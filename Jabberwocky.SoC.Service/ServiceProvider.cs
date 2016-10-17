@@ -1,14 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.Serialization;
-using System.ServiceModel;
-using System.Text;
-
+﻿
 namespace Jabberwocky.SoC.Service
 {
+  using System;
+  using System.Collections.Generic;
+  using System.Linq;
+  using System.Runtime.Serialization;
+  using System.ServiceModel;
+  using System.Text;
+
   // NOTE: You can use the "Rename" command on the "Refactor" menu to change the class name "Service1" in both code and config file together.
-  public class Service1 : IService
+  public class ServiceProvider : IServiceProvider
   {
     public string GetData(int value)
     {
@@ -19,7 +20,7 @@ namespace Jabberwocky.SoC.Service
     {
       if (composite == null)
       {
-        throw new ArgumentNullException("composite");
+        throw new ArgumentNullException(nameof(composite));
       }
       if (composite.BoolValue)
       {
