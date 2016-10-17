@@ -4,6 +4,7 @@ namespace Jabberwocky.SoC.Service.Console
   using System;
   using System.Collections.Generic;
   using System.Linq;
+  using System.ServiceModel;
   using System.Text;
   using System.Threading.Tasks;
 
@@ -11,6 +12,10 @@ namespace Jabberwocky.SoC.Service.Console
   {
     public static void Main(String[] args)
     {
+      var serviceHost = new ServiceHost(typeof(ServiceProvider));
+      serviceHost.Open();
+      Console.WriteLine("Started...");
+      Console.ReadKey();
     }
   }
 }
