@@ -18,6 +18,8 @@ namespace Jabberwocky.SoC.Service
       this.clients = new List<IServiceProviderCallback>(4);
     }
 
+    public static String Message;
+
     #region Methods
     public Boolean JoinGame()
     {
@@ -33,9 +35,7 @@ namespace Jabberwocky.SoC.Service
         this.clients.Add(client);
       }
 
-      Console.WriteLine("Client joined game");
-
-      client.StartTurn(Guid.NewGuid());
+      Message = "Client joined game";
 
       return true;
     }
