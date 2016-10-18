@@ -8,7 +8,7 @@ namespace Jabberwocky.SoC.Service
   using System.Text;
   using System.Threading.Tasks;
 
-  public interface IClient
+  public interface IServiceProviderCallback
   {
     [OperationContract(IsOneWay = true)]
     void StartTurn(Guid token);

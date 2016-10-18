@@ -9,7 +9,7 @@ namespace Jabberwocky.SoC.Service
   using System.Text;
 
   [ServiceContract(SessionMode = SessionMode.Required,
-    CallbackContract = typeof(IClient))]
+    CallbackContract = typeof(IServiceProviderCallback))]
   public interface IServiceProvider
   {
     [OperationContract]

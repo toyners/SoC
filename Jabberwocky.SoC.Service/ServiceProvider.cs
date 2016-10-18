@@ -8,13 +8,14 @@ namespace Jabberwocky.SoC.Service
   using System.ServiceModel;
   using System.Text;
 
+  [ServiceBehavior(InstanceContextMode =InstanceContextMode.PerSession)]
   public class ServiceProvider : IServiceProvider
   {
-    private List<IClient> clients;
+    private List<IServiceProviderCallback> clients;
 
     public ServiceProvider()
     {
-      this.clients = new List<IClient>(4);
+      this.clients = new List<IServiceProviderCallback>(4);
     }
 
     #region Methods
@@ -25,21 +26,26 @@ namespace Jabberwocky.SoC.Service
         return false; // Game is full
       }
 
-      var client = OperationContext.Current.GetCallbackChannel<IClient>();
+      var client = OperationContext.Current.GetCallbackChannel<IServiceProviderCallback>();
 
       if (!this.clients.Contains(client))
       {
         this.clients.Add(client);
       }
 
+      Console.WriteLine("Client joined game");
+
+      client.StartTurn(Guid.NewGuid());
+
       return true;
     }
 
     public void LeaveGame()
     {
-      throw new NotImplementedException();
+      Console.WriteLine("Client left game");
     }
     #endregion
+
     /*public string GetData(int value)
     {
       return string.Format("You entered: {0}", value);
