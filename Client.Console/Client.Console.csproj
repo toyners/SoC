@@ -83,9 +83,9 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Jabberwocky.SoC.Service\Jabberwocky.SoC.Service.csproj">
+    <ProjectReference Include="..\Service\Service.csproj">
       <Project>{0CCA125D-9987-4128-895E-25C0DD1B684F}</Project>
-      <Name>Jabberwocky.SoC.Service</Name>
+      <Name>Service</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

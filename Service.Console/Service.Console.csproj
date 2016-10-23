@@ -51,9 +51,9 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Jabberwocky.SoC.Service\Jabberwocky.SoC.Service.csproj">
+    <ProjectReference Include="..\Service\Service.csproj">
       <Project>{0cca125d-9987-4128-895e-25c0dd1b684f}</Project>
-      <Name>Jabberwocky.SoC.Service</Name>
+      <Name>Service</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

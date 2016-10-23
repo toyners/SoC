@@ -3,11 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
 VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jabberwocky.SoC.Service", "Jabberwocky.SoC.Service\Jabberwocky.SoC.Service.csproj", "{0CCA125D-9987-4128-895E-25C0DD1B684F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Service", "Service\Service.csproj", "{0CCA125D-9987-4128-895E-25C0DD1B684F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jabberwocky.SoC.Service.Console", "Jabberwocky.SoC.Service.Console\Jabberwocky.SoC.Service.Console.csproj", "{C56E7E2E-DCB8-4B6D-AEEA-EF87DE8CB059}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Service.Console", "Service.Console\Service.Console.csproj", "{C56E7E2E-DCB8-4B6D-AEEA-EF87DE8CB059}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jabberwocky.SoC.Client.Console", "Jabberwocky.SoC.Client.Console\Jabberwocky.SoC.Client.Console.csproj", "{BB8D6826-93DF-410E-AC65-D3A32A59F337}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Client.Console", "Client.Console\Client.Console.csproj", "{BB8D6826-93DF-410E-AC65-D3A32A59F337}"
 	ProjectSection(ProjectDependencies) = postProject
 		{0CCA125D-9987-4128-895E-25C0DD1B684F} = {0CCA125D-9987-4128-895E-25C0DD1B684F}
 	EndProjectSection
