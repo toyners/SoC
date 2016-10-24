@@ -12,39 +12,36 @@ namespace Jabberwocky.SoC.Client.Console
 
   public class Program
   {
+    private static List<ServiceProviderClient> serviceClients = new List<ServiceProviderClient>();
+
     public static void Main(string[] args)
     {
-      InstanceContext instanceContext = new InstanceContext(new Client());
-      ServiceProviderClient service = new ServiceProviderClient(instanceContext, "WSDualHttpBinding_IServiceProvider");
-      Console.WriteLine("Client started");
-
-      UInt32 clientCount = 0;
       while (true)
       {
         Console.WriteLine();
-        Console.WriteLine("Press 'A' to add a client from the game");
-        Console.WriteLine("Press 'R' to remove a client from the game.");
-        Console.WriteLine("Press 'X' to remove all clients from the game and exit.");
-        var input = Console.ReadKey();
-        switch (input.Key)
+        Console.WriteLine("Press 'A' to add a player to the game");
+        Console.WriteLine("Press 'R' to remove a player from the game.");
+        Console.WriteLine("Press 'X' to remove all players from the game and exit.");
+        var input = Console.ReadLine();
+        switch (input.ToUpper())
         {
-          case ConsoleKey.A:
+          case "A":
           {
-            TryToAddClientToGame(service, clientCount);
+            TryToAddClientToGame();
             break;
           }
 
-          case ConsoleKey.R:
+          case "R":
           {
-            TryToRemoveClientFromGame(service, clientCount);
+            TryToRemoveClientFromGame();
             break;
           }
 
-          case ConsoleKey.X:
+          case "X":
           {
-            while (clientCount > 0)
+            while (serviceClients.Count > 0)
             {
-              TryToRemoveClientFromGame(service, clientCount);
+              TryToRemoveClientFromGame();
             }
 
             return;
@@ -55,22 +52,29 @@ namespace Jabberwocky.SoC.Client.Console
       }
     }
 
-    public static void TryToAddClientToGame(ServiceProviderClient service, UInt32 clientCount)
+    public static void TryToAddClientToGame()
     {
-      if (clientCount < 4)
+      Console.Write("Attempting connection...");
+      var instanceContext = new InstanceContext(new Client());
+      var serviceClient = new ServiceProviderClient(instanceContext, "WSDualHttpBinding_IServiceProvider");
+      var gameJoined = serviceClient.JoinGame();
+
+      if (gameJoined)
       {
-        service.JoinGame();
-        clientCount++;
+        serviceClients.Add(serviceClient);
+        Console.WriteLine("Joined.");
+      }
+      else
+      {
+        Console.WriteLine("FAILED!");
       }
     }
 
-    public static void TryToRemoveClientFromGame(ServiceProviderClient service, UInt32 clientCount)
+    public static void TryToRemoveClientFromGame()
     {
-      if (clientCount > 0)
-      {
-        service.LeaveGameAsync();
-        clientCount++;
-      }
+      serviceClients[serviceClients.Count - 1].LeaveGame();
+      serviceClients.RemoveAt(serviceClients.Count - 1);
+      Console.WriteLine("Client removed.");
     }
   }
 }
