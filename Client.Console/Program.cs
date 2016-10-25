@@ -65,9 +65,12 @@ namespace Jabberwocky.SoC.Client.Console
 
     public static void TryToRemoveClientFromGame()
     {
-      clients[clients.Count - 1].Disconnect();
-      clients.RemoveAt(clients.Count - 1);
-      Console.WriteLine("Client removed.");
+      if (clients.Count > 0)
+      {
+        clients[clients.Count - 1].Disconnect();
+        clients.RemoveAt(clients.Count - 1);
+        Console.WriteLine("Client removed.");
+      }
     }
   }
 }

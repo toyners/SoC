@@ -9,14 +9,19 @@ namespace Jabberwocky.SoC.Service
                    ConcurrencyMode = ConcurrencyMode.Single)]
   public class ServiceProvider : IServiceProvider
   {
+    #region Fields
     private List<IServiceProviderCallback> clients;
 
+    private Guid gameId;
+    #endregion
+
+    #region Construction
     public ServiceProvider()
     {
       this.clients = new List<IServiceProviderCallback>(4);
+      this.gameId = Guid.NewGuid();
     }
-
-    public static String Message;
+    #endregion
 
     #region Methods
     public Boolean TryJoinGame()
@@ -31,9 +36,8 @@ namespace Jabberwocky.SoC.Service
       if (!this.clients.Contains(client))
       {
         this.clients.Add(client);
+        client.ConfirmGameJoined(this.gameId);
       }
-
-      Message = "Client joined game";
 
       return true;
     }

@@ -2,22 +2,29 @@
 namespace Jabberwocky.SoC.Client
 {
   using System;
-  using System.Collections.Generic;
-  using System.Linq;
-  using System.Text;
-  using System.Threading.Tasks;
   using Jabberwocky.SoC.Client.ServiceReference;
 
   public class ServiceClient : IServiceProviderCallback
   {
-    public void ConfirmGameJoined(Guid gameId)
+    #region Fields
+    private Guid gameToken;
+
+    private Guid turnToken;
+
+    public Action<Guid> GameJoinedEvent;
+    #endregion
+
+    #region Methods
+    public void ConfirmGameJoined(Guid gameToken)
     {
-      throw new NotImplementedException();
+      this.gameToken = gameToken;
+      this.GameJoinedEvent?.Invoke(gameToken);
     }
 
-    public void StartTurn(Guid token)
+    public void StartTurn(Guid turnToken)
     {
-      throw new NotImplementedException();
+      this.turnToken = turnToken;
     }
+    #endregion
   }
 }

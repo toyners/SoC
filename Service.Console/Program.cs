@@ -15,12 +15,6 @@ namespace Jabberwocky.SoC.Service.Console
 
       while (true)
       {
-        if (ServiceProvider.Message != null)
-        {
-          Console.WriteLine(ServiceProvider.Message);
-          ServiceProvider.Message = null;
-        }
-
         Thread.Sleep(100);
       }
     }

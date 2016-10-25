@@ -7,20 +7,31 @@ namespace Jabberwocky.SoC.Client
 
   public class Client
   {
-    private ServiceProviderClient serviceClient;
+    #region Fields
+    private ServiceProviderClient serviceProviderClient;
+    #endregion
 
+    #region Methods
     public Boolean Connect()
     {
-      var instanceContext = new InstanceContext(new ServiceClient());
-      this.serviceClient = new ServiceProviderClient(instanceContext, "WSDualHttpBinding_IServiceProvider");
-      var joined = this.serviceClient.TryJoinGame();
+      var serviceClient = new ServiceClient();
+      serviceClient.GameJoinedEvent = this.GameJoinedEventHandler;
+      var instanceContext = new InstanceContext(serviceClient);
+      this.serviceProviderClient = new ServiceProviderClient(instanceContext, "WSDualHttpBinding_IServiceProvider");
+      var joined = this.serviceProviderClient.TryJoinGame();
 
       return joined;
     }
 
+    public void GameJoinedEventHandler(Guid gameId)
+    {
+      Console.WriteLine("Game joined confirmed: " + gameId);
+    }
+
     public void Disconnect()
     {
-      this.serviceClient.LeaveGame();
+      this.serviceProviderClient.LeaveGame();
     }
+    #endregion
   }
 }
