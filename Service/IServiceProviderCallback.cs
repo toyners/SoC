@@ -2,15 +2,14 @@
 namespace Jabberwocky.SoC.Service
 {
   using System;
-  using System.Collections.Generic;
-  using System.Linq;
   using System.ServiceModel;
-  using System.Text;
-  using System.Threading.Tasks;
 
   public interface IServiceProviderCallback
   {
     [OperationContract(IsOneWay = true)]
     void StartTurn(Guid token);
+
+    [OperationContract(IsOneWay = true)]
+    void ConfirmGameJoined();
   }
 }
