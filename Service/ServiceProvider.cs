@@ -19,7 +19,7 @@ namespace Jabberwocky.SoC.Service
     public static String Message;
 
     #region Methods
-    public Boolean JoinGame()
+    public Boolean TryJoinGame()
     {
       if (this.clients.Count == 4)
       {

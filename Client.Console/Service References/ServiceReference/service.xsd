@@ -1,15 +1,15 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <xs:schema xmlns:tns="http://tempuri.org/" elementFormDefault="qualified" targetNamespace="http://tempuri.org/" xmlns:xs="http://www.w3.org/2001/XMLSchema">
   <xs:import namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
-  <xs:element name="JoinGame">
+  <xs:element name="TryJoinGame">
     <xs:complexType>
       <xs:sequence />
     </xs:complexType>
   </xs:element>
-  <xs:element name="JoinGameResponse">
+  <xs:element name="TryJoinGameResponse">
     <xs:complexType>
       <xs:sequence>
-        <xs:element minOccurs="0" name="JoinGameResult" type="xs:boolean" />
+        <xs:element minOccurs="0" name="TryJoinGameResult" type="xs:boolean" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
@@ -22,6 +22,13 @@
     <xs:complexType>
       <xs:sequence>
         <xs:element xmlns:q1="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="token" type="q1:guid" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="ConfirmGameJoined">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q2="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="gameId" type="q2:guid" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>

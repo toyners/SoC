@@ -9,7 +9,7 @@ namespace Jabberwocky.SoC.Service
   public interface IServiceProvider
   {
     [OperationContract]
-    Boolean JoinGame();
+    Boolean TryJoinGame();
 
     [OperationContract(IsOneWay = true)]
     void LeaveGame();

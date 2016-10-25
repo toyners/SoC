@@ -53,12 +53,12 @@ namespace Jabberwocky.SoC.Client.Console
       Console.Write("Attempting connection...");
       var instanceContext = new InstanceContext(new Client());
       var serviceClient = new ServiceProviderClient(instanceContext, "WSDualHttpBinding_IServiceProvider");
-      var gameJoined = serviceClient.JoinGame();
+      var joined = serviceClient.TryJoinGame();
 
-      if (gameJoined)
+      if (joined)
       {
         serviceClients.Add(serviceClient);
-        Console.WriteLine("Joined.");
+        Console.WriteLine("Joined. Awaiting confirmation");
       }
       else
       {

@@ -15,11 +15,11 @@ namespace Jabberwocky.SoC.Client.Console.ServiceReference {
     [System.ServiceModel.ServiceContractAttribute(ConfigurationName="ServiceReference.IServiceProvider", CallbackContract=typeof(Jabberwocky.SoC.Client.Console.ServiceReference.IServiceProviderCallback), SessionMode=System.ServiceModel.SessionMode.Required)]
     public interface IServiceProvider {
         
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IServiceProvider/JoinGame", ReplyAction="http://tempuri.org/IServiceProvider/JoinGameResponse")]
-        bool JoinGame();
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IServiceProvider/TryJoinGame", ReplyAction="http://tempuri.org/IServiceProvider/TryJoinGameResponse")]
+        bool TryJoinGame();
         
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IServiceProvider/JoinGame", ReplyAction="http://tempuri.org/IServiceProvider/JoinGameResponse")]
-        System.Threading.Tasks.Task<bool> JoinGameAsync();
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IServiceProvider/TryJoinGame", ReplyAction="http://tempuri.org/IServiceProvider/TryJoinGameResponse")]
+        System.Threading.Tasks.Task<bool> TryJoinGameAsync();
         
         [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IServiceProvider/LeaveGame")]
         void LeaveGame();
@@ -33,6 +33,9 @@ namespace Jabberwocky.SoC.Client.Console.ServiceReference {
         
         [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IServiceProvider/StartTurn")]
         void StartTurn(System.Guid token);
+        
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IServiceProvider/ConfirmGameJoined")]
+        void ConfirmGameJoined(System.Guid gameId);
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
@@ -63,12 +66,12 @@ namespace Jabberwocky.SoC.Client.Console.ServiceReference {
                 base(callbackInstance, binding, remoteAddress) {
         }
         
-        public bool JoinGame() {
-            return base.Channel.JoinGame();
+        public bool TryJoinGame() {
+            return base.Channel.TryJoinGame();
         }
         
-        public System.Threading.Tasks.Task<bool> JoinGameAsync() {
-            return base.Channel.JoinGameAsync();
+        public System.Threading.Tasks.Task<bool> TryJoinGameAsync() {
+            return base.Channel.TryJoinGameAsync();
         }
         
         public void LeaveGame() {
