@@ -3,12 +3,10 @@ namespace Jabberwocky.SoC.Service
 {
   using System;
   using System.Collections.Generic;
-  using System.Linq;
-  using System.Runtime.Serialization;
   using System.ServiceModel;
-  using System.Text;
 
-  [ServiceBehavior(InstanceContextMode =InstanceContextMode.PerSession)]
+  [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single,
+                   ConcurrencyMode = ConcurrencyMode.Single)]
   public class ServiceProvider : IServiceProvider
   {
     private List<IServiceProviderCallback> clients;

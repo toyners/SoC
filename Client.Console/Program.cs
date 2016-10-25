@@ -3,11 +3,7 @@ namespace Jabberwocky.SoC.Client.Console
 {
   using System;
   using System.Collections.Generic;
-  using System.Linq;
   using System.ServiceModel;
-  using System.Text;
-  using System.Threading;
-  using System.Threading.Tasks;
   using ServiceReference;
 
   public class Program
