@@ -5,7 +5,7 @@ namespace Jabberwocky.SoC.Client
   using System.ServiceModel;
   using Jabberwocky.SoC.Client.ServiceReference;
 
-  public class Client
+  public class GameClient
   {
     #region Fields
     private ServiceProviderClient serviceProviderClient;

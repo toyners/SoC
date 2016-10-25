@@ -6,7 +6,7 @@ namespace Jabberwocky.SoC.Client.Console
 
   public class Program
   {
-    private static List<Client> clients = new List<Client>();
+    private static List<GameClient> clients = new List<GameClient>();
 
     public static void Main(string[] args)
     {
@@ -49,7 +49,7 @@ namespace Jabberwocky.SoC.Client.Console
     public static void TryToAddClientToGame()
     {
       Console.Write("Attempting connection...");
-      var client = new Client();
+      var client = new GameClient();
       var joined = client.Connect();
 
       if (joined)
