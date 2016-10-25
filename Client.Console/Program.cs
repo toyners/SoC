@@ -3,8 +3,6 @@ namespace Jabberwocky.SoC.Client.Console
 {
   using System;
   using System.Collections.Generic;
-  using System.ServiceModel;
-  using ServiceReference;
 
   public class Program
   {
