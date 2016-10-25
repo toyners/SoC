@@ -8,7 +8,7 @@ namespace Jabberwocky.SoC.Client.Console
 
   public class Program
   {
-    private static List<ServiceProviderClient> serviceClients = new List<ServiceProviderClient>();
+    private static List<Client> clients = new List<Client>();
 
     public static void Main(string[] args)
     {
@@ -35,7 +35,7 @@ namespace Jabberwocky.SoC.Client.Console
 
           case "X":
           {
-            while (serviceClients.Count > 0)
+            while (clients.Count > 0)
             {
               TryToRemoveClientFromGame();
             }
@@ -51,13 +51,12 @@ namespace Jabberwocky.SoC.Client.Console
     public static void TryToAddClientToGame()
     {
       Console.Write("Attempting connection...");
-      var instanceContext = new InstanceContext(new Client());
-      var serviceClient = new ServiceProviderClient(instanceContext, "WSDualHttpBinding_IServiceProvider");
-      var joined = serviceClient.TryJoinGame();
+      var client = new Client();
+      var joined = client.Connect();
 
       if (joined)
       {
-        serviceClients.Add(serviceClient);
+        clients.Add(client);
         Console.WriteLine("Joined. Awaiting confirmation");
       }
       else
@@ -68,8 +67,8 @@ namespace Jabberwocky.SoC.Client.Console
 
     public static void TryToRemoveClientFromGame()
     {
-      serviceClients[serviceClients.Count - 1].LeaveGame();
-      serviceClients.RemoveAt(serviceClients.Count - 1);
+      clients[clients.Count - 1].Disconnect();
+      clients.RemoveAt(clients.Count - 1);
       Console.WriteLine("Client removed.");
     }
   }

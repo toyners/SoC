@@ -1,10 +1,10 @@
 ﻿
 namespace Jabberwocky.SoC.Client.Console
 {
-  using System;
+  /*using System;
   using Jabberwocky.SoC.Client.Console.ServiceReference;
 
-  public class Client : IServiceProviderCallback
+  /*public class Client : IServiceProviderCallback
   {
     public void ConfirmGameJoined(Guid gameId)
     {
@@ -15,5 +15,5 @@ namespace Jabberwocky.SoC.Client.Console
     {
       Console.WriteLine(String.Format("Received token {0} for turn.", token));
     }
-  }
+  }*/
 }
