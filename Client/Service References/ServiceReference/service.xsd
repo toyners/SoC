@@ -6,13 +6,6 @@
       <xs:sequence />
     </xs:complexType>
   </xs:element>
-  <xs:element name="TryJoinGameResponse">
-    <xs:complexType>
-      <xs:sequence>
-        <xs:element minOccurs="0" name="TryJoinGameResult" type="xs:boolean" />
-      </xs:sequence>
-    </xs:complexType>
-  </xs:element>
   <xs:element name="LeaveGame">
     <xs:complexType>
       <xs:sequence />

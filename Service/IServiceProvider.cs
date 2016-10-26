@@ -8,8 +8,8 @@ namespace Jabberwocky.SoC.Service
     CallbackContract = typeof(IServiceProviderCallback))]
   public interface IServiceProvider
   {
-    [OperationContract]
-    Boolean TryJoinGame();
+    [OperationContract(IsOneWay = true)]
+    void TryJoinGame();
 
     [OperationContract(IsOneWay = true)]
     void LeaveGame();

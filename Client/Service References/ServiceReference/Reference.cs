@@ -15,11 +15,11 @@ namespace Jabberwocky.SoC.Client.ServiceReference {
     [System.ServiceModel.ServiceContractAttribute(ConfigurationName="ServiceReference.IServiceProvider", CallbackContract=typeof(Jabberwocky.SoC.Client.ServiceReference.IServiceProviderCallback), SessionMode=System.ServiceModel.SessionMode.Required)]
     public interface IServiceProvider {
         
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IServiceProvider/TryJoinGame", ReplyAction="http://tempuri.org/IServiceProvider/TryJoinGameResponse")]
-        bool TryJoinGame();
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IServiceProvider/TryJoinGame")]
+        void TryJoinGame();
         
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IServiceProvider/TryJoinGame", ReplyAction="http://tempuri.org/IServiceProvider/TryJoinGameResponse")]
-        System.Threading.Tasks.Task<bool> TryJoinGameAsync();
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IServiceProvider/TryJoinGame")]
+        System.Threading.Tasks.Task TryJoinGameAsync();
         
         [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IServiceProvider/LeaveGame")]
         void LeaveGame();
@@ -66,11 +66,11 @@ namespace Jabberwocky.SoC.Client.ServiceReference {
                 base(callbackInstance, binding, remoteAddress) {
         }
         
-        public bool TryJoinGame() {
-            return base.Channel.TryJoinGame();
+        public void TryJoinGame() {
+            base.Channel.TryJoinGame();
         }
         
-        public System.Threading.Tasks.Task<bool> TryJoinGameAsync() {
+        public System.Threading.Tasks.Task TryJoinGameAsync() {
             return base.Channel.TryJoinGameAsync();
         }
         

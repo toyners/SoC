@@ -18,9 +18,9 @@ namespace Jabberwocky.SoC.Client
       serviceClient.GameJoinedEvent = this.GameJoinedEventHandler;
       var instanceContext = new InstanceContext(serviceClient);
       this.serviceProviderClient = new ServiceProviderClient(instanceContext, "WSDualHttpBinding_IServiceProvider");
-      var joined = this.serviceProviderClient.TryJoinGame();
+      this.serviceProviderClient.TryJoinGame();
 
-      return joined;
+      return true;
     }
 
     public void GameJoinedEventHandler(Guid gameId)

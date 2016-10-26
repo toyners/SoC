@@ -1,0 +1,1 @@
+Multiplayer version of a popular board game build using tasks and duplex WCF communication.
