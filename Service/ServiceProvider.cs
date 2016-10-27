@@ -5,6 +5,7 @@ namespace Jabberwocky.SoC.Service
   using System.Collections.Generic;
   using System.ServiceModel;
   using System.Threading;
+  using System.Threading.Tasks;
   using Library;
 
   [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single,
@@ -12,19 +13,14 @@ namespace Jabberwocky.SoC.Service
   public class ServiceProvider : IServiceProvider
   {
     #region Fields
-    private List<IServiceProviderCallback> clients;
-
-    private Queue<IServiceProviderCallback> waitingForGame;
-
-    private Dictionary<Guid, GameManager> games;
+    private GameConnector gameConnector;
     #endregion
 
     #region Construction
     public ServiceProvider()
     {
-      this.clients = new List<IServiceProviderCallback>(4);
-      this.waitingForGame = new Queue<IServiceProviderCallback>();
-      this.games = new Dictionary<Guid, GameManager>();
+      this.gameConnector = new GameConnector();
+      this.gameConnector.StartMatching();
     }
     #endregion
 
@@ -32,7 +28,7 @@ namespace Jabberwocky.SoC.Service
     public void TryJoinGame()
     {
       var client = OperationContext.Current.GetCallbackChannel<IServiceProviderCallback>();
-      this.waitingForGame.Enqueue(client);
+      this.gameConnector.AddClient(client);
     }
 
     public void LeaveGame()
@@ -66,6 +62,7 @@ namespace Jabberwocky.SoC.Service
     private List<IServiceProviderCallback> clients;
     private Dictionary<Guid, GameRecord> games;
     private Queue<IServiceProviderCallback> waitingForGame;
+    private Task matchingTask;
 
     public GameConnector()
     {
@@ -74,20 +71,34 @@ namespace Jabberwocky.SoC.Service
       this.games = new Dictionary<Guid, GameRecord>();
     }
 
+    public Boolean CanStop { get { return this.working; /* TODO: Check task and task status */ } }
+    public Boolean CanStart { get { return !this.working; /* TODO: Check task and task status */ } }
+
+    public void AddClient(IServiceProviderCallback client)
+    {
+      // TODO: Check for null reference
+      this.waitingForGame.Enqueue(client);
+    }
+
     public void StopMatching()
     {
+      if (!this.CanStop)
+      {
+        return;
+      }
+
       this.working = false;
     }
 
     public void StartMatching()
     {
-      if (this.working)
+      if (!this.CanStart)
       {
         return;
       }
 
+      this.matchingTask = Task.Factory.StartNew(() => { this.MatchPlayersWithGames(); });
       this.working = true;
-      
     }
 
     public void MatchPlayersWithGames()

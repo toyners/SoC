@@ -48,11 +48,11 @@ namespace Jabberwocky.SoC.Client.Console
 
     public static void TryToAddClientToGame()
     {
-      Console.Write("Attempting connection...");
+      Console.Write("Attempting connection.");
       var client = new GameClient();
-      var joined = client.Connect();
+      client.Connect();
 
-      if (joined)
+      /*if (joined)
       {
         clients.Add(client);
         Console.WriteLine("Joined. Awaiting confirmation");
@@ -60,7 +60,7 @@ namespace Jabberwocky.SoC.Client.Console
       else
       {
         Console.WriteLine("FAILED!");
-      }
+      }*/
     }
 
     public static void TryToRemoveClientFromGame()
