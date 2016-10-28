@@ -148,27 +148,30 @@ namespace Jabberwocky.SoC.Service
 
       public Guid GameToken;
 
+      private Int32 index = 0;
+
       public GameRecord()
       {
         this.GameToken = Guid.NewGuid();
-        this.Players = new Player[4];
         var board = new Board();
         var diceRoller = new DiceRoller();
         this.Game = new GameManager(board, diceRoller, this.Players, new DevelopmentCardPile());
 
+        this.Players = new Player[4];
         this.Clients = new IServiceProviderCallback[4];
       }
 
       public Boolean NeedsPlayer
       {
-        get { return this.Players.Length < 4; }
+        get { return this.index < this.Clients.Length; }
       }
 
       public void AddPlayer(IServiceProviderCallback client)
       {
         var player = new Player(null);
-        this.Players[this.Players.Length] = player;
-        this.Clients[this.Clients.Length] = client;
+        this.Players[this.index] = player;
+        this.Clients[this.index] = client;
+        this.index++;
         client.ConfirmGameJoined(this.GameToken);
       }
     }
