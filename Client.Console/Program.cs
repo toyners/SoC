@@ -14,6 +14,7 @@ namespace Jabberwocky.SoC.Client.Console
 
     private static GameClient waitingClient;
 
+
     public static void Main(string[] args)
     {
       while (true)
@@ -60,23 +61,28 @@ namespace Jabberwocky.SoC.Client.Console
     public static void TryToAddClientToGame()
     {
       waiting = true;
+      Guid gameToken = Guid.Empty;
       Console.Write("Attempting connection...");
       var client = new GameClient();
-      client.GameJoinedEvent = GameJoinedEventHandler;
+      client.GameJoinedEvent = (token) => 
+      {
+        gameToken = token;
+        waiting = false;
+      };
+
       client.Connect();
       Console.WriteLine("Connected");
-      Console.Write("Joining game.");
 
       var stopWatch = new Stopwatch();
       stopWatch.Start();
       var timeOutThreshold = TimeSpan.FromMinutes(2);
 
-
       var isTimedOut = false;
+      Console.Write("Joining game...");
       while (waiting)
       {
-        Console.Write(".");
         Thread.Sleep(500);
+        Console.Write(".");
         if (stopWatch.Elapsed >= timeOutThreshold)
         {
           isTimedOut = true;
@@ -87,7 +93,7 @@ namespace Jabberwocky.SoC.Client.Console
       if (!waiting && !isTimedOut)
       {
         clients.Add(client);
-        Console.WriteLine("Joined");
+        Console.WriteLine("Joined: " + gameToken.ToString());
       }
       else
       {
