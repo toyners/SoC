@@ -2,11 +2,7 @@
 namespace Jabberwocky.SoC.Service
 {
   using System;
-  using System.Collections.Generic;
   using System.ServiceModel;
-  using System.Threading;
-  using System.Threading.Tasks;
-  using Library;
   using Logging;
 
   [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single,
@@ -15,17 +11,12 @@ namespace Jabberwocky.SoC.Service
   {
     #region Fields
     private GameConnector gameConnector;
-
-    private ILog log;
     #endregion
 
     #region Construction
     public ServiceProvider()
     {
-      //TODO: null reference check
-      this.log = log;
-
-      //this.log.Message("Initiating Service Provider");
+      Logger.Message("Initiating Service Provider");
       this.gameConnector = new GameConnector();
       this.gameConnector.StartMatching();
     }

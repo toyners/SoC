@@ -10,12 +10,11 @@ namespace Jabberwocky.SoC.Service.Console
   {
     public static void Main(String[] args)
     {
-      var logger = new Logger();
-      logger.MessageEvent = (message) => { Console.WriteLine(message); };
+      Logger.MessageEvent = (message) => { Console.WriteLine(message); };
       var serviceHost = new ServiceHost(typeof(ServiceProvider));
 
       serviceHost.Open();
-      Console.WriteLine("Started...");
+      Logger.Message("Started...");
 
       while (true)
       {

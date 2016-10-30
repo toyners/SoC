@@ -2,23 +2,25 @@
 namespace Jabberwocky.SoC.Service.Logging
 {
   using System;
-  using System.Collections.Generic;
-  using System.Linq;
-  using System.Text;
-  using System.Threading.Tasks;
 
-  public class Logger : ILog
+  public static class Logger
   {
-    public Action<String> MessageEvent;
+    #region Events
+    public static Action<String> MessageEvent;
 
-    public void Exception(String message)
+    public static Action<String> ExceptionEvent;
+    #endregion
+
+    #region Methods
+    public static void Exception(String message)
     {
-      throw new NotImplementedException();
+      ExceptionEvent?.Invoke(message);
     }
 
-    public void Message(String message)
+    public static void Message(String message)
     {
       MessageEvent?.Invoke(message);
     }
+    #endregion
   }
 }
