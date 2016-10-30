@@ -7,6 +7,7 @@ namespace Jabberwocky.SoC.Service
   using System.Threading;
   using System.Threading.Tasks;
   using Library;
+  using Logging;
 
   [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single,
                    ConcurrencyMode = ConcurrencyMode.Multiple)]
@@ -14,11 +15,17 @@ namespace Jabberwocky.SoC.Service
   {
     #region Fields
     private GameConnector gameConnector;
+
+    private ILog log;
     #endregion
 
     #region Construction
     public ServiceProvider()
     {
+      //TODO: null reference check
+      this.log = log;
+
+      //this.log.Message("Initiating Service Provider");
       this.gameConnector = new GameConnector();
       this.gameConnector.StartMatching();
     }
