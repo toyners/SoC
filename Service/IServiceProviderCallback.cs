@@ -10,6 +10,9 @@ namespace Jabberwocky.SoC.Service
     void StartTurn(Guid token);
 
     [OperationContract(IsOneWay = true)]
-    void ConfirmGameJoined(Guid gameId);
+    void ConfirmGameJoined(Guid gameToken);
+
+    [OperationContract(IsOneWay = true)]
+    void GameInitialization();
   }
 }

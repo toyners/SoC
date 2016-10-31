@@ -9,22 +9,36 @@ namespace Jabberwocky.SoC.Service
 
   public class GameConnector
   {
+    #region Fields
     private Boolean working;
     private List<IServiceProviderCallback> clients;
-    private Dictionary<Guid, GameRecord> games;
+    private Dictionary<Guid, GameSession> gameSessions;
     private Queue<IServiceProviderCallback> waitingForGame;
     private Task matchingTask;
+    #endregion
 
+    #region Construction
     public GameConnector()
     {
       this.clients = new List<IServiceProviderCallback>();
       this.waitingForGame = new Queue<IServiceProviderCallback>();
-      this.games = new Dictionary<Guid, GameRecord>();
+      this.gameSessions = new Dictionary<Guid, GameSession>();
+    }
+    #endregion
+
+    #region Properties
+    public Boolean CanStop
+    {
+      get { return this.working; /* TODO: Check task and task status */ }
     }
 
-    public Boolean CanStop { get { return this.working; /* TODO: Check task and task status */ } }
-    public Boolean CanStart { get { return !this.working; /* TODO: Check task and task status */ } }
+    public Boolean CanStart
+    {
+      get { return !this.working; /* TODO: Check task and task status */ }
+    }
+    #endregion
 
+    #region Methods
     public void AddClient(IServiceProviderCallback client)
     {
       // TODO: Check for null reference
@@ -52,7 +66,7 @@ namespace Jabberwocky.SoC.Service
       this.working = true;
     }
 
-    public void MatchPlayersWithGames()
+    private void MatchPlayersWithGames()
     {
       while (this.working)
       {
@@ -62,15 +76,15 @@ namespace Jabberwocky.SoC.Service
         }
 
         IServiceProviderCallback client;
-        GameRecord game;
+        GameSession gameSession;
         var matchMade = false;
-        foreach (var kv in this.games)
+        foreach (var kv in this.gameSessions)
         {
-          game = kv.Value;
-          if (game.NeedsPlayer)
+          gameSession = kv.Value;
+          if (gameSession.NeedsPlayer)
           {
             client = this.waitingForGame.Dequeue();
-            game.AddPlayer(client);
+            gameSession.AddPlayer(client);
             matchMade = true;
             break;
           }
@@ -83,13 +97,14 @@ namespace Jabberwocky.SoC.Service
 
         // Create a new game and add the player
         client = this.waitingForGame.Dequeue();
-        game = new GameRecord();
-        game.AddPlayer(client);
-        this.games.Add(game.GameToken, game);
+        gameSession = new GameSession();
+        gameSession.AddPlayer(client);
+        this.gameSessions.Add(gameSession.GameToken, gameSession);
       }
     }
+    #endregion
 
-    private class GameRecord
+    private class GameSession
     {
       public GameManager Game;
 
@@ -99,14 +114,16 @@ namespace Jabberwocky.SoC.Service
 
       public Guid GameToken;
 
+      private Board board;
+
       private Int32 index = 0;
 
-      public GameRecord()
+      public GameSession()
       {
         this.GameToken = Guid.NewGuid();
-        var board = new Board();
+        this.board = new Board();
         var diceRoller = new DiceRoller();
-        this.Game = new GameManager(board, diceRoller, this.Players, new DevelopmentCardPile());
+        this.Game = new GameManager(this.board, diceRoller, this.Players, new DevelopmentCardPile());
 
         this.Players = new Player[4];
         this.Clients = new IServiceProviderCallback[4];
@@ -119,7 +136,7 @@ namespace Jabberwocky.SoC.Service
 
       public void AddPlayer(IServiceProviderCallback client)
       {
-        var player = new Player(null);
+        var player = new Player(this.board);
         this.Players[this.index] = player;
         this.Clients[this.index] = client;
         this.index++;
