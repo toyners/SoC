@@ -13,11 +13,14 @@ namespace Jabberwocky.SoC.Client
 
     public Action<Guid> GameJoinedEvent;
 
+    public Action GameInitializationEvent;
+
     #region Methods
     public void Connect()
     {
       var serviceClient = new ServiceClient();
       serviceClient.GameJoinedEvent = this.GameJoinedEvent;
+      serviceClient.GameInitializationEvent = this.GameInitializationEvent;
       var instanceContext = new InstanceContext(serviceClient);
       this.serviceProviderClient = new ServiceProviderClient(instanceContext, "WSDualHttpBinding_IServiceProvider");
       this.serviceProviderClient.TryJoinGame();

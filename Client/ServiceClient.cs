@@ -7,11 +7,13 @@ namespace Jabberwocky.SoC.Client
   public class ServiceClient : IServiceProviderCallback
   {
     #region Fields
+    public Action<Guid> GameJoinedEvent;
+
+    public Action GameInitializationEvent;
+
     private Guid gameToken;
 
     private Guid turnToken;
-
-    public Action<Guid> GameJoinedEvent;
     #endregion
 
     #region Methods
@@ -19,6 +21,11 @@ namespace Jabberwocky.SoC.Client
     {
       this.gameToken = gameToken;
       this.GameJoinedEvent?.Invoke(gameToken);
+    }
+
+    public void GameInitialization()
+    {
+      this.GameInitializationEvent?.Invoke();
     }
 
     public void StartTurn(Guid turnToken)
