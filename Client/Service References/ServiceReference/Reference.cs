@@ -22,10 +22,10 @@ namespace Jabberwocky.SoC.Client.ServiceReference {
         System.Threading.Tasks.Task TryJoinGameAsync();
         
         [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IServiceProvider/LeaveGame")]
-        void LeaveGame();
+        void LeaveGame(System.Guid gameToken);
         
         [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IServiceProvider/LeaveGame")]
-        System.Threading.Tasks.Task LeaveGameAsync();
+        System.Threading.Tasks.Task LeaveGameAsync(System.Guid gameToken);
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
@@ -77,12 +77,12 @@ namespace Jabberwocky.SoC.Client.ServiceReference {
             return base.Channel.TryJoinGameAsync();
         }
         
-        public void LeaveGame() {
-            base.Channel.LeaveGame();
+        public void LeaveGame(System.Guid gameToken) {
+            base.Channel.LeaveGame(gameToken);
         }
         
-        public System.Threading.Tasks.Task LeaveGameAsync() {
-            return base.Channel.LeaveGameAsync();
+        public System.Threading.Tasks.Task LeaveGameAsync(System.Guid gameToken) {
+            return base.Channel.LeaveGameAsync(gameToken);
         }
     }
 }

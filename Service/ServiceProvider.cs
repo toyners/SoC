@@ -27,11 +27,14 @@ namespace Jabberwocky.SoC.Service
     {
       var client = OperationContext.Current.GetCallbackChannel<IServiceProviderCallback>();
       this.gameConnector.AddClient(client);
+      Logger.Message("Client joined game");
     }
 
-    public void LeaveGame()
+    public void LeaveGame(Guid gameToken)
     {
-      Console.WriteLine("Client left game");
+      var client = OperationContext.Current.GetCallbackChannel<IServiceProviderCallback>();
+      this.gameConnector.RemoveClient(gameToken, client);
+      Logger.Message("Client left game");
     }
     #endregion
 

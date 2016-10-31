@@ -11,15 +11,12 @@ namespace Jabberwocky.SoC.Client
 
     public Action GameInitializationEvent;
 
-    private Guid gameToken;
-
     private Guid turnToken;
     #endregion
 
     #region Methods
     public void ConfirmGameJoined(Guid gameToken)
     {
-      this.gameToken = gameToken;
       this.GameJoinedEvent?.Invoke(gameToken);
     }
 

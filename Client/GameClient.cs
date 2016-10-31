@@ -11,7 +11,11 @@ namespace Jabberwocky.SoC.Client
     private ServiceProviderClient serviceProviderClient;
     #endregion
 
-    public Action<Guid> GameJoinedEvent;
+    #region Properties
+    public Guid GameToken { get; private set; }
+    #endregion
+
+    public Action GameJoinedEvent;
 
     public Action GameInitializationEvent;
 
@@ -19,7 +23,7 @@ namespace Jabberwocky.SoC.Client
     public void Connect()
     {
       var serviceClient = new ServiceClient();
-      serviceClient.GameJoinedEvent = this.GameJoinedEvent;
+      serviceClient.GameJoinedEvent = this.GameJoinedEventHandler;
       serviceClient.GameInitializationEvent = this.GameInitializationEvent;
       var instanceContext = new InstanceContext(serviceClient);
       this.serviceProviderClient = new ServiceProviderClient(instanceContext, "WSDualHttpBinding_IServiceProvider");
@@ -28,7 +32,13 @@ namespace Jabberwocky.SoC.Client
 
     public void Disconnect()
     {
-      this.serviceProviderClient.LeaveGame();
+      this.serviceProviderClient.LeaveGame(this.GameToken);
+    }
+
+    private void GameJoinedEventHandler(Guid gameToken)
+    {
+      this.GameToken = gameToken;
+      this.GameJoinedEvent?.Invoke();
     }
     #endregion
   }

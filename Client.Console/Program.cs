@@ -12,9 +12,6 @@ namespace Jabberwocky.SoC.Client.Console
 
     private static Boolean waiting;
 
-    private static GameClient waitingClient;
-
-
     public static void Main(string[] args)
     {
       while (true)
@@ -64,9 +61,9 @@ namespace Jabberwocky.SoC.Client.Console
       Guid gameToken = Guid.Empty;
       Console.Write("Attempting connection...");
       var client = new GameClient();
-      client.GameJoinedEvent = (token) => 
+      client.GameJoinedEvent = () => 
       {
-        gameToken = token;
+        gameToken = client.GameToken;
         waiting = false;
       };
 
@@ -99,16 +96,6 @@ namespace Jabberwocky.SoC.Client.Console
       {
         Console.WriteLine("FAILED!");
       }
-
-      /*if (joined)
-      {
-        clients.Add(client);
-        Console.WriteLine("Joined. Awaiting confirmation");
-      }
-      else
-      {
-        Console.WriteLine("FAILED!");
-      }*/
     }
 
     public static void TryToRemoveClientFromGame()

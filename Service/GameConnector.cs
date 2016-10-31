@@ -36,6 +36,17 @@ namespace Jabberwocky.SoC.Service
     {
       get { return !this.working; /* TODO: Check task and task status */ }
     }
+
+    public void RemoveClient(Guid gameToken, IServiceProviderCallback client)
+    {
+      if (!this.gameSessions.ContainsKey(gameToken))
+      {
+        throw new NotImplementedException();
+      }
+
+      var gameSession = this.gameSessions[gameToken];
+      gameSession.RemovePlayer(client);
+    }
     #endregion
 
     #region Methods
@@ -116,7 +127,7 @@ namespace Jabberwocky.SoC.Service
 
       private Board board;
 
-      private Int32 index = 0;
+      private Int32 clientCount;
 
       public GameSession()
       {
@@ -131,16 +142,40 @@ namespace Jabberwocky.SoC.Service
 
       public Boolean NeedsPlayer
       {
-        get { return this.index < this.Clients.Length; }
+        get { return this.clientCount < this.Clients.Length; }
       }
 
       public void AddPlayer(IServiceProviderCallback client)
       {
-        var player = new Player(this.board);
-        this.Players[this.index] = player;
-        this.Clients[this.index] = client;
-        this.index++;
-        client.ConfirmGameJoined(this.GameToken);
+        for (var i = 0; i < this.Clients.Length; i++)
+        {
+          if (this.Clients[i] == null)
+          {
+            var player = new Player(this.board);
+            this.Clients[i] = client;
+            this.Players[i] = player;
+            this.clientCount++;
+            client.ConfirmGameJoined(this.GameToken);
+            return;
+          }
+        }
+
+        throw new NotImplementedException();
+      }
+
+      public void RemovePlayer(IServiceProviderCallback client)
+      {
+        for (Int32 i = 0; i < this.Clients.Length; i++)
+        {
+          if (this.Clients[i] == client)
+          {
+            this.Clients[i] = null;
+            this.clientCount--;
+            return;
+          }
+        }
+
+        throw new NotImplementedException();
       }
     }
   }

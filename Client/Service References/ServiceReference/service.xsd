@@ -8,20 +8,22 @@
   </xs:element>
   <xs:element name="LeaveGame">
     <xs:complexType>
-      <xs:sequence />
+      <xs:sequence>
+        <xs:element xmlns:q1="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="gameToken" type="q1:guid" />
+      </xs:sequence>
     </xs:complexType>
   </xs:element>
   <xs:element name="StartTurn">
     <xs:complexType>
       <xs:sequence>
-        <xs:element xmlns:q1="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="token" type="q1:guid" />
+        <xs:element xmlns:q2="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="token" type="q2:guid" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
   <xs:element name="ConfirmGameJoined">
     <xs:complexType>
       <xs:sequence>
-        <xs:element xmlns:q2="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="gameToken" type="q2:guid" />
+        <xs:element xmlns:q3="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="gameToken" type="q3:guid" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
