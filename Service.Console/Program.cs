@@ -3,7 +3,6 @@ namespace Jabberwocky.SoC.Service.Console
 {
   using System;
   using System.ServiceModel;
-  using System.Threading;
   using Logging;
 
   public class Program
@@ -15,11 +14,11 @@ namespace Jabberwocky.SoC.Service.Console
 
       serviceHost.Open();
       Logger.Message("Started...");
+      Console.WriteLine("Any key to exit");
+      Console.ReadKey();
 
-      while (true)
-      {
-        Thread.Sleep(100);
-      }
+      Logger.Message("Closing...");
+      serviceHost.Close();
     }
   }
 }
