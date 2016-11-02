@@ -10,7 +10,9 @@ namespace Jabberwocky.SoC.Service.Console
   {
     public static void Main(String[] args)
     {
-      var serviceHost = new ServiceHost(typeof(ServiceProvider));
+      var serviceProvider = new ServiceProvider();
+      //var serviceHost = new ServiceHost(typeof(ServiceProvider));
+      var serviceHost = new ServiceHost(serviceProvider);
 
       serviceHost.Open();
       Console.WriteLine("Started...");
