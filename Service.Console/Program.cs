@@ -13,7 +13,7 @@ namespace Jabberwocky.SoC.Service.Console
       var serviceHost = new ServiceHost(typeof(ServiceProvider));
 
       serviceHost.Open();
-      Logger.Message("Started...");
+      Console.WriteLine("Started...");
 
       while (true)
       {

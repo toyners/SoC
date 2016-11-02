@@ -4,6 +4,7 @@ namespace Jabberwocky.SoC.Service
   using System;
   using System.ServiceModel;
   using Logging;
+  using NLog;
 
   [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single,
                    ConcurrencyMode = ConcurrencyMode.Multiple)]
@@ -11,12 +12,16 @@ namespace Jabberwocky.SoC.Service
   {
     #region Fields
     private GameConnector gameConnector;
+
+    private Logger logger = LogManager.GetLogger("logfile");
+
+    private Guid id = Guid.NewGuid();
     #endregion
 
     #region Construction
     public ServiceProvider()
     {
-      Logger.Message("Initiating Service Provider");
+      this.logger.Info("Initiating Service Provider: " + id.ToString());
       this.gameConnector = new GameConnector();
       this.gameConnector.StartMatching();
     }
@@ -27,14 +32,14 @@ namespace Jabberwocky.SoC.Service
     {
       var client = OperationContext.Current.GetCallbackChannel<IServiceProviderCallback>();
       this.gameConnector.AddClient(client);
-      Logger.Message("Client joined game");
+      this.logger.Info("Client joined game: " + id.ToString());
     }
 
     public void LeaveGame(Guid gameToken)
     {
       var client = OperationContext.Current.GetCallbackChannel<IServiceProviderCallback>();
       this.gameConnector.RemoveClient(gameToken, client);
-      Logger.Message("Client left game");
+      this.logger.Info("Client left game");
     }
     #endregion
   }

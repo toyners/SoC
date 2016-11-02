@@ -3,7 +3,7 @@ namespace Jabberwocky.SoC.Service.Logging
 {
   using System;
 
-  public static class Logger
+  public static class Loggger
   {
     #region Methods
     public static void Exception(String message)
