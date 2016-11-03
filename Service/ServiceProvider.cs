@@ -13,20 +13,11 @@ namespace Jabberwocky.SoC.Service
   {
     #region Fields
     private GameConnector gameConnector;
-
-    //private Logger logger = LogManager.GetCurrentClassLogger();
-
-    private Guid id = Guid.NewGuid();
-
-    private StreamWriter writer;
     #endregion
 
     #region Construction
     public ServiceProvider()
     {
-      this.writer = new StreamWriter(@"C:\projects\soc_" + id.ToString() + ".log");
-      this.writer.WriteLine("Initiating Service Provider: " + id.ToString());
-      this.writer.AutoFlush = true;
       this.gameConnector = new GameConnector();
       this.gameConnector.StartMatching();
     }
@@ -37,14 +28,14 @@ namespace Jabberwocky.SoC.Service
     {
       var client = OperationContext.Current.GetCallbackChannel<IServiceProviderCallback>();
       this.gameConnector.AddClient(client);
-      this.writer.WriteLine("Client joined game: " + id.ToString());
+      Logger.Message("Client joined game");
     }
 
     public void LeaveGame(Guid gameToken)
     {
       var client = OperationContext.Current.GetCallbackChannel<IServiceProviderCallback>();
       this.gameConnector.RemoveClient(gameToken, client);
-      //this.logger.Info("Client left game");
+      Logger.Message("Client left game");
     }
     #endregion
   }
