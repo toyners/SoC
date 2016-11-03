@@ -46,7 +46,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CompositeType.cs" />
-    <Compile Include="GameConnector.cs" />
+    <Compile Include="GameSessionManager.cs" />
     <Compile Include="IServiceProviderCallback.cs" />
     <Compile Include="IServiceProvider.cs" />
     <Compile Include="Logging\Logger.cs" />

@@ -12,14 +12,14 @@ namespace Jabberwocky.SoC.Service
   public class ServiceProvider : IServiceProvider
   {
     #region Fields
-    private GameConnector gameConnector;
+    private GameSessionManager gameSessionManager;
     #endregion
 
     #region Construction
     public ServiceProvider()
     {
-      this.gameConnector = new GameConnector();
-      this.gameConnector.StartMatching();
+      this.gameSessionManager = new GameSessionManager();
+      this.gameSessionManager.StartMatching();
     }
     #endregion
 
@@ -27,14 +27,14 @@ namespace Jabberwocky.SoC.Service
     public void TryJoinGame()
     {
       var client = OperationContext.Current.GetCallbackChannel<IServiceProviderCallback>();
-      this.gameConnector.AddClient(client);
+      this.gameSessionManager.AddClient(client);
       Logger.Message("Client joined game");
     }
 
     public void LeaveGame(Guid gameToken)
     {
       var client = OperationContext.Current.GetCallbackChannel<IServiceProviderCallback>();
-      this.gameConnector.RemoveClient(gameToken, client);
+      this.gameSessionManager.RemoveClient(gameToken, client);
       Logger.Message("Client left game");
     }
     #endregion

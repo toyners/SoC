@@ -7,7 +7,7 @@ namespace Jabberwocky.SoC.Service
   using System.Threading.Tasks;
   using Library;
 
-  public class GameConnector
+  public class GameSessionManager
   {
     #region Fields
     private Boolean working;
@@ -18,7 +18,7 @@ namespace Jabberwocky.SoC.Service
     #endregion
 
     #region Construction
-    public GameConnector()
+    public GameSessionManager()
     {
       this.clients = new List<IServiceProviderCallback>();
       this.waitingForGame = new Queue<IServiceProviderCallback>();
@@ -87,8 +87,8 @@ namespace Jabberwocky.SoC.Service
         }
 
         IServiceProviderCallback client;
-        GameSession gameSession;
         var matchMade = false;
+        GameSession gameSession = null;
         foreach (var kv in this.gameSessions)
         {
           gameSession = kv.Value;
@@ -103,6 +103,13 @@ namespace Jabberwocky.SoC.Service
 
         if (matchMade)
         {
+          if (!gameSession.NeedsPlayer)
+          {
+            // Game is full so initialise the game here 
+            // and all clients
+            gameSession.InitializeGame();
+          }
+
           continue;
         }
 
@@ -176,6 +183,14 @@ namespace Jabberwocky.SoC.Service
         }
 
         throw new NotImplementedException();
+      }
+
+      public void InitializeGame()
+      {
+        foreach (var client in this.Clients)
+        {
+          client.GameInitialization();
+        }
       }
     }
   }
