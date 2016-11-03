@@ -11,22 +11,15 @@ namespace Jabberwocky.SoC.Service.Console
     public static void Main(String[] args)
     {
       var serviceProvider = new ServiceProvider();
-      //var serviceHost = new ServiceHost(typeof(ServiceProvider));
-      var serviceHost = new ServiceHost(serviceProvider);
+      var serviceHost = new ServiceHost(typeof(ServiceProvider));
 
       serviceHost.Open();
       Console.WriteLine("Started...");
-
-      while (true)
-      {
-        Thread.Sleep(250);
-      }
-      
-      //Console.WriteLine("Any key to exit");
-      //Console.ReadKey();
-      //Console.WriteLine();
-      //Logger.Message("Closing...");
-      //serviceHost.Close();
+      Console.WriteLine("Any key to exit");
+      Console.ReadKey();
+      Console.WriteLine();
+      Console.WriteLine("Closing...");
+      serviceHost.Close();
     }
   }
 }
