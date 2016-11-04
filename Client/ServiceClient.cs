@@ -13,8 +13,10 @@ namespace Jabberwocky.SoC.Client
     public Action GameInitializationEvent;
 
     private Guid turnToken;
+    #endregion
 
-    private Board board;
+    #region Properties
+    public Board Board { get; private set; }
     #endregion
 
     #region Methods
@@ -25,7 +27,7 @@ namespace Jabberwocky.SoC.Client
 
     public void GameInitialization()
     {
-      this.board = new Board();
+      this.Board = new Board();
       this.GameInitializationEvent?.Invoke();
     }
 
