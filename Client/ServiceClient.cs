@@ -3,6 +3,7 @@ namespace Jabberwocky.SoC.Client
 {
   using System;
   using Jabberwocky.SoC.Client.ServiceReference;
+  using Library;
 
   public class ServiceClient : IServiceProviderCallback
   {
@@ -12,6 +13,8 @@ namespace Jabberwocky.SoC.Client
     public Action GameInitializationEvent;
 
     private Guid turnToken;
+
+    private Board board;
     #endregion
 
     #region Methods
@@ -22,6 +25,7 @@ namespace Jabberwocky.SoC.Client
 
     public void GameInitialization()
     {
+      this.board = new Board();
       this.GameInitializationEvent?.Invoke();
     }
 
