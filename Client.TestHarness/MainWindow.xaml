@@ -5,8 +5,28 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Client.TestHarness"
         mc:Ignorable="d"
-        Title="MainWindow" Height="350" Width="525">
+        Title="SoC TestHarness" Height="500" Width="800">
     <Grid>
-        
+      <TabControl>
+        <TabItem Header="Player #1">
+          <DockPanel>
+          <Border BorderBrush="Gray" BorderThickness="1" DockPanel.Dock="Top">
+            <StackPanel Orientation="Horizontal">
+              <Button Name="ConnectButton" Margin="0,0,5,0" Click="ConnectButtonClick">Connect</Button>
+              <Label Name="GameIdLabel" Margin="0,0,5,0"><![CDATA[<not connected>]]></Label>
+            </StackPanel>
+          </Border>
+          <Grid DockPanel.Dock="Bottom">
+            
+          </Grid>
+          </DockPanel>
+        </TabItem>
+
+      <TabItem Header="Player #2" IsEnabled="False" />
+      <TabItem Header="Player #3" IsEnabled="False" />
+      <TabItem Header="Player #4" IsEnabled="False" />
+
+
+    </TabControl>
     </Grid>
 </Window>

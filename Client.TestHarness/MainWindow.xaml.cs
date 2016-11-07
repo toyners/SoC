@@ -24,5 +24,10 @@ namespace Client.TestHarness
     {
       InitializeComponent();
     }
+
+    private void ConnectButtonClick(Object sender, RoutedEventArgs e)
+    {
+
+    }
   }
 }
