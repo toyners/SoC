@@ -186,7 +186,7 @@ namespace Jabberwocky.SoC.Service
           {
             this.Clients[i] = null;
             this.clientCount--;
-            client.ConfirmGameLeft(this.GameToken);
+            client.ConfirmGameLeft();
             return;
           }
         }

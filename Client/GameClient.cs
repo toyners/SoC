@@ -44,7 +44,7 @@ namespace Jabberwocky.SoC.Client
       this.GameJoinedEvent?.Invoke();
     }
 
-    private void GameLeftEventHandler(Guid gameToken)
+    private void GameLeftEventHandler()
     {
       this.GameToken = Guid.Empty;
       this.GameLeftEvent?.Invoke(); 

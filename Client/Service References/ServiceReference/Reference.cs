@@ -38,7 +38,7 @@ namespace Jabberwocky.SoC.Client.ServiceReference {
         void ConfirmGameJoined(System.Guid gameToken);
         
         [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IServiceProvider/ConfirmGameLeft")]
-        void ConfirmGameLeft(System.Guid gameToken);
+        void ConfirmGameLeft();
         
         [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IServiceProvider/GameInitialization")]
         void GameInitialization();
