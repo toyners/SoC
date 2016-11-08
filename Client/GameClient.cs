@@ -17,6 +17,8 @@ namespace Jabberwocky.SoC.Client
 
     public Action GameJoinedEvent;
 
+    public Action GameLeftEvent;
+
     public Action GameInitializationEvent;
 
     #region Methods
@@ -39,6 +41,17 @@ namespace Jabberwocky.SoC.Client
     {
       this.GameToken = gameToken;
       this.GameJoinedEvent?.Invoke();
+    }
+
+    private void GameLeftEventHandler()
+    {
+      this.GameToken = Guid.Empty;
+      this.GameLeftEvent?.Invoke(); 
+    }
+
+    private void GameInitializationEventHandler()
+    {
+      this.GameInitializationEvent?.Invoke();
     }
     #endregion
   }

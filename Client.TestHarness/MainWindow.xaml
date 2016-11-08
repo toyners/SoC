@@ -10,15 +10,16 @@
       <TabControl>
         <TabItem Header="Player #1">
           <DockPanel>
-          <Border BorderBrush="Gray" BorderThickness="1" DockPanel.Dock="Top">
-            <StackPanel Orientation="Horizontal">
-              <Button Name="ConnectButton" Margin="0,0,5,0" Click="ConnectButtonClick">Connect</Button>
-              <Label Name="GameIdLabel" Margin="0,0,5,0"><![CDATA[<not connected>]]></Label>
-            </StackPanel>
-          </Border>
-          <Grid DockPanel.Dock="Bottom">
+            <Border BorderBrush="Gray" BorderThickness="1" DockPanel.Dock="Top">
+              <StackPanel Orientation="Horizontal">
+                <Button Name="ConnectButton" Margin="0,0,5,0" Padding="5,0" Click="ConnectButtonClick">Connect</Button>
+                <Label Name="GameIdLabel" Margin="0,0,5,0"><![CDATA[<not connected>]]></Label>
+              </StackPanel>
+            </Border>
             
-          </Grid>
+            <Grid DockPanel.Dock="Bottom">
+            
+            </Grid>
           </DockPanel>
         </TabItem>
 

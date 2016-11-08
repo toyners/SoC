@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Jabberwocky.SoC.Client;
 
 namespace Client.TestHarness
 {
@@ -20,6 +21,8 @@ namespace Client.TestHarness
   /// </summary>
   public partial class MainWindow : Window
   {
+    private GameClient gameClient;
+
     public MainWindow()
     {
       InitializeComponent();
@@ -27,7 +30,48 @@ namespace Client.TestHarness
 
     private void ConnectButtonClick(Object sender, RoutedEventArgs e)
     {
+      if (this.gameClient == null)
+      {
+        this.ConnectButton.Content = "Connecting...";
+        this.ConnectButton.IsEnabled = false;
+         
+        this.gameClient = new GameClient();
+        this.gameClient.GameJoinedEvent = () => 
+        {
+          Application.Current.Dispatcher.Invoke(() =>
+          {
+            this.GameIdLabel.Content = this.gameClient.GameToken.ToString();
+            this.ConnectButton.IsEnabled = true;
+            this.ConnectButton.Content = "Disconnect";
+          });
+        };
 
+        Task.Factory.StartNew(() =>
+        {
+          this.gameClient.Connect();
+        });
+      }
+      else
+      {
+        this.ConnectButton.Content = "Disconnecting...";
+        this.ConnectButton.IsEnabled = false;
+
+        this.gameClient.GameLeftEvent = () =>
+        {
+          this.gameClient = null;
+          Application.Current.Dispatcher.Invoke(() =>
+          {
+            this.GameIdLabel.Content = "(unconnected)";
+            this.ConnectButton.IsEnabled = true;
+            this.ConnectButton.Content = "Connect";
+          });
+        };
+
+        Task.Factory.StartNew(() => 
+        {
+          this.gameClient.Disconnect();
+        });
+      }
     }
   }
 }
