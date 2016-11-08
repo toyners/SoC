@@ -122,8 +122,10 @@ namespace Jabberwocky.SoC.Service
     }
     #endregion
 
+    #region Classes
     private class GameSession
     {
+      #region Fields
       public GameManager Game;
 
       public Player[] Players;
@@ -135,7 +137,9 @@ namespace Jabberwocky.SoC.Service
       private Board board;
 
       private Int32 clientCount;
+      #endregion
 
+      #region Construction
       public GameSession()
       {
         this.GameToken = Guid.NewGuid();
@@ -146,12 +150,16 @@ namespace Jabberwocky.SoC.Service
         this.Players = new Player[4];
         this.Clients = new IServiceProviderCallback[4];
       }
+      #endregion
 
+      #region Properties
       public Boolean NeedsPlayer
       {
         get { return this.clientCount < this.Clients.Length; }
       }
+      #endregion
 
+      #region Methods
       public void AddPlayer(IServiceProviderCallback client)
       {
         for (var i = 0; i < this.Clients.Length; i++)
@@ -193,6 +201,8 @@ namespace Jabberwocky.SoC.Service
           client.GameInitialization();
         }
       }
+      #endregion
     }
+    #endregion
   }
 }
