@@ -31,7 +31,7 @@ namespace Jabberwocky.SoC.Service
       Logger.Message("Client joined game");
     }
 
-    public void LeaveGame(Guid gameToken)
+    public void TryLeaveGame(Guid gameToken)
     {
       var client = OperationContext.Current.GetCallbackChannel<IServiceProviderCallback>();
       this.gameSessionManager.RemoveClient(gameToken, client);

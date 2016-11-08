@@ -13,6 +13,9 @@ namespace Jabberwocky.SoC.Service
     void ConfirmGameJoined(Guid gameToken);
 
     [OperationContract(IsOneWay = true)]
+    void ConfirmGameLeft(Guid gameToken);
+
+    [OperationContract(IsOneWay = true)]
     void GameInitialization();
   }
 }

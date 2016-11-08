@@ -12,7 +12,7 @@ namespace Jabberwocky.SoC.Service
     void TryJoinGame();
 
     [OperationContract(IsOneWay = true)]
-    void LeaveGame(Guid gameToken);
+    void TryLeaveGame(Guid gameToken);
 
     /*[OperationContract]
     string GetData(int value);
