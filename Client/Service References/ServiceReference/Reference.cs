@@ -21,11 +21,11 @@ namespace Jabberwocky.SoC.Client.ServiceReference {
         [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IServiceProvider/TryJoinGame")]
         System.Threading.Tasks.Task TryJoinGameAsync();
         
-        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IServiceProvider/LeaveGame")]
-        void LeaveGame(System.Guid gameToken);
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IServiceProvider/TryLeaveGame")]
+        void TryLeaveGame(System.Guid gameToken);
         
-        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IServiceProvider/LeaveGame")]
-        System.Threading.Tasks.Task LeaveGameAsync(System.Guid gameToken);
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IServiceProvider/TryLeaveGame")]
+        System.Threading.Tasks.Task TryLeaveGameAsync(System.Guid gameToken);
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
@@ -36,6 +36,9 @@ namespace Jabberwocky.SoC.Client.ServiceReference {
         
         [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IServiceProvider/ConfirmGameJoined")]
         void ConfirmGameJoined(System.Guid gameToken);
+        
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IServiceProvider/ConfirmGameLeft")]
+        void ConfirmGameLeft(System.Guid gameToken);
         
         [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IServiceProvider/GameInitialization")]
         void GameInitialization();
@@ -77,12 +80,12 @@ namespace Jabberwocky.SoC.Client.ServiceReference {
             return base.Channel.TryJoinGameAsync();
         }
         
-        public void LeaveGame(System.Guid gameToken) {
-            base.Channel.LeaveGame(gameToken);
+        public void TryLeaveGame(System.Guid gameToken) {
+            base.Channel.TryLeaveGame(gameToken);
         }
         
-        public System.Threading.Tasks.Task LeaveGameAsync(System.Guid gameToken) {
-            return base.Channel.LeaveGameAsync(gameToken);
+        public System.Threading.Tasks.Task TryLeaveGameAsync(System.Guid gameToken) {
+            return base.Channel.TryLeaveGameAsync(gameToken);
         }
     }
 }

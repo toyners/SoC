@@ -6,7 +6,7 @@
       <xs:sequence />
     </xs:complexType>
   </xs:element>
-  <xs:element name="LeaveGame">
+  <xs:element name="TryLeaveGame">
     <xs:complexType>
       <xs:sequence>
         <xs:element xmlns:q1="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="gameToken" type="q1:guid" />
@@ -24,6 +24,13 @@
     <xs:complexType>
       <xs:sequence>
         <xs:element xmlns:q3="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="gameToken" type="q3:guid" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="ConfirmGameLeft">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q4="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="gameToken" type="q4:guid" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>

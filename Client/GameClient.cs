@@ -27,6 +27,7 @@ namespace Jabberwocky.SoC.Client
       var serviceClient = new ServiceClient();
       serviceClient.GameJoinedEvent = this.GameJoinedEventHandler;
       serviceClient.GameInitializationEvent = this.GameInitializationEvent;
+      serviceClient.GameLeftEvent = this.GameLeftEventHandler;
       var instanceContext = new InstanceContext(serviceClient);
       this.serviceProviderClient = new ServiceProviderClient(instanceContext, "WSDualHttpBinding_IServiceProvider");
       this.serviceProviderClient.TryJoinGame();
@@ -34,7 +35,7 @@ namespace Jabberwocky.SoC.Client
 
     public void Disconnect()
     {
-      this.serviceProviderClient.LeaveGame(this.GameToken);
+      this.serviceProviderClient.TryLeaveGame(this.GameToken);
     }
 
     private void GameJoinedEventHandler(Guid gameToken)
@@ -43,7 +44,7 @@ namespace Jabberwocky.SoC.Client
       this.GameJoinedEvent?.Invoke();
     }
 
-    private void GameLeftEventHandler()
+    private void GameLeftEventHandler(Guid gameToken)
     {
       this.GameToken = Guid.Empty;
       this.GameLeftEvent?.Invoke(); 
