@@ -78,5 +78,15 @@ namespace Client.TestHarness
         });
       }
     }
+
+    private void DisplayAreaMouseLeftButtonDown(Object sender, MouseButtonEventArgs e)
+    {
+      
+    }
+
+    private void DisplayAreaMouseLeftButtonUp(Object sender, MouseButtonEventArgs e)
+    {
+      
+    }
   }
 }

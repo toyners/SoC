@@ -29,7 +29,9 @@
             </Grid>
           </Border>
 
-          <WebBrowser Name="DisplayArea" />
+          <WebBrowser Name="DisplayArea" 
+                      MouseLeftButtonDown="DisplayAreaMouseLeftButtonDown"
+                      MouseLeftButtonUp="DisplayAreaMouseLeftButtonUp"/>
 
         </DockPanel>
         </TabItem>
