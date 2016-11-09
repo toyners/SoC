@@ -46,6 +46,11 @@ namespace Client.TestHarness
           });
         };
 
+        this.gameClient.GameInitializationEvent = () =>
+        {
+          this.DisplayArea.NavigateToString(this.gameClient.Document);
+        };
+
         Task.Factory.StartNew(() =>
         {
           this.gameClient.Connect();

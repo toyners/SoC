@@ -28,9 +28,9 @@
               <TextBlock Grid.Column="1">Market Place</TextBlock>
             </Grid>
           </Border>
-          <WebBrowser>
 
-          </WebBrowser>
+          <WebBrowser Name="DisplayArea" />
+
         </DockPanel>
         </TabItem>
 
