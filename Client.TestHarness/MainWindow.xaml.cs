@@ -48,7 +48,10 @@ namespace Client.TestHarness
 
         this.gameClient.GameInitializationEvent = () =>
         {
-          this.DisplayArea.NavigateToString(this.gameClient.Document);
+          Application.Current.Dispatcher.Invoke(() =>
+          {
+            this.DisplayArea.NavigateToString(this.gameClient.Document);
+          });
         };
 
         Task.Factory.StartNew(() =>

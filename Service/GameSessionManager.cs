@@ -134,6 +134,8 @@ namespace Jabberwocky.SoC.Service
 
       public Guid GameToken;
 
+      private const Int32 MaximumPlayerCountPerGame = 1;
+
       private Board board;
 
       private Int32 clientCount;
@@ -147,8 +149,8 @@ namespace Jabberwocky.SoC.Service
         var diceRoller = new DiceRoller();
         this.Game = new GameManager(this.board, diceRoller, this.Players, new DevelopmentCardPile());
 
-        this.Players = new Player[4];
-        this.Clients = new IServiceProviderCallback[4];
+        this.Players = new Player[MaximumPlayerCountPerGame];
+        this.Clients = new IServiceProviderCallback[MaximumPlayerCountPerGame];
       }
       #endregion
 

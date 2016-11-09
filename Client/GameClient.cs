@@ -30,7 +30,7 @@ namespace Jabberwocky.SoC.Client
     {
       var serviceClient = new ServiceClient();
       serviceClient.GameJoinedEvent = this.GameJoinedEventHandler;
-      serviceClient.GameInitializationEvent = this.GameInitializationEvent;
+      serviceClient.GameInitializationEvent = this.GameInitializationEventHandler;
       serviceClient.GameLeftEvent = this.GameLeftEventHandler;
       var instanceContext = new InstanceContext(serviceClient);
       this.serviceProviderClient = new ServiceProviderClient(instanceContext, "WSDualHttpBinding_IServiceProvider");
