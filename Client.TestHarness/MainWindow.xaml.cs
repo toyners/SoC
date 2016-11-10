@@ -23,7 +23,7 @@ namespace Client.TestHarness
   {
     private GameClient gameClient;
 
-    private BoardTranslator boardTranslator;
+    private BoardDisplay boardDisplay;
 
     public MainWindow()
     {
@@ -50,11 +50,10 @@ namespace Client.TestHarness
 
         this.gameClient.GameInitializationEvent = () =>
         {
-          this.boardTranslator = new BoardTranslator(this.gameClient.Board);
-
           Application.Current.Dispatcher.Invoke(() =>
           {
-            this.DisplayArea.NavigateToString(this.boardTranslator.Content);
+            this.boardDisplay = new BoardDisplay(this.gameClient.Board, this.DisplayArea);
+            this.boardDisplay.Draw();
           });
         };
 
@@ -73,6 +72,7 @@ namespace Client.TestHarness
           this.gameClient = null;
           Application.Current.Dispatcher.Invoke(() =>
           {
+            this.boardDisplay.Clear();
             this.GameIdLabel.Content = "(unconnected)";
             this.ConnectButton.IsEnabled = true;
             this.ConnectButton.Content = "Connect";

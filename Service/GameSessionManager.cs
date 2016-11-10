@@ -101,23 +101,21 @@ namespace Jabberwocky.SoC.Service
           }
         }
 
-        if (matchMade)
+        if (!matchMade)
         {
-          if (!gameSession.NeedsPlayer)
-          {
-            // Game is full so initialise the game here 
-            // and all clients
-            gameSession.InitializeGame();
-          }
-
-          continue;
+          // Create a new game and add the player
+          client = this.waitingForGame.Dequeue();
+          gameSession = new GameSession();
+          gameSession.AddPlayer(client);
+          this.gameSessions.Add(gameSession.GameToken, gameSession);
         }
 
-        // Create a new game and add the player
-        client = this.waitingForGame.Dequeue();
-        gameSession = new GameSession();
-        gameSession.AddPlayer(client);
-        this.gameSessions.Add(gameSession.GameToken, gameSession);
+        if (!gameSession.NeedsPlayer)
+        {
+          // Game is full so initialise the game here 
+          // and all clients
+          gameSession.InitializeGame();
+        }
       }
     }
     #endregion
