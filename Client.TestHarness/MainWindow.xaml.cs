@@ -50,13 +50,13 @@ namespace Client.TestHarness
 
         this.gameClient.GameInitializationEvent = () =>
         {
+          this.boardTranslator = new BoardTranslator(this.gameClient.Board);
+
           Application.Current.Dispatcher.Invoke(() =>
           {
-            this.DisplayArea.NavigateToString(this.gameClient.Document);
+            this.DisplayArea.NavigateToString(this.boardTranslator.Content);
           });
         };
-
-        this.boardTranslator = new BoardTranslator(this.gameClient.Board);
 
         Task.Factory.StartNew(() =>
         {

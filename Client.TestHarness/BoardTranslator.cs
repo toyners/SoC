@@ -6,11 +6,16 @@ namespace Client.TestHarness
 
   public class BoardTranslator
   {
-    public String Content { get { throw new NotImplementedException(); } }
+    public String Content
+    {
+      get
+      {
+        return "<html><header></header><body>Hello!<body></html>";
+      }
+    }
 
     public BoardTranslator(Board board)
     {
-      throw new NotImplementedException();
     }
   }
 }

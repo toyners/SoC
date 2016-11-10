@@ -17,8 +17,6 @@ namespace Jabberwocky.SoC.Client
     #region Properties
     public Guid GameToken { get; private set; }
 
-    public String Document { get; private set; }
-
     // TODO: Check that we are connected and that game initialization has completed 
     // (i.e. Serviceclient and Board not null)
     public Board Board { get { return this.serviceClient.Board; } }
@@ -64,7 +62,6 @@ namespace Jabberwocky.SoC.Client
 
     private void GameInitializationEventHandler()
     {
-      this.Document = "<html><header></header><body>Hello!<body></html>";
       this.GameInitializationEvent?.Invoke();
     }
     #endregion
