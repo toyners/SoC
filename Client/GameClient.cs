@@ -4,10 +4,13 @@ namespace Jabberwocky.SoC.Client
   using System;
   using System.ServiceModel;
   using Jabberwocky.SoC.Client.ServiceReference;
+  using Library;
 
   public class GameClient
   {
     #region Fields
+    private ServiceClient serviceClient;
+
     private ServiceProviderClient serviceProviderClient;
     #endregion
 
@@ -15,6 +18,10 @@ namespace Jabberwocky.SoC.Client
     public Guid GameToken { get; private set; }
 
     public String Document { get; private set; }
+
+    // TODO: Check that we are connected and that game initialization has completed 
+    // (i.e. Serviceclient and Board not null)
+    public Board Board { get { return this.serviceClient.Board; } }
     #endregion
 
     #region Events
@@ -28,11 +35,12 @@ namespace Jabberwocky.SoC.Client
     #region Methods
     public void Connect()
     {
-      var serviceClient = new ServiceClient();
-      serviceClient.GameJoinedEvent = this.GameJoinedEventHandler;
-      serviceClient.GameInitializationEvent = this.GameInitializationEventHandler;
-      serviceClient.GameLeftEvent = this.GameLeftEventHandler;
-      var instanceContext = new InstanceContext(serviceClient);
+      this.serviceClient = new ServiceClient();
+      this.serviceClient.GameJoinedEvent = this.GameJoinedEventHandler;
+      this.serviceClient.GameInitializationEvent = this.GameInitializationEventHandler;
+      this.serviceClient.GameLeftEvent = this.GameLeftEventHandler;
+
+      var instanceContext = new InstanceContext(this.serviceClient);
       this.serviceProviderClient = new ServiceProviderClient(instanceContext, "WSDualHttpBinding_IServiceProvider");
       this.serviceProviderClient.TryJoinGame();
     }

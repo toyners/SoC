@@ -23,6 +23,8 @@ namespace Client.TestHarness
   {
     private GameClient gameClient;
 
+    private BoardTranslator boardTranslator;
+
     public MainWindow()
     {
       InitializeComponent();
@@ -53,6 +55,8 @@ namespace Client.TestHarness
             this.DisplayArea.NavigateToString(this.gameClient.Document);
           });
         };
+
+        this.boardTranslator = new BoardTranslator(this.gameClient.Board);
 
         Task.Factory.StartNew(() =>
         {
