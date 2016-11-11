@@ -13,23 +13,21 @@ namespace Client.TestHarness
 
     private Canvas canvas;
 
+    private Image testImage;
+
     public BoardDisplay(Board board, Canvas canvas)
     {
       //Todo null reference check
       this.board = board;
       this.canvas = canvas;
       BitmapImage bitmapImage = new BitmapImage(new Uri(@"C:\projects\redsquare.bmp"));
-      Image image = new Image
+      this.testImage = new Image
       {
         Width = bitmapImage.Width,
         Height = bitmapImage.Height,
         Name = "Test",
         Source = bitmapImage
       };
-
-      this.canvas.Children.Add(image);
-      Canvas.SetTop(image, 10);
-      Canvas.SetLeft(image, 20);
     }
 
     public void Clear()
@@ -39,7 +37,10 @@ namespace Client.TestHarness
 
     public void Draw()
     {
-
+      this.Clear();
+      this.canvas.Children.Add(this.testImage);
+      Canvas.SetTop(this.testImage, 10);
+      Canvas.SetLeft(this.testImage, 20);
     }
   }
 }
