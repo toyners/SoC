@@ -13,21 +13,24 @@ namespace Client.TestHarness
 
     private Canvas canvas;
 
-    private Image testImage;
+    private Image pastureImage;
+
+    private Image brickImage;
+
+    private Image wheatImage;
 
     public BoardDisplay(Board board, Canvas canvas)
     {
       //Todo null reference check
       this.board = board;
       this.canvas = canvas;
-      BitmapImage bitmapImage = new BitmapImage(new Uri(@"C:\projects\redsquare.bmp"));
-      this.testImage = new Image
-      {
-        Width = bitmapImage.Width,
-        Height = bitmapImage.Height,
-        Name = "Test",
-        Source = bitmapImage
-      };
+      var woolBitmap = new BitmapImage(new Uri(@"C:\projects\wool.png"));
+      var brickBitmap = new BitmapImage(new Uri(@"C:\projects\brick.png"));
+      var wheatBitmap = new BitmapImage(new Uri(@"C:\projects\wheat.png"));
+
+      this.pastureImage = this.CreateImage(woolBitmap, "Wool1");
+      this.brickImage = this.CreateImage(brickBitmap, "Brick1");
+      this.wheatImage = this.CreateImage(wheatBitmap, "Wheat1");
     }
 
     public void Clear()
@@ -38,9 +41,28 @@ namespace Client.TestHarness
     public void Draw()
     {
       this.Clear();
-      this.canvas.Children.Add(this.testImage);
-      Canvas.SetTop(this.testImage, 10);
-      Canvas.SetLeft(this.testImage, 20);
+      this.canvas.Children.Add(this.pastureImage);
+      Canvas.SetLeft(this.pastureImage, 10);
+      Canvas.SetTop(this.pastureImage, 10);
+
+      this.canvas.Children.Add(this.brickImage);
+      Canvas.SetLeft(this.brickImage, 44);
+      Canvas.SetTop(this.brickImage, 32);
+
+      this.canvas.Children.Add(this.wheatImage);
+      Canvas.SetLeft(this.wheatImage, 10);
+      Canvas.SetTop(this.wheatImage, 55);
+    }
+
+    private Image CreateImage(BitmapImage bitmapImage, String name)
+    {
+      return new Image
+      {
+        Width = bitmapImage.Width,
+        Height = bitmapImage.Height,
+        Name = name,
+        Source = bitmapImage
+      };
     }
   }
 }
