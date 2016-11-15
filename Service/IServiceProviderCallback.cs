@@ -16,6 +16,6 @@ namespace Jabberwocky.SoC.Service
     void ConfirmGameLeft();
 
     [OperationContract(IsOneWay = true)]
-    void GameInitialization();
+    void GameInitialization(GameInitializationData gameData);
   }
 }

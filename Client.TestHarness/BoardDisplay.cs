@@ -35,7 +35,7 @@ namespace Client.TestHarness
       var wheatBitmap = new BitmapImage(new Uri(@"C:\projects\wheat.png"));
       var woolBitmap = new BitmapImage(new Uri(@"C:\projects\wool.png"));
 
-      // Row 1
+      // Column 1
       Image image;
       image = this.CreateImage(woolBitmap, "Wool1");
       this.canvas.Children.Add(image);
@@ -52,7 +52,7 @@ namespace Client.TestHarness
       Canvas.SetLeft(image, 10);
       Canvas.SetTop(image, 100);
 
-      // Row 2
+      // Column 2
       image = this.CreateImage(oreBitmap, "Ore1");
       this.canvas.Children.Add(image);
       Canvas.SetLeft(image, 44);
