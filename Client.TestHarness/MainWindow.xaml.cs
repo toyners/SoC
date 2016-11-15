@@ -53,7 +53,7 @@ namespace Client.TestHarness
           Application.Current.Dispatcher.Invoke(() =>
           {
             this.boardDisplay = new BoardDisplay(this.gameClient.Board, this.DisplayArea);
-            this.boardDisplay.Draw();
+            this.boardDisplay.LayoutBoard();
           });
         };
 

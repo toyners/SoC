@@ -2,75 +2,71 @@
 namespace Client.TestHarness
 {
   using System;
-  using System.Windows;
   using System.Windows.Controls;
   using System.Windows.Media.Imaging;
   using Jabberwocky.SoC.Library;
 
-  public class BoardDisplay : IBoardDisplay
+  public class BoardDisplay
   {
+    #region Fields
     private Board board;
 
     private Canvas canvas;
+    #endregion
 
-    private Image pastureImage;
-
-    private Image brickImage;
-
-    private Image wheatImage;
-
-    private Image lumberImage;
-
-    private Image oreImage;
-
+    #region Construction
     public BoardDisplay(Board board, Canvas canvas)
     {
       //Todo null reference check
       this.board = board;
       this.canvas = canvas;
-      var woolBitmap = new BitmapImage(new Uri(@"C:\projects\wool.png"));
+    }
+    #endregion
+
+    #region Methods
+    public void LayoutBoard()
+    {
+      this.Clear();
+
+      var desertBitmap = new BitmapImage(new Uri(@"C:\projects\desert.png"));
       var brickBitmap = new BitmapImage(new Uri(@"C:\projects\brick.png"));
-      var wheatBitmap = new BitmapImage(new Uri(@"C:\projects\wheat.png"));
       var lumberBitmap = new BitmapImage(new Uri(@"C:\projects\lumber.png"));
       var oreBitmap = new BitmapImage(new Uri(@"C:\projects\ore.png"));
+      var wheatBitmap = new BitmapImage(new Uri(@"C:\projects\wheat.png"));
+      var woolBitmap = new BitmapImage(new Uri(@"C:\projects\wool.png"));
 
-      this.pastureImage = this.CreateImage(woolBitmap, "Wool1");
-      this.brickImage = this.CreateImage(brickBitmap, "Brick1");
-      this.wheatImage = this.CreateImage(wheatBitmap, "Wheat1");
-      this.lumberImage = this.CreateImage(lumberBitmap, "Lumber1");
-      this.oreImage = this.CreateImage(oreBitmap, "Ore1");
+      // Row 1
+      Image image;
+      image = this.CreateImage(woolBitmap, "Wool1");
+      this.canvas.Children.Add(image);
+      Canvas.SetLeft(image, 10);
+      Canvas.SetTop(image, 10);
+
+      image = this.CreateImage(brickBitmap, "Brick1");
+      this.canvas.Children.Add(image);
+      Canvas.SetLeft(image, 10);
+      Canvas.SetTop(image, 55);
+
+      image = this.CreateImage(wheatBitmap, "Wheat1");
+      this.canvas.Children.Add(image);
+      Canvas.SetLeft(image, 10);
+      Canvas.SetTop(image, 100);
+
+      // Row 2
+      image = this.CreateImage(oreBitmap, "Ore1");
+      this.canvas.Children.Add(image);
+      Canvas.SetLeft(image, 44);
+      Canvas.SetTop(image, 32);
+
+      image = this.CreateImage(lumberBitmap, "Lumber1");
+      this.canvas.Children.Add(image);
+      Canvas.SetLeft(image, 44);
+      Canvas.SetTop(image, 77);
     }
 
     public void Clear()
     {
       this.canvas.Children.Clear();
-    }
-
-    public void Draw()
-    {
-      this.Clear();
-
-      // Row 1
-      this.canvas.Children.Add(this.pastureImage);
-      Canvas.SetLeft(this.pastureImage, 10);
-      Canvas.SetTop(this.pastureImage, 10);
-
-      this.canvas.Children.Add(this.brickImage);
-      Canvas.SetLeft(this.brickImage, 10);
-      Canvas.SetTop(this.brickImage, 55);
-
-      this.canvas.Children.Add(this.wheatImage);
-      Canvas.SetLeft(this.wheatImage, 10);
-      Canvas.SetTop(this.wheatImage, 100);
-
-      // Row 2
-      this.canvas.Children.Add(this.oreImage);
-      Canvas.SetLeft(this.oreImage, 44);
-      Canvas.SetTop(this.oreImage, 32);
-
-      this.canvas.Children.Add(this.lumberImage);
-      Canvas.SetLeft(this.lumberImage, 44);
-      Canvas.SetTop(this.lumberImage, 77);
     }
 
     private Image CreateImage(BitmapImage bitmapImage, String name)
@@ -83,5 +79,6 @@ namespace Client.TestHarness
         Source = bitmapImage
       };
     }
+    #endregion
   }
 }
