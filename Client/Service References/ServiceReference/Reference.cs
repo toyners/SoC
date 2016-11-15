@@ -9,7 +9,86 @@
 //------------------------------------------------------------------------------
 
 namespace Jabberwocky.SoC.Client.ServiceReference {
+    using System.Runtime.Serialization;
+    using System;
     
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
+    [System.Runtime.Serialization.DataContractAttribute(Name="GameInitializationData", Namespace="http://schemas.datacontract.org/2004/07/Jabberwocky.SoC.Service")]
+    [System.SerializableAttribute()]
+    public partial class GameInitializationData : object, System.Runtime.Serialization.IExtensibleDataObject, System.ComponentModel.INotifyPropertyChanged {
+        
+        [System.NonSerializedAttribute()]
+        private System.Runtime.Serialization.ExtensionDataObject extensionDataField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private byte[] BoardDataField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private byte ColumnCountField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private byte FirstColumnCountField;
+        
+        [global::System.ComponentModel.BrowsableAttribute(false)]
+        public System.Runtime.Serialization.ExtensionDataObject ExtensionData {
+            get {
+                return this.extensionDataField;
+            }
+            set {
+                this.extensionDataField = value;
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public byte[] BoardData {
+            get {
+                return this.BoardDataField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.BoardDataField, value) != true)) {
+                    this.BoardDataField = value;
+                    this.RaisePropertyChanged("BoardData");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public byte ColumnCount {
+            get {
+                return this.ColumnCountField;
+            }
+            set {
+                if ((this.ColumnCountField.Equals(value) != true)) {
+                    this.ColumnCountField = value;
+                    this.RaisePropertyChanged("ColumnCount");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public byte FirstColumnCount {
+            get {
+                return this.FirstColumnCountField;
+            }
+            set {
+                if ((this.FirstColumnCountField.Equals(value) != true)) {
+                    this.FirstColumnCountField = value;
+                    this.RaisePropertyChanged("FirstColumnCount");
+                }
+            }
+        }
+        
+        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
+        
+        protected void RaisePropertyChanged(string propertyName) {
+            System.ComponentModel.PropertyChangedEventHandler propertyChanged = this.PropertyChanged;
+            if ((propertyChanged != null)) {
+                propertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
+            }
+        }
+    }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
     [System.ServiceModel.ServiceContractAttribute(ConfigurationName="ServiceReference.IServiceProvider", CallbackContract=typeof(Jabberwocky.SoC.Client.ServiceReference.IServiceProviderCallback), SessionMode=System.ServiceModel.SessionMode.Required)]
@@ -41,7 +120,7 @@ namespace Jabberwocky.SoC.Client.ServiceReference {
         void ConfirmGameLeft();
         
         [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IServiceProvider/GameInitialization")]
-        void GameInitialization();
+        void GameInitialization(Jabberwocky.SoC.Client.ServiceReference.GameInitializationData gameData);
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]

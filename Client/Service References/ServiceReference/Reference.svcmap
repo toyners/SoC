@@ -25,6 +25,7 @@
     <MetadataFile FileName="service.wsdl" MetadataType="Wsdl" ID="2d7418c3-a26c-4040-a818-53ad4d72fd99" SourceId="1" SourceUrl="http://localhost:8733/Design_Time_Addresses/Jabberwocky.SoC.Service/ServiceProvider/mex" />
     <MetadataFile FileName="service.xsd" MetadataType="Schema" ID="f6450d03-5bd9-48ed-834d-6b5f7c5ec4de" SourceId="1" SourceUrl="http://localhost:8733/Design_Time_Addresses/Jabberwocky.SoC.Service/ServiceProvider/mex" />
     <MetadataFile FileName="service1.xsd" MetadataType="Schema" ID="ce2c5222-ee97-4368-8c02-cf675b5379d0" SourceId="1" SourceUrl="http://localhost:8733/Design_Time_Addresses/Jabberwocky.SoC.Service/ServiceProvider/mex" />
+    <MetadataFile FileName="Jabberwocky.SoC.Service.xsd" MetadataType="Schema" ID="fc7fd249-4396-4dd8-a109-955d5b770137" SourceId="1" SourceUrl="http://localhost:8733/Design_Time_Addresses/Jabberwocky.SoC.Service/ServiceProvider/mex" />
   </Metadata>
   <Extensions>
     <ExtensionFile FileName="configuration91.svcinfo" Name="configuration91.svcinfo" />

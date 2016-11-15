@@ -4,6 +4,7 @@ namespace Client.TestHarness
   using System;
   using System.Windows.Controls;
   using System.Windows.Media.Imaging;
+  using Jabberwocky.SoC.Client.ServiceReference;
   using Jabberwocky.SoC.Library;
 
   public class BoardDisplay
@@ -24,7 +25,7 @@ namespace Client.TestHarness
     #endregion
 
     #region Methods
-    public void LayoutBoard()
+    public void LayoutBoard(GameInitializationData gameData)
     {
       this.Clear();
 

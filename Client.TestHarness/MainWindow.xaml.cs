@@ -36,26 +36,8 @@ namespace Client.TestHarness
       {
         this.ConnectButton.Content = "Connecting...";
         this.ConnectButton.IsEnabled = false;
-         
-        this.gameClient = new GameClient();
-        this.gameClient.GameJoinedEvent = () => 
-        {
-          Application.Current.Dispatcher.Invoke(() =>
-          {
-            this.GameIdLabel.Content = this.gameClient.GameToken.ToString();
-            this.ConnectButton.IsEnabled = true;
-            this.ConnectButton.Content = "Disconnect";
-          });
-        };
 
-        this.gameClient.GameInitializationEvent = () =>
-        {
-          Application.Current.Dispatcher.Invoke(() =>
-          {
-            this.boardDisplay = new BoardDisplay(this.gameClient.Board, this.DisplayArea);
-            this.boardDisplay.LayoutBoard();
-          });
-        };
+        this.InitializeGameClient();
 
         Task.Factory.StartNew(() =>
         {
@@ -84,6 +66,29 @@ namespace Client.TestHarness
           this.gameClient.Disconnect();
         });
       }
+    }
+
+    private void InitializeGameClient()
+    {
+      this.gameClient = new GameClient();
+      this.gameClient.GameJoinedEvent = () =>
+      {
+        Application.Current.Dispatcher.Invoke(() =>
+        {
+          this.GameIdLabel.Content = this.gameClient.GameToken.ToString();
+          this.ConnectButton.IsEnabled = true;
+          this.ConnectButton.Content = "Disconnect";
+        });
+      };
+
+      this.gameClient.GameInitializationEvent = (gameData) =>
+      {
+        Application.Current.Dispatcher.Invoke(() =>
+        {
+          this.boardDisplay = new BoardDisplay(this.gameClient.Board, this.DisplayArea);
+          this.boardDisplay.LayoutBoard(gameData);
+        });
+      };
     }
 
     private void DisplayAreaMouseLeftButtonDown(Object sender, MouseButtonEventArgs e)

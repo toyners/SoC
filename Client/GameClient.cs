@@ -27,7 +27,7 @@ namespace Jabberwocky.SoC.Client
 
     public Action GameLeftEvent;
 
-    public Action GameInitializationEvent;
+    public Action<GameInitializationData> GameInitializationEvent;
     #endregion
 
     #region Methods
@@ -60,9 +60,9 @@ namespace Jabberwocky.SoC.Client
       this.GameLeftEvent?.Invoke();
     }
 
-    private void GameInitializationEventHandler()
+    private void GameInitializationEventHandler(GameInitializationData gameData)
     {
-      this.GameInitializationEvent?.Invoke();
+      this.GameInitializationEvent?.Invoke(gameData);
     }
     #endregion
   }

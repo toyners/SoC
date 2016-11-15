@@ -56,6 +56,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
+    <None Include="Service References\ServiceReference\Jabberwocky.SoC.Service.xsd">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="Service References\ServiceReference\service.wsdl" />
     <None Include="Service References\ServiceReference\service.xsd">
       <SubType>Designer</SubType>

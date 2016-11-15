@@ -10,7 +10,7 @@ namespace Jabberwocky.SoC.Client
     #region Fields
     public Action<Guid> GameJoinedEvent;
 
-    public Action GameInitializationEvent;
+    public Action<GameInitializationData> GameInitializationEvent;
 
     public Action GameLeftEvent;
 
@@ -32,10 +32,10 @@ namespace Jabberwocky.SoC.Client
       this.GameLeftEvent?.Invoke();
     }
 
-    public void GameInitialization()
+    public void GameInitialization(GameInitializationData gameData)
     {
       this.Board = new Board();
-      this.GameInitializationEvent?.Invoke();
+      this.GameInitializationEvent?.Invoke(gameData);
     }
 
     public void StartTurn(Guid turnToken)
