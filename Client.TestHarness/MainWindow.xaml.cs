@@ -49,18 +49,6 @@ namespace Client.TestHarness
         this.ConnectButton.Content = "Disconnecting...";
         this.ConnectButton.IsEnabled = false;
 
-        this.gameClient.GameLeftEvent = () =>
-        {
-          this.gameClient = null;
-          Application.Current.Dispatcher.Invoke(() =>
-          {
-            this.boardDisplay.Clear();
-            this.GameIdLabel.Content = "(unconnected)";
-            this.ConnectButton.IsEnabled = true;
-            this.ConnectButton.Content = "Connect";
-          });
-        };
-
         Task.Factory.StartNew(() => 
         {
           this.gameClient.Disconnect();
@@ -87,6 +75,18 @@ namespace Client.TestHarness
         {
           this.boardDisplay = new BoardDisplay(this.gameClient.Board, this.DisplayArea);
           this.boardDisplay.LayoutBoard(gameData);
+        });
+      };
+
+      this.gameClient.GameLeftEvent = () =>
+      {
+        this.gameClient = null;
+        Application.Current.Dispatcher.Invoke(() =>
+        {
+          this.boardDisplay.Clear();
+          this.GameIdLabel.Content = "<unconnected>";
+          this.ConnectButton.IsEnabled = true;
+          this.ConnectButton.Content = "Connect";
         });
       };
     }
