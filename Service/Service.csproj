@@ -45,7 +45,8 @@
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CompositeType.cs" />
+    <Compile Include="GameInitializationData.cs" />
+    <Compile Include="GameInitializationDataBuilder.cs" />
     <Compile Include="GameSessionManager.cs" />
     <Compile Include="IServiceProviderCallback.cs" />
     <Compile Include="IServiceProvider.cs" />
