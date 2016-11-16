@@ -13,9 +13,13 @@ namespace Jabberwocky.SoC.Library
 
     public Trail[] Trails;
 
+    public ResourceProvider[] Providers;
+
     public const Int32 StandardBoardLocationCount = 54;
 
     public const Int32 StandardBoardTrailCount = 72;
+
+    public const Int32 StandardBoardResourceProviderCount = 19;
     #endregion
 
     #region Methods
@@ -83,6 +87,28 @@ namespace Jabberwocky.SoC.Library
       //g9,w10,g8
       var grain9 = new ResourceProvider(ResourceTypes.Grain, 9);
       var grain8 = new ResourceProvider(ResourceTypes.Grain, 8);
+
+      // Load the resource provider array
+      this.Providers = new ResourceProvider[StandardBoardResourceProviderCount];
+      this.Providers[0] = desert;
+      this.Providers[1] = brick8;
+      this.Providers[2] = ore5;
+      this.Providers[3] = brick4;
+      this.Providers[4] = lumber3;
+      this.Providers[5] = wool10;
+      this.Providers[6] = grain2;
+      this.Providers[7] = lumber11;
+      this.Providers[8] = ore6;
+      this.Providers[9] = grain11;
+      this.Providers[10] = wool9;
+      this.Providers[11] = lumber6;
+      this.Providers[12] = wool12;
+      this.Providers[13] = brick5;
+      this.Providers[14] = lumber4;
+      this.Providers[15] = ore3;
+      this.Providers[16] = grain9;
+      this.Providers[17] = wool10;
+      this.Providers[18] = grain8;
 
       // Side 1
       this.Locations[0].Providers.Add(desert);

@@ -9,8 +9,6 @@ namespace Jabberwocky.SoC.Library
     public readonly ResourceTypes Type;
 
     Boolean HasRobber;
-
-    private readonly UInt32 productionNumber;
     #endregion
 
     #region Construction
@@ -23,13 +21,17 @@ namespace Jabberwocky.SoC.Library
         throw new ArgumentOutOfRangeException("Parameter 'productionNumber' must be within range 2..12", (Exception)null);
       }
 
-      this.productionNumber = productionNumber;
+      this.ProductionNumber = productionNumber;
     }
 
     public ResourceProvider()
     {
       this.Type = ResourceTypes.None;
     }
+    #endregion
+
+    #region Properties
+    public UInt32 ProductionNumber { get; private set; }
     #endregion
 
     #region Methods
@@ -45,7 +47,7 @@ namespace Jabberwocky.SoC.Library
         return false;
       }
 
-      return (first.Type == second.Type && first.productionNumber == second.productionNumber);
+      return (first.Type == second.Type && first.ProductionNumber == second.ProductionNumber);
     }
 
     public static Boolean operator !=(ResourceProvider first, ResourceProvider second)
@@ -71,7 +73,7 @@ namespace Jabberwocky.SoC.Library
         return true;
       }
 
-      return this.Type == other.Type && this.productionNumber == other.productionNumber;
+      return this.Type == other.Type && this.ProductionNumber == other.ProductionNumber;
     }
 
     public override Int32 GetHashCode()
@@ -87,7 +89,7 @@ namespace Jabberwocky.SoC.Library
         case ResourceTypes.Wool: factor = 100000; break;
       }
 
-      return (Int32)(this.productionNumber * factor); 
+      return (Int32)(this.ProductionNumber * factor); 
     }
     
     public Boolean ProducesResources(UInt32 rolledNumber) { throw new NotImplementedException(); }
