@@ -22,8 +22,8 @@ namespace Jabberwocky.SoC.Library
     public const Int32 StandardBoardResourceProviderCount = 19;
     #endregion
 
-    #region Methods
-    public void Create(BoardSizes size)
+    #region Construction
+    public Board(BoardSizes size)
     {
       if (size == BoardSizes.Extended)
       {
@@ -40,7 +40,9 @@ namespace Jabberwocky.SoC.Library
 
       this.CreateResourcesProvider();
     }
+    #endregion
 
+    #region Methods
     public void PlaceStartingRoad(Location location1, Location location2) { }
 
     public void PlaceStartingSettlement(Location location) { }

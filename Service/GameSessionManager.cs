@@ -143,7 +143,7 @@ namespace Jabberwocky.SoC.Service
       public GameSession()
       {
         this.GameToken = Guid.NewGuid();
-        this.board = new Board();
+        this.board = new Board(BoardSizes.Standard);
         var diceRoller = new DiceRoller();
         this.Game = new GameManager(this.board, diceRoller, this.Players, new DevelopmentCardPile());
 

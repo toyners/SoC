@@ -10,11 +10,8 @@ namespace Jabberwocky.SoC.Library.UnitTests
     [Test]
     public void Create_StandardSize_LocationsCreated()
     {
-      // Arrange
-      Board board = new Board();
-
-      // Act
-      board.Create(BoardSizes.Standard);
+      // Arrange and Act
+      Board board = new Board(BoardSizes.Standard);
 
       // Assert
       board.Locations.Length.ShouldBe(Board.StandardBoardLocationCount);
@@ -23,11 +20,8 @@ namespace Jabberwocky.SoC.Library.UnitTests
     [Test]
     public void Create_StandardSize_TrailsCreatedAndLinkedToLocations()
     {
-      // Arrange
-      Board board = new Board();
-
-      // Act
-      board.Create(BoardSizes.Standard);
+      // Arrange and Act
+      Board board = new Board(BoardSizes.Standard);
 
       // Assert
       // Columns of hexes 3-4-5-4-3
@@ -156,11 +150,8 @@ namespace Jabberwocky.SoC.Library.UnitTests
     [Test]
     public void Create_StandardSize_LocationsLinkedToTrails()
     {
-      // Arrange
-      Board board = new Board();
-
-      // Act
-      board.Create(BoardSizes.Standard);
+      // Arrange and Act
+      Board board = new Board(BoardSizes.Standard);
 
       // Assert
       // Column side 1
@@ -454,8 +445,8 @@ namespace Jabberwocky.SoC.Library.UnitTests
     [Test]
     public void Create_StandardSize_ResourceProvidersLinkedToLocations()
     {
-      // Arrange
-      Board board = new Board();
+      // Arrange and Act
+      Board board = new Board(BoardSizes.Standard);
 
       var desert = new ResourceProvider();
       var brick8 = new ResourceProvider(ResourceTypes.Brick, 8);
@@ -475,9 +466,6 @@ namespace Jabberwocky.SoC.Library.UnitTests
       var ore3 = new ResourceProvider(ResourceTypes.Ore, 3);
       var grain9 = new ResourceProvider(ResourceTypes.Grain, 9);
       var grain8 = new ResourceProvider(ResourceTypes.Grain, 8);
-
-      // Act
-      board.Create(BoardSizes.Standard);
 
       // Assert
       board.Locations[0].Providers.Count.ShouldBe(1);

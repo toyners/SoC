@@ -14,10 +14,13 @@ namespace Service.UnitTests
     [Test]
     public void Build_StandardBoard_ReturnsCorrectInitializationData()
     {
-      var board = new Board();
-      board.Create(BoardSizes.Standard);
+      // Arrange
+      var board = new Board(BoardSizes.Standard);
+
+      // Act
       var data = GameInitializationDataBuilder.Build(board);
 
+      // Assert
       // 0 = desert, 1 = brick, 2 = grain, 3 = lumber, 4 = ore, 5 = wool
       // 20 = 2 on dice, 30 = 3 on dice, 40 = 4 on dice, .... 110 = 11 on dice, 120 = 12 on dice 
 

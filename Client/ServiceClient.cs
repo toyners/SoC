@@ -34,7 +34,7 @@ namespace Jabberwocky.SoC.Client
 
     public void GameInitialization(GameInitializationData gameData)
     {
-      this.Board = new Board();
+      this.Board = new Board(BoardSizes.Standard);
       this.GameInitializationEvent?.Invoke(gameData);
     }
 
