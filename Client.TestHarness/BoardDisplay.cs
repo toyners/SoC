@@ -2,6 +2,9 @@
 namespace Client.TestHarness
 {
   using System;
+  using System.Collections;
+  using System.Collections.Generic;
+  using System.Windows;
   using System.Windows.Controls;
   using System.Windows.Media.Imaging;
   using Jabberwocky.SoC.Client.ServiceReference;
@@ -29,15 +32,78 @@ namespace Client.TestHarness
     {
       this.Clear();
 
-      var desertBitmap = new BitmapImage(new Uri(@"C:\projects\desert.png"));
-      var brickBitmap = new BitmapImage(new Uri(@"C:\projects\brick.png"));
-      var lumberBitmap = new BitmapImage(new Uri(@"C:\projects\lumber.png"));
-      var oreBitmap = new BitmapImage(new Uri(@"C:\projects\ore.png"));
-      var wheatBitmap = new BitmapImage(new Uri(@"C:\projects\wheat.png"));
-      var woolBitmap = new BitmapImage(new Uri(@"C:\projects\wool.png"));
+      // 0 = desert, 1 = brick, 2 = grain, 3 = lumber, 4 = ore, 5 = wool
+      // 20 = 2 on dice, 30 = 3 on dice, 40 = 4 on dice, .... 110 = 11 on dice, 120 = 12 on dice 
+      var bitmaps = new[]
+      {
+        new BitmapImage(new Uri(@"C:\projects\desert.png")),
+        new BitmapImage(new Uri(@"C:\projects\brick.png")),
+        new BitmapImage(new Uri(@"C:\projects\grain.png")),
+        new BitmapImage(new Uri(@"C:\projects\lumber.png")),
+        new BitmapImage(new Uri(@"C:\projects\ore.png")),
+        new BitmapImage(new Uri(@"C:\projects\wool.png"))
+      };
+
+      var dataIndex = 0;
+      var count = 3;
+      var x = 10;
+      var y = 54;
+      BitmapImage bitmap = null;
 
       // Column 1
-      Image image;
+      while (count-- > 0)
+      {
+        bitmap = GetBitmap(gameData.BoardData[dataIndex++], bitmaps);
+        this.PlaceHex(bitmap, x, y);
+        y += 45;
+      }
+
+      // Column 2
+      count = 4;
+      x = 44;
+      y = 32;
+      while (count-- > 0)
+      {
+        bitmap = GetBitmap(gameData.BoardData[dataIndex++], bitmaps);
+        this.PlaceHex(bitmap, x, y);
+        y += 45;
+      }
+
+      // Column 3
+      count = 5;
+      x = 78;
+      y = 10;
+      while (count-- > 0)
+      {
+        bitmap = GetBitmap(gameData.BoardData[dataIndex++], bitmaps);
+        this.PlaceHex(bitmap, x, y);
+        y += 45;
+      }
+
+      // Column 4
+      count = 4;
+      x = 112;
+      y = 32;
+      while (count-- > 0)
+      {
+        bitmap = GetBitmap(gameData.BoardData[dataIndex++], bitmaps);
+        this.PlaceHex(bitmap, x, y);
+        y += 45;
+      }
+
+      // Column5
+      count = 3;
+      x = 146;
+      y = 54;
+      while (count-- > 0)
+      {
+        bitmap = GetBitmap(gameData.BoardData[dataIndex++], bitmaps);
+        this.PlaceHex(bitmap, x, y);
+        y += 45;
+      }
+
+      // Column 1
+      /*Image image;
       image = this.CreateImage(woolBitmap, "Wool1");
       this.canvas.Children.Add(image);
       Canvas.SetLeft(image, 10);
@@ -62,7 +128,21 @@ namespace Client.TestHarness
       image = this.CreateImage(lumberBitmap, "Lumber1");
       this.canvas.Children.Add(image);
       Canvas.SetLeft(image, 44);
-      Canvas.SetTop(image, 77);
+      Canvas.SetTop(image, 77);*/
+    }
+
+    private BitmapImage GetBitmap(Byte hexData, BitmapImage[] bitmaps)
+    {
+      var index = hexData % 10;
+      return bitmaps[index];
+    }
+
+    private void PlaceHex(BitmapImage bitmap, Int32 x, Int32 y)
+    {
+      var image = this.CreateImage(bitmap, String.Empty);
+      this.canvas.Children.Add(image);
+      Canvas.SetLeft(image, x);
+      Canvas.SetTop(image, y);
     }
 
     public void Clear()
