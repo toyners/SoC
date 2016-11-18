@@ -6,40 +6,53 @@
         xmlns:local="clr-namespace:Client.TestHarness"
         mc:Ignorable="d"
         Title="SoC TestHarness" Height="500" Width="800">
-    <Grid>
-      <TabControl>
-        <TabItem Header="Player #1">
-          <DockPanel>
-            <Border BorderBrush="Black" BorderThickness="1" DockPanel.Dock="Top" Padding="0,2">
-              <StackPanel Orientation="Horizontal">
-                <Button Name="ConnectButton" Margin="2,0,5,0" Padding="5,0" Width="100" Click="ConnectButtonClick">Connect</Button>
-                <Label Name="GameIdLabel" Margin="0,0,5,0"><![CDATA[<not connected>]]></Label>
-                <Label Name="StatusLabel" Margin="0,0,5,0" />
-              </StackPanel>
-            </Border>
+  <Grid>
+    <Grid.ColumnDefinitions>
+      <ColumnDefinition />
+      <ColumnDefinition />
+    </Grid.ColumnDefinitions>
 
-          <Border BorderBrush="Black" BorderThickness="1" DockPanel.Dock="Bottom">
-            <Grid>
-              <Grid.ColumnDefinitions>
-                <ColumnDefinition />
-                <ColumnDefinition />
-              </Grid.ColumnDefinitions>
+    <Grid.RowDefinitions>
+      <RowDefinition />
+      <RowDefinition />
+    </Grid.RowDefinitions>
+    
+    <DockPanel>
+      <Border BorderBrush="Black" BorderThickness="1" DockPanel.Dock="Top" Padding="0,2">
+        <StackPanel Orientation="Horizontal">
+          <Button Name="ConnectButton" Margin="2,0,5,0" Padding="5,0" Width="100" Click="ConnectButtonClick">Connect</Button>
+          <Label Name="GameIdLabel" Margin="0,0,5,0">
+            <![CDATA[<not connected>]]>
+          </Label>
+          <Label Name="StatusLabel" Margin="0,0,5,0" />
+        </StackPanel>
+      </Border>
 
-              <TextBlock>General Channel</TextBlock>
-              <TextBlock Grid.Column="1">Market Place</TextBlock>
-            </Grid>
-          </Border>
+      <Border BorderBrush="Black" BorderThickness="1" DockPanel.Dock="Bottom">
+        <Grid>
+          <Grid.ColumnDefinitions>
+            <ColumnDefinition />
+            <ColumnDefinition />
+          </Grid.ColumnDefinitions>
 
-          <Canvas Name="DisplayArea" MouseLeftButtonDown="DisplayAreaMouseLeftButtonDown"
+          <TextBlock>General Channel</TextBlock>
+          <TextBlock Grid.Column="1">Market Place</TextBlock>
+        </Grid>
+      </Border>
+
+      <Border BorderBrush="Black" BorderThickness="1" DockPanel.Dock="Right" Padding="0,2">
+        <StackPanel>
+          <Button Name="ConnectButton" Margin="2,0,5,0" Padding="5,0" Width="100" Click="ConnectButtonClick">Connect</Button>
+          <Label Name="GameIdLabel" Margin="0,0,5,0">
+            <![CDATA[<not connected>]]>
+          </Label>
+          <Label Name="StatusLabel" Margin="0,0,5,0" />
+        </StackPanel>
+      </Border>
+
+      <Canvas Name="DisplayArea" MouseLeftButtonDown="DisplayAreaMouseLeftButtonDown"
                   MouseLeftButtonUp="DisplayAreaMouseLeftButtonUp"/>
 
-        </DockPanel>
-        </TabItem>
-
-      <TabItem Header="Player #2" IsEnabled="False" />
-      <TabItem Header="Player #3" IsEnabled="False" />
-      <TabItem Header="Player #4" IsEnabled="False" />
-
-    </TabControl>
-    </Grid>
+    </DockPanel>
+  </Grid>
 </Window>
