@@ -29,7 +29,8 @@
             </Grid>
           </Border>
 
-          <Canvas Name="DisplayArea" />
+          <Canvas Name="DisplayArea" MouseLeftButtonDown="DisplayAreaMouseLeftButtonDown"
+                  MouseLeftButtonUp="DisplayAreaMouseLeftButtonUp"/>
 
         </DockPanel>
         </TabItem>

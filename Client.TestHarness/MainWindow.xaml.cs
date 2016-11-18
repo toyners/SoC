@@ -25,6 +25,8 @@ namespace Client.TestHarness
 
     private BoardDisplay boardDisplay;
 
+    private Boolean leftMouseButtonDown;
+
     public MainWindow()
     {
       InitializeComponent();
@@ -93,12 +95,16 @@ namespace Client.TestHarness
 
     private void DisplayAreaMouseLeftButtonDown(Object sender, MouseButtonEventArgs e)
     {
-      
+      leftMouseButtonDown = true;
     }
 
     private void DisplayAreaMouseLeftButtonUp(Object sender, MouseButtonEventArgs e)
     {
-      
+      if (leftMouseButtonDown)
+      {
+        var mousePoint = e.GetPosition(this.DisplayArea);
+        leftMouseButtonDown = false;
+      }  
     }
   }
 }
