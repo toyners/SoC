@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Client.TestHarness"
         mc:Ignorable="d"
-        Title="SoC TestHarness" Height="500" Width="800">
+        Title="SoC TestHarness" Height="640" Width="800">
   <Grid>
     <Grid.ColumnDefinitions>
       <ColumnDefinition />
@@ -42,15 +42,15 @@
 
       <Border BorderBrush="Black" BorderThickness="1" DockPanel.Dock="Right" Padding="0,2">
         <StackPanel>
-          <!--<Button Name="ConnectButton" Margin="2,0,5,0" Padding="5,0" Width="100" Click="ConnectButtonClick">Connect</Button>
-          <Label Name="GameIdLabel" Margin="0,0,5,0">
-            <![CDATA[<not connected>]]>
-          </Label>
-          <Label Name="StatusLabel" Margin="0,0,5,0" />-->
+          <Button Name="TurnButton" Margin="2,0,5,0" Padding="5,0" Width="100" Click="TurnButtonClick">End Turn</Button>
+          <Label Name="GameStatusLabel" Margin="0,0,5,0" >Place First Town</Label>
         </StackPanel>
       </Border>
 
       <Canvas Name="DisplayArea" MouseLeftButtonDown="DisplayAreaMouseLeftButtonDown"
+                  MouseLeftButtonUp="DisplayAreaMouseLeftButtonUp"/>
+
+      <Canvas Name="ControlArea" MouseLeftButtonDown="DisplayAreaMouseLeftButtonDown"
                   MouseLeftButtonUp="DisplayAreaMouseLeftButtonUp"/>
 
     </DockPanel>

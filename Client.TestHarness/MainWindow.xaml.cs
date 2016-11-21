@@ -21,17 +21,22 @@ namespace Client.TestHarness
   /// </summary>
   public partial class MainWindow : Window
   {
+    #region Fields
     private GameClient gameClient;
 
     private BoardDisplay boardDisplay;
 
     private Boolean leftMouseButtonDown;
+    #endregion
 
+    #region Construction
     public MainWindow()
     {
       InitializeComponent();
     }
+    #endregion
 
+    #region Methods
     private void ConnectButtonClick(Object sender, RoutedEventArgs e)
     {
       if (this.gameClient == null)
@@ -56,6 +61,20 @@ namespace Client.TestHarness
           this.gameClient.Disconnect();
         });
       }
+    }
+
+    private void DisplayAreaMouseLeftButtonDown(Object sender, MouseButtonEventArgs e)
+    {
+      leftMouseButtonDown = true;
+    }
+
+    private void DisplayAreaMouseLeftButtonUp(Object sender, MouseButtonEventArgs e)
+    {
+      if (leftMouseButtonDown)
+      {
+        var mousePoint = e.GetPosition(this.DisplayArea);
+        leftMouseButtonDown = false;
+      }  
     }
 
     private void InitializeGameClient()
@@ -93,18 +112,10 @@ namespace Client.TestHarness
       };
     }
 
-    private void DisplayAreaMouseLeftButtonDown(Object sender, MouseButtonEventArgs e)
+    private void TurnButtonClick(Object sender, RoutedEventArgs e)
     {
-      leftMouseButtonDown = true;
+      throw new NotImplementedException();
     }
-
-    private void DisplayAreaMouseLeftButtonUp(Object sender, MouseButtonEventArgs e)
-    {
-      if (leftMouseButtonDown)
-      {
-        var mousePoint = e.GetPosition(this.DisplayArea);
-        leftMouseButtonDown = false;
-      }  
-    }
+    #endregion
   }
 }
