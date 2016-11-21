@@ -15,15 +15,18 @@ namespace Client.TestHarness
     #region Fields
     private Board board;
 
-    private Canvas canvas;
+    private Canvas backgroundCanvas;
+
+    private Canvas foregroundCanvas;
     #endregion
 
     #region Construction
-    public BoardDisplay(Board board, Canvas canvas)
+    public BoardDisplay(Board board, Canvas backgroundCanvas, Canvas foregroundCanvas)
     {
       //Todo null reference check
       this.board = board;
-      this.canvas = canvas;
+      this.backgroundCanvas = backgroundCanvas;
+      this.foregroundCanvas = foregroundCanvas;
     }
     #endregion
 
@@ -114,6 +117,29 @@ namespace Client.TestHarness
         this.PlaceHex(resourceBitmap, numberBitmap, x, y);
         y += 45;
       }
+
+      var button = new CircleButton(BoardDisplay_Click);
+      this.foregroundCanvas.Children.Add(button);
+      Canvas.SetLeft(button, 10);
+      Canvas.SetTop(button, 10);
+      
+        /*Button button = new Button();
+      button.Width = 20;
+      button.Height = 20;
+      button.Click += LocationClick;
+      this.canvas.Children.Add(button);
+      Canvas.SetLeft(button, 10);
+      Canvas.SetTop(button, 10);*/
+    }
+
+    private void BoardDisplay_Click()
+    {
+      throw new NotImplementedException();
+    }
+
+    private void LocationClick(Object sender, RoutedEventArgs routedEventArgs)
+    {
+      throw new NotImplementedException();
     }
 
     private void GetBitmap(Byte hexData, BitmapImage[] resourceBitmaps, Dictionary<Int32, BitmapImage> numberBitmaps, out BitmapImage resourceBitmap, out BitmapImage numberBitmap)
@@ -134,7 +160,7 @@ namespace Client.TestHarness
     private void PlaceHex(BitmapImage resourceBitmap, BitmapImage numberBitmap, Int32 x, Int32 y)
     {
       var resourceImage = this.CreateImage(resourceBitmap, String.Empty);
-      this.canvas.Children.Add(resourceImage);
+      this.backgroundCanvas.Children.Add(resourceImage);
       Canvas.SetLeft(resourceImage, x);
       Canvas.SetTop(resourceImage, y);
 
@@ -144,7 +170,7 @@ namespace Client.TestHarness
       }
 
       var numberImage = this.CreateImage(numberBitmap, String.Empty);
-      this.canvas.Children.Add(numberImage);
+      this.backgroundCanvas.Children.Add(numberImage);
       Canvas.SetLeft(numberImage, x);
       Canvas.SetTop(numberImage, y);
 
@@ -152,7 +178,7 @@ namespace Client.TestHarness
 
     public void Clear()
     {
-      this.canvas.Children.Clear();
+      this.backgroundCanvas.Children.Clear();
     }
 
     private Image CreateImage(BitmapImage bitmapImage, String name)

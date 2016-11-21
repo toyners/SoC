@@ -94,7 +94,7 @@ namespace Client.TestHarness
       {
         Application.Current.Dispatcher.Invoke(() =>
         {
-          this.boardDisplay = new BoardDisplay(this.gameClient.Board, this.DisplayArea);
+          this.boardDisplay = new BoardDisplay(this.gameClient.Board, this.DisplayArea, this.ControlArea);
           this.boardDisplay.LayoutBoard(gameData);
         });
       };
