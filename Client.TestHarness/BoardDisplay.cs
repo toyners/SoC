@@ -34,7 +34,7 @@ namespace Client.TestHarness
 
       // 0 = desert, 1 = brick, 2 = grain, 3 = lumber, 4 = ore, 5 = wool
       // 20 = 2 on dice, 30 = 3 on dice, 40 = 4 on dice, .... 110 = 11 on dice, 120 = 12 on dice 
-      var bitmaps = new[]
+      var resourceBitmaps = new[]
       {
         new BitmapImage(new Uri(@"C:\projects\desert.png")),
         new BitmapImage(new Uri(@"C:\projects\brick.png")),
@@ -44,17 +44,30 @@ namespace Client.TestHarness
         new BitmapImage(new Uri(@"C:\projects\wool.png"))
       };
 
+      var numberBitmaps = new Dictionary<Int32, BitmapImage>();
+      numberBitmaps.Add(2, new BitmapImage(new Uri(@"C:\projects\2.png")));
+      numberBitmaps.Add(3, new BitmapImage(new Uri(@"C:\projects\3.png")));
+      numberBitmaps.Add(4, new BitmapImage(new Uri(@"C:\projects\4.png")));
+      numberBitmaps.Add(5, new BitmapImage(new Uri(@"C:\projects\5.png")));
+      numberBitmaps.Add(6, new BitmapImage(new Uri(@"C:\projects\6.png")));
+      numberBitmaps.Add(8, new BitmapImage(new Uri(@"C:\projects\8.png")));
+      numberBitmaps.Add(9, new BitmapImage(new Uri(@"C:\projects\9.png")));
+      numberBitmaps.Add(10, new BitmapImage(new Uri(@"C:\projects\10.png")));
+      numberBitmaps.Add(11, new BitmapImage(new Uri(@"C:\projects\11.png")));
+      numberBitmaps.Add(12, new BitmapImage(new Uri(@"C:\projects\12.png")));
+
       var dataIndex = 0;
       var count = 3;
       var x = 10;
       var y = 54;
-      BitmapImage bitmap = null;
+      BitmapImage resourceBitmap = null;
+      BitmapImage numberBitmap = null;
 
       // Column 1
       while (count-- > 0)
       {
-        bitmap = GetBitmap(gameData.BoardData[dataIndex++], bitmaps);
-        this.PlaceHex(bitmap, x, y);
+        GetBitmap(gameData.BoardData[dataIndex++], resourceBitmaps, numberBitmaps, out resourceBitmap, out numberBitmap);
+        this.PlaceHex(resourceBitmap, numberBitmap, x, y);
         y += 45;
       }
 
@@ -64,8 +77,8 @@ namespace Client.TestHarness
       y = 32;
       while (count-- > 0)
       {
-        bitmap = GetBitmap(gameData.BoardData[dataIndex++], bitmaps);
-        this.PlaceHex(bitmap, x, y);
+        GetBitmap(gameData.BoardData[dataIndex++], resourceBitmaps, numberBitmaps, out resourceBitmap, out numberBitmap);
+        this.PlaceHex(resourceBitmap, numberBitmap, x, y);
         y += 45;
       }
 
@@ -75,8 +88,8 @@ namespace Client.TestHarness
       y = 10;
       while (count-- > 0)
       {
-        bitmap = GetBitmap(gameData.BoardData[dataIndex++], bitmaps);
-        this.PlaceHex(bitmap, x, y);
+        GetBitmap(gameData.BoardData[dataIndex++], resourceBitmaps, numberBitmaps, out resourceBitmap, out numberBitmap);
+        this.PlaceHex(resourceBitmap, numberBitmap, x, y);
         y += 45;
       }
 
@@ -86,8 +99,8 @@ namespace Client.TestHarness
       y = 32;
       while (count-- > 0)
       {
-        bitmap = GetBitmap(gameData.BoardData[dataIndex++], bitmaps);
-        this.PlaceHex(bitmap, x, y);
+        GetBitmap(gameData.BoardData[dataIndex++], resourceBitmaps, numberBitmaps, out resourceBitmap, out numberBitmap);
+        this.PlaceHex(resourceBitmap, numberBitmap, x, y);
         y += 45;
       }
 
@@ -97,52 +110,44 @@ namespace Client.TestHarness
       y = 54;
       while (count-- > 0)
       {
-        bitmap = GetBitmap(gameData.BoardData[dataIndex++], bitmaps);
-        this.PlaceHex(bitmap, x, y);
+        GetBitmap(gameData.BoardData[dataIndex++], resourceBitmaps, numberBitmaps, out resourceBitmap, out numberBitmap);
+        this.PlaceHex(resourceBitmap, numberBitmap, x, y);
         y += 45;
       }
-
-      // Column 1
-      /*Image image;
-      image = this.CreateImage(woolBitmap, "Wool1");
-      this.canvas.Children.Add(image);
-      Canvas.SetLeft(image, 10);
-      Canvas.SetTop(image, 10);
-
-      image = this.CreateImage(brickBitmap, "Brick1");
-      this.canvas.Children.Add(image);
-      Canvas.SetLeft(image, 10);
-      Canvas.SetTop(image, 55);
-
-      image = this.CreateImage(wheatBitmap, "Wheat1");
-      this.canvas.Children.Add(image);
-      Canvas.SetLeft(image, 10);
-      Canvas.SetTop(image, 100);
-
-      // Column 2
-      image = this.CreateImage(oreBitmap, "Ore1");
-      this.canvas.Children.Add(image);
-      Canvas.SetLeft(image, 44);
-      Canvas.SetTop(image, 32);
-
-      image = this.CreateImage(lumberBitmap, "Lumber1");
-      this.canvas.Children.Add(image);
-      Canvas.SetLeft(image, 44);
-      Canvas.SetTop(image, 77);*/
     }
 
-    private BitmapImage GetBitmap(Byte hexData, BitmapImage[] bitmaps)
+    private void GetBitmap(Byte hexData, BitmapImage[] resourceBitmaps, Dictionary<Int32, BitmapImage> numberBitmaps, out BitmapImage resourceBitmap, out BitmapImage numberBitmap)
     {
       var index = hexData % 10;
-      return bitmaps[index];
+      resourceBitmap = resourceBitmaps[index];
+
+      if (hexData == 0)
+      {
+        numberBitmap = null;
+      }
+      else
+      {
+        numberBitmap = numberBitmaps[hexData / 10];
+      }
     }
 
-    private void PlaceHex(BitmapImage bitmap, Int32 x, Int32 y)
+    private void PlaceHex(BitmapImage resourceBitmap, BitmapImage numberBitmap, Int32 x, Int32 y)
     {
-      var image = this.CreateImage(bitmap, String.Empty);
-      this.canvas.Children.Add(image);
-      Canvas.SetLeft(image, x);
-      Canvas.SetTop(image, y);
+      var resourceImage = this.CreateImage(resourceBitmap, String.Empty);
+      this.canvas.Children.Add(resourceImage);
+      Canvas.SetLeft(resourceImage, x);
+      Canvas.SetTop(resourceImage, y);
+
+      if (numberBitmap == null)
+      {
+        return;
+      }
+
+      var numberImage = this.CreateImage(numberBitmap, String.Empty);
+      this.canvas.Children.Add(numberImage);
+      Canvas.SetLeft(numberImage, x);
+      Canvas.SetTop(numberImage, y);
+
     }
 
     public void Clear()
