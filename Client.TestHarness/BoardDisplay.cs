@@ -34,13 +34,16 @@ namespace Client.TestHarness
     public void Clear()
     {
       this.backgroundCanvas.Children.Clear();
+      this.ClearForeground();
+    }
+
+    public void ClearForeground()
+    {
       this.foregroundCanvas.Children.Clear();
     }
 
     public void LayoutBoard(GameInitializationData gameData)
     {
-      this.Clear();
-
       // 0 = desert, 1 = brick, 2 = grain, 3 = lumber, 4 = ore, 5 = wool
       // 20 = 2 on dice, 30 = 3 on dice, 40 = 4 on dice, .... 110 = 11 on dice, 120 = 12 on dice 
       var resourceBitmaps = new[]
@@ -105,6 +108,14 @@ namespace Client.TestHarness
       this.canvas.Children.Add(button);
       Canvas.SetLeft(button, 10);
       Canvas.SetTop(button, 10);*/
+    }
+
+    public void OverlayoutTownPlacement()
+    {
+      var button = new CircleButton(BoardDisplay_Click);
+      this.foregroundCanvas.Children.Add(button);
+      Canvas.SetLeft(button, 10);
+      Canvas.SetTop(button, 10);
     }
 
     private void BoardDisplay_Click()
