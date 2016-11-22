@@ -23,11 +23,11 @@ namespace Jabberwocky.SoC.Client
     #endregion
 
     #region Events
-    public Action GameJoinedEvent;
+    public event Action GameJoinedEvent;
 
-    public Action GameLeftEvent;
+    public event Action GameLeftEvent;
 
-    public Action<GameInitializationData> GameInitializationEvent;
+    public event Action<GameInitializationData> GameInitializationEvent;
     #endregion
 
     #region Methods

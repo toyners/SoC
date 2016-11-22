@@ -61,7 +61,7 @@ namespace Jabberwocky.SoC.Client.Console
       Guid gameToken = Guid.Empty;
       Console.Write("Attempting connection...");
       var client = new GameClient();
-      client.GameJoinedEvent = () => 
+      client.GameJoinedEvent += () => 
       {
         gameToken = client.GameToken;
         waiting = false;

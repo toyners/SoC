@@ -13,6 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Jabberwocky.SoC.Client;
+using Jabberwocky.SoC.Client.ServiceReference;
 
 namespace Client.TestHarness
 {
@@ -77,39 +78,43 @@ namespace Client.TestHarness
       }
     }
 
+    private void GameInitializationEventHandler(GameInitializationData gameData)
+    {
+      Application.Current.Dispatcher.Invoke(() =>
+      {
+        this.boardDisplay = new BoardDisplay(this.gameClient.Board, this.DisplayArea, this.ControlArea);
+        this.boardDisplay.LayoutBoard(gameData);
+      });
+    }
+
+    private void GameJoinedEventHandler()
+    {
+      Application.Current.Dispatcher.Invoke(() =>
+      {
+        this.GameIdLabel.Content = this.gameClient.GameToken.ToString();
+        this.ConnectButton.IsEnabled = true;
+        this.ConnectButton.Content = "Disconnect";
+      });
+    }
+
+    private void GameLeftEventHandler()
+    {
+      this.gameClient = null;
+      Application.Current.Dispatcher.Invoke(() =>
+      {
+        this.boardDisplay.Clear();
+        this.GameIdLabel.Content = "<unconnected>";
+        this.ConnectButton.IsEnabled = true;
+        this.ConnectButton.Content = "Connect";
+      });
+    }
+
     private void InitializeGameClient()
     {
       this.gameClient = new GameClient();
-      this.gameClient.GameJoinedEvent = () =>
-      {
-        Application.Current.Dispatcher.Invoke(() =>
-        {
-          this.GameIdLabel.Content = this.gameClient.GameToken.ToString();
-          this.ConnectButton.IsEnabled = true;
-          this.ConnectButton.Content = "Disconnect";
-        });
-      };
-
-      this.gameClient.GameInitializationEvent = (gameData) =>
-      {
-        Application.Current.Dispatcher.Invoke(() =>
-        {
-          this.boardDisplay = new BoardDisplay(this.gameClient.Board, this.DisplayArea, this.ControlArea);
-          this.boardDisplay.LayoutBoard(gameData);
-        });
-      };
-
-      this.gameClient.GameLeftEvent = () =>
-      {
-        this.gameClient = null;
-        Application.Current.Dispatcher.Invoke(() =>
-        {
-          this.boardDisplay.Clear();
-          this.GameIdLabel.Content = "<unconnected>";
-          this.ConnectButton.IsEnabled = true;
-          this.ConnectButton.Content = "Connect";
-        });
-      };
+      this.gameClient.GameJoinedEvent += this.GameJoinedEventHandler;
+      this.gameClient.GameInitializationEvent += this.GameInitializationEventHandler;
+      this.gameClient.GameLeftEvent += this.GameLeftEventHandler;
     }
 
     private void TurnButtonClick(Object sender, RoutedEventArgs e)
