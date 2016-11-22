@@ -20,18 +20,21 @@ namespace Client.TestHarness
   /// </summary>
   public partial class CircleButton : UserControl
   {
-    private Action click;
+    private Action<Int32> click;
 
-    public CircleButton(Action click)
+    private Int32 id;
+
+    public CircleButton(Action<Int32> click, Int32 id)
     {
       InitializeComponent();
 
       this.click = click;
+      this.id = id;
     }
 
     private void Button_Click(Object sender, RoutedEventArgs e)
     {
-      this.click();
+      this.click(this.id);
       e.Handled = true;
     }
   }

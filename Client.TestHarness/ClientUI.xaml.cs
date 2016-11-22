@@ -38,6 +38,11 @@ namespace Client.TestHarness
     #endregion
 
     #region Methods
+    private void BoardDisplay_Click(Int32 id)
+    {
+      throw new NotImplementedException();
+    }
+
     private void ConnectButtonClick(Object sender, RoutedEventArgs e)
     {
       if (this.gameClient == null)
@@ -83,7 +88,9 @@ namespace Client.TestHarness
       Application.Current.Dispatcher.Invoke(() =>
       {
         this.boardDisplay = new BoardDisplay(this.gameClient.Board, this.DisplayArea, this.ControlArea);
+        this.boardDisplay.ButtonClickEventHandler += BoardDisplay_Click;
         this.boardDisplay.LayoutBoard(gameData);
+        this.boardDisplay.OverlayTownPlacement();
       });
     }
 

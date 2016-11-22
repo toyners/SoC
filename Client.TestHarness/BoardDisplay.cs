@@ -30,6 +30,8 @@ namespace Client.TestHarness
     }
     #endregion
 
+    public event Action<Int32> ButtonClickEventHandler;
+
     #region Methods
     public void Clear()
     {
@@ -95,32 +97,14 @@ namespace Client.TestHarness
           y += cellHeight;
         }
       }
+    }
 
-      var button = new CircleButton(BoardDisplay_Click);
+    public void OverlayTownPlacement()
+    {
+      var button = new CircleButton(this.ButtonClickEventHandler, 0);
       this.foregroundCanvas.Children.Add(button);
       Canvas.SetLeft(button, 10);
       Canvas.SetTop(button, 10);
-      
-        /*Button button = new Button();
-      button.Width = 20;
-      button.Height = 20;
-      button.Click += LocationClick;
-      this.canvas.Children.Add(button);
-      Canvas.SetLeft(button, 10);
-      Canvas.SetTop(button, 10);*/
-    }
-
-    public void OverlayoutTownPlacement()
-    {
-      var button = new CircleButton(BoardDisplay_Click);
-      this.foregroundCanvas.Children.Add(button);
-      Canvas.SetLeft(button, 10);
-      Canvas.SetTop(button, 10);
-    }
-
-    private void BoardDisplay_Click()
-    {
-      throw new NotImplementedException();
     }
 
     private void LocationClick(Object sender, RoutedEventArgs routedEventArgs)

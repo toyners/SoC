@@ -5,8 +5,8 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Client.TestHarness"
              mc:Ignorable="d" 
-             d:DesignHeight="10" d:DesignWidth="10">
-  <Button Width="10" Height="10" Click="Button_Click">
+             d:DesignHeight="15" d:DesignWidth="15">
+  <Button Width="15" Height="15" Click="Button_Click">
     <Button.Template>
       <ControlTemplate TargetType="{x:Type Button}">
         <Ellipse Fill="Red" />
