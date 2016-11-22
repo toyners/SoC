@@ -65,15 +65,15 @@ namespace Client.TestHarness
 
     private void DisplayAreaMouseLeftButtonDown(Object sender, MouseButtonEventArgs e)
     {
-      leftMouseButtonDown = true;
+      this.leftMouseButtonDown = true;
     }
 
     private void DisplayAreaMouseLeftButtonUp(Object sender, MouseButtonEventArgs e)
     {
-      if (leftMouseButtonDown)
+      if (this.leftMouseButtonDown)
       {
-        var mousePoint = e.GetPosition(this.DisplayArea);
-        leftMouseButtonDown = false;
+        var mousePoint = e.GetPosition(this.ControlArea);
+        this.leftMouseButtonDown = false;
       }
     }
 

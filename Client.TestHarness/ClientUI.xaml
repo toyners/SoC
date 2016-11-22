@@ -36,8 +36,7 @@
       </StackPanel>
     </Border>
 
-    <Canvas Name="DisplayArea" MouseLeftButtonDown="DisplayAreaMouseLeftButtonDown"
-                  MouseLeftButtonUp="DisplayAreaMouseLeftButtonUp"/>
+    <Canvas Name="DisplayArea" />
 
     <Canvas Name="ControlArea" MouseLeftButtonDown="DisplayAreaMouseLeftButtonDown"
                   MouseLeftButtonUp="DisplayAreaMouseLeftButtonUp"/>

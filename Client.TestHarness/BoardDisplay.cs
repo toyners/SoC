@@ -31,6 +31,12 @@ namespace Client.TestHarness
     #endregion
 
     #region Methods
+    public void Clear()
+    {
+      this.backgroundCanvas.Children.Clear();
+      this.foregroundCanvas.Children.Clear();
+    }
+
     public void LayoutBoard(GameInitializationData gameData)
     {
       this.Clear();
@@ -59,63 +65,32 @@ namespace Client.TestHarness
       numberBitmaps.Add(11, new BitmapImage(new Uri(@"C:\projects\11.png")));
       numberBitmaps.Add(12, new BitmapImage(new Uri(@"C:\projects\12.png")));
 
+      var layoutColumnData = new[] 
+      {
+        new LayoutColumnData { X = 10, Y = 54, Count = 3 },
+        new LayoutColumnData { X = 44, Y = 32, Count = 4 },
+        new LayoutColumnData { X = 78, Y = 10, Count = 5 },
+        new LayoutColumnData { X = 112, Y = 32, Count = 4 },
+        new LayoutColumnData { X = 146, Y = 54, Count = 3 }
+      };
+
+      const Int32 cellHeight = 45;
       var dataIndex = 0;
-      var count = 3;
-      var x = 10;
-      var y = 54;
       BitmapImage resourceBitmap = null;
       BitmapImage numberBitmap = null;
 
-      // Column 1
-      while (count-- > 0)
+      foreach (var columnData in layoutColumnData)
       {
-        GetBitmap(gameData.BoardData[dataIndex++], resourceBitmaps, numberBitmaps, out resourceBitmap, out numberBitmap);
-        this.PlaceHex(resourceBitmap, numberBitmap, x, y);
-        y += 45;
-      }
+        var count = columnData.Count;
+        var x = columnData.X;
+        var y = columnData.Y;
 
-      // Column 2
-      count = 4;
-      x = 44;
-      y = 32;
-      while (count-- > 0)
-      {
-        GetBitmap(gameData.BoardData[dataIndex++], resourceBitmaps, numberBitmaps, out resourceBitmap, out numberBitmap);
-        this.PlaceHex(resourceBitmap, numberBitmap, x, y);
-        y += 45;
-      }
-
-      // Column 3
-      count = 5;
-      x = 78;
-      y = 10;
-      while (count-- > 0)
-      {
-        GetBitmap(gameData.BoardData[dataIndex++], resourceBitmaps, numberBitmaps, out resourceBitmap, out numberBitmap);
-        this.PlaceHex(resourceBitmap, numberBitmap, x, y);
-        y += 45;
-      }
-
-      // Column 4
-      count = 4;
-      x = 112;
-      y = 32;
-      while (count-- > 0)
-      {
-        GetBitmap(gameData.BoardData[dataIndex++], resourceBitmaps, numberBitmaps, out resourceBitmap, out numberBitmap);
-        this.PlaceHex(resourceBitmap, numberBitmap, x, y);
-        y += 45;
-      }
-
-      // Column5
-      count = 3;
-      x = 146;
-      y = 54;
-      while (count-- > 0)
-      {
-        GetBitmap(gameData.BoardData[dataIndex++], resourceBitmaps, numberBitmaps, out resourceBitmap, out numberBitmap);
-        this.PlaceHex(resourceBitmap, numberBitmap, x, y);
-        y += 45;
+        while (count-- > 0)
+        {
+          GetBitmap(gameData.BoardData[dataIndex++], resourceBitmaps, numberBitmaps, out resourceBitmap, out numberBitmap);
+          this.PlaceHex(resourceBitmap, numberBitmap, x, y);
+          y += cellHeight;
+        }
       }
 
       var button = new CircleButton(BoardDisplay_Click);
@@ -176,11 +151,6 @@ namespace Client.TestHarness
 
     }
 
-    public void Clear()
-    {
-      this.backgroundCanvas.Children.Clear();
-    }
-
     private Image CreateImage(BitmapImage bitmapImage, String name)
     {
       return new Image
@@ -191,6 +161,16 @@ namespace Client.TestHarness
         Source = bitmapImage
       };
     }
+    #endregion
+
+    #region Structures
+    private struct LayoutColumnData
+    {
+      public Int32 X;
+      public Int32 Y;
+      public UInt32 Count;
+    }
+
     #endregion
   }
 }
