@@ -40,7 +40,6 @@ namespace Client.TestHarness
     #region Methods
     private void BoardDisplay_Click(Int32 id)
     {
-      throw new NotImplementedException();
     }
 
     private void ConnectButtonClick(Object sender, RoutedEventArgs e)

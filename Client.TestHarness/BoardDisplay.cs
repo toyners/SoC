@@ -102,9 +102,10 @@ namespace Client.TestHarness
     public void OverlayTownPlacement()
     {
       var button = new CircleButton(this.ButtonClickEventHandler, 0);
+      button.ToolTip = "test";
       this.foregroundCanvas.Children.Add(button);
-      Canvas.SetLeft(button, 10);
-      Canvas.SetTop(button, 10);
+      Canvas.SetLeft(button, 13);
+      Canvas.SetTop(button, 48);
     }
 
     private void LocationClick(Object sender, RoutedEventArgs routedEventArgs)
