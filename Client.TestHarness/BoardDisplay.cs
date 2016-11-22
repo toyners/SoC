@@ -101,16 +101,11 @@ namespace Client.TestHarness
 
     public void OverlayTownPlacement()
     {
-      var button = new CircleButton(this.ButtonClickEventHandler, 0);
-      button.ToolTip = "test";
-      this.foregroundCanvas.Children.Add(button);
-      Canvas.SetLeft(button, 13);
-      Canvas.SetTop(button, 48);
-    }
-
-    private void LocationClick(Object sender, RoutedEventArgs routedEventArgs)
-    {
-      throw new NotImplementedException();
+      this.PlaceTownPlacementButton(13, 48, 0, "(nothing)");
+      this.PlaceTownPlacementButton(3, 70, 1, "(nothing)");
+      this.PlaceTownPlacementButton(13, 92, 2, "Brick (20%)");
+      this.PlaceTownPlacementButton(3, 114, 3, "Brick (20%)");
+      this.PlaceTownPlacementButton(37, 48, 8, "Brick (20%)");
     }
 
     private void GetBitmap(Byte hexData, BitmapImage[] resourceBitmaps, Dictionary<Int32, BitmapImage> numberBitmaps, out BitmapImage resourceBitmap, out BitmapImage numberBitmap)
@@ -144,7 +139,15 @@ namespace Client.TestHarness
       this.backgroundCanvas.Children.Add(numberImage);
       Canvas.SetLeft(numberImage, x);
       Canvas.SetTop(numberImage, y);
+    }
 
+    private void PlaceTownPlacementButton(Double x, Double y, Int32 index, String toolTip)
+    {
+      var button = new CircleButton(this.ButtonClickEventHandler, index);
+      button.ToolTip = toolTip;
+      this.foregroundCanvas.Children.Add(button);
+      Canvas.SetLeft(button, x);
+      Canvas.SetTop(button, y);
     }
 
     private Image CreateImage(BitmapImage bitmapImage, String name)
