@@ -39,6 +39,8 @@ namespace Jabberwocky.SoC.Service
       get { return !this.working; /* TODO: Check task and task status */ }
     }
 
+    public Boolean IsProcessing { get { return this.working; } }
+
     public void RemoveClient(Guid gameToken, IServiceProviderCallback client)
     {
       if (!this.gameSessions.ContainsKey(gameToken))
@@ -76,11 +78,11 @@ namespace Jabberwocky.SoC.Service
       }
 
       this.matchingTask = Task.Factory.StartNew(() => { this.MatchPlayersWithGames(); });
-      this.working = true;
     }
 
     private void MatchPlayersWithGames()
     {
+      this.working = true;
       while (this.working)
       {
         while (this.waitingForGame.Count == 0)
