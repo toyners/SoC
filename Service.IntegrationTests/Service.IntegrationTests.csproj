@@ -59,6 +59,10 @@
     <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Library\Library.csproj">
+      <Project>{5cac4497-470c-49fe-9cfd-ad5c908bea79}</Project>
+      <Name>Library</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Service\Service.csproj">
       <Project>{0CCA125D-9987-4128-895E-25C0DD1B684F}</Project>
       <Name>Service</Name>

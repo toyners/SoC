@@ -16,7 +16,7 @@ namespace Service.IntegrationTests
     public void AddPlayer_AddPlayerToNonFullSession_PlayerAdded()
     {
       // Arrange
-      var gameSessionManager = this.CreateGameSessionManager();
+      var gameSessionManager = this.CreateGameSessionManager(new DiceRollerFactory());
 
       var client = new TestClient();
 
@@ -34,7 +34,7 @@ namespace Service.IntegrationTests
     public void AddPlayer_AddEnoughPlayersToFillGame_AllPlayersHaveSameGameToken()
     {
       // Arrange
-      var gameSessionManager = this.CreateGameSessionManager(4);
+      var gameSessionManager = this.CreateGameSessionManager(new DiceRollerFactory(), 4);
 
       var client1 = new TestClient();
       var client2 = new TestClient();
@@ -61,7 +61,7 @@ namespace Service.IntegrationTests
     public void AddPlayer_AddEnoughPlayersToFillGame_AllPlayersAreInitialized()
     {
       // Arrange
-      var gameSessionManager = this.CreateGameSessionManager(4);
+      var gameSessionManager = this.CreateGameSessionManager(new DiceRollerFactory(), 4);
 
       var client1 = new TestClient();
       var client2 = new TestClient();
@@ -84,9 +84,36 @@ namespace Service.IntegrationTests
       Assert.IsTrue(client4.GameInitialized);
     }
 
-    private GameSessionManager CreateGameSessionManager(Int32 maximumPlayerCount = 1)
+    [Test]
+    public void AddPlayer_AddEnoughPlayersToFillGame_FirstPlayerGetsToPlaceTown()
     {
-      var gameSessionManager = new GameSessionManager(maximumPlayerCount);
+      // Arrange
+      var gameSessionManager = this.CreateGameSessionManager(new DiceRollerFactory(), 4);
+
+      var client1 = new TestClient();
+      var client2 = new TestClient();
+      var client3 = new TestClient();
+      var client4 = new TestClient();
+
+      // Act
+      gameSessionManager.AddClient(client1);
+      gameSessionManager.AddClient(client2);
+      gameSessionManager.AddClient(client3);
+      gameSessionManager.AddClient(client4);
+      Thread.Sleep(1000);
+
+      gameSessionManager.StopMatching();
+
+      // Assert
+      Assert.IsTrue(client1.TownPlaced);
+      Assert.IsFalse(client2.TownPlaced);
+      Assert.IsFalse(client3.TownPlaced);
+      Assert.IsFalse(client4.TownPlaced);
+    }
+
+    private GameSessionManager CreateGameSessionManager(DiceRollerFactory diceRollerFactory, Int32 maximumPlayerCount = 1)
+    {
+      var gameSessionManager = new GameSessionManager(diceRollerFactory, maximumPlayerCount);
       gameSessionManager.StartMatching();
 
       var stopWatch = new Stopwatch();

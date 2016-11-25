@@ -16,15 +16,17 @@ namespace Jabberwocky.SoC.Service
     private Queue<IServiceProviderCallback> waitingForGame;
     private Task matchingTask;
     private Int32 maximumPlayerCount;
+    private IDiceRollerFactory diceRollerFactory;
     #endregion
 
     #region Construction
-    public GameSessionManager(Int32 maximumPlayerCount = 1)
+    public GameSessionManager(IDiceRollerFactory diceRollerFactory, Int32 maximumPlayerCount = 1)
     {
       this.clients = new List<IServiceProviderCallback>();
       this.waitingForGame = new Queue<IServiceProviderCallback>();
       this.gameSessions = new Dictionary<Guid, GameSession>();
       this.maximumPlayerCount = maximumPlayerCount;
+      this.diceRollerFactory = diceRollerFactory;
     }
     #endregion
 
@@ -109,7 +111,7 @@ namespace Jabberwocky.SoC.Service
         {
           // Create a new game and add the player
           client = this.waitingForGame.Dequeue();
-          gameSession = new GameSession(this.maximumPlayerCount);
+          gameSession = new GameSession(this.diceRollerFactory.Create(), this.maximumPlayerCount);
           gameSession.AddPlayer(client);
           this.gameSessions.Add(gameSession.GameToken, gameSession);
         }
@@ -142,15 +144,15 @@ namespace Jabberwocky.SoC.Service
       #endregion
 
       #region Construction
-      public GameSession(Int32 maximumPlayerCount)
+      public GameSession(DiceRoller diceRoller, Int32 maximumPlayerCount)
       {
         this.GameToken = Guid.NewGuid();
-        this.board = new Board(BoardSizes.Standard);
-        var diceRoller = new DiceRoller();
-        this.Game = new GameManager(this.board, diceRoller, this.Players, new DevelopmentCardPile());
 
         this.Players = new Player[maximumPlayerCount];
         this.Clients = new IServiceProviderCallback[maximumPlayerCount];
+
+        this.board = new Board(BoardSizes.Standard);
+        this.Game = new GameManager(this.board, diceRoller, this.Players, new DevelopmentCardPile());
       }
       #endregion
 

@@ -18,7 +18,7 @@ namespace Jabberwocky.SoC.Service
     #region Construction
     public ServiceProvider()
     {
-      this.gameSessionManager = new GameSessionManager();
+      this.gameSessionManager = new GameSessionManager(new DiceRollerFactory());
       this.gameSessionManager.StartMatching();
     }
     #endregion
@@ -36,7 +36,7 @@ namespace Jabberwocky.SoC.Service
       var client = OperationContext.Current.GetCallbackChannel<IServiceProviderCallback>();
       this.gameSessionManager.RemoveClient(gameToken, client);
       Logger.Message("Client left game");
-    }
+    } 
     #endregion
   }
 }
