@@ -17,7 +17,6 @@ namespace Service.IntegrationTests
     {
       // Arrange
       var gameSessionManager = this.CreateGameSessionManager();
-      gameSessionManager.StartMatching();
 
       var client = new TestClient();
 
@@ -36,7 +35,6 @@ namespace Service.IntegrationTests
     {
       // Arrange
       var gameSessionManager = this.CreateGameSessionManager(4);
-      gameSessionManager.StartMatching();
 
       var client1 = new TestClient();
       var client2 = new TestClient();
@@ -78,8 +76,6 @@ namespace Service.IntegrationTests
         throw new Exception("GameSessionManager has not started");
       }
       
-      Thread.Sleep(500);
-
       return gameSessionManager;
     }
     #endregion 
