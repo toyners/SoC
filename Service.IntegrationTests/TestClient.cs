@@ -10,6 +10,8 @@ namespace Service.IntegrationTests
 
     public Boolean GameJoined;
 
+    public Boolean GameInitialized;
+
     public void ConfirmGameJoined(Guid gameToken)
     {
       this.GameToken = gameToken;
@@ -23,6 +25,7 @@ namespace Service.IntegrationTests
 
     public void GameInitialization(GameInitializationData gameData)
     {
+      this.GameInitialized = true;
     }
 
     public void StartTurn(Guid token)

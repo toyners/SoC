@@ -46,7 +46,7 @@ namespace Service.IntegrationTests
       gameSessionManager.AddClient(client2);
       gameSessionManager.AddClient(client3);
       gameSessionManager.AddClient(client4);
-      Thread.Sleep(500);
+      Thread.Sleep(1000);
 
       gameSessionManager.StopMatching();
 
@@ -55,6 +55,33 @@ namespace Service.IntegrationTests
       client1.GameToken == client2.GameToken &&
       client2.GameToken == client3.GameToken &&
       client3.GameToken == client4.GameToken).ShouldBe(true);
+    }
+
+    [Test]
+    public void AddPlayer_AddEnoughPlayersToFillGame_AllPlayersAreInitialized()
+    {
+      // Arrange
+      var gameSessionManager = this.CreateGameSessionManager(4);
+
+      var client1 = new TestClient();
+      var client2 = new TestClient();
+      var client3 = new TestClient();
+      var client4 = new TestClient();
+
+      // Act
+      gameSessionManager.AddClient(client1);
+      gameSessionManager.AddClient(client2);
+      gameSessionManager.AddClient(client3);
+      gameSessionManager.AddClient(client4);
+      Thread.Sleep(1000);
+
+      gameSessionManager.StopMatching();
+
+      // Assert
+      Assert.IsTrue(client1.GameInitialized);
+      Assert.IsTrue(client2.GameInitialized);
+      Assert.IsTrue(client3.GameInitialized);
+      Assert.IsTrue(client4.GameInitialized);
     }
 
     private GameSessionManager CreateGameSessionManager(Int32 maximumPlayerCount = 1)
