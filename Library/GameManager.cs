@@ -2,13 +2,14 @@
 namespace Jabberwocky.SoC.Library
 {
   using System;
+  using Service;
 
   public class GameManager
   {
     #region Fields
     private Board board;
 
-    private DiceRoller diceRoller;
+    private IDiceRoller diceRoller;
 
     private Player[] players;
 
@@ -16,7 +17,7 @@ namespace Jabberwocky.SoC.Library
     #endregion
 
     #region Construction
-    public GameManager(Board board, DiceRoller diceRoller, Player[] players, DevelopmentCardPile cardPile)
+    public GameManager(Board board, IDiceRoller diceRoller, Player[] players, DevelopmentCardPile cardPile)
     {
       this.board = board;
       this.diceRoller = diceRoller;

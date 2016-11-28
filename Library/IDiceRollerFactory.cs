@@ -5,6 +5,6 @@ namespace Jabberwocky.SoC.Service
 
   public interface IDiceRollerFactory
   {
-    DiceRoller Create();
+    IDiceRoller Create();
   }
 }

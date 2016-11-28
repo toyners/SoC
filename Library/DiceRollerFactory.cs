@@ -6,7 +6,7 @@ namespace Jabberwocky.SoC.Service
 
   public class DiceRollerFactory : IDiceRollerFactory
   {
-    public DiceRoller Create()
+    public IDiceRoller Create()
     {
       return new DiceRoller();
     }

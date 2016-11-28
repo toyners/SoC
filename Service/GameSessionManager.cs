@@ -144,7 +144,7 @@ namespace Jabberwocky.SoC.Service
       #endregion
 
       #region Construction
-      public GameSession(DiceRoller diceRoller, Int32 maximumPlayerCount)
+      public GameSession(IDiceRoller diceRoller, Int32 maximumPlayerCount)
       {
         this.GameToken = Guid.NewGuid();
 

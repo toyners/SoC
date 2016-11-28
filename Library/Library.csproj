@@ -43,6 +43,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Board.cs" />
+    <Compile Include="DiceRoller.cs" />
     <Compile Include="DiceRollerFactory.cs" />
     <Compile Include="Enums\BoardSizes.cs" />
     <Compile Include="Enums\DevelopmentCardTypes.cs" />

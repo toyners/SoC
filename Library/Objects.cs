@@ -2,12 +2,6 @@
 namespace Jabberwocky.SoC.Library
 {
   using System;
-  using System.Collections.Generic;
-  
-  public class DiceRoller
-  {
-    UInt32 Roll() { throw new NotImplementedException(); }
-  }
 
   public class Market
   {

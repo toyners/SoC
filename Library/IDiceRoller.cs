@@ -3,8 +3,8 @@ namespace Jabberwocky.SoC.Service
 {
   using System;
 
-  interface IDiceRoller
+  public interface IDiceRoller
   {
-    Int32 Roll();
+    UInt32 RollTwoDice();
   }
 }
