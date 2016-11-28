@@ -149,7 +149,6 @@ namespace Service.IntegrationTests
     public class TestDiceRollerFactory : IDiceRollerFactory
     {
       private Queue<TestDiceRoller> diceRollers;
-      private Int32 index;
 
       public TestDiceRollerFactory(List<TestDiceRoller> diceRollers)
       {
