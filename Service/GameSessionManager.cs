@@ -42,6 +42,14 @@ namespace Jabberwocky.SoC.Service
     }
 
     public Boolean IsProcessing { get { return this.working; } }
+    #endregion
+
+    #region Methods
+    public void AddClient(IServiceProviderCallback client)
+    {
+      // TODO: Check for null reference
+      this.waitingForGame.Enqueue(client);
+    }
 
     public void RemoveClient(Guid gameToken, IServiceProviderCallback client)
     {
@@ -52,14 +60,6 @@ namespace Jabberwocky.SoC.Service
 
       var gameSession = this.gameSessions[gameToken];
       gameSession.RemovePlayer(client);
-    }
-    #endregion
-
-    #region Methods
-    public void AddClient(IServiceProviderCallback client)
-    {
-      // TODO: Check for null reference
-      this.waitingForGame.Enqueue(client);
     }
 
     public void StopMatching()
