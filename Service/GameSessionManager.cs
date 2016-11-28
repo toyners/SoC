@@ -205,6 +205,8 @@ namespace Jabberwocky.SoC.Service
         {
           client.GameInitialization(gameData);
         }
+
+
       }
       #endregion
     }

@@ -2,6 +2,7 @@
 namespace Service.IntegrationTests
 {
   using System;
+  using System.Collections.Generic;
   using System.Diagnostics;
   using System.Threading;
   using Jabberwocky.SoC.Service;
@@ -88,7 +89,8 @@ namespace Service.IntegrationTests
     public void AddPlayer_AddEnoughPlayersToFillGame_FirstPlayerGetsToPlaceTown()
     {
       // Arrange
-      var gameSessionManager = this.CreateGameSessionManager(new DiceRollerFactory(), 4);
+      var diceRollerFactory = this.CreateDiceRollerFactory(new List<UInt32> { 12, 8, 6, 4 });
+      var gameSessionManager = this.CreateGameSessionManager(diceRollerFactory, 4);
 
       var client1 = new TestClient();
       var client2 = new TestClient();
@@ -111,7 +113,18 @@ namespace Service.IntegrationTests
       Assert.IsFalse(client4.TownPlaced);
     }
 
-    private GameSessionManager CreateGameSessionManager(DiceRollerFactory diceRollerFactory, Int32 maximumPlayerCount = 1)
+    private TestDiceRollerFactory CreateDiceRollerFactory(params List<UInt32>[] numbers)
+    {
+      var diceRollers = new List<TestDiceRoller>();
+      foreach (var numberSet in numbers)
+      {
+        diceRollers.Add(new TestDiceRoller(numberSet));
+      }
+
+      return new TestDiceRollerFactory(diceRollers);
+    }
+
+    private GameSessionManager CreateGameSessionManager(IDiceRollerFactory diceRollerFactory, Int32 maximumPlayerCount = 1)
     {
       var gameSessionManager = new GameSessionManager(diceRollerFactory, maximumPlayerCount);
       gameSessionManager.StartMatching();
@@ -131,6 +144,47 @@ namespace Service.IntegrationTests
       }
       
       return gameSessionManager;
+    }
+
+    public class TestDiceRollerFactory : IDiceRollerFactory
+    {
+      private Queue<TestDiceRoller> diceRollers;
+      private Int32 index;
+
+      public TestDiceRollerFactory(List<TestDiceRoller> diceRollers)
+      {
+        this.diceRollers = new Queue<TestDiceRoller>(diceRollers);
+      }
+
+      public IDiceRoller Create()
+      {
+        if (this.diceRollers.Count == 0)
+        {
+          throw new Exception("No more dice rollers in dice roller factory.");
+        }
+
+        return this.diceRollers.Dequeue();
+      }
+    }
+
+    public class TestDiceRoller : IDiceRoller
+    {
+      private Queue<UInt32> numbers;
+
+      public TestDiceRoller(List<UInt32> numbers)
+      {
+        this.numbers = new Queue<UInt32>(numbers);
+      } 
+
+      public UInt32 RollTwoDice()
+      {
+        if (this.numbers.Count == 0)
+        {
+          throw new Exception("No more numbers in dice roller.");
+        }
+
+        return this.numbers.Dequeue();
+      }
     }
     #endregion 
   }
