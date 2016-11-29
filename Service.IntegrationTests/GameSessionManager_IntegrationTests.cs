@@ -124,7 +124,7 @@ namespace Service.IntegrationTests
       return new TestDiceRollerFactory(diceRollers);
     }
 
-    private GameSessionManager CreateGameSessionManager(IDiceRollerFactory diceRollerFactory, Int32 maximumPlayerCount = 1)
+    private GameSessionManager CreateGameSessionManager(IDiceRollerFactory diceRollerFactory, UInt32 maximumPlayerCount = 1)
     {
       var gameSessionManager = new GameSessionManager(diceRollerFactory, maximumPlayerCount);
       gameSessionManager.StartMatching();

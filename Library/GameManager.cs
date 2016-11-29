@@ -17,11 +17,11 @@ namespace Jabberwocky.SoC.Library
     #endregion
 
     #region Construction
-    public GameManager(Board board, IDiceRoller diceRoller, Player[] players, DevelopmentCardPile cardPile)
+    public GameManager(Board board, IDiceRoller diceRoller, UInt32 playerCount, DevelopmentCardPile cardPile)
     {
       this.board = board;
       this.diceRoller = diceRoller;
-      this.players = players;
+      this.players = new Player[playerCount];
       this.cardPile = cardPile;
     }
     #endregion
