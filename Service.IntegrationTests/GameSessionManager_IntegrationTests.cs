@@ -113,6 +113,20 @@ namespace Service.IntegrationTests
       Assert.IsFalse(client4.TownPlaced);
     }
 
+    private void AddEnoughPlayersToFillGame_FirstPlayerGetsToPlaceTown(List<UInt32> diceRolls, Boolean[] expectedResults)
+    {
+      var client1 = new TestClient();
+      var client2 = new TestClient();
+      var client3 = new TestClient();
+      var client4 = new TestClient();
+
+      // Assert
+      Assert.IsTrue(client1.TownPlaced);
+      Assert.IsFalse(client2.TownPlaced);
+      Assert.IsFalse(client3.TownPlaced);
+      Assert.IsFalse(client4.TownPlaced);
+    }
+
     private TestDiceRollerFactory CreateDiceRollerFactory(params List<UInt32>[] numbers)
     {
       var diceRollers = new List<TestDiceRoller>();
