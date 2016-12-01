@@ -14,6 +14,9 @@ namespace Jabberwocky.SoC.Service
     [OperationContract(IsOneWay = true)]
     void TryLeaveGame(Guid gameToken);
 
+    [OperationContract(IsOneWay = true)]
+    void ConfirmGameInitialized(Guid gameToken);
+
     /*[OperationContract]
     string GetData(int value);
 

@@ -202,8 +202,11 @@ namespace Jabberwocky.SoC.Service
           var gameData = GameInitializationDataBuilder.Build(this.board);
           foreach (var client in this.Clients)
           {
-            client.GameInitialization(gameData);
+            client.InitializeGame(gameData);
           }
+
+          this.Clients[0].PlaceTown();
+
         });
       }
       #endregion

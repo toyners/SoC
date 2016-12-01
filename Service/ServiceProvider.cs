@@ -24,6 +24,18 @@ namespace Jabberwocky.SoC.Service
     #endregion
 
     #region Methods
+    public void ConfirmGameInitialized(Guid gameToken)
+    {
+      throw new NotImplementedException();
+    }
+
+    public void SendInstructions()
+    {
+      var client = OperationContext.Current.GetCallbackChannel<IServiceProviderCallback>();
+
+      throw new NotImplementedException();
+    }
+
     public void TryJoinGame()
     {
       var client = OperationContext.Current.GetCallbackChannel<IServiceProviderCallback>();
@@ -36,7 +48,7 @@ namespace Jabberwocky.SoC.Service
       var client = OperationContext.Current.GetCallbackChannel<IServiceProviderCallback>();
       this.gameSessionManager.RemoveClient(gameToken, client);
       Logger.Message("Client left game");
-    } 
+    }
     #endregion
   }
 }

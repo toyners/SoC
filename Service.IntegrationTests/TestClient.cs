@@ -25,7 +25,7 @@ namespace Service.IntegrationTests
       throw new NotImplementedException();
     }
 
-    public void GameInitialization(GameInitializationData gameData)
+    public void InitializeGame(GameInitializationData gameData)
     {
       this.GameInitialized = true;
     }

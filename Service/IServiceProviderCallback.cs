@@ -16,6 +16,9 @@ namespace Jabberwocky.SoC.Service
     void ConfirmGameLeft();
 
     [OperationContract(IsOneWay = true)]
-    void GameInitialization(GameInitializationData gameData);
+    void InitializeGame(GameInitializationData gameData);
+
+    [OperationContract(IsOneWay = true)]
+    void PlaceTown();
   }
 }
