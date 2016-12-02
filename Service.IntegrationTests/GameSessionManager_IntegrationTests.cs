@@ -14,7 +14,7 @@ namespace Service.IntegrationTests
   {
     #region Methods
     [Test]
-    public void AddPlayer_AddPlayerToNonFullSession_PlayerAdded()
+    public void AddClient_AddPlayerToNonFullSession_PlayerAdded()
     {
       // Arrange
       var gameSessionManager = this.CreateGameSessionManager(new DiceRollerFactory());
@@ -32,7 +32,7 @@ namespace Service.IntegrationTests
     }
 
     [Test]
-    public void AddPlayer_AddEnoughPlayersToFillGame_AllPlayersHaveSameGameToken()
+    public void AddClient_AddEnoughPlayersToFillGame_AllPlayersHaveSameGameToken()
     {
       // Arrange
       var gameSessionManager = this.CreateGameSessionManager(new DiceRollerFactory(), 4);
@@ -59,7 +59,7 @@ namespace Service.IntegrationTests
     }
 
     [Test]
-    public void AddPlayer_AddEnoughPlayersToFillGame_AllPlayersAreInitialized()
+    public void AddClient_AddEnoughPlayersToFillGame_AllPlayersAreInitialized()
     {
       // Arrange
       var gameSessionManager = this.CreateGameSessionManager(new DiceRollerFactory(), 4);
@@ -86,10 +86,41 @@ namespace Service.IntegrationTests
     }
 
     [Test]
-    public void AddPlayer_AddEnoughPlayersToFillGame_FirstPlayerGetsToPlaceTown()
+    public void AddClient_AddEnoughPlayersToFillGame_FirstPlayerGetsToPlaceFirstTown()
+    {
+      var diceRolls = new List<UInt32> { 12, 8, 6, 4 };
+      var expectedResults = new Boolean[] { true, false, false, false };
+      GameIsFullSoPlayerGetsToPlaceFirstTown(diceRolls, expectedResults);
+    }
+
+    [Test]
+    public void AddClient_AddEnoughPlayersToFillGame_SecondPlayerGetsToPlaceFirstTown()
+    {
+      var diceRolls = new List<UInt32> { 8, 12, 6, 4 };
+      var expectedResults = new Boolean[] { false, true, false, false };
+      GameIsFullSoPlayerGetsToPlaceFirstTown(diceRolls, expectedResults);
+    }
+
+    [Test]
+    public void AddClient_AddEnoughPlayersToFillGame_ThirdPlayerGetsToPlaceFirstTown()
+    {
+      var diceRolls = new List<UInt32> { 8, 6, 12, 4 };
+      var expectedResults = new Boolean[] { false, false, true, false };
+      GameIsFullSoPlayerGetsToPlaceFirstTown(diceRolls, expectedResults);
+    }
+
+    [Test]
+    public void AddClient_AddEnoughPlayersToFillGame_LastPlayerGetsToPlaceFirstTown()
+    {
+      var diceRolls = new List<UInt32> { 8, 6, 4, 12 };
+      var expectedResults = new Boolean[] { false, false, false, true };
+      GameIsFullSoPlayerGetsToPlaceFirstTown(diceRolls, expectedResults);
+    }
+
+    private void GameIsFullSoPlayerGetsToPlaceFirstTown(List<UInt32> diceRolls, Boolean[] expectedResults)
     {
       // Arrange
-      var diceRollerFactory = this.CreateDiceRollerFactory(new List<UInt32> { 12, 8, 6, 4 });
+      var diceRollerFactory = this.CreateDiceRollerFactory(diceRolls);
       var gameSessionManager = this.CreateGameSessionManager(diceRollerFactory, 4);
 
       var client1 = new TestClient();
@@ -107,24 +138,10 @@ namespace Service.IntegrationTests
       gameSessionManager.StopMatching();
 
       // Assert
-      Assert.IsTrue(client1.TownPlaced);
-      Assert.IsFalse(client2.TownPlaced);
-      Assert.IsFalse(client3.TownPlaced);
-      Assert.IsFalse(client4.TownPlaced);
-    }
-
-    private void AddEnoughPlayersToFillGame_FirstPlayerGetsToPlaceTown(List<UInt32> diceRolls, Boolean[] expectedResults)
-    {
-      var client1 = new TestClient();
-      var client2 = new TestClient();
-      var client3 = new TestClient();
-      var client4 = new TestClient();
-
-      // Assert
-      Assert.IsTrue(client1.TownPlaced);
-      Assert.IsFalse(client2.TownPlaced);
-      Assert.IsFalse(client3.TownPlaced);
-      Assert.IsFalse(client4.TownPlaced);
+      Assert.AreEqual(client1.TownPlaced, expectedResults[0]);
+      Assert.AreEqual(client2.TownPlaced, expectedResults[1]);
+      Assert.AreEqual(client3.TownPlaced, expectedResults[2]);
+      Assert.AreEqual(client4.TownPlaced, expectedResults[3]);
     }
 
     private TestDiceRollerFactory CreateDiceRollerFactory(params List<UInt32>[] numbers)
