@@ -56,6 +56,11 @@ namespace Jabberwocky.SoC.Library
     {
       throw new NotImplementedException();
     }
+
+    public UInt32[] GetFirstTownPassOrder()
+    {
+      throw new NotImplementedException();
+    }
     #endregion
   }
 }

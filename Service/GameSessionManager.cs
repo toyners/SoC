@@ -205,7 +205,13 @@ namespace Jabberwocky.SoC.Service
             client.InitializeGame(gameData);
           }
 
-          this.Clients[0].PlaceTown();
+          //TODO: what for initialization confirmed replies from clients
+
+          var playerIndexes = this.Game.GetFirstTownPassOrder();
+          foreach (var playerIndex in playerIndexes)
+          {
+            this.Clients[playerIndex].PlaceTown();
+          }
 
         });
       }
