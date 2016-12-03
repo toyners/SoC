@@ -205,7 +205,7 @@ namespace Jabberwocky.SoC.Service
             client.InitializeGame(gameData);
           }
 
-          //TODO: what for initialization confirmed replies from clients
+          //TODO: wait for initialization confirmed replies from clients
 
           var playerIndexes = this.Game.GetFirstSetupPassOrder();
           foreach (var playerIndex in playerIndexes)

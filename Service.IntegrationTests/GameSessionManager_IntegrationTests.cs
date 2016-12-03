@@ -88,7 +88,7 @@ namespace Service.IntegrationTests
     [Test]
     public void AddClient_AddEnoughPlayersToFillGame_FirstPlayerGetsToPlaceFirstTown()
     {
-      var diceRolls = new List<UInt32> { 12, 8, 6, 4 };
+      var diceRolls = new List<UInt32> { 12u, 8u, 6u, 4u };
       var expectedResults = new Boolean[] { true, false, false, false };
       GameIsFullSoPlayerGetsToPlaceFirstTown(diceRolls, expectedResults);
     }
@@ -96,7 +96,7 @@ namespace Service.IntegrationTests
     [Test]
     public void AddClient_AddEnoughPlayersToFillGame_SecondPlayerGetsToPlaceFirstTown()
     {
-      var diceRolls = new List<UInt32> { 8, 12, 6, 4 };
+      var diceRolls = new List<UInt32> { 8u, 12u, 6u, 4u };
       var expectedResults = new Boolean[] { false, true, false, false };
       GameIsFullSoPlayerGetsToPlaceFirstTown(diceRolls, expectedResults);
     }
@@ -104,7 +104,7 @@ namespace Service.IntegrationTests
     [Test]
     public void AddClient_AddEnoughPlayersToFillGame_ThirdPlayerGetsToPlaceFirstTown()
     {
-      var diceRolls = new List<UInt32> { 8, 6, 12, 4 };
+      var diceRolls = new List<UInt32> { 8u, 6u, 12u, 4u };
       var expectedResults = new Boolean[] { false, false, true, false };
       GameIsFullSoPlayerGetsToPlaceFirstTown(diceRolls, expectedResults);
     }
@@ -112,7 +112,7 @@ namespace Service.IntegrationTests
     [Test]
     public void AddClient_AddEnoughPlayersToFillGame_LastPlayerGetsToPlaceFirstTown()
     {
-      var diceRolls = new List<UInt32> { 8, 6, 4, 12 };
+      var diceRolls = new List<UInt32> { 8u, 6u, 4u, 12u };
       var expectedResults = new Boolean[] { false, false, false, true };
       GameIsFullSoPlayerGetsToPlaceFirstTown(diceRolls, expectedResults);
     }
