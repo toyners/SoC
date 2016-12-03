@@ -57,7 +57,7 @@ namespace Jabberwocky.SoC.Library
       throw new NotImplementedException();
     }
 
-    public UInt32[] GetFirstTownPassOrder()
+    public UInt32[] GetFirstSetupPassOrder()
     {
       throw new NotImplementedException();
     }

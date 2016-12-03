@@ -207,7 +207,7 @@ namespace Jabberwocky.SoC.Service
 
           //TODO: what for initialization confirmed replies from clients
 
-          var playerIndexes = this.Game.GetFirstTownPassOrder();
+          var playerIndexes = this.Game.GetFirstSetupPassOrder();
           foreach (var playerIndex in playerIndexes)
           {
             this.Clients[playerIndex].PlaceTown();
