@@ -208,9 +208,17 @@ namespace Jabberwocky.SoC.Service
           //TODO: wait for initialization confirmed replies from clients
 
           var playerIndexes = this.Game.GetFirstSetupPassOrder();
+          var waitingForResponse = true;
           foreach (var playerIndex in playerIndexes)
           {
-            this.Clients[playerIndex].PlaceTown();
+            var client = this.Clients[playerIndex];
+            client.PlaceTown();
+
+            // Wait until response from client
+            while (waitingForResponse)
+            {
+              Thread.Sleep(50);
+            }
           }
 
         });
