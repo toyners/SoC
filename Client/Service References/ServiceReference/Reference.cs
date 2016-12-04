@@ -105,6 +105,12 @@ namespace Jabberwocky.SoC.Client.ServiceReference {
         
         [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IServiceProvider/TryLeaveGame")]
         System.Threading.Tasks.Task TryLeaveGameAsync(System.Guid gameToken);
+        
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IServiceProvider/ConfirmGameInitialized")]
+        void ConfirmGameInitialized(System.Guid gameToken);
+        
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IServiceProvider/ConfirmGameInitialized")]
+        System.Threading.Tasks.Task ConfirmGameInitializedAsync(System.Guid gameToken);
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
@@ -119,8 +125,11 @@ namespace Jabberwocky.SoC.Client.ServiceReference {
         [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IServiceProvider/ConfirmGameLeft")]
         void ConfirmGameLeft();
         
-        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IServiceProvider/GameInitialization")]
-        void GameInitialization(Jabberwocky.SoC.Client.ServiceReference.GameInitializationData gameData);
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IServiceProvider/InitializeGame")]
+        void InitializeGame(Jabberwocky.SoC.Client.ServiceReference.GameInitializationData gameData);
+        
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IServiceProvider/PlaceTown")]
+        void PlaceTown();
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
@@ -165,6 +174,14 @@ namespace Jabberwocky.SoC.Client.ServiceReference {
         
         public System.Threading.Tasks.Task TryLeaveGameAsync(System.Guid gameToken) {
             return base.Channel.TryLeaveGameAsync(gameToken);
+        }
+        
+        public void ConfirmGameInitialized(System.Guid gameToken) {
+            base.Channel.ConfirmGameInitialized(gameToken);
+        }
+        
+        public System.Threading.Tasks.Task ConfirmGameInitializedAsync(System.Guid gameToken) {
+            return base.Channel.ConfirmGameInitializedAsync(gameToken);
         }
     }
 }

@@ -14,17 +14,24 @@
       </xs:sequence>
     </xs:complexType>
   </xs:element>
+  <xs:element name="ConfirmGameInitialized">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q2="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="gameToken" type="q2:guid" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
   <xs:element name="StartTurn">
     <xs:complexType>
       <xs:sequence>
-        <xs:element xmlns:q2="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="token" type="q2:guid" />
+        <xs:element xmlns:q3="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="token" type="q3:guid" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
   <xs:element name="ConfirmGameJoined">
     <xs:complexType>
       <xs:sequence>
-        <xs:element xmlns:q3="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="gameToken" type="q3:guid" />
+        <xs:element xmlns:q4="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="gameToken" type="q4:guid" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
@@ -33,11 +40,16 @@
       <xs:sequence />
     </xs:complexType>
   </xs:element>
-  <xs:element name="GameInitialization">
+  <xs:element name="InitializeGame">
     <xs:complexType>
       <xs:sequence>
-        <xs:element xmlns:q4="http://schemas.datacontract.org/2004/07/Jabberwocky.SoC.Service" minOccurs="0" name="gameData" nillable="true" type="q4:GameInitializationData" />
+        <xs:element xmlns:q5="http://schemas.datacontract.org/2004/07/Jabberwocky.SoC.Service" minOccurs="0" name="gameData" nillable="true" type="q5:GameInitializationData" />
       </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="PlaceTown">
+    <xs:complexType>
+      <xs:sequence />
     </xs:complexType>
   </xs:element>
 </xs:schema>

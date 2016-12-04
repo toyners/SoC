@@ -42,6 +42,16 @@ namespace Jabberwocky.SoC.Client
     {
       this.turnToken = turnToken;
     }
+
+    public void InitializeGame(GameInitializationData gameData)
+    {
+      throw new NotImplementedException();
+    }
+
+    public void PlaceTown()
+    {
+      throw new NotImplementedException();
+    }
     #endregion
   }
 }

@@ -31,6 +31,11 @@ namespace Jabberwocky.SoC.Client
     #endregion
 
     #region Methods
+    public void ConfirmGameInitialization()
+    {
+      this.serviceProviderClient.ConfirmGameInitialized(this.GameToken);
+    }
+
     public void Connect()
     {
       this.serviceClient = new ServiceClient();
