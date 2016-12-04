@@ -225,6 +225,11 @@ namespace Jabberwocky.SoC.Service
       }
       #endregion
     }
+
+    private class LockableQueue
+    {
+      private static Object queueLock;
+    }
     #endregion
   }
 }
