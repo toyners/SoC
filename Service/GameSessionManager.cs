@@ -105,7 +105,7 @@ namespace Jabberwocky.SoC.Service
         var gotClient = this.waitingForGameQueue.TryDequeue(out client);
         if (!gotClient)
         {
-          // Couldn't get the client from the queue (probably because another thread got it
+          // Couldn't get the client from the queue (probably because another thread got it).
           continue;
         }
 
@@ -217,7 +217,7 @@ namespace Jabberwocky.SoC.Service
           var gameData = GameInitializationDataBuilder.Build(this.board);
           foreach (var client in this.Clients)
           {
-            client.InitializeGame(gameData);
+            client.InitializeGame(null);
           }
 
           //TODO: wait for initialization confirmed replies from clients

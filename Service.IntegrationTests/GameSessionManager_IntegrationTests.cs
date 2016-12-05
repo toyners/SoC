@@ -6,6 +6,7 @@ namespace Service.IntegrationTests
   using System.Diagnostics;
   using System.Threading;
   using Jabberwocky.SoC.Service;
+  using Jabberwocky.Toolkit.Object;
   using NSubstitute;
   using NUnit.Framework;
   using Shouldly;
@@ -63,22 +64,23 @@ namespace Service.IntegrationTests
       // Arrange
       var gameSessionManager = this.CreateGameSessionManager(new DiceRollerFactory(), 4);
 
-      var client1 = new TestClient();
+      var mockClient1 = Substitute.For<IServiceProviderCallback>();
       var client2 = new TestClient();
       var client3 = new TestClient();
       var client4 = new TestClient();
 
       // Act
-      gameSessionManager.AddClient(client1);
+      gameSessionManager.AddClient(mockClient1);
       gameSessionManager.AddClient(client2);
       gameSessionManager.AddClient(client3);
       gameSessionManager.AddClient(client4);
       Thread.Sleep(1000);
 
       gameSessionManager.StopMatching();
-
+      
       // Assert
-      Assert.IsTrue(client1.GameInitialized);
+      mockClient1.Received().InitializeGame(Arg.Do<GameInitializationData>(gameData => { gameData.VerifyThatObjectIsNotNull(); }));
+      //Assert.IsTrue(mockClient1.GameInitialized);
       Assert.IsTrue(client2.GameInitialized);
       Assert.IsTrue(client3.GameInitialized);
       Assert.IsTrue(client4.GameInitialized);
@@ -119,7 +121,10 @@ namespace Service.IntegrationTests
     private void GameIsFullSoPlayerGetsToPlaceFirstTown(List<UInt32> diceRolls, Boolean[] expectedResults)
     {
       // Arrange
-      var diceRollerFactory = this.CreateDiceRollerFactory(diceRolls);
+      var diceRoller = Substitute.For<IDiceRoller>();
+
+      var diceRollerFactory = Substitute.For<IDiceRollerFactory>();
+      //var diceRollerFactory = this.CreateDiceRollerFactory(diceRolls);
       var gameSessionManager = this.CreateGameSessionManager(diceRollerFactory, 4);
 
       var client1 = new TestClient();
