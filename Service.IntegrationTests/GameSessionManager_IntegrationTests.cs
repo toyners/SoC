@@ -20,12 +20,10 @@ namespace Service.IntegrationTests
       // Arrange
       var gameSessionManager = this.CreateGameSessionManager(new DiceRollerFactory());
       var mockClient = Substitute.For<IServiceProviderCallback>();
-      //var client = new TestClient();
 
       // Act
       gameSessionManager.AddClient(mockClient);
       Thread.Sleep(1000);
-
       gameSessionManager.StopMatching();
 
       // Assert
