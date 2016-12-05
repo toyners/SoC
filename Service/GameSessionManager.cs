@@ -94,6 +94,13 @@ namespace Jabberwocky.SoC.Service
         }
 
         IServiceProviderCallback client;
+        var gotClient = this.waitingForGameQueue.TryDequeue(out client);
+        if (!gotClient)
+        {
+          // Couldn't get the client from the queue (probably because another thread got it
+          continue;
+        }
+
         var matchMade = false;
         GameSession gameSession = null;
         foreach (var kv in this.gameSessions)
@@ -101,26 +108,18 @@ namespace Jabberwocky.SoC.Service
           gameSession = kv.Value;
           if (gameSession.NeedsClient)
           {
-            var gotClient = this.waitingForGameQueue.TryDequeue(out client);
-            if (gotClient)
-            {
-              gameSession.AddClient(client);
-              matchMade = true;
-              break;
-            }
+            gameSession.AddClient(client);
+            matchMade = true;
+            break;
           }
         }
 
         if (!matchMade)
         {
           // Create a new game and add the player
-          var gotClient = this.waitingForGameQueue.TryDequeue(out client);
-          if (gotClient)
-          {
-            gameSession = new GameSession(this.diceRollerFactory.Create(), this.maximumPlayerCount);
-            gameSession.AddClient(client);
-            this.gameSessions.Add(gameSession.GameToken, gameSession);
-          }
+          gameSession = new GameSession(this.diceRollerFactory.Create(), this.maximumPlayerCount);
+          gameSession.AddClient(client);
+          this.gameSessions.Add(gameSession.GameToken, gameSession);
         }
 
         if (!gameSession.NeedsClient)
