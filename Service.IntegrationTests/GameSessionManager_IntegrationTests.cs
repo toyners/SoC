@@ -65,25 +65,24 @@ namespace Service.IntegrationTests
       var gameSessionManager = this.CreateGameSessionManager(new DiceRollerFactory(), 4);
 
       var mockClient1 = Substitute.For<IServiceProviderCallback>();
-      var client2 = new TestClient();
-      var client3 = new TestClient();
-      var client4 = new TestClient();
+      var mockClient2 = Substitute.For<IServiceProviderCallback>();
+      var mockClient3 = Substitute.For<IServiceProviderCallback>();
+      var mockClient4 = Substitute.For<IServiceProviderCallback>();
 
       // Act
       gameSessionManager.AddClient(mockClient1);
-      gameSessionManager.AddClient(client2);
-      gameSessionManager.AddClient(client3);
-      gameSessionManager.AddClient(client4);
+      gameSessionManager.AddClient(mockClient2);
+      gameSessionManager.AddClient(mockClient3);
+      gameSessionManager.AddClient(mockClient4);
       Thread.Sleep(1000);
 
       gameSessionManager.StopMatching();
       
       // Assert
-      mockClient1.Received().InitializeGame(Arg.Do<GameInitializationData>(gameData => { gameData.VerifyThatObjectIsNotNull(); }));
-      //Assert.IsTrue(mockClient1.GameInitialized);
-      Assert.IsTrue(client2.GameInitialized);
-      Assert.IsTrue(client3.GameInitialized);
-      Assert.IsTrue(client4.GameInitialized);
+      mockClient1.Received().InitializeGame(Arg.Is<GameInitializationData>(gameData => gameData != null));
+      mockClient2.Received().InitializeGame(Arg.Is<GameInitializationData>(gameData => gameData != null));
+      mockClient3.Received().InitializeGame(Arg.Is<GameInitializationData>(gameData => gameData != null));
+      mockClient4.Received().InitializeGame(Arg.Is<GameInitializationData>(gameData => gameData != null));
     }
 
     [Test]
@@ -121,31 +120,34 @@ namespace Service.IntegrationTests
     private void GameIsFullSoPlayerGetsToPlaceFirstTown(List<UInt32> diceRolls, Boolean[] expectedResults)
     {
       // Arrange
+      var index = 0;
       var diceRoller = Substitute.For<IDiceRoller>();
+      diceRoller.RollTwoDice().Returns(x => { return diceRolls[index++]; });
 
       var diceRollerFactory = Substitute.For<IDiceRollerFactory>();
-      //var diceRollerFactory = this.CreateDiceRollerFactory(diceRolls);
+      diceRollerFactory.Create().Returns(diceRoller);
+        
       var gameSessionManager = this.CreateGameSessionManager(diceRollerFactory, 4);
 
-      var client1 = new TestClient();
-      var client2 = new TestClient();
-      var client3 = new TestClient();
-      var client4 = new TestClient();
+      var mockClient1 = Substitute.For<IServiceProviderCallback>();
+      var mockClient2 = Substitute.For<IServiceProviderCallback>();
+      var mockClient3 = Substitute.For<IServiceProviderCallback>();
+      var mockClient4 = Substitute.For<IServiceProviderCallback>();
 
       // Act
-      gameSessionManager.AddClient(client1);
-      gameSessionManager.AddClient(client2);
-      gameSessionManager.AddClient(client3);
-      gameSessionManager.AddClient(client4);
+      gameSessionManager.AddClient(mockClient1);
+      gameSessionManager.AddClient(mockClient2);
+      gameSessionManager.AddClient(mockClient3);
+      gameSessionManager.AddClient(mockClient4);
       Thread.Sleep(1000);
 
       gameSessionManager.StopMatching();
 
       // Assert
-      Assert.AreEqual(client1.TownPlaced, expectedResults[0]);
-      Assert.AreEqual(client2.TownPlaced, expectedResults[1]);
-      Assert.AreEqual(client3.TownPlaced, expectedResults[2]);
-      Assert.AreEqual(client4.TownPlaced, expectedResults[3]);
+      mockClient1.Received().PlaceTown();
+      /*mockClient2.Received().PlaceTown();
+      mockClient3.Received().PlaceTown();
+      mockClient4.Received().PlaceTown();*/
     }
 
     private TestDiceRollerFactory CreateDiceRollerFactory(params List<UInt32>[] numbers)

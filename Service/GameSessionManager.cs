@@ -217,7 +217,7 @@ namespace Jabberwocky.SoC.Service
           var gameData = GameInitializationDataBuilder.Build(this.board);
           foreach (var client in this.Clients)
           {
-            client.InitializeGame(null);
+            client.InitializeGame(gameData);
           }
 
           //TODO: wait for initialization confirmed replies from clients
