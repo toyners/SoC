@@ -2,6 +2,7 @@
 namespace Jabberwocky.SoC.Service
 {
   using System;
+  using System.Collections.Concurrent;
   using System.Collections.Generic;
   using System.Threading;
   using System.Threading.Tasks;
@@ -13,7 +14,7 @@ namespace Jabberwocky.SoC.Service
     private Boolean working;
     private List<IServiceProviderCallback> clients;
     private Dictionary<Guid, GameSession> gameSessions;
-    private Queue<IServiceProviderCallback> waitingForGame;
+    private ConcurrentQueue<IServiceProviderCallback> waitingForGameQueue;
     private Task matchingTask;
     private UInt32 maximumPlayerCount;
     private IDiceRollerFactory diceRollerFactory;
@@ -23,7 +24,7 @@ namespace Jabberwocky.SoC.Service
     public GameSessionManager(IDiceRollerFactory diceRollerFactory, UInt32 maximumPlayerCount = 1)
     {
       this.clients = new List<IServiceProviderCallback>();
-      this.waitingForGame = new Queue<IServiceProviderCallback>();
+      this.waitingForGameQueue = new ConcurrentQueue<IServiceProviderCallback>();
       this.gameSessions = new Dictionary<Guid, GameSession>();
       this.maximumPlayerCount = maximumPlayerCount;
       this.diceRollerFactory = diceRollerFactory;
@@ -48,7 +49,7 @@ namespace Jabberwocky.SoC.Service
     public void AddClient(IServiceProviderCallback client)
     {
       // TODO: Check for null reference
-      this.waitingForGame.Enqueue(client);
+      this.waitingForGameQueue.Enqueue(client);
     }
 
     public void RemoveClient(Guid gameToken, IServiceProviderCallback client)
@@ -87,7 +88,7 @@ namespace Jabberwocky.SoC.Service
       this.working = true;
       while (this.working)
       {
-        while (this.waitingForGame.Count == 0)
+        while (this.waitingForGameQueue.IsEmpty)
         {
           Thread.Sleep(500);
         }
@@ -100,20 +101,26 @@ namespace Jabberwocky.SoC.Service
           gameSession = kv.Value;
           if (gameSession.NeedsClient)
           {
-            client = this.waitingForGame.Dequeue();
-            gameSession.AddClient(client);
-            matchMade = true;
-            break;
+            var gotClient = this.waitingForGameQueue.TryDequeue(out client);
+            if (gotClient)
+            {
+              gameSession.AddClient(client);
+              matchMade = true;
+              break;
+            }
           }
         }
 
         if (!matchMade)
         {
           // Create a new game and add the player
-          client = this.waitingForGame.Dequeue();
-          gameSession = new GameSession(this.diceRollerFactory.Create(), this.maximumPlayerCount);
-          gameSession.AddClient(client);
-          this.gameSessions.Add(gameSession.GameToken, gameSession);
+          var gotClient = this.waitingForGameQueue.TryDequeue(out client);
+          if (gotClient)
+          {
+            gameSession = new GameSession(this.diceRollerFactory.Create(), this.maximumPlayerCount);
+            gameSession.AddClient(client);
+            this.gameSessions.Add(gameSession.GameToken, gameSession);
+          }
         }
 
         if (!gameSession.NeedsClient)
