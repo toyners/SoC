@@ -63,6 +63,17 @@ namespace Jabberwocky.SoC.Service
       gameSession.RemoveClient(client);
     }
 
+    public void ProcessMessage(Guid gameToken)
+    {
+      if (!this.gameSessions.ContainsKey(gameToken))
+      {
+        throw new NotImplementedException();
+      }
+
+      var gameSession = this.gameSessions[gameToken];
+      gameSession.ProcessMessage();
+    }
+
     public void StopMatching()
     {
       if (!this.CanStop)
@@ -155,6 +166,8 @@ namespace Jabberwocky.SoC.Service
       private Int32 clientCount;
 
       private Task gameTask;
+
+      private ConcurrentQueue<UInt32> messages;
       #endregion
 
       #region Construction
@@ -166,6 +179,7 @@ namespace Jabberwocky.SoC.Service
 
         this.board = new Board(BoardSizes.Standard);
         this.Game = new GameManager(this.board, diceRoller, playerCount, new DevelopmentCardPile());
+        this.messages = new ConcurrentQueue<UInt32>();
       }
       #endregion
 
@@ -207,6 +221,11 @@ namespace Jabberwocky.SoC.Service
           }
         }
 
+        throw new NotImplementedException();
+      }
+
+      public void ProcessMessage()
+      {
         throw new NotImplementedException();
       }
 
