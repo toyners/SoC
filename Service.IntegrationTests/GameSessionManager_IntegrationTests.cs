@@ -28,7 +28,7 @@ namespace Service.IntegrationTests
       gameSessionManager.StopMatching();
 
       // Assert
-      mockClient.Received().ConfirmGameJoined(Arg.Any<Guid>());
+      mockClient.Received().ConfirmGameJoined(Arg.Any<Guid>(), Arg.Any<Guid>());
     }
 
     [Test]
@@ -53,11 +53,12 @@ namespace Service.IntegrationTests
 
       // Assert
       Guid token = Guid.Empty;
-      mockClient1.ConfirmGameJoined(Arg.Is<Guid>(gameToken => gameToken != Guid.Empty));
-      mockClient1.ConfirmGameJoined(Arg.Do<Guid>(gameToken => token = gameToken));
-      mockClient2.ConfirmGameJoined(Arg.Is<Guid>(gameToken => gameToken == token));
-      mockClient3.ConfirmGameJoined(Arg.Is<Guid>(gameToken => gameToken == token));
-      mockClient4.ConfirmGameJoined(Arg.Is<Guid>(gameToken => gameToken == token));
+      mockClient1.ConfirmGameJoined(Arg.Is<Guid>(gameToken => gameToken != Guid.Empty), Arg.Is<Guid>(clientToken => clientToken != Guid.Empty));
+      mockClient1.ConfirmGameJoined(Arg.Do<Guid>(gameToken => token = gameToken), Arg.Is<Guid>(clientToken => clientToken != token));
+
+      mockClient2.ConfirmGameJoined(Arg.Is<Guid>(gameToken => gameToken == token), Arg.Is<Guid>(clientToken => clientToken != Guid.Empty && clientToken != token));
+      mockClient3.ConfirmGameJoined(Arg.Is<Guid>(gameToken => gameToken == token), Arg.Is<Guid>(clientToken => clientToken != Guid.Empty && clientToken != token));
+      mockClient4.ConfirmGameJoined(Arg.Is<Guid>(gameToken => gameToken == token), Arg.Is<Guid>(clientToken => clientToken != Guid.Empty && clientToken != token));
     }
 
     [Test]
@@ -139,6 +140,12 @@ namespace Service.IntegrationTests
       gameSessionManager.AddClient(mockClient4);
       Thread.Sleep(1000);
 
+      Guid token = Guid.Empty;
+      mockClient1.ConfirmGameJoined(Arg.Is<Guid>(gameToken => gameToken != Guid.Empty), Arg.Is<Guid>(clientToken => clientToken != Guid.Empty));
+      mockClient1.ConfirmGameJoined(Arg.Do<Guid>(gameToken => token = gameToken), Arg.Is<Guid>(clientToken => clientToken != token));
+
+      gameSessionManager.ProcessMessage(token, 0);
+      
       gameSessionManager.StopMatching();
 
       // Assert

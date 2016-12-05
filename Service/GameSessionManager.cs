@@ -63,7 +63,7 @@ namespace Jabberwocky.SoC.Service
       gameSession.RemoveClient(client);
     }
 
-    public void ProcessMessage(Guid gameToken)
+    public void ProcessMessage(Guid gameToken, UInt32 message)
     {
       if (!this.gameSessions.ContainsKey(gameToken))
       {
@@ -71,7 +71,7 @@ namespace Jabberwocky.SoC.Service
       }
 
       var gameSession = this.gameSessions[gameToken];
-      gameSession.ProcessMessage();
+      gameSession.ProcessMessage(message);
     }
 
     public void StopMatching()
@@ -157,7 +157,7 @@ namespace Jabberwocky.SoC.Service
       #region Fields
       public GameManager Game;
 
-      public IServiceProviderCallback[] Clients;
+      private ClientData[] Clients;
 
       public Guid GameToken;
 
@@ -175,7 +175,7 @@ namespace Jabberwocky.SoC.Service
       {
         this.GameToken = Guid.NewGuid();
 
-        this.Clients = new IServiceProviderCallback[playerCount];
+        this.Clients = new ClientData[playerCount];
 
         this.board = new Board(BoardSizes.Standard);
         this.Game = new GameManager(this.board, diceRoller, playerCount, new DevelopmentCardPile());
@@ -195,12 +195,13 @@ namespace Jabberwocky.SoC.Service
       {
         for (var i = 0; i < this.Clients.Length; i++)
         {
-          if (this.Clients[i] == null)
+          if (this.Clients[i] == ClientData.Empty)
           {
             var player = new Player(this.board);
-            this.Clients[i] = client;
+            this.Clients[i].ClientToken = Guid.NewGuid();
+            this.Clients[i].Client = client;
             this.clientCount++;
-            client.ConfirmGameJoined(this.GameToken);
+            client.ConfirmGameJoined(this.GameToken, this.Clients[i].ClientToken);
             return;
           }
         }
@@ -212,9 +213,9 @@ namespace Jabberwocky.SoC.Service
       {
         for (Int32 i = 0; i < this.Clients.Length; i++)
         {
-          if (this.Clients[i] == client)
+          if (this.Clients[i].Client == client)
           {
-            this.Clients[i] = null;
+            this.Clients[i] = ClientData.Empty;
             this.clientCount--;
             client.ConfirmGameLeft();
             return;
@@ -224,7 +225,7 @@ namespace Jabberwocky.SoC.Service
         throw new NotImplementedException();
       }
 
-      public void ProcessMessage()
+      public void ProcessMessage(UInt32 message)
       {
         throw new NotImplementedException();
       }
@@ -236,7 +237,7 @@ namespace Jabberwocky.SoC.Service
           var gameData = GameInitializationDataBuilder.Build(this.board);
           foreach (var client in this.Clients)
           {
-            client.InitializeGame(gameData);
+            client.Client.InitializeGame(gameData);
           }
 
           //TODO: wait for initialization confirmed replies from clients
@@ -246,7 +247,7 @@ namespace Jabberwocky.SoC.Service
           foreach (var playerIndex in playerIndexes)
           {
             var client = this.Clients[playerIndex];
-            client.PlaceTown();
+            client.Client.PlaceTown();
 
             // Wait until response from client
             while (waitingForResponse)
@@ -256,6 +257,21 @@ namespace Jabberwocky.SoC.Service
           }
 
         });
+      }
+      #endregion
+
+      #region Structures
+      private struct ClientData
+      {
+        public Guid ClientToken;
+
+        public IServiceProviderCallback Client;
+
+        public static ClientData Empty = new ClientData { ClientToken = Guid.Empty, Client = null };
+
+        public static Boolean operator ==(ClientData x, ClientData y) { throw new NotImplementedException(); }
+
+        public static Boolean operator !=(ClientData x, ClientData y) { throw new NotImplementedException(); }
       }
       #endregion
     }

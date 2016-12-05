@@ -4,7 +4,7 @@ namespace Service.IntegrationTests
   using System;
   using Jabberwocky.SoC.Service;
 
-  public class TestClient : IServiceProviderCallback
+  public class TestClient
   {
     public Guid GameToken;
 
