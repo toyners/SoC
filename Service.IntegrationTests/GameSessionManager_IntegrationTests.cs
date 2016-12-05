@@ -6,6 +6,7 @@ namespace Service.IntegrationTests
   using System.Diagnostics;
   using System.Threading;
   using Jabberwocky.SoC.Service;
+  using NSubstitute;
   using NUnit.Framework;
   using Shouldly;
 
@@ -18,17 +19,17 @@ namespace Service.IntegrationTests
     {
       // Arrange
       var gameSessionManager = this.CreateGameSessionManager(new DiceRollerFactory());
-
-      var client = new TestClient();
+      var mockClient = Substitute.For<IServiceProviderCallback>();
+      //var client = new TestClient();
 
       // Act
-      gameSessionManager.AddClient(client);
+      gameSessionManager.AddClient(mockClient);
       Thread.Sleep(1000);
 
       gameSessionManager.StopMatching();
 
       // Assert
-      client.GameJoined.ShouldBe(true);
+      mockClient.Received().ConfirmGameJoined(Arg.Any<Guid>());
     }
 
     [Test]
