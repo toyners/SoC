@@ -83,6 +83,14 @@ namespace Jabberwocky.SoC.Service
       this.matchingTask = Task.Factory.StartNew(() => { this.MatchPlayersWithGames(); });
     }
 
+    private GameSession AddToNewGameSession(IServiceProviderCallback client)
+    {
+      var gameSession = new GameSession(this.diceRollerFactory.Create(), this.maximumPlayerCount);
+      gameSession.AddClient(client);
+      this.gameSessions.Add(gameSession.GameToken, gameSession);
+      return gameSession;
+    }
+
     private void MatchPlayersWithGames()
     {
       this.working = true;
@@ -101,25 +109,10 @@ namespace Jabberwocky.SoC.Service
           continue;
         }
 
-        var matchMade = false;
         GameSession gameSession = null;
-        foreach (var kv in this.gameSessions)
+        if (!this.TryAddToCurrentGameSession(client, out gameSession))
         {
-          gameSession = kv.Value;
-          if (gameSession.NeedsClient)
-          {
-            gameSession.AddClient(client);
-            matchMade = true;
-            break;
-          }
-        }
-
-        if (!matchMade)
-        {
-          // Create a new game and add the player
-          gameSession = new GameSession(this.diceRollerFactory.Create(), this.maximumPlayerCount);
-          gameSession.AddClient(client);
-          this.gameSessions.Add(gameSession.GameToken, gameSession);
+          gameSession = this.AddToNewGameSession(client);
         }
 
         if (!gameSession.NeedsClient)
@@ -128,6 +121,22 @@ namespace Jabberwocky.SoC.Service
           gameSession.StartGame();
         }
       }
+    }
+
+    private Boolean TryAddToCurrentGameSession(IServiceProviderCallback client, out GameSession gameSession)
+    {
+      gameSession = null;
+      foreach (var kv in this.gameSessions)
+      {
+        gameSession = kv.Value;
+        if (gameSession.NeedsClient)
+        {
+          gameSession.AddClient(client);
+          return true;
+        }
+      }
+
+      return false;
     }
     #endregion
 
