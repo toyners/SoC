@@ -29,11 +29,6 @@ namespace Jabberwocky.SoC.Service
       this.maximumPlayerCount = maximumPlayerCount;
       this.diceRollerFactory = diceRollerFactory;
     }
-
-    public void ConfirmGameInitialized(Guid gameToken, IServiceProviderCallback client)
-    {
-      throw new NotImplementedException();
-    }
     #endregion
 
     #region Properties
@@ -57,11 +52,22 @@ namespace Jabberwocky.SoC.Service
       this.waitingForGameQueue.Enqueue(client);
     }
 
+    public void ConfirmGameInitialized(Guid gameToken, IServiceProviderCallback client)
+    {
+      if (!this.gameSessions.ContainsKey(gameToken))
+      {
+        throw new NotImplementedException(); //TODO: Change for Meaningful exception
+      }
+
+      var gameSession = this.gameSessions[gameToken];
+      gameSession.ConfirmGameInitialized(client);
+    }
+
     public void RemoveClient(Guid gameToken, IServiceProviderCallback client)
     {
       if (!this.gameSessions.ContainsKey(gameToken))
       {
-        throw new NotImplementedException();
+        throw new NotImplementedException(); //TODO: Change for Meaningful exception
       }
 
       var gameSession = this.gameSessions[gameToken];
@@ -196,6 +202,11 @@ namespace Jabberwocky.SoC.Service
       #endregion
 
       #region Methods
+      public void ConfirmGameInitialized(IServiceProviderCallback client)
+      {
+        throw new NotImplementedException();
+      }
+
       public void AddClient(IServiceProviderCallback client)
       {
         for (var i = 0; i < this.Clients.Length; i++)
