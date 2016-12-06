@@ -204,6 +204,16 @@ namespace Jabberwocky.SoC.Service
       #region Methods
       public void ConfirmGameInitialized(IServiceProviderCallback client)
       {
+        for (UInt32 index = 0; index < this.clientCount; index++)
+        {
+          if (this.clients[index] == client)
+          {
+            this.messages.Enqueue(index + 1);
+            return;
+          }
+        }
+
+        //TODO: Remove or make meaningful
         throw new NotImplementedException();
       }
 
@@ -221,6 +231,7 @@ namespace Jabberwocky.SoC.Service
           }
         }
 
+        //TODO: Remove or make meaningful
         throw new NotImplementedException();
       }
 
@@ -237,6 +248,7 @@ namespace Jabberwocky.SoC.Service
           }
         }
 
+        //TODO: Remove or make meaningful
         throw new NotImplementedException();
       }
 
@@ -255,7 +267,18 @@ namespace Jabberwocky.SoC.Service
             client.InitializeGame(gameData);
           }
 
-          //TODO: wait for initialization confirmed replies from clients
+          var confirmationCount = 0;
+          UInt32 clientIndex = 0;
+          while (confirmationCount < this.clientCount)
+          {
+            if (this.messages.TryDequeue(out clientIndex))
+            {
+              confirmationCount++;
+              continue;
+            }
+
+            Thread.Sleep(50);
+          }
 
           var playerIndexes = this.Game.GetFirstSetupPassOrder();
           var waitingForResponse = true;

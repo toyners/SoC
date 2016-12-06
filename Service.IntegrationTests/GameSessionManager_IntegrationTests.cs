@@ -140,11 +140,11 @@ namespace Service.IntegrationTests
       gameSessionManager.AddClient(mockClient4);
       Thread.Sleep(1000);
 
-      Guid token = Guid.Empty;
-      mockClient1.ConfirmGameJoined(Arg.Is<Guid>(gameToken => gameToken != Guid.Empty));
-      mockClient1.ConfirmGameJoined(Arg.Do<Guid>(gameToken => token = gameToken));
+      Guid gameToken = Guid.Empty;
+      mockClient1.ConfirmGameJoined(Arg.Is<Guid>(token => token != Guid.Empty));
+      mockClient1.ConfirmGameJoined(Arg.Do<Guid>(token => gameToken = token));
 
-      gameSessionManager.ProcessMessage(token, 0);
+      gameSessionManager.ConfirmGameInitialized(gameToken, mockClient1);
       
       gameSessionManager.StopMatching();
 
