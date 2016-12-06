@@ -29,6 +29,11 @@ namespace Jabberwocky.SoC.Service
       this.maximumPlayerCount = maximumPlayerCount;
       this.diceRollerFactory = diceRollerFactory;
     }
+
+    public void ConfirmGameInitialized(Guid gameToken, IServiceProviderCallback client)
+    {
+      throw new NotImplementedException();
+    }
     #endregion
 
     #region Properties

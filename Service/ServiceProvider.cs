@@ -26,6 +26,8 @@ namespace Jabberwocky.SoC.Service
     #region Methods
     public void ConfirmGameInitialized(Guid gameToken)
     {
+      var client = OperationContext.Current.GetCallbackChannel<IServiceProviderCallback>();
+      this.gameSessionManager.ConfirmGameInitialized(gameToken, client);
       throw new NotImplementedException();
     }
 

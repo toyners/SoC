@@ -24,7 +24,7 @@ namespace Jabberwocky.SoC.Service
     /// <summary>
     /// Confirm to the server that the client has completed game initialization.
     /// </summary>
-    /// <param name="gameToken"></param>
+    /// <param name="gameToken">The game identifier.</param>
     [OperationContract(IsOneWay = true)]
     void ConfirmGameInitialized(Guid gameToken);
 
