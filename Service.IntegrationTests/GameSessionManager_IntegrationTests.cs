@@ -28,7 +28,7 @@ namespace Service.IntegrationTests
       gameSessionManager.StopMatching();
 
       // Assert
-      mockClient.Received().ConfirmGameJoined(Arg.Any<Guid>(), Arg.Any<Guid>());
+      mockClient.Received().ConfirmGameJoined(Arg.Any<Guid>());
     }
 
     [Test]
@@ -53,12 +53,12 @@ namespace Service.IntegrationTests
 
       // Assert
       Guid token = Guid.Empty;
-      mockClient1.ConfirmGameJoined(Arg.Is<Guid>(gameToken => gameToken != Guid.Empty), Arg.Is<Guid>(clientToken => clientToken != Guid.Empty));
-      mockClient1.ConfirmGameJoined(Arg.Do<Guid>(gameToken => token = gameToken), Arg.Is<Guid>(clientToken => clientToken != token));
+      mockClient1.ConfirmGameJoined(Arg.Is<Guid>(gameToken => gameToken != Guid.Empty));
+      mockClient1.ConfirmGameJoined(Arg.Do<Guid>(gameToken => token = gameToken));
 
-      mockClient2.ConfirmGameJoined(Arg.Is<Guid>(gameToken => gameToken == token), Arg.Is<Guid>(clientToken => clientToken != Guid.Empty && clientToken != token));
-      mockClient3.ConfirmGameJoined(Arg.Is<Guid>(gameToken => gameToken == token), Arg.Is<Guid>(clientToken => clientToken != Guid.Empty && clientToken != token));
-      mockClient4.ConfirmGameJoined(Arg.Is<Guid>(gameToken => gameToken == token), Arg.Is<Guid>(clientToken => clientToken != Guid.Empty && clientToken != token));
+      mockClient2.ConfirmGameJoined(Arg.Is<Guid>(gameToken => gameToken == token));
+      mockClient3.ConfirmGameJoined(Arg.Is<Guid>(gameToken => gameToken == token));
+      mockClient4.ConfirmGameJoined(Arg.Is<Guid>(gameToken => gameToken == token));
     }
 
     [Test]
@@ -141,8 +141,8 @@ namespace Service.IntegrationTests
       Thread.Sleep(1000);
 
       Guid token = Guid.Empty;
-      mockClient1.ConfirmGameJoined(Arg.Is<Guid>(gameToken => gameToken != Guid.Empty), Arg.Is<Guid>(clientToken => clientToken != Guid.Empty));
-      mockClient1.ConfirmGameJoined(Arg.Do<Guid>(gameToken => token = gameToken), Arg.Is<Guid>(clientToken => clientToken != token));
+      mockClient1.ConfirmGameJoined(Arg.Is<Guid>(gameToken => gameToken != Guid.Empty));
+      mockClient1.ConfirmGameJoined(Arg.Do<Guid>(gameToken => token = gameToken));
 
       gameSessionManager.ProcessMessage(token, 0);
       
