@@ -6,7 +6,6 @@ namespace Service.IntegrationTests
   using System.Diagnostics;
   using System.Threading;
   using Jabberwocky.SoC.Service;
-  using Jabberwocky.Toolkit.Object;
   using NSubstitute;
   using NUnit.Framework;
   using Shouldly;
@@ -20,7 +19,8 @@ namespace Service.IntegrationTests
     {
       // Arrange
       var gameSessionManager = this.CreateGameSessionManager(new DiceRollerFactory());
-      var mockClient = Substitute.For<IServiceProviderCallback>();
+      //var mockClient = Substitute.For<IServiceProviderCallback>();
+      var mockClient = new MockClient();
 
       // Act
       gameSessionManager.AddClient(mockClient);
@@ -28,19 +28,20 @@ namespace Service.IntegrationTests
       gameSessionManager.StopMatching();
 
       // Assert
-      mockClient.Received().ConfirmGameJoined(Arg.Any<Guid>());
+      mockClient.GameJoined.ShouldBeTrue();
     }
 
     [Test]
     public void AddClient_AddEnoughPlayersToFillGame_AllPlayersHaveSameGameToken()
     {
       // Arrange
+      Guid token = Guid.Empty;
       var gameSessionManager = this.CreateGameSessionManager(new DiceRollerFactory(), 4);
 
-      var mockClient1 = Substitute.For<IServiceProviderCallback>();
-      var mockClient2 = Substitute.For<IServiceProviderCallback>();
-      var mockClient3 = Substitute.For<IServiceProviderCallback>();
-      var mockClient4 = Substitute.For<IServiceProviderCallback>();
+      var mockClient1 = new MockClient();
+      var mockClient2 = new MockClient();
+      var mockClient3 = new MockClient();
+      var mockClient4 = new MockClient();
 
       // Act
       gameSessionManager.AddClient(mockClient1);
@@ -52,13 +53,10 @@ namespace Service.IntegrationTests
       gameSessionManager.StopMatching();
 
       // Assert
-      Guid token = Guid.Empty;
-      mockClient1.ConfirmGameJoined(Arg.Is<Guid>(gameToken => gameToken != Guid.Empty));
-      mockClient1.ConfirmGameJoined(Arg.Do<Guid>(gameToken => token = gameToken));
-
-      mockClient2.ConfirmGameJoined(Arg.Is<Guid>(gameToken => gameToken == token));
-      mockClient3.ConfirmGameJoined(Arg.Is<Guid>(gameToken => gameToken == token));
-      mockClient4.ConfirmGameJoined(Arg.Is<Guid>(gameToken => gameToken == token));
+      mockClient1.GameToken.ShouldNotBe(Guid.Empty);
+      (mockClient1.GameToken == mockClient2.GameToken &&
+       mockClient2.GameToken == mockClient3.GameToken &&
+       mockClient3.GameToken == mockClient4.GameToken).ShouldBeTrue();
     }
 
     [Test]
@@ -67,10 +65,10 @@ namespace Service.IntegrationTests
       // Arrange
       var gameSessionManager = this.CreateGameSessionManager(new DiceRollerFactory(), 4);
 
-      var mockClient1 = Substitute.For<IServiceProviderCallback>();
-      var mockClient2 = Substitute.For<IServiceProviderCallback>();
-      var mockClient3 = Substitute.For<IServiceProviderCallback>();
-      var mockClient4 = Substitute.For<IServiceProviderCallback>();
+      var mockClient1 = new MockClient();
+      var mockClient2 = new MockClient();
+      var mockClient3 = new MockClient();
+      var mockClient4 = new MockClient();
 
       // Act
       gameSessionManager.AddClient(mockClient1);
@@ -80,45 +78,50 @@ namespace Service.IntegrationTests
       Thread.Sleep(1000);
 
       gameSessionManager.StopMatching();
-      
+
       // Assert
-      mockClient1.Received().InitializeGame(Arg.Is<GameInitializationData>(gameData => gameData != null));
-      mockClient2.Received().InitializeGame(Arg.Is<GameInitializationData>(gameData => gameData != null));
-      mockClient3.Received().InitializeGame(Arg.Is<GameInitializationData>(gameData => gameData != null));
-      mockClient4.Received().InitializeGame(Arg.Is<GameInitializationData>(gameData => gameData != null));
+      mockClient1.GameInitialized.ShouldBeTrue();
+      mockClient2.GameInitialized.ShouldBeTrue();
+      mockClient3.GameInitialized.ShouldBeTrue();
+      mockClient4.GameInitialized.ShouldBeTrue();
     }
 
     [Test]
     public void AddClient_AddEnoughPlayersToFillGame_FirstPlayerGetsToPlaceFirstTown()
     {
       var diceRolls = new List<UInt32> { 12u, 8u, 6u, 4u };
-      GameIsFullSoPlayerGetsToPlaceFirstTown(diceRolls);
+      Boolean[] expectedResults = { true, false, false, false };
+      GameIsFullSoPlayerGetsToPlaceFirstTown(diceRolls, expectedResults);
     }
 
     [Test]
     public void AddClient_AddEnoughPlayersToFillGame_SecondPlayerGetsToPlaceFirstTown()
     {
       var diceRolls = new List<UInt32> { 8u, 12u, 6u, 4u };
-      GameIsFullSoPlayerGetsToPlaceFirstTown(diceRolls);
+      Boolean[] expectedResults = { false, true, false, false };
+      GameIsFullSoPlayerGetsToPlaceFirstTown(diceRolls, expectedResults);
     }
 
     [Test]
     public void AddClient_AddEnoughPlayersToFillGame_ThirdPlayerGetsToPlaceFirstTown()
     {
       var diceRolls = new List<UInt32> { 8u, 6u, 12u, 4u };
-      GameIsFullSoPlayerGetsToPlaceFirstTown(diceRolls);
+      Boolean[] expectedResults = { false, false, true, false };
+      GameIsFullSoPlayerGetsToPlaceFirstTown(diceRolls, expectedResults);
     }
 
     [Test]
     public void AddClient_AddEnoughPlayersToFillGame_LastPlayerGetsToPlaceFirstTown()
     {
       var diceRolls = new List<UInt32> { 8u, 6u, 4u, 12u };
-      GameIsFullSoPlayerGetsToPlaceFirstTown(diceRolls);
+      Boolean[] expectedResults = { false, false, false, true };
+      GameIsFullSoPlayerGetsToPlaceFirstTown(diceRolls, expectedResults);
     }
 
-    private void GameIsFullSoPlayerGetsToPlaceFirstTown(List<UInt32> diceRolls)
+    private void GameIsFullSoPlayerGetsToPlaceFirstTown(List<UInt32> diceRolls, Boolean[] expectedResults)
     {
       // Arrange
+      Guid gameToken = Guid.Empty;
       var index = 0;
       var diceRoller = Substitute.For<IDiceRoller>();
       diceRoller.RollTwoDice().Returns(x => { return diceRolls[index++]; });
@@ -128,10 +131,10 @@ namespace Service.IntegrationTests
         
       var gameSessionManager = this.CreateGameSessionManager(diceRollerFactory, 4);
 
-      var mockClient1 = Substitute.For<IServiceProviderCallback>();
-      var mockClient2 = Substitute.For<IServiceProviderCallback>();
-      var mockClient3 = Substitute.For<IServiceProviderCallback>();
-      var mockClient4 = Substitute.For<IServiceProviderCallback>();
+      var mockClient1 = new MockClient();
+      var mockClient2 = new MockClient();
+      var mockClient3 = new MockClient();
+      var mockClient4 = new MockClient();
 
       // Act
       gameSessionManager.AddClient(mockClient1);
@@ -140,30 +143,19 @@ namespace Service.IntegrationTests
       gameSessionManager.AddClient(mockClient4);
       Thread.Sleep(1000);
 
-      Guid gameToken = Guid.Empty;
-      mockClient1.ConfirmGameJoined(Arg.Is<Guid>(token => token != Guid.Empty));
-      mockClient1.ConfirmGameJoined(Arg.Do<Guid>(token => gameToken = token));
-
-      gameSessionManager.ConfirmGameInitialized(gameToken, mockClient1);
-      
       gameSessionManager.StopMatching();
 
+      gameSessionManager.ConfirmGameInitialized(mockClient1.GameToken, mockClient1);
+      gameSessionManager.ConfirmGameInitialized(mockClient1.GameToken, mockClient2);
+      gameSessionManager.ConfirmGameInitialized(mockClient1.GameToken, mockClient3);
+      gameSessionManager.ConfirmGameInitialized(mockClient1.GameToken, mockClient4);
+      Thread.Sleep(1000);
+
       // Assert
-      mockClient1.Received().PlaceTown();
-      mockClient2.Received().PlaceTown();
-      mockClient3.Received().PlaceTown();
-      mockClient4.Received().PlaceTown();
-    }
-
-    private TestDiceRollerFactory CreateDiceRollerFactory(params List<UInt32>[] numbers)
-    {
-      var diceRollers = new List<TestDiceRoller>();
-      foreach (var numberSet in numbers)
-      {
-        diceRollers.Add(new TestDiceRoller(numberSet));
-      }
-
-      return new TestDiceRollerFactory(diceRollers);
+      (mockClient1.TownPlaced == expectedResults[0]).ShouldBeTrue();
+      (mockClient2.TownPlaced == expectedResults[1]).ShouldBeTrue();
+      (mockClient3.TownPlaced == expectedResults[2]).ShouldBeTrue();
+      (mockClient4.TownPlaced == expectedResults[3]).ShouldBeTrue();
     }
 
     private GameSessionManager CreateGameSessionManager(IDiceRollerFactory diceRollerFactory, UInt32 maximumPlayerCount = 1)
@@ -186,46 +178,6 @@ namespace Service.IntegrationTests
       }
       
       return gameSessionManager;
-    }
-
-    public class TestDiceRollerFactory : IDiceRollerFactory
-    {
-      private Queue<TestDiceRoller> diceRollers;
-
-      public TestDiceRollerFactory(List<TestDiceRoller> diceRollers)
-      {
-        this.diceRollers = new Queue<TestDiceRoller>(diceRollers);
-      }
-
-      public IDiceRoller Create()
-      {
-        if (this.diceRollers.Count == 0)
-        {
-          throw new Exception("No more dice rollers in dice roller factory.");
-        }
-
-        return this.diceRollers.Dequeue();
-      }
-    }
-
-    public class TestDiceRoller : IDiceRoller
-    {
-      private Queue<UInt32> numbers;
-
-      public TestDiceRoller(List<UInt32> numbers)
-      {
-        this.numbers = new Queue<UInt32>(numbers);
-      } 
-
-      public UInt32 RollTwoDice()
-      {
-        if (this.numbers.Count == 0)
-        {
-          throw new Exception("No more numbers in dice roller.");
-        }
-
-        return this.numbers.Dequeue();
-      }
     }
     #endregion 
   }

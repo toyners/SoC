@@ -59,7 +59,7 @@
   <ItemGroup>
     <Compile Include="GameSessionManager_IntegrationTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="TestClient.cs" />
+    <Compile Include="MockClient.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

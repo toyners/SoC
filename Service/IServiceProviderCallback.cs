@@ -10,7 +10,7 @@ namespace Jabberwocky.SoC.Service
     void StartTurn(Guid token);
 
     /// <summary>
-    /// Confirmt that the client has joined a game.
+    /// Confirm that the client has joined a game.
     /// </summary>
     /// <param name="gameToken">The game identifier.</param>
     [OperationContract(IsOneWay = true)]

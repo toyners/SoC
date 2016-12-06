@@ -288,10 +288,10 @@ namespace Jabberwocky.SoC.Service
             client.PlaceTown();
 
             // Wait until response from client
-            while (waitingForResponse)
+            /*while (waitingForResponse)
             {
               Thread.Sleep(50);
-            }
+            }*/
           }
 
         });
