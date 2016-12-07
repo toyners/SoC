@@ -122,6 +122,12 @@ namespace Service.IntegrationTests
       GameIsFullSoPlayerGetsToPlaceFirstTown(diceRolls, expectedResults);
     }
 
+    [Test]
+    public void AddClient_AddEnoughPlayersToFillGame_AllPlayersGetToPlaceFirstTown()
+    {
+
+    }
+
     private void GameIsFullSoPlayerGetsToPlaceFirstTown(List<UInt32> diceRolls, Boolean[] expectedResults)
     {
       // Arrange
