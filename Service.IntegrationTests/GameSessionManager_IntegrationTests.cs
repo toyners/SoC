@@ -19,7 +19,6 @@ namespace Service.IntegrationTests
     {
       // Arrange
       var gameSessionManager = this.CreateGameSessionManager(new DiceRollerFactory());
-      //var mockClient = Substitute.For<IServiceProviderCallback>();
       var mockClient = new MockClient();
 
       // Act
