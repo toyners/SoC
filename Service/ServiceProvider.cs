@@ -19,7 +19,7 @@ namespace Jabberwocky.SoC.Service
     public ServiceProvider()
     {
       this.gameSessionManager = new GameSessionManager(new DiceRollerFactory());
-      this.gameSessionManager.StartMatching();
+      this.gameSessionManager.Start();
     }
     #endregion
 

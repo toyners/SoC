@@ -24,7 +24,12 @@ namespace Service.IntegrationTests
       // Act
       gameSessionManager.AddClient(mockClient);
       Thread.Sleep(1000);
-      gameSessionManager.StopMatching();
+      gameSessionManager.Stop();
+
+      while (gameSessionManager.State != GameSessionManager.States.Stopped)
+      {
+        Thread.Sleep(500);
+      }
 
       // Assert
       mockClient.GameJoined.ShouldBeTrue();
@@ -49,7 +54,7 @@ namespace Service.IntegrationTests
       gameSessionManager.AddClient(mockClient4);
       Thread.Sleep(1000);
 
-      gameSessionManager.StopMatching();
+      gameSessionManager.Stop();
 
       // Assert
       mockClient1.GameToken.ShouldNotBe(Guid.Empty);
@@ -76,7 +81,7 @@ namespace Service.IntegrationTests
       gameSessionManager.AddClient(mockClient4);
       Thread.Sleep(1000);
 
-      gameSessionManager.StopMatching();
+      gameSessionManager.Stop();
 
       // Assert
       mockClient1.GameInitialized.ShouldBeTrue();
@@ -142,13 +147,18 @@ namespace Service.IntegrationTests
       gameSessionManager.AddClient(mockClient4);
       Thread.Sleep(1000);
 
-      gameSessionManager.StopMatching();
-
       gameSessionManager.ConfirmGameInitialized(mockClient1.GameToken, mockClient1);
       gameSessionManager.ConfirmGameInitialized(mockClient1.GameToken, mockClient2);
       gameSessionManager.ConfirmGameInitialized(mockClient1.GameToken, mockClient3);
       gameSessionManager.ConfirmGameInitialized(mockClient1.GameToken, mockClient4);
-      Thread.Sleep(1000);
+      Thread.Sleep(10000);
+
+      gameSessionManager.Stop();
+
+      while (gameSessionManager.State != GameSessionManager.States.Stopped)
+      {
+        Thread.Sleep(50);
+      }
 
       // Assert
       (mockClient1.TownPlaced == expectedResults[0]).ShouldBeTrue();
@@ -160,18 +170,21 @@ namespace Service.IntegrationTests
     private GameSessionManager CreateGameSessionManager(IDiceRollerFactory diceRollerFactory, UInt32 maximumPlayerCount = 1)
     {
       var gameSessionManager = new GameSessionManager(diceRollerFactory, maximumPlayerCount);
-      gameSessionManager.StartMatching();
+      gameSessionManager.Start();
 
       var stopWatch = new Stopwatch();
       stopWatch.Start();
 
-      while (!gameSessionManager.IsProcessing && stopWatch.ElapsedMilliseconds < 5000)
+      // Wait until the game session manager is started before continuing. Set a limit of 5 seconds for this to happen.
+      while (gameSessionManager.State != GameSessionManager.States.Running && stopWatch.ElapsedMilliseconds < 5000)
       {
-        Thread.Sleep(500);
+        Thread.Sleep(50);
       }
 
       stopWatch.Stop();
-      if (!gameSessionManager.IsProcessing)
+
+      // Still not started.
+      if (gameSessionManager.State != GameSessionManager.States.Running)
       {
         throw new Exception("GameSessionManager has not started");
       }

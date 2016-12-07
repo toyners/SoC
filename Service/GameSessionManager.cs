@@ -10,14 +10,21 @@ namespace Jabberwocky.SoC.Service
 
   public class GameSessionManager
   {
+    public enum States
+    {
+      Stopped,
+      Stopping,
+      Running
+    }
+
     #region Fields
-    private Boolean working;
     private List<IServiceProviderCallback> clients;
     private Dictionary<Guid, GameSession> gameSessions;
     private ConcurrentQueue<IServiceProviderCallback> waitingForGameQueue;
     private Task matchingTask;
     private UInt32 maximumPlayerCount;
     private IDiceRollerFactory diceRollerFactory;
+    private CancellationTokenSource cancellationTokenSource;
     #endregion
 
     #region Construction
@@ -28,21 +35,13 @@ namespace Jabberwocky.SoC.Service
       this.gameSessions = new Dictionary<Guid, GameSession>();
       this.maximumPlayerCount = maximumPlayerCount;
       this.diceRollerFactory = diceRollerFactory;
+      this.cancellationTokenSource = new CancellationTokenSource();
+      this.State = States.Stopped;
     }
     #endregion
 
     #region Properties
-    public Boolean CanStop
-    {
-      get { return this.working; /* TODO: Check task and task status */ }
-    }
-
-    public Boolean CanStart
-    {
-      get { return !this.working; /* TODO: Check task and task status */ }
-    }
-
-    public Boolean IsProcessing { get { return this.working; } }
+    public States State { get; private set; }
     #endregion
 
     #region Methods
@@ -85,63 +84,85 @@ namespace Jabberwocky.SoC.Service
       gameSession.ProcessMessage(message);
     }
 
-    public void StopMatching()
+    public void Stop()
     {
-      if (!this.CanStop)
+      if (this.State != States.Running)
       {
         return;
       }
 
-      this.working = false;
+      this.cancellationTokenSource.Cancel();
     }
 
-    public void StartMatching()
+    public void Start()
     {
-      if (!this.CanStart)
+      if (this.State != States.Stopped)
       {
         return;
       }
 
-      this.matchingTask = Task.Factory.StartNew(() => { this.MatchPlayersWithGames(); });
+      var cancellationToken = this.cancellationTokenSource.Token;
+
+      this.matchingTask = Task.Factory.StartNew(() => { this.MatchPlayersWithGames(cancellationToken); });
     }
 
-    private GameSession AddToNewGameSession(IServiceProviderCallback client)
+    private GameSession AddToNewGameSession(IServiceProviderCallback client, CancellationToken cancellationToken)
     {
-      var gameSession = new GameSession(this.diceRollerFactory.Create(), this.maximumPlayerCount);
+      var gameSession = new GameSession(this.diceRollerFactory.Create(), this.maximumPlayerCount, cancellationToken);
       gameSession.AddClient(client);
       this.gameSessions.Add(gameSession.GameToken, gameSession);
       return gameSession;
     }
 
-    private void MatchPlayersWithGames()
+    private void MatchPlayersWithGames(CancellationToken cancellationToken)
     {
-      this.working = true;
-      while (this.working)
+      try
       {
-        while (this.waitingForGameQueue.IsEmpty)
+        this.State = States.Running;
+        while (true)
         {
-          Thread.Sleep(500);
-        }
+          while (this.waitingForGameQueue.IsEmpty)
+          {
+            cancellationToken.ThrowIfCancellationRequested();
+            Thread.Sleep(500);
+          }
 
-        IServiceProviderCallback client;
-        var gotClient = this.waitingForGameQueue.TryDequeue(out client);
-        if (!gotClient)
-        {
-          // Couldn't get the client from the queue (probably because another thread got it).
-          continue;
-        }
+          IServiceProviderCallback client;
+          var gotClient = this.waitingForGameQueue.TryDequeue(out client);
+          if (!gotClient)
+          {
+            // Couldn't get the client from the queue (probably because another thread got it).
+            continue;
+          }
 
-        GameSession gameSession = null;
-        if (!this.TryAddToCurrentGameSession(client, out gameSession))
-        {
-          gameSession = this.AddToNewGameSession(client);
-        }
+          GameSession gameSession = null;
+          if (!this.TryAddToCurrentGameSession(client, out gameSession))
+          {
+            gameSession = this.AddToNewGameSession(client, cancellationToken);
+          }
 
-        if (!gameSession.NeedsClient)
-        {
-          // Game is full so start it
-          gameSession.StartGame();
+          if (!gameSession.NeedsClient)
+          {
+            // Game is full so start it
+            gameSession.StartGame();
+          }
         }
+      }
+      catch (OperationCanceledException)
+      {
+        // Shutting down - ignore exception
+        this.State = States.Stopping;
+        foreach (var gameSession in this.gameSessions.Values)
+        {
+          while (gameSession.State != States.Stopped)
+          {
+            Thread.Sleep(50);
+          }
+        }
+      }
+      finally
+      {
+        this.State = States.Stopped;
       }
     }
 
@@ -168,21 +189,18 @@ namespace Jabberwocky.SoC.Service
       #region Fields
       public GameManager Game;
 
-      private IServiceProviderCallback[] clients;
-
       public Guid GameToken;
 
       private Board board;
-
+      private CancellationToken cancellationToken;
       private Int32 clientCount;
-
+      private IServiceProviderCallback[] clients;
       private Task gameTask;
-
       private ConcurrentQueue<UInt32> messages;
       #endregion
 
       #region Construction
-      public GameSession(IDiceRoller diceRoller, UInt32 playerCount)
+      public GameSession(IDiceRoller diceRoller, UInt32 playerCount, CancellationToken cancellationToken)
       {
         this.GameToken = Guid.NewGuid();
 
@@ -191,6 +209,7 @@ namespace Jabberwocky.SoC.Service
         this.board = new Board(BoardSizes.Standard);
         this.Game = new GameManager(this.board, diceRoller, playerCount, new DevelopmentCardPile());
         this.messages = new ConcurrentQueue<UInt32>();
+        this.cancellationToken = cancellationToken;
       }
       #endregion
 
@@ -199,6 +218,8 @@ namespace Jabberwocky.SoC.Service
       {
         get { return this.clientCount < this.clients.Length; }
       }
+
+      public States State { get; private set; }
       #endregion
 
       #region Methods
@@ -208,7 +229,7 @@ namespace Jabberwocky.SoC.Service
         {
           if (this.clients[index] == client)
           {
-            this.messages.Enqueue(index + 1);
+            this.messages.Enqueue(index);
             return;
           }
         }
@@ -261,39 +282,53 @@ namespace Jabberwocky.SoC.Service
       {
         this.gameTask = Task.Factory.StartNew(() =>
         {
-          var gameData = GameInitializationDataBuilder.Build(this.board);
-          foreach (var client in this.clients)
+          this.State = States.Running;
+          try
           {
-            client.InitializeGame(gameData);
-          }
-
-          var confirmationCount = 0;
-          UInt32 clientIndex = 0;
-          while (confirmationCount < this.clientCount)
-          {
-            if (this.messages.TryDequeue(out clientIndex))
+            var gameData = GameInitializationDataBuilder.Build(this.board);
+            foreach (var client in this.clients)
             {
-              confirmationCount++;
-              continue;
+              client.InitializeGame(gameData);
             }
 
-            Thread.Sleep(50);
-          }
-
-          var playerIndexes = this.Game.GetFirstSetupPassOrder();
-          var waitingForResponse = true;
-          foreach (var playerIndex in playerIndexes)
-          {
-            var client = this.clients[playerIndex];
-            client.PlaceTown();
-
-            // Wait until response from client
-            /*while (waitingForResponse)
+            var confirmationCount = 0;
+            UInt32 clientIndex = 0;
+            while (confirmationCount < this.clientCount)
             {
-              Thread.Sleep(50);
-            }*/
-          }
+              this.cancellationToken.ThrowIfCancellationRequested();
 
+              if (this.messages.TryDequeue(out clientIndex))
+              {
+                confirmationCount++;
+                continue;
+              }
+
+              Thread.Sleep(50);
+            }
+
+            var playerIndexes = this.Game.GetFirstSetupPassOrder();
+            var waitingForResponse = true;
+            foreach (var playerIndex in playerIndexes)
+            {
+              var client = this.clients[playerIndex];
+              client.PlaceTown();
+
+              // Wait until response from client
+              /*while (waitingForResponse)
+              {
+                Thread.Sleep(50);
+              }*/
+            }
+          }
+          catch (OperationCanceledException)
+          {
+            // Shutting down - ignore exception
+            this.State = States.Stopping;
+          }
+          finally
+          {
+            this.State = States.Stopped;
+          }
         });
       }
       #endregion
