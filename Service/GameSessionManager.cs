@@ -10,12 +10,14 @@ namespace Jabberwocky.SoC.Service
 
   public class GameSessionManager
   {
+    #region Enums
     public enum States
     {
       Stopped,
       Stopping,
       Running
     }
+    #endregion
 
     #region Fields
     private List<IServiceProviderCallback> clients;
@@ -62,17 +64,6 @@ namespace Jabberwocky.SoC.Service
       gameSession.ConfirmGameInitialized(client);
     }
 
-    public void RemoveClient(Guid gameToken, IServiceProviderCallback client)
-    {
-      if (!this.gameSessions.ContainsKey(gameToken))
-      {
-        throw new NotImplementedException(); //TODO: Change for Meaningful exception
-      }
-
-      var gameSession = this.gameSessions[gameToken];
-      gameSession.RemoveClient(client);
-    }
-
     public void ProcessMessage(Guid gameToken, UInt32 message)
     {
       if (!this.gameSessions.ContainsKey(gameToken))
@@ -82,6 +73,17 @@ namespace Jabberwocky.SoC.Service
 
       var gameSession = this.gameSessions[gameToken];
       gameSession.ProcessMessage(message);
+    }
+
+    public void RemoveClient(Guid gameToken, IServiceProviderCallback client)
+    {
+      if (!this.gameSessions.ContainsKey(gameToken))
+      {
+        throw new NotImplementedException(); //TODO: Change for Meaningful exception
+      }
+
+      var gameSession = this.gameSessions[gameToken];
+      gameSession.RemoveClient(client);
     }
 
     public void Stop()
