@@ -151,10 +151,13 @@ namespace Service.IntegrationTests
       gameSessionManager.ConfirmGameInitialized(mockClient1.GameToken, mockClient2);
       gameSessionManager.ConfirmGameInitialized(mockClient1.GameToken, mockClient3);
       gameSessionManager.ConfirmGameInitialized(mockClient1.GameToken, mockClient4);
-      Thread.Sleep(10000);
+
+      while (gameSessionManager.GameSessionState(mockClient1.GameToken) != GameSessionManager.States.Stopped)
+      {
+        Thread.Sleep(50);
+      }
 
       gameSessionManager.Stop();
-
       while (gameSessionManager.State != GameSessionManager.States.Stopped)
       {
         Thread.Sleep(50);

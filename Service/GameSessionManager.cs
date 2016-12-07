@@ -64,6 +64,16 @@ namespace Jabberwocky.SoC.Service
       gameSession.ConfirmGameInitialized(client);
     }
 
+    public States GameSessionState(Guid gameToken)
+    {
+      if (!this.gameSessions.ContainsKey(gameToken))
+      {
+        throw new NotImplementedException(); //TODO: Change for Meaningful exception
+      }
+
+      return this.gameSessions[gameToken].State;
+    }
+
     public void ProcessMessage(Guid gameToken, UInt32 message)
     {
       if (!this.gameSessions.ContainsKey(gameToken))
@@ -309,7 +319,8 @@ namespace Jabberwocky.SoC.Service
             }
 
             var playerIndexes = this.Game.GetFirstSetupPassOrder();
-            var waitingForResponse = true;
+            this.clients[playerIndexes[0]].PlaceTown();
+            /*var waitingForResponse = true;
             foreach (var playerIndex in playerIndexes)
             {
               var client = this.clients[playerIndex];
@@ -319,8 +330,8 @@ namespace Jabberwocky.SoC.Service
               /*while (waitingForResponse)
               {
                 Thread.Sleep(50);
-              }*/
-            }
+              }
+            }*/
           }
           catch (OperationCanceledException)
           {
