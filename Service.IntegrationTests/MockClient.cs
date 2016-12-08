@@ -12,7 +12,7 @@ namespace Service.IntegrationTests
 
     public Boolean GameInitialized;
 
-    public Boolean TownPlaced;
+    public Boolean PlaceTownMessageReceived;
 
     public void ConfirmGameJoined(Guid gameToken)
     {
@@ -32,7 +32,7 @@ namespace Service.IntegrationTests
 
     public void PlaceTown()
     {
-      this.TownPlaced = true;
+      this.PlaceTownMessageReceived = true;
     }
 
     public void StartTurn(Guid token)
