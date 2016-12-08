@@ -89,6 +89,24 @@ namespace Jabberwocky.SoC.Library
 
       return setupPassOrder;
     }
+
+    /// <summary>
+    /// Places town at position for the player.
+    /// </summary>
+    /// <param name="playerId">Player Id of the new town.</param>
+    public void PlaceTown(UInt32 playerId)
+    {
+      
+    }
+
+    /// <summary>
+    /// Places road between positions for the player.
+    /// </summary>
+    /// <param name="playerId">Player Id of the new road.</param>
+    public void PlaceRoad(UInt32 playerId)
+    {
+      
+    }
     #endregion
   }
 }

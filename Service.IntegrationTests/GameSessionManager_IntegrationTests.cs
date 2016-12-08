@@ -97,38 +97,6 @@ namespace Service.IntegrationTests
     }
 
     [Test]
-    public void AddClient_AddEnoughPlayersToFillGame_FirstPlayerGetsToPlaceFirstTown()
-    {
-      var diceRolls = new List<UInt32> { 12u, 8u, 6u, 4u };
-      Boolean[] expectedResults = { true, false, false, false };
-      GameIsFullSoPlayerGetsToPlaceFirstTown(diceRolls, expectedResults);
-    }
-
-    [Test]
-    public void AddClient_AddEnoughPlayersToFillGame_SecondPlayerGetsToPlaceFirstTown()
-    {
-      var diceRolls = new List<UInt32> { 8u, 12u, 6u, 4u };
-      Boolean[] expectedResults = { false, true, false, false };
-      GameIsFullSoPlayerGetsToPlaceFirstTown(diceRolls, expectedResults);
-    }
-
-    [Test]
-    public void AddClient_AddEnoughPlayersToFillGame_ThirdPlayerGetsToPlaceFirstTown()
-    {
-      var diceRolls = new List<UInt32> { 8u, 6u, 12u, 4u };
-      Boolean[] expectedResults = { false, false, true, false };
-      GameIsFullSoPlayerGetsToPlaceFirstTown(diceRolls, expectedResults);
-    }
-
-    [Test]
-    public void AddClient_AddEnoughPlayersToFillGame_LastPlayerGetsToPlaceFirstTown()
-    {
-      var diceRolls = new List<UInt32> { 8u, 6u, 4u, 12u };
-      Boolean[] expectedResults = { false, false, false, true };
-      GameIsFullSoPlayerGetsToPlaceFirstTown(diceRolls, expectedResults);
-    }
-
-    [Test]
     public void AddClient_AddEnoughPlayersToFillGame_AllPlayersPlaceFirstTown()
     {
       var diceRolls = new List<UInt32> { 8u, 6u, 4u, 12u };
@@ -171,9 +139,13 @@ namespace Service.IntegrationTests
         gameSessionManager.ConfirmGameInitialized(mockClient4.GameToken, mockClient4);
 
         this.WaitUntilClientReceivesPlaceTownMessage(expectedOrder[0]);
-        this.WaitUntilClientReceivesPlaceTownMessage(mockClient2);
-        this.WaitUntilClientReceivesPlaceTownMessage(mockClient3);
-        this.WaitUntilClientReceivesPlaceTownMessage(mockClient4);
+        gameSessionManager.ConfirmTownPlaced(expectedOrder[0].GameToken, expectedOrder[0]);
+        this.WaitUntilClientReceivesPlaceTownMessage(expectedOrder[1]);
+        gameSessionManager.ConfirmTownPlaced(expectedOrder[1].GameToken, expectedOrder[1]);
+        this.WaitUntilClientReceivesPlaceTownMessage(expectedOrder[2]);
+        gameSessionManager.ConfirmTownPlaced(expectedOrder[2].GameToken, expectedOrder[2]);
+        this.WaitUntilClientReceivesPlaceTownMessage(expectedOrder[3]);
+        gameSessionManager.ConfirmTownPlaced(expectedOrder[3].GameToken, expectedOrder[3]);
 
         this.WaitUntilGameSessionManagerStops(gameSessionManager);
 
@@ -187,48 +159,6 @@ namespace Service.IntegrationTests
       {
         this.WaitUntilGameSessionManagerStops(gameSessionManager);
       }
-    }
-
-    private void GameIsFullSoPlayerGetsToPlaceFirstTown(List<UInt32> diceRolls, Boolean[] expectedResults)
-    {
-      // Arrange
-      Guid gameToken = Guid.Empty;
-      var diceRollerFactory = this.CreateOneDiceRoller(diceRolls);
-      var gameSessionManager = this.CreateGameSessionManager(diceRollerFactory, 4);
-
-      var mockClient1 = new MockClient();
-      var mockClient2 = new MockClient();
-      var mockClient3 = new MockClient();
-      var mockClient4 = new MockClient();
-
-      // Act
-      gameSessionManager.AddClient(mockClient1);
-      gameSessionManager.AddClient(mockClient2);
-      gameSessionManager.AddClient(mockClient3);
-      gameSessionManager.AddClient(mockClient4);
-      Thread.Sleep(1000);
-
-      gameSessionManager.ConfirmGameInitialized(mockClient1.GameToken, mockClient1);
-      gameSessionManager.ConfirmGameInitialized(mockClient1.GameToken, mockClient2);
-      gameSessionManager.ConfirmGameInitialized(mockClient1.GameToken, mockClient3);
-      gameSessionManager.ConfirmGameInitialized(mockClient1.GameToken, mockClient4);
-
-      while (gameSessionManager.GameSessionState(mockClient1.GameToken) != GameSessionManager.States.Stopped)
-      {
-        Thread.Sleep(50);
-      }
-
-      gameSessionManager.Stop();
-      while (gameSessionManager.State != GameSessionManager.States.Stopped)
-      {
-        Thread.Sleep(50);
-      }
-
-      // Assert
-      (mockClient1.PlaceTownMessageReceived == expectedResults[0]).ShouldBeTrue();
-      (mockClient2.PlaceTownMessageReceived == expectedResults[1]).ShouldBeTrue();
-      (mockClient3.PlaceTownMessageReceived == expectedResults[2]).ShouldBeTrue();
-      (mockClient4.PlaceTownMessageReceived == expectedResults[3]).ShouldBeTrue();
     }
 
     private IDiceRollerFactory CreateOneDiceRoller(List<UInt32> diceRolls)

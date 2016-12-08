@@ -64,6 +64,17 @@ namespace Jabberwocky.SoC.Service
       gameSession.ConfirmGameInitialized(client);
     }
 
+    public void ConfirmTownPlaced(Guid gameToken, IServiceProviderCallback client)
+    {
+      if (!this.gameSessions.ContainsKey(gameToken))
+      {
+        throw new NotImplementedException(); //TODO: Change for Meaningful exception
+      }
+
+      var gameSession = this.gameSessions[gameToken];
+      gameSession.ConfirmTownPlaced(client);
+    }
+
     public States GameSessionState(Guid gameToken)
     {
       if (!this.gameSessions.ContainsKey(gameToken))
@@ -250,6 +261,21 @@ namespace Jabberwocky.SoC.Service
         throw new NotImplementedException();
       }
 
+      public void ConfirmTownPlaced(IServiceProviderCallback client)
+      {
+        for (UInt32 index = 0; index < this.clientCount; index++)
+        {
+          if (this.clients[index] == client)
+          {
+            this.messages.Enqueue(index);
+            return;
+          }
+        }
+
+        //TODO: Remove or make meaningful
+        throw new NotImplementedException();
+      }
+
       public void AddClient(IServiceProviderCallback client)
       {
         for (var i = 0; i < this.clients.Length; i++)
@@ -319,7 +345,24 @@ namespace Jabberwocky.SoC.Service
             }
 
             var playerIndexes = this.Game.GetFirstSetupPassOrder();
-            this.clients[playerIndexes[0]].PlaceTown();
+            //this.clients[playerIndexes[0]].PlaceTown();
+
+            for (var index = 0; index < this.clientCount; index++)
+            {
+              var playerIndex = playerIndexes[index];
+              this.clients[playerIndex].PlaceTown();
+
+              while (!this.messages.TryDequeue(out clientIndex))
+              {
+                this.cancellationToken.ThrowIfCancellationRequested();
+
+                Thread.Yield();
+              }
+
+              this.Game.PlaceTown(playerIndex);
+              this.Game.PlaceRoad(playerIndex);
+            }
+            
             /*var waitingForResponse = true;
             foreach (var playerIndex in playerIndexes)
             {
