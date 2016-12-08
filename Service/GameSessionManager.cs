@@ -315,7 +315,7 @@ namespace Jabberwocky.SoC.Service
                 continue;
               }
 
-              Thread.Sleep(50);
+              Thread.Yield();
             }
 
             var playerIndexes = this.Game.GetFirstSetupPassOrder();

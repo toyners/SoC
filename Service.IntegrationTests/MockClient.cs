@@ -12,7 +12,26 @@ namespace Service.IntegrationTests
 
     public Boolean GameInitialized;
 
+    public UInt32 Id;
+
     public Boolean PlaceTownMessageReceived;
+
+    public UInt32 TownPlacedRank;
+
+    private static UInt32 NextTownPlacedRank;
+
+    private static UInt32 NextClientId;
+
+    public MockClient()
+    {
+      this.Id = MockClient.NextClientId++;
+    }
+
+    public static void SetupBeforeEachTest()
+    {
+      MockClient.NextTownPlacedRank = 1;
+      MockClient.NextClientId = 1;
+    }
 
     public void ConfirmGameJoined(Guid gameToken)
     {
@@ -33,6 +52,7 @@ namespace Service.IntegrationTests
     public void PlaceTown()
     {
       this.PlaceTownMessageReceived = true;
+      this.TownPlacedRank = MockClient.NextTownPlacedRank++;
     }
 
     public void StartTurn(Guid token)

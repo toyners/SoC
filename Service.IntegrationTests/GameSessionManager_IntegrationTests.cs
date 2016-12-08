@@ -14,6 +14,12 @@ namespace Service.IntegrationTests
   public class GameSessionManager_IntegrationTests
   {
     #region Methods
+    [SetUp]
+    public void SetupBeforeEachTest()
+    {
+      MockClient.SetupBeforeEachTest();
+    }
+
     [Test]
     public void AddClient_AddPlayerToNonFullSession_PlayerAdded()
     {
@@ -125,89 +131,61 @@ namespace Service.IntegrationTests
     [Test]
     public void AddClient_AddEnoughPlayersToFillGame_AllPlayersPlaceFirstTown()
     {
-    }
-
-    private void Method(List<UInt32> diceRolls, MockClient[] clients)
-    { 
-      Guid gameToken = Guid.Empty;
-      var index = 0;
-      var diceRoller = Substitute.For<IDiceRoller>();
-      //var diceRolls = new[] { 1u };
-      diceRoller.RollTwoDice().Returns(x => { return diceRolls[index++]; });
-
-      var diceRollerFactory = Substitute.For<IDiceRollerFactory>();
-      diceRollerFactory.Create().Returns(diceRoller);
-
-      var gameSessionManager = this.CreateGameSessionManager(diceRollerFactory, 4);
-
+      var diceRolls = new List<UInt32> { 8u, 6u, 4u, 12u };
       var mockClient1 = new MockClient();
       var mockClient2 = new MockClient();
       var mockClient3 = new MockClient();
       var mockClient4 = new MockClient();
 
-      // Act
-      gameSessionManager.AddClient(mockClient1);
-      gameSessionManager.AddClient(mockClient2);
-      gameSessionManager.AddClient(mockClient3);
-      gameSessionManager.AddClient(mockClient4);
+      MockClient[] clients = { mockClient1, mockClient2, mockClient3, mockClient4 };
+      MockClient[] expectedOrder = { mockClient4, mockClient1, mockClient2, mockClient3 };
 
-      this.WaitUntilClientsReceiveGameData(mockClient1, mockClient2, mockClient3, mockClient4);
-
-      gameSessionManager.ConfirmGameInitialized(mockClient1.GameToken, mockClient1);
-      gameSessionManager.ConfirmGameInitialized(mockClient2.GameToken, mockClient2);
-      gameSessionManager.ConfirmGameInitialized(mockClient3.GameToken, mockClient3);
-      gameSessionManager.ConfirmGameInitialized(mockClient4.GameToken, mockClient4);
-
-      foreach (var client in clients)
-      {
-        this.WaitUntilClientReceivesPlaceTownMessage(client);
-      }
+      ClientsReceivePlaceTownMessage(diceRolls, clients, expectedOrder);
     }
 
-    private void WaitUntilClientReceivesPlaceTownMessage(MockClient mockClient)
+    private void ClientsReceivePlaceTownMessage(List<UInt32> diceRolls, MockClient[] clients, MockClient[] expectedOrder)
     {
-      var stopWatch = new Stopwatch();
-      stopWatch.Start();
-
-      while (!mockClient.PlaceTownMessageReceived && stopWatch.ElapsedMilliseconds <= 1000)
+      GameSessionManager gameSessionManager = null;
+      try
       {
-        Thread.Sleep(50);
+        Guid gameToken = Guid.Empty;
+        var diceRollerFactory = this.CreateOneDiceRoller(diceRolls);
+        gameSessionManager = this.CreateGameSessionManager(diceRollerFactory, 4);
+
+        var mockClient1 = clients[0];
+        var mockClient2 = clients[1];
+        var mockClient3 = clients[2];
+        var mockClient4 = clients[3];
+
+        // Act
+        gameSessionManager.AddClient(mockClient1);
+        gameSessionManager.AddClient(mockClient2);
+        gameSessionManager.AddClient(mockClient3);
+        gameSessionManager.AddClient(mockClient4);
+
+        this.WaitUntilClientsReceiveGameData(mockClient1, mockClient2, mockClient3, mockClient4);
+
+        gameSessionManager.ConfirmGameInitialized(mockClient1.GameToken, mockClient1);
+        gameSessionManager.ConfirmGameInitialized(mockClient2.GameToken, mockClient2);
+        gameSessionManager.ConfirmGameInitialized(mockClient3.GameToken, mockClient3);
+        gameSessionManager.ConfirmGameInitialized(mockClient4.GameToken, mockClient4);
+
+        this.WaitUntilClientReceivesPlaceTownMessage(expectedOrder[0]);
+        this.WaitUntilClientReceivesPlaceTownMessage(mockClient2);
+        this.WaitUntilClientReceivesPlaceTownMessage(mockClient3);
+        this.WaitUntilClientReceivesPlaceTownMessage(mockClient4);
+
+        this.WaitUntilGameSessionManagerStops(gameSessionManager);
+
+        // Assert
+        expectedOrder[0].TownPlacedRank.ShouldBe(1u);
+        expectedOrder[1].TownPlacedRank.ShouldBe(2u);
+        expectedOrder[2].TownPlacedRank.ShouldBe(3u);
+        expectedOrder[3].TownPlacedRank.ShouldBe(4u);
       }
-
-      stopWatch.Stop();
-
-      if (!mockClient.PlaceTownMessageReceived)
+      finally
       {
-        throw new TimeoutException("Timed out waiting for client to receive place town message.");
-      }
-    }
-
-    private void WaitUntilClientsReceiveGameData(params MockClient[] mockClients)
-    {
-      var stopWatch = new Stopwatch();
-      stopWatch.Start();
-
-      var waitingForGameData = new List<MockClient>(mockClients);
-
-      while (waitingForGameData.Count > 0 && stopWatch.ElapsedMilliseconds <= 1000)
-      {
-        for (var index = 0; index < waitingForGameData.Count; index++)
-        {
-          if (waitingForGameData[index].GameInitialized)
-          {
-            waitingForGameData.RemoveAt(index);
-            index--;
-          }
-        }
-
-        Thread.Sleep(50);
-      }
-
-      stopWatch.Stop();
-
-      if (waitingForGameData.Count > 0)
-      {
-        throw new TimeoutException("Timed out waiting for clients to receive game data.");
+        this.WaitUntilGameSessionManagerStops(gameSessionManager);
       }
     }
 
@@ -215,13 +193,7 @@ namespace Service.IntegrationTests
     {
       // Arrange
       Guid gameToken = Guid.Empty;
-      var index = 0;
-      var diceRoller = Substitute.For<IDiceRoller>();
-      diceRoller.RollTwoDice().Returns(x => { return diceRolls[index++]; });
-
-      var diceRollerFactory = Substitute.For<IDiceRollerFactory>();
-      diceRollerFactory.Create().Returns(diceRoller);
-        
+      var diceRollerFactory = this.CreateOneDiceRoller(diceRolls);
       var gameSessionManager = this.CreateGameSessionManager(diceRollerFactory, 4);
 
       var mockClient1 = new MockClient();
@@ -259,6 +231,18 @@ namespace Service.IntegrationTests
       (mockClient4.PlaceTownMessageReceived == expectedResults[3]).ShouldBeTrue();
     }
 
+    private IDiceRollerFactory CreateOneDiceRoller(List<UInt32> diceRolls)
+    {
+      var index = 0;
+      var diceRoller = Substitute.For<IDiceRoller>();
+      diceRoller.RollTwoDice().Returns(x => { return diceRolls[index++]; });
+
+      var diceRollerFactory = Substitute.For<IDiceRollerFactory>();
+      diceRollerFactory.Create().Returns(diceRoller);
+
+      return diceRollerFactory;
+    }
+
     private GameSessionManager CreateGameSessionManager(IDiceRollerFactory diceRollerFactory, UInt32 maximumPlayerCount = 1)
     {
       var gameSessionManager = new GameSessionManager(diceRollerFactory, maximumPlayerCount);
@@ -282,6 +266,62 @@ namespace Service.IntegrationTests
       }
       
       return gameSessionManager;
+    }
+
+    private void WaitUntilClientReceivesPlaceTownMessage(MockClient mockClient)
+    {
+      var stopWatch = new Stopwatch();
+      stopWatch.Start();
+
+      while (!mockClient.PlaceTownMessageReceived && stopWatch.ElapsedMilliseconds <= 2000)
+      {
+        Thread.Sleep(50);
+      }
+
+      stopWatch.Stop();
+
+      if (!mockClient.PlaceTownMessageReceived)
+      {
+        throw new TimeoutException("Timed out waiting for client to receive place town message.");
+      }
+    }
+
+    private void WaitUntilClientsReceiveGameData(params MockClient[] mockClients)
+    {
+      var stopWatch = new Stopwatch();
+      stopWatch.Start();
+
+      var waitingForGameData = new List<MockClient>(mockClients);
+
+      while (waitingForGameData.Count > 0 && stopWatch.ElapsedMilliseconds <= 1000)
+      {
+        for (var index = 0; index < waitingForGameData.Count; index++)
+        {
+          if (waitingForGameData[index].GameInitialized)
+          {
+            waitingForGameData.RemoveAt(index);
+            index--;
+          }
+        }
+
+        Thread.Yield();
+      }
+
+      stopWatch.Stop();
+
+      if (waitingForGameData.Count > 0)
+      {
+        throw new TimeoutException("Timed out waiting for clients to receive game data.");
+      }
+    }
+
+    private void WaitUntilGameSessionManagerStops(GameSessionManager gameSessionManager)
+    {
+      gameSessionManager.Stop();
+      while (gameSessionManager.State != GameSessionManager.States.Stopped)
+      {
+        Thread.Sleep(50);
+      }
     }
     #endregion 
   }
