@@ -214,7 +214,6 @@ namespace Jabberwocky.SoC.Service
 
       public Guid GameToken;
 
-      private Board board;
       private CancellationToken cancellationToken;
       private Int32 clientCount;
       private IServiceProviderCallback[] clients;
@@ -229,8 +228,8 @@ namespace Jabberwocky.SoC.Service
 
         this.clients = new IServiceProviderCallback[playerCount];
 
-        this.board = new Board(BoardSizes.Standard);
-        this.Game = new GameManager(this.board, diceRoller, playerCount, new DevelopmentCardPile());
+        var board = new Board(BoardSizes.Standard);
+        this.Game = new GameManager(board, diceRoller, playerCount, new DevelopmentCardPile());
         this.messages = new ConcurrentQueue<UInt32>();
         this.cancellationToken = cancellationToken;
       }
@@ -282,7 +281,6 @@ namespace Jabberwocky.SoC.Service
         {
           if (this.clients[i] == null)
           {
-            var player = new Player(this.board);
             this.clients[i] = client;
             this.clientCount++;
             client.ConfirmGameJoined(this.GameToken);
@@ -323,7 +321,7 @@ namespace Jabberwocky.SoC.Service
           this.State = States.Running;
           try
           {
-            var gameData = GameInitializationDataBuilder.Build(this.board);
+            var gameData = GameInitializationDataBuilder.Build(this.Game.Board);
             foreach (var client in this.clients)
             {
               client.InitializeGame(gameData);
@@ -345,8 +343,6 @@ namespace Jabberwocky.SoC.Service
             }
 
             var playerIndexes = this.Game.GetFirstSetupPassOrder();
-            //this.clients[playerIndexes[0]].PlaceTown();
-
             for (var index = 0; index < this.clientCount; index++)
             {
               var playerIndex = playerIndexes[index];
@@ -362,19 +358,6 @@ namespace Jabberwocky.SoC.Service
               this.Game.PlaceTown(playerIndex);
               this.Game.PlaceRoad(playerIndex);
             }
-            
-            /*var waitingForResponse = true;
-            foreach (var playerIndex in playerIndexes)
-            {
-              var client = this.clients[playerIndex];
-              client.PlaceTown();
-
-              // Wait until response from client
-              /*while (waitingForResponse)
-              {
-                Thread.Sleep(50);
-              }
-            }*/
           }
           catch (OperationCanceledException)
           {

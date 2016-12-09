@@ -8,8 +8,6 @@ namespace Jabberwocky.SoC.Library
   public class GameManager
   {
     #region Fields
-    private Board board;
-
     private IDiceRoller diceRoller;
 
     private Player[] players;
@@ -20,11 +18,16 @@ namespace Jabberwocky.SoC.Library
     #region Construction
     public GameManager(Board board, IDiceRoller diceRoller, UInt32 playerCount, DevelopmentCardPile cardPile)
     {
-      this.board = board;
+      //TODO: Check for null references
+      this.Board = board;
       this.diceRoller = diceRoller;
       this.players = new Player[playerCount];
       this.cardPile = cardPile;
     }
+    #endregion
+
+    #region Properties
+    public Board Board { get; private set; }
     #endregion
 
     #region Methods
