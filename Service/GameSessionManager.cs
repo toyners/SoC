@@ -375,6 +375,21 @@ namespace Jabberwocky.SoC.Service
       }
       #endregion
     }
+
+    private class Message
+    {
+      public enum Types
+      {
+        ConfirmGameInitialized
+      }
+
+      public readonly UInt32 Type;
+
+      public Message(UInt32 type)
+      {
+        this.Type = type;
+      }
+    }
     #endregion
   }
 }
