@@ -30,12 +30,8 @@ namespace Service.IntegrationTests
       // Act
       gameSessionManager.AddClient(mockClient);
       Thread.Sleep(1000);
-      gameSessionManager.Stop();
 
-      while (gameSessionManager.State != GameSessionManager.States.Stopped)
-      {
-        Thread.Sleep(500);
-      }
+      this.WaitUntilGameSessionManagerStops(gameSessionManager);
 
       // Assert
       mockClient.GameJoined.ShouldBeTrue();
@@ -60,7 +56,7 @@ namespace Service.IntegrationTests
       gameSessionManager.AddClient(mockClient4);
       Thread.Sleep(1000);
 
-      gameSessionManager.Stop();
+      this.WaitUntilGameSessionManagerStops(gameSessionManager);
 
       // Assert
       mockClient1.GameToken.ShouldNotBe(Guid.Empty);
@@ -85,9 +81,9 @@ namespace Service.IntegrationTests
       gameSessionManager.AddClient(mockClient2);
       gameSessionManager.AddClient(mockClient3);
       gameSessionManager.AddClient(mockClient4);
-      Thread.Sleep(1000);
+      this.WaitUntilClientsReceiveGameData(mockClient1, mockClient2, mockClient3, mockClient4);
 
-      gameSessionManager.Stop();
+      this.WaitUntilGameSessionManagerStops(gameSessionManager);
 
       // Assert
       mockClient1.GameInitialized.ShouldBeTrue();
@@ -234,7 +230,7 @@ namespace Service.IntegrationTests
           }
         }
 
-        Thread.Yield();
+        Thread.Sleep(50);
       }
 
       stopWatch.Stop();

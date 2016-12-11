@@ -339,7 +339,7 @@ namespace Jabberwocky.SoC.Service
                 continue;
               }
 
-              Thread.Yield();
+              Thread.Sleep(50);
             }
 
             var playerIndexes = this.Game.GetFirstSetupPassOrder();
@@ -352,7 +352,7 @@ namespace Jabberwocky.SoC.Service
               {
                 this.cancellationToken.ThrowIfCancellationRequested();
 
-                Thread.Yield();
+                Thread.Sleep(50);
               }
 
               this.Game.PlaceTown(playerIndex);
