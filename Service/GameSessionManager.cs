@@ -327,6 +327,7 @@ namespace Jabberwocky.SoC.Service
               client.InitializeGame(gameData);
             }
 
+            // Clients confirming that they have completed game initialization.
             var confirmationCount = 0;
             UInt32 clientIndex = 0;
             while (confirmationCount < this.clientCount)
