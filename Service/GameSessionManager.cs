@@ -343,6 +343,8 @@ namespace Jabberwocky.SoC.Service
               Thread.Sleep(50);
             }
 
+            // Clients have all confirmed they received game initialization data
+            // Now ask each client in dice roll order to place a town.
             var playerIndexes = this.Game.GetFirstSetupPassOrder();
             for (var index = 0; index < this.clientCount; index++)
             {

@@ -107,8 +107,13 @@ namespace Service.IntegrationTests
       ClientsReceivePlaceTownMessage(diceRolls, clients, expectedOrder);
     }
 
+    /// <summary>
+    /// If a client sends multiple game initialization confirmation messages then the
+    /// subsequent messages should be ignored. In this scenario the second client 
+    /// sends nothing so the same number of messages are being sent to the server.
+    /// </summary>
     [Test]
-    public void Test()
+    public void SubsequentGameInitializationConfirminationMessagesAreIgnored()
     {
       // Arrange
       var gameSessionManager = this.CreateGameSessionManager(new DiceRollerFactory(), 4);
