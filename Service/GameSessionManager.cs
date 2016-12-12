@@ -199,7 +199,6 @@ namespace Jabberwocky.SoC.Service
       private Int32 clientCount;
       private IServiceProviderCallback[] clients;
       private Task gameTask;
-      //private ConcurrentQueue<Message> messages;
       private MessagePump messagePump;
       #endregion
 
@@ -212,7 +211,6 @@ namespace Jabberwocky.SoC.Service
 
         var board = new Board(BoardSizes.Standard);
         this.Game = new GameManager(board, diceRoller, playerCount, new DevelopmentCardPile());
-        //this.messages = new ConcurrentQueue<Message>();
         this.messagePump = new MessagePump();
         this.cancellationToken = cancellationToken;
       }
@@ -231,14 +229,12 @@ namespace Jabberwocky.SoC.Service
       public void ConfirmGameInitialized(IServiceProviderCallback client)
       {
         var message = new Message(Message.Types.ConfirmGameInitialized, client);
-        //this.messages.Enqueue(message);
         this.messagePump.Enqueue(message);
       }
 
       public void ConfirmTownPlaced(IServiceProviderCallback client)
       {
         var message = new Message(Message.Types.ConfirmTownPlaced, client);
-        //this.messages.Enqueue(message);
         this.messagePump.Enqueue(message);
       }
 
@@ -296,7 +292,6 @@ namespace Jabberwocky.SoC.Service
             {
               this.cancellationToken.ThrowIfCancellationRequested();
 
-              //if (this.messages.TryDequeue(out message))
               if (this.messagePump.TryDequeue(Message.Types.ConfirmGameInitialized, out message))
               {
                 awaitingGameInitializationConfirmation.Remove(message.Sender);
@@ -360,8 +355,11 @@ namespace Jabberwocky.SoC.Service
 
     private class MessagePump
     {
+      #region Fields
       private ConcurrentQueue<Message> messages = new ConcurrentQueue<Message>();
+      #endregion
 
+      #region Methods
       public void Enqueue(Message message)
       {
         this.messages.Enqueue(message);
@@ -380,6 +378,7 @@ namespace Jabberwocky.SoC.Service
 
         return false;
       }
+      #endregion
     }
     #endregion
   }
