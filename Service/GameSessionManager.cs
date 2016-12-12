@@ -55,55 +55,25 @@ namespace Jabberwocky.SoC.Service
 
     public void ConfirmGameInitialized(Guid gameToken, IServiceProviderCallback client)
     {
-      if (!this.gameSessions.ContainsKey(gameToken))
-      {
-        throw new NotImplementedException(); //TODO: Change for Meaningful exception
-      }
-
-      var gameSession = this.gameSessions[gameToken];
+      var gameSession = this.GetGameSession(gameToken);
       gameSession.ConfirmGameInitialized(client);
     }
 
     public void ConfirmTownPlaced(Guid gameToken, IServiceProviderCallback client)
     {
-      if (!this.gameSessions.ContainsKey(gameToken))
-      {
-        throw new NotImplementedException(); //TODO: Change for Meaningful exception
-      }
-
-      var gameSession = this.gameSessions[gameToken];
+      var gameSession = this.GetGameSession(gameToken);
       gameSession.ConfirmTownPlaced(client);
     }
 
     public States GameSessionState(Guid gameToken)
     {
-      if (!this.gameSessions.ContainsKey(gameToken))
-      {
-        throw new NotImplementedException(); //TODO: Change for Meaningful exception
-      }
-
-      return this.gameSessions[gameToken].State;
-    }
-
-    public void ProcessMessage(Guid gameToken, UInt32 message)
-    {
-      if (!this.gameSessions.ContainsKey(gameToken))
-      {
-        throw new NotImplementedException();
-      }
-
-      var gameSession = this.gameSessions[gameToken];
-      gameSession.ProcessMessage(message);
+      var gameSession = this.GetGameSession(gameToken);
+      return gameSession.State;
     }
 
     public void RemoveClient(Guid gameToken, IServiceProviderCallback client)
     {
-      if (!this.gameSessions.ContainsKey(gameToken))
-      {
-        throw new NotImplementedException(); //TODO: Change for Meaningful exception
-      }
-
-      var gameSession = this.gameSessions[gameToken];
+      var gameSession = this.GetGameSession(gameToken);
       gameSession.RemoveClient(client);
     }
 
@@ -135,6 +105,16 @@ namespace Jabberwocky.SoC.Service
       gameSession.AddClient(client);
       this.gameSessions.Add(gameSession.GameToken, gameSession);
       return gameSession;
+    }
+
+    private GameSession GetGameSession(Guid gameToken)
+    {
+      if (!this.gameSessions.ContainsKey(gameToken))
+      {
+        throw new NotImplementedException(); //TODO: Change for Meaningful exception
+      }
+
+      return this.gameSessions[gameToken];
     }
 
     private void MatchPlayersWithGames(CancellationToken cancellationToken)
@@ -218,7 +198,7 @@ namespace Jabberwocky.SoC.Service
       private Int32 clientCount;
       private IServiceProviderCallback[] clients;
       private Task gameTask;
-      private ConcurrentQueue<UInt32> messages;
+      private ConcurrentQueue<Message> messages;
       #endregion
 
       #region Construction
@@ -230,7 +210,7 @@ namespace Jabberwocky.SoC.Service
 
         var board = new Board(BoardSizes.Standard);
         this.Game = new GameManager(board, diceRoller, playerCount, new DevelopmentCardPile());
-        this.messages = new ConcurrentQueue<UInt32>();
+        this.messages = new ConcurrentQueue<Message>();
         this.cancellationToken = cancellationToken;
       }
       #endregion
@@ -247,32 +227,14 @@ namespace Jabberwocky.SoC.Service
       #region Methods
       public void ConfirmGameInitialized(IServiceProviderCallback client)
       {
-        for (UInt32 index = 0; index < this.clientCount; index++)
-        {
-          if (this.clients[index] == client)
-          {
-            this.messages.Enqueue(index);
-            return;
-          }
-        }
-
-        //TODO: Remove or make meaningful
-        throw new NotImplementedException();
+        var message = new Message(Message.Types.ConfirmGameInitialized, client);
+        this.messages.Enqueue(message);
       }
 
       public void ConfirmTownPlaced(IServiceProviderCallback client)
       {
-        for (UInt32 index = 0; index < this.clientCount; index++)
-        {
-          if (this.clients[index] == client)
-          {
-            this.messages.Enqueue(index);
-            return;
-          }
-        }
-
-        //TODO: Remove or make meaningful
-        throw new NotImplementedException();
+        var message = new Message(Message.Types.ConfirmTownPlaced, client);
+        this.messages.Enqueue(message);
       }
 
       public void AddClient(IServiceProviderCallback client)
@@ -309,11 +271,6 @@ namespace Jabberwocky.SoC.Service
         throw new NotImplementedException();
       }
 
-      public void ProcessMessage(UInt32 message)
-      {
-        throw new NotImplementedException();
-      }
-
       public void StartGame()
       {
         this.gameTask = Task.Factory.StartNew(() =>
@@ -328,15 +285,15 @@ namespace Jabberwocky.SoC.Service
             }
 
             // Clients confirming that they have completed game initialization.
-            var confirmationCount = 0;
-            UInt32 clientIndex = 0;
-            while (confirmationCount < this.clientCount)
+            var awaitingGameInitializationConfirmation = new HashSet<IServiceProviderCallback>(this.clients);
+            Message message = null;
+            while (awaitingGameInitializationConfirmation.Count > 0)
             {
               this.cancellationToken.ThrowIfCancellationRequested();
 
-              if (this.messages.TryDequeue(out clientIndex))
+              if (this.messages.TryDequeue(out message))
               {
-                confirmationCount++;
+                awaitingGameInitializationConfirmation.Remove(message.Sender);
                 continue;
               }
 
@@ -351,7 +308,7 @@ namespace Jabberwocky.SoC.Service
               var playerIndex = playerIndexes[index];
               this.clients[playerIndex].PlaceTown();
 
-              while (!this.messages.TryDequeue(out clientIndex))
+              while (!this.messages.TryDequeue(out message))
               {
                 this.cancellationToken.ThrowIfCancellationRequested();
 
@@ -380,14 +337,18 @@ namespace Jabberwocky.SoC.Service
     {
       public enum Types
       {
-        ConfirmGameInitialized
+        ConfirmGameInitialized,
+        ConfirmTownPlaced
       }
 
-      public readonly UInt32 Type;
+      public readonly Types Type;
 
-      public Message(UInt32 type)
+      public readonly IServiceProviderCallback Sender;
+
+      public Message(Types type, IServiceProviderCallback sender)
       {
         this.Type = type;
+        this.Sender = sender;
       }
     }
     #endregion
