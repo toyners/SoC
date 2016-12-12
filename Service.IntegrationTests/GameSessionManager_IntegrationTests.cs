@@ -188,7 +188,6 @@ namespace Service.IntegrationTests
       try
       {
         Guid gameToken = Guid.Empty;
-        //var diceRollerFactory = this.CreateOneDiceRoller(diceRolls);
         gameSessionManager = this.CreateGameSessionManager(new DiceRollerFactory(), 4);
 
         var mockClient1 = new MockClient();
