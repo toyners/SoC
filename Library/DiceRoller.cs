@@ -2,7 +2,6 @@
 namespace Jabberwocky.SoC.Library
 {
   using System;
-  using Service;
 
   public class DiceRoller : IDiceRoller
   {

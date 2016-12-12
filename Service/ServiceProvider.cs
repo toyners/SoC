@@ -2,10 +2,9 @@
 namespace Jabberwocky.SoC.Service
 {
   using System;
-  using System.IO;
   using System.ServiceModel;
+  using Library;
   using Logging;
-  //using NLog;
 
   [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single,
                    ConcurrencyMode = ConcurrencyMode.Single)]

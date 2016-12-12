@@ -210,7 +210,7 @@ namespace Jabberwocky.SoC.Service
         this.clients = new IServiceProviderCallback[playerCount];
 
         var board = new Board(BoardSizes.Standard);
-        this.Game = new GameManager(board, diceRoller, playerCount, new DevelopmentCardPile());
+        this.Game = new GameManager(board, playerCount, diceRoller, new DevelopmentCardPile());
         this.messagePump = new MessagePump();
         this.cancellationToken = cancellationToken;
       }

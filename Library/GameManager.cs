@@ -3,7 +3,6 @@ namespace Jabberwocky.SoC.Library
 {
   using System;
   using System.Collections.Generic;
-  using Service;
 
   public class GameManager : IGameManager
   {
@@ -16,12 +15,12 @@ namespace Jabberwocky.SoC.Library
     #endregion
 
     #region Construction
-    public GameManager(Board board, IDiceRoller diceRoller, UInt32 playerCount, DevelopmentCardPile cardPile)
+    public GameManager(Board board, UInt32 playerCount, IDiceRoller diceRoller, DevelopmentCardPile cardPile)
     {
       //TODO: Check for null references
       this.Board = board;
-      this.diceRoller = diceRoller;
       this.players = new Player[playerCount];
+      this.diceRoller = diceRoller;
       this.cardPile = cardPile;
     }
     #endregion

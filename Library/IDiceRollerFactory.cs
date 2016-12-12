@@ -1,8 +1,6 @@
 ﻿
-namespace Jabberwocky.SoC.Service
+namespace Jabberwocky.SoC.Library
 {
-  using Jabberwocky.SoC.Library;
-
   public interface IDiceRollerFactory
   {
     IDiceRoller Create();

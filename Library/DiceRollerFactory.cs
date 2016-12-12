@@ -1,5 +1,5 @@
 ﻿
-namespace Jabberwocky.SoC.Service
+namespace Jabberwocky.SoC.Library
 {
   using System;
   using Library;

@@ -4,7 +4,6 @@ namespace Jabberwocky.SoC.Library.UnitTests
   using System;
   using NSubstitute;
   using NUnit.Framework;
-  using Service;
   using Shouldly;
 
   [TestFixture]
@@ -16,7 +15,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     {
       var diceRoller = Substitute.For<IDiceRoller>();
       diceRoller.RollTwoDice().Returns(4u, 8u, 6u, 10u);
-      var gameManager = new GameManager(new Board(BoardSizes.Standard), diceRoller, 4, new DevelopmentCardPile());
+      var gameManager = new GameManager(new Board(BoardSizes.Standard), 4, diceRoller, new DevelopmentCardPile());
 
 
       gameManager.GetFirstSetupPassOrder().ShouldBe(new [] { 3u, 1u, 2u, 0u });
@@ -27,7 +26,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     {
       var diceRoller = Substitute.For<IDiceRoller>();
       diceRoller.RollTwoDice().Returns(10u, 8u, 6u, 10u, 12u);
-      var gameManager = new GameManager(new Board(BoardSizes.Standard), diceRoller, 4, new DevelopmentCardPile());
+      var gameManager = new GameManager(new Board(BoardSizes.Standard), 4, diceRoller, new DevelopmentCardPile());
 
 
       gameManager.GetFirstSetupPassOrder().ShouldBe(new[] { 3u, 0u, 1u, 2u });
@@ -38,7 +37,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     {
       var diceRoller = Substitute.For<IDiceRoller>();
       diceRoller.RollTwoDice().Returns(10u, 10u, 10u, 10u, 7u, 6u, 7u, 8u);
-      var gameManager = new GameManager(new Board(BoardSizes.Standard), diceRoller, 4, new DevelopmentCardPile());
+      var gameManager = new GameManager(new Board(BoardSizes.Standard), 4, diceRoller, new DevelopmentCardPile());
 
 
       gameManager.GetFirstSetupPassOrder().ShouldBe(new[] { 0u, 3u, 1u, 2u });
