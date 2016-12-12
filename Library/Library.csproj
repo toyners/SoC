@@ -51,6 +51,8 @@
     <Compile Include="GameManager.cs" />
     <Compile Include="IDiceRoller.cs" />
     <Compile Include="IDiceRollerFactory.cs" />
+    <Compile Include="IGameManager.cs" />
+    <Compile Include="IGameManagerFactory.cs" />
     <Compile Include="Location.cs" />
     <Compile Include="Objects.cs" />
     <Compile Include="Player.cs" />
