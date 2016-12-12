@@ -4,6 +4,7 @@ namespace Jabberwocky.SoC.Service
   using System;
   using System.Collections.Concurrent;
   using System.Collections.Generic;
+  using System.Diagnostics;
   using System.Threading;
   using System.Threading.Tasks;
   using Library;
@@ -198,7 +199,8 @@ namespace Jabberwocky.SoC.Service
       private Int32 clientCount;
       private IServiceProviderCallback[] clients;
       private Task gameTask;
-      private ConcurrentQueue<Message> messages;
+      //private ConcurrentQueue<Message> messages;
+      private MessagePump messagePump;
       #endregion
 
       #region Construction
@@ -210,7 +212,8 @@ namespace Jabberwocky.SoC.Service
 
         var board = new Board(BoardSizes.Standard);
         this.Game = new GameManager(board, diceRoller, playerCount, new DevelopmentCardPile());
-        this.messages = new ConcurrentQueue<Message>();
+        //this.messages = new ConcurrentQueue<Message>();
+        this.messagePump = new MessagePump();
         this.cancellationToken = cancellationToken;
       }
       #endregion
@@ -228,13 +231,15 @@ namespace Jabberwocky.SoC.Service
       public void ConfirmGameInitialized(IServiceProviderCallback client)
       {
         var message = new Message(Message.Types.ConfirmGameInitialized, client);
-        this.messages.Enqueue(message);
+        //this.messages.Enqueue(message);
+        this.messagePump.Enqueue(message);
       }
 
       public void ConfirmTownPlaced(IServiceProviderCallback client)
       {
         var message = new Message(Message.Types.ConfirmTownPlaced, client);
-        this.messages.Enqueue(message);
+        //this.messages.Enqueue(message);
+        this.messagePump.Enqueue(message);
       }
 
       public void AddClient(IServiceProviderCallback client)
@@ -291,7 +296,8 @@ namespace Jabberwocky.SoC.Service
             {
               this.cancellationToken.ThrowIfCancellationRequested();
 
-              if (this.messages.TryDequeue(out message))
+              //if (this.messages.TryDequeue(out message))
+              if (this.messagePump.TryDequeue(Message.Types.ConfirmGameInitialized, out message))
               {
                 awaitingGameInitializationConfirmation.Remove(message.Sender);
                 continue;
@@ -301,14 +307,14 @@ namespace Jabberwocky.SoC.Service
             }
 
             // Clients have all confirmed they received game initialization data
-            // Now ask each client in dice roll order to place a town.
+            // Now ask each client to place a town in dice roll order.
             var playerIndexes = this.Game.GetFirstSetupPassOrder();
             for (var index = 0; index < this.clientCount; index++)
             {
               var playerIndex = playerIndexes[index];
               this.clients[playerIndex].PlaceTown();
 
-              while (!this.messages.TryDequeue(out message))
+              while (!this.messagePump.TryDequeue(Message.Types.ConfirmTownPlaced, out message))
               {
                 this.cancellationToken.ThrowIfCancellationRequested();
 
@@ -349,6 +355,30 @@ namespace Jabberwocky.SoC.Service
       {
         this.Type = type;
         this.Sender = sender;
+      }
+    }
+
+    private class MessagePump
+    {
+      private ConcurrentQueue<Message> messages = new ConcurrentQueue<Message>();
+
+      public void Enqueue(Message message)
+      {
+        this.messages.Enqueue(message);
+      }
+
+      public Boolean TryDequeue(Message.Types messageType, out Message message)
+      {
+        message = null;
+        if (this.messages.TryPeek(out message) && message.Type == messageType)
+        {
+          if (this.messages.TryDequeue(out message))
+          {
+            return true;
+          }
+        }
+
+        return false;
       }
     }
     #endregion

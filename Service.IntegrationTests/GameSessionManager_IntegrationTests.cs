@@ -144,6 +144,43 @@ namespace Service.IntegrationTests
       mockClient4.PlaceTownMessageReceived.ShouldBeFalse();
     }
 
+    /// <summary>
+    /// If a client sends the wrong message when the server is waiting for 
+    /// game initialization confirmation messages then the message should be ignored. 
+    /// In this scenario the first client sends the wrong message.
+    /// </summary>
+    [Test]
+    public void WhenWaitingForGameInitializationConfirminationMessagesWrongMessagesAreIgnored()
+    {
+      // Arrange
+      var gameSessionManager = this.CreateGameSessionManager(new DiceRollerFactory(), 4);
+
+      var mockClient1 = new MockClient();
+      var mockClient2 = new MockClient();
+      var mockClient3 = new MockClient();
+      var mockClient4 = new MockClient();
+
+      // Act
+      gameSessionManager.AddClient(mockClient1);
+      gameSessionManager.AddClient(mockClient2);
+      gameSessionManager.AddClient(mockClient3);
+      gameSessionManager.AddClient(mockClient4);
+      this.WaitUntilClientsReceiveGameData(mockClient1, mockClient2, mockClient3, mockClient4);
+
+      gameSessionManager.ConfirmTownPlaced(mockClient1.GameToken, mockClient1);
+      gameSessionManager.ConfirmGameInitialized(mockClient2.GameToken, mockClient2);
+      gameSessionManager.ConfirmGameInitialized(mockClient3.GameToken, mockClient3);
+      gameSessionManager.ConfirmGameInitialized(mockClient4.GameToken, mockClient4);
+      Thread.Sleep(1000);
+
+      this.WaitUntilGameSessionManagerStops(gameSessionManager);
+
+      mockClient1.PlaceTownMessageReceived.ShouldBeFalse();
+      mockClient2.PlaceTownMessageReceived.ShouldBeFalse();
+      mockClient3.PlaceTownMessageReceived.ShouldBeFalse();
+      mockClient4.PlaceTownMessageReceived.ShouldBeFalse();
+    }
+
     private void ClientsReceivePlaceTownMessage(List<UInt32> diceRolls, MockClient[] clients, MockClient[] expectedOrder)
     {
       GameSessionManager gameSessionManager = null;
