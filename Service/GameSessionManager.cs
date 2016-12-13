@@ -4,7 +4,6 @@ namespace Jabberwocky.SoC.Service
   using System;
   using System.Collections.Concurrent;
   using System.Collections.Generic;
-  using System.Diagnostics;
   using System.Threading;
   using System.Threading.Tasks;
   using Library;
@@ -27,11 +26,12 @@ namespace Jabberwocky.SoC.Service
     private Task matchingTask;
     private UInt32 maximumPlayerCount;
     private IDiceRollerFactory diceRollerFactory;
+    private IGameManagerFactory gameManagerFactory;
     private CancellationTokenSource cancellationTokenSource;
     #endregion
 
     #region Construction
-    public GameSessionManager(IDiceRollerFactory diceRollerFactory, UInt32 maximumPlayerCount = 1)
+    public GameSessionManager(IDiceRollerFactory diceRollerFactory, IGameManagerFactory gameManagerFactory, UInt32 maximumPlayerCount)
     {
       this.clients = new List<IServiceProviderCallback>();
       this.waitingForGameQueue = new ConcurrentQueue<IServiceProviderCallback>();
@@ -39,6 +39,7 @@ namespace Jabberwocky.SoC.Service
       this.maximumPlayerCount = maximumPlayerCount;
       this.diceRollerFactory = diceRollerFactory;
       this.cancellationTokenSource = new CancellationTokenSource();
+      this.gameManagerFactory = gameManagerFactory;
       this.State = States.Stopped;
     }
     #endregion

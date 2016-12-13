@@ -25,7 +25,7 @@ namespace Service.IntegrationTests
     public void AddClient_AddPlayerToNonFullSession_PlayerAdded()
     {
       // Arrange
-      var gameSessionManager = this.CreateGameSessionManager(new DiceRollerFactory());
+      var gameSessionManager = this.CreateGameSessionManager(new DiceRollerFactory(), new GameManagerFactory(), 1);
       var mockClient = new MockClient();
 
       // Act
@@ -43,7 +43,7 @@ namespace Service.IntegrationTests
     {
       // Arrange
       Guid token = Guid.Empty;
-      var gameSessionManager = this.CreateGameSessionManager(new DiceRollerFactory(), 4);
+      var gameSessionManager = this.CreateGameSessionManager(new DiceRollerFactory(), new GameManagerFactory(), 4);
 
       var mockClient1 = new MockClient();
       var mockClient2 = new MockClient();
@@ -70,7 +70,7 @@ namespace Service.IntegrationTests
     public void AddClient_AddEnoughPlayersToFillGame_AllPlayersAreInitialized()
     {
       // Arrange
-      var gameSessionManager = this.CreateGameSessionManager(new DiceRollerFactory(), 4);
+      var gameSessionManager = this.CreateGameSessionManager(new DiceRollerFactory(), new GameManagerFactory(), 4);
 
       var mockClient1 = new MockClient();
       var mockClient2 = new MockClient();
@@ -117,7 +117,7 @@ namespace Service.IntegrationTests
     public void SubsequentGameInitializationConfirminationMessagesAreIgnored()
     {
       // Arrange
-      var gameSessionManager = this.CreateGameSessionManager(new DiceRollerFactory(), 4);
+      var gameSessionManager = this.CreateGameSessionManager(new DiceRollerFactory(), new GameManagerFactory(), 4);
 
       var mockClient1 = new MockClient();
       var mockClient2 = new MockClient();
@@ -154,7 +154,7 @@ namespace Service.IntegrationTests
     public void WhenWaitingForGameInitializationConfirminationMessagesWrongMessagesAreIgnored()
     {
       // Arrange
-      var gameSessionManager = this.CreateGameSessionManager(new DiceRollerFactory(), 4);
+      var gameSessionManager = this.CreateGameSessionManager(new DiceRollerFactory(), new GameManagerFactory(), 4);
 
       var mockClient1 = new MockClient();
       var mockClient2 = new MockClient();
@@ -183,13 +183,13 @@ namespace Service.IntegrationTests
     }
 
     [Test]
-    public void Test()
+    public void GameManagerReceivesCorrectMessagesWhenPlacingFirstTown()
     {
       GameSessionManager gameSessionManager = null;
       try
       {
         Guid gameToken = Guid.Empty;
-        gameSessionManager = this.CreateGameSessionManager(new DiceRollerFactory(), 4);
+        gameSessionManager = this.CreateGameSessionManager(new DiceRollerFactory(), new GameManagerFactory(), 4);
 
         var mockClient1 = new MockClient();
         var mockClient2 = new MockClient();
@@ -218,13 +218,10 @@ namespace Service.IntegrationTests
         this.WaitUntilClientReceivesPlaceTownMessage(expectedOrder[3]);
         gameSessionManager.ConfirmTownPlaced(expectedOrder[3].GameToken, expectedOrder[3]);
 
-        this.WaitUntilGameSessionManagerStops(gameSessionManager);
+        this.WaitUntilGameSessionManagerStops(gameSessionManager);*/
 
         // Assert
-        expectedOrder[0].TownPlacedRank.ShouldBe(1u);
-        expectedOrder[1].TownPlacedRank.ShouldBe(2u);
-        expectedOrder[2].TownPlacedRank.ShouldBe(3u);
-        expectedOrder[3].TownPlacedRank.ShouldBe(4u);*/
+        throw new NotImplementedException();
       }
       finally
       {
@@ -239,7 +236,7 @@ namespace Service.IntegrationTests
       {
         Guid gameToken = Guid.Empty;
         var diceRollerFactory = this.CreateOneDiceRoller(diceRolls);
-        gameSessionManager = this.CreateGameSessionManager(diceRollerFactory, 4);
+        gameSessionManager = this.CreateGameSessionManager(diceRollerFactory, new GameManagerFactory(), 4);
 
         var mockClient1 = clients[0];
         var mockClient2 = clients[1];
@@ -294,9 +291,9 @@ namespace Service.IntegrationTests
       return diceRollerFactory;
     }
 
-    private GameSessionManager CreateGameSessionManager(IDiceRollerFactory diceRollerFactory, UInt32 maximumPlayerCount = 1)
+    private GameSessionManager CreateGameSessionManager(IDiceRollerFactory diceRollerFactory, IGameManagerFactory gameManagerFactory, UInt32 maximumPlayerCount = 1)
     {
-      var gameSessionManager = new GameSessionManager(diceRollerFactory, maximumPlayerCount);
+      var gameSessionManager = new GameSessionManager(diceRollerFactory, gameManagerFactory, maximumPlayerCount);
       this.WaitUntilGameSessionManagerHasStarted(gameSessionManager);
       return gameSessionManager;
     }
