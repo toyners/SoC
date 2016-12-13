@@ -32,7 +32,7 @@ namespace Service.IntegrationTests
       gameSessionManager.AddClient(mockClient);
       Thread.Sleep(1000);
 
-      this.WaitUntilGameSessionManagerStops(gameSessionManager);
+      this.WaitUntilGameSessionManagerHasStopped(gameSessionManager);
 
       // Assert
       mockClient.GameJoined.ShouldBeTrue();
@@ -57,7 +57,7 @@ namespace Service.IntegrationTests
       gameSessionManager.AddClient(mockClient4);
       Thread.Sleep(1000);
 
-      this.WaitUntilGameSessionManagerStops(gameSessionManager);
+      this.WaitUntilGameSessionManagerHasStopped(gameSessionManager);
 
       // Assert
       mockClient1.GameToken.ShouldNotBe(Guid.Empty);
@@ -84,7 +84,7 @@ namespace Service.IntegrationTests
       gameSessionManager.AddClient(mockClient4);
       this.WaitUntilClientsReceiveGameData(mockClient1, mockClient2, mockClient3, mockClient4);
 
-      this.WaitUntilGameSessionManagerStops(gameSessionManager);
+      this.WaitUntilGameSessionManagerHasStopped(gameSessionManager);
 
       // Assert
       mockClient1.GameInitialized.ShouldBeTrue();
@@ -137,7 +137,7 @@ namespace Service.IntegrationTests
       gameSessionManager.ConfirmGameInitialized(mockClient4.GameToken, mockClient4);
       Thread.Sleep(1000);
 
-      this.WaitUntilGameSessionManagerStops(gameSessionManager);
+      this.WaitUntilGameSessionManagerHasStopped(gameSessionManager);
 
       mockClient1.PlaceTownMessageReceived.ShouldBeFalse();
       mockClient2.PlaceTownMessageReceived.ShouldBeFalse();
@@ -174,7 +174,7 @@ namespace Service.IntegrationTests
       gameSessionManager.ConfirmGameInitialized(mockClient4.GameToken, mockClient4);
       Thread.Sleep(1000);
 
-      this.WaitUntilGameSessionManagerStops(gameSessionManager);
+      this.WaitUntilGameSessionManagerHasStopped(gameSessionManager);
 
       mockClient1.PlaceTownMessageReceived.ShouldBeFalse();
       mockClient2.PlaceTownMessageReceived.ShouldBeFalse();
@@ -228,7 +228,7 @@ namespace Service.IntegrationTests
       }
       finally
       {
-        this.WaitUntilGameSessionManagerStops(gameSessionManager);
+        this.WaitUntilGameSessionManagerHasStopped(gameSessionManager);
       }
     }
 
@@ -268,7 +268,7 @@ namespace Service.IntegrationTests
         this.WaitUntilClientReceivesPlaceTownMessage(expectedOrder[3]);
         gameSessionManager.ConfirmTownPlaced(expectedOrder[3].GameToken, expectedOrder[3]);
 
-        this.WaitUntilGameSessionManagerStops(gameSessionManager);
+        this.WaitUntilGameSessionManagerHasStopped(gameSessionManager);
 
         // Assert
         expectedOrder[0].TownPlacedRank.ShouldBe(1u);
@@ -278,7 +278,7 @@ namespace Service.IntegrationTests
       }
       finally
       {
-        this.WaitUntilGameSessionManagerStops(gameSessionManager);
+        this.WaitUntilGameSessionManagerHasStopped(gameSessionManager);
       }
     }
 
@@ -297,25 +297,7 @@ namespace Service.IntegrationTests
     private GameSessionManager CreateGameSessionManager(IDiceRollerFactory diceRollerFactory, UInt32 maximumPlayerCount = 1)
     {
       var gameSessionManager = new GameSessionManager(diceRollerFactory, maximumPlayerCount);
-      gameSessionManager.Start();
-
-      var stopWatch = new Stopwatch();
-      stopWatch.Start();
-
-      // Wait until the game session manager is started before continuing. Set a limit of 5 seconds for this to happen.
-      while (gameSessionManager.State != GameSessionManager.States.Running && stopWatch.ElapsedMilliseconds < 5000)
-      {
-        Thread.Sleep(50);
-      }
-
-      stopWatch.Stop();
-
-      // Still not started.
-      if (gameSessionManager.State != GameSessionManager.States.Running)
-      {
-        throw new Exception("GameSessionManager has not started");
-      }
-
+      this.WaitUntilGameSessionManagerHasStarted(gameSessionManager);
       return gameSessionManager;
     }
 
@@ -366,12 +348,47 @@ namespace Service.IntegrationTests
       }
     }
 
-    private void WaitUntilGameSessionManagerStops(GameSessionManager gameSessionManager)
+    private void WaitUntilGameSessionManagerHasStarted(GameSessionManager gameSessionManager)
     {
-      gameSessionManager.Stop();
-      while (gameSessionManager.State != GameSessionManager.States.Stopped)
+      gameSessionManager.Start();
+
+      var stopWatch = new Stopwatch();
+      stopWatch.Start();
+
+      // Wait until the game session manager is started before continuing. Set a limit of 5 seconds for this to happen.
+      while (gameSessionManager.State != GameSessionManager.States.Running && stopWatch.ElapsedMilliseconds < 5000)
       {
         Thread.Sleep(50);
+      }
+
+      stopWatch.Stop();
+
+      // Still not started.
+      if (gameSessionManager.State != GameSessionManager.States.Running)
+      {
+        throw new Exception("GameSessionManager has not started.");
+      }
+    }
+
+    private void WaitUntilGameSessionManagerHasStopped(GameSessionManager gameSessionManager)
+    {
+      gameSessionManager.Stop();
+
+      var stopWatch = new Stopwatch();
+      stopWatch.Start();
+
+      // Wait until the game session manager is started before continuing. Set a limit of 5 seconds for this to happen.
+      while (gameSessionManager.State != GameSessionManager.States.Stopped && stopWatch.ElapsedMilliseconds < 5000)
+      {
+        Thread.Sleep(50);
+      }
+
+      stopWatch.Stop();
+
+      // Still not stopped.
+      if (gameSessionManager.State != GameSessionManager.States.Stopped)
+      {
+        throw new Exception("GameSessionManager has not stopped.");
       }
     }
     #endregion 
