@@ -32,13 +32,12 @@ namespace Jabberwocky.SoC.Service
     #endregion
 
     #region Construction
-    public GameSessionManager(IDiceRollerFactory diceRollerFactory, IGameManagerFactory gameManagerFactory, UInt32 maximumPlayerCount)
+    public GameSessionManager(IGameManagerFactory gameManagerFactory, UInt32 maximumPlayerCount)
     {
       this.clients = new List<IServiceProviderCallback>();
       this.waitingForGameQueue = new ConcurrentQueue<IServiceProviderCallback>();
       this.gameSessions = new Dictionary<Guid, GameSession>();
       this.maximumPlayerCount = maximumPlayerCount;
-      this.diceRollerFactory = diceRollerFactory;
       this.cancellationTokenSource = new CancellationTokenSource();
       this.gameManagerFactory = gameManagerFactory;
       this.State = States.Stopped;

@@ -25,7 +25,7 @@ namespace Service.IntegrationTests
     public void AddClient_AddPlayerToNonFullSession_PlayerAdded()
     {
       // Arrange
-      var gameSessionManager = this.CreateGameSessionManager(new DiceRollerFactory(), new GameManagerFactory(), 1);
+      var gameSessionManager = this.CreateGameSessionManager(new GameManagerFactory(), 1);
       var mockClient = new MockClient();
 
       // Act
@@ -43,7 +43,7 @@ namespace Service.IntegrationTests
     {
       // Arrange
       Guid token = Guid.Empty;
-      var gameSessionManager = this.CreateGameSessionManager(new DiceRollerFactory(), new GameManagerFactory(), 4);
+      var gameSessionManager = this.CreateGameSessionManager(new GameManagerFactory(), 4);
 
       var mockClient1 = new MockClient();
       var mockClient2 = new MockClient();
@@ -70,7 +70,7 @@ namespace Service.IntegrationTests
     public void AddClient_AddEnoughPlayersToFillGame_AllPlayersAreInitialized()
     {
       // Arrange
-      var gameSessionManager = this.CreateGameSessionManager(new DiceRollerFactory(), new GameManagerFactory(), 4);
+      var gameSessionManager = this.CreateGameSessionManager(new GameManagerFactory(), 4);
 
       var mockClient1 = new MockClient();
       var mockClient2 = new MockClient();
@@ -94,18 +94,63 @@ namespace Service.IntegrationTests
     }
 
     [Test]
-    public void AddClient_AddEnoughPlayersToFillGame_AllPlayersPlaceFirstTown()
+    [TestCase(new UInt32[] { 0u, 1u, 2u, 3u })]
+    [TestCase(new UInt32[] { 3u, 0u, 1u, 2u })]
+    [TestCase(new UInt32[] { 2u, 3u, 0u, 1u })]
+    [TestCase(new UInt32[] { 1u, 2u, 3u, 0u })]
+    public void ClientsReceivePlaceTownMessageInCorrectOrder(UInt32[] firstSetupPassOrder)
     {
-      var diceRolls = new List<UInt32> { 8u, 6u, 4u, 12u };
-      var mockClient1 = new MockClient();
-      var mockClient2 = new MockClient();
-      var mockClient3 = new MockClient();
-      var mockClient4 = new MockClient();
+      GameSessionManager gameSessionManager = null;
+      try
+      {
+        var board = new Board(BoardSizes.Standard);
+        var mockGameManager = Substitute.For<IGameManager>();
+        mockGameManager.GetFirstSetupPassOrder().Returns(firstSetupPassOrder);
+        mockGameManager.Board.Returns(board);
 
-      MockClient[] clients = { mockClient1, mockClient2, mockClient3, mockClient4 };
-      MockClient[] expectedOrder = { mockClient4, mockClient1, mockClient2, mockClient3 };
+        var mockGameManagerFactory = Substitute.For<IGameManagerFactory>();
+        mockGameManagerFactory.Create().Returns(mockGameManager);
 
-      ClientsReceivePlaceTownMessage(diceRolls, clients, expectedOrder);
+        gameSessionManager = this.CreateGameSessionManager(mockGameManagerFactory, 4);
+
+        var clients = new[] { new MockClient(), new MockClient(), new MockClient(), new MockClient() };
+
+        var mockClient1 = clients[0];
+        var mockClient2 = clients[1];
+        var mockClient3 = clients[2];
+        var mockClient4 = clients[3];
+
+        var firstMockClient = clients[firstSetupPassOrder[0]];
+        var secondMockClient = clients[firstSetupPassOrder[1]];
+        var thirdMockClient = clients[firstSetupPassOrder[2]];
+        var fourthMockClient = clients[firstSetupPassOrder[3]];
+
+        // Act
+        gameSessionManager.AddClient(mockClient1);
+        gameSessionManager.AddClient(mockClient2);
+        gameSessionManager.AddClient(mockClient3);
+        gameSessionManager.AddClient(mockClient4);
+
+        this.WaitUntilClientsReceiveGameData(mockClient1, mockClient2, mockClient3, mockClient4);
+
+        gameSessionManager.ConfirmGameInitialized(mockClient1.GameToken, mockClient1);
+        gameSessionManager.ConfirmGameInitialized(mockClient2.GameToken, mockClient2);
+        gameSessionManager.ConfirmGameInitialized(mockClient3.GameToken, mockClient3);
+        gameSessionManager.ConfirmGameInitialized(mockClient4.GameToken, mockClient4);
+
+        this.WaitUntilClientReceivesPlaceTownMessage(firstMockClient);
+        gameSessionManager.ConfirmTownPlaced(firstMockClient.GameToken, firstMockClient);
+        this.WaitUntilClientReceivesPlaceTownMessage(secondMockClient);
+        gameSessionManager.ConfirmTownPlaced(secondMockClient.GameToken, secondMockClient);
+        this.WaitUntilClientReceivesPlaceTownMessage(thirdMockClient);
+        gameSessionManager.ConfirmTownPlaced(thirdMockClient.GameToken, thirdMockClient);
+        this.WaitUntilClientReceivesPlaceTownMessage(fourthMockClient);
+        gameSessionManager.ConfirmTownPlaced(fourthMockClient.GameToken, fourthMockClient);
+      }
+      finally
+      {
+        this.WaitUntilGameSessionManagerHasStopped(gameSessionManager);
+      }
     }
 
     /// <summary>
@@ -117,7 +162,7 @@ namespace Service.IntegrationTests
     public void SubsequentGameInitializationConfirminationMessagesAreIgnored()
     {
       // Arrange
-      var gameSessionManager = this.CreateGameSessionManager(new DiceRollerFactory(), new GameManagerFactory(), 4);
+      var gameSessionManager = this.CreateGameSessionManager(new GameManagerFactory(), 4);
 
       var mockClient1 = new MockClient();
       var mockClient2 = new MockClient();
@@ -154,7 +199,7 @@ namespace Service.IntegrationTests
     public void WhenWaitingForGameInitializationConfirminationMessagesWrongMessagesAreIgnored()
     {
       // Arrange
-      var gameSessionManager = this.CreateGameSessionManager(new DiceRollerFactory(), new GameManagerFactory(), 4);
+      var gameSessionManager = this.CreateGameSessionManager(new GameManagerFactory(), 4);
 
       var mockClient1 = new MockClient();
       var mockClient2 = new MockClient();
@@ -189,7 +234,7 @@ namespace Service.IntegrationTests
       try
       {
         Guid gameToken = Guid.Empty;
-        gameSessionManager = this.CreateGameSessionManager(new DiceRollerFactory(), new GameManagerFactory(), 4);
+        gameSessionManager = this.CreateGameSessionManager(new GameManagerFactory(), 4);
 
         var mockClient1 = new MockClient();
         var mockClient2 = new MockClient();
@@ -229,56 +274,6 @@ namespace Service.IntegrationTests
       }
     }
 
-    private void ClientsReceivePlaceTownMessage(List<UInt32> diceRolls, MockClient[] clients, MockClient[] expectedOrder)
-    {
-      GameSessionManager gameSessionManager = null;
-      try
-      {
-        Guid gameToken = Guid.Empty;
-        var diceRollerFactory = this.CreateOneDiceRoller(diceRolls);
-        gameSessionManager = this.CreateGameSessionManager(diceRollerFactory, new GameManagerFactory(), 4);
-
-        var mockClient1 = clients[0];
-        var mockClient2 = clients[1];
-        var mockClient3 = clients[2];
-        var mockClient4 = clients[3];
-
-        // Act
-        gameSessionManager.AddClient(mockClient1);
-        gameSessionManager.AddClient(mockClient2);
-        gameSessionManager.AddClient(mockClient3);
-        gameSessionManager.AddClient(mockClient4);
-
-        this.WaitUntilClientsReceiveGameData(mockClient1, mockClient2, mockClient3, mockClient4);
-
-        gameSessionManager.ConfirmGameInitialized(mockClient1.GameToken, mockClient1);
-        gameSessionManager.ConfirmGameInitialized(mockClient2.GameToken, mockClient2);
-        gameSessionManager.ConfirmGameInitialized(mockClient3.GameToken, mockClient3);
-        gameSessionManager.ConfirmGameInitialized(mockClient4.GameToken, mockClient4);
-
-        this.WaitUntilClientReceivesPlaceTownMessage(expectedOrder[0]);
-        gameSessionManager.ConfirmTownPlaced(expectedOrder[0].GameToken, expectedOrder[0]);
-        this.WaitUntilClientReceivesPlaceTownMessage(expectedOrder[1]);
-        gameSessionManager.ConfirmTownPlaced(expectedOrder[1].GameToken, expectedOrder[1]);
-        this.WaitUntilClientReceivesPlaceTownMessage(expectedOrder[2]);
-        gameSessionManager.ConfirmTownPlaced(expectedOrder[2].GameToken, expectedOrder[2]);
-        this.WaitUntilClientReceivesPlaceTownMessage(expectedOrder[3]);
-        gameSessionManager.ConfirmTownPlaced(expectedOrder[3].GameToken, expectedOrder[3]);
-
-        this.WaitUntilGameSessionManagerHasStopped(gameSessionManager);
-
-        // Assert
-        expectedOrder[0].TownPlacedRank.ShouldBe(1u);
-        expectedOrder[1].TownPlacedRank.ShouldBe(2u);
-        expectedOrder[2].TownPlacedRank.ShouldBe(3u);
-        expectedOrder[3].TownPlacedRank.ShouldBe(4u);
-      }
-      finally
-      {
-        this.WaitUntilGameSessionManagerHasStopped(gameSessionManager);
-      }
-    }
-
     private IDiceRollerFactory CreateOneDiceRoller(List<UInt32> diceRolls)
     {
       var index = 0;
@@ -291,9 +286,9 @@ namespace Service.IntegrationTests
       return diceRollerFactory;
     }
 
-    private GameSessionManager CreateGameSessionManager(IDiceRollerFactory diceRollerFactory, IGameManagerFactory gameManagerFactory, UInt32 maximumPlayerCount = 1)
+    private GameSessionManager CreateGameSessionManager(IGameManagerFactory gameManagerFactory, UInt32 maximumPlayerCount = 1)
     {
-      var gameSessionManager = new GameSessionManager(diceRollerFactory, gameManagerFactory, maximumPlayerCount);
+      var gameSessionManager = new GameSessionManager(gameManagerFactory, maximumPlayerCount);
       this.WaitUntilGameSessionManagerHasStarted(gameSessionManager);
       return gameSessionManager;
     }
