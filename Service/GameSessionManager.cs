@@ -4,6 +4,7 @@ namespace Jabberwocky.SoC.Service
   using System;
   using System.Collections.Concurrent;
   using System.Collections.Generic;
+  using System.Diagnostics;
   using System.Threading;
   using System.Threading.Tasks;
   using Library;
@@ -103,7 +104,7 @@ namespace Jabberwocky.SoC.Service
 
     private GameSession AddToNewGameSession(IServiceProviderCallback client, CancellationToken cancellationToken)
     {
-      var gameSession = new GameSession(this.diceRollerFactory.Create(), this.maximumPlayerCount, cancellationToken);
+      var gameSession = new GameSession(this.gameManagerFactory.Create(), this.maximumPlayerCount, cancellationToken);
       gameSession.AddClient(client);
       this.gameSessions.Add(gameSession.GameToken, gameSession);
       return gameSession;
@@ -192,7 +193,7 @@ namespace Jabberwocky.SoC.Service
     private class GameSession
     {
       #region Fields
-      public GameManager Game;
+      private IGameManager gameManager;
 
       public Guid GameToken;
 
@@ -204,16 +205,15 @@ namespace Jabberwocky.SoC.Service
       #endregion
 
       #region Construction
-      public GameSession(IDiceRoller diceRoller, UInt32 playerCount, CancellationToken cancellationToken)
+      public GameSession(IGameManager gameManager, UInt32 clientCount, CancellationToken cancellationToken)
       {
         this.GameToken = Guid.NewGuid();
-
-        this.clients = new IServiceProviderCallback[playerCount];
-
-        var board = new Board(BoardSizes.Standard);
-        this.Game = new GameManager(board, playerCount, diceRoller, new DevelopmentCardPile());
+        this.gameManager = gameManager;
+        this.clients = new IServiceProviderCallback[clientCount];
         this.messagePump = new MessagePump();
         this.cancellationToken = cancellationToken;
+        //var board = new Board(BoardSizes.Standard);
+        //this.Game = new GameManager(board, playerCount, diceRoller, new DevelopmentCardPile());
       }
       #endregion
 
@@ -280,7 +280,7 @@ namespace Jabberwocky.SoC.Service
           this.State = States.Running;
           try
           {
-            var gameData = GameInitializationDataBuilder.Build(this.Game.Board);
+            var gameData = GameInitializationDataBuilder.Build(this.gameManager.Board);
             foreach (var client in this.clients)
             {
               client.InitializeGame(gameData);
@@ -296,6 +296,7 @@ namespace Jabberwocky.SoC.Service
               if (this.messagePump.TryDequeue(Message.Types.ConfirmGameInitialized, out message))
               {
                 awaitingGameInitializationConfirmation.Remove(message.Sender);
+                Debug.Print("Received: " + awaitingGameInitializationConfirmation.Count + " left.");
                 continue;
               }
 
@@ -304,12 +305,12 @@ namespace Jabberwocky.SoC.Service
 
             // Clients have all confirmed they received game initialization data
             // Now ask each client to place a town in dice roll order.
-            var playerIndexes = this.Game.GetFirstSetupPassOrder();
+            var playerIndexes = this.gameManager.GetFirstSetupPassOrder();
             for (var index = 0; index < this.clientCount; index++)
             {
               var playerIndex = playerIndexes[index];
               this.clients[playerIndex].PlaceTown();
-
+              Debug.Print("Sent: Index " + playerIndex);
               while (!this.messagePump.TryDequeue(Message.Types.ConfirmTownPlaced, out message))
               {
                 this.cancellationToken.ThrowIfCancellationRequested();
@@ -317,8 +318,8 @@ namespace Jabberwocky.SoC.Service
                 Thread.Sleep(50);
               }
 
-              this.Game.PlaceTown(playerIndex);
-              this.Game.PlaceRoad(playerIndex);
+              this.gameManager.PlaceTown(playerIndex);
+              this.gameManager.PlaceRoad(playerIndex);
             }
           }
           catch (OperationCanceledException)

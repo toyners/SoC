@@ -8,6 +8,13 @@ namespace Jabberwocky.SoC.Library
   /// </summary>
   public interface IGameManager
   {
+    #region Properties
+    Board Board { get; }
+    #endregion
+
+    #region Methods
+    UInt32[] GetFirstSetupPassOrder();
+
     /// <summary>
     /// Places town at position for the player.
     /// </summary>
@@ -19,5 +26,6 @@ namespace Jabberwocky.SoC.Library
     /// </summary>
     /// <param name="playerId">Player Id of the new road.</param>
     void PlaceRoad(UInt32 playerId);
+    #endregion
   }
 }
