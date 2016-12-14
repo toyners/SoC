@@ -233,8 +233,15 @@ namespace Service.IntegrationTests
       GameSessionManager gameSessionManager = null;
       try
       {
-        Guid gameToken = Guid.Empty;
-        gameSessionManager = this.CreateGameSessionManager(new GameManagerFactory(), 4);
+        var board = new Board(BoardSizes.Standard);
+        var mockGameManager = Substitute.For<IGameManager>();
+        mockGameManager.GetFirstSetupPassOrder().Returns(new UInt32[] { 0u, 1u, 2u, 3u });
+        mockGameManager.Board.Returns(board);
+
+        var mockGameManagerFactory = Substitute.For<IGameManagerFactory>();
+        mockGameManagerFactory.Create().Returns(mockGameManager);
+
+        gameSessionManager = this.CreateGameSessionManager(mockGameManagerFactory, 4);
 
         var mockClient1 = new MockClient();
         var mockClient2 = new MockClient();
@@ -254,18 +261,19 @@ namespace Service.IntegrationTests
         gameSessionManager.ConfirmGameInitialized(mockClient3.GameToken, mockClient3);
         gameSessionManager.ConfirmGameInitialized(mockClient4.GameToken, mockClient4);
 
-        /*this.WaitUntilClientReceivesPlaceTownMessage(expectedOrder[0]);
-        gameSessionManager.ConfirmTownPlaced(expectedOrder[0].GameToken, expectedOrder[0]);
-        this.WaitUntilClientReceivesPlaceTownMessage(expectedOrder[1]);
-        gameSessionManager.ConfirmTownPlaced(expectedOrder[1].GameToken, expectedOrder[1]);
-        this.WaitUntilClientReceivesPlaceTownMessage(expectedOrder[2]);
-        gameSessionManager.ConfirmTownPlaced(expectedOrder[2].GameToken, expectedOrder[2]);
-        this.WaitUntilClientReceivesPlaceTownMessage(expectedOrder[3]);
-        gameSessionManager.ConfirmTownPlaced(expectedOrder[3].GameToken, expectedOrder[3]);
+        this.WaitUntilClientReceivesPlaceTownMessage(mockClient1);
+        gameSessionManager.ConfirmTownPlaced(mockClient1.GameToken, mockClient1);
+        this.WaitUntilClientReceivesPlaceTownMessage(mockClient2);
+        gameSessionManager.ConfirmTownPlaced(mockClient2.GameToken, mockClient2);
+        this.WaitUntilClientReceivesPlaceTownMessage(mockClient3);
+        gameSessionManager.ConfirmTownPlaced(mockClient3.GameToken, mockClient3);
+        this.WaitUntilClientReceivesPlaceTownMessage(mockClient4);
+        gameSessionManager.ConfirmTownPlaced(mockClient4.GameToken, mockClient4);
 
-        this.WaitUntilGameSessionManagerStops(gameSessionManager);*/
+        this.WaitUntilGameSessionManagerHasStopped(gameSessionManager);
 
         // Assert
+        mockGameManager.Received().PlaceTown(0u);
         throw new NotImplementedException();
       }
       finally
