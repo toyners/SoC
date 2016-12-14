@@ -61,10 +61,10 @@ namespace Jabberwocky.SoC.Service
       gameSession.ConfirmGameInitialized(client);
     }
 
-    public void ConfirmTownPlaced(Guid gameToken, IServiceProviderCallback client)
+    public void RequestTownPlacement(Guid gameToken, IServiceProviderCallback client, UInt32 positionIndex)
     {
       var gameSession = this.GetGameSession(gameToken);
-      gameSession.ConfirmTownPlaced(client);
+      gameSession.RequestTownPlacement(client, positionIndex);
     }
 
     public States GameSessionState(Guid gameToken)
@@ -232,9 +232,9 @@ namespace Jabberwocky.SoC.Service
         this.messagePump.Enqueue(message);
       }
 
-      public void ConfirmTownPlaced(IServiceProviderCallback client)
+      public void RequestTownPlacement(IServiceProviderCallback client, UInt32 positionIndex)
       {
-        var message = new Message(Message.Types.ConfirmTownPlaced, client);
+        var message = new Message(Message.Types.RequestTownPlacement, client);
         this.messagePump.Enqueue(message);
       }
 
@@ -312,7 +312,7 @@ namespace Jabberwocky.SoC.Service
               var playerIndex = playerIndexes[index];
               this.clients[playerIndex].PlaceTown();
               Debug.Print("Sent: Index " + playerIndex);
-              while (!this.messagePump.TryDequeue(Message.Types.ConfirmTownPlaced, out message))
+              while (!this.messagePump.TryDequeue(Message.Types.RequestTownPlacement, out message))
               {
                 this.cancellationToken.ThrowIfCancellationRequested();
 
@@ -342,7 +342,7 @@ namespace Jabberwocky.SoC.Service
       public enum Types
       {
         ConfirmGameInitialized,
-        ConfirmTownPlaced
+        RequestTownPlacement
       }
 
       public readonly Types Type;
