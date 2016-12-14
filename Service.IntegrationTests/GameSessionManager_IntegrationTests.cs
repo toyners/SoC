@@ -263,18 +263,22 @@ namespace Service.IntegrationTests
 
         this.WaitUntilClientReceivesPlaceTownMessage(mockClient1);
         gameSessionManager.ConfirmTownPlaced(mockClient1.GameToken, mockClient1);
-        this.WaitUntilClientReceivesPlaceTownMessage(mockClient2);
+        mockGameManager.Received().PlaceTown(0u);
+
+        /*this.WaitUntilClientReceivesPlaceTownMessage(mockClient2);
         gameSessionManager.ConfirmTownPlaced(mockClient2.GameToken, mockClient2);
         this.WaitUntilClientReceivesPlaceTownMessage(mockClient3);
         gameSessionManager.ConfirmTownPlaced(mockClient3.GameToken, mockClient3);
         this.WaitUntilClientReceivesPlaceTownMessage(mockClient4);
-        gameSessionManager.ConfirmTownPlaced(mockClient4.GameToken, mockClient4);
+        gameSessionManager.ConfirmTownPlaced(mockClient4.GameToken, mockClient4);*/
 
         this.WaitUntilGameSessionManagerHasStopped(gameSessionManager);
 
         // Assert
         mockGameManager.Received().PlaceTown(0u);
-        throw new NotImplementedException();
+        /*mockGameManager.Received().PlaceTown(1u);
+        mockGameManager.Received().PlaceTown(59u);
+        mockGameManager.Received().PlaceTown()*/
       }
       finally
       {

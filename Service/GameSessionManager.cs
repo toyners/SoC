@@ -279,12 +279,14 @@ namespace Jabberwocky.SoC.Service
           this.State = States.Running;
           try
           {
+            Debug.Print("Start Game");
+
             var gameData = GameInitializationDataBuilder.Build(this.gameManager.Board);
             foreach (var client in this.clients)
             {
               client.InitializeGame(gameData);
             }
-
+            
             // Clients confirming that they have completed game initialization.
             var awaitingGameInitializationConfirmation = new HashSet<IServiceProviderCallback>(this.clients);
             Message message = null;
@@ -301,7 +303,7 @@ namespace Jabberwocky.SoC.Service
 
               Thread.Sleep(50);
             }
-
+            
             // Clients have all confirmed they received game initialization data
             // Now ask each client to place a town in dice roll order.
             var playerIndexes = this.gameManager.GetFirstSetupPassOrder();
@@ -369,12 +371,14 @@ namespace Jabberwocky.SoC.Service
       public Boolean TryDequeue(Message.Types messageType, out Message message)
       {
         message = null;
-        if (this.messages.TryPeek(out message) && message.Type == messageType)
+        if (this.messages.TryDequeue(out message))
         {
-          if (this.messages.TryDequeue(out message))
+          if (message.Type == messageType)
           {
             return true;
           }
+
+          this.messages.Enqueue(message);
         }
 
         return false;
