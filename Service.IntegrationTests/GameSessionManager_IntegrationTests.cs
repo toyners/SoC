@@ -138,7 +138,8 @@ namespace Service.IntegrationTests
         gameSessionManager.ConfirmGameInitialized(mockClient3.GameToken, mockClient3);
         gameSessionManager.ConfirmGameInitialized(mockClient4.GameToken, mockClient4);
 
-        this.WaitUntilClientReceivesPlaceTownMessage(firstMockClient);
+        firstMockClient.WaitUntilClientReceivesPlaceTownMessage();
+        //this.WaitUntilClientReceivesPlaceTownMessage(firstMockClient);
         gameSessionManager.RequestTownPlacement(firstMockClient.GameToken, firstMockClient, 0u);
         this.WaitUntilClientReceivesPlaceTownMessage(secondMockClient);
         gameSessionManager.RequestTownPlacement(secondMockClient.GameToken, secondMockClient, 10u);

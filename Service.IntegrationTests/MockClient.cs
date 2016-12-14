@@ -2,6 +2,8 @@
 namespace Service.IntegrationTests
 {
   using System;
+  using System.Diagnostics;
+  using System.Threading;
   using Jabberwocky.SoC.Service;
 
   public class MockClient : IServiceProviderCallback
@@ -53,6 +55,24 @@ namespace Service.IntegrationTests
     {
       this.PlaceTownMessageReceived = true;
       this.TownPlacedRank = MockClient.NextTownPlacedRank++;
+    }
+
+    public void WaitUntilClientReceivesPlaceTownMessage()
+    {
+      var stopWatch = new Stopwatch();
+      stopWatch.Start();
+
+      while (!this.PlaceTownMessageReceived && stopWatch.ElapsedMilliseconds <= 2000)
+      {
+        Thread.Sleep(50);
+      }
+
+      stopWatch.Stop();
+
+      if (!this.PlaceTownMessageReceived)
+      {
+        throw new TimeoutException("Timed out waiting for client to receive place town message.");
+      }
     }
 
     public void StartTurn(Guid token)
