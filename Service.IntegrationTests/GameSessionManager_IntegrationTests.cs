@@ -187,10 +187,10 @@ namespace Service.IntegrationTests
 
       this.WaitUntilGameSessionManagerHasStopped(gameSessionManager);
 
-      mockClient1.PlaceTownMessageReceived.ShouldBeFalse();
-      mockClient2.PlaceTownMessageReceived.ShouldBeFalse();
-      mockClient3.PlaceTownMessageReceived.ShouldBeFalse();
-      mockClient4.PlaceTownMessageReceived.ShouldBeFalse();
+      mockClient1.ChooseTownLocationMessageReceived.ShouldBeFalse();
+      mockClient2.ChooseTownLocationMessageReceived.ShouldBeFalse();
+      mockClient3.ChooseTownLocationMessageReceived.ShouldBeFalse();
+      mockClient4.ChooseTownLocationMessageReceived.ShouldBeFalse();
     }
 
     /// <summary>
@@ -224,10 +224,10 @@ namespace Service.IntegrationTests
 
       this.WaitUntilGameSessionManagerHasStopped(gameSessionManager);
 
-      mockClient1.PlaceTownMessageReceived.ShouldBeFalse();
-      mockClient2.PlaceTownMessageReceived.ShouldBeFalse();
-      mockClient3.PlaceTownMessageReceived.ShouldBeFalse();
-      mockClient4.PlaceTownMessageReceived.ShouldBeFalse();
+      mockClient1.ChooseTownLocationMessageReceived.ShouldBeFalse();
+      mockClient2.ChooseTownLocationMessageReceived.ShouldBeFalse();
+      mockClient3.ChooseTownLocationMessageReceived.ShouldBeFalse();
+      mockClient4.ChooseTownLocationMessageReceived.ShouldBeFalse();
     }
 
     /// <summary>
@@ -311,10 +311,10 @@ namespace Service.IntegrationTests
 
         gameSessionManager = this.CreateGameSessionManager(mockGameManagerFactory, 4);
 
-        var mockClient1 = new MockClient();
-        var mockClient2 = new MockClient();
-        var mockClient3 = new MockClient();
-        var mockClient4 = new MockClient();
+        var mockClient1 = new MockClient(gameSessionManager);
+        var mockClient2 = new MockClient(gameSessionManager);
+        var mockClient3 = new MockClient(gameSessionManager);
+        var mockClient4 = new MockClient(gameSessionManager);
 
         // Act
         this.AddClientsToSessionManager(gameSessionManager, mockClient1, mockClient2, mockClient3, mockClient4);
@@ -324,22 +324,29 @@ namespace Service.IntegrationTests
         this.ConfirmGameInitializedForClients(gameSessionManager, mockClient1, mockClient2, mockClient3, mockClient4);
         
         mockClient1.WaitUntilClientReceivesPlaceTownMessage();
-        mockClient1.TownLocations.ShouldBeNull();
-        gameSessionManager.ConfirmTownPlacement(mockClient1.GameToken, mockClient1, 1u);
+        mockClient1.SelectedTownLocations.ShouldBeNull();
+        mockClient1.PlaceTown(1u);
 
         mockClient2.WaitUntilClientReceivesPlaceTownMessage();
-        mockClient2.TownLocations.ShouldBe(new UInt32[] { 1u });
-        gameSessionManager.ConfirmTownPlacement(mockClient2.GameToken, mockClient2, 2u);
+        mockClient2.SelectedTownLocations.ShouldBeSameAs(new [] { 1u });
+        mockClient2.PlaceTown(5u);
 
         mockClient3.WaitUntilClientReceivesPlaceTownMessage();
-        mockClient1.TownLocations.ShouldBe(new UInt32[] { 1u, 2u });
-        mockClient3.TownLocations.ShouldBe(new UInt32[] { 1u, 2u });
-        gameSessionManager.ConfirmTownPlacement(mockClient3.GameToken, mockClient3, 3u);
+        mockClient3.SelectedTownLocations.ShouldBeSameAs(new[] { 1u, 5u });
+        mockClient1.NewTownLocation.ShouldBe(5u);
+        mockClient3.PlaceTown(13u);
 
         mockClient4.WaitUntilClientReceivesPlaceTownMessage();
-        gameSessionManager.ConfirmTownPlacement(mockClient4.GameToken, mockClient4, 4u);
+        mockClient4.SelectedTownLocations.ShouldBeSameAs(new[] { 1u, 5u, 13u });
+        mockClient1.NewTownLocation.ShouldBe(13u);
+        mockClient2.NewTownLocation.ShouldBe(13u);
+        mockClient4.PlaceTown(27u);
 
         this.WaitUntilGameSessionManagerHasStopped(gameSessionManager);
+
+        mockClient1.NewTownLocation.ShouldBe(27u);
+        mockClient2.NewTownLocation.ShouldBe(27u);
+        mockClient3.NewTownLocation.ShouldBe(27u);
       }
       finally
       {

@@ -8,27 +8,36 @@ namespace Service.IntegrationTests
 
   public class MockClient : IServiceProviderCallback
   {
-    public Guid GameToken;
+    public Boolean ChooseTownLocationMessageReceived;
 
     public Boolean GameJoined;
 
     public Boolean GameInitialized;
 
+    public Guid GameToken;
+
     public UInt32 Id;
 
-    public Boolean PlaceTownMessageReceived;
+    public UInt32 NewTownLocation;
+
+    public UInt32[] SelectedTownLocations;
 
     public UInt32 TownPlacedRank;
-
-    public UInt32[] TownLocations;
 
     private static UInt32 NextTownPlacedRank;
 
     private static UInt32 NextClientId;
 
+    private GameSessionManager gameSessionManager;
+
     public MockClient()
     {
       this.Id = MockClient.NextClientId++;
+    }
+
+    public MockClient(GameSessionManager gameSessionManager)
+    {
+      this.gameSessionManager = gameSessionManager;
     }
 
     public static void SetupBeforeEachTest()
@@ -53,10 +62,11 @@ namespace Service.IntegrationTests
       this.GameInitialized = true;
     }
 
-    public void PlaceTown()
+    public void ChooseTownLocation(UInt32[] selectedTownLocations)
     {
-      this.PlaceTownMessageReceived = true;
+      this.ChooseTownLocationMessageReceived = true;
       this.TownPlacedRank = MockClient.NextTownPlacedRank++;
+      this.SelectedTownLocations = selectedTownLocations;
     }
 
     public void WaitUntilClientReceivesPlaceTownMessage()
@@ -64,14 +74,14 @@ namespace Service.IntegrationTests
       var stopWatch = new Stopwatch();
       stopWatch.Start();
 
-      while (!this.PlaceTownMessageReceived && stopWatch.ElapsedMilliseconds <= 2000)
+      while (!this.ChooseTownLocationMessageReceived && stopWatch.ElapsedMilliseconds <= 2000)
       {
         Thread.Sleep(50);
       }
 
       stopWatch.Stop();
 
-      if (!this.PlaceTownMessageReceived)
+      if (!this.ChooseTownLocationMessageReceived)
       {
         throw new TimeoutException("Timed out waiting for client to receive place town message.");
       }
@@ -80,6 +90,11 @@ namespace Service.IntegrationTests
     public void StartTurn(Guid token)
     {
       throw new NotImplementedException();
+    }
+
+    public void PlaceTown(UInt32 locationIndex)
+    {
+      this.gameSessionManager.ConfirmTownPlacement(this.GameToken, this, locationIndex);
     }
   }
 }

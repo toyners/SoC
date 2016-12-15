@@ -311,7 +311,7 @@ namespace Jabberwocky.SoC.Service
             {
               var playerIndex = playerIndexes[index];
               
-              this.clients[playerIndex].PlaceTown();
+              this.clients[playerIndex].ChooseTownLocation(null);
               Debug.Print("Sent: Index " + playerIndex);
               while (!this.messagePump.TryDequeue(Message.Types.RequestTownPlacement, out message))
               {
