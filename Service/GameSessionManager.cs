@@ -61,10 +61,10 @@ namespace Jabberwocky.SoC.Service
       gameSession.ConfirmGameInitialized(client);
     }
 
-    public void RequestTownPlacement(Guid gameToken, IServiceProviderCallback client, UInt32 positionIndex)
+    public void ConfirmTownPlacement(Guid gameToken, IServiceProviderCallback client, UInt32 positionIndex)
     {
       var gameSession = this.GetGameSession(gameToken);
-      gameSession.RequestTownPlacement(client, positionIndex);
+      gameSession.ConfirmTownPlacement(client, positionIndex);
     }
 
     public States GameSessionState(Guid gameToken)
@@ -232,9 +232,9 @@ namespace Jabberwocky.SoC.Service
         this.messagePump.Enqueue(message);
       }
 
-      public void RequestTownPlacement(IServiceProviderCallback client, UInt32 positionIndex)
+      public void ConfirmTownPlacement(IServiceProviderCallback client, UInt32 positionIndex)
       {
-        var message = new Message(Message.Types.RequestTownPlacement, client);
+        var message = new PlaceTownMessage(Message.Types.RequestTownPlacement, client, positionIndex);
         this.messagePump.Enqueue(message);
       }
 
@@ -310,6 +310,7 @@ namespace Jabberwocky.SoC.Service
             for (var index = 0; index < this.clientCount; index++)
             {
               var playerIndex = playerIndexes[index];
+              
               this.clients[playerIndex].PlaceTown();
               Debug.Print("Sent: Index " + playerIndex);
               while (!this.messagePump.TryDequeue(Message.Types.RequestTownPlacement, out message))
@@ -319,8 +320,8 @@ namespace Jabberwocky.SoC.Service
                 Thread.Sleep(50);
               }
 
-              this.gameManager.PlaceTown(playerIndex);
-              this.gameManager.PlaceRoad(playerIndex);
+              var placeTownMessage = (PlaceTownMessage)message;
+              this.gameManager.PlaceTown(placeTownMessage.Location);
             }
           }
           catch (OperationCanceledException)
@@ -353,6 +354,16 @@ namespace Jabberwocky.SoC.Service
       {
         this.Type = type;
         this.Sender = sender;
+      }
+    }
+
+    private class PlaceTownMessage : Message
+    {
+      public readonly UInt32 Location;
+
+      public PlaceTownMessage(Types type, IServiceProviderCallback sender, UInt32 location) : base(type, sender)
+      {
+        this.Location = location;
       }
     }
 

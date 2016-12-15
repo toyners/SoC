@@ -139,16 +139,16 @@ namespace Service.IntegrationTests
         gameSessionManager.ConfirmGameInitialized(mockClient4.GameToken, mockClient4);
 
         firstMockClient.WaitUntilClientReceivesPlaceTownMessage();
-        gameSessionManager.RequestTownPlacement(firstMockClient.GameToken, firstMockClient, 0u);
+        gameSessionManager.ConfirmTownPlacement(firstMockClient.GameToken, firstMockClient, 0u);
 
         secondMockClient.WaitUntilClientReceivesPlaceTownMessage();
-        gameSessionManager.RequestTownPlacement(secondMockClient.GameToken, secondMockClient, 10u);
+        gameSessionManager.ConfirmTownPlacement(secondMockClient.GameToken, secondMockClient, 10u);
 
         thirdMockClient.WaitUntilClientReceivesPlaceTownMessage();
-        gameSessionManager.RequestTownPlacement(thirdMockClient.GameToken, thirdMockClient, 20u);
+        gameSessionManager.ConfirmTownPlacement(thirdMockClient.GameToken, thirdMockClient, 20u);
 
         fourthMockClient.WaitUntilClientReceivesPlaceTownMessage();
-        gameSessionManager.RequestTownPlacement(fourthMockClient.GameToken, fourthMockClient, 30u);
+        gameSessionManager.ConfirmTownPlacement(fourthMockClient.GameToken, fourthMockClient, 30u);
       }
       finally
       {
@@ -216,7 +216,7 @@ namespace Service.IntegrationTests
       gameSessionManager.AddClient(mockClient4);
       this.WaitUntilClientsReceiveGameData(mockClient1, mockClient2, mockClient3, mockClient4);
 
-      gameSessionManager.RequestTownPlacement(mockClient1.GameToken, mockClient1, 0u);
+      gameSessionManager.ConfirmTownPlacement(mockClient1.GameToken, mockClient1, 0u);
       gameSessionManager.ConfirmGameInitialized(mockClient2.GameToken, mockClient2);
       gameSessionManager.ConfirmGameInitialized(mockClient3.GameToken, mockClient3);
       gameSessionManager.ConfirmGameInitialized(mockClient4.GameToken, mockClient4);
@@ -265,16 +265,22 @@ namespace Service.IntegrationTests
         gameSessionManager.ConfirmGameInitialized(mockClient4.GameToken, mockClient4);
 
         mockClient1.WaitUntilClientReceivesPlaceTownMessage();
-        gameSessionManager.RequestTownPlacement(mockClient1.GameToken, mockClient1, 1u);
+        gameSessionManager.ConfirmTownPlacement(mockClient1.GameToken, mockClient1, 1u);
+
         mockClient2.WaitUntilClientReceivesPlaceTownMessage();
         mockGameManager.Received().PlaceTown(1u);
-        /*gameSessionManager.ConfirmTownPlaced(mockClient2.GameToken, mockClient2);
-        this.WaitUntilClientReceivesPlaceTownMessage(mockClient3);
-        gameSessionManager.ConfirmTownPlaced(mockClient3.GameToken, mockClient3);
-        this.WaitUntilClientReceivesPlaceTownMessage(mockClient4);
-        gameSessionManager.ConfirmTownPlaced(mockClient4.GameToken, mockClient4);*/
+        gameSessionManager.ConfirmTownPlacement(mockClient2.GameToken, mockClient2, 2u);
+
+        mockClient3.WaitUntilClientReceivesPlaceTownMessage();
+        mockGameManager.Received().PlaceTown(2u);
+        gameSessionManager.ConfirmTownPlacement(mockClient3.GameToken, mockClient3, 3u);
+
+        mockClient4.WaitUntilClientReceivesPlaceTownMessage();
+        mockGameManager.Received().PlaceTown(3u);
+        gameSessionManager.ConfirmTownPlacement(mockClient4.GameToken, mockClient4, 4u);
 
         this.WaitUntilGameSessionManagerHasStopped(gameSessionManager);
+        mockGameManager.Received().PlaceTown(4u);
 
         // Assert
         /*mockGameManager.Received().PlaceTown(0u);
