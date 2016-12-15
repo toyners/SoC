@@ -139,13 +139,15 @@ namespace Service.IntegrationTests
         gameSessionManager.ConfirmGameInitialized(mockClient4.GameToken, mockClient4);
 
         firstMockClient.WaitUntilClientReceivesPlaceTownMessage();
-        //this.WaitUntilClientReceivesPlaceTownMessage(firstMockClient);
         gameSessionManager.RequestTownPlacement(firstMockClient.GameToken, firstMockClient, 0u);
-        this.WaitUntilClientReceivesPlaceTownMessage(secondMockClient);
+
+        secondMockClient.WaitUntilClientReceivesPlaceTownMessage();
         gameSessionManager.RequestTownPlacement(secondMockClient.GameToken, secondMockClient, 10u);
-        this.WaitUntilClientReceivesPlaceTownMessage(thirdMockClient);
+
+        thirdMockClient.WaitUntilClientReceivesPlaceTownMessage();
         gameSessionManager.RequestTownPlacement(thirdMockClient.GameToken, thirdMockClient, 20u);
-        this.WaitUntilClientReceivesPlaceTownMessage(fourthMockClient);
+
+        fourthMockClient.WaitUntilClientReceivesPlaceTownMessage();
         gameSessionManager.RequestTownPlacement(fourthMockClient.GameToken, fourthMockClient, 30u);
       }
       finally
@@ -262,9 +264,9 @@ namespace Service.IntegrationTests
         gameSessionManager.ConfirmGameInitialized(mockClient3.GameToken, mockClient3);
         gameSessionManager.ConfirmGameInitialized(mockClient4.GameToken, mockClient4);
 
-        this.WaitUntilClientReceivesPlaceTownMessage(mockClient1);
+        mockClient1.WaitUntilClientReceivesPlaceTownMessage();
         gameSessionManager.RequestTownPlacement(mockClient1.GameToken, mockClient1, 1u);
-        this.WaitUntilClientReceivesPlaceTownMessage(mockClient2);
+        mockClient2.WaitUntilClientReceivesPlaceTownMessage();
         mockGameManager.Received().PlaceTown(1u);
         /*gameSessionManager.ConfirmTownPlaced(mockClient2.GameToken, mockClient2);
         this.WaitUntilClientReceivesPlaceTownMessage(mockClient3);
@@ -303,24 +305,6 @@ namespace Service.IntegrationTests
       var gameSessionManager = new GameSessionManager(gameManagerFactory, maximumPlayerCount);
       this.WaitUntilGameSessionManagerHasStarted(gameSessionManager);
       return gameSessionManager;
-    }
-
-    private void WaitUntilClientReceivesPlaceTownMessage(MockClient mockClient)
-    {
-      var stopWatch = new Stopwatch();
-      stopWatch.Start();
-
-      while (!mockClient.PlaceTownMessageReceived && stopWatch.ElapsedMilliseconds <= 2000)
-      {
-        Thread.Sleep(50);
-      }
-
-      stopWatch.Stop();
-
-      if (!mockClient.PlaceTownMessageReceived)
-      {
-        throw new TimeoutException("Timed out waiting for client to receive place town message.");
-      }
     }
 
     private void WaitUntilClientsReceiveGameData(params MockClient[] mockClients)
