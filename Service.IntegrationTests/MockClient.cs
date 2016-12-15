@@ -20,6 +20,8 @@ namespace Service.IntegrationTests
 
     public UInt32 TownPlacedRank;
 
+    public UInt32[] TownLocations;
+
     private static UInt32 NextTownPlacedRank;
 
     private static UInt32 NextClientId;
