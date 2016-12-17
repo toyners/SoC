@@ -2,6 +2,7 @@
 namespace Service.IntegrationTests
 {
   using System;
+  using System.Collections.Generic;
   using System.Diagnostics;
   using System.Threading;
   using Jabberwocky.SoC.Service;
@@ -20,7 +21,7 @@ namespace Service.IntegrationTests
 
     public UInt32 NewTownLocation;
 
-    public UInt32[] SelectedTownLocations;
+    public List<UInt32> SelectedTownLocations;
 
     public UInt32 TownPlacedRank;
 
@@ -62,7 +63,7 @@ namespace Service.IntegrationTests
       this.GameInitialized = true;
     }
 
-    public void ChooseTownLocation(UInt32[] selectedTownLocations)
+    public void ChooseTownLocation(List<UInt32> selectedTownLocations)
     {
       this.ChooseTownLocationMessageReceived = true;
       this.TownPlacedRank = MockClient.NextTownPlacedRank++;

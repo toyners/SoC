@@ -2,6 +2,7 @@
 namespace Jabberwocky.SoC.Service
 {
   using System;
+  using System.Collections.Generic;
   using System.ServiceModel;
 
   public interface IServiceProviderCallback
@@ -30,6 +31,6 @@ namespace Jabberwocky.SoC.Service
     void InitializeGame(GameInitializationData gameData);
 
     [OperationContract(IsOneWay = true)]
-    void ChooseTownLocation(UInt32[] selectedTownLocations);
+    void ChooseTownLocation(List<UInt32> selectedTownLocations);
   }
 }

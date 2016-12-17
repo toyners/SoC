@@ -328,16 +328,16 @@ namespace Service.IntegrationTests
         mockClient1.PlaceTown(1u);
 
         mockClient2.WaitUntilClientReceivesPlaceTownMessage();
-        mockClient2.SelectedTownLocations.ShouldBeSameAs(new [] { 1u });
+        mockClient2.SelectedTownLocations.ShouldBeSameAs(new List<UInt32> { 1u });
         mockClient2.PlaceTown(5u);
 
         mockClient3.WaitUntilClientReceivesPlaceTownMessage();
-        mockClient3.SelectedTownLocations.ShouldBeSameAs(new[] { 1u, 5u });
+        mockClient3.SelectedTownLocations.ShouldBeSameAs(new List<UInt32> { 1u, 5u });
         mockClient1.NewTownLocation.ShouldBe(5u);
         mockClient3.PlaceTown(13u);
 
         mockClient4.WaitUntilClientReceivesPlaceTownMessage();
-        mockClient4.SelectedTownLocations.ShouldBeSameAs(new[] { 1u, 5u, 13u });
+        mockClient4.SelectedTownLocations.ShouldBeSameAs(new List<UInt32> { 1u, 5u, 13u });
         mockClient1.NewTownLocation.ShouldBe(13u);
         mockClient2.NewTownLocation.ShouldBe(13u);
         mockClient4.PlaceTown(27u);

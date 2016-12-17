@@ -307,11 +307,12 @@ namespace Jabberwocky.SoC.Service
             // Clients have all confirmed they received game initialization data
             // Now ask each client to place a town in dice roll order.
             var playerIndexes = this.gameManager.GetFirstSetupPassOrder();
+            var selectedTownLocations = new List<UInt32>(8);
             for (var index = 0; index < this.clientCount; index++)
             {
               var playerIndex = playerIndexes[index];
               
-              this.clients[playerIndex].ChooseTownLocation(null);
+              this.clients[playerIndex].ChooseTownLocation(selectedTownLocations);
               Debug.Print("Sent: Index " + playerIndex);
               while (!this.messagePump.TryDequeue(Message.Types.RequestTownPlacement, out message))
               {
