@@ -328,7 +328,7 @@ namespace Jabberwocky.SoC.Service
 
               foreach (var client in playersThatHavePlacedTown)
               {
-                //client.Pl
+                client.UpdateTownLocations(placeTownMessage.Location);
               }
 
               playersThatHavePlacedTown.Add(this.clients[playerIndex]);

@@ -97,5 +97,10 @@ namespace Service.IntegrationTests
     {
       this.gameSessionManager.ConfirmTownPlacement(this.GameToken, this, locationIndex);
     }
+
+    public void UpdateTownLocations(UInt32 locationIndex)
+    {
+      this.NewTownLocation = locationIndex;
+    }
   }
 }

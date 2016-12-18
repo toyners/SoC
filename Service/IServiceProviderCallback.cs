@@ -32,5 +32,8 @@ namespace Jabberwocky.SoC.Service
 
     [OperationContract(IsOneWay = true)]
     void ChooseTownLocation(List<UInt32> selectedTownLocations);
+
+    [OperationContract(IsOneWay = true)]
+    void UpdateTownLocations(UInt32 locationIndex);
   }
 }
