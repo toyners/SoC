@@ -308,6 +308,7 @@ namespace Jabberwocky.SoC.Service
             // Now ask each client to place a town in dice roll order.
             var playerIndexes = this.gameManager.GetFirstSetupPassOrder();
             var selectedTownLocations = new List<UInt32>(8);
+            var playersThatHavePlacedTown = new List<IServiceProviderCallback>(3);
             for (var index = 0; index < this.clientCount; index++)
             {
               var playerIndex = playerIndexes[index];
@@ -323,6 +324,14 @@ namespace Jabberwocky.SoC.Service
 
               var placeTownMessage = (PlaceTownMessage)message;
               this.gameManager.PlaceTown(placeTownMessage.Location);
+              selectedTownLocations.Add(placeTownMessage.Location);
+
+              foreach (var client in playersThatHavePlacedTown)
+              {
+                //client.Pl
+              }
+
+              playersThatHavePlacedTown.Add(this.clients[playerIndex]);
             }
           }
           catch (OperationCanceledException)
