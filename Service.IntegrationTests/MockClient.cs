@@ -36,7 +36,7 @@ namespace Service.IntegrationTests
       this.Id = MockClient.NextClientId++;
     }
 
-    public MockClient(GameSessionManager gameSessionManager)
+    public MockClient(GameSessionManager gameSessionManager) : this()
     {
       this.gameSessionManager = gameSessionManager;
     }
