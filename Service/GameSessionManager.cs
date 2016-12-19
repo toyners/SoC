@@ -303,36 +303,10 @@ namespace Jabberwocky.SoC.Service
 
               Thread.Sleep(50);
             }
-            
+
             // Clients have all confirmed they received game initialization data
             // Now ask each client to place a town in dice roll order.
-            var playerIndexes = this.gameManager.GetFirstSetupPassOrder();
-            var selectedTownLocations = new List<UInt32>(8);
-            var playersThatHavePlacedTown = new List<IServiceProviderCallback>(3);
-            for (var index = 0; index < this.clientCount; index++)
-            {
-              var playerIndex = playerIndexes[index];
-              
-              this.clients[playerIndex].ChooseTownLocation(selectedTownLocations);
-              Debug.Print("Sent: Index " + playerIndex);
-              while (!this.messagePump.TryDequeue(Message.Types.RequestTownPlacement, out message))
-              {
-                this.cancellationToken.ThrowIfCancellationRequested();
-
-                Thread.Sleep(50);
-              }
-
-              var placeTownMessage = (PlaceTownMessage)message;
-              this.gameManager.PlaceTown(placeTownMessage.Location);
-              selectedTownLocations.Add(placeTownMessage.Location);
-
-              foreach (var client in playersThatHavePlacedTown)
-              {
-                client.UpdateTownLocations(placeTownMessage.Location);
-              }
-
-              playersThatHavePlacedTown.Add(this.clients[playerIndex]);
-            }
+            this.PlaceTownsInOrder(this.gameManager.GetFirstSetupPassOrder());
           }
           catch (OperationCanceledException)
           {
@@ -344,6 +318,37 @@ namespace Jabberwocky.SoC.Service
             this.State = States.Stopped;
           }
         });
+      }
+
+      private void PlaceTownsInOrder(UInt32[] playerIndexes)
+      {
+        Message message = null;
+        var selectedTownLocations = new List<UInt32>(8);
+        var playersThatHavePlacedTown = new List<IServiceProviderCallback>(3);
+        for (var index = 0; index < this.clientCount; index++)
+        {
+          var playerIndex = playerIndexes[index];
+
+          this.clients[playerIndex].ChooseTownLocation(selectedTownLocations);
+          Debug.Print("Sent: Index " + playerIndex);
+          while (!this.messagePump.TryDequeue(Message.Types.RequestTownPlacement, out message))
+          {
+            this.cancellationToken.ThrowIfCancellationRequested();
+
+            Thread.Sleep(50);
+          }
+
+          var placeTownMessage = (PlaceTownMessage)message;
+          this.gameManager.PlaceTown(placeTownMessage.Location);
+          selectedTownLocations.Add(placeTownMessage.Location);
+
+          foreach (var client in playersThatHavePlacedTown)
+          {
+            client.UpdateTownLocations(placeTownMessage.Location);
+          }
+
+          playersThatHavePlacedTown.Add(this.clients[playerIndex]);
+        }
       }
       #endregion
     }
