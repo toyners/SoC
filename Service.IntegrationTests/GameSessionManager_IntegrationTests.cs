@@ -413,7 +413,6 @@ namespace Service.IntegrationTests
         var mockClient3 = mockClients[2];
         var mockClient4 = mockClients[3];
 
-
         var firstMockClient = mockClients[setupOrder[0]];
         var secondMockClient = mockClients[setupOrder[1]];
         var thirdMockClient = mockClients[setupOrder[2]];
@@ -456,13 +455,45 @@ namespace Service.IntegrationTests
         firstMockClient.NewTownLocation.ShouldBe(lastLocation);
         secondMockClient.NewTownLocation.ShouldBe(lastLocation);
         fourthMockClient.PlaceTown(location);
-
-        gameSessionManager.WaitUntilGameSessionManagerHasStopped();
-
-        lastLocation = location;
+        
+        // Start of round two
+        fourthMockClient.WaitUntilClientReceivesPlaceTownMessage();
         firstMockClient.NewTownLocation.ShouldBe(lastLocation);
         secondMockClient.NewTownLocation.ShouldBe(lastLocation);
         thirdMockClient.NewTownLocation.ShouldBe(lastLocation);
+
+        location = locationIndexes[++locationIndex];
+        fourthMockClient.PlaceTown(location);
+
+        thirdMockClient.WaitUntilClientReceivesPlaceTownMessage();
+        firstMockClient.NewTownLocation.ShouldBe(location);
+        secondMockClient.NewTownLocation.ShouldBe(location);
+        thirdMockClient.NewTownLocation.ShouldBe(location);
+
+        location = locationIndexes[++locationIndex];
+        thirdMockClient.PlaceTown(location);
+
+        secondMockClient.WaitUntilClientReceivesPlaceTownMessage();
+        firstMockClient.NewTownLocation.ShouldBe(location);
+        secondMockClient.NewTownLocation.ShouldBe(location);
+        fourthMockClient.NewTownLocation.ShouldBe(location);
+
+        location = locationIndexes[++locationIndex];
+        secondMockClient.PlaceTown(location);
+
+        firstMockClient.WaitUntilClientReceivesPlaceTownMessage();
+        thirdMockClient.NewTownLocation.ShouldBe(location);
+        secondMockClient.NewTownLocation.ShouldBe(location);
+        fourthMockClient.NewTownLocation.ShouldBe(location);
+
+        location = locationIndexes[++locationIndex];
+        firstMockClient.PlaceTown(location);
+
+        gameSessionManager.WaitUntilGameSessionManagerHasStopped();
+
+        secondMockClient.NewTownLocation.ShouldBe(location);
+        thirdMockClient.NewTownLocation.ShouldBe(location);
+        fourthMockClient.NewTownLocation.ShouldBe(location);
       }
       finally
       {
