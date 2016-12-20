@@ -9,13 +9,25 @@ namespace Service.IntegrationTests
 
   public static class GameSessionManagerExtensions
   {
-    public static GameSessionManager CreateGameSessionManager(IGameManagerFactory gameManagerFactory, UInt32 maximumPlayerCount = 1)
+    /// <summary>
+    /// Creates the game session manager and then starts them. Throws time out exception if the gsm is not started
+    /// after 5 seconds.
+    /// </summary>
+    /// <param name="gameManagerFactory"></param>
+    /// <param name="maximumPlayerCount"></param>
+    /// <returns></returns>
+    public static GameSessionManager CreateGameSessionManagerForTest(IGameManagerFactory gameManagerFactory, UInt32 maximumPlayerCount = 1)
     {
       var gameSessionManager = new GameSessionManager(gameManagerFactory, maximumPlayerCount);
       gameSessionManager.WaitUntilGameSessionManagerHasStarted();
       return gameSessionManager;
     }
 
+    /// <summary>
+    /// Stops the game session manager (if not already stopped). Waits for a maximum of 5 seconds for the gsm to stop 
+    /// before throwing a time out exception.
+    /// </summary>
+    /// <param name="gameSessionManager">Game session manager instance.</param>
     public static void WaitUntilGameSessionManagerHasStopped(this GameSessionManager gameSessionManager)
     {
       if (gameSessionManager.State == GameSessionManager.States.Stopped)

@@ -25,7 +25,7 @@ namespace Service.IntegrationTests
     public void AddClient_AddPlayerToNonFullSession_PlayerAdded()
     {
       // Arrange
-      var gameSessionManager = GameSessionManagerExtensions.CreateGameSessionManager(new GameManagerFactory(), 1);
+      var gameSessionManager = GameSessionManagerExtensions.CreateGameSessionManagerForTest(new GameManagerFactory(), 1);
       var mockClient = new MockClient();
 
       // Act
@@ -43,7 +43,7 @@ namespace Service.IntegrationTests
     {
       // Arrange
       Guid token = Guid.Empty;
-      var gameSessionManager = GameSessionManagerExtensions.CreateGameSessionManager(new GameManagerFactory(), 4);
+      var gameSessionManager = GameSessionManagerExtensions.CreateGameSessionManagerForTest(new GameManagerFactory(), 4);
 
       var mockClient1 = new MockClient();
       var mockClient2 = new MockClient();
@@ -70,7 +70,7 @@ namespace Service.IntegrationTests
     public void AddClient_AddEnoughPlayersToFillGame_AllPlayersAreInitialized()
     {
       // Arrange
-      var gameSessionManager = GameSessionManagerExtensions.CreateGameSessionManager(new GameManagerFactory(), 4);
+      var gameSessionManager = GameSessionManagerExtensions.CreateGameSessionManagerForTest(new GameManagerFactory(), 4);
 
       var mockClient1 = new MockClient();
       var mockClient2 = new MockClient();
@@ -111,7 +111,7 @@ namespace Service.IntegrationTests
         var mockGameManagerFactory = Substitute.For<IGameManagerFactory>();
         mockGameManagerFactory.Create().Returns(mockGameManager);
 
-        gameSessionManager = GameSessionManagerExtensions.CreateGameSessionManager(mockGameManagerFactory, 4);
+        gameSessionManager = GameSessionManagerExtensions.CreateGameSessionManagerForTest(mockGameManagerFactory, 4);
 
         var clients = new[] { new MockClient(), new MockClient(), new MockClient(), new MockClient() };
 
@@ -165,7 +165,7 @@ namespace Service.IntegrationTests
     public void SubsequentGameInitializationConfirminationMessagesAreIgnored()
     {
       // Arrange
-      var gameSessionManager = GameSessionManagerExtensions.CreateGameSessionManager(new GameManagerFactory(), 4);
+      var gameSessionManager = GameSessionManagerExtensions.CreateGameSessionManagerForTest(new GameManagerFactory(), 4);
 
       var mockClient1 = new MockClient();
       var mockClient2 = new MockClient();
@@ -202,7 +202,7 @@ namespace Service.IntegrationTests
     public void WhenWaitingForGameInitializationConfirminationMessagesWrongMessagesAreIgnored()
     {
       // Arrange
-      var gameSessionManager = GameSessionManagerExtensions.CreateGameSessionManager(new GameManagerFactory(), 4);
+      var gameSessionManager = GameSessionManagerExtensions.CreateGameSessionManagerForTest(new GameManagerFactory(), 4);
 
       var mockClient1 = new MockClient();
       var mockClient2 = new MockClient();
@@ -251,7 +251,7 @@ namespace Service.IntegrationTests
         var mockGameManagerFactory = Substitute.For<IGameManagerFactory>();
         mockGameManagerFactory.Create().Returns(mockGameManager);
 
-        gameSessionManager = GameSessionManagerExtensions.CreateGameSessionManager(mockGameManagerFactory, 4);
+        gameSessionManager = GameSessionManagerExtensions.CreateGameSessionManagerForTest(mockGameManagerFactory, 4);
 
         var mockClient1 = new MockClient();
         var mockClient2 = new MockClient();
@@ -313,7 +313,7 @@ namespace Service.IntegrationTests
         var mockGameManagerFactory = Substitute.For<IGameManagerFactory>();
         mockGameManagerFactory.Create().Returns(mockGameManager);
 
-        gameSessionManager = GameSessionManagerExtensions.CreateGameSessionManager(mockGameManagerFactory, 4);
+        gameSessionManager = GameSessionManagerExtensions.CreateGameSessionManagerForTest(mockGameManagerFactory, 4);
 
         var mockClients = new[] 
         {
@@ -398,7 +398,7 @@ namespace Service.IntegrationTests
         var mockGameManagerFactory = Substitute.For<IGameManagerFactory>();
         mockGameManagerFactory.Create().Returns(mockGameManager);
 
-        gameSessionManager = GameSessionManagerExtensions.CreateGameSessionManager(mockGameManagerFactory, 4);
+        gameSessionManager = GameSessionManagerExtensions.CreateGameSessionManagerForTest(mockGameManagerFactory, 4);
 
         var mockClients = new[]
         {
