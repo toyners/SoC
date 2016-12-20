@@ -25,14 +25,14 @@ namespace Service.IntegrationTests
     public void AddClient_AddPlayerToNonFullSession_PlayerAdded()
     {
       // Arrange
-      var gameSessionManager = this.CreateGameSessionManager(new GameManagerFactory(), 1);
+      var gameSessionManager = GameSessionManagerExtensions.CreateGameSessionManager(new GameManagerFactory(), 1);
       var mockClient = new MockClient();
 
       // Act
       gameSessionManager.AddClient(mockClient);
       Thread.Sleep(1000);
 
-      this.WaitUntilGameSessionManagerHasStopped(gameSessionManager);
+      gameSessionManager.WaitUntilGameSessionManagerHasStopped();
 
       // Assert
       mockClient.GameJoined.ShouldBeTrue();
@@ -43,7 +43,7 @@ namespace Service.IntegrationTests
     {
       // Arrange
       Guid token = Guid.Empty;
-      var gameSessionManager = this.CreateGameSessionManager(new GameManagerFactory(), 4);
+      var gameSessionManager = GameSessionManagerExtensions.CreateGameSessionManager(new GameManagerFactory(), 4);
 
       var mockClient1 = new MockClient();
       var mockClient2 = new MockClient();
@@ -57,7 +57,7 @@ namespace Service.IntegrationTests
       gameSessionManager.AddClient(mockClient4);
       Thread.Sleep(1000);
 
-      this.WaitUntilGameSessionManagerHasStopped(gameSessionManager);
+      gameSessionManager.WaitUntilGameSessionManagerHasStopped();
 
       // Assert
       mockClient1.GameToken.ShouldNotBe(Guid.Empty);
@@ -70,7 +70,7 @@ namespace Service.IntegrationTests
     public void AddClient_AddEnoughPlayersToFillGame_AllPlayersAreInitialized()
     {
       // Arrange
-      var gameSessionManager = this.CreateGameSessionManager(new GameManagerFactory(), 4);
+      var gameSessionManager = GameSessionManagerExtensions.CreateGameSessionManager(new GameManagerFactory(), 4);
 
       var mockClient1 = new MockClient();
       var mockClient2 = new MockClient();
@@ -84,7 +84,7 @@ namespace Service.IntegrationTests
       gameSessionManager.AddClient(mockClient4);
       this.WaitUntilClientsReceiveGameData(mockClient1, mockClient2, mockClient3, mockClient4);
 
-      this.WaitUntilGameSessionManagerHasStopped(gameSessionManager);
+      gameSessionManager.WaitUntilGameSessionManagerHasStopped();
 
       // Assert
       mockClient1.GameInitialized.ShouldBeTrue();
@@ -111,7 +111,7 @@ namespace Service.IntegrationTests
         var mockGameManagerFactory = Substitute.For<IGameManagerFactory>();
         mockGameManagerFactory.Create().Returns(mockGameManager);
 
-        gameSessionManager = this.CreateGameSessionManager(mockGameManagerFactory, 4);
+        gameSessionManager = GameSessionManagerExtensions.CreateGameSessionManager(mockGameManagerFactory, 4);
 
         var clients = new[] { new MockClient(), new MockClient(), new MockClient(), new MockClient() };
 
@@ -152,7 +152,7 @@ namespace Service.IntegrationTests
       }
       finally
       {
-        this.WaitUntilGameSessionManagerHasStopped(gameSessionManager);
+        gameSessionManager.WaitUntilGameSessionManagerHasStopped();
       }
     }
 
@@ -165,7 +165,7 @@ namespace Service.IntegrationTests
     public void SubsequentGameInitializationConfirminationMessagesAreIgnored()
     {
       // Arrange
-      var gameSessionManager = this.CreateGameSessionManager(new GameManagerFactory(), 4);
+      var gameSessionManager = GameSessionManagerExtensions.CreateGameSessionManager(new GameManagerFactory(), 4);
 
       var mockClient1 = new MockClient();
       var mockClient2 = new MockClient();
@@ -185,7 +185,7 @@ namespace Service.IntegrationTests
       gameSessionManager.ConfirmGameInitialized(mockClient4.GameToken, mockClient4);
       Thread.Sleep(1000);
 
-      this.WaitUntilGameSessionManagerHasStopped(gameSessionManager);
+      gameSessionManager.WaitUntilGameSessionManagerHasStopped();
 
       mockClient1.ChooseTownLocationMessageReceived.ShouldBeFalse();
       mockClient2.ChooseTownLocationMessageReceived.ShouldBeFalse();
@@ -202,7 +202,7 @@ namespace Service.IntegrationTests
     public void WhenWaitingForGameInitializationConfirminationMessagesWrongMessagesAreIgnored()
     {
       // Arrange
-      var gameSessionManager = this.CreateGameSessionManager(new GameManagerFactory(), 4);
+      var gameSessionManager = GameSessionManagerExtensions.CreateGameSessionManager(new GameManagerFactory(), 4);
 
       var mockClient1 = new MockClient();
       var mockClient2 = new MockClient();
@@ -222,7 +222,7 @@ namespace Service.IntegrationTests
       gameSessionManager.ConfirmGameInitialized(mockClient4.GameToken, mockClient4);
       Thread.Sleep(1000);
 
-      this.WaitUntilGameSessionManagerHasStopped(gameSessionManager);
+      gameSessionManager.WaitUntilGameSessionManagerHasStopped();
 
       mockClient1.ChooseTownLocationMessageReceived.ShouldBeFalse();
       mockClient2.ChooseTownLocationMessageReceived.ShouldBeFalse();
@@ -251,7 +251,7 @@ namespace Service.IntegrationTests
         var mockGameManagerFactory = Substitute.For<IGameManagerFactory>();
         mockGameManagerFactory.Create().Returns(mockGameManager);
 
-        gameSessionManager = this.CreateGameSessionManager(mockGameManagerFactory, 4);
+        gameSessionManager = GameSessionManagerExtensions.CreateGameSessionManager(mockGameManagerFactory, 4);
 
         var mockClient1 = new MockClient();
         var mockClient2 = new MockClient();
@@ -286,12 +286,12 @@ namespace Service.IntegrationTests
         mockGameManager.Received().PlaceTown(townLocations[2]);
         gameSessionManager.ConfirmTownPlacement(mockClient4.GameToken, mockClient4, townLocations[3]);
 
-        this.WaitUntilGameSessionManagerHasStopped(gameSessionManager);
+        gameSessionManager.WaitUntilGameSessionManagerHasStopped();
         mockGameManager.Received().PlaceTown(townLocations[3]);
       }
       finally
       {
-        this.WaitUntilGameSessionManagerHasStopped(gameSessionManager);
+        gameSessionManager.WaitUntilGameSessionManagerHasStopped();
       }
     }
 
@@ -313,7 +313,7 @@ namespace Service.IntegrationTests
         var mockGameManagerFactory = Substitute.For<IGameManagerFactory>();
         mockGameManagerFactory.Create().Returns(mockGameManager);
 
-        gameSessionManager = this.CreateGameSessionManager(mockGameManagerFactory, 4);
+        gameSessionManager = GameSessionManagerExtensions.CreateGameSessionManager(mockGameManagerFactory, 4);
 
         var mockClients = new[] 
         {
@@ -372,7 +372,7 @@ namespace Service.IntegrationTests
         secondMockClient.NewTownLocation.ShouldBe(lastLocation);
         fourthMockClient.PlaceTown(location);
 
-        this.WaitUntilGameSessionManagerHasStopped(gameSessionManager);
+        gameSessionManager.WaitUntilGameSessionManagerHasStopped();
 
         lastLocation = location;
         firstMockClient.NewTownLocation.ShouldBe(lastLocation);
@@ -381,7 +381,7 @@ namespace Service.IntegrationTests
       }
       finally
       {
-        this.WaitUntilGameSessionManagerHasStopped(gameSessionManager);
+        gameSessionManager.WaitUntilGameSessionManagerHasStopped();
       }
     }
 
@@ -398,7 +398,7 @@ namespace Service.IntegrationTests
         var mockGameManagerFactory = Substitute.For<IGameManagerFactory>();
         mockGameManagerFactory.Create().Returns(mockGameManager);
 
-        gameSessionManager = this.CreateGameSessionManager(mockGameManagerFactory, 4);
+        gameSessionManager = GameSessionManagerExtensions.CreateGameSessionManager(mockGameManagerFactory, 4);
 
         var mockClients = new[]
         {
@@ -457,7 +457,7 @@ namespace Service.IntegrationTests
         secondMockClient.NewTownLocation.ShouldBe(lastLocation);
         fourthMockClient.PlaceTown(location);
 
-        this.WaitUntilGameSessionManagerHasStopped(gameSessionManager);
+        gameSessionManager.WaitUntilGameSessionManagerHasStopped();
 
         lastLocation = location;
         firstMockClient.NewTownLocation.ShouldBe(lastLocation);
@@ -466,7 +466,7 @@ namespace Service.IntegrationTests
       }
       finally
       {
-        this.WaitUntilGameSessionManagerHasStopped(gameSessionManager);
+        gameSessionManager.WaitUntilGameSessionManagerHasStopped();
       }
     }
 
@@ -484,25 +484,6 @@ namespace Service.IntegrationTests
       {
         gameSessionManager.ConfirmGameInitialized(mockClient.GameToken, mockClient);
       }
-    }
-
-    private IDiceRollerFactory CreateOneDiceRoller(List<UInt32> diceRolls)
-    {
-      var index = 0;
-      var diceRoller = Substitute.For<IDiceRoller>();
-      diceRoller.RollTwoDice().Returns(x => { return diceRolls[index++]; });
-
-      var diceRollerFactory = Substitute.For<IDiceRollerFactory>();
-      diceRollerFactory.Create().Returns(diceRoller);
-
-      return diceRollerFactory;
-    }
-
-    private GameSessionManager CreateGameSessionManager(IGameManagerFactory gameManagerFactory, UInt32 maximumPlayerCount = 1)
-    {
-      var gameSessionManager = new GameSessionManager(gameManagerFactory, maximumPlayerCount);
-      this.WaitUntilGameSessionManagerHasStarted(gameSessionManager);
-      return gameSessionManager;
     }
 
     private void WaitUntilClientsReceiveGameData(params MockClient[] mockClients)
@@ -531,55 +512,6 @@ namespace Service.IntegrationTests
       if (waitingForGameData.Count > 0)
       {
         throw new TimeoutException("Timed out waiting for clients to receive game data.");
-      }
-    }
-
-    private void WaitUntilGameSessionManagerHasStarted(GameSessionManager gameSessionManager)
-    {
-      gameSessionManager.Start();
-
-      var stopWatch = new Stopwatch();
-      stopWatch.Start();
-
-      // Wait until the game session manager is started before continuing. Set a limit of 5 seconds for this to happen.
-      while (gameSessionManager.State != GameSessionManager.States.Running && stopWatch.ElapsedMilliseconds < 5000)
-      {
-        Thread.Sleep(50);
-      }
-
-      stopWatch.Stop();
-
-      // Still not started.
-      if (gameSessionManager.State != GameSessionManager.States.Running)
-      {
-        throw new Exception("GameSessionManager has not started.");
-      }
-    }
-
-    private void WaitUntilGameSessionManagerHasStopped(GameSessionManager gameSessionManager)
-    {
-      if (gameSessionManager.State == GameSessionManager.States.Stopped)
-      {
-        return;
-      }
-
-      gameSessionManager.Stop();
-
-      var stopWatch = new Stopwatch();
-      stopWatch.Start();
-
-      // Wait until the game session manager is started before continuing. Set a limit of 5 seconds for this to happen.
-      while (gameSessionManager.State != GameSessionManager.States.Stopped && stopWatch.ElapsedMilliseconds < 5000)
-      {
-        Thread.Sleep(50);
-      }
-
-      stopWatch.Stop();
-
-      // Still not stopped.
-      if (gameSessionManager.State != GameSessionManager.States.Stopped)
-      {
-        throw new Exception("GameSessionManager has not stopped.");
       }
     }
     #endregion 

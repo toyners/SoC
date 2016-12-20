@@ -60,6 +60,7 @@
     <Compile Include="GameSessionManager_IntegrationTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="MockClient.cs" />
+    <Compile Include="GameSessionManagerExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
