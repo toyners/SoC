@@ -385,6 +385,91 @@ namespace Service.IntegrationTests
       }
     }
 
+    public void CompleteBothRoundsOfTownPlacement(UInt32[] setupOrder, UInt32[] locationIndexes)
+    {
+      GameSessionManager gameSessionManager = null;
+      try
+      {
+        var board = new Board(BoardSizes.Standard);
+        var mockGameManager = Substitute.For<IGameManager>();
+        mockGameManager.GetFirstSetupPassOrder().Returns(setupOrder);
+        mockGameManager.Board.Returns(board);
+
+        var mockGameManagerFactory = Substitute.For<IGameManagerFactory>();
+        mockGameManagerFactory.Create().Returns(mockGameManager);
+
+        gameSessionManager = this.CreateGameSessionManager(mockGameManagerFactory, 4);
+
+        var mockClients = new[]
+        {
+          new MockClient(gameSessionManager),
+          new MockClient(gameSessionManager),
+          new MockClient(gameSessionManager),
+          new MockClient(gameSessionManager)
+        };
+
+        var mockClient1 = mockClients[0];
+        var mockClient2 = mockClients[1];
+        var mockClient3 = mockClients[2];
+        var mockClient4 = mockClients[3];
+
+
+        var firstMockClient = mockClients[setupOrder[0]];
+        var secondMockClient = mockClients[setupOrder[1]];
+        var thirdMockClient = mockClients[setupOrder[2]];
+        var fourthMockClient = mockClients[setupOrder[3]];
+
+        // Act
+        this.AddClientsToSessionManager(gameSessionManager, mockClient1, mockClient2, mockClient3, mockClient4);
+
+        this.WaitUntilClientsReceiveGameData(mockClient1, mockClient2, mockClient3, mockClient4);
+
+        this.ConfirmGameInitializedForClients(gameSessionManager, mockClient1, mockClient2, mockClient3, mockClient4);
+
+        var locationIndex = 0;
+        var location = locationIndexes[locationIndex];
+        var expectedSelectedTownLocations = new List<UInt32>();
+
+        firstMockClient.WaitUntilClientReceivesPlaceTownMessage();
+        firstMockClient.SelectedTownLocations.ShouldBe(expectedSelectedTownLocations);
+        firstMockClient.PlaceTown(location);
+
+        expectedSelectedTownLocations.Add(location);
+        location = locationIndexes[++locationIndex];
+        secondMockClient.WaitUntilClientReceivesPlaceTownMessage();
+        secondMockClient.SelectedTownLocations.ShouldBe(expectedSelectedTownLocations);
+        secondMockClient.PlaceTown(location);
+
+        expectedSelectedTownLocations.Add(location);
+        var lastLocation = location;
+        location = locationIndexes[++locationIndex];
+        thirdMockClient.WaitUntilClientReceivesPlaceTownMessage();
+        thirdMockClient.SelectedTownLocations.ShouldBe(expectedSelectedTownLocations);
+        firstMockClient.NewTownLocation.ShouldBe(lastLocation);
+        thirdMockClient.PlaceTown(location);
+
+        expectedSelectedTownLocations.Add(location);
+        lastLocation = location;
+        location = locationIndexes[++locationIndex];
+        fourthMockClient.WaitUntilClientReceivesPlaceTownMessage();
+        fourthMockClient.SelectedTownLocations.ShouldBe(expectedSelectedTownLocations);
+        firstMockClient.NewTownLocation.ShouldBe(lastLocation);
+        secondMockClient.NewTownLocation.ShouldBe(lastLocation);
+        fourthMockClient.PlaceTown(location);
+
+        this.WaitUntilGameSessionManagerHasStopped(gameSessionManager);
+
+        lastLocation = location;
+        firstMockClient.NewTownLocation.ShouldBe(lastLocation);
+        secondMockClient.NewTownLocation.ShouldBe(lastLocation);
+        thirdMockClient.NewTownLocation.ShouldBe(lastLocation);
+      }
+      finally
+      {
+        this.WaitUntilGameSessionManagerHasStopped(gameSessionManager);
+      }
+    }
+
     private void AddClientsToSessionManager(GameSessionManager gameSessionManager, params MockClient[] mockClients)
     {
       foreach (var mockClient in mockClients)
@@ -473,6 +558,11 @@ namespace Service.IntegrationTests
 
     private void WaitUntilGameSessionManagerHasStopped(GameSessionManager gameSessionManager)
     {
+      if (gameSessionManager.State == GameSessionManager.States.Stopped)
+      {
+        return;
+      }
+
       gameSessionManager.Stop();
 
       var stopWatch = new Stopwatch();
