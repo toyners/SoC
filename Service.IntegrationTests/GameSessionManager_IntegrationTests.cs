@@ -385,6 +385,8 @@ namespace Service.IntegrationTests
       }
     }
 
+    [Test]
+    [TestCase(new UInt32[] { 0u, 1u, 2u, 3u }, new UInt32[] { 1u, 5u, 13u, 27u })]
     public void CompleteBothRoundsOfTownPlacement(UInt32[] setupOrder, UInt32[] locationIndexes)
     {
       GameSessionManager gameSessionManager = null;
