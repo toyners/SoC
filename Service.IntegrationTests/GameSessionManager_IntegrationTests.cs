@@ -328,7 +328,6 @@ namespace Service.IntegrationTests
         var mockClient3 = mockClients[2];
         var mockClient4 = mockClients[3];
 
-
         var firstMockClient = mockClients[setupOrder[0]];
         var secondMockClient = mockClients[setupOrder[1]];
         var thirdMockClient = mockClients[setupOrder[2]];
@@ -356,28 +355,27 @@ namespace Service.IntegrationTests
         secondMockClient.PlaceTown(location);
 
         expectedSelectedTownLocations.Add(location);
-        var lastLocation = location;
-        location = locationIndexes[++locationIndex];
         thirdMockClient.WaitUntilClientReceivesPlaceTownMessage();
         thirdMockClient.SelectedTownLocations.ShouldBe(expectedSelectedTownLocations);
-        firstMockClient.NewTownLocation.ShouldBe(lastLocation);
+        firstMockClient.NewTownLocation.ShouldBe(location);
+
+        location = locationIndexes[++locationIndex];
         thirdMockClient.PlaceTown(location);
 
         expectedSelectedTownLocations.Add(location);
-        lastLocation = location;
-        location = locationIndexes[++locationIndex];
         fourthMockClient.WaitUntilClientReceivesPlaceTownMessage();
         fourthMockClient.SelectedTownLocations.ShouldBe(expectedSelectedTownLocations);
-        firstMockClient.NewTownLocation.ShouldBe(lastLocation);
-        secondMockClient.NewTownLocation.ShouldBe(lastLocation);
+        firstMockClient.NewTownLocation.ShouldBe(location);
+        secondMockClient.NewTownLocation.ShouldBe(location);
+
+        location = locationIndexes[++locationIndex];
         fourthMockClient.PlaceTown(location);
 
         gameSessionManager.WaitUntilGameSessionManagerHasStopped();
 
-        lastLocation = location;
-        firstMockClient.NewTownLocation.ShouldBe(lastLocation);
-        secondMockClient.NewTownLocation.ShouldBe(lastLocation);
-        thirdMockClient.NewTownLocation.ShouldBe(lastLocation);
+        firstMockClient.NewTownLocation.ShouldBe(location);
+        secondMockClient.NewTownLocation.ShouldBe(location);
+        thirdMockClient.NewTownLocation.ShouldBe(location);
       }
       finally
       {
