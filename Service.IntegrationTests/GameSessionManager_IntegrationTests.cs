@@ -455,7 +455,7 @@ namespace Service.IntegrationTests
 
         location = locationIndexes[++locationIndex];
         fourthMockClient.PlaceTown(location);
-        
+
         // Start of round two
         fourthMockClient.WaitUntilClientReceivesPlaceTownMessage();
         firstMockClient.NewTownLocation.ShouldBe(location);
