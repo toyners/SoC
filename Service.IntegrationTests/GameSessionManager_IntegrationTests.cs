@@ -393,6 +393,10 @@ namespace Service.IntegrationTests
         var board = new Board(BoardSizes.Standard);
         var mockGameManager = Substitute.For<IGameManager>();
         mockGameManager.GetFirstSetupPassOrder().Returns(setupOrder);
+        var secondSetupOrder = new List<UInt32>(setupOrder);
+        secondSetupOrder.Reverse();
+         
+        mockGameManager.GetSecondSetupPassOrder().Returns(secondSetupOrder.ToArray());
         mockGameManager.Board.Returns(board);
 
         var mockGameManagerFactory = Substitute.For<IGameManagerFactory>();

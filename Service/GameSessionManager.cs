@@ -308,7 +308,7 @@ namespace Jabberwocky.SoC.Service
             // Now ask each client to place a town in dice roll order.
             this.PlaceTownsInOrder(this.gameManager.GetFirstSetupPassOrder());
 
-            this.PlaceTownsInOrder(this.gameManager.GetFirstSetupPassOrder());
+            this.PlaceTownsInOrder(this.gameManager.GetSecondSetupPassOrder());
           }
           catch (OperationCanceledException)
           {
