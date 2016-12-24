@@ -60,6 +60,10 @@ namespace Jabberwocky.SoC.Library
       throw new NotImplementedException();
     }
 
+    /// <summary>
+    /// Gets the order of the clients for the first setup pass.
+    /// </summary>
+    /// <returns>Returns array of player indexs in order of setup.</returns>
     public UInt32[] GetFirstSetupPassOrder()
     {
       // Roll dice for each player
@@ -90,6 +94,15 @@ namespace Jabberwocky.SoC.Library
       }
 
       return setupPassOrder;
+    }
+
+    /// <summary>
+    /// Gets the order of the clients for the second setup pass.
+    /// </summary>
+    /// <returns>Returns array of player indexs in order of setup.</returns>
+    public UInt32[] GetSecondSetupPassOrder()
+    {
+      throw new NotImplementedException();
     }
 
     /// <summary>

@@ -13,7 +13,17 @@ namespace Jabberwocky.SoC.Library
     #endregion
 
     #region Methods
+    /// <summary>
+    /// Gets the order of the clients for the first setup pass.
+    /// </summary>
+    /// <returns>Returns array of player indexs in order of setup.</returns>
     UInt32[] GetFirstSetupPassOrder();
+
+    /// <summary>
+    /// Gets the order of the clients for the second setup pass.
+    /// </summary>
+    /// <returns>Returns array of player indexs in order of setup.</returns>
+    UInt32[] GetSecondSetupPassOrder();
 
     /// <summary>
     /// Places town at position for the player.
