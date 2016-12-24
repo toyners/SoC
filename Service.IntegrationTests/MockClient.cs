@@ -9,6 +9,8 @@ namespace Service.IntegrationTests
 
   public class MockClient : IServiceProviderCallback
   {
+    private const UInt32 NotSet = UInt32.MaxValue;
+
     public Boolean ChooseTownLocationMessageReceived;
 
     public Boolean GameJoined;
@@ -34,6 +36,7 @@ namespace Service.IntegrationTests
     public MockClient()
     {
       this.Id = MockClient.NextClientId++;
+      this.NewTownLocation = MockClient.NotSet;
     }
 
     public MockClient(GameSessionManager gameSessionManager) : this()
@@ -88,6 +91,12 @@ namespace Service.IntegrationTests
       }
     }
 
+    public void ResetForNextTownPlacement()
+    {
+      this.SelectedTownLocations = null;
+      this.NewTownLocation = MockClient.NotSet;
+    }
+
     public void StartTurn(Guid token)
     {
       throw new NotImplementedException();
@@ -100,6 +109,11 @@ namespace Service.IntegrationTests
 
     public void TownPlacedDuringSetup(UInt32 locationIndex)
     {
+      if (locationIndex == MockClient.NotSet)
+      {
+        throw new ArgumentException("Location index is invalid.");
+      }
+
       this.NewTownLocation = locationIndex;
     }
   }

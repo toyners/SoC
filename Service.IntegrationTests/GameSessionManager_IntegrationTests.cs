@@ -457,6 +457,11 @@ namespace Service.IntegrationTests
         fourthMockClient.PlaceTown(location);
 
         // Start of round two
+        firstMockClient.ResetForNextTownPlacement();
+        secondMockClient.ResetForNextTownPlacement();
+        thirdMockClient.ResetForNextTownPlacement();
+        fourthMockClient.ResetForNextTownPlacement();
+
         fourthMockClient.WaitUntilClientReceivesPlaceTownMessage();
         firstMockClient.NewTownLocation.ShouldBe(location);
         secondMockClient.NewTownLocation.ShouldBe(location);
