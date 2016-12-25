@@ -461,12 +461,7 @@ namespace Service.IntegrationTests
         fourthMockClient.PlaceTown(location);
 
         // Start of round two
-        firstMockClient.ResetForNextTownPlacement();
-        secondMockClient.ResetForNextTownPlacement();
-        thirdMockClient.ResetForNextTownPlacement();
-        fourthMockClient.ResetForNextTownPlacement();
-
-        fourthMockClient.WaitUntilClientReceivesPlaceTownMessage();
+        fourthMockClient.WaitUntilClientReceivesPlaceTownMessage(); 
         firstMockClient.NewTownLocation.ShouldBe(location);
         secondMockClient.NewTownLocation.ShouldBe(location);
         thirdMockClient.NewTownLocation.ShouldBe(location);
@@ -491,8 +486,8 @@ namespace Service.IntegrationTests
         secondMockClient.PlaceTown(location);
 
         firstMockClient.WaitUntilClientReceivesPlaceTownMessage();
+        firstMockClient.NewTownLocation.ShouldBe(location);
         thirdMockClient.NewTownLocation.ShouldBe(location);
-        secondMockClient.NewTownLocation.ShouldBe(location);
         fourthMockClient.NewTownLocation.ShouldBe(location);
 
         location = locationIndexes[++locationIndex];

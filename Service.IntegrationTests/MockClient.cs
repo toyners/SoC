@@ -11,6 +11,8 @@ namespace Service.IntegrationTests
   {
     private const UInt32 NotSet = UInt32.MaxValue;
 
+    public const Int64 TimeOut = 2000;
+
     public Boolean ChooseTownLocationMessageReceived;
 
     public Boolean GameJoined;
@@ -75,10 +77,15 @@ namespace Service.IntegrationTests
 
     public void WaitUntilClientReceivesPlaceTownMessage()
     {
+      this.ChooseTownLocationMessageReceived = false;
       var stopWatch = new Stopwatch();
       stopWatch.Start();
 
-      while (!this.ChooseTownLocationMessageReceived && stopWatch.ElapsedMilliseconds <= 2000)
+      while (!this.ChooseTownLocationMessageReceived
+#if !DEBUG
+        && stopWatch.ElapsedMilliseconds <= MockClient.TimeOut
+#endif
+        )
       {
         Thread.Sleep(50);
       }
@@ -89,12 +96,6 @@ namespace Service.IntegrationTests
       {
         throw new TimeoutException("Timed out waiting for client to receive place town message.");
       }
-    }
-
-    public void ResetForNextTownPlacement()
-    {
-      this.SelectedTownLocations = null;
-      this.NewTownLocation = MockClient.NotSet;
     }
 
     public void StartTurn(Guid token)

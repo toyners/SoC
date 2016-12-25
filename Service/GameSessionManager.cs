@@ -308,7 +308,35 @@ namespace Jabberwocky.SoC.Service
             // Now ask each client to place a town in dice roll order.
             this.PlaceTownsInOrder(this.gameManager.GetFirstSetupPassOrder());
 
-            this.PlaceTownsInOrder(this.gameManager.GetSecondSetupPassOrder());
+            // Do second pass of setup
+            UInt32[] playerIndexes = this.gameManager.GetSecondSetupPassOrder();
+            for (var index = 0; index < this.clientCount; index++)
+            {
+              var playerIndex = playerIndexes[index];
+              
+              this.clients[playerIndex].ChooseTownLocation(null);
+              Debug.Print("Second pass: Choose town message sent for Index " + playerIndex);
+              while (!this.messagePump.TryDequeue(Message.Types.RequestTownPlacement, out message))
+              {
+                this.cancellationToken.ThrowIfCancellationRequested();
+
+                Thread.Sleep(50);
+              }
+
+              var placeTownMessage = (PlaceTownMessage)message;
+              Debug.Print("Second pass: Request town message received for location " + placeTownMessage.Location);
+              this.gameManager.PlaceTown(placeTownMessage.Location);
+
+              for (var clientIndex = 0; clientIndex < this.clients.Length; clientIndex++)
+              {
+                if (clientIndex == playerIndex)
+                {
+                  continue;
+                }
+
+                this.clients[clientIndex].TownPlacedDuringSetup(placeTownMessage.Location);
+              }
+            }
           }
           catch (OperationCanceledException)
           {
@@ -332,7 +360,7 @@ namespace Jabberwocky.SoC.Service
           var playerIndex = playerIndexes[index];
 
           this.clients[playerIndex].ChooseTownLocation(selectedTownLocations);
-          Debug.Print("Sent: Index " + playerIndex);
+          Debug.Print("First pass: Choose town message sent for Index " + playerIndex);
           while (!this.messagePump.TryDequeue(Message.Types.RequestTownPlacement, out message))
           {
             this.cancellationToken.ThrowIfCancellationRequested();
@@ -341,6 +369,7 @@ namespace Jabberwocky.SoC.Service
           }
 
           var placeTownMessage = (PlaceTownMessage)message;
+          Debug.Print("First pass: Request town message received for location " + placeTownMessage.Location);
           this.gameManager.PlaceTown(placeTownMessage.Location);
           selectedTownLocations.Add(placeTownMessage.Location);
 
