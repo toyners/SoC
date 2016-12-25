@@ -342,31 +342,30 @@ namespace Service.IntegrationTests
 
         var locationIndex = 0;
         var location = locationIndexes[locationIndex];
-        var expectedSelectedTownLocations = new List<UInt32>();
 
         firstMockClient.WaitUntilClientReceivesPlaceTownMessage();
-        firstMockClient.SelectedTownLocations.ShouldBe(expectedSelectedTownLocations);
         firstMockClient.PlaceTown(location);
 
-        expectedSelectedTownLocations.Add(location);
-        location = locationIndexes[++locationIndex];
         secondMockClient.WaitUntilClientReceivesPlaceTownMessage();
-        secondMockClient.SelectedTownLocations.ShouldBe(expectedSelectedTownLocations);
+        secondMockClient.NewTownLocation.ShouldBe(location);
+        thirdMockClient.NewTownLocation.ShouldBe(location);
+        fourthMockClient.NewTownLocation.ShouldBe(location);
+
+        location = locationIndexes[++locationIndex];
         secondMockClient.PlaceTown(location);
 
-        expectedSelectedTownLocations.Add(location);
         thirdMockClient.WaitUntilClientReceivesPlaceTownMessage();
-        thirdMockClient.SelectedTownLocations.ShouldBe(expectedSelectedTownLocations);
         firstMockClient.NewTownLocation.ShouldBe(location);
+        thirdMockClient.NewTownLocation.ShouldBe(location);
+        fourthMockClient.NewTownLocation.ShouldBe(location);
 
         location = locationIndexes[++locationIndex];
         thirdMockClient.PlaceTown(location);
 
-        expectedSelectedTownLocations.Add(location);
         fourthMockClient.WaitUntilClientReceivesPlaceTownMessage();
-        fourthMockClient.SelectedTownLocations.ShouldBe(expectedSelectedTownLocations);
         firstMockClient.NewTownLocation.ShouldBe(location);
         secondMockClient.NewTownLocation.ShouldBe(location);
+        fourthMockClient.NewTownLocation.ShouldBe(location);
 
         location = locationIndexes[++locationIndex];
         fourthMockClient.PlaceTown(location);
@@ -434,31 +433,30 @@ namespace Service.IntegrationTests
 
         var locationIndex = 0;
         var location = locationIndexes[locationIndex];
-        var expectedSelectedTownLocations = new List<UInt32>();
 
         firstMockClient.WaitUntilClientReceivesPlaceTownMessage();
-        firstMockClient.SelectedTownLocations.ShouldBe(expectedSelectedTownLocations);
         firstMockClient.PlaceTown(location);
 
-        expectedSelectedTownLocations.Add(location);
-        location = locationIndexes[++locationIndex];
         secondMockClient.WaitUntilClientReceivesPlaceTownMessage();
-        secondMockClient.SelectedTownLocations.ShouldBe(expectedSelectedTownLocations);
+        secondMockClient.NewTownLocation.ShouldBe(location);
+        thirdMockClient.NewTownLocation.ShouldBe(location);
+        fourthMockClient.NewTownLocation.ShouldBe(location);
+
+        location = locationIndexes[++locationIndex];
         secondMockClient.PlaceTown(location);
 
-        expectedSelectedTownLocations.Add(location);
         thirdMockClient.WaitUntilClientReceivesPlaceTownMessage();
-        thirdMockClient.SelectedTownLocations.ShouldBe(expectedSelectedTownLocations);
         firstMockClient.NewTownLocation.ShouldBe(location);
+        thirdMockClient.NewTownLocation.ShouldBe(location);
+        fourthMockClient.NewTownLocation.ShouldBe(location);
 
         location = locationIndexes[++locationIndex];
         thirdMockClient.PlaceTown(location);
 
-        expectedSelectedTownLocations.Add(location);
         fourthMockClient.WaitUntilClientReceivesPlaceTownMessage();
-        fourthMockClient.SelectedTownLocations.ShouldBe(expectedSelectedTownLocations);
         firstMockClient.NewTownLocation.ShouldBe(location);
         secondMockClient.NewTownLocation.ShouldBe(location);
+        fourthMockClient.NewTownLocation.ShouldBe(location);
 
         location = locationIndexes[++locationIndex];
         fourthMockClient.PlaceTown(location);

@@ -31,7 +31,7 @@ namespace Jabberwocky.SoC.Service
     void InitializeGame(GameInitializationData gameData);
 
     [OperationContract(IsOneWay = true)]
-    void ChooseTownLocation(List<UInt32> selectedTownLocations);
+    void ChooseTownLocation();
 
     [OperationContract(IsOneWay = true)]
     void TownPlacedDuringSetup(UInt32 locationIndex);

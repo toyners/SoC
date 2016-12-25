@@ -326,13 +326,11 @@ namespace Jabberwocky.SoC.Service
       private void PlaceTownsInFirstPassOrder(UInt32[] playerIndexes)
       {
         Message message = null;
-        var selectedTownLocations = new List<UInt32>(8);
-        var playersThatHavePlacedTown = new List<IServiceProviderCallback>(3);
         for (var index = 0; index < this.clientCount; index++)
         {
           var playerIndex = playerIndexes[index];
 
-          this.clients[playerIndex].ChooseTownLocation(selectedTownLocations);
+          this.clients[playerIndex].ChooseTownLocation();
           Debug.Print("First pass: Choose town message sent for Index " + playerIndex);
           while (!this.messagePump.TryDequeue(Message.Types.RequestTownPlacement, out message))
           {
@@ -344,14 +342,16 @@ namespace Jabberwocky.SoC.Service
           var placeTownMessage = (PlaceTownMessage)message;
           Debug.Print("First pass: Request town message received for location " + placeTownMessage.Location);
           this.gameManager.PlaceTown(placeTownMessage.Location);
-          selectedTownLocations.Add(placeTownMessage.Location);
 
-          foreach (var client in playersThatHavePlacedTown)
+          for (var clientIndex = 0; clientIndex < this.clients.Length; clientIndex++)
           {
-            client.TownPlacedDuringSetup(placeTownMessage.Location);
-          }
+            if (clientIndex == playerIndex)
+            {
+              continue;
+            }
 
-          playersThatHavePlacedTown.Add(this.clients[playerIndex]);
+            this.clients[clientIndex].TownPlacedDuringSetup(placeTownMessage.Location);
+          }
         }
       }
 
@@ -363,7 +363,7 @@ namespace Jabberwocky.SoC.Service
         {
           var playerIndex = playerIndexes[index];
 
-          this.clients[playerIndex].ChooseTownLocation(null);
+          this.clients[playerIndex].ChooseTownLocation();
           Debug.Print("Second pass: Choose town message sent for Index " + playerIndex);
           while (!this.messagePump.TryDequeue(Message.Types.RequestTownPlacement, out message))
           {

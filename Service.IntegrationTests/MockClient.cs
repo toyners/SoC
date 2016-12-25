@@ -9,8 +9,6 @@ namespace Service.IntegrationTests
 
   public class MockClient : IServiceProviderCallback
   {
-    private const UInt32 NotSet = UInt32.MaxValue;
-
     public const Int64 TimeOut = 2000;
 
     public Boolean ChooseTownLocationMessageReceived;
@@ -25,8 +23,6 @@ namespace Service.IntegrationTests
 
     public UInt32 NewTownLocation;
 
-    public List<UInt32> SelectedTownLocations;
-
     public UInt32 TownPlacedRank;
 
     private static UInt32 NextTownPlacedRank;
@@ -38,7 +34,6 @@ namespace Service.IntegrationTests
     public MockClient()
     {
       this.Id = MockClient.NextClientId++;
-      this.NewTownLocation = MockClient.NotSet;
     }
 
     public MockClient(GameSessionManager gameSessionManager) : this()
@@ -68,11 +63,10 @@ namespace Service.IntegrationTests
       this.GameInitialized = true;
     }
 
-    public void ChooseTownLocation(List<UInt32> selectedTownLocations)
+    public void ChooseTownLocation()
     {
       this.ChooseTownLocationMessageReceived = true;
       this.TownPlacedRank = MockClient.NextTownPlacedRank++;
-      this.SelectedTownLocations = selectedTownLocations;
     }
 
     public void WaitUntilClientReceivesPlaceTownMessage()
@@ -110,11 +104,6 @@ namespace Service.IntegrationTests
 
     public void TownPlacedDuringSetup(UInt32 locationIndex)
     {
-      if (locationIndex == MockClient.NotSet)
-      {
-        throw new ArgumentException("Location index is invalid.");
-      }
-
       this.NewTownLocation = locationIndex;
     }
   }
