@@ -306,37 +306,10 @@ namespace Jabberwocky.SoC.Service
 
             // Clients have all confirmed they received game initialization data
             // Now ask each client to place a town in dice roll order.
-            this.PlaceTownsInOrder(this.gameManager.GetFirstSetupPassOrder());
+            this.PlaceTownsInFirstPassOrder(this.gameManager.GetFirstSetupPassOrder());
 
             // Do second pass of setup
-            UInt32[] playerIndexes = this.gameManager.GetSecondSetupPassOrder();
-            for (var index = 0; index < this.clientCount; index++)
-            {
-              var playerIndex = playerIndexes[index];
-              
-              this.clients[playerIndex].ChooseTownLocation(null);
-              Debug.Print("Second pass: Choose town message sent for Index " + playerIndex);
-              while (!this.messagePump.TryDequeue(Message.Types.RequestTownPlacement, out message))
-              {
-                this.cancellationToken.ThrowIfCancellationRequested();
-
-                Thread.Sleep(50);
-              }
-
-              var placeTownMessage = (PlaceTownMessage)message;
-              Debug.Print("Second pass: Request town message received for location " + placeTownMessage.Location);
-              this.gameManager.PlaceTown(placeTownMessage.Location);
-
-              for (var clientIndex = 0; clientIndex < this.clients.Length; clientIndex++)
-              {
-                if (clientIndex == playerIndex)
-                {
-                  continue;
-                }
-
-                this.clients[clientIndex].TownPlacedDuringSetup(placeTownMessage.Location);
-              }
-            }
+            this.PlaceTownsInSecondPassOrder();
           }
           catch (OperationCanceledException)
           {
@@ -350,7 +323,7 @@ namespace Jabberwocky.SoC.Service
         });
       }
 
-      private void PlaceTownsInOrder(UInt32[] playerIndexes)
+      private void PlaceTownsInFirstPassOrder(UInt32[] playerIndexes)
       {
         Message message = null;
         var selectedTownLocations = new List<UInt32>(8);
@@ -379,6 +352,39 @@ namespace Jabberwocky.SoC.Service
           }
 
           playersThatHavePlacedTown.Add(this.clients[playerIndex]);
+        }
+      }
+
+      private void PlaceTownsInSecondPassOrder()
+      {
+        Message message = null;
+        UInt32[] playerIndexes = this.gameManager.GetSecondSetupPassOrder();
+        for (var index = 0; index < this.clientCount; index++)
+        {
+          var playerIndex = playerIndexes[index];
+
+          this.clients[playerIndex].ChooseTownLocation(null);
+          Debug.Print("Second pass: Choose town message sent for Index " + playerIndex);
+          while (!this.messagePump.TryDequeue(Message.Types.RequestTownPlacement, out message))
+          {
+            this.cancellationToken.ThrowIfCancellationRequested();
+
+            Thread.Sleep(50);
+          }
+
+          var placeTownMessage = (PlaceTownMessage)message;
+          Debug.Print("Second pass: Request town message received for location " + placeTownMessage.Location);
+          this.gameManager.PlaceTown(placeTownMessage.Location);
+
+          for (var clientIndex = 0; clientIndex < this.clients.Length; clientIndex++)
+          {
+            if (clientIndex == playerIndex)
+            {
+              continue;
+            }
+
+            this.clients[clientIndex].TownPlacedDuringSetup(placeTownMessage.Location);
+          }
         }
       }
       #endregion
