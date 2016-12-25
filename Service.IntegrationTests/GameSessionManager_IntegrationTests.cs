@@ -385,6 +385,9 @@ namespace Service.IntegrationTests
 
     [Test]
     [TestCase(new UInt32[] { 0u, 1u, 2u, 3u }, new UInt32[] { 1u, 5u, 13u, 27u, 3u, 7u, 17u, 30u })]
+    [TestCase(new UInt32[] { 3u, 0u, 1u, 2u }, new UInt32[] { 15u, 3u, 12u, 36u, 11u, 6u, 22u, 30u })]
+    [TestCase(new UInt32[] { 2u, 3u, 0u, 1u }, new UInt32[] { 10u, 2u, 14u, 23u, 33u, 9u, 21u, 37u })]
+    [TestCase(new UInt32[] { 1u, 2u, 3u, 0u }, new UInt32[] { 34u, 26u, 16u, 20u, 34u, 8u, 0u, 40u })]
     public void CompleteBothRoundsOfTownPlacement(UInt32[] setupOrder, UInt32[] locationIndexes)
     {
       GameSessionManager gameSessionManager = null;
