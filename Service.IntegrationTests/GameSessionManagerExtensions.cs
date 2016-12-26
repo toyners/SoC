@@ -10,6 +10,19 @@ namespace Service.IntegrationTests
   public static class GameSessionManagerExtensions
   {
     /// <summary>
+    /// Add clients to the game session manager.
+    /// </summary>
+    /// <param name="gameSessionManager">Game session manager instance.</param>
+    /// <param name="mockClients">Clients to add to the game session manager.</param>
+    public static void AddClientsToSessionManager(this GameSessionManager gameSessionManager, params MockClient[] mockClients)
+    {
+      foreach (var mockClient in mockClients)
+      {
+        gameSessionManager.AddClient(mockClient);
+      }
+    }
+
+    /// <summary>
     /// Creates the game session manager and then starts them. Throws time out exception if the gsm is not started
     /// after 5 seconds.
     /// </summary>
