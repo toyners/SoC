@@ -38,6 +38,24 @@ namespace Service.IntegrationTests
       mockClient.GameJoined.ShouldBeTrue();
     }
 
+    /// <summary>
+    /// When a new client joins a game all clients in the game receive their business card (client data).
+    /// </summary>
+    [Test]
+    public void AllClientsReceiveBusinessCardWhenNewClientJoinsGame()
+    {
+      throw new NotImplementedException();
+    }
+
+    /// <summary>
+    /// When a new client joins a game they get all business cards (client data) for the clients already in the game. 
+    /// </summary>
+    [Test]
+    public void NewClientJoiningGameGetsBusinessCardsForAllClientsAlreadyInGame()
+    {
+      throw new NotImplementedException();
+    }
+
     [Test]
     public void AllClientsReceiveSameGameTokenWhenJoinedToSameGame()
     {
