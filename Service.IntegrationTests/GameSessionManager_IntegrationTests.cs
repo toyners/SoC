@@ -51,7 +51,7 @@ namespace Service.IntegrationTests
       var mockClient4 = new MockClient();
 
       // Act
-      gameSessionManager.AddClientsToSessionManager(mockClient1, mockClient2, mockClient3, mockClient4);
+      gameSessionManager.AddMockClients(mockClient1, mockClient2, mockClient3, mockClient4);
       Thread.Sleep(1000);
 
       gameSessionManager.WaitUntilGameSessionManagerHasStopped();
@@ -75,7 +75,7 @@ namespace Service.IntegrationTests
       var mockClient4 = new MockClient();
 
       // Act
-      gameSessionManager.AddClientsToSessionManager(mockClient1, mockClient2, mockClient3, mockClient4);
+      gameSessionManager.AddMockClients(mockClient1, mockClient2, mockClient3, mockClient4);
       this.WaitUntilClientsReceiveGameData(mockClient1, mockClient2, mockClient3, mockClient4);
 
       gameSessionManager.WaitUntilGameSessionManagerHasStopped();
@@ -120,7 +120,7 @@ namespace Service.IntegrationTests
         var fourthMockClient = clients[firstSetupPassOrder[3]];
 
         // Act
-        gameSessionManager.AddClientsToSessionManager(mockClient1, mockClient2, mockClient3, mockClient4);
+        gameSessionManager.AddMockClients(mockClient1, mockClient2, mockClient3, mockClient4);
 
         this.WaitUntilClientsReceiveGameData(mockClient1, mockClient2, mockClient3, mockClient4);
 
@@ -164,7 +164,7 @@ namespace Service.IntegrationTests
       var mockClient4 = new MockClient();
 
       // Act
-      gameSessionManager.AddClientsToSessionManager(mockClient1, mockClient2, mockClient3, mockClient4);
+      gameSessionManager.AddMockClients(mockClient1, mockClient2, mockClient3, mockClient4);
 
       this.WaitUntilClientsReceiveGameData(mockClient1, mockClient2, mockClient3, mockClient4);
 
@@ -199,7 +199,7 @@ namespace Service.IntegrationTests
       var mockClient4 = new MockClient();
 
       // Act
-      gameSessionManager.AddClientsToSessionManager(mockClient1, mockClient2, mockClient3, mockClient4);
+      gameSessionManager.AddMockClients(mockClient1, mockClient2, mockClient3, mockClient4);
 
       this.WaitUntilClientsReceiveGameData(mockClient1, mockClient2, mockClient3, mockClient4);
 
@@ -321,7 +321,7 @@ namespace Service.IntegrationTests
         var fourthMockClient = mockClients[setupOrder[3]];
 
         // Act
-        gameSessionManager.AddClientsToSessionManager(mockClient1, mockClient2, mockClient3, mockClient4);
+        gameSessionManager.AddMockClients(mockClient1, mockClient2, mockClient3, mockClient4);
         
         this.WaitUntilClientsReceiveGameData(mockClient1, mockClient2, mockClient3, mockClient4);
 
@@ -412,7 +412,7 @@ namespace Service.IntegrationTests
         var fourthMockClient = mockClients[setupOrder[3]];
 
         // Act
-        gameSessionManager.AddClientsToSessionManager(mockClient1, mockClient2, mockClient3, mockClient4);
+        gameSessionManager.AddMockClients(mockClient1, mockClient2, mockClient3, mockClient4);
 
         this.WaitUntilClientsReceiveGameData(mockClient1, mockClient2, mockClient3, mockClient4);
 

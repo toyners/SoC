@@ -10,11 +10,11 @@ namespace Service.IntegrationTests
   public static class GameSessionManagerExtensions
   {
     /// <summary>
-    /// Add clients to the game session manager.
+    /// Add mock clients to the game session manager.
     /// </summary>
     /// <param name="gameSessionManager">Game session manager instance.</param>
-    /// <param name="mockClients">Clients to add to the game session manager.</param>
-    public static void AddClientsToSessionManager(this GameSessionManager gameSessionManager, params MockClient[] mockClients)
+    /// <param name="mockClients">Mock clients to add to the game session manager.</param>
+    public static void AddMockClients(this GameSessionManager gameSessionManager, params MockClient[] mockClients)
     {
       foreach (var mockClient in mockClients)
       {
