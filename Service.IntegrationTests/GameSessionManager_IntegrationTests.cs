@@ -134,7 +134,7 @@ namespace Service.IntegrationTests
 
         gameSessionManager = GameSessionManagerExtensions.CreateGameSessionManagerForTest(mockGameManagerFactory, 4);
 
-        var clients = new[] { new MockClient(), new MockClient(), new MockClient(), new MockClient() };
+        var clients = new[] { new MockClient(gameSessionManager), new MockClient(gameSessionManager), new MockClient(gameSessionManager), new MockClient(gameSessionManager) };
 
         var mockClient1 = clients[0];
         var mockClient2 = clients[1];
@@ -151,11 +151,8 @@ namespace Service.IntegrationTests
 
         this.WaitUntilClientsReceiveGameData(mockClient1, mockClient2, mockClient3, mockClient4);
 
-        gameSessionManager.ConfirmGameInitialized(mockClient1.GameToken, mockClient1);
-        gameSessionManager.ConfirmGameInitialized(mockClient2.GameToken, mockClient2);
-        gameSessionManager.ConfirmGameInitialized(mockClient3.GameToken, mockClient3);
-        gameSessionManager.ConfirmGameInitialized(mockClient4.GameToken, mockClient4);
-
+        this.ConfirmGameInitializedForClients(mockClient1, mockClient2, mockClient3, mockClient4);
+        
         firstMockClient.WaitUntilClientReceivesPlaceTownMessage();
         gameSessionManager.ConfirmTownPlacement(firstMockClient.GameToken, firstMockClient, 0u);
 
