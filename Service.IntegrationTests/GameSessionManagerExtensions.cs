@@ -22,6 +22,14 @@ namespace Service.IntegrationTests
       }
     }
 
+    public static void ConfirmGameInitializedForClients(this GameSessionManager gameSessionManager, params MockClient[] mockClients)
+    {
+      foreach (var mockClient in mockClients)
+      {
+        gameSessionManager.ConfirmGameInitialized(mockClient.GameToken, mockClient);
+      }
+    }
+
     /// <summary>
     /// Creates the game session manager and then starts them. Throws time out exception if the gsm is not started
     /// after 5 seconds.
