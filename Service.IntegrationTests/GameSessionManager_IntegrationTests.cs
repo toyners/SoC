@@ -22,14 +22,14 @@ namespace Service.IntegrationTests
     }
 
     [Test]
-    public void AddClient_AddPlayerToNonFullSession_PlayerAdded()
+    public void ClientReceivesConfirmationOnceJoinedToGame()
     {
       // Arrange
-      var gameSessionManager = GameSessionManagerExtensions.CreateGameSessionManagerForTest(new GameManagerFactory(), 1);
+      var gameSessionManager = GameSessionManagerExtensions.CreateGameSessionManagerForTest(new GameManagerFactory(), 4);
       var mockClient = new MockClient();
 
       // Act
-      gameSessionManager.AddClient(mockClient);
+      gameSessionManager.AddMockClients(mockClient);
       Thread.Sleep(1000);
 
       gameSessionManager.WaitUntilGameSessionManagerHasStopped();
@@ -39,52 +39,61 @@ namespace Service.IntegrationTests
     }
 
     [Test]
-    public void AddClient_AddEnoughPlayersToFillGame_AllPlayersHaveSameGameToken()
+    public void AllPlayersReceivedSameGameTokenWhenJoinedToSameGame()
     {
-      // Arrange
-      Guid token = Guid.Empty;
-      var gameSessionManager = GameSessionManagerExtensions.CreateGameSessionManagerForTest(new GameManagerFactory(), 4);
+      GameSessionManager gameSessionManager = null;
+      try
+      {
+        // Arrange
+        gameSessionManager = GameSessionManagerExtensions.CreateGameSessionManagerForTest(new GameManagerFactory(), 4);
 
-      var mockClient1 = new MockClient();
-      var mockClient2 = new MockClient();
-      var mockClient3 = new MockClient();
-      var mockClient4 = new MockClient();
+        var mockClient1 = new MockClient();
+        var mockClient2 = new MockClient();
+        var mockClient3 = new MockClient();
+        var mockClient4 = new MockClient();
 
-      // Act
-      gameSessionManager.AddMockClients(mockClient1, mockClient2, mockClient3, mockClient4);
-      Thread.Sleep(1000);
+        // Act
+        gameSessionManager.AddMockClients(mockClient1, mockClient2, mockClient3, mockClient4);
+        Thread.Sleep(1000);
 
-      gameSessionManager.WaitUntilGameSessionManagerHasStopped();
+        gameSessionManager.WaitUntilGameSessionManagerHasStopped();
 
-      // Assert
-      mockClient1.GameToken.ShouldNotBe(Guid.Empty);
-      (mockClient1.GameToken == mockClient2.GameToken &&
-       mockClient2.GameToken == mockClient3.GameToken &&
-       mockClient3.GameToken == mockClient4.GameToken).ShouldBeTrue();
+        // Assert
+        mockClient1.GameToken.ShouldNotBe(Guid.Empty);
+        (mockClient1.GameToken == mockClient2.GameToken &&
+         mockClient2.GameToken == mockClient3.GameToken &&
+         mockClient3.GameToken == mockClient4.GameToken).ShouldBeTrue();
+      }
+      finally
+      {
+        gameSessionManager.WaitUntilGameSessionManagerHasStopped();
+      }
     }
 
     [Test]
     public void AddClient_AddEnoughPlayersToFillGame_AllPlayersAreInitialized()
     {
-      // Arrange
-      var gameSessionManager = GameSessionManagerExtensions.CreateGameSessionManagerForTest(new GameManagerFactory(), 4);
+      GameSessionManager gameSessionManager = null;
+      try
+      {
+        // Arrange
+        gameSessionManager = GameSessionManagerExtensions.CreateGameSessionManagerForTest(new GameManagerFactory(), 4);
 
-      var mockClient1 = new MockClient();
-      var mockClient2 = new MockClient();
-      var mockClient3 = new MockClient();
-      var mockClient4 = new MockClient();
+        var mockClient1 = new MockClient();
+        var mockClient2 = new MockClient();
+        var mockClient3 = new MockClient();
+        var mockClient4 = new MockClient();
 
-      // Act
-      gameSessionManager.AddMockClients(mockClient1, mockClient2, mockClient3, mockClient4);
-      this.WaitUntilClientsReceiveGameData(mockClient1, mockClient2, mockClient3, mockClient4);
+        // Act
+        gameSessionManager.AddMockClients(mockClient1, mockClient2, mockClient3, mockClient4);
 
-      gameSessionManager.WaitUntilGameSessionManagerHasStopped();
-
-      // Assert
-      mockClient1.GameInitialized.ShouldBeTrue();
-      mockClient2.GameInitialized.ShouldBeTrue();
-      mockClient3.GameInitialized.ShouldBeTrue();
-      mockClient4.GameInitialized.ShouldBeTrue();
+        // Assert
+        this.WaitUntilClientsReceiveGameData(mockClient1, mockClient2, mockClient3, mockClient4);
+      }
+      finally
+      {
+        gameSessionManager.WaitUntilGameSessionManagerHasStopped();
+      }
     }
 
     [Test]
