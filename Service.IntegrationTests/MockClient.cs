@@ -47,6 +47,17 @@ namespace Service.IntegrationTests
       MockClient.NextClientId = 1;
     }
 
+    public void ChooseTownLocation()
+    {
+      this.ChooseTownLocationMessageReceived = true;
+      this.TownPlacedRank = MockClient.NextTownPlacedRank++;
+    }
+
+    public void ConfirmGameInitialized()
+    {
+      this.gameSessionManager.ConfirmGameInitialized(this.GameToken, this);
+    }
+
     public void ConfirmGameJoined(Guid gameToken)
     {
       this.GameToken = gameToken;
@@ -63,10 +74,19 @@ namespace Service.IntegrationTests
       this.GameInitialized = true;
     }
 
-    public void ChooseTownLocation()
+    public void PlaceTown(UInt32 locationIndex)
     {
-      this.ChooseTownLocationMessageReceived = true;
-      this.TownPlacedRank = MockClient.NextTownPlacedRank++;
+      this.gameSessionManager.ConfirmTownPlacement(this.GameToken, this, locationIndex);
+    }
+
+    public void StartTurn(Guid token)
+    {
+      throw new NotImplementedException();
+    }
+
+    public void TownPlacedDuringSetup(UInt32 locationIndex)
+    {
+      this.NewTownLocation = locationIndex;
     }
 
     public void WaitUntilClientReceivesPlaceTownMessage()
@@ -90,21 +110,6 @@ namespace Service.IntegrationTests
       {
         throw new TimeoutException("Timed out waiting for client to receive place town message.");
       }
-    }
-
-    public void StartTurn(Guid token)
-    {
-      throw new NotImplementedException();
-    }
-
-    public void PlaceTown(UInt32 locationIndex)
-    {
-      this.gameSessionManager.ConfirmTownPlacement(this.GameToken, this, locationIndex);
-    }
-
-    public void TownPlacedDuringSetup(UInt32 locationIndex)
-    {
-      this.NewTownLocation = locationIndex;
     }
   }
 }

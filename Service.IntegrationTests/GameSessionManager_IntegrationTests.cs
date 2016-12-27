@@ -249,10 +249,10 @@ namespace Service.IntegrationTests
 
         gameSessionManager = GameSessionManagerExtensions.CreateGameSessionManagerForTest(mockGameManagerFactory, 4);
 
-        var mockClient1 = new MockClient();
-        var mockClient2 = new MockClient();
-        var mockClient3 = new MockClient();
-        var mockClient4 = new MockClient();
+        var mockClient1 = new MockClient(gameSessionManager);
+        var mockClient2 = new MockClient(gameSessionManager);
+        var mockClient3 = new MockClient(gameSessionManager);
+        var mockClient4 = new MockClient(gameSessionManager);
 
         // Act
         gameSessionManager.AddClient(mockClient1);
@@ -262,10 +262,7 @@ namespace Service.IntegrationTests
 
         this.WaitUntilClientsReceiveGameData(mockClient1, mockClient2, mockClient3, mockClient4);
 
-        gameSessionManager.ConfirmGameInitialized(mockClient1.GameToken, mockClient1);
-        gameSessionManager.ConfirmGameInitialized(mockClient2.GameToken, mockClient2);
-        gameSessionManager.ConfirmGameInitialized(mockClient3.GameToken, mockClient3);
-        gameSessionManager.ConfirmGameInitialized(mockClient4.GameToken, mockClient4);
+        this.ConfirmGameInitializedForClients(mockClient1, mockClient2, mockClient3, mockClient4);
 
         mockClient1.WaitUntilClientReceivesPlaceTownMessage();
         gameSessionManager.ConfirmTownPlacement(mockClient1.GameToken, mockClient1, townLocations[0]);
@@ -334,7 +331,7 @@ namespace Service.IntegrationTests
         
         this.WaitUntilClientsReceiveGameData(mockClient1, mockClient2, mockClient3, mockClient4);
 
-        gameSessionManager.ConfirmGameInitializedForClients(mockClient1, mockClient2, mockClient3, mockClient4);
+        this.ConfirmGameInitializedForClients(mockClient1, mockClient2, mockClient3, mockClient4);
 
         var locationIndex = 0;
         var location = locationIndexes[locationIndex];
@@ -425,7 +422,7 @@ namespace Service.IntegrationTests
 
         this.WaitUntilClientsReceiveGameData(mockClient1, mockClient2, mockClient3, mockClient4);
 
-        gameSessionManager.ConfirmGameInitializedForClients(mockClient1, mockClient2, mockClient3, mockClient4);
+        this.ConfirmGameInitializedForClients(mockClient1, mockClient2, mockClient3, mockClient4);
 
         var locationIndex = 0;
         var location = locationIndexes[locationIndex];
@@ -499,6 +496,14 @@ namespace Service.IntegrationTests
       finally
       {
         gameSessionManager.WaitUntilGameSessionManagerHasStopped();
+      }
+    }
+
+    private void ConfirmGameInitializedForClients(params MockClient[] mockClients)
+    {
+      foreach (var mockClient in mockClients)
+      {
+        mockClient.ConfirmGameInitialized();
       }
     }
 
