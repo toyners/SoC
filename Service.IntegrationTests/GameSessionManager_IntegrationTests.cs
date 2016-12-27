@@ -39,7 +39,7 @@ namespace Service.IntegrationTests
     }
 
     [Test]
-    public void AllPlayersReceivedSameGameTokenWhenJoinedToSameGame()
+    public void AllClientsReceiveSameGameTokenWhenJoinedToSameGame()
     {
       GameSessionManager gameSessionManager = null;
       try
@@ -71,7 +71,7 @@ namespace Service.IntegrationTests
     }
 
     [Test]
-    public void AddClient_AddEnoughPlayersToFillGame_AllPlayersAreInitialized()
+    public void AllClientsReceiveBoardDataWhenGameIsFull()
     {
       GameSessionManager gameSessionManager = null;
       try
