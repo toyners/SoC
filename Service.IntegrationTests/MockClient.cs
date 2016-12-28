@@ -23,7 +23,7 @@ namespace Service.IntegrationTests
 
     public UInt32 NewTownLocation;
 
-    public List<Object> ReceivedPlayerCards;
+    public List<PlayerData> ReceivedPlayerData;
 
     public UInt32 TownPlacedRank;
 
@@ -38,7 +38,7 @@ namespace Service.IntegrationTests
     public MockClient()
     {
       this.Id = MockClient.NextClientId++;
-      this.ReceivedPlayerCards = new List<object>();
+      this.ReceivedPlayerData = new List<PlayerData>();
     }
 
     public MockClient(GameSessionManager gameSessionManager) : this()

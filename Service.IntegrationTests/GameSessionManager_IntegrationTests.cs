@@ -49,13 +49,15 @@ namespace Service.IntegrationTests
       var mockClient1 = new MockClient { Username = "" };
       var mockClient2 = new MockClient { Username = "" };
 
+      var expectedPlayerData = new PlayerData("Ben", 1); 
+
       // Act
       gameSessionManager.AddMockClients(mockClient1);
       gameSessionManager.AddMockClients(mockClient2);
 
       // Assert
-      mockClient1.ReceivedPlayerCards.Count.ShouldBe(1);
-      //mockClient1.ReceivedPlayerCards[0].ShoudBe();
+      mockClient1.ReceivedPlayerData.Count.ShouldBe(1);
+      mockClient1.ReceivedPlayerData[0].ShouldBe(expectedPlayerData);
     }
 
     /// <summary>
