@@ -23,8 +23,12 @@ namespace Service.IntegrationTests
 
     public UInt32 NewTownLocation;
 
+    public List<Object> ReceivedPlayerCards;
+
     public UInt32 TownPlacedRank;
 
+    public String Username;
+    
     private static UInt32 NextTownPlacedRank;
 
     private static UInt32 NextClientId;
@@ -34,6 +38,7 @@ namespace Service.IntegrationTests
     public MockClient()
     {
       this.Id = MockClient.NextClientId++;
+      this.ReceivedPlayerCards = new List<object>();
     }
 
     public MockClient(GameSessionManager gameSessionManager) : this()

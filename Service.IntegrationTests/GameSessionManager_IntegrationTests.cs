@@ -39,19 +39,30 @@ namespace Service.IntegrationTests
     }
 
     /// <summary>
-    /// When a new client joins a game all clients in the game receive their business card (client data).
+    /// When a new client joins a game all clients in the game receive their player card.
     /// </summary>
     [Test]
-    public void AllClientsReceiveBusinessCardWhenNewClientJoinsGame()
+    public void AllClientsReceivePlayerCardWhenNewClientJoinsGame()
     {
-      throw new NotImplementedException();
+      // Arrange
+      var gameSessionManager = GameSessionManagerExtensions.CreateGameSessionManagerForTest(new GameManagerFactory(), 4);
+      var mockClient1 = new MockClient { Username = "" };
+      var mockClient2 = new MockClient { Username = "" };
+
+      // Act
+      gameSessionManager.AddMockClients(mockClient1);
+      gameSessionManager.AddMockClients(mockClient2);
+
+      // Assert
+      mockClient1.ReceivedPlayerCards.Count.ShouldBe(1);
+      //mockClient1.ReceivedPlayerCards[0].ShoudBe();
     }
 
     /// <summary>
-    /// When a new client joins a game they get all business cards (client data) for the clients already in the game. 
+    /// When a new client joins a game they get all player cards for the clients already in the game. 
     /// </summary>
     [Test]
-    public void NewClientJoiningGameGetsBusinessCardsForAllClientsAlreadyInGame()
+    public void NewClientJoiningGameGetsPlayerCardsForAllClientsAlreadyInGame()
     {
       throw new NotImplementedException();
     }
