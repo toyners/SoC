@@ -8,6 +8,7 @@ namespace Jabberwocky.SoC.Service
   using System.Threading;
   using System.Threading.Tasks;
   using Library;
+  using Toolkit.Object;
 
   public class GameSessionManager
   {
@@ -23,7 +24,8 @@ namespace Jabberwocky.SoC.Service
     #region Fields
     private List<IServiceProviderCallback> clients;
     private Dictionary<Guid, GameSession> gameSessions;
-    private ConcurrentQueue<IServiceProviderCallback> waitingForGameQueue;
+    private IPlayerCardRepository playerCardRepository;
+    private ConcurrentQueue<JoinTicket> waitingForGameQueue;
     private Task matchingTask;
     private UInt32 maximumPlayerCount;
     private IDiceRollerFactory diceRollerFactory;
@@ -32,14 +34,19 @@ namespace Jabberwocky.SoC.Service
     #endregion
 
     #region Construction
-    public GameSessionManager(IGameManagerFactory gameManagerFactory, UInt32 maximumPlayerCount)
+    public GameSessionManager(IGameManagerFactory gameManagerFactory, UInt32 maximumPlayerCount, IPlayerCardRepository playerCardRepository)
     {
+      // TODO: Null reference checks
       this.clients = new List<IServiceProviderCallback>();
-      this.waitingForGameQueue = new ConcurrentQueue<IServiceProviderCallback>();
+      this.waitingForGameQueue = new ConcurrentQueue<JoinTicket>();
       this.gameSessions = new Dictionary<Guid, GameSession>();
       this.maximumPlayerCount = maximumPlayerCount;
       this.cancellationTokenSource = new CancellationTokenSource();
       this.gameManagerFactory = gameManagerFactory;
+
+      playerCardRepository.VerifyThatObjectIsNotNull("Parameter 'playerCardRepository' is null.");
+      this.playerCardRepository = playerCardRepository;
+
       this.State = States.Stopped;
     }
     #endregion
@@ -49,10 +56,10 @@ namespace Jabberwocky.SoC.Service
     #endregion
 
     #region Methods
-    public void AddClient(IServiceProviderCallback client)
+    public void AddClient(IServiceProviderCallback client, String username)
     {
       // TODO: Check for null reference
-      this.waitingForGameQueue.Enqueue(client);
+      this.waitingForGameQueue.Enqueue(new JoinTicket { Client = client, Username = username });
     }
 
     public void ConfirmGameInitialized(Guid gameToken, IServiceProviderCallback client)
@@ -101,10 +108,10 @@ namespace Jabberwocky.SoC.Service
       this.matchingTask = Task.Factory.StartNew(() => { this.MatchPlayersWithGames(cancellationToken); });
     }
 
-    private GameSession AddToNewGameSession(IServiceProviderCallback client, CancellationToken cancellationToken)
+    private GameSession AddToNewGameSession(JoinTicket joinTicket, CancellationToken cancellationToken)
     {
-      var gameSession = new GameSession(this.gameManagerFactory.Create(), this.maximumPlayerCount, cancellationToken);
-      gameSession.AddClient(client);
+      var gameSession = new GameSession(this.gameManagerFactory.Create(), this.maximumPlayerCount, this.playerCardRepository, cancellationToken);
+      gameSession.AddClient(joinTicket.Client, joinTicket.Username);
       this.gameSessions.Add(gameSession.GameToken, gameSession);
       return gameSession;
     }
@@ -132,8 +139,8 @@ namespace Jabberwocky.SoC.Service
             Thread.Sleep(500);
           }
 
-          IServiceProviderCallback client;
-          var gotClient = this.waitingForGameQueue.TryDequeue(out client);
+          JoinTicket joinTicket;
+          var gotClient = this.waitingForGameQueue.TryDequeue(out joinTicket);
           if (!gotClient)
           {
             // Couldn't get the client from the queue (probably because another thread got it).
@@ -141,9 +148,9 @@ namespace Jabberwocky.SoC.Service
           }
 
           GameSession gameSession = null;
-          if (!this.TryAddToCurrentGameSession(client, out gameSession))
+          if (!this.TryAddToCurrentGameSession(joinTicket, out gameSession))
           {
-            gameSession = this.AddToNewGameSession(client, cancellationToken);
+            gameSession = this.AddToNewGameSession(joinTicket, cancellationToken);
           }
 
           if (!gameSession.NeedsClient)
@@ -171,7 +178,7 @@ namespace Jabberwocky.SoC.Service
       }
     }
 
-    private Boolean TryAddToCurrentGameSession(IServiceProviderCallback client, out GameSession gameSession)
+    private Boolean TryAddToCurrentGameSession(JoinTicket joinTicket, out GameSession gameSession)
     {
       gameSession = null;
       foreach (var kv in this.gameSessions)
@@ -179,7 +186,7 @@ namespace Jabberwocky.SoC.Service
         gameSession = kv.Value;
         if (gameSession.NeedsClient)
         {
-          gameSession.AddClient(client);
+          gameSession.AddClient(joinTicket.Client, joinTicket.Username);
           return true;
         }
       }
@@ -199,18 +206,22 @@ namespace Jabberwocky.SoC.Service
       private CancellationToken cancellationToken;
       private Int32 clientCount;
       private IServiceProviderCallback[] clients;
+      private IPlayerCardRepository playerCardRepository;
+      private Dictionary<IServiceProviderCallback, PlayerData> playerCards;
       private Task gameTask;
       private MessagePump messagePump;
       #endregion
 
       #region Construction
-      public GameSession(IGameManager gameManager, UInt32 clientCount, CancellationToken cancellationToken)
+      public GameSession(IGameManager gameManager, UInt32 clientCount, IPlayerCardRepository playerCardRepository, CancellationToken cancellationToken)
       {
         this.GameToken = Guid.NewGuid();
         this.gameManager = gameManager;
         this.clients = new IServiceProviderCallback[clientCount];
         this.messagePump = new MessagePump();
         this.cancellationToken = cancellationToken;
+        this.playerCardRepository = playerCardRepository;
+        this.playerCards = new Dictionary<IServiceProviderCallback, PlayerData>();
         //var board = new Board(BoardSizes.Standard);
         //this.Game = new GameManager(board, playerCount, diceRoller, new DevelopmentCardPile());
       }
@@ -238,7 +249,7 @@ namespace Jabberwocky.SoC.Service
         this.messagePump.Enqueue(message);
       }
 
-      public void AddClient(IServiceProviderCallback client)
+      public void AddClient(IServiceProviderCallback client, String userName)
       {
         for (var i = 0; i < this.clients.Length; i++)
         {
@@ -247,6 +258,20 @@ namespace Jabberwocky.SoC.Service
             this.clients[i] = client;
             this.clientCount++;
             client.ConfirmGameJoined(this.GameToken);
+
+            var playerCard = this.playerCardRepository.GetPlayerData(userName);
+            this.playerCards.Add(client, playerCard);
+
+            for (var j = 0; j < this.clients.Length; j++)
+            {
+              if (j == i || this.clients[j] == null)
+              {
+                continue;
+              }
+
+              this.clients[j].PlayerDataForJoiningClient(playerCard);
+            }
+
             return;
           }
         }
@@ -448,6 +473,26 @@ namespace Jabberwocky.SoC.Service
       }
       #endregion
     }
+
+    private struct JoinTicket
+    {
+      public IServiceProviderCallback Client;
+
+      public String Username;
+    }
     #endregion
+  }
+
+  public interface IPlayerCardRepository
+  {
+    PlayerData GetPlayerData(String userName);
+  }
+
+  public class PlayerCardRepository : IPlayerCardRepository
+  {
+    public PlayerData GetPlayerData(String userName)
+    {
+      return new PlayerData();
+    }
   }
 }

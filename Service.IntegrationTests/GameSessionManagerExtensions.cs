@@ -18,20 +18,27 @@ namespace Service.IntegrationTests
     {
       foreach (var mockClient in mockClients)
       {
-        gameSessionManager.AddClient(mockClient);
+        gameSessionManager.AddClient(mockClient, null);
       }
     }
 
     /// <summary>
-    /// Creates the game session manager and then starts them. Throws time out exception if the gsm is not started
+    /// Creates the game session manager and then starts it. Throws time out exception if the gsm is not started
     /// after 5 seconds.
     /// </summary>
     /// <param name="gameManagerFactory"></param>
     /// <param name="maximumPlayerCount"></param>
     /// <returns></returns>
-    public static GameSessionManager CreateGameSessionManagerForTest(IGameManagerFactory gameManagerFactory, UInt32 maximumPlayerCount = 1)
+    public static GameSessionManager CreateGameSessionManagerForTest(IGameManagerFactory gameManagerFactory, UInt32 maximumPlayerCount)
     {
-      var gameSessionManager = new GameSessionManager(gameManagerFactory, maximumPlayerCount);
+      var gameSessionManager = new GameSessionManager(gameManagerFactory, maximumPlayerCount, new PlayerCardRepository());
+      gameSessionManager.WaitUntilGameSessionManagerHasStarted();
+      return gameSessionManager;
+    }
+
+    public static GameSessionManager CreateGameSessionManagerForTest(IGameManagerFactory gameManagerFactory, UInt32 maximumPlayerCount, IPlayerCardRepository playerCardRepository)
+    {
+      var gameSessionManager = new GameSessionManager(gameManagerFactory, maximumPlayerCount, playerCardRepository);
       gameSessionManager.WaitUntilGameSessionManagerHasStarted();
       return gameSessionManager;
     }

@@ -45,15 +45,18 @@ namespace Service.IntegrationTests
     public void AllClientsReceivePlayerCardWhenNewClientJoinsGame()
     {
       // Arrange
-      var gameSessionManager = GameSessionManagerExtensions.CreateGameSessionManagerForTest(new GameManagerFactory(), 4);
+      var expectedPlayerData = new PlayerData("User2", 1);
+      var mockPlayerCardRepository = Substitute.For<IPlayerCardRepository>();
+      mockPlayerCardRepository.GetPlayerData("User2").Returns(expectedPlayerData);
+
+      var gameSessionManager = GameSessionManagerExtensions.CreateGameSessionManagerForTest(new GameManagerFactory(), 4, mockPlayerCardRepository);
       var mockClient1 = new MockClient();
       var mockClient2 = new MockClient { Username = "User2" };
 
-      var expectedPlayerData = new PlayerData("User2", 1); 
-
       // Act
       gameSessionManager.AddMockClients(mockClient1);
-      gameSessionManager.AddMockClients(mockClient2);
+      gameSessionManager.AddClient(mockClient2, "User2");
+      Thread.Sleep(1000);
 
       // Assert
       mockClient1.ReceivedPlayerData.Count.ShouldBe(1);
@@ -289,10 +292,11 @@ namespace Service.IntegrationTests
         var mockClient4 = new MockClient(gameSessionManager);
 
         // Act
-        gameSessionManager.AddClient(mockClient1);
+        gameSessionManager.AddMockClients(mockClient1, mockClient2, mockClient3, mockClient4);
+        /*gameSessionManager.AddClient(mockClient1);
         gameSessionManager.AddClient(mockClient2);
         gameSessionManager.AddClient(mockClient3);
-        gameSessionManager.AddClient(mockClient4);
+        gameSessionManager.AddClient(mockClient4);*/
 
         this.WaitUntilClientsReceiveGameData(mockClient1, mockClient2, mockClient3, mockClient4);
 
@@ -548,7 +552,11 @@ namespace Service.IntegrationTests
 
       var waitingForGameData = new List<MockClient>(mockClients);
 
-      while (waitingForGameData.Count > 0 && stopWatch.ElapsedMilliseconds <= 1000)
+      while (waitingForGameData.Count > 0
+#if !DEBUG
+        && stopWatch.ElapsedMilliseconds <= 1000
+#endif
+        )
       {
         for (var index = 0; index < waitingForGameData.Count; index++)
         {
@@ -569,6 +577,6 @@ namespace Service.IntegrationTests
         throw new TimeoutException("Timed out waiting for clients to receive game data.");
       }
     }
-    #endregion 
+#endregion
   }
 }

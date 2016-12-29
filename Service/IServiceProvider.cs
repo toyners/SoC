@@ -11,8 +11,9 @@ namespace Jabberwocky.SoC.Service
     /// <summary>
     /// Ask to the server to join a game.
     /// </summary>
+    /// <param name="username">Username of player. Can be null or empty for anonymous player.</param>
     [OperationContract(IsOneWay = true)]
-    void TryJoinGame();
+    void TryJoinGame(String username);
 
     /// <summary>
     /// Instruct the server that the client is leaving a game.

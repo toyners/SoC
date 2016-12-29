@@ -36,6 +36,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Jabberwocky.Toolkit, Version=1.0.6.4, Culture=neutral, PublicKeyToken=8994d5f40ad2f5fb, processorArchitecture=MSIL">
+      <HintPath>..\packages\Jabberwocky.Toolkit.1.0.6.4\lib\net45\Jabberwocky.Toolkit.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -59,6 +63,7 @@
     <None Include="App.config">
       <SubType>Designer</SubType>
     </None>
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Library\Library.csproj">

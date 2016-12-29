@@ -21,10 +21,18 @@ namespace Jabberwocky.SoC.Service
   public class PlayerData
   {
     [DataMember]
-    public String Username { get; private set; }
+    public UInt32 GamesPlayed { get; private set; }
 
     [DataMember]
-    public UInt32 GamesPlayed { get; private set; }
+    public Boolean IsAnonymous { get; private set; }
+
+    [DataMember]
+    public String Username { get; private set; }
+
+    public PlayerData()
+    {
+      this.IsAnonymous = true;
+    }
 
     public PlayerData(String username, UInt32 gamesPlayed)
     {

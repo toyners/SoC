@@ -17,7 +17,7 @@ namespace Jabberwocky.SoC.Service
     #region Construction
     public ServiceProvider()
     {
-      this.gameSessionManager = new GameSessionManager(new GameManagerFactory(), 1);
+      this.gameSessionManager = new GameSessionManager(new GameManagerFactory(), 1, new PlayerCardRepository());
       this.gameSessionManager.Start();
     }
     #endregion
@@ -37,10 +37,10 @@ namespace Jabberwocky.SoC.Service
       throw new NotImplementedException();
     }
 
-    public void TryJoinGame()
+    public void TryJoinGame(String username)
     {
       var client = OperationContext.Current.GetCallbackChannel<IServiceProviderCallback>();
-      this.gameSessionManager.AddClient(client);
+      this.gameSessionManager.AddClient(client, username);
       Logger.Message("Client joined game");
     }
 
