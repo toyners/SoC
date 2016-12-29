@@ -60,6 +60,12 @@ namespace Service.IntegrationTests
       mockClient1.ReceivedPlayerData[0].ShouldBe(expectedPlayerData);
     }
 
+    [Test]
+    public void SameClientCantBeAddedToSameGameSession()
+    {
+      throw new NotImplementedException();
+    }
+
     /// <summary>
     /// When a new client joins a game they get all player cards for the clients already in the game. 
     /// </summary>
