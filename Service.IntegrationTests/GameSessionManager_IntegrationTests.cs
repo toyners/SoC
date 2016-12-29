@@ -46,10 +46,10 @@ namespace Service.IntegrationTests
     {
       // Arrange
       var gameSessionManager = GameSessionManagerExtensions.CreateGameSessionManagerForTest(new GameManagerFactory(), 4);
-      var mockClient1 = new MockClient { Username = "" };
-      var mockClient2 = new MockClient { Username = "" };
+      var mockClient1 = new MockClient();
+      var mockClient2 = new MockClient { Username = "User2" };
 
-      var expectedPlayerData = new PlayerData("Ben", 1); 
+      var expectedPlayerData = new PlayerData("User2", 1); 
 
       // Act
       gameSessionManager.AddMockClients(mockClient1);

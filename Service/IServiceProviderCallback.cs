@@ -34,6 +34,9 @@ namespace Jabberwocky.SoC.Service
     void ChooseTownLocation();
 
     [OperationContract(IsOneWay = true)]
+    void PlayerDataForJoiningClient(PlayerData playerData);
+
+    [OperationContract(IsOneWay = true)]
     void TownPlacedDuringSetup(UInt32 locationIndex);
   }
 }

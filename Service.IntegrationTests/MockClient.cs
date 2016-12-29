@@ -84,6 +84,11 @@ namespace Service.IntegrationTests
       this.gameSessionManager.ConfirmTownPlacement(this.GameToken, this, locationIndex);
     }
 
+    public void PlayerDataForJoiningClient(PlayerData playerData)
+    {
+      this.ReceivedPlayerData.Add(playerData);
+    }
+
     public void StartTurn(Guid token)
     {
       throw new NotImplementedException();
