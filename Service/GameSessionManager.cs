@@ -260,8 +260,7 @@ namespace Jabberwocky.SoC.Service
             client.ConfirmGameJoined(this.GameToken);
 
             var playerCard = this.playerCardRepository.GetPlayerData(userName);
-            this.playerCards.Add(client, playerCard);
-
+            
             for (var j = 0; j < this.clients.Length; j++)
             {
               if (j == i || this.clients[j] == null)
@@ -269,8 +268,11 @@ namespace Jabberwocky.SoC.Service
                 continue;
               }
 
+              client.PlayerDataForJoiningClient(this.playerCards[this.clients[j]]);
               this.clients[j].PlayerDataForJoiningClient(playerCard);
             }
+
+            this.playerCards.Add(client, playerCard);
 
             return;
           }
