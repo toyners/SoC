@@ -97,6 +97,33 @@ namespace Service.IntegrationTests
     }
 
     [Test]
+    public void WhenClientDropsOutOfGameOtherClientsAreNotified()
+    {
+      GameSessionManager gameSessionManager = null;
+      try
+      {
+        gameSessionManager = GameSessionManagerExtensions.CreateGameSessionManagerForTest(new GameManagerFactory(), 4);
+
+        var mockClient1 = new MockClient();
+        var mockClient2 = new MockClient();
+        var mockClient3 = new MockClient();
+        var mockClient4 = new MockClient();
+
+        gameSessionManager.AddMockClients(mockClient1, mockClient2, mockClient3, mockClient4);
+        Thread.Sleep(1000);
+        gameSessionManager.RemoveClient(mockClient1.GameToken, mockClient1);
+        gameSessionManager.WaitUntilGameSessionManagerHasStopped();
+
+        // Assert
+        throw new NotImplementedException();
+      }
+      finally
+      {
+        gameSessionManager.WaitUntilGameSessionManagerHasStopped();
+      }
+    }
+
+    [Test]
     public void SameClientCantBeAddedToSameGameSession()
     {
       throw new NotImplementedException();
@@ -597,6 +624,6 @@ namespace Service.IntegrationTests
         throw new TimeoutException("Timed out waiting for clients to receive game data.");
       }
     }
-#endregion
+    #endregion
   }
 }
