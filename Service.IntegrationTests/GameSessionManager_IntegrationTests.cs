@@ -39,57 +39,10 @@ namespace Service.IntegrationTests
     }
 
     /// <summary>
-    /// When a new client joins a game all clients in the game receive their player card.
+    /// All clients receive player cards for all clients in game session.
     /// </summary>
     [Test]
-    public void AllClientsReceivePlayerCardWhenNewClientJoinsGame()
-    {
-      GameSessionManager gameSessionManager = null;
-      try
-      {
-        // Arrange
-        var username = "User4";
-        var expectedPlayerData = new PlayerData(username, 17);
-        var anonymousPlayerData = new PlayerData();
-
-        var mockPlayerCardRepository = Substitute.For<IPlayerCardRepository>();
-        mockPlayerCardRepository.GetPlayerData(Arg.Any<String>()).Returns(anonymousPlayerData);
-        mockPlayerCardRepository.GetPlayerData(username).Returns(expectedPlayerData);
-
-        var mockClient1 = new MockClient();
-        var mockClient2 = new MockClient();
-        var mockClient3 = new MockClient();
-
-        gameSessionManager = GameSessionManagerExtensions.CreateGameSessionManagerForTest(new GameManagerFactory(), 4, mockPlayerCardRepository);
-        gameSessionManager.AddMockClients(mockClient1, mockClient2, mockClient3);
-
-        var mockClient4 = new MockClient { Username = username };
-
-        // Act
-        gameSessionManager.AddClient(mockClient4, username);
-        Thread.Sleep(1000);
-
-        // Assert
-        mockClient1.ReceivedPlayerData.Count.ShouldBe(3);
-        mockClient1.ReceivedPlayerData.ShouldBe(new [] { anonymousPlayerData, anonymousPlayerData, expectedPlayerData }, true);
-
-        mockClient2.ReceivedPlayerData.Count.ShouldBe(2);
-        mockClient2.ReceivedPlayerData.ShouldBe(new[] { anonymousPlayerData, expectedPlayerData }, true);
-
-        mockClient3.ReceivedPlayerData.Count.ShouldBe(1);
-        mockClient3.ReceivedPlayerData.ShouldBe(new[] { expectedPlayerData });
-      }
-      finally
-      {
-        gameSessionManager.WaitUntilGameSessionManagerHasStopped();
-      }
-    }
-
-    /// <summary>
-    /// When a new client joins a game they get all player cards for the clients already in the game. 
-    /// </summary>
-    [Test]
-    public void NewClientJoiningGameGetsPlayerCardsForAllClientsAlreadyInGame()
+    public void AllClientsReceivePlayerCardsForAllClientsInGame()
     {
       GameSessionManager gameSessionManager = null;
       try
@@ -104,25 +57,36 @@ namespace Service.IntegrationTests
         var username3 = "User3";
         var expectedPlayerData3 = new PlayerData(username3, 17);
 
+        var username4 = "User4";
+        var expectedPlayerData4 = new PlayerData(username4, 29);
+
         var mockPlayerCardRepository = Substitute.For<IPlayerCardRepository>();
         mockPlayerCardRepository.GetPlayerData(username1).Returns(expectedPlayerData1);
         mockPlayerCardRepository.GetPlayerData(username2).Returns(expectedPlayerData2);
         mockPlayerCardRepository.GetPlayerData(username3).Returns(expectedPlayerData3);
+        mockPlayerCardRepository.GetPlayerData(username4).Returns(expectedPlayerData4);
 
         var mockClient1 = new MockClient { Username = username1 };
         var mockClient2 = new MockClient { Username = username2 };
         var mockClient3 = new MockClient { Username = username3 };
-        
-        gameSessionManager = GameSessionManagerExtensions.CreateGameSessionManagerForTest(new GameManagerFactory(), 4, mockPlayerCardRepository);
-        gameSessionManager.AddMockClients(mockClient1, mockClient2, mockClient3);
+        var mockClient4 = new MockClient { Username = username4 };
 
-        var mockClient4 = new MockClient();
+        gameSessionManager = GameSessionManagerExtensions.CreateGameSessionManagerForTest(new GameManagerFactory(), 4, mockPlayerCardRepository);
 
         // Act
-        gameSessionManager.AddMockClients(mockClient4);
+        gameSessionManager.AddMockClients(mockClient1, mockClient2, mockClient3, mockClient4);
         Thread.Sleep(1000);
 
         // Assert
+        mockClient1.ReceivedPlayerData.Count.ShouldBe(3);
+        mockClient1.ReceivedPlayerData.ShouldBe(new[] { expectedPlayerData2, expectedPlayerData3, expectedPlayerData4 }, true);
+
+        mockClient2.ReceivedPlayerData.Count.ShouldBe(3);
+        mockClient2.ReceivedPlayerData.ShouldBe(new[] { expectedPlayerData1, expectedPlayerData3, expectedPlayerData4 }, true);
+
+        mockClient3.ReceivedPlayerData.Count.ShouldBe(3);
+        mockClient3.ReceivedPlayerData.ShouldBe(new[] { expectedPlayerData1, expectedPlayerData2, expectedPlayerData4 }, true);
+
         mockClient4.ReceivedPlayerData.Count.ShouldBe(3);
         mockClient4.ReceivedPlayerData.ShouldBe(new[] { expectedPlayerData1, expectedPlayerData2, expectedPlayerData3 }, true);
       }
