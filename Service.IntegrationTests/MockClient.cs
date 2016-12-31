@@ -9,6 +9,7 @@ namespace Service.IntegrationTests
 
   public class MockClient : IServiceProviderCallback
   {
+    #region Fields
     public const Int64 TimeOut = 2000;
 
     public Boolean ChooseTownLocationMessageReceived;
@@ -34,7 +35,9 @@ namespace Service.IntegrationTests
     private static UInt32 NextClientId;
 
     private GameSessionManager gameSessionManager;
+    #endregion
 
+    #region Construction
     public MockClient()
     {
       this.Id = MockClient.NextClientId++;
@@ -45,7 +48,9 @@ namespace Service.IntegrationTests
     {
       this.gameSessionManager = gameSessionManager;
     }
+    #endregion
 
+    #region Methods
     public static void SetupBeforeEachTest()
     {
       MockClient.NextTownPlacedRank = 1;
@@ -121,5 +126,6 @@ namespace Service.IntegrationTests
         throw new TimeoutException("Timed out waiting for client to receive place town message.");
       }
     }
+    #endregion
   }
 }

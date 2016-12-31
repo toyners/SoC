@@ -317,10 +317,6 @@ namespace Service.IntegrationTests
 
         // Act
         gameSessionManager.AddMockClients(mockClient1, mockClient2, mockClient3, mockClient4);
-        /*gameSessionManager.AddClient(mockClient1);
-        gameSessionManager.AddClient(mockClient2);
-        gameSessionManager.AddClient(mockClient3);
-        gameSessionManager.AddClient(mockClient4);*/
 
         this.WaitUntilClientsReceiveGameData(mockClient1, mockClient2, mockClient3, mockClient4);
 

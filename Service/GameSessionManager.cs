@@ -28,7 +28,6 @@ namespace Jabberwocky.SoC.Service
     private ConcurrentQueue<JoinTicket> waitingForGameQueue;
     private Task matchingTask;
     private UInt32 maximumPlayerCount;
-    private IDiceRollerFactory diceRollerFactory;
     private IGameManagerFactory gameManagerFactory;
     private CancellationTokenSource cancellationTokenSource;
     #endregion
@@ -222,8 +221,6 @@ namespace Jabberwocky.SoC.Service
         this.cancellationToken = cancellationToken;
         this.playerCardRepository = playerCardRepository;
         this.playerCards = new Dictionary<IServiceProviderCallback, PlayerData>();
-        //var board = new Board(BoardSizes.Standard);
-        //this.Game = new GameManager(board, playerCount, diceRoller, new DevelopmentCardPile());
       }
       #endregion
 
