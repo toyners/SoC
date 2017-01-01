@@ -84,6 +84,11 @@ namespace Service.IntegrationTests
       this.GameInitialized = true;
     }
 
+    public void LeaveGame()
+    {
+      this.gameSessionManager.RemoveClient(this.GameToken, this);
+    }
+
     public void PlaceTown(UInt32 locationIndex)
     {
       this.gameSessionManager.ConfirmTownPlacement(this.GameToken, this, locationIndex);

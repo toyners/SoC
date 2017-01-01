@@ -104,17 +104,18 @@ namespace Service.IntegrationTests
       {
         gameSessionManager = GameSessionManagerExtensions.CreateGameSessionManagerForTest(new GameManagerFactory(), 4);
 
-        var mockClient1 = new MockClient();
-        var mockClient2 = new MockClient();
-        var mockClient3 = new MockClient();
-        var mockClient4 = new MockClient();
+        var mockClient1 = new MockClient(gameSessionManager);
+        var mockClient2 = new MockClient(gameSessionManager);
+        var mockClient3 = new MockClient(gameSessionManager);
+        var mockClient4 = new MockClient(gameSessionManager);
 
         gameSessionManager.AddMockClients(mockClient1, mockClient2, mockClient3, mockClient4);
         Thread.Sleep(1000);
-        gameSessionManager.RemoveClient(mockClient1.GameToken, mockClient1);
+        mockClient1.LeaveGame();
         gameSessionManager.WaitUntilGameSessionManagerHasStopped();
 
         // Assert
+
         throw new NotImplementedException();
       }
       finally
