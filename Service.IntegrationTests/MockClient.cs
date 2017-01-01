@@ -20,6 +20,8 @@ namespace Service.IntegrationTests
 
     public Guid GameToken;
 
+    public Boolean GameLeft;
+
     public UInt32 Id;
 
     public UInt32 NewTownLocation;

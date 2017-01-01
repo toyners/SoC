@@ -115,8 +115,8 @@ namespace Service.IntegrationTests
         gameSessionManager.WaitUntilGameSessionManagerHasStopped();
 
         // Assert
-
-        throw new NotImplementedException();
+        mockClient1.GameLeft.ShouldBeTrue();
+        mockClient1.GameToken.ShouldBe(Guid.Empty);
       }
       finally
       {
