@@ -38,6 +38,23 @@ namespace Service.IntegrationTests
       mockClient.GameJoined.ShouldBeTrue();
     }
 
+    [Test]
+    public void Test()
+    {
+      // Arrange
+      var gameSessionManager = GameSessionManagerExtensions.CreateGameSessionManagerForTest(new GameManagerFactory(), 4);
+      var mockClient = new MockClient2();
+
+      // Act
+      gameSessionManager.AddClient(mockClient, "");
+      Thread.Sleep(1000);
+
+      gameSessionManager.WaitUntilGameSessionManagerHasStopped();
+
+      // Assert
+      mockClient.Peek().ShouldBe(new MockClient2.ConfirmGameJoinedMessage());
+    }
+
     /// <summary>
     /// All clients receive player cards for all clients in game session.
     /// </summary>

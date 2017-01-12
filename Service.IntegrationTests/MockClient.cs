@@ -2,6 +2,7 @@
 namespace Service.IntegrationTests
 {
   using System;
+  using System.Collections.Concurrent;
   using System.Collections.Generic;
   using System.Diagnostics;
   using System.Threading;
@@ -134,5 +135,69 @@ namespace Service.IntegrationTests
       }
     }
     #endregion
+  }
+
+  public class MockClient2 : IServiceProviderCallback
+  {
+    private ConcurrentQueue<MessageBase> messageQueue = new ConcurrentQueue<MessageBase>();
+
+    public MessageBase Peek()
+    {
+      MessageBase message = null;
+      if (this.messageQueue.TryPeek(out message))
+      {
+        return message;
+      }
+
+      return null;
+    }
+
+    public void ChooseTownLocation()
+    {
+      throw new NotImplementedException();
+    }
+
+    public void ConfirmGameJoined(Guid gameToken)
+    {
+      this.messageQueue.Enqueue(new ConfirmGameJoinedMessage(gameToken));
+    }
+
+    public void ConfirmGameLeft()
+    {
+      throw new NotImplementedException();
+    }
+
+    public void InitializeGame(GameInitializationData gameData)
+    {
+      throw new NotImplementedException();
+    }
+
+    public void PlayerDataForJoiningClient(PlayerData playerData)
+    {
+      throw new NotImplementedException();
+    }
+
+    public void StartTurn(Guid token)
+    {
+      throw new NotImplementedException();
+    }
+
+    public void TownPlacedDuringSetup(UInt32 locationIndex)
+    {
+      throw new NotImplementedException();
+    }
+
+    public class MessageBase
+    {
+
+    }
+
+    public class ConfirmGameJoinedMessage : MessageBase
+    {
+      public ConfirmGameJoinedMessage() : this(Guid.Empty) { }
+      public ConfirmGameJoinedMessage(Guid gameToken) { this.GameToken = gameToken; }
+
+      public Guid GameToken { get; private set; }
+    }
   }
 }
