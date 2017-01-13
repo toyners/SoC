@@ -52,7 +52,7 @@ namespace Service.IntegrationTests
       gameSessionManager.WaitUntilGameSessionManagerHasStopped();
 
       // Assert
-      mockClient.Peek().ShouldBe(new MockClient2.ConfirmGameJoinedMessage());
+      mockClient.Peek().GetType().ShouldBe(typeof(MockClient2.ConfirmGameJoinedMessage));
     }
 
     /// <summary>
