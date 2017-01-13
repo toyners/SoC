@@ -482,16 +482,7 @@ namespace Jabberwocky.SoC.Service
     #endregion
   }
 
-  public interface IPlayerCardRepository
-  {
-    PlayerData GetPlayerData(String userName);
-  }
+  
 
-  public class PlayerCardRepository : IPlayerCardRepository
-  {
-    public PlayerData GetPlayerData(String userName)
-    {
-      return new PlayerData();
-    }
-  }
+  
 }

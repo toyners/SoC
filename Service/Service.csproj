@@ -50,6 +50,8 @@
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="PlayerCardRepository.cs" />
+    <Compile Include="IPlayerCardRepository.cs" />
     <Compile Include="GameInitializationData.cs" />
     <Compile Include="GameInitializationDataBuilder.cs" />
     <Compile Include="GameSessionManager.cs" />
