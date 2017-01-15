@@ -127,7 +127,18 @@ namespace Service.IntegrationTests
     [Test]
     public void SameClientCantBeAddedToSameGameSession()
     {
-      throw new NotImplementedException();
+      GameSessionManager gameSessionManager = null;
+      try
+      {
+        gameSessionManager = GameSessionManagerExtensions.CreateGameSessionManagerForTest(new GameManagerFactory(), 4);
+      }
+      finally
+      {
+        if (gameSessionManager != null)
+        {
+          gameSessionManager.WaitUntilGameSessionManagerHasStopped();
+        }
+      }
     }
 
     [Test]
