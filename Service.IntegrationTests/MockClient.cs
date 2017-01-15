@@ -8,7 +8,7 @@ namespace Service.IntegrationTests
   using System.Threading;
   using Jabberwocky.SoC.Service;
 
-  public class MockClient : IServiceProviderCallback
+  public class MockClient3 : IServiceProviderCallback
   {
     #region Fields
     public const Int64 TimeOut = 2000;
@@ -41,13 +41,13 @@ namespace Service.IntegrationTests
     #endregion
 
     #region Construction
-    public MockClient()
+    public MockClient3()
     {
-      this.Id = MockClient.NextClientId++;
+      this.Id = MockClient3.NextClientId++;
       this.ReceivedPlayerData = new List<PlayerData>();
     }
 
-    public MockClient(GameSessionManager gameSessionManager) : this()
+    public MockClient3(GameSessionManager gameSessionManager) : this()
     {
       this.gameSessionManager = gameSessionManager;
     }
@@ -56,14 +56,14 @@ namespace Service.IntegrationTests
     #region Methods
     public static void SetupBeforeEachTest()
     {
-      MockClient.NextTownPlacedRank = 1;
-      MockClient.NextClientId = 1;
+      MockClient3.NextTownPlacedRank = 1;
+      MockClient3.NextClientId = 1;
     }
 
     public void ChooseTownLocation()
     {
       this.ChooseTownLocationMessageReceived = true;
-      this.TownPlacedRank = MockClient.NextTownPlacedRank++;
+      this.TownPlacedRank = MockClient3.NextTownPlacedRank++;
     }
 
     public void ConfirmGameInitialized()
@@ -71,7 +71,7 @@ namespace Service.IntegrationTests
       this.gameSessionManager.ConfirmGameInitialized(this.GameToken, this);
     }
 
-    public void ConfirmGameJoined(Guid gameToken)
+    public virtual void ConfirmGameJoined(Guid gameToken)
     {
       this.GameToken = gameToken;
       this.GameJoined = true;
@@ -137,7 +137,7 @@ namespace Service.IntegrationTests
     #endregion
   }
 
-  public class MockClient2 : IServiceProviderCallback
+  public class MockClient : MockClient3, IServiceProviderCallback
   {
     private ConcurrentQueue<MessageBase> messageQueue = new ConcurrentQueue<MessageBase>();
 
@@ -152,12 +152,19 @@ namespace Service.IntegrationTests
       return null;
     }
 
+    public Boolean MessageHasType<T>()
+    {
+      var message = this.Peek();
+
+      return message != null && message.GetType() == typeof(T);
+    }
+
     public void ChooseTownLocation()
     {
       throw new NotImplementedException();
     }
 
-    public void ConfirmGameJoined(Guid gameToken)
+    public override void ConfirmGameJoined(Guid gameToken)
     {
       this.messageQueue.Enqueue(new ConfirmGameJoinedMessage(gameToken));
     }
@@ -187,10 +194,7 @@ namespace Service.IntegrationTests
       throw new NotImplementedException();
     }
 
-    public class MessageBase
-    {
-
-    }
+    public abstract class MessageBase { }
 
     public class ConfirmGameJoinedMessage : MessageBase
     {

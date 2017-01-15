@@ -18,7 +18,7 @@ namespace Service.IntegrationTests
     [SetUp]
     public void SetupBeforeEachTest()
     {
-      MockClient.SetupBeforeEachTest();
+      MockClient3.SetupBeforeEachTest();
     }
 
     [Test]
@@ -35,24 +35,7 @@ namespace Service.IntegrationTests
       gameSessionManager.WaitUntilGameSessionManagerHasStopped();
 
       // Assert
-      mockClient.GameJoined.ShouldBeTrue();
-    }
-
-    [Test]
-    public void Test()
-    {
-      // Arrange
-      var gameSessionManager = GameSessionManagerExtensions.CreateGameSessionManagerForTest(new GameManagerFactory(), 4);
-      var mockClient = new MockClient2();
-
-      // Act
-      gameSessionManager.AddClient(mockClient, "");
-      Thread.Sleep(1000);
-
-      gameSessionManager.WaitUntilGameSessionManagerHasStopped();
-
-      // Assert
-      mockClient.Peek().GetType().ShouldBe(typeof(MockClient2.ConfirmGameJoinedMessage));
+      mockClient.MessageHasType<MockClient.ConfirmGameJoinedMessage>().ShouldBeTrue();
     }
 
     /// <summary>
@@ -83,10 +66,10 @@ namespace Service.IntegrationTests
         mockPlayerCardRepository.GetPlayerData(username3).Returns(expectedPlayerData3);
         mockPlayerCardRepository.GetPlayerData(username4).Returns(expectedPlayerData4);
 
-        var mockClient1 = new MockClient { Username = username1 };
-        var mockClient2 = new MockClient { Username = username2 };
-        var mockClient3 = new MockClient { Username = username3 };
-        var mockClient4 = new MockClient { Username = username4 };
+        var mockClient1 = new MockClient3 { Username = username1 };
+        var mockClient2 = new MockClient3 { Username = username2 };
+        var mockClient3 = new MockClient3 { Username = username3 };
+        var mockClient4 = new MockClient3 { Username = username4 };
 
         gameSessionManager = GameSessionManagerExtensions.CreateGameSessionManagerForTest(new GameManagerFactory(), 4, mockPlayerCardRepository);
 
@@ -121,10 +104,10 @@ namespace Service.IntegrationTests
       {
         gameSessionManager = GameSessionManagerExtensions.CreateGameSessionManagerForTest(new GameManagerFactory(), 4);
 
-        var mockClient1 = new MockClient(gameSessionManager);
-        var mockClient2 = new MockClient(gameSessionManager);
-        var mockClient3 = new MockClient(gameSessionManager);
-        var mockClient4 = new MockClient(gameSessionManager);
+        var mockClient1 = new MockClient3(gameSessionManager);
+        var mockClient2 = new MockClient3(gameSessionManager);
+        var mockClient3 = new MockClient3(gameSessionManager);
+        var mockClient4 = new MockClient3(gameSessionManager);
 
         gameSessionManager.AddMockClients(mockClient1, mockClient2, mockClient3, mockClient4);
         Thread.Sleep(1000);
@@ -156,10 +139,10 @@ namespace Service.IntegrationTests
         // Arrange
         gameSessionManager = GameSessionManagerExtensions.CreateGameSessionManagerForTest(new GameManagerFactory(), 4);
 
-        var mockClient1 = new MockClient();
-        var mockClient2 = new MockClient();
-        var mockClient3 = new MockClient();
-        var mockClient4 = new MockClient();
+        var mockClient1 = new MockClient3();
+        var mockClient2 = new MockClient3();
+        var mockClient3 = new MockClient3();
+        var mockClient4 = new MockClient3();
 
         // Act
         gameSessionManager.AddMockClients(mockClient1, mockClient2, mockClient3, mockClient4);
@@ -188,10 +171,10 @@ namespace Service.IntegrationTests
         // Arrange
         gameSessionManager = GameSessionManagerExtensions.CreateGameSessionManagerForTest(new GameManagerFactory(), 4);
 
-        var mockClient1 = new MockClient();
-        var mockClient2 = new MockClient();
-        var mockClient3 = new MockClient();
-        var mockClient4 = new MockClient();
+        var mockClient1 = new MockClient3();
+        var mockClient2 = new MockClient3();
+        var mockClient3 = new MockClient3();
+        var mockClient4 = new MockClient3();
 
         // Act
         gameSessionManager.AddMockClients(mockClient1, mockClient2, mockClient3, mockClient4);
@@ -225,7 +208,7 @@ namespace Service.IntegrationTests
 
         gameSessionManager = GameSessionManagerExtensions.CreateGameSessionManagerForTest(mockGameManagerFactory, 4);
 
-        var clients = new[] { new MockClient(gameSessionManager), new MockClient(gameSessionManager), new MockClient(gameSessionManager), new MockClient(gameSessionManager) };
+        var clients = new[] { new MockClient3(gameSessionManager), new MockClient3(gameSessionManager), new MockClient3(gameSessionManager), new MockClient3(gameSessionManager) };
 
         var mockClient1 = clients[0];
         var mockClient2 = clients[1];
@@ -273,10 +256,10 @@ namespace Service.IntegrationTests
       // Arrange
       var gameSessionManager = GameSessionManagerExtensions.CreateGameSessionManagerForTest(new GameManagerFactory(), 4);
 
-      var mockClient1 = new MockClient();
-      var mockClient2 = new MockClient();
-      var mockClient3 = new MockClient();
-      var mockClient4 = new MockClient();
+      var mockClient1 = new MockClient3();
+      var mockClient2 = new MockClient3();
+      var mockClient3 = new MockClient3();
+      var mockClient4 = new MockClient3();
 
       // Act
       gameSessionManager.AddMockClients(mockClient1, mockClient2, mockClient3, mockClient4);
@@ -308,10 +291,10 @@ namespace Service.IntegrationTests
       // Arrange
       var gameSessionManager = GameSessionManagerExtensions.CreateGameSessionManagerForTest(new GameManagerFactory(), 4);
 
-      var mockClient1 = new MockClient();
-      var mockClient2 = new MockClient();
-      var mockClient3 = new MockClient();
-      var mockClient4 = new MockClient();
+      var mockClient1 = new MockClient3();
+      var mockClient2 = new MockClient3();
+      var mockClient3 = new MockClient3();
+      var mockClient4 = new MockClient3();
 
       // Act
       gameSessionManager.AddMockClients(mockClient1, mockClient2, mockClient3, mockClient4);
@@ -355,10 +338,10 @@ namespace Service.IntegrationTests
 
         gameSessionManager = GameSessionManagerExtensions.CreateGameSessionManagerForTest(mockGameManagerFactory, 4);
 
-        var mockClient1 = new MockClient(gameSessionManager);
-        var mockClient2 = new MockClient(gameSessionManager);
-        var mockClient3 = new MockClient(gameSessionManager);
-        var mockClient4 = new MockClient(gameSessionManager);
+        var mockClient1 = new MockClient3(gameSessionManager);
+        var mockClient2 = new MockClient3(gameSessionManager);
+        var mockClient3 = new MockClient3(gameSessionManager);
+        var mockClient4 = new MockClient3(gameSessionManager);
 
         // Act
         gameSessionManager.AddMockClients(mockClient1, mockClient2, mockClient3, mockClient4);
@@ -413,10 +396,10 @@ namespace Service.IntegrationTests
 
         var mockClients = new[] 
         {
-          new MockClient(gameSessionManager),
-          new MockClient(gameSessionManager),
-          new MockClient(gameSessionManager),
-          new MockClient(gameSessionManager)
+          new MockClient3(gameSessionManager),
+          new MockClient3(gameSessionManager),
+          new MockClient3(gameSessionManager),
+          new MockClient3(gameSessionManager)
         };
 
         var mockClient1 = mockClients[0];
@@ -504,10 +487,10 @@ namespace Service.IntegrationTests
 
         var mockClients = new[]
         {
-          new MockClient(gameSessionManager),
-          new MockClient(gameSessionManager),
-          new MockClient(gameSessionManager),
-          new MockClient(gameSessionManager)
+          new MockClient3(gameSessionManager),
+          new MockClient3(gameSessionManager),
+          new MockClient3(gameSessionManager),
+          new MockClient3(gameSessionManager)
         };
 
         var mockClient1 = mockClients[0];
@@ -602,7 +585,7 @@ namespace Service.IntegrationTests
       }
     }
 
-    private void ConfirmGameInitializedForClients(params MockClient[] mockClients)
+    private void ConfirmGameInitializedForClients(params MockClient3[] mockClients)
     {
       foreach (var mockClient in mockClients)
       {
@@ -610,12 +593,12 @@ namespace Service.IntegrationTests
       }
     }
 
-    private void WaitUntilClientsReceiveGameData(params MockClient[] mockClients)
+    private void WaitUntilClientsReceiveGameData(params MockClient3[] mockClients)
     {
       var stopWatch = new Stopwatch();
       stopWatch.Start();
 
-      var waitingForGameData = new List<MockClient>(mockClients);
+      var waitingForGameData = new List<MockClient3>(mockClients);
 
       while (waitingForGameData.Count > 0
 #if !DEBUG

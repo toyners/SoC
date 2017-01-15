@@ -14,7 +14,7 @@ namespace Service.IntegrationTests
     /// </summary>
     /// <param name="gameSessionManager">Game session manager instance.</param>
     /// <param name="mockClients">Mock clients to add to the game session manager.</param>
-    public static void AddMockClients(this GameSessionManager gameSessionManager, params MockClient[] mockClients)
+    public static void AddMockClients(this GameSessionManager gameSessionManager, params MockClient3[] mockClients)
     {
       foreach (var mockClient in mockClients)
       {
