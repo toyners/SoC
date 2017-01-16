@@ -119,7 +119,9 @@ namespace Jabberwocky.SoC.Service
     {
       if (!this.gameSessions.ContainsKey(gameToken))
       {
-        throw new NotImplementedException(); //TODO: Change for Meaningful exception
+        var message = "Can't game session for token " + gameToken;
+        NLog.LogManager.GetCurrentClassLogger().Error(message);
+        throw new ArgumentException(message); 
       }
 
       return this.gameSessions[gameToken];

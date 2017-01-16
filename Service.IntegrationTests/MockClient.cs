@@ -166,6 +166,7 @@ namespace Service.IntegrationTests
 
     public override void ConfirmGameJoined(Guid gameToken)
     {
+      this.GameToken = gameToken;
       this.messageQueue.Enqueue(new ConfirmGameJoinedMessage(gameToken));
     }
 
