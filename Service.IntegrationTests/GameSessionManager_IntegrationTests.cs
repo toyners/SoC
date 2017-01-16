@@ -80,34 +80,6 @@ namespace Service.IntegrationTests
     }
 
     [Test]
-    public void WhenClientDropsOutOfGameOtherClientsAreNotified()
-    {
-      GameSessionManager gameSessionManager = null;
-      try
-      {
-        gameSessionManager = GameSessionManagerExtensions.CreateGameSessionManagerForTest(new GameManagerFactory(), 4);
-
-        var mockClient1 = new MockClient3(gameSessionManager);
-        var mockClient2 = new MockClient3(gameSessionManager);
-        var mockClient3 = new MockClient3(gameSessionManager);
-        var mockClient4 = new MockClient3(gameSessionManager);
-
-        gameSessionManager.AddMockClients(mockClient1, mockClient2, mockClient3, mockClient4);
-        Thread.Sleep(1000);
-        mockClient1.LeaveGame();
-        gameSessionManager.WaitUntilGameSessionManagerHasStopped();
-
-        // Assert
-        mockClient1.GameLeft.ShouldBeTrue();
-        mockClient1.GameToken.ShouldBe(Guid.Empty);
-      }
-      finally
-      {
-        gameSessionManager.WaitUntilGameSessionManagerHasStopped();
-      }
-    }
-
-    [Test]
     public void SameClientCantBeAddedToSameGameSession()
     {
       GameSessionManager gameSessionManager = null;
