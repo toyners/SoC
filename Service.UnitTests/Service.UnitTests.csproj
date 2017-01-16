@@ -49,7 +49,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="GameSessionManagerTestExtensions.cs" />
+    <Compile Include="GameSessionManager_UnitTests.cs" />
     <Compile Include="GameInitializationDataBuilder_UnitTests.cs" />
+    <Compile Include="TestClientcs.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
