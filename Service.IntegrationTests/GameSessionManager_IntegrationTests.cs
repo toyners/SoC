@@ -21,23 +21,6 @@ namespace Service.IntegrationTests
       MockClient3.SetupBeforeEachTest();
     }
 
-    [Test]
-    public void ClientReceivesConfirmationOnceJoinedToGame()
-    {
-      // Arrange
-      var gameSessionManager = GameSessionManagerExtensions.CreateGameSessionManagerForTest(new GameManagerFactory(), 4);
-      var mockClient = new MockClient();
-
-      // Act
-      gameSessionManager.AddMockClients(mockClient);
-      Thread.Sleep(1000);
-
-      gameSessionManager.WaitUntilGameSessionManagerHasStopped();
-
-      // Assert
-      mockClient.MessageHasType<MockClient.ConfirmGameJoinedMessage>().ShouldBeTrue();
-    }
-
     /// <summary>
     /// All clients receive player cards for all clients in game session.
     /// </summary>
