@@ -140,6 +140,13 @@ namespace Service.UnitTests
   public class TestClient : MockClient, IServiceProviderCallback
   {
     private ConcurrentQueue<MessageBase> messageQueue = new ConcurrentQueue<MessageBase>();
+    
+    public MessageBase LastMessage { get; internal set; }
+
+    public TestClient(String userName, GameSessionManager gameSessionManager) : base(gameSessionManager)
+    {
+      this.Username = userName;
+    }
 
     public MessageBase Peek()
     {
@@ -194,7 +201,10 @@ namespace Service.UnitTests
       throw new NotImplementedException();
     }
 
-    public abstract class MessageBase { }
+    public class MessageBase
+    {
+      public String MessageText { get; protected set; }
+    }
 
     public class ConfirmGameJoinedMessage : MessageBase
     {
@@ -202,6 +212,14 @@ namespace Service.UnitTests
       public ConfirmGameJoinedMessage(Guid gameToken) { this.GameToken = gameToken; }
 
       public Guid GameToken { get; private set; }
+    }
+
+    public class ClientLeftMessage : MessageBase
+    {
+      public ClientLeftMessage(String userName)
+      {
+        this.MessageText = userName + " has left the game.";
+      }
     }
   }
 }

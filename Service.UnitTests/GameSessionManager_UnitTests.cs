@@ -26,7 +26,7 @@ namespace Service.UnitTests
     {
       // Arrange
       var gameSessionManager = GameSessionManagerTestExtensions.CreateGameSessionManagerForTest(new GameManagerFactory(), 4);
-      var testClient = new TestClient();
+      var testClient = new TestClient("Test Client 1", gameSessionManager);
 
       // Act
       gameSessionManager.AddMockClients(testClient);
@@ -36,6 +36,40 @@ namespace Service.UnitTests
 
       // Assert
       testClient.MessageHasType<TestClient.ConfirmGameJoinedMessage>().ShouldBeTrue();
+    }
+
+    [Test]
+    public void WhenClientDropsOutOfGameOtherClientsAreNotified()
+    {
+      GameSessionManager gameSessionManager = null;
+      try
+      {
+        var testClient1UserName = "Test Client 1";
+        var testClient2UserName = "Test Client 2";
+        var testClient3UserName = "Test Client 3";
+        var testClient4UserName = "Test Client 4";
+        var expectedMessage = new TestClient.ClientLeftMessage(testClient1UserName);
+        gameSessionManager = GameSessionManagerTestExtensions.CreateGameSessionManagerForTest(new GameManagerFactory(), 4);
+
+        var testClient1 = new TestClient(testClient1UserName, gameSessionManager);
+        var testClient2 = new TestClient(testClient2UserName, gameSessionManager);
+        var testClient3 = new TestClient(testClient3UserName, gameSessionManager);
+        var testClient4 = new TestClient(testClient4UserName, gameSessionManager);
+
+        gameSessionManager.AddMockClients(testClient1, testClient2, testClient3, testClient4);
+        Thread.Sleep(1000);
+        testClient1.LeaveGame();
+        gameSessionManager.WaitUntilGameSessionManagerHasStopped();
+
+        // Assert
+        testClient2.LastMessage.ShouldBe(expectedMessage);
+        testClient3.LastMessage.ShouldBe(expectedMessage);
+        testClient4.LastMessage.ShouldBe(expectedMessage);
+      }
+      finally
+      {
+        gameSessionManager.WaitUntilGameSessionManagerHasStopped();
+      }
     }
 
     /// <summary>
