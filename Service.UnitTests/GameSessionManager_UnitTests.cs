@@ -7,7 +7,7 @@ namespace Service.UnitTests
   using System.Threading;
   using Jabberwocky.SoC.Library;
   using Jabberwocky.SoC.Service;
-  //using NSubstitute;
+  using NSubstitute;
   using NUnit.Framework;
   using Shouldly;
 
