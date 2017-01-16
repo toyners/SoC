@@ -119,7 +119,7 @@ namespace Jabberwocky.SoC.Service
     {
       if (!this.gameSessions.ContainsKey(gameToken))
       {
-        var message = "Can't game session for token " + gameToken;
+        var message = "Can't find game session matching game session token " + gameToken;
         NLog.LogManager.GetCurrentClassLogger().Error(message);
         throw new ArgumentException(message); 
       }

@@ -77,12 +77,12 @@ namespace Service.UnitTests
       this.GameJoined = true;
     }
 
-    public void ConfirmGameLeft()
+    public virtual void ConfirmGameLeft()
     {
       throw new NotImplementedException();
     }
 
-    public void InitializeGame(GameInitializationData gameData)
+    public virtual void InitializeGame(GameInitializationData gameData)
     {
       this.GameInitialized = true;
     }
@@ -97,7 +97,7 @@ namespace Service.UnitTests
       this.gameSessionManager.ConfirmTownPlacement(this.GameToken, this, locationIndex);
     }
 
-    public void PlayerDataForJoiningClient(PlayerData playerData)
+    public virtual void PlayerDataForJoiningClient(PlayerData playerData)
     {
       this.ReceivedPlayerData.Add(playerData);
     }
@@ -141,7 +141,19 @@ namespace Service.UnitTests
   {
     private ConcurrentQueue<MessageBase> messageQueue = new ConcurrentQueue<MessageBase>();
     
-    public MessageBase LastMessage { get; internal set; }
+    public MessageBase LastMessage
+    {
+      get
+      {
+        MessageBase message = null;
+        while(!this.messageQueue.TryPeek(out message))
+        {
+          Thread.Sleep(50);
+        }
+
+        return message;
+      }
+    }
 
     public TestClient(String userName, GameSessionManager gameSessionManager) : base(gameSessionManager)
     {
@@ -173,22 +185,23 @@ namespace Service.UnitTests
 
     public override void ConfirmGameJoined(Guid gameToken)
     {
+      this.GameToken = gameToken;
       this.messageQueue.Enqueue(new ConfirmGameJoinedMessage(gameToken));
     }
 
-    public void ConfirmGameLeft()
+    public override void ConfirmGameLeft()
     {
-      throw new NotImplementedException();
+      this.messageQueue.Enqueue(new ConfirmGameLeftMessage());
     }
 
-    public void InitializeGame(GameInitializationData gameData)
+    public override void InitializeGame(GameInitializationData gameData)
     {
-      throw new NotImplementedException();
+      this.messageQueue.Enqueue(new InitializeGameMessage(gameData));
     }
 
-    public void PlayerDataForJoiningClient(PlayerData playerData)
+    public override void PlayerDataForJoiningClient(PlayerData playerData)
     {
-      throw new NotImplementedException();
+      this.messageQueue.Enqueue(new PlayerDataReceivedMessage(playerData));
     }
 
     public void StartTurn(Guid token)
@@ -214,12 +227,36 @@ namespace Service.UnitTests
       public Guid GameToken { get; private set; }
     }
 
+    public class ConfirmGameLeftMessage : MessageBase
+    {
+    }
+
     public class ClientLeftMessage : MessageBase
     {
       public ClientLeftMessage(String userName)
       {
         this.MessageText = userName + " has left the game.";
       }
+    }
+
+    public class PlayerDataReceivedMessage : MessageBase
+    {
+      public PlayerDataReceivedMessage(PlayerData playerData)
+      {
+        this.PlayerData = playerData;
+      }
+
+      public PlayerData PlayerData { get; private set; }
+    }
+
+    public class InitializeGameMessage : MessageBase
+    {
+      public InitializeGameMessage(GameInitializationData gameData)
+      {
+        this.GameData = gameData;
+      }
+
+      public GameInitializationData GameData { get; private set; }
     }
   }
 }
