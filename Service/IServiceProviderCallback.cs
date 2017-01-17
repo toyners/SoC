@@ -18,10 +18,17 @@ namespace Jabberwocky.SoC.Service
     void ConfirmGameJoined(Guid gameToken);
 
     /// <summary>
-    /// Confirm that to the client that they have left the game.
+    /// Confirm to the player that they have left the game session.
     /// </summary>
     [OperationContract(IsOneWay = true)]
-    void ConfirmGameLeft();
+    void ConfirmPlayerHasLeftGame();
+
+    /// <summary>
+    /// Confirm that another player has left the game.
+    /// </summary>
+    /// <param name="username">Username of player that has left game session.</param>
+    [OperationContract(IsOneWay = true)]
+    void ConfirmOtherPlayerHasLeftGame(String username);
 
     /// <summary>
     /// Instruct the client to initialize the game.

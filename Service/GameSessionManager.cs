@@ -289,7 +289,7 @@ namespace Jabberwocky.SoC.Service
           {
             this.clients[i] = null;
             this.clientCount--;
-            client.ConfirmGameLeft();
+            client.ConfirmPlayerHasLeftGame();
             break;
           }
         }
@@ -298,6 +298,7 @@ namespace Jabberwocky.SoC.Service
         {
           if (this.clients[i] != null)
           {
+            this.clients[i].ConfirmOtherPlayerHasLeftGame(null);
             //client.();
           }
         }

@@ -83,7 +83,7 @@ namespace Service.UnitTests
       this.messageQueue.Enqueue(new ConfirmGameJoinedMessage(gameToken));
     }
 
-    public void ConfirmGameLeft()
+    public void ConfirmPlayerHasLeftGame()
     {
       this.messageQueue.Enqueue(new ConfirmGameLeftMessage());
     }
@@ -104,6 +104,11 @@ namespace Service.UnitTests
     }
 
     public void TownPlacedDuringSetup(UInt32 locationIndex)
+    {
+      throw new NotImplementedException();
+    }
+
+    public void ConfirmOtherPlayerHasLeftGame(String username)
     {
       throw new NotImplementedException();
     }

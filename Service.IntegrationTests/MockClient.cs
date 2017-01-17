@@ -77,7 +77,7 @@ namespace Service.IntegrationTests
       this.GameJoined = true;
     }
 
-    public void ConfirmGameLeft()
+    public void ConfirmPlayerHasLeftGame()
     {
       throw new NotImplementedException();
     }
@@ -134,6 +134,11 @@ namespace Service.IntegrationTests
         throw new TimeoutException("Timed out waiting for client to receive place town message.");
       }
     }
+
+    public void ConfirmOtherPlayerHasLeftGame(String username)
+    {
+      throw new NotImplementedException();
+    }
     #endregion
   }
 
@@ -170,7 +175,7 @@ namespace Service.IntegrationTests
       this.messageQueue.Enqueue(new ConfirmGameJoinedMessage(gameToken));
     }
 
-    public void ConfirmGameLeft()
+    public void ConfirmPlayerHasLeftGame()
     {
       throw new NotImplementedException();
     }
