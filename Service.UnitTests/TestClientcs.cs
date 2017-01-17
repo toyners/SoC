@@ -85,7 +85,7 @@ namespace Service.UnitTests
 
     public void ConfirmPlayerHasLeftGame()
     {
-      this.messageQueue.Enqueue(new ConfirmGameLeftMessage());
+      this.messageQueue.Enqueue(new PlayerHasLeftGameMessage());
     }
 
     public void InitializeGame(GameInitializationData gameData)
@@ -110,7 +110,7 @@ namespace Service.UnitTests
 
     public void ConfirmOtherPlayerHasLeftGame(String username)
     {
-      throw new NotImplementedException();
+      this.messageQueue.Enqueue(new OtherPlayerHasLeftGameMessage(username));
     }
 
     public class MessageBase
@@ -126,13 +126,13 @@ namespace Service.UnitTests
       public Guid GameToken { get; private set; }
     }
 
-    public class ConfirmGameLeftMessage : MessageBase
+    public class PlayerHasLeftGameMessage : MessageBase
     {
     }
 
-    public class ClientLeftMessage : MessageBase
+    public class OtherPlayerHasLeftGameMessage : MessageBase
     {
-      public ClientLeftMessage(String userName)
+      public OtherPlayerHasLeftGameMessage(String userName)
       {
         this.MessageText = userName + " has left the game.";
       }

@@ -39,7 +39,7 @@ namespace Service.UnitTests
     }
 
     [Test]
-    public void WhenClientDropsOutOfGameOtherClientsAreNotified()
+    public void WhenClientLeavesGameOtherClientsAreNotified()
     {
       GameSessionManager gameSessionManager = null;
       try
@@ -48,7 +48,7 @@ namespace Service.UnitTests
         var testClient2UserName = "Test Client 2";
         var testClient3UserName = "Test Client 3";
         var testClient4UserName = "Test Client 4";
-        var expectedMessage = new TestClient.ClientLeftMessage(testClient1UserName);
+        var expectedMessage = new TestClient.OtherPlayerHasLeftGameMessage(testClient1UserName);
         gameSessionManager = GameSessionManagerTestExtensions.CreateGameSessionManagerForTest(new GameManagerFactory(), 4);
 
         var testClient1 = new TestClient(testClient1UserName, gameSessionManager);

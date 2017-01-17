@@ -290,19 +290,22 @@ namespace Jabberwocky.SoC.Service
             this.clients[i] = null;
             this.clientCount--;
             client.ConfirmPlayerHasLeftGame();
-            break;
+
+            var playerData = this.playerCards[client];
+            for (Int32 j = 0; j < this.clients.Length; j++)
+            {
+              if (j != i)
+              {
+                this.clients[j].ConfirmOtherPlayerHasLeftGame(playerData.Username);
+              }
+            }
+
+            this.playerCards.Remove(client);
+
+            return;
           }
         }
-
-        for (Int32 i = 0; i < this.clients.Length; i++)
-        {
-          if (this.clients[i] != null)
-          {
-            this.clients[i].ConfirmOtherPlayerHasLeftGame(null);
-            //client.();
-          }
-        }
-
+        
         //TODO: Remove or make meaningful
         throw new NotImplementedException();
       }
