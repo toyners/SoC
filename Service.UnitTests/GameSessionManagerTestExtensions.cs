@@ -13,12 +13,12 @@ namespace Service.UnitTests
     /// Add mock clients to the game session manager.
     /// </summary>
     /// <param name="gameSessionManager">Game session manager instance.</param>
-    /// <param name="mockClients">Mock clients to add to the game session manager.</param>
-    public static void AddMockClients(this GameSessionManager gameSessionManager, params MockClient[] mockClients)
+    /// <param name="testClients">Test clients to add to the game session manager.</param>
+    public static void AddTestClients(this GameSessionManager gameSessionManager, params TestClient[] testClients)
     {
-      foreach (var mockClient in mockClients)
+      foreach (var testClient in testClients)
       {
-        gameSessionManager.AddClient(mockClient, mockClient.Username);
+        gameSessionManager.AddClient(testClient, testClient.Username);
       }
     }
 

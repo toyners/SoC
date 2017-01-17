@@ -8,139 +8,25 @@ namespace Service.UnitTests
   using System.Threading;
   using Jabberwocky.SoC.Service;
 
-  public class MockClient : IServiceProviderCallback
+  public class TestClient : IServiceProviderCallback
   {
-    #region Fields
-    public const Int64 TimeOut = 2000;
-
-    public Boolean ChooseTownLocationMessageReceived;
-
-    public Boolean GameJoined;
-
-    public Boolean GameInitialized;
-
-    public Guid GameToken;
-
-    public Boolean GameLeft;
-
-    public UInt32 Id;
-
-    public UInt32 NewTownLocation;
-
-    public List<PlayerData> ReceivedPlayerData;
-
-    public UInt32 TownPlacedRank;
-
-    public String Username;
+    private static UInt32 NextClientId;
 
     private static UInt32 NextTownPlacedRank;
 
-    private static UInt32 NextClientId;
-
     private GameSessionManager gameSessionManager;
-    #endregion
 
-    #region Construction
-    public MockClient()
-    {
-      this.Id = MockClient.NextClientId++;
-      this.ReceivedPlayerData = new List<PlayerData>();
-    }
+    private ConcurrentQueue<MessageBase> messageQueue;
 
-    public MockClient(GameSessionManager gameSessionManager) : this()
+    public TestClient(String userName, GameSessionManager gameSessionManager)
     {
+      this.messageQueue = new ConcurrentQueue<MessageBase>();
       this.gameSessionManager = gameSessionManager;
-    }
-    #endregion
-
-    #region Methods
-    public static void SetupBeforeEachTest()
-    {
-      MockClient.NextTownPlacedRank = 1;
-      MockClient.NextClientId = 1;
+      this.Username = userName;
     }
 
-    public void ChooseTownLocation()
-    {
-      this.ChooseTownLocationMessageReceived = true;
-      this.TownPlacedRank = MockClient.NextTownPlacedRank++;
-    }
+    public Guid GameToken { get; private set; }
 
-    public void ConfirmGameInitialized()
-    {
-      this.gameSessionManager.ConfirmGameInitialized(this.GameToken, this);
-    }
-
-    public virtual void ConfirmGameJoined(Guid gameToken)
-    {
-      this.GameToken = gameToken;
-      this.GameJoined = true;
-    }
-
-    public virtual void ConfirmGameLeft()
-    {
-      throw new NotImplementedException();
-    }
-
-    public virtual void InitializeGame(GameInitializationData gameData)
-    {
-      this.GameInitialized = true;
-    }
-
-    public void LeaveGame()
-    {
-      this.gameSessionManager.RemoveClient(this.GameToken, this);
-    }
-
-    public void PlaceTown(UInt32 locationIndex)
-    {
-      this.gameSessionManager.ConfirmTownPlacement(this.GameToken, this, locationIndex);
-    }
-
-    public virtual void PlayerDataForJoiningClient(PlayerData playerData)
-    {
-      this.ReceivedPlayerData.Add(playerData);
-    }
-
-    public void StartTurn(Guid token)
-    {
-      throw new NotImplementedException();
-    }
-
-    public void TownPlacedDuringSetup(UInt32 locationIndex)
-    {
-      this.NewTownLocation = locationIndex;
-    }
-
-    public void WaitUntilClientReceivesPlaceTownMessage()
-    {
-      this.ChooseTownLocationMessageReceived = false;
-      var stopWatch = new Stopwatch();
-      stopWatch.Start();
-
-      while (!this.ChooseTownLocationMessageReceived
-#if !DEBUG
-        && stopWatch.ElapsedMilliseconds <= MockClient.TimeOut
-#endif
-        )
-      {
-        Thread.Sleep(50);
-      }
-
-      stopWatch.Stop();
-
-      if (!this.ChooseTownLocationMessageReceived)
-      {
-        throw new TimeoutException("Timed out waiting for client to receive place town message.");
-      }
-    }
-    #endregion
-  }
-
-  public class TestClient : MockClient //, IServiceProviderCallback
-  {
-    private ConcurrentQueue<MessageBase> messageQueue = new ConcurrentQueue<MessageBase>();
-    
     public MessageBase LastMessage
     {
       get
@@ -155,9 +41,24 @@ namespace Service.UnitTests
       }
     }
 
-    public TestClient(String userName, GameSessionManager gameSessionManager) : base(gameSessionManager)
+    public String Username { get; private set; }
+
+    public static void SetupBeforeEachTest()
     {
-      this.Username = userName;
+      TestClient.NextTownPlacedRank = 1;
+      TestClient.NextClientId = 1;
+    }
+
+    public void LeaveGame()
+    {
+      this.gameSessionManager.RemoveClient(this.GameToken, this);
+    }
+
+    public Boolean MessageHasType<T>()
+    {
+      var message = this.Peek();
+
+      return message != null && message.GetType() == typeof(T);
     }
 
     public MessageBase Peek()
@@ -171,35 +72,28 @@ namespace Service.UnitTests
       return null;
     }
 
-    public Boolean MessageHasType<T>()
-    {
-      var message = this.Peek();
-
-      return message != null && message.GetType() == typeof(T);
-    }
-
     public void ChooseTownLocation()
     {
       throw new NotImplementedException();
     }
 
-    public override void ConfirmGameJoined(Guid gameToken)
+    public void ConfirmGameJoined(Guid gameToken)
     {
       this.GameToken = gameToken;
       this.messageQueue.Enqueue(new ConfirmGameJoinedMessage(gameToken));
     }
 
-    public override void ConfirmGameLeft()
+    public void ConfirmGameLeft()
     {
       this.messageQueue.Enqueue(new ConfirmGameLeftMessage());
     }
 
-    public override void InitializeGame(GameInitializationData gameData)
+    public void InitializeGame(GameInitializationData gameData)
     {
       this.messageQueue.Enqueue(new InitializeGameMessage(gameData));
     }
 
-    public override void PlayerDataForJoiningClient(PlayerData playerData)
+    public void PlayerDataForJoiningClient(PlayerData playerData)
     {
       this.messageQueue.Enqueue(new PlayerDataReceivedMessage(playerData));
     }

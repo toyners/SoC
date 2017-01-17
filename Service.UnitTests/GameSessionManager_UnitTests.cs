@@ -18,7 +18,7 @@ namespace Service.UnitTests
     [SetUp]
     public void SetupBeforeEachTest()
     {
-      MockClient.SetupBeforeEachTest();
+      TestClient.SetupBeforeEachTest();
     }
 
     [Test]
@@ -29,7 +29,7 @@ namespace Service.UnitTests
       var testClient = new TestClient("Test Client 1", gameSessionManager);
 
       // Act
-      gameSessionManager.AddMockClients(testClient);
+      gameSessionManager.AddTestClients(testClient);
       Thread.Sleep(1000);
 
       gameSessionManager.WaitUntilGameSessionManagerHasStopped();
@@ -56,7 +56,7 @@ namespace Service.UnitTests
         var testClient3 = new TestClient(testClient3UserName, gameSessionManager);
         var testClient4 = new TestClient(testClient4UserName, gameSessionManager);
 
-        gameSessionManager.AddMockClients(testClient1, testClient2, testClient3, testClient4);
+        gameSessionManager.AddTestClients(testClient1, testClient2, testClient3, testClient4);
         Thread.Sleep(1000);
         testClient1.LeaveGame();
         gameSessionManager.WaitUntilGameSessionManagerHasStopped();
