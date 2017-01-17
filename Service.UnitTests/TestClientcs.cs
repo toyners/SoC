@@ -137,7 +137,7 @@ namespace Service.UnitTests
     #endregion
   }
 
-  public class TestClient : MockClient, IServiceProviderCallback
+  public class TestClient : MockClient //, IServiceProviderCallback
   {
     private ConcurrentQueue<MessageBase> messageQueue = new ConcurrentQueue<MessageBase>();
     

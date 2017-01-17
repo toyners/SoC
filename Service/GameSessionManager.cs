@@ -290,7 +290,15 @@ namespace Jabberwocky.SoC.Service
             this.clients[i] = null;
             this.clientCount--;
             client.ConfirmGameLeft();
-            return;
+            break;
+          }
+        }
+
+        for (Int32 i = 0; i < this.clients.Length; i++)
+        {
+          if (this.clients[i] != null)
+          {
+            //client.();
           }
         }
 
