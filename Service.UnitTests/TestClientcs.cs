@@ -27,29 +27,26 @@ namespace Service.UnitTests
 
     public Guid GameToken { get; private set; }
 
-    public MessageBase LastMessage
-    {
-      get
-      {
-        MessageBase message = null;
-        while (this.messageQueue.Count > 0)
-        {
-          while (!this.messageQueue.TryDequeue(out message))
-          {
-            Thread.Sleep(50);
-          }
-        }
-
-        return message;
-      }
-    }
-
     public String Username { get; private set; }
 
     public static void SetupBeforeEachTest()
     {
       TestClient.NextTownPlacedRank = 1;
       TestClient.NextClientId = 1;
+    }
+
+    public MessageBase GetLastMessage()
+    {
+      MessageBase message = null;
+      while (this.messageQueue.Count > 0)
+      {
+        while (!this.messageQueue.TryDequeue(out message))
+        {
+          Thread.Sleep(50);
+        }
+      }
+
+      return message;
     }
 
     public void LeaveGame()

@@ -14,6 +14,11 @@ namespace Service.UnitTests
   [TestFixture]
   public class GameSessionManager_IntegrationTests
   {
+    private const String TestPlayer1UserName = "Test Player 1";
+    private const String TestPlayer2UserName = "Test Player 2";
+    private const String TestPlayer3UserName = "Test Player 3";
+    private const String TestPlayer4UserName = "Test Player 4";
+
     #region Methods
     [SetUp]
     public void SetupBeforeEachTest()
@@ -44,23 +49,19 @@ namespace Service.UnitTests
       GameSessionManager gameSessionManager = null;
       try
       {
-        var testPlayer1UserName = "Test Player 1";
-        var testPlayer2UserName = "Test Player 2";
-        var testPlayer3UserName = "Test Player 3";
-        var testPlayer4UserName = "Test Player 4";
-        var expectedMessageText = testPlayer1UserName + " has left the game.";
-        var expectedMessage = new TestClient.OtherPlayerHasLeftGameMessage(testPlayer1UserName);
+        var expectedMessageText = TestPlayer1UserName + " has left the game.";
+        var expectedMessage = new TestClient.OtherPlayerHasLeftGameMessage(TestPlayer1UserName);
         var mockPlayerCardRepository = this.CreateMockPlayerCardRepository(
-          new PlayerData(testPlayer1UserName),
-          new PlayerData(testPlayer2UserName),
-          new PlayerData(testPlayer3UserName),
-          new PlayerData(testPlayer4UserName));
+          new PlayerData(TestPlayer1UserName),
+          new PlayerData(TestPlayer2UserName),
+          new PlayerData(TestPlayer3UserName),
+          new PlayerData(TestPlayer4UserName));
         gameSessionManager = GameSessionManagerTestExtensions.CreateGameSessionManagerForTest(new GameManagerFactory(), 4, mockPlayerCardRepository);
 
-        var testPlayer1 = new TestClient(testPlayer1UserName, gameSessionManager);
-        var testPlayer2 = new TestClient(testPlayer2UserName, gameSessionManager);
-        var testPlayer3 = new TestClient(testPlayer3UserName, gameSessionManager);
-        var testPlayer4 = new TestClient(testPlayer4UserName, gameSessionManager);
+        var testPlayer1 = new TestClient(TestPlayer1UserName, gameSessionManager);
+        var testPlayer2 = new TestClient(TestPlayer2UserName, gameSessionManager);
+        var testPlayer3 = new TestClient(TestPlayer3UserName, gameSessionManager);
+        var testPlayer4 = new TestClient(TestPlayer4UserName, gameSessionManager);
 
         gameSessionManager.AddTestClients(testPlayer1, testPlayer2, testPlayer3, testPlayer4);
         Thread.Sleep(1000);
@@ -68,9 +69,29 @@ namespace Service.UnitTests
         gameSessionManager.WaitUntilGameSessionManagerHasStopped();
 
         // Assert
-        testPlayer2.LastMessage.MessageText.ShouldBe(expectedMessageText);
-        testPlayer3.LastMessage.MessageText.ShouldBe(expectedMessageText);
-        testPlayer4.LastMessage.MessageText.ShouldBe(expectedMessageText);
+        testPlayer2.GetLastMessage().ShouldBeOfType(typeof(TestClient.OtherPlayerHasLeftGameMessage));
+        testPlayer3.GetLastMessage().MessageText.ShouldBe(expectedMessageText);
+        testPlayer4.GetLastMessage().MessageText.ShouldBe(expectedMessageText);
+      }
+      finally
+      {
+        gameSessionManager.WaitUntilGameSessionManagerHasStopped();
+      }
+    }
+
+    [Test]
+    public void PlayerGetsNotificationWhenFirstJoiningGameSession()
+    {
+      GameSessionManager gameSessionManager = null;
+      try
+      {
+        var mockPlayerCardRepository = this.CreateMockPlayerCardRepository(new PlayerData(TestPlayer1UserName));
+        gameSessionManager = GameSessionManagerTestExtensions.CreateGameSessionManagerForTest(new GameManagerFactory(), 4, mockPlayerCardRepository);
+
+        var testPlayer1 = new TestClient(TestPlayer1UserName, gameSessionManager);
+        gameSessionManager.AddTestClients(testPlayer1);
+
+        //testPlayer1.GetLastMessage().ShouldBeOfType(typeof());
       }
       finally
       {
