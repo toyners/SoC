@@ -149,7 +149,7 @@ namespace Jabberwocky.SoC.Service
           }
 
           GameSession gameSession = null;
-          if (!this.TryAddToCurrentGameSession(joinTicket, out gameSession))
+          if (!this.TryAddToExistingGameSession(joinTicket, out gameSession))
           {
             gameSession = this.AddToNewGameSession(joinTicket, cancellationToken);
           }
@@ -179,7 +179,7 @@ namespace Jabberwocky.SoC.Service
       }
     }
 
-    private Boolean TryAddToCurrentGameSession(JoinTicket joinTicket, out GameSession gameSession)
+    private Boolean TryAddToExistingGameSession(JoinTicket joinTicket, out GameSession gameSession)
     {
       gameSession = null;
       foreach (var kv in this.gameSessions)
