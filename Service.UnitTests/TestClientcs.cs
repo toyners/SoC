@@ -32,9 +32,12 @@ namespace Service.UnitTests
       get
       {
         MessageBase message = null;
-        while(!this.messageQueue.TryPeek(out message))
+        while (this.messageQueue.Count > 0)
         {
-          Thread.Sleep(50);
+          while (!this.messageQueue.TryDequeue(out message))
+          {
+            Thread.Sleep(50);
+          }
         }
 
         return message;

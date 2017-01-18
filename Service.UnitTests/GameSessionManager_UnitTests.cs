@@ -44,32 +44,50 @@ namespace Service.UnitTests
       GameSessionManager gameSessionManager = null;
       try
       {
-        var testClient1UserName = "Test Client 1";
-        var testClient2UserName = "Test Client 2";
-        var testClient3UserName = "Test Client 3";
-        var testClient4UserName = "Test Client 4";
-        var expectedMessage = new TestClient.OtherPlayerHasLeftGameMessage(testClient1UserName);
-        gameSessionManager = GameSessionManagerTestExtensions.CreateGameSessionManagerForTest(new GameManagerFactory(), 4);
+        var testPlayer1UserName = "Test Player 1";
+        var testPlayer2UserName = "Test Player 2";
+        var testPlayer3UserName = "Test Player 3";
+        var testPlayer4UserName = "Test Player 4";
+        var expectedMessageText = testPlayer1UserName + " has left the game.";
+        var expectedMessage = new TestClient.OtherPlayerHasLeftGameMessage(testPlayer1UserName);
+        var mockPlayerCardRepository = this.CreateMockPlayerCardRepository(
+          new PlayerData(testPlayer1UserName),
+          new PlayerData(testPlayer2UserName),
+          new PlayerData(testPlayer3UserName),
+          new PlayerData(testPlayer4UserName));
+        gameSessionManager = GameSessionManagerTestExtensions.CreateGameSessionManagerForTest(new GameManagerFactory(), 4, mockPlayerCardRepository);
 
-        var testClient1 = new TestClient(testClient1UserName, gameSessionManager);
-        var testClient2 = new TestClient(testClient2UserName, gameSessionManager);
-        var testClient3 = new TestClient(testClient3UserName, gameSessionManager);
-        var testClient4 = new TestClient(testClient4UserName, gameSessionManager);
+        var testPlayer1 = new TestClient(testPlayer1UserName, gameSessionManager);
+        var testPlayer2 = new TestClient(testPlayer2UserName, gameSessionManager);
+        var testPlayer3 = new TestClient(testPlayer3UserName, gameSessionManager);
+        var testPlayer4 = new TestClient(testPlayer4UserName, gameSessionManager);
 
-        gameSessionManager.AddTestClients(testClient1, testClient2, testClient3, testClient4);
+        gameSessionManager.AddTestClients(testPlayer1, testPlayer2, testPlayer3, testPlayer4);
         Thread.Sleep(1000);
-        testClient1.LeaveGame();
+        testPlayer1.LeaveGame();
         gameSessionManager.WaitUntilGameSessionManagerHasStopped();
 
         // Assert
-        testClient2.LastMessage.ShouldBe(expectedMessage);
-        testClient3.LastMessage.ShouldBe(expectedMessage);
-        testClient4.LastMessage.ShouldBe(expectedMessage);
+        testPlayer2.LastMessage.MessageText.ShouldBe(expectedMessageText);
+        testPlayer3.LastMessage.MessageText.ShouldBe(expectedMessageText);
+        testPlayer4.LastMessage.MessageText.ShouldBe(expectedMessageText);
       }
       finally
       {
         gameSessionManager.WaitUntilGameSessionManagerHasStopped();
       }
+    }
+
+    private IPlayerCardRepository CreateMockPlayerCardRepository(PlayerData mandatoryPlayerData, params PlayerData[] playerDataList)
+    {
+      var mockPlayerCardRepository = Substitute.For<IPlayerCardRepository>();
+      mockPlayerCardRepository.GetPlayerData(mandatoryPlayerData.Username).Returns(mandatoryPlayerData);
+      foreach (var playerData in playerDataList)
+      {
+        mockPlayerCardRepository.GetPlayerData(playerData.Username).Returns(playerData);
+      }
+
+      return mockPlayerCardRepository;
     }
 
     /// <summary>

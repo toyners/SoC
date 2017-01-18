@@ -32,16 +32,16 @@ namespace Service.IntegrationTests
       {
         // Arrange
         var username1 = "User1";
-        var expectedPlayerData1 = new PlayerData(username1, 3);
+        var expectedPlayerData1 = new PlayerData(username1);
 
         var username2 = "User2";
-        var expectedPlayerData2 = new PlayerData(username2, 7);
+        var expectedPlayerData2 = new PlayerData(username2);
 
         var username3 = "User3";
-        var expectedPlayerData3 = new PlayerData(username3, 17);
+        var expectedPlayerData3 = new PlayerData(username3);
 
         var username4 = "User4";
-        var expectedPlayerData4 = new PlayerData(username4, 29);
+        var expectedPlayerData4 = new PlayerData(username4);
 
         var mockPlayerCardRepository = Substitute.For<IPlayerCardRepository>();
         mockPlayerCardRepository.GetPlayerData(username1).Returns(expectedPlayerData1);

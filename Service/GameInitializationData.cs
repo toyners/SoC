@@ -21,9 +21,6 @@ namespace Jabberwocky.SoC.Service
   public class PlayerData
   {
     [DataMember]
-    public UInt32 GamesPlayed { get; private set; }
-
-    [DataMember]
     public Boolean IsAnonymous { get; private set; }
 
     [DataMember]
@@ -34,11 +31,10 @@ namespace Jabberwocky.SoC.Service
       this.IsAnonymous = true;
     }
 
-    public PlayerData(String username, UInt32 gamesPlayed)
+    public PlayerData(String username)
     {
       // Check null or empty
       this.Username = username;
-      this.GamesPlayed = gamesPlayed;
     }
   }
 }
