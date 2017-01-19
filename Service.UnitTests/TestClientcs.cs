@@ -37,16 +37,13 @@ namespace Service.UnitTests
 
     public MessageBase GetLastMessage()
     {
-      MessageBase message = null;
-      while (this.messageQueue.Count > 0)
+      if (this.messageQueue.IsEmpty)
       {
-        while (!this.messageQueue.TryDequeue(out message))
-        {
-          Thread.Sleep(50);
-        }
+        throw new Exception("Message queue is empty.");
       }
 
-      return message;
+      var messages = this.messageQueue.ToArray();
+      return messages[messages.Length - 1];
     }
 
     public void LeaveGame()
