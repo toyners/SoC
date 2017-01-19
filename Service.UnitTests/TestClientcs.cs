@@ -35,6 +35,25 @@ namespace Service.UnitTests
       TestClient.NextClientId = 1;
     }
 
+    /// <summary>
+    /// Gets the first message from test client. Is not thread safe.
+    /// </summary>
+    /// <returns>First message that the client received.</returns>
+    public MessageBase GetFirstMessage()
+    {
+      if (this.messageQueue.IsEmpty)
+      {
+        throw new Exception("Message queue is empty.");
+      }
+
+      var messages = this.messageQueue.ToArray();
+      return messages[0];
+    }
+
+    /// <summary>
+    /// Gets the last message from the test client. Is not thread safe.
+    /// </summary>
+    /// <returns>Most current message that the client received.</returns>
     public MessageBase GetLastMessage()
     {
       if (this.messageQueue.IsEmpty)
@@ -49,24 +68,6 @@ namespace Service.UnitTests
     public void LeaveGame()
     {
       this.gameSessionManager.RemoveClient(this.GameToken, this);
-    }
-
-    public Boolean MessageHasType<T>()
-    {
-      var message = this.Peek();
-
-      return message != null && message.GetType() == typeof(T);
-    }
-
-    public MessageBase Peek()
-    {
-      MessageBase message = null;
-      if (this.messageQueue.TryPeek(out message))
-      {
-        return message;
-      }
-
-      return null;
     }
 
     public void ChooseTownLocation()

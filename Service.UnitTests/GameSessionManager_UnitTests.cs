@@ -40,7 +40,7 @@ namespace Service.UnitTests
       gameSessionManager.WaitUntilGameSessionManagerHasStopped();
 
       // Assert
-      testClient.MessageHasType<TestClient.ConfirmGameJoinedMessage>().ShouldBeTrue();
+      testClient.GetFirstMessage().ShouldBeOfType<TestClient.ConfirmGameJoinedMessage>();
     }
 
     [Test]
