@@ -19,6 +19,13 @@ namespace Jabberwocky.SoC.Service
       Stopping,
       Running
     }
+
+    public enum GameStates
+    {
+      Lobby,
+      Setup,
+      Playing
+    }
     #endregion
 
     #region Fields
@@ -256,7 +263,7 @@ namespace Jabberwocky.SoC.Service
           {
             this.clients[i] = client;
             this.clientCount++;
-            client.ConfirmGameJoined(this.GameToken);
+            client.ConfirmGameJoined(this.GameToken, GameStates.Lobby);
 
             var playerCard = this.playerCardRepository.GetPlayerData(userName);
             

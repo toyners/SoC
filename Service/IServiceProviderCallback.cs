@@ -15,7 +15,7 @@ namespace Jabberwocky.SoC.Service
     /// </summary>
     /// <param name="gameToken">The game identifier.</param>
     [OperationContract(IsOneWay = true)]
-    void ConfirmGameJoined(Guid gameToken);
+    void ConfirmGameJoined(Guid gameToken, GameSessionManager.GameStates gameSession);
 
     /// <summary>
     /// Confirm to the player that they have left the game session.

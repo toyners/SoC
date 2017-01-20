@@ -75,10 +75,10 @@ namespace Service.UnitTests
       throw new NotImplementedException();
     }
 
-    public void ConfirmGameJoined(Guid gameToken)
+    public void ConfirmGameJoined(Guid gameToken, GameSessionManager.GameStates gameState)
     {
       this.GameToken = gameToken;
-      this.messageQueue.Enqueue(new ConfirmGameJoinedMessage(gameToken));
+      this.messageQueue.Enqueue(new ConfirmGameJoinedMessage(gameToken, gameState));
     }
 
     public void ConfirmPlayerHasLeftGame()
@@ -111,6 +111,11 @@ namespace Service.UnitTests
       this.messageQueue.Enqueue(new OtherPlayerHasLeftGameMessage(username));
     }
 
+    public void ConfirmGameJoined(Guid gameToken)
+    {
+      throw new NotImplementedException();
+    }
+
     public class MessageBase
     {
       public String MessageText { get; protected set; }
@@ -118,9 +123,13 @@ namespace Service.UnitTests
 
     public class ConfirmGameJoinedMessage : MessageBase
     {
-      public ConfirmGameJoinedMessage() : this(Guid.Empty) { }
-      public ConfirmGameJoinedMessage(Guid gameToken) { this.GameToken = gameToken; }
+      public ConfirmGameJoinedMessage(Guid gameToken, GameSessionManager.GameStates gameState)
+      {
+        this.GameToken = gameToken;
+        this.GameState = gameState;
+      }
 
+      public Object GameState { get; internal set; }
       public Guid GameToken { get; private set; }
     }
 

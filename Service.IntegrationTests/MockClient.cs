@@ -71,7 +71,7 @@ namespace Service.IntegrationTests
       this.gameSessionManager.ConfirmGameInitialized(this.GameToken, this);
     }
 
-    public virtual void ConfirmGameJoined(Guid gameToken)
+    public virtual void ConfirmGameJoined(Guid gameToken, GameSessionManager.GameStates gameState)
     {
       this.GameToken = gameToken;
       this.GameJoined = true;
@@ -169,7 +169,7 @@ namespace Service.IntegrationTests
       throw new NotImplementedException();
     }
 
-    public override void ConfirmGameJoined(Guid gameToken)
+    public override void ConfirmGameJoined(Guid gameToken, GameSessionManager.GameStates gameState)
     {
       this.GameToken = gameToken;
       this.messageQueue.Enqueue(new ConfirmGameJoinedMessage(gameToken));

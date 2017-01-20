@@ -27,7 +27,7 @@ namespace Service.UnitTests
     }
 
     [Test]
-    public void ClientReceivesConfirmationOnceJoinedToGame()
+    public void PlayerReceivesConfirmationOnceJoinedToGame()
     {
       // Arrange
       var gameSessionManager = GameSessionManagerTestExtensions.CreateGameSessionManagerForTest(new GameManagerFactory(), 4);
@@ -40,7 +40,9 @@ namespace Service.UnitTests
       gameSessionManager.WaitUntilGameSessionManagerHasStopped();
 
       // Assert
-      testClient.GetFirstMessage().ShouldBeOfType<TestClient.ConfirmGameJoinedMessage>();
+      var receivedMessage = testClient.GetFirstMessage();
+      receivedMessage.ShouldBeOfType<TestClient.ConfirmGameJoinedMessage>();
+      ((TestClient.ConfirmGameJoinedMessage)receivedMessage).GameState.ShouldBe(GameSessionManager.GameStates.Lobby);
     }
 
     [Test]
@@ -80,7 +82,7 @@ namespace Service.UnitTests
     }
 
     [Test]
-    public void PlayerGetsNotificationWhenFirstJoiningGameSession()
+    public void PlayerGetsNotificationWhenGameIsReadyToStart()
     {
       GameSessionManager gameSessionManager = null;
       try
