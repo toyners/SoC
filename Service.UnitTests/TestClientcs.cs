@@ -164,5 +164,10 @@ namespace Service.UnitTests
 
       public GameInitializationData GameData { get; private set; }
     }
+
+    internal void ContainMessagesInOrder(PlayerDataReceivedMessage playerDataReceivedMessage1, PlayerDataReceivedMessage playerDataReceivedMessage2, PlayerDataReceivedMessage playerDataReceivedMessage3, PlayerDataReceivedMessage playerDataReceivedMessage4)
+    {
+      throw new NotImplementedException();
+    }
   }
 }

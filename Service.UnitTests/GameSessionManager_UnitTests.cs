@@ -53,11 +53,13 @@ namespace Service.UnitTests
       {
         var expectedMessageText = TestPlayer1UserName + " has left the game.";
         var expectedMessage = new TestClient.OtherPlayerHasLeftGameMessage(TestPlayer1UserName);
+
         var mockPlayerCardRepository = this.CreateMockPlayerCardRepository(
           new PlayerData(TestPlayer1UserName),
           new PlayerData(TestPlayer2UserName),
           new PlayerData(TestPlayer3UserName),
           new PlayerData(TestPlayer4UserName));
+
         gameSessionManager = GameSessionManagerTestExtensions.CreateGameSessionManagerForTest(new GameManagerFactory(), 4, mockPlayerCardRepository);
 
         var testPlayer1 = new TestClient(TestPlayer1UserName, gameSessionManager);
@@ -94,6 +96,7 @@ namespace Service.UnitTests
         gameSessionManager.AddTestClients(testPlayer1);
 
         //testPlayer1.GetLastMessage().ShouldBeOfType(typeof());
+        throw new NotImplementedException();
       }
       finally
       {
@@ -101,76 +104,66 @@ namespace Service.UnitTests
       }
     }
 
-    private IPlayerCardRepository CreateMockPlayerCardRepository(PlayerData mandatoryPlayerData, params PlayerData[] playerDataList)
-    {
-      var mockPlayerCardRepository = Substitute.For<IPlayerCardRepository>();
-      mockPlayerCardRepository.GetPlayerData(mandatoryPlayerData.Username).Returns(mandatoryPlayerData);
-      foreach (var playerData in playerDataList)
-      {
-        mockPlayerCardRepository.GetPlayerData(playerData.Username).Returns(playerData);
-      }
-
-      return mockPlayerCardRepository;
-    }
-
     /// <summary>
     /// All clients receive player cards for all clients in game session.
     /// </summary>
-    /*[Test]
+    [Test]
     public void AllClientsReceivePlayerCardsForAllClientsInGame()
     {
       GameSessionManager gameSessionManager = null;
       try
       {
         // Arrange
-        var username1 = "User1";
-        var expectedPlayerData1 = new PlayerData(username1, 3);
+        var testPlayer1Data = new PlayerData(TestPlayer1UserName);
+        var testPlayer2Data = new PlayerData(TestPlayer2UserName);
+        var testPlayer3Data = new PlayerData(TestPlayer3UserName);
+        var testPlayer4Data = new PlayerData(TestPlayer4UserName);
 
-        var username2 = "User2";
-        var expectedPlayerData2 = new PlayerData(username2, 7);
+        var mockPlayerCardRepository = this.CreateMockPlayerCardRepository(
+          testPlayer1Data,
+          testPlayer2Data,
+          testPlayer3Data,
+          testPlayer4Data);
 
-        var username3 = "User3";
-        var expectedPlayerData3 = new PlayerData(username3, 17);
+        gameSessionManager = GameSessionManagerTestExtensions.CreateGameSessionManagerForTest(new GameManagerFactory(), 4, mockPlayerCardRepository);
 
-        var username4 = "User4";
-        var expectedPlayerData4 = new PlayerData(username4, 29);
-
-        var mockPlayerCardRepository = Substitute.For<IPlayerCardRepository>();
-        mockPlayerCardRepository.GetPlayerData(username1).Returns(expectedPlayerData1);
-        mockPlayerCardRepository.GetPlayerData(username2).Returns(expectedPlayerData2);
-        mockPlayerCardRepository.GetPlayerData(username3).Returns(expectedPlayerData3);
-        mockPlayerCardRepository.GetPlayerData(username4).Returns(expectedPlayerData4);
-
-        var mockClient1 = new MockClient { Username = username1 };
-        var mockClient2 = new MockClient { Username = username2 };
-        var mockClient3 = new MockClient { Username = username3 };
-        var mockClient4 = new MockClient { Username = username4 };
+        var testPlayer1 = new TestClient(TestPlayer1UserName, gameSessionManager);
+        var testPlayer2 = new TestClient(TestPlayer2UserName, gameSessionManager);
+        var testPlayer3 = new TestClient(TestPlayer3UserName, gameSessionManager);
+        var testPlayer4 = new TestClient(TestPlayer4UserName, gameSessionManager);
 
         gameSessionManager = GameSessionManagerTestExtensions.CreateGameSessionManagerForTest(new GameManagerFactory(), 4, mockPlayerCardRepository);
 
         // Act
-        gameSessionManager.AddMockClients(mockClient1, mockClient2, mockClient3, mockClient4);
+        gameSessionManager.AddTestClients(testPlayer1, testPlayer2, testPlayer3, testPlayer4);
         Thread.Sleep(1000);
 
         // Assert
-        mockClient1.ReceivedPlayerData.Count.ShouldBe(3);
-        mockClient1.ReceivedPlayerData.ShouldBe(new[] { expectedPlayerData2, expectedPlayerData3, expectedPlayerData4 }, true);
+        testPlayer1.ContainMessagesInOrder(
 
-        mockClient2.ReceivedPlayerData.Count.ShouldBe(3);
-        mockClient2.ReceivedPlayerData.ShouldBe(new[] { expectedPlayerData1, expectedPlayerData3, expectedPlayerData4 }, true);
+          new TestClient.PlayerDataReceivedMessage(testPlayer1Data),
+          new TestClient.PlayerDataReceivedMessage(testPlayer2Data),
+          new TestClient.PlayerDataReceivedMessage(testPlayer3Data),
+          new TestClient.PlayerDataReceivedMessage(testPlayer4Data));
 
-        mockClient3.ReceivedPlayerData.Count.ShouldBe(3);
-        mockClient3.ReceivedPlayerData.ShouldBe(new[] { expectedPlayerData1, expectedPlayerData2, expectedPlayerData4 }, true);
+        /*testPlayer1.ReceivedPlayerData.ShouldBe(new[] { expectedPlayerData2, expectedPlayerData3, expectedPlayerData4 }, true);
 
-        mockClient4.ReceivedPlayerData.Count.ShouldBe(3);
-        mockClient4.ReceivedPlayerData.ShouldBe(new[] { expectedPlayerData1, expectedPlayerData2, expectedPlayerData3 }, true);
+        testPlayer2.ReceivedPlayerData.Count.ShouldBe(3);
+        testPlayer2.ReceivedPlayerData.ShouldBe(new[] { expectedPlayerData1, expectedPlayerData3, expectedPlayerData4 }, true);
+
+        testPlayer3.ReceivedPlayerData.Count.ShouldBe(3);
+        testPlayer3.ReceivedPlayerData.ShouldBe(new[] { expectedPlayerData1, expectedPlayerData2, expectedPlayerData4 }, true);
+
+        testPlayer4.ReceivedPlayerData.Count.ShouldBe(3);
+        testPlayer4.ReceivedPlayerData.ShouldBe(new[] { expectedPlayerData1, expectedPlayerData2, expectedPlayerData3 }, true);
+        */
       }
       finally
       {
         gameSessionManager.WaitUntilGameSessionManagerHasStopped();
       }
     }
-
+    /*
     [Test]
     public void WhenClientDropsOutOfGameOtherClientsAreNotified()
     {
@@ -711,6 +704,18 @@ namespace Service.UnitTests
         throw new TimeoutException("Timed out waiting for clients to receive game data.");
       }
     }*/
+
+    private IPlayerCardRepository CreateMockPlayerCardRepository(PlayerData mandatoryPlayerData, params PlayerData[] playerDataList)
+    {
+      var mockPlayerCardRepository = Substitute.For<IPlayerCardRepository>();
+      mockPlayerCardRepository.GetPlayerData(mandatoryPlayerData.Username).Returns(mandatoryPlayerData);
+      foreach (var playerData in playerDataList)
+      {
+        mockPlayerCardRepository.GetPlayerData(playerData.Username).Returns(playerData);
+      }
+
+      return mockPlayerCardRepository;
+    }
     #endregion
   }
 }
