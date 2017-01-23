@@ -165,9 +165,21 @@ namespace Service.UnitTests
       public GameInitializationData GameData { get; private set; }
     }
 
-    internal void ContainMessagesInOrder(PlayerDataReceivedMessage playerDataReceivedMessage1, PlayerDataReceivedMessage playerDataReceivedMessage2, PlayerDataReceivedMessage playerDataReceivedMessage3, PlayerDataReceivedMessage playerDataReceivedMessage4)
+    public void ContainMessagesInOrder(int startingIndex, params MessageBase[] expectedMessages)
     {
-      throw new NotImplementedException();
+      var messages = this.messageQueue.ToArray();
+      var index = startingIndex;
+
+      foreach (var expectedMessage in expectedMessages)
+      {
+        var message = messages[index++];
+
+        if (message.GetType() != expectedMessage.GetType())
+        {
+          var exceptionMessage = String.Format("Message at index {0} does not have expected type {1}. Instead it has type {2}", index, expectedMessage.GetType(), message.GetType());
+          throw new Exception(exceptionMessage);
+        }
+      }
     }
   }
 }

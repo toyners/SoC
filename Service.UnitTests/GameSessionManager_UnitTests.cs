@@ -139,9 +139,7 @@ namespace Service.UnitTests
         Thread.Sleep(1000);
 
         // Assert
-        testPlayer1.ContainMessagesInOrder(
-
-          new TestClient.PlayerDataReceivedMessage(testPlayer1Data),
+        testPlayer1.ContainMessagesInOrder(1,
           new TestClient.PlayerDataReceivedMessage(testPlayer2Data),
           new TestClient.PlayerDataReceivedMessage(testPlayer3Data),
           new TestClient.PlayerDataReceivedMessage(testPlayer4Data));
