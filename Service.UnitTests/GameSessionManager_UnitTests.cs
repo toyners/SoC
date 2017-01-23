@@ -27,31 +27,38 @@ namespace Service.UnitTests
     }
 
     [Test]
-    public void PlayerReceivesConfirmationOnceJoinedToGame()
+    public void PlayerReceivesConfirmationOnceJoinedToGameSession()
     {
       // Arrange
-      var gameSessionManager = GameSessionManagerTestExtensions.CreateGameSessionManagerForTest(new GameManagerFactory(), 4);
-      var testClient = new TestClient("Test Client 1", gameSessionManager);
+      GameSessionManager gameSessionManager = null;
+      try
+      {
+        gameSessionManager = GameSessionManagerTestExtensions.CreateGameSessionManagerForTest(new GameManagerFactory(), 4);
+        var testClient = new TestClient("Test Client 1", gameSessionManager);
 
-      // Act
-      gameSessionManager.AddTestClients(testClient);
-      Thread.Sleep(1000);
+        // Act
+        gameSessionManager.AddTestClients(testClient);
+        Thread.Sleep(1000);
 
-      gameSessionManager.WaitUntilGameSessionManagerHasStopped();
+        gameSessionManager.WaitUntilGameSessionManagerHasStopped();
 
-      // Assert
-      var receivedMessage = testClient.GetFirstMessage();
-      receivedMessage.ShouldBeOfType<TestClient.ConfirmGameJoinedMessage>();
-      ((TestClient.ConfirmGameJoinedMessage)receivedMessage).GameState.ShouldBe(GameSessionManager.GameStates.Lobby);
+        // Assert
+        var receivedMessage = testClient.GetFirstMessage();
+        receivedMessage.ShouldBeOfType<TestClient.ConfirmGameJoinedMessage>();
+        ((TestClient.ConfirmGameJoinedMessage)receivedMessage).GameState.ShouldBe(GameSessionManager.GameStates.Lobby);
+      }
+      finally
+      {
+        gameSessionManager?.WaitUntilGameSessionManagerHasStopped();
+      }
     }
 
     [Test]
-    public void WhenClientLeavesGameOtherClientsAreNotified()
+    public void PlayersAreNotifiedWhenPlayerLeavesGameSession()
     {
       GameSessionManager gameSessionManager = null;
       try
       {
-        var expectedMessageText = TestPlayer1UserName + " has left the game.";
         var expectedMessage = new TestClient.OtherPlayerHasLeftGameMessage(TestPlayer1UserName);
 
         var mockPlayerCardRepository = this.CreateMockPlayerCardRepository(
@@ -73,18 +80,18 @@ namespace Service.UnitTests
         gameSessionManager.WaitUntilGameSessionManagerHasStopped();
 
         // Assert
-        testPlayer2.GetLastMessage().ShouldBeOfType(typeof(TestClient.OtherPlayerHasLeftGameMessage));
-        testPlayer3.GetLastMessage().MessageText.ShouldBe(expectedMessageText);
-        testPlayer4.GetLastMessage().MessageText.ShouldBe(expectedMessageText);
+        testPlayer2.GetLastMessage().IsSameAs(expectedMessage).ShouldBeTrue();
+        testPlayer3.GetLastMessage().IsSameAs(expectedMessage).ShouldBeTrue();
+        testPlayer4.GetLastMessage().IsSameAs(expectedMessage).ShouldBeTrue();
       }
       finally
       {
-        gameSessionManager.WaitUntilGameSessionManagerHasStopped();
+        gameSessionManager?.WaitUntilGameSessionManagerHasStopped();
       }
     }
 
     [Test]
-    public void PlayerGetsNotificationWhenGameIsReadyToStart()
+    public void PlayerGetsNotificationWhenGameSessionIsReadyToLaunch()
     {
       GameSessionManager gameSessionManager = null;
       try
@@ -108,7 +115,7 @@ namespace Service.UnitTests
     /// All clients receive player cards for all clients in game session.
     /// </summary>
     [Test]
-    public void AllClientsReceivePlayerCardsForAllClientsInGame()
+    public void AllClientsReceivePlayerCardsForAllClientsInGameSession()
     {
       GameSessionManager gameSessionManager = null;
       try
@@ -144,6 +151,7 @@ namespace Service.UnitTests
           new TestClient.PlayerDataReceivedMessage(testPlayer3Data),
           new TestClient.PlayerDataReceivedMessage(testPlayer4Data));
 
+        throw new NotImplementedException();
         /*testPlayer1.ReceivedPlayerData.ShouldBe(new[] { expectedPlayerData2, expectedPlayerData3, expectedPlayerData4 }, true);
 
         testPlayer2.ReceivedPlayerData.Count.ShouldBe(3);

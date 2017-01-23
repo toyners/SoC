@@ -119,6 +119,16 @@ namespace Service.UnitTests
     public class MessageBase
     {
       public String MessageText { get; protected set; }
+
+      public virtual Boolean IsSameAs(MessageBase messageBase)
+      {
+        if (this.Equals(messageBase))
+        {
+          throw new Exception("Same Object");
+        }
+
+        return (String.CompareOrdinal(this.MessageText, messageBase.MessageText) == 0);
+      }
     }
 
     public class ConfirmGameJoinedMessage : MessageBase
