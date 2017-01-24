@@ -10,6 +10,7 @@ namespace Service.UnitTests
 
   public class TestClient : IServiceProviderCallback
   {
+    #region Fields
     private static UInt32 NextClientId;
 
     private static UInt32 NextTownPlacedRank;
@@ -17,18 +18,24 @@ namespace Service.UnitTests
     private GameSessionManager gameSessionManager;
 
     private ConcurrentQueue<MessageBase> messageQueue;
+    #endregion
 
+    #region Construction
     public TestClient(String userName, GameSessionManager gameSessionManager)
     {
       this.messageQueue = new ConcurrentQueue<MessageBase>();
       this.gameSessionManager = gameSessionManager;
       this.Username = userName;
     }
+    #endregion
 
+    #region Properties
     public Guid GameToken { get; private set; }
 
     public String Username { get; private set; }
+    #endregion
 
+    #region Methods
     public static void SetupBeforeEachTest()
     {
       TestClient.NextTownPlacedRank = 1;
@@ -81,9 +88,31 @@ namespace Service.UnitTests
       this.messageQueue.Enqueue(new ConfirmGameJoinedMessage(gameToken, gameState));
     }
 
+    public void ConfirmOtherPlayerHasLeftGame(String username)
+    {
+      this.messageQueue.Enqueue(new OtherPlayerHasLeftGameMessage(username));
+    }
+
     public void ConfirmPlayerHasLeftGame()
     {
       this.messageQueue.Enqueue(new PlayerHasLeftGameMessage());
+    }
+
+    public void ContainMessagesInOrder(int startingIndex, params MessageBase[] expectedMessages)
+    {
+      var messages = this.messageQueue.ToArray();
+      var index = startingIndex;
+
+      foreach (var expectedMessage in expectedMessages)
+      {
+        var message = messages[index++];
+
+        if (!message.IsSameAs(expectedMessage))
+        {
+          var exceptionMessage = String.Format("Message at index {0} is not the same as expected message. Expected {1} but found {2}", index, expectedMessage, message);
+          throw new Exception(exceptionMessage);
+        }
+      }
     }
 
     public void InitializeGame(GameInitializationData gameData)
@@ -105,17 +134,9 @@ namespace Service.UnitTests
     {
       throw new NotImplementedException();
     }
+    #endregion
 
-    public void ConfirmOtherPlayerHasLeftGame(String username)
-    {
-      this.messageQueue.Enqueue(new OtherPlayerHasLeftGameMessage(username));
-    }
-
-    public void ConfirmGameJoined(Guid gameToken)
-    {
-      throw new NotImplementedException();
-    }
-
+    #region Classes
     public class MessageBase
     {
       public String MessageText { get; protected set; }
@@ -127,7 +148,7 @@ namespace Service.UnitTests
           throw new Exception("Same Object");
         }
 
-        return (String.CompareOrdinal(this.MessageText, messageBase.MessageText) == 0);
+        return (this.GetType() == messageBase.GetType() && String.CompareOrdinal(this.MessageText, messageBase.MessageText) == 0);
       }
     }
 
@@ -163,6 +184,23 @@ namespace Service.UnitTests
       }
 
       public PlayerData PlayerData { get; private set; }
+
+      public override Boolean IsSameAs(MessageBase messageBase)
+      {
+        if (!base.IsSameAs(messageBase))
+        {
+          return false;
+        }
+
+        var playerDataReceivedMessage = (PlayerDataReceivedMessage)messageBase;
+        return this.PlayerData.IsAnonymous == playerDataReceivedMessage.PlayerData.IsAnonymous &&
+          this.PlayerData.Username == playerDataReceivedMessage.PlayerData.Username;
+      }
+
+      public override String ToString()
+      {
+        return String.Format("{0}, IsAnonymous: {1}, Username: {2}", this.GetType(), this.PlayerData.IsAnonymous, this.PlayerData.Username);
+      }
     }
 
     public class InitializeGameMessage : MessageBase
@@ -174,22 +212,6 @@ namespace Service.UnitTests
 
       public GameInitializationData GameData { get; private set; }
     }
-
-    public void ContainMessagesInOrder(int startingIndex, params MessageBase[] expectedMessages)
-    {
-      var messages = this.messageQueue.ToArray();
-      var index = startingIndex;
-
-      foreach (var expectedMessage in expectedMessages)
-      {
-        var message = messages[index++];
-
-        if (message.GetType() != expectedMessage.GetType())
-        {
-          var exceptionMessage = String.Format("Message at index {0} does not have expected type {1}. Instead it has type {2}", index, expectedMessage.GetType(), message.GetType());
-          throw new Exception(exceptionMessage);
-        }
-      }
-    }
+    #endregion
   }
 }

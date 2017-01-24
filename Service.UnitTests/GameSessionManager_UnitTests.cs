@@ -107,7 +107,7 @@ namespace Service.UnitTests
       }
       finally
       {
-        gameSessionManager.WaitUntilGameSessionManagerHasStopped();
+        gameSessionManager?.WaitUntilGameSessionManagerHasStopped();
       }
     }
 
@@ -151,22 +151,24 @@ namespace Service.UnitTests
           new TestClient.PlayerDataReceivedMessage(testPlayer3Data),
           new TestClient.PlayerDataReceivedMessage(testPlayer4Data));
 
-        throw new NotImplementedException();
-        /*testPlayer1.ReceivedPlayerData.ShouldBe(new[] { expectedPlayerData2, expectedPlayerData3, expectedPlayerData4 }, true);
+        testPlayer2.ContainMessagesInOrder(1,
+          new TestClient.PlayerDataReceivedMessage(testPlayer1Data),
+          new TestClient.PlayerDataReceivedMessage(testPlayer3Data),
+          new TestClient.PlayerDataReceivedMessage(testPlayer4Data));
 
-        testPlayer2.ReceivedPlayerData.Count.ShouldBe(3);
-        testPlayer2.ReceivedPlayerData.ShouldBe(new[] { expectedPlayerData1, expectedPlayerData3, expectedPlayerData4 }, true);
+        testPlayer3.ContainMessagesInOrder(1,
+          new TestClient.PlayerDataReceivedMessage(testPlayer1Data),
+          new TestClient.PlayerDataReceivedMessage(testPlayer2Data),
+          new TestClient.PlayerDataReceivedMessage(testPlayer4Data));
 
-        testPlayer3.ReceivedPlayerData.Count.ShouldBe(3);
-        testPlayer3.ReceivedPlayerData.ShouldBe(new[] { expectedPlayerData1, expectedPlayerData2, expectedPlayerData4 }, true);
-
-        testPlayer4.ReceivedPlayerData.Count.ShouldBe(3);
-        testPlayer4.ReceivedPlayerData.ShouldBe(new[] { expectedPlayerData1, expectedPlayerData2, expectedPlayerData3 }, true);
-        */
+        testPlayer4.ContainMessagesInOrder(1,
+          new TestClient.PlayerDataReceivedMessage(testPlayer1Data),
+          new TestClient.PlayerDataReceivedMessage(testPlayer2Data),
+          new TestClient.PlayerDataReceivedMessage(testPlayer3Data));
       }
       finally
       {
-        gameSessionManager.WaitUntilGameSessionManagerHasStopped();
+        gameSessionManager?.WaitUntilGameSessionManagerHasStopped();
       }
     }
     /*
