@@ -91,19 +91,41 @@ namespace Service.UnitTests
     }
 
     [Test]
-    public void PlayerGetsNotificationWhenGameSessionIsReadyToLaunch()
+    public void PlayersGetsNotificationWhenGameSessionIsLaunching()
     {
       GameSessionManager gameSessionManager = null;
       try
       {
-        var mockPlayerCardRepository = this.CreateMockPlayerCardRepository(new PlayerData(TestPlayer1UserName));
+        // Arrange
+        var testPlayer1Data = new PlayerData(TestPlayer1UserName);
+        var testPlayer2Data = new PlayerData(TestPlayer2UserName);
+        var testPlayer3Data = new PlayerData(TestPlayer3UserName);
+        var testPlayer4Data = new PlayerData(TestPlayer4UserName);
+
+        var mockPlayerCardRepository = this.CreateMockPlayerCardRepository(
+          testPlayer1Data,
+          testPlayer2Data,
+          testPlayer3Data,
+          testPlayer4Data);
+
         gameSessionManager = GameSessionManagerTestExtensions.CreateGameSessionManagerForTest(new GameManagerFactory(), 4, mockPlayerCardRepository);
 
         var testPlayer1 = new TestClient(TestPlayer1UserName, gameSessionManager);
-        gameSessionManager.AddTestClients(testPlayer1);
+        var testPlayer2 = new TestClient(TestPlayer2UserName, gameSessionManager);
+        var testPlayer3 = new TestClient(TestPlayer3UserName, gameSessionManager);
+        var testPlayer4 = new TestClient(TestPlayer4UserName, gameSessionManager);
 
-        //testPlayer1.GetLastMessage().ShouldBeOfType(typeof());
-        throw new NotImplementedException();
+        var expectedMessage = new TestClient.GameSessionLaunchMessage();
+
+        // Act
+        gameSessionManager.AddTestClients(testPlayer1);
+        Thread.Sleep(1000);
+
+        // Assert
+        testPlayer1.GetLastMessage().IsSameAs(expectedMessage).ShouldBeTrue();
+        testPlayer2.GetLastMessage().IsSameAs(expectedMessage).ShouldBeTrue();
+        testPlayer3.GetLastMessage().IsSameAs(expectedMessage).ShouldBeTrue();
+        testPlayer4.GetLastMessage().IsSameAs(expectedMessage).ShouldBeTrue();
       }
       finally
       {

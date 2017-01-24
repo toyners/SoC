@@ -163,7 +163,7 @@ namespace Jabberwocky.SoC.Service
 
           if (!gameSession.NeedsClient)
           {
-            // Game is full so start it
+            // Game session is full so start it
             gameSession.StartGame();
           }
         }

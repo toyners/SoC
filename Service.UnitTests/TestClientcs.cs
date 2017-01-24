@@ -212,6 +212,10 @@ namespace Service.UnitTests
 
       public GameInitializationData GameData { get; private set; }
     }
+
+    public class GameSessionLaunchMessage : MessageBase
+    {
+    }
     #endregion
   }
 }
