@@ -82,7 +82,7 @@ namespace Service.UnitTests
       throw new NotImplementedException();
     }
 
-    public void ConfirmGameJoined(Guid gameToken, GameSessionManager.GameStates gameState)
+    public void ConfirmGameSessionJoined(Guid gameToken, GameSessionManager.GameStates gameState)
     {
       this.GameToken = gameToken;
       this.messageQueue.Enqueue(new ConfirmGameJoinedMessage(gameToken, gameState));

@@ -263,7 +263,7 @@ namespace Jabberwocky.SoC.Service
           {
             this.clients[i] = client;
             this.clientCount++;
-            client.ConfirmGameJoined(this.GameToken, GameStates.Lobby);
+            client.ConfirmGameSessionJoined(this.GameToken, GameStates.Lobby);
 
             var playerCard = this.playerCardRepository.GetPlayerData(userName);
             

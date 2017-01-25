@@ -11,11 +11,11 @@ namespace Jabberwocky.SoC.Service
     void StartTurn(Guid token);
 
     /// <summary>
-    /// Confirm that the client has joined a game.
+    /// Confirm that the client has joined a game session.
     /// </summary>
     /// <param name="gameToken">The game identifier.</param>
     [OperationContract(IsOneWay = true)]
-    void ConfirmGameJoined(Guid gameToken, GameSessionManager.GameStates gameSession);
+    void ConfirmGameSessionJoined(Guid gameToken, GameSessionManager.GameStates gameSession);
 
     /// <summary>
     /// Confirm to the player that they have left the game session.
