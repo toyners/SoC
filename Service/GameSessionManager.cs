@@ -234,6 +234,8 @@ namespace Jabberwocky.SoC.Service
       #endregion
 
       #region Properties
+      public GameStates GameState { get; private set; }
+
       public Boolean NeedsClient
       {
         get { return this.clientCount < this.clients.Length; }
@@ -286,6 +288,29 @@ namespace Jabberwocky.SoC.Service
 
         //TODO: Remove or make meaningful
         throw new NotImplementedException();
+      }
+
+      public void LaunchGameSession()
+      {
+        this.gameTask = Task.Factory.StartNew(() =>
+        {
+          try
+          {
+            this.State = States.Running;
+            this.GameState = GameStates.Lobby;
+
+
+          }
+          catch (OperationCanceledException)
+          {
+            // Shutting down - ignore exception
+            this.State = States.Stopping;
+          }
+          finally
+          {
+            this.State = States.Stopped;
+          }
+        });
       }
 
       public void RemoveClient(IServiceProviderCallback client)
@@ -502,8 +527,4 @@ namespace Jabberwocky.SoC.Service
     }
     #endregion
   }
-
-  
-
-  
 }
