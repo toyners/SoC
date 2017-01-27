@@ -24,7 +24,7 @@ namespace Service.IntegrationTests
     /// <summary>
     /// All clients receive player cards for all clients in game session.
     /// </summary>
-    [Test]
+    //[Test]
     public void AllClientsReceivePlayerCardsForAllClientsInGame()
     {
       GameSessionManager gameSessionManager = null;
@@ -79,7 +79,7 @@ namespace Service.IntegrationTests
       }
     }
 
-    [Test]
+    //[Test]
     public void SameClientCantBeAddedToSameGameSession()
     {
       GameSessionManager gameSessionManager = null;
@@ -96,7 +96,7 @@ namespace Service.IntegrationTests
       }
     }
 
-    [Test]
+    //[Test]
     public void AllClientsReceiveSameGameTokenWhenJoinedToSameGame()
     {
       GameSessionManager gameSessionManager = null;
@@ -128,7 +128,7 @@ namespace Service.IntegrationTests
       }
     }
 
-    [Test]
+    //[Test]
     public void AllClientsReceiveBoardDataWhenGameIsFull()
     {
       GameSessionManager gameSessionManager = null;
@@ -154,11 +154,11 @@ namespace Service.IntegrationTests
       }
     }
 
-    [Test]
+    /*[Test]
     [TestCase(new UInt32[] { 0u, 1u, 2u, 3u })]
     [TestCase(new UInt32[] { 3u, 0u, 1u, 2u })]
     [TestCase(new UInt32[] { 2u, 3u, 0u, 1u })]
-    [TestCase(new UInt32[] { 1u, 2u, 3u, 0u })]
+    [TestCase(new UInt32[] { 1u, 2u, 3u, 0u })]*/
     public void ClientsReceivePlaceTownMessageInCorrectOrder(UInt32[] firstSetupPassOrder)
     {
       GameSessionManager gameSessionManager = null;
@@ -216,7 +216,7 @@ namespace Service.IntegrationTests
     /// subsequent messages should be ignored. In this scenario the second client 
     /// sends nothing so the same number of messages are being sent to the server.
     /// </summary>
-    [Test]
+    //[Test]
     public void SubsequentGameInitializationConfirminationMessagesAreIgnored()
     {
       // Arrange
@@ -251,7 +251,7 @@ namespace Service.IntegrationTests
     /// game initialization confirmation messages then the message should be ignored. 
     /// In this scenario the first client sends the wrong message.
     /// </summary>
-    [Test]
+    //[Test]
     public void WhenWaitingForGameInitializationConfirminationMessagesWrongMessagesAreIgnored()
     {
       // Arrange
@@ -285,10 +285,10 @@ namespace Service.IntegrationTests
     /// Game manager receives the correct location from the clients when placing 
     /// the town.
     /// </summary>
-    [Test]
+    /*[Test]
     [TestCase(new UInt32[] { 1u, 2u, 3u, 4u })]
     [TestCase(new UInt32[] { 1u, 5u, 9u, 30u })]
-    [TestCase(new UInt32[] { 3u, 12u, 20u, 35u })]
+    [TestCase(new UInt32[] { 3u, 12u, 20u, 35u })]*/
     public void GameManagerReceivesCorrectMessagesWhenPlacingFirstTown(UInt32[] townLocations)
     {
       GameSessionManager gameSessionManager = null;
@@ -340,11 +340,11 @@ namespace Service.IntegrationTests
       }
     }
 
-    [Test]
+    /*[Test]
     [TestCase(new UInt32[] { 0u, 1u, 2u, 3u }, new UInt32[] { 1u, 5u, 13u, 27u })]
     [TestCase(new UInt32[] { 3u, 0u, 1u, 2u }, new UInt32[] { 7u, 10u, 1u, 19u })]
     [TestCase(new UInt32[] { 2u, 3u, 0u, 1u }, new UInt32[] { 13u, 26u, 5u, 9u })]
-    [TestCase(new UInt32[] { 1u, 2u, 3u, 0u }, new UInt32[] { 26u, 11u, 4u, 15u })]
+    [TestCase(new UInt32[] { 1u, 2u, 3u, 0u }, new UInt32[] { 26u, 11u, 4u, 15u })]*/
     public void CompleteFirstRoundTownPlacement(UInt32[] setupOrder, UInt32[] locationIndexes)
     {
       GameSessionManager gameSessionManager = null;
@@ -427,11 +427,11 @@ namespace Service.IntegrationTests
       }
     }
 
-    [Test]
+    /*[Test]
     [TestCase(new UInt32[] { 0u, 1u, 2u, 3u }, new UInt32[] { 1u, 5u, 13u, 27u, 3u, 7u, 17u, 30u })]
     [TestCase(new UInt32[] { 3u, 0u, 1u, 2u }, new UInt32[] { 15u, 3u, 12u, 36u, 11u, 6u, 22u, 30u })]
     [TestCase(new UInt32[] { 2u, 3u, 0u, 1u }, new UInt32[] { 10u, 2u, 14u, 23u, 33u, 9u, 21u, 37u })]
-    [TestCase(new UInt32[] { 1u, 2u, 3u, 0u }, new UInt32[] { 34u, 26u, 16u, 20u, 34u, 8u, 0u, 40u })]
+    [TestCase(new UInt32[] { 1u, 2u, 3u, 0u }, new UInt32[] { 34u, 26u, 16u, 20u, 34u, 8u, 0u, 40u })]*/
     public void CompleteBothRoundsOfTownPlacement(UInt32[] setupOrder, UInt32[] locationIndexes)
     {
       GameSessionManager gameSessionManager = null;
