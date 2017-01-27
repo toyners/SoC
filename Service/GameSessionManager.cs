@@ -117,6 +117,7 @@ namespace Jabberwocky.SoC.Service
     private GameSession AddToNewGameSession(JoinTicket joinTicket, CancellationToken cancellationToken)
     {
       var gameSession = new GameSession(this.gameManagerFactory.Create(), this.maximumPlayerCount, this.playerCardRepository, cancellationToken);
+      gameSession.Launch();
       gameSession.AddClient(joinTicket.Client, joinTicket.Username);
       this.gameSessions.Add(gameSession.GameToken, gameSession);
       return gameSession;
@@ -160,12 +161,6 @@ namespace Jabberwocky.SoC.Service
           {
             gameSession = this.AddToNewGameSession(joinTicket, cancellationToken);
           }
-
-          if (!gameSession.NeedsClient)
-          {
-            // Game session is full so start it
-            gameSession.StartGame();
-          }
         }
       }
       catch (OperationCanceledException)
@@ -189,23 +184,36 @@ namespace Jabberwocky.SoC.Service
     private Boolean TryAddToExistingGameSession(JoinTicket joinTicket, out GameSession gameSession)
     {
       gameSession = null;
+      var pendingGameSession = false;
       foreach (var kv in this.gameSessions)
       {
         gameSession = kv.Value;
-        if (gameSession.NeedsClient)
+        if (gameSession.GameSessionState == GameSession.GameSessionStates.AwaitingPlayer)
         {
           gameSession.AddClient(joinTicket.Client, joinTicket.Username);
           return true;
         }
+
+        if (gameSession.GameSessionState == GameSession.GameSessionStates.Unknown)
+        {
+          pendingGameSession = true;
+        }
       }
 
-      return false;
+      return pendingGameSession;
     }
     #endregion
 
     #region Classes
     private class GameSession
     {
+      public enum GameSessionStates
+      {
+        AwaitingPlayer,
+        Full,
+        Unknown
+      }
+
       #region Fields
       private IGameManager gameManager;
 
@@ -236,10 +244,12 @@ namespace Jabberwocky.SoC.Service
       #region Properties
       public GameStates GameState { get; private set; }
 
-      public Boolean NeedsClient
+      public GameSessionStates GameSessionState { get; private set; }
+
+      /*public Boolean NeedsClient
       {
         get { return this.clientCount < this.clients.Length; }
-      }
+      }*/
 
       public States State { get; private set; }
       #endregion
@@ -259,6 +269,9 @@ namespace Jabberwocky.SoC.Service
 
       public void AddClient(IServiceProviderCallback client, String userName)
       {
+        this.GameSessionState = GameSessionStates.Unknown;
+        //this.messagePump.Enqueue()
+        
         for (var i = 0; i < this.clients.Length; i++)
         {
           if (this.clients[i] == null)
@@ -290,7 +303,7 @@ namespace Jabberwocky.SoC.Service
         throw new NotImplementedException();
       }
 
-      public void LaunchGameSession()
+      public void Launch()
       {
         this.gameTask = Task.Factory.StartNew(() =>
         {
@@ -299,7 +312,16 @@ namespace Jabberwocky.SoC.Service
             this.State = States.Running;
             this.GameState = GameStates.Lobby;
 
+            Message message;
+            while (this.GameSessionState != GameSessionStates.Full)
+            {
+              if (this.messagePump.TryDequeue(Message.Types.AddPlayer, out message))
+              {
 
+              }
+
+              Thread.Sleep(50);
+            }
           }
           catch (OperationCanceledException)
           {
@@ -462,10 +484,13 @@ namespace Jabberwocky.SoC.Service
 
     private class Message
     {
+      [Flags]
       public enum Types
       {
+        AddPlayer,
         ConfirmGameInitialized,
-        RequestTownPlacement
+        RequestTownPlacement,
+        Any = AddPlayer | ConfirmGameInitialized | RequestTownPlacement
       }
 
       public readonly Types Type;
@@ -506,12 +531,13 @@ namespace Jabberwocky.SoC.Service
         message = null;
         if (this.messages.TryDequeue(out message))
         {
-          if (message.Type == messageType)
+          if ((message.Type & messageType) != 0)
           {
             return true;
           }
 
-          this.messages.Enqueue(message);
+          var exceptionText = String.Format("Message found with type {0}. Expected type {1}", message.Type, messageType);
+          throw new Exception(exceptionText);
         }
 
         return false;
