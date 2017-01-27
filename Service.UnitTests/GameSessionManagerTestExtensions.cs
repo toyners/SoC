@@ -18,7 +18,7 @@ namespace Service.UnitTests
     {
       foreach (var testClient in testClients)
       {
-        gameSessionManager.AddClient(testClient, testClient.Username);
+        gameSessionManager.AddPlayer(testClient, testClient.Username);
       }
     }
 

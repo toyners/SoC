@@ -18,7 +18,7 @@ namespace Service.IntegrationTests
     {
       foreach (var mockClient in mockClients)
       {
-        gameSessionManager.AddClient(mockClient, mockClient.Username);
+        gameSessionManager.AddPlayer(mockClient, mockClient.Username);
       }
     }
 

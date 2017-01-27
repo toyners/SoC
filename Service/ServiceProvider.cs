@@ -40,7 +40,7 @@ namespace Jabberwocky.SoC.Service
     public void TryJoinGame(String username)
     {
       var client = OperationContext.Current.GetCallbackChannel<IServiceProviderCallback>();
-      this.gameSessionManager.AddClient(client, username);
+      this.gameSessionManager.AddPlayer(client, username);
       Logger.Message("Client joined game");
     }
 
