@@ -40,8 +40,6 @@ namespace Service.UnitTests
         gameSessionManager.AddTestClients(testClient);
         Thread.Sleep(1000);
 
-        gameSessionManager.WaitUntilGameSessionManagerHasStopped();
-
         // Assert
         var receivedMessage = testClient.GetFirstMessage();
         receivedMessage.ShouldBeOfType<TestClient.ConfirmGameJoinedMessage>();

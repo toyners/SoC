@@ -298,6 +298,7 @@ namespace Jabberwocky.SoC.Service
                 this.AddPlayer(addPlayerMessage.Client, addPlayerMessage.Username);
               }
 
+              this.cancellationToken.ThrowIfCancellationRequested();
               Thread.Sleep(50);
             }
           }
