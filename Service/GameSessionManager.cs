@@ -80,16 +80,22 @@ namespace Jabberwocky.SoC.Service
       gameSession.ConfirmTownPlacement(client, positionIndex);
     }
 
-    public States GameSessionState(Guid gameToken)
+    /*public States GameSessionState(Guid gameToken)
     {
       var gameSession = this.GetGameSession(gameToken);
       return gameSession.State;
-    }
+    }*/
 
     public void RemoveClient(Guid gameToken, IServiceProviderCallback client)
     {
       var gameSession = this.GetGameSession(gameToken);
       gameSession.RemoveClient(client);
+    }
+
+    public void LaunchGame(Guid gameToken, IServiceProviderCallback client)
+    {
+      var gameSession = this.GetGameSession(gameToken);
+      gameSession.LaunchGame(client);
     }
 
     public void Stop()
@@ -117,7 +123,7 @@ namespace Jabberwocky.SoC.Service
     private void AddToNewGameSession(AddPlayerMessage addPlayerMessage, CancellationToken cancellationToken)
     {
       var gameSession = new GameSession(this.gameManagerFactory.Create(), this.maximumPlayerCount, this.playerCardRepository, cancellationToken);
-      gameSession.Launch();
+      gameSession.Start();
       gameSession.AddPlayer(addPlayerMessage);
       this.gameSessions.Add(gameSession.GameToken, gameSession);
     }
@@ -262,6 +268,12 @@ namespace Jabberwocky.SoC.Service
       #endregion
 
       #region Methods
+      public void AddPlayer(AddPlayerMessage addPlayerMessage)
+      {
+        this.GameSessionState = GameSessionStates.AddingPlayer;
+        this.messagePump.Enqueue(addPlayerMessage);
+      }
+
       public void ConfirmGameInitialized(IServiceProviderCallback client)
       {
         var message = new Message(Message.Types.ConfirmGameInitialized, client);
@@ -274,46 +286,10 @@ namespace Jabberwocky.SoC.Service
         this.messagePump.Enqueue(message);
       }
 
-      public void AddPlayer(AddPlayerMessage addPlayerMessage)
+      public void LaunchGame(IServiceProviderCallback client)
       {
-        this.GameSessionState = GameSessionStates.AddingPlayer;
-        this.messagePump.Enqueue(addPlayerMessage);
-      }
-
-      public void Launch()
-      {
-        this.gameTask = Task.Factory.StartNew(() =>
-        {
-          try
-          {
-            this.State = States.Running;
-            this.GameState = GameStates.Lobby;
-
-            Message message;
-            while (this.GameSessionState != GameSessionStates.Full)
-            {
-              if (this.messagePump.TryDequeue(Message.Types.AddPlayer, out message))
-              {
-                var addPlayerMessage = (AddPlayerMessage)message;
-                this.AddPlayer(addPlayerMessage.Client, addPlayerMessage.Username);
-              }
-
-              this.cancellationToken.ThrowIfCancellationRequested();
-              Thread.Sleep(50);
-            }
-
-            this.SendConfirmGameSessionReadyToLaunchMessage();
-          }
-          catch (OperationCanceledException)
-          {
-            // Shutting down - ignore exception
-            this.State = States.Stopping;
-          }
-          finally
-          {
-            this.State = States.Stopped;
-          }
-        });
+        var message = new LaunchGameMessage(client);
+        this.messagePump.Enqueue(message);
       }
 
       public void RemoveClient(IServiceProviderCallback client)
@@ -348,6 +324,44 @@ namespace Jabberwocky.SoC.Service
 
         //TODO: Remove or make meaningful
         throw new NotImplementedException();
+      }
+
+      public void Start()
+      {
+        this.gameTask = Task.Factory.StartNew(() =>
+        {
+          try
+          {
+            this.State = States.Running;
+            this.GameState = GameStates.Lobby;
+
+            Message message;
+            while (this.GameSessionState != GameSessionStates.Full)
+            {
+              if (this.messagePump.TryDequeue(Message.Types.AddPlayer, out message))
+              {
+                var addPlayerMessage = (AddPlayerMessage)message;
+                this.AddPlayer(addPlayerMessage.Client, addPlayerMessage.Username);
+              }
+
+              this.cancellationToken.ThrowIfCancellationRequested();
+              Thread.Sleep(50);
+            }
+
+            this.SendConfirmGameSessionReadyToLaunchMessage();
+
+            this.WaitForAllGameLaunchMessages();
+          }
+          catch (OperationCanceledException)
+          {
+            // Shutting down - ignore exception
+            this.State = States.Stopping;
+          }
+          finally
+          {
+            this.State = States.Stopped;
+          }
+        });
       }
 
       public void StartGame()
@@ -525,6 +539,30 @@ namespace Jabberwocky.SoC.Service
           this.clients[i].PlayerDataForJoiningClient(playerCard);
         }
       }
+
+      private void WaitForAllGameLaunchMessages()
+      {
+        Message message;
+        var receivedMessages = new HashSet<IServiceProviderCallback>();
+        var receivedMessageCount = 0;
+        while (receivedMessageCount < this.maxPlayerCount)
+        {
+          if (this.messagePump.TryDequeue(Message.Types.LaunchGame, out message))
+          {
+            var client = message.Client;
+            if (receivedMessages.Contains(client))
+            {
+              continue;
+            }
+
+            receivedMessages.Add(client);
+            receivedMessageCount++;
+          }
+
+          this.cancellationToken.ThrowIfCancellationRequested();
+          Thread.Sleep(50);
+        }
+      }
       #endregion
     }
 
@@ -538,6 +576,11 @@ namespace Jabberwocky.SoC.Service
       }
     }
 
+    private class LaunchGameMessage : Message
+    {
+      public LaunchGameMessage(IServiceProviderCallback client) : base(Types.LaunchGame, client) {}
+    }
+
     private class Message
     {
       [Flags]
@@ -545,6 +588,7 @@ namespace Jabberwocky.SoC.Service
       {
         AddPlayer,
         ConfirmGameInitialized,
+        LaunchGame,
         RequestTownPlacement,
         Any = AddPlayer | ConfirmGameInitialized | RequestTownPlacement
       }

@@ -130,6 +130,11 @@ namespace Service.UnitTests
       this.messageQueue.Enqueue(new PlayerDataReceivedMessage(playerData));
     }
 
+    public void SendLaunchGameMessage()
+    {
+      this.gameSessionManager.LaunchGame(this.GameToken, this);
+    }
+
     public void StartTurn(Guid token)
     {
       throw new NotImplementedException();

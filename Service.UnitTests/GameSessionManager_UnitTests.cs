@@ -222,6 +222,11 @@ namespace Service.UnitTests
 
         this.WaitUntilClientsReceiveMessage(new TestClient.GameSessionReadyToLaunchMessage(), testPlayer1, testPlayer2, testPlayer3, testPlayer4);
 
+        testPlayer1.SendLaunchGameMessage();
+        testPlayer2.SendLaunchGameMessage();
+        testPlayer3.SendLaunchGameMessage();
+        testPlayer4.SendLaunchGameMessage();
+
         throw new NotImplementedException();
       }
       finally
