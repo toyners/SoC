@@ -65,7 +65,7 @@ namespace Service.UnitTests
     {
       if (this.messageQueue.IsEmpty)
       {
-        throw new Exception("Message queue is empty.");
+        return null;
       }
 
       var messages = this.messageQueue.ToArray();
@@ -86,6 +86,11 @@ namespace Service.UnitTests
     {
       this.GameToken = gameToken;
       this.messageQueue.Enqueue(new ConfirmGameJoinedMessage(gameToken, gameState));
+    }
+
+    public void ConfirmGameSessionReadyToLaunch()
+    {
+      this.messageQueue.Enqueue(new GameSessionReadyToLaunchMessage());
     }
 
     public void ConfirmOtherPlayerHasLeftGame(String username)
@@ -213,7 +218,7 @@ namespace Service.UnitTests
       public GameInitializationData GameData { get; private set; }
     }
 
-    public class GameSessionLaunchMessage : MessageBase
+    public class GameSessionReadyToLaunchMessage : MessageBase
     {
     }
     #endregion

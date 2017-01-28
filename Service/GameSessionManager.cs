@@ -301,6 +301,8 @@ namespace Jabberwocky.SoC.Service
               this.cancellationToken.ThrowIfCancellationRequested();
               Thread.Sleep(50);
             }
+
+            this.SendConfirmGameSessionReadyToLaunchMessage();
           }
           catch (OperationCanceledException)
           {
@@ -312,44 +314,6 @@ namespace Jabberwocky.SoC.Service
             this.State = States.Stopped;
           }
         });
-      }
-
-      private void AddPlayer(IServiceProviderCallback client, String username)
-      {
-        for (var i = 0; i < this.clients.Length; i++)
-        {
-          if (this.clients[i] != null)
-          {
-            continue;
-          }
-
-          this.clients[i] = client;
-
-          client.ConfirmGameSessionJoined(this.GameToken, GameStates.Lobby);
-
-          var playerCard = this.playerCardRepository.GetPlayerData(username);
-
-          if (this.currentPlayerCount > 1)
-          {
-            this.SendPlayerDataToPlayers(i, client, playerCard);
-          }
-
-          this.playerCards.Add(client, playerCard);
-
-          this.currentPlayerCount++;
-          if (this.currentPlayerCount == this.maxPlayerCount)
-          {
-            this.GameSessionState = GameSessionStates.Full;
-          }
-          else
-          {
-            this.GameSessionState = GameSessionStates.AwaitingPlayer;
-          }
-
-          return;
-        }
-
-        throw new Exception();
       }
 
       public void RemoveClient(IServiceProviderCallback client)
@@ -437,6 +401,44 @@ namespace Jabberwocky.SoC.Service
         });
       }
 
+      private void AddPlayer(IServiceProviderCallback client, String username)
+      {
+        for (var i = 0; i < this.clients.Length; i++)
+        {
+          if (this.clients[i] != null)
+          {
+            continue;
+          }
+
+          this.clients[i] = client;
+
+          client.ConfirmGameSessionJoined(this.GameToken, GameStates.Lobby);
+
+          var playerCard = this.playerCardRepository.GetPlayerData(username);
+
+          if (this.currentPlayerCount > 1)
+          {
+            this.SendPlayerDataToPlayers(i, client, playerCard);
+          }
+
+          this.playerCards.Add(client, playerCard);
+
+          this.currentPlayerCount++;
+          if (this.currentPlayerCount == this.maxPlayerCount)
+          {
+            this.GameSessionState = GameSessionStates.Full;
+          }
+          else
+          {
+            this.GameSessionState = GameSessionStates.AwaitingPlayer;
+          }
+
+          return;
+        }
+
+        throw new Exception();
+      }
+
       private void PlaceTownsInFirstPassOrder(UInt32[] playerIndexes)
       {
         Message message = null;
@@ -499,6 +501,14 @@ namespace Jabberwocky.SoC.Service
 
             this.clients[clientIndex].TownPlacedDuringSetup(placeTownMessage.Location);
           }
+        }
+      }
+
+      private void SendConfirmGameSessionReadyToLaunchMessage()
+      {
+        for (var i = 0; i < this.currentPlayerCount; i++)
+        {
+          this.clients[i].ConfirmGameSessionReadyToLaunch();
         }
       }
 

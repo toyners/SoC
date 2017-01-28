@@ -17,6 +17,9 @@ namespace Jabberwocky.SoC.Service
     [OperationContract(IsOneWay = true)]
     void ConfirmGameSessionJoined(Guid gameToken, GameSessionManager.GameStates gameSession);
 
+    [OperationContract(IsOneWay = true)]
+    void ConfirmGameSessionReadyToLaunch();
+
     /// <summary>
     /// Confirm to the player that they have left the game session.
     /// </summary>

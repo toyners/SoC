@@ -88,8 +88,11 @@ namespace Service.UnitTests
       }
     }
 
+    /// <summary>
+    /// Test that all clients receive notification that the game session is ready to launch
+    /// </summary>
     [Test]
-    public void PlayersGetsNotificationWhenGameSessionIsLaunching()
+    public void PlayersGetsNotificationWhenGameSessionIsReadyToLaunch()
     {
       GameSessionManager gameSessionManager = null;
       try
@@ -113,10 +116,10 @@ namespace Service.UnitTests
         var testPlayer3 = new TestClient(TestPlayer3UserName, gameSessionManager);
         var testPlayer4 = new TestClient(TestPlayer4UserName, gameSessionManager);
 
-        var expectedMessage = new TestClient.GameSessionLaunchMessage();
+        var expectedMessage = new TestClient.GameSessionReadyToLaunchMessage();
 
         // Act
-        gameSessionManager.AddTestClients(testPlayer1);
+        gameSessionManager.AddTestClients(testPlayer1, testPlayer2, testPlayer3, testPlayer4);
         Thread.Sleep(1000);
 
         // Assert
@@ -132,7 +135,7 @@ namespace Service.UnitTests
     }
 
     /// <summary>
-    /// All clients receive player cards for all clients in game session.
+    /// All players receive player cards for all players in game session.
     /// </summary>
     [Test]
     public void AllClientsReceivePlayerCardsForAllClientsInGameSession()
@@ -158,8 +161,6 @@ namespace Service.UnitTests
         var testPlayer2 = new TestClient(TestPlayer2UserName, gameSessionManager);
         var testPlayer3 = new TestClient(TestPlayer3UserName, gameSessionManager);
         var testPlayer4 = new TestClient(TestPlayer4UserName, gameSessionManager);
-
-        gameSessionManager = GameSessionManagerTestExtensions.CreateGameSessionManagerForTest(new GameManagerFactory(), 4, mockPlayerCardRepository);
 
         // Act
         gameSessionManager.AddTestClients(testPlayer1, testPlayer2, testPlayer3, testPlayer4);
@@ -191,8 +192,80 @@ namespace Service.UnitTests
         gameSessionManager?.WaitUntilGameSessionManagerHasStopped();
       }
     }
-    /*
+
     [Test]
+    public void AllClientsReceiveBoardDataWhenGameSessionIsLaunched()
+    {
+      GameSessionManager gameSessionManager = null;
+      try
+      {
+        // Arrange
+        var testPlayer1Data = new PlayerData(TestPlayer1UserName);
+        var testPlayer2Data = new PlayerData(TestPlayer2UserName);
+        var testPlayer3Data = new PlayerData(TestPlayer3UserName);
+        var testPlayer4Data = new PlayerData(TestPlayer4UserName);
+
+        var mockPlayerCardRepository = this.CreateMockPlayerCardRepository(
+          testPlayer1Data,
+          testPlayer2Data,
+          testPlayer3Data,
+          testPlayer4Data);
+
+        gameSessionManager = GameSessionManagerTestExtensions.CreateGameSessionManagerForTest(new GameManagerFactory(), 4, mockPlayerCardRepository);
+
+        var testPlayer1 = new TestClient(TestPlayer1UserName, gameSessionManager);
+        var testPlayer2 = new TestClient(TestPlayer2UserName, gameSessionManager);
+        var testPlayer3 = new TestClient(TestPlayer3UserName, gameSessionManager);
+        var testPlayer4 = new TestClient(TestPlayer4UserName, gameSessionManager);
+
+        gameSessionManager.AddTestClients(testPlayer1, testPlayer2, testPlayer3, testPlayer4);
+
+        this.WaitUntilClientsReceiveMessage(new TestClient.GameSessionReadyToLaunchMessage(), testPlayer1, testPlayer2, testPlayer3, testPlayer4);
+
+        throw new NotImplementedException();
+      }
+      finally
+      {
+        gameSessionManager?.WaitUntilGameSessionManagerHasStopped();
+      }
+    }
+
+    private void WaitUntilClientsReceiveMessage(TestClient.MessageBase expectedMessage, params TestClient[] testClients)
+    {
+      var stopWatch = new Stopwatch();
+      stopWatch.Start();
+
+      var clientsWaitingForMessage = new List<TestClient>(testClients);
+
+      while (clientsWaitingForMessage.Count > 0
+#if !DEBUG
+        && stopWatch.ElapsedMilliseconds <= 1000
+#endif
+        )
+      {
+        for (var index = 0; index < clientsWaitingForMessage.Count; index++)
+        {
+          var message = clientsWaitingForMessage[index].GetLastMessage();
+          if (message != null && message.IsSameAs(expectedMessage))
+          {
+            clientsWaitingForMessage.RemoveAt(index);
+            index--;
+          }
+        }
+
+        Thread.Sleep(50);
+      }
+
+      stopWatch.Stop();
+
+      if (clientsWaitingForMessage.Count > 0)
+      {
+        var exceptionMessage = String.Format("Timed out waiting for clients to receive message of type '{0}'", expectedMessage.GetType());
+        throw new TimeoutException(exceptionMessage);
+      }
+    }
+
+    /*[Test]
     public void WhenClientDropsOutOfGameOtherClientsAreNotified()
     {
       GameSessionManager gameSessionManager = null;

@@ -139,6 +139,11 @@ namespace Service.IntegrationTests
     {
       throw new NotImplementedException();
     }
+
+    public void ConfirmGameSessionReadyToLaunch()
+    {
+      throw new NotImplementedException();
+    }
     #endregion
   }
 
