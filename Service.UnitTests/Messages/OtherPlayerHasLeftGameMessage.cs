@@ -5,9 +5,8 @@ namespace Service.UnitTests.Messages
 
   public class OtherPlayerHasLeftGameMessage : MessageBase
   {
-    public OtherPlayerHasLeftGameMessage(String userName)
+    public OtherPlayerHasLeftGameMessage(String userName) : base(userName + " has left the game.")
     {
-      this.MessageText = userName + " has left the game.";
     }
   }
 }

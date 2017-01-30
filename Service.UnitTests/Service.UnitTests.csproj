@@ -53,6 +53,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="MessageBase_UnitTests.cs" />
     <Compile Include="InitializeGameMessage_UnitTests.cs" />
     <Compile Include="GameSessionManagerTestExtensions.cs" />
     <Compile Include="GameSessionManager_UnitTests.cs" />
