@@ -7,6 +7,7 @@ namespace Service.UnitTests
   using System.Threading;
   using Jabberwocky.SoC.Library;
   using Jabberwocky.SoC.Service;
+  using Messages;
   using NSubstitute;
   using NUnit.Framework;
   using Shouldly;
@@ -42,8 +43,8 @@ namespace Service.UnitTests
 
         // Assert
         var receivedMessage = testClient.GetFirstMessage();
-        receivedMessage.ShouldBeOfType<TestClient.ConfirmGameJoinedMessage>();
-        ((TestClient.ConfirmGameJoinedMessage)receivedMessage).GameState.ShouldBe(GameSessionManager.GameStates.Lobby);
+        receivedMessage.ShouldBeOfType<ConfirmGameJoinedMessage>();
+        ((ConfirmGameJoinedMessage)receivedMessage).GameState.ShouldBe(GameSessionManager.GameStates.Lobby);
       }
       finally
       {
@@ -57,7 +58,7 @@ namespace Service.UnitTests
       GameSessionManager gameSessionManager = null;
       try
       {
-        var expectedMessage = new TestClient.OtherPlayerHasLeftGameMessage(TestPlayer1UserName);
+        var expectedMessage = new OtherPlayerHasLeftGameMessage(TestPlayer1UserName);
 
         var mockPlayerCardRepository = this.CreateMockPlayerCardRepository(
           new PlayerData(TestPlayer1UserName),
@@ -116,7 +117,7 @@ namespace Service.UnitTests
         var testPlayer3 = new TestClient(TestPlayer3UserName, gameSessionManager);
         var testPlayer4 = new TestClient(TestPlayer4UserName, gameSessionManager);
 
-        var expectedMessage = new TestClient.GameSessionReadyToLaunchMessage();
+        var expectedMessage = new GameSessionReadyToLaunchMessage();
 
         // Act
         gameSessionManager.AddTestClients(testPlayer1, testPlayer2, testPlayer3, testPlayer4);
@@ -168,24 +169,24 @@ namespace Service.UnitTests
 
         // Assert
         testPlayer1.ContainMessagesInOrder(1,
-          new TestClient.PlayerDataReceivedMessage(testPlayer2Data),
-          new TestClient.PlayerDataReceivedMessage(testPlayer3Data),
-          new TestClient.PlayerDataReceivedMessage(testPlayer4Data));
+          new PlayerDataReceivedMessage(testPlayer2Data),
+          new PlayerDataReceivedMessage(testPlayer3Data),
+          new PlayerDataReceivedMessage(testPlayer4Data));
 
         testPlayer2.ContainMessagesInOrder(1,
-          new TestClient.PlayerDataReceivedMessage(testPlayer1Data),
-          new TestClient.PlayerDataReceivedMessage(testPlayer3Data),
-          new TestClient.PlayerDataReceivedMessage(testPlayer4Data));
+          new PlayerDataReceivedMessage(testPlayer1Data),
+          new PlayerDataReceivedMessage(testPlayer3Data),
+          new PlayerDataReceivedMessage(testPlayer4Data));
 
         testPlayer3.ContainMessagesInOrder(1,
-          new TestClient.PlayerDataReceivedMessage(testPlayer1Data),
-          new TestClient.PlayerDataReceivedMessage(testPlayer2Data),
-          new TestClient.PlayerDataReceivedMessage(testPlayer4Data));
+          new PlayerDataReceivedMessage(testPlayer1Data),
+          new PlayerDataReceivedMessage(testPlayer2Data),
+          new PlayerDataReceivedMessage(testPlayer4Data));
 
         testPlayer4.ContainMessagesInOrder(1,
-          new TestClient.PlayerDataReceivedMessage(testPlayer1Data),
-          new TestClient.PlayerDataReceivedMessage(testPlayer2Data),
-          new TestClient.PlayerDataReceivedMessage(testPlayer3Data));
+          new PlayerDataReceivedMessage(testPlayer1Data),
+          new PlayerDataReceivedMessage(testPlayer2Data),
+          new PlayerDataReceivedMessage(testPlayer3Data));
       }
       finally
       {
@@ -220,7 +221,7 @@ namespace Service.UnitTests
 
         gameSessionManager.AddTestClients(testPlayer1, testPlayer2, testPlayer3, testPlayer4);
 
-        this.WaitUntilClientsReceiveMessage(new TestClient.GameSessionReadyToLaunchMessage(), testPlayer1, testPlayer2, testPlayer3, testPlayer4);
+        this.WaitUntilClientsReceiveMessage(new GameSessionReadyToLaunchMessage(), testPlayer1, testPlayer2, testPlayer3, testPlayer4);
 
         testPlayer1.SendLaunchGameMessage();
         testPlayer2.SendLaunchGameMessage();
@@ -229,7 +230,8 @@ namespace Service.UnitTests
 
         Thread.Sleep(100);
 
-        var expectedMessage = new TestClient.InitializeGameMessage(null);
+        var gameInitializationData = GameInitializationDataBuilder.Build(new Board(BoardSizes.Standard));
+        var expectedMessage = new InitializeGameMessage(gameInitializationData);
 
         // Assert
         testPlayer1.GetLastMessage().IsSameAs(expectedMessage);
@@ -243,7 +245,7 @@ namespace Service.UnitTests
       }
     }
 
-    private void WaitUntilClientsReceiveMessage(TestClient.MessageBase expectedMessage, params TestClient[] testClients)
+    private void WaitUntilClientsReceiveMessage(MessageBase expectedMessage, params TestClient[] testClients)
     {
       var stopWatch = new Stopwatch();
       stopWatch.Start();
