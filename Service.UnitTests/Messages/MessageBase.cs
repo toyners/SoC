@@ -5,14 +5,19 @@ namespace Service.UnitTests.Messages
 
   public class MessageBase
   {
+    #region Construction
     public MessageBase() { }
     public MessageBase(String text)
     {
       this.MessageText = text;
     }
+    #endregion
 
+    #region Properties
     public String MessageText { get; private set; }
+    #endregion
 
+    #region Methods
     public virtual Boolean IsSameAs(MessageBase messageBase)
     {
       if (this == messageBase)
@@ -23,5 +28,6 @@ namespace Service.UnitTests.Messages
       return this.GetType() == messageBase.GetType() && 
         String.CompareOrdinal(this.MessageText, messageBase.MessageText) == 0;
     }
+    #endregion
   }
 }
