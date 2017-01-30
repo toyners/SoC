@@ -3,10 +3,8 @@ namespace Service.UnitTests
 {
   using System;
   using System.Collections.Concurrent;
-  using System.Collections.Generic;
-  using System.Diagnostics;
-  using System.Threading;
   using Jabberwocky.SoC.Service;
+  using Messages;
 
   public class TestClient : IServiceProviderCallback
   {
@@ -143,88 +141,6 @@ namespace Service.UnitTests
     public void TownPlacedDuringSetup(UInt32 locationIndex)
     {
       throw new NotImplementedException();
-    }
-    #endregion
-
-    #region Classes
-    public class MessageBase
-    {
-      public String MessageText { get; protected set; }
-
-      public virtual Boolean IsSameAs(MessageBase messageBase)
-      {
-        if (this.Equals(messageBase))
-        {
-          throw new Exception("Same Object");
-        }
-
-        return (this.GetType() == messageBase.GetType() && String.CompareOrdinal(this.MessageText, messageBase.MessageText) == 0);
-      }
-    }
-
-    public class ConfirmGameJoinedMessage : MessageBase
-    {
-      public ConfirmGameJoinedMessage(Guid gameToken, GameSessionManager.GameStates gameState)
-      {
-        this.GameToken = gameToken;
-        this.GameState = gameState;
-      }
-
-      public Object GameState { get; internal set; }
-      public Guid GameToken { get; private set; }
-    }
-
-    public class PlayerHasLeftGameMessage : MessageBase
-    {
-    }
-
-    public class OtherPlayerHasLeftGameMessage : MessageBase
-    {
-      public OtherPlayerHasLeftGameMessage(String userName)
-      {
-        this.MessageText = userName + " has left the game.";
-      }
-    }
-
-    public class PlayerDataReceivedMessage : MessageBase
-    {
-      public PlayerDataReceivedMessage(PlayerData playerData)
-      {
-        this.PlayerData = playerData;
-      }
-
-      public PlayerData PlayerData { get; private set; }
-
-      public override Boolean IsSameAs(MessageBase messageBase)
-      {
-        if (!base.IsSameAs(messageBase))
-        {
-          return false;
-        }
-
-        var playerDataReceivedMessage = (PlayerDataReceivedMessage)messageBase;
-        return this.PlayerData.IsAnonymous == playerDataReceivedMessage.PlayerData.IsAnonymous &&
-          this.PlayerData.Username == playerDataReceivedMessage.PlayerData.Username;
-      }
-
-      public override String ToString()
-      {
-        return String.Format("{0}, IsAnonymous: {1}, Username: {2}", this.GetType(), this.PlayerData.IsAnonymous, this.PlayerData.Username);
-      }
-    }
-
-    public class InitializeGameMessage : MessageBase
-    {
-      public InitializeGameMessage(GameInitializationData gameData)
-      {
-        this.GameData = gameData;
-      }
-
-      public GameInitializationData GameData { get; private set; }
-    }
-
-    public class GameSessionReadyToLaunchMessage : MessageBase
-    {
     }
     #endregion
   }

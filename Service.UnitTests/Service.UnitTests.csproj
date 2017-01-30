@@ -56,6 +56,13 @@
     <Compile Include="GameSessionManagerTestExtensions.cs" />
     <Compile Include="GameSessionManager_UnitTests.cs" />
     <Compile Include="GameInitializationDataBuilder_UnitTests.cs" />
+    <Compile Include="Messages\ConfirmGameJoinedMessage.cs" />
+    <Compile Include="Messages\InitializeGameMessage.cs" />
+    <Compile Include="Messages\PlayerDataReceivedMessage.cs" />
+    <Compile Include="Messages\OtherPlayerHasLeftGameMessage.cs" />
+    <Compile Include="Messages\PlayerHasLeftGameMessage.cs" />
+    <Compile Include="Messages\GameSessionReadyToLaunchMessage.cs" />
+    <Compile Include="Messages\MessageBase.cs" />
     <Compile Include="TestClientcs.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

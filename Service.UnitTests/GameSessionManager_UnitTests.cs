@@ -227,7 +227,15 @@ namespace Service.UnitTests
         testPlayer3.SendLaunchGameMessage();
         testPlayer4.SendLaunchGameMessage();
 
-        throw new NotImplementedException();
+        Thread.Sleep(100);
+
+        var expectedMessage = new TestClient.InitializeGameMessage(null);
+
+        // Assert
+        testPlayer1.GetLastMessage().IsSameAs(expectedMessage);
+        testPlayer2.GetLastMessage().IsSameAs(expectedMessage);
+        testPlayer3.GetLastMessage().IsSameAs(expectedMessage);
+        testPlayer4.GetLastMessage().IsSameAs(expectedMessage);
       }
       finally
       {
