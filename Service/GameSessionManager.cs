@@ -232,7 +232,6 @@ namespace Jabberwocky.SoC.Service
 
       private CancellationToken cancellationToken;
       private UInt32 currentPlayerCount;
-      private UInt32 maxPlayerCount;
       private IServiceProviderCallback[] clients;
       private IPlayerCardRepository playerCardRepository;
       private Dictionary<IServiceProviderCallback, PlayerData> playerCards;
@@ -245,8 +244,7 @@ namespace Jabberwocky.SoC.Service
       {
         this.GameToken = Guid.NewGuid();
         this.gameManager = gameManager;
-        this.maxPlayerCount = maxPlayerCount;
-        this.clients = new IServiceProviderCallback[this.maxPlayerCount];
+        this.clients = new IServiceProviderCallback[maxPlayerCount];
         this.messagePump = new MessagePump();
         this.cancellationToken = cancellationToken;
         this.playerCardRepository = playerCardRepository;
@@ -300,7 +298,7 @@ namespace Jabberwocky.SoC.Service
           {
             this.clients[i] = null;
             this.currentPlayerCount--;
-            if (this.currentPlayerCount < this.maxPlayerCount)
+            if (this.currentPlayerCount < this.clients.Length)
             {
               this.GameSessionState = GameSessionStates.AwaitingPlayer;
             }
@@ -335,19 +333,8 @@ namespace Jabberwocky.SoC.Service
             this.State = States.Running;
             this.GameState = GameStates.Lobby;
 
-            Message message;
-            while (this.GameSessionState != GameSessionStates.Full)
-            {
-              if (this.messagePump.TryDequeue(Message.Types.AddPlayer, out message))
-              {
-                var addPlayerMessage = (AddPlayerMessage)message;
-                this.AddPlayer(addPlayerMessage.Client, addPlayerMessage.Username);
-              }
-
-              this.cancellationToken.ThrowIfCancellationRequested();
-              Thread.Sleep(50);
-            }
-
+            this.WaitForAllPlayersToJoin();
+            
             this.SendConfirmGameSessionReadyToLaunchMessage();
 
             this.WaitForAllGameLaunchMessages();
@@ -363,7 +350,7 @@ namespace Jabberwocky.SoC.Service
           }
         });
       }
-
+      
       public void StartGame()
       {
         this.gameTask = Task.Factory.StartNew(() =>
@@ -456,7 +443,7 @@ namespace Jabberwocky.SoC.Service
       private void PlaceTownsInFirstPassOrder(UInt32[] playerIndexes)
       {
         Message message = null;
-        for (var index = 0; index < this.maxPlayerCount; index++)
+        for (var index = 0; index < this.clients.Length; index++)
         {
           var playerIndex = playerIndexes[index];
 
@@ -489,7 +476,7 @@ namespace Jabberwocky.SoC.Service
       {
         Message message = null;
         UInt32[] playerIndexes = this.gameManager.GetSecondSetupPassOrder();
-        for (var index = 0; index < this.maxPlayerCount; index++)
+        for (var index = 0; index < this.clients.Length; index++)
         {
           var playerIndex = playerIndexes[index];
 
@@ -545,7 +532,7 @@ namespace Jabberwocky.SoC.Service
       {
         Message message;
         var receivedMessages = new HashSet<IServiceProviderCallback>();
-        while (receivedMessages.Count < this.maxPlayerCount)
+        while (receivedMessages.Count < this.clients.Length)
         {
           if (this.messagePump.TryDequeue(Message.Types.LaunchGame, out message))
           {
@@ -556,6 +543,24 @@ namespace Jabberwocky.SoC.Service
             }
 
             receivedMessages.Add(client);
+          }
+
+          this.cancellationToken.ThrowIfCancellationRequested();
+          Thread.Sleep(50);
+        }
+
+        this.GameState = GameStates.Setup;
+      }
+
+      private void WaitForAllPlayersToJoin()
+      {
+        Message message;
+        while (this.GameSessionState != GameSessionStates.Full)
+        {
+          if (this.messagePump.TryDequeue(Message.Types.AddPlayer, out message))
+          {
+            var addPlayerMessage = (AddPlayerMessage)message;
+            this.AddPlayer(addPlayerMessage.Client, addPlayerMessage.Username);
           }
 
           this.cancellationToken.ThrowIfCancellationRequested();
