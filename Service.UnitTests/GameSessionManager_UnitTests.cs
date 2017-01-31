@@ -76,7 +76,6 @@ namespace Service.UnitTests
         gameSessionManager.AddTestClients(testPlayer1, testPlayer2, testPlayer3, testPlayer4);
         Thread.Sleep(1000);
         testPlayer1.LeaveGame();
-        gameSessionManager.WaitUntilGameSessionManagerHasStopped();
 
         // Assert
         testPlayer2.GetLastMessage().IsSameAs(expectedMessage).ShouldBeTrue();
@@ -165,7 +164,8 @@ namespace Service.UnitTests
 
         // Act
         gameSessionManager.AddTestClients(testPlayer1, testPlayer2, testPlayer3, testPlayer4);
-        Thread.Sleep(1000);
+
+        this.WaitUntilClientsReceiveMessage(new GameSessionReadyToLaunchMessage(), testPlayer1, testPlayer2, testPlayer3, testPlayer4);
 
         // Assert
         testPlayer1.ContainMessagesInOrder(1,

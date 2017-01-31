@@ -430,6 +430,7 @@ namespace Jabberwocky.SoC.Service
 
           var playerCard = this.playerCardRepository.GetPlayerData(username);
 
+          this.currentPlayerCount++;
           if (this.currentPlayerCount > 1)
           {
             this.SendPlayerDataToPlayers(i, client, playerCard);
@@ -437,8 +438,7 @@ namespace Jabberwocky.SoC.Service
 
           this.playerCards.Add(client, playerCard);
 
-          this.currentPlayerCount++;
-          if (this.currentPlayerCount == this.maxPlayerCount)
+          if (this.currentPlayerCount == this.clients.Length)
           {
             this.GameSessionState = GameSessionStates.Full;
           }
@@ -528,14 +528,15 @@ namespace Jabberwocky.SoC.Service
 
       private void SendPlayerDataToPlayers(Int32 clientIndex, IServiceProviderCallback client, PlayerData playerCard)
       {
-        for (var i = 0; i < this.currentPlayerCount; i++)
+        for (var i = 0; i < this.clients.Length; i++)
         {
           if (i == clientIndex || this.clients[i] == null)
           {
             continue;
           }
 
-          client.PlayerDataForJoiningClient(this.playerCards[this.clients[i]]);
+          var otherPlayerCard = this.playerCards[this.clients[i]];
+          client.PlayerDataForJoiningClient(otherPlayerCard);
           this.clients[i].PlayerDataForJoiningClient(playerCard);
         }
       }
