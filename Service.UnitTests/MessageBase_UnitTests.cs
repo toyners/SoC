@@ -17,7 +17,8 @@ namespace Service.UnitTests
 
       Action action = () => messageBase.IsSameAs(messageBase);
 
-      //action.ShouldThrow<Exception>("IsSameAs cannot be used to compare the same object");
+      action.ShouldThrow<Exception>("IsSameAs cannot be used to compare the same object");
+      throw new Exception("Should be failing");
     }
 
     [Test]
