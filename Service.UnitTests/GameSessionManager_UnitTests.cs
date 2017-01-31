@@ -234,10 +234,10 @@ namespace Service.UnitTests
         var expectedMessage = new InitializeGameMessage(gameInitializationData);
 
         // Assert
-        testPlayer1.GetLastMessage().IsSameAs(expectedMessage);
-        testPlayer2.GetLastMessage().IsSameAs(expectedMessage);
-        testPlayer3.GetLastMessage().IsSameAs(expectedMessage);
-        testPlayer4.GetLastMessage().IsSameAs(expectedMessage);
+        testPlayer1.GetLastMessage().IsSameAs(expectedMessage).ShouldBeTrue();
+        testPlayer2.GetLastMessage().IsSameAs(expectedMessage).ShouldBeTrue();
+        testPlayer3.GetLastMessage().IsSameAs(expectedMessage).ShouldBeTrue();
+        testPlayer4.GetLastMessage().IsSameAs(expectedMessage).ShouldBeTrue();
       }
       finally
       {
