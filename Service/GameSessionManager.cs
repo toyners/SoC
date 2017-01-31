@@ -544,8 +544,7 @@ namespace Jabberwocky.SoC.Service
       {
         Message message;
         var receivedMessages = new HashSet<IServiceProviderCallback>();
-        var receivedMessageCount = 0;
-        while (receivedMessageCount < this.maxPlayerCount)
+        while (receivedMessages.Count < this.maxPlayerCount)
         {
           if (this.messagePump.TryDequeue(Message.Types.LaunchGame, out message))
           {
@@ -556,7 +555,6 @@ namespace Jabberwocky.SoC.Service
             }
 
             receivedMessages.Add(client);
-            receivedMessageCount++;
           }
 
           this.cancellationToken.ThrowIfCancellationRequested();
