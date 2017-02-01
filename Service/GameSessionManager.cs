@@ -338,6 +338,8 @@ namespace Jabberwocky.SoC.Service
             this.SendConfirmGameSessionReadyToLaunchMessage();
 
             this.WaitForAllGameLaunchMessages();
+
+            this.SendGameInitializationData();
           }
           catch (OperationCanceledException)
           {
@@ -350,7 +352,7 @@ namespace Jabberwocky.SoC.Service
           }
         });
       }
-      
+
       public void StartGame()
       {
         this.gameTask = Task.Factory.StartNew(() =>
@@ -436,8 +438,6 @@ namespace Jabberwocky.SoC.Service
 
           return;
         }
-
-        throw new Exception();
       }
 
       private void PlaceTownsInFirstPassOrder(UInt32[] playerIndexes)
@@ -509,7 +509,26 @@ namespace Jabberwocky.SoC.Service
       {
         for (var i = 0; i < this.currentPlayerCount; i++)
         {
+          if (this.clients[i] == null)
+          {
+            continue;
+          }
+
           this.clients[i].ConfirmGameSessionReadyToLaunch();
+        }
+      }
+
+      private void SendGameInitializationData()
+      {
+        var gameData = GameInitializationDataBuilder.Build(this.gameManager.Board);
+        for (var i = 0; i < this.clients.Length; i++)
+        {
+          if (this.clients[i] == null)
+          {
+            continue;
+          }
+          
+          clients[i].InitializeGame(gameData);
         }
       }
 

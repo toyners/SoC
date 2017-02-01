@@ -228,10 +228,10 @@ namespace Service.UnitTests
         testPlayer3.SendLaunchGameMessage();
         testPlayer4.SendLaunchGameMessage();
 
-        Thread.Sleep(100);
-
         var gameInitializationData = GameInitializationDataBuilder.Build(new Board(BoardSizes.Standard));
         var expectedMessage = new InitializeGameMessage(gameInitializationData);
+
+        this.WaitUntilClientsReceiveMessage(expectedMessage, testPlayer1, testPlayer2, testPlayer3, testPlayer4);
 
         // Assert
         testPlayer1.GetLastMessage().IsSameAs(expectedMessage).ShouldBeTrue();
