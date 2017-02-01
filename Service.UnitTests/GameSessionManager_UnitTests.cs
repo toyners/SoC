@@ -245,6 +245,46 @@ namespace Service.UnitTests
       }
     }
 
+    [Test]
+    public void ClientReceivesPersonalMessageFromAnotherClientBeforeGameSessionIsLaunched()
+    {
+      GameSessionManager gameSessionManager = null;
+      try
+      {
+        // Arrange
+        var testPlayer1Data = new PlayerData(TestPlayer1UserName);
+        var testPlayer2Data = new PlayerData(TestPlayer2UserName);
+
+        var mockPlayerCardRepository = this.CreateMockPlayerCardRepository(
+          testPlayer1Data,
+          testPlayer2Data);
+
+        gameSessionManager = GameSessionManagerTestExtensions.CreateGameSessionManagerForTest(new GameManagerFactory(), 4, mockPlayerCardRepository);
+
+        var testPlayer1 = new TestClient(TestPlayer1UserName, gameSessionManager);
+        var testPlayer2 = new TestClient(TestPlayer2UserName, gameSessionManager);
+
+        gameSessionManager.AddTestClients(testPlayer1, testPlayer2);
+
+        this.WaitUntilClientsReceiveMessageOfType(typeof(ConfirmGameJoinedMessage), testPlayer1, testPlayer2);
+
+        //this.WaitUntilClientsReceiveMessage(new GameSessionReadyToLaunchMessage(), testPlayer1, testPlayer2, testPlayer3, testPlayer4);
+
+        var gameInitializationData = GameInitializationDataBuilder.Build(new Board(BoardSizes.Standard));
+        var expectedMessage = new InitializeGameMessage(gameInitializationData);
+
+        this.WaitUntilClientsReceiveMessage(expectedMessage, testPlayer1, testPlayer2);
+
+        // Assert
+        testPlayer1.GetLastMessage().IsSameAs(expectedMessage).ShouldBeTrue();
+        testPlayer2.GetLastMessage().IsSameAs(expectedMessage).ShouldBeTrue();
+      }
+      finally
+      {
+        gameSessionManager?.WaitUntilGameSessionManagerHasStopped();
+      }
+    }
+
     private void WaitUntilClientsReceiveMessage(MessageBase expectedMessage, params TestClient[] testClients)
     {
       var stopWatch = new Stopwatch();
@@ -276,6 +316,41 @@ namespace Service.UnitTests
       if (clientsWaitingForMessage.Count > 0)
       {
         var exceptionMessage = String.Format("Timed out waiting for clients to receive message of type '{0}'", expectedMessage.GetType());
+        throw new TimeoutException(exceptionMessage);
+      }
+    }
+
+    private void WaitUntilClientsReceiveMessageOfType(Type expectedMessageType, params TestClient[] testClients)
+    {
+      var stopWatch = new Stopwatch();
+      stopWatch.Start();
+
+      var clientsWaitingForMessage = new List<TestClient>(testClients);
+
+      while (clientsWaitingForMessage.Count > 0
+#if !DEBUG
+        && stopWatch.ElapsedMilliseconds <= 1000
+#endif
+        )
+      {
+        for (var index = 0; index < clientsWaitingForMessage.Count; index++)
+        {
+          var message = clientsWaitingForMessage[index].GetLastMessage();
+          if (message != null && message.GetType() == expectedMessageType)
+          {
+            clientsWaitingForMessage.RemoveAt(index);
+            index--;
+          }
+        }
+
+        Thread.Sleep(50);
+      }
+
+      stopWatch.Stop();
+
+      if (clientsWaitingForMessage.Count > 0)
+      {
+        var exceptionMessage = String.Format("Timed out waiting for clients to receive message of type '{0}'", expectedMessageType);
         throw new TimeoutException(exceptionMessage);
       }
     }
