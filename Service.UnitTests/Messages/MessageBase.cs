@@ -22,7 +22,7 @@ namespace Service.UnitTests.Messages
     {
       if (this == messageBase)
       {
-        throw new Exception("Same Object");
+        throw new Exception("IsSameAs cannot be used to compare the same object");
       }
 
       return this.GetType() == messageBase.GetType() && 

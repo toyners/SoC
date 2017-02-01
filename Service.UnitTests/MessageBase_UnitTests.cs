@@ -15,10 +15,10 @@ namespace Service.UnitTests
     {
       MessageBase messageBase = new MessageBase("Text");
 
-      Action action = () => messageBase.IsSameAs(messageBase);
-
-      action.ShouldThrow<Exception>("IsSameAs cannot be used to compare the same object");
-      throw new Exception("Should be throwing an expected exception.");
+      Should.Throw<Exception>(() =>
+      {
+        messageBase.IsSameAs(messageBase);
+      }).Message.ShouldBe("IsSameAs cannot be used to compare the same object");
     }
 
     [Test]
