@@ -133,6 +133,11 @@ namespace Service.UnitTests
       this.gameSessionManager.LaunchGame(this.GameToken, this);
     }
 
+    public void SendPersonalMessage(String messageText)
+    {
+      throw new NotImplementedException();
+    }
+
     public void StartTurn(Guid token)
     {
       throw new NotImplementedException();

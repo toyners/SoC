@@ -268,15 +268,13 @@ namespace Service.UnitTests
 
         this.WaitUntilClientsReceiveMessageOfType(typeof(ConfirmGameJoinedMessage), testPlayer1, testPlayer2);
 
-        //this.WaitUntilClientsReceiveMessage(new GameSessionReadyToLaunchMessage(), testPlayer1, testPlayer2, testPlayer3, testPlayer4);
-
-        var gameInitializationData = GameInitializationDataBuilder.Build(new Board(BoardSizes.Standard));
-        var expectedMessage = new InitializeGameMessage(gameInitializationData);
+        var messageText = "Hello There";
+        testPlayer1.SendPersonalMessage(messageText);
+        var expectedMessage = new PersonalMessage(messageText);
 
         this.WaitUntilClientsReceiveMessage(expectedMessage, testPlayer1, testPlayer2);
 
         // Assert
-        testPlayer1.GetLastMessage().IsSameAs(expectedMessage).ShouldBeTrue();
         testPlayer2.GetLastMessage().IsSameAs(expectedMessage).ShouldBeTrue();
       }
       finally

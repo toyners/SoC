@@ -86,6 +86,12 @@ namespace Jabberwocky.SoC.Service
       return gameSession.State;
     }*/
 
+    public void ProcessPersonalMessage(Guid gameToken, IServiceProviderCallback client, String text)
+    {
+      var gameSession = this.GetGameSession(gameToken);
+      gameSession.ProcessPersonalMessage(client, text);
+    }
+
     public void RemoveClient(Guid gameToken, IServiceProviderCallback client)
     {
       var gameSession = this.GetGameSession(gameToken);
@@ -287,6 +293,12 @@ namespace Jabberwocky.SoC.Service
       public void LaunchGame(IServiceProviderCallback client)
       {
         var message = new LaunchGameMessage(client);
+        this.messagePump.Enqueue(message);
+      }
+
+      public void ProcessPersonalMessage(IServiceProviderCallback client, String text)
+      {
+        var message = new PersonalMessage(client, text);
         this.messagePump.Enqueue(message);
       }
 
@@ -576,15 +588,28 @@ namespace Jabberwocky.SoC.Service
         Message message;
         while (this.GameSessionState != GameSessionStates.Full)
         {
-          if (this.messagePump.TryDequeue(Message.Types.AddPlayer, out message))
+          if (this.messagePump.TryDequeue(Message.Types.AddPlayer | Message.Types.Personal, out message))
           {
-            var addPlayerMessage = (AddPlayerMessage)message;
-            this.AddPlayer(addPlayerMessage.Client, addPlayerMessage.Username);
+            if (message.Type == Message.Types.AddPlayer)
+            {
+              var addPlayerMessage = (AddPlayerMessage)message;
+              this.AddPlayer(addPlayerMessage.Client, addPlayerMessage.Username);
+            }
+            else if (message.Type == Message.Types.Personal)
+            {
+              var personalMessage = (PersonalMessage)message;
+              this.SendPersonalMessageToClients(personalMessage.Client, personalMessage.Text);
+            }
           }
 
           this.cancellationToken.ThrowIfCancellationRequested();
           Thread.Sleep(50);
         }
+      }
+
+      private void SendPersonalMessageToClients(IServiceProviderCallback client, String text)
+      {
+        throw new NotImplementedException();
       }
       #endregion
     }
@@ -612,8 +637,9 @@ namespace Jabberwocky.SoC.Service
         AddPlayer,
         ConfirmGameInitialized,
         LaunchGame,
+        Personal,
         RequestTownPlacement,
-        Any = AddPlayer | ConfirmGameInitialized | RequestTownPlacement
+        Any = AddPlayer | ConfirmGameInitialized | Personal | RequestTownPlacement
       }
 
       public readonly Types Type;
@@ -624,6 +650,15 @@ namespace Jabberwocky.SoC.Service
       {
         this.Type = type;
         this.Client = client;
+      }
+    }
+
+    private class PersonalMessage : Message
+    {
+      public readonly String Text;
+      public PersonalMessage(IServiceProviderCallback client, String text) : base(Message.Types.Personal, client)
+      {
+        this.Text = text;
       }
     }
 
