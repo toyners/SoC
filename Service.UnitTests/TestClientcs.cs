@@ -128,6 +128,11 @@ namespace Service.UnitTests
       this.messageQueue.Enqueue(new PlayerDataReceivedMessage(playerData));
     }
 
+    public void ReceivePersonalMessage(String text)
+    {
+      this.messageQueue.Enqueue(new PersonalMessage(text));
+    }
+
     public void SendLaunchGameMessage()
     {
       this.gameSessionManager.LaunchGame(this.GameToken, this);
@@ -135,7 +140,7 @@ namespace Service.UnitTests
 
     public void SendPersonalMessage(String messageText)
     {
-      throw new NotImplementedException();
+      this.gameSessionManager.ProcessPersonalMessage(this.GameToken, this, messageText);
     }
 
     public void StartTurn(Guid token)

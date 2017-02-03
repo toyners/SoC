@@ -144,6 +144,11 @@ namespace Service.IntegrationTests
     {
       throw new NotImplementedException();
     }
+
+    public void ReceivePersonalMessage(String text)
+    {
+      throw new NotImplementedException();
+    }
     #endregion
   }
 

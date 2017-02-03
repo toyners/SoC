@@ -607,9 +607,17 @@ namespace Jabberwocky.SoC.Service
         }
       }
 
-      private void SendPersonalMessageToClients(IServiceProviderCallback client, String text)
+      private void SendPersonalMessageToClients(IServiceProviderCallback sendingClient, String text)
       {
-        throw new NotImplementedException();
+        for (int i = 0; i < this.clients.Length; i++)
+        {
+          if (clients[i] == null || clients[i] == sendingClient)
+          {
+            continue;
+          }
+
+          clients[i].ReceivePersonalMessage(text);
+        }
       }
       #endregion
     }
@@ -634,11 +642,11 @@ namespace Jabberwocky.SoC.Service
       [Flags]
       public enum Types
       {
-        AddPlayer,
-        ConfirmGameInitialized,
-        LaunchGame,
-        Personal,
-        RequestTownPlacement,
+        AddPlayer = 1,
+        ConfirmGameInitialized = 2,
+        LaunchGame = 4,
+        Personal = 8,
+        RequestTownPlacement = 16,
         Any = AddPlayer | ConfirmGameInitialized | Personal | RequestTownPlacement
       }
 
@@ -689,7 +697,7 @@ namespace Jabberwocky.SoC.Service
         message = null;
         if (this.messages.TryDequeue(out message))
         {
-          if ((message.Type & messageType) == messageType)
+          if ((message.Type & messageType) == message.Type)
           {
             return true;
           }

@@ -266,13 +266,13 @@ namespace Service.UnitTests
 
         gameSessionManager.AddTestClients(testPlayer1, testPlayer2);
 
-        this.WaitUntilClientsReceiveMessageOfType(typeof(ConfirmGameJoinedMessage), testPlayer1, testPlayer2);
+        this.WaitUntilClientsReceiveMessageOfType(typeof(PlayerDataReceivedMessage), testPlayer1, testPlayer2);
 
         var messageText = "Hello There";
         testPlayer1.SendPersonalMessage(messageText);
         var expectedMessage = new PersonalMessage(messageText);
 
-        this.WaitUntilClientsReceiveMessage(expectedMessage, testPlayer1, testPlayer2);
+        this.WaitUntilClientsReceiveMessage(expectedMessage, testPlayer2);
 
         // Assert
         testPlayer2.GetLastMessage().IsSameAs(expectedMessage).ShouldBeTrue();
