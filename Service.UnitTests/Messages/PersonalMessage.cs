@@ -5,6 +5,27 @@ namespace Service.UnitTests.Messages
 
   public class PersonalMessage : MessageBase
   {
-    public PersonalMessage(String text) : base(text) { } 
+    #region Construction
+    public PersonalMessage(String sender, String text) : base(text)
+    {
+      this.Sender = sender;
+    }
+    #endregion
+
+    #region Properties
+    public String Sender { get; private set; }
+    #endregion
+
+    #region Methods
+    public override Boolean IsSameAs(MessageBase messageBase)
+    {
+      if (!base.IsSameAs(messageBase))
+      {
+        return false;
+      }
+
+      return String.CompareOrdinal(this.Sender, ((PersonalMessage)messageBase).Sender) == 0;
+    }
+    #endregion
   }
 }

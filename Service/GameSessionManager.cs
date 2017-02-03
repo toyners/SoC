@@ -598,7 +598,8 @@ namespace Jabberwocky.SoC.Service
             else if (message.Type == Message.Types.Personal)
             {
               var personalMessage = (PersonalMessage)message;
-              this.SendPersonalMessageToClients(personalMessage.Client, personalMessage.Text);
+              var playerCard = this.playerCards[personalMessage.Client];
+              this.SendPersonalMessageToClients(personalMessage.Client, playerCard.Username, personalMessage.Text);
             }
           }
 
@@ -607,7 +608,7 @@ namespace Jabberwocky.SoC.Service
         }
       }
 
-      private void SendPersonalMessageToClients(IServiceProviderCallback sendingClient, String text)
+      private void SendPersonalMessageToClients(IServiceProviderCallback sendingClient, String sender, String text)
       {
         for (int i = 0; i < this.clients.Length; i++)
         {
@@ -616,7 +617,7 @@ namespace Jabberwocky.SoC.Service
             continue;
           }
 
-          clients[i].ReceivePersonalMessage(text);
+          clients[i].ReceivePersonalMessage(sender, text);
         }
       }
       #endregion

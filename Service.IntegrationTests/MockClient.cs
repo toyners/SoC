@@ -145,7 +145,7 @@ namespace Service.IntegrationTests
       throw new NotImplementedException();
     }
 
-    public void ReceivePersonalMessage(String text)
+    public void ReceivePersonalMessage(String sender, String text)
     {
       throw new NotImplementedException();
     }

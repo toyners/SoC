@@ -44,7 +44,7 @@ namespace Jabberwocky.SoC.Service
     void ChooseTownLocation();
 
     [OperationContract(IsOneWay = true)]
-    void ReceivePersonalMessage(String text);
+    void ReceivePersonalMessage(String sender, String text);
 
     [OperationContract(IsOneWay = true)]
     void PlayerDataForJoiningClient(PlayerData playerData);

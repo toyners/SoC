@@ -128,9 +128,9 @@ namespace Service.UnitTests
       this.messageQueue.Enqueue(new PlayerDataReceivedMessage(playerData));
     }
 
-    public void ReceivePersonalMessage(String text)
+    public void ReceivePersonalMessage(String sender, String text)
     {
-      this.messageQueue.Enqueue(new PersonalMessage(text));
+      this.messageQueue.Enqueue(new PersonalMessage(sender, text));
     }
 
     public void SendLaunchGameMessage()
