@@ -336,9 +336,7 @@ namespace Service.UnitTests
       var clientsWaitingForMessage = new List<TestClient>(testClients);
 
       while (clientsWaitingForMessage.Count > 0
-#if !DEBUG
         && stopWatch.ElapsedMilliseconds <= 1000
-#endif
         )
       {
         for (var index = 0; index < clientsWaitingForMessage.Count; index++)
