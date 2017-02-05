@@ -352,6 +352,20 @@ namespace Jabberwocky.SoC.Service
             this.WaitForAllGameLaunchMessages();
 
             this.SendGameInitializationData();
+
+            Message message;
+            while (true)
+            {
+              if (this.messagePump.TryDequeue(Message.Types.Personal, out message))
+              {
+                var personalMessage = (PersonalMessage)message;
+                var playerData = this.playerCards[personalMessage.Client];
+                this.SendPersonalMessageToClients(personalMessage.Client, playerData.Username, personalMessage.Text);
+              }
+
+              this.cancellationToken.ThrowIfCancellationRequested();
+              Thread.Sleep(50);
+            }
           }
           catch (OperationCanceledException)
           {
