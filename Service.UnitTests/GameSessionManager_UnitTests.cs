@@ -34,7 +34,9 @@ namespace Service.UnitTests
       GameSessionManager gameSessionManager = null;
       try
       {
-        gameSessionManager = GameSessionManagerTestExtensions.CreateGameSessionManagerForTest(new GameManagerFactory(), 4);
+        gameSessionManager = GameSessionManagerTestExtensions.CreateGameSessionManagerForTest(4)
+          .WaitUntilGameSessionManagerHasStarted();
+
         var testClient = new TestClient("Test Client 1", gameSessionManager);
 
         // Act
@@ -66,7 +68,9 @@ namespace Service.UnitTests
           new PlayerData(TestPlayer3UserName),
           new PlayerData(TestPlayer4UserName));
 
-        gameSessionManager = GameSessionManagerTestExtensions.CreateGameSessionManagerForTest(new GameManagerFactory(), 4, mockPlayerCardRepository);
+        gameSessionManager = GameSessionManagerTestExtensions.CreateGameSessionManagerForTest(4)
+          .AddPlayerCardRepository(mockPlayerCardRepository)
+          .WaitUntilGameSessionManagerHasStarted();
 
         var testPlayer1 = new TestClient(TestPlayer1UserName, gameSessionManager);
         var testPlayer2 = new TestClient(TestPlayer2UserName, gameSessionManager);
@@ -109,7 +113,9 @@ namespace Service.UnitTests
           testPlayer3Data,
           testPlayer4Data);
 
-        gameSessionManager = GameSessionManagerTestExtensions.CreateGameSessionManagerForTest(new GameManagerFactory(), 4, mockPlayerCardRepository);
+        gameSessionManager = GameSessionManagerTestExtensions.CreateGameSessionManagerForTest(4)
+          .AddPlayerCardRepository(mockPlayerCardRepository)
+          .WaitUntilGameSessionManagerHasStarted();
 
         var testPlayer1 = new TestClient(TestPlayer1UserName, gameSessionManager);
         var testPlayer2 = new TestClient(TestPlayer2UserName, gameSessionManager);
@@ -155,7 +161,9 @@ namespace Service.UnitTests
           testPlayer3Data,
           testPlayer4Data);
 
-        gameSessionManager = GameSessionManagerTestExtensions.CreateGameSessionManagerForTest(new GameManagerFactory(), 4, mockPlayerCardRepository);
+        gameSessionManager = GameSessionManagerTestExtensions.CreateGameSessionManagerForTest(4)
+          .AddPlayerCardRepository(mockPlayerCardRepository)
+          .WaitUntilGameSessionManagerHasStarted();
 
         var testPlayer1 = new TestClient(TestPlayer1UserName, gameSessionManager);
         var testPlayer2 = new TestClient(TestPlayer2UserName, gameSessionManager);
@@ -212,7 +220,9 @@ namespace Service.UnitTests
           testPlayer3Data,
           testPlayer4Data);
 
-        gameSessionManager = GameSessionManagerTestExtensions.CreateGameSessionManagerForTest(new GameManagerFactory(), 4, mockPlayerCardRepository);
+        gameSessionManager = GameSessionManagerTestExtensions.CreateGameSessionManagerForTest(4)
+                  .AddPlayerCardRepository(mockPlayerCardRepository)
+                  .WaitUntilGameSessionManagerHasStarted();
 
         var testPlayer1 = new TestClient(TestPlayer1UserName, gameSessionManager);
         var testPlayer2 = new TestClient(TestPlayer2UserName, gameSessionManager);
@@ -259,7 +269,9 @@ namespace Service.UnitTests
           testPlayer1Data,
           testPlayer2Data);
 
-        gameSessionManager = GameSessionManagerTestExtensions.CreateGameSessionManagerForTest(new GameManagerFactory(), 4, mockPlayerCardRepository);
+        gameSessionManager = GameSessionManagerTestExtensions.CreateGameSessionManagerForTest(4)
+                  .AddPlayerCardRepository(mockPlayerCardRepository)
+                  .WaitUntilGameSessionManagerHasStarted();
 
         var testPlayer1 = new TestClient(TestPlayer1UserName, gameSessionManager);
         var testPlayer2 = new TestClient(TestPlayer2UserName, gameSessionManager);
@@ -299,7 +311,9 @@ namespace Service.UnitTests
           testPlayer3Data,
           testPlayer4Data);
 
-        gameSessionManager = GameSessionManagerTestExtensions.CreateGameSessionManagerForTest(new GameManagerFactory(), 4, mockPlayerCardRepository);
+        gameSessionManager = GameSessionManagerTestExtensions.CreateGameSessionManagerForTest(4)
+                  .AddPlayerCardRepository(mockPlayerCardRepository)
+                  .WaitUntilGameSessionManagerHasStarted();
 
         var testPlayer1 = new TestClient(TestPlayer1UserName, gameSessionManager);
         var testPlayer2 = new TestClient(TestPlayer2UserName, gameSessionManager);
@@ -346,7 +360,9 @@ namespace Service.UnitTests
           testPlayer3Data,
           testPlayer4Data);
 
-        gameSessionManager = GameSessionManagerTestExtensions.CreateGameSessionManagerForTest(new GameManagerFactory(), 4, mockPlayerCardRepository);
+        gameSessionManager = GameSessionManagerTestExtensions.CreateGameSessionManagerForTest(4)
+                  .AddPlayerCardRepository(mockPlayerCardRepository)
+                  .WaitUntilGameSessionManagerHasStarted();
 
         var testPlayer1 = new TestClient(TestPlayer1UserName, gameSessionManager);
         var testPlayer2 = new TestClient(TestPlayer2UserName, gameSessionManager);
@@ -367,6 +383,40 @@ namespace Service.UnitTests
       finally
       {
         gameSessionManager.WaitUntilGameSessionManagerHasStopped();
+      }
+    }
+
+    [Test]
+    public void SameClientInterfaceCannotBeAddedToAnotherGameSession()
+    {
+      GameSessionManager gameSessionManager = null;
+      try
+      {
+        Guid expectedSessionToken = Guid.NewGuid();
+        Guid otherSessionToken = Guid.NewGuid();
+
+        var mockGameSessionTokenFactory = NSubstitute.Substitute.For<IGameSessionTokenFactory>();
+        mockGameSessionTokenFactory.CreateGameSessionToken().Returns(expectedSessionToken, otherSessionToken);
+
+        gameSessionManager = GameSessionManagerTestExtensions.CreateGameSessionManagerForTest(4)
+          .AddGameSessionTokenFactory(mockGameSessionTokenFactory)
+          .WaitUntilGameSessionManagerHasStarted();
+
+        var testPlayer1 = new TestClient(TestPlayer1UserName, gameSessionManager);
+
+        // Attempt to add the same client twice.
+        gameSessionManager.AddTestClients(testPlayer1, testPlayer1);
+
+        this.WaitUntilClientsReceiveMessageOfType(typeof(ConfirmGameJoinedMessage), testPlayer1);
+
+        testPlayer1.GameToken.ShouldBe(expectedSessionToken);
+      }
+      finally
+      {
+        if (gameSessionManager != null)
+        {
+          gameSessionManager.WaitUntilGameSessionManagerHasStopped();
+        }
       }
     }
 
@@ -463,23 +513,6 @@ namespace Service.UnitTests
       finally
       {
         gameSessionManager.WaitUntilGameSessionManagerHasStopped();
-      }
-    }
-
-    [Test]
-    public void SameClientCantBeAddedToSameGameSession()
-    {
-      GameSessionManager gameSessionManager = null;
-      try
-      {
-        gameSessionManager = GameSessionManagerTestExtensions.CreateGameSessionManagerForTest(new GameManagerFactory(), 4);
-      }
-      finally
-      {
-        if (gameSessionManager != null)
-        {
-          gameSessionManager.WaitUntilGameSessionManagerHasStopped();
-        }
       }
     }
 

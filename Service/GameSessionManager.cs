@@ -26,6 +26,13 @@ namespace Jabberwocky.SoC.Service
       Setup,
       Playing
     }
+
+    private enum States2
+    {
+      AddToNewGameSession,
+      Added,
+      AlreadyInGameSession
+    }
     #endregion
 
     #region Fields
@@ -37,28 +44,56 @@ namespace Jabberwocky.SoC.Service
     private UInt32 maximumPlayerCount;
     private IGameManagerFactory gameManagerFactory;
     private CancellationTokenSource cancellationTokenSource;
+    private IGameSessionTokenFactory gameSessionTokenFactory;
     #endregion
 
     #region Construction
-    public GameSessionManager(IGameManagerFactory gameManagerFactory, UInt32 maximumPlayerCount, IPlayerCardRepository playerCardRepository)
+    public GameSessionManager(UInt32 maximumPlayerCount)
     {
-      // TODO: Null reference checks
       this.clients = new List<IServiceProviderCallback>();
       this.waitingForGameSessionQueue = new ConcurrentQueue<AddPlayerMessage>();
       this.gameSessions = new Dictionary<Guid, GameSession>();
       this.maximumPlayerCount = maximumPlayerCount;
       this.cancellationTokenSource = new CancellationTokenSource();
-      this.gameManagerFactory = gameManagerFactory;
-
-      playerCardRepository.VerifyThatObjectIsNotNull("Parameter 'playerCardRepository' is null.");
-      this.playerCardRepository = playerCardRepository;
-
+      this.gameManagerFactory = new GameManagerFactory();
+      this.gameSessionTokenFactory = new GameSessionTokenFactory();
+      this.playerCardRepository = new PlayerCardRepository();
       this.State = States.Stopped;
     }
     #endregion
 
     #region Properties
     public States State { get; private set; }
+
+    public IGameManagerFactory GameManagerFactory
+    { 
+      get { return this.gameManagerFactory; } 
+      set
+      {
+        value.VerifyThatObjectIsNotNull("Property 'GameManagerFactory' has not been set.");
+        this.gameManagerFactory = value;
+      }
+    }
+
+    public IPlayerCardRepository PlayerCardRepository
+    {
+      get { return this.playerCardRepository; }
+      set
+      {
+        value.VerifyThatObjectIsNotNull("Property 'PlayerCardRepository' has not been set.");
+        this.playerCardRepository = value;
+      }
+    }
+
+    public IGameSessionTokenFactory GameSessionTokenFactory
+    {
+      get { return this.gameSessionTokenFactory; }
+      set
+      {
+        value.VerifyThatObjectIsNotNull("Property 'GameSessionTokenFactory' has not been set.");
+        this.gameSessionTokenFactory = value;
+      }
+    }
     #endregion
 
     #region Methods
@@ -128,10 +163,11 @@ namespace Jabberwocky.SoC.Service
 
     private void AddToNewGameSession(AddPlayerMessage addPlayerMessage, CancellationToken cancellationToken)
     {
-      var gameSession = new GameSession(this.gameManagerFactory.Create(), this.maximumPlayerCount, this.playerCardRepository, cancellationToken);
+      var gameSessionToken = this.gameSessionTokenFactory.CreateGameSessionToken();
+      var gameSession = new GameSession(this.gameManagerFactory.Create(), this.maximumPlayerCount, this.playerCardRepository, gameSessionToken,  cancellationToken);
       gameSession.Start();
       gameSession.AddPlayer(addPlayerMessage);
-      this.gameSessions.Add(gameSession.GameToken, gameSession);
+      this.gameSessions.Add(gameSessionToken, gameSession);
     }
 
     private GameSession GetGameSession(Guid gameToken)
@@ -167,6 +203,11 @@ namespace Jabberwocky.SoC.Service
             continue;
           }
 
+          if (this.AlreadyInGameSession(addPlayerMessage.Client))
+          {
+            continue;
+          }
+
           if (!this.TryAddToExistingGameSession(addPlayerMessage))
           {
             this.AddToNewGameSession(addPlayerMessage, cancellationToken);
@@ -191,16 +232,27 @@ namespace Jabberwocky.SoC.Service
       }
     }
 
+    private Boolean AlreadyInGameSession(IServiceProviderCallback client)
+    {
+      foreach (var gameSession in this.gameSessions.Values)
+      {
+        if (gameSession.ContainsClient(client))
+        {
+          return true;
+        }
+      }
+
+      return false;
+    }
+
     private Boolean TryAddToExistingGameSession(AddPlayerMessage addPlayerMessage)
     {
-      GameSession gameSession = null;
       var gotBusyGameSession = false;
       do
       {
         gotBusyGameSession = false;
-        foreach (var kv in this.gameSessions)
+        foreach (var gameSession in this.gameSessions.Values)
         {
-          gameSession = kv.Value;
           if (gameSession.GameSessionState == GameSession.GameSessionStates.AwaitingPlayer)
           {
             gameSession.AddPlayer(addPlayerMessage);
@@ -234,7 +286,7 @@ namespace Jabberwocky.SoC.Service
       #region Fields
       private IGameManager gameManager;
 
-      public Guid GameToken;
+      public Guid GameSessionToken;
 
       private CancellationToken cancellationToken;
       private UInt32 currentPlayerCount;
@@ -246,9 +298,9 @@ namespace Jabberwocky.SoC.Service
       #endregion
 
       #region Construction
-      public GameSession(IGameManager gameManager, UInt32 maxPlayerCount, IPlayerCardRepository playerCardRepository, CancellationToken cancellationToken)
+      public GameSession(IGameManager gameManager, UInt32 maxPlayerCount, IPlayerCardRepository playerCardRepository, Guid gameSessionToken, CancellationToken cancellationToken)
       {
-        this.GameToken = Guid.NewGuid();
+        this.GameSessionToken = gameSessionToken;
         this.gameManager = gameManager;
         this.clients = new IServiceProviderCallback[maxPlayerCount];
         this.messagePump = new MessagePump();
@@ -441,7 +493,7 @@ namespace Jabberwocky.SoC.Service
 
           this.clients[i] = client;
 
-          client.ConfirmGameSessionJoined(this.GameToken, GameStates.Lobby);
+          client.ConfirmGameSessionJoined(this.GameSessionToken, GameStates.Lobby);
 
           var playerCard = this.playerCardRepository.GetPlayerData(username);
 
@@ -633,6 +685,24 @@ namespace Jabberwocky.SoC.Service
 
           clients[i].ReceivePersonalMessage(sender, text);
         }
+      }
+
+      public Boolean ContainsClient(IServiceProviderCallback client)
+      {
+        for (var i = 0; i < this.clients.Length; i++)
+        {
+          if (this.clients[i] == null)
+          {
+            continue;
+          }
+
+          if (this.clients[i] == client)
+          {
+            return true;
+          }
+        }
+
+        return false;
       }
       #endregion
     }

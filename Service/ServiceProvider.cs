@@ -17,7 +17,8 @@ namespace Jabberwocky.SoC.Service
     #region Construction
     public ServiceProvider()
     {
-      this.gameSessionManager = new GameSessionManager(new GameManagerFactory(), 1, new PlayerCardRepository());
+      this.gameSessionManager = new GameSessionManager(1);
+      this.gameSessionManager.PlayerCardRepository = new PlayerCardRepository();
       this.gameSessionManager.Start();
     }
     #endregion

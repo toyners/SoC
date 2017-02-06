@@ -26,20 +26,28 @@ namespace Service.UnitTests
     /// Creates the game session manager and then starts it. Throws time out exception if the gsm is not started
     /// after 5 seconds.
     /// </summary>
-    /// <param name="gameManagerFactory"></param>
     /// <param name="maximumPlayerCount"></param>
-    /// <returns></returns>
-    public static GameSessionManager CreateGameSessionManagerForTest(IGameManagerFactory gameManagerFactory, UInt32 maximumPlayerCount)
+    /// <returns>Game Session Manager instance.</returns>
+    public static GameSessionManager CreateGameSessionManagerForTest(UInt32 maximumPlayerCount)
     {
-      var gameSessionManager = new GameSessionManager(gameManagerFactory, maximumPlayerCount, new PlayerCardRepository());
-      gameSessionManager.WaitUntilGameSessionManagerHasStarted();
+      return new GameSessionManager(maximumPlayerCount);
+    }
+
+    public static GameSessionManager AddGameManagerFactory(this GameSessionManager gameSessionManager, IGameManagerFactory gameManagerFactory)
+    {
+      gameSessionManager.GameManagerFactory = gameManagerFactory;
       return gameSessionManager;
     }
 
-    public static GameSessionManager CreateGameSessionManagerForTest(IGameManagerFactory gameManagerFactory, UInt32 maximumPlayerCount, IPlayerCardRepository playerCardRepository)
+    public static GameSessionManager AddPlayerCardRepository(this GameSessionManager gameSessionManager, IPlayerCardRepository playerCardRepostory)
     {
-      var gameSessionManager = new GameSessionManager(gameManagerFactory, maximumPlayerCount, playerCardRepository);
-      gameSessionManager.WaitUntilGameSessionManagerHasStarted();
+      gameSessionManager.PlayerCardRepository = playerCardRepostory;
+      return gameSessionManager;
+    }
+
+    public static GameSessionManager AddGameSessionTokenFactory(this GameSessionManager gameSessionManager, IGameSessionTokenFactory gameSessionTokenFactory)
+    {
+      gameSessionManager.GameSessionTokenFactory = gameSessionTokenFactory;
       return gameSessionManager;
     }
 
@@ -75,7 +83,7 @@ namespace Service.UnitTests
       }
     }
 
-    private static void WaitUntilGameSessionManagerHasStarted(this GameSessionManager gameSessionManager)
+    public static GameSessionManager WaitUntilGameSessionManagerHasStarted(this GameSessionManager gameSessionManager)
     {
       gameSessionManager.Start();
 
@@ -95,6 +103,8 @@ namespace Service.UnitTests
       {
         throw new Exception("GameSessionManager has not started.");
       }
+
+      return gameSessionManager;
     }
   }
 }

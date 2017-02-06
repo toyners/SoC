@@ -31,16 +31,18 @@ namespace Service.IntegrationTests
     /// <returns></returns>
     public static GameSessionManager CreateGameSessionManagerForTest(IGameManagerFactory gameManagerFactory, UInt32 maximumPlayerCount)
     {
-      var gameSessionManager = new GameSessionManager(gameManagerFactory, maximumPlayerCount, new PlayerCardRepository());
+      /*var gameSessionManager = new GameSessionManager(gameManagerFactory, maximumPlayerCount, new PlayerCardRepository());
       gameSessionManager.WaitUntilGameSessionManagerHasStarted();
-      return gameSessionManager;
+      return gameSessionManager;*/
+      throw new NotImplementedException();
     }
 
     public static GameSessionManager CreateGameSessionManagerForTest(IGameManagerFactory gameManagerFactory, UInt32 maximumPlayerCount, IPlayerCardRepository playerCardRepository)
     {
-      var gameSessionManager = new GameSessionManager(gameManagerFactory, maximumPlayerCount, playerCardRepository);
+      /*var gameSessionManager = new GameSessionManager(gameManagerFactory, maximumPlayerCount, playerCardRepository);
       gameSessionManager.WaitUntilGameSessionManagerHasStarted();
-      return gameSessionManager;
+      return gameSessionManager;*/
+      throw new NotImplementedException();
     }
 
     /// <summary>
