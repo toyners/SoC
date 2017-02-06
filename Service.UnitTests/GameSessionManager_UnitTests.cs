@@ -382,12 +382,12 @@ namespace Service.UnitTests
       }
       finally
       {
-        gameSessionManager.WaitUntilGameSessionManagerHasStopped();
+        gameSessionManager?.WaitUntilGameSessionManagerHasStopped();
       }
     }
 
     [Test]
-    public void SameClientInterfaceCannotBeAddedToAnotherGameSession()
+    public void SameClientInterfaceCannotBeAddedToSameGameSession()
     {
       GameSessionManager gameSessionManager = null;
       try
@@ -413,10 +413,79 @@ namespace Service.UnitTests
       }
       finally
       {
-        if (gameSessionManager != null)
-        {
-          gameSessionManager.WaitUntilGameSessionManagerHasStopped();
-        }
+        gameSessionManager?.WaitUntilGameSessionManagerHasStopped();
+      }
+    }
+
+    [Test]
+    public void SameClientCannotBeAddedAsLastMemberOfGameSession()
+    {
+      GameSessionManager gameSessionManager = null;
+      try
+      {
+        Guid expectedSessionToken = Guid.NewGuid();
+        Guid otherSessionToken = Guid.NewGuid();
+
+        var mockGameSessionTokenFactory = NSubstitute.Substitute.For<IGameSessionTokenFactory>();
+        mockGameSessionTokenFactory.CreateGameSessionToken().Returns(expectedSessionToken, otherSessionToken);
+
+        gameSessionManager = GameSessionManagerTestExtensions.CreateGameSessionManagerForTest(4)
+          .AddGameSessionTokenFactory(mockGameSessionTokenFactory)
+          .WaitUntilGameSessionManagerHasStarted();
+
+        var testPlayer1 = new TestClient(TestPlayer1UserName, gameSessionManager);
+        var testPlayer2 = new TestClient(TestPlayer2UserName, gameSessionManager);
+        var testPlayer3 = new TestClient(TestPlayer3UserName, gameSessionManager);
+
+        // Attempt to add the same client as the last member to the game session.
+        gameSessionManager.AddTestClients(testPlayer1, testPlayer2, testPlayer3, testPlayer1);
+
+        this.WaitUntilClientsReceiveMessageOfType(typeof(PlayerDataReceivedMessage), testPlayer1, testPlayer2, testPlayer3);
+
+        testPlayer1.GameToken.ShouldBe(expectedSessionToken);
+        testPlayer2.GameToken.ShouldBe(expectedSessionToken);
+        testPlayer3.GameToken.ShouldBe(expectedSessionToken);
+      }
+      finally
+      {
+        gameSessionManager?.WaitUntilGameSessionManagerHasStopped();
+      }
+    }
+
+    [Test]
+    public void SameClientCannotBeAddedToAnotherGameSession()
+    {
+      GameSessionManager gameSessionManager = null;
+      try
+      {
+        Guid firstSessionToken = Guid.NewGuid();
+        Guid secondSessionToken = Guid.NewGuid();
+
+        var mockGameSessionTokenFactory = NSubstitute.Substitute.For<IGameSessionTokenFactory>();
+        mockGameSessionTokenFactory.CreateGameSessionToken().Returns(firstSessionToken, secondSessionToken);
+
+        gameSessionManager = GameSessionManagerTestExtensions.CreateGameSessionManagerForTest(4)
+          .AddGameSessionTokenFactory(mockGameSessionTokenFactory)
+          .WaitUntilGameSessionManagerHasStarted();
+
+        var testPlayer1 = new TestClient(TestPlayer1UserName, gameSessionManager);
+        var testPlayer2 = new TestClient(TestPlayer2UserName, gameSessionManager);
+        var testPlayer3 = new TestClient(TestPlayer3UserName, gameSessionManager);
+        var testPlayer4 = new TestClient(TestPlayer4UserName, gameSessionManager);
+
+        // Attempt to add the same client as the last member to the game session.
+        gameSessionManager.AddTestClients(testPlayer1, testPlayer2, testPlayer3, testPlayer4, testPlayer1);
+
+        this.WaitUntilClientsReceiveMessageOfType(typeof(GameSessionReadyToLaunchMessage), testPlayer1, testPlayer2, testPlayer3, testPlayer4);
+
+        testPlayer1.GameToken.ShouldBe(firstSessionToken);
+        testPlayer2.GameToken.ShouldBe(firstSessionToken);
+        testPlayer3.GameToken.ShouldBe(firstSessionToken);
+        testPlayer4.GameToken.ShouldBe(firstSessionToken);
+      }
+      finally
+      {
+        gameSessionManager?.WaitUntilGameSessionManagerHasStopped();
       }
     }
 
@@ -461,9 +530,7 @@ namespace Service.UnitTests
       var clientsWaitingForMessage = new List<TestClient>(testClients);
 
       while (clientsWaitingForMessage.Count > 0
-#if !DEBUG
-        && stopWatch.ElapsedMilliseconds <= 1000
-#endif
+        //&& stopWatch.ElapsedMilliseconds <= 1000
         )
       {
         for (var index = 0; index < clientsWaitingForMessage.Count; index++)
@@ -509,32 +576,6 @@ namespace Service.UnitTests
         // Assert
         mockClient1.GameLeft.ShouldBeTrue();
         mockClient1.GameToken.ShouldBe(Guid.Empty);
-      }
-      finally
-      {
-        gameSessionManager.WaitUntilGameSessionManagerHasStopped();
-      }
-    }
-
-    [Test]
-    public void AllClientsReceiveBoardDataWhenGameIsFull()
-    {
-      GameSessionManager gameSessionManager = null;
-      try
-      {
-        // Arrange
-        gameSessionManager = GameSessionManagerTestExtensions.CreateGameSessionManagerForTest(new GameManagerFactory(), 4);
-
-        var mockClient1 = new MockClient();
-        var mockClient2 = new MockClient();
-        var mockClient3 = new MockClient();
-        var mockClient4 = new MockClient();
-
-        // Act
-        gameSessionManager.AddMockClients(mockClient1, mockClient2, mockClient3, mockClient4);
-
-        // Assert
-        this.WaitUntilClientsReceiveGameData(mockClient1, mockClient2, mockClient3, mockClient4);
       }
       finally
       {
