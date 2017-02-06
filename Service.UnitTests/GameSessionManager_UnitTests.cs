@@ -489,6 +489,36 @@ namespace Service.UnitTests
       }
     }
 
+    [Test]
+    public void WhenClientDropsOutOfGameSessionBeforeLaunchOtherClientsAreNotified()
+    {
+      GameSessionManager gameSessionManager = null;
+      try
+      {
+        var expectedMessage = new ConfirmGameSessionLeftMessage();
+        gameSessionManager = GameSessionManagerTestExtensions.CreateGameSessionManagerForTest(4)
+          .WaitUntilGameSessionManagerHasStarted();
+
+        var testPlayer1 = new TestClient(TestPlayer1UserName, gameSessionManager);
+        var testPlayer2 = new TestClient(TestPlayer2UserName, gameSessionManager);
+
+        gameSessionManager.AddTestClients(testPlayer1, testPlayer2);
+
+        this.WaitUntilClientsReceiveMessageOfType(typeof(ConfirmGameJoinedMessage), testPlayer1, testPlayer2);
+
+        testPlayer1.LeaveGame();
+        gameSessionManager.WaitUntilGameSessionManagerHasStopped();
+
+        // Assert
+        testPlayer1.GetLastMessage().IsSameAs(expectedMessage).ShouldBeTrue();
+        testPlayer1.GameToken.ShouldBe(Guid.Empty);
+      }
+      finally
+      {
+        gameSessionManager?.WaitUntilGameSessionManagerHasStopped();
+      }
+    }
+
     private void WaitUntilClientsReceiveMessage(MessageBase expectedMessage, params TestClient[] testClients)
     {
       var stopWatch = new Stopwatch();
@@ -555,34 +585,7 @@ namespace Service.UnitTests
       }
     }
 
-    /*[Test]
-    public void WhenClientDropsOutOfGameOtherClientsAreNotified()
-    {
-      GameSessionManager gameSessionManager = null;
-      try
-      {
-        gameSessionManager = GameSessionManagerTestExtensions.CreateGameSessionManagerForTest(new GameManagerFactory(), 4);
-
-        var mockClient1 = new MockClient(gameSessionManager);
-        var mockClient2 = new MockClient(gameSessionManager);
-        var mockClient3 = new MockClient(gameSessionManager);
-        var mockClient4 = new MockClient(gameSessionManager);
-
-        gameSessionManager.AddMockClients(mockClient1, mockClient2, mockClient3, mockClient4);
-        Thread.Sleep(1000);
-        mockClient1.LeaveGame();
-        gameSessionManager.WaitUntilGameSessionManagerHasStopped();
-
-        // Assert
-        mockClient1.GameLeft.ShouldBeTrue();
-        mockClient1.GameToken.ShouldBe(Guid.Empty);
-      }
-      finally
-      {
-        gameSessionManager.WaitUntilGameSessionManagerHasStopped();
-      }
-    }
-
+    /*
     [Test]
     [TestCase(new UInt32[] { 0u, 1u, 2u, 3u })]
     [TestCase(new UInt32[] { 3u, 0u, 1u, 2u })]

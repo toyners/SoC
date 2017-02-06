@@ -59,6 +59,7 @@
     <Compile Include="GameSessionManager_UnitTests.cs" />
     <Compile Include="GameInitializationDataBuilder_UnitTests.cs" />
     <Compile Include="Messages\ConfirmGameJoinedMessage.cs" />
+    <Compile Include="Messages\ConfirmGameSessionLeftMessage.cs" />
     <Compile Include="Messages\PersonalMessage.cs" />
     <Compile Include="Messages\InitializeGameMessage.cs" />
     <Compile Include="Messages\PlayerDataReceivedMessage.cs" />
