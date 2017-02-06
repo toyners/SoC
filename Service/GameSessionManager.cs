@@ -533,7 +533,7 @@ namespace Jabberwocky.SoC.Service
 
       private void SendConfirmGameSessionReadyToLaunchMessage()
       {
-        for (var i = 0; i < this.currentPlayerCount; i++)
+        for (var i = 0; i < this.clients.Length; i++)
         {
           if (this.clients[i] == null)
           {

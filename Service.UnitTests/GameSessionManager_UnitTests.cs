@@ -13,7 +13,7 @@ namespace Service.UnitTests
   using Shouldly;
 
   [TestFixture]
-  public class GameSessionManager_IntegrationTests
+  public class GameSessionManager_UnitTests
   {
     private const String TestPlayer1UserName = "Test Player 1";
     private const String TestPlayer2UserName = "Test Player 2";
@@ -282,7 +282,7 @@ namespace Service.UnitTests
     }
 
     [Test]
-    public void ClientsReceivesPersonalMessageFromClientOnceGameSessionIsLaunched()
+    public void ClientsReceivePersonalMessageFromClientOnceGameSessionIsLaunched()
     {
       GameSessionManager gameSessionManager = null;
       try
@@ -325,6 +325,48 @@ namespace Service.UnitTests
       finally
       {
         gameSessionManager?.WaitUntilGameSessionManagerHasStopped();
+      }
+    }
+
+    [Test]
+    public void AllClientsReceiveSameGameTokenWhenJoinedToSameGame()
+    {
+      GameSessionManager gameSessionManager = null;
+      try
+      {
+        // Arrange
+        var testPlayer1Data = new PlayerData(TestPlayer1UserName);
+        var testPlayer2Data = new PlayerData(TestPlayer2UserName);
+        var testPlayer3Data = new PlayerData(TestPlayer3UserName);
+        var testPlayer4Data = new PlayerData(TestPlayer4UserName);
+
+        var mockPlayerCardRepository = this.CreateMockPlayerCardRepository(
+          testPlayer1Data,
+          testPlayer2Data,
+          testPlayer3Data,
+          testPlayer4Data);
+
+        gameSessionManager = GameSessionManagerTestExtensions.CreateGameSessionManagerForTest(new GameManagerFactory(), 4, mockPlayerCardRepository);
+
+        var testPlayer1 = new TestClient(TestPlayer1UserName, gameSessionManager);
+        var testPlayer2 = new TestClient(TestPlayer2UserName, gameSessionManager);
+        var testPlayer3 = new TestClient(TestPlayer3UserName, gameSessionManager);
+        var testPlayer4 = new TestClient(TestPlayer4UserName, gameSessionManager);
+
+        // Act
+        gameSessionManager.AddTestClients(testPlayer1, testPlayer2, testPlayer3, testPlayer4);
+
+        this.WaitUntilClientsReceiveMessageOfType(typeof(GameSessionReadyToLaunchMessage), testPlayer1, testPlayer2, testPlayer3, testPlayer4);
+
+        // Assert
+        testPlayer1.GameToken.ShouldNotBe(Guid.Empty);
+        (testPlayer1.GameToken == testPlayer2.GameToken &&
+         testPlayer2.GameToken == testPlayer3.GameToken &&
+         testPlayer3.GameToken == testPlayer4.GameToken).ShouldBeTrue();
+      }
+      finally
+      {
+        gameSessionManager.WaitUntilGameSessionManagerHasStopped();
       }
     }
 
@@ -438,38 +480,6 @@ namespace Service.UnitTests
         {
           gameSessionManager.WaitUntilGameSessionManagerHasStopped();
         }
-      }
-    }
-
-    [Test]
-    public void AllClientsReceiveSameGameTokenWhenJoinedToSameGame()
-    {
-      GameSessionManager gameSessionManager = null;
-      try
-      {
-        // Arrange
-        gameSessionManager = GameSessionManagerTestExtensions.CreateGameSessionManagerForTest(new GameManagerFactory(), 4);
-
-        var mockClient1 = new MockClient();
-        var mockClient2 = new MockClient();
-        var mockClient3 = new MockClient();
-        var mockClient4 = new MockClient();
-
-        // Act
-        gameSessionManager.AddMockClients(mockClient1, mockClient2, mockClient3, mockClient4);
-        Thread.Sleep(1000);
-
-        gameSessionManager.WaitUntilGameSessionManagerHasStopped();
-
-        // Assert
-        mockClient1.GameToken.ShouldNotBe(Guid.Empty);
-        (mockClient1.GameToken == mockClient2.GameToken &&
-         mockClient2.GameToken == mockClient3.GameToken &&
-         mockClient3.GameToken == mockClient4.GameToken).ShouldBeTrue();
-      }
-      finally
-      {
-        gameSessionManager.WaitUntilGameSessionManagerHasStopped();
       }
     }
 
