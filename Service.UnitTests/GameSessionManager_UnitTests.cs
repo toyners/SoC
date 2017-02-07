@@ -54,44 +54,6 @@ namespace Service.UnitTests
       }
     }
 
-    [Test]
-    public void PlayersAreNotifiedWhenPlayerLeavesGameSession()
-    {
-      GameSessionManager gameSessionManager = null;
-      try
-      {
-        var expectedMessage = new OtherPlayerHasLeftGameMessage(TestPlayer1UserName);
-
-        var mockPlayerCardRepository = this.CreateMockPlayerCardRepository(
-          new PlayerData(TestPlayer1UserName),
-          new PlayerData(TestPlayer2UserName),
-          new PlayerData(TestPlayer3UserName),
-          new PlayerData(TestPlayer4UserName));
-
-        gameSessionManager = GameSessionManagerTestExtensions.CreateGameSessionManagerForTest(4)
-          .AddPlayerCardRepository(mockPlayerCardRepository)
-          .WaitUntilGameSessionManagerHasStarted();
-
-        var testPlayer1 = new TestClient(TestPlayer1UserName, gameSessionManager);
-        var testPlayer2 = new TestClient(TestPlayer2UserName, gameSessionManager);
-        var testPlayer3 = new TestClient(TestPlayer3UserName, gameSessionManager);
-        var testPlayer4 = new TestClient(TestPlayer4UserName, gameSessionManager);
-
-        gameSessionManager.AddTestClients(testPlayer1, testPlayer2, testPlayer3, testPlayer4);
-        Thread.Sleep(1000);
-        testPlayer1.LeaveGame();
-
-        // Assert
-        testPlayer2.GetLastMessage().IsSameAs(expectedMessage).ShouldBeTrue();
-        testPlayer3.GetLastMessage().IsSameAs(expectedMessage).ShouldBeTrue();
-        testPlayer4.GetLastMessage().IsSameAs(expectedMessage).ShouldBeTrue();
-      }
-      finally
-      {
-        gameSessionManager?.WaitUntilGameSessionManagerHasStopped();
-      }
-    }
-
     /// <summary>
     /// Test that all clients receive notification that the game session is ready to launch
     /// </summary>

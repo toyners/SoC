@@ -736,13 +736,6 @@ namespace Jabberwocky.SoC.Service
       }
       #endregion
     }
-
-    private struct JoinTicket
-    {
-      public IServiceProviderCallback Client;
-
-      public String Username;
-    }
     #endregion
   }
 }
