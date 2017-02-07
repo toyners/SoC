@@ -27,13 +27,6 @@ namespace Jabberwocky.SoC.Service
       Setup,
       Playing
     }
-
-    private enum States2
-    {
-      AddToNewGameSession,
-      Added,
-      AlreadyInGameSession
-    }
     #endregion
 
     #region Fields
