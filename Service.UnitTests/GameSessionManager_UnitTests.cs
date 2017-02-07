@@ -490,13 +490,20 @@ namespace Service.UnitTests
     }
 
     [Test]
-    public void WhenClientDropsOutOfGameSessionBeforeLaunchOtherClientsAreNotified()
+    public void WhenNamedClientDropsOutOfGameSessionBeforeLaunchOtherClientsAreNotified()
     {
       GameSessionManager gameSessionManager = null;
       try
       {
-        var expectedMessage = new ConfirmGameSessionLeftMessage();
+        var expectedMessageForTestPlayer1 = new PlayerHasLeftGameMessage();
+        var expectedMessageForTestPlayer2 = new OtherPlayerHasLeftGameMessage(TestPlayer1UserName);
+
+        var testPlayer1Data = new PlayerData(TestPlayer1UserName);
+        
+        var mockPlayerCardRepository = this.CreateMockPlayerCardRepository(testPlayer1Data);
+        
         gameSessionManager = GameSessionManagerTestExtensions.CreateGameSessionManagerForTest(4)
+          .AddPlayerCardRepository(mockPlayerCardRepository)
           .WaitUntilGameSessionManagerHasStarted();
 
         var testPlayer1 = new TestClient(TestPlayer1UserName, gameSessionManager);
@@ -504,14 +511,14 @@ namespace Service.UnitTests
 
         gameSessionManager.AddTestClients(testPlayer1, testPlayer2);
 
-        this.WaitUntilClientsReceiveMessageOfType(typeof(ConfirmGameJoinedMessage), testPlayer1, testPlayer2);
+        this.WaitUntilClientsReceiveMessageOfType(typeof(PlayerDataReceivedMessage), testPlayer1, testPlayer2);
 
+        // Act
         testPlayer1.LeaveGame();
-        gameSessionManager.WaitUntilGameSessionManagerHasStopped();
 
         // Assert
-        testPlayer1.GetLastMessage().IsSameAs(expectedMessage).ShouldBeTrue();
-        testPlayer1.GameToken.ShouldBe(Guid.Empty);
+        this.WaitUntilClientsReceiveMessage(expectedMessageForTestPlayer1, testPlayer1);
+        this.WaitUntilClientsReceiveMessage(expectedMessageForTestPlayer2, testPlayer2);
       }
       finally
       {
@@ -560,7 +567,7 @@ namespace Service.UnitTests
       var clientsWaitingForMessage = new List<TestClient>(testClients);
 
       while (clientsWaitingForMessage.Count > 0
-        //&& stopWatch.ElapsedMilliseconds <= 1000
+        && stopWatch.ElapsedMilliseconds <= 1000
         )
       {
         for (var index = 0; index < clientsWaitingForMessage.Count; index++)

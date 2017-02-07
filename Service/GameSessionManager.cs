@@ -358,30 +358,34 @@ namespace Jabberwocky.SoC.Service
       {
         for (Int32 i = 0; i < this.clients.Length; i++)
         {
-          if (this.clients[i] == client)
+          if (this.clients[i] != client)
           {
-            this.clients[i] = null;
-            this.currentPlayerCount--;
-            if (this.currentPlayerCount < this.clients.Length)
-            {
-              this.GameSessionState = GameSessionStates.AwaitingPlayer;
-            }
-
-            client.ConfirmPlayerHasLeftGame();
-
-            var playerData = this.playerCards[client];
-            for (Int32 j = 0; j < this.clients.Length; j++)
-            {
-              if (j != i)
-              {
-                this.clients[j].ConfirmOtherPlayerHasLeftGame(playerData.Username);
-              }
-            }
-
-            this.playerCards.Remove(client);
-
-            return;
+            continue;
           }
+
+          this.clients[i] = null;
+          this.currentPlayerCount--;
+          if (this.currentPlayerCount < this.clients.Length)
+          {
+            this.GameSessionState = GameSessionStates.AwaitingPlayer;
+          }
+
+          client.ConfirmPlayerHasLeftGame();
+
+          var playerData = this.playerCards[client];
+          for (Int32 j = 0; j < this.clients.Length; j++)
+          {
+            if (this.clients[j] == null)
+            {
+              continue;
+            }
+
+            this.clients[j].ConfirmOtherPlayerHasLeftGame(playerData.Username);
+          }
+
+          this.playerCards.Remove(client);
+
+          return;
         }
 
         //TODO: Remove or make meaningful
