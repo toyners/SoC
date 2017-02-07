@@ -8,6 +8,7 @@ namespace Jabberwocky.SoC.Service
   using System.Threading;
   using System.Threading.Tasks;
   using Library;
+  using Messages;
   using Toolkit.Object;
 
   public class GameSessionManager
@@ -332,7 +333,7 @@ namespace Jabberwocky.SoC.Service
 
       public void ConfirmGameInitialized(IServiceProviderCallback client)
       {
-        var message = new Message(Message.Types.ConfirmGameInitialized, client);
+        var message = new GameSessionMessage(GameSessionMessage.Types.ConfirmGameInitialized, client);
         this.messagePump.Enqueue(message);
       }
 
@@ -409,10 +410,10 @@ namespace Jabberwocky.SoC.Service
 
             this.SendGameInitializationData();
 
-            Message message;
+            GameSessionMessage message;
             while (true)
             {
-              if (this.messagePump.TryDequeue(Message.Types.Personal, out message))
+              if (this.messagePump.TryDequeue(GameSessionMessage.Types.Personal, out message))
               {
                 var personalMessage = (PersonalMessage)message;
                 var playerData = this.playerCards[personalMessage.Client];
@@ -452,12 +453,12 @@ namespace Jabberwocky.SoC.Service
 
             // Clients confirming that they have completed game initialization.
             var awaitingGameInitializationConfirmation = new HashSet<IServiceProviderCallback>(this.clients);
-            Message message = null;
+            GameSessionMessage message = null;
             while (awaitingGameInitializationConfirmation.Count > 0)
             {
               this.cancellationToken.ThrowIfCancellationRequested();
 
-              if (this.messagePump.TryDequeue(Message.Types.ConfirmGameInitialized, out message))
+              if (this.messagePump.TryDequeue(GameSessionMessage.Types.ConfirmGameInitialized, out message))
               {
                 awaitingGameInitializationConfirmation.Remove(message.Client);
                 Debug.Print("Received: " + awaitingGameInitializationConfirmation.Count + " left.");
@@ -524,14 +525,14 @@ namespace Jabberwocky.SoC.Service
 
       private void PlaceTownsInFirstPassOrder(UInt32[] playerIndexes)
       {
-        Message message = null;
+        GameSessionMessage message = null;
         for (var index = 0; index < this.clients.Length; index++)
         {
           var playerIndex = playerIndexes[index];
 
           this.clients[playerIndex].ChooseTownLocation();
           Debug.Print("First pass: Choose town message sent for Index " + playerIndex);
-          while (!this.messagePump.TryDequeue(Message.Types.RequestTownPlacement, out message))
+          while (!this.messagePump.TryDequeue(GameSessionMessage.Types.RequestTownPlacement, out message))
           {
             this.cancellationToken.ThrowIfCancellationRequested();
 
@@ -556,7 +557,7 @@ namespace Jabberwocky.SoC.Service
 
       private void PlaceTownsInSecondPassOrder()
       {
-        Message message = null;
+        GameSessionMessage message = null;
         UInt32[] playerIndexes = this.gameManager.GetSecondSetupPassOrder();
         for (var index = 0; index < this.clients.Length; index++)
         {
@@ -564,7 +565,7 @@ namespace Jabberwocky.SoC.Service
 
           this.clients[playerIndex].ChooseTownLocation();
           Debug.Print("Second pass: Choose town message sent for Index " + playerIndex);
-          while (!this.messagePump.TryDequeue(Message.Types.RequestTownPlacement, out message))
+          while (!this.messagePump.TryDequeue(GameSessionMessage.Types.RequestTownPlacement, out message))
           {
             this.cancellationToken.ThrowIfCancellationRequested();
 
@@ -631,11 +632,11 @@ namespace Jabberwocky.SoC.Service
 
       private void WaitForAllGameLaunchMessages()
       {
-        Message message;
+        GameSessionMessage message;
         var receivedMessages = new HashSet<IServiceProviderCallback>();
         while (receivedMessages.Count < this.clients.Length)
         {
-          if (this.messagePump.TryDequeue(Message.Types.LaunchGame, out message))
+          if (this.messagePump.TryDequeue(GameSessionMessage.Types.LaunchGame, out message))
           {
             var client = message.Client;
             if (receivedMessages.Contains(client))
@@ -655,17 +656,17 @@ namespace Jabberwocky.SoC.Service
 
       private void WaitForAllPlayersToJoin()
       {
-        Message message;
+        GameSessionMessage message;
         while (this.GameSessionState != GameSessionStates.Full)
         {
-          if (this.messagePump.TryDequeue(Message.Types.AddPlayer | Message.Types.Personal, out message))
+          if (this.messagePump.TryDequeue(GameSessionMessage.Types.AddPlayer | GameSessionMessage.Types.Personal, out message))
           {
-            if (message.Type == Message.Types.AddPlayer)
+            if (message.Type == GameSessionMessage.Types.AddPlayer)
             {
               var addPlayerMessage = (AddPlayerMessage)message;
               this.AddPlayer(addPlayerMessage.Client, addPlayerMessage.Username);
             }
-            else if (message.Type == Message.Types.Personal)
+            else if (message.Type == GameSessionMessage.Types.Personal)
             {
               var personalMessage = (PersonalMessage)message;
               var playerCard = this.playerCards[personalMessage.Client];
@@ -711,77 +712,19 @@ namespace Jabberwocky.SoC.Service
       #endregion
     }
 
-    private class AddPlayerMessage : Message
-    {
-      public readonly String Username;
-
-      public AddPlayerMessage(IServiceProviderCallback sender, String username) : base(Message.Types.AddPlayer, sender)
-      {
-        this.Username = username;
-      }
-    }
-
-    private class LaunchGameMessage : Message
-    {
-      public LaunchGameMessage(IServiceProviderCallback client) : base(Types.LaunchGame, client) {}
-    }
-
-    private class Message
-    {
-      [Flags]
-      public enum Types
-      {
-        AddPlayer = 1,
-        ConfirmGameInitialized = 2,
-        LaunchGame = 4,
-        Personal = 8,
-        RequestTownPlacement = 16,
-        Any = AddPlayer | ConfirmGameInitialized | Personal | RequestTownPlacement
-      }
-
-      public readonly Types Type;
-
-      public readonly IServiceProviderCallback Client;
-
-      public Message(Types type, IServiceProviderCallback client)
-      {
-        this.Type = type;
-        this.Client = client;
-      }
-    }
-
-    private class PersonalMessage : Message
-    {
-      public readonly String Text;
-      public PersonalMessage(IServiceProviderCallback client, String text) : base(Message.Types.Personal, client)
-      {
-        this.Text = text;
-      }
-    }
-
-    private class PlaceTownMessage : Message
-    {
-      public readonly UInt32 Location;
-
-      public PlaceTownMessage(IServiceProviderCallback client, UInt32 location) : base(Message.Types.RequestTownPlacement, client)
-      {
-        this.Location = location;
-      }
-    }
-
     private class MessagePump
     {
       #region Fields
-      private ConcurrentQueue<Message> messages = new ConcurrentQueue<Message>();
+      private ConcurrentQueue<GameSessionMessage> messages = new ConcurrentQueue<GameSessionMessage>();
       #endregion
 
       #region Methods
-      public void Enqueue(Message message)
+      public void Enqueue(GameSessionMessage message)
       {
         this.messages.Enqueue(message);
       }
 
-      public Boolean TryDequeue(Message.Types messageType, out Message message)
+      public Boolean TryDequeue(GameSessionMessage.Types messageType, out GameSessionMessage message)
       {
         message = null;
         if (this.messages.TryDequeue(out message))

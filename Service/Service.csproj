@@ -56,6 +56,11 @@
   <ItemGroup>
     <Compile Include="GameSessionTokenFactory.cs" />
     <Compile Include="IGameSessionTokenFactory.cs" />
+    <Compile Include="Messages\AddPlayerMessage.cs" />
+    <Compile Include="Messages\LaunchGameMessage.cs" />
+    <Compile Include="Messages\PersonalMessage.cs" />
+    <Compile Include="Messages\PlaceTownMessage.cs" />
+    <Compile Include="Messages\GameSessionMessage.cs" />
     <Compile Include="PlayerData.cs" />
     <Compile Include="PlayerCardRepository.cs" />
     <Compile Include="IPlayerCardRepository.cs" />
