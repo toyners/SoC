@@ -36,8 +36,8 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Jabberwocky.Toolkit, Version=1.0.7.2, Culture=neutral, PublicKeyToken=8994d5f40ad2f5fb, processorArchitecture=MSIL">
-      <HintPath>..\packages\Jabberwocky.Toolkit.1.0.7.2\lib\net45\Jabberwocky.Toolkit.dll</HintPath>
+    <Reference Include="Jabberwocky.Toolkit, Version=1.0.7.3, Culture=neutral, PublicKeyToken=8994d5f40ad2f5fb, processorArchitecture=MSIL">
+      <HintPath>..\packages\Jabberwocky.Toolkit.1.0.7.3\lib\net45\Jabberwocky.Toolkit.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
