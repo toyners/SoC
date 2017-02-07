@@ -120,7 +120,7 @@ namespace Jabberwocky.SoC.Service
     public void RemoveClient(Guid gameToken, IServiceProviderCallback client)
     {
       var gameSession = this.GetGameSession(gameToken);
-      gameSession.RemoveClient(client);
+      gameSession.RemoveClient(new RemovePlayerMessage(client));
     }
 
     public void LaunchGame(Guid gameToken, IServiceProviderCallback client)
@@ -344,42 +344,9 @@ namespace Jabberwocky.SoC.Service
         this.messagePump.Enqueue(message);
       }
 
-      public void RemoveClient(IServiceProviderCallback client)
+      public void RemoveClient(RemovePlayerMessage removePlayerMessage)
       {
-        for (Int32 i = 0; i < this.clients.Length; i++)
-        {
-          if (this.clients[i] != client)
-          {
-            continue;
-          }
-
-          this.clients[i] = null;
-          this.currentPlayerCount--;
-          if (this.currentPlayerCount < this.clients.Length)
-          {
-            this.GameSessionState = GameSessionStates.AwaitingPlayer;
-          }
-
-          client.ConfirmPlayerHasLeftGame();
-
-          var playerData = this.playerCards[client];
-          for (Int32 j = 0; j < this.clients.Length; j++)
-          {
-            if (this.clients[j] == null)
-            {
-              continue;
-            }
-
-            this.clients[j].ConfirmOtherPlayerHasLeftGame(playerData.Username);
-          }
-
-          this.playerCards.Remove(client);
-
-          return;
-        }
-
-        //TODO: Remove or make meaningful
-        throw new NotImplementedException();
+        this.messagePump.Enqueue(removePlayerMessage);
       }
 
       public void Start()
@@ -575,6 +542,44 @@ namespace Jabberwocky.SoC.Service
             this.clients[clientIndex].TownPlacedDuringSetup(placeTownMessage.Location);
           }
         }
+      }
+
+      private void RemovePlayer(IServiceProviderCallback client)
+      {
+        for (Int32 i = 0; i < this.clients.Length; i++)
+        {
+          if (this.clients[i] != client)
+          {
+            continue;
+          }
+
+          this.clients[i] = null;
+          this.currentPlayerCount--;
+          if (this.currentPlayerCount < this.clients.Length)
+          {
+            this.GameSessionState = GameSessionStates.AwaitingPlayer;
+          }
+
+          client.ConfirmPlayerHasLeftGame();
+
+          var playerData = this.playerCards[client];
+          for (Int32 j = 0; j < this.clients.Length; j++)
+          {
+            if (this.clients[j] == null)
+            {
+              continue;
+            }
+
+            this.clients[j].ConfirmOtherPlayerHasLeftGame(playerData.Username);
+          }
+
+          this.playerCards.Remove(client);
+
+          return;
+        }
+
+        //TODO: Remove or make meaningful
+        throw new NotImplementedException();
       }
 
       private void SendConfirmGameSessionReadyToLaunchMessage()

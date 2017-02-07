@@ -12,8 +12,8 @@ namespace Jabberwocky.SoC.Service.Messages
       ConfirmGameInitialized = 2,
       LaunchGame = 4,
       Personal = 8,
-      RequestTownPlacement = 16,
-      Any = AddPlayer | ConfirmGameInitialized | Personal | RequestTownPlacement
+      RemovePlayer = 16,
+      RequestTownPlacement = 32,
     }
 
     public readonly Types Type;

@@ -57,6 +57,7 @@
     <Compile Include="GameSessionTokenFactory.cs" />
     <Compile Include="IGameSessionTokenFactory.cs" />
     <Compile Include="Messages\AddPlayerMessage.cs" />
+    <Compile Include="Messages\RemovePlayerMessage.cs" />
     <Compile Include="Messages\LaunchGameMessage.cs" />
     <Compile Include="Messages\PersonalMessage.cs" />
     <Compile Include="Messages\PlaceTownMessage.cs" />
