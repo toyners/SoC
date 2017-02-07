@@ -9,6 +9,7 @@ namespace Jabberwocky.SoC.Service
   using System.Threading.Tasks;
   using Library;
   using Messages;
+  using Toolkit.Logging;
   using Toolkit.Object;
   using Toolkit.String;
 
@@ -154,7 +155,7 @@ namespace Jabberwocky.SoC.Service
     private void AddToNewGameSession(AddPlayerMessage addPlayerMessage, CancellationToken cancellationToken)
     {
       var gameSessionToken = this.gameSessionTokenFactory.CreateGameSessionToken();
-      var gameSession = new GameSession(this.gameManagerFactory.Create(), this.maximumPlayerCount, this.playerCardRepository, gameSessionToken,  cancellationToken);
+      var gameSession = new GameSession(this.gameManagerFactory.Create(), this.maximumPlayerCount, this.playerCardRepository, gameSessionToken,  cancellationToken, null);
       gameSession.Start();
       gameSession.AddPlayer(addPlayerMessage);
       this.gameSessions.Add(gameSessionToken, gameSession);
@@ -285,11 +286,13 @@ namespace Jabberwocky.SoC.Service
       private Dictionary<IServiceProviderCallback, PlayerData> playerCards;
       private Task gameTask;
       private MessagePump messagePump;
+      private ILogger logger;
       #endregion
 
       #region Construction
-      public GameSession(IGameManager gameManager, UInt32 maxPlayerCount, IPlayerCardRepository playerCardRepository, Guid gameSessionToken, CancellationToken cancellationToken)
+      public GameSession(IGameManager gameManager, UInt32 maxPlayerCount, IPlayerCardRepository playerCardRepository, Guid gameSessionToken, CancellationToken cancellationToken, ILogger logger)
       {
+        // No parameter checking done because this is not a public interface.
         this.GameSessionToken = gameSessionToken;
         this.gameManager = gameManager;
         this.clients = new IServiceProviderCallback[maxPlayerCount];
@@ -297,6 +300,7 @@ namespace Jabberwocky.SoC.Service
         this.cancellationToken = cancellationToken;
         this.playerCardRepository = playerCardRepository;
         this.playerCards = new Dictionary<IServiceProviderCallback, PlayerData>();
+        this.logger = logger;
       }
       #endregion
 
