@@ -10,6 +10,7 @@ namespace Jabberwocky.SoC.Service
   using Library;
   using Messages;
   using Toolkit.Object;
+  using Toolkit.String;
 
   public class GameSessionManager
   {
@@ -64,7 +65,7 @@ namespace Jabberwocky.SoC.Service
       get { return this.gameManagerFactory; } 
       set
       {
-        value.VerifyThatObjectIsNotNull("Property 'GameManagerFactory' has not been set.");
+        value.VerifyThatObjectIsNotNull("Property 'GameManagerFactory' has set to null.");
         this.gameManagerFactory = value;
       }
     }
@@ -74,7 +75,7 @@ namespace Jabberwocky.SoC.Service
       get { return this.playerCardRepository; }
       set
       {
-        value.VerifyThatObjectIsNotNull("Property 'PlayerCardRepository' has not been set.");
+        value.VerifyThatObjectIsNotNull("Property 'PlayerCardRepository' has been set to null.");
         this.playerCardRepository = value;
       }
     }
@@ -84,7 +85,7 @@ namespace Jabberwocky.SoC.Service
       get { return this.gameSessionTokenFactory; }
       set
       {
-        value.VerifyThatObjectIsNotNull("Property 'GameSessionTokenFactory' has not been set.");
+        value.VerifyThatObjectIsNotNull("Property 'GameSessionTokenFactory' has been set to null.");
         this.gameSessionTokenFactory = value;
       }
     }
@@ -93,7 +94,8 @@ namespace Jabberwocky.SoC.Service
     #region Methods
     public void AddPlayer(IServiceProviderCallback client, String username)
     {
-      // TODO: Check for null reference
+      client.VerifyThatObjectIsNotNull("Parameter 'client' is null.");
+      username.VerifyThatStringIsNotNullAndNotEmpty("Parameter 'username' is null or empty.");
       this.waitingForGameSessionQueue.Enqueue(new AddPlayerMessage(client, username));
     }
 
@@ -108,12 +110,6 @@ namespace Jabberwocky.SoC.Service
       var gameSession = this.GetGameSession(gameToken);
       gameSession.ConfirmTownPlacement(client, positionIndex);
     }
-
-    /*public States GameSessionState(Guid gameToken)
-    {
-      var gameSession = this.GetGameSession(gameToken);
-      return gameSession.State;
-    }*/
 
     public void ProcessPersonalMessage(Guid gameToken, IServiceProviderCallback client, String text)
     {
