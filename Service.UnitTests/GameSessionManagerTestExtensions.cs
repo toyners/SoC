@@ -6,9 +6,12 @@ namespace Service.UnitTests
   using System.Threading;
   using Jabberwocky.SoC.Library;
   using Jabberwocky.SoC.Service;
+  using Jabberwocky.Toolkit.Logging;
 
   public static class GameSessionManagerTestExtensions
   {
+    public const String GameSessionManagerUnitTestLoggingPath = @"C:\Projects\SOC_Logging\GameSessionManager_UnitTests\";
+     
     /// <summary>
     /// Add mock clients to the game session manager.
     /// </summary>
@@ -30,12 +33,18 @@ namespace Service.UnitTests
     /// <returns>Game Session Manager instance.</returns>
     public static GameSessionManager CreateGameSessionManagerForTest(UInt32 maximumPlayerCount)
     {
-      return new GameSessionManager(maximumPlayerCount, @"C:\Projects\SOC_Logging\");
+      return new GameSessionManager(maximumPlayerCount, GameSessionManagerUnitTestLoggingPath);
     }
 
     public static GameSessionManager AddGameManagerFactory(this GameSessionManager gameSessionManager, IGameManagerFactory gameManagerFactory)
     {
       gameSessionManager.GameManagerFactory = gameManagerFactory;
+      return gameSessionManager;
+    }
+
+    public static GameSessionManager AddLoggerFactory(this GameSessionManager gameSessionManager, ILoggerFactory loggerFactory)
+    {
+      gameSessionManager.LoggerFactory = loggerFactory;
       return gameSessionManager;
     }
 

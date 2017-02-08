@@ -74,16 +74,6 @@ namespace Jabberwocky.SoC.Service
       }
     }
 
-    public IPlayerCardRepository PlayerCardRepository
-    {
-      get { return this.playerCardRepository; }
-      set
-      {
-        value.VerifyThatObjectIsNotNull("Property 'PlayerCardRepository' has been set to null.");
-        this.playerCardRepository = value;
-      }
-    }
-
     public IGameSessionTokenFactory GameSessionTokenFactory
     {
       get { return this.gameSessionTokenFactory; }
@@ -91,6 +81,26 @@ namespace Jabberwocky.SoC.Service
       {
         value.VerifyThatObjectIsNotNull("Property 'GameSessionTokenFactory' has been set to null.");
         this.gameSessionTokenFactory = value;
+      }
+    }
+
+    public ILoggerFactory LoggerFactory
+    {
+      get { return this.loggerFactory; }
+      set
+      {
+        value.VerifyThatObjectIsNotNull("Property 'LoggerFactory' has been set to null.");
+        this.loggerFactory = value;
+      }
+    }
+
+    public IPlayerCardRepository PlayerCardRepository
+    {
+      get { return this.playerCardRepository; }
+      set
+      {
+        value.VerifyThatObjectIsNotNull("Property 'PlayerCardRepository' has been set to null.");
+        this.playerCardRepository = value;
       }
     }
     #endregion

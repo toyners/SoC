@@ -7,6 +7,7 @@ namespace Service.UnitTests
   using System.Threading;
   using Jabberwocky.SoC.Library;
   using Jabberwocky.SoC.Service;
+  using Jabberwocky.Toolkit.IO;
   using Messages;
   using NSubstitute;
   using NUnit.Framework;
@@ -25,6 +26,7 @@ namespace Service.UnitTests
     public void SetupBeforeEachTest()
     {
       TestClient.SetupBeforeEachTest();
+      DirectoryOperations.EnsureDirectoryIsEmpty(GameSessionManagerTestExtensions.GameSessionManagerUnitTestLoggingPath);
     }
 
     [Test]
