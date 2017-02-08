@@ -37,14 +37,14 @@ namespace Service.UnitTests
         gameSessionManager = GameSessionManagerTestExtensions.CreateGameSessionManagerForTest(4)
           .WaitUntilGameSessionManagerHasStarted();
 
-        var testClient = new TestClient("Test Client 1", gameSessionManager);
+        var testPlayer1 = new TestClient(TestPlayer1UserName, gameSessionManager);
 
         // Act
-        gameSessionManager.AddTestClients(testClient);
+        gameSessionManager.AddTestClients(testPlayer1);
         Thread.Sleep(1000);
 
         // Assert
-        var receivedMessage = testClient.GetFirstMessage();
+        var receivedMessage = testPlayer1.GetLastMessage();
         receivedMessage.ShouldBeOfType<ConfirmGameJoinedMessage>();
         ((ConfirmGameJoinedMessage)receivedMessage).GameState.ShouldBe(GameSessionManager.GameStates.Lobby);
       }
@@ -203,13 +203,8 @@ namespace Service.UnitTests
         var gameInitializationData = GameInitializationDataBuilder.Build(new Board(BoardSizes.Standard));
         var expectedMessage = new InitializeGameMessage(gameInitializationData);
 
-        this.WaitUntilClientsReceiveMessage(expectedMessage, testPlayer1, testPlayer2, testPlayer3, testPlayer4);
-
         // Assert
-        testPlayer1.GetLastMessage().IsSameAs(expectedMessage).ShouldBeTrue();
-        testPlayer2.GetLastMessage().IsSameAs(expectedMessage).ShouldBeTrue();
-        testPlayer3.GetLastMessage().IsSameAs(expectedMessage).ShouldBeTrue();
-        testPlayer4.GetLastMessage().IsSameAs(expectedMessage).ShouldBeTrue();
+        this.WaitUntilClientsReceiveMessage(expectedMessage, testPlayer1, testPlayer2, testPlayer3, testPlayer4);
       }
       finally
       {

@@ -118,7 +118,7 @@ namespace Jabberwocky.SoC.Service
     public void ProcessPersonalMessage(Guid gameToken, IServiceProviderCallback client, String text)
     {
       var gameSession = this.GetGameSession(gameToken);
-      gameSession.ProcessPersonalMessage(client, text);
+      gameSession.QueuePersonalMessage(client, text);
     }
 
     public void RemoveClient(Guid gameToken, IServiceProviderCallback client)
@@ -288,8 +288,10 @@ namespace Jabberwocky.SoC.Service
       private IPlayerCardRepository playerCardRepository;
       private Dictionary<IServiceProviderCallback, PlayerData> playerCards;
       private Task gameTask;
-      private MessagePump messagePump;
+      //private MessagePump messagePump;
+      private ConcurrentQueue<GameSessionMessage> messageQueue;
       private ILoggerFactory loggerFactory;
+      private HashSet<IServiceProviderCallback> clientsThatReceivedMessages;
       #endregion
 
       #region Construction
@@ -299,11 +301,13 @@ namespace Jabberwocky.SoC.Service
         this.GameSessionToken = gameSessionToken;
         this.gameManager = gameManager;
         this.clients = new IServiceProviderCallback[maxPlayerCount];
-        this.messagePump = new MessagePump();
+        //this.messagePump = new MessagePump();
         this.cancellationToken = cancellationToken;
         this.playerCardRepository = playerCardRepository;
         this.playerCards = new Dictionary<IServiceProviderCallback, PlayerData>();
+        this.messageQueue = new ConcurrentQueue<GameSessionMessage>();
         this.loggerFactory = loggerFactory;
+        this.clientsThatReceivedMessages = new HashSet<IServiceProviderCallback>();
       }
       #endregion
 
@@ -312,11 +316,6 @@ namespace Jabberwocky.SoC.Service
 
       public GameSessionStates GameSessionState { get; private set; }
 
-      /*public Boolean NeedsClient
-      {
-        get { return this.clientCount < this.clients.Length; }
-      }*/
-
       public States State { get; private set; }
       #endregion
 
@@ -324,36 +323,36 @@ namespace Jabberwocky.SoC.Service
       public void AddPlayer(AddPlayerMessage addPlayerMessage)
       {
         this.GameSessionState = GameSessionStates.AddingPlayer;
-        this.messagePump.Enqueue(addPlayerMessage);
+        this.messageQueue.Enqueue(addPlayerMessage);
       }
 
       public void ConfirmGameInitialized(IServiceProviderCallback client)
       {
         var message = new GameSessionMessage(GameSessionMessage.Types.ConfirmGameInitialized, client);
-        this.messagePump.Enqueue(message);
+        this.messageQueue.Enqueue(message);
       }
 
       public void ConfirmTownPlacement(IServiceProviderCallback client, UInt32 positionIndex)
       {
         var message = new PlaceTownMessage(client, positionIndex);
-        this.messagePump.Enqueue(message);
+        this.messageQueue.Enqueue(message);
       }
 
       public void LaunchGame(IServiceProviderCallback client)
       {
         var message = new LaunchGameMessage(client);
-        this.messagePump.Enqueue(message);
+        this.messageQueue.Enqueue(message);
       }
 
-      public void ProcessPersonalMessage(IServiceProviderCallback client, String text)
+      public void QueuePersonalMessage(IServiceProviderCallback client, String text)
       {
         var message = new PersonalMessage(client, text);
-        this.messagePump.Enqueue(message);
+        this.messageQueue.Enqueue(message);
       }
 
       public void RemoveClient(RemovePlayerMessage removePlayerMessage)
       {
-        this.messagePump.Enqueue(removePlayerMessage);
+        this.messageQueue.Enqueue(removePlayerMessage);
       }
 
       public void Start()
@@ -371,26 +370,39 @@ namespace Jabberwocky.SoC.Service
               logger.Message("Started.");
               logger.Message("State: " + this.State + ", GameState: " + this.GameState);
 
-              this.WaitForAllPlayersToJoin();
-
-              this.SendConfirmGameSessionReadyToLaunchMessage();
-
-              this.WaitForAllGameLaunchMessages();
-
-              this.SendGameInitializationData();
-
-              GameSessionMessage message;
               while (true)
               {
-                if (this.messagePump.TryDequeue(GameSessionMessage.Types.Personal, out message))
+                this.cancellationToken.ThrowIfCancellationRequested();
+
+                GameSessionMessage message;
+                if (this.messageQueue.IsEmpty || !this.messageQueue.TryDequeue(out message))
                 {
-                  var personalMessage = (PersonalMessage)message;
-                  var playerData = this.playerCards[personalMessage.Client];
-                  this.SendPersonalMessageToClients(personalMessage.Client, playerData.Username, personalMessage.Text);
+                  Thread.Sleep(50);
+                  continue;
                 }
 
-                this.cancellationToken.ThrowIfCancellationRequested();
-                Thread.Sleep(50);
+                logger.Message("Message of type " + message.Type + " received.");
+
+                switch (message.Type)
+                {
+                  case GameSessionMessage.Types.AddPlayer:
+                  {
+                    this.ProcessAddPlayerMessage((AddPlayerMessage)message);
+                    break;
+                  }
+
+                  case GameSessionMessage.Types.LaunchGame:
+                  {
+                    this.ProcessLaunchGameMessage((LaunchGameMessage)message);
+                    break;
+                  }
+
+                  case GameSessionMessage.Types.Personal:
+                  {
+                    this.ProcessPersonalMessage((PersonalMessage)message);
+                    break;
+                  }
+                }
               }
             }
             catch (OperationCanceledException)
@@ -412,7 +424,7 @@ namespace Jabberwocky.SoC.Service
         });
       }
 
-      public void StartGame()
+      /*public void StartGame()
       {
         this.gameTask = Task.Factory.StartNew(() =>
         {
@@ -461,9 +473,9 @@ namespace Jabberwocky.SoC.Service
             this.State = States.Stopped;
           }
         });
-      }
+      }*/
 
-      private void AddPlayer(IServiceProviderCallback client, String username)
+      private Boolean AddPlayer(IServiceProviderCallback client, String username)
       {
         for (var i = 0; i < this.clients.Length; i++)
         {
@@ -486,17 +498,10 @@ namespace Jabberwocky.SoC.Service
 
           this.playerCards.Add(client, playerCard);
 
-          if (this.currentPlayerCount == this.clients.Length)
-          {
-            this.GameSessionState = GameSessionStates.Full;
-          }
-          else
-          {
-            this.GameSessionState = GameSessionStates.AwaitingPlayer;
-          }
-
-          return;
+          return this.currentPlayerCount == this.clients.Length;
         }
+
+        return true;
       }
 
       private void PlaceTownsInFirstPassOrder(UInt32[] playerIndexes)
@@ -508,7 +513,7 @@ namespace Jabberwocky.SoC.Service
 
           this.clients[playerIndex].ChooseTownLocation();
           Debug.Print("First pass: Choose town message sent for Index " + playerIndex);
-          while (!this.messagePump.TryDequeue(GameSessionMessage.Types.RequestTownPlacement, out message))
+          while (!this.messageQueue.TryDequeue(out message))
           {
             this.cancellationToken.ThrowIfCancellationRequested();
 
@@ -541,7 +546,7 @@ namespace Jabberwocky.SoC.Service
 
           this.clients[playerIndex].ChooseTownLocation();
           Debug.Print("Second pass: Choose town message sent for Index " + playerIndex);
-          while (!this.messagePump.TryDequeue(GameSessionMessage.Types.RequestTownPlacement, out message))
+          while (!this.messageQueue.TryDequeue(out message))
           {
             this.cancellationToken.ThrowIfCancellationRequested();
 
@@ -562,6 +567,40 @@ namespace Jabberwocky.SoC.Service
             this.clients[clientIndex].TownPlacedDuringSetup(placeTownMessage.Location);
           }
         }
+      }
+
+      private void ProcessAddPlayerMessage(AddPlayerMessage addPlayerMessage)
+      {
+        if (this.AddPlayer(addPlayerMessage.Client, addPlayerMessage.Username))
+        {
+          this.GameSessionState = GameSessionStates.Full;
+          this.SendConfirmGameSessionReadyToLaunchMessage();
+        }
+        else
+        {
+          this.GameSessionState = GameSessionStates.AwaitingPlayer;
+        }
+      }
+
+      private void ProcessLaunchGameMessage(LaunchGameMessage message)
+      {
+        if (!this.clientsThatReceivedMessages.Contains(message.Client))
+        {
+          this.clientsThatReceivedMessages.Add(message.Client);
+        }
+
+        var haveReceivedMessagesFromAllClients = (this.clientsThatReceivedMessages.Count == this.clients.Length);
+        if (haveReceivedMessagesFromAllClients)
+        {
+          this.clientsThatReceivedMessages.Clear();
+          this.SendGameInitializationData();
+        }
+      }
+
+      private void ProcessPersonalMessage(PersonalMessage message)
+      {
+        var playerData = this.playerCards[message.Client];
+        this.SendPersonalMessageToClients(message.Client, playerData.Username, message.Text);
       }
 
       private void RemovePlayer(IServiceProviderCallback client)
@@ -644,55 +683,6 @@ namespace Jabberwocky.SoC.Service
         }
       }
 
-      private void WaitForAllGameLaunchMessages()
-      {
-        GameSessionMessage message;
-        var receivedMessages = new HashSet<IServiceProviderCallback>();
-        while (receivedMessages.Count < this.clients.Length)
-        {
-          if (this.messagePump.TryDequeue(GameSessionMessage.Types.LaunchGame, out message))
-          {
-            var client = message.Client;
-            if (receivedMessages.Contains(client))
-            {
-              continue;
-            }
-
-            receivedMessages.Add(client);
-          }
-
-          this.cancellationToken.ThrowIfCancellationRequested();
-          Thread.Sleep(50);
-        }
-
-        this.GameState = GameStates.Setup;
-      }
-
-      private void WaitForAllPlayersToJoin()
-      {
-        GameSessionMessage message;
-        while (this.GameSessionState != GameSessionStates.Full)
-        {
-          if (this.messagePump.TryDequeue(GameSessionMessage.Types.AddPlayer | GameSessionMessage.Types.Personal, out message))
-          {
-            if (message.Type == GameSessionMessage.Types.AddPlayer)
-            {
-              var addPlayerMessage = (AddPlayerMessage)message;
-              this.AddPlayer(addPlayerMessage.Client, addPlayerMessage.Username);
-            }
-            else if (message.Type == GameSessionMessage.Types.Personal)
-            {
-              var personalMessage = (PersonalMessage)message;
-              var playerCard = this.playerCards[personalMessage.Client];
-              this.SendPersonalMessageToClients(personalMessage.Client, playerCard.Username, personalMessage.Text);
-            }
-          }
-
-          this.cancellationToken.ThrowIfCancellationRequested();
-          Thread.Sleep(50);
-        }
-      }
-
       private void SendPersonalMessageToClients(IServiceProviderCallback sendingClient, String sender, String text)
       {
         for (int i = 0; i < this.clients.Length; i++)
@@ -719,37 +709,6 @@ namespace Jabberwocky.SoC.Service
           {
             return true;
           }
-        }
-
-        return false;
-      }
-      #endregion
-    }
-
-    private class MessagePump
-    {
-      #region Fields
-      private ConcurrentQueue<GameSessionMessage> messages = new ConcurrentQueue<GameSessionMessage>();
-      #endregion
-
-      #region Methods
-      public void Enqueue(GameSessionMessage message)
-      {
-        this.messages.Enqueue(message);
-      }
-
-      public Boolean TryDequeue(GameSessionMessage.Types messageType, out GameSessionMessage message)
-      {
-        message = null;
-        if (this.messages.TryDequeue(out message))
-        {
-          if ((message.Type & messageType) == message.Type)
-          {
-            return true;
-          }
-
-          var exceptionText = String.Format("Message found with type {0}. Expected type {1}", message.Type, messageType);
-          throw new Exception(exceptionText);
         }
 
         return false;
