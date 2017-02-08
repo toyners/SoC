@@ -360,12 +360,16 @@ namespace Jabberwocky.SoC.Service
       {
         this.gameTask = Task.Factory.StartNew(() =>
         {
-          using (var logger = this.loggerFactory.Create(null))
+          var fileName = this.GameSessionToken + "_" + DateTime.Now.ToString("dd-MM-yyyy_HH-mm-ss") + ".txt";
+          using (var logger = this.loggerFactory.Create(fileName))
           {
             try
             {
               this.State = States.Running;
               this.GameState = GameStates.Lobby;
+
+              logger.Message("Started.");
+              logger.Message("State: " + this.State + ", GameState: " + this.GameState);
 
               this.WaitForAllPlayersToJoin();
 
@@ -393,10 +397,16 @@ namespace Jabberwocky.SoC.Service
             {
               // Shutting down - ignore exception
               this.State = States.Stopping;
+              logger.Message("Stopping.");
+            }
+            catch (Exception exception)
+            {
+              logger.Exception(exception.Message);
             }
             finally
             {
               this.State = States.Stopped;
+              logger.Message("Stopped.");
             }
           }
         });
