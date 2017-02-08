@@ -36,8 +36,8 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Jabberwocky.Toolkit, Version=1.0.7.3, Culture=neutral, PublicKeyToken=8994d5f40ad2f5fb, processorArchitecture=MSIL">
-      <HintPath>..\packages\Jabberwocky.Toolkit.1.0.7.3\lib\net45\Jabberwocky.Toolkit.dll</HintPath>
+    <Reference Include="Jabberwocky.Toolkit, Version=1.0.7.5, Culture=neutral, PublicKeyToken=8994d5f40ad2f5fb, processorArchitecture=MSIL">
+      <HintPath>..\packages\Jabberwocky.Toolkit.1.0.7.5\lib\net45\Jabberwocky.Toolkit.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
@@ -56,6 +56,8 @@
   <ItemGroup>
     <Compile Include="GameSessionTokenFactory.cs" />
     <Compile Include="IGameSessionTokenFactory.cs" />
+    <Compile Include="Logging\Logger.cs" />
+    <Compile Include="Logging\LogFileFactory.cs" />
     <Compile Include="Messages\AddPlayerMessage.cs" />
     <Compile Include="Messages\RemovePlayerMessage.cs" />
     <Compile Include="Messages\LaunchGameMessage.cs" />
@@ -70,7 +72,7 @@
     <Compile Include="GameSessionManager.cs" />
     <Compile Include="IServiceProviderCallback.cs" />
     <Compile Include="IServiceProvider.cs" />
-    <Compile Include="Logging\Logger.cs" />
+    <Compile Include="Logging\ServiceLogger.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ServiceProvider.cs" />
   </ItemGroup>

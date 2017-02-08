@@ -8,6 +8,7 @@ namespace Jabberwocky.SoC.Service
   using System.Threading;
   using System.Threading.Tasks;
   using Library;
+  using Logging;
   using Messages;
   using Toolkit.Logging;
   using Toolkit.Object;
@@ -41,10 +42,11 @@ namespace Jabberwocky.SoC.Service
     private IGameManagerFactory gameManagerFactory;
     private CancellationTokenSource cancellationTokenSource;
     private IGameSessionTokenFactory gameSessionTokenFactory;
+    private ILoggerFactory loggerFactory;
     #endregion
 
     #region Construction
-    public GameSessionManager(UInt32 maximumPlayerCount)
+    public GameSessionManager(UInt32 maximumPlayerCount, String logFileBasePath)
     {
       this.clients = new List<IServiceProviderCallback>();
       this.waitingForGameSessionQueue = new ConcurrentQueue<AddPlayerMessage>();
@@ -54,6 +56,7 @@ namespace Jabberwocky.SoC.Service
       this.gameManagerFactory = new GameManagerFactory();
       this.gameSessionTokenFactory = new GameSessionTokenFactory();
       this.playerCardRepository = new PlayerCardRepository();
+      this.loggerFactory = new LogFileFactory(logFileBasePath);
       this.State = States.Stopped;
     }
     #endregion
@@ -155,7 +158,7 @@ namespace Jabberwocky.SoC.Service
     private void AddToNewGameSession(AddPlayerMessage addPlayerMessage, CancellationToken cancellationToken)
     {
       var gameSessionToken = this.gameSessionTokenFactory.CreateGameSessionToken();
-      var gameSession = new GameSession(this.gameManagerFactory.Create(), this.maximumPlayerCount, this.playerCardRepository, gameSessionToken,  cancellationToken, null);
+      var gameSession = new GameSession(this.gameManagerFactory.Create(), this.maximumPlayerCount, this.playerCardRepository, gameSessionToken,  cancellationToken, this.loggerFactory);
       gameSession.Start();
       gameSession.AddPlayer(addPlayerMessage);
       this.gameSessions.Add(gameSessionToken, gameSession);
@@ -286,11 +289,11 @@ namespace Jabberwocky.SoC.Service
       private Dictionary<IServiceProviderCallback, PlayerData> playerCards;
       private Task gameTask;
       private MessagePump messagePump;
-      private ILogger logger;
+      private ILoggerFactory loggerFactory;
       #endregion
 
       #region Construction
-      public GameSession(IGameManager gameManager, UInt32 maxPlayerCount, IPlayerCardRepository playerCardRepository, Guid gameSessionToken, CancellationToken cancellationToken, ILogger logger)
+      public GameSession(IGameManager gameManager, UInt32 maxPlayerCount, IPlayerCardRepository playerCardRepository, Guid gameSessionToken, CancellationToken cancellationToken, ILoggerFactory loggerFactory)
       {
         // No parameter checking done because this is not a public interface.
         this.GameSessionToken = gameSessionToken;
@@ -300,7 +303,7 @@ namespace Jabberwocky.SoC.Service
         this.cancellationToken = cancellationToken;
         this.playerCardRepository = playerCardRepository;
         this.playerCards = new Dictionary<IServiceProviderCallback, PlayerData>();
-        this.logger = logger;
+        this.loggerFactory = loggerFactory;
       }
       #endregion
 
@@ -357,41 +360,44 @@ namespace Jabberwocky.SoC.Service
       {
         this.gameTask = Task.Factory.StartNew(() =>
         {
-          try
+          using (var logger = this.loggerFactory.Create(null))
           {
-            this.State = States.Running;
-            this.GameState = GameStates.Lobby;
-
-            this.WaitForAllPlayersToJoin();
-            
-            this.SendConfirmGameSessionReadyToLaunchMessage();
-
-            this.WaitForAllGameLaunchMessages();
-
-            this.SendGameInitializationData();
-
-            GameSessionMessage message;
-            while (true)
+            try
             {
-              if (this.messagePump.TryDequeue(GameSessionMessage.Types.Personal, out message))
-              {
-                var personalMessage = (PersonalMessage)message;
-                var playerData = this.playerCards[personalMessage.Client];
-                this.SendPersonalMessageToClients(personalMessage.Client, playerData.Username, personalMessage.Text);
-              }
+              this.State = States.Running;
+              this.GameState = GameStates.Lobby;
 
-              this.cancellationToken.ThrowIfCancellationRequested();
-              Thread.Sleep(50);
+              this.WaitForAllPlayersToJoin();
+
+              this.SendConfirmGameSessionReadyToLaunchMessage();
+
+              this.WaitForAllGameLaunchMessages();
+
+              this.SendGameInitializationData();
+
+              GameSessionMessage message;
+              while (true)
+              {
+                if (this.messagePump.TryDequeue(GameSessionMessage.Types.Personal, out message))
+                {
+                  var personalMessage = (PersonalMessage)message;
+                  var playerData = this.playerCards[personalMessage.Client];
+                  this.SendPersonalMessageToClients(personalMessage.Client, playerData.Username, personalMessage.Text);
+                }
+
+                this.cancellationToken.ThrowIfCancellationRequested();
+                Thread.Sleep(50);
+              }
             }
-          }
-          catch (OperationCanceledException)
-          {
-            // Shutting down - ignore exception
-            this.State = States.Stopping;
-          }
-          finally
-          {
-            this.State = States.Stopped;
+            catch (OperationCanceledException)
+            {
+              // Shutting down - ignore exception
+              this.State = States.Stopping;
+            }
+            finally
+            {
+              this.State = States.Stopped;
+            }
           }
         });
       }

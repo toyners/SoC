@@ -30,7 +30,7 @@ namespace Service.UnitTests
     /// <returns>Game Session Manager instance.</returns>
     public static GameSessionManager CreateGameSessionManagerForTest(UInt32 maximumPlayerCount)
     {
-      return new GameSessionManager(maximumPlayerCount);
+      return new GameSessionManager(maximumPlayerCount, @"C:\Projects\SOC_Logging\");
     }
 
     public static GameSessionManager AddGameManagerFactory(this GameSessionManager gameSessionManager, IGameManagerFactory gameManagerFactory)

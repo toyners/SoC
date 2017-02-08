@@ -17,7 +17,7 @@ namespace Jabberwocky.SoC.Service
     #region Construction
     public ServiceProvider()
     {
-      this.gameSessionManager = new GameSessionManager(1);
+      this.gameSessionManager = new GameSessionManager(1, @"C:\Projects\SOC_Logging\");
       this.gameSessionManager.PlayerCardRepository = new PlayerCardRepository();
       this.gameSessionManager.Start();
     }
@@ -42,14 +42,14 @@ namespace Jabberwocky.SoC.Service
     {
       var client = OperationContext.Current.GetCallbackChannel<IServiceProviderCallback>();
       this.gameSessionManager.AddPlayer(client, username);
-      Logger.Message("Client joined game");
+      ServiceLogger.Message("Client joined game");
     }
 
     public void TryLeaveGame(Guid gameToken)
     {
       var client = OperationContext.Current.GetCallbackChannel<IServiceProviderCallback>();
       this.gameSessionManager.RemoveClient(gameToken, client);
-      Logger.Message("Client left game");
+      ServiceLogger.Message("Client left game");
     }
     #endregion
   }
