@@ -33,17 +33,24 @@ namespace Jabberwocky.SoC.Service.Logging
 
     public void Exception(String message)
     {
-      throw new NotImplementedException();
+      this.sw.WriteLine("EXCEPTION: " + message);
     }
 
     public void Message(String message)
     {
-      throw new NotImplementedException();
+      this.Message(message, true);
     }
 
     public void Message(String message, Boolean lineBreak)
     {
-      throw new NotImplementedException();
+      if (lineBreak)
+      {
+        this.sw.WriteLine(message);
+      }
+      else
+      {
+        this.sw.Write(message);
+      }
     }
 
     protected virtual void Dispose(bool disposing)
