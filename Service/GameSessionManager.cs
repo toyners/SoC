@@ -415,6 +415,8 @@ namespace Jabberwocky.SoC.Service
 
                   case GameSessionMessage.Types.RemovePlayer:
                   {
+                    var removePlayerMessage = message as RemovePlayerMessage;
+                    this.RemovePlayer(removePlayerMessage.Client);
                     break;
                   }
 
