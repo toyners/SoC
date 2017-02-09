@@ -412,6 +412,17 @@ namespace Jabberwocky.SoC.Service
                     this.ProcessPersonalMessage((PersonalMessage)message);
                     break;
                   }
+
+                  case GameSessionMessage.Types.RemovePlayer:
+                  {
+                    break;
+                  }
+
+                  default:
+                  {
+                    logger.Exception("EXCEPTION: Unknown message type " + message.Type);
+                    break;
+                  }
                 }
               }
             }
