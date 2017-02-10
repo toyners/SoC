@@ -298,7 +298,6 @@ namespace Jabberwocky.SoC.Service
       private IPlayerCardRepository playerCardRepository;
       private Dictionary<IServiceProviderCallback, PlayerData> playerCards;
       private Task gameTask;
-      //private MessagePump messagePump;
       private ConcurrentQueue<GameSessionMessage> messageQueue;
       private ILoggerFactory loggerFactory;
       private HashSet<IServiceProviderCallback> clientsThatReceivedMessages;
@@ -311,7 +310,6 @@ namespace Jabberwocky.SoC.Service
         this.GameSessionToken = gameSessionToken;
         this.gameManager = gameManager;
         this.clients = new IServiceProviderCallback[maxPlayerCount];
-        //this.messagePump = new MessagePump();
         this.cancellationToken = cancellationToken;
         this.playerCardRepository = playerCardRepository;
         this.playerCards = new Dictionary<IServiceProviderCallback, PlayerData>();

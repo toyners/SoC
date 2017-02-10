@@ -628,7 +628,13 @@ namespace Service.UnitTests
 
         gameSessionManager = GameSessionManagerTestExtensions.CreateGameSessionManagerForTest(4);
 
-        var testPlayers = new[] { new TestClient(TestPlayer1UserName, gameSessionManager), new TestClient(TestPlayer2UserName, gameSessionManager), new TestClient(TestPlayer3UserName, gameSessionManager), new TestClient(TestPlayer4UserName, gameSessionManager) };
+        var testPlayers = new[] 
+        {
+          new TestClient(TestPlayer1UserName, gameSessionManager),
+          new TestClient(TestPlayer2UserName, gameSessionManager),
+          new TestClient(TestPlayer3UserName, gameSessionManager),
+          new TestClient(TestPlayer4UserName, gameSessionManager)
+        };
 
         var testPlayer1 = testPlayers[0];
         var testPlayer2 = testPlayers[1];
