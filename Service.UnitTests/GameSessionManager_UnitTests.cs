@@ -512,12 +512,8 @@ namespace Service.UnitTests
 
         gameSessionManager.AddTestClients(testPlayer1, testPlayer2, testPlayer3, testPlayer4);
 
-        this.WaitUntilClientsReceiveMessageOfType(typeof(GameSessionReadyToLaunchMessage), testPlayer1, testPlayer2, testPlayer3, testPlayer4);
-
-        testPlayer1.SendLaunchGameMessage();
-        testPlayer2.SendLaunchGameMessage();
-        testPlayer3.SendLaunchGameMessage();
-        testPlayer4.SendLaunchGameMessage();
+        this.WaitUntilClientsReceiveMessageOfType(typeof(GameSessionReadyToLaunchMessage), testPlayer1, testPlayer2, testPlayer3, testPlayer4)
+          .SendLaunchMessageFromClients(testPlayer1, testPlayer2, testPlayer3, testPlayer4);
 
         // Act
         testPlayer1.LeaveGame();
@@ -565,7 +561,7 @@ namespace Service.UnitTests
       }
     }
 
-    private void WaitUntilClientsReceiveMessageOfType(Type expectedMessageType, params TestClient[] testClients)
+    private GameSessionManager_UnitTests WaitUntilClientsReceiveMessageOfType(Type expectedMessageType, params TestClient[] testClients)
     {
       var stopWatch = new Stopwatch();
       stopWatch.Start();
@@ -596,6 +592,19 @@ namespace Service.UnitTests
         var exceptionMessage = String.Format("Timed out waiting for clients to receive message of type '{0}'", expectedMessageType);
         throw new TimeoutException(exceptionMessage);
       }
+
+      return this;
+    }
+
+    private GameSessionManager_UnitTests SendLaunchMessageFromClients(TestClient client, params TestClient[] clients)
+    {
+      client.SendLaunchGameMessage();
+      for (int i = 0; i < clients.Length; i++)
+      {
+        clients[i].SendLaunchGameMessage();
+      }
+
+      return this;
     }
 
     
@@ -633,14 +642,9 @@ namespace Service.UnitTests
 
         gameSessionManager.AddTestClients(testPlayer1, testPlayer2, testPlayer3, testPlayer4);
 
-        this.WaitUntilClientsReceiveMessageOfType(typeof(GameSessionReadyToLaunchMessage), testPlayer1, testPlayer2, testPlayer3, testPlayer4);
-
-        testPlayer1.SendLaunchGameMessage();
-        testPlayer2.SendLaunchGameMessage();
-        testPlayer3.SendLaunchGameMessage();
-        testPlayer4.SendLaunchGameMessage();
-
-        this.WaitUntilClientsReceiveMessageOfType(typeof(InitializeGameMessage), testPlayer1, testPlayer2, testPlayer3, testPlayer4);
+        this.WaitUntilClientsReceiveMessageOfType(typeof(GameSessionReadyToLaunchMessage), testPlayer1, testPlayer2, testPlayer3, testPlayer4)
+          .SendLaunchMessageFromClients(testPlayer1, testPlayer2, testPlayer3, testPlayer4)
+          .WaitUntilClientsReceiveMessageOfType(typeof(InitializeGameMessage), testPlayer1, testPlayer2, testPlayer3, testPlayer4);
 
         //this.ConfirmGameInitializedForClients(testPlayer1, testPlayer2, testPlayer3, testPlayer4);
 
