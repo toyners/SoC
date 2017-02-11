@@ -71,7 +71,7 @@
     <Compile Include="Messages\PlayerHasLeftGameMessage.cs" />
     <Compile Include="Messages\GameSessionReadyToLaunchMessage.cs" />
     <Compile Include="Messages\MessageBase.cs" />
-    <Compile Include="TestClientcs.cs" />
+    <Compile Include="TestClient.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

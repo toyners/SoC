@@ -80,6 +80,11 @@ namespace Service.UnitTests
       throw new NotImplementedException();
     }
 
+    public void ConfirmGameInitialized()
+    {
+      this.gameSessionManager.ConfirmGameInitialized(this.GameToken, this);
+    }
+
     public void ConfirmGameSessionJoined(Guid gameToken, GameSessionManager.GameStates gameState)
     {
       this.GameToken = gameToken;

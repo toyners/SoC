@@ -607,6 +607,17 @@ namespace Service.UnitTests
       return this;
     }
 
+    private GameSessionManager_UnitTests SendGameInitializationConfirmationFromClients(TestClient client, params TestClient[] clients)
+    {
+      client.ConfirmGameInitialized();
+      for (int i = 0; i < clients.Length; i++)
+      {
+        clients[i].ConfirmGameInitialized();
+      }
+
+      return this;
+    }
+
     
     [Test]
     [TestCase(new UInt32[] { 0u, 1u, 2u, 3u })]
@@ -626,7 +637,8 @@ namespace Service.UnitTests
         var mockGameManagerFactory = Substitute.For<IGameManagerFactory>();
         mockGameManagerFactory.Create().Returns(mockGameManager);
 
-        gameSessionManager = GameSessionManagerTestExtensions.CreateGameSessionManagerForTest(4);
+        gameSessionManager = GameSessionManagerTestExtensions.CreateGameSessionManagerForTest(4)
+          .WaitUntilGameSessionManagerHasStarted();
 
         var testPlayers = new[] 
         {
@@ -650,9 +662,8 @@ namespace Service.UnitTests
 
         this.WaitUntilClientsReceiveMessageOfType(typeof(GameSessionReadyToLaunchMessage), testPlayer1, testPlayer2, testPlayer3, testPlayer4)
           .SendLaunchMessageFromClients(testPlayer1, testPlayer2, testPlayer3, testPlayer4)
-          .WaitUntilClientsReceiveMessageOfType(typeof(InitializeGameMessage), testPlayer1, testPlayer2, testPlayer3, testPlayer4);
-
-        //this.ConfirmGameInitializedForClients(testPlayer1, testPlayer2, testPlayer3, testPlayer4);
+          .WaitUntilClientsReceiveMessageOfType(typeof(InitializeGameMessage), testPlayer1, testPlayer2, testPlayer3, testPlayer4)
+          .SendGameInitializationConfirmationFromClients(testPlayer1, testPlayer2, testPlayer3, testPlayer4);
 
         this.WaitUntilClientsReceiveMessageOfType(typeof(PlaceTownMessage), firstTestPlayer);
         gameSessionManager.ConfirmTownPlacement(firstTestPlayer.GameToken, firstTestPlayer, 0u);

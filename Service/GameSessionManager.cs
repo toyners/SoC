@@ -399,6 +399,11 @@ namespace Jabberwocky.SoC.Service
                     break;
                   }
 
+                  case GameSessionMessage.Types.ConfirmGameInitialized:
+                  {
+                    break;
+                  }
+
                   case GameSessionMessage.Types.LaunchGame:
                   {
                     this.ProcessLaunchGameMessage((LaunchGameMessage)message);
@@ -611,11 +616,17 @@ namespace Jabberwocky.SoC.Service
         }
 
         var haveReceivedMessagesFromAllClients = (this.clientsThatReceivedMessages.Count == this.clients.Length);
-        if (haveReceivedMessagesFromAllClients)
+        if (!haveReceivedMessagesFromAllClients)
         {
-          this.clientsThatReceivedMessages.Clear();
-          this.SendGameInitializationData();
+          return;
         }
+
+        this.clientsThatReceivedMessages.Clear();
+        this.SendGameInitializationData();
+
+        // Clients have all confirmed they received game initialization data
+        // Now ask each client to place a town in dice roll order.
+        this.PlaceTownsInFirstPassOrder(this.gameManager.GetFirstSetupPassOrder());
       }
 
       private void ProcessPersonalMessage(PersonalMessage message)
