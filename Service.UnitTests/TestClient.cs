@@ -70,6 +70,11 @@ namespace Service.UnitTests
       return messages[messages.Length - 1];
     }
 
+    public void JoinGame()
+    {
+      this.gameSessionManager.AddPlayer(this, this.Username);
+    }
+
     public void LeaveGame()
     {
       this.gameSessionManager.RemoveClient(this.GameToken, this);
