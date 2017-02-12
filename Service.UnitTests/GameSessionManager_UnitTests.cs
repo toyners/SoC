@@ -528,6 +528,94 @@ namespace Service.UnitTests
       }
     }
 
+    [Test]
+    [TestCase(new UInt32[] { 0u, 1u, 2u, 3u })]
+    [TestCase(new UInt32[] { 3u, 0u, 1u, 2u })]
+    [TestCase(new UInt32[] { 2u, 3u, 0u, 1u })]
+    [TestCase(new UInt32[] { 1u, 2u, 3u, 0u })]
+    public void ClientsReceivePlaceTownMessageInCorrectOrder(UInt32[] firstSetupPassOrder)
+    {
+      GameSessionManager gameSessionManager = null;
+      try
+      {
+        var board = new Board(BoardSizes.Standard);
+        var mockGameManager = Substitute.For<IGameManager>();
+        mockGameManager.GetFirstSetupPassOrder().Returns(firstSetupPassOrder);
+        mockGameManager.Board.Returns(board);
+
+        var mockGameManagerFactory = Substitute.For<IGameManagerFactory>();
+        mockGameManagerFactory.Create().Returns(mockGameManager);
+
+        gameSessionManager = GameSessionManagerTestExtensions.CreateGameSessionManagerForTest(4)
+          .AddGameManagerFactory(mockGameManagerFactory)
+          .WaitUntilGameSessionManagerHasStarted();
+
+        var testPlayers = new[]
+        {
+          new TestClient(TestPlayer1UserName, gameSessionManager),
+          new TestClient(TestPlayer2UserName, gameSessionManager),
+          new TestClient(TestPlayer3UserName, gameSessionManager),
+          new TestClient(TestPlayer4UserName, gameSessionManager)
+        };
+
+        var testPlayer1 = testPlayers[0];
+        var testPlayer2 = testPlayers[1];
+        var testPlayer3 = testPlayers[2];
+        var testPlayer4 = testPlayers[3];
+
+        var firstTestPlayer = testPlayers[firstSetupPassOrder[0]];
+        var secondTestPlayer = testPlayers[firstSetupPassOrder[1]];
+        var thirdTestPlayer = testPlayers[firstSetupPassOrder[2]];
+        var fourthTestPlayer = testPlayers[firstSetupPassOrder[3]];
+
+        gameSessionManager.AddTestClients(testPlayer1, testPlayer2, testPlayer3, testPlayer4);
+
+        this.WaitUntilClientsReceiveMessageOfType(typeof(GameSessionReadyToLaunchMessage), testPlayer1, testPlayer2, testPlayer3, testPlayer4);
+        this.SendLaunchMessageFromClients(testPlayer1, testPlayer2, testPlayer3, testPlayer4);
+        this.WaitUntilClientsReceiveMessageOfType(typeof(InitializeGameMessage), testPlayer1, testPlayer2, testPlayer3, testPlayer4);
+        this.SendGameInitializationConfirmationFromClients(testPlayer1, testPlayer2, testPlayer3, testPlayer4);
+        this.WaitUntilClientsReceiveMessageOfType(typeof(PlaceTownMessage), firstTestPlayer);
+        this.SendTownPlacementFromClient(firstTestPlayer, 0u);
+        this.WaitUntilClientsReceiveMessageOfType(typeof(PlaceTownMessage), secondTestPlayer);
+        this.SendTownPlacementFromClient(secondTestPlayer, 10u);
+        this.WaitUntilClientsReceiveMessageOfType(typeof(PlaceTownMessage), thirdTestPlayer);
+        this.SendTownPlacementFromClient(thirdTestPlayer, 20u);
+        this.WaitUntilClientsReceiveMessageOfType(typeof(PlaceTownMessage), fourthTestPlayer);
+      }
+      finally
+      {
+        gameSessionManager.WaitUntilGameSessionManagerHasStopped();
+      }
+    }
+
+    private GameSessionManager_UnitTests SendTownPlacementFromClient(TestClient client, UInt32 positionIndex)
+    {
+      client.SendTownLocation(positionIndex);
+      return this;
+    }
+
+    private GameSessionManager_UnitTests SendLaunchMessageFromClients(TestClient client, params TestClient[] clients)
+    {
+      client.SendLaunchGameMessage();
+      for (int i = 0; i < clients.Length; i++)
+      {
+        clients[i].SendLaunchGameMessage();
+      }
+
+      return this;
+    }
+
+    private GameSessionManager_UnitTests SendGameInitializationConfirmationFromClients(TestClient client, params TestClient[] clients)
+    {
+      client.ConfirmGameInitialized();
+      for (int i = 0; i < clients.Length; i++)
+      {
+        clients[i].ConfirmGameInitialized();
+      }
+
+      return this;
+    }
+
     private void WaitUntilClientsReceiveMessage(MessageBase expectedMessage, params TestClient[] testClients)
     {
       var stopWatch = new Stopwatch();
@@ -569,7 +657,7 @@ namespace Service.UnitTests
       var clientsWaitingForMessage = new List<TestClient>(testClients);
 
       while (clientsWaitingForMessage.Count > 0
-        && stopWatch.ElapsedMilliseconds <= 1000
+        //&& stopWatch.ElapsedMilliseconds <= 1000
         )
       {
         for (var index = 0; index < clientsWaitingForMessage.Count; index++)
@@ -596,94 +684,6 @@ namespace Service.UnitTests
       return this;
     }
 
-    private GameSessionManager_UnitTests SendLaunchMessageFromClients(TestClient client, params TestClient[] clients)
-    {
-      client.SendLaunchGameMessage();
-      for (int i = 0; i < clients.Length; i++)
-      {
-        clients[i].SendLaunchGameMessage();
-      }
-
-      return this;
-    }
-
-    private GameSessionManager_UnitTests SendGameInitializationConfirmationFromClients(TestClient client, params TestClient[] clients)
-    {
-      client.ConfirmGameInitialized();
-      for (int i = 0; i < clients.Length; i++)
-      {
-        clients[i].ConfirmGameInitialized();
-      }
-
-      return this;
-    }
-
-    
-    [Test]
-    [TestCase(new UInt32[] { 0u, 1u, 2u, 3u })]
-    [TestCase(new UInt32[] { 3u, 0u, 1u, 2u })]
-    [TestCase(new UInt32[] { 2u, 3u, 0u, 1u })]
-    [TestCase(new UInt32[] { 1u, 2u, 3u, 0u })]
-    public void ClientsReceivePlaceTownMessageInCorrectOrder(UInt32[] firstSetupPassOrder)
-    {
-      GameSessionManager gameSessionManager = null;
-      try
-      {
-        var board = new Board(BoardSizes.Standard);
-        var mockGameManager = Substitute.For<IGameManager>();
-        mockGameManager.GetFirstSetupPassOrder().Returns(firstSetupPassOrder);
-        mockGameManager.Board.Returns(board);
-
-        var mockGameManagerFactory = Substitute.For<IGameManagerFactory>();
-        mockGameManagerFactory.Create().Returns(mockGameManager);
-
-        gameSessionManager = GameSessionManagerTestExtensions.CreateGameSessionManagerForTest(4)
-          .WaitUntilGameSessionManagerHasStarted();
-
-        var testPlayers = new[] 
-        {
-          new TestClient(TestPlayer1UserName, gameSessionManager),
-          new TestClient(TestPlayer2UserName, gameSessionManager),
-          new TestClient(TestPlayer3UserName, gameSessionManager),
-          new TestClient(TestPlayer4UserName, gameSessionManager)
-        };
-
-        var testPlayer1 = testPlayers[0];
-        var testPlayer2 = testPlayers[1];
-        var testPlayer3 = testPlayers[2];
-        var testPlayer4 = testPlayers[3];
-
-        var firstTestPlayer = testPlayers[firstSetupPassOrder[0]];
-        var secondTestPlayer = testPlayers[firstSetupPassOrder[1]];
-        var thirdTestPlayer = testPlayers[firstSetupPassOrder[2]];
-        var fourthTestPlayer = testPlayers[firstSetupPassOrder[3]];
-
-        gameSessionManager.AddTestClients(testPlayer1, testPlayer2, testPlayer3, testPlayer4);
-
-        this.WaitUntilClientsReceiveMessageOfType(typeof(GameSessionReadyToLaunchMessage), testPlayer1, testPlayer2, testPlayer3, testPlayer4)
-          .SendLaunchMessageFromClients(testPlayer1, testPlayer2, testPlayer3, testPlayer4)
-          .WaitUntilClientsReceiveMessageOfType(typeof(InitializeGameMessage), testPlayer1, testPlayer2, testPlayer3, testPlayer4)
-          .SendGameInitializationConfirmationFromClients(testPlayer1, testPlayer2, testPlayer3, testPlayer4);
-
-        this.WaitUntilClientsReceiveMessageOfType(typeof(PlaceTownMessage), firstTestPlayer);
-        gameSessionManager.ConfirmTownPlacement(firstTestPlayer.GameToken, firstTestPlayer, 0u);
-
-        this.WaitUntilClientsReceiveMessageOfType(typeof(PlaceTownMessage), secondTestPlayer);
-        gameSessionManager.ConfirmTownPlacement(secondTestPlayer.GameToken, secondTestPlayer, 10u);
-
-        this.WaitUntilClientsReceiveMessageOfType(typeof(PlaceTownMessage), thirdTestPlayer);
-        gameSessionManager.ConfirmTownPlacement(thirdTestPlayer.GameToken, thirdTestPlayer, 20u);
-
-        this.WaitUntilClientsReceiveMessageOfType(typeof(PlaceTownMessage), fourthTestPlayer);
-        gameSessionManager.ConfirmTownPlacement(fourthTestPlayer.GameToken, fourthTestPlayer, 30u);
-
-
-      }
-      finally
-      {
-        gameSessionManager.WaitUntilGameSessionManagerHasStopped();
-      }
-    }
     /*
     /// <summary>
     /// If a client sends multiple game initialization confirmation messages then the

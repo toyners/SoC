@@ -77,7 +77,7 @@ namespace Service.UnitTests
 
     public void ChooseTownLocation()
     {
-      throw new NotImplementedException();
+      this.messageQueue.Enqueue(new PlaceTownMessage());
     }
 
     public void ConfirmGameInitialized()
@@ -146,6 +146,11 @@ namespace Service.UnitTests
     public void SendPersonalMessage(String messageText)
     {
       this.gameSessionManager.ProcessPersonalMessage(this.GameToken, this, messageText);
+    }
+
+    public void SendTownLocation(UInt32 positionIndex)
+    {
+      this.gameSessionManager.ConfirmTownPlacement(this.GameToken, this, positionIndex);
     }
 
     public void StartTurn(Guid token)

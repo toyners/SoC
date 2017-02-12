@@ -301,6 +301,9 @@ namespace Jabberwocky.SoC.Service
       private ConcurrentQueue<GameSessionMessage> messageQueue;
       private ILoggerFactory loggerFactory;
       private HashSet<IServiceProviderCallback> clientsThatReceivedMessages;
+      private ILogger logger;
+      private Queue<UInt32> setupOrder;
+      private IServiceProviderCallback clientExpectingMessage;
       #endregion
 
       #region Construction
@@ -368,7 +371,7 @@ namespace Jabberwocky.SoC.Service
         this.gameTask = Task.Factory.StartNew(() =>
         {
           var fileName = this.GameSessionToken + "_" + DateTime.Now.ToString("dd-MM-yyyy_HH-mm-ss") + ".txt";
-          using (var logger = this.loggerFactory.Create(fileName))
+          using (this.logger = this.loggerFactory.Create(fileName))
           {
             try
             {
@@ -401,6 +404,7 @@ namespace Jabberwocky.SoC.Service
 
                   case GameSessionMessage.Types.ConfirmGameInitialized:
                   {
+                    this.ProcessConfirmGameInitializedMessage(message);
                     break;
                   }
 
@@ -420,6 +424,12 @@ namespace Jabberwocky.SoC.Service
                   {
                     var removePlayerMessage = message as RemovePlayerMessage;
                     this.RemovePlayer(removePlayerMessage.Client);
+                    break;
+                  }
+
+                  case GameSessionMessage.Types.RequestTownPlacement:
+                  {
+                    this.ProcessPlaceTownMessage((PlaceTownMessage)message);
                     break;
                   }
 
@@ -608,31 +618,65 @@ namespace Jabberwocky.SoC.Service
         }
       }
 
-      private void ProcessLaunchGameMessage(LaunchGameMessage message)
+      private void ProcessConfirmGameInitializedMessage(GameSessionMessage message)
       {
-        if (!this.clientsThatReceivedMessages.Contains(message.Client))
+        if (!this.AllClientsHaveSentMessage(message.Client))
         {
-          this.clientsThatReceivedMessages.Add(message.Client);
+          return;
         }
 
-        var haveReceivedMessagesFromAllClients = (this.clientsThatReceivedMessages.Count == this.clients.Length);
-        if (!haveReceivedMessagesFromAllClients)
+        this.clientsThatReceivedMessages.Clear();
+
+        // Clients have all confirmed they received game initialization data
+        // Now ask each client to place a town in dice roll order.
+        this.setupOrder = new Queue<UInt32>(this.gameManager.GetFirstSetupPassOrder());
+        var index = this.setupOrder.Dequeue();
+        this.clientExpectingMessage = this.clients[index];
+        this.clientExpectingMessage.ChooseTownLocation();
+      }
+
+      private void ProcessLaunchGameMessage(LaunchGameMessage message)
+      {
+        if (!this.AllClientsHaveSentMessage(message.Client))
         {
           return;
         }
 
         this.clientsThatReceivedMessages.Clear();
         this.SendGameInitializationData();
-
-        // Clients have all confirmed they received game initialization data
-        // Now ask each client to place a town in dice roll order.
-        this.PlaceTownsInFirstPassOrder(this.gameManager.GetFirstSetupPassOrder());
       }
 
       private void ProcessPersonalMessage(PersonalMessage message)
       {
         var playerData = this.playerCards[message.Client];
         this.SendPersonalMessageToClients(message.Client, playerData.Username, message.Text);
+      }
+
+      private void ProcessPlaceTownMessage(PlaceTownMessage message)
+      {
+        if (this.clientExpectingMessage != message.Client)
+        {
+          return;
+        }
+
+        var index = this.setupOrder.Dequeue();
+        this.clientExpectingMessage = this.clients[index];
+        this.clientExpectingMessage.ChooseTownLocation();
+      }
+
+      /// <summary>
+      /// Records that the client has sent the expected message.
+      /// </summary>
+      /// <param name="client">Client that has sent the expected message.</param>
+      /// <returns>True if all clients have sent the expected message, otherwise false.</returns>
+      private Boolean AllClientsHaveSentMessage(IServiceProviderCallback client)
+      {
+        if (!this.clientsThatReceivedMessages.Contains(client))
+        {
+          this.clientsThatReceivedMessages.Add(client);
+        }
+
+        return (this.clientsThatReceivedMessages.Count == this.clients.Length);
       }
 
       private void RemovePlayer(IServiceProviderCallback client)
