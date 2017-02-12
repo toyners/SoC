@@ -86,17 +86,9 @@ namespace Service.UnitTests
         var testPlayer3 = new TestClient(TestPlayer3UserName, gameSessionManager);
         var testPlayer4 = new TestClient(TestPlayer4UserName, gameSessionManager);
 
-        var expectedMessage = new GameSessionReadyToLaunchMessage();
-
-        // Act
-        gameSessionManager.AddTestClients(testPlayer1, testPlayer2, testPlayer3, testPlayer4);
-        Thread.Sleep(1000);
-
-        // Assert
-        testPlayer1.GetLastMessage().IsSameAs(expectedMessage).ShouldBeTrue();
-        testPlayer2.GetLastMessage().IsSameAs(expectedMessage).ShouldBeTrue();
-        testPlayer3.GetLastMessage().IsSameAs(expectedMessage).ShouldBeTrue();
-        testPlayer4.GetLastMessage().IsSameAs(expectedMessage).ShouldBeTrue();
+        // Act & Assert
+        var testScript = new TestScript(testPlayer1, testPlayer2, testPlayer3, testPlayer4);
+        testScript.RunUntil(TestScript.RunPoints.RunUntilClientsReceiveGameSessionReadyToLaunchMessage);
       }
       finally
       {
@@ -135,9 +127,8 @@ namespace Service.UnitTests
         var testPlayer4 = new TestClient(TestPlayer4UserName, gameSessionManager);
 
         // Act
-        gameSessionManager.AddTestClients(testPlayer1, testPlayer2, testPlayer3, testPlayer4);
-
-        this.WaitUntilClientsReceiveMessage(new GameSessionReadyToLaunchMessage(), testPlayer1, testPlayer2, testPlayer3, testPlayer4);
+        var testScript = new TestScript(testPlayer1, testPlayer2, testPlayer3, testPlayer4);
+        testScript.RunUntil(TestScript.RunPoints.RunUntilClientsReceiveGameSessionReadyToLaunchMessage);
 
         // Assert
         testPlayer1.ContainMessagesInOrder(1,
@@ -193,20 +184,18 @@ namespace Service.UnitTests
         var testPlayer3 = new TestClient(TestPlayer3UserName, gameSessionManager);
         var testPlayer4 = new TestClient(TestPlayer4UserName, gameSessionManager);
 
-        gameSessionManager.AddTestClients(testPlayer1, testPlayer2, testPlayer3, testPlayer4);
-
-        this.WaitUntilClientsReceiveMessage(new GameSessionReadyToLaunchMessage(), testPlayer1, testPlayer2, testPlayer3, testPlayer4);
-
-        testPlayer1.SendLaunchGameMessage();
-        testPlayer2.SendLaunchGameMessage();
-        testPlayer3.SendLaunchGameMessage();
-        testPlayer4.SendLaunchGameMessage();
-
         var gameInitializationData = GameInitializationDataBuilder.Build(new Board(BoardSizes.Standard));
         var expectedMessage = new InitializeGameMessage(gameInitializationData);
 
+        // Act
+        var testScript = new TestScript(testPlayer1, testPlayer2, testPlayer3, testPlayer4);
+        testScript.RunUntil(TestScript.RunPoints.RunUntilClientsReceiveGameInitializationMessage);
+        
         // Assert
-        this.WaitUntilClientsReceiveMessage(expectedMessage, testPlayer1, testPlayer2, testPlayer3, testPlayer4);
+        testPlayer1.GetLastMessage().IsSameAs(expectedMessage);
+        testPlayer2.GetLastMessage().IsSameAs(expectedMessage);
+        testPlayer3.GetLastMessage().IsSameAs(expectedMessage);
+        testPlayer4.GetLastMessage().IsSameAs(expectedMessage);
       }
       finally
       {
@@ -235,16 +224,18 @@ namespace Service.UnitTests
         var testPlayer1 = new TestClient(TestPlayer1UserName, gameSessionManager);
         var testPlayer2 = new TestClient(TestPlayer2UserName, gameSessionManager);
 
-        gameSessionManager.AddTestClients(testPlayer1, testPlayer2);
-
-        this.WaitUntilClientsReceiveMessageOfType(typeof(PlayerDataReceivedMessage), testPlayer1, testPlayer2);
+        var testScript = new TestScript(testPlayer1, testPlayer2);
+        testScript.AllClientsJoinGame();
+        testScript.WaitUntilClientsReceiveMessageOfType(typeof(PlayerDataReceivedMessage), testPlayer1, testPlayer2);
 
         var messageText = "Hello There";
-        testPlayer1.SendPersonalMessage(messageText);
         var expectedMessage = new PersonalMessage(TestPlayer1UserName, messageText);
 
+        // Act
+        testPlayer1.SendPersonalMessage(messageText);
+
         // Assert
-        this.WaitUntilClientsReceiveMessage(expectedMessage, testPlayer2);
+        testScript.WaitUntilClientsReceiveMessage(expectedMessage, testPlayer2);
       }
       finally
       {
@@ -279,21 +270,17 @@ namespace Service.UnitTests
         var testPlayer3 = new TestClient(TestPlayer3UserName, gameSessionManager);
         var testPlayer4 = new TestClient(TestPlayer4UserName, gameSessionManager);
 
-        gameSessionManager.AddTestClients(testPlayer1, testPlayer2, testPlayer3, testPlayer4);
-
-        this.WaitUntilClientsReceiveMessageOfType(typeof(GameSessionReadyToLaunchMessage), testPlayer1, testPlayer2, testPlayer3, testPlayer4);
-
-        testPlayer1.SendLaunchGameMessage();
-        testPlayer2.SendLaunchGameMessage();
-        testPlayer3.SendLaunchGameMessage();
-        testPlayer4.SendLaunchGameMessage();
+        var testScript = new TestScript(testPlayer1, testPlayer2, testPlayer3, testPlayer4);
+        testScript.RunUntil(TestScript.RunPoints.RunUntilClientsReceiveGameInitializationMessage);
 
         var messageText = "Hello There";
-        testPlayer1.SendPersonalMessage(messageText);
         var expectedMessage = new PersonalMessage(TestPlayer1UserName, messageText);
 
+        // Act
+        testPlayer1.SendPersonalMessage(messageText);
+
         // Assert
-        this.WaitUntilClientsReceiveMessage(expectedMessage, testPlayer2, testPlayer3, testPlayer4);
+        testScript.WaitUntilClientsReceiveMessage(expectedMessage, testPlayer2, testPlayer3, testPlayer4);
       }
       finally
       {
@@ -329,9 +316,8 @@ namespace Service.UnitTests
         var testPlayer4 = new TestClient(TestPlayer4UserName, gameSessionManager);
 
         // Act
-        gameSessionManager.AddTestClients(testPlayer1, testPlayer2, testPlayer3, testPlayer4);
-
-        this.WaitUntilClientsReceiveMessageOfType(typeof(GameSessionReadyToLaunchMessage), testPlayer1, testPlayer2, testPlayer3, testPlayer4);
+        var testScript = new TestScript(testPlayer1, testPlayer2, testPlayer3, testPlayer4);
+        testScript.RunUntil(TestScript.RunPoints.RunUntilClientsReceiveGameSessionReadyToLaunchMessage);
 
         // Assert
         testPlayer1.GameToken.ShouldNotBe(Guid.Empty);
@@ -363,11 +349,12 @@ namespace Service.UnitTests
 
         var testPlayer1 = new TestClient(TestPlayer1UserName, gameSessionManager);
 
-        // Attempt to add the same client twice.
-        gameSessionManager.AddTestClients(testPlayer1, testPlayer1);
+        // Act- Attempt to add the same client twice.
+        var testScript = new TestScript(testPlayer1, testPlayer1);
+        testScript.AllClientsJoinGame();
+        testScript.WaitUntilClientsReceiveMessageOfType(typeof(ConfirmGameJoinedMessage), testPlayer1);
 
-        this.WaitUntilClientsReceiveMessageOfType(typeof(ConfirmGameJoinedMessage), testPlayer1);
-
+        // Assert
         testPlayer1.GameToken.ShouldBe(expectedSessionToken);
       }
       finally
@@ -396,11 +383,12 @@ namespace Service.UnitTests
         var testPlayer2 = new TestClient(TestPlayer2UserName, gameSessionManager);
         var testPlayer3 = new TestClient(TestPlayer3UserName, gameSessionManager);
 
-        // Attempt to add the same client as the last member to the game session.
-        gameSessionManager.AddTestClients(testPlayer1, testPlayer2, testPlayer3, testPlayer1);
+        // Act - Attempt to add the same client as the last member to the game session.
+        var testScript = new TestScript(testPlayer1, testPlayer2, testPlayer3, testPlayer1);
+        testScript.AllClientsJoinGame();
+        testScript.WaitUntilClientsReceiveMessageOfType(typeof(PlayerDataReceivedMessage), testPlayer1, testPlayer2, testPlayer3);
 
-        this.WaitUntilClientsReceiveMessageOfType(typeof(PlayerDataReceivedMessage), testPlayer1, testPlayer2, testPlayer3);
-
+        // Assert
         testPlayer1.GameToken.ShouldBe(expectedSessionToken);
         testPlayer2.GameToken.ShouldBe(expectedSessionToken);
         testPlayer3.GameToken.ShouldBe(expectedSessionToken);
@@ -432,11 +420,12 @@ namespace Service.UnitTests
         var testPlayer3 = new TestClient(TestPlayer3UserName, gameSessionManager);
         var testPlayer4 = new TestClient(TestPlayer4UserName, gameSessionManager);
 
-        // Attempt to add the same client as the last member to the game session.
-        gameSessionManager.AddTestClients(testPlayer1, testPlayer2, testPlayer3, testPlayer4, testPlayer1);
+        // Act - Attempt to add the same client into two game sessions.
+        var testScript = new TestScript(testPlayer1, testPlayer2, testPlayer3, testPlayer4, testPlayer1);
+        testScript.RunUntil(TestScript.RunPoints.RunUntilClientsReceiveGameSessionReadyToLaunchMessage);
+        //this.WaitUntilClientsReceiveMessageOfType(typeof(GameSessionReadyToLaunchMessage), testPlayer1, testPlayer2, testPlayer3, testPlayer4);
 
-        this.WaitUntilClientsReceiveMessageOfType(typeof(GameSessionReadyToLaunchMessage), testPlayer1, testPlayer2, testPlayer3, testPlayer4);
-
+        // Assert
         testPlayer1.GameToken.ShouldBe(firstSessionToken);
         testPlayer2.GameToken.ShouldBe(firstSessionToken);
         testPlayer3.GameToken.ShouldBe(firstSessionToken);
@@ -468,16 +457,16 @@ namespace Service.UnitTests
         var testPlayer1 = new TestClient(TestPlayer1UserName, gameSessionManager);
         var testPlayer2 = new TestClient(TestPlayer2UserName, gameSessionManager);
 
-        gameSessionManager.AddTestClients(testPlayer1, testPlayer2);
-
-        this.WaitUntilClientsReceiveMessageOfType(typeof(PlayerDataReceivedMessage), testPlayer1, testPlayer2);
+        var testScript = new TestScript(testPlayer1, testPlayer2);
+        testScript.AllClientsJoinGame();
+        testScript.WaitUntilClientsReceiveMessageOfType(typeof(PlayerDataReceivedMessage), testPlayer1, testPlayer2);
 
         // Act
         testPlayer1.LeaveGame();
 
         // Assert
-        this.WaitUntilClientsReceiveMessage(expectedMessageForTestPlayer1, testPlayer1);
-        this.WaitUntilClientsReceiveMessage(expectedMessageForTestPlayer2, testPlayer2);
+        testScript.WaitUntilClientsReceiveMessage(expectedMessageForTestPlayer1, testPlayer1);
+        testScript.WaitUntilClientsReceiveMessage(expectedMessageForTestPlayer2, testPlayer2);
       }
       finally
       {
@@ -510,17 +499,15 @@ namespace Service.UnitTests
         var testPlayer3 = new TestClient(TestPlayer3UserName, gameSessionManager);
         var testPlayer4 = new TestClient(TestPlayer4UserName, gameSessionManager);
 
-        gameSessionManager.AddTestClients(testPlayer1, testPlayer2, testPlayer3, testPlayer4);
-
-        this.WaitUntilClientsReceiveMessageOfType(typeof(GameSessionReadyToLaunchMessage), testPlayer1, testPlayer2, testPlayer3, testPlayer4)
-          .SendLaunchMessageFromClients(testPlayer1, testPlayer2, testPlayer3, testPlayer4);
+        var testScript = new TestScript(testPlayer1, testPlayer2, testPlayer3, testPlayer4);
+        testScript.RunUntil(TestScript.RunPoints.RunUntilClientsReceiveGameInitializationMessage);
 
         // Act
         testPlayer1.LeaveGame();
 
         // Assert
-        this.WaitUntilClientsReceiveMessage(expectedMessageForTestPlayer1, testPlayer1);
-        this.WaitUntilClientsReceiveMessage(expectedMessageForOtherTestPlayers, testPlayer2, testPlayer3, testPlayer4);
+        testScript.WaitUntilClientsReceiveMessage(expectedMessageForTestPlayer1, testPlayer1);
+        testScript.WaitUntilClientsReceiveMessage(expectedMessageForOtherTestPlayers, testPlayer2, testPlayer3, testPlayer4);
       }
       finally
       {
@@ -582,102 +569,6 @@ namespace Service.UnitTests
       {
         gameSessionManager.WaitUntilGameSessionManagerHasStopped();
       }
-    }
-
-    private GameSessionManager_UnitTests SendTownPlacementFromClient(TestClient client, UInt32 positionIndex)
-    {
-      client.SendTownLocation(positionIndex);
-      return this;
-    }
-
-    private GameSessionManager_UnitTests SendLaunchMessageFromClients(TestClient client, params TestClient[] clients)
-    {
-      client.SendLaunchGameMessage();
-      for (int i = 0; i < clients.Length; i++)
-      {
-        clients[i].SendLaunchGameMessage();
-      }
-
-      return this;
-    }
-
-    private GameSessionManager_UnitTests SendGameInitializationConfirmationFromClients(TestClient client, params TestClient[] clients)
-    {
-      client.ConfirmGameInitialized();
-      for (int i = 0; i < clients.Length; i++)
-      {
-        clients[i].ConfirmGameInitialized();
-      }
-
-      return this;
-    }
-
-    private void WaitUntilClientsReceiveMessage(MessageBase expectedMessage, params TestClient[] testClients)
-    {
-      var stopWatch = new Stopwatch();
-      stopWatch.Start();
-
-      var clientsWaitingForMessage = new List<TestClient>(testClients);
-
-      while (clientsWaitingForMessage.Count > 0
-        && stopWatch.ElapsedMilliseconds <= 1000
-        )
-      {
-        for (var index = 0; index < clientsWaitingForMessage.Count; index++)
-        {
-          var message = clientsWaitingForMessage[index].GetLastMessage();
-          if (message != null && message.IsSameAs(expectedMessage))
-          {
-            clientsWaitingForMessage.RemoveAt(index);
-            index--;
-          }
-        }
-
-        Thread.Sleep(50);
-      }
-
-      stopWatch.Stop();
-
-      if (clientsWaitingForMessage.Count > 0)
-      {
-        var exceptionMessage = String.Format("Timed out waiting for clients to receive message of type '{0}'", expectedMessage.GetType());
-        throw new TimeoutException(exceptionMessage);
-      }
-    }
-
-    private GameSessionManager_UnitTests WaitUntilClientsReceiveMessageOfType(Type expectedMessageType, params TestClient[] testClients)
-    {
-      var stopWatch = new Stopwatch();
-      stopWatch.Start();
-
-      var clientsWaitingForMessage = new List<TestClient>(testClients);
-
-      while (clientsWaitingForMessage.Count > 0
-        //&& stopWatch.ElapsedMilliseconds <= 1000
-        )
-      {
-        for (var index = 0; index < clientsWaitingForMessage.Count; index++)
-        {
-          var message = clientsWaitingForMessage[index].GetLastMessage();
-          if (message != null && message.GetType() == expectedMessageType)
-          {
-            clientsWaitingForMessage.RemoveAt(index);
-            index--;
-          }
-        }
-
-        Thread.Sleep(50);
-      }
-
-      stopWatch.Stop();
-
-      if (clientsWaitingForMessage.Count > 0)
-      {
-        var exceptionMessage = String.Format("Timed out waiting for clients to receive message of type '{0}'", expectedMessageType);
-        throw new TimeoutException(exceptionMessage);
-      }
-
-      return this;
     }
 
     /*

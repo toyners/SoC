@@ -30,6 +30,14 @@ namespace Service.UnitTests
     #endregion
 
     #region Methods
+    public void AllClientsJoinGame()
+    {
+      foreach (var client in this.clients)
+      {
+        client.JoinGame();
+      }
+    }
+
     public void RunUntil(RunPoints runPoint)
     {
       this.AllClientsJoinGame();
@@ -52,14 +60,6 @@ namespace Service.UnitTests
       this.SendGameInitializationConfirmationFromClients(this.clients);
     }
 
-    private void AllClientsJoinGame()
-    {
-      foreach (var client in this.clients)
-      {
-        client.JoinGame();
-      }
-    }
-
     public void SendGameInitializationConfirmationFromClients(TestClient client, params TestClient[] clients)
     {
       client.ConfirmGameInitialized();
@@ -77,6 +77,39 @@ namespace Service.UnitTests
     public void SendTownPlacementFromClient(TestClient client, UInt32 positionIndex)
     {
       client.SendTownLocation(positionIndex);
+    }
+
+    public void WaitUntilClientsReceiveMessage(MessageBase expectedMessage, TestClient testClient, params TestClient[] testClients)
+    {
+      var stopWatch = new Stopwatch();
+      stopWatch.Start();
+
+      var clientsWaitingForMessage = this.MergeToList(testClient, testClients);
+
+      while (clientsWaitingForMessage.Count > 0
+        && stopWatch.ElapsedMilliseconds <= 1000
+        )
+      {
+        for (var index = 0; index < clientsWaitingForMessage.Count; index++)
+        {
+          var message = clientsWaitingForMessage[index].GetLastMessage();
+          if (message != null && message.IsSameAs(expectedMessage))
+          {
+            clientsWaitingForMessage.RemoveAt(index);
+            index--;
+          }
+        }
+
+        Thread.Sleep(50);
+      }
+
+      stopWatch.Stop();
+
+      if (clientsWaitingForMessage.Count > 0)
+      {
+        var exceptionMessage = String.Format("Timed out waiting for clients to receive message of type '{0}'", expectedMessage.GetType());
+        throw new TimeoutException(exceptionMessage);
+      }
     }
 
     public void WaitUntilClientsReceiveMessageOfType(Type expectedMessageType, TestClient testClient, params TestClient[] testClients)
