@@ -42,7 +42,7 @@ namespace Service.UnitTests
         var testPlayer1 = new TestClient(TestPlayer1UserName, gameSessionManager);
 
         // Act
-        gameSessionManager.AddTestClients(testPlayer1);
+        testPlayer1.JoinGame();
         Thread.Sleep(1000);
 
         // Assert

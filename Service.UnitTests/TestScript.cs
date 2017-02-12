@@ -9,54 +9,55 @@ namespace Service.UnitTests
 
   public class TestScript
   {
+    #region Enums
     public enum RunPoints
     {
       RunUntilClientsReceiveGameSessionReadyToLaunchMessage,
       RunUntilClientsReceiveGameInitializationMessage,
       RunUntilEnd
     }
+    #endregion
 
     #region Fields
-    private TestClient testPlayer1;
-    private TestClient testPlayer2;
-    private TestClient testPlayer3;
-    private TestClient testPlayer4;
+    private List<TestClient> clients;
     #endregion
 
     #region Construction
-    public TestScript(TestClient testPlayer1, TestClient testPlayer2, TestClient testPlayer3, TestClient testPlayer4)
+    public TestScript(TestClient testClient, params TestClient[] testClients)
     {
-      this.testPlayer1 = testPlayer1;
-      this.testPlayer2 = testPlayer2;
-      this.testPlayer3 = testPlayer3;
-      this.testPlayer4 = testPlayer4;
+      this.clients = this.MergeToList(testClient, testClients);
     }
     #endregion
 
     #region Methods
     public void RunUntil(RunPoints runPoint)
     {
-      this.testPlayer1.JoinGame();
-      this.testPlayer2.JoinGame();
-      this.testPlayer3.JoinGame();
-      this.testPlayer4.JoinGame();
+      this.AllClientsJoinGame();
 
-      this.WaitUntilClientsReceiveMessageOfType(typeof(GameSessionReadyToLaunchMessage), this.testPlayer1, this.testPlayer2, this.testPlayer3, this.testPlayer4);
+      this.WaitUntilClientsReceiveMessageOfType(typeof(GameSessionReadyToLaunchMessage), this.clients);
 
       if (runPoint == RunPoints.RunUntilClientsReceiveGameSessionReadyToLaunchMessage)
       {
         return;
       }
 
-      this.SendLaunchMessageFromClients(this.testPlayer1, this.testPlayer2, this.testPlayer3, this.testPlayer4);
-      this.WaitUntilClientsReceiveMessageOfType(typeof(InitializeGameMessage), this.testPlayer1, this.testPlayer2, this.testPlayer3, this.testPlayer4);
+      this.SendLaunchMessageFromClients(this.clients);
+      this.WaitUntilClientsReceiveMessageOfType(typeof(InitializeGameMessage), this.clients);
 
       if (runPoint == RunPoints.RunUntilClientsReceiveGameInitializationMessage)
       {
         return;
       }
 
-      this.SendGameInitializationConfirmationFromClients(this.testPlayer1, this.testPlayer2, this.testPlayer3, this.testPlayer4);
+      this.SendGameInitializationConfirmationFromClients(this.clients);
+    }
+
+    private void AllClientsJoinGame()
+    {
+      foreach (var client in this.clients)
+      {
+        client.JoinGame();
+      }
     }
 
     public void SendGameInitializationConfirmationFromClients(TestClient client, params TestClient[] clients)
@@ -70,11 +71,7 @@ namespace Service.UnitTests
 
     public void SendLaunchMessageFromClients(TestClient client, params TestClient[] clients)
     {
-      client.SendLaunchGameMessage();
-      for (int i = 0; i < clients.Length; i++)
-      {
-        clients[i].SendLaunchGameMessage();
-      }
+      this.SendLaunchMessageFromClients(this.MergeToList(client, clients));
     }
 
     public void SendTownPlacementFromClient(TestClient client, UInt32 positionIndex)
@@ -82,7 +79,41 @@ namespace Service.UnitTests
       client.SendTownLocation(positionIndex);
     }
 
-    public void WaitUntilClientsReceiveMessageOfType(Type expectedMessageType, params TestClient[] testClients)
+    public void WaitUntilClientsReceiveMessageOfType(Type expectedMessageType, TestClient testClient, params TestClient[] testClients)
+    {
+      var allClients = this.MergeToList(testClient, testClients); 
+      this.WaitUntilClientsReceiveMessageOfType(expectedMessageType, allClients);
+    }
+
+    private List<TestClient> MergeToList(TestClient testClient, TestClient[] testClients)
+    {
+      var allClients = new List<TestClient>();
+      allClients.Add(testClient);
+      if (testClients != null)
+      {
+        allClients.AddRange(testClients);
+      }
+
+      return allClients;
+    }
+
+    private void SendGameInitializationConfirmationFromClients(List<TestClient> testClients)
+    {
+      foreach (var testClient in testClients)
+      {
+        testClient.ConfirmGameInitialized();
+      }
+    }
+
+    private void SendLaunchMessageFromClients(List<TestClient> testClients)
+    {
+      foreach (var testClient in testClients)
+      {
+        testClient.SendLaunchGameMessage();
+      }
+    }
+
+    private void WaitUntilClientsReceiveMessageOfType(Type expectedMessageType, List<TestClient> testClients)
     {
       var stopWatch = new Stopwatch();
       stopWatch.Start();
