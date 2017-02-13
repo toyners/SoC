@@ -40,10 +40,11 @@ namespace Service.UnitTests
           .WaitUntilGameSessionManagerHasStarted();
 
         var testPlayer1 = new TestClient(TestPlayer1UserName, gameSessionManager);
+        var testScript = new TestScript(testPlayer1);
 
         // Act
-        testPlayer1.JoinGame();
-        Thread.Sleep(1000);
+        testScript.AllClientsJoinGame();
+        testScript.WaitUntilClientsReceiveMessageOfType(typeof(ConfirmGameJoinedMessage), testPlayer1);
 
         // Assert
         var receivedMessage = testPlayer1.GetLastMessage();

@@ -196,7 +196,7 @@ namespace Jabberwocky.SoC.Service
           while (this.waitingForGameSessionQueue.IsEmpty)
           {
             cancellationToken.ThrowIfCancellationRequested();
-            Thread.Sleep(500);
+            Thread.Sleep(50);
           }
 
           AddPlayerMessage addPlayerMessage;
