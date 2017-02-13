@@ -28,8 +28,8 @@ namespace Jabberwocky.SoC.Library
     /// <summary>
     /// Places town at position for the player.
     /// </summary>
-    /// <param name="playerId">Player Id of the new town.</param>
-    void PlaceTown(UInt32 playerId);
+    /// <param name="position">Map position index of the new town.</param>
+    void PlaceTown(UInt32 position);
 
     /// <summary>
     /// Places road between positions for the player.

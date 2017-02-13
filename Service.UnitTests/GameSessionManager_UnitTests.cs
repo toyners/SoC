@@ -571,6 +571,62 @@ namespace Service.UnitTests
       }
     }
 
+    /// <summary>
+    /// Game manager receives the correct location from the clients when placing 
+    /// the town.
+    /// </summary>
+    [Test]
+    [TestCase(new UInt32[] { 1u, 2u, 3u, 4u })]
+    [TestCase(new UInt32[] { 1u, 5u, 9u, 30u })]
+    [TestCase(new UInt32[] { 3u, 12u, 20u, 35u })]
+    public void GameManagerReceivesCorrectMessagesWhenPlacingFirstTown(UInt32[] townLocations)
+    {
+      GameSessionManager gameSessionManager = null;
+      try
+      {
+        var board = new Board(BoardSizes.Standard);
+        var mockGameManager = Substitute.For<IGameManager>();
+        mockGameManager.GetFirstSetupPassOrder().Returns(new UInt32[] { 0u, 1u, 2u, 3u });
+        mockGameManager.Board.Returns(board);
+
+        var mockGameManagerFactory = Substitute.For<IGameManagerFactory>();
+        mockGameManagerFactory.Create().Returns(mockGameManager);
+
+        gameSessionManager = GameSessionManagerTestExtensions.CreateGameSessionManagerForTest(4)
+          .AddGameManagerFactory(mockGameManagerFactory)
+          .WaitUntilGameSessionManagerHasStarted();
+
+        var testPlayer1 = new TestClient(TestPlayer1UserName, gameSessionManager);
+        var testPlayer2 = new TestClient(TestPlayer2UserName, gameSessionManager);
+        var testPlayer3 = new TestClient(TestPlayer3UserName, gameSessionManager);
+        var testPlayer4 = new TestClient(TestPlayer4UserName, gameSessionManager);
+
+        var testScript = new TestScript(testPlayer1, testPlayer2, testPlayer3, testPlayer4);
+        testScript.RunUntil(TestScript.RunPoints.RunUntilEnd);
+        testScript.WaitUntilClientsReceiveMessageOfType(typeof(PlaceTownMessage), testPlayer1);
+        testScript.SendTownPlacementFromClient(testPlayer1, townLocations[0]);
+
+        testScript.WaitUntilClientsReceiveMessageOfType(typeof(PlaceTownMessage), testPlayer2);
+        mockGameManager.Received().PlaceTown(townLocations[0]);
+        testScript.SendTownPlacementFromClient(testPlayer2, townLocations[1]);
+
+        testScript.WaitUntilClientsReceiveMessageOfType(typeof(PlaceTownMessage), testPlayer3);
+        mockGameManager.Received().PlaceTown(townLocations[1]);
+        testScript.SendTownPlacementFromClient(testPlayer3, townLocations[2]);
+
+        testScript.WaitUntilClientsReceiveMessageOfType(typeof(PlaceTownMessage), testPlayer4);
+        mockGameManager.Received().PlaceTown(townLocations[2]);
+        testScript.SendTownPlacementFromClient(testPlayer4, townLocations[3]);
+
+        gameSessionManager.WaitUntilGameSessionManagerHasStopped();
+        mockGameManager.Received().PlaceTown(townLocations[3]);
+      }
+      finally
+      {
+        gameSessionManager.WaitUntilGameSessionManagerHasStopped();
+      }
+    }
+
     /*
     /// <summary>
     /// If a client sends multiple game initialization confirmation messages then the
@@ -583,7 +639,7 @@ namespace Service.UnitTests
       // Arrange
       var gameSessionManager = GameSessionManagerTestExtensions.CreateGameSessionManagerForTest(new GameManagerFactory(), 4);
 
-      var mockClient1 = new MockClient();
+      var mockClient1 = new testPlayer();
       var mockClient2 = new MockClient();
       var mockClient3 = new MockClient();
       var mockClient4 = new MockClient();
@@ -640,65 +696,6 @@ namespace Service.UnitTests
       mockClient2.ChooseTownLocationMessageReceived.ShouldBeFalse();
       mockClient3.ChooseTownLocationMessageReceived.ShouldBeFalse();
       mockClient4.ChooseTownLocationMessageReceived.ShouldBeFalse();
-    }
-
-    /// <summary>
-    /// Game manager receives the correct location from the clients when placing 
-    /// the town.
-    /// </summary>
-    [Test]
-    [TestCase(new UInt32[] { 1u, 2u, 3u, 4u })]
-    [TestCase(new UInt32[] { 1u, 5u, 9u, 30u })]
-    [TestCase(new UInt32[] { 3u, 12u, 20u, 35u })]
-    public void GameManagerReceivesCorrectMessagesWhenPlacingFirstTown(UInt32[] townLocations)
-    {
-      GameSessionManager gameSessionManager = null;
-      try
-      {
-        var board = new Board(BoardSizes.Standard);
-        var mockGameManager = Substitute.For<IGameManager>();
-        mockGameManager.GetFirstSetupPassOrder().Returns(new UInt32[] { 0u, 1u, 2u, 3u });
-        mockGameManager.Board.Returns(board);
-
-        var mockGameManagerFactory = Substitute.For<IGameManagerFactory>();
-        mockGameManagerFactory.Create().Returns(mockGameManager);
-
-        gameSessionManager = GameSessionManagerTestExtensions.CreateGameSessionManagerForTest(mockGameManagerFactory, 4);
-
-        var mockClient1 = new MockClient(gameSessionManager);
-        var mockClient2 = new MockClient(gameSessionManager);
-        var mockClient3 = new MockClient(gameSessionManager);
-        var mockClient4 = new MockClient(gameSessionManager);
-
-        // Act
-        gameSessionManager.AddMockClients(mockClient1, mockClient2, mockClient3, mockClient4);
-
-        this.WaitUntilClientsReceiveGameData(mockClient1, mockClient2, mockClient3, mockClient4);
-
-        this.ConfirmGameInitializedForClients(mockClient1, mockClient2, mockClient3, mockClient4);
-
-        mockClient1.WaitUntilClientReceivesPlaceTownMessage();
-        gameSessionManager.ConfirmTownPlacement(mockClient1.GameToken, mockClient1, townLocations[0]);
-
-        mockClient2.WaitUntilClientReceivesPlaceTownMessage();
-        mockGameManager.Received().PlaceTown(townLocations[0]);
-        gameSessionManager.ConfirmTownPlacement(mockClient2.GameToken, mockClient2, townLocations[1]);
-
-        mockClient3.WaitUntilClientReceivesPlaceTownMessage();
-        mockGameManager.Received().PlaceTown(townLocations[1]);
-        gameSessionManager.ConfirmTownPlacement(mockClient3.GameToken, mockClient3, townLocations[2]);
-
-        mockClient4.WaitUntilClientReceivesPlaceTownMessage();
-        mockGameManager.Received().PlaceTown(townLocations[2]);
-        gameSessionManager.ConfirmTownPlacement(mockClient4.GameToken, mockClient4, townLocations[3]);
-
-        gameSessionManager.WaitUntilGameSessionManagerHasStopped();
-        mockGameManager.Received().PlaceTown(townLocations[3]);
-      }
-      finally
-      {
-        gameSessionManager.WaitUntilGameSessionManagerHasStopped();
-      }
     }
 
     [Test]
