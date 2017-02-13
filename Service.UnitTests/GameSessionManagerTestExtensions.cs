@@ -77,7 +77,7 @@ namespace Service.UnitTests
       var stopWatch = new Stopwatch();
       stopWatch.Start();
 
-      // Wait until the game session manager is started before continuing. Set a limit of 5 seconds for this to happen.
+      // Wait until the game session manager is stopped before continuing. Set a limit of 5 seconds for this to happen.
       while (gameSessionManager.State != GameSessionManager.States.Stopped && stopWatch.ElapsedMilliseconds < 5000)
       {
         Thread.Sleep(50);

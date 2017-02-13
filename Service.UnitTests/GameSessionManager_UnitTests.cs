@@ -619,12 +619,12 @@ namespace Service.UnitTests
         mockGameManager.Received().PlaceTown(townLocations[2]);
         testScript.SendTownPlacementFromClient(testPlayer4, townLocations[3]);
 
-        gameSessionManager.WaitUntilGameSessionManagerHasStopped();
+        Thread.Sleep(1000);
         mockGameManager.Received().PlaceTown(townLocations[3]);
       }
       finally
       {
-        gameSessionManager.WaitUntilGameSessionManagerHasStopped();
+        gameSessionManager?.WaitUntilGameSessionManagerHasStopped();
       }
     }
 

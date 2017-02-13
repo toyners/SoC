@@ -378,8 +378,8 @@ namespace Jabberwocky.SoC.Service
               this.State = States.Running;
               this.GameState = GameStates.Lobby;
 
-              logger.Message("Started.");
-              logger.Message("State: " + this.State + ", GameState: " + this.GameState);
+              this.logger.Message("Started.");
+              this.logger.Message("State: " + this.State + ", GameState: " + this.GameState);
 
               while (true)
               {
@@ -392,7 +392,7 @@ namespace Jabberwocky.SoC.Service
                   continue;
                 }
 
-                logger.Message("Message of type " + message.Type + " received.");
+                this.logger.Message("Message of type " + message.Type + " received.");
 
                 switch (message.Type)
                 {
@@ -445,16 +445,16 @@ namespace Jabberwocky.SoC.Service
             {
               // Shutting down - ignore exception
               this.State = States.Stopping;
-              logger.Message("Stopping.");
+              this.logger.Message("Stopping.");
             }
             catch (Exception exception)
             {
-              logger.Exception(exception.Message);
+              this.logger.Exception(exception.Message);
             }
             finally
             {
               this.State = States.Stopped;
-              logger.Message("Stopped.");
+              this.logger.Message("Stopped.");
             }
           }
         });
