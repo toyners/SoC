@@ -8,6 +8,7 @@ namespace Service.UnitTests
   using Jabberwocky.SoC.Library;
   using Jabberwocky.SoC.Service;
   using Jabberwocky.Toolkit.IO;
+  using Jabberwocky.Toolkit.Logging;
   using Messages;
   using NSubstitute;
   using NUnit.Framework;
@@ -593,8 +594,13 @@ namespace Service.UnitTests
         var mockGameManagerFactory = Substitute.For<IGameManagerFactory>();
         mockGameManagerFactory.Create().Returns(mockGameManager);
 
+        var mockLogger = Substitute.For<ILogger>();
+        var mockLoggerFactory = Substitute.For<ILoggerFactory>();
+        mockLoggerFactory.Create(Arg.Any<String>()).Returns(mockLogger);
+
         gameSessionManager = GameSessionManagerTestExtensions.CreateGameSessionManagerForTest(4)
           .AddGameManagerFactory(mockGameManagerFactory)
+          .AddLoggerFactory(mockLoggerFactory)
           .WaitUntilGameSessionManagerHasStarted();
 
         var testPlayer1 = new TestClient(TestPlayer1UserName, gameSessionManager);
@@ -621,6 +627,7 @@ namespace Service.UnitTests
 
         Thread.Sleep(1000);
         mockGameManager.Received().PlaceTown(townLocations[3]);
+        mockLogger.DidNotReceive().Exception(Arg.Any<String>());
       }
       finally
       {
