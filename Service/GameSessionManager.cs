@@ -660,9 +660,13 @@ namespace Jabberwocky.SoC.Service
         }
 
         this.gameManager.PlaceTown(message.Location);
-        var index = this.setupOrder.Dequeue();
-        this.clientExpectingMessage = this.clients[index];
-        this.clientExpectingMessage.ChooseTownLocation();
+
+        if (this.setupOrder.Count > 0)
+        {
+          var index = this.setupOrder.Dequeue();
+          this.clientExpectingMessage = this.clients[index];
+          this.clientExpectingMessage.ChooseTownLocation();
+        }
       }
 
       /// <summary>
