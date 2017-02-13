@@ -9,13 +9,16 @@ namespace Jabberwocky.SoC.Service.Logging
   {
     #region Fields
     private Boolean disposed;
-    private StreamWriter sw;
+    private StreamWriter messageWriter;
+    private StreamWriter exceptionWriter;
+    private String exceptionWriterFilePath;
     #endregion
 
     #region Construction
     public Logger(String filePath)
     {
-      this.sw = new StreamWriter(filePath);
+      this.messageWriter = new StreamWriter(filePath);
+      this.exceptionWriterFilePath = filePath + ".error";
     }
     #endregion
 
@@ -33,7 +36,14 @@ namespace Jabberwocky.SoC.Service.Logging
 
     public void Exception(String message)
     {
-      this.sw.WriteLine("EXCEPTION: " + message);
+      var exceptionMessage = "EXCEPTION: " + message;
+      this.messageWriter.WriteLine(exceptionMessage);
+      if (this.exceptionWriter == null)
+      {
+        this.exceptionWriter = new StreamWriter(this.exceptionWriterFilePath);
+      }
+
+      this.exceptionWriter.WriteLine(exceptionMessage);
     }
 
     public void Message(String message)
@@ -45,11 +55,11 @@ namespace Jabberwocky.SoC.Service.Logging
     {
       if (lineBreak)
       {
-        this.sw.WriteLine(message);
+        this.messageWriter.WriteLine(message);
       }
       else
       {
-        this.sw.Write(message);
+        this.messageWriter.Write(message);
       }
     }
 
@@ -60,11 +70,19 @@ namespace Jabberwocky.SoC.Service.Logging
         return;
       }
 
-      if (disposing && this.sw != null)
+      if (disposing && this.messageWriter != null)
       {
-        this.sw.Close();
-        this.sw.Dispose();
-        this.sw = null;
+        if (this.messageWriter != null)
+        {
+          this.messageWriter.Dispose();
+          this.messageWriter = null;
+        }
+        
+        if (this.exceptionWriter != null)
+        {
+          this.exceptionWriter.Dispose();
+          this.exceptionWriter = null;
+        }
       }
 
       this.disposed = true;
