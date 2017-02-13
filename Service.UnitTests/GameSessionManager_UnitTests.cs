@@ -670,7 +670,6 @@ namespace Service.UnitTests
         mockGameManager.Received().PlaceTown(townLocations[2]);
         testScript.SendTownPlacementFromClient(testPlayer4, townLocations[3]);
 
-        Thread.Sleep(1000);
         mockGameManager.Received().PlaceTown(townLocations[3]);
         mockLogger.DidNotReceive().Exception(Arg.Any<String>());
       }
