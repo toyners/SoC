@@ -517,6 +517,51 @@ namespace Service.UnitTests
       }
     }
 
+    /// <summary>
+    /// If a client sends multiple game initialization confirmation messages then the
+    /// subsequent messages should be ignored. In this scenario the second client 
+    /// sends nothing so the same number of messages are being sent to the server.
+    /// </summary>
+    [Test]
+    public void SubsequentGameInitializationConfirminationMessagesAreIgnored()
+    {
+      GameSessionManager gameSessionManager = null;
+      try
+      {
+        // Arrange
+        var mockLogger = Substitute.For<ILogger>();
+        var mockLoggerFactory = Substitute.For<ILoggerFactory>();
+        mockLoggerFactory.Create(Arg.Any<String>()).Returns(mockLogger);
+
+        gameSessionManager = GameSessionManagerTestExtensions.CreateGameSessionManagerForTest(4)
+          .AddLoggerFactory(mockLoggerFactory)
+          .WaitUntilGameSessionManagerHasStarted();
+
+        var testPlayer1 = new TestClient(TestPlayer1UserName, gameSessionManager);
+        var testPlayer2 = new TestClient(TestPlayer2UserName, gameSessionManager);
+        var testPlayer3 = new TestClient(TestPlayer3UserName, gameSessionManager);
+        var testPlayer4 = new TestClient(TestPlayer4UserName, gameSessionManager);
+
+        // Act
+        var testScript = new TestScript(testPlayer1, testPlayer2, testPlayer3, testPlayer4);
+        testScript.RunUntil(TestScript.RunPoints.RunUntilEnd);
+        //this.WaitUntilClientsReceiveGameData(mockClient1, mockClient2, mockClient3, mockClient4);
+        testScript.SendGameInitializationConfirmationFromClients(testPlayer1, testPlayer2, testPlayer3, testPlayer4);
+        Thread.Sleep(1000);
+
+        //mockClient1.ChooseTownLocationMessageReceived.ShouldBeFalse();
+        //mockClient2.ChooseTownLocationMessageReceived.ShouldBeFalse();
+        //mockClient3.ChooseTownLocationMessageReceived.ShouldBeFalse();
+        //mockClient4.ChooseTownLocationMessageReceived.ShouldBeFalse();
+
+        mockLogger.DidNotReceive().Exception(Arg.Any<String>());
+      }
+      finally
+      {
+        gameSessionManager?.WaitUntilGameSessionManagerHasStopped();
+      }
+    }
+
     [Test]
     [TestCase(new UInt32[] { 0u, 1u, 2u, 3u })]
     [TestCase(new UInt32[] { 3u, 0u, 1u, 2u })]
@@ -636,41 +681,6 @@ namespace Service.UnitTests
     }
 
     /*
-    /// <summary>
-    /// If a client sends multiple game initialization confirmation messages then the
-    /// subsequent messages should be ignored. In this scenario the second client 
-    /// sends nothing so the same number of messages are being sent to the server.
-    /// </summary>
-    [Test]
-    public void SubsequentGameInitializationConfirminationMessagesAreIgnored()
-    {
-      // Arrange
-      var gameSessionManager = GameSessionManagerTestExtensions.CreateGameSessionManagerForTest(new GameManagerFactory(), 4);
-
-      var mockClient1 = new testPlayer();
-      var mockClient2 = new MockClient();
-      var mockClient3 = new MockClient();
-      var mockClient4 = new MockClient();
-
-      // Act
-      gameSessionManager.AddMockClients(mockClient1, mockClient2, mockClient3, mockClient4);
-
-      this.WaitUntilClientsReceiveGameData(mockClient1, mockClient2, mockClient3, mockClient4);
-
-      gameSessionManager.ConfirmGameInitialized(mockClient1.GameToken, mockClient1);
-      gameSessionManager.ConfirmGameInitialized(mockClient1.GameToken, mockClient1);
-      gameSessionManager.ConfirmGameInitialized(mockClient3.GameToken, mockClient3);
-      gameSessionManager.ConfirmGameInitialized(mockClient4.GameToken, mockClient4);
-      Thread.Sleep(1000);
-
-      gameSessionManager.WaitUntilGameSessionManagerHasStopped();
-
-      mockClient1.ChooseTownLocationMessageReceived.ShouldBeFalse();
-      mockClient2.ChooseTownLocationMessageReceived.ShouldBeFalse();
-      mockClient3.ChooseTownLocationMessageReceived.ShouldBeFalse();
-      mockClient4.ChooseTownLocationMessageReceived.ShouldBeFalse();
-    }
-
     /// <summary>
     /// If a client sends the wrong message when the server is waiting for 
     /// game initialization confirmation messages then the message should be ignored. 
