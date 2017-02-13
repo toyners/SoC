@@ -56,7 +56,7 @@ namespace Jabberwocky.SoC.Service
       this.gameManagerFactory = new GameManagerFactory();
       this.gameSessionTokenFactory = new GameSessionTokenFactory();
       this.playerCardRepository = new PlayerCardRepository();
-      this.loggerFactory = new LogFileFactory(logFileBasePath);
+      this.loggerFactory = new FileLoggerFactory(logFileBasePath);
       this.State = States.Stopped;
     }
     #endregion

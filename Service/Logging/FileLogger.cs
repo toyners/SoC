@@ -5,7 +5,7 @@ namespace Jabberwocky.SoC.Service.Logging
   using System.IO;
   using Toolkit.Logging;
 
-  public class Logger : ILogger
+  public class FileLogger : ILogger
   {
     #region Fields
     private Boolean disposed;
@@ -15,7 +15,7 @@ namespace Jabberwocky.SoC.Service.Logging
     #endregion
 
     #region Construction
-    public Logger(String filePath)
+    public FileLogger(String filePath)
     {
       this.messageWriter = new StreamWriter(filePath);
       this.exceptionWriterFilePath = filePath + ".error";

@@ -56,8 +56,8 @@
   <ItemGroup>
     <Compile Include="GameSessionTokenFactory.cs" />
     <Compile Include="IGameSessionTokenFactory.cs" />
-    <Compile Include="Logging\Logger.cs" />
-    <Compile Include="Logging\LogFileFactory.cs" />
+    <Compile Include="Logging\FileLogger.cs" />
+    <Compile Include="Logging\FileLoggerFactory.cs" />
     <Compile Include="Messages\AddPlayerMessage.cs" />
     <Compile Include="Messages\RemovePlayerMessage.cs" />
     <Compile Include="Messages\LaunchGameMessage.cs" />

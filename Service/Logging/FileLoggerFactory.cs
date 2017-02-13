@@ -7,11 +7,11 @@ namespace Jabberwocky.SoC.Service.Logging
   using Toolkit.Path;
   using Toolkit.String;
 
-  public class LogFileFactory : ILoggerFactory
+  public class FileLoggerFactory : ILoggerFactory
   {
     private String basePath;
 
-    public LogFileFactory(String basePath)
+    public FileLoggerFactory(String basePath)
     {
       basePath.VerifyThatStringIsNotNullAndNotEmpty("Parameter 'basePath' is null or empty.");
       this.basePath = PathOperations.CompleteDirectoryPath(basePath);
@@ -21,7 +21,7 @@ namespace Jabberwocky.SoC.Service.Logging
     public ILogger Create(String fileName)
     {
       var filePath = this.basePath + fileName;
-      return new Logger(filePath);
+      return new FileLogger(filePath);
     }
   }
 }
