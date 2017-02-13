@@ -4,6 +4,7 @@ namespace Jabberwocky.SoC.Service.Logging
   using System;
   using System.IO;
   using Toolkit.Logging;
+  using Toolkit.String;
 
   public class FileLogger : ILogger
   {
@@ -17,6 +18,7 @@ namespace Jabberwocky.SoC.Service.Logging
     #region Construction
     public FileLogger(String filePath)
     {
+      filePath.VerifyThatStringIsNotNullAndNotEmpty("Parameter 'filePath'is null or empty.");
       this.messageWriter = new StreamWriter(filePath);
       this.exceptionWriterFilePath = filePath + ".error";
     }
