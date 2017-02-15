@@ -381,7 +381,7 @@ namespace Jabberwocky.SoC.Service
               this.logger.Message("Started.");
               this.logger.Message("State: " + this.State + ", GameState: " + this.GameState);
 
-              while (true)
+              while (this.State == States.Running)
               {
                 this.cancellationToken.ThrowIfCancellationRequested();
 
@@ -440,12 +440,13 @@ namespace Jabberwocky.SoC.Service
                   }
                 }
               }
+
+              this.Stop();
             }
             catch (OperationCanceledException)
             {
-              // Shutting down - ignore exception
-              this.State = States.Stopping;
-              this.logger.Message("Stopping.");
+              // Cancelling - ignore exception
+              this.Stop();
             }
             catch (Exception exception)
             {
@@ -661,12 +662,15 @@ namespace Jabberwocky.SoC.Service
 
         this.gameManager.PlaceTown(message.Location);
 
-        if (this.setupOrder.Count > 0)
+        if (this.setupOrder.Count == 0)
         {
-          var index = this.setupOrder.Dequeue();
-          this.clientExpectingMessage = this.clients[index];
-          this.clientExpectingMessage.ChooseTownLocation();
+          this.State = States.Stopping;
+          return;
         }
+
+        var index = this.setupOrder.Dequeue();
+        this.clientExpectingMessage = this.clients[index];
+        this.clientExpectingMessage.ChooseTownLocation();
       }
 
       /// <summary>
@@ -682,6 +686,21 @@ namespace Jabberwocky.SoC.Service
         }
 
         return (this.clientsThatReceivedMessages.Count == this.clients.Length);
+      }
+
+      private void RemoveAllPlayers()
+      {
+        for (Int32 i = 0; i < this.clients.Length; i++)
+        {
+          if (this.clients[i] == null)
+          {
+            continue;
+          }
+
+          this.clients[i].ConfirmPlayerHasLeftGame();
+          this.clients[i] = null;
+          this.currentPlayerCount--;
+        }
       }
 
       private void RemovePlayer(IServiceProviderCallback client)
@@ -775,6 +794,13 @@ namespace Jabberwocky.SoC.Service
 
           clients[i].ReceivePersonalMessage(sender, text);
         }
+      }
+
+      private void Stop()
+      {
+        this.RemoveAllPlayers();
+        this.State = States.Stopping;
+        this.logger.Message("Stopping.");
       }
 
       public Boolean ContainsClient(IServiceProviderCallback client)
