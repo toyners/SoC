@@ -553,7 +553,7 @@ namespace Service.UnitTests
         //mockClient2.ChooseTownLocationMessageReceived.ShouldBeFalse();
         //mockClient3.ChooseTownLocationMessageReceived.ShouldBeFalse();
         //mockClient4.ChooseTownLocationMessageReceived.ShouldBeFalse();
-
+        testScript.WaitUntilAllClientsReceiveMessageOfType(typeof(PlayerHasLeftGameMessage));
         mockLogger.DidNotReceive().Exception(Arg.Any<String>());
       }
       finally

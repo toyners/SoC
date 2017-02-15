@@ -112,6 +112,11 @@ namespace Service.UnitTests
       }
     }
 
+    public void WaitUntilAllClientsReceiveMessageOfType(Type expectedMessageType)
+    {
+      this.WaitUntilClientsReceiveMessageOfType(expectedMessageType, this.clients);
+    }
+
     public void WaitUntilClientsReceiveMessageOfType(Type expectedMessageType, TestClient testClient, params TestClient[] testClients)
     {
       var allClients = this.MergeToList(testClient, testClients); 
