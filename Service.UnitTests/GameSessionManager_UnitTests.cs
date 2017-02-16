@@ -545,15 +545,9 @@ namespace Service.UnitTests
         // Act
         var testScript = new TestScript(testPlayer1, testPlayer2, testPlayer3, testPlayer4);
         testScript.RunUntil(TestScript.RunPoints.RunUntilEnd);
-        //this.WaitUntilClientsReceiveGameData(mockClient1, mockClient2, mockClient3, mockClient4);
         testScript.SendGameInitializationConfirmationFromClients(testPlayer1, testPlayer2, testPlayer3, testPlayer4);
-        Thread.Sleep(1000);
 
-        //mockClient1.ChooseTownLocationMessageReceived.ShouldBeFalse();
-        //mockClient2.ChooseTownLocationMessageReceived.ShouldBeFalse();
-        //mockClient3.ChooseTownLocationMessageReceived.ShouldBeFalse();
-        //mockClient4.ChooseTownLocationMessageReceived.ShouldBeFalse();
-        testScript.WaitUntilAllClientsReceiveMessageOfType(typeof(PlayerHasLeftGameMessage));
+        testScript.WaitUntilAllClientsReceiveMessageOfType(typeof(GameOverMessage));
         mockLogger.DidNotReceive().Exception(Arg.Any<String>());
       }
       finally

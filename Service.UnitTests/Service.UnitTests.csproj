@@ -57,6 +57,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Messages\GameOverMessage.cs" />
     <Compile Include="TestScript.cs" />
     <Compile Include="MessageBase_UnitTests.cs" />
     <Compile Include="InitializeGameMessage_UnitTests.cs" />
