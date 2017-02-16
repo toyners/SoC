@@ -70,7 +70,7 @@
     <Compile Include="GameInitializationData.cs" />
     <Compile Include="GameInitializationDataBuilder.cs" />
     <Compile Include="GameSessionManager.cs" />
-    <Compile Include="IServiceProviderCallback.cs" />
+    <Compile Include="IClientCallback.cs" />
     <Compile Include="IServiceProvider.cs" />
     <Compile Include="Logging\ServiceLogger.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

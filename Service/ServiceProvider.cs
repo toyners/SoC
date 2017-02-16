@@ -26,28 +26,28 @@ namespace Jabberwocky.SoC.Service
     #region Methods
     public void ConfirmGameInitialized(Guid gameToken)
     {
-      var client = OperationContext.Current.GetCallbackChannel<IServiceProviderCallback>();
+      var client = OperationContext.Current.GetCallbackChannel<IClientCallback>();
       this.gameSessionManager.ConfirmGameInitialized(gameToken, client);
       throw new NotImplementedException();
     }
 
     public void SendInstructions()
     {
-      var client = OperationContext.Current.GetCallbackChannel<IServiceProviderCallback>();
+      var client = OperationContext.Current.GetCallbackChannel<IClientCallback>();
 
       throw new NotImplementedException();
     }
 
     public void TryJoinGame(String username)
     {
-      var client = OperationContext.Current.GetCallbackChannel<IServiceProviderCallback>();
+      var client = OperationContext.Current.GetCallbackChannel<IClientCallback>();
       this.gameSessionManager.AddPlayer(client, username);
       ServiceLogger.Message("Client joined game");
     }
 
     public void TryLeaveGame(Guid gameToken)
     {
-      var client = OperationContext.Current.GetCallbackChannel<IServiceProviderCallback>();
+      var client = OperationContext.Current.GetCallbackChannel<IClientCallback>();
       this.gameSessionManager.RemoveClient(gameToken, client);
       ServiceLogger.Message("Client left game");
     }

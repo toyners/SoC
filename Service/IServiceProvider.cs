@@ -5,7 +5,7 @@ namespace Jabberwocky.SoC.Service
   using System.ServiceModel;
 
   [ServiceContract(SessionMode = SessionMode.Required,
-    CallbackContract = typeof(IServiceProviderCallback))]
+    CallbackContract = typeof(IClientCallback))]
   public interface IServiceProvider
   {
     /// <summary>

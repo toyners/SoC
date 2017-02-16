@@ -7,7 +7,7 @@ namespace Jabberwocky.SoC.Service.Messages
   {
     public readonly String Text;
 
-    public PersonalMessage(IServiceProviderCallback client, String text) : base(Types.Personal, client)
+    public PersonalMessage(IClientCallback client, String text) : base(Types.Personal, client)
     {
       this.Text = text;
     }

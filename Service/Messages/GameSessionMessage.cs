@@ -18,9 +18,9 @@ namespace Jabberwocky.SoC.Service.Messages
 
     public readonly Types Type;
 
-    public readonly IServiceProviderCallback Client;
+    public readonly IClientCallback Client;
 
-    public GameSessionMessage(Types type, IServiceProviderCallback client)
+    public GameSessionMessage(Types type, IClientCallback client)
     {
       this.Type = type;
       this.Client = client;

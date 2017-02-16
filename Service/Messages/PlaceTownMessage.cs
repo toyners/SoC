@@ -7,7 +7,7 @@ namespace Jabberwocky.SoC.Service.Messages
   {
     public readonly UInt32 Location;
 
-    public PlaceTownMessage(IServiceProviderCallback client, UInt32 location) : base(Types.RequestTownPlacement, client)
+    public PlaceTownMessage(IClientCallback client, UInt32 location) : base(Types.RequestTownPlacement, client)
     {
       this.Location = location;
     }

@@ -6,7 +6,7 @@ namespace Service.UnitTests
   using Jabberwocky.SoC.Service;
   using Messages;
 
-  public class TestClient : IServiceProviderCallback
+  public class TestClient : IClientCallback
   {
     #region Fields
     private static UInt32 NextClientId;

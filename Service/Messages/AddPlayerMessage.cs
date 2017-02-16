@@ -7,7 +7,7 @@ namespace Jabberwocky.SoC.Service.Messages
   {
     public readonly String Username;
 
-    public AddPlayerMessage(IServiceProviderCallback sender, String username) : base(Types.AddPlayer, sender)
+    public AddPlayerMessage(IClientCallback sender, String username) : base(Types.AddPlayer, sender)
     {
       this.Username = username;
     }

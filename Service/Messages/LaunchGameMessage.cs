@@ -9,6 +9,6 @@ namespace Jabberwocky.SoC.Service.Messages
 
   internal class LaunchGameMessage : GameSessionMessage
   {
-    public LaunchGameMessage(IServiceProviderCallback client) : base(Types.LaunchGame, client) { }
+    public LaunchGameMessage(IClientCallback client) : base(Types.LaunchGame, client) { }
   }
 }

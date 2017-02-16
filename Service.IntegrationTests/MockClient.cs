@@ -8,7 +8,7 @@ namespace Service.IntegrationTests
   using System.Threading;
   using Jabberwocky.SoC.Service;
 
-  public class MockClient3 : IServiceProviderCallback
+  public class MockClient3 : IClientCallback
   {
     #region Fields
     public const Int64 TimeOut = 2000;
@@ -152,7 +152,7 @@ namespace Service.IntegrationTests
     #endregion
   }
 
-  public class MockClient : MockClient3, IServiceProviderCallback
+  public class MockClient : MockClient3, IClientCallback
   {
     private ConcurrentQueue<MessageBase> messageQueue = new ConcurrentQueue<MessageBase>();
 
