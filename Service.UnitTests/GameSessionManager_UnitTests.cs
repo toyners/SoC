@@ -664,7 +664,7 @@ namespace Service.UnitTests
         mockGameManager.Received().PlaceTown(townLocations[2]);
         testScript.SendTownPlacementFromClient(testPlayer4, townLocations[3]);
 
-        testScript.WaitUntilClientsReceiveMessageOfType(typeof(PlayerHasLeftGameMessage), testPlayer1, testPlayer2, testPlayer3, testPlayer4);
+        testScript.WaitUntilClientsReceiveMessageOfType(typeof(GameOverMessage), testPlayer1, testPlayer2, testPlayer3, testPlayer4);
         mockGameManager.Received().PlaceTown(townLocations[3]);
         mockLogger.DidNotReceive().Exception(Arg.Any<String>());
       }
