@@ -10,6 +10,9 @@ namespace Jabberwocky.SoC.Service
     [OperationContract(IsOneWay = true)]
     void StartTurn(Guid token);
 
+    [OperationContract(IsOneWay = true)]
+    void ConfirmGameIsOver();
+
     /// <summary>
     /// Confirm that the client has joined a game session.
     /// </summary>
@@ -51,8 +54,5 @@ namespace Jabberwocky.SoC.Service
 
     [OperationContract(IsOneWay = true)]
     void TownPlacedDuringSetup(UInt32 locationIndex);
-
-    [OperationContract(IsOneWay = true)]
-    void GameOver();
   }
 }

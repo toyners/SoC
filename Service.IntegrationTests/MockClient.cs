@@ -150,7 +150,7 @@ namespace Service.IntegrationTests
       throw new NotImplementedException();
     }
 
-    public void GameOver()
+    public void ConfirmGameIsOver()
     {
       throw new NotImplementedException();
     }

@@ -128,9 +128,9 @@ namespace Service.UnitTests
       }
     }
 
-    public void GameOver()
+    public void ConfirmGameIsOver()
     {
-      throw new NotImplementedException();
+      this.messageQueue.Enqueue(new GameOverMessage());
     }
 
     public void InitializeGame(GameInitializationData gameData)

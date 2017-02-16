@@ -697,7 +697,7 @@ namespace Jabberwocky.SoC.Service
             continue;
           }
 
-          this.clients[i].ConfirmPlayerHasLeftGame();
+          this.clients[i].ConfirmGameIsOver();
           this.clients[i] = null;
           this.currentPlayerCount--;
         }
