@@ -128,6 +128,11 @@ namespace Service.UnitTests
       }
     }
 
+    public void GameOver()
+    {
+      throw new NotImplementedException();
+    }
+
     public void InitializeGame(GameInitializationData gameData)
     {
       this.messageQueue.Enqueue(new InitializeGameMessage(gameData));

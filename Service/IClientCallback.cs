@@ -51,5 +51,8 @@ namespace Jabberwocky.SoC.Service
 
     [OperationContract(IsOneWay = true)]
     void TownPlacedDuringSetup(UInt32 locationIndex);
+
+    [OperationContract(IsOneWay = true)]
+    void GameOver();
   }
 }

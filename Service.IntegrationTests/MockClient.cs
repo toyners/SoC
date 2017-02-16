@@ -149,6 +149,11 @@ namespace Service.IntegrationTests
     {
       throw new NotImplementedException();
     }
+
+    public void GameOver()
+    {
+      throw new NotImplementedException();
+    }
     #endregion
   }
 
