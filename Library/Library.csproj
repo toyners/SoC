@@ -49,6 +49,7 @@
     <Compile Include="Enums\DevelopmentCardTypes.cs" />
     <Compile Include="Enums\ResourceTypes.cs" />
     <Compile Include="GameManager.cs" />
+    <Compile Include="OldGameManager.cs" />
     <Compile Include="GameManagerFactory.cs" />
     <Compile Include="IDiceRoller.cs" />
     <Compile Include="IDiceRollerFactory.cs" />
