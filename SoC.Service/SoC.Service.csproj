@@ -91,9 +91,9 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Library\Library.csproj">
+    <ProjectReference Include="..\SoC.Library\SoC.Library.csproj">
       <Project>{5CAC4497-470C-49FE-9CFD-AD5C908BEA79}</Project>
-      <Name>Library</Name>
+      <Name>SoC.Library</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

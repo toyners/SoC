@@ -114,13 +114,13 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Client\Client.csproj">
+    <ProjectReference Include="..\SoC.Client\SoC.Client.csproj">
       <Project>{576aa68d-d15e-4257-aa48-4c1077cecda9}</Project>
-      <Name>Client</Name>
+      <Name>SoC.Client</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Library\Library.csproj">
+    <ProjectReference Include="..\SoC.Library\SoC.Library.csproj">
       <Project>{5cac4497-470c-49fe-9cfd-ad5c908bea79}</Project>
-      <Name>Library</Name>
+      <Name>SoC.Library</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

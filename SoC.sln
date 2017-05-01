@@ -3,34 +3,34 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
 VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Service", "Service\Service.csproj", "{0CCA125D-9987-4128-895E-25C0DD1B684F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SoC.Service", "SoC.Service\SoC.Service.csproj", "{0CCA125D-9987-4128-895E-25C0DD1B684F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Service.Console", "Service.Console\Service.Console.csproj", "{C56E7E2E-DCB8-4B6D-AEEA-EF87DE8CB059}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SoC.Service.Console", "SoC.Service.Console\SoC.Service.Console.csproj", "{C56E7E2E-DCB8-4B6D-AEEA-EF87DE8CB059}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Client.Console", "Client.Console\Client.Console.csproj", "{BB8D6826-93DF-410E-AC65-D3A32A59F337}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SoC.Client.Console", "SoC.Client.Console\SoC.Client.Console.csproj", "{BB8D6826-93DF-410E-AC65-D3A32A59F337}"
 	ProjectSection(ProjectDependencies) = postProject
 		{0CCA125D-9987-4128-895E-25C0DD1B684F} = {0CCA125D-9987-4128-895E-25C0DD1B684F}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Client", "Client\Client.csproj", "{576AA68D-D15E-4257-AA48-4C1077CECDA9}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SoC.Client", "SoC.Client\SoC.Client.csproj", "{576AA68D-D15E-4257-AA48-4C1077CECDA9}"
 	ProjectSection(ProjectDependencies) = postProject
 		{0CCA125D-9987-4128-895E-25C0DD1B684F} = {0CCA125D-9987-4128-895E-25C0DD1B684F}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Library", "Library\Library.csproj", "{5CAC4497-470C-49FE-9CFD-AD5C908BEA79}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SoC.Library", "SoC.Library\SoC.Library.csproj", "{5CAC4497-470C-49FE-9CFD-AD5C908BEA79}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Library.UnitTests", "Library.UnitTests\Library.UnitTests.csproj", "{A2A13612-A3F5-4219-B21B-E2DE1220B632}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SoC.Library.UnitTests", "SoC.Library.UnitTests\SoC.Library.UnitTests.csproj", "{A2A13612-A3F5-4219-B21B-E2DE1220B632}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{0FA0AA7F-FFDA-4B3C-9EB9-C82D793AE8AB}"
 	ProjectSection(SolutionItems) = preProject
 		README.md = README.md
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Client.TestHarness", "Client.TestHarness\Client.TestHarness.csproj", "{21989B2D-C26B-47EE-8F5C-BCBF414AE282}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SoC.Client.TestHarness", "SoC.Client.TestHarness\SoC.Client.TestHarness.csproj", "{21989B2D-C26B-47EE-8F5C-BCBF414AE282}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Service.UnitTests", "Service.UnitTests\Service.UnitTests.csproj", "{FADCAC9F-D0A1-445A-9B51-4FA20F273DC3}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SoC.Service.UnitTests", "SoC.Service.UnitTests\SoC.Service.UnitTests.csproj", "{FADCAC9F-D0A1-445A-9B51-4FA20F273DC3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Service.IntegrationTests", "Service.IntegrationTests\Service.IntegrationTests.csproj", "{2C55EA06-7F06-4425-BC08-4C60C4491C43}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SoC.Service.IntegrationTests", "SoC.Service.IntegrationTests\SoC.Service.IntegrationTests.csproj", "{2C55EA06-7F06-4425-BC08-4C60C4491C43}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
