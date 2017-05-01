@@ -11,6 +11,24 @@ namespace Jabberwocky.SoC.Library.UnitTests
   {
     #region Methods
     [Test]
+    public void RegisterPlayer_GameManagerIsEmpty_PlayerIsRegistered()
+    {
+      throw new NotImplementedException();
+    }
+
+    [Test]
+    public void RegisterPlayer_GameManagerHasOneSlotLeft_PlayerIsRegistered()
+    {
+      throw new NotImplementedException();
+    }
+
+    [Test]
+    public void RegisterPlayer_GameManagerIsFull_PlayerIsNotRegistered()
+    {
+      throw new NotImplementedException();
+    }
+
+    [Test]
     public void GetFirstSetupPassOrder_ReturnsPlayerOrderBasedOnDiceRolls()
     {
       var diceRoller = Substitute.For<IDiceRoller>();
