@@ -4,7 +4,7 @@ namespace Jabberwocky.SoC.Library
   using System;
   using System.Collections.Generic;
 
-  public class OldGameManager : IGameManager
+  public class OldGameManager
   {
     #region Fields
     private IDiceRoller diceRoller;

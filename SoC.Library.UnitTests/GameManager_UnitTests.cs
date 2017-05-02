@@ -13,19 +13,52 @@ namespace Jabberwocky.SoC.Library.UnitTests
     [Test]
     public void RegisterPlayer_GameManagerIsEmpty_PlayerIsRegistered()
     {
-      throw new NotImplementedException();
+      var board = new Board(BoardSizes.Standard);
+      var diceRoller = new DiceRoller();
+      var cardPile = new DevelopmentCardPile();
+      IGameManager gameManager = new GameManager(board, 2, diceRoller, cardPile);
+
+      var player = new Player(board);
+
+      var result = gameManager.RegisterPlayer(player);
+
+      result.ShouldBeTrue();
     }
 
     [Test]
-    public void RegisterPlayer_GameManagerHasOneSlotLeft_PlayerIsRegistered()
+    public void RegisterPlayer_GameManagerNeedsLastPlayer_PlayerIsRegistered()
     {
-      throw new NotImplementedException();
+      var board = new Board(BoardSizes.Standard);
+      var diceRoller = new DiceRoller();
+      var cardPile = new DevelopmentCardPile();
+      IGameManager gameManager = new GameManager(board, 2, diceRoller, cardPile);
+
+      var player1 = new Player(board);
+      var player2 = new Player(board);
+
+      gameManager.RegisterPlayer(player1);
+      var result = gameManager.RegisterPlayer(player2);
+
+      result.ShouldBeTrue();
     }
 
     [Test]
     public void RegisterPlayer_GameManagerIsFull_PlayerIsNotRegistered()
     {
-      throw new NotImplementedException();
+      var board = new Board(BoardSizes.Standard);
+      var diceRoller = new DiceRoller();
+      var cardPile = new DevelopmentCardPile();
+      IGameManager gameManager = new GameManager(board, 2, diceRoller, cardPile);
+
+      var player1 = new Player(board);
+      var player2 = new Player(board);
+      var player3 = new Player(board);
+
+      gameManager.RegisterPlayer(player1);
+      gameManager.RegisterPlayer(player2);
+      var result = gameManager.RegisterPlayer(player3);
+
+      result.ShouldBeTrue();
     }
 
     [Test]

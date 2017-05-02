@@ -7,7 +7,6 @@ namespace Jabberwocky.SoC.Library
   {
     public GameManager(Board board, UInt32 playerCount, IDiceRoller diceRoller, DevelopmentCardPile cardPile)
     {
-
     }
 
     public Board Board
@@ -34,6 +33,11 @@ namespace Jabberwocky.SoC.Library
     }
 
     public void PlaceTown(UInt32 position)
+    {
+      throw new NotImplementedException();
+    }
+
+    public Boolean RegisterPlayer(Player player)
     {
       throw new NotImplementedException();
     }
