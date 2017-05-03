@@ -37,7 +37,7 @@ namespace Jabberwocky.SoC.Library
     /// <param name="playerId">Player Id of the new road.</param>
     void PlaceRoad(UInt32 playerId);
 
-    Boolean RegisterPlayer(Player player);
+    Boolean RegisterPlayer(IPlayer player);
     #endregion
   }
 }

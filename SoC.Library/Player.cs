@@ -6,7 +6,7 @@ namespace Jabberwocky.SoC.Library
   using System.Linq;
   using System.Text;
 
-  public class Player
+  public class Player : IPlayer
   {
     List<Location> Settlements;
     List<DevelopmentCard> Cards;
@@ -18,9 +18,11 @@ namespace Jabberwocky.SoC.Library
     UInt32 BrickCount;
 
     private Board board;
+    private IGameConnector gameConnector;
 
-    public Player(Board board)
+    public Player(Board board, IGameConnector gameConnector)
     {
+      this.gameConnector = gameConnector;
       this.board = board;
     }
 
@@ -46,6 +48,16 @@ namespace Jabberwocky.SoC.Library
 
     public void ProduceResources()
     { }
+
+    public void SetGameManager(IGameManager gameManager)
+    {
+      throw new NotImplementedException();
+    }
+
+    public void RequestConnectionToGame()
+    {
+      throw new NotImplementedException();
+    }
     #endregion
   }
 }

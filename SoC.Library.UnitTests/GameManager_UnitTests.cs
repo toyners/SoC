@@ -18,7 +18,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
       var cardPile = new DevelopmentCardPile();
       IGameManager gameManager = new GameManager(board, 2, diceRoller, cardPile);
 
-      var player = new Player(board);
+      IPlayer player = new Player(board, null);
 
       var result = gameManager.RegisterPlayer(player);
 
@@ -33,8 +33,8 @@ namespace Jabberwocky.SoC.Library.UnitTests
       var cardPile = new DevelopmentCardPile();
       IGameManager gameManager = new GameManager(board, 2, diceRoller, cardPile);
 
-      var player1 = new Player(board);
-      var player2 = new Player(board);
+      var player1 = new Player(board, null);
+      var player2 = new Player(board, null);
 
       gameManager.RegisterPlayer(player1);
       var result = gameManager.RegisterPlayer(player2);
@@ -50,9 +50,9 @@ namespace Jabberwocky.SoC.Library.UnitTests
       var cardPile = new DevelopmentCardPile();
       IGameManager gameManager = new GameManager(board, 2, diceRoller, cardPile);
 
-      var player1 = new Player(board);
-      var player2 = new Player(board);
-      var player3 = new Player(board);
+      IPlayer player1 = new Player(board, null);
+      IPlayer player2 = new Player(board, null);
+      IPlayer player3 = new Player(board, null);
 
       gameManager.RegisterPlayer(player1);
       gameManager.RegisterPlayer(player2);
