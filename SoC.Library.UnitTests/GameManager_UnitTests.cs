@@ -2,6 +2,7 @@
 namespace Jabberwocky.SoC.Library.UnitTests
 {
   using System;
+  using Interfaces;
   using NSubstitute;
   using NUnit.Framework;
   using Shouldly;

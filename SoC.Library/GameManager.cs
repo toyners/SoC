@@ -2,6 +2,7 @@
 namespace Jabberwocky.SoC.Library
 {
   using System;
+  using Interfaces;
 
   public class GameManager : IGameManager
   {

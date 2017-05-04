@@ -8,6 +8,7 @@ namespace Jabberwocky.SoC.Service
   using System.Threading;
   using System.Threading.Tasks;
   using Library;
+  using Library.Interfaces;
   using Logging;
   using Messages;
   using Toolkit.Logging;

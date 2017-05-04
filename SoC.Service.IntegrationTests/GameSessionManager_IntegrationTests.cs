@@ -6,6 +6,7 @@ namespace Service.IntegrationTests
   using System.Diagnostics;
   using System.Threading;
   using Jabberwocky.SoC.Library;
+  using Jabberwocky.SoC.Library.Interfaces;
   using Jabberwocky.SoC.Service;
   using NSubstitute;
   using NUnit.Framework;

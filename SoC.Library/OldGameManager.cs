@@ -3,6 +3,7 @@ namespace Jabberwocky.SoC.Library
 {
   using System;
   using System.Collections.Generic;
+  using Interfaces;
 
   public class OldGameManager
   {

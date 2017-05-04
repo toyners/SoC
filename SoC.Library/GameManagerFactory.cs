@@ -1,4 +1,6 @@
 ﻿
+using Jabberwocky.SoC.Library.Interfaces;
+
 namespace Jabberwocky.SoC.Library
 {
   public class GameManagerFactory : IGameManagerFactory

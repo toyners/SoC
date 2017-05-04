@@ -1,5 +1,5 @@
 ﻿
-namespace Jabberwocky.SoC.Library
+namespace Jabberwocky.SoC.Library.Interfaces
 {
   public interface IDiceRollerFactory
   {

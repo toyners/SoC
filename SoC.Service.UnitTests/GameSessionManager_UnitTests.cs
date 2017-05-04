@@ -6,6 +6,7 @@ namespace Service.UnitTests
   using System.Diagnostics;
   using System.Threading;
   using Jabberwocky.SoC.Library;
+  using Jabberwocky.SoC.Library.Interfaces;
   using Jabberwocky.SoC.Service;
   using Jabberwocky.Toolkit.IO;
   using Jabberwocky.Toolkit.Logging;
