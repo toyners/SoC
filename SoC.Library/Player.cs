@@ -19,9 +19,9 @@ namespace Jabberwocky.SoC.Library
     UInt32 BrickCount;
 
     private Board board;
-    private IGameConnector gameConnector;
+    private IGameController gameConnector;
 
-    public Player(Board board, IGameConnector gameConnector)
+    public Player(Board board, IGameController gameConnector)
     {
       this.gameConnector = gameConnector;
       this.board = board;
