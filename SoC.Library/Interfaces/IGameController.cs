@@ -3,8 +3,6 @@ namespace Jabberwocky.SoC.Library.Interfaces
 {
   using System;
   using System.Collections.Generic;
-  using System.Linq;
-  using System.Text;
 
   public interface IGameController
   {
@@ -22,7 +20,7 @@ namespace Jabberwocky.SoC.Library.Interfaces
 
     ResourceTypes TradeResourcesWithBank();
 
-    void TradeResourcesAtPort(Location location);
+    ResourceTypes TradeResourcesAtPort(Location location);
 
     ICollection<Offer> MakeOffer(Offer offer);
 
@@ -33,22 +31,16 @@ namespace Jabberwocky.SoC.Library.Interfaces
   {
     Player player;
 
-    OfferComponent? OfferedOre;
-    OfferComponent? OfferedWheat;
-    OfferComponent? OfferedSheep;
-    OfferComponent? OfferedLumber;
-    OfferComponent? OfferedBrick;
+    Int32 OfferedOre;
+    Int32 OfferedWheat;
+    Int32 OfferedSheep;
+    Int32 OfferedLumber;
+    Int32 OfferedBrick;
 
-    OfferComponent? WantedOreCount;
-    OfferComponent? WantedWheatCount;
-    OfferComponent? WantedSheepCount;
-    OfferComponent? WantedLumberCount;
-    OfferComponent? WantedBrickCount;
-  }
-
-  public struct OfferComponent
-  {
-    ResourceTypes ResourceType;
-    UInt32? Number;
+    Int32 WantedOreCount;
+    Int32 WantedWheatCount;
+    Int32 WantedSheepCount;
+    Int32 WantedLumberCount;
+    Int32 WantedBrickCount;
   }
 }

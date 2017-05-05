@@ -96,4 +96,16 @@ namespace Jabberwocky.SoC.Library.UnitTests
     }
     #endregion 
   }
+
+  [TestFixture]
+  public class GameController_UnitTests
+  {
+    #region Methods
+    [Test]
+    public void Test()
+    {
+      var mockGameManager = NSubstitute.Substitute.For<IGameManager>();
+    }
+    #endregion
+  }
 }

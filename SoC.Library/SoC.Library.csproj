@@ -48,8 +48,9 @@
     <Compile Include="Enums\BoardSizes.cs" />
     <Compile Include="Enums\DevelopmentCardTypes.cs" />
     <Compile Include="Enums\ResourceTypes.cs" />
+    <Compile Include="GameController.cs" />
     <Compile Include="GameManager.cs" />
-    <Compile Include="Interfaces\IGameConnector.cs" />
+    <Compile Include="Interfaces\IGameController.cs" />
     <Compile Include="Interfaces\IPlayer.cs" />
     <Compile Include="OldGameManager.cs" />
     <Compile Include="GameManagerFactory.cs" />

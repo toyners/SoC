@@ -38,7 +38,7 @@ namespace Jabberwocky.SoC.Library
 
       this.StitchLocationsTogetherUsingHorizontalTrails(index);
 
-      this.CreateResourcesProvider();
+      this.CreateResourceProviders();
     }
     #endregion
 
@@ -61,7 +61,7 @@ namespace Jabberwocky.SoC.Library
       }
     }
 
-    private void CreateResourcesProvider()
+    private void CreateResourceProviders()
     {
       var desert = new ResourceProvider();
       var brick8 = new ResourceProvider(ResourceTypes.Brick, 8);
