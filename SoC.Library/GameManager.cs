@@ -8,6 +8,10 @@ namespace Jabberwocky.SoC.Library
   {
     public GameManager(Board board, UInt32 playerCount, IDiceRoller diceRoller, DevelopmentCardPile cardPile)
     {
+      if (playerCount < 2 || playerCount > 4)
+      {
+        throw new ArgumentOutOfRangeException(String.Format("Maximum Player count must be within range 2-4 inclusive. Was {0}.", playerCount), (Exception)null);
+      }
     }
 
     public Board Board

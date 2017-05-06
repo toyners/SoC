@@ -19,7 +19,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
       var cardPile = new DevelopmentCardPile();
 
       Should.Throw<ArgumentOutOfRangeException>(() => new GameManager(board, 1, diceRoller, cardPile))
-        .Message.ShouldBe("Maximum Player count must be within range 2-4. Was 1.");
+        .Message.ShouldBe("Maximum Player count must be within range 2-4 inclusive. Was 1.");
     }
 
     [Test]
@@ -30,7 +30,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
       var cardPile = new DevelopmentCardPile();
 
       Should.Throw<ArgumentOutOfRangeException>(() => new GameManager(board, 5, diceRoller, cardPile))
-        .Message.ShouldBe("Maximum Player count must be within range 2-4. Was 5.");
+        .Message.ShouldBe("Maximum Player count must be within range 2-4 inclusive. Was 5.");
     }
 
     [Test]
