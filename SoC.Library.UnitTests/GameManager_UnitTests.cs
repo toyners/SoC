@@ -12,6 +12,28 @@ namespace Jabberwocky.SoC.Library.UnitTests
   {
     #region Methods
     [Test]
+    public void GameManager_MaxPlayerCountIsLessThanTwo_ThrowsMeaningfulException()
+    {
+      var board = new Board(BoardSizes.Standard);
+      var diceRoller = new DiceRoller();
+      var cardPile = new DevelopmentCardPile();
+
+      Should.Throw<ArgumentOutOfRangeException>(() => new GameManager(board, 1, diceRoller, cardPile))
+        .Message.ShouldBe("Maximum Player count must be within range 2-4. Was 1.");
+    }
+
+    [Test]
+    public void GameManager_MaxPlayerCountIsMoreThanFour_ThrowsMeaningfulException()
+    {
+      var board = new Board(BoardSizes.Standard);
+      var diceRoller = new DiceRoller();
+      var cardPile = new DevelopmentCardPile();
+
+      Should.Throw<ArgumentOutOfRangeException>(() => new GameManager(board, 5, diceRoller, cardPile))
+        .Message.ShouldBe("Maximum Player count must be within range 2-4. Was 5.");
+    }
+
+    [Test]
     public void RegisterPlayer_GameManagerIsEmpty_PlayerIsRegistered()
     {
       var board = new Board(BoardSizes.Standard);

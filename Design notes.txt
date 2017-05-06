@@ -17,6 +17,7 @@ Board holds all locations and roads and resource providers
 
 GameManager manages player turns and interactions between the players, the board, the boardview
 - At start of each player turn performs dice roll, collects resource manifest from board based on dice roll, and passes resources back to players.
+- Handles registration of account in game. Returns Player object which is token for all calls to GameManager.
 
 GameController
 - is the channel from the client to the GameManager (GM could be local or on a server). It passes through commands and passes back updated BoardView and/or PlayerView
