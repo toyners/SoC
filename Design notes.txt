@@ -22,5 +22,9 @@ GameManager manages player turns and interactions between the players, the board
 GameController
 - is the channel from the client to the GameManager (GM could be local or on a server). It passes through commands and passes back updated BoardView and/or PlayerView
 - Also handles the game setup conversation between client and GM
+- Also handles retrieving of account by passing username and password.
 
+ClientAccount holds data about a client including game played, games won etc.
 
+ClientAccountManager holds all accounts
+- given a username and password will return the matching account instance or error message if not.
