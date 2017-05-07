@@ -15,9 +15,15 @@ Board holds all locations and roads and resource providers
 - Updates the board with a new city for a player
 - Returns the resources manifest for a given dice roll to the GameManager
 
-GameManager manages player turns and interactions between the players, the board, the boardview
+GameSession is the instance of the SoC game
+- manages player turns and interactions between the players, the board, the boardview
 - At start of each player turn performs dice roll, collects resource manifest from board based on dice roll, and passes resources back to players.
 - Handles registration of account in game. Returns Player object which is token for all calls to GameManager.
+
+GameSessionManager creates and manages instances of GameSession
+- One only (Singleton?)
+- Matches ClientAccount instances with GameSession instances
+- Passes communication between GameController and GameSession
 
 GameController
 - is the channel from the client to the GameManager (GM could be local or on a server). It passes through commands and passes back updated BoardView and/or PlayerView
