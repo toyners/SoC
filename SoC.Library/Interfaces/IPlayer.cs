@@ -10,6 +10,6 @@ namespace Jabberwocky.SoC.Library.Interfaces
   {
     void RequestConnectionToGame();
 
-    void SetGameManager(IGameManager gameManager);
+    void SetGameManager(IGameSession gameManager);
   }
 }

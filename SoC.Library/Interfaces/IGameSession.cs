@@ -6,7 +6,7 @@ namespace Jabberwocky.SoC.Library.Interfaces
   /// <summary>
   /// Provides methods for managing a game.
   /// </summary>
-  public interface IGameManager
+  public interface IGameSession
   {
     #region Properties
     Board Board { get; }

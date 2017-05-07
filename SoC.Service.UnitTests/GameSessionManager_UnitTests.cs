@@ -35,7 +35,7 @@ namespace Service.UnitTests
     public void PlayerReceivesConfirmationOnceJoinedToGameSession()
     {
       // Arrange
-      GameSessionManager gameSessionManager = null;
+      Jabberwocky.SoC.Service.GameSessionManager gameSessionManager = null;
       try
       {
         gameSessionManager = GameSessionManagerTestExtensions.CreateGameSessionManagerForTest(4)
@@ -51,7 +51,7 @@ namespace Service.UnitTests
         // Assert
         var receivedMessage = testPlayer1.GetLastMessage();
         receivedMessage.ShouldBeOfType<ConfirmGameJoinedMessage>();
-        ((ConfirmGameJoinedMessage)receivedMessage).GameState.ShouldBe(GameSessionManager.GameStates.Lobby);
+        ((ConfirmGameJoinedMessage)receivedMessage).GameState.ShouldBe(Jabberwocky.SoC.Service.GameSessionManager.GameStates.Lobby);
       }
       finally
       {
@@ -65,7 +65,7 @@ namespace Service.UnitTests
     [Test]
     public void PlayersGetsNotificationWhenGameSessionIsReadyToLaunch()
     {
-      GameSessionManager gameSessionManager = null;
+      Jabberwocky.SoC.Service.GameSessionManager gameSessionManager = null;
       try
       {
         // Arrange
@@ -105,7 +105,7 @@ namespace Service.UnitTests
     [Test]
     public void AllClientsReceivePlayerCardsForAllClientsInGameSession()
     {
-      GameSessionManager gameSessionManager = null;
+      Jabberwocky.SoC.Service.GameSessionManager gameSessionManager = null;
       try
       {
         // Arrange
@@ -163,7 +163,7 @@ namespace Service.UnitTests
     [Test]
     public void AllClientsReceiveBoardDataWhenGameSessionIsLaunched()
     {
-      GameSessionManager gameSessionManager = null;
+      Jabberwocky.SoC.Service.GameSessionManager gameSessionManager = null;
       try
       {
         // Arrange
@@ -209,7 +209,7 @@ namespace Service.UnitTests
     [Test]
     public void ClientReceivesPersonalMessageFromAnotherClientBeforeGameSessionIsLaunched()
     {
-      GameSessionManager gameSessionManager = null;
+      Jabberwocky.SoC.Service.GameSessionManager gameSessionManager = null;
       try
       {
         // Arrange
@@ -249,7 +249,7 @@ namespace Service.UnitTests
     [Test]
     public void ClientsReceivePersonalMessageFromClientOnceGameSessionIsLaunched()
     {
-      GameSessionManager gameSessionManager = null;
+      Jabberwocky.SoC.Service.GameSessionManager gameSessionManager = null;
       try
       {
         // Arrange
@@ -294,7 +294,7 @@ namespace Service.UnitTests
     [Test]
     public void AllClientsReceiveSameGameTokenWhenJoinedToSameGame()
     {
-      GameSessionManager gameSessionManager = null;
+      Jabberwocky.SoC.Service.GameSessionManager gameSessionManager = null;
       try
       {
         // Arrange
@@ -337,7 +337,7 @@ namespace Service.UnitTests
     [Test]
     public void SameClientInterfaceCannotBeAddedToSameGameSession()
     {
-      GameSessionManager gameSessionManager = null;
+      Jabberwocky.SoC.Service.GameSessionManager gameSessionManager = null;
       try
       {
         Guid expectedSessionToken = Guid.NewGuid();
@@ -369,7 +369,7 @@ namespace Service.UnitTests
     [Test]
     public void SameClientCannotBeAddedAsLastMemberOfGameSession()
     {
-      GameSessionManager gameSessionManager = null;
+      Jabberwocky.SoC.Service.GameSessionManager gameSessionManager = null;
       try
       {
         Guid expectedSessionToken = Guid.NewGuid();
@@ -405,7 +405,7 @@ namespace Service.UnitTests
     [Test]
     public void SameClientCannotBeAddedToAnotherGameSession()
     {
-      GameSessionManager gameSessionManager = null;
+      Jabberwocky.SoC.Service.GameSessionManager gameSessionManager = null;
       try
       {
         Guid firstSessionToken = Guid.NewGuid();
@@ -443,7 +443,7 @@ namespace Service.UnitTests
     [Test]
     public void WhenNamedClientDropsOutOfGameSessionBeforeLaunchOtherClientsAreNotified()
     {
-      GameSessionManager gameSessionManager = null;
+      Jabberwocky.SoC.Service.GameSessionManager gameSessionManager = null;
       try
       {
         var expectedMessageForTestPlayer1 = new PlayerHasLeftGameMessage();
@@ -480,7 +480,7 @@ namespace Service.UnitTests
     [Test]
     public void WhenNamedClientDropsOutOfGameSessionAfterLaunchOtherClientsAreNotified()
     {
-      GameSessionManager gameSessionManager = null;
+      Jabberwocky.SoC.Service.GameSessionManager gameSessionManager = null;
       try
       {
         var expectedMessageForTestPlayer1 = new PlayerHasLeftGameMessage();
@@ -526,7 +526,7 @@ namespace Service.UnitTests
     [Test]
     public void SubsequentGameInitializationConfirminationMessagesAreIgnored()
     {
-      GameSessionManager gameSessionManager = null;
+      Jabberwocky.SoC.Service.GameSessionManager gameSessionManager = null;
       try
       {
         // Arrange
@@ -564,15 +564,15 @@ namespace Service.UnitTests
     [TestCase(new UInt32[] { 1u, 2u, 3u, 0u })]
     public void ClientsReceivePlaceTownMessageInCorrectOrder(UInt32[] firstSetupPassOrder)
     {
-      GameSessionManager gameSessionManager = null;
+      Jabberwocky.SoC.Service.GameSessionManager gameSessionManager = null;
       try
       {
         var board = new Board(BoardSizes.Standard);
-        var mockGameManager = Substitute.For<IGameManager>();
+        var mockGameManager = Substitute.For<IGameSession>();
         mockGameManager.GetFirstSetupPassOrder().Returns(firstSetupPassOrder);
         mockGameManager.Board.Returns(board);
 
-        var mockGameManagerFactory = Substitute.For<IGameManagerFactory>();
+        var mockGameManagerFactory = Substitute.For<IGameSessionManager>();
         mockGameManagerFactory.Create().Returns(mockGameManager);
 
         gameSessionManager = GameSessionManagerTestExtensions.CreateGameSessionManagerForTest(4)
@@ -623,15 +623,15 @@ namespace Service.UnitTests
     [TestCase(new UInt32[] { 3u, 12u, 20u, 35u })]
     public void GameManagerReceivesCorrectMessagesWhenPlacingFirstTown(UInt32[] townLocations)
     {
-      GameSessionManager gameSessionManager = null;
+      Jabberwocky.SoC.Service.GameSessionManager gameSessionManager = null;
       try
       {
         var board = new Board(BoardSizes.Standard);
-        var mockGameManager = Substitute.For<IGameManager>();
+        var mockGameManager = Substitute.For<IGameSession>();
         mockGameManager.GetFirstSetupPassOrder().Returns(new UInt32[] { 0u, 1u, 2u, 3u });
         mockGameManager.Board.Returns(board);
 
-        var mockGameManagerFactory = Substitute.For<IGameManagerFactory>();
+        var mockGameManagerFactory = Substitute.For<IGameSessionManager>();
         mockGameManagerFactory.Create().Returns(mockGameManager);
 
         var mockLogger = Substitute.For<ILogger>();

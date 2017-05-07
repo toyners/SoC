@@ -40,7 +40,7 @@ namespace Jabberwocky.SoC.Service
     private ConcurrentQueue<AddPlayerMessage> waitingForGameSessionQueue;
     private Task matchingTask;
     private UInt32 maximumPlayerCount;
-    private IGameManagerFactory gameManagerFactory;
+    private IGameSessionManager gameManagerFactory;
     private CancellationTokenSource cancellationTokenSource;
     private IGameSessionTokenFactory gameSessionTokenFactory;
     private ILoggerFactory loggerFactory;
@@ -54,7 +54,7 @@ namespace Jabberwocky.SoC.Service
       this.gameSessions = new Dictionary<Guid, GameSession>();
       this.maximumPlayerCount = maximumPlayerCount;
       this.cancellationTokenSource = new CancellationTokenSource();
-      this.gameManagerFactory = new GameManagerFactory();
+      this.gameManagerFactory = new Library.GameSessionManager();
       this.gameSessionTokenFactory = new GameSessionTokenFactory();
       this.playerCardRepository = new PlayerCardRepository();
       this.loggerFactory = new FileLoggerFactory(logFileBasePath);
@@ -65,7 +65,7 @@ namespace Jabberwocky.SoC.Service
     #region Properties
     public States State { get; private set; }
 
-    public IGameManagerFactory GameManagerFactory
+    public IGameSessionManager GameManagerFactory
     { 
       get { return this.gameManagerFactory; } 
       set
@@ -289,7 +289,7 @@ namespace Jabberwocky.SoC.Service
       }
 
       #region Fields
-      private IGameManager gameManager;
+      private IGameSession gameManager;
 
       public Guid GameSessionToken;
 
@@ -308,7 +308,7 @@ namespace Jabberwocky.SoC.Service
       #endregion
 
       #region Construction
-      public GameSession(IGameManager gameManager, UInt32 maxPlayerCount, IPlayerCardRepository playerCardRepository, Guid gameSessionToken, CancellationToken cancellationToken, ILoggerFactory loggerFactory)
+      public GameSession(IGameSession gameManager, UInt32 maxPlayerCount, IPlayerCardRepository playerCardRepository, Guid gameSessionToken, CancellationToken cancellationToken, ILoggerFactory loggerFactory)
       {
         // No parameter checking done because this is not a public interface.
         this.GameSessionToken = gameSessionToken;

@@ -28,7 +28,7 @@ namespace Service.IntegrationTests
     //[Test]
     public void AllClientsReceivePlayerCardsForAllClientsInGame()
     {
-      GameSessionManager gameSessionManager = null;
+      Jabberwocky.SoC.Service.GameSessionManager gameSessionManager = null;
       try
       {
         // Arrange
@@ -55,7 +55,7 @@ namespace Service.IntegrationTests
         var mockClient3 = new MockClient3 { Username = username3 };
         var mockClient4 = new MockClient3 { Username = username4 };
 
-        gameSessionManager = GameSessionManagerExtensions.CreateGameSessionManagerForTest(new GameManagerFactory(), 4, mockPlayerCardRepository);
+        gameSessionManager = GameSessionManagerExtensions.CreateGameSessionManagerForTest(new Jabberwocky.SoC.Library.GameSessionManager(), 4, mockPlayerCardRepository);
 
         // Act
         gameSessionManager.AddMockClients(mockClient1, mockClient2, mockClient3, mockClient4);
@@ -83,10 +83,10 @@ namespace Service.IntegrationTests
     //[Test]
     public void SameClientCantBeAddedToSameGameSession()
     {
-      GameSessionManager gameSessionManager = null;
+      Jabberwocky.SoC.Service.GameSessionManager gameSessionManager = null;
       try
       {
-        gameSessionManager = GameSessionManagerExtensions.CreateGameSessionManagerForTest(new GameManagerFactory(), 4);
+        gameSessionManager = GameSessionManagerExtensions.CreateGameSessionManagerForTest(new Jabberwocky.SoC.Library.GameSessionManager(), 4);
       }
       finally
       {
@@ -100,11 +100,11 @@ namespace Service.IntegrationTests
     //[Test]
     public void AllClientsReceiveSameGameTokenWhenJoinedToSameGame()
     {
-      GameSessionManager gameSessionManager = null;
+      Jabberwocky.SoC.Service.GameSessionManager gameSessionManager = null;
       try
       {
         // Arrange
-        gameSessionManager = GameSessionManagerExtensions.CreateGameSessionManagerForTest(new GameManagerFactory(), 4);
+        gameSessionManager = GameSessionManagerExtensions.CreateGameSessionManagerForTest(new Jabberwocky.SoC.Library.GameSessionManager(), 4);
 
         var mockClient1 = new MockClient3();
         var mockClient2 = new MockClient3();
@@ -132,11 +132,11 @@ namespace Service.IntegrationTests
     //[Test]
     public void AllClientsReceiveBoardDataWhenGameIsFull()
     {
-      GameSessionManager gameSessionManager = null;
+      Jabberwocky.SoC.Service.GameSessionManager gameSessionManager = null;
       try
       {
         // Arrange
-        gameSessionManager = GameSessionManagerExtensions.CreateGameSessionManagerForTest(new GameManagerFactory(), 4);
+        gameSessionManager = GameSessionManagerExtensions.CreateGameSessionManagerForTest(new Jabberwocky.SoC.Library.GameSessionManager(), 4);
 
         var mockClient1 = new MockClient3();
         var mockClient2 = new MockClient3();
@@ -162,15 +162,15 @@ namespace Service.IntegrationTests
     [TestCase(new UInt32[] { 1u, 2u, 3u, 0u })]*/
     public void ClientsReceivePlaceTownMessageInCorrectOrder(UInt32[] firstSetupPassOrder)
     {
-      GameSessionManager gameSessionManager = null;
+      Jabberwocky.SoC.Service.GameSessionManager gameSessionManager = null;
       try
       {
         var board = new Board(BoardSizes.Standard);
-        var mockGameManager = Substitute.For<IGameManager>();
+        var mockGameManager = Substitute.For<IGameSession>();
         mockGameManager.GetFirstSetupPassOrder().Returns(firstSetupPassOrder);
         mockGameManager.Board.Returns(board);
 
-        var mockGameManagerFactory = Substitute.For<IGameManagerFactory>();
+        var mockGameManagerFactory = Substitute.For<IGameSessionManager>();
         mockGameManagerFactory.Create().Returns(mockGameManager);
 
         gameSessionManager = GameSessionManagerExtensions.CreateGameSessionManagerForTest(mockGameManagerFactory, 4);
@@ -221,7 +221,7 @@ namespace Service.IntegrationTests
     public void SubsequentGameInitializationConfirminationMessagesAreIgnored()
     {
       // Arrange
-      var gameSessionManager = GameSessionManagerExtensions.CreateGameSessionManagerForTest(new GameManagerFactory(), 4);
+      var gameSessionManager = GameSessionManagerExtensions.CreateGameSessionManagerForTest(new Jabberwocky.SoC.Library.GameSessionManager(), 4);
 
       var mockClient1 = new MockClient3();
       var mockClient2 = new MockClient3();
@@ -256,7 +256,7 @@ namespace Service.IntegrationTests
     public void WhenWaitingForGameInitializationConfirminationMessagesWrongMessagesAreIgnored()
     {
       // Arrange
-      var gameSessionManager = GameSessionManagerExtensions.CreateGameSessionManagerForTest(new GameManagerFactory(), 4);
+      var gameSessionManager = GameSessionManagerExtensions.CreateGameSessionManagerForTest(new Jabberwocky.SoC.Library.GameSessionManager(), 4);
 
       var mockClient1 = new MockClient3();
       var mockClient2 = new MockClient3();
@@ -292,15 +292,15 @@ namespace Service.IntegrationTests
     [TestCase(new UInt32[] { 3u, 12u, 20u, 35u })]*/
     public void GameManagerReceivesCorrectMessagesWhenPlacingFirstTown(UInt32[] townLocations)
     {
-      GameSessionManager gameSessionManager = null;
+      Jabberwocky.SoC.Service.GameSessionManager gameSessionManager = null;
       try
       {
         var board = new Board(BoardSizes.Standard);
-        var mockGameManager = Substitute.For<IGameManager>();
+        var mockGameManager = Substitute.For<IGameSession>();
         mockGameManager.GetFirstSetupPassOrder().Returns(new UInt32[] { 0u, 1u, 2u, 3u });
         mockGameManager.Board.Returns(board);
 
-        var mockGameManagerFactory = Substitute.For<IGameManagerFactory>();
+        var mockGameManagerFactory = Substitute.For<IGameSessionManager>();
         mockGameManagerFactory.Create().Returns(mockGameManager);
 
         gameSessionManager = GameSessionManagerExtensions.CreateGameSessionManagerForTest(mockGameManagerFactory, 4);
@@ -348,15 +348,15 @@ namespace Service.IntegrationTests
     [TestCase(new UInt32[] { 1u, 2u, 3u, 0u }, new UInt32[] { 26u, 11u, 4u, 15u })]*/
     public void CompleteFirstRoundTownPlacement(UInt32[] setupOrder, UInt32[] locationIndexes)
     {
-      GameSessionManager gameSessionManager = null;
+      Jabberwocky.SoC.Service.GameSessionManager gameSessionManager = null;
       try
       {
         var board = new Board(BoardSizes.Standard);
-        var mockGameManager = Substitute.For<IGameManager>();
+        var mockGameManager = Substitute.For<IGameSession>();
         mockGameManager.GetFirstSetupPassOrder().Returns(setupOrder);
         mockGameManager.Board.Returns(board);
 
-        var mockGameManagerFactory = Substitute.For<IGameManagerFactory>();
+        var mockGameManagerFactory = Substitute.For<IGameSessionManager>();
         mockGameManagerFactory.Create().Returns(mockGameManager);
 
         gameSessionManager = GameSessionManagerExtensions.CreateGameSessionManagerForTest(mockGameManagerFactory, 4);
@@ -435,11 +435,11 @@ namespace Service.IntegrationTests
     [TestCase(new UInt32[] { 1u, 2u, 3u, 0u }, new UInt32[] { 34u, 26u, 16u, 20u, 34u, 8u, 0u, 40u })]*/
     public void CompleteBothRoundsOfTownPlacement(UInt32[] setupOrder, UInt32[] locationIndexes)
     {
-      GameSessionManager gameSessionManager = null;
+      Jabberwocky.SoC.Service.GameSessionManager gameSessionManager = null;
       try
       {
         var board = new Board(BoardSizes.Standard);
-        var mockGameManager = Substitute.For<IGameManager>();
+        var mockGameManager = Substitute.For<IGameSession>();
         mockGameManager.GetFirstSetupPassOrder().Returns(setupOrder);
         var secondSetupOrder = new List<UInt32>(setupOrder);
         secondSetupOrder.Reverse();
@@ -447,7 +447,7 @@ namespace Service.IntegrationTests
         mockGameManager.GetSecondSetupPassOrder().Returns(secondSetupOrder.ToArray());
         mockGameManager.Board.Returns(board);
 
-        var mockGameManagerFactory = Substitute.For<IGameManagerFactory>();
+        var mockGameManagerFactory = Substitute.For<IGameSessionManager>();
         mockGameManagerFactory.Create().Returns(mockGameManager);
 
         gameSessionManager = GameSessionManagerExtensions.CreateGameSessionManagerForTest(mockGameManagerFactory, 4);

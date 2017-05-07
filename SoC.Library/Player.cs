@@ -50,7 +50,7 @@ namespace Jabberwocky.SoC.Library
     public void ProduceResources()
     { }
 
-    public void SetGameManager(IGameManager gameManager)
+    public void SetGameManager(IGameSession gameManager)
     {
       throw new NotImplementedException();
     }

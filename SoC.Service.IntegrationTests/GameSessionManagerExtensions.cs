@@ -15,7 +15,7 @@ namespace Service.IntegrationTests
     /// </summary>
     /// <param name="gameSessionManager">Game session manager instance.</param>
     /// <param name="mockClients">Mock clients to add to the game session manager.</param>
-    public static void AddMockClients(this GameSessionManager gameSessionManager, params MockClient3[] mockClients)
+    public static void AddMockClients(this Jabberwocky.SoC.Service.GameSessionManager gameSessionManager, params MockClient3[] mockClients)
     {
       foreach (var mockClient in mockClients)
       {
@@ -30,7 +30,7 @@ namespace Service.IntegrationTests
     /// <param name="gameManagerFactory"></param>
     /// <param name="maximumPlayerCount"></param>
     /// <returns></returns>
-    public static GameSessionManager CreateGameSessionManagerForTest(IGameManagerFactory gameManagerFactory, UInt32 maximumPlayerCount)
+    public static Jabberwocky.SoC.Service.GameSessionManager CreateGameSessionManagerForTest(IGameSessionManager gameManagerFactory, UInt32 maximumPlayerCount)
     {
       /*var gameSessionManager = new GameSessionManager(gameManagerFactory, maximumPlayerCount, new PlayerCardRepository());
       gameSessionManager.WaitUntilGameSessionManagerHasStarted();
@@ -38,7 +38,7 @@ namespace Service.IntegrationTests
       throw new NotImplementedException();
     }
 
-    public static GameSessionManager CreateGameSessionManagerForTest(IGameManagerFactory gameManagerFactory, UInt32 maximumPlayerCount, IPlayerCardRepository playerCardRepository)
+    public static Jabberwocky.SoC.Service.GameSessionManager CreateGameSessionManagerForTest(IGameSessionManager gameManagerFactory, UInt32 maximumPlayerCount, IPlayerCardRepository playerCardRepository)
     {
       /*var gameSessionManager = new GameSessionManager(gameManagerFactory, maximumPlayerCount, playerCardRepository);
       gameSessionManager.WaitUntilGameSessionManagerHasStarted();
@@ -51,9 +51,9 @@ namespace Service.IntegrationTests
     /// before throwing a time out exception.
     /// </summary>
     /// <param name="gameSessionManager">Game session manager instance.</param>
-    public static void WaitUntilGameSessionManagerHasStopped(this GameSessionManager gameSessionManager)
+    public static void WaitUntilGameSessionManagerHasStopped(this Jabberwocky.SoC.Service.GameSessionManager gameSessionManager)
     {
-      if (gameSessionManager.State == GameSessionManager.States.Stopped)
+      if (gameSessionManager.State == Jabberwocky.SoC.Service.GameSessionManager.States.Stopped)
       {
         return;
       }
@@ -64,7 +64,7 @@ namespace Service.IntegrationTests
       stopWatch.Start();
 
       // Wait until the game session manager is started before continuing. Set a limit of 5 seconds for this to happen.
-      while (gameSessionManager.State != GameSessionManager.States.Stopped && stopWatch.ElapsedMilliseconds < 5000)
+      while (gameSessionManager.State != Jabberwocky.SoC.Service.GameSessionManager.States.Stopped && stopWatch.ElapsedMilliseconds < 5000)
       {
         Thread.Sleep(50);
       }
@@ -72,13 +72,13 @@ namespace Service.IntegrationTests
       stopWatch.Stop();
 
       // Still not stopped.
-      if (gameSessionManager.State != GameSessionManager.States.Stopped)
+      if (gameSessionManager.State != Jabberwocky.SoC.Service.GameSessionManager.States.Stopped)
       {
         throw new Exception("GameSessionManager has not stopped.");
       }
     }
 
-    private static void WaitUntilGameSessionManagerHasStarted(this GameSessionManager gameSessionManager)
+    private static void WaitUntilGameSessionManagerHasStarted(this Jabberwocky.SoC.Service.GameSessionManager gameSessionManager)
     {
       gameSessionManager.Start();
 
@@ -86,7 +86,7 @@ namespace Service.IntegrationTests
       stopWatch.Start();
 
       // Wait until the game session manager is started before continuing. Set a limit of 5 seconds for this to happen.
-      while (gameSessionManager.State != GameSessionManager.States.Running && stopWatch.ElapsedMilliseconds < 5000)
+      while (gameSessionManager.State != Jabberwocky.SoC.Service.GameSessionManager.States.Running && stopWatch.ElapsedMilliseconds < 5000)
       {
         Thread.Sleep(50);
       }
@@ -94,7 +94,7 @@ namespace Service.IntegrationTests
       stopWatch.Stop();
 
       // Still not started.
-      if (gameSessionManager.State != GameSessionManager.States.Running)
+      if (gameSessionManager.State != Jabberwocky.SoC.Service.GameSessionManager.States.Running)
       {
         throw new Exception("GameSessionManager has not started.");
       }

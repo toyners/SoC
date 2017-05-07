@@ -18,7 +18,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
       var diceRoller = new DiceRoller();
       var cardPile = new DevelopmentCardPile();
 
-      Should.Throw<ArgumentOutOfRangeException>(() => new GameManager(board, 1, diceRoller, cardPile))
+      Should.Throw<ArgumentOutOfRangeException>(() => new GameSession(board, 1, diceRoller, cardPile))
         .Message.ShouldBe("Maximum Player count must be within range 2-4 inclusive. Was 1.");
     }
 
@@ -29,7 +29,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
       var diceRoller = new DiceRoller();
       var cardPile = new DevelopmentCardPile();
 
-      Should.Throw<ArgumentOutOfRangeException>(() => new GameManager(board, 5, diceRoller, cardPile))
+      Should.Throw<ArgumentOutOfRangeException>(() => new GameSession(board, 5, diceRoller, cardPile))
         .Message.ShouldBe("Maximum Player count must be within range 2-4 inclusive. Was 5.");
     }
 
@@ -39,7 +39,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
       var board = new Board(BoardSizes.Standard);
       var diceRoller = new DiceRoller();
       var cardPile = new DevelopmentCardPile();
-      IGameManager gameManager = new GameManager(board, 2, diceRoller, cardPile);
+      IGameSession gameManager = new GameSession(board, 2, diceRoller, cardPile);
 
       IPlayer player = new Player(board, null);
 
@@ -54,7 +54,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
       var board = new Board(BoardSizes.Standard);
       var diceRoller = new DiceRoller();
       var cardPile = new DevelopmentCardPile();
-      IGameManager gameManager = new GameManager(board, 2, diceRoller, cardPile);
+      IGameSession gameManager = new GameSession(board, 2, diceRoller, cardPile);
 
       var player1 = new Player(board, null);
       var player2 = new Player(board, null);
@@ -71,7 +71,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
       var board = new Board(BoardSizes.Standard);
       var diceRoller = new DiceRoller();
       var cardPile = new DevelopmentCardPile();
-      IGameManager gameManager = new GameManager(board, 2, diceRoller, cardPile);
+      IGameSession gameManager = new GameSession(board, 2, diceRoller, cardPile);
 
       IPlayer player1 = new Player(board, null);
       IPlayer player2 = new Player(board, null);
@@ -89,7 +89,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     {
       var diceRoller = Substitute.For<IDiceRoller>();
       diceRoller.RollTwoDice().Returns(4u, 8u, 6u, 10u);
-      var gameManager = new GameManager(new Board(BoardSizes.Standard), 4, diceRoller, new DevelopmentCardPile());
+      var gameManager = new GameSession(new Board(BoardSizes.Standard), 4, diceRoller, new DevelopmentCardPile());
 
 
       gameManager.GetFirstSetupPassOrder().ShouldBe(new [] { 3u, 1u, 2u, 0u });
@@ -100,7 +100,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     {
       var diceRoller = Substitute.For<IDiceRoller>();
       diceRoller.RollTwoDice().Returns(10u, 8u, 6u, 10u, 12u);
-      var gameManager = new GameManager(new Board(BoardSizes.Standard), 4, diceRoller, new DevelopmentCardPile());
+      var gameManager = new GameSession(new Board(BoardSizes.Standard), 4, diceRoller, new DevelopmentCardPile());
 
 
       gameManager.GetFirstSetupPassOrder().ShouldBe(new[] { 3u, 0u, 1u, 2u });
@@ -111,7 +111,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     {
       var diceRoller = Substitute.For<IDiceRoller>();
       diceRoller.RollTwoDice().Returns(10u, 10u, 10u, 10u, 7u, 6u, 7u, 8u);
-      var gameManager = new GameManager(new Board(BoardSizes.Standard), 4, diceRoller, new DevelopmentCardPile());
+      var gameManager = new GameSession(new Board(BoardSizes.Standard), 4, diceRoller, new DevelopmentCardPile());
 
 
       gameManager.GetFirstSetupPassOrder().ShouldBe(new[] { 0u, 3u, 1u, 2u });
@@ -126,7 +126,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     [Test]
     public void Test()
     {
-      var mockGameManager = NSubstitute.Substitute.For<IGameManager>();
+      var mockGameManager = NSubstitute.Substitute.For<IGameSession>();
     }
     #endregion
   }
