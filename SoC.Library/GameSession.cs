@@ -42,7 +42,7 @@ namespace Jabberwocky.SoC.Library
       throw new NotImplementedException();
     }
 
-    public Boolean RegisterPlayer(IPlayer player)
+    public Boolean RegisterPlayer(ClientAccount clientAccount)
     {
       throw new NotImplementedException();
     }

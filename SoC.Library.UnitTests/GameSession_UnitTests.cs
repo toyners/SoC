@@ -8,11 +8,11 @@ namespace Jabberwocky.SoC.Library.UnitTests
   using Shouldly;
 
   [TestFixture]
-  public class GameManager_UnitTests
+  public class GameSession_UnitTests
   {
     #region Methods
     [Test]
-    public void GameManager_MaxPlayerCountIsLessThanTwo_ThrowsMeaningfulException()
+    public void GameSession_MaxPlayerCountIsLessThanTwo_ThrowsMeaningfulException()
     {
       var board = new Board(BoardSizes.Standard);
       var diceRoller = new DiceRoller();
@@ -23,7 +23,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     }
 
     [Test]
-    public void GameManager_MaxPlayerCountIsMoreThanFour_ThrowsMeaningfulException()
+    public void GameSession_MaxPlayerCountIsMoreThanFour_ThrowsMeaningfulException()
     {
       var board = new Board(BoardSizes.Standard);
       var diceRoller = new DiceRoller();
@@ -34,52 +34,51 @@ namespace Jabberwocky.SoC.Library.UnitTests
     }
 
     [Test]
-    public void RegisterPlayer_GameManagerIsEmpty_PlayerIsRegistered()
+    public void RegisterClient_GameSessionIsEmpty_ClientIsRegistered()
     {
       var board = new Board(BoardSizes.Standard);
       var diceRoller = new DiceRoller();
       var cardPile = new DevelopmentCardPile();
       IGameSession gameManager = new GameSession(board, 2, diceRoller, cardPile);
 
-      IPlayer player = new Player(board, null);
+      var clientAccount = new ClientAccount();
 
-      var result = gameManager.RegisterPlayer(player);
+      var result = gameManager.RegisterPlayer(clientAccount);
 
       result.ShouldBeTrue();
     }
 
     [Test]
-    public void RegisterPlayer_GameManagerNeedsLastPlayer_PlayerIsRegistered()
+    public void RegisterClient_GameSessionNeedsLastPlayer_ClientIsRegistered()
     {
       var board = new Board(BoardSizes.Standard);
       var diceRoller = new DiceRoller();
       var cardPile = new DevelopmentCardPile();
       IGameSession gameManager = new GameSession(board, 2, diceRoller, cardPile);
 
-      var player1 = new Player(board, null);
-      var player2 = new Player(board, null);
+      var clientAccount1 = new ClientAccount();
+      var clientAccount2 = new ClientAccount();
 
-      gameManager.RegisterPlayer(player1);
-      var result = gameManager.RegisterPlayer(player2);
+      gameManager.RegisterPlayer(clientAccount1);
+      var result = gameManager.RegisterPlayer(clientAccount2);
 
       result.ShouldBeTrue();
     }
 
     [Test]
-    public void RegisterPlayer_GameManagerIsFull_PlayerIsNotRegistered()
+    public void RegisterClient_GameSessionIsFull_ClientIsNotRegistered()
     {
       var board = new Board(BoardSizes.Standard);
       var diceRoller = new DiceRoller();
       var cardPile = new DevelopmentCardPile();
       IGameSession gameManager = new GameSession(board, 2, diceRoller, cardPile);
 
-      IPlayer player1 = new Player(board, null);
-      IPlayer player2 = new Player(board, null);
-      IPlayer player3 = new Player(board, null);
-
-      gameManager.RegisterPlayer(player1);
-      gameManager.RegisterPlayer(player2);
-      var result = gameManager.RegisterPlayer(player3);
+      var clientAccount1 = new ClientAccount();
+      var clientAccount2 = new ClientAccount();
+      var clientAccount3 = new ClientAccount();
+      gameManager.RegisterPlayer(clientAccount1);
+      gameManager.RegisterPlayer(clientAccount2);
+      var result = gameManager.RegisterPlayer(clientAccount3);
 
       result.ShouldBeTrue();
     }
