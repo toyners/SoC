@@ -3,15 +3,16 @@ namespace Jabberwocky.SoC.Service
 {
   using System;
   using Library;
+  using Library.GameBoards;
 
   public static class GameInitializationDataBuilder
   {
-    public static GameInitializationData Build(Board board)
+    public static GameInitializationData Build(GameBoard board)
     {
       // Standard board only
-      var boardData = new Byte[Board.StandardBoardResourceProviderCount];
+      var boardData = new Byte[GameBoard.StandardBoardResourceProviderCount];
 
-      for (Int32 index = 0; index < Board.StandardBoardResourceProviderCount; index++)
+      for (Int32 index = 0; index < GameBoard.StandardBoardResourceProviderCount; index++)
       {
         boardData[index] = CreateDataForProvider(board.Providers[index]);
       }

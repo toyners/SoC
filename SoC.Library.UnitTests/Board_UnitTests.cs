@@ -1,6 +1,7 @@
 ﻿
 namespace Jabberwocky.SoC.Library.UnitTests
 {
+  using GameBoards;
   using NUnit.Framework;
   using Shouldly;
 
@@ -11,17 +12,17 @@ namespace Jabberwocky.SoC.Library.UnitTests
     public void Create_StandardSize_LocationsCreated()
     {
       // Arrange and Act
-      Board board = new Board(BoardSizes.Standard);
+      var board = new GameBoard(BoardSizes.Standard);
 
       // Assert
-      board.Locations.Length.ShouldBe(Board.StandardBoardLocationCount);
+      board.Locations.Length.ShouldBe(GameBoard.StandardBoardLocationCount);
     }
 
     [Test]
     public void Create_StandardSize_TrailsCreatedAndLinkedToLocations()
     {
       // Arrange and Act
-      Board board = new Board(BoardSizes.Standard);
+      var board = new GameBoard(BoardSizes.Standard);
 
       // Assert
       // Columns of hexes 3-4-5-4-3
@@ -44,7 +45,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
       // Column 3 horizontals = 6
       // Column 4 horizontals = 5
       // Column 5 horizontals = 4
-      board.Trails.Length.ShouldBe(Board.StandardBoardTrailCount);
+      board.Trails.Length.ShouldBe(GameBoard.StandardBoardTrailCount);
 
       // Column side 1
       var locationIndex = 0;
@@ -151,7 +152,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     public void Create_StandardSize_LocationsLinkedToTrails()
     {
       // Arrange and Act
-      Board board = new Board(BoardSizes.Standard);
+      var board = new GameBoard(BoardSizes.Standard);
 
       // Assert
       // Column side 1
@@ -446,7 +447,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     public void Create_StandardSize_ResourceProvidersLinkedToLocations()
     {
       // Arrange and Act
-      Board board = new Board(BoardSizes.Standard);
+      GameBoard board = new GameBoard(BoardSizes.Standard);
 
       var desert = new ResourceProvider();
       var brick8 = new ResourceProvider(ResourceTypes.Brick, 8);

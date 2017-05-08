@@ -4,6 +4,7 @@ namespace Jabberwocky.SoC.Client
   using System;
   using Jabberwocky.SoC.Client.ServiceReference;
   using Library;
+  using Library.GameBoards;
 
   public class ServiceClient : IServiceProviderCallback
   {
@@ -18,7 +19,7 @@ namespace Jabberwocky.SoC.Client
     #endregion
 
     #region Properties
-    public Board Board { get; private set; }
+    public GameBoard Board { get; private set; }
     #endregion
 
     #region Methods
@@ -34,7 +35,7 @@ namespace Jabberwocky.SoC.Client
 
     public void GameInitialization(GameInitializationData gameData)
     {
-      this.Board = new Board(BoardSizes.Standard);
+      this.Board = new GameBoard(BoardSizes.Standard);
       this.GameInitializationEvent?.Invoke(gameData);
     }
 

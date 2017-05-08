@@ -5,6 +5,7 @@ namespace Jabberwocky.SoC.Client
   using System.ServiceModel;
   using Jabberwocky.SoC.Client.ServiceReference;
   using Library;
+  using Library.GameBoards;
 
   public class GameClient
   {
@@ -19,7 +20,7 @@ namespace Jabberwocky.SoC.Client
 
     // TODO: Check that we are connected and that game initialization has completed 
     // (i.e. Serviceclient and Board not null)
-    public Board Board { get { return this.serviceClient.Board; } }
+    public GameBoard Board { get { return this.serviceClient.Board; } }
     #endregion
 
     #region Events

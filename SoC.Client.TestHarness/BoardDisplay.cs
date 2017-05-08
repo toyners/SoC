@@ -9,11 +9,12 @@ namespace Client.TestHarness
   using System.Windows.Media.Imaging;
   using Jabberwocky.SoC.Client.ServiceReference;
   using Jabberwocky.SoC.Library;
+  using Jabberwocky.SoC.Library.GameBoards;
 
   public class BoardDisplay
   {
     #region Fields
-    private Board board;
+    private GameBoard board;
 
     private Canvas backgroundCanvas;
 
@@ -21,7 +22,7 @@ namespace Client.TestHarness
     #endregion
 
     #region Construction
-    public BoardDisplay(Board board, Canvas backgroundCanvas, Canvas foregroundCanvas)
+    public BoardDisplay(GameBoard board, Canvas backgroundCanvas, Canvas foregroundCanvas)
     {
       //Todo null reference check
       this.board = board;

@@ -3,6 +3,7 @@ namespace Service.UnitTests
 {
   using System;
   using Jabberwocky.SoC.Library;
+  using Jabberwocky.SoC.Library.GameBoards;
   using Jabberwocky.SoC.Service;
   using NUnit.Framework;
   using Shouldly;
@@ -15,7 +16,7 @@ namespace Service.UnitTests
     public void Build_StandardBoard_ReturnsCorrectInitializationData()
     {
       // Arrange
-      var board = new Board(BoardSizes.Standard);
+      var board = new GameBoard(BoardSizes.Standard);
 
       // Act
       var data = GameInitializationDataBuilder.Build(board);

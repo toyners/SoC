@@ -1,12 +1,12 @@
 ﻿
-namespace Jabberwocky.SoC.Library
+namespace Jabberwocky.SoC.Library.GameBoards
 {
   using System;
   using System.Collections.Generic;
   using System.Linq;
   using System.Text;
 
-  public class Board
+  public class GameBoard
   {
     #region Fields
     public Location[] Locations;
@@ -23,7 +23,7 @@ namespace Jabberwocky.SoC.Library
     #endregion
 
     #region Construction
-    public Board(BoardSizes size)
+    public GameBoard(BoardSizes size)
     {
       if (size == BoardSizes.Extended)
       {

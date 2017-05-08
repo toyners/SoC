@@ -1,4 +1,5 @@
 ﻿
+using Jabberwocky.SoC.Library.GameBoards;
 using Jabberwocky.SoC.Library.Interfaces;
 
 namespace Jabberwocky.SoC.Library
@@ -7,7 +8,7 @@ namespace Jabberwocky.SoC.Library
   {
     public IGameSession Create()
     {
-      var board = new Board(BoardSizes.Standard);
+      var board = new GameBoard(BoardSizes.Standard);
       return new GameSession(board, 1, new DiceRoller(), new DevelopmentCardPile());
     }
   }

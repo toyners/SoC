@@ -2,12 +2,15 @@
 namespace Jabberwocky.SoC.Library
 {
   using System;
-  using System.Collections.Generic;
-  using System.Linq;
-  using System.Text;
 
   public class ClientAccount
   {
+    public String Username { get; set; }
 
+    public String Fullname { get; set; }
+
+    public UInt32 GamesPlayed { get; set; }
+
+    public UInt32 GamesWon { get; set; }
   }
 }

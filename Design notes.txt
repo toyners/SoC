@@ -1,12 +1,15 @@
 Player holds counts for resources, list of settlement/city locations, list of development cards
 PlayerView holds number of resource cards, number of hidden and unhidden development cards
 
-BoardView holds information on locations and trails for purposes of display. Includes robber location.
+GameBoardUpdate holds information on new settlements, cities, roads and robber location. Happens for every player
+
+GameBoardData holds information on all settlements, cities, roads, resource providers and robber location. Used on Server side
+and is the initial data sent to the client. Used by GameBoard on Server side as data repository.
 - Verifies the settlement placement before passing to GameManager
 - Verifies the road placement before passsing to GameManager
 - Verifies the city placement before passing to GameManager
 
-Board holds all locations and roads and resource providers
+GameBoard holds all locations and roads and resource providers
 - Verifies the settlement placement before updating the board
 - Updates the board with a new settlement for a player
 - Verifies the road placement before updating the board
@@ -14,6 +17,7 @@ Board holds all locations and roads and resource providers
 - Verifies the city placement before updating the board
 - Updates the board with a new city for a player
 - Returns the resources manifest for a given dice roll to the GameManager
+- Verifies that a player can make a trade with an owned port.
 
 GameSession is the instance of the SoC game
 - manages player turns and interactions between the players, the board, the boardview
@@ -26,7 +30,8 @@ GameSessionManager creates and manages instances of GameSession
 - Passes communication between GameController and GameSession
 
 GameController
-- is the channel from the client to the GameManager (GM could be local or on a server). It passes through commands and passes back updated BoardView and/or PlayerView
+- is the channel from the client to the GameSession (GS could be local or on a server) via GameSessionManager. 
+It passes through commands and passes back updated BoardView and/or PlayerView.
 - Also handles the game setup conversation between client and GM
 - Also handles retrieving of account by passing username and password.
 

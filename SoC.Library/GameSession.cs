@@ -2,11 +2,12 @@
 namespace Jabberwocky.SoC.Library
 {
   using System;
+  using GameBoards;
   using Interfaces;
 
   public class GameSession : IGameSession
   {
-    public GameSession(Board board, UInt32 playerCount, IDiceRoller diceRoller, DevelopmentCardPile cardPile)
+    public GameSession(GameBoard board, UInt32 playerCount, IDiceRoller diceRoller, DevelopmentCardPile cardPile)
     {
       if (playerCount < 2 || playerCount > 4)
       {
@@ -14,7 +15,7 @@ namespace Jabberwocky.SoC.Library
       }
     }
 
-    public Board Board
+    public GameBoard Board
     {
       get
       {

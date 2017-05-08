@@ -42,8 +42,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Board.cs" />
+    <Compile Include="GameBoards\GameBoard.cs" />
+    <Compile Include="GameBoards\GameBoardData.cs" />
+    <Compile Include="GameBoards\GameBoardUpdate.cs" />
     <Compile Include="ClientAccount.cs" />
+    <Compile Include="ClientAccountManager.cs" />
     <Compile Include="DiceRoller.cs" />
     <Compile Include="DiceRollerFactory.cs" />
     <Compile Include="Enums\BoardSizes.cs" />

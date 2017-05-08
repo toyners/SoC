@@ -18,15 +18,6 @@ namespace Jabberwocky.SoC.Library
     UInt32 LumberCount;
     UInt32 BrickCount;
 
-    private Board board;
-    private IGameController gameConnector;
-
-    public Player(Board board, IGameController gameConnector)
-    {
-      this.gameConnector = gameConnector;
-      this.board = board;
-    }
-
     #region Methods
     public UInt32 GetVictoryPoints() { throw new NotImplementedException(); }
 

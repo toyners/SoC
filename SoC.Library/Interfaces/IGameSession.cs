@@ -2,6 +2,7 @@
 namespace Jabberwocky.SoC.Library.Interfaces
 {
   using System;
+  using GameBoards;
 
   /// <summary>
   /// Provides methods for managing a game.
@@ -9,7 +10,7 @@ namespace Jabberwocky.SoC.Library.Interfaces
   public interface IGameSession
   {
     #region Properties
-    Board Board { get; }
+    GameBoard Board { get; }
     #endregion
 
     #region Methods
