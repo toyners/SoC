@@ -2,10 +2,10 @@
 namespace Jabberwocky.SoC.Library.GameBoards
 {
   using System;
-  using System.Collections.Generic;
-  using System.Linq;
-  using System.Text;
 
+  /// <summary>
+  /// Holds all locations, trails and resource providers
+  /// </summary>
   public class GameBoard
   {
     #region Fields
