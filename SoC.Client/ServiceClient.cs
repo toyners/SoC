@@ -19,7 +19,7 @@ namespace Jabberwocky.SoC.Client
     #endregion
 
     #region Properties
-    public GameBoard Board { get; private set; }
+    public GameBoardManager Board { get; private set; }
     #endregion
 
     #region Methods
@@ -35,7 +35,7 @@ namespace Jabberwocky.SoC.Client
 
     public void GameInitialization(GameInitializationData gameData)
     {
-      this.Board = new GameBoard(BoardSizes.Standard);
+      this.Board = new GameBoardManager(BoardSizes.Standard);
       this.GameInitializationEvent?.Invoke(gameData);
     }
 

@@ -10,7 +10,7 @@ and is the initial data sent to the client. Used by GameBoard on Server side as 
 - Verifies the road placement before passsing to GameManager
 - Verifies the city placement before passing to GameManager
 
-GameBoard holds all locations and roads and resource providers (via GameBoardData)
+GameBoardManager holds all locations and roads and resource providers (via GameBoardData)
 - Verifies the settlement placement before updating the board (via GameBoardData)
 - Updates the board with a new settlement for a player
 - Verifies the road placement before updating the board (via GameBoardData)

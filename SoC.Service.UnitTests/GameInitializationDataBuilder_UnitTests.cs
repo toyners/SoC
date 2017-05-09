@@ -16,7 +16,7 @@ namespace Service.UnitTests
     public void Build_StandardBoard_ReturnsCorrectInitializationData()
     {
       // Arrange
-      var board = new GameBoard(BoardSizes.Standard);
+      var board = new GameBoardManager(BoardSizes.Standard);
 
       // Act
       var data = GameInitializationDataBuilder.Build(board);

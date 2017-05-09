@@ -20,7 +20,7 @@ namespace Jabberwocky.SoC.Client
 
     // TODO: Check that we are connected and that game initialization has completed 
     // (i.e. Serviceclient and Board not null)
-    public GameBoard Board { get { return this.serviceClient.Board; } }
+    public GameBoardManager Board { get { return this.serviceClient.Board; } }
     #endregion
 
     #region Events

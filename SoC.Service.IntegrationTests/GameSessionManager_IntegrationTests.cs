@@ -166,7 +166,7 @@ namespace Service.IntegrationTests
       Jabberwocky.SoC.Service.GameSessionManager gameSessionManager = null;
       try
       {
-        var board = new GameBoard(BoardSizes.Standard);
+        var board = new GameBoardManager(BoardSizes.Standard);
         var mockGameManager = Substitute.For<IGameSession>();
         mockGameManager.GetFirstSetupPassOrder().Returns(firstSetupPassOrder);
         mockGameManager.Board.Returns(board);
@@ -296,7 +296,7 @@ namespace Service.IntegrationTests
       Jabberwocky.SoC.Service.GameSessionManager gameSessionManager = null;
       try
       {
-        var board = new GameBoard(BoardSizes.Standard);
+        var board = new GameBoardManager(BoardSizes.Standard);
         var mockGameManager = Substitute.For<IGameSession>();
         mockGameManager.GetFirstSetupPassOrder().Returns(new UInt32[] { 0u, 1u, 2u, 3u });
         mockGameManager.Board.Returns(board);
@@ -352,7 +352,7 @@ namespace Service.IntegrationTests
       Jabberwocky.SoC.Service.GameSessionManager gameSessionManager = null;
       try
       {
-        var board = new GameBoard(BoardSizes.Standard);
+        var board = new GameBoardManager(BoardSizes.Standard);
         var mockGameManager = Substitute.For<IGameSession>();
         mockGameManager.GetFirstSetupPassOrder().Returns(setupOrder);
         mockGameManager.Board.Returns(board);
@@ -439,7 +439,7 @@ namespace Service.IntegrationTests
       Jabberwocky.SoC.Service.GameSessionManager gameSessionManager = null;
       try
       {
-        var board = new GameBoard(BoardSizes.Standard);
+        var board = new GameBoardManager(BoardSizes.Standard);
         var mockGameManager = Substitute.For<IGameSession>();
         mockGameManager.GetFirstSetupPassOrder().Returns(setupOrder);
         var secondSetupOrder = new List<UInt32>(setupOrder);

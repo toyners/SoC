@@ -14,7 +14,7 @@ namespace Client.TestHarness
   public class BoardDisplay
   {
     #region Fields
-    private GameBoard board;
+    private GameBoardManager board;
 
     private Canvas backgroundCanvas;
 
@@ -22,7 +22,7 @@ namespace Client.TestHarness
     #endregion
 
     #region Construction
-    public BoardDisplay(GameBoard board, Canvas backgroundCanvas, Canvas foregroundCanvas)
+    public BoardDisplay(GameBoardManager board, Canvas backgroundCanvas, Canvas foregroundCanvas)
     {
       //Todo null reference check
       this.board = board;

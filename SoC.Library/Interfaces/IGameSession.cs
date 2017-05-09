@@ -10,7 +10,7 @@ namespace Jabberwocky.SoC.Library.Interfaces
   public interface IGameSession
   {
     #region Properties
-    GameBoard Board { get; }
+    GameBoardManager Board { get; }
     #endregion
 
     #region Methods

@@ -188,7 +188,7 @@ namespace Service.UnitTests
         var testPlayer3 = new TestClient(TestPlayer3UserName, gameSessionManager);
         var testPlayer4 = new TestClient(TestPlayer4UserName, gameSessionManager);
 
-        var gameInitializationData = GameInitializationDataBuilder.Build(new GameBoard(BoardSizes.Standard));
+        var gameInitializationData = GameInitializationDataBuilder.Build(new GameBoardManager(BoardSizes.Standard));
         var expectedMessage = new InitializeGameMessage(gameInitializationData);
 
         // Act
@@ -568,7 +568,7 @@ namespace Service.UnitTests
       Jabberwocky.SoC.Service.GameSessionManager gameSessionManager = null;
       try
       {
-        var board = new GameBoard(BoardSizes.Standard);
+        var board = new GameBoardManager(BoardSizes.Standard);
         var mockGameManager = Substitute.For<IGameSession>();
         mockGameManager.GetFirstSetupPassOrder().Returns(firstSetupPassOrder);
         mockGameManager.Board.Returns(board);
@@ -627,7 +627,7 @@ namespace Service.UnitTests
       Jabberwocky.SoC.Service.GameSessionManager gameSessionManager = null;
       try
       {
-        var board = new GameBoard(BoardSizes.Standard);
+        var board = new GameBoardManager(BoardSizes.Standard);
         var mockGameManager = Substitute.For<IGameSession>();
         mockGameManager.GetFirstSetupPassOrder().Returns(new UInt32[] { 0u, 1u, 2u, 3u });
         mockGameManager.Board.Returns(board);

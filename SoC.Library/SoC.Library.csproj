@@ -44,8 +44,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="GameBoards\GameBoard.cs" />
     <Compile Include="GameBoards\GameBoardData.cs" />
+    <Compile Include="GameBoards\GameBoardManager.cs" />
     <Compile Include="GameBoards\GameBoardUpdate.cs" />
     <Compile Include="ClientAccount.cs" />
     <Compile Include="ClientAccountManager.cs" />

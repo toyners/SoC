@@ -8,7 +8,7 @@ namespace Jabberwocky.SoC.Library
   {
     public IGameSession Create()
     {
-      var board = new GameBoard(BoardSizes.Standard);
+      var board = new GameBoardManager(BoardSizes.Standard);
       return new GameSession(board, 1, new DiceRoller(), new DevelopmentCardPile());
     }
   }
