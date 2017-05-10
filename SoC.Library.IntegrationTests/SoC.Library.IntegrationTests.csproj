@@ -4,14 +4,13 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{5CAC4497-470C-49FE-9CFD-AD5C908BEA79}</ProjectGuid>
+    <ProjectGuid>{1FED6954-33B1-4B0E-B535-BBC6AD398211}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Jabberwocky.SoC.Library</RootNamespace>
-    <AssemblyName>Jabberwocky.SoC.Library</AssemblyName>
+    <RootNamespace>SoC.Library.IntegrationTests</RootNamespace>
+    <AssemblyName>SoC.Library.IntegrationTests</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -21,8 +20,6 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <CodeAnalysisRuleSet>..\..\Common.ruleset</CodeAnalysisRuleSet>
-    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -31,9 +28,16 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="nunit.framework, Version=3.4.1.0, Culture=neutral, PublicKeyToken=2638cd05610744eb, processorArchitecture=MSIL">
+      <HintPath>..\packages\NUnit.3.4.1\lib\net45\nunit.framework.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Shouldly, Version=2.8.2.0, Culture=neutral, PublicKeyToken=6042cbcb05cbc941, processorArchitecture=MSIL">
+      <HintPath>..\packages\Shouldly.2.8.2\lib\net451\Shouldly.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -44,35 +48,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Enums\GameConnectionTypes.cs" />
-    <Compile Include="GameBoards\GameBoardData.cs" />
-    <Compile Include="GameBoards\GameBoardManager.cs" />
-    <Compile Include="GameBoards\GameBoardUpdate.cs" />
-    <Compile Include="ClientAccount.cs" />
-    <Compile Include="ClientAccountManager.cs" />
-    <Compile Include="DiceRoller.cs" />
-    <Compile Include="DiceRollerFactory.cs" />
-    <Compile Include="Enums\BoardSizes.cs" />
-    <Compile Include="Enums\DevelopmentCardTypes.cs" />
-    <Compile Include="Enums\ResourceTypes.cs" />
-    <Compile Include="GameController.cs" />
-    <Compile Include="GameControllerFactory.cs" />
-    <Compile Include="GameFilter.cs" />
-    <Compile Include="GameSession.cs" />
-    <Compile Include="Interfaces\IGameController.cs" />
-    <Compile Include="Interfaces\IPlayer.cs" />
-    <Compile Include="OldGameManager.cs" />
-    <Compile Include="GameSessionManager.cs" />
-    <Compile Include="Interfaces\IDiceRoller.cs" />
-    <Compile Include="Interfaces\IDiceRollerFactory.cs" />
-    <Compile Include="Interfaces\IGameSession.cs" />
-    <Compile Include="Interfaces\IGameSessionManager.cs" />
-    <Compile Include="Location.cs" />
-    <Compile Include="Objects.cs" />
-    <Compile Include="Player.cs" />
+    <Compile Include="Empty Test Class1.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ResourceProvider.cs" />
-    <Compile Include="Trail.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\SoC.Library\SoC.Library.csproj">
+      <Project>{5cac4497-470c-49fe-9cfd-ad5c908bea79}</Project>
+      <Name>SoC.Library</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

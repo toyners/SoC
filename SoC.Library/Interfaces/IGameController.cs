@@ -6,9 +6,17 @@ namespace Jabberwocky.SoC.Library.Interfaces
 
   public interface IGameController
   {
+    Action<Player> GameJoinedEvent { get; set; }
+
+    Action<ClientAccount> LoggedInEvent { get; set; }
+
     Guid GameId { get; }
 
-    Boolean RequestConnectionToGame();
+    void StartLogIntoAccount(String username, String password);
+
+    void StartJoiningGame(GameFilter gameFilter);
+
+    void StartJoiningGame(GameFilter gameFilter, Guid accountToken);
 
     void PlaceTown(Location location);
 

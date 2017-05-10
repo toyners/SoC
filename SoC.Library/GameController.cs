@@ -9,7 +9,11 @@ namespace Jabberwocky.SoC.Library
 
   public class GameController : IGameController
   {
+    public Action<Player> GameJoinedEvent { get; set; }
+
     public Guid GameId { get; private set; }
+
+    public Action<ClientAccount> LoggedInEvent { get; set; }
 
     public void AcceptOffer(Offer offer)
     {
@@ -26,17 +30,27 @@ namespace Jabberwocky.SoC.Library
       throw new NotImplementedException();
     }
 
+    public void StartJoiningGame(GameFilter gameFilter)
+    {
+      throw new NotImplementedException();
+    }
+
+    public void StartJoiningGame(GameFilter gameFilter, Guid accountToken)
+    {
+      throw new NotImplementedException();
+    }
+
+    public void StartLogIntoAccount(String username, String password)
+    {
+      throw new NotImplementedException();
+    }
+
     public ICollection<Offer> MakeOffer(Offer offer)
     {
       throw new NotImplementedException();
     }
 
     public void PlaceTown(Location location)
-    {
-      throw new NotImplementedException();
-    }
-
-    public Boolean RequestConnectionToGame()
     {
       throw new NotImplementedException();
     }
