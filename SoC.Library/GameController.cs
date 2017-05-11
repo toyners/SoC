@@ -9,7 +9,7 @@ namespace Jabberwocky.SoC.Library
 
   public class GameController : IGameController
   {
-    public Action<Player> GameJoinedEvent { get; set; }
+    public Action<Player[]> GameJoinedEvent { get; set; }
 
     public Guid GameId { get; private set; }
 

@@ -11,29 +11,45 @@ namespace SoC.Library.IntegrationTests
   {
     #region Methods
     [Test]
-    public void JoinEmptyGameOnLocalMachine()
+    public void StartDefaultGameOnLocalMachine()
     {
       var gameControllerFactory = new GameControllerFactory();
       var gameController = gameControllerFactory.Create(GameConnectionTypes.Local);
-      Player player = null;
-      gameController.GameJoinedEvent = (Player p) => { player = p; };
+      Player[] players = null;
+      gameController.GameJoinedEvent = (Player[] p) => { players = p; };
 
       gameController.StartJoiningGame(null);
 
-      player.ShouldNotBeNull();
+      players.ShouldNotBeNull();
+      players.Length.ShouldBe(4);
     }
 
     [Test]
-    public void JoinEmptyGameOnRemoteServerMachine()
+    public void StartSinglePlayerGameOnLocalMachine()
     {
       var gameControllerFactory = new GameControllerFactory();
-      var gameController = gameControllerFactory.Create(GameConnectionTypes.Server);
-      Player player = null;
-      gameController.GameJoinedEvent = (Player p) => { player = p; };
+      var gameController = gameControllerFactory.Create(GameConnectionTypes.Local);
+      Player[] players = null;
+      gameController.GameJoinedEvent = (Player[] p) => { players = p; };
 
-      gameController.StartJoiningGame(null);
+      var gameFilter = new GameFilter { MaxPlayers = 1, MaxAIPlayers = 3 };
+      gameController.StartJoiningGame(gameFilter);
 
-      player.ShouldNotBeNull();
+      players.ShouldNotBeNull();
+    }
+
+    [Test]
+    public void StartHotseatGameOnLocalServerMachine()
+    {
+      var gameControllerFactory = new GameControllerFactory();
+      var gameController = gameControllerFactory.Create(GameConnectionTypes.Local);
+      Player[] players = null;
+      gameController.GameJoinedEvent = (Player[] p) => { players = p; };
+
+      var gameFilter = new GameFilter { MaxPlayers = 2, MaxAIPlayers = 2 };
+      gameController.StartJoiningGame(gameFilter);
+
+      players.ShouldNotBeNull();
     }
     #endregion 
   }
