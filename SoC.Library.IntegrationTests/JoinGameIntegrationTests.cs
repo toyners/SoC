@@ -22,6 +22,10 @@ namespace SoC.Library.IntegrationTests
 
       players.ShouldNotBeNull();
       players.Length.ShouldBe(4);
+      players[0].ShouldBeOfType<Player>();
+      players[1].ShouldBeOfType<PlayerView>();
+      players[2].ShouldBeOfType<PlayerView>();
+      players[3].ShouldBeOfType<PlayerView>();
     }
 
     [Test]
@@ -36,6 +40,11 @@ namespace SoC.Library.IntegrationTests
       gameController.StartJoiningGame(gameFilter);
 
       players.ShouldNotBeNull();
+      players.Length.ShouldBe(4);
+      players[0].ShouldBeOfType<Player>();
+      players[1].ShouldBeOfType<PlayerView>();
+      players[2].ShouldBeOfType<PlayerView>();
+      players[3].ShouldBeOfType<PlayerView>();
     }
 
     [Test]
@@ -50,6 +59,11 @@ namespace SoC.Library.IntegrationTests
       gameController.StartJoiningGame(gameFilter);
 
       players.ShouldNotBeNull();
+      players.Length.ShouldBe(4);
+      players[0].ShouldBeOfType<Player>();
+      players[1].ShouldBeOfType<Player>();
+      players[2].ShouldBeOfType<PlayerView>();
+      players[3].ShouldBeOfType<PlayerView>();
     }
     #endregion 
   }

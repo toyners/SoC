@@ -1,5 +1,6 @@
-Player holds counts for resources, list of settlement/city locations, list of development cards
-PlayerView holds number of resource cards, number of hidden and unhidden development cards
+
+Player holds counts for resources, list of hidden and shown development cards. Gives VP count.
+PlayerView holds number of resource cards, number of hidden development cards and list of shown development cards
 
 GameBoardUpdate holds information on new settlements, cities, roads and robber location. Happens for every player
 
