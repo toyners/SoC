@@ -6,7 +6,7 @@ namespace Jabberwocky.SoC.Library.Interfaces
 
   public interface IGameController
   {
-    Action<Player[]> GameJoinedEvent { get; set; }
+    Action<PlayerBase[]> GameJoinedEvent { get; set; }
 
     Action<ClientAccount> LoggedInEvent { get; set; }
 

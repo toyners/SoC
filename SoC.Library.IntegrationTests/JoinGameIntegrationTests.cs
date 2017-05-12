@@ -15,8 +15,8 @@ namespace SoC.Library.IntegrationTests
     {
       var gameControllerFactory = new GameControllerFactory();
       var gameController = gameControllerFactory.Create(GameConnectionTypes.Local);
-      Player[] players = null;
-      gameController.GameJoinedEvent = (Player[] p) => { players = p; };
+      PlayerBase[] players = null;
+      gameController.GameJoinedEvent = (PlayerBase[] p) => { players = p; };
 
       gameController.StartJoiningGame(null);
 
@@ -33,8 +33,8 @@ namespace SoC.Library.IntegrationTests
     {
       var gameControllerFactory = new GameControllerFactory();
       var gameController = gameControllerFactory.Create(GameConnectionTypes.Local);
-      Player[] players = null;
-      gameController.GameJoinedEvent = (Player[] p) => { players = p; };
+      PlayerBase[] players = null;
+      gameController.GameJoinedEvent = (PlayerBase[] p) => { players = p; };
 
       var gameFilter = new GameFilter { MaxPlayers = 1, MaxAIPlayers = 3 };
       gameController.StartJoiningGame(gameFilter);
@@ -52,8 +52,8 @@ namespace SoC.Library.IntegrationTests
     {
       var gameControllerFactory = new GameControllerFactory();
       var gameController = gameControllerFactory.Create(GameConnectionTypes.Local);
-      Player[] players = null;
-      gameController.GameJoinedEvent = (Player[] p) => { players = p; };
+      PlayerBase[] players = null;
+      gameController.GameJoinedEvent = (PlayerBase[] p) => { players = p; };
 
       var gameFilter = new GameFilter { MaxPlayers = 2, MaxAIPlayers = 2 };
       gameController.StartJoiningGame(gameFilter);
