@@ -55,6 +55,7 @@
   <ItemGroup>
     <Compile Include="Board_UnitTests.cs" />
     <Compile Include="GameSession_UnitTests.cs" />
+    <Compile Include="LocalGameController_UnitTests.cs" />
     <Compile Include="Location_UnitTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ResourceProvider_UnitTests.cs" />

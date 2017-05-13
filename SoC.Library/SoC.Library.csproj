@@ -55,7 +55,7 @@
     <Compile Include="Enums\BoardSizes.cs" />
     <Compile Include="Enums\DevelopmentCardTypes.cs" />
     <Compile Include="Enums\ResourceTypes.cs" />
-    <Compile Include="GameController.cs" />
+    <Compile Include="LocalGameController.cs" />
     <Compile Include="GameControllerFactory.cs" />
     <Compile Include="GameFilter.cs" />
     <Compile Include="GameSession.cs" />

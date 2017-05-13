@@ -13,7 +13,14 @@ namespace Jabberwocky.SoC.Library
   {
     public IGameController Create(GameConnectionTypes connectionType)
     {
-      throw new NotImplementedException();
+      if (connectionType == GameConnectionTypes.Local)
+      {
+        return new LocalGameController();
+      }
+      else
+      {
+        throw new NotImplementedException();
+      }
     }
   }
 }

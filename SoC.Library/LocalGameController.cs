@@ -7,7 +7,7 @@ namespace Jabberwocky.SoC.Library
   using System.Text;
   using Interfaces;
 
-  public class GameController : IGameController
+  public class LocalGameController : IGameController
   {
     public Action<PlayerBase[]> GameJoinedEvent { get; set; }
 
@@ -32,7 +32,25 @@ namespace Jabberwocky.SoC.Library
 
     public void StartJoiningGame(GameFilter gameFilter)
     {
-      throw new NotImplementedException();
+      if (gameFilter == null)
+      {
+        gameFilter = new GameFilter { MaxPlayers = 1, MaxAIPlayers = 3 };
+      }
+
+      var players = new PlayerBase[gameFilter.MaxPlayers + gameFilter.MaxAIPlayers];
+
+      var index = 0;
+      while ((gameFilter.MaxPlayers--) > 0)
+      {
+        players[index++] = new Player();
+      }
+
+      while ((gameFilter.MaxAIPlayers--) > 0)
+      {
+        players[index++] = new PlayerView();
+      }
+
+      this.GameJoinedEvent?.Invoke(players);
     }
 
     public void StartJoiningGame(GameFilter gameFilter, Guid accountToken)
