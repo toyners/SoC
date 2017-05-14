@@ -35,6 +35,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SoC.Service.IntegrationTest
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SoC.Library.IntegrationTests", "SoC.Library.IntegrationTests\SoC.Library.IntegrationTests.csproj", "{1FED6954-33B1-4B0E-B535-BBC6AD398211}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SoC.Test", "SoC.Test\SoC.Test.csproj", "{F1E8B2F5-A3E5-432C-B578-E843FFA63AB6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -81,6 +83,10 @@ Global
 		{1FED6954-33B1-4B0E-B535-BBC6AD398211}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1FED6954-33B1-4B0E-B535-BBC6AD398211}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1FED6954-33B1-4B0E-B535-BBC6AD398211}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F1E8B2F5-A3E5-432C-B578-E843FFA63AB6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F1E8B2F5-A3E5-432C-B578-E843FFA63AB6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F1E8B2F5-A3E5-432C-B578-E843FFA63AB6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F1E8B2F5-A3E5-432C-B578-E843FFA63AB6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
