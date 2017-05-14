@@ -21,7 +21,7 @@ namespace Jabberwocky.SoC.Library
 
   public class Settlement
   {
-    Player Owner;
+    PlayerData Owner;
   }
 
   public class City

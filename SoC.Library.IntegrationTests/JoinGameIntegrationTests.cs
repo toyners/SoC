@@ -23,8 +23,8 @@ namespace SoC.Library.IntegrationTests
 
       players.ShouldNotBeNull();
       players.Length.ShouldBe(4);
-      players[0].ShouldBeOfType<Player>();
-      players[1].ShouldBeOfType<Player>();
+      players[0].ShouldBeOfType<PlayerData>();
+      players[1].ShouldBeOfType<PlayerData>();
       players[2].ShouldBeOfType<PlayerView>();
       players[3].ShouldBeOfType<PlayerView>();
     }

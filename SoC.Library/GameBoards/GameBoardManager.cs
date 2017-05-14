@@ -15,17 +15,17 @@ namespace Jabberwocky.SoC.Library.GameBoards
 
     public GameBoardData Data { get; private set; }
 
-    public void PlaceCity(Player player, Location location)
+    public void PlaceCity(PlayerData player, Location location)
     {
       throw new NotImplementedException();
     }
 
-    public void PlaceRoad(Player player, Location startLocation, Location endLocation)
+    public void PlaceRoad(PlayerData player, Location startLocation, Location endLocation)
     {
       throw new NotImplementedException();
     }
 
-    public void PlaceTown(Player player, Location location)
+    public void PlaceTown(PlayerData player, Location location)
     {
       throw new NotImplementedException();
     }

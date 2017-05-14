@@ -11,7 +11,7 @@ namespace Jabberwocky.SoC.Library
     #region Fields
     private IDiceRoller diceRoller;
 
-    private Player[] players;
+    private PlayerData[] players;
 
     private DevelopmentCardPile cardPile;
     #endregion
@@ -21,7 +21,7 @@ namespace Jabberwocky.SoC.Library
     {
       //TODO: Check for null references
       this.Board = board;
-      this.players = new Player[playerCount];
+      this.players = new PlayerData[playerCount];
       this.diceRoller = diceRoller;
       this.cardPile = cardPile;
     }
@@ -36,12 +36,12 @@ namespace Jabberwocky.SoC.Library
     {
     }
 
-    private Player[] DeterminePlayingOrder(Player[] players)
+    private PlayerData[] DeterminePlayingOrder(PlayerData[] players)
     {
       throw new NotImplementedException();
     }
 
-    private Player[] DetermineSetupOrder(Player[] players)
+    private PlayerData[] DetermineSetupOrder(PlayerData[] players)
     {
       throw new NotImplementedException();
     }

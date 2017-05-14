@@ -7,7 +7,7 @@ namespace Jabberwocky.SoC.Library
   using System.Text;
   using Interfaces;
 
-  public class Player : PlayerBase
+  public class PlayerData : PlayerBase
   {
     DevelopmentCard[] HiddenDevelopmentCards;
 

@@ -37,7 +37,7 @@ namespace Jabberwocky.SoC.Library.Interfaces
 
   public struct Offer
   {
-    Player player;
+    PlayerData player;
 
     Int32 OfferedOre;
     Int32 OfferedWheat;

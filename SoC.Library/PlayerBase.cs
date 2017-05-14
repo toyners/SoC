@@ -6,9 +6,8 @@ namespace Jabberwocky.SoC.Library
   using System.Linq;
   using System.Text;
 
-  public class PlayerView : PlayerBase
+  public class PlayerBase
   {
-    UInt32 ResourceCards;
-    UInt32 HiddenDevelopmentCards;
+    DevelopmentCard[] DisplayedDevelopmentCards;
   }
 }

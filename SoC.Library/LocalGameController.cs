@@ -42,7 +42,7 @@ namespace Jabberwocky.SoC.Library
       var index = 0;
       while ((gameFilter.MaxPlayers--) > 0)
       {
-        players[index++] = new Player();
+        players[index++] = new PlayerData();
       }
 
       while ((gameFilter.MaxAIPlayers--) > 0)

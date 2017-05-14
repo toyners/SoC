@@ -70,10 +70,10 @@ namespace Service.UnitTests
       try
       {
         // Arrange
-        var testPlayer1Data = new PlayerData(TestPlayer1UserName);
-        var testPlayer2Data = new PlayerData(TestPlayer2UserName);
-        var testPlayer3Data = new PlayerData(TestPlayer3UserName);
-        var testPlayer4Data = new PlayerData(TestPlayer4UserName);
+        var testPlayer1Data = new Jabberwocky.SoC.Service.PlayerData(TestPlayer1UserName);
+        var testPlayer2Data = new Jabberwocky.SoC.Service.PlayerData(TestPlayer2UserName);
+        var testPlayer3Data = new Jabberwocky.SoC.Service.PlayerData(TestPlayer3UserName);
+        var testPlayer4Data = new Jabberwocky.SoC.Service.PlayerData(TestPlayer4UserName);
 
         var mockPlayerCardRepository = this.CreateMockPlayerCardRepository(
           testPlayer1Data,
@@ -110,10 +110,10 @@ namespace Service.UnitTests
       try
       {
         // Arrange
-        var testPlayer1Data = new PlayerData(TestPlayer1UserName);
-        var testPlayer2Data = new PlayerData(TestPlayer2UserName);
-        var testPlayer3Data = new PlayerData(TestPlayer3UserName);
-        var testPlayer4Data = new PlayerData(TestPlayer4UserName);
+        var testPlayer1Data = new Jabberwocky.SoC.Service.PlayerData(TestPlayer1UserName);
+        var testPlayer2Data = new Jabberwocky.SoC.Service.PlayerData(TestPlayer2UserName);
+        var testPlayer3Data = new Jabberwocky.SoC.Service.PlayerData(TestPlayer3UserName);
+        var testPlayer4Data = new Jabberwocky.SoC.Service.PlayerData(TestPlayer4UserName);
 
         var mockPlayerCardRepository = this.CreateMockPlayerCardRepository(
           testPlayer1Data,
@@ -168,10 +168,10 @@ namespace Service.UnitTests
       try
       {
         // Arrange
-        var testPlayer1Data = new PlayerData(TestPlayer1UserName);
-        var testPlayer2Data = new PlayerData(TestPlayer2UserName);
-        var testPlayer3Data = new PlayerData(TestPlayer3UserName);
-        var testPlayer4Data = new PlayerData(TestPlayer4UserName);
+        var testPlayer1Data = new Jabberwocky.SoC.Service.PlayerData(TestPlayer1UserName);
+        var testPlayer2Data = new Jabberwocky.SoC.Service.PlayerData(TestPlayer2UserName);
+        var testPlayer3Data = new Jabberwocky.SoC.Service.PlayerData(TestPlayer3UserName);
+        var testPlayer4Data = new Jabberwocky.SoC.Service.PlayerData(TestPlayer4UserName);
 
         var mockPlayerCardRepository = this.CreateMockPlayerCardRepository(
           testPlayer1Data,
@@ -214,8 +214,8 @@ namespace Service.UnitTests
       try
       {
         // Arrange
-        var testPlayer1Data = new PlayerData(TestPlayer1UserName);
-        var testPlayer2Data = new PlayerData(TestPlayer2UserName);
+        var testPlayer1Data = new Jabberwocky.SoC.Service.PlayerData(TestPlayer1UserName);
+        var testPlayer2Data = new Jabberwocky.SoC.Service.PlayerData(TestPlayer2UserName);
 
         var mockPlayerCardRepository = this.CreateMockPlayerCardRepository(
           testPlayer1Data,
@@ -254,10 +254,10 @@ namespace Service.UnitTests
       try
       {
         // Arrange
-        var testPlayer1Data = new PlayerData(TestPlayer1UserName);
-        var testPlayer2Data = new PlayerData(TestPlayer2UserName);
-        var testPlayer3Data = new PlayerData(TestPlayer3UserName);
-        var testPlayer4Data = new PlayerData(TestPlayer4UserName);
+        var testPlayer1Data = new Jabberwocky.SoC.Service.PlayerData(TestPlayer1UserName);
+        var testPlayer2Data = new Jabberwocky.SoC.Service.PlayerData(TestPlayer2UserName);
+        var testPlayer3Data = new Jabberwocky.SoC.Service.PlayerData(TestPlayer3UserName);
+        var testPlayer4Data = new Jabberwocky.SoC.Service.PlayerData(TestPlayer4UserName);
 
         var mockPlayerCardRepository = this.CreateMockPlayerCardRepository(
           testPlayer1Data,
@@ -299,10 +299,10 @@ namespace Service.UnitTests
       try
       {
         // Arrange
-        var testPlayer1Data = new PlayerData(TestPlayer1UserName);
-        var testPlayer2Data = new PlayerData(TestPlayer2UserName);
-        var testPlayer3Data = new PlayerData(TestPlayer3UserName);
-        var testPlayer4Data = new PlayerData(TestPlayer4UserName);
+        var testPlayer1Data = new Jabberwocky.SoC.Service.PlayerData(TestPlayer1UserName);
+        var testPlayer2Data = new Jabberwocky.SoC.Service.PlayerData(TestPlayer2UserName);
+        var testPlayer3Data = new Jabberwocky.SoC.Service.PlayerData(TestPlayer3UserName);
+        var testPlayer4Data = new Jabberwocky.SoC.Service.PlayerData(TestPlayer4UserName);
 
         var mockPlayerCardRepository = this.CreateMockPlayerCardRepository(
           testPlayer1Data,
@@ -450,7 +450,7 @@ namespace Service.UnitTests
         var expectedMessageForTestPlayer1 = new PlayerHasLeftGameMessage();
         var expectedMessageForTestPlayer2 = new OtherPlayerHasLeftGameMessage(TestPlayer1UserName);
 
-        var testPlayer1Data = new PlayerData(TestPlayer1UserName);
+        var testPlayer1Data = new Jabberwocky.SoC.Service.PlayerData(TestPlayer1UserName);
         
         var mockPlayerCardRepository = this.CreateMockPlayerCardRepository(testPlayer1Data);
         
@@ -487,10 +487,10 @@ namespace Service.UnitTests
         var expectedMessageForTestPlayer1 = new PlayerHasLeftGameMessage();
         var expectedMessageForOtherTestPlayers = new OtherPlayerHasLeftGameMessage(TestPlayer1UserName);
 
-        var testPlayer1Data = new PlayerData(TestPlayer1UserName);
-        var testPlayer2Data = new PlayerData(TestPlayer2UserName);
-        var testPlayer3Data = new PlayerData(TestPlayer3UserName);
-        var testPlayer4Data = new PlayerData(TestPlayer4UserName);
+        var testPlayer1Data = new Jabberwocky.SoC.Service.PlayerData(TestPlayer1UserName);
+        var testPlayer2Data = new Jabberwocky.SoC.Service.PlayerData(TestPlayer2UserName);
+        var testPlayer3Data = new Jabberwocky.SoC.Service.PlayerData(TestPlayer3UserName);
+        var testPlayer4Data = new Jabberwocky.SoC.Service.PlayerData(TestPlayer4UserName);
 
         var mockPlayerCardRepository = this.CreateMockPlayerCardRepository(testPlayer1Data, testPlayer2Data, testPlayer3Data, testPlayer4Data);
 
@@ -964,7 +964,7 @@ namespace Service.UnitTests
       }
     }*/
 
-    private IPlayerCardRepository CreateMockPlayerCardRepository(PlayerData mandatoryPlayerData, params PlayerData[] playerDataList)
+    private IPlayerCardRepository CreateMockPlayerCardRepository(Jabberwocky.SoC.Service.PlayerData mandatoryPlayerData, params Jabberwocky.SoC.Service.PlayerData[] playerDataList)
     {
       var mockPlayerCardRepository = Substitute.For<IPlayerCardRepository>();
       mockPlayerCardRepository.GetPlayerData(mandatoryPlayerData.Username).Returns(mandatoryPlayerData);

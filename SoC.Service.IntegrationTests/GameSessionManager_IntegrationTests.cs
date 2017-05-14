@@ -34,16 +34,16 @@ namespace Service.IntegrationTests
       {
         // Arrange
         var username1 = "User1";
-        var expectedPlayerData1 = new PlayerData(username1);
+        var expectedPlayerData1 = new Jabberwocky.SoC.Service.PlayerData(username1);
 
         var username2 = "User2";
-        var expectedPlayerData2 = new PlayerData(username2);
+        var expectedPlayerData2 = new Jabberwocky.SoC.Service.PlayerData(username2);
 
         var username3 = "User3";
-        var expectedPlayerData3 = new PlayerData(username3);
+        var expectedPlayerData3 = new Jabberwocky.SoC.Service.PlayerData(username3);
 
         var username4 = "User4";
-        var expectedPlayerData4 = new PlayerData(username4);
+        var expectedPlayerData4 = new Jabberwocky.SoC.Service.PlayerData(username4);
 
         var mockPlayerCardRepository = Substitute.For<IPlayerCardRepository>();
         mockPlayerCardRepository.GetPlayerData(username1).Returns(expectedPlayerData1);

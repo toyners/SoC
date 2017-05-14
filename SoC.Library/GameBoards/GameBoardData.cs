@@ -55,17 +55,17 @@ namespace Jabberwocky.SoC.Library.GameBoards
     #endregion
 
     #region Methods
-    public VerificationResults CanPlaceCity(Player player, Location location)
+    public VerificationResults CanPlaceCity(PlayerData player, Location location)
     {
       throw new NotImplementedException();
     }
 
-    public VerificationResults CanPlaceRoad(Player player, Location startLocation, Location endLocation)
+    public VerificationResults CanPlaceRoad(PlayerData player, Location startLocation, Location endLocation)
     {
       throw new NotImplementedException();
     }
 
-    public VerificationResults CanPlaceSettlement(Player player, Location location)
+    public VerificationResults CanPlaceSettlement(PlayerData player, Location location)
     {
       throw new NotImplementedException();
     }

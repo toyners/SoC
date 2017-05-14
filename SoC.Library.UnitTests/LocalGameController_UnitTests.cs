@@ -21,7 +21,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
       players.ShouldNotBeNull();
       players.Length.ShouldBe(4);
-      players[0].ShouldBeOfType<Player>();
+      players[0].ShouldBeOfType<PlayerData>();
       players[1].ShouldBeOfType<PlayerView>();
       players[2].ShouldBeOfType<PlayerView>();
       players[3].ShouldBeOfType<PlayerView>();
@@ -44,7 +44,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
       while (maxPlayers-- > 0)
       {
-        players[index++].ShouldBeOfType<Player>();
+        players[index++].ShouldBeOfType<PlayerData>();
       }
 
       while (maxAIPlayers-- > 0)
