@@ -126,6 +126,29 @@
       </wsp:All>
     </wsp:ExactlyOne>
   </wsp:Policy>
+  <wsp:Policy wsu:Id="WSDualHttpBinding_IServiceProvider_TryJoinGameNew_Input_policy">
+    <wsp:ExactlyOne>
+      <wsp:All>
+        <sp:SignedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <sp:Body />
+          <sp:Header Name="Sequence" Namespace="http://schemas.xmlsoap.org/ws/2005/02/rm" />
+          <sp:Header Name="SequenceAcknowledgement" Namespace="http://schemas.xmlsoap.org/ws/2005/02/rm" />
+          <sp:Header Name="AckRequested" Namespace="http://schemas.xmlsoap.org/ws/2005/02/rm" />
+          <sp:Header Name="ChannelInstance" Namespace="http://schemas.microsoft.com/ws/2005/02/duplex" />
+          <sp:Header Name="To" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="From" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="FaultTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="ReplyTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="MessageID" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="RelatesTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="Action" Namespace="http://www.w3.org/2005/08/addressing" />
+        </sp:SignedParts>
+        <sp:EncryptedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <sp:Body />
+        </sp:EncryptedParts>
+      </wsp:All>
+    </wsp:ExactlyOne>
+  </wsp:Policy>
   <wsp:Policy wsu:Id="WSDualHttpBinding_IServiceProvider_TryLeaveGame_Input_policy">
     <wsp:ExactlyOne>
       <wsp:All>
@@ -195,7 +218,7 @@
       </wsp:All>
     </wsp:ExactlyOne>
   </wsp:Policy>
-  <wsp:Policy wsu:Id="WSDualHttpBinding_IServiceProvider_ConfirmGameJoined_output_policy">
+  <wsp:Policy wsu:Id="WSDualHttpBinding_IServiceProvider_ConfirmGameIsOver_output_policy">
     <wsp:ExactlyOne>
       <wsp:All>
         <sp:SignedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
@@ -218,7 +241,99 @@
       </wsp:All>
     </wsp:ExactlyOne>
   </wsp:Policy>
-  <wsp:Policy wsu:Id="WSDualHttpBinding_IServiceProvider_ConfirmGameLeft_output_policy">
+  <wsp:Policy wsu:Id="WSDualHttpBinding_IServiceProvider_GameJoined_output_policy">
+    <wsp:ExactlyOne>
+      <wsp:All>
+        <sp:SignedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <sp:Body />
+          <sp:Header Name="Sequence" Namespace="http://schemas.xmlsoap.org/ws/2005/02/rm" />
+          <sp:Header Name="SequenceAcknowledgement" Namespace="http://schemas.xmlsoap.org/ws/2005/02/rm" />
+          <sp:Header Name="AckRequested" Namespace="http://schemas.xmlsoap.org/ws/2005/02/rm" />
+          <sp:Header Name="ChannelInstance" Namespace="http://schemas.microsoft.com/ws/2005/02/duplex" />
+          <sp:Header Name="To" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="From" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="FaultTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="ReplyTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="MessageID" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="RelatesTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="Action" Namespace="http://www.w3.org/2005/08/addressing" />
+        </sp:SignedParts>
+        <sp:EncryptedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <sp:Body />
+        </sp:EncryptedParts>
+      </wsp:All>
+    </wsp:ExactlyOne>
+  </wsp:Policy>
+  <wsp:Policy wsu:Id="WSDualHttpBinding_IServiceProvider_ConfirmGameSessionJoined_output_policy">
+    <wsp:ExactlyOne>
+      <wsp:All>
+        <sp:SignedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <sp:Body />
+          <sp:Header Name="Sequence" Namespace="http://schemas.xmlsoap.org/ws/2005/02/rm" />
+          <sp:Header Name="SequenceAcknowledgement" Namespace="http://schemas.xmlsoap.org/ws/2005/02/rm" />
+          <sp:Header Name="AckRequested" Namespace="http://schemas.xmlsoap.org/ws/2005/02/rm" />
+          <sp:Header Name="ChannelInstance" Namespace="http://schemas.microsoft.com/ws/2005/02/duplex" />
+          <sp:Header Name="To" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="From" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="FaultTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="ReplyTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="MessageID" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="RelatesTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="Action" Namespace="http://www.w3.org/2005/08/addressing" />
+        </sp:SignedParts>
+        <sp:EncryptedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <sp:Body />
+        </sp:EncryptedParts>
+      </wsp:All>
+    </wsp:ExactlyOne>
+  </wsp:Policy>
+  <wsp:Policy wsu:Id="WSDualHttpBinding_IServiceProvider_ConfirmGameSessionReadyToLaunch_output_policy">
+    <wsp:ExactlyOne>
+      <wsp:All>
+        <sp:SignedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <sp:Body />
+          <sp:Header Name="Sequence" Namespace="http://schemas.xmlsoap.org/ws/2005/02/rm" />
+          <sp:Header Name="SequenceAcknowledgement" Namespace="http://schemas.xmlsoap.org/ws/2005/02/rm" />
+          <sp:Header Name="AckRequested" Namespace="http://schemas.xmlsoap.org/ws/2005/02/rm" />
+          <sp:Header Name="ChannelInstance" Namespace="http://schemas.microsoft.com/ws/2005/02/duplex" />
+          <sp:Header Name="To" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="From" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="FaultTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="ReplyTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="MessageID" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="RelatesTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="Action" Namespace="http://www.w3.org/2005/08/addressing" />
+        </sp:SignedParts>
+        <sp:EncryptedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <sp:Body />
+        </sp:EncryptedParts>
+      </wsp:All>
+    </wsp:ExactlyOne>
+  </wsp:Policy>
+  <wsp:Policy wsu:Id="WSDualHttpBinding_IServiceProvider_ConfirmPlayerHasLeftGame_output_policy">
+    <wsp:ExactlyOne>
+      <wsp:All>
+        <sp:SignedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <sp:Body />
+          <sp:Header Name="Sequence" Namespace="http://schemas.xmlsoap.org/ws/2005/02/rm" />
+          <sp:Header Name="SequenceAcknowledgement" Namespace="http://schemas.xmlsoap.org/ws/2005/02/rm" />
+          <sp:Header Name="AckRequested" Namespace="http://schemas.xmlsoap.org/ws/2005/02/rm" />
+          <sp:Header Name="ChannelInstance" Namespace="http://schemas.microsoft.com/ws/2005/02/duplex" />
+          <sp:Header Name="To" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="From" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="FaultTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="ReplyTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="MessageID" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="RelatesTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="Action" Namespace="http://www.w3.org/2005/08/addressing" />
+        </sp:SignedParts>
+        <sp:EncryptedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <sp:Body />
+        </sp:EncryptedParts>
+      </wsp:All>
+    </wsp:ExactlyOne>
+  </wsp:Policy>
+  <wsp:Policy wsu:Id="WSDualHttpBinding_IServiceProvider_ConfirmOtherPlayerHasLeftGame_output_policy">
     <wsp:ExactlyOne>
       <wsp:All>
         <sp:SignedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
@@ -264,7 +379,76 @@
       </wsp:All>
     </wsp:ExactlyOne>
   </wsp:Policy>
-  <wsp:Policy wsu:Id="WSDualHttpBinding_IServiceProvider_PlaceTown_output_policy">
+  <wsp:Policy wsu:Id="WSDualHttpBinding_IServiceProvider_ChooseTownLocation_output_policy">
+    <wsp:ExactlyOne>
+      <wsp:All>
+        <sp:SignedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <sp:Body />
+          <sp:Header Name="Sequence" Namespace="http://schemas.xmlsoap.org/ws/2005/02/rm" />
+          <sp:Header Name="SequenceAcknowledgement" Namespace="http://schemas.xmlsoap.org/ws/2005/02/rm" />
+          <sp:Header Name="AckRequested" Namespace="http://schemas.xmlsoap.org/ws/2005/02/rm" />
+          <sp:Header Name="ChannelInstance" Namespace="http://schemas.microsoft.com/ws/2005/02/duplex" />
+          <sp:Header Name="To" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="From" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="FaultTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="ReplyTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="MessageID" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="RelatesTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="Action" Namespace="http://www.w3.org/2005/08/addressing" />
+        </sp:SignedParts>
+        <sp:EncryptedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <sp:Body />
+        </sp:EncryptedParts>
+      </wsp:All>
+    </wsp:ExactlyOne>
+  </wsp:Policy>
+  <wsp:Policy wsu:Id="WSDualHttpBinding_IServiceProvider_ReceivePersonalMessage_output_policy">
+    <wsp:ExactlyOne>
+      <wsp:All>
+        <sp:SignedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <sp:Body />
+          <sp:Header Name="Sequence" Namespace="http://schemas.xmlsoap.org/ws/2005/02/rm" />
+          <sp:Header Name="SequenceAcknowledgement" Namespace="http://schemas.xmlsoap.org/ws/2005/02/rm" />
+          <sp:Header Name="AckRequested" Namespace="http://schemas.xmlsoap.org/ws/2005/02/rm" />
+          <sp:Header Name="ChannelInstance" Namespace="http://schemas.microsoft.com/ws/2005/02/duplex" />
+          <sp:Header Name="To" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="From" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="FaultTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="ReplyTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="MessageID" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="RelatesTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="Action" Namespace="http://www.w3.org/2005/08/addressing" />
+        </sp:SignedParts>
+        <sp:EncryptedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <sp:Body />
+        </sp:EncryptedParts>
+      </wsp:All>
+    </wsp:ExactlyOne>
+  </wsp:Policy>
+  <wsp:Policy wsu:Id="WSDualHttpBinding_IServiceProvider_PlayerDataForJoiningClient_output_policy">
+    <wsp:ExactlyOne>
+      <wsp:All>
+        <sp:SignedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <sp:Body />
+          <sp:Header Name="Sequence" Namespace="http://schemas.xmlsoap.org/ws/2005/02/rm" />
+          <sp:Header Name="SequenceAcknowledgement" Namespace="http://schemas.xmlsoap.org/ws/2005/02/rm" />
+          <sp:Header Name="AckRequested" Namespace="http://schemas.xmlsoap.org/ws/2005/02/rm" />
+          <sp:Header Name="ChannelInstance" Namespace="http://schemas.microsoft.com/ws/2005/02/duplex" />
+          <sp:Header Name="To" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="From" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="FaultTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="ReplyTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="MessageID" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="RelatesTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="Action" Namespace="http://www.w3.org/2005/08/addressing" />
+        </sp:SignedParts>
+        <sp:EncryptedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <sp:Body />
+        </sp:EncryptedParts>
+      </wsp:All>
+    </wsp:ExactlyOne>
+  </wsp:Policy>
+  <wsp:Policy wsu:Id="WSDualHttpBinding_IServiceProvider_TownPlacedDuringSetup_output_policy">
     <wsp:ExactlyOne>
       <wsp:All>
         <sp:SignedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
@@ -297,6 +481,9 @@
   <wsdl:message name="IServiceProvider_TryJoinGame_InputMessage">
     <wsdl:part name="parameters" element="tns:TryJoinGame" />
   </wsdl:message>
+  <wsdl:message name="IServiceProvider_TryJoinGameNew_InputMessage">
+    <wsdl:part name="parameters" element="tns:TryJoinGameNew" />
+  </wsdl:message>
   <wsdl:message name="IServiceProvider_TryLeaveGame_InputMessage">
     <wsdl:part name="parameters" element="tns:TryLeaveGame" />
   </wsdl:message>
@@ -306,21 +493,45 @@
   <wsdl:message name="IServiceProvider_StartTurn_OutputCallbackMessage">
     <wsdl:part name="parameters" element="tns:StartTurn" />
   </wsdl:message>
-  <wsdl:message name="IServiceProvider_ConfirmGameJoined_OutputCallbackMessage">
-    <wsdl:part name="parameters" element="tns:ConfirmGameJoined" />
+  <wsdl:message name="IServiceProvider_ConfirmGameIsOver_OutputCallbackMessage">
+    <wsdl:part name="parameters" element="tns:ConfirmGameIsOver" />
   </wsdl:message>
-  <wsdl:message name="IServiceProvider_ConfirmGameLeft_OutputCallbackMessage">
-    <wsdl:part name="parameters" element="tns:ConfirmGameLeft" />
+  <wsdl:message name="IServiceProvider_GameJoined_OutputCallbackMessage">
+    <wsdl:part name="parameters" element="tns:GameJoined" />
+  </wsdl:message>
+  <wsdl:message name="IServiceProvider_ConfirmGameSessionJoined_OutputCallbackMessage">
+    <wsdl:part name="parameters" element="tns:ConfirmGameSessionJoined" />
+  </wsdl:message>
+  <wsdl:message name="IServiceProvider_ConfirmGameSessionReadyToLaunch_OutputCallbackMessage">
+    <wsdl:part name="parameters" element="tns:ConfirmGameSessionReadyToLaunch" />
+  </wsdl:message>
+  <wsdl:message name="IServiceProvider_ConfirmPlayerHasLeftGame_OutputCallbackMessage">
+    <wsdl:part name="parameters" element="tns:ConfirmPlayerHasLeftGame" />
+  </wsdl:message>
+  <wsdl:message name="IServiceProvider_ConfirmOtherPlayerHasLeftGame_OutputCallbackMessage">
+    <wsdl:part name="parameters" element="tns:ConfirmOtherPlayerHasLeftGame" />
   </wsdl:message>
   <wsdl:message name="IServiceProvider_InitializeGame_OutputCallbackMessage">
     <wsdl:part name="parameters" element="tns:InitializeGame" />
   </wsdl:message>
-  <wsdl:message name="IServiceProvider_PlaceTown_OutputCallbackMessage">
-    <wsdl:part name="parameters" element="tns:PlaceTown" />
+  <wsdl:message name="IServiceProvider_ChooseTownLocation_OutputCallbackMessage">
+    <wsdl:part name="parameters" element="tns:ChooseTownLocation" />
+  </wsdl:message>
+  <wsdl:message name="IServiceProvider_ReceivePersonalMessage_OutputCallbackMessage">
+    <wsdl:part name="parameters" element="tns:ReceivePersonalMessage" />
+  </wsdl:message>
+  <wsdl:message name="IServiceProvider_PlayerDataForJoiningClient_OutputCallbackMessage">
+    <wsdl:part name="parameters" element="tns:PlayerDataForJoiningClient" />
+  </wsdl:message>
+  <wsdl:message name="IServiceProvider_TownPlacedDuringSetup_OutputCallbackMessage">
+    <wsdl:part name="parameters" element="tns:TownPlacedDuringSetup" />
   </wsdl:message>
   <wsdl:portType msc:usingSession="true" name="IServiceProvider">
     <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="TryJoinGame">
       <wsdl:input wsaw:Action="http://tempuri.org/IServiceProvider/TryJoinGame" message="tns:IServiceProvider_TryJoinGame_InputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="TryJoinGameNew">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServiceProvider/TryJoinGameNew" message="tns:IServiceProvider_TryJoinGameNew_InputMessage" />
     </wsdl:operation>
     <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="TryLeaveGame">
       <wsdl:input wsaw:Action="http://tempuri.org/IServiceProvider/TryLeaveGame" message="tns:IServiceProvider_TryLeaveGame_InputMessage" />
@@ -331,17 +542,38 @@
     <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="StartTurn">
       <wsdl:output wsaw:Action="http://tempuri.org/IServiceProvider/StartTurn" message="tns:IServiceProvider_StartTurn_OutputCallbackMessage" />
     </wsdl:operation>
-    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="ConfirmGameJoined">
-      <wsdl:output wsaw:Action="http://tempuri.org/IServiceProvider/ConfirmGameJoined" message="tns:IServiceProvider_ConfirmGameJoined_OutputCallbackMessage" />
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="ConfirmGameIsOver">
+      <wsdl:output wsaw:Action="http://tempuri.org/IServiceProvider/ConfirmGameIsOver" message="tns:IServiceProvider_ConfirmGameIsOver_OutputCallbackMessage" />
     </wsdl:operation>
-    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="ConfirmGameLeft">
-      <wsdl:output wsaw:Action="http://tempuri.org/IServiceProvider/ConfirmGameLeft" message="tns:IServiceProvider_ConfirmGameLeft_OutputCallbackMessage" />
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="GameJoined">
+      <wsdl:output wsaw:Action="http://tempuri.org/IServiceProvider/GameJoined" message="tns:IServiceProvider_GameJoined_OutputCallbackMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="ConfirmGameSessionJoined">
+      <wsdl:output wsaw:Action="http://tempuri.org/IServiceProvider/ConfirmGameSessionJoined" message="tns:IServiceProvider_ConfirmGameSessionJoined_OutputCallbackMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="ConfirmGameSessionReadyToLaunch">
+      <wsdl:output wsaw:Action="http://tempuri.org/IServiceProvider/ConfirmGameSessionReadyToLaunch" message="tns:IServiceProvider_ConfirmGameSessionReadyToLaunch_OutputCallbackMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="ConfirmPlayerHasLeftGame">
+      <wsdl:output wsaw:Action="http://tempuri.org/IServiceProvider/ConfirmPlayerHasLeftGame" message="tns:IServiceProvider_ConfirmPlayerHasLeftGame_OutputCallbackMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="ConfirmOtherPlayerHasLeftGame">
+      <wsdl:output wsaw:Action="http://tempuri.org/IServiceProvider/ConfirmOtherPlayerHasLeftGame" message="tns:IServiceProvider_ConfirmOtherPlayerHasLeftGame_OutputCallbackMessage" />
     </wsdl:operation>
     <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="InitializeGame">
       <wsdl:output wsaw:Action="http://tempuri.org/IServiceProvider/InitializeGame" message="tns:IServiceProvider_InitializeGame_OutputCallbackMessage" />
     </wsdl:operation>
-    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="PlaceTown">
-      <wsdl:output wsaw:Action="http://tempuri.org/IServiceProvider/PlaceTown" message="tns:IServiceProvider_PlaceTown_OutputCallbackMessage" />
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="ChooseTownLocation">
+      <wsdl:output wsaw:Action="http://tempuri.org/IServiceProvider/ChooseTownLocation" message="tns:IServiceProvider_ChooseTownLocation_OutputCallbackMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="ReceivePersonalMessage">
+      <wsdl:output wsaw:Action="http://tempuri.org/IServiceProvider/ReceivePersonalMessage" message="tns:IServiceProvider_ReceivePersonalMessage_OutputCallbackMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="PlayerDataForJoiningClient">
+      <wsdl:output wsaw:Action="http://tempuri.org/IServiceProvider/PlayerDataForJoiningClient" message="tns:IServiceProvider_PlayerDataForJoiningClient_OutputCallbackMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="TownPlacedDuringSetup">
+      <wsdl:output wsaw:Action="http://tempuri.org/IServiceProvider/TownPlacedDuringSetup" message="tns:IServiceProvider_TownPlacedDuringSetup_OutputCallbackMessage" />
     </wsdl:operation>
   </wsdl:portType>
   <wsdl:binding name="WSDualHttpBinding_IServiceProvider" type="tns:IServiceProvider">
@@ -351,6 +583,13 @@
       <soap12:operation soapAction="http://tempuri.org/IServiceProvider/TryJoinGame" style="document" />
       <wsdl:input>
         <wsp:PolicyReference URI="#WSDualHttpBinding_IServiceProvider_TryJoinGame_Input_policy" />
+        <soap12:body use="literal" />
+      </wsdl:input>
+    </wsdl:operation>
+    <wsdl:operation name="TryJoinGameNew">
+      <soap12:operation soapAction="http://tempuri.org/IServiceProvider/TryJoinGameNew" style="document" />
+      <wsdl:input>
+        <wsp:PolicyReference URI="#WSDualHttpBinding_IServiceProvider_TryJoinGameNew_Input_policy" />
         <soap12:body use="literal" />
       </wsdl:input>
     </wsdl:operation>
@@ -375,17 +614,45 @@
         <soap12:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
-    <wsdl:operation name="ConfirmGameJoined">
-      <soap12:operation soapAction="http://tempuri.org/IServiceProvider/ConfirmGameJoined" style="document" />
+    <wsdl:operation name="ConfirmGameIsOver">
+      <soap12:operation soapAction="http://tempuri.org/IServiceProvider/ConfirmGameIsOver" style="document" />
       <wsdl:output>
-        <wsp:PolicyReference URI="#WSDualHttpBinding_IServiceProvider_ConfirmGameJoined_output_policy" />
+        <wsp:PolicyReference URI="#WSDualHttpBinding_IServiceProvider_ConfirmGameIsOver_output_policy" />
         <soap12:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
-    <wsdl:operation name="ConfirmGameLeft">
-      <soap12:operation soapAction="http://tempuri.org/IServiceProvider/ConfirmGameLeft" style="document" />
+    <wsdl:operation name="GameJoined">
+      <soap12:operation soapAction="http://tempuri.org/IServiceProvider/GameJoined" style="document" />
       <wsdl:output>
-        <wsp:PolicyReference URI="#WSDualHttpBinding_IServiceProvider_ConfirmGameLeft_output_policy" />
+        <wsp:PolicyReference URI="#WSDualHttpBinding_IServiceProvider_GameJoined_output_policy" />
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ConfirmGameSessionJoined">
+      <soap12:operation soapAction="http://tempuri.org/IServiceProvider/ConfirmGameSessionJoined" style="document" />
+      <wsdl:output>
+        <wsp:PolicyReference URI="#WSDualHttpBinding_IServiceProvider_ConfirmGameSessionJoined_output_policy" />
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ConfirmGameSessionReadyToLaunch">
+      <soap12:operation soapAction="http://tempuri.org/IServiceProvider/ConfirmGameSessionReadyToLaunch" style="document" />
+      <wsdl:output>
+        <wsp:PolicyReference URI="#WSDualHttpBinding_IServiceProvider_ConfirmGameSessionReadyToLaunch_output_policy" />
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ConfirmPlayerHasLeftGame">
+      <soap12:operation soapAction="http://tempuri.org/IServiceProvider/ConfirmPlayerHasLeftGame" style="document" />
+      <wsdl:output>
+        <wsp:PolicyReference URI="#WSDualHttpBinding_IServiceProvider_ConfirmPlayerHasLeftGame_output_policy" />
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ConfirmOtherPlayerHasLeftGame">
+      <soap12:operation soapAction="http://tempuri.org/IServiceProvider/ConfirmOtherPlayerHasLeftGame" style="document" />
+      <wsdl:output>
+        <wsp:PolicyReference URI="#WSDualHttpBinding_IServiceProvider_ConfirmOtherPlayerHasLeftGame_output_policy" />
         <soap12:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
@@ -396,10 +663,31 @@
         <soap12:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
-    <wsdl:operation name="PlaceTown">
-      <soap12:operation soapAction="http://tempuri.org/IServiceProvider/PlaceTown" style="document" />
+    <wsdl:operation name="ChooseTownLocation">
+      <soap12:operation soapAction="http://tempuri.org/IServiceProvider/ChooseTownLocation" style="document" />
       <wsdl:output>
-        <wsp:PolicyReference URI="#WSDualHttpBinding_IServiceProvider_PlaceTown_output_policy" />
+        <wsp:PolicyReference URI="#WSDualHttpBinding_IServiceProvider_ChooseTownLocation_output_policy" />
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ReceivePersonalMessage">
+      <soap12:operation soapAction="http://tempuri.org/IServiceProvider/ReceivePersonalMessage" style="document" />
+      <wsdl:output>
+        <wsp:PolicyReference URI="#WSDualHttpBinding_IServiceProvider_ReceivePersonalMessage_output_policy" />
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="PlayerDataForJoiningClient">
+      <soap12:operation soapAction="http://tempuri.org/IServiceProvider/PlayerDataForJoiningClient" style="document" />
+      <wsdl:output>
+        <wsp:PolicyReference URI="#WSDualHttpBinding_IServiceProvider_PlayerDataForJoiningClient_output_policy" />
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="TownPlacedDuringSetup">
+      <soap12:operation soapAction="http://tempuri.org/IServiceProvider/TownPlacedDuringSetup" style="document" />
+      <wsdl:output>
+        <wsp:PolicyReference URI="#WSDualHttpBinding_IServiceProvider_TownPlacedDuringSetup_output_policy" />
         <soap12:body use="literal" />
       </wsdl:output>
     </wsdl:operation>

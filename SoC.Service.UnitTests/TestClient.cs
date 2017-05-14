@@ -172,6 +172,11 @@ namespace Service.UnitTests
     {
       throw new NotImplementedException();
     }
+
+    public void GameJoined()
+    {
+      throw new NotImplementedException();
+    }
     #endregion
   }
 }

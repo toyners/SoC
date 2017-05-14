@@ -4,6 +4,13 @@
   <xs:import namespace="http://schemas.datacontract.org/2004/07/Jabberwocky.SoC.Service" />
   <xs:element name="TryJoinGame">
     <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="username" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="TryJoinGameNew">
+    <xs:complexType>
       <xs:sequence />
     </xs:complexType>
   </xs:element>
@@ -28,28 +35,73 @@
       </xs:sequence>
     </xs:complexType>
   </xs:element>
-  <xs:element name="ConfirmGameJoined">
+  <xs:element name="ConfirmGameIsOver">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GameJoined">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="ConfirmGameSessionJoined">
     <xs:complexType>
       <xs:sequence>
         <xs:element xmlns:q4="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="gameToken" type="q4:guid" />
+        <xs:element xmlns:q5="http://schemas.datacontract.org/2004/07/Jabberwocky.SoC.Service" minOccurs="0" name="gameSession" type="q5:GameSessionManager.GameStates" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
-  <xs:element name="ConfirmGameLeft">
+  <xs:element name="ConfirmGameSessionReadyToLaunch">
     <xs:complexType>
       <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="ConfirmPlayerHasLeftGame">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="ConfirmOtherPlayerHasLeftGame">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="username" nillable="true" type="xs:string" />
+      </xs:sequence>
     </xs:complexType>
   </xs:element>
   <xs:element name="InitializeGame">
     <xs:complexType>
       <xs:sequence>
-        <xs:element xmlns:q5="http://schemas.datacontract.org/2004/07/Jabberwocky.SoC.Service" minOccurs="0" name="gameData" nillable="true" type="q5:GameInitializationData" />
+        <xs:element xmlns:q6="http://schemas.datacontract.org/2004/07/Jabberwocky.SoC.Service" minOccurs="0" name="gameData" nillable="true" type="q6:GameInitializationData" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
-  <xs:element name="PlaceTown">
+  <xs:element name="ChooseTownLocation">
     <xs:complexType>
       <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="ReceivePersonalMessage">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="sender" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="text" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="PlayerDataForJoiningClient">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q7="http://schemas.datacontract.org/2004/07/Jabberwocky.SoC.Service" minOccurs="0" name="playerData" nillable="true" type="q7:PlayerData" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="TownPlacedDuringSetup">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="locationIndex" type="xs:unsignedInt" />
+      </xs:sequence>
     </xs:complexType>
   </xs:element>
 </xs:schema>

@@ -38,6 +38,12 @@ namespace Jabberwocky.SoC.Service
       throw new NotImplementedException();
     }
 
+    public void TryJoinGameNew()
+    {
+      var client = OperationContext.Current.GetCallbackChannel<IClientCallback>();
+      client.ConfirmGameSessionReadyToLaunch();
+    }
+
     public void TryJoinGame(String username)
     {
       var client = OperationContext.Current.GetCallbackChannel<IClientCallback>();

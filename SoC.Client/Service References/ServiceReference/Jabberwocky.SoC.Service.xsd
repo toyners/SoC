@@ -1,11 +1,24 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <xs:schema xmlns:tns="http://schemas.datacontract.org/2004/07/Jabberwocky.SoC.Service" elementFormDefault="qualified" targetNamespace="http://schemas.datacontract.org/2004/07/Jabberwocky.SoC.Service" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:simpleType name="GameSessionManager.GameStates">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="Lobby" />
+      <xs:enumeration value="Setup" />
+      <xs:enumeration value="Playing" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:element name="GameSessionManager.GameStates" nillable="true" type="tns:GameSessionManager.GameStates" />
   <xs:complexType name="GameInitializationData">
     <xs:sequence>
       <xs:element minOccurs="0" name="BoardData" nillable="true" type="xs:base64Binary" />
-      <xs:element minOccurs="0" name="ColumnCount" type="xs:unsignedByte" />
-      <xs:element minOccurs="0" name="FirstColumnCount" type="xs:unsignedByte" />
     </xs:sequence>
   </xs:complexType>
   <xs:element name="GameInitializationData" nillable="true" type="tns:GameInitializationData" />
+  <xs:complexType name="PlayerData">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="IsAnonymous" type="xs:boolean" />
+      <xs:element minOccurs="0" name="Username" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="PlayerData" nillable="true" type="tns:PlayerData" />
 </xs:schema>

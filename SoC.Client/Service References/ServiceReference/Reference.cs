@@ -13,6 +13,20 @@ namespace Jabberwocky.SoC.Client.ServiceReference {
     using System;
     
     
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
+    [System.Runtime.Serialization.DataContractAttribute(Name="GameSessionManager.GameStates", Namespace="http://schemas.datacontract.org/2004/07/Jabberwocky.SoC.Service")]
+    public enum GameSessionManagerGameStates : int {
+        
+        [System.Runtime.Serialization.EnumMemberAttribute()]
+        Lobby = 0,
+        
+        [System.Runtime.Serialization.EnumMemberAttribute()]
+        Setup = 1,
+        
+        [System.Runtime.Serialization.EnumMemberAttribute()]
+        Playing = 2,
+    }
+    
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
     [System.Runtime.Serialization.DataContractAttribute(Name="GameInitializationData", Namespace="http://schemas.datacontract.org/2004/07/Jabberwocky.SoC.Service")]
@@ -24,12 +38,6 @@ namespace Jabberwocky.SoC.Client.ServiceReference {
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
         private byte[] BoardDataField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private byte ColumnCountField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private byte FirstColumnCountField;
         
         [global::System.ComponentModel.BrowsableAttribute(false)]
         public System.Runtime.Serialization.ExtensionDataObject ExtensionData {
@@ -54,28 +62,63 @@ namespace Jabberwocky.SoC.Client.ServiceReference {
             }
         }
         
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public byte ColumnCount {
+        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
+        
+        protected void RaisePropertyChanged(string propertyName) {
+            System.ComponentModel.PropertyChangedEventHandler propertyChanged = this.PropertyChanged;
+            if ((propertyChanged != null)) {
+                propertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
+            }
+        }
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
+    [System.Runtime.Serialization.DataContractAttribute(Name="PlayerData", Namespace="http://schemas.datacontract.org/2004/07/Jabberwocky.SoC.Service")]
+    [System.SerializableAttribute()]
+    public partial class PlayerData : object, System.Runtime.Serialization.IExtensibleDataObject, System.ComponentModel.INotifyPropertyChanged {
+        
+        [System.NonSerializedAttribute()]
+        private System.Runtime.Serialization.ExtensionDataObject extensionDataField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private bool IsAnonymousField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string UsernameField;
+        
+        [global::System.ComponentModel.BrowsableAttribute(false)]
+        public System.Runtime.Serialization.ExtensionDataObject ExtensionData {
             get {
-                return this.ColumnCountField;
+                return this.extensionDataField;
             }
             set {
-                if ((this.ColumnCountField.Equals(value) != true)) {
-                    this.ColumnCountField = value;
-                    this.RaisePropertyChanged("ColumnCount");
+                this.extensionDataField = value;
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public bool IsAnonymous {
+            get {
+                return this.IsAnonymousField;
+            }
+            set {
+                if ((this.IsAnonymousField.Equals(value) != true)) {
+                    this.IsAnonymousField = value;
+                    this.RaisePropertyChanged("IsAnonymous");
                 }
             }
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
-        public byte FirstColumnCount {
+        public string Username {
             get {
-                return this.FirstColumnCountField;
+                return this.UsernameField;
             }
             set {
-                if ((this.FirstColumnCountField.Equals(value) != true)) {
-                    this.FirstColumnCountField = value;
-                    this.RaisePropertyChanged("FirstColumnCount");
+                if ((object.ReferenceEquals(this.UsernameField, value) != true)) {
+                    this.UsernameField = value;
+                    this.RaisePropertyChanged("Username");
                 }
             }
         }
@@ -95,10 +138,16 @@ namespace Jabberwocky.SoC.Client.ServiceReference {
     public interface IServiceProvider {
         
         [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IServiceProvider/TryJoinGame")]
-        void TryJoinGame();
+        void TryJoinGame(string username);
         
         [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IServiceProvider/TryJoinGame")]
-        System.Threading.Tasks.Task TryJoinGameAsync();
+        System.Threading.Tasks.Task TryJoinGameAsync(string username);
+        
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IServiceProvider/TryJoinGameNew")]
+        void TryJoinGameNew();
+        
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IServiceProvider/TryJoinGameNew")]
+        System.Threading.Tasks.Task TryJoinGameNewAsync();
         
         [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IServiceProvider/TryLeaveGame")]
         void TryLeaveGame(System.Guid gameToken);
@@ -119,17 +168,38 @@ namespace Jabberwocky.SoC.Client.ServiceReference {
         [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IServiceProvider/StartTurn")]
         void StartTurn(System.Guid token);
         
-        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IServiceProvider/ConfirmGameJoined")]
-        void ConfirmGameJoined(System.Guid gameToken);
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IServiceProvider/ConfirmGameIsOver")]
+        void ConfirmGameIsOver();
         
-        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IServiceProvider/ConfirmGameLeft")]
-        void ConfirmGameLeft();
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IServiceProvider/GameJoined")]
+        void GameJoined();
+        
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IServiceProvider/ConfirmGameSessionJoined")]
+        void ConfirmGameSessionJoined(System.Guid gameToken, Jabberwocky.SoC.Client.ServiceReference.GameSessionManagerGameStates gameSession);
+        
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IServiceProvider/ConfirmGameSessionReadyToLaunch")]
+        void ConfirmGameSessionReadyToLaunch();
+        
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IServiceProvider/ConfirmPlayerHasLeftGame")]
+        void ConfirmPlayerHasLeftGame();
+        
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IServiceProvider/ConfirmOtherPlayerHasLeftGame")]
+        void ConfirmOtherPlayerHasLeftGame(string username);
         
         [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IServiceProvider/InitializeGame")]
         void InitializeGame(Jabberwocky.SoC.Client.ServiceReference.GameInitializationData gameData);
         
-        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IServiceProvider/PlaceTown")]
-        void PlaceTown();
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IServiceProvider/ChooseTownLocation")]
+        void ChooseTownLocation();
+        
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IServiceProvider/ReceivePersonalMessage")]
+        void ReceivePersonalMessage(string sender, string text);
+        
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IServiceProvider/PlayerDataForJoiningClient")]
+        void PlayerDataForJoiningClient(Jabberwocky.SoC.Client.ServiceReference.PlayerData playerData);
+        
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IServiceProvider/TownPlacedDuringSetup")]
+        void TownPlacedDuringSetup(uint locationIndex);
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
@@ -160,12 +230,20 @@ namespace Jabberwocky.SoC.Client.ServiceReference {
                 base(callbackInstance, binding, remoteAddress) {
         }
         
-        public void TryJoinGame() {
-            base.Channel.TryJoinGame();
+        public void TryJoinGame(string username) {
+            base.Channel.TryJoinGame(username);
         }
         
-        public System.Threading.Tasks.Task TryJoinGameAsync() {
-            return base.Channel.TryJoinGameAsync();
+        public System.Threading.Tasks.Task TryJoinGameAsync(string username) {
+            return base.Channel.TryJoinGameAsync(username);
+        }
+        
+        public void TryJoinGameNew() {
+            base.Channel.TryJoinGameNew();
+        }
+        
+        public System.Threading.Tasks.Task TryJoinGameNewAsync() {
+            return base.Channel.TryJoinGameNewAsync();
         }
         
         public void TryLeaveGame(System.Guid gameToken) {

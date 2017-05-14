@@ -53,6 +53,56 @@ namespace Jabberwocky.SoC.Client
     {
       throw new NotImplementedException();
     }
+
+    public void ConfirmGameIsOver()
+    {
+      throw new NotImplementedException();
+    }
+
+    public void GameJoined()
+    {
+      throw new NotImplementedException();
+    }
+
+    public void ConfirmGameSessionJoined(Guid gameToken, GameSessionManagerGameStates gameSession)
+    {
+      throw new NotImplementedException();
+    }
+
+    public void ConfirmGameSessionReadyToLaunch()
+    {
+      throw new NotImplementedException();
+    }
+
+    public void ConfirmPlayerHasLeftGame()
+    {
+      throw new NotImplementedException();
+    }
+
+    public void ConfirmOtherPlayerHasLeftGame(String username)
+    {
+      throw new NotImplementedException();
+    }
+
+    public void ChooseTownLocation()
+    {
+      throw new NotImplementedException();
+    }
+
+    public void ReceivePersonalMessage(String sender, String text)
+    {
+      throw new NotImplementedException();
+    }
+
+    public void PlayerDataForJoiningClient(ServiceReference.PlayerData playerData)
+    {
+      throw new NotImplementedException();
+    }
+
+    public void TownPlacedDuringSetup(UInt32 locationIndex)
+    {
+      throw new NotImplementedException();
+    }
     #endregion
   }
 }

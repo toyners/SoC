@@ -15,6 +15,9 @@ namespace Jabberwocky.SoC.Service
     [OperationContract(IsOneWay = true)]
     void TryJoinGame(String username);
 
+    [OperationContract(IsOneWay = true)]
+    void TryJoinGameNew();
+
     /// <summary>
     /// Instruct the server that the client is leaving a game.
     /// </summary>

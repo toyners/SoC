@@ -13,6 +13,9 @@ namespace Jabberwocky.SoC.Service
     [OperationContract(IsOneWay = true)]
     void ConfirmGameIsOver();
 
+    [OperationContract(IsOneWay = true)]
+    void GameJoined();
+
     /// <summary>
     /// Confirm that the client has joined a game session.
     /// </summary>

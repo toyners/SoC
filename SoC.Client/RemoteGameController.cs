@@ -43,6 +43,16 @@ namespace Jabberwocky.SoC.Client
       throw new NotImplementedException();
     }
 
+    public void ChooseTownLocation()
+    {
+      throw new NotImplementedException();
+    }
+
+    public void ConfirmGameIsOver()
+    {
+      throw new NotImplementedException();
+    }
+
     public void ConfirmGameJoined(Guid gameToken)
     {
       throw new NotImplementedException();
@@ -51,6 +61,31 @@ namespace Jabberwocky.SoC.Client
     public void ConfirmGameLeft()
     {
       throw new NotImplementedException();
+    }
+
+    public void ConfirmGameSessionJoined(Guid gameToken, GameSessionManagerGameStates gameSession)
+    {
+      throw new NotImplementedException();
+    }
+
+    public void ConfirmGameSessionReadyToLaunch()
+    {
+      this.GameJoinedEvent?.Invoke(new[] { new Library.PlayerData() });
+    }
+
+    public void ConfirmOtherPlayerHasLeftGame(String username)
+    {
+      throw new NotImplementedException();
+    }
+
+    public void ConfirmPlayerHasLeftGame()
+    {
+      throw new NotImplementedException();
+    }
+
+    public void GameJoined()
+    {
+      this.GameJoinedEvent?.Invoke(new[] { new Library.PlayerData() });
     }
 
     public void InitializeGame(GameInitializationData gameData)
@@ -73,6 +108,16 @@ namespace Jabberwocky.SoC.Client
       throw new NotImplementedException();
     }
 
+    public void PlayerDataForJoiningClient(ServiceReference.PlayerData playerData)
+    {
+      throw new NotImplementedException();
+    }
+
+    public void ReceivePersonalMessage(String sender, String text)
+    {
+      throw new NotImplementedException();
+    }
+
     public void StartJoiningGame(GameFilter gameFilter)
     {
       var instanceContext = new InstanceContext(this);
@@ -81,7 +126,7 @@ namespace Jabberwocky.SoC.Client
       var uri = new Uri("http://localhost:8733/Design_Time_Addresses/Jabberwocky.SoC.Service/IServiceProvider/");
       var endPointAddress = new EndpointAddress(uri);
       this.serviceProviderClient = new ServiceProviderClient(instanceContext, binding, endPointAddress);
-      this.serviceProviderClient.TryJoinGame();
+      this.serviceProviderClient.TryJoinGameNew();
     }
 
     public void StartJoiningGame(GameFilter gameFilter, Guid accountToken)
@@ -95,6 +140,11 @@ namespace Jabberwocky.SoC.Client
     }
 
     public void StartTurn(Guid token)
+    {
+      throw new NotImplementedException();
+    }
+
+    public void TownPlacedDuringSetup(UInt32 locationIndex)
     {
       throw new NotImplementedException();
     }

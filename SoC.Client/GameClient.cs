@@ -46,7 +46,7 @@ namespace Jabberwocky.SoC.Client
 
       var instanceContext = new InstanceContext(this.serviceClient);
       this.serviceProviderClient = new ServiceProviderClient(instanceContext, "WSDualHttpBinding_IServiceProvider");
-      this.serviceProviderClient.TryJoinGame();
+      this.serviceProviderClient.TryJoinGame(null);
     }
 
     public void Disconnect()

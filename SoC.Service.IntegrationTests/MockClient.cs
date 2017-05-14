@@ -154,6 +154,11 @@ namespace Service.IntegrationTests
     {
       throw new NotImplementedException();
     }
+
+    void IClientCallback.GameJoined()
+    {
+      throw new NotImplementedException();
+    }
     #endregion
   }
 
@@ -177,6 +182,11 @@ namespace Service.IntegrationTests
       var message = this.Peek();
 
       return message != null && message.GetType() == typeof(T);
+    }
+
+    public void GameJoined()
+    {
+      throw new NotImplementedException();
     }
 
     public void ChooseTownLocation()
