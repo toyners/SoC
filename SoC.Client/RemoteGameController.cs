@@ -118,7 +118,7 @@ namespace Jabberwocky.SoC.Client
       throw new NotImplementedException();
     }
 
-    public void StartJoiningGame(GameFilter gameFilter)
+    public void StartJoiningGame(GameOptions gameFilter)
     {
       var instanceContext = new InstanceContext(this);
       //this.serviceProviderClient = new ServiceProviderClient(instanceContext, "WSDualHttpBinding_IServiceProvider");
@@ -129,7 +129,7 @@ namespace Jabberwocky.SoC.Client
       this.serviceProviderClient.TryJoinGameNew();
     }
 
-    public void StartJoiningGame(GameFilter gameFilter, Guid accountToken)
+    public void StartJoiningGame(GameOptions gameFilter, Guid accountToken)
     {
       throw new NotImplementedException();
     }

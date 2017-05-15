@@ -57,7 +57,7 @@
     <Compile Include="Enums\ResourceTypes.cs" />
     <Compile Include="LocalGameController.cs" />
     <Compile Include="GameControllerFactory.cs" />
-    <Compile Include="GameFilter.cs" />
+    <Compile Include="GameOptions.cs" />
     <Compile Include="GameSession.cs" />
     <Compile Include="Interfaces\IGameController.cs" />
     <Compile Include="Interfaces\IPlayer.cs" />

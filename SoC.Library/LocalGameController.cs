@@ -30,11 +30,11 @@ namespace Jabberwocky.SoC.Library
       throw new NotImplementedException();
     }
 
-    public void StartJoiningGame(GameFilter gameFilter)
+    public void StartJoiningGame(GameOptions gameFilter)
     {
       if (gameFilter == null)
       {
-        gameFilter = new GameFilter { MaxPlayers = 1, MaxAIPlayers = 3 };
+        gameFilter = new GameOptions { MaxPlayers = 1, MaxAIPlayers = 3 };
       }
 
       var players = new PlayerBase[gameFilter.MaxPlayers + gameFilter.MaxAIPlayers];
@@ -53,7 +53,7 @@ namespace Jabberwocky.SoC.Library
       this.GameJoinedEvent?.Invoke(players);
     }
 
-    public void StartJoiningGame(GameFilter gameFilter, Guid accountToken)
+    public void StartJoiningGame(GameOptions gameFilter, Guid accountToken)
     {
       throw new NotImplementedException();
     }

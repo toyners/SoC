@@ -13,7 +13,7 @@ namespace SoC.Library.IntegrationTests
     [Test]
     public void StartDefaultGameOnLocalServerMachine()
     {
-      var gameOptions = new GameFilter { Connection = GameConnectionTypes.Local };
+      var gameOptions = new GameOptions { Connection = GameConnectionTypes.Local };
       var gameControllerFactory = new GameControllerFactory();
       var gameController = gameControllerFactory.Create(gameOptions);
       PlayerBase[] players = null;

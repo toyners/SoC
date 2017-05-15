@@ -7,7 +7,7 @@ namespace Jabberwocky.SoC.Library
 
   public class GameControllerFactory
   {
-    public IGameController Create(GameFilter gameOptions)
+    public IGameController Create(GameOptions gameOptions)
     {
       if (gameOptions.Connection == GameConnectionTypes.Local)
       {

@@ -35,7 +35,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
       PlayerBase[] players = null;
       localGameController.GameJoinedEvent = (PlayerBase[] p) => { players = p; };
-      localGameController.StartJoiningGame(new GameFilter { MaxPlayers = (UInt32)maxPlayers, MaxAIPlayers = (UInt32)maxAIPlayers });
+      localGameController.StartJoiningGame(new GameOptions { MaxPlayers = (UInt32)maxPlayers, MaxAIPlayers = (UInt32)maxAIPlayers });
 
       players.ShouldNotBeNull();
       players.Length.ShouldBe(maxPlayers + maxAIPlayers);

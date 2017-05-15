@@ -14,9 +14,9 @@ namespace Jabberwocky.SoC.Library.Interfaces
 
     void StartLogIntoAccount(String username, String password);
 
-    void StartJoiningGame(GameFilter gameFilter);
+    void StartJoiningGame(GameOptions gameFilter);
 
-    void StartJoiningGame(GameFilter gameFilter, Guid accountToken);
+    void StartJoiningGame(GameOptions gameFilter, Guid accountToken);
 
     void PlaceTown(Location location);
 
