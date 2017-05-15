@@ -22,12 +22,18 @@ namespace SoC.Test
       PlayerBase[] players = null;
       remoteGameController.GameJoinedEvent = (PlayerBase[] p) => { players = p; };
 
-      //Task.Factory.StartNew(() => { Program.Main(null); }); 
-      Task.Factory.StartNew(() => 
+      var cancellationTokenSource = new CancellationTokenSource();
+      var cancellationToken = cancellationTokenSource.Token;
+      var serviceTask = Task.Factory.StartNew(() => 
       {
         var serviceHost = new ServiceHost(typeof(Jabberwocky.SoC.Service.ServiceProvider));
         serviceHost.Open();
-      });
+
+        while (!cancellationToken.IsCancellationRequested)
+        {
+          Thread.Sleep(500);
+        }
+      }, cancellationToken);
 
       Task.Factory.StartNew(() =>
       {
@@ -38,6 +44,8 @@ namespace SoC.Test
       {
         Thread.Sleep(1000);
       }
+
+      cancellationTokenSource.Cancel();
 
       players.ShouldNotBeNull();
     }
