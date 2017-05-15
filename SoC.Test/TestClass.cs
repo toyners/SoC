@@ -7,7 +7,6 @@ namespace SoC.Test
   using System.Threading.Tasks;
   using Jabberwocky.SoC.Client;
   using Jabberwocky.SoC.Library;
-  using Jabberwocky.SoC.Service.Console;
   using NUnit.Framework;
   using Shouldly;
 
