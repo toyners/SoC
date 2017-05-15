@@ -9,7 +9,7 @@ namespace Jabberwocky.SoC.Library
   {
     public IGameController Create(GameOptions gameOptions)
     {
-      if (gameOptions.Connection == GameConnectionTypes.Local)
+      if (gameOptions == null || gameOptions.Connection == GameConnectionTypes.Local)
       {
         return new LocalGameController();
       }

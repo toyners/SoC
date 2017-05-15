@@ -11,5 +11,12 @@ namespace Jabberwocky.SoC.Library
     public UInt32 MaxPlayers;
 
     public UInt32 MaxAIPlayers;
+
+    public GameOptions()
+    {
+      this.Connection = GameConnectionTypes.Local;
+      this.MaxPlayers = 1;
+      this.MaxAIPlayers = 3;
+    }
   }
 }

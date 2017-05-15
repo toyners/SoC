@@ -30,22 +30,22 @@ namespace Jabberwocky.SoC.Library
       throw new NotImplementedException();
     }
 
-    public void StartJoiningGame(GameOptions gameFilter)
+    public void StartJoiningGame(GameOptions gameOptions)
     {
-      if (gameFilter == null)
+      if (gameOptions == null)
       {
-        gameFilter = new GameOptions { MaxPlayers = 1, MaxAIPlayers = 3 };
+        gameOptions = new GameOptions { MaxPlayers = 1, MaxAIPlayers = 3 };
       }
 
-      var players = new PlayerBase[gameFilter.MaxPlayers + gameFilter.MaxAIPlayers];
+      var players = new PlayerBase[gameOptions.MaxPlayers + gameOptions.MaxAIPlayers];
 
       var index = 0;
-      while ((gameFilter.MaxPlayers--) > 0)
+      while ((gameOptions.MaxPlayers--) > 0)
       {
         players[index++] = new PlayerData();
       }
 
-      while ((gameFilter.MaxAIPlayers--) > 0)
+      while ((gameOptions.MaxAIPlayers--) > 0)
       {
         players[index++] = new PlayerView();
       }
