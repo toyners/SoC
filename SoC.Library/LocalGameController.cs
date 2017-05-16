@@ -53,7 +53,7 @@ namespace Jabberwocky.SoC.Library
       this.GameJoinedEvent?.Invoke(players);
     }
 
-    public void StartJoiningGame(GameOptions gameFilter, Guid accountToken)
+    public void StartJoiningGame(GameOptions gameOptions, Guid accountToken)
     {
       throw new NotImplementedException();
     }
