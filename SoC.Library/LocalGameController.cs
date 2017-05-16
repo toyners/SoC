@@ -6,14 +6,23 @@ namespace Jabberwocky.SoC.Library
   using System.Linq;
   using System.Text;
   using Interfaces;
+  using GameBoards;
 
   public class LocalGameController : IGameController
   {
-    public Action<PlayerBase[]> GameJoinedEvent { get; set; }
+    private IGameSession gameSession;
 
     public Guid GameId { get; private set; }
 
+    #region Events
+    public Action<PlayerBase[]> GameJoinedEvent { get; set; }
+
+    public Action<GameBoardData> InitialBoardSetupEvent { get; set; }
+
     public Action<ClientAccount> LoggedInEvent { get; set; }
+
+    public Action<Guid> StartInitialTurnEvent { get; set; }
+    #endregion
 
     public void AcceptOffer(Offer offer)
     {
@@ -51,6 +60,8 @@ namespace Jabberwocky.SoC.Library
       }
 
       this.GameJoinedEvent?.Invoke(players);
+
+      //this.gameSession = new GameSession()
     }
 
     public void StartJoiningGame(GameOptions gameOptions, Guid accountToken)

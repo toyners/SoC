@@ -2,10 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.ServiceModel;
-using System.Text;
-using System.Threading.Tasks;
 using Jabberwocky.SoC.Client.ServiceReference;
 using Jabberwocky.SoC.Library;
+using Jabberwocky.SoC.Library.GameBoards;
 using Jabberwocky.SoC.Library.Interfaces;
 
 namespace Jabberwocky.SoC.Client
@@ -24,9 +23,15 @@ namespace Jabberwocky.SoC.Client
       }
     }
 
+    #region Events
     public Action<PlayerBase[]> GameJoinedEvent { get; set; }
 
+    public Action<GameBoardData> InitialBoardSetupEvent { get; set; }
+
     public Action<ClientAccount> LoggedInEvent { get; set; }
+
+    public Action<Guid> StartInitialTurnEvent { get; set; }
+    #endregion
 
     public void AcceptOffer(Offer offer)
     {

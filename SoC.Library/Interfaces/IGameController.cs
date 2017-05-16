@@ -3,12 +3,17 @@ namespace Jabberwocky.SoC.Library.Interfaces
 {
   using System;
   using System.Collections.Generic;
+  using GameBoards;
 
   public interface IGameController
   {
     Action<PlayerBase[]> GameJoinedEvent { get; set; }
 
+    Action<GameBoardData> InitialBoardSetupEvent { get; set; }
+
     Action<ClientAccount> LoggedInEvent { get; set; }
+
+    Action<Guid> StartInitialTurnEvent { get; set; }
 
     Guid GameId { get; }
 
