@@ -15,6 +15,11 @@ namespace Jabberwocky.SoC.Library
       }
     }
 
+    public GameSession()
+    {
+
+    }
+
     public GameBoardManager Board
     {
       get

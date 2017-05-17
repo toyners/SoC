@@ -13,8 +13,9 @@ namespace SoC.Library.IntegrationTests
     public void StartGameUsingDefaultGameOptions()
     {
       var gameOptions = new GameOptions();
+      var gameControllerSetup = new GameControllerSetup();
       var gameControllerFactory = new GameControllerFactory();
-      var gameController = gameControllerFactory.Create(gameOptions);
+      var gameController = gameControllerFactory.Create(gameOptions, gameControllerSetup);
       PlayerBase[] players = null;
       gameController.GameJoinedEvent = (PlayerBase[] p) => { players = p; };
       gameController.StartJoiningGame(gameOptions);
@@ -30,8 +31,9 @@ namespace SoC.Library.IntegrationTests
     [Test]
     public void StartGameUsingNullGameOptions()
     {
+      var gameControllerSetup = new GameControllerSetup();
       var gameControllerFactory = new GameControllerFactory();
-      var gameController = gameControllerFactory.Create(null);
+      var gameController = gameControllerFactory.Create(null, gameControllerSetup);
       PlayerBase[] players = null;
       gameController.GameJoinedEvent = (PlayerBase[] p) => { players = p; };
       gameController.StartJoiningGame(null);

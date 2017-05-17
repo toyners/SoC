@@ -10,6 +10,8 @@ namespace Jabberwocky.SoC.Library
 
   public class LocalGameController : IGameController
   {
+    private GameBoardManager gameBoardManager;
+
     private IGameSession gameSession;
 
     public Guid GameId { get; private set; }
@@ -61,7 +63,10 @@ namespace Jabberwocky.SoC.Library
 
       this.GameJoinedEvent?.Invoke(players);
 
-      //this.gameSession = new GameSession()
+      this.gameBoardManager = new GameBoardManager(BoardSizes.Standard);
+      this.InitialBoardSetupEvent?.Invoke(this.gameBoardManager.Data);
+
+      //this.gameSession = new GameSession();
     }
 
     public void StartJoiningGame(GameOptions gameOptions, Guid accountToken)

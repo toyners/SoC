@@ -5,7 +5,7 @@ PlayerView holds number of resource cards, number of hidden development cards an
 GameBoardUpdate holds information on new settlements, cities, roads and robber location. Happens for every player
 
 GameBoardData holds information on all locations, trails, settlements, cities, roads, resource providers and robber location.
-Used on Server side and is the initial data sent to the client. Used by GameBoard on Server side as data repository.
+Used on Server side and is the initial data sent to the client. Used by GameBoardManager on Server side as data repository.
 - Verifies the settlement placement before passing to GameManager
 - Verifies the road placement before passsing to GameManager
 - Verifies the city placement before passing to GameManager

@@ -10,7 +10,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
   {
     public GameBoardManager(BoardSizes size)
     {
-
+      this.Data = new GameBoardData(size);
     }
 
     public GameBoardData Data { get; private set; }
