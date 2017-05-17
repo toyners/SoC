@@ -38,6 +38,8 @@ namespace Jabberwocky.SoC.Library.Interfaces
     ICollection<Offer> MakeOffer(Offer offer);
 
     void AcceptOffer(Offer offer);
+
+    void Quit();
   }
 
   public struct Offer

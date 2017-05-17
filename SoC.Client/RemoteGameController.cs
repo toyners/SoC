@@ -118,6 +118,11 @@ namespace Jabberwocky.SoC.Client
       throw new NotImplementedException();
     }
 
+    public void Quit()
+    {
+      throw new NotImplementedException();
+    }
+
     public void ReceivePersonalMessage(String sender, String text)
     {
       throw new NotImplementedException();

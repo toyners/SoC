@@ -7,13 +7,22 @@ namespace Jabberwocky.SoC.Library
 
   public class GameControllerFactory
   {
+    private IDiceRollerFactory diceRollerFactory;
+
+    public GameControllerFactory(IDiceRollerFactory diceRollerFactory)
+    {
+      this.diceRollerFactory = diceRollerFactory;
+    }
+
+    public GameControllerFactory() : this(new DiceRollerFactory()) { }
+
     public IGameController Create(GameOptions gameOptions, GameControllerSetup gameControllerSetup)
     {
       this.VerifyControllerSetup(gameControllerSetup);
 
       if (gameOptions == null || gameOptions.Connection == GameConnectionTypes.Local)
       {
-        return new LocalGameController();
+        return new LocalGameController(this.diceRollerFactory.Create());
       }
 
       throw new NotImplementedException();

@@ -14,11 +14,12 @@ namespace Jabberwocky.SoC.Library.UnitTests
     [Test]
     public void StartJoiningGame_DefaultGameOptions_PlayerDataReturned()
     {
-      var localGameController = new LocalGameController();
+      var localGameController = new LocalGameController(new DiceRoller());
 
       PlayerBase[] players = null;
       localGameController.GameJoinedEvent = (PlayerBase[] p) => { players = p; };
       localGameController.StartJoiningGame(new GameOptions());
+      localGameController.Quit();
 
       players.ShouldNotBeNull();
       players.Length.ShouldBe(4);
@@ -31,11 +32,12 @@ namespace Jabberwocky.SoC.Library.UnitTests
     [Test]
     public void StartJoiningGame_NullGameOptions_PlayerDataReturned()
     {
-      var localGameController = new LocalGameController();
+      var localGameController = new LocalGameController(new DiceRoller());
 
       PlayerBase[] players = null;
       localGameController.GameJoinedEvent = (PlayerBase[] p) => { players = p; };
       localGameController.StartJoiningGame(null);
+      localGameController.Quit();
 
       players.ShouldNotBeNull();
       players.Length.ShouldBe(4);
@@ -48,7 +50,8 @@ namespace Jabberwocky.SoC.Library.UnitTests
     [Test]
     public void StartJoiningGame_LocalGameJoined_InitialBoardPassedBack()
     {
-      var localGameController = new LocalGameController();
+      
+      var localGameController = new LocalGameController(new DiceRoller());
 
       localGameController.GameJoinedEvent = (PlayerBase[] p) => { };
 
@@ -63,7 +66,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     [Test]
     public void StartJoiningGame_LocalGameJoined_TurnTokenPassedBack()
     {
-      var localGameController = new LocalGameController();
+      var localGameController = new LocalGameController(new DiceRoller());
 
       localGameController.GameJoinedEvent = (PlayerBase[] p) => { };
 

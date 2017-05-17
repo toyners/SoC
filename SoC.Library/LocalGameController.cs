@@ -10,9 +10,15 @@ namespace Jabberwocky.SoC.Library
 
   public class LocalGameController : IGameController
   {
+    private Guid curentPlayerTurnToken;
+    private IDiceRoller diceRoller;
     private GameBoardManager gameBoardManager;
-
     private IGameSession gameSession;
+
+    public LocalGameController(IDiceRoller diceRoller)
+    {
+      this.diceRoller = diceRoller;
+    }
 
     public Guid GameId { get; private set; }
 
@@ -41,6 +47,21 @@ namespace Jabberwocky.SoC.Library
       throw new NotImplementedException();
     }
 
+    public ICollection<Offer> MakeOffer(Offer offer)
+    {
+      throw new NotImplementedException();
+    }
+
+    public void PlaceTown(Location location)
+    {
+      throw new NotImplementedException();
+    }
+
+    public void Quit()
+    {
+      throw new NotImplementedException();
+    }
+
     public void StartJoiningGame(GameOptions gameOptions)
     {
       if (gameOptions == null)
@@ -65,8 +86,10 @@ namespace Jabberwocky.SoC.Library
 
       this.gameBoardManager = new GameBoardManager(BoardSizes.Standard);
       this.InitialBoardSetupEvent?.Invoke(this.gameBoardManager.Data);
+      this.gameSession = new GameSession();
 
-      //this.gameSession = new GameSession();
+      this.curentPlayerTurnToken = this.GetTurnToken();
+      this.StartInitialTurnEvent?.Invoke(this.curentPlayerTurnToken);
     }
 
     public void StartJoiningGame(GameOptions gameOptions, Guid accountToken)
@@ -75,16 +98,6 @@ namespace Jabberwocky.SoC.Library
     }
 
     public void StartLogIntoAccount(String username, String password)
-    {
-      throw new NotImplementedException();
-    }
-
-    public ICollection<Offer> MakeOffer(Offer offer)
-    {
-      throw new NotImplementedException();
-    }
-
-    public void PlaceTown(Location location)
     {
       throw new NotImplementedException();
     }
@@ -102,6 +115,11 @@ namespace Jabberwocky.SoC.Library
     public void UpgradeToCity(Location location)
     {
       throw new NotImplementedException();
+    }
+
+    private Guid GetTurnToken()
+    {
+      return Guid.NewGuid();
     }
   }
 }
