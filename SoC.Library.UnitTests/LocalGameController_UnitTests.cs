@@ -50,15 +50,14 @@ namespace Jabberwocky.SoC.Library.UnitTests
     [Test]
     public void StartJoiningGame_LocalGameJoined_InitialBoardPassedBack()
     {
-      
       var localGameController = new LocalGameController(new DiceRoller());
-
-      localGameController.GameJoinedEvent = (PlayerBase[] p) => { };
+      //localGameController.GameJoinedEvent = (PlayerBase[] p) => { };
 
       GameBoardData gameBoardData = null;
       localGameController.InitialBoardSetupEvent = (GameBoardData g) => { gameBoardData = g; };
 
       localGameController.StartJoiningGame(null);
+      localGameController.Quit();
 
       gameBoardData.ShouldNotBeNull();
     }
@@ -67,12 +66,12 @@ namespace Jabberwocky.SoC.Library.UnitTests
     public void StartJoiningGame_LocalGameJoined_TurnTokenPassedBack()
     {
       var localGameController = new LocalGameController(new DiceRoller());
-
-      localGameController.GameJoinedEvent = (PlayerBase[] p) => { };
+      //localGameController.GameJoinedEvent = (PlayerBase[] p) => { };
 
       Guid turnToken = Guid.Empty;
       localGameController.StartInitialTurnEvent = (Guid t) => { turnToken = t; };
       localGameController.StartJoiningGame(null);
+      localGameController.Quit();
 
       turnToken.ShouldNotBe(Guid.Empty);
     }
