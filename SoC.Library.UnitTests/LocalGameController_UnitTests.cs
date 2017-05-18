@@ -49,22 +49,41 @@ namespace Jabberwocky.SoC.Library.UnitTests
     }
 
     [Test]
-    public void StartJoiningGame_LocalGameJoined_InitialBoardPassedBack()
+    public void StartJoiningGame_TryLaunchingGameWithoutJoining_ReturnsFalse()
     {
       var localGameController = this.CreateLocalGameController();
-      
-      GameBoardData gameBoardData = null;
-      localGameController.InitialBoardSetupEvent = (GameBoardData g) => { gameBoardData = g; };
-
-      localGameController.StartJoiningGame(null);
-      localGameController.LaunchGame();
-      localGameController.Quit();
-
-      gameBoardData.ShouldNotBeNull();
+      localGameController.TryLaunchGame().ShouldBeFalse();
     }
 
     [Test]
-    public void StartJoiningGame_LocalGameJoined_TurnTokenPassedBack()
+    public void StartJoiningGame_TryLaunchingGameAfterJoining_ReturnsTrue()
+    {
+      var localGameController = this.CreateLocalGameController();
+      localGameController.StartJoiningGame(null);
+      localGameController.TryLaunchGame().ShouldBeTrue();
+    }
+
+    [Test]
+    public void StartJoiningGame_GameLaunchedWithPlayerFirstIn_InitialBoardPassedBack()
+    {
+      var mockDice = NSubstitute.Substitute.For<IDiceRoller>();
+      mockDice.RollTwoDice().Returns(0u);
+      var localGameController = this.CreateLocalGameController();
+
+      PlayerBase[] players = null;
+      GameBoardData gameBoardData = null;
+      localGameController.GameJoinedEvent = (PlayerBase[] p) => { players = p; };
+      localGameController.InitialBoardSetupEvent = (GameBoardData g) => { gameBoardData = g; };
+
+      localGameController.StartJoiningGame(null);
+      localGameController.TryLaunchGame();
+
+      gameBoardData.ShouldNotBeNull();
+      gameBoardData.Settlements.Count.ShouldBe(0);
+    }
+
+    [Test]
+    public void StartJoiningGame_GameLaunched_TurnTokenPassedBack()
     {
       var localGameController = this.CreateLocalGameController();
 

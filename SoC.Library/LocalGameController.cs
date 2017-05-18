@@ -62,9 +62,14 @@ namespace Jabberwocky.SoC.Library
       throw new NotImplementedException();
     }
 
-    public void LaunchGame()
+    public Boolean TryLaunchGame()
     {
-      throw new NotImplementedException();
+      if (this.gamePhase != GamePhases.WaitingLaunch)
+      {
+        return false;
+      }
+
+      throw new Exception();
     }
 
     public ICollection<Offer> MakeOffer(Offer offer)
