@@ -64,11 +64,11 @@ namespace Jabberwocky.SoC.Library.UnitTests
     }
 
     [Test]
-    public void StartJoiningGame_GameLaunchedWithPlayerFirstIn_InitialBoardPassedBack()
+    public void StartJoiningGame_GameLaunchedWithPlayerFirstInInitialSetupRound_InitialBoardPassedBack()
     {
       var mockDice = NSubstitute.Substitute.For<IDiceRoller>();
-      mockDice.RollTwoDice().Returns(0u);
-      var localGameController = this.CreateLocalGameController();
+      mockDice.RollTwoDice().Returns(12u, 10u, 8u, 2u);
+      var localGameController = this.CreateLocalGameController(mockDice);
 
       PlayerBase[] players = null;
       GameBoardData gameBoardData = null;
