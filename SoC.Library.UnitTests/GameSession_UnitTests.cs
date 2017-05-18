@@ -16,7 +16,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     public void GameSession_MaxPlayerCountIsLessThanTwo_ThrowsMeaningfulException()
     {
       var board = new GameBoardManager(BoardSizes.Standard);
-      var diceRoller = new DiceRoller();
+      var diceRoller = new Dice();
       var cardPile = new DevelopmentCardPile();
 
       Should.Throw<ArgumentOutOfRangeException>(() => new GameSession(board, 1, diceRoller, cardPile))
@@ -27,7 +27,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     public void GameSession_MaxPlayerCountIsMoreThanFour_ThrowsMeaningfulException()
     {
       var board = new GameBoardManager(BoardSizes.Standard);
-      var diceRoller = new DiceRoller();
+      var diceRoller = new Dice();
       var cardPile = new DevelopmentCardPile();
 
       Should.Throw<ArgumentOutOfRangeException>(() => new GameSession(board, 5, diceRoller, cardPile))
@@ -38,7 +38,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     public void RegisterClient_GameSessionIsEmpty_ClientIsRegistered()
     {
       var board = new GameBoardManager(BoardSizes.Standard);
-      var diceRoller = new DiceRoller();
+      var diceRoller = new Dice();
       var cardPile = new DevelopmentCardPile();
       IGameSession gameManager = new GameSession(board, 2, diceRoller, cardPile);
 
@@ -53,7 +53,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     public void RegisterClient_GameSessionNeedsLastPlayer_ClientIsRegistered()
     {
       var board = new GameBoardManager(BoardSizes.Standard);
-      var diceRoller = new DiceRoller();
+      var diceRoller = new Dice();
       var cardPile = new DevelopmentCardPile();
       IGameSession gameManager = new GameSession(board, 2, diceRoller, cardPile);
 
@@ -70,7 +70,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     public void RegisterClient_GameSessionIsFull_ClientIsNotRegistered()
     {
       var board = new GameBoardManager(BoardSizes.Standard);
-      var diceRoller = new DiceRoller();
+      var diceRoller = new Dice();
       var cardPile = new DevelopmentCardPile();
       IGameSession gameManager = new GameSession(board, 2, diceRoller, cardPile);
 
@@ -87,7 +87,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     [Test]
     public void GetFirstSetupPassOrder_ReturnsPlayerOrderBasedOnDiceRolls()
     {
-      var diceRoller = Substitute.For<IDiceRoller>();
+      var diceRoller = Substitute.For<IDice>();
       diceRoller.RollTwoDice().Returns(4u, 8u, 6u, 10u);
       var gameManager = new GameSession(new GameBoardManager(BoardSizes.Standard), 4, diceRoller, new DevelopmentCardPile());
 
@@ -98,7 +98,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     [Test]
     public void GetFirstSetupPassOrder_SameRollForTwoPlayersCausesReroll_ReturnsPlayerOrderBasedOnDiceRolls()
     {
-      var diceRoller = Substitute.For<IDiceRoller>();
+      var diceRoller = Substitute.For<IDice>();
       diceRoller.RollTwoDice().Returns(10u, 8u, 6u, 10u, 12u);
       var gameManager = new GameSession(new GameBoardManager(BoardSizes.Standard), 4, diceRoller, new DevelopmentCardPile());
 
@@ -109,7 +109,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     [Test]
     public void GetFirstSetupPassOrder_SameRollCausesTwoRoundsOfRerolls_ReturnsPlayerOrderBasedOnDiceRolls()
     {
-      var diceRoller = Substitute.For<IDiceRoller>();
+      var diceRoller = Substitute.For<IDice>();
       diceRoller.RollTwoDice().Returns(10u, 10u, 10u, 10u, 7u, 6u, 7u, 8u);
       var gameManager = new GameSession(new GameBoardManager(BoardSizes.Standard), 4, diceRoller, new DevelopmentCardPile());
 

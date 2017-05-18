@@ -50,8 +50,8 @@
     <Compile Include="GameBoards\GameBoardUpdate.cs" />
     <Compile Include="ClientAccount.cs" />
     <Compile Include="ClientAccountManager.cs" />
-    <Compile Include="DiceRoller.cs" />
-    <Compile Include="DiceRollerFactory.cs" />
+    <Compile Include="Dice.cs" />
+    <Compile Include="DiceFactory.cs" />
     <Compile Include="Enums\BoardSizes.cs" />
     <Compile Include="Enums\DevelopmentCardTypes.cs" />
     <Compile Include="Enums\ResourceTypes.cs" />
@@ -63,8 +63,8 @@
     <Compile Include="Interfaces\IPlayer.cs" />
     <Compile Include="OldGameManager.cs" />
     <Compile Include="GameSessionManager.cs" />
-    <Compile Include="Interfaces\IDiceRoller.cs" />
-    <Compile Include="Interfaces\IDiceRollerFactory.cs" />
+    <Compile Include="Interfaces\IDice.cs" />
+    <Compile Include="Interfaces\IDiceFactory.cs" />
     <Compile Include="Interfaces\IGameSession.cs" />
     <Compile Include="Interfaces\IGameSessionManager.cs" />
     <Compile Include="Location.cs" />

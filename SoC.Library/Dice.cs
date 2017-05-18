@@ -4,7 +4,7 @@ namespace Jabberwocky.SoC.Library
   using System;
   using Interfaces;
 
-  public class DiceRoller : IDiceRoller
+  public class Dice : IDice
   {
     private Random random = new Random();
 

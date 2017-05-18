@@ -66,7 +66,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     [Test]
     public void StartJoiningGame_GameLaunchedWithPlayerFirstInInitialSetupRound_InitialBoardPassedBack()
     {
-      var mockDice = NSubstitute.Substitute.For<IDiceRoller>();
+      var mockDice = NSubstitute.Substitute.For<IDice>();
       mockDice.RollTwoDice().Returns(12u, 10u, 8u, 2u);
       var localGameController = this.CreateLocalGameController(mockDice);
 
@@ -97,10 +97,10 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
     private LocalGameController CreateLocalGameController()
     {
-      return this.CreateLocalGameController(new DiceRoller());
+      return this.CreateLocalGameController(new Dice());
     }
 
-    private LocalGameController CreateLocalGameController(IDiceRoller diceRoller)
+    private LocalGameController CreateLocalGameController(IDice diceRoller)
     {
       var localGameController = new LocalGameController(diceRoller);
       localGameController.GameJoinedEvent = (PlayerBase[] players) => { };

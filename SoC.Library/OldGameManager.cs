@@ -9,7 +9,7 @@ namespace Jabberwocky.SoC.Library
   public class OldGameManager
   {
     #region Fields
-    private IDiceRoller diceRoller;
+    private IDice diceRoller;
 
     private PlayerData[] players;
 
@@ -17,7 +17,7 @@ namespace Jabberwocky.SoC.Library
     #endregion
 
     #region Construction
-    public OldGameManager(GameBoardManager board, UInt32 playerCount, IDiceRoller diceRoller, DevelopmentCardPile cardPile)
+    public OldGameManager(GameBoardManager board, UInt32 playerCount, IDice diceRoller, DevelopmentCardPile cardPile)
     {
       //TODO: Check for null references
       this.Board = board;

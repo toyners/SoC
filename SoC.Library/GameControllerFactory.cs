@@ -7,14 +7,14 @@ namespace Jabberwocky.SoC.Library
 
   public class GameControllerFactory
   {
-    private IDiceRollerFactory diceRollerFactory;
+    private IDiceFactory diceRollerFactory;
 
-    public GameControllerFactory(IDiceRollerFactory diceRollerFactory)
+    public GameControllerFactory(IDiceFactory diceRollerFactory)
     {
       this.diceRollerFactory = diceRollerFactory;
     }
 
-    public GameControllerFactory() : this(new DiceRollerFactory()) { }
+    public GameControllerFactory() : this(new DiceFactory()) { }
 
     public IGameController Create(GameOptions gameOptions, GameControllerSetup gameControllerSetup)
     {
