@@ -86,14 +86,10 @@ namespace Jabberwocky.SoC.Library
         gameOptions = new GameOptions { MaxPlayers = 1, MaxAIPlayers = 3 };
       }
 
-      this.cancellationTokenSource = new CancellationTokenSource();
-      this.cancellationToken = this.cancellationTokenSource.Token;
-
-      this.sessionTask = Task.Factory.StartNew(() =>
-      {
-        this.RunGame(gameOptions);
-      },
-      cancellationToken);
+      this.players = this.CreatePlayers(gameOptions);
+      this.gamePhase = GamePhases.WaitingLaunch;
+      this.GameJoinedEvent.Invoke(players);
+      //this.RunGame(gameOptions);
     }
 
     public void StartJoiningGame(GameOptions gameOptions, Guid accountToken)
@@ -128,10 +124,16 @@ namespace Jabberwocky.SoC.Library
 
     private void RunGame(GameOptions gameOptions)
     {
+
       this.players = this.CreatePlayers(gameOptions);
       this.GameJoinedEvent.Invoke(players);
 
-      this.WaitForGameLaunch();
+      if (this.gamePhase == GamePhases.WaitingLaunch)
+      {
+        return;
+      }
+
+      //this.WaitForGameLaunch();
       
       while (true)
       {

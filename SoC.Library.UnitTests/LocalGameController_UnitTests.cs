@@ -20,8 +20,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
       PlayerBase[] players = null;
       localGameController.GameJoinedEvent = (PlayerBase[] p) => { players = p; };
       localGameController.StartJoiningGame(new GameOptions());
-
-      localGameController.Quit();
+      //localGameController.Quit();
       
       players.ShouldNotBeNull();
       players.Length.ShouldBe(4);
