@@ -57,6 +57,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
       localGameController.InitialBoardSetupEvent = (GameBoardData g) => { gameBoardData = g; };
 
       localGameController.StartJoiningGame(null);
+      localGameController.LaunchGame();
       localGameController.Quit();
 
       gameBoardData.ShouldNotBeNull();

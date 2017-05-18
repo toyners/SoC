@@ -14,6 +14,7 @@ namespace Jabberwocky.SoC.Library
     {
       Initial,
       WaitingLaunch,
+      Quitting,
     }
 
     #region Fields
@@ -61,6 +62,11 @@ namespace Jabberwocky.SoC.Library
       throw new NotImplementedException();
     }
 
+    public void LaunchGame()
+    {
+      throw new NotImplementedException();
+    }
+
     public ICollection<Offer> MakeOffer(Offer offer)
     {
       throw new NotImplementedException();
@@ -73,10 +79,7 @@ namespace Jabberwocky.SoC.Library
 
     public void Quit()
     {
-      if (this.cancellationTokenSource != null)
-      {
-        this.cancellationTokenSource.Cancel();
-      }
+      this.gamePhase = GamePhases.Quitting;
     }
 
     public void StartJoiningGame(GameOptions gameOptions)
