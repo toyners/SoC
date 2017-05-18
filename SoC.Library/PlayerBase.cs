@@ -8,6 +8,7 @@ namespace Jabberwocky.SoC.Library
 
   public class PlayerBase
   {
+    public readonly Guid PlayerId;
     DevelopmentCard[] DisplayedDevelopmentCards;
   }
 }

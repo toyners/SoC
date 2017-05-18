@@ -69,19 +69,8 @@ namespace Jabberwocky.SoC.Library
         return false;
       }
 
-      // Roll dice for each player to determine turn order for initial setup round
-      UInt32[] diceRolls = new UInt32[this.players.Length];
-      for (Int32 i = 0; i < this.players.Length; i++)
-      {
-        diceRolls[i] = this.dice.RollTwoDice();
-      }
-
-      PlayerBase[] initialSetupRoundOrder = new PlayerBase[this.players.Length];
-      for 
-
       this.gameBoardManager = new GameBoardManager(BoardSizes.Standard);
       this.InitialBoardSetupEvent.Invoke(this.gameBoardManager.Data);
-
 
       throw new Exception();
     }
