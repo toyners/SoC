@@ -3,17 +3,31 @@ namespace Jabberwocky.SoC.Library
 {
   using System;
   using System.Collections.Generic;
-  using System.Linq;
-  using System.Text;
-  using Interfaces;
+  using System.Threading;
+  using System.Threading.Tasks;
   using GameBoards;
+  using Interfaces;
 
   public class LocalGameController : IGameController
   {
+    private enum GamePhases
+    {
+      Initial,
+      WaitingLaunch,
+    }
+
+    #region Fields
+    private CancellationToken cancellationToken;
+    private CancellationTokenSource cancellationTokenSource;
     private Guid curentPlayerTurnToken;
     private IDiceRoller diceRoller;
     private GameBoardManager gameBoardManager;
+    private GamePhases gamePhase;
     private IGameSession gameSession;
+    private PlayerBase[] players;
+    private Boolean quitting;
+    private Task sessionTask;
+    #endregion
 
     public LocalGameController(IDiceRoller diceRoller)
     {
@@ -59,7 +73,10 @@ namespace Jabberwocky.SoC.Library
 
     public void Quit()
     {
-      throw new NotImplementedException();
+      if (this.cancellationTokenSource != null)
+      {
+        this.cancellationTokenSource.Cancel();
+      }
     }
 
     public void StartJoiningGame(GameOptions gameOptions)
@@ -69,28 +86,14 @@ namespace Jabberwocky.SoC.Library
         gameOptions = new GameOptions { MaxPlayers = 1, MaxAIPlayers = 3 };
       }
 
-      var players = new PlayerBase[gameOptions.MaxPlayers + gameOptions.MaxAIPlayers];
+      this.cancellationTokenSource = new CancellationTokenSource();
+      this.cancellationToken = this.cancellationTokenSource.Token;
 
-      var index = 0;
-      while ((gameOptions.MaxPlayers--) > 0)
+      this.sessionTask = Task.Factory.StartNew(() =>
       {
-        players[index++] = new PlayerData();
-      }
-
-      while ((gameOptions.MaxAIPlayers--) > 0)
-      {
-        players[index++] = new PlayerView();
-      }
-
-      this.GameJoinedEvent?.Invoke(players);
-
-      this.gameBoardManager = new GameBoardManager(BoardSizes.Standard);
-      this.InitialBoardSetupEvent?.Invoke(this.gameBoardManager.Data);
-
-      this.gameSession = new GameSession();
-
-      this.curentPlayerTurnToken = this.GetTurnToken();
-      this.StartInitialTurnEvent?.Invoke(this.curentPlayerTurnToken);
+        this.RunGame(gameOptions);
+      },
+      cancellationToken);
     }
 
     public void StartJoiningGame(GameOptions gameOptions, Guid accountToken)
@@ -121,6 +124,52 @@ namespace Jabberwocky.SoC.Library
     private Guid GetTurnToken()
     {
       return Guid.NewGuid();
+    }
+
+    private void RunGame(GameOptions gameOptions)
+    {
+      this.players = this.CreatePlayers(gameOptions);
+      this.GameJoinedEvent.Invoke(players);
+
+      this.WaitForGameLaunch();
+      
+      while (true)
+      {
+        this.gameBoardManager = new GameBoardManager(BoardSizes.Standard);
+        this.InitialBoardSetupEvent.Invoke(this.gameBoardManager.Data);
+
+        this.gameSession = new GameSession();
+
+        this.curentPlayerTurnToken = this.GetTurnToken();
+        this.StartInitialTurnEvent.Invoke(this.curentPlayerTurnToken);
+      }
+    }
+
+    private void WaitForGameLaunch()
+    {
+      while (this.gamePhase == GamePhases.WaitingLaunch)
+      {
+        Thread.Sleep(50);
+        this.cancellationToken.ThrowIfCancellationRequested();
+      }
+    }
+
+    private PlayerBase[] CreatePlayers(GameOptions gameOptions)
+    {
+      var players = new PlayerBase[gameOptions.MaxPlayers + gameOptions.MaxAIPlayers];
+
+      var index = 0;
+      while ((gameOptions.MaxPlayers--) > 0)
+      {
+        players[index++] = new PlayerData();
+      }
+
+      while ((gameOptions.MaxAIPlayers--) > 0)
+      {
+        players[index++] = new PlayerView();
+      }
+
+      return players;
     }
   }
 }
