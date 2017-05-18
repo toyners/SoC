@@ -86,6 +86,7 @@ namespace Jabberwocky.SoC.Library
 
       this.gameBoardManager = new GameBoardManager(BoardSizes.Standard);
       this.InitialBoardSetupEvent?.Invoke(this.gameBoardManager.Data);
+
       this.gameSession = new GameSession();
 
       this.curentPlayerTurnToken = this.GetTurnToken();

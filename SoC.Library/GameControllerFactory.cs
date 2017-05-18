@@ -20,12 +20,22 @@ namespace Jabberwocky.SoC.Library
     {
       this.VerifyControllerSetup(gameControllerSetup);
 
+      IGameController gameController = null;
       if (gameOptions == null || gameOptions.Connection == GameConnectionTypes.Local)
       {
-        return new LocalGameController(this.diceRollerFactory.Create());
+        gameController = new LocalGameController(this.diceRollerFactory.Create());
+      }
+      else
+      {
+        throw new NotImplementedException();
       }
 
-      throw new NotImplementedException();
+      gameController.GameJoinedEvent = gameControllerSetup.GameJoinedEventHandler;
+      gameController.InitialBoardSetupEvent = gameControllerSetup.InitialBoardSetupEventHandler;
+      gameController.LoggedInEvent = gameControllerSetup.LoggedInEventHandler;
+      gameController.StartInitialTurnEvent = gameControllerSetup.StartInitialTurnEventHandler;
+
+      return gameController;
     }
 
     private void VerifyControllerSetup(GameControllerSetup gameControllerSetup)
@@ -77,11 +87,8 @@ namespace Jabberwocky.SoC.Library
   public class GameControllerSetup
   {
     public Action<PlayerBase[]> GameJoinedEventHandler;
-
-    public Action<GameBoards.GameBoardData> InitialBoardSetupEventHandler { get; set; }
-
-    public Action<ClientAccount> LoggedInEventHandler { get; set; }
-
-    public Action<Guid> StartInitialTurnEventHandler { get; set; }
+    public Action<GameBoards.GameBoardData> InitialBoardSetupEventHandler;
+    public Action<ClientAccount> LoggedInEventHandler;
+    public Action<Guid> StartInitialTurnEventHandler;
   }
 }

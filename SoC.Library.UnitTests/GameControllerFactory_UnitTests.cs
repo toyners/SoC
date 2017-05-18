@@ -39,6 +39,18 @@ namespace Jabberwocky.SoC.Library.UnitTests
     }
 
     [Test]
+    public void Create_SetupWithAllHandlers_ControllerHasHandlersSet()
+    {
+      var gameControllerSetup = this.CreateGameControllerSetup();
+      var gameController = new GameControllerFactory().Create(null, gameControllerSetup);
+
+      gameController.GameJoinedEvent.ShouldBe(gameControllerSetup.GameJoinedEventHandler);
+      gameController.InitialBoardSetupEvent.ShouldBe(gameControllerSetup.InitialBoardSetupEventHandler);
+      gameController.LoggedInEvent.ShouldBe(gameControllerSetup.LoggedInEventHandler);
+      gameController.StartInitialTurnEvent.ShouldBe(gameControllerSetup.StartInitialTurnEventHandler);
+    }
+
+    [Test]
     public void Create_NullParameter_ReturnsLocalController()
     {
       var gameController = new GameControllerFactory().Create(null, this.CreateGameControllerSetup());
