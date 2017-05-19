@@ -95,6 +95,30 @@ namespace Jabberwocky.SoC.Library.UnitTests
       turnToken.ShouldNotBe(Guid.Empty);
     }
 
+    [Test]
+    public void InitialOrderSetupTest()
+    {
+      var player1 = new PlayerData();
+      var player2 = new PlayerView();
+      var player3 = new PlayerView();
+      var player4 = new PlayerView();
+
+      var players = new PlayerBase[] { player1, player2, player3, player4 };
+      var mockDice = NSubstitute.Substitute.For<IDice>();
+      mockDice.RollTwoDice().Returns(12u, 10u, 8u, 6u);
+      var setupOrder = SetupOrderCreator.Create(players, mockDice);
+
+      setupOrder.ShouldBe(new PlayerBase[] { null });
+    }
+
+    private static class SetupOrderCreator
+    {
+      public static PlayerBase[] Create(PlayerBase[] players, IDice dice)
+      {
+        throw new NotImplementedException();
+      }
+    }
+
     private LocalGameController CreateLocalGameController()
     {
       return this.CreateLocalGameController(new Dice());

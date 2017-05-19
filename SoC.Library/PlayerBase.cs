@@ -2,13 +2,15 @@
 namespace Jabberwocky.SoC.Library
 {
   using System;
-  using System.Collections.Generic;
-  using System.Linq;
-  using System.Text;
 
   public class PlayerBase
   {
     public readonly Guid PlayerId;
     DevelopmentCard[] DisplayedDevelopmentCards;
+
+    public PlayerBase()
+    {
+      this.PlayerId = Guid.NewGuid();
+    }
   }
 }
