@@ -5,12 +5,12 @@ namespace Jabberwocky.SoC.Library
 
   public class PlayerBase
   {
-    public readonly Guid PlayerId;
+    public readonly Guid Id;
     DevelopmentCard[] DisplayedDevelopmentCards;
 
     public PlayerBase()
     {
-      this.PlayerId = Guid.NewGuid();
+      this.Id = Guid.NewGuid();
     }
   }
 }

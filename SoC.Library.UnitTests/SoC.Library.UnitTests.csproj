@@ -54,6 +54,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Board_UnitTests.cs" />
+    <Compile Include="SetupOrderCreator_UnitTests.cs" />
     <Compile Include="GameControllerFactory_UnitTests.cs" />
     <Compile Include="GameSession_UnitTests.cs" />
     <Compile Include="LocalGameController_UnitTests.cs" />

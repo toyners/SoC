@@ -2,6 +2,7 @@
 namespace Jabberwocky.SoC.Library.UnitTests
 {
   using System;
+  using System.Collections.Generic;
   using GameBoards;
   using Interfaces;
   using NSubstitute;
@@ -20,7 +21,6 @@ namespace Jabberwocky.SoC.Library.UnitTests
       PlayerBase[] players = null;
       localGameController.GameJoinedEvent = (PlayerBase[] p) => { players = p; };
       localGameController.StartJoiningGame(new GameOptions());
-      //localGameController.Quit();
       
       players.ShouldNotBeNull();
       players.Length.ShouldBe(4);
@@ -79,7 +79,17 @@ namespace Jabberwocky.SoC.Library.UnitTests
       localGameController.TryLaunchGame();
 
       gameBoardData.ShouldNotBeNull();
-      gameBoardData.Settlements.Count.ShouldBe(0);
+      gameBoardData.Settlements.Count.ShouldBe(players.Length);
+      gameBoardData.Settlements.ShouldContain(new KeyValuePair<Guid, List<Location>>(players[0].Id, null));
+      gameBoardData.Settlements.ShouldContain(new KeyValuePair<Guid, List<Location>>(players[1].Id, null));
+      gameBoardData.Settlements.ShouldContain(new KeyValuePair<Guid, List<Location>>(players[2].Id, null));
+      gameBoardData.Settlements.ShouldContain(new KeyValuePair<Guid, List<Location>>(players[3].Id, null));
+
+      gameBoardData.Roads.Count.ShouldBe(players.Length);
+      gameBoardData.Roads.ShouldContain(new KeyValuePair<Guid, List<Road>>(players[0].Id, null));
+      gameBoardData.Roads.ShouldContain(new KeyValuePair<Guid, List<Road>>(players[1].Id, null));
+      gameBoardData.Roads.ShouldContain(new KeyValuePair<Guid, List<Road>>(players[2].Id, null));
+      gameBoardData.Roads.ShouldContain(new KeyValuePair<Guid, List<Road>>(players[3].Id, null));
     }
 
     [Test]
@@ -93,30 +103,6 @@ namespace Jabberwocky.SoC.Library.UnitTests
       localGameController.Quit();
 
       turnToken.ShouldNotBe(Guid.Empty);
-    }
-
-    [Test]
-    public void InitialOrderSetupTest()
-    {
-      var player1 = new PlayerData();
-      var player2 = new PlayerView();
-      var player3 = new PlayerView();
-      var player4 = new PlayerView();
-
-      var players = new PlayerBase[] { player1, player2, player3, player4 };
-      var mockDice = NSubstitute.Substitute.For<IDice>();
-      mockDice.RollTwoDice().Returns(12u, 10u, 8u, 6u);
-      var setupOrder = SetupOrderCreator.Create(players, mockDice);
-
-      setupOrder.ShouldBe(new PlayerBase[] { null });
-    }
-
-    private static class SetupOrderCreator
-    {
-      public static PlayerBase[] Create(PlayerBase[] players, IDice dice)
-      {
-        throw new NotImplementedException();
-      }
     }
 
     private LocalGameController CreateLocalGameController()

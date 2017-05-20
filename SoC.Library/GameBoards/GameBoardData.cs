@@ -21,6 +21,8 @@ namespace Jabberwocky.SoC.Library.GameBoards
     #region Fields
     public Dictionary<Guid, List<Location>> Settlements;
 
+    public Dictionary<Guid, List<Road>> Roads;
+
     public Location[] Locations;
 
     public Trail[] Trails;
@@ -41,6 +43,9 @@ namespace Jabberwocky.SoC.Library.GameBoards
       {
         throw new Exception("Extended boards not implemented.");
       }
+
+      this.Settlements = new Dictionary<Guid, List<Location>>();
+      this.Roads = new Dictionary<Guid, List<Road>>();
 
       this.CreateLocations();
 

@@ -70,9 +70,16 @@ namespace Jabberwocky.SoC.Library
       }
 
       this.gameBoardManager = new GameBoardManager(BoardSizes.Standard);
-      this.InitialBoardSetupEvent.Invoke(this.gameBoardManager.Data);
+      var gameBoardData = this.gameBoardManager.Data;
+      for (Int32 i = 0; i < this.players.Length; i++)
+      {
+        gameBoardData.Settlements.Add(this.players[i].Id, null);
+        gameBoardData.Roads.Add(this.players[i].Id, null);
+      }
 
-      throw new Exception();
+      this.InitialBoardSetupEvent.Invoke(gameBoardData);
+      return true;
+      //throw new Exception();
     }
 
     public ICollection<Offer> MakeOffer(Offer offer)
