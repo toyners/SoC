@@ -91,6 +91,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
 
     private void CreateResourceProviders()
     {
+      //d,b8,o5
       var desert = new ResourceProvider();
       var brick8 = new ResourceProvider(ResourceTypes.Brick, 8);
       var ore5 = new ResourceProvider(ResourceTypes.Ore, 5);

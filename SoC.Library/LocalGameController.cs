@@ -21,20 +21,23 @@ namespace Jabberwocky.SoC.Library
     private CancellationToken cancellationToken;
     private CancellationTokenSource cancellationTokenSource;
     private IComputerPlayerFactory computerPlayerFactory;
+    private Dictionary<PlayerBase, IComputerPlayer> computerPlayers;
     private Guid curentPlayerTurnToken;
     private IDice dice;
     private GameBoardManager gameBoardManager;
     private GamePhases gamePhase;
     private IGameSession gameSession;
     private PlayerBase[] players;
+    private PlayerBase[] turnOrder;
     private Boolean quitting;
     private Task sessionTask;
     #endregion
 
-    public LocalGameController(IDice dice, IComputerPlayerFactory computerPlayerFactory)
+    public LocalGameController(IDice dice, IComputerPlayerFactory computerPlayerFactory, GameBoardManager gameBoardManager)
     {
       this.dice = dice;
       this.computerPlayerFactory = computerPlayerFactory;
+      this.gameBoardManager = gameBoardManager;
     }
 
     public Guid GameId { get; private set; }
@@ -72,7 +75,6 @@ namespace Jabberwocky.SoC.Library
         return false;
       }
 
-      this.gameBoardManager = new GameBoardManager(BoardSizes.Standard);
       var gameBoardData = this.gameBoardManager.Data;
       for (Int32 i = 0; i < this.players.Length; i++)
       {
@@ -83,7 +85,33 @@ namespace Jabberwocky.SoC.Library
       this.InitialBoardSetupEvent?.Invoke(gameBoardData);
 
       this.players = SetupOrderCreator.Create(this.players, this.dice);
-      //this.StartInitialTurnEvent.Invoke();
+      var firstPlayer = this.players[0];
+
+      if (this.computerPlayers.ContainsKey(firstPlayer))
+      {
+        // Is computer player
+        var computerPlayer = this.computerPlayers[firstPlayer];
+        var chosenSettlement = computerPlayer.ChooseSettlementLocation(gameBoardData);
+        var chosenRoad = computerPlayer.ChooseRoad(gameBoardData);
+        var gameBoardUpdate = new GameBoardUpdate()
+        {
+          NewSettlements = new Dictionary<PlayerBase, List<Location>>
+          {
+            { firstPlayer, new List<Location> { chosenSettlement } }
+          },
+          NewRoads = new Dictionary<PlayerBase, List<Trail>>
+          {
+            { firstPlayer, new List<Trail> { chosenRoad } }
+          }
+        };
+        
+        this.StartInitialSetupTurnEvent?.Invoke(firstPlayer.Id, gameBoardUpdate);
+      }
+      else
+      {
+        // Human player is first to complete initial setup turn so no outstanding updates
+        this.StartInitialSetupTurnEvent?.Invoke(this.players[0].Id, null);
+      }
 
       return true;
     }

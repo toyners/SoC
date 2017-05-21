@@ -45,7 +45,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ComputerPlayerFactory.cs" />
-    <Compile Include="Interfaces\IAIFactory.cs" />
+    <Compile Include="Interfaces\IComputerPlayer.cs" />
+    <Compile Include="Interfaces\IComputerPlayerFactory.cs" />
     <Compile Include="SetupOrderCreator.cs" />
     <Compile Include="Enums\GameConnectionTypes.cs" />
     <Compile Include="GameBoards\GameBoardData.cs" />
