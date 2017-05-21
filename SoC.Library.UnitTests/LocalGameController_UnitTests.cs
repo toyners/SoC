@@ -68,7 +68,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     {
       var mockDice = NSubstitute.Substitute.For<IDice>();
       mockDice.RollTwoDice().Returns(12u, 10u, 8u, 2u);
-      var localGameController = this.CreateLocalGameController(mockDice);
+      var localGameController = this.CreateLocalGameController(mockDice, new ComputerPlayerFactory());
 
       PlayerBase[] players = null;
       GameBoardData gameBoardData = null;
@@ -86,33 +86,62 @@ namespace Jabberwocky.SoC.Library.UnitTests
       gameBoardData.Settlements.ShouldContain(new KeyValuePair<Guid, List<Location>>(players[3].Id, null));
 
       gameBoardData.Roads.Count.ShouldBe(players.Length);
-      gameBoardData.Roads.ShouldContain(new KeyValuePair<Guid, List<Road>>(players[0].Id, null));
-      gameBoardData.Roads.ShouldContain(new KeyValuePair<Guid, List<Road>>(players[1].Id, null));
-      gameBoardData.Roads.ShouldContain(new KeyValuePair<Guid, List<Road>>(players[2].Id, null));
-      gameBoardData.Roads.ShouldContain(new KeyValuePair<Guid, List<Road>>(players[3].Id, null));
+      gameBoardData.Roads.ShouldContain(new KeyValuePair<Guid, List<Trail>>(players[0].Id, null));
+      gameBoardData.Roads.ShouldContain(new KeyValuePair<Guid, List<Trail>>(players[1].Id, null));
+      gameBoardData.Roads.ShouldContain(new KeyValuePair<Guid, List<Trail>>(players[2].Id, null));
+      gameBoardData.Roads.ShouldContain(new KeyValuePair<Guid, List<Trail>>(players[3].Id, null));
+    }
+
+    [Test]
+    public void StartJoiningGame_GameLaunchedWithPlayerSecondInInitialSetupRound_InitialBoardPassedBack()
+    {
+      var mockDice = NSubstitute.Substitute.For<IDice>();
+      mockDice.RollTwoDice().Returns(12u, 10u, 8u, 2u);
+      var localGameController = this.CreateLocalGameController(mockDice, new ComputerPlayerFactory());
+
+      PlayerBase[] players = null;
+      GameBoardData gameBoardData = null;
+      localGameController.GameJoinedEvent = (PlayerBase[] p) => { players = p; };
+      localGameController.InitialBoardSetupEvent = (GameBoardData g) => { gameBoardData = g; };
+
+      localGameController.StartJoiningGame(null);
+      localGameController.TryLaunchGame();
+
+      gameBoardData.ShouldNotBeNull();
+      gameBoardData.Settlements.Count.ShouldBe(players.Length);
+      gameBoardData.Settlements.ShouldContain(new KeyValuePair<Guid, List<Location>>(players[0].Id, null));
+      gameBoardData.Settlements.ShouldContain(new KeyValuePair<Guid, List<Location>>(players[1].Id, new List<Location>()));
+      gameBoardData.Settlements.ShouldContain(new KeyValuePair<Guid, List<Location>>(players[2].Id, null));
+      gameBoardData.Settlements.ShouldContain(new KeyValuePair<Guid, List<Location>>(players[3].Id, null));
+
+      gameBoardData.Roads.Count.ShouldBe(players.Length);
+      gameBoardData.Roads.ShouldContain(new KeyValuePair<Guid, List<Trail>>(players[0].Id, null));
+      gameBoardData.Roads.ShouldContain(new KeyValuePair<Guid, List<Trail>>(players[1].Id, new List<Trail>()));
+      gameBoardData.Roads.ShouldContain(new KeyValuePair<Guid, List<Trail>>(players[2].Id, null));
+      gameBoardData.Roads.ShouldContain(new KeyValuePair<Guid, List<Trail>>(players[3].Id, null));
     }
 
     [Test]
     public void StartJoiningGame_GameLaunched_TurnTokenPassedBack()
     {
-      var localGameController = this.CreateLocalGameController();
+      /*var localGameController = this.CreateLocalGameController();
 
       Guid turnToken = Guid.Empty;
-      localGameController.StartInitialTurnEvent = (Guid t) => { turnToken = t; };
+      localGameController.StartInitialSetupTurnEvent = (Guid t, ) => { turnToken = t; };
       localGameController.StartJoiningGame(null);
       localGameController.Quit();
 
-      turnToken.ShouldNotBe(Guid.Empty);
+      turnToken.ShouldNotBe(Guid.Empty);*/
     }
 
     private LocalGameController CreateLocalGameController()
     {
-      return this.CreateLocalGameController(new Dice());
+      return this.CreateLocalGameController(new Dice(), new ComputerPlayerFactory());
     }
 
-    private LocalGameController CreateLocalGameController(IDice diceRoller)
+    private LocalGameController CreateLocalGameController(IDice diceRoller, IComputerPlayerFactory computerPlayerFactory)
     {
-      var localGameController = new LocalGameController(diceRoller);
+      var localGameController = new LocalGameController(diceRoller, computerPlayerFactory);
       localGameController.GameJoinedEvent = (PlayerBase[] players) => { };
       return localGameController;
     }

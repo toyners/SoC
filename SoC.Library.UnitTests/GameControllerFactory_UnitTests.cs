@@ -35,7 +35,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
       exception.ShouldNotBeNull();
       exception.ShouldBeOfType<NullReferenceException>();
       exception.InnerException.ShouldBeNull();
-      exception.Message.ShouldBe("The following Event Handlers are not set: GameJoinedEventHandler, InitialBoardSetupEventHandler, LoggedInEventHandler, StartInitialTurnEventHandler");
+      exception.Message.ShouldBe("The following Event Handlers are not set: GameJoinedEventHandler, InitialBoardSetupEventHandler, LoggedInEventHandler, StartInitialSetupTurnEvent");
     }
 
     [Test]
@@ -47,7 +47,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
       gameController.GameJoinedEvent.ShouldBe(gameControllerSetup.GameJoinedEventHandler);
       gameController.InitialBoardSetupEvent.ShouldBe(gameControllerSetup.InitialBoardSetupEventHandler);
       gameController.LoggedInEvent.ShouldBe(gameControllerSetup.LoggedInEventHandler);
-      gameController.StartInitialTurnEvent.ShouldBe(gameControllerSetup.StartInitialTurnEventHandler);
+      gameController.StartInitialSetupTurnEvent.ShouldBe(gameControllerSetup.StartInitialSetupTurnEvent);
     }
 
     [Test]
@@ -78,7 +78,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
         GameJoinedEventHandler = (PlayerBase[] players) => { },
         InitialBoardSetupEventHandler = (GameBoards.GameBoardData boardData) => { },
         LoggedInEventHandler = (ClientAccount clientAccount) => { },
-        StartInitialTurnEventHandler = (Guid turnToken) => { }
+        StartInitialSetupTurnEvent = (Guid turnToken, GameBoards.GameBoardUpdate gameBoardUpdate) => { }
       };
     }
     #endregion 

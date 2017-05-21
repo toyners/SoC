@@ -30,7 +30,7 @@ namespace Jabberwocky.SoC.Client
 
     public Action<ClientAccount> LoggedInEvent { get; set; }
 
-    public Action<Guid> StartInitialTurnEvent { get; set; }
+    public Action<Guid, GameBoardUpdate> StartInitialSetupTurnEvent { get; set; }
     #endregion
 
     public void AcceptOffer(Offer offer)

@@ -13,7 +13,7 @@ namespace Jabberwocky.SoC.Library.Interfaces
 
     Action<ClientAccount> LoggedInEvent { get; set; }
 
-    Action<Guid> StartInitialTurnEvent { get; set; }
+    Action<Guid, GameBoardUpdate> StartInitialSetupTurnEvent { get; set; }
 
     Guid GameId { get; }
 

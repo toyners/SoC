@@ -44,6 +44,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ComputerPlayerFactory.cs" />
+    <Compile Include="Interfaces\IAIFactory.cs" />
     <Compile Include="SetupOrderCreator.cs" />
     <Compile Include="Enums\GameConnectionTypes.cs" />
     <Compile Include="GameBoards\GameBoardData.cs" />

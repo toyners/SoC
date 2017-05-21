@@ -20,6 +20,7 @@ namespace Jabberwocky.SoC.Library
     #region Fields
     private CancellationToken cancellationToken;
     private CancellationTokenSource cancellationTokenSource;
+    private IComputerPlayerFactory computerPlayerFactory;
     private Guid curentPlayerTurnToken;
     private IDice dice;
     private GameBoardManager gameBoardManager;
@@ -30,9 +31,10 @@ namespace Jabberwocky.SoC.Library
     private Task sessionTask;
     #endregion
 
-    public LocalGameController(IDice dice)
+    public LocalGameController(IDice dice, IComputerPlayerFactory computerPlayerFactory)
     {
       this.dice = dice;
+      this.computerPlayerFactory = computerPlayerFactory;
     }
 
     public Guid GameId { get; private set; }
@@ -44,9 +46,10 @@ namespace Jabberwocky.SoC.Library
 
     public Action<ClientAccount> LoggedInEvent { get; set; }
 
-    public Action<Guid> StartInitialTurnEvent { get; set; }
+    public Action<Guid, GameBoardUpdate> StartInitialSetupTurnEvent { get; set; }
     #endregion
 
+    #region Methods
     public void AcceptOffer(Offer offer)
     {
       throw new NotImplementedException();
@@ -77,9 +80,12 @@ namespace Jabberwocky.SoC.Library
         gameBoardData.Roads.Add(this.players[i].Id, null);
       }
 
-      this.InitialBoardSetupEvent.Invoke(gameBoardData);
+      this.InitialBoardSetupEvent?.Invoke(gameBoardData);
+
+      this.players = SetupOrderCreator.Create(this.players, this.dice);
+      //this.StartInitialTurnEvent.Invoke();
+
       return true;
-      //throw new Exception();
     }
 
     public ICollection<Offer> MakeOffer(Offer offer)
@@ -106,7 +112,7 @@ namespace Jabberwocky.SoC.Library
 
       this.players = this.CreatePlayers(gameOptions);
       this.gamePhase = GamePhases.WaitingLaunch;
-      this.GameJoinedEvent.Invoke(players);
+      this.GameJoinedEvent?.Invoke(players);
       //this.RunGame(gameOptions);
     }
 
@@ -143,7 +149,7 @@ namespace Jabberwocky.SoC.Library
     private void RunGame(GameOptions gameOptions)
     {
 
-      this.players = this.CreatePlayers(gameOptions);
+      /*this.players = this.CreatePlayers(gameOptions);
       this.GameJoinedEvent.Invoke(players);
 
       if (this.gamePhase == GamePhases.WaitingLaunch)
@@ -162,7 +168,7 @@ namespace Jabberwocky.SoC.Library
 
         this.curentPlayerTurnToken = this.GetTurnToken();
         this.StartInitialTurnEvent.Invoke(this.curentPlayerTurnToken);
-      }
+      }*/
     }
 
     private void WaitForGameLaunch()
@@ -223,5 +229,6 @@ namespace Jabberwocky.SoC.Library
 
       return setupPassOrder;
     }
+    #endregion
   }
 }

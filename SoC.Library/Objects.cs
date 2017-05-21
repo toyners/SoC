@@ -35,10 +35,4 @@ namespace Jabberwocky.SoC.Library
 
     UInt32 Trade(UInt32 count) { throw new NotImplementedException(); }
   }
-
-  public class Road
-  {
-    Location Location1;
-    Location Location2;
-  }
 }

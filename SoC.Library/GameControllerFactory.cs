@@ -7,15 +7,20 @@ namespace Jabberwocky.SoC.Library
 
   public class GameControllerFactory
   {
+    private IComputerPlayerFactory computerPlayerFactory;
     private IDiceFactory diceRollerFactory;
 
-    public GameControllerFactory(IDiceFactory diceRollerFactory)
+    #region Construction
+    public GameControllerFactory(IDiceFactory diceRollerFactory, IComputerPlayerFactory computerPlayerFactory)
     {
       this.diceRollerFactory = diceRollerFactory;
+      this.computerPlayerFactory = computerPlayerFactory;
     }
 
-    public GameControllerFactory() : this(new DiceFactory()) { }
+    public GameControllerFactory() : this(new DiceFactory(), new ComputerPlayerFactory()) { }
+    #endregion
 
+    #region Methods
     public IGameController Create(GameOptions gameOptions, GameControllerSetup gameControllerSetup)
     {
       this.VerifyControllerSetup(gameControllerSetup);
@@ -23,7 +28,7 @@ namespace Jabberwocky.SoC.Library
       IGameController gameController = null;
       if (gameOptions == null || gameOptions.Connection == GameConnectionTypes.Local)
       {
-        gameController = new LocalGameController(this.diceRollerFactory.Create());
+        gameController = new LocalGameController(this.diceRollerFactory.Create(), this.computerPlayerFactory);
       }
       else
       {
@@ -33,7 +38,7 @@ namespace Jabberwocky.SoC.Library
       gameController.GameJoinedEvent = gameControllerSetup.GameJoinedEventHandler;
       gameController.InitialBoardSetupEvent = gameControllerSetup.InitialBoardSetupEventHandler;
       gameController.LoggedInEvent = gameControllerSetup.LoggedInEventHandler;
-      gameController.StartInitialTurnEvent = gameControllerSetup.StartInitialTurnEventHandler;
+      gameController.StartInitialSetupTurnEvent = gameControllerSetup.StartInitialSetupTurnEvent;
 
       return gameController;
     }
@@ -62,9 +67,9 @@ namespace Jabberwocky.SoC.Library
         missingEventHandlers = this.AddToMissingEventHandlers(missingEventHandlers, "LoggedInEventHandler");
       }
 
-      if (gameControllerSetup.StartInitialTurnEventHandler == null)
+      if (gameControllerSetup.StartInitialSetupTurnEvent == null)
       {
-        missingEventHandlers = this.AddToMissingEventHandlers(missingEventHandlers, "StartInitialTurnEventHandler");
+        missingEventHandlers = this.AddToMissingEventHandlers(missingEventHandlers, "StartInitialSetupTurnEvent");
       }
 
       if (missingEventHandlers.Length > 0)
@@ -82,6 +87,7 @@ namespace Jabberwocky.SoC.Library
 
       return missingEventHandlers + missingEventHandler;
     }
+    #endregion
   }
 
   public class GameControllerSetup
@@ -89,6 +95,6 @@ namespace Jabberwocky.SoC.Library
     public Action<PlayerBase[]> GameJoinedEventHandler;
     public Action<GameBoards.GameBoardData> InitialBoardSetupEventHandler;
     public Action<ClientAccount> LoggedInEventHandler;
-    public Action<Guid> StartInitialTurnEventHandler;
+    public Action<Guid, GameBoards.GameBoardUpdate> StartInitialSetupTurnEvent;
   }
 }
