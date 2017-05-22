@@ -28,7 +28,7 @@ namespace Jabberwocky.SoC.Library
     private GamePhases gamePhase;
     private IGameSession gameSession;
     private PlayerBase[] players;
-    private PlayerBase[] turnOrder;
+    private PlayerData player;
     private Boolean quitting;
     private Task sessionTask;
     #endregion
@@ -87,13 +87,13 @@ namespace Jabberwocky.SoC.Library
       this.players = SetupOrderCreator.Create(this.players, this.dice);
       var firstPlayer = this.players[0];
 
-      if (this.computerPlayers.ContainsKey(firstPlayer))
+      if (firstPlayer != this.player)
       {
         // Is computer player
         var computerPlayer = this.computerPlayers[firstPlayer];
         var chosenSettlement = computerPlayer.ChooseSettlementLocation(gameBoardData);
         var chosenRoad = computerPlayer.ChooseRoad(gameBoardData);
-        var gameBoardUpdate = new GameBoardUpdate()
+        var gameBoardUpdate = new GameBoardUpdate
         {
           NewSettlements = new Dictionary<PlayerBase, List<Location>>
           {
@@ -138,7 +138,7 @@ namespace Jabberwocky.SoC.Library
         gameOptions = new GameOptions { MaxPlayers = 1, MaxAIPlayers = 3 };
       }
 
-      this.players = this.CreatePlayers(gameOptions);
+      this.CreatePlayers(gameOptions);
       this.gamePhase = GamePhases.WaitingLaunch;
       this.GameJoinedEvent?.Invoke(players);
       //this.RunGame(gameOptions);
@@ -208,22 +208,18 @@ namespace Jabberwocky.SoC.Library
       }
     }
 
-    private PlayerBase[] CreatePlayers(GameOptions gameOptions)
+    private void CreatePlayers(GameOptions gameOptions)
     {
-      var players = new PlayerBase[gameOptions.MaxPlayers + gameOptions.MaxAIPlayers];
-
-      var index = 0;
-      while ((gameOptions.MaxPlayers--) > 0)
-      {
-        players[index++] = new PlayerData();
-      }
-
+      this.player = new PlayerData();
+      this.players = new PlayerBase[gameOptions.MaxAIPlayers + 1];
+      this.players[0] = this.player;
+      var index = 1;
       while ((gameOptions.MaxAIPlayers--) > 0)
       {
-        players[index++] = new PlayerView();
+        this.players[index] = new PlayerView();
+        this.computerPlayers.Add(this.players[index], this.computerPlayerFactory.Create());
+        index++;
       }
-
-      return players;
     }
 
     public UInt32[] GetInitialSetupRoundOrder()
