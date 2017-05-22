@@ -211,6 +211,7 @@ namespace Jabberwocky.SoC.Library
     private void CreatePlayers(GameOptions gameOptions)
     {
       this.player = new PlayerData();
+      this.computerPlayers = new Dictionary<PlayerBase, IComputerPlayer>();
       this.players = new PlayerBase[gameOptions.MaxAIPlayers + 1];
       this.players[0] = this.player;
       var index = 1;
