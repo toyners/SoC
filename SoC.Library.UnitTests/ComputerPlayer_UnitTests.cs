@@ -2,6 +2,7 @@
 namespace Jabberwocky.SoC.Library.UnitTests
 {
   using System;
+  using System.Collections.Generic;
   using NSubstitute;
   using NUnit.Framework;
   using Shouldly;
@@ -11,14 +12,30 @@ namespace Jabberwocky.SoC.Library.UnitTests
   {
     #region Methods
     [Test]
-    public void ChooseSettlementLocation_GetBestLocation_ReturnsBestLocation()
+    public void ChooseSettlementLocation_GetBestLocationOnEmptyBoard_ReturnsBestLocation()
     {
       var gameBoardData = new GameBoards.GameBoardData(BoardSizes.Standard);
       var computerPlayer = new ComputerPlayer();
 
       var location = computerPlayer.ChooseSettlementLocation(gameBoardData);
 
-      location.ShouldBe(gameBoardData.Locations[19]);
+      location.ShouldBe(gameBoardData.Locations[12]);
+    }
+
+    [Test]
+    public void ChooseSettlementLocation_GetBestLocationOnBoardWithBestLocationUnavailable_ReturnsBestLocation()
+    {
+      var gameBoardData = new GameBoards.GameBoardData(BoardSizes.Standard);
+      gameBoardData.Settlements = new Dictionary<Guid, List<Location>>
+      {
+        { Guid.NewGuid(), new List<Location> { gameBoardData.Locations[12] } }
+      };
+
+      var computerPlayer = new ComputerPlayer();
+
+      var location = computerPlayer.ChooseSettlementLocation(gameBoardData);
+
+      location.ShouldBe(gameBoardData.Locations[31]);
     }
 
     [Test]

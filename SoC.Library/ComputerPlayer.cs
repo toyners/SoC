@@ -24,11 +24,15 @@ namespace Jabberwocky.SoC.Library
       {
         var location = gameBoardData.Locations[index];
         var chanceOfReturnOnRoll = this.CalculateChangeOfReturnOnRoll(location.Providers);
+        System.Diagnostics.Debug.Write(String.Format("{0}: {1}", index, chanceOfReturnOnRoll));
         if (chanceOfReturnOnRoll > bestChanceOfReturnOnRoll)
         {
           bestChanceOfReturnOnRoll = chanceOfReturnOnRoll;
           bestLocationSoFar = index;
+          System.Diagnostics.Debug.Write(" <= New High");
         }
+
+        System.Diagnostics.Debug.WriteLine("");
       }
 
       return gameBoardData.Locations[bestLocationSoFar];
