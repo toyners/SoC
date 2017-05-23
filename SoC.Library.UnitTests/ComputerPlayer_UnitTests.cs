@@ -20,6 +20,17 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
       location.ShouldBe(gameBoardData.Locations[19]);
     }
+
+    [Test]
+    public void ChooseRoad_GetBestLocation_ReturnsBestLocation()
+    {
+      var gameBoardData = new GameBoards.GameBoardData(BoardSizes.Standard);
+      var computerPlayer = new ComputerPlayer();
+
+      var road = computerPlayer.ChooseRoad(gameBoardData);
+
+      road.ShouldBe(gameBoardData.Trails[16]);
+    }
     #endregion 
   }
 }
