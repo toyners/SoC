@@ -16,26 +16,8 @@ namespace Jabberwocky.SoC.Library
     public Location ChooseSettlementLocation(GameBoardData gameBoardData)
     {
       // Find location that has the highest chance of a return for any roll.
-      var bestChanceOfReturnOnRoll = 0;
-      var bestLocationSoFar = -1; 
-
-      // Iterate over every location and determine the chance of return for all resource providers
-      for (var index = 0; index < gameBoardData.Locations.Length; index++)
-      {
-        var location = gameBoardData.Locations[index];
-        var chanceOfReturnOnRoll = this.CalculateChangeOfReturnOnRoll(location.Providers);
-        System.Diagnostics.Debug.Write(String.Format("{0}: {1}", index, chanceOfReturnOnRoll));
-        if (chanceOfReturnOnRoll > bestChanceOfReturnOnRoll)
-        {
-          bestChanceOfReturnOnRoll = chanceOfReturnOnRoll;
-          bestLocationSoFar = index;
-          System.Diagnostics.Debug.Write(" <= New High");
-        }
-
-        System.Diagnostics.Debug.WriteLine("");
-      }
-
-      return gameBoardData.Locations[bestLocationSoFar];
+      var bestLocation = this.GetIndexOfLocationThatHasBestChanceOfReturnOnRoll(gameBoardData);
+      return gameBoardData.Locations[bestLocation];
     }
 
     private Int32 CalculateChangeOfReturnOnRoll(HashSet<ResourceProvider> providers)
@@ -59,6 +41,31 @@ namespace Jabberwocky.SoC.Library
       }
 
       return totalChance;
+    }
+
+    private Int32 GetIndexOfLocationThatHasBestChanceOfReturnOnRoll(GameBoardData gameBoardData)
+    {
+      // Find location that has the highest chance of a return for any roll.
+      var bestChanceOfReturnOnRoll = 0;
+      var bestLocationIndex = -1;
+
+      // Iterate over every location and determine the chance of return for all resource providers
+      for (var index = 0; index < gameBoardData.Locations.Length; index++)
+      {
+        var location = gameBoardData.Locations[index];
+        var chanceOfReturnOnRoll = this.CalculateChangeOfReturnOnRoll(location.Providers);
+        System.Diagnostics.Debug.Write(String.Format("{0}: {1}", index, chanceOfReturnOnRoll));
+        if (chanceOfReturnOnRoll > bestChanceOfReturnOnRoll)
+        {
+          bestChanceOfReturnOnRoll = chanceOfReturnOnRoll;
+          bestLocationIndex = index;
+          System.Diagnostics.Debug.Write(" <= New High");
+        }
+
+        System.Diagnostics.Debug.WriteLine("");
+      }
+
+      return bestLocationIndex;
     }
   }
 }
