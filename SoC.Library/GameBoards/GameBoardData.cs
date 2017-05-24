@@ -19,7 +19,6 @@ namespace Jabberwocky.SoC.Library.GameBoards
     }
 
     #region Fields
-    public Dictionary<Location, Guid> Settlements;
     public Dictionary<Guid, List<Location>> SettlementsByPlayer;
 
     public Dictionary<Guid, List<Trail>> Roads;
@@ -35,6 +34,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
     public const Int32 StandardBoardTrailCount = 72;
 
     public const Int32 StandardBoardResourceProviderCount = 19;
+    private Dictionary<Location, Guid> settlements;
     #endregion
 
     #region Construction
@@ -45,7 +45,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
         throw new Exception("Extended boards not implemented.");
       }
 
-      this.Settlements = new Dictionary<Location, Guid>();
+      this.settlements = new Dictionary<Location, Guid>();
       this.SettlementsByPlayer = new Dictionary<Guid, List<Location>>();
       this.Roads = new Dictionary<Guid, List<Trail>>();
 

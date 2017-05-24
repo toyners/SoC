@@ -26,10 +26,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     public void ChooseSettlementLocation_GetBestLocationOnBoardWithBestLocationUnavailable_ReturnsBestLocation()
     {
       var gameBoardData = new GameBoards.GameBoardData(BoardSizes.Standard);
-      gameBoardData.Settlements = new Dictionary<Location, Guid>
-      {
-        { gameBoardData.Locations[12], Guid.NewGuid() }
-      };
+      gameBoardData.PlaceStartingSettlement(gameBoardData.Locations[12]);
 
       var computerPlayer = new ComputerPlayer();
 
