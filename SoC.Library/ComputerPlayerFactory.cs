@@ -1,13 +1,14 @@
 ﻿
 namespace Jabberwocky.SoC.Library
 {
+  using System;
   using Interfaces;
 
   public class ComputerPlayerFactory : IComputerPlayerFactory
   {
     public IComputerPlayer Create()
     {
-      return new ComputerPlayer();
+      return new ComputerPlayer(Guid.NewGuid());
     }
   }
 }

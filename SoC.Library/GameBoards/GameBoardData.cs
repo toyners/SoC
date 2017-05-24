@@ -20,7 +20,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
     }
 
     #region Fields
-    public Dictionary<Guid, List<Location>> SettlementsByPlayer;
+    //public Dictionary<Guid, List<Location>> SettlementsByPlayer;
 
     public Dictionary<Guid, List<Trail>> Roads;
 
@@ -36,6 +36,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
 
     public const Int32 StandardBoardResourceProviderCount = 19;
     private Dictionary<UInt32, Guid> settlements;
+    private Dictionary<Guid, List<UInt32>> settlementsByPlayer;
     #endregion
 
     #region Construction
@@ -47,7 +48,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
       }
 
       this.settlements = new Dictionary<UInt32, Guid>();
-      this.SettlementsByPlayer = new Dictionary<Guid, List<Location>>();
+      this.settlementsByPlayer = new Dictionary<Guid, List<UInt32>>();
       this.Roads = new Dictionary<Guid, List<Trail>>();
 
       this.CreateLocations();
@@ -81,6 +82,11 @@ namespace Jabberwocky.SoC.Library.GameBoards
       }
 
       return VerificationResults.Valid;
+    }
+
+    public List<UInt32> GetSettlementsForPlayer(Guid playerId)
+    {
+      throw new NotImplementedException();
     }
 
     public void PlaceStartingRoad(Location location1, Location location2) { }

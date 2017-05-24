@@ -8,8 +8,22 @@ namespace Jabberwocky.SoC.Library
 
   public class ComputerPlayer : IComputerPlayer
   {
+    private Guid playerId;
+
+    public ComputerPlayer(Guid playerId)
+    {
+      this.playerId = playerId;
+    }
+
     public Trail ChooseRoad(GameBoardData gameBoardData)
     {
+      // Iterate over all settlements for the player and look for best road option towards
+      // another location
+      foreach (var location in gameBoardData.GetSettlementsForPlayer(this.playerId))
+      {
+
+      }
+
       throw new NotImplementedException();
     }
 

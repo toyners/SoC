@@ -78,7 +78,6 @@ namespace Jabberwocky.SoC.Library
       var gameBoardData = this.gameBoardManager.Data;
       for (Int32 i = 0; i < this.players.Length; i++)
       {
-        gameBoardData.SettlementsByPlayer.Add(this.players[i].Id, null);
         gameBoardData.Roads.Add(this.players[i].Id, null);
       }
 
