@@ -79,11 +79,11 @@ namespace Jabberwocky.SoC.Library.UnitTests
       localGameController.TryLaunchGame();
 
       gameBoardData.ShouldNotBeNull();
-      gameBoardData.Settlements.Count.ShouldBe(players.Length);
-      gameBoardData.Settlements.ShouldContain(new KeyValuePair<Guid, List<Location>>(players[0].Id, null));
-      gameBoardData.Settlements.ShouldContain(new KeyValuePair<Guid, List<Location>>(players[1].Id, null));
-      gameBoardData.Settlements.ShouldContain(new KeyValuePair<Guid, List<Location>>(players[2].Id, null));
-      gameBoardData.Settlements.ShouldContain(new KeyValuePair<Guid, List<Location>>(players[3].Id, null));
+      gameBoardData.SettlementsByPlayer.Count.ShouldBe(players.Length);
+      gameBoardData.SettlementsByPlayer.ShouldContain(new KeyValuePair<Guid, List<Location>>(players[0].Id, null));
+      gameBoardData.SettlementsByPlayer.ShouldContain(new KeyValuePair<Guid, List<Location>>(players[1].Id, null));
+      gameBoardData.SettlementsByPlayer.ShouldContain(new KeyValuePair<Guid, List<Location>>(players[2].Id, null));
+      gameBoardData.SettlementsByPlayer.ShouldContain(new KeyValuePair<Guid, List<Location>>(players[3].Id, null));
 
       gameBoardData.Roads.Count.ShouldBe(players.Length);
       gameBoardData.Roads.ShouldContain(new KeyValuePair<Guid, List<Trail>>(players[0].Id, null));
@@ -120,11 +120,11 @@ namespace Jabberwocky.SoC.Library.UnitTests
       localGameController.TryLaunchGame();
 
       gameBoardData.ShouldNotBeNull();
-      gameBoardData.Settlements.Count.ShouldBe(players.Length);
-      gameBoardData.Settlements.ShouldContain(new KeyValuePair<Guid, List<Location>>(players[0].Id, null));
-      gameBoardData.Settlements.ShouldContain(new KeyValuePair<Guid, List<Location>>(players[1].Id, new List<Location> { initialSetupSettlementLocation }));
-      gameBoardData.Settlements.ShouldContain(new KeyValuePair<Guid, List<Location>>(players[2].Id, null));
-      gameBoardData.Settlements.ShouldContain(new KeyValuePair<Guid, List<Location>>(players[3].Id, null));
+      gameBoardData.SettlementsByPlayer.Count.ShouldBe(players.Length);
+      gameBoardData.SettlementsByPlayer.ShouldContain(new KeyValuePair<Guid, List<Location>>(players[0].Id, null));
+      gameBoardData.SettlementsByPlayer.ShouldContain(new KeyValuePair<Guid, List<Location>>(players[1].Id, new List<Location> { initialSetupSettlementLocation }));
+      gameBoardData.SettlementsByPlayer.ShouldContain(new KeyValuePair<Guid, List<Location>>(players[2].Id, null));
+      gameBoardData.SettlementsByPlayer.ShouldContain(new KeyValuePair<Guid, List<Location>>(players[3].Id, null));
 
       gameBoardData.Roads.Count.ShouldBe(players.Length);
       gameBoardData.Roads.ShouldContain(new KeyValuePair<Guid, List<Trail>>(players[0].Id, null));
