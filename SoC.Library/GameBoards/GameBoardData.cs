@@ -35,7 +35,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
     public const Int32 StandardBoardTrailCount = 72;
 
     public const Int32 StandardBoardResourceProviderCount = 19;
-    private Dictionary<Location, Guid> settlements;
+    private Dictionary<UInt32, Guid> settlements;
     #endregion
 
     #region Construction
@@ -46,7 +46,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
         throw new Exception("Extended boards not implemented.");
       }
 
-      this.settlements = new Dictionary<Location, Guid>();
+      this.settlements = new Dictionary<UInt32, Guid>();
       this.SettlementsByPlayer = new Dictionary<Guid, List<Location>>();
       this.Roads = new Dictionary<Guid, List<Trail>>();
 
@@ -75,14 +75,19 @@ namespace Jabberwocky.SoC.Library.GameBoards
 
     public VerificationResults CanPlaceSettlement(Guid playerId, UInt32 locationIndex)
     {
+      if (this.settlements.ContainsKey(locationIndex))
+      {
+        return VerificationResults.LocationIsOccupied;
+      }
+
       return VerificationResults.Valid;
     }
 
     public void PlaceStartingRoad(Location location1, Location location2) { }
 
-    public void PlaceStartingSettlement(UInt32 locationIndex)
+    public void PlaceStartingSettlement(Guid playerId, UInt32 locationIndex)
     {
-
+      this.settlements.Add(locationIndex, playerId);
     }
     
     private void CreateLocations()

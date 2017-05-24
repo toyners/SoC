@@ -3,6 +3,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
 {
   using System;
   using System.Collections.Generic;
+  using GameBoards;
   using NSubstitute;
   using NUnit.Framework;
   using Shouldly;
@@ -14,7 +15,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     [Test]
     public void ChooseSettlementLocation_GetBestLocationOnEmptyBoard_ReturnsBestLocation()
     {
-      var gameBoardData = new GameBoards.GameBoardData(BoardSizes.Standard);
+      var gameBoardData = new GameBoardData(BoardSizes.Standard);
       var computerPlayer = new ComputerPlayer();
 
       var location = computerPlayer.ChooseSettlementLocation(gameBoardData);
@@ -25,8 +26,8 @@ namespace Jabberwocky.SoC.Library.UnitTests
     [Test]
     public void ChooseSettlementLocation_GetBestLocationOnBoardWithBestLocationUnavailable_ReturnsBestLocation()
     {
-      var gameBoardData = new GameBoards.GameBoardData(BoardSizes.Standard);
-      gameBoardData.PlaceStartingSettlement(12);
+      var gameBoardData = new GameBoardData(BoardSizes.Standard);
+      gameBoardData.PlaceStartingSettlement(Guid.NewGuid(), 12);
 
       var computerPlayer = new ComputerPlayer();
 
@@ -38,7 +39,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     [Test]
     public void ChooseRoad_GetBestLocation_ReturnsBestLocation()
     {
-      var gameBoardData = new GameBoards.GameBoardData(BoardSizes.Standard);
+      var gameBoardData = new GameBoardData(BoardSizes.Standard);
       var computerPlayer = new ComputerPlayer();
 
       var road = computerPlayer.ChooseRoad(gameBoardData);

@@ -23,7 +23,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     public void CanPlaceSettlement_TryPlacingOnSettledLocation_ReturnsLocationIsOccupied()
     {
       var gameBoardData = new GameBoardData(BoardSizes.Standard);
-      gameBoardData.PlaceStartingSettlement(0);
+      gameBoardData.PlaceStartingSettlement(Guid.NewGuid(), 0);
       var result = gameBoardData.CanPlaceSettlement(new Guid(), 0);
       result.ShouldBe(GameBoardData.VerificationResults.LocationIsOccupied);
     }
