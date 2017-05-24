@@ -37,7 +37,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     }
 
     [Test]
-    public void ChooseRoad_GetBestLocation_ReturnsBestLocation()
+    public void ChooseRoad_GetBestRoadFromSettlement_ReturnsBestLocation()
     {
       var gameBoardData = new GameBoardData(BoardSizes.Standard);
       var computerPlayer = new ComputerPlayer();

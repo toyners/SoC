@@ -50,15 +50,20 @@ namespace Jabberwocky.SoC.Library
       var bestLocationIndex = -1;
 
       // Iterate over every location and determine the chance of return for all resource providers
-      for (var index = 0; index < gameBoardData.Locations.Length; index++)
+      for (UInt32 index = 0; index < gameBoardData.Locations.Length; index++)
       {
+        if (gameBoardData.CanPlaceSettlement(index) != GameBoardData.VerificationResults.Valid)
+        {
+          continue;
+        }
+
         var location = gameBoardData.Locations[index];
         var chanceOfReturnOnRoll = this.CalculateChangeOfReturnOnRoll(location.Providers);
         System.Diagnostics.Debug.Write(String.Format("{0}: {1}", index, chanceOfReturnOnRoll));
         if (chanceOfReturnOnRoll > bestChanceOfReturnOnRoll)
         {
           bestChanceOfReturnOnRoll = chanceOfReturnOnRoll;
-          bestLocationIndex = index;
+          bestLocationIndex = (Int32)index;
           System.Diagnostics.Debug.Write(" <= New High");
         }
 

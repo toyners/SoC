@@ -15,7 +15,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     public void CanPlaceSettlement_EmptyBoard_ReturnsValid()
     {
       var gameBoardData = new GameBoardData(BoardSizes.Standard);
-      var result = gameBoardData.CanPlaceSettlement(new Guid(), 0);
+      var result = gameBoardData.CanPlaceSettlement(0);
       result.ShouldBe(GameBoardData.VerificationResults.Valid);
     }
 
@@ -24,7 +24,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     {
       var gameBoardData = new GameBoardData(BoardSizes.Standard);
       gameBoardData.PlaceStartingSettlement(Guid.NewGuid(), 0);
-      var result = gameBoardData.CanPlaceSettlement(new Guid(), 0);
+      var result = gameBoardData.CanPlaceSettlement(0);
       result.ShouldBe(GameBoardData.VerificationResults.LocationIsOccupied);
     }
     #endregion 

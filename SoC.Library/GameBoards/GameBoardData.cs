@@ -73,7 +73,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
       throw new NotImplementedException();
     }
 
-    public VerificationResults CanPlaceSettlement(Guid playerId, UInt32 locationIndex)
+    public VerificationResults CanPlaceSettlement(UInt32 locationIndex)
     {
       if (this.settlements.ContainsKey(locationIndex))
       {
