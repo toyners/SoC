@@ -13,6 +13,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
     public enum VerificationResults
     {
       Valid,
+      LocationIsOccupied,
       NoConnectingRoad,
       NoSettlementToUpgrade,
       TooCloseToOpponent,
@@ -72,15 +73,17 @@ namespace Jabberwocky.SoC.Library.GameBoards
       throw new NotImplementedException();
     }
 
-    public VerificationResults CanPlaceSettlement(PlayerData player, Location location)
+    public VerificationResults CanPlaceSettlement(Guid playerId, UInt32 locationIndex)
     {
-      throw new NotImplementedException();
+      return VerificationResults.Valid;
     }
 
     public void PlaceStartingRoad(Location location1, Location location2) { }
 
-    public void PlaceStartingSettlement(Location location) { }
+    public void PlaceStartingSettlement(UInt32 locationIndex)
+    {
 
+    }
     
     private void CreateLocations()
     {

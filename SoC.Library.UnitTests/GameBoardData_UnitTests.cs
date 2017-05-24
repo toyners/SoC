@@ -2,6 +2,7 @@
 namespace Jabberwocky.SoC.Library.UnitTests
 {
   using System;
+  using GameBoards;
   using NSubstitute;
   using NUnit.Framework;
   using Shouldly;
@@ -11,8 +12,20 @@ namespace Jabberwocky.SoC.Library.UnitTests
   {
     #region Methods
     [Test]
-    public void Test()
+    public void CanPlaceSettlement_EmptyBoard_ReturnsValid()
     {
+      var gameBoardData = new GameBoardData(BoardSizes.Standard);
+      var result = gameBoardData.CanPlaceSettlement(new Guid(), 0);
+      result.ShouldBe(GameBoardData.VerificationResults.Valid);
+    }
+
+    [Test]
+    public void CanPlaceSettlement_TryPlacingOnSettledLocation_ReturnsLocationIsOccupied()
+    {
+      var gameBoardData = new GameBoardData(BoardSizes.Standard);
+      gameBoardData.PlaceStartingSettlement(0);
+      var result = gameBoardData.CanPlaceSettlement(new Guid(), 0);
+      result.ShouldBe(GameBoardData.VerificationResults.LocationIsOccupied);
     }
     #endregion 
   }
