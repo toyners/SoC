@@ -27,6 +27,23 @@ namespace Jabberwocky.SoC.Library.UnitTests
       var result = gameBoardData.CanPlaceSettlement(0);
       result.ShouldBe(GameBoardData.VerificationResults.LocationIsOccupied);
     }
+
+    [Test]
+    public void GetSettlementsForPlayers_EmptyBoard_ReturnsNull()
+    {
+      var gameBoardData = new GameBoardData(BoardSizes.Standard);
+      var settlements = gameBoardData.GetSettlementsForPlayer(Guid.NewGuid());
+      settlements.ShouldBeNull();
+    }
+
+    [Test]
+    public void GetSettlementsForPlayers_PlayerHasNoSettlementsOnBoard_ReturnsNull()
+    {
+      var gameBoardData = new GameBoardData(BoardSizes.Standard);
+      gameBoardData.PlaceStartingSettlement(Guid.NewGuid(), 0);
+      var settlements = gameBoardData.GetSettlementsForPlayer(Guid.NewGuid());
+      settlements.ShouldBeNull();
+    }
     #endregion 
   }
 }

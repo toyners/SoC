@@ -86,7 +86,12 @@ namespace Jabberwocky.SoC.Library.GameBoards
 
     public List<UInt32> GetSettlementsForPlayer(Guid playerId)
     {
-      throw new NotImplementedException();
+      if (!this.settlementsByPlayer.ContainsKey(playerId))
+      {
+        return null;
+      }
+
+      return this.settlementsByPlayer[playerId];
     }
 
     public void PlaceStartingRoad(Location location1, Location location2) { }
