@@ -1,21 +1,17 @@
 ﻿
 namespace Jabberwocky.SoC.Library
 {
-  using System;
   using System.Collections.Generic;
-  using System.Linq;
-  using System.Text;
 
   public class Location
   {
-    public readonly HashSet<Trail> Trails;
+    public Trail[] Trails;
 
-    public readonly HashSet<ResourceProvider> Providers; // Either 2 or 3
+    public readonly HashSet<ResourceProvider> Providers; // 1, 2 or 3
 
     #region Construction
     public Location()
     {
-      this.Trails = new HashSet<Trail>();
       this.Providers = new HashSet<ResourceProvider>();
     }
     #endregion
@@ -23,7 +19,18 @@ namespace Jabberwocky.SoC.Library
     #region Methods
     public void AddTrail(Trail trail)
     {
-      this.Trails.Add(trail);
+      if (this.Trails == null)
+      {
+        this.Trails = new Trail[1];
+        this.Trails[0] = trail;
+      }
+      else
+      {
+        var trails = new Trail[this.Trails.Length + 1];
+        this.Trails.CopyTo(trails, 0);
+        trails[trails.Length - 1] = trail;
+        this.Trails = trails;
+      }
     }
     #endregion
   }

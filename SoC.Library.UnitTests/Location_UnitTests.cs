@@ -40,7 +40,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
       location1.AddTrail(trail);
 
       // Arrange
-      location1.Trails.Count.ShouldBe(1);
+      location1.Trails.Length.ShouldBe(1);
       location1.Trails.Contains(trail).ShouldBeTrue();
     }
 
@@ -60,7 +60,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
       location1.AddTrail(subsequentTrail);
 
       // Arrange
-      location1.Trails.Count.ShouldBe(2);
+      location1.Trails.Length.ShouldBe(2);
       location1.Trails.Contains(firstTrail).ShouldBeTrue();
       location1.Trails.Contains(subsequentTrail).ShouldBeTrue();
     }

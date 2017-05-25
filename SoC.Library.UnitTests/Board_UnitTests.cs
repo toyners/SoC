@@ -156,213 +156,213 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
       // Assert
       // Column side 1
-      board.Locations[0].Trails.Count.ShouldBe(2);
+      board.Locations[0].Trails.Length.ShouldBe(2);
       board.Locations[0].Trails.ShouldContain(board.Trails[0]);
 
-      board.Locations[1].Trails.Count.ShouldBe(2);
+      board.Locations[1].Trails.Length.ShouldBe(2);
       board.Locations[1].Trails.ShouldContain(board.Trails[0]);
       board.Locations[1].Trails.ShouldContain(board.Trails[1]);
 
-      board.Locations[2].Trails.Count.ShouldBe(3);
+      board.Locations[2].Trails.Length.ShouldBe(3);
       board.Locations[2].Trails.ShouldContain(board.Trails[1]);
       board.Locations[2].Trails.ShouldContain(board.Trails[2]);
 
-      board.Locations[3].Trails.Count.ShouldBe(2);
+      board.Locations[3].Trails.Length.ShouldBe(2);
       board.Locations[3].Trails.ShouldContain(board.Trails[2]);
       board.Locations[3].Trails.ShouldContain(board.Trails[3]);
 
-      board.Locations[4].Trails.Count.ShouldBe(3);
+      board.Locations[4].Trails.Length.ShouldBe(3);
       board.Locations[4].Trails.ShouldContain(board.Trails[3]);
       board.Locations[4].Trails.ShouldContain(board.Trails[4]);
 
-      board.Locations[5].Trails.Count.ShouldBe(2);
+      board.Locations[5].Trails.Length.ShouldBe(2);
       board.Locations[5].Trails.ShouldContain(board.Trails[4]);
       board.Locations[5].Trails.ShouldContain(board.Trails[5]);
 
-      board.Locations[6].Trails.Count.ShouldBe(2);
+      board.Locations[6].Trails.Length.ShouldBe(2);
       board.Locations[6].Trails.ShouldContain(board.Trails[5]);
 
       // Column side 2
-      board.Locations[7].Trails.Count.ShouldBe(2);
+      board.Locations[7].Trails.Length.ShouldBe(2);
       board.Locations[7].Trails.ShouldContain(board.Trails[6]);
 
-      board.Locations[8].Trails.Count.ShouldBe(3);
+      board.Locations[8].Trails.Length.ShouldBe(3);
       board.Locations[8].Trails.ShouldContain(board.Trails[6]);
       board.Locations[8].Trails.ShouldContain(board.Trails[7]);
 
-      board.Locations[9].Trails.Count.ShouldBe(3);
+      board.Locations[9].Trails.Length.ShouldBe(3);
       board.Locations[9].Trails.ShouldContain(board.Trails[7]);
       board.Locations[9].Trails.ShouldContain(board.Trails[8]);
 
-      board.Locations[10].Trails.Count.ShouldBe(3);
+      board.Locations[10].Trails.Length.ShouldBe(3);
       board.Locations[10].Trails.ShouldContain(board.Trails[8]);
       board.Locations[10].Trails.ShouldContain(board.Trails[9]);
 
-      board.Locations[11].Trails.Count.ShouldBe(3);
+      board.Locations[11].Trails.Length.ShouldBe(3);
       board.Locations[11].Trails.ShouldContain(board.Trails[9]);
       board.Locations[11].Trails.ShouldContain(board.Trails[10]);
 
-      board.Locations[12].Trails.Count.ShouldBe(3);
+      board.Locations[12].Trails.Length.ShouldBe(3);
       board.Locations[12].Trails.ShouldContain(board.Trails[10]);
       board.Locations[12].Trails.ShouldContain(board.Trails[11]);
 
-      board.Locations[13].Trails.Count.ShouldBe(3);
+      board.Locations[13].Trails.Length.ShouldBe(3);
       board.Locations[13].Trails.ShouldContain(board.Trails[11]);
       board.Locations[13].Trails.ShouldContain(board.Trails[12]);
 
-      board.Locations[14].Trails.Count.ShouldBe(3);
+      board.Locations[14].Trails.Length.ShouldBe(3);
       board.Locations[14].Trails.ShouldContain(board.Trails[12]);
       board.Locations[14].Trails.ShouldContain(board.Trails[13]);
 
-      board.Locations[15].Trails.Count.ShouldBe(2);
+      board.Locations[15].Trails.Length.ShouldBe(2);
       board.Locations[15].Trails.ShouldContain(board.Trails[13]);
 
       // Column Side 3
-      board.Locations[16].Trails.Count.ShouldBe(2);
+      board.Locations[16].Trails.Length.ShouldBe(2);
       board.Locations[16].Trails.ShouldContain(board.Trails[14]);
 
-      board.Locations[17].Trails.Count.ShouldBe(3);
+      board.Locations[17].Trails.Length.ShouldBe(3);
       board.Locations[17].Trails.ShouldContain(board.Trails[14]);
       board.Locations[17].Trails.ShouldContain(board.Trails[15]);
 
-      board.Locations[18].Trails.Count.ShouldBe(3);
+      board.Locations[18].Trails.Length.ShouldBe(3);
       board.Locations[18].Trails.ShouldContain(board.Trails[15]);
       board.Locations[18].Trails.ShouldContain(board.Trails[16]);
 
-      board.Locations[19].Trails.Count.ShouldBe(3);
+      board.Locations[19].Trails.Length.ShouldBe(3);
       board.Locations[19].Trails.ShouldContain(board.Trails[16]);
       board.Locations[19].Trails.ShouldContain(board.Trails[17]);
 
-      board.Locations[20].Trails.Count.ShouldBe(3);
+      board.Locations[20].Trails.Length.ShouldBe(3);
       board.Locations[20].Trails.ShouldContain(board.Trails[17]);
       board.Locations[20].Trails.ShouldContain(board.Trails[18]);
 
-      board.Locations[21].Trails.Count.ShouldBe(3);
+      board.Locations[21].Trails.Length.ShouldBe(3);
       board.Locations[21].Trails.ShouldContain(board.Trails[18]);
       board.Locations[21].Trails.ShouldContain(board.Trails[19]);
 
-      board.Locations[22].Trails.Count.ShouldBe(3);
+      board.Locations[22].Trails.Length.ShouldBe(3);
       board.Locations[22].Trails.ShouldContain(board.Trails[19]);
       board.Locations[22].Trails.ShouldContain(board.Trails[20]);
 
-      board.Locations[23].Trails.Count.ShouldBe(3);
+      board.Locations[23].Trails.Length.ShouldBe(3);
       board.Locations[23].Trails.ShouldContain(board.Trails[20]);
       board.Locations[23].Trails.ShouldContain(board.Trails[21]);
 
-      board.Locations[24].Trails.Count.ShouldBe(3);
+      board.Locations[24].Trails.Length.ShouldBe(3);
       board.Locations[24].Trails.ShouldContain(board.Trails[21]);
       board.Locations[24].Trails.ShouldContain(board.Trails[22]);
 
-      board.Locations[25].Trails.Count.ShouldBe(3);
+      board.Locations[25].Trails.Length.ShouldBe(3);
       board.Locations[25].Trails.ShouldContain(board.Trails[22]);
       board.Locations[25].Trails.ShouldContain(board.Trails[23]);
 
-      board.Locations[26].Trails.Count.ShouldBe(2);
+      board.Locations[26].Trails.Length.ShouldBe(2);
       board.Locations[26].Trails.ShouldContain(board.Trails[23]);
 
       // Column Side 4
-      board.Locations[27].Trails.Count.ShouldBe(2);
+      board.Locations[27].Trails.Length.ShouldBe(2);
       board.Locations[27].Trails.ShouldContain(board.Trails[24]);
 
-      board.Locations[28].Trails.Count.ShouldBe(3);
+      board.Locations[28].Trails.Length.ShouldBe(3);
       board.Locations[28].Trails.ShouldContain(board.Trails[24]);
       board.Locations[28].Trails.ShouldContain(board.Trails[25]);
 
-      board.Locations[29].Trails.Count.ShouldBe(3);
+      board.Locations[29].Trails.Length.ShouldBe(3);
       board.Locations[29].Trails.ShouldContain(board.Trails[25]);
       board.Locations[29].Trails.ShouldContain(board.Trails[26]);
 
-      board.Locations[30].Trails.Count.ShouldBe(3);
+      board.Locations[30].Trails.Length.ShouldBe(3);
       board.Locations[30].Trails.ShouldContain(board.Trails[26]);
       board.Locations[30].Trails.ShouldContain(board.Trails[27]);
 
-      board.Locations[31].Trails.Count.ShouldBe(3);
+      board.Locations[31].Trails.Length.ShouldBe(3);
       board.Locations[31].Trails.ShouldContain(board.Trails[27]);
       board.Locations[31].Trails.ShouldContain(board.Trails[28]);
 
-      board.Locations[32].Trails.Count.ShouldBe(3);
+      board.Locations[32].Trails.Length.ShouldBe(3);
       board.Locations[32].Trails.ShouldContain(board.Trails[28]);
       board.Locations[32].Trails.ShouldContain(board.Trails[29]);
 
-      board.Locations[33].Trails.Count.ShouldBe(3);
+      board.Locations[33].Trails.Length.ShouldBe(3);
       board.Locations[33].Trails.ShouldContain(board.Trails[29]);
       board.Locations[33].Trails.ShouldContain(board.Trails[30]);
 
-      board.Locations[34].Trails.Count.ShouldBe(3);
+      board.Locations[34].Trails.Length.ShouldBe(3);
       board.Locations[34].Trails.ShouldContain(board.Trails[30]);
       board.Locations[34].Trails.ShouldContain(board.Trails[31]);
 
-      board.Locations[35].Trails.Count.ShouldBe(3);
+      board.Locations[35].Trails.Length.ShouldBe(3);
       board.Locations[35].Trails.ShouldContain(board.Trails[31]);
       board.Locations[35].Trails.ShouldContain(board.Trails[32]);
 
-      board.Locations[36].Trails.Count.ShouldBe(3);
+      board.Locations[36].Trails.Length.ShouldBe(3);
       board.Locations[36].Trails.ShouldContain(board.Trails[32]);
       board.Locations[36].Trails.ShouldContain(board.Trails[33]);
 
-      board.Locations[37].Trails.Count.ShouldBe(2);
+      board.Locations[37].Trails.Length.ShouldBe(2);
       board.Locations[37].Trails.ShouldContain(board.Trails[33]);
 
       // Column Side 5
-      board.Locations[38].Trails.Count.ShouldBe(2);
+      board.Locations[38].Trails.Length.ShouldBe(2);
       board.Locations[38].Trails.ShouldContain(board.Trails[34]);
 
-      board.Locations[39].Trails.Count.ShouldBe(3);
+      board.Locations[39].Trails.Length.ShouldBe(3);
       board.Locations[39].Trails.ShouldContain(board.Trails[34]);
       board.Locations[39].Trails.ShouldContain(board.Trails[35]);
 
-      board.Locations[40].Trails.Count.ShouldBe(3);
+      board.Locations[40].Trails.Length.ShouldBe(3);
       board.Locations[40].Trails.ShouldContain(board.Trails[35]);
       board.Locations[40].Trails.ShouldContain(board.Trails[36]);
 
-      board.Locations[41].Trails.Count.ShouldBe(3);
+      board.Locations[41].Trails.Length.ShouldBe(3);
       board.Locations[41].Trails.ShouldContain(board.Trails[36]);
       board.Locations[41].Trails.ShouldContain(board.Trails[37]);
 
-      board.Locations[42].Trails.Count.ShouldBe(3);
+      board.Locations[42].Trails.Length.ShouldBe(3);
       board.Locations[42].Trails.ShouldContain(board.Trails[37]);
       board.Locations[42].Trails.ShouldContain(board.Trails[38]);
 
-      board.Locations[43].Trails.Count.ShouldBe(3);
+      board.Locations[43].Trails.Length.ShouldBe(3);
       board.Locations[43].Trails.ShouldContain(board.Trails[38]);
       board.Locations[43].Trails.ShouldContain(board.Trails[39]);
 
-      board.Locations[44].Trails.Count.ShouldBe(3);
+      board.Locations[44].Trails.Length.ShouldBe(3);
       board.Locations[44].Trails.ShouldContain(board.Trails[39]);
       board.Locations[44].Trails.ShouldContain(board.Trails[40]);
 
-      board.Locations[45].Trails.Count.ShouldBe(3);
+      board.Locations[45].Trails.Length.ShouldBe(3);
       board.Locations[45].Trails.ShouldContain(board.Trails[40]);
       board.Locations[45].Trails.ShouldContain(board.Trails[41]);
 
-      board.Locations[46].Trails.Count.ShouldBe(2);
+      board.Locations[46].Trails.Length.ShouldBe(2);
       board.Locations[46].Trails.ShouldContain(board.Trails[41]);
 
       // Column Side 6
-      board.Locations[47].Trails.Count.ShouldBe(2);
+      board.Locations[47].Trails.Length.ShouldBe(2);
       board.Locations[47].Trails.ShouldContain(board.Trails[42]);
 
-      board.Locations[48].Trails.Count.ShouldBe(2);
+      board.Locations[48].Trails.Length.ShouldBe(2);
       board.Locations[48].Trails.ShouldContain(board.Trails[42]);
       board.Locations[48].Trails.ShouldContain(board.Trails[43]);
 
-      board.Locations[49].Trails.Count.ShouldBe(3);
+      board.Locations[49].Trails.Length.ShouldBe(3);
       board.Locations[49].Trails.ShouldContain(board.Trails[43]);
       board.Locations[49].Trails.ShouldContain(board.Trails[44]);
 
-      board.Locations[50].Trails.Count.ShouldBe(2);
+      board.Locations[50].Trails.Length.ShouldBe(2);
       board.Locations[50].Trails.ShouldContain(board.Trails[44]);
       board.Locations[50].Trails.ShouldContain(board.Trails[45]);
 
-      board.Locations[51].Trails.Count.ShouldBe(3);
+      board.Locations[51].Trails.Length.ShouldBe(3);
       board.Locations[51].Trails.ShouldContain(board.Trails[45]);
       board.Locations[51].Trails.ShouldContain(board.Trails[45]);
 
-      board.Locations[52].Trails.Count.ShouldBe(2);
+      board.Locations[52].Trails.Length.ShouldBe(2);
       board.Locations[52].Trails.ShouldContain(board.Trails[46]);
       board.Locations[52].Trails.ShouldContain(board.Trails[47]);
 
-      board.Locations[53].Trails.Count.ShouldBe(2);
+      board.Locations[53].Trails.Length.ShouldBe(2);
       board.Locations[53].Trails.ShouldContain(board.Trails[47]);
 
       // Column 1 Horizontals
