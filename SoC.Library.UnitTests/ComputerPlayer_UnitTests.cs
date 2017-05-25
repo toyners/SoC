@@ -37,6 +37,19 @@ namespace Jabberwocky.SoC.Library.UnitTests
     }
 
     [Test]
+    public void ChooseRoad_NoSettlementsForPlayer_ThrowsMeaningfulException()
+    {
+      var playerId = Guid.NewGuid();
+      var gameBoardData = new GameBoardData(BoardSizes.Standard);
+      var computerPlayer = new ComputerPlayer(playerId);
+
+      Should.Throw<Exception>(() =>
+      {
+        computerPlayer.ChooseRoad(gameBoardData);
+      }).Message.ShouldBe("No settlements found for player with id " + playerId);
+    }
+
+    [Test]
     public void ChooseRoad_GetBestRoadFromSettlement_ReturnsBestLocation()
     {
       var playerId = Guid.NewGuid();

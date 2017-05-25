@@ -19,9 +19,15 @@ namespace Jabberwocky.SoC.Library
     {
       // Iterate over all settlements for the player and look for best road option towards
       // another location
-      foreach (var location in gameBoardData.GetSettlementsForPlayer(this.playerId))
+      var settlementsForPlayer = gameBoardData.GetSettlementsForPlayer(this.playerId);
+      if (settlementsForPlayer == null || settlementsForPlayer.Count == 0)
       {
+        throw new Exception("No settlements found for player with id " + this.playerId);
+      }
 
+      foreach (var locationIndex in settlementsForPlayer)
+      {
+        var path = this.GetPathToLocationThatHasBestChanceOfReturnOnRoll(gameBoardData, locationIndex);
       }
 
       throw new NotImplementedException();
@@ -85,6 +91,19 @@ namespace Jabberwocky.SoC.Library
       }
 
       return bestLocationIndex;
+    }
+
+    private List<UInt32> GetPathToLocationThatHasBestChanceOfReturnOnRoll(GameBoardData gameBoardData, UInt32 locationIndex)
+    {
+      var processing = true;
+      var currentIndex = locationIndex;
+      var stack = new Stack<UInt32>();
+      while(processing)
+      {
+        
+      }
+
+      throw new NotImplementedException();
     }
   }
 }

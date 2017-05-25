@@ -98,6 +98,15 @@ namespace Jabberwocky.SoC.Library.GameBoards
 
     public void PlaceStartingSettlement(Guid playerId, UInt32 locationIndex)
     {
+      if (this.settlementsByPlayer.ContainsKey(playerId))
+      {
+        this.settlementsByPlayer[playerId].Add(locationIndex);
+      }
+      else
+      {
+        this.settlementsByPlayer.Add(playerId, new List<uint> { locationIndex });
+      }
+
       this.settlements.Add(locationIndex, playerId);
     }
     
