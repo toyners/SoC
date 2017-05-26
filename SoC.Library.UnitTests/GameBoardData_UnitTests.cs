@@ -2,6 +2,7 @@
 namespace Jabberwocky.SoC.Library.UnitTests
 {
   using System;
+  using System.Collections.Generic;
   using GameBoards;
   using NSubstitute;
   using NUnit.Framework;
@@ -26,6 +27,24 @@ namespace Jabberwocky.SoC.Library.UnitTests
       gameBoardData.PlaceStartingSettlement(Guid.NewGuid(), 0);
       var result = gameBoardData.CanPlaceSettlement(0);
       result.ShouldBe(GameBoardData.VerificationResults.LocationIsOccupied);
+    }
+
+    [Test]
+    public void GetPathBetweenLocations_StartAndEndAreSame_ReturnsNull()
+    {
+      var gameBoardData = new GameBoardData(BoardSizes.Standard);
+      var result = gameBoardData.GetPathBetweenLocations(0, 0);
+      result.ShouldBeNull();
+    }
+
+    [Test]
+    [TestCase(1u, 0u)]
+    [TestCase(8u, 48u)]
+    public void GetPathBetweenLocations_StartAndEndAreNeighbours_ReturnsOneStep(UInt32 endPoint, UInt32 stepIndex)
+    {
+      var gameBoardData = new GameBoardData(BoardSizes.Standard);
+      var result = gameBoardData.GetPathBetweenLocations(0, endPoint);
+      result.ShouldBe(new List<UInt32> { stepIndex });
     }
 
     [Test]

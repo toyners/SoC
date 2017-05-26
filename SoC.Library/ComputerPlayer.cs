@@ -95,13 +95,7 @@ namespace Jabberwocky.SoC.Library
 
     private List<UInt32> GetPathToLocationThatHasBestChanceOfReturnOnRoll(GameBoardData gameBoardData, UInt32 locationIndex)
     {
-      var processing = true;
-      var currentIndex = locationIndex;
-      var stack = new Stack<UInt32>();
-      while(processing)
-      {
-        
-      }
+      var bestLocationIndex = this.GetIndexOfLocationThatHasBestChanceOfReturnOnRoll(gameBoardData);
 
       throw new NotImplementedException();
     }

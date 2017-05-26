@@ -84,6 +84,16 @@ namespace Jabberwocky.SoC.Library.GameBoards
       return VerificationResults.Valid;
     }
 
+    public List<UInt32> GetPathBetweenLocations(UInt32 startIndex, UInt32 endIndex)
+    {
+      if (startIndex == endIndex)
+      {
+        return null;
+      }
+
+      return new List<UInt32> { 0 };
+    }
+
     public List<UInt32> GetSettlementsForPlayer(Guid playerId)
     {
       if (!this.settlementsByPlayer.ContainsKey(playerId))
@@ -296,7 +306,6 @@ namespace Jabberwocky.SoC.Library.GameBoards
       this.Locations[51].Providers.Add(grain8);
       this.Locations[52].Providers.Add(grain8);
       this.Locations[53].Providers.Add(grain8);
-
     }
 
     private void StitchLocationsTogetherUsingHorizontalTrails(Int32 index)
