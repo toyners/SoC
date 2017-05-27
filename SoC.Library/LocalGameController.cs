@@ -173,31 +173,6 @@ namespace Jabberwocky.SoC.Library
       return Guid.NewGuid();
     }
 
-    private void RunGame(GameOptions gameOptions)
-    {
-
-      /*this.players = this.CreatePlayers(gameOptions);
-      this.GameJoinedEvent.Invoke(players);
-
-      if (this.gamePhase == GamePhases.WaitingLaunch)
-      {
-        return;
-      }
-
-      //this.WaitForGameLaunch();
-      
-      while (true)
-      {
-        this.gameBoardManager = new GameBoardManager(BoardSizes.Standard);
-        this.InitialBoardSetupEvent.Invoke(this.gameBoardManager.Data);
-
-        this.gameSession = new GameSession();
-
-        this.curentPlayerTurnToken = this.GetTurnToken();
-        this.StartInitialTurnEvent.Invoke(this.curentPlayerTurnToken);
-      }*/
-    }
-
     private void WaitForGameLaunch()
     {
       while (this.gamePhase == GamePhases.WaitingLaunch)
