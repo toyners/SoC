@@ -17,8 +17,6 @@ namespace Jabberwocky.SoC.Library
 
     public Trail ChooseRoad(GameBoardData gameBoardData)
     {
-      // Iterate over all settlements for the player and look for best road option towards
-      // another location
       var settlementsForPlayer = gameBoardData.GetSettlementsForPlayer(this.playerId);
       if (settlementsForPlayer == null || settlementsForPlayer.Count == 0)
       {
@@ -97,7 +95,9 @@ namespace Jabberwocky.SoC.Library
     {
       var bestLocationIndex = this.GetIndexOfLocationThatHasBestChanceOfReturnOnRoll(gameBoardData);
 
-      throw new NotImplementedException();
+      var connections = new Boolean[GameBoardData.StandardBoardLocationCount, GameBoardData.StandardBoardLocationCount];
+
+      return PathFinder.GetPathBetweenPoints(locationIndex, (UInt32)bestLocationIndex, connections);
     }
   }
 }
