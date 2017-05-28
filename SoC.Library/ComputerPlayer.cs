@@ -34,8 +34,13 @@ namespace Jabberwocky.SoC.Library
     public Location ChooseSettlementLocation(GameBoardData gameBoardData)
     {
       // Find location that has the highest chance of a return for any roll.
-      var bestLocation = this.GetIndexOfLocationThatHasBestChanceOfReturnOnRoll(gameBoardData);
-      return gameBoardData.Locations[bestLocation];
+      var bestLocationIndex = 0u;
+      if (!this.TryGetIndexOfLocationThatHasBestChanceOfReturnOnRoll(gameBoardData, out bestLocationIndex))
+      {
+        throw new Exception("Should not get here"); //TODO: Clean up
+      }
+
+      return gameBoardData.Locations[bestLocationIndex];
     }
 
     private Int32 CalculateChangeOfReturnOnRoll(HashSet<ResourceProvider> providers)
@@ -61,11 +66,12 @@ namespace Jabberwocky.SoC.Library
       return totalChance;
     }
 
-    private Int32 GetIndexOfLocationThatHasBestChanceOfReturnOnRoll(GameBoardData gameBoardData)
+    private Boolean TryGetIndexOfLocationThatHasBestChanceOfReturnOnRoll(GameBoardData gameBoardData, out UInt32 bestLocationIndex)
     {
       // Find location that has the highest chance of a return for any roll.
       var bestChanceOfReturnOnRoll = 0;
-      var bestLocationIndex = -1;
+      var gotBestLocationIndex = false;
+      bestLocationIndex = 0;
 
       // Iterate over every location and determine the chance of return for all resource providers
       for (UInt32 index = 0; index < gameBoardData.Locations.Length; index++)
@@ -81,23 +87,29 @@ namespace Jabberwocky.SoC.Library
         if (chanceOfReturnOnRoll > bestChanceOfReturnOnRoll)
         {
           bestChanceOfReturnOnRoll = chanceOfReturnOnRoll;
-          bestLocationIndex = (Int32)index;
+          bestLocationIndex = index;
+          gotBestLocationIndex = true;
           System.Diagnostics.Debug.Write(" <= New High");
         }
 
         System.Diagnostics.Debug.WriteLine("");
       }
 
-      return bestLocationIndex;
+      return gotBestLocationIndex;
     }
 
     private List<UInt32> GetPathToLocationThatHasBestChanceOfReturnOnRoll(GameBoardData gameBoardData, UInt32 locationIndex)
     {
-      var bestLocationIndex = this.GetIndexOfLocationThatHasBestChanceOfReturnOnRoll(gameBoardData);
+      var bestLocationIndex = 0u;
+
+      if (!this.TryGetIndexOfLocationThatHasBestChanceOfReturnOnRoll(gameBoardData, out bestLocationIndex))
+      {
+        throw new Exception("Should not get here"); // TODO: Clean up
+      }
 
       var connections = new Boolean[GameBoardData.StandardBoardLocationCount, GameBoardData.StandardBoardLocationCount];
 
-      return PathFinder.GetPathBetweenPoints(locationIndex, (UInt32)bestLocationIndex, connections);
+      return PathFinder.GetPathBetweenPoints(locationIndex, bestLocationIndex, connections);
     }
   }
 }
