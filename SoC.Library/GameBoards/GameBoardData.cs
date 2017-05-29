@@ -91,7 +91,16 @@ namespace Jabberwocky.SoC.Library.GameBoards
         return null;
       }
 
-      return new List<UInt32> { 0 };
+      var connections = new Boolean[GameBoardData.StandardBoardLocationCount, GameBoardData.StandardBoardLocationCount];
+      var locations = new List<Location>(this.Locations);
+      foreach (var trail in this.Trails)
+      {
+        var x = locations.IndexOf(trail.Location1);
+        var y = locations.IndexOf(trail.Location2);
+        connections[x, y] = true;
+      }
+
+      return PathFinder.GetPathBetweenPoints(startIndex, endIndex, connections);
     }
 
     public List<UInt32> GetSettlementsForPlayer(Guid playerId)

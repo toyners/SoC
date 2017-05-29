@@ -87,17 +87,18 @@ namespace Jabberwocky.SoC.Library
     private static List<UInt32> ConstructPath(UInt32 currentIndex, UInt32 startIndex, Dictionary<UInt32, UInt32> mostEfficientNeighbour)
     {
       var list = new List<UInt32>();
-      var index = currentIndex;
+      list.Add(currentIndex);
 
       while (mostEfficientNeighbour.ContainsKey(currentIndex))
       {
         currentIndex = mostEfficientNeighbour[currentIndex];
         if (currentIndex == startIndex)
         {
-          return new List<UInt32> { index };
+          list.Reverse();
+          return list;
         }
 
-        index = currentIndex;
+        list.Add(currentIndex);
       }
 
       throw new Exception();

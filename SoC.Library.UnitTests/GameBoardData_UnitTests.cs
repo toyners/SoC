@@ -48,6 +48,14 @@ namespace Jabberwocky.SoC.Library.UnitTests
     }
 
     [Test]
+    public void GetPathBetweenLocations_StartAndEndAreNeighbours()
+    {
+      var gameBoardData = new GameBoardData(BoardSizes.Standard);
+      var result = gameBoardData.GetPathBetweenLocations(0, 10);
+      result.ShouldBe(new List<UInt32> { 1, 2 });
+    }
+
+    [Test]
     public void GetSettlementsForPlayers_EmptyBoard_ReturnsNull()
     {
       var gameBoardData = new GameBoardData(BoardSizes.Standard);

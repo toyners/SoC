@@ -107,9 +107,7 @@ namespace Jabberwocky.SoC.Library
         throw new Exception("Should not get here"); // TODO: Clean up
       }
 
-      var connections = new Boolean[GameBoardData.StandardBoardLocationCount, GameBoardData.StandardBoardLocationCount];
-
-      return PathFinder.GetPathBetweenPoints(locationIndex, bestLocationIndex, connections);
+      return gameBoardData.GetPathBetweenLocations(locationIndex, bestLocationIndex);
     }
   }
 }
