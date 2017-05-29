@@ -23,9 +23,17 @@ namespace Jabberwocky.SoC.Library
         throw new Exception("No settlements found for player with id " + this.playerId);
       }
 
-      foreach (var locationIndex in settlementsForPlayer)
+      var locationIndex = settlementsForPlayer[0];
+      var path = this.GetPathToLocationThatHasBestChanceOfReturnOnRoll(gameBoardData, locationIndex);
+      var roadStartLocation = gameBoardData.Locations[path[path.Count - 1]];
+      var roadEndLocation = gameBoardData.Locations[path[path.Count - 2]];
+       
+      foreach (var trail in gameBoardData.Trails)
       {
-        var path = this.GetPathToLocationThatHasBestChanceOfReturnOnRoll(gameBoardData, locationIndex);
+        if (trail.Location1 == roadStartLocation && trail.Location2 == roadEndLocation)
+        {
+          return trail;
+        }
       }
 
       throw new NotImplementedException();

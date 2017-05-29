@@ -94,14 +94,13 @@ namespace Jabberwocky.SoC.Library
         currentIndex = mostEfficientNeighbour[currentIndex];
         if (currentIndex == startIndex)
         {
-          list.Reverse();
           return list;
         }
 
         list.Add(currentIndex);
       }
 
-      throw new Exception();
+      throw new Exception("Should not get here");
     }
 
     private static UInt32 GetIndexFromOpenSetWithLowestTotalCost(HashSet<UInt32> openSet, Dictionary<UInt32, Single> totalCostOfStartToGoalViaThisPoint)
