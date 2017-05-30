@@ -4,7 +4,6 @@ namespace Jabberwocky.SoC.Library.UnitTests
   using System;
   using System.Collections.Generic;
   using GameBoards;
-  using NSubstitute;
   using NUnit.Framework;
   using Shouldly;
 
@@ -44,7 +43,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     {
       var gameBoardData = new GameBoardData(BoardSizes.Standard);
       var result = gameBoardData.GetPathBetweenLocations(0, endPoint);
-      result.ShouldBe(new List<UInt32> { stepIndex });
+      result.ShouldBe(new List<UInt32> { endPoint });
     }
 
     [Test]
@@ -52,7 +51,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     {
       var gameBoardData = new GameBoardData(BoardSizes.Standard);
       var result = gameBoardData.GetPathBetweenLocations(0, 10);
-      result.ShouldBe(new List<UInt32> { 1, 2 });
+      result.ShouldBe(new List<UInt32> { 10, 2, 1 });
     }
 
     [Test]

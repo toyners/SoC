@@ -2,9 +2,7 @@
 namespace Jabberwocky.SoC.Library.UnitTests
 {
   using System;
-  using System.Collections.Generic;
   using GameBoards;
-  using NSubstitute;
   using NUnit.Framework;
   using Shouldly;
 
@@ -50,7 +48,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     }
 
     [Test]
-    public void ChooseRoad_GetBestRoadFromSettlement_ReturnsBestLocation()
+    public void ChooseRoad_BuildingTowardsNextBestSettlementLocation_ReturnsFirstRoadTowardsBestLocation()
     {
       var playerId = Guid.NewGuid();
       var gameBoardData = new GameBoardData(BoardSizes.Standard);
@@ -60,7 +58,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
       var road = computerPlayer.ChooseRoad(gameBoardData);
 
-      road.ShouldBe(gameBoardData.Trails[16]);
+      road.ShouldBe(gameBoardData.Trails[10]);
     }
     #endregion 
   }

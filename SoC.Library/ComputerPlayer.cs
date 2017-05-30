@@ -25,12 +25,13 @@ namespace Jabberwocky.SoC.Library
 
       var locationIndex = settlementsForPlayer[0];
       var path = this.GetPathToLocationThatHasBestChanceOfReturnOnRoll(gameBoardData, locationIndex);
-      var roadStartLocation = gameBoardData.Locations[path[path.Count - 1]];
-      var roadEndLocation = gameBoardData.Locations[path[path.Count - 2]];
+      var roadStartLocation = gameBoardData.Locations[locationIndex];
+      var roadEndLocation = gameBoardData.Locations[path[path.Count - 1]];
        
       foreach (var trail in gameBoardData.Trails)
       {
-        if (trail.Location1 == roadStartLocation && trail.Location2 == roadEndLocation)
+        if ((trail.Location1 == roadStartLocation && trail.Location2 == roadEndLocation) ||
+          (trail.Location2 == roadStartLocation && trail.Location1 == roadEndLocation))
         {
           return trail;
         }

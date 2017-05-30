@@ -97,7 +97,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
       {
         var x = locations.IndexOf(trail.Location1);
         var y = locations.IndexOf(trail.Location2);
-        connections[x, y] = true;
+        connections[x, y] = connections[y, x] = true;
       }
 
       return PathFinder.GetPathBetweenPoints(startIndex, endIndex, connections);
