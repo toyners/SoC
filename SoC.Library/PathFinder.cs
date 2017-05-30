@@ -31,13 +31,14 @@ namespace Jabberwocky.SoC.Library
 
       totalCostOfStartToGoalViaThisPoint.Add(startIndex, distanceCoveringAllPermanentPoints);
 
-      var path = new List<UInt32>();
+      List<UInt32> path = null;
       while (openSet.Count > 0)
       {
         var currentIndex = GetIndexFromOpenSetWithLowestTotalCost(openSet, totalCostOfStartToGoalViaThisPoint);
         if (currentIndex == endIndex)
         {
-          return ConstructPath(currentIndex, startIndex, mostEfficientNeighbour);
+          path = ConstructPath(currentIndex, startIndex, mostEfficientNeighbour);
+          break;
         }
 
         openSet.Remove(currentIndex);
@@ -81,7 +82,7 @@ namespace Jabberwocky.SoC.Library
         }
       }
 
-      throw new NotImplementedException();
+      return path;
     }
 
     private static List<UInt32> ConstructPath(UInt32 currentIndex, UInt32 startIndex, Dictionary<UInt32, UInt32> mostEfficientNeighbour)
