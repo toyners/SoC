@@ -148,12 +148,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
       localGameController.StartJoiningGame(null);
       localGameController.TryLaunchGame();
 
-      gameBoardData.ShouldNotBeNull();
-      gameBoardData.Roads.Count.ShouldBe(players.Length);
-      gameBoardData.Roads.ShouldContain(new KeyValuePair<Guid, List<Trail>>(players[0].Id, null));
-      gameBoardData.Roads.ShouldContain(new KeyValuePair<Guid, List<Trail>>(players[1].Id, null));
-      gameBoardData.Roads.ShouldContain(new KeyValuePair<Guid, List<Trail>>(players[2].Id, null));
-      gameBoardData.Roads.ShouldContain(new KeyValuePair<Guid, List<Trail>>(players[3].Id, null));
+      throw new NotImplementedException();
     }
 
     [Test]
