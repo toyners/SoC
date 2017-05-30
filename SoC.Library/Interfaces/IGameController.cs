@@ -7,6 +7,9 @@ namespace Jabberwocky.SoC.Library.Interfaces
 
   public interface IGameController
   {
+    #region Events
+    Action<GameBoardUpdate> BoardUpdatedEvent { get; set; }
+
     Action<PlayerBase[]> GameJoinedEvent { get; set; }
 
     Action<GameBoardData> InitialBoardSetupEvent { get; set; }
@@ -14,6 +17,7 @@ namespace Jabberwocky.SoC.Library.Interfaces
     Action<ClientAccount> LoggedInEvent { get; set; }
 
     Action<Guid, GameBoardUpdate> StartInitialSetupTurnEvent { get; set; }
+    #endregion
 
     Guid GameId { get; }
 

@@ -79,7 +79,6 @@ namespace Jabberwocky.SoC.Library.UnitTests
       localGameController.TryLaunchGame();
 
       gameBoardData.ShouldNotBeNull();
-
       gameBoardData.Roads.Count.ShouldBe(players.Length);
       gameBoardData.Roads.ShouldContain(new KeyValuePair<Guid, List<Trail>>(players[0].Id, null));
       gameBoardData.Roads.ShouldContain(new KeyValuePair<Guid, List<Trail>>(players[1].Id, null));
@@ -88,14 +87,14 @@ namespace Jabberwocky.SoC.Library.UnitTests
     }
 
     [Test]
-    public void StartJoiningGame_GameLaunchedWithPlayerSecondInInitialSetupRound_InitialBoardPassedBack()
+    public void StartJoiningGame_GameLaunchedWithPlayerNotFirstInInitialSetupRound_InitialBoardPassedBack()
     {
       var mockDice = NSubstitute.Substitute.For<IDice>();
       mockDice.RollTwoDice().Returns(10u, 12u, 8u, 6u);
 
       var gameBoardManager = new GameBoardManager(BoardSizes.Standard);
       var initialSetupSettlementLocation = gameBoardManager.Data.Locations[19];
-      var initialSetupRoundTrail = gameBoardManager.Data.Trails[16];
+      var initialSetupRoundTrail = gameBoardManager.Data.Trails[10];
 
       var mockComputerPlayer = Substitute.For<IComputerPlayer>();
       mockComputerPlayer.ChooseSettlementLocation(gameBoardManager.Data).Returns(initialSetupSettlementLocation);
@@ -115,10 +114,44 @@ namespace Jabberwocky.SoC.Library.UnitTests
       localGameController.TryLaunchGame();
 
       gameBoardData.ShouldNotBeNull();
-
       gameBoardData.Roads.Count.ShouldBe(players.Length);
       gameBoardData.Roads.ShouldContain(new KeyValuePair<Guid, List<Trail>>(players[0].Id, null));
-      gameBoardData.Roads.ShouldContain(new KeyValuePair<Guid, List<Trail>>(players[1].Id, new List<Trail> { initialSetupRoundTrail }));
+      gameBoardData.Roads.ShouldContain(new KeyValuePair<Guid, List<Trail>>(players[1].Id, null));
+      gameBoardData.Roads.ShouldContain(new KeyValuePair<Guid, List<Trail>>(players[2].Id, null));
+      gameBoardData.Roads.ShouldContain(new KeyValuePair<Guid, List<Trail>>(players[3].Id, null));
+    }
+
+    [Test]
+    public void StartJoiningGame_GameLaunchedWithPlayerNotFirstInInitialSetupRound_BoardUpdatePassedBack()
+    {
+      var mockDice = NSubstitute.Substitute.For<IDice>();
+      mockDice.RollTwoDice().Returns(10u, 12u, 8u, 6u);
+
+      var gameBoardManager = new GameBoardManager(BoardSizes.Standard);
+      var initialSetupSettlementLocation = gameBoardManager.Data.Locations[19];
+      var initialSetupRoundTrail = gameBoardManager.Data.Trails[10];
+
+      var mockComputerPlayer = Substitute.For<IComputerPlayer>();
+      mockComputerPlayer.ChooseSettlementLocation(gameBoardManager.Data).Returns(initialSetupSettlementLocation);
+      mockComputerPlayer.ChooseRoad(gameBoardManager.Data).Returns(initialSetupRoundTrail);
+
+      var mockComputerPlayerFactory = Substitute.For<IComputerPlayerFactory>();
+      mockComputerPlayerFactory.Create().Returns(mockComputerPlayer);
+
+      var localGameController = this.CreateLocalGameController(mockDice, mockComputerPlayerFactory, gameBoardManager);
+
+      PlayerBase[] players = null;
+      GameBoardData gameBoardData = null;
+      localGameController.GameJoinedEvent = (PlayerBase[] p) => { players = p; };
+      localGameController.InitialBoardSetupEvent = (GameBoardData g) => { gameBoardData = g; };
+
+      localGameController.StartJoiningGame(null);
+      localGameController.TryLaunchGame();
+
+      gameBoardData.ShouldNotBeNull();
+      gameBoardData.Roads.Count.ShouldBe(players.Length);
+      gameBoardData.Roads.ShouldContain(new KeyValuePair<Guid, List<Trail>>(players[0].Id, null));
+      gameBoardData.Roads.ShouldContain(new KeyValuePair<Guid, List<Trail>>(players[1].Id, null));
       gameBoardData.Roads.ShouldContain(new KeyValuePair<Guid, List<Trail>>(players[2].Id, null));
       gameBoardData.Roads.ShouldContain(new KeyValuePair<Guid, List<Trail>>(players[3].Id, null));
     }

@@ -43,6 +43,8 @@ namespace Jabberwocky.SoC.Library
     public Guid GameId { get; private set; }
 
     #region Events
+    public Action<GameBoardUpdate> BoardUpdatedEvent { get; set; }
+
     public Action<PlayerBase[]> GameJoinedEvent { get; set; }
 
     public Action<GameBoardData> InitialBoardSetupEvent { get; set; }
