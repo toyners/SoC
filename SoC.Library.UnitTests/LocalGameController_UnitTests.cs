@@ -58,7 +58,10 @@ namespace Jabberwocky.SoC.Library.UnitTests
     [Test]
     public void StartJoiningGame_TryLaunchingGameAfterJoining_ReturnsTrue()
     {
-      var localGameController = this.CreateLocalGameController();
+      var mockDice = NSubstitute.Substitute.For<IDice>();
+      mockDice.RollTwoDice().Returns(12u, 10u, 8u, 2u);
+      var localGameController = this.CreateLocalGameController(mockDice, new ComputerPlayerFactory(), new GameBoardManager(BoardSizes.Standard));
+
       localGameController.StartJoiningGame(null);
       localGameController.TryLaunchGame().ShouldBeTrue();
     }
@@ -122,7 +125,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     }
 
     [Test]
-    public void StartJoiningGame_GameLaunchedWithPlayerNotFirstInInitialSetupRound_BoardUpdatePassedBack()
+    public void StartJoiningGame_GameLaunchedWithPlayerSecondInInitialSetupRound_BoardUpdatePassedBack()
     {
       var mockDice = NSubstitute.Substitute.For<IDice>();
       mockDice.RollTwoDice().Returns(10u, 12u, 8u, 6u);
@@ -131,7 +134,9 @@ namespace Jabberwocky.SoC.Library.UnitTests
       var initialSetupSettlementLocation = gameBoardManager.Data.Locations[19];
       var initialSetupRoundTrail = gameBoardManager.Data.Trails[10];
 
+      var playerId = Guid.NewGuid();
       var mockComputerPlayer = Substitute.For<IComputerPlayer>();
+      mockComputerPlayer.Id.Returns(playerId);
       mockComputerPlayer.ChooseSettlementLocation(gameBoardManager.Data).Returns(initialSetupSettlementLocation);
       mockComputerPlayer.ChooseRoad(gameBoardManager.Data).Returns(initialSetupRoundTrail);
 
@@ -140,15 +145,17 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
       var localGameController = this.CreateLocalGameController(mockDice, mockComputerPlayerFactory, gameBoardManager);
 
-      PlayerBase[] players = null;
-      GameBoardData gameBoardData = null;
-      localGameController.GameJoinedEvent = (PlayerBase[] p) => { players = p; };
-      localGameController.InitialBoardSetupEvent = (GameBoardData g) => { gameBoardData = g; };
+      Guid firstPlayerId = Guid.Empty;
+      GameBoardUpdate gameBoardUpdate = null;
+      localGameController.StartInitialSetupTurnEvent = (Guid id, GameBoardUpdate u) => { firstPlayerId = id; gameBoardUpdate = u; };
 
       localGameController.StartJoiningGame(null);
       localGameController.TryLaunchGame();
 
-      throw new NotImplementedException();
+      firstPlayerId.ShouldBe(playerId);
+      gameBoardUpdate.ShouldNotBeNull();
+      gameBoardUpdate.NewSettlements.Count.ShouldBe(1);
+      gameBoardUpdate.NewRoads.Count.ShouldBe(1);
     }
 
     [Test]

@@ -8,19 +8,19 @@ namespace Jabberwocky.SoC.Library
 
   public class ComputerPlayer : IComputerPlayer
   {
-    private Guid playerId;
+    public Guid Id { get; private set; }
 
-    public ComputerPlayer(Guid playerId)
+    public ComputerPlayer(Guid id)
     {
-      this.playerId = playerId;
+      this.Id = id;
     }
 
     public Trail ChooseRoad(GameBoardData gameBoardData)
     {
-      var settlementsForPlayer = gameBoardData.GetSettlementsForPlayer(this.playerId);
+      var settlementsForPlayer = gameBoardData.GetSettlementsForPlayer(this.Id);
       if (settlementsForPlayer == null || settlementsForPlayer.Count == 0)
       {
-        throw new Exception("No settlements found for player with id " + this.playerId);
+        throw new Exception("No settlements found for player with id " + this.Id);
       }
 
       var locationIndex = settlementsForPlayer[0];
