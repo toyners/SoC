@@ -161,6 +161,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     [Test]
     public void StartJoiningGame_GameLaunched_TurnTokenPassedBack()
     {
+      throw new NotImplementedException();
       /*var localGameController = this.CreateLocalGameController();
 
       Guid turnToken = Guid.Empty;
