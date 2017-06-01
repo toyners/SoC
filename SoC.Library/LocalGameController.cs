@@ -106,7 +106,7 @@ namespace Jabberwocky.SoC.Library
           }
         };
         
-        this.StartInitialSetupTurnEvent?.Invoke(firstPlayer.Id, gameBoardUpdate);
+        this.StartInitialSetupTurnEvent?.Invoke(this.computerPlayers[firstPlayer].Id, gameBoardUpdate);
       }
       else
       {
