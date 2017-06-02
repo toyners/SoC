@@ -6,10 +6,8 @@ namespace Jabberwocky.SoC.Library
   using GameBoards;
   using System.Collections.Generic;
 
-  public class ComputerPlayer : IComputerPlayer
+  public class ComputerPlayer : PlayerBase, IComputerPlayer
   {
-    public Guid Id { get; private set; }
-
     public ComputerPlayer(Guid id)
     {
       this.Id = id;
@@ -40,7 +38,7 @@ namespace Jabberwocky.SoC.Library
       throw new NotImplementedException();
     }
 
-    public Location ChooseSettlementLocation(GameBoardData gameBoardData)
+    public UInt32 ChooseSettlementLocation(GameBoardData gameBoardData)
     {
       // Find location that has the highest chance of a return for any roll.
       var bestLocationIndex = 0u;
@@ -49,7 +47,7 @@ namespace Jabberwocky.SoC.Library
         throw new Exception("Should not get here"); //TODO: Clean up
       }
 
-      return gameBoardData.Locations[bestLocationIndex];
+      return bestLocationIndex;
     }
 
     private Int32 CalculateChangeOfReturnOnRoll(HashSet<ResourceProvider> providers)

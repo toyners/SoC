@@ -7,7 +7,7 @@ namespace Jabberwocky.SoC.Library.Interfaces
   public interface IComputerPlayer
   {
     Guid Id { get; }
-    Location ChooseSettlementLocation(GameBoardData gameBoardData);
+    UInt32 ChooseSettlementLocation(GameBoardData gameBoardData);
     Trail ChooseRoad(GameBoardData gameBoardData);
   }
 }

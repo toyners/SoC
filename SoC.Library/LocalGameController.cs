@@ -78,11 +78,6 @@ namespace Jabberwocky.SoC.Library
       }
 
       var gameBoardData = this.gameBoardManager.Data;
-      for (Int32 i = 0; i < this.players.Length; i++)
-      {
-        gameBoardData.Roads.Add(this.players[i].Id, null);
-      }
-
       this.InitialBoardSetupEvent?.Invoke(gameBoardData);
 
       this.players = SetupOrderCreator.Create(this.players, this.dice);
@@ -97,16 +92,17 @@ namespace Jabberwocky.SoC.Library
           {
             gameBoardUpdate = new GameBoardUpdate
             {
-              NewSettlements = new Dictionary<PlayerBase, List<Location>>(),
+              NewSettlements = new Dictionary<PlayerBase, List<UInt32>>(),
               NewRoads = new Dictionary<PlayerBase, List<Trail>>()
             };
-          }
+          } 
 
           var computerPlayer = this.computerPlayers[player];
-          var chosenSettlement = computerPlayer.ChooseSettlementLocation(gameBoardData);
+          var chosenSettlementIndex = computerPlayer.ChooseSettlementLocation(gameBoardData);
+          gameBoardData.PlaceStartingSettlement(computerPlayer.Id, chosenSettlementIndex);
           var chosenRoad = computerPlayer.ChooseRoad(gameBoardData);
 
-          gameBoardUpdate.NewSettlements.Add(player, new List<Location> { chosenSettlement });
+          gameBoardUpdate.NewSettlements.Add(player, new List<UInt32> { chosenSettlementIndex });
           gameBoardUpdate.NewRoads.Add(player, new List<Trail> { chosenRoad });
         }
         else

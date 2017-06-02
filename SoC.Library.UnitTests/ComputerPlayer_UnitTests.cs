@@ -18,7 +18,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
       var location = computerPlayer.ChooseSettlementLocation(gameBoardData);
 
-      location.ShouldBe(gameBoardData.Locations[12]);
+      location.ShouldBe(12u);
     }
 
     [Test]
@@ -31,7 +31,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
       var location = computerPlayer.ChooseSettlementLocation(gameBoardData);
 
-      location.ShouldBe(gameBoardData.Locations[31]);
+      location.ShouldBe(31u);
     }
 
     [Test]

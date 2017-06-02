@@ -5,7 +5,7 @@ namespace Jabberwocky.SoC.Library
 
   public class PlayerBase
   {
-    public readonly Guid Id;
+    public Guid Id { get; protected set; }
     public DevelopmentCard[] DisplayedDevelopmentCards;
 
     public PlayerBase()

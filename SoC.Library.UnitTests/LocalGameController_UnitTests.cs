@@ -96,10 +96,11 @@ namespace Jabberwocky.SoC.Library.UnitTests
       mockDice.RollTwoDice().Returns(10u, 12u, 8u, 6u);
 
       var gameBoardManager = new GameBoardManager(BoardSizes.Standard);
-      var initialSetupSettlementLocation = gameBoardManager.Data.Locations[19];
+      var initialSetupSettlementLocation = 19u;
       var initialSetupRoundTrail = gameBoardManager.Data.Trails[10];
 
       var mockComputerPlayer = Substitute.For<IComputerPlayer>();
+      mockComputerPlayer.Id.Returns(Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid());
       mockComputerPlayer.ChooseSettlementLocation(gameBoardManager.Data).Returns(initialSetupSettlementLocation);
       mockComputerPlayer.ChooseRoad(gameBoardManager.Data).Returns(initialSetupRoundTrail);
 
@@ -131,12 +132,12 @@ namespace Jabberwocky.SoC.Library.UnitTests
       mockDice.RollTwoDice().Returns(10u, 12u, 8u, 6u);
 
       var gameBoardManager = new GameBoardManager(BoardSizes.Standard);
-      var initialSetupSettlementLocation = gameBoardManager.Data.Locations[19];
+      var initialSetupSettlementLocation = 19u;
       var initialSetupRoundTrail = gameBoardManager.Data.Trails[10];
 
       var playerId = Guid.NewGuid();
       var mockComputerPlayer = Substitute.For<IComputerPlayer>();
-      mockComputerPlayer.Id.Returns(playerId);
+      //mockComputerPlayer.Id.Returns(playerId);
       mockComputerPlayer.ChooseSettlementLocation(gameBoardManager.Data).Returns(initialSetupSettlementLocation);
       mockComputerPlayer.ChooseRoad(gameBoardManager.Data).Returns(initialSetupRoundTrail);
 
@@ -165,18 +166,18 @@ namespace Jabberwocky.SoC.Library.UnitTests
       mockDice.RollTwoDice().Returns(8u, 10u, 12u, 6u);
 
       var gameBoardManager = new GameBoardManager(BoardSizes.Standard);
-      var initialSetupSettlementLocation = gameBoardManager.Data.Locations[19];
+      var initialSetupSettlementLocation = 19u;
       var initialSetupRoundTrail = gameBoardManager.Data.Trails[10];
 
       var playerId = Guid.NewGuid();
       var firstMockComputerPlayer = Substitute.For<IComputerPlayer>();
-      firstMockComputerPlayer.Id.Returns(playerId);
+      //firstMockComputerPlayer.Id.Returns(playerId);
       firstMockComputerPlayer.ChooseSettlementLocation(gameBoardManager.Data).Returns(initialSetupSettlementLocation);
       firstMockComputerPlayer.ChooseRoad(gameBoardManager.Data).Returns(initialSetupRoundTrail);
 
       var secondMockComputerPlayer = Substitute.For<IComputerPlayer>();
-      secondMockComputerPlayer.Id.Returns(playerId);
-      secondMockComputerPlayer.ChooseSettlementLocation(gameBoardManager.Data).Returns(gameBoardManager.Data.Locations[24]);
+      //secondMockComputerPlayer.Id.Returns(playerId);
+      secondMockComputerPlayer.ChooseSettlementLocation(gameBoardManager.Data).Returns(24u);
       secondMockComputerPlayer.ChooseRoad(gameBoardManager.Data).Returns(gameBoardManager.Data.Trails[20]);
 
       var mockComputerPlayerFactory = Substitute.For<IComputerPlayerFactory>();
