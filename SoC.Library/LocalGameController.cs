@@ -86,9 +86,10 @@ namespace Jabberwocky.SoC.Library
       this.InitialBoardSetupEvent?.Invoke(gameBoardData);
 
       this.players = SetupOrderCreator.Create(this.players, this.dice);
+
       var firstPlayer = this.players[0];
 
-      if (firstPlayer != this.player)
+      if (this.IsComputerPlayer(firstPlayer))
       {
         // Is computer player
         var computerPlayer = this.computerPlayers[firstPlayer];
@@ -173,6 +174,11 @@ namespace Jabberwocky.SoC.Library
     private Guid GetTurnToken()
     {
       return Guid.NewGuid();
+    }
+
+    private Boolean IsComputerPlayer(PlayerBase player)
+    {
+      return this.computerPlayers.ContainsKey(player);
     }
 
     private void WaitForGameLaunch()
