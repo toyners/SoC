@@ -204,38 +204,6 @@ namespace Jabberwocky.SoC.Library
         index++;
       }
     }
-
-    public UInt32[] GetInitialSetupRoundOrder()
-    {
-      // Roll dice for each player
-      var rollsByPlayer = new Dictionary<UInt32, UInt32>();
-      var rolls = new List<UInt32>(this.players.Length);
-      UInt32 index = 0;
-      for (; index < this.players.Length; index++)
-      {
-        UInt32 roll = this.dice.RollTwoDice();
-        while (rolls.Contains(roll))
-        {
-          roll = this.dice.RollTwoDice();
-        }
-
-        rollsByPlayer.Add(roll, index);
-        rolls.Add(roll);
-      }
-
-      // Reverse sort the rolls
-      rolls.Sort((x, y) => { if (x < y) return 1; if (x > y) return -1; return 0; });
-
-      // Produce order based on descending dice roll order
-      UInt32[] setupPassOrder = new UInt32[this.players.Length];
-      index = 0;
-      foreach (var roll in rolls)
-      {
-        setupPassOrder[index++] = rollsByPlayer[roll];
-      }
-
-      return setupPassOrder;
-    }
     #endregion
   }
 }
