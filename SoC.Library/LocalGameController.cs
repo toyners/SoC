@@ -28,7 +28,7 @@ namespace Jabberwocky.SoC.Library
     private GamePhases gamePhase;
     private IGameSession gameSession;
     private PlayerBase[] players;
-    private PlayerData player;
+    private PlayerData mainPlayer;
     private Boolean quitting;
     private Task sessionTask;
     #endregion
@@ -87,11 +87,41 @@ namespace Jabberwocky.SoC.Library
 
       this.players = SetupOrderCreator.Create(this.players, this.dice);
 
-      var firstPlayer = this.players[0];
+      var mainPlayerHasHadTurn = false;
+      GameBoardUpdate gameBoardUpdate = null;
+      foreach (var player in this.players)
+      {
+        if (this.IsComputerPlayer(player))
+        {
+          if (gameBoardUpdate == null)
+          {
+            gameBoardUpdate = new GameBoardUpdate
+            {
+              NewSettlements = new Dictionary<PlayerBase, List<Location>>(),
+              NewRoads = new Dictionary<PlayerBase, List<Trail>>()
+            };
+          }
 
+          var computerPlayer = this.computerPlayers[player];
+          var chosenSettlement = computerPlayer.ChooseSettlementLocation(gameBoardData);
+          var chosenRoad = computerPlayer.ChooseRoad(gameBoardData);
+
+          gameBoardUpdate.NewSettlements.Add(player, new List<Location> { chosenSettlement });
+          gameBoardUpdate.NewRoads.Add(player, new List<Trail> { chosenRoad });
+        }
+        else
+        {
+          if (gameBoardUpdate != null)
+          {
+            this.StartInitialSetupTurnEvent?.Invoke(Guid.Empty, gameBoardUpdate);
+            gameBoardUpdate = null;
+          }
+        }
+      }
+
+      /*var firstPlayer = this.players[0];
       if (this.IsComputerPlayer(firstPlayer))
       {
-        // Is computer player
         var computerPlayer = this.computerPlayers[firstPlayer];
         var chosenSettlement = computerPlayer.ChooseSettlementLocation(gameBoardData);
         var chosenRoad = computerPlayer.ChooseRoad(gameBoardData);
@@ -113,7 +143,7 @@ namespace Jabberwocky.SoC.Library
       {
         // Human player is first to complete initial setup turn so no outstanding updates
         this.StartInitialSetupTurnEvent?.Invoke(this.players[0].Id, null);
-      }
+      }*/
 
       return true;
     }
@@ -192,10 +222,10 @@ namespace Jabberwocky.SoC.Library
 
     private void CreatePlayers(GameOptions gameOptions)
     {
-      this.player = new PlayerData();
+      this.mainPlayer = new PlayerData();
       this.computerPlayers = new Dictionary<PlayerBase, IComputerPlayer>();
       this.players = new PlayerBase[gameOptions.MaxAIPlayers + 1];
-      this.players[0] = this.player;
+      this.players[0] = this.mainPlayer;
       var index = 1;
       while ((gameOptions.MaxAIPlayers--) > 0)
       {
