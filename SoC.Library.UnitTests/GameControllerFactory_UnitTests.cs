@@ -2,6 +2,7 @@
 namespace Jabberwocky.SoC.Library.UnitTests
 {
   using System;
+  using Interfaces;
   using NSubstitute;
   using NUnit.Framework;
   using Shouldly;
@@ -75,7 +76,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     {
       return new GameControllerSetup
       {
-        GameJoinedEventHandler = (PlayerDataBase[] players) => { },
+        GameJoinedEventHandler = (IPlayer[] players) => { },
         InitialBoardSetupEventHandler = (GameBoards.GameBoardData boardData) => { },
         LoggedInEventHandler = (ClientAccount clientAccount) => { },
         StartInitialSetupTurnEvent = (Guid turnToken, GameBoards.GameBoardUpdate gameBoardUpdate) => { }

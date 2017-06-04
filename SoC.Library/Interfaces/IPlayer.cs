@@ -6,5 +6,7 @@ namespace Jabberwocky.SoC.Library.Interfaces
   public interface IPlayer
   {
     Guid Id { get; }
+
+    PlayerData Data { get; }
   }
 }

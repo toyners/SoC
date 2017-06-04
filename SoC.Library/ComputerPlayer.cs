@@ -10,6 +10,8 @@ namespace Jabberwocky.SoC.Library
   {
     public Guid Id { get; private set; }
 
+    public PlayerData Data { get; private set; }
+
     public ComputerPlayer(Guid id)
     {
       this.Id = id;

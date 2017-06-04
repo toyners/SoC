@@ -22,6 +22,8 @@ namespace Jabberwocky.SoC.Library
       this.Id = Guid.NewGuid();
     }
 
+    public PlayerData Data { get; private set; }
+
     public Guid Id { get; private set; }
   }
 }

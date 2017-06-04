@@ -2,6 +2,7 @@
 namespace SoC.Library.IntegrationTests
 {
   using Jabberwocky.SoC.Library;
+  using Jabberwocky.SoC.Library.Interfaces;
   using NUnit.Framework;
   using Shouldly;
 
@@ -16,8 +17,8 @@ namespace SoC.Library.IntegrationTests
       var gameControllerSetup = new GameControllerSetup();
       var gameControllerFactory = new GameControllerFactory();
       var gameController = gameControllerFactory.Create(gameOptions, gameControllerSetup);
-      PlayerDataBase[] players = null;
-      gameController.GameJoinedEvent = (PlayerDataBase[] p) => { players = p; };
+      IPlayer[] players = null;
+      gameController.GameJoinedEvent = (IPlayer[] p) => { players = p; };
       gameController.StartJoiningGame(gameOptions);
 
       players.ShouldNotBeNull();
@@ -34,8 +35,8 @@ namespace SoC.Library.IntegrationTests
       var gameControllerSetup = new GameControllerSetup();
       var gameControllerFactory = new GameControllerFactory();
       var gameController = gameControllerFactory.Create(null, gameControllerSetup);
-      PlayerDataBase[] players = null;
-      gameController.GameJoinedEvent = (PlayerDataBase[] p) => { players = p; };
+      IPlayer[] players = null;
+      gameController.GameJoinedEvent = (IPlayer[] p) => { players = p; };
       gameController.StartJoiningGame(null);
 
       players.ShouldNotBeNull();

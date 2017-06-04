@@ -5,12 +5,12 @@ namespace Jabberwocky.SoC.Library
 
   public class PlayerData : PlayerDataBase
   {
-    DevelopmentCard[] DevelopmentCards;
+    public DevelopmentCard[] DevelopmentCards { get; private set; }
 
-    UInt32 OreCount;
-    UInt32 WheatCount;
-    UInt32 SheepCount;
-    UInt32 LumberCount;
-    UInt32 BrickCount;
+    public UInt32 OreCount { get; private set; }
+    public UInt32 WheatCount { get; private set; }
+    public UInt32 SheepCount { get; private set; }
+    public UInt32 LumberCount { get; private set; }
+    public UInt32 BrickCount { get; private set; }
   }
 }

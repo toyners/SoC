@@ -18,8 +18,8 @@ namespace Jabberwocky.SoC.Library.UnitTests
     {
       var localGameController = this.CreateLocalGameController();
 
-      PlayerDataBase[] players = null;
-      localGameController.GameJoinedEvent = (PlayerDataBase[] p) => { players = p; };
+      IPlayer[] players = null;
+      localGameController.GameJoinedEvent = (IPlayer[] p) => { players = p; };
       localGameController.StartJoiningGame(new GameOptions());
       
       players.ShouldNotBeNull();
@@ -35,8 +35,8 @@ namespace Jabberwocky.SoC.Library.UnitTests
     {
       var localGameController = this.CreateLocalGameController();
 
-      PlayerDataBase[] players = null;
-      localGameController.GameJoinedEvent = (PlayerDataBase[] p) => { players = p; };
+      IPlayer[] players = null;
+      localGameController.GameJoinedEvent = (IPlayer[] p) => { players = p; };
       localGameController.StartJoiningGame(null);
       localGameController.Quit();
 
@@ -73,10 +73,10 @@ namespace Jabberwocky.SoC.Library.UnitTests
       mockDice.RollTwoDice().Returns(12u, 10u, 8u, 2u);
       var localGameController = this.CreateLocalGameController(mockDice, new ComputerPlayerFactory(), new GameBoardManager(BoardSizes.Standard));
 
-      PlayerDataBase[] players = null;
+      IPlayer[] players = null;
       GameBoardData gameBoardData = null;
       GameBoardUpdate gameBoardUpdate = new GameBoardUpdate();
-      localGameController.GameJoinedEvent = (PlayerDataBase[] p) => { players = p; };
+      localGameController.GameJoinedEvent = (IPlayer[] p) => { players = p; };
       localGameController.InitialBoardSetupEvent = (GameBoardData g) => { gameBoardData = g; };
       localGameController.StartInitialSetupTurnEvent = (Guid id, GameBoardUpdate u) => { gameBoardUpdate = u; };
 
@@ -107,9 +107,9 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
       var localGameController = this.CreateLocalGameController(mockDice, mockComputerPlayerFactory, gameBoardManager);
 
-      PlayerDataBase[] players = null;
+      IPlayer[] players = null;
       GameBoardData gameBoardData = null;
-      localGameController.GameJoinedEvent = (PlayerDataBase[] p) => { players = p; };
+      localGameController.GameJoinedEvent = (IPlayer[] p) => { players = p; };
       localGameController.InitialBoardSetupEvent = (GameBoardData g) => { gameBoardData = g; };
 
       localGameController.StartJoiningGame(null);
@@ -218,7 +218,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     private LocalGameController CreateLocalGameController(IDice diceRoller, IComputerPlayerFactory computerPlayerFactory, GameBoardManager gameBoardManager)
     {
       var localGameController = new LocalGameController(diceRoller, computerPlayerFactory, gameBoardManager);
-      localGameController.GameJoinedEvent = (PlayerDataBase[] players) => { };
+      localGameController.GameJoinedEvent = (IPlayer[] players) => { };
       return localGameController;
     }
     #endregion 

@@ -27,8 +27,8 @@ namespace Jabberwocky.SoC.Library
     private GamePhases gamePhase;
     private IGameSession gameSession;
     private UInt32 playerIndex;
-    private PlayerDataBase[] players;
-    private PlayerData mainPlayer;
+    private IPlayer[] players;
+    private Player mainPlayer;
     private Boolean quitting;
     private Task sessionTask;
     #endregion
@@ -45,7 +45,7 @@ namespace Jabberwocky.SoC.Library
     #region Events
     public Action<GameBoardUpdate> BoardUpdatedEvent { get; set; }
 
-    public Action<PlayerDataBase[]> GameJoinedEvent { get; set; }
+    public Action<IPlayer[]> GameJoinedEvent { get; set; }
 
     public Action<GameBoardData> InitialBoardSetupEvent { get; set; }
 
@@ -96,8 +96,8 @@ namespace Jabberwocky.SoC.Library
         {
           gameBoardUpdate = new GameBoardUpdate
           {
-            NewSettlements = new Dictionary<PlayerDataBase, List<UInt32>>(),
-            NewRoads = new Dictionary<PlayerDataBase, List<Trail>>()
+            NewSettlements = new Dictionary<IPlayer, List<UInt32>>(),
+            NewRoads = new Dictionary<IPlayer, List<Trail>>()
           };
         }
 
@@ -170,7 +170,7 @@ namespace Jabberwocky.SoC.Library
       return Guid.NewGuid();
     }
 
-    private Boolean IsComputerPlayer(PlayerDataBase player)
+    private Boolean IsComputerPlayer(IPlayer player)
     {
       return player is IComputerPlayer;
     }
@@ -186,13 +186,13 @@ namespace Jabberwocky.SoC.Library
 
     private void CreatePlayers(GameOptions gameOptions)
     {
-      this.mainPlayer = new PlayerData();
-      this.players = new PlayerDataBase[gameOptions.MaxAIPlayers + 1];
+      this.mainPlayer = new Player();
+      this.players = new IPlayer[gameOptions.MaxAIPlayers + 1];
       this.players[0] = this.mainPlayer;
       var index = 1;
       while ((gameOptions.MaxAIPlayers--) > 0)
       {
-        this.players[index] = (PlayerDataBase)this.computerPlayerFactory.Create();
+        this.players[index] = this.computerPlayerFactory.Create();
         index++;
       }
     }

@@ -33,6 +33,19 @@ namespace Jabberwocky.SoC.Client
     public Action<ClientAccount> LoggedInEvent { get; set; }
 
     public Action<Guid, GameBoardUpdate> StartInitialSetupTurnEvent { get; set; }
+
+    Action<IPlayer[]> IGameController.GameJoinedEvent
+    {
+      get
+      {
+        throw new NotImplementedException();
+      }
+
+      set
+      {
+        throw new NotImplementedException();
+      }
+    }
     #endregion
 
     public void AcceptOffer(Offer offer)
