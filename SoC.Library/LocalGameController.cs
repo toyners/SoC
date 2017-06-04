@@ -27,6 +27,7 @@ namespace Jabberwocky.SoC.Library
     private GameBoardManager gameBoardManager;
     private GamePhases gamePhase;
     private IGameSession gameSession;
+    private UInt32 playerIndex;
     private PlayerBase[] players;
     private PlayerData mainPlayer;
     private Boolean quitting;
@@ -81,65 +82,34 @@ namespace Jabberwocky.SoC.Library
       this.InitialBoardSetupEvent?.Invoke(gameBoardData);
 
       this.players = SetupOrderCreator.Create(this.players, this.dice);
-
-      var mainPlayerHasHadTurn = false;
       GameBoardUpdate gameBoardUpdate = null;
-      foreach (var player in this.players)
+      this.playerIndex = 0;
+      for (; this.playerIndex < this.players.Length; this.playerIndex++)
       {
-        if (this.IsComputerPlayer(player))
+        var player = this.players[this.playerIndex];
+        if (!this.IsComputerPlayer(player))
         {
-          if (gameBoardUpdate == null)
-          {
-            gameBoardUpdate = new GameBoardUpdate
-            {
-              NewSettlements = new Dictionary<PlayerBase, List<UInt32>>(),
-              NewRoads = new Dictionary<PlayerBase, List<Trail>>()
-            };
-          } 
-
-          var computerPlayer = this.computerPlayers[player];
-          var chosenSettlementIndex = computerPlayer.ChooseSettlementLocation(gameBoardData);
-          gameBoardData.PlaceStartingSettlement(computerPlayer.Id, chosenSettlementIndex);
-          var chosenRoad = computerPlayer.ChooseRoad(gameBoardData);
-
-          gameBoardUpdate.NewSettlements.Add(player, new List<UInt32> { chosenSettlementIndex });
-          gameBoardUpdate.NewRoads.Add(player, new List<Trail> { chosenRoad });
+          this.StartInitialSetupTurnEvent?.Invoke(Guid.Empty, gameBoardUpdate);
+          break;
         }
-        else
+
+        if (gameBoardUpdate == null)
         {
-          if (gameBoardUpdate != null)
+          gameBoardUpdate = new GameBoardUpdate
           {
-            this.StartInitialSetupTurnEvent?.Invoke(Guid.Empty, gameBoardUpdate);
-            gameBoardUpdate = null;
-          }
-        }
-      }
+            NewSettlements = new Dictionary<PlayerBase, List<UInt32>>(),
+            NewRoads = new Dictionary<PlayerBase, List<Trail>>()
+          };
+        } 
 
-      /*var firstPlayer = this.players[0];
-      if (this.IsComputerPlayer(firstPlayer))
-      {
-        var computerPlayer = this.computerPlayers[firstPlayer];
-        var chosenSettlement = computerPlayer.ChooseSettlementLocation(gameBoardData);
+        var computerPlayer = this.computerPlayers[player];
+        var chosenSettlementIndex = computerPlayer.ChooseSettlementLocation(gameBoardData);
+        gameBoardData.PlaceStartingSettlement(computerPlayer.Id, chosenSettlementIndex);
         var chosenRoad = computerPlayer.ChooseRoad(gameBoardData);
-        var gameBoardUpdate = new GameBoardUpdate
-        {
-          NewSettlements = new Dictionary<PlayerBase, List<Location>>
-          {
-            { firstPlayer, new List<Location> { chosenSettlement } }
-          },
-          NewRoads = new Dictionary<PlayerBase, List<Trail>>
-          {
-            { firstPlayer, new List<Trail> { chosenRoad } }
-          }
-        };
-        
-        this.StartInitialSetupTurnEvent?.Invoke(this.computerPlayers[firstPlayer].Id, gameBoardUpdate);
+
+        gameBoardUpdate.NewSettlements.Add(player, new List<UInt32> { chosenSettlementIndex });
+        gameBoardUpdate.NewRoads.Add(player, new List<Trail> { chosenRoad });
       }
-      else
-      {
-        // Human player is first to complete initial setup turn so no outstanding updates
-        this.StartInitialSetupTurnEvent?.Invoke(this.players[0].Id, null);
-      }*/
 
       return true;
     }
@@ -204,7 +174,7 @@ namespace Jabberwocky.SoC.Library
 
     private Boolean IsComputerPlayer(PlayerBase player)
     {
-      return this.computerPlayers.ContainsKey(player);
+      return player is IComputerPlayer;
     }
 
     private void WaitForGameLaunch()

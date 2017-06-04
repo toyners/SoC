@@ -75,18 +75,16 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
       PlayerBase[] players = null;
       GameBoardData gameBoardData = null;
+      GameBoardUpdate gameBoardUpdate = new GameBoardUpdate();
       localGameController.GameJoinedEvent = (PlayerBase[] p) => { players = p; };
       localGameController.InitialBoardSetupEvent = (GameBoardData g) => { gameBoardData = g; };
+      localGameController.StartInitialSetupTurnEvent = (Guid id, GameBoardUpdate u) => { gameBoardUpdate = u; };
 
       localGameController.StartJoiningGame(null);
       localGameController.TryLaunchGame();
 
       gameBoardData.ShouldNotBeNull();
-      gameBoardData.Roads.Count.ShouldBe(players.Length);
-      gameBoardData.Roads.ShouldContain(new KeyValuePair<Guid, List<Trail>>(players[0].Id, null));
-      gameBoardData.Roads.ShouldContain(new KeyValuePair<Guid, List<Trail>>(players[1].Id, null));
-      gameBoardData.Roads.ShouldContain(new KeyValuePair<Guid, List<Trail>>(players[2].Id, null));
-      gameBoardData.Roads.ShouldContain(new KeyValuePair<Guid, List<Trail>>(players[3].Id, null));
+      gameBoardUpdate.ShouldBeNull();
     }
 
     [Test]
