@@ -21,7 +21,6 @@ namespace Jabberwocky.SoC.Library
     private CancellationToken cancellationToken;
     private CancellationTokenSource cancellationTokenSource;
     private IComputerPlayerFactory computerPlayerFactory;
-    private Dictionary<PlayerBase, IComputerPlayer> computerPlayers;
     private Guid curentPlayerTurnToken;
     private IDice dice;
     private GameBoardManager gameBoardManager;
@@ -100,9 +99,9 @@ namespace Jabberwocky.SoC.Library
             NewSettlements = new Dictionary<PlayerBase, List<UInt32>>(),
             NewRoads = new Dictionary<PlayerBase, List<Trail>>()
           };
-        } 
+        }
 
-        var computerPlayer = this.computerPlayers[player];
+        var computerPlayer = (IComputerPlayer)player;
         var chosenSettlementIndex = computerPlayer.ChooseSettlementLocation(gameBoardData);
         gameBoardData.PlaceStartingSettlement(computerPlayer.Id, chosenSettlementIndex);
         var chosenRoad = computerPlayer.ChooseRoad(gameBoardData);
@@ -189,14 +188,12 @@ namespace Jabberwocky.SoC.Library
     private void CreatePlayers(GameOptions gameOptions)
     {
       this.mainPlayer = new PlayerData();
-      this.computerPlayers = new Dictionary<PlayerBase, IComputerPlayer>();
       this.players = new PlayerBase[gameOptions.MaxAIPlayers + 1];
       this.players[0] = this.mainPlayer;
       var index = 1;
       while ((gameOptions.MaxAIPlayers--) > 0)
       {
-        this.players[index] = new PlayerView();
-        this.computerPlayers.Add(this.players[index], this.computerPlayerFactory.Create());
+        this.players[index] = (PlayerBase)this.computerPlayerFactory.Create();
         index++;
       }
     }
