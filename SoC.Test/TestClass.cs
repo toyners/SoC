@@ -18,8 +18,8 @@ namespace SoC.Test
     public void Test()
     {
       var remoteGameController = new RemoteGameController();
-      PlayerBase[] players = null;
-      remoteGameController.GameJoinedEvent = (PlayerBase[] p) => { players = p; };
+      PlayerDataBase[] players = null;
+      remoteGameController.GameJoinedEvent = (PlayerDataBase[] p) => { players = p; };
 
       var cancellationTokenSource = new CancellationTokenSource();
       var cancellationToken = cancellationTokenSource.Token;

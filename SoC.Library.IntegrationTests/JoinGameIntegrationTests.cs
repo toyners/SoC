@@ -16,16 +16,16 @@ namespace SoC.Library.IntegrationTests
       var gameControllerSetup = new GameControllerSetup();
       var gameControllerFactory = new GameControllerFactory();
       var gameController = gameControllerFactory.Create(gameOptions, gameControllerSetup);
-      PlayerBase[] players = null;
-      gameController.GameJoinedEvent = (PlayerBase[] p) => { players = p; };
+      PlayerDataBase[] players = null;
+      gameController.GameJoinedEvent = (PlayerDataBase[] p) => { players = p; };
       gameController.StartJoiningGame(gameOptions);
 
       players.ShouldNotBeNull();
       players.Length.ShouldBe(4);
       players[0].ShouldBeOfType<PlayerData>();
-      players[1].ShouldBeOfType<PlayerView>();
-      players[2].ShouldBeOfType<PlayerView>();
-      players[3].ShouldBeOfType<PlayerView>();
+      players[1].ShouldBeOfType<PlayerDataView>();
+      players[2].ShouldBeOfType<PlayerDataView>();
+      players[3].ShouldBeOfType<PlayerDataView>();
     }
 
     [Test]
@@ -34,16 +34,16 @@ namespace SoC.Library.IntegrationTests
       var gameControllerSetup = new GameControllerSetup();
       var gameControllerFactory = new GameControllerFactory();
       var gameController = gameControllerFactory.Create(null, gameControllerSetup);
-      PlayerBase[] players = null;
-      gameController.GameJoinedEvent = (PlayerBase[] p) => { players = p; };
+      PlayerDataBase[] players = null;
+      gameController.GameJoinedEvent = (PlayerDataBase[] p) => { players = p; };
       gameController.StartJoiningGame(null);
 
       players.ShouldNotBeNull();
       players.Length.ShouldBe(4);
       players[0].ShouldBeOfType<PlayerData>();
-      players[1].ShouldBeOfType<PlayerView>();
-      players[2].ShouldBeOfType<PlayerView>();
-      players[3].ShouldBeOfType<PlayerView>();
+      players[1].ShouldBeOfType<PlayerDataView>();
+      players[2].ShouldBeOfType<PlayerDataView>();
+      players[3].ShouldBeOfType<PlayerDataView>();
     }
     #endregion 
   }

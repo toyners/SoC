@@ -18,16 +18,16 @@ namespace Jabberwocky.SoC.Library.UnitTests
     {
       var localGameController = this.CreateLocalGameController();
 
-      PlayerBase[] players = null;
-      localGameController.GameJoinedEvent = (PlayerBase[] p) => { players = p; };
+      PlayerDataBase[] players = null;
+      localGameController.GameJoinedEvent = (PlayerDataBase[] p) => { players = p; };
       localGameController.StartJoiningGame(new GameOptions());
       
       players.ShouldNotBeNull();
       players.Length.ShouldBe(4);
       players[0].ShouldBeOfType<PlayerData>();
-      players[1].ShouldBeOfType<PlayerView>();
-      players[2].ShouldBeOfType<PlayerView>();
-      players[3].ShouldBeOfType<PlayerView>();
+      players[1].ShouldBeOfType<PlayerDataView>();
+      players[2].ShouldBeOfType<PlayerDataView>();
+      players[3].ShouldBeOfType<PlayerDataView>();
     }
 
     [Test]
@@ -35,17 +35,17 @@ namespace Jabberwocky.SoC.Library.UnitTests
     {
       var localGameController = this.CreateLocalGameController();
 
-      PlayerBase[] players = null;
-      localGameController.GameJoinedEvent = (PlayerBase[] p) => { players = p; };
+      PlayerDataBase[] players = null;
+      localGameController.GameJoinedEvent = (PlayerDataBase[] p) => { players = p; };
       localGameController.StartJoiningGame(null);
       localGameController.Quit();
 
       players.ShouldNotBeNull();
       players.Length.ShouldBe(4);
       players[0].ShouldBeOfType<PlayerData>();
-      players[1].ShouldBeOfType<PlayerView>();
-      players[2].ShouldBeOfType<PlayerView>();
-      players[3].ShouldBeOfType<PlayerView>();
+      players[1].ShouldBeOfType<PlayerDataView>();
+      players[2].ShouldBeOfType<PlayerDataView>();
+      players[3].ShouldBeOfType<PlayerDataView>();
     }
 
     [Test]
@@ -73,10 +73,10 @@ namespace Jabberwocky.SoC.Library.UnitTests
       mockDice.RollTwoDice().Returns(12u, 10u, 8u, 2u);
       var localGameController = this.CreateLocalGameController(mockDice, new ComputerPlayerFactory(), new GameBoardManager(BoardSizes.Standard));
 
-      PlayerBase[] players = null;
+      PlayerDataBase[] players = null;
       GameBoardData gameBoardData = null;
       GameBoardUpdate gameBoardUpdate = new GameBoardUpdate();
-      localGameController.GameJoinedEvent = (PlayerBase[] p) => { players = p; };
+      localGameController.GameJoinedEvent = (PlayerDataBase[] p) => { players = p; };
       localGameController.InitialBoardSetupEvent = (GameBoardData g) => { gameBoardData = g; };
       localGameController.StartInitialSetupTurnEvent = (Guid id, GameBoardUpdate u) => { gameBoardUpdate = u; };
 
@@ -107,9 +107,9 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
       var localGameController = this.CreateLocalGameController(mockDice, mockComputerPlayerFactory, gameBoardManager);
 
-      PlayerBase[] players = null;
+      PlayerDataBase[] players = null;
       GameBoardData gameBoardData = null;
-      localGameController.GameJoinedEvent = (PlayerBase[] p) => { players = p; };
+      localGameController.GameJoinedEvent = (PlayerDataBase[] p) => { players = p; };
       localGameController.InitialBoardSetupEvent = (GameBoardData g) => { gameBoardData = g; };
 
       localGameController.StartJoiningGame(null);
@@ -218,7 +218,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     private LocalGameController CreateLocalGameController(IDice diceRoller, IComputerPlayerFactory computerPlayerFactory, GameBoardManager gameBoardManager)
     {
       var localGameController = new LocalGameController(diceRoller, computerPlayerFactory, gameBoardManager);
-      localGameController.GameJoinedEvent = (PlayerBase[] players) => { };
+      localGameController.GameJoinedEvent = (PlayerDataBase[] players) => { };
       return localGameController;
     }
     #endregion 

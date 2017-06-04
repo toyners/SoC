@@ -2,11 +2,8 @@
 namespace Jabberwocky.SoC.Library
 {
   using System;
-  using System.Collections.Generic;
-  using System.Linq;
-  using System.Text;
 
-  public class PlayerView : PlayerBase
+  public class PlayerDataView : PlayerDataBase
   {
     UInt32 ResourceCards;
     UInt32 HiddenDevelopmentCards;

@@ -27,7 +27,7 @@ namespace Jabberwocky.SoC.Library
     private GamePhases gamePhase;
     private IGameSession gameSession;
     private UInt32 playerIndex;
-    private PlayerBase[] players;
+    private PlayerDataBase[] players;
     private PlayerData mainPlayer;
     private Boolean quitting;
     private Task sessionTask;
@@ -45,7 +45,7 @@ namespace Jabberwocky.SoC.Library
     #region Events
     public Action<GameBoardUpdate> BoardUpdatedEvent { get; set; }
 
-    public Action<PlayerBase[]> GameJoinedEvent { get; set; }
+    public Action<PlayerDataBase[]> GameJoinedEvent { get; set; }
 
     public Action<GameBoardData> InitialBoardSetupEvent { get; set; }
 
@@ -96,8 +96,8 @@ namespace Jabberwocky.SoC.Library
         {
           gameBoardUpdate = new GameBoardUpdate
           {
-            NewSettlements = new Dictionary<PlayerBase, List<UInt32>>(),
-            NewRoads = new Dictionary<PlayerBase, List<Trail>>()
+            NewSettlements = new Dictionary<PlayerDataBase, List<UInt32>>(),
+            NewRoads = new Dictionary<PlayerDataBase, List<Trail>>()
           };
         }
 
@@ -138,7 +138,6 @@ namespace Jabberwocky.SoC.Library
       this.CreatePlayers(gameOptions);
       this.gamePhase = GamePhases.WaitingLaunch;
       this.GameJoinedEvent?.Invoke(players);
-      //this.RunGame(gameOptions);
     }
 
     public void StartJoiningGame(GameOptions gameOptions, Guid accountToken)
@@ -171,7 +170,7 @@ namespace Jabberwocky.SoC.Library
       return Guid.NewGuid();
     }
 
-    private Boolean IsComputerPlayer(PlayerBase player)
+    private Boolean IsComputerPlayer(PlayerDataBase player)
     {
       return player is IComputerPlayer;
     }
@@ -188,12 +187,12 @@ namespace Jabberwocky.SoC.Library
     private void CreatePlayers(GameOptions gameOptions)
     {
       this.mainPlayer = new PlayerData();
-      this.players = new PlayerBase[gameOptions.MaxAIPlayers + 1];
+      this.players = new PlayerDataBase[gameOptions.MaxAIPlayers + 1];
       this.players[0] = this.mainPlayer;
       var index = 1;
       while ((gameOptions.MaxAIPlayers--) > 0)
       {
-        this.players[index] = (PlayerBase)this.computerPlayerFactory.Create();
+        this.players[index] = (PlayerDataBase)this.computerPlayerFactory.Create();
         index++;
       }
     }

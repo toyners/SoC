@@ -75,9 +75,9 @@
     <Compile Include="Interfaces\IGameSessionManager.cs" />
     <Compile Include="Location.cs" />
     <Compile Include="Objects.cs" />
-    <Compile Include="Player.cs" />
-    <Compile Include="PlayerBase.cs" />
-    <Compile Include="PlayerView.cs" />
+    <Compile Include="PlayerData.cs" />
+    <Compile Include="PlayerDataBase.cs" />
+    <Compile Include="PlayerDataView.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ResourceProvider.cs" />
     <Compile Include="Trail.cs" />

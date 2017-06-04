@@ -6,8 +6,10 @@ namespace Jabberwocky.SoC.Library
   using GameBoards;
   using System.Collections.Generic;
 
-  public class ComputerPlayer : PlayerBase, IComputerPlayer
+  public class ComputerPlayer : IComputerPlayer
   {
+    public Guid Id { get; private set; }
+
     public ComputerPlayer(Guid id)
     {
       this.Id = id;
