@@ -24,10 +24,10 @@ namespace Jabberwocky.SoC.Library.UnitTests
       
       playerData.ShouldNotBeNull();
       playerData.Length.ShouldBe(4);
-      playerData[0].ShouldBeOfType<PlayerDataBase>();
-      playerData[1].ShouldBeOfType<PlayerDataBase>();
-      playerData[2].ShouldBeOfType<PlayerDataBase>();
-      playerData[3].ShouldBeOfType<PlayerDataBase>();
+      playerData[0].ShouldBeOfType<PlayerData>();
+      playerData[1].ShouldBeOfType<PlayerDataView>();
+      playerData[2].ShouldBeOfType<PlayerDataView>();
+      playerData[3].ShouldBeOfType<PlayerDataView>();
     }
 
     [Test]
@@ -78,7 +78,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
       GameBoardUpdate gameBoardUpdate = new GameBoardUpdate();
       localGameController.GameJoinedEvent = (PlayerDataBase[] p) => { playerData = p; };
       localGameController.InitialBoardSetupEvent = (GameBoardData g) => { gameBoardData = g; };
-      localGameController.StartInitialSetupTurnEvent = (Guid id, GameBoardUpdate u) => { gameBoardUpdate = u; };
+      localGameController.StartInitialSetupTurnEvent = (GameBoardUpdate u) => { gameBoardUpdate = u; };
 
       localGameController.StartJoiningGame(null);
       localGameController.TryLaunchGame();
@@ -135,7 +135,6 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
       var playerId = Guid.NewGuid();
       var mockComputerPlayer = Substitute.For<IComputerPlayer>();
-      //mockComputerPlayer.Id.Returns(playerId);
       mockComputerPlayer.ChooseSettlementLocation(gameBoardManager.Data).Returns(initialSetupSettlementLocation);
       mockComputerPlayer.ChooseRoad(gameBoardManager.Data).Returns(initialSetupRoundTrail);
 
@@ -144,14 +143,12 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
       var localGameController = this.CreateLocalGameController(mockDice, mockComputerPlayerFactory, gameBoardManager);
 
-      Guid firstPlayerId = Guid.Empty;
       GameBoardUpdate gameBoardUpdate = null;
-      localGameController.StartInitialSetupTurnEvent = (Guid id, GameBoardUpdate u) => { firstPlayerId = id; gameBoardUpdate = u; };
+      localGameController.StartInitialSetupTurnEvent = (GameBoardUpdate u) => { gameBoardUpdate = u; };
 
       localGameController.StartJoiningGame(null);
       localGameController.TryLaunchGame();
 
-      //firstPlayerId.ShouldBe(playerId);
       gameBoardUpdate.ShouldNotBeNull();
       gameBoardUpdate.NewSettlements.Count.ShouldBe(1);
       gameBoardUpdate.NewRoads.Count.ShouldBe(1);
@@ -169,12 +166,10 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
       var playerId = Guid.NewGuid();
       var firstMockComputerPlayer = Substitute.For<IComputerPlayer>();
-      //firstMockComputerPlayer.Id.Returns(playerId);
       firstMockComputerPlayer.ChooseSettlementLocation(gameBoardManager.Data).Returns(initialSetupSettlementLocation);
       firstMockComputerPlayer.ChooseRoad(gameBoardManager.Data).Returns(initialSetupRoundTrail);
 
       var secondMockComputerPlayer = Substitute.For<IComputerPlayer>();
-      //secondMockComputerPlayer.Id.Returns(playerId);
       secondMockComputerPlayer.ChooseSettlementLocation(gameBoardManager.Data).Returns(24u);
       secondMockComputerPlayer.ChooseRoad(gameBoardManager.Data).Returns(gameBoardManager.Data.Trails[20]);
 
@@ -185,12 +180,11 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
       Guid firstPlayerId = Guid.Empty;
       GameBoardUpdate gameBoardUpdate = null;
-      localGameController.StartInitialSetupTurnEvent = (Guid id, GameBoardUpdate u) => { firstPlayerId = id; gameBoardUpdate = u; };
+      localGameController.StartInitialSetupTurnEvent = (GameBoardUpdate u) => { gameBoardUpdate = u; };
 
       localGameController.StartJoiningGame(null);
       localGameController.TryLaunchGame();
 
-      //firstPlayerId.ShouldBe(playerId);
       gameBoardUpdate.ShouldNotBeNull();
       gameBoardUpdate.NewSettlements.Count.ShouldBe(2);
       gameBoardUpdate.NewRoads.Count.ShouldBe(2);

@@ -51,7 +51,7 @@ namespace Jabberwocky.SoC.Library
 
     public Action<ClientAccount> LoggedInEvent { get; set; }
 
-    public Action<Guid, GameBoardUpdate> StartInitialSetupTurnEvent { get; set; }
+    public Action<GameBoardUpdate> StartInitialSetupTurnEvent { get; set; }
     #endregion
 
     #region Methods
@@ -88,7 +88,7 @@ namespace Jabberwocky.SoC.Library
         var player = this.players[this.playerIndex];
         if (!this.IsComputerPlayer(player))
         {
-          this.StartInitialSetupTurnEvent?.Invoke(Guid.Empty, gameBoardUpdate);
+          this.StartInitialSetupTurnEvent?.Invoke(gameBoardUpdate);
           break;
         }
 
@@ -168,7 +168,28 @@ namespace Jabberwocky.SoC.Library
 
     private PlayerDataBase[] CreateDataFromPlayers()
     {
-      throw new NotImplementedException();
+      var playerData = new PlayerDataBase[this.players.Length];
+      playerData[0] = new PlayerData();
+
+      for (var index = 1; index < playerData.Length; index++)
+      {
+        playerData[index] = new PlayerDataView();
+      }
+
+      return playerData;
+    }
+
+    private void CreatePlayers(GameOptions gameOptions)
+    {
+      this.mainPlayer = new Player();
+      this.players = new IPlayer[gameOptions.MaxAIPlayers + 1];
+      this.players[0] = this.mainPlayer;
+      var index = 1;
+      while ((gameOptions.MaxAIPlayers--) > 0)
+      {
+        this.players[index] = this.computerPlayerFactory.Create();
+        index++;
+      }
     }
 
     private Guid GetTurnToken()
@@ -187,19 +208,6 @@ namespace Jabberwocky.SoC.Library
       {
         Thread.Sleep(50);
         this.cancellationToken.ThrowIfCancellationRequested();
-      }
-    }
-
-    private void CreatePlayers(GameOptions gameOptions)
-    {
-      this.mainPlayer = new Player();
-      this.players = new IPlayer[gameOptions.MaxAIPlayers + 1];
-      this.players[0] = this.mainPlayer;
-      var index = 1;
-      while ((gameOptions.MaxAIPlayers--) > 0)
-      {
-        this.players[index] = this.computerPlayerFactory.Create();
-        index++;
       }
     }
     #endregion

@@ -32,7 +32,7 @@ namespace Jabberwocky.SoC.Client
 
     public Action<ClientAccount> LoggedInEvent { get; set; }
 
-    public Action<Guid, GameBoardUpdate> StartInitialSetupTurnEvent { get; set; }
+    public Action<GameBoardUpdate> StartInitialSetupTurnEvent { get; set; }
 
     Action<PlayerDataBase[]> IGameController.GameJoinedEvent { get; set; }
     #endregion

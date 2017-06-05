@@ -79,7 +79,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
         GameJoinedEventHandler = (PlayerDataBase[] players) => { },
         InitialBoardSetupEventHandler = (GameBoards.GameBoardData boardData) => { },
         LoggedInEventHandler = (ClientAccount clientAccount) => { },
-        StartInitialSetupTurnEvent = (Guid turnToken, GameBoards.GameBoardUpdate gameBoardUpdate) => { }
+        StartInitialSetupTurnEvent = (GameBoards.GameBoardUpdate gameBoardUpdate) => { }
       };
     }
     #endregion 

@@ -95,6 +95,6 @@ namespace Jabberwocky.SoC.Library
     public Action<PlayerDataBase[]> GameJoinedEventHandler;
     public Action<GameBoards.GameBoardData> InitialBoardSetupEventHandler;
     public Action<ClientAccount> LoggedInEventHandler;
-    public Action<Guid, GameBoards.GameBoardUpdate> StartInitialSetupTurnEvent;
+    public Action<GameBoards.GameBoardUpdate> StartInitialSetupTurnEvent;
   }
 }
