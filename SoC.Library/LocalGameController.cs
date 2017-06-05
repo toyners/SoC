@@ -45,7 +45,7 @@ namespace Jabberwocky.SoC.Library
     #region Events
     public Action<GameBoardUpdate> BoardUpdatedEvent { get; set; }
 
-    public Action<IPlayer[]> GameJoinedEvent { get; set; }
+    public Action<PlayerDataBase[]> GameJoinedEvent { get; set; }
 
     public Action<GameBoardData> InitialBoardSetupEvent { get; set; }
 
@@ -136,8 +136,9 @@ namespace Jabberwocky.SoC.Library
       }
 
       this.CreatePlayers(gameOptions);
+      var playerData = this.CreateDataFromPlayers();
+      this.GameJoinedEvent?.Invoke(playerData);
       this.gamePhase = GamePhases.WaitingLaunch;
-      this.GameJoinedEvent?.Invoke(players);
     }
 
     public void StartJoiningGame(GameOptions gameOptions, Guid accountToken)
@@ -161,6 +162,11 @@ namespace Jabberwocky.SoC.Library
     }
 
     public void UpgradeToCity(Location location)
+    {
+      throw new NotImplementedException();
+    }
+
+    private PlayerDataBase[] CreateDataFromPlayers()
     {
       throw new NotImplementedException();
     }

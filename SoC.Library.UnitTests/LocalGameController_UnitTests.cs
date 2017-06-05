@@ -18,16 +18,16 @@ namespace Jabberwocky.SoC.Library.UnitTests
     {
       var localGameController = this.CreateLocalGameController();
 
-      IPlayer[] players = null;
-      localGameController.GameJoinedEvent = (IPlayer[] p) => { players = p; };
+      PlayerDataBase[] playerData = null;
+      localGameController.GameJoinedEvent = (PlayerDataBase[] p) => { playerData = p; };
       localGameController.StartJoiningGame(new GameOptions());
       
-      players.ShouldNotBeNull();
-      players.Length.ShouldBe(4);
-      players[0].ShouldBeOfType<PlayerData>();
-      players[1].ShouldBeOfType<PlayerDataView>();
-      players[2].ShouldBeOfType<PlayerDataView>();
-      players[3].ShouldBeOfType<PlayerDataView>();
+      playerData.ShouldNotBeNull();
+      playerData.Length.ShouldBe(4);
+      playerData[0].ShouldBeOfType<PlayerDataBase>();
+      playerData[1].ShouldBeOfType<PlayerDataBase>();
+      playerData[2].ShouldBeOfType<PlayerDataBase>();
+      playerData[3].ShouldBeOfType<PlayerDataBase>();
     }
 
     [Test]
@@ -35,17 +35,17 @@ namespace Jabberwocky.SoC.Library.UnitTests
     {
       var localGameController = this.CreateLocalGameController();
 
-      IPlayer[] players = null;
-      localGameController.GameJoinedEvent = (IPlayer[] p) => { players = p; };
+      PlayerDataBase[] playerData = null;
+      localGameController.GameJoinedEvent = (PlayerDataBase[] p) => { playerData = p; };
       localGameController.StartJoiningGame(null);
       localGameController.Quit();
 
-      players.ShouldNotBeNull();
-      players.Length.ShouldBe(4);
-      players[0].ShouldBeOfType<PlayerData>();
-      players[1].ShouldBeOfType<PlayerDataView>();
-      players[2].ShouldBeOfType<PlayerDataView>();
-      players[3].ShouldBeOfType<PlayerDataView>();
+      playerData.ShouldNotBeNull();
+      playerData.Length.ShouldBe(4);
+      playerData[0].ShouldBeOfType<PlayerData>();
+      playerData[1].ShouldBeOfType<PlayerDataView>();
+      playerData[2].ShouldBeOfType<PlayerDataView>();
+      playerData[3].ShouldBeOfType<PlayerDataView>();
     }
 
     [Test]
@@ -73,10 +73,10 @@ namespace Jabberwocky.SoC.Library.UnitTests
       mockDice.RollTwoDice().Returns(12u, 10u, 8u, 2u);
       var localGameController = this.CreateLocalGameController(mockDice, new ComputerPlayerFactory(), new GameBoardManager(BoardSizes.Standard));
 
-      IPlayer[] players = null;
+      PlayerDataBase[] playerData = null;
       GameBoardData gameBoardData = null;
       GameBoardUpdate gameBoardUpdate = new GameBoardUpdate();
-      localGameController.GameJoinedEvent = (IPlayer[] p) => { players = p; };
+      localGameController.GameJoinedEvent = (PlayerDataBase[] p) => { playerData = p; };
       localGameController.InitialBoardSetupEvent = (GameBoardData g) => { gameBoardData = g; };
       localGameController.StartInitialSetupTurnEvent = (Guid id, GameBoardUpdate u) => { gameBoardUpdate = u; };
 
@@ -107,20 +107,20 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
       var localGameController = this.CreateLocalGameController(mockDice, mockComputerPlayerFactory, gameBoardManager);
 
-      IPlayer[] players = null;
+      PlayerDataBase[] playerData = null;
       GameBoardData gameBoardData = null;
-      localGameController.GameJoinedEvent = (IPlayer[] p) => { players = p; };
+      localGameController.GameJoinedEvent = (PlayerDataBase[] p) => { playerData = p; };
       localGameController.InitialBoardSetupEvent = (GameBoardData g) => { gameBoardData = g; };
 
       localGameController.StartJoiningGame(null);
       localGameController.TryLaunchGame();
 
       gameBoardData.ShouldNotBeNull();
-      gameBoardData.Roads.Count.ShouldBe(players.Length);
-      gameBoardData.Roads.ShouldContain(new KeyValuePair<Guid, List<Trail>>(players[0].Id, null));
-      gameBoardData.Roads.ShouldContain(new KeyValuePair<Guid, List<Trail>>(players[1].Id, null));
-      gameBoardData.Roads.ShouldContain(new KeyValuePair<Guid, List<Trail>>(players[2].Id, null));
-      gameBoardData.Roads.ShouldContain(new KeyValuePair<Guid, List<Trail>>(players[3].Id, null));
+      gameBoardData.Roads.Count.ShouldBe(playerData.Length);
+      gameBoardData.Roads.ShouldContain(new KeyValuePair<Guid, List<Trail>>(playerData[0].Id, null));
+      gameBoardData.Roads.ShouldContain(new KeyValuePair<Guid, List<Trail>>(playerData[1].Id, null));
+      gameBoardData.Roads.ShouldContain(new KeyValuePair<Guid, List<Trail>>(playerData[2].Id, null));
+      gameBoardData.Roads.ShouldContain(new KeyValuePair<Guid, List<Trail>>(playerData[3].Id, null));
     }
 
     [Test]
@@ -218,7 +218,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     private LocalGameController CreateLocalGameController(IDice diceRoller, IComputerPlayerFactory computerPlayerFactory, GameBoardManager gameBoardManager)
     {
       var localGameController = new LocalGameController(diceRoller, computerPlayerFactory, gameBoardManager);
-      localGameController.GameJoinedEvent = (IPlayer[] players) => { };
+      localGameController.GameJoinedEvent = (PlayerDataBase[] players) => { };
       return localGameController;
     }
     #endregion 

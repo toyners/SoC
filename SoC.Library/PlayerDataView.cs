@@ -5,7 +5,7 @@ namespace Jabberwocky.SoC.Library
 
   public class PlayerDataView : PlayerDataBase
   {
-    UInt32 ResourceCards;
-    UInt32 HiddenDevelopmentCards;
+    public UInt32 ResourceCards { get; private set; }
+    public UInt32 HiddenDevelopmentCards { get; private set; }
   }
 }

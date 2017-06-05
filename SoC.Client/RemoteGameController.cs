@@ -34,18 +34,7 @@ namespace Jabberwocky.SoC.Client
 
     public Action<Guid, GameBoardUpdate> StartInitialSetupTurnEvent { get; set; }
 
-    Action<IPlayer[]> IGameController.GameJoinedEvent
-    {
-      get
-      {
-        throw new NotImplementedException();
-      }
-
-      set
-      {
-        throw new NotImplementedException();
-      }
-    }
+    Action<PlayerDataBase[]> IGameController.GameJoinedEvent { get; set; }
     #endregion
 
     public void AcceptOffer(Offer offer)
