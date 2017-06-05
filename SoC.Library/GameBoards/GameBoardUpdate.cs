@@ -10,9 +10,9 @@ namespace Jabberwocky.SoC.Library.GameBoards
   /// </summary>
   public class GameBoardUpdate
   {
-    public Dictionary<IPlayer, List<UInt32>> NewSettlements;
+    public Dictionary<UInt32, Guid> NewSettlements;
     public Dictionary<IPlayer, List<Location>> NewCities;
-    public Dictionary<IPlayer, List<Trail>> NewRoads;
+    public Dictionary<Trail, Guid> NewRoads;
     public Location Robber;
   }
 }

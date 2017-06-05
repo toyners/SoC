@@ -96,8 +96,8 @@ namespace Jabberwocky.SoC.Library
         {
           gameBoardUpdate = new GameBoardUpdate
           {
-            NewSettlements = new Dictionary<IPlayer, List<UInt32>>(),
-            NewRoads = new Dictionary<IPlayer, List<Trail>>()
+            NewSettlements = new Dictionary<UInt32, Guid>(),
+            NewRoads = new Dictionary<Trail, Guid>()
           };
         }
 
@@ -106,8 +106,8 @@ namespace Jabberwocky.SoC.Library
         gameBoardData.PlaceStartingSettlement(computerPlayer.Id, chosenSettlementIndex);
         var chosenRoad = computerPlayer.ChooseRoad(gameBoardData);
 
-        gameBoardUpdate.NewSettlements.Add(player, new List<UInt32> { chosenSettlementIndex });
-        gameBoardUpdate.NewRoads.Add(player, new List<Trail> { chosenRoad });
+        gameBoardUpdate.NewSettlements.Add(chosenSettlementIndex, player.Id);
+        gameBoardUpdate.NewRoads.Add(chosenRoad, player.Id);
       }
 
       return true;

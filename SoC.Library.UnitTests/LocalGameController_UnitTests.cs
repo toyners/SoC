@@ -99,6 +99,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
       var playerId = Guid.NewGuid();
       var mockComputerPlayer = Substitute.For<IComputerPlayer>();
+      mockComputerPlayer.Id.Returns(playerId, Guid.Empty, Guid.Empty);
       mockComputerPlayer.ChooseSettlementLocation(gameBoardManager.Data).Returns(initialSetupSettlementLocation);
       mockComputerPlayer.ChooseRoad(gameBoardManager.Data).Returns(initialSetupRoundTrail);
 
@@ -115,7 +116,9 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
       gameBoardUpdate.ShouldNotBeNull();
       gameBoardUpdate.NewSettlements.Count.ShouldBe(1);
+      gameBoardUpdate.NewSettlements.ContainsValue(playerId);
       gameBoardUpdate.NewRoads.Count.ShouldBe(1);
+      gameBoardUpdate.NewRoads.ContainsValue(playerId);
     }
 
     [Test]
@@ -128,12 +131,15 @@ namespace Jabberwocky.SoC.Library.UnitTests
       var initialSetupSettlementLocation = 19u;
       var initialSetupRoundTrail = gameBoardManager.Data.Trails[10];
 
-      var playerId = Guid.NewGuid();
+      var firstMockPlayerId = Guid.NewGuid();
       var firstMockComputerPlayer = Substitute.For<IComputerPlayer>();
+      firstMockComputerPlayer.Id.Returns(firstMockPlayerId);
       firstMockComputerPlayer.ChooseSettlementLocation(gameBoardManager.Data).Returns(initialSetupSettlementLocation);
       firstMockComputerPlayer.ChooseRoad(gameBoardManager.Data).Returns(initialSetupRoundTrail);
 
+      var secondMockPlayerId = Guid.NewGuid();
       var secondMockComputerPlayer = Substitute.For<IComputerPlayer>();
+      secondMockComputerPlayer.Id.Returns(secondMockPlayerId);
       secondMockComputerPlayer.ChooseSettlementLocation(gameBoardManager.Data).Returns(24u);
       secondMockComputerPlayer.ChooseRoad(gameBoardManager.Data).Returns(gameBoardManager.Data.Trails[20]);
 
@@ -151,7 +157,11 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
       gameBoardUpdate.ShouldNotBeNull();
       gameBoardUpdate.NewSettlements.Count.ShouldBe(2);
+      gameBoardUpdate.NewSettlements.ContainsValue(firstMockPlayerId);
+      gameBoardUpdate.NewSettlements.ContainsValue(secondMockPlayerId);
       gameBoardUpdate.NewRoads.Count.ShouldBe(2);
+      gameBoardUpdate.NewRoads.ContainsValue(firstMockPlayerId);
+      gameBoardUpdate.NewRoads.ContainsValue(secondMockPlayerId);
     }
 
     [Test]
