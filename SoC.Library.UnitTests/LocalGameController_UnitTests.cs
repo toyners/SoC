@@ -2,7 +2,6 @@
 namespace Jabberwocky.SoC.Library.UnitTests
 {
   using System;
-  using System.Collections.Generic;
   using GameBoards;
   using Interfaces;
   using NSubstitute;
