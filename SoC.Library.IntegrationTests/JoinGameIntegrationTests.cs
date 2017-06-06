@@ -19,7 +19,7 @@ namespace SoC.Library.IntegrationTests
       var gameController = gameControllerFactory.Create(gameOptions, gameControllerSetup);
       PlayerDataBase[] playerData = null;
       gameController.GameJoinedEvent = (PlayerDataBase[] p) => { playerData = p; };
-      gameController.StartJoiningGame(gameOptions);
+      gameController.TryJoiningGame(gameOptions);
 
       playerData.ShouldNotBeNull();
       playerData.Length.ShouldBe(4);
@@ -37,7 +37,7 @@ namespace SoC.Library.IntegrationTests
       var gameController = gameControllerFactory.Create(null, gameControllerSetup);
       PlayerDataBase[] playerData = null;
       gameController.GameJoinedEvent = (PlayerDataBase[] p) => { playerData = p; };
-      gameController.StartJoiningGame(null);
+      gameController.TryJoiningGame(null);
 
       playerData.ShouldNotBeNull();
       playerData.Length.ShouldBe(4);

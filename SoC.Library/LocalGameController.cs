@@ -38,6 +38,7 @@ namespace Jabberwocky.SoC.Library
       this.dice = dice;
       this.computerPlayerFactory = computerPlayerFactory;
       this.gameBoardManager = gameBoardManager;
+      this.gamePhase = GamePhases.Initial;
     }
 
     public Guid GameId { get; private set; }
@@ -128,8 +129,13 @@ namespace Jabberwocky.SoC.Library
       this.gamePhase = GamePhases.Quitting;
     }
 
-    public void StartJoiningGame(GameOptions gameOptions)
+    public Boolean TryJoiningGame(GameOptions gameOptions)
     {
+      if (this.gamePhase != GamePhases.Initial)
+      {
+        return false;
+      }
+
       if (gameOptions == null)
       {
         gameOptions = new GameOptions { MaxPlayers = 1, MaxAIPlayers = 3 };
@@ -139,6 +145,8 @@ namespace Jabberwocky.SoC.Library
       var playerData = this.CreateDataFromPlayers();
       this.GameJoinedEvent?.Invoke(playerData);
       this.gamePhase = GamePhases.WaitingLaunch;
+
+      return true;
     }
 
     public void StartJoiningGame(GameOptions gameOptions, Guid accountToken)

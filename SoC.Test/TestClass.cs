@@ -36,7 +36,7 @@ namespace SoC.Test
 
       Task.Factory.StartNew(() =>
       {
-        remoteGameController.StartJoiningGame(null);
+        remoteGameController.TryJoiningGame(null);
       });
 
       while (players == null)

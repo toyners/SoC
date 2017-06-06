@@ -19,7 +19,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
       PlayerDataBase[] playerData = null;
       localGameController.GameJoinedEvent = (PlayerDataBase[] p) => { playerData = p; };
-      localGameController.StartJoiningGame(new GameOptions());
+      localGameController.TryJoiningGame(new GameOptions());
       
       playerData.ShouldNotBeNull();
       playerData.Length.ShouldBe(4);
@@ -36,7 +36,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
       PlayerDataBase[] playerData = null;
       localGameController.GameJoinedEvent = (PlayerDataBase[] p) => { playerData = p; };
-      localGameController.StartJoiningGame(null);
+      localGameController.TryJoiningGame(null);
       localGameController.Quit();
 
       playerData.ShouldNotBeNull();
@@ -45,6 +45,19 @@ namespace Jabberwocky.SoC.Library.UnitTests
       playerData[1].ShouldBeOfType<PlayerDataView>();
       playerData[2].ShouldBeOfType<PlayerDataView>();
       playerData[3].ShouldBeOfType<PlayerDataView>();
+    }
+
+    [Test]
+    public void TryingToJoinGameMoreThanOnceReturnsFalse()
+    {
+      var localGameController = this.CreateLocalGameController();
+      var joinedCount = 0;
+      localGameController.GameJoinedEvent = (PlayerDataBase[] p) => { joinedCount++; };
+      localGameController.TryJoiningGame(null);
+      var result = localGameController.TryJoiningGame(null);
+
+      result.ShouldBeFalse();
+      joinedCount.ShouldBe(1);
     }
 
     [Test]
@@ -61,7 +74,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
       mockDice.RollTwoDice().Returns(12u, 10u, 8u, 2u);
       var localGameController = this.CreateLocalGameController(mockDice, new ComputerPlayerFactory(), new GameBoardManager(BoardSizes.Standard));
 
-      localGameController.StartJoiningGame(null);
+      localGameController.TryJoiningGame(null);
       localGameController.TryLaunchGame().ShouldBeTrue();
     }
 
@@ -79,7 +92,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
       localGameController.InitialBoardSetupEvent = (GameBoardData g) => { gameBoardData = g; };
       localGameController.StartInitialSetupTurnEvent = (GameBoardUpdate u) => { gameBoardUpdate = u; };
 
-      localGameController.StartJoiningGame(null);
+      localGameController.TryJoiningGame(null);
       localGameController.TryLaunchGame();
 
       gameBoardData.ShouldNotBeNull();
@@ -110,7 +123,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
       GameBoardUpdate gameBoardUpdate = null;
       localGameController.StartInitialSetupTurnEvent = (GameBoardUpdate u) => { gameBoardUpdate = u; };
 
-      localGameController.StartJoiningGame(null);
+      localGameController.TryJoiningGame(null);
       localGameController.TryLaunchGame();
 
       gameBoardUpdate.ShouldNotBeNull();
@@ -151,7 +164,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
       GameBoardUpdate gameBoardUpdate = null;
       localGameController.StartInitialSetupTurnEvent = (GameBoardUpdate u) => { gameBoardUpdate = u; };
 
-      localGameController.StartJoiningGame(null);
+      localGameController.TryJoiningGame(null);
       localGameController.TryLaunchGame();
 
       gameBoardUpdate.ShouldNotBeNull();

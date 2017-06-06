@@ -23,7 +23,7 @@ namespace Jabberwocky.SoC.Library.Interfaces
 
     void StartLogIntoAccount(String username, String password);
 
-    void StartJoiningGame(GameOptions gameFilter);
+    Boolean TryJoiningGame(GameOptions gameOptions);
 
     void StartJoiningGame(GameOptions gameFilter, Guid accountToken);
 

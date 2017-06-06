@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.ServiceModel;
 using Jabberwocky.SoC.Client.ServiceReference;
 using Jabberwocky.SoC.Library;
@@ -132,7 +131,7 @@ namespace Jabberwocky.SoC.Client
       throw new NotImplementedException();
     }
 
-    public void StartJoiningGame(GameOptions gameFilter)
+    public Boolean TryJoiningGame(GameOptions gameOptions)
     {
       var instanceContext = new InstanceContext(this);
       //this.serviceProviderClient = new ServiceProviderClient(instanceContext, "WSDualHttpBinding_IServiceProvider");
@@ -141,6 +140,8 @@ namespace Jabberwocky.SoC.Client
       var endPointAddress = new EndpointAddress(uri);
       this.serviceProviderClient = new ServiceProviderClient(instanceContext, binding, endPointAddress);
       this.serviceProviderClient.TryJoinGameNew();
+
+      return true;
     }
 
     public void StartJoiningGame(GameOptions gameFilter, Guid accountToken)
