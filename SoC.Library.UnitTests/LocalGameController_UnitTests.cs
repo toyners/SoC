@@ -164,20 +164,6 @@ namespace Jabberwocky.SoC.Library.UnitTests
       gameBoardUpdate.NewRoads.ContainsValue(secondMockPlayerId);
     }
 
-    [Test]
-    public void StartJoiningGame_GameLaunched_TurnTokenPassedBack()
-    {
-      throw new NotImplementedException();
-      /*var localGameController = this.CreateLocalGameController();
-
-      Guid turnToken = Guid.Empty;
-      localGameController.StartInitialSetupTurnEvent = (Guid t, ) => { turnToken = t; };
-      localGameController.StartJoiningGame(null);
-      localGameController.Quit();
-
-      turnToken.ShouldNotBe(Guid.Empty);*/
-    }
-
     private LocalGameController CreateLocalGameController()
     {
       return this.CreateLocalGameController(new Dice(), new ComputerPlayerFactory(), new GameBoardManager(BoardSizes.Standard));
