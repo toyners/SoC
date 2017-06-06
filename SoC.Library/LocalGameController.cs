@@ -218,6 +218,11 @@ namespace Jabberwocky.SoC.Library
         this.cancellationToken.ThrowIfCancellationRequested();
       }
     }
+
+    public void CompleteLaunchGame()
+    {
+      throw new NotImplementedException();
+    }
     #endregion
   }
 }

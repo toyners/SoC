@@ -176,6 +176,26 @@ namespace Jabberwocky.SoC.Library.UnitTests
       gameBoardUpdate.NewRoads.ContainsValue(secondMockPlayerId);
     }
 
+    [Test]
+    public void CompleteBothSetupRoundsWithPlayerInLastSlot()
+    {
+      var mockDice = Substitute.For<IDice>();
+      mockDice.RollTwoDice().Returns(6u, 8u, 10u, 12u);
+
+      var gameBoardManager = new GameBoardManager(BoardSizes.Standard);
+
+      var mockComputerPlayerFactory = Substitute.For<IComputerPlayerFactory>();
+
+      var localGameController = this.CreateLocalGameController(mockDice, mockComputerPlayerFactory, gameBoardManager);
+
+      localGameController.TryJoiningGame(null);
+      localGameController.TryLaunchGame();
+
+      localGameController.CompleteLaunchGame();
+
+      throw new NotImplementedException();
+    }
+
     private LocalGameController CreateLocalGameController()
     {
       return this.CreateLocalGameController(new Dice(), new ComputerPlayerFactory(), new GameBoardManager(BoardSizes.Standard));
