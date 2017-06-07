@@ -53,6 +53,8 @@ namespace Jabberwocky.SoC.Library
     public Action<ClientAccount> LoggedInEvent { get; set; }
 
     public Action<GameBoardUpdate> StartInitialSetupTurnEvent { get; set; }
+
+    public Action<GameBoardUpdate> GameSetupUpdateEvent { get; set; }
     #endregion
 
     #region Methods
@@ -220,6 +222,21 @@ namespace Jabberwocky.SoC.Library
     }
 
     public void CompleteLaunchGame()
+    {
+      throw new NotImplementedException();
+    }
+
+    public void StartGameSetup()
+    {
+      throw new NotImplementedException();
+    }
+
+    public void ContinueGameSetup()
+    {
+      throw new NotImplementedException();
+    }
+
+    public void CompleteGameSetup()
     {
       throw new NotImplementedException();
     }

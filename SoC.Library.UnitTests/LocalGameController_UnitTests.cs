@@ -177,21 +177,48 @@ namespace Jabberwocky.SoC.Library.UnitTests
     }
 
     [Test]
-    public void CompleteBothSetupRoundsWithPlayerInLastSlot()
+    public void CompleteBothSetupRoundsWithPlayerInFirstSlot()
     {
       var mockDice = Substitute.For<IDice>();
-      mockDice.RollTwoDice().Returns(6u, 8u, 10u, 12u);
+      mockDice.RollTwoDice().Returns(12u, 10u, 8u, 6u);
 
       var gameBoardManager = new GameBoardManager(BoardSizes.Standard);
+      var initialSetupSettlementLocation = 19u;
+      var initialSetupRoundTrail = gameBoardManager.Data.Trails[10];
+
+      var firstMockPlayerId = Guid.NewGuid();
+      var firstMockComputerPlayer = Substitute.For<IComputerPlayer>();
+      firstMockComputerPlayer.Id.Returns(firstMockPlayerId);
+      firstMockComputerPlayer.ChooseSettlementLocation(gameBoardManager.Data).Returns(initialSetupSettlementLocation);
+      firstMockComputerPlayer.ChooseRoad(gameBoardManager.Data).Returns(initialSetupRoundTrail);
+
+      var secondMockPlayerId = Guid.NewGuid();
+      var secondMockComputerPlayer = Substitute.For<IComputerPlayer>();
+      secondMockComputerPlayer.Id.Returns(secondMockPlayerId);
+      secondMockComputerPlayer.ChooseSettlementLocation(gameBoardManager.Data).Returns(24u);
+      secondMockComputerPlayer.ChooseRoad(gameBoardManager.Data).Returns(gameBoardManager.Data.Trails[20]);
+
+      var thirdMockPlayerId = Guid.NewGuid();
+      var thirdMockComputerPlayer = Substitute.For<IComputerPlayer>();
+      thirdMockComputerPlayer.Id.Returns(thirdMockPlayerId);
+      //thirdMockComputerPlayer.ChooseSettlementLocation(gameBoardManager.Data).Returns(24u);
+      //thirdMockComputerPlayer.ChooseRoad(gameBoardManager.Data).Returns(gameBoardManager.Data.Trails[20]);
 
       var mockComputerPlayerFactory = Substitute.For<IComputerPlayerFactory>();
+      mockComputerPlayerFactory.Create().Returns(firstMockComputerPlayer, secondMockComputerPlayer, thirdMockComputerPlayer);
 
       var localGameController = this.CreateLocalGameController(mockDice, mockComputerPlayerFactory, gameBoardManager);
 
       localGameController.TryJoiningGame(null);
       localGameController.TryLaunchGame();
 
-      localGameController.CompleteLaunchGame();
+      localGameController.StartGameSetup();
+
+      localGameController.GameSetupUpdateEvent = (GameBoardUpdate u) => { };
+
+      localGameController.ContinueGameSetup();
+
+      localGameController.CompleteGameSetup();
 
       throw new NotImplementedException();
     }
