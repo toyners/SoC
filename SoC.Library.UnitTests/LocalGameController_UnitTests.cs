@@ -191,6 +191,8 @@ namespace Jabberwocky.SoC.Library.UnitTests
       var secondSettlementTwoLocation = 35u;
       var firstSettlementTwoLocation = 43u;
 
+      var firstRoadOne = new Road(0u, 1u);
+
       var firstTrailOne = gameBoardManager.Data.Trails[10];
 
       var firstMockPlayerId = Guid.NewGuid();
@@ -242,5 +244,17 @@ namespace Jabberwocky.SoC.Library.UnitTests
       return localGameController;
     }
     #endregion 
+  }
+
+  [TestFixture]
+  public class Road_UnitTests
+  {
+    [Test]
+    public void Cstr_LocationsAreSame_ThrowMeaningfulException()
+    {
+      Action action = () => { new Road(0u, 0u); };
+
+      Should.Throw<Exception>(action).Message.ShouldBe("Locations cannot be equal");
+    }
   }
 }
