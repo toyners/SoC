@@ -183,14 +183,21 @@ namespace Jabberwocky.SoC.Library.UnitTests
       mockDice.RollTwoDice().Returns(12u, 10u, 8u, 6u);
 
       var gameBoardManager = new GameBoardManager(BoardSizes.Standard);
-      var initialSetupSettlementLocation = 19u;
-      var initialSetupRoundTrail = gameBoardManager.Data.Trails[10];
+      var firstSettlementOneLocation = 18u;
+      var secondSettlementOneLocation = 25u;
+      var thirdSettlementOneLocation = 31;
+
+      var thirdSettlementTwoLocation = 33u;
+      var secondSettlementTwoLocation = 35u;
+      var firstSettlementTwoLocation = 43u;
+
+      var firstTrailOne = gameBoardManager.Data.Trails[10];
 
       var firstMockPlayerId = Guid.NewGuid();
       var firstMockComputerPlayer = Substitute.For<IComputerPlayer>();
       firstMockComputerPlayer.Id.Returns(firstMockPlayerId);
-      firstMockComputerPlayer.ChooseSettlementLocation(gameBoardManager.Data).Returns(initialSetupSettlementLocation);
-      firstMockComputerPlayer.ChooseRoad(gameBoardManager.Data).Returns(initialSetupRoundTrail);
+      firstMockComputerPlayer.ChooseSettlementLocation(gameBoardManager.Data).Returns(firstSettlementOneLocation);
+      firstMockComputerPlayer.ChooseRoad(gameBoardManager.Data).Returns(firstTrailOne);
 
       var secondMockPlayerId = Guid.NewGuid();
       var secondMockComputerPlayer = Substitute.For<IComputerPlayer>();
