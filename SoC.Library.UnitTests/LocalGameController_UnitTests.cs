@@ -107,7 +107,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
       var gameBoardManager = new GameBoardManager(BoardSizes.Standard);
       var initialSetupSettlementLocation = 19u;
-      var initialSetupRoundTrail = gameBoardManager.Data.Trails[10];
+      var initialSetupRoundTrail = new Road(0u, 1u); //      gameBoardManager.Data.Trails[10];
 
       var playerId = Guid.NewGuid();
       var mockComputerPlayer = Substitute.For<IComputerPlayer>();
@@ -141,7 +141,8 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
       var gameBoardManager = new GameBoardManager(BoardSizes.Standard);
       var initialSetupSettlementLocation = 19u;
-      var initialSetupRoundTrail = gameBoardManager.Data.Trails[10];
+      var initialSetupRoundTrail = new Road(0u, 1u); // gameBoardManager.Data.Trails[10];
+      var secondRoadOne = new Road(0u, 1u); // gameBoardManager.Data.Trails[20]
 
       var firstMockPlayerId = Guid.NewGuid();
       var firstMockComputerPlayer = Substitute.For<IComputerPlayer>();
@@ -153,7 +154,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
       var secondMockComputerPlayer = Substitute.For<IComputerPlayer>();
       secondMockComputerPlayer.Id.Returns(secondMockPlayerId);
       secondMockComputerPlayer.ChooseSettlementLocation(gameBoardManager.Data).Returns(24u);
-      secondMockComputerPlayer.ChooseRoad(gameBoardManager.Data).Returns(gameBoardManager.Data.Trails[20]);
+      secondMockComputerPlayer.ChooseRoad(gameBoardManager.Data).Returns(secondRoadOne);
 
       var mockComputerPlayerFactory = Substitute.For<IComputerPlayerFactory>();
       mockComputerPlayerFactory.Create().Returns(firstMockComputerPlayer, secondMockComputerPlayer);
@@ -191,7 +192,13 @@ namespace Jabberwocky.SoC.Library.UnitTests
       var secondSettlementTwoLocation = 35u;
       var firstSettlementTwoLocation = 43u;
 
-      var firstRoadOne = new Road(0u, 1u);
+      var firstRoadOne = new Road(17u, 18u);
+      var secondRoadOne = new Road(15u, 25u);
+      var thirdRoadOne = new Road(30u, 31u);
+
+      var thirdRoadTwo = new Road(32u, 33u);
+      var secondRoadTow = new Road(24u, 35u);
+      var firstRoadTwo = new Road(43u, 44u);
 
       var firstTrailOne = gameBoardManager.Data.Trails[10];
 
@@ -199,13 +206,13 @@ namespace Jabberwocky.SoC.Library.UnitTests
       var firstMockComputerPlayer = Substitute.For<IComputerPlayer>();
       firstMockComputerPlayer.Id.Returns(firstMockPlayerId);
       firstMockComputerPlayer.ChooseSettlementLocation(gameBoardManager.Data).Returns(firstSettlementOneLocation);
-      firstMockComputerPlayer.ChooseRoad(gameBoardManager.Data).Returns(firstTrailOne);
+      firstMockComputerPlayer.ChooseRoad(gameBoardManager.Data).Returns(firstRoadOne);
 
       var secondMockPlayerId = Guid.NewGuid();
       var secondMockComputerPlayer = Substitute.For<IComputerPlayer>();
       secondMockComputerPlayer.Id.Returns(secondMockPlayerId);
       secondMockComputerPlayer.ChooseSettlementLocation(gameBoardManager.Data).Returns(24u);
-      secondMockComputerPlayer.ChooseRoad(gameBoardManager.Data).Returns(gameBoardManager.Data.Trails[20]);
+      secondMockComputerPlayer.ChooseRoad(gameBoardManager.Data).Returns(secondRoadOne);
 
       var thirdMockPlayerId = Guid.NewGuid();
       var thirdMockComputerPlayer = Substitute.For<IComputerPlayer>();

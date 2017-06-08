@@ -17,7 +17,7 @@ namespace Jabberwocky.SoC.Library
       this.Id = id;
     }
 
-    public Trail ChooseRoad(GameBoardData gameBoardData)
+    public Road ChooseRoad(GameBoardData gameBoardData)
     {
       var settlementsForPlayer = gameBoardData.GetSettlementsForPlayer(this.Id);
       if (settlementsForPlayer == null || settlementsForPlayer.Count == 0)
@@ -29,15 +29,17 @@ namespace Jabberwocky.SoC.Library
       var path = this.GetPathToLocationThatHasBestChanceOfReturnOnRoll(gameBoardData, locationIndex);
       var roadStartLocation = gameBoardData.Locations[locationIndex];
       var roadEndLocation = gameBoardData.Locations[path[path.Count - 1]];
+
+      return new Road(locationIndex, path[path.Count - 1]);
        
-      foreach (var trail in gameBoardData.Trails)
+      /*foreach (var trail in gameBoardData.Trails)
       {
         if ((trail.Location1 == roadStartLocation && trail.Location2 == roadEndLocation) ||
           (trail.Location2 == roadStartLocation && trail.Location1 == roadEndLocation))
         {
           return trail;
         }
-      }
+      }*/
 
       throw new NotImplementedException();
     }

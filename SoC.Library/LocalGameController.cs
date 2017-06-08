@@ -110,7 +110,7 @@ namespace Jabberwocky.SoC.Library
         var chosenRoad = computerPlayer.ChooseRoad(gameBoardData);
 
         gameBoardUpdate.NewSettlements.Add(chosenSettlementIndex, player.Id);
-        gameBoardUpdate.NewRoads.Add(chosenRoad, player.Id);
+        gameBoardUpdate.NewRoads2.Add(chosenRoad, player.Id);
       }
 
       return true;
