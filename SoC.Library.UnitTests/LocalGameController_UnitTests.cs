@@ -254,7 +254,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     {
       Action action = () => { new Road(0u, 0u); };
 
-      Should.Throw<Exception>(action).Message.ShouldBe("Locations cannot be equal");
+      Should.Throw<ArgumentException>(action).Message.ShouldBe("Locations cannot be the same");
     }
   }
 }

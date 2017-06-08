@@ -50,6 +50,7 @@
     <Compile Include="Interfaces\IComputerPlayerFactory.cs" />
     <Compile Include="PathFinder.cs" />
     <Compile Include="Player.cs" />
+    <Compile Include="Road.cs" />
     <Compile Include="SetupOrderCreator.cs" />
     <Compile Include="Enums\GameConnectionTypes.cs" />
     <Compile Include="GameBoards\GameBoardData.cs" />
