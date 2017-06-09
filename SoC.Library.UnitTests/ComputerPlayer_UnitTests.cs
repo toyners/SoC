@@ -57,7 +57,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
       var computerPlayer = new ComputerPlayer(playerId);
 
       var road = computerPlayer.ChooseRoad(gameBoardData);
-      var expectedRoad = new Road(0u, 1u); //gameBoardData.Trails[10]
+      var expectedRoad = new Road(11, 12);
       road.ShouldBe(expectedRoad);
     }
     #endregion 

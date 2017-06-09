@@ -2,8 +2,10 @@
 namespace Jabberwocky.SoC.Library
 {
   using System;
+  using System.Diagnostics;
 
-  public struct Road
+  [DebuggerDisplay("({Location1}, {Location2})")]
+  public class Road
   {
     public readonly UInt32 Location1;
     public readonly UInt32 Location2;
@@ -17,6 +19,28 @@ namespace Jabberwocky.SoC.Library
 
       this.Location1 = location1;
       this.Location2 = location2;
+    }
+
+    public override Boolean Equals(Object obj)
+    {
+      if (base.Equals(obj))
+      {
+        return true;
+      }
+
+      var other = (Road)obj;
+
+      if (this.Location1 == other.Location1 && this.Location2 == other.Location2)
+      {
+        return true;
+      }
+
+      if (this.Location1 == other.Location2 && this.Location2 == other.Location1)
+      {
+        return true;
+      }
+
+      return false;
     }
   }
 }
