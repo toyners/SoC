@@ -178,7 +178,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     }
 
     [Test]
-    public void CompleteBothSetupRoundsWithPlayerInFirstSlot()
+    public void CompleteSetupWithPlayerInFirstSlot()
     {
       var mockDice = Substitute.For<IDice>();
       mockDice.RollTwoDice().Returns(12u, 10u, 8u, 6u);
@@ -186,7 +186,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
       var gameBoardManager = new GameBoardManager(BoardSizes.Standard);
       var firstSettlementOneLocation = 18u;
       var secondSettlementOneLocation = 25u;
-      var thirdSettlementOneLocation = 31;
+      var thirdSettlementOneLocation = 31u;
 
       var thirdSettlementTwoLocation = 33u;
       var secondSettlementTwoLocation = 35u;
@@ -197,7 +197,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
       var thirdRoadOne = new Road(30u, 31u);
 
       var thirdRoadTwo = new Road(32u, 33u);
-      var secondRoadTow = new Road(24u, 35u);
+      var secondRoadTwo = new Road(24u, 35u);
       var firstRoadTwo = new Road(43u, 44u);
 
       var firstTrailOne = gameBoardManager.Data.Trails[10];
@@ -205,38 +205,52 @@ namespace Jabberwocky.SoC.Library.UnitTests
       var firstMockPlayerId = Guid.NewGuid();
       var firstMockComputerPlayer = Substitute.For<IComputerPlayer>();
       firstMockComputerPlayer.Id.Returns(firstMockPlayerId);
-      firstMockComputerPlayer.ChooseSettlementLocation(gameBoardManager.Data).Returns(firstSettlementOneLocation, firstSettlementTwoLocation);
-      firstMockComputerPlayer.ChooseRoad(gameBoardManager.Data).Returns(firstRoadOne);
+      firstMockComputerPlayer.ChooseSettlementLocation(gameBoardManager.Data)
+        .Returns(firstSettlementOneLocation, firstSettlementTwoLocation);
+      firstMockComputerPlayer.ChooseRoad(gameBoardManager.Data).Returns(firstRoadOne, firstRoadTwo);
 
       var secondMockPlayerId = Guid.NewGuid();
       var secondMockComputerPlayer = Substitute.For<IComputerPlayer>();
       secondMockComputerPlayer.Id.Returns(secondMockPlayerId);
-      secondMockComputerPlayer.ChooseSettlementLocation(gameBoardManager.Data).Returns(24u);
-      secondMockComputerPlayer.ChooseRoad(gameBoardManager.Data).Returns(secondRoadOne);
+      secondMockComputerPlayer.ChooseSettlementLocation(gameBoardManager.Data)
+        .Returns(secondSettlementOneLocation, secondSettlementTwoLocation);
+      secondMockComputerPlayer.ChooseRoad(gameBoardManager.Data).Returns(secondRoadOne, secondRoadTwo);
 
       var thirdMockPlayerId = Guid.NewGuid();
       var thirdMockComputerPlayer = Substitute.For<IComputerPlayer>();
       thirdMockComputerPlayer.Id.Returns(thirdMockPlayerId);
-      //thirdMockComputerPlayer.ChooseSettlementLocation(gameBoardManager.Data).Returns(24u);
-      //thirdMockComputerPlayer.ChooseRoad(gameBoardManager.Data).Returns(gameBoardManager.Data.Trails[20]);
+      thirdMockComputerPlayer.ChooseSettlementLocation(gameBoardManager.Data)
+        .Returns(thirdSettlementOneLocation, thirdSettlementTwoLocation);
+      thirdMockComputerPlayer.ChooseRoad(gameBoardManager.Data).Returns(thirdRoadOne, thirdRoadTwo);
 
       var mockComputerPlayerFactory = Substitute.For<IComputerPlayerFactory>();
       mockComputerPlayerFactory.Create().Returns(firstMockComputerPlayer, secondMockComputerPlayer, thirdMockComputerPlayer);
 
+      GameBoardUpdate gameBoardUpdate = null;
       var localGameController = this.CreateLocalGameController(mockDice, mockComputerPlayerFactory, gameBoardManager);
+      localGameController.GameSetupUpdateEvent = (GameBoardUpdate u) => { gameBoardUpdate = u; };
+      localGameController.InitialBoardSetupEvent = (GameBoardData d) => { };
 
       localGameController.TryJoiningGame(null);
       localGameController.TryLaunchGame();
 
+      gameBoardUpdate = new GameBoardUpdate(); // Ensure that there is a state change for the gameBoardUpdate variable 
       localGameController.StartGameSetup();
+      gameBoardUpdate.ShouldBeNull();
 
-      localGameController.GameSetupUpdateEvent = (GameBoardUpdate u) => { };
+      gameBoardUpdate = null; // Ensure that there is a state change for the gameBoardUpdate variable
 
-      localGameController.ContinueGameSetup();
+      var chosenRoad = new Road(0u, 1u);
+      localGameController.ContinueGameSetup(0u, chosenRoad);
+      gameBoardUpdate.ShouldNotBeNull();
+      gameBoardUpdate.NewSettlements.Count.ShouldBe(6);
+      gameBoardUpdate.NewRoads2.Count.ShouldBe(6);
 
-      localGameController.CompleteGameSetup();
+      gameBoardUpdate = new GameBoardUpdate(); // Ensure that there is a state change for the gameBoardUpdate variable 
 
-      throw new NotImplementedException();
+      chosenRoad = new Road(2u, 3u);
+      localGameController.CompleteGameSetup(2u, chosenRoad);
+      gameBoardUpdate.ShouldBeNull();
     }
 
     private LocalGameController CreateLocalGameController()

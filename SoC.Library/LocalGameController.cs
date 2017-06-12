@@ -14,6 +14,7 @@ namespace Jabberwocky.SoC.Library
     {
       Initial,
       WaitingLaunch,
+      WaitingToStartGameSetup,
       Quitting,
     }
 
@@ -80,39 +81,8 @@ namespace Jabberwocky.SoC.Library
         return false;
       }
 
-      var gameBoardData = this.gameBoardManager.Data;
-      this.InitialBoardSetupEvent?.Invoke(gameBoardData);
-
-      this.players = SetupOrderCreator.Create(this.players, this.dice);
-      GameBoardUpdate gameBoardUpdate = null;
-      this.playerIndex = 0;
-      for (; this.playerIndex < this.players.Length; this.playerIndex++)
-      {
-        var player = this.players[this.playerIndex];
-        if (!this.IsComputerPlayer(player))
-        {
-          this.StartInitialSetupTurnEvent?.Invoke(gameBoardUpdate);
-          break;
-        }
-
-        if (gameBoardUpdate == null)
-        {
-          gameBoardUpdate = new GameBoardUpdate
-          {
-            NewSettlements = new Dictionary<UInt32, Guid>(),
-            NewRoads = new Dictionary<Trail, Guid>()
-          };
-        }
-
-        var computerPlayer = (IComputerPlayer)player;
-        var chosenSettlementIndex = computerPlayer.ChooseSettlementLocation(gameBoardData);
-        gameBoardData.PlaceStartingSettlement(computerPlayer.Id, chosenSettlementIndex);
-        var chosenRoad = computerPlayer.ChooseRoad(gameBoardData);
-
-        gameBoardUpdate.NewSettlements.Add(chosenSettlementIndex, player.Id);
-        gameBoardUpdate.NewRoads2.Add(chosenRoad, player.Id);
-      }
-
+      this.InitialBoardSetupEvent?.Invoke(this.gameBoardManager.Data);
+      this.gamePhase = GamePhases.WaitingToStartGameSetup;
       return true;
     }
 
@@ -226,17 +196,58 @@ namespace Jabberwocky.SoC.Library
       throw new NotImplementedException();
     }
 
-    public void StartGameSetup()
+    public Boolean StartGameSetup()
     {
-      throw new NotImplementedException();
+      if (this.gamePhase != GamePhases.WaitingToStartGameSetup)
+      {
+        return false;
+      }
+
+      this.players = SetupOrderCreator.Create(this.players, this.dice);
+      GameBoardUpdate gameBoardUpdate = null;
+      this.playerIndex = 0;
+      while (this.playerIndex < this.players.Length)
+      {
+        var player = this.players[this.playerIndex];
+        this.playerIndex++;
+
+        if (!this.IsComputerPlayer(player))
+        {
+          this.GameSetupUpdateEvent?.Invoke(gameBoardUpdate);
+          this.playerIndex++;
+          break;
+        }
+
+        if (gameBoardUpdate == null)
+        {
+          gameBoardUpdate = new GameBoardUpdate
+          {
+            NewSettlements = new Dictionary<UInt32, Guid>(),
+            NewRoads = new Dictionary<Trail, Guid>()
+          };
+        }
+
+        var gameBoardData = this.gameBoardManager.Data;
+        var computerPlayer = (IComputerPlayer)player;
+        var chosenSettlementIndex = computerPlayer.ChooseSettlementLocation(gameBoardData);
+        gameBoardData.PlaceStartingSettlement(computerPlayer.Id, chosenSettlementIndex);
+        var chosenRoad = computerPlayer.ChooseRoad(gameBoardData);
+
+        gameBoardUpdate.NewSettlements.Add(chosenSettlementIndex, player.Id);
+        gameBoardUpdate.NewRoads2.Add(chosenRoad, player.Id);
+      }
+
+      return true;
     }
 
-    public void ContinueGameSetup()
+    public void ContinueGameSetup(UInt32 firstSettlement, Road firstRoad)
     {
-      throw new NotImplementedException();
+      this.gameBoardManager.Data.PlaceStartingSettlement(this.mainPlayer.Id, firstSettlement);
+      this.gameBoardManager.Data.PlaceStartingRoad(this.mainPlayer.Id, firstRoad);
+
     }
 
-    public void CompleteGameSetup()
+    public void CompleteGameSetup(UInt32 lastSettlement, Road lastRoad)
     {
       throw new NotImplementedException();
     }
