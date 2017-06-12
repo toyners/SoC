@@ -5,7 +5,7 @@ namespace Jabberwocky.SoC.Library
   using System.Diagnostics;
 
   [DebuggerDisplay("({Location1}, {Location2})")]
-  public class Road
+  public struct Road
   {
     public readonly UInt32 Location1;
     public readonly UInt32 Location2;
@@ -21,26 +21,39 @@ namespace Jabberwocky.SoC.Library
       this.Location2 = location2;
     }
 
-    public override Boolean Equals(Object obj)
+    public static Boolean operator ==(Road road1, Road road2)
     {
-      if (base.Equals(obj))
+      if (road1.Location1 == road2.Location1 && road1.Location2 == road2.Location2)
       {
         return true;
       }
 
-      var other = (Road)obj;
-
-      if (this.Location1 == other.Location1 && this.Location2 == other.Location2)
-      {
-        return true;
-      }
-
-      if (this.Location1 == other.Location2 && this.Location2 == other.Location1)
+      if (road1.Location1 == road2.Location2 && road1.Location2 == road2.Location1)
       {
         return true;
       }
 
       return false;
+    }
+
+    public static Boolean operator !=(Road road1, Road road2)
+    {
+      return !(road1 == road2);
+    }
+
+    public override Boolean Equals(Object obj)
+    {
+      if (!(obj is Road))
+      {
+        return false;
+      }
+
+      return this == (Road)obj;
+    }
+
+    public override Int32 GetHashCode()
+    {
+      return base.GetHashCode();
     }
   }
 }

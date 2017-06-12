@@ -205,7 +205,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
       var firstMockPlayerId = Guid.NewGuid();
       var firstMockComputerPlayer = Substitute.For<IComputerPlayer>();
       firstMockComputerPlayer.Id.Returns(firstMockPlayerId);
-      firstMockComputerPlayer.ChooseSettlementLocation(gameBoardManager.Data).Returns(firstSettlementOneLocation);
+      firstMockComputerPlayer.ChooseSettlementLocation(gameBoardManager.Data).Returns(firstSettlementOneLocation, firstSettlementTwoLocation);
       firstMockComputerPlayer.ChooseRoad(gameBoardManager.Data).Returns(firstRoadOne);
 
       var secondMockPlayerId = Guid.NewGuid();
