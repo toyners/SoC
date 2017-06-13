@@ -221,8 +221,14 @@ namespace Jabberwocky.SoC.Library.UnitTests
         .Returns(thirdSettlementOneLocation, thirdSettlementTwoLocation);
       thirdMockComputerPlayer.ChooseRoad(gameBoardManager.Data).Returns(thirdRoadOne, thirdRoadTwo);
 
+      var mockComputerPlayers = this.CreateMockComputerPlayers(firstSettlementOneLocation, firstSettlementTwoLocation, firstRoadOne, firstRoadTwo);
+      firstMockComputerPlayer = mockComputerPlayers[0];
+      secondMockComputerPlayer = mockComputerPlayers[1];
+      thirdMockComputerPlayer = mockComputerPlayers[2];
+
       var mockComputerPlayerFactory = Substitute.For<IComputerPlayerFactory>();
       mockComputerPlayerFactory.Create().Returns(firstMockComputerPlayer, secondMockComputerPlayer, thirdMockComputerPlayer);
+
 
       GameBoardUpdate gameBoardUpdate = null;
       var localGameController = this.CreateLocalGameController(mockDice, mockComputerPlayerFactory, gameBoardManager);
@@ -262,6 +268,11 @@ namespace Jabberwocky.SoC.Library.UnitTests
       chosenRoad = new Road(2u, 3u);
       localGameController.CompleteGameSetup(2u, chosenRoad);
       gameBoardUpdate.ShouldBeNull();
+    }
+
+    private IComputerPlayer[] CreateMockComputerPlayers(UInt32 firstSettlementOneLocation, UInt32 firstSettlementTwoLocation, Road firstRoadOne, Road firstRoadTwo)
+    {
+      throw new NotImplementedException();
     }
 
     [Test]
