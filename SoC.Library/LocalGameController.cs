@@ -29,7 +29,7 @@ namespace Jabberwocky.SoC.Library
     private GameBoardManager gameBoardManager;
     private GamePhases gamePhase;
     private IGameSession gameSession;
-    private UInt32 playerIndex;
+    private Int32 playerIndex;
     private IPlayer[] players;
     private Player mainPlayer;
     private Boolean quitting;
@@ -290,7 +290,7 @@ namespace Jabberwocky.SoC.Library
         gameBoardUpdate.NewRoads2.Add(chosenRoad, computerPlayer.Id);
       }
 
-      this.playerIndex = (UInt32)this.players.Length - 1;
+      this.playerIndex = this.players.Length - 1;
       while (this.playerIndex >= 0)
       {
         var player = this.players[this.playerIndex];
