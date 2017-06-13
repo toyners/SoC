@@ -16,6 +16,7 @@ namespace Jabberwocky.SoC.Library
       WaitingLaunch,
       StartGameSetup,
       ContinueGameSetup,
+      CompleteGameSetup,
       Quitting,
     }
 
@@ -277,7 +278,7 @@ namespace Jabberwocky.SoC.Library
         gameBoardUpdate.NewRoads2.Add(chosenRoad, computerPlayer.Id);
       }
 
-      for (var index = this.players.Length - 1; index > 1; index--)
+      for (var index = this.players.Length - 1; index > 0; index--)
       {
         var computerPlayer = (IComputerPlayer)this.players[index];
 
@@ -291,13 +292,23 @@ namespace Jabberwocky.SoC.Library
       }
 
       this.GameSetupUpdateEvent?.Invoke(gameBoardUpdate);
+      this.gamePhase = GamePhases.CompleteGameSetup;
 
       return true;
     }
 
-    public void CompleteGameSetup(UInt32 lastSettlement, Road lastRoad)
+    public Boolean CompleteGameSetup(UInt32 lastSettlement, Road lastRoad)
     {
-      throw new NotImplementedException();
+      if (this.gamePhase != GamePhases.CompleteGameSetup)
+      {
+        return false;
+      }
+
+      this.gameBoardManager.Data.PlaceStartingSettlement(this.mainPlayer.Id, lastSettlement);
+      this.gameBoardManager.Data.PlaceStartingRoad(this.mainPlayer.Id, lastRoad);
+      this.GameSetupUpdateEvent?.Invoke(null);
+
+      return true;
     }
     #endregion
   }
