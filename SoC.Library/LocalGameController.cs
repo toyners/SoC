@@ -256,11 +256,7 @@ namespace Jabberwocky.SoC.Library
       this.gameBoardManager.Data.PlaceStartingSettlement(this.mainPlayer.Id, firstSettlement);
       this.gameBoardManager.Data.PlaceStartingRoad(this.mainPlayer.Id, firstRoad);
 
-      GameBoardUpdate gameBoardUpdate = new GameBoardUpdate
-      {
-        NewSettlements = new Dictionary<uint, Guid>(),
-        NewRoads2 = new Dictionary<Road, Guid>()
-      };
+      GameBoardUpdate gameBoardUpdate = null;
 
       var gameBoardData = this.gameBoardManager.Data;
 
@@ -306,6 +302,15 @@ namespace Jabberwocky.SoC.Library
           break;
         }
 
+        if (gameBoardUpdate == null)
+        {
+          gameBoardUpdate = new GameBoardUpdate
+          {
+            NewSettlements = new Dictionary<UInt32, Guid>(),
+            NewRoads2 = new Dictionary<Road, Guid>()
+          };
+        }
+
         var computerPlayer = (IComputerPlayer)player;
         var chosenSettlementIndex = computerPlayer.ChooseSettlementLocation(gameBoardData);
         //gameBoardData.PlaceStartingSettlement(computerPlayer.Id, chosenSettlementIndex);
@@ -331,7 +336,41 @@ namespace Jabberwocky.SoC.Library
 
       this.gameBoardManager.Data.PlaceStartingSettlement(this.mainPlayer.Id, lastSettlement);
       this.gameBoardManager.Data.PlaceStartingRoad(this.mainPlayer.Id, lastRoad);
-      this.GameSetupUpdateEvent?.Invoke(null);
+
+      GameBoardUpdate gameBoardUpdate = null;
+      var gameBoardData = this.gameBoardManager.Data;
+
+      while (this.playerIndex >= 0)
+      {
+        var player = this.players[this.playerIndex];
+        this.playerIndex--;
+
+        if (!this.IsComputerPlayer(player))
+        {
+          this.GameSetupUpdateEvent?.Invoke(gameBoardUpdate);
+          break;
+        }
+
+        if (gameBoardUpdate == null)
+        {
+          gameBoardUpdate = new GameBoardUpdate
+          {
+            NewSettlements = new Dictionary<UInt32, Guid>(),
+            NewRoads2 = new Dictionary<Road, Guid>()
+          };
+        }
+
+        var computerPlayer = (IComputerPlayer)player;
+        var chosenSettlementIndex = computerPlayer.ChooseSettlementLocation(gameBoardData);
+        //gameBoardData.PlaceStartingSettlement(computerPlayer.Id, chosenSettlementIndex);
+        gameBoardUpdate.NewSettlements.Add(chosenSettlementIndex, computerPlayer.Id);
+
+        var chosenRoad = computerPlayer.ChooseRoad(gameBoardData);
+        //gameBoardData.PlaceStartingRoad(computerPlayer.Id, chosenRoad);
+        gameBoardUpdate.NewRoads2.Add(chosenRoad, computerPlayer.Id);
+      }
+
+      this.GameSetupUpdateEvent?.Invoke(gameBoardUpdate);
 
       return true;
     }
