@@ -337,10 +337,10 @@ namespace Jabberwocky.SoC.Library
       this.gameBoardManager.Data.PlaceStartingSettlement(this.mainPlayer.Id, lastSettlement);
       this.gameBoardManager.Data.PlaceStartingRoad(this.mainPlayer.Id, lastRoad);
 
-      GameBoardUpdate gameBoardUpdate = null;
       var gameBoardData = this.gameBoardManager.Data;
+      GameBoardUpdate gameBoardUpdate = this.CreateUpdate(gameBoardData, -1);
 
-      while (this.playerIndex >= 0)
+      /*while (this.playerIndex >= 0)
       {
         var player = this.players[this.playerIndex];
         this.playerIndex--;
@@ -368,11 +368,46 @@ namespace Jabberwocky.SoC.Library
         var chosenRoad = computerPlayer.ChooseRoad(gameBoardData);
         //gameBoardData.PlaceStartingRoad(computerPlayer.Id, chosenRoad);
         gameBoardUpdate.NewRoads.Add(chosenRoad, computerPlayer.Id);
-      }
+      }*/
 
       this.GameSetupUpdateEvent?.Invoke(gameBoardUpdate);
 
       return true;
+    }
+
+    private GameBoardUpdate CreateUpdate(GameBoardData gameBoardData, Int32 step)
+    {
+      GameBoardUpdate gameBoardUpdate = null;
+      while (this.playerIndex >= 0 && this.playerIndex < this.players.Length)
+      {
+        var player = this.players[this.playerIndex];
+        this.playerIndex += step;
+
+        if (!this.IsComputerPlayer(player))
+        {
+          return gameBoardUpdate;
+        }
+
+        if (gameBoardUpdate == null)
+        {
+          gameBoardUpdate = new GameBoardUpdate
+          {
+            NewSettlements = new Dictionary<UInt32, Guid>(),
+            NewRoads = new Dictionary<Road, Guid>()
+          };
+        }
+
+        var computerPlayer = (IComputerPlayer)player;
+        var chosenSettlementIndex = computerPlayer.ChooseSettlementLocation(gameBoardData);
+        //gameBoardData.PlaceStartingSettlement(computerPlayer.Id, chosenSettlementIndex);
+        gameBoardUpdate.NewSettlements.Add(chosenSettlementIndex, computerPlayer.Id);
+
+        var chosenRoad = computerPlayer.ChooseRoad(gameBoardData);
+        //gameBoardData.PlaceStartingRoad(computerPlayer.Id, chosenRoad);
+        gameBoardUpdate.NewRoads.Add(chosenRoad, computerPlayer.Id);
+      }
+
+      return gameBoardUpdate;
     }
     #endregion
   }
