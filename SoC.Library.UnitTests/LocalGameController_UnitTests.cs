@@ -79,7 +79,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     }
 
     [Test]
-    public void StartJoiningGame_GameLaunchedWithPlayerFirstInInitialSetupRound_InitialBoardPassedBack()
+    public void StartJoiningGame_GameLaunched_InitialBoardPassedBack()
     {
       var mockDice = NSubstitute.Substitute.For<IDice>();
       mockDice.RollTwoDice().Returns(12u, 10u, 8u, 2u);
@@ -87,94 +87,13 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
       PlayerDataBase[] playerData = null;
       GameBoardData gameBoardData = null;
-      GameBoardUpdate gameBoardUpdate = new GameBoardUpdate();
       localGameController.GameJoinedEvent = (PlayerDataBase[] p) => { playerData = p; };
       localGameController.InitialBoardSetupEvent = (GameBoardData g) => { gameBoardData = g; };
-      localGameController.StartInitialSetupTurnEvent = (GameBoardUpdate u) => { gameBoardUpdate = u; };
 
       localGameController.TryJoiningGame(null);
       localGameController.TryLaunchGame();
 
       gameBoardData.ShouldNotBeNull();
-      gameBoardUpdate.ShouldBeNull();
-    }
-
-    [Test]
-    public void StartJoiningGame_GameLaunchedWithPlayerSecondInInitialSetupRound_CorrectBoardUpdatePassedBack()
-    {
-      var mockDice = NSubstitute.Substitute.For<IDice>();
-      mockDice.RollTwoDice().Returns(10u, 12u, 8u, 6u);
-
-      var gameBoardManager = new GameBoardManager(BoardSizes.Standard);
-      var initialSetupSettlementLocation = 19u;
-      var initialSetupRoundTrail = new Road(0u, 1u); //      gameBoardManager.Data.Trails[10];
-
-      var playerId = Guid.NewGuid();
-      var mockComputerPlayer = Substitute.For<IComputerPlayer>();
-      mockComputerPlayer.Id.Returns(playerId, Guid.Empty, Guid.Empty);
-      mockComputerPlayer.ChooseSettlementLocation(gameBoardManager.Data).Returns(initialSetupSettlementLocation);
-      mockComputerPlayer.ChooseRoad(gameBoardManager.Data).Returns(initialSetupRoundTrail);
-
-      var mockComputerPlayerFactory = Substitute.For<IComputerPlayerFactory>();
-      mockComputerPlayerFactory.Create().Returns(mockComputerPlayer);
-
-      var localGameController = this.CreateLocalGameController(mockDice, mockComputerPlayerFactory, gameBoardManager);
-
-      GameBoardUpdate gameBoardUpdate = null;
-      localGameController.StartInitialSetupTurnEvent = (GameBoardUpdate u) => { gameBoardUpdate = u; };
-
-      localGameController.TryJoiningGame(null);
-      localGameController.TryLaunchGame();
-
-      gameBoardUpdate.ShouldNotBeNull();
-      gameBoardUpdate.NewSettlements.Count.ShouldBe(1);
-      gameBoardUpdate.NewSettlements.ContainsValue(playerId);
-      gameBoardUpdate.NewRoads.Count.ShouldBe(1);
-      gameBoardUpdate.NewRoads.ContainsValue(playerId);
-    }
-
-    [Test]
-    public void StartJoiningGame_GameLaunchedWithPlayerThirdInInitialSetupRound_CorrectBoardUpdatePassedBack()
-    {
-      var mockDice = NSubstitute.Substitute.For<IDice>();
-      mockDice.RollTwoDice().Returns(8u, 10u, 12u, 6u);
-
-      var gameBoardManager = new GameBoardManager(BoardSizes.Standard);
-      var initialSetupSettlementLocation = 19u;
-      var initialSetupRoundTrail = new Road(0u, 1u); // gameBoardManager.Data.Trails[10];
-      var secondRoadOne = new Road(0u, 1u); // gameBoardManager.Data.Trails[20]
-
-      var firstMockPlayerId = Guid.NewGuid();
-      var firstMockComputerPlayer = Substitute.For<IComputerPlayer>();
-      firstMockComputerPlayer.Id.Returns(firstMockPlayerId);
-      firstMockComputerPlayer.ChooseSettlementLocation(gameBoardManager.Data).Returns(initialSetupSettlementLocation);
-      firstMockComputerPlayer.ChooseRoad(gameBoardManager.Data).Returns(initialSetupRoundTrail);
-
-      var secondMockPlayerId = Guid.NewGuid();
-      var secondMockComputerPlayer = Substitute.For<IComputerPlayer>();
-      secondMockComputerPlayer.Id.Returns(secondMockPlayerId);
-      secondMockComputerPlayer.ChooseSettlementLocation(gameBoardManager.Data).Returns(24u);
-      secondMockComputerPlayer.ChooseRoad(gameBoardManager.Data).Returns(secondRoadOne);
-
-      var mockComputerPlayerFactory = Substitute.For<IComputerPlayerFactory>();
-      mockComputerPlayerFactory.Create().Returns(firstMockComputerPlayer, secondMockComputerPlayer);
-
-      var localGameController = this.CreateLocalGameController(mockDice, mockComputerPlayerFactory, gameBoardManager);
-
-      Guid firstPlayerId = Guid.Empty;
-      GameBoardUpdate gameBoardUpdate = null;
-      localGameController.StartInitialSetupTurnEvent = (GameBoardUpdate u) => { gameBoardUpdate = u; };
-
-      localGameController.TryJoiningGame(null);
-      localGameController.TryLaunchGame();
-
-      gameBoardUpdate.ShouldNotBeNull();
-      gameBoardUpdate.NewSettlements.Count.ShouldBe(2);
-      gameBoardUpdate.NewSettlements.ContainsValue(firstMockPlayerId);
-      gameBoardUpdate.NewSettlements.ContainsValue(secondMockPlayerId);
-      gameBoardUpdate.NewRoads.Count.ShouldBe(2);
-      gameBoardUpdate.NewRoads.ContainsValue(firstMockPlayerId);
-      gameBoardUpdate.NewRoads.ContainsValue(secondMockPlayerId);
     }
 
     [Test]
