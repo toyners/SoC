@@ -226,7 +226,7 @@ namespace Jabberwocky.SoC.Library
           gameBoardUpdate = new GameBoardUpdate
           {
             NewSettlements = new Dictionary<UInt32, Guid>(),
-            NewRoads2 = new Dictionary<Road, Guid>()
+            NewRoads = new Dictionary<Road, Guid>()
           };
         }
 
@@ -238,7 +238,7 @@ namespace Jabberwocky.SoC.Library
 
         var chosenRoad = computerPlayer.ChooseRoad(gameBoardData);
         //gameBoardData.PlaceStartingRoad(computerPlayer.Id, chosenRoad);
-        gameBoardUpdate.NewRoads2.Add(chosenRoad, player.Id);
+        gameBoardUpdate.NewRoads.Add(chosenRoad, player.Id);
       }
 
       this.gamePhase = GamePhases.ContinueGameSetup;
@@ -276,7 +276,7 @@ namespace Jabberwocky.SoC.Library
           gameBoardUpdate = new GameBoardUpdate
           {
             NewSettlements = new Dictionary<UInt32, Guid>(),
-            NewRoads2 = new Dictionary<Road, Guid>()
+            NewRoads = new Dictionary<Road, Guid>()
           };
         }
 
@@ -287,7 +287,7 @@ namespace Jabberwocky.SoC.Library
 
         var chosenRoad = computerPlayer.ChooseRoad(gameBoardData);
         //gameBoardData.PlaceStartingRoad(computerPlayer.Id, chosenRoad);
-        gameBoardUpdate.NewRoads2.Add(chosenRoad, computerPlayer.Id);
+        gameBoardUpdate.NewRoads.Add(chosenRoad, computerPlayer.Id);
       }
 
       this.playerIndex = this.players.Length - 1;
@@ -307,7 +307,7 @@ namespace Jabberwocky.SoC.Library
           gameBoardUpdate = new GameBoardUpdate
           {
             NewSettlements = new Dictionary<UInt32, Guid>(),
-            NewRoads2 = new Dictionary<Road, Guid>()
+            NewRoads = new Dictionary<Road, Guid>()
           };
         }
 
@@ -318,7 +318,7 @@ namespace Jabberwocky.SoC.Library
 
         var chosenRoad = computerPlayer.ChooseRoad(gameBoardData);
         //gameBoardData.PlaceStartingRoad(computerPlayer.Id, chosenRoad);
-        gameBoardUpdate.NewRoads2.Add(chosenRoad, computerPlayer.Id);
+        gameBoardUpdate.NewRoads.Add(chosenRoad, computerPlayer.Id);
       }
 
       this.GameSetupUpdateEvent?.Invoke(gameBoardUpdate);
@@ -356,7 +356,7 @@ namespace Jabberwocky.SoC.Library
           gameBoardUpdate = new GameBoardUpdate
           {
             NewSettlements = new Dictionary<UInt32, Guid>(),
-            NewRoads2 = new Dictionary<Road, Guid>()
+            NewRoads = new Dictionary<Road, Guid>()
           };
         }
 
@@ -367,7 +367,7 @@ namespace Jabberwocky.SoC.Library
 
         var chosenRoad = computerPlayer.ChooseRoad(gameBoardData);
         //gameBoardData.PlaceStartingRoad(computerPlayer.Id, chosenRoad);
-        gameBoardUpdate.NewRoads2.Add(chosenRoad, computerPlayer.Id);
+        gameBoardUpdate.NewRoads.Add(chosenRoad, computerPlayer.Id);
       }
 
       this.GameSetupUpdateEvent?.Invoke(gameBoardUpdate);

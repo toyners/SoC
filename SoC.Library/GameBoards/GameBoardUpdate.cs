@@ -12,8 +12,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
   {
     public Dictionary<UInt32, Guid> NewSettlements;
     public Dictionary<IPlayer, List<Location>> NewCities;
-    public Dictionary<Trail, Guid> NewRoads;
-    public Dictionary<Road, Guid> NewRoads2;
+    public Dictionary<Road, Guid> NewRoads;
     public Location Robber;
   }
 }
