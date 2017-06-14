@@ -200,35 +200,12 @@ namespace Jabberwocky.SoC.Library.UnitTests
       var secondRoadTwo = new Road(24u, 35u);
       var firstRoadTwo = new Road(43u, 44u);
 
-      var firstMockPlayerId = Guid.NewGuid();
-      var firstMockComputerPlayer = Substitute.For<IComputerPlayer>();
-      firstMockComputerPlayer.Id.Returns(firstMockPlayerId);
-      firstMockComputerPlayer.ChooseSettlementLocation(gameBoardManager.Data)
-        .Returns(firstSettlementOneLocation, firstSettlementTwoLocation);
-      firstMockComputerPlayer.ChooseRoad(gameBoardManager.Data).Returns(firstRoadOne, firstRoadTwo);
-
-      var secondMockPlayerId = Guid.NewGuid();
-      var secondMockComputerPlayer = Substitute.For<IComputerPlayer>();
-      secondMockComputerPlayer.Id.Returns(secondMockPlayerId);
-      secondMockComputerPlayer.ChooseSettlementLocation(gameBoardManager.Data)
-        .Returns(secondSettlementOneLocation, secondSettlementTwoLocation);
-      secondMockComputerPlayer.ChooseRoad(gameBoardManager.Data).Returns(secondRoadOne, secondRoadTwo);
-
-      var thirdMockPlayerId = Guid.NewGuid();
-      var thirdMockComputerPlayer = Substitute.For<IComputerPlayer>();
-      thirdMockComputerPlayer.Id.Returns(thirdMockPlayerId);
-      thirdMockComputerPlayer.ChooseSettlementLocation(gameBoardManager.Data)
-        .Returns(thirdSettlementOneLocation, thirdSettlementTwoLocation);
-      thirdMockComputerPlayer.ChooseRoad(gameBoardManager.Data).Returns(thirdRoadOne, thirdRoadTwo);
-
-      var mockComputerPlayers = this.CreateMockComputerPlayers(firstSettlementOneLocation, firstSettlementTwoLocation, firstRoadOne, firstRoadTwo);
-      firstMockComputerPlayer = mockComputerPlayers[0];
-      secondMockComputerPlayer = mockComputerPlayers[1];
-      thirdMockComputerPlayer = mockComputerPlayers[2];
+      var firstMockComputerPlayer = this.CreateMockComputerPlayer(gameBoardManager.Data, firstSettlementOneLocation, firstSettlementTwoLocation, firstRoadOne, firstRoadTwo);
+      var secondMockComputerPlayer = this.CreateMockComputerPlayer(gameBoardManager.Data, secondSettlementOneLocation, secondSettlementTwoLocation, secondRoadOne, secondRoadTwo);
+      var thirdMockComputerPlayer = this.CreateMockComputerPlayer(gameBoardManager.Data, thirdSettlementOneLocation, thirdSettlementTwoLocation, thirdRoadOne, thirdRoadTwo);
 
       var mockComputerPlayerFactory = Substitute.For<IComputerPlayerFactory>();
       mockComputerPlayerFactory.Create().Returns(firstMockComputerPlayer, secondMockComputerPlayer, thirdMockComputerPlayer);
-
 
       GameBoardUpdate gameBoardUpdate = null;
       var localGameController = this.CreateLocalGameController(mockDice, mockComputerPlayerFactory, gameBoardManager);
@@ -270,11 +247,6 @@ namespace Jabberwocky.SoC.Library.UnitTests
       gameBoardUpdate.ShouldBeNull();
     }
 
-    private IComputerPlayer[] CreateMockComputerPlayers(UInt32 firstSettlementOneLocation, UInt32 firstSettlementTwoLocation, Road firstRoadOne, Road firstRoadTwo)
-    {
-      throw new NotImplementedException();
-    }
-
     [Test]
     public void CompleteSetupWithPlayerInSecondSlot()
     {
@@ -299,26 +271,9 @@ namespace Jabberwocky.SoC.Library.UnitTests
       var secondRoadTwo = new Road(24u, 35u);
       var firstRoadTwo = new Road(43u, 44u);
 
-      var firstMockPlayerId = Guid.NewGuid();
-      var firstMockComputerPlayer = Substitute.For<IComputerPlayer>();
-      firstMockComputerPlayer.Id.Returns(firstMockPlayerId);
-      firstMockComputerPlayer.ChooseSettlementLocation(gameBoardManager.Data)
-        .Returns(firstSettlementOneLocation, firstSettlementTwoLocation);
-      firstMockComputerPlayer.ChooseRoad(gameBoardManager.Data).Returns(firstRoadOne, firstRoadTwo);
-
-      var secondMockPlayerId = Guid.NewGuid();
-      var secondMockComputerPlayer = Substitute.For<IComputerPlayer>();
-      secondMockComputerPlayer.Id.Returns(secondMockPlayerId);
-      secondMockComputerPlayer.ChooseSettlementLocation(gameBoardManager.Data)
-        .Returns(secondSettlementOneLocation, secondSettlementTwoLocation);
-      secondMockComputerPlayer.ChooseRoad(gameBoardManager.Data).Returns(secondRoadOne, secondRoadTwo);
-
-      var thirdMockPlayerId = Guid.NewGuid();
-      var thirdMockComputerPlayer = Substitute.For<IComputerPlayer>();
-      thirdMockComputerPlayer.Id.Returns(thirdMockPlayerId);
-      thirdMockComputerPlayer.ChooseSettlementLocation(gameBoardManager.Data)
-        .Returns(thirdSettlementOneLocation, thirdSettlementTwoLocation);
-      thirdMockComputerPlayer.ChooseRoad(gameBoardManager.Data).Returns(thirdRoadOne, thirdRoadTwo);
+      var firstMockComputerPlayer = this.CreateMockComputerPlayer(gameBoardManager.Data, firstSettlementOneLocation, firstSettlementTwoLocation, firstRoadOne, firstRoadTwo);
+      var secondMockComputerPlayer = this.CreateMockComputerPlayer(gameBoardManager.Data, secondSettlementOneLocation, secondSettlementTwoLocation, secondRoadOne, secondRoadTwo);
+      var thirdMockComputerPlayer = this.CreateMockComputerPlayer(gameBoardManager.Data, thirdSettlementOneLocation, thirdSettlementTwoLocation, thirdRoadOne, thirdRoadTwo);
 
       var mockComputerPlayerFactory = Substitute.For<IComputerPlayerFactory>();
       mockComputerPlayerFactory.Create().Returns(firstMockComputerPlayer, secondMockComputerPlayer, thirdMockComputerPlayer);
@@ -387,26 +342,9 @@ namespace Jabberwocky.SoC.Library.UnitTests
       var secondRoadTwo = new Road(24u, 35u);
       var firstRoadTwo = new Road(43u, 44u);
 
-      var firstMockPlayerId = Guid.NewGuid();
-      var firstMockComputerPlayer = Substitute.For<IComputerPlayer>();
-      firstMockComputerPlayer.Id.Returns(firstMockPlayerId);
-      firstMockComputerPlayer.ChooseSettlementLocation(gameBoardManager.Data)
-        .Returns(firstSettlementOneLocation, firstSettlementTwoLocation);
-      firstMockComputerPlayer.ChooseRoad(gameBoardManager.Data).Returns(firstRoadOne, firstRoadTwo);
-
-      var secondMockPlayerId = Guid.NewGuid();
-      var secondMockComputerPlayer = Substitute.For<IComputerPlayer>();
-      secondMockComputerPlayer.Id.Returns(secondMockPlayerId);
-      secondMockComputerPlayer.ChooseSettlementLocation(gameBoardManager.Data)
-        .Returns(secondSettlementOneLocation, secondSettlementTwoLocation);
-      secondMockComputerPlayer.ChooseRoad(gameBoardManager.Data).Returns(secondRoadOne, secondRoadTwo);
-
-      var thirdMockPlayerId = Guid.NewGuid();
-      var thirdMockComputerPlayer = Substitute.For<IComputerPlayer>();
-      thirdMockComputerPlayer.Id.Returns(thirdMockPlayerId);
-      thirdMockComputerPlayer.ChooseSettlementLocation(gameBoardManager.Data)
-        .Returns(thirdSettlementOneLocation, thirdSettlementTwoLocation);
-      thirdMockComputerPlayer.ChooseRoad(gameBoardManager.Data).Returns(thirdRoadOne, thirdRoadTwo);
+      var firstMockComputerPlayer = this.CreateMockComputerPlayer(gameBoardManager.Data, firstSettlementOneLocation, firstSettlementTwoLocation, firstRoadOne, firstRoadTwo);
+      var secondMockComputerPlayer = this.CreateMockComputerPlayer(gameBoardManager.Data, secondSettlementOneLocation, secondSettlementTwoLocation, secondRoadOne, secondRoadTwo);
+      var thirdMockComputerPlayer = this.CreateMockComputerPlayer(gameBoardManager.Data, thirdSettlementOneLocation, thirdSettlementTwoLocation, thirdRoadOne, thirdRoadTwo);
 
       var mockComputerPlayerFactory = Substitute.For<IComputerPlayerFactory>();
       mockComputerPlayerFactory.Create().Returns(firstMockComputerPlayer, secondMockComputerPlayer, thirdMockComputerPlayer);
@@ -475,26 +413,9 @@ namespace Jabberwocky.SoC.Library.UnitTests
       var secondRoadTwo = new Road(24u, 35u);
       var firstRoadTwo = new Road(43u, 44u);
 
-      var firstMockPlayerId = Guid.NewGuid();
-      var firstMockComputerPlayer = Substitute.For<IComputerPlayer>();
-      firstMockComputerPlayer.Id.Returns(firstMockPlayerId);
-      firstMockComputerPlayer.ChooseSettlementLocation(gameBoardManager.Data)
-        .Returns(firstSettlementOneLocation, firstSettlementTwoLocation);
-      firstMockComputerPlayer.ChooseRoad(gameBoardManager.Data).Returns(firstRoadOne, firstRoadTwo);
-
-      var secondMockPlayerId = Guid.NewGuid();
-      var secondMockComputerPlayer = Substitute.For<IComputerPlayer>();
-      secondMockComputerPlayer.Id.Returns(secondMockPlayerId);
-      secondMockComputerPlayer.ChooseSettlementLocation(gameBoardManager.Data)
-        .Returns(secondSettlementOneLocation, secondSettlementTwoLocation);
-      secondMockComputerPlayer.ChooseRoad(gameBoardManager.Data).Returns(secondRoadOne, secondRoadTwo);
-
-      var thirdMockPlayerId = Guid.NewGuid();
-      var thirdMockComputerPlayer = Substitute.For<IComputerPlayer>();
-      thirdMockComputerPlayer.Id.Returns(thirdMockPlayerId);
-      thirdMockComputerPlayer.ChooseSettlementLocation(gameBoardManager.Data)
-        .Returns(thirdSettlementOneLocation, thirdSettlementTwoLocation);
-      thirdMockComputerPlayer.ChooseRoad(gameBoardManager.Data).Returns(thirdRoadOne, thirdRoadTwo);
+      var firstMockComputerPlayer = this.CreateMockComputerPlayer(gameBoardManager.Data, firstSettlementOneLocation, firstSettlementTwoLocation, firstRoadOne, firstRoadTwo);
+      var secondMockComputerPlayer = this.CreateMockComputerPlayer(gameBoardManager.Data, secondSettlementOneLocation, secondSettlementTwoLocation, secondRoadOne, secondRoadTwo);
+      var thirdMockComputerPlayer = this.CreateMockComputerPlayer(gameBoardManager.Data, thirdSettlementOneLocation, thirdSettlementTwoLocation, thirdRoadOne, thirdRoadTwo);
 
       var mockComputerPlayerFactory = Substitute.For<IComputerPlayerFactory>();
       mockComputerPlayerFactory.Create().Returns(firstMockComputerPlayer, secondMockComputerPlayer, thirdMockComputerPlayer);
@@ -546,6 +467,19 @@ namespace Jabberwocky.SoC.Library.UnitTests
       var localGameController = new LocalGameController(diceRoller, computerPlayerFactory, gameBoardManager);
       localGameController.GameJoinedEvent = (PlayerDataBase[] players) => { };
       return localGameController;
+    }
+
+    private IComputerPlayer CreateMockComputerPlayer(GameBoardData gameBoardData, UInt32 firstSettlementOneLocation, UInt32 firstSettlementTwoLocation, Road firstRoadOne, Road firstRoadTwo)
+    {
+      var mockComputerPlayer = Substitute.For<IComputerPlayer>();
+      var playerId = Guid.NewGuid();
+      mockComputerPlayer.Id.Returns(playerId);
+      mockComputerPlayer.ChooseSettlementLocation(gameBoardData)
+        .Returns(firstSettlementOneLocation, firstSettlementTwoLocation);
+      mockComputerPlayer.ChooseRoad(gameBoardData)
+        .Returns(firstRoadOne, firstRoadTwo);
+
+      return mockComputerPlayer;
     }
     #endregion 
   }
