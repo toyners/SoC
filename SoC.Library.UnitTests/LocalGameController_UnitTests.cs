@@ -11,6 +11,24 @@ namespace Jabberwocky.SoC.Library.UnitTests
   [TestFixture]
   public class LocalGameController_UnitTests
   {
+    #region Fields
+    UInt32 firstSettlementOneLocation = 18u;
+    UInt32 secondSettlementOneLocation = 25u;
+    UInt32 thirdSettlementOneLocation = 31u;
+
+    UInt32 thirdSettlementTwoLocation = 33u;
+    UInt32 secondSettlementTwoLocation = 35u;
+    UInt32 firstSettlementTwoLocation = 43u;
+
+    Road firstRoadOne = new Road(17u, 18u);
+    Road secondRoadOne = new Road(15u, 25u);
+    Road thirdRoadOne = new Road(30u, 31u);
+
+    Road thirdRoadTwo = new Road(32u, 33u);
+    Road secondRoadTwo = new Road(24u, 35u);
+    Road firstRoadTwo = new Road(43u, 44u);
+    #endregion
+
     #region Methods
     [Test]
     public void StartJoiningGame_DefaultGameOptions_PlayerDataPassedBack()
@@ -103,21 +121,6 @@ namespace Jabberwocky.SoC.Library.UnitTests
       mockDice.RollTwoDice().Returns(12u, 10u, 8u, 6u);
 
       var gameBoardManager = new GameBoardManager(BoardSizes.Standard);
-      var firstSettlementOneLocation = 18u;
-      var secondSettlementOneLocation = 25u;
-      var thirdSettlementOneLocation = 31u;
-
-      var thirdSettlementTwoLocation = 33u;
-      var secondSettlementTwoLocation = 35u;
-      var firstSettlementTwoLocation = 43u;
-
-      var firstRoadOne = new Road(17u, 18u);
-      var secondRoadOne = new Road(15u, 25u);
-      var thirdRoadOne = new Road(30u, 31u);
-
-      var thirdRoadTwo = new Road(32u, 33u);
-      var secondRoadTwo = new Road(24u, 35u);
-      var firstRoadTwo = new Road(43u, 44u);
 
       var firstMockComputerPlayer = this.CreateMockComputerPlayer(gameBoardManager.Data, firstSettlementOneLocation, firstSettlementTwoLocation, firstRoadOne, firstRoadTwo);
       var secondMockComputerPlayer = this.CreateMockComputerPlayer(gameBoardManager.Data, secondSettlementOneLocation, secondSettlementTwoLocation, secondRoadOne, secondRoadTwo);
@@ -174,22 +177,6 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
       var gameBoardManager = new GameBoardManager(BoardSizes.Standard);
 
-      var firstSettlementOneLocation = 18u;
-      var secondSettlementOneLocation = 25u;
-      var thirdSettlementOneLocation = 31u;
-
-      var thirdSettlementTwoLocation = 33u;
-      var secondSettlementTwoLocation = 35u;
-      var firstSettlementTwoLocation = 43u;
-
-      var firstRoadOne = new Road(17u, 18u);
-      var secondRoadOne = new Road(15u, 25u);
-      var thirdRoadOne = new Road(30u, 31u);
-
-      var thirdRoadTwo = new Road(32u, 33u);
-      var secondRoadTwo = new Road(24u, 35u);
-      var firstRoadTwo = new Road(43u, 44u);
-
       var firstMockComputerPlayer = this.CreateMockComputerPlayer(gameBoardManager.Data, firstSettlementOneLocation, firstSettlementTwoLocation, firstRoadOne, firstRoadTwo);
       var secondMockComputerPlayer = this.CreateMockComputerPlayer(gameBoardManager.Data, secondSettlementOneLocation, secondSettlementTwoLocation, secondRoadOne, secondRoadTwo);
       var thirdMockComputerPlayer = this.CreateMockComputerPlayer(gameBoardManager.Data, thirdSettlementOneLocation, thirdSettlementTwoLocation, thirdRoadOne, thirdRoadTwo);
@@ -245,21 +232,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
       var gameBoardManager = new GameBoardManager(BoardSizes.Standard);
 
-      var firstSettlementOneLocation = 18u;
-      var secondSettlementOneLocation = 25u;
-      var thirdSettlementOneLocation = 31u;
-
-      var thirdSettlementTwoLocation = 33u;
-      var secondSettlementTwoLocation = 35u;
-      var firstSettlementTwoLocation = 43u;
-
-      var firstRoadOne = new Road(17u, 18u);
-      var secondRoadOne = new Road(15u, 25u);
-      var thirdRoadOne = new Road(30u, 31u);
-
-      var thirdRoadTwo = new Road(32u, 33u);
-      var secondRoadTwo = new Road(24u, 35u);
-      var firstRoadTwo = new Road(43u, 44u);
+      
 
       var firstMockComputerPlayer = this.CreateMockComputerPlayer(gameBoardManager.Data, firstSettlementOneLocation, firstSettlementTwoLocation, firstRoadOne, firstRoadTwo);
       var secondMockComputerPlayer = this.CreateMockComputerPlayer(gameBoardManager.Data, secondSettlementOneLocation, secondSettlementTwoLocation, secondRoadOne, secondRoadTwo);
@@ -289,22 +262,6 @@ namespace Jabberwocky.SoC.Library.UnitTests
       mockDice.RollTwoDice().Returns(8u, 12u, 10u, 6u);
 
       var gameBoardManager = new GameBoardManager(BoardSizes.Standard);
-
-      var firstSettlementOneLocation = 18u;
-      var secondSettlementOneLocation = 25u;
-      var thirdSettlementOneLocation = 31u;
-
-      var thirdSettlementTwoLocation = 33u;
-      var secondSettlementTwoLocation = 35u;
-      var firstSettlementTwoLocation = 43u;
-
-      var firstRoadOne = new Road(17u, 18u);
-      var secondRoadOne = new Road(15u, 25u);
-      var thirdRoadOne = new Road(30u, 31u);
-
-      var thirdRoadTwo = new Road(32u, 33u);
-      var secondRoadTwo = new Road(24u, 35u);
-      var firstRoadTwo = new Road(43u, 44u);
 
       var firstMockComputerPlayer = this.CreateMockComputerPlayer(gameBoardManager.Data, firstSettlementOneLocation, firstSettlementTwoLocation, firstRoadOne, firstRoadTwo);
       var secondMockComputerPlayer = this.CreateMockComputerPlayer(gameBoardManager.Data, secondSettlementOneLocation, secondSettlementTwoLocation, secondRoadOne, secondRoadTwo);
@@ -360,22 +317,6 @@ namespace Jabberwocky.SoC.Library.UnitTests
       mockDice.RollTwoDice().Returns(6u, 12u, 10u, 8u);
 
       var gameBoardManager = new GameBoardManager(BoardSizes.Standard);
-
-      var firstSettlementOneLocation = 18u;
-      var secondSettlementOneLocation = 25u;
-      var thirdSettlementOneLocation = 31u;
-
-      var thirdSettlementTwoLocation = 33u;
-      var secondSettlementTwoLocation = 35u;
-      var firstSettlementTwoLocation = 43u;
-
-      var firstRoadOne = new Road(17u, 18u);
-      var secondRoadOne = new Road(15u, 25u);
-      var thirdRoadOne = new Road(30u, 31u);
-
-      var thirdRoadTwo = new Road(32u, 33u);
-      var secondRoadTwo = new Road(24u, 35u);
-      var firstRoadTwo = new Road(43u, 44u);
 
       var firstMockComputerPlayer = this.CreateMockComputerPlayer(gameBoardManager.Data, firstSettlementOneLocation, firstSettlementTwoLocation, firstRoadOne, firstRoadTwo);
       var secondMockComputerPlayer = this.CreateMockComputerPlayer(gameBoardManager.Data, secondSettlementOneLocation, secondSettlementTwoLocation, secondRoadOne, secondRoadTwo);
