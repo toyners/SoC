@@ -224,7 +224,16 @@ namespace Jabberwocky.SoC.Library
         return false;
       }
 
-      this.gameBoardManager.Data.PlaceStartingSettlement(this.mainPlayer.Id, firstSettlement);
+      if (this.gameBoardManager.Data.CanPlaceSettlement(firstSettlement) != GameBoardData.VerificationResults.Valid)
+      {
+        var exception = new Exception("Cannot place settlement");
+        this.ExceptionRaisedEvent?.Invoke(exception);
+      }
+      else
+      {
+        this.gameBoardManager.Data.PlaceStartingSettlement(this.mainPlayer.Id, firstSettlement);
+      }
+
       this.gameBoardManager.Data.PlaceStartingRoad(this.mainPlayer.Id, firstRoad);
 
       var gameBoardData = this.gameBoardManager.Data;
@@ -279,7 +288,7 @@ namespace Jabberwocky.SoC.Library
 
         var computerPlayer = (IComputerPlayer)player;
         var chosenSettlementIndex = computerPlayer.ChooseSettlementLocation(gameBoardData);
-        //gameBoardData.PlaceStartingSettlement(computerPlayer.Id, chosenSettlementIndex);
+        gameBoardData.PlaceStartingSettlement(computerPlayer.Id, chosenSettlementIndex);
         gameBoardUpdate.NewSettlements.Add(chosenSettlementIndex, computerPlayer.Id);
 
         var chosenRoad = computerPlayer.ChooseRoad(gameBoardData);
