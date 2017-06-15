@@ -59,7 +59,7 @@ namespace Jabberwocky.SoC.Library
 
     public Action<GameBoardUpdate> GameSetupUpdateEvent { get; set; }
 
-    public Action<ErrorMessage> ErrorRaisedEvent { get; set; }
+    public Action<Exception> ExceptionRaisedEvent { get; set; }
     #endregion
 
     #region Methods

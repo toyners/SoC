@@ -268,12 +268,9 @@ namespace Jabberwocky.SoC.Library.UnitTests
       var mockComputerPlayerFactory = Substitute.For<IComputerPlayerFactory>();
       mockComputerPlayerFactory.Create().Returns(firstMockComputerPlayer, secondMockComputerPlayer, thirdMockComputerPlayer);
 
-      //GameBoardUpdate gameBoardUpdate = null;
-      ErrorMessage errorMessage = null;
+      Exception exception = null;
       var localGameController = this.CreateLocalGameController(mockDice, mockComputerPlayerFactory, gameBoardManager);
-      localGameController.GameSetupUpdateEvent = (GameBoardUpdate u) => { };
-      localGameController.InitialBoardSetupEvent = (GameBoardData d) => { };
-      localGameController.ErrorRaisedEvent = (ErrorMessage e) => { errorMessage = e; };
+      localGameController.ExceptionRaisedEvent = (Exception e) => { exception = e; };
 
       localGameController.TryJoiningGame(null);
       localGameController.TryLaunchGame();
@@ -281,8 +278,8 @@ namespace Jabberwocky.SoC.Library.UnitTests
       localGameController.StartGameSetup();
 
       localGameController.ContinueGameSetup(firstSettlementOneLocation, new Road(0u, 1u));
-      errorMessage.ShouldNotBeNull();
-      errorMessage.Message.ShouldBe("Cannot place settlement at ");
+      exception.ShouldNotBeNull();
+      exception.Message.ShouldBe("Cannot place settlement");
     }
 
     [Test]
