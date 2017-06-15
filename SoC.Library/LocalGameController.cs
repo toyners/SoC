@@ -210,7 +210,7 @@ namespace Jabberwocky.SoC.Library
       this.players = SetupOrderCreator.Create(this.players, this.dice);
    
       this.playerIndex = 0;
-      GameBoardUpdate gameBoardUpdate = this.CreateUpdate(this.gameBoardManager.Data, 1, null);
+      GameBoardUpdate gameBoardUpdate = this.ContinueSetupForComputerPlayers(this.gameBoardManager.Data, 1, null);
       this.GameSetupUpdateEvent?.Invoke(gameBoardUpdate);
       this.gamePhase = GamePhases.ContinueGameSetup;
 
@@ -229,9 +229,9 @@ namespace Jabberwocky.SoC.Library
 
       var gameBoardData = this.gameBoardManager.Data;
 
-      GameBoardUpdate gameBoardUpdate = this.CreateUpdate(gameBoardData, 1, null);
+      GameBoardUpdate gameBoardUpdate = this.ContinueSetupForComputerPlayers(gameBoardData, 1, null);
       this.playerIndex = this.players.Length - 1;
-      gameBoardUpdate = this.CreateUpdate(gameBoardData, -1, gameBoardUpdate);
+      gameBoardUpdate = this.ContinueSetupForComputerPlayers(gameBoardData, -1, gameBoardUpdate);
 
       this.GameSetupUpdateEvent?.Invoke(gameBoardUpdate);
       this.gamePhase = GamePhases.CompleteGameSetup;
@@ -250,13 +250,13 @@ namespace Jabberwocky.SoC.Library
       this.gameBoardManager.Data.PlaceStartingRoad(this.mainPlayer.Id, lastRoad);
 
       var gameBoardData = this.gameBoardManager.Data;
-      GameBoardUpdate gameBoardUpdate = this.CreateUpdate(gameBoardData, -1, null);
+      GameBoardUpdate gameBoardUpdate = this.ContinueSetupForComputerPlayers(gameBoardData, -1, null);
       this.GameSetupUpdateEvent?.Invoke(gameBoardUpdate);
 
       return true;
     }
 
-    private GameBoardUpdate CreateUpdate(GameBoardData gameBoardData, Int32 step, GameBoardUpdate gameBoardUpdate)
+    private GameBoardUpdate ContinueSetupForComputerPlayers(GameBoardData gameBoardData, Int32 step, GameBoardUpdate gameBoardUpdate)
     {
       while (this.playerIndex >= 0 && this.playerIndex < this.players.Length)
       {
