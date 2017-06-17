@@ -232,8 +232,6 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
       var gameBoardManager = new GameBoardManager(BoardSizes.Standard);
 
-      
-
       var firstMockComputerPlayer = this.CreateMockComputerPlayer(gameBoardManager.Data, firstSettlementOneLocation, firstSettlementTwoLocation, firstRoadOne, firstRoadTwo);
       var secondMockComputerPlayer = this.CreateMockComputerPlayer(gameBoardManager.Data, secondSettlementOneLocation, secondSettlementTwoLocation, secondRoadOne, secondRoadTwo);
       var thirdMockComputerPlayer = this.CreateMockComputerPlayer(gameBoardManager.Data, thirdSettlementOneLocation, thirdSettlementTwoLocation, thirdRoadOne, thirdRoadTwo);
@@ -252,7 +250,36 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
       localGameController.ContinueGameSetup(firstSettlementOneLocation, new Road(0u, 1u));
       exception.ShouldNotBeNull();
-      exception.Message.ShouldBe("Cannot place settlement");
+      exception.Message.ShouldBe("Cannot place settlement: Location + " + firstSettlementOneLocation + " already owned by player " + firstMockComputerPlayer.Id);
+    }
+
+    [Test]
+    public void PlayerSelectsLocationTooCloseToComputerplayerDuringSetupWithPlayerInSecondSlot_ErrorDetailsPassedBack()
+    {
+      var mockDice = Substitute.For<IDice>();
+      mockDice.RollTwoDice().Returns(10u, 12u, 8u, 6u);
+
+      var gameBoardManager = new GameBoardManager(BoardSizes.Standard);
+
+      var firstMockComputerPlayer = this.CreateMockComputerPlayer(gameBoardManager.Data, firstSettlementOneLocation, firstSettlementTwoLocation, firstRoadOne, firstRoadTwo);
+      var secondMockComputerPlayer = this.CreateMockComputerPlayer(gameBoardManager.Data, secondSettlementOneLocation, secondSettlementTwoLocation, secondRoadOne, secondRoadTwo);
+      var thirdMockComputerPlayer = this.CreateMockComputerPlayer(gameBoardManager.Data, thirdSettlementOneLocation, thirdSettlementTwoLocation, thirdRoadOne, thirdRoadTwo);
+
+      var mockComputerPlayerFactory = Substitute.For<IComputerPlayerFactory>();
+      mockComputerPlayerFactory.Create().Returns(firstMockComputerPlayer, secondMockComputerPlayer, thirdMockComputerPlayer);
+
+      Exception exception = null;
+      var localGameController = this.CreateLocalGameController(mockDice, mockComputerPlayerFactory, gameBoardManager);
+      localGameController.ExceptionRaisedEvent = (Exception e) => { exception = e; };
+
+      localGameController.TryJoiningGame(null);
+      localGameController.TryLaunchGame();
+
+      localGameController.StartGameSetup();
+
+      localGameController.ContinueGameSetup(19u, new Road(0u, 1u));
+      exception.ShouldNotBeNull();
+      exception.Message.ShouldBe("Cannot place settlement: Too close to player " + firstMockComputerPlayer.Id + " at location " + firstSettlementOneLocation);
     }
 
     [Test]

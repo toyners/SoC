@@ -224,7 +224,13 @@ namespace Jabberwocky.SoC.Library
         return false;
       }
 
-      if (this.gameBoardManager.Data.CanPlaceSettlement(firstSettlement) != GameBoardData.VerificationResults.Valid)
+      var canPlaceSettlement = this.gameBoardManager.Data.CanPlaceSettlement(firstSettlement);
+      if (canPlaceSettlement == GameBoardData.VerificationResults.TooCloseToOpponent)
+      {
+        var exception = new Exception("Cannot place settlement");
+        this.ExceptionRaisedEvent?.Invoke(exception);
+      }
+      else if (canPlaceSettlement != GameBoardData.VerificationResults.Valid)
       {
         var exception = new Exception("Cannot place settlement");
         this.ExceptionRaisedEvent?.Invoke(exception);
