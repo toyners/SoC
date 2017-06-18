@@ -15,8 +15,18 @@ namespace Jabberwocky.SoC.Library.UnitTests
     public void CanPlaceSettlement_EmptyBoard_ReturnsValid()
     {
       var gameBoardData = new GameBoardData(BoardSizes.Standard);
-      var result = gameBoardData.CanPlaceSettlement(0);
+      Guid playerId;
+      var result = gameBoardData.CanPlaceSettlement(0, out playerId);
       result.ShouldBe(GameBoardData.VerificationResults.Valid);
+    }
+
+    [Test]
+    public void CanPlaceSettlement_EmptyBoard_ReturnsEmptyOccupyingPlayer()
+    {
+      var gameBoardData = new GameBoardData(BoardSizes.Standard);
+      Guid playerId = Guid.NewGuid();
+      gameBoardData.CanPlaceSettlement(0, out playerId);
+      playerId.ShouldBe(Guid.Empty);
     }
 
     [Test]
@@ -24,8 +34,20 @@ namespace Jabberwocky.SoC.Library.UnitTests
     {
       var gameBoardData = new GameBoardData(BoardSizes.Standard);
       gameBoardData.PlaceStartingSettlement(Guid.NewGuid(), 0);
-      var result = gameBoardData.CanPlaceSettlement(0);
+      Guid playerId;
+      var result = gameBoardData.CanPlaceSettlement(0, out playerId);
       result.ShouldBe(GameBoardData.VerificationResults.LocationIsOccupied);
+    }
+
+    [Test]
+    public void CanPlaceSettlement_TryPlacingOnSettledLocation_ReturnsOwnerOfOccupiedLocation()
+    {
+      var playerId = Guid.NewGuid();
+      var gameBoardData = new GameBoardData(BoardSizes.Standard);
+      gameBoardData.PlaceStartingSettlement(playerId, 0);
+      Guid occupyingPlayerId = Guid.Empty;
+      var result = gameBoardData.CanPlaceSettlement(0, out occupyingPlayerId);
+      occupyingPlayerId.ShouldBe(playerId);
     }
 
     [Test]

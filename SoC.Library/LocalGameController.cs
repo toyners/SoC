@@ -224,7 +224,8 @@ namespace Jabberwocky.SoC.Library
         return false;
       }
 
-      var canPlaceSettlement = this.gameBoardManager.Data.CanPlaceSettlement(firstSettlement);
+      Guid occupyingPlayerId;
+      var canPlaceSettlement = this.gameBoardManager.Data.CanPlaceSettlement(firstSettlement, out occupyingPlayerId);
       if (canPlaceSettlement == GameBoardData.VerificationResults.TooCloseToOpponent)
       {
         var exception = new Exception("Cannot place settlement");
