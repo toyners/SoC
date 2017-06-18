@@ -250,7 +250,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
       localGameController.ContinueGameSetup(firstSettlementOneLocation, new Road(0u, 1u));
       exception.ShouldNotBeNull();
-      exception.Message.ShouldBe("Cannot place settlement: Location + " + firstSettlementOneLocation + " already owned by player " + firstMockComputerPlayer.Id);
+      exception.Message.ShouldBe("Cannot place settlement: Location " + firstSettlementOneLocation + " already owned by player " + firstMockComputerPlayer.Id);
     }
 
     [Test]
