@@ -86,7 +86,19 @@ namespace Jabberwocky.SoC.Library.GameBoards
         return VerificationResults.LocationIsOccupied;
       }
 
-      // Get
+      var neighbourCount = 0;
+      for (UInt32 index = 0; index < this.connections.GetLength(1) && neighbourCount < 3; index++)
+      {
+        if (this.connections[locationIndex, index])
+        {
+          neighbourCount++;
+          if (this.settlements.ContainsKey(index))
+          {
+            playerId = this.settlements[locationIndex];
+            return VerificationResults.TooCloseToOpponent;
+          }
+        }
+      }
 
       return VerificationResults.Valid;
     }
