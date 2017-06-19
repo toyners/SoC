@@ -37,8 +37,8 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
       connections[0, 0].ShouldBeFalse();
       connections[0, 1].ShouldBeTrue();
+      connections[1, 0].ShouldBeTrue();
     }
-
 
     [Test]
     public void CanPlaceSettlement_TryPlacingOnSettledLocation_ReturnsLocationIsOccupied()
@@ -62,9 +62,9 @@ namespace Jabberwocky.SoC.Library.UnitTests
     }
 
     [Test]
-    [TestCase(31)]
     [TestCase(19)]
     [TestCase(21)]
+    [TestCase(31)]
     public void CanPlaceSettlement_TryPlacingNextToSettledLocation_ReturnsCorrectVerificationCode(UInt32 settlementIndex)
     {
       var playerId = Guid.NewGuid();
@@ -76,9 +76,9 @@ namespace Jabberwocky.SoC.Library.UnitTests
     }
 
     [Test]
-    [TestCase(31)]
     [TestCase(19)]
     [TestCase(21)]
+    [TestCase(31)]
     public void CanPlaceSettlement_TryPlacingNextToSettledLocation_ReturnsOwnerOfOccupiedLocation(UInt32 settlementIndex)
     {
       var playerId = Guid.NewGuid();

@@ -56,6 +56,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
 
       this.connections = new Boolean[GameBoardData.StandardBoardLocationCount, GameBoardData.StandardBoardLocationCount];
       this.ConnectLocationsVertically();
+      this.ConnectLocationsHorizontally();
 
       var index = this.StitchLocationsTogetherUsingVerticalTrails();
 
@@ -388,6 +389,26 @@ namespace Jabberwocky.SoC.Library.GameBoards
       }
 
       return index;
+    }
+
+    private void ConnectLocationsHorizontally()
+    {
+      // Add horizontal trails for columns
+      foreach (var setup in new[] {
+            new HorizontalTrailSetup(0, 4, 8),
+            new HorizontalTrailSetup(7, 5, 10),
+            new HorizontalTrailSetup(16, 6, 11),
+            new HorizontalTrailSetup(28, 5, 10),
+            new HorizontalTrailSetup(39, 4, 8) })
+      {
+        var count = setup.TrailCount;
+        var startIndex = setup.LocationIndexStart;
+        while (count-- > 0)
+        {
+          var endIndex = startIndex + setup.LocationIndexDiff;
+          this.connections[startIndex, endIndex] = this.connections[endIndex, startIndex] = true;
+        }
+      }
     }
 
     private void ConnectLocationsVertically()
