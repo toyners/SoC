@@ -20,8 +20,6 @@ namespace Jabberwocky.SoC.Library.GameBoards
     }
 
     #region Fields
-    //public Dictionary<Guid, List<Location>> SettlementsByPlayer;
-
     public Dictionary<Guid, List<Trail>> Roads;
 
     public Location[] Locations;
