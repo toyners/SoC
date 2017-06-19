@@ -35,7 +35,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
     public const Int32 StandardBoardResourceProviderCount = 19;
     private Dictionary<UInt32, Guid> settlements;
     private Dictionary<Guid, List<UInt32>> settlementsByPlayer;
-    private Int32[,] data;
+    private Boolean[,] connections;
     #endregion
 
     #region Construction
@@ -46,7 +46,6 @@ namespace Jabberwocky.SoC.Library.GameBoards
         throw new Exception("Extended boards not implemented.");
       }
 
-      this.data = new Int32[GameBoardData.StandardBoardLocationCount, GameBoardData.StandardBoardLocationCount];
       this.settlements = new Dictionary<UInt32, Guid>();
       this.settlementsByPlayer = new Dictionary<Guid, List<UInt32>>();
       this.Roads = new Dictionary<Guid, List<Trail>>();
@@ -54,6 +53,9 @@ namespace Jabberwocky.SoC.Library.GameBoards
       this.CreateLocations();
 
       this.Trails = new Trail[StandardBoardTrailCount];
+
+      this.connections = new Boolean[GameBoardData.StandardBoardLocationCount, GameBoardData.StandardBoardLocationCount];
+      this.ConnectLocationsVertically();
 
       var index = this.StitchLocationsTogetherUsingVerticalTrails();
 
@@ -86,6 +88,20 @@ namespace Jabberwocky.SoC.Library.GameBoards
       // Get
 
       return VerificationResults.Valid;
+    }
+
+    public Boolean[,] GetBoardSnapshot()
+    {
+      var snapshot = new Boolean[this.connections.GetLength(0), this.connections.GetLength(1)];
+      for (var x = 0u; x < this.connections.GetLength(0); x++)
+      {
+        for (var y = 0u; y < this.connections.GetLength(0); y++)
+        {
+          snapshot[x, y] = this.connections[x, y];
+        }
+      }
+
+      return snapshot;
     }
 
     public List<UInt32> GetPathBetweenLocations(UInt32 startIndex, UInt32 endIndex)
@@ -372,6 +388,23 @@ namespace Jabberwocky.SoC.Library.GameBoards
       }
 
       return index;
+    }
+
+    private void ConnectLocationsVertically()
+    {
+      var startIndex = -1;
+      foreach (var trailCount in new[] { 6, 8, 10, 10, 8, 6 })
+      {
+        var count = trailCount;
+        startIndex++;
+        var endIndex = startIndex + 1;
+        while (count-- > 0)
+        {
+          this.connections[startIndex, endIndex] = this.connections[endIndex, startIndex] = true;
+          startIndex++;
+          endIndex++;
+        }
+      }
     }
     #endregion
 
