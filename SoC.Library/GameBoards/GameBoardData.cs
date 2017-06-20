@@ -448,6 +448,13 @@ namespace Jabberwocky.SoC.Library.GameBoards
     #endregion
 
     #region Structs
+    public struct SettlementPlacementVerificationResults
+    {
+      public VerificationResults Result;
+      public Guid PlayerId;
+      public UInt32 LocationIndex;
+    }
+
     private struct HorizontalTrailSetup
     {
       public Int32 LocationIndexStart;
