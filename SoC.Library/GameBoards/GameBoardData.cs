@@ -103,6 +103,11 @@ namespace Jabberwocky.SoC.Library.GameBoards
       return VerificationResults.Valid;
     }
 
+    public Object CanPlaceSettlement(UInt32 locationIndex)
+    {
+      throw new NotImplementedException();
+    }
+
     public Boolean[,] GetBoardSnapshot()
     {
       var snapshot = new Boolean[this.connections.GetLength(0), this.connections.GetLength(1)];

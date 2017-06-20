@@ -12,12 +12,11 @@ namespace Jabberwocky.SoC.Library.UnitTests
   {
     #region Methods
     [Test]
-    public void CanPlaceSettlement_EmptyBoard_ReturnsValid()
+    public void CanPlaceSettlement_EmptyBoard_ReturnsNull()
     {
       var gameBoardData = new GameBoardData(BoardSizes.Standard);
-      Guid playerId;
-      var result = gameBoardData.CanPlaceSettlement(0, out playerId);
-      result.ShouldBe(GameBoardData.VerificationResults.Valid);
+      var result = gameBoardData.CanPlaceSettlement(0);
+      result.ShouldBeNull();
     }
 
     [Test]
