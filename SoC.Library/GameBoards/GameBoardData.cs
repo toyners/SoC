@@ -16,7 +16,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
       LocationIsOccupied,
       NoConnectingRoad,
       NoSettlementToUpgrade,
-      TooCloseToOpponent,
+      TooCloseToSettlement,
     }
 
     #region Fields
@@ -95,7 +95,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
           if (this.settlements.ContainsKey(index))
           {
             playerId = this.settlements[index];
-            return VerificationResults.TooCloseToOpponent;
+            return VerificationResults.TooCloseToSettlement;
           }
         }
       }

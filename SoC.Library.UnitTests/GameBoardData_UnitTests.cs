@@ -72,7 +72,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
       gameBoardData.PlaceStartingSettlement(playerId, 20);
       Guid occupyingPlayerId = Guid.Empty;
       var result = gameBoardData.CanPlaceSettlement(settlementIndex, out occupyingPlayerId);
-      result.ShouldBe(GameBoardData.VerificationResults.TooCloseToOpponent);
+      result.ShouldBe(GameBoardData.VerificationResults.TooCloseToSettlement);
     }
 
     [Test]

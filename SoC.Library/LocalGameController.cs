@@ -226,7 +226,7 @@ namespace Jabberwocky.SoC.Library
 
       Guid occupyingPlayerId;
       var canPlaceSettlement = this.gameBoardManager.Data.CanPlaceSettlement(settlementLocation, out occupyingPlayerId);
-      if (canPlaceSettlement == GameBoardData.VerificationResults.TooCloseToOpponent)
+      if (canPlaceSettlement == GameBoardData.VerificationResults.TooCloseToSettlement)
       {
         var exception = new Exception("Cannot place settlement: Location + " + settlementLocation + " already owned by player " + occupyingPlayerId);
         this.ExceptionRaisedEvent?.Invoke(exception);
