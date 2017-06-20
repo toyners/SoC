@@ -228,7 +228,7 @@ namespace Jabberwocky.SoC.Library
       var canPlaceSettlement = this.gameBoardManager.Data.CanPlaceSettlement(settlementLocation, out occupyingPlayerId);
       if (canPlaceSettlement == GameBoardData.VerificationResults.TooCloseToSettlement)
       {
-        var exception = new Exception("Cannot place settlement: Location + " + settlementLocation + " already owned by player " + occupyingPlayerId);
+        var exception = new Exception("Cannot place settlement: Too close to player " + occupyingPlayerId + " at location " + settlementLocation);
         this.ExceptionRaisedEvent?.Invoke(exception);
       }
       else if (canPlaceSettlement == GameBoardData.VerificationResults.LocationIsOccupied)
@@ -306,10 +306,5 @@ namespace Jabberwocky.SoC.Library
       return gameBoardUpdate;
     }
     #endregion
-  }
-
-  public class ErrorMessage
-  {
-    public String Message;
   }
 }
