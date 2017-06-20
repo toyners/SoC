@@ -16,16 +16,9 @@ namespace Jabberwocky.SoC.Library.UnitTests
     {
       var gameBoardData = new GameBoardData(BoardSizes.Standard);
       var result = gameBoardData.CanPlaceSettlement(0);
-      result.ShouldBeNull();
-    }
-
-    [Test]
-    public void CanPlaceSettlement_EmptyBoard_ReturnsEmptyOccupyingPlayer()
-    {
-      var gameBoardData = new GameBoardData(BoardSizes.Standard);
-      Guid playerId = Guid.NewGuid();
-      gameBoardData.CanPlaceSettlement(0, out playerId);
-      playerId.ShouldBe(Guid.Empty);
+      result.Status.ShouldBe(GameBoardData.VerificationResults.Valid);
+      result.LocationIndex.ShouldBe(0u);
+      result.PlayerId.ShouldBe(Guid.Empty);
     }
 
     [Test]
@@ -40,38 +33,33 @@ namespace Jabberwocky.SoC.Library.UnitTests
     }
 
     [Test]
-    public void CanPlaceSettlement_TryPlacingOnSettledLocation_ReturnsLocationIsOccupied()
+    public void CanPlaceSettlement_TryPlacingOnSettledLocation_ReturnsLocationIsOccupiedStatus()
     {
       var gameBoardData = new GameBoardData(BoardSizes.Standard);
-      gameBoardData.PlaceStartingSettlement(Guid.NewGuid(), 0);
-      Guid playerId;
-      var result = gameBoardData.CanPlaceSettlement(0, out playerId);
-      result.ShouldBe(GameBoardData.VerificationResults.LocationIsOccupied);
-    }
-
-    [Test]
-    public void CanPlaceSettlement_TryPlacingOnSettledLocation_ReturnsOwnerOfOccupiedLocation()
-    {
       var playerId = Guid.NewGuid();
-      var gameBoardData = new GameBoardData(BoardSizes.Standard);
-      gameBoardData.PlaceStartingSettlement(playerId, 0);
-      Guid occupyingPlayerId = Guid.Empty;
-      var result = gameBoardData.CanPlaceSettlement(0, out occupyingPlayerId);
-      occupyingPlayerId.ShouldBe(playerId);
+      gameBoardData.PlaceStartingSettlement(playerId, 1);
+      
+      var result = gameBoardData.CanPlaceSettlement(1);
+      result.Status.ShouldBe(GameBoardData.VerificationResults.LocationIsOccupied);
+      result.LocationIndex.ShouldBe(1u);
+      result.PlayerId.ShouldBe(playerId);
     }
 
     [Test]
     [TestCase(19u)]
     [TestCase(21u)]
     [TestCase(31u)]
-    public void CanPlaceSettlement_TryPlacingNextToSettledLocation_ReturnsCorrectVerificationCode(UInt32 settlementIndex)
+    public void CanPlaceSettlement_TryPlacingNextToSettledLocation_ReturnsCorrectVerificationCode(UInt32 newLocation)
     {
       var playerId = Guid.NewGuid();
+      var location = 20u;
       var gameBoardData = new GameBoardData(BoardSizes.Standard);
-      gameBoardData.PlaceStartingSettlement(playerId, 20);
-      Guid occupyingPlayerId = Guid.Empty;
-      var result = gameBoardData.CanPlaceSettlement(settlementIndex, out occupyingPlayerId);
-      result.ShouldBe(GameBoardData.VerificationResults.TooCloseToSettlement);
+      gameBoardData.PlaceStartingSettlement(playerId, location);
+      var result = gameBoardData.CanPlaceSettlement(newLocation);
+
+      result.Status.ShouldBe(GameBoardData.VerificationResults.TooCloseToSettlement);
+      result.LocationIndex.ShouldBe(location);
+      result.PlayerId.ShouldBe(playerId);
     }
 
     [Test]

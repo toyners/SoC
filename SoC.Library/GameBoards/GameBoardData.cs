@@ -103,7 +103,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
       return VerificationResults.Valid;
     }
 
-    public Object CanPlaceSettlement(UInt32 locationIndex)
+    public SettlementPlacementVerificationResults CanPlaceSettlement(UInt32 locationIndex)
     {
       throw new NotImplementedException();
     }
@@ -450,7 +450,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
     #region Structs
     public struct SettlementPlacementVerificationResults
     {
-      public VerificationResults Result;
+      public VerificationResults Status;
       public Guid PlayerId;
       public UInt32 LocationIndex;
     }
