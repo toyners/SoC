@@ -94,7 +94,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
           neighbourCount++;
           if (this.settlements.ContainsKey(index))
           {
-            playerId = this.settlements[locationIndex];
+            playerId = this.settlements[index];
             return VerificationResults.TooCloseToOpponent;
           }
         }
@@ -419,6 +419,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
         {
           var endIndex = startIndex + setup.LocationIndexDiff;
           this.connections[startIndex, endIndex] = this.connections[endIndex, startIndex] = true;
+          startIndex += 2;
         }
       }
     }
