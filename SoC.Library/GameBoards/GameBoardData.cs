@@ -117,17 +117,14 @@ namespace Jabberwocky.SoC.Library.GameBoards
 
       for (UInt32 index = 0; index < this.connections.GetLength(1); index++)
       {
-        if (this.connections[locationIndex, index])
+        if (this.connections[locationIndex, index] && this.settlements.ContainsKey(index))
         {
-          if (this.settlements.ContainsKey(index))
+          return new SettlementPlacementVerificationResults
           {
-            return new SettlementPlacementVerificationResults
-            {
-              Status = VerificationResults.TooCloseToSettlement,
-              LocationIndex = index,
-              PlayerId = this.settlements[index]
-            };
-          }
+            Status = VerificationResults.TooCloseToSettlement,
+            LocationIndex = index,
+            PlayerId = this.settlements[index]
+          };
         }
       }
 
