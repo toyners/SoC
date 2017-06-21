@@ -240,17 +240,19 @@ namespace Jabberwocky.SoC.Library.UnitTests
       mockComputerPlayerFactory.Create().Returns(firstMockComputerPlayer, secondMockComputerPlayer, thirdMockComputerPlayer);
 
       Exception exception = null;
+      GameBoardUpdate gameBoardUpdate = null;
       var localGameController = this.CreateLocalGameController(mockDice, mockComputerPlayerFactory, gameBoardManager);
       localGameController.ExceptionRaisedEvent = (Exception e) => { exception = e; };
+      localGameController.GameSetupUpdateEvent = (GameBoardUpdate u) => { gameBoardUpdate = u; };
 
       localGameController.TryJoiningGame(null);
       localGameController.TryLaunchGame();
-
       localGameController.StartGameSetup();
 
       localGameController.ContinueGameSetup(firstSettlementOneLocation, new Road(0u, 1u));
       exception.ShouldNotBeNull();
       exception.Message.ShouldBe("Cannot place settlement: Location " + firstSettlementOneLocation + " already owned by player " + firstMockComputerPlayer.Id);
+      gameBoardUpdate.ShouldBeNull();
     }
 
     [Test]
@@ -269,17 +271,19 @@ namespace Jabberwocky.SoC.Library.UnitTests
       mockComputerPlayerFactory.Create().Returns(firstMockComputerPlayer, secondMockComputerPlayer, thirdMockComputerPlayer);
 
       Exception exception = null;
+      GameBoardUpdate gameBoardUpdate = null;
       var localGameController = this.CreateLocalGameController(mockDice, mockComputerPlayerFactory, gameBoardManager);
       localGameController.ExceptionRaisedEvent = (Exception e) => { exception = e; };
-
+      localGameController.GameSetupUpdateEvent = (GameBoardUpdate u) => { gameBoardUpdate = u; };
       localGameController.TryJoiningGame(null);
       localGameController.TryLaunchGame();
-
       localGameController.StartGameSetup();
 
       localGameController.ContinueGameSetup(19u, new Road(0u, 1u));
+
       exception.ShouldNotBeNull();
       exception.Message.ShouldBe("Cannot place settlement: Too close to player " + firstMockComputerPlayer.Id + " at location " + firstSettlementOneLocation);
+      gameBoardUpdate.ShouldBeNull();
     }
 
     [Test]
