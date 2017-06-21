@@ -115,12 +115,10 @@ namespace Jabberwocky.SoC.Library.GameBoards
         };
       }
 
-      var neighbourCount = 0;
-      for (UInt32 index = 0; index < this.connections.GetLength(1) && neighbourCount < 3; index++)
+      for (UInt32 index = 0; index < this.connections.GetLength(1); index++)
       {
         if (this.connections[locationIndex, index])
         {
-          neighbourCount++;
           if (this.settlements.ContainsKey(index))
           {
             return new SettlementPlacementVerificationResults
