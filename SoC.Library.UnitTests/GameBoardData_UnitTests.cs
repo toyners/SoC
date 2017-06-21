@@ -63,20 +63,6 @@ namespace Jabberwocky.SoC.Library.UnitTests
     }
 
     [Test]
-    [TestCase(19u)]
-    [TestCase(21u)]
-    [TestCase(31u)]
-    public void CanPlaceSettlement_TryPlacingNextToSettledLocation_ReturnsOwnerOfOccupiedLocation(UInt32 settlementIndex)
-    {
-      var playerId = Guid.NewGuid();
-      var gameBoardData = new GameBoardData(BoardSizes.Standard);
-      gameBoardData.PlaceStartingSettlement(playerId, 20);
-      Guid occupyingPlayerId = Guid.Empty;
-      var result = gameBoardData.CanPlaceSettlement(settlementIndex, out occupyingPlayerId);
-      occupyingPlayerId.ShouldBe(playerId);
-    }
-
-    [Test]
     public void GetPathBetweenLocations_StartAndEndAreSame_ReturnsNull()
     {
       var gameBoardData = new GameBoardData(BoardSizes.Standard);

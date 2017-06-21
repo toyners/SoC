@@ -105,7 +105,12 @@ namespace Jabberwocky.SoC.Library.GameBoards
 
     public SettlementPlacementVerificationResults CanPlaceSettlement(UInt32 locationIndex)
     {
-      throw new NotImplementedException();
+      return new SettlementPlacementVerificationResults
+      {
+        Status = VerificationResults.Valid,
+        LocationIndex = 0u,
+        PlayerId = Guid.Empty
+      };
     }
 
     public Boolean[,] GetBoardSnapshot()
