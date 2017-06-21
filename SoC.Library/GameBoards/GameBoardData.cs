@@ -105,6 +105,34 @@ namespace Jabberwocky.SoC.Library.GameBoards
 
     public SettlementPlacementVerificationResults CanPlaceSettlement(UInt32 locationIndex)
     {
+      if (this.settlements.ContainsKey(locationIndex))
+      {
+        return new SettlementPlacementVerificationResults
+        {
+          Status = VerificationResults.LocationIsOccupied,
+          LocationIndex = locationIndex,
+          PlayerId = this.settlements[locationIndex]
+        };
+      }
+
+      var neighbourCount = 0;
+      for (UInt32 index = 0; index < this.connections.GetLength(1) && neighbourCount < 3; index++)
+      {
+        if (this.connections[locationIndex, index])
+        {
+          neighbourCount++;
+          if (this.settlements.ContainsKey(index))
+          {
+            return new SettlementPlacementVerificationResults
+            {
+              Status = VerificationResults.TooCloseToSettlement,
+              LocationIndex = index,
+              PlayerId = this.settlements[index]
+            };
+          }
+        }
+      }
+
       return new SettlementPlacementVerificationResults
       {
         Status = VerificationResults.Valid,
