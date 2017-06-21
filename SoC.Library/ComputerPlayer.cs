@@ -89,8 +89,9 @@ namespace Jabberwocky.SoC.Library
       // Iterate over every location and determine the chance of return for all resource providers
       for (UInt32 index = 0; index < gameBoardData.Locations.Length; index++)
       {
-        Guid playerId;
-        if (gameBoardData.CanPlaceSettlement(index, out playerId) != GameBoardData.VerificationResults.Valid)
+        //Guid playerId;
+        var canPlaceResult = gameBoardData.CanPlaceSettlement(index);
+        if (canPlaceResult.Status != GameBoardData.VerificationResults.Valid)
         {
           continue;
         }

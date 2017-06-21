@@ -224,16 +224,15 @@ namespace Jabberwocky.SoC.Library
         return false;
       }
 
-      Guid occupyingPlayerId;
-      var canPlaceSettlement = this.gameBoardManager.Data.CanPlaceSettlement(settlementLocation, out occupyingPlayerId);
-      if (canPlaceSettlement == GameBoardData.VerificationResults.TooCloseToSettlement)
+      var canPlaceResults = this.gameBoardManager.Data.CanPlaceSettlement(settlementLocation);
+      if (canPlaceResults.Status == GameBoardData.VerificationResults.TooCloseToSettlement)
       {
-        var exception = new Exception("Cannot place settlement: Too close to player " + occupyingPlayerId + " at location " + settlementLocation);
+        var exception = new Exception("Cannot place settlement: Too close to player " + canPlaceResults.PlayerId + " at location " + canPlaceResults.LocationIndex);
         this.ExceptionRaisedEvent?.Invoke(exception);
       }
-      else if (canPlaceSettlement == GameBoardData.VerificationResults.LocationIsOccupied)
+      else if (canPlaceResults.Status == GameBoardData.VerificationResults.LocationIsOccupied)
       {
-        var exception = new Exception("Cannot place settlement: Location " + settlementLocation + " already owned by player " + occupyingPlayerId);
+        var exception = new Exception("Cannot place settlement: Location " + settlementLocation + " already owned by player " + canPlaceResults.PlayerId);
         this.ExceptionRaisedEvent?.Invoke(exception);
       }
       else

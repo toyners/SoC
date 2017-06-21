@@ -77,32 +77,6 @@ namespace Jabberwocky.SoC.Library.GameBoards
       throw new NotImplementedException();
     }
 
-    public VerificationResults CanPlaceSettlement(UInt32 locationIndex, out Guid playerId)
-    {
-      playerId = Guid.Empty;
-      if (this.settlements.ContainsKey(locationIndex))
-      {
-        playerId = this.settlements[locationIndex];
-        return VerificationResults.LocationIsOccupied;
-      }
-
-      var neighbourCount = 0;
-      for (UInt32 index = 0; index < this.connections.GetLength(1) && neighbourCount < 3; index++)
-      {
-        if (this.connections[locationIndex, index])
-        {
-          neighbourCount++;
-          if (this.settlements.ContainsKey(index))
-          {
-            playerId = this.settlements[index];
-            return VerificationResults.TooCloseToSettlement;
-          }
-        }
-      }
-
-      return VerificationResults.Valid;
-    }
-
     public SettlementPlacementVerificationResults CanPlaceSettlement(UInt32 locationIndex)
     {
       if (this.settlements.ContainsKey(locationIndex))
