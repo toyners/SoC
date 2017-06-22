@@ -234,17 +234,17 @@ namespace Jabberwocky.SoC.Library
       {
         var exception = new Exception("Cannot place settlement: Too close to player " + canPlaceResults.PlayerId + " at location " + canPlaceResults.LocationIndex);
         this.ExceptionRaisedEvent?.Invoke(exception);
+        return false;
       }
-      else if (canPlaceResults.Status == GameBoardData.VerificationResults.LocationIsOccupied)
+
+      if (canPlaceResults.Status == GameBoardData.VerificationResults.LocationIsOccupied)
       {
         var exception = new Exception("Cannot place settlement: Location " + settlementLocation + " already owned by player " + canPlaceResults.PlayerId);
         this.ExceptionRaisedEvent?.Invoke(exception);
-      }
-      else
-      {
-        this.gameBoardManager.Data.PlaceStartingSettlement(this.mainPlayer.Id, settlementLocation);
+        return false;
       }
 
+      this.gameBoardManager.Data.PlaceStartingSettlement(this.mainPlayer.Id, settlementLocation);
       this.gameBoardManager.Data.PlaceStartingRoad(this.mainPlayer.Id, road);
 
       var gameBoardData = this.gameBoardManager.Data;
