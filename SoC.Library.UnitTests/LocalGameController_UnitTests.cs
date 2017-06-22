@@ -302,6 +302,40 @@ namespace Jabberwocky.SoC.Library.UnitTests
     }
 
     [Test]
+    public void PlayerSelectsSameRoadAsComputerplayerDuringSetup_MeaningfulExceptionPassedBack()
+    {
+      /*var mockDice = Substitute.For<IDice>();
+      mockDice.RollTwoDice().Returns(10u, 12u, 8u, 6u);
+
+      var gameBoardManager = new GameBoardManager(BoardSizes.Standard);
+
+      var firstMockComputerPlayer = this.CreateMockComputerPlayer(gameBoardManager.Data, firstSettlementOneLocation, firstSettlementTwoLocation, firstRoadOne, firstRoadTwo);
+      var secondMockComputerPlayer = this.CreateMockComputerPlayer(gameBoardManager.Data, secondSettlementOneLocation, secondSettlementTwoLocation, secondRoadOne, secondRoadTwo);
+      var thirdMockComputerPlayer = this.CreateMockComputerPlayer(gameBoardManager.Data, thirdSettlementOneLocation, thirdSettlementTwoLocation, thirdRoadOne, thirdRoadTwo);
+
+      var mockComputerPlayerFactory = Substitute.For<IComputerPlayerFactory>();
+      mockComputerPlayerFactory.Create().Returns(firstMockComputerPlayer, secondMockComputerPlayer, thirdMockComputerPlayer);
+
+      Exception exception = null;
+      var localGameController = this.CreateLocalGameController(mockDice, mockComputerPlayerFactory, gameBoardManager);
+      localGameController.ExceptionRaisedEvent = (Exception e) => { exception = e; };
+
+      localGameController.TryJoiningGame();
+      localGameController.TryLaunchGame();
+      localGameController.StartGameSetup();
+
+      GameBoardUpdate gameBoardUpdate = null;
+      localGameController.GameSetupUpdateEvent = (GameBoardUpdate u) => { gameBoardUpdate = u; };
+
+      localGameController.ContinueGameSetup(firstSettlementOneLocation, new Road(0u, 1u));
+      exception.ShouldNotBeNull();
+      exception.Message.ShouldBe("Cannot place settlement: Location " + firstSettlementOneLocation + " already owned by player " + firstMockComputerPlayer.Id);
+      gameBoardUpdate.ShouldBeNull();*/
+
+      throw new NotImplementedException();
+    }
+
+    [Test]
     public void CompleteSetupWithPlayerInThirdSlot()
     {
       var mockDice = Substitute.For<IDice>();
