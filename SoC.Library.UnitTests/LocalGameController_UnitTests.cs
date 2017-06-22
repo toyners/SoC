@@ -289,6 +289,19 @@ namespace Jabberwocky.SoC.Library.UnitTests
     }
 
     [Test]
+    public void ContinueGameSetup_CallOutOfSequence_ExpectedExceptionPassedBack()
+    {
+      var localGameController = this.CreateLocalGameController();
+      Exception exception = null;
+      localGameController.ExceptionRaisedEvent = (Exception e) => { exception = e; };
+
+      localGameController.ContinueGameSetup(0u, new Road(0u, 1u));
+
+      exception.ShouldNotBeNull();
+      exception.Message.ShouldBe("Cannot call 'ContinueGameSetup' until 'StartGameSetup' has completed.");
+    }
+
+    [Test]
     public void CompleteSetupWithPlayerInThirdSlot()
     {
       var mockDice = Substitute.For<IDice>();

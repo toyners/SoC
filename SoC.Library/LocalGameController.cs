@@ -222,11 +222,13 @@ namespace Jabberwocky.SoC.Library
       return true;
     }
 
-    public Boolean ContinueGameSetup(UInt32 settlementLocation, Road road)
+    public void ContinueGameSetup(UInt32 settlementLocation, Road road)
     {
       if (this.gamePhase != GamePhases.ContinueGameSetup)
       {
-        return false;
+        var exception = new Exception("Cannot call 'ContinueGameSetup' until 'StartGameSetup' has completed.");
+        this.ExceptionRaisedEvent?.Invoke(exception);
+        return;
       }
 
       var canPlaceResults = this.gameBoardManager.Data.CanPlaceSettlement(settlementLocation);
@@ -234,14 +236,14 @@ namespace Jabberwocky.SoC.Library
       {
         var exception = new Exception("Cannot place settlement: Too close to player " + canPlaceResults.PlayerId + " at location " + canPlaceResults.LocationIndex);
         this.ExceptionRaisedEvent?.Invoke(exception);
-        return false;
+        return;
       }
 
       if (canPlaceResults.Status == GameBoardData.VerificationResults.LocationIsOccupied)
       {
         var exception = new Exception("Cannot place settlement: Location " + settlementLocation + " already owned by player " + canPlaceResults.PlayerId);
         this.ExceptionRaisedEvent?.Invoke(exception);
-        return false;
+        return;
       }
 
       this.gameBoardManager.Data.PlaceStartingSettlement(this.mainPlayer.Id, settlementLocation);
@@ -255,8 +257,6 @@ namespace Jabberwocky.SoC.Library
 
       this.GameSetupUpdateEvent?.Invoke(gameBoardUpdate);
       this.gamePhase = GamePhases.CompleteGameSetup;
-
-      return true;
     }
 
     public Boolean CompleteGameSetup(UInt32 lastSettlement, Road lastRoad)
