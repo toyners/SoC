@@ -105,6 +105,11 @@ namespace Jabberwocky.SoC.Library
       this.gamePhase = GamePhases.Quitting;
     }
 
+    public Boolean TryJoiningGame()
+    {
+      return this.TryJoiningGame(null);
+    }
+
     public Boolean TryJoiningGame(GameOptions gameOptions)
     {
       if (this.gamePhase != GamePhases.Initial)
