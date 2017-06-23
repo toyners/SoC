@@ -302,37 +302,25 @@ namespace Jabberwocky.SoC.Library.UnitTests
     }
 
     [Test]
-    public void PlayerSelectsSameRoadAsComputerplayerDuringSetup_MeaningfulExceptionPassedBack()
+    public void PlayerPlacesRoadWithNoConnectionToAnySettlements_MeaningfulExceptionPassedBack()
     {
-      /*var mockDice = Substitute.For<IDice>();
-      mockDice.RollTwoDice().Returns(10u, 12u, 8u, 6u);
-
-      var gameBoardManager = new GameBoardManager(BoardSizes.Standard);
-
-      var firstMockComputerPlayer = this.CreateMockComputerPlayer(gameBoardManager.Data, firstSettlementOneLocation, firstSettlementTwoLocation, firstRoadOne, firstRoadTwo);
-      var secondMockComputerPlayer = this.CreateMockComputerPlayer(gameBoardManager.Data, secondSettlementOneLocation, secondSettlementTwoLocation, secondRoadOne, secondRoadTwo);
-      var thirdMockComputerPlayer = this.CreateMockComputerPlayer(gameBoardManager.Data, thirdSettlementOneLocation, thirdSettlementTwoLocation, thirdRoadOne, thirdRoadTwo);
-
-      var mockComputerPlayerFactory = Substitute.For<IComputerPlayerFactory>();
-      mockComputerPlayerFactory.Create().Returns(firstMockComputerPlayer, secondMockComputerPlayer, thirdMockComputerPlayer);
+      var mockDice = Substitute.For<IDice>();
+      mockDice.RollTwoDice().Returns(12u, 10u, 8u, 6u);
 
       Exception exception = null;
-      var localGameController = this.CreateLocalGameController(mockDice, mockComputerPlayerFactory, gameBoardManager);
+      GameBoardUpdate gameBoardUpdate = null;
+      var localGameController = this.CreateLocalGameController(mockDice, new ComputerPlayerFactory(), new GameBoardManager(BoardSizes.Standard));
       localGameController.ExceptionRaisedEvent = (Exception e) => { exception = e; };
+      localGameController.GameSetupUpdateEvent = (GameBoardUpdate u) => { gameBoardUpdate = u; };
 
       localGameController.TryJoiningGame();
       localGameController.TryLaunchGame();
       localGameController.StartGameSetup();
+      localGameController.ContinueGameSetup(0u, new Road(1u, 2u));
 
-      GameBoardUpdate gameBoardUpdate = null;
-      localGameController.GameSetupUpdateEvent = (GameBoardUpdate u) => { gameBoardUpdate = u; };
-
-      localGameController.ContinueGameSetup(firstSettlementOneLocation, new Road(0u, 1u));
       exception.ShouldNotBeNull();
-      exception.Message.ShouldBe("Cannot place settlement: Location " + firstSettlementOneLocation + " already owned by player " + firstMockComputerPlayer.Id);
-      gameBoardUpdate.ShouldBeNull();*/
-
-      throw new NotImplementedException();
+      exception.Message.ShouldBe("Cannot place road: No connection to a player settlement or city.");
+      gameBoardUpdate.ShouldBeNull();
     }
 
     [Test]
