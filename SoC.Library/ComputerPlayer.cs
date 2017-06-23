@@ -27,8 +27,6 @@ namespace Jabberwocky.SoC.Library
 
       var locationIndex = settlementsForPlayer[0];
       var path = this.GetPathToLocationThatHasBestChanceOfReturnOnRoll(gameBoardData, locationIndex);
-      var roadStartLocation = gameBoardData.Locations[locationIndex];
-      var roadEndLocation = gameBoardData.Locations[path[path.Count - 1]];
 
       return new Road(locationIndex, path[path.Count - 1]);
     }
