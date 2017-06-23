@@ -31,17 +31,6 @@ namespace Jabberwocky.SoC.Library
       var roadEndLocation = gameBoardData.Locations[path[path.Count - 1]];
 
       return new Road(locationIndex, path[path.Count - 1]);
-       
-      /*foreach (var trail in gameBoardData.Trails)
-      {
-        if ((trail.Location1 == roadStartLocation && trail.Location2 == roadEndLocation) ||
-          (trail.Location2 == roadStartLocation && trail.Location1 == roadEndLocation))
-        {
-          return trail;
-        }
-      }*/
-
-      throw new NotImplementedException();
     }
 
     public UInt32 ChooseSettlementLocation(GameBoardData gameBoardData)
