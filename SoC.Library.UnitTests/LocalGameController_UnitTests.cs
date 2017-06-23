@@ -12,21 +12,21 @@ namespace Jabberwocky.SoC.Library.UnitTests
   public class LocalGameController_UnitTests
   {
     #region Fields
-    UInt32 firstSettlementOneLocation = 18u;
-    UInt32 secondSettlementOneLocation = 25u;
-    UInt32 thirdSettlementOneLocation = 31u;
+    private UInt32 firstSettlementOneLocation = 18u;
+    private UInt32 secondSettlementOneLocation = 25u;
+    private UInt32 thirdSettlementOneLocation = 31u;
 
-    UInt32 thirdSettlementTwoLocation = 33u;
-    UInt32 secondSettlementTwoLocation = 35u;
-    UInt32 firstSettlementTwoLocation = 43u;
+    private UInt32 thirdSettlementTwoLocation = 33u;
+    private UInt32 secondSettlementTwoLocation = 35u;
+    private UInt32 firstSettlementTwoLocation = 43u;
 
-    Road firstRoadOne = new Road(17u, 18u);
-    Road secondRoadOne = new Road(15u, 25u);
-    Road thirdRoadOne = new Road(30u, 31u);
+    private Road firstRoadOne = new Road(17u, 18u);
+    private Road secondRoadOne = new Road(15u, 25u);
+    private Road thirdRoadOne = new Road(30u, 31u);
 
-    Road thirdRoadTwo = new Road(32u, 33u);
-    Road secondRoadTwo = new Road(24u, 35u);
-    Road firstRoadTwo = new Road(43u, 44u);
+    private Road thirdRoadTwo = new Road(32u, 33u);
+    private Road secondRoadTwo = new Road(24u, 35u);
+    private Road firstRoadTwo = new Road(43u, 44u);
     #endregion
 
     #region Methods
@@ -454,15 +454,15 @@ namespace Jabberwocky.SoC.Library.UnitTests
       return localGameController;
     }
 
-    private IComputerPlayer CreateMockComputerPlayer(GameBoardData gameBoardData, UInt32 firstSettlementOneLocation, UInt32 firstSettlementTwoLocation, Road firstRoadOne, Road firstRoadTwo)
+    private IComputerPlayer CreateMockComputerPlayer(GameBoardData gameBoardData, UInt32 settlementOneLocation, UInt32 settlementTwoLocation, Road roadOne, Road roadTwo)
     {
       var mockComputerPlayer = Substitute.For<IComputerPlayer>();
       var playerId = Guid.NewGuid();
       mockComputerPlayer.Id.Returns(playerId);
       mockComputerPlayer.ChooseSettlementLocation(gameBoardData)
-        .Returns(firstSettlementOneLocation, firstSettlementTwoLocation);
+        .Returns(settlementOneLocation, settlementTwoLocation);
       mockComputerPlayer.ChooseRoad(gameBoardData)
-        .Returns(firstRoadOne, firstRoadTwo);
+        .Returns(roadOne, roadTwo);
 
       return mockComputerPlayer;
     }
