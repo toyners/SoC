@@ -74,12 +74,12 @@ namespace Jabberwocky.SoC.Library.GameBoards
 
     public RoadPlacementVerificationResults CanPlaceRoad(Road road)
     {
-      throw new NotImplementedException();
-    }
+      if (!this.settlements.ContainsKey(road.Location1) && !this.settlements.ContainsKey(road.Location2))
+      {
+        return new RoadPlacementVerificationResults { Status = VerificationResults.NotConnectedToExistingInfrastructure };
+      }
 
-    public VerificationResults CanPlaceRoad(PlayerData player, Location startLocation, Location endLocation)
-    {
-      throw new NotImplementedException();
+      return new RoadPlacementVerificationResults { Status = VerificationResults.Valid };
     }
 
     public SettlementPlacementVerificationResults CanPlaceSettlement(UInt32 locationIndex)
