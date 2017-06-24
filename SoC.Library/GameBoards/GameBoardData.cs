@@ -14,7 +14,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
     {
       Valid,
       LocationIsOccupied,
-      NoConnectingRoad,
+      NotConnectedToExistingInfrastructure,
       NoSettlementToUpgrade,
       TooCloseToSettlement,
     }
@@ -68,6 +68,11 @@ namespace Jabberwocky.SoC.Library.GameBoards
 
     #region Methods
     public VerificationResults CanPlaceCity(PlayerData player, Location location)
+    {
+      throw new NotImplementedException();
+    }
+
+    public RoadPlacementVerificationResults CanPlaceRoad(Road road)
     {
       throw new NotImplementedException();
     }
@@ -441,6 +446,11 @@ namespace Jabberwocky.SoC.Library.GameBoards
     #endregion
 
     #region Structs
+    public struct RoadPlacementVerificationResults
+    {
+      public VerificationResults Status;
+    }
+
     public struct SettlementPlacementVerificationResults
     {
       public VerificationResults Status;

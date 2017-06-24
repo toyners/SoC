@@ -12,6 +12,25 @@ namespace Jabberwocky.SoC.Library.UnitTests
   {
     #region Methods
     [Test]
+    public void CanPlaceRoad_EmptyBoard_ReturnsNotConnected()
+    {
+      var gameBoardData = new GameBoardData(BoardSizes.Standard);
+      var result = gameBoardData.CanPlaceRoad(new Road(0u, 1u));
+      result.Status.ShouldBe(GameBoardData.VerificationResults.NotConnectedToExistingInfrastructure);
+    }
+
+    [Test]
+    public void CanPlaceRoad_RoadNotConnectedToPlacedSettlement_ReturnsNotConnected()
+    {
+      var gameBoardData = new GameBoardData(BoardSizes.Standard);
+      var playerId = Guid.NewGuid();
+      gameBoardData.PlaceStartingSettlement(playerId, 0);
+
+      var result = gameBoardData.CanPlaceRoad(new Road(1u, 2u));
+      result.Status.ShouldBe(GameBoardData.VerificationResults.NotConnectedToExistingInfrastructure);
+    }
+
+    [Test]
     public void CanPlaceSettlement_EmptyBoard_ReturnsNull()
     {
       var gameBoardData = new GameBoardData(BoardSizes.Standard);
