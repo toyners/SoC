@@ -22,17 +22,6 @@ namespace Jabberwocky.SoC.Library.UnitTests
     }
 
     [Test]
-    public void Test()
-    {
-      var gameBoardData = new GameBoardData(BoardSizes.Standard);
-      var connections = gameBoardData.GetBoardSnapshot();
-
-      connections[0, 0].ShouldBeFalse();
-      connections[0, 1].ShouldBeTrue();
-      connections[1, 0].ShouldBeTrue();
-    }
-
-    [Test]
     public void CanPlaceSettlement_TryPlacingOnSettledLocation_ReturnsLocationIsOccupiedStatus()
     {
       var gameBoardData = new GameBoardData(BoardSizes.Standard);
