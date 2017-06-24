@@ -246,8 +246,8 @@ namespace Jabberwocky.SoC.Library
         return;
       }
 
-      this.gameBoardManager.Data.PlaceStartingSettlement(this.mainPlayer.Id, settlementLocation);
-      this.gameBoardManager.Data.PlaceStartingRoad(this.mainPlayer.Id, road);
+      this.gameBoardManager.Data.PlaceSettlement(this.mainPlayer.Id, settlementLocation);
+      this.gameBoardManager.Data.PlaceRoad(this.mainPlayer.Id, road);
 
       var gameBoardData = this.gameBoardManager.Data;
 
@@ -266,8 +266,8 @@ namespace Jabberwocky.SoC.Library
         return false;
       }
 
-      this.gameBoardManager.Data.PlaceStartingSettlement(this.mainPlayer.Id, lastSettlement);
-      this.gameBoardManager.Data.PlaceStartingRoad(this.mainPlayer.Id, lastRoad);
+      this.gameBoardManager.Data.PlaceSettlement(this.mainPlayer.Id, lastSettlement);
+      this.gameBoardManager.Data.PlaceRoad(this.mainPlayer.Id, lastRoad);
 
       var gameBoardData = this.gameBoardManager.Data;
       GameBoardUpdate gameBoardUpdate = this.ContinueSetupForComputerPlayers(gameBoardData, -1, null);
@@ -299,7 +299,7 @@ namespace Jabberwocky.SoC.Library
 
         var computerPlayer = (IComputerPlayer)player;
         var chosenSettlementIndex = computerPlayer.ChooseSettlementLocation(gameBoardData);
-        gameBoardData.PlaceStartingSettlement(computerPlayer.Id, chosenSettlementIndex);
+        gameBoardData.PlaceSettlement(computerPlayer.Id, chosenSettlementIndex);
         gameBoardUpdate.NewSettlements.Add(chosenSettlementIndex, computerPlayer.Id);
 
         var chosenRoad = computerPlayer.ChooseRoad(gameBoardData);

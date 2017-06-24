@@ -149,11 +149,11 @@ namespace Jabberwocky.SoC.Library.GameBoards
       return this.settlementsByPlayer[playerId];
     }
 
-    public void PlaceStartingRoad(Guid playerId, Road road)
+    public void PlaceRoad(Guid playerId, Road road)
     {
     }
 
-    public void PlaceStartingSettlement(Guid playerId, UInt32 locationIndex)
+    public void PlaceSettlement(Guid playerId, UInt32 locationIndex)
     {
       if (this.settlementsByPlayer.ContainsKey(playerId))
       {

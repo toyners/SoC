@@ -25,7 +25,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     public void ChooseSettlementLocation_GetBestLocationOnBoardWithBestLocationUnavailable_ReturnsBestLocation()
     {
       var gameBoardData = new GameBoardData(BoardSizes.Standard);
-      gameBoardData.PlaceStartingSettlement(Guid.NewGuid(), 12);
+      gameBoardData.PlaceSettlement(Guid.NewGuid(), 12);
 
       var computerPlayer = new ComputerPlayer(Guid.NewGuid());
 
@@ -52,7 +52,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     {
       var playerId = Guid.NewGuid();
       var gameBoardData = new GameBoardData(BoardSizes.Standard);
-      gameBoardData.PlaceStartingSettlement(playerId, 12);
+      gameBoardData.PlaceSettlement(playerId, 12);
 
       var computerPlayer = new ComputerPlayer(playerId);
 
