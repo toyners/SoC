@@ -303,7 +303,7 @@ namespace Jabberwocky.SoC.Library
         gameBoardUpdate.NewSettlements.Add(chosenSettlementIndex, computerPlayer.Id);
 
         var chosenRoad = computerPlayer.ChooseRoad(gameBoardData);
-        //gameBoardData.PlaceStartingRoad(computerPlayer.Id, chosenRoad);
+        gameBoardData.PlaceRoad(computerPlayer.Id, chosenRoad);
         gameBoardUpdate.NewRoads.Add(chosenRoad, computerPlayer.Id);
       }
 

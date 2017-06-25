@@ -11,6 +11,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
   {
     #region Methods
     [Test]
+    [Category("ComputerPlayer")]
     public void ChooseSettlementLocation_GetBestLocationOnEmptyBoard_ReturnsBestLocation()
     {
       var gameBoardData = new GameBoardData(BoardSizes.Standard);
@@ -22,6 +23,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     }
 
     [Test]
+    [Category("ComputerPlayer")]
     public void ChooseSettlementLocation_GetBestLocationOnBoardWithBestLocationUnavailable_ReturnsBestLocation()
     {
       var gameBoardData = new GameBoardData(BoardSizes.Standard);
@@ -35,6 +37,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     }
 
     [Test]
+    [Category("ComputerPlayer")]
     public void ChooseRoad_NoSettlementsForPlayer_ThrowsMeaningfulException()
     {
       var playerId = Guid.NewGuid();
@@ -48,7 +51,8 @@ namespace Jabberwocky.SoC.Library.UnitTests
     }
 
     [Test]
-    public void ChooseRoad_BuildingTowardsNextBestSettlementLocation_ReturnsFirstRoadTowardsBestLocation()
+    [Category("ComputerPlayer")]
+    public void ChooseRoad_BuildingTowardsNextBestSettlementLocation_ReturnsFirstRoadFragment()
     {
       var playerId = Guid.NewGuid();
       var gameBoardData = new GameBoardData(BoardSizes.Standard);
@@ -59,6 +63,23 @@ namespace Jabberwocky.SoC.Library.UnitTests
       var road = computerPlayer.ChooseRoad(gameBoardData);
       var expectedRoad = new Road(11, 12);
       road.ShouldBe(expectedRoad);
+    }
+
+    [Test]
+    [Category("ComputerPlayer")]
+    public void ChooseRoad_BuildingTowardsNextBestSettlementLocationWithFirstRoadPlaced_ReturnsSecondRoadFragment()
+    {
+      var playerId = Guid.NewGuid();
+      var gameBoardData = new GameBoardData(BoardSizes.Standard);
+      gameBoardData.PlaceSettlement(playerId, 12);
+      gameBoardData.PlaceRoad(playerId, new Road(12, 11));
+
+      var computerPlayer = new ComputerPlayer(playerId);
+
+      var road = computerPlayer.ChooseRoad(gameBoardData);
+      var expectedRoad = new Road(11, 21);
+      road.ShouldBe(expectedRoad);
+
     }
     #endregion 
   }
