@@ -15,8 +15,8 @@ namespace Jabberwocky.SoC.Library.UnitTests
     public void CanPlaceRoad_EmptyBoard_ReturnsNotConnected()
     {
       var gameBoardData = new GameBoardData(BoardSizes.Standard);
-      var result = gameBoardData.CanPlaceRoad(new Road(0u, 1u));
-      result.Status.ShouldBe(GameBoardData.VerificationResults.NotConnectedToExistingInfrastructure);
+      var result = gameBoardData.CanPlaceRoad(Guid.NewGuid(), new Road(0u, 1u));
+      result.Status.ShouldBe(GameBoardData.VerificationResults.NotConnectedToExisting);
     }
 
     [Test]
@@ -25,12 +25,12 @@ namespace Jabberwocky.SoC.Library.UnitTests
       var gameBoardData = new GameBoardData(BoardSizes.Standard);
       gameBoardData.PlaceSettlement(Guid.NewGuid(), 0);
 
-      var result = gameBoardData.CanPlaceRoad(new Road(1u, 2u));
-      result.Status.ShouldBe(GameBoardData.VerificationResults.NotConnectedToExistingInfrastructure);
+      var result = gameBoardData.CanPlaceRoad(Guid.NewGuid(), new Road(1u, 2u));
+      result.Status.ShouldBe(GameBoardData.VerificationResults.NotConnectedToExisting);
     }
 
     [Test]
-    public void CanPlaceRoad_RoadConnectsToAnotherPlayersSettlement_ReturnsRoadConnectsToAnotherPlayer()
+    public void CanPlaceRoad_RoadWouldConnectToAnotherPlayersSettlement_ReturnsRoadConnectsToAnotherPlayer()
     {
       var gameBoardData = new GameBoardData(BoardSizes.Standard);
       var playerOneId = Guid.NewGuid();
@@ -40,7 +40,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
       var playerTwoId = Guid.NewGuid();
       gameBoardData.PlaceSettlement(playerTwoId, 8);
 
-      var result = gameBoardData.CanPlaceRoad(new Road(9, 8));
+      var result = gameBoardData.CanPlaceRoad(playerOneId, new Road(9, 8));
       result.Status.ShouldBe(GameBoardData.VerificationResults.RoadConnectsToAnotherPlayer);
     }
 
@@ -48,8 +48,20 @@ namespace Jabberwocky.SoC.Library.UnitTests
     public void CanPlaceRoad_ConnectedToSettlement_ReturnsValid()
     {
       var gameBoardData = new GameBoardData(BoardSizes.Standard);
-      gameBoardData.PlaceSettlement(Guid.NewGuid(), 0u);
-      var result = gameBoardData.CanPlaceRoad(new Road(0u, 1u));
+      var playerId = Guid.NewGuid();
+      gameBoardData.PlaceSettlement(playerId, 0u);
+      var result = gameBoardData.CanPlaceRoad(playerId, new Road(0u, 1u));
+      result.Status.ShouldBe(GameBoardData.VerificationResults.Valid);
+    }
+
+    [Test]
+    public void CanPlaceRoad_ConnectedToRoad_ReturnsValid()
+    {
+      var gameBoardData = new GameBoardData(BoardSizes.Standard);
+      var playerId = Guid.NewGuid();
+      gameBoardData.PlaceSettlement(playerId, 0);
+      gameBoardData.PlaceRoad(playerId, new Road(0, 9));
+      var result = gameBoardData.CanPlaceRoad(playerId, new Road(9, 8));
       result.Status.ShouldBe(GameBoardData.VerificationResults.Valid);
     }
 

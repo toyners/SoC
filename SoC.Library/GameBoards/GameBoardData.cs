@@ -14,7 +14,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
     {
       Valid,
       LocationIsOccupied,
-      NotConnectedToExistingInfrastructure,
+      NotConnectedToExisting,
       NoSettlementToUpgrade,
       TooCloseToSettlement,
       RoadConnectsToAnotherPlayer
@@ -37,7 +37,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
     private Dictionary<UInt32, Guid> settlements;
     private Dictionary<Guid, List<UInt32>> settlementsByPlayer;
     private Boolean[,] connections;
-    private Dictionary<Road, Guid> roads;
+    private Dictionary<UInt32, Guid> roads;
     #endregion
 
     #region Construction
@@ -49,7 +49,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
       }
 
       this.settlements = new Dictionary<UInt32, Guid>();
-      this.roads = new Dictionary<Road, Guid>();
+      this.roads = new Dictionary<UInt32, Guid>();
       this.settlementsByPlayer = new Dictionary<Guid, List<UInt32>>();
       this.Roads = new Dictionary<Guid, List<Trail>>();
 
@@ -75,11 +75,26 @@ namespace Jabberwocky.SoC.Library.GameBoards
       throw new NotImplementedException();
     }
 
-    public RoadPlacementVerificationResults CanPlaceRoad(Road road)
+    public RoadPlacementVerificationResults CanPlaceRoad(Guid playerId, Road road)
     {
-      if (!this.settlements.ContainsKey(road.Location1) && !this.settlements.ContainsKey(road.Location2))
+      // Verify #1 - Does it connect to existing infrastructure
+      if (!this.settlements.ContainsKey(road.Location1) && 
+        !this.settlements.ContainsKey(road.Location2) &&
+        !this.roads.ContainsKey(road.Location1) &&
+        !this.roads.ContainsKey(road.Location2))
       {
-        return new RoadPlacementVerificationResults { Status = VerificationResults.NotConnectedToExistingInfrastructure };
+        return new RoadPlacementVerificationResults { Status = VerificationResults.NotConnectedToExisting };
+      }
+
+      // Verify #2 - Does it connect to another players settlement
+      if (this.settlements.ContainsKey(road.Location1) && this.settlements[road.Location1] != playerId)
+      {
+        return new RoadPlacementVerificationResults { Status = VerificationResults.RoadConnectsToAnotherPlayer };
+      }
+
+      if (this.settlements.ContainsKey(road.Location2) && this.settlements[road.Location2] != playerId)
+      {
+        return new RoadPlacementVerificationResults { Status = VerificationResults.RoadConnectsToAnotherPlayer };
       }
 
       return new RoadPlacementVerificationResults { Status = VerificationResults.Valid };
@@ -154,7 +169,8 @@ namespace Jabberwocky.SoC.Library.GameBoards
 
     public void PlaceRoad(Guid playerId, Road road)
     {
-      this.roads.Add(road, playerId);
+      this.roads.Add(road.Location1, playerId);
+      this.roads.Add(road.Location2, playerId);
     }
 
     public void PlaceSettlement(Guid playerId, UInt32 locationIndex)
