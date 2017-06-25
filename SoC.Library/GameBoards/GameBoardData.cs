@@ -17,6 +17,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
       NotConnectedToExistingInfrastructure,
       NoSettlementToUpgrade,
       TooCloseToSettlement,
+      RoadConnectsToAnotherPlayer
     }
 
     #region Fields
@@ -36,6 +37,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
     private Dictionary<UInt32, Guid> settlements;
     private Dictionary<Guid, List<UInt32>> settlementsByPlayer;
     private Boolean[,] connections;
+    private Dictionary<Road, Guid> roads;
     #endregion
 
     #region Construction
@@ -47,6 +49,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
       }
 
       this.settlements = new Dictionary<UInt32, Guid>();
+      this.roads = new Dictionary<Road, Guid>();
       this.settlementsByPlayer = new Dictionary<Guid, List<UInt32>>();
       this.Roads = new Dictionary<Guid, List<Trail>>();
 
@@ -151,6 +154,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
 
     public void PlaceRoad(Guid playerId, Road road)
     {
+      this.roads.Add(road, playerId);
     }
 
     public void PlaceSettlement(Guid playerId, UInt32 locationIndex)

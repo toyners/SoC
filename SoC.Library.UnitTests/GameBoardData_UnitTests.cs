@@ -30,12 +30,18 @@ namespace Jabberwocky.SoC.Library.UnitTests
     }
 
     [Test]
-    public void CanPlaceRoad_RoadAlreadyExists_ReturnsRoadAlreadyExists()
+    public void CanPlaceRoad_RoadConnectsToAnotherPlayersSettlement_ReturnsRoadConnectsToAnotherPlayer()
     {
       var gameBoardData = new GameBoardData(BoardSizes.Standard);
-      gameBoardData.PlaceRoad(Guid.NewGuid(), new Road(0u, 1u));
-      var result = gameBoardData.CanPlaceRoad(new Road(0u, 1u));
-      result.Status.ShouldBe(GameBoardData.VerificationResults.Valid);
+      var playerOneId = Guid.NewGuid();
+      gameBoardData.PlaceSettlement(playerOneId, 0);
+      gameBoardData.PlaceRoad(playerOneId, new Road(0, 9));
+
+      var playerTwoId = Guid.NewGuid();
+      gameBoardData.PlaceSettlement(playerTwoId, 8);
+
+      var result = gameBoardData.CanPlaceRoad(new Road(9, 8));
+      result.Status.ShouldBe(GameBoardData.VerificationResults.RoadConnectsToAnotherPlayer);
     }
 
     [Test]
