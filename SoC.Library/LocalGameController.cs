@@ -231,22 +231,31 @@ namespace Jabberwocky.SoC.Library
         return;
       }
 
-      var canPlaceResults = this.gameBoardManager.Data.CanPlaceSettlement(settlementLocation);
-      if (canPlaceResults.Status == GameBoardData.VerificationResults.TooCloseToSettlement)
+      var canPlaceSettlementResults = this.gameBoardManager.Data.CanPlaceSettlement(settlementLocation);
+      if (canPlaceSettlementResults.Status == GameBoardData.VerificationResults.TooCloseToSettlement)
       {
-        var exception = new Exception("Cannot place settlement: Too close to player " + canPlaceResults.PlayerId + " at location " + canPlaceResults.LocationIndex);
+        var exception = new Exception("Cannot place settlement: Too close to player " + canPlaceSettlementResults.PlayerId + " at location " + canPlaceSettlementResults.LocationIndex);
         this.ExceptionRaisedEvent?.Invoke(exception);
         return;
       }
 
-      if (canPlaceResults.Status == GameBoardData.VerificationResults.LocationIsOccupied)
+      if (canPlaceSettlementResults.Status == GameBoardData.VerificationResults.LocationIsOccupied)
       {
-        var exception = new Exception("Cannot place settlement: Location " + settlementLocation + " already owned by player " + canPlaceResults.PlayerId);
+        var exception = new Exception("Cannot place settlement: Location " + settlementLocation + " already owned by player " + canPlaceSettlementResults.PlayerId);
         this.ExceptionRaisedEvent?.Invoke(exception);
         return;
       }
 
       this.gameBoardManager.Data.PlaceSettlement(this.mainPlayer.Id, settlementLocation);
+
+      var canPlaceRoadResults = this.gameBoardManager.Data.CanPlaceRoad(this.mainPlayer.Id, road);
+      if (canPlaceRoadResults.Status == GameBoardData.VerificationResults.NotConnectedToExisting)
+      {
+        var exception = new Exception("Cannot place road: No connection to a player owned road or settlement.");
+        this.ExceptionRaisedEvent?.Invoke(exception);
+        return;
+      }
+
       this.gameBoardManager.Data.PlaceRoad(this.mainPlayer.Id, road);
 
       var gameBoardData = this.gameBoardManager.Data;

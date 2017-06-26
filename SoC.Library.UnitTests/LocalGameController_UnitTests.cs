@@ -307,9 +307,15 @@ namespace Jabberwocky.SoC.Library.UnitTests
       var mockDice = Substitute.For<IDice>();
       mockDice.RollTwoDice().Returns(12u, 10u, 8u, 6u);
 
+      var gameBoardManager = new GameBoardManager(BoardSizes.Standard);
+
+      var firstMockComputerPlayer = this.CreateMockComputerPlayer(gameBoardManager.Data, firstSettlementOneLocation, firstSettlementTwoLocation, firstRoadOne, firstRoadTwo);
+      var secondMockComputerPlayer = this.CreateMockComputerPlayer(gameBoardManager.Data, secondSettlementOneLocation, secondSettlementTwoLocation, secondRoadOne, secondRoadTwo);
+      var thirdMockComputerPlayer = this.CreateMockComputerPlayer(gameBoardManager.Data, thirdSettlementOneLocation, thirdSettlementTwoLocation, thirdRoadOne, thirdRoadTwo);
+
       Exception exception = null;
       GameBoardUpdate gameBoardUpdate = null;
-      var localGameController = this.CreateLocalGameController(mockDice, new ComputerPlayerFactory(), new GameBoardManager(BoardSizes.Standard));
+      var localGameController = this.CreateLocalGameController(mockDice, gameBoardManager, firstMockComputerPlayer, secondMockComputerPlayer, thirdMockComputerPlayer);
       localGameController.ExceptionRaisedEvent = (Exception e) => { exception = e; };
       localGameController.GameSetupUpdateEvent = (GameBoardUpdate u) => { gameBoardUpdate = u; };
 
@@ -319,7 +325,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
       localGameController.ContinueGameSetup(0u, new Road(1u, 2u));
 
       exception.ShouldNotBeNull();
-      exception.Message.ShouldBe("Cannot place road: No connection to a player owner road, settlement or city.");
+      exception.Message.ShouldBe("Cannot place road: No connection to a player owned road or settlement.");
       gameBoardUpdate.ShouldBeNull();
     }
 
@@ -439,6 +445,15 @@ namespace Jabberwocky.SoC.Library.UnitTests
     {
       var localGameController = new LocalGameController(diceRoller, computerPlayerFactory, gameBoardManager);
       localGameController.GameJoinedEvent = (PlayerDataBase[] players) => { };
+      return localGameController;
+    }
+
+    private LocalGameController CreateLocalGameController(IDice dice, GameBoardManager gameBoardManager, IComputerPlayer firstComputerPlayer, params IComputerPlayer[] otherComputerPlayers)
+    {
+      var mockComputerPlayerFactory = Substitute.For<IComputerPlayerFactory>();
+      mockComputerPlayerFactory.Create().Returns(firstComputerPlayer, otherComputerPlayers);
+
+      var localGameController = new LocalGameController(dice, mockComputerPlayerFactory, gameBoardManager);
       return localGameController;
     }
 
