@@ -122,15 +122,12 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
       var gameBoardManager = new GameBoardManager(BoardSizes.Standard);
 
-      var firstMockComputerPlayer = this.CreateMockComputerPlayer(gameBoardManager.Data, firstSettlementOneLocation, firstSettlementTwoLocation, firstRoadOne, firstRoadTwo);
-      var secondMockComputerPlayer = this.CreateMockComputerPlayer(gameBoardManager.Data, secondSettlementOneLocation, secondSettlementTwoLocation, secondRoadOne, secondRoadTwo);
-      var thirdMockComputerPlayer = this.CreateMockComputerPlayer(gameBoardManager.Data, thirdSettlementOneLocation, thirdSettlementTwoLocation, thirdRoadOne, thirdRoadTwo);
-
-      var mockComputerPlayerFactory = Substitute.For<IComputerPlayerFactory>();
-      mockComputerPlayerFactory.Create().Returns(firstMockComputerPlayer, secondMockComputerPlayer, thirdMockComputerPlayer);
+      var firstComputerPlayer = this.CreateMockComputerPlayer(gameBoardManager.Data, firstSettlementOneLocation, firstSettlementTwoLocation, firstRoadOne, firstRoadTwo);
+      var secondComputerPlayer = this.CreateMockComputerPlayer(gameBoardManager.Data, secondSettlementOneLocation, secondSettlementTwoLocation, secondRoadOne, secondRoadTwo);
+      var thirdComputerPlayer = this.CreateMockComputerPlayer(gameBoardManager.Data, thirdSettlementOneLocation, thirdSettlementTwoLocation, thirdRoadOne, thirdRoadTwo);
 
       GameBoardUpdate gameBoardUpdate = null;
-      var localGameController = this.CreateLocalGameController(mockDice, mockComputerPlayerFactory, gameBoardManager);
+      var localGameController = this.CreateLocalGameController(mockDice, gameBoardManager, firstComputerPlayer, secondComputerPlayer, thirdComputerPlayer);
       localGameController.GameSetupUpdateEvent = (GameBoardUpdate u) => { gameBoardUpdate = u; };
       localGameController.InitialBoardSetupEvent = (GameBoardData d) => { };
 
@@ -147,20 +144,20 @@ namespace Jabberwocky.SoC.Library.UnitTests
       localGameController.ContinueGameSetup(0u, chosenRoad);
       gameBoardUpdate.ShouldNotBeNull();
       gameBoardUpdate.NewSettlements.Count.ShouldBe(6);
-      gameBoardUpdate.NewSettlements.ShouldContainKeyAndValue(firstSettlementOneLocation, firstMockComputerPlayer.Id);
-      gameBoardUpdate.NewSettlements.ShouldContainKeyAndValue(firstSettlementTwoLocation, firstMockComputerPlayer.Id);
-      gameBoardUpdate.NewSettlements.ShouldContainKeyAndValue(secondSettlementOneLocation, secondMockComputerPlayer.Id);
-      gameBoardUpdate.NewSettlements.ShouldContainKeyAndValue(secondSettlementTwoLocation, secondMockComputerPlayer.Id);
-      gameBoardUpdate.NewSettlements.ShouldContainKeyAndValue(thirdSettlementOneLocation, thirdMockComputerPlayer.Id);
-      gameBoardUpdate.NewSettlements.ShouldContainKeyAndValue(thirdSettlementTwoLocation, thirdMockComputerPlayer.Id);
+      gameBoardUpdate.NewSettlements.ShouldContainKeyAndValue(firstSettlementOneLocation, firstComputerPlayer.Id);
+      gameBoardUpdate.NewSettlements.ShouldContainKeyAndValue(firstSettlementTwoLocation, firstComputerPlayer.Id);
+      gameBoardUpdate.NewSettlements.ShouldContainKeyAndValue(secondSettlementOneLocation, secondComputerPlayer.Id);
+      gameBoardUpdate.NewSettlements.ShouldContainKeyAndValue(secondSettlementTwoLocation, secondComputerPlayer.Id);
+      gameBoardUpdate.NewSettlements.ShouldContainKeyAndValue(thirdSettlementOneLocation, thirdComputerPlayer.Id);
+      gameBoardUpdate.NewSettlements.ShouldContainKeyAndValue(thirdSettlementTwoLocation, thirdComputerPlayer.Id);
 
       gameBoardUpdate.NewRoads.Count.ShouldBe(6);
-      gameBoardUpdate.NewRoads.ShouldContainKeyAndValue(firstRoadOne, firstMockComputerPlayer.Id);
-      gameBoardUpdate.NewRoads.ShouldContainKeyAndValue(firstRoadTwo, firstMockComputerPlayer.Id);
-      gameBoardUpdate.NewRoads.ShouldContainKeyAndValue(secondRoadOne, secondMockComputerPlayer.Id);
-      gameBoardUpdate.NewRoads.ShouldContainKeyAndValue(secondRoadTwo, secondMockComputerPlayer.Id);
-      gameBoardUpdate.NewRoads.ShouldContainKeyAndValue(thirdRoadOne, thirdMockComputerPlayer.Id);
-      gameBoardUpdate.NewRoads.ShouldContainKeyAndValue(thirdRoadTwo, thirdMockComputerPlayer.Id);
+      gameBoardUpdate.NewRoads.ShouldContainKeyAndValue(firstRoadOne, firstComputerPlayer.Id);
+      gameBoardUpdate.NewRoads.ShouldContainKeyAndValue(firstRoadTwo, firstComputerPlayer.Id);
+      gameBoardUpdate.NewRoads.ShouldContainKeyAndValue(secondRoadOne, secondComputerPlayer.Id);
+      gameBoardUpdate.NewRoads.ShouldContainKeyAndValue(secondRoadTwo, secondComputerPlayer.Id);
+      gameBoardUpdate.NewRoads.ShouldContainKeyAndValue(thirdRoadOne, thirdComputerPlayer.Id);
+      gameBoardUpdate.NewRoads.ShouldContainKeyAndValue(thirdRoadTwo, thirdComputerPlayer.Id);
 
       gameBoardUpdate = new GameBoardUpdate(); // Ensure that there is a state change for the gameBoardUpdate variable 
 
@@ -177,15 +174,12 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
       var gameBoardManager = new GameBoardManager(BoardSizes.Standard);
 
-      var firstMockComputerPlayer = this.CreateMockComputerPlayer(gameBoardManager.Data, firstSettlementOneLocation, firstSettlementTwoLocation, firstRoadOne, firstRoadTwo);
-      var secondMockComputerPlayer = this.CreateMockComputerPlayer(gameBoardManager.Data, secondSettlementOneLocation, secondSettlementTwoLocation, secondRoadOne, secondRoadTwo);
-      var thirdMockComputerPlayer = this.CreateMockComputerPlayer(gameBoardManager.Data, thirdSettlementOneLocation, thirdSettlementTwoLocation, thirdRoadOne, thirdRoadTwo);
-
-      var mockComputerPlayerFactory = Substitute.For<IComputerPlayerFactory>();
-      mockComputerPlayerFactory.Create().Returns(firstMockComputerPlayer, secondMockComputerPlayer, thirdMockComputerPlayer);
+      var firstComputerPlayer = this.CreateMockComputerPlayer(gameBoardManager.Data, firstSettlementOneLocation, firstSettlementTwoLocation, firstRoadOne, firstRoadTwo);
+      var secondComputerPlayer = this.CreateMockComputerPlayer(gameBoardManager.Data, secondSettlementOneLocation, secondSettlementTwoLocation, secondRoadOne, secondRoadTwo);
+      var thirdComputerPlayer = this.CreateMockComputerPlayer(gameBoardManager.Data, thirdSettlementOneLocation, thirdSettlementTwoLocation, thirdRoadOne, thirdRoadTwo);
 
       GameBoardUpdate gameBoardUpdate = null;
-      var localGameController = this.CreateLocalGameController(mockDice, mockComputerPlayerFactory, gameBoardManager);
+      var localGameController = this.CreateLocalGameController(mockDice, gameBoardManager, firstComputerPlayer, secondComputerPlayer, thirdComputerPlayer);
       localGameController.GameSetupUpdateEvent = (GameBoardUpdate u) => { gameBoardUpdate = u; };
       localGameController.InitialBoardSetupEvent = (GameBoardData d) => { };
 
@@ -195,33 +189,33 @@ namespace Jabberwocky.SoC.Library.UnitTests
       localGameController.StartGameSetup();
       gameBoardUpdate.ShouldNotBeNull();
       gameBoardUpdate.NewSettlements.Count.ShouldBe(1);
-      gameBoardUpdate.NewSettlements.ShouldContainKeyAndValue(firstSettlementOneLocation, firstMockComputerPlayer.Id);
+      gameBoardUpdate.NewSettlements.ShouldContainKeyAndValue(firstSettlementOneLocation, firstComputerPlayer.Id);
       gameBoardUpdate.NewRoads.Count.ShouldBe(1);
-      gameBoardUpdate.NewRoads.ShouldContainKeyAndValue(firstRoadOne, firstMockComputerPlayer.Id);
+      gameBoardUpdate.NewRoads.ShouldContainKeyAndValue(firstRoadOne, firstComputerPlayer.Id);
 
       gameBoardUpdate = null; // Ensure that there is a state change for the gameBoardUpdate variable 
       localGameController.ContinueGameSetup(0u, new Road(0u, 1u));
 
       gameBoardUpdate.ShouldNotBeNull();
       gameBoardUpdate.NewSettlements.Count.ShouldBe(4);
-      gameBoardUpdate.NewSettlements.ShouldContainKeyAndValue(secondSettlementOneLocation, secondMockComputerPlayer.Id);
-      gameBoardUpdate.NewSettlements.ShouldContainKeyAndValue(secondSettlementTwoLocation, secondMockComputerPlayer.Id);
-      gameBoardUpdate.NewSettlements.ShouldContainKeyAndValue(thirdSettlementOneLocation, thirdMockComputerPlayer.Id);
-      gameBoardUpdate.NewSettlements.ShouldContainKeyAndValue(thirdSettlementTwoLocation, thirdMockComputerPlayer.Id);
+      gameBoardUpdate.NewSettlements.ShouldContainKeyAndValue(secondSettlementOneLocation, secondComputerPlayer.Id);
+      gameBoardUpdate.NewSettlements.ShouldContainKeyAndValue(secondSettlementTwoLocation, secondComputerPlayer.Id);
+      gameBoardUpdate.NewSettlements.ShouldContainKeyAndValue(thirdSettlementOneLocation, thirdComputerPlayer.Id);
+      gameBoardUpdate.NewSettlements.ShouldContainKeyAndValue(thirdSettlementTwoLocation, thirdComputerPlayer.Id);
 
       gameBoardUpdate.NewRoads.Count.ShouldBe(4);
-      gameBoardUpdate.NewRoads.ShouldContainKeyAndValue(secondRoadOne, secondMockComputerPlayer.Id);
-      gameBoardUpdate.NewRoads.ShouldContainKeyAndValue(secondRoadTwo, secondMockComputerPlayer.Id);
-      gameBoardUpdate.NewRoads.ShouldContainKeyAndValue(thirdRoadOne, thirdMockComputerPlayer.Id);
-      gameBoardUpdate.NewRoads.ShouldContainKeyAndValue(thirdRoadTwo, thirdMockComputerPlayer.Id);
+      gameBoardUpdate.NewRoads.ShouldContainKeyAndValue(secondRoadOne, secondComputerPlayer.Id);
+      gameBoardUpdate.NewRoads.ShouldContainKeyAndValue(secondRoadTwo, secondComputerPlayer.Id);
+      gameBoardUpdate.NewRoads.ShouldContainKeyAndValue(thirdRoadOne, thirdComputerPlayer.Id);
+      gameBoardUpdate.NewRoads.ShouldContainKeyAndValue(thirdRoadTwo, thirdComputerPlayer.Id);
 
       gameBoardUpdate = null; // Ensure that there is a state change for the gameBoardUpdate variable 
       localGameController.CompleteGameSetup(2u, new Road(2u, 3u));
 
       gameBoardUpdate.NewSettlements.Count.ShouldBe(1);
-      gameBoardUpdate.NewSettlements.ShouldContainKeyAndValue(firstSettlementTwoLocation, firstMockComputerPlayer.Id);
+      gameBoardUpdate.NewSettlements.ShouldContainKeyAndValue(firstSettlementTwoLocation, firstComputerPlayer.Id);
       gameBoardUpdate.NewRoads.Count.ShouldBe(1);
-      gameBoardUpdate.NewRoads.ShouldContainKeyAndValue(firstRoadTwo, firstMockComputerPlayer.Id);
+      gameBoardUpdate.NewRoads.ShouldContainKeyAndValue(firstRoadTwo, firstComputerPlayer.Id);
     }
 
     [Test]
@@ -232,15 +226,12 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
       var gameBoardManager = new GameBoardManager(BoardSizes.Standard);
 
-      var firstMockComputerPlayer = this.CreateMockComputerPlayer(gameBoardManager.Data, firstSettlementOneLocation, firstSettlementTwoLocation, firstRoadOne, firstRoadTwo);
-      var secondMockComputerPlayer = this.CreateMockComputerPlayer(gameBoardManager.Data, secondSettlementOneLocation, secondSettlementTwoLocation, secondRoadOne, secondRoadTwo);
-      var thirdMockComputerPlayer = this.CreateMockComputerPlayer(gameBoardManager.Data, thirdSettlementOneLocation, thirdSettlementTwoLocation, thirdRoadOne, thirdRoadTwo);
-
-      var mockComputerPlayerFactory = Substitute.For<IComputerPlayerFactory>();
-      mockComputerPlayerFactory.Create().Returns(firstMockComputerPlayer, secondMockComputerPlayer, thirdMockComputerPlayer);
+      var firstComputerPlayer = this.CreateMockComputerPlayer(gameBoardManager.Data, firstSettlementOneLocation, firstSettlementTwoLocation, firstRoadOne, firstRoadTwo);
+      var secondComputerPlayer = this.CreateMockComputerPlayer(gameBoardManager.Data, secondSettlementOneLocation, secondSettlementTwoLocation, secondRoadOne, secondRoadTwo);
+      var thirdComputerPlayer = this.CreateMockComputerPlayer(gameBoardManager.Data, thirdSettlementOneLocation, thirdSettlementTwoLocation, thirdRoadOne, thirdRoadTwo);
 
       Exception exception = null;
-      var localGameController = this.CreateLocalGameController(mockDice, mockComputerPlayerFactory, gameBoardManager);
+      var localGameController = this.CreateLocalGameController(mockDice, gameBoardManager, firstComputerPlayer, secondComputerPlayer, thirdComputerPlayer);
       localGameController.ExceptionRaisedEvent = (Exception e) => { exception = e; };
 
       localGameController.TryJoiningGame();
@@ -252,7 +243,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
       localGameController.ContinueGameSetup(firstSettlementOneLocation, new Road(0u, 1u));
       exception.ShouldNotBeNull();
-      exception.Message.ShouldBe("Cannot place settlement: Location " + firstSettlementOneLocation + " already owned by player " + firstMockComputerPlayer.Id);
+      exception.Message.ShouldBe("Cannot place settlement: Location " + firstSettlementOneLocation + " already owned by player " + firstComputerPlayer.Id);
       gameBoardUpdate.ShouldBeNull();
     }
 
@@ -264,15 +255,12 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
       var gameBoardManager = new GameBoardManager(BoardSizes.Standard);
 
-      var firstMockComputerPlayer = this.CreateMockComputerPlayer(gameBoardManager.Data, firstSettlementOneLocation, firstSettlementTwoLocation, firstRoadOne, firstRoadTwo);
-      var secondMockComputerPlayer = this.CreateMockComputerPlayer(gameBoardManager.Data, secondSettlementOneLocation, secondSettlementTwoLocation, secondRoadOne, secondRoadTwo);
-      var thirdMockComputerPlayer = this.CreateMockComputerPlayer(gameBoardManager.Data, thirdSettlementOneLocation, thirdSettlementTwoLocation, thirdRoadOne, thirdRoadTwo);
-
-      var mockComputerPlayerFactory = Substitute.For<IComputerPlayerFactory>();
-      mockComputerPlayerFactory.Create().Returns(firstMockComputerPlayer, secondMockComputerPlayer, thirdMockComputerPlayer);
+      var firstComputerPlayer = this.CreateMockComputerPlayer(gameBoardManager.Data, firstSettlementOneLocation, firstSettlementTwoLocation, firstRoadOne, firstRoadTwo);
+      var secondComputerPlayer = this.CreateMockComputerPlayer(gameBoardManager.Data, secondSettlementOneLocation, secondSettlementTwoLocation, secondRoadOne, secondRoadTwo);
+      var thirdComputerPlayer = this.CreateMockComputerPlayer(gameBoardManager.Data, thirdSettlementOneLocation, thirdSettlementTwoLocation, thirdRoadOne, thirdRoadTwo);
 
       Exception exception = null;
-      var localGameController = this.CreateLocalGameController(mockDice, mockComputerPlayerFactory, gameBoardManager);
+      var localGameController = this.CreateLocalGameController(mockDice, gameBoardManager, firstComputerPlayer, secondComputerPlayer, thirdComputerPlayer);
       localGameController.ExceptionRaisedEvent = (Exception e) => { exception = e; };
       localGameController.TryJoiningGame();
       localGameController.TryLaunchGame();
@@ -284,7 +272,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
       localGameController.ContinueGameSetup(19u, new Road(0u, 1u));
 
       exception.ShouldNotBeNull();
-      exception.Message.ShouldBe("Cannot place settlement: Too close to player " + firstMockComputerPlayer.Id + " at location " + firstSettlementOneLocation);
+      exception.Message.ShouldBe("Cannot place settlement: Too close to player " + firstComputerPlayer.Id + " at location " + firstSettlementOneLocation);
       gameBoardUpdate.ShouldBeNull();
     }
 
@@ -309,13 +297,13 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
       var gameBoardManager = new GameBoardManager(BoardSizes.Standard);
 
-      var firstMockComputerPlayer = this.CreateMockComputerPlayer(gameBoardManager.Data, firstSettlementOneLocation, firstSettlementTwoLocation, firstRoadOne, firstRoadTwo);
-      var secondMockComputerPlayer = this.CreateMockComputerPlayer(gameBoardManager.Data, secondSettlementOneLocation, secondSettlementTwoLocation, secondRoadOne, secondRoadTwo);
-      var thirdMockComputerPlayer = this.CreateMockComputerPlayer(gameBoardManager.Data, thirdSettlementOneLocation, thirdSettlementTwoLocation, thirdRoadOne, thirdRoadTwo);
+      var firstComputerPlayer = this.CreateMockComputerPlayer(gameBoardManager.Data, firstSettlementOneLocation, firstSettlementTwoLocation, firstRoadOne, firstRoadTwo);
+      var secondComputerPlayer = this.CreateMockComputerPlayer(gameBoardManager.Data, secondSettlementOneLocation, secondSettlementTwoLocation, secondRoadOne, secondRoadTwo);
+      var thirdComputerPlayer = this.CreateMockComputerPlayer(gameBoardManager.Data, thirdSettlementOneLocation, thirdSettlementTwoLocation, thirdRoadOne, thirdRoadTwo);
 
       Exception exception = null;
       GameBoardUpdate gameBoardUpdate = null;
-      var localGameController = this.CreateLocalGameController(mockDice, gameBoardManager, firstMockComputerPlayer, secondMockComputerPlayer, thirdMockComputerPlayer);
+      var localGameController = this.CreateLocalGameController(mockDice, gameBoardManager, firstComputerPlayer, secondComputerPlayer, thirdComputerPlayer);
       localGameController.ExceptionRaisedEvent = (Exception e) => { exception = e; };
       localGameController.GameSetupUpdateEvent = (GameBoardUpdate u) => { gameBoardUpdate = u; };
 
@@ -337,15 +325,12 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
       var gameBoardManager = new GameBoardManager(BoardSizes.Standard);
 
-      var firstMockComputerPlayer = this.CreateMockComputerPlayer(gameBoardManager.Data, firstSettlementOneLocation, firstSettlementTwoLocation, firstRoadOne, firstRoadTwo);
-      var secondMockComputerPlayer = this.CreateMockComputerPlayer(gameBoardManager.Data, secondSettlementOneLocation, secondSettlementTwoLocation, secondRoadOne, secondRoadTwo);
-      var thirdMockComputerPlayer = this.CreateMockComputerPlayer(gameBoardManager.Data, thirdSettlementOneLocation, thirdSettlementTwoLocation, thirdRoadOne, thirdRoadTwo);
-
-      var mockComputerPlayerFactory = Substitute.For<IComputerPlayerFactory>();
-      mockComputerPlayerFactory.Create().Returns(firstMockComputerPlayer, secondMockComputerPlayer, thirdMockComputerPlayer);
+      var firstComputerPlayer = this.CreateMockComputerPlayer(gameBoardManager.Data, firstSettlementOneLocation, firstSettlementTwoLocation, firstRoadOne, firstRoadTwo);
+      var secondComputerPlayer = this.CreateMockComputerPlayer(gameBoardManager.Data, secondSettlementOneLocation, secondSettlementTwoLocation, secondRoadOne, secondRoadTwo);
+      var thirdComputerPlayer = this.CreateMockComputerPlayer(gameBoardManager.Data, thirdSettlementOneLocation, thirdSettlementTwoLocation, thirdRoadOne, thirdRoadTwo);
 
       GameBoardUpdate gameBoardUpdate = null;
-      var localGameController = this.CreateLocalGameController(mockDice, mockComputerPlayerFactory, gameBoardManager);
+      var localGameController = this.CreateLocalGameController(mockDice, gameBoardManager, firstComputerPlayer, secondComputerPlayer, thirdComputerPlayer);
       localGameController.GameSetupUpdateEvent = (GameBoardUpdate u) => { gameBoardUpdate = u; };
       localGameController.InitialBoardSetupEvent = (GameBoardData d) => { };
 
@@ -355,33 +340,33 @@ namespace Jabberwocky.SoC.Library.UnitTests
       localGameController.StartGameSetup();
       gameBoardUpdate.ShouldNotBeNull();
       gameBoardUpdate.NewSettlements.Count.ShouldBe(2);
-      gameBoardUpdate.NewSettlements.ShouldContainKeyAndValue(firstSettlementOneLocation, firstMockComputerPlayer.Id);
-      gameBoardUpdate.NewSettlements.ShouldContainKeyAndValue(secondSettlementOneLocation, secondMockComputerPlayer.Id);
+      gameBoardUpdate.NewSettlements.ShouldContainKeyAndValue(firstSettlementOneLocation, firstComputerPlayer.Id);
+      gameBoardUpdate.NewSettlements.ShouldContainKeyAndValue(secondSettlementOneLocation, secondComputerPlayer.Id);
       gameBoardUpdate.NewRoads.Count.ShouldBe(2);
-      gameBoardUpdate.NewRoads.ShouldContainKeyAndValue(firstRoadOne, firstMockComputerPlayer.Id);
-      gameBoardUpdate.NewRoads.ShouldContainKeyAndValue(secondRoadOne, secondMockComputerPlayer.Id);
+      gameBoardUpdate.NewRoads.ShouldContainKeyAndValue(firstRoadOne, firstComputerPlayer.Id);
+      gameBoardUpdate.NewRoads.ShouldContainKeyAndValue(secondRoadOne, secondComputerPlayer.Id);
 
       gameBoardUpdate = null; // Ensure that there is a state change for the gameBoardUpdate variable 
       localGameController.ContinueGameSetup(0u, new Road(0u, 1u));
 
       gameBoardUpdate.ShouldNotBeNull();
       gameBoardUpdate.NewSettlements.Count.ShouldBe(2);
-      gameBoardUpdate.NewSettlements.ShouldContainKeyAndValue(thirdSettlementOneLocation, thirdMockComputerPlayer.Id);
-      gameBoardUpdate.NewSettlements.ShouldContainKeyAndValue(thirdSettlementTwoLocation, thirdMockComputerPlayer.Id);
+      gameBoardUpdate.NewSettlements.ShouldContainKeyAndValue(thirdSettlementOneLocation, thirdComputerPlayer.Id);
+      gameBoardUpdate.NewSettlements.ShouldContainKeyAndValue(thirdSettlementTwoLocation, thirdComputerPlayer.Id);
 
       gameBoardUpdate.NewRoads.Count.ShouldBe(2);
-      gameBoardUpdate.NewRoads.ShouldContainKeyAndValue(thirdRoadOne, thirdMockComputerPlayer.Id);
-      gameBoardUpdate.NewRoads.ShouldContainKeyAndValue(thirdRoadTwo, thirdMockComputerPlayer.Id);
+      gameBoardUpdate.NewRoads.ShouldContainKeyAndValue(thirdRoadOne, thirdComputerPlayer.Id);
+      gameBoardUpdate.NewRoads.ShouldContainKeyAndValue(thirdRoadTwo, thirdComputerPlayer.Id);
 
       gameBoardUpdate = null; // Ensure that there is a state change for the gameBoardUpdate variable 
       localGameController.CompleteGameSetup(2u, new Road(2u, 3u));
 
       gameBoardUpdate.NewSettlements.Count.ShouldBe(2);
-      gameBoardUpdate.NewSettlements.ShouldContainKeyAndValue(secondSettlementTwoLocation, secondMockComputerPlayer.Id);
-      gameBoardUpdate.NewSettlements.ShouldContainKeyAndValue(firstSettlementTwoLocation, firstMockComputerPlayer.Id);
+      gameBoardUpdate.NewSettlements.ShouldContainKeyAndValue(secondSettlementTwoLocation, secondComputerPlayer.Id);
+      gameBoardUpdate.NewSettlements.ShouldContainKeyAndValue(firstSettlementTwoLocation, firstComputerPlayer.Id);
       gameBoardUpdate.NewRoads.Count.ShouldBe(2);
-      gameBoardUpdate.NewRoads.ShouldContainKeyAndValue(secondRoadTwo, secondMockComputerPlayer.Id);
-      gameBoardUpdate.NewRoads.ShouldContainKeyAndValue(firstRoadTwo, firstMockComputerPlayer.Id);
+      gameBoardUpdate.NewRoads.ShouldContainKeyAndValue(secondRoadTwo, secondComputerPlayer.Id);
+      gameBoardUpdate.NewRoads.ShouldContainKeyAndValue(firstRoadTwo, firstComputerPlayer.Id);
     }
 
     [Test]
@@ -392,15 +377,12 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
       var gameBoardManager = new GameBoardManager(BoardSizes.Standard);
 
-      var firstMockComputerPlayer = this.CreateMockComputerPlayer(gameBoardManager.Data, firstSettlementOneLocation, firstSettlementTwoLocation, firstRoadOne, firstRoadTwo);
-      var secondMockComputerPlayer = this.CreateMockComputerPlayer(gameBoardManager.Data, secondSettlementOneLocation, secondSettlementTwoLocation, secondRoadOne, secondRoadTwo);
-      var thirdMockComputerPlayer = this.CreateMockComputerPlayer(gameBoardManager.Data, thirdSettlementOneLocation, thirdSettlementTwoLocation, thirdRoadOne, thirdRoadTwo);
-
-      var mockComputerPlayerFactory = Substitute.For<IComputerPlayerFactory>();
-      mockComputerPlayerFactory.Create().Returns(firstMockComputerPlayer, secondMockComputerPlayer, thirdMockComputerPlayer);
+      var firstComputerPlayer = this.CreateMockComputerPlayer(gameBoardManager.Data, firstSettlementOneLocation, firstSettlementTwoLocation, firstRoadOne, firstRoadTwo);
+      var secondComputerPlayer = this.CreateMockComputerPlayer(gameBoardManager.Data, secondSettlementOneLocation, secondSettlementTwoLocation, secondRoadOne, secondRoadTwo);
+      var thirdComputerPlayer = this.CreateMockComputerPlayer(gameBoardManager.Data, thirdSettlementOneLocation, thirdSettlementTwoLocation, thirdRoadOne, thirdRoadTwo);
 
       GameBoardUpdate gameBoardUpdate = null;
-      var localGameController = this.CreateLocalGameController(mockDice, mockComputerPlayerFactory, gameBoardManager);
+      var localGameController = this.CreateLocalGameController(mockDice, gameBoardManager, firstComputerPlayer, secondComputerPlayer, thirdComputerPlayer);
       localGameController.GameSetupUpdateEvent = (GameBoardUpdate u) => { gameBoardUpdate = u; };
       localGameController.InitialBoardSetupEvent = (GameBoardData d) => { };
 
@@ -410,13 +392,13 @@ namespace Jabberwocky.SoC.Library.UnitTests
       localGameController.StartGameSetup();
       gameBoardUpdate.ShouldNotBeNull();
       gameBoardUpdate.NewSettlements.Count.ShouldBe(3);
-      gameBoardUpdate.NewSettlements.ShouldContainKeyAndValue(firstSettlementOneLocation, firstMockComputerPlayer.Id);
-      gameBoardUpdate.NewSettlements.ShouldContainKeyAndValue(secondSettlementOneLocation, secondMockComputerPlayer.Id);
-      gameBoardUpdate.NewSettlements.ShouldContainKeyAndValue(thirdSettlementOneLocation, thirdMockComputerPlayer.Id);
+      gameBoardUpdate.NewSettlements.ShouldContainKeyAndValue(firstSettlementOneLocation, firstComputerPlayer.Id);
+      gameBoardUpdate.NewSettlements.ShouldContainKeyAndValue(secondSettlementOneLocation, secondComputerPlayer.Id);
+      gameBoardUpdate.NewSettlements.ShouldContainKeyAndValue(thirdSettlementOneLocation, thirdComputerPlayer.Id);
       gameBoardUpdate.NewRoads.Count.ShouldBe(3);
-      gameBoardUpdate.NewRoads.ShouldContainKeyAndValue(firstRoadOne, firstMockComputerPlayer.Id);
-      gameBoardUpdate.NewRoads.ShouldContainKeyAndValue(secondRoadOne, secondMockComputerPlayer.Id);
-      gameBoardUpdate.NewRoads.ShouldContainKeyAndValue(thirdRoadOne, thirdMockComputerPlayer.Id);
+      gameBoardUpdate.NewRoads.ShouldContainKeyAndValue(firstRoadOne, firstComputerPlayer.Id);
+      gameBoardUpdate.NewRoads.ShouldContainKeyAndValue(secondRoadOne, secondComputerPlayer.Id);
+      gameBoardUpdate.NewRoads.ShouldContainKeyAndValue(thirdRoadOne, thirdComputerPlayer.Id);
 
       gameBoardUpdate = new GameBoardUpdate(); // Ensure that there is a state change for the gameBoardUpdate variable 
       localGameController.ContinueGameSetup(0u, new Road(0u, 1u));
@@ -427,13 +409,13 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
       gameBoardUpdate.ShouldNotBeNull();
       gameBoardUpdate.NewSettlements.Count.ShouldBe(3);
-      gameBoardUpdate.NewSettlements.ShouldContainKeyAndValue(thirdSettlementTwoLocation, thirdMockComputerPlayer.Id);
-      gameBoardUpdate.NewSettlements.ShouldContainKeyAndValue(secondSettlementTwoLocation, secondMockComputerPlayer.Id);
-      gameBoardUpdate.NewSettlements.ShouldContainKeyAndValue(firstSettlementTwoLocation, firstMockComputerPlayer.Id);
+      gameBoardUpdate.NewSettlements.ShouldContainKeyAndValue(thirdSettlementTwoLocation, thirdComputerPlayer.Id);
+      gameBoardUpdate.NewSettlements.ShouldContainKeyAndValue(secondSettlementTwoLocation, secondComputerPlayer.Id);
+      gameBoardUpdate.NewSettlements.ShouldContainKeyAndValue(firstSettlementTwoLocation, firstComputerPlayer.Id);
       gameBoardUpdate.NewRoads.Count.ShouldBe(3);
-      gameBoardUpdate.NewRoads.ShouldContainKeyAndValue(thirdRoadTwo, thirdMockComputerPlayer.Id);
-      gameBoardUpdate.NewRoads.ShouldContainKeyAndValue(secondRoadTwo, secondMockComputerPlayer.Id);
-      gameBoardUpdate.NewRoads.ShouldContainKeyAndValue(firstRoadTwo, firstMockComputerPlayer.Id);
+      gameBoardUpdate.NewRoads.ShouldContainKeyAndValue(thirdRoadTwo, thirdComputerPlayer.Id);
+      gameBoardUpdate.NewRoads.ShouldContainKeyAndValue(secondRoadTwo, secondComputerPlayer.Id);
+      gameBoardUpdate.NewRoads.ShouldContainKeyAndValue(firstRoadTwo, firstComputerPlayer.Id);
     }
 
     private LocalGameController CreateLocalGameController()
