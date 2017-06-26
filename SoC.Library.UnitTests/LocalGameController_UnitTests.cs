@@ -31,6 +31,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
     #region Methods
     [Test]
+    [Category("LocalGameController")]
     public void StartJoiningGame_DefaultGameOptions_PlayerDataPassedBack()
     {
       var localGameController = this.CreateLocalGameController();
@@ -48,6 +49,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     }
 
     [Test]
+    [Category("LocalGameController")]
     public void StartJoiningGame_NullGameOptions_PlayerDataPassedBack()
     {
       var localGameController = this.CreateLocalGameController();
@@ -66,6 +68,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     }
 
     [Test]
+    [Category("LocalGameController")]
     public void TryingToJoinGameMoreThanOnceReturnsFalse()
     {
       var localGameController = this.CreateLocalGameController();
@@ -79,6 +82,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     }
 
     [Test]
+    [Category("LocalGameController")]
     public void StartJoiningGame_TryLaunchingGameWithoutJoining_ReturnsFalse()
     {
       var localGameController = this.CreateLocalGameController();
@@ -86,6 +90,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     }
 
     [Test]
+    [Category("LocalGameController")]
     public void StartJoiningGame_TryLaunchingGameAfterJoining_ReturnsTrue()
     {
       var mockDice = NSubstitute.Substitute.For<IDice>();
@@ -97,6 +102,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     }
 
     [Test]
+    [Category("LocalGameController")]
     public void StartJoiningGame_GameLaunched_InitialBoardPassedBack()
     {
       var mockDice = NSubstitute.Substitute.For<IDice>();
@@ -115,6 +121,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     }
 
     [Test]
+    [Category("LocalGameController")]
     public void CompleteSetupWithPlayerInFirstSlot()
     {
       var mockDice = Substitute.For<IDice>();
@@ -167,6 +174,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     }
 
     [Test]
+    [Category("LocalGameController")]
     public void CompleteSetupWithPlayerInSecondSlot()
     {
       var mockDice = Substitute.For<IDice>();
@@ -219,6 +227,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     }
 
     [Test]
+    [Category("LocalGameController")]
     public void PlayerSelectsSameLocationAsComputerplayerDuringSetupWithPlayerInSecondSlot_ErrorDetailsPassedBack()
     {
       var mockDice = Substitute.For<IDice>();
@@ -248,6 +257,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     }
 
     [Test]
+    [Category("LocalGameController")]
     public void PlayerSelectsLocationTooCloseToComputerplayerDuringSetupWithPlayerInSecondSlot_ErrorDetailsPassedBack()
     {
       var mockDice = Substitute.For<IDice>();
@@ -277,6 +287,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     }
 
     [Test]
+    [Category("LocalGameController")]
     public void ContinueGameSetup_CallOutOfSequence_ExpectedExceptionPassedBack()
     {
       var localGameController = this.CreateLocalGameController();
@@ -290,6 +301,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     }
 
     [Test]
+    [Category("LocalGameController")]
     public void PlayerPlacesRoadWithNoConnectionToAnySettlements_MeaningfulExceptionPassedBack()
     {
       var mockDice = Substitute.For<IDice>();
@@ -318,6 +330,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     }
 
     [Test]
+    [Category("LocalGameController")]
     public void CompleteSetupWithPlayerInThirdSlot()
     {
       var mockDice = Substitute.For<IDice>();
@@ -370,6 +383,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     }
 
     [Test]
+    [Category("LocalGameController")]
     public void CompleteSetupWithPlayerInFourthSlot()
     {
       var mockDice = Substitute.For<IDice>();
