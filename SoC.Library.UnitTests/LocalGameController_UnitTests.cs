@@ -513,17 +513,9 @@ namespace Jabberwocky.SoC.Library.UnitTests
     [Category("LocalGameController")]
     public void PlayerPlacesRoadWithNoConnectionToAnySettlementsDuringSecondSetupRound_MeaningfulErrorDetailsPassedBack()
     {
-      var mockDice = Substitute.For<IDice>();
-      mockDice.RollTwoDice().Returns(12u, 10u, 8u, 6u);
-
-      var gameBoardManager = new GameBoardManager(BoardSizes.Standard);
-
-      var firstComputerPlayer = this.CreateMockComputerPlayer(gameBoardManager.Data, firstSettlementOneLocation, firstSettlementTwoLocation, firstRoadOne, firstRoadTwo);
-      var secondComputerPlayer = this.CreateMockComputerPlayer(gameBoardManager.Data, secondSettlementOneLocation, secondSettlementTwoLocation, secondRoadOne, secondRoadTwo);
-      var thirdComputerPlayer = this.CreateMockComputerPlayer(gameBoardManager.Data, thirdSettlementOneLocation, thirdSettlementTwoLocation, thirdRoadOne, thirdRoadTwo);
+      var localGameController = CreateLocalGameControllerWithMainPlayerGoingFirstInSetup();
 
       ErrorDetails errorDetails = null;
-      var localGameController = this.CreateLocalGameController(mockDice, gameBoardManager, firstComputerPlayer, secondComputerPlayer, thirdComputerPlayer);
       localGameController.ExceptionRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
 
       localGameController.TryJoiningGame();
@@ -538,6 +530,98 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
       errorDetails.ShouldNotBeNull();
       errorDetails.Message.ShouldBe("Cannot place road at [4, 5]. No connection to a player owned road or settlement.");
+      gameBoardUpdate.ShouldBeNull();
+    }
+
+    [Test]
+    [Category("LocalGameController")]
+    public void PlayerPlacesSettlementOffGameBoardDuringFirstSetupRound_MeaningfulErrorDetailsPassedBack()
+    {
+      var localGameController = CreateLocalGameControllerWithMainPlayerGoingFirstInSetup();
+
+      ErrorDetails errorDetails = null;
+      localGameController.ExceptionRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
+
+      GameBoardUpdate gameBoardUpdate = null;
+      localGameController.GameSetupUpdateEvent = (GameBoardUpdate u) => { gameBoardUpdate = u; };
+
+      localGameController.TryJoiningGame();
+      localGameController.TryLaunchGame();
+      localGameController.StartGameSetup();
+      localGameController.ContinueGameSetup(100, new Road(100, 101));
+
+      errorDetails.ShouldNotBeNull();
+      errorDetails.Message.ShouldBe("Cannot place settlement at [100]. This is outside of board range (0 - 52");
+      gameBoardUpdate.ShouldBeNull();
+    }
+
+    [Test]
+    [Category("LocalGameController")]
+    public void PlayerPlacesRoadOverEdgeOfGameBoardDuringFirstSetupRound_MeaningfulErrorDetailsPassedBack()
+    {
+      var localGameController = CreateLocalGameControllerWithMainPlayerGoingFirstInSetup();
+
+      ErrorDetails errorDetails = null;
+      localGameController.ExceptionRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
+
+      GameBoardUpdate gameBoardUpdate = null;
+      localGameController.GameSetupUpdateEvent = (GameBoardUpdate u) => { gameBoardUpdate = u; };
+
+      localGameController.TryJoiningGame();
+      localGameController.TryLaunchGame();
+      localGameController.StartGameSetup();
+      localGameController.ContinueGameSetup(52, new Road(52, 53));
+
+      errorDetails.ShouldNotBeNull();
+      errorDetails.Message.ShouldBe("Cannot place road at [52, 53]. This is outside of board range (0 - 52");
+      gameBoardUpdate.ShouldBeNull();
+    }
+
+    [Test]
+    [Category("LocalGameController")]
+    public void PlayerPlacesSettlementOffGameBoardDuringSecondSetupRound_MeaningfulErrorDetailsPassedBack()
+    {
+      var localGameController = CreateLocalGameControllerWithMainPlayerGoingFirstInSetup();
+
+      ErrorDetails errorDetails = null;
+      localGameController.ExceptionRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
+
+      localGameController.TryJoiningGame();
+      localGameController.TryLaunchGame();
+      localGameController.StartGameSetup();
+      localGameController.ContinueGameSetup(0, new Road(0, 1));
+
+      GameBoardUpdate gameBoardUpdate = null;
+      localGameController.GameSetupUpdateEvent = (GameBoardUpdate u) => { gameBoardUpdate = u; };
+
+      localGameController.ContinueGameSetup(100, new Road(100, 101));
+
+      errorDetails.ShouldNotBeNull();
+      errorDetails.Message.ShouldBe("Cannot place settlement at [100]. This is outside of board range (0 - 52");
+      gameBoardUpdate.ShouldBeNull();
+    }
+
+    [Test]
+    [Category("LocalGameController")]
+    public void PlayerPlacesRoadOverEdgeOfGameBoardDuringSecondSetupRound_MeaningfulErrorDetailsPassedBack()
+    {
+      var localGameController = CreateLocalGameControllerWithMainPlayerGoingFirstInSetup();
+
+      ErrorDetails errorDetails = null;
+      localGameController.ExceptionRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
+
+      localGameController.TryJoiningGame();
+      localGameController.TryLaunchGame();
+      localGameController.StartGameSetup();
+      localGameController.ContinueGameSetup(0, new Road(0, 1));
+
+      GameBoardUpdate gameBoardUpdate = null;
+      localGameController.GameSetupUpdateEvent = (GameBoardUpdate u) => { gameBoardUpdate = u; };
+
+      localGameController.CompleteGameSetup(52, new Road(52, 53));
+
+      errorDetails.ShouldNotBeNull();
+      errorDetails.Message.ShouldBe("Cannot place road at [52, 53]. This is outside of board range (0 - 52");
       gameBoardUpdate.ShouldBeNull();
     }
 
@@ -560,6 +644,20 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
       var localGameController = new LocalGameController(dice, mockComputerPlayerFactory, gameBoardManager);
       return localGameController;
+    }
+
+    private LocalGameController CreateLocalGameControllerWithMainPlayerGoingFirstInSetup()
+    {
+      var mockDice = Substitute.For<IDice>();
+      mockDice.RollTwoDice().Returns(12u, 10u, 8u, 6u);
+
+      var gameBoardManager = new GameBoardManager(BoardSizes.Standard);
+
+      var firstComputerPlayer = this.CreateMockComputerPlayer(gameBoardManager.Data, firstSettlementOneLocation, firstSettlementTwoLocation, firstRoadOne, firstRoadTwo);
+      var secondComputerPlayer = this.CreateMockComputerPlayer(gameBoardManager.Data, secondSettlementOneLocation, secondSettlementTwoLocation, secondRoadOne, secondRoadTwo);
+      var thirdComputerPlayer = this.CreateMockComputerPlayer(gameBoardManager.Data, thirdSettlementOneLocation, thirdSettlementTwoLocation, thirdRoadOne, thirdRoadTwo);
+
+      return this.CreateLocalGameController(mockDice, gameBoardManager, firstComputerPlayer, secondComputerPlayer, thirdComputerPlayer);
     }
 
     private IComputerPlayer CreateMockComputerPlayer(GameBoardData gameBoardData, UInt32 settlementOneLocation, UInt32 settlementTwoLocation, Road roadOne, Road roadTwo)
