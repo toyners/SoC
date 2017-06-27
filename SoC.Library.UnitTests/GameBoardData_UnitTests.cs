@@ -60,6 +60,15 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
     [Test]
     [Category("GameBoardData")]
+    public void CanPlaceRoad_OverEdgeOfBoard_ReturnsRoadIsInvalid()
+    {
+      var gameBoardData = new GameBoardData(BoardSizes.Standard);
+      var result = gameBoardData.CanPlaceRoad(Guid.NewGuid(), new Road(52, 53));
+      result.Status.ShouldBe(GameBoardData.VerificationResults.RoadIsInvalid);
+    }
+
+    [Test]
+    [Category("GameBoardData")]
     public void CanPlaceRoad_ConnectedToRoad_ReturnsValid()
     {
       var gameBoardData = new GameBoardData(BoardSizes.Standard);
@@ -93,6 +102,15 @@ namespace Jabberwocky.SoC.Library.UnitTests
       result.Status.ShouldBe(GameBoardData.VerificationResults.LocationIsOccupied);
       result.LocationIndex.ShouldBe(1u);
       result.PlayerId.ShouldBe(playerId);
+    }
+
+    [Test]
+    [Category("GameBoardData")]
+    public void CanPlaceSettlement_TryPlacingOnInvalidLocation_ReturnsLocationIsInvalidStatus()
+    {
+      var gameBoardData = new GameBoardData(BoardSizes.Standard);
+      var result = gameBoardData.CanPlaceSettlement(100);
+      result.Status.ShouldBe(GameBoardData.VerificationResults.LocationIsInvalid);
     }
 
     [Test]

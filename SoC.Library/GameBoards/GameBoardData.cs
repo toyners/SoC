@@ -14,10 +14,12 @@ namespace Jabberwocky.SoC.Library.GameBoards
     {
       Valid,
       LocationIsOccupied,
+      LocationIsInvalid,
       NotConnectedToExisting,
       NoSettlementToUpgrade,
       TooCloseToSettlement,
-      RoadConnectsToAnotherPlayer
+      RoadConnectsToAnotherPlayer,
+      RoadIsInvalid
     }
 
     #region Fields
