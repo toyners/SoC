@@ -59,7 +59,7 @@ namespace Jabberwocky.SoC.Library
 
     public Action<GameBoardUpdate> GameSetupUpdateEvent { get; set; }
 
-    public Action<Exception> ExceptionRaisedEvent { get; set; }
+    public Action<ErrorDetails> ExceptionRaisedEvent { get; set; }
     #endregion
 
     #region Methods
@@ -226,8 +226,8 @@ namespace Jabberwocky.SoC.Library
     {
       if (this.gamePhase != GamePhases.ContinueGameSetup)
       {
-        var exception = new Exception("Cannot call 'ContinueGameSetup' until 'StartGameSetup' has completed.");
-        this.ExceptionRaisedEvent?.Invoke(exception);
+        var errorDetails = new ErrorDetails("Cannot call 'ContinueGameSetup' until 'StartGameSetup' has completed.");
+        this.ExceptionRaisedEvent?.Invoke(errorDetails);
         return;
       }
 
@@ -235,15 +235,15 @@ namespace Jabberwocky.SoC.Library
       var canPlaceSettlementResults = gameBoardData.CanPlaceSettlement(settlementLocation);
       if (canPlaceSettlementResults.Status == GameBoardData.VerificationResults.TooCloseToSettlement)
       {
-        var exception = new Exception("Cannot place settlement: Too close to player " + canPlaceSettlementResults.PlayerId + " at location " + canPlaceSettlementResults.LocationIndex);
-        this.ExceptionRaisedEvent?.Invoke(exception);
+        var errorDetails = new ErrorDetails("Cannot place settlement: Too close to player " + canPlaceSettlementResults.PlayerId + " at location " + canPlaceSettlementResults.LocationIndex);
+        this.ExceptionRaisedEvent?.Invoke(errorDetails);
         return;
       }
 
       if (canPlaceSettlementResults.Status == GameBoardData.VerificationResults.LocationIsOccupied)
       {
-        var exception = new Exception("Cannot place settlement: Location " + settlementLocation + " already owned by player " + canPlaceSettlementResults.PlayerId);
-        this.ExceptionRaisedEvent?.Invoke(exception);
+        var errorDetails = new ErrorDetails("Cannot place settlement: Location " + settlementLocation + " already owned by player " + canPlaceSettlementResults.PlayerId);
+        this.ExceptionRaisedEvent?.Invoke(errorDetails);
         return;
       }
 
@@ -252,8 +252,8 @@ namespace Jabberwocky.SoC.Library
       var canPlaceRoadResults = gameBoardData.CanPlaceRoad(this.mainPlayer.Id, road);
       if (canPlaceRoadResults.Status == GameBoardData.VerificationResults.NotConnectedToExisting)
       {
-        var exception = new Exception("Cannot place road: No connection to a player owned road or settlement.");
-        this.ExceptionRaisedEvent?.Invoke(exception);
+        var errorDetails = new ErrorDetails("Cannot place road: No connection to a player owned road or settlement.");
+        this.ExceptionRaisedEvent?.Invoke(errorDetails);
         return;
       }
 
@@ -271,8 +271,8 @@ namespace Jabberwocky.SoC.Library
     {
       if (this.gamePhase != GamePhases.CompleteGameSetup)
       {
-        var exception = new Exception("Cannot call 'CompleteGameSetup' until 'ContinueGameSetup' has completed.");
-        this.ExceptionRaisedEvent?.Invoke(exception);
+        var errorDetails = new ErrorDetails("Cannot call 'CompleteGameSetup' until 'ContinueGameSetup' has completed.");
+        this.ExceptionRaisedEvent?.Invoke(errorDetails);
         return;
       }
 

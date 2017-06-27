@@ -228,7 +228,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
     [Test]
     [Category("LocalGameController")]
-    public void PlayerSelectsSameLocationAsComputerplayerDuringSetupWithPlayerInSecondSlot_ErrorDetailsPassedBack()
+    public void PlayerSelectsSameLocationAsComputerplayerDuringSetupWithPlayerInSecondSlot_MeaningfulErrorDetailsPassedBack()
     {
       var mockDice = Substitute.For<IDice>();
       mockDice.RollTwoDice().Returns(10u, 12u, 8u, 6u);
@@ -239,9 +239,9 @@ namespace Jabberwocky.SoC.Library.UnitTests
       var secondComputerPlayer = this.CreateMockComputerPlayer(gameBoardManager.Data, secondSettlementOneLocation, secondSettlementTwoLocation, secondRoadOne, secondRoadTwo);
       var thirdComputerPlayer = this.CreateMockComputerPlayer(gameBoardManager.Data, thirdSettlementOneLocation, thirdSettlementTwoLocation, thirdRoadOne, thirdRoadTwo);
 
-      Exception exception = null;
+      ErrorDetails exception = null;
       var localGameController = this.CreateLocalGameController(mockDice, gameBoardManager, firstComputerPlayer, secondComputerPlayer, thirdComputerPlayer);
-      localGameController.ExceptionRaisedEvent = (Exception e) => { exception = e; };
+      localGameController.ExceptionRaisedEvent = (ErrorDetails e) => { exception = e; };
 
       localGameController.TryJoiningGame();
       localGameController.TryLaunchGame();
@@ -258,7 +258,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
     [Test]
     [Category("LocalGameController")]
-    public void PlayerSelectsLocationTooCloseToComputerplayerDuringSetupWithPlayerInSecondSlot_ErrorDetailsPassedBack()
+    public void PlayerSelectsLocationTooCloseToComputerplayerDuringSetupWithPlayerInSecondSlot_MeaningfulErrorDetailsPassedBack()
     {
       var mockDice = Substitute.For<IDice>();
       mockDice.RollTwoDice().Returns(10u, 12u, 8u, 6u);
@@ -269,9 +269,9 @@ namespace Jabberwocky.SoC.Library.UnitTests
       var secondComputerPlayer = this.CreateMockComputerPlayer(gameBoardManager.Data, secondSettlementOneLocation, secondSettlementTwoLocation, secondRoadOne, secondRoadTwo);
       var thirdComputerPlayer = this.CreateMockComputerPlayer(gameBoardManager.Data, thirdSettlementOneLocation, thirdSettlementTwoLocation, thirdRoadOne, thirdRoadTwo);
 
-      Exception exception = null;
+      ErrorDetails exception = null;
       var localGameController = this.CreateLocalGameController(mockDice, gameBoardManager, firstComputerPlayer, secondComputerPlayer, thirdComputerPlayer);
-      localGameController.ExceptionRaisedEvent = (Exception e) => { exception = e; };
+      localGameController.ExceptionRaisedEvent = (ErrorDetails e) => { exception = e; };
       localGameController.TryJoiningGame();
       localGameController.TryLaunchGame();
       localGameController.StartGameSetup();
@@ -288,35 +288,35 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
     [Test]
     [Category("LocalGameController")]
-    public void ContinueGameSetup_CallOutOfSequence_ExpectedExceptionPassedBack()
+    public void ContinueGameSetup_CallOutOfSequence_MeaningfulErrorDetailsPassedBack()
     {
       var localGameController = this.CreateLocalGameController();
-      Exception exception = null;
-      localGameController.ExceptionRaisedEvent = (Exception e) => { exception = e; };
+      ErrorDetails errorDetails = null;
+      localGameController.ExceptionRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
 
       localGameController.ContinueGameSetup(0u, new Road(0u, 1u));
 
-      exception.ShouldNotBeNull();
-      exception.Message.ShouldBe("Cannot call 'ContinueGameSetup' until 'StartGameSetup' has completed.");
+      errorDetails.ShouldNotBeNull();
+      errorDetails.Message.ShouldBe("Cannot call 'ContinueGameSetup' until 'StartGameSetup' has completed.");
     }
 
     [Test]
     [Category("LocalGameController")]
-    public void CompleteGameSetup_CallOutOfSequence_ExpectedExceptionPassedBack()
+    public void CompleteGameSetup_CallOutOfSequence_MeaningfulErrorDetailsPassedBack()
     {
       var localGameController = this.CreateLocalGameController();
-      Exception exception = null;
-      localGameController.ExceptionRaisedEvent = (Exception e) => { exception = e; };
+      ErrorDetails errorDetails = null;
+      localGameController.ExceptionRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
 
       localGameController.CompleteGameSetup(0u, new Road(0u, 1u));
 
-      exception.ShouldNotBeNull();
-      exception.Message.ShouldBe("Cannot call 'CompleteGameSetup' until 'ContinueGameSetup' has completed.");
+      errorDetails.ShouldNotBeNull();
+      errorDetails.Message.ShouldBe("Cannot call 'CompleteGameSetup' until 'ContinueGameSetup' has completed.");
     }
 
     [Test]
     [Category("LocalGameController")]
-    public void PlayerPlacesRoadWithNoConnectionToAnySettlements_MeaningfulExceptionPassedBack()
+    public void PlayerPlacesRoadWithNoConnectionToAnySettlements_MeaningfulErrorDetailsPassedBack()
     {
       var mockDice = Substitute.For<IDice>();
       mockDice.RollTwoDice().Returns(12u, 10u, 8u, 6u);
@@ -327,10 +327,10 @@ namespace Jabberwocky.SoC.Library.UnitTests
       var secondComputerPlayer = this.CreateMockComputerPlayer(gameBoardManager.Data, secondSettlementOneLocation, secondSettlementTwoLocation, secondRoadOne, secondRoadTwo);
       var thirdComputerPlayer = this.CreateMockComputerPlayer(gameBoardManager.Data, thirdSettlementOneLocation, thirdSettlementTwoLocation, thirdRoadOne, thirdRoadTwo);
 
-      Exception exception = null;
+      ErrorDetails errorDetails = null;
       GameBoardUpdate gameBoardUpdate = null;
       var localGameController = this.CreateLocalGameController(mockDice, gameBoardManager, firstComputerPlayer, secondComputerPlayer, thirdComputerPlayer);
-      localGameController.ExceptionRaisedEvent = (Exception e) => { exception = e; };
+      localGameController.ExceptionRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
       localGameController.GameSetupUpdateEvent = (GameBoardUpdate u) => { gameBoardUpdate = u; };
 
       localGameController.TryJoiningGame();
@@ -338,8 +338,8 @@ namespace Jabberwocky.SoC.Library.UnitTests
       localGameController.StartGameSetup();
       localGameController.ContinueGameSetup(0u, new Road(1u, 2u));
 
-      exception.ShouldNotBeNull();
-      exception.Message.ShouldBe("Cannot place road: No connection to a player owned road or settlement.");
+      errorDetails.ShouldNotBeNull();
+      errorDetails.Message.ShouldBe("Cannot place road: No connection to a player owned road or settlement.");
       gameBoardUpdate.ShouldBeNull();
     }
 
