@@ -446,6 +446,101 @@ namespace Jabberwocky.SoC.Library.UnitTests
       gameBoardUpdate.NewRoads.ShouldContainKeyAndValue(firstRoadTwo, firstComputerPlayer.Id);
     }
 
+    [Test]
+    [Category("LocalGameController")]
+    public void PlayerSelectsSameLocationAsComputerplayerDuringSecondSetupRound_MeaningfulErrorDetailsPassedBack()
+    {
+      var mockDice = Substitute.For<IDice>();
+      mockDice.RollTwoDice().Returns(12u, 10u, 8u, 6u);
+
+      var gameBoardManager = new GameBoardManager(BoardSizes.Standard);
+
+      var firstComputerPlayer = this.CreateMockComputerPlayer(gameBoardManager.Data, firstSettlementOneLocation, firstSettlementTwoLocation, firstRoadOne, firstRoadTwo);
+      var secondComputerPlayer = this.CreateMockComputerPlayer(gameBoardManager.Data, secondSettlementOneLocation, secondSettlementTwoLocation, secondRoadOne, secondRoadTwo);
+      var thirdComputerPlayer = this.CreateMockComputerPlayer(gameBoardManager.Data, thirdSettlementOneLocation, thirdSettlementTwoLocation, thirdRoadOne, thirdRoadTwo);
+
+      ErrorDetails exception = null;
+      var localGameController = this.CreateLocalGameController(mockDice, gameBoardManager, firstComputerPlayer, secondComputerPlayer, thirdComputerPlayer);
+      localGameController.ExceptionRaisedEvent = (ErrorDetails e) => { exception = e; };
+
+      localGameController.TryJoiningGame();
+      localGameController.TryLaunchGame();
+      localGameController.StartGameSetup();
+      localGameController.ContinueGameSetup(0, new Road(0, 1));
+
+      GameBoardUpdate gameBoardUpdate = null;
+      localGameController.GameSetupUpdateEvent = (GameBoardUpdate u) => { gameBoardUpdate = u; };
+
+      localGameController.CompleteGameSetup(firstSettlementOneLocation, new Road(0, 1));
+
+      exception.ShouldNotBeNull();
+      exception.Message.ShouldBe("Cannot place settlement: Location " + firstSettlementOneLocation + " already owned by player " + firstComputerPlayer.Id);
+      gameBoardUpdate.ShouldBeNull();
+    }
+
+    [Test]
+    [Category("LocalGameController")]
+    public void PlayerSelectsLocationTooCloseToComputerplayerDuringSecondSetupRound_MeaningfulErrorDetailsPassedBack()
+    {
+      var mockDice = Substitute.For<IDice>();
+      mockDice.RollTwoDice().Returns(12u, 10u, 8u, 6u);
+
+      var gameBoardManager = new GameBoardManager(BoardSizes.Standard);
+
+      var firstComputerPlayer = this.CreateMockComputerPlayer(gameBoardManager.Data, firstSettlementOneLocation, firstSettlementTwoLocation, firstRoadOne, firstRoadTwo);
+      var secondComputerPlayer = this.CreateMockComputerPlayer(gameBoardManager.Data, secondSettlementOneLocation, secondSettlementTwoLocation, secondRoadOne, secondRoadTwo);
+      var thirdComputerPlayer = this.CreateMockComputerPlayer(gameBoardManager.Data, thirdSettlementOneLocation, thirdSettlementTwoLocation, thirdRoadOne, thirdRoadTwo);
+
+      ErrorDetails exception = null;
+      var localGameController = this.CreateLocalGameController(mockDice, gameBoardManager, firstComputerPlayer, secondComputerPlayer, thirdComputerPlayer);
+      localGameController.ExceptionRaisedEvent = (ErrorDetails e) => { exception = e; };
+      localGameController.TryJoiningGame();
+      localGameController.TryLaunchGame();
+      localGameController.StartGameSetup();
+      localGameController.ContinueGameSetup(0, new Road(0, 1));
+
+      GameBoardUpdate gameBoardUpdate = null;
+      localGameController.GameSetupUpdateEvent = (GameBoardUpdate u) => { gameBoardUpdate = u; };
+
+      localGameController.CompleteGameSetup(19, new Road(19, 18));
+
+      exception.ShouldNotBeNull();
+      exception.Message.ShouldBe("Cannot place settlement: Too close to player " + firstComputerPlayer.Id + " at location " + firstSettlementOneLocation);
+      gameBoardUpdate.ShouldBeNull();
+    }
+
+    [Test]
+    [Category("LocalGameController")]
+    public void PlayerPlacesRoadWithNoConnectionToAnySettlementsDuringSecondSetupRound_MeaningfulErrorDetailsPassedBack()
+    {
+      var mockDice = Substitute.For<IDice>();
+      mockDice.RollTwoDice().Returns(12u, 10u, 8u, 6u);
+
+      var gameBoardManager = new GameBoardManager(BoardSizes.Standard);
+
+      var firstComputerPlayer = this.CreateMockComputerPlayer(gameBoardManager.Data, firstSettlementOneLocation, firstSettlementTwoLocation, firstRoadOne, firstRoadTwo);
+      var secondComputerPlayer = this.CreateMockComputerPlayer(gameBoardManager.Data, secondSettlementOneLocation, secondSettlementTwoLocation, secondRoadOne, secondRoadTwo);
+      var thirdComputerPlayer = this.CreateMockComputerPlayer(gameBoardManager.Data, thirdSettlementOneLocation, thirdSettlementTwoLocation, thirdRoadOne, thirdRoadTwo);
+
+      ErrorDetails errorDetails = null;
+      var localGameController = this.CreateLocalGameController(mockDice, gameBoardManager, firstComputerPlayer, secondComputerPlayer, thirdComputerPlayer);
+      localGameController.ExceptionRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
+
+      localGameController.TryJoiningGame();
+      localGameController.TryLaunchGame();
+      localGameController.StartGameSetup();
+      localGameController.ContinueGameSetup(0, new Road(0, 1));
+
+      GameBoardUpdate gameBoardUpdate = null;
+      localGameController.GameSetupUpdateEvent = (GameBoardUpdate u) => { gameBoardUpdate = u; };
+
+      localGameController.CompleteGameSetup(6, new Road(4, 5));
+
+      errorDetails.ShouldNotBeNull();
+      errorDetails.Message.ShouldBe("Cannot place road at [4, 5]. No connection to a player owned road or settlement.");
+      gameBoardUpdate.ShouldBeNull();
+    }
+
     private LocalGameController CreateLocalGameController()
     {
       return this.CreateLocalGameController(new Dice(), new ComputerPlayerFactory(), new GameBoardManager(BoardSizes.Standard));
