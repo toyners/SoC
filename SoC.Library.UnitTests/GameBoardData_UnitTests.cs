@@ -12,6 +12,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
   {
     #region Methods
     [Test]
+    [Category("GameBoardData")]
     public void CanPlaceRoad_EmptyBoard_ReturnsNotConnected()
     {
       var gameBoardData = new GameBoardData(BoardSizes.Standard);
@@ -20,6 +21,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     }
 
     [Test]
+    [Category("GameBoardData")]
     public void CanPlaceRoad_RoadNotConnectedToPlacedSettlement_ReturnsNotConnected()
     {
       var gameBoardData = new GameBoardData(BoardSizes.Standard);
@@ -30,6 +32,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     }
 
     [Test]
+    [Category("GameBoardData")]
     public void CanPlaceRoad_RoadWouldConnectToAnotherPlayersSettlement_ReturnsRoadConnectsToAnotherPlayer()
     {
       var gameBoardData = new GameBoardData(BoardSizes.Standard);
@@ -45,6 +48,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     }
 
     [Test]
+    [Category("GameBoardData")]
     public void CanPlaceRoad_ConnectedToSettlement_ReturnsValid()
     {
       var gameBoardData = new GameBoardData(BoardSizes.Standard);
@@ -55,6 +59,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     }
 
     [Test]
+    [Category("GameBoardData")]
     public void CanPlaceRoad_ConnectedToRoad_ReturnsValid()
     {
       var gameBoardData = new GameBoardData(BoardSizes.Standard);
@@ -66,6 +71,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     }
 
     [Test]
+    [Category("GameBoardData")]
     public void CanPlaceSettlement_EmptyBoard_ReturnsValid()
     {
       var gameBoardData = new GameBoardData(BoardSizes.Standard);
@@ -76,6 +82,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     }
 
     [Test]
+    [Category("GameBoardData")]
     public void CanPlaceSettlement_TryPlacingOnSettledLocation_ReturnsLocationIsOccupiedStatus()
     {
       var gameBoardData = new GameBoardData(BoardSizes.Standard);
@@ -89,6 +96,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     }
 
     [Test]
+    [Category("GameBoardData")]
     [TestCase(19u)]
     [TestCase(21u)]
     [TestCase(31u)]
@@ -106,6 +114,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     }
 
     [Test]
+    [Category("GameBoardData")]
     public void GetPathBetweenLocations_StartAndEndAreSame_ReturnsNull()
     {
       var gameBoardData = new GameBoardData(BoardSizes.Standard);
@@ -114,6 +123,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     }
 
     [Test]
+    [Category("GameBoardData")]
     [TestCase(1u, 0u)]
     [TestCase(8u, 48u)]
     public void GetPathBetweenLocations_StartAndEndAreNeighbours_ReturnsOneStep(UInt32 endPoint, UInt32 stepIndex)
@@ -124,6 +134,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     }
 
     [Test]
+    [Category("GameBoardData")]
     public void GetPathBetweenLocations_StartAndEndAreNeighbours()
     {
       var gameBoardData = new GameBoardData(BoardSizes.Standard);
@@ -132,6 +143,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     }
 
     [Test]
+    [Category("GameBoardData")]
     public void GetSettlementsForPlayers_EmptyBoard_ReturnsNull()
     {
       var gameBoardData = new GameBoardData(BoardSizes.Standard);
@@ -140,6 +152,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     }
 
     [Test]
+    [Category("GameBoardData")]
     public void GetSettlementsForPlayers_PlayerHasNoSettlementsOnBoard_ReturnsNull()
     {
       var gameBoardData = new GameBoardData(BoardSizes.Standard);
