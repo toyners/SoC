@@ -267,11 +267,13 @@ namespace Jabberwocky.SoC.Library
       this.gamePhase = GamePhases.CompleteGameSetup;
     }
 
-    public Boolean CompleteGameSetup(UInt32 lastSettlement, Road lastRoad)
+    public void CompleteGameSetup(UInt32 lastSettlement, Road lastRoad)
     {
       if (this.gamePhase != GamePhases.CompleteGameSetup)
       {
-        return false;
+        var exception = new Exception("Cannot call 'CompleteGameSetup' until 'ContinueGameSetup' has completed.");
+        this.ExceptionRaisedEvent?.Invoke(exception);
+        return;
       }
 
       this.gameBoardManager.Data.PlaceSettlement(this.mainPlayer.Id, lastSettlement);
@@ -280,8 +282,6 @@ namespace Jabberwocky.SoC.Library
       var gameBoardData = this.gameBoardManager.Data;
       GameBoardUpdate gameBoardUpdate = this.ContinueSetupForComputerPlayers(gameBoardData, -1, null);
       this.GameSetupUpdateEvent?.Invoke(gameBoardUpdate);
-
-      return true;
     }
 
     private GameBoardUpdate ContinueSetupForComputerPlayers(GameBoardData gameBoardData, Int32 step, GameBoardUpdate gameBoardUpdate)
