@@ -13,15 +13,17 @@ namespace Jabberwocky.SoC.Library.UnitTests
     {
       Action action = () => { new Road(0u, 0u); };
 
-      Should.Throw<ArgumentException>(action).Message.ShouldBe("Locations cannot be the same");
+      Should.Throw<ArgumentException>(action).Message.ShouldBe("Locations cannot be the same.");
     }
 
     [Test]
-    public void Cstr_DistanceLargerThanOne_ThrowMeaningfulException()
+    [TestCase(0, 2)]
+    [TestCase(2, 0)]
+    public void Cstr_DistanceLargerThanOne_ThrowMeaningfulException(Int32 start, Int32 end)
     {
-      Action action = () => { new Road(0u, 2u); };
+      Action action = () => { new Road(start, end); };
 
-      Should.Throw<ArgumentException>(action).Message.ShouldBe("Length cannot be the greater than one.");
+      Should.Throw<ArgumentException>(action).Message.ShouldBe("Length cannot be greater than one.");
     }
 
     [Test]

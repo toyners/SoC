@@ -17,8 +17,29 @@ namespace Jabberwocky.SoC.Library
         throw new ArgumentException("Locations cannot be the same");
       }
 
+      if (Math.Abs(location1 - location2) > 1)
+      {
+        throw new ArgumentException("Length cannot be greater than one.");
+      }
+
       this.Location1 = location1;
       this.Location2 = location2;
+    }
+
+    public Road(Int32 location1, Int32 location2)
+    {
+      if (location1 == location2)
+      {
+        throw new ArgumentException("Locations cannot be the same.");
+      }
+
+      if (Math.Abs(location1 - location2) > 1)
+      {
+        throw new ArgumentException("Length cannot be greater than one.");
+      }
+
+      this.Location1 = (UInt32)location1;
+      this.Location2 = (UInt32)location2;
     }
 
     public static Boolean operator ==(Road road1, Road road2)
