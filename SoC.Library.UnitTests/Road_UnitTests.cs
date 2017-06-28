@@ -17,6 +17,14 @@ namespace Jabberwocky.SoC.Library.UnitTests
     }
 
     [Test]
+    public void Cstr_DistanceLargerThanOne_ThrowMeaningfulException()
+    {
+      Action action = () => { new Road(0u, 2u); };
+
+      Should.Throw<ArgumentException>(action).Message.ShouldBe("Length cannot be the greater than one.");
+    }
+
+    [Test]
     public void Equals_OtherObjectIsNotRoad_ReturnFalse()
     {
       var road1 = new Road(0, 1);
