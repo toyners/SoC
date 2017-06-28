@@ -60,10 +60,12 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
     [Test]
     [Category("GameBoardData")]
-    public void CanPlaceRoad_OverEdgeOfBoard_ReturnsRoadIsInvalid()
+    [TestCase(53u, 54u)]
+    [TestCase(54u, 53u)]
+    public void CanPlaceRoad_OverEdgeOfBoard_ReturnsRoadIsInvalid(UInt32 start, UInt32 end)
     {
       var gameBoardData = new GameBoardData(BoardSizes.Standard);
-      var result = gameBoardData.CanPlaceRoad(Guid.NewGuid(), new Road(52, 53));
+      var result = gameBoardData.CanPlaceRoad(Guid.NewGuid(), new Road(start, end));
       result.Status.ShouldBe(GameBoardData.VerificationResults.RoadIsInvalid);
     }
 
@@ -111,6 +113,8 @@ namespace Jabberwocky.SoC.Library.UnitTests
       var gameBoardData = new GameBoardData(BoardSizes.Standard);
       var result = gameBoardData.CanPlaceSettlement(100);
       result.Status.ShouldBe(GameBoardData.VerificationResults.LocationIsInvalid);
+      result.LocationIndex.ShouldBe(0u);
+      result.PlayerId.ShouldBe(Guid.Empty);
     }
 
     [Test]
@@ -118,7 +122,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     [TestCase(19u)]
     [TestCase(21u)]
     [TestCase(31u)]
-    public void CanPlaceSettlement_TryPlacingNextToSettledLocation_ReturnsCorrectVerificationCode(UInt32 newLocation)
+    public void CanPlaceSettlement_TryPlacingNextToSettledLocation_ReturnsCorrectVerificationResult(UInt32 newLocation)
     {
       var playerId = Guid.NewGuid();
       var location = 20u;
