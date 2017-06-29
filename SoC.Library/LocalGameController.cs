@@ -233,6 +233,13 @@ namespace Jabberwocky.SoC.Library
 
       var gameBoardData = this.gameBoardManager.Data;
       var canPlaceSettlementResults = gameBoardData.CanPlaceSettlement(settlementLocation);
+      if (canPlaceSettlementResults.Status == GameBoardData.VerificationResults.LocationIsInvalid)
+      {
+        var errorDetails = new ErrorDetails("Cannot place settlement at [" + settlementLocation + "]. This is outside of board range (0 - 53).");
+        this.ExceptionRaisedEvent?.Invoke(errorDetails);
+        return;
+      }
+
       if (canPlaceSettlementResults.Status == GameBoardData.VerificationResults.TooCloseToSettlement)
       {
         var errorDetails = new ErrorDetails("Cannot place settlement: Too close to player " + canPlaceSettlementResults.PlayerId + " at location " + canPlaceSettlementResults.LocationIndex);
@@ -250,9 +257,16 @@ namespace Jabberwocky.SoC.Library
       gameBoardData.PlaceSettlement(this.mainPlayer.Id, settlementLocation);
 
       var canPlaceRoadResults = gameBoardData.CanPlaceRoad(this.mainPlayer.Id, road);
+      if (canPlaceRoadResults.Status == GameBoardData.VerificationResults.RoadIsInvalid)
+      {
+        var errorDetails = new ErrorDetails("Cannot place road at [" + road.Location1 + ", " + road.Location2 + "]. This is outside of board range (0 - 53).");
+        this.ExceptionRaisedEvent?.Invoke(errorDetails);
+        return;
+      }
+
       if (canPlaceRoadResults.Status == GameBoardData.VerificationResults.NotConnectedToExisting)
       {
-        var errorDetails = new ErrorDetails("Cannot place road: No connection to a player owned road or settlement.");
+        var errorDetails = new ErrorDetails("Cannot place road at [" + road.Location1 + ", " + road.Location2 + "]. No connection to a player owned road or settlement.");
         this.ExceptionRaisedEvent?.Invoke(errorDetails);
         return;
       }
@@ -267,7 +281,7 @@ namespace Jabberwocky.SoC.Library
       this.gamePhase = GamePhases.CompleteGameSetup;
     }
 
-    public void CompleteGameSetup(UInt32 lastSettlement, Road lastRoad)
+    public void CompleteGameSetup(UInt32 settlementLocation, Road road)
     {
       if (this.gamePhase != GamePhases.CompleteGameSetup)
       {
@@ -276,10 +290,48 @@ namespace Jabberwocky.SoC.Library
         return;
       }
 
-      this.gameBoardManager.Data.PlaceSettlement(this.mainPlayer.Id, lastSettlement);
-      this.gameBoardManager.Data.PlaceRoad(this.mainPlayer.Id, lastRoad);
-
       var gameBoardData = this.gameBoardManager.Data;
+      var canPlaceSettlementResults = gameBoardData.CanPlaceSettlement(settlementLocation);
+      if (canPlaceSettlementResults.Status == GameBoardData.VerificationResults.LocationIsInvalid)
+      {
+        var errorDetails = new ErrorDetails("Cannot place settlement at [" + settlementLocation + "]. This is outside of board range (0 - 52).");
+        this.ExceptionRaisedEvent?.Invoke(errorDetails);
+        return;
+      }
+
+      if (canPlaceSettlementResults.Status == GameBoardData.VerificationResults.TooCloseToSettlement)
+      {
+        var errorDetails = new ErrorDetails("Cannot place settlement: Too close to player " + canPlaceSettlementResults.PlayerId + " at location " + canPlaceSettlementResults.LocationIndex);
+        this.ExceptionRaisedEvent?.Invoke(errorDetails);
+        return;
+      }
+
+      if (canPlaceSettlementResults.Status == GameBoardData.VerificationResults.LocationIsOccupied)
+      {
+        var errorDetails = new ErrorDetails("Cannot place settlement: Location " + settlementLocation + " already owned by player " + canPlaceSettlementResults.PlayerId);
+        this.ExceptionRaisedEvent?.Invoke(errorDetails);
+        return;
+      }
+
+      this.gameBoardManager.Data.PlaceSettlement(this.mainPlayer.Id, settlementLocation);
+
+      var canPlaceRoadResults = gameBoardData.CanPlaceRoad(this.mainPlayer.Id, road);
+      if (canPlaceRoadResults.Status == GameBoardData.VerificationResults.RoadIsInvalid)
+      {
+        var errorDetails = new ErrorDetails("Cannot place road at [" + road.Location1 + ", " + road.Location2 + "]. This is outside of board range (0 - 53).");
+        this.ExceptionRaisedEvent?.Invoke(errorDetails);
+        return;
+      }
+
+      if (canPlaceRoadResults.Status == GameBoardData.VerificationResults.NotConnectedToExisting)
+      {
+        var errorDetails = new ErrorDetails("Cannot place road at [" + road.Location1 + ", " + road.Location2 + "]. No connection to a player owned road or settlement.");
+        this.ExceptionRaisedEvent?.Invoke(errorDetails);
+        return;
+      }
+
+      this.gameBoardManager.Data.PlaceRoad(this.mainPlayer.Id, road);
+
       GameBoardUpdate gameBoardUpdate = this.ContinueSetupForComputerPlayers(gameBoardData, -1, null);
       this.GameSetupUpdateEvent?.Invoke(gameBoardUpdate);
     }

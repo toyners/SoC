@@ -551,7 +551,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
       localGameController.ContinueGameSetup(100, new Road(100, 101));
 
       errorDetails.ShouldNotBeNull();
-      errorDetails.Message.ShouldBe("Cannot place settlement at [100]. This is outside of board range (0 - 52");
+      errorDetails.Message.ShouldBe("Cannot place settlement at [100]. This is outside of board range (0 - 53).");
       gameBoardUpdate.ShouldBeNull();
     }
 
@@ -570,10 +570,10 @@ namespace Jabberwocky.SoC.Library.UnitTests
       localGameController.TryJoiningGame();
       localGameController.TryLaunchGame();
       localGameController.StartGameSetup();
-      localGameController.ContinueGameSetup(52, new Road(52, 53));
+      localGameController.ContinueGameSetup(53, new Road(53, 54));
 
       errorDetails.ShouldNotBeNull();
-      errorDetails.Message.ShouldBe("Cannot place road at [52, 53]. This is outside of board range (0 - 52");
+      errorDetails.Message.ShouldBe("Cannot place road at [53, 54]. This is outside of board range (0 - 53).");
       gameBoardUpdate.ShouldBeNull();
     }
 
@@ -594,10 +594,10 @@ namespace Jabberwocky.SoC.Library.UnitTests
       GameBoardUpdate gameBoardUpdate = null;
       localGameController.GameSetupUpdateEvent = (GameBoardUpdate u) => { gameBoardUpdate = u; };
 
-      localGameController.ContinueGameSetup(100, new Road(100, 101));
+      localGameController.CompleteGameSetup(100, new Road(100, 101));
 
       errorDetails.ShouldNotBeNull();
-      errorDetails.Message.ShouldBe("Cannot place settlement at [100]. This is outside of board range (0 - 52");
+      errorDetails.Message.ShouldBe("Cannot place settlement at [100]. This is outside of board range (0 - 52).");
       gameBoardUpdate.ShouldBeNull();
     }
 
@@ -618,10 +618,10 @@ namespace Jabberwocky.SoC.Library.UnitTests
       GameBoardUpdate gameBoardUpdate = null;
       localGameController.GameSetupUpdateEvent = (GameBoardUpdate u) => { gameBoardUpdate = u; };
 
-      localGameController.CompleteGameSetup(52, new Road(52, 53));
+      localGameController.CompleteGameSetup(53, new Road(53, 54));
 
       errorDetails.ShouldNotBeNull();
-      errorDetails.Message.ShouldBe("Cannot place road at [52, 53]. This is outside of board range (0 - 52");
+      errorDetails.Message.ShouldBe("Cannot place road at [53, 54]. This is outside of board range (0 - 53).");
       gameBoardUpdate.ShouldBeNull();
     }
 
