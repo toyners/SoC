@@ -17,16 +17,6 @@ namespace Jabberwocky.SoC.Library
         throw new ArgumentException("Locations cannot be the same.");
       }
 
-      if (location1 > location2  && location1 - location2 > 1)
-      {
-        throw new ArgumentException("Length cannot be greater than one.");
-      }
-
-      if (location2 > location1 && location2 - location1 > 1)
-      {
-        throw new ArgumentException("Length cannot be greater than one.");
-      }
-
       this.Location1 = location1;
       this.Location2 = location2;
     }
