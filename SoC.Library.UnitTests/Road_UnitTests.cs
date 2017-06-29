@@ -9,6 +9,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
   public class Road_UnitTests
   {
     [Test]
+    [Category("Road")]
     public void Cstr_LocationsAreSame_ThrowMeaningfulException()
     {
       Action action = () => { new Road(0u, 0u); };
@@ -17,9 +18,10 @@ namespace Jabberwocky.SoC.Library.UnitTests
     }
 
     [Test]
-    [TestCase(0, 2)]
-    [TestCase(2, 0)]
-    public void Cstr_DistanceLargerThanOne_ThrowMeaningfulException(Int32 start, Int32 end)
+    [Category("Road")]
+    [TestCase(0u, 2u)]
+    [TestCase(2u, 0u)]
+    public void Cstr_DistanceLargerThanOne_ThrowMeaningfulException(UInt32 start, UInt32 end)
     {
       Action action = () => { new Road(start, end); };
 
@@ -27,6 +29,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     }
 
     [Test]
+    [Category("Road")]
     public void Equals_OtherObjectIsNotRoad_ReturnFalse()
     {
       var road1 = new Road(0, 1);
@@ -36,6 +39,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     }
 
     [Test]
+    [Category("Road")]
     public void EqualityOperator_LocationsAreSame_ReturnTrue()
     {
       var road1 = new Road(0, 1);
@@ -45,6 +49,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     }
 
     [Test]
+    [Category("Road")]
     public void EqualityOperator_LocationsAreDifferent_ReturnFalse()
     {
       var road1 = new Road(0, 1);
@@ -54,6 +59,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     }
 
     [Test]
+    [Category("Road")]
     public void EqualityOperator_LocationsAreDiametricallyIdentical_ReturnTrue()
     {
       var road1 = new Road(0, 1);
@@ -63,6 +69,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     }
 
     [Test]
+    [Category("Road")]
     public void InequalityOperator_LocationsAreSame_ReturnFalse()
     {
       var road1 = new Road(0, 1);
@@ -72,6 +79,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     }
 
     [Test]
+    [Category("Road")]
     public void InequalityOperator_LocationsAreDifferent_ReturnTrue()
     {
       var road1 = new Road(0, 1);
@@ -81,6 +89,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     }
 
     [Test]
+    [Category("Road")]
     public void InequalityOperator_LocationsAreDiametricallyIdentical_ReturnFalse()
     {
       var road1 = new Road(0, 1);
