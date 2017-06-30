@@ -597,7 +597,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
       localGameController.CompleteGameSetup(100, new Road(100, 101));
 
       errorDetails.ShouldNotBeNull();
-      errorDetails.Message.ShouldBe("Cannot place settlement at [100]. This is outside of board range (0 - 52).");
+      errorDetails.Message.ShouldBe("Cannot place settlement at [100]. This is outside of board range (0 - 53).");
       gameBoardUpdate.ShouldBeNull();
     }
 
