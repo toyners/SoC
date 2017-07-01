@@ -209,6 +209,20 @@ namespace Jabberwocky.SoC.Library.UnitTests
       var settlements = gameBoardData.GetSettlementsForPlayer(Guid.NewGuid());
       settlements.ShouldBeNull();
     }
+
+    [Test]
+    [Category("GameBoardData")]
+    public void PlaceStartingInfrastructure_SettlementAndRoad_LocationsOccupied()
+    {
+      var playerId = Guid.NewGuid();
+      var location = 20u;
+      var road = new Road(21, 22);
+      var gameBoardData = new GameBoardData(BoardSizes.Standard);
+      gameBoardData.PlaceStartingInfrastructure(playerId, location, new Road(21, 22));
+
+      gameBoardData.CanPlaceSettlement(location).Status.ShouldBe(GameBoardData.VerificationStatus.LocationIsOccupied);
+      gameBoardData.CanPlaceRoad(playerId, road).Status.ShouldBe(GameBoardData.VerificationStatus.RoadIsOccupied);
+    }
     #endregion 
   }
 }

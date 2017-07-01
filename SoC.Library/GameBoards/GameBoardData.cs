@@ -19,7 +19,8 @@ namespace Jabberwocky.SoC.Library.GameBoards
       NoSettlementToUpgrade,
       TooCloseToSettlement,
       RoadConnectsToAnotherPlayer,
-      RoadIsInvalid
+      RoadIsInvalid,
+      RoadIsOccupied,
     }
 
     #region Fields
@@ -203,6 +204,11 @@ namespace Jabberwocky.SoC.Library.GameBoards
       }
 
       return this.settlementsByPlayer[playerId];
+    }
+
+    public void PlaceStartingInfrastructure(Guid playerId, UInt32 settlementIndex, Road road)
+    {
+      throw new NotImplementedException();
     }
 
     public void PlaceRoad(Guid playerId, Road road)
