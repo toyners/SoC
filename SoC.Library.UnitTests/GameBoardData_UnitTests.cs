@@ -212,7 +212,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
     [Test]
     [Category("GameBoardData")]
-    public void PlaceStartingInfrastructure_SettlementAndRoad_LocationsOccupied()
+    public void PlaceStartingInfrastructure_SettlementAndRoadAreValid_InfrastructurePlaced()
     {
       var playerId = Guid.NewGuid();
       var location = 20u;
