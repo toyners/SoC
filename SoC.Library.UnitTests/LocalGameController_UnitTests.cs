@@ -382,7 +382,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
       localGameController.ContinueGameSetup(0u, new Road(1u, 2u));
 
       errorDetails.ShouldNotBeNull();
-      errorDetails.Message.ShouldBe("Cannot place road at [1, 2]. Not connected to a player owned road or settlement.");
+      errorDetails.Message.ShouldBe("Cannot place road at [1, 2]. No connection to a player owned road or settlement.");
       gameBoardUpdate.ShouldBeNull();
     }
 

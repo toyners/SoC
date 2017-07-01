@@ -352,8 +352,42 @@ namespace Jabberwocky.SoC.Library
     private Boolean VerifyStartingInfrastructurePlacementRequest(UInt32 settlementLocation, Road road)
     {
       var verificationResults = this.gameBoardManager.Data.CanPlaceStartingInfrastructure(this.mainPlayer.Id, settlementLocation, road);
+      if (verificationResults.Status == GameBoardData.VerificationStatus.LocationIsInvalid)
+      {
+        var errorDetails = new ErrorDetails("Cannot place settlement at [" + settlementLocation + "]. This is outside of board range (0 - 53).");
+        this.ExceptionRaisedEvent?.Invoke(errorDetails);
+        return false;
+      }
 
-      return verificationResults.Status == GameBoardData.VerificationStatus.Valid;
+      if (verificationResults.Status == GameBoardData.VerificationStatus.TooCloseToSettlement)
+      {
+        var errorDetails = new ErrorDetails("Cannot place settlement: Too close to player " + verificationResults.PlayerId + " at location " + verificationResults.LocationIndex);
+        this.ExceptionRaisedEvent?.Invoke(errorDetails);
+        return false;
+      }
+
+      if (verificationResults.Status == GameBoardData.VerificationStatus.LocationIsOccupied)
+      {
+        var errorDetails = new ErrorDetails("Cannot place settlement: Location " + settlementLocation + " already owned by player " + verificationResults.PlayerId);
+        this.ExceptionRaisedEvent?.Invoke(errorDetails);
+        return false;
+      }
+
+      if (verificationResults.Status == GameBoardData.VerificationStatus.RoadIsInvalid)
+      {
+        var errorDetails = new ErrorDetails("Cannot place road at [" + road.Location1 + ", " + road.Location2 + "]. This is outside of board range (0 - 53).");
+        this.ExceptionRaisedEvent?.Invoke(errorDetails);
+        return false;
+      }
+
+      if (verificationResults.Status == GameBoardData.VerificationStatus.NotConnectedToExisting)
+      {
+        var errorDetails = new ErrorDetails("Cannot place road at [" + road.Location1 + ", " + road.Location2 + "]. No connection to a player owned road or settlement.");
+        this.ExceptionRaisedEvent?.Invoke(errorDetails);
+        return false;
+      }
+
+      return true;
     }
     #endregion
   }
