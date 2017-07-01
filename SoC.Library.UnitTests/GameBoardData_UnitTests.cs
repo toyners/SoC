@@ -137,6 +137,17 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
     [Test]
     [Category("GameBoardData")]
+    public void CanPlaceStartingInfrastructure_RoadFailsVerification_SettlementNotPlaced()
+    {
+      var playerId = Guid.NewGuid();
+      var location = 20u;
+      var gameBoardData = new GameBoardData(BoardSizes.Standard);
+      var result = gameBoardData.CanPlaceStartingInfrastructure(playerId, location, new Road(21, 22));
+      result.ShouldBe(GameBoardData.VerificationResults.NotConnectedToExisting);
+    }
+
+    [Test]
+    [Category("GameBoardData")]
     public void GetPathBetweenLocations_StartAndEndAreSame_ReturnsNull()
     {
       var gameBoardData = new GameBoardData(BoardSizes.Standard);

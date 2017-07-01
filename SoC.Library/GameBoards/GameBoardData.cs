@@ -151,6 +151,11 @@ namespace Jabberwocky.SoC.Library.GameBoards
       };
     }
 
+    public VerificationResults CanPlaceStartingInfrastructure(Guid playerId, UInt32 settlementIndex, Road road)
+    {
+      throw new NotImplementedException();
+    }
+
     public Boolean[,] GetBoardSnapshot()
     {
       var snapshot = new Boolean[this.connections.GetLength(0), this.connections.GetLength(1)];
@@ -204,7 +209,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
 
       this.settlements.Add(locationIndex, playerId);
     }
-    
+
     private void CreateLocations()
     {
       this.Locations = new Location[StandardBoardLocationCount];
