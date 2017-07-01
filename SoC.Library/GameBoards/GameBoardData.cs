@@ -77,14 +77,14 @@ namespace Jabberwocky.SoC.Library.GameBoards
       throw new NotImplementedException();
     }
 
-    public RoadPlacementVerificationResults CanPlaceRoad(Guid playerId, Road road)
+    public VerificationResults CanPlaceRoad(Guid playerId, Road road)
     {
       // Verify #1 - Does it hang over the edge of the board (one location on board, one location
       // off board). 
       var length = (UInt32)this.connections.GetLength(0);
       if (road == new Road(length - 1, length))
       {
-        return new RoadPlacementVerificationResults { Status = VerificationStatus.RoadIsInvalid };
+        return new VerificationResults { Status = VerificationStatus.RoadIsInvalid };
       }
 
       // Verify #2 - Does it connect to existing infrastructure
@@ -93,28 +93,28 @@ namespace Jabberwocky.SoC.Library.GameBoards
         !this.roads.ContainsKey(road.Location1) &&
         !this.roads.ContainsKey(road.Location2))
       {
-        return new RoadPlacementVerificationResults { Status = VerificationStatus.NotConnectedToExisting };
+        return new VerificationResults { Status = VerificationStatus.NotConnectedToExisting };
       }
 
       // Verify #3 - Does it connect to another players settlement
       if (this.settlements.ContainsKey(road.Location1) && this.settlements[road.Location1] != playerId)
       {
-        return new RoadPlacementVerificationResults { Status = VerificationStatus.RoadConnectsToAnotherPlayer };
+        return new VerificationResults { Status = VerificationStatus.RoadConnectsToAnotherPlayer };
       }
 
       if (this.settlements.ContainsKey(road.Location2) && this.settlements[road.Location2] != playerId)
       {
-        return new RoadPlacementVerificationResults { Status = VerificationStatus.RoadConnectsToAnotherPlayer };
+        return new VerificationResults { Status = VerificationStatus.RoadConnectsToAnotherPlayer };
       }
 
-      return new RoadPlacementVerificationResults { Status = VerificationStatus.Valid };
+      return new VerificationResults { Status = VerificationStatus.Valid };
     }
 
-    public SettlementPlacementVerificationResults CanPlaceSettlement(UInt32 locationIndex)
+    public VerificationResults CanPlaceSettlement(UInt32 locationIndex)
     {
       if (locationIndex >= this.connections.GetLength(0))
       {
-        return new SettlementPlacementVerificationResults
+        return new VerificationResults
         {
           Status = VerificationStatus.LocationIsInvalid
         };
@@ -122,7 +122,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
 
       if (this.settlements.ContainsKey(locationIndex))
       {
-        return new SettlementPlacementVerificationResults
+        return new VerificationResults
         {
           Status = VerificationStatus.LocationIsOccupied,
           LocationIndex = locationIndex,
@@ -134,7 +134,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
       {
         if (this.connections[locationIndex, index] && this.settlements.ContainsKey(index))
         {
-          return new SettlementPlacementVerificationResults
+          return new VerificationResults
           {
             Status = VerificationStatus.TooCloseToSettlement,
             LocationIndex = index,
@@ -143,7 +143,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
         }
       }
 
-      return new SettlementPlacementVerificationResults
+      return new VerificationResults
       {
         Status = VerificationStatus.Valid,
         LocationIndex = 0u,
@@ -489,12 +489,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
     #endregion
 
     #region Structs
-    public struct RoadPlacementVerificationResults
-    {
-      public VerificationStatus Status;
-    }
-
-    public struct SettlementPlacementVerificationResults
+    public struct VerificationResults
     {
       public VerificationStatus Status;
       public Guid PlayerId;
