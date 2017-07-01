@@ -10,7 +10,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
   /// </summary>
   public class GameBoardData
   {
-    public enum VerificationResults
+    public enum VerificationStatus
     {
       Valid,
       LocationIsOccupied,
@@ -72,7 +72,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
     #endregion
 
     #region Methods
-    public VerificationResults CanPlaceCity(PlayerData player, Location location)
+    public VerificationStatus CanPlaceCity(PlayerData player, Location location)
     {
       throw new NotImplementedException();
     }
@@ -84,7 +84,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
       var length = (UInt32)this.connections.GetLength(0);
       if (road == new Road(length - 1, length))
       {
-        return new RoadPlacementVerificationResults { Status = VerificationResults.RoadIsInvalid };
+        return new RoadPlacementVerificationResults { Status = VerificationStatus.RoadIsInvalid };
       }
 
       // Verify #2 - Does it connect to existing infrastructure
@@ -93,21 +93,21 @@ namespace Jabberwocky.SoC.Library.GameBoards
         !this.roads.ContainsKey(road.Location1) &&
         !this.roads.ContainsKey(road.Location2))
       {
-        return new RoadPlacementVerificationResults { Status = VerificationResults.NotConnectedToExisting };
+        return new RoadPlacementVerificationResults { Status = VerificationStatus.NotConnectedToExisting };
       }
 
       // Verify #3 - Does it connect to another players settlement
       if (this.settlements.ContainsKey(road.Location1) && this.settlements[road.Location1] != playerId)
       {
-        return new RoadPlacementVerificationResults { Status = VerificationResults.RoadConnectsToAnotherPlayer };
+        return new RoadPlacementVerificationResults { Status = VerificationStatus.RoadConnectsToAnotherPlayer };
       }
 
       if (this.settlements.ContainsKey(road.Location2) && this.settlements[road.Location2] != playerId)
       {
-        return new RoadPlacementVerificationResults { Status = VerificationResults.RoadConnectsToAnotherPlayer };
+        return new RoadPlacementVerificationResults { Status = VerificationStatus.RoadConnectsToAnotherPlayer };
       }
 
-      return new RoadPlacementVerificationResults { Status = VerificationResults.Valid };
+      return new RoadPlacementVerificationResults { Status = VerificationStatus.Valid };
     }
 
     public SettlementPlacementVerificationResults CanPlaceSettlement(UInt32 locationIndex)
@@ -116,7 +116,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
       {
         return new SettlementPlacementVerificationResults
         {
-          Status = VerificationResults.LocationIsInvalid
+          Status = VerificationStatus.LocationIsInvalid
         };
       }
 
@@ -124,7 +124,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
       {
         return new SettlementPlacementVerificationResults
         {
-          Status = VerificationResults.LocationIsOccupied,
+          Status = VerificationStatus.LocationIsOccupied,
           LocationIndex = locationIndex,
           PlayerId = this.settlements[locationIndex]
         };
@@ -136,7 +136,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
         {
           return new SettlementPlacementVerificationResults
           {
-            Status = VerificationResults.TooCloseToSettlement,
+            Status = VerificationStatus.TooCloseToSettlement,
             LocationIndex = index,
             PlayerId = this.settlements[index]
           };
@@ -145,13 +145,13 @@ namespace Jabberwocky.SoC.Library.GameBoards
 
       return new SettlementPlacementVerificationResults
       {
-        Status = VerificationResults.Valid,
+        Status = VerificationStatus.Valid,
         LocationIndex = 0u,
         PlayerId = Guid.Empty
       };
     }
 
-    public VerificationResults CanPlaceStartingInfrastructure(Guid playerId, UInt32 settlementIndex, Road road)
+    public VerificationStatus CanPlaceStartingInfrastructure(Guid playerId, UInt32 settlementIndex, Road road)
     {
       throw new NotImplementedException();
     }
@@ -491,12 +491,12 @@ namespace Jabberwocky.SoC.Library.GameBoards
     #region Structs
     public struct RoadPlacementVerificationResults
     {
-      public VerificationResults Status;
+      public VerificationStatus Status;
     }
 
     public struct SettlementPlacementVerificationResults
     {
-      public VerificationResults Status;
+      public VerificationStatus Status;
       public Guid PlayerId;
       public UInt32 LocationIndex;
     }
