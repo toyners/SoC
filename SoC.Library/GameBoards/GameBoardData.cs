@@ -151,9 +151,24 @@ namespace Jabberwocky.SoC.Library.GameBoards
       };
     }
 
-    public VerificationStatus CanPlaceStartingInfrastructure(Guid playerId, UInt32 settlementIndex, Road road)
+    public VerificationResults CanPlaceStartingInfrastructure(Guid playerId, UInt32 settlementIndex, Road road)
     {
-      throw new NotImplementedException();
+      var results = this.CanPlaceSettlement(settlementIndex);
+      if (results.Status != VerificationStatus.Valid)
+      {
+        return results;
+      }
+
+      results = this.CanPlaceRoad(playerId, road);
+      if (results.Status == VerificationStatus.NotConnectedToExisting)
+      {
+        if (road.Location1 == settlementIndex || road.Location2 == settlementIndex)
+        {
+          return new VerificationResults { Status = VerificationStatus.Valid };
+        }
+      }
+
+      return results;
     }
 
     public Boolean[,] GetBoardSnapshot()
