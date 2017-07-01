@@ -231,19 +231,13 @@ namespace Jabberwocky.SoC.Library
         return;
       }
 
-      if (!this.VerifySettlementPlacementRequest(settlementLocation))
-      {
-        return;
-      }
-
-      if (!this.VerifyRoadPlacementRequest(road))
+      if (!this.VerifyStartingInfrastructurePlacementRequest(settlementLocation, road))
       {
         return;
       }
 
       var gameBoardData = this.gameBoardManager.Data;
-      gameBoardData.PlaceSettlement(this.mainPlayer.Id, settlementLocation);
-      gameBoardData.PlaceRoad(this.mainPlayer.Id, road);
+      gameBoardData.PlaceStartingInfrastructure(this.mainPlayer.Id, settlementLocation, road);
 
       GameBoardUpdate gameBoardUpdate = this.ContinueSetupForComputerPlayers(gameBoardData, 1, null);
       this.playerIndex = this.players.Length - 1;
@@ -262,18 +256,12 @@ namespace Jabberwocky.SoC.Library
         return;
       }
 
-      if (!this.VerifySettlementPlacementRequest(settlementLocation))
+      if (!this.VerifyStartingInfrastructurePlacementRequest(settlementLocation, road))
       {
         return;
       }
 
-      if (!this.VerifyRoadPlacementRequest(road))
-      {
-        return;
-      }
-      
-      this.gameBoardManager.Data.PlaceSettlement(this.mainPlayer.Id, settlementLocation);
-      this.gameBoardManager.Data.PlaceRoad(this.mainPlayer.Id, road);
+      this.gameBoardManager.Data.PlaceStartingInfrastructure(this.mainPlayer.Id, settlementLocation, road);
 
       var gameBoardData = this.gameBoardManager.Data;
       GameBoardUpdate gameBoardUpdate = this.ContinueSetupForComputerPlayers(gameBoardData, -1, null);
@@ -359,6 +347,13 @@ namespace Jabberwocky.SoC.Library
       }
 
       return true;
+    }
+
+    private Boolean VerifyStartingInfrastructurePlacementRequest(UInt32 settlementLocation, Road road)
+    {
+      var verificationResults = this.gameBoardManager.Data.CanPlaceStartingInfrastructure(this.mainPlayer.Id, settlementLocation, road);
+
+      return verificationResults.Status == GameBoardData.VerificationStatus.Valid;
     }
     #endregion
   }
