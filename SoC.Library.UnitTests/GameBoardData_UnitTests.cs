@@ -96,6 +96,21 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
     [Test]
     [Category("GameBoardData")]
+    public void CanPlaceRoad_JoiningToOtherRoads_ReturnsValid()
+    {
+      var gameBoardData = new GameBoardData(BoardSizes.Standard);
+      var playerId = Guid.NewGuid();
+      var road = new Road(11, 21);
+      gameBoardData.PlaceStartingInfrastructure(playerId, 12, new Road(12, 11));
+
+      gameBoardData.PlaceStartingInfrastructure(playerId, 20, new Road(20, 21));
+
+      var result = gameBoardData.CanPlaceRoad(playerId, road);
+      result.Status.ShouldBe(GameBoardData.VerificationStatus.Valid);
+    }
+
+    [Test]
+    [Category("GameBoardData")]
     public void CanPlaceSettlement_EmptyBoard_ReturnsValid()
     {
       var gameBoardData = new GameBoardData(BoardSizes.Standard);
