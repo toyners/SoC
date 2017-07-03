@@ -625,6 +625,30 @@ namespace Jabberwocky.SoC.Library.UnitTests
       gameBoardUpdate.ShouldBeNull();
     }
 
+    [Test]
+    [Category("LocalGameController")]
+    public void MainGameLoop_MainPlayerTurn_ReceiveTurnsResourceDetails()
+    {
+      var mockDice = Substitute.For<IDice>();
+      mockDice.RollTwoDice().Returns(12u, 10u, 8u, 6u, 12u, 10u, 8u, 6u);
+
+      var gameBoardManager = new GameBoardManager(BoardSizes.Standard);
+
+      var firstComputerPlayer = this.CreateMockComputerPlayer(gameBoardManager.Data, firstSettlementOneLocation, firstSettlementTwoLocation, firstRoadOne, firstRoadTwo);
+      var secondComputerPlayer = this.CreateMockComputerPlayer(gameBoardManager.Data, secondSettlementOneLocation, secondSettlementTwoLocation, secondRoadOne, secondRoadTwo);
+      var thirdComputerPlayer = this.CreateMockComputerPlayer(gameBoardManager.Data, thirdSettlementOneLocation, thirdSettlementTwoLocation, thirdRoadOne, thirdRoadTwo);
+
+      var localGameController = this.CreateLocalGameController(mockDice, gameBoardManager, firstComputerPlayer, secondComputerPlayer, thirdComputerPlayer);
+
+      localGameController.TryJoiningGame();
+      localGameController.TryLaunchGame();
+      localGameController.StartGameSetup();
+      localGameController.ContinueGameSetup(12, new Road(12, 11));
+      localGameController.CompleteGameSetup(43, new Road(43, 51));
+      
+      throw new NotImplementedException();
+    }
+
     private LocalGameController CreateLocalGameController()
     {
       return this.CreateLocalGameController(new Dice(), new ComputerPlayerFactory(), new GameBoardManager(BoardSizes.Standard));
