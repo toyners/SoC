@@ -335,7 +335,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     {
       var localGameController = this.CreateLocalGameController();
       ErrorDetails errorDetails = null;
-      localGameController.ExceptionRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
+      localGameController.ErrorRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
 
       localGameController.ContinueGameSetup(0u, new Road(0u, 1u));
 
@@ -349,7 +349,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     {
       var localGameController = this.CreateLocalGameController();
       ErrorDetails errorDetails = null;
-      localGameController.ExceptionRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
+      localGameController.ErrorRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
 
       localGameController.CompleteGameSetup(0u, new Road(0u, 1u));
 
@@ -373,7 +373,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
       ErrorDetails errorDetails = null;
       GameBoardUpdate gameBoardUpdate = null;
       var localGameController = this.CreateLocalGameController(mockDice, gameBoardManager, firstComputerPlayer, secondComputerPlayer, thirdComputerPlayer);
-      localGameController.ExceptionRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
+      localGameController.ErrorRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
       localGameController.GameSetupUpdateEvent = (GameBoardUpdate u) => { gameBoardUpdate = u; };
 
       localGameController.TryJoiningGame();
@@ -401,7 +401,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
       ErrorDetails exception = null;
       var localGameController = this.CreateLocalGameController(mockDice, gameBoardManager, firstComputerPlayer, secondComputerPlayer, thirdComputerPlayer);
-      localGameController.ExceptionRaisedEvent = (ErrorDetails e) => { exception = e; };
+      localGameController.ErrorRaisedEvent = (ErrorDetails e) => { exception = e; };
 
       localGameController.TryJoiningGame();
       localGameController.TryLaunchGame();
@@ -431,7 +431,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
       ErrorDetails exception = null;
       var localGameController = this.CreateLocalGameController(mockDice, gameBoardManager, firstComputerPlayer, secondComputerPlayer, thirdComputerPlayer);
-      localGameController.ExceptionRaisedEvent = (ErrorDetails e) => { exception = e; };
+      localGameController.ErrorRaisedEvent = (ErrorDetails e) => { exception = e; };
 
       localGameController.TryJoiningGame();
       localGameController.TryLaunchGame();
@@ -463,7 +463,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
       ErrorDetails exception = null;
       var localGameController = this.CreateLocalGameController(mockDice, gameBoardManager, firstComputerPlayer, secondComputerPlayer, thirdComputerPlayer);
-      localGameController.ExceptionRaisedEvent = (ErrorDetails e) => { exception = e; };
+      localGameController.ErrorRaisedEvent = (ErrorDetails e) => { exception = e; };
       localGameController.TryJoiningGame();
       localGameController.TryLaunchGame();
       localGameController.StartGameSetup();
@@ -493,7 +493,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
       ErrorDetails exception = null;
       var localGameController = this.CreateLocalGameController(mockDice, gameBoardManager, firstComputerPlayer, secondComputerPlayer, thirdComputerPlayer);
-      localGameController.ExceptionRaisedEvent = (ErrorDetails e) => { exception = e; };
+      localGameController.ErrorRaisedEvent = (ErrorDetails e) => { exception = e; };
       localGameController.TryJoiningGame();
       localGameController.TryLaunchGame();
       localGameController.StartGameSetup();
@@ -516,7 +516,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
       var localGameController = CreateLocalGameControllerWithMainPlayerGoingFirstInSetup();
 
       ErrorDetails errorDetails = null;
-      localGameController.ExceptionRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
+      localGameController.ErrorRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
 
       localGameController.TryJoiningGame();
       localGameController.TryLaunchGame();
@@ -540,7 +540,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
       var localGameController = CreateLocalGameControllerWithMainPlayerGoingFirstInSetup();
 
       ErrorDetails errorDetails = null;
-      localGameController.ExceptionRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
+      localGameController.ErrorRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
 
       GameBoardUpdate gameBoardUpdate = null;
       localGameController.GameSetupUpdateEvent = (GameBoardUpdate u) => { gameBoardUpdate = u; };
@@ -562,7 +562,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
       var localGameController = CreateLocalGameControllerWithMainPlayerGoingFirstInSetup();
 
       ErrorDetails errorDetails = null;
-      localGameController.ExceptionRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
+      localGameController.ErrorRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
 
       GameBoardUpdate gameBoardUpdate = null;
       localGameController.GameSetupUpdateEvent = (GameBoardUpdate u) => { gameBoardUpdate = u; };
@@ -584,7 +584,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
       var localGameController = CreateLocalGameControllerWithMainPlayerGoingFirstInSetup();
 
       ErrorDetails errorDetails = null;
-      localGameController.ExceptionRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
+      localGameController.ErrorRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
 
       localGameController.TryJoiningGame();
       localGameController.TryLaunchGame();
@@ -608,7 +608,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
       var localGameController = CreateLocalGameControllerWithMainPlayerGoingFirstInSetup();
 
       ErrorDetails errorDetails = null;
-      localGameController.ExceptionRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
+      localGameController.ErrorRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
 
       localGameController.TryJoiningGame();
       localGameController.TryLaunchGame();
