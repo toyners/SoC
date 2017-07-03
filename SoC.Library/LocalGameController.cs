@@ -304,7 +304,7 @@ namespace Jabberwocky.SoC.Library
 
     private void TryRaiseRoadPlacingExceptions(GameBoardData.VerificationResults verificationResults, Road road)
     {
-      if (verificationResults.Status == GameBoardData.VerificationStatus.RoadIsInvalid)
+      if (verificationResults.Status == GameBoardData.VerificationStatus.RoadIsOffBoard)
       {
         var errorDetails = new ErrorDetails("Cannot place road at [" + road.Location1 + ", " + road.Location2 + "]. This is outside of board range (0 - 53).");
         this.ErrorRaisedEvent?.Invoke(errorDetails);

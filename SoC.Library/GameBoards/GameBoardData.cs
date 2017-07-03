@@ -19,8 +19,9 @@ namespace Jabberwocky.SoC.Library.GameBoards
       NoSettlementToUpgrade,
       TooCloseToSettlement,
       RoadConnectsToAnotherPlayer,
-      RoadIsInvalid,
+      RoadIsOffBoard,
       RoadIsOccupied,
+      NoDirectConnection
     }
 
     #region Fields
@@ -80,6 +81,12 @@ namespace Jabberwocky.SoC.Library.GameBoards
 
     public VerificationResults CanPlaceRoad(Guid playerId, Road road)
     {
+      // Verify - Is direct connection possible
+      if (!this.connections[road.Location1, road.Location2])
+      {
+        return new VerificationResults { Status = VerificationStatus.NoDirectConnection };
+      }
+
       // Verify #1 - Is there already a road built
       if (this.roads.ContainsKey(road))
       {
@@ -91,7 +98,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
       var length = (UInt32)this.connections.GetLength(0);
       if (road == new Road(length - 1, length))
       {
-        return new VerificationResults { Status = VerificationStatus.RoadIsInvalid };
+        return new VerificationResults { Status = VerificationStatus.RoadIsOffBoard };
       }
 
       // Verify #3 - Does it connect to existing infrastructure

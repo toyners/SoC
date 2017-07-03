@@ -60,13 +60,25 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
     [Test]
     [Category("GameBoardData")]
-    [TestCase(53u, 54u)]
-    [TestCase(54u, 53u)]
-    public void CanPlaceRoad_OverEdgeOfBoard_ReturnsRoadIsInvalid(UInt32 start, UInt32 end)
+    [TestCase(53u, 54u)] // Hanging over the edge 
+    [TestCase(54u, 53u)] // Hanging over the edge
+    [TestCase(100u, 101u)]
+    public void CanPlaceRoad_OffBoard_ReturnsRoadIsInvalid(UInt32 start, UInt32 end)
     {
       var gameBoardData = new GameBoardData(BoardSizes.Standard);
       var result = gameBoardData.CanPlaceRoad(Guid.NewGuid(), new Road(start, end));
-      result.Status.ShouldBe(GameBoardData.VerificationStatus.RoadIsInvalid);
+      result.Status.ShouldBe(GameBoardData.VerificationStatus.RoadIsOffBoard);
+    }
+
+    [Test]
+    [Category("GameBoardData")]
+    [TestCase(43u, 53u)]
+    [TestCase(53u, 43u)]
+    public void CanPlaceRoad_NoDirectConnection_ReturnsRoadIsInvalid(UInt32 start, UInt32 end)
+    {
+      var gameBoardData = new GameBoardData(BoardSizes.Standard);
+      var result = gameBoardData.CanPlaceRoad(Guid.NewGuid(), new Road(start, end));
+      result.Status.ShouldBe(GameBoardData.VerificationStatus.NoDirectConnection);
     }
 
     [Test]
