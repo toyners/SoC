@@ -579,6 +579,28 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
     [Test]
     [Category("LocalGameController")]
+    public void PlayerPlacesRoadWhereNoConnectionExistsDuringFirstSetupRound_MeaningfulErrorDetailsPassedBack()
+    {
+      var localGameController = CreateLocalGameControllerWithMainPlayerGoingFirstInSetup();
+
+      ErrorDetails errorDetails = null;
+      localGameController.ErrorRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
+
+      GameBoardUpdate gameBoardUpdate = null;
+      localGameController.GameSetupUpdateEvent = (GameBoardUpdate u) => { gameBoardUpdate = u; };
+
+      localGameController.TryJoiningGame();
+      localGameController.TryLaunchGame();
+      localGameController.StartGameSetup();
+      localGameController.ContinueGameSetup(43, new Road(43, 53));
+
+      errorDetails.ShouldNotBeNull();
+      errorDetails.Message.ShouldBe("Cannot place road at [43, 53]. There is no direct connection between those points.");
+      gameBoardUpdate.ShouldBeNull();
+    }
+
+    [Test]
+    [Category("LocalGameController")]
     public void PlayerPlacesSettlementOffGameBoardDuringSecondSetupRound_MeaningfulErrorDetailsPassedBack()
     {
       var localGameController = CreateLocalGameControllerWithMainPlayerGoingFirstInSetup();
@@ -622,6 +644,30 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
       errorDetails.ShouldNotBeNull();
       errorDetails.Message.ShouldBe("Cannot place road at [53, 54]. This is outside of board range (0 - 53).");
+      gameBoardUpdate.ShouldBeNull();
+    }
+
+    [Test]
+    [Category("LocalGameController")]
+    public void PlayerPlacesRoadWhereNoConnectionExistsDuringSecondSetupRound_MeaningfulErrorDetailsPassedBack()
+    {
+      var localGameController = CreateLocalGameControllerWithMainPlayerGoingFirstInSetup();
+
+      ErrorDetails errorDetails = null;
+      localGameController.ErrorRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
+
+      localGameController.TryJoiningGame();
+      localGameController.TryLaunchGame();
+      localGameController.StartGameSetup();
+      localGameController.ContinueGameSetup(0, new Road(0, 1));
+
+      GameBoardUpdate gameBoardUpdate = null;
+      localGameController.GameSetupUpdateEvent = (GameBoardUpdate u) => { gameBoardUpdate = u; };
+
+      localGameController.CompleteGameSetup(43, new Road(43, 53));
+
+      errorDetails.ShouldNotBeNull();
+      errorDetails.Message.ShouldBe("Cannot place road at [43, 53]. There is no direct connection between those points.");
       gameBoardUpdate.ShouldBeNull();
     }
 
