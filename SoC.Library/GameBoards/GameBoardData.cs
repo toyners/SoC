@@ -81,27 +81,26 @@ namespace Jabberwocky.SoC.Library.GameBoards
 
     public VerificationResults CanPlaceRoad(Guid playerId, Road road)
     {
-      // Verify - Is direct connection possible
+      // Verify #1 - Are both road locations on the board.
+      var length = (UInt32)this.connections.GetLength(0);
+      if (road.Location1 >= length || road.Location2 >= length)
+      {
+        return new VerificationResults { Status = VerificationStatus.RoadIsOffBoard };
+      }
+
+      // Verify #2 - Is direct connection possible
       if (!this.connections[road.Location1, road.Location2])
       {
         return new VerificationResults { Status = VerificationStatus.NoDirectConnection };
       }
 
-      // Verify #1 - Is there already a road built
+      // Verify #3 - Is there already a road built
       if (this.roads.ContainsKey(road))
       {
         return new VerificationResults { Status = VerificationStatus.RoadIsOccupied };
       }
 
-      // Verify #2 - Does it hang over the edge of the board (one location on board, one location
-      // off board). 
-      var length = (UInt32)this.connections.GetLength(0);
-      if (road == new Road(length - 1, length))
-      {
-        return new VerificationResults { Status = VerificationStatus.RoadIsOffBoard };
-      }
-
-      // Verify #3 - Does it connect to existing infrastructure
+      // Verify #4 - Does it connect to existing infrastructure
       if (!this.settlements.ContainsKey(road.Location1) && !this.settlements.ContainsKey(road.Location2))
       {
         var isConnected = false;
@@ -123,7 +122,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
         }
       }
 
-      // Verify #4 - Does it connect to another players settlement
+      // Verify #5 - Does it connect to another players settlement
       if (this.settlements.ContainsKey(road.Location1) && this.settlements[road.Location1] != playerId)
       {
         return new VerificationResults { Status = VerificationStatus.RoadConnectsToAnotherPlayer };
