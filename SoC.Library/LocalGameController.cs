@@ -311,6 +311,13 @@ namespace Jabberwocky.SoC.Library
         return;
       }
 
+      if (verificationResults.Status == GameBoardData.VerificationStatus.NoDirectConnection)
+      {
+        var errorDetails = new ErrorDetails("Cannot place road at [" + road.Location1 + ", " + road.Location2 + "]. There is no direct connection between those points.");
+        this.ErrorRaisedEvent?.Invoke(errorDetails);
+        return;
+      }
+
       if (verificationResults.Status == GameBoardData.VerificationStatus.NotConnectedToExisting)
       {
         var errorDetails = new ErrorDetails("Cannot place road at [" + road.Location1 + ", " + road.Location2 + "]. No connection to a player owned road or settlement.");

@@ -592,10 +592,10 @@ namespace Jabberwocky.SoC.Library.UnitTests
       localGameController.TryJoiningGame();
       localGameController.TryLaunchGame();
       localGameController.StartGameSetup();
-      localGameController.ContinueGameSetup(43, new Road(43, 53));
+      localGameController.ContinueGameSetup(28, new Road(28, 40));
 
       errorDetails.ShouldNotBeNull();
-      errorDetails.Message.ShouldBe("Cannot place road at [43, 53]. There is no direct connection between those points.");
+      errorDetails.Message.ShouldBe("Cannot place road at [28, 40]. There is no direct connection between those points.");
       gameBoardUpdate.ShouldBeNull();
     }
 
@@ -664,10 +664,10 @@ namespace Jabberwocky.SoC.Library.UnitTests
       GameBoardUpdate gameBoardUpdate = null;
       localGameController.GameSetupUpdateEvent = (GameBoardUpdate u) => { gameBoardUpdate = u; };
 
-      localGameController.CompleteGameSetup(43, new Road(43, 53));
+      localGameController.CompleteGameSetup(28, new Road(28, 40));
 
       errorDetails.ShouldNotBeNull();
-      errorDetails.Message.ShouldBe("Cannot place road at [43, 53]. There is no direct connection between those points.");
+      errorDetails.Message.ShouldBe("Cannot place road at [28, 40]. There is no direct connection between those points.");
       gameBoardUpdate.ShouldBeNull();
     }
 
