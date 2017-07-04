@@ -60,6 +60,8 @@ namespace Jabberwocky.SoC.Library
     public Action<GameBoardUpdate> GameSetupUpdateEvent { get; set; }
 
     public Action<ErrorDetails> ErrorRaisedEvent { get; set; }
+
+    public Action<ResourceUpdate> StartPlayerTurnEvent { get; set; }
     #endregion
 
     #region Methods
@@ -375,5 +377,10 @@ namespace Jabberwocky.SoC.Library
       return verificationResults.Status == GameBoardData.VerificationStatus.Valid;
     }
     #endregion
+  }
+
+  public class ResourceUpdate
+  {
+
   }
 }

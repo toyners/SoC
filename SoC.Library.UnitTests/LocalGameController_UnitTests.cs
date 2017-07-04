@@ -2,6 +2,7 @@
 namespace Jabberwocky.SoC.Library.UnitTests
 {
   using System;
+  using System.Collections.Generic;
   using GameBoards;
   using Interfaces;
   using NSubstitute;
@@ -673,10 +674,13 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
     [Test]
     [Category("LocalGameController")]
-    public void MainGameLoop_MainPlayerTurn_ReceiveTurnsResourceDetails()
+    public void MainGameLoop_MainPlayerTurn_ReceiveResourceDetails()
     {
       var mockDice = Substitute.For<IDice>();
-      mockDice.RollTwoDice().Returns(12u, 10u, 8u, 6u, 12u, 10u, 8u, 6u);
+      var gameSetupOrder = new [] { 12u, 10u, 8u, 8u };
+      var gameTurnOrder = new [] { 12u, 10u, 8u, 6u };
+      var resourceRoll = new[] { 8u };
+      mockDice = new MockDice(gameSetupOrder, gameTurnOrder, resourceRoll);
 
       var gameBoardManager = new GameBoardManager(BoardSizes.Standard);
 
@@ -686,13 +690,16 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
       var localGameController = this.CreateLocalGameController(mockDice, gameBoardManager, firstComputerPlayer, secondComputerPlayer, thirdComputerPlayer);
 
+      ResourceUpdate resourceUpdate = null;
+      localGameController.StartPlayerTurnEvent = (ResourceUpdate r) => { resourceUpdate = r; };
+
       localGameController.TryJoiningGame();
       localGameController.TryLaunchGame();
       localGameController.StartGameSetup();
       localGameController.ContinueGameSetup(12, new Road(12, 11));
       localGameController.CompleteGameSetup(43, new Road(43, 51));
-      
-      throw new NotImplementedException();
+
+      resourceUpdate.ShouldNotBeNull();
     }
 
     private LocalGameController CreateLocalGameController()
@@ -743,5 +750,32 @@ namespace Jabberwocky.SoC.Library.UnitTests
       return mockComputerPlayer;
     }
     #endregion 
+  }
+
+  public class MockDice : IDice
+  {
+    private Int32 index;
+    private UInt32[] diceRolls;
+
+    public MockDice(UInt32[] first, params UInt32[][] rest)
+    {
+      var rolls = new List<UInt32>(first);
+      foreach(var sequence in rest)
+      {
+        rolls.AddRange(sequence);
+      }
+
+      this.diceRolls = rolls.ToArray();
+    }
+
+    public UInt32 RollTwoDice()
+    {
+      if (this.index >= this.diceRolls.Length)
+      {
+        throw new IndexOutOfRangeException("No more dice rolls.");
+      }
+
+      return this.diceRolls[this.index++];
+    }
   }
 }
