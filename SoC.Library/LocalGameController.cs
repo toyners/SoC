@@ -381,6 +381,10 @@ namespace Jabberwocky.SoC.Library
 
   public class ResourceUpdate
   {
-
+    public readonly UInt32 BrickCount;
+    public readonly UInt32 GrainCount;
+    public readonly UInt32 LumberCount;
+    public readonly UInt32 OreCount;
+    public readonly UInt32 WoolCount;
   }
 }

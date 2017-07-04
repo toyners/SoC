@@ -696,9 +696,10 @@ namespace Jabberwocky.SoC.Library.UnitTests
       localGameController.TryLaunchGame();
       localGameController.StartGameSetup();
       localGameController.ContinueGameSetup(12, new Road(12, 11));
-      localGameController.CompleteGameSetup(43, new Road(43, 51));
+      localGameController.CompleteGameSetup(40, new Road(40, 39));
 
       resourceUpdate.ShouldNotBeNull();
+      resourceUpdate.BrickCount.ShouldBe(1);
     }
 
     private LocalGameController CreateLocalGameController()
