@@ -270,6 +270,13 @@ namespace Jabberwocky.SoC.Library
       var gameBoardData = this.gameBoardManager.Data;
       GameBoardUpdate gameBoardUpdate = this.ContinueSetupForComputerPlayers(gameBoardData, -1, null);
       this.GameSetupUpdateEvent?.Invoke(gameBoardUpdate);
+
+      var resourceUpdate = new ResourceUpdate
+      {
+
+      };
+
+      this.GameSetupResourcesEvent?.Invoke(resourceUpdate);
     }
 
     private GameBoardUpdate ContinueSetupForComputerPlayers(GameBoardData gameBoardData, Int32 step, GameBoardUpdate gameBoardUpdate)
