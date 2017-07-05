@@ -62,6 +62,8 @@ namespace Jabberwocky.SoC.Library
     public Action<ErrorDetails> ErrorRaisedEvent { get; set; }
 
     public Action<ResourceUpdate> StartPlayerTurnEvent { get; set; }
+
+    public Action<ResourceUpdate> GameSetupResourcesEvent { get; set; }
     #endregion
 
     #region Methods
@@ -386,5 +388,7 @@ namespace Jabberwocky.SoC.Library
     public readonly UInt32 LumberCount;
     public readonly UInt32 OreCount;
     public readonly UInt32 WoolCount;
+
+    public readonly Dictionary<Guid, ResourceUpdate> OtherPlayers;
   }
 }
