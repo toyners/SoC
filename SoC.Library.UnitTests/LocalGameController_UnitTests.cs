@@ -138,10 +138,11 @@ namespace Jabberwocky.SoC.Library.UnitTests
       var thirdComputerPlayer = this.CreateMockComputerPlayer(gameBoardManager.Data, ThirdSettlementOneLocation, ThirdSettlementTwoLocation, thirdRoadOne, thirdRoadTwo);
 
       GameBoardUpdate gameBoardUpdate = null;
-      ResourceUpdate resourceUpdate = null;
       var localGameController = this.CreateLocalGameController(mockDice, gameBoardManager, firstComputerPlayer, secondComputerPlayer, thirdComputerPlayer);
       localGameController.GameSetupUpdateEvent = (GameBoardUpdate u) => { gameBoardUpdate = u; };
       localGameController.InitialBoardSetupEvent = (GameBoardData d) => { };
+
+      ResourceUpdate resourceUpdate = null;
       localGameController.GameSetupResourcesEvent = (ResourceUpdate r) => { resourceUpdate = r; };
 
       localGameController.TryJoiningGame();
@@ -225,6 +226,9 @@ namespace Jabberwocky.SoC.Library.UnitTests
       localGameController.GameSetupUpdateEvent = (GameBoardUpdate u) => { gameBoardUpdate = u; };
       localGameController.InitialBoardSetupEvent = (GameBoardData d) => { };
 
+      ResourceUpdate resourceUpdate = null;
+      localGameController.GameSetupResourcesEvent = (ResourceUpdate r) => { resourceUpdate = r; };
+
       localGameController.TryJoiningGame();
       localGameController.TryLaunchGame();
 
@@ -258,6 +262,36 @@ namespace Jabberwocky.SoC.Library.UnitTests
       gameBoardUpdate.NewSettlements.ShouldContainKeyAndValue(FirstSettlementTwoLocation, firstComputerPlayer.Id);
       gameBoardUpdate.NewRoads.Count.ShouldBe(1);
       gameBoardUpdate.NewRoads.ShouldContainKeyAndValue(firstRoadTwo, firstComputerPlayer.Id);
+
+      resourceUpdate.ShouldNotBeNull();
+      resourceUpdate.BrickCount.ShouldBe(1u);
+      resourceUpdate.GrainCount.ShouldBe(1u);
+      resourceUpdate.LumberCount.ShouldBe(0u);
+      resourceUpdate.OreCount.ShouldBe(0u);
+      resourceUpdate.WoolCount.ShouldBe(1u);
+
+      resourceUpdate.OtherPlayers.Count.ShouldBe(3);
+      resourceUpdate.OtherPlayers.ShouldContainKey(firstComputerPlayer.Id);
+      resourceUpdate.OtherPlayers.ShouldContainKey(secondComputerPlayer.Id);
+      resourceUpdate.OtherPlayers.ShouldContainKey(thirdComputerPlayer.Id);
+
+      resourceUpdate.OtherPlayers[firstComputerPlayer.Id].BrickCount.ShouldBe(0u);
+      resourceUpdate.OtherPlayers[firstComputerPlayer.Id].GrainCount.ShouldBe(1u);
+      resourceUpdate.OtherPlayers[firstComputerPlayer.Id].LumberCount.ShouldBe(1u);
+      resourceUpdate.OtherPlayers[firstComputerPlayer.Id].OreCount.ShouldBe(0u);
+      resourceUpdate.OtherPlayers[firstComputerPlayer.Id].WoolCount.ShouldBe(1u);
+
+      resourceUpdate.OtherPlayers[secondComputerPlayer.Id].BrickCount.ShouldBe(0u);
+      resourceUpdate.OtherPlayers[secondComputerPlayer.Id].GrainCount.ShouldBe(0u);
+      resourceUpdate.OtherPlayers[secondComputerPlayer.Id].LumberCount.ShouldBe(1u);
+      resourceUpdate.OtherPlayers[secondComputerPlayer.Id].OreCount.ShouldBe(1u);
+      resourceUpdate.OtherPlayers[secondComputerPlayer.Id].WoolCount.ShouldBe(1u);
+
+      resourceUpdate.OtherPlayers[thirdComputerPlayer.Id].BrickCount.ShouldBe(0u);
+      resourceUpdate.OtherPlayers[thirdComputerPlayer.Id].GrainCount.ShouldBe(1u);
+      resourceUpdate.OtherPlayers[thirdComputerPlayer.Id].LumberCount.ShouldBe(1u);
+      resourceUpdate.OtherPlayers[thirdComputerPlayer.Id].OreCount.ShouldBe(0u);
+      resourceUpdate.OtherPlayers[thirdComputerPlayer.Id].WoolCount.ShouldBe(1u);
     }
 
     [Test]
@@ -277,6 +311,9 @@ namespace Jabberwocky.SoC.Library.UnitTests
       var localGameController = this.CreateLocalGameController(mockDice, gameBoardManager, firstComputerPlayer, secondComputerPlayer, thirdComputerPlayer);
       localGameController.GameSetupUpdateEvent = (GameBoardUpdate u) => { gameBoardUpdate = u; };
       localGameController.InitialBoardSetupEvent = (GameBoardData d) => { };
+
+      ResourceUpdate resourceUpdate = null;
+      localGameController.GameSetupResourcesEvent = (ResourceUpdate r) => { resourceUpdate = r; };
 
       localGameController.TryJoiningGame();
       localGameController.TryLaunchGame();
@@ -311,6 +348,36 @@ namespace Jabberwocky.SoC.Library.UnitTests
       gameBoardUpdate.NewRoads.Count.ShouldBe(2);
       gameBoardUpdate.NewRoads.ShouldContainKeyAndValue(secondRoadTwo, secondComputerPlayer.Id);
       gameBoardUpdate.NewRoads.ShouldContainKeyAndValue(firstRoadTwo, firstComputerPlayer.Id);
+
+      resourceUpdate.ShouldNotBeNull();
+      resourceUpdate.BrickCount.ShouldBe(1u);
+      resourceUpdate.GrainCount.ShouldBe(1u);
+      resourceUpdate.LumberCount.ShouldBe(0u);
+      resourceUpdate.OreCount.ShouldBe(0u);
+      resourceUpdate.WoolCount.ShouldBe(1u);
+
+      resourceUpdate.OtherPlayers.Count.ShouldBe(3);
+      resourceUpdate.OtherPlayers.ShouldContainKey(firstComputerPlayer.Id);
+      resourceUpdate.OtherPlayers.ShouldContainKey(secondComputerPlayer.Id);
+      resourceUpdate.OtherPlayers.ShouldContainKey(thirdComputerPlayer.Id);
+
+      resourceUpdate.OtherPlayers[firstComputerPlayer.Id].BrickCount.ShouldBe(0u);
+      resourceUpdate.OtherPlayers[firstComputerPlayer.Id].GrainCount.ShouldBe(1u);
+      resourceUpdate.OtherPlayers[firstComputerPlayer.Id].LumberCount.ShouldBe(1u);
+      resourceUpdate.OtherPlayers[firstComputerPlayer.Id].OreCount.ShouldBe(0u);
+      resourceUpdate.OtherPlayers[firstComputerPlayer.Id].WoolCount.ShouldBe(1u);
+
+      resourceUpdate.OtherPlayers[secondComputerPlayer.Id].BrickCount.ShouldBe(0u);
+      resourceUpdate.OtherPlayers[secondComputerPlayer.Id].GrainCount.ShouldBe(0u);
+      resourceUpdate.OtherPlayers[secondComputerPlayer.Id].LumberCount.ShouldBe(1u);
+      resourceUpdate.OtherPlayers[secondComputerPlayer.Id].OreCount.ShouldBe(1u);
+      resourceUpdate.OtherPlayers[secondComputerPlayer.Id].WoolCount.ShouldBe(1u);
+
+      resourceUpdate.OtherPlayers[thirdComputerPlayer.Id].BrickCount.ShouldBe(0u);
+      resourceUpdate.OtherPlayers[thirdComputerPlayer.Id].GrainCount.ShouldBe(1u);
+      resourceUpdate.OtherPlayers[thirdComputerPlayer.Id].LumberCount.ShouldBe(1u);
+      resourceUpdate.OtherPlayers[thirdComputerPlayer.Id].OreCount.ShouldBe(0u);
+      resourceUpdate.OtherPlayers[thirdComputerPlayer.Id].WoolCount.ShouldBe(1u);
     }
 
     [Test]
@@ -330,6 +397,9 @@ namespace Jabberwocky.SoC.Library.UnitTests
       var localGameController = this.CreateLocalGameController(mockDice, gameBoardManager, firstComputerPlayer, secondComputerPlayer, thirdComputerPlayer);
       localGameController.GameSetupUpdateEvent = (GameBoardUpdate u) => { gameBoardUpdate = u; };
       localGameController.InitialBoardSetupEvent = (GameBoardData d) => { };
+
+      ResourceUpdate resourceUpdate = null;
+      localGameController.GameSetupResourcesEvent = (ResourceUpdate r) => { resourceUpdate = r; };
 
       localGameController.TryJoiningGame();
       localGameController.TryLaunchGame();
@@ -361,6 +431,36 @@ namespace Jabberwocky.SoC.Library.UnitTests
       gameBoardUpdate.NewRoads.ShouldContainKeyAndValue(thirdRoadTwo, thirdComputerPlayer.Id);
       gameBoardUpdate.NewRoads.ShouldContainKeyAndValue(secondRoadTwo, secondComputerPlayer.Id);
       gameBoardUpdate.NewRoads.ShouldContainKeyAndValue(firstRoadTwo, firstComputerPlayer.Id);
+
+      resourceUpdate.ShouldNotBeNull();
+      resourceUpdate.BrickCount.ShouldBe(1u);
+      resourceUpdate.GrainCount.ShouldBe(1u);
+      resourceUpdate.LumberCount.ShouldBe(0u);
+      resourceUpdate.OreCount.ShouldBe(0u);
+      resourceUpdate.WoolCount.ShouldBe(1u);
+
+      resourceUpdate.OtherPlayers.Count.ShouldBe(3);
+      resourceUpdate.OtherPlayers.ShouldContainKey(firstComputerPlayer.Id);
+      resourceUpdate.OtherPlayers.ShouldContainKey(secondComputerPlayer.Id);
+      resourceUpdate.OtherPlayers.ShouldContainKey(thirdComputerPlayer.Id);
+
+      resourceUpdate.OtherPlayers[firstComputerPlayer.Id].BrickCount.ShouldBe(0u);
+      resourceUpdate.OtherPlayers[firstComputerPlayer.Id].GrainCount.ShouldBe(1u);
+      resourceUpdate.OtherPlayers[firstComputerPlayer.Id].LumberCount.ShouldBe(1u);
+      resourceUpdate.OtherPlayers[firstComputerPlayer.Id].OreCount.ShouldBe(0u);
+      resourceUpdate.OtherPlayers[firstComputerPlayer.Id].WoolCount.ShouldBe(1u);
+
+      resourceUpdate.OtherPlayers[secondComputerPlayer.Id].BrickCount.ShouldBe(0u);
+      resourceUpdate.OtherPlayers[secondComputerPlayer.Id].GrainCount.ShouldBe(0u);
+      resourceUpdate.OtherPlayers[secondComputerPlayer.Id].LumberCount.ShouldBe(1u);
+      resourceUpdate.OtherPlayers[secondComputerPlayer.Id].OreCount.ShouldBe(1u);
+      resourceUpdate.OtherPlayers[secondComputerPlayer.Id].WoolCount.ShouldBe(1u);
+
+      resourceUpdate.OtherPlayers[thirdComputerPlayer.Id].BrickCount.ShouldBe(0u);
+      resourceUpdate.OtherPlayers[thirdComputerPlayer.Id].GrainCount.ShouldBe(1u);
+      resourceUpdate.OtherPlayers[thirdComputerPlayer.Id].LumberCount.ShouldBe(1u);
+      resourceUpdate.OtherPlayers[thirdComputerPlayer.Id].OreCount.ShouldBe(0u);
+      resourceUpdate.OtherPlayers[thirdComputerPlayer.Id].WoolCount.ShouldBe(1u);
     }
 
     [Test]
