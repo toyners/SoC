@@ -226,6 +226,8 @@ namespace Jabberwocky.SoC.Library
       return true;
     }
 
+    private ResourceUpdate resourceUpdate;
+
     public void ContinueGameSetup(UInt32 settlementLocation, Road road)
     {
       if (this.gamePhase != GamePhases.ContinueGameSetup)
@@ -245,6 +247,7 @@ namespace Jabberwocky.SoC.Library
 
       GameBoardUpdate gameBoardUpdate = this.ContinueSetupForComputerPlayers(gameBoardData, 1, null);
       this.playerIndex = this.players.Length - 1;
+      this.resourceUpdate = new ResourceUpdate();
       gameBoardUpdate = this.ContinueSetupForComputerPlayers(gameBoardData, -1, gameBoardUpdate);
 
       this.GameSetupUpdateEvent?.Invoke(gameBoardUpdate);
@@ -271,12 +274,7 @@ namespace Jabberwocky.SoC.Library
       GameBoardUpdate gameBoardUpdate = this.ContinueSetupForComputerPlayers(gameBoardData, -1, null);
       this.GameSetupUpdateEvent?.Invoke(gameBoardUpdate);
 
-      var resourceUpdate = new ResourceUpdate
-      {
-
-      };
-
-      this.GameSetupResourcesEvent?.Invoke(resourceUpdate);
+      this.GameSetupResourcesEvent?.Invoke(this.resourceUpdate);
     }
 
     private GameBoardUpdate ContinueSetupForComputerPlayers(GameBoardData gameBoardData, Int32 step, GameBoardUpdate gameBoardUpdate)
@@ -304,6 +302,12 @@ namespace Jabberwocky.SoC.Library
         var chosenSettlementIndex = computerPlayer.ChooseSettlementLocation(gameBoardData);
         gameBoardData.PlaceSettlement(computerPlayer.Id, chosenSettlementIndex);
         gameBoardUpdate.NewSettlements.Add(chosenSettlementIndex, computerPlayer.Id);
+
+        if (this.resourceUpdate != null)
+        {
+          // Add resources for this placement
+          //this.gameBoardManager
+        }
 
         var chosenRoad = computerPlayer.ChooseRoad(gameBoardData);
         gameBoardData.PlaceRoad(computerPlayer.Id, chosenRoad);
