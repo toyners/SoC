@@ -12,6 +12,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
   public class LocalGameController_UnitTests
   {
     #region Fields
+    private const UInt32 MainSettlementOneLocation = 12u;
     private const UInt32 FirstSettlementOneLocation = 18u;
     private const UInt32 SecondSettlementOneLocation = 25u;
     private const UInt32 ThirdSettlementOneLocation = 31u;
@@ -19,14 +20,17 @@ namespace Jabberwocky.SoC.Library.UnitTests
     private const UInt32 ThirdSettlementTwoLocation = 33u;
     private const UInt32 SecondSettlementTwoLocation = 35u;
     private const UInt32 FirstSettlementTwoLocation = 43u;
+    private const UInt32 MainSettlementTwoLocation = 40u;
 
-    private Road firstRoadOne = new Road(17u, 18u);
-    private Road secondRoadOne = new Road(15u, 25u);
-    private Road thirdRoadOne = new Road(30u, 31u);
+    private Road mainRoadOne = new Road(12, 4);
+    private Road firstRoadOne = new Road(17, 18);
+    private Road secondRoadOne = new Road(15, 25);
+    private Road thirdRoadOne = new Road(30, 31);
 
-    private Road thirdRoadTwo = new Road(32u, 33u);
-    private Road secondRoadTwo = new Road(24u, 35u);
-    private Road firstRoadTwo = new Road(43u, 44u);
+    private Road thirdRoadTwo = new Road(32, 33);
+    private Road secondRoadTwo = new Road(24, 35);
+    private Road firstRoadTwo = new Road(43, 44);
+    private Road mainRoadTwo = new Road(40, 39);
     #endregion
 
     #region Methods
@@ -149,7 +153,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
       gameBoardUpdate = null; // Ensure that there is a state change for the gameBoardUpdate variable
 
-      localGameController.ContinueGameSetup(12, new Road(12, 4));
+      localGameController.ContinueGameSetup(MainSettlementOneLocation, mainRoadOne);
       gameBoardUpdate.ShouldNotBeNull();
       gameBoardUpdate.NewSettlements.Count.ShouldBe(6);
       gameBoardUpdate.NewSettlements.ShouldContainKeyAndValue(FirstSettlementOneLocation, firstComputerPlayer.Id);
@@ -169,7 +173,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
       gameBoardUpdate = new GameBoardUpdate(); // Ensure that there is a state change for the gameBoardUpdate variable 
 
-      localGameController.CompleteGameSetup(40, new Road(40, 39));
+      localGameController.CompleteGameSetup(MainSettlementTwoLocation, mainRoadTwo);
       gameBoardUpdate.ShouldBeNull();
 
       resourceUpdate.ShouldNotBeNull();
@@ -232,7 +236,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
       gameBoardUpdate.NewRoads.ShouldContainKeyAndValue(firstRoadOne, firstComputerPlayer.Id);
 
       gameBoardUpdate = null; // Ensure that there is a state change for the gameBoardUpdate variable 
-      localGameController.ContinueGameSetup(0u, new Road(0u, 1u));
+      localGameController.ContinueGameSetup(MainSettlementOneLocation, mainRoadOne);
 
       gameBoardUpdate.ShouldNotBeNull();
       gameBoardUpdate.NewSettlements.Count.ShouldBe(4);
@@ -248,7 +252,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
       gameBoardUpdate.NewRoads.ShouldContainKeyAndValue(thirdRoadTwo, thirdComputerPlayer.Id);
 
       gameBoardUpdate = null; // Ensure that there is a state change for the gameBoardUpdate variable 
-      localGameController.CompleteGameSetup(2u, new Road(2u, 3u));
+      localGameController.CompleteGameSetup(MainSettlementTwoLocation, mainRoadTwo);
 
       gameBoardUpdate.NewSettlements.Count.ShouldBe(1);
       gameBoardUpdate.NewSettlements.ShouldContainKeyAndValue(FirstSettlementTwoLocation, firstComputerPlayer.Id);
@@ -287,7 +291,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
       gameBoardUpdate.NewRoads.ShouldContainKeyAndValue(secondRoadOne, secondComputerPlayer.Id);
 
       gameBoardUpdate = null; // Ensure that there is a state change for the gameBoardUpdate variable 
-      localGameController.ContinueGameSetup(0u, new Road(0u, 1u));
+      localGameController.ContinueGameSetup(MainSettlementOneLocation, mainRoadOne);
 
       gameBoardUpdate.ShouldNotBeNull();
       gameBoardUpdate.NewSettlements.Count.ShouldBe(2);
@@ -299,7 +303,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
       gameBoardUpdate.NewRoads.ShouldContainKeyAndValue(thirdRoadTwo, thirdComputerPlayer.Id);
 
       gameBoardUpdate = null; // Ensure that there is a state change for the gameBoardUpdate variable 
-      localGameController.CompleteGameSetup(2u, new Road(2u, 3u));
+      localGameController.CompleteGameSetup(MainSettlementTwoLocation, mainRoadTwo);
 
       gameBoardUpdate.NewSettlements.Count.ShouldBe(2);
       gameBoardUpdate.NewSettlements.ShouldContainKeyAndValue(SecondSettlementTwoLocation, secondComputerPlayer.Id);
@@ -342,11 +346,11 @@ namespace Jabberwocky.SoC.Library.UnitTests
       gameBoardUpdate.NewRoads.ShouldContainKeyAndValue(thirdRoadOne, thirdComputerPlayer.Id);
 
       gameBoardUpdate = new GameBoardUpdate(); // Ensure that there is a state change for the gameBoardUpdate variable 
-      localGameController.ContinueGameSetup(0u, new Road(0u, 1u));
+      localGameController.ContinueGameSetup(MainSettlementOneLocation, mainRoadOne);
       gameBoardUpdate.ShouldBeNull();
 
       gameBoardUpdate = null; // Ensure that there is a state change for the gameBoardUpdate variable 
-      localGameController.CompleteGameSetup(2u, new Road(2u, 3u));
+      localGameController.CompleteGameSetup(MainSettlementTwoLocation, mainRoadTwo);
 
       gameBoardUpdate.ShouldNotBeNull();
       gameBoardUpdate.NewSettlements.Count.ShouldBe(3);
