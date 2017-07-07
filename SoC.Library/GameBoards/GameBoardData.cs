@@ -42,7 +42,16 @@ namespace Jabberwocky.SoC.Library.GameBoards
     private Dictionary<Guid, List<UInt32>> settlementsByPlayer;
     private Boolean[,] connections;
     private Dictionary<Road, Guid> roads;
+
+    // Location and resources bordering it
+    private Dictionary<UInt32, ResourceProvider2[]> resourcesAtLocation;
     #endregion
+
+    private struct ResourceProvider2
+    {
+      public ResourceTypes Type;
+      public UInt32 ProductionNumber;
+    }
 
     #region Construction
     public GameBoardData(BoardSizes size)
@@ -240,6 +249,11 @@ namespace Jabberwocky.SoC.Library.GameBoards
       }
 
       this.settlements.Add(locationIndex, playerId);
+    }
+
+    public ResourceUpdate GetResourcesByLocation(UInt32 location)
+    {
+      throw new NotImplementedException();
     }
 
     private void CreateLocations()

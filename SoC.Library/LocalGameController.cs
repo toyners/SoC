@@ -306,7 +306,7 @@ namespace Jabberwocky.SoC.Library
         if (this.resourceUpdate != null)
         {
           // Add resources for this placement
-          //this.gameBoardManager
+          this.gameBoardManager.Data.GetResourcesByLocation(chosenSettlementIndex);
         }
 
         var chosenRoad = computerPlayer.ChooseRoad(gameBoardData);
