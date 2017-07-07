@@ -126,7 +126,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
     [Test]
     [Category("LocalGameController")]
-    public void CompleteSetupWithPlayerInFirstSlot()
+    public void CompleteSetupWithPlayerInFirstSlot_ExpectedPlacementsAreReturned()
     {
       var mockDice = Substitute.For<IDice>();
       mockDice.RollTwoDice().Returns(12u, 10u, 8u, 6u);
@@ -141,9 +141,6 @@ namespace Jabberwocky.SoC.Library.UnitTests
       var localGameController = this.CreateLocalGameController(mockDice, gameBoardManager, firstComputerPlayer, secondComputerPlayer, thirdComputerPlayer);
       localGameController.GameSetupUpdateEvent = (GameBoardUpdate u) => { gameBoardUpdate = u; };
       localGameController.InitialBoardSetupEvent = (GameBoardData d) => { };
-
-      ResourceUpdate resourceUpdate = null;
-      localGameController.GameSetupResourcesEvent = (ResourceUpdate r) => { resourceUpdate = r; };
 
       localGameController.TryJoiningGame();
       localGameController.TryLaunchGame();
@@ -176,41 +173,11 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
       localGameController.CompleteGameSetup(MainSettlementTwoLocation, mainRoadTwo);
       gameBoardUpdate.ShouldBeNull();
-
-      resourceUpdate.ShouldNotBeNull();
-      resourceUpdate.BrickCount.ShouldBe(1u);
-      resourceUpdate.GrainCount.ShouldBe(1u);
-      resourceUpdate.LumberCount.ShouldBe(0u);
-      resourceUpdate.OreCount.ShouldBe(0u);
-      resourceUpdate.WoolCount.ShouldBe(1u);
-
-      resourceUpdate.OtherPlayers.Count.ShouldBe(3);
-      resourceUpdate.OtherPlayers.ShouldContainKey(firstComputerPlayer.Id);
-      resourceUpdate.OtherPlayers.ShouldContainKey(secondComputerPlayer.Id);
-      resourceUpdate.OtherPlayers.ShouldContainKey(thirdComputerPlayer.Id);
-
-      resourceUpdate.OtherPlayers[firstComputerPlayer.Id].BrickCount.ShouldBe(0u);
-      resourceUpdate.OtherPlayers[firstComputerPlayer.Id].GrainCount.ShouldBe(1u);
-      resourceUpdate.OtherPlayers[firstComputerPlayer.Id].LumberCount.ShouldBe(1u);
-      resourceUpdate.OtherPlayers[firstComputerPlayer.Id].OreCount.ShouldBe(0u);
-      resourceUpdate.OtherPlayers[firstComputerPlayer.Id].WoolCount.ShouldBe(1u);
-
-      resourceUpdate.OtherPlayers[secondComputerPlayer.Id].BrickCount.ShouldBe(0u);
-      resourceUpdate.OtherPlayers[secondComputerPlayer.Id].GrainCount.ShouldBe(0u);
-      resourceUpdate.OtherPlayers[secondComputerPlayer.Id].LumberCount.ShouldBe(1u);
-      resourceUpdate.OtherPlayers[secondComputerPlayer.Id].OreCount.ShouldBe(1u);
-      resourceUpdate.OtherPlayers[secondComputerPlayer.Id].WoolCount.ShouldBe(1u);
-
-      resourceUpdate.OtherPlayers[thirdComputerPlayer.Id].BrickCount.ShouldBe(0u);
-      resourceUpdate.OtherPlayers[thirdComputerPlayer.Id].GrainCount.ShouldBe(1u);
-      resourceUpdate.OtherPlayers[thirdComputerPlayer.Id].LumberCount.ShouldBe(1u);
-      resourceUpdate.OtherPlayers[thirdComputerPlayer.Id].OreCount.ShouldBe(0u);
-      resourceUpdate.OtherPlayers[thirdComputerPlayer.Id].WoolCount.ShouldBe(1u);
     }
 
     [Test]
     [Category("LocalGameController")]
-    public void CompleteSetupWithPlayerInSecondSlot()
+    public void CompleteSetupWithPlayerInSecondSlot_ExpectedPlacementsAreReturned()
     {
       var mockDice = Substitute.For<IDice>();
       mockDice.RollTwoDice().Returns(10u, 12u, 8u, 6u);
@@ -225,9 +192,6 @@ namespace Jabberwocky.SoC.Library.UnitTests
       var localGameController = this.CreateLocalGameController(mockDice, gameBoardManager, firstComputerPlayer, secondComputerPlayer, thirdComputerPlayer);
       localGameController.GameSetupUpdateEvent = (GameBoardUpdate u) => { gameBoardUpdate = u; };
       localGameController.InitialBoardSetupEvent = (GameBoardData d) => { };
-
-      ResourceUpdate resourceUpdate = null;
-      localGameController.GameSetupResourcesEvent = (ResourceUpdate r) => { resourceUpdate = r; };
 
       localGameController.TryJoiningGame();
       localGameController.TryLaunchGame();
@@ -262,41 +226,11 @@ namespace Jabberwocky.SoC.Library.UnitTests
       gameBoardUpdate.NewSettlements.ShouldContainKeyAndValue(FirstSettlementTwoLocation, firstComputerPlayer.Id);
       gameBoardUpdate.NewRoads.Count.ShouldBe(1);
       gameBoardUpdate.NewRoads.ShouldContainKeyAndValue(firstRoadTwo, firstComputerPlayer.Id);
-
-      resourceUpdate.ShouldNotBeNull();
-      resourceUpdate.BrickCount.ShouldBe(1u);
-      resourceUpdate.GrainCount.ShouldBe(1u);
-      resourceUpdate.LumberCount.ShouldBe(0u);
-      resourceUpdate.OreCount.ShouldBe(0u);
-      resourceUpdate.WoolCount.ShouldBe(1u);
-
-      resourceUpdate.OtherPlayers.Count.ShouldBe(3);
-      resourceUpdate.OtherPlayers.ShouldContainKey(firstComputerPlayer.Id);
-      resourceUpdate.OtherPlayers.ShouldContainKey(secondComputerPlayer.Id);
-      resourceUpdate.OtherPlayers.ShouldContainKey(thirdComputerPlayer.Id);
-
-      resourceUpdate.OtherPlayers[firstComputerPlayer.Id].BrickCount.ShouldBe(0u);
-      resourceUpdate.OtherPlayers[firstComputerPlayer.Id].GrainCount.ShouldBe(1u);
-      resourceUpdate.OtherPlayers[firstComputerPlayer.Id].LumberCount.ShouldBe(1u);
-      resourceUpdate.OtherPlayers[firstComputerPlayer.Id].OreCount.ShouldBe(0u);
-      resourceUpdate.OtherPlayers[firstComputerPlayer.Id].WoolCount.ShouldBe(1u);
-
-      resourceUpdate.OtherPlayers[secondComputerPlayer.Id].BrickCount.ShouldBe(0u);
-      resourceUpdate.OtherPlayers[secondComputerPlayer.Id].GrainCount.ShouldBe(0u);
-      resourceUpdate.OtherPlayers[secondComputerPlayer.Id].LumberCount.ShouldBe(1u);
-      resourceUpdate.OtherPlayers[secondComputerPlayer.Id].OreCount.ShouldBe(1u);
-      resourceUpdate.OtherPlayers[secondComputerPlayer.Id].WoolCount.ShouldBe(1u);
-
-      resourceUpdate.OtherPlayers[thirdComputerPlayer.Id].BrickCount.ShouldBe(0u);
-      resourceUpdate.OtherPlayers[thirdComputerPlayer.Id].GrainCount.ShouldBe(1u);
-      resourceUpdate.OtherPlayers[thirdComputerPlayer.Id].LumberCount.ShouldBe(1u);
-      resourceUpdate.OtherPlayers[thirdComputerPlayer.Id].OreCount.ShouldBe(0u);
-      resourceUpdate.OtherPlayers[thirdComputerPlayer.Id].WoolCount.ShouldBe(1u);
     }
 
     [Test]
     [Category("LocalGameController")]
-    public void CompleteSetupWithPlayerInThirdSlot()
+    public void CompleteSetupWithPlayerInThirdSlot_ExpectedPlacementsAreReturned()
     {
       var mockDice = Substitute.For<IDice>();
       mockDice.RollTwoDice().Returns(8u, 12u, 10u, 6u);
@@ -311,9 +245,6 @@ namespace Jabberwocky.SoC.Library.UnitTests
       var localGameController = this.CreateLocalGameController(mockDice, gameBoardManager, firstComputerPlayer, secondComputerPlayer, thirdComputerPlayer);
       localGameController.GameSetupUpdateEvent = (GameBoardUpdate u) => { gameBoardUpdate = u; };
       localGameController.InitialBoardSetupEvent = (GameBoardData d) => { };
-
-      ResourceUpdate resourceUpdate = null;
-      localGameController.GameSetupResourcesEvent = (ResourceUpdate r) => { resourceUpdate = r; };
 
       localGameController.TryJoiningGame();
       localGameController.TryLaunchGame();
@@ -348,41 +279,11 @@ namespace Jabberwocky.SoC.Library.UnitTests
       gameBoardUpdate.NewRoads.Count.ShouldBe(2);
       gameBoardUpdate.NewRoads.ShouldContainKeyAndValue(secondRoadTwo, secondComputerPlayer.Id);
       gameBoardUpdate.NewRoads.ShouldContainKeyAndValue(firstRoadTwo, firstComputerPlayer.Id);
-
-      resourceUpdate.ShouldNotBeNull();
-      resourceUpdate.BrickCount.ShouldBe(1u);
-      resourceUpdate.GrainCount.ShouldBe(1u);
-      resourceUpdate.LumberCount.ShouldBe(0u);
-      resourceUpdate.OreCount.ShouldBe(0u);
-      resourceUpdate.WoolCount.ShouldBe(1u);
-
-      resourceUpdate.OtherPlayers.Count.ShouldBe(3);
-      resourceUpdate.OtherPlayers.ShouldContainKey(firstComputerPlayer.Id);
-      resourceUpdate.OtherPlayers.ShouldContainKey(secondComputerPlayer.Id);
-      resourceUpdate.OtherPlayers.ShouldContainKey(thirdComputerPlayer.Id);
-
-      resourceUpdate.OtherPlayers[firstComputerPlayer.Id].BrickCount.ShouldBe(0u);
-      resourceUpdate.OtherPlayers[firstComputerPlayer.Id].GrainCount.ShouldBe(1u);
-      resourceUpdate.OtherPlayers[firstComputerPlayer.Id].LumberCount.ShouldBe(1u);
-      resourceUpdate.OtherPlayers[firstComputerPlayer.Id].OreCount.ShouldBe(0u);
-      resourceUpdate.OtherPlayers[firstComputerPlayer.Id].WoolCount.ShouldBe(1u);
-
-      resourceUpdate.OtherPlayers[secondComputerPlayer.Id].BrickCount.ShouldBe(0u);
-      resourceUpdate.OtherPlayers[secondComputerPlayer.Id].GrainCount.ShouldBe(0u);
-      resourceUpdate.OtherPlayers[secondComputerPlayer.Id].LumberCount.ShouldBe(1u);
-      resourceUpdate.OtherPlayers[secondComputerPlayer.Id].OreCount.ShouldBe(1u);
-      resourceUpdate.OtherPlayers[secondComputerPlayer.Id].WoolCount.ShouldBe(1u);
-
-      resourceUpdate.OtherPlayers[thirdComputerPlayer.Id].BrickCount.ShouldBe(0u);
-      resourceUpdate.OtherPlayers[thirdComputerPlayer.Id].GrainCount.ShouldBe(1u);
-      resourceUpdate.OtherPlayers[thirdComputerPlayer.Id].LumberCount.ShouldBe(1u);
-      resourceUpdate.OtherPlayers[thirdComputerPlayer.Id].OreCount.ShouldBe(0u);
-      resourceUpdate.OtherPlayers[thirdComputerPlayer.Id].WoolCount.ShouldBe(1u);
     }
 
     [Test]
     [Category("LocalGameController")]
-    public void CompleteSetupWithPlayerInFourthSlot()
+    public void CompleteSetupWithPlayerInFourthSlot_ExpectedPlacementsAreReturned()
     {
       var mockDice = Substitute.For<IDice>();
       mockDice.RollTwoDice().Returns(6u, 12u, 10u, 8u);
@@ -397,9 +298,6 @@ namespace Jabberwocky.SoC.Library.UnitTests
       var localGameController = this.CreateLocalGameController(mockDice, gameBoardManager, firstComputerPlayer, secondComputerPlayer, thirdComputerPlayer);
       localGameController.GameSetupUpdateEvent = (GameBoardUpdate u) => { gameBoardUpdate = u; };
       localGameController.InitialBoardSetupEvent = (GameBoardData d) => { };
-
-      ResourceUpdate resourceUpdate = null;
-      localGameController.GameSetupResourcesEvent = (ResourceUpdate r) => { resourceUpdate = r; };
 
       localGameController.TryJoiningGame();
       localGameController.TryLaunchGame();
@@ -431,6 +329,194 @@ namespace Jabberwocky.SoC.Library.UnitTests
       gameBoardUpdate.NewRoads.ShouldContainKeyAndValue(thirdRoadTwo, thirdComputerPlayer.Id);
       gameBoardUpdate.NewRoads.ShouldContainKeyAndValue(secondRoadTwo, secondComputerPlayer.Id);
       gameBoardUpdate.NewRoads.ShouldContainKeyAndValue(firstRoadTwo, firstComputerPlayer.Id);
+    }
+
+    [Test]
+    [Category("LocalGameController")]
+    public void CompleteSetupWithPlayerInFirstSlot_ExpectedResourcesAreReturned()
+    {
+      var mockDice = Substitute.For<IDice>();
+      mockDice.RollTwoDice().Returns(12u, 10u, 8u, 6u);
+
+      var gameBoardManager = new GameBoardManager(BoardSizes.Standard);
+
+      var firstComputerPlayer = this.CreateMockComputerPlayer(gameBoardManager.Data, FirstSettlementOneLocation, FirstSettlementTwoLocation, firstRoadOne, firstRoadTwo);
+      var secondComputerPlayer = this.CreateMockComputerPlayer(gameBoardManager.Data, SecondSettlementOneLocation, SecondSettlementTwoLocation, secondRoadOne, secondRoadTwo);
+      var thirdComputerPlayer = this.CreateMockComputerPlayer(gameBoardManager.Data, ThirdSettlementOneLocation, ThirdSettlementTwoLocation, thirdRoadOne, thirdRoadTwo);
+
+      var localGameController = this.CreateLocalGameController(mockDice, gameBoardManager, firstComputerPlayer, secondComputerPlayer, thirdComputerPlayer);
+
+      ResourceUpdate resourceUpdate = null;
+      localGameController.GameSetupResourcesEvent = (ResourceUpdate r) => { resourceUpdate = r; };
+
+      localGameController.TryJoiningGame();
+      localGameController.TryLaunchGame();
+      localGameController.StartGameSetup();
+      localGameController.ContinueGameSetup(MainSettlementOneLocation, mainRoadOne);
+      localGameController.CompleteGameSetup(MainSettlementTwoLocation, mainRoadTwo);
+
+      resourceUpdate.ShouldNotBeNull();
+      resourceUpdate.BrickCount.ShouldBe(1u);
+      resourceUpdate.GrainCount.ShouldBe(1u);
+      resourceUpdate.LumberCount.ShouldBe(0u);
+      resourceUpdate.OreCount.ShouldBe(0u);
+      resourceUpdate.WoolCount.ShouldBe(1u);
+
+      resourceUpdate.OtherPlayers.Count.ShouldBe(3);
+      resourceUpdate.OtherPlayers.ShouldContainKey(firstComputerPlayer.Id);
+      resourceUpdate.OtherPlayers.ShouldContainKey(secondComputerPlayer.Id);
+      resourceUpdate.OtherPlayers.ShouldContainKey(thirdComputerPlayer.Id);
+
+      resourceUpdate.OtherPlayers[firstComputerPlayer.Id].BrickCount.ShouldBe(0u);
+      resourceUpdate.OtherPlayers[firstComputerPlayer.Id].GrainCount.ShouldBe(1u);
+      resourceUpdate.OtherPlayers[firstComputerPlayer.Id].LumberCount.ShouldBe(1u);
+      resourceUpdate.OtherPlayers[firstComputerPlayer.Id].OreCount.ShouldBe(0u);
+      resourceUpdate.OtherPlayers[firstComputerPlayer.Id].WoolCount.ShouldBe(1u);
+
+      resourceUpdate.OtherPlayers[secondComputerPlayer.Id].BrickCount.ShouldBe(0u);
+      resourceUpdate.OtherPlayers[secondComputerPlayer.Id].GrainCount.ShouldBe(0u);
+      resourceUpdate.OtherPlayers[secondComputerPlayer.Id].LumberCount.ShouldBe(1u);
+      resourceUpdate.OtherPlayers[secondComputerPlayer.Id].OreCount.ShouldBe(1u);
+      resourceUpdate.OtherPlayers[secondComputerPlayer.Id].WoolCount.ShouldBe(1u);
+
+      resourceUpdate.OtherPlayers[thirdComputerPlayer.Id].BrickCount.ShouldBe(0u);
+      resourceUpdate.OtherPlayers[thirdComputerPlayer.Id].GrainCount.ShouldBe(1u);
+      resourceUpdate.OtherPlayers[thirdComputerPlayer.Id].LumberCount.ShouldBe(1u);
+      resourceUpdate.OtherPlayers[thirdComputerPlayer.Id].OreCount.ShouldBe(0u);
+      resourceUpdate.OtherPlayers[thirdComputerPlayer.Id].WoolCount.ShouldBe(1u);
+    }
+
+    [Test]
+    [Category("LocalGameController")]
+    public void CompleteSetupWithPlayerInSecondSlot_ExpectedResourcesAreReturned()
+    {
+      var mockDice = Substitute.For<IDice>();
+      mockDice.RollTwoDice().Returns(10u, 12u, 8u, 6u);
+
+      var gameBoardManager = new GameBoardManager(BoardSizes.Standard);
+
+      var firstComputerPlayer = this.CreateMockComputerPlayer(gameBoardManager.Data, FirstSettlementOneLocation, FirstSettlementTwoLocation, firstRoadOne, firstRoadTwo);
+      var secondComputerPlayer = this.CreateMockComputerPlayer(gameBoardManager.Data, SecondSettlementOneLocation, SecondSettlementTwoLocation, secondRoadOne, secondRoadTwo);
+      var thirdComputerPlayer = this.CreateMockComputerPlayer(gameBoardManager.Data, ThirdSettlementOneLocation, ThirdSettlementTwoLocation, thirdRoadOne, thirdRoadTwo);
+
+      var localGameController = this.CreateLocalGameController(mockDice, gameBoardManager, firstComputerPlayer, secondComputerPlayer, thirdComputerPlayer);
+
+      ResourceUpdate resourceUpdate = null;
+      localGameController.GameSetupResourcesEvent = (ResourceUpdate r) => { resourceUpdate = r; };
+      localGameController.TryJoiningGame();
+      localGameController.TryLaunchGame();
+      localGameController.StartGameSetup();
+      localGameController.ContinueGameSetup(MainSettlementOneLocation, mainRoadOne);
+      localGameController.CompleteGameSetup(MainSettlementTwoLocation, mainRoadTwo);
+
+      resourceUpdate.ShouldNotBeNull();
+      resourceUpdate.BrickCount.ShouldBe(1u);
+      resourceUpdate.GrainCount.ShouldBe(1u);
+      resourceUpdate.LumberCount.ShouldBe(0u);
+      resourceUpdate.OreCount.ShouldBe(0u);
+      resourceUpdate.WoolCount.ShouldBe(1u);
+
+      resourceUpdate.OtherPlayers.Count.ShouldBe(3);
+      resourceUpdate.OtherPlayers.ShouldContainKey(firstComputerPlayer.Id);
+      resourceUpdate.OtherPlayers.ShouldContainKey(secondComputerPlayer.Id);
+      resourceUpdate.OtherPlayers.ShouldContainKey(thirdComputerPlayer.Id);
+
+      resourceUpdate.OtherPlayers[firstComputerPlayer.Id].BrickCount.ShouldBe(0u);
+      resourceUpdate.OtherPlayers[firstComputerPlayer.Id].GrainCount.ShouldBe(1u);
+      resourceUpdate.OtherPlayers[firstComputerPlayer.Id].LumberCount.ShouldBe(1u);
+      resourceUpdate.OtherPlayers[firstComputerPlayer.Id].OreCount.ShouldBe(0u);
+      resourceUpdate.OtherPlayers[firstComputerPlayer.Id].WoolCount.ShouldBe(1u);
+
+      resourceUpdate.OtherPlayers[secondComputerPlayer.Id].BrickCount.ShouldBe(0u);
+      resourceUpdate.OtherPlayers[secondComputerPlayer.Id].GrainCount.ShouldBe(0u);
+      resourceUpdate.OtherPlayers[secondComputerPlayer.Id].LumberCount.ShouldBe(1u);
+      resourceUpdate.OtherPlayers[secondComputerPlayer.Id].OreCount.ShouldBe(1u);
+      resourceUpdate.OtherPlayers[secondComputerPlayer.Id].WoolCount.ShouldBe(1u);
+
+      resourceUpdate.OtherPlayers[thirdComputerPlayer.Id].BrickCount.ShouldBe(0u);
+      resourceUpdate.OtherPlayers[thirdComputerPlayer.Id].GrainCount.ShouldBe(1u);
+      resourceUpdate.OtherPlayers[thirdComputerPlayer.Id].LumberCount.ShouldBe(1u);
+      resourceUpdate.OtherPlayers[thirdComputerPlayer.Id].OreCount.ShouldBe(0u);
+      resourceUpdate.OtherPlayers[thirdComputerPlayer.Id].WoolCount.ShouldBe(1u);
+    }
+
+    [Test]
+    [Category("LocalGameController")]
+    public void CompleteSetupWithPlayerInThirdSlot_ExpectedResourcesAreReturned()
+    {
+      var mockDice = Substitute.For<IDice>();
+      mockDice.RollTwoDice().Returns(8u, 12u, 10u, 6u);
+
+      var gameBoardManager = new GameBoardManager(BoardSizes.Standard);
+
+      var firstComputerPlayer = this.CreateMockComputerPlayer(gameBoardManager.Data, FirstSettlementOneLocation, FirstSettlementTwoLocation, firstRoadOne, firstRoadTwo);
+      var secondComputerPlayer = this.CreateMockComputerPlayer(gameBoardManager.Data, SecondSettlementOneLocation, SecondSettlementTwoLocation, secondRoadOne, secondRoadTwo);
+      var thirdComputerPlayer = this.CreateMockComputerPlayer(gameBoardManager.Data, ThirdSettlementOneLocation, ThirdSettlementTwoLocation, thirdRoadOne, thirdRoadTwo);
+
+      var localGameController = this.CreateLocalGameController(mockDice, gameBoardManager, firstComputerPlayer, secondComputerPlayer, thirdComputerPlayer);
+
+      ResourceUpdate resourceUpdate = null;
+      localGameController.GameSetupResourcesEvent = (ResourceUpdate r) => { resourceUpdate = r; };
+
+      localGameController.TryJoiningGame();
+      localGameController.TryLaunchGame();
+      localGameController.StartGameSetup();
+      localGameController.ContinueGameSetup(MainSettlementOneLocation, mainRoadOne);
+      localGameController.CompleteGameSetup(MainSettlementTwoLocation, mainRoadTwo);
+
+      resourceUpdate.ShouldNotBeNull();
+      resourceUpdate.BrickCount.ShouldBe(1u);
+      resourceUpdate.GrainCount.ShouldBe(1u);
+      resourceUpdate.LumberCount.ShouldBe(0u);
+      resourceUpdate.OreCount.ShouldBe(0u);
+      resourceUpdate.WoolCount.ShouldBe(1u);
+
+      resourceUpdate.OtherPlayers.Count.ShouldBe(3);
+      resourceUpdate.OtherPlayers.ShouldContainKey(firstComputerPlayer.Id);
+      resourceUpdate.OtherPlayers.ShouldContainKey(secondComputerPlayer.Id);
+      resourceUpdate.OtherPlayers.ShouldContainKey(thirdComputerPlayer.Id);
+
+      resourceUpdate.OtherPlayers[firstComputerPlayer.Id].BrickCount.ShouldBe(0u);
+      resourceUpdate.OtherPlayers[firstComputerPlayer.Id].GrainCount.ShouldBe(1u);
+      resourceUpdate.OtherPlayers[firstComputerPlayer.Id].LumberCount.ShouldBe(1u);
+      resourceUpdate.OtherPlayers[firstComputerPlayer.Id].OreCount.ShouldBe(0u);
+      resourceUpdate.OtherPlayers[firstComputerPlayer.Id].WoolCount.ShouldBe(1u);
+
+      resourceUpdate.OtherPlayers[secondComputerPlayer.Id].BrickCount.ShouldBe(0u);
+      resourceUpdate.OtherPlayers[secondComputerPlayer.Id].GrainCount.ShouldBe(0u);
+      resourceUpdate.OtherPlayers[secondComputerPlayer.Id].LumberCount.ShouldBe(1u);
+      resourceUpdate.OtherPlayers[secondComputerPlayer.Id].OreCount.ShouldBe(1u);
+      resourceUpdate.OtherPlayers[secondComputerPlayer.Id].WoolCount.ShouldBe(1u);
+
+      resourceUpdate.OtherPlayers[thirdComputerPlayer.Id].BrickCount.ShouldBe(0u);
+      resourceUpdate.OtherPlayers[thirdComputerPlayer.Id].GrainCount.ShouldBe(1u);
+      resourceUpdate.OtherPlayers[thirdComputerPlayer.Id].LumberCount.ShouldBe(1u);
+      resourceUpdate.OtherPlayers[thirdComputerPlayer.Id].OreCount.ShouldBe(0u);
+      resourceUpdate.OtherPlayers[thirdComputerPlayer.Id].WoolCount.ShouldBe(1u);
+    }
+
+    [Test]
+    [Category("LocalGameController")]
+    public void CompleteSetupWithPlayerInFourthSlot_ExpectedResourcesAreReturned()
+    {
+      var mockDice = Substitute.For<IDice>();
+      mockDice.RollTwoDice().Returns(6u, 12u, 10u, 8u);
+
+      var gameBoardManager = new GameBoardManager(BoardSizes.Standard);
+
+      var firstComputerPlayer = this.CreateMockComputerPlayer(gameBoardManager.Data, FirstSettlementOneLocation, FirstSettlementTwoLocation, firstRoadOne, firstRoadTwo);
+      var secondComputerPlayer = this.CreateMockComputerPlayer(gameBoardManager.Data, SecondSettlementOneLocation, SecondSettlementTwoLocation, secondRoadOne, secondRoadTwo);
+      var thirdComputerPlayer = this.CreateMockComputerPlayer(gameBoardManager.Data, ThirdSettlementOneLocation, ThirdSettlementTwoLocation, thirdRoadOne, thirdRoadTwo);
+
+      var localGameController = this.CreateLocalGameController(mockDice, gameBoardManager, firstComputerPlayer, secondComputerPlayer, thirdComputerPlayer);
+
+      ResourceUpdate resourceUpdate = null;
+      localGameController.GameSetupResourcesEvent = (ResourceUpdate r) => { resourceUpdate = r; };
+      localGameController.TryJoiningGame();
+      localGameController.TryLaunchGame();
+      localGameController.StartGameSetup();
+      localGameController.ContinueGameSetup(MainSettlementOneLocation, mainRoadOne);
+      localGameController.CompleteGameSetup(MainSettlementTwoLocation, mainRoadTwo);
 
       resourceUpdate.ShouldNotBeNull();
       resourceUpdate.BrickCount.ShouldBe(1u);
