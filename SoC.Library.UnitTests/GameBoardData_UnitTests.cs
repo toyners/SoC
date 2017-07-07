@@ -266,15 +266,19 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
     [Test]
     [Category("GameBoardData")]
-    public void GetResourcesByLocation_StandardBoard_ReturnsExpectedResources()
+    [TestCase(12u, 1u, 0u, 0u, 1u, 1u)]
+    [TestCase(45u, 0u, 1u, 0u, 1u, 0u)]
+    [TestCase(53u, 0u, 1u, 0u, 0u, 0u)]
+    [TestCase(20u, 0u, 1u, 1u, 1u, 0u)]
+    public void GetResourcesByLocation_StandardBoard_ReturnsExpectedResources(UInt32 location, UInt32 expectedBrickCount, UInt32 expectedGrainCount, UInt32 expectedLumberCount, UInt32 expectedOreCount, UInt32 expectedWoolCount)
     {
       var gameBoardData = new GameBoardData(BoardSizes.Standard);
-      var result = gameBoardData.GetResourcesByLocation(12u);
-      result.BrickCount.ShouldBe(1u);
-      result.GrainCount.ShouldBe(0u);
-      result.LumberCount.ShouldBe(0u);
-      result.OreCount.ShouldBe(1u);
-      result.WoolCount.ShouldBe(1u);
+      var result = gameBoardData.GetResourcesByLocation(location);
+      result.BrickCount.ShouldBe(expectedBrickCount);
+      result.GrainCount.ShouldBe(expectedGrainCount);
+      result.LumberCount.ShouldBe(expectedLumberCount);
+      result.OreCount.ShouldBe(expectedOreCount);
+      result.WoolCount.ShouldBe(expectedWoolCount);
     }
     #endregion 
   }
