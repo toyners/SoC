@@ -197,20 +197,6 @@ namespace Jabberwocky.SoC.Library.GameBoards
       return results;
     }
 
-    public Boolean[,] GetBoardSnapshot()
-    {
-      var snapshot = new Boolean[this.connections.GetLength(0), this.connections.GetLength(1)];
-      for (var x = 0u; x < this.connections.GetLength(0); x++)
-      {
-        for (var y = 0u; y < this.connections.GetLength(0); y++)
-        {
-          snapshot[x, y] = this.connections[x, y];
-        }
-      }
-
-      return snapshot;
-    }
-
     public List<UInt32> GetPathBetweenLocations(UInt32 startIndex, UInt32 endIndex)
     {
       if (startIndex == endIndex)
