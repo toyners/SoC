@@ -263,6 +263,19 @@ namespace Jabberwocky.SoC.Library.UnitTests
       gameBoardData.CanPlaceSettlement(location).Status.ShouldBe(GameBoardData.VerificationStatus.LocationIsOccupied);
       gameBoardData.CanPlaceRoad(playerId, road).Status.ShouldBe(GameBoardData.VerificationStatus.RoadIsOccupied);
     }
+
+    [Test]
+    [Category("GameBoardData")]
+    public void GetResourcesByLocation_StandardBoard_ReturnsExpectedResources()
+    {
+      var gameBoardData = new GameBoardData(BoardSizes.Standard);
+      var result = gameBoardData.GetResourcesByLocation(12u);
+      result.BrickCount.ShouldBe(1u);
+      result.GrainCount.ShouldBe(0u);
+      result.LumberCount.ShouldBe(0u);
+      result.OreCount.ShouldBe(1u);
+      result.WoolCount.ShouldBe(1u);
+    }
     #endregion 
   }
 }
