@@ -306,7 +306,7 @@ namespace Jabberwocky.SoC.Library
         if (this.resourceUpdate != null)
         {
           // Add resources for this placement
-          this.gameBoardManager.Data.GetResourcesByLocation(chosenSettlementIndex);
+          this.gameBoardManager.Data.GetResourcesForLocation(chosenSettlementIndex);
         }
 
         var chosenRoad = computerPlayer.ChooseRoad(gameBoardData);
@@ -394,12 +394,12 @@ namespace Jabberwocky.SoC.Library
 
   public class ResourceUpdate
   {
-    public readonly UInt32 BrickCount;
-    public readonly UInt32 GrainCount;
-    public readonly UInt32 LumberCount;
-    public readonly UInt32 OreCount;
-    public readonly UInt32 WoolCount;
+    public UInt32 BrickCount;
+    public UInt32 GrainCount;
+    public UInt32 LumberCount;
+    public UInt32 OreCount;
+    public UInt32 WoolCount;
 
-    public readonly Dictionary<Guid, ResourceUpdate> OtherPlayers;
+    public Dictionary<Guid, ResourceUpdate> OtherPlayers;
   }
 }

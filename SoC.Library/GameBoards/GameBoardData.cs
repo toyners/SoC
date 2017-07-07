@@ -251,9 +251,24 @@ namespace Jabberwocky.SoC.Library.GameBoards
       this.settlements.Add(locationIndex, playerId);
     }
 
-    public ResourceUpdate GetResourcesByLocation(UInt32 location)
+    public ResourceUpdate GetResourcesForLocation(UInt32 location)
     {
-      throw new NotImplementedException();
+      var resourceUpdate = new ResourceUpdate();
+      var resourceProviders = this.resourcesAtLocation[location];
+
+      foreach (var resourceProvider in resourceProviders)
+      {
+        switch (resourceProvider.Type)
+        {
+          case ResourceTypes.Brick: resourceUpdate.BrickCount++; break;
+          case ResourceTypes.Grain: resourceUpdate.GrainCount++; break;
+          case ResourceTypes.Lumber: resourceUpdate.LumberCount++; break;
+          case ResourceTypes.Ore: resourceUpdate.OreCount++; break;
+          case ResourceTypes.Wool: resourceUpdate.WoolCount++; break;
+        }
+      }
+
+      return resourceUpdate;
     }
 
     private void CreateLocations()
