@@ -14,5 +14,10 @@ namespace Jabberwocky.SoC.Library.GameBoards
     public Dictionary<IPlayer, List<Location>> NewCities;
     public Dictionary<Road, Guid> NewRoads;
     public Location Robber;
+
+    public static GameBoardUpdate operator+ (GameBoardUpdate a, GameBoardUpdate b)
+    {
+      throw new NotImplementedException();
+    }
   }
 }
