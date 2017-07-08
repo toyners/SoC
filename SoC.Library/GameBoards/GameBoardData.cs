@@ -254,7 +254,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
     public ResourceUpdate GetResourcesForLocation(UInt32 location)
     {
       var resourceUpdate = new ResourceUpdate();
-      var resourceProviders = this.resourcesAtLocation[location];
+      var resourceProviders = this.Locations[location].Providers;
 
       foreach (var resourceProvider in resourceProviders)
       {
