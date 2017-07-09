@@ -245,14 +245,13 @@ namespace Jabberwocky.SoC.Library
       var gameBoardData = this.gameBoardManager.Data;
       gameBoardData.PlaceStartingInfrastructure(this.mainPlayer.Id, settlementLocation, road);
 
-      GameBoardUpdate firstGameBoardUpdate = this.ContinueSetupForComputerPlayers(gameBoardData);
+      GameBoardUpdate gameBoardUpdate = this.ContinueSetupForComputerPlayers(gameBoardData);
 
       this.playerIndex = this.players.Length - 1;
-      GameBoardUpdate secondGameBoardUpdate = this.CompleteSetupForComputerPlayers(gameBoardData);
+      gameBoardUpdate = this.CompleteSetupForComputerPlayers(gameBoardData, gameBoardUpdate);
 
       this.resourceUpdate = new ResourceUpdate();
 
-      var gameBoardUpdate = firstGameBoardUpdate + secondGameBoardUpdate;
       this.GameSetupUpdateEvent?.Invoke(gameBoardUpdate);
       this.gamePhase = GamePhases.CompleteGameSetup;
     }
@@ -274,7 +273,7 @@ namespace Jabberwocky.SoC.Library
       this.gameBoardManager.Data.PlaceStartingInfrastructure(this.mainPlayer.Id, settlementLocation, road);
 
       var gameBoardData = this.gameBoardManager.Data;
-      GameBoardUpdate gameBoardUpdate = this.CompleteSetupForComputerPlayers(gameBoardData);
+      GameBoardUpdate gameBoardUpdate = this.CompleteSetupForComputerPlayers(gameBoardData, null);
       this.GameSetupUpdateEvent?.Invoke(gameBoardUpdate);
 
       this.GameSetupResourcesEvent?.Invoke(this.resourceUpdate);
@@ -315,10 +314,8 @@ namespace Jabberwocky.SoC.Library
       return gameBoardUpdate;
     }
 
-    private GameBoardUpdate CompleteSetupForComputerPlayers(GameBoardData gameBoardData)
+    private GameBoardUpdate CompleteSetupForComputerPlayers(GameBoardData gameBoardData, GameBoardUpdate gameBoardUpdate)
     {
-      GameBoardUpdate gameBoardUpdate = null;
-
       while (this.playerIndex >= 0)
       {
         var player = this.players[this.playerIndex--];
