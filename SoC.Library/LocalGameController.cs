@@ -339,6 +339,13 @@ namespace Jabberwocky.SoC.Library
         gameBoardData.PlaceSettlement(computerPlayer.Id, chosenSettlementIndex);
         gameBoardUpdate.NewSettlements.Add(chosenSettlementIndex, computerPlayer.Id);
 
+        if (this.resourceUpdate == null)
+        {
+          this.resourceUpdate = new ResourceUpdate();
+        }
+
+        var resourceCounts = gameBoardData.GetResourcesForLocation(chosenSettlementIndex);
+
         var chosenRoad = computerPlayer.ChooseRoad(gameBoardData);
         gameBoardData.PlaceRoad(computerPlayer.Id, chosenRoad);
         gameBoardUpdate.NewRoads.Add(chosenRoad, computerPlayer.Id);

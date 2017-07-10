@@ -3,15 +3,10 @@ namespace Jabberwocky.SoC.Library
 {
   using System;
   using System.Collections.Generic;
+  using static GameBoards.GameBoardData;
 
   public class ResourceUpdate
   {
-    public UInt32 BrickCount;
-    public UInt32 GrainCount;
-    public UInt32 LumberCount;
-    public UInt32 OreCount;
-    public UInt32 WoolCount;
-
-    public Dictionary<Guid, ResourceUpdate> OtherPlayers;
+    public Dictionary<Guid, ResourceCounts> Resources;
   }
 }

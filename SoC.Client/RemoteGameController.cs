@@ -32,8 +32,6 @@ namespace Jabberwocky.SoC.Client
     public Action<ClientAccount> LoggedInEvent { get; set; }
 
     public Action<GameBoardUpdate> StartInitialSetupTurnEvent { get; set; }
-
-    Action<PlayerDataBase[]> IGameController.GameJoinedEvent { get; set; }
     #endregion
 
     public void AcceptOffer(Offer offer)

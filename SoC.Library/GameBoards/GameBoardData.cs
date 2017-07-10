@@ -251,24 +251,24 @@ namespace Jabberwocky.SoC.Library.GameBoards
       this.settlements.Add(locationIndex, playerId);
     }
 
-    public ResourceUpdate GetResourcesForLocation(UInt32 location)
+    public ResourceCounts GetResourcesForLocation(UInt32 location)
     {
-      var resourceUpdate = new ResourceUpdate();
+      var resourceCounts = new ResourceCounts();
       var resourceProviders = this.Locations[location].Providers;
 
       foreach (var resourceProvider in resourceProviders)
       {
         switch (resourceProvider.Type)
         {
-          case ResourceTypes.Brick: resourceUpdate.BrickCount++; break;
-          case ResourceTypes.Grain: resourceUpdate.GrainCount++; break;
-          case ResourceTypes.Lumber: resourceUpdate.LumberCount++; break;
-          case ResourceTypes.Ore: resourceUpdate.OreCount++; break;
-          case ResourceTypes.Wool: resourceUpdate.WoolCount++; break;
+          case ResourceTypes.Brick: resourceCounts.BrickCount++; break;
+          case ResourceTypes.Grain: resourceCounts.GrainCount++; break;
+          case ResourceTypes.Lumber: resourceCounts.LumberCount++; break;
+          case ResourceTypes.Ore: resourceCounts.OreCount++; break;
+          case ResourceTypes.Wool: resourceCounts.WoolCount++; break;
         }
       }
 
-      return resourceUpdate;
+      return resourceCounts;
     }
 
     private void CreateLocations()
@@ -550,6 +550,15 @@ namespace Jabberwocky.SoC.Library.GameBoards
     #endregion
 
     #region Structs
+    public struct ResourceCounts
+    {
+      public UInt32 BrickCount;
+      public UInt32 GrainCount;
+      public UInt32 LumberCount;
+      public UInt32 OreCount;
+      public UInt32 WoolCount;
+    }
+
     public struct VerificationResults
     {
       public VerificationStatus Status;
