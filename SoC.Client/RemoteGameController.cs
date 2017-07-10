@@ -131,7 +131,7 @@ namespace Jabberwocky.SoC.Client
       throw new NotImplementedException();
     }
 
-    public void TryJoiningGame(GameOptions gameOptions)
+    public void JoinGame(GameOptions gameOptions)
     {
       var instanceContext = new InstanceContext(this);
       //this.serviceProviderClient = new ServiceProviderClient(instanceContext, "WSDualHttpBinding_IServiceProvider");

@@ -82,7 +82,7 @@ namespace Jabberwocky.SoC.Library
       throw new NotImplementedException();
     }
 
-    public Boolean TryLaunchGame()
+    public Boolean LaunchGame()
     {
       if (this.gamePhase != GamePhases.WaitingLaunch)
       {
@@ -109,12 +109,12 @@ namespace Jabberwocky.SoC.Library
       this.gamePhase = GamePhases.Quitting;
     }
 
-    public void TryJoiningGame()
+    public void JoinGame()
     {
-      this.TryJoiningGame(null);
+      this.JoinGame(null);
     }
 
-    public void TryJoiningGame(GameOptions gameOptions)
+    public void JoinGame(GameOptions gameOptions)
     {
       if (this.gamePhase != GamePhases.Initial)
       {

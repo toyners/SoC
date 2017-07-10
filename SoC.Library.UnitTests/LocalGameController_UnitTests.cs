@@ -42,7 +42,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
       PlayerDataBase[] playerData = null;
       localGameController.GameJoinedEvent = (PlayerDataBase[] p) => { playerData = p; };
-      localGameController.TryJoiningGame(new GameOptions());
+      localGameController.JoinGame(new GameOptions());
       
       playerData.ShouldNotBeNull();
       playerData.Length.ShouldBe(4);
@@ -60,7 +60,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
       PlayerDataBase[] playerData = null;
       localGameController.GameJoinedEvent = (PlayerDataBase[] p) => { playerData = p; };
-      localGameController.TryJoiningGame();
+      localGameController.JoinGame();
       localGameController.Quit();
 
       playerData.ShouldNotBeNull();
@@ -78,8 +78,8 @@ namespace Jabberwocky.SoC.Library.UnitTests
       var localGameController = this.CreateLocalGameController();
       ErrorDetails errorDetails = null;
       localGameController.ErrorRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
-      localGameController.TryJoiningGame();
-      localGameController.TryJoiningGame();
+      localGameController.JoinGame();
+      localGameController.JoinGame();
 
       errorDetails.ShouldNotBeNull();
       errorDetails.Message.ShouldBe("Cannot call 'TryJoiningGame' more than once.");
@@ -90,7 +90,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     public void StartJoiningGame_TryLaunchingGameWithoutJoining_ReturnsFalse()
     {
       var localGameController = this.CreateLocalGameController();
-      localGameController.TryLaunchGame().ShouldBeFalse();
+      localGameController.LaunchGame().ShouldBeFalse();
     }
 
     [Test]
@@ -101,8 +101,8 @@ namespace Jabberwocky.SoC.Library.UnitTests
       mockDice.RollTwoDice().Returns(12u, 10u, 8u, 2u);
       var localGameController = this.CreateLocalGameController(mockDice, new ComputerPlayerFactory(), new GameBoardManager(BoardSizes.Standard));
 
-      localGameController.TryJoiningGame();
-      localGameController.TryLaunchGame().ShouldBeTrue();
+      localGameController.JoinGame();
+      localGameController.LaunchGame().ShouldBeTrue();
     }
 
     [Test]
@@ -118,8 +118,8 @@ namespace Jabberwocky.SoC.Library.UnitTests
       localGameController.GameJoinedEvent = (PlayerDataBase[] p) => { playerData = p; };
       localGameController.InitialBoardSetupEvent = (GameBoardData g) => { gameBoardData = g; };
 
-      localGameController.TryJoiningGame();
-      localGameController.TryLaunchGame();
+      localGameController.JoinGame();
+      localGameController.LaunchGame();
 
       gameBoardData.ShouldNotBeNull();
     }
@@ -142,8 +142,8 @@ namespace Jabberwocky.SoC.Library.UnitTests
       localGameController.GameSetupUpdateEvent = (GameBoardUpdate u) => { gameBoardUpdate = u; };
       localGameController.InitialBoardSetupEvent = (GameBoardData d) => { };
 
-      localGameController.TryJoiningGame();
-      localGameController.TryLaunchGame();
+      localGameController.JoinGame();
+      localGameController.LaunchGame();
 
       gameBoardUpdate = new GameBoardUpdate(); // Ensure that there is a state change for the gameBoardUpdate variable 
       localGameController.StartGameSetup();
@@ -193,8 +193,8 @@ namespace Jabberwocky.SoC.Library.UnitTests
       localGameController.GameSetupUpdateEvent = (GameBoardUpdate u) => { gameBoardUpdate = u; };
       localGameController.InitialBoardSetupEvent = (GameBoardData d) => { };
 
-      localGameController.TryJoiningGame();
-      localGameController.TryLaunchGame();
+      localGameController.JoinGame();
+      localGameController.LaunchGame();
 
       localGameController.StartGameSetup();
       gameBoardUpdate.ShouldNotBeNull();
@@ -246,8 +246,8 @@ namespace Jabberwocky.SoC.Library.UnitTests
       localGameController.GameSetupUpdateEvent = (GameBoardUpdate u) => { gameBoardUpdate = u; };
       localGameController.InitialBoardSetupEvent = (GameBoardData d) => { };
 
-      localGameController.TryJoiningGame();
-      localGameController.TryLaunchGame();
+      localGameController.JoinGame();
+      localGameController.LaunchGame();
 
       localGameController.StartGameSetup();
       gameBoardUpdate.ShouldNotBeNull();
@@ -299,8 +299,8 @@ namespace Jabberwocky.SoC.Library.UnitTests
       localGameController.GameSetupUpdateEvent = (GameBoardUpdate u) => { gameBoardUpdate = u; };
       localGameController.InitialBoardSetupEvent = (GameBoardData d) => { };
 
-      localGameController.TryJoiningGame();
-      localGameController.TryLaunchGame();
+      localGameController.JoinGame();
+      localGameController.LaunchGame();
 
       localGameController.StartGameSetup();
       gameBoardUpdate.ShouldNotBeNull();
@@ -352,8 +352,8 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
       ResourceUpdate resourceUpdate = null;
       localGameController.GameSetupResourcesEvent = (ResourceUpdate r) => { resourceUpdate = r; };
-      localGameController.TryJoiningGame();
-      localGameController.TryLaunchGame();
+      localGameController.JoinGame();
+      localGameController.LaunchGame();
       localGameController.StartGameSetup();
       localGameController.ContinueGameSetup(MainSettlementOneLocation, mainRoadOne);
       localGameController.CompleteGameSetup(MainSettlementTwoLocation, mainRoadTwo);
@@ -436,8 +436,8 @@ namespace Jabberwocky.SoC.Library.UnitTests
       localGameController.ErrorRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
       localGameController.GameSetupUpdateEvent = (GameBoardUpdate u) => { gameBoardUpdate = u; };
 
-      localGameController.TryJoiningGame();
-      localGameController.TryLaunchGame();
+      localGameController.JoinGame();
+      localGameController.LaunchGame();
       localGameController.StartGameSetup();
       localGameController.ContinueGameSetup(0u, new Road(1u, 2u));
 
@@ -463,8 +463,8 @@ namespace Jabberwocky.SoC.Library.UnitTests
       var localGameController = this.CreateLocalGameController(mockDice, gameBoardManager, firstComputerPlayer, secondComputerPlayer, thirdComputerPlayer);
       localGameController.ErrorRaisedEvent = (ErrorDetails e) => { exception = e; };
 
-      localGameController.TryJoiningGame();
-      localGameController.TryLaunchGame();
+      localGameController.JoinGame();
+      localGameController.LaunchGame();
       localGameController.StartGameSetup();
 
       GameBoardUpdate gameBoardUpdate = null;
@@ -493,8 +493,8 @@ namespace Jabberwocky.SoC.Library.UnitTests
       var localGameController = this.CreateLocalGameController(mockDice, gameBoardManager, firstComputerPlayer, secondComputerPlayer, thirdComputerPlayer);
       localGameController.ErrorRaisedEvent = (ErrorDetails e) => { exception = e; };
 
-      localGameController.TryJoiningGame();
-      localGameController.TryLaunchGame();
+      localGameController.JoinGame();
+      localGameController.LaunchGame();
       localGameController.StartGameSetup();
       localGameController.ContinueGameSetup(0, new Road(0, 1));
 
@@ -524,8 +524,8 @@ namespace Jabberwocky.SoC.Library.UnitTests
       ErrorDetails exception = null;
       var localGameController = this.CreateLocalGameController(mockDice, gameBoardManager, firstComputerPlayer, secondComputerPlayer, thirdComputerPlayer);
       localGameController.ErrorRaisedEvent = (ErrorDetails e) => { exception = e; };
-      localGameController.TryJoiningGame();
-      localGameController.TryLaunchGame();
+      localGameController.JoinGame();
+      localGameController.LaunchGame();
       localGameController.StartGameSetup();
 
       GameBoardUpdate gameBoardUpdate = null;
@@ -554,8 +554,8 @@ namespace Jabberwocky.SoC.Library.UnitTests
       ErrorDetails exception = null;
       var localGameController = this.CreateLocalGameController(mockDice, gameBoardManager, firstComputerPlayer, secondComputerPlayer, thirdComputerPlayer);
       localGameController.ErrorRaisedEvent = (ErrorDetails e) => { exception = e; };
-      localGameController.TryJoiningGame();
-      localGameController.TryLaunchGame();
+      localGameController.JoinGame();
+      localGameController.LaunchGame();
       localGameController.StartGameSetup();
       localGameController.ContinueGameSetup(0, new Road(0, 1));
 
@@ -578,8 +578,8 @@ namespace Jabberwocky.SoC.Library.UnitTests
       ErrorDetails errorDetails = null;
       localGameController.ErrorRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
 
-      localGameController.TryJoiningGame();
-      localGameController.TryLaunchGame();
+      localGameController.JoinGame();
+      localGameController.LaunchGame();
       localGameController.StartGameSetup();
       localGameController.ContinueGameSetup(0, new Road(0, 1));
 
@@ -605,8 +605,8 @@ namespace Jabberwocky.SoC.Library.UnitTests
       GameBoardUpdate gameBoardUpdate = null;
       localGameController.GameSetupUpdateEvent = (GameBoardUpdate u) => { gameBoardUpdate = u; };
 
-      localGameController.TryJoiningGame();
-      localGameController.TryLaunchGame();
+      localGameController.JoinGame();
+      localGameController.LaunchGame();
       localGameController.StartGameSetup();
       localGameController.ContinueGameSetup(100, new Road(100, 101));
 
@@ -627,8 +627,8 @@ namespace Jabberwocky.SoC.Library.UnitTests
       GameBoardUpdate gameBoardUpdate = null;
       localGameController.GameSetupUpdateEvent = (GameBoardUpdate u) => { gameBoardUpdate = u; };
 
-      localGameController.TryJoiningGame();
-      localGameController.TryLaunchGame();
+      localGameController.JoinGame();
+      localGameController.LaunchGame();
       localGameController.StartGameSetup();
       localGameController.ContinueGameSetup(53, new Road(53, 54));
 
@@ -649,8 +649,8 @@ namespace Jabberwocky.SoC.Library.UnitTests
       GameBoardUpdate gameBoardUpdate = null;
       localGameController.GameSetupUpdateEvent = (GameBoardUpdate u) => { gameBoardUpdate = u; };
 
-      localGameController.TryJoiningGame();
-      localGameController.TryLaunchGame();
+      localGameController.JoinGame();
+      localGameController.LaunchGame();
       localGameController.StartGameSetup();
       localGameController.ContinueGameSetup(28, new Road(28, 40));
 
@@ -668,8 +668,8 @@ namespace Jabberwocky.SoC.Library.UnitTests
       ErrorDetails errorDetails = null;
       localGameController.ErrorRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
 
-      localGameController.TryJoiningGame();
-      localGameController.TryLaunchGame();
+      localGameController.JoinGame();
+      localGameController.LaunchGame();
       localGameController.StartGameSetup();
       localGameController.ContinueGameSetup(0, new Road(0, 1));
 
@@ -692,8 +692,8 @@ namespace Jabberwocky.SoC.Library.UnitTests
       ErrorDetails errorDetails = null;
       localGameController.ErrorRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
 
-      localGameController.TryJoiningGame();
-      localGameController.TryLaunchGame();
+      localGameController.JoinGame();
+      localGameController.LaunchGame();
       localGameController.StartGameSetup();
       localGameController.ContinueGameSetup(0, new Road(0, 1));
 
@@ -716,8 +716,8 @@ namespace Jabberwocky.SoC.Library.UnitTests
       ErrorDetails errorDetails = null;
       localGameController.ErrorRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
 
-      localGameController.TryJoiningGame();
-      localGameController.TryLaunchGame();
+      localGameController.JoinGame();
+      localGameController.LaunchGame();
       localGameController.StartGameSetup();
       localGameController.ContinueGameSetup(0, new Road(0, 1));
 
@@ -752,8 +752,8 @@ namespace Jabberwocky.SoC.Library.UnitTests
       ResourceUpdate resourceUpdate = null;
       localGameController.StartPlayerTurnEvent = (ResourceUpdate r) => { resourceUpdate = r; };
 
-      localGameController.TryJoiningGame();
-      localGameController.TryLaunchGame();
+      localGameController.JoinGame();
+      localGameController.LaunchGame();
       localGameController.StartGameSetup();
       localGameController.ContinueGameSetup(12, new Road(12, 11));
       localGameController.CompleteGameSetup(40, new Road(40, 39));
