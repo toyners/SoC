@@ -109,16 +109,18 @@ namespace Jabberwocky.SoC.Library
       this.gamePhase = GamePhases.Quitting;
     }
 
-    public Boolean TryJoiningGame()
+    public void TryJoiningGame()
     {
-      return this.TryJoiningGame(null);
+      this.TryJoiningGame(null);
     }
 
-    public Boolean TryJoiningGame(GameOptions gameOptions)
+    public void TryJoiningGame(GameOptions gameOptions)
     {
       if (this.gamePhase != GamePhases.Initial)
       {
-        return false;
+        var errorDetails = new ErrorDetails("Cannot call 'TryJoiningGame' more than once.");
+        this.ErrorRaisedEvent?.Invoke(errorDetails);
+        return;
       }
 
       if (gameOptions == null)
@@ -130,8 +132,6 @@ namespace Jabberwocky.SoC.Library
       var playerData = this.CreateDataFromPlayers();
       this.GameJoinedEvent?.Invoke(playerData);
       this.gamePhase = GamePhases.WaitingLaunch;
-
-      return true;
     }
 
     public void StartJoiningGame(GameOptions gameOptions, Guid accountToken)

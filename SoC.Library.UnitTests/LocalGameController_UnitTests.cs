@@ -73,16 +73,16 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
     [Test]
     [Category("LocalGameController")]
-    public void TryingToJoinGameMoreThanOnceReturnsFalse()
+    public void TryingToJoinGameMoreThanOnce_MeaningfulErrorIsRaised()
     {
       var localGameController = this.CreateLocalGameController();
-      var joinedCount = 0;
-      localGameController.GameJoinedEvent = (PlayerDataBase[] p) => { joinedCount++; };
+      ErrorDetails errorDetails = null;
+      localGameController.ErrorRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
       localGameController.TryJoiningGame();
-      var result = localGameController.TryJoiningGame();
+      localGameController.TryJoiningGame();
 
-      result.ShouldBeFalse();
-      joinedCount.ShouldBe(1);
+      errorDetails.ShouldNotBeNull();
+      errorDetails.Message.ShouldBe("Cannot call 'TryJoiningGame' more than once.");
     }
 
     [Test]
