@@ -83,16 +83,17 @@ namespace Jabberwocky.SoC.Library
       throw new NotImplementedException();
     }
 
-    public Boolean LaunchGame()
+    public void LaunchGame()
     {
       if (this.gamePhase != GamePhases.WaitingLaunch)
       {
-        return false;
+        var errorDetails = new ErrorDetails("Cannot call 'LaunchGame' without joining game.");
+        this.ErrorRaisedEvent?.Invoke(errorDetails);
+        return;
       }
 
       this.InitialBoardSetupEvent?.Invoke(this.gameBoardManager.Data);
       this.gamePhase = GamePhases.StartGameSetup;
-      return true;
     }
 
     public ICollection<Offer> MakeOffer(Offer offer)
