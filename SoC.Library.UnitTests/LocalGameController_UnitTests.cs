@@ -47,9 +47,16 @@ namespace Jabberwocky.SoC.Library.UnitTests
       playerData.ShouldNotBeNull();
       playerData.Length.ShouldBe(4);
       playerData[0].ShouldBeOfType<PlayerData>();
+      var pd = (PlayerData)playerData[0];
+      pd.Id.ShouldNotBe(Guid.Empty);
+      pd.DisplayedDevelopmentCards.ShouldBeNull();
+
       playerData[1].ShouldBeOfType<PlayerDataView>();
+      playerData[1].Id.ShouldNotBe(Guid.Empty);
       playerData[2].ShouldBeOfType<PlayerDataView>();
+      playerData[2].Id.ShouldNotBe(Guid.Empty);
       playerData[3].ShouldBeOfType<PlayerDataView>();
+      playerData[3].Id.ShouldNotBe(Guid.Empty);
     }
 
     [Test]
