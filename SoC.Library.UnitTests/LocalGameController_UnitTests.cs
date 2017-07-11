@@ -36,7 +36,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     #region Methods
     [Test]
     [Category("LocalGameController")]
-    public void StartJoiningGame_DefaultGameOptions_PlayerDataPassedBack()
+    public void JoinGame_DefaultGameOptions_PlayerDataPassedBack()
     {
       var localGameController = this.CreateLocalGameController();
 
@@ -54,7 +54,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
     [Test]
     [Category("LocalGameController")]
-    public void StartJoiningGame_NullGameOptions_PlayerDataPassedBack()
+    public void JoinGame_NullGameOptions_PlayerDataPassedBack()
     {
       var localGameController = this.CreateLocalGameController();
 
@@ -87,27 +87,20 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
     [Test]
     [Category("LocalGameController")]
-    public void StartJoiningGame_TryLaunchingGameWithoutJoining_ReturnsFalse()
+    public void LaunchGame_LaunchGameWithoutJoining_MeaningfulErrorIsRaised()
     {
       var localGameController = this.CreateLocalGameController();
-      localGameController.LaunchGame().ShouldBeFalse();
+      ErrorDetails errorDetails = null;
+      localGameController.ErrorRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
+      localGameController.LaunchGame();
+
+      errorDetails.ShouldNotBeNull();
+      errorDetails.Message.ShouldBe("Cannot call 'LaunchGame' without joining game.");
     }
 
     [Test]
     [Category("LocalGameController")]
-    public void StartJoiningGame_TryLaunchingGameAfterJoining_ReturnsTrue()
-    {
-      var mockDice = NSubstitute.Substitute.For<IDice>();
-      mockDice.RollTwoDice().Returns(12u, 10u, 8u, 2u);
-      var localGameController = this.CreateLocalGameController(mockDice, new ComputerPlayerFactory(), new GameBoardManager(BoardSizes.Standard));
-
-      localGameController.JoinGame();
-      localGameController.LaunchGame().ShouldBeTrue();
-    }
-
-    [Test]
-    [Category("LocalGameController")]
-    public void StartJoiningGame_GameLaunched_InitialBoardPassedBack()
+    public void LaunchGame_GameLaunchedAfterJoining_InitialBoardPassedBack()
     {
       var mockDice = NSubstitute.Substitute.For<IDice>();
       mockDice.RollTwoDice().Returns(12u, 10u, 8u, 2u);
