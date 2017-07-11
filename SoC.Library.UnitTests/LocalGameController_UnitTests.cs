@@ -82,7 +82,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
       localGameController.JoinGame();
 
       errorDetails.ShouldNotBeNull();
-      errorDetails.Message.ShouldBe("Cannot call 'TryJoiningGame' more than once.");
+      errorDetails.Message.ShouldBe("Cannot call 'JoinGame' more than once.");
     }
 
     [Test]

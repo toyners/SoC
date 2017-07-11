@@ -120,7 +120,7 @@ namespace Jabberwocky.SoC.Library
     {
       if (this.gamePhase != GamePhases.Initial)
       {
-        var errorDetails = new ErrorDetails("Cannot call 'TryJoiningGame' more than once.");
+        var errorDetails = new ErrorDetails("Cannot call 'JoinGame' more than once.");
         this.ErrorRaisedEvent?.Invoke(errorDetails);
         return;
       }
