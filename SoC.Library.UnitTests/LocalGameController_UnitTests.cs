@@ -351,7 +351,10 @@ namespace Jabberwocky.SoC.Library.UnitTests
       var localGameController = this.CreateLocalGameController(mockDice, gameBoardManager, firstComputerPlayer, secondComputerPlayer, thirdComputerPlayer);
 
       ResourceUpdate resourceUpdate = null;
+      Guid mainPlayerId = Guid.Empty;
       localGameController.GameSetupResourcesEvent = (ResourceUpdate r) => { resourceUpdate = r; };
+      localGameController.GameJoinedEvent = (PlayerDataBase[] p) => { mainPlayerId = p[0].Id; };
+
       localGameController.JoinGame();
       localGameController.LaunchGame();
       localGameController.StartGameSetup();
@@ -360,16 +363,16 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
       resourceUpdate.ShouldNotBeNull();
       resourceUpdate.Resources.Count.ShouldBe(4);
-      resourceUpdate.Resources.ShouldContainKey(firstComputerPlayer.Id);
+      resourceUpdate.Resources.ShouldContainKey(mainPlayerId);
       resourceUpdate.Resources.ShouldContainKey(firstComputerPlayer.Id);
       resourceUpdate.Resources.ShouldContainKey(secondComputerPlayer.Id);
       resourceUpdate.Resources.ShouldContainKey(thirdComputerPlayer.Id);
 
-      resourceUpdate.Resources[firstComputerPlayer.Id].BrickCount.ShouldBe(1u);
-      resourceUpdate.Resources[firstComputerPlayer.Id].GrainCount.ShouldBe(1u);
-      resourceUpdate.Resources[firstComputerPlayer.Id].LumberCount.ShouldBe(0u);
-      resourceUpdate.Resources[firstComputerPlayer.Id].OreCount.ShouldBe(0u);
-      resourceUpdate.Resources[firstComputerPlayer.Id].WoolCount.ShouldBe(1u);
+      resourceUpdate.Resources[mainPlayerId].BrickCount.ShouldBe(1u);
+      resourceUpdate.Resources[mainPlayerId].GrainCount.ShouldBe(1u);
+      resourceUpdate.Resources[mainPlayerId].LumberCount.ShouldBe(0u);
+      resourceUpdate.Resources[mainPlayerId].OreCount.ShouldBe(0u);
+      resourceUpdate.Resources[mainPlayerId].WoolCount.ShouldBe(1u);
 
       resourceUpdate.Resources[firstComputerPlayer.Id].BrickCount.ShouldBe(0u);
       resourceUpdate.Resources[firstComputerPlayer.Id].GrainCount.ShouldBe(1u);

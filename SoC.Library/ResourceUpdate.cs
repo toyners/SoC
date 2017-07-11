@@ -7,6 +7,6 @@ namespace Jabberwocky.SoC.Library
 
   public class ResourceUpdate
   {
-    public Dictionary<Guid, ResourceCounts> Resources;
+    public Dictionary<Guid, ResourceCounts> Resources = new Dictionary<Guid, ResourceCounts>();
   }
 }

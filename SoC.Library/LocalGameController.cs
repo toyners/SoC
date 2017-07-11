@@ -34,6 +34,7 @@ namespace Jabberwocky.SoC.Library
     private Player mainPlayer;
     private Boolean quitting;
     private Task sessionTask;
+    private ResourceUpdate gameSetupResources;
     #endregion
 
     public LocalGameController(IDice dice, IComputerPlayerFactory computerPlayerFactory, GameBoardManager gameBoardManager)
@@ -226,8 +227,6 @@ namespace Jabberwocky.SoC.Library
       return true;
     }
 
-    private ResourceUpdate resourceUpdate;
-
     public void ContinueGameSetup(UInt32 settlementLocation, Road road)
     {
       if (this.gamePhase != GamePhases.ContinueGameSetup)
@@ -250,8 +249,6 @@ namespace Jabberwocky.SoC.Library
       this.playerIndex = this.players.Length - 1;
       gameBoardUpdate = this.CompleteSetupForComputerPlayers(gameBoardData, gameBoardUpdate);
 
-      this.resourceUpdate = new ResourceUpdate();
-
       this.GameSetupUpdateEvent?.Invoke(gameBoardUpdate);
       this.gamePhase = GamePhases.CompleteGameSetup;
     }
@@ -272,11 +269,24 @@ namespace Jabberwocky.SoC.Library
 
       this.gameBoardManager.Data.PlaceStartingInfrastructure(this.mainPlayer.Id, settlementLocation, road);
 
+      this.CollectInitialResourcesForPlayer(this.mainPlayer.Id, settlementLocation);
+
       var gameBoardData = this.gameBoardManager.Data;
       GameBoardUpdate gameBoardUpdate = this.CompleteSetupForComputerPlayers(gameBoardData, null);
       this.GameSetupUpdateEvent?.Invoke(gameBoardUpdate);
 
-      this.GameSetupResourcesEvent?.Invoke(this.resourceUpdate);
+      this.GameSetupResourcesEvent?.Invoke(this.gameSetupResources);
+    }
+
+    private void CollectInitialResourcesForPlayer(Guid playerId, UInt32 settlementLocation)
+    {
+      if (this.gameSetupResources == null)
+      {
+        this.gameSetupResources = new ResourceUpdate();
+      }
+
+      var resourceCounts = this.gameBoardManager.Data.GetResourcesForLocation(settlementLocation);
+      this.gameSetupResources.Resources.Add(playerId, resourceCounts);
     }
 
     private GameBoardUpdate ContinueSetupForComputerPlayers(GameBoardData gameBoardData)
@@ -339,13 +349,8 @@ namespace Jabberwocky.SoC.Library
         gameBoardData.PlaceSettlement(computerPlayer.Id, chosenSettlementIndex);
         gameBoardUpdate.NewSettlements.Add(chosenSettlementIndex, computerPlayer.Id);
 
-        if (this.resourceUpdate == null)
-        {
-          this.resourceUpdate = new ResourceUpdate();
-        }
-
-        var resourceCounts = gameBoardData.GetResourcesForLocation(chosenSettlementIndex);
-
+        this.CollectInitialResourcesForPlayer(computerPlayer.Id, chosenSettlementIndex);
+        
         var chosenRoad = computerPlayer.ChooseRoad(gameBoardData);
         gameBoardData.PlaceRoad(computerPlayer.Id, chosenRoad);
         gameBoardUpdate.NewRoads.Add(chosenRoad, computerPlayer.Id);
