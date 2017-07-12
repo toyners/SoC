@@ -47,16 +47,16 @@ namespace Jabberwocky.SoC.Library.UnitTests
       playerData.ShouldNotBeNull();
       playerData.Length.ShouldBe(4);
       playerData[0].ShouldBeOfType<PlayerData>();
-      var pd = (PlayerData)playerData[0];
-      pd.Id.ShouldNotBe(Guid.Empty);
-      pd.DisplayedDevelopmentCards.ShouldBeNull();
+      this.AssertPlayerDataIsCorrect((PlayerData)playerData[0]);
 
       playerData[1].ShouldBeOfType<PlayerDataView>();
-      playerData[1].Id.ShouldNotBe(Guid.Empty);
+      this.AssertPlayerDataViewIsCorrect((PlayerDataView)playerData[1]);
+      
       playerData[2].ShouldBeOfType<PlayerDataView>();
-      playerData[2].Id.ShouldNotBe(Guid.Empty);
+      this.AssertPlayerDataViewIsCorrect((PlayerDataView)playerData[2]);
+
       playerData[3].ShouldBeOfType<PlayerDataView>();
-      playerData[3].Id.ShouldNotBe(Guid.Empty);
+      this.AssertPlayerDataViewIsCorrect((PlayerDataView)playerData[3]);
     }
 
     [Test]
@@ -68,14 +68,20 @@ namespace Jabberwocky.SoC.Library.UnitTests
       PlayerDataBase[] playerData = null;
       localGameController.GameJoinedEvent = (PlayerDataBase[] p) => { playerData = p; };
       localGameController.JoinGame();
-      localGameController.Quit();
 
       playerData.ShouldNotBeNull();
       playerData.Length.ShouldBe(4);
       playerData[0].ShouldBeOfType<PlayerData>();
+      this.AssertPlayerDataIsCorrect((PlayerData)playerData[0]);
+
       playerData[1].ShouldBeOfType<PlayerDataView>();
+      this.AssertPlayerDataViewIsCorrect((PlayerDataView)playerData[1]);
+
       playerData[2].ShouldBeOfType<PlayerDataView>();
+      this.AssertPlayerDataViewIsCorrect((PlayerDataView)playerData[2]);
+
       playerData[3].ShouldBeOfType<PlayerDataView>();
+      this.AssertPlayerDataViewIsCorrect((PlayerDataView)playerData[3]);
     }
 
     [Test]
@@ -773,6 +779,26 @@ namespace Jabberwocky.SoC.Library.UnitTests
       resourceUpdate.Resources[id].LumberCount.ShouldBe(0u);
       resourceUpdate.Resources[id].OreCount.ShouldBe(0u);
       resourceUpdate.Resources[id].WoolCount.ShouldBe(0u);
+    }
+
+    private void AssertPlayerDataViewIsCorrect(PlayerDataView playerDataView)
+    {
+      playerDataView.DisplayedDevelopmentCards.ShouldBeNull();
+      playerDataView.HiddenDevelopmentCards.ShouldBe(0u);
+      playerDataView.Id.ShouldNotBe(Guid.Empty);
+      playerDataView.ResourceCards.ShouldBe(0u);
+    }
+
+    private void AssertPlayerDataIsCorrect(PlayerData playerData)
+    {
+      playerData.Id.ShouldNotBe(Guid.Empty);
+      playerData.BrickCount.ShouldBe(0u);
+      playerData.GrainCount.ShouldBe(0u);
+      playerData.LumberCount.ShouldBe(0u);
+      playerData.OreCount.ShouldBe(0u);
+      playerData.WoolCount.ShouldBe(0u);
+      playerData.DisplayedDevelopmentCards.ShouldBeNull();
+      playerData.DevelopmentCards.ShouldBeNull();
     }
 
     private LocalGameController CreateLocalGameController()
