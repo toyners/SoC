@@ -15,6 +15,7 @@ namespace Jabberwocky.SoC.Library
     public ComputerPlayer(Guid id)
     {
       this.Id = id;
+      this.Data = new PlayerData();
     }
 
     public Road ChooseRoad(GameBoardData gameBoardData)
@@ -106,6 +107,18 @@ namespace Jabberwocky.SoC.Library
       }
 
       return gameBoardData.GetPathBetweenLocations(locationIndex, bestLocationIndex);
+    }
+
+    public PlayerDataBase GetDataView()
+    {
+      var dataView = new PlayerDataView();
+
+      dataView.Id = this.Id;
+      dataView.ResourceCards = 0u;
+      dataView.HiddenDevelopmentCards = 0u;
+      dataView.DisplayedDevelopmentCards = null;
+
+      return dataView;
     }
   }
 }

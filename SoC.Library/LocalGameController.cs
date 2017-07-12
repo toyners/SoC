@@ -164,11 +164,11 @@ namespace Jabberwocky.SoC.Library
     private PlayerDataBase[] CreateDataFromPlayers()
     {
       var playerData = new PlayerDataBase[this.players.Length];
-      playerData[0] = new PlayerData();
+      playerData[0] = this.mainPlayer.Data;
 
-      for (var index = 1; index < playerData.Length; index++)
+      for (var index = 0; index < playerData.Length; index++)
       {
-        playerData[index] = new PlayerDataView();
+        playerData[index] = this.players[index].GetDataView();
       }
 
       return playerData;
