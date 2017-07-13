@@ -770,7 +770,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     {
       var gameSetupOrder = new[] { 12u, 10u, 8u, 6u };
       var gameTurnOrder = new[] { 12u, 10u, 8u, 6u };
-      var mockDice = new MockDice(gameSetupOrder, gameTurnOrder);
+      var mockDice = new MockDiceCreator().AddRandomSequence(4).AddExplicitSequence(gameTurnOrder).Create();
       var gameBoardManager = new GameBoardManager(BoardSizes.Standard);
       var firstComputerPlayer = this.CreateMockComputerPlayer(gameBoardManager.Data, FirstSettlementOneLocation, FirstSettlementTwoLocation, firstRoadOne, firstRoadTwo);
       var secondComputerPlayer = this.CreateMockComputerPlayer(gameBoardManager.Data, SecondSettlementOneLocation, SecondSettlementTwoLocation, secondRoadOne, secondRoadTwo);
@@ -894,36 +894,6 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
       return mockComputerPlayer;
     }
-    #endregion 
-
-    public class MockDiceCreator
-    {
-      private List<UInt32[]> diceRollSequences = new List<UInt32[]>();  
-
-      public MockDice Create()
-      {
-        return new MockDice(diceRollSequences);
-      }
-
-      public MockDiceCreator AddExplicitSequence(UInt32[] diceRolls)
-      {
-        this.diceRollSequences.Add(diceRolls);
-        return this;
-      }
-
-      public MockDiceCreator AddRandomSequence(Int32 diceRollCount)
-      {
-        var diceRolls = new UInt32[diceRollCount];
-
-        var random = new Random();
-        for (Int32 i = 0; i < diceRollCount; i++)
-        {
-          diceRolls[i] = (UInt32)random.Next(2, 13);
-        }
-
-        this.diceRollSequences.Add(diceRolls);
-        return this;
-      }
-    }
+    #endregion
   }
 }
