@@ -65,6 +65,8 @@ namespace Jabberwocky.SoC.Library
     public Action<ResourceUpdate> StartPlayerTurnEvent { get; set; }
 
     public Action<ResourceUpdate> GameSetupResourcesEvent { get; set; }
+
+    public Action<PlayerDataView[]> TurnOrderFinalisedEvent { get; set; }
     #endregion
 
     #region Methods

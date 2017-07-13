@@ -765,10 +765,46 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
     [Test]
     [Category("LocalGameController")]
+    public void EndOfGameSetup_ReceiveTurnOrder()
+    {
+      var gameSetupOrder = new[] { 12u, 10u, 8u, 6u };
+      var gameTurnOrder = new[] { 12u, 10u, 8u, 6u };
+      var mockDice = new MockDice(gameSetupOrder, gameTurnOrder);
+      var gameBoardManager = new GameBoardManager(BoardSizes.Standard);
+      var firstComputerPlayer = this.CreateMockComputerPlayer(gameBoardManager.Data, FirstSettlementOneLocation, FirstSettlementTwoLocation, firstRoadOne, firstRoadTwo);
+      var secondComputerPlayer = this.CreateMockComputerPlayer(gameBoardManager.Data, SecondSettlementOneLocation, SecondSettlementTwoLocation, secondRoadOne, secondRoadTwo);
+      var thirdComputerPlayer = this.CreateMockComputerPlayer(gameBoardManager.Data, ThirdSettlementOneLocation, ThirdSettlementTwoLocation, thirdRoadOne, thirdRoadTwo);
+      var mockComputerPlayerFactory = Substitute.For<IComputerPlayerFactory>();
+      mockComputerPlayerFactory.Create().Returns(firstComputerPlayer, secondComputerPlayer, thirdComputerPlayer);
+
+      var localGameController = new LocalGameControllerCreator()
+                                  .ChangeDice(mockDice)
+                                  .ChangeGameBoardManager(gameBoardManager)
+                                  .ChangeComputerPlayerFactory(mockComputerPlayerFactory)
+                                  .Controller;
+
+      PlayerDataView[] turnOrder = null;
+      localGameController.TurnOrderFinalisedEvent = (PlayerDataView[] p) => { turnOrder = p; };
+      localGameController.JoinGame();
+      localGameController.LaunchGame();
+      localGameController.StartGameSetup();
+      localGameController.ContinueGameSetup(12, new Road(12, 11));
+      localGameController.CompleteGameSetup(40, new Road(40, 39));
+
+      turnOrder.ShouldNotBeNull();
+      turnOrder.Length.ShouldBe(4);
+      turnOrder[0].Id.ShouldNotBe(Guid.Empty);
+      turnOrder[1].Id.ShouldBe(firstComputerPlayer.Id);
+      turnOrder[2].Id.ShouldBe(secondComputerPlayer.Id);
+      turnOrder[3].Id.ShouldBe(thirdComputerPlayer.Id);
+    }
+
+    [Test]
+    [Category("LocalGameController")]
     public void MainGameLoop_MainPlayerTurn_ReceiveResourceDetails()
     {
       var mockDice = Substitute.For<IDice>();
-      var gameSetupOrder = new [] { 12u, 10u, 8u, 8u };
+      var gameSetupOrder = new [] { 12u, 10u, 8u, 6u };
       var gameTurnOrder = new [] { 12u, 10u, 8u, 6u };
       var resourceRoll = new[] { 8u };
       mockDice = new MockDice(gameSetupOrder, gameTurnOrder, resourceRoll);
