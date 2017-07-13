@@ -2,6 +2,7 @@
 namespace Jabberwocky.SoC.Library.UnitTests
 {
   using System;
+  using System.Collections.Generic;
   using GameBoards;
   using Interfaces;
   using NSubstitute;
@@ -894,5 +895,35 @@ namespace Jabberwocky.SoC.Library.UnitTests
       return mockComputerPlayer;
     }
     #endregion 
+
+    public class MockDiceCreator
+    {
+      private List<UInt32[]> diceRollSequences = new List<UInt32[]>();  
+
+      public MockDice Create()
+      {
+        return new MockDice(diceRollSequences);
+      }
+
+      public MockDiceCreator AddExplicitSequence(UInt32[] diceRolls)
+      {
+        this.diceRollSequences.Add(diceRolls);
+        return this;
+      }
+
+      public MockDiceCreator AddRandomSequence(Int32 diceRollCount)
+      {
+        var diceRolls = new UInt32[diceRollCount];
+
+        var random = new Random();
+        for (Int32 i = 0; i < diceRollCount; i++)
+        {
+          diceRolls[i] = (UInt32)random.Next(2, 13);
+        }
+
+        this.diceRollSequences.Add(diceRolls);
+        return this;
+      }
+    }
   }
 }

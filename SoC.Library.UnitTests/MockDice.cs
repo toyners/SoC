@@ -20,6 +20,17 @@ namespace Jabberwocky.SoC.Library.UnitTests
       this.diceRolls = rolls.ToArray();
     }
 
+    public MockDice(List<UInt32[]> diceRolls)
+    {
+      var rolls = new List<UInt32>(diceRolls[0]);
+      for (Int32 i = 1; i < diceRolls.Count; i++)
+      {
+        rolls.AddRange(diceRolls[i]);
+      }
+
+      this.diceRolls = rolls.ToArray();
+    }
+
     public UInt32 RollTwoDice()
     {
       if (this.index >= this.diceRolls.Length)
