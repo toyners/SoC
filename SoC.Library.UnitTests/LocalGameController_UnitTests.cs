@@ -765,7 +765,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
     [Test]
     [Category("LocalGameController")]
-    public void EndOfGameSetup_ReceiveTurnOrder()
+    public void EndOfGameSetup_ReceiveTurnOrderForMainGameLoop()
     {
       var gameSetupOrder = new[] { 12u, 10u, 8u, 6u };
       var gameTurnOrder = new[] { 12u, 10u, 8u, 6u };
