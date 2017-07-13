@@ -7,8 +7,6 @@ namespace Jabberwocky.SoC.Library.Interfaces
   {
     Guid Id { get; }
 
-    PlayerData Data { get; }
-
-    PlayerDataBase GetDataView();
+    PlayerDataView GetDataView();
   }
 }

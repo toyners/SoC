@@ -25,7 +25,7 @@ namespace Jabberwocky.SoC.Client
     #region Events
     public Action<GameBoardUpdate> BoardUpdatedEvent { get; set; }
 
-    public Action<PlayerDataBase[]> GameJoinedEvent { get; set; }
+    public Action<PlayerDataView[]> GameJoinedEvent { get; set; }
 
     public Action<GameBoardData> InitialBoardSetupEvent { get; set; }
 
@@ -76,7 +76,7 @@ namespace Jabberwocky.SoC.Client
 
     public void ConfirmGameSessionReadyToLaunch()
     {
-      this.GameJoinedEvent?.Invoke(new[] { new Library.PlayerData() });
+      this.GameJoinedEvent?.Invoke(new[] { new Library.PlayerDataView() });
     }
 
     public void ConfirmOtherPlayerHasLeftGame(String username)
@@ -91,7 +91,7 @@ namespace Jabberwocky.SoC.Client
 
     public void GameJoined()
     {
-      this.GameJoinedEvent?.Invoke(new[] { new Library.PlayerData() });
+      this.GameJoinedEvent?.Invoke(new[] { new Library.PlayerDataView() });
     }
 
     public void InitializeGame(GameInitializationData gameData)

@@ -10,12 +10,10 @@ namespace Jabberwocky.SoC.Library
   {
     public Guid Id { get; private set; }
 
-    public PlayerData Data { get; private set; }
-
     public ComputerPlayer(Guid id)
     {
       this.Id = id;
-      this.Data = new PlayerData();
+      //this.Data = new PlayerData();
     }
 
     public Road ChooseRoad(GameBoardData gameBoardData)
@@ -109,13 +107,13 @@ namespace Jabberwocky.SoC.Library
       return gameBoardData.GetPathBetweenLocations(locationIndex, bestLocationIndex);
     }
 
-    public PlayerDataBase GetDataView()
+    public PlayerDataView GetDataView()
     {
       var dataView = new PlayerDataView();
 
       dataView.Id = this.Id;
       dataView.ResourceCards = 0u;
-      dataView.HiddenDevelopmentCards = 0u;
+      dataView.HiddenDevelopmentCards = 0;
       dataView.DisplayedDevelopmentCards = null;
 
       return dataView;

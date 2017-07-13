@@ -10,7 +10,7 @@ namespace Jabberwocky.SoC.Library.Interfaces
     #region Events
     Action<GameBoardUpdate> BoardUpdatedEvent { get; set; }
 
-    Action<PlayerDataBase[]> GameJoinedEvent { get; set; }
+    Action<PlayerDataView[]> GameJoinedEvent { get; set; }
 
     Action<GameBoardData> InitialBoardSetupEvent { get; set; }
 

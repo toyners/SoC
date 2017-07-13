@@ -8,17 +8,21 @@ namespace Jabberwocky.SoC.Library
   {
     public Player()
     {
-      this.Data = new PlayerData();
-      this.Data.Id = Guid.NewGuid();
+      this.Id = Guid.NewGuid();
     }
 
-    public PlayerData Data { get; private set; }
+    public Guid Id { get; private set; }
 
-    public Guid Id { get { return this.Data.Id; } }
-
-    public PlayerDataBase GetDataView()
+    public PlayerDataView GetDataView()
     {
-      return this.Data;
+      var dataView = new PlayerDataView();
+
+      dataView.Id = this.Id;
+      dataView.ResourceCards = 0u;
+      dataView.HiddenDevelopmentCards = 0;
+      dataView.DisplayedDevelopmentCards = null;
+
+      return dataView;
     }
   }
 }

@@ -50,7 +50,7 @@ namespace Jabberwocky.SoC.Library
     #region Events
     public Action<GameBoardUpdate> BoardUpdatedEvent { get; set; }
 
-    public Action<PlayerDataBase[]> GameJoinedEvent { get; set; }
+    public Action<PlayerDataView[]> GameJoinedEvent { get; set; }
 
     public Action<GameBoardData> InitialBoardSetupEvent { get; set; }
 
@@ -131,7 +131,7 @@ namespace Jabberwocky.SoC.Library
       }
 
       this.CreatePlayers(gameOptions);
-      var playerData = this.CreateDataFromPlayers();
+      var playerData = this.CreatePlayerDataViews();
       this.GameJoinedEvent?.Invoke(playerData);
       this.gamePhase = GamePhases.WaitingLaunch;
     }
@@ -161,17 +161,16 @@ namespace Jabberwocky.SoC.Library
       throw new NotImplementedException();
     }
 
-    private PlayerDataBase[] CreateDataFromPlayers()
+    private PlayerDataView[] CreatePlayerDataViews()
     {
-      var playerData = new PlayerDataBase[this.players.Length];
-      playerData[0] = this.mainPlayer.Data;
+      var playerDataViews = new PlayerDataView[this.players.Length];
 
-      for (var index = 0; index < playerData.Length; index++)
+      for (var index = 0; index < playerDataViews.Length; index++)
       {
-        playerData[index] = this.players[index].GetDataView();
+        playerDataViews[index] = this.players[index].GetDataView();
       }
 
-      return playerData;
+      return playerDataViews;
     }
 
     private void CreatePlayers(GameOptions gameOptions)

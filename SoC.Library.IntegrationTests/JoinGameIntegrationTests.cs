@@ -17,8 +17,8 @@ namespace SoC.Library.IntegrationTests
       var gameControllerSetup = new GameControllerSetup();
       var gameControllerFactory = new GameControllerFactory();
       var gameController = gameControllerFactory.Create(gameOptions, gameControllerSetup);
-      PlayerDataBase[] playerData = null;
-      gameController.GameJoinedEvent = (PlayerDataBase[] p) => { playerData = p; };
+      PlayerDataView[] playerData = null;
+      gameController.GameJoinedEvent = (PlayerDataView[] p) => { playerData = p; };
       gameController.JoinGame(gameOptions);
 
       playerData.ShouldNotBeNull();
@@ -35,8 +35,8 @@ namespace SoC.Library.IntegrationTests
       var gameControllerSetup = new GameControllerSetup();
       var gameControllerFactory = new GameControllerFactory();
       var gameController = gameControllerFactory.Create(null, gameControllerSetup);
-      PlayerDataBase[] playerData = null;
-      gameController.GameJoinedEvent = (PlayerDataBase[] p) => { playerData = p; };
+      PlayerDataView[] playerData = null;
+      gameController.GameJoinedEvent = (PlayerDataView[] p) => { playerData = p; };
       gameController.JoinGame(null);
 
       playerData.ShouldNotBeNull();
