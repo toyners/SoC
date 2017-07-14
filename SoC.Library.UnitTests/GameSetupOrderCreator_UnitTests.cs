@@ -8,7 +8,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
   using Shouldly;
 
   [TestFixture]
-  public class SetupOrderCreator_UnitTests
+  public class GameSetupOrderCreator_UnitTests
   {
     #region Methods
     [Test]
@@ -26,7 +26,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
       var players = new IPlayer[] { player1, player2, player3, player4 };
       var mockDice = NSubstitute.Substitute.For<IDice>();
       mockDice.RollTwoDice().Returns(firstRoll, secondRoll, thirdRoll, fourthRoll);
-      var setupOrder = SetupOrderCreator.Create(players, mockDice);
+      var setupOrder = GameSetupOrderCreator.Create(players, mockDice);
 
       setupOrder.ShouldBe(new IPlayer[] { players[first], players[second], players[third], players[fourth]});
     }
@@ -41,7 +41,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
       var players = new Player[] { new Player(), new Player(), new Player() };
       var mockDice = NSubstitute.Substitute.For<IDice>(); 
       mockDice.RollTwoDice().Returns(firstRoll, secondRoll, thirdRoll, fourthRoll);
-      var setupOrder = SetupOrderCreator.Create(players, mockDice);
+      var setupOrder = GameSetupOrderCreator.Create(players, mockDice);
 
       setupOrder.ShouldBe(new IPlayer[] { players[first], players[second], players[third] });
     }

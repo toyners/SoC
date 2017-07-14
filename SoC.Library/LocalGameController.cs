@@ -219,7 +219,7 @@ namespace Jabberwocky.SoC.Library
         return false;
       }
 
-      this.players = SetupOrderCreator.Create(this.players, this.dice);
+      this.players = GameSetupOrderCreator.Create(this.players, this.dice);
    
       this.playerIndex = 0;
       GameBoardUpdate gameBoardUpdate = this.ContinueSetupForComputerPlayers(this.gameBoardManager.Data);
@@ -278,6 +278,8 @@ namespace Jabberwocky.SoC.Library
       this.GameSetupUpdateEvent?.Invoke(gameBoardUpdate);
 
       this.GameSetupResourcesEvent?.Invoke(this.gameSetupResources);
+
+      
     }
 
     private void CollectInitialResourcesForPlayer(Guid playerId, UInt32 settlementLocation)

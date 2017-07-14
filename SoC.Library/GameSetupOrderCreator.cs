@@ -5,7 +5,7 @@ namespace Jabberwocky.SoC.Library
   using System.Collections.Generic;
   using Interfaces;
 
-  public static class SetupOrderCreator
+  public static class GameSetupOrderCreator
   {
     public static IPlayer[] Create(IPlayer[] players, IDice dice)
     {
