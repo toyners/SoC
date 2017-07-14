@@ -2,7 +2,6 @@
 namespace Jabberwocky.SoC.Library.UnitTests
 {
   using System;
-  using System.Collections.Generic;
   using GameBoards;
   using Interfaces;
   using NSubstitute;
@@ -891,6 +890,9 @@ namespace Jabberwocky.SoC.Library.UnitTests
         .Returns(settlementOneLocation, settlementTwoLocation);
       mockComputerPlayer.ChooseRoad(gameBoardData)
         .Returns(roadOne, roadTwo);
+
+      var playerDataView = new PlayerDataView { Id = playerId };
+      mockComputerPlayer.GetDataView().Returns(playerDataView);
 
       return mockComputerPlayer;
     }
