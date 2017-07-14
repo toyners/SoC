@@ -53,7 +53,7 @@
     <Compile Include="Player.cs" />
     <Compile Include="ResourceUpdate.cs" />
     <Compile Include="Road.cs" />
-    <Compile Include="GameSetupOrderCreator.cs" />
+    <Compile Include="PlayerTurnOrderCreator.cs" />
     <Compile Include="Enums\GameConnectionTypes.cs" />
     <Compile Include="GameBoards\GameBoardData.cs" />
     <Compile Include="GameBoards\GameBoardManager.cs" />

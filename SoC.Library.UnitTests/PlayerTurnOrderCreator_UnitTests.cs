@@ -9,7 +9,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
   [TestFixture]
   [Category("GameSetupOrderCreator")]
-  public class GameSetupOrderCreator_UnitTests
+  public class PlayerTurnOrderCreator_UnitTests
   {
     #region Methods
     [Test]
@@ -27,7 +27,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
       var players = new IPlayer[] { player1, player2, player3, player4 };
       var mockDice = NSubstitute.Substitute.For<IDice>();
       mockDice.RollTwoDice().Returns(firstRoll, secondRoll, thirdRoll, fourthRoll);
-      var setupOrder = GameSetupOrderCreator.Create(players, mockDice);
+      var setupOrder = PlayerTurnOrderCreator.Create(players, mockDice);
 
       setupOrder.ShouldBe(new IPlayer[] { players[first], players[second], players[third], players[fourth]});
     }
@@ -43,7 +43,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
       var players = new Player[] { new Player(), new Player(), new Player() };
       var mockDice = NSubstitute.Substitute.For<IDice>(); 
       mockDice.RollTwoDice().Returns(firstRoll, secondRoll, thirdRoll, fourthRoll);
-      var setupOrder = GameSetupOrderCreator.Create(players, mockDice);
+      var setupOrder = PlayerTurnOrderCreator.Create(players, mockDice);
 
       setupOrder.ShouldBe(new IPlayer[] { players[first], players[second], players[third] });
     }

@@ -219,7 +219,7 @@ namespace Jabberwocky.SoC.Library
         return false;
       }
 
-      this.players = GameSetupOrderCreator.Create(this.players, this.dice);
+      this.players = PlayerTurnOrderCreator.Create(this.players, this.dice);
    
       this.playerIndex = 0;
       GameBoardUpdate gameBoardUpdate = this.ContinueSetupForComputerPlayers(this.gameBoardManager.Data);
