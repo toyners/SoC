@@ -8,6 +8,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
   using Shouldly;
 
   [TestFixture]
+  [Category("GameSetupOrderCreator")]
   public class GameSetupOrderCreator_UnitTests
   {
     #region Methods
@@ -32,6 +33,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     }
 
     [Test]
+    [Category("GameSetupOrderCreator")]
     [TestCase(12u, 12u, 10u, 8u, 0, 1, 2)]
     [TestCase(12u, 10u, 10u, 8u, 0, 1, 2)]
     [TestCase(12u, 10u, 12u, 8u, 0, 1, 2)]
