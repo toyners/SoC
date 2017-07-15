@@ -156,11 +156,11 @@ namespace Jabberwocky.SoC.Library.UnitTests
     [Category("LocalGameController")]
     public void CompleteSetupWithPlayerInFirstSlot_ExpectedPlacementsAreReturned()
     {
-      var setupOrderRolls = new[] { 12u, 10u, 8u, 6u };
-      var turnOrderRolls = new[] { 12u, 10u, 8u, 6u };
+      var gameSetupOrder = new[] { 12u, 10u, 8u, 6u };
+      var gameTurnOrder = new[] { 12u, 10u, 8u, 6u };
       var mockDice = new MockDiceCreator()
-        .AddExplicitSequence(setupOrderRolls)
-        .AddExplicitSequence(turnOrderRolls)
+        .AddExplicitSequence(gameSetupOrder)
+        .AddRandomSequenceWithNoDuplicates(4)
         .Create();
        
       var gameBoardManager = new GameBoardManager(BoardSizes.Standard);
@@ -211,11 +211,10 @@ namespace Jabberwocky.SoC.Library.UnitTests
     [Category("LocalGameController")]
     public void CompleteSetupWithPlayerInSecondSlot_ExpectedPlacementsAreReturned()
     {
-      var setupOrderRolls = new[] { 10u, 12u, 8u, 6u };
-      var turnOrderRolls = new[] { 12u, 10u, 8u, 6u };
+      var gameSetupOrder = new[] { 10u, 12u, 8u, 6u };
       var mockDice = new MockDiceCreator()
-        .AddExplicitSequence(setupOrderRolls)
-        .AddExplicitSequence(turnOrderRolls)
+        .AddExplicitSequence(gameSetupOrder)
+        .AddRandomSequenceWithNoDuplicates(4)
         .Create();
 
       var gameBoardManager = new GameBoardManager(BoardSizes.Standard);
@@ -268,11 +267,10 @@ namespace Jabberwocky.SoC.Library.UnitTests
     [Category("LocalGameController")]
     public void CompleteSetupWithPlayerInThirdSlot_ExpectedPlacementsAreReturned()
     {
-      var setupOrderRolls = new[] { 8u, 12u, 10u, 6u };
-      var turnOrderRolls = new[] { 12u, 10u, 8u, 6u };
+      var gameSetupOrders = new[] { 8u, 12u, 10u, 6u };
       var mockDice = new MockDiceCreator()
-        .AddExplicitSequence(setupOrderRolls)
-        .AddExplicitSequence(turnOrderRolls)
+        .AddExplicitSequence(gameSetupOrders)
+        .AddRandomSequenceWithNoDuplicates(4)
         .Create();
 
       var gameBoardManager = new GameBoardManager(BoardSizes.Standard);
@@ -325,11 +323,10 @@ namespace Jabberwocky.SoC.Library.UnitTests
     [Category("LocalGameController")]
     public void CompleteSetupWithPlayerInFourthSlot_ExpectedPlacementsAreReturned()
     {
-      var setupOrderRolls = new[] { 6u, 12u, 10u, 8u };
-      var turnOrderRolls = setupOrderRolls;
+      var gameSetupOrder = new[] { 6u, 12u, 10u, 8u };
       var mockDice = new MockDiceCreator()
-        .AddExplicitSequence(setupOrderRolls)
-        .AddExplicitSequence(turnOrderRolls)
+        .AddExplicitSequence(gameSetupOrder)
+        .AddRandomSequenceWithNoDuplicates(4)
         .Create();
 
       var gameBoardManager = new GameBoardManager(BoardSizes.Standard);
