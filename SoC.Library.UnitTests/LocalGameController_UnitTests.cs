@@ -785,10 +785,10 @@ namespace Jabberwocky.SoC.Library.UnitTests
     [Category("LocalGameController")]
     public void EndOfGameSetup_ReceiveTurnOrderForMainGameLoop()
     {
-      //var gameSetupOrder = new[] { 12u, 10u, 8u, 6u };
+      var gameSetupOrder = new[] { 12u, 10u, 8u, 6u };
       var gameTurnOrder = new[] { 12u, 10u, 8u, 6u };
       var mockDice = new MockDiceCreator()
-        .AddRandomSequenceWithNoDuplicates(4)
+        .AddExplicitSequence(gameSetupOrder)
         .AddExplicitSequence(gameTurnOrder)
         .Create();
 
