@@ -156,9 +156,13 @@ namespace Jabberwocky.SoC.Library.UnitTests
     [Category("LocalGameController")]
     public void CompleteSetupWithPlayerInFirstSlot_ExpectedPlacementsAreReturned()
     {
-      var mockDice = Substitute.For<IDice>();
-      mockDice.RollTwoDice().Returns(12u, 10u, 8u, 6u);
-
+      var setupOrderRolls = new[] { 12u, 10u, 8u, 6u };
+      var turnOrderRolls = new[] { 12u, 10u, 8u, 6u };
+      var mockDice = new MockDiceCreator()
+        .AddExplicitSequence(setupOrderRolls)
+        .AddExplicitSequence(turnOrderRolls)
+        .Create();
+       
       var gameBoardManager = new GameBoardManager(BoardSizes.Standard);
 
       var firstComputerPlayer = this.CreateMockComputerPlayer(gameBoardManager.Data, FirstSettlementOneLocation, FirstSettlementTwoLocation, firstRoadOne, firstRoadTwo);
@@ -207,8 +211,12 @@ namespace Jabberwocky.SoC.Library.UnitTests
     [Category("LocalGameController")]
     public void CompleteSetupWithPlayerInSecondSlot_ExpectedPlacementsAreReturned()
     {
-      var mockDice = Substitute.For<IDice>();
-      mockDice.RollTwoDice().Returns(10u, 12u, 8u, 6u);
+      var setupOrderRolls = new[] { 10u, 12u, 8u, 6u };
+      var turnOrderRolls = new[] { 12u, 10u, 8u, 6u };
+      var mockDice = new MockDiceCreator()
+        .AddExplicitSequence(setupOrderRolls)
+        .AddExplicitSequence(turnOrderRolls)
+        .Create();
 
       var gameBoardManager = new GameBoardManager(BoardSizes.Standard);
 
@@ -260,8 +268,12 @@ namespace Jabberwocky.SoC.Library.UnitTests
     [Category("LocalGameController")]
     public void CompleteSetupWithPlayerInThirdSlot_ExpectedPlacementsAreReturned()
     {
-      var mockDice = Substitute.For<IDice>();
-      mockDice.RollTwoDice().Returns(8u, 12u, 10u, 6u);
+      var setupOrderRolls = new[] { 8u, 12u, 10u, 6u };
+      var turnOrderRolls = new[] { 12u, 10u, 8u, 6u };
+      var mockDice = new MockDiceCreator()
+        .AddExplicitSequence(setupOrderRolls)
+        .AddExplicitSequence(turnOrderRolls)
+        .Create();
 
       var gameBoardManager = new GameBoardManager(BoardSizes.Standard);
 
@@ -313,8 +325,12 @@ namespace Jabberwocky.SoC.Library.UnitTests
     [Category("LocalGameController")]
     public void CompleteSetupWithPlayerInFourthSlot_ExpectedPlacementsAreReturned()
     {
-      var mockDice = Substitute.For<IDice>();
-      mockDice.RollTwoDice().Returns(6u, 12u, 10u, 8u);
+      var setupOrderRolls = new[] { 6u, 12u, 10u, 8u };
+      var turnOrderRolls = setupOrderRolls;
+      var mockDice = new MockDiceCreator()
+        .AddExplicitSequence(setupOrderRolls)
+        .AddExplicitSequence(turnOrderRolls)
+        .Create();
 
       var gameBoardManager = new GameBoardManager(BoardSizes.Standard);
 
@@ -367,8 +383,10 @@ namespace Jabberwocky.SoC.Library.UnitTests
     [TestCase(6u, 12u, 10u, 8u)]
     public void CompleteSetupWithPlayer_ExpectedResourcesAreReturned(UInt32 firstDiceRoll, UInt32 secondDiceRoll, UInt32 thirdDiceRoll, UInt32 fourthDiceRoll)
     {
-      var mockDice = Substitute.For<IDice>();
-      mockDice.RollTwoDice().Returns(firstDiceRoll, secondDiceRoll, thirdDiceRoll, fourthDiceRoll);
+      var mockDice = new MockDiceCreator()
+        .AddRandomSequenceWithNoDuplicates(4)
+        .AddExplicitSequence(new[] { firstDiceRoll, secondDiceRoll, thirdDiceRoll, fourthDiceRoll })
+        .Create();
 
       var gameBoardManager = new GameBoardManager(BoardSizes.Standard);
 
@@ -767,9 +785,13 @@ namespace Jabberwocky.SoC.Library.UnitTests
     [Category("LocalGameController")]
     public void EndOfGameSetup_ReceiveTurnOrderForMainGameLoop()
     {
-      var gameSetupOrder = new[] { 12u, 10u, 8u, 6u };
+      //var gameSetupOrder = new[] { 12u, 10u, 8u, 6u };
       var gameTurnOrder = new[] { 12u, 10u, 8u, 6u };
-      var mockDice = new MockDiceCreator().AddRandomSequence(4).AddExplicitSequence(gameTurnOrder).Create();
+      var mockDice = new MockDiceCreator()
+        .AddRandomSequenceWithNoDuplicates(4)
+        .AddExplicitSequence(gameTurnOrder)
+        .Create();
+
       var gameBoardManager = new GameBoardManager(BoardSizes.Standard);
       var firstComputerPlayer = this.CreateMockComputerPlayer(gameBoardManager.Data, FirstSettlementOneLocation, FirstSettlementTwoLocation, firstRoadOne, firstRoadTwo);
       var secondComputerPlayer = this.CreateMockComputerPlayer(gameBoardManager.Data, SecondSettlementOneLocation, SecondSettlementTwoLocation, secondRoadOne, secondRoadTwo);
