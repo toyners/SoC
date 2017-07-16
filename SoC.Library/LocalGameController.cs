@@ -283,6 +283,16 @@ namespace Jabberwocky.SoC.Library
       this.players = PlayerTurnOrderCreator.Create(this.players, this.dice);
       var playerData = this.CreatePlayerDataViews();
       this.TurnOrderFinalisedEvent?.Invoke(playerData);
+
+      // Start the main game loop
+      var resourceRoll = this.dice.RollTwoDice();
+      var turnResources = CollectTurnResources(resourceRoll);
+      this.StartPlayerTurnEvent?.Invoke(turnResources);
+    }
+
+    private ResourceUpdate CollectTurnResources(UInt32 diceRoll)
+    {
+      throw new NotImplementedException();
     }
 
     private void CollectInitialResourcesForPlayer(Guid playerId, UInt32 settlementLocation)
