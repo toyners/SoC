@@ -47,12 +47,6 @@ namespace Jabberwocky.SoC.Library.GameBoards
     private Dictionary<UInt32, ResourceProvider2[]> resourcesAtLocation;
     #endregion
 
-    private struct ResourceProvider2
-    {
-      public ResourceTypes Type;
-      public UInt32 ProductionNumber;
-    }
-
     #region Construction
     public GameBoardData(BoardSizes size)
     {
@@ -79,6 +73,12 @@ namespace Jabberwocky.SoC.Library.GameBoards
       this.StitchLocationsTogetherUsingHorizontalTrails(index);
 
       this.CreateResourceProviders();
+
+      this.CreateResourceProviders2();
+    }
+
+    private void CreateResourceProviders2()
+    {
     }
     #endregion
 
@@ -562,6 +562,12 @@ namespace Jabberwocky.SoC.Library.GameBoards
       public UInt32 LumberCount;
       public UInt32 OreCount;
       public UInt32 WoolCount;
+    }
+
+    private struct ResourceProvider2
+    {
+      public ResourceTypes Type;
+      public UInt32 ProductionNumber;
     }
 
     public struct VerificationResults
