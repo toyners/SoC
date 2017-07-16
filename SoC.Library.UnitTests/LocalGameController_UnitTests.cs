@@ -157,7 +157,6 @@ namespace Jabberwocky.SoC.Library.UnitTests
     public void CompleteSetupWithPlayerInFirstSlot_ExpectedPlacementsAreReturned()
     {
       var gameSetupOrder = new[] { 12u, 10u, 8u, 6u };
-      var gameTurnOrder = new[] { 12u, 10u, 8u, 6u };
       var mockDice = new MockDiceCreator()
         .AddExplicitSequence(gameSetupOrder)
         .AddRandomSequenceWithNoDuplicates(4)
