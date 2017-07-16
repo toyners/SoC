@@ -822,11 +822,10 @@ namespace Jabberwocky.SoC.Library.UnitTests
     [Category("LocalGameController")]
     public void MainGameLoop_MainPlayerTurn_ReceiveResourceDetails()
     {
-      var mockDice = Substitute.For<IDice>();
       var gameSetupOrder = new [] { 12u, 10u, 8u, 6u };
-      var gameTurnOrder = new [] { 12u, 10u, 8u, 6u };
+      var gameTurnOrder = gameSetupOrder;
       var resourceRoll = new[] { 8u };
-      mockDice = new MockDice(gameSetupOrder, gameTurnOrder, resourceRoll);
+      var mockDice = new MockDice(gameSetupOrder, gameTurnOrder, resourceRoll);
 
       var gameBoardManager = new GameBoardManager(BoardSizes.Standard);
 
