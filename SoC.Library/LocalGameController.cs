@@ -286,13 +286,17 @@ namespace Jabberwocky.SoC.Library
 
       // Start the main game loop
       var resourceRoll = this.dice.RollTwoDice();
-      var turnResources = CollectTurnResources(resourceRoll);
+      var turnResources = this.CollectTurnResources(resourceRoll);
       this.StartPlayerTurnEvent?.Invoke(turnResources);
     }
 
     private ResourceUpdate CollectTurnResources(UInt32 diceRoll)
     {
-      throw new NotImplementedException();
+      var resourceUpdate = new ResourceUpdate();
+
+      var resources = this.gameBoardManager.Data.GetResourcesForRoll(diceRoll);
+
+      return resourceUpdate;
     }
 
     private void CollectInitialResourcesForPlayer(Guid playerId, UInt32 settlementLocation)
