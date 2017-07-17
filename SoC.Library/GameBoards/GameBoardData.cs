@@ -45,6 +45,8 @@ namespace Jabberwocky.SoC.Library.GameBoards
 
     // Location and resources bordering it
     private Dictionary<UInt32, ResourceProvider2[]> resourcesAtLocation;
+
+    private Dictionary<UInt32, ResourceProvider2[]> resourceProvidersByDiceRolls;
     #endregion
 
     #region Construction
@@ -273,6 +275,11 @@ namespace Jabberwocky.SoC.Library.GameBoards
 
     public Dictionary<Guid, ResourceCounts> GetResourcesForRoll(UInt32 diceRoll)
     {
+      // Get locations that are adjacent to the providers matching the dice roll
+
+
+      // Get the owners of locations
+
       throw new NotImplementedException();
     }
 
