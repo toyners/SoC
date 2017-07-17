@@ -6,6 +6,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
   using GameBoards;
   using NUnit.Framework;
   using Shouldly;
+  using static GameBoards.GameBoardData;
 
   [TestFixture]
   public class GameBoardData_UnitTests
@@ -279,6 +280,28 @@ namespace Jabberwocky.SoC.Library.UnitTests
       result.LumberCount.ShouldBe(expectedLumberCount);
       result.OreCount.ShouldBe(expectedOreCount);
       result.WoolCount.ShouldBe(expectedWoolCount);
+    }
+
+    [Test]
+    [Category("GameBoardData")]
+    public void GetResourcesForRoll_StandardBoard_ReturnsCorrectResourcesForMatchingNeighbouringLocations()
+    {
+      var player1_Id = Guid.NewGuid();
+      var player2_Id = Guid.NewGuid();
+      var player3_Id = Guid.NewGuid();
+
+      var roll = 8u;
+      var gameBoardData = new GameBoardData(BoardSizes.Standard);
+      gameBoardData.PlaceSettlement(player1_Id, 12u);
+      gameBoardData.PlaceSettlement(player1_Id, 53u);
+      gameBoardData.PlaceSettlement(player2_Id, 43u);
+      gameBoardData.PlaceSettlement(player3_Id, 39u);
+
+      var result = gameBoardData.GetResourcesForRoll(roll);
+
+      result.Count.ShouldBe(2);
+      result.ShouldContainKeyAndValue(player1_Id, new ResourceCounts { BrickCount = 1, GrainCount = 1, LumberCount = 0, OreCount = 0, WoolCount = 0 });
+      result.ShouldContainKeyAndValue(player2_Id, new ResourceCounts { BrickCount = 0, GrainCount = 1, LumberCount = 0, OreCount = 0, WoolCount = 0 });
     }
     #endregion 
   }

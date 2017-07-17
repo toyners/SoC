@@ -271,7 +271,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
       return resourceCounts;
     }
 
-    public ResourceCounts GetResourcesForRoll(UInt32 diceRoll)
+    public Dictionary<Guid, ResourceCounts> GetResourcesForRoll(UInt32 diceRoll)
     {
       throw new NotImplementedException();
     }
