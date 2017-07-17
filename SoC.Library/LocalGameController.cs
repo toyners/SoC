@@ -70,21 +70,6 @@ namespace Jabberwocky.SoC.Library
     #endregion
 
     #region Methods
-    public void AcceptOffer(Offer offer)
-    {
-      throw new NotImplementedException();
-    }
-
-    public void BuildRoad(Location startingLocation, Location finishingLocation)
-    {
-      throw new NotImplementedException();
-    }
-
-    public DevelopmentCard BuyDevelopmentCard()
-    {
-      throw new NotImplementedException();
-    }
-
     public void LaunchGame()
     {
       if (this.gamePhase != GamePhases.WaitingLaunch)
@@ -96,16 +81,6 @@ namespace Jabberwocky.SoC.Library
 
       this.InitialBoardSetupEvent?.Invoke(this.gameBoardManager.Data);
       this.gamePhase = GamePhases.StartGameSetup;
-    }
-
-    public ICollection<Offer> MakeOffer(Offer offer)
-    {
-      throw new NotImplementedException();
-    }
-
-    public void PlaceTown(Location location)
-    {
-      throw new NotImplementedException();
     }
 
     public void Quit()
@@ -138,31 +113,6 @@ namespace Jabberwocky.SoC.Library
       this.gamePhase = GamePhases.WaitingLaunch;
     }
 
-    public void StartJoiningGame(GameOptions gameOptions, Guid accountToken)
-    {
-      throw new NotImplementedException();
-    }
-
-    public void StartLogIntoAccount(String username, String password)
-    {
-      throw new NotImplementedException();
-    }
-
-    public ResourceTypes TradeResourcesAtPort(Location location)
-    {
-      throw new NotImplementedException();
-    }
-
-    public ResourceTypes TradeResourcesWithBank()
-    {
-      throw new NotImplementedException();
-    }
-
-    public void UpgradeToCity(Location location)
-    {
-      throw new NotImplementedException();
-    }
-
     private PlayerDataView[] CreatePlayerDataViews()
     {
       var playerDataViews = new PlayerDataView[this.players.Length];
@@ -186,11 +136,6 @@ namespace Jabberwocky.SoC.Library
         this.players[index] = this.computerPlayerFactory.Create();
         index++;
       }
-    }
-
-    private Guid GetTurnToken()
-    {
-      return Guid.NewGuid();
     }
 
     private Boolean IsComputerPlayer(IPlayer player)

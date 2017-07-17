@@ -21,27 +21,27 @@ namespace Jabberwocky.SoC.Library.Interfaces
 
     Guid GameId { get; }
 
-    void StartLogIntoAccount(String username, String password);
+    //void StartLogIntoAccount(String username, String password);
 
     void JoinGame(GameOptions gameOptions);
 
-    void StartJoiningGame(GameOptions gameFilter, Guid accountToken);
+    //void StartJoiningGame(GameOptions gameFilter, Guid accountToken);
 
-    void PlaceTown(Location location);
+    //void PlaceTown(Location location);
 
-    void UpgradeToCity(Location location);
+    //void UpgradeToCity(Location location);
 
-    void BuildRoad(Location startingLocation, Location finishingLocation);
+    //void BuildRoad(Location startingLocation, Location finishingLocation);
 
-    DevelopmentCard BuyDevelopmentCard();
+    //DevelopmentCard BuyDevelopmentCard();
 
-    ResourceTypes TradeResourcesWithBank();
+    //ResourceTypes TradeResourcesWithBank();
 
-    ResourceTypes TradeResourcesAtPort(Location location);
+    //ResourceTypes TradeResourcesAtPort(Location location);
 
-    ICollection<Offer> MakeOffer(Offer offer);
+    //ICollection<Offer> MakeOffer(Offer offer);
 
-    void AcceptOffer(Offer offer);
+    //void AcceptOffer(Offer offer);
 
     void Quit();
   }
