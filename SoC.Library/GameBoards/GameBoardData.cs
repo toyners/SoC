@@ -273,14 +273,53 @@ namespace Jabberwocky.SoC.Library.GameBoards
       return resourceCounts;
     }
 
+    private Dictionary<ResourceProvider2, UInt32[]> locationsForResourceProvider;
+
     public Dictionary<Guid, ResourceCounts> GetResourcesForRoll(UInt32 diceRoll)
     {
-      // Get locations that are adjacent to the providers matching the dice roll
+      var resources = new Dictionary<Guid, ResourceCounts>();
 
+      // Iterate over all the resource providers that match the dice roll
+      foreach (var resourceProvider in this.resourceProvidersByDiceRolls[diceRoll])
+      {
+        // Iterate over all the locations bordering the resource provider
+        foreach (var location in this.locationsForResourceProvider[resourceProvider])
+        {
+          if (!this.settlements.ContainsKey(location))
+          {
+            // No owner of the location
+            continue;
+          }
 
-      // Get the owners of locations
+          var owner = this.settlements[location];
 
-      throw new NotImplementedException();
+          ResourceCounts existingResourceCounts;
+
+          // Got an owner - add to the resource count for the owner.
+          if (resources.ContainsKey(owner))
+          {
+            existingResourceCounts = resources[owner];
+          }
+          else
+          {
+            existingResourceCounts = new ResourceCounts();
+            resources.Add(owner, existingResourceCounts);
+          }
+
+          switch (resourceProvider.Type)
+          {
+            case ResourceTypes.Brick: existingResourceCounts.BrickCount += 1; break;
+            case ResourceTypes.Grain: existingResourceCounts.GrainCount += 1; break;
+            case ResourceTypes.Lumber: existingResourceCounts.LumberCount += 1; break;
+            case ResourceTypes.Ore: existingResourceCounts.OreCount += 1; break;
+            case ResourceTypes.Wool: existingResourceCounts.WoolCount += 1; break;
+          }
+
+          resources[owner] = existingResourceCounts;
+        }
+      }
+
+      return resources;
     }
 
     private void CreateLocations()
@@ -571,7 +610,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
       public UInt32 WoolCount;
     }
 
-    private struct ResourceProvider2
+    private class ResourceProvider2
     {
       public ResourceTypes Type;
       public UInt32 ProductionNumber;
