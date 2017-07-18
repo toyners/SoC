@@ -81,6 +81,14 @@ namespace Jabberwocky.SoC.Library.GameBoards
 
     private void CreateResourceProviders2()
     {
+      
+      var brick8 = new ResourceProvider2(ResourceTypes.Brick);
+
+      var tempResourceProvidersByDiceRolls = new List<ResourceProvider2>[13];
+
+      tempResourceProvidersByDiceRolls[8] = new List<ResourceProvider2> { brick8 };
+
+      this.resourceProvidersByDiceRolls = new Dictionary<uint, ResourceProvider2[]>();
     }
     #endregion
 
@@ -612,8 +620,12 @@ namespace Jabberwocky.SoC.Library.GameBoards
 
     private class ResourceProvider2
     {
-      public ResourceTypes Type;
-      public UInt32 ProductionNumber;
+      public readonly ResourceTypes Type;
+
+      public ResourceProvider2(ResourceTypes type)
+      {
+        this.Type = type;
+      }
     }
 
     public struct VerificationResults
