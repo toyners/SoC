@@ -83,12 +83,27 @@ namespace Jabberwocky.SoC.Library.GameBoards
     {
       
       var brick8 = new ResourceProvider2(ResourceTypes.Brick);
+      var grain8 = new ResourceProvider2(ResourceTypes.Grain);
 
       var tempResourceProvidersByDiceRolls = new List<ResourceProvider2>[13];
 
-      tempResourceProvidersByDiceRolls[8] = new List<ResourceProvider2> { brick8 };
+      tempResourceProvidersByDiceRolls[8] = new List<ResourceProvider2> { brick8, grain8 };
 
       this.resourceProvidersByDiceRolls = new Dictionary<uint, ResourceProvider2[]>();
+      this.resourceProvidersByDiceRolls.Add(8u, tempResourceProvidersByDiceRolls[8u].ToArray());
+
+      /*for (UInt32 diceRoll = 2; diceRoll <= 12; diceRoll++)
+      {
+        this.resourceProvidersByDiceRolls.Add(diceRoll, tempResourceProvidersByDiceRolls[diceRoll].ToArray());
+      }*/
+
+      this.locationsForResourceProvider = new Dictionary<ResourceProvider2, UInt32[]>();
+
+      var locationsForBrick8 = new UInt32[] { 2, 3, 4, 10, 11, 12 };
+      this.locationsForResourceProvider.Add(brick8, locationsForBrick8);
+
+      var locationsForGrain8 = new UInt32[] { 43, 44, 45, 51, 52, 53 };
+      this.locationsForResourceProvider.Add(grain8, locationsForGrain8);
     }
     #endregion
 
