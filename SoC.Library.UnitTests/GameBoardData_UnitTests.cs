@@ -303,6 +303,31 @@ namespace Jabberwocky.SoC.Library.UnitTests
       result.ShouldContainKeyAndValue(player1_Id, new ResourceCounts { BrickCount = 1, GrainCount = 1, LumberCount = 0, OreCount = 0, WoolCount = 0 });
       result.ShouldContainKeyAndValue(player2_Id, new ResourceCounts { BrickCount = 0, GrainCount = 1, LumberCount = 0, OreCount = 0, WoolCount = 0 });
     }
+
+    [Test]
+    [Category("GameBoardData")]
+    [TestCase(11u, 27u, ResourceTypes.Brick)]
+    public void GetResourcesForRoll_StandardBoard_ReturnsCorrectResources(UInt32 diceRoll, UInt32 location, ResourceTypes expectedType)
+    {
+      var playerId = Guid.NewGuid();
+      var gameBoardData = new GameBoardData(BoardSizes.Standard);
+      gameBoardData.PlaceSettlement(playerId, location);
+
+      var result = gameBoardData.GetResourcesForRoll(diceRoll);
+
+      ResourceCounts expectedResourceCounts = default(ResourceCounts);
+      switch (expectedType)
+      {
+        case ResourceTypes.Brick: expectedResourceCounts = new ResourceCounts { BrickCount = 1, GrainCount = 0, LumberCount = 0, OreCount = 0, WoolCount = 0 }; break;
+        case ResourceTypes.Grain: expectedResourceCounts = new ResourceCounts { BrickCount = 0, GrainCount = 1, LumberCount = 0, OreCount = 0, WoolCount = 0 }; break;
+        case ResourceTypes.Lumber: expectedResourceCounts = new ResourceCounts { BrickCount = 0, GrainCount = 0, LumberCount = 1, OreCount = 0, WoolCount = 0 }; break;
+        case ResourceTypes.Ore: expectedResourceCounts = new ResourceCounts { BrickCount = 0, GrainCount = 0, LumberCount = 0, OreCount = 1, WoolCount = 0 }; break;
+        case ResourceTypes.Wool: expectedResourceCounts = new ResourceCounts { BrickCount = 0, GrainCount = 0, LumberCount = 0, OreCount = 0, WoolCount = 1 }; break;
+      }
+
+      result.Count.ShouldBe(1);
+      result.ShouldContainKeyAndValue(playerId, expectedResourceCounts);
+    }
     #endregion 
   }
 }
