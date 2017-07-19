@@ -306,7 +306,11 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
     [Test]
     [Category("GameBoardData")]
-    [TestCase(11u, 27u, ResourceTypes.Brick)]
+    [TestCase(5u, 42u, ResourceTypes.Brick)]
+    [TestCase(2u, 23u, ResourceTypes.Grain)]
+    [TestCase(11u, 27u, ResourceTypes.Lumber)]
+    [TestCase(6u, 20u, ResourceTypes.Ore)]
+    [TestCase(10u, 12u, ResourceTypes.Wool)]
     public void GetResourcesForRoll_StandardBoard_ReturnsCorrectResources(UInt32 diceRoll, UInt32 location, ResourceTypes expectedType)
     {
       var playerId = Guid.NewGuid();
