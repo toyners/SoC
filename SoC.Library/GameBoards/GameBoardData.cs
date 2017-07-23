@@ -137,15 +137,20 @@ namespace Jabberwocky.SoC.Library.GameBoards
       this.locationsForResourceProvider = new Dictionary<ResourceProvider2, UInt32[]>();
 
       // Column 1
-      var locationsForBrick8 = new UInt32[] { 2, 3, 4, 10, 11, 12 };
-      this.locationsForResourceProvider.Add(brick8, locationsForBrick8);
+      UInt32 lhs = 2;
+      UInt32 rhs = 10;
+      foreach (var resourceProvider in new[] { brick8, ore5 })
+      {
+        var locations = new UInt32[] { lhs, lhs + 1, lhs + 2, rhs, rhs + 1, rhs + 2 };
+        lhs = lhs + 2;
+        rhs = rhs + 2;
 
-      var locationsForOre5 = new UInt32[] { 4, 5, 6, 12, 13, 14 };
-      this.locationsForResourceProvider.Add(ore5, locationsForOre5);
+        this.locationsForResourceProvider.Add(resourceProvider, locations);
+      }
 
       // Column 2
-      UInt32 lhs = 7;
-      UInt32 rhs = 17;
+      lhs = 7;
+      rhs = 17;
       foreach (var resourceProvider in new[] { brick4, lumber3, wool10_a, grain2 })
       {
         var locations = new UInt32[] { lhs, lhs + 1, lhs + 2, rhs, rhs + 1, rhs + 2 };
