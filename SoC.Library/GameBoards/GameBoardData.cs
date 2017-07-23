@@ -88,7 +88,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
       //b4,l3,w10,g2,
       var brick4 = new ResourceProvider2(ResourceTypes.Brick);
       var lumber3 = new ResourceProvider2(ResourceTypes.Lumber);
-      var wool10 = new ResourceProvider2(ResourceTypes.Wool);
+      var wool10_a = new ResourceProvider2(ResourceTypes.Wool);
       var grain2 = new ResourceProvider2(ResourceTypes.Grain);
 
       //l11,o6,g11,w9,l6,
@@ -106,6 +106,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
 
       //g9,w10 (see above),g8
       var grain9 = new ResourceProvider2(ResourceTypes.Grain);
+      var wool10_b = new ResourceProvider2(ResourceTypes.Wool);
       var grain8 = new ResourceProvider2(ResourceTypes.Grain);
 
       var tempResourceProvidersByDiceRolls = new List<ResourceProvider2>[13];
@@ -117,9 +118,11 @@ namespace Jabberwocky.SoC.Library.GameBoards
       tempResourceProvidersByDiceRolls[6] = new List<ResourceProvider2> { ore6, lumber6 };
       tempResourceProvidersByDiceRolls[8] = new List<ResourceProvider2> { brick8, grain8 };
       tempResourceProvidersByDiceRolls[9] = new List<ResourceProvider2> { wool9, grain9 };
-      tempResourceProvidersByDiceRolls[10] = new List<ResourceProvider2> { wool10 };
+      tempResourceProvidersByDiceRolls[10] = new List<ResourceProvider2> { wool10_a, wool10_b };
       tempResourceProvidersByDiceRolls[11] = new List<ResourceProvider2> { lumber11, grain11 };
       tempResourceProvidersByDiceRolls[12] = new List<ResourceProvider2> { wool12 };
+
+      this.resourceProvidersByDiceRolls = new Dictionary<UInt32, ResourceProvider2[]>();
 
       for (UInt32 diceRoll = 2; diceRoll <= 12; diceRoll++) 
       {
@@ -143,7 +146,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
       // Column 2
       UInt32 lhs = 7;
       UInt32 rhs = 17;
-      foreach (var resourceProvider in new[] { brick4, lumber3, wool10, grain2 })
+      foreach (var resourceProvider in new[] { brick4, lumber3, wool10_a, grain2 })
       {
         var locations = new UInt32[] { lhs, lhs + 1, lhs + 2, rhs, rhs + 1, rhs + 2 };
         lhs = lhs + 2;
@@ -179,7 +182,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
       // Column 5
       lhs = 39;
       rhs = 47;
-      foreach (var resourceProvider in new[] { grain9, wool10, grain8 })
+      foreach (var resourceProvider in new[] { grain9, wool10_b, grain8 })
       {
         var locations = new UInt32[] { lhs, lhs + 1, lhs + 2, rhs, rhs + 1, rhs + 2 };
         lhs = lhs + 2;
