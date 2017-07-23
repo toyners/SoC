@@ -152,9 +152,41 @@ namespace Jabberwocky.SoC.Library.GameBoards
         this.locationsForResourceProvider.Add(resourceProvider, locations);
       }
 
+      // Column 3
+      lhs = 16;
+      rhs = 27;
+      foreach (var resourceProvider in new[] { lumber11, ore6, grain11, wool9, lumber6 })
+      {
+        var locations = new UInt32[] { lhs, lhs + 1, lhs + 2, rhs, rhs + 1, rhs + 2 };
+        lhs = lhs + 2;
+        rhs = rhs + 2;
+
+        this.locationsForResourceProvider.Add(resourceProvider, locations);
+      }
+
+      // Column 4
+      lhs = 28;
+      rhs = 38;
+      foreach (var resourceProvider in new[] { wool12, brick5, lumber4, ore3 })
+      {
+        var locations = new UInt32[] { lhs, lhs + 1, lhs + 2, rhs, rhs + 1, rhs + 2 };
+        lhs = lhs + 2;
+        rhs = rhs + 2;
+
+        this.locationsForResourceProvider.Add(resourceProvider, locations);
+      }
+
       // Column 5
-      var locationsForGrain8 = new UInt32[] { 43, 44, 45, 51, 52, 53 };
-      this.locationsForResourceProvider.Add(grain8, locationsForGrain8);
+      lhs = 39;
+      rhs = 47;
+      foreach (var resourceProvider in new[] { grain9, wool10, grain8 })
+      {
+        var locations = new UInt32[] { lhs, lhs + 1, lhs + 2, rhs, rhs + 1, rhs + 2 };
+        lhs = lhs + 2;
+        rhs = rhs + 2;
+
+        this.locationsForResourceProvider.Add(resourceProvider, locations);
+      }
     }
     #endregion
 
