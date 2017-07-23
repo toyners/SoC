@@ -78,124 +78,6 @@ namespace Jabberwocky.SoC.Library.GameBoards
 
       this.CreateResourceProviders2();
     }
-
-    private void CreateResourceProviders2()
-    {
-      //d,b8,o5
-      var brick8 = new ResourceProvider2(ResourceTypes.Brick);
-      var ore5 = new ResourceProvider2(ResourceTypes.Ore);
-
-      //b4,l3,w10,g2,
-      var brick4 = new ResourceProvider2(ResourceTypes.Brick);
-      var lumber3 = new ResourceProvider2(ResourceTypes.Lumber);
-      var wool10_a = new ResourceProvider2(ResourceTypes.Wool);
-      var grain2 = new ResourceProvider2(ResourceTypes.Grain);
-
-      //l11,o6,g11,w9,l6,
-      var lumber11 = new ResourceProvider2(ResourceTypes.Lumber);
-      var ore6 = new ResourceProvider2(ResourceTypes.Ore);
-      var grain11 = new ResourceProvider2(ResourceTypes.Grain);
-      var wool9 = new ResourceProvider2(ResourceTypes.Wool);
-      var lumber6 = new ResourceProvider2(ResourceTypes.Lumber);
-
-      //w12,b5,l4,o3
-      var wool12 = new ResourceProvider2(ResourceTypes.Wool);
-      var brick5 = new ResourceProvider2(ResourceTypes.Brick);
-      var lumber4 = new ResourceProvider2(ResourceTypes.Lumber);
-      var ore3 = new ResourceProvider2(ResourceTypes.Ore);
-
-      //g9,w10 (see above),g8
-      var grain9 = new ResourceProvider2(ResourceTypes.Grain);
-      var wool10_b = new ResourceProvider2(ResourceTypes.Wool);
-      var grain8 = new ResourceProvider2(ResourceTypes.Grain);
-
-      var tempResourceProvidersByDiceRolls = new List<ResourceProvider2>[13];
-
-      tempResourceProvidersByDiceRolls[2] = new List<ResourceProvider2> { grain2 };
-      tempResourceProvidersByDiceRolls[3] = new List<ResourceProvider2> { lumber3, ore3 };
-      tempResourceProvidersByDiceRolls[4] = new List<ResourceProvider2> { brick4, lumber4 };
-      tempResourceProvidersByDiceRolls[5] = new List<ResourceProvider2> { ore5, brick5 };
-      tempResourceProvidersByDiceRolls[6] = new List<ResourceProvider2> { ore6, lumber6 };
-      tempResourceProvidersByDiceRolls[8] = new List<ResourceProvider2> { brick8, grain8 };
-      tempResourceProvidersByDiceRolls[9] = new List<ResourceProvider2> { wool9, grain9 };
-      tempResourceProvidersByDiceRolls[10] = new List<ResourceProvider2> { wool10_a, wool10_b };
-      tempResourceProvidersByDiceRolls[11] = new List<ResourceProvider2> { lumber11, grain11 };
-      tempResourceProvidersByDiceRolls[12] = new List<ResourceProvider2> { wool12 };
-
-      this.resourceProvidersByDiceRolls = new Dictionary<UInt32, ResourceProvider2[]>();
-
-      for (UInt32 diceRoll = 2; diceRoll <= 12; diceRoll++) 
-      {
-        if (diceRoll == 7)
-        {
-          continue;
-        }
-
-        this.resourceProvidersByDiceRolls.Add(diceRoll, tempResourceProvidersByDiceRolls[diceRoll].ToArray());
-      }
-
-      this.locationsForResourceProvider = new Dictionary<ResourceProvider2, UInt32[]>();
-
-      // Column 1
-      UInt32 lhs = 2;
-      UInt32 rhs = 10;
-      foreach (var resourceProvider in new[] { brick8, ore5 })
-      {
-        var locations = new UInt32[] { lhs, lhs + 1, lhs + 2, rhs, rhs + 1, rhs + 2 };
-        lhs = lhs + 2;
-        rhs = rhs + 2;
-
-        this.locationsForResourceProvider.Add(resourceProvider, locations);
-      }
-
-      // Column 2
-      lhs = 7;
-      rhs = 17;
-      foreach (var resourceProvider in new[] { brick4, lumber3, wool10_a, grain2 })
-      {
-        var locations = new UInt32[] { lhs, lhs + 1, lhs + 2, rhs, rhs + 1, rhs + 2 };
-        lhs = lhs + 2;
-        rhs = rhs + 2;
-
-        this.locationsForResourceProvider.Add(resourceProvider, locations);
-      }
-
-      // Column 3
-      lhs = 16;
-      rhs = 27;
-      foreach (var resourceProvider in new[] { lumber11, ore6, grain11, wool9, lumber6 })
-      {
-        var locations = new UInt32[] { lhs, lhs + 1, lhs + 2, rhs, rhs + 1, rhs + 2 };
-        lhs = lhs + 2;
-        rhs = rhs + 2;
-
-        this.locationsForResourceProvider.Add(resourceProvider, locations);
-      }
-
-      // Column 4
-      lhs = 28;
-      rhs = 38;
-      foreach (var resourceProvider in new[] { wool12, brick5, lumber4, ore3 })
-      {
-        var locations = new UInt32[] { lhs, lhs + 1, lhs + 2, rhs, rhs + 1, rhs + 2 };
-        lhs = lhs + 2;
-        rhs = rhs + 2;
-
-        this.locationsForResourceProvider.Add(resourceProvider, locations);
-      }
-
-      // Column 5
-      lhs = 39;
-      rhs = 47;
-      foreach (var resourceProvider in new[] { grain9, wool10_b, grain8 })
-      {
-        var locations = new UInt32[] { lhs, lhs + 1, lhs + 2, rhs, rhs + 1, rhs + 2 };
-        lhs = lhs + 2;
-        rhs = rhs + 2;
-
-        this.locationsForResourceProvider.Add(resourceProvider, locations);
-      }
-    }
     #endregion
 
     #region Methods
@@ -622,6 +504,124 @@ namespace Jabberwocky.SoC.Library.GameBoards
       this.Locations[51].Providers.Add(grain8);
       this.Locations[52].Providers.Add(grain8);
       this.Locations[53].Providers.Add(grain8);
+    }
+
+    private void CreateResourceProviders2()
+    {
+      //d,b8,o5
+      var brick8 = new ResourceProvider2(ResourceTypes.Brick);
+      var ore5 = new ResourceProvider2(ResourceTypes.Ore);
+
+      //b4,l3,w10,g2,
+      var brick4 = new ResourceProvider2(ResourceTypes.Brick);
+      var lumber3 = new ResourceProvider2(ResourceTypes.Lumber);
+      var wool10_a = new ResourceProvider2(ResourceTypes.Wool);
+      var grain2 = new ResourceProvider2(ResourceTypes.Grain);
+
+      //l11,o6,g11,w9,l6,
+      var lumber11 = new ResourceProvider2(ResourceTypes.Lumber);
+      var ore6 = new ResourceProvider2(ResourceTypes.Ore);
+      var grain11 = new ResourceProvider2(ResourceTypes.Grain);
+      var wool9 = new ResourceProvider2(ResourceTypes.Wool);
+      var lumber6 = new ResourceProvider2(ResourceTypes.Lumber);
+
+      //w12,b5,l4,o3
+      var wool12 = new ResourceProvider2(ResourceTypes.Wool);
+      var brick5 = new ResourceProvider2(ResourceTypes.Brick);
+      var lumber4 = new ResourceProvider2(ResourceTypes.Lumber);
+      var ore3 = new ResourceProvider2(ResourceTypes.Ore);
+
+      //g9,w10 (see above),g8
+      var grain9 = new ResourceProvider2(ResourceTypes.Grain);
+      var wool10_b = new ResourceProvider2(ResourceTypes.Wool);
+      var grain8 = new ResourceProvider2(ResourceTypes.Grain);
+
+      var tempResourceProvidersByDiceRolls = new List<ResourceProvider2>[13];
+
+      tempResourceProvidersByDiceRolls[2] = new List<ResourceProvider2> { grain2 };
+      tempResourceProvidersByDiceRolls[3] = new List<ResourceProvider2> { lumber3, ore3 };
+      tempResourceProvidersByDiceRolls[4] = new List<ResourceProvider2> { brick4, lumber4 };
+      tempResourceProvidersByDiceRolls[5] = new List<ResourceProvider2> { ore5, brick5 };
+      tempResourceProvidersByDiceRolls[6] = new List<ResourceProvider2> { ore6, lumber6 };
+      tempResourceProvidersByDiceRolls[8] = new List<ResourceProvider2> { brick8, grain8 };
+      tempResourceProvidersByDiceRolls[9] = new List<ResourceProvider2> { wool9, grain9 };
+      tempResourceProvidersByDiceRolls[10] = new List<ResourceProvider2> { wool10_a, wool10_b };
+      tempResourceProvidersByDiceRolls[11] = new List<ResourceProvider2> { lumber11, grain11 };
+      tempResourceProvidersByDiceRolls[12] = new List<ResourceProvider2> { wool12 };
+
+      this.resourceProvidersByDiceRolls = new Dictionary<UInt32, ResourceProvider2[]>();
+
+      for (UInt32 diceRoll = 2; diceRoll <= 12; diceRoll++)
+      {
+        if (diceRoll == 7)
+        {
+          continue;
+        }
+
+        this.resourceProvidersByDiceRolls.Add(diceRoll, tempResourceProvidersByDiceRolls[diceRoll].ToArray());
+      }
+
+      this.locationsForResourceProvider = new Dictionary<ResourceProvider2, UInt32[]>();
+
+      // Column 1
+      UInt32 lhs = 2;
+      UInt32 rhs = 10;
+      foreach (var resourceProvider in new[] { brick8, ore5 })
+      {
+        var locations = new UInt32[] { lhs, lhs + 1, lhs + 2, rhs, rhs + 1, rhs + 2 };
+        lhs = lhs + 2;
+        rhs = rhs + 2;
+
+        this.locationsForResourceProvider.Add(resourceProvider, locations);
+      }
+
+      // Column 2
+      lhs = 7;
+      rhs = 17;
+      foreach (var resourceProvider in new[] { brick4, lumber3, wool10_a, grain2 })
+      {
+        var locations = new UInt32[] { lhs, lhs + 1, lhs + 2, rhs, rhs + 1, rhs + 2 };
+        lhs = lhs + 2;
+        rhs = rhs + 2;
+
+        this.locationsForResourceProvider.Add(resourceProvider, locations);
+      }
+
+      // Column 3
+      lhs = 16;
+      rhs = 27;
+      foreach (var resourceProvider in new[] { lumber11, ore6, grain11, wool9, lumber6 })
+      {
+        var locations = new UInt32[] { lhs, lhs + 1, lhs + 2, rhs, rhs + 1, rhs + 2 };
+        lhs = lhs + 2;
+        rhs = rhs + 2;
+
+        this.locationsForResourceProvider.Add(resourceProvider, locations);
+      }
+
+      // Column 4
+      lhs = 28;
+      rhs = 38;
+      foreach (var resourceProvider in new[] { wool12, brick5, lumber4, ore3 })
+      {
+        var locations = new UInt32[] { lhs, lhs + 1, lhs + 2, rhs, rhs + 1, rhs + 2 };
+        lhs = lhs + 2;
+        rhs = rhs + 2;
+
+        this.locationsForResourceProvider.Add(resourceProvider, locations);
+      }
+
+      // Column 5
+      lhs = 39;
+      rhs = 47;
+      foreach (var resourceProvider in new[] { grain9, wool10_b, grain8 })
+      {
+        var locations = new UInt32[] { lhs, lhs + 1, lhs + 2, rhs, rhs + 1, rhs + 2 };
+        lhs = lhs + 2;
+        rhs = rhs + 2;
+
+        this.locationsForResourceProvider.Add(resourceProvider, locations);
+      }
     }
 
     private void StitchLocationsTogetherUsingHorizontalTrails(Int32 index)
