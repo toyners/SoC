@@ -26,27 +26,18 @@ namespace Jabberwocky.SoC.Library.GameBoards
 
     #region Fields
     public Dictionary<Guid, List<Trail>> Roads;
-
     public Location[] Locations;
-
     public Trail[] Trails;
-
     public ResourceProvider[] Providers;
-
     public const Int32 StandardBoardLocationCount = 54;
-
     public const Int32 StandardBoardTrailCount = 72;
-
     public const Int32 StandardBoardResourceProviderCount = 19;
     private Dictionary<UInt32, Guid> settlements;
     private Dictionary<Guid, List<UInt32>> settlementsByPlayer;
     private Boolean[,] connections;
     private Dictionary<Road, Guid> roads;
-
-    // Location and resources bordering it
-    private Dictionary<UInt32, ResourceProvider2[]> resourcesAtLocation;
-
     private Dictionary<UInt32, ResourceProvider2[]> resourceProvidersByDiceRolls;
+    private Dictionary<ResourceProvider2, UInt32[]> locationsForResourceProvider;
     #endregion
 
     #region Construction
@@ -268,8 +259,6 @@ namespace Jabberwocky.SoC.Library.GameBoards
 
       return resourceCounts;
     }
-
-    private Dictionary<ResourceProvider2, UInt32[]> locationsForResourceProvider;
 
     public Dictionary<Guid, ResourceCounts> GetResourcesForRoll(UInt32 diceRoll)
     {
