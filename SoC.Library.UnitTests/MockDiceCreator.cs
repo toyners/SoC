@@ -12,7 +12,13 @@ namespace Jabberwocky.SoC.Library.UnitTests
     #endregion
 
     #region Methods
-    public MockDiceCreator AddExplicitSequence(UInt32[] diceRolls)
+    public MockDiceCreator AddExplictDiceRoll(UInt32 diceRoll)
+    {
+      this.diceRollSequences.Add(new[] { diceRoll });
+      return this;
+    }
+
+    public MockDiceCreator AddExplicitDiceRollSequence(UInt32[] diceRolls)
     {
       this.diceRollSequences.Add(diceRolls);
       return this;
@@ -39,7 +45,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
       return this;
     }
 
-    // Add a random sequence of distinct rolls. Can't have more than 11
+    // Add a random sequence of distinct rolls. Can't have more than 11 dice rolls
     public MockDiceCreator AddRandomSequenceWithNoDuplicates(Int32 diceRollCount)
     {
       if (diceRollCount > 11)

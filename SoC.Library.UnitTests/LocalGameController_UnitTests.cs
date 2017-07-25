@@ -158,7 +158,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     {
       var gameSetupOrder = new[] { 12u, 10u, 8u, 6u };
       var mockDice = new MockDiceCreator()
-        .AddExplicitSequence(gameSetupOrder)
+        .AddExplicitDiceRollSequence(gameSetupOrder)
         .AddRandomSequenceWithNoDuplicates(4)
         .Create();
        
@@ -212,7 +212,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     {
       var gameSetupOrder = new[] { 10u, 12u, 8u, 6u };
       var mockDice = new MockDiceCreator()
-        .AddExplicitSequence(gameSetupOrder)
+        .AddExplicitDiceRollSequence(gameSetupOrder)
         .AddRandomSequenceWithNoDuplicates(4)
         .Create();
 
@@ -268,7 +268,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     {
       var gameSetupOrders = new[] { 8u, 12u, 10u, 6u };
       var mockDice = new MockDiceCreator()
-        .AddExplicitSequence(gameSetupOrders)
+        .AddExplicitDiceRollSequence(gameSetupOrders)
         .AddRandomSequenceWithNoDuplicates(4)
         .Create();
 
@@ -324,7 +324,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     {
       var gameSetupOrder = new[] { 6u, 12u, 10u, 8u };
       var mockDice = new MockDiceCreator()
-        .AddExplicitSequence(gameSetupOrder)
+        .AddExplicitDiceRollSequence(gameSetupOrder)
         .AddRandomSequenceWithNoDuplicates(4)
         .Create();
 
@@ -379,9 +379,10 @@ namespace Jabberwocky.SoC.Library.UnitTests
     [TestCase(6u, 12u, 10u, 8u)]
     public void CompleteSetupWithPlayer_ExpectedResourcesAreReturned(UInt32 firstDiceRoll, UInt32 secondDiceRoll, UInt32 thirdDiceRoll, UInt32 fourthDiceRoll)
     {
+      var turnOrderDiceRolls = new[] { firstDiceRoll, secondDiceRoll, thirdDiceRoll, fourthDiceRoll };
       var mockDice = new MockDiceCreator()
         .AddRandomSequenceWithNoDuplicates(4)
-        .AddExplicitSequence(new[] { firstDiceRoll, secondDiceRoll, thirdDiceRoll, fourthDiceRoll })
+        .AddExplicitDiceRollSequence(turnOrderDiceRolls)
         .Create();
 
       var gameBoardManager = new GameBoardManager(BoardSizes.Standard);
@@ -784,8 +785,8 @@ namespace Jabberwocky.SoC.Library.UnitTests
       var gameSetupOrder = new[] { 12u, 10u, 8u, 6u };
       var gameTurnOrder = new[] { 12u, 10u, 8u, 6u };
       var mockDice = new MockDiceCreator()
-        .AddExplicitSequence(gameSetupOrder)
-        .AddExplicitSequence(gameTurnOrder)
+        .AddExplicitDiceRollSequence(gameSetupOrder)
+        .AddExplicitDiceRollSequence(gameTurnOrder)
         .Create();
 
       var gameBoardManager = new GameBoardManager(BoardSizes.Standard);
