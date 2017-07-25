@@ -383,6 +383,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
       var mockDice = new MockDiceCreator()
         .AddRandomSequenceWithNoDuplicates(4)
         .AddExplicitDiceRollSequence(turnOrderDiceRolls)
+        .ReturnRandomRollsOnException(true)
         .Create();
 
       var gameBoardManager = new GameBoardManager(BoardSizes.Standard);
