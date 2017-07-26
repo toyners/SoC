@@ -791,7 +791,6 @@ namespace Jabberwocky.SoC.Library.UnitTests
                                   .ChangeComputerPlayerFactory(mockComputerPlayerFactory)
                                   .Create();
 
-      PlayerDataView[] turnOrder = null;
       localGameController.JoinGame();
       localGameController.LaunchGame();
       localGameController.StartGameSetup();
@@ -799,13 +798,14 @@ namespace Jabberwocky.SoC.Library.UnitTests
       localGameController.CompleteGameSetup(MainSettlementTwoLocation, mainRoadTwo);
 
       // Act
+      PlayerDataView[] turnOrder = null;
       localGameController.TurnOrderFinalisedEvent = (PlayerDataView[] p) => { turnOrder = p; };
       localGameController.StartGameLoop();
 
       // Assert
       turnOrder.ShouldNotBeNull();
       turnOrder.Length.ShouldBe(4);
-      turnOrder[0].Id.ShouldNotBe(Guid.Empty);
+      turnOrder[0].Id.ShouldNotBeOneOf(new[] { Guid.Empty, firstComputerPlayer.Id, secondComputerPlayer.Id, thirdComputerPlayer.Id });
       turnOrder[1].Id.ShouldBe(firstComputerPlayer.Id);
       turnOrder[2].Id.ShouldBe(secondComputerPlayer.Id);
       turnOrder[3].Id.ShouldBe(thirdComputerPlayer.Id);
