@@ -64,6 +64,8 @@ namespace Jabberwocky.SoC.Library
 
     public Action<ResourceUpdate> StartPlayerTurnEvent { get; set; }
 
+    public Action<ResourceUpdate> TurnResourcesCollectedEvent { get; set; }
+    
     public Action<ResourceUpdate> GameSetupResourcesEvent { get; set; }
 
     public Action<PlayerDataView[]> TurnOrderFinalisedEvent { get; set; }
@@ -232,10 +234,10 @@ namespace Jabberwocky.SoC.Library
       var playerData = this.CreatePlayerDataViews();
       this.TurnOrderFinalisedEvent?.Invoke(playerData);
 
-      // Start the main game loop
-      //var resourceRoll = this.dice.RollTwoDice();
-      //var turnResources = this.CollectTurnResources(resourceRoll);
-      //this.StartPlayerTurnEvent?.Invoke(turnResources);
+      // Collect and pass back the resources for the dice roll
+      var resourceRoll = this.dice.RollTwoDice();
+      var turnResources = this.CollectTurnResources(resourceRoll);
+      this.TurnResourcesCollectedEvent?.Invoke(turnResources);
     }
 
     private ResourceUpdate CollectTurnResources(UInt32 diceRoll)

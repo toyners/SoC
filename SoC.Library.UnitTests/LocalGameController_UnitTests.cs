@@ -860,12 +860,16 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
     [Test]
     [Category("LocalGameController")]
-    public void MainGameLoop_MainPlayerTurn_ReceiveResourceDetails()
+    public void MainGameLoop_StartOfMainPlayerTurn_ReceiveResourceDetails()
     {
       var gameSetupOrder = new [] { 12u, 10u, 8u, 6u };
       var gameTurnOrder = gameSetupOrder;
-      var resourceRoll = new[] { 8u };
-      var mockDice = new MockDice(gameSetupOrder, gameTurnOrder, resourceRoll);
+      var resourceRoll = 8u;
+      var mockDice = new MockDiceCreator()
+        .AddExplicitDiceRollSequence(gameSetupOrder)
+        .AddExplicitDiceRollSequence(gameTurnOrder)
+        .AddExplictDiceRoll(resourceRoll)
+        .Create();
 
       var gameBoardManager = new GameBoardManager(BoardSizes.Standard);
 
@@ -875,26 +879,33 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
       var localGameController = this.CreateLocalGameController(mockDice, gameBoardManager, firstComputerPlayer, secondComputerPlayer, thirdComputerPlayer);
 
-      ResourceUpdate resourceUpdate = null;
-      localGameController.StartPlayerTurnEvent = (ResourceUpdate r) => { resourceUpdate = r; };
-
       PlayerDataView[] playerData = null;
       localGameController.GameJoinedEvent = (PlayerDataView[] p) => { playerData = p; };
 
       localGameController.JoinGame();
       localGameController.LaunchGame();
       localGameController.StartGameSetup();
-      localGameController.ContinueGameSetup(12, new Road(12, 11));
-      localGameController.CompleteGameSetup(40, new Road(40, 39));
+      localGameController.ContinueGameSetup(MainSettlementOneLocation, mainRoadOne);
+      localGameController.CompleteGameSetup(MainSettlementTwoLocation, mainRoadTwo);
+
+      ResourceUpdate resourceUpdate = null;
+      localGameController.TurnResourcesCollectedEvent = (ResourceUpdate r) => { resourceUpdate = r; };
+      localGameController.StartGameLoop();
 
       var id = playerData[0].Id;
       resourceUpdate.ShouldNotBeNull();
-      resourceUpdate.Resources.Count.ShouldBe(1);
+      resourceUpdate.Resources.Count.ShouldBe(2);
       resourceUpdate.Resources[id].BrickCount.ShouldBe(1u);
       resourceUpdate.Resources[id].GrainCount.ShouldBe(0u);
       resourceUpdate.Resources[id].LumberCount.ShouldBe(0u);
       resourceUpdate.Resources[id].OreCount.ShouldBe(0u);
       resourceUpdate.Resources[id].WoolCount.ShouldBe(0u);
+
+      resourceUpdate.Resources[firstComputerPlayer.Id].BrickCount.ShouldBe(0u);
+      resourceUpdate.Resources[firstComputerPlayer.Id].GrainCount.ShouldBe(1u);
+      resourceUpdate.Resources[firstComputerPlayer.Id].LumberCount.ShouldBe(0u);
+      resourceUpdate.Resources[firstComputerPlayer.Id].OreCount.ShouldBe(0u);
+      resourceUpdate.Resources[firstComputerPlayer.Id].WoolCount.ShouldBe(0u);
     }
 
     private void AssertPlayerDataViewIsCorrect(PlayerDataView playerDataView)
