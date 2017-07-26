@@ -774,8 +774,10 @@ namespace Jabberwocky.SoC.Library.UnitTests
     {
       // Arrange
       var gameSetupOrder = new[] { 12u, 10u, 8u, 6u };
+      var gameTurnOrder = gameSetupOrder;
       var mockDice = new MockDiceCreator()
         .AddExplicitDiceRollSequence(gameSetupOrder)
+        .AddExplicitDiceRollSequence(gameTurnOrder)
         .Create();
 
       var gameBoardManager = new GameBoardManager(BoardSizes.Standard);
