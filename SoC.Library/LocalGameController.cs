@@ -223,16 +223,19 @@ namespace Jabberwocky.SoC.Library
       this.GameSetupUpdateEvent?.Invoke(gameBoardUpdate);
 
       this.GameSetupResourcesEvent?.Invoke(this.gameSetupResources);
+    }
 
+    public void StartGame()
+    {
       // Set the order for the main game loop
-      this.players = PlayerTurnOrderCreator.Create(this.players, this.dice);
-      var playerData = this.CreatePlayerDataViews();
-      this.TurnOrderFinalisedEvent?.Invoke(playerData);
+      //this.players = PlayerTurnOrderCreator.Create(this.players, this.dice);
+      //var playerData = this.CreatePlayerDataViews();
+      //this.TurnOrderFinalisedEvent?.Invoke(playerData);
 
       // Start the main game loop
-      var resourceRoll = this.dice.RollTwoDice();
-      var turnResources = this.CollectTurnResources(resourceRoll);
-      this.StartPlayerTurnEvent?.Invoke(turnResources);
+      //var resourceRoll = this.dice.RollTwoDice();
+      //var turnResources = this.CollectTurnResources(resourceRoll);
+      //this.StartPlayerTurnEvent?.Invoke(turnResources);
     }
 
     private ResourceUpdate CollectTurnResources(UInt32 diceRoll)
