@@ -770,13 +770,12 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
     [Test]
     [Category("LocalGameController")]
-    public void EndOfGameSetup_ReceiveTurnOrderForMainGameLoop()
+    public void StartGameLoop_ReceiveTurnOrderForMainGameLoop()
     {
+      // Arrange
       var gameSetupOrder = new[] { 12u, 10u, 8u, 6u };
-      var gameTurnOrder = new[] { 12u, 10u, 8u, 6u };
       var mockDice = new MockDiceCreator()
         .AddExplicitDiceRollSequence(gameSetupOrder)
-        .AddExplicitDiceRollSequence(gameTurnOrder)
         .Create();
 
       var gameBoardManager = new GameBoardManager(BoardSizes.Standard);
@@ -793,13 +792,17 @@ namespace Jabberwocky.SoC.Library.UnitTests
                                   .Controller;
 
       PlayerDataView[] turnOrder = null;
-      localGameController.TurnOrderFinalisedEvent = (PlayerDataView[] p) => { turnOrder = p; };
       localGameController.JoinGame();
       localGameController.LaunchGame();
       localGameController.StartGameSetup();
-      localGameController.ContinueGameSetup(12, new Road(12, 11));
-      localGameController.CompleteGameSetup(40, new Road(40, 39));
+      localGameController.ContinueGameSetup(MainSettlementOneLocation, mainRoadOne);
+      localGameController.CompleteGameSetup(MainSettlementTwoLocation, mainRoadTwo);
 
+      // Act
+      localGameController.TurnOrderFinalisedEvent = (PlayerDataView[] p) => { turnOrder = p; };
+      localGameController.StartGameLoop();
+
+      // Assert
       turnOrder.ShouldNotBeNull();
       turnOrder.Length.ShouldBe(4);
       turnOrder[0].Id.ShouldNotBe(Guid.Empty);

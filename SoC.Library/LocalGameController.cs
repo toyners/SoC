@@ -225,7 +225,7 @@ namespace Jabberwocky.SoC.Library
       this.GameSetupResourcesEvent?.Invoke(this.gameSetupResources);
     }
 
-    public void StartGame()
+    public void StartGameLoop()
     {
       // Set the order for the main game loop
       //this.players = PlayerTurnOrderCreator.Create(this.players, this.dice);
