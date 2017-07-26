@@ -228,9 +228,9 @@ namespace Jabberwocky.SoC.Library
     public void StartGameLoop()
     {
       // Set the order for the main game loop
-      //this.players = PlayerTurnOrderCreator.Create(this.players, this.dice);
-      //var playerData = this.CreatePlayerDataViews();
-      //this.TurnOrderFinalisedEvent?.Invoke(playerData);
+      this.players = PlayerTurnOrderCreator.Create(this.players, this.dice);
+      var playerData = this.CreatePlayerDataViews();
+      this.TurnOrderFinalisedEvent?.Invoke(playerData);
 
       // Start the main game loop
       //var resourceRoll = this.dice.RollTwoDice();
