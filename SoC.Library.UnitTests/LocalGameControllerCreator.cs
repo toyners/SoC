@@ -21,16 +21,6 @@ namespace Jabberwocky.SoC.Library.UnitTests
     }
     #endregion
 
-    #region Properties
-    public LocalGameController Controller
-    {
-      get
-      {
-        return new LocalGameController(this.dice, this.computerPlayerFactory, this.gameBoardManager);
-      }
-    }
-    #endregion
-
     #region Methods
     public LocalGameControllerCreator ChangeComputerPlayerFactory(IComputerPlayerFactory computerPlayerFactory)
     {
@@ -48,6 +38,11 @@ namespace Jabberwocky.SoC.Library.UnitTests
     {
       this.gameBoardManager = gameBoardManager;
       return this;
+    }
+
+    public LocalGameController Create()
+    {
+      return new LocalGameController(this.dice, this.computerPlayerFactory, this.gameBoardManager);
     }
     #endregion
   }

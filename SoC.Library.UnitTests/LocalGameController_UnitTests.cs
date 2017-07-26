@@ -46,7 +46,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
       mockComputerGameFactory.Create().Returns(firstComputerPlayer, secondComputerPlayer, thirdComputerPlayer);
       var localGameController = new LocalGameControllerCreator()
         .ChangeComputerPlayerFactory(mockComputerGameFactory)
-        .Controller;
+        .Create();
 
       PlayerDataView[] playerData = null;
       localGameController.GameJoinedEvent = (PlayerDataView[] p) => { playerData = p; };
@@ -82,7 +82,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
       mockComputerGameFactory.Create().Returns(firstComputerPlayer, secondComputerPlayer, thirdComputerPlayer);
       var localGameController = new LocalGameControllerCreator()
         .ChangeComputerPlayerFactory(mockComputerGameFactory)
-        .Controller;
+        .Create();
 
       PlayerDataView[] playerData = null;
       localGameController.GameJoinedEvent = (PlayerDataView[] p) => { playerData = p; };
@@ -789,7 +789,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
                                   .ChangeDice(mockDice)
                                   .ChangeGameBoardManager(gameBoardManager)
                                   .ChangeComputerPlayerFactory(mockComputerPlayerFactory)
-                                  .Controller;
+                                  .Create();
 
       PlayerDataView[] turnOrder = null;
       localGameController.JoinGame();
