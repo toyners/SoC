@@ -770,7 +770,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
     [Test]
     [Category("LocalGameController")]
-    public void StartGameLoop_ReceiveTurnOrderForMainGameLoop()
+    public void StartGameLoop_RollsDescending_ReceiveTurnOrderForMainGameLoop()
     {
       // Arrange
       var gameSetupOrder = new[] { 12u, 10u, 8u, 6u };
@@ -811,6 +811,51 @@ namespace Jabberwocky.SoC.Library.UnitTests
       turnOrder[1].Id.ShouldBe(firstComputerPlayer.Id);
       turnOrder[2].Id.ShouldBe(secondComputerPlayer.Id);
       turnOrder[3].Id.ShouldBe(thirdComputerPlayer.Id);
+    }
+
+    [Test]
+    [Category("LocalGameController")]
+    public void StartGameLoop_RollsAscending_ReceiveTurnOrderForMainGameLoop()
+    {
+      // Arrange
+      var gameSetupOrder = new[] { 12u, 10u, 8u, 6u };
+      var gameTurnOrder = new[] { 6u, 8u, 10u, 12u };
+      var mockDice = new MockDiceCreator()
+        .AddExplicitDiceRollSequence(gameSetupOrder)
+        .AddExplicitDiceRollSequence(gameTurnOrder)
+        .Create();
+
+      var gameBoardManager = new GameBoardManager(BoardSizes.Standard);
+      var firstComputerPlayer = this.CreateMockComputerPlayer(gameBoardManager.Data, FirstSettlementOneLocation, FirstSettlementTwoLocation, firstRoadOne, firstRoadTwo);
+      var secondComputerPlayer = this.CreateMockComputerPlayer(gameBoardManager.Data, SecondSettlementOneLocation, SecondSettlementTwoLocation, secondRoadOne, secondRoadTwo);
+      var thirdComputerPlayer = this.CreateMockComputerPlayer(gameBoardManager.Data, ThirdSettlementOneLocation, ThirdSettlementTwoLocation, thirdRoadOne, thirdRoadTwo);
+      var mockComputerPlayerFactory = Substitute.For<IComputerPlayerFactory>();
+      mockComputerPlayerFactory.Create().Returns(firstComputerPlayer, secondComputerPlayer, thirdComputerPlayer);
+
+      var localGameController = new LocalGameControllerCreator()
+                                  .ChangeDice(mockDice)
+                                  .ChangeGameBoardManager(gameBoardManager)
+                                  .ChangeComputerPlayerFactory(mockComputerPlayerFactory)
+                                  .Create();
+
+      localGameController.JoinGame();
+      localGameController.LaunchGame();
+      localGameController.StartGameSetup();
+      localGameController.ContinueGameSetup(MainSettlementOneLocation, mainRoadOne);
+      localGameController.CompleteGameSetup(MainSettlementTwoLocation, mainRoadTwo);
+
+      // Act
+      PlayerDataView[] turnOrder = null;
+      localGameController.TurnOrderFinalisedEvent = (PlayerDataView[] p) => { turnOrder = p; };
+      localGameController.StartGameLoop();
+
+      // Assert
+      turnOrder.ShouldNotBeNull();
+      turnOrder.Length.ShouldBe(4);
+      turnOrder[0].Id.ShouldBe(thirdComputerPlayer.Id);
+      turnOrder[1].Id.ShouldBe(secondComputerPlayer.Id);
+      turnOrder[2].Id.ShouldBe(firstComputerPlayer.Id);
+      turnOrder[3].Id.ShouldNotBeOneOf(new[] { Guid.Empty, firstComputerPlayer.Id, secondComputerPlayer.Id, thirdComputerPlayer.Id });
     }
 
     [Test]
