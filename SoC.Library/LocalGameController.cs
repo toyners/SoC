@@ -178,7 +178,10 @@ namespace Jabberwocky.SoC.Library
 
     public void StartGame()
     {
-
+      // Collect and pass back the resources for the dice roll
+      //var resourceRoll = this.dice.RollTwoDice();
+      //var turnResources = this.CollectTurnResources(resourceRoll);
+      //this.TurnResourcesCollectedEvent?.Invoke(turnResources);
     }
 
     public void ContinueGameSetup(UInt32 settlementLocation, Road road)
@@ -238,11 +241,6 @@ namespace Jabberwocky.SoC.Library
       this.players = PlayerTurnOrderCreator.Create(this.players, this.dice);
       var playerData = this.CreatePlayerDataViews();
       this.TurnOrderFinalisedEvent?.Invoke(playerData);
-
-      // Collect and pass back the resources for the dice roll
-      var resourceRoll = this.dice.RollTwoDice();
-      var turnResources = this.CollectTurnResources(resourceRoll);
-      this.TurnResourcesCollectedEvent?.Invoke(turnResources);
     }
 
     private ResourceUpdate CollectTurnResources(UInt32 diceRoll)
