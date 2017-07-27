@@ -778,6 +778,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
       var mockDice = new MockDiceCreator()
         .AddExplicitDiceRollSequence(gameSetupOrder)
         .AddExplicitDiceRollSequence(gameTurnOrder)
+        .ReturnRandomRollsOnException(true)
         .Create();
 
       var gameBoardManager = new GameBoardManager(BoardSizes.Standard);
@@ -823,6 +824,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
       var mockDice = new MockDiceCreator()
         .AddExplicitDiceRollSequence(gameSetupOrder)
         .AddExplicitDiceRollSequence(gameTurnOrder)
+        .ReturnRandomRollsOnException(true)
         .Create();
 
       var gameBoardManager = new GameBoardManager(BoardSizes.Standard);
