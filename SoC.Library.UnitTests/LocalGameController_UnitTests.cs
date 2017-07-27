@@ -881,8 +881,8 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
       var localGameController = this.CreateLocalGameController(mockDice, gameBoardManager, firstComputerPlayer, secondComputerPlayer, thirdComputerPlayer);
 
-      PlayerDataView[] playerData = null;
-      localGameController.GameJoinedEvent = (PlayerDataView[] p) => { playerData = p; };
+      var id = Guid.Empty;
+      localGameController.GameJoinedEvent = (PlayerDataView[] p) => { id = p[0].Id; };
 
       localGameController.JoinGame();
       localGameController.LaunchGame();
@@ -894,7 +894,6 @@ namespace Jabberwocky.SoC.Library.UnitTests
       localGameController.TurnResourcesCollectedEvent = (ResourceUpdate r) => { resourceUpdate = r; };
       localGameController.StartGameLoop();
 
-      var id = playerData[0].Id;
       resourceUpdate.ShouldNotBeNull();
       resourceUpdate.Resources.Count.ShouldBe(2);
       resourceUpdate.Resources[id].BrickCount.ShouldBe(1u);
