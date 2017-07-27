@@ -243,9 +243,7 @@ namespace Jabberwocky.SoC.Library
     private ResourceUpdate CollectTurnResources(UInt32 diceRoll)
     {
       var resourceUpdate = new ResourceUpdate();
-
-      var resources = this.gameBoardManager.Data.GetResourcesForRoll(diceRoll);
-
+      resourceUpdate.Resources = this.gameBoardManager.Data.GetResourcesForRoll(diceRoll);
       return resourceUpdate;
     }
 
