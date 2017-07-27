@@ -770,7 +770,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
     [Test]
     [Category("LocalGameController")]
-    public void StartGameLoop_RollsDescending_ReceiveTurnOrderForMainGameLoop()
+    public void GetTurnOrder_RollsDescending_ReceiveTurnOrderForMainGameLoop()
     {
       // Arrange
       var gameSetupOrder = new[] { 12u, 10u, 8u, 6u };
@@ -778,7 +778,6 @@ namespace Jabberwocky.SoC.Library.UnitTests
       var mockDice = new MockDiceCreator()
         .AddExplicitDiceRollSequence(gameSetupOrder)
         .AddExplicitDiceRollSequence(gameTurnOrder)
-        .AddExplictDiceRoll(2)
         .Create();
 
       var gameBoardManager = new GameBoardManager(BoardSizes.Standard);
@@ -803,7 +802,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
       // Act
       PlayerDataView[] turnOrder = null;
       localGameController.TurnOrderFinalisedEvent = (PlayerDataView[] p) => { turnOrder = p; };
-      localGameController.StartGameLoop();
+      localGameController.FinalisePlayerTurnOrder();
 
       // Assert
       turnOrder.ShouldNotBeNull();
@@ -816,7 +815,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
     [Test]
     [Category("LocalGameController")]
-    public void StartGameLoop_RollsAscending_ReceiveTurnOrderForMainGameLoop()
+    public void GetTurnOrder_RollsAscending_ReceiveTurnOrderForMainGameLoop()
     {
       // Arrange
       var gameSetupOrder = new[] { 12u, 10u, 8u, 6u };
@@ -824,7 +823,6 @@ namespace Jabberwocky.SoC.Library.UnitTests
       var mockDice = new MockDiceCreator()
         .AddExplicitDiceRollSequence(gameSetupOrder)
         .AddExplicitDiceRollSequence(gameTurnOrder)
-        .AddExplictDiceRoll(2)
         .Create();
 
       var gameBoardManager = new GameBoardManager(BoardSizes.Standard);
@@ -849,7 +847,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
       // Act
       PlayerDataView[] turnOrder = null;
       localGameController.TurnOrderFinalisedEvent = (PlayerDataView[] p) => { turnOrder = p; };
-      localGameController.StartGameLoop();
+      localGameController.FinalisePlayerTurnOrder();
 
       // Assert
       turnOrder.ShouldNotBeNull();
@@ -862,7 +860,48 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
     [Test]
     [Category("LocalGameController")]
-    public void MainGameLoop_StartOfMainPlayerTurn_ReceiveResourceDetails()
+    public void StartOfMainPlayerTurn_TurnTokenReceived()
+    {
+      // Arrange
+      var gameSetupOrder = new[] { 12u, 10u, 8u, 6u };
+      var gameTurnOrder = gameSetupOrder;
+      var mockDice = new MockDiceCreator()
+        .AddExplicitDiceRollSequence(gameSetupOrder)
+        .AddExplicitDiceRollSequence(gameTurnOrder)
+        .Create();
+
+      var gameBoardManager = new GameBoardManager(BoardSizes.Standard);
+      var firstComputerPlayer = this.CreateMockComputerPlayer(gameBoardManager.Data, FirstSettlementOneLocation, FirstSettlementTwoLocation, firstRoadOne, firstRoadTwo);
+      var secondComputerPlayer = this.CreateMockComputerPlayer(gameBoardManager.Data, SecondSettlementOneLocation, SecondSettlementTwoLocation, secondRoadOne, secondRoadTwo);
+      var thirdComputerPlayer = this.CreateMockComputerPlayer(gameBoardManager.Data, ThirdSettlementOneLocation, ThirdSettlementTwoLocation, thirdRoadOne, thirdRoadTwo);
+      var mockComputerPlayerFactory = Substitute.For<IComputerPlayerFactory>();
+      mockComputerPlayerFactory.Create().Returns(firstComputerPlayer, secondComputerPlayer, thirdComputerPlayer);
+
+      var localGameController = new LocalGameControllerCreator()
+                                  .ChangeDice(mockDice)
+                                  .ChangeGameBoardManager(gameBoardManager)
+                                  .ChangeComputerPlayerFactory(mockComputerPlayerFactory)
+                                  .Create();
+
+      localGameController.JoinGame();
+      localGameController.LaunchGame();
+      localGameController.StartGameSetup();
+      localGameController.ContinueGameSetup(MainSettlementOneLocation, mainRoadOne);
+      localGameController.CompleteGameSetup(MainSettlementTwoLocation, mainRoadTwo);
+      localGameController.FinalisePlayerTurnOrder();
+
+      // Act
+      var turnToken = Guid.Empty;
+      localGameController.StartPlayerTurnEvent = (Guid t, ResourceUpdate r) => { turnToken = t; };
+      localGameController.StartGame();
+
+      // Assert
+      turnToken.ShouldNotBe(Guid.Empty);
+    }
+
+    [Test]
+    [Category("LocalGameController")]
+    public void StartOfMainPlayerTurn_ReceiveResourceDetails()
     {
       var gameSetupOrder = new [] { 12u, 10u, 8u, 6u };
       var gameTurnOrder = gameSetupOrder;
@@ -889,10 +928,11 @@ namespace Jabberwocky.SoC.Library.UnitTests
       localGameController.StartGameSetup();
       localGameController.ContinueGameSetup(MainSettlementOneLocation, mainRoadOne);
       localGameController.CompleteGameSetup(MainSettlementTwoLocation, mainRoadTwo);
+      localGameController.FinalisePlayerTurnOrder();
 
       ResourceUpdate resourceUpdate = null;
-      localGameController.TurnResourcesCollectedEvent = (ResourceUpdate r) => { resourceUpdate = r; };
-      localGameController.StartGameLoop();
+      localGameController.StartPlayerTurnEvent = (Guid t, ResourceUpdate r) => { resourceUpdate = r; };
+      localGameController.StartGame();
 
       resourceUpdate.ShouldNotBeNull();
       resourceUpdate.Resources.Count.ShouldBe(2);

@@ -62,7 +62,7 @@ namespace Jabberwocky.SoC.Library
 
     public Action<ErrorDetails> ErrorRaisedEvent { get; set; }
 
-    public Action<ResourceUpdate> StartPlayerTurnEvent { get; set; }
+    public Action<Guid, ResourceUpdate> StartPlayerTurnEvent { get; set; }
 
     public Action<ResourceUpdate> TurnResourcesCollectedEvent { get; set; }
     
@@ -176,6 +176,11 @@ namespace Jabberwocky.SoC.Library
       return true;
     }
 
+    public void StartGame()
+    {
+
+    }
+
     public void ContinueGameSetup(UInt32 settlementLocation, Road road)
     {
       if (this.gamePhase != GamePhases.ContinueGameSetup)
@@ -227,7 +232,7 @@ namespace Jabberwocky.SoC.Library
       this.GameSetupResourcesEvent?.Invoke(this.gameSetupResources);
     }
 
-    public void StartGameLoop()
+    public void FinalisePlayerTurnOrder()
     {
       // Set the order for the main game loop
       this.players = PlayerTurnOrderCreator.Create(this.players, this.dice);
