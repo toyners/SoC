@@ -31,18 +31,10 @@ namespace Jabberwocky.SoC.Library.UnitTests
       this.diceRolls = rolls.ToArray();
     }
 
-    public bool ReturnRandomRollOnException { get; set; }
-
     public UInt32 RollTwoDice()
     {
       if (this.index >= this.diceRolls.Length)
       {
-        if (this.ReturnRandomRollOnException)
-        {
-          var random = new Random();
-          return (UInt32)random.Next(2, 13);
-        }
-
         throw new IndexOutOfRangeException("No more dice rolls.");
       }
 

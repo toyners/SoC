@@ -8,7 +8,6 @@ namespace Jabberwocky.SoC.Library.UnitTests
   {
     #region Fields
     private List<UInt32[]> diceRollSequences = new List<UInt32[]>();
-    private Boolean randomRollsOnException;
     #endregion
 
     #region Methods
@@ -21,12 +20,6 @@ namespace Jabberwocky.SoC.Library.UnitTests
     public MockDiceCreator AddExplicitDiceRollSequence(UInt32[] diceRolls)
     {
       this.diceRollSequences.Add(diceRolls);
-      return this;
-    }
-
-    public MockDiceCreator ReturnRandomRollsOnException(Boolean value)
-    {
-      this.randomRollsOnException = value;
       return this;
     }
 
@@ -77,7 +70,6 @@ namespace Jabberwocky.SoC.Library.UnitTests
     public MockDice Create()
     {
       var mockDice = new MockDice(diceRollSequences);
-      mockDice.ReturnRandomRollOnException = randomRollsOnException;
       return mockDice;
     }
     #endregion
