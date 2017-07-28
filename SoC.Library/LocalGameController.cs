@@ -179,6 +179,13 @@ namespace Jabberwocky.SoC.Library
     public void StartGamePlay()
     {
       // Collect and pass back the resources for the dice roll
+      var resourceRoll = this.dice.RollTwoDice();
+      var turnResources = this.CollectTurnResources(resourceRoll);
+
+      var turnToken = Guid.NewGuid();
+      this.StartPlayerTurnEvent.Invoke(turnToken, turnResources);
+
+      // Collect and pass back the resources for the dice roll
       //var resourceRoll = this.dice.RollTwoDice();
       //var turnResources = this.CollectTurnResources(resourceRoll);
       //this.TurnResourcesCollectedEvent?.Invoke(turnResources);
