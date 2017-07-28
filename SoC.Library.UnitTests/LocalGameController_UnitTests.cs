@@ -815,7 +815,21 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
     [Test]
     [Category("LocalGameController")]
-    public void GetTurnOrder_RollsAscending_ReceiveTurnOrderForMainGameLoop()
+    public void FinalisePlayerTurnOrder_CallOutOfSequence_MeaningfulErrorDetailsPassedBack()
+    {
+      var localGameController = this.CreateLocalGameController();
+      ErrorDetails errorDetails = null;
+      localGameController.ErrorRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
+
+      localGameController.FinalisePlayerTurnOrder();
+
+      errorDetails.ShouldNotBeNull();
+      errorDetails.Message.ShouldBe("Cannot call 'FinalisePlayerTurnOrder' until 'CompleteGameSetup' has completed.");
+    }
+
+    [Test]
+    [Category("LocalGameController")]
+    public void FinalisePlayerTurnOrder_RollsAscending_ReceiveTurnOrderForMainGameLoop()
     {
       // Arrange
       var gameSetupOrder = new[] { 12u, 10u, 8u, 6u };
