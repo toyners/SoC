@@ -893,7 +893,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
       // Act
       var turnToken = Guid.Empty;
       localGameController.StartPlayerTurnEvent = (Guid t, ResourceUpdate r) => { turnToken = t; };
-      localGameController.StartGame();
+      localGameController.StartGamePlay();
 
       // Assert
       turnToken.ShouldNotBe(Guid.Empty);
@@ -932,7 +932,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
       ResourceUpdate resourceUpdate = null;
       localGameController.StartPlayerTurnEvent = (Guid t, ResourceUpdate r) => { resourceUpdate = r; };
-      localGameController.StartGame();
+      localGameController.StartGamePlay();
 
       resourceUpdate.ShouldNotBeNull();
       resourceUpdate.Resources.Count.ShouldBe(2);

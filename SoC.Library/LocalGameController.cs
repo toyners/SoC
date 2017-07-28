@@ -176,7 +176,7 @@ namespace Jabberwocky.SoC.Library
       return true;
     }
 
-    public void StartGame()
+    public void StartGamePlay()
     {
       // Collect and pass back the resources for the dice roll
       //var resourceRoll = this.dice.RollTwoDice();
