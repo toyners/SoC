@@ -17,6 +17,7 @@ namespace Jabberwocky.SoC.Library
       StartGameSetup,
       ContinueGameSetup,
       CompleteGameSetup,
+      FinalisePlayerTurnOrder,
       Quitting,
     }
 
@@ -228,10 +229,18 @@ namespace Jabberwocky.SoC.Library
       this.GameSetupUpdateEvent?.Invoke(gameBoardUpdate);
 
       this.GameSetupResourcesEvent?.Invoke(this.gameSetupResources);
+      this.gamePhase = GamePhases.FinalisePlayerTurnOrder;
     }
 
     public void FinalisePlayerTurnOrder()
     {
+      if (this.gamePhase != GamePhases.FinalisePlayerTurnOrder)
+      {
+        var errorDetails = new ErrorDetails("Cannot call 'FinalisePlayerTurnOrder' until 'CompleteGameSetup' has completed.");
+        this.ErrorRaisedEvent?.Invoke(errorDetails);
+        return;
+      }
+
       // Set the order for the main game loop
       this.players = PlayerTurnOrderCreator.Create(this.players, this.dice);
       var playerData = this.CreatePlayerDataViews();

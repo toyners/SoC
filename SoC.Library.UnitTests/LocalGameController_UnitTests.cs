@@ -770,7 +770,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
     [Test]
     [Category("LocalGameController")]
-    public void GetTurnOrder_RollsDescending_ReceiveTurnOrderForMainGameLoop()
+    public void FinalisePlayerTurnOrder_RollsDescending_ReceiveTurnOrderForMainGameLoop()
     {
       // Arrange
       var gameSetupOrder = new[] { 12u, 10u, 8u, 6u };
