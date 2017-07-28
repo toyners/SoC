@@ -64,8 +64,6 @@ namespace Jabberwocky.SoC.Library
 
     public Action<Guid, ResourceUpdate> StartPlayerTurnEvent { get; set; }
 
-    public Action<ResourceUpdate> TurnResourcesCollectedEvent { get; set; }
-    
     public Action<ResourceUpdate> GameSetupResourcesEvent { get; set; }
 
     public Action<PlayerDataView[]> TurnOrderFinalisedEvent { get; set; }
@@ -179,11 +177,6 @@ namespace Jabberwocky.SoC.Library
 
       var turnToken = Guid.NewGuid();
       this.StartPlayerTurnEvent.Invoke(turnToken, turnResources);
-
-      // Collect and pass back the resources for the dice roll
-      //var resourceRoll = this.dice.RollTwoDice();
-      //var turnResources = this.CollectTurnResources(resourceRoll);
-      //this.TurnResourcesCollectedEvent?.Invoke(turnResources);
     }
 
     public void ContinueGameSetup(UInt32 settlementLocation, Road road)
