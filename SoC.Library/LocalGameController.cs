@@ -154,11 +154,6 @@ namespace Jabberwocky.SoC.Library
       }
     }
 
-    public void CompleteLaunchGame()
-    {
-      throw new NotImplementedException();
-    }
-
     public Boolean StartGameSetup()
     {
       if (this.gamePhase != GamePhases.StartGameSetup)
