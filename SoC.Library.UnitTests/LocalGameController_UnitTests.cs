@@ -917,7 +917,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
     [Test]
     [Category("LocalGameController")]
-    public void StartOfMainPlayerTurn_ReceiveResourceDetails()
+    public void StartOfMainPlayerTurn_DoesNotRollSeven_ReceiveResourceDetails()
     {
       var gameSetupOrder = new [] { 12u, 10u, 8u, 6u };
       var gameTurnOrder = gameSetupOrder;
@@ -963,6 +963,44 @@ namespace Jabberwocky.SoC.Library.UnitTests
       resourceUpdate.Resources[firstComputerPlayer.Id].LumberCount.ShouldBe(0u);
       resourceUpdate.Resources[firstComputerPlayer.Id].OreCount.ShouldBe(0u);
       resourceUpdate.Resources[firstComputerPlayer.Id].WoolCount.ShouldBe(0u);
+    }
+
+    [Test]
+    [Category("LocalGameController")]
+    public void StartOfMainPlayerTurn_RollsSevenWithMoreThanSevenCardsInHand_ChoosesThreeCardsToDiscard()
+    {
+      var gameSetupOrder = new[] { 12u, 10u, 8u, 6u };
+      var gameTurnOrder = gameSetupOrder;
+      var resourceRoll = 7u;
+      var mockDice = new MockDiceCreator()
+        .AddExplicitDiceRollSequence(gameSetupOrder)
+        .AddExplicitDiceRollSequence(gameTurnOrder)
+        .AddExplictDiceRoll(resourceRoll)
+        .Create();
+
+      var gameBoardManager = new GameBoardManager(BoardSizes.Standard);
+
+      var firstComputerPlayer = this.CreateMockComputerPlayer(gameBoardManager.Data, FirstSettlementOneLocation, FirstSettlementTwoLocation, firstRoadOne, firstRoadTwo);
+      var secondComputerPlayer = this.CreateMockComputerPlayer(gameBoardManager.Data, SecondSettlementOneLocation, SecondSettlementTwoLocation, secondRoadOne, secondRoadTwo);
+      var thirdComputerPlayer = this.CreateMockComputerPlayer(gameBoardManager.Data, ThirdSettlementOneLocation, ThirdSettlementTwoLocation, thirdRoadOne, thirdRoadTwo);
+
+      var localGameController = this.CreateLocalGameController(mockDice, gameBoardManager, firstComputerPlayer, secondComputerPlayer, thirdComputerPlayer);
+
+      var id = Guid.Empty;
+      localGameController.GameJoinedEvent = (PlayerDataView[] p) => { id = p[0].Id; };
+
+      localGameController.JoinGame();
+      localGameController.LaunchGame();
+      localGameController.StartGameSetup();
+      localGameController.ContinueGameSetup(MainSettlementOneLocation, mainRoadOne);
+      localGameController.CompleteGameSetup(MainSettlementTwoLocation, mainRoadTwo);
+      localGameController.FinalisePlayerTurnOrder();
+
+      ResourceUpdate resourceUpdate = null;
+      localGameController.StartPlayerTurnEvent = (Guid t, ResourceUpdate r) => { resourceUpdate = r; };
+      localGameController.StartGamePlay();
+
+      resourceUpdate.ShouldBeNull();
     }
 
     private void AssertPlayerDataViewIsCorrect(PlayerDataView playerDataView)
