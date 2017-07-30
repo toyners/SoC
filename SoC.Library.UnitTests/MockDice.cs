@@ -6,39 +6,46 @@ namespace Jabberwocky.SoC.Library.UnitTests
 {
   public class MockDice : IDice
   {
+    #region Fields
     private Int32 index;
-    private UInt32[] diceRolls;
+    private List<UInt32> diceRolls;
+    #endregion
 
+    #region Construction
     public MockDice(UInt32[] first, params UInt32[][] rest)
     {
-      var rolls = new List<UInt32>(first);
+      this.diceRolls = new List<UInt32>(first);
       foreach (var sequence in rest)
       {
-        rolls.AddRange(sequence);
+        this.diceRolls.AddRange(sequence);
       }
-
-      this.diceRolls = rolls.ToArray();
     }
 
-    public MockDice(List<UInt32[]> diceRolls)
+    public MockDice(List<UInt32[]> rolls)
     {
-      var rolls = new List<UInt32>(diceRolls[0]);
+      this.diceRolls = new List<UInt32>(rolls[0]);
       for (Int32 i = 1; i < diceRolls.Count; i++)
       {
-        rolls.AddRange(diceRolls[i]);
+        this.diceRolls.AddRange(rolls[i]);
       }
+    }
+    #endregion
 
-      this.diceRolls = rolls.ToArray();
+    #region Methods
+    public void AddSequence(UInt32[] rolls)
+    {
+      this.diceRolls.AddRange(rolls);
     }
 
     public UInt32 RollTwoDice()
     {
-      if (this.index >= this.diceRolls.Length)
+      if (this.index >= this.diceRolls.Count)
       {
         throw new IndexOutOfRangeException("No more dice rolls.");
       }
 
       return this.diceRolls[this.index++];
     }
+    #endregion
   }
 }
