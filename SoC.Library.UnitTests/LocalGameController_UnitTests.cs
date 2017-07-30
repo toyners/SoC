@@ -967,15 +967,28 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
     [Test]
     [Category("LocalGameController")]
-    public void StartOfMainPlayerTurn_RollsSevenWithMoreThanSevenCardsInHand_ChoosesThreeCardsToDiscard()
+    public void StartOfMainPlayerTurn_RollsSeven_ReceiveResourceCardLossesForComputerPlayers()
+    {
+      MockDice mockDice = null;
+      var localGameController = this.CreateLocalGameControllerAndCompleteGameSetup(out mockDice);
+      mockDice.AddSequence(new[] { 7u });
+
+      ResourceUpdate resourceUpdate = null;
+      Guid turnToken = Guid.Empty;
+      localGameController.StartPlayerTurnEvent = (Guid t, ResourceUpdate r) => { resourceUpdate = r; turnToken = t; };
+      localGameController.StartGamePlay();
+
+      turnToken.ShouldNotBe(Guid.Empty);
+      resourceUpdate.ShouldBeNull();
+    }
+
+    private LocalGameController CreateLocalGameControllerAndCompleteGameSetup(out MockDice mockDice)
     {
       var gameSetupOrder = new[] { 12u, 10u, 8u, 6u };
       var gameTurnOrder = gameSetupOrder;
-      var resourceRoll = 7u;
-      var mockDice = new MockDiceCreator()
+      mockDice = new MockDiceCreator()
         .AddExplicitDiceRollSequence(gameSetupOrder)
         .AddExplicitDiceRollSequence(gameTurnOrder)
-        .AddExplictDiceRoll(resourceRoll)
         .Create();
 
       var gameBoardManager = new GameBoardManager(BoardSizes.Standard);
@@ -996,11 +1009,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
       localGameController.CompleteGameSetup(MainSettlementTwoLocation, mainRoadTwo);
       localGameController.FinalisePlayerTurnOrder();
 
-      ResourceUpdate resourceUpdate = null;
-      localGameController.StartPlayerTurnEvent = (Guid t, ResourceUpdate r) => { resourceUpdate = r; };
-      localGameController.StartGamePlay();
-
-      resourceUpdate.ShouldBeNull();
+      return localGameController;
     }
 
     private void AssertPlayerDataViewIsCorrect(PlayerDataView playerDataView)
