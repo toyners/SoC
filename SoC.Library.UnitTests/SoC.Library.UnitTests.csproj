@@ -58,6 +58,7 @@
     <Compile Include="ComputerPlayer_UnitTests.cs" />
     <Compile Include="GameBoardData_UnitTests.cs" />
     <Compile Include="LocalGameControllerCreator.cs" />
+    <Compile Include="MockComputerPlayer.cs" />
     <Compile Include="MockDice.cs" />
     <Compile Include="MockDiceCreator.cs" />
     <Compile Include="Road_UnitTests.cs" />
