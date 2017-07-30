@@ -24,7 +24,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     public MockDice(List<UInt32[]> rolls)
     {
       this.diceRolls = new List<UInt32>(rolls[0]);
-      for (Int32 i = 1; i < diceRolls.Count; i++)
+      for (Int32 i = 1; i < rolls.Count; i++)
       {
         this.diceRolls.AddRange(rolls[i]);
       }
