@@ -65,6 +65,8 @@ namespace Jabberwocky.SoC.Library
 
     public Action<Guid, ResourceUpdate> StartPlayerTurnEvent { get; set; }
 
+    public Action<UInt32> DiceRollEvent { get; set; }
+
     public Action<ResourceUpdate> GameSetupResourcesEvent { get; set; }
 
     public Action<PlayerDataView[]> TurnOrderFinalisedEvent { get; set; }

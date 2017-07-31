@@ -877,34 +877,11 @@ namespace Jabberwocky.SoC.Library.UnitTests
     public void StartOfMainPlayerTurn_TurnTokenReceived()
     {
       // Arrange
-      var gameSetupOrder = new[] { 12u, 10u, 8u, 6u };
-      var gameTurnOrder = gameSetupOrder;
-      var resourceRoll = 8u;
-      var mockDice = new MockDiceCreator()
-        .AddExplicitDiceRollSequence(gameSetupOrder)
-        .AddExplicitDiceRollSequence(gameTurnOrder)
-        .AddExplictDiceRoll(resourceRoll)
-        .Create();
-
-      var gameBoardManager = new GameBoardManager(BoardSizes.Standard);
-      var firstComputerPlayer = this.CreateMockComputerPlayer(gameBoardManager.Data, FirstSettlementOneLocation, FirstSettlementTwoLocation, firstRoadOne, firstRoadTwo);
-      var secondComputerPlayer = this.CreateMockComputerPlayer(gameBoardManager.Data, SecondSettlementOneLocation, SecondSettlementTwoLocation, secondRoadOne, secondRoadTwo);
-      var thirdComputerPlayer = this.CreateMockComputerPlayer(gameBoardManager.Data, ThirdSettlementOneLocation, ThirdSettlementTwoLocation, thirdRoadOne, thirdRoadTwo);
-      var mockComputerPlayerFactory = Substitute.For<IComputerPlayerFactory>();
-      mockComputerPlayerFactory.Create().Returns(firstComputerPlayer, secondComputerPlayer, thirdComputerPlayer);
-
-      var localGameController = new LocalGameControllerCreator()
-                                  .ChangeDice(mockDice)
-                                  .ChangeGameBoardManager(gameBoardManager)
-                                  .ChangeComputerPlayerFactory(mockComputerPlayerFactory)
-                                  .Create();
-
-      localGameController.JoinGame();
-      localGameController.LaunchGame();
-      localGameController.StartGameSetup();
-      localGameController.ContinueGameSetup(MainSettlementOneLocation, mainRoadOne);
-      localGameController.CompleteGameSetup(MainSettlementTwoLocation, mainRoadTwo);
-      localGameController.FinalisePlayerTurnOrder();
+      MockDice mockDice = null;
+      Guid id = Guid.Empty;
+      IComputerPlayer firstComputerPlayer, secondComputerPlayer, thirdComputerPlayer;
+      var localGameController = this.CreateLocalGameControllerAndCompleteGameSetup(out mockDice, out id, out firstComputerPlayer, out secondComputerPlayer, out thirdComputerPlayer);
+      mockDice.AddSequence(new[] { 8u });
 
       // Act
       var turnToken = Guid.Empty;
@@ -913,6 +890,26 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
       // Assert
       turnToken.ShouldNotBe(Guid.Empty);
+    }
+
+    [Test]
+    [Category("LocalGameController")]
+    public void StartOfMainPlayerTurn_DiceRollReceived()
+    {
+      // Arrange
+      MockDice mockDice = null;
+      Guid id = Guid.Empty;
+      IComputerPlayer firstComputerPlayer, secondComputerPlayer, thirdComputerPlayer;
+      var localGameController = this.CreateLocalGameControllerAndCompleteGameSetup(out mockDice, out id, out firstComputerPlayer, out secondComputerPlayer, out thirdComputerPlayer);
+      mockDice.AddSequence(new[] { 8u });
+
+      // Act
+      var diceRoll = 0u;
+      localGameController.DiceRollEvent = (UInt32 d) => { diceRoll = d; };
+      localGameController.StartGamePlay();
+
+      // Assert
+      diceRoll.ShouldBe(8u);
     }
 
     [Test]
