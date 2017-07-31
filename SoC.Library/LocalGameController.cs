@@ -63,9 +63,11 @@ namespace Jabberwocky.SoC.Library
 
     public Action<ErrorDetails> ErrorRaisedEvent { get; set; }
 
-    public Action<Guid, ResourceUpdate> StartPlayerTurnEvent { get; set; }
+    public Action<Guid> StartPlayerTurnEvent { get; set; }
 
     public Action<UInt32> DiceRollEvent { get; set; }
+
+    public Action<ResourceUpdate> ResourcesCollectedEvent { get; set; }
 
     public Action<ResourceUpdate> GameSetupResourcesEvent { get; set; }
 
@@ -179,7 +181,7 @@ namespace Jabberwocky.SoC.Library
       var turnResources = this.CollectTurnResources(resourceRoll);
 
       var turnToken = Guid.NewGuid();
-      this.StartPlayerTurnEvent.Invoke(turnToken, turnResources);
+      this.StartPlayerTurnEvent.Invoke(turnToken /*, turnResources*/);
     }
 
     public void ContinueGameSetup(UInt32 settlementLocation, Road road)

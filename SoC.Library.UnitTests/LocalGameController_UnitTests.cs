@@ -885,7 +885,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
       // Act
       var turnToken = Guid.Empty;
-      localGameController.StartPlayerTurnEvent = (Guid t, ResourceUpdate r) => { turnToken = t; };
+      localGameController.StartPlayerTurnEvent = (Guid t) => { turnToken = t; };
       localGameController.StartGamePlay();
 
       // Assert
@@ -923,7 +923,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
       mockDice.AddSequence(new[] { 8u });
 
       ResourceUpdate resourceUpdate = null;
-      localGameController.StartPlayerTurnEvent = (Guid t, ResourceUpdate r) => { resourceUpdate = r; };
+      localGameController.ResourcesCollectedEvent = (ResourceUpdate r) => { resourceUpdate = r; };
       localGameController.StartGamePlay();
 
       resourceUpdate.ShouldNotBeNull();
@@ -949,13 +949,9 @@ namespace Jabberwocky.SoC.Library.UnitTests
       var localGameController = this.CreateLocalGameControllerAndCompleteGameSetup(out mockDice);
       mockDice.AddSequence(new[] { 7u });
 
-      ResourceUpdate resourceUpdate = null;
-      Guid turnToken = Guid.Empty;
-      localGameController.StartPlayerTurnEvent = (Guid t, ResourceUpdate r) => { resourceUpdate = r; turnToken = t; };
       localGameController.StartGamePlay();
 
-      turnToken.ShouldNotBe(Guid.Empty);
-      resourceUpdate.ShouldBeNull();
+      throw new NotImplementedException();
     }
 
     private LocalGameController CreateLocalGameControllerAndCompleteGameSetup(out MockDice mockDice)
