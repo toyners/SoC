@@ -176,14 +176,21 @@ namespace Jabberwocky.SoC.Library
 
     public void StartGamePlay()
     {
+      var turnToken = Guid.NewGuid();
+      this.StartPlayerTurnEvent?.Invoke(turnToken);
+
       var resourceRoll = this.dice.RollTwoDice();
       this.DiceRollEvent?.Invoke(resourceRoll);
 
-      var turnResources = this.CollectTurnResources(resourceRoll);
-      this.ResourcesCollectedEvent?.Invoke(turnResources);
-
-      var turnToken = Guid.NewGuid();
-      this.StartPlayerTurnEvent?.Invoke(turnToken);
+      if (resourceRoll != 7)
+      {
+        var turnResources = this.CollectTurnResources(resourceRoll);
+        this.ResourcesCollectedEvent?.Invoke(turnResources);
+      }
+      else
+      {
+        throw new NotImplementedException();
+      }
     }
 
     public void ContinueGameSetup(UInt32 settlementLocation, Road road)
