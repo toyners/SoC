@@ -954,14 +954,16 @@ namespace Jabberwocky.SoC.Library.UnitTests
       mockDice.AddSequence(new[] { 7u });
 
       // Act
-      Dictionary<Guid, Int32> resourcesLost = null;
-      localGameController.ResourcesLostEvent = (Dictionary<Guid, Int32> r) => { resourcesLost = r; };
+      PlayerDataView[] playerData = null;
+      localGameController.ResourcesLostEvent = (PlayerDataView[] p) => { playerData = p; };
       localGameController.StartGamePlay();
 
       // Assert
-      resourcesLost.Count.ShouldBe(2);
-      resourcesLost.ShouldContainKeyAndValue(firstComputerPlayer.Id, 1);
-      resourcesLost.ShouldContainKeyAndValue(thirdComputerPlayer.Id, 3);
+      playerData.Length.ShouldBe(2);
+      playerData[0].Id.ShouldBe(firstComputerPlayer.Id);
+      playerData[0].ResourceCards.ShouldBe(1u);
+      playerData[1].Id.ShouldBe(thirdComputerPlayer.Id);
+      playerData[1].ResourceCards.ShouldBe(3u);
     }
 
     private LocalGameController CreateLocalGameControllerAndCompleteGameSetup(out MockDice mockDice)
