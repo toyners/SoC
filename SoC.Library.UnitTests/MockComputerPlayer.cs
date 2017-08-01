@@ -2,13 +2,12 @@
 namespace Jabberwocky.SoC.Library.UnitTests
 {
   using System;
-  using System.Collections.Generic;
-  using System.Linq;
-  using System.Text;
-  using System.Threading.Tasks;
   using Interfaces;
   using GameBoards;
 
+  /// <summary>
+  /// Used to set computer player behaviour for testing purposes
+  /// </summary>
   public class MockComputerPlayer : IComputerPlayer
   {
     //private Queue<UInt32> 
@@ -31,6 +30,11 @@ namespace Jabberwocky.SoC.Library.UnitTests
     }
 
     public UInt32 ChooseSettlementLocation(GameBoardData gameBoardData)
+    {
+      throw new NotImplementedException();
+    }
+
+    public void DropResources(Int32 resourceCount)
     {
       throw new NotImplementedException();
     }

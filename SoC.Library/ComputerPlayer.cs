@@ -42,6 +42,11 @@ namespace Jabberwocky.SoC.Library
       return bestLocationIndex;
     }
 
+    public void DropResources(Int32 resourceCount)
+    {
+      throw new NotImplementedException();
+    }
+
     private Int32 CalculateChangeOfReturnOnRoll(HashSet<ResourceProvider> providers)
     {
       Int32 totalChance = 0;

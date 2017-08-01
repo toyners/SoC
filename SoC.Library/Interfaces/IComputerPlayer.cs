@@ -8,5 +8,6 @@ namespace Jabberwocky.SoC.Library.Interfaces
   {
     UInt32 ChooseSettlementLocation(GameBoardData gameBoardData);
     Road ChooseRoad(GameBoardData gameBoardData);
+    void DropResources(Int32 resourceCount);
   }
 }
