@@ -2,6 +2,7 @@
 namespace Jabberwocky.SoC.Library.UnitTests
 {
   using System;
+  using System.Collections.Generic;
   using GameBoards;
   using Interfaces;
   using NSubstitute;
@@ -945,13 +946,22 @@ namespace Jabberwocky.SoC.Library.UnitTests
     [Category("LocalGameController")]
     public void StartOfMainPlayerTurn_RollsSeven_ReceiveResourceCardLossesForComputerPlayers()
     {
+      // Assert
       MockDice mockDice = null;
-      var localGameController = this.CreateLocalGameControllerAndCompleteGameSetup(out mockDice);
+      Guid mainPlayerId;
+      IComputerPlayer firstComputerPlayer, secondComputerPlayer, thirdComputerPlayer;
+      var localGameController = this.CreateLocalGameControllerAndCompleteGameSetup(out mockDice, out mainPlayerId, out firstComputerPlayer, out secondComputerPlayer, out thirdComputerPlayer);
       mockDice.AddSequence(new[] { 7u });
 
+      // Act
+      Dictionary<Guid, Int32> resourcesLost = null;
+      localGameController.ResourcesLostEvent = (Dictionary<Guid, Int32> r) => { resourcesLost = r; };
       localGameController.StartGamePlay();
 
-      throw new NotImplementedException();
+      // Assert
+      resourcesLost.Count.ShouldBe(2);
+      resourcesLost.ShouldContainKeyAndValue(firstComputerPlayer.Id, 1);
+      resourcesLost.ShouldContainKeyAndValue(thirdComputerPlayer.Id, 3);
     }
 
     private LocalGameController CreateLocalGameControllerAndCompleteGameSetup(out MockDice mockDice)
