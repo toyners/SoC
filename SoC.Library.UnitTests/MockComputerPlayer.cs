@@ -14,7 +14,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     #region Fields
     public UInt32 HiddenDevelopmentCards;
     public UInt32 ResourceCards;
-    public List<DevelopmentCard> DisplayedDevelopmentCards;
+    public List<DevelopmentCardTypes> DisplayedDevelopmentCards;
 
     public Queue<UInt32> SettlementLocations;
     public Queue<Road> Roads;
@@ -58,9 +58,14 @@ namespace Jabberwocky.SoC.Library.UnitTests
       };
     }
 
-    private List<DevelopmentCard> CreateListOfDisplayedDevelopmentCards()
+    private List<DevelopmentCardTypes> CreateListOfDisplayedDevelopmentCards()
     {
-      throw new NotImplementedException();
+      if (this.DisplayedDevelopmentCards == null || this.DisplayedDevelopmentCards.Count == 0)
+      {
+        return null;
+      }
+      
+      return new List<DevelopmentCardTypes>(this.DisplayedDevelopmentCards);
     }
     #endregion
   }
