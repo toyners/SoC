@@ -11,22 +11,23 @@ namespace Jabberwocky.SoC.Library.UnitTests
   /// </summary>
   public class MockComputerPlayer : IComputerPlayer
   {
+    #region Fields
     public UInt32 HiddenDevelopmentCards;
     public UInt32 ResourceCards;
+    #endregion
 
+    #region Construction
     public MockComputerPlayer(UInt32 firstSettlementLocation, Road firstRoad, UInt32 secondSettlementLocation, Road secondRoad)
     {
 
     }
+    #endregion
 
-    public Guid Id
-    {
-      get
-      {
-        throw new NotImplementedException();
-      }
-    }
+    #region Properties
+    public Guid Id { get; private set; }
+    #endregion
 
+    #region Methods
     public Road ChooseRoad(GameBoardData gameBoardData)
     {
       throw new NotImplementedException();
@@ -57,5 +58,6 @@ namespace Jabberwocky.SoC.Library.UnitTests
     {
       throw new NotImplementedException();
     }
+    #endregion
   }
 }
