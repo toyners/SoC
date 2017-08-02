@@ -14,12 +14,16 @@ namespace Jabberwocky.SoC.Library.UnitTests
     #region Fields
     public UInt32 HiddenDevelopmentCards;
     public UInt32 ResourceCards;
+    public List<DevelopmentCard> DisplayedDevelopmentCards;
+
+    public Queue<UInt32> SettlementLocations;
+    public Queue<Road> Roads;
     #endregion
 
     #region Construction
-    public MockComputerPlayer(UInt32 firstSettlementLocation, Road firstRoad, UInt32 secondSettlementLocation, Road secondRoad)
+    public MockComputerPlayer()
     {
-
+      this.Id = Guid.NewGuid();
     }
     #endregion
 
@@ -30,12 +34,12 @@ namespace Jabberwocky.SoC.Library.UnitTests
     #region Methods
     public Road ChooseRoad(GameBoardData gameBoardData)
     {
-      throw new NotImplementedException();
+      return this.Roads.Dequeue();
     }
 
     public UInt32 ChooseSettlementLocation(GameBoardData gameBoardData)
     {
-      throw new NotImplementedException();
+      return this.SettlementLocations.Dequeue();
     }
 
     public void DropResources(Int32 resourceCount)
