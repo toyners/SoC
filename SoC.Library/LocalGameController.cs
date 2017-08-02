@@ -138,15 +138,6 @@ namespace Jabberwocky.SoC.Library
       return player is IComputerPlayer;
     }
 
-    private void WaitForGameLaunch()
-    {
-      while (this.gamePhase == GamePhases.WaitingLaunch)
-      {
-        Thread.Sleep(50);
-        this.cancellationToken.ThrowIfCancellationRequested();
-      }
-    }
-
     public Boolean StartGameSetup()
     {
       if (this.gamePhase != GamePhases.StartGameSetup)
