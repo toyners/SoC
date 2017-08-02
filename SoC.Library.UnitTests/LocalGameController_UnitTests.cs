@@ -1007,7 +1007,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     private void AssertPlayerDataViewIsCorrect(PlayerDataView playerDataView)
     {
       playerDataView.DisplayedDevelopmentCards.ShouldBeNull();
-      playerDataView.HiddenDevelopmentCards.ShouldBe(0);
+      playerDataView.HiddenDevelopmentCards.ShouldBe(0u);
       playerDataView.ResourceCards.ShouldBe(0u);
     }
 

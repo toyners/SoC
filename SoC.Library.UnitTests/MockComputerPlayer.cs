@@ -11,7 +11,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
   /// </summary>
   public class MockComputerPlayer : IComputerPlayer
   {
-    public Int32 HiddenDevelopmentCards;
+    public UInt32 HiddenDevelopmentCards;
     public UInt32 ResourceCards;
 
     public MockComputerPlayer(UInt32 firstSettlementLocation, Road firstRoad, UInt32 secondSettlementLocation, Road secondRoad)

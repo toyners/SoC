@@ -9,6 +9,6 @@ namespace Jabberwocky.SoC.Library
     public Guid Id { get; set; }
     public List<DevelopmentCard> DisplayedDevelopmentCards { get; set; }
     public UInt32 ResourceCards { get; set; }
-    public Int32 HiddenDevelopmentCards { get; set; }
+    public UInt32 HiddenDevelopmentCards { get; set; }
   }
 }
