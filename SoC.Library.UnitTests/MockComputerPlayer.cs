@@ -4,13 +4,16 @@ namespace Jabberwocky.SoC.Library.UnitTests
   using System;
   using Interfaces;
   using GameBoards;
+  using System.Collections.Generic;
 
   /// <summary>
   /// Used to set computer player behaviour for testing purposes
   /// </summary>
   public class MockComputerPlayer : IComputerPlayer
   {
-    //private Queue<UInt32> 
+    public Int32 HiddenDevelopmentCards;
+    public UInt32 ResourceCards;
+
     public MockComputerPlayer(UInt32 firstSettlementLocation, Road firstRoad, UInt32 secondSettlementLocation, Road secondRoad)
     {
 
@@ -40,6 +43,17 @@ namespace Jabberwocky.SoC.Library.UnitTests
     }
 
     public PlayerDataView GetDataView()
+    {
+      return new PlayerDataView
+      {
+        Id = this.Id,
+        DisplayedDevelopmentCards = this.CreateListOfDisplayedDevelopmentCards(),
+        HiddenDevelopmentCards = this.HiddenDevelopmentCards,
+        ResourceCards = this.ResourceCards
+      };
+    }
+
+    private List<DevelopmentCard> CreateListOfDisplayedDevelopmentCards()
     {
       throw new NotImplementedException();
     }
