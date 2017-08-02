@@ -59,7 +59,7 @@ namespace Jabberwocky.SoC.Library
     public Action<Guid> StartPlayerTurnEvent { get; set; }
     public Action<UInt32> DiceRollEvent { get; set; }
     public Action<ResourceUpdate> ResourcesCollectedEvent { get; set; }
-    public Action<PlayerDataView[]> ResourcesLostEvent { get; set; }
+    public Action<Dictionary<Guid, UInt32>> ResourcesLostEvent { get; set; }
     public Action<ResourceUpdate> GameSetupResourcesEvent { get; set; }
     public Action<PlayerDataView[]> TurnOrderFinalisedEvent { get; set; }
     #endregion
