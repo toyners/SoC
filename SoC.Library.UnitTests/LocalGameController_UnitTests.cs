@@ -949,9 +949,13 @@ namespace Jabberwocky.SoC.Library.UnitTests
       // Assert
       MockDice mockDice = null;
       Guid mainPlayerId;
-      IComputerPlayer firstComputerPlayer, secondComputerPlayer, thirdComputerPlayer;
+      MockComputerPlayer firstComputerPlayer, secondComputerPlayer, thirdComputerPlayer;
       var localGameController = this.CreateLocalGameControllerAndCompleteGameSetup2(out mockDice, out mainPlayerId, out firstComputerPlayer, out secondComputerPlayer, out thirdComputerPlayer);
       mockDice.AddSequence(new[] { 7u });
+      firstComputerPlayer.ResourceCards = 8;
+      secondComputerPlayer.ResourceCards = 7;
+      thirdComputerPlayer.ResourceCards = 9;
+
 
       // Act
       Dictionary<Guid, UInt32> resourcesLost = null;
@@ -960,9 +964,9 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
       // Assert
       resourcesLost.Count.ShouldBe(3);
-      resourcesLost.ShouldContainKeyAndValue(firstComputerPlayer.Id, 1u);
+      resourcesLost.ShouldContainKeyAndValue(firstComputerPlayer.Id, 4u);
       resourcesLost.ShouldContainKeyAndValue(secondComputerPlayer.Id, 0u);
-      resourcesLost.ShouldContainKeyAndValue(thirdComputerPlayer.Id, 3u);
+      resourcesLost.ShouldContainKeyAndValue(thirdComputerPlayer.Id, 4u);
     }
 
     private LocalGameController CreateLocalGameControllerAndCompleteGameSetup(out MockDice mockDice)
@@ -1004,7 +1008,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
       return localGameController;
     }
 
-    private LocalGameController CreateLocalGameControllerAndCompleteGameSetup2(out MockDice mockDice, out Guid mainPlayerId, out IComputerPlayer firstComputerPlayer, out IComputerPlayer secondComputerPlayer, out IComputerPlayer thirdComputerPlayer)
+    private LocalGameController CreateLocalGameControllerAndCompleteGameSetup2(out MockDice mockDice, out Guid mainPlayerId, out MockComputerPlayer firstComputerPlayer, out MockComputerPlayer secondComputerPlayer, out MockComputerPlayer thirdComputerPlayer)
     {
       var gameSetupOrder = new[] { 12u, 10u, 8u, 6u };
       var gameTurnOrder = gameSetupOrder;
@@ -1094,11 +1098,11 @@ namespace Jabberwocky.SoC.Library.UnitTests
       return mockComputerPlayer;
     }
 
-    private IComputerPlayer CreateMockComputerPlayer(UInt32 settlementOneLocation, UInt32 settlementTwoLocation, Road roadOne, Road roadTwo)
+    private MockComputerPlayer CreateMockComputerPlayer(UInt32 settlementOneLocation, UInt32 settlementTwoLocation, Road roadOne, Road roadTwo)
     {
       var computerPlayer = new MockComputerPlayer();
-      computerPlayer.SettlementLocations = new Queue<uint>(new uint[] { FirstSettlementOneLocation, FirstSettlementTwoLocation });
-      computerPlayer.Roads = new Queue<Road>(new Road[] { firstRoadOne, firstRoadTwo });
+      computerPlayer.SettlementLocations = new Queue<uint>(new uint[] { settlementOneLocation, settlementTwoLocation });
+      computerPlayer.Roads = new Queue<Road>(new Road[] { roadOne, roadTwo });
       return computerPlayer;
     }  
     #endregion
