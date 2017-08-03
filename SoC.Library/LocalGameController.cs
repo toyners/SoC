@@ -157,6 +157,7 @@ namespace Jabberwocky.SoC.Library
 
     public void StartGamePlay()
     {
+      this.playerIndex = 0;
       var turnToken = Guid.NewGuid();
       this.StartPlayerTurnEvent?.Invoke(turnToken);
 
@@ -170,7 +171,19 @@ namespace Jabberwocky.SoC.Library
       }
       else
       {
-        throw new NotImplementedException();
+        Dictionary<Guid, UInt32> resourcesLost = new Dictionary<Guid, uint>();
+
+        for (var index = 0; index < this.players.Length; index++)
+        {
+          if (index == this.playerIndex)
+          {
+            continue;
+          }
+
+          var player = this.players[this.playerIndex];
+        }
+
+        this.ResourcesLostEvent?.Invoke(resourcesLost);
       }
     }
 
