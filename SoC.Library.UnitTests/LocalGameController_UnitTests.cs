@@ -1057,12 +1057,12 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
     private void RunOpponentDataPassBackTests(GameOptions gameOptions)
     {
-      var firstOpponentPlayer = new MockPlayer("Bob");
-      var secondOpponentPlayer = new MockPlayer("Sally");
-      var thirdOpponentPlayer = new MockPlayer("Rich");
+      var firstOpponent = new MockPlayer("Bob");
+      var secondOpponent = new MockPlayer("Sally");
+      var thirdOpponent = new MockPlayer("Rich");
 
       var mockComputerGameFactory = Substitute.For<IComputerPlayerFactory>();
-      mockComputerGameFactory.GetPlayer().Returns(firstOpponentPlayer, secondOpponentPlayer, thirdOpponentPlayer);
+      mockComputerGameFactory.GetPlayer().Returns(firstOpponent, secondOpponent, thirdOpponent);
       var localGameController = new LocalGameControllerCreator()
         .ChangeComputerPlayerFactory(mockComputerGameFactory)
         .Create();
@@ -1075,13 +1075,13 @@ namespace Jabberwocky.SoC.Library.UnitTests
       playerDataViews.Length.ShouldBe(3);
 
       playerDataViews[0].ShouldBeOfType<PlayerDataView>();
-      this.AssertPlayerDataViewIsCorrect(firstOpponentPlayer.Id, firstOpponentPlayer.Name, playerDataViews[0]);
+      this.AssertPlayerDataViewIsCorrect(firstOpponent.Id, firstOpponent.Name, playerDataViews[0]);
 
       playerDataViews[1].ShouldBeOfType<PlayerDataView>();
-      this.AssertPlayerDataViewIsCorrect(secondOpponentPlayer.Id, secondOpponentPlayer.Name, playerDataViews[1]);
+      this.AssertPlayerDataViewIsCorrect(secondOpponent.Id, secondOpponent.Name, playerDataViews[1]);
 
       playerDataViews[2].ShouldBeOfType<PlayerDataView>();
-      this.AssertPlayerDataViewIsCorrect(thirdOpponentPlayer.Id, thirdOpponentPlayer.Name, playerDataViews[2]);
+      this.AssertPlayerDataViewIsCorrect(thirdOpponent.Id, thirdOpponent.Name, playerDataViews[2]);
     }
     #endregion
   }
