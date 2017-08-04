@@ -37,38 +37,33 @@ namespace Jabberwocky.SoC.Library.UnitTests
     #region Methods
     [Test]
     [Category("LocalGameController")]
-    public void JoinGame_DefaultGameOptions_PlayerDataPassedBack()
+    public void JoinGame_DefaultGameOptions_OpponentDataPassedBack()
     {
-      var firstComputerPlayer = new ComputerPlayer(Guid.NewGuid());
-      var secondComputerPlayer = new ComputerPlayer(Guid.NewGuid());
-      var thirdComputerPlayer = new ComputerPlayer(Guid.NewGuid());
+      var firstOpponentPlayer = new MockPlayer("Bob");
+      var secondOpponentPlayer = new MockPlayer("Sally");
+      var thirdOpponentPlayer = new MockPlayer("Rich");
 
       var mockComputerGameFactory = Substitute.For<IComputerPlayerFactory>();
-      mockComputerGameFactory.Create().Returns(firstComputerPlayer, secondComputerPlayer, thirdComputerPlayer);
+      mockComputerGameFactory.GetPlayer().Returns(firstOpponentPlayer, secondOpponentPlayer, thirdOpponentPlayer);
       var localGameController = new LocalGameControllerCreator()
         .ChangeComputerPlayerFactory(mockComputerGameFactory)
         .Create();
 
-      PlayerDataView[] playerData = null;
-      localGameController.GameJoinedEvent = (PlayerDataView[] p) => { playerData = p; };
+      PlayerDataView[] playerDataViews = null;
+      localGameController.GameJoinedEvent = (PlayerDataView[] p) => { playerDataViews = p; };
       localGameController.JoinGame(new GameOptions());
       
-      playerData.ShouldNotBeNull();
-      playerData.Length.ShouldBe(4);
-      playerData[0].ShouldBeOfType<PlayerDataView>();
-      this.AssertPlayerDataViewIsCorrect(playerData[0]);
+      playerDataViews.ShouldNotBeNull();
+      playerDataViews.Length.ShouldBe(3);
 
-      playerData[1].ShouldBeOfType<PlayerDataView>();
-      playerData[1].Id.ShouldBe(firstComputerPlayer.Id);
-      this.AssertPlayerDataViewIsCorrect(playerData[1]);
+      playerDataViews[0].ShouldBeOfType<PlayerDataView>();
+      this.AssertPlayerDataViewIsCorrect(firstOpponentPlayer.Id, firstOpponentPlayer.Name, playerDataViews[0]);
       
-      playerData[2].ShouldBeOfType<PlayerDataView>();
-      playerData[2].Id.ShouldBe(secondComputerPlayer.Id);
-      this.AssertPlayerDataViewIsCorrect(playerData[2]);
+      playerDataViews[1].ShouldBeOfType<PlayerDataView>();
+      this.AssertPlayerDataViewIsCorrect(secondOpponentPlayer.Id, secondOpponentPlayer.Name, playerDataViews[1]);
 
-      playerData[3].ShouldBeOfType<PlayerDataView>();
-      playerData[3].Id.ShouldBe(thirdComputerPlayer.Id);
-      this.AssertPlayerDataViewIsCorrect(playerData[3]);
+      playerDataViews[2].ShouldBeOfType<PlayerDataView>();
+      this.AssertPlayerDataViewIsCorrect(thirdOpponentPlayer.Id, thirdOpponentPlayer.Name, playerDataViews[2]);
     }
 
     [Test]
@@ -949,7 +944,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
       // Assert
       MockDice mockDice = null;
       Guid mainPlayerId;
-      MockComputerPlayer firstComputerPlayer, secondComputerPlayer, thirdComputerPlayer;
+      MockPlayer firstComputerPlayer, secondComputerPlayer, thirdComputerPlayer;
       var localGameController = this.CreateLocalGameControllerAndCompleteGameSetup2(out mockDice, out mainPlayerId, out firstComputerPlayer, out secondComputerPlayer, out thirdComputerPlayer);
       mockDice.AddSequence(new[] { 7u });
       firstComputerPlayer.ResourceCards = 8;
@@ -1008,7 +1003,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
       return localGameController;
     }
 
-    private LocalGameController CreateLocalGameControllerAndCompleteGameSetup2(out MockDice mockDice, out Guid mainPlayerId, out MockComputerPlayer firstComputerPlayer, out MockComputerPlayer secondComputerPlayer, out MockComputerPlayer thirdComputerPlayer)
+    private LocalGameController CreateLocalGameControllerAndCompleteGameSetup2(out MockDice mockDice, out Guid mainPlayerId, out MockPlayer firstComputerPlayer, out MockPlayer secondComputerPlayer, out MockPlayer thirdComputerPlayer)
     {
       var gameSetupOrder = new[] { 12u, 10u, 8u, 6u };
       var gameTurnOrder = gameSetupOrder;
@@ -1042,6 +1037,15 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
     private void AssertPlayerDataViewIsCorrect(PlayerDataView playerDataView)
     {
+      playerDataView.DisplayedDevelopmentCards.ShouldBeNull();
+      playerDataView.HiddenDevelopmentCards.ShouldBe(0u);
+      playerDataView.ResourceCards.ShouldBe(0u);
+    }
+
+    private void AssertPlayerDataViewIsCorrect(Guid expectedId, String expectedName, PlayerDataView playerDataView)
+    {
+      playerDataView.Id.ShouldBe(expectedId);
+      playerDataView.Name.ShouldBe(expectedName);
       playerDataView.DisplayedDevelopmentCards.ShouldBeNull();
       playerDataView.HiddenDevelopmentCards.ShouldBe(0u);
       playerDataView.ResourceCards.ShouldBe(0u);
@@ -1098,9 +1102,9 @@ namespace Jabberwocky.SoC.Library.UnitTests
       return mockComputerPlayer;
     }
 
-    private MockComputerPlayer CreateMockComputerPlayer(UInt32 settlementOneLocation, UInt32 settlementTwoLocation, Road roadOne, Road roadTwo)
+    private MockPlayer CreateMockComputerPlayer(UInt32 settlementOneLocation, UInt32 settlementTwoLocation, Road roadOne, Road roadTwo)
     {
-      var computerPlayer = new MockComputerPlayer();
+      var computerPlayer = new MockPlayer();
       computerPlayer.SettlementLocations = new Queue<uint>(new uint[] { settlementOneLocation, settlementTwoLocation });
       computerPlayer.Roads = new Queue<Road>(new Road[] { roadOne, roadTwo });
       return computerPlayer;

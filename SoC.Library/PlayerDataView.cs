@@ -10,5 +10,6 @@ namespace Jabberwocky.SoC.Library
     public List<DevelopmentCardTypes> DisplayedDevelopmentCards { get; set; }
     public UInt32 ResourceCards { get; set; }
     public UInt32 HiddenDevelopmentCards { get; set; }
+    public String Name;
   }
 }

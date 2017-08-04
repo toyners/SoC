@@ -7,23 +7,29 @@ namespace Jabberwocky.SoC.Library.UnitTests
   using System.Collections.Generic;
 
   /// <summary>
-  /// Used to set computer player behaviour for testing purposes
+  /// Used to set opponent player behaviour for testing purposes
   /// </summary>
-  public class MockComputerPlayer : IComputerPlayer
+  public class MockPlayer : IComputerPlayer
   {
     #region Fields
     public UInt32 HiddenDevelopmentCards;
     public UInt32 ResourceCards;
     public List<DevelopmentCardTypes> DisplayedDevelopmentCards;
+    public readonly String Name;
 
     public Queue<UInt32> SettlementLocations;
     public Queue<Road> Roads;
     #endregion
 
     #region Construction
-    public MockComputerPlayer()
+    public MockPlayer()
     {
       this.Id = Guid.NewGuid();
+    }
+
+    public MockPlayer(String name) : this()
+    {
+      this.Name = name;
     }
     #endregion
 

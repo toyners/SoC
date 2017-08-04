@@ -4,6 +4,7 @@ using Jabberwocky.SoC.Library.GameBoards;
 
 namespace Jabberwocky.SoC.Library.Interfaces
 {
+  // TODO: Collapse into IPlayer
   public interface IComputerPlayer : IPlayer
   {
     UInt32 ChooseSettlementLocation(GameBoardData gameBoardData);
