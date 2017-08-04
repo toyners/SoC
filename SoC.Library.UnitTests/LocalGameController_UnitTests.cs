@@ -37,69 +37,16 @@ namespace Jabberwocky.SoC.Library.UnitTests
     #region Methods
     [Test]
     [Category("LocalGameController")]
-    public void JoinGame_DefaultGameOptions_OpponentDataPassedBack()
+    public void JoinGame_NullGameOptions_OpponentDataPassedBack()
     {
-      var firstOpponentPlayer = new MockPlayer("Bob");
-      var secondOpponentPlayer = new MockPlayer("Sally");
-      var thirdOpponentPlayer = new MockPlayer("Rich");
-
-      var mockComputerGameFactory = Substitute.For<IComputerPlayerFactory>();
-      mockComputerGameFactory.GetPlayer().Returns(firstOpponentPlayer, secondOpponentPlayer, thirdOpponentPlayer);
-      var localGameController = new LocalGameControllerCreator()
-        .ChangeComputerPlayerFactory(mockComputerGameFactory)
-        .Create();
-
-      PlayerDataView[] playerDataViews = null;
-      localGameController.GameJoinedEvent = (PlayerDataView[] p) => { playerDataViews = p; };
-      localGameController.JoinGame(new GameOptions());
-      
-      playerDataViews.ShouldNotBeNull();
-      playerDataViews.Length.ShouldBe(3);
-
-      playerDataViews[0].ShouldBeOfType<PlayerDataView>();
-      this.AssertPlayerDataViewIsCorrect(firstOpponentPlayer.Id, firstOpponentPlayer.Name, playerDataViews[0]);
-      
-      playerDataViews[1].ShouldBeOfType<PlayerDataView>();
-      this.AssertPlayerDataViewIsCorrect(secondOpponentPlayer.Id, secondOpponentPlayer.Name, playerDataViews[1]);
-
-      playerDataViews[2].ShouldBeOfType<PlayerDataView>();
-      this.AssertPlayerDataViewIsCorrect(thirdOpponentPlayer.Id, thirdOpponentPlayer.Name, playerDataViews[2]);
+      this.RunOpponentDataPassBackTests(null);
     }
 
     [Test]
     [Category("LocalGameController")]
-    public void JoinGame_NullGameOptions_PlayerDataPassedBack()
+    public void JoinGame_DefaultGameOptions_OpponentDataPassedBack()
     {
-      var firstComputerPlayer = new ComputerPlayer(Guid.NewGuid());
-      var secondComputerPlayer = new ComputerPlayer(Guid.NewGuid());
-      var thirdComputerPlayer = new ComputerPlayer(Guid.NewGuid());
-
-      var mockComputerGameFactory = Substitute.For<IComputerPlayerFactory>();
-      mockComputerGameFactory.Create().Returns(firstComputerPlayer, secondComputerPlayer, thirdComputerPlayer);
-      var localGameController = new LocalGameControllerCreator()
-        .ChangeComputerPlayerFactory(mockComputerGameFactory)
-        .Create();
-
-      PlayerDataView[] playerData = null;
-      localGameController.GameJoinedEvent = (PlayerDataView[] p) => { playerData = p; };
-      localGameController.JoinGame();
-
-      playerData.ShouldNotBeNull();
-      playerData.Length.ShouldBe(4);
-      playerData[0].ShouldBeOfType<PlayerDataView>();
-      this.AssertPlayerDataViewIsCorrect(playerData[0]);
-
-      playerData[1].ShouldBeOfType<PlayerDataView>();
-      playerData[1].Id.ShouldBe(firstComputerPlayer.Id);
-      this.AssertPlayerDataViewIsCorrect(playerData[1]);
-
-      playerData[2].ShouldBeOfType<PlayerDataView>();
-      playerData[2].Id.ShouldBe(secondComputerPlayer.Id);
-      this.AssertPlayerDataViewIsCorrect(playerData[2]);
-
-      playerData[3].ShouldBeOfType<PlayerDataView>();
-      playerData[3].Id.ShouldBe(thirdComputerPlayer.Id);
-      this.AssertPlayerDataViewIsCorrect(playerData[3]);
+      this.RunOpponentDataPassBackTests(new GameOptions());
     }
 
     [Test]
@@ -1108,7 +1055,36 @@ namespace Jabberwocky.SoC.Library.UnitTests
       computerPlayer.SettlementLocations = new Queue<uint>(new uint[] { settlementOneLocation, settlementTwoLocation });
       computerPlayer.Roads = new Queue<Road>(new Road[] { roadOne, roadTwo });
       return computerPlayer;
-    }  
+    }
+
+    private void RunOpponentDataPassBackTests(GameOptions gameOptions)
+    {
+      var firstOpponentPlayer = new MockPlayer("Bob");
+      var secondOpponentPlayer = new MockPlayer("Sally");
+      var thirdOpponentPlayer = new MockPlayer("Rich");
+
+      var mockComputerGameFactory = Substitute.For<IComputerPlayerFactory>();
+      mockComputerGameFactory.GetPlayer().Returns(firstOpponentPlayer, secondOpponentPlayer, thirdOpponentPlayer);
+      var localGameController = new LocalGameControllerCreator()
+        .ChangeComputerPlayerFactory(mockComputerGameFactory)
+        .Create();
+
+      PlayerDataView[] playerDataViews = null;
+      localGameController.GameJoinedEvent = (PlayerDataView[] p) => { playerDataViews = p; };
+      localGameController.JoinGame(gameOptions);
+
+      playerDataViews.ShouldNotBeNull();
+      playerDataViews.Length.ShouldBe(3);
+
+      playerDataViews[0].ShouldBeOfType<PlayerDataView>();
+      this.AssertPlayerDataViewIsCorrect(firstOpponentPlayer.Id, firstOpponentPlayer.Name, playerDataViews[0]);
+
+      playerDataViews[1].ShouldBeOfType<PlayerDataView>();
+      this.AssertPlayerDataViewIsCorrect(secondOpponentPlayer.Id, secondOpponentPlayer.Name, playerDataViews[1]);
+
+      playerDataViews[2].ShouldBeOfType<PlayerDataView>();
+      this.AssertPlayerDataViewIsCorrect(thirdOpponentPlayer.Id, thirdOpponentPlayer.Name, playerDataViews[2]);
+    }
     #endregion
   }
 
