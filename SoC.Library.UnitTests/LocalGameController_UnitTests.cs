@@ -84,9 +84,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
       mockDice.RollTwoDice().Returns(12u, 10u, 8u, 2u);
       var localGameController = this.CreateLocalGameController(mockDice, new ComputerPlayerFactory(), new GameBoardManager(BoardSizes.Standard));
 
-      PlayerDataView[] playerData = null;
       GameBoardData gameBoardData = null;
-      localGameController.GameJoinedEvent = (PlayerDataView[] p) => { playerData = p; };
       localGameController.InitialBoardSetupEvent = (GameBoardData g) => { gameBoardData = g; };
 
       localGameController.JoinGame();
