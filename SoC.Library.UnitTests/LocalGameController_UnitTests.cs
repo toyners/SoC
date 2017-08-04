@@ -108,9 +108,17 @@ namespace Jabberwocky.SoC.Library.UnitTests
        
       var gameBoardManager = new GameBoardManager(BoardSizes.Standard);
 
-      var firstOpponent = new MockPlayer(FirstOpponentName); 
+      var firstOpponent = new MockPlayer(FirstOpponentName);
+      firstOpponent.SettlementLocations = new Queue<UInt32>(new [] { FirstSettlementOneLocation, FirstSettlementTwoLocation });
+      firstOpponent.Roads = new Queue<Road>(new[] { firstRoadOne, firstRoadTwo });
+
       var secondOpponent = new MockPlayer(SecondOpponentName);
+      secondOpponent.SettlementLocations = new Queue<UInt32>(new[] { SecondSettlementOneLocation, SecondSettlementTwoLocation });
+      secondOpponent.Roads = new Queue<Road>(new[] { secondRoadOne, secondRoadTwo });
+
       var thirdOpponent = new MockPlayer(ThirdOpponentName);
+      thirdOpponent.SettlementLocations = new Queue<UInt32>(new[] { ThirdSettlementOneLocation, ThirdSettlementTwoLocation });
+      thirdOpponent.Roads = new Queue<Road>(new[] { thirdRoadOne, thirdRoadTwo });
 
       GameBoardUpdate gameBoardUpdate = null;
       var localGameController = this.CreateLocalGameController(mockDice, gameBoardManager, firstOpponent, secondOpponent, thirdOpponent);
