@@ -980,13 +980,6 @@ namespace Jabberwocky.SoC.Library.UnitTests
       return localGameController;
     }
 
-    private void AssertPlayerDataViewIsCorrect(PlayerDataView playerDataView)
-    {
-      playerDataView.DisplayedDevelopmentCards.ShouldBeNull();
-      playerDataView.HiddenDevelopmentCards.ShouldBe(0u);
-      playerDataView.ResourceCards.ShouldBe(0u);
-    }
-
     private void AssertPlayerDataViewIsCorrect(Guid expectedId, String expectedName, PlayerDataView playerDataView)
     {
       playerDataView.Id.ShouldBe(expectedId);
