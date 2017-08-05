@@ -121,7 +121,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
       thirdOpponent.Roads = new Queue<Road>(new[] { thirdRoadOne, thirdRoadTwo });
 
       GameBoardUpdate gameBoardUpdate = null;
-      var localGameController = this.CreateLocalGameController(mockDice, gameBoardManager, firstOpponent, secondOpponent, thirdOpponent);
+      var localGameController = this.CreateLocalGameController(mockDice, firstOpponent, secondOpponent, thirdOpponent);
       localGameController.GameSetupUpdateEvent = (GameBoardUpdate u) => { gameBoardUpdate = u; };
       localGameController.InitialBoardSetupEvent = (GameBoardData d) => { };
 
@@ -1020,6 +1020,17 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
       var localGameController = new LocalGameController(dice, mockComputerPlayerFactory, gameBoardManager);
       return localGameController;
+    }
+
+    private LocalGameController CreateLocalGameController(IDice dice, IComputerPlayer firstComputerPlayer, params IComputerPlayer[] otherComputerPlayers)
+    {
+      var mockComputerPlayerFactory = Substitute.For<IComputerPlayerFactory>();
+      mockComputerPlayerFactory.Create().Returns(firstComputerPlayer, otherComputerPlayers);
+
+      return new LocalGameControllerCreator()
+        .ChangeDice(dice)
+        .ChangeComputerPlayerFactory(mockComputerPlayerFactory)
+        .Create();
     }
 
     private LocalGameController CreateLocalGameControllerWithMainPlayerGoingFirstInSetup()
