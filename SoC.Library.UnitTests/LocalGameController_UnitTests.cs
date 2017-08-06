@@ -420,15 +420,14 @@ namespace Jabberwocky.SoC.Library.UnitTests
       var mockDice = Substitute.For<IDice>();
       mockDice.RollTwoDice().Returns(12u, 10u, 8u, 6u);
 
-      var gameBoardManager = new GameBoardManager(BoardSizes.Standard);
+      MockPlayer player;
+      MockComputerPlayer firstOpponent, secondOpponent, thirdOpponent;
+      this.CreateDefaultPlayerInstances(out player, out firstOpponent, out secondOpponent, out thirdOpponent);
 
-      var firstComputerPlayer = this.CreateMockComputerPlayer(gameBoardManager.Data, FirstSettlementOneLocation, FirstSettlementTwoLocation, firstRoadOne, firstRoadTwo);
-      var secondComputerPlayer = this.CreateMockComputerPlayer(gameBoardManager.Data, SecondSettlementOneLocation, SecondSettlementTwoLocation, secondRoadOne, secondRoadTwo);
-      var thirdComputerPlayer = this.CreateMockComputerPlayer(gameBoardManager.Data, ThirdSettlementOneLocation, ThirdSettlementTwoLocation, thirdRoadOne, thirdRoadTwo);
+      var localGameController = this.CreateLocalGameController(mockDice, player, firstOpponent, secondOpponent, thirdOpponent);
 
       ErrorDetails errorDetails = null;
       GameBoardUpdate gameBoardUpdate = null;
-      var localGameController = this.CreateLocalGameController(mockDice, gameBoardManager, firstComputerPlayer, secondComputerPlayer, thirdComputerPlayer);
       localGameController.ErrorRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
       localGameController.GameSetupUpdateEvent = (GameBoardUpdate u) => { gameBoardUpdate = u; };
 
@@ -479,14 +478,13 @@ namespace Jabberwocky.SoC.Library.UnitTests
       var mockDice = Substitute.For<IDice>();
       mockDice.RollTwoDice().Returns(12u, 10u, 8u, 6u);
 
-      var gameBoardManager = new GameBoardManager(BoardSizes.Standard);
+      MockPlayer player;
+      MockComputerPlayer firstOpponent, secondOpponent, thirdOpponent;
+      this.CreateDefaultPlayerInstances(out player, out firstOpponent, out secondOpponent, out thirdOpponent);
 
-      var firstComputerPlayer = this.CreateMockComputerPlayer(gameBoardManager.Data, FirstSettlementOneLocation, FirstSettlementTwoLocation, firstRoadOne, firstRoadTwo);
-      var secondComputerPlayer = this.CreateMockComputerPlayer(gameBoardManager.Data, SecondSettlementOneLocation, SecondSettlementTwoLocation, secondRoadOne, secondRoadTwo);
-      var thirdComputerPlayer = this.CreateMockComputerPlayer(gameBoardManager.Data, ThirdSettlementOneLocation, ThirdSettlementTwoLocation, thirdRoadOne, thirdRoadTwo);
+      var localGameController = this.CreateLocalGameController(mockDice, player, firstOpponent, secondOpponent, thirdOpponent);
 
       ErrorDetails exception = null;
-      var localGameController = this.CreateLocalGameController(mockDice, gameBoardManager, firstComputerPlayer, secondComputerPlayer, thirdComputerPlayer);
       localGameController.ErrorRaisedEvent = (ErrorDetails e) => { exception = e; };
 
       localGameController.JoinGame();
@@ -500,7 +498,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
       localGameController.CompleteGameSetup(FirstSettlementOneLocation, new Road(0, 1));
 
       exception.ShouldNotBeNull();
-      exception.Message.ShouldBe("Cannot place settlement: Location " + FirstSettlementOneLocation + " already owned by player " + firstComputerPlayer.Id);
+      exception.Message.ShouldBe("Cannot place settlement: Location " + FirstSettlementOneLocation + " already owned by player " + firstOpponent.Id);
       gameBoardUpdate.ShouldBeNull();
     }
 
@@ -541,14 +539,13 @@ namespace Jabberwocky.SoC.Library.UnitTests
       var mockDice = Substitute.For<IDice>();
       mockDice.RollTwoDice().Returns(12u, 10u, 8u, 6u);
 
-      var gameBoardManager = new GameBoardManager(BoardSizes.Standard);
+      MockPlayer player;
+      MockComputerPlayer firstOpponent, secondOpponent, thirdOpponent;
+      this.CreateDefaultPlayerInstances(out player, out firstOpponent, out secondOpponent, out thirdOpponent);
 
-      var firstComputerPlayer = this.CreateMockComputerPlayer(gameBoardManager.Data, FirstSettlementOneLocation, FirstSettlementTwoLocation, firstRoadOne, firstRoadTwo);
-      var secondComputerPlayer = this.CreateMockComputerPlayer(gameBoardManager.Data, SecondSettlementOneLocation, SecondSettlementTwoLocation, secondRoadOne, secondRoadTwo);
-      var thirdComputerPlayer = this.CreateMockComputerPlayer(gameBoardManager.Data, ThirdSettlementOneLocation, ThirdSettlementTwoLocation, thirdRoadOne, thirdRoadTwo);
+      var localGameController = this.CreateLocalGameController(mockDice, player, firstOpponent, secondOpponent, thirdOpponent);
 
       ErrorDetails exception = null;
-      var localGameController = this.CreateLocalGameController(mockDice, gameBoardManager, firstComputerPlayer, secondComputerPlayer, thirdComputerPlayer);
       localGameController.ErrorRaisedEvent = (ErrorDetails e) => { exception = e; };
       localGameController.JoinGame();
       localGameController.LaunchGame();
@@ -561,7 +558,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
       localGameController.CompleteGameSetup(19, new Road(19, 18));
 
       exception.ShouldNotBeNull();
-      exception.Message.ShouldBe("Cannot place settlement: Too close to player " + firstComputerPlayer.Id + " at location " + FirstSettlementOneLocation);
+      exception.Message.ShouldBe("Cannot place settlement: Too close to player " + firstOpponent.Id + " at location " + FirstSettlementOneLocation);
       gameBoardUpdate.ShouldBeNull();
     }
 
@@ -826,8 +823,10 @@ namespace Jabberwocky.SoC.Library.UnitTests
       // Arrange
       MockDice mockDice = null;
       Guid id = Guid.Empty;
-      IComputerPlayer firstComputerPlayer, secondComputerPlayer, thirdComputerPlayer;
-      var localGameController = this.CreateLocalGameControllerAndCompleteGameSetup(out mockDice, out id, out firstComputerPlayer, out secondComputerPlayer, out thirdComputerPlayer);
+      MockPlayer player;
+      MockComputerPlayer firstComputerPlayer, secondComputerPlayer, thirdComputerPlayer;
+      var localGameController = this.CreateLocalGameControllerAndCompleteGameSetup(out mockDice, out player, out firstComputerPlayer, out secondComputerPlayer, out thirdComputerPlayer);
+
       mockDice.AddSequence(new[] { 8u });
 
       // Act
@@ -846,8 +845,9 @@ namespace Jabberwocky.SoC.Library.UnitTests
       // Arrange
       MockDice mockDice = null;
       Guid id = Guid.Empty;
-      IComputerPlayer firstComputerPlayer, secondComputerPlayer, thirdComputerPlayer;
-      var localGameController = this.CreateLocalGameControllerAndCompleteGameSetup(out mockDice, out id, out firstComputerPlayer, out secondComputerPlayer, out thirdComputerPlayer);
+      MockPlayer player;
+      MockComputerPlayer firstComputerPlayer, secondComputerPlayer, thirdComputerPlayer;
+      var localGameController = this.CreateLocalGameControllerAndCompleteGameSetup(out mockDice, out player, out firstComputerPlayer, out secondComputerPlayer, out thirdComputerPlayer);
       mockDice.AddSequence(new[] { 8u });
 
       // Act
@@ -865,8 +865,10 @@ namespace Jabberwocky.SoC.Library.UnitTests
     {
       MockDice mockDice = null;
       Guid id = Guid.Empty;
-      IComputerPlayer firstComputerPlayer, secondComputerPlayer, thirdComputerPlayer;
-      var localGameController = this.CreateLocalGameControllerAndCompleteGameSetup(out mockDice, out id, out firstComputerPlayer, out secondComputerPlayer, out thirdComputerPlayer);
+      MockPlayer player;
+      MockComputerPlayer firstComputerPlayer, secondComputerPlayer, thirdComputerPlayer;
+      var localGameController = this.CreateLocalGameControllerAndCompleteGameSetup(out mockDice, out player, out firstComputerPlayer, out secondComputerPlayer, out thirdComputerPlayer);
+
       mockDice.AddSequence(new[] { 8u });
 
       ResourceUpdate resourceUpdate = null;
@@ -914,14 +916,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
       resourcesLost.ShouldContainKeyAndValue(thirdComputerPlayer.Id, 4u);
     }
 
-    private LocalGameController CreateLocalGameControllerAndCompleteGameSetup(out MockDice mockDice)
-    {
-      Guid mainPlayerId = Guid.Empty;
-      IComputerPlayer firstComputerPlayer, secondComputerPlayer, thirdComputerPlayer;
-      return this.CreateLocalGameControllerAndCompleteGameSetup(out mockDice, out mainPlayerId, out firstComputerPlayer, out secondComputerPlayer, out thirdComputerPlayer);
-    }
-
-    private LocalGameController CreateLocalGameControllerAndCompleteGameSetup(out MockDice mockDice, out Guid mainPlayerId, out IComputerPlayer firstComputerPlayer, out IComputerPlayer secondComputerPlayer, out IComputerPlayer thirdComputerPlayer)
+    private LocalGameController CreateLocalGameControllerAndCompleteGameSetup(out MockDice mockDice, out MockPlayer player, out MockComputerPlayer firstOpponent, out MockComputerPlayer secondOpponent, out MockComputerPlayer thirdOpponent)
     {
       var gameSetupOrder = new[] { 12u, 10u, 8u, 6u };
       var gameTurnOrder = gameSetupOrder;
@@ -930,16 +925,9 @@ namespace Jabberwocky.SoC.Library.UnitTests
         .AddExplicitDiceRollSequence(gameTurnOrder)
         .Create();
 
-      var gameBoardManager = new GameBoardManager(BoardSizes.Standard);
+      this.CreateDefaultPlayerInstances(out player, out firstOpponent, out secondOpponent, out thirdOpponent);
 
-      firstComputerPlayer = this.CreateMockComputerPlayer(gameBoardManager.Data, FirstSettlementOneLocation, FirstSettlementTwoLocation, firstRoadOne, firstRoadTwo);
-      secondComputerPlayer = this.CreateMockComputerPlayer(gameBoardManager.Data, SecondSettlementOneLocation, SecondSettlementTwoLocation, secondRoadOne, secondRoadTwo);
-      thirdComputerPlayer = this.CreateMockComputerPlayer(gameBoardManager.Data, ThirdSettlementOneLocation, ThirdSettlementTwoLocation, thirdRoadOne, thirdRoadTwo);
-
-      var localGameController = this.CreateLocalGameController(mockDice, gameBoardManager, firstComputerPlayer, secondComputerPlayer, thirdComputerPlayer);
-
-      var id = Guid.Empty;
-      localGameController.GameJoinedEvent = (PlayerDataView[] p) => { id = p[0].Id; };
+      var localGameController = this.CreateLocalGameController(mockDice, player, firstOpponent, secondOpponent, thirdOpponent);
 
       localGameController.JoinGame();
       localGameController.LaunchGame();
@@ -947,8 +935,6 @@ namespace Jabberwocky.SoC.Library.UnitTests
       localGameController.ContinueGameSetup(MainSettlementOneLocation, mainRoadOne);
       localGameController.CompleteGameSetup(MainSettlementTwoLocation, mainRoadTwo);
       localGameController.FinalisePlayerTurnOrder();
-
-      mainPlayerId = id;
 
       return localGameController;
     }
