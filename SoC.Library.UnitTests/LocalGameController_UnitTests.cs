@@ -1041,13 +1041,11 @@ namespace Jabberwocky.SoC.Library.UnitTests
       var mockDice = Substitute.For<IDice>();
       mockDice.RollTwoDice().Returns(12u, 10u, 8u, 6u);
 
-      var gameBoardManager = new GameBoardManager(BoardSizes.Standard);
+      MockPlayer player;
+      MockComputerPlayer firstOpponent, secondOpponent, thirdOpponent;
+      this.CreateDefaultPlayerInstances(out player, out firstOpponent, out secondOpponent, out thirdOpponent);
 
-      var firstComputerPlayer = this.CreateMockComputerPlayer(gameBoardManager.Data, FirstSettlementOneLocation, FirstSettlementTwoLocation, firstRoadOne, firstRoadTwo);
-      var secondComputerPlayer = this.CreateMockComputerPlayer(gameBoardManager.Data, SecondSettlementOneLocation, SecondSettlementTwoLocation, secondRoadOne, secondRoadTwo);
-      var thirdComputerPlayer = this.CreateMockComputerPlayer(gameBoardManager.Data, ThirdSettlementOneLocation, ThirdSettlementTwoLocation, thirdRoadOne, thirdRoadTwo);
-
-      return this.CreateLocalGameController(mockDice, gameBoardManager, firstComputerPlayer, secondComputerPlayer, thirdComputerPlayer);
+      return this.CreateLocalGameController(mockDice, player, firstOpponent, secondOpponent, thirdOpponent);
     }
 
     private IComputerPlayer CreateMockComputerPlayer(GameBoardData gameBoardData, UInt32 settlementOneLocation, UInt32 settlementTwoLocation, Road roadOne, Road roadTwo)
