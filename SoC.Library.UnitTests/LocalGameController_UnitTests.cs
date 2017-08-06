@@ -862,7 +862,6 @@ namespace Jabberwocky.SoC.Library.UnitTests
     public void StartOfMainPlayerTurn_DoesNotRollSeven_ReceiveResourceDetails()
     {
       MockDice mockDice = null;
-      Guid id = Guid.Empty;
       MockPlayer player;
       MockComputerPlayer firstOpponent, secondOpponent, thirdOpponent;
       var localGameController = this.CreateLocalGameControllerAndCompleteGameSetup(out mockDice, out player, out firstOpponent, out secondOpponent, out thirdOpponent);
@@ -875,11 +874,11 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
       resourceUpdate.ShouldNotBeNull();
       resourceUpdate.Resources.Count.ShouldBe(2);
-      resourceUpdate.Resources[id].BrickCount.ShouldBe(1u);
-      resourceUpdate.Resources[id].GrainCount.ShouldBe(0u);
-      resourceUpdate.Resources[id].LumberCount.ShouldBe(0u);
-      resourceUpdate.Resources[id].OreCount.ShouldBe(0u);
-      resourceUpdate.Resources[id].WoolCount.ShouldBe(0u);
+      resourceUpdate.Resources[player.Id].BrickCount.ShouldBe(1u);
+      resourceUpdate.Resources[player.Id].GrainCount.ShouldBe(0u);
+      resourceUpdate.Resources[player.Id].LumberCount.ShouldBe(0u);
+      resourceUpdate.Resources[player.Id].OreCount.ShouldBe(0u);
+      resourceUpdate.Resources[player.Id].WoolCount.ShouldBe(0u);
 
       resourceUpdate.Resources[firstOpponent.Id].BrickCount.ShouldBe(0u);
       resourceUpdate.Resources[firstOpponent.Id].GrainCount.ShouldBe(1u);
