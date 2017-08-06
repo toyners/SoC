@@ -448,14 +448,13 @@ namespace Jabberwocky.SoC.Library.UnitTests
       var mockDice = Substitute.For<IDice>();
       mockDice.RollTwoDice().Returns(10u, 12u, 8u, 6u);
 
-      var gameBoardManager = new GameBoardManager(BoardSizes.Standard);
+      MockPlayer player;
+      MockComputerPlayer firstOpponent, secondOpponent, thirdOpponent;
+      this.CreateDefaultPlayerInstances(out player, out firstOpponent, out secondOpponent, out thirdOpponent);
 
-      var firstComputerPlayer = this.CreateMockComputerPlayer(gameBoardManager.Data, FirstSettlementOneLocation, FirstSettlementTwoLocation, firstRoadOne, firstRoadTwo);
-      var secondComputerPlayer = this.CreateMockComputerPlayer(gameBoardManager.Data, SecondSettlementOneLocation, SecondSettlementTwoLocation, secondRoadOne, secondRoadTwo);
-      var thirdComputerPlayer = this.CreateMockComputerPlayer(gameBoardManager.Data, ThirdSettlementOneLocation, ThirdSettlementTwoLocation, thirdRoadOne, thirdRoadTwo);
+      var localGameController = this.CreateLocalGameController(mockDice, player, firstOpponent, secondOpponent, thirdOpponent);
 
       ErrorDetails exception = null;
-      var localGameController = this.CreateLocalGameController(mockDice, gameBoardManager, firstComputerPlayer, secondComputerPlayer, thirdComputerPlayer);
       localGameController.ErrorRaisedEvent = (ErrorDetails e) => { exception = e; };
 
       localGameController.JoinGame();
@@ -467,7 +466,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
       localGameController.ContinueGameSetup(FirstSettlementOneLocation, new Road(0u, 1u));
       exception.ShouldNotBeNull();
-      exception.Message.ShouldBe("Cannot place settlement: Location " + FirstSettlementOneLocation + " already owned by player " + firstComputerPlayer.Id);
+      exception.Message.ShouldBe("Cannot place settlement: Location " + FirstSettlementOneLocation + " already owned by player " + firstOpponent.Id);
       gameBoardUpdate.ShouldBeNull();
     }
 
@@ -509,14 +508,13 @@ namespace Jabberwocky.SoC.Library.UnitTests
       var mockDice = Substitute.For<IDice>();
       mockDice.RollTwoDice().Returns(10u, 12u, 8u, 6u);
 
-      var gameBoardManager = new GameBoardManager(BoardSizes.Standard);
+      MockPlayer player;
+      MockComputerPlayer firstOpponent, secondOpponent, thirdOpponent;
+      this.CreateDefaultPlayerInstances(out player, out firstOpponent, out secondOpponent, out thirdOpponent);
 
-      var firstComputerPlayer = this.CreateMockComputerPlayer(gameBoardManager.Data, FirstSettlementOneLocation, FirstSettlementTwoLocation, firstRoadOne, firstRoadTwo);
-      var secondComputerPlayer = this.CreateMockComputerPlayer(gameBoardManager.Data, SecondSettlementOneLocation, SecondSettlementTwoLocation, secondRoadOne, secondRoadTwo);
-      var thirdComputerPlayer = this.CreateMockComputerPlayer(gameBoardManager.Data, ThirdSettlementOneLocation, ThirdSettlementTwoLocation, thirdRoadOne, thirdRoadTwo);
+      var localGameController = this.CreateLocalGameController(mockDice, player, firstOpponent, secondOpponent, thirdOpponent);
 
       ErrorDetails exception = null;
-      var localGameController = this.CreateLocalGameController(mockDice, gameBoardManager, firstComputerPlayer, secondComputerPlayer, thirdComputerPlayer);
       localGameController.ErrorRaisedEvent = (ErrorDetails e) => { exception = e; };
       localGameController.JoinGame();
       localGameController.LaunchGame();
@@ -528,7 +526,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
       localGameController.ContinueGameSetup(19u, new Road(0u, 1u));
 
       exception.ShouldNotBeNull();
-      exception.Message.ShouldBe("Cannot place settlement: Too close to player " + firstComputerPlayer.Id + " at location " + FirstSettlementOneLocation);
+      exception.Message.ShouldBe("Cannot place settlement: Too close to player " + firstOpponent.Id + " at location " + FirstSettlementOneLocation);
       gameBoardUpdate.ShouldBeNull();
     }
 
@@ -866,8 +864,8 @@ namespace Jabberwocky.SoC.Library.UnitTests
       MockDice mockDice = null;
       Guid id = Guid.Empty;
       MockPlayer player;
-      MockComputerPlayer firstComputerPlayer, secondComputerPlayer, thirdComputerPlayer;
-      var localGameController = this.CreateLocalGameControllerAndCompleteGameSetup(out mockDice, out player, out firstComputerPlayer, out secondComputerPlayer, out thirdComputerPlayer);
+      MockComputerPlayer firstOpponent, secondOpponent, thirdOpponent;
+      var localGameController = this.CreateLocalGameControllerAndCompleteGameSetup(out mockDice, out player, out firstOpponent, out secondOpponent, out thirdOpponent);
 
       mockDice.AddSequence(new[] { 8u });
 
@@ -883,11 +881,11 @@ namespace Jabberwocky.SoC.Library.UnitTests
       resourceUpdate.Resources[id].OreCount.ShouldBe(0u);
       resourceUpdate.Resources[id].WoolCount.ShouldBe(0u);
 
-      resourceUpdate.Resources[firstComputerPlayer.Id].BrickCount.ShouldBe(0u);
-      resourceUpdate.Resources[firstComputerPlayer.Id].GrainCount.ShouldBe(1u);
-      resourceUpdate.Resources[firstComputerPlayer.Id].LumberCount.ShouldBe(0u);
-      resourceUpdate.Resources[firstComputerPlayer.Id].OreCount.ShouldBe(0u);
-      resourceUpdate.Resources[firstComputerPlayer.Id].WoolCount.ShouldBe(0u);
+      resourceUpdate.Resources[firstOpponent.Id].BrickCount.ShouldBe(0u);
+      resourceUpdate.Resources[firstOpponent.Id].GrainCount.ShouldBe(1u);
+      resourceUpdate.Resources[firstOpponent.Id].LumberCount.ShouldBe(0u);
+      resourceUpdate.Resources[firstOpponent.Id].OreCount.ShouldBe(0u);
+      resourceUpdate.Resources[firstOpponent.Id].WoolCount.ShouldBe(0u);
     }
 
     [Test]
@@ -1028,22 +1026,6 @@ namespace Jabberwocky.SoC.Library.UnitTests
       this.CreateDefaultPlayerInstances(out player, out firstOpponent, out secondOpponent, out thirdOpponent);
 
       return this.CreateLocalGameController(mockDice, player, firstOpponent, secondOpponent, thirdOpponent);
-    }
-
-    private IComputerPlayer CreateMockComputerPlayer(GameBoardData gameBoardData, UInt32 settlementOneLocation, UInt32 settlementTwoLocation, Road roadOne, Road roadTwo)
-    {
-      var mockComputerPlayer = Substitute.For<IComputerPlayer>();
-      var playerId = Guid.NewGuid();
-      mockComputerPlayer.Id.Returns(playerId);
-      mockComputerPlayer.ChooseSettlementLocation(gameBoardData)
-        .Returns(settlementOneLocation, settlementTwoLocation);
-      mockComputerPlayer.ChooseRoad(gameBoardData)
-        .Returns(roadOne, roadTwo);
-
-      var playerDataView = new PlayerDataView { Id = playerId };
-      mockComputerPlayer.GetDataView().Returns(playerDataView);
-
-      return mockComputerPlayer;
     }
 
     private MockComputerPlayer CreateMockComputerPlayer(String name, UInt32 settlementOneLocation, UInt32 settlementTwoLocation, Road roadOne, Road roadTwo)
