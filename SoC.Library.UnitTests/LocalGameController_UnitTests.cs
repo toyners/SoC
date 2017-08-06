@@ -13,6 +13,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
   public class LocalGameController_UnitTests
   {
     #region Fields
+    private const String PlayerName = "Player";
     private const String FirstOpponentName = "Bob";
     private const String SecondOpponentName = "Sally";
     private const String ThirdOpponentName = "Rich";
@@ -1093,12 +1094,13 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
     private void RunOpponentDataPassBackTests(GameOptions gameOptions)
     {
+      var player = new MockComputerPlayer(PlayerName);
       var firstOpponent = new MockComputerPlayer(FirstOpponentName);
       var secondOpponent = new MockComputerPlayer(SecondOpponentName);
       var thirdOpponent = new MockComputerPlayer(ThirdOpponentName);
 
       var mockComputerGameFactory = Substitute.For<IComputerPlayerFactory>();
-      mockComputerGameFactory.GetPlayer().Returns(firstOpponent, secondOpponent, thirdOpponent);
+      mockComputerGameFactory.GetPlayer().Returns(player, firstOpponent, secondOpponent, thirdOpponent);
       var localGameController = new LocalGameControllerCreator()
         .ChangeComputerPlayerFactory(mockComputerGameFactory)
         .Create();
@@ -1108,16 +1110,19 @@ namespace Jabberwocky.SoC.Library.UnitTests
       localGameController.JoinGame(gameOptions);
 
       playerDataViews.ShouldNotBeNull();
-      playerDataViews.Length.ShouldBe(3);
+      playerDataViews.Length.ShouldBe(4);
 
       playerDataViews[0].ShouldBeOfType<PlayerDataView>();
-      this.AssertPlayerDataViewIsCorrect(firstOpponent.Id, firstOpponent.Name, playerDataViews[0]);
+      this.AssertPlayerDataViewIsCorrect(player.Id, player.Name, playerDataViews[0]);
 
       playerDataViews[1].ShouldBeOfType<PlayerDataView>();
-      this.AssertPlayerDataViewIsCorrect(secondOpponent.Id, secondOpponent.Name, playerDataViews[1]);
+      this.AssertPlayerDataViewIsCorrect(firstOpponent.Id, firstOpponent.Name, playerDataViews[1]);
 
       playerDataViews[2].ShouldBeOfType<PlayerDataView>();
-      this.AssertPlayerDataViewIsCorrect(thirdOpponent.Id, thirdOpponent.Name, playerDataViews[2]);
+      this.AssertPlayerDataViewIsCorrect(secondOpponent.Id, secondOpponent.Name, playerDataViews[2]);
+
+      playerDataViews[3].ShouldBeOfType<PlayerDataView>();
+      this.AssertPlayerDataViewIsCorrect(thirdOpponent.Id, thirdOpponent.Name, playerDataViews[3]);
     }
     #endregion
   }
