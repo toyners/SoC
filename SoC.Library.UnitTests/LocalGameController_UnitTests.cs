@@ -733,51 +733,6 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
     [Test]
     [Category("LocalGameController")]
-    public void FinalisePlayerTurnOrder_RollsDescending_ReceiveTurnOrderForMainGameLoop()
-    {
-      // Arrange
-      var gameSetupOrder = new[] { 12u, 10u, 8u, 6u };
-      var gameTurnOrder = gameSetupOrder;
-      var mockDice = new MockDiceCreator()
-        .AddExplicitDiceRollSequence(gameSetupOrder)
-        .AddExplicitDiceRollSequence(gameTurnOrder)
-        .Create();
-
-      var gameBoardManager = new GameBoardManager(BoardSizes.Standard);
-      var firstComputerPlayer = this.CreateMockComputerPlayer(gameBoardManager.Data, FirstSettlementOneLocation, FirstSettlementTwoLocation, firstRoadOne, firstRoadTwo);
-      var secondComputerPlayer = this.CreateMockComputerPlayer(gameBoardManager.Data, SecondSettlementOneLocation, SecondSettlementTwoLocation, secondRoadOne, secondRoadTwo);
-      var thirdComputerPlayer = this.CreateMockComputerPlayer(gameBoardManager.Data, ThirdSettlementOneLocation, ThirdSettlementTwoLocation, thirdRoadOne, thirdRoadTwo);
-      var mockComputerPlayerFactory = Substitute.For<IComputerPlayerFactory>();
-      mockComputerPlayerFactory.Create().Returns(firstComputerPlayer, secondComputerPlayer, thirdComputerPlayer);
-
-      var localGameController = new LocalGameControllerCreator()
-                                  .ChangeDice(mockDice)
-                                  .ChangeGameBoardManager(gameBoardManager)
-                                  .ChangeComputerPlayerFactory(mockComputerPlayerFactory)
-                                  .Create();
-
-      localGameController.JoinGame();
-      localGameController.LaunchGame();
-      localGameController.StartGameSetup();
-      localGameController.ContinueGameSetup(MainSettlementOneLocation, mainRoadOne);
-      localGameController.CompleteGameSetup(MainSettlementTwoLocation, mainRoadTwo);
-
-      // Act
-      PlayerDataView[] turnOrder = null;
-      localGameController.TurnOrderFinalisedEvent = (PlayerDataView[] p) => { turnOrder = p; };
-      localGameController.FinalisePlayerTurnOrder();
-
-      // Assert
-      turnOrder.ShouldNotBeNull();
-      turnOrder.Length.ShouldBe(4);
-      turnOrder[0].Id.ShouldNotBeOneOf(new[] { Guid.Empty, firstComputerPlayer.Id, secondComputerPlayer.Id, thirdComputerPlayer.Id });
-      turnOrder[1].Id.ShouldBe(firstComputerPlayer.Id);
-      turnOrder[2].Id.ShouldBe(secondComputerPlayer.Id);
-      turnOrder[3].Id.ShouldBe(thirdComputerPlayer.Id);
-    }
-
-    [Test]
-    [Category("LocalGameController")]
     public void FinalisePlayerTurnOrder_CallOutOfSequence_MeaningfulErrorDetailsPassedBack()
     {
       var localGameController = this.CreateLocalGameController();
@@ -826,6 +781,44 @@ namespace Jabberwocky.SoC.Library.UnitTests
       turnOrder[1].Id.ShouldBe(secondOpponent.Id);
       turnOrder[2].Id.ShouldBe(firstOpponent.Id);
       turnOrder[3].Id.ShouldNotBeOneOf(new[] { Guid.Empty, firstOpponent.Id, secondOpponent.Id, thirdOpponent.Id });
+    }
+
+    [Test]
+    [Category("LocalGameController")]
+    public void FinalisePlayerTurnOrder_RollsDescending_ReceiveTurnOrderForMainGameLoop()
+    {
+      // Arrange
+      var gameSetupOrder = new[] { 12u, 10u, 8u, 6u };
+      var gameTurnOrder = gameSetupOrder;
+      var mockDice = new MockDiceCreator()
+        .AddExplicitDiceRollSequence(gameSetupOrder)
+        .AddExplicitDiceRollSequence(gameTurnOrder)
+        .Create();
+
+      MockPlayer player;
+      MockComputerPlayer firstOpponent, secondOpponent, thirdOpponent;
+      this.CreateDefaultPlayerInstances(out player, out firstOpponent, out secondOpponent, out thirdOpponent);
+
+      var localGameController = this.CreateLocalGameController(mockDice, player, firstOpponent, secondOpponent, thirdOpponent);
+
+      localGameController.JoinGame();
+      localGameController.LaunchGame();
+      localGameController.StartGameSetup();
+      localGameController.ContinueGameSetup(MainSettlementOneLocation, mainRoadOne);
+      localGameController.CompleteGameSetup(MainSettlementTwoLocation, mainRoadTwo);
+
+      // Act
+      PlayerDataView[] turnOrder = null;
+      localGameController.TurnOrderFinalisedEvent = (PlayerDataView[] p) => { turnOrder = p; };
+      localGameController.FinalisePlayerTurnOrder();
+
+      // Assert
+      turnOrder.ShouldNotBeNull();
+      turnOrder.Length.ShouldBe(4);
+      turnOrder[0].Id.ShouldNotBeOneOf(new[] { Guid.Empty, firstOpponent.Id, secondOpponent.Id, thirdOpponent.Id });
+      turnOrder[1].Id.ShouldBe(firstOpponent.Id);
+      turnOrder[2].Id.ShouldBe(secondOpponent.Id);
+      turnOrder[3].Id.ShouldBe(thirdOpponent.Id);
     }
 
     [Test]
