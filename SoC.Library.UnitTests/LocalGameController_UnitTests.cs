@@ -234,14 +234,13 @@ namespace Jabberwocky.SoC.Library.UnitTests
         .AddExplicitDiceRollSequence(gameSetupOrders)
         .Create();
 
-      var gameBoardManager = new GameBoardManager(BoardSizes.Standard);
+      MockPlayer player;
+      MockComputerPlayer firstOpponent, secondOpponent, thirdOpponent;
+      this.CreateDefaultPlayerInstances(out player, out firstOpponent, out secondOpponent, out thirdOpponent);
 
-      var firstComputerPlayer = this.CreateMockComputerPlayer(gameBoardManager.Data, FirstSettlementOneLocation, FirstSettlementTwoLocation, firstRoadOne, firstRoadTwo);
-      var secondComputerPlayer = this.CreateMockComputerPlayer(gameBoardManager.Data, SecondSettlementOneLocation, SecondSettlementTwoLocation, secondRoadOne, secondRoadTwo);
-      var thirdComputerPlayer = this.CreateMockComputerPlayer(gameBoardManager.Data, ThirdSettlementOneLocation, ThirdSettlementTwoLocation, thirdRoadOne, thirdRoadTwo);
+      var localGameController = this.CreateLocalGameController(mockDice, player, firstOpponent, secondOpponent, thirdOpponent);
 
       GameBoardUpdate gameBoardUpdate = null;
-      var localGameController = this.CreateLocalGameController(mockDice, gameBoardManager, firstComputerPlayer, secondComputerPlayer, thirdComputerPlayer);
       localGameController.GameSetupUpdateEvent = (GameBoardUpdate u) => { gameBoardUpdate = u; };
       localGameController.InitialBoardSetupEvent = (GameBoardData d) => { };
 
@@ -251,33 +250,33 @@ namespace Jabberwocky.SoC.Library.UnitTests
       localGameController.StartGameSetup();
       gameBoardUpdate.ShouldNotBeNull();
       gameBoardUpdate.NewSettlements.Count.ShouldBe(2);
-      gameBoardUpdate.NewSettlements.ShouldContainKeyAndValue(FirstSettlementOneLocation, firstComputerPlayer.Id);
-      gameBoardUpdate.NewSettlements.ShouldContainKeyAndValue(SecondSettlementOneLocation, secondComputerPlayer.Id);
+      gameBoardUpdate.NewSettlements.ShouldContainKeyAndValue(FirstSettlementOneLocation, firstOpponent.Id);
+      gameBoardUpdate.NewSettlements.ShouldContainKeyAndValue(SecondSettlementOneLocation, secondOpponent.Id);
       gameBoardUpdate.NewRoads.Count.ShouldBe(2);
-      gameBoardUpdate.NewRoads.ShouldContainKeyAndValue(firstRoadOne, firstComputerPlayer.Id);
-      gameBoardUpdate.NewRoads.ShouldContainKeyAndValue(secondRoadOne, secondComputerPlayer.Id);
+      gameBoardUpdate.NewRoads.ShouldContainKeyAndValue(firstRoadOne, firstOpponent.Id);
+      gameBoardUpdate.NewRoads.ShouldContainKeyAndValue(secondRoadOne, secondOpponent.Id);
 
       gameBoardUpdate = null; // Ensure that there is a state change for the gameBoardUpdate variable 
       localGameController.ContinueGameSetup(MainSettlementOneLocation, mainRoadOne);
 
       gameBoardUpdate.ShouldNotBeNull();
       gameBoardUpdate.NewSettlements.Count.ShouldBe(2);
-      gameBoardUpdate.NewSettlements.ShouldContainKeyAndValue(ThirdSettlementOneLocation, thirdComputerPlayer.Id);
-      gameBoardUpdate.NewSettlements.ShouldContainKeyAndValue(ThirdSettlementTwoLocation, thirdComputerPlayer.Id);
+      gameBoardUpdate.NewSettlements.ShouldContainKeyAndValue(ThirdSettlementOneLocation, thirdOpponent.Id);
+      gameBoardUpdate.NewSettlements.ShouldContainKeyAndValue(ThirdSettlementTwoLocation, thirdOpponent.Id);
 
       gameBoardUpdate.NewRoads.Count.ShouldBe(2);
-      gameBoardUpdate.NewRoads.ShouldContainKeyAndValue(thirdRoadOne, thirdComputerPlayer.Id);
-      gameBoardUpdate.NewRoads.ShouldContainKeyAndValue(thirdRoadTwo, thirdComputerPlayer.Id);
+      gameBoardUpdate.NewRoads.ShouldContainKeyAndValue(thirdRoadOne, thirdOpponent.Id);
+      gameBoardUpdate.NewRoads.ShouldContainKeyAndValue(thirdRoadTwo, thirdOpponent.Id);
 
       gameBoardUpdate = null; // Ensure that there is a state change for the gameBoardUpdate variable 
       localGameController.CompleteGameSetup(MainSettlementTwoLocation, mainRoadTwo);
 
       gameBoardUpdate.NewSettlements.Count.ShouldBe(2);
-      gameBoardUpdate.NewSettlements.ShouldContainKeyAndValue(SecondSettlementTwoLocation, secondComputerPlayer.Id);
-      gameBoardUpdate.NewSettlements.ShouldContainKeyAndValue(FirstSettlementTwoLocation, firstComputerPlayer.Id);
+      gameBoardUpdate.NewSettlements.ShouldContainKeyAndValue(SecondSettlementTwoLocation, secondOpponent.Id);
+      gameBoardUpdate.NewSettlements.ShouldContainKeyAndValue(FirstSettlementTwoLocation, firstOpponent.Id);
       gameBoardUpdate.NewRoads.Count.ShouldBe(2);
-      gameBoardUpdate.NewRoads.ShouldContainKeyAndValue(secondRoadTwo, secondComputerPlayer.Id);
-      gameBoardUpdate.NewRoads.ShouldContainKeyAndValue(firstRoadTwo, firstComputerPlayer.Id);
+      gameBoardUpdate.NewRoads.ShouldContainKeyAndValue(secondRoadTwo, secondOpponent.Id);
+      gameBoardUpdate.NewRoads.ShouldContainKeyAndValue(firstRoadTwo, firstOpponent.Id);
     }
 
     [Test]
@@ -289,14 +288,13 @@ namespace Jabberwocky.SoC.Library.UnitTests
         .AddExplicitDiceRollSequence(gameSetupOrder)
         .Create();
 
-      var gameBoardManager = new GameBoardManager(BoardSizes.Standard);
+      MockPlayer player;
+      MockComputerPlayer firstOpponent, secondOpponent, thirdOpponent;
+      this.CreateDefaultPlayerInstances(out player, out firstOpponent, out secondOpponent, out thirdOpponent);
 
-      var firstComputerPlayer = this.CreateMockComputerPlayer(gameBoardManager.Data, FirstSettlementOneLocation, FirstSettlementTwoLocation, firstRoadOne, firstRoadTwo);
-      var secondComputerPlayer = this.CreateMockComputerPlayer(gameBoardManager.Data, SecondSettlementOneLocation, SecondSettlementTwoLocation, secondRoadOne, secondRoadTwo);
-      var thirdComputerPlayer = this.CreateMockComputerPlayer(gameBoardManager.Data, ThirdSettlementOneLocation, ThirdSettlementTwoLocation, thirdRoadOne, thirdRoadTwo);
+      var localGameController = this.CreateLocalGameController(mockDice, player, firstOpponent, secondOpponent, thirdOpponent);
 
       GameBoardUpdate gameBoardUpdate = null;
-      var localGameController = this.CreateLocalGameController(mockDice, gameBoardManager, firstComputerPlayer, secondComputerPlayer, thirdComputerPlayer);
       localGameController.GameSetupUpdateEvent = (GameBoardUpdate u) => { gameBoardUpdate = u; };
       localGameController.InitialBoardSetupEvent = (GameBoardData d) => { };
 
@@ -306,13 +304,13 @@ namespace Jabberwocky.SoC.Library.UnitTests
       localGameController.StartGameSetup();
       gameBoardUpdate.ShouldNotBeNull();
       gameBoardUpdate.NewSettlements.Count.ShouldBe(3);
-      gameBoardUpdate.NewSettlements.ShouldContainKeyAndValue(FirstSettlementOneLocation, firstComputerPlayer.Id);
-      gameBoardUpdate.NewSettlements.ShouldContainKeyAndValue(SecondSettlementOneLocation, secondComputerPlayer.Id);
-      gameBoardUpdate.NewSettlements.ShouldContainKeyAndValue(ThirdSettlementOneLocation, thirdComputerPlayer.Id);
+      gameBoardUpdate.NewSettlements.ShouldContainKeyAndValue(FirstSettlementOneLocation, firstOpponent.Id);
+      gameBoardUpdate.NewSettlements.ShouldContainKeyAndValue(SecondSettlementOneLocation, secondOpponent.Id);
+      gameBoardUpdate.NewSettlements.ShouldContainKeyAndValue(ThirdSettlementOneLocation, thirdOpponent.Id);
       gameBoardUpdate.NewRoads.Count.ShouldBe(3);
-      gameBoardUpdate.NewRoads.ShouldContainKeyAndValue(firstRoadOne, firstComputerPlayer.Id);
-      gameBoardUpdate.NewRoads.ShouldContainKeyAndValue(secondRoadOne, secondComputerPlayer.Id);
-      gameBoardUpdate.NewRoads.ShouldContainKeyAndValue(thirdRoadOne, thirdComputerPlayer.Id);
+      gameBoardUpdate.NewRoads.ShouldContainKeyAndValue(firstRoadOne, firstOpponent.Id);
+      gameBoardUpdate.NewRoads.ShouldContainKeyAndValue(secondRoadOne, secondOpponent.Id);
+      gameBoardUpdate.NewRoads.ShouldContainKeyAndValue(thirdRoadOne, thirdOpponent.Id);
 
       gameBoardUpdate = new GameBoardUpdate(); // Ensure that there is a state change for the gameBoardUpdate variable 
       localGameController.ContinueGameSetup(MainSettlementOneLocation, mainRoadOne);
@@ -323,13 +321,13 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
       gameBoardUpdate.ShouldNotBeNull();
       gameBoardUpdate.NewSettlements.Count.ShouldBe(3);
-      gameBoardUpdate.NewSettlements.ShouldContainKeyAndValue(ThirdSettlementTwoLocation, thirdComputerPlayer.Id);
-      gameBoardUpdate.NewSettlements.ShouldContainKeyAndValue(SecondSettlementTwoLocation, secondComputerPlayer.Id);
-      gameBoardUpdate.NewSettlements.ShouldContainKeyAndValue(FirstSettlementTwoLocation, firstComputerPlayer.Id);
+      gameBoardUpdate.NewSettlements.ShouldContainKeyAndValue(ThirdSettlementTwoLocation, thirdOpponent.Id);
+      gameBoardUpdate.NewSettlements.ShouldContainKeyAndValue(SecondSettlementTwoLocation, secondOpponent.Id);
+      gameBoardUpdate.NewSettlements.ShouldContainKeyAndValue(FirstSettlementTwoLocation, firstOpponent.Id);
       gameBoardUpdate.NewRoads.Count.ShouldBe(3);
-      gameBoardUpdate.NewRoads.ShouldContainKeyAndValue(thirdRoadTwo, thirdComputerPlayer.Id);
-      gameBoardUpdate.NewRoads.ShouldContainKeyAndValue(secondRoadTwo, secondComputerPlayer.Id);
-      gameBoardUpdate.NewRoads.ShouldContainKeyAndValue(firstRoadTwo, firstComputerPlayer.Id);
+      gameBoardUpdate.NewRoads.ShouldContainKeyAndValue(thirdRoadTwo, thirdOpponent.Id);
+      gameBoardUpdate.NewRoads.ShouldContainKeyAndValue(secondRoadTwo, secondOpponent.Id);
+      gameBoardUpdate.NewRoads.ShouldContainKeyAndValue(firstRoadTwo, firstOpponent.Id);
     }
     
     [Test]
