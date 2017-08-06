@@ -21,12 +21,6 @@ namespace Jabberwocky.SoC.Library.UnitTests
     #endregion
 
     #region Construction
-    // Depreciated
-    public MockComputerPlayer()
-    {
-      this.Id = Guid.NewGuid();
-    }
-
     public MockComputerPlayer(String name)
     {
       this.Id = Guid.NewGuid();

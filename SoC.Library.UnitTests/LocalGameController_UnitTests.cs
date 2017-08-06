@@ -127,8 +127,8 @@ namespace Jabberwocky.SoC.Library.UnitTests
       var mockDice = new MockDiceCreator()
         .AddExplicitDiceRollSequence(gameSetupOrder)
         .Create();
-       
-      var gameBoardManager = new GameBoardManager(BoardSizes.Standard);
+
+      var player = new MockPlayer(PlayerName);
 
       var firstOpponent = new MockComputerPlayer(FirstOpponentName);
       firstOpponent.SettlementLocations = new Queue<UInt32>(new [] { FirstSettlementOneLocation, FirstSettlementTwoLocation });
@@ -142,8 +142,9 @@ namespace Jabberwocky.SoC.Library.UnitTests
       thirdOpponent.SettlementLocations = new Queue<UInt32>(new[] { ThirdSettlementOneLocation, ThirdSettlementTwoLocation });
       thirdOpponent.Roads = new Queue<Road>(new[] { thirdRoadOne, thirdRoadTwo });
 
+      var localGameController = this.CreateLocalGameController(mockDice, player, firstOpponent, secondOpponent, thirdOpponent);
+
       GameBoardUpdate gameBoardUpdate = null;
-      var localGameController = this.CreateLocalGameController(mockDice, firstOpponent, secondOpponent, thirdOpponent);
       localGameController.GameSetupUpdateEvent = (GameBoardUpdate u) => { gameBoardUpdate = u; };
       localGameController.InitialBoardSetupEvent = (GameBoardData d) => { };
 
@@ -992,9 +993,9 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
       var gameBoardManager = new GameBoardManager(BoardSizes.Standard);
 
-      firstComputerPlayer = this.CreateMockComputerPlayer(FirstSettlementOneLocation, FirstSettlementTwoLocation, firstRoadOne, firstRoadTwo);
-      secondComputerPlayer = this.CreateMockComputerPlayer(SecondSettlementOneLocation, SecondSettlementTwoLocation, secondRoadOne, secondRoadTwo);
-      thirdComputerPlayer = this.CreateMockComputerPlayer(ThirdSettlementOneLocation, ThirdSettlementTwoLocation, thirdRoadOne, thirdRoadTwo);
+      firstComputerPlayer = this.CreateMockComputerPlayer(FirstOpponentName, FirstSettlementOneLocation, FirstSettlementTwoLocation, firstRoadOne, firstRoadTwo);
+      secondComputerPlayer = this.CreateMockComputerPlayer(SecondOpponentName, SecondSettlementOneLocation, SecondSettlementTwoLocation, secondRoadOne, secondRoadTwo);
+      thirdComputerPlayer = this.CreateMockComputerPlayer(ThirdOpponentName, ThirdSettlementOneLocation, ThirdSettlementTwoLocation, thirdRoadOne, thirdRoadTwo);
 
       var localGameController = this.CreateLocalGameController(mockDice, gameBoardManager, firstComputerPlayer, secondComputerPlayer, thirdComputerPlayer);
 
@@ -1043,15 +1044,21 @@ namespace Jabberwocky.SoC.Library.UnitTests
       return localGameController;
     }
 
-    private LocalGameController CreateLocalGameController(IDice dice, IComputerPlayer firstComputerPlayer, params IComputerPlayer[] otherComputerPlayers)
+    private LocalGameController CreateLocalGameController(IDice dice, IPlayer firstPlayer, params IPlayer[] otherPlayers)
     {
-      var mockComputerPlayerFactory = Substitute.For<IComputerPlayerFactory>();
-      mockComputerPlayerFactory.Create().Returns(firstComputerPlayer, otherComputerPlayers);
+      var mockComputerPlayerFactory = CreatePlayerFactory(firstPlayer, otherPlayers);
 
       return new LocalGameControllerCreator()
         .ChangeDice(dice)
         .ChangeComputerPlayerFactory(mockComputerPlayerFactory)
         .Create();
+    }
+
+    private IComputerPlayerFactory CreatePlayerFactory(IPlayer player, IPlayer[] otherPlayers)
+    {
+      var mockComputerPlayerFactory = Substitute.For<IComputerPlayerFactory>();
+      mockComputerPlayerFactory.Create().Returns(player, otherPlayers);
+      return mockComputerPlayerFactory;
     }
 
     private LocalGameController CreateLocalGameControllerWithMainPlayerGoingFirstInSetup()
@@ -1084,9 +1091,9 @@ namespace Jabberwocky.SoC.Library.UnitTests
       return mockComputerPlayer;
     }
 
-    private MockComputerPlayer CreateMockComputerPlayer(UInt32 settlementOneLocation, UInt32 settlementTwoLocation, Road roadOne, Road roadTwo)
+    private MockComputerPlayer CreateMockComputerPlayer(String name, UInt32 settlementOneLocation, UInt32 settlementTwoLocation, Road roadOne, Road roadTwo)
     {
-      var computerPlayer = new MockComputerPlayer();
+      var computerPlayer = new MockComputerPlayer(name);
       computerPlayer.SettlementLocations = new Queue<uint>(new uint[] { settlementOneLocation, settlementTwoLocation });
       computerPlayer.Roads = new Queue<Road>(new Road[] { roadOne, roadTwo });
       return computerPlayer;
