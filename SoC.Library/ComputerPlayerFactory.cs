@@ -9,7 +9,8 @@ namespace Jabberwocky.SoC.Library
   {
     public IComputerPlayer Create()
     {
-      return new ComputerPlayer(Guid.NewGuid());
+      throw new NotImplementedException();
+      //return new ComputerPlayer(Guid.NewGuid());
     }
 
     public IPlayer GetPlayer()

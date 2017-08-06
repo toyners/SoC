@@ -35,6 +35,14 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
     #region Properties
     public Guid Id { get; private set; }
+
+    public Int32 ResourceCount
+    {
+      get
+      {
+        throw new NotImplementedException();
+      }
+    }
     #endregion
 
     #region Methods

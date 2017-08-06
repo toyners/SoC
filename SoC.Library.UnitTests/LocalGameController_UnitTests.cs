@@ -57,7 +57,13 @@ namespace Jabberwocky.SoC.Library.UnitTests
     [Category("LocalGameController")]
     public void TryingToJoinGameMoreThanOnce_MeaningfulErrorIsRaised()
     {
-      var localGameController = this.CreateLocalGameController();
+      var firstOpponent = new MockComputerPlayer(FirstOpponentName);
+      var secondOpponent = new MockComputerPlayer(SecondOpponentName);
+      var thirdOpponent = new MockComputerPlayer(ThirdOpponentName);
+
+      var mockPlayerFactory = this.CreateMockPlayerFactory(firstOpponent, secondOpponent, thirdOpponent);
+
+      var localGameController = new LocalGameControllerCreator().ChangeComputerPlayerFactory(mockPlayerFactory).Create();
       ErrorDetails errorDetails = null;
       localGameController.ErrorRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
       localGameController.JoinGame();
@@ -86,7 +92,14 @@ namespace Jabberwocky.SoC.Library.UnitTests
     {
       var mockDice = NSubstitute.Substitute.For<IDice>();
       mockDice.RollTwoDice().Returns(12u, 10u, 8u, 2u);
-      var localGameController = this.CreateLocalGameController(mockDice, new ComputerPlayerFactory(), new GameBoardManager(BoardSizes.Standard));
+
+      var firstOpponent = new MockComputerPlayer(FirstOpponentName);
+      var secondOpponent = new MockComputerPlayer(SecondOpponentName);
+      var thirdOpponent = new MockComputerPlayer(ThirdOpponentName);
+
+      var mockPlayerFactory = this.CreateMockPlayerFactory(firstOpponent, secondOpponent, thirdOpponent);
+
+      var localGameController = new LocalGameControllerCreator().ChangeDice(mockDice).ChangeComputerPlayerFactory(mockPlayerFactory).Create();
 
       GameBoardData gameBoardData = null;
       localGameController.InitialBoardSetupEvent = (GameBoardData g) => { gameBoardData = g; };
@@ -95,6 +108,14 @@ namespace Jabberwocky.SoC.Library.UnitTests
       localGameController.LaunchGame();
 
       gameBoardData.ShouldNotBeNull();
+    }
+
+    private IComputerPlayerFactory CreateMockPlayerFactory(IComputerPlayer firstOpponent, params IComputerPlayer[] otherOpponents)
+    {
+      var mockPlayerFactory = Substitute.For<IComputerPlayerFactory>();
+      mockPlayerFactory.Create().Returns(firstOpponent, otherOpponents);
+
+      return mockPlayerFactory;
     }
 
     [Test]
