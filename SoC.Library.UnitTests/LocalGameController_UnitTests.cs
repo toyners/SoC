@@ -128,19 +128,9 @@ namespace Jabberwocky.SoC.Library.UnitTests
         .AddExplicitDiceRollSequence(gameSetupOrder)
         .Create();
 
-      var player = new MockPlayer(PlayerName);
-
-      var firstOpponent = new MockComputerPlayer(FirstOpponentName);
-      firstOpponent.SettlementLocations = new Queue<UInt32>(new [] { FirstSettlementOneLocation, FirstSettlementTwoLocation });
-      firstOpponent.Roads = new Queue<Road>(new[] { firstRoadOne, firstRoadTwo });
-
-      var secondOpponent = new MockComputerPlayer(SecondOpponentName);
-      secondOpponent.SettlementLocations = new Queue<UInt32>(new[] { SecondSettlementOneLocation, SecondSettlementTwoLocation });
-      secondOpponent.Roads = new Queue<Road>(new[] { secondRoadOne, secondRoadTwo });
-
-      var thirdOpponent = new MockComputerPlayer(ThirdOpponentName);
-      thirdOpponent.SettlementLocations = new Queue<UInt32>(new[] { ThirdSettlementOneLocation, ThirdSettlementTwoLocation });
-      thirdOpponent.Roads = new Queue<Road>(new[] { thirdRoadOne, thirdRoadTwo });
+      MockPlayer player;
+      MockComputerPlayer firstOpponent, secondOpponent, thirdOpponent;
+      this.CreateDefaultPlayerInstances(out player, out firstOpponent, out secondOpponent, out thirdOpponent);
 
       var localGameController = this.CreateLocalGameController(mockDice, player, firstOpponent, secondOpponent, thirdOpponent);
 
@@ -1097,6 +1087,23 @@ namespace Jabberwocky.SoC.Library.UnitTests
       computerPlayer.SettlementLocations = new Queue<uint>(new uint[] { settlementOneLocation, settlementTwoLocation });
       computerPlayer.Roads = new Queue<Road>(new Road[] { roadOne, roadTwo });
       return computerPlayer;
+    }
+
+    private void CreateDefaultPlayerInstances(out MockPlayer player, out MockComputerPlayer firstOpponent, out MockComputerPlayer secondOpponent, out MockComputerPlayer thirdOpponent)
+    {
+      player = new MockPlayer(PlayerName);
+
+      firstOpponent = new MockComputerPlayer(FirstOpponentName);
+      firstOpponent.SettlementLocations = new Queue<UInt32>(new[] { FirstSettlementOneLocation, FirstSettlementTwoLocation });
+      firstOpponent.Roads = new Queue<Road>(new[] { firstRoadOne, firstRoadTwo });
+
+      secondOpponent = new MockComputerPlayer(SecondOpponentName);
+      secondOpponent.SettlementLocations = new Queue<UInt32>(new[] { SecondSettlementOneLocation, SecondSettlementTwoLocation });
+      secondOpponent.Roads = new Queue<Road>(new[] { secondRoadOne, secondRoadTwo });
+
+      thirdOpponent = new MockComputerPlayer(ThirdOpponentName);
+      thirdOpponent.SettlementLocations = new Queue<UInt32>(new[] { ThirdSettlementOneLocation, ThirdSettlementTwoLocation });
+      thirdOpponent.Roads = new Queue<Road>(new[] { thirdRoadOne, thirdRoadTwo });
     }
 
     private void RunOpponentDataPassBackTests(GameOptions gameOptions)
