@@ -181,6 +181,10 @@ namespace Jabberwocky.SoC.Library
           }
 
           var player = this.players[this.playerIndex];
+          if (player.ResourcesCount > 7)
+          {
+            var computerPlayer = (IComputerPlayer)player;
+          }
         }
 
         this.ResourcesLostEvent?.Invoke(resourcesLost);

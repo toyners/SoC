@@ -20,6 +20,14 @@ namespace Jabberwocky.SoC.Library
 
     public String Name { get; private set; }
 
+    public Int32 ResourcesCount
+    {
+      get
+      {
+        throw new NotImplementedException();
+      }
+    }
+
     public PlayerDataView GetDataView()
     {
       var dataView = new PlayerDataView();

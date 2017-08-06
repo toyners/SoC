@@ -36,11 +36,19 @@ namespace Jabberwocky.SoC.Library.UnitTests
     {
       get
       {
-        throw new NotImplementedException();
+        return this.Resources.Count;
       }
     }
 
     public String Name { get; set; }
+
+    public Int32 ResourcesCount
+    {
+      get
+      {
+        throw new NotImplementedException();
+      }
+    }
     #endregion
 
     #region Methods
@@ -90,6 +98,14 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
     public MockPlayer(String name) : base(name)
     {
+    }
+
+    public new Int32 ResourcesCount
+    {
+      get
+      {
+        return this.Resources.Count;
+      }
     }
   }
 }

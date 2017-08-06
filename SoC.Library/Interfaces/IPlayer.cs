@@ -8,6 +8,7 @@ namespace Jabberwocky.SoC.Library.Interfaces
     #region Properties
     Guid Id { get; }
     String Name { get; }
+    Int32 ResourcesCount { get; }
     #endregion
 
     #region Methods
