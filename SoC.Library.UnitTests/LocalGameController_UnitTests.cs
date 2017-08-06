@@ -908,7 +908,6 @@ namespace Jabberwocky.SoC.Library.UnitTests
       secondComputerPlayer.ResourceCards = 7;
       thirdComputerPlayer.ResourceCards = 9;
 
-
       // Act
       Dictionary<Guid, UInt32> resourcesLost = null;
       localGameController.ResourcesLostEvent = (Dictionary<Guid, UInt32> r) => { resourcesLost = r; };
