@@ -338,18 +338,14 @@ namespace Jabberwocky.SoC.Library.UnitTests
         .AddRandomSequenceWithNoDuplicates(4)
         .Create();
 
-      var gameBoardManager = new GameBoardManager(BoardSizes.Standard);
+      MockPlayer player;
+      MockComputerPlayer firstOpponent, secondOpponent, thirdOpponent;
+      this.CreateDefaultPlayerInstances(out player, out firstOpponent, out secondOpponent, out thirdOpponent);
 
-      var firstComputerPlayer = this.CreateMockComputerPlayer(gameBoardManager.Data, FirstSettlementOneLocation, FirstSettlementTwoLocation, firstRoadOne, firstRoadTwo);
-      var secondComputerPlayer = this.CreateMockComputerPlayer(gameBoardManager.Data, SecondSettlementOneLocation, SecondSettlementTwoLocation, secondRoadOne, secondRoadTwo);
-      var thirdComputerPlayer = this.CreateMockComputerPlayer(gameBoardManager.Data, ThirdSettlementOneLocation, ThirdSettlementTwoLocation, thirdRoadOne, thirdRoadTwo);
-
-      var localGameController = this.CreateLocalGameController(mockDice, gameBoardManager, firstComputerPlayer, secondComputerPlayer, thirdComputerPlayer);
+      var localGameController = this.CreateLocalGameController(mockDice, player, firstOpponent, secondOpponent, thirdOpponent);
 
       ResourceUpdate resourceUpdate = null;
-      Guid mainPlayerId = Guid.Empty;
       localGameController.GameSetupResourcesEvent = (ResourceUpdate r) => { resourceUpdate = r; };
-      localGameController.GameJoinedEvent = (PlayerDataView[] p) => { mainPlayerId = p[0].Id; };
 
       localGameController.JoinGame();
       localGameController.LaunchGame();
@@ -359,34 +355,34 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
       resourceUpdate.ShouldNotBeNull();
       resourceUpdate.Resources.Count.ShouldBe(4);
-      resourceUpdate.Resources.ShouldContainKey(mainPlayerId);
-      resourceUpdate.Resources.ShouldContainKey(firstComputerPlayer.Id);
-      resourceUpdate.Resources.ShouldContainKey(secondComputerPlayer.Id);
-      resourceUpdate.Resources.ShouldContainKey(thirdComputerPlayer.Id);
+      resourceUpdate.Resources.ShouldContainKey(player.Id);
+      resourceUpdate.Resources.ShouldContainKey(firstOpponent.Id);
+      resourceUpdate.Resources.ShouldContainKey(secondOpponent.Id);
+      resourceUpdate.Resources.ShouldContainKey(thirdOpponent.Id);
 
-      resourceUpdate.Resources[mainPlayerId].BrickCount.ShouldBe(1u);
-      resourceUpdate.Resources[mainPlayerId].GrainCount.ShouldBe(1u);
-      resourceUpdate.Resources[mainPlayerId].LumberCount.ShouldBe(0u);
-      resourceUpdate.Resources[mainPlayerId].OreCount.ShouldBe(0u);
-      resourceUpdate.Resources[mainPlayerId].WoolCount.ShouldBe(1u);
+      resourceUpdate.Resources[player.Id].BrickCount.ShouldBe(1u);
+      resourceUpdate.Resources[player.Id].GrainCount.ShouldBe(1u);
+      resourceUpdate.Resources[player.Id].LumberCount.ShouldBe(0u);
+      resourceUpdate.Resources[player.Id].OreCount.ShouldBe(0u);
+      resourceUpdate.Resources[player.Id].WoolCount.ShouldBe(1u);
 
-      resourceUpdate.Resources[firstComputerPlayer.Id].BrickCount.ShouldBe(0u);
-      resourceUpdate.Resources[firstComputerPlayer.Id].GrainCount.ShouldBe(1u);
-      resourceUpdate.Resources[firstComputerPlayer.Id].LumberCount.ShouldBe(1u);
-      resourceUpdate.Resources[firstComputerPlayer.Id].OreCount.ShouldBe(0u);
-      resourceUpdate.Resources[firstComputerPlayer.Id].WoolCount.ShouldBe(1u);
+      resourceUpdate.Resources[firstOpponent.Id].BrickCount.ShouldBe(0u);
+      resourceUpdate.Resources[firstOpponent.Id].GrainCount.ShouldBe(1u);
+      resourceUpdate.Resources[firstOpponent.Id].LumberCount.ShouldBe(1u);
+      resourceUpdate.Resources[firstOpponent.Id].OreCount.ShouldBe(0u);
+      resourceUpdate.Resources[firstOpponent.Id].WoolCount.ShouldBe(1u);
 
-      resourceUpdate.Resources[secondComputerPlayer.Id].BrickCount.ShouldBe(0u);
-      resourceUpdate.Resources[secondComputerPlayer.Id].GrainCount.ShouldBe(0u);
-      resourceUpdate.Resources[secondComputerPlayer.Id].LumberCount.ShouldBe(1u);
-      resourceUpdate.Resources[secondComputerPlayer.Id].OreCount.ShouldBe(1u);
-      resourceUpdate.Resources[secondComputerPlayer.Id].WoolCount.ShouldBe(1u);
+      resourceUpdate.Resources[secondOpponent.Id].BrickCount.ShouldBe(0u);
+      resourceUpdate.Resources[secondOpponent.Id].GrainCount.ShouldBe(0u);
+      resourceUpdate.Resources[secondOpponent.Id].LumberCount.ShouldBe(1u);
+      resourceUpdate.Resources[secondOpponent.Id].OreCount.ShouldBe(1u);
+      resourceUpdate.Resources[secondOpponent.Id].WoolCount.ShouldBe(1u);
 
-      resourceUpdate.Resources[thirdComputerPlayer.Id].BrickCount.ShouldBe(0u);
-      resourceUpdate.Resources[thirdComputerPlayer.Id].GrainCount.ShouldBe(1u);
-      resourceUpdate.Resources[thirdComputerPlayer.Id].LumberCount.ShouldBe(1u);
-      resourceUpdate.Resources[thirdComputerPlayer.Id].OreCount.ShouldBe(0u);
-      resourceUpdate.Resources[thirdComputerPlayer.Id].WoolCount.ShouldBe(1u);
+      resourceUpdate.Resources[thirdOpponent.Id].BrickCount.ShouldBe(0u);
+      resourceUpdate.Resources[thirdOpponent.Id].GrainCount.ShouldBe(1u);
+      resourceUpdate.Resources[thirdOpponent.Id].LumberCount.ShouldBe(1u);
+      resourceUpdate.Resources[thirdOpponent.Id].OreCount.ShouldBe(0u);
+      resourceUpdate.Resources[thirdOpponent.Id].WoolCount.ShouldBe(1u);
     }
 
     [Test]
