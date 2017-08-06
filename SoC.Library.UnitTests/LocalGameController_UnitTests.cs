@@ -802,18 +802,11 @@ namespace Jabberwocky.SoC.Library.UnitTests
         .AddExplicitDiceRollSequence(gameTurnOrder)
         .Create();
 
-      var gameBoardManager = new GameBoardManager(BoardSizes.Standard);
-      var firstComputerPlayer = this.CreateMockComputerPlayer(gameBoardManager.Data, FirstSettlementOneLocation, FirstSettlementTwoLocation, firstRoadOne, firstRoadTwo);
-      var secondComputerPlayer = this.CreateMockComputerPlayer(gameBoardManager.Data, SecondSettlementOneLocation, SecondSettlementTwoLocation, secondRoadOne, secondRoadTwo);
-      var thirdComputerPlayer = this.CreateMockComputerPlayer(gameBoardManager.Data, ThirdSettlementOneLocation, ThirdSettlementTwoLocation, thirdRoadOne, thirdRoadTwo);
-      var mockComputerPlayerFactory = Substitute.For<IComputerPlayerFactory>();
-      mockComputerPlayerFactory.Create().Returns(firstComputerPlayer, secondComputerPlayer, thirdComputerPlayer);
+      MockPlayer player;
+      MockComputerPlayer firstOpponent, secondOpponent, thirdOpponent;
+      this.CreateDefaultPlayerInstances(out player, out firstOpponent, out secondOpponent, out thirdOpponent);
 
-      var localGameController = new LocalGameControllerCreator()
-                                  .ChangeDice(mockDice)
-                                  .ChangeGameBoardManager(gameBoardManager)
-                                  .ChangeComputerPlayerFactory(mockComputerPlayerFactory)
-                                  .Create();
+      var localGameController = this.CreateLocalGameController(mockDice, player, firstOpponent, secondOpponent, thirdOpponent);
 
       localGameController.JoinGame();
       localGameController.LaunchGame();
@@ -829,10 +822,10 @@ namespace Jabberwocky.SoC.Library.UnitTests
       // Assert
       turnOrder.ShouldNotBeNull();
       turnOrder.Length.ShouldBe(4);
-      turnOrder[0].Id.ShouldBe(thirdComputerPlayer.Id);
-      turnOrder[1].Id.ShouldBe(secondComputerPlayer.Id);
-      turnOrder[2].Id.ShouldBe(firstComputerPlayer.Id);
-      turnOrder[3].Id.ShouldNotBeOneOf(new[] { Guid.Empty, firstComputerPlayer.Id, secondComputerPlayer.Id, thirdComputerPlayer.Id });
+      turnOrder[0].Id.ShouldBe(thirdOpponent.Id);
+      turnOrder[1].Id.ShouldBe(secondOpponent.Id);
+      turnOrder[2].Id.ShouldBe(firstOpponent.Id);
+      turnOrder[3].Id.ShouldNotBeOneOf(new[] { Guid.Empty, firstOpponent.Id, secondOpponent.Id, thirdOpponent.Id });
     }
 
     [Test]
