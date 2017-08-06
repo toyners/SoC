@@ -18,6 +18,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
     public Queue<UInt32> SettlementLocations;
     public Queue<Road> Roads;
+    public List<ResourceTypes> Resources;
     #endregion
 
     #region Construction
@@ -85,6 +86,8 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
   public class MockPlayer : Player
   {
+    public List<ResourceTypes> Resources;
+
     public MockPlayer(String name) : base(name)
     {
     }

@@ -897,9 +897,11 @@ namespace Jabberwocky.SoC.Library.UnitTests
       MockComputerPlayer firstOpponent, secondOpponent, thirdOpponent;
       var localGameController = this.CreateLocalGameControllerAndCompleteGameSetup(out mockDice, out player, out firstOpponent, out secondOpponent, out thirdOpponent);
       mockDice.AddSequence(new[] { 7u });
-      firstOpponent.ResourceCards = 8;
-      secondOpponent.ResourceCards = 7;
-      thirdOpponent.ResourceCards = 9;
+
+      player.Resources = new List<ResourceTypes> { ResourceTypes.Brick };
+      firstOpponent.Resources = new List<ResourceTypes> { ResourceTypes.Brick, ResourceTypes.Brick, ResourceTypes.Grain, ResourceTypes.Grain, ResourceTypes.Lumber, ResourceTypes.Lumber, ResourceTypes.Ore, ResourceTypes.Wool };
+      secondOpponent.Resources = new List<ResourceTypes> { ResourceTypes.Brick, ResourceTypes.Brick, ResourceTypes.Grain, ResourceTypes.Grain, ResourceTypes.Lumber, ResourceTypes.Ore, ResourceTypes.Wool };
+      thirdOpponent.Resources = new List<ResourceTypes> { ResourceTypes.Brick, ResourceTypes.Brick, ResourceTypes.Grain, ResourceTypes.Grain, ResourceTypes.Lumber, ResourceTypes.Lumber, ResourceTypes.Ore, ResourceTypes.Ore, ResourceTypes.Wool };
 
       // Act
       Dictionary<Guid, UInt32> resourcesLost = null;
