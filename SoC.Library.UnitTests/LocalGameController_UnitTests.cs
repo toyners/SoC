@@ -777,10 +777,11 @@ namespace Jabberwocky.SoC.Library.UnitTests
       // Assert
       turnOrder.ShouldNotBeNull();
       turnOrder.Length.ShouldBe(4);
-      turnOrder[0].Id.ShouldBe(thirdOpponent.Id);
-      turnOrder[1].Id.ShouldBe(secondOpponent.Id);
-      turnOrder[2].Id.ShouldBe(firstOpponent.Id);
-      turnOrder[3].Id.ShouldNotBeOneOf(new[] { Guid.Empty, firstOpponent.Id, secondOpponent.Id, thirdOpponent.Id });
+
+      this.AssertPlayerDataViewIsCorrect(player, turnOrder[3]);
+      this.AssertPlayerDataViewIsCorrect(firstOpponent, turnOrder[2]);
+      this.AssertPlayerDataViewIsCorrect(secondOpponent, turnOrder[1]);
+      this.AssertPlayerDataViewIsCorrect(thirdOpponent, turnOrder[0]);
     }
 
     [Test]
@@ -815,10 +816,11 @@ namespace Jabberwocky.SoC.Library.UnitTests
       // Assert
       turnOrder.ShouldNotBeNull();
       turnOrder.Length.ShouldBe(4);
-      turnOrder[0].Id.ShouldNotBeOneOf(new[] { Guid.Empty, firstOpponent.Id, secondOpponent.Id, thirdOpponent.Id });
-      turnOrder[1].Id.ShouldBe(firstOpponent.Id);
-      turnOrder[2].Id.ShouldBe(secondOpponent.Id);
-      turnOrder[3].Id.ShouldBe(thirdOpponent.Id);
+
+      this.AssertPlayerDataViewIsCorrect(player, turnOrder[0]);
+      this.AssertPlayerDataViewIsCorrect(firstOpponent, turnOrder[1]);
+      this.AssertPlayerDataViewIsCorrect(secondOpponent, turnOrder[2]);
+      this.AssertPlayerDataViewIsCorrect(thirdOpponent, turnOrder[3]);
     }
 
     [Test]
@@ -987,10 +989,10 @@ namespace Jabberwocky.SoC.Library.UnitTests
       return localGameController;
     }
 
-    private void AssertPlayerDataViewIsCorrect(Guid expectedId, String expectedName, PlayerDataView playerDataView)
+    private void AssertPlayerDataViewIsCorrect(IPlayer player, PlayerDataView playerDataView)
     {
-      playerDataView.Id.ShouldBe(expectedId);
-      playerDataView.Name.ShouldBe(expectedName);
+      playerDataView.Id.ShouldBe(player.Id);
+      playerDataView.Name.ShouldBe(player.Name);
       playerDataView.DisplayedDevelopmentCards.ShouldBeNull();
       playerDataView.HiddenDevelopmentCards.ShouldBe(0u);
       playerDataView.ResourceCards.ShouldBe(0u);
@@ -1109,17 +1111,10 @@ namespace Jabberwocky.SoC.Library.UnitTests
       playerDataViews.ShouldNotBeNull();
       playerDataViews.Length.ShouldBe(4);
 
-      playerDataViews[0].ShouldBeOfType<PlayerDataView>();
-      this.AssertPlayerDataViewIsCorrect(player.Id, player.Name, playerDataViews[0]);
-
-      playerDataViews[1].ShouldBeOfType<PlayerDataView>();
-      this.AssertPlayerDataViewIsCorrect(firstOpponent.Id, firstOpponent.Name, playerDataViews[1]);
-
-      playerDataViews[2].ShouldBeOfType<PlayerDataView>();
-      this.AssertPlayerDataViewIsCorrect(secondOpponent.Id, secondOpponent.Name, playerDataViews[2]);
-
-      playerDataViews[3].ShouldBeOfType<PlayerDataView>();
-      this.AssertPlayerDataViewIsCorrect(thirdOpponent.Id, thirdOpponent.Name, playerDataViews[3]);
+      this.AssertPlayerDataViewIsCorrect(player, playerDataViews[0]);
+      this.AssertPlayerDataViewIsCorrect(firstOpponent, playerDataViews[1]);
+      this.AssertPlayerDataViewIsCorrect(secondOpponent, playerDataViews[2]);
+      this.AssertPlayerDataViewIsCorrect(thirdOpponent, playerDataViews[3]);
     }
     #endregion
   }
