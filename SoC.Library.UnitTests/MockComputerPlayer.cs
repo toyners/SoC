@@ -9,7 +9,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
   /// <summary>
   /// Used to set opponent player behaviour for testing purposes
   /// </summary>
-  public class MockPlayer : IComputerPlayer
+  public class MockComputerPlayer : IComputerPlayer
   {
     #region Fields
     public UInt32 HiddenDevelopmentCards;
@@ -22,12 +22,12 @@ namespace Jabberwocky.SoC.Library.UnitTests
     #endregion
 
     #region Construction
-    public MockPlayer()
+    public MockComputerPlayer()
     {
       this.Id = Guid.NewGuid();
     }
 
-    public MockPlayer(String name) : this()
+    public MockComputerPlayer(String name) : this()
     {
       this.Name = name;
     }
