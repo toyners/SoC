@@ -32,7 +32,7 @@ namespace Jabberwocky.SoC.Library
     private IGameSession gameSession;
     private Int32 playerIndex;
     private IPlayer[] players;
-    private Player mainPlayer;
+    private IPlayer mainPlayer;
     private Boolean quitting;
     private Task sessionTask;
     private ResourceUpdate gameSetupResources;
@@ -122,7 +122,7 @@ namespace Jabberwocky.SoC.Library
 
     private void CreatePlayers(GameOptions gameOptions)
     {
-      this.mainPlayer = new Player();
+      this.mainPlayer = this.computerPlayerFactory.Create();
       this.players = new IPlayer[gameOptions.MaxAIPlayers + 1];
       this.players[0] = this.mainPlayer;
       var index = 1;

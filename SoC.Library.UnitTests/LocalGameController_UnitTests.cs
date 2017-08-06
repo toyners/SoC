@@ -1094,13 +1094,13 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
     private void RunOpponentDataPassBackTests(GameOptions gameOptions)
     {
-      var player = new MockComputerPlayer(PlayerName);
+      var player = new MockPlayer(PlayerName);
       var firstOpponent = new MockComputerPlayer(FirstOpponentName);
       var secondOpponent = new MockComputerPlayer(SecondOpponentName);
       var thirdOpponent = new MockComputerPlayer(ThirdOpponentName);
 
       var mockComputerGameFactory = Substitute.For<IComputerPlayerFactory>();
-      mockComputerGameFactory.GetPlayer().Returns(player, firstOpponent, secondOpponent, thirdOpponent);
+      mockComputerGameFactory.Create().Returns(player, firstOpponent, secondOpponent, thirdOpponent);
       var localGameController = new LocalGameControllerCreator()
         .ChangeComputerPlayerFactory(mockComputerGameFactory)
         .Create();

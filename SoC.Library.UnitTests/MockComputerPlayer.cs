@@ -15,20 +15,21 @@ namespace Jabberwocky.SoC.Library.UnitTests
     public UInt32 HiddenDevelopmentCards;
     public UInt32 ResourceCards;
     public List<DevelopmentCardTypes> DisplayedDevelopmentCards;
-    public readonly String Name;
 
     public Queue<UInt32> SettlementLocations;
     public Queue<Road> Roads;
     #endregion
 
     #region Construction
+    // Depreciated
     public MockComputerPlayer()
     {
       this.Id = Guid.NewGuid();
     }
 
-    public MockComputerPlayer(String name) : this()
+    public MockComputerPlayer(String name)
     {
+      this.Id = Guid.NewGuid();
       this.Name = name;
     }
     #endregion
@@ -43,6 +44,8 @@ namespace Jabberwocky.SoC.Library.UnitTests
         throw new NotImplementedException();
       }
     }
+
+    public String Name { get; set; }
     #endregion
 
     #region Methods
@@ -66,6 +69,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
       return new PlayerDataView
       {
         Id = this.Id,
+        Name = this.Name,
         DisplayedDevelopmentCards = this.CreateListOfDisplayedDevelopmentCards(),
         HiddenDevelopmentCards = this.HiddenDevelopmentCards,
         ResourceCards = this.ResourceCards
@@ -83,5 +87,12 @@ namespace Jabberwocky.SoC.Library.UnitTests
       return new List<DevelopmentCardTypes>(this.DisplayedDevelopmentCards);
     }
     #endregion
+  }
+
+  public class MockPlayer : Player
+  {
+    public MockPlayer(String name) : base(name)
+    {
+    }
   }
 }

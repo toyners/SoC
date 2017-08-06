@@ -7,7 +7,7 @@ namespace Jabberwocky.SoC.Library
   // TODO: Change name to PlayerPool
   public class ComputerPlayerFactory : IComputerPlayerFactory
   {
-    public IComputerPlayer Create()
+    public IPlayer Create()
     {
       throw new NotImplementedException();
       //return new ComputerPlayer(Guid.NewGuid());
