@@ -893,13 +893,13 @@ namespace Jabberwocky.SoC.Library.UnitTests
     {
       // Assert
       MockDice mockDice = null;
-      Guid mainPlayerId;
-      MockComputerPlayer firstComputerPlayer, secondComputerPlayer, thirdComputerPlayer;
-      var localGameController = this.CreateLocalGameControllerAndCompleteGameSetup2(out mockDice, out mainPlayerId, out firstComputerPlayer, out secondComputerPlayer, out thirdComputerPlayer);
+      MockPlayer player;
+      MockComputerPlayer firstOpponent, secondOpponent, thirdOpponent;
+      var localGameController = this.CreateLocalGameControllerAndCompleteGameSetup(out mockDice, out player, out firstOpponent, out secondOpponent, out thirdOpponent);
       mockDice.AddSequence(new[] { 7u });
-      firstComputerPlayer.ResourceCards = 8;
-      secondComputerPlayer.ResourceCards = 7;
-      thirdComputerPlayer.ResourceCards = 9;
+      firstOpponent.ResourceCards = 8;
+      secondOpponent.ResourceCards = 7;
+      thirdOpponent.ResourceCards = 9;
 
       // Act
       Dictionary<Guid, UInt32> resourcesLost = null;
@@ -908,9 +908,9 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
       // Assert
       resourcesLost.Count.ShouldBe(3);
-      resourcesLost.ShouldContainKeyAndValue(firstComputerPlayer.Id, 4u);
-      resourcesLost.ShouldContainKeyAndValue(secondComputerPlayer.Id, 0u);
-      resourcesLost.ShouldContainKeyAndValue(thirdComputerPlayer.Id, 4u);
+      resourcesLost.ShouldContainKeyAndValue(firstOpponent.Id, 4u);
+      resourcesLost.ShouldContainKeyAndValue(secondOpponent.Id, 0u);
+      resourcesLost.ShouldContainKeyAndValue(thirdOpponent.Id, 4u);
     }
 
     private LocalGameController CreateLocalGameControllerAndCompleteGameSetup(out MockDice mockDice, out MockPlayer player, out MockComputerPlayer firstOpponent, out MockComputerPlayer secondOpponent, out MockComputerPlayer thirdOpponent)
@@ -932,38 +932,6 @@ namespace Jabberwocky.SoC.Library.UnitTests
       localGameController.ContinueGameSetup(MainSettlementOneLocation, mainRoadOne);
       localGameController.CompleteGameSetup(MainSettlementTwoLocation, mainRoadTwo);
       localGameController.FinalisePlayerTurnOrder();
-
-      return localGameController;
-    }
-
-    private LocalGameController CreateLocalGameControllerAndCompleteGameSetup2(out MockDice mockDice, out Guid mainPlayerId, out MockComputerPlayer firstComputerPlayer, out MockComputerPlayer secondComputerPlayer, out MockComputerPlayer thirdComputerPlayer)
-    {
-      var gameSetupOrder = new[] { 12u, 10u, 8u, 6u };
-      var gameTurnOrder = gameSetupOrder;
-      mockDice = new MockDiceCreator()
-        .AddExplicitDiceRollSequence(gameSetupOrder)
-        .AddExplicitDiceRollSequence(gameTurnOrder)
-        .Create();
-
-      var gameBoardManager = new GameBoardManager(BoardSizes.Standard);
-
-      firstComputerPlayer = this.CreateMockComputerPlayer(FirstOpponentName, FirstSettlementOneLocation, FirstSettlementTwoLocation, firstRoadOne, firstRoadTwo);
-      secondComputerPlayer = this.CreateMockComputerPlayer(SecondOpponentName, SecondSettlementOneLocation, SecondSettlementTwoLocation, secondRoadOne, secondRoadTwo);
-      thirdComputerPlayer = this.CreateMockComputerPlayer(ThirdOpponentName, ThirdSettlementOneLocation, ThirdSettlementTwoLocation, thirdRoadOne, thirdRoadTwo);
-
-      var localGameController = this.CreateLocalGameController(mockDice, gameBoardManager, firstComputerPlayer, secondComputerPlayer, thirdComputerPlayer);
-
-      var id = Guid.Empty;
-      localGameController.GameJoinedEvent = (PlayerDataView[] p) => { id = p[0].Id; };
-
-      localGameController.JoinGame();
-      localGameController.LaunchGame();
-      localGameController.StartGameSetup();
-      localGameController.ContinueGameSetup(MainSettlementOneLocation, mainRoadOne);
-      localGameController.CompleteGameSetup(MainSettlementTwoLocation, mainRoadTwo);
-      localGameController.FinalisePlayerTurnOrder();
-
-      mainPlayerId = id;
 
       return localGameController;
     }
