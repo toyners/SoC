@@ -32,7 +32,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     #region Properties
     public Guid Id { get; private set; }
 
-    public Int32 ResourceCount
+    public Int32 ResourcesCount
     {
       get
       {
@@ -41,14 +41,6 @@ namespace Jabberwocky.SoC.Library.UnitTests
     }
 
     public String Name { get; set; }
-
-    public Int32 ResourcesCount
-    {
-      get
-      {
-        throw new NotImplementedException();
-      }
-    }
     #endregion
 
     #region Methods
@@ -100,7 +92,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     {
     }
 
-    public new Int32 ResourcesCount
+    public override Int32 ResourcesCount
     {
       get
       {

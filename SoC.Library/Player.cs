@@ -20,7 +20,7 @@ namespace Jabberwocky.SoC.Library
 
     public String Name { get; private set; }
 
-    public Int32 ResourcesCount
+    public virtual Int32 ResourcesCount
     {
       get
       {

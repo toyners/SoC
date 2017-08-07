@@ -180,7 +180,7 @@ namespace Jabberwocky.SoC.Library
             continue;
           }
 
-          var player = this.players[this.playerIndex];
+          var player = this.players[index];
           if (player.ResourcesCount > 7)
           {
             var computerPlayer = (IComputerPlayer)player;
