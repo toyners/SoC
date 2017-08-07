@@ -19,6 +19,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     public Queue<UInt32> SettlementLocations;
     public Queue<Road> Roads;
     public List<ResourceTypes> Resources;
+    public HashSet<ResourceTypes> DroppedResources;
     #endregion
 
     #region Construction
@@ -44,6 +45,11 @@ namespace Jabberwocky.SoC.Library.UnitTests
     #endregion
 
     #region Methods
+    public HashSet<ResourceTypes> ChooseResourcesToDrop()
+    {
+      return DroppedResources;
+    }
+
     public Road ChooseRoad(GameBoardData gameBoardData)
     {
       return this.Roads.Dequeue();
@@ -52,11 +58,6 @@ namespace Jabberwocky.SoC.Library.UnitTests
     public UInt32 ChooseSettlementLocation(GameBoardData gameBoardData)
     {
       return this.SettlementLocations.Dequeue();
-    }
-
-    public void DropResources(Int32 resourceCount)
-    {
-      throw new NotImplementedException();
     }
 
     public PlayerDataView GetDataView()

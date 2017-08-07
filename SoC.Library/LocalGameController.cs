@@ -184,6 +184,7 @@ namespace Jabberwocky.SoC.Library
           if (player.ResourcesCount > 7)
           {
             var computerPlayer = (IComputerPlayer)player;
+            computerPlayer.ChooseResourcesToDrop();
           }
         }
 
