@@ -22,4 +22,28 @@ namespace Jabberwocky.SoC.Library.Interfaces
     public Int32 OreCount;
     public Int32 WoolCount;
   }
+
+  public class ResourceBag
+  {
+    public Int32 BrickCount { get; private set; }
+    public Int32 GrainCount { get; private set; }
+    public Int32 LumberCount { get; private set; }
+    public Int32 OreCount { get; private set; }
+    public Int32 WoolCount { get; private set; }
+
+    public void Add(ResourceClutch resources)
+    {
+      throw new NotImplementedException();
+    }
+
+    public void Remove(ResourceClutch resources)
+    {
+      throw new NotImplementedException();
+    }
+
+    public override Boolean Equals(Object obj)
+    {
+      return base.Equals(obj);
+    }
+  }
 }
