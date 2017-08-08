@@ -36,6 +36,7 @@ namespace Jabberwocky.SoC.Library
     private Boolean quitting;
     private Task sessionTask;
     private ResourceUpdate gameSetupResources;
+    private Dictionary<Guid, ResourceBag> resourceBags;
     #endregion
 
     public LocalGameController(IDice dice, IComputerPlayerFactory computerPlayerFactory, GameBoardManager gameBoardManager)
@@ -184,7 +185,11 @@ namespace Jabberwocky.SoC.Library
           if (player.ResourcesCount > 7)
           {
             var computerPlayer = (IComputerPlayer)player;
-            computerPlayer.ChooseResourcesToDrop();
+            var resourcesToDrop = computerPlayer.ChooseResourcesToDrop();
+
+            var resourceBag = this.resourceBags[player.Id];
+
+            resourceBag.Remove(resourcesToDrop);
           }
         }
 
