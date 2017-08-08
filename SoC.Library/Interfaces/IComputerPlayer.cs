@@ -10,7 +10,16 @@ namespace Jabberwocky.SoC.Library.Interfaces
     #region Methods
     UInt32 ChooseSettlementLocation(GameBoardData gameBoardData);
     Road ChooseRoad(GameBoardData gameBoardData);
-    HashSet<ResourceTypes> ChooseResourcesToDrop();
+    ResourceClutch ChooseResourcesToDrop();
     #endregion
+  }
+
+  public struct ResourceClutch
+  {
+    public Int32 BrickCount;
+    public Int32 GrainCount;
+    public Int32 LumberCount;
+    public Int32 OreCount;
+    public Int32 WoolCount;
   }
 }

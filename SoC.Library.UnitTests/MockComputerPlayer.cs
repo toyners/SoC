@@ -19,7 +19,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     public Queue<UInt32> SettlementLocations;
     public Queue<Road> Roads;
     public List<ResourceTypes> Resources;
-    public HashSet<ResourceTypes> DroppedResources;
+    public ResourceClutch DroppedResources;
     #endregion
 
     #region Construction
@@ -45,7 +45,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     #endregion
 
     #region Methods
-    public HashSet<ResourceTypes> ChooseResourcesToDrop()
+    public ResourceClutch ChooseResourcesToDrop()
     {
       return DroppedResources;
     }
