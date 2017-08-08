@@ -704,6 +704,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
     #endregion
 
     #region Structs
+    // TODO: Removed in favour of ResourceClutch
     public struct ResourceCounts
     {
       public UInt32 BrickCount;
