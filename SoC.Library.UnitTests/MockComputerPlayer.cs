@@ -18,7 +18,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
     public Queue<UInt32> SettlementLocations;
     public Queue<Road> Roads;
-    public List<ResourceTypes> Resources;
+    public ResourceBag Resources;
     public ResourceClutch DroppedResources;
     #endregion
 

@@ -899,9 +899,10 @@ namespace Jabberwocky.SoC.Library.UnitTests
       mockDice.AddSequence(new[] { 7u });
 
       player.Resources = new List<ResourceTypes> { ResourceTypes.Brick };
-      firstOpponent.Resources = new List<ResourceTypes> { ResourceTypes.Brick, ResourceTypes.Brick, ResourceTypes.Grain, ResourceTypes.Grain, ResourceTypes.Lumber, ResourceTypes.Lumber, ResourceTypes.Ore, ResourceTypes.Wool };
-      secondOpponent.Resources = new List<ResourceTypes> { ResourceTypes.Brick, ResourceTypes.Brick, ResourceTypes.Grain, ResourceTypes.Grain, ResourceTypes.Lumber, ResourceTypes.Ore, ResourceTypes.Wool };
-      thirdOpponent.Resources = new List<ResourceTypes> { ResourceTypes.Brick, ResourceTypes.Brick, ResourceTypes.Grain, ResourceTypes.Grain, ResourceTypes.Lumber, ResourceTypes.Lumber, ResourceTypes.Ore, ResourceTypes.Ore, ResourceTypes.Wool };
+      firstOpponent.Resources = new ResourceBag(2, 2, 2, 1, 1);
+      firstOpponent.DroppedResources = ResourceClutch.Create(1, 1, 1, 1, 0);
+      secondOpponent.Resources = new ResourceBag(2, 2, 1, 1, 1);
+      thirdOpponent.Resources = new ResourceBag(2, 2, 2, 2, 1);
 
       // Act
       Dictionary<Guid, UInt32> resourcesLost = null;

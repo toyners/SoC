@@ -21,15 +21,39 @@ namespace Jabberwocky.SoC.Library.Interfaces
     public Int32 LumberCount;
     public Int32 OreCount;
     public Int32 WoolCount;
+
+    public static ResourceClutch Create(Int32 brickCount, Int32 grainCount, Int32 lumberCount, Int32 oreCount, Int32 woolCount)
+    {
+      return new ResourceClutch
+      {
+        BrickCount = brickCount,
+        GrainCount = grainCount,
+        LumberCount = lumberCount,
+        OreCount = oreCount,
+        WoolCount = woolCount
+      };
+    }
   }
 
   public class ResourceBag
   {
     public Int32 BrickCount { get; private set; }
+    public Int32 Count { get { return this.BrickCount + this.GrainCount + this.LumberCount + this.OreCount + this.WoolCount; } }
     public Int32 GrainCount { get; private set; }
     public Int32 LumberCount { get; private set; }
     public Int32 OreCount { get; private set; }
     public Int32 WoolCount { get; private set; }
+
+    public ResourceBag(Int32 brickCount, Int32 grainCount, Int32 lumberCount, Int32 oreCount, Int32 woolCount)
+    {
+      this.BrickCount = brickCount;
+      this.GrainCount = grainCount;
+      this.LumberCount = lumberCount;
+      this.OreCount = oreCount;
+      this.WoolCount = woolCount;
+    }
+
+    public ResourceBag() : this(0, 0, 0, 0, 0) { }
 
     public void Add(ResourceClutch resources)
     {
