@@ -60,7 +60,7 @@ namespace Jabberwocky.SoC.Library
     public Action<Guid> StartPlayerTurnEvent { get; set; }
     public Action<UInt32> DiceRollEvent { get; set; }
     public Action<ResourceUpdate> ResourcesCollectedEvent { get; set; }
-    public Action<Dictionary<Guid, UInt32>> ResourcesLostEvent { get; set; }
+    public Action<ResourceUpdate> ResourcesLostEvent { get; set; }
     public Action<ResourceUpdate> GameSetupResourcesEvent { get; set; }
     public Action<PlayerDataView[]> TurnOrderFinalisedEvent { get; set; }
     #endregion
@@ -172,7 +172,7 @@ namespace Jabberwocky.SoC.Library
       }
       else
       {
-        Dictionary<Guid, UInt32> resourcesLost = new Dictionary<Guid, uint>();
+        ResourceUpdate resourcesLost = null;
 
         for (var index = 0; index < this.players.Length; index++)
         {

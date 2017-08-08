@@ -360,29 +360,29 @@ namespace Jabberwocky.SoC.Library.UnitTests
       resourceUpdate.Resources.ShouldContainKey(secondOpponent.Id);
       resourceUpdate.Resources.ShouldContainKey(thirdOpponent.Id);
 
-      resourceUpdate.Resources[player.Id].BrickCount.ShouldBe(1u);
-      resourceUpdate.Resources[player.Id].GrainCount.ShouldBe(1u);
-      resourceUpdate.Resources[player.Id].LumberCount.ShouldBe(0u);
-      resourceUpdate.Resources[player.Id].OreCount.ShouldBe(0u);
-      resourceUpdate.Resources[player.Id].WoolCount.ShouldBe(1u);
+      resourceUpdate.Resources[player.Id].BrickCount.ShouldBe(1);
+      resourceUpdate.Resources[player.Id].GrainCount.ShouldBe(1);
+      resourceUpdate.Resources[player.Id].LumberCount.ShouldBe(0);
+      resourceUpdate.Resources[player.Id].OreCount.ShouldBe(0);
+      resourceUpdate.Resources[player.Id].WoolCount.ShouldBe(1);
 
-      resourceUpdate.Resources[firstOpponent.Id].BrickCount.ShouldBe(0u);
-      resourceUpdate.Resources[firstOpponent.Id].GrainCount.ShouldBe(1u);
-      resourceUpdate.Resources[firstOpponent.Id].LumberCount.ShouldBe(1u);
-      resourceUpdate.Resources[firstOpponent.Id].OreCount.ShouldBe(0u);
-      resourceUpdate.Resources[firstOpponent.Id].WoolCount.ShouldBe(1u);
+      resourceUpdate.Resources[firstOpponent.Id].BrickCount.ShouldBe(0);
+      resourceUpdate.Resources[firstOpponent.Id].GrainCount.ShouldBe(1);
+      resourceUpdate.Resources[firstOpponent.Id].LumberCount.ShouldBe(1);
+      resourceUpdate.Resources[firstOpponent.Id].OreCount.ShouldBe(0);
+      resourceUpdate.Resources[firstOpponent.Id].WoolCount.ShouldBe(1);
 
-      resourceUpdate.Resources[secondOpponent.Id].BrickCount.ShouldBe(0u);
-      resourceUpdate.Resources[secondOpponent.Id].GrainCount.ShouldBe(0u);
-      resourceUpdate.Resources[secondOpponent.Id].LumberCount.ShouldBe(1u);
-      resourceUpdate.Resources[secondOpponent.Id].OreCount.ShouldBe(1u);
-      resourceUpdate.Resources[secondOpponent.Id].WoolCount.ShouldBe(1u);
+      resourceUpdate.Resources[secondOpponent.Id].BrickCount.ShouldBe(0);
+      resourceUpdate.Resources[secondOpponent.Id].GrainCount.ShouldBe(0);
+      resourceUpdate.Resources[secondOpponent.Id].LumberCount.ShouldBe(1);
+      resourceUpdate.Resources[secondOpponent.Id].OreCount.ShouldBe(1);
+      resourceUpdate.Resources[secondOpponent.Id].WoolCount.ShouldBe(1);
 
-      resourceUpdate.Resources[thirdOpponent.Id].BrickCount.ShouldBe(0u);
-      resourceUpdate.Resources[thirdOpponent.Id].GrainCount.ShouldBe(1u);
-      resourceUpdate.Resources[thirdOpponent.Id].LumberCount.ShouldBe(1u);
-      resourceUpdate.Resources[thirdOpponent.Id].OreCount.ShouldBe(0u);
-      resourceUpdate.Resources[thirdOpponent.Id].WoolCount.ShouldBe(1u);
+      resourceUpdate.Resources[thirdOpponent.Id].BrickCount.ShouldBe(0);
+      resourceUpdate.Resources[thirdOpponent.Id].GrainCount.ShouldBe(1);
+      resourceUpdate.Resources[thirdOpponent.Id].LumberCount.ShouldBe(1);
+      resourceUpdate.Resources[thirdOpponent.Id].OreCount.ShouldBe(0);
+      resourceUpdate.Resources[thirdOpponent.Id].WoolCount.ShouldBe(1);
     }
 
     [Test]
@@ -874,17 +874,17 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
       resourceUpdate.ShouldNotBeNull();
       resourceUpdate.Resources.Count.ShouldBe(2);
-      resourceUpdate.Resources[player.Id].BrickCount.ShouldBe(1u);
-      resourceUpdate.Resources[player.Id].GrainCount.ShouldBe(0u);
-      resourceUpdate.Resources[player.Id].LumberCount.ShouldBe(0u);
-      resourceUpdate.Resources[player.Id].OreCount.ShouldBe(0u);
-      resourceUpdate.Resources[player.Id].WoolCount.ShouldBe(0u);
+      resourceUpdate.Resources[player.Id].BrickCount.ShouldBe(1);
+      resourceUpdate.Resources[player.Id].GrainCount.ShouldBe(0);
+      resourceUpdate.Resources[player.Id].LumberCount.ShouldBe(0);
+      resourceUpdate.Resources[player.Id].OreCount.ShouldBe(0);
+      resourceUpdate.Resources[player.Id].WoolCount.ShouldBe(0);
 
-      resourceUpdate.Resources[firstOpponent.Id].BrickCount.ShouldBe(0u);
-      resourceUpdate.Resources[firstOpponent.Id].GrainCount.ShouldBe(1u);
-      resourceUpdate.Resources[firstOpponent.Id].LumberCount.ShouldBe(0u);
-      resourceUpdate.Resources[firstOpponent.Id].OreCount.ShouldBe(0u);
-      resourceUpdate.Resources[firstOpponent.Id].WoolCount.ShouldBe(0u);
+      resourceUpdate.Resources[firstOpponent.Id].BrickCount.ShouldBe(0);
+      resourceUpdate.Resources[firstOpponent.Id].GrainCount.ShouldBe(1);
+      resourceUpdate.Resources[firstOpponent.Id].LumberCount.ShouldBe(0);
+      resourceUpdate.Resources[firstOpponent.Id].OreCount.ShouldBe(0);
+      resourceUpdate.Resources[firstOpponent.Id].WoolCount.ShouldBe(0);
     }
 
     [Test]
@@ -900,20 +900,21 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
       player.Resources = new List<ResourceTypes> { ResourceTypes.Brick };
       firstOpponent.Resources = new ResourceBag(2, 2, 2, 1, 1);
-      firstOpponent.DroppedResources = ResourceClutch.Create(1, 1, 1, 1, 0);
+      firstOpponent.DroppedResources = new ResourceClutch(1, 1, 1, 1, 0);
       secondOpponent.Resources = new ResourceBag(2, 2, 1, 1, 1);
       thirdOpponent.Resources = new ResourceBag(2, 2, 2, 2, 1);
+      thirdOpponent.DroppedResources = new ResourceClutch(1, 1, 1, 1, 1);
 
       // Act
-      Dictionary<Guid, UInt32> resourcesLost = null;
-      localGameController.ResourcesLostEvent = (Dictionary<Guid, UInt32> r) => { resourcesLost = r; };
+      ResourceUpdate resourcesLost = null;
+      localGameController.ResourcesLostEvent = (ResourceUpdate r) => { resourcesLost = r; };
       localGameController.StartGamePlay();
 
       // Assert
-      resourcesLost.Count.ShouldBe(3);
-      resourcesLost.ShouldContainKeyAndValue(firstOpponent.Id, 4u);
-      resourcesLost.ShouldContainKeyAndValue(secondOpponent.Id, 0u);
-      resourcesLost.ShouldContainKeyAndValue(thirdOpponent.Id, 4u);
+      resourcesLost.Resources.Count.ShouldBe(3);
+      resourcesLost.Resources.ShouldContainKeyAndValue(firstOpponent.Id, firstOpponent.DroppedResources);
+      resourcesLost.Resources.ShouldContainKeyAndValue(secondOpponent.Id, ResourceClutch.Zero);
+      resourcesLost.Resources.ShouldContainKeyAndValue(thirdOpponent.Id, thirdOpponent.DroppedResources);
     }
 
     private LocalGameController CreateLocalGameControllerAndCompleteGameSetup(out MockDice mockDice, out MockPlayer player, out MockComputerPlayer firstOpponent, out MockComputerPlayer secondOpponent, out MockComputerPlayer thirdOpponent)

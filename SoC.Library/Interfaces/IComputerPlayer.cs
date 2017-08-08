@@ -14,27 +14,6 @@ namespace Jabberwocky.SoC.Library.Interfaces
     #endregion
   }
 
-  public struct ResourceClutch
-  {
-    public Int32 BrickCount;
-    public Int32 GrainCount;
-    public Int32 LumberCount;
-    public Int32 OreCount;
-    public Int32 WoolCount;
-
-    public static ResourceClutch Create(Int32 brickCount, Int32 grainCount, Int32 lumberCount, Int32 oreCount, Int32 woolCount)
-    {
-      return new ResourceClutch
-      {
-        BrickCount = brickCount,
-        GrainCount = grainCount,
-        LumberCount = lumberCount,
-        OreCount = oreCount,
-        WoolCount = woolCount
-      };
-    }
-  }
-
   public class ResourceBag
   {
     public Int32 BrickCount { get; private set; }

@@ -51,6 +51,7 @@
     <Compile Include="Interfaces\IComputerPlayerFactory.cs" />
     <Compile Include="PathFinder.cs" />
     <Compile Include="Player.cs" />
+    <Compile Include="ResourceClutch.cs" />
     <Compile Include="ResourceUpdate.cs" />
     <Compile Include="Road.cs" />
     <Compile Include="PlayerTurnOrderCreator.cs" />

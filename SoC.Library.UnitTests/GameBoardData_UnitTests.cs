@@ -267,11 +267,11 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
     [Test]
     [Category("GameBoardData")]
-    [TestCase(12u, 1u, 0u, 0u, 1u, 1u)]
-    [TestCase(45u, 0u, 1u, 0u, 1u, 0u)]
-    [TestCase(53u, 0u, 1u, 0u, 0u, 0u)]
-    [TestCase(20u, 0u, 1u, 1u, 1u, 0u)]
-    public void GetResourcesForLocation_StandardBoard_ReturnsExpectedResources(UInt32 location, UInt32 expectedBrickCount, UInt32 expectedGrainCount, UInt32 expectedLumberCount, UInt32 expectedOreCount, UInt32 expectedWoolCount)
+    [TestCase(12u, 1, 0, 0, 1, 1)]
+    [TestCase(45u, 0, 1, 0, 1, 0)]
+    [TestCase(53u, 0, 1, 0, 0, 0)]
+    [TestCase(20u, 0, 1, 1, 1, 0)]
+    public void GetResourcesForLocation_StandardBoard_ReturnsExpectedResources(UInt32 location, Int32 expectedBrickCount, Int32 expectedGrainCount, Int32 expectedLumberCount, Int32 expectedOreCount, Int32 expectedWoolCount)
     {
       var gameBoardData = new GameBoardData(BoardSizes.Standard);
       var result = gameBoardData.GetResourcesForLocation(location);
@@ -300,8 +300,8 @@ namespace Jabberwocky.SoC.Library.UnitTests
       var result = gameBoardData.GetResourcesForRoll(roll);
 
       result.Count.ShouldBe(2);
-      result.ShouldContainKeyAndValue(player1_Id, new ResourceCounts { BrickCount = 1, GrainCount = 1, LumberCount = 0, OreCount = 0, WoolCount = 0 });
-      result.ShouldContainKeyAndValue(player2_Id, new ResourceCounts { BrickCount = 0, GrainCount = 1, LumberCount = 0, OreCount = 0, WoolCount = 0 });
+      result.ShouldContainKeyAndValue(player1_Id, new ResourceClutch(1, 1, 0, 0, 0 ));
+      result.ShouldContainKeyAndValue(player2_Id, new ResourceClutch(0, 1, 0, 0, 0 ));
     }
 
     [Test]
@@ -319,14 +319,14 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
       var result = gameBoardData.GetResourcesForRoll(diceRoll);
 
-      ResourceCounts expectedResourceCounts = default(ResourceCounts);
+      ResourceClutch expectedResourceCounts = default(ResourceClutch);
       switch (expectedType)
       {
-        case ResourceTypes.Brick: expectedResourceCounts = new ResourceCounts { BrickCount = 1, GrainCount = 0, LumberCount = 0, OreCount = 0, WoolCount = 0 }; break;
-        case ResourceTypes.Grain: expectedResourceCounts = new ResourceCounts { BrickCount = 0, GrainCount = 1, LumberCount = 0, OreCount = 0, WoolCount = 0 }; break;
-        case ResourceTypes.Lumber: expectedResourceCounts = new ResourceCounts { BrickCount = 0, GrainCount = 0, LumberCount = 1, OreCount = 0, WoolCount = 0 }; break;
-        case ResourceTypes.Ore: expectedResourceCounts = new ResourceCounts { BrickCount = 0, GrainCount = 0, LumberCount = 0, OreCount = 1, WoolCount = 0 }; break;
-        case ResourceTypes.Wool: expectedResourceCounts = new ResourceCounts { BrickCount = 0, GrainCount = 0, LumberCount = 0, OreCount = 0, WoolCount = 1 }; break;
+        case ResourceTypes.Brick: expectedResourceCounts = new ResourceClutch(1, 0, 0, 0, 0); break;
+        case ResourceTypes.Grain: expectedResourceCounts = new ResourceClutch(0, 1, 0, 0, 0); break;
+        case ResourceTypes.Lumber: expectedResourceCounts = new ResourceClutch(0, 0, 1, 0, 0 ); break;
+        case ResourceTypes.Ore: expectedResourceCounts = new ResourceClutch(0, 0, 0, 1, 0); break;
+        case ResourceTypes.Wool: expectedResourceCounts = new ResourceClutch(0, 0, 0, 0, 1); break;
       }
 
       result.Count.ShouldBe(1);

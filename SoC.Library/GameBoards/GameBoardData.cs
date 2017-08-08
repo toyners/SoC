@@ -240,29 +240,29 @@ namespace Jabberwocky.SoC.Library.GameBoards
       this.settlements.Add(locationIndex, playerId);
     }
 
-    public ResourceCounts GetResourcesForLocation(UInt32 location)
+    public ResourceClutch GetResourcesForLocation(UInt32 location)
     {
-      var resourceCounts = new ResourceCounts();
+      var resourceClutch = new ResourceClutch();
       var resourceProviders = this.Locations[location].Providers;
 
       foreach (var resourceProvider in resourceProviders)
       {
         switch (resourceProvider.Type)
         {
-          case ResourceTypes.Brick: resourceCounts.BrickCount++; break;
-          case ResourceTypes.Grain: resourceCounts.GrainCount++; break;
-          case ResourceTypes.Lumber: resourceCounts.LumberCount++; break;
-          case ResourceTypes.Ore: resourceCounts.OreCount++; break;
-          case ResourceTypes.Wool: resourceCounts.WoolCount++; break;
+          case ResourceTypes.Brick: resourceClutch.BrickCount++; break;
+          case ResourceTypes.Grain: resourceClutch.GrainCount++; break;
+          case ResourceTypes.Lumber: resourceClutch.LumberCount++; break;
+          case ResourceTypes.Ore: resourceClutch.OreCount++; break;
+          case ResourceTypes.Wool: resourceClutch.WoolCount++; break;
         }
       }
 
-      return resourceCounts;
+      return resourceClutch;
     }
 
-    public Dictionary<Guid, ResourceCounts> GetResourcesForRoll(UInt32 diceRoll)
+    public Dictionary<Guid, ResourceClutch> GetResourcesForRoll(UInt32 diceRoll)
     {
-      var resources = new Dictionary<Guid, ResourceCounts>();
+      var resources = new Dictionary<Guid, ResourceClutch>();
 
       // Iterate over all the resource providers that match the dice roll
       foreach (var resourceProvider in this.resourceProvidersByDiceRolls[diceRoll])
@@ -278,7 +278,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
 
           var owner = this.settlements[location];
 
-          ResourceCounts existingResourceCounts;
+          ResourceClutch existingResourceCounts;
 
           // Got an owner - add to the resource count for the owner.
           if (resources.ContainsKey(owner))
@@ -287,7 +287,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
           }
           else
           {
-            existingResourceCounts = new ResourceCounts();
+            existingResourceCounts = new ResourceClutch();
             resources.Add(owner, existingResourceCounts);
           }
 
@@ -704,16 +704,6 @@ namespace Jabberwocky.SoC.Library.GameBoards
     #endregion
 
     #region Structs
-    // TODO: Removed in favour of ResourceClutch
-    public struct ResourceCounts
-    {
-      public UInt32 BrickCount;
-      public UInt32 GrainCount;
-      public UInt32 LumberCount;
-      public UInt32 OreCount;
-      public UInt32 WoolCount;
-    }
-
     private class ResourceProvider2
     {
       public readonly ResourceTypes Type;
