@@ -37,6 +37,7 @@ namespace Jabberwocky.SoC.Library
     private Task sessionTask;
     private ResourceUpdate gameSetupResources;
     private Dictionary<Guid, ResourceBag> resourceBags;
+    private ResourceBag mainPlayerResourceBag;
     #endregion
 
     public LocalGameController(IDice dice, IComputerPlayerFactory computerPlayerFactory, GameBoardManager gameBoardManager)
@@ -178,12 +179,13 @@ namespace Jabberwocky.SoC.Library
 
         for (var index = 0; index < this.players.Length; index++)
         {
-          if (index == this.playerIndex)
+          var player = this.players[index];
+
+          if (!this.IsComputerPlayer(player))
           {
             continue;
           }
 
-          var player = this.players[index];
           if (player.ResourcesCount > 7)
           {
             var computerPlayer = (IComputerPlayer)player;
@@ -199,6 +201,13 @@ namespace Jabberwocky.SoC.Library
         }
 
         this.ResourcesLostEvent?.Invoke(resourcesLost);
+
+        if (this.mainPlayer.ResourcesCount > 7)
+        {
+          var resourcesToDrop = -1;
+          this.ResourceDropEvent?.Invoke(resourcesToDrop);
+          return;
+        }
       }
     }
 
