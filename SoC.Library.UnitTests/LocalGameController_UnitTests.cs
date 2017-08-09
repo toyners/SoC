@@ -891,7 +891,12 @@ namespace Jabberwocky.SoC.Library.UnitTests
     [Category("LocalGameController")]
     public void StartOfMainPlayerTurn_RollsSeven_ReceiveResourceCardLossesForComputerPlayers()
     {
-      // Assert
+      // Arrange
+      var droppedResourcesForFirstOpponent = new ResourceClutch(1, 1, 1, 1, 0);
+      var expectedDroppedResourcesForFirstOpponent = new ResourceClutch(1, 1, 1, 1, 0);
+      var droppedResourcesForThirdOpponent = new ResourceClutch(1, 1, 1, 1, 1);
+      var expectedDroppedResourcesForThirdOpponent = new ResourceClutch(1, 1, 1, 1, 1);
+
       MockDice mockDice = null;
       MockPlayer player;
       MockComputerPlayer firstOpponent, secondOpponent, thirdOpponent;
@@ -900,10 +905,10 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
       player.Resources = new List<ResourceTypes> { ResourceTypes.Brick };
       firstOpponent.Resources = new ResourceBag(2, 2, 2, 1, 1);
-      firstOpponent.DroppedResources = new ResourceClutch(1, 1, 1, 1, 0);
+      firstOpponent.DroppedResources = droppedResourcesForFirstOpponent;
       secondOpponent.Resources = new ResourceBag(2, 2, 1, 1, 1);
       thirdOpponent.Resources = new ResourceBag(2, 2, 2, 2, 1);
-      thirdOpponent.DroppedResources = new ResourceClutch(1, 1, 1, 1, 1);
+      thirdOpponent.DroppedResources = droppedResourcesForThirdOpponent;
 
       // Act
       ResourceUpdate resourcesLost = null;
@@ -912,8 +917,8 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
       // Assert
       resourcesLost.Resources.Count.ShouldBe(2);
-      resourcesLost.Resources.ShouldContainKeyAndValue(firstOpponent.Id, firstOpponent.DroppedResources);
-      resourcesLost.Resources.ShouldContainKeyAndValue(thirdOpponent.Id, thirdOpponent.DroppedResources);
+      resourcesLost.Resources.ShouldContainKeyAndValue(firstOpponent.Id, expectedDroppedResourcesForFirstOpponent);
+      resourcesLost.Resources.ShouldContainKeyAndValue(thirdOpponent.Id, expectedDroppedResourcesForThirdOpponent);
     }
 
     private LocalGameController CreateLocalGameControllerAndCompleteGameSetup(out MockDice mockDice, out MockPlayer player, out MockComputerPlayer firstOpponent, out MockComputerPlayer secondOpponent, out MockComputerPlayer thirdOpponent)
