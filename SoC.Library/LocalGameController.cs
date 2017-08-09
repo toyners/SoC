@@ -45,6 +45,7 @@ namespace Jabberwocky.SoC.Library
       this.computerPlayerFactory = computerPlayerFactory;
       this.gameBoardManager = gameBoardManager;
       this.gamePhase = GamePhases.Initial;
+      this.resourceBags = new Dictionary<Guid, ResourceBag>();
     }
 
     public Guid GameId { get; private set; }
@@ -187,9 +188,12 @@ namespace Jabberwocky.SoC.Library
             var computerPlayer = (IComputerPlayer)player;
             var resourcesToDrop = computerPlayer.ChooseResourcesToDrop();
 
-            var resourceBag = this.resourceBags[player.Id];
+            if (resourcesLost == null)
+            {
+              resourcesLost = new ResourceUpdate();
+            }
 
-            resourceBag.Remove(resourcesToDrop);
+            resourcesLost.Resources.Add(computerPlayer.Id, resourcesToDrop);
           }
         }
 

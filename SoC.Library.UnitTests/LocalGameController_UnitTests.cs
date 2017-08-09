@@ -911,9 +911,8 @@ namespace Jabberwocky.SoC.Library.UnitTests
       localGameController.StartGamePlay();
 
       // Assert
-      resourcesLost.Resources.Count.ShouldBe(3);
+      resourcesLost.Resources.Count.ShouldBe(2);
       resourcesLost.Resources.ShouldContainKeyAndValue(firstOpponent.Id, firstOpponent.DroppedResources);
-      resourcesLost.Resources.ShouldContainKeyAndValue(secondOpponent.Id, ResourceClutch.Zero);
       resourcesLost.Resources.ShouldContainKeyAndValue(thirdOpponent.Id, thirdOpponent.DroppedResources);
     }
 
