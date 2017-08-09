@@ -903,7 +903,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
       var localGameController = this.CreateLocalGameControllerAndCompleteGameSetup(out mockDice, out player, out firstOpponent, out secondOpponent, out thirdOpponent);
       mockDice.AddSequence(new[] { 7u });
 
-      player.Resources = new List<ResourceTypes> { ResourceTypes.Brick };
+      player.Resources = new ResourceBag();
       firstOpponent.Resources = new ResourceBag(2, 2, 2, 1, 1);
       firstOpponent.DroppedResources = droppedResourcesForFirstOpponent;
       secondOpponent.Resources = new ResourceBag(2, 2, 1, 1, 1);
@@ -919,6 +919,34 @@ namespace Jabberwocky.SoC.Library.UnitTests
       resourcesLost.Resources.Count.ShouldBe(2);
       resourcesLost.Resources.ShouldContainKeyAndValue(firstOpponent.Id, expectedDroppedResourcesForFirstOpponent);
       resourcesLost.Resources.ShouldContainKeyAndValue(thirdOpponent.Id, expectedDroppedResourcesForThirdOpponent);
+    }
+
+    [Test]
+    [TestCase(8, 4)]
+    [TestCase(9, 4)]
+    [TestCase(10, 5)]
+    [Category("LocalGameController")]
+    public void StartOfMainPlayerTurn_RollsSevenWithMoreThanSevenResourceCards_ReceivesNotificationToDropResourceCards(Int32 brickCount, Int32 expectedResourceDropCount)
+    {
+      // Arrange
+      MockDice mockDice = null;
+      MockPlayer player;
+      MockComputerPlayer firstOpponent, secondOpponent, thirdOpponent;
+      var localGameController = this.CreateLocalGameControllerAndCompleteGameSetup(out mockDice, out player, out firstOpponent, out secondOpponent, out thirdOpponent);
+      mockDice.AddSequence(new[] { 7u });
+
+      player.Resources = new ResourceBag(brickCount, 0, 0, 0, 0);
+      firstOpponent.Resources = new ResourceBag();
+      secondOpponent.Resources = new ResourceBag();
+      thirdOpponent.Resources = new ResourceBag();
+
+      // Act
+      Int32 resourceDropCount = -1;
+      localGameController.ResourceDropEvent = (Int32 r) => { resourceDropCount = r; };
+      localGameController.StartGamePlay();
+
+      // Assert
+      resourceDropCount.ShouldBe(expectedResourceDropCount);
     }
 
     private LocalGameController CreateLocalGameControllerAndCompleteGameSetup(out MockDice mockDice, out MockPlayer player, out MockComputerPlayer firstOpponent, out MockComputerPlayer secondOpponent, out MockComputerPlayer thirdOpponent)

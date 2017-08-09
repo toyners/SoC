@@ -87,7 +87,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
   public class MockPlayer : Player
   {
-    public List<ResourceTypes> Resources;
+    public ResourceBag Resources;
 
     public MockPlayer(String name) : base(name)
     {

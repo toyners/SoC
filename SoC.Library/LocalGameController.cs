@@ -62,6 +62,7 @@ namespace Jabberwocky.SoC.Library
     public Action<UInt32> DiceRollEvent { get; set; }
     public Action<ResourceUpdate> ResourcesCollectedEvent { get; set; }
     public Action<ResourceUpdate> ResourcesLostEvent { get; set; }
+    public Action<Int32> ResourceDropEvent { get; set; }
     public Action<ResourceUpdate> GameSetupResourcesEvent { get; set; }
     public Action<PlayerDataView[]> TurnOrderFinalisedEvent { get; set; }
     #endregion
