@@ -3,6 +3,9 @@ namespace Jabberwocky.SoC.Library
 {
   using System;
 
+  /// <summary>
+  /// Holds resource counts. Allows controlled changes using ResourceClutch structure.
+  /// </summary>
   public class ResourceBag
   {
     public Int32 BrickCount { get; private set; }
