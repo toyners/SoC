@@ -78,7 +78,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     [Category("LocalGameController")]
     public void LaunchGame_LaunchGameWithoutJoining_MeaningfulErrorIsRaised()
     {
-      var localGameController = this.CreateLocalGameController();
+      var localGameController = new LocalGameControllerCreator().Create();
       ErrorDetails errorDetails = null;
       localGameController.ErrorRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
       localGameController.LaunchGame();
@@ -389,7 +389,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     [Category("LocalGameController")]
     public void ContinueGameSetup_CallOutOfSequence_MeaningfulErrorDetailsPassedBack()
     {
-      var localGameController = this.CreateLocalGameController();
+      var localGameController = new LocalGameControllerCreator().Create();
       ErrorDetails errorDetails = null;
       localGameController.ErrorRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
 
@@ -403,7 +403,8 @@ namespace Jabberwocky.SoC.Library.UnitTests
     [Category("LocalGameController")]
     public void CompleteGameSetup_CallOutOfSequence_MeaningfulErrorDetailsPassedBack()
     {
-      var localGameController = this.CreateLocalGameController();
+      //var localGameController = this.CreateLocalGameController();
+      var localGameController = new LocalGameControllerCreator().Create();
       ErrorDetails errorDetails = null;
       localGameController.ErrorRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
 
@@ -726,7 +727,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     [Category("LocalGameController")]
     public void FinalisePlayerTurnOrder_CallOutOfSequence_MeaningfulErrorDetailsPassedBack()
     {
-      var localGameController = this.CreateLocalGameController();
+      var localGameController = new LocalGameControllerCreator().Create();
       ErrorDetails errorDetails = null;
       localGameController.ErrorRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
 
@@ -979,27 +980,6 @@ namespace Jabberwocky.SoC.Library.UnitTests
       playerDataView.DisplayedDevelopmentCards.ShouldBeNull();
       playerDataView.HiddenDevelopmentCards.ShouldBe(0u);
       playerDataView.ResourceCards.ShouldBe(0u);
-    }
-
-    private LocalGameController CreateLocalGameController()
-    {
-      return this.CreateLocalGameController(new Dice(), new ComputerPlayerFactory(), new GameBoardManager(BoardSizes.Standard));
-    }
-
-    private LocalGameController CreateLocalGameController(IDice diceRoller, IComputerPlayerFactory computerPlayerFactory, GameBoardManager gameBoardManager)
-    {
-      var localGameController = new LocalGameController(diceRoller, computerPlayerFactory, gameBoardManager);
-      localGameController.GameJoinedEvent = (PlayerDataView[] players) => { };
-      return localGameController;
-    }
-
-    private LocalGameController CreateLocalGameController(IDice dice, GameBoardManager gameBoardManager, IComputerPlayer firstComputerPlayer, params IComputerPlayer[] otherComputerPlayers)
-    {
-      var mockComputerPlayerFactory = Substitute.For<IComputerPlayerFactory>();
-      mockComputerPlayerFactory.Create().Returns(firstComputerPlayer, otherComputerPlayers);
-
-      var localGameController = new LocalGameController(dice, mockComputerPlayerFactory, gameBoardManager);
-      return localGameController;
     }
 
     private LocalGameController CreateLocalGameController(IDice dice, IPlayer firstPlayer, params IPlayer[] otherPlayers)
