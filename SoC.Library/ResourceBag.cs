@@ -28,7 +28,11 @@ namespace Jabberwocky.SoC.Library
 
     public void Add(ResourceClutch resources)
     {
-      throw new NotImplementedException();
+      this.BrickCount += resources.BrickCount;
+      this.GrainCount += resources.GrainCount;
+      this.LumberCount += resources.LumberCount;
+      this.OreCount += resources.OreCount;
+      this.WoolCount += resources.WoolCount;
     }
 
     public void Remove(ResourceClutch resources)

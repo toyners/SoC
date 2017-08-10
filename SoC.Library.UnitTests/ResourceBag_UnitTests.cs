@@ -7,19 +7,10 @@ namespace Jabberwocky.SoC.Library.UnitTests
   using Shouldly;
 
   [TestFixture]
+  [Category("ResourceBag")]
   public class ResourceBag_UnitTests
   {
     #region Methods
-    [TestFixtureSetUp]
-    public void SetupBeforeAllTests()
-    {
-    }
-
-    [SetUp]
-    public void SetupBeforeEachTest()
-    {
-    }
-
     [Test]
     public void Add_VariousTypes_CountsAreCorrect()
     {
