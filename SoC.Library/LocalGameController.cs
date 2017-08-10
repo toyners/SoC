@@ -254,7 +254,9 @@ namespace Jabberwocky.SoC.Library
 
       this.gameBoardManager.Data.PlaceStartingInfrastructure(this.mainPlayer.Id, settlementLocation, road);
 
-      this.CollectInitialResourcesForPlayer(this.mainPlayer.Id, settlementLocation);
+      var resources = this.gameBoardManager.Data.GetResourcesForLocation(settlementLocation);
+      this.AddResourcesToUpdate(this.mainPlayer.Id, resources);
+      this.mainPlayerResourceBag.Add(resources);
 
       var gameBoardData = this.gameBoardManager.Data;
       GameBoardUpdate gameBoardUpdate = this.CompleteSetupForComputerPlayers(gameBoardData, null);
@@ -262,6 +264,16 @@ namespace Jabberwocky.SoC.Library
 
       this.GameSetupResourcesEvent?.Invoke(this.gameSetupResources);
       this.gamePhase = GamePhases.FinalisePlayerTurnOrder;
+    }
+
+    private void AddResourcesToUpdate(Guid playerId, ResourceClutch resources)
+    {
+      if (this.gameSetupResources == null)
+      {
+        this.gameSetupResources = new ResourceUpdate();
+      }
+
+      this.gameSetupResources.Resources.Add(playerId, resources);
     }
 
     public void FinalisePlayerTurnOrder()
@@ -284,18 +296,6 @@ namespace Jabberwocky.SoC.Library
       var resourceUpdate = new ResourceUpdate();
       resourceUpdate.Resources = this.gameBoardManager.Data.GetResourcesForRoll(diceRoll);
       return resourceUpdate;
-    }
-
-    private void CollectInitialResourcesForPlayer(Guid playerId, UInt32 settlementLocation)
-    {
-      if (this.gameSetupResources == null)
-      {
-        this.gameSetupResources = new ResourceUpdate();
-      }
-
-      var resources = this.gameBoardManager.Data.GetResourcesForLocation(settlementLocation);
-      this.mainPlayerResourceBag.Add(resources);
-      this.gameSetupResources.Resources.Add(playerId, resources);
     }
 
     private GameBoardUpdate ContinueSetupForComputerPlayers(GameBoardData gameBoardData)
@@ -358,7 +358,8 @@ namespace Jabberwocky.SoC.Library
         gameBoardData.PlaceSettlement(computerPlayer.Id, chosenSettlementIndex);
         gameBoardUpdate.NewSettlements.Add(chosenSettlementIndex, computerPlayer.Id);
 
-        this.CollectInitialResourcesForPlayer(computerPlayer.Id, chosenSettlementIndex);
+        var resources = this.gameBoardManager.Data.GetResourcesForLocation(chosenSettlementIndex);
+        this.AddResourcesToUpdate(computerPlayer.Id, resources);
         
         var chosenRoad = computerPlayer.ChooseRoad(gameBoardData);
         gameBoardData.PlaceRoad(computerPlayer.Id, chosenRoad);
