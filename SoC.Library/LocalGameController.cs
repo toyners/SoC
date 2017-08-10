@@ -37,7 +37,6 @@ namespace Jabberwocky.SoC.Library
     private Task sessionTask;
     private ResourceUpdate gameSetupResources;
     private Dictionary<Guid, ResourceBag> resourceBags;
-    private ResourceBag mainPlayerResourceBag;
     #endregion
 
     public LocalGameController(IDice dice, IComputerPlayerFactory computerPlayerFactory, GameBoardManager gameBoardManager)
@@ -47,7 +46,6 @@ namespace Jabberwocky.SoC.Library
       this.gameBoardManager = gameBoardManager;
       this.gamePhase = GamePhases.Initial;
       this.resourceBags = new Dictionary<Guid, ResourceBag>();
-      this.mainPlayerResourceBag = new ResourceBag();
     }
 
     public Guid GameId { get; private set; }
@@ -203,9 +201,9 @@ namespace Jabberwocky.SoC.Library
 
         this.ResourcesLostEvent?.Invoke(resourcesLost);
 
-        if (this.mainPlayerResourceBag.Count > 7)
+        if (this.mainPlayer.ResourcesCount > 7)
         {
-          var resourcesToDrop = this.mainPlayerResourceBag.Count / 2;
+          var resourcesToDrop = this.mainPlayer.ResourcesCount / 2;
           this.ResourceDropEvent?.Invoke(resourcesToDrop);
           return;
         }
@@ -256,7 +254,6 @@ namespace Jabberwocky.SoC.Library
 
       var resources = this.gameBoardManager.Data.GetResourcesForLocation(settlementLocation);
       this.AddResourcesToUpdate(this.mainPlayer.Id, resources);
-      this.mainPlayerResourceBag.Add(resources);
 
       var gameBoardData = this.gameBoardManager.Data;
       GameBoardUpdate gameBoardUpdate = this.CompleteSetupForComputerPlayers(gameBoardData, null);
