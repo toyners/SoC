@@ -923,11 +923,13 @@ namespace Jabberwocky.SoC.Library.UnitTests
     }
 
     [Test]
+    [TestCase(6, 0)]
+    [TestCase(7, 0)]
     [TestCase(8, 4)]
     [TestCase(9, 4)]
     [TestCase(10, 5)]
     [Category("LocalGameController")]
-    public void StartOfMainPlayerTurn_RollsSevenWithMoreThanSevenResourceCards_ReceivesNotificationToDropResourceCards(Int32 brickCount, Int32 expectedResourceDropCount)
+    public void StartOfMainPlayerTurn_RollsSeven_ReceivesRobberEventNotificationWithDropResourceCardsCount(Int32 brickCount, Int32 expectedResourceDropCount)
     {
       // Arrange
       MockDice mockDice = null;
@@ -943,36 +945,11 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
       // Act
       Int32 resourceDropCount = -1;
-      localGameController.ResourceDropEvent = (Int32 r) => { resourceDropCount = r; };
+      localGameController.RobberEvent = (Int32 r) => { resourceDropCount = r; };
       localGameController.StartGamePlay();
 
       // Assert
       resourceDropCount.ShouldBe(expectedResourceDropCount);
-    }
-
-    [Test]
-    [Category("LocalGameController")]
-    public void StartOfMainPlayerTurn_RollsSeven_NotifyPlayerAboutSettingRobberLocation()
-    {
-      // Arrange
-      MockDice mockDice = null;
-      MockPlayer player;
-      MockComputerPlayer firstOpponent, secondOpponent, thirdOpponent;
-      var localGameController = this.CreateLocalGameControllerAndCompleteGameSetup(out mockDice, out player, out firstOpponent, out secondOpponent, out thirdOpponent);
-      mockDice.AddSequence(new[] { 7u });
-
-      player.Resources = new ResourceBag();
-      firstOpponent.Resources = new ResourceBag();
-      secondOpponent.Resources = new ResourceBag();
-      thirdOpponent.Resources = new ResourceBag();
-
-      // Act
-      Boolean robberEventOccurred = false;
-      localGameController.RobberEvent = () => { robberEventOccurred = true; };
-      localGameController.StartGamePlay();
-
-      // Assert
-      robberEventOccurred.ShouldBeTrue();
     }
 
     private LocalGameController CreateLocalGameControllerAndCompleteGameSetup(out MockDice mockDice, out MockPlayer player, out MockComputerPlayer firstOpponent, out MockComputerPlayer secondOpponent, out MockComputerPlayer thirdOpponent)
