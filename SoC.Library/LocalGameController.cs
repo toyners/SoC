@@ -62,7 +62,6 @@ namespace Jabberwocky.SoC.Library
     public Action<UInt32> DiceRollEvent { get; set; }
     public Action<ResourceUpdate> ResourcesCollectedEvent { get; set; }
     public Action<ResourceUpdate> ResourcesLostEvent { get; set; }
-    public Action<Int32> ResourceDropEvent { get; set; }
     public Action<Int32> RobberEvent { get; set; }
     public Action<ResourceUpdate> GameSetupResourcesEvent { get; set; }
     public Action<PlayerDataView[]> TurnOrderFinalisedEvent { get; set; }
@@ -175,7 +174,7 @@ namespace Jabberwocky.SoC.Library
       }
       else
       {
-        ResourceUpdate resourcesLost = null;
+        ResourceUpdate resourcesDroppedByComputerPlayers = null;
 
         for (var index = 0; index < this.players.Length; index++)
         {
@@ -189,25 +188,30 @@ namespace Jabberwocky.SoC.Library
           if (player.ResourcesCount > 7)
           {
             var computerPlayer = (IComputerPlayer)player;
-            var resourcesToDrop = computerPlayer.ChooseResourcesToDrop();
+            var resourcesToDropByComputerPlayer = computerPlayer.ChooseResourcesToDrop();
 
-            if (resourcesLost == null)
+            if (resourcesDroppedByComputerPlayers == null)
             {
-              resourcesLost = new ResourceUpdate();
+              resourcesDroppedByComputerPlayers = new ResourceUpdate();
             }
 
-            resourcesLost.Resources.Add(computerPlayer.Id, resourcesToDrop);
+            resourcesDroppedByComputerPlayers.Resources.Add(computerPlayer.Id, resourcesToDropByComputerPlayer);
           }
         }
 
-        this.ResourcesLostEvent?.Invoke(resourcesLost);
-
+        var resourcesToDrop = 0;
         if (this.mainPlayer.ResourcesCount > 7)
         {
-          var resourcesToDrop = this.mainPlayer.ResourcesCount / 2;
-          this.ResourceDropEvent?.Invoke(resourcesToDrop);
-          return;
+          resourcesToDrop = this.mainPlayer.ResourcesCount / 2;
         }
+
+        if (resourcesDroppedByComputerPlayers != null)
+        {
+          this.ResourcesLostEvent?.Invoke(resourcesDroppedByComputerPlayers);
+        }
+
+        this.RobberEvent?.Invoke(resourcesToDrop);
+        return;
       }
     }
 
