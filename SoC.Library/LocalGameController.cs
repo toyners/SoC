@@ -37,7 +37,6 @@ namespace Jabberwocky.SoC.Library
     private Boolean quitting;
     private Task sessionTask;
     private ResourceUpdate gameSetupResources;
-    private Dictionary<Guid, ResourceBag> resourceBags;
     private ErrorDetails resourceDropErrorDetails;
     #endregion
 
@@ -47,7 +46,6 @@ namespace Jabberwocky.SoC.Library
       this.computerPlayerFactory = computerPlayerFactory;
       this.gameBoardManager = gameBoardManager;
       this.gamePhase = GamePhases.Initial;
-      this.resourceBags = new Dictionary<Guid, ResourceBag>();
     }
 
     public Guid GameId { get; private set; }
