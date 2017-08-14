@@ -282,6 +282,11 @@ namespace Jabberwocky.SoC.Library
       this.TurnOrderFinalisedEvent?.Invoke(playerData);
     }
 
+    public void SetRobberLocation(UInt32 v)
+    {
+      throw new NotImplementedException();
+    }
+
     private ResourceUpdate CollectTurnResources(UInt32 diceRoll)
     {
       var resourceUpdate = new ResourceUpdate();
