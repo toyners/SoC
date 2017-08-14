@@ -18,6 +18,7 @@ namespace Jabberwocky.SoC.Library
       ContinueGameSetup,
       CompleteGameSetup,
       FinalisePlayerTurnOrder,
+      SetRobber,
       Quitting,
     }
 
@@ -37,6 +38,7 @@ namespace Jabberwocky.SoC.Library
     private Task sessionTask;
     private ResourceUpdate gameSetupResources;
     private Dictionary<Guid, ResourceBag> resourceBags;
+    private ErrorDetails resourceDropErrorDetails;
     #endregion
 
     public LocalGameController(IDice dice, IComputerPlayerFactory computerPlayerFactory, GameBoardManager gameBoardManager)
@@ -203,6 +205,7 @@ namespace Jabberwocky.SoC.Library
         if (this.mainPlayer.ResourcesCount > 7)
         {
           resourcesToDrop = this.mainPlayer.ResourcesCount / 2;
+          this.resourceDropErrorDetails = new ErrorDetails(String.Format("Cannot set robber location until expected resources ({0}) have been dropped via call to DropResources method.", resourcesToDrop));
         }
 
         if (resourcesDroppedByComputerPlayers != null)
@@ -282,8 +285,14 @@ namespace Jabberwocky.SoC.Library
       this.TurnOrderFinalisedEvent?.Invoke(playerData);
     }
 
-    public void SetRobberLocation(UInt32 v)
+    public void SetRobberLocation(UInt32 newRobberLocation)
     {
+      if (this.gamePhase != GamePhases.SetRobber)
+      {
+        this.ErrorRaisedEvent?.Invoke(this.resourceDropErrorDetails);
+        return;
+      }
+
       throw new NotImplementedException();
     }
 
