@@ -979,6 +979,30 @@ namespace Jabberwocky.SoC.Library.UnitTests
       errorDetails.Message.ShouldBe("Cannot set robber location until expected resources (4) have been dropped via call to DropResources method.");
     }
 
+    [Test]
+    [Category("LocalGameController")]
+    public void StartOfMainPlayerTurn_RollsSevenAndPassBackExpectedResources_PlayerResourcesUpdatedCorrectly()
+    {
+      // Arrange
+      MockDice mockDice = null;
+      MockPlayer player;
+      MockComputerPlayer firstOpponent, secondOpponent, thirdOpponent;
+      var localGameController = this.CreateLocalGameControllerAndCompleteGameSetup(out mockDice, out player, out firstOpponent, out secondOpponent, out thirdOpponent);
+      mockDice.AddSequence(new[] { 7u });
+
+      player.Resources = new ResourceBag(8, 0, 0, 0, 0);
+      firstOpponent.Resources = new ResourceBag();
+      secondOpponent.Resources = new ResourceBag();
+      thirdOpponent.Resources = new ResourceBag();
+
+      // Act
+      localGameController.StartGamePlay();
+      localGameController.DropResources(new ResourceClutch(4, 0, 0, 0, 0));
+
+      // Assert
+      player.Resources.ShouldBe(new ResourceBag(4, 0, 0, 0, 0));
+    }
+
     private LocalGameController CreateLocalGameControllerAndCompleteGameSetup(out MockDice mockDice, out MockPlayer player, out MockComputerPlayer firstOpponent, out MockComputerPlayer secondOpponent, out MockComputerPlayer thirdOpponent)
     {
       var gameSetupOrder = new[] { 12u, 10u, 8u, 6u };

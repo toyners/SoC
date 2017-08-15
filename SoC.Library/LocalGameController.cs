@@ -268,6 +268,11 @@ namespace Jabberwocky.SoC.Library
       this.gamePhase = GamePhases.FinalisePlayerTurnOrder;
     }
 
+    public void DropResources(ResourceClutch resourceClutch)
+    {
+      throw new NotImplementedException();
+    }
+
     public void FinalisePlayerTurnOrder()
     {
       if (this.gamePhase != GamePhases.FinalisePlayerTurnOrder)
