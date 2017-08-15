@@ -860,7 +860,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
     [Test]
     [Category("LocalGameController")]
-    public void StartOfMainPlayerTurn_DoesNotRollSeven_ReceiveResourceDetails()
+    public void StartOfMainPlayerTurn_DoesNotRollSeven_ReceiveCollectedResourcesDetails()
     {
       MockDice mockDice = null;
       MockPlayer player;
