@@ -72,6 +72,11 @@ namespace Jabberwocky.SoC.Library.UnitTests
       };
     }
 
+    public void RemoveResources(ResourceClutch resourceClutch)
+    {
+      throw new NotImplementedException();
+    }
+
     private List<DevelopmentCardTypes> CreateListOfDisplayedDevelopmentCards()
     {
       // TODO: Use Jabberwocky

@@ -40,5 +40,10 @@ namespace Jabberwocky.SoC.Library
 
       return dataView;
     }
+
+    public void RemoveResources(ResourceClutch resourceClutch)
+    {
+      throw new NotImplementedException();
+    }
   }
 }
