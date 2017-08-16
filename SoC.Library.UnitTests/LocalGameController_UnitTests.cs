@@ -1118,40 +1118,4 @@ namespace Jabberwocky.SoC.Library.UnitTests
     }
     #endregion
   }
-
-  public class LocalGameContext
-  {
-    public IComputerPlayer FirstComputerPlayer { get; private set; }
-    public IComputerPlayer SecondComputerPlayer { get; private set; }
-    public IComputerPlayer ThirdComputerPlayer { get; private set; }
-    public MockDice Dice { get; private set; }
-    public GameBoardData GameBoard { get; private set; }
-    public LocalGameController GameController { get; private set; }
-
-    public LocalGameContext(MockDice dice, IComputerPlayer firstComputerPlayer, IComputerPlayer secondComputerPlayer, IComputerPlayer thirdComputerPlayer)
-    {
-      this.Dice = dice;
-      this.FirstComputerPlayer = firstComputerPlayer;
-      this.SecondComputerPlayer = secondComputerPlayer;
-      this.ThirdComputerPlayer = thirdComputerPlayer;
-
-      var gameBoardManager = new GameBoardManager(BoardSizes.Standard);
-      this.GameBoard = gameBoardManager.Data;
-
-      var mockComputerPlayerFactory = Substitute.For<IComputerPlayerFactory>();
-      mockComputerPlayerFactory.Create().Returns(firstComputerPlayer, secondComputerPlayer, thirdComputerPlayer);
-
-      this.GameController = new LocalGameController(this.Dice, mockComputerPlayerFactory, gameBoardManager);
-    }
-
-    public void CompleteGameSetup(UInt32 firstSettlmentLocation, Road firstRoad, UInt32 secondSettlementLocation, Road secondRoad)
-    {
-      this.GameController.JoinGame();
-      this.GameController.LaunchGame();
-      this.GameController.StartGameSetup();
-      this.GameController.ContinueGameSetup(firstSettlmentLocation, firstRoad);
-      this.GameController.CompleteGameSetup(secondSettlementLocation, secondRoad);
-      this.GameController.FinalisePlayerTurnOrder();
-    }
-  }
 }
