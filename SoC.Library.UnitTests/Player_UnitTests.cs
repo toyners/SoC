@@ -46,6 +46,21 @@ namespace Jabberwocky.SoC.Library.UnitTests
       player.OreCount.ShouldBe(1);
       player.WoolCount.ShouldBe(1);
     }
+
+    [Test]
+    [Category("Player")]
+    public void RemoveResources_ResultingTotalsWillBeBelowero_ThrowsMeaningfulException()
+    {
+      // Arrange
+      var player = new Player();
+
+      // Act
+      player.AddResources(new ResourceClutch(1, 0, 0, 0, 0));
+      Action action = () => { player.RemoveResources(new ResourceClutch(2, 0, 0, 0, 0)); };
+
+      // Assert
+      Should.Throw<ArithmeticException>(action).Message.ShouldBe("No resource count can be negative.");
+    }
     #endregion 
   }
 }

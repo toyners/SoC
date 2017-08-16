@@ -45,7 +45,11 @@ namespace Jabberwocky.SoC.Library
     #region Methods
     public void AddResources(ResourceClutch resourceClutch)
     {
-      throw new NotImplementedException();
+      this.BrickCount += resourceClutch.BrickCount;
+      this.GrainCount += resourceClutch.GrainCount;
+      this.LumberCount += resourceClutch.LumberCount;
+      this.OreCount += resourceClutch.OreCount;
+      this.WoolCount += resourceClutch.WoolCount;
     }
 
     public PlayerDataView GetDataView()
