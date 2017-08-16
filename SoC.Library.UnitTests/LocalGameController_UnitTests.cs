@@ -817,7 +817,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
     [Test]
     [Category("LocalGameController")]
-    [Category("Start of Main Player Turn")]
+    [Category("Main Player Turn")]
     public void StartOfMainPlayerTurn_TurnTokenReceived()
     {
       // Arrange
@@ -840,7 +840,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
     [Test]
     [Category("LocalGameController")]
-    [Category("Start of Main Player Turn")]
+    [Category("Main Player Turn")]
     public void StartOfMainPlayerTurn_DiceRollReceived()
     {
       // Arrange
@@ -862,7 +862,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
     [Test]
     [Category("LocalGameController")]
-    [Category("Start of Main Player Turn")]
+    [Category("Main Player Turn")]
     public void StartOfMainPlayerTurn_DoesNotRollSeven_ReceiveCollectedResourcesDetails()
     {
       MockDice mockDice = null;
@@ -893,7 +893,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
     [Test]
     [Category("LocalGameController")]
-    [Category("Start of Main Player Turn")]
+    [Category("Main Player Turn")]
     public void StartOfMainPlayerTurn_RollsSeven_ReceiveResourceCardLossesForComputerPlayers()
     {
       // Arrange
@@ -933,7 +933,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     [TestCase(9, 4)]
     [TestCase(10, 5)]
     [Category("LocalGameController")]
-    [Category("Start of Main Player Turn")]
+    [Category("Main Player Turn")]
     public void StartOfMainPlayerTurn_RollsSeven_ReceivesRobberEventNotificationWithDropResourceCardsCount(Int32 brickCount, Int32 expectedResourceDropCount)
     {
       // Arrange
@@ -959,7 +959,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
     [Test]
     [Category("LocalGameController")]
-    [Category("Start of Main Player Turn")]
+    [Category("Main Player Turn")]
     public void StartOfMainPlayerTurn_RollsSevenButDoesNotPassBackExpectedResources_ThrowsMeaningfulException()
     {
       // Arrange
@@ -987,7 +987,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
     [Test]
     [Category("LocalGameController")]
-    [Category("Start of Main Player Turn")]
+    [Category("Main Player Turn")]
     public void StartOfMainPlayerTurn_RollsSevenAndPassBackExpectedResources_PlayerResourcesUpdatedCorrectly()
     {
       // Arrange
