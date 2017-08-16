@@ -6,6 +6,7 @@ namespace Jabberwocky.SoC.Library
 
   public class Player : IPlayer
   {
+    #region Construction
     public Player()
     {
       this.Id = Guid.NewGuid();
@@ -15,11 +16,21 @@ namespace Jabberwocky.SoC.Library
     {
       this.Name = name;
     }
+    #endregion
 
+    #region Properties
+    public Int32 BrickCount { get; protected set; }
+
+    public Int32 GrainCount { get; protected set; }
+    
     public Guid Id { get; private set; }
 
+    public Int32 LumberCount { get; protected set; }
+    
     public String Name { get; private set; }
 
+    public Int32 OreCount { get; protected set; }
+    
     public virtual Int32 ResourcesCount
     {
       get
@@ -28,6 +39,10 @@ namespace Jabberwocky.SoC.Library
       }
     }
 
+    public Int32 WoolCount { get; protected set; }
+    #endregion
+
+    #region Methods
     public PlayerDataView GetDataView()
     {
       var dataView = new PlayerDataView();
@@ -45,5 +60,6 @@ namespace Jabberwocky.SoC.Library
     {
       throw new NotImplementedException();
     }
+    #endregion
   }
 }
