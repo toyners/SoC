@@ -18,6 +18,7 @@ namespace Jabberwocky.SoC.Library.Interfaces
 
     #region Methods
     PlayerDataView GetDataView();
+    void AddResources(ResourceClutch resourceClutch);
     void RemoveResources(ResourceClutch resourceClutch);
     #endregion
   }

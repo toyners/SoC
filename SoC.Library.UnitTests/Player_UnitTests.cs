@@ -12,21 +12,39 @@ namespace Jabberwocky.SoC.Library.UnitTests
     #region Methods
     [Test]
     [Category("Player")]
+    public void AddResources_VariousResourceKinds_CountsAreUpdated()
+    {
+      // Arrange
+      var player = new Player();
+
+      // Act
+      player.AddResources(new ResourceClutch(5, 4, 3, 2, 1));
+
+      // Assert
+      player.BrickCount.ShouldBe(5);
+      player.GrainCount.ShouldBe(4);
+      player.LumberCount.ShouldBe(3);
+      player.OreCount.ShouldBe(2);
+      player.WoolCount.ShouldBe(1);
+    }
+
+    [Test]
+    [Category("Player")]
     public void RemoveResources_VariousResourceKinds_CountsAreUpdated()
     {
       // Arrange
       var player = new Player();
-      var resourceClutch = new ResourceClutch(1, 2, 3, 4, 5);
 
       // Act
-      player.RemoveResources(resourceClutch);
+      player.AddResources(new ResourceClutch(5, 4, 3, 2, 1));
+      player.RemoveResources(new ResourceClutch(4, 3, 2, 1, 0));
 
       // Assert
       player.BrickCount.ShouldBe(1);
-      player.GrainCount.ShouldBe(2);
-      player.LumberCount.ShouldBe(3);
-      player.OreCount.ShouldBe(4);
-      player.WoolCount.ShouldBe(5);
+      player.GrainCount.ShouldBe(1);
+      player.LumberCount.ShouldBe(1);
+      player.OreCount.ShouldBe(1);
+      player.WoolCount.ShouldBe(1);
     }
     #endregion 
   }

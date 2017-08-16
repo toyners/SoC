@@ -43,6 +43,11 @@ namespace Jabberwocky.SoC.Library
     #endregion
 
     #region Methods
+    public void AddResources(ResourceClutch resourceClutch)
+    {
+      throw new NotImplementedException();
+    }
+
     public PlayerDataView GetDataView()
     {
       var dataView = new PlayerDataView();
