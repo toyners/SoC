@@ -1,6 +1,5 @@
 ﻿
 using System;
-using System.Collections.Generic;
 using Jabberwocky.SoC.Library.GameBoards;
 
 namespace Jabberwocky.SoC.Library.Interfaces
