@@ -35,7 +35,7 @@ namespace Jabberwocky.SoC.Library
     {
       get
       {
-        throw new NotImplementedException();
+        return this.BrickCount + this.GrainCount + this.LumberCount + this.OreCount + this.WoolCount;
       }
     }
 

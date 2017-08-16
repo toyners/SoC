@@ -908,11 +908,11 @@ namespace Jabberwocky.SoC.Library.UnitTests
       var localGameController = this.CreateLocalGameControllerAndCompleteGameSetup(out mockDice, out player, out firstOpponent, out secondOpponent, out thirdOpponent);
       mockDice.AddSequence(new[] { 7u });
 
-      player.Resources = new ResourceBag();
-      firstOpponent.Resources = new ResourceBag(2, 2, 2, 1, 1);
+      //player.Resources = new ResourceBag();
+      firstOpponent.AddResources(new ResourceClutch(2, 2, 2, 1, 1));
       firstOpponent.DroppedResources = droppedResourcesForFirstOpponent;
-      secondOpponent.Resources = new ResourceBag(2, 2, 1, 1, 1);
-      thirdOpponent.Resources = new ResourceBag(2, 2, 2, 2, 1);
+      secondOpponent.AddResources(new ResourceClutch(2, 2, 1, 1, 1));
+      thirdOpponent.AddResources(new ResourceClutch(2, 2, 2, 2, 1));
       thirdOpponent.DroppedResources = droppedResourcesForThirdOpponent;
 
       // Act
@@ -943,10 +943,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
       var localGameController = this.CreateLocalGameControllerAndCompleteGameSetup(out mockDice, out player, out firstOpponent, out secondOpponent, out thirdOpponent);
       mockDice.AddSequence(new[] { 7u });
 
-      player.Resources = new ResourceBag(brickCount, 0, 0, 0, 0);
-      firstOpponent.Resources = new ResourceBag();
-      secondOpponent.Resources = new ResourceBag();
-      thirdOpponent.Resources = new ResourceBag();
+      player.AddResources(new ResourceClutch(brickCount, 0, 0, 0, 0));
 
       // Act
       Int32 resourceDropCount = -1;
@@ -969,11 +966,8 @@ namespace Jabberwocky.SoC.Library.UnitTests
       var localGameController = this.CreateLocalGameControllerAndCompleteGameSetup(out mockDice, out player, out firstOpponent, out secondOpponent, out thirdOpponent);
       mockDice.AddSequence(new[] { 7u });
 
-      player.Resources = new ResourceBag(8, 0, 0, 0, 0);
-      firstOpponent.Resources = new ResourceBag();
-      secondOpponent.Resources = new ResourceBag();
-      thirdOpponent.Resources = new ResourceBag();
-
+      player.AddResources(new ResourceClutch(8, 0, 0, 0, 0));
+      
       // Act
       ErrorDetails errorDetails = null;
       localGameController.ErrorRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
@@ -997,17 +991,18 @@ namespace Jabberwocky.SoC.Library.UnitTests
       var localGameController = this.CreateLocalGameControllerAndCompleteGameSetup(out mockDice, out player, out firstOpponent, out secondOpponent, out thirdOpponent);
       mockDice.AddSequence(new[] { 7u });
 
-      player.Resources = new ResourceBag(8, 0, 0, 0, 0);
-      firstOpponent.Resources = new ResourceBag();
-      secondOpponent.Resources = new ResourceBag();
-      thirdOpponent.Resources = new ResourceBag();
-
+      player.AddResources(new ResourceClutch(8, 0, 0, 0, 0));
+      
       // Act
       localGameController.StartGamePlay();
       localGameController.DropResources(new ResourceClutch(4, 0, 0, 0, 0));
 
       // Assert
-      player.Resources.ShouldBe(new ResourceBag(4, 0, 0, 0, 0));
+      player.BrickCount.ShouldBe(4);
+      player.GrainCount.ShouldBe(0);
+      player.LumberCount.ShouldBe(0);
+      player.OreCount.ShouldBe(0);
+      player.WoolCount.ShouldBe(0);
     }
 
     private LocalGameController CreateLocalGameControllerAndCompleteGameSetup(out MockDice mockDice, out MockPlayer player, out MockComputerPlayer firstOpponent, out MockComputerPlayer secondOpponent, out MockComputerPlayer thirdOpponent)

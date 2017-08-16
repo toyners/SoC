@@ -18,26 +18,12 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
     public Queue<UInt32> SettlementLocations;
     public Queue<Road> Roads;
-    public ResourceBag Resources;
+    //public ResourceBag Resources;
     public ResourceClutch DroppedResources;
     #endregion
 
     #region Construction
     public MockComputerPlayer(String name) : base(name) {}
-    #endregion
-
-    #region Properties
-    public Guid Id { get; private set; }
-
-    public Int32 ResourcesCount
-    {
-      get
-      {
-        return this.Resources.Count;
-      }
-    }
-
-    public String Name { get; set; }
     #endregion
 
     #region Methods
@@ -54,23 +40,6 @@ namespace Jabberwocky.SoC.Library.UnitTests
     public UInt32 ChooseSettlementLocation(GameBoardData gameBoardData)
     {
       return this.SettlementLocations.Dequeue();
-    }
-
-    public PlayerDataView GetDataView()
-    {
-      return new PlayerDataView
-      {
-        Id = this.Id,
-        Name = this.Name,
-        DisplayedDevelopmentCards = this.CreateListOfDisplayedDevelopmentCards(),
-        HiddenDevelopmentCards = this.HiddenDevelopmentCards,
-        ResourceCards = this.ResourceCards
-      };
-    }
-
-    public void RemoveResources(ResourceClutch resourceClutch)
-    {
-      throw new NotImplementedException();
     }
 
     private List<DevelopmentCardTypes> CreateListOfDisplayedDevelopmentCards()

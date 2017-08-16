@@ -271,7 +271,6 @@ namespace Jabberwocky.SoC.Library
     public void DropResources(ResourceClutch resourceClutch)
     {
       this.mainPlayer.RemoveResources(resourceClutch);
-      throw new NotImplementedException();
     }
 
     public void FinalisePlayerTurnOrder()
