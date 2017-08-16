@@ -22,15 +22,15 @@ namespace Jabberwocky.SoC.Library
     public Int32 BrickCount { get; protected set; }
 
     public Int32 GrainCount { get; protected set; }
-    
+
     public Guid Id { get; private set; }
 
     public Int32 LumberCount { get; protected set; }
-    
+
     public String Name { get; private set; }
 
     public Int32 OreCount { get; protected set; }
-    
+
     public virtual Int32 ResourcesCount
     {
       get
@@ -67,7 +67,20 @@ namespace Jabberwocky.SoC.Library
 
     public void RemoveResources(ResourceClutch resourceClutch)
     {
-      throw new NotImplementedException();
+      if (this.BrickCount - resourceClutch.BrickCount < 0 ||
+          this.GrainCount - resourceClutch.GrainCount < 0 ||
+          this.LumberCount - resourceClutch.LumberCount < 0 ||
+          this.OreCount - resourceClutch.OreCount < 0 ||
+          this.WoolCount - resourceClutch.WoolCount < 0)
+      {
+        throw new ArithmeticException("No resource count can be negative.");
+      }
+
+      this.BrickCount -= resourceClutch.BrickCount;
+      this.GrainCount -= resourceClutch.GrainCount;
+      this.LumberCount -= resourceClutch.LumberCount;
+      this.OreCount -= resourceClutch.OreCount;
+      this.WoolCount -= resourceClutch.WoolCount;
     }
     #endregion
   }
