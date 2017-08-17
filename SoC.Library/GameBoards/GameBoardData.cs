@@ -307,6 +307,11 @@ namespace Jabberwocky.SoC.Library.GameBoards
       return resources;
     }
 
+    internal List<Guid> GetPlayersForLocation(UInt32 location)
+    {
+      throw new NotImplementedException();
+    }
+
     private void CreateLocations()
     {
       this.Locations = new Location[StandardBoardLocationCount];

@@ -33,6 +33,7 @@ namespace Jabberwocky.SoC.Library
     private IGameSession gameSession;
     private Int32 playerIndex;
     private IPlayer[] players;
+    private Dictionary<Guid, IPlayer> players2;
     private IPlayer mainPlayer;
     private Boolean quitting;
     private Task sessionTask;
@@ -289,7 +290,7 @@ namespace Jabberwocky.SoC.Library
       this.TurnOrderFinalisedEvent?.Invoke(playerData);
     }
 
-    public void SetRobberLocation(UInt32 newRobberLocation)
+    public void SetRobberLocation(UInt32 location)
     {
       if (this.gamePhase != GamePhases.SetRobber)
       {
@@ -297,7 +298,16 @@ namespace Jabberwocky.SoC.Library
         return;
       }
 
-      throw new NotImplementedException();
+      var playerIds = this.gameBoardManager.Data.GetPlayersForLocation(location);
+      Dictionary<Guid, Int32> choices = new Dictionary<Guid, Int32>();
+      foreach(var playerId in playerIds)
+      {
+        choices.Add(playerId, this.players2[playerId].ResourcesCount);
+      }
+
+      this.RobbingChoicesEvent?.Invoke(choices);
+
+      //throw new NotImplementedException();
     }
 
     private ResourceUpdate CollectTurnResources(UInt32 diceRoll)
