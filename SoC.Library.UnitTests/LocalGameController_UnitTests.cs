@@ -1008,7 +1008,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     [Test]
     [Category("LocalGameController")]
     [Category("Main Player Turn")]
-    public void StartOfMainPlayerTurn_SetRobberLocationOnHexWithOneOpponent_ReturnListOfOpponentsAndResourceCardsToChooseFrom()
+    public void StartOfMainPlayerTurn_SetRobberOnHexWithOneOpponent_ReturnListOfOpponentsAndResourceCardsToChooseFrom()
     {
       // Arrange
       MockDice mockDice = null;
