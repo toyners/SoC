@@ -39,7 +39,7 @@ namespace Jabberwocky.SoC.Library
     private Boolean quitting;
     private Task sessionTask;
     private ResourceUpdate gameSetupResources;
-    private ErrorDetails resourceDropErrorDetails;
+    private Int32 resourcesToDrop = 0;
     #endregion
 
     public LocalGameController(IDice dice, IComputerPlayerFactory computerPlayerFactory, GameBoardManager gameBoardManager)
@@ -204,11 +204,9 @@ namespace Jabberwocky.SoC.Library
 
         this.gamePhase = GamePhases.SetRobberLocation;
 
-        var resourcesToDrop = 0;
         if (this.mainPlayer.ResourcesCount > 7)
         {
-          resourcesToDrop = this.mainPlayer.ResourcesCount / 2;
-          this.resourceDropErrorDetails = new ErrorDetails(String.Format("Cannot set robber location until expected resources ({0}) have been dropped via call to DropResources method.", resourcesToDrop));
+          this.resourcesToDrop = this.mainPlayer.ResourcesCount / 2;
           this.gamePhase = GamePhases.DropResources;
         }
 
@@ -217,7 +215,7 @@ namespace Jabberwocky.SoC.Library
           this.ResourcesLostEvent?.Invoke(resourcesDroppedByComputerPlayers);
         }
 
-        this.RobberEvent?.Invoke(resourcesToDrop);
+        this.RobberEvent?.Invoke(this.resourcesToDrop);
         return;
       }
     }
@@ -298,7 +296,8 @@ namespace Jabberwocky.SoC.Library
     {
       if (this.gamePhase != GamePhases.SetRobberLocation)
       {
-        this.ErrorRaisedEvent?.Invoke(this.resourceDropErrorDetails);
+        var resourceDropErrorDetails = new ErrorDetails(String.Format("Cannot set robber location until expected resources ({0}) have been dropped via call to DropResources method.", this.resourcesToDrop));
+        this.ErrorRaisedEvent?.Invoke(resourceDropErrorDetails);
         return;
       }
 
