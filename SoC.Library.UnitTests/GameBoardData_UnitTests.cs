@@ -336,12 +336,40 @@ namespace Jabberwocky.SoC.Library.UnitTests
     [Test]
     [Category("All")]
     [Category("GameBoardData")]
-    public void GetPlayersForLocation_OnePlayerSettlementOnHex_ReturnPlayerIds()
+    public void GetPlayersForLocation_OnePlayerOnHex_ReturnPlayerIds()
     {
+      // Arrange
+      var playerId = Guid.NewGuid();
+      var gameBoardData = new GameBoardData(BoardSizes.Standard);
+      gameBoardData.PlaceSettlement(playerId, 0u);
+
+      // Act
+      var results = gameBoardData.GetPlayersForHex(0);
+
+      // Assert
+      results.Count.ShouldBe(1);
+      results.ShouldContain(playerId);
+    }
+
+    [Test]
+    [Category("All")]
+    [Category("GameBoardData")]
+    public void GetPlayersForHex_MultiplePlayersOnHex_ReturnPlayerIds()
+    {
+      // Arrange
       var firstPlayerId = Guid.NewGuid();
       var secondPlayerId = Guid.NewGuid();
       var gameBoardData = new GameBoardData(BoardSizes.Standard);
       gameBoardData.PlaceSettlement(firstPlayerId, 0u);
+      gameBoardData.PlaceSettlement(secondPlayerId, 2u);
+
+      // Act
+      var results = gameBoardData.GetPlayersForHex(0);
+
+      // Assert
+      results.Count.ShouldBe(2);
+      results.ShouldContain(firstPlayerId);
+      results.ShouldContain(secondPlayerId);
     }
 
     [Test]
@@ -349,10 +377,18 @@ namespace Jabberwocky.SoC.Library.UnitTests
     [Category("GameBoardData")]
     public void GetPlayersForHex_MultiplePlayerSettlementsOnHex_ReturnPlayerIds()
     {
-      var firstPlayerId = Guid.NewGuid();
-      var secondPlayerId = Guid.NewGuid();
+      // Arrange
+      var playerId = Guid.NewGuid();
       var gameBoardData = new GameBoardData(BoardSizes.Standard);
-      gameBoardData.PlaceSettlement(firstPlayerId, 0u);
+      gameBoardData.PlaceSettlement(playerId, 0u);
+      gameBoardData.PlaceSettlement(playerId, 2u);
+
+      // Act
+      var results = gameBoardData.GetPlayersForHex(0);
+
+      // Assert
+      results.Count.ShouldBe(1);
+      results.ShouldContain(playerId);
     }
     #endregion 
   }
