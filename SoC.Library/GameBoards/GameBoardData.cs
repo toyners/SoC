@@ -240,6 +240,17 @@ namespace Jabberwocky.SoC.Library.GameBoards
       this.settlements.Add(locationIndex, playerId);
     }
 
+    /// <summary>
+    /// Get list of ids for players that have settlements on the location hex. Duplicates
+    /// are suppressed.
+    /// </summary>
+    /// <param name="location">Index of location hex.</param>
+    /// <returns>List of player ids.</returns>
+    public List<Guid> GetPlayersForLocation(UInt32 location)
+    {
+      throw new NotImplementedException();
+    }
+
     public ResourceClutch GetResourcesForLocation(UInt32 location)
     {
       var resourceClutch = new ResourceClutch();
@@ -305,11 +316,6 @@ namespace Jabberwocky.SoC.Library.GameBoards
       }
 
       return resources;
-    }
-
-    internal List<Guid> GetPlayersForLocation(UInt32 location)
-    {
-      throw new NotImplementedException();
     }
 
     private void CreateLocations()
