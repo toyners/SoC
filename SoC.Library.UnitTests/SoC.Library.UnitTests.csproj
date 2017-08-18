@@ -63,7 +63,6 @@
     <Compile Include="MockDiceCreator.cs" />
     <Compile Include="MockPlayer.cs" />
     <Compile Include="Player_UnitTests.cs" />
-    <Compile Include="ResourceBag_UnitTests.cs" />
     <Compile Include="Road_UnitTests.cs" />
     <Compile Include="PlayerTurnOrderCreator_UnitTests.cs" />
     <Compile Include="GameControllerFactory_UnitTests.cs" />

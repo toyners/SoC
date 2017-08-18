@@ -46,7 +46,6 @@
   <ItemGroup>
     <Compile Include="ComputerPlayer.cs" />
     <Compile Include="ComputerPlayerFactory.cs" />
-    <Compile Include="ResourceBag.cs" />
     <Compile Include="ErrorDetails.cs" />
     <Compile Include="Interfaces\IComputerPlayer.cs" />
     <Compile Include="Interfaces\IComputerPlayerFactory.cs" />
