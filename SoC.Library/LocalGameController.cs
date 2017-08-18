@@ -18,7 +18,8 @@ namespace Jabberwocky.SoC.Library
       ContinueGameSetup,
       CompleteGameSetup,
       FinalisePlayerTurnOrder,
-      SetRobber,
+      SetRobberLocation,
+      DropResources,
       Quitting,
     }
 
@@ -201,11 +202,14 @@ namespace Jabberwocky.SoC.Library
           }
         }
 
+        this.gamePhase = GamePhases.SetRobberLocation;
+
         var resourcesToDrop = 0;
         if (this.mainPlayer.ResourcesCount > 7)
         {
           resourcesToDrop = this.mainPlayer.ResourcesCount / 2;
           this.resourceDropErrorDetails = new ErrorDetails(String.Format("Cannot set robber location until expected resources ({0}) have been dropped via call to DropResources method.", resourcesToDrop));
+          this.gamePhase = GamePhases.DropResources;
         }
 
         if (resourcesDroppedByComputerPlayers != null)
@@ -292,7 +296,7 @@ namespace Jabberwocky.SoC.Library
 
     public void SetRobberLocation(UInt32 location)
     {
-      if (this.gamePhase != GamePhases.SetRobber)
+      if (this.gamePhase != GamePhases.SetRobberLocation)
       {
         this.ErrorRaisedEvent?.Invoke(this.resourceDropErrorDetails);
         return;
