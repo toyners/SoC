@@ -301,7 +301,7 @@ namespace Jabberwocky.SoC.Library
         return;
       }
 
-      var playerIds = this.gameBoardManager.Data.GetPlayersForLocation(location);
+      var playerIds = this.gameBoardManager.Data.GetPlayersForHex(location);
       Dictionary<Guid, Int32> choices = new Dictionary<Guid, Int32>();
       foreach(var playerId in playerIds)
       {
@@ -309,8 +309,6 @@ namespace Jabberwocky.SoC.Library
       }
 
       this.RobbingChoicesEvent?.Invoke(choices);
-
-      //throw new NotImplementedException();
     }
 
     private ResourceUpdate CollectTurnResources(UInt32 diceRoll)

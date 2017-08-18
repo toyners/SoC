@@ -332,6 +332,28 @@ namespace Jabberwocky.SoC.Library.UnitTests
       result.Count.ShouldBe(1);
       result.ShouldContainKeyAndValue(playerId, expectedResourceCounts);
     }
+
+    [Test]
+    [Category("All")]
+    [Category("GameBoardData")]
+    public void GetPlayersForLocation_OnePlayerSettlementOnHex_ReturnPlayerIds()
+    {
+      var firstPlayerId = Guid.NewGuid();
+      var secondPlayerId = Guid.NewGuid();
+      var gameBoardData = new GameBoardData(BoardSizes.Standard);
+      gameBoardData.PlaceSettlement(firstPlayerId, 0u);
+    }
+
+    [Test]
+    [Category("All")]
+    [Category("GameBoardData")]
+    public void GetPlayersForHex_MultiplePlayerSettlementsOnHex_ReturnPlayerIds()
+    {
+      var firstPlayerId = Guid.NewGuid();
+      var secondPlayerId = Guid.NewGuid();
+      var gameBoardData = new GameBoardData(BoardSizes.Standard);
+      gameBoardData.PlaceSettlement(firstPlayerId, 0u);
+    }
     #endregion 
   }
 }

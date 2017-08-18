@@ -241,12 +241,11 @@ namespace Jabberwocky.SoC.Library.GameBoards
     }
 
     /// <summary>
-    /// Get list of ids for players that have settlements on the location hex. Duplicates
-    /// are suppressed.
+    /// Get list of player ids that have settlements on the hex. Duplicates are suppressed.
     /// </summary>
-    /// <param name="location">Index of location hex.</param>
+    /// <param name="hex">Index of location hex.</param>
     /// <returns>List of player ids.</returns>
-    public List<Guid> GetPlayersForLocation(UInt32 location)
+    public List<Guid> GetPlayersForHex(UInt32 hex)
     {
       throw new NotImplementedException();
     }
