@@ -247,8 +247,10 @@ namespace Jabberwocky.SoC.Library.GameBoards
     /// <returns>List of player ids.</returns>
     public List<Guid> GetPlayersForHex(UInt32 hex)
     {
-      // Get list of locations bordering on the hex
+      // Get list of settlement bordering on the hex
       // this.locationsForHex
+
+      // Get players for each settlement
       throw new NotImplementedException();
     }
 
