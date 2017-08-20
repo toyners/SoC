@@ -24,8 +24,6 @@ namespace Jabberwocky.SoC.Library
     }
 
     #region Fields
-    private CancellationToken cancellationToken;
-    private CancellationTokenSource cancellationTokenSource;
     private IComputerPlayerFactory computerPlayerFactory;
     private Guid curentPlayerTurnToken;
     private IDice dice;
