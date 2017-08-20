@@ -38,6 +38,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
     private Dictionary<Road, Guid> roads;
     private Dictionary<UInt32, ResourceProvider2[]> resourceProvidersByDiceRolls;
     private Dictionary<ResourceProvider2, UInt32[]> locationsForResourceProvider;
+    private Dictionary<UInt32, UInt32[]> locationsForHex;
     #endregion
 
     #region Construction
@@ -68,6 +69,8 @@ namespace Jabberwocky.SoC.Library.GameBoards
       this.CreateResourceProviders();
 
       this.CreateResourceProviders2();
+
+      this.CreateLocationsForHex();
     }
     #endregion
 
@@ -245,13 +248,24 @@ namespace Jabberwocky.SoC.Library.GameBoards
     /// </summary>
     /// <param name="hex">Index of location hex.</param>
     /// <returns>List of player ids.</returns>
-    public List<Guid> GetPlayersForHex(UInt32 hex)
+    public Guid[] GetPlayersForHex(UInt32 hex)
     {
       // Get list of settlement bordering on the hex
       // this.locationsForHex
-
+      UInt32[] settlements = new UInt32[0];
+      List<Guid> players = new List<Guid>();
+      
       // Get players for each settlement
-      throw new NotImplementedException();
+      foreach (var settlement in settlements)
+      {
+        var playerId = this.settlements[settlement];
+        if (players.Contains(playerId))
+        {
+          players.Add(playerId);
+        }
+      }
+
+      return players.ToArray();
     }
 
     public ResourceClutch GetResourcesForLocation(UInt32 location)
@@ -625,6 +639,23 @@ namespace Jabberwocky.SoC.Library.GameBoards
 
         this.locationsForResourceProvider.Add(resourceProvider, locations);
       }
+    }
+
+    private void CreateLocationsForHex()
+    {
+      this.locationsForHex = new Dictionary<UInt32, UInt32[]>();
+
+      // Column 1
+      var hexIndex = 0u;
+      var locations = new UInt32[6];
+      locations[0] = 0u;
+      locations[1] = 1u;
+      locations[2] = 2u;
+      locations[3] = 8u;
+      locations[4] = 9u;
+      locations[5] = 10u;
+
+      this.locationsForHex.Add(hexIndex, locations);
     }
 
     private void StitchLocationsTogetherUsingHorizontalTrails(Int32 index)

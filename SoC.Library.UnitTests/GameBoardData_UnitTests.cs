@@ -347,7 +347,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
       var results = gameBoardData.GetPlayersForHex(0);
 
       // Assert
-      results.Count.ShouldBe(1);
+      results.Length.ShouldBe(1);
       results.ShouldContain(playerId);
     }
 
@@ -367,7 +367,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
       var results = gameBoardData.GetPlayersForHex(0);
 
       // Assert
-      results.Count.ShouldBe(2);
+      results.Length.ShouldBe(2);
       results.ShouldContain(firstPlayerId);
       results.ShouldContain(secondPlayerId);
     }
@@ -387,7 +387,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
       var results = gameBoardData.GetPlayersForHex(0);
 
       // Assert
-      results.Count.ShouldBe(1);
+      results.Length.ShouldBe(1);
       results.ShouldContain(playerId);
     }
     #endregion 
