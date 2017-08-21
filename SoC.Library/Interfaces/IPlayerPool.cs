@@ -1,8 +1,7 @@
 ﻿
 namespace Jabberwocky.SoC.Library.Interfaces
 {
-  // TODO: Rename to IPlayerPool
-  public interface IComputerPlayerFactory
+  public interface IPlayerPool
   {
     IPlayer Create();
 

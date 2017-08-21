@@ -45,10 +45,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ComputerPlayer.cs" />
-    <Compile Include="ComputerPlayerFactory.cs" />
+    <Compile Include="PlayerPool.cs" />
     <Compile Include="ErrorDetails.cs" />
     <Compile Include="Interfaces\IComputerPlayer.cs" />
-    <Compile Include="Interfaces\IComputerPlayerFactory.cs" />
+    <Compile Include="Interfaces\IPlayerPool.cs" />
     <Compile Include="PathFinder.cs" />
     <Compile Include="Player.cs" />
     <Compile Include="ResourceClutch.cs" />

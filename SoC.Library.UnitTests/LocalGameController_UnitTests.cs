@@ -1072,9 +1072,9 @@ namespace Jabberwocky.SoC.Library.UnitTests
         .Create();
     }
 
-    private IComputerPlayerFactory CreatePlayerFactory(IPlayer player, IPlayer[] otherPlayers)
+    private IPlayerPool CreatePlayerFactory(IPlayer player, IPlayer[] otherPlayers)
     {
-      var mockComputerPlayerFactory = Substitute.For<IComputerPlayerFactory>();
+      var mockComputerPlayerFactory = Substitute.For<IPlayerPool>();
       mockComputerPlayerFactory.Create().Returns(player, otherPlayers);
       return mockComputerPlayerFactory;
     }
@@ -1123,7 +1123,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
       var secondOpponent = new MockComputerPlayer(SecondOpponentName);
       var thirdOpponent = new MockComputerPlayer(ThirdOpponentName);
 
-      var mockComputerGameFactory = Substitute.For<IComputerPlayerFactory>();
+      var mockComputerGameFactory = Substitute.For<IPlayerPool>();
       mockComputerGameFactory.Create().Returns(player, firstOpponent, secondOpponent, thirdOpponent);
       var localGameController = new LocalGameControllerCreator()
         .ChangeComputerPlayerFactory(mockComputerGameFactory)

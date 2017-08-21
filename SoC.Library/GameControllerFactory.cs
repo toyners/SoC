@@ -7,17 +7,17 @@ namespace Jabberwocky.SoC.Library
 
   public class GameControllerFactory
   {
-    private IComputerPlayerFactory computerPlayerFactory;
+    private IPlayerPool computerPlayerFactory;
     private IDiceFactory diceRollerFactory;
 
     #region Construction
-    public GameControllerFactory(IDiceFactory diceRollerFactory, IComputerPlayerFactory computerPlayerFactory)
+    public GameControllerFactory(IDiceFactory diceRollerFactory, IPlayerPool computerPlayerFactory)
     {
       this.diceRollerFactory = diceRollerFactory;
       this.computerPlayerFactory = computerPlayerFactory;
     }
 
-    public GameControllerFactory() : this(new DiceFactory(), new ComputerPlayerFactory()) { }
+    public GameControllerFactory() : this(new DiceFactory(), new PlayerPool()) { }
     #endregion
 
     #region Methods

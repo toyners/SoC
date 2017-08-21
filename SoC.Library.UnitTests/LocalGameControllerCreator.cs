@@ -7,7 +7,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
   public class LocalGameControllerCreator
   {
     #region Fields
-    private IComputerPlayerFactory computerPlayerFactory;
+    private IPlayerPool computerPlayerFactory;
     private IDice dice;
     private GameBoardManager gameBoardManager;
     #endregion
@@ -15,14 +15,14 @@ namespace Jabberwocky.SoC.Library.UnitTests
     #region Contruction
     public LocalGameControllerCreator()
     {
-      this.computerPlayerFactory = new ComputerPlayerFactory();
+      this.computerPlayerFactory = new PlayerPool();
       this.dice = new Dice();
       this.gameBoardManager = new GameBoardManager(BoardSizes.Standard);
     }
     #endregion
 
     #region Methods
-    public LocalGameControllerCreator ChangeComputerPlayerFactory(IComputerPlayerFactory computerPlayerFactory)
+    public LocalGameControllerCreator ChangeComputerPlayerFactory(IPlayerPool computerPlayerFactory)
     {
       this.computerPlayerFactory = computerPlayerFactory;
       return this;

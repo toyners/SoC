@@ -4,8 +4,7 @@ namespace Jabberwocky.SoC.Library
   using System;
   using Interfaces;
 
-  // TODO: Change name to PlayerPool
-  public class ComputerPlayerFactory : IComputerPlayerFactory
+  public class PlayerPool : IPlayerPool
   {
     public IPlayer Create()
     {

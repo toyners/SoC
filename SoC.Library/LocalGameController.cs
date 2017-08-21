@@ -23,7 +23,7 @@ namespace Jabberwocky.SoC.Library
     }
 
     #region Fields
-    private IComputerPlayerFactory computerPlayerFactory;
+    private IPlayerPool computerPlayerFactory;
     private Guid curentPlayerTurnToken;
     private IDice dice;
     private GameBoardManager gameBoardManager;
@@ -39,7 +39,7 @@ namespace Jabberwocky.SoC.Library
     private Int32 resourcesToDrop = 0;
     #endregion
 
-    public LocalGameController(IDice dice, IComputerPlayerFactory computerPlayerFactory, GameBoardManager gameBoardManager)
+    public LocalGameController(IDice dice, IPlayerPool computerPlayerFactory, GameBoardManager gameBoardManager)
     {
       this.dice = dice;
       this.computerPlayerFactory = computerPlayerFactory;
