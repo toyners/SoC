@@ -3,7 +3,6 @@ namespace Jabberwocky.SoC.Library
 {
   using System;
   using System.Collections.Generic;
-  using System.Threading;
   using System.Threading.Tasks;
   using GameBoards;
   using Interfaces;
@@ -32,7 +31,7 @@ namespace Jabberwocky.SoC.Library
     private IGameSession gameSession;
     private Int32 playerIndex;
     private IPlayer[] players;
-    private Dictionary<Guid, IPlayer> players2;
+    private Dictionary<Guid, IPlayer> playersById;
     private IPlayer mainPlayer;
     private Boolean quitting;
     private Task sessionTask;
@@ -129,10 +128,15 @@ namespace Jabberwocky.SoC.Library
       this.mainPlayer = this.computerPlayerFactory.Create();
       this.players = new IPlayer[gameOptions.MaxAIPlayers + 1];
       this.players[0] = this.mainPlayer;
+      this.playersById = new Dictionary<Guid, IPlayer>(this.players.Length);
+      this.playersById.Add(this.mainPlayer.Id, this.mainPlayer);
+
       var index = 1;
       while ((gameOptions.MaxAIPlayers--) > 0)
       {
-        this.players[index] = this.computerPlayerFactory.Create();
+        var player = this.computerPlayerFactory.Create();
+        this.players[index] = player;
+        this.playersById.Add(player.Id, player);
         index++;
       }
     }
@@ -303,7 +307,7 @@ namespace Jabberwocky.SoC.Library
       Dictionary<Guid, Int32> choices = new Dictionary<Guid, Int32>();
       foreach(var playerId in playerIds)
       {
-        choices.Add(playerId, this.players2[playerId].ResourcesCount);
+        choices.Add(playerId, this.playersById[playerId].ResourcesCount);
       }
 
       this.RobbingChoicesEvent?.Invoke(choices);
