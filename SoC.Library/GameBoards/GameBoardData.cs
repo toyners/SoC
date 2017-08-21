@@ -250,19 +250,23 @@ namespace Jabberwocky.SoC.Library.GameBoards
     /// <returns>List of player ids.</returns>
     public Guid[] GetPlayersForHex(UInt32 hex)
     {
-      // Get list of settlement bordering on the hex
-      // this.locationsForHex
-      UInt32[] settlements = new UInt32[0];
       List<Guid> players = new List<Guid>();
       
       // Get players for each settlement
-      foreach (var settlement in settlements)
+      foreach (var locationIndex in this.locationsForHex[hex])
       {
-        var playerId = this.settlements[settlement];
+        if (!this.settlements.ContainsKey(locationIndex))
+        {
+          continue;
+        }
+
+        var playerId = this.settlements[locationIndex];
         if (players.Contains(playerId))
         {
-          players.Add(playerId);
+          continue;
         }
+
+        players.Add(playerId);
       }
 
       return players.ToArray();
@@ -333,6 +337,26 @@ namespace Jabberwocky.SoC.Library.GameBoards
       }
 
       return resources;
+    }
+
+    private void AddLocationsToHex(UInt32 lhs, UInt32 rhs, UInt32 hexIndex, UInt32 count)
+    {
+      var lastIndex = hexIndex + count - 1;
+      for (; hexIndex <= lastIndex; hexIndex++)
+      {
+        var locations = new UInt32[6];
+        locations[0] = lhs;
+        locations[1] = lhs + 1;
+        locations[2] = lhs + 2;
+        locations[3] = rhs;
+        locations[4] = rhs + 1;
+        locations[5] = rhs + 2;
+
+        lhs += 2;
+        rhs += 2;
+
+        this.locationsForHex.Add(hexIndex, locations);
+      }
     }
 
     private void CreateLocations()
@@ -645,17 +669,11 @@ namespace Jabberwocky.SoC.Library.GameBoards
     {
       this.locationsForHex = new Dictionary<UInt32, UInt32[]>();
 
-      // Column 1
-      var hexIndex = 0u;
-      var locations = new UInt32[6];
-      locations[0] = 0u;
-      locations[1] = 1u;
-      locations[2] = 2u;
-      locations[3] = 8u;
-      locations[4] = 9u;
-      locations[5] = 10u;
-
-      this.locationsForHex.Add(hexIndex, locations);
+      this.AddLocationsToHex(0u, 8u, 0u, 3u);
+      this.AddLocationsToHex(7u, 17u, 3u, 4u);
+      this.AddLocationsToHex(16u, 27u, 7u, 5u);
+      this.AddLocationsToHex(28u, 38u, 12u, 4u);
+      this.AddLocationsToHex(39u, 47u, 16u, 3u);
     }
 
     private void StitchLocationsTogetherUsingHorizontalTrails(Int32 index)
