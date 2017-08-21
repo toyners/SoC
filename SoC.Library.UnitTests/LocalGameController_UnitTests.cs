@@ -66,9 +66,9 @@ namespace Jabberwocky.SoC.Library.UnitTests
         new MockComputerPlayer(ThirdOpponentName)
       };
 
-      var mockPlayerFactory = this.CreatePlayerFactory(player, opponents);
+      var mockPlayerFactory = this.CreatePlayerPool(player, opponents);
 
-      var localGameController = new LocalGameControllerCreator().ChangeComputerPlayerFactory(mockPlayerFactory).Create();
+      var localGameController = new LocalGameControllerCreator().ChangePlayerPool(mockPlayerFactory).Create();
       ErrorDetails errorDetails = null;
       localGameController.ErrorRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
       localGameController.JoinGame();
@@ -106,9 +106,9 @@ namespace Jabberwocky.SoC.Library.UnitTests
         new MockComputerPlayer(ThirdOpponentName)
       };
 
-      var mockPlayerFactory = this.CreatePlayerFactory(player, opponents);
+      var mockPlayerFactory = this.CreatePlayerPool(player, opponents);
 
-      var localGameController = new LocalGameControllerCreator().ChangeDice(mockDice).ChangeComputerPlayerFactory(mockPlayerFactory).Create();
+      var localGameController = new LocalGameControllerCreator().ChangeDice(mockDice).ChangePlayerPool(mockPlayerFactory).Create();
 
       GameBoardData gameBoardData = null;
       localGameController.InitialBoardSetupEvent = (GameBoardData g) => { gameBoardData = g; };
@@ -1064,19 +1064,19 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
     private LocalGameController CreateLocalGameController(IDice dice, IPlayer firstPlayer, params IPlayer[] otherPlayers)
     {
-      var mockComputerPlayerFactory = CreatePlayerFactory(firstPlayer, otherPlayers);
+      var mockPlayerPool = CreatePlayerPool(firstPlayer, otherPlayers);
 
       return new LocalGameControllerCreator()
         .ChangeDice(dice)
-        .ChangeComputerPlayerFactory(mockComputerPlayerFactory)
+        .ChangePlayerPool(mockPlayerPool)
         .Create();
     }
 
-    private IPlayerPool CreatePlayerFactory(IPlayer player, IPlayer[] otherPlayers)
+    private IPlayerPool CreatePlayerPool(IPlayer player, IPlayer[] otherPlayers)
     {
-      var mockComputerPlayerFactory = Substitute.For<IPlayerPool>();
-      mockComputerPlayerFactory.Create().Returns(player, otherPlayers);
-      return mockComputerPlayerFactory;
+      var mockPlayerPool = Substitute.For<IPlayerPool>();
+      mockPlayerPool.Create().Returns(player, otherPlayers);
+      return mockPlayerPool;
     }
 
     private LocalGameController CreateLocalGameControllerWithMainPlayerGoingFirstInSetup()
@@ -1123,10 +1123,10 @@ namespace Jabberwocky.SoC.Library.UnitTests
       var secondOpponent = new MockComputerPlayer(SecondOpponentName);
       var thirdOpponent = new MockComputerPlayer(ThirdOpponentName);
 
-      var mockComputerGameFactory = Substitute.For<IPlayerPool>();
-      mockComputerGameFactory.Create().Returns(player, firstOpponent, secondOpponent, thirdOpponent);
+      var mockPlayerPool = Substitute.For<IPlayerPool>();
+      mockPlayerPool.Create().Returns(player, firstOpponent, secondOpponent, thirdOpponent);
       var localGameController = new LocalGameControllerCreator()
-        .ChangeComputerPlayerFactory(mockComputerGameFactory)
+        .ChangePlayerPool(mockPlayerPool)
         .Create();
 
       PlayerDataView[] playerDataViews = null;
