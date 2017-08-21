@@ -58,11 +58,15 @@ namespace Jabberwocky.SoC.Library.UnitTests
     [Category("LocalGameController")]
     public void TryingToJoinGameMoreThanOnce_MeaningfulErrorIsRaised()
     {
-      var firstOpponent = new MockComputerPlayer(FirstOpponentName);
-      var secondOpponent = new MockComputerPlayer(SecondOpponentName);
-      var thirdOpponent = new MockComputerPlayer(ThirdOpponentName);
+      var player = new MockPlayer(PlayerName);
+      var opponents = new[] 
+      {
+        new MockComputerPlayer(FirstOpponentName),
+        new MockComputerPlayer(SecondOpponentName),
+        new MockComputerPlayer(ThirdOpponentName)
+      };
 
-      var mockPlayerFactory = this.CreateMockPlayerFactory(firstOpponent, secondOpponent, thirdOpponent);
+      var mockPlayerFactory = this.CreatePlayerFactory(player, opponents);
 
       var localGameController = new LocalGameControllerCreator().ChangeComputerPlayerFactory(mockPlayerFactory).Create();
       ErrorDetails errorDetails = null;
@@ -94,11 +98,15 @@ namespace Jabberwocky.SoC.Library.UnitTests
       var mockDice = NSubstitute.Substitute.For<IDice>();
       mockDice.RollTwoDice().Returns(12u, 10u, 8u, 2u);
 
-      var firstOpponent = new MockComputerPlayer(FirstOpponentName);
-      var secondOpponent = new MockComputerPlayer(SecondOpponentName);
-      var thirdOpponent = new MockComputerPlayer(ThirdOpponentName);
+      var player = new MockPlayer(PlayerName);
+      var opponents = new[] 
+      {
+        new MockComputerPlayer(FirstOpponentName),
+        new MockComputerPlayer(SecondOpponentName),
+        new MockComputerPlayer(ThirdOpponentName)
+      };
 
-      var mockPlayerFactory = this.CreateMockPlayerFactory(firstOpponent, secondOpponent, thirdOpponent);
+      var mockPlayerFactory = this.CreatePlayerFactory(player, opponents);
 
       var localGameController = new LocalGameControllerCreator().ChangeDice(mockDice).ChangeComputerPlayerFactory(mockPlayerFactory).Create();
 
@@ -110,15 +118,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
       gameBoardData.ShouldNotBeNull();
     }
-
-    private IComputerPlayerFactory CreateMockPlayerFactory(IComputerPlayer firstOpponent, params IComputerPlayer[] otherOpponents)
-    {
-      var mockPlayerFactory = Substitute.For<IComputerPlayerFactory>();
-      mockPlayerFactory.Create().Returns(firstOpponent, otherOpponents);
-
-      return mockPlayerFactory;
-    }
-
+    
     [Test]
     [Category("LocalGameController")]
     public void CompleteSetupWithPlayerInFirstSlot_ExpectedPlacementsAreReturned()
@@ -403,7 +403,6 @@ namespace Jabberwocky.SoC.Library.UnitTests
     [Category("LocalGameController")]
     public void CompleteGameSetup_CallOutOfSequence_MeaningfulErrorDetailsPassedBack()
     {
-      //var localGameController = this.CreateLocalGameController();
       var localGameController = new LocalGameControllerCreator().Create();
       ErrorDetails errorDetails = null;
       localGameController.ErrorRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
