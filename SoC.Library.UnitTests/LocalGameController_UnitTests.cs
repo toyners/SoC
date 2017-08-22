@@ -1057,6 +1057,70 @@ namespace Jabberwocky.SoC.Library.UnitTests
       firstOpponent.ResourcesCount.ShouldBe(0);
     }
 
+    [Test]
+    [Category("LocalGameController")]
+    [Category("Main Player Turn")]
+    [TestCase(-1)]
+    [TestCase(1)]
+    public void StartOfMainPlayerTurn_RollsSevenAndChoosesOutOfRangeResourceIndexFromOpponent_MeaningfulErrorPassedBack(Int32 index)
+    {
+      // Arrange
+      MockDice mockDice = null;
+      MockPlayer player;
+      MockComputerPlayer firstOpponent, secondOpponent, thirdOpponent;
+      var localGameController = this.CreateLocalGameControllerAndCompleteGameSetup(out mockDice, out player, out firstOpponent, out secondOpponent, out thirdOpponent);
+      mockDice.AddSequence(new[] { 7u });
+
+      firstOpponent.AddResources(new ResourceClutch(1, 0, 0, 0, 0));
+
+      // Act
+      ResourceClutch resourceClutch = ResourceClutch.Zero;
+      ErrorDetails errorDetails = null;
+      localGameController.ResourcesGainedEvent = (ResourceClutch rc) => { resourceClutch = rc; };
+      localGameController.ErrorRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
+      localGameController.StartGamePlay();
+      localGameController.ChooseResourceFromOpponent(firstOpponent.Id, index);
+
+      // Assert
+      resourceClutch.ShouldBe(ResourceClutch.Zero);
+      player.ResourcesCount.ShouldBe(0);
+      firstOpponent.ResourcesCount.ShouldBe(1);
+      firstOpponent.BrickCount.ShouldBe(1);
+      errorDetails.ShouldNotBeNull();
+      errorDetails.Message.ShouldBe("Cannot pick resource card at position " + index + ". Resource card range is 0..0");
+    }
+
+    [Test]
+    [Category("LocalGameController")]
+    [Category("Main Player Turn")]
+    public void StartOfMainPlayerTurn_RollsSevenAndPassesInInvalidPlayerId_MeaningfulErrorPassedBack()
+    {
+      // Arrange
+      MockDice mockDice = null;
+      MockPlayer player;
+      MockComputerPlayer firstOpponent, secondOpponent, thirdOpponent;
+      var localGameController = this.CreateLocalGameControllerAndCompleteGameSetup(out mockDice, out player, out firstOpponent, out secondOpponent, out thirdOpponent);
+      mockDice.AddSequence(new[] { 7u });
+
+      firstOpponent.AddResources(new ResourceClutch(1, 0, 0, 0, 0));
+
+      // Act
+      ResourceClutch resourceClutch = ResourceClutch.Zero;
+      ErrorDetails errorDetails = null;
+      localGameController.ResourcesGainedEvent = (ResourceClutch rc) => { resourceClutch = rc; };
+      localGameController.ErrorRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
+      localGameController.StartGamePlay();
+      localGameController.ChooseResourceFromOpponent(secondOpponent.Id, 0);
+
+      // Assert
+      resourceClutch.ShouldBe(ResourceClutch.Zero);
+      player.ResourcesCount.ShouldBe(0);
+      firstOpponent.ResourcesCount.ShouldBe(1);
+      firstOpponent.BrickCount.ShouldBe(1);
+      errorDetails.ShouldNotBeNull();
+      errorDetails.Message.ShouldBe("Cannot pick resource card from invalid opponent.");
+    }
+
     private LocalGameController CreateLocalGameControllerAndCompleteGameSetup(out MockDice mockDice, out MockPlayer player, out MockComputerPlayer firstOpponent, out MockComputerPlayer secondOpponent, out MockComputerPlayer thirdOpponent)
     {
       var gameSetupOrder = new[] { 12u, 10u, 8u, 6u };
