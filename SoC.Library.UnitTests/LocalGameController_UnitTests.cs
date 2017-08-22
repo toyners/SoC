@@ -1062,7 +1062,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     [Category("Main Player Turn")]
     [TestCase(-1)]
     [TestCase(1)]
-    public void StartOfMainPlayerTurn_RollsSevenAndChoosesOutOfRangeResourceIndexFromOpponent_MeaningfulErrorPassedBack(Int32 index)
+    public void StartOfMainPlayerTurn_RollsSevenAndChoosesOutOfRangeResourceIndexFromOpponent_MeaningfulErrorIsRaised(Int32 index)
     {
       // Arrange
       MockDice mockDice = null;
@@ -1093,7 +1093,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     [Test]
     [Category("LocalGameController")]
     [Category("Main Player Turn")]
-    public void StartOfMainPlayerTurn_RollsSevenAndPassesInInvalidPlayerId_MeaningfulErrorPassedBack()
+    public void StartOfMainPlayerTurn_RollsSevenAndPassesInInvalidPlayerId_MeaningfulErrorIsRaised()
     {
       // Arrange
       MockDice mockDice = null;
@@ -1119,6 +1119,36 @@ namespace Jabberwocky.SoC.Library.UnitTests
       firstOpponent.BrickCount.ShouldBe(1);
       errorDetails.ShouldNotBeNull();
       errorDetails.Message.ShouldBe("Cannot pick resource card from invalid opponent.");
+    }
+
+    [Test]
+    [Category("LocalGameController")]
+    [Category("Main Player Turn")]
+    public void StartOfMainPlayerTurn_ChooseResourceFromOpponentCalledOutOfSequence_MeaningfulErrorIsRaised()
+    {
+      // Arrange
+      MockDice mockDice = null;
+      MockPlayer player;
+      MockComputerPlayer firstOpponent, secondOpponent, thirdOpponent;
+      var localGameController = this.CreateLocalGameControllerAndCompleteGameSetup(out mockDice, out player, out firstOpponent, out secondOpponent, out thirdOpponent);
+      mockDice.AddSequence(new[] { 7u });
+
+      firstOpponent.AddResources(new ResourceClutch(1, 0, 0, 0, 0));
+
+      // Act
+      ResourceClutch resourceClutch = ResourceClutch.Zero;
+      ErrorDetails errorDetails = null;
+      localGameController.ResourcesGainedEvent = (ResourceClutch rc) => { resourceClutch = rc; };
+      localGameController.ErrorRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
+      localGameController.ChooseResourceFromOpponent(firstOpponent.Id, 0);
+
+      // Assert
+      resourceClutch.ShouldBe(ResourceClutch.Zero);
+      player.ResourcesCount.ShouldBe(0);
+      firstOpponent.ResourcesCount.ShouldBe(1);
+      firstOpponent.BrickCount.ShouldBe(1);
+      errorDetails.ShouldNotBeNull();
+      errorDetails.Message.ShouldBe("Cannot call 'ChooseResourceFromOpponent' until 'SetRobberLocation' has completed.");
     }
 
     private LocalGameController CreateLocalGameControllerAndCompleteGameSetup(out MockDice mockDice, out MockPlayer player, out MockComputerPlayer firstOpponent, out MockComputerPlayer secondOpponent, out MockComputerPlayer thirdOpponent)
