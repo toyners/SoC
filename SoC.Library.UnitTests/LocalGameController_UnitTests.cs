@@ -1030,6 +1030,33 @@ namespace Jabberwocky.SoC.Library.UnitTests
       robberingChoices.ShouldContainKeyAndValue(firstOpponent.Id, 5);
     }
 
+    [Test]
+    [Category("LocalGameController")]
+    [Category("Main Player Turn")]
+    public void StartOfMainPlayerTurn_RollsSevenAndChoosesBlindResourceFromOpponent_PlayerAndOpponentResourcesUpdated()
+    {
+      // Arrange
+      MockDice mockDice = null;
+      MockPlayer player;
+      MockComputerPlayer firstOpponent, secondOpponent, thirdOpponent;
+      var localGameController = this.CreateLocalGameControllerAndCompleteGameSetup(out mockDice, out player, out firstOpponent, out secondOpponent, out thirdOpponent);
+      mockDice.AddSequence(new[] { 7u });
+
+      firstOpponent.AddResources(new ResourceClutch(1, 0, 0, 0, 0));
+
+      // Act
+      ResourceClutch resourceClutch = ResourceClutch.Zero;
+      localGameController.ResourcesGainedEvent = (ResourceClutch rc) => { resourceClutch = rc; };
+      localGameController.StartGamePlay();
+      localGameController.ChooseResourceFromOpponent(firstOpponent.Id, 0);
+
+      // Assert
+      resourceClutch.ShouldBe(new ResourceClutch(1, 0, 0, 0, 0));
+      player.ResourcesCount.ShouldBe(1);
+      player.BrickCount.ShouldBe(1);
+      firstOpponent.ResourcesCount.ShouldBe(0);
+    }
+
     private LocalGameController CreateLocalGameControllerAndCompleteGameSetup(out MockDice mockDice, out MockPlayer player, out MockComputerPlayer firstOpponent, out MockComputerPlayer secondOpponent, out MockComputerPlayer thirdOpponent)
     {
       var gameSetupOrder = new[] { 12u, 10u, 8u, 6u };

@@ -60,6 +60,7 @@ namespace Jabberwocky.SoC.Library
     public Action<Guid> StartPlayerTurnEvent { get; set; }
     public Action<UInt32> DiceRollEvent { get; set; }
     public Action<ResourceUpdate> ResourcesCollectedEvent { get; set; }
+    public Action<ResourceClutch> ResourcesGainedEvent { get; set; }
     public Action<ResourceUpdate> ResourcesLostEvent { get; set; }
     public Action<Int32> RobberEvent { get; set; }
     public Action<Dictionary<Guid, Int32>> RobbingChoicesEvent { get; set; }
@@ -68,6 +69,11 @@ namespace Jabberwocky.SoC.Library
     #endregion
 
     #region Methods
+    public void ChooseResourceFromOpponent(Guid opponentId, Int32 index)
+    {
+      throw new NotImplementedException();
+    }
+
     public void LaunchGame()
     {
       if (this.gamePhase != GamePhases.WaitingLaunch)
