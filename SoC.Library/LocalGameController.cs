@@ -36,7 +36,8 @@ namespace Jabberwocky.SoC.Library
     private Boolean quitting;
     private Task sessionTask;
     private ResourceUpdate gameSetupResources;
-    private Int32 resourcesToDrop = 0;
+    private Int32 resourcesToDrop;
+    private Dictionary<Guid, Int32> robbingChoices;
     #endregion
 
     public LocalGameController(IDice dice, IPlayerPool computerPlayerFactory, GameBoardManager gameBoardManager)
@@ -71,6 +72,14 @@ namespace Jabberwocky.SoC.Library
     #region Methods
     public void ChooseResourceFromOpponent(Guid opponentId, Int32 index)
     {
+      if (!this.robbingChoices.ContainsKey(opponentId))
+      {
+        var message = "Cannot pick resource card from invalid opponent.";
+        var errorDetails = new ErrorDetails(message);
+        this.ErrorRaisedEvent?.Invoke(errorDetails);
+        return;
+      }
+
       throw new NotImplementedException();
     }
 
@@ -310,13 +319,13 @@ namespace Jabberwocky.SoC.Library
       }
 
       var playerIds = this.gameBoardManager.Data.GetPlayersForHex(location);
-      Dictionary<Guid, Int32> choices = new Dictionary<Guid, Int32>();
+      this.robbingChoices = new Dictionary<Guid, Int32>();
       foreach(var playerId in playerIds)
       {
-        choices.Add(playerId, this.playersById[playerId].ResourcesCount);
+        this.robbingChoices.Add(playerId, this.playersById[playerId].ResourcesCount);
       }
 
-      this.RobbingChoicesEvent?.Invoke(choices);
+      this.RobbingChoicesEvent?.Invoke(this.robbingChoices);
     }
 
     private ResourceUpdate CollectTurnResources(UInt32 diceRoll)

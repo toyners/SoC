@@ -1151,6 +1151,38 @@ namespace Jabberwocky.SoC.Library.UnitTests
       errorDetails.Message.ShouldBe("Cannot call 'ChooseResourceFromOpponent' until 'SetRobberLocation' has completed.");
     }
 
+    [Test]
+    [Category("LocalGameController")]
+    [Category("Main Player Turn")]
+    public void StartOfMainPlayerTurn_RobberLocationHasNoSettlements_ReturnedRobbingChoicesIsNull()
+    {
+      throw new NotImplementedException();
+    }
+
+    [Test]
+    [Category("LocalGameController")]
+    [Category("Main Player Turn")]
+    public void StartOfMainPlayerTurn_RobberLocationHasNoSettlementsAndCallingChooseResourceFromOpponent_MeaningfulErrorIsRaised()
+    {
+      throw new NotImplementedException();
+    }
+
+    [Test]
+    [Category("LocalGameController")]
+    [Category("Main Player Turn")]
+    public void StartOfMainPlayerTurn_RobberLocationHasOnlyPlayerSettlements_ReturnedRobbingChoicesIsNull()
+    {
+      throw new NotImplementedException();
+    }
+
+    [Test]
+    [Category("LocalGameController")]
+    [Category("Main Player Turn")]
+    public void StartOfMainPlayerTurn_RobberLocationHasOnlyPlayerSettlementsAndCallingChooseResourceFromOpponent_MeaningfulErrorIsRaised()
+    {
+      throw new NotImplementedException();
+    }
+
     private LocalGameController CreateLocalGameControllerAndCompleteGameSetup(out MockDice mockDice, out MockPlayer player, out MockComputerPlayer firstOpponent, out MockComputerPlayer secondOpponent, out MockComputerPlayer thirdOpponent)
     {
       var gameSetupOrder = new[] { 12u, 10u, 8u, 6u };
