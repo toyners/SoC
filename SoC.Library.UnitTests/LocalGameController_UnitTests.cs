@@ -1166,7 +1166,21 @@ namespace Jabberwocky.SoC.Library.UnitTests
     [Category("Main Player Turn")]
     public void StartOfMainPlayerTurn_RobberLocationHasNoSettlements_ReturnedRobbingChoicesIsNull()
     {
-      throw new NotImplementedException();
+      // Arrange
+      MockDice mockDice = null;
+      MockPlayer player;
+      MockComputerPlayer firstOpponent, secondOpponent, thirdOpponent;
+      var localGameController = this.CreateLocalGameControllerAndCompleteGameSetup(out mockDice, out player, out firstOpponent, out secondOpponent, out thirdOpponent);
+      mockDice.AddSequence(new[] { 7u });
+
+      // Act
+      Dictionary<Guid, Int32> robbingChoices = new Dictionary<Guid, Int32>();
+      localGameController.RobbingChoicesEvent = (Dictionary<Guid, Int32> rc) => { robbingChoices = rc; };
+      localGameController.StartGamePlay();
+      localGameController.SetRobberLocation(0u);
+
+      // Assert
+      robbingChoices.ShouldBeNull();
     }
 
     /// <summary>
@@ -1178,7 +1192,23 @@ namespace Jabberwocky.SoC.Library.UnitTests
     [Category("Main Player Turn")]
     public void StartOfMainPlayerTurn_RobberLocationHasNoSettlementsAndCallingChooseResourceFromOpponent_MeaningfulErrorIsRaised()
     {
-      throw new NotImplementedException();
+      // Arrange
+      MockDice mockDice = null;
+      MockPlayer player;
+      MockComputerPlayer firstOpponent, secondOpponent, thirdOpponent;
+      var localGameController = this.CreateLocalGameControllerAndCompleteGameSetup(out mockDice, out player, out firstOpponent, out secondOpponent, out thirdOpponent);
+      mockDice.AddSequence(new[] { 7u });
+
+      // Act
+      ErrorDetails errorDetails = null;
+      localGameController.ErrorRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
+      localGameController.StartGamePlay();
+      localGameController.SetRobberLocation(0u);
+      localGameController.ChooseResourceFromOpponent(Guid.NewGuid(), 0);
+
+      // Assert
+      errorDetails.ShouldNotBeNull();
+      errorDetails.Message.ShouldBe("Cannot call 'ChooseResourceFromOpponent' when 'RobbingChoicesEvent' is not raised.");
     }
 
     /// <summary>
