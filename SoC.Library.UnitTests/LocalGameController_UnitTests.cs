@@ -1057,6 +1057,9 @@ namespace Jabberwocky.SoC.Library.UnitTests
       firstOpponent.ResourcesCount.ShouldBe(0);
     }
 
+    /// <summary>
+    /// Passing in an resource index that is out of the range causes an error to be raised.
+    /// </summary>
     [Test]
     [Category("LocalGameController")]
     [Category("Main Player Turn")]
@@ -1090,10 +1093,13 @@ namespace Jabberwocky.SoC.Library.UnitTests
       errorDetails.Message.ShouldBe("Cannot pick resource card at position " + index + ". Resource card range is 0..0");
     }
 
+    /// <summary>
+    /// Passing in an unknown player id causes an error to be raised.
+    /// </summary>
     [Test]
     [Category("LocalGameController")]
     [Category("Main Player Turn")]
-    public void StartOfMainPlayerTurn_RollsSevenAndPassesInInvalidPlayerId_MeaningfulErrorIsRaised()
+    public void StartOfMainPlayerTurn_RollsSevenAndPassesInUnknownPlayerId_MeaningfulErrorIsRaised()
     {
       // Arrange
       MockDice mockDice = null;
@@ -1151,6 +1157,10 @@ namespace Jabberwocky.SoC.Library.UnitTests
       errorDetails.Message.ShouldBe("Cannot call 'ChooseResourceFromOpponent' until 'SetRobberLocation' has completed.");
     }
 
+    /// <summary>
+    /// The robber hex set by the player has no adjacent settlements so the returned robbing choices
+    /// is nulled.
+    /// </summary>
     [Test]
     [Category("LocalGameController")]
     [Category("Main Player Turn")]
@@ -1159,6 +1169,10 @@ namespace Jabberwocky.SoC.Library.UnitTests
       throw new NotImplementedException();
     }
 
+    /// <summary>
+    /// The robber hex set by the player has no adjacent settlements so calling the CallingChooseResourceFromOpponent 
+    /// method raises an error
+    /// </summary>
     [Test]
     [Category("LocalGameController")]
     [Category("Main Player Turn")]
@@ -1167,6 +1181,10 @@ namespace Jabberwocky.SoC.Library.UnitTests
       throw new NotImplementedException();
     }
 
+    /// <summary>
+    /// The robber hex set by the player has only player settlements so the returned robbing choices
+    /// is nulled.
+    /// </summary>
     [Test]
     [Category("LocalGameController")]
     [Category("Main Player Turn")]
@@ -1175,6 +1193,10 @@ namespace Jabberwocky.SoC.Library.UnitTests
       throw new NotImplementedException();
     }
 
+    /// <summary>
+    /// The robber hex set by the player has only player settlements so calling the CallingChooseResourceFromOpponent 
+    /// method raises an error
+    /// </summary>
     [Test]
     [Category("LocalGameController")]
     [Category("Main Player Turn")]
