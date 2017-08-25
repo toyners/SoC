@@ -250,7 +250,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
     /// <returns>List of player ids.</returns>
     public Guid[] GetPlayersForHex(UInt32 hex)
     {
-      List<Guid> players = new List<Guid>();
+      List<Guid> players = null;
       
       // Get players for each settlement
       foreach (var locationIndex in this.locationsForHex[hex])
@@ -258,6 +258,11 @@ namespace Jabberwocky.SoC.Library.GameBoards
         if (!this.settlements.ContainsKey(locationIndex))
         {
           continue;
+        }
+
+        if (players == null)
+        {
+          players = new List<Guid>();
         }
 
         var playerId = this.settlements[locationIndex];
@@ -269,7 +274,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
         players.Add(playerId);
       }
 
-      return players.ToArray();
+      return players != null ? players.ToArray() : null;
     }
 
     public ResourceClutch GetResourcesForLocation(UInt32 location)
