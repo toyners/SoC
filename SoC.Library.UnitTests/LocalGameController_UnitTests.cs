@@ -1159,7 +1159,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
     /// <summary>
     /// The robber hex set by the player has no adjacent settlements so the returned robbing choices
-    /// is nulled.
+    /// is null.
     /// </summary>
     [Test]
     [Category("LocalGameController")]

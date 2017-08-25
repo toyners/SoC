@@ -390,6 +390,22 @@ namespace Jabberwocky.SoC.Library.UnitTests
       results.Length.ShouldBe(1);
       results.ShouldContain(playerId);
     }
+
+    [Test]
+    [Category("All")]
+    [Category("GameBoardData")]
+    public void GetPlayersForHex_NoPlayerSettlementsOnHex_ReturnNull()
+    {
+      // Arrange
+      var playerId = Guid.NewGuid();
+      var gameBoardData = new GameBoardData(BoardSizes.Standard);
+
+      // Act
+      var results = gameBoardData.GetPlayersForHex(0);
+
+      // Assert
+      results.ShouldBeNull();
+    }
     #endregion 
   }
 }

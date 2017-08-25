@@ -244,7 +244,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
     }
 
     /// <summary>
-    /// Get list of player ids that have settlements on the hex. Duplicates are suppressed.
+    /// Get list of player ids that have settlements on the hex. Duplicates are ignored.
     /// </summary>
     /// <param name="hex">Index of location hex.</param>
     /// <returns>List of player ids.</returns>
