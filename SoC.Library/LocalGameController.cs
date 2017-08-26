@@ -14,6 +14,7 @@ namespace Jabberwocky.SoC.Library
       Initial,
       WaitingLaunch,
       StartGameSetup,
+      ChooseResourceFromOpponent,
       ContinueGameSetup,
       CompleteGameSetup,
       FinalisePlayerTurnOrder,
@@ -72,6 +73,14 @@ namespace Jabberwocky.SoC.Library
     #region Methods
     public void ChooseResourceFromOpponent(Guid opponentId, Int32 index)
     {
+      if (this.gamePhase != GamePhases.ChooseResourceFromOpponent)
+      {
+        var message = "Cannot call 'ChooseResourceFromOpponent' until 'SetRobberLocation' has completed.";
+        var errorDetails = new ErrorDetails(message);
+        this.ErrorRaisedEvent?.Invoke(errorDetails);
+        return;
+      }
+
       if (!this.robbingChoices.ContainsKey(opponentId))
       {
         var message = "Cannot pick resource card from invalid opponent.";
