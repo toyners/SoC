@@ -89,6 +89,15 @@ namespace Jabberwocky.SoC.Library
         return;
       }
 
+      var resourceCount = this.robbingChoices[opponentId];
+      if (index < 0 || index >= resourceCount)
+      {
+        var message = "Cannot pick resource card at position " + index + ". Resource card range is 0.." + (resourceCount - 1);
+        var errorDetails = new ErrorDetails(message);
+        this.ErrorRaisedEvent?.Invoke(errorDetails);
+        return;
+      }
+
       throw new NotImplementedException();
     }
 
@@ -328,12 +337,19 @@ namespace Jabberwocky.SoC.Library
       }
 
       var playerIds = this.gameBoardManager.Data.GetPlayersForHex(location);
+      if (playerIds == null)
+      {
+        this.RobbingChoicesEvent?.Invoke(null);
+        return;
+      }
+
       this.robbingChoices = new Dictionary<Guid, Int32>();
       foreach(var playerId in playerIds)
       {
         this.robbingChoices.Add(playerId, this.playersById[playerId].ResourcesCount);
       }
 
+      this.gamePhase = GamePhases.ChooseResourceFromOpponent;
       this.RobbingChoicesEvent?.Invoke(this.robbingChoices);
     }
 

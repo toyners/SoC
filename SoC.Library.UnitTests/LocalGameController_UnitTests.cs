@@ -1082,6 +1082,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
       localGameController.ResourcesGainedEvent = (ResourceClutch rc) => { resourceClutch = rc; };
       localGameController.ErrorRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
       localGameController.StartGamePlay();
+      localGameController.SetRobberLocation(3u);
       localGameController.ChooseResourceFromOpponent(firstOpponent.Id, index);
 
       // Assert
@@ -1116,6 +1117,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
       localGameController.ResourcesGainedEvent = (ResourceClutch rc) => { resourceClutch = rc; };
       localGameController.ErrorRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
       localGameController.StartGamePlay();
+      localGameController.SetRobberLocation(3u);
       localGameController.ChooseResourceFromOpponent(secondOpponent.Id, 0);
 
       // Assert
