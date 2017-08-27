@@ -21,5 +21,15 @@ namespace Jabberwocky.SoC.Library
       OreCount = oreCount;
       WoolCount = woolCount;
     }
+
+    public static Boolean operator== (ResourceClutch r1, ResourceClutch r2)
+    {
+      throw new NotImplementedException();
+    }
+
+    public static Boolean operator !=(ResourceClutch r1, ResourceClutch r2)
+    {
+      throw new NotImplementedException();
+    }
   }
 }
