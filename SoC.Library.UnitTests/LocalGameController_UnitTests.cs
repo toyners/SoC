@@ -1031,6 +1031,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     }
 
     [Test]
+    [Category("All")]
     [Category("LocalGameController")]
     [Category("Main Player Turn")]
     public void StartOfMainPlayerTurn_RollsSevenAndChoosesBlindResourceFromOpponent_PlayerAndOpponentResourcesUpdated()
@@ -1190,6 +1191,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     /// method raises an error
     /// </summary>
     [Test]
+    [Category("All")]
     [Category("LocalGameController")]
     [Category("Main Player Turn")]
     public void StartOfMainPlayerTurn_RobberLocationHasNoSettlementsAndCallingChooseResourceFromOpponent_MeaningfulErrorIsRaised()
@@ -1218,6 +1220,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     /// is nulled.
     /// </summary>
     [Test]
+    [Category("All")]
     [Category("LocalGameController")]
     [Category("Main Player Turn")]
     public void StartOfMainPlayerTurn_RobberLocationHasOnlyPlayerSettlements_ReturnedRobbingChoicesIsNull()
@@ -1230,6 +1233,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     /// method raises an error
     /// </summary>
     [Test]
+    [Category("All")]
     [Category("LocalGameController")]
     [Category("Main Player Turn")]
     public void StartOfMainPlayerTurn_RobberLocationHasOnlyPlayerSettlementsAndCallingChooseResourceFromOpponent_MeaningfulErrorIsRaised()
