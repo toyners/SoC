@@ -35,5 +35,11 @@ namespace Jabberwocky.SoC.Library
     {
       return !(r1 == r2);
     }
+
+    public override Boolean Equals(Object obj)
+    {
+      //return base.Equals(obj);
+      throw new NotImplementedException();
+    }
   }
 }
