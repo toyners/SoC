@@ -21,6 +21,7 @@ namespace Jabberwocky.SoC.Library
       SetRobberLocation,
       DropResources,
       Quitting,
+      NextStep,
     }
 
     #region Fields
@@ -73,6 +74,14 @@ namespace Jabberwocky.SoC.Library
     #region Methods
     public void ChooseResourceFromOpponent(Guid opponentId, Int32 index)
     {
+      if (this.gamePhase == GamePhases.NextStep)
+      {
+        var message = "Cannot call 'ChooseResourceFromOpponent' when 'RobbingChoicesEvent' is not raised.";
+        var errorDetails = new ErrorDetails(message);
+        this.ErrorRaisedEvent?.Invoke(errorDetails);
+        return;
+      }
+
       if (this.gamePhase != GamePhases.ChooseResourceFromOpponent)
       {
         var message = "Cannot call 'ChooseResourceFromOpponent' until 'SetRobberLocation' has completed.";
@@ -187,7 +196,7 @@ namespace Jabberwocky.SoC.Library
       }
 
       this.players = PlayerTurnOrderCreator.Create(this.players, this.dice);
-   
+
       this.playerIndex = 0;
       GameBoardUpdate gameBoardUpdate = this.ContinueSetupForComputerPlayers(this.gameBoardManager.Data);
       this.GameSetupUpdateEvent?.Invoke(gameBoardUpdate);
@@ -337,8 +346,9 @@ namespace Jabberwocky.SoC.Library
       }
 
       var playerIds = this.gameBoardManager.Data.GetPlayersForHex(location);
-      if (playerIds == null)
+      if (this.PlayerIdsIsEmptyOrOnlyContainsMainPlayer(playerIds))
       {
+        this.gamePhase = GamePhases.NextStep;
         this.RobbingChoicesEvent?.Invoke(null);
         return;
       }
@@ -439,6 +449,12 @@ namespace Jabberwocky.SoC.Library
       }
 
       return gameBoardUpdate;
+    }
+
+    private Boolean PlayerIdsIsEmptyOrOnlyContainsMainPlayer(Guid[] playerIds)
+    {
+      return playerIds == null || playerIds.Length == 0 ||
+             (playerIds.Length == 1 && playerIds[0] == this.mainPlayer.Id);
     }
 
     private void TryRaiseRoadPlacingExceptions(GameBoardData.VerificationResults verificationResults, Road road)

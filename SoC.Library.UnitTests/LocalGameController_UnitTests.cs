@@ -1216,8 +1216,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     }
 
     /// <summary>
-    /// The robber hex set by the player has only player settlements so the returned robbing choices
-    /// is nulled.
+    /// The robber hex set by the player has only player settlements so the returned robbing choices is null.
     /// </summary>
     [Test]
     [Category("All")]
@@ -1225,7 +1224,21 @@ namespace Jabberwocky.SoC.Library.UnitTests
     [Category("Main Player Turn")]
     public void StartOfMainPlayerTurn_RobberLocationHasOnlyPlayerSettlements_ReturnedRobbingChoicesIsNull()
     {
-      throw new NotImplementedException();
+      // Arrange
+      MockDice mockDice = null;
+      MockPlayer player;
+      MockComputerPlayer firstOpponent, secondOpponent, thirdOpponent;
+      var localGameController = this.CreateLocalGameControllerAndCompleteGameSetup(out mockDice, out player, out firstOpponent, out secondOpponent, out thirdOpponent);
+      mockDice.AddSequence(new[] { 7u });
+
+      // Act
+      Dictionary<Guid, Int32> robbingChoices = new Dictionary<Guid, Int32>();
+      localGameController.RobbingChoicesEvent = (Dictionary<Guid, Int32> rc) => { robbingChoices = rc; };
+      localGameController.StartGamePlay();
+      localGameController.SetRobberLocation(2u);
+
+      // Assert
+      robbingChoices.ShouldBeNull();
     }
 
     /// <summary>
@@ -1238,7 +1251,23 @@ namespace Jabberwocky.SoC.Library.UnitTests
     [Category("Main Player Turn")]
     public void StartOfMainPlayerTurn_RobberLocationHasOnlyPlayerSettlementsAndCallingChooseResourceFromOpponent_MeaningfulErrorIsRaised()
     {
-      throw new NotImplementedException();
+      // Arrange
+      MockDice mockDice = null;
+      MockPlayer player;
+      MockComputerPlayer firstOpponent, secondOpponent, thirdOpponent;
+      var localGameController = this.CreateLocalGameControllerAndCompleteGameSetup(out mockDice, out player, out firstOpponent, out secondOpponent, out thirdOpponent);
+      mockDice.AddSequence(new[] { 7u });
+
+      // Act
+      ErrorDetails errorDetails = null;
+      localGameController.ErrorRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
+      localGameController.StartGamePlay();
+      localGameController.SetRobberLocation(2u);
+      localGameController.ChooseResourceFromOpponent(Guid.NewGuid(), 0);
+
+      // Assert
+      errorDetails.ShouldNotBeNull();
+      errorDetails.Message.ShouldBe("Cannot call 'ChooseResourceFromOpponent' when 'RobbingChoicesEvent' is not raised.");
     }
 
     private LocalGameController CreateLocalGameControllerAndCompleteGameSetup(out MockDice mockDice, out MockPlayer player, out MockComputerPlayer firstOpponent, out MockComputerPlayer secondOpponent, out MockComputerPlayer thirdOpponent)
