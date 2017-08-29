@@ -108,44 +108,14 @@ namespace Jabberwocky.SoC.Library
       }
 
       var player = this.playersById[opponentId];
-      var list = new List<ResourceTypes>(player.ResourcesCount);
-      foreach (ResourceTypes resourceType in Enum.GetValues(typeof(ResourceTypes)))
-      {
-        switch (resourceType)
-        {
-          case ResourceTypes.Brick:  for (var i = 0; i < player.BrickCount; i++) { list.Add(ResourceTypes.Brick); } break;
-          case ResourceTypes.Grain:  for (var i = 0; i < player.GrainCount; i++) { list.Add(ResourceTypes.Grain); } break;
-          case ResourceTypes.Lumber:  for (var i = 0; i < player.LumberCount; i++) { list.Add(ResourceTypes.Lumber); } break;
-          case ResourceTypes.Ore:  for (var i = 0; i < player.OreCount; i++) { list.Add(ResourceTypes.Ore); } break;
-          case ResourceTypes.Wool:  for (var i = 0; i < player.WoolCount; i++) { list.Add(ResourceTypes.Wool); } break;
-        }
-      }
+      var resources = this.CollapsePlayerResourcesToList(player);
+      var randomisedResources = this.RandomiseResourceList(resources);
+      var gainedResources = this.CreateGainedResources(randomisedResources, resourceIndex);
+      
+      player.RemoveResources(gainedResources);
+      this.mainPlayer.AddResources(gainedResources);
 
-      var randomList = new List<ResourceTypes>(list.Count);
-      Random random = new Random();
-      while (list.Count > 0)
-      {
-        var index = random.Next(list.Count - 1);
-        randomList.Add(list[index]);
-        list.RemoveAt(index);
-      }
-
-      var resources = ResourceClutch.Zero;
-      var chosenResourceType = randomList[resourceIndex];
-
-      switch (chosenResourceType)
-      {
-        case ResourceTypes.Brick: resources.BrickCount = 1; break;
-        case ResourceTypes.Grain: resources.GrainCount = 1; break;
-        case ResourceTypes.Lumber: resources.LumberCount = 1; break;
-        case ResourceTypes.Ore: resources.OreCount = 1; break;
-        case ResourceTypes.Wool: resources.WoolCount = 1; break;
-      }
-
-      player.RemoveResources(resources);
-      this.mainPlayer.AddResources(resources);
-
-      this.ResourcesGainedEvent?.Invoke(resources);
+      this.ResourcesGainedEvent?.Invoke(gainedResources);
     }
 
     public void LaunchGame()
@@ -189,41 +159,6 @@ namespace Jabberwocky.SoC.Library
       var playerData = this.CreatePlayerDataViews();
       this.GameJoinedEvent?.Invoke(playerData);
       this.gamePhase = GamePhases.WaitingLaunch;
-    }
-
-    private PlayerDataView[] CreatePlayerDataViews()
-    {
-      var playerDataViews = new PlayerDataView[this.players.Length];
-
-      for (var index = 0; index < playerDataViews.Length; index++)
-      {
-        playerDataViews[index] = this.players[index].GetDataView();
-      }
-
-      return playerDataViews;
-    }
-
-    private void CreatePlayers(GameOptions gameOptions)
-    {
-      this.mainPlayer = this.computerPlayerFactory.Create();
-      this.players = new IPlayer[gameOptions.MaxAIPlayers + 1];
-      this.players[0] = this.mainPlayer;
-      this.playersById = new Dictionary<Guid, IPlayer>(this.players.Length);
-      this.playersById.Add(this.mainPlayer.Id, this.mainPlayer);
-
-      var index = 1;
-      while ((gameOptions.MaxAIPlayers--) > 0)
-      {
-        var player = this.computerPlayerFactory.Create();
-        this.players[index] = player;
-        this.playersById.Add(player.Id, player);
-        index++;
-      }
-    }
-
-    private Boolean IsComputerPlayer(IPlayer player)
-    {
-      return player is IComputerPlayer;
     }
 
     public Boolean StartGameSetup()
@@ -401,6 +336,32 @@ namespace Jabberwocky.SoC.Library
       this.RobbingChoicesEvent?.Invoke(this.robbingChoices);
     }
 
+    private void AddResourcesToList(List<ResourceTypes> resources, ResourceTypes resourceType, Int32 total)
+    {
+      for (var i = 0; i < total; i++)
+      {
+        resources.Add(resourceType);
+      }
+    }
+
+    private List<ResourceTypes> CollapsePlayerResourcesToList(IPlayer player)
+    {
+      var resources = new List<ResourceTypes>(player.ResourcesCount);
+      foreach (ResourceTypes resourceType in Enum.GetValues(typeof(ResourceTypes)))
+      {
+        switch (resourceType)
+        {
+          case ResourceTypes.Brick: this.AddResourcesToList(resources, ResourceTypes.Brick, player.BrickCount); break;
+          case ResourceTypes.Grain: this.AddResourcesToList(resources, ResourceTypes.Grain, player.GrainCount); break;
+          case ResourceTypes.Lumber: this.AddResourcesToList(resources, ResourceTypes.Lumber, player.LumberCount); break;
+          case ResourceTypes.Ore: this.AddResourcesToList(resources, ResourceTypes.Ore, player.OreCount); break;
+          case ResourceTypes.Wool: this.AddResourcesToList(resources, ResourceTypes.Wool, player.WoolCount); break;
+        }
+      }
+
+      return resources;
+    }
+
     private ResourceUpdate CollectTurnResources(UInt32 diceRoll)
     {
       var resourceUpdate = new ResourceUpdate();
@@ -489,10 +450,76 @@ namespace Jabberwocky.SoC.Library
       return gameBoardUpdate;
     }
 
+    private ResourceClutch CreateGainedResources(List<ResourceTypes> resources, Int32 resourceIndex)
+    {
+      var gainedResources = ResourceClutch.Zero;
+      var chosenResourceType = resources[resourceIndex];
+
+      switch (chosenResourceType)
+      {
+        case ResourceTypes.Brick: gainedResources.BrickCount = 1; break;
+        case ResourceTypes.Grain: gainedResources.GrainCount = 1; break;
+        case ResourceTypes.Lumber: gainedResources.LumberCount = 1; break;
+        case ResourceTypes.Ore: gainedResources.OreCount = 1; break;
+        case ResourceTypes.Wool: gainedResources.WoolCount = 1; break;
+      }
+
+      return gainedResources;
+    }
+
+    private PlayerDataView[] CreatePlayerDataViews()
+    {
+      var playerDataViews = new PlayerDataView[this.players.Length];
+
+      for (var index = 0; index < playerDataViews.Length; index++)
+      {
+        playerDataViews[index] = this.players[index].GetDataView();
+      }
+
+      return playerDataViews;
+    }
+
+    private void CreatePlayers(GameOptions gameOptions)
+    {
+      this.mainPlayer = this.computerPlayerFactory.Create();
+      this.players = new IPlayer[gameOptions.MaxAIPlayers + 1];
+      this.players[0] = this.mainPlayer;
+      this.playersById = new Dictionary<Guid, IPlayer>(this.players.Length);
+      this.playersById.Add(this.mainPlayer.Id, this.mainPlayer);
+
+      var index = 1;
+      while ((gameOptions.MaxAIPlayers--) > 0)
+      {
+        var player = this.computerPlayerFactory.Create();
+        this.players[index] = player;
+        this.playersById.Add(player.Id, player);
+        index++;
+      }
+    }
+
+    private Boolean IsComputerPlayer(IPlayer player)
+    {
+      return player is IComputerPlayer;
+    }
+
     private Boolean PlayerIdsIsEmptyOrOnlyContainsMainPlayer(Guid[] playerIds)
     {
       return playerIds == null || playerIds.Length == 0 ||
              (playerIds.Length == 1 && playerIds[0] == this.mainPlayer.Id);
+    }
+
+    private List<ResourceTypes> RandomiseResourceList(List<ResourceTypes> resources)
+    {
+      var randomisedResources = new List<ResourceTypes>(resources.Count);
+      Random random = new Random();
+      while (resources.Count > 0)
+      {
+        var index = random.Next(resources.Count - 1);
+        randomisedResources.Add(resources[index]);
+        resources.RemoveAt(index);
+      }
+
+      return randomisedResources;
     }
 
     private void TryRaiseRoadPlacingExceptions(GameBoardData.VerificationResults verificationResults, Road road)
