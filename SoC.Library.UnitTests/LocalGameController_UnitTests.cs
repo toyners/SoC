@@ -1049,6 +1049,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
       ResourceClutch resourceClutch = ResourceClutch.Zero;
       localGameController.ResourcesGainedEvent = (ResourceClutch rc) => { resourceClutch = rc; };
       localGameController.StartGamePlay();
+      localGameController.SetRobberLocation(7u);
       localGameController.ChooseResourceFromOpponent(firstOpponent.Id, 0);
 
       // Assert
