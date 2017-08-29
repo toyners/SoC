@@ -72,7 +72,7 @@ namespace Jabberwocky.SoC.Library
     #endregion
 
     #region Methods
-    public void ChooseResourceFromOpponent(Guid opponentId, Int32 index)
+    public void ChooseResourceFromOpponent(Guid opponentId, Int32 resourceIndex)
     {
       if (this.gamePhase == GamePhases.NextStep)
       {
@@ -99,15 +99,53 @@ namespace Jabberwocky.SoC.Library
       }
 
       var resourceCount = this.robbingChoices[opponentId];
-      if (index < 0 || index >= resourceCount)
+      if (resourceIndex < 0 || resourceIndex >= resourceCount)
       {
-        var message = "Cannot pick resource card at position " + index + ". Resource card range is 0.." + (resourceCount - 1);
+        var message = "Cannot pick resource card at position " + resourceIndex + ". Resource card range is 0.." + (resourceCount - 1);
         var errorDetails = new ErrorDetails(message);
         this.ErrorRaisedEvent?.Invoke(errorDetails);
         return;
       }
 
-      throw new NotImplementedException();
+      var player = this.playersById[opponentId];
+      var list = new List<ResourceTypes>(player.ResourcesCount);
+      foreach (ResourceTypes resourceType in Enum.GetValues(typeof(ResourceTypes)))
+      {
+        switch (resourceType)
+        {
+          case ResourceTypes.Brick:  for (var i = 0; i < player.BrickCount; i++) { list.Add(ResourceTypes.Brick); } break;
+          case ResourceTypes.Grain:  for (var i = 0; i < player.GrainCount; i++) { list.Add(ResourceTypes.Grain); } break;
+          case ResourceTypes.Lumber:  for (var i = 0; i < player.LumberCount; i++) { list.Add(ResourceTypes.Lumber); } break;
+          case ResourceTypes.Ore:  for (var i = 0; i < player.OreCount; i++) { list.Add(ResourceTypes.Ore); } break;
+          case ResourceTypes.Wool:  for (var i = 0; i < player.WoolCount; i++) { list.Add(ResourceTypes.Wool); } break;
+        }
+      }
+
+      var randomList = new List<ResourceTypes>(list.Count);
+      Random random = new Random();
+      while (list.Count > 0)
+      {
+        var index = random.Next(list.Count - 1);
+        randomList.Add(list[index]);
+        list.RemoveAt(index);
+      }
+
+      var resources = ResourceClutch.Zero;
+      var chosenResourceType = randomList[resourceIndex];
+
+      switch (chosenResourceType)
+      {
+        case ResourceTypes.Brick: resources.BrickCount = 1; break;
+        case ResourceTypes.Grain: resources.GrainCount = 1; break;
+        case ResourceTypes.Lumber: resources.LumberCount = 1; break;
+        case ResourceTypes.Ore: resources.OreCount = 1; break;
+        case ResourceTypes.Wool: resources.WoolCount = 1; break;
+      }
+
+      player.RemoveResources(resources);
+      this.mainPlayer.AddResources(resources);
+
+      this.ResourcesGainedEvent?.Invoke(resources);
     }
 
     public void LaunchGame()

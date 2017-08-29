@@ -24,7 +24,14 @@ namespace Jabberwocky.SoC.Service
 
     private static Byte CreateDataForProvider(ResourceProvider provider)
     {
-      return (Byte)((provider.ProductionNumber * 10) + TranslateProviderTypeToNumber(provider.Type));
+      if (!provider.Type.HasValue)
+      {
+        return 0;
+      }
+      else
+      {
+        return (Byte)((provider.ProductionNumber * 10) + TranslateProviderTypeToNumber(provider.Type.Value));
+      }
     }
 
     private static Byte TranslateProviderTypeToNumber(ResourceTypes type)

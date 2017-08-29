@@ -194,7 +194,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     {
       var r1 = new ResourceProvider();
 
-      r1.Type.ShouldBe(ResourceTypes.None);
+      r1.Type.ShouldBeNull();
     }
 
     [Test]

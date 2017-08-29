@@ -38,7 +38,7 @@ namespace Jabberwocky.SoC.Library
 
     public override Boolean Equals(Object obj)
     {
-      //return base.Equals(obj);
+      return base.Equals(obj);
       throw new NotImplementedException();
     }
   }

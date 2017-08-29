@@ -6,7 +6,7 @@ namespace Jabberwocky.SoC.Library
   public class ResourceProvider
   {
     #region Fields
-    public readonly ResourceTypes Type;
+    public readonly ResourceTypes? Type;
 
     Boolean HasRobber;
     #endregion
@@ -26,7 +26,7 @@ namespace Jabberwocky.SoC.Library
 
     public ResourceProvider()
     {
-      this.Type = ResourceTypes.None;
+      this.Type = null;
     }
     #endregion
 
@@ -84,9 +84,8 @@ namespace Jabberwocky.SoC.Library
         case ResourceTypes.Brick: factor = 1; break;
         case ResourceTypes.Grain: factor = 10; break;
         case ResourceTypes.Lumber: factor = 100; break;
-        case ResourceTypes.None: factor = 1000; break;
-        case ResourceTypes.Ore: factor = 10000; break;
-        case ResourceTypes.Wool: factor = 100000; break;
+        case ResourceTypes.Ore: factor = 1000; break;
+        case ResourceTypes.Wool: factor = 10000; break;
       }
 
       return (Int32)(this.ProductionNumber * factor); 
