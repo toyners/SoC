@@ -3,6 +3,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
 {
   using System;
   using System.Collections.Generic;
+  using System.IO;
   using GameBoards;
   using Interfaces;
   using NSubstitute;
@@ -1269,6 +1270,23 @@ namespace Jabberwocky.SoC.Library.UnitTests
       // Assert
       errorDetails.ShouldNotBeNull();
       errorDetails.Message.ShouldBe("Cannot call 'ChooseResourceFromOpponent' when 'RobbingChoicesEvent' is not raised.");
+    }
+
+    [Test]
+    [Category("All")]
+    [Category("LocalGameController")]
+    public void Load()
+    {
+      var playerPool = new PlayerPool();
+      var gameBoardManager = new GameBoardManager(BoardSizes.Standard);
+      var localGameController = new LocalGameController(new Dice(), playerPool, gameBoardManager);
+
+      using (var stream = new FileStream("", FileMode.Open))
+      {
+        localGameController.Load(stream);
+      }
+
+      localGameController.GamePhase.ShouldBe(LocalGameController.GamePhases.SetRobberLocation);
     }
 
     private LocalGameController CreateLocalGameControllerAndCompleteGameSetup(out MockDice mockDice, out MockPlayer player, out MockComputerPlayer firstOpponent, out MockComputerPlayer secondOpponent, out MockComputerPlayer thirdOpponent)

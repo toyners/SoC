@@ -3,13 +3,14 @@ namespace Jabberwocky.SoC.Library
 {
   using System;
   using System.Collections.Generic;
+  using System.IO;
   using System.Threading.Tasks;
   using GameBoards;
   using Interfaces;
 
   public class LocalGameController : IGameController
   {
-    private enum GamePhases
+    public enum GamePhases
     {
       Initial,
       WaitingLaunch,
@@ -29,7 +30,6 @@ namespace Jabberwocky.SoC.Library
     private Guid curentPlayerTurnToken;
     private IDice dice;
     private GameBoardManager gameBoardManager;
-    private GamePhases gamePhase;
     private IGameSession gameSession;
     private Int32 playerIndex;
     private IPlayer[] players;
@@ -47,10 +47,13 @@ namespace Jabberwocky.SoC.Library
       this.dice = dice;
       this.playerPool = computerPlayerFactory;
       this.gameBoardManager = gameBoardManager;
-      this.gamePhase = GamePhases.Initial;
+      this.GamePhase = GamePhases.Initial;
     }
 
+    #region Properties
     public Guid GameId { get; private set; }
+    public GamePhases GamePhase { get; private set; }
+    #endregion
 
     #region Events
     public Action<GameBoardUpdate> BoardUpdatedEvent { get; set; }
@@ -74,7 +77,7 @@ namespace Jabberwocky.SoC.Library
     #region Methods
     public void ChooseResourceFromOpponent(Guid opponentId, Int32 resourceIndex)
     {
-      if (this.gamePhase == GamePhases.NextStep)
+      if (this.GamePhase == GamePhases.NextStep)
       {
         var message = "Cannot call 'ChooseResourceFromOpponent' when 'RobbingChoicesEvent' is not raised.";
         var errorDetails = new ErrorDetails(message);
@@ -82,7 +85,7 @@ namespace Jabberwocky.SoC.Library
         return;
       }
 
-      if (this.gamePhase != GamePhases.ChooseResourceFromOpponent)
+      if (this.GamePhase != GamePhases.ChooseResourceFromOpponent)
       {
         var message = "Cannot call 'ChooseResourceFromOpponent' until 'SetRobberLocation' has completed.";
         var errorDetails = new ErrorDetails(message);
@@ -120,7 +123,7 @@ namespace Jabberwocky.SoC.Library
 
     public void LaunchGame()
     {
-      if (this.gamePhase != GamePhases.WaitingLaunch)
+      if (this.GamePhase != GamePhases.WaitingLaunch)
       {
         var errorDetails = new ErrorDetails("Cannot call 'LaunchGame' without joining game.");
         this.ErrorRaisedEvent?.Invoke(errorDetails);
@@ -128,12 +131,17 @@ namespace Jabberwocky.SoC.Library
       }
 
       this.InitialBoardSetupEvent?.Invoke(this.gameBoardManager.Data);
-      this.gamePhase = GamePhases.StartGameSetup;
+      this.GamePhase = GamePhases.StartGameSetup;
+    }
+
+    public void Load(Stream stream)
+    {
+      throw new NotImplementedException();
     }
 
     public void Quit()
     {
-      this.gamePhase = GamePhases.Quitting;
+      this.GamePhase = GamePhases.Quitting;
     }
 
     public void JoinGame()
@@ -143,7 +151,7 @@ namespace Jabberwocky.SoC.Library
 
     public void JoinGame(GameOptions gameOptions)
     {
-      if (this.gamePhase != GamePhases.Initial)
+      if (this.GamePhase != GamePhases.Initial)
       {
         var errorDetails = new ErrorDetails("Cannot call 'JoinGame' more than once.");
         this.ErrorRaisedEvent?.Invoke(errorDetails);
@@ -158,12 +166,12 @@ namespace Jabberwocky.SoC.Library
       this.CreatePlayers(gameOptions);
       var playerData = this.CreatePlayerDataViews();
       this.GameJoinedEvent?.Invoke(playerData);
-      this.gamePhase = GamePhases.WaitingLaunch;
+      this.GamePhase = GamePhases.WaitingLaunch;
     }
 
     public Boolean StartGameSetup()
     {
-      if (this.gamePhase != GamePhases.StartGameSetup)
+      if (this.GamePhase != GamePhases.StartGameSetup)
       {
         return false;
       }
@@ -173,7 +181,7 @@ namespace Jabberwocky.SoC.Library
       this.playerIndex = 0;
       GameBoardUpdate gameBoardUpdate = this.ContinueSetupForComputerPlayers(this.gameBoardManager.Data);
       this.GameSetupUpdateEvent?.Invoke(gameBoardUpdate);
-      this.gamePhase = GamePhases.ContinueGameSetup;
+      this.GamePhase = GamePhases.ContinueGameSetup;
 
       return true;
     }
@@ -219,12 +227,12 @@ namespace Jabberwocky.SoC.Library
           }
         }
 
-        this.gamePhase = GamePhases.SetRobberLocation;
+        this.GamePhase = GamePhases.SetRobberLocation;
 
         if (this.mainPlayer.ResourcesCount > 7)
         {
           this.resourcesToDrop = this.mainPlayer.ResourcesCount / 2;
-          this.gamePhase = GamePhases.DropResources;
+          this.GamePhase = GamePhases.DropResources;
         }
 
         if (resourcesDroppedByComputerPlayers != null)
@@ -239,7 +247,7 @@ namespace Jabberwocky.SoC.Library
 
     public void ContinueGameSetup(UInt32 settlementLocation, Road road)
     {
-      if (this.gamePhase != GamePhases.ContinueGameSetup)
+      if (this.GamePhase != GamePhases.ContinueGameSetup)
       {
         var errorDetails = new ErrorDetails("Cannot call 'ContinueGameSetup' until 'StartGameSetup' has completed.");
         this.ErrorRaisedEvent?.Invoke(errorDetails);
@@ -260,12 +268,12 @@ namespace Jabberwocky.SoC.Library
       gameBoardUpdate = this.CompleteSetupForComputerPlayers(gameBoardData, gameBoardUpdate);
 
       this.GameSetupUpdateEvent?.Invoke(gameBoardUpdate);
-      this.gamePhase = GamePhases.CompleteGameSetup;
+      this.GamePhase = GamePhases.CompleteGameSetup;
     }
 
     public void CompleteGameSetup(UInt32 settlementLocation, Road road)
     {
-      if (this.gamePhase != GamePhases.CompleteGameSetup)
+      if (this.GamePhase != GamePhases.CompleteGameSetup)
       {
         var errorDetails = new ErrorDetails("Cannot call 'CompleteGameSetup' until 'ContinueGameSetup' has completed.");
         this.ErrorRaisedEvent?.Invoke(errorDetails);
@@ -286,7 +294,7 @@ namespace Jabberwocky.SoC.Library
       this.GameSetupUpdateEvent?.Invoke(gameBoardUpdate);
 
       this.GameSetupResourcesEvent?.Invoke(this.gameSetupResources);
-      this.gamePhase = GamePhases.FinalisePlayerTurnOrder;
+      this.GamePhase = GamePhases.FinalisePlayerTurnOrder;
     }
 
     public void DropResources(ResourceClutch resourceClutch)
@@ -296,7 +304,7 @@ namespace Jabberwocky.SoC.Library
 
     public void FinalisePlayerTurnOrder()
     {
-      if (this.gamePhase != GamePhases.FinalisePlayerTurnOrder)
+      if (this.GamePhase != GamePhases.FinalisePlayerTurnOrder)
       {
         var errorDetails = new ErrorDetails("Cannot call 'FinalisePlayerTurnOrder' until 'CompleteGameSetup' has completed.");
         this.ErrorRaisedEvent?.Invoke(errorDetails);
@@ -311,7 +319,7 @@ namespace Jabberwocky.SoC.Library
 
     public void SetRobberLocation(UInt32 location)
     {
-      if (this.gamePhase != GamePhases.SetRobberLocation)
+      if (this.GamePhase != GamePhases.SetRobberLocation)
       {
         var resourceDropErrorDetails = new ErrorDetails(String.Format("Cannot set robber location until expected resources ({0}) have been dropped via call to DropResources method.", this.resourcesToDrop));
         this.ErrorRaisedEvent?.Invoke(resourceDropErrorDetails);
@@ -321,7 +329,7 @@ namespace Jabberwocky.SoC.Library
       var playerIds = this.gameBoardManager.Data.GetPlayersForHex(location);
       if (this.PlayerIdsIsEmptyOrOnlyContainsMainPlayer(playerIds))
       {
-        this.gamePhase = GamePhases.NextStep;
+        this.GamePhase = GamePhases.NextStep;
         this.RobbingChoicesEvent?.Invoke(null);
         return;
       }
@@ -332,7 +340,7 @@ namespace Jabberwocky.SoC.Library
         this.robbingChoices.Add(playerId, this.playersById[playerId].ResourcesCount);
       }
 
-      this.gamePhase = GamePhases.ChooseResourceFromOpponent;
+      this.GamePhase = GamePhases.ChooseResourceFromOpponent;
       this.RobbingChoicesEvent?.Invoke(this.robbingChoices);
     }
 
