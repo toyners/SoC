@@ -25,7 +25,7 @@ namespace Jabberwocky.SoC.Library
     }
 
     #region Fields
-    private IPlayerPool computerPlayerFactory;
+    private IPlayerPool playerPool;
     private Guid curentPlayerTurnToken;
     private IDice dice;
     private GameBoardManager gameBoardManager;
@@ -45,7 +45,7 @@ namespace Jabberwocky.SoC.Library
     public LocalGameController(IDice dice, IPlayerPool computerPlayerFactory, GameBoardManager gameBoardManager)
     {
       this.dice = dice;
-      this.computerPlayerFactory = computerPlayerFactory;
+      this.playerPool = computerPlayerFactory;
       this.gameBoardManager = gameBoardManager;
       this.gamePhase = GamePhases.Initial;
     }
@@ -481,7 +481,7 @@ namespace Jabberwocky.SoC.Library
 
     private void CreatePlayers(GameOptions gameOptions)
     {
-      this.mainPlayer = this.computerPlayerFactory.Create();
+      this.mainPlayer = this.playerPool.Create();
       this.players = new IPlayer[gameOptions.MaxAIPlayers + 1];
       this.players[0] = this.mainPlayer;
       this.playersById = new Dictionary<Guid, IPlayer>(this.players.Length);
@@ -490,7 +490,7 @@ namespace Jabberwocky.SoC.Library
       var index = 1;
       while ((gameOptions.MaxAIPlayers--) > 0)
       {
-        var player = this.computerPlayerFactory.Create();
+        var player = this.playerPool.Create();
         this.players[index] = player;
         this.playersById.Add(player.Id, player);
         index++;
