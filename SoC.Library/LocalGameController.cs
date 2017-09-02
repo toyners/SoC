@@ -35,8 +35,6 @@ namespace Jabberwocky.SoC.Library
     private IPlayer[] players;
     private Dictionary<Guid, IPlayer> playersById;
     private IPlayer mainPlayer;
-    private Boolean quitting;
-    private Task sessionTask;
     private ResourceUpdate gameSetupResources;
     private Int32 resourcesToDrop;
     private Dictionary<Guid, Int32> robbingChoices;
