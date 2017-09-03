@@ -1277,9 +1277,16 @@ namespace Jabberwocky.SoC.Library.UnitTests
     [Category("LocalGameController")]
     public void Load()
     {
+      // Arrange
       var playerPool = new PlayerPool();
       var gameBoardManager = new GameBoardManager(BoardSizes.Standard);
-      var localGameController = new LocalGameController(new Dice(), playerPool, gameBoardManager);
+
+      MockDice mockDice = null;
+      MockPlayer player;
+      MockComputerPlayer firstOpponent, secondOpponent, thirdOpponent;
+      var localGameController = this.CreateLocalGameControllerAndCompleteGameSetup(out mockDice, out player, out firstOpponent, out secondOpponent, out thirdOpponent);
+
+      localGameController.Save("");
 
       using (var stream = new FileStream("", FileMode.Open))
       {
@@ -1312,6 +1319,31 @@ namespace Jabberwocky.SoC.Library.UnitTests
       return localGameController;
     }
 
+    private LocalGameController CreateLocalGameControllerAndCompleteGameSetup(out MockDice mockDice, out GameBoardManager gameBoardManager, out MockPlayer player, out MockComputerPlayer firstOpponent, out MockComputerPlayer secondOpponent, out MockComputerPlayer thirdOpponent)
+    {
+      var gameSetupOrder = new[] { 12u, 10u, 8u, 6u };
+      var gameTurnOrder = gameSetupOrder;
+      mockDice = new MockDiceCreator()
+        .AddExplicitDiceRollSequence(gameSetupOrder)
+        .AddExplicitDiceRollSequence(gameTurnOrder)
+        .Create();
+
+      gameBoardManager = new GameBoardManager(BoardSizes.Standard);
+
+      this.CreateDefaultPlayerInstances(out player, out firstOpponent, out secondOpponent, out thirdOpponent);
+
+      var localGameController = this.CreateLocalGameController(mockDice, gameBoardManager, player, firstOpponent, secondOpponent, thirdOpponent);
+
+      localGameController.JoinGame();
+      localGameController.LaunchGame();
+      localGameController.StartGameSetup();
+      localGameController.ContinueGameSetup(MainSettlementOneLocation, mainRoadOne);
+      localGameController.CompleteGameSetup(MainSettlementTwoLocation, mainRoadTwo);
+      localGameController.FinalisePlayerTurnOrder();
+
+      return localGameController;
+    }
+
     private void AssertPlayerDataViewIsCorrect(IPlayer player, PlayerDataView playerDataView)
     {
       playerDataView.Id.ShouldBe(player.Id);
@@ -1327,6 +1359,17 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
       return new LocalGameControllerCreator()
         .ChangeDice(dice)
+        .ChangePlayerPool(mockPlayerPool)
+        .Create();
+    }
+
+    private LocalGameController CreateLocalGameController(IDice dice, GameBoardManager gameBoardManager, IPlayer firstPlayer, params IPlayer[] otherPlayers)
+    {
+      var mockPlayerPool = CreatePlayerPool(firstPlayer, otherPlayers);
+
+      return new LocalGameControllerCreator()
+        .ChangeDice(dice)
+        .ChangeGameBoardManager(gameBoardManager)
         .ChangePlayerPool(mockPlayerPool)
         .Create();
     }

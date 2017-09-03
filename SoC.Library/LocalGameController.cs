@@ -167,6 +167,11 @@ namespace Jabberwocky.SoC.Library
       this.GamePhase = GamePhases.WaitingLaunch;
     }
 
+    public void Save(String v)
+    {
+      throw new NotImplementedException();
+    }
+
     public Boolean StartGameSetup()
     {
       if (this.GamePhase != GamePhases.StartGameSetup)
