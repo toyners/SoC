@@ -1287,13 +1287,14 @@ namespace Jabberwocky.SoC.Library.UnitTests
       var localGameController = this.CreateLocalGameControllerAndCompleteGameSetup(out mockDice, out player, out firstOpponent, out secondOpponent, out thirdOpponent);
 
       localGameController.Save("");
+      LocalGameController newLocalGameController = null;
 
       using (var stream = new FileStream("", FileMode.Open))
       {
-        localGameController.Load(stream);
+        newLocalGameController = LocalGameController.Load(stream);
       }
 
-      localGameController.GamePhase.ShouldBe(LocalGameController.GamePhases.SetRobberLocation);
+      newLocalGameController.GamePhase.ShouldBe(localGameController.GamePhase);
     }
 
     private LocalGameController CreateLocalGameControllerAndCompleteGameSetup(out MockDice mockDice, out MockPlayer player, out MockComputerPlayer firstOpponent, out MockComputerPlayer secondOpponent, out MockComputerPlayer thirdOpponent)

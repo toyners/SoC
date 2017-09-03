@@ -73,6 +73,11 @@ namespace Jabberwocky.SoC.Library
     #endregion
 
     #region Methods
+    public static LocalGameController Load(Stream s)
+    {
+      throw new NotImplementedException();
+    }
+
     public void ChooseResourceFromOpponent(Guid opponentId, Int32 resourceIndex)
     {
       if (this.GamePhase == GamePhases.NextStep)
@@ -132,10 +137,10 @@ namespace Jabberwocky.SoC.Library
       this.GamePhase = GamePhases.StartGameSetup;
     }
 
-    public void Load(Stream stream)
+    /*public void Load(Stream stream)
     {
       throw new NotImplementedException();
-    }
+    }*/
 
     public void Quit()
     {
