@@ -894,7 +894,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     [Test]
     [Category("LocalGameController")]
     [Category("Main Player Turn")]
-    public void StartOfMainPlayerTurn_RollsSeven_ReceiveResourceCardLossesForComputerPlayers()
+    public void StartOfMainPlayerTurn_RollsSevenReceiveResourceCardLossesForComputerPlayers()
     {
       // Arrange
       var droppedResourcesForFirstOpponent = new ResourceClutch(1, 1, 1, 1, 0);
@@ -934,7 +934,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     [TestCase(10, 5)]
     [Category("LocalGameController")]
     [Category("Main Player Turn")]
-    public void StartOfMainPlayerTurn_RollsSeven_ReceivesRobberEventNotificationWithDropResourceCardsCount(Int32 brickCount, Int32 expectedResourceDropCount)
+    public void StartOfMainPlayerTurn_RollsSevenReceivesRobberEventNotificationWithDropResourceCardsCount(Int32 brickCount, Int32 expectedResourceDropCount)
     {
       // Arrange
       MockDice mockDice = null;
@@ -1275,6 +1275,28 @@ namespace Jabberwocky.SoC.Library.UnitTests
     [Test]
     [Category("All")]
     [Category("LocalGameController")]
+    [Category("Main Player Turn")]
+    public void MainPlayerTurn_BuildRoadingWithRequiredResourcesAvailable_BuildCompleteEventRaised()
+    {
+      // Arrange
+      MockDice mockDice = null;
+      MockPlayer player;
+      MockComputerPlayer firstOpponent, secondOpponent, thirdOpponent;
+      var localGameController = this.CreateLocalGameControllerAndCompleteGameSetup(out mockDice, out player, out firstOpponent, out secondOpponent, out thirdOpponent);
+      mockDice.AddSequence(new[] { 8u });
+
+      player.AddResources(new ResourceClutch(1, 0, 1, 0, 0));
+
+      // Act
+      localGameController.StartGamePlay();
+      localGameController.BuildRoad(4u, 3u);
+
+      // Assert
+    }
+
+    [Test]
+    [Category("All")]
+    [Category("LocalGameController")]
     public void Load()
     {
       // Arrange
@@ -1284,17 +1306,17 @@ namespace Jabberwocky.SoC.Library.UnitTests
       MockDice mockDice = null;
       MockPlayer player;
       MockComputerPlayer firstOpponent, secondOpponent, thirdOpponent;
-      var localGameController = this.CreateLocalGameControllerAndCompleteGameSetup(out mockDice, out player, out firstOpponent, out secondOpponent, out thirdOpponent);
+      var currentLocalGameController = this.CreateLocalGameControllerAndCompleteGameSetup(out mockDice, out player, out firstOpponent, out secondOpponent, out thirdOpponent);
 
-      localGameController.Save("");
+      currentLocalGameController.Save("");
+
       LocalGameController newLocalGameController = null;
-
       using (var stream = new FileStream("", FileMode.Open))
       {
-        newLocalGameController = LocalGameController.Load(stream);
+        newLocalGameController.Load(stream);
       }
 
-      newLocalGameController.GamePhase.ShouldBe(localGameController.GamePhase);
+      newLocalGameController.GamePhase.ShouldBe(currentLocalGameController.GamePhase);
     }
 
     private LocalGameController CreateLocalGameControllerAndCompleteGameSetup(out MockDice mockDice, out MockPlayer player, out MockComputerPlayer firstOpponent, out MockComputerPlayer secondOpponent, out MockComputerPlayer thirdOpponent)

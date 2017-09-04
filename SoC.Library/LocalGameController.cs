@@ -73,7 +73,7 @@ namespace Jabberwocky.SoC.Library
     #endregion
 
     #region Methods
-    public static LocalGameController Load(Stream s)
+    public void BuildRoad(UInt32 startIndex, UInt32 endIndex)
     {
       throw new NotImplementedException();
     }
@@ -137,10 +137,10 @@ namespace Jabberwocky.SoC.Library
       this.GamePhase = GamePhases.StartGameSetup;
     }
 
-    /*public void Load(Stream stream)
+    public void Load(Stream stream)
     {
       throw new NotImplementedException();
-    }*/
+    }
 
     public void Quit()
     {
