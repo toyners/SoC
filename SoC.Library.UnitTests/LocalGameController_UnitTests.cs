@@ -1292,6 +1292,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
       localGameController.BuildRoad(4u, 3u);
 
       // Assert
+      throw new NotImplementedException();
     }
 
     [Test]
@@ -1299,24 +1300,16 @@ namespace Jabberwocky.SoC.Library.UnitTests
     [Category("LocalGameController")]
     public void Load()
     {
-      // Arrange
       var playerPool = new PlayerPool();
       var gameBoardManager = new GameBoardManager(BoardSizes.Standard);
-
-      MockDice mockDice = null;
-      MockPlayer player;
-      MockComputerPlayer firstOpponent, secondOpponent, thirdOpponent;
-      var currentLocalGameController = this.CreateLocalGameControllerAndCompleteGameSetup(out mockDice, out player, out firstOpponent, out secondOpponent, out thirdOpponent);
-
-      currentLocalGameController.Save("");
-
-      LocalGameController newLocalGameController = null;
+      LocalGameController newLocalGameController = new LocalGameController(new Dice(), playerPool, gameBoardManager);
       using (var stream = new FileStream("", FileMode.Open))
       {
         newLocalGameController.Load(stream);
       }
 
-      newLocalGameController.GamePhase.ShouldBe(currentLocalGameController.GamePhase);
+      //newLocalGameController.GamePhase.ShouldBe(currentLocalGameController.GamePhase);
+      throw new NotImplementedException();
     }
 
     private LocalGameController CreateLocalGameControllerAndCompleteGameSetup(out MockDice mockDice, out MockPlayer player, out MockComputerPlayer firstOpponent, out MockComputerPlayer secondOpponent, out MockComputerPlayer thirdOpponent)
