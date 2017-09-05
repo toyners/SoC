@@ -69,12 +69,54 @@ namespace Jabberwocky.SoC.Library
 
     public void Load(Stream stream)
     {
-      using (var reader = XmlReader.Create(stream))
+      try
       {
+        using (var reader = XmlReader.Create(stream))
+        {
+          while (reader.Name != "Player" && reader.NodeType != XmlNodeType.EndElement)
+          {
+            reader.Read();
+            if (reader.Name == "name")
+            {
+              this.Name = reader.ReadElementContentAsString();
+            }
 
+            if (reader.Name == "brick")
+            {
+              this.BrickCount = reader.ReadElementContentAsInt();
+            }
+
+            if (reader.Name == "grain")
+            {
+              this.GrainCount = reader.ReadElementContentAsInt();
+            }
+
+            if (reader.Name == "lumber")
+            {
+              this.LumberCount = reader.ReadElementContentAsInt();
+            }
+
+            if (reader.Name == "ore")
+            {
+              this.OreCount = reader.ReadElementContentAsInt();
+            }
+
+            if (reader.Name == "wool")
+            {
+              this.WoolCount = reader.ReadElementContentAsInt();
+            }
+          }
+        }
+
+        if (String.IsNullOrEmpty(this.Name))
+        {
+          throw new Exception("No name found for player in stream.");
+        }
       }
-
-      throw new NotImplementedException();
+      catch (Exception e)
+      {
+        throw new Exception("Ëxception thrown during player loading.", e);
+      }
     }
 
     public void RemoveResources(ResourceClutch resourceClutch)

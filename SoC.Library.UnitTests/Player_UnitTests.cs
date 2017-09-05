@@ -65,14 +65,14 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
     [Test]
     [Category("Player")]
-    public void Load_NameAndCountsReadFromStream_PlayerPropertiesAreCorrect()
+    public void Load_NameAndCountsInStream_PlayerPropertiesAreCorrect()
     {
       // Arrange
       var player = new Player();
       var playerId = player.Id;
 
       // Act
-      var content = "<content></content>";
+      var content = "<player><name>Player</name><brick>1</brick><grain>2</grain><lumber>3</lumber><ore>4</ore><wool>5</wool></player>";
       var contentBytes = Encoding.UTF8.GetBytes(content);
       using (var memoryStream = new MemoryStream(contentBytes))
       {
@@ -83,10 +83,60 @@ namespace Jabberwocky.SoC.Library.UnitTests
       player.Id.ShouldBe(playerId);
       player.Name.ShouldBe("Player");
       player.BrickCount.ShouldBe(1);
-      player.BrickCount.ShouldBe(2);
-      player.BrickCount.ShouldBe(3);
-      player.BrickCount.ShouldBe(4);
-      player.BrickCount.ShouldBe(5);
+      player.GrainCount.ShouldBe(2);
+      player.LumberCount.ShouldBe(3);
+      player.OreCount.ShouldBe(4);
+      player.WoolCount.ShouldBe(5);
+    }
+
+    [Test]
+    [Category("Player")]
+    public void Load_NameOnlyInStream_PlayerPropertiesAreCorrect()
+    {
+      // Arrange
+      var player = new Player();
+      var playerId = player.Id;
+
+      // Act
+      var content = "<player><name>Player</name></player>";
+      var contentBytes = Encoding.UTF8.GetBytes(content);
+      using (var memoryStream = new MemoryStream(contentBytes))
+      {
+        player.Load(memoryStream);
+      }
+
+      // Assert
+      player.Id.ShouldBe(playerId);
+      player.Name.ShouldBe("Player");
+      player.BrickCount.ShouldBe(0);
+      player.GrainCount.ShouldBe(0);
+      player.LumberCount.ShouldBe(0);
+      player.OreCount.ShouldBe(0);
+      player.WoolCount.ShouldBe(0);
+    }
+
+    [Test]
+    [Category("Player")]
+    public void Load_NoNameInStream_ThrowsMeaningfulException()
+    {
+      // Arrange
+      var player = new Player();
+      var playerId = player.Id;
+
+      // Act
+      var content = "<player><brick>1</brick><grain>2</grain><lumber>3</lumber><ore>4</ore><wool>5</wool></player>";
+      var contentBytes = Encoding.UTF8.GetBytes(content);
+
+      Action action = () =>
+      {
+        using (var memoryStream = new MemoryStream(contentBytes))
+        {
+          player.Load(memoryStream);
+        }
+      };
+
+      // Assert
+      Should.Throw<Exception>(action).Message.ShouldBe("No name found for player in stream.");
     }
     #endregion 
   }
