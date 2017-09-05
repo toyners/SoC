@@ -67,6 +67,10 @@ namespace Jabberwocky.SoC.Library
       return dataView;
     }
 
+    /// <summary>
+    /// Loads player properties from stream. Original player id is preserved.
+    /// </summary>
+    /// <param name="stream">Stream containing player properties.</param>
     public void Load(Stream stream)
     {
       try
