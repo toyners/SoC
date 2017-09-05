@@ -2,7 +2,6 @@
 namespace Jabberwocky.SoC.Library.UnitTests
 {
   using System;
-  using NSubstitute;
   using NUnit.Framework;
   using Shouldly;
 
@@ -49,7 +48,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
     [Test]
     [Category("Player")]
-    public void RemoveResources_ResultingTotalsWillBeBelowero_ThrowsMeaningfulException()
+    public void RemoveResources_ResultingTotalsWillBeBeLowerThanZero_ThrowsMeaningfulException()
     {
       // Arrange
       var player = new Player();
@@ -60,6 +59,27 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
       // Assert
       Should.Throw<ArithmeticException>(action).Message.ShouldBe("No resource count can be negative.");
+    }
+
+    [Test]
+    [Category("Player")]
+    public void Load_NameAndCountsReadFromStream_PlayerPropertiesAreCorrect()
+    {
+      // Arrange
+      var player = new Player();
+      var playerId = player.Id;
+
+      // Act
+      player.Load(null);
+
+      // Assert
+      player.Id.ShouldBe(playerId);
+      player.Name.ShouldBe("Player");
+      player.BrickCount.ShouldBe(1);
+      player.BrickCount.ShouldBe(2);
+      player.BrickCount.ShouldBe(3);
+      player.BrickCount.ShouldBe(4);
+      player.BrickCount.ShouldBe(5);
     }
     #endregion 
   }

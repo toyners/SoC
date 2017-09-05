@@ -2,7 +2,8 @@
 namespace Jabberwocky.SoC.Library.Interfaces
 {
   using System;
-  
+  using System.IO;
+
   public interface IPlayer
   {
     #region Properties
@@ -20,6 +21,7 @@ namespace Jabberwocky.SoC.Library.Interfaces
     PlayerDataView GetDataView();
     void AddResources(ResourceClutch resourceClutch);
     void RemoveResources(ResourceClutch resourceClutch);
+    void Load(Stream stream);
     #endregion
   }
 }

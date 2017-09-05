@@ -2,6 +2,7 @@
 namespace Jabberwocky.SoC.Library
 {
   using System;
+  using System.IO;
   using Interfaces;
 
   public class Player : IPlayer
@@ -63,6 +64,11 @@ namespace Jabberwocky.SoC.Library
       dataView.DisplayedDevelopmentCards = null;
 
       return dataView;
+    }
+
+    public void Load(Stream stream)
+    {
+      throw new NotImplementedException();
     }
 
     public void RemoveResources(ResourceClutch resourceClutch)
