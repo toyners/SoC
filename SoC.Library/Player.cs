@@ -3,6 +3,7 @@ namespace Jabberwocky.SoC.Library
 {
   using System;
   using System.IO;
+  using System.Xml;
   using Interfaces;
 
   public class Player : IPlayer
@@ -68,6 +69,11 @@ namespace Jabberwocky.SoC.Library
 
     public void Load(Stream stream)
     {
+      using (var reader = XmlReader.Create(stream))
+      {
+
+      }
+
       throw new NotImplementedException();
     }
 

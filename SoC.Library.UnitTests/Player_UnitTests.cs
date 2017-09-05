@@ -2,6 +2,8 @@
 namespace Jabberwocky.SoC.Library.UnitTests
 {
   using System;
+  using System.IO;
+  using System.Text;
   using NUnit.Framework;
   using Shouldly;
 
@@ -70,7 +72,12 @@ namespace Jabberwocky.SoC.Library.UnitTests
       var playerId = player.Id;
 
       // Act
-      player.Load(null);
+      var content = "<content></content>";
+      var contentBytes = Encoding.UTF8.GetBytes(content);
+      using (var memoryStream = new MemoryStream(contentBytes))
+      {
+        player.Load(memoryStream);
+      }
 
       // Assert
       player.Id.ShouldBe(playerId);
