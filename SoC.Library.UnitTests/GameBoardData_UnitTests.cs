@@ -3,6 +3,8 @@ namespace Jabberwocky.SoC.Library.UnitTests
 {
   using System;
   using System.Collections.Generic;
+  using System.IO;
+  using System.Text;
   using GameBoards;
   using NUnit.Framework;
   using Shouldly;
@@ -404,6 +406,47 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
       // Assert
       results.ShouldBeNull();
+    }
+
+    [Test]
+    [Category("All")]
+    [Category("GameBoardData")]
+    public void Load_NoPlayerSettlementsOnHex_ReturnNull()
+    {
+      // Arrange
+      var playerId = Guid.NewGuid();
+      var gameBoardData = new GameBoardData(BoardSizes.Standard);
+
+      // Act
+      var content = "<board><hexes resources=\"glbglogob gwwwlwlbo\" /></board>";
+      var contentBytes = Encoding.UTF8.GetBytes(content);
+      using (var memoryStream = new MemoryStream(contentBytes))
+      {
+        gameBoardData.Load(memoryStream);
+      }
+
+      // Assert
+      ResourceTypes[] hexes = gameBoardData.GetHexInformation();
+      hexes.Length.ShouldBe(GameBoardData.StandardBoardHexCount);
+      hexes[0].ShouldBe(ResourceTypes.Grain);
+      hexes[1].ShouldBe(ResourceTypes.Lumber);
+      hexes[2].ShouldBe(ResourceTypes.Brick);
+      hexes[3].ShouldBe(ResourceTypes.Grain);
+      hexes[4].ShouldBe(ResourceTypes.Lumber);
+      hexes[5].ShouldBe(ResourceTypes.Ore);
+      hexes[6].ShouldBe(ResourceTypes.Grain);
+      hexes[7].ShouldBe(ResourceTypes.Ore);
+      hexes[8].ShouldBe(ResourceTypes.Brick);
+      hexes[9].ShouldBeNull();
+      hexes[10].ShouldBe(ResourceTypes.Grain);
+      hexes[11].ShouldBe(ResourceTypes.Wool);
+      hexes[12].ShouldBe(ResourceTypes.Wool);
+      hexes[13].ShouldBe(ResourceTypes.Wool);
+      hexes[14].ShouldBe(ResourceTypes.Lumber);
+      hexes[15].ShouldBe(ResourceTypes.Wool);
+      hexes[16].ShouldBe(ResourceTypes.Lumber);
+      hexes[17].ShouldBe(ResourceTypes.Brick);
+      hexes[18].ShouldBe(ResourceTypes.Ore);
     }
     #endregion 
   }

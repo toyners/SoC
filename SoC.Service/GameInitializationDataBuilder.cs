@@ -10,8 +10,8 @@ namespace Jabberwocky.SoC.Service
     public static GameInitializationData Build(GameBoardManager board)
     {
       // Standard board only
-      var boardData = new Byte[GameBoardData.StandardBoardResourceProviderCount];
-      for (Int32 index = 0; index < GameBoardData.StandardBoardResourceProviderCount; index++)
+      var boardData = new Byte[GameBoardData.StandardBoardHexCount];
+      for (Int32 index = 0; index < GameBoardData.StandardBoardHexCount; index++)
       {
         boardData[index] = CreateDataForProvider(board.Data.Providers[index]);
       }

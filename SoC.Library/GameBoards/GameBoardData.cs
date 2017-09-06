@@ -3,6 +3,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
 {
   using System;
   using System.Collections.Generic;
+  using System.IO;
 
   /// <summary>
   /// Holds data for all locations, trails, towns, cities, roads, resource providers and robber location.
@@ -34,7 +35,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
 
     public const Int32 StandardBoardLocationCount = 54;
     public const Int32 StandardBoardTrailCount = 72;
-    public const Int32 StandardBoardResourceProviderCount = 19;
+    public const Int32 StandardBoardHexCount = 19;
     private Dictionary<UInt32, Guid> settlements;
     private Dictionary<Guid, List<UInt32>> settlementsByPlayer;
     private Boolean[,] connections;
@@ -346,6 +347,15 @@ namespace Jabberwocky.SoC.Library.GameBoards
       return resources;
     }
 
+    /// <summary>
+    /// Load the board data from stream.
+    /// </summary>
+    /// <param name="stream">Stream containing board data.</param>
+    public void Load(Stream stream)
+    {
+      throw new NotImplementedException();
+    }
+
     private void AddLocationsToHex(UInt32 lhs, UInt32 rhs, UInt32 hexIndex, UInt32 count)
     {
       var lastIndex = hexIndex + count - 1;
@@ -406,7 +416,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
       var grain8 = new ResourceProvider(ResourceTypes.Grain, 8);
 
       // Load the resource provider array
-      this.Providers = new ResourceProvider[StandardBoardResourceProviderCount];
+      this.Providers = new ResourceProvider[StandardBoardHexCount];
       this.Providers[0] = desert;
       this.Providers[1] = brick8;
       this.Providers[2] = ore5;
@@ -552,6 +562,11 @@ namespace Jabberwocky.SoC.Library.GameBoards
       this.Locations[51].Providers.Add(grain8);
       this.Locations[52].Providers.Add(grain8);
       this.Locations[53].Providers.Add(grain8);
+    }
+
+    public ResourceTypes[] GetHexInformation()
+    {
+      throw new NotImplementedException();
     }
 
     private void CreateResourceProviders2()
