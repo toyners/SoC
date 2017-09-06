@@ -25,9 +25,13 @@ namespace Jabberwocky.SoC.Library.GameBoards
     }
 
     #region Fields
+    [Obsolete]
     public Location[] Locations;
+    [Obsolete]
     public Trail[] Trails;
+    [Obsolete]
     public ResourceProvider[] Providers;
+
     public const Int32 StandardBoardLocationCount = 54;
     public const Int32 StandardBoardTrailCount = 72;
     public const Int32 StandardBoardResourceProviderCount = 19;
