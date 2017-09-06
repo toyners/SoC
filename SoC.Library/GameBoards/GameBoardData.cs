@@ -4,6 +4,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
   using System;
   using System.Collections.Generic;
   using System.IO;
+  using System.Xml;
 
   /// <summary>
   /// Holds data for all locations, trails, towns, cities, roads, resource providers and robber location.
@@ -36,6 +37,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
     public const Int32 StandardBoardLocationCount = 54;
     public const Int32 StandardBoardTrailCount = 72;
     public const Int32 StandardBoardHexCount = 19;
+    private ResourceTypes[] hexes;
     private Dictionary<UInt32, Guid> settlements;
     private Dictionary<Guid, List<UInt32>> settlementsByPlayer;
     private Boolean[,] connections;
@@ -119,7 +121,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
             break;
           }
         }
-        
+
         if (!isConnected)
         {
           return new VerificationResults { Status = VerificationStatus.NotConnectedToExisting };
@@ -254,7 +256,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
     public Guid[] GetPlayersForHex(UInt32 hex)
     {
       List<Guid> players = null;
-      
+
       // Get players for each settlement
       foreach (var locationIndex in this.locationsForHex[hex])
       {
@@ -353,7 +355,31 @@ namespace Jabberwocky.SoC.Library.GameBoards
     /// <param name="stream">Stream containing board data.</param>
     public void Load(Stream stream)
     {
-      throw new NotImplementedException();
+      using (var reader = XmlReader.Create(stream))
+      {
+        while (reader.Name != "Player" && reader.NodeType != XmlNodeType.EndElement)
+        {
+          reader.Read();
+          if (reader.Name == "hexes")
+          {
+            var resources = reader.ReadContentAsString();
+            this.hexes = new ResourceTypes[StandardBoardHexCount];
+            var index = 0;
+            foreach (var resource in resources)
+            {
+              switch (resource)
+              {
+                case 'b': this.hexes[index++] = ResourceTypes.Brick; break;
+                case 'g': this.hexes[index++] = ResourceTypes.Grain; break; 
+                case 'l': this.hexes[index++] = ResourceTypes.Lumber; break;
+                case 'o': this.hexes[index++] = ResourceTypes.Ore; break;
+                case 'w': this.hexes[index++] = ResourceTypes.Wool; break;
+                case ' ': index++; break;
+              }
+            }
+          }
+        }
+      }
     }
 
     private void AddLocationsToHex(UInt32 lhs, UInt32 rhs, UInt32 hexIndex, UInt32 count)

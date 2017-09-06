@@ -77,7 +77,7 @@ namespace Jabberwocky.SoC.Library
       {
         using (var reader = XmlReader.Create(stream))
         {
-          while (reader.Name != "Player" && reader.NodeType != XmlNodeType.EndElement)
+          while (reader.Name != "player" && reader.NodeType != XmlNodeType.EndElement)
           {
             reader.Read();
             if (reader.Name == "name")

@@ -411,14 +411,14 @@ namespace Jabberwocky.SoC.Library.UnitTests
     [Test]
     [Category("All")]
     [Category("GameBoardData")]
-    public void Load_NoPlayerSettlementsOnHex_ReturnNull()
+    public void Load_HexDataOnly_ResourceProvidersLoadedCorrectly()
     {
       // Arrange
       var playerId = Guid.NewGuid();
       var gameBoardData = new GameBoardData(BoardSizes.Standard);
 
       // Act
-      var content = "<board><hexes resources=\"glbglogob gwwwlwlbo\" /></board>";
+      var content = "<board><hexes>glbglogob gwwwlwlbo</hexes></board>";
       var contentBytes = Encoding.UTF8.GetBytes(content);
       using (var memoryStream = new MemoryStream(contentBytes))
       {
