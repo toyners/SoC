@@ -25,7 +25,6 @@ namespace Jabberwocky.SoC.Library.GameBoards
     }
 
     #region Fields
-    public Dictionary<Guid, List<Trail>> Roads;
     public Location[] Locations;
     public Trail[] Trails;
     public ResourceProvider[] Providers;
@@ -52,7 +51,6 @@ namespace Jabberwocky.SoC.Library.GameBoards
       this.settlements = new Dictionary<UInt32, Guid>();
       this.roads = new Dictionary<Road, Guid>();
       this.settlementsByPlayer = new Dictionary<Guid, List<UInt32>>();
-      this.Roads = new Dictionary<Guid, List<Trail>>();
 
       this.CreateLocations();
 
