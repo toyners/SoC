@@ -6,7 +6,6 @@ namespace Jabberwocky.SoC.Library.UnitTests
   using GameBoards;
   using NUnit.Framework;
   using Shouldly;
-  using static GameBoards.GameBoardData;
 
   [TestFixture]
   public class GameBoardData_UnitTests
