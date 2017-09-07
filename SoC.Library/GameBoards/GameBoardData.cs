@@ -362,7 +362,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
           reader.Read();
           if (reader.Name == "hexes")
           {
-            var resources = reader.ReadContentAsString();
+            var resources = reader.ReadElementContentAsString();
             this.hexes = new ResourceTypes[StandardBoardHexCount];
             var index = 0;
             foreach (var resource in resources)
