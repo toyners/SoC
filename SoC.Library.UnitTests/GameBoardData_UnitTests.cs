@@ -448,6 +448,43 @@ namespace Jabberwocky.SoC.Library.UnitTests
       hexes[17].ShouldBe(ResourceTypes.Brick);
       hexes[18].ShouldBe(ResourceTypes.Ore);
     }
+
+    [Test]
+    [Category("All")]
+    [Category("GameBoardData")]
+    public void GetHexInformation_StandardBoard_ReturnsResourceTypeArray()
+    {
+      // Arrange
+      var gameBoard = new GameBoardData(BoardSizes.Standard);
+
+      // Act
+      var data = gameBoard.GetHexInformation();
+
+      // Assert
+      data[0].ShouldBeNull();
+      data[1].ShouldBe(ResourceTypes.Brick);
+      data[2].ShouldBe(ResourceTypes.Ore);
+
+      data[3].ShouldBe(ResourceTypes.Brick);
+      data[4].ShouldBe(ResourceTypes.Lumber);
+      data[5].ShouldBe(ResourceTypes.Wool);
+      data[6].ShouldBe(ResourceTypes.Grain);
+
+      data[7].ShouldBe(ResourceTypes.Lumber);
+      data[8].ShouldBe(ResourceTypes.Ore);
+      data[9].ShouldBe(ResourceTypes.Grain);
+      data[10].ShouldBe(ResourceTypes.Wool);
+      data[11].ShouldBe(ResourceTypes.Lumber);
+
+      data[12].ShouldBe(ResourceTypes.Wool);
+      data[13].ShouldBe(ResourceTypes.Brick);
+      data[14].ShouldBe(ResourceTypes.Lumber);
+      data[15].ShouldBe(ResourceTypes.Ore);
+
+      data[16].ShouldBe(ResourceTypes.Grain);
+      data[17].ShouldBe(ResourceTypes.Wool);
+      data[18].ShouldBe(ResourceTypes.Grain);
+    }
     #endregion 
   }
 }
