@@ -55,10 +55,11 @@ namespace Jabberwocky.SoC.Library.GameBoards
         throw new Exception("Extended boards not implemented.");
       }
 
-      this.hexes = new ResourceTypes[StandardBoardHexCount];
       this.settlements = new Dictionary<UInt32, Guid>();
       this.roads = new Dictionary<Road, Guid>();
       this.settlementsByPlayer = new Dictionary<Guid, List<UInt32>>();
+
+      this.CreateHexes();
 
       this.CreateLocations();
 
@@ -374,7 +375,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
                 case 'l': this.hexes[index++] = ResourceTypes.Lumber; break;
                 case 'o': this.hexes[index++] = ResourceTypes.Ore; break;
                 case 'w': this.hexes[index++] = ResourceTypes.Wool; break;
-                case ' ': index++; break;
+                case ' ': this.hexes[index++] = ResourceTypes.None; break;
               }
             }
           }
@@ -400,6 +401,34 @@ namespace Jabberwocky.SoC.Library.GameBoards
 
         this.locationsForHex.Add(hexIndex, locations);
       }
+    }
+
+    private void CreateHexes()
+    {
+      this.hexes = new ResourceTypes[StandardBoardHexCount];
+      this.hexes[0] = ResourceTypes.None;
+      this.hexes[1] = ResourceTypes.Brick;
+      this.hexes[2] = ResourceTypes.Ore;
+
+      this.hexes[3] = ResourceTypes.None;
+      this.hexes[4] = ResourceTypes.None;
+      this.hexes[5] = ResourceTypes.None;
+      this.hexes[6] = ResourceTypes.None;
+
+      this.hexes[7] = ResourceTypes.None;
+      this.hexes[8] = ResourceTypes.None;
+      this.hexes[9] = ResourceTypes.None;
+      this.hexes[10] = ResourceTypes.None;
+      this.hexes[11] = ResourceTypes.None;
+
+      this.hexes[12] = ResourceTypes.None;
+      this.hexes[13] = ResourceTypes.None;
+      this.hexes[14] = ResourceTypes.None;
+      this.hexes[15] = ResourceTypes.None;
+
+      this.hexes[16] = ResourceTypes.None;
+      this.hexes[17] = ResourceTypes.None;
+      this.hexes[18] = ResourceTypes.None;
     }
 
     private void CreateLocations()

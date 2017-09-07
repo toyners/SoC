@@ -437,7 +437,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
       hexes[6].ShouldBe(ResourceTypes.Grain);
       hexes[7].ShouldBe(ResourceTypes.Ore);
       hexes[8].ShouldBe(ResourceTypes.Brick);
-      hexes[9].ShouldBeNull();
+      hexes[9].ShouldBe(ResourceTypes.None);
       hexes[10].ShouldBe(ResourceTypes.Grain);
       hexes[11].ShouldBe(ResourceTypes.Wool);
       hexes[12].ShouldBe(ResourceTypes.Wool);
@@ -461,7 +461,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
       var data = gameBoard.GetHexInformation();
 
       // Assert
-      data[0].ShouldBeNull();
+      data[0].ShouldBe(ResourceTypes.None);
       data[1].ShouldBe(ResourceTypes.Brick);
       data[2].ShouldBe(ResourceTypes.Ore);
 

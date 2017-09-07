@@ -6,7 +6,7 @@ namespace Jabberwocky.SoC.Library
     Brick,
     Grain,
     Lumber,
-    //None,
+    None,
     Ore,
     Wool
   }
