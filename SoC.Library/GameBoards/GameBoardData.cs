@@ -71,9 +71,9 @@ namespace Jabberwocky.SoC.Library.GameBoards
 
       this.StitchLocationsTogetherUsingHorizontalTrails(index);
 
-      this.CreateResourceProviders();
+      this.ObsoleteCreateResourceProviders();
 
-      this.CreateResourceProviders2();
+      this.CreateResourceProviders();
 
       this.CreateLocationsForHex();
     }
@@ -411,7 +411,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
       }
     }
 
-    private void CreateResourceProviders()
+    private void ObsoleteCreateResourceProviders()
     {
       //d,b8,o5
       var desert = new ResourceProvider();
@@ -595,7 +595,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
       throw new NotImplementedException();
     }
 
-    private void CreateResourceProviders2()
+    private void CreateResourceProviders()
     {
       //d,b8,o5
       var brick8 = new ResourceProvider2(ResourceTypes.Brick);
