@@ -55,6 +55,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
         throw new Exception("Extended boards not implemented.");
       }
 
+      this.hexes = new ResourceTypes[StandardBoardHexCount];
       this.settlements = new Dictionary<UInt32, Guid>();
       this.roads = new Dictionary<Road, Guid>();
       this.settlementsByPlayer = new Dictionary<Guid, List<UInt32>>();
@@ -363,7 +364,6 @@ namespace Jabberwocky.SoC.Library.GameBoards
           if (reader.Name == "hexes")
           {
             var resources = reader.ReadElementContentAsString();
-            this.hexes = new ResourceTypes[StandardBoardHexCount];
             var index = 0;
             foreach (var resource in resources)
             {
@@ -592,7 +592,9 @@ namespace Jabberwocky.SoC.Library.GameBoards
 
     public ResourceTypes[] GetHexInformation()
     {
-      throw new NotImplementedException();
+      var data = new ResourceTypes[this.hexes.Length];
+      this.hexes.CopyTo(data, 0);
+      return data;
     }
 
     private void CreateResourceProviders()
