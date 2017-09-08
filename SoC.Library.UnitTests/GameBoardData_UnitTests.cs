@@ -452,6 +452,31 @@ namespace Jabberwocky.SoC.Library.UnitTests
     [Test]
     [Category("All")]
     [Category("GameBoardData")]
+    public void Load_HexAndInfrastructureData_InfrastructureLoadedCorrectly()
+    {
+      // Arrange
+      var playerId = Guid.NewGuid();
+      var gameBoardData = new GameBoardData(BoardSizes.Standard);
+
+      // Act
+      var content = "<board><hexes>glbglogob gwwwlwlbo</hexes>" +
+        "<settlements></settlements>" +
+        "<roads></roads>" +
+        "</board>";
+      var contentBytes = Encoding.UTF8.GetBytes(content);
+      using (var memoryStream = new MemoryStream(contentBytes))
+      {
+        gameBoardData.Load(memoryStream);
+      }
+
+      // Assert
+      var data = gameBoardData.GetSettlementInformation();
+      throw new NotImplementedException();
+    }
+
+    [Test]
+    [Category("All")]
+    [Category("GameBoardData")]
     public void GetHexInformation_StandardBoard_ReturnsResourceTypeArray()
     {
       // Arrange

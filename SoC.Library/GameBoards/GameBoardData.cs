@@ -626,6 +626,11 @@ namespace Jabberwocky.SoC.Library.GameBoards
       return data;
     }
 
+    public object GetSettlementInformation()
+    {
+      throw new NotImplementedException();
+    }
+
     private void CreateResourceProviders()
     {
       //d,b8,o5
