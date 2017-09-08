@@ -410,25 +410,25 @@ namespace Jabberwocky.SoC.Library.GameBoards
       this.hexes[1] = ResourceTypes.Brick;
       this.hexes[2] = ResourceTypes.Ore;
 
-      this.hexes[3] = ResourceTypes.None;
-      this.hexes[4] = ResourceTypes.None;
-      this.hexes[5] = ResourceTypes.None;
-      this.hexes[6] = ResourceTypes.None;
+      this.hexes[3] = ResourceTypes.Brick;
+      this.hexes[4] = ResourceTypes.Lumber;
+      this.hexes[5] = ResourceTypes.Wool;
+      this.hexes[6] = ResourceTypes.Grain;
 
-      this.hexes[7] = ResourceTypes.None;
-      this.hexes[8] = ResourceTypes.None;
-      this.hexes[9] = ResourceTypes.None;
-      this.hexes[10] = ResourceTypes.None;
-      this.hexes[11] = ResourceTypes.None;
+      this.hexes[7] = ResourceTypes.Lumber;
+      this.hexes[8] = ResourceTypes.Ore;
+      this.hexes[9] = ResourceTypes.Grain;
+      this.hexes[10] = ResourceTypes.Wool;
+      this.hexes[11] = ResourceTypes.Lumber;
 
-      this.hexes[12] = ResourceTypes.None;
-      this.hexes[13] = ResourceTypes.None;
-      this.hexes[14] = ResourceTypes.None;
-      this.hexes[15] = ResourceTypes.None;
+      this.hexes[12] = ResourceTypes.Wool;
+      this.hexes[13] = ResourceTypes.Brick;
+      this.hexes[14] = ResourceTypes.Lumber;
+      this.hexes[15] = ResourceTypes.Ore;
 
-      this.hexes[16] = ResourceTypes.None;
-      this.hexes[17] = ResourceTypes.None;
-      this.hexes[18] = ResourceTypes.None;
+      this.hexes[16] = ResourceTypes.Grain;
+      this.hexes[17] = ResourceTypes.Wool;
+      this.hexes[18] = ResourceTypes.Grain;
     }
 
     private void CreateLocations()
