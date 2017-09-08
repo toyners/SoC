@@ -111,15 +111,15 @@ namespace Jabberwocky.SoC.Library
             }
           }
         }
-
-        if (String.IsNullOrEmpty(this.Name))
-        {
-          throw new Exception("No name found for player in stream.");
-        }
       }
       catch (Exception e)
       {
         throw new Exception("Ëxception thrown during player loading.", e);
+      }
+
+      if (String.IsNullOrEmpty(this.Name))
+      {
+        throw new Exception("No name found for player in stream.");
       }
     }
 
