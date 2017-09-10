@@ -460,14 +460,13 @@ namespace Jabberwocky.SoC.Library.UnitTests
       var road = new Road(12u, 4u);
       var gameBoardData = new GameBoardData(BoardSizes.Standard);
       
-
       // Act
       var content = "<board><hexes>glbglogob gwwwlwlbo</hexes>" +
         "<settlements>" + 
-        "<settlement><playerid>" + playerId + "</playerid><locationid>" + settlementLocation + "</locationid></settlement>" + 
+        "<settlement playerid=\"" + playerId + "\" location=\"" + settlementLocation + "\" />" + 
         "</settlements>" +
-        "<roads>" + 
-        "<road><playerid>" + playerId + "</playerid><startid>" + road.Location1 + "</startid><endid>" + road.Location2 + "</endid></road>" + 
+        "<roads>" +
+        "<road playerid=\"" + playerId + "\" start=\"" + road.Location1 + "\" end=\"" + road.Location2 + "\" />" + 
         "</roads>" +
         "</board>";
       var contentBytes = Encoding.UTF8.GetBytes(content);

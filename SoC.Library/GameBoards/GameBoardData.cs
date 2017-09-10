@@ -359,10 +359,17 @@ namespace Jabberwocky.SoC.Library.GameBoards
     {
       using (var reader = XmlReader.Create(stream))
       {
-        while (reader.Name != "Player" && reader.NodeType != XmlNodeType.EndElement)
+        this.roads.Clear();
+        this.settlements.Clear();
+
+        while(!reader.EOF)
         {
-          reader.Read();
-          if (reader.Name == "hexes")
+          if (reader.Name == "board" && reader.NodeType == XmlNodeType.EndElement)
+          {
+            break;
+          }
+
+          if (reader.Name == "hexes" && reader.NodeType == XmlNodeType.Element)
           {
             var resources = reader.ReadElementContentAsString();
             var index = 0;
@@ -379,6 +386,23 @@ namespace Jabberwocky.SoC.Library.GameBoards
               }
             }
           }
+          else if (reader.Name == "settlement")
+          {
+            var playerId = Guid.Parse(reader.GetAttribute("playerid"));
+            var location = UInt32.Parse(reader.GetAttribute("location"));
+
+            this.settlements.Add(location, playerId);
+          }
+          else if (reader.Name == "road")
+          {
+            var playerId = Guid.Parse(reader.GetAttribute("playerid"));
+            var start = UInt32.Parse(reader.GetAttribute("start"));
+            var end = UInt32.Parse(reader.GetAttribute("end"));
+
+            this.roads.Add(new Road(start, end), playerId);
+          }
+
+          reader.Read();
         }
       }
     }
@@ -628,12 +652,25 @@ namespace Jabberwocky.SoC.Library.GameBoards
 
     public Dictionary<UInt32, Guid> GetSettlementInformation()
     {
-      throw new NotImplementedException();
+      var data = new Dictionary<UInt32, Guid>(this.settlements.Count);
+      foreach(var kv in this.settlements)
+      {
+        data.Add(kv.Key, kv.Value);
+      }
+
+      return data;
     }
 
     public Tuple<Road, Guid>[] GetRoadInformation()
     {
-      throw new NotImplementedException();
+      var data = new Tuple<Road, Guid>[this.roads.Count];
+      var index = 0;
+      foreach (var kv in this.roads)
+      {
+        data[index++] = new Tuple<Road, Guid>(kv.Key, kv.Value);
+      }
+
+      return data;
     }
 
     private void CreateResourceProviders()
