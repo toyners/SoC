@@ -469,6 +469,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
         "<road playerid=\"" + playerId + "\" start=\"" + road.Location1 + "\" end=\"" + road.Location2 + "\" />" + 
         "</roads>" +
         "</board>";
+
       var contentBytes = Encoding.UTF8.GetBytes(content);
       using (var memoryStream = new MemoryStream(contentBytes))
       {

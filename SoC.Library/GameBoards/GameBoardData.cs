@@ -357,53 +357,47 @@ namespace Jabberwocky.SoC.Library.GameBoards
     /// <param name="stream">Stream containing board data.</param>
     public void Load(Stream stream)
     {
-      using (var reader = XmlReader.Create(stream))
+      try
       {
-        this.roads.Clear();
-        this.settlements.Clear();
-
-        while(!reader.EOF)
+        using (var reader = XmlReader.Create(stream))
         {
-          if (reader.Name == "board" && reader.NodeType == XmlNodeType.EndElement)
-          {
-            break;
-          }
+          this.roads.Clear();
+          this.settlements.Clear();
 
-          if (reader.Name == "hexes" && reader.NodeType == XmlNodeType.Element)
+          while (!reader.EOF)
           {
-            var resources = reader.ReadElementContentAsString();
-            var index = 0;
-            foreach (var resource in resources)
+            if (reader.Name == "board" && reader.NodeType == XmlNodeType.EndElement)
             {
-              switch (resource)
-              {
-                case 'b': this.hexes[index++] = ResourceTypes.Brick; break;
-                case 'g': this.hexes[index++] = ResourceTypes.Grain; break; 
-                case 'l': this.hexes[index++] = ResourceTypes.Lumber; break;
-                case 'o': this.hexes[index++] = ResourceTypes.Ore; break;
-                case 'w': this.hexes[index++] = ResourceTypes.Wool; break;
-                case ' ': this.hexes[index++] = ResourceTypes.None; break;
-              }
+              break;
             }
-          }
-          else if (reader.Name == "settlement")
-          {
-            var playerId = Guid.Parse(reader.GetAttribute("playerid"));
-            var location = UInt32.Parse(reader.GetAttribute("location"));
 
-            this.settlements.Add(location, playerId);
-          }
-          else if (reader.Name == "road")
-          {
-            var playerId = Guid.Parse(reader.GetAttribute("playerid"));
-            var start = UInt32.Parse(reader.GetAttribute("start"));
-            var end = UInt32.Parse(reader.GetAttribute("end"));
+            if (reader.Name == "hexes" && reader.NodeType == XmlNodeType.Element)
+            {
+              this.LoadHexes(reader);
+            }
+            else if (reader.Name == "settlement")
+            {
+              var playerId = Guid.Parse(reader.GetAttribute("playerid"));
+              var location = UInt32.Parse(reader.GetAttribute("location"));
 
-            this.roads.Add(new Road(start, end), playerId);
-          }
+              this.settlements.Add(location, playerId);
+            }
+            else if (reader.Name == "road")
+            {
+              var playerId = Guid.Parse(reader.GetAttribute("playerid"));
+              var start = UInt32.Parse(reader.GetAttribute("start"));
+              var end = UInt32.Parse(reader.GetAttribute("end"));
 
-          reader.Read();
+              this.roads.Add(new Road(start, end), playerId);
+            }
+
+            reader.Read();
+          }
         }
+      }
+      catch (Exception e)
+      {
+        throw new Exception("Ëxception thrown during board loading.", e);
       }
     }
 
@@ -461,6 +455,36 @@ namespace Jabberwocky.SoC.Library.GameBoards
       for (var index = 0; index < StandardBoardLocationCount; index++)
       {
         this.Locations[index] = new Location();
+      }
+    }
+
+        private void LoadHexes(XmlReader reader)
+    {
+      var resources = reader.ReadElementContentAsString();
+      var index = 0;
+      foreach (var resource in resources)
+      {
+        switch (resource)
+        {
+          case 'b':
+          this.hexes[index++] = ResourceTypes.Brick;
+          break;
+          case 'g':
+          this.hexes[index++] = ResourceTypes.Grain;
+          break;
+          case 'l':
+          this.hexes[index++] = ResourceTypes.Lumber;
+          break;
+          case 'o':
+          this.hexes[index++] = ResourceTypes.Ore;
+          break;
+          case 'w':
+          this.hexes[index++] = ResourceTypes.Wool;
+          break;
+          case ' ':
+          this.hexes[index++] = ResourceTypes.None;
+          break;
+        }
       }
     }
 
@@ -653,7 +677,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
     public Dictionary<UInt32, Guid> GetSettlementInformation()
     {
       var data = new Dictionary<UInt32, Guid>(this.settlements.Count);
-      foreach(var kv in this.settlements)
+      foreach (var kv in this.settlements)
       {
         data.Add(kv.Key, kv.Value);
       }
