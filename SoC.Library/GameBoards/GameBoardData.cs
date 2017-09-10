@@ -626,7 +626,12 @@ namespace Jabberwocky.SoC.Library.GameBoards
       return data;
     }
 
-    public object GetSettlementInformation()
+    public Dictionary<UInt32, Guid> GetSettlementInformation()
+    {
+      throw new NotImplementedException();
+    }
+
+    public Tuple<Road, Guid>[] GetRoadInformation()
     {
       throw new NotImplementedException();
     }

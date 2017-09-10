@@ -452,16 +452,23 @@ namespace Jabberwocky.SoC.Library.UnitTests
     [Test]
     [Category("All")]
     [Category("GameBoardData")]
-    public void Load_HexAndInfrastructureData_InfrastructureLoadedCorrectly()
+    public void Load_HexAndInfrastructureData_SettlementsLoadedCorrectly()
     {
       // Arrange
       var playerId = Guid.NewGuid();
+      var settlementLocation = 12u;
+      var road = new Road(12u, 4u);
       var gameBoardData = new GameBoardData(BoardSizes.Standard);
+      
 
       // Act
       var content = "<board><hexes>glbglogob gwwwlwlbo</hexes>" +
-        "<settlements></settlements>" +
-        "<roads></roads>" +
+        "<settlements>" + 
+        "<settlement><playerid>" + playerId + "</playerid><locationid>" + settlementLocation + "</locationid></settlement>" + 
+        "</settlements>" +
+        "<roads>" + 
+        "<road><playerid>" + playerId + "</playerid><startid>" + road.Location1 + "</startid><endid>" + road.Location2 + "</endid></road>" + 
+        "</roads>" +
         "</board>";
       var contentBytes = Encoding.UTF8.GetBytes(content);
       using (var memoryStream = new MemoryStream(contentBytes))
@@ -469,9 +476,15 @@ namespace Jabberwocky.SoC.Library.UnitTests
         gameBoardData.Load(memoryStream);
       }
 
+      var settlements = gameBoardData.GetSettlementInformation();
+      var roads = gameBoardData.GetRoadInformation();
+
       // Assert
-      var data = gameBoardData.GetSettlementInformation();
-      throw new NotImplementedException();
+      settlements.Count.ShouldBe(1);
+      settlements.ShouldContainKeyAndValue(settlementLocation, playerId);
+
+      roads.Length.ShouldBe(1);
+      roads[0].ShouldBe(new Tuple<Road, Guid>(road, playerId));
     }
 
     [Test]
@@ -509,6 +522,44 @@ namespace Jabberwocky.SoC.Library.UnitTests
       data[16].ShouldBe(ResourceTypes.Grain);
       data[17].ShouldBe(ResourceTypes.Wool);
       data[18].ShouldBe(ResourceTypes.Grain);
+    }
+
+    [Test]
+    [Category("All")]
+    [Category("GameBoardData")]
+    public void GetSettlementInformation_OneSettlement_ReturnsSettlementDetails()
+    {
+      // Arrange
+      var gameBoard = new GameBoardData(BoardSizes.Standard);
+      var playerId = Guid.NewGuid();
+      var settlementLocation = 12u;
+      gameBoard.PlaceSettlement(playerId, settlementLocation);
+
+      // Act
+      var settlements = gameBoard.GetSettlementInformation();
+
+      // Assert
+      settlements.Count.ShouldBe(1);
+      settlements.ShouldContainKeyAndValue(settlementLocation, playerId);
+    }
+
+    [Test]
+    [Category("All")]
+    [Category("GameBoardData")]
+    public void GetRoadInformation_OneRoad_ReturnsRoadDetails()
+    {
+      // Arrange
+      var gameBoard = new GameBoardData(BoardSizes.Standard);
+      var playerId = Guid.NewGuid();
+      var road = new Road(12u, 4u);
+      gameBoard.PlaceRoad(playerId, road);
+
+      // Act
+      var roads = gameBoard.GetRoadInformation();
+
+      // Assert
+      roads.Length.ShouldBe(1);
+      roads[0].ShouldBe(new Tuple<Road, Guid>(road, playerId));
     }
     #endregion 
   }
