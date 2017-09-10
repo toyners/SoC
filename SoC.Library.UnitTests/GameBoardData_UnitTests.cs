@@ -490,6 +490,36 @@ namespace Jabberwocky.SoC.Library.UnitTests
     [Test]
     [Category("All")]
     [Category("GameBoardData")]
+    [TestCase(2u, 1)]
+    public void Load_HexAndInfrastructureData_GetCorrectResourcesForRolls(UInt32 diceRoll, Int32 brickCount)
+    {
+      // Arrange
+      var playerId = Guid.NewGuid();
+      var settlementLocation = 12u;
+      var gameBoardData = new GameBoardData(BoardSizes.Standard);
+
+      // Act
+      var content = "<board><hexes>glbglogob gwwwlwlbo</hexes>" +
+        "<settlements>" +
+        "<settlement playerid=\"" + playerId + "\" location=\"" + settlementLocation + "\" />" +
+        "</settlements>" +
+        "</board>";
+
+      var contentBytes = Encoding.UTF8.GetBytes(content);
+      using (var memoryStream = new MemoryStream(contentBytes))
+      {
+        gameBoardData.Load(memoryStream);
+      }
+
+      // Assert
+      var resourcesByPlayer = gameBoardData.GetResourcesForRoll(diceRoll);
+      resourcesByPlayer.Count.ShouldBe(1);
+      resourcesByPlayer.ShouldContainKeyAndValue(playerId, new ResourceClutch(brickCount, 0, 0, 0, 0));
+    }
+
+    [Test]
+    [Category("All")]
+    [Category("GameBoardData")]
     public void GetHexInformation_StandardBoard_ReturnsResourceTypeArray()
     {
       // Arrange
