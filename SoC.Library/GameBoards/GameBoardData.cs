@@ -667,10 +667,11 @@ namespace Jabberwocky.SoC.Library.GameBoards
       this.Locations[53].Providers.Add(grain8);
     }
 
-    public ResourceTypes[] GetHexInformation()
+    public Tuple<ResourceTypes, UInt32>[] GetHexInformation()
     {
-      var data = new ResourceTypes[this.hexes.Length];
-      this.hexes.CopyTo(data, 0);
+      var data = new Tuple<ResourceTypes, UInt32>[this.hexes.Length];
+
+      //this.hexes.CopyTo(data, 0);
       return data;
     }
 
