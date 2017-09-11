@@ -420,7 +420,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
       // Act
       var content = "<board><hexes>" + 
         "<resources>glbglogob gwwwlwlbo</resources>" + 
-        "<production>985121136106 41124359108</production>" + 
+        "<production>9,8,5,12,11,3,6,10,6,0,4,11,2,4,3,5,9,10,8</production>" + 
         "</hexes></board>";
 
       var contentBytes = Encoding.UTF8.GetBytes(content);
