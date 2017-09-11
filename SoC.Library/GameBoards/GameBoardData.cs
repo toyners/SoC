@@ -722,6 +722,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
 
     private void CreateResourceProviders()
     {
+      // TODO: Replace this by using this.hexes
       //d,b8,o5
       var brick8 = new ResourceProvider2 { Type = ResourceTypes.Brick, Production = 8u };
       var ore5 = new ResourceProvider2 { Type = ResourceTypes.Ore, Production = 5u };
@@ -752,16 +753,16 @@ namespace Jabberwocky.SoC.Library.GameBoards
 
       var tempResourceProvidersByDiceRolls = new List<ResourceProvider2>[13];
 
-      tempResourceProvidersByDiceRolls[2] = new List<ResourceProvider2> { grain2 };
-      tempResourceProvidersByDiceRolls[3] = new List<ResourceProvider2> { lumber3, ore3 };
-      tempResourceProvidersByDiceRolls[4] = new List<ResourceProvider2> { brick4, lumber4 };
-      tempResourceProvidersByDiceRolls[5] = new List<ResourceProvider2> { ore5, brick5 };
-      tempResourceProvidersByDiceRolls[6] = new List<ResourceProvider2> { ore6, lumber6 };
-      tempResourceProvidersByDiceRolls[8] = new List<ResourceProvider2> { brick8, grain8 };
-      tempResourceProvidersByDiceRolls[9] = new List<ResourceProvider2> { wool9, grain9 };
-      tempResourceProvidersByDiceRolls[10] = new List<ResourceProvider2> { wool10_a, wool10_b };
-      tempResourceProvidersByDiceRolls[11] = new List<ResourceProvider2> { lumber11, grain11 };
-      tempResourceProvidersByDiceRolls[12] = new List<ResourceProvider2> { wool12 };
+      tempResourceProvidersByDiceRolls[2] = new List<ResourceProvider2>();
+      tempResourceProvidersByDiceRolls[3] = new List<ResourceProvider2>();
+      tempResourceProvidersByDiceRolls[4] = new List<ResourceProvider2>();
+      tempResourceProvidersByDiceRolls[5] = new List<ResourceProvider2>();
+      tempResourceProvidersByDiceRolls[6] = new List<ResourceProvider2>();
+      tempResourceProvidersByDiceRolls[8] = new List<ResourceProvider2>();
+      tempResourceProvidersByDiceRolls[9] = new List<ResourceProvider2>();
+      tempResourceProvidersByDiceRolls[10] = new List<ResourceProvider2>();
+      tempResourceProvidersByDiceRolls[11] = new List<ResourceProvider2>();
+      tempResourceProvidersByDiceRolls[12] = new List<ResourceProvider2>();
 
       this.resourceProvidersByDiceRolls = new Dictionary<UInt32, ResourceProvider2[]>();
 
