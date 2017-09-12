@@ -742,6 +742,11 @@ namespace Jabberwocky.SoC.Library.GameBoards
 
       foreach (var hex in this.hexes)
       {
+        if (hex.Production == 0)
+        {
+          continue;
+        }
+
         tempResourceProvidersByDiceRolls[hex.Production].Add(hex);
       }
 
