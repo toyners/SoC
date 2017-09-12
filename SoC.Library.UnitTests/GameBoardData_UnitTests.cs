@@ -494,12 +494,12 @@ namespace Jabberwocky.SoC.Library.UnitTests
     [Test]
     [Category("All")]
     [Category("GameBoardData")]
-    [TestCase(8u, 1)]
-    public void Load_HexAndInfrastructureData_GetCorrectResourcesForRolls(UInt32 diceRoll, Int32 brickCount)
+    [TestCase(3u, 8u, 1, 0)]
+    [TestCase(20u, 6u, 0, 1)]
+    public void Load_HexAndInfrastructureData_GetCorrectResourcesForRolls(UInt32 settlementLocation, UInt32 diceRoll, Int32 brickCount, Int32 oreCount)
     {
       // Arrange
       var playerId = Guid.NewGuid();
-      var settlementLocation = 12u;
       var gameBoardData = new GameBoardData(BoardSizes.Standard);
 
       // Act
@@ -518,7 +518,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
       // Assert
       var resourcesByPlayer = gameBoardData.GetResourcesForRoll(diceRoll);
       resourcesByPlayer.Count.ShouldBe(1);
-      resourcesByPlayer.ShouldContainKeyAndValue(playerId, new ResourceClutch(brickCount, 0, 0, 0, 0));
+      resourcesByPlayer.ShouldContainKeyAndValue(playerId, new ResourceClutch(brickCount, 0, 0, oreCount, 0));
     }
 
     [Test]
