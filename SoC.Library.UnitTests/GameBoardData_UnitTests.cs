@@ -494,7 +494,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     [Test]
     [Category("All")]
     [Category("GameBoardData")]
-    [TestCase(2u, 1)]
+    [TestCase(8u, 1)]
     public void Load_HexAndInfrastructureData_GetCorrectResourcesForRolls(UInt32 diceRoll, Int32 brickCount)
     {
       // Arrange
