@@ -32,18 +32,18 @@ namespace Jabberwocky.SoC.Library.GameBoards
     [Obsolete]
     public Trail[] Trails;
     [Obsolete]
-    public ResourceProvider[] Providers;
+    public OldResourceProvider[] Providers;
 
     public const Int32 StandardBoardLocationCount = 54;
     public const Int32 StandardBoardTrailCount = 72;
     public const Int32 StandardBoardHexCount = 19;
-    private ResourceProvider2[] hexes;
+    private ResourceProducer[] hexes;
     private Dictionary<UInt32, Guid> settlements;
     private Dictionary<Guid, List<UInt32>> settlementsByPlayer;
     private Boolean[,] connections;
     private Dictionary<Road, Guid> roads;
-    private Dictionary<UInt32, ResourceProvider2[]> resourceProvidersByDiceRolls;
-    private Dictionary<ResourceProvider2, UInt32[]> locationsForResourceProvider;
+    private Dictionary<UInt32, ResourceProducer[]> resourceProvidersByDiceRolls;
+    private Dictionary<ResourceProducer, UInt32[]> locationsForResourceProvider;
     private Dictionary<UInt32, UInt32[]> locationsForHex;
     #endregion
 
@@ -430,35 +430,35 @@ namespace Jabberwocky.SoC.Library.GameBoards
 
     private void CreateHexes()
     {
-      this.hexes = new ResourceProvider2[StandardBoardHexCount];
+      this.hexes = new ResourceProducer[StandardBoardHexCount];
       //d,b8,o5
-      this.hexes[0] = new ResourceProvider2 { Type = ResourceTypes.None, Production = 0u };
-      this.hexes[1] = new ResourceProvider2 { Type = ResourceTypes.Brick, Production = 8u };
-      this.hexes[2] = new ResourceProvider2 { Type = ResourceTypes.Ore, Production = 5u };
+      this.hexes[0] = new ResourceProducer { Type = ResourceTypes.None, Production = 0u };
+      this.hexes[1] = new ResourceProducer { Type = ResourceTypes.Brick, Production = 8u };
+      this.hexes[2] = new ResourceProducer { Type = ResourceTypes.Ore, Production = 5u };
 
       //b4,l3,w10,g2,
-      this.hexes[3] = new ResourceProvider2 { Type = ResourceTypes.Brick, Production = 4u };
-      this.hexes[4] = new ResourceProvider2 { Type = ResourceTypes.Lumber, Production = 3u };
-      this.hexes[5] = new ResourceProvider2 { Type = ResourceTypes.Wool, Production = 10u };
-      this.hexes[6] = new ResourceProvider2 { Type = ResourceTypes.Grain, Production = 2u };
+      this.hexes[3] = new ResourceProducer { Type = ResourceTypes.Brick, Production = 4u };
+      this.hexes[4] = new ResourceProducer { Type = ResourceTypes.Lumber, Production = 3u };
+      this.hexes[5] = new ResourceProducer { Type = ResourceTypes.Wool, Production = 10u };
+      this.hexes[6] = new ResourceProducer { Type = ResourceTypes.Grain, Production = 2u };
 
       //l11,o6,g11,w9,l6,
-      this.hexes[7] = new ResourceProvider2 { Type = ResourceTypes.Lumber, Production = 11u };
-      this.hexes[8] = new ResourceProvider2 { Type = ResourceTypes.Ore, Production = 6u };
-      this.hexes[9] = new ResourceProvider2 { Type = ResourceTypes.Grain, Production = 11u };
-      this.hexes[10] = new ResourceProvider2 { Type = ResourceTypes.Wool, Production = 9u };
-      this.hexes[11] = new ResourceProvider2 { Type = ResourceTypes.Lumber, Production = 6u };
+      this.hexes[7] = new ResourceProducer { Type = ResourceTypes.Lumber, Production = 11u };
+      this.hexes[8] = new ResourceProducer { Type = ResourceTypes.Ore, Production = 6u };
+      this.hexes[9] = new ResourceProducer { Type = ResourceTypes.Grain, Production = 11u };
+      this.hexes[10] = new ResourceProducer { Type = ResourceTypes.Wool, Production = 9u };
+      this.hexes[11] = new ResourceProducer { Type = ResourceTypes.Lumber, Production = 6u };
 
       //w12,b5,l4,o3
-      this.hexes[12] = new ResourceProvider2 { Type = ResourceTypes.Wool, Production = 12u };
-      this.hexes[13] = new ResourceProvider2 { Type = ResourceTypes.Brick, Production = 5u };
-      this.hexes[14] = new ResourceProvider2 { Type = ResourceTypes.Lumber, Production = 4u };
-      this.hexes[15] = new ResourceProvider2 { Type = ResourceTypes.Ore, Production = 3u };
+      this.hexes[12] = new ResourceProducer { Type = ResourceTypes.Wool, Production = 12u };
+      this.hexes[13] = new ResourceProducer { Type = ResourceTypes.Brick, Production = 5u };
+      this.hexes[14] = new ResourceProducer { Type = ResourceTypes.Lumber, Production = 4u };
+      this.hexes[15] = new ResourceProducer { Type = ResourceTypes.Ore, Production = 3u };
 
       //g9,w10 (see above),g8
-      this.hexes[16] = new ResourceProvider2 { Type = ResourceTypes.Grain, Production = 9u };
-      this.hexes[17] = new ResourceProvider2 { Type = ResourceTypes.Wool, Production = 10u };
-      this.hexes[18] = new ResourceProvider2 { Type = ResourceTypes.Grain, Production = 8u };
+      this.hexes[16] = new ResourceProducer { Type = ResourceTypes.Grain, Production = 9u };
+      this.hexes[17] = new ResourceProducer { Type = ResourceTypes.Wool, Production = 10u };
+      this.hexes[18] = new ResourceProducer { Type = ResourceTypes.Grain, Production = 8u };
     }
 
     private void CreateLocations()
@@ -513,35 +513,35 @@ namespace Jabberwocky.SoC.Library.GameBoards
     private void ObsoleteCreateResourceProviders()
     {
       //d,b8,o5
-      var desert = new ResourceProvider();
-      var brick8 = new ResourceProvider(ResourceTypes.Brick, 8);
-      var ore5 = new ResourceProvider(ResourceTypes.Ore, 5);
+      var desert = new OldResourceProvider();
+      var brick8 = new OldResourceProvider(ResourceTypes.Brick, 8);
+      var ore5 = new OldResourceProvider(ResourceTypes.Ore, 5);
 
       //b4,l3,w10,g2,
-      var brick4 = new ResourceProvider(ResourceTypes.Brick, 4);
-      var lumber3 = new ResourceProvider(ResourceTypes.Lumber, 3);
-      var wool10 = new ResourceProvider(ResourceTypes.Wool, 10);
-      var grain2 = new ResourceProvider(ResourceTypes.Grain, 2);
+      var brick4 = new OldResourceProvider(ResourceTypes.Brick, 4);
+      var lumber3 = new OldResourceProvider(ResourceTypes.Lumber, 3);
+      var wool10 = new OldResourceProvider(ResourceTypes.Wool, 10);
+      var grain2 = new OldResourceProvider(ResourceTypes.Grain, 2);
 
       //l11,o6,g11,w9,l6,
-      var lumber11 = new ResourceProvider(ResourceTypes.Lumber, 11);
-      var ore6 = new ResourceProvider(ResourceTypes.Ore, 6);
-      var grain11 = new ResourceProvider(ResourceTypes.Grain, 11);
-      var wool9 = new ResourceProvider(ResourceTypes.Wool, 9);
-      var lumber6 = new ResourceProvider(ResourceTypes.Lumber, 6);
+      var lumber11 = new OldResourceProvider(ResourceTypes.Lumber, 11);
+      var ore6 = new OldResourceProvider(ResourceTypes.Ore, 6);
+      var grain11 = new OldResourceProvider(ResourceTypes.Grain, 11);
+      var wool9 = new OldResourceProvider(ResourceTypes.Wool, 9);
+      var lumber6 = new OldResourceProvider(ResourceTypes.Lumber, 6);
 
       //w12,b5,l4,o3
-      var wool12 = new ResourceProvider(ResourceTypes.Wool, 12);
-      var brick5 = new ResourceProvider(ResourceTypes.Brick, 5);
-      var lumber4 = new ResourceProvider(ResourceTypes.Lumber, 4);
-      var ore3 = new ResourceProvider(ResourceTypes.Ore, 3);
+      var wool12 = new OldResourceProvider(ResourceTypes.Wool, 12);
+      var brick5 = new OldResourceProvider(ResourceTypes.Brick, 5);
+      var lumber4 = new OldResourceProvider(ResourceTypes.Lumber, 4);
+      var ore3 = new OldResourceProvider(ResourceTypes.Ore, 3);
 
       //g9,w10,g8
-      var grain9 = new ResourceProvider(ResourceTypes.Grain, 9);
-      var grain8 = new ResourceProvider(ResourceTypes.Grain, 8);
+      var grain9 = new OldResourceProvider(ResourceTypes.Grain, 9);
+      var grain8 = new OldResourceProvider(ResourceTypes.Grain, 8);
 
       // Load the resource provider array
-      this.Providers = new ResourceProvider[StandardBoardHexCount];
+      this.Providers = new OldResourceProvider[StandardBoardHexCount];
       this.Providers[0] = desert;
       this.Providers[1] = brick8;
       this.Providers[2] = ore5;
@@ -727,47 +727,47 @@ namespace Jabberwocky.SoC.Library.GameBoards
     {
       // TODO: Replace this by using this.hexes
       //d,b8,o5
-      var brick8 = new ResourceProvider2 { Type = ResourceTypes.Brick, Production = 8u };
-      var ore5 = new ResourceProvider2 { Type = ResourceTypes.Ore, Production = 5u };
+      var brick8 = new ResourceProducer { Type = ResourceTypes.Brick, Production = 8u };
+      var ore5 = new ResourceProducer { Type = ResourceTypes.Ore, Production = 5u };
 
       //b4,l3,w10,g2,
-      var brick4 = new ResourceProvider2 { Type = ResourceTypes.Brick, Production = 4u };
-      var lumber3 = new ResourceProvider2 { Type = ResourceTypes.Lumber, Production = 3u };
-      var wool10_a = new ResourceProvider2 { Type = ResourceTypes.Wool, Production = 10u };
-      var grain2 = new ResourceProvider2 { Type = ResourceTypes.Grain, Production = 2u };
+      var brick4 = new ResourceProducer { Type = ResourceTypes.Brick, Production = 4u };
+      var lumber3 = new ResourceProducer { Type = ResourceTypes.Lumber, Production = 3u };
+      var wool10_a = new ResourceProducer { Type = ResourceTypes.Wool, Production = 10u };
+      var grain2 = new ResourceProducer { Type = ResourceTypes.Grain, Production = 2u };
 
       //l11,o6,g11,w9,l6,
-      var lumber11 = new ResourceProvider2 { Type = ResourceTypes.Lumber, Production = 11u };
-      var ore6 = new ResourceProvider2 { Type = ResourceTypes.Ore, Production = 6u };
-      var grain11 = new ResourceProvider2 { Type = ResourceTypes.Grain, Production = 11u };
-      var wool9 = new ResourceProvider2 { Type = ResourceTypes.Wool, Production = 9u };
-      var lumber6 = new ResourceProvider2 { Type = ResourceTypes.Lumber, Production = 6u };
+      var lumber11 = new ResourceProducer { Type = ResourceTypes.Lumber, Production = 11u };
+      var ore6 = new ResourceProducer { Type = ResourceTypes.Ore, Production = 6u };
+      var grain11 = new ResourceProducer { Type = ResourceTypes.Grain, Production = 11u };
+      var wool9 = new ResourceProducer { Type = ResourceTypes.Wool, Production = 9u };
+      var lumber6 = new ResourceProducer { Type = ResourceTypes.Lumber, Production = 6u };
 
       //w12,b5,l4,o3
-      var wool12 = new ResourceProvider2 { Type = ResourceTypes.Wool, Production = 12u };
-      var brick5 = new ResourceProvider2 { Type = ResourceTypes.Brick, Production = 5u };
-      var lumber4 = new ResourceProvider2 { Type = ResourceTypes.Lumber, Production = 4u };
-      var ore3 = new ResourceProvider2 { Type = ResourceTypes.Ore, Production = 3u };
+      var wool12 = new ResourceProducer { Type = ResourceTypes.Wool, Production = 12u };
+      var brick5 = new ResourceProducer { Type = ResourceTypes.Brick, Production = 5u };
+      var lumber4 = new ResourceProducer { Type = ResourceTypes.Lumber, Production = 4u };
+      var ore3 = new ResourceProducer { Type = ResourceTypes.Ore, Production = 3u };
 
       //g9,w10 (see above),g8
-      var grain9 = new ResourceProvider2 { Type = ResourceTypes.Grain, Production = 9u };
-      var wool10_b = new ResourceProvider2 { Type = ResourceTypes.Wool, Production = 10u };
-      var grain8 = new ResourceProvider2 { Type = ResourceTypes.Grain, Production = 8u };
+      var grain9 = new ResourceProducer { Type = ResourceTypes.Grain, Production = 9u };
+      var wool10_b = new ResourceProducer { Type = ResourceTypes.Wool, Production = 10u };
+      var grain8 = new ResourceProducer { Type = ResourceTypes.Grain, Production = 8u };
 
-      var tempResourceProvidersByDiceRolls = new List<ResourceProvider2>[13];
+      var tempResourceProvidersByDiceRolls = new List<ResourceProducer>[13];
 
-      tempResourceProvidersByDiceRolls[2] = new List<ResourceProvider2>();
-      tempResourceProvidersByDiceRolls[3] = new List<ResourceProvider2>();
-      tempResourceProvidersByDiceRolls[4] = new List<ResourceProvider2>();
-      tempResourceProvidersByDiceRolls[5] = new List<ResourceProvider2>();
-      tempResourceProvidersByDiceRolls[6] = new List<ResourceProvider2>();
-      tempResourceProvidersByDiceRolls[8] = new List<ResourceProvider2>();
-      tempResourceProvidersByDiceRolls[9] = new List<ResourceProvider2>();
-      tempResourceProvidersByDiceRolls[10] = new List<ResourceProvider2>();
-      tempResourceProvidersByDiceRolls[11] = new List<ResourceProvider2>();
-      tempResourceProvidersByDiceRolls[12] = new List<ResourceProvider2>();
+      tempResourceProvidersByDiceRolls[2] = new List<ResourceProducer>();
+      tempResourceProvidersByDiceRolls[3] = new List<ResourceProducer>();
+      tempResourceProvidersByDiceRolls[4] = new List<ResourceProducer>();
+      tempResourceProvidersByDiceRolls[5] = new List<ResourceProducer>();
+      tempResourceProvidersByDiceRolls[6] = new List<ResourceProducer>();
+      tempResourceProvidersByDiceRolls[8] = new List<ResourceProducer>();
+      tempResourceProvidersByDiceRolls[9] = new List<ResourceProducer>();
+      tempResourceProvidersByDiceRolls[10] = new List<ResourceProducer>();
+      tempResourceProvidersByDiceRolls[11] = new List<ResourceProducer>();
+      tempResourceProvidersByDiceRolls[12] = new List<ResourceProducer>();
 
-      this.resourceProvidersByDiceRolls = new Dictionary<UInt32, ResourceProvider2[]>();
+      this.resourceProvidersByDiceRolls = new Dictionary<UInt32, ResourceProducer[]>();
 
       for (UInt32 diceRoll = 2; diceRoll <= 12; diceRoll++)
       {
@@ -779,7 +779,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
         this.resourceProvidersByDiceRolls.Add(diceRoll, tempResourceProvidersByDiceRolls[diceRoll].ToArray());
       }
 
-      this.locationsForResourceProvider = new Dictionary<ResourceProvider2, UInt32[]>();
+      this.locationsForResourceProvider = new Dictionary<ResourceProducer, UInt32[]>();
 
       // Column 1
       UInt32 lhs = 2;
@@ -944,7 +944,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
     #endregion
 
     #region Structs
-    private class ResourceProvider2
+    private class ResourceProducer
     {
       public ResourceTypes Type;
       public UInt32 Production;

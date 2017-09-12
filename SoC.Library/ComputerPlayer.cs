@@ -47,7 +47,7 @@ namespace Jabberwocky.SoC.Library
       throw new NotImplementedException();
     }
 
-    private Int32 CalculateChangeOfReturnOnRoll(HashSet<ResourceProvider> providers)
+    private Int32 CalculateChangeOfReturnOnRoll(HashSet<OldResourceProvider> providers)
     {
       Int32 totalChance = 0;
       foreach (var provider in providers)

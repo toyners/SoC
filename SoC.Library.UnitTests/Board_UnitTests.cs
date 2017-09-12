@@ -449,24 +449,24 @@ namespace Jabberwocky.SoC.Library.UnitTests
       // Arrange and Act
       var board = new GameBoardData(BoardSizes.Standard);
 
-      var desert = new ResourceProvider();
-      var brick8 = new ResourceProvider(ResourceTypes.Brick, 8);
-      var ore5 = new ResourceProvider(ResourceTypes.Ore, 5);
-      var brick4 = new ResourceProvider(ResourceTypes.Brick, 4);
-      var lumber3 = new ResourceProvider(ResourceTypes.Lumber, 3);
-      var wool10 = new ResourceProvider(ResourceTypes.Wool, 10);
-      var grain2 = new ResourceProvider(ResourceTypes.Grain, 2);
-      var lumber11 = new ResourceProvider(ResourceTypes.Lumber, 11);
-      var ore6 = new ResourceProvider(ResourceTypes.Ore, 6);
-      var grain11 = new ResourceProvider(ResourceTypes.Grain, 11);
-      var wool9 = new ResourceProvider(ResourceTypes.Wool, 9);
-      var lumber6 = new ResourceProvider(ResourceTypes.Lumber, 6);
-      var wool12 = new ResourceProvider(ResourceTypes.Wool, 12);
-      var brick5 = new ResourceProvider(ResourceTypes.Brick, 5);
-      var lumber4 = new ResourceProvider(ResourceTypes.Lumber, 4);
-      var ore3 = new ResourceProvider(ResourceTypes.Ore, 3);
-      var grain9 = new ResourceProvider(ResourceTypes.Grain, 9);
-      var grain8 = new ResourceProvider(ResourceTypes.Grain, 8);
+      var desert = new OldResourceProvider();
+      var brick8 = new OldResourceProvider(ResourceTypes.Brick, 8);
+      var ore5 = new OldResourceProvider(ResourceTypes.Ore, 5);
+      var brick4 = new OldResourceProvider(ResourceTypes.Brick, 4);
+      var lumber3 = new OldResourceProvider(ResourceTypes.Lumber, 3);
+      var wool10 = new OldResourceProvider(ResourceTypes.Wool, 10);
+      var grain2 = new OldResourceProvider(ResourceTypes.Grain, 2);
+      var lumber11 = new OldResourceProvider(ResourceTypes.Lumber, 11);
+      var ore6 = new OldResourceProvider(ResourceTypes.Ore, 6);
+      var grain11 = new OldResourceProvider(ResourceTypes.Grain, 11);
+      var wool9 = new OldResourceProvider(ResourceTypes.Wool, 9);
+      var lumber6 = new OldResourceProvider(ResourceTypes.Lumber, 6);
+      var wool12 = new OldResourceProvider(ResourceTypes.Wool, 12);
+      var brick5 = new OldResourceProvider(ResourceTypes.Brick, 5);
+      var lumber4 = new OldResourceProvider(ResourceTypes.Lumber, 4);
+      var ore3 = new OldResourceProvider(ResourceTypes.Ore, 3);
+      var grain9 = new OldResourceProvider(ResourceTypes.Grain, 9);
+      var grain8 = new OldResourceProvider(ResourceTypes.Grain, 8);
 
       // Assert
       board.Locations[0].Providers.Count.ShouldBe(1);

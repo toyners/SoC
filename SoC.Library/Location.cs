@@ -7,12 +7,12 @@ namespace Jabberwocky.SoC.Library
   {
     public Trail[] Trails;
 
-    public readonly HashSet<ResourceProvider> Providers; // 1, 2 or 3
+    public readonly HashSet<OldResourceProvider> Providers; // 1, 2 or 3
 
     #region Construction
     public Location()
     {
-      this.Providers = new HashSet<ResourceProvider>();
+      this.Providers = new HashSet<OldResourceProvider>();
     }
     #endregion
 

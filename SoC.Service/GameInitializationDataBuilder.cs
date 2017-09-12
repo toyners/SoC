@@ -22,7 +22,7 @@ namespace Jabberwocky.SoC.Service
       };
     }
 
-    private static Byte CreateDataForProvider(ResourceProvider provider)
+    private static Byte CreateDataForProvider(OldResourceProvider provider)
     {
       if (!provider.Type.HasValue)
       {

@@ -3,7 +3,7 @@ namespace Jabberwocky.SoC.Library
 {
   using System;
 
-  public class ResourceProvider
+  public class OldResourceProvider
   {
     #region Fields
     public readonly ResourceTypes? Type;
@@ -12,7 +12,7 @@ namespace Jabberwocky.SoC.Library
     #endregion
 
     #region Construction
-    public ResourceProvider(ResourceTypes type, UInt32 productionNumber)
+    public OldResourceProvider(ResourceTypes type, UInt32 productionNumber)
     {
       this.Type = type;
 
@@ -24,7 +24,7 @@ namespace Jabberwocky.SoC.Library
       this.ProductionNumber = productionNumber;
     }
 
-    public ResourceProvider()
+    public OldResourceProvider()
     {
       this.Type = null;
     }
@@ -35,7 +35,7 @@ namespace Jabberwocky.SoC.Library
     #endregion
 
     #region Methods
-    public static Boolean operator ==(ResourceProvider first, ResourceProvider second)
+    public static Boolean operator ==(OldResourceProvider first, OldResourceProvider second)
     {
       if (Object.ReferenceEquals(first, second))
       {
@@ -50,7 +50,7 @@ namespace Jabberwocky.SoC.Library
       return (first.Type == second.Type && first.ProductionNumber == second.ProductionNumber);
     }
 
-    public static Boolean operator !=(ResourceProvider first, ResourceProvider second)
+    public static Boolean operator !=(OldResourceProvider first, OldResourceProvider second)
     {
       return !(first == second);
     }
@@ -62,7 +62,7 @@ namespace Jabberwocky.SoC.Library
         return false;
       }
 
-      var other = obj as ResourceProvider;
+      var other = obj as OldResourceProvider;
       if (other == null)
       {
         return false;
