@@ -75,9 +75,9 @@ namespace Jabberwocky.SoC.Library.GameBoards
 
       this.ObsoleteCreateResourceProviders();
 
-      this.CreateResourceProvidersByDiceRolls();
+      this.AssignResourceProvidersToDiceRolls();
 
-      this.CreateResourceProviders();
+      this.AssignLocationsToResourceProviders();
 
       this.CreateLocationsForHex();
     }
@@ -725,7 +725,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
       return data;
     }
 
-    private void CreateResourceProvidersByDiceRolls()
+    private void AssignResourceProvidersToDiceRolls()
     {
       var tempResourceProvidersByDiceRolls = new List<ResourceProducer>[13];
 
@@ -763,44 +763,17 @@ namespace Jabberwocky.SoC.Library.GameBoards
       }
     }
 
-    private void CreateResourceProviders()
+    private void AssignLocationsToResourceProviders()
     {
-      // TODO: Replace this by using this.hexes
-      //d,b8,o5
-      var brick8 = new ResourceProducer { Type = ResourceTypes.Brick, Production = 8u };
-      var ore5 = new ResourceProducer { Type = ResourceTypes.Ore, Production = 5u };
-
-      //b4,l3,w10,g2,
-      var brick4 = new ResourceProducer { Type = ResourceTypes.Brick, Production = 4u };
-      var lumber3 = new ResourceProducer { Type = ResourceTypes.Lumber, Production = 3u };
-      var wool10_a = new ResourceProducer { Type = ResourceTypes.Wool, Production = 10u };
-      var grain2 = new ResourceProducer { Type = ResourceTypes.Grain, Production = 2u };
-
-      //l11,o6,g11,w9,l6,
-      var lumber11 = new ResourceProducer { Type = ResourceTypes.Lumber, Production = 11u };
-      var ore6 = new ResourceProducer { Type = ResourceTypes.Ore, Production = 6u };
-      var grain11 = new ResourceProducer { Type = ResourceTypes.Grain, Production = 11u };
-      var wool9 = new ResourceProducer { Type = ResourceTypes.Wool, Production = 9u };
-      var lumber6 = new ResourceProducer { Type = ResourceTypes.Lumber, Production = 6u };
-
-      //w12,b5,l4,o3
-      var wool12 = new ResourceProducer { Type = ResourceTypes.Wool, Production = 12u };
-      var brick5 = new ResourceProducer { Type = ResourceTypes.Brick, Production = 5u };
-      var lumber4 = new ResourceProducer { Type = ResourceTypes.Lumber, Production = 4u };
-      var ore3 = new ResourceProducer { Type = ResourceTypes.Ore, Production = 3u };
-
-      //g9,w10 (see above),g8
-      var grain9 = new ResourceProducer { Type = ResourceTypes.Grain, Production = 9u };
-      var wool10_b = new ResourceProducer { Type = ResourceTypes.Wool, Production = 10u };
-      var grain8 = new ResourceProducer { Type = ResourceTypes.Grain, Production = 8u };
-
       this.locationsForResourceProvider = new Dictionary<ResourceProducer, UInt32[]>();
 
       // Column 1
       UInt32 lhs = 2;
       UInt32 rhs = 10;
-      foreach (var resourceProvider in new[] { brick8, ore5 })
+      Int32 hexIndex = 0;
+      for (; hexIndex < 3; hexIndex++)
       {
+        var resourceProvider = this.hexes[hexIndex];
         var locations = new UInt32[] { lhs, lhs + 1, lhs + 2, rhs, rhs + 1, rhs + 2 };
         lhs = lhs + 2;
         rhs = rhs + 2;
@@ -811,8 +784,9 @@ namespace Jabberwocky.SoC.Library.GameBoards
       // Column 2
       lhs = 7;
       rhs = 17;
-      foreach (var resourceProvider in new[] { brick4, lumber3, wool10_a, grain2 })
+      for (; hexIndex < 7; hexIndex++)
       {
+        var resourceProvider = this.hexes[hexIndex];
         var locations = new UInt32[] { lhs, lhs + 1, lhs + 2, rhs, rhs + 1, rhs + 2 };
         lhs = lhs + 2;
         rhs = rhs + 2;
@@ -823,8 +797,9 @@ namespace Jabberwocky.SoC.Library.GameBoards
       // Column 3
       lhs = 16;
       rhs = 27;
-      foreach (var resourceProvider in new[] { lumber11, ore6, grain11, wool9, lumber6 })
+      for (; hexIndex < 12; hexIndex++)
       {
+        var resourceProvider = this.hexes[hexIndex];
         var locations = new UInt32[] { lhs, lhs + 1, lhs + 2, rhs, rhs + 1, rhs + 2 };
         lhs = lhs + 2;
         rhs = rhs + 2;
@@ -835,8 +810,9 @@ namespace Jabberwocky.SoC.Library.GameBoards
       // Column 4
       lhs = 28;
       rhs = 38;
-      foreach (var resourceProvider in new[] { wool12, brick5, lumber4, ore3 })
+      for (; hexIndex < 16; hexIndex++)
       {
+        var resourceProvider = this.hexes[hexIndex];
         var locations = new UInt32[] { lhs, lhs + 1, lhs + 2, rhs, rhs + 1, rhs + 2 };
         lhs = lhs + 2;
         rhs = rhs + 2;
@@ -847,8 +823,9 @@ namespace Jabberwocky.SoC.Library.GameBoards
       // Column 5
       lhs = 39;
       rhs = 47;
-      foreach (var resourceProvider in new[] { grain9, wool10_b, grain8 })
+      for (; hexIndex < 19; hexIndex++)
       {
+        var resourceProvider = this.hexes[hexIndex];
         var locations = new UInt32[] { lhs, lhs + 1, lhs + 2, rhs, rhs + 1, rhs + 2 };
         lhs = lhs + 2;
         rhs = rhs + 2;
