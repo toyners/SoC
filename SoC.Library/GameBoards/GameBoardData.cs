@@ -359,7 +359,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
     {
       try
       {
-        using (var reader = XmlReader.Create(stream))
+        using (var reader = XmlReader.Create(stream, new XmlReaderSettings { CloseInput = false, IgnoreWhitespace = true, IgnoreComments = true }))
         {
           this.roads.Clear();
           this.settlements.Clear();
@@ -375,18 +375,21 @@ namespace Jabberwocky.SoC.Library.GameBoards
             {
               this.LoadHexResources(reader);
             }
-            else if (reader.Name == "production" && reader.NodeType == XmlNodeType.Element)
+
+            if (reader.Name == "production" && reader.NodeType == XmlNodeType.Element)
             {
               this.LoadHexProduction(reader);
             }
-            else if (reader.Name == "settlement")
+
+            if (reader.Name == "settlement")
             {
               var playerId = Guid.Parse(reader.GetAttribute("playerid"));
               var location = UInt32.Parse(reader.GetAttribute("location"));
 
               this.settlements.Add(location, playerId);
             }
-            else if (reader.Name == "road")
+
+            if (reader.Name == "road")
             {
               var playerId = Guid.Parse(reader.GetAttribute("playerid"));
               var start = UInt32.Parse(reader.GetAttribute("start"));
