@@ -75,6 +75,8 @@ namespace Jabberwocky.SoC.Library.GameBoards
 
       this.ObsoleteCreateResourceProviders();
 
+      this.CreateResourceProvidersByDiceRolls();
+
       this.CreateResourceProviders();
 
       this.CreateLocationsForHex();
@@ -723,6 +725,39 @@ namespace Jabberwocky.SoC.Library.GameBoards
       return data;
     }
 
+    private void CreateResourceProvidersByDiceRolls()
+    {
+      var tempResourceProvidersByDiceRolls = new List<ResourceProducer>[13];
+
+      tempResourceProvidersByDiceRolls[2] = new List<ResourceProducer>();
+      tempResourceProvidersByDiceRolls[3] = new List<ResourceProducer>();
+      tempResourceProvidersByDiceRolls[4] = new List<ResourceProducer>();
+      tempResourceProvidersByDiceRolls[5] = new List<ResourceProducer>();
+      tempResourceProvidersByDiceRolls[6] = new List<ResourceProducer>();
+      tempResourceProvidersByDiceRolls[8] = new List<ResourceProducer>();
+      tempResourceProvidersByDiceRolls[9] = new List<ResourceProducer>();
+      tempResourceProvidersByDiceRolls[10] = new List<ResourceProducer>();
+      tempResourceProvidersByDiceRolls[11] = new List<ResourceProducer>();
+      tempResourceProvidersByDiceRolls[12] = new List<ResourceProducer>();
+
+      foreach (var hex in this.hexes)
+      {
+        tempResourceProvidersByDiceRolls[hex.Production].Add(hex);
+      }
+
+      this.resourceProvidersByDiceRolls = new Dictionary<UInt32, ResourceProducer[]>();
+
+      for (UInt32 diceRoll = 2; diceRoll <= 12; diceRoll++)
+      {
+        if (diceRoll == 7)
+        {
+          continue;
+        }
+
+        this.resourceProvidersByDiceRolls.Add(diceRoll, tempResourceProvidersByDiceRolls[diceRoll].ToArray());
+      }
+    }
+
     private void CreateResourceProviders()
     {
       // TODO: Replace this by using this.hexes
@@ -753,31 +788,6 @@ namespace Jabberwocky.SoC.Library.GameBoards
       var grain9 = new ResourceProducer { Type = ResourceTypes.Grain, Production = 9u };
       var wool10_b = new ResourceProducer { Type = ResourceTypes.Wool, Production = 10u };
       var grain8 = new ResourceProducer { Type = ResourceTypes.Grain, Production = 8u };
-
-      var tempResourceProvidersByDiceRolls = new List<ResourceProducer>[13];
-
-      tempResourceProvidersByDiceRolls[2] = new List<ResourceProducer>();
-      tempResourceProvidersByDiceRolls[3] = new List<ResourceProducer>();
-      tempResourceProvidersByDiceRolls[4] = new List<ResourceProducer>();
-      tempResourceProvidersByDiceRolls[5] = new List<ResourceProducer>();
-      tempResourceProvidersByDiceRolls[6] = new List<ResourceProducer>();
-      tempResourceProvidersByDiceRolls[8] = new List<ResourceProducer>();
-      tempResourceProvidersByDiceRolls[9] = new List<ResourceProducer>();
-      tempResourceProvidersByDiceRolls[10] = new List<ResourceProducer>();
-      tempResourceProvidersByDiceRolls[11] = new List<ResourceProducer>();
-      tempResourceProvidersByDiceRolls[12] = new List<ResourceProducer>();
-
-      this.resourceProvidersByDiceRolls = new Dictionary<UInt32, ResourceProducer[]>();
-
-      for (UInt32 diceRoll = 2; diceRoll <= 12; diceRoll++)
-      {
-        if (diceRoll == 7)
-        {
-          continue;
-        }
-
-        this.resourceProvidersByDiceRolls.Add(diceRoll, tempResourceProvidersByDiceRolls[diceRoll].ToArray());
-      }
 
       this.locationsForResourceProvider = new Dictionary<ResourceProducer, UInt32[]>();
 
