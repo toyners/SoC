@@ -47,12 +47,12 @@ namespace Jabberwocky.SoC.Library
       throw new NotImplementedException();
     }
 
-    private Int32 CalculateChangeOfReturnOnRoll(HashSet<OldResourceProvider> providers)
+    private Int32 CalculateChanceOfReturnOnRoll(UInt32[] productionValues)
     {
       Int32 totalChance = 0;
-      foreach (var provider in providers)
+      foreach (var productionValue in productionValues)
       {
-        switch (provider.ProductionNumber)
+        switch (productionValue)
         {
           case 2:
           case 12: totalChance += 1; break;
@@ -78,7 +78,7 @@ namespace Jabberwocky.SoC.Library
       bestLocationIndex = 0;
 
       // Iterate over every location and determine the chance of return for all resource providers
-      for (UInt32 index = 0; index < gameBoardData.Locations.Length; index++)
+      for (UInt32 index = 0; index < gameBoardData.Length; index++)
       {
         //Guid playerId;
         var canPlaceResult = gameBoardData.CanPlaceSettlement(index);
@@ -87,8 +87,8 @@ namespace Jabberwocky.SoC.Library
           continue;
         }
 
-        var location = gameBoardData.Locations[index];
-        var chanceOfReturnOnRoll = this.CalculateChangeOfReturnOnRoll(location.Providers);
+        var productionValues = gameBoardData.GetProductionValuesForLocation(index);
+        var chanceOfReturnOnRoll = this.CalculateChanceOfReturnOnRoll(productionValues);
         if (chanceOfReturnOnRoll > bestChanceOfReturnOnRoll)
         {
           bestChanceOfReturnOnRoll = chanceOfReturnOnRoll;

@@ -54,7 +54,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Board_UnitTests.cs" />
     <Compile Include="ComputerPlayer_UnitTests.cs" />
     <Compile Include="GameBoardData_UnitTests.cs" />
     <Compile Include="LocalGameControllerCreator.cs" />

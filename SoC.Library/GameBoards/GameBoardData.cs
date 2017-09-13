@@ -29,7 +29,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
 
     #region Fields
     [Obsolete]
-    public Location[] Locations;
+    private Location[] Locations;
     [Obsolete]
     public Trail[] Trails;
     [Obsolete]
@@ -55,7 +55,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
       {
         throw new Exception("Extended boards not implemented.");
       }
-
+      this.Length = StandardBoardHexCount;
       this.settlements = new Dictionary<UInt32, Guid>();
       this.roads = new Dictionary<Road, Guid>();
       this.settlementsByPlayer = new Dictionary<Guid, List<UInt32>>();
@@ -82,6 +82,10 @@ namespace Jabberwocky.SoC.Library.GameBoards
 
       this.CreateLocationsForHex();
     }
+    #endregion
+
+    #region Properties
+    public UInt32 Length { get; private set; }
     #endregion
 
     #region Methods
@@ -216,6 +220,17 @@ namespace Jabberwocky.SoC.Library.GameBoards
       }
 
       return PathFinder.GetPathBetweenPoints(startIndex, endIndex, this.connections);
+    }
+
+    /// <summary>
+    /// Returns the list of production values of the resource producers that are available
+    /// to the location.
+    /// </summary>
+    /// <param name="index">Index of the location to get production values for.</param>
+    /// <returns>Array of production values.</returns>
+    public UInt32[] GetProductionValuesForLocation(UInt32 index)
+    {
+      throw new NotImplementedException();
     }
 
     public List<UInt32> GetSettlementsForPlayer(Guid playerId)
