@@ -598,6 +598,24 @@ namespace Jabberwocky.SoC.Library.UnitTests
       roads.Length.ShouldBe(1);
       roads[0].ShouldBe(new Tuple<Road, Guid>(road, playerId));
     }
+
+    [Test]
+    [Category("All")]
+    [Category("GameBoardData")]
+    public void GetProductionValuesForLocation_LocationWithThreeResourceProducers_ReturnsExpectedProductionValues()
+    {
+      // Arrange
+      var gameBoard = new GameBoardData(BoardSizes.Standard);
+
+      // Act
+      var productionValues = gameBoard.GetProductionValuesForLocation(12u);
+
+      // Assert
+      productionValues.Length.ShouldBe(3);
+      productionValues.ShouldContain(8u);
+      productionValues.ShouldContain(5u);
+      productionValues.ShouldContain(10u);
+    }
     #endregion 
   }
 }
