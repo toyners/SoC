@@ -616,6 +616,38 @@ namespace Jabberwocky.SoC.Library.UnitTests
       productionValues.ShouldContain(5u);
       productionValues.ShouldContain(10u);
     }
+
+    [Test]
+    [Category("All")]
+    [Category("GameBoardData")]
+    public void GetProductionValuesForLocation_LocationWithTwoResourceProducers_ReturnsExpectedProductionValues()
+    {
+      // Arrange
+      var gameBoard = new GameBoardData(BoardSizes.Standard);
+
+      // Act
+      var productionValues = gameBoard.GetProductionValuesForLocation(4u);
+
+      // Assert
+      productionValues.Length.ShouldBe(2);
+      productionValues.ShouldContain(8u);
+      productionValues.ShouldContain(5u);
+    }
+
+    [Test]
+    [Category("All")]
+    [Category("GameBoardData")]
+    public void GetProductionValuesForLocation_LocationIsOnDesertOnly_ReturnsEmptyArray()
+    {
+      // Arrange
+      var gameBoard = new GameBoardData(BoardSizes.Standard);
+
+      // Act
+      var productionValues = gameBoard.GetProductionValuesForLocation(0u);
+
+      // Assert
+      productionValues.Length.ShouldBe(0);
+    }
     #endregion 
   }
 }
