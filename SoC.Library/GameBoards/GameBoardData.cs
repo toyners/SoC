@@ -3,6 +3,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
 {
   using System;
   using System.Collections.Generic;
+  using System.Diagnostics;
   using System.IO;
   using System.Xml;
 
@@ -768,8 +769,8 @@ namespace Jabberwocky.SoC.Library.GameBoards
       this.locationsForResourceProvider = new Dictionary<ResourceProducer, UInt32[]>();
 
       // Column 1
-      UInt32 lhs = 2;
-      UInt32 rhs = 10;
+      UInt32 lhs = 0;
+      UInt32 rhs = 8;
       Int32 hexIndex = 0;
       for (; hexIndex < 3; hexIndex++)
       {
@@ -936,6 +937,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
     #endregion
 
     #region Structs
+    [DebuggerDisplay("Type = {Type}, Production = {Production}")]
     private class ResourceProducer
     {
       public ResourceTypes Type;

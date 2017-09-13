@@ -494,16 +494,19 @@ namespace Jabberwocky.SoC.Library.UnitTests
     [Test]
     [Category("All")]
     [Category("GameBoardData")]
-    [TestCase(3u, 8u, 1, 0)]
-    [TestCase(20u, 6u, 0, 1)]
-    public void Load_HexAndInfrastructureData_GetCorrectResourcesForRolls(UInt32 settlementLocation, UInt32 diceRoll, Int32 brickCount, Int32 oreCount)
+    [TestCase(3u, 8u, 0, 1)]
+    [TestCase(20u, 6u, 1, 0)]
+    public void Load_HexAndInfrastructureData_GetCorrectResourcesForRolls(UInt32 settlementLocation, UInt32 diceRoll, Int32 brickCount, Int32 lumberCount)
     {
       // Arrange
       var playerId = Guid.NewGuid();
       var gameBoardData = new GameBoardData(BoardSizes.Standard);
 
       // Act
-      var content = "<board><hexes>glbglogob gwwwlwlbo</hexes>" +
+      var content = "<board><hexes>" +
+        "<resources>glbglogob gwwwlwlbo</resources>" +
+        "<production>9,8,5,12,11,3,6,10,6,0,4,11,2,4,3,5,9,10,8</production>" + 
+        "</hexes>" +
         "<settlements>" +
         "<settlement playerid=\"" + playerId + "\" location=\"" + settlementLocation + "\" />" +
         "</settlements>" +
@@ -518,7 +521,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
       // Assert
       var resourcesByPlayer = gameBoardData.GetResourcesForRoll(diceRoll);
       resourcesByPlayer.Count.ShouldBe(1);
-      resourcesByPlayer.ShouldContainKeyAndValue(playerId, new ResourceClutch(brickCount, 0, 0, oreCount, 0));
+      resourcesByPlayer.ShouldContainKeyAndValue(playerId, new ResourceClutch(brickCount, 0, lumberCount, 0, 0));
     }
 
     [Test]
