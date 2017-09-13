@@ -28,13 +28,6 @@ namespace Jabberwocky.SoC.Library.GameBoards
     }
 
     #region Fields
-    [Obsolete]
-    private Location[] Locations;
-    [Obsolete]
-    public Trail[] Trails;
-    [Obsolete]
-    public OldResourceProvider[] Providers;
-
     public const Int32 StandardBoardLocationCount = 54;
     public const Int32 StandardBoardTrailCount = 72;
     public const Int32 StandardBoardHexCount = 19;
@@ -46,6 +39,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
     private Dictionary<UInt32, ResourceProducer[]> resourceProvidersByDiceRolls;
     private Dictionary<ResourceProducer, UInt32[]> locationsForResourceProvider;
     private Dictionary<UInt32, UInt32[]> locationsForHex;
+    private Dictionary<UInt32, UInt32[]> hexesForLocations;
     #endregion
 
     #region Construction
@@ -62,19 +56,9 @@ namespace Jabberwocky.SoC.Library.GameBoards
 
       this.CreateHexes();
 
-      this.CreateLocations();
-
-      this.Trails = new Trail[StandardBoardTrailCount];
-
       this.connections = new Boolean[GameBoardData.StandardBoardLocationCount, GameBoardData.StandardBoardLocationCount];
       this.ConnectLocationsVertically();
       this.ConnectLocationsHorizontally();
-
-      var index = this.StitchLocationsTogetherUsingVerticalTrails();
-
-      this.StitchLocationsTogetherUsingHorizontalTrails(index);
-
-      this.ObsoleteCreateResourceProviders();
 
       this.AssignResourceProvidersToDiceRolls();
 
@@ -226,9 +210,9 @@ namespace Jabberwocky.SoC.Library.GameBoards
     /// Returns the list of production values of the resource producers that are available
     /// to the location.
     /// </summary>
-    /// <param name="index">Index of the location to get production values for.</param>
+    /// <param name="location">Index of the location to get production values for.</param>
     /// <returns>Array of production values.</returns>
-    public UInt32[] GetProductionValuesForLocation(UInt32 index)
+    public UInt32[] GetProductionValuesForLocation(UInt32 location)
     {
       throw new NotImplementedException();
     }
@@ -305,11 +289,12 @@ namespace Jabberwocky.SoC.Library.GameBoards
     public ResourceClutch GetResourcesForLocation(UInt32 location)
     {
       var resourceClutch = new ResourceClutch();
-      var resourceProviders = this.Locations[location].Providers;
+      var hexes = this.hexesForLocations[location];
+        // this.Locations[location].Providers;
 
-      foreach (var resourceProvider in resourceProviders)
+      foreach (var hexIndex in hexes)
       {
-        switch (resourceProvider.Type)
+        switch (this.hexes[hexIndex].Type)
         {
           case ResourceTypes.Brick: resourceClutch.BrickCount++; break;
           case ResourceTypes.Grain: resourceClutch.GrainCount++; break;
@@ -479,15 +464,6 @@ namespace Jabberwocky.SoC.Library.GameBoards
       this.hexes[18] = new ResourceProducer { Type = ResourceTypes.Grain, Production = 8u };
     }
 
-    private void CreateLocations()
-    {
-      this.Locations = new Location[StandardBoardLocationCount];
-      for (var index = 0; index < StandardBoardLocationCount; index++)
-      {
-        this.Locations[index] = new Location();
-      }
-    }
-
     private void LoadHexResources(XmlReader reader)
     {
       var resources = reader.ReadElementContentAsString();
@@ -526,185 +502,6 @@ namespace Jabberwocky.SoC.Library.GameBoards
       {
         this.hexes[index++].Production = UInt32.Parse(productionValue);
       }
-    }
-
-    private void ObsoleteCreateResourceProviders()
-    {
-      //d,b8,o5
-      var desert = new OldResourceProvider();
-      var brick8 = new OldResourceProvider(ResourceTypes.Brick, 8);
-      var ore5 = new OldResourceProvider(ResourceTypes.Ore, 5);
-
-      //b4,l3,w10,g2,
-      var brick4 = new OldResourceProvider(ResourceTypes.Brick, 4);
-      var lumber3 = new OldResourceProvider(ResourceTypes.Lumber, 3);
-      var wool10 = new OldResourceProvider(ResourceTypes.Wool, 10);
-      var grain2 = new OldResourceProvider(ResourceTypes.Grain, 2);
-
-      //l11,o6,g11,w9,l6,
-      var lumber11 = new OldResourceProvider(ResourceTypes.Lumber, 11);
-      var ore6 = new OldResourceProvider(ResourceTypes.Ore, 6);
-      var grain11 = new OldResourceProvider(ResourceTypes.Grain, 11);
-      var wool9 = new OldResourceProvider(ResourceTypes.Wool, 9);
-      var lumber6 = new OldResourceProvider(ResourceTypes.Lumber, 6);
-
-      //w12,b5,l4,o3
-      var wool12 = new OldResourceProvider(ResourceTypes.Wool, 12);
-      var brick5 = new OldResourceProvider(ResourceTypes.Brick, 5);
-      var lumber4 = new OldResourceProvider(ResourceTypes.Lumber, 4);
-      var ore3 = new OldResourceProvider(ResourceTypes.Ore, 3);
-
-      //g9,w10,g8
-      var grain9 = new OldResourceProvider(ResourceTypes.Grain, 9);
-      var grain8 = new OldResourceProvider(ResourceTypes.Grain, 8);
-
-      // Load the resource provider array
-      this.Providers = new OldResourceProvider[StandardBoardHexCount];
-      this.Providers[0] = desert;
-      this.Providers[1] = brick8;
-      this.Providers[2] = ore5;
-      this.Providers[3] = brick4;
-      this.Providers[4] = lumber3;
-      this.Providers[5] = wool10;
-      this.Providers[6] = grain2;
-      this.Providers[7] = lumber11;
-      this.Providers[8] = ore6;
-      this.Providers[9] = grain11;
-      this.Providers[10] = wool9;
-      this.Providers[11] = lumber6;
-      this.Providers[12] = wool12;
-      this.Providers[13] = brick5;
-      this.Providers[14] = lumber4;
-      this.Providers[15] = ore3;
-      this.Providers[16] = grain9;
-      this.Providers[17] = wool10;
-      this.Providers[18] = grain8;
-
-      // Side 1
-      this.Locations[0].Providers.Add(desert);
-      this.Locations[1].Providers.Add(desert);
-      this.Locations[2].Providers.Add(desert);
-      this.Locations[2].Providers.Add(brick8);
-      this.Locations[3].Providers.Add(brick8);
-      this.Locations[4].Providers.Add(brick8);
-      this.Locations[4].Providers.Add(ore5);
-      this.Locations[5].Providers.Add(ore5);
-      this.Locations[6].Providers.Add(ore5);
-
-      // Side 2
-      this.Locations[7].Providers.Add(brick4);
-      this.Locations[8].Providers.Add(desert);
-      this.Locations[8].Providers.Add(brick4);
-      this.Locations[9].Providers.Add(brick4);
-      this.Locations[9].Providers.Add(desert);
-      this.Locations[9].Providers.Add(lumber3);
-      this.Locations[10].Providers.Add(brick8);
-      this.Locations[10].Providers.Add(desert);
-      this.Locations[10].Providers.Add(lumber3);
-      this.Locations[11].Providers.Add(brick8);
-      this.Locations[11].Providers.Add(wool10);
-      this.Locations[11].Providers.Add(lumber3);
-      this.Locations[12].Providers.Add(brick8);
-      this.Locations[12].Providers.Add(wool10);
-      this.Locations[12].Providers.Add(ore5);
-      this.Locations[13].Providers.Add(wool10);
-      this.Locations[13].Providers.Add(ore5);
-      this.Locations[13].Providers.Add(grain2);
-      this.Locations[14].Providers.Add(ore5);
-      this.Locations[14].Providers.Add(grain2);
-      this.Locations[15].Providers.Add(grain2);
-
-      // Side 3
-      this.Locations[16].Providers.Add(lumber11);
-      this.Locations[17].Providers.Add(lumber11);
-      this.Locations[17].Providers.Add(brick4);
-      this.Locations[18].Providers.Add(lumber11);
-      this.Locations[18].Providers.Add(brick4);
-      this.Locations[18].Providers.Add(ore6);
-      this.Locations[19].Providers.Add(lumber3);
-      this.Locations[19].Providers.Add(brick4);
-      this.Locations[19].Providers.Add(ore6);
-      this.Locations[20].Providers.Add(lumber3);
-      this.Locations[20].Providers.Add(grain11);
-      this.Locations[20].Providers.Add(ore6);
-      this.Locations[21].Providers.Add(lumber3);
-      this.Locations[21].Providers.Add(wool10);
-      this.Locations[21].Providers.Add(grain11);
-      this.Locations[22].Providers.Add(grain11);
-      this.Locations[22].Providers.Add(wool10);
-      this.Locations[22].Providers.Add(wool9);
-      this.Locations[23].Providers.Add(grain2);
-      this.Locations[23].Providers.Add(wool10);
-      this.Locations[23].Providers.Add(wool9);
-      this.Locations[24].Providers.Add(grain2);
-      this.Locations[24].Providers.Add(lumber6);
-      this.Locations[24].Providers.Add(wool9);
-      this.Locations[25].Providers.Add(lumber6);
-      this.Locations[25].Providers.Add(grain2);
-      this.Locations[26].Providers.Add(lumber6);
-
-      // Side 4
-      this.Locations[27].Providers.Add(lumber11);
-      this.Locations[28].Providers.Add(lumber11);
-      this.Locations[28].Providers.Add(wool12);
-      this.Locations[29].Providers.Add(lumber11);
-      this.Locations[29].Providers.Add(wool12);
-      this.Locations[29].Providers.Add(ore6);
-      this.Locations[30].Providers.Add(wool12);
-      this.Locations[30].Providers.Add(ore6);
-      this.Locations[30].Providers.Add(brick5);
-      this.Locations[31].Providers.Add(ore6);
-      this.Locations[31].Providers.Add(brick5);
-      this.Locations[31].Providers.Add(grain11);
-      this.Locations[32].Providers.Add(brick5);
-      this.Locations[32].Providers.Add(grain11);
-      this.Locations[32].Providers.Add(lumber4);
-      this.Locations[33].Providers.Add(grain11);
-      this.Locations[33].Providers.Add(lumber4);
-      this.Locations[33].Providers.Add(wool9);
-      this.Locations[34].Providers.Add(lumber4);
-      this.Locations[34].Providers.Add(wool9);
-      this.Locations[34].Providers.Add(ore3);
-      this.Locations[35].Providers.Add(wool9);
-      this.Locations[35].Providers.Add(ore3);
-      this.Locations[35].Providers.Add(lumber6);
-      this.Locations[36].Providers.Add(lumber6);
-      this.Locations[36].Providers.Add(ore3);
-      this.Locations[37].Providers.Add(lumber6);
-
-      // Side 5
-      this.Locations[38].Providers.Add(wool12);
-      this.Locations[39].Providers.Add(wool12);
-      this.Locations[39].Providers.Add(grain9);
-      this.Locations[40].Providers.Add(wool12);
-      this.Locations[40].Providers.Add(grain9);
-      this.Locations[40].Providers.Add(brick5);
-      this.Locations[41].Providers.Add(grain9);
-      this.Locations[41].Providers.Add(brick5);
-      this.Locations[41].Providers.Add(wool10);
-      this.Locations[42].Providers.Add(brick5);
-      this.Locations[42].Providers.Add(wool10);
-      this.Locations[42].Providers.Add(lumber4);
-      this.Locations[43].Providers.Add(wool10);
-      this.Locations[43].Providers.Add(lumber4);
-      this.Locations[43].Providers.Add(grain8);
-      this.Locations[44].Providers.Add(lumber4);
-      this.Locations[44].Providers.Add(grain8);
-      this.Locations[44].Providers.Add(ore3);
-      this.Locations[45].Providers.Add(grain8);
-      this.Locations[45].Providers.Add(ore3);
-      this.Locations[46].Providers.Add(ore3);
-
-      // Side 6
-      this.Locations[47].Providers.Add(grain9);
-      this.Locations[48].Providers.Add(grain9);
-      this.Locations[49].Providers.Add(grain9);
-      this.Locations[49].Providers.Add(wool10);
-      this.Locations[50].Providers.Add(wool10);
-      this.Locations[51].Providers.Add(wool10);
-      this.Locations[51].Providers.Add(grain8);
-      this.Locations[52].Providers.Add(grain8);
-      this.Locations[53].Providers.Add(grain8);
     }
 
     public Tuple<ResourceTypes, UInt32>[] GetHexInformation()
@@ -859,57 +656,6 @@ namespace Jabberwocky.SoC.Library.GameBoards
       this.AddLocationsToHex(16u, 27u, 7u, 5u);
       this.AddLocationsToHex(28u, 38u, 12u, 4u);
       this.AddLocationsToHex(39u, 47u, 16u, 3u);
-    }
-
-    private void StitchLocationsTogetherUsingHorizontalTrails(Int32 index)
-    {
-      // Add horizontal trails for columns
-      foreach (var setup in new[] {
-            new HorizontalTrailSetup(0, 4, 8),
-            new HorizontalTrailSetup(7, 5, 10),
-            new HorizontalTrailSetup(16, 6, 11),
-            new HorizontalTrailSetup(28, 5, 10),
-            new HorizontalTrailSetup(39, 4, 8) })
-      {
-        var count = setup.TrailCount;
-        var locationIndex = setup.LocationIndexStart;
-        while (count-- > 0)
-        {
-          var location1 = this.Locations[locationIndex];
-          var location2 = this.Locations[locationIndex + setup.LocationIndexDiff];
-          var trail = new Trail(location1, location2);
-          this.Trails[index++] = trail;
-          location1.AddTrail(trail);
-          location2.AddTrail(trail);
-
-          locationIndex += 2;
-        }
-      }
-    }
-
-    private Int32 StitchLocationsTogetherUsingVerticalTrails()
-    {
-      var index = 0;
-      var locationIndex = 0;
-      foreach (var trailCount in new[] { 6, 8, 10, 10, 8, 6 })
-      {
-        var count = trailCount;
-        while (count-- > 0)
-        {
-          var location1 = this.Locations[locationIndex];
-          var location2 = this.Locations[locationIndex + 1];
-          var trail = new Trail(location1, location2);
-          this.Trails[index++] = trail;
-          location1.AddTrail(trail);
-          location2.AddTrail(trail);
-
-          locationIndex++;
-        }
-
-        locationIndex++;
-      }
-
-      return index;
     }
 
     private void ConnectLocationsHorizontally()

@@ -11,9 +11,10 @@ namespace Jabberwocky.SoC.Service
     {
       // Standard board only
       var boardData = new Byte[GameBoardData.StandardBoardHexCount];
+      var hexInformation = board.Data.GetHexInformation();
       for (Int32 index = 0; index < GameBoardData.StandardBoardHexCount; index++)
       {
-        boardData[index] = CreateDataForProvider(board.Data.Providers[index]);
+        boardData[index] = CreateDataForProvider(hexInformation[index]);
       }
 
       return new GameInitializationData()
@@ -22,16 +23,9 @@ namespace Jabberwocky.SoC.Service
       };
     }
 
-    private static Byte CreateDataForProvider(OldResourceProvider provider)
+    private static Byte CreateDataForProvider(Tuple<ResourceTypes, UInt32> resourceProducer)
     {
-      if (!provider.Type.HasValue)
-      {
-        return 0;
-      }
-      else
-      {
-        return (Byte)((provider.ProductionNumber * 10) + TranslateProviderTypeToNumber(provider.Type.Value));
-      }
+      return (Byte)((resourceProducer.Item2 * 10) + TranslateProviderTypeToNumber(resourceProducer.Item1));
     }
 
     private static Byte TranslateProviderTypeToNumber(ResourceTypes type)
