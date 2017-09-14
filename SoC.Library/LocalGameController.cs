@@ -5,6 +5,7 @@ namespace Jabberwocky.SoC.Library
   using System.Collections.Generic;
   using System.IO;
   using System.Threading.Tasks;
+  using System.Xml;
   using GameBoards;
   using Interfaces;
 
@@ -145,7 +146,15 @@ namespace Jabberwocky.SoC.Library
     {
       try
       {
-        throw new NotImplementedException();
+        using (var reader = XmlReader.Create(stream, new XmlReaderSettings { CloseInput = false, IgnoreWhitespace = true, IgnoreComments = true }))
+        {
+          while (!reader.EOF)
+          {
+            throw new NotImplementedException();
+
+            reader.Read();
+          }
+        }
       }
       catch (Exception e)
       {
