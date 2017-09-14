@@ -289,10 +289,9 @@ namespace Jabberwocky.SoC.Library.GameBoards
     public ResourceClutch GetResourcesForLocation(UInt32 location)
     {
       var resourceClutch = new ResourceClutch();
-      var hexes = this.hexesForLocations[location];
-        // this.Locations[location].Providers;
+      var hexesForLocation = this.hexesForLocations[location];
 
-      foreach (var hexIndex in hexes)
+      foreach (var hexIndex in hexesForLocation)
       {
         switch (this.hexes[hexIndex].Type)
         {
@@ -645,6 +644,71 @@ namespace Jabberwocky.SoC.Library.GameBoards
 
         this.locationsForResourceProvider.Add(resourceProvider, locations);
       }
+    }
+
+    private void CreateHexesForLocation()
+    {
+      this.hexesForLocations = new Dictionary<uint, uint[]>();
+
+      this.hexesForLocations.Add(0u, new[] { 0u });
+      this.hexesForLocations.Add(1u, new[] { 0u });
+      this.hexesForLocations.Add(2u, new[] { 0u, 1u });
+      this.hexesForLocations.Add(3u, new[] { 1u });
+      this.hexesForLocations.Add(4u, new[] { 1u, 2u });
+      this.hexesForLocations.Add(5u, new[] { 2u });
+      this.hexesForLocations.Add(6u, new[] { 2u });
+
+      this.hexesForLocations.Add(7u, new[] { 3u });
+      this.hexesForLocations.Add(8u, new[] { 0u, 3u });
+      this.hexesForLocations.Add(9u, new[] { 0u, 3u, 4u });
+      this.hexesForLocations.Add(10u, new[] { 0u, 1u, 4u });
+      this.hexesForLocations.Add(11u, new[] { 1u, 4u, 5u });
+      this.hexesForLocations.Add(12u, new[] { 1u, 2u, 5u });
+      this.hexesForLocations.Add(13u, new[] { 2u, 5u, 6u });
+      this.hexesForLocations.Add(14u, new[] { 2u, 6u });
+      this.hexesForLocations.Add(15u, new[] { 6u });
+
+      this.hexesForLocations.Add(16u, new[] { 7u });
+      this.hexesForLocations.Add(17u, new[] { 3u, 7u });
+      this.hexesForLocations.Add(18u, new[] { 3u, 7u, 8u });
+      this.hexesForLocations.Add(19u, new[] { 3u, 4u, 8u });
+      this.hexesForLocations.Add(20u, new[] { 4u, 8u, 9u });
+      this.hexesForLocations.Add(21u, new[] { 4u, 5u, 9u });
+      this.hexesForLocations.Add(22u, new[] { 5u, 9u, 10u });
+      this.hexesForLocations.Add(23u, new[] { 5u, 6u, 10u });
+      this.hexesForLocations.Add(24u, new[] { 6u, 10u, 11u });
+      this.hexesForLocations.Add(25u, new[] { 6u, 11u });
+      this.hexesForLocations.Add(26u, new[] { 11u });
+
+      this.hexesForLocations.Add(27u, new[] { 7u });
+      this.hexesForLocations.Add(28u, new[] { 7u, 12u });
+      this.hexesForLocations.Add(29u, new[] { 7u, 8u, 12u });
+      this.hexesForLocations.Add(30u, new[] { 8u, 12u, 13u });
+      this.hexesForLocations.Add(31u, new[] { 8u, 9u, 13u });
+      this.hexesForLocations.Add(32u, new[] { 9u, 13u, 14u });
+      this.hexesForLocations.Add(33u, new[] { 9u, 10u, 14u });
+      this.hexesForLocations.Add(34u, new[] { 10u, 14u, 15u });
+      this.hexesForLocations.Add(35u, new[] { 10u, 11u, 15u });
+      this.hexesForLocations.Add(36u, new[] { 11u, 15u });
+      this.hexesForLocations.Add(37u, new[] { 11u });
+
+      this.hexesForLocations.Add(38u, new[] { 12u });
+      this.hexesForLocations.Add(39u, new[] { 12u, 16u });
+      this.hexesForLocations.Add(40u, new[] { 12u, 13u, 16u });
+      this.hexesForLocations.Add(41u, new[] { 13u, 16u, 17u });
+      this.hexesForLocations.Add(42u, new[] { 13u, 14u, 17u });
+      this.hexesForLocations.Add(43u, new[] { 14u, 17u, 18u });
+      this.hexesForLocations.Add(44u, new[] { 14u, 15u, 18u });
+      this.hexesForLocations.Add(45u, new[] { 15u, 18u });
+      this.hexesForLocations.Add(46u, new[] { 12u });
+
+      this.hexesForLocations.Add(47u, new[] { 16u });
+      this.hexesForLocations.Add(48u, new[] { 16u });
+      this.hexesForLocations.Add(49u, new[] { 16u, 17u });
+      this.hexesForLocations.Add(50u, new[] { 17u });
+      this.hexesForLocations.Add(51u, new[] { 17u, 18u });
+      this.hexesForLocations.Add(52u, new[] { 18u });
+      this.hexesForLocations.Add(53u, new[] { 18u });
     }
 
     private void CreateLocationsForHex()
