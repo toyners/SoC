@@ -64,7 +64,9 @@ namespace Jabberwocky.SoC.Library.GameBoards
 
       this.AssignLocationsToResourceProviders();
 
-      this.CreateLocationsForHex();
+      this.AssignLocationsToHex();
+
+      this.AssignHexesToLocation();
     }
     #endregion
 
@@ -646,7 +648,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
       }
     }
 
-    private void CreateHexesForLocation()
+    private void AssignHexesToLocation()
     {
       this.hexesForLocations = new Dictionary<uint, uint[]>();
 
@@ -711,7 +713,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
       this.hexesForLocations.Add(53u, new[] { 18u });
     }
 
-    private void CreateLocationsForHex()
+    private void AssignLocationsToHex()
     {
       this.locationsForHex = new Dictionary<UInt32, UInt32[]>();
 
