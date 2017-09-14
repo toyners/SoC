@@ -137,9 +137,20 @@ namespace Jabberwocky.SoC.Library
       this.GamePhase = GamePhases.StartGameSetup;
     }
 
+    /// <summary>
+    /// Load the game controller data from stream.
+    /// </summary>
+    /// <param name="stream">Stream containing game controller data.</param>
     public void Load(Stream stream)
     {
-      throw new NotImplementedException();
+      try
+      {
+        throw new NotImplementedException();
+      }
+      catch (Exception e)
+      {
+        throw new Exception("Ëxception thrown during board loading.", e);
+      }
     }
 
     public void Quit()
