@@ -216,7 +216,19 @@ namespace Jabberwocky.SoC.Library.GameBoards
     /// <returns>Array of production values.</returns>
     public UInt32[] GetProductionValuesForLocation(UInt32 location)
     {
-      throw new NotImplementedException();
+      var hexesForLocation = this.hexesForLocations[location];
+      var productionValues = new List<UInt32>();
+
+      foreach (var hexIndex in hexesForLocation)
+      {
+        var productionValue = this.hexes[hexIndex].Production;
+        if (productionValue > 0)
+        {
+          productionValues.Add(this.hexes[hexIndex].Production);
+        }
+      }
+
+      return productionValues.ToArray();
     }
 
     public List<UInt32> GetSettlementsForPlayer(Guid playerId)
