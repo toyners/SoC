@@ -1298,18 +1298,24 @@ namespace Jabberwocky.SoC.Library.UnitTests
     [Test]
     [Category("All")]
     [Category("LocalGameController")]
-    public void Load()
+    public void Load_SavedAfterSetup_PlayerTurnStarts()
     {
+      // Arrange
       var playerPool = new PlayerPool();
       var gameBoardManager = new GameBoardManager(BoardSizes.Standard);
       LocalGameController newLocalGameController = new LocalGameController(new Dice(), playerPool, gameBoardManager);
+
+      var turnToken = Guid.Empty;
+      newLocalGameController.StartPlayerTurnEvent = (Guid t) => { turnToken = t; };
+
+      // Act
       using (var stream = new FileStream("", FileMode.Open))
       {
         newLocalGameController.Load(stream);
       }
 
-      //newLocalGameController.GamePhase.ShouldBe(currentLocalGameController.GamePhase);
-      throw new NotImplementedException();
+      // Assert
+      turnToken.ShouldNotBe(Guid.Empty);
     }
 
     private LocalGameController CreateLocalGameControllerAndCompleteGameSetup(out MockDice mockDice, out MockPlayer player, out MockComputerPlayer firstOpponent, out MockComputerPlayer secondOpponent, out MockComputerPlayer thirdOpponent)
