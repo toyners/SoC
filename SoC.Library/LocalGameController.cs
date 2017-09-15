@@ -150,6 +150,11 @@ namespace Jabberwocky.SoC.Library
         {
           while (!reader.EOF)
           {
+            if (reader.Name == "player" && reader.NodeType == XmlNodeType.Element)
+            {
+
+            }
+
             throw new NotImplementedException();
 
             reader.Read();

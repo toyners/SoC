@@ -4,6 +4,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
   using System;
   using System.Collections.Generic;
   using System.IO;
+  using System.Text;
   using GameBoards;
   using Interfaces;
   using NSubstitute;
@@ -1298,20 +1299,37 @@ namespace Jabberwocky.SoC.Library.UnitTests
     [Test]
     [Category("All")]
     [Category("LocalGameController")]
-    public void Load_SavedAfterSetup_PlayerTurnStarts()
+    public void Load_SavedAfterSetupOnStandardBoard_PlayerTurnStarts()
     {
       // Arrange
       var playerPool = new PlayerPool();
       var gameBoardManager = new GameBoardManager(BoardSizes.Standard);
-      LocalGameController newLocalGameController = new LocalGameController(new Dice(), playerPool, gameBoardManager);
+      LocalGameController localGameController = new LocalGameController(new Dice(), playerPool, gameBoardManager);
+
+      var playerId = Guid.NewGuid();
+      var firstOpponentId = Guid.NewGuid();
+      var secondOpponentId = Guid.NewGuid();
+      var thirdOpponentId = Guid.NewGuid();
 
       var turnToken = Guid.Empty;
-      newLocalGameController.StartPlayerTurnEvent = (Guid t) => { turnToken = t; };
+      localGameController.StartPlayerTurnEvent = (Guid t) => { turnToken = t; };
 
       // Act
-      using (var stream = new FileStream("", FileMode.Open))
+      var streamContent = "<game>" +
+        "<players>" +
+        "<player id=\"\" name=\"" + PlayerName + "\" brick=\"\" grain=\"\" lumber=\"\" ore=\"\" wool=\"\" />" +
+        "<player id=\"\" name=\"" + FirstOpponentName + "\" brick=\"\" grain=\"\" lumber=\"\" ore=\"\" wool=\"\" />" +
+        "<player id=\"\" name=\"" + SecondOpponentName + "\" brick=\"\" grain=\"\" lumber=\"\" ore=\"\" wool=\"\" />" +
+        "<player id=\"\" name=\"" + ThirdOpponentName + "\" brick=\"\" grain=\"\" lumber=\"\" ore=\"\" wool=\"\" />" +
+        "</players>" +
+        "<settlements>" +
+        "<settlement playerid=\"" + playerId + "\" location=\"" + MainSettlementOneLocation + "\" />" +
+        "</settlements>" +
+        "</game>";
+      var streamContentBytes = Encoding.UTF8.GetBytes(streamContent);
+      using (var stream = new MemoryStream(streamContentBytes))
       {
-        newLocalGameController.Load(stream);
+        localGameController.Load(stream);
       }
 
       // Assert
