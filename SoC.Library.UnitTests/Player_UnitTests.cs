@@ -12,6 +12,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
   {
     #region Methods
     [Test]
+    [Category("All")]
     [Category("Player")]
     public void AddResources_VariousResourceKinds_CountsAreUpdated()
     {
@@ -30,6 +31,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     }
 
     [Test]
+    [Category("All")]
     [Category("Player")]
     public void RemoveResources_VariousResourceKinds_CountsAreUpdated()
     {
@@ -49,6 +51,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     }
 
     [Test]
+    [Category("All")]
     [Category("Player")]
     public void RemoveResources_ResultingTotalsWillBeBeLowerThanZero_ThrowsMeaningfulException()
     {
@@ -64,16 +67,17 @@ namespace Jabberwocky.SoC.Library.UnitTests
     }
 
     [Test]
+    [Category("All")]
     [Category("Player")]
     public void Load_NameAndCountsInStream_PlayerPropertiesAreCorrect()
     {
       // Arrange
       var player = new Player();
-      var playerId = player.Id;
-
-      // Act
-      var content = "<player><name>Player</name><brick>1</brick><grain>2</grain><lumber>3</lumber><ore>4</ore><wool>5</wool></player>";
+      var playerId = Guid.NewGuid();
+      var content = "<player id=\"" + playerId + "\" name=\"Player\" brick=\"1\" grain=\"2\" lumber=\"3\" ore=\"4\" wool=\"5\" />";
       var contentBytes = Encoding.UTF8.GetBytes(content);
+      
+      // Act
       using (var memoryStream = new MemoryStream(contentBytes))
       {
         player.Load(memoryStream);
@@ -90,16 +94,17 @@ namespace Jabberwocky.SoC.Library.UnitTests
     }
 
     [Test]
+    [Category("All")]
     [Category("Player")]
     public void Load_NameOnlyInStream_PlayerPropertiesAreCorrect()
     {
       // Arrange
       var player = new Player();
-      var playerId = player.Id;
+      var playerId = Guid.NewGuid();
+      var content = "<player id=\"" + playerId + "\" name=\"Player\" />";
+      var contentBytes = Encoding.UTF8.GetBytes(content);
 
       // Act
-      var content = "<player><name>Player</name></player>";
-      var contentBytes = Encoding.UTF8.GetBytes(content);
       using (var memoryStream = new MemoryStream(contentBytes))
       {
         player.Load(memoryStream);
@@ -116,17 +121,41 @@ namespace Jabberwocky.SoC.Library.UnitTests
     }
 
     [Test]
+    [Category("All")]
+    [Category("Player")]
+    public void Load_NoIdInStream_ThrowsMeaningfulException()
+    {
+      // Arrange
+      var player = new Player();
+      var playerId = Guid.NewGuid();
+      var content = "<player name=\"Player\" brick=\"1\" grain=\"2\" lumber=\"3\" ore=\"4\" wool=\"5\" />";
+      var contentBytes = Encoding.UTF8.GetBytes(content);
+
+      // Act
+      Action action = () =>
+      {
+        using (var memoryStream = new MemoryStream(contentBytes))
+        {
+          player.Load(memoryStream);
+        }
+      };
+
+      // Assert
+      Should.Throw<Exception>(action).Message.ShouldBe("No id found for player in stream.");
+    }
+
+    [Test]
+    [Category("All")]
     [Category("Player")]
     public void Load_NoNameInStream_ThrowsMeaningfulException()
     {
       // Arrange
       var player = new Player();
-      var playerId = player.Id;
-
-      // Act
-      var content = "<player><brick>1</brick><grain>2</grain><lumber>3</lumber><ore>4</ore><wool>5</wool></player>";
+      var playerId = Guid.NewGuid();
+      var content = "<player id=\"" + playerId + "\" brick=\"1\" grain=\"2\" lumber=\"3\" ore=\"4\" wool=\"5\" />";
       var contentBytes = Encoding.UTF8.GetBytes(content);
 
+      // Act
       Action action = () =>
       {
         using (var memoryStream = new MemoryStream(contentBytes))

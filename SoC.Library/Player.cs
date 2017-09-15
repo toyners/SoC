@@ -73,42 +73,30 @@ namespace Jabberwocky.SoC.Library
     /// <param name="stream">Stream containing player properties.</param>
     public void Load(Stream stream)
     {
+      this.Id = Guid.Empty;
       try
       {
         using (var reader = XmlReader.Create(stream))
         {
-          while (reader.Name != "player" && reader.NodeType != XmlNodeType.EndElement)
+          reader.Read(); // Move to first node
+          if (reader.Name == "player" && reader.NodeType == XmlNodeType.Element)
           {
-            reader.Read();
-            if (reader.Name == "name")
+            var idValue = reader.GetAttribute("id");
+            if (!String.IsNullOrEmpty(idValue))
             {
-              this.Name = reader.ReadElementContentAsString();
+              this.Id = Guid.Parse(idValue);
             }
 
-            if (reader.Name == "brick")
-            {
-              this.BrickCount = reader.ReadElementContentAsInt();
-            }
-
-            if (reader.Name == "grain")
-            {
-              this.GrainCount = reader.ReadElementContentAsInt();
-            }
-
-            if (reader.Name == "lumber")
-            {
-              this.LumberCount = reader.ReadElementContentAsInt();
-            }
-
-            if (reader.Name == "ore")
-            {
-              this.OreCount = reader.ReadElementContentAsInt();
-            }
-
-            if (reader.Name == "wool")
-            {
-              this.WoolCount = reader.ReadElementContentAsInt();
-            }
+            this.Name = reader.GetAttribute("name");
+            this.BrickCount = this.GetValueOrZero(reader, "brick");
+            this.GrainCount = this.GetValueOrZero(reader, "grain");
+            this.LumberCount = this.GetValueOrZero(reader, "lumber");
+            this.OreCount = this.GetValueOrZero(reader, "ore");
+            this.WoolCount = this.GetValueOrZero(reader, "wool");
+          }
+          else
+          {
+            throw new XmlException("Element is '" + reader.Name + "' but should be 'plaýer'.");
           }
         }
       }
@@ -117,10 +105,21 @@ namespace Jabberwocky.SoC.Library
         throw new Exception("Ëxception thrown during player loading.", e);
       }
 
+      if (this.Id == Guid.Empty)
+      {
+        throw new Exception("No id found for player in stream.");
+      }
+
       if (String.IsNullOrEmpty(this.Name))
       {
         throw new Exception("No name found for player in stream.");
       }
+    }
+
+    private Int32 GetValueOrZero(XmlReader reader, String attributeName)
+    {
+      var value = reader.GetAttribute(attributeName);
+      return value != null ? Int32.Parse(value) : 0;
     }
 
     public void RemoveResources(ResourceClutch resourceClutch)
