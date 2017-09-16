@@ -144,7 +144,7 @@ namespace Jabberwocky.SoC.Library
     private Int32 GetValueOrZero(XmlReader reader, String attributeName)
     {
       var value = reader.GetAttribute(attributeName);
-      return value != null ? Int32.Parse(value) : 0;
+      return !String.IsNullOrEmpty(value) ? Int32.Parse(value) : 0;
     }
     #endregion
   }

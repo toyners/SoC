@@ -146,6 +146,7 @@ namespace Jabberwocky.SoC.Library
     {
       try
       {
+        var loadedPlayers = new List<IPlayer>();
         using (var reader = XmlReader.Create(stream, new XmlReaderSettings { CloseInput = false, IgnoreWhitespace = true, IgnoreComments = true }))
         {
           while (!reader.EOF)
@@ -154,18 +155,36 @@ namespace Jabberwocky.SoC.Library
             {
               var player = new Player();
               player.Load(reader);
+              loadedPlayers.Add(player);
             }
 
             reader.Read();
           }
         }
+
+        if (loadedPlayers.Count > 0)
+        {
+          this.mainPlayer = loadedPlayers[0];
+          this.players = new IPlayer[loadedPlayers.Count];
+          this.players[0] = this.mainPlayer;
+          this.playersById = new Dictionary<Guid, IPlayer>(this.players.Length);
+          this.playersById.Add(this.mainPlayer.Id, this.mainPlayer);
+
+          for (var index = 1; index < loadedPlayers.Count; index++)
+          {
+            var player = loadedPlayers[index];
+            this.players[index] = player;
+            this.playersById.Add(player.Id, player);
+          }
+        }
+
+        this.GameLoadedEvent?.Invoke(this.CreatePlayerDataViews(), this.gameBoardManager.Data);
+
       }
       catch (Exception e)
       {
         throw new Exception("Exception thrown during board loading.", e);
       }
-
-      this.GameLoadedEvent?.Invoke(this.CreatePlayerDataViews(), this.gameBoardManager.Data);
     }
 
     public void Quit()
