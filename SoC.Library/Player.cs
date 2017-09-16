@@ -88,6 +88,24 @@ namespace Jabberwocky.SoC.Library
       }
     }
 
+    public void RemoveResources(ResourceClutch resourceClutch)
+    {
+      if (this.BrickCount - resourceClutch.BrickCount < 0 ||
+          this.GrainCount - resourceClutch.GrainCount < 0 ||
+          this.LumberCount - resourceClutch.LumberCount < 0 ||
+          this.OreCount - resourceClutch.OreCount < 0 ||
+          this.WoolCount - resourceClutch.WoolCount < 0)
+      {
+        throw new ArithmeticException("No resource count can be negative.");
+      }
+
+      this.BrickCount -= resourceClutch.BrickCount;
+      this.GrainCount -= resourceClutch.GrainCount;
+      this.LumberCount -= resourceClutch.LumberCount;
+      this.OreCount -= resourceClutch.OreCount;
+      this.WoolCount -= resourceClutch.WoolCount;
+    }
+
     internal void Load(XmlReader reader)
     {
       this.Id = Guid.Empty;
@@ -127,24 +145,6 @@ namespace Jabberwocky.SoC.Library
     {
       var value = reader.GetAttribute(attributeName);
       return value != null ? Int32.Parse(value) : 0;
-    }
-
-    public void RemoveResources(ResourceClutch resourceClutch)
-    {
-      if (this.BrickCount - resourceClutch.BrickCount < 0 ||
-          this.GrainCount - resourceClutch.GrainCount < 0 ||
-          this.LumberCount - resourceClutch.LumberCount < 0 ||
-          this.OreCount - resourceClutch.OreCount < 0 ||
-          this.WoolCount - resourceClutch.WoolCount < 0)
-      {
-        throw new ArithmeticException("No resource count can be negative.");
-      }
-
-      this.BrickCount -= resourceClutch.BrickCount;
-      this.GrainCount -= resourceClutch.GrainCount;
-      this.LumberCount -= resourceClutch.LumberCount;
-      this.OreCount -= resourceClutch.OreCount;
-      this.WoolCount -= resourceClutch.WoolCount;
     }
     #endregion
   }
