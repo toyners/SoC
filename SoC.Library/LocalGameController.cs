@@ -57,6 +57,7 @@ namespace Jabberwocky.SoC.Library
     #region Events
     public Action<GameBoardUpdate> BoardUpdatedEvent { get; set; }
     public Action<PlayerDataView[]> GameJoinedEvent { get; set; }
+    public Action<PlayerDataView[], GameBoardData> GameLoadedEvent { get; set; }
     public Action<GameBoardData> InitialBoardSetupEvent { get; set; }
     public Action<ClientAccount> LoggedInEvent { get; set; }
     public Action<GameBoardUpdate> StartInitialSetupTurnEvent { get; set; }
@@ -153,7 +154,7 @@ namespace Jabberwocky.SoC.Library
             if (reader.Name == "player" && reader.NodeType == XmlNodeType.Element)
             {
               var player = new Player();
-              player.Load(stream);
+              player.Load(reader);
             }
 
             //throw new NotImplementedException();

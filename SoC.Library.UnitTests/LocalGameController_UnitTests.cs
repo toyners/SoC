@@ -1311,8 +1311,9 @@ namespace Jabberwocky.SoC.Library.UnitTests
       var secondOpponentId = Guid.NewGuid();
       var thirdOpponentId = Guid.NewGuid();
 
-      var turnToken = Guid.Empty;
-      localGameController.StartPlayerTurnEvent = (Guid t) => { turnToken = t; };
+      PlayerDataView[] playerData = null;
+      GameBoardData boardData = null;
+      localGameController.GameLoadedEvent = (PlayerDataView[] pd, GameBoardData bd) => { playerData = pd; boardData = bd; };
 
       // Act
       var streamContent = "<game>" +
@@ -1333,7 +1334,9 @@ namespace Jabberwocky.SoC.Library.UnitTests
       }
 
       // Assert
-      turnToken.ShouldNotBe(Guid.Empty);
+      playerData.ShouldNotBeNull();
+
+      boardData.ShouldNotBeNull();
     }
 
     private LocalGameController CreateLocalGameControllerAndCompleteGameSetup(out MockDice mockDice, out MockPlayer player, out MockComputerPlayer firstOpponent, out MockComputerPlayer secondOpponent, out MockComputerPlayer thirdOpponent)
