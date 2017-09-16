@@ -152,10 +152,11 @@ namespace Jabberwocky.SoC.Library
           {
             if (reader.Name == "player" && reader.NodeType == XmlNodeType.Element)
             {
-
+              var player = new Player();
+              player.Load(stream);
             }
 
-            throw new NotImplementedException();
+            //throw new NotImplementedException();
 
             reader.Read();
           }

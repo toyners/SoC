@@ -68,37 +68,44 @@ namespace Jabberwocky.SoC.Library
     }
 
     /// <summary>
-    /// Loads player properties from stream. Original player id is preserved.
+    /// Loads player properties from stream. Stream must contain player id and name.
     /// </summary>
     /// <param name="stream">Stream containing player properties.</param>
     public void Load(Stream stream)
     {
-      this.Id = Guid.Empty;
-      try
+      using (var reader = XmlReader.Create(stream, new XmlReaderSettings { ConformanceLevel = ConformanceLevel.Fragment, CloseInput = false, IgnoreComments = true, IgnoreWhitespace = true }))
       {
-        using (var reader = XmlReader.Create(stream))
+        while (!reader.EOF)
         {
-          reader.Read(); // Move to first node
           if (reader.Name == "player" && reader.NodeType == XmlNodeType.Element)
           {
-            var idValue = reader.GetAttribute("id");
-            if (!String.IsNullOrEmpty(idValue))
-            {
-              this.Id = Guid.Parse(idValue);
-            }
+            this.Load(reader);
+            return;
+          }
 
-            this.Name = reader.GetAttribute("name");
-            this.BrickCount = this.GetValueOrZero(reader, "brick");
-            this.GrainCount = this.GetValueOrZero(reader, "grain");
-            this.LumberCount = this.GetValueOrZero(reader, "lumber");
-            this.OreCount = this.GetValueOrZero(reader, "ore");
-            this.WoolCount = this.GetValueOrZero(reader, "wool");
-          }
-          else
-          {
-            throw new XmlException("Element is '" + reader.Name + "' but should be 'plaýer'.");
-          }
+          reader.Read();
         }
+      }
+    }
+
+    internal void Load(XmlReader reader)
+    {
+      this.Id = Guid.Empty;
+
+      try
+      {
+        var idValue = reader.GetAttribute("id");
+        if (!String.IsNullOrEmpty(idValue))
+        {
+          this.Id = Guid.Parse(idValue);
+        }
+
+        this.Name = reader.GetAttribute("name");
+        this.BrickCount = this.GetValueOrZero(reader, "brick");
+        this.GrainCount = this.GetValueOrZero(reader, "grain");
+        this.LumberCount = this.GetValueOrZero(reader, "lumber");
+        this.OreCount = this.GetValueOrZero(reader, "ore");
+        this.WoolCount = this.GetValueOrZero(reader, "wool");
       }
       catch (Exception e)
       {
