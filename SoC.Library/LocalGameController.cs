@@ -4,7 +4,6 @@ namespace Jabberwocky.SoC.Library
   using System;
   using System.Collections.Generic;
   using System.IO;
-  using System.Threading.Tasks;
   using System.Xml;
   using GameBoards;
   using Interfaces;
@@ -157,16 +156,16 @@ namespace Jabberwocky.SoC.Library
               player.Load(reader);
             }
 
-            //throw new NotImplementedException();
-
             reader.Read();
           }
         }
       }
       catch (Exception e)
       {
-        throw new Exception("Ëxception thrown during board loading.", e);
+        throw new Exception("Exception thrown during board loading.", e);
       }
+
+      this.GameLoadedEvent?.Invoke(this.CreatePlayerDataViews(), this.gameBoardManager.Data);
     }
 
     public void Quit()

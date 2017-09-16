@@ -1306,25 +1306,24 @@ namespace Jabberwocky.SoC.Library.UnitTests
       var gameBoardManager = new GameBoardManager(BoardSizes.Standard);
       LocalGameController localGameController = new LocalGameController(new Dice(), playerPool, gameBoardManager);
 
-      var playerId = Guid.NewGuid();
-      var firstOpponentId = Guid.NewGuid();
-      var secondOpponentId = Guid.NewGuid();
-      var thirdOpponentId = Guid.NewGuid();
+      MockPlayer player;
+      MockComputerPlayer firstOpponent, secondOpponent, thirdOpponent;
+      CreateDefaultPlayerInstances(out player, out firstOpponent, out secondOpponent, out thirdOpponent);
 
-      PlayerDataView[] playerData = null;
+      PlayerDataView[] playerDataViews = null;
       GameBoardData boardData = null;
-      localGameController.GameLoadedEvent = (PlayerDataView[] pd, GameBoardData bd) => { playerData = pd; boardData = bd; };
+      localGameController.GameLoadedEvent = (PlayerDataView[] pd, GameBoardData bd) => { playerDataViews = pd; boardData = bd; };
 
       // Act
       var streamContent = "<game>" +
         "<players>" +
-        "<player id=\"\" name=\"" + PlayerName + "\" brick=\"\" grain=\"\" lumber=\"\" ore=\"\" wool=\"\" />" +
-        "<player id=\"\" name=\"" + FirstOpponentName + "\" brick=\"\" grain=\"\" lumber=\"\" ore=\"\" wool=\"\" />" +
-        "<player id=\"\" name=\"" + SecondOpponentName + "\" brick=\"\" grain=\"\" lumber=\"\" ore=\"\" wool=\"\" />" +
-        "<player id=\"\" name=\"" + ThirdOpponentName + "\" brick=\"\" grain=\"\" lumber=\"\" ore=\"\" wool=\"\" />" +
+        "<player id=\"" + player.Id + "\" name=\"" + player.Name + "\" brick=\"\" grain=\"\" lumber=\"\" ore=\"\" wool=\"\" />" +
+        "<player id=\"" + firstOpponent.Id + "\" name=\"" + firstOpponent.Name + "\" brick=\"\" grain=\"\" lumber=\"\" ore=\"\" wool=\"\" />" +
+        "<player id=\"" + secondOpponent.Id + "\" name=\"" + secondOpponent.Name + "\" brick=\"\" grain=\"\" lumber=\"\" ore=\"\" wool=\"\" />" +
+        "<player id=\"" + thirdOpponent.Id + "\" name=\"" + thirdOpponent.Name + "\" brick=\"\" grain=\"\" lumber=\"\" ore=\"\" wool=\"\" />" +
         "</players>" +
         "<settlements>" +
-        "<settlement playerid=\"" + playerId + "\" location=\"" + MainSettlementOneLocation + "\" />" +
+        "<settlement playerid=\"" + player.Id + "\" location=\"" + MainSettlementOneLocation + "\" />" +
         "</settlements>" +
         "</game>";
       var streamContentBytes = Encoding.UTF8.GetBytes(streamContent);
@@ -1334,7 +1333,13 @@ namespace Jabberwocky.SoC.Library.UnitTests
       }
 
       // Assert
-      playerData.ShouldNotBeNull();
+      playerDataViews.ShouldNotBeNull();
+      playerDataViews.Length.ShouldBe(4);
+
+      this.AssertPlayerDataViewIsCorrect(player, playerDataViews[0]);
+      this.AssertPlayerDataViewIsCorrect(firstOpponent, playerDataViews[1]);
+      this.AssertPlayerDataViewIsCorrect(secondOpponent, playerDataViews[2]);
+      this.AssertPlayerDataViewIsCorrect(thirdOpponent, playerDataViews[3]);
 
       boardData.ShouldNotBeNull();
     }
