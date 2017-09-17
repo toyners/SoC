@@ -1299,7 +1299,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     [Test]
     [Category("All")]
     [Category("LocalGameController")]
-    public void Load_SavedAfterSetupOnStandardBoard_PlayerTurnStarts()
+    public void Load_SavedAfterSetupOnStandardBoard_PlayerDataViewsAreAsExpected()
     {
       // Arrange
       var playerPool = new PlayerPool();
@@ -1342,6 +1342,49 @@ namespace Jabberwocky.SoC.Library.UnitTests
       this.AssertPlayerDataViewIsCorrect(thirdOpponent, playerDataViews[3]);
 
       boardData.ShouldNotBeNull();
+    }
+
+    [Test]
+    [Category("All")]
+    [Category("LocalGameController")]
+    public void Load_SavedAfterSetupOnStandardBoard_PlayerInstancesLoadedCorrectly()
+    {
+      // Arrange
+      var playerPool = new PlayerPool();
+      var gameBoardManager = new GameBoardManager(BoardSizes.Standard);
+      LocalGameController localGameController = new LocalGameController(new Dice(), playerPool, gameBoardManager);
+
+      MockPlayer player;
+      MockComputerPlayer firstOpponent, secondOpponent, thirdOpponent;
+      CreateDefaultPlayerInstances(out player, out firstOpponent, out secondOpponent, out thirdOpponent);
+
+      PlayerDataView[] playerDataViews = null;
+      GameBoardData boardData = null;
+      localGameController.GameLoadedEvent = (PlayerDataView[] pd, GameBoardData bd) => { playerDataViews = pd; boardData = bd; };
+
+      // Act
+      var streamContent = "<game>" +
+        "<players>" +
+        "<player id=\"" + player.Id + "\" name=\"" + player.Name + "\" brick=\"5\" grain=\"\" />" +
+        "<player id=\"" + firstOpponent.Id + "\" name=\"" + firstOpponent.Name + "\" brick=\"6\" />" +
+        "<player id=\"" + secondOpponent.Id + "\" name=\"" + secondOpponent.Name + "\" brick=\"7\" />" +
+        "<player id=\"" + thirdOpponent.Id + "\" name=\"" + thirdOpponent.Name + "\" brick=\"8\" />" +
+        "</players>" +
+        "<settlements>" +
+        "<settlement playerid=\"" + player.Id + "\" location=\"" + MainSettlementOneLocation + "\" />" +
+        "</settlements>" +
+        "</game>";
+      var streamContentBytes = Encoding.UTF8.GetBytes(streamContent);
+      using (var stream = new MemoryStream(streamContentBytes))
+      {
+        localGameController.Load(stream);
+      }
+
+      // Assert
+      player.BrickCount.ShouldBe(5);
+      firstOpponent.BrickCount.ShouldBe(6);
+      secondOpponent.BrickCount.ShouldBe(7);
+      thirdOpponent.BrickCount.ShouldBe(8);
     }
 
     private LocalGameController CreateLocalGameControllerAndCompleteGameSetup(out MockDice mockDice, out MockPlayer player, out MockComputerPlayer firstOpponent, out MockComputerPlayer secondOpponent, out MockComputerPlayer thirdOpponent)
