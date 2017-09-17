@@ -179,7 +179,6 @@ namespace Jabberwocky.SoC.Library
         }
 
         this.GameLoadedEvent?.Invoke(this.CreatePlayerDataViews(), this.gameBoardManager.Data);
-
       }
       catch (Exception e)
       {

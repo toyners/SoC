@@ -1344,47 +1344,6 @@ namespace Jabberwocky.SoC.Library.UnitTests
       boardData.ShouldNotBeNull();
     }
 
-    [Test]
-    [Category("All")]
-    [Category("LocalGameController")]
-    public void Load_NotCallingStartGamePlayMethodAfterLoad_MeaningfulErrorIsRaised()
-    {
-      // Arrange
-      var playerPool = new PlayerPool();
-      var gameBoardManager = new GameBoardManager(BoardSizes.Standard);
-      LocalGameController localGameController = new LocalGameController(new Dice(), playerPool, gameBoardManager);
-
-      MockPlayer player;
-      MockComputerPlayer firstOpponent, secondOpponent, thirdOpponent;
-      CreateDefaultPlayerInstances(out player, out firstOpponent, out secondOpponent, out thirdOpponent);
-
-      ErrorDetails errorDetails = null;
-      localGameController.ErrorRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
-
-      // Act
-      var streamContent = "<game>" +
-        "<players>" +
-        "<player id=\"" + player.Id + "\" name=\"" + player.Name + "\" brick=\"\" grain=\"\" lumber=\"\" ore=\"\" wool=\"\" />" +
-        "<player id=\"" + firstOpponent.Id + "\" name=\"" + firstOpponent.Name + "\" brick=\"\" grain=\"\" lumber=\"\" ore=\"\" wool=\"\" />" +
-        "<player id=\"" + secondOpponent.Id + "\" name=\"" + secondOpponent.Name + "\" brick=\"\" grain=\"\" lumber=\"\" ore=\"\" wool=\"\" />" +
-        "<player id=\"" + thirdOpponent.Id + "\" name=\"" + thirdOpponent.Name + "\" brick=\"\" grain=\"\" lumber=\"\" ore=\"\" wool=\"\" />" +
-        "</players>" +
-        "<settlements>" +
-        "<settlement playerid=\"" + player.Id + "\" location=\"" + MainSettlementOneLocation + "\" />" +
-        "</settlements>" +
-        "</game>";
-      var streamContentBytes = Encoding.UTF8.GetBytes(streamContent);
-      using (var stream = new MemoryStream(streamContentBytes))
-      {
-        localGameController.Load(stream);
-      }
-
-      localGameController.StartGameSetup();
-
-      errorDetails.ShouldNotBeNull();
-      errorDetails.Message.ShouldBe("Can only call 'StartGamePlay' after loading a game.");
-    }
-
     private LocalGameController CreateLocalGameControllerAndCompleteGameSetup(out MockDice mockDice, out MockPlayer player, out MockComputerPlayer firstOpponent, out MockComputerPlayer secondOpponent, out MockComputerPlayer thirdOpponent)
     {
       var gameSetupOrder = new[] { 12u, 10u, 8u, 6u };
