@@ -4,7 +4,7 @@ using Jabberwocky.SoC.Library.GameBoards;
 
 namespace Jabberwocky.SoC.Library.Interfaces
 {
-  public interface IComputerPlayer : IPlayer
+  public interface IComputerPlayer
   {
     #region Methods
     UInt32 ChooseSettlementLocation(GameBoardData gameBoardData);

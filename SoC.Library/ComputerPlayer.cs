@@ -6,17 +6,13 @@ namespace Jabberwocky.SoC.Library
   using GameBoards;
   using System.Collections.Generic;
 
-  public class ComputerPlayer /*: IComputerPlayer*/
+  public class ComputerPlayer : Player, IComputerPlayer
   {
-    public Guid Id { get; private set; }
+    public ComputerPlayer(String name) : base(name) { }
 
-    public ComputerPlayer(Guid id)
-    {
-      this.Id = id;
-      //this.Data = new PlayerData();
-    }
+    public override Boolean IsComputer { get { return true; } }
 
-    public Road ChooseRoad(GameBoardData gameBoardData)
+    public virtual Road ChooseRoad(GameBoardData gameBoardData)
     {
       var settlementsForPlayer = gameBoardData.GetSettlementsForPlayer(this.Id);
       if (settlementsForPlayer == null || settlementsForPlayer.Count == 0)
@@ -30,7 +26,12 @@ namespace Jabberwocky.SoC.Library
       return new Road(locationIndex, path[path.Count - 1]);
     }
 
-    public UInt32 ChooseSettlementLocation(GameBoardData gameBoardData)
+    public virtual ResourceClutch ChooseResourcesToDrop()
+    {
+      throw new NotImplementedException();
+    }
+
+    public virtual UInt32 ChooseSettlementLocation(GameBoardData gameBoardData)
     {
       // Find location that has the highest chance of a return for any roll.
       var bestLocationIndex = 0u;
@@ -110,18 +111,6 @@ namespace Jabberwocky.SoC.Library
       }
 
       return gameBoardData.GetPathBetweenLocations(locationIndex, bestLocationIndex);
-    }
-
-    public PlayerDataView GetDataView()
-    {
-      var dataView = new PlayerDataView();
-
-      dataView.Id = this.Id;
-      dataView.ResourceCards = 0u;
-      dataView.HiddenDevelopmentCards = 0;
-      dataView.DisplayedDevelopmentCards = null;
-
-      return dataView;
     }
   }
 }

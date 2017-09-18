@@ -9,7 +9,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
   /// <summary>
   /// Used to set opponent player behaviour for testing purposes
   /// </summary>
-  public class MockComputerPlayer : MockPlayer, IComputerPlayer
+  public class MockComputerPlayer : ComputerPlayer
   {
     #region Fields
     public UInt32 HiddenDevelopmentCards;
@@ -27,17 +27,17 @@ namespace Jabberwocky.SoC.Library.UnitTests
     #endregion
 
     #region Methods
-    public ResourceClutch ChooseResourcesToDrop()
+    public override ResourceClutch ChooseResourcesToDrop()
     {
       return DroppedResources;
     }
 
-    public Road ChooseRoad(GameBoardData gameBoardData)
+    public override Road ChooseRoad(GameBoardData gameBoardData)
     {
       return this.Roads.Dequeue();
     }
 
-    public UInt32 ChooseSettlementLocation(GameBoardData gameBoardData)
+    public override UInt32 ChooseSettlementLocation(GameBoardData gameBoardData)
     {
       return this.SettlementLocations.Dequeue();
     }

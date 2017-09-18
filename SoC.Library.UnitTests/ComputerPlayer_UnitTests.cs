@@ -15,7 +15,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     public void ChooseSettlementLocation_GetBestLocationOnEmptyBoard_ReturnsBestLocation()
     {
       var gameBoardData = new GameBoardData(BoardSizes.Standard);
-      var computerPlayer = new ComputerPlayer(Guid.NewGuid());
+      var computerPlayer = new ComputerPlayer("ComputerPlayer");
 
       var location = computerPlayer.ChooseSettlementLocation(gameBoardData);
 
@@ -29,7 +29,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
       var gameBoardData = new GameBoardData(BoardSizes.Standard);
       gameBoardData.PlaceSettlement(Guid.NewGuid(), 12);
 
-      var computerPlayer = new ComputerPlayer(Guid.NewGuid());
+      var computerPlayer = new ComputerPlayer("ComputerPlayer");
 
       var location = computerPlayer.ChooseSettlementLocation(gameBoardData);
 
@@ -40,25 +40,23 @@ namespace Jabberwocky.SoC.Library.UnitTests
     [Category("ComputerPlayer")]
     public void ChooseRoad_NoSettlementsForPlayer_ThrowsMeaningfulException()
     {
-      var playerId = Guid.NewGuid();
       var gameBoardData = new GameBoardData(BoardSizes.Standard);
-      var computerPlayer = new ComputerPlayer(playerId);
+      var computerPlayer = new ComputerPlayer("ComputerPlayer");
 
       Should.Throw<Exception>(() =>
       {
         computerPlayer.ChooseRoad(gameBoardData);
-      }).Message.ShouldBe("No settlements found for player with id " + playerId);
+      }).Message.ShouldBe("No settlements found for player with id " + computerPlayer.Id);
     }
 
     [Test]
     [Category("ComputerPlayer")]
     public void ChooseRoad_BuildingTowardsNextBestSettlementLocation_ReturnsFirstRoadFragment()
     {
-      var playerId = Guid.NewGuid();
+      var computerPlayer = new ComputerPlayer("ComputerPlayer");
       var gameBoardData = new GameBoardData(BoardSizes.Standard);
-      gameBoardData.PlaceSettlement(playerId, 12);
+      gameBoardData.PlaceSettlement(computerPlayer.Id, 12);
 
-      var computerPlayer = new ComputerPlayer(playerId);
 
       var road = computerPlayer.ChooseRoad(gameBoardData);
       var expectedRoad = new Road(11, 12);
@@ -69,12 +67,11 @@ namespace Jabberwocky.SoC.Library.UnitTests
     [Category("ComputerPlayer")]
     public void ChooseRoad_BuildingTowardsNextBestSettlementLocationWithFirstRoadPlaced_ReturnsSecondRoadFragment()
     {
-      var playerId = Guid.NewGuid();
+      var computerPlayer = new ComputerPlayer("ComputerPlayer");
       var gameBoardData = new GameBoardData(BoardSizes.Standard);
-      gameBoardData.PlaceSettlement(playerId, 12);
-      gameBoardData.PlaceRoad(playerId, new Road(12, 11));
+      gameBoardData.PlaceSettlement(computerPlayer.Id, 12);
+      gameBoardData.PlaceRoad(computerPlayer.Id, new Road(12, 11));
 
-      var computerPlayer = new ComputerPlayer(playerId);
 
       var road = computerPlayer.ChooseRoad(gameBoardData);
       var expectedRoad = new Road(11, 21);

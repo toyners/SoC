@@ -27,6 +27,8 @@ namespace Jabberwocky.SoC.Library
 
     public Guid Id { get; private set; }
 
+    public virtual Boolean IsComputer { get { return false; } }
+
     public Int32 LumberCount { get; protected set; }
 
     public String Name { get; private set; }

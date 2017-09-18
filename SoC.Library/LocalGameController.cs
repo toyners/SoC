@@ -260,7 +260,7 @@ namespace Jabberwocky.SoC.Library
         {
           var player = this.players[index];
 
-          if (!this.IsComputerPlayer(player))
+          if (!player.IsComputer)
           {
             continue;
           }
@@ -275,7 +275,7 @@ namespace Jabberwocky.SoC.Library
               resourcesDroppedByComputerPlayers = new ResourceUpdate();
             }
 
-            resourcesDroppedByComputerPlayers.Resources.Add(computerPlayer.Id, resourcesToDropByComputerPlayer);
+            resourcesDroppedByComputerPlayers.Resources.Add(player.Id, resourcesToDropByComputerPlayer);
           }
         }
 
@@ -448,7 +448,7 @@ namespace Jabberwocky.SoC.Library
       {
         var player = this.players[this.playerIndex++];
 
-        if (!this.IsComputerPlayer(player))
+        if (!player.IsComputer)
         {
           return gameBoardUpdate;
         }
@@ -464,12 +464,12 @@ namespace Jabberwocky.SoC.Library
 
         var computerPlayer = (IComputerPlayer)player;
         var chosenSettlementIndex = computerPlayer.ChooseSettlementLocation(gameBoardData);
-        gameBoardData.PlaceSettlement(computerPlayer.Id, chosenSettlementIndex);
-        gameBoardUpdate.NewSettlements.Add(chosenSettlementIndex, computerPlayer.Id);
+        gameBoardData.PlaceSettlement(player.Id, chosenSettlementIndex);
+        gameBoardUpdate.NewSettlements.Add(chosenSettlementIndex, player.Id);
 
         var chosenRoad = computerPlayer.ChooseRoad(gameBoardData);
-        gameBoardData.PlaceRoad(computerPlayer.Id, chosenRoad);
-        gameBoardUpdate.NewRoads.Add(chosenRoad, computerPlayer.Id);
+        gameBoardData.PlaceRoad(player.Id, chosenRoad);
+        gameBoardUpdate.NewRoads.Add(chosenRoad, player.Id);
       }
 
       return gameBoardUpdate;
@@ -481,7 +481,7 @@ namespace Jabberwocky.SoC.Library
       {
         var player = this.players[this.playerIndex--];
 
-        if (!this.IsComputerPlayer(player))
+        if (!player.IsComputer)
         {
           return gameBoardUpdate;
         }
@@ -497,14 +497,14 @@ namespace Jabberwocky.SoC.Library
 
         var computerPlayer = (IComputerPlayer)player;
         var chosenSettlementIndex = computerPlayer.ChooseSettlementLocation(gameBoardData);
-        gameBoardData.PlaceSettlement(computerPlayer.Id, chosenSettlementIndex);
-        gameBoardUpdate.NewSettlements.Add(chosenSettlementIndex, computerPlayer.Id);
+        gameBoardData.PlaceSettlement(player.Id, chosenSettlementIndex);
+        gameBoardUpdate.NewSettlements.Add(chosenSettlementIndex, player.Id);
 
-        this.CollectInitialResourcesForPlayer(computerPlayer.Id, chosenSettlementIndex);
+        this.CollectInitialResourcesForPlayer(player.Id, chosenSettlementIndex);
         
         var chosenRoad = computerPlayer.ChooseRoad(gameBoardData);
-        gameBoardData.PlaceRoad(computerPlayer.Id, chosenRoad);
-        gameBoardUpdate.NewRoads.Add(chosenRoad, computerPlayer.Id);
+        gameBoardData.PlaceRoad(player.Id, chosenRoad);
+        gameBoardUpdate.NewRoads.Add(chosenRoad, player.Id);
       }
 
       return gameBoardUpdate;

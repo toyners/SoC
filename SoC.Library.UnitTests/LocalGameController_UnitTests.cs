@@ -1442,6 +1442,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
       playerDataView.DisplayedDevelopmentCards.ShouldBeNull();
       playerDataView.HiddenDevelopmentCards.ShouldBe(0u);
       playerDataView.ResourceCards.ShouldBe(0u);
+      playerDataView.IsComputer.ShouldBe(player.IsComputer);
     }
 
     private LocalGameController CreateLocalGameController(IDice dice, IPlayer firstPlayer, params IPlayer[] otherPlayers)

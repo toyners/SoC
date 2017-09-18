@@ -15,6 +15,7 @@ namespace Jabberwocky.SoC.Library.Interfaces
     Guid Id { get; }
     String Name { get; }
     Int32 ResourcesCount { get; }
+    Boolean IsComputer { get; }
     #endregion
 
     #region Methods

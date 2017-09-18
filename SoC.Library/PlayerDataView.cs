@@ -7,6 +7,7 @@ namespace Jabberwocky.SoC.Library
   public class PlayerDataView
   {
     public Guid Id { get; set; }
+    public Boolean IsComputer { get; set; }
     public List<DevelopmentCardTypes> DisplayedDevelopmentCards { get; set; }
     public UInt32 ResourceCards { get; set; }
     public UInt32 HiddenDevelopmentCards { get; set; }
