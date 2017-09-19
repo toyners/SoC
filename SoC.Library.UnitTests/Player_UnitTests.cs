@@ -69,34 +69,6 @@ namespace Jabberwocky.SoC.Library.UnitTests
     [Test]
     [Category("All")]
     [Category("Player")]
-    public void Load_AllPropertiesInStream_PlayerPropertiesAreCorrect()
-    {
-      // Arrange
-      var player = new Player();
-      var playerId = Guid.NewGuid();
-      var content = "<player id=\"" + playerId + "\" name=\"Player\" iscomputer=\"true\" brick=\"1\" grain=\"2\" lumber=\"3\" ore=\"4\" wool=\"5\" />";
-      var contentBytes = Encoding.UTF8.GetBytes(content);
-      
-      // Act
-      using (var memoryStream = new MemoryStream(contentBytes))
-      {
-        player.Load(memoryStream);
-      }
-
-      // Assert
-      player.Id.ShouldBe(playerId);
-      player.Name.ShouldBe("Player");
-      player.BrickCount.ShouldBe(1);
-      player.GrainCount.ShouldBe(2);
-      player.LumberCount.ShouldBe(3);
-      player.OreCount.ShouldBe(4);
-      player.WoolCount.ShouldBe(5);
-      player.IsComputer.ShouldBeTrue();
-    }
-
-    [Test]
-    [Category("All")]
-    [Category("Player")]
     public void Load_NameOnlyInStream_PlayerPropertiesAreCorrect()
     {
       // Arrange
