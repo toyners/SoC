@@ -275,7 +275,7 @@ namespace Jabberwocky.SoC.Library
               resourcesDroppedByComputerPlayers = new ResourceUpdate();
             }
 
-            resourcesDroppedByComputerPlayers.Resources.Add(player.Id, resourcesToDropByComputerPlayer);
+            resourcesDroppedByComputerPlayers.Resources.Add(computerPlayer.Id, resourcesToDropByComputerPlayer);
           }
         }
 
@@ -464,12 +464,12 @@ namespace Jabberwocky.SoC.Library
 
         var computerPlayer = (IComputerPlayer)player;
         var chosenSettlementIndex = computerPlayer.ChooseSettlementLocation(gameBoardData);
-        gameBoardData.PlaceSettlement(player.Id, chosenSettlementIndex);
-        gameBoardUpdate.NewSettlements.Add(chosenSettlementIndex, player.Id);
+        gameBoardData.PlaceSettlement(computerPlayer.Id, chosenSettlementIndex);
+        gameBoardUpdate.NewSettlements.Add(chosenSettlementIndex, computerPlayer.Id);
 
         var chosenRoad = computerPlayer.ChooseRoad(gameBoardData);
-        gameBoardData.PlaceRoad(player.Id, chosenRoad);
-        gameBoardUpdate.NewRoads.Add(chosenRoad, player.Id);
+        gameBoardData.PlaceRoad(computerPlayer.Id, chosenRoad);
+        gameBoardUpdate.NewRoads.Add(chosenRoad, computerPlayer.Id);
       }
 
       return gameBoardUpdate;
@@ -497,14 +497,14 @@ namespace Jabberwocky.SoC.Library
 
         var computerPlayer = (IComputerPlayer)player;
         var chosenSettlementIndex = computerPlayer.ChooseSettlementLocation(gameBoardData);
-        gameBoardData.PlaceSettlement(player.Id, chosenSettlementIndex);
-        gameBoardUpdate.NewSettlements.Add(chosenSettlementIndex, player.Id);
+        gameBoardData.PlaceSettlement(computerPlayer.Id, chosenSettlementIndex);
+        gameBoardUpdate.NewSettlements.Add(chosenSettlementIndex, computerPlayer.Id);
 
-        this.CollectInitialResourcesForPlayer(player.Id, chosenSettlementIndex);
+        this.CollectInitialResourcesForPlayer(computerPlayer.Id, chosenSettlementIndex);
         
         var chosenRoad = computerPlayer.ChooseRoad(gameBoardData);
-        gameBoardData.PlaceRoad(player.Id, chosenRoad);
-        gameBoardUpdate.NewRoads.Add(chosenRoad, player.Id);
+        gameBoardData.PlaceRoad(computerPlayer.Id, chosenRoad);
+        gameBoardUpdate.NewRoads.Add(chosenRoad, computerPlayer.Id);
       }
 
       return gameBoardUpdate;
