@@ -42,6 +42,81 @@ namespace Jabberwocky.SoC.Library.UnitTests
       player.WoolCount.ShouldBe(5);
       player.IsComputer.ShouldBeTrue();
     }
+
+    [Test]
+    [Category("All")]
+    [Category("Player")]
+    public void CreatePlayer_NameOnlyInStream_PlayerPropertiesAreCorrect()
+    {
+      // Arrange
+      IPlayer player = null;
+      var playerId = Guid.NewGuid();
+      var content = "<player id=\"" + playerId + "\" name=\"Player\" />";
+      var contentBytes = Encoding.UTF8.GetBytes(content);
+
+      // Act
+      using (var memoryStream = new MemoryStream(contentBytes))
+      {
+        var playerPool = new PlayerPool();
+        player = playerPool.CreatePlayer(memoryStream);
+      }
+
+      // Assert
+      player.Id.ShouldBe(playerId);
+      player.Name.ShouldBe("Player");
+      player.BrickCount.ShouldBe(0);
+      player.GrainCount.ShouldBe(0);
+      player.LumberCount.ShouldBe(0);
+      player.OreCount.ShouldBe(0);
+      player.WoolCount.ShouldBe(0);
+      player.IsComputer.ShouldBeFalse();
+    }
+
+    [Test]
+    [Category("All")]
+    [Category("Player")]
+    public void CreatePlayer_NoIdInStream_ThrowsMeaningfulException()
+    {
+      // Arrange
+      var content = "<player name=\"Player\" brick=\"1\" grain=\"2\" lumber=\"3\" ore=\"4\" wool=\"5\" />";
+      var contentBytes = Encoding.UTF8.GetBytes(content);
+
+      // Act
+      Action action = () =>
+      {
+        using (var memoryStream = new MemoryStream(contentBytes))
+        {
+          var playerPool = new PlayerPool();
+          playerPool.CreatePlayer(memoryStream);
+        }
+      };
+
+      // Assert
+      Should.Throw<Exception>(action).Message.ShouldBe("No id found for player in stream.");
+    }
+
+    [Test]
+    [Category("All")]
+    [Category("Player")]
+    public void CreatePlayer_NoNameInStream_ThrowsMeaningfulException()
+    {
+      // Arrange
+      var content = "<player id=\"" + Guid.NewGuid() + "\" brick=\"1\" grain=\"2\" lumber=\"3\" ore=\"4\" wool=\"5\" />";
+      var contentBytes = Encoding.UTF8.GetBytes(content);
+
+      // Act
+      Action action = () =>
+      {
+        using (var memoryStream = new MemoryStream(contentBytes))
+        {
+          var playerPool = new PlayerPool();
+          playerPool.CreatePlayer(memoryStream);
+        }
+      };
+
+      // Assert
+      Should.Throw<Exception>(action).Message.ShouldBe("No name found for player in stream.");
+    }
     #endregion 
   }
 }

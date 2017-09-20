@@ -2,7 +2,6 @@
 namespace Jabberwocky.SoC.Library
 {
   using System;
-  using System.IO;
   using System.Xml;
   using Interfaces;
 
@@ -73,22 +72,6 @@ namespace Jabberwocky.SoC.Library
     /// Loads player properties from stream. Stream must contain player id and name.
     /// </summary>
     /// <param name="stream">Stream containing player properties.</param>
-    public void Load(Stream stream)
-    {
-      using (var reader = XmlReader.Create(stream, new XmlReaderSettings { ConformanceLevel = ConformanceLevel.Fragment, CloseInput = false, IgnoreComments = true, IgnoreWhitespace = true }))
-      {
-        while (!reader.EOF)
-        {
-          if (reader.Name == "player" && reader.NodeType == XmlNodeType.Element)
-          {
-            this.Load(reader);
-            return;
-          }
-
-          reader.Read();
-        }
-      }
-    }
 
     public void RemoveResources(ResourceClutch resourceClutch)
     {
