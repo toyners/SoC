@@ -61,7 +61,7 @@ namespace Jabberwocky.SoC.Library
 
       dataView.Id = this.Id;
       dataView.Name = this.Name;
-      dataView.ResourceCards = 0u;
+      dataView.ResourceCards = 0;
       dataView.HiddenDevelopmentCards = 0;
       dataView.DisplayedDevelopmentCards = null;
 

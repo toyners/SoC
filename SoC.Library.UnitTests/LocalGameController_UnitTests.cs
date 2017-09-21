@@ -1345,6 +1345,10 @@ namespace Jabberwocky.SoC.Library.UnitTests
       MockPlayer player;
       MockComputerPlayer firstOpponent, secondOpponent, thirdOpponent;
       CreateDefaultPlayerInstances(out player, out firstOpponent, out secondOpponent, out thirdOpponent);
+      player.AddResources(new ResourceClutch(1, 2, 3, 4, 5));
+      firstOpponent.AddResources(new ResourceClutch(1, 1, 1, 1, 1));
+      secondOpponent.AddResources(new ResourceClutch(2, 2, 2, 2, 2));
+      thirdOpponent.AddResources(new ResourceClutch(3, 3, 3, 3, 3));
 
       PlayerDataView[] playerDataViews = null;
       GameBoardData boardData = null;
@@ -1353,10 +1357,10 @@ namespace Jabberwocky.SoC.Library.UnitTests
       // Act
       var streamContent = "<game>" +
         "<players>" +
-        "<player id=\"" + player.Id + "\" name=\"" + player.Name + "\" brick=\"\" grain=\"\" lumber=\"\" ore=\"\" wool=\"\" />" +
-        "<player id=\"" + firstOpponent.Id + "\" name=\"" + firstOpponent.Name + "\" brick=\"\" grain=\"\" lumber=\"\" ore=\"\" wool=\"\" />" +
-        "<player id=\"" + secondOpponent.Id + "\" name=\"" + secondOpponent.Name + "\" brick=\"\" grain=\"\" lumber=\"\" ore=\"\" wool=\"\" />" +
-        "<player id=\"" + thirdOpponent.Id + "\" name=\"" + thirdOpponent.Name + "\" brick=\"\" grain=\"\" lumber=\"\" ore=\"\" wool=\"\" />" +
+        "<player id=\"" + player.Id + "\" name=\"" + player.Name + "\" brick=\"" + player.BrickCount + "\" grain=\"" + player.GrainCount + "\" lumber=\"" + player.LumberCount + "\" ore=\"" + player.OreCount + "\" wool=\"" + player.WoolCount + "\" />" +
+        "<player id=\"" + firstOpponent.Id + "\" name=\"" + firstOpponent.Name + "\" iscomputer=\"true\" brick=\"1\" grain=\"1\" lumber=\"1\" ore=\"1\" wool=\"1\" />" +
+        "<player id=\"" + secondOpponent.Id + "\" name=\"" + secondOpponent.Name + "\" iscomputer=\"true\" brick=\"2\" grain=\"2\" lumber=\"2\" ore=\"2\" wool=\"2\" />" +
+        "<player id=\"" + thirdOpponent.Id + "\" name=\"" + thirdOpponent.Name + "\" iscomputer=\"true\" brick=\"3\" grain=\"3\" lumber=\"3\" ore=\"3\" wool=\"3\" />" +
         "</players>" +
         "<settlements>" +
         "<settlement playerid=\"" + player.Id + "\" location=\"" + MainSettlementOneLocation + "\" />" +
@@ -1476,8 +1480,8 @@ namespace Jabberwocky.SoC.Library.UnitTests
       playerDataView.Id.ShouldBe(player.Id);
       playerDataView.Name.ShouldBe(player.Name);
       playerDataView.DisplayedDevelopmentCards.ShouldBeNull();
-      playerDataView.HiddenDevelopmentCards.ShouldBe(0u);
-      playerDataView.ResourceCards.ShouldBe(0u);
+      playerDataView.HiddenDevelopmentCards.ShouldBe(0);
+      playerDataView.ResourceCards.ShouldBe(player.ResourcesCount);
       playerDataView.IsComputer.ShouldBe(player.IsComputer);
     }
 
