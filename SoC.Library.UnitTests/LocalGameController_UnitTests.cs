@@ -1134,12 +1134,13 @@ namespace Jabberwocky.SoC.Library.UnitTests
     }
 
     /// <summary>
-    /// Passing in the player id causes an error to be raised.
+    /// Passing in the player id when choosing the resource from an opponent causes an error to be raised.
     /// </summary>
     [Test]
+    [Category("All")]
     [Category("LocalGameController")]
     [Category("Main Player Turn")]
-    public void StartOfMainPlayerTurn_RollsSevenAndPassesInOwnPlayerId_MeaningfulErrorIsRaised()
+    public void StartOfMainPlayerTurn_ChooseResourceFromOpponentUsingPlayerId_MeaningfulErrorIsRaised()
     {
       // Arrange
       MockDice mockDice = null;
@@ -1165,7 +1166,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
       firstOpponent.ResourcesCount.ShouldBe(1);
       firstOpponent.BrickCount.ShouldBe(1);
       errorDetails.ShouldNotBeNull();
-      errorDetails.Message.ShouldBe("Must pick resource card from opponent.");
+      errorDetails.Message.ShouldBe("Cannot pick resource card from invalid opponent.");
     }
 
     [Test]
