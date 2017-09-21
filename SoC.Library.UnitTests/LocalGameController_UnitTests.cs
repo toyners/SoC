@@ -1133,6 +1133,41 @@ namespace Jabberwocky.SoC.Library.UnitTests
       errorDetails.Message.ShouldBe("Cannot pick resource card from invalid opponent.");
     }
 
+    /// <summary>
+    /// Passing in the player id causes an error to be raised.
+    /// </summary>
+    [Test]
+    [Category("LocalGameController")]
+    [Category("Main Player Turn")]
+    public void StartOfMainPlayerTurn_RollsSevenAndPassesInOwnPlayerId_MeaningfulErrorIsRaised()
+    {
+      // Arrange
+      MockDice mockDice = null;
+      MockPlayer player;
+      MockComputerPlayer firstOpponent, secondOpponent, thirdOpponent;
+      var localGameController = this.CreateLocalGameControllerAndCompleteGameSetup(out mockDice, out player, out firstOpponent, out secondOpponent, out thirdOpponent);
+      mockDice.AddSequence(new[] { 7u });
+
+      firstOpponent.AddResources(new ResourceClutch(1, 0, 0, 0, 0));
+
+      // Act
+      ResourceClutch resourceClutch = ResourceClutch.Zero;
+      ErrorDetails errorDetails = null;
+      localGameController.ResourcesGainedEvent = (ResourceClutch rc) => { resourceClutch = rc; };
+      localGameController.ErrorRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
+      localGameController.StartGamePlay();
+      localGameController.SetRobberLocation(3u);
+      localGameController.ChooseResourceFromOpponent(player.Id, 0);
+
+      // Assert
+      resourceClutch.ShouldBe(ResourceClutch.Zero);
+      player.ResourcesCount.ShouldBe(0);
+      firstOpponent.ResourcesCount.ShouldBe(1);
+      firstOpponent.BrickCount.ShouldBe(1);
+      errorDetails.ShouldNotBeNull();
+      errorDetails.Message.ShouldBe("Must pick resource card from opponent.");
+    }
+
     [Test]
     [Category("LocalGameController")]
     [Category("Main Player Turn")]
