@@ -4,6 +4,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
   using System;
   using System.IO;
   using System.Text;
+  using System.Xml;
   using Interfaces;
   using NUnit.Framework;
   using Shouldly;
@@ -14,7 +15,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     #region Methods
     [Test]
     [Category("All")]
-    [Category("Player")]
+    [Category("PlayerPool")]
     public void CreatePlayer_AllPropertiesInStream_PlayerPropertiesAreCorrect()
     {
       // Arrange
@@ -26,13 +27,17 @@ namespace Jabberwocky.SoC.Library.UnitTests
       // Act
       using (var memoryStream = new MemoryStream(contentBytes))
       {
-        var playerPool = new PlayerPool();
-        player = playerPool.CreatePlayer(memoryStream);
+        using (var reader = XmlReader.Create(memoryStream, new XmlReaderSettings { ConformanceLevel = ConformanceLevel.Fragment, CloseInput = false, IgnoreComments = true, IgnoreWhitespace = true }))
+        {
+          reader.Read();
+          var playerPool = new PlayerPool();
+          player = playerPool.CreatePlayer(reader);
+        } 
       }
 
       // Assert
       player.ShouldNotBeNull();
-      player.ShouldBeOfType<IComputerPlayer>();
+      player.ShouldBeOfType<ComputerPlayer>();
       player.Id.ShouldBe(playerId);
       player.Name.ShouldBe("Player");
       player.BrickCount.ShouldBe(1);
@@ -45,7 +50,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
     [Test]
     [Category("All")]
-    [Category("Player")]
+    [Category("PlayerPool")]
     public void CreatePlayer_NameOnlyInStream_PlayerPropertiesAreCorrect()
     {
       // Arrange
@@ -57,8 +62,12 @@ namespace Jabberwocky.SoC.Library.UnitTests
       // Act
       using (var memoryStream = new MemoryStream(contentBytes))
       {
-        var playerPool = new PlayerPool();
-        player = playerPool.CreatePlayer(memoryStream);
+        using (var reader = XmlReader.Create(memoryStream, new XmlReaderSettings { ConformanceLevel = ConformanceLevel.Fragment, CloseInput = false, IgnoreComments = true, IgnoreWhitespace = true }))
+        {
+          reader.Read();
+          var playerPool = new PlayerPool();
+          player = playerPool.CreatePlayer(reader);
+        }
       }
 
       // Assert
@@ -74,7 +83,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
     [Test]
     [Category("All")]
-    [Category("Player")]
+    [Category("PlayerPool")]
     public void CreatePlayer_NoIdInStream_ThrowsMeaningfulException()
     {
       // Arrange
@@ -86,8 +95,11 @@ namespace Jabberwocky.SoC.Library.UnitTests
       {
         using (var memoryStream = new MemoryStream(contentBytes))
         {
-          var playerPool = new PlayerPool();
-          playerPool.CreatePlayer(memoryStream);
+          using (var reader = XmlReader.Create(memoryStream, new XmlReaderSettings { ConformanceLevel = ConformanceLevel.Fragment, CloseInput = false, IgnoreComments = true, IgnoreWhitespace = true }))
+          {
+            var playerPool = new PlayerPool();
+            playerPool.CreatePlayer(reader);
+          }
         }
       };
 
@@ -97,7 +109,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
     [Test]
     [Category("All")]
-    [Category("Player")]
+    [Category("PlayerPool")]
     public void CreatePlayer_NoNameInStream_ThrowsMeaningfulException()
     {
       // Arrange
@@ -109,8 +121,12 @@ namespace Jabberwocky.SoC.Library.UnitTests
       {
         using (var memoryStream = new MemoryStream(contentBytes))
         {
-          var playerPool = new PlayerPool();
-          playerPool.CreatePlayer(memoryStream);
+          using (var reader = XmlReader.Create(memoryStream, new XmlReaderSettings { ConformanceLevel = ConformanceLevel.Fragment, CloseInput = false, IgnoreComments = true, IgnoreWhitespace = true }))
+          {
+            reader.Read();
+            var playerPool = new PlayerPool();
+            playerPool.CreatePlayer(reader);
+          }
         }
       };
 

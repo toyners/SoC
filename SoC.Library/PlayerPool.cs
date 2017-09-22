@@ -2,7 +2,6 @@
 namespace Jabberwocky.SoC.Library
 {
   using System;
-  using System.IO;
   using System.Xml;
   using Interfaces;
 
@@ -15,33 +14,30 @@ namespace Jabberwocky.SoC.Library
     }
 
     /// <summary>
-    /// Create a player instance from stream data.
+    /// Create a player instance from XML reader.
     /// </summary>
-    /// <param name="stream">Stream containing player data.</param>
+    /// <param name="reader">Xml reader containing player data.</param>
     /// <returns>Player instance</returns>
-    public IPlayer CreatePlayer(Stream stream)
+    public IPlayer CreatePlayer(XmlReader reader)
     {
-      throw new NotImplementedException();
-      /*using (var reader = XmlReader.Create(stream, new XmlReaderSettings { ConformanceLevel = ConformanceLevel.Fragment, CloseInput = false, IgnoreComments = true, IgnoreWhitespace = true }))
+      var isComputer = false;
+      var isComputerValue = reader.GetAttribute("iscomputer");
+      if (!String.IsNullOrEmpty(isComputerValue))
       {
-        while (!reader.EOF)
+        if (Boolean.TryParse(isComputerValue, out isComputer) && isComputer)
         {
-          if (reader.Name == "player" && reader.NodeType == XmlNodeType.Element)
-          {
-            return this.CreatePlayer(reader);
-          }
-
-          reader.Read();
+          var computerPlayer = new ComputerPlayer();
+          computerPlayer.Load(reader);
+          return computerPlayer;
         }
-      }*/
+      }
+
+      var player = new Player();
+      player.Load(reader);
+      return player;
     }
 
     public IPlayer GetPlayer()
-    {
-      throw new NotImplementedException();
-    }
-
-    internal IPlayer CreatePlayer(XmlReader reader)
     {
       throw new NotImplementedException();
     }

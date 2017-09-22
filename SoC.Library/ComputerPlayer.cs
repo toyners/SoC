@@ -8,6 +8,7 @@ namespace Jabberwocky.SoC.Library
 
   public class ComputerPlayer : Player, IComputerPlayer
   {
+    public ComputerPlayer() { }
     public ComputerPlayer(String name) : base(name) { }
 
     public override Boolean IsComputer { get { return true; } }

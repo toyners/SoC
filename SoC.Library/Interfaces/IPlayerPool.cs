@@ -1,5 +1,6 @@
 ﻿
 using System.IO;
+using System.Xml;
 
 namespace Jabberwocky.SoC.Library.Interfaces
 {
@@ -8,11 +9,11 @@ namespace Jabberwocky.SoC.Library.Interfaces
     IPlayer Create();
 
     /// <summary>
-    /// Create a player instance from stream data.
+    /// Create a player instance from XML reader.
     /// </summary>
-    /// <param name="stream">Stream containing player data.</param>
+    /// <param name="reader">Xml reader containing player data.</param>
     /// <returns>Player instance</returns>
-    IPlayer CreatePlayer(Stream stream);
+    IPlayer CreatePlayer(XmlReader reader);
 
     IPlayer GetPlayer();
   }

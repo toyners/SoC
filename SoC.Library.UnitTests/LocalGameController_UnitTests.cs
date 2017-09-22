@@ -1358,9 +1358,9 @@ namespace Jabberwocky.SoC.Library.UnitTests
       var streamContent = "<game>" +
         "<players>" +
         "<player id=\"" + player.Id + "\" name=\"" + player.Name + "\" brick=\"" + player.BrickCount + "\" grain=\"" + player.GrainCount + "\" lumber=\"" + player.LumberCount + "\" ore=\"" + player.OreCount + "\" wool=\"" + player.WoolCount + "\" />" +
-        "<player id=\"" + firstOpponent.Id + "\" name=\"" + firstOpponent.Name + "\" iscomputer=\"true\" brick=\"1\" grain=\"1\" lumber=\"1\" ore=\"1\" wool=\"1\" />" +
-        "<player id=\"" + secondOpponent.Id + "\" name=\"" + secondOpponent.Name + "\" iscomputer=\"true\" brick=\"2\" grain=\"2\" lumber=\"2\" ore=\"2\" wool=\"2\" />" +
-        "<player id=\"" + thirdOpponent.Id + "\" name=\"" + thirdOpponent.Name + "\" iscomputer=\"true\" brick=\"3\" grain=\"3\" lumber=\"3\" ore=\"3\" wool=\"3\" />" +
+        "<player id=\"" + firstOpponent.Id + "\" name=\"" + firstOpponent.Name + "\" iscomputer=\"true\" brick=\"" + firstOpponent.BrickCount + "\" grain=\"" + firstOpponent.GrainCount + "\" lumber=\"" + firstOpponent.LumberCount + "\" ore=\"" + firstOpponent.OreCount + "\" wool=\"" + firstOpponent.WoolCount + "\" />" +
+        "<player id=\"" + secondOpponent.Id + "\" name=\"" + secondOpponent.Name + "\" iscomputer=\"true\" brick=\"" + secondOpponent.BrickCount + "\" grain=\"" + secondOpponent.GrainCount + "\" lumber=\"" + secondOpponent.LumberCount + "\" ore=\"" + secondOpponent.OreCount + "\" wool=\"" + secondOpponent.WoolCount + "\" />" +
+        "<player id=\"" + thirdOpponent.Id + "\" name=\"" + thirdOpponent.Name + "\" iscomputer=\"true\" brick=\"" + thirdOpponent.BrickCount + "\" grain=\"" + thirdOpponent.GrainCount + "\" lumber=\"" + thirdOpponent.LumberCount + "\" ore=\"" + thirdOpponent.OreCount + "\" wool=\"" + thirdOpponent.WoolCount + "\" />" +
         "</players>" +
         "<settlements>" +
         "<settlement playerid=\"" + player.Id + "\" location=\"" + MainSettlementOneLocation + "\" />" +

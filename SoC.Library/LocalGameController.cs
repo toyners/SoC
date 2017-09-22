@@ -153,8 +153,7 @@ namespace Jabberwocky.SoC.Library
           {
             if (reader.Name == "player" && reader.NodeType == XmlNodeType.Element)
             {
-              var player = new Player();
-              player.Load(reader);
+              var player = this.playerPool.CreatePlayer(reader);
               loadedPlayers.Add(player);
             }
 
