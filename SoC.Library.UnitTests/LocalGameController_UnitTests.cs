@@ -1421,10 +1421,8 @@ namespace Jabberwocky.SoC.Library.UnitTests
       }
 
       // Assert
-      player.BrickCount.ShouldBe(5);
-      firstOpponent.BrickCount.ShouldBe(6);
-      secondOpponent.BrickCount.ShouldBe(7);
-      thirdOpponent.BrickCount.ShouldBe(8);
+      boardData.ShouldNotBeNull();
+      throw new NotImplementedException();
     }
 
     private LocalGameController CreateLocalGameControllerAndCompleteGameSetup(out MockDice mockDice, out MockPlayer player, out MockComputerPlayer firstOpponent, out MockComputerPlayer secondOpponent, out MockComputerPlayer thirdOpponent)
