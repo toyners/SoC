@@ -58,7 +58,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
     [Test]
     [Category("LocalGameController")]
-    public void TryingToJoinGameMoreThanOnce_MeaningfulErrorIsRaised()
+    public void TryingToJoinGameMoreThanOnce_MeaningfulErrorIsReceived()
     {
       var player = new MockPlayer(PlayerName);
       var opponents = new[] 
@@ -82,7 +82,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
     [Test]
     [Category("LocalGameController")]
-    public void LaunchGame_LaunchGameWithoutJoining_MeaningfulErrorIsRaised()
+    public void LaunchGame_LaunchGameWithoutJoining_MeaningfulErrorIsReceived()
     {
       var localGameController = new LocalGameControllerCreator().Create();
       ErrorDetails errorDetails = null;
@@ -389,7 +389,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
     [Test]
     [Category("LocalGameController")]
-    public void ContinueGameSetup_CallOutOfSequence_MeaningfulErrorDetailsPassedBack()
+    public void ContinueGameSetup_CallOutOfSequence_MeaningfulErrorIsReceived()
     {
       var localGameController = new LocalGameControllerCreator().Create();
       ErrorDetails errorDetails = null;
@@ -403,7 +403,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
     [Test]
     [Category("LocalGameController")]
-    public void CompleteGameSetup_CallOutOfSequence_MeaningfulErrorDetailsPassedBack()
+    public void CompleteGameSetup_CallOutOfSequence_MeaningfulErrorIsReceived()
     {
       var localGameController = new LocalGameControllerCreator().Create();
       ErrorDetails errorDetails = null;
@@ -417,7 +417,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
     [Test]
     [Category("LocalGameController")]
-    public void PlayerPlacesRoadWithNoConnectionToAnySettlements_MeaningfulErrorDetailsPassedBack()
+    public void PlayerPlacesRoadWithNoConnectionToAnySettlements_MeaningfulErrorIsReceived()
     {
       var mockDice = Substitute.For<IDice>();
       mockDice.RollTwoDice().Returns(12u, 10u, 8u, 6u);
@@ -445,7 +445,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
     [Test]
     [Category("LocalGameController")]
-    public void PlayerSelectsSameLocationAsComputerPlayerDuringFirstSetupRound_MeaningfulErrorDetailsPassedBack()
+    public void PlayerSelectsSameLocationAsComputerPlayerDuringFirstSetupRound_MeaningfulErrorIsReceived()
     {
       var mockDice = Substitute.For<IDice>();
       mockDice.RollTwoDice().Returns(10u, 12u, 8u, 6u);
@@ -474,7 +474,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
     [Test]
     [Category("LocalGameController")]
-    public void PlayerSelectsSameLocationAsComputerPlayerDuringSecondSetupRound_MeaningfulErrorDetailsPassedBack()
+    public void PlayerSelectsSameLocationAsComputerPlayerDuringSecondSetupRound_MeaningfulErrorIsReceived()
     {
       var mockDice = Substitute.For<IDice>();
       mockDice.RollTwoDice().Returns(12u, 10u, 8u, 6u);
@@ -505,7 +505,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
     [Test]
     [Category("LocalGameController")]
-    public void PlayerSelectsLocationTooCloseToComputerPlayerDuringFirstSetupRound_MeaningfulErrorDetailsPassedBack()
+    public void PlayerSelectsLocationTooCloseToComputerPlayerDuringFirstSetupRound_MeaningfulErrorIsReceived()
     {
       var mockDice = Substitute.For<IDice>();
       mockDice.RollTwoDice().Returns(10u, 12u, 8u, 6u);
@@ -534,7 +534,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
     [Test]
     [Category("LocalGameController")]
-    public void PlayerSelectsLocationTooCloseToComputerPlayerDuringSecondSetupRound_MeaningfulErrorDetailsPassedBack()
+    public void PlayerSelectsLocationTooCloseToComputerPlayerDuringSecondSetupRound_MeaningfulErrorIsReceived()
     {
       var mockDice = Substitute.For<IDice>();
       mockDice.RollTwoDice().Returns(12u, 10u, 8u, 6u);
@@ -564,7 +564,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
     [Test]
     [Category("LocalGameController")]
-    public void PlayerPlacesRoadWithNoConnectionToAnySettlementsDuringSecondSetupRound_MeaningfulErrorDetailsPassedBack()
+    public void PlayerPlacesRoadWithNoConnectionToAnySettlementsDuringSecondSetupRound_MeaningfulErrorIsReceived()
     {
       var localGameController = CreateLocalGameControllerWithMainPlayerGoingFirstInSetup();
 
@@ -588,7 +588,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
     [Test]
     [Category("LocalGameController")]
-    public void PlayerPlacesSettlementOffGameBoardDuringFirstSetupRound_MeaningfulErrorDetailsPassedBack()
+    public void PlayerPlacesSettlementOffGameBoardDuringFirstSetupRound_MeaningfulErrorReceived()
     {
       var localGameController = CreateLocalGameControllerWithMainPlayerGoingFirstInSetup();
 
@@ -610,7 +610,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
     [Test]
     [Category("LocalGameController")]
-    public void PlayerPlacesRoadOverEdgeOfGameBoardDuringFirstSetupRound_MeaningfulErrorDetailsPassedBack()
+    public void PlayerPlacesRoadOverEdgeOfGameBoardDuringFirstSetupRound_MeaningfulErrorIsReceived()
     {
       var localGameController = CreateLocalGameControllerWithMainPlayerGoingFirstInSetup();
 
@@ -632,7 +632,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
     [Test]
     [Category("LocalGameController")]
-    public void PlayerPlacesRoadWhereNoConnectionExistsDuringFirstSetupRound_MeaningfulErrorDetailsPassedBack()
+    public void PlayerPlacesRoadWhereNoConnectionExistsDuringFirstSetupRound_MeaningfulErrorIsReceived()
     {
       var localGameController = CreateLocalGameControllerWithMainPlayerGoingFirstInSetup();
 
@@ -654,7 +654,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
     [Test]
     [Category("LocalGameController")]
-    public void PlayerPlacesSettlementOffGameBoardDuringSecondSetupRound_MeaningfulErrorDetailsPassedBack()
+    public void PlayerPlacesSettlementOffGameBoardDuringSecondSetupRound_MeaningfulErrorIsReceived()
     {
       var localGameController = CreateLocalGameControllerWithMainPlayerGoingFirstInSetup();
 
@@ -678,7 +678,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
     [Test]
     [Category("LocalGameController")]
-    public void PlayerPlacesRoadOverEdgeOfGameBoardDuringSecondSetupRound_MeaningfulErrorDetailsPassedBack()
+    public void PlayerPlacesRoadOverEdgeOfGameBoardDuringSecondSetupRound_MeaningfulErrorIsReceived()
     {
       var localGameController = CreateLocalGameControllerWithMainPlayerGoingFirstInSetup();
 
@@ -702,7 +702,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
     [Test]
     [Category("LocalGameController")]
-    public void PlayerPlacesRoadWhereNoConnectionExistsDuringSecondSetupRound_MeaningfulErrorDetailsPassedBack()
+    public void PlayerPlacesRoadWhereNoConnectionExistsDuringSecondSetupRound_MeaningfulErrorIsReceived()
     {
       var localGameController = CreateLocalGameControllerWithMainPlayerGoingFirstInSetup();
 
@@ -726,7 +726,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
     [Test]
     [Category("LocalGameController")]
-    public void FinalisePlayerTurnOrder_CallOutOfSequence_MeaningfulErrorDetailsPassedBack()
+    public void FinalisePlayerTurnOrder_CallOutOfSequence_MeaningfulErrorIsReceived()
     {
       var localGameController = new LocalGameControllerCreator().Create();
       ErrorDetails errorDetails = null;
@@ -814,6 +814,42 @@ namespace Jabberwocky.SoC.Library.UnitTests
       this.AssertPlayerDataViewIsCorrect(firstOpponent, turnOrder[1]);
       this.AssertPlayerDataViewIsCorrect(secondOpponent, turnOrder[2]);
       this.AssertPlayerDataViewIsCorrect(thirdOpponent, turnOrder[3]);
+    }
+
+    [Test]
+    [Category("All")]
+    [Category("LocalGameController")]
+    public void StartGamePlayer_PlayerTurnNotFinalised_MeaningfulErrorIsReceived()
+    {
+      // Arrange
+      var gameSetupOrder = new[] { 12u, 10u, 8u, 6u };
+      var gameTurnOrder = gameSetupOrder;
+      var mockDice = new MockDiceCreator()
+        .AddExplicitDiceRollSequence(gameSetupOrder)
+        .AddExplicitDiceRollSequence(gameTurnOrder)
+        .Create();
+
+      MockPlayer player;
+      MockComputerPlayer firstOpponent, secondOpponent, thirdOpponent;
+      this.CreateDefaultPlayerInstances(out player, out firstOpponent, out secondOpponent, out thirdOpponent);
+
+      var localGameController = this.CreateLocalGameController(mockDice, player, firstOpponent, secondOpponent, thirdOpponent);
+
+      ErrorDetails errorDetails = null;
+      localGameController.ErrorRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
+
+      localGameController.JoinGame();
+      localGameController.LaunchGame();
+      localGameController.StartGameSetup();
+      localGameController.ContinueGameSetup(MainSettlementOneLocation, mainRoadOne);
+      localGameController.CompleteGameSetup(MainSettlementTwoLocation, mainRoadTwo);
+
+      // Act
+      localGameController.StartGamePlay();
+
+      // Assert
+      errorDetails.ShouldNotBeNull();
+      errorDetails.Message.ShouldBe("Error");
     }
 
     [Test]
@@ -958,7 +994,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     [Test]
     [Category("LocalGameController")]
     [Category("Main Player Turn")]
-    public void StartOfMainPlayerTurn_RollsSevenButDoesNotPassBackExpectedResources_ThrowsMeaningfulException()
+    public void StartOfMainPlayerTurn_RollsSevenButDoesNotPassBackExpectedResources_MeaningfulErrorIsReceived()
     {
       // Arrange
       MockDice mockDice = null;
@@ -1069,7 +1105,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     [Category("Main Player Turn")]
     [TestCase(-1)]
     [TestCase(1)]
-    public void StartOfMainPlayerTurn_RollsSevenAndChoosesOutOfRangeResourceIndexFromOpponent_MeaningfulErrorIsRaised(Int32 index)
+    public void StartOfMainPlayerTurn_RollsSevenAndChoosesOutOfRangeResourceIndexFromOpponent_MeaningfulErrorIsReceived(Int32 index)
     {
       // Arrange
       MockDice mockDice = null;
@@ -1104,7 +1140,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     [Test]
     [Category("LocalGameController")]
     [Category("Main Player Turn")]
-    public void StartOfMainPlayerTurn_RollsSevenAndPassesInUnknownPlayerId_MeaningfulErrorIsRaised()
+    public void StartOfMainPlayerTurn_RollsSevenAndPassesInUnknownPlayerId_MeaningfulErrorIsReceived()
     {
       // Arrange
       MockDice mockDice = null;
@@ -1140,7 +1176,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     [Category("All")]
     [Category("LocalGameController")]
     [Category("Main Player Turn")]
-    public void StartOfMainPlayerTurn_ChooseResourceFromOpponentUsingPlayerId_MeaningfulErrorIsRaised()
+    public void StartOfMainPlayerTurn_ChooseResourceFromOpponentUsingPlayerId_MeaningfulErrorIsReceived()
     {
       // Arrange
       MockDice mockDice = null;
@@ -1172,7 +1208,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     [Test]
     [Category("LocalGameController")]
     [Category("Main Player Turn")]
-    public void StartOfMainPlayerTurn_ChooseResourceFromOpponentCalledOutOfSequence_MeaningfulErrorIsRaised()
+    public void StartOfMainPlayerTurn_ChooseResourceFromOpponentCalledOutOfSequence_MeaningfulErrorIsReceived()
     {
       // Arrange
       MockDice mockDice = null;
@@ -1233,7 +1269,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     [Category("All")]
     [Category("LocalGameController")]
     [Category("Main Player Turn")]
-    public void StartOfMainPlayerTurn_RobberLocationHasNoSettlementsAndCallingChooseResourceFromOpponent_MeaningfulErrorIsRaised()
+    public void StartOfMainPlayerTurn_RobberLocationHasNoSettlementsAndCallingChooseResourceFromOpponent_MeaningfulErrorIsReceived()
     {
       // Arrange
       MockDice mockDice = null;
@@ -1288,7 +1324,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     [Category("All")]
     [Category("LocalGameController")]
     [Category("Main Player Turn")]
-    public void StartOfMainPlayerTurn_RobberLocationHasOnlyPlayerSettlementsAndCallingChooseResourceFromOpponent_MeaningfulErrorIsRaised()
+    public void StartOfMainPlayerTurn_RobberLocationHasOnlyPlayerSettlementsAndCallingChooseResourceFromOpponent_MeaningfulErrorIsReceived()
     {
       // Arrange
       MockDice mockDice = null;
