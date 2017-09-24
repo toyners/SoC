@@ -240,6 +240,13 @@ namespace Jabberwocky.SoC.Library
 
     public void StartGamePlay()
     {
+      if (this.GamePhase != GamePhases.StartGamePlay)
+      {
+        var errorDetails = new ErrorDetails("Cannot call 'StartGamePlay' until 'FinalisePlayerTurnOrder' has completed.");
+        this.ErrorRaisedEvent?.Invoke(errorDetails);
+        return;
+      }
+
       this.playerIndex = 0;
       var turnToken = Guid.NewGuid();
       this.StartPlayerTurnEvent?.Invoke(turnToken);

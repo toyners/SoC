@@ -849,7 +849,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
       // Assert
       errorDetails.ShouldNotBeNull();
-      errorDetails.Message.ShouldBe("Error");
+      errorDetails.Message.ShouldBe("Cannot call 'StartGamePlay' until 'FinalisePlayerTurnOrder' has completed.");
     }
 
     [Test]
