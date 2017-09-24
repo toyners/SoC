@@ -1335,6 +1335,29 @@ namespace Jabberwocky.SoC.Library.UnitTests
     [Test]
     [Category("All")]
     [Category("LocalGameController")]
+    public void Load_LocalGameControllerSetupNotComplete_ThrowsMeaningfulException()
+    {
+      // Arrange
+      var localGameController = new LocalGameController(new Dice(), new PlayerPool(), new GameBoardManager(BoardSizes.Standard));
+      var content = String.Empty;
+      var contentBytes = Encoding.UTF8.GetBytes(content);
+      
+      // Act
+      Action action = () =>
+      {
+        using (var memoryStream = new MemoryStream(contentBytes))
+        {
+          localGameController.Load(memoryStream);
+        }
+      };
+
+      // Assert
+      Should.Throw<Exception>(action).Message.ShouldBe("Must complete setup before loading game.");
+    }
+
+    [Test]
+    [Category("All")]
+    [Category("LocalGameController")]
     public void Load_HexDataOnly_ResourceProvidersLoadedCorrectly()
     {
       // Arrange
@@ -1433,13 +1456,18 @@ namespace Jabberwocky.SoC.Library.UnitTests
     public void Load_PlayerAndInfrastructureData_GameBoardIsAsExpected()
     {
       // Arrange
-      var playerPool = new PlayerPool();
-      var gameBoardManager = new GameBoardManager(BoardSizes.Standard);
-      LocalGameController localGameController = new LocalGameController(new Dice(), playerPool, gameBoardManager);
+      //var playerPool = new PlayerPool();
+      //var gameBoardManager = new GameBoardManager(BoardSizes.Standard);
+      //LocalGameController localGameController = new LocalGameController(new Dice(), playerPool, gameBoardManager);
 
+      MockDice dice = null;
       MockPlayer player;
       MockComputerPlayer firstOpponent, secondOpponent, thirdOpponent;
-      CreateDefaultPlayerInstances(out player, out firstOpponent, out secondOpponent, out thirdOpponent);
+      var localGameController = this.CreateLocalGameControllerAndCompleteGameSetup(out dice, out player, out firstOpponent, out secondOpponent, out thirdOpponent);
+
+      //MockPlayer player;
+      //MockComputerPlayer firstOpponent, secondOpponent, thirdOpponent;
+      //CreateDefaultPlayerInstances(out player, out firstOpponent, out secondOpponent, out thirdOpponent);
 
       GameBoardData boardData = null;
       localGameController.GameLoadedEvent = (PlayerDataView[] pd, GameBoardData bd) => { boardData = bd; };
