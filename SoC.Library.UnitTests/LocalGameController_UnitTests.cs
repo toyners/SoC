@@ -1335,7 +1335,56 @@ namespace Jabberwocky.SoC.Library.UnitTests
     [Test]
     [Category("All")]
     [Category("LocalGameController")]
-    public void Load_SavedAfterSetupOnStandardBoard_PlayerDataViewsAreAsExpected()
+    public void Load_HexDataOnly_ResourceProvidersLoadedCorrectly()
+    {
+      // Arrange
+      var playerPool = new PlayerPool();
+      var gameBoardManager = new GameBoardManager(BoardSizes.Standard);
+      var localGameController = new LocalGameController(new Dice(), playerPool, gameBoardManager);
+
+      GameBoardData boardData = null;
+      localGameController.GameLoadedEvent = (PlayerDataView[] pd, GameBoardData bd) => { boardData = bd; };
+
+      // Act
+      var content = "<game><board><hexes>" +
+        "<resources>glbglogob gwwwlwlbo</resources>" +
+        "<production>9,8,5,12,11,3,6,10,6,0,4,11,2,4,3,5,9,10,8</production>" +
+        "</hexes></board></game>";
+
+      var contentBytes = Encoding.UTF8.GetBytes(content);
+      using (var memoryStream = new MemoryStream(contentBytes))
+      {
+        localGameController.Load(memoryStream);
+      }
+
+      // Assert
+      Tuple<ResourceTypes, UInt32>[] hexes = boardData.GetHexInformation();
+      hexes.Length.ShouldBe(GameBoardData.StandardBoardHexCount);
+      hexes[0].ShouldBe(new Tuple<ResourceTypes, UInt32>(ResourceTypes.Grain, 9));
+      hexes[1].ShouldBe(new Tuple<ResourceTypes, UInt32>(ResourceTypes.Lumber, 8));
+      hexes[2].ShouldBe(new Tuple<ResourceTypes, UInt32>(ResourceTypes.Brick, 5));
+      hexes[3].ShouldBe(new Tuple<ResourceTypes, UInt32>(ResourceTypes.Grain, 12));
+      hexes[4].ShouldBe(new Tuple<ResourceTypes, UInt32>(ResourceTypes.Lumber, 11));
+      hexes[5].ShouldBe(new Tuple<ResourceTypes, UInt32>(ResourceTypes.Ore, 3));
+      hexes[6].ShouldBe(new Tuple<ResourceTypes, UInt32>(ResourceTypes.Grain, 6));
+      hexes[7].ShouldBe(new Tuple<ResourceTypes, UInt32>(ResourceTypes.Ore, 10));
+      hexes[8].ShouldBe(new Tuple<ResourceTypes, UInt32>(ResourceTypes.Brick, 6));
+      hexes[9].ShouldBe(new Tuple<ResourceTypes, UInt32>(ResourceTypes.None, 0));
+      hexes[10].ShouldBe(new Tuple<ResourceTypes, UInt32>(ResourceTypes.Grain, 4));
+      hexes[11].ShouldBe(new Tuple<ResourceTypes, UInt32>(ResourceTypes.Wool, 11));
+      hexes[12].ShouldBe(new Tuple<ResourceTypes, UInt32>(ResourceTypes.Wool, 2));
+      hexes[13].ShouldBe(new Tuple<ResourceTypes, UInt32>(ResourceTypes.Wool, 4));
+      hexes[14].ShouldBe(new Tuple<ResourceTypes, UInt32>(ResourceTypes.Lumber, 3));
+      hexes[15].ShouldBe(new Tuple<ResourceTypes, UInt32>(ResourceTypes.Wool, 5));
+      hexes[16].ShouldBe(new Tuple<ResourceTypes, UInt32>(ResourceTypes.Lumber, 9));
+      hexes[17].ShouldBe(new Tuple<ResourceTypes, UInt32>(ResourceTypes.Brick, 10));
+      hexes[18].ShouldBe(new Tuple<ResourceTypes, UInt32>(ResourceTypes.Ore, 8));
+    }
+
+    [Test]
+    [Category("All")]
+    [Category("LocalGameController")]
+    public void Load_PlayerDataOnly_PlayerDataViewsAreAsExpected()
     {
       // Arrange
       var playerPool = new PlayerPool();
@@ -1351,8 +1400,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
       thirdOpponent.AddResources(new ResourceClutch(3, 3, 3, 3, 3));
 
       PlayerDataView[] playerDataViews = null;
-      GameBoardData boardData = null;
-      localGameController.GameLoadedEvent = (PlayerDataView[] pd, GameBoardData bd) => { playerDataViews = pd; boardData = bd; };
+      localGameController.GameLoadedEvent = (PlayerDataView[] pd, GameBoardData bd) => { playerDataViews = pd; };
 
       // Act
       var streamContent = "<game>" +
@@ -1362,9 +1410,6 @@ namespace Jabberwocky.SoC.Library.UnitTests
         "<player id=\"" + secondOpponent.Id + "\" name=\"" + secondOpponent.Name + "\" iscomputer=\"true\" brick=\"" + secondOpponent.BrickCount + "\" grain=\"" + secondOpponent.GrainCount + "\" lumber=\"" + secondOpponent.LumberCount + "\" ore=\"" + secondOpponent.OreCount + "\" wool=\"" + secondOpponent.WoolCount + "\" />" +
         "<player id=\"" + thirdOpponent.Id + "\" name=\"" + thirdOpponent.Name + "\" iscomputer=\"true\" brick=\"" + thirdOpponent.BrickCount + "\" grain=\"" + thirdOpponent.GrainCount + "\" lumber=\"" + thirdOpponent.LumberCount + "\" ore=\"" + thirdOpponent.OreCount + "\" wool=\"" + thirdOpponent.WoolCount + "\" />" +
         "</players>" +
-        "<settlements>" +
-        "<settlement playerid=\"" + player.Id + "\" location=\"" + MainSettlementOneLocation + "\" />" +
-        "</settlements>" +
         "</game>";
       var streamContentBytes = Encoding.UTF8.GetBytes(streamContent);
       using (var stream = new MemoryStream(streamContentBytes))
@@ -1380,14 +1425,12 @@ namespace Jabberwocky.SoC.Library.UnitTests
       this.AssertPlayerDataViewIsCorrect(firstOpponent, playerDataViews[1]);
       this.AssertPlayerDataViewIsCorrect(secondOpponent, playerDataViews[2]);
       this.AssertPlayerDataViewIsCorrect(thirdOpponent, playerDataViews[3]);
-
-      boardData.ShouldNotBeNull();
     }
 
     [Test]
     [Category("All")]
     [Category("LocalGameController")]
-    public void Load_SavedAfterSetupOnStandardBoard_GameBoardIsAsExpected()
+    public void Load_PlayerAndInfrastructureData_GameBoardIsAsExpected()
     {
       // Arrange
       var playerPool = new PlayerPool();
@@ -1398,9 +1441,8 @@ namespace Jabberwocky.SoC.Library.UnitTests
       MockComputerPlayer firstOpponent, secondOpponent, thirdOpponent;
       CreateDefaultPlayerInstances(out player, out firstOpponent, out secondOpponent, out thirdOpponent);
 
-      PlayerDataView[] playerDataViews = null;
       GameBoardData boardData = null;
-      localGameController.GameLoadedEvent = (PlayerDataView[] pd, GameBoardData bd) => { playerDataViews = pd; boardData = bd; };
+      localGameController.GameLoadedEvent = (PlayerDataView[] pd, GameBoardData bd) => { boardData = bd; };
 
       // Act
       var streamContent = "<game>" +
@@ -1415,6 +1457,9 @@ namespace Jabberwocky.SoC.Library.UnitTests
         "<settlement playerid=\"" + player.Id + "\" location=\"" + MainSettlementTwoLocation + "\" />" +
         "<settlement playerid=\"" + firstOpponent.Id + "\" location=\"" + FirstSettlementOneLocation + "\" />" +
         "</settlements>" +
+        "<roads>" +
+        "<road playerid=\"" + player.Id + "\" start=\"" + this.mainRoadOne.Location1 + "\" end=\"" + this.mainRoadOne.Location2 + "\" />" +
+        "</roads>" +
         "</game>";
       var streamContentBytes = Encoding.UTF8.GetBytes(streamContent);
       using (var stream = new MemoryStream(streamContentBytes))
@@ -1424,14 +1469,16 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
       // Assert
       boardData.ShouldNotBeNull();
-      var settlementLocations = boardData.GetSettlementsForPlayer(player.Id);
-      settlementLocations.Count.ShouldBe(2);
-      settlementLocations.ShouldContain(MainSettlementOneLocation);
-      settlementLocations.ShouldContain(MainSettlementTwoLocation);
-      settlementLocations = boardData.GetSettlementsForPlayer(firstOpponent.Id);
-      settlementLocations.Count.ShouldBe(1);
-      settlementLocations.ShouldContain(FirstSettlementOneLocation);
 
+      var settlements = boardData.GetSettlementInformation();
+      settlements.Count.ShouldBe(3);
+      settlements.ShouldContainKeyAndValue(MainSettlementOneLocation, player.Id);
+      settlements.ShouldContainKeyAndValue(MainSettlementTwoLocation, player.Id);
+      settlements.ShouldContainKeyAndValue(FirstSettlementOneLocation, firstOpponent.Id);
+
+      var roads = boardData.GetRoadInformation();
+      roads.Length.ShouldBe(1);
+      roads[0].ShouldBe(new Tuple<Road, Guid>(this.mainRoadOne, player.Id));
     }
 
     private LocalGameController CreateLocalGameControllerAndCompleteGameSetup(out MockDice mockDice, out MockPlayer player, out MockComputerPlayer firstOpponent, out MockComputerPlayer secondOpponent, out MockComputerPlayer thirdOpponent)
