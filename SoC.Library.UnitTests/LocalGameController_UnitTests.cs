@@ -1387,7 +1387,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     [Test]
     [Category("All")]
     [Category("LocalGameController")]
-    public void Load_SavedAfterSetupOnStandardBoard_PlayerInstancesLoadedCorrectly()
+    public void Load_SavedAfterSetupOnStandardBoard_GameBoardIsAsExpected()
     {
       // Arrange
       var playerPool = new PlayerPool();
@@ -1412,6 +1412,8 @@ namespace Jabberwocky.SoC.Library.UnitTests
         "</players>" +
         "<settlements>" +
         "<settlement playerid=\"" + player.Id + "\" location=\"" + MainSettlementOneLocation + "\" />" +
+        "<settlement playerid=\"" + player.Id + "\" location=\"" + MainSettlementTwoLocation + "\" />" +
+        "<settlement playerid=\"" + firstOpponent.Id + "\" location=\"" + FirstSettlementOneLocation + "\" />" +
         "</settlements>" +
         "</game>";
       var streamContentBytes = Encoding.UTF8.GetBytes(streamContent);
@@ -1422,7 +1424,14 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
       // Assert
       boardData.ShouldNotBeNull();
-      throw new NotImplementedException();
+      var settlementLocations = boardData.GetSettlementsForPlayer(player.Id);
+      settlementLocations.Count.ShouldBe(2);
+      settlementLocations.ShouldContain(MainSettlementOneLocation);
+      settlementLocations.ShouldContain(MainSettlementTwoLocation);
+      settlementLocations = boardData.GetSettlementsForPlayer(firstOpponent.Id);
+      settlementLocations.Count.ShouldBe(1);
+      settlementLocations.ShouldContain(FirstSettlementOneLocation);
+
     }
 
     private LocalGameController CreateLocalGameControllerAndCompleteGameSetup(out MockDice mockDice, out MockPlayer player, out MockComputerPlayer firstOpponent, out MockComputerPlayer secondOpponent, out MockComputerPlayer thirdOpponent)
