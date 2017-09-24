@@ -1397,9 +1397,10 @@ namespace Jabberwocky.SoC.Library.UnitTests
     public void Load_HexDataOnly_ResourceProvidersLoadedCorrectly()
     {
       // Arrange
-      var playerPool = new PlayerPool();
-      var gameBoardManager = new GameBoardManager(BoardSizes.Standard);
-      var localGameController = new LocalGameController(new Dice(), playerPool, gameBoardManager);
+      MockDice dice = null;
+      MockPlayer player = null;
+      MockComputerPlayer firstOpponent, secondOpponent, thirdOpponent;
+      var localGameController = this.CreateLocalGameControllerAndCompleteGameSetup(out dice, out player, out firstOpponent, out secondOpponent, out thirdOpponent);
 
       GameBoardData boardData = null;
       localGameController.GameLoadedEvent = (PlayerDataView[] pd, GameBoardData bd) => { boardData = bd; };

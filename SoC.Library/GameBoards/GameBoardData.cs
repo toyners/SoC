@@ -198,6 +198,17 @@ namespace Jabberwocky.SoC.Library.GameBoards
       return results;
     }
 
+    public Tuple<ResourceTypes, UInt32>[] GetHexInformation()
+    {
+      var data = new Tuple<ResourceTypes, UInt32>[this.hexes.Length];
+      for (var index = 0; index < this.hexes.Length; index++)
+      {
+        data[index] = new Tuple<ResourceTypes, uint>(this.hexes[index].Type, this.hexes[index].Production);
+      }
+
+      return data;
+    }
+
     public List<UInt32> GetPathBetweenLocations(UInt32 startIndex, UInt32 endIndex)
     {
       if (startIndex == endIndex)
@@ -206,64 +217,6 @@ namespace Jabberwocky.SoC.Library.GameBoards
       }
 
       return PathFinder.GetPathBetweenPoints(startIndex, endIndex, this.connections);
-    }
-
-    /// <summary>
-    /// Returns the list of production values of the resource producers that are available
-    /// to the location.
-    /// </summary>
-    /// <param name="location">Index of the location to get production values for.</param>
-    /// <returns>Array of production values.</returns>
-    public UInt32[] GetProductionValuesForLocation(UInt32 location)
-    {
-      var hexesForLocation = this.hexesForLocations[location];
-      var productionValues = new List<UInt32>();
-
-      foreach (var hexIndex in hexesForLocation)
-      {
-        var productionValue = this.hexes[hexIndex].Production;
-        if (productionValue > 0)
-        {
-          productionValues.Add(this.hexes[hexIndex].Production);
-        }
-      }
-
-      return productionValues.ToArray();
-    }
-
-    public List<UInt32> GetSettlementsForPlayer(Guid playerId)
-    {
-      if (!this.settlementsByPlayer.ContainsKey(playerId))
-      {
-        return null;
-      }
-
-      return this.settlementsByPlayer[playerId];
-    }
-
-    public void PlaceStartingInfrastructure(Guid playerId, UInt32 settlementIndex, Road road)
-    {
-      this.PlaceSettlement(playerId, settlementIndex);
-      this.PlaceRoad(playerId, road);
-    }
-
-    public void PlaceRoad(Guid playerId, Road road)
-    {
-      this.roads.Add(road, playerId);
-    }
-
-    public void PlaceSettlement(Guid playerId, UInt32 locationIndex)
-    {
-      if (this.settlementsByPlayer.ContainsKey(playerId))
-      {
-        this.settlementsByPlayer[playerId].Add(locationIndex);
-      }
-      else
-      {
-        this.settlementsByPlayer.Add(playerId, new List<uint> { locationIndex });
-      }
-
-      this.settlements.Add(locationIndex, playerId);
     }
 
     /// <summary>
@@ -300,6 +253,29 @@ namespace Jabberwocky.SoC.Library.GameBoards
       return players != null ? players.ToArray() : null;
     }
 
+    /// <summary>
+    /// Returns the list of production values of the resource producers that are available
+    /// to the location.
+    /// </summary>
+    /// <param name="location">Index of the location to get production values for.</param>
+    /// <returns>Array of production values.</returns>
+    public UInt32[] GetProductionValuesForLocation(UInt32 location)
+    {
+      var hexesForLocation = this.hexesForLocations[location];
+      var productionValues = new List<UInt32>();
+
+      foreach (var hexIndex in hexesForLocation)
+      {
+        var productionValue = this.hexes[hexIndex].Production;
+        if (productionValue > 0)
+        {
+          productionValues.Add(this.hexes[hexIndex].Production);
+        }
+      }
+
+      return productionValues.ToArray();
+    }
+
     public ResourceClutch GetResourcesForLocation(UInt32 location)
     {
       var resourceClutch = new ResourceClutch();
@@ -309,11 +285,21 @@ namespace Jabberwocky.SoC.Library.GameBoards
       {
         switch (this.hexes[hexIndex].Type)
         {
-          case ResourceTypes.Brick: resourceClutch.BrickCount++; break;
-          case ResourceTypes.Grain: resourceClutch.GrainCount++; break;
-          case ResourceTypes.Lumber: resourceClutch.LumberCount++; break;
-          case ResourceTypes.Ore: resourceClutch.OreCount++; break;
-          case ResourceTypes.Wool: resourceClutch.WoolCount++; break;
+          case ResourceTypes.Brick:
+          resourceClutch.BrickCount++;
+          break;
+          case ResourceTypes.Grain:
+          resourceClutch.GrainCount++;
+          break;
+          case ResourceTypes.Lumber:
+          resourceClutch.LumberCount++;
+          break;
+          case ResourceTypes.Ore:
+          resourceClutch.OreCount++;
+          break;
+          case ResourceTypes.Wool:
+          resourceClutch.WoolCount++;
+          break;
         }
       }
 
@@ -353,11 +339,21 @@ namespace Jabberwocky.SoC.Library.GameBoards
 
           switch (resourceProvider.Type)
           {
-            case ResourceTypes.Brick: existingResourceCounts.BrickCount += 1; break;
-            case ResourceTypes.Grain: existingResourceCounts.GrainCount += 1; break;
-            case ResourceTypes.Lumber: existingResourceCounts.LumberCount += 1; break;
-            case ResourceTypes.Ore: existingResourceCounts.OreCount += 1; break;
-            case ResourceTypes.Wool: existingResourceCounts.WoolCount += 1; break;
+            case ResourceTypes.Brick:
+            existingResourceCounts.BrickCount += 1;
+            break;
+            case ResourceTypes.Grain:
+            existingResourceCounts.GrainCount += 1;
+            break;
+            case ResourceTypes.Lumber:
+            existingResourceCounts.LumberCount += 1;
+            break;
+            case ResourceTypes.Ore:
+            existingResourceCounts.OreCount += 1;
+            break;
+            case ResourceTypes.Wool:
+            existingResourceCounts.WoolCount += 1;
+            break;
           }
 
           resources[owner] = existingResourceCounts;
@@ -365,6 +361,39 @@ namespace Jabberwocky.SoC.Library.GameBoards
       }
 
       return resources;
+    }
+
+    public Tuple<Road, Guid>[] GetRoadInformation()
+    {
+      var data = new Tuple<Road, Guid>[this.roads.Count];
+      var index = 0;
+      foreach (var kv in this.roads)
+      {
+        data[index++] = new Tuple<Road, Guid>(kv.Key, kv.Value);
+      }
+
+      return data;
+    }
+
+    public List<UInt32> GetSettlementsForPlayer(Guid playerId)
+    {
+      if (!this.settlementsByPlayer.ContainsKey(playerId))
+      {
+        return null;
+      }
+
+      return this.settlementsByPlayer[playerId];
+    }
+
+    public Dictionary<UInt32, Guid> GetSettlementInformation()
+    {
+      var data = new Dictionary<UInt32, Guid>(this.settlements.Count);
+      foreach (var kv in this.settlements)
+      {
+        data.Add(kv.Key, kv.Value);
+      }
+
+      return data;
     }
 
     /// <summary>
@@ -424,6 +453,61 @@ namespace Jabberwocky.SoC.Library.GameBoards
       }
     }
 
+    public void PlaceRoad(Guid playerId, Road road)
+    {
+      this.roads.Add(road, playerId);
+    }
+
+    public void PlaceSettlement(Guid playerId, UInt32 locationIndex)
+    {
+      if (this.settlementsByPlayer.ContainsKey(playerId))
+      {
+        this.settlementsByPlayer[playerId].Add(locationIndex);
+      }
+      else
+      {
+        this.settlementsByPlayer.Add(playerId, new List<uint> { locationIndex });
+      }
+
+      this.settlements.Add(locationIndex, playerId);
+    }
+
+    public void PlaceStartingInfrastructure(Guid playerId, UInt32 settlementIndex, Road road)
+    {
+      this.PlaceSettlement(playerId, settlementIndex);
+      this.PlaceRoad(playerId, road);
+    }
+
+    internal void LoadHexResources(XmlReader reader)
+    {
+      var resources = reader.ReadElementContentAsString();
+      var index = 0;
+      foreach (var resource in resources)
+      {
+        switch (resource)
+        {
+          case 'b':
+          this.hexes[index++].Type = ResourceTypes.Brick;
+          break;
+          case 'g':
+          this.hexes[index++].Type = ResourceTypes.Grain;
+          break;
+          case 'l':
+          this.hexes[index++].Type = ResourceTypes.Lumber;
+          break;
+          case 'o':
+          this.hexes[index++].Type = ResourceTypes.Ore;
+          break;
+          case 'w':
+          this.hexes[index++].Type = ResourceTypes.Wool;
+          break;
+          case ' ':
+          this.hexes[index++].Type = ResourceTypes.None;
+          break;
+        }
+      }
+    }
+
     private void AddLocationsToHex(UInt32 lhs, UInt32 rhs, UInt32 hexIndex, UInt32 count)
     {
       var lastIndex = hexIndex + count - 1;
@@ -477,36 +561,6 @@ namespace Jabberwocky.SoC.Library.GameBoards
       this.hexes[18] = new ResourceProducer { Type = ResourceTypes.Grain, Production = 8u };
     }
 
-    private void LoadHexResources(XmlReader reader)
-    {
-      var resources = reader.ReadElementContentAsString();
-      var index = 0;
-      foreach (var resource in resources)
-      {
-        switch (resource)
-        {
-          case 'b':
-          this.hexes[index++].Type = ResourceTypes.Brick;
-          break;
-          case 'g':
-          this.hexes[index++].Type = ResourceTypes.Grain;
-          break;
-          case 'l':
-          this.hexes[index++].Type = ResourceTypes.Lumber;
-          break;
-          case 'o':
-          this.hexes[index++].Type = ResourceTypes.Ore;
-          break;
-          case 'w':
-          this.hexes[index++].Type = ResourceTypes.Wool;
-          break;
-          case ' ':
-          this.hexes[index++].Type = ResourceTypes.None;
-          break;
-        }
-      }
-    }
-
     private void LoadHexProduction(XmlReader reader)
     {
       var productionValues = reader.ReadElementContentAsString().Split(',');
@@ -515,40 +569,6 @@ namespace Jabberwocky.SoC.Library.GameBoards
       {
         this.hexes[index++].Production = UInt32.Parse(productionValue);
       }
-    }
-
-    public Tuple<ResourceTypes, UInt32>[] GetHexInformation()
-    {
-      var data = new Tuple<ResourceTypes, UInt32>[this.hexes.Length];
-      for (var index = 0; index < this.hexes.Length; index++)
-      {
-        data[index] = new Tuple<ResourceTypes, uint>(this.hexes[index].Type, this.hexes[index].Production);
-      }
-
-      return data;
-    }
-
-    public Dictionary<UInt32, Guid> GetSettlementInformation()
-    {
-      var data = new Dictionary<UInt32, Guid>(this.settlements.Count);
-      foreach (var kv in this.settlements)
-      {
-        data.Add(kv.Key, kv.Value);
-      }
-
-      return data;
-    }
-
-    public Tuple<Road, Guid>[] GetRoadInformation()
-    {
-      var data = new Tuple<Road, Guid>[this.roads.Count];
-      var index = 0;
-      foreach (var kv in this.roads)
-      {
-        data[index++] = new Tuple<Road, Guid>(kv.Key, kv.Value);
-      }
-
-      return data;
     }
 
     private void AssignResourceProvidersToDiceRolls()

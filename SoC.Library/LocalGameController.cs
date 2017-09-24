@@ -147,6 +147,13 @@ namespace Jabberwocky.SoC.Library
     {
       try
       {
+        if (this.GamePhase < GamePhases.StartGamePlay)
+        {
+          var errorDetails = new ErrorDetails("Must complete setup before loading game.");
+          this.ErrorRaisedEvent?.Invoke(errorDetails);
+          return;
+        }
+
         var loadedPlayers = new List<IPlayer>();
         using (var reader = XmlReader.Create(stream, new XmlReaderSettings { CloseInput = false, IgnoreWhitespace = true, IgnoreComments = true }))
         {
@@ -156,6 +163,11 @@ namespace Jabberwocky.SoC.Library
             {
               var player = this.playerPool.CreatePlayer(reader);
               loadedPlayers.Add(player);
+            }
+
+            if (reader.Name == "resources" && reader.NodeType == XmlNodeType.Element)
+            {
+              this.gameBoardManager.Data.LoadHexResources(reader);
             }
 
             reader.Read();
