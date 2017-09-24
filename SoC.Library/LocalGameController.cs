@@ -19,6 +19,7 @@ namespace Jabberwocky.SoC.Library
       ContinueGameSetup,
       CompleteGameSetup,
       FinalisePlayerTurnOrder,
+      StartGamePlay,
       SetRobberLocation,
       DropResources,
       Quitting,
@@ -366,6 +367,7 @@ namespace Jabberwocky.SoC.Library
       this.players = PlayerTurnOrderCreator.Create(this.players, this.dice);
       var playerData = this.CreatePlayerDataViews();
       this.TurnOrderFinalisedEvent?.Invoke(playerData);
+      this.GamePhase = GamePhases.StartGamePlay;
     }
 
     public void SetRobberLocation(UInt32 location)
