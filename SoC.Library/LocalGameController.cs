@@ -145,11 +145,6 @@ namespace Jabberwocky.SoC.Library
     /// <param name="stream">Stream containing game controller data.</param>
     public void Load(Stream stream)
     {
-      if (this.GamePhase < GamePhases.StartGamePlay)
-      {
-        throw new TypeLoadException("Must complete setup before loading game.");
-      }
-
       try
       {
         var loadedPlayers = new List<IPlayer>();

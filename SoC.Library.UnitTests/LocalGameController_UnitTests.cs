@@ -1371,37 +1371,10 @@ namespace Jabberwocky.SoC.Library.UnitTests
     [Test]
     [Category("All")]
     [Category("LocalGameController")]
-    public void Load_LocalGameControllerSetupNotComplete_ThrowsMeaningfulException()
-    {
-      // Arrange
-      var localGameController = new LocalGameController(new Dice(), new PlayerPool(), new GameBoardManager(BoardSizes.Standard));
-      var content = String.Empty;
-      var contentBytes = Encoding.UTF8.GetBytes(content);
-      
-      // Act
-      Action action = () =>
-      {
-        using (var memoryStream = new MemoryStream(contentBytes))
-        {
-          localGameController.Load(memoryStream);
-        }
-      };
-
-      // Assert
-      Should.Throw<TypeLoadException>(action).Message.ShouldBe("Must complete setup before loading game.");
-    }
-
-    [Test]
-    [Category("All")]
-    [Category("LocalGameController")]
     public void Load_HexDataOnly_ResourceProvidersLoadedCorrectly()
     {
       // Arrange
-      //MockDice dice = null;
-      //MockPlayer player = null;
-      //MockComputerPlayer firstOpponent, secondOpponent, thirdOpponent;
       var localGameController = new LocalGameController(new Dice(), new PlayerPool(), new GameBoardManager(BoardSizes.Standard));
-        //this.CreateLocalGameControllerAndCompleteGameSetup(out dice, out player, out firstOpponent, out secondOpponent, out thirdOpponent);
 
       GameBoardData boardData = null;
       localGameController.GameLoadedEvent = (PlayerDataView[] pd, GameBoardData bd) => { boardData = bd; };
