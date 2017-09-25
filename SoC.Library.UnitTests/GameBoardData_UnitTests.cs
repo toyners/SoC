@@ -409,7 +409,6 @@ namespace Jabberwocky.SoC.Library.UnitTests
     }
 
     [Test]
-    [Category("All")]
     [Category("GameBoardData")]
     public void Load_HexDataOnly_ResourceProvidersLoadedCorrectly()
     {
@@ -454,7 +453,6 @@ namespace Jabberwocky.SoC.Library.UnitTests
     }
 
     [Test]
-    [Category("All")]
     [Category("GameBoardData")]
     public void Load_HexAndInfrastructureData_SettlementsLoadedCorrectly()
     {
@@ -492,7 +490,6 @@ namespace Jabberwocky.SoC.Library.UnitTests
     }
 
     [Test]
-    [Category("All")]
     [Category("GameBoardData")]
     [TestCase(3u, 8u, 0, 1)]
     [TestCase(20u, 6u, 1, 0)]

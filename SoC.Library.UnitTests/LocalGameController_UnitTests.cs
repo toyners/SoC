@@ -1397,10 +1397,11 @@ namespace Jabberwocky.SoC.Library.UnitTests
     public void Load_HexDataOnly_ResourceProvidersLoadedCorrectly()
     {
       // Arrange
-      MockDice dice = null;
-      MockPlayer player = null;
-      MockComputerPlayer firstOpponent, secondOpponent, thirdOpponent;
-      var localGameController = this.CreateLocalGameControllerAndCompleteGameSetup(out dice, out player, out firstOpponent, out secondOpponent, out thirdOpponent);
+      //MockDice dice = null;
+      //MockPlayer player = null;
+      //MockComputerPlayer firstOpponent, secondOpponent, thirdOpponent;
+      var localGameController = new LocalGameController(new Dice(), new PlayerPool(), new GameBoardManager(BoardSizes.Standard));
+        //this.CreateLocalGameControllerAndCompleteGameSetup(out dice, out player, out firstOpponent, out secondOpponent, out thirdOpponent);
 
       GameBoardData boardData = null;
       localGameController.GameLoadedEvent = (PlayerDataView[] pd, GameBoardData bd) => { boardData = bd; };
@@ -1448,14 +1449,16 @@ namespace Jabberwocky.SoC.Library.UnitTests
     public void Load_PlayerDataOnly_PlayerDataViewsAreAsExpected()
     {
       // Arrange
-      MockDice mockDice = null;
       MockPlayer player;
       MockComputerPlayer firstOpponent, secondOpponent, thirdOpponent;
-      var localGameController = this.CreateLocalGameControllerAndCompleteGameSetup(out mockDice, out player, out firstOpponent, out secondOpponent, out thirdOpponent);
+      this.CreateDefaultPlayerInstances(out player, out firstOpponent, out secondOpponent, out thirdOpponent);
+        
       player.AddResources(new ResourceClutch(1, 2, 3, 4, 5));
       firstOpponent.AddResources(new ResourceClutch(1, 1, 1, 1, 1));
       secondOpponent.AddResources(new ResourceClutch(2, 2, 2, 2, 2));
       thirdOpponent.AddResources(new ResourceClutch(3, 3, 3, 3, 3));
+
+      var localGameController = new LocalGameController(new Dice(), new PlayerPool(), new GameBoardManager(BoardSizes.Standard));
 
       PlayerDataView[] playerDataViews = null;
       localGameController.GameLoadedEvent = (PlayerDataView[] pd, GameBoardData bd) => { playerDataViews = pd; };
@@ -1491,10 +1494,11 @@ namespace Jabberwocky.SoC.Library.UnitTests
     public void Load_PlayerAndInfrastructureData_GameBoardIsAsExpected()
     {
       // Arrange
-      MockDice dice = null;
       MockPlayer player;
       MockComputerPlayer firstOpponent, secondOpponent, thirdOpponent;
-      var localGameController = this.CreateLocalGameControllerAndCompleteGameSetup(out dice, out player, out firstOpponent, out secondOpponent, out thirdOpponent);
+      var localGameController = new LocalGameController(new Dice(), new PlayerPool(), new GameBoardManager(BoardSizes.Standard));
+
+      this.CreateDefaultPlayerInstances(out player, out firstOpponent, out secondOpponent, out thirdOpponent);
 
       GameBoardData boardData = null;
       localGameController.GameLoadedEvent = (PlayerDataView[] pd, GameBoardData bd) => { boardData = bd; };
