@@ -478,6 +478,27 @@ namespace Jabberwocky.SoC.Library.GameBoards
       this.PlaceRoad(playerId, road);
     }
 
+    internal void ClearRoads()
+    {
+      this.roads.Clear();
+    }
+
+    internal void ClearSettlements()
+    {
+      this.settlements.Clear();
+      this.settlementsByPlayer.Clear();
+    }
+
+    internal void LoadHexProduction(XmlReader reader)
+    {
+      var productionValues = reader.ReadElementContentAsString().Split(',');
+      var index = 0;
+      foreach (var productionValue in productionValues)
+      {
+        this.hexes[index++].Production = UInt32.Parse(productionValue);
+      }
+    }
+
     internal void LoadHexResources(XmlReader reader)
     {
       var resources = reader.ReadElementContentAsString();
@@ -559,16 +580,6 @@ namespace Jabberwocky.SoC.Library.GameBoards
       this.hexes[16] = new ResourceProducer { Type = ResourceTypes.Grain, Production = 9u };
       this.hexes[17] = new ResourceProducer { Type = ResourceTypes.Wool, Production = 10u };
       this.hexes[18] = new ResourceProducer { Type = ResourceTypes.Grain, Production = 8u };
-    }
-
-    private void LoadHexProduction(XmlReader reader)
-    {
-      var productionValues = reader.ReadElementContentAsString().Split(',');
-      var index = 0;
-      foreach (var productionValue in productionValues)
-      {
-        this.hexes[index++].Production = UInt32.Parse(productionValue);
-      }
     }
 
     private void AssignResourceProvidersToDiceRolls()

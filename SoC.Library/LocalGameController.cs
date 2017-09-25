@@ -168,6 +168,38 @@ namespace Jabberwocky.SoC.Library
               this.gameBoardManager.Data.LoadHexResources(reader);
             }
 
+            if (reader.Name == "production" && reader.NodeType == XmlNodeType.Element)
+            {
+              this.gameBoardManager.Data.LoadHexProduction(reader);
+            }
+
+            if (reader.Name == "settlements")
+            {
+              this.gameBoardManager.Data.ClearSettlements();
+            }
+
+            if (reader.Name == "settlement")
+            {
+              var playerId = Guid.Parse(reader.GetAttribute("playerid"));
+              var location = UInt32.Parse(reader.GetAttribute("location"));
+
+              this.gameBoardManager.Data.PlaceSettlement(playerId, location);
+            }
+
+            if (reader.Name == "roads")
+            {
+              this.gameBoardManager.Data.ClearRoads();
+            }
+
+            if (reader.Name == "road")
+            {
+              var playerId = Guid.Parse(reader.GetAttribute("playerid"));
+              var start = UInt32.Parse(reader.GetAttribute("start"));
+              var end = UInt32.Parse(reader.GetAttribute("end"));
+
+              this.gameBoardManager.Data.PlaceRoad(playerId, new Road(start, end));
+            }
+
             reader.Read();
           }
         }
