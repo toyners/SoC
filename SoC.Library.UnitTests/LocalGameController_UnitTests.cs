@@ -1388,7 +1388,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
       };
 
       // Assert
-      Should.Throw<Exception>(action).Message.ShouldBe("Must complete setup before loading game.");
+      Should.Throw<TypeLoadException>(action).Message.ShouldBe("Must complete setup before loading game.");
     }
 
     [Test]

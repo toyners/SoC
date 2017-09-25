@@ -145,15 +145,13 @@ namespace Jabberwocky.SoC.Library
     /// <param name="stream">Stream containing game controller data.</param>
     public void Load(Stream stream)
     {
+      if (this.GamePhase < GamePhases.StartGamePlay)
+      {
+        throw new TypeLoadException("Must complete setup before loading game.");
+      }
+
       try
       {
-        if (this.GamePhase < GamePhases.StartGamePlay)
-        {
-          var errorDetails = new ErrorDetails("Must complete setup before loading game.");
-          this.ErrorRaisedEvent?.Invoke(errorDetails);
-          return;
-        }
-
         var loadedPlayers = new List<IPlayer>();
         using (var reader = XmlReader.Create(stream, new XmlReaderSettings { CloseInput = false, IgnoreWhitespace = true, IgnoreComments = true }))
         {
