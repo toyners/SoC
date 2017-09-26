@@ -14,7 +14,12 @@ namespace Jabberwocky.SoC.Library
     /// <returns>Player instance</returns>
     public IPlayer CreatePlayer(Boolean isComputer)
     {
-      throw new NotImplementedException();
+      if (isComputer)
+      {
+        return new ComputerPlayer();
+      }
+
+      return new Player();
     }
 
     /// <summary>
