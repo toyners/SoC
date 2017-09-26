@@ -1349,7 +1349,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     [Category("All")]
     [Category("LocalGameController")]
     [Category("Main Player Turn")]
-    public void MainPlayerTurn_BuildRoadingWithRequiredResourcesAvailable_BuildCompleteEventRaised()
+    public void MainPlayerTurn_BuildRoadWithRequiredResourcesAvailable_BuildCompleteEventRaised()
     {
       // Arrange
       MockDice mockDice = null;
