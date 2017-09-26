@@ -133,6 +133,28 @@ namespace Jabberwocky.SoC.Library.UnitTests
       // Assert
       Should.Throw<Exception>(action).Message.ShouldBe("No name found for player in stream.");
     }
-    #endregion 
+
+    [Test]
+    [Category("All")]
+    [Category("PlayerPool")]
+    public void CreatePlayer_IsComputerParameterIsFalse_PlayerInstanceIsNotComputerControlled()
+    {
+      var playerPool = new PlayerPool();
+      var player = playerPool.CreatePlayer(false);
+
+      player.IsComputer.ShouldBeFalse();
+    }
+
+    [Test]
+    [Category("All")]
+    [Category("PlayerPool")]
+    public void CreatePlayer_IsComputerParameterIsTrue_PlayerInstanceIsComputerControlled()
+    {
+      var playerPool = new PlayerPool();
+      var player = playerPool.CreatePlayer(true);
+
+      player.IsComputer.ShouldBeTrue();
+    }
+    #endregion
   }
 }
