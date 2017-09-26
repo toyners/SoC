@@ -396,63 +396,6 @@ namespace Jabberwocky.SoC.Library.GameBoards
       return data;
     }
 
-    /// <summary>
-    /// Load the board data from stream.
-    /// </summary>
-    /// <param name="stream">Stream containing board data.</param>
-    public void Load(Stream stream)
-    {
-      try
-      {
-        using (var reader = XmlReader.Create(stream, new XmlReaderSettings { CloseInput = false, IgnoreWhitespace = true, IgnoreComments = true }))
-        {
-          this.roads.Clear();
-          this.settlements.Clear();
-
-          while (!reader.EOF)
-          {
-            if (reader.Name == "board" && reader.NodeType == XmlNodeType.EndElement)
-            {
-              break;
-            }
-
-            if (reader.Name == "resources" && reader.NodeType == XmlNodeType.Element)
-            {
-              this.LoadHexResources(reader);
-            }
-
-            if (reader.Name == "production" && reader.NodeType == XmlNodeType.Element)
-            {
-              this.LoadHexProduction(reader);
-            }
-
-            if (reader.Name == "settlement")
-            {
-              var playerId = Guid.Parse(reader.GetAttribute("playerid"));
-              var location = UInt32.Parse(reader.GetAttribute("location"));
-
-              this.settlements.Add(location, playerId);
-            }
-
-            if (reader.Name == "road")
-            {
-              var playerId = Guid.Parse(reader.GetAttribute("playerid"));
-              var start = UInt32.Parse(reader.GetAttribute("start"));
-              var end = UInt32.Parse(reader.GetAttribute("end"));
-
-              this.roads.Add(new Road(start, end), playerId);
-            }
-
-            reader.Read();
-          }
-        }
-      }
-      catch (Exception e)
-      {
-        throw new Exception("Ëxception thrown during board loading.", e);
-      }
-    }
-
     public void PlaceRoad(Guid playerId, Road road)
     {
       this.roads.Add(road, playerId);
