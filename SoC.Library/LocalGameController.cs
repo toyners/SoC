@@ -592,7 +592,7 @@ namespace Jabberwocky.SoC.Library
 
     private void CreatePlayers(GameOptions gameOptions)
     {
-      this.mainPlayer = this.playerPool.Create();
+      this.mainPlayer = this.playerPool.CreatePlayer(true);
       this.players = new IPlayer[gameOptions.MaxAIPlayers + 1];
       this.players[0] = this.mainPlayer;
       this.playersById = new Dictionary<Guid, IPlayer>(this.players.Length);
@@ -601,7 +601,7 @@ namespace Jabberwocky.SoC.Library
       var index = 1;
       while ((gameOptions.MaxAIPlayers--) > 0)
       {
-        var player = this.playerPool.Create();
+        var player = this.playerPool.CreatePlayer(false);
         this.players[index] = player;
         this.playersById.Add(player.Id, player);
         index++;

@@ -1595,7 +1595,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     private IPlayerPool CreatePlayerPool(IPlayer player, IPlayer[] otherPlayers)
     {
       var mockPlayerPool = Substitute.For<IPlayerPool>();
-      mockPlayerPool.Create().Returns(player, otherPlayers);
+      mockPlayerPool.CreatePlayer(Arg.Any<Boolean>()).Returns(player, otherPlayers);
       return mockPlayerPool;
     }
 
@@ -1644,7 +1644,8 @@ namespace Jabberwocky.SoC.Library.UnitTests
       var thirdOpponent = new MockComputerPlayer(ThirdOpponentName);
 
       var mockPlayerPool = Substitute.For<IPlayerPool>();
-      mockPlayerPool.Create().Returns(player, firstOpponent, secondOpponent, thirdOpponent);
+      mockPlayerPool.CreatePlayer(true).Returns(player);
+      mockPlayerPool.CreatePlayer(false).Returns(firstOpponent, secondOpponent, thirdOpponent);
       var localGameController = new LocalGameControllerCreator()
         .ChangePlayerPool(mockPlayerPool)
         .Create();

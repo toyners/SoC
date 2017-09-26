@@ -1,12 +1,17 @@
 ﻿
-using System.IO;
+using System;
 using System.Xml;
 
 namespace Jabberwocky.SoC.Library.Interfaces
 {
   public interface IPlayerPool
   {
-    IPlayer Create();
+    /// <summary>
+    /// Create a player instance.
+    /// </summary>
+    /// <param name="isComputer">True to create a computer player; otherwise false</param>
+    /// <returns>Player instance</returns>
+    IPlayer CreatePlayer(Boolean isComputer);
 
     /// <summary>
     /// Create a player instance from XML reader.

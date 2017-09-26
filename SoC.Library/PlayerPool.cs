@@ -7,10 +7,14 @@ namespace Jabberwocky.SoC.Library
 
   public class PlayerPool : IPlayerPool
   {
-    public IPlayer Create()
+    /// <summary>
+    /// Create a player instance.
+    /// </summary>
+    /// <param name="isComputer">True to create a computer player; otherwise false</param>
+    /// <returns>Player instance</returns>
+    public IPlayer CreatePlayer(Boolean isComputer)
     {
       throw new NotImplementedException();
-      //return new ComputerPlayer(Guid.NewGuid());
     }
 
     /// <summary>
