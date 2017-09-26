@@ -168,12 +168,12 @@ namespace Jabberwocky.SoC.Library
               this.gameBoardManager.Data.LoadHexProduction(reader);
             }
 
-            if (reader.Name == "settlements")
+            if (reader.Name == "settlements" && reader.NodeType == XmlNodeType.Element)
             {
               this.gameBoardManager.Data.ClearSettlements();
             }
 
-            if (reader.Name == "settlement")
+            if (reader.Name == "settlement" && reader.NodeType == XmlNodeType.Element)
             {
               var playerId = Guid.Parse(reader.GetAttribute("playerid"));
               var location = UInt32.Parse(reader.GetAttribute("location"));
@@ -181,12 +181,12 @@ namespace Jabberwocky.SoC.Library
               this.gameBoardManager.Data.PlaceSettlement(playerId, location);
             }
 
-            if (reader.Name == "roads")
+            if (reader.Name == "roads" && reader.NodeType == XmlNodeType.Element)
             {
               this.gameBoardManager.Data.ClearRoads();
             }
 
-            if (reader.Name == "road")
+            if (reader.Name == "road" && reader.NodeType == XmlNodeType.Element)
             {
               var playerId = Guid.Parse(reader.GetAttribute("playerid"));
               var start = UInt32.Parse(reader.GetAttribute("start"));
