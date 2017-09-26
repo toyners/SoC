@@ -214,8 +214,14 @@ namespace Jabberwocky.SoC.Library
             this.playersById.Add(player.Id, player);
           }
         }
+        else
+        {
+          this.CreatePlayers(null);
+        }
 
-        this.GameLoadedEvent?.Invoke(this.CreatePlayerDataViews(), this.gameBoardManager.Data);
+        var playerDataViews = this.CreatePlayerDataViews();
+
+        this.GameLoadedEvent?.Invoke(playerDataViews, this.gameBoardManager.Data);
       }
       catch (Exception e)
       {
