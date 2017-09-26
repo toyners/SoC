@@ -1358,6 +1358,9 @@ namespace Jabberwocky.SoC.Library.UnitTests
       var localGameController = this.CreateLocalGameControllerAndCompleteGameSetup(out mockDice, out player, out firstOpponent, out secondOpponent, out thirdOpponent);
       mockDice.AddSequence(new[] { 8u });
 
+      var buildCompleted = false;
+      localGameController.BuildCompletedEvent = () => { buildCompleted = true; };
+
       player.AddResources(new ResourceClutch(1, 0, 1, 0, 0));
 
       // Act
@@ -1365,7 +1368,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
       localGameController.BuildRoad(4u, 3u);
 
       // Assert
-      throw new NotImplementedException();
+      buildCompleted.ShouldBeTrue();
     }
 
     [Test]

@@ -72,6 +72,7 @@ namespace Jabberwocky.SoC.Library
     public Action<Dictionary<Guid, Int32>> RobbingChoicesEvent { get; set; }
     public Action<ResourceUpdate> GameSetupResourcesEvent { get; set; }
     public Action<PlayerDataView[]> TurnOrderFinalisedEvent { get; set; }
+    public Action BuildCompletedEvent { get; set; }
     #endregion
 
     #region Methods
