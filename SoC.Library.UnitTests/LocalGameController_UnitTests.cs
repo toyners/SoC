@@ -1467,11 +1467,8 @@ namespace Jabberwocky.SoC.Library.UnitTests
     public void Load_PlayerAndInfrastructureData_GameBoardIsAsExpected()
     {
       // Arrange
-      MockPlayer player;
-      MockComputerPlayer firstOpponent, secondOpponent, thirdOpponent;
+      Guid playerId = Guid.NewGuid(), firstOpponentId = Guid.NewGuid(), secondOpponentId = Guid.NewGuid(), thirdOpponentId = Guid.NewGuid();
       var localGameController = new LocalGameController(new Dice(), new PlayerPool(), new GameBoardManager(BoardSizes.Standard));
-
-      this.CreateDefaultPlayerInstances(out player, out firstOpponent, out secondOpponent, out thirdOpponent);
 
       GameBoardData boardData = null;
       localGameController.GameLoadedEvent = (PlayerDataView[] pd, GameBoardData bd) => { boardData = bd; };
@@ -1479,20 +1476,21 @@ namespace Jabberwocky.SoC.Library.UnitTests
       // Act
       var streamContent = "<game>" +
         "<players>" +
-        "<player id=\"" + player.Id + "\" name=\"" + player.Name + "\" brick=\"5\" grain=\"\" />" +
-        "<player id=\"" + firstOpponent.Id + "\" name=\"" + firstOpponent.Name + "\" brick=\"6\" />" +
-        "<player id=\"" + secondOpponent.Id + "\" name=\"" + secondOpponent.Name + "\" brick=\"7\" />" +
-        "<player id=\"" + thirdOpponent.Id + "\" name=\"" + thirdOpponent.Name + "\" brick=\"8\" />" +
+        "<player id=\"" + playerId + "\" name=\"" + PlayerName + "\" brick=\"5\" grain=\"\" />" +
+        "<player id=\"" + firstOpponentId + "\" name=\"" + FirstOpponentName + "\" brick=\"6\" />" +
+        "<player id=\"" + secondOpponentId + "\" name=\"" + SecondOpponentName + "\" brick=\"7\" />" +
+        "<player id=\"" + thirdOpponentId + "\" name=\"" + ThirdOpponentName + "\" brick=\"8\" />" +
         "</players>" +
         "<settlements>" +
-        "<settlement playerid=\"" + player.Id + "\" location=\"" + MainSettlementOneLocation + "\" />" +
-        "<settlement playerid=\"" + player.Id + "\" location=\"" + MainSettlementTwoLocation + "\" />" +
-        "<settlement playerid=\"" + firstOpponent.Id + "\" location=\"" + FirstSettlementOneLocation + "\" />" +
+        "<settlement playerid=\"" + playerId + "\" location=\"" + MainSettlementOneLocation + "\" />" +
+        "<settlement playerid=\"" + playerId + "\" location=\"" + MainSettlementTwoLocation + "\" />" +
+        "<settlement playerid=\"" + firstOpponentId + "\" location=\"" + FirstSettlementOneLocation + "\" />" +
         "</settlements>" +
         "<roads>" +
-        "<road playerid=\"" + player.Id + "\" start=\"" + this.mainRoadOne.Location1 + "\" end=\"" + this.mainRoadOne.Location2 + "\" />" +
+        "<road playerid=\"" + playerId + "\" start=\"" + this.mainRoadOne.Location1 + "\" end=\"" + this.mainRoadOne.Location2 + "\" />" +
         "</roads>" +
         "</game>";
+
       var streamContentBytes = Encoding.UTF8.GetBytes(streamContent);
       using (var stream = new MemoryStream(streamContentBytes))
       {
@@ -1504,13 +1502,13 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
       var settlements = boardData.GetSettlementInformation();
       settlements.Count.ShouldBe(3);
-      settlements.ShouldContainKeyAndValue(MainSettlementOneLocation, player.Id);
-      settlements.ShouldContainKeyAndValue(MainSettlementTwoLocation, player.Id);
-      settlements.ShouldContainKeyAndValue(FirstSettlementOneLocation, firstOpponent.Id);
+      settlements.ShouldContainKeyAndValue(MainSettlementOneLocation, playerId);
+      settlements.ShouldContainKeyAndValue(MainSettlementTwoLocation, playerId);
+      settlements.ShouldContainKeyAndValue(FirstSettlementOneLocation, firstOpponentId);
 
       var roads = boardData.GetRoadInformation();
       roads.Length.ShouldBe(1);
-      roads[0].ShouldBe(new Tuple<Road, Guid>(this.mainRoadOne, player.Id));
+      roads[0].ShouldBe(new Tuple<Road, Guid>(this.mainRoadOne, playerId));
     }
 
     private LocalGameController CreateLocalGameControllerAndCompleteGameSetup(out MockDice mockDice, out MockPlayer player, out MockComputerPlayer firstOpponent, out MockComputerPlayer secondOpponent, out MockComputerPlayer thirdOpponent)
