@@ -216,7 +216,7 @@ namespace Jabberwocky.SoC.Library
         }
         else
         {
-          this.CreatePlayers(null);
+          this.CreatePlayers(new GameOptions());
         }
 
         var playerDataViews = this.CreatePlayerDataViews();
