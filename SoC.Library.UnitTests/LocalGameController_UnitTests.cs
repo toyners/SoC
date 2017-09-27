@@ -1374,6 +1374,33 @@ namespace Jabberwocky.SoC.Library.UnitTests
     [Test]
     [Category("All")]
     [Category("LocalGameController")]
+    [Category("Main Player Turn")]
+    public void MainPlayerTurn_BuildRoadWithoutRequiredResourcesAvailable_MeaningfulErrorIsReceived()
+    {
+      // Arrange
+      MockDice mockDice = null;
+      MockPlayer player;
+      MockComputerPlayer firstOpponent, secondOpponent, thirdOpponent;
+      var localGameController = this.CreateLocalGameControllerAndCompleteGameSetup(out mockDice, out player, out firstOpponent, out secondOpponent, out thirdOpponent);
+      mockDice.AddSequence(new[] { 8u });
+
+      ErrorDetails errorDetails = null;
+      localGameController.ErrorRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
+
+      //player.AddResources(new ResourceClutch(1, 0, 1, 0, 0));
+
+      // Act
+      localGameController.StartGamePlay();
+      localGameController.BuildRoad(4u, 3u);
+
+      // Assert
+      errorDetails.ShouldNotBeNull();
+      errorDetails.Message.ShouldBe("Not enough resources to build road");
+    }
+
+    [Test]
+    [Category("All")]
+    [Category("LocalGameController")]
     public void Load_HexDataOnly_ResourceProvidersLoadedCorrectly()
     {
       // Arrange
