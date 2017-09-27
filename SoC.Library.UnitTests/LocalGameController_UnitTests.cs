@@ -1375,6 +1375,20 @@ namespace Jabberwocky.SoC.Library.UnitTests
     [Category("All")]
     [Category("LocalGameController")]
     [Category("Main Player Turn")]
+    public void MainPlayerTurn_FirstLongestRoadBuilt_LongestRoadEventRaised()
+    {
+      // Arrange
+      
+      // Act
+      
+      // Assert
+      throw new NotImplementedException();
+    }
+
+    [Test]
+    [Category("All")]
+    [Category("LocalGameController")]
+    [Category("Main Player Turn")]
     public void MainPlayerTurn_BuildRoadWithoutRequiredResourcesAvailable_MeaningfulErrorIsReceived()
     {
       // Arrange
