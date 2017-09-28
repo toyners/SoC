@@ -421,6 +421,11 @@ namespace Jabberwocky.SoC.Library.GameBoards
       this.PlaceRoad(playerId, road);
     }
 
+    public Boolean TryGetLongestRoadDetails(out Guid playerId, out Int32 roadLength)
+    {
+      throw new NotImplementedException();
+    }
+
     internal void ClearRoads()
     {
       this.roads.Clear();
