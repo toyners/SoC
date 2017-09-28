@@ -5,7 +5,7 @@ namespace Jabberwocky.SoC.Library
   using System.Diagnostics;
 
   [DebuggerDisplay("({Location1}, {Location2})")]
-  public struct Road
+  public class Road
   {
     public readonly UInt32 Location1;
     public readonly UInt32 Location2;

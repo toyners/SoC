@@ -421,8 +421,19 @@ namespace Jabberwocky.SoC.Library.GameBoards
       this.PlaceRoad(playerId, road);
     }
 
+    Dictionary<UInt32, Road[]> roadsByLocation; 
     public Boolean TryGetLongestRoadDetails(out Guid playerId, out Int32 roadLength)
     {
+      playerId = Guid.Empty;
+      roadLength = -1;
+      var visited = new HashSet<Road>();
+
+      foreach (var road in this.roads)
+      {
+
+      }
+
+
       throw new NotImplementedException();
     }
 
