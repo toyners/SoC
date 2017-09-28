@@ -73,10 +73,11 @@ namespace Jabberwocky.SoC.Library
     public Action<ResourceUpdate> GameSetupResourcesEvent { get; set; }
     public Action<PlayerDataView[]> TurnOrderFinalisedEvent { get; set; }
     public Action BuildCompletedEvent { get; set; }
+    public Action<Guid> LongestRoadBuiltEvent { get; set; }
     #endregion
 
     #region Methods
-    public void BuildRoad(UInt32 startIndex, UInt32 endIndex)
+    public void BuildRoad(Guid id, UInt32 startIndex, UInt32 endIndex)
     {
       throw new NotImplementedException();
     }

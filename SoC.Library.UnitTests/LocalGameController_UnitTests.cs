@@ -1365,7 +1365,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
       // Act
       localGameController.StartGamePlay();
-      localGameController.BuildRoad(4u, 3u);
+      localGameController.BuildRoad(player.Id, 4u, 3u);
 
       // Assert
       buildCompleted.ShouldBeTrue();
@@ -1378,11 +1378,75 @@ namespace Jabberwocky.SoC.Library.UnitTests
     public void MainPlayerTurn_FirstLongestRoadBuilt_LongestRoadEventRaised()
     {
       // Arrange
+      MockDice mockDice = null;
+      MockPlayer player;
+      MockComputerPlayer firstOpponent, secondOpponent, thirdOpponent;
+      var localGameController = this.CreateLocalGameControllerAndCompleteGameSetup(out mockDice, out player, out firstOpponent, out secondOpponent, out thirdOpponent);
       
+      mockDice.AddSequence(new[] { 8u });
+
+      Guid otherPlayerId = Guid.NewGuid(); // Set it to an id to register state change
+      localGameController.LongestRoadBuiltEvent = (Guid pid) => { otherPlayerId = pid; };
+
+      localGameController.StartGamePlay();
+
       // Act
-      
+      localGameController.BuildRoad(player.Id, 4u, 3u);
+
       // Assert
-      throw new NotImplementedException();
+      otherPlayerId.ShouldBe(Guid.Empty);
+    }
+
+    [Test]
+    [Category("All")]
+    [Category("LocalGameController")]
+    [Category("Main Player Turn")]
+    public void MainPlayerTurn_SubsequentLongestRoadBuilt_LongestRoadEventRaised()
+    {
+      // Arrange
+      MockDice mockDice = null;
+      MockPlayer player;
+      MockComputerPlayer firstOpponent, secondOpponent, thirdOpponent;
+      var localGameController = this.CreateLocalGameControllerAndCompleteGameSetup(out mockDice, out player, out firstOpponent, out secondOpponent, out thirdOpponent);
+
+      mockDice.AddSequence(new[] { 8u });
+
+      Guid otherPlayerId = Guid.Empty;
+      localGameController.LongestRoadBuiltEvent = (Guid pid) => { otherPlayerId = pid; };
+
+      localGameController.StartGamePlay();
+
+      // Act
+      localGameController.BuildRoad(player.Id, 4u, 3u);
+
+      // Assert
+      otherPlayerId.ShouldBe(firstOpponent.Id);
+    }
+
+    [Test]
+    [Category("All")]
+    [Category("LocalGameController")]
+    [Category("Main Player Turn")]
+    public void MainPlayerTurn_AddToLongestRoad_LongestRoadEventNotRaised()
+    {
+      // Arrange
+      MockDice mockDice = null;
+      MockPlayer player;
+      MockComputerPlayer firstOpponent, secondOpponent, thirdOpponent;
+      var localGameController = this.CreateLocalGameControllerAndCompleteGameSetup(out mockDice, out player, out firstOpponent, out secondOpponent, out thirdOpponent);
+
+      mockDice.AddSequence(new[] { 8u });
+
+      Boolean longestRoadBuiltEventRaised = false;
+      localGameController.LongestRoadBuiltEvent = (Guid pid) => { longestRoadBuiltEventRaised = true; };
+
+      localGameController.StartGamePlay();
+
+      // Act
+      localGameController.BuildRoad(player.Id, 4u, 3u);
+
+      // Assert
+      longestRoadBuiltEventRaised.ShouldBeFalse();
     }
 
     [Test]
@@ -1401,11 +1465,9 @@ namespace Jabberwocky.SoC.Library.UnitTests
       ErrorDetails errorDetails = null;
       localGameController.ErrorRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
 
-      //player.AddResources(new ResourceClutch(1, 0, 1, 0, 0));
-
       // Act
       localGameController.StartGamePlay();
-      localGameController.BuildRoad(4u, 3u);
+      localGameController.BuildRoad(player.Id, 4u, 3u);
 
       // Assert
       errorDetails.ShouldNotBeNull();
