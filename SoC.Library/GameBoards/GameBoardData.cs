@@ -4,7 +4,6 @@ namespace Jabberwocky.SoC.Library.GameBoards
   using System;
   using System.Collections.Generic;
   using System.Diagnostics;
-  using System.IO;
   using System.Xml;
 
   /// <summary>
