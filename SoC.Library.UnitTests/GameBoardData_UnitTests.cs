@@ -534,7 +534,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     [Test]
     [Category("All")]
     [Category("GameBoardData")]
-    public void TryGetLongestRoadDetails_BoardIsEmpty_ReturnsFalse()
+    public void TryGetLongestRoadDetails_NoRoadsOnBoard_ReturnsFalse()
     {
       // Arrange
       Int32 roadLength;
@@ -559,7 +559,12 @@ namespace Jabberwocky.SoC.Library.UnitTests
       Int32 roadLength;
       Guid longestRoadPlayerId;
       var gameBoard = new GameBoardData(BoardSizes.Standard);
-      //gameBoard.PlaceRoad()
+
+      var playerId = Guid.NewGuid();
+      var opponentId = Guid.NewGuid();
+      gameBoard.PlaceRoad(playerId, new Road(0u, 1u));
+      gameBoard.PlaceRoad(playerId, new Road(1u, 2u));
+      gameBoard.PlaceRoad(opponentId, new Road(18u, 19u));
 
       // Act
       var result = gameBoard.TryGetLongestRoadDetails(out longestRoadPlayerId, out roadLength);

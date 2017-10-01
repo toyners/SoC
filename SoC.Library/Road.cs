@@ -55,5 +55,10 @@ namespace Jabberwocky.SoC.Library
     {
       return base.GetHashCode();
     }
+
+    public Boolean IsConnected(Road road)
+    {
+      throw new NotImplementedException();
+    }
   }
 }

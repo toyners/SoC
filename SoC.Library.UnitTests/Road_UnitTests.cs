@@ -93,5 +93,27 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
       (road1 != road2).ShouldBeFalse();
     }
+
+    [Test]
+    [Category("All")]
+    [Category("Road")]
+    public void IsConnected_RoadsShareALocation_ReturnTrue()
+    {
+      var road1 = new Road(0, 1);
+      var road2 = new Road(1, 0);
+
+      road1.IsConnected(road2).ShouldBeTrue();
+    }
+
+    [Test]
+    [Category("All")]
+    [Category("Road")]
+    public void IsConnected_RoadsDoNotShareALocation_ReturnFalse()
+    {
+      var road1 = new Road(0, 1);
+      var road2 = new Road(2, 3);
+
+      road1.IsConnected(road2).ShouldBeFalse();
+    }
   }
 }

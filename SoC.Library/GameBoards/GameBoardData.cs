@@ -426,10 +426,42 @@ namespace Jabberwocky.SoC.Library.GameBoards
       playerId = Guid.Empty;
       roadLength = -1;
       var visited = new HashSet<Road>();
+      var roadsByPlayer = new Dictionary<Guid, List<Road>>();
 
-      foreach (var road in this.roads)
+      if (this.roads.Count == 0)
       {
+        return false;
+      }
 
+      foreach (var kv in this.roadsByLocation)
+      {
+        var location = kv.Key;
+        var roadsForLocation = kv.Value;
+
+        foreach (var road in roadsForLocation)
+        {
+          if (visited.Contains(road))
+          {
+            continue;
+          }
+
+          var id = this.roads[road];
+
+          if (!roadsByPlayer.ContainsKey(id))
+          {
+            // Road of length one
+            roadsByPlayer.Add(id, new List<Road>());
+          }
+          else
+          {
+            var workingRoadList = roadsByPlayer[id];
+            var lastRoadSegment = workingRoadList[workingRoadList.Count - 1];
+            if (lastRoadSegment.IsConnected(road))
+            {
+
+            }
+          }
+        }
       }
 
 
