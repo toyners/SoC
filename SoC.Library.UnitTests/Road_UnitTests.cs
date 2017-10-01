@@ -97,10 +97,12 @@ namespace Jabberwocky.SoC.Library.UnitTests
     [Test]
     [Category("All")]
     [Category("Road")]
-    public void IsConnected_RoadsShareALocation_ReturnTrue()
+    [TestCase(0u, 1u, 1u, 2u)]
+    [TestCase(1u, 0u, 1u, 2u)]
+    public void IsConnected_RoadsShareALocation_ReturnTrue(UInt32 location1, UInt32 location2, UInt32 location3, UInt32 location4)
     {
-      var road1 = new Road(0, 1);
-      var road2 = new Road(1, 0);
+      var road1 = new Road(location1, location2);
+      var road2 = new Road(location3, location4);
 
       road1.IsConnected(road2).ShouldBeTrue();
     }
@@ -112,6 +114,17 @@ namespace Jabberwocky.SoC.Library.UnitTests
     {
       var road1 = new Road(0, 1);
       var road2 = new Road(2, 3);
+
+      road1.IsConnected(road2).ShouldBeFalse();
+    }
+
+    [Test]
+    [Category("All")]
+    [Category("Road")]
+    public void IsConnected_SameRoad_ReturnFalse()
+    {
+      var road1 = new Road(0, 1);
+      var road2 = new Road(1, 0);
 
       road1.IsConnected(road2).ShouldBeFalse();
     }

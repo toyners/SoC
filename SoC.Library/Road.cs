@@ -56,9 +56,20 @@ namespace Jabberwocky.SoC.Library
       return base.GetHashCode();
     }
 
+    /// <summary>
+    /// Returns true if another road segment is connected (i.e. shares only one location) to this road.
+    /// If the other road segment is the same as this road segment then false is returned.
+    /// </summary>
+    /// <param name="road">Another road segment.</param>
+    /// <returns>True if connected; otherwise false.</returns>
     public Boolean IsConnected(Road road)
     {
-      throw new NotImplementedException();
+      if (this == road)
+      {
+        return false;
+      }
+
+      return this.Location1 == road.Location1 || this.Location1 == road.Location2 || this.Location2 == road.Location1 || this.Location2 == road.Location2;
     }
   }
 }
