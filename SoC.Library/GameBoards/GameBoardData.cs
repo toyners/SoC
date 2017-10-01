@@ -433,10 +433,10 @@ namespace Jabberwocky.SoC.Library.GameBoards
         return false;
       }
 
-      foreach (var kv in this.roadsByLocation)
+      foreach (var kv1 in this.roadsByLocation)
       {
-        var location = kv.Key;
-        var roadsForLocation = kv.Value;
+        var location = kv1.Key;
+        var roadsForLocation = kv1.Value;
 
         foreach (var road in roadsForLocation)
         {
@@ -458,14 +458,22 @@ namespace Jabberwocky.SoC.Library.GameBoards
             var lastRoadSegment = workingRoadList[workingRoadList.Count - 1];
             if (lastRoadSegment.IsConnected(road))
             {
-
+              workingRoadList.Add(road);
             }
+          }
+        }
+
+        foreach (var kv2 in roadsByPlayer)
+        {
+          if (kv2.Value.Count > roadLength)
+          {
+            playerId = kv2.Key;
+            roadLength = kv2.Value.Count;
           }
         }
       }
 
-
-      throw new NotImplementedException();
+      return true;
     }
 
     internal void ClearRoads()
