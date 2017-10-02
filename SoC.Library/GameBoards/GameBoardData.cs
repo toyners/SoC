@@ -398,6 +398,20 @@ namespace Jabberwocky.SoC.Library.GameBoards
     public void PlaceRoad(Guid playerId, Road road)
     {
       this.roads.Add(road, playerId);
+
+
+      HashSet<Road> roadSet = null;
+      if (this.roadsByLocation.ContainsKey(road.Location1))
+      {
+        roadSet = this.roadsByLocation[road.Location1];
+      }
+      else
+      {
+        roadSet = new HashSet<Road>();
+        this.roadsByLocation.Add(road.Location1, roadSet);
+      }
+
+      roadSet.Add(road);
     }
 
     public void PlaceSettlement(Guid playerId, UInt32 locationIndex)
@@ -420,7 +434,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
       this.PlaceRoad(playerId, road);
     }
 
-    Dictionary<UInt32, Road[]> roadsByLocation; 
+    Dictionary<UInt32, HashSet<Road>> roadsByLocation = new Dictionary<UInt32, HashSet<Road>>(); 
     public Boolean TryGetLongestRoadDetails(out Guid playerId, out Int32 roadLength)
     {
       playerId = Guid.Empty;
@@ -446,15 +460,17 @@ namespace Jabberwocky.SoC.Library.GameBoards
           }
 
           var id = this.roads[road];
-
+          List<Road> workingRoadList = null;
           if (!roadsByPlayer.ContainsKey(id))
           {
             // Road of length one
-            roadsByPlayer.Add(id, new List<Road>());
+            workingRoadList = new List<Road>();
+            workingRoadList.Add(road);
+            roadsByPlayer.Add(id, workingRoadList);
           }
           else
           {
-            var workingRoadList = roadsByPlayer[id];
+            workingRoadList = roadsByPlayer[id];
             var lastRoadSegment = workingRoadList[workingRoadList.Count - 1];
             if (lastRoadSegment.IsConnected(road))
             {
@@ -462,18 +478,24 @@ namespace Jabberwocky.SoC.Library.GameBoards
             }
           }
         }
+      }
 
-        foreach (var kv2 in roadsByPlayer)
+      var gotSingleLongestRoad = false;
+      foreach (var kv2 in roadsByPlayer)
+      {
+        if (kv2.Value.Count > roadLength)
         {
-          if (kv2.Value.Count > roadLength)
-          {
-            playerId = kv2.Key;
-            roadLength = kv2.Value.Count;
-          }
+          playerId = kv2.Key;
+          roadLength = kv2.Value.Count;
+          gotSingleLongestRoad = true;
+        }
+        else if (kv2.Value.Count == roadLength && kv2.Key != playerId)
+        {
+          gotSingleLongestRoad = false;
         }
       }
 
-      return true;
+      return gotSingleLongestRoad;
     }
 
     internal void ClearRoads()
