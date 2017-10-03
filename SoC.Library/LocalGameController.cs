@@ -635,7 +635,7 @@ namespace Jabberwocky.SoC.Library
       return randomisedResources;
     }
 
-    private void TryRaiseRoadPlacingExceptions(GameBoardData.VerificationResults verificationResults, Road road)
+    private void TryRaiseRoadPlacingError(GameBoardData.VerificationResults verificationResults, Road road)
     {
       if (verificationResults.Status == GameBoardData.VerificationStatus.RoadIsOffBoard)
       {
@@ -659,7 +659,7 @@ namespace Jabberwocky.SoC.Library
       }
     }
 
-    private void TryRaiseSettlementPlacingExceptions(GameBoardData.VerificationResults verificationResults, UInt32 settlementLocation)
+    private void TryRaiseSettlementPlacingError(GameBoardData.VerificationResults verificationResults, UInt32 settlementLocation)
     {
       if (verificationResults.Status == GameBoardData.VerificationStatus.LocationIsInvalid)
       {
@@ -686,7 +686,7 @@ namespace Jabberwocky.SoC.Library
     private Boolean VerifyRoadPlacementRequest(Road road)
     {
       var verificationResults = this.gameBoardManager.Data.CanPlaceRoad(this.mainPlayer.Id, road);
-      this.TryRaiseRoadPlacingExceptions(verificationResults, road);
+      this.TryRaiseRoadPlacingError(verificationResults, road);
 
       return verificationResults.Status == GameBoardData.VerificationStatus.Valid;
     }
@@ -694,7 +694,7 @@ namespace Jabberwocky.SoC.Library
     private Boolean VerifySettlementPlacementRequest(UInt32 settlementLocation)
     {
       var verificationResults = this.gameBoardManager.Data.CanPlaceSettlement(settlementLocation);
-      this.TryRaiseSettlementPlacingExceptions(verificationResults, settlementLocation);
+      this.TryRaiseSettlementPlacingError(verificationResults, settlementLocation);
 
       return verificationResults.Status == GameBoardData.VerificationStatus.Valid;
     }
@@ -702,8 +702,8 @@ namespace Jabberwocky.SoC.Library
     private Boolean VerifyStartingInfrastructurePlacementRequest(UInt32 settlementLocation, Road road)
     {
       var verificationResults = this.gameBoardManager.Data.CanPlaceStartingInfrastructure(this.mainPlayer.Id, settlementLocation, road);
-      this.TryRaiseSettlementPlacingExceptions(verificationResults, settlementLocation);
-      this.TryRaiseRoadPlacingExceptions(verificationResults, road);
+      this.TryRaiseSettlementPlacingError(verificationResults, settlementLocation);
+      this.TryRaiseRoadPlacingError(verificationResults, road);
       
       return verificationResults.Status == GameBoardData.VerificationStatus.Valid;
     }
