@@ -16,7 +16,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     public void CanPlaceRoad_EmptyBoard_ReturnsNotConnected()
     {
       var gameBoardData = new GameBoardData(BoardSizes.Standard);
-      var result = gameBoardData.CanPlaceRoad(Guid.NewGuid(), new Road(0u, 1u));
+      var result = gameBoardData.CanPlaceRoad(Guid.NewGuid(), new RoadSegment(0u, 1u));
       result.Status.ShouldBe(GameBoardData.VerificationStatus.NotConnectedToExisting);
     }
 
@@ -27,7 +27,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
       var gameBoardData = new GameBoardData(BoardSizes.Standard);
       gameBoardData.PlaceSettlement(Guid.NewGuid(), 0);
 
-      var result = gameBoardData.CanPlaceRoad(Guid.NewGuid(), new Road(1u, 2u));
+      var result = gameBoardData.CanPlaceRoad(Guid.NewGuid(), new RoadSegment(1u, 2u));
       result.Status.ShouldBe(GameBoardData.VerificationStatus.NotConnectedToExisting);
     }
 
@@ -38,12 +38,12 @@ namespace Jabberwocky.SoC.Library.UnitTests
       var gameBoardData = new GameBoardData(BoardSizes.Standard);
       var playerOneId = Guid.NewGuid();
       gameBoardData.PlaceSettlement(playerOneId, 0);
-      gameBoardData.PlaceRoad(playerOneId, new Road(0, 9));
+      gameBoardData.PlaceRoad(playerOneId, new RoadSegment(0, 9));
 
       var playerTwoId = Guid.NewGuid();
       gameBoardData.PlaceSettlement(playerTwoId, 8);
 
-      var result = gameBoardData.CanPlaceRoad(playerOneId, new Road(9, 8));
+      var result = gameBoardData.CanPlaceRoad(playerOneId, new RoadSegment(9, 8));
       result.Status.ShouldBe(GameBoardData.VerificationStatus.RoadConnectsToAnotherPlayer);
     }
 
@@ -54,7 +54,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
       var gameBoardData = new GameBoardData(BoardSizes.Standard);
       var playerId = Guid.NewGuid();
       gameBoardData.PlaceSettlement(playerId, 0u);
-      var result = gameBoardData.CanPlaceRoad(playerId, new Road(0u, 1u));
+      var result = gameBoardData.CanPlaceRoad(playerId, new RoadSegment(0u, 1u));
       result.Status.ShouldBe(GameBoardData.VerificationStatus.Valid);
     }
 
@@ -66,7 +66,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     public void CanPlaceRoad_OffBoard_ReturnsRoadIsInvalid(UInt32 start, UInt32 end)
     {
       var gameBoardData = new GameBoardData(BoardSizes.Standard);
-      var result = gameBoardData.CanPlaceRoad(Guid.NewGuid(), new Road(start, end));
+      var result = gameBoardData.CanPlaceRoad(Guid.NewGuid(), new RoadSegment(start, end));
       result.Status.ShouldBe(GameBoardData.VerificationStatus.RoadIsOffBoard);
     }
 
@@ -77,7 +77,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     public void CanPlaceRoad_NoDirectConnection_ReturnsRoadIsInvalid(UInt32 start, UInt32 end)
     {
       var gameBoardData = new GameBoardData(BoardSizes.Standard);
-      var result = gameBoardData.CanPlaceRoad(Guid.NewGuid(), new Road(start, end));
+      var result = gameBoardData.CanPlaceRoad(Guid.NewGuid(), new RoadSegment(start, end));
       result.Status.ShouldBe(GameBoardData.VerificationStatus.NoDirectConnection);
     }
 
@@ -88,8 +88,8 @@ namespace Jabberwocky.SoC.Library.UnitTests
       var gameBoardData = new GameBoardData(BoardSizes.Standard);
       var playerId = Guid.NewGuid();
       gameBoardData.PlaceSettlement(playerId, 0);
-      gameBoardData.PlaceRoad(playerId, new Road(0, 9));
-      var result = gameBoardData.CanPlaceRoad(playerId, new Road(9, 8));
+      gameBoardData.PlaceRoad(playerId, new RoadSegment(0, 9));
+      var result = gameBoardData.CanPlaceRoad(playerId, new RoadSegment(9, 8));
       result.Status.ShouldBe(GameBoardData.VerificationStatus.Valid);
     }
 
@@ -99,7 +99,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     {
       var gameBoardData = new GameBoardData(BoardSizes.Standard);
       var playerId = Guid.NewGuid();
-      var road = new Road(0, 1);
+      var road = new RoadSegment(0, 1);
       gameBoardData.PlaceStartingInfrastructure(playerId, 0, road);
 
       var result = gameBoardData.CanPlaceRoad(playerId, road);
@@ -112,10 +112,10 @@ namespace Jabberwocky.SoC.Library.UnitTests
     {
       var gameBoardData = new GameBoardData(BoardSizes.Standard);
       var playerId = Guid.NewGuid();
-      var road = new Road(11, 21);
-      gameBoardData.PlaceStartingInfrastructure(playerId, 12, new Road(12, 11));
+      var road = new RoadSegment(11, 21);
+      gameBoardData.PlaceStartingInfrastructure(playerId, 12, new RoadSegment(12, 11));
 
-      gameBoardData.PlaceStartingInfrastructure(playerId, 20, new Road(20, 21));
+      gameBoardData.PlaceStartingInfrastructure(playerId, 20, new RoadSegment(20, 21));
 
       var result = gameBoardData.CanPlaceRoad(playerId, road);
       result.Status.ShouldBe(GameBoardData.VerificationStatus.Valid);
@@ -182,7 +182,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
       var playerId = Guid.NewGuid();
       var location = 20u;
       var gameBoardData = new GameBoardData(BoardSizes.Standard);
-      var results = gameBoardData.CanPlaceStartingInfrastructure(playerId, location, new Road(21, 22));
+      var results = gameBoardData.CanPlaceStartingInfrastructure(playerId, location, new RoadSegment(21, 22));
 
       results.Status.ShouldBe(GameBoardData.VerificationStatus.NotConnectedToExisting);
       results.LocationIndex.ShouldBe(0u);
@@ -196,7 +196,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
       var playerId = Guid.NewGuid();
       var location = 20u;
       var gameBoardData = new GameBoardData(BoardSizes.Standard);
-      gameBoardData.CanPlaceStartingInfrastructure(playerId, location, new Road(21, 22));
+      gameBoardData.CanPlaceStartingInfrastructure(playerId, location, new RoadSegment(21, 22));
       var results = gameBoardData.CanPlaceSettlement(20);
 
       results.Status.ShouldBe(GameBoardData.VerificationStatus.Valid);
@@ -256,9 +256,9 @@ namespace Jabberwocky.SoC.Library.UnitTests
     {
       var playerId = Guid.NewGuid();
       var location = 20u;
-      var road = new Road(21, 22);
+      var road = new RoadSegment(21, 22);
       var gameBoardData = new GameBoardData(BoardSizes.Standard);
-      gameBoardData.PlaceStartingInfrastructure(playerId, location, new Road(21, 22));
+      gameBoardData.PlaceStartingInfrastructure(playerId, location, new RoadSegment(21, 22));
 
       gameBoardData.CanPlaceSettlement(location).Status.ShouldBe(GameBoardData.VerificationStatus.LocationIsOccupied);
       gameBoardData.CanPlaceRoad(playerId, road).Status.ShouldBe(GameBoardData.VerificationStatus.RoadIsOccupied);
@@ -470,7 +470,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
       // Arrange
       var gameBoard = new GameBoardData(BoardSizes.Standard);
       var playerId = Guid.NewGuid();
-      var road = new Road(12u, 4u);
+      var road = new RoadSegment(12u, 4u);
       gameBoard.PlaceRoad(playerId, road);
 
       // Act
@@ -478,7 +478,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
       // Assert
       roads.Length.ShouldBe(1);
-      roads[0].ShouldBe(new Tuple<Road, Guid>(road, playerId));
+      roads[0].ShouldBe(new Tuple<RoadSegment, Guid>(road, playerId));
     }
 
     [Test]
@@ -562,9 +562,9 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
       var playerId = Guid.NewGuid();
       var opponentId = Guid.NewGuid();
-      gameBoard.PlaceRoad(playerId, new Road(0u, 1u));
-      gameBoard.PlaceRoad(playerId, new Road(1u, 2u));
-      gameBoard.PlaceRoad(opponentId, new Road(18u, 19u));
+      gameBoard.PlaceRoad(playerId, new RoadSegment(0u, 1u));
+      gameBoard.PlaceRoad(playerId, new RoadSegment(1u, 2u));
+      gameBoard.PlaceRoad(opponentId, new RoadSegment(18u, 19u));
 
       // Act
       var result = gameBoard.TryGetLongestRoadDetails(out longestRoadPlayerId, out roadLength);
@@ -585,9 +585,9 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
       var playerId = Guid.NewGuid();
       var opponentId = Guid.NewGuid();
-      gameBoard.PlaceRoad(playerId, new Road(0u, 1u));
-      gameBoard.PlaceRoad(playerId, new Road(1u, 2u));
-      gameBoard.PlaceRoad(opponentId, new Road(18u, 19u));
+      gameBoard.PlaceRoad(playerId, new RoadSegment(0u, 1u));
+      gameBoard.PlaceRoad(playerId, new RoadSegment(1u, 2u));
+      gameBoard.PlaceRoad(opponentId, new RoadSegment(18u, 19u));
 
       // Act
       var result = gameBoard.TryGetLongestRoadDetails(out longestRoadPlayerId, out roadLength);
@@ -609,8 +609,8 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
       var playerId = Guid.NewGuid();
       var opponentId = Guid.NewGuid();
-      gameBoard.PlaceRoad(playerId, new Road(0u, 1u));
-      gameBoard.PlaceRoad(opponentId, new Road(18u, 19u));
+      gameBoard.PlaceRoad(playerId, new RoadSegment(0u, 1u));
+      gameBoard.PlaceRoad(opponentId, new RoadSegment(18u, 19u));
 
       // Act
       var result = gameBoard.TryGetLongestRoadDetails(out longestRoadPlayerId, out roadLength);
@@ -631,9 +631,9 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
       var playerId = Guid.NewGuid();
       var opponentId = Guid.NewGuid();
-      gameBoard.PlaceRoad(playerId, new Road(0u, 1u));
-      gameBoard.PlaceRoad(playerId, new Road(2u, 3u));
-      gameBoard.PlaceRoad(opponentId, new Road(18u, 19u));
+      gameBoard.PlaceRoad(playerId, new RoadSegment(0u, 1u));
+      gameBoard.PlaceRoad(playerId, new RoadSegment(2u, 3u));
+      gameBoard.PlaceRoad(opponentId, new RoadSegment(18u, 19u));
 
       // Act
       var result = gameBoard.TryGetLongestRoadDetails(out longestRoadPlayerId, out roadLength);
@@ -653,12 +653,12 @@ namespace Jabberwocky.SoC.Library.UnitTests
       var gameBoard = new GameBoardData(BoardSizes.Standard);
 
       var playerId = Guid.NewGuid();
-      gameBoard.PlaceRoad(playerId, new Road(0u, 1u));
-      gameBoard.PlaceRoad(playerId, new Road(1u, 2u));
-      gameBoard.PlaceRoad(playerId, new Road(0u, 8u));
-      gameBoard.PlaceRoad(playerId, new Road(8u, 9u));
-      gameBoard.PlaceRoad(playerId, new Road(10u, 2u));
-      gameBoard.PlaceRoad(playerId, new Road(10u, 9u));
+      gameBoard.PlaceRoad(playerId, new RoadSegment(0u, 1u));
+      gameBoard.PlaceRoad(playerId, new RoadSegment(1u, 2u));
+      gameBoard.PlaceRoad(playerId, new RoadSegment(0u, 8u));
+      gameBoard.PlaceRoad(playerId, new RoadSegment(8u, 9u));
+      gameBoard.PlaceRoad(playerId, new RoadSegment(10u, 2u));
+      gameBoard.PlaceRoad(playerId, new RoadSegment(10u, 9u));
 
       // Act
       var result = gameBoard.TryGetLongestRoadDetails(out longestRoadPlayerId, out roadLength);
@@ -679,19 +679,19 @@ namespace Jabberwocky.SoC.Library.UnitTests
       var gameBoard = new GameBoardData(BoardSizes.Standard);
 
       var playerId = Guid.NewGuid();
-      gameBoard.PlaceRoad(playerId, new Road(0u, 1u));
-      gameBoard.PlaceRoad(playerId, new Road(1u, 2u));
-      gameBoard.PlaceRoad(playerId, new Road(0u, 8u));
-      gameBoard.PlaceRoad(playerId, new Road(8u, 9u));
-      gameBoard.PlaceRoad(playerId, new Road(10u, 2u));
-      gameBoard.PlaceRoad(playerId, new Road(10u, 9u));
+      gameBoard.PlaceRoad(playerId, new RoadSegment(0u, 1u));
+      gameBoard.PlaceRoad(playerId, new RoadSegment(1u, 2u));
+      gameBoard.PlaceRoad(playerId, new RoadSegment(0u, 8u));
+      gameBoard.PlaceRoad(playerId, new RoadSegment(8u, 9u));
+      gameBoard.PlaceRoad(playerId, new RoadSegment(10u, 2u));
+      gameBoard.PlaceRoad(playerId, new RoadSegment(10u, 9u));
 
-      gameBoard.PlaceRoad(playerId, new Road(8u, 7u));
-      gameBoard.PlaceRoad(playerId, new Road(7u, 17u));
-      gameBoard.PlaceRoad(playerId, new Road(8u, 7u));
-      gameBoard.PlaceRoad(playerId, new Road(19u, 9u));
-      gameBoard.PlaceRoad(playerId, new Road(19u, 18u));
-      gameBoard.PlaceRoad(playerId, new Road(18u, 17u));
+      gameBoard.PlaceRoad(playerId, new RoadSegment(8u, 7u));
+      gameBoard.PlaceRoad(playerId, new RoadSegment(7u, 17u));
+      gameBoard.PlaceRoad(playerId, new RoadSegment(8u, 7u));
+      gameBoard.PlaceRoad(playerId, new RoadSegment(19u, 9u));
+      gameBoard.PlaceRoad(playerId, new RoadSegment(19u, 18u));
+      gameBoard.PlaceRoad(playerId, new RoadSegment(18u, 17u));
 
       // Act
       var result = gameBoard.TryGetLongestRoadDetails(out longestRoadPlayerId, out roadLength);
@@ -712,18 +712,18 @@ namespace Jabberwocky.SoC.Library.UnitTests
       var gameBoard = new GameBoardData(BoardSizes.Standard);
 
       var playerId = Guid.NewGuid();
-      gameBoard.PlaceRoad(playerId, new Road(23u, 22u));
+      gameBoard.PlaceRoad(playerId, new RoadSegment(23u, 22u));
 
-      gameBoard.PlaceRoad(playerId, new Road(22u, 21u));
-      gameBoard.PlaceRoad(playerId, new Road(21u, 20u));
-      gameBoard.PlaceRoad(playerId, new Road(20u, 19u));
-      gameBoard.PlaceRoad(playerId, new Road(19u, 18u));
-      gameBoard.PlaceRoad(playerId, new Road(18u, 17u));
+      gameBoard.PlaceRoad(playerId, new RoadSegment(22u, 21u));
+      gameBoard.PlaceRoad(playerId, new RoadSegment(21u, 20u));
+      gameBoard.PlaceRoad(playerId, new RoadSegment(20u, 19u));
+      gameBoard.PlaceRoad(playerId, new RoadSegment(19u, 18u));
+      gameBoard.PlaceRoad(playerId, new RoadSegment(18u, 17u));
 
-      gameBoard.PlaceRoad(playerId, new Road(22u, 33u));
-      gameBoard.PlaceRoad(playerId, new Road(33u, 32u));
-      gameBoard.PlaceRoad(playerId, new Road(32u, 42u));
-      gameBoard.PlaceRoad(playerId, new Road(42u, 41u));
+      gameBoard.PlaceRoad(playerId, new RoadSegment(22u, 33u));
+      gameBoard.PlaceRoad(playerId, new RoadSegment(33u, 32u));
+      gameBoard.PlaceRoad(playerId, new RoadSegment(32u, 42u));
+      gameBoard.PlaceRoad(playerId, new RoadSegment(42u, 41u));
 
       // Act
       var result = gameBoard.TryGetLongestRoadDetails(out longestRoadPlayerId, out roadLength);

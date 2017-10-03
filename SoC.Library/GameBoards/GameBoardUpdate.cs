@@ -10,6 +10,6 @@ namespace Jabberwocky.SoC.Library.GameBoards
   public class GameBoardUpdate
   {
     public Dictionary<UInt32, Guid> NewSettlements;
-    public Dictionary<Road, Guid> NewRoads;
+    public Dictionary<RoadSegment, Guid> NewRoads;
   }
 }

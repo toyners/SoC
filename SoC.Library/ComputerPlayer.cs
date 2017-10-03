@@ -13,7 +13,7 @@ namespace Jabberwocky.SoC.Library
 
     public override Boolean IsComputer { get { return true; } }
 
-    public virtual Road ChooseRoad(GameBoardData gameBoardData)
+    public virtual RoadSegment ChooseRoad(GameBoardData gameBoardData)
     {
       var settlementsForPlayer = gameBoardData.GetSettlementsForPlayer(this.Id);
       if (settlementsForPlayer == null || settlementsForPlayer.Count == 0)
@@ -24,7 +24,7 @@ namespace Jabberwocky.SoC.Library
       var locationIndex = settlementsForPlayer[0];
       var path = this.GetPathToLocationThatHasBestChanceOfReturnOnRoll(gameBoardData, locationIndex);
 
-      return new Road(locationIndex, path[path.Count - 1]);
+      return new RoadSegment(locationIndex, path[path.Count - 1]);
     }
 
     public virtual ResourceClutch ChooseResourcesToDrop()

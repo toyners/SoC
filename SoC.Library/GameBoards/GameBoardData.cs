@@ -34,7 +34,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
     private Dictionary<UInt32, Guid> settlements;
     private Dictionary<Guid, List<UInt32>> settlementsByPlayer;
     private Boolean[,] connections;
-    private Dictionary<Road, Guid> roads;
+    private Dictionary<RoadSegment, Guid> roadSegments;
     private Dictionary<UInt32, ResourceProducer[]> resourceProvidersByDiceRolls;
     private Dictionary<ResourceProducer, UInt32[]> locationsForResourceProvider;
     private Dictionary<UInt32, UInt32[]> locationsForHex;
@@ -50,7 +50,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
       }
       this.Length = StandardBoardHexCount;
       this.settlements = new Dictionary<UInt32, Guid>();
-      this.roads = new Dictionary<Road, Guid>();
+      this.roadSegments = new Dictionary<RoadSegment, Guid>();
       this.settlementsByPlayer = new Dictionary<Guid, List<UInt32>>();
 
       this.CreateHexes();
@@ -79,7 +79,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
       throw new NotImplementedException();
     }
 
-    public VerificationResults CanPlaceRoad(Guid playerId, Road road)
+    public VerificationResults CanPlaceRoad(Guid playerId, RoadSegment road)
     {
       // Verify #1 - Are both road locations on the board.
       var length = (UInt32)this.connections.GetLength(0);
@@ -95,7 +95,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
       }
 
       // Verify #3 - Is there already a road built
-      if (this.roads.ContainsKey(road))
+      if (this.roadSegments.ContainsKey(road))
       {
         return new VerificationResults { Status = VerificationStatus.RoadIsOccupied };
       }
@@ -106,7 +106,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
         var isConnected = false;
 
         // Linear scan but the total number of possible roads is in the tens
-        foreach (var existingRoad in this.roads.Keys)
+        foreach (var existingRoad in this.roadSegments.Keys)
         {
           if (road.Location1 == existingRoad.Location1 || road.Location1 == existingRoad.Location2 ||
               road.Location2 == existingRoad.Location1 || road.Location2 == existingRoad.Location2)
@@ -177,7 +177,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
       };
     }
 
-    public VerificationResults CanPlaceStartingInfrastructure(Guid playerId, UInt32 settlementIndex, Road road)
+    public VerificationResults CanPlaceStartingInfrastructure(Guid playerId, UInt32 settlementIndex, RoadSegment road)
     {
       var results = this.CanPlaceSettlement(settlementIndex);
       if (results.Status != VerificationStatus.Valid)
@@ -362,13 +362,13 @@ namespace Jabberwocky.SoC.Library.GameBoards
       return resources;
     }
 
-    public Tuple<Road, Guid>[] GetRoadInformation()
+    public Tuple<RoadSegment, Guid>[] GetRoadInformation()
     {
-      var data = new Tuple<Road, Guid>[this.roads.Count];
+      var data = new Tuple<RoadSegment, Guid>[this.roadSegments.Count];
       var index = 0;
-      foreach (var kv in this.roads)
+      foreach (var kv in this.roadSegments)
       {
-        data[index++] = new Tuple<Road, Guid>(kv.Key, kv.Value);
+        data[index++] = new Tuple<RoadSegment, Guid>(kv.Key, kv.Value);
       }
 
       return data;
@@ -395,23 +395,34 @@ namespace Jabberwocky.SoC.Library.GameBoards
       return data;
     }
 
-    public void PlaceRoad(Guid playerId, Road road)
+    private Dictionary<Guid, List<List<RoadSegment>>> roadsByPlayer = new Dictionary<Guid, List<List<RoadSegment>>>();
+
+    public void PlaceRoad(Guid playerId, RoadSegment roadSegment)
     {
-      this.roads.Add(road, playerId);
+      this.roadSegments.Add(roadSegment, playerId);
 
-
-      HashSet<Road> roadSet = null;
-      if (this.roadsByLocation.ContainsKey(road.Location1))
+      // Try to extend an existing road
+      List<List<RoadSegment>> roadsForPlayer = null;
+      if (!this.roadsByPlayer.ContainsKey(playerId))
       {
-        roadSet = this.roadsByLocation[road.Location1];
-      }
-      else
-      {
-        roadSet = new HashSet<Road>();
-        this.roadsByLocation.Add(road.Location1, roadSet);
+        // Should not happen
       }
 
-      roadSet.Add(road);
+      roadsForPlayer = this.roadsByPlayer[playerId];
+      foreach (var road in roadsForPlayer)
+      {
+        // Is the road segment connected to the start of the road?
+        if (road[0].IsConnected(roadSegment))
+        {
+          road.Insert(0, roadSegment);
+        }
+        else if (road[road.Count - 1].IsConnected(roadSegment))
+        {
+          road.Add(roadSegment);
+        }
+      }
+
+      // Create new road
     }
 
     public void PlaceSettlement(Guid playerId, UInt32 locationIndex)
@@ -428,21 +439,22 @@ namespace Jabberwocky.SoC.Library.GameBoards
       this.settlements.Add(locationIndex, playerId);
     }
 
-    public void PlaceStartingInfrastructure(Guid playerId, UInt32 settlementIndex, Road road)
+    public void PlaceStartingInfrastructure(Guid playerId, UInt32 settlementIndex, RoadSegment road)
     {
       this.PlaceSettlement(playerId, settlementIndex);
       this.PlaceRoad(playerId, road);
     }
 
-    Dictionary<UInt32, HashSet<Road>> roadsByLocation = new Dictionary<UInt32, HashSet<Road>>(); 
+    Dictionary<UInt32, HashSet<RoadSegment>> roadsByLocation = new Dictionary<UInt32, HashSet<RoadSegment>>(); 
     public Boolean TryGetLongestRoadDetails(out Guid playerId, out Int32 roadLength)
     {
-      playerId = Guid.Empty;
+      throw new NotImplementedException();
+      /*playerId = Guid.Empty;
       roadLength = -1;
       var visited = new HashSet<Road>();
       var roadsByPlayer = new Dictionary<Guid, List<Road>>();
 
-      if (this.roads.Count == 0)
+      if (this.roadSegments.Count == 0)
       {
         return false;
       }
@@ -459,7 +471,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
             continue;
           }
 
-          var id = this.roads[road];
+          var id = this.roadSegments[road];
           List<Road> workingRoadList = null;
           if (!roadsByPlayer.ContainsKey(id))
           {
@@ -495,12 +507,12 @@ namespace Jabberwocky.SoC.Library.GameBoards
         }
       }
 
-      return gotSingleLongestRoad;
+      return gotSingleLongestRoad;*/
     }
 
     internal void ClearRoads()
     {
-      this.roads.Clear();
+      this.roadSegments.Clear();
     }
 
     internal void ClearSettlements()

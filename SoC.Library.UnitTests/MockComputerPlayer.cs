@@ -17,7 +17,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     public List<DevelopmentCardTypes> DisplayedDevelopmentCards;
 
     public Queue<UInt32> SettlementLocations;
-    public Queue<Road> Roads;
+    public Queue<RoadSegment> Roads;
     //public ResourceBag Resources;
     public ResourceClutch DroppedResources;
     #endregion
@@ -32,7 +32,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
       return DroppedResources;
     }
 
-    public override Road ChooseRoad(GameBoardData gameBoardData)
+    public override RoadSegment ChooseRoad(GameBoardData gameBoardData)
     {
       return this.Roads.Dequeue();
     }

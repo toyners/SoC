@@ -59,7 +59,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
 
       var road = computerPlayer.ChooseRoad(gameBoardData);
-      var expectedRoad = new Road(11, 12);
+      var expectedRoad = new RoadSegment(11, 12);
       road.ShouldBe(expectedRoad);
     }
 
@@ -70,11 +70,11 @@ namespace Jabberwocky.SoC.Library.UnitTests
       var computerPlayer = new ComputerPlayer("ComputerPlayer");
       var gameBoardData = new GameBoardData(BoardSizes.Standard);
       gameBoardData.PlaceSettlement(computerPlayer.Id, 12);
-      gameBoardData.PlaceRoad(computerPlayer.Id, new Road(12, 11));
+      gameBoardData.PlaceRoad(computerPlayer.Id, new RoadSegment(12, 11));
 
 
       var road = computerPlayer.ChooseRoad(gameBoardData);
-      var expectedRoad = new Road(11, 21);
+      var expectedRoad = new RoadSegment(11, 21);
       road.ShouldBe(expectedRoad);
 
     }
