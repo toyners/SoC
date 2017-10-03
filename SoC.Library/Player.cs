@@ -43,6 +43,8 @@ namespace Jabberwocky.SoC.Library
     }
 
     public Int32 WoolCount { get; protected set; }
+
+    public UInt32 VictoryPoints { get; protected set; }
     #endregion
 
     #region Methods

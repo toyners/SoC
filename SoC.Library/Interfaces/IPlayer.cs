@@ -15,6 +15,7 @@ namespace Jabberwocky.SoC.Library.Interfaces
     String Name { get; }
     Int32 ResourcesCount { get; }
     Boolean IsComputer { get; }
+    UInt32 VictoryPoints { get; }
     #endregion
 
     #region Methods
