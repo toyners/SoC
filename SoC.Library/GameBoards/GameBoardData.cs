@@ -440,10 +440,16 @@ namespace Jabberwocky.SoC.Library.GameBoards
       this.settlements.Add(locationIndex, playerId);
     }
 
-    public void PlaceStartingInfrastructure(Guid playerId, UInt32 settlementIndex, RoadSegment road)
+    /// <summary>
+    /// Place starting infrastructure (settlement and connecting road segment). Performs no verification.
+    /// </summary>
+    /// <param name="playerId">Id of player placing the infrastructure.</param>
+    /// <param name="settlementIndex">Location to place settlement.</param>
+    /// <param name="roadSegment">Road segment to place.</param>
+    public void PlaceStartingInfrastructure(Guid playerId, UInt32 settlementIndex, RoadSegment roadSegment)
     {
       this.PlaceSettlement(playerId, settlementIndex);
-      this.PlaceRoad(playerId, road);
+      this.PlaceRoad(playerId, roadSegment);
     }
 
     Dictionary<UInt32, HashSet<RoadSegment>> roadsByLocation = new Dictionary<UInt32, HashSet<RoadSegment>>(); 
