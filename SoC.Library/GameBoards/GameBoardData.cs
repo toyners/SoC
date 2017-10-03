@@ -35,6 +35,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
     private Dictionary<Guid, List<UInt32>> settlementsByPlayer;
     private Boolean[,] connections;
     private Dictionary<RoadSegment, Guid> roadSegments;
+    private Dictionary<Guid, List<List<RoadSegment>>> roadsByPlayer;
     private Dictionary<UInt32, ResourceProducer[]> resourceProvidersByDiceRolls;
     private Dictionary<ResourceProducer, UInt32[]> locationsForResourceProvider;
     private Dictionary<UInt32, UInt32[]> locationsForHex;
@@ -48,9 +49,11 @@ namespace Jabberwocky.SoC.Library.GameBoards
       {
         throw new Exception("Extended boards not implemented.");
       }
+
       this.Length = StandardBoardHexCount;
       this.settlements = new Dictionary<UInt32, Guid>();
       this.roadSegments = new Dictionary<RoadSegment, Guid>();
+      this.roadsByPlayer = new Dictionary<Guid, List<List<RoadSegment>>>();
       this.settlementsByPlayer = new Dictionary<Guid, List<UInt32>>();
 
       this.CreateHexes();
@@ -394,8 +397,6 @@ namespace Jabberwocky.SoC.Library.GameBoards
 
       return data;
     }
-
-    private Dictionary<Guid, List<List<RoadSegment>>> roadsByPlayer = new Dictionary<Guid, List<List<RoadSegment>>>();
 
     public void PlaceRoad(Guid playerId, RoadSegment roadSegment)
     {
