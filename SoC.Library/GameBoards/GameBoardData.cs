@@ -398,28 +398,46 @@ namespace Jabberwocky.SoC.Library.GameBoards
       return data;
     }
 
-    public void PlaceRoad(Guid playerId, RoadSegment roadSegment)
+    public void PlaceRoad(Guid playerId, RoadSegment newRoadSegment)
     {
-      this.roadSegments.Add(roadSegment, playerId);
+      this.roadSegments.Add(newRoadSegment, playerId);
 
-      // Try to extend an existing road
       List<List<RoadSegment>> roadsForPlayer = null;
       if (!this.roadsByPlayer.ContainsKey(playerId))
       {
-        // Should not happen
+        roadsForPlayer = new List<List<RoadSegment>>();
+        var newRoad = new List<RoadSegment>();
+        newRoad.Add(newRoadSegment);
+        roadsForPlayer.Add(newRoad);
+        this.roadsByPlayer.Add(playerId, roadsForPlayer);
+        return;
       }
 
       roadsForPlayer = this.roadsByPlayer[playerId];
       foreach (var road in roadsForPlayer)
       {
-        // Is the road segment connected to the start of the road?
-        if (road[0].IsConnected(roadSegment))
+        var firstRoadSegment = road[0];
+        
+        if (firstRoadSegment.IsConnected(newRoadSegment))
         {
-          road.Insert(0, roadSegment);
+          if (road.Count == 1)
+          {
+            // Second road segment added to road
+            road.Add(newRoadSegment);
+          }
+          else
+          {
+
+          }
         }
-        else if (road[road.Count - 1].IsConnected(roadSegment))
+
+        if (road[0].IsConnected(newRoadSegment))
         {
-          road.Add(roadSegment);
+          road.Insert(0, newRoadSegment);
+        }
+        else if (road[road.Count - 1].IsConnected(newRoadSegment))
+        {
+          road.Add(newRoadSegment);
         }
       }
 
