@@ -531,6 +531,9 @@ namespace Jabberwocky.SoC.Library.UnitTests
       productionValues.Length.ShouldBe(0);
     }
 
+    /// <summary>
+    /// No roads on the board so no longest road details can be passed back. Returns false.
+    /// </summary>
     [Test]
     [Category("All")]
     [Category("GameBoardData")]
@@ -550,6 +553,10 @@ namespace Jabberwocky.SoC.Library.UnitTests
       roadLength.ShouldBe(-1);
     }
 
+    /// <summary>
+    /// Roads placed by two players - first player road is two segments long, second player road is one segment long.
+    /// Returns true to indicate that there is a longest road.
+    /// </summary>
     [Test]
     [Category("All")]
     [Category("GameBoardData")]
@@ -573,6 +580,10 @@ namespace Jabberwocky.SoC.Library.UnitTests
       result.ShouldBeTrue();
     }
 
+    /// <summary>
+    /// Roads placed by two players - first player road is two segments long, second player road is one segment long.
+    /// Longest road details passed back identifying the first player has having the longest road.
+    /// </summary>
     [Test]
     [Category("All")]
     [Category("GameBoardData")]
@@ -597,10 +608,13 @@ namespace Jabberwocky.SoC.Library.UnitTests
       roadLength.ShouldBe(2);
     }
 
+    /// <summary>
+    /// Two players have the longest road. Return false
+    /// </summary>
     [Test]
     [Category("All")]
     [Category("GameBoardData")]
-    public void TryGetLongestRoadDetails_TwoPlayersHaveTheLongestRoad_ReturnsEmptyFalse()
+    public void TryGetLongestRoadDetails_TwoPlayersHaveTheLongestRoad_ReturnsFalse()
     {
       // Arrange
       Int32 roadLength;
@@ -616,9 +630,12 @@ namespace Jabberwocky.SoC.Library.UnitTests
       var result = gameBoard.TryGetLongestRoadDetails(out longestRoadPlayerId, out roadLength);
 
       // Assert
-      result.ShouldBeTrue();
+      result.ShouldBeFalse();
     }
 
+    /// <summary>
+    /// One player has multiple roads that are the longest. Returns false. 
+    /// </summary>
     [Test]
     [Category("All")]
     [Category("GameBoardData")]
@@ -630,10 +647,8 @@ namespace Jabberwocky.SoC.Library.UnitTests
       var gameBoard = new GameBoardData(BoardSizes.Standard);
 
       var playerId = Guid.NewGuid();
-      var opponentId = Guid.NewGuid();
       gameBoard.PlaceRoad(playerId, new RoadSegment(0u, 1u));
       gameBoard.PlaceRoad(playerId, new RoadSegment(2u, 3u));
-      gameBoard.PlaceRoad(opponentId, new RoadSegment(18u, 19u));
 
       // Act
       var result = gameBoard.TryGetLongestRoadDetails(out longestRoadPlayerId, out roadLength);
@@ -642,6 +657,10 @@ namespace Jabberwocky.SoC.Library.UnitTests
       result.ShouldBeFalse();
     }
 
+    /// <summary>
+    /// Road placed around hex in a cycle. Road segments have not been placed in a consecutive manner but rather in a
+    /// haphazard manner. Longest road details must not count road segments more than once.
+    /// </summary>
     [Test]
     [Category("All")]
     [Category("GameBoardData")]
@@ -668,6 +687,10 @@ namespace Jabberwocky.SoC.Library.UnitTests
       roadLength.ShouldBe(6);
     }
 
+    /// <summary>
+    /// Road placed around two hexes in a figure-of-eight. Road segments have not been placed in a consecutive manner but 
+    /// rather in a haphazard manner. Longest road details must not count road segments more than once.
+    /// </summary>
     [Test]
     [Category("All")]
     [Category("GameBoardData")]
@@ -701,6 +724,10 @@ namespace Jabberwocky.SoC.Library.UnitTests
       roadLength.ShouldBe(10);
     }
 
+    /// <summary>
+    /// Road contains a fork. One branch is longer. Longest road details must be for long branch. Longest road count
+    /// must include common 'trunk' road segment.
+    /// </summary>
     [Test]
     [Category("All")]
     [Category("GameBoardData")]
