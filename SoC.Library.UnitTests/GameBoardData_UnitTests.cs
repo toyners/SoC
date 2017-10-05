@@ -759,6 +759,75 @@ namespace Jabberwocky.SoC.Library.UnitTests
       longestRoadPlayerId.ShouldBe(playerId);
       roadLength.ShouldBe(6);
     }
+
+    /// <summary>
+    /// Two roads are connected with a road segment creating a new longest road. Returns true
+    /// </summary>
+    [Test]
+    [Category("All")]
+    [Category("GameBoardData")]
+    public void TryGetLongestRoadDetails_TwoRoadsAreConnectedWithRoadSegment_ReturnsTrue()
+    {
+      // Arrange
+      Int32 roadLength;
+      Guid longestRoadPlayerId;
+      var gameBoard = new GameBoardData(BoardSizes.Standard);
+
+      var playerId = Guid.NewGuid();
+
+      gameBoard.PlaceRoad(playerId, new RoadSegment(21u, 20u));
+      gameBoard.PlaceRoad(playerId, new RoadSegment(20u, 31u));
+      gameBoard.PlaceRoad(playerId, new RoadSegment(31u, 30u));
+      gameBoard.PlaceRoad(playerId, new RoadSegment(30u, 40u));
+
+      gameBoard.PlaceRoad(playerId, new RoadSegment(33u, 32u));
+      gameBoard.PlaceRoad(playerId, new RoadSegment(32u, 42u));
+      gameBoard.PlaceRoad(playerId, new RoadSegment(42u, 41u));
+      gameBoard.PlaceRoad(playerId, new RoadSegment(41u, 49u));
+
+      gameBoard.PlaceRoad(playerId, new RoadSegment(31u, 32u));
+
+      // Act
+      var result = gameBoard.TryGetLongestRoadDetails(out longestRoadPlayerId, out roadLength);
+
+      // Assert
+      result.ShouldBeTrue();
+    }
+
+    /// <summary>
+    /// Two roads are connected with a road segment creating a new longest road. Returns longest road details
+    /// </summary>
+    [Test]
+    [Category("All")]
+    [Category("GameBoardData")]
+    public void TryGetLongestRoadDetails_TwoRoadsAreConnectedWithRoadSegment_ReturnsLongestRoadDetails()
+    {
+      // Arrange
+      Int32 roadLength;
+      Guid longestRoadPlayerId;
+      var gameBoard = new GameBoardData(BoardSizes.Standard);
+
+      var playerId = Guid.NewGuid();
+
+      gameBoard.PlaceRoad(playerId, new RoadSegment(21u, 20u));
+      gameBoard.PlaceRoad(playerId, new RoadSegment(20u, 31u));
+      gameBoard.PlaceRoad(playerId, new RoadSegment(31u, 30u));
+      gameBoard.PlaceRoad(playerId, new RoadSegment(30u, 40u));
+
+      gameBoard.PlaceRoad(playerId, new RoadSegment(33u, 32u));
+      gameBoard.PlaceRoad(playerId, new RoadSegment(32u, 42u));
+      gameBoard.PlaceRoad(playerId, new RoadSegment(42u, 41u));
+      gameBoard.PlaceRoad(playerId, new RoadSegment(41u, 49u));
+
+      gameBoard.PlaceRoad(playerId, new RoadSegment(31u, 32u));
+
+      // Act
+      var result = gameBoard.TryGetLongestRoadDetails(out longestRoadPlayerId, out roadLength);
+
+      // Assert
+      longestRoadPlayerId.ShouldBe(playerId);
+      roadLength.ShouldBe(6);
+    }
     #endregion
   }
 }
