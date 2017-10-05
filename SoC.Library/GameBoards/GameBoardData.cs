@@ -470,10 +470,42 @@ namespace Jabberwocky.SoC.Library.GameBoards
       this.PlaceRoad(playerId, roadSegment);
     }
 
-    Dictionary<UInt32, HashSet<RoadSegment>> roadsByLocation = new Dictionary<UInt32, HashSet<RoadSegment>>(); 
+    Dictionary<UInt32, HashSet<RoadSegment>> roadsByLocation = new Dictionary<UInt32, HashSet<RoadSegment>>();
+    Dictionary<Guid, List<RoadSegment>> roadSegmentsByPlayer = new Dictionary<Guid, List<RoadSegment>>();
     public Boolean TryGetLongestRoadDetails(out Guid playerId, out Int32 roadLength)
     {
+
+      foreach (var kv in roadSegmentsByPlayer)
+      {
+        // Got all road segments for the player. Identify the end points
+        var playerSegments = kv.Value;
+        var endPoints = new List<RoadSegment>();
+        foreach (var roadSegment in playerSegments)
+        {
+          if (roadSegment.ConnectedToLocation1.Count > 0 || roadSegment.ConnectedToLocation2.Count > 0)
+          {
+            endPoints.Add(roadSegment);
+          }
+        }
+
+        foreach (var endPoint in endPoints)
+        {
+          // Follow road from endpoint through to other endpoint
+          var roadSegment = endPoint;
+
+          if (roadSegment.ConnectedToLocation2.Count == 0)
+          {
+            if (roadSegment.ConnectedToLocation2.Count == 1)
+            {
+              roadSegment = roadSegment.ConnectedToLocation2[0];
+            }
+          }
+        }
+      }
+
       throw new NotImplementedException();
+
+
       /*playerId = Guid.Empty;
       roadLength = -1;
       var visited = new HashSet<Road>();
