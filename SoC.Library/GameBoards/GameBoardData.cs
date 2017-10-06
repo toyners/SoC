@@ -472,40 +472,87 @@ namespace Jabberwocky.SoC.Library.GameBoards
 
     Dictionary<UInt32, HashSet<RoadSegment>> roadsByLocation = new Dictionary<UInt32, HashSet<RoadSegment>>();
     Dictionary<Guid, List<RoadSegment>> roadSegmentsByPlayer = new Dictionary<Guid, List<RoadSegment>>();
+    Guid[,] roadss = new Guid[1,1];
     public Boolean TryGetLongestRoadDetails(out Guid playerId, out Int32 roadLength)
     {
 
+      playerId = Guid.Empty;
+      roadLength = 0;
       foreach (var kv in roadSegmentsByPlayer)
       {
         // Got all road segments for the player. Identify the end points
         var playerSegments = kv.Value;
-        var endPoints = new List<RoadSegment>();
+        RoadSegment endPoint = null;
+        var endPoints = new HashSet<RoadSegment>();
         foreach (var roadSegment in playerSegments)
         {
-          if (roadSegment.ConnectedToLocation1.Count > 0 || roadSegment.ConnectedToLocation2.Count > 0)
+          if (roadSegment.ConnectedToLocation1.Count > 0 && roadSegment.ConnectedToLocation2.Count > 0)
           {
-            endPoints.Add(roadSegment);
+            // This segment is in the middle of the road i.e. has two neighbours
+          }
+          else if (roadSegment.ConnectedToLocation1.Count > 0 || roadSegment.ConnectedToLocation2.Count > 0)
+          {
+            // This is a road end i.e. only one neighbour
+            if (endPoint == null)
+            {
+              endPoint = roadSegment;
+            }
+            else
+            {
+              endPoints.Add(roadSegment);
+            }
           }
         }
 
-        foreach (var endPoint in endPoints)
+        while (endPoints.Count > 0)
         {
           // Follow road from endpoint through to other endpoint
           var roadSegment = endPoint;
-
-          if (roadSegment.ConnectedToLocation2.Count == 0)
+          var visited = new HashSet<RoadSegment>();
+          var length = 0;
+          var atEndOfRoad = false;
+          RoadSegment nextSegment = null;
+          while (!atEndOfRoad)
           {
-            if (roadSegment.ConnectedToLocation2.Count == 1)
+            // Get nextSegment from this roadSegment
+            if (roadSegment.ConnectedToLocation2.Count == 0)
             {
-              roadSegment = roadSegment.ConnectedToLocation2[0];
+              // Location 2 on this road segment has no neighbours
+              if (roadSegment.ConnectedToLocation1.Count == 1)
+              {
+                // Only one neighbour - continue moving along the road
+                nextSegment = roadSegment.ConnectedToLocation2[0];
+                length++;
+              }
+              else if (roadSegment.ConnectedToLocation1.Count > 1)
+              {
+
+              }
+              else
+              {
+                endPoints.Remove(roadSegment);
+                atEndOfRoad = true;
+              }
             }
+          }
+          
+          if (length > roadLength)
+          {
+            playerId = kv.Key;
+            roadLength = length;
+          }
+          else if (length == roadLength)
+          {
+            playerId = Guid.Empty;
           }
         }
       }
 
       throw new NotImplementedException();
+    }
 
-
+    private void TryGetLongestRoadDetails1()
+    {
       /*playerId = Guid.Empty;
       roadLength = -1;
       var visited = new HashSet<Road>();
