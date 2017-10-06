@@ -402,7 +402,18 @@ namespace Jabberwocky.SoC.Library.GameBoards
     {
       this.roadSegments.Add(newRoadSegment, playerId);
 
-      List<List<RoadSegment>> roadsForPlayer = null;
+      if (!roadSegmentsByPlayer.ContainsKey(playerId))
+      {
+        var list = new List<RoadSegment>();
+        list.Add(newRoadSegment);
+        roadSegmentsByPlayer.Add(playerId, list);
+      }
+      else
+      {
+        roadSegmentsByPlayer[playerId].Add(newRoadSegment);
+      }
+
+      /*List<List<RoadSegment>> roadsForPlayer = null;
       if (!this.roadsByPlayer.ContainsKey(playerId))
       {
         roadsForPlayer = new List<List<RoadSegment>>();
@@ -441,7 +452,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
         }
       }
 
-      // Create new road
+      // Create new road*/
     }
 
     public void PlaceSettlement(Guid playerId, UInt32 locationIndex)

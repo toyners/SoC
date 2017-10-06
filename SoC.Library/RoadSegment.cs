@@ -10,8 +10,8 @@ namespace Jabberwocky.SoC.Library
   {
     public readonly UInt32 Location1;
     public readonly UInt32 Location2;
-    public List<RoadSegment> ConnectedToLocation1;
-    public List<RoadSegment> ConnectedToLocation2;
+    public List<RoadSegment> ConnectedToLocation1 = new List<RoadSegment>();
+    public List<RoadSegment> ConnectedToLocation2 = new List<RoadSegment>();
 
     public RoadSegment(UInt32 location1, UInt32 location2)
     {
