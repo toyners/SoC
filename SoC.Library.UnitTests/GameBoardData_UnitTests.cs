@@ -828,6 +828,38 @@ namespace Jabberwocky.SoC.Library.UnitTests
       longestRoadPlayerId.ShouldBe(playerId);
       roadLength.ShouldBe(6);
     }
+
+    /// <summary>
+    /// Road is in a 6 (or 9) figure i.e. only on end, other end is connected to the road. Road segments not placed sequentially.
+    /// Returns longest road details.
+    /// </summary>
+    [Test]
+    [Category("All")]
+    [Category("GameBoardData")]
+    public void TryGetLongestRoadDetails_OnePlayerHasLongestRoadWithOneEndPoint_ReturnsLongestRoadDetails()
+    {
+      // Arrange
+      Int32 roadLength;
+      Guid longestRoadPlayerId;
+      var gameBoard = new GameBoardData(BoardSizes.Standard);
+
+      var playerId = Guid.NewGuid();
+      gameBoard.PlaceRoad(playerId, new RoadSegment(12u, 11u));
+      gameBoard.PlaceRoad(playerId, new RoadSegment(11u, 21u));
+      gameBoard.PlaceRoad(playerId, new RoadSegment(21u, 20u));
+      gameBoard.PlaceRoad(playerId, new RoadSegment(20u, 19u));
+      gameBoard.PlaceRoad(playerId, new RoadSegment(19u, 9u));
+      gameBoard.PlaceRoad(playerId, new RoadSegment(10u, 9u));
+      gameBoard.PlaceRoad(playerId, new RoadSegment(11u, 10u));
+
+      // Act
+      var result = gameBoard.TryGetLongestRoadDetails(out longestRoadPlayerId, out roadLength);
+
+      // Assert
+      result.ShouldBeTrue();
+      longestRoadPlayerId.ShouldBe(playerId);
+      roadLength.ShouldBe(8);
+    }
     #endregion
   }
 }
