@@ -17,8 +17,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     public List<DevelopmentCardTypes> DisplayedDevelopmentCards;
 
     public Queue<UInt32> SettlementLocations;
-    public Queue<RoadSegment> Roads;
-    //public ResourceBag Resources;
+    public Queue<Tuple<UInt32, UInt32>> Roads;
     public ResourceClutch DroppedResources;
     #endregion
 
@@ -32,9 +31,11 @@ namespace Jabberwocky.SoC.Library.UnitTests
       return DroppedResources;
     }
 
-    public override RoadSegment ChooseRoad(GameBoardData gameBoardData)
+    public override void ChooseRoad(GameBoardData gameBoardData, out UInt32 roadStartLocation, out UInt32 roadEndLocation)
     {
-      return this.Roads.Dequeue();
+      var roadLocations = this.Roads.Dequeue();
+      roadStartLocation = roadLocations.Item1;
+      roadEndLocation = roadLocations.Item2;
     }
 
     public override UInt32 ChooseSettlementLocation(GameBoardData gameBoardData)

@@ -30,15 +30,25 @@ namespace Jabberwocky.SoC.Library.UnitTests
     private const UInt32 FirstSettlementTwoLocation = 43u;
     private const UInt32 MainSettlementTwoLocation = 40u;
 
-    private RoadSegment mainRoadOne = new RoadSegment(12, 4);
-    private RoadSegment firstRoadOne = new RoadSegment(17, 18);
-    private RoadSegment secondRoadOne = new RoadSegment(15, 25);
-    private RoadSegment thirdRoadOne = new RoadSegment(30, 31);
+    private const UInt32 MainRoadOneEnd = 4;
+    private const UInt32 FirstRoadOneEnd = 17;
+    private const UInt32 SecondRoadOneEnd = 15;
+    private const UInt32 ThirdRoadOneEnd = 30;
 
-    private RoadSegment thirdRoadTwo = new RoadSegment(32, 33);
-    private RoadSegment secondRoadTwo = new RoadSegment(24, 35);
-    private RoadSegment firstRoadTwo = new RoadSegment(43, 44);
-    private RoadSegment mainRoadTwo = new RoadSegment(40, 39);
+    private const UInt32 ThirdRoadTwoEnd = 32;
+    private const UInt32 SecondRoadTwoEnd = 24;
+    private const UInt32 FirstRoadTwoEnd = 44;
+    private const UInt32 MainRoadTwoEnd = 39;
+
+    //private RoadSegment mainRoadOne = new RoadSegment(12, 4);
+    //private RoadSegment firstRoadOne = new RoadSegment(17, 18);
+    //private RoadSegment secondRoadOne = new RoadSegment(15, 25);
+    //private RoadSegment thirdRoadOne = new RoadSegment(30, 31);
+
+    //private RoadSegment thirdRoadTwo = new RoadSegment(32, 33);
+    //private RoadSegment secondRoadTwo = new RoadSegment(24, 35);
+    //private RoadSegment firstRoadTwo = new RoadSegment(43, 44);
+    //private RoadSegment mainRoadTwo = new RoadSegment(40, 39);
     #endregion
 
     #region Methods
@@ -149,28 +159,92 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
       gameBoardUpdate = null; // Ensure that there is a state change for the gameBoardUpdate variable
 
-      localGameController.ContinueGameSetup(MainSettlementOneLocation, mainRoadOne);
+      localGameController.ContinueGameSetup(MainSettlementOneLocation, MainRoadOneEnd);
       gameBoardUpdate.ShouldNotBeNull();
-      gameBoardUpdate.NewSettlements.Count.ShouldBe(6);
-      gameBoardUpdate.NewSettlements.ShouldContainKeyAndValue(FirstSettlementOneLocation, firstOpponent.Id);
-      gameBoardUpdate.NewSettlements.ShouldContainKeyAndValue(FirstSettlementTwoLocation, firstOpponent.Id);
-      gameBoardUpdate.NewSettlements.ShouldContainKeyAndValue(SecondSettlementOneLocation, secondOpponent.Id);
-      gameBoardUpdate.NewSettlements.ShouldContainKeyAndValue(SecondSettlementTwoLocation, secondOpponent.Id);
-      gameBoardUpdate.NewSettlements.ShouldContainKeyAndValue(ThirdSettlementOneLocation, thirdOpponent.Id);
-      gameBoardUpdate.NewSettlements.ShouldContainKeyAndValue(ThirdSettlementTwoLocation, thirdOpponent.Id);
+      this.VerifyNewSettlements(gameBoardUpdate.NewSettlements,
+        new Tuple<UInt32, Guid>(FirstSettlementOneLocation, firstOpponent.Id),
+        new Tuple<UInt32, Guid>(FirstSettlementTwoLocation, firstOpponent.Id),
+        new Tuple<UInt32, Guid>(SecondSettlementOneLocation, secondOpponent.Id),
+        new Tuple<UInt32, Guid>(SecondSettlementTwoLocation, secondOpponent.Id),
+        new Tuple<UInt32, Guid>(ThirdSettlementOneLocation, thirdOpponent.Id),
+        new Tuple<UInt32, Guid>(ThirdSettlementTwoLocation, thirdOpponent.Id));
 
-      gameBoardUpdate.NewRoads.Count.ShouldBe(6);
+      this.VerifyNewRoads(gameBoardUpdate.NewRoads,
+        new Tuple<UInt32, UInt32, Guid>(FirstSettlementOneLocation, FirstRoadOneEnd, firstOpponent.Id),
+        new Tuple<UInt32, UInt32, Guid>(FirstSettlementTwoLocation, FirstRoadTwoEnd, firstOpponent.Id),
+        new Tuple<UInt32, UInt32, Guid>(SecondSettlementOneLocation, SecondRoadOneEnd, secondOpponent.Id),
+        new Tuple<UInt32, UInt32, Guid>(SecondSettlementTwoLocation, SecondRoadTwoEnd, secondOpponent.Id),
+        new Tuple<UInt32, UInt32, Guid>(ThirdSettlementOneLocation, ThirdRoadOneEnd, thirdOpponent.Id),
+        new Tuple<UInt32, UInt32, Guid>(ThirdSettlementTwoLocation, ThirdRoadTwoEnd, thirdOpponent.Id));
+
+      /*gameBoardUpdate.NewRoads.Count.ShouldBe(6);
       gameBoardUpdate.NewRoads.ShouldContainKeyAndValue(firstRoadOne, firstOpponent.Id);
       gameBoardUpdate.NewRoads.ShouldContainKeyAndValue(firstRoadTwo, firstOpponent.Id);
       gameBoardUpdate.NewRoads.ShouldContainKeyAndValue(secondRoadOne, secondOpponent.Id);
       gameBoardUpdate.NewRoads.ShouldContainKeyAndValue(secondRoadTwo, secondOpponent.Id);
       gameBoardUpdate.NewRoads.ShouldContainKeyAndValue(thirdRoadOne, thirdOpponent.Id);
-      gameBoardUpdate.NewRoads.ShouldContainKeyAndValue(thirdRoadTwo, thirdOpponent.Id);
+      gameBoardUpdate.NewRoads.ShouldContainKeyAndValue(thirdRoadTwo, thirdOpponent.Id);*/
 
       gameBoardUpdate = new GameBoardUpdate(); // Ensure that there is a state change for the gameBoardUpdate variable 
 
-      localGameController.CompleteGameSetup(MainSettlementTwoLocation, mainRoadTwo);
+      localGameController.CompleteGameSetup(MainSettlementTwoLocation, MainRoadTwoEnd);
       gameBoardUpdate.ShouldBeNull();
+    }
+
+    private void VerifyNewSettlements(List<Tuple<UInt32, Guid>> actualSettlements, params Tuple<UInt32, Guid>[] expectedSettlements)
+    {
+      actualSettlements.Count.ShouldBe(expectedSettlements.Length);
+
+      foreach(var expectedSettlement in expectedSettlements)
+      {
+        var foundExpectedSettlement = false;
+        for (var index = 0; index < actualSettlements.Count; index++)
+        {
+          var actualSettlement = actualSettlements[index];
+
+          if (actualSettlement.Item1 == expectedSettlement.Item1 &&
+              actualSettlement.Item2 == expectedSettlement.Item2)
+          {
+            actualSettlements.RemoveAt(index);
+            index--;
+            foundExpectedSettlement = true;
+            break;
+          }
+        }
+
+        if (!foundExpectedSettlement)
+        {
+          throw new Exception("Did not find expected settlement: " + expectedSettlement.ToString());
+        }
+      }
+    }
+
+    private void VerifyNewRoads(List<Tuple<UInt32, UInt32, Guid>> actualRoads, params Tuple<UInt32, UInt32, Guid>[] expectedRoads)
+    {
+      actualRoads.Count.ShouldBe(expectedRoads.Length);
+
+      foreach (var expectedRoad in expectedRoads)
+      {
+        var foundExpectedRoad = false;
+        for (var index = 0; index < actualRoads.Count; index++)
+        {
+          var actualRoad = actualRoads[index];
+
+          if (actualRoad.Item1 == expectedRoad.Item1 &&
+              actualRoad.Item2 == expectedRoad.Item2 &&
+              actualRoad.Item3 == expectedRoad.Item3)
+          {
+            actualRoads.RemoveAt(index);
+            index--;
+            break;
+          }
+        }
+
+        if (!foundExpectedRoad)
+        {
+          throw new Exception("Did not find expected road: " + expectedRoad.ToString());
+        }
+      }
     }
 
     [Test]
@@ -197,34 +271,38 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
       localGameController.StartGameSetup();
       gameBoardUpdate.ShouldNotBeNull();
-      gameBoardUpdate.NewSettlements.Count.ShouldBe(1);
-      gameBoardUpdate.NewSettlements.ShouldContainKeyAndValue(FirstSettlementOneLocation, firstOpponent.Id);
-      gameBoardUpdate.NewRoads.Count.ShouldBe(1);
-      gameBoardUpdate.NewRoads.ShouldContainKeyAndValue(firstRoadOne, firstOpponent.Id);
+
+      this.VerifyNewSettlements(gameBoardUpdate.NewSettlements,
+        new Tuple<UInt32, Guid>(FirstSettlementOneLocation, firstOpponent.Id));
+
+      this.VerifyNewRoads(gameBoardUpdate.NewRoads,
+        new Tuple<UInt32, UInt32, Guid>(FirstSettlementOneLocation, FirstRoadOneEnd, firstOpponent.Id));
 
       gameBoardUpdate = null; // Ensure that there is a state change for the gameBoardUpdate variable 
-      localGameController.ContinueGameSetup(MainSettlementOneLocation, mainRoadOne);
+      localGameController.ContinueGameSetup(MainSettlementOneLocation, MainRoadOneEnd);
 
       gameBoardUpdate.ShouldNotBeNull();
-      gameBoardUpdate.NewSettlements.Count.ShouldBe(4);
-      gameBoardUpdate.NewSettlements.ShouldContainKeyAndValue(SecondSettlementOneLocation, secondOpponent.Id);
-      gameBoardUpdate.NewSettlements.ShouldContainKeyAndValue(SecondSettlementTwoLocation, secondOpponent.Id);
-      gameBoardUpdate.NewSettlements.ShouldContainKeyAndValue(ThirdSettlementOneLocation, thirdOpponent.Id);
-      gameBoardUpdate.NewSettlements.ShouldContainKeyAndValue(ThirdSettlementTwoLocation, thirdOpponent.Id);
 
-      gameBoardUpdate.NewRoads.Count.ShouldBe(4);
-      gameBoardUpdate.NewRoads.ShouldContainKeyAndValue(secondRoadOne, secondOpponent.Id);
-      gameBoardUpdate.NewRoads.ShouldContainKeyAndValue(secondRoadTwo, secondOpponent.Id);
-      gameBoardUpdate.NewRoads.ShouldContainKeyAndValue(thirdRoadOne, thirdOpponent.Id);
-      gameBoardUpdate.NewRoads.ShouldContainKeyAndValue(thirdRoadTwo, thirdOpponent.Id);
+      this.VerifyNewSettlements(gameBoardUpdate.NewSettlements,
+        new Tuple<UInt32, Guid>(SecondSettlementOneLocation, secondOpponent.Id),
+        new Tuple<UInt32, Guid>(SecondSettlementTwoLocation, secondOpponent.Id),
+        new Tuple<UInt32, Guid>(ThirdSettlementOneLocation, thirdOpponent.Id),
+        new Tuple<UInt32, Guid>(ThirdSettlementTwoLocation, thirdOpponent.Id));
+
+      this.VerifyNewRoads(gameBoardUpdate.NewRoads,
+        new Tuple<UInt32, UInt32, Guid>(SecondSettlementOneLocation, SecondRoadOneEnd, secondOpponent.Id),
+        new Tuple<UInt32, UInt32, Guid>(SecondSettlementTwoLocation, SecondRoadTwoEnd, secondOpponent.Id),
+        new Tuple<UInt32, UInt32, Guid>(ThirdSettlementOneLocation, ThirdRoadOneEnd, thirdOpponent.Id),
+        new Tuple<UInt32, UInt32, Guid>(ThirdSettlementTwoLocation, ThirdRoadTwoEnd, thirdOpponent.Id));
 
       gameBoardUpdate = null; // Ensure that there is a state change for the gameBoardUpdate variable 
-      localGameController.CompleteGameSetup(MainSettlementTwoLocation, mainRoadTwo);
+      localGameController.CompleteGameSetup(MainSettlementTwoLocation, MainRoadTwoEnd);
 
-      gameBoardUpdate.NewSettlements.Count.ShouldBe(1);
-      gameBoardUpdate.NewSettlements.ShouldContainKeyAndValue(FirstSettlementTwoLocation, firstOpponent.Id);
-      gameBoardUpdate.NewRoads.Count.ShouldBe(1);
-      gameBoardUpdate.NewRoads.ShouldContainKeyAndValue(firstRoadTwo, firstOpponent.Id);
+      this.VerifyNewSettlements(gameBoardUpdate.NewSettlements,
+        new Tuple<UInt32, Guid>(FirstSettlementTwoLocation, firstOpponent.Id));
+
+      this.VerifyNewRoads(gameBoardUpdate.NewRoads,
+        new Tuple<UInt32, UInt32, Guid>(FirstSettlementTwoLocation, FirstRoadTwoEnd, firstOpponent.Id));
     }
 
     [Test]
@@ -251,34 +329,38 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
       localGameController.StartGameSetup();
       gameBoardUpdate.ShouldNotBeNull();
-      gameBoardUpdate.NewSettlements.Count.ShouldBe(2);
-      gameBoardUpdate.NewSettlements.ShouldContainKeyAndValue(FirstSettlementOneLocation, firstOpponent.Id);
-      gameBoardUpdate.NewSettlements.ShouldContainKeyAndValue(SecondSettlementOneLocation, secondOpponent.Id);
-      gameBoardUpdate.NewRoads.Count.ShouldBe(2);
-      gameBoardUpdate.NewRoads.ShouldContainKeyAndValue(firstRoadOne, firstOpponent.Id);
-      gameBoardUpdate.NewRoads.ShouldContainKeyAndValue(secondRoadOne, secondOpponent.Id);
+
+      this.VerifyNewSettlements(gameBoardUpdate.NewSettlements,
+        new Tuple<UInt32, Guid>(FirstSettlementOneLocation, firstOpponent.Id),
+        new Tuple<UInt32, Guid>(SecondSettlementOneLocation, secondOpponent.Id));
+
+      this.VerifyNewRoads(gameBoardUpdate.NewRoads,
+        new Tuple<UInt32, UInt32, Guid>(FirstSettlementOneLocation, FirstRoadOneEnd, firstOpponent.Id),
+        new Tuple<UInt32, UInt32, Guid>(SecondSettlementOneLocation, SecondRoadOneEnd, secondOpponent.Id));
 
       gameBoardUpdate = null; // Ensure that there is a state change for the gameBoardUpdate variable 
-      localGameController.ContinueGameSetup(MainSettlementOneLocation, mainRoadOne);
+      localGameController.ContinueGameSetup(MainSettlementOneLocation, MainRoadOneEnd);
 
       gameBoardUpdate.ShouldNotBeNull();
-      gameBoardUpdate.NewSettlements.Count.ShouldBe(2);
-      gameBoardUpdate.NewSettlements.ShouldContainKeyAndValue(ThirdSettlementOneLocation, thirdOpponent.Id);
-      gameBoardUpdate.NewSettlements.ShouldContainKeyAndValue(ThirdSettlementTwoLocation, thirdOpponent.Id);
 
-      gameBoardUpdate.NewRoads.Count.ShouldBe(2);
-      gameBoardUpdate.NewRoads.ShouldContainKeyAndValue(thirdRoadOne, thirdOpponent.Id);
-      gameBoardUpdate.NewRoads.ShouldContainKeyAndValue(thirdRoadTwo, thirdOpponent.Id);
+      this.VerifyNewSettlements(gameBoardUpdate.NewSettlements,
+        new Tuple<UInt32, Guid>(ThirdSettlementOneLocation, thirdOpponent.Id),
+        new Tuple<UInt32, Guid>(ThirdSettlementTwoLocation, thirdOpponent.Id));
+
+      this.VerifyNewRoads(gameBoardUpdate.NewRoads,
+        new Tuple<UInt32, UInt32, Guid>(ThirdSettlementOneLocation, ThirdRoadOneEnd, thirdOpponent.Id),
+        new Tuple<UInt32, UInt32, Guid>(ThirdSettlementTwoLocation, ThirdRoadTwoEnd, thirdOpponent.Id));
 
       gameBoardUpdate = null; // Ensure that there is a state change for the gameBoardUpdate variable 
-      localGameController.CompleteGameSetup(MainSettlementTwoLocation, mainRoadTwo);
+      localGameController.CompleteGameSetup(MainSettlementTwoLocation, MainRoadTwoEnd);
 
-      gameBoardUpdate.NewSettlements.Count.ShouldBe(2);
-      gameBoardUpdate.NewSettlements.ShouldContainKeyAndValue(SecondSettlementTwoLocation, secondOpponent.Id);
-      gameBoardUpdate.NewSettlements.ShouldContainKeyAndValue(FirstSettlementTwoLocation, firstOpponent.Id);
-      gameBoardUpdate.NewRoads.Count.ShouldBe(2);
-      gameBoardUpdate.NewRoads.ShouldContainKeyAndValue(secondRoadTwo, secondOpponent.Id);
-      gameBoardUpdate.NewRoads.ShouldContainKeyAndValue(firstRoadTwo, firstOpponent.Id);
+      this.VerifyNewSettlements(gameBoardUpdate.NewSettlements,
+        new Tuple<UInt32, Guid>(SecondSettlementTwoLocation, secondOpponent.Id),
+        new Tuple<UInt32, Guid>(FirstSettlementTwoLocation, firstOpponent.Id));
+
+      this.VerifyNewRoads(gameBoardUpdate.NewRoads,
+        new Tuple<UInt32, UInt32, Guid>(SecondSettlementTwoLocation, SecondRoadTwoEnd, secondOpponent.Id),
+        new Tuple<UInt32, UInt32, Guid>(FirstSettlementTwoLocation, FirstRoadTwoEnd, firstOpponent.Id));
     }
 
     [Test]
@@ -305,31 +387,34 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
       localGameController.StartGameSetup();
       gameBoardUpdate.ShouldNotBeNull();
-      gameBoardUpdate.NewSettlements.Count.ShouldBe(3);
-      gameBoardUpdate.NewSettlements.ShouldContainKeyAndValue(FirstSettlementOneLocation, firstOpponent.Id);
-      gameBoardUpdate.NewSettlements.ShouldContainKeyAndValue(SecondSettlementOneLocation, secondOpponent.Id);
-      gameBoardUpdate.NewSettlements.ShouldContainKeyAndValue(ThirdSettlementOneLocation, thirdOpponent.Id);
-      gameBoardUpdate.NewRoads.Count.ShouldBe(3);
-      gameBoardUpdate.NewRoads.ShouldContainKeyAndValue(firstRoadOne, firstOpponent.Id);
-      gameBoardUpdate.NewRoads.ShouldContainKeyAndValue(secondRoadOne, secondOpponent.Id);
-      gameBoardUpdate.NewRoads.ShouldContainKeyAndValue(thirdRoadOne, thirdOpponent.Id);
+
+      this.VerifyNewSettlements(gameBoardUpdate.NewSettlements,
+        new Tuple<UInt32, Guid>(FirstSettlementOneLocation, firstOpponent.Id),
+        new Tuple<UInt32, Guid>(SecondSettlementOneLocation, secondOpponent.Id),
+        new Tuple<UInt32, Guid>(ThirdSettlementOneLocation, thirdOpponent.Id));
+
+      this.VerifyNewRoads(gameBoardUpdate.NewRoads,
+        new Tuple<UInt32, UInt32, Guid>(FirstSettlementOneLocation, FirstRoadOneEnd, firstOpponent.Id),
+        new Tuple<UInt32, UInt32, Guid>(SecondSettlementOneLocation, SecondRoadOneEnd, secondOpponent.Id),
+        new Tuple<UInt32, UInt32, Guid>(ThirdSettlementOneLocation, ThirdRoadOneEnd, thirdOpponent.Id));
 
       gameBoardUpdate = new GameBoardUpdate(); // Ensure that there is a state change for the gameBoardUpdate variable 
-      localGameController.ContinueGameSetup(MainSettlementOneLocation, mainRoadOne);
+      localGameController.ContinueGameSetup(MainSettlementOneLocation, MainRoadOneEnd);
       gameBoardUpdate.ShouldBeNull();
 
       gameBoardUpdate = null; // Ensure that there is a state change for the gameBoardUpdate variable 
-      localGameController.CompleteGameSetup(MainSettlementTwoLocation, mainRoadTwo);
+      localGameController.CompleteGameSetup(MainSettlementTwoLocation, MainRoadTwoEnd);
 
       gameBoardUpdate.ShouldNotBeNull();
-      gameBoardUpdate.NewSettlements.Count.ShouldBe(3);
-      gameBoardUpdate.NewSettlements.ShouldContainKeyAndValue(ThirdSettlementTwoLocation, thirdOpponent.Id);
-      gameBoardUpdate.NewSettlements.ShouldContainKeyAndValue(SecondSettlementTwoLocation, secondOpponent.Id);
-      gameBoardUpdate.NewSettlements.ShouldContainKeyAndValue(FirstSettlementTwoLocation, firstOpponent.Id);
-      gameBoardUpdate.NewRoads.Count.ShouldBe(3);
-      gameBoardUpdate.NewRoads.ShouldContainKeyAndValue(thirdRoadTwo, thirdOpponent.Id);
-      gameBoardUpdate.NewRoads.ShouldContainKeyAndValue(secondRoadTwo, secondOpponent.Id);
-      gameBoardUpdate.NewRoads.ShouldContainKeyAndValue(firstRoadTwo, firstOpponent.Id);
+      this.VerifyNewSettlements(gameBoardUpdate.NewSettlements,
+        new Tuple<UInt32, Guid>(ThirdSettlementTwoLocation, thirdOpponent.Id),
+        new Tuple<UInt32, Guid>(SecondSettlementTwoLocation, secondOpponent.Id),
+        new Tuple<UInt32, Guid>(FirstSettlementTwoLocation, firstOpponent.Id));
+
+      this.VerifyNewRoads(gameBoardUpdate.NewRoads,
+        new Tuple<UInt32, UInt32, Guid>(ThirdSettlementTwoLocation, ThirdRoadTwoEnd, thirdOpponent.Id),
+        new Tuple<UInt32, UInt32, Guid>(SecondSettlementTwoLocation, SecondRoadTwoEnd, secondOpponent.Id),
+        new Tuple<UInt32, UInt32, Guid>(FirstSettlementTwoLocation, FirstRoadTwoEnd, firstOpponent.Id));
     }
     
     [Test]
@@ -352,8 +437,8 @@ namespace Jabberwocky.SoC.Library.UnitTests
       localGameController.JoinGame();
       localGameController.LaunchGame();
       localGameController.StartGameSetup();
-      localGameController.ContinueGameSetup(MainSettlementOneLocation, mainRoadOne);
-      localGameController.CompleteGameSetup(MainSettlementTwoLocation, mainRoadTwo);
+      localGameController.ContinueGameSetup(MainSettlementOneLocation, MainRoadOneEnd);
+      localGameController.CompleteGameSetup(MainSettlementTwoLocation, MainRoadTwoEnd);
 
       resourceUpdate.ShouldNotBeNull();
       resourceUpdate.Resources.Count.ShouldBe(4);
@@ -395,7 +480,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
       ErrorDetails errorDetails = null;
       localGameController.ErrorRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
 
-      localGameController.ContinueGameSetup(0u, new RoadSegment(0u, 1u));
+      localGameController.ContinueGameSetup(0u, 1u);
 
       errorDetails.ShouldNotBeNull();
       errorDetails.Message.ShouldBe("Cannot call 'ContinueGameSetup' until 'StartGameSetup' has completed.");
@@ -409,7 +494,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
       ErrorDetails errorDetails = null;
       localGameController.ErrorRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
 
-      localGameController.CompleteGameSetup(0u, new RoadSegment(0u, 1u));
+      localGameController.CompleteGameSetup(0u, 1u);
 
       errorDetails.ShouldNotBeNull();
       errorDetails.Message.ShouldBe("Cannot call 'CompleteGameSetup' until 'ContinueGameSetup' has completed.");
@@ -419,7 +504,9 @@ namespace Jabberwocky.SoC.Library.UnitTests
     [Category("LocalGameController")]
     public void PlayerPlacesRoadWithNoConnectionToAnySettlements_MeaningfulErrorIsReceived()
     {
-      var mockDice = Substitute.For<IDice>();
+      throw new NotImplementedException();
+      // TODO: Test no longer makes sense because of change to ContinueGameSetup parameters list
+      /*var mockDice = Substitute.For<IDice>();
       mockDice.RollTwoDice().Returns(12u, 10u, 8u, 6u);
 
       MockPlayer player;
@@ -440,7 +527,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
       errorDetails.ShouldNotBeNull();
       errorDetails.Message.ShouldBe("Cannot place road at [1, 2]. No connection to a player owned road or settlement.");
-      gameBoardUpdate.ShouldBeNull();
+      gameBoardUpdate.ShouldBeNull();*/
     }
 
     [Test]
@@ -466,7 +553,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
       GameBoardUpdate gameBoardUpdate = null;
       localGameController.GameSetupUpdateEvent = (GameBoardUpdate u) => { gameBoardUpdate = u; };
 
-      localGameController.ContinueGameSetup(FirstSettlementOneLocation, new RoadSegment(0u, 1u));
+      localGameController.ContinueGameSetup(FirstSettlementOneLocation, 1u);
       exception.ShouldNotBeNull();
       exception.Message.ShouldBe("Cannot place settlement: Location " + FirstSettlementOneLocation + " already owned by player " + firstOpponent.Id);
       gameBoardUpdate.ShouldBeNull();
@@ -491,12 +578,12 @@ namespace Jabberwocky.SoC.Library.UnitTests
       localGameController.JoinGame();
       localGameController.LaunchGame();
       localGameController.StartGameSetup();
-      localGameController.ContinueGameSetup(0, new RoadSegment(0, 1));
+      localGameController.ContinueGameSetup(0, 1);
 
       GameBoardUpdate gameBoardUpdate = null;
       localGameController.GameSetupUpdateEvent = (GameBoardUpdate u) => { gameBoardUpdate = u; };
 
-      localGameController.CompleteGameSetup(FirstSettlementOneLocation, new RoadSegment(0, 1));
+      localGameController.CompleteGameSetup(FirstSettlementOneLocation, 1);
 
       exception.ShouldNotBeNull();
       exception.Message.ShouldBe("Cannot place settlement: Location " + FirstSettlementOneLocation + " already owned by player " + firstOpponent.Id);
@@ -525,7 +612,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
       GameBoardUpdate gameBoardUpdate = null;
       localGameController.GameSetupUpdateEvent = (GameBoardUpdate u) => { gameBoardUpdate = u; };
 
-      localGameController.ContinueGameSetup(19u, new RoadSegment(0u, 1u));
+      localGameController.ContinueGameSetup(19u, 1u);
 
       exception.ShouldNotBeNull();
       exception.Message.ShouldBe("Cannot place settlement: Too close to player " + firstOpponent.Id + " at location " + FirstSettlementOneLocation);
@@ -550,12 +637,12 @@ namespace Jabberwocky.SoC.Library.UnitTests
       localGameController.JoinGame();
       localGameController.LaunchGame();
       localGameController.StartGameSetup();
-      localGameController.ContinueGameSetup(0, new RoadSegment(0, 1));
+      localGameController.ContinueGameSetup(0, 1);
 
       GameBoardUpdate gameBoardUpdate = null;
       localGameController.GameSetupUpdateEvent = (GameBoardUpdate u) => { gameBoardUpdate = u; };
 
-      localGameController.CompleteGameSetup(19, new RoadSegment(19, 18));
+      localGameController.CompleteGameSetup(19, 18);
 
       exception.ShouldNotBeNull();
       exception.Message.ShouldBe("Cannot place settlement: Too close to player " + firstOpponent.Id + " at location " + FirstSettlementOneLocation);
@@ -566,7 +653,10 @@ namespace Jabberwocky.SoC.Library.UnitTests
     [Category("LocalGameController")]
     public void PlayerPlacesRoadWithNoConnectionToAnySettlementsDuringSecondSetupRound_MeaningfulErrorIsReceived()
     {
-      var localGameController = CreateLocalGameControllerWithMainPlayerGoingFirstInSetup();
+      throw new NotImplementedException();
+
+      // TODO: Test is no longer meaningful because of parameter change in CompleteGameSetup method
+      /*var localGameController = CreateLocalGameControllerWithMainPlayerGoingFirstInSetup();
 
       ErrorDetails errorDetails = null;
       localGameController.ErrorRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
@@ -574,7 +664,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
       localGameController.JoinGame();
       localGameController.LaunchGame();
       localGameController.StartGameSetup();
-      localGameController.ContinueGameSetup(0, new RoadSegment(0, 1));
+      localGameController.ContinueGameSetup(0, 1);
 
       GameBoardUpdate gameBoardUpdate = null;
       localGameController.GameSetupUpdateEvent = (GameBoardUpdate u) => { gameBoardUpdate = u; };
@@ -583,7 +673,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
       errorDetails.ShouldNotBeNull();
       errorDetails.Message.ShouldBe("Cannot place road at [4, 5]. No connection to a player owned road or settlement.");
-      gameBoardUpdate.ShouldBeNull();
+      gameBoardUpdate.ShouldBeNull();*/
     }
 
     [Test]
@@ -601,7 +691,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
       localGameController.JoinGame();
       localGameController.LaunchGame();
       localGameController.StartGameSetup();
-      localGameController.ContinueGameSetup(100, new RoadSegment(100, 101));
+      localGameController.ContinueGameSetup(100, 101);
 
       errorDetails.ShouldNotBeNull();
       errorDetails.Message.ShouldBe("Cannot place settlement at [100]. This is outside of board range (0 - 53).");
@@ -623,7 +713,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
       localGameController.JoinGame();
       localGameController.LaunchGame();
       localGameController.StartGameSetup();
-      localGameController.ContinueGameSetup(53, new RoadSegment(53, 54));
+      localGameController.ContinueGameSetup(53, 54);
 
       errorDetails.ShouldNotBeNull();
       errorDetails.Message.ShouldBe("Cannot place road at [53, 54]. This is outside of board range (0 - 53).");
@@ -645,7 +735,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
       localGameController.JoinGame();
       localGameController.LaunchGame();
       localGameController.StartGameSetup();
-      localGameController.ContinueGameSetup(28, new RoadSegment(28, 40));
+      localGameController.ContinueGameSetup(28, 40);
 
       errorDetails.ShouldNotBeNull();
       errorDetails.Message.ShouldBe("Cannot place road at [28, 40]. There is no direct connection between those points.");
@@ -664,12 +754,12 @@ namespace Jabberwocky.SoC.Library.UnitTests
       localGameController.JoinGame();
       localGameController.LaunchGame();
       localGameController.StartGameSetup();
-      localGameController.ContinueGameSetup(0, new RoadSegment(0, 1));
+      localGameController.ContinueGameSetup(0, 1);
 
       GameBoardUpdate gameBoardUpdate = null;
       localGameController.GameSetupUpdateEvent = (GameBoardUpdate u) => { gameBoardUpdate = u; };
 
-      localGameController.CompleteGameSetup(100, new RoadSegment(100, 101));
+      localGameController.CompleteGameSetup(100, 101);
 
       errorDetails.ShouldNotBeNull();
       errorDetails.Message.ShouldBe("Cannot place settlement at [100]. This is outside of board range (0 - 53).");
@@ -688,12 +778,12 @@ namespace Jabberwocky.SoC.Library.UnitTests
       localGameController.JoinGame();
       localGameController.LaunchGame();
       localGameController.StartGameSetup();
-      localGameController.ContinueGameSetup(0, new RoadSegment(0, 1));
+      localGameController.ContinueGameSetup(0, 1);
 
       GameBoardUpdate gameBoardUpdate = null;
       localGameController.GameSetupUpdateEvent = (GameBoardUpdate u) => { gameBoardUpdate = u; };
 
-      localGameController.CompleteGameSetup(53, new RoadSegment(53, 54));
+      localGameController.CompleteGameSetup(53, 54);
 
       errorDetails.ShouldNotBeNull();
       errorDetails.Message.ShouldBe("Cannot place road at [53, 54]. This is outside of board range (0 - 53).");
@@ -712,12 +802,12 @@ namespace Jabberwocky.SoC.Library.UnitTests
       localGameController.JoinGame();
       localGameController.LaunchGame();
       localGameController.StartGameSetup();
-      localGameController.ContinueGameSetup(0, new RoadSegment(0, 1));
+      localGameController.ContinueGameSetup(0, 1);
 
       GameBoardUpdate gameBoardUpdate = null;
       localGameController.GameSetupUpdateEvent = (GameBoardUpdate u) => { gameBoardUpdate = u; };
 
-      localGameController.CompleteGameSetup(28, new RoadSegment(28, 40));
+      localGameController.CompleteGameSetup(28, 40);
 
       errorDetails.ShouldNotBeNull();
       errorDetails.Message.ShouldBe("Cannot place road at [28, 40]. There is no direct connection between those points.");
@@ -759,8 +849,8 @@ namespace Jabberwocky.SoC.Library.UnitTests
       localGameController.JoinGame();
       localGameController.LaunchGame();
       localGameController.StartGameSetup();
-      localGameController.ContinueGameSetup(MainSettlementOneLocation, mainRoadOne);
-      localGameController.CompleteGameSetup(MainSettlementTwoLocation, mainRoadTwo);
+      localGameController.ContinueGameSetup(MainSettlementOneLocation, MainRoadOneEnd);
+      localGameController.CompleteGameSetup(MainSettlementTwoLocation, MainRoadTwoEnd);
 
       // Act
       PlayerDataView[] turnOrder = null;
@@ -798,8 +888,8 @@ namespace Jabberwocky.SoC.Library.UnitTests
       localGameController.JoinGame();
       localGameController.LaunchGame();
       localGameController.StartGameSetup();
-      localGameController.ContinueGameSetup(MainSettlementOneLocation, mainRoadOne);
-      localGameController.CompleteGameSetup(MainSettlementTwoLocation, mainRoadTwo);
+      localGameController.ContinueGameSetup(MainSettlementOneLocation, MainRoadOneEnd);
+      localGameController.CompleteGameSetup(MainSettlementTwoLocation, MainRoadTwoEnd);
 
       // Act
       PlayerDataView[] turnOrder = null;
@@ -841,8 +931,8 @@ namespace Jabberwocky.SoC.Library.UnitTests
       localGameController.JoinGame();
       localGameController.LaunchGame();
       localGameController.StartGameSetup();
-      localGameController.ContinueGameSetup(MainSettlementOneLocation, mainRoadOne);
-      localGameController.CompleteGameSetup(MainSettlementTwoLocation, mainRoadTwo);
+      localGameController.ContinueGameSetup(MainSettlementOneLocation, MainRoadOneEnd);
+      localGameController.CompleteGameSetup(MainSettlementTwoLocation, MainRoadTwoEnd);
 
       // Act
       localGameController.StartGamePlay();
@@ -1593,7 +1683,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
         "<settlement playerid=\"" + firstOpponentId + "\" location=\"" + FirstSettlementOneLocation + "\" />" +
         "</settlements>" +
         "<roads>" +
-        "<road playerid=\"" + playerId + "\" start=\"" + this.mainRoadOne.Location1 + "\" end=\"" + this.mainRoadOne.Location2 + "\" />" +
+        "<road playerid=\"" + playerId + "\" start=\"" + MainSettlementOneLocation + "\" end=\"" + MainRoadOneEnd + "\" />" +
         "</roads>" +
         "</game>";
 
@@ -1614,7 +1704,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
       var roads = boardData.GetRoadInformation();
       roads.Length.ShouldBe(1);
-      roads[0].ShouldBe(new Tuple<RoadSegment, Guid>(this.mainRoadOne, playerId));
+      roads[0].ShouldBe(new Tuple<UInt32, UInt32, Guid>(MainSettlementOneLocation, MainRoadOneEnd, playerId));
     }
 
     private LocalGameController CreateLocalGameControllerAndCompleteGameSetup(out MockDice mockDice, out MockPlayer player, out MockComputerPlayer firstOpponent, out MockComputerPlayer secondOpponent, out MockComputerPlayer thirdOpponent)
@@ -1633,8 +1723,8 @@ namespace Jabberwocky.SoC.Library.UnitTests
       localGameController.JoinGame();
       localGameController.LaunchGame();
       localGameController.StartGameSetup();
-      localGameController.ContinueGameSetup(MainSettlementOneLocation, mainRoadOne);
-      localGameController.CompleteGameSetup(MainSettlementTwoLocation, mainRoadTwo);
+      localGameController.ContinueGameSetup(MainSettlementOneLocation, MainRoadOneEnd);
+      localGameController.CompleteGameSetup(MainSettlementTwoLocation, MainRoadTwoEnd);
       localGameController.FinalisePlayerTurnOrder();
 
       return localGameController;
@@ -1658,8 +1748,8 @@ namespace Jabberwocky.SoC.Library.UnitTests
       localGameController.JoinGame();
       localGameController.LaunchGame();
       localGameController.StartGameSetup();
-      localGameController.ContinueGameSetup(MainSettlementOneLocation, mainRoadOne);
-      localGameController.CompleteGameSetup(MainSettlementTwoLocation, mainRoadTwo);
+      localGameController.ContinueGameSetup(MainSettlementOneLocation, MainRoadOneEnd);
+      localGameController.CompleteGameSetup(MainSettlementTwoLocation, MainRoadTwoEnd);
       localGameController.FinalisePlayerTurnOrder();
 
       return localGameController;
@@ -1715,11 +1805,11 @@ namespace Jabberwocky.SoC.Library.UnitTests
       return this.CreateLocalGameController(mockDice, player, firstOpponent, secondOpponent, thirdOpponent);
     }
 
-    private MockComputerPlayer CreateMockComputerPlayer(String name, UInt32 settlementOneLocation, UInt32 settlementTwoLocation, RoadSegment roadOne, RoadSegment roadTwo)
+    private MockComputerPlayer CreateMockComputerPlayer(String name, UInt32 settlementOneLocation, UInt32 settlementTwoLocation, UInt32 roadOneStart, UInt32 roadOneEnd, UInt32 roadTwoStart, UInt32 roadTwoEnd)
     {
       var computerPlayer = new MockComputerPlayer(name);
       computerPlayer.SettlementLocations = new Queue<uint>(new uint[] { settlementOneLocation, settlementTwoLocation });
-      computerPlayer.Roads = new Queue<RoadSegment>(new RoadSegment[] { roadOne, roadTwo });
+      computerPlayer.Roads = new Queue<Tuple<UInt32, UInt32>>(new Tuple<UInt32, UInt32>[] { new Tuple<UInt32, UInt32>(roadOneStart, roadOneEnd), new Tuple<UInt32, UInt32>(roadTwoStart, roadTwoEnd) });
       return computerPlayer;
     }
 
@@ -1729,15 +1819,15 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
       firstOpponent = new MockComputerPlayer(FirstOpponentName);
       firstOpponent.SettlementLocations = new Queue<UInt32>(new[] { FirstSettlementOneLocation, FirstSettlementTwoLocation });
-      firstOpponent.Roads = new Queue<RoadSegment>(new[] { firstRoadOne, firstRoadTwo });
+      firstOpponent.Roads = new Queue<Tuple<UInt32, UInt32>>(new[] { new Tuple<UInt32, UInt32>(17, 18), new Tuple<UInt32, UInt32>(43, 44) });
 
       secondOpponent = new MockComputerPlayer(SecondOpponentName);
       secondOpponent.SettlementLocations = new Queue<UInt32>(new[] { SecondSettlementOneLocation, SecondSettlementTwoLocation });
-      secondOpponent.Roads = new Queue<RoadSegment>(new[] { secondRoadOne, secondRoadTwo });
+      secondOpponent.Roads = new Queue<Tuple<UInt32, UInt32>>(new[] { new Tuple<UInt32, UInt32>(15, 25), new Tuple<UInt32, UInt32>(24, 35) });
 
       thirdOpponent = new MockComputerPlayer(ThirdOpponentName);
       thirdOpponent.SettlementLocations = new Queue<UInt32>(new[] { ThirdSettlementOneLocation, ThirdSettlementTwoLocation });
-      thirdOpponent.Roads = new Queue<RoadSegment>(new[] { thirdRoadOne, thirdRoadTwo });
+      thirdOpponent.Roads = new Queue<Tuple<UInt32, UInt32>>(new[] { new Tuple<UInt32, UInt32>(30, 31), new Tuple<UInt32, UInt32>(32, 33) });
     }
 
     private void RunOpponentDataPassBackTests(GameOptions gameOptions)

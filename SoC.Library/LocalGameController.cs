@@ -194,7 +194,7 @@ namespace Jabberwocky.SoC.Library
               var start = UInt32.Parse(reader.GetAttribute("start"));
               var end = UInt32.Parse(reader.GetAttribute("end"));
 
-              this.gameBoardManager.Data.PlaceRoad(playerId, new RoadSegment(start, end));
+              this.gameBoardManager.Data.PlaceRoad(playerId, start, end);
             }
 
             reader.Read();
@@ -349,7 +349,7 @@ namespace Jabberwocky.SoC.Library
       }
     }
 
-    public void ContinueGameSetup(UInt32 settlementLocation, RoadSegment road)
+    public void ContinueGameSetup(UInt32 settlementLocation, UInt32 roadEndLocation)
     {
       if (this.GamePhase != GamePhases.ContinueGameSetup)
       {
@@ -358,13 +358,13 @@ namespace Jabberwocky.SoC.Library
         return;
       }
 
-      if (!this.VerifyStartingInfrastructurePlacementRequest(settlementLocation, road))
+      if (!this.VerifyStartingInfrastructurePlacementRequest(settlementLocation, roadEndLocation))
       {
         return;
       }
 
       var gameBoardData = this.gameBoardManager.Data;
-      gameBoardData.PlaceStartingInfrastructure(this.mainPlayer.Id, settlementLocation, road);
+      gameBoardData.PlaceStartingInfrastructure(this.mainPlayer.Id, settlementLocation, roadEndLocation);
 
       GameBoardUpdate gameBoardUpdate = this.ContinueSetupForComputerPlayers(gameBoardData);
 
@@ -375,7 +375,7 @@ namespace Jabberwocky.SoC.Library
       this.GamePhase = GamePhases.CompleteGameSetup;
     }
 
-    public void CompleteGameSetup(UInt32 settlementLocation, RoadSegment road)
+    public void CompleteGameSetup(UInt32 settlementLocation, UInt32 roadEndLocation)
     {
       if (this.GamePhase != GamePhases.CompleteGameSetup)
       {
@@ -384,12 +384,12 @@ namespace Jabberwocky.SoC.Library
         return;
       }
 
-      if (!this.VerifyStartingInfrastructurePlacementRequest(settlementLocation, road))
+      if (!this.VerifyStartingInfrastructurePlacementRequest(settlementLocation, roadEndLocation))
       {
         return;
       }
 
-      this.gameBoardManager.Data.PlaceStartingInfrastructure(this.mainPlayer.Id, settlementLocation, road);
+      this.gameBoardManager.Data.PlaceStartingInfrastructure(this.mainPlayer.Id, settlementLocation, roadEndLocation);
 
       this.CollectInitialResourcesForPlayer(this.mainPlayer.Id, settlementLocation);
 
@@ -510,19 +510,20 @@ namespace Jabberwocky.SoC.Library
         {
           gameBoardUpdate = new GameBoardUpdate
           {
-            NewSettlements = new Dictionary<UInt32, Guid>(),
-            NewRoads = new Dictionary<RoadSegment, Guid>()
+            NewSettlements = new List<Tuple<UInt32, Guid>>(),
+            NewRoads = new List<Tuple<UInt32, UInt32, Guid>>()
           };
         }
 
         var computerPlayer = (IComputerPlayer)player;
         var chosenSettlementIndex = computerPlayer.ChooseSettlementLocation(gameBoardData);
         gameBoardData.PlaceSettlement(computerPlayer.Id, chosenSettlementIndex);
-        gameBoardUpdate.NewSettlements.Add(chosenSettlementIndex, computerPlayer.Id);
+        gameBoardUpdate.NewSettlements.Add(new Tuple<UInt32, Guid>(chosenSettlementIndex, computerPlayer.Id));
 
-        var chosenRoad = computerPlayer.ChooseRoad(gameBoardData);
-        gameBoardData.PlaceRoad(computerPlayer.Id, chosenRoad);
-        gameBoardUpdate.NewRoads.Add(chosenRoad, computerPlayer.Id);
+        UInt32 startRoadLocation, endRoadLocation;
+        computerPlayer.ChooseRoad(gameBoardData, out startRoadLocation, out endRoadLocation);
+        gameBoardData.PlaceRoad(computerPlayer.Id, startRoadLocation, endRoadLocation);
+        gameBoardUpdate.NewRoads.Add(new Tuple<UInt32, UInt32, Guid>(startRoadLocation, endRoadLocation, computerPlayer.Id));
       }
 
       return gameBoardUpdate;
@@ -543,21 +544,22 @@ namespace Jabberwocky.SoC.Library
         {
           gameBoardUpdate = new GameBoardUpdate
           {
-            NewSettlements = new Dictionary<UInt32, Guid>(),
-            NewRoads = new Dictionary<RoadSegment, Guid>()
+            NewSettlements = new List<Tuple<UInt32, Guid>>(),
+            NewRoads = new List<Tuple<UInt32, UInt32, Guid>>()
           };
         }
 
         var computerPlayer = (IComputerPlayer)player;
         var chosenSettlementIndex = computerPlayer.ChooseSettlementLocation(gameBoardData);
         gameBoardData.PlaceSettlement(computerPlayer.Id, chosenSettlementIndex);
-        gameBoardUpdate.NewSettlements.Add(chosenSettlementIndex, computerPlayer.Id);
+        gameBoardUpdate.NewSettlements.Add(new Tuple<UInt32, Guid>(chosenSettlementIndex, computerPlayer.Id));
 
         this.CollectInitialResourcesForPlayer(computerPlayer.Id, chosenSettlementIndex);
-        
-        var chosenRoad = computerPlayer.ChooseRoad(gameBoardData);
-        gameBoardData.PlaceRoad(computerPlayer.Id, chosenRoad);
-        gameBoardUpdate.NewRoads.Add(chosenRoad, computerPlayer.Id);
+
+        UInt32 startRoadLocation, endRoadLocation;
+        computerPlayer.ChooseRoad(gameBoardData, out startRoadLocation, out endRoadLocation);
+        gameBoardData.PlaceRoad(computerPlayer.Id, startRoadLocation, endRoadLocation);
+        gameBoardUpdate.NewRoads.Add(new Tuple<UInt32, UInt32, Guid>(startRoadLocation, endRoadLocation, computerPlayer.Id));
       }
 
       return gameBoardUpdate;
@@ -635,25 +637,25 @@ namespace Jabberwocky.SoC.Library
       return randomisedResources;
     }
 
-    private void TryRaiseRoadPlacingError(GameBoardData.VerificationResults verificationResults, RoadSegment road)
+    private void TryRaiseRoadPlacingError(GameBoardData.VerificationResults verificationResults, UInt32 settlementLocation, UInt32 roadEndLocation)
     {
       if (verificationResults.Status == GameBoardData.VerificationStatus.RoadIsOffBoard)
       {
-        var errorDetails = new ErrorDetails("Cannot place road at [" + road.Location1 + ", " + road.Location2 + "]. This is outside of board range (0 - 53).");
+        var errorDetails = new ErrorDetails("Cannot place road at [" + settlementLocation + ", " + roadEndLocation + "]. This is outside of board range (0 - 53).");
         this.ErrorRaisedEvent?.Invoke(errorDetails);
         return;
       }
 
       if (verificationResults.Status == GameBoardData.VerificationStatus.NoDirectConnection)
       {
-        var errorDetails = new ErrorDetails("Cannot place road at [" + road.Location1 + ", " + road.Location2 + "]. There is no direct connection between those points.");
+        var errorDetails = new ErrorDetails("Cannot place road at [" + settlementLocation + ", " + roadEndLocation + "]. There is no direct connection between those points.");
         this.ErrorRaisedEvent?.Invoke(errorDetails);
         return;
       }
 
       if (verificationResults.Status == GameBoardData.VerificationStatus.NotConnectedToExisting)
       {
-        var errorDetails = new ErrorDetails("Cannot place road at [" + road.Location1 + ", " + road.Location2 + "]. No connection to a player owned road or settlement.");
+        var errorDetails = new ErrorDetails("Cannot place road at [" + settlementLocation + ", " + roadEndLocation + "]. No connection to a player owned road or settlement.");
         this.ErrorRaisedEvent?.Invoke(errorDetails);
         return;
       }
@@ -683,14 +685,6 @@ namespace Jabberwocky.SoC.Library
       }
     }
 
-    private Boolean VerifyRoadPlacementRequest(RoadSegment road)
-    {
-      var verificationResults = this.gameBoardManager.Data.CanPlaceRoad(this.mainPlayer.Id, road);
-      this.TryRaiseRoadPlacingError(verificationResults, road);
-
-      return verificationResults.Status == GameBoardData.VerificationStatus.Valid;
-    }
-
     private Boolean VerifySettlementPlacementRequest(UInt32 settlementLocation)
     {
       var verificationResults = this.gameBoardManager.Data.CanPlaceSettlement(settlementLocation);
@@ -699,11 +693,11 @@ namespace Jabberwocky.SoC.Library
       return verificationResults.Status == GameBoardData.VerificationStatus.Valid;
     }
 
-    private Boolean VerifyStartingInfrastructurePlacementRequest(UInt32 settlementLocation, RoadSegment road)
+    private Boolean VerifyStartingInfrastructurePlacementRequest(UInt32 settlementLocation, UInt32 roadEndLocation)
     {
-      var verificationResults = this.gameBoardManager.Data.CanPlaceStartingInfrastructure(this.mainPlayer.Id, settlementLocation, road);
+      var verificationResults = this.gameBoardManager.Data.CanPlaceStartingInfrastructure(this.mainPlayer.Id, settlementLocation, roadEndLocation);
       this.TryRaiseSettlementPlacingError(verificationResults, settlementLocation);
-      this.TryRaiseRoadPlacingError(verificationResults, road);
+      this.TryRaiseRoadPlacingError(verificationResults, settlementLocation, roadEndLocation);
       
       return verificationResults.Status == GameBoardData.VerificationStatus.Valid;
     }

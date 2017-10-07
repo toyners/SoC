@@ -82,37 +82,38 @@ namespace Jabberwocky.SoC.Library.GameBoards
       throw new NotImplementedException();
     }
 
-    public VerificationResults CanPlaceRoad(Guid playerId, RoadSegment road)
+    public VerificationResults CanPlaceRoad(Guid playerId, UInt32 roadStartLocation, UInt32 roadEndLocation)
     {
       // Verify #1 - Are both road locations on the board.
       var length = (UInt32)this.connections.GetLength(0);
-      if (road.Location1 >= length || road.Location2 >= length)
+      if (roadStartLocation >= length || roadEndLocation >= length)
       {
         return new VerificationResults { Status = VerificationStatus.RoadIsOffBoard };
       }
 
       // Verify #2 - Is direct connection possible
-      if (!this.connections[road.Location1, road.Location2])
+      if (!this.connections[roadStartLocation, roadEndLocation])
       {
         return new VerificationResults { Status = VerificationStatus.NoDirectConnection };
       }
 
       // Verify #3 - Is there already a road built
-      if (this.roadSegments.ContainsKey(road))
+      var newRoadSegment = new RoadSegment(roadStartLocation, roadEndLocation);
+      if (this.roadSegments.ContainsKey(newRoadSegment))
       {
         return new VerificationResults { Status = VerificationStatus.RoadIsOccupied };
       }
 
       // Verify #4 - Does it connect to existing infrastructure
-      if (!this.settlements.ContainsKey(road.Location1) && !this.settlements.ContainsKey(road.Location2))
+      if (!this.settlements.ContainsKey(roadStartLocation) && !this.settlements.ContainsKey(roadEndLocation))
       {
         var isConnected = false;
 
         // Linear scan but the total number of possible roads is in the tens
         foreach (var existingRoad in this.roadSegments.Keys)
         {
-          if (road.Location1 == existingRoad.Location1 || road.Location1 == existingRoad.Location2 ||
-              road.Location2 == existingRoad.Location1 || road.Location2 == existingRoad.Location2)
+          if (newRoadSegment.Location1 == existingRoad.Location1 || newRoadSegment.Location1 == existingRoad.Location2 ||
+              newRoadSegment.Location2 == existingRoad.Location1 || newRoadSegment.Location2 == existingRoad.Location2)
           {
             isConnected = true;
             break;
@@ -126,12 +127,12 @@ namespace Jabberwocky.SoC.Library.GameBoards
       }
 
       // Verify #5 - Does it connect to another players settlement
-      if (this.settlements.ContainsKey(road.Location1) && this.settlements[road.Location1] != playerId)
+      if (this.settlements.ContainsKey(newRoadSegment.Location1) && this.settlements[newRoadSegment.Location1] != playerId)
       {
         return new VerificationResults { Status = VerificationStatus.RoadConnectsToAnotherPlayer };
       }
 
-      if (this.settlements.ContainsKey(road.Location2) && this.settlements[road.Location2] != playerId)
+      if (this.settlements.ContainsKey(newRoadSegment.Location2) && this.settlements[newRoadSegment.Location2] != playerId)
       {
         return new VerificationResults { Status = VerificationStatus.RoadConnectsToAnotherPlayer };
       }
@@ -180,7 +181,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
       };
     }
 
-    public VerificationResults CanPlaceStartingInfrastructure(Guid playerId, UInt32 settlementIndex, RoadSegment road)
+    public VerificationResults CanPlaceStartingInfrastructure(Guid playerId, UInt32 settlementIndex, UInt32 roadEndLocation)
     {
       var results = this.CanPlaceSettlement(settlementIndex);
       if (results.Status != VerificationStatus.Valid)
@@ -188,14 +189,18 @@ namespace Jabberwocky.SoC.Library.GameBoards
         return results;
       }
 
-      results = this.CanPlaceRoad(playerId, road);
-      if (results.Status == VerificationStatus.NotConnectedToExisting)
+      // TODO: Rework this to use call the individual verification for road place so that 
+      // the NotConnectedToExisting verification is not called (since it makes no sense here)
+      // Also check that there is no connecting 
+
+      results = this.CanPlaceRoad(playerId, settlementIndex, roadEndLocation);
+      /*if (results.Status == VerificationStatus.NotConnectedToExisting)
       {
         if (road.Location1 == settlementIndex || road.Location2 == settlementIndex)
         {
           return new VerificationResults { Status = VerificationStatus.Valid };
         }
-      }
+      }*/
 
       return results;
     }
@@ -365,13 +370,13 @@ namespace Jabberwocky.SoC.Library.GameBoards
       return resources;
     }
 
-    public Tuple<RoadSegment, Guid>[] GetRoadInformation()
+    public Tuple<UInt32, UInt32, Guid>[] GetRoadInformation()
     {
-      var data = new Tuple<RoadSegment, Guid>[this.roadSegments.Count];
+      var data = new Tuple<UInt32, UInt32, Guid>[this.roadSegments.Count];
       var index = 0;
       foreach (var kv in this.roadSegments)
       {
-        data[index++] = new Tuple<RoadSegment, Guid>(kv.Key, kv.Value);
+        data[index++] = new Tuple<UInt32, UInt32, Guid>(kv.Key.Location1, kv.Key.Location2, kv.Value);
       }
 
       return data;
@@ -398,9 +403,9 @@ namespace Jabberwocky.SoC.Library.GameBoards
       return data;
     }
 
-    public void PlaceRoad(Guid playerId, RoadSegment newRoadSegment)
+    public void PlaceRoad(Guid playerId, UInt32 locationIndex1, UInt32 locationIndex2)
     {
-      this.roadSegments.Add(newRoadSegment, playerId);
+      /*this.roadSegments.Add(newRoadSegment, playerId);
 
       if (!roadSegmentsByPlayer.ContainsKey(playerId))
       {
@@ -411,7 +416,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
       else
       {
         roadSegmentsByPlayer[playerId].Add(newRoadSegment);
-      }
+      }*/
 
       /*List<List<RoadSegment>> roadsForPlayer = null;
       if (!this.roadsByPlayer.ContainsKey(playerId))
@@ -473,12 +478,12 @@ namespace Jabberwocky.SoC.Library.GameBoards
     /// Place starting infrastructure (settlement and connecting road segment). Performs no verification.
     /// </summary>
     /// <param name="playerId">Id of player placing the infrastructure.</param>
-    /// <param name="settlementIndex">Location to place settlement.</param>
-    /// <param name="roadSegment">Road segment to place.</param>
-    public void PlaceStartingInfrastructure(Guid playerId, UInt32 settlementIndex, RoadSegment roadSegment)
+    /// <param name="settlementIndex">Location to place settlement. Also the starting location of the road segment.</param>
+    /// <param name="endIndex">End location of road segment.</param>
+    public void PlaceStartingInfrastructure(Guid playerId, UInt32 settlementIndex, UInt32 endIndex)
     {
       this.PlaceSettlement(playerId, settlementIndex);
-      this.PlaceRoad(playerId, roadSegment);
+      this.PlaceRoad(playerId, settlementIndex, endIndex);
     }
 
     Dictionary<UInt32, HashSet<RoadSegment>> roadsByLocation = new Dictionary<UInt32, HashSet<RoadSegment>>();

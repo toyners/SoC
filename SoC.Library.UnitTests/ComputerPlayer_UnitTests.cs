@@ -45,7 +45,8 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
       Should.Throw<Exception>(() =>
       {
-        computerPlayer.ChooseRoad(gameBoardData);
+        UInt32 startRoadLocation, endRoadLocation;
+        computerPlayer.ChooseRoad(gameBoardData, out startRoadLocation, out endRoadLocation);
       }).Message.ShouldBe("No settlements found for player with id " + computerPlayer.Id);
     }
 
@@ -53,21 +54,26 @@ namespace Jabberwocky.SoC.Library.UnitTests
     [Category("ComputerPlayer")]
     public void ChooseRoad_BuildingTowardsNextBestSettlementLocation_ReturnsFirstRoadFragment()
     {
-      var computerPlayer = new ComputerPlayer("ComputerPlayer");
+      throw new NotImplementedException();
+
+      // TODO: Not sure about this - needs to be revisited
+      /*var computerPlayer = new ComputerPlayer("ComputerPlayer");
       var gameBoardData = new GameBoardData(BoardSizes.Standard);
       gameBoardData.PlaceSettlement(computerPlayer.Id, 12);
 
-
       var road = computerPlayer.ChooseRoad(gameBoardData);
       var expectedRoad = new RoadSegment(11, 12);
-      road.ShouldBe(expectedRoad);
+      road.ShouldBe(expectedRoad);*/
     }
 
     [Test]
     [Category("ComputerPlayer")]
     public void ChooseRoad_BuildingTowardsNextBestSettlementLocationWithFirstRoadPlaced_ReturnsSecondRoadFragment()
     {
-      var computerPlayer = new ComputerPlayer("ComputerPlayer");
+      throw new NotImplementedException();
+
+      // TODO: Not sure about this - needs to be revisited
+      /*var computerPlayer = new ComputerPlayer("ComputerPlayer");
       var gameBoardData = new GameBoardData(BoardSizes.Standard);
       gameBoardData.PlaceSettlement(computerPlayer.Id, 12);
       gameBoardData.PlaceRoad(computerPlayer.Id, new RoadSegment(12, 11));
@@ -75,8 +81,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
       var road = computerPlayer.ChooseRoad(gameBoardData);
       var expectedRoad = new RoadSegment(11, 21);
-      road.ShouldBe(expectedRoad);
-
+      road.ShouldBe(expectedRoad);*/
     }
     #endregion 
   }
