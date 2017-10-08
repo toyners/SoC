@@ -34,8 +34,8 @@ namespace Jabberwocky.SoC.Library.GameBoards
     private Dictionary<UInt32, Guid> settlements;
     private Dictionary<Guid, List<UInt32>> settlementsByPlayer;
     private Boolean[,] connections;
-    private Dictionary<RoadSegment, Guid> roadSegments;
-    private Dictionary<Guid, List<List<RoadSegment>>> roadsByPlayer;
+    private List<RoadSegment> roadSegments;
+    private Dictionary<Guid, List<RoadSegment>> roadsByPlayer;
     private Dictionary<UInt32, ResourceProducer[]> resourceProvidersByDiceRolls;
     private Dictionary<ResourceProducer, UInt32[]> locationsForResourceProvider;
     private Dictionary<UInt32, UInt32[]> locationsForHex;
@@ -52,8 +52,8 @@ namespace Jabberwocky.SoC.Library.GameBoards
 
       this.Length = StandardBoardHexCount;
       this.settlements = new Dictionary<UInt32, Guid>();
-      this.roadSegments = new Dictionary<RoadSegment, Guid>();
-      this.roadsByPlayer = new Dictionary<Guid, List<List<RoadSegment>>>();
+      this.roadSegments = new List<RoadSegment>();
+      this.roadsByPlayer = new Dictionary<Guid, List<RoadSegment>>();
       this.settlementsByPlayer = new Dictionary<Guid, List<UInt32>>();
 
       this.CreateHexes();
@@ -99,7 +99,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
 
       // Verify #3 - Is there already a road built
       var newRoadSegment = new RoadSegment(roadStartLocation, roadEndLocation);
-      if (this.roadSegments.ContainsKey(newRoadSegment))
+      if (this.roadSegments.Contains(newRoadSegment))
       {
         return new VerificationResults { Status = VerificationStatus.RoadIsOccupied };
       }
@@ -110,7 +110,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
         var isConnected = false;
 
         // Linear scan but the total number of possible roads is in the tens
-        foreach (var existingRoad in this.roadSegments.Keys)
+        foreach (var existingRoad in this.roadSegments)
         {
           if (newRoadSegment.Location1 == existingRoad.Location1 || newRoadSegment.Location1 == existingRoad.Location2 ||
               newRoadSegment.Location2 == existingRoad.Location1 || newRoadSegment.Location2 == existingRoad.Location2)
@@ -374,9 +374,12 @@ namespace Jabberwocky.SoC.Library.GameBoards
     {
       var data = new Tuple<UInt32, UInt32, Guid>[this.roadSegments.Count];
       var index = 0;
-      foreach (var kv in this.roadSegments)
+      foreach (var kv in this.roadsByPlayer)
       {
-        data[index++] = new Tuple<UInt32, UInt32, Guid>(kv.Key.Location1, kv.Key.Location2, kv.Value);
+        foreach (var roadSegment in kv.Value)
+        {
+          data[index++] = new Tuple<UInt32, UInt32, Guid>(roadSegment.Location1, roadSegment.Location2, kv.Key);
+        }
       }
 
       return data;
