@@ -408,18 +408,24 @@ namespace Jabberwocky.SoC.Library.GameBoards
 
     public void PlaceRoad(Guid playerId, UInt32 locationIndex1, UInt32 locationIndex2)
     {
-      /*this.roadSegments.Add(newRoadSegment, playerId);
+      this.PlaceTheRoad(playerId, locationIndex1, locationIndex2);
+    }
 
-      if (!roadSegmentsByPlayer.ContainsKey(playerId))
+    private void PlaceTheRoad(Guid playerId, UInt32 locationIndex1, UInt32 locationIndex2)
+    {
+      var newRoadSegment = new RoadSegment(locationIndex1, locationIndex2);
+      this.roadSegments.Add(newRoadSegment);
+
+      if (!this.roadsByPlayer.ContainsKey(playerId))
       {
-        var list = new List<RoadSegment>();
-        list.Add(newRoadSegment);
-        roadSegmentsByPlayer.Add(playerId, list);
+        var roadSegmentList = new List<RoadSegment>();
+        roadSegmentList.Add(newRoadSegment);
+        this.roadsByPlayer.Add(playerId, roadSegmentList);
       }
       else
       {
-        roadSegmentsByPlayer[playerId].Add(newRoadSegment);
-      }*/
+        this.roadsByPlayer[playerId].Add(newRoadSegment);
+      }
 
       /*List<List<RoadSegment>> roadsForPlayer = null;
       if (!this.roadsByPlayer.ContainsKey(playerId))
@@ -478,13 +484,19 @@ namespace Jabberwocky.SoC.Library.GameBoards
     }
 
     /// <summary>
-    /// Place starting infrastructure (settlement and connecting road segment). Performs no verification.
+    /// Place starting infrastructure (settlement and connecting road segment).
     /// </summary>
     /// <param name="playerId">Id of player placing the infrastructure.</param>
     /// <param name="settlementIndex">Location to place settlement. Also the starting location of the road segment.</param>
     /// <param name="endIndex">End location of road segment.</param>
     public void PlaceStartingInfrastructure(Guid playerId, UInt32 settlementIndex, UInt32 endIndex)
     {
+      var verificationResults = this.CanPlaceStartingInfrastructure(playerId, settlementIndex, endIndex);
+      if (verificationResults.Status != VerificationStatus.Valid)
+      {
+
+      }
+
       this.PlaceSettlement(playerId, settlementIndex);
       this.PlaceRoad(playerId, settlementIndex, endIndex);
     }

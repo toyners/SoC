@@ -175,35 +175,19 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
     [Test]
     [Category("GameBoardData")]
-    public void CanPlaceStartingInfrastructure_RoadFailsVerification_ReturnsNotConnectedToExisting()
+    public void PlaceStartingInfrastructure_RoadFailsVerification_SettlementNotPlaced()
     {
-      throw new NotImplementedException();
-
-      // TODO: This test looks like it is no longer required
-      /*var playerId = Guid.NewGuid();
+      var playerId = Guid.NewGuid();
       var location = 20u;
       var gameBoardData = new GameBoardData(BoardSizes.Standard);
-      var results = gameBoardData.CanPlaceStartingInfrastructure(playerId, location, new RoadSegment(21, 22));
+      
+      // Road end not valid so will not be placed.
+      gameBoardData.PlaceStartingInfrastructure(playerId, location, 22);
 
-      results.Status.ShouldBe(GameBoardData.VerificationStatus.NotConnectedToExisting);
-      results.LocationIndex.ShouldBe(0u);
-      results.PlayerId.ShouldBe(Guid.Empty);*/
-    }
+      // Check placing the settlement in the same location - will pass since nothing is there.
+      var results = gameBoardData.CanPlaceSettlement(location);
 
-    [Test]
-    [Category("GameBoardData")]
-    public void CanPlaceStartingInfrastructure_RoadFailsVerification_SettlementNotPlaced()
-    {
-      throw new NotImplementedException();
-
-      // TODO: This test does not make sense - the title does not match what is happening in the test
-      /*var playerId = Guid.NewGuid();
-      var location = 20u;
-      var gameBoardData = new GameBoardData(BoardSizes.Standard);
-      gameBoardData.CanPlaceStartingInfrastructure(playerId, location, new RoadSegment(21, 22));
-      var results = gameBoardData.CanPlaceSettlement(20);
-
-      results.Status.ShouldBe(GameBoardData.VerificationStatus.Valid);*/
+      results.Status.ShouldBe(GameBoardData.VerificationStatus.Valid);
     }
 
     [Test]
