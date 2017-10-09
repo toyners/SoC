@@ -154,6 +154,11 @@ namespace Jabberwocky.SoC.Library.GameBoards
       {
         foreach (var otherEnd in roadNode.OtherEnds)
         {
+          if (otherEnd == null)
+          {
+            break;
+          }
+
           if (otherEnd.Item1 == roadEndLocation)
           {
             return true;
@@ -430,14 +435,14 @@ namespace Jabberwocky.SoC.Library.GameBoards
       return data;
     }
 
-    public void PlaceRoad(Guid playerId, UInt32 locationIndex1, UInt32 locationIndex2)
+    public void PlaceRoad(Guid playerId, UInt32 roadStartLocation, UInt32 roadEndLocation)
     {
-      this.PlaceTheRoad(playerId, locationIndex1, locationIndex2);
+      this.PlaceTheRoad(playerId, roadStartLocation, roadEndLocation);
     }
 
-    private void PlaceTheRoad(Guid playerId, UInt32 locationIndex1, UInt32 locationIndex2)
+    private void PlaceTheRoad(Guid playerId, UInt32 roadStartLocation, UInt32 roadEndLocation)
     {
-      var newRoadSegment = new RoadSegment(locationIndex1, locationIndex2);
+      var newRoadSegment = new RoadSegment(roadStartLocation, roadEndLocation);
       this.roadSegments.Add(newRoadSegment);
 
       if (!this.roadsByPlayer.ContainsKey(playerId))
@@ -449,6 +454,38 @@ namespace Jabberwocky.SoC.Library.GameBoards
       else
       {
         this.roadsByPlayer[playerId].Add(newRoadSegment);
+      }
+
+      var startRoadNode = this.roadNodes[roadStartLocation];
+      if (startRoadNode == null)
+      {
+        startRoadNode = new RoadNode();
+        this.roadNodes[roadStartLocation] = startRoadNode;
+      }
+
+      for (var i = 0; i < startRoadNode.OtherEnds.Length; i++)
+      {
+        if (startRoadNode.OtherEnds[i] == null)
+        {
+          startRoadNode.OtherEnds[i] = new Tuple<UInt32, Guid>(roadEndLocation, playerId);
+          break;
+        }
+      }
+
+      var endRoadNode = this.roadNodes[roadEndLocation];
+      if (endRoadNode == null)
+      {
+        endRoadNode = new RoadNode();
+        this.roadNodes[roadEndLocation] = endRoadNode;
+      }
+
+      for (var i = 0; i < endRoadNode.OtherEnds.Length; i++)
+      {
+        if (endRoadNode.OtherEnds[i] == null)
+        {
+          endRoadNode.OtherEnds[i] = new Tuple<UInt32, Guid>(roadStartLocation, playerId);
+          break;
+        }
       }
 
       /*List<List<RoadSegment>> roadsForPlayer = null;
