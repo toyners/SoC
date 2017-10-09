@@ -100,16 +100,9 @@ namespace Jabberwocky.SoC.Library.GameBoards
       }
 
       // Verify #3 - Is there already a road built
-      var roadNode = this.roadNodes[roadStartLocation];
-      if (roadNode != null)
+      if (this.RoadAlreadyPresent(roadStartLocation, roadEndLocation))
       {
-        foreach (var otherEnd in roadNode.OtherEnds)
-        {
-          if (otherEnd.Item1 == roadEndLocation)
-          {
-            return new VerificationResults { Status = VerificationStatus.RoadIsOccupied };
-          }
-        }
+        return new VerificationResults { Status = VerificationStatus.RoadIsOccupied };
       }
 
       var newRoadSegment = new RoadSegment(roadStartLocation, roadEndLocation);
@@ -152,6 +145,23 @@ namespace Jabberwocky.SoC.Library.GameBoards
       }
 
       return new VerificationResults { Status = VerificationStatus.Valid };
+    }
+
+    private Boolean RoadAlreadyPresent(UInt32 roadStartLocation, UInt32 roadEndLocation)
+    {
+      var roadNode = this.roadNodes[roadStartLocation];
+      if (roadNode != null)
+      {
+        foreach (var otherEnd in roadNode.OtherEnds)
+        {
+          if (otherEnd.Item1 == roadEndLocation)
+          {
+            return true;
+          }
+        }
+      }
+
+      return false;
     }
 
     public VerificationResults CanPlaceSettlement(UInt32 locationIndex)
