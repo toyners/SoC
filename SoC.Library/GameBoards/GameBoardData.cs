@@ -40,6 +40,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
     private Dictionary<ResourceProducer, UInt32[]> locationsForResourceProvider;
     private Dictionary<UInt32, UInt32[]> locationsForHex;
     private Dictionary<UInt32, UInt32[]> hexesForLocations;
+    private RoadNode[] roadNodes;
     #endregion
 
     #region Construction
@@ -55,6 +56,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
       this.roadSegments = new List<RoadSegment>();
       this.roadsByPlayer = new Dictionary<Guid, List<RoadSegment>>();
       this.settlementsByPlayer = new Dictionary<Guid, List<UInt32>>();
+      this.roadNodes = new RoadNode[StandardBoardLocationCount];
 
       this.CreateHexes();
 
@@ -98,11 +100,23 @@ namespace Jabberwocky.SoC.Library.GameBoards
       }
 
       // Verify #3 - Is there already a road built
+      var roadNode = this.roadNodes[roadStartLocation];
+      if (roadNode != null)
+      {
+        foreach (var otherEnd in roadNode.OtherEnds)
+        {
+          if (otherEnd.Item1 == roadEndLocation)
+          {
+            return new VerificationResults { Status = VerificationStatus.RoadIsOccupied };
+          }
+        }
+      }
+
       var newRoadSegment = new RoadSegment(roadStartLocation, roadEndLocation);
-      if (this.roadSegments.Contains(newRoadSegment))
+      /*if (this.roadSegments.Contains(newRoadSegment))
       {
         return new VerificationResults { Status = VerificationStatus.RoadIsOccupied };
-      }
+      }*/
 
       // Verify #4 - Does it connect to existing infrastructure
       if (!this.settlements.ContainsKey(roadStartLocation) && !this.settlements.ContainsKey(roadEndLocation))
@@ -1000,6 +1014,11 @@ namespace Jabberwocky.SoC.Library.GameBoards
         this.TrailCount = trailCount;
         this.LocationIndexDiff = locationIndexDiff;
       }
+    }
+
+    private class RoadNode
+    {
+      public Tuple<UInt32, Guid>[] OtherEnds = new Tuple<UInt32, Guid>[3];
     }
     #endregion
   }
