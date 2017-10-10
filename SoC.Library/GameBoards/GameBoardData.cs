@@ -116,8 +116,50 @@ namespace Jabberwocky.SoC.Library.GameBoards
       {
         var isConnected = false;
 
+        var roadNode = this.roadNodes[roadStartLocation];
+        if (roadNode != null)
+        {
+          for(var i = 0; i < roadNode.OtherEnds.Length; i++)
+          {
+            var otherEnd = roadNode.OtherEnds[i];
+            if (otherEnd == null)
+            {
+              break;
+            }
+
+            if (otherEnd.Item1 == roadEndLocation && otherEnd.Item2 == playerId)
+            {
+              isConnected = true;
+              break;
+            }
+          }
+        }
+
+        if (!isConnected)
+        {
+          roadNode = this.roadNodes[roadEndLocation];
+          if (roadNode != null)
+          {
+            for (var i = 0; i < roadNode.OtherEnds.Length; i++)
+            {
+              var otherEnd = roadNode.OtherEnds[i];
+              if (otherEnd == null)
+              {
+                break;
+              }
+
+              if (otherEnd.Item1 == roadStartLocation && otherEnd.Item2 == playerId)
+              {
+                isConnected = true;
+                break;
+              }
+            }
+          }
+        }
+
+
         // Linear scan but the total number of possible roads is in the tens
-        foreach (var existingRoad in this.roadSegments)
+        /*foreach (var existingRoad in this.roadSegments)
         {
           if (newRoadSegment.Location1 == existingRoad.Location1 || newRoadSegment.Location1 == existingRoad.Location2 ||
               newRoadSegment.Location2 == existingRoad.Location1 || newRoadSegment.Location2 == existingRoad.Location2)
@@ -125,7 +167,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
             isConnected = true;
             break;
           }
-        }
+        }*/
 
         if (!isConnected)
         {
