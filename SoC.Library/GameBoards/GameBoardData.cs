@@ -41,6 +41,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
     private Dictionary<UInt32, UInt32[]> locationsForHex;
     private Dictionary<UInt32, UInt32[]> hexesForLocations;
     private RoadNode[] roadNodes;
+    private Location[] locations;
     #endregion
 
     #region Construction
@@ -58,11 +59,20 @@ namespace Jabberwocky.SoC.Library.GameBoards
       this.settlementsByPlayer = new Dictionary<Guid, List<UInt32>>();
       this.roadNodes = new RoadNode[StandardBoardLocationCount];
 
+      this.locations = new Location[GameBoardData.StandardBoardLocationCount];
+      for (var i = 0; i < GameBoardData.StandardBoardHexCount; i++)
+      {
+        this.locations[i] = new Location();
+      }
+
+      this.ConnectLocationsVertically();
+      this.ConnectLocationsHorizontally();
+
       this.CreateHexes();
 
       this.connections = new Boolean[GameBoardData.StandardBoardLocationCount, GameBoardData.StandardBoardLocationCount];
-      this.ConnectLocationsVertically();
-      this.ConnectLocationsHorizontally();
+      this.ConnectLocationsVerticallyOld();
+      this.ConnectLocationsHorizontallyOld();
 
       this.AssignResourceProvidersToDiceRolls();
 
@@ -79,7 +89,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
     #endregion
 
     #region Methods
-    public VerificationStatus CanPlaceCity(PlayerData player, Location location)
+    public VerificationStatus CanPlaceCity(Guid playerId, UInt32 locationIndex)
     {
       throw new NotImplementedException();
     }
@@ -119,9 +129,9 @@ namespace Jabberwocky.SoC.Library.GameBoards
         var roadNode = this.roadNodes[roadStartLocation];
         if (roadNode != null)
         {
-          for(var i = 0; i < roadNode.OtherEnds.Length; i++)
+          for(var i = 0; i < roadNode.Trails.Length; i++)
           {
-            var otherEnd = roadNode.OtherEnds[i];
+            var otherEnd = roadNode.Trails[i];
             if (otherEnd == null)
             {
               break;
@@ -140,9 +150,9 @@ namespace Jabberwocky.SoC.Library.GameBoards
           roadNode = this.roadNodes[roadEndLocation];
           if (roadNode != null)
           {
-            for (var i = 0; i < roadNode.OtherEnds.Length; i++)
+            for (var i = 0; i < roadNode.Trails.Length; i++)
             {
-              var otherEnd = roadNode.OtherEnds[i];
+              var otherEnd = roadNode.Trails[i];
               if (otherEnd == null)
               {
                 break;
@@ -194,7 +204,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
       var roadNode = this.roadNodes[roadStartLocation];
       if (roadNode != null)
       {
-        foreach (var otherEnd in roadNode.OtherEnds)
+        foreach (var otherEnd in roadNode.Trails)
         {
           if (otherEnd == null)
           {
@@ -505,11 +515,11 @@ namespace Jabberwocky.SoC.Library.GameBoards
         this.roadNodes[roadStartLocation] = startRoadNode;
       }
 
-      for (var i = 0; i < startRoadNode.OtherEnds.Length; i++)
+      for (var i = 0; i < startRoadNode.Trails.Length; i++)
       {
-        if (startRoadNode.OtherEnds[i] == null)
+        if (startRoadNode.Trails[i] == null)
         {
-          startRoadNode.OtherEnds[i] = new Tuple<UInt32, Guid>(roadEndLocation, playerId);
+          startRoadNode.Trails[i] = new Tuple<UInt32, Guid>(roadEndLocation, playerId);
           break;
         }
       }
@@ -521,11 +531,11 @@ namespace Jabberwocky.SoC.Library.GameBoards
         this.roadNodes[roadEndLocation] = endRoadNode;
       }
 
-      for (var i = 0; i < endRoadNode.OtherEnds.Length; i++)
+      for (var i = 0; i < endRoadNode.Trails.Length; i++)
       {
-        if (endRoadNode.OtherEnds[i] == null)
+        if (endRoadNode.Trails[i] == null)
         {
-          endRoadNode.OtherEnds[i] = new Tuple<UInt32, Guid>(roadStartLocation, playerId);
+          endRoadNode.Trails[i] = new Tuple<UInt32, Guid>(roadStartLocation, playerId);
           break;
         }
       }
@@ -1068,6 +1078,50 @@ namespace Jabberwocky.SoC.Library.GameBoards
         var endIndex = startIndex + 1;
         while (count-- > 0)
         {
+          var connection = new Connection();
+          connection.Location1 = this.locations[startIndex];
+          connection.Location2 = this.locations[endIndex];
+          this.locations[startIndex].connections[0] = connection;
+          this.locations[endIndex].connections[1] = connection;
+
+          //this.connections[startIndex, endIndex] = this.connections[endIndex, startIndex] = true;
+          //startIndex++;
+          //endIndex++;
+        }
+      }
+    }
+
+    private void ConnectLocationsHorizontallyOld()
+    {
+      // Add horizontal trails for columns
+      foreach (var setup in new[] {
+            new HorizontalTrailSetup(0, 4, 8),
+            new HorizontalTrailSetup(7, 5, 10),
+            new HorizontalTrailSetup(16, 6, 11),
+            new HorizontalTrailSetup(28, 5, 10),
+            new HorizontalTrailSetup(39, 4, 8) })
+      {
+        var count = setup.TrailCount;
+        var startIndex = setup.LocationIndexStart;
+        while (count-- > 0)
+        {
+          var endIndex = startIndex + setup.LocationIndexDiff;
+          this.connections[startIndex, endIndex] = this.connections[endIndex, startIndex] = true;
+          startIndex += 2;
+        }
+      }
+    }
+
+    private void ConnectLocationsVerticallyOld()
+    {
+      var startIndex = -1;
+      foreach (var trailCount in new[] { 6, 8, 10, 10, 8, 6 })
+      {
+        var count = trailCount;
+        startIndex++;
+        var endIndex = startIndex + 1;
+        while (count-- > 0)
+        {
           this.connections[startIndex, endIndex] = this.connections[endIndex, startIndex] = true;
           startIndex++;
           endIndex++;
@@ -1107,7 +1161,20 @@ namespace Jabberwocky.SoC.Library.GameBoards
 
     private class RoadNode
     {
-      public Tuple<UInt32, Guid>[] OtherEnds = new Tuple<UInt32, Guid>[3];
+      public Tuple<UInt32, Guid>[] Trails = new Tuple<UInt32, Guid>[3];
+    }
+
+    private class Connection
+    {
+      public Guid Owner;
+      public Location Location1;
+      public Location Location2;
+    }
+
+    private class Location
+    {
+      public Guid Owner;
+      public Connection[] connections; 
     }
     #endregion
   }
