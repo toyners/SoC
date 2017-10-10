@@ -4,6 +4,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
   using System;
   using System.Collections.Generic;
   using System.Diagnostics;
+  using System.Linq;
   using System.Xml;
 
   /// <summary>
@@ -62,7 +63,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
       this.locations = new Location[GameBoardData.StandardBoardLocationCount];
       for (var i = 0; i < GameBoardData.StandardBoardHexCount; i++)
       {
-        this.locations[i] = new Location();
+        this.locations[i] = new Location() { Index = i };
       }
 
       this.ConnectLocationsVertically();
@@ -97,7 +98,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
     public VerificationResults CanPlaceRoad(Guid playerId, UInt32 roadStartLocation, UInt32 roadEndLocation)
     {
       // Verify #1 - Are both road locations on the board.
-      var length = (UInt32)this.connections.GetLength(0);
+      var length = (UInt32)this.connections.GetLength(0); // TODO: Change to use Location array
       if (roadStartLocation >= length || roadEndLocation >= length)
       {
         return new VerificationResults { Status = VerificationStatus.RoadIsOffBoard };
@@ -199,9 +200,23 @@ namespace Jabberwocky.SoC.Library.GameBoards
       return new VerificationResults { Status = VerificationStatus.Valid };
     }
 
-    private Boolean RoadAlreadyPresent(UInt32 roadStartLocation, UInt32 roadEndLocation)
+    private List<Tuple<UInt32, UInt32, Guid>> builtRoadSegments;
+    private Boolean RoadAlreadyPresent(UInt32 roadStartLocationIndex, UInt32 roadEndLocationIndex)
     {
-      var roadNode = this.roadNodes[roadStartLocation];
+
+      var roadSegment = builtRoadSegments.Where(r => (r.Item1 == roadStartLocationIndex && r.Item2 == roadEndLocationIndex)
+      || (r.Item2 == roadStartLocationIndex && r.Item1 == roadEndLocationIndex)).FirstOrDefault();
+
+      return roadSegment != null;
+      /*var roadStartLocation = this.locations[roadStartLocationIndex];
+      var roadEndLocation = this.locations[roadEndLocationIndex];
+
+      foreach (var connection in roadStartLocation.connections.Where(c => c != null))
+      {
+        if (connection.Location1
+      }
+
+      /*var roadNode = this.roadNodes[roadStartLocationIndex];
       if (roadNode != null)
       {
         foreach (var otherEnd in roadNode.Trails)
@@ -211,12 +226,12 @@ namespace Jabberwocky.SoC.Library.GameBoards
             break;
           }
 
-          if (otherEnd.Item1 == roadEndLocation)
+          if (otherEnd.Item1 == roadEndLocationIndex)
           {
             return true;
           }
         }
-      }
+      }*/
 
       return false;
     }
@@ -1050,6 +1065,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
     private void ConnectLocationsHorizontally()
     {
       // Add horizontal trails for columns
+      Connection connection = null;
       foreach (var setup in new[] {
             new HorizontalTrailSetup(0, 4, 8),
             new HorizontalTrailSetup(7, 5, 10),
@@ -1059,12 +1075,27 @@ namespace Jabberwocky.SoC.Library.GameBoards
       {
         var count = setup.TrailCount;
         var startIndex = setup.LocationIndexStart;
+        Int32 endIndex = -1;
         while (count-- > 0)
         {
-          var endIndex = startIndex + setup.LocationIndexDiff;
-          this.connections[startIndex, endIndex] = this.connections[endIndex, startIndex] = true;
+          endIndex = startIndex + setup.LocationIndexDiff;
+
+          connection = new Connection();
+          connection.Location1 = this.locations[startIndex];
+          connection.Location2 = this.locations[endIndex];
+          this.locations[startIndex].connections[2] = connection;
+          this.locations[endIndex].connections[2] = connection;
+
+          //this.connections[startIndex, endIndex] = this.connections[endIndex, startIndex] = true;
           startIndex += 2;
         }
+
+        // First and last location in column only have two connections so move them towards 0th end.
+        this.locations[setup.LocationIndexDiff].connections[1] = this.locations[setup.LocationIndexDiff].connections[2];
+        this.locations[setup.LocationIndexDiff].connections[2] = null;
+
+        this.locations[endIndex].connections[1] = connection;
+        this.locations[endIndex].connections[2] = null;
       }
     }
 
@@ -1076,18 +1107,24 @@ namespace Jabberwocky.SoC.Library.GameBoards
         var count = trailCount;
         startIndex++;
         var endIndex = startIndex + 1;
+        Connection connection = null;
         while (count-- > 0)
         {
-          var connection = new Connection();
+          connection = new Connection();
           connection.Location1 = this.locations[startIndex];
           connection.Location2 = this.locations[endIndex];
           this.locations[startIndex].connections[0] = connection;
           this.locations[endIndex].connections[1] = connection;
 
           //this.connections[startIndex, endIndex] = this.connections[endIndex, startIndex] = true;
-          //startIndex++;
-          //endIndex++;
+          startIndex++;
+          endIndex++;
         }
+
+        // Last location in column so change the connection end to be in the 0th slot. Otherwise
+        // 0th slot will be null. 
+        this.locations[endIndex - 1].connections[0] = connection;
+        this.locations[endIndex - 1].connections[1] = null;
       }
     }
 
@@ -1173,6 +1210,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
 
     private class Location
     {
+      public Int32 Index;
       public Guid Owner;
       public Connection[] connections; 
     }
