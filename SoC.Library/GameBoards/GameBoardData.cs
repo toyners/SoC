@@ -66,8 +66,8 @@ namespace Jabberwocky.SoC.Library.GameBoards
         this.locations[i] = new Location() { Index = i };
       }
 
-      this.ConnectLocationsVertically();
-      this.ConnectLocationsHorizontally();
+      //this.ConnectLocationsVertically();
+      //this.ConnectLocationsHorizontally();
 
       this.CreateHexes();
 
@@ -116,91 +116,16 @@ namespace Jabberwocky.SoC.Library.GameBoards
         return new VerificationResults { Status = VerificationStatus.RoadIsOccupied };
       }
 
-      var newRoadSegment = new RoadSegment(roadStartLocation, roadEndLocation);
-      /*if (this.roadSegments.Contains(newRoadSegment))
-      {
-        return new VerificationResults { Status = VerificationStatus.RoadIsOccupied };
-      }*/
-
       // Verify #4 - Does it connect to existing infrastructure
-      if (!this.settlements.ContainsKey(roadStartLocation) && !this.settlements.ContainsKey(roadEndLocation))
+      if (!this.WillConnectToExistingRoad(playerId, roadStartLocation, roadEndLocation))
       {
-        var isConnected = false;
-
-        var roadNode = this.roadNodes[roadStartLocation];
-        if (roadNode != null)
-        {
-          for(var i = 0; i < roadNode.Trails.Length; i++)
-          {
-            var otherEnd = roadNode.Trails[i];
-            if (otherEnd == null)
-            {
-              break;
-            }
-
-            if (otherEnd.Item1 == roadEndLocation && otherEnd.Item2 == playerId)
-            {
-              isConnected = true;
-              break;
-            }
-          }
-        }
-
-        if (!isConnected)
-        {
-          roadNode = this.roadNodes[roadEndLocation];
-          if (roadNode != null)
-          {
-            for (var i = 0; i < roadNode.Trails.Length; i++)
-            {
-              var otherEnd = roadNode.Trails[i];
-              if (otherEnd == null)
-              {
-                break;
-              }
-
-              if (otherEnd.Item1 == roadStartLocation && otherEnd.Item2 == playerId)
-              {
-                isConnected = true;
-                break;
-              }
-            }
-          }
-        }
-
-
-        // Linear scan but the total number of possible roads is in the tens
-        /*foreach (var existingRoad in this.roadSegments)
-        {
-          if (newRoadSegment.Location1 == existingRoad.Location1 || newRoadSegment.Location1 == existingRoad.Location2 ||
-              newRoadSegment.Location2 == existingRoad.Location1 || newRoadSegment.Location2 == existingRoad.Location2)
-          {
-            isConnected = true;
-            break;
-          }
-        }*/
-
-        if (!isConnected)
-        {
-          return new VerificationResults { Status = VerificationStatus.NotConnectedToExisting };
-        }
-      }
-
-      // Verify #5 - Does it connect to another players settlement
-      if (this.settlements.ContainsKey(newRoadSegment.Location1) && this.settlements[newRoadSegment.Location1] != playerId)
-      {
-        return new VerificationResults { Status = VerificationStatus.RoadConnectsToAnotherPlayer };
-      }
-
-      if (this.settlements.ContainsKey(newRoadSegment.Location2) && this.settlements[newRoadSegment.Location2] != playerId)
-      {
-        return new VerificationResults { Status = VerificationStatus.RoadConnectsToAnotherPlayer };
+        return new VerificationResults { Status = VerificationStatus.NotConnectedToExisting };
       }
 
       return new VerificationResults { Status = VerificationStatus.Valid };
     }
 
-    private List<Tuple<UInt32, UInt32, Guid>> builtRoadSegments;
+    private List<Tuple<UInt32, UInt32, Guid>> builtRoadSegments = new List<Tuple<UInt32, UInt32, Guid>>();
     private Boolean RoadAlreadyPresent(UInt32 roadStartLocationIndex, UInt32 roadEndLocationIndex)
     {
 
@@ -208,32 +133,14 @@ namespace Jabberwocky.SoC.Library.GameBoards
       || (r.Item2 == roadStartLocationIndex && r.Item1 == roadEndLocationIndex)).FirstOrDefault();
 
       return roadSegment != null;
-      /*var roadStartLocation = this.locations[roadStartLocationIndex];
-      var roadEndLocation = this.locations[roadEndLocationIndex];
+    }
 
-      foreach (var connection in roadStartLocation.connections.Where(c => c != null))
-      {
-        if (connection.Location1
-      }
+    private Boolean WillConnectToExistingRoad(Guid playerId, UInt32 roadStartLocationIndex, UInt32 roadEndLocationIndex)
+    {
+      var roadSegment = builtRoadSegments.Where(r => (r.Item1 == roadStartLocationIndex || r.Item2 == roadStartLocationIndex
+      || r.Item1 == roadEndLocationIndex || r.Item2 == roadEndLocationIndex) && r.Item3 == playerId).FirstOrDefault();
 
-      /*var roadNode = this.roadNodes[roadStartLocationIndex];
-      if (roadNode != null)
-      {
-        foreach (var otherEnd in roadNode.Trails)
-        {
-          if (otherEnd == null)
-          {
-            break;
-          }
-
-          if (otherEnd.Item1 == roadEndLocationIndex)
-          {
-            return true;
-          }
-        }
-      }*/
-
-      return false;
+      return roadSegment != null;
     }
 
     public VerificationResults CanPlaceSettlement(UInt32 locationIndex)
@@ -502,14 +409,15 @@ namespace Jabberwocky.SoC.Library.GameBoards
       return data;
     }
 
-    public void PlaceRoad(Guid playerId, UInt32 roadStartLocation, UInt32 roadEndLocation)
+    public void PlaceRoad(Guid playerId, UInt32 roadStartLocationIndex, UInt32 roadEndLocationIndex)
     {
-      this.PlaceTheRoad(playerId, roadStartLocation, roadEndLocation);
+      this.PlaceRoadOnBoard(playerId, roadStartLocationIndex, roadEndLocationIndex);
     }
 
-    private void PlaceTheRoad(Guid playerId, UInt32 roadStartLocation, UInt32 roadEndLocation)
+    private void PlaceRoadOnBoard(Guid playerId, UInt32 roadStartLocationIndex, UInt32 roadEndLocationIndex)
     {
-      var newRoadSegment = new RoadSegment(roadStartLocation, roadEndLocation);
+      this.builtRoadSegments.Add(new Tuple<uint, uint, Guid>(roadStartLocationIndex, roadEndLocationIndex, playerId));
+      var newRoadSegment = new RoadSegment(roadStartLocationIndex, roadEndLocationIndex);
       this.roadSegments.Add(newRoadSegment);
 
       if (!this.roadsByPlayer.ContainsKey(playerId))
@@ -523,34 +431,34 @@ namespace Jabberwocky.SoC.Library.GameBoards
         this.roadsByPlayer[playerId].Add(newRoadSegment);
       }
 
-      var startRoadNode = this.roadNodes[roadStartLocation];
+      var startRoadNode = this.roadNodes[roadStartLocationIndex];
       if (startRoadNode == null)
       {
         startRoadNode = new RoadNode();
-        this.roadNodes[roadStartLocation] = startRoadNode;
+        this.roadNodes[roadStartLocationIndex] = startRoadNode;
       }
 
       for (var i = 0; i < startRoadNode.Trails.Length; i++)
       {
         if (startRoadNode.Trails[i] == null)
         {
-          startRoadNode.Trails[i] = new Tuple<UInt32, Guid>(roadEndLocation, playerId);
+          startRoadNode.Trails[i] = new Tuple<UInt32, Guid>(roadEndLocationIndex, playerId);
           break;
         }
       }
 
-      var endRoadNode = this.roadNodes[roadEndLocation];
+      var endRoadNode = this.roadNodes[roadEndLocationIndex];
       if (endRoadNode == null)
       {
         endRoadNode = new RoadNode();
-        this.roadNodes[roadEndLocation] = endRoadNode;
+        this.roadNodes[roadEndLocationIndex] = endRoadNode;
       }
 
       for (var i = 0; i < endRoadNode.Trails.Length; i++)
       {
         if (endRoadNode.Trails[i] == null)
         {
-          endRoadNode.Trails[i] = new Tuple<UInt32, Guid>(roadStartLocation, playerId);
+          endRoadNode.Trails[i] = new Tuple<UInt32, Guid>(roadStartLocationIndex, playerId);
           break;
         }
       }

@@ -190,6 +190,30 @@ namespace Jabberwocky.SoC.Library.UnitTests
     }
 
     [Test]
+    [Category("All")]
+    [Category("GameBoardData")]
+    public void PlaceSettlement_HasNotPlacedStartingInfrastructure_ThrowsMeaningfulException()
+    {
+      var gameBoardData = new GameBoardData(BoardSizes.Standard);
+
+      Action action = () => { gameBoardData.PlaceSettlement(Guid.NewGuid(), 20u); };
+
+      action.ShouldThrow<Exception>().Message.ShouldBe("Cannot place settlement before placing infrastructure using PlaceInfrastructure method.");
+    }
+
+    [Test]
+    [Category("All")]
+    [Category("GameBoardData")]
+    public void PlaceRoad_HasNotPlacedStartingInfrastructure_ThrowsMeaningfulException()
+    {
+      var gameBoardData = new GameBoardData(BoardSizes.Standard);
+
+      Action action = () => { gameBoardData.PlaceRoad(Guid.NewGuid(), 20u, 21u); };
+
+      action.ShouldThrow<Exception>().Message.ShouldBe("Cannot place road before placing infrastructure using PlaceInfrastructure method.");
+    }
+
+    [Test]
     [Category("GameBoardData")]
     public void PlaceStartingInfrastructure_RoadFailsVerification_SettlementNotPlaced()
     {
