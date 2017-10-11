@@ -49,33 +49,6 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
     [Test]
     [Category("GameBoardData")]
-    public void CanPlaceRoad_RoadWouldConnectToAnotherPlayersSettlement_ReturnsRoadConnectsToAnotherPlayer()
-    {
-      var gameBoardData = new GameBoardData(BoardSizes.Standard);
-      var playerOneId = Guid.NewGuid();
-      gameBoardData.PlaceSettlement(playerOneId, 0);
-      gameBoardData.PlaceRoad(playerOneId, 0, 9);
-
-      var playerTwoId = Guid.NewGuid();
-      gameBoardData.PlaceSettlement(playerTwoId, 8);
-
-      var result = gameBoardData.CanPlaceRoad(playerOneId, 9, 8);
-      result.Status.ShouldBe(GameBoardData.VerificationStatus.RoadConnectsToAnotherPlayer);
-    }
-
-    [Test]
-    [Category("GameBoardData")]
-    public void CanPlaceRoad_ConnectedToSettlement_ReturnsValid()
-    {
-      var gameBoardData = new GameBoardData(BoardSizes.Standard);
-      var playerId = Guid.NewGuid();
-      gameBoardData.PlaceSettlement(playerId, 0u);
-      var result = gameBoardData.CanPlaceRoad(playerId, 0u, 1u);
-      result.Status.ShouldBe(GameBoardData.VerificationStatus.Valid);
-    }
-
-    [Test]
-    [Category("GameBoardData")]
     [TestCase(53u, 54u)] // Hanging over the edge 
     [TestCase(54u, 53u)] // Hanging over the edge
     [TestCase(100u, 101u)]
@@ -198,7 +171,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
       Action action = () => { gameBoardData.PlaceSettlement(Guid.NewGuid(), 20u); };
 
-      action.ShouldThrow<Exception>().Message.ShouldBe("Cannot place settlement before placing infrastructure using PlaceInfrastructure method.");
+      action.ShouldThrow<GameBoardData.PlacementException>().Message.ShouldBe("Cannot place settlement before placing infrastructure using PlaceInfrastructure method.");
     }
 
     [Test]
@@ -210,7 +183,21 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
       Action action = () => { gameBoardData.PlaceRoad(Guid.NewGuid(), 20u, 21u); };
 
-      action.ShouldThrow<Exception>().Message.ShouldBe("Cannot place road before placing infrastructure using PlaceInfrastructure method.");
+      action.ShouldThrow<GameBoardData.PlacementException>().Message.ShouldBe("Cannot place road before placing infrastructure using PlaceInfrastructure method.");
+    }
+
+    [Test]
+    [Category("All")]
+    [Category("GameBoardData")]
+    public void PlaceStartingInfrastructure_PlayerAlreadyPlacedStartingInfrastructure_ThrowsMeaningfulException()
+    {
+      var playerId = Guid.NewGuid();
+      var gameBoardData = new GameBoardData(BoardSizes.Standard);
+      gameBoardData.PlaceStartingInfrastructure(playerId, 20u, 21u);
+
+      Action action = () => { gameBoardData.PlaceStartingInfrastructure(playerId, 10u, 11u); };
+
+      action.ShouldThrow<GameBoardData.PlacementException>().Message.ShouldBe("Cannot place starting infrastructure more than once per player.");
     }
 
     [Test]

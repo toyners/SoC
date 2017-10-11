@@ -1122,6 +1122,10 @@ namespace Jabberwocky.SoC.Library.GameBoards
       public Guid Owner;
       public Connection[] connections; 
     }
+
+    public class PlacementException : Exception
+    {
+    }
     #endregion
   }
 }
