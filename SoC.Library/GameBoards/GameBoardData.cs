@@ -411,7 +411,17 @@ namespace Jabberwocky.SoC.Library.GameBoards
 
     public void PlaceRoad(Guid playerId, UInt32 roadStartLocationIndex, UInt32 roadEndLocationIndex)
     {
+      if (!this.HasPlacedStartingInfrastructure(playerId))
+      {
+        throw new PlacementException();
+      }
+
       this.PlaceRoadOnBoard(playerId, roadStartLocationIndex, roadEndLocationIndex);
+    }
+
+    private Boolean HasPlacedStartingInfrastructure(Guid playerId)
+    {
+      throw new NotImplementedException();
     }
 
     private void PlaceRoadOnBoard(Guid playerId, UInt32 roadStartLocationIndex, UInt32 roadEndLocationIndex)
