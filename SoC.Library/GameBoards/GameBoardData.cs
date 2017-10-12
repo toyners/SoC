@@ -24,7 +24,8 @@ namespace Jabberwocky.SoC.Library.GameBoards
       RoadConnectsToAnotherPlayer,
       RoadIsOffBoard,
       RoadIsOccupied,
-      NoDirectConnection
+      NoDirectConnection,
+      StartingInfrastructureNotPresent
     }
 
     #region Fields
@@ -116,7 +117,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
         return new VerificationResults { Status = VerificationStatus.RoadIsOccupied };
       }
 
-      // Verify #4 - Does it connect to existing infrastructure
+      // Verify #4 - Does it connect to existing road
       if (!this.WillConnectToExistingRoad(playerId, roadStartLocation, roadEndLocation))
       {
         return new VerificationResults { Status = VerificationStatus.NotConnectedToExisting };

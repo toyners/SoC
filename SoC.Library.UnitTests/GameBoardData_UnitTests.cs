@@ -33,6 +33,19 @@ namespace Jabberwocky.SoC.Library.UnitTests
     }
 
     [Test]
+    [Category("All")]
+    [Category("GameBoardData")]
+    public void CanPlaceRoad_StartingInfrastructureNotPlaced_ReturnsStartingInfrastructureNotPresent()
+    {
+      var playerId = Guid.NewGuid();
+      var gameBoardData = new GameBoardData(BoardSizes.Standard);
+      gameBoardData.PlaceSettlement(playerId, 0);
+
+      var result = gameBoardData.CanPlaceRoad(playerId, 0, 1);
+      result.Status.ShouldBe(GameBoardData.VerificationStatus.StartingInfrastructureNotPresent);
+    }
+
+    [Test]
     [TestCase(2u, 3u)]
     [TestCase(3u, 2u)]
     [Category("All")]
