@@ -413,7 +413,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
     {
       if (!this.HasPlacedStartingInfrastructure(playerId))
       {
-        throw new PlacementException();
+        throw new PlacementException("Cannot place road before placing infrastructure using PlaceInfrastructure method.");
       }
 
       this.PlaceRoadOnBoard(playerId, roadStartLocationIndex, roadEndLocationIndex);
@@ -421,7 +421,16 @@ namespace Jabberwocky.SoC.Library.GameBoards
 
     private Boolean HasPlacedStartingInfrastructure(Guid playerId)
     {
-      throw new NotImplementedException();
+      if (!this.settlementsByPlayer.ContainsKey(playerId) || 
+        this.settlementsByPlayer[playerId] == null || 
+        this.settlementsByPlayer[playerId].Count < 1)
+      {
+        return false;
+      }
+
+      return this.roadsByPlayer.ContainsKey(playerId) &&
+          this.roadsByPlayer[playerId] != null &&
+          this.roadsByPlayer[playerId].Count >= 1;
     }
 
     private void PlaceRoadOnBoard(Guid playerId, UInt32 roadStartLocationIndex, UInt32 roadEndLocationIndex)
@@ -1135,6 +1144,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
 
     public class PlacementException : Exception
     {
+      public PlacementException(String message) : base(message) { }
     }
     #endregion
   }
