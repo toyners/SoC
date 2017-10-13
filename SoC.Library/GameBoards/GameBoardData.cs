@@ -200,14 +200,6 @@ namespace Jabberwocky.SoC.Library.GameBoards
       // Also check that there is no connecting 
 
       results = this.CanPlaceRoad(playerId, settlementIndex, roadEndLocation);
-      /*if (results.Status == VerificationStatus.NotConnectedToExisting)
-      {
-        if (road.Location1 == settlementIndex || road.Location2 == settlementIndex)
-        {
-          return new VerificationResults { Status = VerificationStatus.Valid };
-        }
-      }*/
-
       return results;
     }
 
