@@ -178,6 +178,59 @@ namespace Jabberwocky.SoC.Library.UnitTests
     [Test]
     [Category("All")]
     [Category("GameBoardData")]
+    public void CanPlaceStartingInfrastructure_BoardIsEmpty_ReturnsValid()
+    {
+      var playerId = Guid.NewGuid();
+      var locationIndex = 20u;
+      var roadEndIndex = 21u;
+      var gameBoardData = new GameBoardData(BoardSizes.Standard);
+      var result = gameBoardData.CanPlaceStartingInfrastructure(playerId, locationIndex, roadEndIndex);
+
+      result.Status.ShouldBe(GameBoardData.VerificationStatus.Valid);
+      result.LocationIndex.ShouldBe(locationIndex);
+      result.PlayerId.ShouldBe(playerId);
+    }
+
+    [Test]
+    [Category("All")]
+    [Category("GameBoardData")]
+    public void CanPlaceStartingInfrastructure_PlayerAlreadyPlacedStartingInfrastructure_ReturnsStartingInfrastructureAlreadyPresent()
+    {
+      var playerId = Guid.NewGuid();
+      var locationOneIndex = 20u;
+      var roadOneEndIndex = 22u;
+      
+      var gameBoardData = new GameBoardData(BoardSizes.Standard);
+      gameBoardData.CanPlaceStartingInfrastructure(playerId, locationOneIndex, roadOneEndIndex);
+
+      var locationTwoIndex = 0u;
+      var roadTwoEndIndex = 1u;
+      var result = gameBoardData.CanPlaceStartingInfrastructure(playerId, locationTwoIndex, roadTwoEndIndex);
+
+      result.Status.ShouldBe(GameBoardData.VerificationStatus.StartingInfrastructureAlreadyPresent);
+      result.LocationIndex.ShouldBe(0u);
+      result.PlayerId.ShouldBe(Guid.Empty);
+    }
+
+    [Test]
+    [Category("All")]
+    [Category("GameBoardData")]
+    public void CanPlaceStartingInfrastructure_RoadDoesNotConnect_ReturnsNoDirectConnection()
+    {
+      var playerId = Guid.NewGuid();
+      var locationIndex = 20u;
+      var roadEndIndex = 22u;
+      var gameBoardData = new GameBoardData(BoardSizes.Standard);
+      var result = gameBoardData.CanPlaceStartingInfrastructure(playerId, locationIndex, roadEndIndex);
+
+      result.Status.ShouldBe(GameBoardData.VerificationStatus.NoDirectConnection);
+      result.LocationIndex.ShouldBe(0u);
+      result.PlayerId.ShouldBe(Guid.Empty);
+    }
+
+    [Test]
+    [Category("All")]
+    [Category("GameBoardData")]
     public void PlaceSettlement_HasNotPlacedStartingInfrastructure_ThrowsMeaningfulException()
     {
       var gameBoardData = new GameBoardData(BoardSizes.Standard);

@@ -19,13 +19,15 @@ namespace Jabberwocky.SoC.Library.GameBoards
       LocationIsOccupied,
       LocationIsInvalid,
       NotConnectedToExisting,
+      NotConnectedToSettlement,
       NoSettlementToUpgrade,
       TooCloseToSettlement,
       RoadConnectsToAnotherPlayer,
       RoadIsOffBoard,
       RoadIsOccupied,
       NoDirectConnection,
-      StartingInfrastructureNotPresent
+      StartingInfrastructureNotPresent,
+      StartingInfrastructureAlreadyPresent
     }
 
     #region Fields
@@ -111,7 +113,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
         return new VerificationResults { Status = VerificationStatus.NoDirectConnection };
       }
 
-      // Verify #3 - Is there already a road built
+      // Verify #3 - Is there already a road built at the same location.
       if (this.RoadAlreadyPresent(roadStartLocation, roadEndLocation))
       {
         return new VerificationResults { Status = VerificationStatus.RoadIsOccupied };
