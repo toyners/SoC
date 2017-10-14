@@ -89,8 +89,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     {
       var gameBoardData = new GameBoardData(BoardSizes.Standard);
       var playerId = Guid.NewGuid();
-      gameBoardData.PlaceSettlement(playerId, 0);
-      gameBoardData.PlaceRoad(playerId, 0, 8);
+      gameBoardData.PlaceStartingInfrastructure(playerId, 0, 8);
       var result = gameBoardData.CanPlaceRoad(playerId, 9, 8);
       result.Status.ShouldBe(GameBoardData.VerificationStatus.Valid);
     }
