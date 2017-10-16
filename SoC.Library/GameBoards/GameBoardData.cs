@@ -101,14 +101,13 @@ namespace Jabberwocky.SoC.Library.GameBoards
     public VerificationResults CanPlaceRoad(Guid playerId, UInt32 roadStartLocation, UInt32 roadEndLocation)
     {
       // Verify #1 - Are both road locations on the board.
-      var length = (UInt32)this.connections.GetLength(0); // TODO: Change to use Location array
-      if (roadStartLocation >= length || roadEndLocation >= length)
+      if (!this.RoadLocationsOnBoard(roadStartLocation, roadEndLocation))      
       {
         return new VerificationResults { Status = VerificationStatus.RoadIsOffBoard };
       }
 
       // Verify #2 - Is direct connection possible
-      if (!this.connections[roadStartLocation, roadEndLocation])
+      if (!this.DirectConnectionBetweenRoadLocations(roadStartLocation, roadEndLocation))
       {
         return new VerificationResults { Status = VerificationStatus.NoDirectConnection };
       }
@@ -126,6 +125,17 @@ namespace Jabberwocky.SoC.Library.GameBoards
       }
 
       return new VerificationResults { Status = VerificationStatus.Valid };
+    }
+
+    private Boolean DirectConnectionBetweenRoadLocations(UInt32 roadStartLocation, UInt32 roadEndLocation)
+    {
+      return this.connections[roadStartLocation, roadEndLocation];
+    }
+
+    private Boolean RoadLocationsOnBoard(UInt32 roadStartLocation, UInt32 roadEndLocation)
+    {
+      var length = (UInt32)this.connections.GetLength(0); // TODO: Change to use Location array
+      return roadStartLocation < length && roadEndLocation < length;
     }
 
     private List<Tuple<UInt32, UInt32, Guid>> builtRoadSegments = new List<Tuple<UInt32, UInt32, Guid>>();
@@ -187,19 +197,35 @@ namespace Jabberwocky.SoC.Library.GameBoards
       };
     }
 
-    public VerificationResults CanPlaceStartingInfrastructure(Guid playerId, UInt32 settlementIndex, UInt32 roadEndLocation)
+    public VerificationResults CanPlaceStartingInfrastructure(Guid playerId, UInt32 settlementLocation, UInt32 roadEndLocation)
     {
-      var results = this.CanPlaceSettlement(settlementIndex);
+      var results = this.CanPlaceSettlement(settlementLocation);
       if (results.Status != VerificationStatus.Valid)
       {
         return results;
       }
 
-      // TODO: Rework this to use call the individual verification for road place so that 
-      // the NotConnectedToExisting verification is not called (since it makes no sense here)
-      // Also check that there is no connecting 
+      // Verify #1 - Are both road locations on the board.
+      if (!this.RoadLocationsOnBoard(settlementLocation, roadEndLocation))
+      {
+        return new VerificationResults { Status = VerificationStatus.RoadIsOffBoard };
+      }
 
-      results = this.CanPlaceRoad(playerId, settlementIndex, roadEndLocation);
+      // Verify #2 - Is direct connection possible
+      if (!this.DirectConnectionBetweenRoadLocations(settlementLocation, roadEndLocation))
+      {
+        return new VerificationResults { Status = VerificationStatus.NoDirectConnection };
+      }
+
+      // Verify #3 - Is there already a road built at the same location.
+      if (this.RoadAlreadyPresent(settlementLocation, roadEndLocation))
+      {
+        return new VerificationResults { Status = VerificationStatus.RoadIsOccupied };
+      }
+
+      // This is the first road segment on the board - No sense in checking for a connection
+      // to an existing road segment
+
       return results;
     }
 

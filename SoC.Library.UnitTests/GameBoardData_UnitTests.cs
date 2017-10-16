@@ -186,8 +186,8 @@ namespace Jabberwocky.SoC.Library.UnitTests
       var result = gameBoardData.CanPlaceStartingInfrastructure(playerId, locationIndex, roadEndIndex);
 
       result.Status.ShouldBe(GameBoardData.VerificationStatus.Valid);
-      result.LocationIndex.ShouldBe(locationIndex);
-      result.PlayerId.ShouldBe(playerId);
+      result.LocationIndex.ShouldBe(0u);
+      result.PlayerId.ShouldBe(Guid.Empty);
     }
 
     [Test]
