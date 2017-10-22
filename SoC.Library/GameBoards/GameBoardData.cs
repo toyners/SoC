@@ -199,6 +199,11 @@ namespace Jabberwocky.SoC.Library.GameBoards
 
     public VerificationResults CanPlaceStartingInfrastructure(Guid playerId, UInt32 settlementLocation, UInt32 roadEndLocation)
     {
+      if (this.settlementsByPlayer.ContainsKey(playerId))
+      {
+        return new VerificationResults { Status = VerificationStatus.StartingInfrastructureAlreadyPresent };
+      }
+
       var results = this.CanPlaceSettlement(settlementLocation);
       if (results.Status != VerificationStatus.Valid)
       {
@@ -568,13 +573,19 @@ namespace Jabberwocky.SoC.Library.GameBoards
     public void PlaceStartingInfrastructure(Guid playerId, UInt32 settlementIndex, UInt32 endIndex)
     {
       var verificationResults = this.CanPlaceStartingInfrastructure(playerId, settlementIndex, endIndex);
-      if (verificationResults.Status != VerificationStatus.Valid)
-      {
-
-      }
+      this.ThrowExceptionOnBadVerificationResult(verificationResults);
 
       this.PlaceSettlement(playerId, settlementIndex);
-      this.PlaceRoad(playerId, settlementIndex, endIndex);
+      this.PlaceRoadOnBoard(playerId, settlementIndex, endIndex);
+    }
+
+    private void ThrowExceptionOnBadVerificationResult(VerificationResults verificationResults)
+    {
+      switch (verificationResults.Status)
+      {
+        case VerificationStatus.StartingInfrastructureAlreadyPresent: throw new PlacementException("Cannot place starting infrastructure more than once per player.");
+        case VerificationStatus.Valid: break;
+      }
     }
 
     Dictionary<UInt32, HashSet<RoadSegment>> roadsByLocation = new Dictionary<UInt32, HashSet<RoadSegment>>();
