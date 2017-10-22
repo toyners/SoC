@@ -227,6 +227,21 @@ namespace Jabberwocky.SoC.Library.UnitTests
       result.PlayerId.ShouldBe(Guid.Empty);
     }
 
+    public void CanPlaceStartingInfrastructure_RoadOffBoard_ReturnsRoadIsOffBoard()
+    {
+      throw new NotImplementedException();
+
+      var playerId = Guid.NewGuid();
+      var locationIndex = 20u;
+      var roadEndIndex = 22u;
+      var gameBoardData = new GameBoardData(BoardSizes.Standard);
+      var result = gameBoardData.CanPlaceStartingInfrastructure(playerId, locationIndex, roadEndIndex);
+
+      result.Status.ShouldBe(GameBoardData.VerificationStatus.RoadIsOffBoard);
+      result.LocationIndex.ShouldBe(0u);
+      result.PlayerId.ShouldBe(Guid.Empty);
+    }
+
     [Test]
     [Category("All")]
     [Category("GameBoardData")]
