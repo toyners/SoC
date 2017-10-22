@@ -197,7 +197,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     {
       var playerId = Guid.NewGuid();
       var locationOneIndex = 20u;
-      var roadOneEndIndex = 22u;
+      var roadOneEndIndex = 21u;
       
       var gameBoardData = new GameBoardData(BoardSizes.Standard);
       gameBoardData.PlaceStartingInfrastructure(playerId, locationOneIndex, roadOneEndIndex);
@@ -272,9 +272,16 @@ namespace Jabberwocky.SoC.Library.UnitTests
       var playerId = Guid.NewGuid();
       var location = 20u;
       var gameBoardData = new GameBoardData(BoardSizes.Standard);
-      
+
       // Road end not valid so will not be placed.
-      gameBoardData.PlaceStartingInfrastructure(playerId, location, 22);
+      try
+      {
+        gameBoardData.PlaceStartingInfrastructure(playerId, location, 22);
+      }
+      catch (GameBoardData.PlacementException pe)
+      {
+        // ignore it
+      }
 
       // Check placing the settlement in the same location - will pass since nothing is there.
       var results = gameBoardData.CanPlaceSettlement(location);

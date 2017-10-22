@@ -584,6 +584,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
       switch (verificationResults.Status)
       {
         case VerificationStatus.StartingInfrastructureAlreadyPresent: throw new PlacementException("Cannot place starting infrastructure more than once per player.");
+        case VerificationStatus.NoDirectConnection: throw new PlacementException(); // TODO: Set message for this. Verify with test. 
         case VerificationStatus.Valid: break;
       }
     }
@@ -1176,6 +1177,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
 
     public class PlacementException : Exception
     {
+      public PlacementException() : base() { }
       public PlacementException(String message) : base(message) { }
     }
     #endregion
