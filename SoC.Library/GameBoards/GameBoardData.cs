@@ -22,7 +22,6 @@ namespace Jabberwocky.SoC.Library.GameBoards
       NotConnectedToSettlement,
       NoSettlementToUpgrade,
       TooCloseToSettlement,
-      RoadConnectsToAnotherPlayer,
       RoadIsOffBoard,
       RoadIsOccupied,
       NoDirectConnection,
