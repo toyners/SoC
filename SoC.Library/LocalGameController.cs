@@ -687,7 +687,7 @@ namespace Jabberwocky.SoC.Library
 
     private Boolean VerifySettlementPlacementRequest(UInt32 settlementLocation)
     {
-      var verificationResults = this.gameBoardManager.Data.CanPlaceSettlement(settlementLocation);
+      var verificationResults = this.gameBoardManager.Data.CanPlaceSettlement(this.mainPlayer.Id, settlementLocation);
       this.TryRaiseSettlementPlacingError(verificationResults, settlementLocation);
 
       return verificationResults.Status == GameBoardData.VerificationStatus.Valid;

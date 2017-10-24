@@ -99,25 +99,31 @@ namespace Jabberwocky.SoC.Library.GameBoards
 
     public VerificationResults CanPlaceRoad(Guid playerId, UInt32 roadStartLocation, UInt32 roadEndLocation)
     {
-      // Verify #1 - Are both road locations on the board.
+      // Has the player placed their starting infrastructure
+      if (!this.HasPlacedStartingInfrastructure(playerId))
+      {
+        return new VerificationResults { Status = VerificationStatus.StartingInfrastructureNotPresent };
+      }
+
+      // Are both road locations on the board.
       if (!this.RoadLocationsOnBoard(roadStartLocation, roadEndLocation))      
       {
         return new VerificationResults { Status = VerificationStatus.RoadIsOffBoard };
       }
 
-      // Verify #2 - Is direct connection possible
+      // Is direct connection possible
       if (!this.DirectConnectionBetweenRoadLocations(roadStartLocation, roadEndLocation))
       {
         return new VerificationResults { Status = VerificationStatus.NoDirectConnection };
       }
 
-      // Verify #3 - Is there already a road built at the same location.
+      // Is there already a road built at the same location.
       if (this.RoadAlreadyPresent(roadStartLocation, roadEndLocation))
       {
         return new VerificationResults { Status = VerificationStatus.RoadIsOccupied };
       }
 
-      // Verify #4 - Does it connect to existing road
+      // Does it connect to existing road
       if (!this.WillConnectToExistingRoad(playerId, roadStartLocation, roadEndLocation))
       {
         return new VerificationResults { Status = VerificationStatus.NotConnectedToExisting };
@@ -155,17 +161,19 @@ namespace Jabberwocky.SoC.Library.GameBoards
       return roadSegment != null;
     }
 
-    public VerificationResults CanPlaceSettlement(UInt32 locationIndex)
+    public VerificationResults CanPlaceSettlement(Guid playerId, UInt32 locationIndex)
     {
-      if (locationIndex >= this.connections.GetLength(0))
+      if (!this.HasPlacedStartingInfrastructure(playerId))
       {
-        return new VerificationResults
-        {
-          Status = VerificationStatus.LocationIsInvalid
-        };
+        return new VerificationResults { Status = VerificationStatus.StartingInfrastructureNotPresent };
       }
 
-      if (this.settlements.ContainsKey(locationIndex))
+      if (!this.SettlementLocationOnBoard(locationIndex))
+      {
+        return new VerificationResults { Status = VerificationStatus.LocationIsInvalid };
+      }
+
+      if (this.SettlementLocationIsOccupied(locationIndex))
       {
         return new VerificationResults
         {
@@ -175,17 +183,16 @@ namespace Jabberwocky.SoC.Library.GameBoards
         };
       }
 
-      for (UInt32 index = 0; index < this.connections.GetLength(1); index++)
+      Guid id;
+      UInt32 index;
+      if (this.TooCloseToSettlement(locationIndex, out id, out index))
       {
-        if (this.connections[locationIndex, index] && this.settlements.ContainsKey(index))
+        return new VerificationResults
         {
-          return new VerificationResults
-          {
-            Status = VerificationStatus.TooCloseToSettlement,
-            LocationIndex = index,
-            PlayerId = this.settlements[index]
-          };
-        }
+          Status = VerificationStatus.TooCloseToSettlement,
+          LocationIndex = index,
+          PlayerId = id
+        };
       }
 
       return new VerificationResults
@@ -196,17 +203,63 @@ namespace Jabberwocky.SoC.Library.GameBoards
       };
     }
 
+    private Boolean TooCloseToSettlement(UInt32 locationIndex, out Guid id, out UInt32 index)
+    {
+      id = Guid.Empty;
+      for (index = 0; index < this.connections.GetLength(1); index++)
+      {
+        if (this.connections[locationIndex, index] && this.settlements.ContainsKey(index))
+        {
+          id = this.settlements[index];
+          return true;
+        }
+      }
+
+      return false;
+    }
+
+    private Boolean SettlementLocationIsOccupied(UInt32 locationIndex)
+    {
+      return this.settlements.ContainsKey(locationIndex);
+    }
+
+    private Boolean SettlementLocationOnBoard(UInt32 settlementLocation)
+    {
+      return settlementLocation < (UInt32)this.connections.GetLength(0); // TODO: Change to use Location array
+    }
+
     public VerificationResults CanPlaceStartingInfrastructure(Guid playerId, UInt32 settlementLocation, UInt32 roadEndLocation)
     {
-      if (this.settlementsByPlayer.ContainsKey(playerId))
+      if (this.HasPlacedStartingInfrastructure(playerId))
       {
         return new VerificationResults { Status = VerificationStatus.StartingInfrastructureAlreadyPresent };
       }
 
-      var results = this.CanPlaceSettlement(settlementLocation);
-      if (results.Status != VerificationStatus.Valid)
+      if (!this.SettlementLocationOnBoard(settlementLocation))
       {
-        return results;
+        return new VerificationResults { Status = VerificationStatus.LocationIsInvalid };
+      }
+
+      if (this.SettlementLocationIsOccupied(settlementLocation))
+      {
+        return new VerificationResults
+        {
+          Status = VerificationStatus.LocationIsOccupied,
+          LocationIndex = settlementLocation,
+          PlayerId = this.settlements[settlementLocation]
+        };
+      }
+
+      Guid id;
+      UInt32 index;
+      if (this.TooCloseToSettlement(settlementLocation, out id, out index))
+      {
+        return new VerificationResults
+        {
+          Status = VerificationStatus.TooCloseToSettlement,
+          LocationIndex = index,
+          PlayerId = id
+        };
       }
 
       // Verify #1 - Are both road locations on the board.
@@ -230,7 +283,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
       // This is the first road segment on the board - No sense in checking for a connection
       // to an existing road segment
 
-      return results;
+      return new VerificationResults { Status = VerificationStatus.Valid };
     }
 
     public Tuple<ResourceTypes, UInt32>[] GetHexInformation()

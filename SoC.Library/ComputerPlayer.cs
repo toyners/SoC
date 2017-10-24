@@ -84,7 +84,7 @@ namespace Jabberwocky.SoC.Library
       for (UInt32 index = 0; index < gameBoardData.Length; index++)
       {
         //Guid playerId;
-        var canPlaceResult = gameBoardData.CanPlaceSettlement(index);
+        var canPlaceResult = gameBoardData.CanPlaceSettlement(this.Id, index);
         if (canPlaceResult.Status != GameBoardData.VerificationStatus.Valid)
         {
           continue;
