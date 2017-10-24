@@ -604,6 +604,9 @@ namespace Jabberwocky.SoC.Library.GameBoards
 
     public void PlaceSettlement(Guid playerId, UInt32 locationIndex)
     {
+      var verificationResults = this.CanPlaceSettlement(playerId, locationIndex);
+      this.ThrowExceptionOnBadVerificationResult(verificationResults);
+
       if (this.settlementsByPlayer.ContainsKey(playerId))
       {
         this.settlementsByPlayer[playerId].Add(locationIndex);

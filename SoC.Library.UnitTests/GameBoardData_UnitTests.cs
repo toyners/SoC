@@ -363,13 +363,71 @@ namespace Jabberwocky.SoC.Library.UnitTests
     [Test]
     [Category("All")]
     [Category("GameBoardData")]
-    public void PlaceSettlement_HasNotPlacedStartingInfrastructure_ThrowsMeaningfulException()
+    public void PlaceSettlement_EmptyBoard_ThrowsMeaningfulException()
     {
+      // Arrange
       var gameBoardData = new GameBoardData(BoardSizes.Standard);
 
+      // Act
       Action action = () => { gameBoardData.PlaceSettlement(Guid.NewGuid(), 20u); };
 
+      // Assert
       action.ShouldThrow<GameBoardData.PlacementException>().Message.ShouldBe("Cannot place settlement before placing infrastructure using PlaceInfrastructure method.");
+    }
+
+    [Test]
+    [Category("All")]
+    [Category("GameBoardData")]
+    public void PlaceSettlement_TryPlacingOnSettledLocation_ReturnsMeaningfulException()
+    {
+      // Arrange
+      var playerId = Guid.NewGuid();
+      var gameBoardData = new GameBoardData(BoardSizes.Standard);
+      gameBoardData.PlaceStartingInfrastructure(playerId, 1, 2);
+
+      // Act
+      Action action = () => { gameBoardData.PlaceSettlement(playerId, 1); };
+
+      // Assert
+      action.ShouldThrow<GameBoardData.PlacementException>().Message.ShouldBe("Cannot place settlement because location is already settled.");
+    }
+
+    [Test]
+    [Category("All")]
+    [Category("GameBoardData")]
+    public void PlaceSettlement_TryPlacingOnInvalidLocation_ReturnsMeaningfulException()
+    {
+      // Arrange
+      var playerId = Guid.NewGuid();
+      var gameBoardData = new GameBoardData(BoardSizes.Standard);
+      gameBoardData.PlaceStartingInfrastructure(playerId, 0, 1);
+
+      // Act
+      Action action = () => { gameBoardData.CanPlaceSettlement(playerId, 100); };
+
+      // Assert
+      action.ShouldThrow<GameBoardData.PlacementException>().Message.ShouldBe("Cannot place settlement because location is not on board.");
+    }
+
+    [Test]
+    [Category("All")]
+    [Category("GameBoardData")]
+    [TestCase(19u)]
+    [TestCase(21u)]
+    [TestCase(31u)]
+    public void PlaceSettlement_TryPlacingNextToSettledLocation_ReturnsMeaningfulException(UInt32 newSettlementLocation)
+    {
+      // Arrange
+      var playerId = Guid.NewGuid();
+      var location = 20u;
+      var gameBoardData = new GameBoardData(BoardSizes.Standard);
+      gameBoardData.PlaceStartingInfrastructure(playerId, location, 21u);
+
+      // Act
+      Action action = () => { gameBoardData.PlaceSettlement(playerId, newSettlementLocation); };
+
+      // Assert
+      action.ShouldThrow<GameBoardData.PlacementException>().Message.ShouldBe("Cannot place settlement because location (" + newSettlementLocation + ") is too close to exising settlement at location (" + location + ").");
     }
 
     [Test]
@@ -377,11 +435,32 @@ namespace Jabberwocky.SoC.Library.UnitTests
     [Category("GameBoardData")]
     public void PlaceRoad_HasNotPlacedStartingInfrastructure_ThrowsMeaningfulException()
     {
+      // Arrange
       var gameBoardData = new GameBoardData(BoardSizes.Standard);
 
+      // Act
       Action action = () => { gameBoardData.PlaceRoad(Guid.NewGuid(), 20u, 21u); };
 
+      // Assert
       action.ShouldThrow<GameBoardData.PlacementException>().Message.ShouldBe("Cannot place road before placing infrastructure using PlaceInfrastructure method.");
+    }
+
+    [Test]
+    [Category("All")]
+    [Category("GameBoardData")]
+    public void PlaceStartingInfrastructure_TryPlacingOnSettledLocation_ThrowsMeaningfulException()
+    {
+      // Arrange
+      var gameBoardData = new GameBoardData(BoardSizes.Standard);
+      var firstPlayerId = Guid.NewGuid();
+      var secondPlayerId = Guid.NewGuid();
+      gameBoardData.PlaceStartingInfrastructure(firstPlayerId, 1, 2);
+
+      // Act
+      Action action = () => { gameBoardData.PlaceStartingInfrastructure(secondPlayerId, 1, 0); };
+
+      // Assert
+      action.ShouldThrow<GameBoardData.PlacementException>().Message.ShouldBe("Cannot place settlement because location is already settled.");
     }
 
     [Test]
