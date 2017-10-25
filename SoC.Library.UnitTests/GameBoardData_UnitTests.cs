@@ -378,7 +378,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     [Test]
     [Category("All")]
     [Category("GameBoardData")]
-    public void PlaceSettlement_TryPlacingOnSettledLocation_ReturnsMeaningfulException()
+    public void PlaceSettlement_TryPlacingOnSettledLocation_ThrowsMeaningfulException()
     {
       // Arrange
       var playerId = Guid.NewGuid();
@@ -395,7 +395,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     [Test]
     [Category("All")]
     [Category("GameBoardData")]
-    public void PlaceSettlement_TryPlacingOnInvalidLocation_ReturnsMeaningfulException()
+    public void PlaceSettlement_TryPlacingOnInvalidLocation_ThrowsMeaningfulException()
     {
       // Arrange
       var playerId = Guid.NewGuid();
@@ -415,7 +415,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     [TestCase(19u)]
     [TestCase(21u)]
     [TestCase(31u)]
-    public void PlaceSettlement_TryPlacingNextToSettledLocation_ReturnsMeaningfulException(UInt32 newSettlementLocation)
+    public void PlaceSettlement_TryPlacingNextToSettledLocation_ThrowsMeaningfulException(UInt32 newSettlementLocation)
     {
       // Arrange
       var playerId = Guid.NewGuid();
