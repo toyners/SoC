@@ -14,6 +14,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     [Test]
     [Category("All")]
     [Category("GameBoardData")]
+    [Category("CanPlaceRoad")]
     public void CanPlaceRoad_EmptyBoard_ReturnsStartingInfrastructureNotPresent()
     {
       // Arrange
@@ -29,6 +30,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     [Test]
     [Category("All")]
     [Category("GameBoardData")]
+    [Category("CanPlaceRoad")]
     public void CanPlaceRoad_RoadNotConnectedToPlacedSettlement_ReturnsNotConnected()
     {
       // Arrange
@@ -46,6 +48,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     [Test]
     [Category("All")]
     [Category("GameBoardData")]
+    [Category("CanPlaceRoad")]
     public void CanPlaceRoad_StartingInfrastructureNotPlaced_ReturnsStartingInfrastructureNotPresent()
     {
       var playerId = Guid.NewGuid();
@@ -58,6 +61,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     [Test]
     [Category("All")]
     [Category("GameBoardData")]
+    [Category("CanPlaceRoad")]
     [TestCase(2u, 3u)]
     [TestCase(8u, 9u)]
     public void CanPlaceRoad_RoadNotConnectedToPlacedRoad_ReturnsNotConnected(UInt32 roadStartLocation, UInt32 roadEndLocation)
@@ -72,6 +76,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
     [Test]
     [Category("GameBoardData")]
+    [Category("CanPlaceRoad")]
     [TestCase(53u, 54u)] // Hanging over the edge 
     [TestCase(54u, 53u)] // Hanging over the edge
     [TestCase(100u, 101u)]
@@ -91,6 +96,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
     [Test]
     [Category("GameBoardData")]
+    [Category("CanPlaceRoad")]
     [TestCase(43u, 53u)]
     [TestCase(53u, 43u)]
     public void CanPlaceRoad_NoDirectConnection_ReturnsRoadIsInvalid(UInt32 start, UInt32 end)
@@ -109,6 +115,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
     [Test]
     [Category("GameBoardData")]
+    [Category("CanPlaceRoad")]
     public void CanPlaceRoad_ConnectedToRoad_ReturnsValid()
     {
       var gameBoardData = new GameBoardData(BoardSizes.Standard);
@@ -120,6 +127,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
     [Test]
     [Category("GameBoardData")]
+    [Category("CanPlaceRoad")]
     public void CanPlaceRoad_RoadAlreadyBuilt_ReturnsRoadIsOccupied()
     {
       var gameBoardData = new GameBoardData(BoardSizes.Standard);
@@ -133,6 +141,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     [Test]
     [Category("All")]
     [Category("GameBoardData")]
+    [Category("CanPlaceRoad")]
     [TestCase(11u, 21u)]
     [TestCase(21u, 11u)]
     public void CanPlaceRoad_JoiningToOtherRoads_ReturnsValid(UInt32 roadStartLocation, UInt32 roadEndLocation)
@@ -152,6 +161,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     [Test]
     [Category("All")]
     [Category("GameBoardData")]
+    [Category("CanPlaceSettlement")]
     public void CanPlaceSettlement_EmptyBoard_ReturnsStartingInfrastructureNotPresent()
     {
       // Arrange
@@ -170,6 +180,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     [Test]
     [Category("All")]
     [Category("GameBoardData")]
+    [Category("CanPlaceSettlement")]
     public void CanPlaceSettlement_TryPlacingOnSettledLocation_ReturnsLocationIsOccupiedStatus()
     {
       // Arrange
@@ -189,6 +200,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     [Test]
     [Category("All")]
     [Category("GameBoardData")]
+    [Category("CanPlaceSettlement")]
     public void CanPlaceSettlement_TryPlacingOnInvalidLocation_ReturnsLocationIsInvalidStatus()
     {
       // Arrange
@@ -208,6 +220,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     [Test]
     [Category("All")]
     [Category("GameBoardData")]
+    [Category("CanPlaceSettlement")]
     [TestCase(19u)]
     [TestCase(21u)]
     [TestCase(31u)]
@@ -231,6 +244,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     [Test]
     [Category("All")]
     [Category("GameBoardData")]
+    [Category("CanPlaceStartingInfrastructure")]
     public void CanPlaceStartingInfrastructure_EmptyBoard_ReturnsValid()
     {
       // Arrange
@@ -363,6 +377,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     [Test]
     [Category("All")]
     [Category("GameBoardData")]
+    [Category("PlaceSettlement")]
     public void PlaceSettlement_EmptyBoard_ThrowsMeaningfulException()
     {
       // Arrange
@@ -378,6 +393,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     [Test]
     [Category("All")]
     [Category("GameBoardData")]
+    [Category("PlaceSettlement")]
     public void PlaceSettlement_TryPlacingOnSettledLocation_ThrowsMeaningfulException()
     {
       // Arrange
@@ -395,6 +411,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     [Test]
     [Category("All")]
     [Category("GameBoardData")]
+    [Category("PlaceSettlement")]
     public void PlaceSettlement_TryPlacingOnInvalidLocation_ThrowsMeaningfulException()
     {
       // Arrange
@@ -412,6 +429,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     [Test]
     [Category("All")]
     [Category("GameBoardData")]
+    [Category("PlaceSettlement")]
     [TestCase(19u)]
     [TestCase(21u)]
     [TestCase(31u)]
@@ -433,6 +451,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     [Test]
     [Category("All")]
     [Category("GameBoardData")]
+    [Category("PlaceRoad")]
     public void PlaceRoad_HasNotPlacedStartingInfrastructure_ThrowsMeaningfulException()
     {
       // Arrange
