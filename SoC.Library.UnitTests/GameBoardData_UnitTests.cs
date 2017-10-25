@@ -232,24 +232,6 @@ namespace Jabberwocky.SoC.Library.UnitTests
     [Category("All")]
     [Category("GameBoardData")]
     [Category("CanPlaceRoad")]
-    public void CanPlaceRoad_RoadNotConnectedToPlacedSettlement_ReturnsNotConnected()
-    {
-      // Arrange
-      var playerId = Guid.NewGuid();
-      var gameBoardData = new GameBoardData(BoardSizes.Standard);
-      gameBoardData.PlaceStartingInfrastructure(playerId, 0, 1);
-
-      // Act
-      var result = gameBoardData.CanPlaceRoad(playerId, 2, 3);
-
-      // Assert
-      result.Status.ShouldBe(GameBoardData.VerificationStatus.NotConnectedToExisting);
-    }
-
-    [Test]
-    [Category("All")]
-    [Category("GameBoardData")]
-    [Category("CanPlaceRoad")]
     public void CanPlaceRoad_StartingInfrastructureNotPlaced_ReturnsStartingInfrastructureNotPresent()
     {
       var playerId = Guid.NewGuid();
