@@ -25,7 +25,8 @@ namespace Jabberwocky.SoC.Library.GameBoards
       RoadIsOffBoard,
       RoadIsOccupied,
       NoDirectConnection,
-      StartingInfrastructureNotPresent,
+      StartingInfrastructureNotPresentWhenPlacingRoad,
+      StartingInfrastructureNotPresentWhenPlacingSettlement,
       StartingInfrastructureAlreadyPresent
     }
 
@@ -102,7 +103,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
       // Has the player placed their starting infrastructure
       if (!this.HasPlacedStartingInfrastructure(playerId))
       {
-        return new VerificationResults { Status = VerificationStatus.StartingInfrastructureNotPresent };
+        return new VerificationResults { Status = VerificationStatus.StartingInfrastructureNotPresentWhenPlacingRoad };
       }
 
       // Are both road locations on the board.
@@ -165,7 +166,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
     {
       if (!this.HasPlacedStartingInfrastructure(playerId))
       {
-        return new VerificationResults { Status = VerificationStatus.StartingInfrastructureNotPresent };
+        return new VerificationResults { Status = VerificationStatus.StartingInfrastructureNotPresentWhenPlacingSettlement };
       }
 
       if (!this.SettlementLocationOnBoard(locationIndex))
@@ -497,14 +498,12 @@ namespace Jabberwocky.SoC.Library.GameBoards
       return data;
     }
 
-    public void PlaceRoad(Guid playerId, UInt32 roadStartLocationIndex, UInt32 roadEndLocationIndex)
+    public void PlaceRoad(Guid playerId, UInt32 roadStartLocation, UInt32 roadEndLocation)
     {
-      if (!this.HasPlacedStartingInfrastructure(playerId))
-      {
-        throw new PlacementException("Cannot place road before placing infrastructure using PlaceInfrastructure method.");
-      }
-
-      this.PlaceRoadOnBoard(playerId, roadStartLocationIndex, roadEndLocationIndex);
+      var verificationResults = this.CanPlaceRoad(playerId, roadStartLocation, roadEndLocation);
+      this.ThrowExceptionOnBadVerificationResult(verificationResults);
+      
+      this.PlaceRoadOnBoard(playerId, roadStartLocation, roadEndLocation);
     }
 
     private Boolean HasPlacedStartingInfrastructure(Guid playerId)
@@ -653,8 +652,12 @@ namespace Jabberwocky.SoC.Library.GameBoards
     {
       switch (verificationResults.Status)
       {
+        case VerificationStatus.NoDirectConnection: throw new PlacementException("Cannot place road because no direct connection between start location and end location.");
+        case VerificationStatus.NotConnectedToExisting: throw new PlacementException("Cannot place road because it is not connected to an existing road segment.");
+        case VerificationStatus.RoadIsOccupied: throw new PlacementException("Cannot place road because road already exists.");
+        case VerificationStatus.RoadIsOffBoard: throw new PlacementException("Cannot place road because board location is not valid.");
         case VerificationStatus.StartingInfrastructureAlreadyPresent: throw new PlacementException("Cannot place starting infrastructure more than once per player.");
-        case VerificationStatus.NoDirectConnection: throw new PlacementException(); // TODO: Set message for this. Verify with test. 
+        case VerificationStatus.StartingInfrastructureNotPresentWhenPlacingRoad: throw new PlacementException("Cannot place road before placing initial infrastructure using PlaceInfrastructure method.");
         case VerificationStatus.Valid: break;
       }
     }

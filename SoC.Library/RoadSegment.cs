@@ -26,12 +26,12 @@ namespace Jabberwocky.SoC.Library
 
     public static Boolean operator ==(RoadSegment road1, RoadSegment road2)
     {
-      if (road1 == null && road2 == null)
+      if (Object.ReferenceEquals(road1, null) && Object.ReferenceEquals(road2, null))
       {
         return true;
       }
 
-      if (road1 == null || road2 == null)
+      if (Object.ReferenceEquals(road1, null) || Object.ReferenceEquals(road2, null))
       {
         return false;
       }
