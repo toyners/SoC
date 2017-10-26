@@ -26,6 +26,16 @@ namespace Jabberwocky.SoC.Library
 
     public static Boolean operator ==(RoadSegment road1, RoadSegment road2)
     {
+      if (road1 == null && road2 == null)
+      {
+        return true;
+      }
+
+      if (road1 == null || road2 == null)
+      {
+        return false;
+      }
+
       if (road1.Location1 == road2.Location1 && road1.Location2 == road2.Location2)
       {
         return true;

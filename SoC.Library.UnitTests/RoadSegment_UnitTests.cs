@@ -9,6 +9,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
   public class RoadSegment_UnitTests
   {
     [Test]
+    [Category("All")]
     [Category("RoadSegment")]
     public void Cstr_LocationsAreSame_ThrowMeaningfulException()
     {
@@ -17,6 +18,9 @@ namespace Jabberwocky.SoC.Library.UnitTests
       Should.Throw<ArgumentException>(action).Message.ShouldBe("Locations cannot be the same.");
     }
 
+    [Test]
+    [Category("All")]
+    [Category("RoadSegment")]
     public void Cstr_ValidRoadParameters_NoExceptionThrown()
     {
       Action action = () => { new RoadSegment(0, 1); };
@@ -25,6 +29,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     }
 
     [Test]
+    [Category("All")]
     [Category("RoadSegment")]
     public void Equals_OtherObjectIsNotRoad_ReturnFalse()
     {
@@ -35,6 +40,48 @@ namespace Jabberwocky.SoC.Library.UnitTests
     }
 
     [Test]
+    [Category("All")]
+    [Category("RoadSegment")]
+    public void EqualityOperator_RoadSegmentsAreSameObject_ReturnTrue()
+    {
+      var road1 = new RoadSegment(0, 1);
+      var road2 = road1;
+
+      (road1 == road2).ShouldBeTrue();
+    }
+
+    [Test]
+    [Category("All")]
+    [Category("RoadSegment")]
+    public void EqualityOperator_OneRoadSegmentIsNull_ReturnFalse()
+    {
+      var road1 = new RoadSegment(0, 1);
+      var road2 = (RoadSegment)null;
+
+      (road1 == road2).ShouldBeFalse();
+    }
+
+    [Test]
+    [Category("All")]
+    [Category("RoadSegment")]
+    public void EqualityOperator_OtherRoadSegmentIsNull_ReturnFalse()
+    {
+      var road1 = new RoadSegment(0, 1);
+      var road2 = (RoadSegment)null;
+
+      (road2 == road1).ShouldBeFalse();
+    }
+
+    [Test]
+    [Category("All")]
+    [Category("RoadSegment")]
+    public void EqualityOperator_BothRoadSegmentsAreNull_ReturnTrue()
+    {
+      ((RoadSegment)null == (RoadSegment)null).ShouldBeTrue();
+    }
+
+    [Test]
+    [Category("All")]
     [Category("RoadSegment")]
     public void EqualityOperator_LocationsAreSame_ReturnTrue()
     {
@@ -45,6 +92,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     }
 
     [Test]
+    [Category("All")]
     [Category("RoadSegment")]
     public void EqualityOperator_LocationsAreDifferent_ReturnFalse()
     {
@@ -55,6 +103,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     }
 
     [Test]
+    [Category("All")]
     [Category("RoadSegment")]
     public void EqualityOperator_LocationsAreDiametricallyIdentical_ReturnTrue()
     {
@@ -65,6 +114,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     }
 
     [Test]
+    [Category("All")]
     [Category("RoadSegment")]
     public void InequalityOperator_LocationsAreSame_ReturnFalse()
     {
@@ -75,6 +125,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     }
 
     [Test]
+    [Category("All")]
     [Category("RoadSegment")]
     public void InequalityOperator_LocationsAreDifferent_ReturnTrue()
     {
@@ -85,6 +136,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     }
 
     [Test]
+    [Category("All")]
     [Category("RoadSegment")]
     public void InequalityOperator_LocationsAreDiametricallyIdentical_ReturnFalse()
     {
