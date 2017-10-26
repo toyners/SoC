@@ -195,12 +195,22 @@ namespace Jabberwocky.SoC.Library.GameBoards
         };
       }
 
-      return new VerificationResults
+      if (!this.SettlementIsOnRoad(playerId, locationIndex))
       {
-        Status = VerificationStatus.Valid,
-        LocationIndex = 0u,
-        PlayerId = Guid.Empty
-      };
+        return new VerificationResults { Status = VerificationStatus.NotConnectedToExisting };
+      }
+
+      return new VerificationResults { Status = VerificationStatus.Valid };
+    }
+
+    private Boolean SettlementIsOnRoad(Guid playerId, UInt32 locationIndex)
+    {
+      if (this.roadsByPlayer.ContainsKey(playerId))
+      {
+        return this.roadsByPlayer[playerId].FirstOrDefault(r => r.Location1 == locationIndex || r.Location2 == locationIndex) != null;
+      }
+
+      return false;
     }
 
     private Boolean TooCloseToSettlement(UInt32 locationIndex, out Guid id, out UInt32 index)
@@ -607,31 +617,36 @@ namespace Jabberwocky.SoC.Library.GameBoards
       var verificationResults = this.CanPlaceSettlement(playerId, locationIndex);
       this.ThrowExceptionOnBadVerificationResult(verificationResults);
 
-      if (this.settlementsByPlayer.ContainsKey(playerId))
-      {
-        this.settlementsByPlayer[playerId].Add(locationIndex);
-      }
-      else
-      {
-        this.settlementsByPlayer.Add(playerId, new List<uint> { locationIndex });
-      }
-
-      this.settlements.Add(locationIndex, playerId);
+      this.PlaceSettlementOnBoard(playerId, locationIndex);
     }
 
     /// <summary>
     /// Place starting infrastructure (settlement and connecting road segment).
     /// </summary>
     /// <param name="playerId">Id of player placing the infrastructure.</param>
-    /// <param name="settlementIndex">Location to place settlement. Also the starting location of the road segment.</param>
-    /// <param name="endIndex">End location of road segment.</param>
-    public void PlaceStartingInfrastructure(Guid playerId, UInt32 settlementIndex, UInt32 endIndex)
+    /// <param name="settlementLocation">Location to place settlement. Also the starting location of the road segment.</param>
+    /// <param name="roadEndLocation">End location of road segment.</param>
+    public void PlaceStartingInfrastructure(Guid playerId, UInt32 settlementLocation, UInt32 roadEndLocation)
     {
-      var verificationResults = this.CanPlaceStartingInfrastructure(playerId, settlementIndex, endIndex);
+      var verificationResults = this.CanPlaceStartingInfrastructure(playerId, settlementLocation, roadEndLocation);
       this.ThrowExceptionOnBadVerificationResult(verificationResults);
 
-      this.PlaceSettlement(playerId, settlementIndex);
-      this.PlaceRoadOnBoard(playerId, settlementIndex, endIndex);
+      this.PlaceSettlementOnBoard(playerId, settlementLocation);
+      this.PlaceRoadOnBoard(playerId, settlementLocation, roadEndLocation);
+    }
+
+    private void PlaceSettlementOnBoard(Guid playerId, UInt32 settlementLocation)
+    {
+      if (this.settlementsByPlayer.ContainsKey(playerId))
+      {
+        this.settlementsByPlayer[playerId].Add(settlementLocation);
+      }
+      else
+      {
+        this.settlementsByPlayer.Add(playerId, new List<uint> { settlementLocation });
+      }
+
+      this.settlements.Add(settlementLocation, playerId);
     }
 
     private void ThrowExceptionOnBadVerificationResult(VerificationResults verificationResults)
@@ -1190,6 +1205,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
       public UInt32 Production;
     }
 
+    [DebuggerDisplay("Status = {Status}, PlayerId = {PlayerId}, LocationIndex = {LocationIndex}")]
     public struct VerificationResults
     {
       public VerificationStatus Status;
