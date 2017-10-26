@@ -536,7 +536,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
       gameBoardData.PlaceStartingInfrastructure(playerId, 0, 1);
 
       // Act
-      Action action = () => { gameBoardData.CanPlaceSettlement(playerId, 100); };
+      Action action = () => { gameBoardData.PlaceSettlement(playerId, 100); };
 
       // Assert
       action.ShouldThrow<GameBoardData.PlacementException>().Message.ShouldBe("Cannot place settlement because location is not on board.");
@@ -576,7 +576,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
       gameBoardData.PlaceStartingInfrastructure(playerId, 20, 21);
 
       // Act
-      Action action = () => { gameBoardData.CanPlaceSettlement(playerId, 22); };
+      Action action = () => { gameBoardData.PlaceSettlement(playerId, 22); };
 
       // Assert
       action.ShouldThrow<GameBoardData.PlacementException>().Message.ShouldBe("Cannot place settlement because location is not on a road.");
