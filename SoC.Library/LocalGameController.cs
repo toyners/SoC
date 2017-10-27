@@ -653,7 +653,7 @@ namespace Jabberwocky.SoC.Library
         return;
       }
 
-      if (verificationResults.Status == GameBoardData.VerificationStatus.NotConnectedToExisting)
+      if (verificationResults.Status == GameBoardData.VerificationStatus.RoadNotConnectedToExistingRoad)
       {
         var errorDetails = new ErrorDetails("Cannot place road at [" + settlementLocation + ", " + roadEndLocation + "]. No connection to a player owned road or settlement.");
         this.ErrorRaisedEvent?.Invoke(errorDetails);

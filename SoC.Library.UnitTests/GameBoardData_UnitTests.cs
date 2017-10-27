@@ -205,7 +205,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
       var result = gameBoardData.CanPlaceRoad(playerId, roadStartLocation, roadEndLocation);
 
       // Assert
-      result.Status.ShouldBe(GameBoardData.VerificationStatus.NotConnectedToExisting);
+      result.Status.ShouldBe(GameBoardData.VerificationStatus.RoadNotConnectedToExistingRoad);
     }
 
     [Test]
@@ -345,7 +345,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
       var result = gameBoardData.CanPlaceSettlement(playerId, 22);
 
       // Assert
-      result.Status.ShouldBe(GameBoardData.VerificationStatus.NotConnectedToExisting);
+      result.Status.ShouldBe(GameBoardData.VerificationStatus.SettlementNotConnectedToExistingRoad);
     }
 
     [Test]
@@ -561,7 +561,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
       Action action = () => { gameBoardData.PlaceSettlement(playerId, newSettlementLocation); };
 
       // Assert
-      action.ShouldThrow<GameBoardData.PlacementException>().Message.ShouldBe("Cannot place settlement because location (" + newSettlementLocation + ") is too close to exising settlement at location (" + location + ").");
+      action.ShouldThrow<GameBoardData.PlacementException>().Message.ShouldBe("Cannot place settlement because location is too close to exising settlement.");
     }
 
     [Test]
@@ -612,7 +612,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
       var gameBoardData = new GameBoardData(BoardSizes.Standard);
 
       // Act
-      Action action = () => { gameBoardData.CanPlaceStartingInfrastructure(playerId, 100, 101); };
+      Action action = () => { gameBoardData.PlaceStartingInfrastructure(playerId, 100, 101); };
 
       // Assert
       action.ShouldThrow<GameBoardData.PlacementException>().Message.ShouldBe("Cannot place settlement because location is not on board.");
@@ -648,10 +648,10 @@ namespace Jabberwocky.SoC.Library.UnitTests
       gameBoardData.PlaceStartingInfrastructure(firstPlayerId, firstSettlementLocation, firstEndRoadLocation);
 
       // Act
-      Action action = () => { gameBoardData.CanPlaceStartingInfrastructure(secondPlayerId, secondSettlementLocation, secondEndRoadLocation); };
+      Action action = () => { gameBoardData.PlaceStartingInfrastructure(secondPlayerId, secondSettlementLocation, secondEndRoadLocation); };
 
       // Assert
-      action.ShouldThrow<GameBoardData.PlacementException>().Message.ShouldBe("Cannot place settlement because location (" + secondSettlementLocation + ") is too close to exising settlement at location (" + firstSettlementLocation + ").");
+      action.ShouldThrow<GameBoardData.PlacementException>().Message.ShouldBe("Cannot place settlement because location is too close to exising settlement.");
     }
 
     [Test]
@@ -665,29 +665,29 @@ namespace Jabberwocky.SoC.Library.UnitTests
       var gameBoardData = new GameBoardData(BoardSizes.Standard);
 
       // Act
-      Action action = () => { gameBoardData.CanPlaceStartingInfrastructure(playerId, 20u, 22u); };
+      Action action = () => { gameBoardData.PlaceStartingInfrastructure(playerId, 20u, 22u); };
 
       // Assert
-      action.ShouldThrow<GameBoardData.PlacementException>().Message.ShouldBe("Cannot place road because no direct connection between locations (20, 22).");
+      action.ShouldThrow<GameBoardData.PlacementException>().Message.ShouldBe("Cannot place road because no direct connection between start location and end location.");
     }
 
     [Test]
     [Category("All")]
     [Category("GameBoardData")]
     [Category("PlaceStartingInfrastructure")]
-    [TestCase(53u, 54u)] // Hanging over the edge 
-    [TestCase(54u, 53u)] // Hanging over the edge
-    [TestCase(100u, 101u)]
-    public void PlaceStartingInfrastructure_RoadOffBoard_ThrowsMeaningfulException(UInt32 settlementLocation, UInt32 roadEndLocation)
+    [TestCase(53u, 54u, "Cannot place road because board location is not valid.")] // Hanging over the edge 
+    [TestCase(54u, 53u, "Cannot place settlement because location is not on board.")] // Hanging over the edge
+    [TestCase(100u, 101u, "Cannot place settlement because location is not on board.")]
+    public void PlaceStartingInfrastructure_InfrastructureOffBoard_ThrowsMeaningfulException(UInt32 settlementLocation, UInt32 roadEndLocation, String expectedMessage)
     {
       // Arrange
       var gameBoardData = new GameBoardData(BoardSizes.Standard);
 
       // Act
-      Action action = () => { gameBoardData.CanPlaceStartingInfrastructure(Guid.NewGuid(), settlementLocation, roadEndLocation); };
+      Action action = () => { gameBoardData.PlaceStartingInfrastructure(Guid.NewGuid(), settlementLocation, roadEndLocation); };
 
       // Assert
-      action.ShouldThrow<GameBoardData.PlacementException>().Message.ShouldBe("Cannot place road because board location is not valid (" + settlementLocation + ", " + roadEndLocation + ").");
+      action.ShouldThrow<GameBoardData.PlacementException>().Message.ShouldBe(expectedMessage);
     }
 
     [Test]
@@ -710,8 +710,8 @@ namespace Jabberwocky.SoC.Library.UnitTests
         // ignore it
       }
 
-      // Check placing the settlement in the same location - will pass since nothing is there.
-      var results = gameBoardData.CanPlaceSettlement(playerId, location);
+      // Check placing the settlement in the same location with a correct road end - will pass since nothing is there.
+      var results = gameBoardData.CanPlaceStartingInfrastructure(playerId, location, 21);
 
       results.Status.ShouldBe(GameBoardData.VerificationStatus.Valid);
     }

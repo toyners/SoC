@@ -18,9 +18,8 @@ namespace Jabberwocky.SoC.Library.GameBoards
       Valid,
       LocationIsOccupied,
       LocationIsInvalid,
-      NotConnectedToExisting,
-      NotConnectedToSettlement,
-      NoSettlementToUpgrade,
+      RoadNotConnectedToExistingRoad,
+      SettlementNotConnectedToExistingRoad,
       TooCloseToSettlement,
       RoadIsOffBoard,
       RoadIsOccupied,
@@ -127,7 +126,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
       // Does it connect to existing road
       if (!this.WillConnectToExistingRoad(playerId, roadStartLocation, roadEndLocation))
       {
-        return new VerificationResults { Status = VerificationStatus.NotConnectedToExisting };
+        return new VerificationResults { Status = VerificationStatus.RoadNotConnectedToExistingRoad };
       }
 
       return new VerificationResults { Status = VerificationStatus.Valid };
@@ -198,7 +197,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
 
       if (!this.SettlementIsOnRoad(playerId, locationIndex))
       {
-        return new VerificationResults { Status = VerificationStatus.NotConnectedToExisting };
+        return new VerificationResults { Status = VerificationStatus.SettlementNotConnectedToExistingRoad };
       }
 
       return new VerificationResults { Status = VerificationStatus.Valid };
@@ -652,13 +651,17 @@ namespace Jabberwocky.SoC.Library.GameBoards
     {
       switch (verificationResults.Status)
       {
+        case VerificationStatus.LocationIsInvalid: throw new PlacementException("Cannot place settlement because location is not on board.");
+        case VerificationStatus.LocationIsOccupied: throw new PlacementException("Cannot place settlement because location is already settled.");
         case VerificationStatus.NoDirectConnection: throw new PlacementException("Cannot place road because no direct connection between start location and end location.");
-        case VerificationStatus.NotConnectedToExisting: throw new PlacementException("Cannot place road because it is not connected to an existing road segment.");
+        case VerificationStatus.RoadNotConnectedToExistingRoad: throw new PlacementException("Cannot place road because it is not connected to an existing road segment.");
         case VerificationStatus.RoadIsOccupied: throw new PlacementException("Cannot place road because road already exists.");
         case VerificationStatus.RoadIsOffBoard: throw new PlacementException("Cannot place road because board location is not valid.");
+        case VerificationStatus.SettlementNotConnectedToExistingRoad: throw new PlacementException("Cannot place settlement because location is not on a road.");
         case VerificationStatus.StartingInfrastructureAlreadyPresent: throw new PlacementException("Cannot place starting infrastructure more than once per player.");
         case VerificationStatus.StartingInfrastructureNotPresentWhenPlacingRoad: throw new PlacementException("Cannot place road before placing initial infrastructure using PlaceInfrastructure method.");
-        case VerificationStatus.Valid: break;
+        case VerificationStatus.StartingInfrastructureNotPresentWhenPlacingSettlement: throw new PlacementException("Cannot place settlement before placing infrastructure using PlaceInfrastructure method.");
+        case VerificationStatus.TooCloseToSettlement: throw new PlacementException("Cannot place settlement because location is too close to exising settlement.");
       }
     }
 
