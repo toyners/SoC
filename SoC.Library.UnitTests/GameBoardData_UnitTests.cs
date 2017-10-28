@@ -809,10 +809,10 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
       var roll = 8u;
       var gameBoardData = new GameBoardData(BoardSizes.Standard);
-      gameBoardData.PlaceSettlement(player1_Id, 12u);
-      gameBoardData.PlaceSettlement(player1_Id, 53u);
-      gameBoardData.PlaceSettlement(player2_Id, 43u);
-      gameBoardData.PlaceSettlement(player3_Id, 39u);
+      gameBoardData.PlaceStartingInfrastructure(player1_Id, 12, 11);
+      gameBoardData.PlaceStartingInfrastructure(player1_Id, 53, 52);
+      gameBoardData.PlaceStartingInfrastructure(player2_Id, 43, 42);
+      gameBoardData.PlaceStartingInfrastructure(player3_Id, 39, 47);
 
       var result = gameBoardData.GetResourcesForRoll(roll);
 
@@ -823,16 +823,16 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
     [Test]
     [Category("GameBoardData")]
-    [TestCase(5u, 42u, ResourceTypes.Brick)]
-    [TestCase(2u, 23u, ResourceTypes.Grain)]
-    [TestCase(11u, 27u, ResourceTypes.Lumber)]
-    [TestCase(6u, 20u, ResourceTypes.Ore)]
-    [TestCase(10u, 12u, ResourceTypes.Wool)]
-    public void GetResourcesForRoll_StandardBoard_ReturnsCorrectResources(UInt32 diceRoll, UInt32 location, ResourceTypes expectedType)
+    [TestCase(5u, 42u, 41u, ResourceTypes.Brick)]
+    [TestCase(2u, 23u, 22u, ResourceTypes.Grain)]
+    [TestCase(11u, 27u, 28u, ResourceTypes.Lumber)]
+    [TestCase(6u, 20u, 21u, ResourceTypes.Ore)]
+    [TestCase(10u, 12u, 13u, ResourceTypes.Wool)]
+    public void GetResourcesForRoll_StandardBoard_ReturnsCorrectResources(UInt32 diceRoll, UInt32 settlementLocation, UInt32 roadEndLocation, ResourceTypes expectedType)
     {
       var playerId = Guid.NewGuid();
       var gameBoardData = new GameBoardData(BoardSizes.Standard);
-      gameBoardData.PlaceSettlement(playerId, location);
+      gameBoardData.PlaceStartingInfrastructure(playerId, settlementLocation, roadEndLocation);
 
       var result = gameBoardData.GetResourcesForRoll(diceRoll);
 
@@ -858,7 +858,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
       // Arrange
       var playerId = Guid.NewGuid();
       var gameBoardData = new GameBoardData(BoardSizes.Standard);
-      gameBoardData.PlaceSettlement(playerId, 0u);
+      gameBoardData.PlaceStartingInfrastructure(playerId, 0, 8);
 
       // Act
       var results = gameBoardData.GetPlayersForHex(0);
@@ -877,8 +877,8 @@ namespace Jabberwocky.SoC.Library.UnitTests
       var firstPlayerId = Guid.NewGuid();
       var secondPlayerId = Guid.NewGuid();
       var gameBoardData = new GameBoardData(BoardSizes.Standard);
-      gameBoardData.PlaceSettlement(firstPlayerId, 0u);
-      gameBoardData.PlaceSettlement(secondPlayerId, 2u);
+      gameBoardData.PlaceStartingInfrastructure(firstPlayerId, 0, 8);
+      gameBoardData.PlaceStartingInfrastructure(secondPlayerId, 2, 1);
 
       // Act
       var results = gameBoardData.GetPlayersForHex(0);
@@ -897,8 +897,9 @@ namespace Jabberwocky.SoC.Library.UnitTests
       // Arrange
       var playerId = Guid.NewGuid();
       var gameBoardData = new GameBoardData(BoardSizes.Standard);
-      gameBoardData.PlaceSettlement(playerId, 0u);
-      gameBoardData.PlaceSettlement(playerId, 2u);
+      gameBoardData.PlaceStartingInfrastructure(playerId, 0, 8);
+      gameBoardData.PlaceRoad(playerId, 8, 9);
+      gameBoardData.PlaceSettlement(playerId, 9);
 
       // Act
       var results = gameBoardData.GetPlayersForHex(0);
