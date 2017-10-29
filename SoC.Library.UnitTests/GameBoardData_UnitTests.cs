@@ -10,6 +10,11 @@ namespace Jabberwocky.SoC.Library.UnitTests
   [TestFixture]
   public class GameBoardData_UnitTests
   {
+    private const UInt32 FirstSettlementLocation = 12;
+    private const UInt32 FirstRoadEndLocation = 11;
+    private const UInt32 SecondSettlementLocation = 25;
+    private const UInt32 SecondRoadEndLocation = 15;
+
     #region Methods
     [Test]
     [Category("All")]
@@ -232,11 +237,31 @@ namespace Jabberwocky.SoC.Library.UnitTests
     [Category("All")]
     [Category("GameBoardData")]
     [Category("CanPlaceSettlement")]
-    public void CanPlaceSettlement_EmptyBoard_ReturnsStartingInfrastructureNotPresent()
+    public void CanPlaceSettlement_EmptyBoard_ReturnsStartingInfrastructureNotPresentWhenPlacingSettlement()
     {
       // Arrange
       var playerId = Guid.NewGuid();
       var gameBoardData = new GameBoardData(BoardSizes.Standard);
+
+      // Act
+      var result = gameBoardData.CanPlaceSettlement(playerId, 0);
+
+      // Assert
+      result.Status.ShouldBe(GameBoardData.VerificationStatus.StartingInfrastructureNotPresentWhenPlacingSettlement);
+      result.LocationIndex.ShouldBe(0u);
+      result.PlayerId.ShouldBe(Guid.Empty);
+    }
+
+    [Test]
+    [Category("All")]
+    [Category("GameBoardData")]
+    [Category("CanPlaceSettlement")]
+    public void CanPlaceSettlement_OnlyPlacedFirstStartingInfrastructure_ReturnsStartingInfrastructureNotPresentWhenPlacingSettlement()
+    {
+      // Arrange
+      var playerId = Guid.NewGuid();
+      var gameBoardData = new GameBoardData(BoardSizes.Standard);
+      gameBoardData.PlaceStartingInfrastructure(playerId, FirstSettlementLocation, FirstRoadEndLocation);
 
       // Act
       var result = gameBoardData.CanPlaceSettlement(playerId, 0);
@@ -409,7 +434,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     [Category("All")]
     [Category("GameBoardData")]
     [Category("CanPlaceStartingInfrastructure")]
-    public void CanPlaceStartingInfrastructure_PlayerAlreadyPlacedStartingInfrastructure_ReturnsStartingInfrastructureAlreadyPresent()
+    public void CanPlaceStartingInfrastructure_OnlyPlacedFirstStartingInfrastructure_ReturnsValid()
     {
       var playerId = Guid.NewGuid();
       var locationOneIndex = 20u;
@@ -421,6 +446,25 @@ namespace Jabberwocky.SoC.Library.UnitTests
       var locationTwoIndex = 0u;
       var roadTwoEndIndex = 1u;
       var result = gameBoardData.CanPlaceStartingInfrastructure(playerId, locationTwoIndex, roadTwoEndIndex);
+
+      result.Status.ShouldBe(GameBoardData.VerificationStatus.Valid);
+    }
+
+    [Test]
+    [Category("All")]
+    [Category("GameBoardData")]
+    [Category("CanPlaceStartingInfrastructure")]
+    public void CanPlaceStartingInfrastructure_PlayerAlreadyPlacedAllStartingInfrastructure_ReturnsStartingInfrastructureAlreadyPresent()
+    {
+      var playerId = Guid.NewGuid();
+
+      var gameBoardData = new GameBoardData(BoardSizes.Standard);
+      gameBoardData.PlaceStartingInfrastructure(playerId, FirstSettlementLocation, FirstRoadEndLocation);
+      gameBoardData.PlaceStartingInfrastructure(playerId, SecondSettlementLocation, SecondRoadEndLocation);
+
+      var locationThreeIndex = 0u;
+      var roadThreeEndIndex = 1u;
+      var result = gameBoardData.CanPlaceStartingInfrastructure(playerId, locationThreeIndex, roadThreeEndIndex);
 
       result.Status.ShouldBe(GameBoardData.VerificationStatus.StartingInfrastructureAlreadyPresent);
       result.LocationIndex.ShouldBe(0u);
@@ -622,13 +666,14 @@ namespace Jabberwocky.SoC.Library.UnitTests
     [Category("All")]
     [Category("GameBoardData")]
     [Category("PlaceStartingInfrastructure")]
-    public void PlaceStartingInfrastructure_PlayerAlreadyPlacedStartingInfrastructure_ThrowsMeaningfulException()
+    public void PlaceStartingInfrastructure_PlayerAlreadyPlacedAllStartingInfrastructure_ThrowsMeaningfulException()
     {
       var playerId = Guid.NewGuid();
       var gameBoardData = new GameBoardData(BoardSizes.Standard);
-      gameBoardData.PlaceStartingInfrastructure(playerId, 20u, 21u);
+      gameBoardData.PlaceStartingInfrastructure(playerId, 12u, 11u);
+      gameBoardData.PlaceStartingInfrastructure(playerId, 25u, 15u);
 
-      Action action = () => { gameBoardData.PlaceStartingInfrastructure(playerId, 10u, 11u); };
+      Action action = () => { gameBoardData.PlaceStartingInfrastructure(playerId, 0u, 1u); };
 
       action.ShouldThrow<GameBoardData.PlacementException>().Message.ShouldBe("Cannot place starting infrastructure more than once per player.");
     }
