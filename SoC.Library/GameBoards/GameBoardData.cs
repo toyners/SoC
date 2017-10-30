@@ -102,9 +102,10 @@ namespace Jabberwocky.SoC.Library.GameBoards
     public VerificationResults CanPlaceRoad(Guid playerId, UInt32 roadStartLocation, UInt32 roadEndLocation)
     {
       // Has the player placed their starting infrastructure
-      if (!this.HasPlacedStartingInfrastructure(playerId))
+      switch (this.PlacedStartingInfrastructureStatus(playerId))
       {
-        return new VerificationResults { Status = VerificationStatus.StartingInfrastructureNotPresentWhenPlacingRoad };
+        case StartingInfrastructureStatus.None: return new VerificationResults { Status = VerificationStatus.StartingInfrastructureNotPresentWhenPlacingRoad };
+        case StartingInfrastructureStatus.Partial: return new VerificationResults { Status = VerificationStatus.StartingInfrastructureNotCompleteWhenPlacingRoad };
       }
 
       // Are both road locations on the board.
@@ -165,9 +166,10 @@ namespace Jabberwocky.SoC.Library.GameBoards
 
     public VerificationResults CanPlaceSettlement(Guid playerId, UInt32 locationIndex)
     {
-      if (!this.HasPlacedStartingInfrastructure(playerId))
+      switch (this.PlacedStartingInfrastructureStatus(playerId))
       {
-        return new VerificationResults { Status = VerificationStatus.StartingInfrastructureNotPresentWhenPlacingSettlement };
+        case StartingInfrastructureStatus.None: return new VerificationResults { Status = VerificationStatus.StartingInfrastructureNotPresentWhenPlacingSettlement };
+        case StartingInfrastructureStatus.Partial: return new VerificationResults { Status = VerificationStatus.StartingInfrastructureNotCompleteWhenPlacingSettlement };
       }
 
       if (!this.SettlementLocationOnBoard(locationIndex))
@@ -242,7 +244,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
 
     public VerificationResults CanPlaceStartingInfrastructure(Guid playerId, UInt32 settlementLocation, UInt32 roadEndLocation)
     {
-      if (this.HasPlacedStartingInfrastructure(playerId))
+      if (this.PlacedStartingInfrastructureStatus(playerId) == StartingInfrastructureStatus.Complete)
       {
         return new VerificationResults { Status = VerificationStatus.StartingInfrastructureAlreadyPresent };
       }
@@ -507,18 +509,35 @@ namespace Jabberwocky.SoC.Library.GameBoards
       this.PlaceRoadOnBoard(playerId, roadStartLocation, roadEndLocation);
     }
 
-    private Boolean HasPlacedStartingInfrastructure(Guid playerId)
+    private enum StartingInfrastructureStatus
+    {
+      None,
+      Partial,
+      Complete
+    }
+
+    private StartingInfrastructureStatus PlacedStartingInfrastructureStatus(Guid playerId)
     {
       if (!this.settlementsByPlayer.ContainsKey(playerId) || 
-        this.settlementsByPlayer[playerId] == null || 
-        this.settlementsByPlayer[playerId].Count < 1)
+        this.settlementsByPlayer[playerId] == null ||
+        this.settlementsByPlayer[playerId].Count == 0)
       {
-        return false;
+        return StartingInfrastructureStatus.None;
       }
 
-      return this.roadsByPlayer.ContainsKey(playerId) &&
-          this.roadsByPlayer[playerId] != null &&
-          this.roadsByPlayer[playerId].Count >= 1;
+      if (this.settlementsByPlayer[playerId].Count == 1)
+      {
+        return StartingInfrastructureStatus.Partial;
+      }
+
+      if (!this.roadsByPlayer.ContainsKey(playerId) ||
+          this.roadsByPlayer[playerId] == null ||
+          this.roadsByPlayer[playerId].Count == 0)
+      {
+        return StartingInfrastructureStatus.None;
+      }
+
+      return this.roadsByPlayer[playerId].Count == 1 ? StartingInfrastructureStatus.Partial : StartingInfrastructureStatus.Complete;
     }
 
     private void PlaceRoadOnBoard(Guid playerId, UInt32 roadStartLocationIndex, UInt32 roadEndLocationIndex)
@@ -661,8 +680,10 @@ namespace Jabberwocky.SoC.Library.GameBoards
         case VerificationStatus.RoadIsOffBoard: throw new PlacementException("Cannot place road because board location is not valid.");
         case VerificationStatus.SettlementNotConnectedToExistingRoad: throw new PlacementException("Cannot place settlement because location is not on a road.");
         case VerificationStatus.StartingInfrastructureAlreadyPresent: throw new PlacementException("Cannot place starting infrastructure more than once per player.");
-        case VerificationStatus.StartingInfrastructureNotPresentWhenPlacingRoad: throw new PlacementException("Cannot place road before placing initial infrastructure using PlaceInfrastructure method.");
-        case VerificationStatus.StartingInfrastructureNotPresentWhenPlacingSettlement: throw new PlacementException("Cannot place settlement before placing infrastructure using PlaceInfrastructure method.");
+        case VerificationStatus.StartingInfrastructureNotCompleteWhenPlacingRoad:
+        case VerificationStatus.StartingInfrastructureNotPresentWhenPlacingRoad: throw new PlacementException("Cannot place road before placing all initial infrastructure.");
+        case VerificationStatus.StartingInfrastructureNotCompleteWhenPlacingSettlement:
+        case VerificationStatus.StartingInfrastructureNotPresentWhenPlacingSettlement: throw new PlacementException("Cannot place settlement before placing all initial infrastructure.");
         case VerificationStatus.TooCloseToSettlement: throw new PlacementException("Cannot place settlement because location is too close to exising settlement.");
       }
     }
