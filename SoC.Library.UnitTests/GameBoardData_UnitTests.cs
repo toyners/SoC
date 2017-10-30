@@ -48,6 +48,24 @@ namespace Jabberwocky.SoC.Library.UnitTests
     [Test]
     [Category("All")]
     [Category("GameBoardData")]
+    [Category("CanPlaceRoad")]
+    public void CanPlaceRoad_OnlyPlacedFirstStartingInfrastructure_StartingInfrastructureNotCompleteWhenPlacingRoad()
+    {
+      // Arrange
+      var playerId = Guid.NewGuid();
+      var gameBoardData = new GameBoardData(BoardSizes.Standard);
+      gameBoardData.PlaceStartingInfrastructure(playerId, FirstSettlementLocation, FirstRoadEndLocation);
+
+      // Act
+      var result = gameBoardData.CanPlaceRoad(playerId, 10, FirstRoadEndLocation);
+
+      // Assert
+      result.Status.ShouldBe(GameBoardData.VerificationStatus.StartingInfrastructureNotCompleteWhenPlacingRoad);
+    }
+
+    [Test]
+    [Category("All")]
+    [Category("GameBoardData")]
     [Category("PlaceRoad")]
     public void PlaceRoad_EmptyBoard_ThrowsMeaningfulException()
     {
@@ -59,6 +77,24 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
       // Assert
       action.ShouldThrow<GameBoardData.PlacementException>().Message.ShouldBe("Cannot place road before placing initial infrastructure using PlaceInfrastructure method.");
+    }
+
+    [Test]
+    [Category("All")]
+    [Category("GameBoardData")]
+    [Category("PlaceRoad")]
+    public void PlaceRoad_OnlyPlacedFirstStartingInfrastructure_ThrowsMeaningfulException()
+    {
+      // Arrange
+      var playerId = Guid.NewGuid();
+      var gameBoardData = new GameBoardData(BoardSizes.Standard);
+      gameBoardData.PlaceStartingInfrastructure(playerId, FirstSettlementLocation, FirstRoadEndLocation);
+
+      // Act
+      Action action = () => { gameBoardData.PlaceRoad(playerId, 10, FirstRoadEndLocation); };
+
+      // Assert
+      action.ShouldThrow<GameBoardData.PlacementException>().Message.ShouldBe("Complete this.");
     }
 
     [Test]
@@ -267,7 +303,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
       var result = gameBoardData.CanPlaceSettlement(playerId, 0);
 
       // Assert
-      result.Status.ShouldBe(GameBoardData.VerificationStatus.StartingInfrastructureNotPresentWhenPlacingSettlement);
+      result.Status.ShouldBe(GameBoardData.VerificationStatus.StartingInfrastructureNotCompleteWhenPlacingSettlement);
       result.LocationIndex.ShouldBe(0u);
       result.PlayerId.ShouldBe(Guid.Empty);
     }
@@ -548,6 +584,24 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
       // Assert
       action.ShouldThrow<GameBoardData.PlacementException>().Message.ShouldBe("Cannot place settlement before placing infrastructure using PlaceInfrastructure method.");
+    }
+
+    [Test]
+    [Category("All")]
+    [Category("GameBoardData")]
+    [Category("PlaceSettlement")]
+    public void PlaceSettlement_OnlyPlacedFirstStartingInfrastructure_ThrowsMeaningfulException()
+    {
+      // Arrange
+      var playerId = Guid.NewGuid();
+      var gameBoardData = new GameBoardData(BoardSizes.Standard);
+      gameBoardData.PlaceStartingInfrastructure(playerId, FirstSettlementLocation, FirstRoadEndLocation);
+
+      // Act
+      Action action = () => { gameBoardData.CanPlaceSettlement(playerId, 0); };
+
+      // Assert
+      action.ShouldThrow<GameBoardData.PlacementException>().Message.ShouldBe("Complete");
     }
 
     [Test]

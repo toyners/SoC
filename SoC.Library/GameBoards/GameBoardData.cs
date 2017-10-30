@@ -25,7 +25,9 @@ namespace Jabberwocky.SoC.Library.GameBoards
       RoadIsOccupied,
       NoDirectConnection,
       StartingInfrastructureNotPresentWhenPlacingRoad,
+      StartingInfrastructureNotCompleteWhenPlacingRoad,
       StartingInfrastructureNotPresentWhenPlacingSettlement,
+      StartingInfrastructureNotCompleteWhenPlacingSettlement,
       StartingInfrastructureAlreadyPresent
     }
 
