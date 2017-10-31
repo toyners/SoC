@@ -693,6 +693,9 @@ namespace Jabberwocky.SoC.Library.GameBoards
     Guid[,] roadss = new Guid[1,1];
     public Boolean TryGetLongestRoadDetails(out Guid playerId, out Int32 roadLength)
     {
+      // Get all road ends
+      // Start from road end and advance along path, store each in a set to ensure that cycles are ignored.
+
 
       playerId = Guid.Empty;
       roadLength = 0;
