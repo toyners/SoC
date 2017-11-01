@@ -705,12 +705,16 @@ namespace Jabberwocky.SoC.Library.GameBoards
 
       foreach (var kv2 in this.roadSegmentsByPlayer)
       {
-        var roadEnds = new List<RoadSegment>();
-        roadEnds.Add(kv2.Value[0]);
-        roadEnds.Add(kv2.Value[1]);
+        var roadEnds = new List<UInt32>();
+        roadEnds.Add(12);
+        roadEnds.Add(25);
+        var visitedSet = new HashSet<RoadSegment>();
 
         for (var index = 0; index < roadEnds.Count; index++)
         {
+          var currentRoadSegment = roadEnds[index];
+
+
         }
       }
 
