@@ -1189,6 +1189,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     [Test]
     [Category("All")]
     [Category("GameBoardData")]
+    [Category("GameBoardData.TryGetLongestRoadDetails")]
     public void TryGetLongestRoadDetails_NoRoadsOnBoard_ReturnsFalse()
     {
       // Arrange
@@ -1212,6 +1213,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     [Test]
     [Category("All")]
     [Category("GameBoardData")]
+    [Category("GameBoardData.TryGetLongestRoadDetails")]
     public void TryGetLongestRoadDetails_OnePlayerHasLongestRoad_ReturnsTrue()
     {
       // Arrange
@@ -1245,6 +1247,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     [Test]
     [Category("All")]
     [Category("GameBoardData")]
+    [Category("GameBoardData.TryGetLongestRoadDetails")]
     public void TryGetLongestRoadDetails_TwoPlayersHaveTheLongestRoad_ReturnsFalse()
     {
       // Arrange
@@ -1277,6 +1280,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     [Test]
     [Category("All")]
     [Category("GameBoardData")]
+    [Category("GameBoardData.TryGetLongestRoadDetails")]
     public void TryGetLongestRoadDetails_OnePlayerHasTwoRoads_ReturnsFalse()
     {
       // Arrange
@@ -1308,6 +1312,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     [Test]
     [Category("All")]
     [Category("GameBoardData")]
+    [Category("GameBoardData.TryGetLongestRoadDetails")]
     public void TryGetLongestRoadDetails_LongestRoadIsCycle_ReturnsLongestRoadDetails()
     {
       // Arrange
@@ -1340,6 +1345,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     [Test]
     [Category("All")]
     [Category("GameBoardData")]
+    [Category("GameBoardData.TryGetLongestRoadDetails")]
     public void TryGetLongestRoadDetails_LongestRoadIsFigureOfEight_ReturnsLongestRoadDetails()
     {
       // Arrange
@@ -1378,6 +1384,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     [Test]
     [Category("All")]
     [Category("GameBoardData")]
+    [Category("GameBoardData.TryGetLongestRoadDetails")]
     public void TryGetLongestRoadDetails_LongestRoadContainsFork_ReturnsLongestRoadDetails()
     {
       // Arrange
@@ -1414,6 +1421,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     [Test]
     [Category("All")]
     [Category("GameBoardData")]
+    [Category("GameBoardData.TryGetLongestRoadDetails")]
     public void TryGetLongestRoadDetails_TwoRoadsAreConnectedWithRoadSegment_ReturnsTrue()
     {
       // Arrange
@@ -1445,12 +1453,13 @@ namespace Jabberwocky.SoC.Library.UnitTests
     }
 
     /// <summary>
-    /// Road is in a 6 (or 9) figure i.e. only on end, other end is connected to the road. Road segments not placed sequentially.
+    /// Road is in a 6 (or 9) figure i.e. only one end, other end is connected to the road. Road segments not placed sequentially.
     /// Returns longest road details.
     /// </summary>
     [Test]
     [Category("All")]
     [Category("GameBoardData")]
+    [Category("GameBoardData.TryGetLongestRoadDetails")]
     public void TryGetLongestRoadDetails_OnePlayerHasLongestRoadWithOneEndPoint_ReturnsLongestRoadDetails()
     {
       // Arrange
@@ -1475,6 +1484,64 @@ namespace Jabberwocky.SoC.Library.UnitTests
       result.ShouldBeTrue();
       longestRoadPlayerId.ShouldBe(playerId);
       roadLength.ShouldBe(8);
+    }
+
+    /// <summary>
+    /// Longest road is two segments long with settlement in the middle. Should still return the road as longest.
+    /// </summary>
+    [Test]
+    [Category("All")]
+    [Category("GameBoardData")]
+    [Category("GameBoardData.TryGetLongestRoadDetails")]
+    public void TryGetLongestRoadDetails_StartingSettlementNotOnEndOfRoad_ReturnsLongestRoadDetails()
+    {
+      // Arrange
+      var gameBoard = new GameBoardData(BoardSizes.Standard);
+
+      var playerId = Guid.NewGuid();
+      gameBoard.PlaceStartingInfrastructure(playerId, FirstSettlementLocation, FirstRoadEndLocation);
+      gameBoard.PlaceStartingInfrastructure(playerId, SecondSettlementLocation, SecondRoadEndLocation);
+      gameBoard.PlaceRoad(playerId, FirstSettlementLocation, 4);
+      
+      // Act
+      Int32 roadLength;
+      Guid longestRoadPlayerId;
+      var result = gameBoard.TryGetLongestRoadDetails(out longestRoadPlayerId, out roadLength);
+
+      // Assert
+      result.ShouldBeTrue();
+      longestRoadPlayerId.ShouldBe(playerId);
+      roadLength.ShouldBe(2);
+    }
+
+    /// <summary>
+    /// Settlment has road leading away in all three directions. Two roads are same size. One road is longer.
+    /// </summary>
+    [Test]
+    [Category("All")]
+    [Category("GameBoardData")]
+    [Category("GameBoardData.TryGetLongestRoadDetails")]
+    public void TryGetLongestRoadDetails_SettlementHasRoadsInAllDirections_ReturnsLongestRoadDetails()
+    {
+      // Arrange
+      var gameBoard = new GameBoardData(BoardSizes.Standard);
+
+      var playerId = Guid.NewGuid();
+      gameBoard.PlaceStartingInfrastructure(playerId, FirstSettlementLocation, FirstRoadEndLocation);
+      gameBoard.PlaceStartingInfrastructure(playerId, SecondSettlementLocation, SecondRoadEndLocation);
+      gameBoard.PlaceRoad(playerId, FirstSettlementLocation, 4);
+      gameBoard.PlaceRoad(playerId, FirstRoadEndLocation, 10);
+      gameBoard.PlaceRoad(playerId, FirstSettlementLocation, 13);
+
+      // Act
+      Int32 roadLength;
+      Guid longestRoadPlayerId;
+      var result = gameBoard.TryGetLongestRoadDetails(out longestRoadPlayerId, out roadLength);
+
+      // Assert
+      result.ShouldBeTrue();
+      longestRoadPlayerId.ShouldBe(playerId);
+      roadLength.ShouldBe(3);
     }
     #endregion
   }

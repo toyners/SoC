@@ -40,7 +40,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
     private Dictionary<Guid, List<UInt32>> settlementsByPlayer;
     private Boolean[,] connections;
     private List<RoadSegment> roadSegments;
-    private Dictionary<Guid, List<RoadSegment>> roadsByPlayer;
+    private Dictionary<Guid, List<RoadSegment>> roadSegmentsByPlayer;
     private Dictionary<UInt32, ResourceProducer[]> resourceProvidersByDiceRolls;
     private Dictionary<ResourceProducer, UInt32[]> locationsForResourceProvider;
     private Dictionary<UInt32, UInt32[]> locationsForHex;
@@ -60,7 +60,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
       this.Length = StandardBoardHexCount;
       this.settlements = new Dictionary<UInt32, Guid>();
       this.roadSegments = new List<RoadSegment>();
-      this.roadsByPlayer = new Dictionary<Guid, List<RoadSegment>>();
+      this.roadSegmentsByPlayer = new Dictionary<Guid, List<RoadSegment>>();
       this.settlementsByPlayer = new Dictionary<Guid, List<UInt32>>();
       this.roadNodes = new RoadNode[StandardBoardLocationCount];
 
@@ -209,9 +209,9 @@ namespace Jabberwocky.SoC.Library.GameBoards
 
     private Boolean SettlementIsOnRoad(Guid playerId, UInt32 locationIndex)
     {
-      if (this.roadsByPlayer.ContainsKey(playerId))
+      if (this.roadSegmentsByPlayer.ContainsKey(playerId))
       {
-        return this.roadsByPlayer[playerId].FirstOrDefault(r => r.Location1 == locationIndex || r.Location2 == locationIndex) != null;
+        return this.roadSegmentsByPlayer[playerId].FirstOrDefault(r => r.Location1 == locationIndex || r.Location2 == locationIndex) != null;
       }
 
       return false;
@@ -469,7 +469,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
     {
       var data = new Tuple<UInt32, UInt32, Guid>[this.roadSegments.Count];
       var index = 0;
-      foreach (var kv in this.roadsByPlayer)
+      foreach (var kv in this.roadSegmentsByPlayer)
       {
         foreach (var roadSegment in kv.Value)
         {
@@ -530,14 +530,14 @@ namespace Jabberwocky.SoC.Library.GameBoards
         return StartingInfrastructureStatus.Partial;
       }
 
-      if (!this.roadsByPlayer.ContainsKey(playerId) ||
-          this.roadsByPlayer[playerId] == null ||
-          this.roadsByPlayer[playerId].Count == 0)
+      if (!this.roadSegmentsByPlayer.ContainsKey(playerId) ||
+          this.roadSegmentsByPlayer[playerId] == null ||
+          this.roadSegmentsByPlayer[playerId].Count == 0)
       {
         return StartingInfrastructureStatus.None;
       }
 
-      return this.roadsByPlayer[playerId].Count == 1 ? StartingInfrastructureStatus.Partial : StartingInfrastructureStatus.Complete;
+      return this.roadSegmentsByPlayer[playerId].Count == 1 ? StartingInfrastructureStatus.Partial : StartingInfrastructureStatus.Complete;
     }
 
     private void PlaceRoadOnBoard(Guid playerId, UInt32 roadStartLocationIndex, UInt32 roadEndLocationIndex)
@@ -546,15 +546,15 @@ namespace Jabberwocky.SoC.Library.GameBoards
       var newRoadSegment = new RoadSegment(roadStartLocationIndex, roadEndLocationIndex);
       this.roadSegments.Add(newRoadSegment);
 
-      if (!this.roadsByPlayer.ContainsKey(playerId))
+      if (!this.roadSegmentsByPlayer.ContainsKey(playerId))
       {
         var roadSegmentList = new List<RoadSegment>();
         roadSegmentList.Add(newRoadSegment);
-        this.roadsByPlayer.Add(playerId, roadSegmentList);
+        this.roadSegmentsByPlayer.Add(playerId, roadSegmentList);
       }
       else
       {
-        this.roadsByPlayer[playerId].Add(newRoadSegment);
+        this.roadSegmentsByPlayer[playerId].Add(newRoadSegment);
       }
 
       var startRoadNode = this.roadNodes[roadStartLocationIndex];
@@ -689,17 +689,33 @@ namespace Jabberwocky.SoC.Library.GameBoards
     }
 
     Dictionary<UInt32, HashSet<RoadSegment>> roadsByLocation = new Dictionary<UInt32, HashSet<RoadSegment>>();
-    Dictionary<Guid, List<RoadSegment>> roadSegmentsByPlayer = new Dictionary<Guid, List<RoadSegment>>();
     Guid[,] roadss = new Guid[1,1];
     public Boolean TryGetLongestRoadDetails(out Guid playerId, out Int32 roadLength)
     {
-      // Get all road ends
-      // Start from road end and advance along path, store each in a set to ensure that cycles are ignored.
-
-
       playerId = Guid.Empty;
       roadLength = 0;
-      foreach (var kv in roadSegmentsByPlayer)
+
+      // Get all road ends - Start from the starting settlements because most times they will be a genuine road end
+      // (except in the case of a cycle). 
+      // Start from road end and advance along path, store each in a set to ensure that cycles are ignored.
+      // Find all road segments that are connected to the other end of this road segment
+      // If there are multiple road segments connected to the other end then place a bookmark on the stack.
+      // The bookmark has the location to start from and the set of the locations (paths) not currently explored and
+      // also the visited set (maybe).
+
+      foreach (var kv2 in this.roadSegmentsByPlayer)
+      {
+        var roadEnds = new List<RoadSegment>();
+        roadEnds.Add(kv2.Value[0]);
+        roadEnds.Add(kv2.Value[1]);
+
+        for (var index = 0; index < roadEnds.Count; index++)
+        {
+        }
+      }
+
+
+      /*foreach (var kv in roadSegmentsByPlayer)
       {
         // Got all road segments for the player. Identify the end points
         var playerSegments = kv.Value;
@@ -767,7 +783,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
             playerId = Guid.Empty;
           }
         }
-      }
+      }*/
 
       throw new NotImplementedException();
     }
