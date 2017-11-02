@@ -1275,7 +1275,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     }
 
     /// <summary>
-    /// One player has multiple roads that are the longest. Returns false. 
+    /// One player has multiple roads that are the longest. Returns true. 
     /// </summary>
     [Test]
     [Category("All")]
@@ -1283,8 +1283,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     [Category("GameBoardData.TryGetLongestRoadDetails")]
     public void TryGetLongestRoadDetails_OnePlayerHasTwoRoads_ReturnsFalse()
     {
-      // Arrange
-      
+      // Arrange      
       var gameBoard = new GameBoardData(BoardSizes.Standard);
 
       var playerId = Guid.NewGuid();
@@ -1302,7 +1301,9 @@ namespace Jabberwocky.SoC.Library.UnitTests
       var result = gameBoard.TryGetLongestRoadDetails(out longestRoadPlayerId, out roadLength);
 
       // Assert
-      result.ShouldBeFalse();
+      result.ShouldBeTrue();
+      roadLength.ShouldBe(3);
+      longestRoadPlayerId.ShouldBe(playerId);
     }
 
     /// <summary>
