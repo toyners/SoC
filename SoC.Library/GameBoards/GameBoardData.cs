@@ -709,10 +709,12 @@ namespace Jabberwocky.SoC.Library.GameBoards
         roadEnds.Add(12);
         roadEnds.Add(25);
         var visitedSet = new HashSet<RoadSegment>();
+        var segments = kv2.Value;
 
         for (var index = 0; index < roadEnds.Count; index++)
         {
-          var currentRoadSegment = roadEnds[index];
+          var currentRoadEndLocation = roadEnds[index];
+          var segmentsContainingLocation = segments.Where(r => r.Location1 == currentRoadEndLocation || r.Location2 == currentRoadEndLocation);
 
 
         }
