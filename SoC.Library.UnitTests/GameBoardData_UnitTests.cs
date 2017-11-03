@@ -1207,7 +1207,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     }
 
     /// <summary>
-    /// Roads placed by two players - first player road is two segments long, second player road is one segment long.
+    /// Roads placed by two players - first player road is three segments long, second player road is two segment long.
     /// Returns true to indicate that there is a longest road.
     /// </summary>
     [Test]
@@ -1275,7 +1275,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     }
 
     /// <summary>
-    /// One player has multiple roads that are the longest. Returns true. 
+    /// One player has multiple roads that are the longest. Returns false. 
     /// </summary>
     [Test]
     [Category("All")]
@@ -1301,9 +1301,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
       var result = gameBoard.TryGetLongestRoadDetails(out longestRoadPlayerId, out roadLength);
 
       // Assert
-      result.ShouldBeTrue();
-      roadLength.ShouldBe(3);
-      longestRoadPlayerId.ShouldBe(playerId);
+      result.ShouldBeFalse();
     }
 
     /// <summary>
