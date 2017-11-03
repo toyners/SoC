@@ -707,14 +707,19 @@ namespace Jabberwocky.SoC.Library.GameBoards
       foreach (var kv2 in this.roadSegmentsByPlayer)
       {
         var roadEnds = new List<UInt32>();
-        roadEnds.Add(12);
-        roadEnds.Add(25);
+        var settlementsPlacedByPlayer = this.settlementsByPlayer[kv2.Key];
+        // First two settlements are always part of the starting infrastruture including the first road segments
+        roadEnds.Add(settlementsPlacedByPlayer[0]); 
+        roadEnds.Add(settlementsPlacedByPlayer[1]);
+        var bookmarks = new Stack<Bookmark>();
+
         var segments = kv2.Value;
         var visitedSet = new HashSet<RoadSegment>();
 
         for (var index = 0; index < roadEnds.Count; index++)
         {
           visitedSet.Clear();
+          bookmarks.Clear();
           var workingRoadLength = 0;
           var currentRoadEndLocation = roadEnds[index];
           var isTravelling = true;
@@ -724,12 +729,25 @@ namespace Jabberwocky.SoC.Library.GameBoards
 
             if (segmentsContainingLocation.Count == 0)
             {
-              // Very bad - should not happen
+              // Travelled to end of road.
               isTravelling = false;
               break;
             }
 
             var currentRoadSegment = segmentsContainingLocation[0];
+            if (segmentsContainingLocation.Count > 1)
+            {
+              // Bookmark with next location, working road length, visited set
+              for (var segmentIndex = 1; segmentIndex < segmentsContainingLocation.Count; segmentIndex++)
+              {
+                var alternateSegment = segmentsContainingLocation[segmentIndex];
+                var startLocation = alternateSegment.Location1 == currentRoadEndLocation ? alternateSegment.Location2 : alternateSegment.Location1;
+                var bookmark = new Bookmark(startLocation, workingRoadLength + 1, visitedSet);
+                bookmarks.Push(bookmark);
+              }
+            }
+
+            //var currentRoadSegment = segmentsContainingLocation[0];
 
             // Move along road segment i.e. get other end
             currentRoadEndLocation = currentRoadSegment.Location1 == currentRoadEndLocation ? currentRoadSegment.Location2 : currentRoadSegment.Location1;
@@ -743,7 +761,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
             playerId = kv2.Key;
             singleLongestRoad = true;
           }
-          else
+          else if (workingRoadLength == roadLength)
           {
             singleLongestRoad = false;
           }
@@ -757,6 +775,20 @@ namespace Jabberwocky.SoC.Library.GameBoards
       }
 
       return singleLongestRoad;
+    }
+
+    private struct Bookmark
+    {
+      public UInt32 StartingLocation;
+      public Int32 RoadLength;
+      public HashSet<RoadSegment> Visited;
+
+      public Bookmark(UInt32 startingLocation, Int32 roadLength, HashSet<RoadSegment> visited)
+      {
+        this.StartingLocation = startingLocation;
+        this.RoadLength = roadLength;
+        this.Visited = new HashSet<RoadSegment>(visited);
+      }
     }
 
     internal void ClearRoads()

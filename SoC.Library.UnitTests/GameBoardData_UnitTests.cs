@@ -1378,13 +1378,13 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
     /// <summary>
     /// Road contains a fork. One branch is longer. Longest road details must be for long branch. Longest road count
-    /// must include common 'trunk' road segment.
+    /// must include common 'trunk' road segment. Longest branch is built first.
     /// </summary>
     [Test]
     [Category("All")]
     [Category("GameBoardData")]
     [Category("GameBoardData.TryGetLongestRoadDetails")]
-    public void TryGetLongestRoadDetails_LongestRoadContainsFork_ReturnsLongestRoadDetails()
+    public void TryGetLongestRoadDetails_LongestRoadContainsForkWithLongestBranchBuiltFirst_ReturnsLongestRoadDetails()
     {
       // Arrange
       var gameBoard = new GameBoardData(BoardSizes.Standard);
@@ -1403,6 +1403,44 @@ namespace Jabberwocky.SoC.Library.UnitTests
       gameBoard.PlaceRoad(playerId, 33u, 32u);
       gameBoard.PlaceRoad(playerId, 32u, 42u);
       gameBoard.PlaceRoad(playerId, 42u, 41u);
+
+      // Act
+      Int32 roadLength;
+      Guid longestRoadPlayerId;
+      var result = gameBoard.TryGetLongestRoadDetails(out longestRoadPlayerId, out roadLength);
+
+      // Assert
+      longestRoadPlayerId.ShouldBe(playerId);
+      roadLength.ShouldBe(6);
+    }
+
+    /// <summary>
+    /// Road contains a fork. One branch is longer. Longest road details must be for long branch. Longest road count
+    /// must include common 'trunk' road segment. Shortest branch is built first.
+    /// </summary>
+    [Test]
+    [Category("All")]
+    [Category("GameBoardData")]
+    [Category("GameBoardData.TryGetLongestRoadDetails")]
+    public void TryGetLongestRoadDetails_LongestRoadContainsForkWithShortestBranchBuiltFirst_ReturnsLongestRoadDetails()
+    {
+      // Arrange
+      var gameBoard = new GameBoardData(BoardSizes.Standard);
+
+      var playerId = Guid.NewGuid();
+      gameBoard.PlaceStartingInfrastructure(playerId, 0, 1);
+      gameBoard.PlaceStartingInfrastructure(playerId, 23, 22);
+
+      gameBoard.PlaceRoad(playerId, 22u, 33u);
+      gameBoard.PlaceRoad(playerId, 33u, 32u);
+      gameBoard.PlaceRoad(playerId, 32u, 42u);
+      gameBoard.PlaceRoad(playerId, 42u, 41u);
+
+      gameBoard.PlaceRoad(playerId, 22u, 21u);
+      gameBoard.PlaceRoad(playerId, 21u, 20u);
+      gameBoard.PlaceRoad(playerId, 20u, 19u);
+      gameBoard.PlaceRoad(playerId, 19u, 18u);
+      gameBoard.PlaceRoad(playerId, 18u, 17u);
 
       // Act
       Int32 roadLength;
