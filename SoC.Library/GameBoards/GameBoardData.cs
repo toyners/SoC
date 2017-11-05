@@ -722,19 +722,39 @@ namespace Jabberwocky.SoC.Library.GameBoards
           bookmarks.Clear();
           var workingRoadLength = 0;
           var currentRoadEndLocation = roadEnds[index];
-          var isTravelling = true;
-          while (isTravelling)
+          while (true)
           {
             var segmentsContainingLocation = segments.Where(r => (r.Location1 == currentRoadEndLocation || r.Location2 == currentRoadEndLocation) && !visitedSet.Contains(r)).ToList();
 
             if (segmentsContainingLocation.Count == 0)
             {
-              // Travelled to end of road.
-              isTravelling = false;
+              // At end of road.
+              if (workingRoadLength > roadLength)
+              {
+                roadLength = workingRoadLength;
+                playerId = kv2.Key;
+                singleLongestRoad = true;
+              }
+              else if (workingRoadLength == roadLength)
+              {
+                singleLongestRoad = false;
+              }
+
+              if (bookmarks.Count > 0)
+              {
+                var bookmark = bookmarks.Pop();
+                currentRoadEndLocation = bookmark.StartingLocation;
+                workingRoadLength = bookmark.RoadLength;
+                visitedSet = bookmark.Visited;
+                continue;
+              }
+
               break;
             }
 
             var currentRoadSegment = segmentsContainingLocation[0];
+            visitedSet.Add(currentRoadSegment);
+
             if (segmentsContainingLocation.Count > 1)
             {
               // Bookmark with next location, working road length, visited set
@@ -742,28 +762,14 @@ namespace Jabberwocky.SoC.Library.GameBoards
               {
                 var alternateSegment = segmentsContainingLocation[segmentIndex];
                 var startLocation = alternateSegment.Location1 == currentRoadEndLocation ? alternateSegment.Location2 : alternateSegment.Location1;
-                var bookmark = new Bookmark(startLocation, workingRoadLength + 1, visitedSet);
+                var bookmark = new Bookmark(alternateSegment, startLocation, workingRoadLength + 1, visitedSet);
                 bookmarks.Push(bookmark);
               }
             }
 
-            //var currentRoadSegment = segmentsContainingLocation[0];
-
             // Move along road segment i.e. get other end
             currentRoadEndLocation = currentRoadSegment.Location1 == currentRoadEndLocation ? currentRoadSegment.Location2 : currentRoadSegment.Location1;
-            visitedSet.Add(currentRoadSegment);
             workingRoadLength++;
-          }
-
-          if (workingRoadLength > roadLength)
-          {
-            roadLength = workingRoadLength;
-            playerId = kv2.Key;
-            singleLongestRoad = true;
-          }
-          else if (workingRoadLength == roadLength)
-          {
-            singleLongestRoad = false;
           }
         }
       }
@@ -783,11 +789,12 @@ namespace Jabberwocky.SoC.Library.GameBoards
       public Int32 RoadLength;
       public HashSet<RoadSegment> Visited;
 
-      public Bookmark(UInt32 startingLocation, Int32 roadLength, HashSet<RoadSegment> visited)
+      public Bookmark(RoadSegment segment, UInt32 startingLocation, Int32 roadLength, HashSet<RoadSegment> visited)
       {
         this.StartingLocation = startingLocation;
         this.RoadLength = roadLength;
         this.Visited = new HashSet<RoadSegment>(visited);
+        this.Visited.Add(segment);
       }
     }
 
