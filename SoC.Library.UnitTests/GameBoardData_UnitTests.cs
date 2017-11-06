@@ -1520,7 +1520,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
       // Assert
       result.ShouldBeTrue();
       longestRoadPlayerId.ShouldBe(playerId);
-      roadLength.ShouldBe(8);
+      roadLength.ShouldBe(7);
     }
 
     /// <summary>
