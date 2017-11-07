@@ -1580,6 +1580,82 @@ namespace Jabberwocky.SoC.Library.UnitTests
       longestRoadPlayerId.ShouldBe(playerId);
       roadLength.ShouldBe(3);
     }
+
+    /// <summary>
+    /// Settlement is between two closed loops.
+    /// </summary>
+    [Test]
+    [Category("All")]
+    [Category("GameBoardData")]
+    [Category("GameBoardData.TryGetLongestRoadDetails")]
+    public void TryGetLongestRoadDetails_StartingSettlementBetweenTwoClosedLoops_ReturnsLongestRoadDetails()
+    {
+      // Arrange
+      var gameBoard = new GameBoardData(BoardSizes.Standard);
+
+      var playerId = Guid.NewGuid();
+      gameBoard.PlaceStartingInfrastructure(playerId, FirstSettlementLocation, FirstRoadEndLocation);
+      gameBoard.PlaceStartingInfrastructure(playerId, 0, 1);
+
+      gameBoard.PlaceRoad(playerId, FirstRoadEndLocation, 21);
+      gameBoard.PlaceRoad(playerId, FirstRoadEndLocation, 10);
+      gameBoard.PlaceRoad(playerId, 21, 20);
+      gameBoard.PlaceRoad(playerId, 20, 19);
+      gameBoard.PlaceRoad(playerId, 19, 9);
+      gameBoard.PlaceRoad(playerId, 9, 10);
+
+      gameBoard.PlaceRoad(playerId, FirstSettlementLocation, 13);
+      gameBoard.PlaceRoad(playerId, 13, 14);
+      gameBoard.PlaceRoad(playerId, 13, 23);
+      gameBoard.PlaceRoad(playerId, 23, 24);
+      gameBoard.PlaceRoad(playerId, 24, 25);
+      gameBoard.PlaceRoad(playerId, 25, 15);
+      gameBoard.PlaceRoad(playerId, 15, 14);
+
+      // Act
+      Int32 roadLength;
+      Guid longestRoadPlayerId;
+      var result = gameBoard.TryGetLongestRoadDetails(out longestRoadPlayerId, out roadLength);
+
+      // Assert
+      result.ShouldBeTrue();
+      longestRoadPlayerId.ShouldBe(playerId);
+      roadLength.ShouldBe(14);
+    }
+
+    /// <summary>
+    /// Settlement is between two closed loops.
+    /// </summary>
+    [Test]
+    [Category("All")]
+    [Category("GameBoardData")]
+    [Category("GameBoardData.TryGetLongestRoadDetails")]
+    public void TryGetLongestRoadDetails_StartingSettlementOnLongestRoadWithFork_ReturnsLongestRoadDetails()
+    {
+      // Arrange
+      var gameBoard = new GameBoardData(BoardSizes.Standard);
+
+      var playerId = Guid.NewGuid();
+      gameBoard.PlaceStartingInfrastructure(playerId, FirstSettlementLocation, FirstRoadEndLocation);
+      gameBoard.PlaceStartingInfrastructure(playerId, 0, 1);
+
+      gameBoard.PlaceRoad(playerId, FirstRoadEndLocation, 10);
+      gameBoard.PlaceRoad(playerId, 10, 2);
+      gameBoard.PlaceRoad(playerId, 10, 9);
+      gameBoard.PlaceRoad(playerId, 9, 8);
+
+      gameBoard.PlaceRoad(playerId, FirstSettlementLocation, 4);
+
+      // Act
+      Int32 roadLength;
+      Guid longestRoadPlayerId;
+      var result = gameBoard.TryGetLongestRoadDetails(out longestRoadPlayerId, out roadLength);
+
+      // Assert
+      result.ShouldBeTrue();
+      longestRoadPlayerId.ShouldBe(playerId);
+      roadLength.ShouldBe(5);
+    }
     #endregion
   }
 }
