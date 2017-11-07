@@ -712,6 +712,9 @@ namespace Jabberwocky.SoC.Library.GameBoards
         roadEnds.Add(settlementsPlacedByPlayer[0]); 
         roadEnds.Add(settlementsPlacedByPlayer[1]);
         var bookmarks = new Stack<Bookmark>();
+        var startingBookmarks = new Stack<Bookmark>();
+        startingBookmarks.Push(new Bookmark());
+        startingBookmarks.Push(new Bookmark());
 
         var segments = kv2.Value;
         var visitedSet = new HashSet<RoadSegment>();
