@@ -710,6 +710,25 @@ namespace Jabberwocky.SoC.Library.GameBoards
         var roadEnds = new List<UInt32>();
         var startingBookmarks = new Queue<StartingBookmark>();
         var settlementsPlacedByPlayer = this.settlementsByPlayer[kv2.Key];
+
+        foreach (var segment in segments)
+        {
+          var connectedSegments = segments.Count(s => s != segment && (segment.Location1 == s.Location1 || segment.Location1 == s.Location2));
+          if (connectedSegments == 0)
+          {
+            roadEnds.Add(segment.Location1);
+            break;
+          }
+          else
+          {
+            connectedSegments = segments.Count(s => s != segment && (segment.Location2 == s.Location1 || segment.Location2 == s.Location2));
+            if (connectedSegments == 0)
+            {
+              roadEnds.Add(segment.Location2);
+              break;
+            }
+          }
+        }
         
         // First two settlements are always part of the starting infrastruture including the first road segments
         roadEnds.Add(settlementsPlacedByPlayer[0]); 
