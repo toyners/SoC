@@ -707,7 +707,8 @@ namespace Jabberwocky.SoC.Library.GameBoards
       foreach (var kv2 in this.roadSegmentsByPlayer)
       {
         var segments = kv2.Value;
-        var roadEnds = new List<UInt32>();
+        //var roadEnds = new List<UInt32>();
+        var roadEnds = new HashSet<UInt32>();
         var startingBookmarks = new Queue<StartingBookmark>();
         var settlementsPlacedByPlayer = this.settlementsByPlayer[kv2.Key];
 
@@ -717,30 +718,32 @@ namespace Jabberwocky.SoC.Library.GameBoards
           if (connectedSegments == 0)
           {
             roadEnds.Add(segment.Location1);
-            break;
           }
-          else
+
+          connectedSegments = segments.Count(s => s != segment && (segment.Location2 == s.Location1 || segment.Location2 == s.Location2));
+          if (connectedSegments == 0)
           {
-            connectedSegments = segments.Count(s => s != segment && (segment.Location2 == s.Location1 || segment.Location2 == s.Location2));
-            if (connectedSegments == 0)
-            {
-              roadEnds.Add(segment.Location2);
-              break;
-            }
+            roadEnds.Add(segment.Location2);
           }
         }
-        
-        // First two settlements are always part of the starting infrastruture including the first road segments
-        roadEnds.Add(settlementsPlacedByPlayer[0]); 
-        roadEnds.Add(settlementsPlacedByPlayer[1]);
+
+        if (roadEnds.Count == 0)
+        {
+          roadEnds.Add(settlementsPlacedByPlayer[0]);
+          roadEnds.Add(settlementsPlacedByPlayer[1]);
+        }
+
         var bookmarks = new Stack<Bookmark>();
 
         var visitedSet = new HashSet<RoadSegment>();
-
-        for (var index = 0; index < roadEnds.Count; index++)
+        
+        //for (var index = 0; index < roadEnds.Count; index++)
+        while (roadEnds.Count > 0)
         {
-          var currentRoadEndLocation = roadEnds[index];
-          StartingBookmark startingBookmark = null;
+          var currentRoadEndLocation = roadEnds.First();
+          roadEnds.Remove(currentRoadEndLocation);
+          //var currentRoadEndLocation = roadEnds[index];
+          /*StartingBookmark startingBookmark = null;
 
           var connectingSegments = segments.Where(r => r.Location1 == currentRoadEndLocation || r.Location2 == currentRoadEndLocation).ToList();
           if (connectingSegments.Count > 1)
@@ -751,19 +754,19 @@ namespace Jabberwocky.SoC.Library.GameBoards
               startingBookmark = new StartingBookmark(startingLocation, 1, connectingSegment);
               startingBookmarks.Enqueue(startingBookmark);
             }
-          }
+          }*/
 
           var workingRoadLength = 0;
           visitedSet.Clear();
           bookmarks.Clear();
 
-          if (startingBookmarks.Count > 0)
+          /*if (startingBookmarks.Count > 0)
           {
             startingBookmark = startingBookmarks.Dequeue();
             workingRoadLength = startingBookmark.RoadLength;
             currentRoadEndLocation = startingBookmark.StartingLocation;
             visitedSet = startingBookmark.Visited;
-          }
+          }*/
           
           while (true)
           {
@@ -772,6 +775,8 @@ namespace Jabberwocky.SoC.Library.GameBoards
             if (segmentsContainingLocation.Count == 0)
             {
               // At end of road.
+              roadEnds.Remove(currentRoadEndLocation);
+
               if (workingRoadLength > roadLength)
               {
                 roadLength = workingRoadLength;
