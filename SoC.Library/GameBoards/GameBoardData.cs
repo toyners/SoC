@@ -729,8 +729,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
 
         if (roadEnds.Count == 0)
         {
-          roadEnds.Add(settlementsPlacedByPlayer[0]);
-          roadEnds.Add(settlementsPlacedByPlayer[1]);
+          return TryGetLongestRoadDetailsForCycle(segments, settlementsPlacedByPlayer, out playerId, out roadLength);
         }
 
         var bookmarks = new Stack<Bookmark>();
@@ -838,6 +837,16 @@ namespace Jabberwocky.SoC.Library.GameBoards
       }
 
       return singleLongestRoad;
+    }
+
+    private Boolean TryGetLongestRoadDetailsForCycle(List<RoadSegment> segments, List<UInt32> settlementsPlacedByPlayer, out Guid playerId, out Int32 roadLength)
+    {
+      for (var index = 0; index < 2; index++)
+      {
+        var currentRoadEndLocation = settlementsPlacedByPlayer[index];
+      }
+
+      throw new NotImplementedException();
     }
 
     private class StartingBookmark
