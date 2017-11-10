@@ -714,16 +714,23 @@ namespace Jabberwocky.SoC.Library.GameBoards
 
         foreach (var segment in segments)
         {
-          var connectedSegments = segments.Count(s => s != segment && (segment.Location1 == s.Location1 || segment.Location1 == s.Location2));
-          if (connectedSegments == 0)
-          {
-            roadEnds.Add(segment.Location1);
-          }
+          var ctl1 = segments.Where(s => s != segment && segment.Location1 == s.Location1 || segment.Location1 == s.Location2).ToList();
+          var ctl2 = segments.Where(s => s != segment && segment.Location2 == s.Location1 || segment.Location2 == s.Location2).ToList();
 
-          connectedSegments = segments.Count(s => s != segment && (segment.Location2 == s.Location1 || segment.Location2 == s.Location2));
-          if (connectedSegments == 0)
+          var connectedToLocation1 = ctl1.Count;
+          var connectedToLocation2 = ctl2.Count;
+
+          if ((connectedToLocation1 != connectedToLocation2) && connectedToLocation1 == 0 || connectedToLocation2 == 0)
           {
-            roadEnds.Add(segment.Location2);
+            if (connectedToLocation1 == 0)
+            {
+              roadEnds.Add(segment.Location1);
+            }
+
+            if (connectedToLocation2 == 0)
+            {
+              roadEnds.Add(segment.Location2);
+            }
           }
         }
 
