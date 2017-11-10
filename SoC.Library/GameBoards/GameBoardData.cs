@@ -786,7 +786,6 @@ namespace Jabberwocky.SoC.Library.GameBoards
             {
               // No new segments connected to this location - At end of road.
 
-
               if (workingRoadLength > roadLength)
               {
                 roadLength = workingRoadLength;
@@ -797,11 +796,6 @@ namespace Jabberwocky.SoC.Library.GameBoards
               {
                 singleLongestRoad = false;
               }
-
-              /*if (startingBookmarkIndex > -1)
-              {
-                startingBookmarks[startingBookmarkIndex].WorkingRoadLength = workingRoadLength;
-              }*/
 
               if (bookmarks.Count > 0)
               {
@@ -841,7 +835,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
                     workingRoadLength += startingBookmarks[0].WorkingRoadLength;
                   }
                 }
-                else
+                else if (startingBookmarks.Count == 2)
                 {
                   workingRoadLength += startingBookmarks[0].WorkingRoadLength;
                 }
@@ -884,6 +878,11 @@ namespace Jabberwocky.SoC.Library.GameBoards
             if ((existingBookmarkIndex = bookmarks.FindIndex(b => b.StartingLocation == currentRoadEndLocation)) != -1)
             {
               bookmarks.RemoveAt(existingBookmarkIndex);
+            }
+
+            if ((existingBookmarkIndex = startingBookmarks.FindIndex(b => b.StartingLocation == currentRoadEndLocation)) != -1)
+            {
+              startingBookmarks.RemoveAt(existingBookmarkIndex);
             }
           }
         }
