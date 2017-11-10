@@ -1311,7 +1311,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     [Test]
     [Category("All")]
     [Category("GameBoardData")]
-    [Category("GameBoardData.TryGetLongestRoadDetailsForCycle")]
+    [Category("GameBoardData.TryGetLongestRoadDetails")]
     public void TryGetLongestRoadDetails_LongestRoadIsCycle_ReturnsLongestRoadDetails()
     {
       // Arrange
@@ -1344,7 +1344,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     [Test]
     [Category("All")]
     [Category("GameBoardData")]
-    [Category("GameBoardData.TryGetLongestRoadDetailsForCycle")]
+    [Category("GameBoardData.TryGetLongestRoadDetails")]
     public void TryGetLongestRoadDetails_LongestRoadIsFigureOfEight_ReturnsLongestRoadDetails()
     {
       // Arrange
@@ -1587,8 +1587,8 @@ namespace Jabberwocky.SoC.Library.UnitTests
     [Test]
     [Category("All")]
     [Category("GameBoardData")]
-    [Category("GameBoardData.TryGetLongestRoadDetailsForCycle")]
-    public void TryGetLongestRoadDetails_StartingSettlementBetweenTwoClosedLoops_ReturnsLongestRoadDetails()
+    [Category("GameBoardData.TryGetLongestRoadDetails")]
+    public void TryGetLongestRoadDetails_StartingSettlementBetweenTwoLoops_ReturnsLongestRoadDetails()
     {
       // Arrange
       var gameBoard = new GameBoardData(BoardSizes.Standard);
@@ -1629,7 +1629,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     [Test]
     [Category("All")]
     [Category("GameBoardData")]
-    [Category("GameBoardData.TryGetLongestRoadDetailsForCycle")]
+    [Category("GameBoardData.TryGetLongestRoadDetails")]
     public void TryGetLongestRoadDetails_StartingSettlementOnLongestRoadWithFork_ReturnsLongestRoadDetails()
     {
       // Arrange
