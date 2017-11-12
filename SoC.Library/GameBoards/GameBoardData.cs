@@ -761,22 +761,19 @@ namespace Jabberwocky.SoC.Library.GameBoards
           bookmarks.Clear();
 
           var connectingSegments = segments.Where(r => r.Location1 == currentRoadEndLocation || r.Location2 == currentRoadEndLocation).ToList();
-          if (connectingSegments.Count > 1)
+          for (var i = 0; i < connectingSegments.Count; i++)
           {
-            for (var i = 0; i < connectingSegments.Count; i++)
-            {
-              var connectingSegment = connectingSegments[i];
-              var startingLocation = connectingSegment.Location1 == currentRoadEndLocation ? connectingSegment.Location2 : connectingSegment.Location1;
-              startingBookmark = new StartingBookmark(startingLocation, connectingSegment);
-              startingBookmarks.Add(startingBookmark);
-            }
-
-            startingBookmarkIndex = 0;
-            var startingSegment = connectingSegments[0];
-            currentRoadEndLocation = startingSegment.Location1 == currentRoadEndLocation ? startingSegment.Location2 : startingSegment.Location1;
-            workingRoadLength = 1;
-            visitedSet.Add(startingSegment);
+            var connectingSegment = connectingSegments[i];
+            var startingLocation = connectingSegment.Location1 == currentRoadEndLocation ? connectingSegment.Location2 : connectingSegment.Location1;
+            startingBookmark = new StartingBookmark(startingLocation, connectingSegment);
+            startingBookmarks.Add(startingBookmark);
           }
+
+          startingBookmarkIndex = 0;
+          var startingSegment = connectingSegments[0];
+          currentRoadEndLocation = startingSegment.Location1 == currentRoadEndLocation ? startingSegment.Location2 : startingSegment.Location1;
+          workingRoadLength = 1;
+          visitedSet.Add(startingSegment);
 
           while (true)
           {
@@ -786,7 +783,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
             {
               // No new segments connected to this location - At end of road.
 
-              if (workingRoadLength > roadLength)
+              /*if (workingRoadLength > roadLength)
               {
                 roadLength = workingRoadLength;
                 playerId = kv2.Key;
@@ -795,6 +792,14 @@ namespace Jabberwocky.SoC.Library.GameBoards
               else if (workingRoadLength == roadLength)
               {
                 singleLongestRoad = false;
+              }*/
+
+              if (startingBookmarkIndex < startingBookmarks.Count)
+              {
+                if (startingBookmarks[startingBookmarkIndex].WorkingRoadLength < workingRoadLength)
+                {
+                  startingBookmarks[startingBookmarkIndex].WorkingRoadLength = workingRoadLength;
+                }
               }
 
               if (bookmarks.Count > 0)
@@ -807,49 +812,53 @@ namespace Jabberwocky.SoC.Library.GameBoards
                 continue;
               }
 
-              if (startingBookmarks.Count > 0)
+              if (startingBookmarkIndex < startingBookmarks.Count - 1)
               {
-                startingBookmarks[startingBookmarkIndex].WorkingRoadLength = workingRoadLength;
-
-                if (startingBookmarkIndex < startingBookmarks.Count - 1)
+                /*if (startingBookmarks[startingBookmarkIndex].WorkingRoadLength < workingRoadLength)
                 {
-                  startingBookmarkIndex++;
-                  currentRoadEndLocation = startingBookmarks[startingBookmarkIndex].StartingLocation;
-                  workingRoadLength = 1;
-                  visitedSet.Add(startingBookmarks[startingBookmarkIndex].VisitedSegment);
-                  continue;
-                }
+                  startingBookmarks[startingBookmarkIndex].WorkingRoadLength = workingRoadLength;
+                }*/
 
-                if (startingBookmarks.Count == 3)
+                startingBookmarkIndex++;
+                currentRoadEndLocation = startingBookmarks[startingBookmarkIndex].StartingLocation;
+                workingRoadLength = 1;
+                visitedSet.Add(startingBookmarks[startingBookmarkIndex].VisitedSegment);
+                continue;
+              }
+
+              if (startingBookmarks.Count == 3)
+              {
+                if (workingRoadLength < startingBookmarks[0].WorkingRoadLength && workingRoadLength < startingBookmarks[1].WorkingRoadLength)
                 {
-                  if (workingRoadLength < startingBookmarks[0].WorkingRoadLength && workingRoadLength < startingBookmarks[1].WorkingRoadLength)
-                  {
-                    workingRoadLength = startingBookmarks[0].WorkingRoadLength + startingBookmarks[1].WorkingRoadLength;
-                  }
-                  else if (startingBookmarks[0].WorkingRoadLength < startingBookmarks[1].WorkingRoadLength)
-                  {
-                    workingRoadLength += startingBookmarks[1].WorkingRoadLength;
-                  }
-                  else
-                  {
-                    workingRoadLength += startingBookmarks[0].WorkingRoadLength;
-                  }
+                  workingRoadLength = startingBookmarks[0].WorkingRoadLength + startingBookmarks[1].WorkingRoadLength;
                 }
-                else if (startingBookmarks.Count == 2)
+                else if (startingBookmarks[0].WorkingRoadLength < startingBookmarks[1].WorkingRoadLength)
+                {
+                  workingRoadLength += startingBookmarks[1].WorkingRoadLength;
+                }
+                else
                 {
                   workingRoadLength += startingBookmarks[0].WorkingRoadLength;
                 }
+              }
+              else if (startingBookmarks.Count == 2)
+              {
+                workingRoadLength = startingBookmarks[0].WorkingRoadLength + startingBookmarks[1].WorkingRoadLength;
+              }
+              else if (startingBookmarks.Count == 1)
+              {
+                workingRoadLength = startingBookmarks[0].WorkingRoadLength;
+              }
 
-                if (workingRoadLength > roadLength)
-                {
-                  roadLength = workingRoadLength;
-                  playerId = kv2.Key;
-                  singleLongestRoad = true;
-                }
-                else if (workingRoadLength == roadLength)
-                {
-                  singleLongestRoad = false;
-                }
+              if (workingRoadLength > roadLength)
+              {
+                roadLength = workingRoadLength;
+                playerId = kv2.Key;
+                singleLongestRoad = true;
+              }
+              else if (workingRoadLength == roadLength)
+              {
+                singleLongestRoad = false;
               }
 
               break;
@@ -877,10 +886,10 @@ namespace Jabberwocky.SoC.Library.GameBoards
             Int32 existingBookmarkIndex = -1;
             if ((existingBookmarkIndex = bookmarks.FindIndex(b => b.StartingLocation == currentRoadEndLocation)) != -1)
             {
-              bookmarks.RemoveAt(existingBookmarkIndex);
+              //bookmarks.RemoveAt(existingBookmarkIndex);
             }
 
-            if ((existingBookmarkIndex = startingBookmarks.FindIndex(b => b.StartingLocation == currentRoadEndLocation)) != -1)
+            if ((existingBookmarkIndex = startingBookmarks.FindIndex(b => b.StartingLocation == currentRoadEndLocation)) != -1 && existingBookmarkIndex != startingBookmarkIndex)
             {
               startingBookmarks.RemoveAt(existingBookmarkIndex);
             }

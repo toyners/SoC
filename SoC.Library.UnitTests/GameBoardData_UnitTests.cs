@@ -1624,7 +1624,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     }
 
     /// <summary>
-    /// Settlement is between two closed loops.
+    /// Settlement on longest fork.
     /// </summary>
     [Test]
     [Category("All")]
