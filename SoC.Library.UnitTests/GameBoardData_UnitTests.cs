@@ -1656,6 +1656,43 @@ namespace Jabberwocky.SoC.Library.UnitTests
       longestRoadPlayerId.ShouldBe(playerId);
       roadLength.ShouldBe(5);
     }
+
+    /// <summary>
+    /// Settlement on loop but also has a short branch.
+    /// </summary>
+    [Test]
+    [Category("All")]
+    [Category("GameBoardData")]
+    [Category("GameBoardData.TryGetLongestRoadDetails")]
+    public void TryGetLongestRoadDetails_StartingSettlementOnLoopWithShortBranch_ReturnsLongestRoadDetails()
+    {
+      // Arrange
+      var gameBoard = new GameBoardData(BoardSizes.Standard);
+
+      var playerId = Guid.NewGuid();
+      gameBoard.PlaceStartingInfrastructure(playerId, FirstSettlementLocation, FirstRoadEndLocation);
+      gameBoard.PlaceStartingInfrastructure(playerId, SecondSettlementLocation, SecondRoadEndLocation);
+
+      gameBoard.PlaceRoad(playerId, FirstSettlementLocation, 13);
+      gameBoard.PlaceRoad(playerId, FirstRoadEndLocation, 21);
+      gameBoard.PlaceRoad(playerId, 21, 22);
+      gameBoard.PlaceRoad(playerId, 22, 23);
+      gameBoard.PlaceRoad(playerId, 13, 23);
+
+      gameBoard.PlaceRoad(playerId, FirstSettlementLocation, 4);
+      gameBoard.PlaceRoad(playerId, 4, 3);
+      gameBoard.PlaceRoad(playerId, 3, 2);
+
+      // Act
+      Int32 roadLength;
+      Guid longestRoadPlayerId;
+      var result = gameBoard.TryGetLongestRoadDetails(out longestRoadPlayerId, out roadLength);
+
+      // Assert
+      result.ShouldBeTrue();
+      longestRoadPlayerId.ShouldBe(playerId);
+      roadLength.ShouldBe(6);
+    }
     #endregion
   }
 }
