@@ -706,7 +706,6 @@ namespace Jabberwocky.SoC.Library.GameBoards
         var segments = kv2.Value;
         var roadEnds = new List<UInt32>();
         var roadStartmarks = new List<RoadStartmark>();
-        var roadStartmarkIndex = -1;
         var settlementsPlacedByPlayer = this.settlementsByPlayer[kv2.Key];
 
         roadEnds.Add(settlementsPlacedByPlayer[0]);
@@ -718,11 +717,11 @@ namespace Jabberwocky.SoC.Library.GameBoards
         
         for (var index = 0; index < roadEnds.Count; index++)
         {
+          var roadStartmarkIndex = 0;
           var currentRoadEndLocation = roadEnds[index];
           var workingRoadLength = 0;
           visitedSet.Clear();
           roadStartmarks.Clear();
-          roadStartmarkIndex = -1;
           forkmarks.Clear();
 
           var connectingSegments = segments.Where(r => r.Location1 == currentRoadEndLocation || r.Location2 == currentRoadEndLocation).ToList();
@@ -734,7 +733,6 @@ namespace Jabberwocky.SoC.Library.GameBoards
             roadStartmarks.Add(roadStartmark);
           }
 
-          roadStartmarkIndex = 0;
           var startingSegment = connectingSegments[0];
           currentRoadEndLocation = startingSegment.Location1 == currentRoadEndLocation ? startingSegment.Location2 : startingSegment.Location1;
           workingRoadLength = 1;
