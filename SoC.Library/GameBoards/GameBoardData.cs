@@ -501,12 +501,12 @@ namespace Jabberwocky.SoC.Library.GameBoards
       return data;
     }
 
-    public void PlaceRoad(Guid playerId, UInt32 roadStartLocation, UInt32 roadEndLocation)
+    public void PlaceRoadSegment(Guid playerId, UInt32 roadStartLocation, UInt32 roadEndLocation)
     {
       var verificationResults = this.CanPlaceRoad(playerId, roadStartLocation, roadEndLocation);
       this.ThrowExceptionOnBadVerificationResult(verificationResults);
       
-      this.PlaceRoadOnBoard(playerId, roadStartLocation, roadEndLocation);
+      this.PlaceRoadSegmentOnBoard(playerId, roadStartLocation, roadEndLocation);
     }
 
     private enum StartingInfrastructureStatus
@@ -540,7 +540,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
       return this.roadSegmentsByPlayer[playerId].Count == 1 ? StartingInfrastructureStatus.Partial : StartingInfrastructureStatus.Complete;
     }
 
-    private void PlaceRoadOnBoard(Guid playerId, UInt32 roadStartLocationIndex, UInt32 roadEndLocationIndex)
+    private void PlaceRoadSegmentOnBoard(Guid playerId, UInt32 roadStartLocationIndex, UInt32 roadEndLocationIndex)
     {
       this.builtRoadSegments.Add(new Tuple<uint, uint, Guid>(roadStartLocationIndex, roadEndLocationIndex, playerId));
       var newRoadSegment = new RoadSegment(roadStartLocationIndex, roadEndLocationIndex);
@@ -651,7 +651,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
       this.ThrowExceptionOnBadVerificationResult(verificationResults);
 
       this.PlaceSettlementOnBoard(playerId, settlementLocation);
-      this.PlaceRoadOnBoard(playerId, settlementLocation, roadEndLocation);
+      this.PlaceRoadSegmentOnBoard(playerId, settlementLocation, roadEndLocation);
     }
 
     private void PlaceSettlementOnBoard(Guid playerId, UInt32 settlementLocation)

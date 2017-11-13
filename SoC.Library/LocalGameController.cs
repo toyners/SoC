@@ -194,7 +194,7 @@ namespace Jabberwocky.SoC.Library
               var start = UInt32.Parse(reader.GetAttribute("start"));
               var end = UInt32.Parse(reader.GetAttribute("end"));
 
-              this.gameBoardManager.Data.PlaceRoad(playerId, start, end);
+              this.gameBoardManager.Data.PlaceRoadSegment(playerId, start, end);
             }
 
             reader.Read();
@@ -522,7 +522,7 @@ namespace Jabberwocky.SoC.Library
 
         UInt32 startRoadLocation, endRoadLocation;
         computerPlayer.ChooseRoad(gameBoardData, out startRoadLocation, out endRoadLocation);
-        gameBoardData.PlaceRoad(computerPlayer.Id, startRoadLocation, endRoadLocation);
+        gameBoardData.PlaceRoadSegment(computerPlayer.Id, startRoadLocation, endRoadLocation);
         gameBoardUpdate.NewRoads.Add(new Tuple<UInt32, UInt32, Guid>(startRoadLocation, endRoadLocation, computerPlayer.Id));
       }
 
@@ -558,7 +558,7 @@ namespace Jabberwocky.SoC.Library
 
         UInt32 startRoadLocation, endRoadLocation;
         computerPlayer.ChooseRoad(gameBoardData, out startRoadLocation, out endRoadLocation);
-        gameBoardData.PlaceRoad(computerPlayer.Id, startRoadLocation, endRoadLocation);
+        gameBoardData.PlaceRoadSegment(computerPlayer.Id, startRoadLocation, endRoadLocation);
         gameBoardUpdate.NewRoads.Add(new Tuple<UInt32, UInt32, Guid>(startRoadLocation, endRoadLocation, computerPlayer.Id));
       }
 
