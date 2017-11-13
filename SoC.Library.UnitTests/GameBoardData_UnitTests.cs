@@ -1691,7 +1691,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
       // Assert
       result.ShouldBeTrue();
       longestRoadPlayerId.ShouldBe(playerId);
-      roadLength.ShouldBe(6);
+      roadLength.ShouldBe(9);
     }
     #endregion
   }
