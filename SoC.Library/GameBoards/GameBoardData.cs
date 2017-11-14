@@ -146,20 +146,26 @@ namespace Jabberwocky.SoC.Library.GameBoards
       return roadStartLocation < length && roadEndLocation < length;
     }
 
-    private List<Tuple<UInt32, UInt32, Guid>> builtRoadSegments = new List<Tuple<UInt32, UInt32, Guid>>();
     private Boolean RoadAlreadyPresent(UInt32 roadStartLocationIndex, UInt32 roadEndLocationIndex)
     {
+      foreach (var kv in this.roadSegmentsByPlayer)
+      {
+        var roadSegment = kv.Value.Where(r => (r.Location1 == roadStartLocationIndex && r.Location2 == roadEndLocationIndex)
+        || (r.Location2 == roadStartLocationIndex && r.Location1 == roadEndLocationIndex)).FirstOrDefault();
 
-      var roadSegment = builtRoadSegments.Where(r => (r.Item1 == roadStartLocationIndex && r.Item2 == roadEndLocationIndex)
-      || (r.Item2 == roadStartLocationIndex && r.Item1 == roadEndLocationIndex)).FirstOrDefault();
+        if (roadSegment != null)
+        {
+          return true;
+        }
+      }
 
-      return roadSegment != null;
+      return false;
     }
 
     private Boolean WillConnectToExistingRoad(Guid playerId, UInt32 roadStartLocationIndex, UInt32 roadEndLocationIndex)
     {
-      var roadSegment = builtRoadSegments.Where(r => (r.Item1 == roadStartLocationIndex || r.Item2 == roadStartLocationIndex
-      || r.Item1 == roadEndLocationIndex || r.Item2 == roadEndLocationIndex) && r.Item3 == playerId).FirstOrDefault();
+      var roadSegment = this.roadSegmentsByPlayer[playerId].Where(r => (r.Location1 == roadStartLocationIndex || r.Location2 == roadStartLocationIndex ||
+        r.Location1 == roadEndLocationIndex || r.Location2 == roadEndLocationIndex)).FirstOrDefault();
 
       return roadSegment != null;
     }
@@ -542,7 +548,6 @@ namespace Jabberwocky.SoC.Library.GameBoards
 
     private void PlaceRoadSegmentOnBoard(Guid playerId, UInt32 roadStartLocationIndex, UInt32 roadEndLocationIndex)
     {
-      this.builtRoadSegments.Add(new Tuple<uint, uint, Guid>(roadStartLocationIndex, roadEndLocationIndex, playerId));
       var newRoadSegment = new RoadSegment(roadStartLocationIndex, roadEndLocationIndex);
       this.roadSegments.Add(newRoadSegment);
 
@@ -556,79 +561,6 @@ namespace Jabberwocky.SoC.Library.GameBoards
       {
         this.roadSegmentsByPlayer[playerId].Add(newRoadSegment);
       }
-
-      var startRoadNode = this.roadNodes[roadStartLocationIndex];
-      if (startRoadNode == null)
-      {
-        startRoadNode = new RoadNode();
-        this.roadNodes[roadStartLocationIndex] = startRoadNode;
-      }
-
-      for (var i = 0; i < startRoadNode.Trails.Length; i++)
-      {
-        if (startRoadNode.Trails[i] == null)
-        {
-          startRoadNode.Trails[i] = new Tuple<UInt32, Guid>(roadEndLocationIndex, playerId);
-          break;
-        }
-      }
-
-      var endRoadNode = this.roadNodes[roadEndLocationIndex];
-      if (endRoadNode == null)
-      {
-        endRoadNode = new RoadNode();
-        this.roadNodes[roadEndLocationIndex] = endRoadNode;
-      }
-
-      for (var i = 0; i < endRoadNode.Trails.Length; i++)
-      {
-        if (endRoadNode.Trails[i] == null)
-        {
-          endRoadNode.Trails[i] = new Tuple<UInt32, Guid>(roadStartLocationIndex, playerId);
-          break;
-        }
-      }
-
-      /*List<List<RoadSegment>> roadsForPlayer = null;
-      if (!this.roadsByPlayer.ContainsKey(playerId))
-      {
-        roadsForPlayer = new List<List<RoadSegment>>();
-        var newRoad = new List<RoadSegment>();
-        newRoad.Add(newRoadSegment);
-        roadsForPlayer.Add(newRoad);
-        this.roadsByPlayer.Add(playerId, roadsForPlayer);
-        return;
-      }
-
-      roadsForPlayer = this.roadsByPlayer[playerId];
-      foreach (var road in roadsForPlayer)
-      {
-        var firstRoadSegment = road[0];
-        
-        if (firstRoadSegment.IsConnected(newRoadSegment))
-        {
-          if (road.Count == 1)
-          {
-            // Second road segment added to road
-            road.Add(newRoadSegment);
-          }
-          else
-          {
-
-          }
-        }
-
-        if (road[0].IsConnected(newRoadSegment))
-        {
-          road.Insert(0, newRoadSegment);
-        }
-        else if (road[road.Count - 1].IsConnected(newRoadSegment))
-        {
-          road.Add(newRoadSegment);
-        }
-      }
-
-      // Create new road*/
     }
 
     public void PlaceSettlement(Guid playerId, UInt32 locationIndex)
