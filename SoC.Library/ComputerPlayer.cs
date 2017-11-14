@@ -13,6 +13,11 @@ namespace Jabberwocky.SoC.Library
 
     public override Boolean IsComputer { get { return true; } }
 
+    public virtual void ChooseInitialInfrastructure(GameBoardData gameBoardData, out UInt32 settlementLocation, out UInt32 roadEndLocation)
+    {
+      throw new NotImplementedException();
+    }
+
     public virtual void ChooseRoad(GameBoardData gameBoardData, out UInt32 roadStartLocation, out UInt32 roadEndLocation)
     {
       var settlementsForPlayer = gameBoardData.GetSettlementsForPlayer(this.Id);

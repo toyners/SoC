@@ -18,6 +18,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
     public Queue<UInt32> SettlementLocations;
     public Queue<Tuple<UInt32, UInt32>> Roads;
+    public Queue<Tuple<UInt32, UInt32>> InitialInfrastructure;
     public ResourceClutch DroppedResources;
     #endregion
 
@@ -26,6 +27,13 @@ namespace Jabberwocky.SoC.Library.UnitTests
     #endregion
 
     #region Methods
+    public override void ChooseInitialInfrastructure(GameBoardData gameBoardData, out UInt32 settlementLocation, out UInt32 roadEndLocation)
+    {
+      var infrastructure = this.InitialInfrastructure.Dequeue();
+      settlementLocation = infrastructure.Item1;
+      roadEndLocation = infrastructure.Item2;
+    }
+
     public override ResourceClutch ChooseResourcesToDrop()
     {
       return DroppedResources;

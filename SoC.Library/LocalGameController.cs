@@ -180,7 +180,7 @@ namespace Jabberwocky.SoC.Library
               var playerId = Guid.Parse(reader.GetAttribute("playerid"));
               var location = UInt32.Parse(reader.GetAttribute("location"));
 
-              this.gameBoardManager.Data.PlaceSettlement(playerId, location);
+              this.gameBoardManager.Data.PlaceSettlementOnBoard(playerId, location);
             }
 
             if (reader.Name == "roads" && reader.NodeType == XmlNodeType.Element)
@@ -194,7 +194,7 @@ namespace Jabberwocky.SoC.Library
               var start = UInt32.Parse(reader.GetAttribute("start"));
               var end = UInt32.Parse(reader.GetAttribute("end"));
 
-              this.gameBoardManager.Data.PlaceRoadSegment(playerId, start, end);
+              this.gameBoardManager.Data.PlaceRoadSegmentOnBoard(playerId, start, end);
             }
 
             reader.Read();
@@ -516,14 +516,13 @@ namespace Jabberwocky.SoC.Library
         }
 
         var computerPlayer = (IComputerPlayer)player;
-        var chosenSettlementIndex = computerPlayer.ChooseSettlementLocation(gameBoardData);
-        gameBoardData.PlaceSettlement(computerPlayer.Id, chosenSettlementIndex);
-        gameBoardUpdate.NewSettlements.Add(new Tuple<UInt32, Guid>(chosenSettlementIndex, computerPlayer.Id));
 
-        UInt32 startRoadLocation, endRoadLocation;
-        computerPlayer.ChooseRoad(gameBoardData, out startRoadLocation, out endRoadLocation);
-        gameBoardData.PlaceRoadSegment(computerPlayer.Id, startRoadLocation, endRoadLocation);
-        gameBoardUpdate.NewRoads.Add(new Tuple<UInt32, UInt32, Guid>(startRoadLocation, endRoadLocation, computerPlayer.Id));
+        UInt32 chosenSettlementLocation, chosenRoadSegmentEndLocation;
+        computerPlayer.ChooseInitialInfrastructure(gameBoardData, out chosenSettlementLocation, out chosenRoadSegmentEndLocation);
+        gameBoardData.PlaceStartingInfrastructure(computerPlayer.Id, chosenSettlementLocation, chosenRoadSegmentEndLocation);
+        
+        gameBoardUpdate.NewSettlements.Add(new Tuple<UInt32, Guid>(chosenSettlementLocation, computerPlayer.Id));
+        gameBoardUpdate.NewRoads.Add(new Tuple<UInt32, UInt32, Guid>(chosenSettlementLocation, chosenRoadSegmentEndLocation, computerPlayer.Id));
       }
 
       return gameBoardUpdate;
