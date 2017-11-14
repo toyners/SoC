@@ -39,7 +39,6 @@ namespace Jabberwocky.SoC.Library.GameBoards
     private Dictionary<UInt32, Guid> settlements;
     private Dictionary<Guid, List<UInt32>> settlementsByPlayer;
     private Boolean[,] connections;
-    private List<RoadSegment> roadSegments;
     private Dictionary<Guid, List<RoadSegment>> roadSegmentsByPlayer;
     private Dictionary<UInt32, ResourceProducer[]> resourceProvidersByDiceRolls;
     private Dictionary<ResourceProducer, UInt32[]> locationsForResourceProvider;
@@ -59,7 +58,6 @@ namespace Jabberwocky.SoC.Library.GameBoards
 
       this.Length = StandardBoardHexCount;
       this.settlements = new Dictionary<UInt32, Guid>();
-      this.roadSegments = new List<RoadSegment>();
       this.roadSegmentsByPlayer = new Dictionary<Guid, List<RoadSegment>>();
       this.settlementsByPlayer = new Dictionary<Guid, List<UInt32>>();
       this.roadNodes = new RoadNode[StandardBoardLocationCount];
@@ -473,7 +471,13 @@ namespace Jabberwocky.SoC.Library.GameBoards
 
     public Tuple<UInt32, UInt32, Guid>[] GetRoadInformation()
     {
-      var data = new Tuple<UInt32, UInt32, Guid>[this.roadSegments.Count];
+      var count = 0;
+      foreach (var kv in this.roadSegmentsByPlayer)
+      {
+        count += kv.Value.Count;
+      }
+
+      var data = new Tuple<UInt32, UInt32, Guid>[count];
       var index = 0;
       foreach (var kv in this.roadSegmentsByPlayer)
       {
@@ -549,7 +553,6 @@ namespace Jabberwocky.SoC.Library.GameBoards
     private void PlaceRoadSegmentOnBoard(Guid playerId, UInt32 roadStartLocationIndex, UInt32 roadEndLocationIndex)
     {
       var newRoadSegment = new RoadSegment(roadStartLocationIndex, roadEndLocationIndex);
-      this.roadSegments.Add(newRoadSegment);
 
       if (!this.roadSegmentsByPlayer.ContainsKey(playerId))
       {
@@ -782,7 +785,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
 
     internal void ClearRoads()
     {
-      this.roadSegments.Clear();
+      this.roadSegmentsByPlayer.Clear();
     }
 
     internal void ClearSettlements()
