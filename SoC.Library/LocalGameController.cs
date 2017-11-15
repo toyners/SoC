@@ -516,7 +516,6 @@ namespace Jabberwocky.SoC.Library
         }
 
         var computerPlayer = (IComputerPlayer)player;
-
         UInt32 chosenSettlementLocation, chosenRoadSegmentEndLocation;
         computerPlayer.ChooseInitialInfrastructure(gameBoardData, out chosenSettlementLocation, out chosenRoadSegmentEndLocation);
         gameBoardData.PlaceStartingInfrastructure(computerPlayer.Id, chosenSettlementLocation, chosenRoadSegmentEndLocation);
@@ -549,16 +548,14 @@ namespace Jabberwocky.SoC.Library
         }
 
         var computerPlayer = (IComputerPlayer)player;
-        var chosenSettlementIndex = computerPlayer.ChooseSettlementLocation(gameBoardData);
-        gameBoardData.PlaceSettlement(computerPlayer.Id, chosenSettlementIndex);
-        gameBoardUpdate.NewSettlements.Add(new Tuple<UInt32, Guid>(chosenSettlementIndex, computerPlayer.Id));
+        UInt32 chosenSettlementLocation, chosenRoadSegmentEndLocation;
+        computerPlayer.ChooseInitialInfrastructure(gameBoardData, out chosenSettlementLocation, out chosenRoadSegmentEndLocation);
+        gameBoardData.PlaceStartingInfrastructure(computerPlayer.Id, chosenSettlementLocation, chosenRoadSegmentEndLocation);
 
-        this.CollectInitialResourcesForPlayer(computerPlayer.Id, chosenSettlementIndex);
+        gameBoardUpdate.NewSettlements.Add(new Tuple<UInt32, Guid>(chosenSettlementLocation, computerPlayer.Id));
+        gameBoardUpdate.NewRoads.Add(new Tuple<UInt32, UInt32, Guid>(chosenSettlementLocation, chosenRoadSegmentEndLocation, computerPlayer.Id));
 
-        UInt32 startRoadLocation, endRoadLocation;
-        computerPlayer.ChooseRoad(gameBoardData, out startRoadLocation, out endRoadLocation);
-        gameBoardData.PlaceRoadSegment(computerPlayer.Id, startRoadLocation, endRoadLocation);
-        gameBoardUpdate.NewRoads.Add(new Tuple<UInt32, UInt32, Guid>(startRoadLocation, endRoadLocation, computerPlayer.Id));
+        this.CollectInitialResourcesForPlayer(computerPlayer.Id, chosenSettlementLocation);
       }
 
       return gameBoardUpdate;

@@ -1805,29 +1805,18 @@ namespace Jabberwocky.SoC.Library.UnitTests
       return this.CreateLocalGameController(mockDice, player, firstOpponent, secondOpponent, thirdOpponent);
     }
 
-    private MockComputerPlayer CreateMockComputerPlayer(String name, UInt32 settlementOneLocation, UInt32 settlementTwoLocation, UInt32 roadOneStart, UInt32 roadOneEnd, UInt32 roadTwoStart, UInt32 roadTwoEnd)
-    {
-      var computerPlayer = new MockComputerPlayer(name);
-      computerPlayer.SettlementLocations = new Queue<uint>(new uint[] { settlementOneLocation, settlementTwoLocation });
-      computerPlayer.Roads = new Queue<Tuple<UInt32, UInt32>>(new Tuple<UInt32, UInt32>[] { new Tuple<UInt32, UInt32>(roadOneStart, roadOneEnd), new Tuple<UInt32, UInt32>(roadTwoStart, roadTwoEnd) });
-      return computerPlayer;
-    }
-
     private void CreateDefaultPlayerInstances(out MockPlayer player, out MockComputerPlayer firstOpponent, out MockComputerPlayer secondOpponent, out MockComputerPlayer thirdOpponent)
     {
       player = new MockPlayer(PlayerName);
 
       firstOpponent = new MockComputerPlayer(FirstOpponentName);
-      firstOpponent.SettlementLocations = new Queue<UInt32>(new[] { FirstSettlementOneLocation, FirstSettlementTwoLocation });
-      firstOpponent.Roads = new Queue<Tuple<UInt32, UInt32>>(new[] { new Tuple<UInt32, UInt32>(17, 18), new Tuple<UInt32, UInt32>(43, 44) });
+      firstOpponent.AddInitialInfrastructureChoices(FirstSettlementOneLocation, FirstRoadOneEnd, FirstSettlementTwoLocation, FirstRoadTwoEnd);
 
       secondOpponent = new MockComputerPlayer(SecondOpponentName);
-      secondOpponent.SettlementLocations = new Queue<UInt32>(new[] { SecondSettlementOneLocation, SecondSettlementTwoLocation });
-      secondOpponent.Roads = new Queue<Tuple<UInt32, UInt32>>(new[] { new Tuple<UInt32, UInt32>(15, 25), new Tuple<UInt32, UInt32>(24, 35) });
+      secondOpponent.AddInitialInfrastructureChoices(SecondSettlementOneLocation, SecondRoadOneEnd, SecondSettlementTwoLocation, SecondRoadTwoEnd);
 
       thirdOpponent = new MockComputerPlayer(ThirdOpponentName);
-      thirdOpponent.SettlementLocations = new Queue<UInt32>(new[] { ThirdSettlementOneLocation, ThirdSettlementTwoLocation });
-      thirdOpponent.Roads = new Queue<Tuple<UInt32, UInt32>>(new[] { new Tuple<UInt32, UInt32>(30, 31), new Tuple<UInt32, UInt32>(32, 33) });
+      thirdOpponent.AddInitialInfrastructureChoices(ThirdSettlementOneLocation, ThirdRoadOneEnd, ThirdSettlementTwoLocation, ThirdRoadTwoEnd);
     }
 
     private void RunOpponentDataPassBackTests(GameOptions gameOptions)
