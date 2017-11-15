@@ -1193,17 +1193,17 @@ namespace Jabberwocky.SoC.Library.UnitTests
     public void TryGetLongestRoadDetails_NoRoadsOnBoard_ReturnsFalse()
     {
       // Arrange
-      Int32 roadLength;
+      UInt32[] road;
       Guid longestRoadPlayerId;
       var gameBoard = new GameBoardData(BoardSizes.Standard);
 
       // Act
-      var result = gameBoard.TryGetLongestRoadDetails(out longestRoadPlayerId, out roadLength);
+      var result = gameBoard.TryGetLongestRoadDetails(out longestRoadPlayerId, out road);
 
       // Assert
       result.ShouldBeFalse();
       longestRoadPlayerId.ShouldBe(Guid.Empty);
-      roadLength.ShouldBe(-1);
+      road.ShouldBeNull();
     }
 
     /// <summary>
@@ -1231,14 +1231,14 @@ namespace Jabberwocky.SoC.Library.UnitTests
       gameBoard.PlaceRoadSegment(opponentId, 1, 2);
 
       // Act
-      Int32 roadLength;
+      UInt32[] road;
       Guid longestRoadPlayerId;
-      var result = gameBoard.TryGetLongestRoadDetails(out longestRoadPlayerId, out roadLength);
+      var result = gameBoard.TryGetLongestRoadDetails(out longestRoadPlayerId, out road);
 
       // Assert
       result.ShouldBeTrue();
       longestRoadPlayerId.ShouldBe(playerId);
-      roadLength.ShouldBe(3);
+      road.ShouldBe(new[] { FirstSettlementLocation, FirstRoadEndLocation, 10u, 2u });
     }
 
     /// <summary>
@@ -1266,9 +1266,9 @@ namespace Jabberwocky.SoC.Library.UnitTests
       gameBoard.PlaceRoadSegment(opponentId, 2, 3);
 
       // Act
-      Int32 roadLength;
+      UInt32[] road;
       Guid longestRoadPlayerId;
-      var result = gameBoard.TryGetLongestRoadDetails(out longestRoadPlayerId, out roadLength);
+      var result = gameBoard.TryGetLongestRoadDetails(out longestRoadPlayerId, out road);
 
       // Assert
       result.ShouldBeFalse();
@@ -1296,9 +1296,9 @@ namespace Jabberwocky.SoC.Library.UnitTests
       gameBoard.PlaceRoadSegment(playerId, 14, 6);
 
       // Act
-      Int32 roadLength;
+      UInt32[] road;
       Guid longestRoadPlayerId;
-      var result = gameBoard.TryGetLongestRoadDetails(out longestRoadPlayerId, out roadLength);
+      var result = gameBoard.TryGetLongestRoadDetails(out longestRoadPlayerId, out road);
 
       // Assert
       result.ShouldBeFalse();
@@ -1328,13 +1328,15 @@ namespace Jabberwocky.SoC.Library.UnitTests
       gameBoard.PlaceRoadSegment(playerId, 13, 23);
 
       // Act
-      Int32 roadLength;
+      UInt32[] road;
       Guid longestRoadPlayerId;
-      var result = gameBoard.TryGetLongestRoadDetails(out longestRoadPlayerId, out roadLength);
+      var result = gameBoard.TryGetLongestRoadDetails(out longestRoadPlayerId, out road);
 
       // Assert
       longestRoadPlayerId.ShouldBe(playerId);
-      roadLength.ShouldBe(6);
+      road.ShouldBeOneOf(
+        new[] { FirstSettlementLocation, FirstRoadEndLocation, 21u, 22u, 23u, 13u, FirstSettlementLocation }, 
+        new[] { FirstSettlementLocation, 13u, 23u, 22u, 21u, FirstRoadEndLocation, FirstSettlementLocation });
     }
 
     /// <summary>
@@ -1367,13 +1369,15 @@ namespace Jabberwocky.SoC.Library.UnitTests
       gameBoard.PlaceRoadSegment(playerId, 22, 33);
 
       // Act
-      Int32 roadLength;
+      UInt32[] road;
       Guid longestRoadPlayerId;
-      var result = gameBoard.TryGetLongestRoadDetails(out longestRoadPlayerId, out roadLength);
+      var result = gameBoard.TryGetLongestRoadDetails(out longestRoadPlayerId, out road);
 
       // Assert
       longestRoadPlayerId.ShouldBe(playerId);
-      roadLength.ShouldBe(10);
+      road.ShouldBeOneOf(
+        new[] { FirstSettlementLocation, FirstRoadEndLocation, 21u, 20u, 31u, 32u, 33u, 22u, 23u, 13u, FirstSettlementLocation },
+        new[] { FirstSettlementLocation, 13u, 23u, 22u, 33u, 32u, 31u, 20u, 21u, FirstRoadEndLocation, FirstSettlementLocation });
     }
 
     /// <summary>
@@ -1405,13 +1409,14 @@ namespace Jabberwocky.SoC.Library.UnitTests
       gameBoard.PlaceRoadSegment(playerId, 42u, 41u);
 
       // Act
-      Int32 roadLength;
+      UInt32[] road;
       Guid longestRoadPlayerId;
-      var result = gameBoard.TryGetLongestRoadDetails(out longestRoadPlayerId, out roadLength);
+      var result = gameBoard.TryGetLongestRoadDetails(out longestRoadPlayerId, out road);
 
       // Assert
       longestRoadPlayerId.ShouldBe(playerId);
-      roadLength.ShouldBe(6);
+      road.ShouldBe(
+        new[] { 23u, 22u, 21u, 20u, 19u, 18u, 17u });
     }
 
     /// <summary>
@@ -1443,13 +1448,14 @@ namespace Jabberwocky.SoC.Library.UnitTests
       gameBoard.PlaceRoadSegment(playerId, 18u, 17u);
 
       // Act
-      Int32 roadLength;
+      UInt32[] road;
       Guid longestRoadPlayerId;
-      var result = gameBoard.TryGetLongestRoadDetails(out longestRoadPlayerId, out roadLength);
+      var result = gameBoard.TryGetLongestRoadDetails(out longestRoadPlayerId, out road);
 
       // Assert
       longestRoadPlayerId.ShouldBe(playerId);
-      roadLength.ShouldBe(6);
+      road.ShouldBe(
+        new[] { 23u, 22u, 21u, 20u, 19u, 18u, 17u });
     }
 
     /// <summary>
@@ -1479,14 +1485,14 @@ namespace Jabberwocky.SoC.Library.UnitTests
       gameBoard.PlaceRoadSegment(playerId, 31, 32);
 
       // Act
-      Int32 roadLength;
+      UInt32[] road;
       Guid longestRoadPlayerId;
-      var result = gameBoard.TryGetLongestRoadDetails(out longestRoadPlayerId, out roadLength);
+      var result = gameBoard.TryGetLongestRoadDetails(out longestRoadPlayerId, out road);
 
       // Assert
       result.ShouldBeTrue();
       longestRoadPlayerId.ShouldBe(playerId);
-      roadLength.ShouldBe(6);
+      road.ShouldBe(new[] { 0u });
     }
 
     /// <summary>
@@ -1513,14 +1519,14 @@ namespace Jabberwocky.SoC.Library.UnitTests
       gameBoard.PlaceRoadSegment(playerId, FirstRoadEndLocation, 10u);
 
       // Act
-      Int32 roadLength;
+      UInt32[] road;
       Guid longestRoadPlayerId;
-      var result = gameBoard.TryGetLongestRoadDetails(out longestRoadPlayerId, out roadLength);
+      var result = gameBoard.TryGetLongestRoadDetails(out longestRoadPlayerId, out road);
 
       // Assert
       result.ShouldBeTrue();
       longestRoadPlayerId.ShouldBe(playerId);
-      roadLength.ShouldBe(7);
+      road.ShouldBe(new[] { 0u });
     }
 
     /// <summary>
@@ -1541,14 +1547,14 @@ namespace Jabberwocky.SoC.Library.UnitTests
       gameBoard.PlaceRoadSegment(playerId, FirstSettlementLocation, 4);
       
       // Act
-      Int32 roadLength;
+      UInt32[] road;
       Guid longestRoadPlayerId;
-      var result = gameBoard.TryGetLongestRoadDetails(out longestRoadPlayerId, out roadLength);
+      var result = gameBoard.TryGetLongestRoadDetails(out longestRoadPlayerId, out road);
 
       // Assert
       result.ShouldBeTrue();
       longestRoadPlayerId.ShouldBe(playerId);
-      roadLength.ShouldBe(2);
+      road.ShouldBe(new[] { 0u });
     }
 
     /// <summary>
@@ -1571,14 +1577,14 @@ namespace Jabberwocky.SoC.Library.UnitTests
       gameBoard.PlaceRoadSegment(playerId, FirstSettlementLocation, 13);
 
       // Act
-      Int32 roadLength;
+      UInt32[] road;
       Guid longestRoadPlayerId;
-      var result = gameBoard.TryGetLongestRoadDetails(out longestRoadPlayerId, out roadLength);
+      var result = gameBoard.TryGetLongestRoadDetails(out longestRoadPlayerId, out road);
 
       // Assert
       result.ShouldBeTrue();
       longestRoadPlayerId.ShouldBe(playerId);
-      roadLength.ShouldBe(3);
+      road.ShouldBe(new[] { 0u });
     }
 
     /// <summary>
@@ -1613,14 +1619,14 @@ namespace Jabberwocky.SoC.Library.UnitTests
       gameBoard.PlaceRoadSegment(playerId, 15, 14);
 
       // Act
-      Int32 roadLength;
+      UInt32[] road;
       Guid longestRoadPlayerId;
-      var result = gameBoard.TryGetLongestRoadDetails(out longestRoadPlayerId, out roadLength);
+      var result = gameBoard.TryGetLongestRoadDetails(out longestRoadPlayerId, out road);
 
       // Assert
       result.ShouldBeTrue();
       longestRoadPlayerId.ShouldBe(playerId);
-      roadLength.ShouldBe(14);
+      road.ShouldBe(new[] { 0u });
     }
 
     /// <summary>
@@ -1647,14 +1653,14 @@ namespace Jabberwocky.SoC.Library.UnitTests
       gameBoard.PlaceRoadSegment(playerId, FirstSettlementLocation, 4);
 
       // Act
-      Int32 roadLength;
+      UInt32[] road;
       Guid longestRoadPlayerId;
-      var result = gameBoard.TryGetLongestRoadDetails(out longestRoadPlayerId, out roadLength);
+      var result = gameBoard.TryGetLongestRoadDetails(out longestRoadPlayerId, out road);
 
       // Assert
       result.ShouldBeTrue();
       longestRoadPlayerId.ShouldBe(playerId);
-      roadLength.ShouldBe(5);
+      road.ShouldBe(new[] { 0u });
     }
 
     /// <summary>
@@ -1684,14 +1690,14 @@ namespace Jabberwocky.SoC.Library.UnitTests
       gameBoard.PlaceRoadSegment(playerId, 3, 2);
 
       // Act
-      Int32 roadLength;
+      UInt32[] road;
       Guid longestRoadPlayerId;
-      var result = gameBoard.TryGetLongestRoadDetails(out longestRoadPlayerId, out roadLength);
+      var result = gameBoard.TryGetLongestRoadDetails(out longestRoadPlayerId, out road);
 
       // Assert
       result.ShouldBeTrue();
       longestRoadPlayerId.ShouldBe(playerId);
-      roadLength.ShouldBe(9);
+      road.ShouldBe(new[] { 0u });
     }
     #endregion
   }

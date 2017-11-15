@@ -629,11 +629,11 @@ namespace Jabberwocky.SoC.Library.GameBoards
       }
     }
 
-    public Boolean TryGetLongestRoadDetails(out Guid playerId, out Int32 roadLength)
+    public Boolean TryGetLongestRoadDetails(out Guid playerId, out UInt32[] road)
     {
       var singleLongestRoad = false;
       playerId = Guid.Empty;
-      roadLength = 0;
+      road = null;
 
       // Get all road ends - Start from the starting settlements because most times they will be a genuine road end
       // (except in the case of a cycle). 
@@ -738,13 +738,13 @@ namespace Jabberwocky.SoC.Library.GameBoards
                 workingRoadLength = roadStartmarks[0].WorkingRoadLength;
               }
 
-              if (workingRoadLength > roadLength)
+              if (workingRoadLength > road.Length)
               {
-                roadLength = workingRoadLength;
+                //roadLength = workingRoadLength;
                 playerId = kv2.Key;
                 singleLongestRoad = true;
               }
-              else if (workingRoadLength == roadLength)
+              else if (workingRoadLength == road.Length)
               {
                 singleLongestRoad = false;
               }
@@ -783,7 +783,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
       if (!singleLongestRoad)
       {
         playerId = Guid.Empty;
-        roadLength = -1;
+        road = null;
       }
 
       return singleLongestRoad;
