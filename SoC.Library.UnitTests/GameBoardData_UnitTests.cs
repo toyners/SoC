@@ -1526,7 +1526,13 @@ namespace Jabberwocky.SoC.Library.UnitTests
       // Assert
       result.ShouldBeTrue();
       longestRoadPlayerId.ShouldBe(playerId);
-      road.ShouldBe(new[] { 0u });
+      var result1 = new List<UInt32> { 0u };
+      var result2 = new List<UInt32> { 0u };
+      var result3 = new List<UInt32>(result1);
+      result3.Reverse();
+      var result4 = new List<UInt32>(result2);
+      result4.Reverse();
+      road.ShouldBeOneOf(result1.ToArray(), result2.ToArray(), result3.ToArray(), result4.ToArray());
     }
 
     /// <summary>
@@ -1554,7 +1560,9 @@ namespace Jabberwocky.SoC.Library.UnitTests
       // Assert
       result.ShouldBeTrue();
       longestRoadPlayerId.ShouldBe(playerId);
-      road.ShouldBe(new[] { 0u });
+      road.ShouldBeOneOf(
+        new[] { FirstRoadEndLocation, FirstSettlementLocation, 4u },
+        new[] { 4u, FirstSettlementLocation, FirstRoadEndLocation });
     }
 
     /// <summary>
@@ -1584,7 +1592,11 @@ namespace Jabberwocky.SoC.Library.UnitTests
       // Assert
       result.ShouldBeTrue();
       longestRoadPlayerId.ShouldBe(playerId);
-      road.ShouldBe(new[] { 0u });
+      road.ShouldBeOneOf(
+        new[] { 10u, FirstRoadEndLocation, FirstSettlementLocation, 4u }, 
+        new[] { 10u, FirstRoadEndLocation, FirstSettlementLocation, 13u },
+        new[] { 13u, FirstSettlementLocation, FirstRoadEndLocation, 10u },
+        new[] { 4u, FirstSettlementLocation, FirstRoadEndLocation, 10u });
     }
 
     /// <summary>
@@ -1626,7 +1638,20 @@ namespace Jabberwocky.SoC.Library.UnitTests
       // Assert
       result.ShouldBeTrue();
       longestRoadPlayerId.ShouldBe(playerId);
-      road.ShouldBe(new[] { 0u });
+      var result1 = new List<UInt32> { FirstRoadEndLocation, 10u, 9u, 19u, 20u, 21u, FirstRoadEndLocation, FirstSettlementLocation, 13u, 23u, 24u, 25u, 15u, 14u, 13u };
+      var result2 = new List<UInt32> { FirstRoadEndLocation, 10u, 9u, 19u, 20u, 21u, FirstRoadEndLocation, FirstSettlementLocation, 13u, 14u, 15u, 25u, 24u, 23u, 13u };
+      var result3 = new List<UInt32> { FirstRoadEndLocation, 21u, 20u, 19u, 9u, 10u, FirstRoadEndLocation, FirstSettlementLocation, 13u, 23u, 24u, 25u, 15u, 14u, 13u };
+      var result4 = new List<UInt32> { FirstRoadEndLocation, 21u, 20u, 19u, 9u, 10u, FirstRoadEndLocation, FirstSettlementLocation, 13u, 14u, 15u, 25u, 24u, 23u, 13u };
+      var result5 = new List<UInt32>(result1);
+      var result6 = new List<UInt32>(result2);
+      var result7 = new List<UInt32>(result3);
+      var result8 = new List<UInt32>(result4);
+      result5.Reverse();
+      result6.Reverse();
+      result7.Reverse();
+      result8.Reverse();
+
+      road.ShouldBeOneOf(result1.ToArray(), result2.ToArray(), result3.ToArray(), result4.ToArray(), result5.ToArray(), result6.ToArray(), result7.ToArray(), result8.ToArray());
     }
 
     /// <summary>
@@ -1660,7 +1685,8 @@ namespace Jabberwocky.SoC.Library.UnitTests
       // Assert
       result.ShouldBeTrue();
       longestRoadPlayerId.ShouldBe(playerId);
-      road.ShouldBe(new[] { 0u });
+      road.ShouldBeOneOf(new[] { 4u, FirstSettlementLocation, FirstRoadEndLocation, 10u, 9u, 8u }, 
+        new[] { 8u, 9u, 10u, FirstRoadEndLocation, FirstSettlementLocation, 4u });
     }
 
     /// <summary>
@@ -1697,7 +1723,8 @@ namespace Jabberwocky.SoC.Library.UnitTests
       // Assert
       result.ShouldBeTrue();
       longestRoadPlayerId.ShouldBe(playerId);
-      road.ShouldBe(new[] { 0u });
+      road.ShouldBeOneOf(new UInt32[] { FirstSettlementLocation, FirstRoadEndLocation, 21, 22, 23, 13, FirstSettlementLocation, 4, 3, 2 },
+        new UInt32[] { 2, 3, 4, FirstSettlementLocation, 13, 23, 22, 21, FirstRoadEndLocation, FirstSettlementLocation });
     }
     #endregion
   }
