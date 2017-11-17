@@ -1238,7 +1238,10 @@ namespace Jabberwocky.SoC.Library.UnitTests
       // Assert
       result.ShouldBeTrue();
       longestRoadPlayerId.ShouldBe(playerId);
-      road.ShouldBe(new[] { FirstSettlementLocation, FirstRoadEndLocation, 10u, 2u });
+      var result1 = new List<UInt32> { FirstSettlementLocation, FirstRoadEndLocation, 10u, 2u };
+      var result2 = new List<UInt32>(result1);
+      result2.Reverse();
+      road.ShouldBeOneOf(result1.ToArray(), result2.ToArray());
     }
 
     /// <summary>
@@ -1334,9 +1337,10 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
       // Assert
       longestRoadPlayerId.ShouldBe(playerId);
-      road.ShouldBeOneOf(
-        new[] { FirstSettlementLocation, FirstRoadEndLocation, 21u, 22u, 23u, 13u, FirstSettlementLocation }, 
-        new[] { FirstSettlementLocation, 13u, 23u, 22u, 21u, FirstRoadEndLocation, FirstSettlementLocation });
+      var result1 = new List<UInt32> { FirstSettlementLocation, FirstRoadEndLocation, 21u, 22u, 23u, 13u, FirstSettlementLocation };
+      var result2 = new List<UInt32>(result1);
+      result2.Reverse();
+      road.ShouldBeOneOf(result1.ToArray(), result2.ToArray());
     }
 
     /// <summary>
@@ -1375,14 +1379,15 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
       // Assert
       longestRoadPlayerId.ShouldBe(playerId);
-      road.ShouldBeOneOf(
-        new[] { FirstSettlementLocation, FirstRoadEndLocation, 21u, 20u, 31u, 32u, 33u, 22u, 23u, 13u, FirstSettlementLocation },
-        new[] { FirstSettlementLocation, 13u, 23u, 22u, 33u, 32u, 31u, 20u, 21u, FirstRoadEndLocation, FirstSettlementLocation });
+      var result1 = new List<UInt32> { FirstSettlementLocation, FirstRoadEndLocation, 21u, 20u, 31u, 32u, 33u, 22u, 23u, 13u, FirstSettlementLocation };
+      var result2 = new List<UInt32>(result1);
+      result2.Reverse();
+      road.ShouldBeOneOf(result1.ToArray(), result2.ToArray());
     }
 
     /// <summary>
-    /// Road contains a fork. One branch is longer. Longest road details must be for long branch. Longest road count
-    /// must include common 'trunk' road segment. Longest branch is built first.
+    /// Road contains a fork. One branch is longer. Longest road details must include both long branch and short branch.
+    /// Longest branch is built first.
     /// </summary>
     [Test]
     [Category("All")]
@@ -1415,13 +1420,61 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
       // Assert
       longestRoadPlayerId.ShouldBe(playerId);
-      road.ShouldBe(
-        new[] { 23u, 22u, 21u, 20u, 19u, 18u, 17u });
+      var result1 = new List<UInt32> { 17u, 18u, 19u, 20u, 21u, 22u, 33u, 32u, 42u, 41u };
+      var result2 = new List<UInt32>(result1);
+      result2.Reverse();
+      road.ShouldBeOneOf(result1.ToArray(), result2.ToArray());
     }
 
     /// <summary>
-    /// Road contains a fork. One branch is longer. Longest road details must be for long branch. Longest road count
-    /// must include common 'trunk' road segment. Shortest branch is built first.
+    /// Road contains multiple forks. Smallest fork is ignored. Longest road details must include both long branch and short branch.
+    /// Longest branch is built first.
+    /// </summary>
+    [Test]
+    [Category("All")]
+    [Category("GameBoardData")]
+    [Category("GameBoardData.TryGetLongestRoadDetails")]
+    public void TryGetLongestRoadDetails_LongestRoadPassesThroughMultipleForks_ReturnsLongestRoadDetails()
+    {
+      // Arrange
+      var gameBoard = new GameBoardData(BoardSizes.Standard);
+
+      var playerId = Guid.NewGuid();
+      gameBoard.PlaceStartingInfrastructure(playerId, 0, 1);
+      gameBoard.PlaceStartingInfrastructure(playerId, 23, 22);
+
+      // Largest fork
+      gameBoard.PlaceRoadSegment(playerId, 22u, 21u);
+      gameBoard.PlaceRoadSegment(playerId, 21u, 20u);
+      gameBoard.PlaceRoadSegment(playerId, 20u, 19u);
+      gameBoard.PlaceRoadSegment(playerId, 19u, 18u);
+      gameBoard.PlaceRoadSegment(playerId, 18u, 17u);
+
+      // One segment fork
+      gameBoard.PlaceRoadSegment(playerId, 19u, 19u);
+
+      // Smaller fork
+      gameBoard.PlaceRoadSegment(playerId, 22u, 33u);
+      gameBoard.PlaceRoadSegment(playerId, 33u, 32u);
+      gameBoard.PlaceRoadSegment(playerId, 32u, 42u);
+      gameBoard.PlaceRoadSegment(playerId, 42u, 41u);
+
+      // Act
+      UInt32[] road;
+      Guid longestRoadPlayerId;
+      var result = gameBoard.TryGetLongestRoadDetails(out longestRoadPlayerId, out road);
+
+      // Assert
+      longestRoadPlayerId.ShouldBe(playerId);
+      var result1 = new List<UInt32> { 17u, 18u, 19u, 20u, 21u, 22u, 33u, 32u, 42u, 41u };
+      var result2 = new List<UInt32>(result1);
+      result2.Reverse();
+      road.ShouldBeOneOf(result1.ToArray(), result2.ToArray());
+    }
+
+    /// <summary>
+    /// Road contains a fork. One branch is longer. Longest road details must include both long branch and short branch.
+    /// Shortest branch is built first.
     /// </summary>
     [Test]
     [Category("All")]
@@ -1454,8 +1507,10 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
       // Assert
       longestRoadPlayerId.ShouldBe(playerId);
-      road.ShouldBe(
-        new[] { 23u, 22u, 21u, 20u, 19u, 18u, 17u });
+      var result1 = new List<UInt32> { 17u, 18u, 19u, 20u, 21u, 22u, 33u, 32u, 42u, 41u };
+      var result2 = new List<UInt32>(result1);
+      result2.Reverse();
+      road.ShouldBeOneOf(result1.ToArray(), result2.ToArray());
     }
 
     /// <summary>
