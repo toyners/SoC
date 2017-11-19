@@ -635,6 +635,8 @@ namespace Jabberwocky.SoC.Library.GameBoards
       playerId = Guid.Empty;
       road = null;
 
+      return this.Try2(out playerId, out road);
+
       // Get all road ends - Start from the starting settlements because most times they will be a genuine road end
       // (except in the case of a cycle). 
       // Start from road end and advance along path, store each in a set to ensure that cycles are ignored.
@@ -787,6 +789,45 @@ namespace Jabberwocky.SoC.Library.GameBoards
       {
         playerId = Guid.Empty;
         road = null;
+      }
+
+      return singleLongestRoad;
+    }
+
+    private Boolean Try2(out Guid playerId, out UInt32[] road)
+    {
+      var singleLongestRoad = false;
+      playerId = Guid.Empty;
+      road = null;
+
+      foreach (var kv2 in this.roadSegmentsByPlayer)
+      {
+        var roadSegments = kv2.Value;
+        var settlementsPlacedByPlayer = this.settlementsByPlayer[kv2.Key];
+        var roadEnds = new UInt32[] { settlementsPlacedByPlayer[0], settlementsPlacedByPlayer[1] };
+
+        var visitedSet = new HashSet<RoadSegment>();
+
+        for (var index = 0; index < roadEnds.Length; index++)
+        {
+          var currentRoadEndLocation = roadEnds[index];
+
+          while (true)
+          {
+            var connectedSegments = roadSegments.Where(r => (r.Location1 == currentRoadEndLocation || r.Location2 == currentRoadEndLocation) && !visitedSet.Contains(r)).ToList();
+            if (connectedSegments.Count == 0)
+            {
+              break;
+            }
+
+            var currentRoadSegment = connectedSegments[0];
+            visitedSet.Add(currentRoadSegment);
+
+            // Move along road segment i.e. get other end
+            currentRoadEndLocation = currentRoadSegment.Location1 == currentRoadEndLocation ? currentRoadSegment.Location2 : currentRoadSegment.Location1;
+
+          }
+        }
       }
 
       return singleLongestRoad;
