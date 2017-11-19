@@ -1783,4 +1783,125 @@ namespace Jabberwocky.SoC.Library.UnitTests
     }
     #endregion
   }
+
+  [TestFixture]
+  public class RoadSegmentsList_UnitTests
+  {
+    [Test]
+    [Category("All")]
+    [Category("RoadSegmentsList")]
+    public void GetRoadEnds_OneRoadSegment_ReturnsTwoEnds()
+    {
+      var roadSegments = new RoadSegmentsList();
+      roadSegments.Add(new RoadSegment(0, 1));
+
+      var roadEnds = roadSegments.GetRoadEnds();
+
+      roadEnds.ShouldBe(new[] { 0u, 1u });
+    }
+
+    [Test]
+    [Category("All")]
+    [Category("RoadSegmentsList")]
+    public void GetRoadEnds_TwoRoadSegments_ReturnsTwoEnds()
+    {
+      var roadSegments = new RoadSegmentsList();
+      roadSegments.Add(new RoadSegment(0, 1));
+      roadSegments.Add(new RoadSegment(1, 2));
+
+      var roadEnds = roadSegments.GetRoadEnds();
+
+      roadEnds.ShouldBe(new[] { 0u, 2u });
+    }
+
+    [Test]
+    [Category("All")]
+    [Category("RoadSegmentsList")]
+    public void GetRoadEnds_SmallestFullRoad_ReturnsTwoEnds()
+    {
+      var roadSegments = new RoadSegmentsList();
+      roadSegments.Add(new RoadSegment(0, 1));
+      roadSegments.Add(new RoadSegment(1, 2));
+      roadSegments.Add(new RoadSegment(2, 3));
+
+      var roadEnds = roadSegments.GetRoadEnds();
+
+      roadEnds.ShouldBe(new [] { 0u, 3u });
+    }
+
+    [Test]
+    [Category("All")]
+    [Category("RoadSegmentsList")]
+    public void GetRoadEnds_RoadWithFork_ReturnsThreeEnds()
+    {
+      // Arrange
+      var roadSegments = new RoadSegmentsList();
+      roadSegments.Add(new RoadSegment(1, 2));
+      roadSegments.Add(new RoadSegment(2, 3));
+      roadSegments.Add(new RoadSegment(2, 10));
+
+      // Act
+      var roadEnds = roadSegments.GetRoadEnds();
+
+      // Assert
+      roadEnds.ShouldBe(new[] { 1u, 3u, 10u });
+    }
+
+    [Test]
+    [Category("All")]
+    [Category("RoadSegmentsList")]
+    public void GetRoadEnds_RoadWithForks_ReturnsFourEnds()
+    {
+      // Arrange
+      var roadSegments = new RoadSegmentsList();
+      roadSegments.Add(new RoadSegment(1, 2));
+      roadSegments.Add(new RoadSegment(2, 3));
+      roadSegments.Add(new RoadSegment(2, 10));
+      roadSegments.Add(new RoadSegment(10, 11));
+      roadSegments.Add(new RoadSegment(10, 9));
+
+      // Act
+      var roadEnds = roadSegments.GetRoadEnds();
+
+      // Assert - Order of road ends is determined by list adding order.
+      roadEnds.ShouldBe(new[] { 1u, 3u, 11u, 9u });
+    }
+
+    [Test]
+    [Category("All")]
+    [Category("RoadSegmentsList")]
+    public void GetRoadEnds_ListIsEmptyIs_ReturnsNoEnds()
+    {
+      // Arrange
+      var roadSegments = new RoadSegmentsList();
+
+      // Act
+      var roadEnds = roadSegments.GetRoadEnds();
+
+      // Assert
+      roadEnds.ShouldBeNull();
+    }
+
+    [Test]
+    [Category("All")]
+    [Category("RoadSegmentsList")]
+    public void GetRoadEnds_RoadIsLoop_ReturnsNoEnds()
+    {
+      // Arrange
+      var roadSegments = new RoadSegmentsList();
+      roadSegments.Add(new RoadSegment(0, 1));
+      roadSegments.Add(new RoadSegment(1, 2));
+      roadSegments.Add(new RoadSegment(2, 3));
+      roadSegments.Add(new RoadSegment(2, 10));
+      roadSegments.Add(new RoadSegment(10, 9));
+      roadSegments.Add(new RoadSegment(9, 8));
+      roadSegments.Add(new RoadSegment(8, 0));
+
+      // Act
+      var roadEnds = roadSegments.GetRoadEnds();
+
+      // Assert
+      roadEnds.ShouldBeNull();
+    }
+  }
 }

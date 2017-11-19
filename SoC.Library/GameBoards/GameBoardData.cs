@@ -649,6 +649,35 @@ namespace Jabberwocky.SoC.Library.GameBoards
         var roadStartmarks = new List<RoadStartmark>();
         var settlementsPlacedByPlayer = this.settlementsByPlayer[kv2.Key];
 
+        foreach (var rs in segments)
+        {
+          var location1HasConnections = false;
+          var location2HasConnections = false;
+
+          foreach (var rs2 in segments)
+          {
+            if (rs == rs2)
+            {
+              continue;
+            }
+
+            if (rs.Location1 == rs2.Location1 || rs.Location1 == rs2.Location2)
+            {
+              location1HasConnections = true;
+            }
+
+            if (rs.Location2 == rs2.Location1 || rs.Location2 == rs2.Location2)
+            {
+              location2HasConnections = true;
+            }
+
+            if (location1HasConnections && location2HasConnections)
+            {
+              break;
+            }
+          }
+        }
+
         roadEnds.Add(settlementsPlacedByPlayer[0]);
         roadEnds.Add(settlementsPlacedByPlayer[1]);
 
@@ -1266,5 +1295,13 @@ namespace Jabberwocky.SoC.Library.GameBoards
       public PlacementException(String message) : base(message) { }
     }
     #endregion
+  }
+
+  public class RoadSegmentsList : List<RoadSegment>
+  {
+    public UInt32[] GetRoadEnds()
+    {
+      throw new NotImplementedException();
+    }
   }
 }
