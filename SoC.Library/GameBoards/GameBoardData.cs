@@ -644,48 +644,22 @@ namespace Jabberwocky.SoC.Library.GameBoards
 
       foreach (var kv2 in this.roadSegmentsByPlayer)
       {
-        var segments = kv2.Value;
-        var roadEnds = new List<UInt32>();
+        var roadSegments = kv2.Value;
+        
         var roadStartmarks = new List<RoadStartmark>();
         var settlementsPlacedByPlayer = this.settlementsByPlayer[kv2.Key];
 
-        foreach (var rs in segments)
+        var roadEnds = roadSegments.GetRoadEnds();
+        if (roadEnds == null)
         {
-          var location1HasConnections = false;
-          var location2HasConnections = false;
-
-          foreach (var rs2 in segments)
-          {
-            if (rs == rs2)
-            {
-              continue;
-            }
-
-            if (rs.Location1 == rs2.Location1 || rs.Location1 == rs2.Location2)
-            {
-              location1HasConnections = true;
-            }
-
-            if (rs.Location2 == rs2.Location1 || rs.Location2 == rs2.Location2)
-            {
-              location2HasConnections = true;
-            }
-
-            if (location1HasConnections && location2HasConnections)
-            {
-              break;
-            }
-          }
+          roadEnds = new UInt32[] { settlementsPlacedByPlayer[0], settlementsPlacedByPlayer[1] };
         }
-
-        roadEnds.Add(settlementsPlacedByPlayer[0]);
-        roadEnds.Add(settlementsPlacedByPlayer[1]);
 
         var forkmarks = new List<Forkmark>();
 
         var visitedSet = new HashSet<RoadSegment>();
         
-        for (var index = 0; index < roadEnds.Count; index++)
+        for (var index = 0; index < roadEnds.Length; index++)
         {
           var roadStartmarkIndex = 0;
           var currentRoadEndLocation = roadEnds[index];
@@ -694,7 +668,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
           roadStartmarks.Clear();
           forkmarks.Clear();
 
-          var connectingSegments = segments.Where(r => r.Location1 == currentRoadEndLocation || r.Location2 == currentRoadEndLocation).ToList();
+          var connectingSegments = roadSegments.Where(r => r.Location1 == currentRoadEndLocation || r.Location2 == currentRoadEndLocation).ToList();
           for (var i = 0; i < connectingSegments.Count; i++)
           {
             var connectingSegment = connectingSegments[i];
@@ -710,7 +684,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
 
           while (true)
           {
-            var segmentsContainingLocation = segments.Where(r => (r.Location1 == currentRoadEndLocation || r.Location2 == currentRoadEndLocation) && !visitedSet.Contains(r)).ToList();
+            var segmentsContainingLocation = roadSegments.Where(r => (r.Location1 == currentRoadEndLocation || r.Location2 == currentRoadEndLocation) && !visitedSet.Contains(r)).ToList();
 
             if (segmentsContainingLocation.Count == 0)
             {
