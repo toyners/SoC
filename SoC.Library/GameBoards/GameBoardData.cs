@@ -1301,7 +1301,49 @@ namespace Jabberwocky.SoC.Library.GameBoards
   {
     public UInt32[] GetRoadEnds()
     {
-      throw new NotImplementedException();
+      if (this.Count == 0)
+      {
+        return null;
+      }
+
+      var roadEnds = new List<UInt32>();
+      foreach (var rs in this)
+      {
+        var gotConnectionOnLocation1 = false;
+        var gotConnectionOnLocation2 = false;
+
+        foreach (var rs2 in this.Where(r => r != rs))
+        {
+          if (rs.Location1 == rs2.Location1 || rs.Location1 == rs2.Location2)
+          {
+            gotConnectionOnLocation1 = true;
+          }
+
+          if (rs.Location2 == rs2.Location1 || rs.Location2 == rs2.Location2)
+          {
+            gotConnectionOnLocation2 = true;
+          }
+
+          if (gotConnectionOnLocation1 && gotConnectionOnLocation2)
+          {
+            break;
+          }
+        }
+
+        if (gotConnectionOnLocation1 != gotConnectionOnLocation2)
+        {
+          // One connection
+          roadEnds.Add(gotConnectionOnLocation1 ? rs.Location2 : rs.Location1);
+        }
+        else if (gotConnectionOnLocation1 == false && gotConnectionOnLocation2 == false)
+        {
+          // No connections
+          roadEnds.Add(rs.Location1);
+          roadEnds.Add(rs.Location2);
+        }
+      }
+
+      return (roadEnds.Count > 0 ? roadEnds.ToArray() : null);
     }
   }
 }

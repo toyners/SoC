@@ -1870,7 +1870,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     [Test]
     [Category("All")]
     [Category("RoadSegmentsList")]
-    public void GetRoadEnds_ListIsEmptyIs_ReturnsNoEnds()
+    public void GetRoadEnds_ListIsEmpty_ReturnsNoEnds()
     {
       // Arrange
       var roadSegments = new RoadSegmentsList();
@@ -1891,7 +1891,6 @@ namespace Jabberwocky.SoC.Library.UnitTests
       var roadSegments = new RoadSegmentsList();
       roadSegments.Add(new RoadSegment(0, 1));
       roadSegments.Add(new RoadSegment(1, 2));
-      roadSegments.Add(new RoadSegment(2, 3));
       roadSegments.Add(new RoadSegment(2, 10));
       roadSegments.Add(new RoadSegment(10, 9));
       roadSegments.Add(new RoadSegment(9, 8));
