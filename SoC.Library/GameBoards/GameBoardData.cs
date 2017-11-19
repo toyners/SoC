@@ -48,7 +48,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
     private Dictionary<UInt32, Guid> settlements;
     private Dictionary<Guid, List<UInt32>> settlementsByPlayer;
     private Boolean[,] connections;
-    private Dictionary<Guid, List<RoadSegment>> roadSegmentsByPlayer;
+    private Dictionary<Guid, RoadSegmentsList> roadSegmentsByPlayer;
     private Dictionary<UInt32, ResourceProducer[]> resourceProvidersByDiceRolls;
     private Dictionary<ResourceProducer, UInt32[]> locationsForResourceProvider;
     private Dictionary<UInt32, UInt32[]> locationsForHex;
@@ -67,7 +67,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
 
       this.Length = StandardBoardHexCount;
       this.settlements = new Dictionary<UInt32, Guid>();
-      this.roadSegmentsByPlayer = new Dictionary<Guid, List<RoadSegment>>();
+      this.roadSegmentsByPlayer = new Dictionary<Guid, RoadSegmentsList>();
       this.settlementsByPlayer = new Dictionary<Guid, List<UInt32>>();
       this.roadNodes = new RoadNode[StandardBoardLocationCount];
 
@@ -193,7 +193,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
 
       if (!this.roadSegmentsByPlayer.ContainsKey(playerId))
       {
-        var roadSegmentList = new List<RoadSegment>();
+        var roadSegmentList = new RoadSegmentsList();
         roadSegmentList.Add(newRoadSegment);
         this.roadSegmentsByPlayer.Add(playerId, roadSegmentList);
       }
