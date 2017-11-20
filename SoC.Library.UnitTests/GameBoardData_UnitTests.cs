@@ -1241,7 +1241,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
       var result1 = new List<UInt32> { FirstSettlementLocation, FirstRoadEndLocation, 10u, 2u };
       var result2 = new List<UInt32>(result1);
       result2.Reverse();
-      RoadShouldBeSameAsOneOf(road, result1, result2);
+      this.RoadShouldBeSameAsOneOf(road, result1, result2);
     }
 
     /// <summary>
@@ -1547,7 +1547,15 @@ namespace Jabberwocky.SoC.Library.UnitTests
       // Assert
       result.ShouldBeTrue();
       longestRoadPlayerId.ShouldBe(playerId);
-      road.ShouldBe(new[] { 0u });
+
+      var result1 = new List<UInt32> { 21, 20, 31, 32, 42, 41, 49 };
+      var result2 = new List<UInt32> { 40, 30, 31, 32, 42, 41, 49 };
+      var result3 = new List<UInt32>(result1);
+      result3.Reverse();
+      var result4 = new List<UInt32>(result2);
+      result4.Reverse();
+
+      this.RoadShouldBeSameAsOneOf(road, result1, result2, result3, result4);
     }
 
     /// <summary>
