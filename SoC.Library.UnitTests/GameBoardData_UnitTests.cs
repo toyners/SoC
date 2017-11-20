@@ -1241,7 +1241,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
       var result1 = new List<UInt32> { FirstSettlementLocation, FirstRoadEndLocation, 10u, 2u };
       var result2 = new List<UInt32>(result1);
       result2.Reverse();
-      RoadShouldBeSameAsOneOf(road, result1.ToArray(), result2.ToArray());
+      RoadShouldBeSameAsOneOf(road, result1, result2);
     }
 
     /// <summary>
@@ -1340,7 +1340,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
       var result1 = new List<UInt32> { FirstSettlementLocation, FirstRoadEndLocation, 21u, 22u, 23u, 13u, FirstSettlementLocation };
       var result2 = new List<UInt32>(result1);
       result2.Reverse();
-      road.ShouldBeOneOf(result1.ToArray(), result2.ToArray());
+      this.RoadShouldBeSameAsOneOf(road, result1, result2);
     }
 
     /// <summary>
@@ -1382,7 +1382,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
       var result1 = new List<UInt32> { FirstSettlementLocation, FirstRoadEndLocation, 21u, 20u, 31u, 32u, 33u, 22u, 23u, 13u, FirstSettlementLocation };
       var result2 = new List<UInt32>(result1);
       result2.Reverse();
-      road.ShouldBeOneOf(result1.ToArray(), result2.ToArray());
+      this.RoadShouldBeSameAsOneOf(road, result1, result2);
     }
 
     /// <summary>
@@ -1423,7 +1423,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
       var result1 = new List<UInt32> { 17u, 18u, 19u, 20u, 21u, 22u, 33u, 32u, 42u, 41u };
       var result2 = new List<UInt32>(result1);
       result2.Reverse();
-      road.ShouldBeOneOf(result1.ToArray(), result2.ToArray());
+      this.RoadShouldBeSameAsOneOf(road, result1, result2);
     }
 
     /// <summary>
@@ -1469,7 +1469,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
       var result1 = new List<UInt32> { 17u, 18u, 19u, 20u, 21u, 22u, 33u, 32u, 42u, 41u };
       var result2 = new List<UInt32>(result1);
       result2.Reverse();
-      road.ShouldBeOneOf(result1.ToArray(), result2.ToArray());
+      this.RoadShouldBeSameAsOneOf(road, result1, result2);
     }
 
     /// <summary>
@@ -1510,7 +1510,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
       var result1 = new List<UInt32> { 17u, 18u, 19u, 20u, 21u, 22u, 33u, 32u, 42u, 41u };
       var result2 = new List<UInt32>(result1);
       result2.Reverse();
-      road.ShouldBeOneOf(result1.ToArray(), result2.ToArray());
+      this.RoadShouldBeSameAsOneOf(road, result1, result2);
     }
 
     /// <summary>
@@ -1587,7 +1587,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
       result3.Reverse();
       var result4 = new List<UInt32>(result2);
       result4.Reverse();
-      road.ShouldBeOneOf(result1.ToArray(), result2.ToArray(), result3.ToArray(), result4.ToArray());
+      this.RoadShouldBeSameAsOneOf(road, result1, result2, result3, result4);
     }
 
     /// <summary>
@@ -1615,9 +1615,10 @@ namespace Jabberwocky.SoC.Library.UnitTests
       // Assert
       result.ShouldBeTrue();
       longestRoadPlayerId.ShouldBe(playerId);
-      road.ShouldBeOneOf(
-        new[] { FirstRoadEndLocation, FirstSettlementLocation, 4u },
-        new[] { 4u, FirstSettlementLocation, FirstRoadEndLocation });
+      var result1 = new List<UInt32> { FirstRoadEndLocation, FirstSettlementLocation, 4u };
+      var result2 = new List<UInt32>(result1);
+      result2.Reverse();
+      this.RoadShouldBeSameAsOneOf(road, result1, result2);
     }
 
     /// <summary>
@@ -1647,11 +1648,13 @@ namespace Jabberwocky.SoC.Library.UnitTests
       // Assert
       result.ShouldBeTrue();
       longestRoadPlayerId.ShouldBe(playerId);
-      road.ShouldBeOneOf(
-        new[] { 10u, FirstRoadEndLocation, FirstSettlementLocation, 4u }, 
-        new[] { 10u, FirstRoadEndLocation, FirstSettlementLocation, 13u },
-        new[] { 13u, FirstSettlementLocation, FirstRoadEndLocation, 10u },
-        new[] { 4u, FirstSettlementLocation, FirstRoadEndLocation, 10u });
+      var result1 = new List<UInt32> { 10u, FirstRoadEndLocation, FirstSettlementLocation, 4u };
+      var result2 = new List<UInt32> { 10u, FirstRoadEndLocation, FirstSettlementLocation, 13u };
+      var result3 = new List<UInt32>(result1);
+      result3.Reverse();
+      var result4 = new List<UInt32>(result2);
+      result2.Reverse();
+      this.RoadShouldBeSameAsOneOf(road, result1, result2, result3, result4);
     }
 
     /// <summary>
@@ -1706,7 +1709,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
       result7.Reverse();
       result8.Reverse();
 
-      road.ShouldBeOneOf(result1.ToArray(), result2.ToArray(), result3.ToArray(), result4.ToArray(), result5.ToArray(), result6.ToArray(), result7.ToArray(), result8.ToArray());
+      this.RoadShouldBeSameAsOneOf(road, result1, result2, result3, result4, result5, result6, result7, result8);
     }
 
     /// <summary>
@@ -1740,8 +1743,11 @@ namespace Jabberwocky.SoC.Library.UnitTests
       // Assert
       result.ShouldBeTrue();
       longestRoadPlayerId.ShouldBe(playerId);
-      road.ShouldBeOneOf(new[] { 4u, FirstSettlementLocation, FirstRoadEndLocation, 10u, 9u, 8u }, 
-        new[] { 8u, 9u, 10u, FirstRoadEndLocation, FirstSettlementLocation, 4u });
+
+      var result1 = new List<UInt32> { 4u, FirstSettlementLocation, FirstRoadEndLocation, 10u, 9u, 8u };
+      var result2 = new List<UInt32>(result1);
+      result2.Reverse();
+      this.RoadShouldBeSameAsOneOf(road, result1, result2);
     }
 
     /// <summary>
@@ -1778,16 +1784,20 @@ namespace Jabberwocky.SoC.Library.UnitTests
       // Assert
       result.ShouldBeTrue();
       longestRoadPlayerId.ShouldBe(playerId);
-      road.ShouldBeOneOf(new UInt32[] { FirstSettlementLocation, FirstRoadEndLocation, 21, 22, 23, 13, FirstSettlementLocation, 4, 3, 2 },
-        new UInt32[] { 2, 3, 4, FirstSettlementLocation, 13, 23, 22, 21, FirstRoadEndLocation, FirstSettlementLocation });
+
+      var result1 = new List<UInt32> { FirstSettlementLocation, FirstRoadEndLocation, 21, 22, 23, 13, FirstSettlementLocation, 4, 3, 2 };
+      var result2 = new List<UInt32>(result1);
+      result2.Reverse();
+
+      this.RoadShouldBeSameAsOneOf(road, result1, result2);
     }
 
-    private void RoadShouldBeSameAsOneOf(UInt32[] actualRoad, params UInt32[][] possibleRoads)
+    private void RoadShouldBeSameAsOneOf(UInt32[] actualRoad, params List<UInt32>[] possibleRoads)
     {
       var result = false;
       foreach (var possibleRoad in possibleRoads)
       {
-        if (actualRoad.Length != possibleRoad.Length)
+        if (actualRoad.Length != possibleRoad.Count)
         {
           continue;
         }
