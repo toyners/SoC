@@ -799,6 +799,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
       var singleLongestRoad = false;
       playerId = Guid.Empty;
       road = null;
+      List<UInt32> longestRoute = null;
 
       foreach (var kv2 in this.roadSegmentsByPlayer)
       {
@@ -811,12 +812,21 @@ namespace Jabberwocky.SoC.Library.GameBoards
         for (var index = 0; index < roadEnds.Length; index++)
         {
           var currentRoadEndLocation = roadEnds[index];
+          var workingRoute = new List<UInt32>();
+          workingRoute.Add(currentRoadEndLocation);
 
           while (true)
           {
             var connectedSegments = roadSegments.Where(r => (r.Location1 == currentRoadEndLocation || r.Location2 == currentRoadEndLocation) && !visitedSet.Contains(r)).ToList();
             if (connectedSegments.Count == 0)
             {
+              if (longestRoute == null || longestRoute.Count < workingRoute.Count)
+              {
+                singleLongestRoad = true;
+                longestRoute = workingRoute;
+                playerId = kv2.Key;
+              }
+
               break;
             }
 
@@ -825,9 +835,14 @@ namespace Jabberwocky.SoC.Library.GameBoards
 
             // Move along road segment i.e. get other end
             currentRoadEndLocation = currentRoadSegment.Location1 == currentRoadEndLocation ? currentRoadSegment.Location2 : currentRoadSegment.Location1;
-
+            workingRoute.Add(currentRoadEndLocation);
           }
         }
+      }
+
+      if (longestRoute != null && longestRoute.Count > 0)
+      {
+        road = longestRoute.ToArray();
       }
 
       return singleLongestRoad;
