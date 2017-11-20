@@ -1765,7 +1765,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     [Category("All")]
     [Category("GameBoardData")]
     [Category("GameBoardData.TryGetLongestRoadDetails")]
-    public void TryGetLongestRoadDetails_StartingSettlementOnLoopWithShortBranch_ReturnsLongestRoadDetails()
+    public void TryGetLongestRoadDetails_SettlementOnLoopWithShortBranch_ReturnsLongestRoadDetails()
     {
       // Arrange
       var gameBoard = new GameBoardData(BoardSizes.Standard);
