@@ -800,7 +800,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
       playerId = Guid.Empty;
       road = null;
       List<UInt32> longestRoute = null;
-      var sections = new List<Tuple<UInt32, List<UInt32>>>();
+      var sections = new List<Tuple<UInt32, UInt32, List<UInt32>>>();
       var forkmarks = new Queue<Tuple<UInt32, RoadSegment>>();
 
       foreach (var kv2 in this.roadSegmentsByPlayer)
@@ -810,6 +810,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
         var roadEnds = new UInt32[] { settlementsPlacedByPlayer[0], settlementsPlacedByPlayer[1] };
 
         var visitedSet = new HashSet<RoadSegment>();
+        sections.Clear();
 
         for (var index = 0; index < roadEnds.Length; index++)
         {
@@ -823,8 +824,9 @@ namespace Jabberwocky.SoC.Library.GameBoards
             if (connectedSegments.Count == 0)
             {
               // Park the current section 
-              var currentSection = new Tuple<UInt32, List<UInt32>>(0u, workingRoute);
+              var currentSection = new Tuple<UInt32, UInt32, List<UInt32>>(workingRoute[0], workingRoute.Last(), workingRoute);
               sections.Add(currentSection);
+
               if (forkmarks.Count > 0)
               {
                 // Start next section
@@ -834,6 +836,32 @@ namespace Jabberwocky.SoC.Library.GameBoards
                 visitedSet.Add(nextSegment);
                 workingRoute = new List<UInt32> { forkmark.Item1, currentRoadEndLocation };
                 continue;
+              }
+
+              if (sections.Count > 1)
+              {
+                // Multiple sections - find the longest combinations
+                for (var i = 0; i < sections.Count; i++)
+                {
+                  var sectionList = new List<Int32> { i };
+                  var firstSection = sections[i];
+                  for (var j = i + 1; j < sections.Count; j++)
+                  {
+                    var nextSection = sections[j];
+                    if (firstSection.Item1 == nextSection.Item1 || firstSection.Item1 == nextSection.Item2 || 
+                      firstSection.Item2 == nextSection.Item1 || firstSection.Item2 == nextSection.Item2)
+                    {
+                      firstSection = nextSection;
+                      sectionList.Add(j);
+                    }
+                  }
+
+                  var workingLength = 0; 
+                  for (var j = 0; j < sectionList.Count; j++)
+                  {
+                    workingLength += sections[sectionList[0]].Item3.Count - 1;
+                  }
+                }
               }
 
               if (longestRoute == null || longestRoute.Count < workingRoute.Count)
@@ -849,7 +877,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
             if (connectedSegments.Count > 1)
             {
               // Park the current section 
-              var currentSection = new Tuple<UInt32, List<UInt32>>(0u, workingRoute);
+              var currentSection = new Tuple<UInt32, UInt32, List<UInt32>>(workingRoute[0], workingRoute.Last(), workingRoute);
               sections.Add(currentSection);
 
               // Start next section
