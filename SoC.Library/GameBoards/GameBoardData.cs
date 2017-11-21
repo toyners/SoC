@@ -800,6 +800,8 @@ namespace Jabberwocky.SoC.Library.GameBoards
       playerId = Guid.Empty;
       road = null;
       List<UInt32> longestRoute = null;
+      var sections = new List<Tuple<UInt32, List<UInt32>>>();
+      var forkmarks = new Queue<Tuple<UInt32, RoadSegment>>();
 
       foreach (var kv2 in this.roadSegmentsByPlayer)
       {
@@ -820,6 +822,20 @@ namespace Jabberwocky.SoC.Library.GameBoards
             var connectedSegments = roadSegments.Where(r => (r.Location1 == currentRoadEndLocation || r.Location2 == currentRoadEndLocation) && !visitedSet.Contains(r)).ToList();
             if (connectedSegments.Count == 0)
             {
+              // Park the current section 
+              var currentSection = new Tuple<UInt32, List<UInt32>>(0u, workingRoute);
+              sections.Add(currentSection);
+              if (forkmarks.Count > 0)
+              {
+                // Start next section
+                var forkmark = forkmarks.Dequeue();
+                var nextSegment = forkmark.Item2;
+                currentRoadEndLocation = nextSegment.Location1 == forkmark.Item1 ? nextSegment.Location2 : nextSegment.Location1;
+                visitedSet.Add(nextSegment);
+                workingRoute = new List<UInt32> { forkmark.Item1, currentRoadEndLocation };
+                continue;
+              }
+
               if (longestRoute == null || longestRoute.Count < workingRoute.Count)
               {
                 singleLongestRoad = true;
@@ -828,6 +844,21 @@ namespace Jabberwocky.SoC.Library.GameBoards
               }
 
               break;
+            }
+
+            if (connectedSegments.Count > 1)
+            {
+              // Park the current section 
+              var currentSection = new Tuple<UInt32, List<UInt32>>(0u, workingRoute);
+              sections.Add(currentSection);
+
+              // Start next section
+              workingRoute = new List<UInt32> { currentRoadEndLocation };
+
+              // Store the forkmark
+              var nextSegment = connectedSegments[1];
+              var forkmark = new Tuple<UInt32, RoadSegment>(currentRoadEndLocation, nextSegment);
+              forkmarks.Enqueue(forkmark);
             }
 
             var currentRoadSegment = connectedSegments[0];
