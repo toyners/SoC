@@ -840,12 +840,44 @@ namespace Jabberwocky.SoC.Library.GameBoards
 
               if (sections.Count > 1)
               {
-                // Multiple sections - find the longest combinations
+                // Multiple sections - find the longest legal combinations
+                var sectionStack = new Stack<Tuple<UInt32, UInt32, List<UInt32>>>();
                 for (var i = 0; i < sections.Count; i++)
                 {
-                  var sectionList = new List<Int32> { i };
                   var firstSection = sections[i];
-                  for (var j = i + 1; j < sections.Count; j++)
+                  var currentRoute = firstSection.Item3;
+                  var possibleRoutes = new List<List<Int32>> { new List<Int32> { i } };
+
+                  // Get the cursor location - this helps to stitch together the sections
+                  var cursorLocation = UInt32.MaxValue;
+                  var count = -1;
+                  count = roadSegments.Count(rs => (rs.Location1 == firstSection.Item1 || rs.Location2 == firstSection.Item1));
+                  if (count == 1)
+                  {
+                    cursorLocation = firstSection.Item2;
+                  }
+                  else
+                  {
+                    count = roadSegments.Count(rs => (rs.Location1 == firstSection.Item2 || rs.Location2 == firstSection.Item2));
+                    if (count == 1)
+                    {
+                      cursorLocation = firstSection.Item1;
+                    }
+                  }
+
+                  var connectedSections = sections.Where(s => s.Item1 == cursorLocation || s.Item2 == cursorLocation).ToList();
+                  if (connectedSections.Count > 1)
+                  {
+                    // place a book mark of where to try next
+                    sectionStack.Push(connectedSections[1]);
+                  }
+
+                  var nextSection = connectedSections[0];
+
+
+
+
+                  /*for (var j = i + 1; j < sections.Count; j++)
                   {
                     var nextSection = sections[j];
                     if (firstSection.Item1 == nextSection.Item1 || firstSection.Item1 == nextSection.Item2 || 
@@ -860,7 +892,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
                   for (var j = 0; j < sectionList.Count; j++)
                   {
                     workingLength += sections[sectionList[0]].Item3.Count - 1;
-                  }
+                  }*/
                 }
               }
 
