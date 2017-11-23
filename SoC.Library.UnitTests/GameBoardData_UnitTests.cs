@@ -1759,13 +1759,13 @@ namespace Jabberwocky.SoC.Library.UnitTests
     }
 
     /// <summary>
-    /// Settlement on loop but also has a short branch.
+    /// Road segments form a loop with a short branch. Settlement is on intersection between loop and branch.
     /// </summary>
     [Test]
     [Category("All")]
     [Category("GameBoardData")]
     [Category("GameBoardData.TryGetLongestRoadDetails")]
-    public void TryGetLongestRoadDetails_SettlementOnLoopWithShortBranch_ReturnsLongestRoadDetails()
+    public void TryGetLongestRoadDetails_SettlementOnLoopIntersectionWithShortBranch_ReturnsLongestRoadDetails()
     {
       // Arrange
       var gameBoard = new GameBoardData(BoardSizes.Standard);
@@ -1798,6 +1798,49 @@ namespace Jabberwocky.SoC.Library.UnitTests
       result2.Reverse();
 
       this.RoadShouldBeSameAsOneOf(road, result1, result2);
+    }
+
+    /// <summary>
+    /// Road segments form a loop with a short branch. Settlement is on edge of loop.
+    /// </summary>
+    [Test]
+    [Category("All")]
+    [Category("GameBoardData")]
+    [Category("GameBoardData.TryGetLongestRoadDetails")]
+    public void TryGetLongestRoadDetails_SettlementOnLoopWithShortBranch_ReturnsLongestRoadDetails()
+    {
+      // Arrange
+      var gameBoard = new GameBoardData(BoardSizes.Standard);
+
+      var playerId = Guid.NewGuid();
+      gameBoard.PlaceStartingInfrastructure(playerId, FirstSettlementLocation, 4);
+      gameBoard.PlaceStartingInfrastructure(playerId, SecondSettlementLocation, SecondRoadEndLocation);
+
+      gameBoard.PlaceRoadSegment(playerId, FirstSettlementLocation, 13);
+      gameBoard.PlaceRoadSegment(playerId, 13, 14);
+      gameBoard.PlaceRoadSegment(playerId, 6, 14);
+      gameBoard.PlaceRoadSegment(playerId, 5, 6);
+      gameBoard.PlaceRoadSegment(playerId, 6, 4);
+
+      gameBoard.PlaceRoadSegment(playerId, 14, 15);
+
+      // Act
+      UInt32[] road;
+      Guid longestRoadPlayerId;
+      var result = gameBoard.TryGetLongestRoadDetails(out longestRoadPlayerId, out road);
+
+      // Assert
+      result.ShouldBeTrue();
+      longestRoadPlayerId.ShouldBe(playerId);
+
+      var result1 = new List<UInt32> { 15, 14, 6, 5, 4, FirstSettlementLocation, 13, 14 };
+      var result2 = new List<UInt32> { 15, 14, 13, FirstSettlementLocation, 4, 5, 6, 14 };
+      var result3 = new List<UInt32>(result1);
+      result3.Reverse();
+      var result4 = new List<UInt32>(result2);
+      result4.Reverse();
+
+      this.RoadShouldBeSameAsOneOf(road, result1, result2, result3, result4);
     }
 
     private void RoadShouldBeSameAsOneOf(UInt32[] actualRoad, params List<UInt32>[] possibleRoads)
