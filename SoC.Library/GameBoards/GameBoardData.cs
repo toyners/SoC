@@ -807,14 +807,21 @@ namespace Jabberwocky.SoC.Library.GameBoards
       {
         var roadSegments = kv2.Value;
         var settlementsPlacedByPlayer = this.settlementsByPlayer[kv2.Key];
-        var roadEnds = new UInt32[] { settlementsPlacedByPlayer[0], settlementsPlacedByPlayer[1] };
+        var startingPoints = new UInt32[] { settlementsPlacedByPlayer[0], settlementsPlacedByPlayer[1] };
+
+        // Scan from the starting points to find the end points. In loops there are no end points so the
+        // longest road can be found with from this initial scan.
+
+
+        var visitedRoadEnds = new HashSet<UInt32>();
+        var roadEnds = new Queue<UInt32>();
 
         var visitedSet = new HashSet<RoadSegment>();
         sections.Clear();
 
-        for (var index = 0; index < roadEnds.Length; index++)
+        for (var index = 0; index < startingPoints.Length; index++)
         {
-          var currentRoadEndLocation = roadEnds[index];
+          var currentRoadEndLocation = startingPoints[index];
           var workingRoute = new List<UInt32>();
           workingRoute.Add(currentRoadEndLocation);
 

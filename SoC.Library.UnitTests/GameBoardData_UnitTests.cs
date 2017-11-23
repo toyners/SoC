@@ -903,7 +903,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
       var gameBoardData = new GameBoardData(BoardSizes.Standard);
 
       // Act
-      Action action = () => 
+      Action action = () =>
       {
         gameBoardData.PlaceStartingInfrastructure(playerId, FirstSettlementLocation, FirstRoadEndLocation);
         gameBoardData.PlaceStartingInfrastructure(playerId, SecondSettlementLocation, SecondRoadEndLocation);
@@ -950,8 +950,8 @@ namespace Jabberwocky.SoC.Library.UnitTests
       var result = gameBoardData.GetResourcesForRoll(roll);
 
       result.Count.ShouldBe(2);
-      result.ShouldContainKeyAndValue(player1_Id, new ResourceClutch(1, 1, 0, 0, 0 ));
-      result.ShouldContainKeyAndValue(player2_Id, new ResourceClutch(0, 1, 0, 0, 0 ));
+      result.ShouldContainKeyAndValue(player1_Id, new ResourceClutch(1, 1, 0, 0, 0));
+      result.ShouldContainKeyAndValue(player2_Id, new ResourceClutch(0, 1, 0, 0, 0));
     }
 
     [Test]
@@ -974,7 +974,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
       {
         case ResourceTypes.Brick: expectedResourceCounts = new ResourceClutch(1, 0, 0, 0, 0); break;
         case ResourceTypes.Grain: expectedResourceCounts = new ResourceClutch(0, 1, 0, 0, 0); break;
-        case ResourceTypes.Lumber: expectedResourceCounts = new ResourceClutch(0, 0, 1, 0, 0 ); break;
+        case ResourceTypes.Lumber: expectedResourceCounts = new ResourceClutch(0, 0, 1, 0, 0); break;
         case ResourceTypes.Ore: expectedResourceCounts = new ResourceClutch(0, 0, 0, 1, 0); break;
         case ResourceTypes.Wool: expectedResourceCounts = new ResourceClutch(0, 0, 0, 0, 1); break;
       }
@@ -1850,16 +1850,22 @@ namespace Jabberwocky.SoC.Library.UnitTests
     [Category("All")]
     [Category("GameBoardData")]
     [Category("GameBoardData.TryGetLongestRoadDetails")]
-    public void TryGetLongestRoadDetails_SettlementOnIntersectionOfThreeLoops_ReturnsLongestRoadDetails()
+    [TestCase(new UInt32[] { FirstSettlementLocation, FirstRoadEndLocation, FirstSettlementLocation, 13, FirstSettlementLocation, 4, FirstRoadEndLocation, 21, FirstRoadEndLocation, 10, 13, 23, 13, 14, 4, 3, 4, 5, 3, 2, 2, 10, 21, 22, 22, 23, 14, 6, 6, 5 })]
+    public void TryGetLongestRoadDetails_SettlementOnIntersectionOfThreeLoops_ReturnsLongestRoadDetails(UInt32[] locations)
     {
       // Arrange
       var gameBoard = new GameBoardData(BoardSizes.Standard);
 
       var playerId = Guid.NewGuid();
-      gameBoard.PlaceStartingInfrastructure(playerId, FirstSettlementLocation, FirstRoadEndLocation);
       gameBoard.PlaceStartingInfrastructure(playerId, SecondSettlementLocation, SecondRoadEndLocation);
 
-      gameBoard.PlaceRoadSegment(playerId, FirstSettlementLocation, 13);
+      gameBoard.PlaceStartingInfrastructure(playerId, locations[0], locations[1]);
+      for (var index = 2; index < locations.Length; index += 2)
+      {
+        gameBoard.PlaceRoadSegment(playerId, locations[index], locations[index + 1]);
+      }
+
+      /*gameBoard.PlaceRoadSegment(playerId, FirstSettlementLocation, 13);
       gameBoard.PlaceRoadSegment(playerId, FirstSettlementLocation, 4);
       gameBoard.PlaceRoadSegment(playerId, FirstRoadEndLocation, 21);
       gameBoard.PlaceRoadSegment(playerId, FirstRoadEndLocation, 10);
@@ -1872,7 +1878,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
       gameBoard.PlaceRoadSegment(playerId, 21, 22);
       gameBoard.PlaceRoadSegment(playerId, 22, 23);
       gameBoard.PlaceRoadSegment(playerId, 14, 6);
-      gameBoard.PlaceRoadSegment(playerId, 6, 5);
+      gameBoard.PlaceRoadSegment(playerId, 6, 5);*/
 
       // Act
       UInt32[] road;
