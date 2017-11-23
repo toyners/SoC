@@ -1843,6 +1843,56 @@ namespace Jabberwocky.SoC.Library.UnitTests
       this.RoadShouldBeSameAsOneOf(road, result1, result2, result3, result4);
     }
 
+    /// <summary>
+    /// Road segments form three single hex loops with settlement on the intersection.
+    /// </summary>
+    [Test]
+    [Category("All")]
+    [Category("GameBoardData")]
+    [Category("GameBoardData.TryGetLongestRoadDetails")]
+    public void TryGetLongestRoadDetails_SettlementOnIntersectionOfThreeLoops_ReturnsLongestRoadDetails()
+    {
+      // Arrange
+      var gameBoard = new GameBoardData(BoardSizes.Standard);
+
+      var playerId = Guid.NewGuid();
+      gameBoard.PlaceStartingInfrastructure(playerId, FirstSettlementLocation, FirstRoadEndLocation);
+      gameBoard.PlaceStartingInfrastructure(playerId, SecondSettlementLocation, SecondRoadEndLocation);
+
+      gameBoard.PlaceRoadSegment(playerId, FirstSettlementLocation, 13);
+      gameBoard.PlaceRoadSegment(playerId, FirstSettlementLocation, 4);
+      gameBoard.PlaceRoadSegment(playerId, FirstRoadEndLocation, 21);
+      gameBoard.PlaceRoadSegment(playerId, FirstRoadEndLocation, 10);
+      gameBoard.PlaceRoadSegment(playerId, 13, 23);
+      gameBoard.PlaceRoadSegment(playerId, 13, 14);
+      gameBoard.PlaceRoadSegment(playerId, 4, 3);
+      gameBoard.PlaceRoadSegment(playerId, 4, 5);
+      gameBoard.PlaceRoadSegment(playerId, 3, 2);
+      gameBoard.PlaceRoadSegment(playerId, 2, 10);
+      gameBoard.PlaceRoadSegment(playerId, 21, 22);
+      gameBoard.PlaceRoadSegment(playerId, 22, 23);
+      gameBoard.PlaceRoadSegment(playerId, 14, 6);
+      gameBoard.PlaceRoadSegment(playerId, 6, 5);
+
+      // Act
+      UInt32[] road;
+      Guid longestRoadPlayerId;
+      var result = gameBoard.TryGetLongestRoadDetails(out longestRoadPlayerId, out road);
+
+      // Assert
+      result.ShouldBeTrue();
+      longestRoadPlayerId.ShouldBe(playerId);
+
+      var result1 = new List<UInt32> { FirstSettlementLocation, FirstRoadEndLocation, 21, 22, 23, 13, 14, 6, 5, 4, 3, 2, 10, FirstRoadEndLocation };
+      var result2 = new List<UInt32> { FirstSettlementLocation, 13, 14, 6, 5, 4, 3, 2, 10, FirstRoadEndLocation, 21, 22, 23, 13 };
+      var result3 = new List<UInt32> { FirstSettlementLocation, 4, 3, 2, 10, FirstRoadEndLocation, 21, 22, 23, 13, 14, 6, 5, 4 };
+      var result4 = new List<UInt32> { FirstSettlementLocation, FirstRoadEndLocation, 10, 2, 3, 4, 5, 6, 14, 13, 23, 22, 21, FirstRoadEndLocation };
+      var result5 = new List<UInt32> { FirstSettlementLocation, 13, 23, 22, 21, FirstRoadEndLocation, 10, 2, 3, 4, 5, 6, 14, 13 };
+      var result6 = new List<UInt32> { FirstSettlementLocation, 4, 5, 6, 14, 13, 23, 22, 21, FirstRoadEndLocation, 10, 2, 3, 4 };
+
+      this.RoadShouldBeSameAsOneOf(road, result1, result2, result3, result4, result5, result6);
+    }
+
     private void RoadShouldBeSameAsOneOf(UInt32[] actualRoad, params List<UInt32>[] possibleRoads)
     {
       var result = false;
