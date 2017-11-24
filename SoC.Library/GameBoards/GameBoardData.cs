@@ -48,7 +48,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
     private Dictionary<UInt32, Guid> settlements;
     private Dictionary<Guid, List<UInt32>> settlementsByPlayer;
     private Boolean[,] connections;
-    private Dictionary<Guid, RoadSegmentsList> roadSegmentsByPlayer;
+    private Dictionary<Guid, List<RoadSegment>> roadSegmentsByPlayer;
     private Dictionary<UInt32, ResourceProducer[]> resourceProvidersByDiceRolls;
     private Dictionary<ResourceProducer, UInt32[]> locationsForResourceProvider;
     private Dictionary<UInt32, UInt32[]> locationsForHex;
@@ -67,7 +67,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
 
       this.Length = StandardBoardHexCount;
       this.settlements = new Dictionary<UInt32, Guid>();
-      this.roadSegmentsByPlayer = new Dictionary<Guid, RoadSegmentsList>();
+      this.roadSegmentsByPlayer = new Dictionary<Guid, List<RoadSegment>>();
       this.settlementsByPlayer = new Dictionary<Guid, List<UInt32>>();
       this.roadNodes = new RoadNode[StandardBoardLocationCount];
 
@@ -193,7 +193,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
 
       if (!this.roadSegmentsByPlayer.ContainsKey(playerId))
       {
-        var roadSegmentList = new RoadSegmentsList();
+        var roadSegmentList = new List<RoadSegment>();
         roadSegmentList.Add(newRoadSegment);
         this.roadSegmentsByPlayer.Add(playerId, roadSegmentList);
       }
@@ -651,11 +651,8 @@ namespace Jabberwocky.SoC.Library.GameBoards
         var roadStartmarks = new List<RoadStartmark>();
         var settlementsPlacedByPlayer = this.settlementsByPlayer[kv2.Key];
 
-        var roadEnds = roadSegments.GetRoadEnds();
-        if (roadEnds == null)
-        {
-          roadEnds = new UInt32[] { settlementsPlacedByPlayer[0], settlementsPlacedByPlayer[1] };
-        }
+        //var roadEnds = roadSegments.GetRoadEnds();
+        var roadEnds = new UInt32[] { settlementsPlacedByPlayer[0], settlementsPlacedByPlayer[1] };
 
         var forkmarks = new List<Forkmark>();
 
@@ -1423,55 +1420,5 @@ namespace Jabberwocky.SoC.Library.GameBoards
       public PlacementException(String message) : base(message) { }
     }
     #endregion
-  }
-
-  public class RoadSegmentsList : List<RoadSegment>
-  {
-    public UInt32[] GetRoadEnds()
-    {
-      if (this.Count == 0)
-      {
-        return null;
-      }
-
-      var roadEnds = new List<UInt32>();
-      foreach (var rs in this)
-      {
-        var gotConnectionOnLocation1 = false;
-        var gotConnectionOnLocation2 = false;
-
-        foreach (var rs2 in this.Where(r => r != rs))
-        {
-          if (rs.Location1 == rs2.Location1 || rs.Location1 == rs2.Location2)
-          {
-            gotConnectionOnLocation1 = true;
-          }
-
-          if (rs.Location2 == rs2.Location1 || rs.Location2 == rs2.Location2)
-          {
-            gotConnectionOnLocation2 = true;
-          }
-
-          if (gotConnectionOnLocation1 && gotConnectionOnLocation2)
-          {
-            break;
-          }
-        }
-
-        if (gotConnectionOnLocation1 != gotConnectionOnLocation2)
-        {
-          // One connection
-          roadEnds.Add(gotConnectionOnLocation1 ? rs.Location2 : rs.Location1);
-        }
-        else if (gotConnectionOnLocation1 == false && gotConnectionOnLocation2 == false)
-        {
-          // No connections
-          roadEnds.Add(rs.Location1);
-          roadEnds.Add(rs.Location2);
-        }
-      }
-
-      return (roadEnds.Count > 0 ? roadEnds.ToArray() : null);
-    }
   }
 }
