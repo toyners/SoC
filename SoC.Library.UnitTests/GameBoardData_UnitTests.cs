@@ -1387,31 +1387,27 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
     /// <summary>
     /// Road contains a fork. One branch is longer. Longest road details must include both long branch and short branch.
-    /// Longest branch is built first.
+    /// Test cases used to vary the build order of the branches.
     /// </summary>
     [Test]
     [Category("All")]
     [Category("GameBoardData")]
     [Category("GameBoardData.TryGetLongestRoadDetails")]
-    public void TryGetLongestRoadDetails_LongestRoadContainsForkWithLongestBranchBuiltFirst_ReturnsLongestRoadDetails()
+    [TestCase(new UInt32[] { 23, 22, 22, 21, 21, 20, 20, 19, 19, 18, 18, 17, 22, 33, 33, 32, 32, 42, 42, 41 })] // Longest branch first
+    [TestCase(new UInt32[] { 23, 22, 22, 33, 33, 32, 32, 42, 42, 41, 22, 21, 21, 20, 20, 19, 19, 18, 18, 17 })] // Shortest branch first
+    public void TryGetLongestRoadDetails_LongestRoadContainsFork_ReturnsLongestRoadDetails(UInt32[] locations)
     {
       // Arrange
       var gameBoard = new GameBoardData(BoardSizes.Standard);
 
       var playerId = Guid.NewGuid();
       gameBoard.PlaceStartingInfrastructure(playerId, 0, 1);
-      gameBoard.PlaceStartingInfrastructure(playerId, 23, 22);
 
-      gameBoard.PlaceRoadSegment(playerId, 22u, 21u);
-      gameBoard.PlaceRoadSegment(playerId, 21u, 20u);
-      gameBoard.PlaceRoadSegment(playerId, 20u, 19u);
-      gameBoard.PlaceRoadSegment(playerId, 19u, 18u);
-      gameBoard.PlaceRoadSegment(playerId, 18u, 17u);
-
-      gameBoard.PlaceRoadSegment(playerId, 22u, 33u);
-      gameBoard.PlaceRoadSegment(playerId, 33u, 32u);
-      gameBoard.PlaceRoadSegment(playerId, 32u, 42u);
-      gameBoard.PlaceRoadSegment(playerId, 42u, 41u);
+      gameBoard.PlaceStartingInfrastructure(playerId, locations[0], locations[1]);
+      for (var index = 2; index < locations.Length; index += 2)
+      {
+        gameBoard.PlaceRoadSegment(playerId, locations[index], locations[index + 1]);
+      }
 
       // Act
       UInt32[] road;
@@ -1427,78 +1423,35 @@ namespace Jabberwocky.SoC.Library.UnitTests
     }
 
     /// <summary>
-    /// Road contains multiple forks. Smallest fork is ignored. Longest road details must include both long branch and short branch.
-    /// Longest branch is built first.
+    /// Road contains multiple branches. Tiny branch is ignored. Longest road details must include both long branch and short branch.
+    /// Test cases used to vary the build order of the branches.
     /// </summary>
     [Test]
     [Category("All")]
     [Category("GameBoardData")]
     [Category("GameBoardData.TryGetLongestRoadDetails")]
-    public void TryGetLongestRoadDetails_LongestRoadPassesThroughMultipleForks_ReturnsLongestRoadDetails()
+    [TestCase(new UInt32[] { 22, 21, 21, 20, 20, 19, 19, 18, 18, 17 }, // Longest branch
+              new UInt32[] { 19, 9 }, // Tiny branch
+              new UInt32[] { 22, 33, 33, 32, 32, 42, 42, 41 })] // Short branch
+    [TestCase(new UInt32[] { 22, 21, 21, 20, 20, 19, 19, 18, 18, 17 }, // Longest branch
+              new UInt32[] { 22, 33, 33, 32, 32, 42, 42, 41 }, // Short branch
+              new UInt32[] { 19, 9 })] // Tiny Branch
+    [TestCase(new UInt32[] { 22, 33, 33, 32, 32, 42, 42, 41 }, // Short branch
+              new UInt32[] { 22, 21, 21, 20, 20, 19, 19, 18, 18, 17 }, // Longest branch
+              new UInt32[] { 19, 9 })] // Tiny Branch
+    public void TryGetLongestRoadDetails_LongestRoadContainsMultipleForks_ReturnsLongestRoadDetails(UInt32[] firstBranch, UInt32[] secondBranch, UInt32[] lastBranch)
     {
       // Arrange
       var gameBoard = new GameBoardData(BoardSizes.Standard);
 
       var playerId = Guid.NewGuid();
       gameBoard.PlaceStartingInfrastructure(playerId, 0, 1);
+
       gameBoard.PlaceStartingInfrastructure(playerId, 23, 22);
 
-      // Largest fork
-      gameBoard.PlaceRoadSegment(playerId, 22u, 21u);
-      gameBoard.PlaceRoadSegment(playerId, 21u, 20u);
-      gameBoard.PlaceRoadSegment(playerId, 20u, 19u);
-      gameBoard.PlaceRoadSegment(playerId, 19u, 18u);
-      gameBoard.PlaceRoadSegment(playerId, 18u, 17u);
-
-      // One segment fork
-      gameBoard.PlaceRoadSegment(playerId, 19u, 19u);
-
-      // Smaller fork
-      gameBoard.PlaceRoadSegment(playerId, 22u, 33u);
-      gameBoard.PlaceRoadSegment(playerId, 33u, 32u);
-      gameBoard.PlaceRoadSegment(playerId, 32u, 42u);
-      gameBoard.PlaceRoadSegment(playerId, 42u, 41u);
-
-      // Act
-      UInt32[] road;
-      Guid longestRoadPlayerId;
-      var result = gameBoard.TryGetLongestRoadDetails(out longestRoadPlayerId, out road);
-
-      // Assert
-      longestRoadPlayerId.ShouldBe(playerId);
-      var result1 = new List<UInt32> { 17u, 18u, 19u, 20u, 21u, 22u, 33u, 32u, 42u, 41u };
-      var result2 = new List<UInt32>(result1);
-      result2.Reverse();
-      this.RoadShouldBeSameAsOneOf(road, result1, result2);
-    }
-
-    /// <summary>
-    /// Road contains a fork. One branch is longer. Longest road details must include both long branch and short branch.
-    /// Shortest branch is built first.
-    /// </summary>
-    [Test]
-    [Category("All")]
-    [Category("GameBoardData")]
-    [Category("GameBoardData.TryGetLongestRoadDetails")]
-    public void TryGetLongestRoadDetails_LongestRoadContainsForkWithShortestBranchBuiltFirst_ReturnsLongestRoadDetails()
-    {
-      // Arrange
-      var gameBoard = new GameBoardData(BoardSizes.Standard);
-
-      var playerId = Guid.NewGuid();
-      gameBoard.PlaceStartingInfrastructure(playerId, 0, 1);
-      gameBoard.PlaceStartingInfrastructure(playerId, 23, 22);
-
-      gameBoard.PlaceRoadSegment(playerId, 22u, 33u);
-      gameBoard.PlaceRoadSegment(playerId, 33u, 32u);
-      gameBoard.PlaceRoadSegment(playerId, 32u, 42u);
-      gameBoard.PlaceRoadSegment(playerId, 42u, 41u);
-
-      gameBoard.PlaceRoadSegment(playerId, 22u, 21u);
-      gameBoard.PlaceRoadSegment(playerId, 21u, 20u);
-      gameBoard.PlaceRoadSegment(playerId, 20u, 19u);
-      gameBoard.PlaceRoadSegment(playerId, 19u, 18u);
-      gameBoard.PlaceRoadSegment(playerId, 18u, 17u);
+      this.BuidRoadBranch(gameBoard, playerId, firstBranch);
+      this.BuidRoadBranch(gameBoard, playerId, secondBranch);
+      this.BuidRoadBranch(gameBoard, playerId, lastBranch);
 
       // Act
       UInt32[] road;
@@ -1844,7 +1797,8 @@ namespace Jabberwocky.SoC.Library.UnitTests
     }
 
     /// <summary>
-    /// Road segments form three single hex loops with settlement on the intersection.
+    /// Road segments form three single hex loops with settlement on the intersection. Uses test cases to build the road segments
+    /// in different order.
     /// </summary>
     [Test]
     [Category("All")]
@@ -1884,6 +1838,14 @@ namespace Jabberwocky.SoC.Library.UnitTests
       var result6 = new List<UInt32> { FirstSettlementLocation, 4, 5, 6, 14, 13, 23, 22, 21, FirstRoadEndLocation, 10, 2, 3, 4 };
 
       this.RoadShouldBeSameAsOneOf(road, result1, result2, result3, result4, result5, result6);
+    }
+
+    private void BuidRoadBranch(GameBoardData gameBoard, Guid playerId, UInt32[] branch)
+    {
+      for (var index = 0; index < branch.Length; index += 2)
+      {
+        gameBoard.PlaceRoadSegment(playerId, branch[index], branch[index + 1]);
+      }
     }
 
     private void RoadShouldBeSameAsOneOf(UInt32[] actualRoad, params List<UInt32>[] possibleRoads)
