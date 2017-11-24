@@ -1850,7 +1850,9 @@ namespace Jabberwocky.SoC.Library.UnitTests
     [Category("All")]
     [Category("GameBoardData")]
     [Category("GameBoardData.TryGetLongestRoadDetails")]
-    [TestCase(new UInt32[] { FirstSettlementLocation, FirstRoadEndLocation, FirstSettlementLocation, 13, FirstSettlementLocation, 4, FirstRoadEndLocation, 21, FirstRoadEndLocation, 10, 13, 23, 13, 14, 4, 3, 4, 5, 3, 2, 2, 10, 21, 22, 22, 23, 14, 6, 6, 5 })]
+    [TestCase(new UInt32[] { FirstSettlementLocation, FirstRoadEndLocation, FirstRoadEndLocation, 10, FirstRoadEndLocation, 21, FirstSettlementLocation, 13, 13, 23, 13, 14, FirstSettlementLocation, 4, 4, 3, 4, 5, 21, 22, 22, 23, 14, 6, 6, 5, 2, 3, 2, 10 })]
+    [TestCase(new UInt32[] { FirstSettlementLocation, 13, 13, 14, 23, 13, FirstSettlementLocation, 4, 3, 4, 4, 5, FirstSettlementLocation, FirstRoadEndLocation, FirstRoadEndLocation, 10, FirstRoadEndLocation, 21, 14, 6, 6, 5, 3, 2, 2, 10, 22, 21, 23, 22 })]
+    [TestCase(new UInt32[] { FirstSettlementLocation, 4, 4, 3, 4, 5, FirstSettlementLocation, FirstRoadEndLocation, FirstRoadEndLocation, 10, 21, FirstRoadEndLocation, FirstSettlementLocation, 13, 23, 13, 13, 14, 3, 2, 10, 2, 22, 21, 22, 23, 6, 14, 6, 5 })]
     public void TryGetLongestRoadDetails_SettlementOnIntersectionOfThreeLoops_ReturnsLongestRoadDetails(UInt32[] locations)
     {
       // Arrange
@@ -1864,21 +1866,6 @@ namespace Jabberwocky.SoC.Library.UnitTests
       {
         gameBoard.PlaceRoadSegment(playerId, locations[index], locations[index + 1]);
       }
-
-      /*gameBoard.PlaceRoadSegment(playerId, FirstSettlementLocation, 13);
-      gameBoard.PlaceRoadSegment(playerId, FirstSettlementLocation, 4);
-      gameBoard.PlaceRoadSegment(playerId, FirstRoadEndLocation, 21);
-      gameBoard.PlaceRoadSegment(playerId, FirstRoadEndLocation, 10);
-      gameBoard.PlaceRoadSegment(playerId, 13, 23);
-      gameBoard.PlaceRoadSegment(playerId, 13, 14);
-      gameBoard.PlaceRoadSegment(playerId, 4, 3);
-      gameBoard.PlaceRoadSegment(playerId, 4, 5);
-      gameBoard.PlaceRoadSegment(playerId, 3, 2);
-      gameBoard.PlaceRoadSegment(playerId, 2, 10);
-      gameBoard.PlaceRoadSegment(playerId, 21, 22);
-      gameBoard.PlaceRoadSegment(playerId, 22, 23);
-      gameBoard.PlaceRoadSegment(playerId, 14, 6);
-      gameBoard.PlaceRoadSegment(playerId, 6, 5);*/
 
       // Act
       UInt32[] road;
