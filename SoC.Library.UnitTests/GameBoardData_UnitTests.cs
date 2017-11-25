@@ -1888,6 +1888,92 @@ namespace Jabberwocky.SoC.Library.UnitTests
         result23, result24);
     }
 
+    /// <summary>
+    /// Road segments form three single hex loops with settlement on the intersection. Uses test cases to build the road segments
+    /// in different order.
+    /// </summary>
+    [Test]
+    [Category("All")]
+    [Category("GameBoardData")]
+    [Category("GameBoardData.TryGetLongestRoadDetails")]
+    [TestCase(new UInt32[] { 21, 20, 20, 19, 19, 18, 18, 29, 29, 28, 20, 31, 31, 30, 30, 29 })]
+    [TestCase(new UInt32[] { 21, 20, 20, 31, 31, 30, 30, 29, 29, 28, 20, 19, 19, 18, 18, 29 })]
+    public void TryGetLongestRoadDetails_TwoRoutesToSameDestinationAreEqual_ReturnsLongestRoadDetails(UInt32[] locations)
+    {
+      // Arrange
+      var gameBoard = new GameBoardData(BoardSizes.Standard);
+
+      var playerId = Guid.NewGuid();
+      gameBoard.PlaceStartingInfrastructure(playerId, 0, 1);
+
+      gameBoard.PlaceStartingInfrastructure(playerId, locations[0], locations[1]);
+      for (var index = 2; index < locations.Length; index += 2)
+      {
+        gameBoard.PlaceRoadSegment(playerId, locations[index], locations[index + 1]);
+      }
+
+      // Act
+      UInt32[] road;
+      Guid longestRoadPlayerId;
+      var result = gameBoard.TryGetLongestRoadDetails(out longestRoadPlayerId, out road);
+
+      // Assert
+      result.ShouldBeTrue();
+      longestRoadPlayerId.ShouldBe(playerId);
+
+      var result1 = new List<UInt32> { 21, 20, 19, 18, 29, 30, 31, 20 };
+      var result2 = new List<UInt32>(result1);
+      result2.Reverse();
+      var result3 = new List<UInt32> { 21, 20, 31, 30, 29, 18, 19, 20 };
+      var result4 = new List<UInt32>(result3);
+      result4.Reverse();
+
+      this.RoadShouldBeSameAsOneOf(road, result1, result2, result3, result4);
+    }
+
+    /// <summary>
+    /// Road segments form three single hex loops with settlement on the intersection. Uses test cases to build the road segments
+    /// in different order.
+    /// </summary>
+    [Test]
+    [Category("All")]
+    [Category("GameBoardData")]
+    [Category("GameBoardData.TryGetLongestRoadDetails")]
+    [TestCase(new UInt32[] { 21, 20, 20, 19, 19, 9, 9, 8, 8, 7, 7, 17, 17, 18, 18, 29, 29, 28, 20, 31, 31, 30, 30, 29 })]
+    [TestCase(new UInt32[] { 21, 20, 20, 31, 31, 30, 30, 29, 29, 28, 20, 19, 19, 9, 9, 8, 8, 7, 7, 17, 17, 18, 18, 29 })]
+    public void TryGetLongestRoadDetails_TwoRoutesToSameDestinationAreDifferent_ReturnsLongestRoadDetails(UInt32[] locations)
+    {
+      // Arrange
+      var gameBoard = new GameBoardData(BoardSizes.Standard);
+
+      var playerId = Guid.NewGuid();
+      gameBoard.PlaceStartingInfrastructure(playerId, 0, 1);
+
+      gameBoard.PlaceStartingInfrastructure(playerId, locations[0], locations[1]);
+      for (var index = 2; index < locations.Length; index += 2)
+      {
+        gameBoard.PlaceRoadSegment(playerId, locations[index], locations[index + 1]);
+      }
+
+      // Act
+      UInt32[] road;
+      Guid longestRoadPlayerId;
+      var result = gameBoard.TryGetLongestRoadDetails(out longestRoadPlayerId, out road);
+
+      // Assert
+      result.ShouldBeTrue();
+      longestRoadPlayerId.ShouldBe(playerId);
+
+      var result1 = new List<UInt32> { 21, 20, 19, 9, 8, 7, 17, 18, 29, 30, 31, 20 };
+      var result2 = new List<UInt32>(result1);
+      result2.Reverse();
+      var result3 = new List<UInt32> { 21, 20, 31, 30, 29, 18, 17, 7, 8, 9, 19, 20 };
+      var result4 = new List<UInt32>(result3);
+      result4.Reverse();
+
+      this.RoadShouldBeSameAsOneOf(road, result1, result2, result3, result4);
+    }
+
     private void BuidRoadBranch(GameBoardData gameBoard, Guid playerId, UInt32[] branch)
     {
       for (var index = 0; index < branch.Length; index += 2)
