@@ -83,8 +83,8 @@ namespace Jabberwocky.SoC.Library.GameBoards
       this.CreateHexes();
 
       this.connections = new Boolean[GameBoardData.StandardBoardLocationCount, GameBoardData.StandardBoardLocationCount];
-      this.ConnectLocationsVerticallyOld();
-      this.ConnectLocationsHorizontallyOld();
+      this.ConnectLocationsVertically();
+      this.ConnectLocationsHorizontally();
 
       this.AssignResourceProvidersToDiceRolls();
 
@@ -607,8 +607,6 @@ namespace Jabberwocky.SoC.Library.GameBoards
       this.PlaceRoadSegmentOnBoard(playerId, settlementLocation, roadEndLocation);
     }
 
-
-
     private void ThrowExceptionOnBadVerificationResult(VerificationResults verificationResults)
     {
       switch (verificationResults.Status)
@@ -635,7 +633,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
       playerId = Guid.Empty;
       road = null;
 
-      return this.Try2(out playerId, out road);
+      return this.Try3(out playerId, out road);
 
       // Get all road ends - Start from the starting settlements because most times they will be a genuine road end
       // (except in the case of a cycle). 
@@ -648,7 +646,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
       {
         var roadSegments = kv2.Value;
         
-        var roadStartmarks = new List<RoadStartmark>();
+        var roadStartmarks = new List<Startmark>();
         var settlementsPlacedByPlayer = this.settlementsByPlayer[kv2.Key];
 
         //var roadEnds = roadSegments.GetRoadEnds();
@@ -672,7 +670,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
           {
             var connectingSegment = connectingSegments[i];
             var startingLocation = connectingSegment.Location1 == currentRoadEndLocation ? connectingSegment.Location2 : connectingSegment.Location1;
-            var roadStartmark = new RoadStartmark(startingLocation, connectingSegment);
+            var roadStartmark = new Startmark(startingLocation, connectingSegment);
             roadStartmarks.Add(roadStartmark);
           }
 
@@ -703,7 +701,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
                 forkmarks.RemoveAt(forkmarks.Count - 1);
                 currentRoadEndLocation = forkmark.StartingLocation;
                 workingRoadLength = forkmark.RoadLength;
-                visitedSet = forkmark.Visited;
+                visitedSet = forkmark.VisitedRoadSegments;
                 continue;
               }
 
@@ -764,7 +762,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
               {
                 var alternateSegment = segmentsContainingLocation[segmentIndex];
                 var startLocation = alternateSegment.Location1 == currentRoadEndLocation ? alternateSegment.Location2 : alternateSegment.Location1;
-                var forkmark = new Forkmark(alternateSegment, startLocation, workingRoadLength + 1, visitedSet);
+                var forkmark = new Forkmark(alternateSegment, startLocation, workingRoadLength + 1, visitedSet, null);
                 forkmarks.Add(forkmark);
               }
             }
@@ -941,6 +939,122 @@ namespace Jabberwocky.SoC.Library.GameBoards
       }
 
       return singleLongestRoad;
+    }
+
+    private Boolean Try3(out Guid playerId, out UInt32[] road)
+    {
+      playerId = Guid.Empty;
+      road = null;
+      List<UInt32> longestRoute = null;
+      Boolean gotSingleLongestRoad = false;
+
+      foreach (var kv2 in this.roadSegmentsByPlayer)
+      {
+        var roadSegments = kv2.Value;
+        var settlementsPlacedByPlayer = this.settlementsByPlayer[kv2.Key];
+        var startLocations = new UInt32[] { settlementsPlacedByPlayer[0], settlementsPlacedByPlayer[1] };
+        var roadEnds = new Queue<UInt32>();
+        var startmarks = new Queue<Startmark>();
+        var visitedRoadEnds = new HashSet<UInt32>();
+        var visitedStartmarks = new HashSet<UInt32>();
+        //var visitedRoadSegments = new HashSet<RoadSegment>();
+
+        foreach (var startLocation in startLocations)
+        {
+          var segmentsConnectedToLocation = roadSegments.Where(rs => rs.Location1 == startLocation || rs.Location2 == startLocation).ToList();
+          if (segmentsConnectedToLocation.Count == 1)
+          {
+            roadEnds.Enqueue(startLocation);
+          }
+          else
+          {
+            roadEnds.Enqueue(startLocation);
+          }
+        }
+
+        while (roadEnds.Count > 0)
+        {
+          var currentLocation = roadEnds.Dequeue();
+          var visitedRoadSegments = new HashSet<RoadSegment>();
+          var workingRoute = new List<UInt32> { currentLocation };
+          visitedRoadEnds.Add(currentLocation);
+          var forkmarks = new Stack<Forkmark>();
+
+          while (true)
+          {
+            var unvisitedSegmentsConnectedToLocation = roadSegments
+              .Where(r => (r.Location1 == currentLocation || r.Location2 == currentLocation) && !visitedRoadSegments.Contains(r))
+              .ToList();
+
+            if (unvisitedSegmentsConnectedToLocation.Count == 0)  
+            {
+              // No unvisited segments connected to this location so at end of route.
+
+              // If this route end is a road end and has not been discovered or processed then place it in the 
+              // road end queue for later processing
+              //var isRoadEnd = roadSegments.Count(r => r.Location1 == currentLocation || r.Location2 == currentLocation) == 1;
+              var isRoadEnd = true;
+              if (isRoadEnd && !visitedRoadEnds.Contains(currentLocation) && !roadEnds.Contains(currentLocation))
+              {
+                roadEnds.Enqueue(currentLocation);
+              }
+
+              if (longestRoute == null || workingRoute.Count > longestRoute.Count)
+              {
+                longestRoute = workingRoute;
+                playerId = kv2.Key;
+                gotSingleLongestRoad = true;
+              }
+              else if (longestRoute.Count == workingRoute.Count && kv2.Key != playerId)
+              {
+                gotSingleLongestRoad = false;
+              }
+
+              if (forkmarks.Count > 0)
+              {
+                var forkmark = forkmarks.Pop();
+                workingRoute = forkmark.WorkingRoute;
+                currentLocation = forkmark.StartingLocation;
+                visitedRoadSegments = forkmark.VisitedRoadSegments;
+                continue;
+              }
+
+              break;
+            }
+
+            if (unvisitedSegmentsConnectedToLocation.Count > 1)
+            {
+              // At a fork in the route - mark other branchs for processing later
+              for (var index = 1; index < unvisitedSegmentsConnectedToLocation.Count; index++)
+              {
+                var otherRoadSegment = unvisitedSegmentsConnectedToLocation[index];
+                var startLocation = otherRoadSegment.Location1 == currentLocation ? otherRoadSegment.Location2 : otherRoadSegment.Location1;
+                var newForkMark = new Forkmark(otherRoadSegment, startLocation, 0, visitedRoadSegments, workingRoute);
+                forkmarks.Push(newForkMark);
+              }
+            }
+
+            var currentRoadSegment = unvisitedSegmentsConnectedToLocation[0];
+            visitedRoadSegments.Add(currentRoadSegment);
+
+            // Move along road segment i.e. get other end
+            currentLocation = currentRoadSegment.Location1 == currentLocation ? currentRoadSegment.Location2 : currentRoadSegment.Location1;
+            workingRoute.Add(currentLocation);
+          }
+        }
+      }
+
+      if (!gotSingleLongestRoad)
+      {
+        playerId = Guid.Empty;
+        road = null;
+      }
+      else
+      {
+        road = longestRoute.ToArray();
+      }
+
+      return gotSingleLongestRoad;
     }
 
     internal void ClearRoads()
@@ -1235,72 +1349,6 @@ namespace Jabberwocky.SoC.Library.GameBoards
     private void ConnectLocationsHorizontally()
     {
       // Add horizontal trails for columns
-      Connection connection = null;
-      foreach (var setup in new[] {
-            new HorizontalTrailSetup(0, 4, 8),
-            new HorizontalTrailSetup(7, 5, 10),
-            new HorizontalTrailSetup(16, 6, 11),
-            new HorizontalTrailSetup(28, 5, 10),
-            new HorizontalTrailSetup(39, 4, 8) })
-      {
-        var count = setup.TrailCount;
-        var startIndex = setup.LocationIndexStart;
-        Int32 endIndex = -1;
-        while (count-- > 0)
-        {
-          endIndex = startIndex + setup.LocationIndexDiff;
-
-          connection = new Connection();
-          connection.Location1 = this.locations[startIndex];
-          connection.Location2 = this.locations[endIndex];
-          this.locations[startIndex].connections[2] = connection;
-          this.locations[endIndex].connections[2] = connection;
-
-          //this.connections[startIndex, endIndex] = this.connections[endIndex, startIndex] = true;
-          startIndex += 2;
-        }
-
-        // First and last location in column only have two connections so move them towards 0th end.
-        this.locations[setup.LocationIndexDiff].connections[1] = this.locations[setup.LocationIndexDiff].connections[2];
-        this.locations[setup.LocationIndexDiff].connections[2] = null;
-
-        this.locations[endIndex].connections[1] = connection;
-        this.locations[endIndex].connections[2] = null;
-      }
-    }
-
-    private void ConnectLocationsVertically()
-    {
-      var startIndex = -1;
-      foreach (var trailCount in new[] { 6, 8, 10, 10, 8, 6 })
-      {
-        var count = trailCount;
-        startIndex++;
-        var endIndex = startIndex + 1;
-        Connection connection = null;
-        while (count-- > 0)
-        {
-          connection = new Connection();
-          connection.Location1 = this.locations[startIndex];
-          connection.Location2 = this.locations[endIndex];
-          this.locations[startIndex].connections[0] = connection;
-          this.locations[endIndex].connections[1] = connection;
-
-          //this.connections[startIndex, endIndex] = this.connections[endIndex, startIndex] = true;
-          startIndex++;
-          endIndex++;
-        }
-
-        // Last location in column so change the connection end to be in the 0th slot. Otherwise
-        // 0th slot will be null. 
-        this.locations[endIndex - 1].connections[0] = connection;
-        this.locations[endIndex - 1].connections[1] = null;
-      }
-    }
-
-    private void ConnectLocationsHorizontallyOld()
-    {
-      // Add horizontal trails for columns
       foreach (var setup in new[] {
             new HorizontalTrailSetup(0, 4, 8),
             new HorizontalTrailSetup(7, 5, 10),
@@ -1319,7 +1367,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
       }
     }
 
-    private void ConnectLocationsVerticallyOld()
+    private void ConnectLocationsVertically()
     {
       var startIndex = -1;
       foreach (var trailCount in new[] { 6, 8, 10, 10, 8, 6 })
@@ -1383,14 +1431,17 @@ namespace Jabberwocky.SoC.Library.GameBoards
     {
       public readonly UInt32 StartingLocation;
       public readonly Int32 RoadLength;
-      public readonly HashSet<RoadSegment> Visited;
+      public readonly HashSet<RoadSegment> VisitedRoadSegments;
+      public readonly List<UInt32> WorkingRoute;
 
-      public Forkmark(RoadSegment segment, UInt32 startingLocation, Int32 roadLength, HashSet<RoadSegment> visited)
+      public Forkmark(RoadSegment segment, UInt32 startingLocation, Int32 roadLength, HashSet<RoadSegment> visitedRoadSegments, List<UInt32> workingRoute)
       {
         this.StartingLocation = startingLocation;
         this.RoadLength = roadLength;
-        this.Visited = new HashSet<RoadSegment>(visited);
-        this.Visited.Add(segment);
+        this.VisitedRoadSegments = new HashSet<RoadSegment>(visitedRoadSegments);
+        this.VisitedRoadSegments.Add(segment);
+        this.WorkingRoute = new List<UInt32>(workingRoute);
+        this.WorkingRoute.Add(startingLocation);
       }
     }
 
@@ -1401,13 +1452,13 @@ namespace Jabberwocky.SoC.Library.GameBoards
       public Connection[] connections; 
     }
 
-    private class RoadStartmark
+    private class Startmark
     {
       public readonly UInt32 StartingLocation;
       public Int32 WorkingRoadLength;
       public readonly RoadSegment RoadSegment;
 
-      public RoadStartmark(UInt32 startingLocation, RoadSegment roadSegment)
+      public Startmark(UInt32 startingLocation, RoadSegment roadSegment)
       {
         StartingLocation = startingLocation;
         this.RoadSegment = roadSegment;

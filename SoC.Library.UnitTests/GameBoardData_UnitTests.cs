@@ -1284,7 +1284,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     [Category("All")]
     [Category("GameBoardData")]
     [Category("GameBoardData.TryGetLongestRoadDetails")]
-    public void TryGetLongestRoadDetails_OnePlayerHasTwoRoads_ReturnsFalse()
+    public void TryGetLongestRoadDetails_OnePlayerHasTwoRoadsOfEqualLength_ReturnsLongestRoadDetails()
     {
       // Arrange      
       var gameBoard = new GameBoardData(BoardSizes.Standard);
@@ -1304,7 +1304,16 @@ namespace Jabberwocky.SoC.Library.UnitTests
       var result = gameBoard.TryGetLongestRoadDetails(out longestRoadPlayerId, out road);
 
       // Assert
-      result.ShouldBeFalse();
+      result.ShouldBeTrue();
+      longestRoadPlayerId.ShouldBe(playerId);
+      var result1 = new List<UInt32> { FirstSettlementLocation, FirstRoadEndLocation, 10, 2 };
+      var result2 = new List<UInt32>(result1);
+      result2.Reverse();
+      var result3 = new List<UInt32> { SecondSettlementLocation, SecondRoadEndLocation, 14, 6 };
+      var result4 = new List<UInt32>(result3);
+      result4.Reverse();
+
+      this.RoadShouldBeSameAsOneOf(road, result1, result2, result3, result4);
     }
 
     /// <summary>
@@ -1336,6 +1345,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
       var result = gameBoard.TryGetLongestRoadDetails(out longestRoadPlayerId, out road);
 
       // Assert
+      result.ShouldBeTrue();
       longestRoadPlayerId.ShouldBe(playerId);
       var result1 = new List<UInt32> { FirstSettlementLocation, FirstRoadEndLocation, 21u, 22u, 23u, 13u, FirstSettlementLocation };
       var result2 = new List<UInt32>(result1);
@@ -1379,10 +1389,15 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
       // Assert
       longestRoadPlayerId.ShouldBe(playerId);
-      var result1 = new List<UInt32> { FirstSettlementLocation, FirstRoadEndLocation, 21u, 20u, 31u, 32u, 33u, 22u, 23u, 13u, FirstSettlementLocation };
+      var result1 = new List<UInt32> { 21, 20, 31, 32, 33, 22, 21, 11, 12, 13, 23, 22};
       var result2 = new List<UInt32>(result1);
       result2.Reverse();
-      this.RoadShouldBeSameAsOneOf(road, result1, result2);
+
+      var result3 = new List<UInt32> { 21, 11, 12, 13, 23, 22, 21, 20, 31, 32, 33, 22 };
+      var result4 = new List<UInt32>(result3);
+      result4.Reverse();
+
+      this.RoadShouldBeSameAsOneOf(road, result1, result2, result3, result4);
     }
 
     /// <summary>
@@ -1542,11 +1557,11 @@ namespace Jabberwocky.SoC.Library.UnitTests
       // Assert
       result.ShouldBeTrue();
       longestRoadPlayerId.ShouldBe(playerId);
-      var result1 = new List<UInt32> { 0u };
-      var result2 = new List<UInt32> { 0u };
-      var result3 = new List<UInt32>(result1);
-      result3.Reverse();
-      var result4 = new List<UInt32>(result2);
+      var result1 = new List<UInt32> { FirstSettlementLocation, FirstRoadEndLocation, 21, 20, 19, 9, 10, FirstRoadEndLocation };
+      var result2 = new List<UInt32>(result1);
+      result2.Reverse();
+      var result3 = new List<UInt32> { FirstSettlementLocation, FirstRoadEndLocation, 10, 9, 19, 20, 21, FirstRoadEndLocation };
+      var result4 = new List<UInt32>(result3);
       result4.Reverse();
       this.RoadShouldBeSameAsOneOf(road, result1, result2, result3, result4);
     }
@@ -1625,7 +1640,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     [Category("All")]
     [Category("GameBoardData")]
     [Category("GameBoardData.TryGetLongestRoadDetails")]
-    public void TryGetLongestRoadDetails_StartingSettlementBetweenTwoLoops_ReturnsLongestRoadDetails()
+    public void TryGetLongestRoadDetails_SettlementBetweenTwoLoops_ReturnsLongestRoadDetails()
     {
       // Arrange
       var gameBoard = new GameBoardData(BoardSizes.Standard);
@@ -1767,13 +1782,13 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
       var playerId = Guid.NewGuid();
       gameBoard.PlaceStartingInfrastructure(playerId, FirstSettlementLocation, 4);
-      gameBoard.PlaceStartingInfrastructure(playerId, SecondSettlementLocation, SecondRoadEndLocation);
+      gameBoard.PlaceStartingInfrastructure(playerId, 0, 1);
 
       gameBoard.PlaceRoadSegment(playerId, FirstSettlementLocation, 13);
       gameBoard.PlaceRoadSegment(playerId, 13, 14);
       gameBoard.PlaceRoadSegment(playerId, 6, 14);
       gameBoard.PlaceRoadSegment(playerId, 5, 6);
-      gameBoard.PlaceRoadSegment(playerId, 6, 4);
+      gameBoard.PlaceRoadSegment(playerId, 5, 4);
 
       gameBoard.PlaceRoadSegment(playerId, 14, 15);
 
@@ -1830,14 +1845,47 @@ namespace Jabberwocky.SoC.Library.UnitTests
       result.ShouldBeTrue();
       longestRoadPlayerId.ShouldBe(playerId);
 
-      var result1 = new List<UInt32> { FirstSettlementLocation, FirstRoadEndLocation, 21, 22, 23, 13, 14, 6, 5, 4, 3, 2, 10, FirstRoadEndLocation };
-      var result2 = new List<UInt32> { FirstSettlementLocation, 13, 14, 6, 5, 4, 3, 2, 10, FirstRoadEndLocation, 21, 22, 23, 13 };
-      var result3 = new List<UInt32> { FirstSettlementLocation, 4, 3, 2, 10, FirstRoadEndLocation, 21, 22, 23, 13, 14, 6, 5, 4 };
-      var result4 = new List<UInt32> { FirstSettlementLocation, FirstRoadEndLocation, 10, 2, 3, 4, 5, 6, 14, 13, 23, 22, 21, FirstRoadEndLocation };
-      var result5 = new List<UInt32> { FirstSettlementLocation, 13, 23, 22, 21, FirstRoadEndLocation, 10, 2, 3, 4, 5, 6, 14, 13 };
-      var result6 = new List<UInt32> { FirstSettlementLocation, 4, 5, 6, 14, 13, 23, 22, 21, FirstRoadEndLocation, 10, 2, 3, 4 };
+      var result1 = new List<UInt32> { 4, 12, 11, 10, 2, 3, 4, 5, 6, 14, 13, 23, 22, 21, 11 };
+      var result2 = new List<UInt32>(result1);
+      result2.Reverse();
+      var result3 = new List<UInt32> { 4, 12, 11, 21, 22, 23, 13, 14, 6, 5, 4, 3, 2, 10, 11 };
+      var result4 = new List<UInt32>(result3);
+      result4.Reverse();
+      var result5 = new List<UInt32> { 4, 12, 13, 23, 22, 21, 11, 10, 2, 3, 4, 5, 6, 14, 13 };
+      var result6 = new List<UInt32>(result5);
+      result6.Reverse();
+      var result7 = new List<UInt32> { 4, 12, 13, 14, 6, 5, 4, 3, 2, 10, 11, 21, 22, 23, 13 };
+      var result8 = new List<UInt32>(result7);
+      result8.Reverse();
+      var result9 = new List<UInt32> { 13, 12, 11, 10, 2, 3, 4, 5, 6, 14, 13, 23, 22, 21, 11 };
+      var result10 = new List<UInt32>(result9);
+      result10.Reverse();
+      var result11 = new List<UInt32> { 13, 12, 11, 21, 22, 23, 13, 14, 6, 5, 4, 3, 2, 10, 11 };
+      var result12 = new List<UInt32>(result11);
+      result12.Reverse();
+      var result13 = new List<UInt32> { 13, 12, 4, 3, 2, 10, 11, 21, 22, 23, 13, 14, 6, 5, 4 };
+      var result14 = new List<UInt32>(result13);
+      result14.Reverse();
+      var result15 = new List<UInt32> { 13, 12, 4, 5, 6, 14, 13, 23, 22, 21, 11, 10, 2, 3, 4 };
+      var result16 = new List<UInt32>(result15);
+      result16.Reverse();
+      var result17 = new List<UInt32> { 11, 12, 13, 23, 22, 21, 11, 10, 2, 3, 4, 5, 6, 14, 13 };
+      var result18 = new List<UInt32>(result17);
+      result18.Reverse();
+      var result19 = new List<UInt32> { 11, 12, 13, 14, 6, 5, 4, 3, 2, 10, 11, 21, 22, 23, 13 };
+      var result20 = new List<UInt32>(result19);
+      result20.Reverse();
+      var result21 = new List<UInt32> { 11, 12, 4, 3, 2, 10, 11, 21, 22, 23, 13, 14, 6, 5, 4 };
+      var result22 = new List<UInt32>(result21);
+      result22.Reverse();
+      var result23 = new List<UInt32> { 11, 12, 4, 5, 6, 14, 13, 23, 22, 21, 11, 10, 2, 3, 4 };
+      var result24 = new List<UInt32>(result23);
+      result24.Reverse();
 
-      this.RoadShouldBeSameAsOneOf(road, result1, result2, result3, result4, result5, result6);
+      this.RoadShouldBeSameAsOneOf(road, result1, result2, result3, result4, result5, result6,
+        result7, result8, result9, result10, result11, result12, result13, result14,
+        result15, result16, result17, result18, result19, result20, result21, result22,
+        result23, result24);
     }
 
     private void BuidRoadBranch(GameBoardData gameBoard, Guid playerId, UInt32[] branch)
@@ -1876,7 +1924,30 @@ namespace Jabberwocky.SoC.Library.UnitTests
         break;
       }
 
-      result.ShouldBeTrue();
+      if (!result)
+      {
+        var actualRoadDetails = "(";
+        foreach (var location in actualRoad)
+        {
+          actualRoadDetails += location + ", ";
+        }
+
+        actualRoadDetails = actualRoadDetails.Substring(0, actualRoadDetails.Length - 2) + ")";
+
+        var possibleRoadDetails = "";
+        foreach (var possibleRoad in possibleRoads)
+        {
+          possibleRoadDetails += "(";
+          foreach (var location in possibleRoad)
+          {
+            possibleRoadDetails += location + ", ";
+          }
+
+          possibleRoadDetails = possibleRoadDetails.Substring(0, possibleRoadDetails.Length - 2) + ")\n";
+        }
+
+        throw new ShouldAssertException(String.Format("Actual road\n{0}\ndoes not match any of the possible roads\n{1}", actualRoadDetails, possibleRoadDetails));
+      }
     }
     #endregion
   }
