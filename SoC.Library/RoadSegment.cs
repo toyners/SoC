@@ -8,11 +8,12 @@ namespace Jabberwocky.SoC.Library
   [DebuggerDisplay("({Location1}, {Location2})")]
   public class RoadSegment
   {
+    #region Fields
     public readonly UInt32 Location1;
     public readonly UInt32 Location2;
-    public List<RoadSegment> ConnectedToLocation1 = new List<RoadSegment>();
-    public List<RoadSegment> ConnectedToLocation2 = new List<RoadSegment>();
+    #endregion
 
+    #region Construction
     public RoadSegment(UInt32 location1, UInt32 location2)
     {
       if (location1 == location2)
@@ -23,7 +24,9 @@ namespace Jabberwocky.SoC.Library
       this.Location1 = location1;
       this.Location2 = location2;
     }
+    #endregion
 
+    #region Methods
     public static Boolean operator ==(RoadSegment road1, RoadSegment road2)
     {
       if (Object.ReferenceEquals(road1, null) && Object.ReferenceEquals(road2, null))
@@ -84,5 +87,16 @@ namespace Jabberwocky.SoC.Library
 
       return this.Location1 == road.Location1 || this.Location1 == road.Location2 || this.Location2 == road.Location1 || this.Location2 == road.Location2;
     }
+
+    /// <summary>
+    /// Returns true if this road segment is on the location passed in.
+    /// </summary>
+    /// <param name="location">Location to check.</param>
+    /// <returns>True if this road segment is on the location; otherwise false.</returns>
+    public Boolean IsOnLocation(UInt32 location)
+    {
+      return this.Location1 == location || this.Location2 == location;
+    }
+    #endregion
   }
 }

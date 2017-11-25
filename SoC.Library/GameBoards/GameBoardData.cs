@@ -634,10 +634,10 @@ namespace Jabberwocky.SoC.Library.GameBoards
       List<UInt32> longestRoute = null;
       Boolean gotSingleLongestRoad = false;
 
-      foreach (var kv2 in this.roadSegmentsByPlayer)
+      foreach (var playerRoadSegments in this.roadSegmentsByPlayer)
       {
-        var roadSegments = kv2.Value;
-        var settlementsPlacedByPlayer = this.settlementsByPlayer[kv2.Key];
+        var roadSegments = playerRoadSegments.Value;
+        var settlementsPlacedByPlayer = this.settlementsByPlayer[playerRoadSegments.Key];
         var roadEnds = new Queue<UInt32>();
         roadEnds.Enqueue(settlementsPlacedByPlayer[0]);
         roadEnds.Enqueue(settlementsPlacedByPlayer[1]);
@@ -654,7 +654,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
           while (true)
           {
             var unvisitedSegmentsConnectedToLocation = roadSegments
-              .Where(r => (r.Location1 == currentLocation || r.Location2 == currentLocation) && !visitedRoadSegments.Contains(r))
+              .Where(r => r.IsOnLocation(currentLocation) && !visitedRoadSegments.Contains(r))
               .ToList();
 
             if (unvisitedSegmentsConnectedToLocation.Count == 0)  
@@ -667,17 +667,19 @@ namespace Jabberwocky.SoC.Library.GameBoards
                 roadEnds.Enqueue(currentLocation);
               }
 
+              // Set the new longest route if working route is longer
               if (longestRoute == null || workingRoute.Count > longestRoute.Count)
               {
                 longestRoute = workingRoute;
-                playerId = kv2.Key;
+                playerId = playerRoadSegments.Key;
                 gotSingleLongestRoad = true;
               }
-              else if (longestRoute.Count == workingRoute.Count && kv2.Key != playerId)
+              else if (longestRoute.Count == workingRoute.Count && playerRoadSegments.Key != playerId)
               {
                 gotSingleLongestRoad = false;
               }
 
+              // Process a formark if we have any.
               if (forkmarks.Count > 0)
               {
                 var forkmark = forkmarks.Pop();
@@ -1118,19 +1120,6 @@ namespace Jabberwocky.SoC.Library.GameBoards
       public Int32 Index;
       public Guid Owner;
       public Connection[] connections; 
-    }
-
-    private class Startmark
-    {
-      public readonly UInt32 StartingLocation;
-      public Int32 WorkingRoadLength;
-      public readonly RoadSegment RoadSegment;
-
-      public Startmark(UInt32 startingLocation, RoadSegment roadSegment)
-      {
-        StartingLocation = startingLocation;
-        this.RoadSegment = roadSegment;
-      }
     }
 
     public class PlacementException : Exception
