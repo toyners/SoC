@@ -94,6 +94,12 @@ namespace Jabberwocky.SoC.Library
       this.WoolCount -= resourceClutch.WoolCount;
     }
 
+    public void RemoveResourcesForRoad()
+    {
+      this.BrickCount--;
+      this.LumberCount--;
+    }
+
     internal void Load(XmlReader reader)
     {
       this.Id = Guid.Empty;

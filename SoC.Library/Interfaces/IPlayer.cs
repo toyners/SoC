@@ -22,6 +22,7 @@ namespace Jabberwocky.SoC.Library.Interfaces
     PlayerDataView GetDataView();
     void AddResources(ResourceClutch resourceClutch);
     void RemoveResources(ResourceClutch resourceClutch);
+    void RemoveResourcesForRoad();
     #endregion
   }
 }

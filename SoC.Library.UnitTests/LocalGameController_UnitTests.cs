@@ -1438,6 +1438,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     [Test]
     [Category("All")]
     [Category("LocalGameController")]
+    [Category("LocalGameController.BuildRoad")]
     [Category("Main Player Turn")]
     public void MainPlayerTurn_BuildRoadWithRequiredResourcesAvailable_BuildCompleteEventRaised()
     {
@@ -1464,6 +1465,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     [Test]
     [Category("All")]
     [Category("LocalGameController")]
+    [Category("LocalGameController.BuildRoad")]
     [Category("Main Player Turn")]
     public void MainPlayerTurn_FirstLongestRoadBuilt_LongestRoadEventRaised()
     {
@@ -1490,6 +1492,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     [Test]
     [Category("All")]
     [Category("LocalGameController")]
+    [Category("LocalGameController.BuildRoad")]
     [Category("Main Player Turn")]
     public void MainPlayerTurn_SubsequentLongestRoadBuilt_LongestRoadEventRaised()
     {
@@ -1516,8 +1519,12 @@ namespace Jabberwocky.SoC.Library.UnitTests
     [Test]
     [Category("All")]
     [Category("LocalGameController")]
+    [Category("LocalGameController.BuildRoad")]
     [Category("Main Player Turn")]
-    public void MainPlayerTurn_AddToLongestRoad_LongestRoadEventNotRaised()
+    [TestCase(new UInt32[] { 4, 3 })]
+    [TestCase(new UInt32[] { 4, 3, 3, 2 })]
+    [TestCase(new UInt32[] { 4, 3, 3, 2, 2, 1 })]
+    public void MainPlayerTurn_AddToRoadShorterThanFiveSegments_LongestRoadEventNotRaised(UInt32[] roadLocations)
     {
       // Arrange
       MockDice mockDice = null;
@@ -1533,7 +1540,10 @@ namespace Jabberwocky.SoC.Library.UnitTests
       localGameController.StartGamePlay();
 
       // Act
-      localGameController.BuildRoad(player.Id, 4u, 3u);
+      for (var index = 0; index < roadLocations.Length; index += 2)
+      {
+        localGameController.BuildRoad(player.Id, roadLocations[index], roadLocations[index + 1]);
+      }
 
       // Assert
       longestRoadBuiltEventRaised.ShouldBeFalse();
@@ -1542,6 +1552,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     [Test]
     [Category("All")]
     [Category("LocalGameController")]
+    [Category("LocalGameController.BuildRoad")]
     [Category("Main Player Turn")]
     public void MainPlayerTurn_BuildRoadWithoutRequiredResourcesAvailable_MeaningfulErrorIsReceived()
     {

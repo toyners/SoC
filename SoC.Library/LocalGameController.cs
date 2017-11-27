@@ -77,9 +77,14 @@ namespace Jabberwocky.SoC.Library
     #endregion
 
     #region Methods
-    public void BuildRoad(Guid id, UInt32 startIndex, UInt32 endIndex)
+    public void BuildRoad(Guid playerId, UInt32 roadStartLocation, UInt32 roadEndLocation)
     {
-      throw new NotImplementedException();
+      var player = this.playersById[playerId];
+      if (player.BrickCount > 0 && player.LumberCount > 0)
+      {
+        this.gameBoardManager.Data.PlaceRoadSegment(playerId, roadStartLocation, roadEndLocation);
+        player.RemoveResourcesForRoad();
+      }
     }
 
     public void ChooseResourceFromOpponent(Guid opponentId, Int32 resourceIndex)
