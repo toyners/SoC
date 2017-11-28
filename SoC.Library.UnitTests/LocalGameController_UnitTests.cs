@@ -1807,10 +1807,15 @@ namespace Jabberwocky.SoC.Library.UnitTests
     {
       var mockPlayerPool = CreatePlayerPool(firstPlayer, otherPlayers);
 
-      return new LocalGameControllerCreator()
+
+      var localGameController = new LocalGameControllerCreator()
         .ChangeDice(dice)
         .ChangePlayerPool(mockPlayerPool)
         .Create();
+
+      localGameController.ErrorRaisedEvent = (ErrorDetails e) => { throw new Exception(e.Message); };
+
+      return localGameController;
     }
 
     private LocalGameController CreateLocalGameController(IDice dice, GameBoardManager gameBoardManager, IPlayer firstPlayer, params IPlayer[] otherPlayers)
