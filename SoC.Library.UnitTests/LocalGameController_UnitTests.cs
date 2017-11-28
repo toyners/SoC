@@ -177,14 +177,6 @@ namespace Jabberwocky.SoC.Library.UnitTests
         new Tuple<UInt32, UInt32, Guid>(ThirdSettlementOneLocation, ThirdRoadOneEnd, thirdOpponent.Id),
         new Tuple<UInt32, UInt32, Guid>(ThirdSettlementTwoLocation, ThirdRoadTwoEnd, thirdOpponent.Id));
 
-      /*gameBoardUpdate.NewRoads.Count.ShouldBe(6);
-      gameBoardUpdate.NewRoads.ShouldContainKeyAndValue(firstRoadOne, firstOpponent.Id);
-      gameBoardUpdate.NewRoads.ShouldContainKeyAndValue(firstRoadTwo, firstOpponent.Id);
-      gameBoardUpdate.NewRoads.ShouldContainKeyAndValue(secondRoadOne, secondOpponent.Id);
-      gameBoardUpdate.NewRoads.ShouldContainKeyAndValue(secondRoadTwo, secondOpponent.Id);
-      gameBoardUpdate.NewRoads.ShouldContainKeyAndValue(thirdRoadOne, thirdOpponent.Id);
-      gameBoardUpdate.NewRoads.ShouldContainKeyAndValue(thirdRoadTwo, thirdOpponent.Id);*/
-
       gameBoardUpdate = new GameBoardUpdate(); // Ensure that there is a state change for the gameBoardUpdate variable 
 
       localGameController.CompleteGameSetup(MainSettlementTwoLocation, MainRoadTwoEnd);
