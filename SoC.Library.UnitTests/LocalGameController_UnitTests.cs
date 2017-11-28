@@ -1448,11 +1448,10 @@ namespace Jabberwocky.SoC.Library.UnitTests
       MockComputerPlayer firstOpponent, secondOpponent, thirdOpponent;
       var localGameController = this.CreateLocalGameControllerAndCompleteGameSetup(out mockDice, out player, out firstOpponent, out secondOpponent, out thirdOpponent);
       mockDice.AddSequence(new[] { 8u });
+      player.AddResources(new ResourceClutch(1, 0, 1, 0, 0));
 
       var buildCompleted = false;
       localGameController.BuildCompletedEvent = () => { buildCompleted = true; };
-
-      player.AddResources(new ResourceClutch(1, 0, 1, 0, 0));
 
       // Act
       localGameController.StartGamePlay();
@@ -1460,6 +1459,30 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
       // Assert
       buildCompleted.ShouldBeTrue();
+    }
+
+    [Test]
+    [Category("All")]
+    [Category("LocalGameController")]
+    [Category("LocalGameController.BuildRoad")]
+    [Category("Main Player Turn")]
+    public void MainPlayerTurn_BuildRoadWithRequiredResourcesAvailable_PlayerResourcesUpdated()
+    {
+      // Arrange
+      MockDice mockDice = null;
+      MockPlayer player;
+      MockComputerPlayer firstOpponent, secondOpponent, thirdOpponent;
+      var localGameController = this.CreateLocalGameControllerAndCompleteGameSetup(out mockDice, out player, out firstOpponent, out secondOpponent, out thirdOpponent);
+      mockDice.AddSequence(new[] { 8u });
+      player.AddResources(new ResourceClutch(1, 0, 1, 0, 0));
+
+      // Act
+      localGameController.StartGamePlay();
+      localGameController.BuildRoad(player.Id, 4u, 3u);
+
+      // Assert
+      player.BrickCount.ShouldBe(0);
+      player.LumberCount.ShouldBe(0);
     }
 
     [Test]
@@ -1554,7 +1577,10 @@ namespace Jabberwocky.SoC.Library.UnitTests
     [Category("LocalGameController")]
     [Category("LocalGameController.BuildRoad")]
     [Category("Main Player Turn")]
-    public void MainPlayerTurn_BuildRoadWithoutRequiredResourcesAvailable_MeaningfulErrorIsReceived()
+    [TestCase(0, 0, "Not enough resources to build road. Missing 1 brick and 1 lumber.")]
+    [TestCase(1, 0, "Not enough resources to build road. Missing 1 lumber.")]
+    [TestCase(0, 1, "Not enough resources to build road. Missing 1 brick.")]
+    public void MainPlayerTurn_BuildRoadWithoutRequiredResourcesAvailable_MeaningfulErrorIsReceived(Int32 brickCount, Int32 lumberCount, String expectedErrorMessage)
     {
       // Arrange
       MockDice mockDice = null;
@@ -1562,6 +1588,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
       MockComputerPlayer firstOpponent, secondOpponent, thirdOpponent;
       var localGameController = this.CreateLocalGameControllerAndCompleteGameSetup(out mockDice, out player, out firstOpponent, out secondOpponent, out thirdOpponent);
       mockDice.AddSequence(new[] { 8u });
+      player.AddResources(new ResourceClutch(brickCount, 0, lumberCount, 0, 0));
 
       ErrorDetails errorDetails = null;
       localGameController.ErrorRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
@@ -1572,7 +1599,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
       // Assert
       errorDetails.ShouldNotBeNull();
-      errorDetails.Message.ShouldBe("Not enough resources to build road");
+      errorDetails.Message.ShouldBe(expectedErrorMessage);
     }
 
     [Test]

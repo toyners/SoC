@@ -85,6 +85,26 @@ namespace Jabberwocky.SoC.Library
         this.gameBoardManager.Data.PlaceRoadSegment(playerId, roadStartLocation, roadEndLocation);
         player.RemoveResourcesForRoad();
       }
+      else if (this.ErrorRaisedEvent != null)
+      {
+        var message = "Not enough resources to build road. ";
+        if (player.BrickCount == 0 && player.LumberCount == 0)
+        {
+          message += "Missing 1 brick and 1 lumber.";
+        }
+        else if (player.BrickCount == 0)
+        {
+          message += "Missing 1 brick.";
+        }
+        else
+        {
+          message += "Missing 1 lumber.";
+        }
+
+        var errorDetails = new ErrorDetails(message);
+        this.ErrorRaisedEvent(errorDetails);
+        return;
+      }
     }
 
     public void ChooseResourceFromOpponent(Guid opponentId, Int32 resourceIndex)
