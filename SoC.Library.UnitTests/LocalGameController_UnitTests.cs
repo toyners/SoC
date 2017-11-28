@@ -1435,6 +1435,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
       var localGameController = this.CreateLocalGameControllerAndCompleteGameSetup(out mockDice, out player, out firstOpponent, out secondOpponent, out thirdOpponent);
       
       mockDice.AddSequence(new[] { 8u });
+      player.AddResources(new ResourceClutch(1, 0, 1, 0, 0));
 
       Guid otherPlayerId = Guid.NewGuid(); // Set it to an id to register state change
       localGameController.LongestRoadBuiltEvent = (Guid pid) => { otherPlayerId = pid; };
@@ -1462,6 +1463,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
       var localGameController = this.CreateLocalGameControllerAndCompleteGameSetup(out mockDice, out player, out firstOpponent, out secondOpponent, out thirdOpponent);
 
       mockDice.AddSequence(new[] { 8u });
+      player.AddResources(new ResourceClutch(1, 0, 1, 0, 0));
 
       Guid otherPlayerId = Guid.Empty;
       localGameController.LongestRoadBuiltEvent = (Guid pid) => { otherPlayerId = pid; };
@@ -1492,6 +1494,10 @@ namespace Jabberwocky.SoC.Library.UnitTests
       var localGameController = this.CreateLocalGameControllerAndCompleteGameSetup(out mockDice, out player, out firstOpponent, out secondOpponent, out thirdOpponent);
 
       mockDice.AddSequence(new[] { 8u });
+      var roadCount = roadLocations.Length / 2;
+      var brickCount = roadCount;
+      var lumberCount = roadCount;
+      player.AddResources(new ResourceClutch(brickCount, 0, lumberCount, 0, 0));
 
       Boolean longestRoadBuiltEventRaised = false;
       localGameController.LongestRoadBuiltEvent = (Guid pid) => { longestRoadBuiltEventRaised = true; };
