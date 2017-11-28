@@ -234,6 +234,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
               actualRoad.Item2 == expectedRoad.Item2 &&
               actualRoad.Item3 == expectedRoad.Item3)
           {
+            foundExpectedRoad = true;
             actualRoads.RemoveAt(index);
             index--;
             break;
@@ -242,7 +243,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
         if (!foundExpectedRoad)
         {
-          throw new Exception("Did not find expected road: " + expectedRoad.ToString());
+          throw new Exception("Did not find expected road: " + expectedRoad);
         }
       }
     }
