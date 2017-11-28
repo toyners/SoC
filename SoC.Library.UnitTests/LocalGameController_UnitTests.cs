@@ -1435,18 +1435,21 @@ namespace Jabberwocky.SoC.Library.UnitTests
       var localGameController = this.CreateLocalGameControllerAndCompleteGameSetup(out mockDice, out player, out firstOpponent, out secondOpponent, out thirdOpponent);
       
       mockDice.AddSequence(new[] { 8u });
-      player.AddResources(new ResourceClutch(1, 0, 1, 0, 0));
+      player.AddResources(new ResourceClutch(5, 0, 5, 0, 0));
 
-      Guid otherPlayerId = Guid.NewGuid(); // Set it to an id to register state change
-      localGameController.LongestRoadBuiltEvent = (Guid pid) => { otherPlayerId = pid; };
+      Guid playerId = Guid.NewGuid(); // Set it to an id to register state change
+      localGameController.LongestRoadBuiltEvent = (Guid pid) => { playerId = pid; };
 
       localGameController.StartGamePlay();
 
       // Act
-      localGameController.BuildRoad(player.Id, 4u, 3u);
+      localGameController.BuildRoad(player.Id, 4, 3);
+      localGameController.BuildRoad(player.Id, 3, 2);
+      localGameController.BuildRoad(player.Id, 2, 1);
+      localGameController.BuildRoad(player.Id, 1, 0);
 
       // Assert
-      otherPlayerId.ShouldBe(Guid.Empty);
+      playerId.ShouldBe(player.Id);
     }
 
     [Test]
