@@ -502,36 +502,6 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
     [Test]
     [Category("LocalGameController")]
-    public void PlayerPlacesRoadWithNoConnectionToAnySettlements_MeaningfulErrorIsReceived()
-    {
-      throw new NotImplementedException();
-      // TODO: Test no longer makes sense because of change to ContinueGameSetup parameters list
-      /*var mockDice = Substitute.For<IDice>();
-      mockDice.RollTwoDice().Returns(12u, 10u, 8u, 6u);
-
-      MockPlayer player;
-      MockComputerPlayer firstOpponent, secondOpponent, thirdOpponent;
-      this.CreateDefaultPlayerInstances(out player, out firstOpponent, out secondOpponent, out thirdOpponent);
-
-      var localGameController = this.CreateLocalGameController(mockDice, player, firstOpponent, secondOpponent, thirdOpponent);
-
-      ErrorDetails errorDetails = null;
-      GameBoardUpdate gameBoardUpdate = null;
-      localGameController.ErrorRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
-      localGameController.GameSetupUpdateEvent = (GameBoardUpdate u) => { gameBoardUpdate = u; };
-
-      localGameController.JoinGame();
-      localGameController.LaunchGame();
-      localGameController.StartGameSetup();
-      localGameController.ContinueGameSetup(0u, new RoadSegment(1u, 2u));
-
-      errorDetails.ShouldNotBeNull();
-      errorDetails.Message.ShouldBe("Cannot place road at [1, 2]. No connection to a player owned road or settlement.");
-      gameBoardUpdate.ShouldBeNull();*/
-    }
-
-    [Test]
-    [Category("LocalGameController")]
     public void PlayerSelectsSameLocationAsComputerPlayerDuringFirstSetupRound_MeaningfulErrorIsReceived()
     {
       var mockDice = Substitute.For<IDice>();
@@ -647,33 +617,6 @@ namespace Jabberwocky.SoC.Library.UnitTests
       exception.ShouldNotBeNull();
       exception.Message.ShouldBe("Cannot place settlement: Too close to player " + firstOpponent.Id + " at location " + FirstSettlementOneLocation);
       gameBoardUpdate.ShouldBeNull();
-    }
-
-    [Test]
-    [Category("LocalGameController")]
-    public void PlayerPlacesRoadWithNoConnectionToAnySettlementsDuringSecondSetupRound_MeaningfulErrorIsReceived()
-    {
-      throw new NotImplementedException();
-
-      // TODO: Test is no longer meaningful because of parameter change in CompleteGameSetup method
-      /*var localGameController = CreateLocalGameControllerWithMainPlayerGoingFirstInSetup();
-
-      ErrorDetails errorDetails = null;
-      localGameController.ErrorRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
-
-      localGameController.JoinGame();
-      localGameController.LaunchGame();
-      localGameController.StartGameSetup();
-      localGameController.ContinueGameSetup(0, 1);
-
-      GameBoardUpdate gameBoardUpdate = null;
-      localGameController.GameSetupUpdateEvent = (GameBoardUpdate u) => { gameBoardUpdate = u; };
-
-      localGameController.CompleteGameSetup(6, new RoadSegment(4, 5));
-
-      errorDetails.ShouldNotBeNull();
-      errorDetails.Message.ShouldBe("Cannot place road at [4, 5]. No connection to a player owned road or settlement.");
-      gameBoardUpdate.ShouldBeNull();*/
     }
 
     [Test]
