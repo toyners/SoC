@@ -41,6 +41,7 @@ namespace Jabberwocky.SoC.Library
     private Dictionary<Guid, IPlayer> playerForCurrentTurn;
     #endregion
 
+    #region Construction
     public LocalGameController(IDice dice, IPlayerPool computerPlayerFactory, GameBoardManager gameBoardManager)
     {
       this.dice = dice;
@@ -49,6 +50,7 @@ namespace Jabberwocky.SoC.Library
       this.GamePhase = GamePhases.Initial;
       this.playerForCurrentTurn = new Dictionary<Guid, IPlayer>();
     }
+    #endregion
 
     #region Properties
     public Guid GameId { get; private set; }
@@ -78,18 +80,6 @@ namespace Jabberwocky.SoC.Library
     #endregion
 
     #region Methods
-    private Boolean TryGetPlayerIdForCurrentTurnToken(Guid turnToken, out IPlayer playerId)
-    {
-      if (this.playerForCurrentTurn.ContainsKey(turnToken))
-      {
-        playerId = this.playerForCurrentTurn[turnToken];
-        return true;
-      }
-
-      playerId = null;
-      return false;
-    }
-
     public void BuildRoad(Guid turnToken, UInt32 roadStartLocation, UInt32 roadEndLocation)
     {
       IPlayer player = null;
@@ -679,6 +669,18 @@ namespace Jabberwocky.SoC.Library
       }
 
       return randomisedResources;
+    }
+
+    private Boolean TryGetPlayerIdForCurrentTurnToken(Guid turnToken, out IPlayer playerId)
+    {
+      if (this.playerForCurrentTurn.ContainsKey(turnToken))
+      {
+        playerId = this.playerForCurrentTurn[turnToken];
+        return true;
+      }
+
+      playerId = null;
+      return false;
     }
 
     private void TryRaiseRoadPlacingError(GameBoardData.VerificationResults verificationResults, UInt32 settlementLocation, UInt32 roadEndLocation)
