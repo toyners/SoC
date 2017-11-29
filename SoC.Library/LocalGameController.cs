@@ -83,7 +83,7 @@ namespace Jabberwocky.SoC.Library
     public void BuildRoad(Guid turnToken, UInt32 roadStartLocation, UInt32 roadEndLocation)
     {
       IPlayer player = null;
-      if (!this.TryGetPlayerIdForCurrentTurnToken(turnToken, out player))
+      if (!this.TryGetPlayerForCurrentTurnToken(turnToken, out player))
       {
         var errorDetails = new ErrorDetails("Turn token not recognised.");
         return;
@@ -671,15 +671,15 @@ namespace Jabberwocky.SoC.Library
       return randomisedResources;
     }
 
-    private Boolean TryGetPlayerIdForCurrentTurnToken(Guid turnToken, out IPlayer playerId)
+    private Boolean TryGetPlayerForCurrentTurnToken(Guid turnToken, out IPlayer player)
     {
       if (this.playerForCurrentTurn.ContainsKey(turnToken))
       {
-        playerId = this.playerForCurrentTurn[turnToken];
+        player = this.playerForCurrentTurn[turnToken];
         return true;
       }
 
-      playerId = null;
+      player = null;
       return false;
     }
 
