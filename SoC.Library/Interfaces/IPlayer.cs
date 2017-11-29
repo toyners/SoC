@@ -16,13 +16,15 @@ namespace Jabberwocky.SoC.Library.Interfaces
     Int32 ResourcesCount { get; }
     Boolean IsComputer { get; }
     UInt32 VictoryPoints { get; }
+    Int32 RemainingRoadSegments { get; }
+    Int32 RoadSegmentsBuilt { get; }
     #endregion
 
     #region Methods
     PlayerDataView GetDataView();
     void AddResources(ResourceClutch resourceClutch);
     void RemoveResources(ResourceClutch resourceClutch);
-    void RemoveResourcesForRoad();
+    void BuildRoad();
     #endregion
   }
 }

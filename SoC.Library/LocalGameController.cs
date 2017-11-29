@@ -89,11 +89,22 @@ namespace Jabberwocky.SoC.Library
         return;
       }
 
-      if (player.BrickCount > 0 && player.LumberCount > 0)
+      if (player.BrickCount > 0 && player.LumberCount > 0 && player.RemainingRoadSegments > 0)
       {
         this.gameBoardManager.Data.PlaceRoadSegment(player.Id, roadStartLocation, roadEndLocation);
-        player.RemoveResourcesForRoad();
+        player.BuildRoad();
         this.BuildCompletedEvent?.Invoke();
+
+        if (player.RoadSegmentsBuilt >= 5)
+        {
+          Guid longestRoadPlayerId = Guid.Empty;
+          UInt32[] road = null;
+          if (this.gameBoardManager.Data.TryGetLongestRoadDetails(out longestRoadPlayerId, out road))
+          {
+
+          }
+        }
+
         return;
       }
 

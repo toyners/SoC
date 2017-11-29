@@ -45,6 +45,9 @@ namespace Jabberwocky.SoC.Library
     public Int32 WoolCount { get; protected set; }
 
     public UInt32 VictoryPoints { get; protected set; }
+
+    public Int32 RemainingRoadSegments { get; protected set; }
+    public Int32 RoadSegmentsBuilt { get; protected set; }
     #endregion
 
     #region Methods
@@ -94,7 +97,7 @@ namespace Jabberwocky.SoC.Library
       this.WoolCount -= resourceClutch.WoolCount;
     }
 
-    public void RemoveResourcesForRoad()
+    public void BuildRoad()
     {
       this.BrickCount--;
       this.LumberCount--;
