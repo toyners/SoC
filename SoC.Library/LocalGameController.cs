@@ -28,7 +28,6 @@ namespace Jabberwocky.SoC.Library
 
     #region Fields
     private IPlayerPool playerPool;
-    private Guid curentPlayerTurnToken;
     private IDice dice;
     private GameBoardManager gameBoardManager;
     private IGameSession gameSession;
@@ -39,6 +38,7 @@ namespace Jabberwocky.SoC.Library
     private ResourceUpdate gameSetupResources;
     private Int32 resourcesToDrop;
     private Dictionary<Guid, Int32> robbingChoices;
+    private Dictionary<Guid, IPlayer> playerForCurrentTurn;
     #endregion
 
     public LocalGameController(IDice dice, IPlayerPool computerPlayerFactory, GameBoardManager gameBoardManager)
@@ -47,6 +47,7 @@ namespace Jabberwocky.SoC.Library
       this.playerPool = computerPlayerFactory;
       this.gameBoardManager = gameBoardManager;
       this.GamePhase = GamePhases.Initial;
+      this.playerForCurrentTurn = new Dictionary<Guid, IPlayer>();
     }
 
     #region Properties
@@ -77,12 +78,30 @@ namespace Jabberwocky.SoC.Library
     #endregion
 
     #region Methods
-    public void BuildRoad(Guid playerId, UInt32 roadStartLocation, UInt32 roadEndLocation)
+    private Boolean TryGetPlayerIdForCurrentTurnToken(Guid turnToken, out IPlayer playerId)
     {
-      var player = this.playersById[playerId];
+      if (this.playerForCurrentTurn.ContainsKey(turnToken))
+      {
+        playerId = this.playerForCurrentTurn[turnToken];
+        return true;
+      }
+
+      playerId = null;
+      return false;
+    }
+
+    public void BuildRoad(Guid turnToken, UInt32 roadStartLocation, UInt32 roadEndLocation)
+    {
+      IPlayer player = null;
+      if (!this.TryGetPlayerIdForCurrentTurnToken(turnToken, out player))
+      {
+        var errorDetails = new ErrorDetails("Turn token not recognised.");
+        return;
+      }
+
       if (player.BrickCount > 0 && player.LumberCount > 0)
       {
-        this.gameBoardManager.Data.PlaceRoadSegment(playerId, roadStartLocation, roadEndLocation);
+        this.gameBoardManager.Data.PlaceRoadSegment(player.Id, roadStartLocation, roadEndLocation);
         player.RemoveResourcesForRoad();
         this.BuildCompletedEvent?.Invoke();
         return;
@@ -321,6 +340,8 @@ namespace Jabberwocky.SoC.Library
 
       this.playerIndex = 0;
       var turnToken = Guid.NewGuid();
+      this.playerForCurrentTurn.Clear();
+      this.playerForCurrentTurn.Add(turnToken, this.players[this.playerIndex]);
       this.StartPlayerTurnEvent?.Invoke(turnToken);
 
       var resourceRoll = this.dice.RollTwoDice();
