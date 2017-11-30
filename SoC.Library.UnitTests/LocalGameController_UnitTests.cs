@@ -893,12 +893,12 @@ namespace Jabberwocky.SoC.Library.UnitTests
       mockDice.AddSequence(new[] { 8u });
 
       // Act
-      var turnToken = Guid.Empty;
-      localGameController.StartPlayerTurnEvent = (Guid t) => { turnToken = t; };
+      TurnToken turnToken = null;
+      localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
       localGameController.StartGamePlay();
 
       // Assert
-      turnToken.ShouldNotBe(Guid.Empty);
+      turnToken.ShouldNotBeNull();
     }
 
     [Test]
@@ -1389,8 +1389,8 @@ namespace Jabberwocky.SoC.Library.UnitTests
       var buildCompleted = false;
       localGameController.BuildCompletedEvent = () => { buildCompleted = true; };
 
-      Guid turnToken = Guid.Empty;
-      localGameController.StartPlayerTurnEvent = (Guid t) => { turnToken = t; };
+      TurnToken turnToken = null;
+      localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
       localGameController.StartGamePlay();
 
       // Act
@@ -1415,8 +1415,8 @@ namespace Jabberwocky.SoC.Library.UnitTests
       mockDice.AddSequence(new[] { 8u });
       player.AddResources(new ResourceClutch(1, 0, 1, 0, 0));
 
-      Guid turnToken = Guid.Empty;
-      localGameController.StartPlayerTurnEvent = (Guid t) => { turnToken = t; };
+      TurnToken turnToken = null;
+      localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
       localGameController.StartGamePlay();
 
       // Act
@@ -1446,8 +1446,8 @@ namespace Jabberwocky.SoC.Library.UnitTests
       Guid playerId = Guid.Empty;
       localGameController.LongestRoadBuiltEvent = (Guid pid) => { playerId = pid; };
 
-      Guid turnToken = Guid.Empty;
-      localGameController.StartPlayerTurnEvent = (Guid t) => { turnToken = t; };
+      TurnToken turnToken = null;
+      localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
       localGameController.StartGamePlay();
 
       // Act
@@ -1479,8 +1479,8 @@ namespace Jabberwocky.SoC.Library.UnitTests
       Guid otherPlayerId = Guid.Empty;
       localGameController.LongestRoadBuiltEvent = (Guid pid) => { otherPlayerId = pid; };
 
-      Guid turnToken = Guid.Empty;
-      localGameController.StartPlayerTurnEvent = (Guid t) => { turnToken = t; };
+      TurnToken turnToken = null;
+      localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
       localGameController.StartGamePlay();
 
       // Act
@@ -1515,8 +1515,8 @@ namespace Jabberwocky.SoC.Library.UnitTests
       Boolean longestRoadBuiltEventRaised = false;
       localGameController.LongestRoadBuiltEvent = (Guid pid) => { longestRoadBuiltEventRaised = true; };
 
-      Guid turnToken = Guid.Empty;
-      localGameController.StartPlayerTurnEvent = (Guid t) => { turnToken = t; };
+      TurnToken turnToken = null;
+      localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
       localGameController.StartGamePlay();
 
       // Act
@@ -1550,8 +1550,8 @@ namespace Jabberwocky.SoC.Library.UnitTests
       ErrorDetails errorDetails = null;
       localGameController.ErrorRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
 
-      Guid turnToken = Guid.Empty;
-      localGameController.StartPlayerTurnEvent = (Guid t) => { turnToken = t; };
+      TurnToken turnToken = null;
+      localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
       localGameController.StartGamePlay();
 
       // Act

@@ -2,6 +2,7 @@
 namespace Jabberwocky.SoC.Library
 {
   using System;
+  using System.Collections;
   using System.Collections.Generic;
   using System.IO;
   using System.Xml;
@@ -38,7 +39,7 @@ namespace Jabberwocky.SoC.Library
     private ResourceUpdate gameSetupResources;
     private Int32 resourcesToDrop;
     private Dictionary<Guid, Int32> robbingChoices;
-    private Dictionary<Guid, IPlayer> playerForCurrentTurn;
+    private Dictionary<TurnToken, IPlayer> playerForCurrentTurn;
     #endregion
 
     #region Construction
@@ -48,7 +49,7 @@ namespace Jabberwocky.SoC.Library
       this.playerPool = computerPlayerFactory;
       this.gameBoardManager = gameBoardManager;
       this.GamePhase = GamePhases.Initial;
-      this.playerForCurrentTurn = new Dictionary<Guid, IPlayer>();
+      this.playerForCurrentTurn = new Dictionary<TurnToken, IPlayer>();
     }
     #endregion
 
@@ -66,7 +67,7 @@ namespace Jabberwocky.SoC.Library
     public Action<GameBoardUpdate> StartInitialSetupTurnEvent { get; set; }
     public Action<GameBoardUpdate> GameSetupUpdateEvent { get; set; }
     public Action<ErrorDetails> ErrorRaisedEvent { get; set; }
-    public Action<Guid> StartPlayerTurnEvent { get; set; }
+    public Action<TurnToken> StartPlayerTurnEvent { get; set; }
     public Action<UInt32> DiceRollEvent { get; set; }
     public Action<ResourceUpdate> ResourcesCollectedEvent { get; set; }
     public Action<ResourceClutch> ResourcesGainedEvent { get; set; }
@@ -80,7 +81,7 @@ namespace Jabberwocky.SoC.Library
     #endregion
 
     #region Methods
-    public void BuildRoad(Guid turnToken, UInt32 roadStartLocation, UInt32 roadEndLocation)
+    public void BuildRoad(TurnToken turnToken, UInt32 roadStartLocation, UInt32 roadEndLocation)
     {
       IPlayer player = null;
       if (!this.TryGetPlayerForCurrentTurnToken(turnToken, out player))
@@ -340,7 +341,7 @@ namespace Jabberwocky.SoC.Library
       }
 
       this.playerIndex = 0;
-      var turnToken = Guid.NewGuid();
+      var turnToken = new TurnToken();
       this.playerForCurrentTurn.Clear();
       this.playerForCurrentTurn.Add(turnToken, this.players[this.playerIndex]);
       this.StartPlayerTurnEvent?.Invoke(turnToken);
@@ -682,13 +683,13 @@ namespace Jabberwocky.SoC.Library
       return randomisedResources;
     }
 
-    private Boolean TryGetPlayerForCurrentTurnToken(Guid turnToken, out IPlayer player)
+    private Boolean TryGetPlayerForCurrentTurnToken(TurnToken turnToken, out IPlayer player)
     {
-      if (this.playerForCurrentTurn.ContainsKey(turnToken))
+      /*if (this.playerForCurrentTurn.ContainsKey(turnToken))
       {
         player = this.playerForCurrentTurn[turnToken];
         return true;
-      }
+      }*/
 
       player = null;
       return false;
@@ -759,5 +760,9 @@ namespace Jabberwocky.SoC.Library
       return verificationResults.Status == GameBoardData.VerificationStatus.Valid;
     }
     #endregion
+  }
+
+  public class TurnToken
+  {
   }
 }
