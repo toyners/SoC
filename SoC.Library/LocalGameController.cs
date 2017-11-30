@@ -685,11 +685,11 @@ namespace Jabberwocky.SoC.Library
 
     private Boolean TryGetPlayerForCurrentTurnToken(TurnToken turnToken, out IPlayer player)
     {
-      /*if (this.playerForCurrentTurn.ContainsKey(turnToken))
+      if (this.playerForCurrentTurn.ContainsKey(turnToken))
       {
         player = this.playerForCurrentTurn[turnToken];
         return true;
-      }*/
+      }
 
       player = null;
       return false;
@@ -760,9 +760,5 @@ namespace Jabberwocky.SoC.Library
       return verificationResults.Status == GameBoardData.VerificationStatus.Valid;
     }
     #endregion
-  }
-
-  public class TurnToken
-  {
   }
 }

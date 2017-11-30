@@ -1534,9 +1534,9 @@ namespace Jabberwocky.SoC.Library.UnitTests
     [Category("LocalGameController")]
     [Category("LocalGameController.BuildRoad")]
     [Category("Main Player Turn")]
-    [TestCase(0, 0, "Not enough resources to build road. Missing 1 brick and 1 lumber.")]
-    [TestCase(1, 0, "Not enough resources to build road. Missing 1 lumber.")]
-    [TestCase(0, 1, "Not enough resources to build road. Missing 1 brick.")]
+    [TestCase(0, 0, "Cannot build road segment. Missing 1 brick and 1 lumber.")]
+    [TestCase(1, 0, "Cannot build road segment. Missing 1 lumber.")]
+    [TestCase(0, 1, "Cannot build road segment. Missing 1 brick.")]
     public void MainPlayerTurn_BuildRoadWithoutRequiredResourcesAvailable_MeaningfulErrorIsReceived(Int32 brickCount, Int32 lumberCount, String expectedErrorMessage)
     {
       // Arrange
@@ -1560,6 +1560,51 @@ namespace Jabberwocky.SoC.Library.UnitTests
       // Assert
       errorDetails.ShouldNotBeNull();
       errorDetails.Message.ShouldBe(expectedErrorMessage);
+    }
+
+    [Test]
+    [Category("All")]
+    [Category("LocalGameController")]
+    [Category("LocalGameController.BuildRoad")]
+    [Category("Main Player Turn")]
+    public void MainPlayerTurn_BuildRoadWithoutWhenAllRoadsAreBuilt_MeaningfulErrorIsReceived()
+    {
+      // Arrange
+      MockDice mockDice = null;
+      MockPlayer player;
+      MockComputerPlayer firstOpponent, secondOpponent, thirdOpponent;
+      var localGameController = this.CreateLocalGameControllerAndCompleteGameSetup(out mockDice, out player, out firstOpponent, out secondOpponent, out thirdOpponent);
+      mockDice.AddSequence(new[] { 8u });
+      player.AddResources(new ResourceClutch(15, 0, 15, 0, 0));
+
+      ErrorDetails errorDetails = null;
+      localGameController.ErrorRaisedEvent = (ErrorDetails e) => 
+      {
+        if (errorDetails == null)
+        {
+          // Ensure that the error details are only received once.
+          throw new Exception("Already received error details");
+        }
+
+        errorDetails = e;
+      };
+
+      TurnToken turnToken = null;
+      localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
+      localGameController.StartGamePlay();
+
+      var roadSegmentDetails = new UInt32[] { 4, 3, 3, 2, 2, 1, 1, 0, 0, 8, 8, 7, 7, 17, 17, 18, 18, 19, 19, 20, 20, 21, 21, 22, 22, 23, 23, 24 };
+      for (var index = 0; index < roadSegmentDetails.Length; index += 2)
+      {
+        localGameController.BuildRoad(turnToken, roadSegmentDetails[index], roadSegmentDetails[index + 1]);
+      }
+
+      // Act
+      localGameController.BuildRoad(turnToken, 24, 25);
+
+      // Assert
+      errorDetails.ShouldNotBeNull();
+      errorDetails.Message.ShouldBe("Cannot build road segment. All road segments already built.");
     }
 
     [Test]
