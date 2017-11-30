@@ -7,6 +7,10 @@ namespace Jabberwocky.SoC.Library
 
   public class Player : IPlayer
   {
+    #region Fields
+    private const Int32 TotalRoadSegments = 15;
+    #endregion
+
     #region Construction
     public Player()
     {
@@ -46,7 +50,7 @@ namespace Jabberwocky.SoC.Library
 
     public UInt32 VictoryPoints { get; protected set; }
 
-    public Int32 RemainingRoadSegments { get; protected set; }
+    public Int32 RemainingRoadSegments { get { return TotalRoadSegments - this.RoadSegmentsBuilt; } }
     public Int32 RoadSegmentsBuilt { get; protected set; }
     #endregion
 
@@ -97,10 +101,16 @@ namespace Jabberwocky.SoC.Library
       this.WoolCount -= resourceClutch.WoolCount;
     }
 
-    public void BuildRoad()
+    public void PlaceRoadSegment()
     {
       this.BrickCount--;
       this.LumberCount--;
+      this.RoadSegmentsBuilt++;
+    }
+
+    public void PlaceStartingInfrastructure()
+    {
+      this.RoadSegmentsBuilt++;
     }
 
     internal void Load(XmlReader reader)

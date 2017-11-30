@@ -1580,7 +1580,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
       ErrorDetails errorDetails = null;
       localGameController.ErrorRaisedEvent = (ErrorDetails e) => 
       {
-        if (errorDetails == null)
+        if (errorDetails != null)
         {
           // Ensure that the error details are only received once.
           throw new Exception("Already received error details");
@@ -1593,14 +1593,14 @@ namespace Jabberwocky.SoC.Library.UnitTests
       localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
       localGameController.StartGamePlay();
 
-      var roadSegmentDetails = new UInt32[] { 4, 3, 3, 2, 2, 1, 1, 0, 0, 8, 8, 7, 7, 17, 17, 18, 18, 19, 19, 20, 20, 21, 21, 22, 22, 23, 23, 24 };
+      var roadSegmentDetails = new UInt32[] { 4, 3, 3, 2, 2, 1, 1, 0, 0, 8, 8, 7, 7, 17, 17, 16, 16, 27, 27, 28, 28, 38, 38, 39, 39, 47 };
       for (var index = 0; index < roadSegmentDetails.Length; index += 2)
       {
         localGameController.BuildRoad(turnToken, roadSegmentDetails[index], roadSegmentDetails[index + 1]);
       }
 
       // Act
-      localGameController.BuildRoad(turnToken, 24, 25);
+      localGameController.BuildRoad(turnToken, 47, 48);
 
       // Assert
       errorDetails.ShouldNotBeNull();

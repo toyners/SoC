@@ -2,7 +2,6 @@
 namespace Jabberwocky.SoC.Library
 {
   using System;
-  using System.Collections;
   using System.Collections.Generic;
   using System.IO;
   using System.Xml;
@@ -93,7 +92,7 @@ namespace Jabberwocky.SoC.Library
       if (player.BrickCount > 0 && player.LumberCount > 0 && player.RemainingRoadSegments > 0)
       {
         this.gameBoardManager.Data.PlaceRoadSegment(player.Id, roadStartLocation, roadEndLocation);
-        player.BuildRoad();
+        player.PlaceRoadSegment();
         this.BuildCompletedEvent?.Invoke();
 
         if (player.RoadSegmentsBuilt >= 5)
@@ -111,7 +110,12 @@ namespace Jabberwocky.SoC.Library
 
       if (this.ErrorRaisedEvent != null)
       {
-        var message = "Not enough resources to build road. ";
+        var message = "Cannot build road segment. ";
+        if (player.RemainingRoadSegments == 0)
+        {
+          message += "All road segments already built.";
+        }
+
         if (player.BrickCount == 0 && player.LumberCount == 0)
         {
           message += "Missing 1 brick and 1 lumber.";
@@ -120,7 +124,7 @@ namespace Jabberwocky.SoC.Library
         {
           message += "Missing 1 brick.";
         }
-        else
+        else if (player.LumberCount == 0)
         {
           message += "Missing 1 lumber.";
         }
@@ -415,6 +419,7 @@ namespace Jabberwocky.SoC.Library
 
       var gameBoardData = this.gameBoardManager.Data;
       gameBoardData.PlaceStartingInfrastructure(this.mainPlayer.Id, settlementLocation, roadEndLocation);
+      this.mainPlayer.PlaceStartingInfrastructure();
 
       GameBoardUpdate gameBoardUpdate = this.ContinueSetupForComputerPlayers(gameBoardData);
 
@@ -440,7 +445,7 @@ namespace Jabberwocky.SoC.Library
       }
 
       this.gameBoardManager.Data.PlaceStartingInfrastructure(this.mainPlayer.Id, settlementLocation, roadEndLocation);
-
+      this.mainPlayer.PlaceStartingInfrastructure();
       this.CollectInitialResourcesForPlayer(this.mainPlayer.Id, settlementLocation);
 
       var gameBoardData = this.gameBoardManager.Data;
