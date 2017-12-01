@@ -1474,7 +1474,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
       var localGameController = this.CreateLocalGameControllerAndCompleteGameSetup(out mockDice, out player, out firstOpponent, out secondOpponent, out thirdOpponent);
 
       mockDice.AddSequence(new[] { 8u });
-      player.AddResources(new ResourceClutch(1, 0, 1, 0, 0));
+      player.AddResources(new ResourceClutch(5, 0, 5, 0, 0));
 
       Guid otherPlayerId = Guid.Empty;
       localGameController.LongestRoadBuiltEvent = (Guid pid) => { otherPlayerId = pid; };
@@ -1484,7 +1484,10 @@ namespace Jabberwocky.SoC.Library.UnitTests
       localGameController.StartGamePlay();
 
       // Act
-      localGameController.BuildRoad(turnToken, 4u, 3u);
+      localGameController.BuildRoad(turnToken, 4, 3);
+      localGameController.BuildRoad(turnToken, 3, 2);
+      localGameController.BuildRoad(turnToken, 2, 1);
+      localGameController.BuildRoad(turnToken, 1, 0);
 
       // Assert
       otherPlayerId.ShouldBe(firstOpponent.Id);

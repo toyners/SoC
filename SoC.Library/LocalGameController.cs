@@ -99,9 +99,9 @@ namespace Jabberwocky.SoC.Library
         {
           Guid longestRoadPlayerId = Guid.Empty;
           UInt32[] road = null;
-          if (this.gameBoardManager.Data.TryGetLongestRoadDetails(out longestRoadPlayerId, out road))
+          if (this.gameBoardManager.Data.TryGetLongestRoadDetails(out longestRoadPlayerId, out road) && road.Length> 5)
           {
-
+            this.LongestRoadBuiltEvent?.Invoke(player.Id);
           }
         }
 
