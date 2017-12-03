@@ -1476,21 +1476,23 @@ namespace Jabberwocky.SoC.Library.UnitTests
       mockDice.AddSequence(new[] { 8u });
       player.AddResources(new ResourceClutch(5, 0, 5, 0, 0));
 
-      Guid otherPlayerId = Guid.Empty;
-      localGameController.LongestRoadBuiltEvent = (Guid pid) => { otherPlayerId = pid; };
+      Guid playerId = Guid.Empty;
+      localGameController.LongestRoadBuiltEvent = (Guid pid) => { playerId = pid; };
 
       TurnToken turnToken = null;
       localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
       localGameController.StartGamePlay();
 
-      // Act
       localGameController.BuildRoad(turnToken, 4, 3);
       localGameController.BuildRoad(turnToken, 3, 2);
       localGameController.BuildRoad(turnToken, 2, 1);
       localGameController.BuildRoad(turnToken, 1, 0);
 
+      // Act - Opponent builds longer road.
+      localGameController.EndTurn(turnToken);
+
       // Assert
-      otherPlayerId.ShouldBe(firstOpponent.Id);
+      playerId.ShouldBe(firstOpponent.Id);
     }
 
     [Test]

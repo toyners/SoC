@@ -180,6 +180,11 @@ namespace Jabberwocky.SoC.Library
       this.ResourcesGainedEvent?.Invoke(gainedResources);
     }
 
+    public void EndTurn(TurnToken turnToken)
+    {
+      throw new NotImplementedException();
+    }
+
     public void LaunchGame()
     {
       if (this.GamePhase != GamePhases.WaitingLaunch)
