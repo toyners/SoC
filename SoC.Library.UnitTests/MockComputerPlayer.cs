@@ -17,8 +17,9 @@ namespace Jabberwocky.SoC.Library.UnitTests
     public List<DevelopmentCardTypes> DisplayedDevelopmentCards;
 
     public Queue<UInt32> SettlementLocations;
-    public Queue<Tuple<UInt32, UInt32>> Roads;
+    public Queue<Tuple<UInt32, UInt32>> Roads = new Queue<Tuple<UInt32, UInt32>>();
     public Queue<Tuple<UInt32, UInt32>> InitialInfrastructure = new Queue<Tuple<UInt32, UInt32>>();
+    public Queue<PlayerAction> Actions = new Queue<PlayerAction>();
     public ResourceClutch DroppedResources;
     #endregion
 
@@ -31,6 +32,15 @@ namespace Jabberwocky.SoC.Library.UnitTests
     {
       this.InitialInfrastructure.Enqueue(new Tuple<UInt32, UInt32>(firstSettlmentLocation, firstRoadEndLocation));
       this.InitialInfrastructure.Enqueue(new Tuple<UInt32, UInt32>(secondSettlementLocation, secondRoadEndLocation));
+    }
+
+    public void AddRoadChoices(UInt32[] roadChoices)
+    {
+      for (var index = 0; index < roadChoices.Length; index += 2)
+      {
+        this.Roads.Enqueue(new Tuple<UInt32, UInt32>(roadChoices[index], roadChoices[index + 1]));
+        this.Actions.Enqueue(PlayerAction.BuildRoad);
+      }
     }
 
     public override void ChooseInitialInfrastructure(GameBoardData gameBoardData, out UInt32 settlementLocation, out UInt32 roadEndLocation)
@@ -55,6 +65,17 @@ namespace Jabberwocky.SoC.Library.UnitTests
     public override UInt32 ChooseSettlementLocation(GameBoardData gameBoardData)
     {
       return this.SettlementLocations.Dequeue();
+    }
+
+    public override PlayerAction GetPlayerAction()
+    {
+      if (this.Actions.Count == 0)
+      {
+        return PlayerAction.EndTurn;
+      }
+
+      var playerAction = this.Actions.Dequeue();
+      return playerAction;
     }
 
     private List<DevelopmentCardTypes> CreateListOfDisplayedDevelopmentCards()

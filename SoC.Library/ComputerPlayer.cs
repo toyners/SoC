@@ -55,6 +55,11 @@ namespace Jabberwocky.SoC.Library
       throw new NotImplementedException();
     }
 
+    public virtual PlayerAction GetPlayerAction()
+    {
+      throw new NotImplementedException();
+    }
+
     private Int32 CalculateChanceOfReturnOnRoll(UInt32[] productionValues)
     {
       Int32 totalChance = 0;

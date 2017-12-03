@@ -38,7 +38,8 @@ namespace Jabberwocky.SoC.Library
     private ResourceUpdate gameSetupResources;
     private Int32 resourcesToDrop;
     private Dictionary<Guid, Int32> robbingChoices;
-    private Dictionary<TurnToken, IPlayer> playerForCurrentTurn;
+    private TurnToken currentTurnToken;
+    private IPlayer currentPlayer;
     #endregion
 
     #region Construction
@@ -48,7 +49,6 @@ namespace Jabberwocky.SoC.Library
       this.playerPool = computerPlayerFactory;
       this.gameBoardManager = gameBoardManager;
       this.GamePhase = GamePhases.Initial;
-      this.playerForCurrentTurn = new Dictionary<TurnToken, IPlayer>();
     }
     #endregion
 
@@ -80,57 +80,60 @@ namespace Jabberwocky.SoC.Library
     #endregion
 
     #region Methods
-    public void BuildRoad(TurnToken turnToken, UInt32 roadStartLocation, UInt32 roadEndLocation)
+    public void BuildRoadSegment(TurnToken turnToken, UInt32 roadStartLocation, UInt32 roadEndLocation)
     {
-      IPlayer player = null;
-      if (!this.TryGetPlayerForCurrentTurnToken(turnToken, out player))
+      if (this.currentTurnToken != turnToken)
       {
         var errorDetails = new ErrorDetails("Turn token not recognised.");
         return;
       }
 
-      if (player.BrickCount > 0 && player.LumberCount > 0 && player.RemainingRoadSegments > 0)
+      if (this.currentPlayer.BrickCount > 0 && this.currentPlayer.LumberCount > 0 && this.currentPlayer.RemainingRoadSegments > 0)
       {
-        this.gameBoardManager.Data.PlaceRoadSegment(player.Id, roadStartLocation, roadEndLocation);
-        player.PlaceRoadSegment();
-        this.BuildCompletedEvent?.Invoke();
-
-        if (player.RoadSegmentsBuilt >= 5)
-        {
-          Guid longestRoadPlayerId = Guid.Empty;
-          UInt32[] road = null;
-          if (this.gameBoardManager.Data.TryGetLongestRoadDetails(out longestRoadPlayerId, out road) && road.Length> 5)
-          {
-            this.LongestRoadBuiltEvent?.Invoke(player.Id);
-          }
-        }
-
+        this.BuildRoadSegment(roadStartLocation, roadEndLocation);
         return;
       }
 
       if (this.ErrorRaisedEvent != null)
       {
         var message = "Cannot build road segment. ";
-        if (player.RemainingRoadSegments == 0)
+        if (this.currentPlayer.RemainingRoadSegments == 0)
         {
           message += "All road segments already built.";
         }
 
-        if (player.BrickCount == 0 && player.LumberCount == 0)
+        if (this.currentPlayer.BrickCount == 0 && this.currentPlayer.LumberCount == 0)
         {
           message += "Missing 1 brick and 1 lumber.";
         }
-        else if (player.BrickCount == 0)
+        else if (this.currentPlayer.BrickCount == 0)
         {
           message += "Missing 1 brick.";
         }
-        else if (player.LumberCount == 0)
+        else if (this.currentPlayer.LumberCount == 0)
         {
           message += "Missing 1 lumber.";
         }
 
         var errorDetails = new ErrorDetails(message);
         this.ErrorRaisedEvent(errorDetails);
+      }
+    }
+
+    private void BuildRoadSegment(UInt32 roadStartLocation, UInt32 roadEndLocation)
+    {
+      this.gameBoardManager.Data.PlaceRoadSegment(this.currentPlayer.Id, roadStartLocation, roadEndLocation);
+      this.currentPlayer.PlaceRoadSegment();
+      this.BuildCompletedEvent?.Invoke();
+
+      if (this.currentPlayer.RoadSegmentsBuilt >= 5)
+      {
+        Guid longestRoadPlayerId = Guid.Empty;
+        UInt32[] road = null;
+        if (this.gameBoardManager.Data.TryGetLongestRoadDetails(out longestRoadPlayerId, out road) && road.Length > 5)
+        {
+          this.LongestRoadBuiltEvent?.Invoke(this.currentPlayer.Id);
+        }
       }
     }
 
@@ -182,7 +185,32 @@ namespace Jabberwocky.SoC.Library
 
     public void EndTurn(TurnToken turnToken)
     {
-      throw new NotImplementedException();
+      if (turnToken != this.currentTurnToken)
+      {
+        return;
+      }
+
+      this.playerIndex++;
+      this.currentPlayer = this.players[this.playerIndex];
+      if (this.currentPlayer.IsComputer)
+      {
+        var computerPlayer = this.currentPlayer as IComputerPlayer;
+        PlayerAction playerAction;
+
+        while ((playerAction = computerPlayer.GetPlayerAction()) != PlayerAction.EndTurn)
+        {
+          switch (playerAction)
+          {
+            case PlayerAction.BuildRoad:
+            {
+              UInt32 startRoadLocation, endRoadLocation;
+              computerPlayer.ChooseRoad(this.gameBoardManager.Data, out startRoadLocation, out endRoadLocation);
+              this.BuildRoadSegment(startRoadLocation, endRoadLocation);
+              break;
+            }
+          }
+        }
+      }
     }
 
     public void LaunchGame()
@@ -350,10 +378,9 @@ namespace Jabberwocky.SoC.Library
       }
 
       this.playerIndex = 0;
-      var turnToken = new TurnToken();
-      this.playerForCurrentTurn.Clear();
-      this.playerForCurrentTurn.Add(turnToken, this.players[this.playerIndex]);
-      this.StartPlayerTurnEvent?.Invoke(turnToken);
+      this.currentTurnToken = new TurnToken();
+      this.currentPlayer = this.players[this.playerIndex];
+      this.StartPlayerTurnEvent?.Invoke(this.currentTurnToken);
 
       var resourceRoll = this.dice.RollTwoDice();
       this.DiceRollEvent?.Invoke(resourceRoll);
@@ -695,9 +722,9 @@ namespace Jabberwocky.SoC.Library
 
     private Boolean TryGetPlayerForCurrentTurnToken(TurnToken turnToken, out IPlayer player)
     {
-      if (this.playerForCurrentTurn.ContainsKey(turnToken))
+      if (this.currentTurnToken == turnToken)
       {
-        player = this.playerForCurrentTurn[turnToken];
+        player = this.currentPlayer;
         return true;
       }
 

@@ -1374,7 +1374,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     [Test]
     [Category("All")]
     [Category("LocalGameController")]
-    [Category("LocalGameController.BuildRoad")]
+    [Category("LocalGameController.BuildRoadSegment")]
     [Category("Main Player Turn")]
     public void MainPlayerTurn_BuildRoadWithRequiredResourcesAvailable_BuildCompleteEventRaised()
     {
@@ -1394,7 +1394,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
       localGameController.StartGamePlay();
 
       // Act
-      localGameController.BuildRoad(turnToken, 4u, 3u);
+      localGameController.BuildRoadSegment(turnToken, 4u, 3u);
 
       // Assert
       buildCompleted.ShouldBeTrue();
@@ -1403,7 +1403,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     [Test]
     [Category("All")]
     [Category("LocalGameController")]
-    [Category("LocalGameController.BuildRoad")]
+    [Category("LocalGameController.BuildRoadSegment")]
     [Category("Main Player Turn")]
     public void MainPlayerTurn_BuildRoadWithRequiredResourcesAvailable_PlayerResourcesUpdated()
     {
@@ -1420,7 +1420,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
       localGameController.StartGamePlay();
 
       // Act
-      localGameController.BuildRoad(turnToken, 4u, 3u);
+      localGameController.BuildRoadSegment(turnToken, 4u, 3u);
 
       // Assert
       player.BrickCount.ShouldBe(0);
@@ -1430,7 +1430,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     [Test]
     [Category("All")]
     [Category("LocalGameController")]
-    [Category("LocalGameController.BuildRoad")]
+    [Category("LocalGameController.BuildRoadSegment")]
     [Category("Main Player Turn")]
     public void MainPlayerTurn_FirstLongestRoadBuilt_LongestRoadEventRaised()
     {
@@ -1451,10 +1451,10 @@ namespace Jabberwocky.SoC.Library.UnitTests
       localGameController.StartGamePlay();
 
       // Act
-      localGameController.BuildRoad(turnToken, 4, 3);
-      localGameController.BuildRoad(turnToken, 3, 2);
-      localGameController.BuildRoad(turnToken, 2, 1);
-      localGameController.BuildRoad(turnToken, 1, 0);
+      localGameController.BuildRoadSegment(turnToken, 4, 3);
+      localGameController.BuildRoadSegment(turnToken, 3, 2);
+      localGameController.BuildRoadSegment(turnToken, 2, 1);
+      localGameController.BuildRoadSegment(turnToken, 1, 0);
 
       // Assert
       playerId.ShouldBe(player.Id);
@@ -1463,9 +1463,9 @@ namespace Jabberwocky.SoC.Library.UnitTests
     [Test]
     [Category("All")]
     [Category("LocalGameController")]
-    [Category("LocalGameController.BuildRoad")]
+    [Category("LocalGameController.BuildRoadSegment")]
     [Category("Main Player Turn")]
-    public void MainPlayerTurn_SubsequentLongestRoadBuilt_LongestRoadEventRaised()
+    public void OpponentPlayerTurn_SubsequentLongestRoadBuilt_LongestRoadEventRaised()
     {
       // Arrange
       MockDice mockDice = null;
@@ -1476,6 +1476,9 @@ namespace Jabberwocky.SoC.Library.UnitTests
       mockDice.AddSequence(new[] { 8u });
       player.AddResources(new ResourceClutch(5, 0, 5, 0, 0));
 
+      firstOpponent.AddResources(new ResourceClutch(6, 0, 6, 0, 0));
+      firstOpponent.AddRoadChoices(new UInt32[] { 18, 19, 19, 9, 9, 10, 10, 11, 11, 21 });
+
       Guid playerId = Guid.Empty;
       localGameController.LongestRoadBuiltEvent = (Guid pid) => { playerId = pid; };
 
@@ -1483,10 +1486,10 @@ namespace Jabberwocky.SoC.Library.UnitTests
       localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
       localGameController.StartGamePlay();
 
-      localGameController.BuildRoad(turnToken, 4, 3);
-      localGameController.BuildRoad(turnToken, 3, 2);
-      localGameController.BuildRoad(turnToken, 2, 1);
-      localGameController.BuildRoad(turnToken, 1, 0);
+      localGameController.BuildRoadSegment(turnToken, 4, 3);
+      localGameController.BuildRoadSegment(turnToken, 3, 2);
+      localGameController.BuildRoadSegment(turnToken, 2, 1);
+      localGameController.BuildRoadSegment(turnToken, 1, 0);
 
       // Act - Opponent builds longer road.
       localGameController.EndTurn(turnToken);
@@ -1498,7 +1501,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     [Test]
     [Category("All")]
     [Category("LocalGameController")]
-    [Category("LocalGameController.BuildRoad")]
+    [Category("LocalGameController.BuildRoadSegment")]
     [Category("Main Player Turn")]
     [TestCase(new UInt32[] { 4, 3 })]
     [TestCase(new UInt32[] { 4, 3, 3, 2 })]
@@ -1527,7 +1530,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
       // Act
       for (var index = 0; index < roadLocations.Length; index += 2)
       {
-        localGameController.BuildRoad(turnToken, roadLocations[index], roadLocations[index + 1]);
+        localGameController.BuildRoadSegment(turnToken, roadLocations[index], roadLocations[index + 1]);
       }
 
       // Assert
@@ -1537,7 +1540,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     [Test]
     [Category("All")]
     [Category("LocalGameController")]
-    [Category("LocalGameController.BuildRoad")]
+    [Category("LocalGameController.BuildRoadSegment")]
     [Category("Main Player Turn")]
     [TestCase(0, 0, "Cannot build road segment. Missing 1 brick and 1 lumber.")]
     [TestCase(1, 0, "Cannot build road segment. Missing 1 lumber.")]
@@ -1560,7 +1563,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
       localGameController.StartGamePlay();
 
       // Act
-      localGameController.BuildRoad(turnToken, 4u, 3u);
+      localGameController.BuildRoadSegment(turnToken, 4u, 3u);
 
       // Assert
       errorDetails.ShouldNotBeNull();
@@ -1570,7 +1573,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     [Test]
     [Category("All")]
     [Category("LocalGameController")]
-    [Category("LocalGameController.BuildRoad")]
+    [Category("LocalGameController.BuildRoadSegment")]
     [Category("Main Player Turn")]
     public void MainPlayerTurn_BuildRoadWithoutWhenAllRoadsAreBuilt_MeaningfulErrorIsReceived()
     {
@@ -1601,11 +1604,11 @@ namespace Jabberwocky.SoC.Library.UnitTests
       var roadSegmentDetails = new UInt32[] { 4, 3, 3, 2, 2, 1, 1, 0, 0, 8, 8, 7, 7, 17, 17, 16, 16, 27, 27, 28, 28, 38, 38, 39, 39, 47 };
       for (var index = 0; index < roadSegmentDetails.Length; index += 2)
       {
-        localGameController.BuildRoad(turnToken, roadSegmentDetails[index], roadSegmentDetails[index + 1]);
+        localGameController.BuildRoadSegment(turnToken, roadSegmentDetails[index], roadSegmentDetails[index + 1]);
       }
 
       // Act
-      localGameController.BuildRoad(turnToken, 47, 48);
+      localGameController.BuildRoadSegment(turnToken, 47, 48);
 
       // Assert
       errorDetails.ShouldNotBeNull();
