@@ -11,11 +11,14 @@ namespace Jabberwocky.SoC.Library.UnitTests
   {
     #region Methods
     [Test]
+    [Category("All")]
     [Category("ComputerPlayer")]
     public void ChooseSettlementLocation_GetBestLocationOnEmptyBoard_ReturnsBestLocation()
     {
-      var gameBoardData = new GameBoardData(BoardSizes.Standard);
       var computerPlayer = new ComputerPlayer("ComputerPlayer");
+      var gameBoardData = new GameBoardData(BoardSizes.Standard);
+      gameBoardData.PlaceStartingInfrastructure(computerPlayer.Id, 0, 1);
+      gameBoardData.PlaceStartingInfrastructure(computerPlayer.Id, 53, 52);
 
       var location = computerPlayer.ChooseSettlementLocation(gameBoardData);
 
@@ -23,13 +26,14 @@ namespace Jabberwocky.SoC.Library.UnitTests
     }
 
     [Test]
+    [Category("All")]
     [Category("ComputerPlayer")]
     public void ChooseSettlementLocation_GetBestLocationOnBoardWithBestLocationUnavailable_ReturnsBestLocation()
     {
-      var gameBoardData = new GameBoardData(BoardSizes.Standard);
-      gameBoardData.PlaceSettlement(Guid.NewGuid(), 12);
-
       var computerPlayer = new ComputerPlayer("ComputerPlayer");
+      var gameBoardData = new GameBoardData(BoardSizes.Standard);
+      gameBoardData.PlaceStartingInfrastructure(computerPlayer.Id, 12, 11);
+      gameBoardData.PlaceStartingInfrastructure(computerPlayer.Id, 0, 1);
 
       var location = computerPlayer.ChooseSettlementLocation(gameBoardData);
 
@@ -37,6 +41,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     }
 
     [Test]
+    [Category("All")]
     [Category("ComputerPlayer")]
     public void ChooseRoad_NoSettlementsForPlayer_ThrowsMeaningfulException()
     {
@@ -51,37 +56,36 @@ namespace Jabberwocky.SoC.Library.UnitTests
     }
 
     [Test]
+    [Category("All")]
     [Category("ComputerPlayer")]
     public void ChooseRoad_BuildingTowardsNextBestSettlementLocation_ReturnsFirstRoadFragment()
     {
-      throw new NotImplementedException();
-
-      // TODO: Not sure about this - needs to be revisited
-      /*var computerPlayer = new ComputerPlayer("ComputerPlayer");
+      var computerPlayer = new ComputerPlayer("ComputerPlayer");
       var gameBoardData = new GameBoardData(BoardSizes.Standard);
-      gameBoardData.PlaceSettlement(computerPlayer.Id, 12);
+      gameBoardData.PlaceStartingInfrastructure(computerPlayer.Id, 0, 1);
+      gameBoardData.PlaceStartingInfrastructure(computerPlayer.Id, 12, 11);
 
-      var road = computerPlayer.ChooseRoad(gameBoardData);
-      var expectedRoad = new RoadSegment(11, 12);
-      road.ShouldBe(expectedRoad);*/
+      UInt32 roadStartLocation, roadEndLocation;
+      computerPlayer.ChooseRoad(gameBoardData, out roadStartLocation, out roadEndLocation);
+      roadStartLocation.ShouldBeOneOf(11u, 21u);
+      roadEndLocation.ShouldBeOneOf(11u, 21u);
     }
 
     [Test]
+    [Category("All")]
     [Category("ComputerPlayer")]
     public void ChooseRoad_BuildingTowardsNextBestSettlementLocationWithFirstRoadPlaced_ReturnsSecondRoadFragment()
     {
-      throw new NotImplementedException();
-
-      // TODO: Not sure about this - needs to be revisited
-      /*var computerPlayer = new ComputerPlayer("ComputerPlayer");
+      var computerPlayer = new ComputerPlayer("ComputerPlayer");
       var gameBoardData = new GameBoardData(BoardSizes.Standard);
-      gameBoardData.PlaceSettlement(computerPlayer.Id, 12);
-      gameBoardData.PlaceRoad(computerPlayer.Id, new RoadSegment(12, 11));
+      gameBoardData.PlaceStartingInfrastructure(computerPlayer.Id, 0, 1);
+      gameBoardData.PlaceStartingInfrastructure(computerPlayer.Id, 12, 11);
+      gameBoardData.PlaceRoadSegment(computerPlayer.Id, 11, 21);
 
-
-      var road = computerPlayer.ChooseRoad(gameBoardData);
-      var expectedRoad = new RoadSegment(11, 21);
-      road.ShouldBe(expectedRoad);*/
+      UInt32 roadStartLocation, roadEndLocation;
+      computerPlayer.ChooseRoad(gameBoardData, out roadStartLocation, out roadEndLocation);
+      roadStartLocation.ShouldBeOneOf(20u, 21u);
+      roadEndLocation.ShouldBeOneOf(20u, 21u);
     }
     #endregion 
   }

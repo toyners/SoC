@@ -95,7 +95,9 @@ namespace Jabberwocky.SoC.Library
       {
         //Guid playerId;
         var canPlaceResult = gameBoardData.CanPlaceSettlement(this.Id, index);
-        if (canPlaceResult.Status != GameBoardData.VerificationStatus.Valid)
+        if (canPlaceResult.Status == GameBoardData.VerificationStatus.LocationIsInvalid ||
+            canPlaceResult.Status == GameBoardData.VerificationStatus.LocationIsOccupied ||
+            canPlaceResult.Status == GameBoardData.VerificationStatus.TooCloseToSettlement)
         {
           continue;
         }

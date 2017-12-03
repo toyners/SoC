@@ -65,7 +65,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
         throw new Exception("Extended boards not implemented.");
       }
 
-      this.Length = StandardBoardHexCount;
+      this.Length = StandardBoardLocationCount;
       this.settlements = new Dictionary<UInt32, Guid>();
       this.roadSegmentsByPlayer = new Dictionary<Guid, List<RoadSegment>>();
       this.settlementsByPlayer = new Dictionary<Guid, List<UInt32>>();
@@ -76,9 +76,6 @@ namespace Jabberwocky.SoC.Library.GameBoards
       {
         this.locations[i] = new Location() { Index = i };
       }
-
-      //this.ConnectLocationsVertically();
-      //this.ConnectLocationsHorizontally();
 
       this.CreateHexes();
 
