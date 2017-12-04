@@ -12,6 +12,8 @@ namespace Jabberwocky.SoC.Library.UnitTests
   using Shouldly;
 
   [TestFixture]
+  [Category("All")]
+  [Category("LocalGameController")]
   public class LocalGameController_UnitTests
   {
     #region Fields

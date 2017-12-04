@@ -8,6 +8,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
   using Shouldly;
 
   [TestFixture]
+  [Category("All")]
   [Category("GameSetupOrderCreator")]
   public class PlayerTurnOrderCreator_UnitTests
   {
