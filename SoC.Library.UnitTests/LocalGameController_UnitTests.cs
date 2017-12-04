@@ -1378,7 +1378,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     [Category("LocalGameController")]
     [Category("LocalGameController.BuildRoadSegment")]
     [Category("Main Player Turn")]
-    public void MainPlayerTurn_BuildRoadWithRequiredResourcesAvailable_BuildCompleteEventRaised()
+    public void BuildingRoadSegment_RequiredResourcesAvailable_BuildCompleteEventRaised()
     {
       // Arrange
       MockDice mockDice = null;
@@ -1407,7 +1407,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     [Category("LocalGameController")]
     [Category("LocalGameController.BuildRoadSegment")]
     [Category("Main Player Turn")]
-    public void MainPlayerTurn_BuildRoadWithRequiredResourcesAvailable_PlayerResourcesUpdated()
+    public void BuildingRoadSegment_RequiredResourcesAvailable_PlayerResourcesUpdated()
     {
       // Arrange
       MockDice mockDice = null;
@@ -1434,7 +1434,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     [Category("LocalGameController")]
     [Category("LocalGameController.BuildRoadSegment")]
     [Category("Main Player Turn")]
-    public void MainPlayerTurn_FirstLongestRoadBuilt_LongestRoadEventRaised()
+    public void BuildingRoadSegment_MainPlayerBuildsLongestRoad_LongestRoadEventRaised()
     {
       // Arrange
       MockDice mockDice = null;
@@ -1467,7 +1467,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     [Category("LocalGameController")]
     [Category("LocalGameController.BuildRoadSegment")]
     [Category("Main Player Turn")]
-    public void OpponentPlayerTurn_SubsequentLongestRoadBuilt_LongestRoadEventRaised()
+    public void BuildingRoadSegment_SubsequentLongestRoadBuiltDuringOpponentsTurn_LongestRoadEventRaised()
     {
       // Arrange
       MockDice mockDice = null;
@@ -1508,7 +1508,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     [TestCase(new UInt32[] { 4, 3 })]
     [TestCase(new UInt32[] { 4, 3, 3, 2 })]
     [TestCase(new UInt32[] { 4, 3, 3, 2, 2, 1 })]
-    public void MainPlayerTurn_AddToRoadShorterThanFiveSegments_LongestRoadEventNotRaised(UInt32[] roadLocations)
+    public void BuildingRoadSegment_AddToRoadShorterThanFiveSegments_LongestRoadEventNotRaised(UInt32[] roadLocations)
     {
       // Arrange
       MockDice mockDice = null;
@@ -1540,6 +1540,66 @@ namespace Jabberwocky.SoC.Library.UnitTests
     }
 
     [Test]
+    [Category("LocalGameController.BuildRoadSegment")]
+    [Category("Main Player Turn")]
+    public void BuildingRoadSegment_OnExistingRoadSegment_MeaningfulErrorIsReceived()
+    {
+      // Arrange
+      MockDice mockDice = null;
+      MockPlayer player;
+      MockComputerPlayer firstOpponent, secondOpponent, thirdOpponent;
+      var localGameController = this.CreateLocalGameControllerAndCompleteGameSetup(out mockDice, out player, out firstOpponent, out secondOpponent, out thirdOpponent);
+
+      mockDice.AddSequence(new[] { 8u });
+      player.AddResources(new ResourceClutch(1, 0, 1, 0, 0));
+
+      localGameController.LongestRoadBuiltEvent = (Guid pid) => { throw new NotImplementedException(); };
+      ErrorDetails errorDetails = null;
+      localGameController.ErrorRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
+
+      TurnToken turnToken = null;
+      localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
+      localGameController.StartGamePlay();
+
+      // Act
+      localGameController.BuildRoadSegment(turnToken, MainRoadOneEnd, MainSettlementOneLocation);
+
+      // Assert
+      errorDetails.ShouldNotBeNull();
+      errorDetails.Message.ShouldBe("Cannot place road because road already exists.");
+    }
+
+    [Test]
+    [Category("LocalGameController.BuildRoadSegment")]
+    [Category("Main Player Turn")]
+    public void BuildingRoadSegment_NotConnectedToExistingInfrastructure_MeaningfulErrorIsReceived()
+    {
+      // Arrange
+      MockDice mockDice = null;
+      MockPlayer player;
+      MockComputerPlayer firstOpponent, secondOpponent, thirdOpponent;
+      var localGameController = this.CreateLocalGameControllerAndCompleteGameSetup(out mockDice, out player, out firstOpponent, out secondOpponent, out thirdOpponent);
+
+      mockDice.AddSequence(new[] { 8u });
+      player.AddResources(new ResourceClutch(1, 0, 1, 0, 0));
+
+      localGameController.LongestRoadBuiltEvent = (Guid pid) => { throw new NotImplementedException(); };
+      ErrorDetails errorDetails = null;
+      localGameController.ErrorRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
+
+      TurnToken turnToken = null;
+      localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
+      localGameController.StartGamePlay();
+
+      // Act
+      localGameController.BuildRoadSegment(turnToken, 0, 1);
+
+      // Assert
+      errorDetails.ShouldNotBeNull();
+      errorDetails.Message.ShouldBe("Cannot place road because road already exists.");
+    }
+
+    [Test]
     [Category("All")]
     [Category("LocalGameController")]
     [Category("LocalGameController.BuildRoadSegment")]
@@ -1547,7 +1607,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     [TestCase(0, 0, "Cannot build road segment. Missing 1 brick and 1 lumber.")]
     [TestCase(1, 0, "Cannot build road segment. Missing 1 lumber.")]
     [TestCase(0, 1, "Cannot build road segment. Missing 1 brick.")]
-    public void MainPlayerTurn_BuildRoadWithoutRequiredResourcesAvailable_MeaningfulErrorIsReceived(Int32 brickCount, Int32 lumberCount, String expectedErrorMessage)
+    public void BuildingRoadSegment_WithoutRequiredResourcesAvailable_MeaningfulErrorIsReceived(Int32 brickCount, Int32 lumberCount, String expectedErrorMessage)
     {
       // Arrange
       MockDice mockDice = null;
@@ -1577,7 +1637,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     [Category("LocalGameController")]
     [Category("LocalGameController.BuildRoadSegment")]
     [Category("Main Player Turn")]
-    public void MainPlayerTurn_BuildRoadWithoutWhenAllRoadsAreBuilt_MeaningfulErrorIsReceived()
+    public void BuildingRoadSegment_AllRoadSegmentsAreBuilt_MeaningfulErrorIsReceived()
     {
       // Arrange
       MockDice mockDice = null;
