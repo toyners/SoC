@@ -26,11 +26,26 @@ namespace Jabberwocky.SoC.Library
         throw new Exception("No settlements found for player with id " + this.Id);
       }
 
-      var locationIndex = settlementsForPlayer[0];
-      var path = this.GetPathToLocationThatHasBestChanceOfReturnOnRoll(gameBoardData, locationIndex);
+      UInt32 bestLocationIndex = 0;
+      if (!this.TryGetIndexOfLocationThatHasBestChanceOfReturnOnRoll(gameBoardData, out bestLocationIndex))
+      {
+        throw new Exception("Should not get here"); // TODO: Clean up
+      }
 
-      roadStartLocation = locationIndex;
-      roadEndLocation = path[path.Count - 1];
+      Tuple<UInt32, List<UInt32>> shortestPathInformation = null;
+      foreach (var locationIndex in settlementsForPlayer)
+      {
+        var path = gameBoardData.GetPathBetweenLocations(locationIndex, bestLocationIndex);
+
+        if (shortestPathInformation == null || shortestPathInformation.Item2.Count > path.Count)
+        {
+          shortestPathInformation = new Tuple<UInt32, List<UInt32>>(locationIndex, path);
+        }
+      }
+
+      roadStartLocation = shortestPathInformation.Item1;
+      var shortestPath = shortestPathInformation.Item2;
+      roadEndLocation = shortestPath[shortestPath.Count - 1];
     }
 
     public virtual ResourceClutch ChooseResourcesToDrop()

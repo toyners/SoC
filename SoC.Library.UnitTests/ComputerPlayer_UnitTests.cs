@@ -7,12 +7,12 @@ namespace Jabberwocky.SoC.Library.UnitTests
   using Shouldly;
 
   [TestFixture]
+  [Category("All")]
+  [Category("ComputerPlayer")]
   public class ComputerPlayer_UnitTests
   {
     #region Methods
     [Test]
-    [Category("All")]
-    [Category("ComputerPlayer")]
     public void ChooseSettlementLocation_GetBestLocationOnEmptyBoard_ReturnsBestLocation()
     {
       var computerPlayer = new ComputerPlayer("ComputerPlayer");
@@ -26,8 +26,6 @@ namespace Jabberwocky.SoC.Library.UnitTests
     }
 
     [Test]
-    [Category("All")]
-    [Category("ComputerPlayer")]
     public void ChooseSettlementLocation_GetBestLocationOnBoardWithBestLocationUnavailable_ReturnsBestLocation()
     {
       var computerPlayer = new ComputerPlayer("ComputerPlayer");
@@ -41,8 +39,6 @@ namespace Jabberwocky.SoC.Library.UnitTests
     }
 
     [Test]
-    [Category("All")]
-    [Category("ComputerPlayer")]
     public void ChooseRoad_NoSettlementsForPlayer_ThrowsMeaningfulException()
     {
       var gameBoardData = new GameBoardData(BoardSizes.Standard);
@@ -56,8 +52,6 @@ namespace Jabberwocky.SoC.Library.UnitTests
     }
 
     [Test]
-    [Category("All")]
-    [Category("ComputerPlayer")]
     public void ChooseRoad_BuildingTowardsNextBestSettlementLocation_ReturnsFirstRoadFragment()
     {
       var computerPlayer = new ComputerPlayer("ComputerPlayer");
@@ -67,13 +61,12 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
       UInt32 roadStartLocation, roadEndLocation;
       computerPlayer.ChooseRoad(gameBoardData, out roadStartLocation, out roadEndLocation);
-      roadStartLocation.ShouldBeOneOf(11u, 21u);
-      roadEndLocation.ShouldBeOneOf(11u, 21u);
+
+      var tuple = new Tuple<UInt32, UInt32>(roadStartLocation, roadEndLocation);
+      tuple.ShouldBeOneOf(new Tuple<UInt32, UInt32>(11, 21), new Tuple<UInt32, UInt32>(21, 11));
     }
 
     [Test]
-    [Category("All")]
-    [Category("ComputerPlayer")]
     public void ChooseRoad_BuildingTowardsNextBestSettlementLocationWithFirstRoadPlaced_ReturnsSecondRoadFragment()
     {
       var computerPlayer = new ComputerPlayer("ComputerPlayer");
@@ -84,8 +77,9 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
       UInt32 roadStartLocation, roadEndLocation;
       computerPlayer.ChooseRoad(gameBoardData, out roadStartLocation, out roadEndLocation);
-      roadStartLocation.ShouldBeOneOf(20u, 21u);
-      roadEndLocation.ShouldBeOneOf(20u, 21u);
+
+      var tuple = new Tuple<UInt32, UInt32>(roadStartLocation, roadEndLocation);
+      tuple.ShouldBeOneOf(new Tuple<UInt32, UInt32>(20, 21), new Tuple<UInt32, UInt32>(21, 20));
     }
     #endregion 
   }
