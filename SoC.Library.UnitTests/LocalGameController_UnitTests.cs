@@ -1566,7 +1566,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
       // Assert
       errorDetails.ShouldNotBeNull();
-      errorDetails.Message.ShouldBe("Cannot place road because road already exists.");
+      errorDetails.Message.ShouldBe("Cannot place road segment because road segment already exists.");
     }
 
     [Test]
@@ -1596,7 +1596,67 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
       // Assert
       errorDetails.ShouldNotBeNull();
-      errorDetails.Message.ShouldBe("Cannot place road because road already exists.");
+      errorDetails.Message.ShouldBe("Cannot place road segment because it is not connected to an existing road segment.");
+    }
+
+    [Test]
+    [Category("LocalGameController.BuildRoadSegment")]
+    [Category("Main Player Turn")]
+    public void BuildingRoadSegment_OffBoard_MeaningfulErrorIsReceived()
+    {
+      // Arrange
+      MockDice mockDice = null;
+      MockPlayer player;
+      MockComputerPlayer firstOpponent, secondOpponent, thirdOpponent;
+      var localGameController = this.CreateLocalGameControllerAndCompleteGameSetup(out mockDice, out player, out firstOpponent, out secondOpponent, out thirdOpponent);
+
+      mockDice.AddSequence(new[] { 8u });
+      player.AddResources(new ResourceClutch(1, 0, 1, 0, 0));
+
+      localGameController.LongestRoadBuiltEvent = (Guid pid) => { throw new NotImplementedException(); };
+      ErrorDetails errorDetails = null;
+      localGameController.ErrorRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
+
+      TurnToken turnToken = null;
+      localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
+      localGameController.StartGamePlay();
+
+      // Act
+      localGameController.BuildRoadSegment(turnToken, 100, 101);
+
+      // Assert
+      errorDetails.ShouldNotBeNull();
+      errorDetails.Message.ShouldBe("Cannot place road segment because board location is not valid.");
+    }
+
+    [Test]
+    [Category("LocalGameController.BuildRoadSegment")]
+    [Category("Main Player Turn")]
+    public void BuildingRoadSegment_NoDirectConnection_MeaningfulErrorIsReceived()
+    {
+      // Arrange
+      MockDice mockDice = null;
+      MockPlayer player;
+      MockComputerPlayer firstOpponent, secondOpponent, thirdOpponent;
+      var localGameController = this.CreateLocalGameControllerAndCompleteGameSetup(out mockDice, out player, out firstOpponent, out secondOpponent, out thirdOpponent);
+
+      mockDice.AddSequence(new[] { 8u });
+      player.AddResources(new ResourceClutch(1, 0, 1, 0, 0));
+
+      localGameController.LongestRoadBuiltEvent = (Guid pid) => { throw new NotImplementedException(); };
+      ErrorDetails errorDetails = null;
+      localGameController.ErrorRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
+
+      TurnToken turnToken = null;
+      localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
+      localGameController.StartGamePlay();
+
+      // Act
+      localGameController.BuildRoadSegment(turnToken, MainRoadOneEnd, 0);
+
+      // Assert
+      errorDetails.ShouldNotBeNull();
+      errorDetails.Message.ShouldBe("Cannot build road segment because no direct connection between start location and end location.");
     }
 
     [Test]

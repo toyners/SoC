@@ -122,6 +122,23 @@ namespace Jabberwocky.SoC.Library
 
     private void BuildRoadSegment(UInt32 roadStartLocation, UInt32 roadEndLocation)
     {
+      var placeRoadStatus = this.gameBoardManager.Data.CanPlaceRoad(this.currentPlayer.Id, roadStartLocation, roadEndLocation);
+      if (placeRoadStatus.Status != GameBoardData.VerificationStatus.Valid)
+      {
+        var message = String.Empty;
+        switch (placeRoadStatus.Status)
+        {
+          case GameBoardData.VerificationStatus.RoadIsOffBoard: message = "Cannot place road segment because board location is not valid."; break;
+          case GameBoardData.VerificationStatus.RoadIsOccupied: message = "Cannot place road segment because road segment already exists."; break;
+          case GameBoardData.VerificationStatus.NoDirectConnection: message = "Cannot build road segment because no direct connection between start location and end location."; break;
+          case GameBoardData.VerificationStatus.RoadNotConnectedToExistingRoad: message = "Cannot place road segment because it is not connected to an existing road segment."; break;
+          default: message = "Road build segment status not recognised: " + placeRoadStatus.Status; break;
+        }
+
+        this.ErrorRaisedEvent?.Invoke(new ErrorDetails(message));
+        return;
+      }
+
       this.gameBoardManager.Data.PlaceRoadSegment(this.currentPlayer.Id, roadStartLocation, roadEndLocation);
       this.currentPlayer.PlaceRoadSegment();
       this.BuildCompletedEvent?.Invoke();
