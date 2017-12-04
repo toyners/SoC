@@ -8,11 +8,16 @@ namespace Jabberwocky.SoC.Library
 
   public class ComputerPlayer : Player, IComputerPlayer
   {
+    #region Construction
     public ComputerPlayer() { }
     public ComputerPlayer(String name) : base(name) { }
+    #endregion
 
+    #region Properties
     public override Boolean IsComputer { get { return true; } }
+    #endregion
 
+    #region Methods
     public virtual void ChooseInitialInfrastructure(GameBoardData gameBoardData, out UInt32 settlementLocation, out UInt32 roadEndLocation)
     {
       throw new NotImplementedException();
@@ -141,5 +146,6 @@ namespace Jabberwocky.SoC.Library
 
       return gameBoardData.GetPathBetweenLocations(locationIndex, bestLocationIndex);
     }
+    #endregion
   }
 }
