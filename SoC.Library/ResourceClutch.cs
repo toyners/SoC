@@ -12,6 +12,7 @@ namespace Jabberwocky.SoC.Library
     public Int32 WoolCount;
 
     public static ResourceClutch Zero = new ResourceClutch();
+    public static ResourceClutch RoadSegment = new ResourceClutch(1, 0, 1, 0, 0);
 
     public ResourceClutch (Int32 brickCount, Int32 grainCount, Int32 lumberCount, Int32 oreCount, Int32 woolCount)
     {
