@@ -1378,7 +1378,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     [Category("LocalGameController")]
     [Category("LocalGameController.BuildRoadSegment")]
     [Category("Main Player Turn")]
-    public void BuildRoadSegment_RequiredResourcesAvailable_BuildCompleteEventRaised()
+    public void BuildRoadSegment_ValidScenario_RoadSegmentBuiltEventRaised()
     {
       // Arrange
       MockDice mockDice = null;
@@ -1389,7 +1389,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
       player.AddResources(new ResourceClutch(1, 0, 1, 0, 0));
 
       var buildCompleted = false;
-      localGameController.BuildCompletedEvent = () => { buildCompleted = true; };
+      localGameController.RoadSegmentBuiltEvent = () => { buildCompleted = true; };
 
       TurnToken turnToken = null;
       localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };

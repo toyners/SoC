@@ -75,7 +75,7 @@ namespace Jabberwocky.SoC.Library
     public Action<Dictionary<Guid, Int32>> RobbingChoicesEvent { get; set; }
     public Action<ResourceUpdate> GameSetupResourcesEvent { get; set; }
     public Action<PlayerDataView[]> TurnOrderFinalisedEvent { get; set; }
-    public Action BuildCompletedEvent { get; set; }
+    public Action RoadSegmentBuiltEvent { get; set; }
     public Action<Guid> LongestRoadBuiltEvent { get; set; }
     public Action SettlementBuiltEvent { get; set; }
     #endregion
@@ -544,7 +544,7 @@ namespace Jabberwocky.SoC.Library
 
       this.gameBoardManager.Data.PlaceRoadSegment(this.currentPlayer.Id, roadStartLocation, roadEndLocation);
       this.currentPlayer.PlaceRoadSegment();
-      this.BuildCompletedEvent?.Invoke();
+      this.RoadSegmentBuiltEvent?.Invoke();
 
       if (this.currentPlayer.RoadSegmentsBuilt >= 5)
       {
