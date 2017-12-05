@@ -123,7 +123,8 @@ namespace Jabberwocky.SoC.Library
 
     public void BuildSettlement(TurnToken turnToken, UInt32 settlementLocation)
     {
-      throw new NotImplementedException();
+      this.gameBoardManager.Data.PlaceSettlement(this.currentPlayer.Id, settlementLocation);
+      this.SettlementBuiltEvent?.Invoke();
     }
 
     public void ChooseResourceFromOpponent(Guid opponentId, Int32 resourceIndex)
