@@ -77,6 +77,7 @@ namespace Jabberwocky.SoC.Library
     public Action<PlayerDataView[]> TurnOrderFinalisedEvent { get; set; }
     public Action BuildCompletedEvent { get; set; }
     public Action<Guid> LongestRoadBuiltEvent { get; set; }
+    public Action SettlementBuiltEvent { get; set; }
     #endregion
 
     #region Methods
@@ -118,6 +119,11 @@ namespace Jabberwocky.SoC.Library
         var errorDetails = new ErrorDetails(message);
         this.ErrorRaisedEvent(errorDetails);
       }
+    }
+
+    public void BuildSettlement(TurnToken turnToken, UInt32 settlementLocation)
+    {
+      throw new NotImplementedException();
     }
 
     public void ChooseResourceFromOpponent(Guid opponentId, Int32 resourceIndex)

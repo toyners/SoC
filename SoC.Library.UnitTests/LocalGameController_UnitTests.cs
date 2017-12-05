@@ -32,7 +32,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     private const UInt32 FirstSettlementTwoLocation = 43u;
     private const UInt32 MainSettlementTwoLocation = 40u;
 
-    private const UInt32 MainRoadOneEnd = 4;
+    protected const UInt32 MainRoadOneEnd = 4;
     private const UInt32 FirstRoadOneEnd = 17;
     private const UInt32 SecondRoadOneEnd = 15;
     private const UInt32 ThirdRoadOneEnd = 30;
@@ -1880,7 +1880,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
       roads[0].ShouldBe(new Tuple<UInt32, UInt32, Guid>(MainSettlementOneLocation, MainRoadOneEnd, playerId));
     }
 
-    private LocalGameController CreateLocalGameControllerAndCompleteGameSetup(out MockDice mockDice, out MockPlayer player, out MockComputerPlayer firstOpponent, out MockComputerPlayer secondOpponent, out MockComputerPlayer thirdOpponent)
+    protected LocalGameController CreateLocalGameControllerAndCompleteGameSetup(out MockDice mockDice, out MockPlayer player, out MockComputerPlayer firstOpponent, out MockComputerPlayer secondOpponent, out MockComputerPlayer thirdOpponent)
     {
       var gameSetupOrder = new[] { 12u, 10u, 8u, 6u };
       var gameTurnOrder = gameSetupOrder;
