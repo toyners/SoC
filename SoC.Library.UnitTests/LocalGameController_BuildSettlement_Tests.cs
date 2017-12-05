@@ -22,7 +22,8 @@ namespace Jabberwocky.SoC.Library.UnitTests
       var localGameController = this.CreateLocalGameControllerAndCompleteGameSetup(out mockDice, out player, out firstOpponent, out secondOpponent, out thirdOpponent);
 
       mockDice.AddSequence(new[] { 8u });
-      player.AddResources(new ResourceClutch(1, 1, 1, 0, 1));
+      player.AddResources(ResourceClutch.RoadSegment); // Need resources to build the precursor road
+      player.AddResources(ResourceClutch.Settlement);
 
       Boolean settlementBuilt = false;
       localGameController.SettlementBuiltEvent = () => { settlementBuilt = true; };
