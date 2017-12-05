@@ -1378,7 +1378,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     [Category("LocalGameController")]
     [Category("LocalGameController.BuildRoadSegment")]
     [Category("Main Player Turn")]
-    public void BuildingRoadSegment_RequiredResourcesAvailable_BuildCompleteEventRaised()
+    public void BuildRoadSegment_RequiredResourcesAvailable_BuildCompleteEventRaised()
     {
       // Arrange
       MockDice mockDice = null;
@@ -1407,7 +1407,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     [Category("LocalGameController")]
     [Category("LocalGameController.BuildRoadSegment")]
     [Category("Main Player Turn")]
-    public void BuildingRoadSegment_RequiredResourcesAvailable_PlayerResourcesUpdated()
+    public void BuildRoadSegment_RequiredResourcesAvailable_PlayerResourcesUpdated()
     {
       // Arrange
       MockDice mockDice = null;
@@ -1434,7 +1434,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     [Category("LocalGameController")]
     [Category("LocalGameController.BuildRoadSegment")]
     [Category("Main Player Turn")]
-    public void BuildingRoadSegment_MainPlayerBuildsLongestRoad_LongestRoadEventRaised()
+    public void BuildRoadSegment_MainPlayerBuildsLongestRoad_LongestRoadEventRaised()
     {
       // Arrange
       MockDice mockDice = null;
@@ -1467,7 +1467,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     [Category("LocalGameController")]
     [Category("LocalGameController.BuildRoadSegment")]
     [Category("Main Player Turn")]
-    public void BuildingRoadSegment_SubsequentLongestRoadBuiltDuringOpponentsTurn_LongestRoadEventRaised()
+    public void BuildRoadSegment_SubsequentLongestRoadBuiltDuringOpponentsTurn_LongestRoadEventRaised()
     {
       // Arrange
       MockDice mockDice = null;
@@ -1508,7 +1508,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     [TestCase(new UInt32[] { 4, 3 })]
     [TestCase(new UInt32[] { 4, 3, 3, 2 })]
     [TestCase(new UInt32[] { 4, 3, 3, 2, 2, 1 })]
-    public void BuildingRoadSegment_AddToRoadShorterThanFiveSegments_LongestRoadEventNotRaised(UInt32[] roadLocations)
+    public void BuildRoadSegment_AddToRoadShorterThanFiveSegments_LongestRoadEventNotRaised(UInt32[] roadLocations)
     {
       // Arrange
       MockDice mockDice = null;
@@ -1542,7 +1542,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     [Test]
     [Category("LocalGameController.BuildRoadSegment")]
     [Category("Main Player Turn")]
-    public void BuildingRoadSegment_OnExistingRoadSegment_MeaningfulErrorIsReceived()
+    public void BuildRoadSegment_OnExistingRoadSegment_MeaningfulErrorIsReceived()
     {
       // Arrange
       MockDice mockDice = null;
@@ -1572,7 +1572,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     [Test]
     [Category("LocalGameController.BuildRoadSegment")]
     [Category("Main Player Turn")]
-    public void BuildingRoadSegment_NotConnectedToExistingInfrastructure_MeaningfulErrorIsReceived()
+    public void BuildRoadSegment_NotConnectedToExistingInfrastructure_MeaningfulErrorIsReceived()
     {
       // Arrange
       MockDice mockDice = null;
@@ -1602,7 +1602,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     [Test]
     [Category("LocalGameController.BuildRoadSegment")]
     [Category("Main Player Turn")]
-    public void BuildingRoadSegment_OffBoard_MeaningfulErrorIsReceived()
+    public void BuildRoadSegment_OffBoard_MeaningfulErrorIsReceived()
     {
       // Arrange
       MockDice mockDice = null;
@@ -1632,7 +1632,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     [Test]
     [Category("LocalGameController.BuildRoadSegment")]
     [Category("Main Player Turn")]
-    public void BuildingRoadSegment_NoDirectConnection_MeaningfulErrorIsReceived()
+    public void BuildRoadSegment_NoDirectConnection_MeaningfulErrorIsReceived()
     {
       // Arrange
       MockDice mockDice = null;
@@ -1667,7 +1667,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     [TestCase(0, 0, "Cannot build road segment. Missing 1 brick and 1 lumber.")]
     [TestCase(1, 0, "Cannot build road segment. Missing 1 lumber.")]
     [TestCase(0, 1, "Cannot build road segment. Missing 1 brick.")]
-    public void BuildingRoadSegment_WithoutRequiredResourcesAvailable_MeaningfulErrorIsReceived(Int32 brickCount, Int32 lumberCount, String expectedErrorMessage)
+    public void BuildRoadSegment_WithoutRequiredResourcesAvailable_MeaningfulErrorIsReceived(Int32 brickCount, Int32 lumberCount, String expectedErrorMessage)
     {
       // Arrange
       MockDice mockDice = null;
@@ -1697,7 +1697,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     [Category("LocalGameController")]
     [Category("LocalGameController.BuildRoadSegment")]
     [Category("Main Player Turn")]
-    public void BuildingRoadSegment_AllRoadSegmentsAreBuilt_MeaningfulErrorIsReceived()
+    public void BuildRoadSegment_AllRoadSegmentsAreBuilt_MeaningfulErrorIsReceived()
     {
       // Arrange
       MockDice mockDice = null;
