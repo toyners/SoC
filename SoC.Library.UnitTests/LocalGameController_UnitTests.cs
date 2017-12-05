@@ -14,45 +14,8 @@ namespace Jabberwocky.SoC.Library.UnitTests
   [TestFixture]
   [Category("All")]
   [Category("LocalGameController")]
-  public class LocalGameController_UnitTests : testbase
+  public class LocalGameController_UnitTests : LocalGameControllerTestBase
   {
-    #region Fields
-    /*private const String PlayerName = "Player";
-    private const String FirstOpponentName = "Bob";
-    private const String SecondOpponentName = "Sally";
-    private const String ThirdOpponentName = "Rich";
-
-    private const UInt32 MainSettlementOneLocation = 12u;
-    private const UInt32 FirstSettlementOneLocation = 18u;
-    private const UInt32 SecondSettlementOneLocation = 25u;
-    private const UInt32 ThirdSettlementOneLocation = 31u;
-
-    private const UInt32 ThirdSettlementTwoLocation = 33u;
-    private const UInt32 SecondSettlementTwoLocation = 35u;
-    private const UInt32 FirstSettlementTwoLocation = 43u;
-    private const UInt32 MainSettlementTwoLocation = 40u;
-
-    //protected const UInt32 MainRoadOneEnd = 4;
-    private const UInt32 FirstRoadOneEnd = 17;
-    private const UInt32 SecondRoadOneEnd = 15;
-    private const UInt32 ThirdRoadOneEnd = 30;
-
-    private const UInt32 ThirdRoadTwoEnd = 32;
-    private const UInt32 SecondRoadTwoEnd = 24;
-    private const UInt32 FirstRoadTwoEnd = 44;
-    private const UInt32 MainRoadTwoEnd = 39;
-
-    //private RoadSegment mainRoadOne = new RoadSegment(12, 4);
-    //private RoadSegment firstRoadOne = new RoadSegment(17, 18);
-    //private RoadSegment secondRoadOne = new RoadSegment(15, 25);
-    //private RoadSegment thirdRoadOne = new RoadSegment(30, 31);
-
-    //private RoadSegment thirdRoadTwo = new RoadSegment(32, 33);
-    //private RoadSegment secondRoadTwo = new RoadSegment(24, 35);
-    //private RoadSegment firstRoadTwo = new RoadSegment(43, 44);
-    //private RoadSegment mainRoadTwo = new RoadSegment(40, 39);*/
-    #endregion
-
     #region Methods
     [Test]
     [Category("LocalGameController")]
@@ -1880,29 +1843,6 @@ namespace Jabberwocky.SoC.Library.UnitTests
       roads[0].ShouldBe(new Tuple<UInt32, UInt32, Guid>(MainSettlementOneLocation, MainRoadOneEnd, playerId));
     }
 
-    /*protected LocalGameController CreateLocalGameControllerAndCompleteGameSetup(out MockDice mockDice, out MockPlayer player, out MockComputerPlayer firstOpponent, out MockComputerPlayer secondOpponent, out MockComputerPlayer thirdOpponent)
-    {
-      var gameSetupOrder = new[] { 12u, 10u, 8u, 6u };
-      var gameTurnOrder = gameSetupOrder;
-      mockDice = new MockDiceCreator()
-        .AddExplicitDiceRollSequence(gameSetupOrder)
-        .AddExplicitDiceRollSequence(gameTurnOrder)
-        .Create();
-
-      this.CreateDefaultPlayerInstances(out player, out firstOpponent, out secondOpponent, out thirdOpponent);
-
-      var localGameController = this.CreateLocalGameController(mockDice, player, firstOpponent, secondOpponent, thirdOpponent);
-
-      localGameController.JoinGame();
-      localGameController.LaunchGame();
-      localGameController.StartGameSetup();
-      localGameController.ContinueGameSetup(MainSettlementOneLocation, MainRoadOneEnd);
-      localGameController.CompleteGameSetup(MainSettlementTwoLocation, MainRoadTwoEnd);
-      localGameController.FinalisePlayerTurnOrder();
-
-      return localGameController;
-    }*/
-
     private LocalGameController CreateLocalGameControllerAndCompleteGameSetup(out MockDice mockDice, out GameBoardManager gameBoardManager, out MockPlayer player, out MockComputerPlayer firstOpponent, out MockComputerPlayer secondOpponent, out MockComputerPlayer thirdOpponent)
     {
       var gameSetupOrder = new[] { 12u, 10u, 8u, 6u };
@@ -1938,21 +1878,6 @@ namespace Jabberwocky.SoC.Library.UnitTests
       playerDataView.IsComputer.ShouldBe(player.IsComputer);
     }
 
-    /*private LocalGameController CreateLocalGameController(IDice dice, IPlayer firstPlayer, params IPlayer[] otherPlayers)
-    {
-      var mockPlayerPool = CreatePlayerPool(firstPlayer, otherPlayers);
-
-
-      var localGameController = new LocalGameControllerCreator()
-        .ChangeDice(dice)
-        .ChangePlayerPool(mockPlayerPool)
-        .Create();
-
-      localGameController.ErrorRaisedEvent = (ErrorDetails e) => { throw new Exception(e.Message); };
-
-      return localGameController;
-    }
-    */
     private LocalGameController CreateLocalGameController(IDice dice, GameBoardManager gameBoardManager, IPlayer firstPlayer, params IPlayer[] otherPlayers)
     {
       var mockPlayerPool = CreatePlayerPool(firstPlayer, otherPlayers);
@@ -1963,13 +1888,6 @@ namespace Jabberwocky.SoC.Library.UnitTests
         .ChangePlayerPool(mockPlayerPool)
         .Create();
     }
-
-    /*private IPlayerPool CreatePlayerPool(IPlayer player, IPlayer[] otherPlayers)
-    {
-      var mockPlayerPool = Substitute.For<IPlayerPool>();
-      mockPlayerPool.CreatePlayer(Arg.Any<Boolean>()).Returns(player, otherPlayers);
-      return mockPlayerPool;
-    }*/
 
     private LocalGameController CreateLocalGameControllerWithMainPlayerGoingFirstInSetup()
     {
@@ -1982,20 +1900,6 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
       return this.CreateLocalGameController(mockDice, player, firstOpponent, secondOpponent, thirdOpponent);
     }
-
-    /*private void CreateDefaultPlayerInstances(out MockPlayer player, out MockComputerPlayer firstOpponent, out MockComputerPlayer secondOpponent, out MockComputerPlayer thirdOpponent)
-    {
-      player = new MockPlayer(PlayerName);
-
-      firstOpponent = new MockComputerPlayer(FirstOpponentName);
-      firstOpponent.AddInitialInfrastructureChoices(FirstSettlementOneLocation, FirstRoadOneEnd, FirstSettlementTwoLocation, FirstRoadTwoEnd);
-
-      secondOpponent = new MockComputerPlayer(SecondOpponentName);
-      secondOpponent.AddInitialInfrastructureChoices(SecondSettlementOneLocation, SecondRoadOneEnd, SecondSettlementTwoLocation, SecondRoadTwoEnd);
-
-      thirdOpponent = new MockComputerPlayer(ThirdOpponentName);
-      thirdOpponent.AddInitialInfrastructureChoices(ThirdSettlementOneLocation, ThirdRoadOneEnd, ThirdSettlementTwoLocation, ThirdRoadTwoEnd);
-    }*/
 
     private void RunOpponentDataPassBackTests(GameOptions gameOptions)
     {
