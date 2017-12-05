@@ -123,8 +123,19 @@ namespace Jabberwocky.SoC.Library
 
     public void BuildSettlement(TurnToken turnToken, UInt32 settlementLocation)
     {
-      this.gameBoardManager.Data.PlaceSettlement(this.currentPlayer.Id, settlementLocation);
-      this.SettlementBuiltEvent?.Invoke();
+      if (this.currentPlayer.BrickCount > 0 && this.currentPlayer.LumberCount > 0 &&
+          this.currentPlayer.GrainCount > 0 && this.currentPlayer.WoolCount > 0)
+      {
+        this.gameBoardManager.Data.PlaceSettlement(this.currentPlayer.Id, settlementLocation);
+        this.SettlementBuiltEvent?.Invoke();
+        return;
+      }
+
+      if (this.ErrorRaisedEvent != null)
+      {
+        var message = "Cannot build settlement. ";
+        this.ErrorRaisedEvent.Invoke(new ErrorDetails(message));
+      }
     }
 
     public void ChooseResourceFromOpponent(Guid opponentId, Int32 resourceIndex)
