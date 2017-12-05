@@ -14,10 +14,10 @@ namespace Jabberwocky.SoC.Library.UnitTests
   [TestFixture]
   [Category("All")]
   [Category("LocalGameController")]
-  public class LocalGameController_UnitTests
+  public class LocalGameController_UnitTests : testbase
   {
     #region Fields
-    private const String PlayerName = "Player";
+    /*private const String PlayerName = "Player";
     private const String FirstOpponentName = "Bob";
     private const String SecondOpponentName = "Sally";
     private const String ThirdOpponentName = "Rich";
@@ -32,7 +32,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     private const UInt32 FirstSettlementTwoLocation = 43u;
     private const UInt32 MainSettlementTwoLocation = 40u;
 
-    protected const UInt32 MainRoadOneEnd = 4;
+    //protected const UInt32 MainRoadOneEnd = 4;
     private const UInt32 FirstRoadOneEnd = 17;
     private const UInt32 SecondRoadOneEnd = 15;
     private const UInt32 ThirdRoadOneEnd = 30;
@@ -50,7 +50,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     //private RoadSegment thirdRoadTwo = new RoadSegment(32, 33);
     //private RoadSegment secondRoadTwo = new RoadSegment(24, 35);
     //private RoadSegment firstRoadTwo = new RoadSegment(43, 44);
-    //private RoadSegment mainRoadTwo = new RoadSegment(40, 39);
+    //private RoadSegment mainRoadTwo = new RoadSegment(40, 39);*/
     #endregion
 
     #region Methods
@@ -1880,7 +1880,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
       roads[0].ShouldBe(new Tuple<UInt32, UInt32, Guid>(MainSettlementOneLocation, MainRoadOneEnd, playerId));
     }
 
-    protected LocalGameController CreateLocalGameControllerAndCompleteGameSetup(out MockDice mockDice, out MockPlayer player, out MockComputerPlayer firstOpponent, out MockComputerPlayer secondOpponent, out MockComputerPlayer thirdOpponent)
+    /*protected LocalGameController CreateLocalGameControllerAndCompleteGameSetup(out MockDice mockDice, out MockPlayer player, out MockComputerPlayer firstOpponent, out MockComputerPlayer secondOpponent, out MockComputerPlayer thirdOpponent)
     {
       var gameSetupOrder = new[] { 12u, 10u, 8u, 6u };
       var gameTurnOrder = gameSetupOrder;
@@ -1901,7 +1901,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
       localGameController.FinalisePlayerTurnOrder();
 
       return localGameController;
-    }
+    }*/
 
     private LocalGameController CreateLocalGameControllerAndCompleteGameSetup(out MockDice mockDice, out GameBoardManager gameBoardManager, out MockPlayer player, out MockComputerPlayer firstOpponent, out MockComputerPlayer secondOpponent, out MockComputerPlayer thirdOpponent)
     {
@@ -1938,7 +1938,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
       playerDataView.IsComputer.ShouldBe(player.IsComputer);
     }
 
-    private LocalGameController CreateLocalGameController(IDice dice, IPlayer firstPlayer, params IPlayer[] otherPlayers)
+    /*private LocalGameController CreateLocalGameController(IDice dice, IPlayer firstPlayer, params IPlayer[] otherPlayers)
     {
       var mockPlayerPool = CreatePlayerPool(firstPlayer, otherPlayers);
 
@@ -1952,7 +1952,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
       return localGameController;
     }
-
+    */
     private LocalGameController CreateLocalGameController(IDice dice, GameBoardManager gameBoardManager, IPlayer firstPlayer, params IPlayer[] otherPlayers)
     {
       var mockPlayerPool = CreatePlayerPool(firstPlayer, otherPlayers);
@@ -1964,12 +1964,12 @@ namespace Jabberwocky.SoC.Library.UnitTests
         .Create();
     }
 
-    private IPlayerPool CreatePlayerPool(IPlayer player, IPlayer[] otherPlayers)
+    /*private IPlayerPool CreatePlayerPool(IPlayer player, IPlayer[] otherPlayers)
     {
       var mockPlayerPool = Substitute.For<IPlayerPool>();
       mockPlayerPool.CreatePlayer(Arg.Any<Boolean>()).Returns(player, otherPlayers);
       return mockPlayerPool;
-    }
+    }*/
 
     private LocalGameController CreateLocalGameControllerWithMainPlayerGoingFirstInSetup()
     {
@@ -1983,7 +1983,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
       return this.CreateLocalGameController(mockDice, player, firstOpponent, secondOpponent, thirdOpponent);
     }
 
-    private void CreateDefaultPlayerInstances(out MockPlayer player, out MockComputerPlayer firstOpponent, out MockComputerPlayer secondOpponent, out MockComputerPlayer thirdOpponent)
+    /*private void CreateDefaultPlayerInstances(out MockPlayer player, out MockComputerPlayer firstOpponent, out MockComputerPlayer secondOpponent, out MockComputerPlayer thirdOpponent)
     {
       player = new MockPlayer(PlayerName);
 
@@ -1995,7 +1995,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
       thirdOpponent = new MockComputerPlayer(ThirdOpponentName);
       thirdOpponent.AddInitialInfrastructureChoices(ThirdSettlementOneLocation, ThirdRoadOneEnd, ThirdSettlementTwoLocation, ThirdRoadTwoEnd);
-    }
+    }*/
 
     private void RunOpponentDataPassBackTests(GameOptions gameOptions)
     {
