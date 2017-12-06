@@ -79,6 +79,48 @@ namespace Jabberwocky.SoC.Library.UnitTests
       errorDetails.ShouldNotBeNull();
       errorDetails.Message.ShouldBe(expectedMessage);
     }
+
+    [Test]
+    public void BuildSettlement_AllSettlementsAreBuilt_MeaningfulErrorIsReceived()
+    {
+      // Arrange
+      MockDice mockDice = null;
+      MockPlayer player;
+      MockComputerPlayer firstOpponent, secondOpponent, thirdOpponent;
+      var localGameController = this.CreateLocalGameControllerAndCompleteGameSetup(out mockDice, out player, out firstOpponent, out secondOpponent, out thirdOpponent);
+      mockDice.AddSequence(new[] { 8u });
+      player.AddResources(ResourceClutch.Settlement * 3);
+      player.AddResources(ResourceClutch.RoadSegment * 5);
+
+      ErrorDetails errorDetails = null;
+      localGameController.ErrorRaisedEvent = (ErrorDetails e) =>
+      {
+        if (errorDetails != null)
+        {
+          // Ensure that the error details are only received once.
+          throw new Exception("Already received error details");
+        }
+
+        errorDetails = e;
+      };
+
+      TurnToken turnToken = null;
+      localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
+      localGameController.StartGamePlay();
+
+      var roadSegmentDetails = new UInt32[] { 4, 3, 3, 2, 2, 1, 1, 0, 0, 8, 8, 7, 7, 17, 17, 16, 16, 27, 27, 28, 28, 38, 38, 39, 39, 47 };
+      for (var index = 0; index < roadSegmentDetails.Length; index += 2)
+      {
+        localGameController.BuildRoadSegment(turnToken, roadSegmentDetails[index], roadSegmentDetails[index + 1]);
+      }
+
+      // Act
+      localGameController.BuildRoadSegment(turnToken, 47, 48);
+
+      // Assert
+      errorDetails.ShouldNotBeNull();
+      errorDetails.Message.ShouldBe("Cannot build road segment. All road segments already built.");
+    }
     #endregion 
   }
 }

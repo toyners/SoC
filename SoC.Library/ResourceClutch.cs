@@ -24,6 +24,16 @@ namespace Jabberwocky.SoC.Library
       WoolCount = woolCount;
     }
 
+    public static ResourceClutch operator* (ResourceClutch operand1, UInt32 operand2)
+    {
+      throw new NotImplementedException();
+    }
+
+    public static ResourceClutch operator *(UInt32 operand1, ResourceClutch operand2)
+    {
+      throw new NotImplementedException();
+    }
+
     public static Boolean operator== (ResourceClutch r1, ResourceClutch r2)
     {
       return r1.BrickCount == r2.BrickCount &&
