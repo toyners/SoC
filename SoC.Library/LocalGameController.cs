@@ -133,7 +133,31 @@ namespace Jabberwocky.SoC.Library
 
       if (this.ErrorRaisedEvent != null)
       {
-        var message = "Cannot build settlement. ";
+        var message = "Cannot build settlement. Missing ";
+
+        if (this.currentPlayer.BrickCount == 0)
+        {
+          message += "1 brick and ";
+        }
+
+        if (this.currentPlayer.GrainCount == 0)
+        {
+          message += "1 grain and ";
+        }
+
+        if (this.currentPlayer.LumberCount == 0)
+        {
+          message += "1 lumber and ";
+        }
+
+        if (this.currentPlayer.WoolCount == 0)
+        {
+          message += "1 wool and ";
+        }
+
+        message = message.Substring(0, message.Length - " and ".Length);
+        message += ".";
+
         this.ErrorRaisedEvent.Invoke(new ErrorDetails(message));
       }
     }
