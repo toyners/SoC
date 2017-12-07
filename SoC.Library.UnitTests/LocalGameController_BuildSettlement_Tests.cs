@@ -108,18 +108,22 @@ namespace Jabberwocky.SoC.Library.UnitTests
       localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
       localGameController.StartGamePlay();
 
-      var roadSegmentDetails = new UInt32[] { 4, 3, 3, 2, 2, 1, 1, 0, 0, 8, 8, 7, 7, 17, 17, 16, 16, 27, 27, 28, 28, 38, 38, 39, 39, 47 };
+      var roadSegmentDetails = new UInt32[] { 4, 3, 3, 2, 2, 1, 1, 0, 0, 8, 8, 7, 7, 17 };
       for (var index = 0; index < roadSegmentDetails.Length; index += 2)
       {
         localGameController.BuildRoadSegment(turnToken, roadSegmentDetails[index], roadSegmentDetails[index + 1]);
       }
 
+      localGameController.BuildSettlement(turnToken, 3);
+      localGameController.BuildSettlement(turnToken, 1);
+      localGameController.BuildSettlement(turnToken, 8);
+
       // Act
-      localGameController.BuildRoadSegment(turnToken, 47, 48);
+      localGameController.BuildSettlement(turnToken, 17);
 
       // Assert
       errorDetails.ShouldNotBeNull();
-      errorDetails.Message.ShouldBe("Cannot build road segment. All road segments already built.");
+      errorDetails.Message.ShouldBe("Cannot build settlement. All settlements already built.");
     }
     #endregion 
   }
