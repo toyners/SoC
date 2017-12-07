@@ -18,6 +18,7 @@ namespace Jabberwocky.SoC.Library.Interfaces
     UInt32 VictoryPoints { get; }
     Int32 RemainingRoadSegments { get; }
     Int32 RoadSegmentsBuilt { get; }
+    Int32 RemainingSettlements { get; }
     #endregion
 
     #region Methods
@@ -25,6 +26,7 @@ namespace Jabberwocky.SoC.Library.Interfaces
     void AddResources(ResourceClutch resourceClutch);
     void RemoveResources(ResourceClutch resourceClutch);
     void PlaceRoadSegment();
+    void PlaceSettlement();
     void PlaceStartingInfrastructure();
     #endregion
   }

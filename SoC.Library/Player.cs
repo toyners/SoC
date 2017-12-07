@@ -9,6 +9,7 @@ namespace Jabberwocky.SoC.Library
   {
     #region Fields
     private const Int32 TotalRoadSegments = 15;
+    private const Int32 TotalSettlements = 5;
     #endregion
 
     #region Construction
@@ -52,6 +53,8 @@ namespace Jabberwocky.SoC.Library
 
     public Int32 RemainingRoadSegments { get { return TotalRoadSegments - this.RoadSegmentsBuilt; } }
     public Int32 RoadSegmentsBuilt { get; protected set; }
+    public Int32 RemainingSettlements { get { return TotalSettlements - this.SettlementsBuilt;  } }
+    public Int32 SettlementsBuilt { get; protected set; }
     #endregion
 
     #region Methods
@@ -78,11 +81,6 @@ namespace Jabberwocky.SoC.Library
       return dataView;
     }
 
-    /// <summary>
-    /// Loads player properties from stream. Stream must contain player id and name.
-    /// </summary>
-    /// <param name="stream">Stream containing player properties.</param>
-
     public void RemoveResources(ResourceClutch resourceClutch)
     {
       if (this.BrickCount - resourceClutch.BrickCount < 0 ||
@@ -108,11 +106,21 @@ namespace Jabberwocky.SoC.Library
       this.RoadSegmentsBuilt++;
     }
 
+    public void PlaceSettlement()
+    {
+      this.SettlementsBuilt++;
+    }
+
     public void PlaceStartingInfrastructure()
     {
       this.RoadSegmentsBuilt++;
+      this.SettlementsBuilt++;
     }
 
+    /// <summary>
+    /// Loads player properties from XML reader.
+    /// </summary>
+    /// <param name="reader">XML reader containing player properties.</param>
     internal void Load(XmlReader reader)
     {
       this.Id = Guid.Empty;

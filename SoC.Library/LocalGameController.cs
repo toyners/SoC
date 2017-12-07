@@ -124,39 +124,48 @@ namespace Jabberwocky.SoC.Library
     public void BuildSettlement(TurnToken turnToken, UInt32 settlementLocation)
     {
       if (this.currentPlayer.BrickCount > 0 && this.currentPlayer.LumberCount > 0 &&
-          this.currentPlayer.GrainCount > 0 && this.currentPlayer.WoolCount > 0)
+          this.currentPlayer.GrainCount > 0 && this.currentPlayer.WoolCount > 0 && this.currentPlayer.RemainingSettlements > 0)
       {
         this.gameBoardManager.Data.PlaceSettlement(this.currentPlayer.Id, settlementLocation);
+        this.currentPlayer.PlaceSettlement();
         this.SettlementBuiltEvent?.Invoke();
         return;
       }
 
       if (this.ErrorRaisedEvent != null)
       {
-        var message = "Cannot build settlement. Missing ";
-
-        if (this.currentPlayer.BrickCount == 0)
+        String message = null;
+        if (this.currentPlayer.RemainingSettlements == 0)
         {
-          message += "1 brick and ";
+          message = "Cannot build settlement. All settlements already built.";
         }
-
-        if (this.currentPlayer.GrainCount == 0)
+        else
         {
-          message += "1 grain and ";
-        }
+          message = "Cannot build settlement. Missing ";
 
-        if (this.currentPlayer.LumberCount == 0)
-        {
-          message += "1 lumber and ";
-        }
+          if (this.currentPlayer.BrickCount == 0)
+          {
+            message += "1 brick and ";
+          }
 
-        if (this.currentPlayer.WoolCount == 0)
-        {
-          message += "1 wool and ";
-        }
+          if (this.currentPlayer.GrainCount == 0)
+          {
+            message += "1 grain and ";
+          }
 
-        message = message.Substring(0, message.Length - " and ".Length);
-        message += ".";
+          if (this.currentPlayer.LumberCount == 0)
+          {
+            message += "1 lumber and ";
+          }
+
+          if (this.currentPlayer.WoolCount == 0)
+          {
+            message += "1 wool and ";
+          }
+
+          message = message.Substring(0, message.Length - " and ".Length);
+          message += ".";
+        }
 
         this.ErrorRaisedEvent.Invoke(new ErrorDetails(message));
       }
