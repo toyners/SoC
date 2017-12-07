@@ -4,7 +4,6 @@ namespace Jabberwocky.SoC.Library.UnitTests
   using System;
   using Interfaces;
   using NSubstitute;
-  using NUnit.Framework;
 
   public class LocalGameControllerTestBase
   {
@@ -53,7 +52,6 @@ namespace Jabberwocky.SoC.Library.UnitTests
     protected LocalGameController CreateLocalGameController(IDice dice, IPlayer firstPlayer, params IPlayer[] otherPlayers)
     {
       var mockPlayerPool = CreatePlayerPool(firstPlayer, otherPlayers);
-
 
       var localGameController = new LocalGameControllerCreator()
         .ChangeDice(dice)

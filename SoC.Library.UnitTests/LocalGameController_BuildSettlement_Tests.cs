@@ -161,6 +161,70 @@ namespace Jabberwocky.SoC.Library.UnitTests
       errorDetails.ShouldNotBeNull();
       errorDetails.Message.ShouldBe("Cannot build settlement. Missing 1 brick and 1 grain and 1 lumber and 1 wool.");
     }
+
+    [Test]
+    public void BuildSettlement_OnExistingSettlementBelongingToPlayer_MeaningfulErrorIsReceived()
+    {
+      // Arrange
+      MockDice mockDice = null;
+      MockPlayer player;
+      MockComputerPlayer firstOpponent, secondOpponent, thirdOpponent;
+      var localGameController = this.CreateLocalGameControllerAndCompleteGameSetup(out mockDice, out player, out firstOpponent, out secondOpponent, out thirdOpponent);
+
+      mockDice.AddSequence(new[] { 8u });
+      player.AddResources(ResourceClutch.RoadSegment);
+      player.AddResources(ResourceClutch.Settlement * 2);
+
+      ErrorDetails errorDetails = null;
+      localGameController.ErrorRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
+
+      TurnToken turnToken = null;
+      localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
+      localGameController.StartGamePlay();
+      localGameController.BuildRoadSegment(turnToken, MainRoadOneEnd, 3);
+      localGameController.BuildSettlement(turnToken, 3);
+
+      // Act
+      localGameController.BuildSettlement(turnToken, 3);
+
+      // Assert
+      errorDetails.ShouldNotBeNull();
+      errorDetails.Message.ShouldBe("Cannot build settlement. Location already has settlement.");
+    }
+
+    [Test]
+    public void BuildSettlement_OnExistingSettlementBelongingToOpponent_MeaningfulErrorIsReceived()
+    {
+      // Arrange
+      MockDice mockDice = null;
+      MockPlayer player;
+      MockComputerPlayer firstOpponent, secondOpponent, thirdOpponent;
+      var localGameController = this.CreateLocalGameControllerAndCompleteGameSetup(out mockDice, out player, out firstOpponent, out secondOpponent, out thirdOpponent);
+
+      mockDice.AddSequence(new[] { 8u });
+      player.AddResources(ResourceClutch.RoadSegment * 7);
+      player.AddResources(ResourceClutch.Settlement);
+
+      ErrorDetails errorDetails = null;
+      localGameController.ErrorRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
+
+      TurnToken turnToken = null;
+      localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
+      localGameController.StartGamePlay();
+
+      var roadSegmentDetails = new UInt32[] { 4, 3, 3, 2, 2, 1, 1, 0, 0, 8, 8, 7, 7, 17 };
+      for (var index = 0; index < roadSegmentDetails.Length; index += 2)
+      {
+        localGameController.BuildRoadSegment(turnToken, roadSegmentDetails[index], roadSegmentDetails[index + 1]);
+      }
+
+      // Act
+      localGameController.BuildSettlement(turnToken, 17);
+
+      // Assert
+      errorDetails.ShouldNotBeNull();
+      errorDetails.Message.ShouldBe("Cannot build settlement. Location already has settlement.");
+    }
     #endregion 
   }
 }
