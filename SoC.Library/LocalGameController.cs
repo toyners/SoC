@@ -124,8 +124,24 @@ namespace Jabberwocky.SoC.Library
     public void BuildSettlement(TurnToken turnToken, UInt32 settlementLocation)
     {
       if (this.currentPlayer.BrickCount > 0 && this.currentPlayer.LumberCount > 0 &&
-          this.currentPlayer.GrainCount > 0 && this.currentPlayer.WoolCount > 0 && this.currentPlayer.RemainingSettlements > 0)
+          this.currentPlayer.GrainCount > 0 && this.currentPlayer.WoolCount > 0 && 
+          this.currentPlayer.RemainingSettlements > 0)
       {
+        var placeSettlementStatus = this.gameBoardManager.Data.CanPlaceSettlement(this.currentPlayer.Id, settlementLocation);
+        if (placeSettlementStatus.Status != GameBoardData.VerificationStatus.Valid)
+        {
+          var message = String.Empty;
+          switch (placeSettlementStatus.Status)
+          {
+            case GameBoardData.VerificationStatus.LocationIsOccupied: message = "Cannot build settlement because location is already settled."; break;
+            default: message = "Settlement build status not recognised: " + placeSettlementStatus.Status; break;
+          }
+
+          this.ErrorRaisedEvent?.Invoke(new ErrorDetails(message));
+          return;
+        }
+        
+
         this.gameBoardManager.Data.PlaceSettlement(this.currentPlayer.Id, settlementLocation);
         this.currentPlayer.PlaceSettlement();
         this.SettlementBuiltEvent?.Invoke();
