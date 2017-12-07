@@ -227,6 +227,34 @@ namespace Jabberwocky.SoC.Library.UnitTests
     }
 
     [Test]
+    public void BuildSettlement_ToCloseToAnotherSettlement_MeaningfulErrorIsReceived()
+    {
+      // Arrange
+      MockDice mockDice = null;
+      MockPlayer player;
+      MockComputerPlayer firstOpponent, secondOpponent, thirdOpponent;
+      var localGameController = this.CreateLocalGameControllerAndCompleteGameSetup(out mockDice, out player, out firstOpponent, out secondOpponent, out thirdOpponent);
+
+      mockDice.AddSequence(new[] { 8u });
+      player.AddResources(ResourceClutch.RoadSegment * 7);
+      player.AddResources(ResourceClutch.Settlement);
+
+      ErrorDetails errorDetails = null;
+      localGameController.ErrorRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
+
+      TurnToken turnToken = null;
+      localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
+      localGameController.StartGamePlay();
+
+      // Act
+      localGameController.BuildSettlement(turnToken, 4);
+
+      // Assert
+      errorDetails.ShouldNotBeNull();
+      errorDetails.Message.ShouldBe("Cannot build settlement because location is already settled.");
+    }
+
+    [Test]
     public void BuildSettlement_ToCloseToOpponentSettlement_MeaningfulErrorIsReceived()
     {
       // Arrange
@@ -246,14 +274,14 @@ namespace Jabberwocky.SoC.Library.UnitTests
       localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
       localGameController.StartGamePlay();
 
-      var roadSegmentDetails = new UInt32[] { 4, 3, 3, 2, 2, 1, 1, 0, 0, 8, 8, 7, 7, 17 };
+      var roadSegmentDetails = new UInt32[] { 4, 3, 3, 2, 2, 1, 1, 0, 0, 8, 8, 9, 9, 19 };
       for (var index = 0; index < roadSegmentDetails.Length; index += 2)
       {
         localGameController.BuildRoadSegment(turnToken, roadSegmentDetails[index], roadSegmentDetails[index + 1]);
       }
 
       // Act
-      localGameController.BuildSettlement(turnToken, 17);
+      localGameController.BuildSettlement(turnToken, 19);
 
       // Assert
       errorDetails.ShouldNotBeNull();
