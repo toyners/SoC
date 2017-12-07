@@ -108,6 +108,10 @@ namespace Jabberwocky.SoC.Library
 
     public void PlaceSettlement()
     {
+      this.BrickCount--;
+      this.GrainCount--;
+      this.LumberCount--;
+      this.WoolCount--;
       this.SettlementsBuilt++;
     }
 

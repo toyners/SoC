@@ -90,7 +90,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
       var localGameController = this.CreateLocalGameControllerAndCompleteGameSetup(out mockDice, out player, out firstOpponent, out secondOpponent, out thirdOpponent);
       mockDice.AddSequence(new[] { 8u });
       player.AddResources(ResourceClutch.Settlement * 3);
-      player.AddResources(ResourceClutch.RoadSegment * 5);
+      player.AddResources(ResourceClutch.RoadSegment * 7);
 
       ErrorDetails errorDetails = null;
       localGameController.ErrorRaisedEvent = (ErrorDetails e) =>
