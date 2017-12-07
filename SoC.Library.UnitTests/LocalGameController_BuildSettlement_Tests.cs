@@ -251,7 +251,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
       // Assert
       errorDetails.ShouldNotBeNull();
-      errorDetails.Message.ShouldBe("Cannot build settlement because location is already settled.");
+      errorDetails.Message.ShouldBe("Cannot build settlement because location is too close to existing settlement.");
     }
 
     [Test]
@@ -285,7 +285,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
       // Assert
       errorDetails.ShouldNotBeNull();
-      errorDetails.Message.ShouldBe("Cannot build settlement because location is already settled.");
+      errorDetails.Message.ShouldBe("Cannot build settlement because location is too close to existing settlement.");
     }
     #endregion 
   }

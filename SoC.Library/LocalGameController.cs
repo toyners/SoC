@@ -134,13 +134,13 @@ namespace Jabberwocky.SoC.Library
           switch (placeSettlementStatus.Status)
           {
             case GameBoardData.VerificationStatus.LocationIsOccupied: message = "Cannot build settlement because location is already settled."; break;
+            case GameBoardData.VerificationStatus.TooCloseToSettlement: message = "Cannot build settlement because location is too close to existing settlement."; break;
             default: message = "Settlement build status not recognised: " + placeSettlementStatus.Status; break;
           }
 
           this.ErrorRaisedEvent?.Invoke(new ErrorDetails(message));
           return;
         }
-        
 
         this.gameBoardManager.Data.PlaceSettlement(this.currentPlayer.Id, settlementLocation);
         this.currentPlayer.PlaceSettlement();
