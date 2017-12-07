@@ -125,6 +125,42 @@ namespace Jabberwocky.SoC.Library.UnitTests
       errorDetails.ShouldNotBeNull();
       errorDetails.Message.ShouldBe("Cannot build settlement. All settlements already built.");
     }
+
+    [Test]
+    public void BuildSettlement_InsufficientResourcesAfterBuildingSettlement_MeaningfulErrorIsReceived()
+    {
+      // Arrange
+      MockDice mockDice = null;
+      MockPlayer player;
+      MockComputerPlayer firstOpponent, secondOpponent, thirdOpponent;
+      var localGameController = this.CreateLocalGameControllerAndCompleteGameSetup(out mockDice, out player, out firstOpponent, out secondOpponent, out thirdOpponent);
+
+      mockDice.AddSequence(new[] { 8u });
+      player.AddResources(ResourceClutch.RoadSegment * 3);
+      player.AddResources(ResourceClutch.Settlement);
+
+      Int32 settlementBuilt = 0;
+      localGameController.SettlementBuiltEvent = () => { settlementBuilt++; };
+
+      ErrorDetails errorDetails = null;
+      localGameController.ErrorRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
+
+      TurnToken turnToken = null;
+      localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
+      localGameController.StartGamePlay();
+      localGameController.BuildRoadSegment(turnToken, MainRoadOneEnd, 3);
+      localGameController.BuildRoadSegment(turnToken, 3, 2);
+      localGameController.BuildRoadSegment(turnToken, 2, 1);
+      localGameController.BuildSettlement(turnToken, 3);
+
+      // Act
+      localGameController.BuildSettlement(turnToken, 1);
+
+      // Assert
+      settlementBuilt.ShouldBe(1);
+      errorDetails.ShouldNotBeNull();
+      errorDetails.Message.ShouldBe("Cannot build settlement. Missing 1 brick and 1 grain and 1 lumber and 1 wool.");
+    }
     #endregion 
   }
 }
