@@ -123,6 +123,12 @@ namespace Jabberwocky.SoC.Library
 
     public void BuildSettlement(TurnToken turnToken, UInt32 settlementLocation)
     {
+      if (turnToken != this.currentTurnToken)
+      {
+        this.ErrorRaisedEvent?.Invoke(new ErrorDetails("Turn token not recognised."));
+        return;
+      }
+
       if (this.currentPlayer.BrickCount > 0 && this.currentPlayer.LumberCount > 0 &&
           this.currentPlayer.GrainCount > 0 && this.currentPlayer.WoolCount > 0 && 
           this.currentPlayer.RemainingSettlements > 0)
