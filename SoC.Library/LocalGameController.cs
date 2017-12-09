@@ -85,7 +85,7 @@ namespace Jabberwocky.SoC.Library
     {
       if (this.currentTurnToken != turnToken)
       {
-        var errorDetails = new ErrorDetails("Turn token not recognised.");
+        this.ErrorRaisedEvent?.Invoke(new ErrorDetails("Turn token not recognised."));
         return;
       }
 
