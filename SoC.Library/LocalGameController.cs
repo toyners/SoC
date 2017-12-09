@@ -135,6 +135,7 @@ namespace Jabberwocky.SoC.Library
           {
             case GameBoardData.VerificationStatus.LocationIsInvalid: message = "Cannot build settlement because location is invalid."; break;
             case GameBoardData.VerificationStatus.LocationIsOccupied: message = "Cannot build settlement because location is already settled."; break;
+            case GameBoardData.VerificationStatus.SettlementNotConnectedToExistingRoad: message = "Cannot build settlement because location not connected to existing road."; break;
             case GameBoardData.VerificationStatus.TooCloseToSettlement: message = "Cannot build settlement because location is too close to existing settlement."; break;
             default: message = "Settlement build status not recognised: " + placeSettlementStatus.Status; break;
           }
