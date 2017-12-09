@@ -287,6 +287,34 @@ namespace Jabberwocky.SoC.Library.UnitTests
       errorDetails.ShouldNotBeNull();
       errorDetails.Message.ShouldBe("Cannot build settlement because location is too close to existing settlement.");
     }
+
+    [Test]
+    public void BuildSettlement_OffBoard_MeaningfulErrorIsReceived()
+    {
+      // Arrange
+      MockDice mockDice = null;
+      MockPlayer player;
+      MockComputerPlayer firstOpponent, secondOpponent, thirdOpponent;
+      var localGameController = this.CreateLocalGameControllerAndCompleteGameSetup(out mockDice, out player, out firstOpponent, out secondOpponent, out thirdOpponent);
+
+      mockDice.AddSequence(new[] { 8u });
+      player.AddResources(ResourceClutch.Settlement);
+
+      ErrorDetails errorDetails = null;
+      localGameController.ErrorRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
+
+      TurnToken turnToken = null;
+      localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
+      localGameController.StartGamePlay();
+
+      // Act
+      localGameController.BuildSettlement(turnToken, 54);
+
+      // Assert
+      errorDetails.ShouldNotBeNull();
+      errorDetails.Message.ShouldBe("Cannot build settlement because location is invalid.");
+    }
     #endregion 
   }
 }
+ 
