@@ -121,6 +121,13 @@ namespace Jabberwocky.SoC.Library
       }
     }
 
+    private Boolean CanBuildSettlement()
+    {
+      return this.currentPlayer.BrickCount > 0 && this.currentPlayer.LumberCount > 0 &&
+          this.currentPlayer.GrainCount > 0 && this.currentPlayer.WoolCount > 0 &&
+          this.currentPlayer.RemainingSettlements > 0;
+    }
+
     public void BuildSettlement(TurnToken turnToken, UInt32 settlementLocation)
     {
       if (turnToken != this.currentTurnToken)
@@ -129,69 +136,69 @@ namespace Jabberwocky.SoC.Library
         return;
       }
 
-      if (this.currentPlayer.BrickCount > 0 && this.currentPlayer.LumberCount > 0 &&
-          this.currentPlayer.GrainCount > 0 && this.currentPlayer.WoolCount > 0 && 
-          this.currentPlayer.RemainingSettlements > 0)
+      if (!this.CanBuildSettlement())
       {
-        var placeSettlementStatus = this.gameBoardManager.Data.CanPlaceSettlement(this.currentPlayer.Id, settlementLocation);
-        if (placeSettlementStatus.Status != GameBoardData.VerificationStatus.Valid)
+        if (this.ErrorRaisedEvent != null)
         {
-          var message = String.Empty;
-          switch (placeSettlementStatus.Status)
+          String message = null;
+          if (this.currentPlayer.RemainingSettlements == 0)
           {
-            case GameBoardData.VerificationStatus.LocationIsInvalid: message = "Cannot build settlement because location is invalid."; break;
-            case GameBoardData.VerificationStatus.LocationIsOccupied: message = "Cannot build settlement because location is already settled."; break;
-            case GameBoardData.VerificationStatus.SettlementNotConnectedToExistingRoad: message = "Cannot build settlement because location not connected to existing road."; break;
-            case GameBoardData.VerificationStatus.TooCloseToSettlement: message = "Cannot build settlement because location is too close to existing settlement."; break;
-            default: message = "Settlement build status not recognised: " + placeSettlementStatus.Status; break;
+            message = "Cannot build settlement. All settlements already built.";
+          }
+          else
+          {
+            message = "Cannot build settlement. Missing ";
+
+            if (this.currentPlayer.BrickCount == 0)
+            {
+              message += "1 brick and ";
+            }
+
+            if (this.currentPlayer.GrainCount == 0)
+            {
+              message += "1 grain and ";
+            }
+
+            if (this.currentPlayer.LumberCount == 0)
+            {
+              message += "1 lumber and ";
+            }
+
+            if (this.currentPlayer.WoolCount == 0)
+            {
+              message += "1 wool and ";
+            }
+
+            message = message.Substring(0, message.Length - " and ".Length);
+            message += ".";
           }
 
-          this.ErrorRaisedEvent?.Invoke(new ErrorDetails(message));
-          return;
+          this.ErrorRaisedEvent.Invoke(new ErrorDetails(message));
         }
+
+        return;
+      }
+
+      var placeSettlementStatus = this.gameBoardManager.Data.CanPlaceSettlement(this.currentPlayer.Id, settlementLocation);
+      if (placeSettlementStatus.Status != GameBoardData.VerificationStatus.Valid)
+      {
+        var message = String.Empty;
+        switch (placeSettlementStatus.Status)
+        {
+          case GameBoardData.VerificationStatus.LocationIsInvalid: message = "Cannot build settlement because location is invalid."; break;
+          case GameBoardData.VerificationStatus.LocationIsOccupied: message = "Cannot build settlement because location is already settled."; break;
+          case GameBoardData.VerificationStatus.SettlementNotConnectedToExistingRoad: message = "Cannot build settlement because location not connected to existing road."; break;
+          case GameBoardData.VerificationStatus.TooCloseToSettlement: message = "Cannot build settlement because location is too close to existing settlement."; break;
+          default: message = "Settlement build status not recognised: " + placeSettlementStatus.Status; break;
+        }
+
+        this.ErrorRaisedEvent?.Invoke(new ErrorDetails(message));
+        
 
         this.gameBoardManager.Data.PlaceSettlement(this.currentPlayer.Id, settlementLocation);
         this.currentPlayer.PlaceSettlement();
         this.SettlementBuiltEvent?.Invoke();
         return;
-      }
-
-      if (this.ErrorRaisedEvent != null)
-      {
-        String message = null;
-        if (this.currentPlayer.RemainingSettlements == 0)
-        {
-          message = "Cannot build settlement. All settlements already built.";
-        }
-        else
-        {
-          message = "Cannot build settlement. Missing ";
-
-          if (this.currentPlayer.BrickCount == 0)
-          {
-            message += "1 brick and ";
-          }
-
-          if (this.currentPlayer.GrainCount == 0)
-          {
-            message += "1 grain and ";
-          }
-
-          if (this.currentPlayer.LumberCount == 0)
-          {
-            message += "1 lumber and ";
-          }
-
-          if (this.currentPlayer.WoolCount == 0)
-          {
-            message += "1 wool and ";
-          }
-
-          message = message.Substring(0, message.Length - " and ".Length);
-          message += ".";
-        }
-
-        this.ErrorRaisedEvent.Invoke(new ErrorDetails(message));
       }
     }
 
