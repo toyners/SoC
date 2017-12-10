@@ -138,44 +138,7 @@ namespace Jabberwocky.SoC.Library
 
       if (!this.CanBuildSettlement())
       {
-        if (this.ErrorRaisedEvent != null)
-        {
-          String message = null;
-          if (this.currentPlayer.RemainingSettlements == 0)
-          {
-            message = "Cannot build settlement. All settlements already built.";
-          }
-          else
-          {
-            message = "Cannot build settlement. Missing ";
-
-            if (this.currentPlayer.BrickCount == 0)
-            {
-              message += "1 brick and ";
-            }
-
-            if (this.currentPlayer.GrainCount == 0)
-            {
-              message += "1 grain and ";
-            }
-
-            if (this.currentPlayer.LumberCount == 0)
-            {
-              message += "1 lumber and ";
-            }
-
-            if (this.currentPlayer.WoolCount == 0)
-            {
-              message += "1 wool and ";
-            }
-
-            message = message.Substring(0, message.Length - " and ".Length);
-            message += ".";
-          }
-
-          this.ErrorRaisedEvent.Invoke(new ErrorDetails(message));
-        }
-
+        this.TryRaiseSettlementBuildingError();
         return;
       }
 
@@ -193,13 +156,12 @@ namespace Jabberwocky.SoC.Library
         }
 
         this.ErrorRaisedEvent?.Invoke(new ErrorDetails(message));
-        
-
-        this.gameBoardManager.Data.PlaceSettlement(this.currentPlayer.Id, settlementLocation);
-        this.currentPlayer.PlaceSettlement();
-        this.SettlementBuiltEvent?.Invoke();
         return;
       }
+
+      this.gameBoardManager.Data.PlaceSettlement(this.currentPlayer.Id, settlementLocation);
+      this.currentPlayer.PlaceSettlement();
+      this.SettlementBuiltEvent?.Invoke();
     }
 
     public void ChooseResourceFromOpponent(Guid opponentId, Int32 resourceIndex)
@@ -858,6 +820,49 @@ namespace Jabberwocky.SoC.Library
         this.ErrorRaisedEvent?.Invoke(errorDetails);
         return;
       }
+    }
+
+    private void TryRaiseSettlementBuildingError()
+    {
+      if (this.ErrorRaisedEvent == null)
+      {
+        return;
+      }
+
+      String message = null;
+      if (this.currentPlayer.RemainingSettlements == 0)
+      {
+        message = "Cannot build settlement. All settlements already built.";
+      }
+      else
+      {
+        message = "Cannot build settlement. Missing ";
+
+        if (this.currentPlayer.BrickCount == 0)
+        {
+          message += "1 brick and ";
+        }
+
+        if (this.currentPlayer.GrainCount == 0)
+        {
+          message += "1 grain and ";
+        }
+
+        if (this.currentPlayer.LumberCount == 0)
+        {
+          message += "1 lumber and ";
+        }
+
+        if (this.currentPlayer.WoolCount == 0)
+        {
+          message += "1 wool and ";
+        }
+
+        message = message.Substring(0, message.Length - " and ".Length);
+        message += ".";
+      }
+
+      this.ErrorRaisedEvent.Invoke(new ErrorDetails(message));
     }
 
     private void TryRaiseSettlementPlacingError(GameBoardData.VerificationResults verificationResults, UInt32 settlementLocation)
