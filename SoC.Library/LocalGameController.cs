@@ -121,13 +121,6 @@ namespace Jabberwocky.SoC.Library
       }
     }
 
-    private Boolean CanBuildSettlement()
-    {
-      return this.currentPlayer.BrickCount > 0 && this.currentPlayer.LumberCount > 0 &&
-          this.currentPlayer.GrainCount > 0 && this.currentPlayer.WoolCount > 0 &&
-          this.currentPlayer.RemainingSettlements > 0;
-    }
-
     public void BuildSettlement(TurnToken turnToken, UInt32 settlementLocation)
     {
       if (turnToken != this.currentTurnToken)
@@ -595,6 +588,13 @@ namespace Jabberwocky.SoC.Library
       }
     }
 
+    private Boolean CanBuildSettlement()
+    {
+      return this.currentPlayer.BrickCount > 0 && this.currentPlayer.LumberCount > 0 &&
+          this.currentPlayer.GrainCount > 0 && this.currentPlayer.WoolCount > 0 &&
+          this.currentPlayer.RemainingSettlements > 0;
+    }
+
     private List<ResourceTypes> CollapsePlayerResourcesToList(IPlayer player)
     {
       var resources = new List<ResourceTypes>(player.ResourcesCount);
@@ -784,18 +784,6 @@ namespace Jabberwocky.SoC.Library
       }
 
       return randomisedResources;
-    }
-
-    private Boolean TryGetPlayerForCurrentTurnToken(TurnToken turnToken, out IPlayer player)
-    {
-      if (this.currentTurnToken == turnToken)
-      {
-        player = this.currentPlayer;
-        return true;
-      }
-
-      player = null;
-      return false;
     }
 
     private void TryRaiseRoadPlacingError(GameBoardData.VerificationResults verificationResults, UInt32 settlementLocation, UInt32 roadEndLocation)
