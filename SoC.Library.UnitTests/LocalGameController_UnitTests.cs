@@ -483,7 +483,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
       localGameController.ContinueGameSetup(FirstSettlementOneLocation, 1u);
       exception.ShouldNotBeNull();
-      exception.Message.ShouldBe("Cannot place settlement: Location " + FirstSettlementOneLocation + " already owned by player " + firstOpponent.Id);
+      exception.Message.ShouldBe("Cannot build settlement: Location " + FirstSettlementOneLocation + " already settled by player '" + FirstOpponentName + "'.");
       gameBoardUpdate.ShouldBeNull();
     }
 
@@ -514,7 +514,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
       localGameController.CompleteGameSetup(FirstSettlementOneLocation, 1);
 
       exception.ShouldNotBeNull();
-      exception.Message.ShouldBe("Cannot place settlement: Location " + FirstSettlementOneLocation + " already owned by player " + firstOpponent.Id);
+      exception.Message.ShouldBe("Cannot build settlement: Location " + FirstSettlementOneLocation + " already settled by player '" + FirstOpponentName + "'.");
       gameBoardUpdate.ShouldBeNull();
     }
 
@@ -543,7 +543,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
       localGameController.ContinueGameSetup(19u, 1u);
 
       exception.ShouldNotBeNull();
-      exception.Message.ShouldBe("Cannot place settlement: Too close to player " + firstOpponent.Id + " at location " + FirstSettlementOneLocation);
+      exception.Message.ShouldBe("Cannot build settlement: Too close to player '" + FirstOpponentName + "' at location " + FirstSettlementOneLocation + ".");
       gameBoardUpdate.ShouldBeNull();
     }
 
@@ -573,7 +573,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
       localGameController.CompleteGameSetup(19, 18);
 
       exception.ShouldNotBeNull();
-      exception.Message.ShouldBe("Cannot place settlement: Too close to player " + firstOpponent.Id + " at location " + FirstSettlementOneLocation);
+      exception.Message.ShouldBe("Cannot build settlement: Too close to player '" + FirstOpponentName + "' at location " + FirstSettlementOneLocation + ".");
       gameBoardUpdate.ShouldBeNull();
     }
 
@@ -595,7 +595,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
       localGameController.ContinueGameSetup(100, 101);
 
       errorDetails.ShouldNotBeNull();
-      errorDetails.Message.ShouldBe("Cannot place settlement at [100]. This is outside of board range (0 - 53).");
+      errorDetails.Message.ShouldBe("Cannot build settlement: Location 100 is outside of board range (0 - 53).");
       gameBoardUpdate.ShouldBeNull();
     }
 
@@ -663,7 +663,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
       localGameController.CompleteGameSetup(100, 101);
 
       errorDetails.ShouldNotBeNull();
-      errorDetails.Message.ShouldBe("Cannot place settlement at [100]. This is outside of board range (0 - 53).");
+      errorDetails.Message.ShouldBe("Cannot build settlement: Location 100 is outside of board range (0 - 53).");
       gameBoardUpdate.ShouldBeNull();
     }
 
