@@ -129,7 +129,7 @@ namespace Jabberwocky.SoC.Library
         return;
       }
 
-      if (!this.VerifySettlementBuildRequest(settlementLocation))
+      if (!this.VerifyBuildSettlementRequest(settlementLocation))
       {
         return;
       }
@@ -885,7 +885,7 @@ namespace Jabberwocky.SoC.Library
       }
     }
 
-    private Boolean VerifySettlementBuildRequest(UInt32 settlementLocation)
+    private Boolean VerifyBuildSettlementRequest(UInt32 settlementLocation)
     {
       if (!this.CanBuildSettlement())
       {
