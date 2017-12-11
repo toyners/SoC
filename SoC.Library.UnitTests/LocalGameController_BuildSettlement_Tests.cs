@@ -189,7 +189,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
       // Assert
       errorDetails.ShouldNotBeNull();
-      errorDetails.Message.ShouldBe("Cannot build settlement because location is already settled.");
+      errorDetails.Message.ShouldBe("Cannot build settlement: Location 3 already settled by you.");
     }
 
     [Test]
@@ -223,7 +223,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
       // Assert
       errorDetails.ShouldNotBeNull();
-      errorDetails.Message.ShouldBe("Cannot build settlement because location is already settled.");
+      errorDetails.Message.ShouldBe("Cannot build settlement: Location 18 already settled by player '"+ FirstOpponentName + "'.");
     }
 
     [Test]
@@ -251,7 +251,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
       // Assert
       errorDetails.ShouldNotBeNull();
-      errorDetails.Message.ShouldBe("Cannot build settlement because location is too close to existing settlement.");
+      errorDetails.Message.ShouldBe("Cannot build settlement: Too close to own settlement at location 12.");
     }
 
     [Test]
@@ -285,7 +285,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
       // Assert
       errorDetails.ShouldNotBeNull();
-      errorDetails.Message.ShouldBe("Cannot build settlement because location is too close to existing settlement.");
+      errorDetails.Message.ShouldBe("Cannot build settlement: Too close to player '" + FirstOpponentName + "' at location 18.");
     }
 
     [Test]
@@ -312,7 +312,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
       // Assert
       errorDetails.ShouldNotBeNull();
-      errorDetails.Message.ShouldBe("Cannot build settlement because location is invalid.");
+      errorDetails.Message.ShouldBe("Cannot build settlement: Location 54 is outside of board range (0 - 53).");
     }
 
     [Test]
@@ -341,7 +341,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
       // Assert
       errorDetails.ShouldNotBeNull();
-      errorDetails.Message.ShouldBe("Cannot build settlement because location not connected to existing road.");
+      errorDetails.Message.ShouldBe("Cannot build settlement: Location 2 not connected to existing road.");
     }
 
     [Test]

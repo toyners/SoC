@@ -178,7 +178,11 @@ namespace Jabberwocky.SoC.Library.GameBoards
 
       if (!this.SettlementIsOnRoad(playerId, locationIndex))
       {
-        return new VerificationResults { Status = VerificationStatus.SettlementNotConnectedToExistingRoad };
+        return new VerificationResults
+        {
+          Status = VerificationStatus.SettlementNotConnectedToExistingRoad,
+          LocationIndex = locationIndex
+        };
       }
 
       return new VerificationResults { Status = VerificationStatus.Valid };

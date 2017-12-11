@@ -129,13 +129,12 @@ namespace Jabberwocky.SoC.Library
         return;
       }
 
-      if (!this.CanBuildSettlement())
+      if (!this.VerifySettlementBuildRequest(settlementLocation))
       {
-        this.TryRaiseSettlementBuildingError();
         return;
       }
 
-      var placeSettlementStatus = this.gameBoardManager.Data.CanPlaceSettlement(this.currentPlayer.Id, settlementLocation);
+      /*var placeSettlementStatus = this.gameBoardManager.Data.CanPlaceSettlement(this.currentPlayer.Id, settlementLocation);
       if (placeSettlementStatus.Status != GameBoardData.VerificationStatus.Valid)
       {
         var message = String.Empty;
@@ -150,7 +149,7 @@ namespace Jabberwocky.SoC.Library
 
         this.ErrorRaisedEvent?.Invoke(new ErrorDetails(message));
         return;
-      }
+      }*/
 
       this.gameBoardManager.Data.PlaceSettlement(this.currentPlayer.Id, settlementLocation);
       this.currentPlayer.PlaceSettlement();
@@ -855,34 +854,70 @@ namespace Jabberwocky.SoC.Library
 
     private void TryRaiseSettlementPlacingError(GameBoardData.VerificationResults verificationResults, UInt32 settlementLocation)
     {
+      if (this.ErrorRaisedEvent == null)
+      {
+        return;
+      }
+
       if (verificationResults.Status == GameBoardData.VerificationStatus.LocationIsInvalid)
       {
-        var errorDetails = new ErrorDetails("Cannot place settlement at [" + settlementLocation + "]. This is outside of board range (0 - 53).");
-        this.ErrorRaisedEvent?.Invoke(errorDetails);
+        this.ErrorRaisedEvent(new ErrorDetails("Cannot build settlement: Location " + settlementLocation + " is outside of board range (0 - 53)."));
         return;
       }
 
       if (verificationResults.Status == GameBoardData.VerificationStatus.TooCloseToSettlement)
       {
-        var errorDetails = new ErrorDetails("Cannot place settlement: Too close to player " + verificationResults.PlayerId + " at location " + verificationResults.LocationIndex);
-        this.ErrorRaisedEvent?.Invoke(errorDetails);
+        var player = this.playersById[verificationResults.PlayerId];
+        if (player == this.currentPlayer)
+        {
+          this.ErrorRaisedEvent(new ErrorDetails("Cannot build settlement: Too close to own settlement at location " + verificationResults.LocationIndex + "."));
+        }
+        else
+        {
+          this.ErrorRaisedEvent(new ErrorDetails("Cannot build settlement: Too close to player '" + player.Name + "' at location " + verificationResults.LocationIndex + "."));
+        }
+
         return;
       }
 
       if (verificationResults.Status == GameBoardData.VerificationStatus.LocationIsOccupied)
       {
-        var errorDetails = new ErrorDetails("Cannot place settlement: Location " + settlementLocation + " already owned by player " + verificationResults.PlayerId);
-        this.ErrorRaisedEvent?.Invoke(errorDetails);
+        var player = this.playersById[verificationResults.PlayerId];
+        if (player == this.currentPlayer)
+        {
+          this.ErrorRaisedEvent(new ErrorDetails("Cannot build settlement: Location " + verificationResults.LocationIndex + " already settled by you."));
+        }
+        else
+        {
+          this.ErrorRaisedEvent(new ErrorDetails("Cannot build settlement: Location " + settlementLocation + " already settled by player '" + player.Name + "'."));
+        }
+
+        return;
+      }
+
+      if (verificationResults.Status == GameBoardData.VerificationStatus.SettlementNotConnectedToExistingRoad)
+      {
+        this.ErrorRaisedEvent(new ErrorDetails("Cannot build settlement: Location " + verificationResults.LocationIndex + " not connected to existing road."));
         return;
       }
     }
 
-    private Boolean VerifySettlementPlacementRequest(UInt32 settlementLocation)
+    private Boolean VerifySettlementBuildRequest(UInt32 settlementLocation)
     {
-      var verificationResults = this.gameBoardManager.Data.CanPlaceSettlement(this.mainPlayer.Id, settlementLocation);
-      this.TryRaiseSettlementPlacingError(verificationResults, settlementLocation);
+      if (!this.CanBuildSettlement())
+      {
+        this.TryRaiseSettlementBuildingError();
+        return false;
+      }
 
-      return verificationResults.Status == GameBoardData.VerificationStatus.Valid;
+      var canPlaceSettlementResults = this.gameBoardManager.Data.CanPlaceSettlement(this.mainPlayer.Id, settlementLocation);
+      if (canPlaceSettlementResults.Status != GameBoardData.VerificationStatus.Valid)
+      {
+        this.TryRaiseSettlementPlacingError(canPlaceSettlementResults, settlementLocation);
+        return false;
+      }
+
+      return true;
     }
 
     private Boolean VerifyStartingInfrastructurePlacementRequest(UInt32 settlementLocation, UInt32 roadEndLocation)
