@@ -80,9 +80,15 @@ namespace Jabberwocky.SoC.Library
     public Action RoadSegmentBuiltEvent { get; set; }
     public Action<Guid> LongestRoadBuiltEvent { get; set; }
     public Action SettlementBuiltEvent { get; set; }
+    public Action CityBuiltEvent { get; set; }
     #endregion
 
     #region Methods
+    public void BuildCity(TurnToken turnToken, UInt32 settlementLocation)
+    {
+      throw new NotImplementedException();
+    }
+
     public void BuildRoadSegment(TurnToken turnToken, UInt32 roadStartLocation, UInt32 roadEndLocation)
     {
       if (this.currentTurnToken != turnToken)

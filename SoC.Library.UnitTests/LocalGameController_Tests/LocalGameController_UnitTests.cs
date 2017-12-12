@@ -1575,7 +1575,37 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
     [Test]
     public void BuildCity_OffBoard_MeaningfulErrorIsReceived()
     {
-      throw new NotImplementedException();
+      // Arrange
+      MockDice mockDice = null;
+      MockPlayer player;
+      MockComputerPlayer firstOpponent, secondOpponent, thirdOpponent;
+      var localGameController = this.CreateLocalGameControllerAndCompleteGameSetup(out mockDice, out player, out firstOpponent, out secondOpponent, out thirdOpponent);
+
+      mockDice.AddSequence(new[] { 8u });
+      player.AddResources(ResourceClutch.RoadSegment); // Need resources to build the precursor road
+      player.AddResources(ResourceClutch.Settlement);
+      player.AddResources(ResourceClutch.City);
+
+      Boolean cityBuilt = false;
+      localGameController.CityBuiltEvent = () => { cityBuilt = true; };
+
+      TurnToken turnToken = null;
+      localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
+
+      ErrorDetails errorDetails = null;
+      localGameController.ErrorRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
+
+      localGameController.StartGamePlay();
+      localGameController.BuildRoadSegment(turnToken, MainRoadOneEnd, 3);
+      localGameController.BuildSettlement(turnToken, 3);
+
+      // Act
+      localGameController.BuildCity(turnToken, 3);
+
+      // Assert
+      cityBuilt.ShouldBeFalse();
+      errorDetails.ShouldNotBeNull();
+      errorDetails.Message.ShouldBe("");
     }
 
     [Test]
