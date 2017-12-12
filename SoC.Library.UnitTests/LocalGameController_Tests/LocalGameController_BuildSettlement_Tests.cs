@@ -1,5 +1,5 @@
 ﻿
-namespace Jabberwocky.SoC.Library.UnitTests
+namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
 {
   using System;
   using NUnit.Framework;

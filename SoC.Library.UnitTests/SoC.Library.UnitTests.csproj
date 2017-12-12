@@ -56,9 +56,10 @@
   <ItemGroup>
     <Compile Include="ComputerPlayer_UnitTests.cs" />
     <Compile Include="GameBoardData_UnitTests.cs" />
-    <Compile Include="LocalGameControllerCreator.cs" />
-    <Compile Include="LocalGameControllerTestBase.cs" />
-    <Compile Include="LocalGameController_BuildSettlement_Tests.cs" />
+    <Compile Include="LocalGameController_Tests\LocalGameControllerCreator.cs" />
+    <Compile Include="LocalGameController_Tests\LocalGameControllerTestBase.cs" />
+    <Compile Include="LocalGameController_Tests\LocalGameController_BuildRoadSegment.cs" />
+    <Compile Include="LocalGameController_Tests\LocalGameController_BuildSettlement_Tests.cs" />
     <Compile Include="MockComputerPlayer.cs" />
     <Compile Include="MockDice.cs" />
     <Compile Include="MockDiceCreator.cs" />
@@ -70,7 +71,7 @@
     <Compile Include="PlayerTurnOrderCreator_UnitTests.cs" />
     <Compile Include="GameControllerFactory_UnitTests.cs" />
     <Compile Include="GameSession_UnitTests.cs" />
-    <Compile Include="LocalGameController_UnitTests.cs" />
+    <Compile Include="LocalGameController_Tests\LocalGameController_UnitTests.cs" />
     <Compile Include="Location_UnitTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ResourceProvider_UnitTests.cs" />
