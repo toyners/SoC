@@ -58,6 +58,7 @@
     <Compile Include="GameBoardData_UnitTests.cs" />
     <Compile Include="LocalGameController_Tests\LocalGameControllerCreator.cs" />
     <Compile Include="LocalGameController_Tests\LocalGameControllerTestBase.cs" />
+    <Compile Include="LocalGameController_Tests\LocalGameController_BuildCity_Tests.cs" />
     <Compile Include="LocalGameController_Tests\LocalGameController_BuildRoadSegment_Tests.cs" />
     <Compile Include="LocalGameController_Tests\LocalGameController_BuildSettlement_Tests.cs" />
     <Compile Include="MockComputerPlayer.cs" />
