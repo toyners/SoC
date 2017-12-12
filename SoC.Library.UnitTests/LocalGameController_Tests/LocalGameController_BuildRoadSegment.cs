@@ -339,6 +339,28 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       errorDetails.ShouldNotBeNull();
       errorDetails.Message.ShouldBe("Cannot build road segment. All road segments already built.");
     }
+
+    [Test]
+    public void BuildRoadSegment_TurnTokenNotCorrect_MeaningfulErrorIsReceived()
+    {
+      // Arrange
+      MockDice mockDice = null;
+      MockPlayer player;
+      MockComputerPlayer firstOpponent, secondOpponent, thirdOpponent;
+      var localGameController = this.CreateLocalGameControllerAndCompleteGameSetup(out mockDice, out player, out firstOpponent, out secondOpponent, out thirdOpponent);
+      mockDice.AddSequence(new[] { 8u });
+
+      ErrorDetails errorDetails = null;
+      localGameController.ErrorRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
+      localGameController.StartGamePlay();
+
+      // Act
+      localGameController.BuildRoadSegment(new TurnToken(), 4u, 3u);
+
+      // Assert
+      errorDetails.ShouldNotBeNull();
+      errorDetails.Message.ShouldBe("Turn token not recognised.");
+    }
     #endregion 
   }
 }

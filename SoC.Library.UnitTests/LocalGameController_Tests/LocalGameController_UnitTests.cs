@@ -1479,35 +1479,6 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       roads[0].ShouldBe(new Tuple<UInt32, UInt32, Guid>(MainSettlementOneLocation, MainRoadOneEnd, playerId));
     }
 
-    [Test]
-    [Category("All")]
-    [Category("LocalGameController")]
-    [Category("LocalGameController.BuildRoadSegment")]
-    [Category("Main Player Turn")]
-    public void BuildRoadSegment_TurnTokenNotCorrect_MeanginfulErrorIsreceived()
-    {
-      // Arrange
-      MockDice mockDice = null;
-      MockPlayer player;
-      MockComputerPlayer firstOpponent, secondOpponent, thirdOpponent;
-      var localGameController = this.CreateLocalGameControllerAndCompleteGameSetup(out mockDice, out player, out firstOpponent, out secondOpponent, out thirdOpponent);
-
-      mockDice.AddSequence(new[] { 8u });
-      player.AddResources(ResourceClutch.RoadSegment);
-
-      ErrorDetails errorDetails = null;
-      localGameController.ErrorRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
-
-      localGameController.StartGamePlay();
-
-      // Act
-      localGameController.BuildRoadSegment(new TurnToken(), 4, 3);
-
-      // Assert
-      errorDetails.ShouldNotBeNull();
-      errorDetails.Message.ShouldBe("Turn token not recognised.");
-    }
-
     private LocalGameController CreateLocalGameControllerAndCompleteGameSetup(out MockDice mockDice, out GameBoardManager gameBoardManager, out MockPlayer player, out MockComputerPlayer firstOpponent, out MockComputerPlayer secondOpponent, out MockComputerPlayer thirdOpponent)
     {
       var gameSetupOrder = new[] { 12u, 10u, 8u, 6u };
