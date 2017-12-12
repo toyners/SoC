@@ -1565,4 +1565,60 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
     }
     #endregion
   }
+
+  [TestFixture]
+  [Category("All")]
+  [Category("LocalGameController")]
+  public class LocalGameController_BuildCity_Tests : LocalGameControllerTestBase
+  {
+    [Test]
+    public void BuildCity_OffBoard_MeaningfulErrorIsReceived()
+    {
+      throw new NotImplementedException();
+    }
+
+    [Test]
+    public void BuildCity_OnExistingSettlementBelongingToOpponent_MeaningfulErrorIsReceived()
+    {
+      throw new NotImplementedException();
+    }
+
+    [Test]
+    public void BuildCity_OnExistingSettlementBelongingToPlayer_CityBuiltEventRaised()
+    {
+      throw new NotImplementedException();
+    }
+
+    [Test]
+    public void BuildCity_InsufficientResources_MeaningfulErrorIsReceived()
+    {
+      throw new NotImplementedException();
+    }
+
+    [Test]
+    public void BuildCity_AllCitiesAreBuilt_MeaningfulErrorIsReceived()
+    {
+      throw new NotImplementedException();
+    }
+
+    [Test]
+    public void BuildCity_OnExistingCityBelongingToPlayer_MeaningfulErrorIsReceived()
+    {
+      throw new NotImplementedException();
+    }
+
+    [Test]
+    public void BuildCity_OnExistingCityBelongingToOpponent_MeaningfulErrorIsReceived()
+    {
+      throw new NotImplementedException();
+    }
+
+    [Test]
+    [TestCase()] // Empty location
+    [TestCase()] // Location on road with no settlement
+    public void BuildCity_OnLocationThatIsNotSettlement_MeaningfulErrorIsReceived(UInt32 location)
+    {
+      throw new NotImplementedException();
+    }
+  }
 }
