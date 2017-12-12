@@ -44,13 +44,39 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       // Assert
       cityBuilt.ShouldBeFalse();
       errorDetails.ShouldNotBeNull();
-      errorDetails.Message.ShouldBe("");
+      errorDetails.Message.ShouldBe("Cannot build city: ");
     }
 
     [Test]
     public void BuildCity_OnExistingSettlementBelongingToOpponent_MeaningfulErrorIsReceived()
     {
-      throw new NotImplementedException();
+      // Arrange
+      MockDice mockDice = null;
+      MockPlayer player;
+      MockComputerPlayer firstOpponent, secondOpponent, thirdOpponent;
+      var localGameController = this.CreateLocalGameControllerAndCompleteGameSetup(out mockDice, out player, out firstOpponent, out secondOpponent, out thirdOpponent);
+
+      mockDice.AddSequence(new[] { 8u });
+      player.AddResources(ResourceClutch.City);
+
+      Boolean cityBuilt = false;
+      localGameController.CityBuiltEvent = () => { cityBuilt = true; };
+
+      TurnToken turnToken = null;
+      localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
+
+      ErrorDetails errorDetails = null;
+      localGameController.ErrorRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
+
+      localGameController.StartGamePlay();
+
+      // Act
+      localGameController.BuildCity(turnToken, FirstSettlementOneLocation);
+
+      // Assert
+      cityBuilt.ShouldBeFalse();
+      errorDetails.ShouldNotBeNull();
+      errorDetails.Message.ShouldBe("Cannot build city: ");
     }
 
     [Test]
