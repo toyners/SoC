@@ -1569,6 +1569,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
   [TestFixture]
   [Category("All")]
   [Category("LocalGameController")]
+  [Category("LocalGameController.BuildCity")]
   public class LocalGameController_BuildCity_Tests : LocalGameControllerTestBase
   {
     [Test]
@@ -1590,7 +1591,12 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
     }
 
     [Test]
-    public void BuildCity_InsufficientResources_MeaningfulErrorIsReceived()
+    [TestCase(0, 0, "")]
+    [TestCase(1, 1, "")]
+    [TestCase(1, 2, "")]
+    [TestCase(2, 0, "")]
+    [TestCase(0, 3, "")]
+    public void BuildCity_InsufficientResources_MeaningfulErrorIsReceived(Int32 grainCount, Int32 oreCount, String expectedMessage)
     {
       throw new NotImplementedException();
     }
