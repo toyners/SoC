@@ -617,7 +617,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       localGameController.ContinueGameSetup(53, 54);
 
       errorDetails.ShouldNotBeNull();
-      errorDetails.Message.ShouldBe("Cannot place road at [53, 54]. This is outside of board range (0 - 53).");
+      errorDetails.Message.ShouldBe("Cannot build road segment: Locations 53 and/or 54 are outside of board range (0 - 53).");
       gameBoardUpdate.ShouldBeNull();
     }
 
@@ -639,7 +639,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       localGameController.ContinueGameSetup(28, 40);
 
       errorDetails.ShouldNotBeNull();
-      errorDetails.Message.ShouldBe("Cannot place road at [28, 40]. There is no direct connection between those points.");
+      errorDetails.Message.ShouldBe("Cannot build road segment: No direct connection between locations [28, 40].");
       gameBoardUpdate.ShouldBeNull();
     }
 
@@ -687,7 +687,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       localGameController.CompleteGameSetup(53, 54);
 
       errorDetails.ShouldNotBeNull();
-      errorDetails.Message.ShouldBe("Cannot place road at [53, 54]. This is outside of board range (0 - 53).");
+      errorDetails.Message.ShouldBe("Cannot build road segment: Locations 53 and/or 54 are outside of board range (0 - 53).");
       gameBoardUpdate.ShouldBeNull();
     }
 
@@ -711,7 +711,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       localGameController.CompleteGameSetup(28, 40);
 
       errorDetails.ShouldNotBeNull();
-      errorDetails.Message.ShouldBe("Cannot place road at [28, 40]. There is no direct connection between those points.");
+      errorDetails.Message.ShouldBe("Cannot build road segment: No direct connection between locations [28, 40].");
       gameBoardUpdate.ShouldBeNull();
     }
 

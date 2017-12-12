@@ -10,6 +10,7 @@ namespace Jabberwocky.SoC.Library
 
   public class LocalGameController : IGameController
   {
+    #region Enums
     public enum GamePhases
     {
       Initial,
@@ -25,6 +26,7 @@ namespace Jabberwocky.SoC.Library
       Quitting,
       NextStep,
     }
+    #endregion
 
     #region Fields
     private IPlayerPool playerPool;
@@ -89,36 +91,12 @@ namespace Jabberwocky.SoC.Library
         return;
       }
 
-      if (this.currentPlayer.BrickCount > 0 && this.currentPlayer.LumberCount > 0 && this.currentPlayer.RemainingRoadSegments > 0)
+      if (!this.VerifyBuildRoadSegmentRequest(roadStartLocation, roadEndLocation))
       {
-        this.BuildRoadSegment(roadStartLocation, roadEndLocation);
         return;
       }
 
-      if (this.ErrorRaisedEvent != null)
-      {
-        var message = "Cannot build road segment. ";
-        if (this.currentPlayer.RemainingRoadSegments == 0)
-        {
-          message += "All road segments already built.";
-        }
-
-        if (this.currentPlayer.BrickCount == 0 && this.currentPlayer.LumberCount == 0)
-        {
-          message += "Missing 1 brick and 1 lumber.";
-        }
-        else if (this.currentPlayer.BrickCount == 0)
-        {
-          message += "Missing 1 brick.";
-        }
-        else if (this.currentPlayer.LumberCount == 0)
-        {
-          message += "Missing 1 lumber.";
-        }
-
-        var errorDetails = new ErrorDetails(message);
-        this.ErrorRaisedEvent(errorDetails);
-      }
+      this.BuildRoadSegment(roadStartLocation, roadEndLocation);
     }
 
     public void BuildSettlement(TurnToken turnToken, UInt32 settlementLocation)
@@ -548,26 +526,18 @@ namespace Jabberwocky.SoC.Library
 
     private void BuildRoadSegment(UInt32 roadStartLocation, UInt32 roadEndLocation)
     {
-      var placeRoadStatus = this.gameBoardManager.Data.CanPlaceRoad(this.currentPlayer.Id, roadStartLocation, roadEndLocation);
-      if (placeRoadStatus.Status != GameBoardData.VerificationStatus.Valid)
-      {
-        this.HandlePlaceRoadError(placeRoadStatus.Status);
-        return;
-      }
-
       this.gameBoardManager.Data.PlaceRoadSegment(this.currentPlayer.Id, roadStartLocation, roadEndLocation);
       this.currentPlayer.PlaceRoadSegment();
       this.RoadSegmentBuiltEvent?.Invoke();
 
-      if (this.currentPlayer.RoadSegmentsBuilt >= 5)
-      {
-        Guid longestRoadPlayerId = Guid.Empty;
-        UInt32[] road = null;
-        if (this.gameBoardManager.Data.TryGetLongestRoadDetails(out longestRoadPlayerId, out road) && road.Length > 5)
-        {
-          this.LongestRoadBuiltEvent?.Invoke(this.currentPlayer.Id);
-        }
-      }
+      this.RaiseLongestRoadBuiltEventIfRelevant();
+    }
+
+    private Boolean CanBuildRoadSegment()
+    {
+      return this.currentPlayer.BrickCount > 0 &&
+        this.currentPlayer.LumberCount > 0 &&
+        this.currentPlayer.RemainingRoadSegments > 0;
     }
 
     private Boolean CanBuildSettlement()
@@ -754,6 +724,21 @@ namespace Jabberwocky.SoC.Library
              (playerIds.Length == 1 && playerIds[0] == this.mainPlayer.Id);
     }
 
+    private void RaiseLongestRoadBuiltEventIfRelevant()
+    {
+      if (this.currentPlayer.RoadSegmentsBuilt < 5)
+      {
+        return;
+      }
+
+      Guid longestRoadPlayerId = Guid.Empty;
+      UInt32[] road = null;
+      if (this.gameBoardManager.Data.TryGetLongestRoadDetails(out longestRoadPlayerId, out road) && road.Length > 5)
+      {
+        this.LongestRoadBuiltEvent?.Invoke(this.currentPlayer.Id);
+      }
+    }
+
     private List<ResourceTypes> RandomiseResourceList(List<ResourceTypes> resources)
     {
       var randomisedResources = new List<ResourceTypes>(resources.Count);
@@ -768,26 +753,56 @@ namespace Jabberwocky.SoC.Library
       return randomisedResources;
     }
 
-    private void TryRaiseRoadPlacingError(GameBoardData.VerificationResults verificationResults, UInt32 settlementLocation, UInt32 roadEndLocation)
+    private void TryRaiseRoadSegmentBuildingError()
+    {
+      if (this.currentPlayer.RemainingRoadSegments == 0)
+      {
+        this.ErrorRaisedEvent?.Invoke(new ErrorDetails("Cannot build road segment. All road segments already built."));
+        return;
+      }
+
+      if (this.currentPlayer.BrickCount == 0 && this.currentPlayer.LumberCount == 0)
+      {
+        this.ErrorRaisedEvent?.Invoke(new ErrorDetails("Cannot build road segment. Missing 1 brick and 1 lumber."));
+        return;
+      }
+
+      if (this.currentPlayer.BrickCount == 0)
+      {
+        this.ErrorRaisedEvent?.Invoke(new ErrorDetails("Cannot build road segment. Missing 1 brick."));
+        return;
+      }
+
+      if (this.currentPlayer.LumberCount == 0)
+      {
+        this.ErrorRaisedEvent?.Invoke(new ErrorDetails("Cannot build road segment. Missing 1 lumber."));
+        return;
+      }
+    }
+
+    private void TryRaiseRoadSegmentPlacingError(GameBoardData.VerificationResults verificationResults, UInt32 settlementLocation, UInt32 roadEndLocation)
     {
       if (verificationResults.Status == GameBoardData.VerificationStatus.RoadIsOffBoard)
       {
-        var errorDetails = new ErrorDetails("Cannot place road at [" + settlementLocation + ", " + roadEndLocation + "]. This is outside of board range (0 - 53).");
-        this.ErrorRaisedEvent?.Invoke(errorDetails);
+        this.ErrorRaisedEvent?.Invoke(new ErrorDetails("Cannot build road segment: Locations " + settlementLocation + " and/or " + roadEndLocation + " are outside of board range (0 - 53)."));
         return;
       }
 
       if (verificationResults.Status == GameBoardData.VerificationStatus.NoDirectConnection)
       {
-        var errorDetails = new ErrorDetails("Cannot place road at [" + settlementLocation + ", " + roadEndLocation + "]. There is no direct connection between those points.");
-        this.ErrorRaisedEvent?.Invoke(errorDetails);
+        this.ErrorRaisedEvent?.Invoke(new ErrorDetails("Cannot build road segment: No direct connection between locations [" + settlementLocation + ", " + roadEndLocation + "]."));
+        return;
+      }
+
+      if (verificationResults.Status == GameBoardData.VerificationStatus.RoadIsOccupied)
+      {
+        this.ErrorRaisedEvent?.Invoke(new ErrorDetails("Cannot build road segment: Road segment between " + settlementLocation + " and " + roadEndLocation + " already exists."));
         return;
       }
 
       if (verificationResults.Status == GameBoardData.VerificationStatus.RoadNotConnectedToExistingRoad)
       {
-        var errorDetails = new ErrorDetails("Cannot place road at [" + settlementLocation + ", " + roadEndLocation + "]. No connection to a player owned road or settlement.");
-        this.ErrorRaisedEvent?.Invoke(errorDetails);
+        this.ErrorRaisedEvent?.Invoke(new ErrorDetails("Cannot build road segment: Road segment [" + settlementLocation + ", " + roadEndLocation + "] not connected to existing road segment."));
         return;
       }
     }
@@ -832,7 +847,7 @@ namespace Jabberwocky.SoC.Library
         message += ".";
       }
 
-      this.ErrorRaisedEvent.Invoke(new ErrorDetails(message));
+      this.ErrorRaisedEvent(new ErrorDetails(message));
     }
 
     private void TryRaiseSettlementPlacingError(GameBoardData.VerificationResults verificationResults, UInt32 settlementLocation)
@@ -885,6 +900,24 @@ namespace Jabberwocky.SoC.Library
       }
     }
 
+    private Boolean VerifyBuildRoadSegmentRequest(UInt32 roadStartLocation, UInt32 roadEndLocation)
+    {
+      if (!this.CanBuildRoadSegment())
+      {
+        this.TryRaiseRoadSegmentBuildingError();
+        return false;
+      }
+
+      var placeRoadStatus = this.gameBoardManager.Data.CanPlaceRoad(this.currentPlayer.Id, roadStartLocation, roadEndLocation);
+      if (placeRoadStatus.Status != GameBoardData.VerificationStatus.Valid)
+      {
+        this.TryRaiseRoadSegmentPlacingError(placeRoadStatus, roadStartLocation, roadEndLocation);
+        return false;
+      }
+
+      return true;
+    }
+
     private Boolean VerifyBuildSettlementRequest(UInt32 settlementLocation)
     {
       if (!this.CanBuildSettlement())
@@ -907,7 +940,7 @@ namespace Jabberwocky.SoC.Library
     {
       var verificationResults = this.gameBoardManager.Data.CanPlaceStartingInfrastructure(this.mainPlayer.Id, settlementLocation, roadEndLocation);
       this.TryRaiseSettlementPlacingError(verificationResults, settlementLocation);
-      this.TryRaiseRoadPlacingError(verificationResults, settlementLocation, roadEndLocation);
+      this.TryRaiseRoadSegmentPlacingError(verificationResults, settlementLocation, roadEndLocation);
       
       return verificationResults.Status == GameBoardData.VerificationStatus.Valid;
     }

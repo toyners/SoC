@@ -99,9 +99,9 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       var localGameController = this.CreateLocalGameControllerAndCompleteGameSetup(out mockDice, out player, out firstOpponent, out secondOpponent, out thirdOpponent);
 
       mockDice.AddSequence(new[] { 8u });
-      player.AddResources(new ResourceClutch(5, 0, 5, 0, 0));
+      player.AddResources(ResourceClutch.RoadSegment * 5);
 
-      firstOpponent.AddResources(new ResourceClutch(6, 0, 6, 0, 0));
+      firstOpponent.AddResources(ResourceClutch.RoadSegment * 6);
       firstOpponent.AddRoadChoices(new UInt32[] { 18, 19, 19, 9, 9, 10, 10, 11, 11, 21 });
 
       Guid playerId = Guid.Empty;
@@ -176,14 +176,17 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
 
       TurnToken turnToken = null;
       localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
+      Boolean roadSegmentBuiltEventRaised = false;
+      localGameController.RoadSegmentBuiltEvent = () => { roadSegmentBuiltEventRaised = true; };
       localGameController.StartGamePlay();
 
       // Act
       localGameController.BuildRoadSegment(turnToken, MainRoadOneEnd, MainSettlementOneLocation);
 
       // Assert
+      roadSegmentBuiltEventRaised.ShouldBeFalse();
       errorDetails.ShouldNotBeNull();
-      errorDetails.Message.ShouldBe("Cannot place road segment because road segment already exists.");
+      errorDetails.Message.ShouldBe("Cannot build road segment: Road segment between " + MainRoadOneEnd + " and " + MainSettlementOneLocation + " already exists.");
     }
 
     [Test]
@@ -211,7 +214,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
 
       // Assert
       errorDetails.ShouldNotBeNull();
-      errorDetails.Message.ShouldBe("Cannot place road segment because it is not connected to an existing road segment.");
+      errorDetails.Message.ShouldBe("Cannot build road segment: Road segment [0, 1] not connected to existing road segment.");
     }
 
     [Test]
@@ -239,7 +242,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
 
       // Assert
       errorDetails.ShouldNotBeNull();
-      errorDetails.Message.ShouldBe("Cannot place road segment because board location is not valid.");
+      errorDetails.Message.ShouldBe("Cannot build road segment: Locations 100 and/or 101 are outside of board range (0 - 53).");
     }
 
     [Test]
@@ -267,7 +270,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
 
       // Assert
       errorDetails.ShouldNotBeNull();
-      errorDetails.Message.ShouldBe("Cannot build road segment because no direct connection between start location and end location.");
+      errorDetails.Message.ShouldBe("Cannot build road segment: No direct connection between locations [4, 0].");
     }
 
     [Test]
