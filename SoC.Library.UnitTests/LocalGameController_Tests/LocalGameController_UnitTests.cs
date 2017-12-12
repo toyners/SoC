@@ -1650,8 +1650,8 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
     }
 
     [Test]
-    [TestCase()] // Empty location
-    [TestCase()] // Location on road with no settlement
+    [TestCase(0)] // Empty location
+    [TestCase(1)] // Location on road with no settlement
     public void BuildCity_OnLocationThatIsNotSettlement_MeaningfulErrorIsReceived(UInt32 location)
     {
       throw new NotImplementedException();
