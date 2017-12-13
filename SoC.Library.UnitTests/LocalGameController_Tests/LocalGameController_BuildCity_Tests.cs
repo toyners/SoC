@@ -40,7 +40,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       // Assert
       cityBuilt.ShouldBeFalse();
       errorDetails.ShouldNotBeNull();
-      errorDetails.Message.ShouldBe("Cannot build city: ");
+      errorDetails.Message.ShouldBe("Cannot build city. Location 100 is outside of board range (0 - 53).");
     }
 
     [Test]
@@ -72,7 +72,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       // Assert
       cityBuilt.ShouldBeFalse();
       errorDetails.ShouldNotBeNull();
-      errorDetails.Message.ShouldBe("Cannot build city: ");
+      errorDetails.Message.ShouldBe("Cannot build city. Settlement at location " + FirstSettlementOneLocation + " is owned by player '" + FirstOpponentName + "'.");
     }
 
     [Test]
@@ -107,11 +107,11 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
     }
 
     [Test]
-    [TestCase(0, 0, "")]
-    [TestCase(1, 1, "")]
-    [TestCase(1, 2, "")]
-    [TestCase(2, 0, "")]
-    [TestCase(0, 3, "")]
+    [TestCase(0, 0, "Cannot build city. Missing 2 grain and 3 ore.")]
+    [TestCase(1, 1, "Cannot build city. Missing 1 grain and 2 ore.")]
+    [TestCase(1, 2, "Cannot build city. Missing 1 grain and 1 ore.")]
+    [TestCase(2, 0, "Cannot build city. Missing 3 ore.")]
+    [TestCase(0, 3, "Cannot build city. Missing 2 grain.")]
     public void BuildCity_InsufficientResources_MeaningfulErrorIsReceived(Int32 grainCount, Int32 oreCount, String expectedMessage)
     {
       // Arrange
@@ -180,7 +180,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
 
       // Assert
       errorDetails.ShouldNotBeNull();
-      errorDetails.Message.ShouldBe("Cannot build city: ");
+      errorDetails.Message.ShouldBe("Cannot build city. All cities already built.");
     }
 
     [Test]
@@ -209,7 +209,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
 
       // Assert
       errorDetails.ShouldNotBeNull();
-      errorDetails.Message.ShouldBe("Cannot build city: ");
+      errorDetails.Message.ShouldBe("Cannot build city. There is already a city at location " + MainSettlementOneLocation + " belongs to you.");
     }
 
     [Test]
@@ -239,7 +239,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
 
       // Assert
       errorDetails.ShouldNotBeNull();
-      errorDetails.Message.ShouldBe("Cannot build city: ");
+      errorDetails.Message.ShouldBe("Cannot build city. There is already a city at location " + FirstSettlementOneLocation + " belonging to '" + FirstOpponentName + "'.");
     }
 
     [Test]
@@ -267,7 +267,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
 
       // Assert
       errorDetails.ShouldNotBeNull();
-      errorDetails.Message.ShouldBe("Cannot build city: ");
+      errorDetails.Message.ShouldBe("Cannot build city. No settlement at location 0.");
     }
 
     [Test]
@@ -297,7 +297,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
 
       // Assert
       errorDetails.ShouldNotBeNull();
-      errorDetails.Message.ShouldBe("Cannot build city: ");
+      errorDetails.Message.ShouldBe("Cannot build city. No settlement at location 3.");
     }
 
     [Test]

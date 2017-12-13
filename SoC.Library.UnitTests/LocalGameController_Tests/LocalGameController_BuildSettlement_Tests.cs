@@ -189,7 +189,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
 
       // Assert
       errorDetails.ShouldNotBeNull();
-      errorDetails.Message.ShouldBe("Cannot build settlement: Location 3 already settled by you.");
+      errorDetails.Message.ShouldBe("Cannot build settlement. Location 3 already settled by you.");
     }
 
     [Test]
@@ -223,7 +223,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
 
       // Assert
       errorDetails.ShouldNotBeNull();
-      errorDetails.Message.ShouldBe("Cannot build settlement: Location 18 already settled by player '"+ FirstOpponentName + "'.");
+      errorDetails.Message.ShouldBe("Cannot build settlement. Location 18 already settled by player '"+ FirstOpponentName + "'.");
     }
 
     [Test]
@@ -251,7 +251,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
 
       // Assert
       errorDetails.ShouldNotBeNull();
-      errorDetails.Message.ShouldBe("Cannot build settlement: Too close to own settlement at location 12.");
+      errorDetails.Message.ShouldBe("Cannot build settlement. Too close to own settlement at location 12.");
     }
 
     [Test]
@@ -285,7 +285,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
 
       // Assert
       errorDetails.ShouldNotBeNull();
-      errorDetails.Message.ShouldBe("Cannot build settlement: Too close to player '" + FirstOpponentName + "' at location 18.");
+      errorDetails.Message.ShouldBe("Cannot build settlement. Too close to player '" + FirstOpponentName + "' at location 18.");
     }
 
     [Test]
