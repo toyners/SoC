@@ -21,8 +21,6 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       var localGameController = this.CreateLocalGameControllerAndCompleteGameSetup(out mockDice, out player, out firstOpponent, out secondOpponent, out thirdOpponent);
 
       mockDice.AddSequence(new[] { 8u });
-      player.AddResources(ResourceClutch.RoadSegment); // Need resources to build the precursor road
-      player.AddResources(ResourceClutch.Settlement);
       player.AddResources(ResourceClutch.City);
 
       Boolean cityBuilt = false;
@@ -35,11 +33,9 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       localGameController.ErrorRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
 
       localGameController.StartGamePlay();
-      localGameController.BuildRoadSegment(turnToken, MainRoadOneEnd, 3);
-      localGameController.BuildSettlement(turnToken, 3);
 
       // Act
-      localGameController.BuildCity(turnToken, 3);
+      localGameController.BuildCity(turnToken, 100);
 
       // Assert
       cityBuilt.ShouldBeFalse();
@@ -82,7 +78,32 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
     [Test]
     public void BuildCity_OnExistingSettlementBelongingToPlayer_CityBuiltEventRaised()
     {
-      throw new NotImplementedException();
+      // Arrange
+      MockDice mockDice = null;
+      MockPlayer player;
+      MockComputerPlayer firstOpponent, secondOpponent, thirdOpponent;
+      var localGameController = this.CreateLocalGameControllerAndCompleteGameSetup(out mockDice, out player, out firstOpponent, out secondOpponent, out thirdOpponent);
+
+      mockDice.AddSequence(new[] { 8u });
+      player.AddResources(ResourceClutch.City);
+
+      Boolean cityBuilt = false;
+      localGameController.CityBuiltEvent = () => { cityBuilt = true; };
+
+      TurnToken turnToken = null;
+      localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
+
+      ErrorDetails errorDetails = null;
+      localGameController.ErrorRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
+
+      localGameController.StartGamePlay();
+
+      // Act
+      localGameController.BuildCity(turnToken, MainSettlementOneLocation);
+
+      // Assert
+      cityBuilt.ShouldBeTrue();
+      errorDetails.ShouldBeNull();
     }
 
     [Test]
@@ -93,33 +114,216 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
     [TestCase(0, 3, "")]
     public void BuildCity_InsufficientResources_MeaningfulErrorIsReceived(Int32 grainCount, Int32 oreCount, String expectedMessage)
     {
-      throw new NotImplementedException();
+      // Arrange
+      MockDice mockDice = null;
+      MockPlayer player;
+      MockComputerPlayer firstOpponent, secondOpponent, thirdOpponent;
+      var localGameController = this.CreateLocalGameControllerAndCompleteGameSetup(out mockDice, out player, out firstOpponent, out secondOpponent, out thirdOpponent);
+
+      mockDice.AddSequence(new[] { 8u });
+      player.AddResources(new ResourceClutch(0, grainCount, 0, oreCount, 0));
+
+      Boolean cityBuilt = false;
+      localGameController.CityBuiltEvent = () => { cityBuilt = true; };
+
+      TurnToken turnToken = null;
+      localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
+
+      ErrorDetails errorDetails = null;
+      localGameController.ErrorRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
+
+      localGameController.StartGamePlay();
+
+      // Act
+      localGameController.BuildCity(turnToken, MainSettlementOneLocation);
+
+      // Assert
+      cityBuilt.ShouldBeFalse();
+      errorDetails.ShouldNotBeNull();
+      errorDetails.Message.ShouldBe(expectedMessage);
     }
 
     [Test]
     public void BuildCity_AllCitiesAreBuilt_MeaningfulErrorIsReceived()
     {
-      throw new NotImplementedException();
+      // Arrange
+      MockDice mockDice = null;
+      MockPlayer player;
+      MockComputerPlayer firstOpponent, secondOpponent, thirdOpponent;
+      var localGameController = this.CreateLocalGameControllerAndCompleteGameSetup(out mockDice, out player, out firstOpponent, out secondOpponent, out thirdOpponent);
+
+      mockDice.AddSequence(new[] { 8u });
+      player.AddResources(ResourceClutch.RoadSegment * 6);
+      player.AddResources(ResourceClutch.Settlement * 4);
+      player.AddResources(ResourceClutch.City * 5);
+
+      TurnToken turnToken = null;
+      localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
+
+      ErrorDetails errorDetails = null;
+      localGameController.ErrorRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
+
+      localGameController.StartGamePlay();
+      localGameController.BuildRoadSegment(turnToken, 4, 3);
+      localGameController.BuildRoadSegment(turnToken, 4, 5);
+      localGameController.BuildSettlement(turnToken, 3);
+      localGameController.BuildSettlement(turnToken, 5);
+      localGameController.BuildRoadSegment(turnToken, 3, 2);
+      localGameController.BuildRoadSegment(turnToken, 2, 1);
+      localGameController.BuildSettlement(turnToken, 1);
+      localGameController.BuildRoadSegment(turnToken, 5, 6);
+      localGameController.BuildRoadSegment(turnToken, 6, 14);
+      localGameController.BuildSettlement(turnToken, 14);
+
+      // Act
+      localGameController.BuildCity(turnToken, 1);
+
+      // Assert
+      errorDetails.ShouldNotBeNull();
+      errorDetails.Message.ShouldBe("Cannot build city: ");
     }
 
     [Test]
     public void BuildCity_OnExistingCityBelongingToPlayer_MeaningfulErrorIsReceived()
     {
-      throw new NotImplementedException();
+      // Arrange
+      MockDice mockDice = null;
+      MockPlayer player;
+      MockComputerPlayer firstOpponent, secondOpponent, thirdOpponent;
+      var localGameController = this.CreateLocalGameControllerAndCompleteGameSetup(out mockDice, out player, out firstOpponent, out secondOpponent, out thirdOpponent);
+
+      mockDice.AddSequence(new[] { 8u });
+      player.AddResources(ResourceClutch.City * 2);
+
+      TurnToken turnToken = null;
+      localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
+
+      ErrorDetails errorDetails = null;
+      localGameController.ErrorRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
+
+      localGameController.StartGamePlay();
+      localGameController.BuildCity(turnToken, MainSettlementOneLocation);
+
+      // Act
+      localGameController.BuildCity(turnToken, MainSettlementOneLocation);
+
+      // Assert
+      errorDetails.ShouldNotBeNull();
+      errorDetails.Message.ShouldBe("Cannot build city: ");
     }
 
     [Test]
     public void BuildCity_OnExistingCityBelongingToOpponent_MeaningfulErrorIsReceived()
     {
-      throw new NotImplementedException();
+      // Arrange
+      MockDice mockDice = null;
+      MockPlayer player;
+      MockComputerPlayer firstOpponent, secondOpponent, thirdOpponent;
+      var localGameController = this.CreateLocalGameControllerAndCompleteGameSetup(out mockDice, out player, out firstOpponent, out secondOpponent, out thirdOpponent);
+
+      mockDice.AddSequence(new[] { 8u });
+      player.AddResources(ResourceClutch.City);
+      firstOpponent.AddResources(ResourceClutch.City);
+
+      TurnToken turnToken = null;
+      localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
+
+      ErrorDetails errorDetails = null;
+      localGameController.ErrorRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
+
+      localGameController.StartGamePlay();
+      localGameController.EndTurn(turnToken);
+
+      // Act
+      localGameController.BuildCity(turnToken, FirstSettlementOneLocation);
+
+      // Assert
+      errorDetails.ShouldNotBeNull();
+      errorDetails.Message.ShouldBe("Cannot build city: ");
     }
 
     [Test]
-    [TestCase(0)] // Empty location
-    [TestCase(1)] // Location on road with no settlement
-    public void BuildCity_OnLocationThatIsNotSettlement_MeaningfulErrorIsReceived(UInt32 location)
+    public void BuildCity_OnLocationThatIsEmpty_MeaningfulErrorIsReceived()
     {
-      throw new NotImplementedException();
+      // Arrange
+      MockDice mockDice = null;
+      MockPlayer player;
+      MockComputerPlayer firstOpponent, secondOpponent, thirdOpponent;
+      var localGameController = this.CreateLocalGameControllerAndCompleteGameSetup(out mockDice, out player, out firstOpponent, out secondOpponent, out thirdOpponent);
+
+      mockDice.AddSequence(new[] { 8u });
+      player.AddResources(ResourceClutch.City);
+
+      TurnToken turnToken = null;
+      localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
+
+      ErrorDetails errorDetails = null;
+      localGameController.ErrorRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
+
+      localGameController.StartGamePlay();
+
+      // Act
+      localGameController.BuildCity(turnToken, 0);
+
+      // Assert
+      errorDetails.ShouldNotBeNull();
+      errorDetails.Message.ShouldBe("Cannot build city: ");
+    }
+
+    [Test]
+    public void BuildCity_OnLocationThatIsNotSettlement_MeaningfulErrorIsReceived()
+    {
+      // Arrange
+      MockDice mockDice = null;
+      MockPlayer player;
+      MockComputerPlayer firstOpponent, secondOpponent, thirdOpponent;
+      var localGameController = this.CreateLocalGameControllerAndCompleteGameSetup(out mockDice, out player, out firstOpponent, out secondOpponent, out thirdOpponent);
+
+      mockDice.AddSequence(new[] { 8u });
+      player.AddResources(ResourceClutch.RoadSegment);
+      player.AddResources(ResourceClutch.City);
+
+      TurnToken turnToken = null;
+      localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
+
+      ErrorDetails errorDetails = null;
+      localGameController.ErrorRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
+
+      localGameController.StartGamePlay();
+      localGameController.BuildRoadSegment(turnToken, 4, 3);
+
+      // Act
+      localGameController.BuildCity(turnToken, 3);
+
+      // Assert
+      errorDetails.ShouldNotBeNull();
+      errorDetails.Message.ShouldBe("Cannot build city: ");
+    }
+
+    [Test]
+    public void BuildCity_TurnTokenNotCorrect_MeaningfulErrorIsReceived()
+    {
+      // Arrange
+      MockDice mockDice = null;
+      MockPlayer player;
+      MockComputerPlayer firstOpponent, secondOpponent, thirdOpponent;
+      var localGameController = this.CreateLocalGameControllerAndCompleteGameSetup(out mockDice, out player, out firstOpponent, out secondOpponent, out thirdOpponent);
+
+      mockDice.AddSequence(new[] { 8u });
+
+      ErrorDetails errorDetails = null;
+      localGameController.ErrorRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
+
+      TurnToken turnToken = null;
+      localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
+      localGameController.StartGamePlay();
+
+      // Act
+      localGameController.BuildCity(new TurnToken(), 3);
+
+      // Assert
+      errorDetails.ShouldNotBeNull();
+      errorDetails.Message.ShouldBe("Turn token not recognised.");
     }
   }
 }
