@@ -86,7 +86,33 @@ namespace Jabberwocky.SoC.Library
     #region Methods
     public void BuildCity(TurnToken turnToken, UInt32 settlementLocation)
     {
+      if (this.currentTurnToken != turnToken)
+      {
+        this.ErrorRaisedEvent?.Invoke(new ErrorDetails("Turn token not recognised."));
+        return;
+      }
+
+      if (this.VerifyBuildCityRequest(settlementLocation))
+      {
+        return;
+      }
+
       throw new NotImplementedException();
+    }
+
+    private Boolean VerifyBuildCityRequest(UInt32 settlementLocation)
+    {
+      if (!this.CanBuildCity())
+      {
+        return false;
+      }
+
+      throw new NotImplementedException();
+    }
+
+    private Boolean CanBuildCity()
+    {
+      return this.currentPlayer.GrainCount >= 2 && this.currentPlayer.OreCount >= 3 && this.currentPlayer.RemainingCities > 0;
     }
 
     public void BuildRoadSegment(TurnToken turnToken, UInt32 roadStartLocation, UInt32 roadEndLocation)

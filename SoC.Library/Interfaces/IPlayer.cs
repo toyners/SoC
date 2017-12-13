@@ -19,6 +19,7 @@ namespace Jabberwocky.SoC.Library.Interfaces
     Int32 RemainingRoadSegments { get; }
     Int32 RoadSegmentsBuilt { get; }
     Int32 RemainingSettlements { get; }
+    Int32 RemainingCities { get; }
     #endregion
 
     #region Methods

@@ -10,6 +10,7 @@ namespace Jabberwocky.SoC.Library
     #region Fields
     private const Int32 TotalRoadSegments = 15;
     private const Int32 TotalSettlements = 5;
+    private const Int32 TotalCities = 4;
     #endregion
 
     #region Construction
@@ -55,6 +56,8 @@ namespace Jabberwocky.SoC.Library
     public Int32 RoadSegmentsBuilt { get; protected set; }
     public Int32 RemainingSettlements { get { return TotalSettlements - this.SettlementsBuilt;  } }
     public Int32 SettlementsBuilt { get; protected set; }
+    public Int32 CitiesBuilt { get; protected set; }
+    public Int32 RemainingCities { get { return TotalCities - this.CitiesBuilt; } }
     #endregion
 
     #region Methods
