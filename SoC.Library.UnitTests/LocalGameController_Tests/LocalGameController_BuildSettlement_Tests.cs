@@ -312,7 +312,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
 
       // Assert
       errorDetails.ShouldNotBeNull();
-      errorDetails.Message.ShouldBe("Cannot build settlement: Location 54 is outside of board range (0 - 53).");
+      errorDetails.Message.ShouldBe("Cannot build settlement. Location 54 is outside of board range (0 - 53).");
     }
 
     [Test]
@@ -341,7 +341,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
 
       // Assert
       errorDetails.ShouldNotBeNull();
-      errorDetails.Message.ShouldBe("Cannot build settlement: Location 2 not connected to existing road.");
+      errorDetails.Message.ShouldBe("Cannot build settlement. Location 2 not connected to existing road.");
     }
 
     [Test]

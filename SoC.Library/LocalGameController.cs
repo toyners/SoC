@@ -865,7 +865,7 @@ namespace Jabberwocky.SoC.Library
 
       if (verificationResults.Status == GameBoardData.VerificationStatus.LocationIsInvalid)
       {
-        this.ErrorRaisedEvent(new ErrorDetails("Cannot build settlement: Location " + settlementLocation + " is outside of board range (0 - 53)."));
+        this.ErrorRaisedEvent(new ErrorDetails("Cannot build settlement. Location " + settlementLocation + " is outside of board range (0 - 53)."));
         return;
       }
 
@@ -874,11 +874,11 @@ namespace Jabberwocky.SoC.Library
         var player = this.playersById[verificationResults.PlayerId];
         if (player == this.currentPlayer)
         {
-          this.ErrorRaisedEvent(new ErrorDetails("Cannot build settlement: Too close to own settlement at location " + verificationResults.LocationIndex + "."));
+          this.ErrorRaisedEvent(new ErrorDetails("Cannot build settlement. Too close to own settlement at location " + verificationResults.LocationIndex + "."));
         }
         else
         {
-          this.ErrorRaisedEvent(new ErrorDetails("Cannot build settlement: Too close to player '" + player.Name + "' at location " + verificationResults.LocationIndex + "."));
+          this.ErrorRaisedEvent(new ErrorDetails("Cannot build settlement. Too close to player '" + player.Name + "' at location " + verificationResults.LocationIndex + "."));
         }
 
         return;
@@ -889,11 +889,11 @@ namespace Jabberwocky.SoC.Library
         var player = this.playersById[verificationResults.PlayerId];
         if (player == this.currentPlayer)
         {
-          this.ErrorRaisedEvent(new ErrorDetails("Cannot build settlement: Location " + verificationResults.LocationIndex + " already settled by you."));
+          this.ErrorRaisedEvent(new ErrorDetails("Cannot build settlement. Location " + verificationResults.LocationIndex + " already settled by you."));
         }
         else
         {
-          this.ErrorRaisedEvent(new ErrorDetails("Cannot build settlement: Location " + settlementLocation + " already settled by player '" + player.Name + "'."));
+          this.ErrorRaisedEvent(new ErrorDetails("Cannot build settlement. Location " + settlementLocation + " already settled by player '" + player.Name + "'."));
         }
 
         return;
@@ -901,7 +901,7 @@ namespace Jabberwocky.SoC.Library
 
       if (verificationResults.Status == GameBoardData.VerificationStatus.SettlementNotConnectedToExistingRoad)
       {
-        this.ErrorRaisedEvent(new ErrorDetails("Cannot build settlement: Location " + verificationResults.LocationIndex + " not connected to existing road."));
+        this.ErrorRaisedEvent(new ErrorDetails("Cannot build settlement. Location " + verificationResults.LocationIndex + " not connected to existing road."));
         return;
       }
     }

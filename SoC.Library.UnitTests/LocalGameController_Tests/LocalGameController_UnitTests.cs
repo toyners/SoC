@@ -483,7 +483,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
 
       localGameController.ContinueGameSetup(FirstSettlementOneLocation, 1u);
       exception.ShouldNotBeNull();
-      exception.Message.ShouldBe("Cannot build settlement: Location " + FirstSettlementOneLocation + " already settled by player '" + FirstOpponentName + "'.");
+      exception.Message.ShouldBe("Cannot build settlement. Location " + FirstSettlementOneLocation + " already settled by player '" + FirstOpponentName + "'.");
       gameBoardUpdate.ShouldBeNull();
     }
 
@@ -514,7 +514,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       localGameController.CompleteGameSetup(FirstSettlementOneLocation, 1);
 
       exception.ShouldNotBeNull();
-      exception.Message.ShouldBe("Cannot build settlement: Location " + FirstSettlementOneLocation + " already settled by player '" + FirstOpponentName + "'.");
+      exception.Message.ShouldBe("Cannot build settlement. Location " + FirstSettlementOneLocation + " already settled by player '" + FirstOpponentName + "'.");
       gameBoardUpdate.ShouldBeNull();
     }
 
@@ -543,7 +543,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       localGameController.ContinueGameSetup(19u, 1u);
 
       exception.ShouldNotBeNull();
-      exception.Message.ShouldBe("Cannot build settlement: Too close to player '" + FirstOpponentName + "' at location " + FirstSettlementOneLocation + ".");
+      exception.Message.ShouldBe("Cannot build settlement. Too close to player '" + FirstOpponentName + "' at location " + FirstSettlementOneLocation + ".");
       gameBoardUpdate.ShouldBeNull();
     }
 
@@ -573,7 +573,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       localGameController.CompleteGameSetup(19, 18);
 
       exception.ShouldNotBeNull();
-      exception.Message.ShouldBe("Cannot build settlement: Too close to player '" + FirstOpponentName + "' at location " + FirstSettlementOneLocation + ".");
+      exception.Message.ShouldBe("Cannot build settlement. Too close to player '" + FirstOpponentName + "' at location " + FirstSettlementOneLocation + ".");
       gameBoardUpdate.ShouldBeNull();
     }
 
@@ -595,7 +595,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       localGameController.ContinueGameSetup(100, 101);
 
       errorDetails.ShouldNotBeNull();
-      errorDetails.Message.ShouldBe("Cannot build settlement: Location 100 is outside of board range (0 - 53).");
+      errorDetails.Message.ShouldBe("Cannot build settlement. Location 100 is outside of board range (0 - 53).");
       gameBoardUpdate.ShouldBeNull();
     }
 
@@ -617,7 +617,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       localGameController.ContinueGameSetup(53, 54);
 
       errorDetails.ShouldNotBeNull();
-      errorDetails.Message.ShouldBe("Cannot build road segment: Locations 53 and/or 54 are outside of board range (0 - 53).");
+      errorDetails.Message.ShouldBe("Cannot build road segment. Locations 53 and/or 54 are outside of board range (0 - 53).");
       gameBoardUpdate.ShouldBeNull();
     }
 
@@ -639,7 +639,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       localGameController.ContinueGameSetup(28, 40);
 
       errorDetails.ShouldNotBeNull();
-      errorDetails.Message.ShouldBe("Cannot build road segment: No direct connection between locations [28, 40].");
+      errorDetails.Message.ShouldBe("Cannot build road segment. No direct connection between locations [28, 40].");
       gameBoardUpdate.ShouldBeNull();
     }
 
@@ -663,7 +663,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       localGameController.CompleteGameSetup(100, 101);
 
       errorDetails.ShouldNotBeNull();
-      errorDetails.Message.ShouldBe("Cannot build settlement: Location 100 is outside of board range (0 - 53).");
+      errorDetails.Message.ShouldBe("Cannot build settlement. Location 100 is outside of board range (0 - 53).");
       gameBoardUpdate.ShouldBeNull();
     }
 
@@ -687,7 +687,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       localGameController.CompleteGameSetup(53, 54);
 
       errorDetails.ShouldNotBeNull();
-      errorDetails.Message.ShouldBe("Cannot build road segment: Locations 53 and/or 54 are outside of board range (0 - 53).");
+      errorDetails.Message.ShouldBe("Cannot build road segment. Locations 53 and/or 54 are outside of board range (0 - 53).");
       gameBoardUpdate.ShouldBeNull();
     }
 
@@ -711,7 +711,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       localGameController.CompleteGameSetup(28, 40);
 
       errorDetails.ShouldNotBeNull();
-      errorDetails.Message.ShouldBe("Cannot build road segment: No direct connection between locations [28, 40].");
+      errorDetails.Message.ShouldBe("Cannot build road segment. No direct connection between locations [28, 40].");
       gameBoardUpdate.ShouldBeNull();
     }
 
