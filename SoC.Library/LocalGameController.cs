@@ -100,21 +100,6 @@ namespace Jabberwocky.SoC.Library
       throw new NotImplementedException();
     }
 
-    private Boolean VerifyBuildCityRequest(UInt32 settlementLocation)
-    {
-      if (!this.CanBuildCity())
-      {
-        return false;
-      }
-
-      throw new NotImplementedException();
-    }
-
-    private Boolean CanBuildCity()
-    {
-      return this.currentPlayer.GrainCount >= 2 && this.currentPlayer.OreCount >= 3 && this.currentPlayer.RemainingCities > 0;
-    }
-
     public void BuildRoadSegment(TurnToken turnToken, UInt32 roadStartLocation, UInt32 roadEndLocation)
     {
       if (this.currentTurnToken != turnToken)
@@ -565,6 +550,11 @@ namespace Jabberwocky.SoC.Library
       this.RaiseLongestRoadBuiltEventIfRelevant();
     }
 
+    private Boolean CanBuildCity()
+    {
+      return this.currentPlayer.GrainCount >= 2 && this.currentPlayer.OreCount >= 3 && this.currentPlayer.RemainingCities > 0;
+    }
+
     private Boolean CanBuildRoadSegment()
     {
       return this.currentPlayer.BrickCount > 0 &&
@@ -930,6 +920,17 @@ namespace Jabberwocky.SoC.Library
         this.ErrorRaisedEvent(new ErrorDetails("Cannot build settlement. Location " + verificationResults.LocationIndex + " not connected to existing road."));
         return;
       }
+    }
+
+    private Boolean VerifyBuildCityRequest(UInt32 settlementLocation)
+    {
+      if (!this.CanBuildCity())
+      {
+        return false;
+      }
+
+      var placeCityStatus = this.gameBoardManager.Data.CanPlaceCity(this.currentPlayer.Id, settlementLocation);
+      throw new NotImplementedException();
     }
 
     private Boolean VerifyBuildRoadSegmentRequest(UInt32 roadStartLocation, UInt32 roadEndLocation)
