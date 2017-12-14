@@ -25,6 +25,8 @@ namespace Jabberwocky.SoC.Library.GameBoards
       RoadIsOffBoard,
       RoadIsOccupied,
       NoDirectConnection,
+      StartingInfrastructureNotPresentWhenPlacingCity,
+      StartingInfrastructureNotCompleteWhenPlacingCity,
       StartingInfrastructureNotPresentWhenPlacingRoad,
       StartingInfrastructureNotCompleteWhenPlacingRoad,
       StartingInfrastructureNotPresentWhenPlacingSettlement,
@@ -98,7 +100,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
     #endregion
 
     #region Methods
-    public VerificationStatus CanPlaceCity(Guid playerId, UInt32 locationIndex)
+    public VerificationResults CanPlaceCity(Guid playerId, UInt32 locationIndex)
     {
       throw new NotImplementedException();
     }

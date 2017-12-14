@@ -19,6 +19,102 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
     #region Methods
     [Test]
+    [Category("GameBoardData.CanPlaceCity")]
+    public void CanPlaceCity_EmptyBoard_ReturnsStartingInfrastructureNotPresentWhenPlacingCity()
+    {
+      // Arrange
+      var playerId = Guid.NewGuid();
+      var gameBoardData = new GameBoardData(BoardSizes.Standard);
+
+      // Act
+      var result = gameBoardData.CanPlaceCity(playerId, 0);
+
+      // Assert
+      result.Status.ShouldBe(GameBoardData.VerificationStatus.StartingInfrastructureNotPresentWhenPlacingCity);
+      result.LocationIndex.ShouldBe(0u);
+      result.PlayerId.ShouldBe(Guid.Empty);
+    }
+
+    [Test]
+    [Category("GameBoardData.CanPlaceCity")]
+    public void CanPlaceCity_OnlyPlacedFirstStartingInfrastructure_ReturnsStartingInfrastructureNotPresentWhenPlacingCity()
+    {
+      // Arrange
+      var playerId = Guid.NewGuid();
+      var gameBoardData = new GameBoardData(BoardSizes.Standard);
+      gameBoardData.PlaceStartingInfrastructure(playerId, FirstSettlementLocation, FirstRoadEndLocation);
+
+      // Act
+      var result = gameBoardData.CanPlaceSettlement(playerId, 0);
+
+      // Assert
+      result.Status.ShouldBe(GameBoardData.VerificationStatus.StartingInfrastructureNotCompleteWhenPlacingCity);
+      result.LocationIndex.ShouldBe(0u);
+      result.PlayerId.ShouldBe(Guid.Empty);
+      throw new NotImplementedException();
+    }
+
+    [Test]
+    [Category("GameBoardData.CanPlaceCity")]
+    public void CanPlaceCity_TryPlacingOnExistingCity_ReturnsLocationIsOccupiedStatus()
+    {
+      // Arrange
+      var playerId = Guid.NewGuid();
+      var gameBoardData = new GameBoardData(BoardSizes.Standard);
+      gameBoardData.PlaceStartingInfrastructure(playerId, FirstSettlementLocation, FirstRoadEndLocation);
+      gameBoardData.PlaceStartingInfrastructure(playerId, SecondSettlementLocation, SecondRoadEndLocation);
+
+      // Act
+      var result = gameBoardData.CanPlaceCity(playerId, FirstSettlementLocation);
+
+      // Assert
+      result.Status.ShouldBe(GameBoardData.VerificationStatus.LocationIsOccupied);
+      result.LocationIndex.ShouldBe(FirstSettlementLocation);
+      result.PlayerId.ShouldBe(playerId);
+      throw new NotImplementedException();
+    }
+
+    [Test]
+    [Category("GameBoardData.CanPlaceCity")]
+    public void CanPlaceCity_TryPlacingOnInvalidLocation_ReturnsLocationIsInvalidStatus()
+    {
+      // Arrange
+      var playerId = Guid.NewGuid();
+      var gameBoardData = new GameBoardData(BoardSizes.Standard);
+      gameBoardData.PlaceStartingInfrastructure(playerId, FirstSettlementLocation, FirstRoadEndLocation);
+      gameBoardData.PlaceStartingInfrastructure(playerId, SecondSettlementLocation, SecondRoadEndLocation);
+
+      // Act
+      var result = gameBoardData.CanPlaceCity(playerId, 100);
+
+      // Assert
+      result.Status.ShouldBe(GameBoardData.VerificationStatus.LocationIsInvalid);
+      result.LocationIndex.ShouldBe(0u);
+      result.PlayerId.ShouldBe(Guid.Empty);
+      throw new NotImplementedException();
+    }
+
+    [Test]
+    [Category("GameBoardData.CanPlaceCity")]
+    public void CanPlaceCity_TryPlacingOnEmptyLocation_ReturnsLocationIsNotSettledStatus()
+    {
+      // Arrange
+      var playerId = Guid.NewGuid();
+      var gameBoardData = new GameBoardData(BoardSizes.Standard);
+      gameBoardData.PlaceStartingInfrastructure(playerId, FirstSettlementLocation, FirstRoadEndLocation);
+      gameBoardData.PlaceStartingInfrastructure(playerId, SecondSettlementLocation, SecondRoadEndLocation);
+
+      // Act
+      var result = gameBoardData.CanPlaceCity(playerId, 100);
+
+      // Assert
+      result.Status.ShouldBe(GameBoardData.VerificationStatus.LocationIsInvalid);
+      result.LocationIndex.ShouldBe(0u);
+      result.PlayerId.ShouldBe(Guid.Empty);
+      throw new NotImplementedException();
+    }
+
+    [Test]
     [Category("GameBoardData.CanPlaceRoad")]
     public void CanPlaceRoad_ConnectedToRoad_ReturnsValid()
     {
