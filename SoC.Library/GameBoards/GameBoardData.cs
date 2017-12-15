@@ -17,8 +17,11 @@ namespace Jabberwocky.SoC.Library.GameBoards
     public enum VerificationStatus
     {
       Valid,
-      LocationIsOccupied,
+      LocationIsAlreadyCity,
       LocationIsInvalid,
+      LocationIsOccupied,
+      LocationIsNotSettled,
+      LocationIsNotOwned,
       RoadNotConnectedToExistingRoad,
       SettlementNotConnectedToExistingRoad,
       TooCloseToSettlement,
@@ -100,7 +103,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
     #endregion
 
     #region Methods
-    public VerificationResults CanPlaceCity(Guid playerId, UInt32 locationIndex)
+    public VerificationResults CanPlaceCity(Guid playerId, UInt32 cityLocation)
     {
       throw new NotImplementedException();
     }
@@ -188,6 +191,11 @@ namespace Jabberwocky.SoC.Library.GameBoards
       }
 
       return new VerificationResults { Status = VerificationStatus.Valid };
+    }
+
+    public void PlaceCity(Guid opponentId, UInt32 cityLocation)
+    {
+      throw new NotImplementedException();
     }
 
     internal void PlaceRoadSegmentOnBoard(Guid playerId, UInt32 roadStartLocationIndex, UInt32 roadEndLocationIndex)
