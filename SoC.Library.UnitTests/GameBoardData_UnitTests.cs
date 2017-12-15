@@ -32,7 +32,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
       var gameBoardData = new GameBoardData(BoardSizes.Standard);
 
       // Act
-      var result = gameBoardData.CanPlaceCity(playerId, 0);
+      var result = gameBoardData.CanPlaceCity(playerId, FirstPlayerSettlementLocation);
 
       // Assert
       result.Status.ShouldBe(GameBoardData.VerificationStatus.StartingInfrastructureNotPresentWhenPlacingCity);
@@ -42,7 +42,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
     [Test]
     [Category("GameBoardData.CanPlaceCity")]
-    public void CanPlaceCity_OnlyPlacedFirstStartingInfrastructure_ReturnsStartingInfrastructureNotPresentWhenPlacingCity()
+    public void CanPlaceCity_OnlyPlacedFirstStartingInfrastructure_ReturnsStartingInfrastructureNotCompleteWhenPlacingCity()
     {
       // Arrange
       var playerId = Guid.NewGuid();
@@ -50,13 +50,12 @@ namespace Jabberwocky.SoC.Library.UnitTests
       gameBoardData.PlaceStartingInfrastructure(playerId, FirstPlayerSettlementLocation, FirstPlayerRoadEndLocation);
 
       // Act
-      var result = gameBoardData.CanPlaceSettlement(playerId, 0);
+      var result = gameBoardData.CanPlaceCity(playerId, FirstPlayerSettlementLocation);
 
       // Assert
       result.Status.ShouldBe(GameBoardData.VerificationStatus.StartingInfrastructureNotCompleteWhenPlacingCity);
       result.LocationIndex.ShouldBe(0u);
       result.PlayerId.ShouldBe(Guid.Empty);
-      throw new NotImplementedException();
     }
 
     [Test]
@@ -68,6 +67,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
       var gameBoardData = new GameBoardData(BoardSizes.Standard);
       gameBoardData.PlaceStartingInfrastructure(playerId, FirstPlayerSettlementLocation, FirstPlayerRoadEndLocation);
       gameBoardData.PlaceStartingInfrastructure(playerId, SecondPlayerSettlementLocation, SecondPlayerRoadEndLocation);
+      gameBoardData.PlaceCity(playerId, FirstPlayerSettlementLocation);
 
       // Act
       var result = gameBoardData.CanPlaceCity(playerId, FirstPlayerSettlementLocation);

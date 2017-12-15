@@ -103,7 +103,30 @@ namespace Jabberwocky.SoC.Library.GameBoards
     #endregion
 
     #region Methods
-    public VerificationResults CanPlaceCity(Guid playerId, UInt32 cityLocation)
+    public VerificationResults CanPlaceCity(Guid playerId, UInt32 location)
+    {
+      switch (this.PlacedStartingInfrastructureStatus(playerId))
+      {
+        case StartingInfrastructureStatus.None:
+        return new VerificationResults { Status = VerificationStatus.StartingInfrastructureNotPresentWhenPlacingCity };
+        case StartingInfrastructureStatus.Partial:
+        return new VerificationResults { Status = VerificationStatus.StartingInfrastructureNotCompleteWhenPlacingCity };
+      }
+
+      if (!this.SettlementLocationOnBoard(location))
+      {
+        return new VerificationResults { Status = VerificationStatus.LocationIsInvalid };
+      }
+
+      if (!this.LocationIsSettledByPlayer(playerId, location))
+      {
+        return new VerificationResults { Status = VerificationStatus.LocationIsNotSettled };
+      }
+
+      throw new NotImplementedException();
+    }
+
+    private Boolean LocationIsSettledByPlayer(Guid playerId, UInt32 cityLocation)
     {
       throw new NotImplementedException();
     }
