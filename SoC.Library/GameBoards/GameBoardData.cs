@@ -126,9 +126,9 @@ namespace Jabberwocky.SoC.Library.GameBoards
       throw new NotImplementedException();
     }
 
-    private Boolean LocationIsSettledByPlayer(Guid playerId, UInt32 cityLocation)
+    private Boolean LocationIsSettledByPlayer(Guid playerId, UInt32 location)
     {
-      throw new NotImplementedException();
+      return this.settlements.ContainsKey(location) && this.settlements[location] == playerId;
     }
 
     public VerificationResults CanPlaceRoad(Guid playerId, UInt32 roadStartLocation, UInt32 roadEndLocation)
