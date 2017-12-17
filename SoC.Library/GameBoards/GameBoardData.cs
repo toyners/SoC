@@ -146,7 +146,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
         };
       }
 
-      throw new NotImplementedException();
+      return new VerificationResults { Status = VerificationStatus.Valid };
     }
 
     private Guid GetOwningPlayerForLocation(UInt32 location)

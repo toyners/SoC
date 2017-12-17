@@ -184,6 +184,25 @@ namespace Jabberwocky.SoC.Library.UnitTests
     }
 
     [Test]
+    [Category("GameBoardData.CanPlaceCity")]
+    public void CanPlaceCity_OnPlayerSettlement_ReturnsValidStatus()
+    {
+      // Arrange
+      var playerId = Guid.NewGuid();
+      var gameBoardData = new GameBoardData(BoardSizes.Standard);
+      gameBoardData.PlaceStartingInfrastructure(playerId, FirstPlayerSettlementLocation, FirstPlayerRoadEndLocation);
+      gameBoardData.PlaceStartingInfrastructure(playerId, SecondPlayerSettlementLocation, SecondPlayerRoadEndLocation);
+
+      // Act
+      var result = gameBoardData.CanPlaceCity(playerId, FirstPlayerSettlementLocation);
+
+      // Assert
+      result.Status.ShouldBe(GameBoardData.VerificationStatus.Valid);
+      result.LocationIndex.ShouldBe(0u);
+      result.PlayerId.ShouldBe(Guid.Empty);
+    }
+
+    [Test]
     [Category("GameBoardData.CanPlaceRoad")]
     public void CanPlaceRoad_ConnectedToRoad_ReturnsValid()
     {
