@@ -111,7 +111,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
       var result = gameBoardData.CanPlaceCity(playerId, 0);
 
       // Assert
-      result.Status.ShouldBe(GameBoardData.VerificationStatus.LocationIsInvalid);
+      result.Status.ShouldBe(GameBoardData.VerificationStatus.LocationIsNotSettled);
       result.LocationIndex.ShouldBe(0u);
       result.PlayerId.ShouldBe(Guid.Empty);
     }

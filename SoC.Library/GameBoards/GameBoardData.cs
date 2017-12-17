@@ -118,12 +118,33 @@ namespace Jabberwocky.SoC.Library.GameBoards
         return new VerificationResults { Status = VerificationStatus.LocationIsInvalid };
       }
 
-      if (!this.LocationIsSettledByPlayer(playerId, location))
+      var owningPlayerId = this.GetOwningPlayerForLocation(location);
+      if (owningPlayerId == Guid.Empty)
       {
         return new VerificationResults { Status = VerificationStatus.LocationIsNotSettled };
       }
 
+      if (owningPlayerId != playerId)
+      {
+        return new VerificationResults
+        {
+          Status = VerificationStatus.LocationIsNotOwned,
+          PlayerId = owningPlayerId,
+          LocationIndex = location
+        };
+      }
+
       throw new NotImplementedException();
+    }
+
+    private Guid GetOwningPlayerForLocation(UInt32 location)
+    {
+      if (!this.settlements.ContainsKey(location))
+      {
+        return Guid.Empty;
+      }
+
+      return this.settlements[location];
     }
 
     private Boolean LocationIsSettledByPlayer(Guid playerId, UInt32 location)
