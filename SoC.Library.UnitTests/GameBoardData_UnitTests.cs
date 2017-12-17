@@ -19,7 +19,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
     private const UInt32 FirstOpponentSettlementLocation = 44;
     private const UInt32 FirstOpponentRoadEndLocation = 43;
-    private const UInt32 SecondOpponentSettlementLocation = 45;
+    private const UInt32 SecondOpponentSettlementLocation = 41;
     private const UInt32 SecondOpponentRoadEndLocation = 49;
 
     #region Methods

@@ -49,6 +49,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
     public const Int32 StandardBoardLocationCount = 54;
     public const Int32 StandardBoardTrailCount = 72;
     public const Int32 StandardBoardHexCount = 19;
+    private Dictionary<UInt32, Guid> cities;
     private ResourceProducer[] hexes;
     private Dictionary<UInt32, Guid> settlements;
     private Dictionary<Guid, List<UInt32>> settlementsByPlayer;
@@ -71,6 +72,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
       }
 
       this.Length = StandardBoardLocationCount;
+      this.cities = new Dictionary<UInt32, Guid>();
       this.settlements = new Dictionary<UInt32, Guid>();
       this.roadSegmentsByPlayer = new Dictionary<Guid, List<RoadSegment>>();
       this.settlementsByPlayer = new Dictionary<Guid, List<UInt32>>();
@@ -134,6 +136,16 @@ namespace Jabberwocky.SoC.Library.GameBoards
         };
       }
 
+      if (this.LocationHasPlayerCity(playerId, location))
+      {
+        return new VerificationResults
+        {
+          Status = VerificationStatus.LocationIsAlreadyCity,
+          LocationIndex = location,
+          PlayerId = playerId
+        };
+      }
+
       throw new NotImplementedException();
     }
 
@@ -147,9 +159,9 @@ namespace Jabberwocky.SoC.Library.GameBoards
       return this.settlements[location];
     }
 
-    private Boolean LocationIsSettledByPlayer(Guid playerId, UInt32 location)
+    private Boolean LocationHasPlayerCity(Guid playerId, UInt32 location)
     {
-      return this.settlements.ContainsKey(location) && this.settlements[location] == playerId;
+      return this.cities.ContainsKey(location) && this.settlements[location] == playerId;
     }
 
     public VerificationResults CanPlaceRoad(Guid playerId, UInt32 roadStartLocation, UInt32 roadEndLocation)
@@ -237,9 +249,9 @@ namespace Jabberwocky.SoC.Library.GameBoards
       return new VerificationResults { Status = VerificationStatus.Valid };
     }
 
-    public void PlaceCity(Guid opponentId, UInt32 cityLocation)
+    public void PlaceCity(Guid playerId, UInt32 location)
     {
-      throw new NotImplementedException();
+      this.cities.Add(location, playerId);
     }
 
     internal void PlaceRoadSegmentOnBoard(Guid playerId, UInt32 roadStartLocationIndex, UInt32 roadEndLocationIndex)
