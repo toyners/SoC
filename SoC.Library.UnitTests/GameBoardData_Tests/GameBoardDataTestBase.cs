@@ -1,5 +1,5 @@
 ﻿
-namespace Jabberwocky.SoC.Library.UnitTests
+namespace Jabberwocky.SoC.Library.UnitTests.GameBoardData_Tests
 {
   using System;
 
