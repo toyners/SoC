@@ -72,7 +72,7 @@
     <Compile Include="PlayerTurnOrderCreator_UnitTests.cs" />
     <Compile Include="GameControllerFactory_UnitTests.cs" />
     <Compile Include="GameSession_UnitTests.cs" />
-    <Compile Include="LocalGameController_Tests\LocalGameController_UnitTests.cs" />
+    <Compile Include="LocalGameController_Tests\LocalGameController_Tests.cs" />
     <Compile Include="Location_UnitTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ResourceProvider_UnitTests.cs" />

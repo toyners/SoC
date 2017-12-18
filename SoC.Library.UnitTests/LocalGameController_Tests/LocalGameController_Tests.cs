@@ -14,7 +14,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
   [TestFixture]
   [Category("All")]
   [Category("LocalGameController")]
-  public class LocalGameController_UnitTests : LocalGameControllerTestBase
+  public class LocalGameController_Tests : LocalGameControllerTestBase
   {
     #region Methods
     [Test]
