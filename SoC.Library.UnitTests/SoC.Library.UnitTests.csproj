@@ -55,7 +55,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ComputerPlayer_UnitTests.cs" />
-    <Compile Include="GameBoardData_UnitTests.cs" />
+    <Compile Include="GameBoardData_Tests\GameBoardDataTestBase.cs" />
+    <Compile Include="GameBoardData_Tests\GameBoardData_CanPlaceCity_UnitTests.cs" />
+    <Compile Include="GameBoardData_Tests\GameBoardData_UnitTests.cs" />
     <Compile Include="LocalGameController_Tests\LocalGameControllerCreator.cs" />
     <Compile Include="LocalGameController_Tests\LocalGameControllerTestBase.cs" />
     <Compile Include="LocalGameController_Tests\LocalGameController_BuildCity_Tests.cs" />
