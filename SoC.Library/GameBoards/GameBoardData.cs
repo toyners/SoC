@@ -251,6 +251,45 @@ namespace Jabberwocky.SoC.Library.GameBoards
 
     public void PlaceCity(Guid playerId, UInt32 location)
     {
+      var verificationResults = this.CanPlaceCity(playerId, location);
+      this.ThrowExceptionOnBadVerificationResult(verificationResults);
+
+      this.PlaceCityOnBoard(playerId, location);
+    }
+
+    public void PlaceRoadSegment(Guid playerId, UInt32 roadStartLocation, UInt32 roadEndLocation)
+    {
+      var verificationResults = this.CanPlaceRoad(playerId, roadStartLocation, roadEndLocation);
+      this.ThrowExceptionOnBadVerificationResult(verificationResults);
+
+      this.PlaceRoadSegmentOnBoard(playerId, roadStartLocation, roadEndLocation);
+    }
+
+    public void PlaceSettlement(Guid playerId, UInt32 locationIndex)
+    {
+      var verificationResults = this.CanPlaceSettlement(playerId, locationIndex);
+      this.ThrowExceptionOnBadVerificationResult(verificationResults);
+
+      this.PlaceSettlementOnBoard(playerId, locationIndex);
+    }
+
+    /// <summary>
+    /// Place starting infrastructure (settlement and connecting road segment).
+    /// </summary>
+    /// <param name="playerId">Id of player placing the infrastructure.</param>
+    /// <param name="settlementLocation">Location to place settlement. Also the starting location of the road segment.</param>
+    /// <param name="roadEndLocation">End location of road segment.</param>
+    public void PlaceStartingInfrastructure(Guid playerId, UInt32 settlementLocation, UInt32 roadEndLocation)
+    {
+      var verificationResults = this.CanPlaceStartingInfrastructure(playerId, settlementLocation, roadEndLocation);
+      this.ThrowExceptionOnBadVerificationResult(verificationResults);
+
+      this.PlaceSettlementOnBoard(playerId, settlementLocation);
+      this.PlaceRoadSegmentOnBoard(playerId, settlementLocation, roadEndLocation);
+    }
+
+    internal void PlaceCityOnBoard(Guid playerId, UInt32 location)
+    {
       this.cities.Add(location, playerId);
     }
 
@@ -619,14 +658,6 @@ namespace Jabberwocky.SoC.Library.GameBoards
       return data;
     }
 
-    public void PlaceRoadSegment(Guid playerId, UInt32 roadStartLocation, UInt32 roadEndLocation)
-    {
-      var verificationResults = this.CanPlaceRoad(playerId, roadStartLocation, roadEndLocation);
-      this.ThrowExceptionOnBadVerificationResult(verificationResults);
-      
-      this.PlaceRoadSegmentOnBoard(playerId, roadStartLocation, roadEndLocation);
-    }
-
     private StartingInfrastructureStatus PlacedStartingInfrastructureStatus(Guid playerId)
     {
       if (!this.settlementsByPlayer.ContainsKey(playerId) || 
@@ -649,29 +680,6 @@ namespace Jabberwocky.SoC.Library.GameBoards
       }
 
       return this.roadSegmentsByPlayer[playerId].Count == 1 ? StartingInfrastructureStatus.Partial : StartingInfrastructureStatus.Complete;
-    }
-
-    public void PlaceSettlement(Guid playerId, UInt32 locationIndex)
-    {
-      var verificationResults = this.CanPlaceSettlement(playerId, locationIndex);
-      this.ThrowExceptionOnBadVerificationResult(verificationResults);
-
-      this.PlaceSettlementOnBoard(playerId, locationIndex);
-    }
-
-    /// <summary>
-    /// Place starting infrastructure (settlement and connecting road segment).
-    /// </summary>
-    /// <param name="playerId">Id of player placing the infrastructure.</param>
-    /// <param name="settlementLocation">Location to place settlement. Also the starting location of the road segment.</param>
-    /// <param name="roadEndLocation">End location of road segment.</param>
-    public void PlaceStartingInfrastructure(Guid playerId, UInt32 settlementLocation, UInt32 roadEndLocation)
-    {
-      var verificationResults = this.CanPlaceStartingInfrastructure(playerId, settlementLocation, roadEndLocation);
-      this.ThrowExceptionOnBadVerificationResult(verificationResults);
-
-      this.PlaceSettlementOnBoard(playerId, settlementLocation);
-      this.PlaceRoadSegmentOnBoard(playerId, settlementLocation, roadEndLocation);
     }
 
     private void ThrowExceptionOnBadVerificationResult(VerificationResults verificationResults)
