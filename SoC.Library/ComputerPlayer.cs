@@ -18,6 +18,11 @@ namespace Jabberwocky.SoC.Library
     #endregion
 
     #region Methods
+    public virtual UInt32 ChooseCityLocation(GameBoardData gameBoardData)
+    {
+      throw new NotImplementedException();
+    }
+
     public virtual void ChooseInitialInfrastructure(GameBoardData gameBoardData, out UInt32 settlementLocation, out UInt32 roadEndLocation)
     {
       throw new NotImplementedException();

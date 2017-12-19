@@ -97,6 +97,11 @@ namespace Jabberwocky.SoC.Library
         return;
       }
 
+      this.BuildCity(location);
+    }
+
+    private void BuildCity(UInt32 location)
+    {
       this.gameBoardManager.Data.PlaceCity(this.currentPlayer.Id, location);
       this.currentPlayer.PlaceCity();
       this.CityBuiltEvent?.Invoke();
@@ -200,6 +205,13 @@ namespace Jabberwocky.SoC.Library
         {
           switch (playerAction)
           {
+            case PlayerAction.BuildCity:
+            {
+              var location = computerPlayer.ChooseCityLocation(this.gameBoardManager.Data);
+              this.BuildCity(location);
+              break;
+            }
+
             case PlayerAction.BuildRoad:
             {
               UInt32 startRoadLocation, endRoadLocation;

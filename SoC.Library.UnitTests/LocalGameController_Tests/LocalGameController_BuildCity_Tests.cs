@@ -233,6 +233,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       mockDice.AddSequence(new[] { 8u });
       player.AddResources(ResourceClutch.City);
       firstOpponent.AddResources(ResourceClutch.City);
+      firstOpponent.AddCityChoices(new[] { FirstSettlementOneLocation });
 
       TurnToken turnToken = null;
       localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
