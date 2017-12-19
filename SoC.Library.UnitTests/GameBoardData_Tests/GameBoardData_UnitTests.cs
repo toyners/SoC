@@ -219,7 +219,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.GameBoardData_Tests
       var result = gameBoardData.CanPlaceSettlement(playerId, 100);
 
       // Assert
-      result.Status.ShouldBe(GameBoardData.VerificationStatus.LocationIsInvalid);
+      result.Status.ShouldBe(GameBoardData.VerificationStatus.LocationForSettlementIsInvalid);
       result.LocationIndex.ShouldBe(0u);
       result.PlayerId.ShouldBe(Guid.Empty);
     }
@@ -327,7 +327,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.GameBoardData_Tests
       var result = gameBoardData.CanPlaceStartingInfrastructure(playerId, 100, 101);
 
       // Assert
-      result.Status.ShouldBe(GameBoardData.VerificationStatus.LocationIsInvalid);
+      result.Status.ShouldBe(GameBoardData.VerificationStatus.LocationForSettlementIsInvalid);
       result.LocationIndex.ShouldBe(0u);
       result.PlayerId.ShouldBe(Guid.Empty);
     }
@@ -414,8 +414,8 @@ namespace Jabberwocky.SoC.Library.UnitTests.GameBoardData_Tests
     [Test]
     [Category("GameBoardData.CanPlaceStartingInfrastructure")]
     [TestCase(53u, 54u, GameBoardData.VerificationStatus.RoadIsOffBoard)] // Hanging over the edge 
-    [TestCase(54u, 53u, GameBoardData.VerificationStatus.LocationIsInvalid)] // Hanging over the edge
-    [TestCase(100u, 101u, GameBoardData.VerificationStatus.LocationIsInvalid)]
+    [TestCase(54u, 53u, GameBoardData.VerificationStatus.LocationForSettlementIsInvalid)] // Hanging over the edge
+    [TestCase(100u, 101u, GameBoardData.VerificationStatus.LocationForSettlementIsInvalid)]
     public void CanPlaceStartingInfrastructure_RoadOffBoard_ReturnsRoadIsOffBoard(UInt32 settlementLocation, UInt32 roadEndLocation, GameBoardData.VerificationStatus expectedStatus)
     {
       // Arrange

@@ -879,7 +879,7 @@ namespace Jabberwocky.SoC.Library
         return;
       }
 
-      if (verificationResults.Status == GameBoardData.VerificationStatus.LocationIsInvalid)
+      if (verificationResults.Status == GameBoardData.VerificationStatus.LocationForSettlementIsInvalid)
       {
         this.ErrorRaisedEvent(new ErrorDetails("Cannot build settlement. Location " + settlementLocation + " is outside of board range (0 - 53)."));
         return;

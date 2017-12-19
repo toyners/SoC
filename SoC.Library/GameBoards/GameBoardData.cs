@@ -17,8 +17,9 @@ namespace Jabberwocky.SoC.Library.GameBoards
     public enum VerificationStatus
     {
       Valid,
+      LocationForCityIsInvalid,
+      LocationForSettlementIsInvalid,
       LocationIsAlreadyCity,
-      LocationIsInvalid,
       LocationIsOccupied,
       LocationIsNotSettled,
       LocationIsNotOwned,
@@ -117,7 +118,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
 
       if (!this.SettlementLocationOnBoard(location))
       {
-        return new VerificationResults { Status = VerificationStatus.LocationIsInvalid };
+        return new VerificationResults { Status = VerificationStatus.LocationForCityIsInvalid };
       }
 
       var owningPlayerId = this.GetOwningPlayerForLocation(location);
@@ -212,7 +213,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
 
       if (!this.SettlementLocationOnBoard(locationIndex))
       {
-        return new VerificationResults { Status = VerificationStatus.LocationIsInvalid };
+        return new VerificationResults { Status = VerificationStatus.LocationForSettlementIsInvalid };
       }
 
       if (this.SettlementLocationIsOccupied(locationIndex))
@@ -402,7 +403,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
 
       if (!this.SettlementLocationOnBoard(settlementLocation))
       {
-        return new VerificationResults { Status = VerificationStatus.LocationIsInvalid };
+        return new VerificationResults { Status = VerificationStatus.LocationForSettlementIsInvalid };
       }
 
       if (this.SettlementLocationIsOccupied(settlementLocation))
@@ -686,14 +687,20 @@ namespace Jabberwocky.SoC.Library.GameBoards
     {
       switch (verificationResults.Status)
       {
-        case VerificationStatus.LocationIsInvalid: throw new PlacementException("Cannot place settlement because location is not on board.");
+        case VerificationStatus.LocationForCityIsInvalid: throw new PlacementException("Cannot place city because location is not on board.");
+        case VerificationStatus.LocationIsAlreadyCity: throw new PlacementException("Cannot place city on existing city.");
+        case VerificationStatus.LocationForSettlementIsInvalid: throw new PlacementException("Cannot place settlement because location is not on board.");
         case VerificationStatus.LocationIsOccupied: throw new PlacementException("Cannot place settlement because location is already settled.");
+        case VerificationStatus.LocationIsNotOwned: throw new PlacementException("Cannot place city because location is settled by an opponent.");
+        case VerificationStatus.LocationIsNotSettled: throw new PlacementException("Cannot place city because location is not settled.");
         case VerificationStatus.NoDirectConnection: throw new PlacementException("Cannot place road because no direct connection between start location and end location.");
         case VerificationStatus.RoadNotConnectedToExistingRoad: throw new PlacementException("Cannot place road because it is not connected to an existing road segment.");
         case VerificationStatus.RoadIsOccupied: throw new PlacementException("Cannot place road because road already exists.");
         case VerificationStatus.RoadIsOffBoard: throw new PlacementException("Cannot place road because board location is not valid.");
         case VerificationStatus.SettlementNotConnectedToExistingRoad: throw new PlacementException("Cannot place settlement because location is not on a road.");
         case VerificationStatus.StartingInfrastructureAlreadyPresent: throw new PlacementException("Cannot place starting infrastructure more than once per player.");
+        case VerificationStatus.StartingInfrastructureNotPresentWhenPlacingCity:
+        case VerificationStatus.StartingInfrastructureNotCompleteWhenPlacingCity: throw new PlacementException("Cannot place city before placing all initial infrastructure.");        
         case VerificationStatus.StartingInfrastructureNotCompleteWhenPlacingRoad:
         case VerificationStatus.StartingInfrastructureNotPresentWhenPlacingRoad: throw new PlacementException("Cannot place road before placing all initial infrastructure.");
         case VerificationStatus.StartingInfrastructureNotCompleteWhenPlacingSettlement:

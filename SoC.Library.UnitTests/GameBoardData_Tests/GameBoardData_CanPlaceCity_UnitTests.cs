@@ -82,7 +82,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.GameBoardData_Tests
       var result = gameBoardData.CanPlaceCity(playerId, 100);
 
       // Assert
-      result.Status.ShouldBe(GameBoardData.VerificationStatus.LocationIsInvalid);
+      result.Status.ShouldBe(GameBoardData.VerificationStatus.LocationForCityIsInvalid);
       result.LocationIndex.ShouldBe(0u);
       result.PlayerId.ShouldBe(Guid.Empty);
     }
