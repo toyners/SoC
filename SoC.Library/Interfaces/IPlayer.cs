@@ -26,6 +26,7 @@ namespace Jabberwocky.SoC.Library.Interfaces
     PlayerDataView GetDataView();
     void AddResources(ResourceClutch resourceClutch);
     void RemoveResources(ResourceClutch resourceClutch);
+    void PlaceCity();
     void PlaceRoadSegment();
     void PlaceSettlement();
     void PlaceStartingInfrastructure();

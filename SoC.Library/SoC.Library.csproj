@@ -45,6 +45,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ComputerPlayer.cs" />
+    <Compile Include="Constants.cs" />
     <Compile Include="PlayerPool.cs" />
     <Compile Include="ErrorDetails.cs" />
     <Compile Include="Interfaces\IComputerPlayer.cs" />

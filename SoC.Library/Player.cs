@@ -84,22 +84,11 @@ namespace Jabberwocky.SoC.Library
       return dataView;
     }
 
-    public void RemoveResources(ResourceClutch resourceClutch)
+    public void PlaceCity()
     {
-      if (this.BrickCount - resourceClutch.BrickCount < 0 ||
-          this.GrainCount - resourceClutch.GrainCount < 0 ||
-          this.LumberCount - resourceClutch.LumberCount < 0 ||
-          this.OreCount - resourceClutch.OreCount < 0 ||
-          this.WoolCount - resourceClutch.WoolCount < 0)
-      {
-        throw new ArithmeticException("No resource count can be negative.");
-      }
-
-      this.BrickCount -= resourceClutch.BrickCount;
-      this.GrainCount -= resourceClutch.GrainCount;
-      this.LumberCount -= resourceClutch.LumberCount;
-      this.OreCount -= resourceClutch.OreCount;
-      this.WoolCount -= resourceClutch.WoolCount;
+      this.GrainCount -= Constants.GrainForBuildingCity;
+      this.OreCount -= Constants.OreForBuildingCity;
+      this.CitiesBuilt++;
     }
 
     public void PlaceRoadSegment()
@@ -122,6 +111,24 @@ namespace Jabberwocky.SoC.Library
     {
       this.RoadSegmentsBuilt++;
       this.SettlementsBuilt++;
+    }
+
+    public void RemoveResources(ResourceClutch resourceClutch)
+    {
+      if (this.BrickCount - resourceClutch.BrickCount < 0 ||
+          this.GrainCount - resourceClutch.GrainCount < 0 ||
+          this.LumberCount - resourceClutch.LumberCount < 0 ||
+          this.OreCount - resourceClutch.OreCount < 0 ||
+          this.WoolCount - resourceClutch.WoolCount < 0)
+      {
+        throw new ArithmeticException("No resource count can be negative.");
+      }
+
+      this.BrickCount -= resourceClutch.BrickCount;
+      this.GrainCount -= resourceClutch.GrainCount;
+      this.LumberCount -= resourceClutch.LumberCount;
+      this.OreCount -= resourceClutch.OreCount;
+      this.WoolCount -= resourceClutch.WoolCount;
     }
 
     /// <summary>

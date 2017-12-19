@@ -153,27 +153,36 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       var localGameController = this.CreateLocalGameControllerAndCompleteGameSetup(out mockDice, out player, out firstOpponent, out secondOpponent, out thirdOpponent);
 
       mockDice.AddSequence(new[] { 8u });
-      player.AddResources(ResourceClutch.RoadSegment * 6);
-      player.AddResources(ResourceClutch.Settlement * 4);
+      player.AddResources(ResourceClutch.RoadSegment * 4);
+      player.AddResources(ResourceClutch.Settlement * 3);
       player.AddResources(ResourceClutch.City * 5);
 
       TurnToken turnToken = null;
       localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
 
       ErrorDetails errorDetails = null;
-      localGameController.ErrorRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
+      localGameController.ErrorRaisedEvent = (ErrorDetails e) => 
+      {
+        if (errorDetails != null)
+        {
+          throw new Exception("Error already raised: " + errorDetails.Message);
+        }
+
+        errorDetails = e;
+      };
 
       localGameController.StartGamePlay();
+      localGameController.BuildCity(turnToken, MainSettlementOneLocation);
+      localGameController.BuildCity(turnToken, MainSettlementTwoLocation);
       localGameController.BuildRoadSegment(turnToken, 4, 3);
       localGameController.BuildRoadSegment(turnToken, 4, 5);
       localGameController.BuildSettlement(turnToken, 3);
+      localGameController.BuildCity(turnToken, 3);
       localGameController.BuildSettlement(turnToken, 5);
+      localGameController.BuildCity(turnToken, 5);
       localGameController.BuildRoadSegment(turnToken, 3, 2);
       localGameController.BuildRoadSegment(turnToken, 2, 1);
       localGameController.BuildSettlement(turnToken, 1);
-      localGameController.BuildRoadSegment(turnToken, 5, 6);
-      localGameController.BuildRoadSegment(turnToken, 6, 14);
-      localGameController.BuildSettlement(turnToken, 14);
 
       // Act
       localGameController.BuildCity(turnToken, 1);
@@ -209,7 +218,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
 
       // Assert
       errorDetails.ShouldNotBeNull();
-      errorDetails.Message.ShouldBe("Cannot build city. There is already a city at location " + MainSettlementOneLocation + " belongs to you.");
+      errorDetails.Message.ShouldBe("Cannot build city. There is already a city at location " + MainSettlementOneLocation + " that belongs to you.");
     }
 
     [Test]

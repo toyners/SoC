@@ -84,7 +84,7 @@ namespace Jabberwocky.SoC.Library
     #endregion
 
     #region Methods
-    public void BuildCity(TurnToken turnToken, UInt32 settlementLocation)
+    public void BuildCity(TurnToken turnToken, UInt32 location)
     {
       if (this.currentTurnToken != turnToken)
       {
@@ -92,12 +92,14 @@ namespace Jabberwocky.SoC.Library
         return;
       }
 
-      if (this.VerifyBuildCityRequest(settlementLocation))
+      if (!this.VerifyBuildCityRequest(location))
       {
         return;
       }
 
-      throw new NotImplementedException();
+      this.gameBoardManager.Data.PlaceCity(this.currentPlayer.Id, location);
+      this.currentPlayer.PlaceCity();
+      this.CityBuiltEvent?.Invoke();
     }
 
     public void BuildRoadSegment(TurnToken turnToken, UInt32 roadStartLocation, UInt32 roadEndLocation)
@@ -116,7 +118,7 @@ namespace Jabberwocky.SoC.Library
       this.BuildRoadSegment(roadStartLocation, roadEndLocation);
     }
 
-    public void BuildSettlement(TurnToken turnToken, UInt32 settlementLocation)
+    public void BuildSettlement(TurnToken turnToken, UInt32 location)
     {
       if (turnToken != this.currentTurnToken)
       {
@@ -124,12 +126,12 @@ namespace Jabberwocky.SoC.Library
         return;
       }
 
-      if (!this.VerifyBuildSettlementRequest(settlementLocation))
+      if (!this.VerifyBuildSettlementRequest(location))
       {
         return;
       }
 
-      this.gameBoardManager.Data.PlaceSettlement(this.currentPlayer.Id, settlementLocation);
+      this.gameBoardManager.Data.PlaceSettlement(this.currentPlayer.Id, location);
       this.currentPlayer.PlaceSettlement();
       this.SettlementBuiltEvent?.Invoke();
     }
@@ -775,6 +777,74 @@ namespace Jabberwocky.SoC.Library
       return randomisedResources;
     }
 
+    private void TryRaiseCityBuildingError()
+    {
+      if (this.currentPlayer.RemainingCities == 0)
+      {
+        this.ErrorRaisedEvent?.Invoke(new ErrorDetails("Cannot build city. All cities already built."));
+        return;
+      }
+
+      if (this.currentPlayer.GrainCount < Constants.GrainForBuildingCity && this.currentPlayer.OreCount < Constants.OreForBuildingCity)
+      {
+        var missingGrainCount = (Constants.GrainForBuildingCity - this.currentPlayer.GrainCount);
+        var missingOreCount = (Constants.OreForBuildingCity - this.currentPlayer.OreCount);
+        this.ErrorRaisedEvent?.Invoke(new ErrorDetails("Cannot build city. Missing " + missingGrainCount + " grain and " + missingOreCount + " ore."));
+        return;
+      }
+
+      if (this.currentPlayer.GrainCount < Constants.GrainForBuildingCity)
+      {
+        var missingGrainCount = (Constants.GrainForBuildingCity - this.currentPlayer.GrainCount);
+        this.ErrorRaisedEvent?.Invoke(new ErrorDetails("Cannot build city. Missing " + missingGrainCount + " grain."));
+        return;
+      }
+
+      if (this.currentPlayer.OreCount < Constants.OreForBuildingCity)
+      {
+        var missingOreCount = (Constants.OreForBuildingCity - this.currentPlayer.OreCount);
+        this.ErrorRaisedEvent?.Invoke(new ErrorDetails("Cannot build city. Missing " + missingOreCount + " ore."));
+        return;
+      }
+    }
+
+    private void TryRaiseCityPlacingError(GameBoardData.VerificationResults verificationResults, UInt32 location)
+    {
+      if (verificationResults.Status == GameBoardData.VerificationStatus.LocationForCityIsInvalid)
+      {
+        this.ErrorRaisedEvent?.Invoke(new ErrorDetails("Cannot build city. Location " + location + " is outside of board range (0 - 53)."));
+        return;
+      }
+
+      if (verificationResults.Status == GameBoardData.VerificationStatus.LocationIsNotOwned)
+      {
+        var player = this.playersById[verificationResults.PlayerId];
+        this.ErrorRaisedEvent?.Invoke(new ErrorDetails("Cannot build city. Settlement at location " + location + " is owned by player '" + player.Name + "'."));
+        return;
+      }
+
+      if (verificationResults.Status == GameBoardData.VerificationStatus.LocationIsNotSettled)
+      {
+        this.ErrorRaisedEvent?.Invoke(new ErrorDetails("Cannot build city. No settlement at location " + location + "."));
+        return;
+      }
+
+      if (verificationResults.Status == GameBoardData.VerificationStatus.LocationIsAlreadyCity)
+      {
+        var player = this.playersById[verificationResults.PlayerId];
+        if (player == this.currentPlayer)
+        {
+          this.ErrorRaisedEvent?.Invoke(new ErrorDetails("Cannot build city. There is already a city at location " + location + " that belongs to you."));
+        }
+        else
+        {
+          this.ErrorRaisedEvent?.Invoke(new ErrorDetails("Cannot build city. There is already a city at location " + location + " belonging to '" + player.Name + "'."));
+        }
+
+        return;
+      }
+    }
+
     private void TryRaiseRoadSegmentBuildingError()
     {
       if (this.currentPlayer.RemainingRoadSegments == 0)
@@ -806,25 +876,25 @@ namespace Jabberwocky.SoC.Library
     {
       if (verificationResults.Status == GameBoardData.VerificationStatus.RoadIsOffBoard)
       {
-        this.ErrorRaisedEvent?.Invoke(new ErrorDetails("Cannot build road segment: Locations " + settlementLocation + " and/or " + roadEndLocation + " are outside of board range (0 - 53)."));
+        this.ErrorRaisedEvent?.Invoke(new ErrorDetails("Cannot build road segment. Locations " + settlementLocation + " and/or " + roadEndLocation + " are outside of board range (0 - 53)."));
         return;
       }
 
       if (verificationResults.Status == GameBoardData.VerificationStatus.NoDirectConnection)
       {
-        this.ErrorRaisedEvent?.Invoke(new ErrorDetails("Cannot build road segment: No direct connection between locations [" + settlementLocation + ", " + roadEndLocation + "]."));
+        this.ErrorRaisedEvent?.Invoke(new ErrorDetails("Cannot build road segment. No direct connection between locations [" + settlementLocation + ", " + roadEndLocation + "]."));
         return;
       }
 
       if (verificationResults.Status == GameBoardData.VerificationStatus.RoadIsOccupied)
       {
-        this.ErrorRaisedEvent?.Invoke(new ErrorDetails("Cannot build road segment: Road segment between " + settlementLocation + " and " + roadEndLocation + " already exists."));
+        this.ErrorRaisedEvent?.Invoke(new ErrorDetails("Cannot build road segment. Road segment between " + settlementLocation + " and " + roadEndLocation + " already exists."));
         return;
       }
 
       if (verificationResults.Status == GameBoardData.VerificationStatus.RoadNotConnectedToExistingRoad)
       {
-        this.ErrorRaisedEvent?.Invoke(new ErrorDetails("Cannot build road segment: Road segment [" + settlementLocation + ", " + roadEndLocation + "] not connected to existing road segment."));
+        this.ErrorRaisedEvent?.Invoke(new ErrorDetails("Cannot build road segment. Road segment [" + settlementLocation + ", " + roadEndLocation + "] not connected to existing road segment."));
         return;
       }
     }
@@ -922,15 +992,22 @@ namespace Jabberwocky.SoC.Library
       }
     }
 
-    private Boolean VerifyBuildCityRequest(UInt32 settlementLocation)
+    private Boolean VerifyBuildCityRequest(UInt32 location)
     {
       if (!this.CanBuildCity())
       {
+        this.TryRaiseCityBuildingError();
         return false;
       }
 
-      var placeCityStatus = this.gameBoardManager.Data.CanPlaceCity(this.currentPlayer.Id, settlementLocation);
-      throw new NotImplementedException();
+      var placeCityResults = this.gameBoardManager.Data.CanPlaceCity(this.currentPlayer.Id, location);
+      if (placeCityResults.Status != GameBoardData.VerificationStatus.Valid)
+      {
+        this.TryRaiseCityPlacingError(placeCityResults, location);
+        return false;
+      }
+
+      return true;
     }
 
     private Boolean VerifyBuildRoadSegmentRequest(UInt32 roadStartLocation, UInt32 roadEndLocation)
