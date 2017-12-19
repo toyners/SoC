@@ -196,7 +196,7 @@ namespace Jabberwocky.SoC.Library
 
       this.playerIndex++;
       this.currentPlayer = this.players[this.playerIndex];
-      if (this.currentPlayer.IsComputer)
+      while (this.currentPlayer.IsComputer)
       {
         var computerPlayer = this.currentPlayer as IComputerPlayer;
         PlayerAction playerAction;
@@ -221,6 +221,14 @@ namespace Jabberwocky.SoC.Library
             }
           }
         }
+
+        this.playerIndex++;
+        if (this.playerIndex == this.players.Length)
+        {
+          this.playerIndex = 0;
+        }
+
+        this.currentPlayer = this.players[this.playerIndex];
       }
     }
 
