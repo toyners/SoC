@@ -839,7 +839,7 @@ namespace Jabberwocky.SoC.Library
       if (verificationResults.Status == GameBoardData.VerificationStatus.LocationIsNotOwned)
       {
         var player = this.playersById[verificationResults.PlayerId];
-        this.ErrorRaisedEvent?.Invoke(new ErrorDetails("Cannot build city. Settlement at location " + location + " is owned by player '" + player.Name + "'."));
+        this.ErrorRaisedEvent?.Invoke(new ErrorDetails("Cannot build city. Location " + location + " is owned by player '" + player.Name + "'."));
         return;
       }
 

@@ -72,7 +72,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       // Assert
       cityBuilt.ShouldBeFalse();
       errorDetails.ShouldNotBeNull();
-      errorDetails.Message.ShouldBe("Cannot build city. Settlement at location " + FirstSettlementOneLocation + " is owned by player '" + FirstOpponentName + "'.");
+      errorDetails.Message.ShouldBe("Cannot build city. Location " + FirstSettlementOneLocation + " is owned by player '" + FirstOpponentName + "'.");
     }
 
     [Test]
@@ -249,7 +249,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
 
       // Assert
       errorDetails.ShouldNotBeNull();
-      errorDetails.Message.ShouldBe("Cannot build city. There is already a city at location " + FirstSettlementOneLocation + " belonging to '" + FirstOpponentName + "'.");
+      errorDetails.Message.ShouldBe("Cannot build city. Location " + FirstSettlementOneLocation + " is owned by player '" + FirstOpponentName + "'.");
     }
 
     [Test]
