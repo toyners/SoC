@@ -11,6 +11,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
   [Category("LocalGameController.BuildCity")]
   public class LocalGameController_BuildCity_Tests : LocalGameControllerTestBase
   {
+    #region Tests
     [Test]
     public void BuildCity_OffBoard_MeaningfulErrorIsReceived()
     {
@@ -335,5 +336,6 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       errorDetails.ShouldNotBeNull();
       errorDetails.Message.ShouldBe("Turn token not recognised.");
     }
+    #endregion
   }
 }

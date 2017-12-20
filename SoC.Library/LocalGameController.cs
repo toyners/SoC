@@ -81,6 +81,7 @@ namespace Jabberwocky.SoC.Library
     public Action<Guid> LongestRoadBuiltEvent { get; set; }
     public Action SettlementBuiltEvent { get; set; }
     public Action CityBuiltEvent { get; set; }
+    public Action DevelopmentCardPurchasedEvent { get; set; }
     #endregion
 
     #region Methods
@@ -98,13 +99,6 @@ namespace Jabberwocky.SoC.Library
       }
 
       this.BuildCity(location);
-    }
-
-    private void BuildCity(UInt32 location)
-    {
-      this.gameBoardManager.Data.PlaceCity(this.currentPlayer.Id, location);
-      this.currentPlayer.PlaceCity();
-      this.CityBuiltEvent?.Invoke();
     }
 
     public void BuildRoadSegment(TurnToken turnToken, UInt32 roadStartLocation, UInt32 roadEndLocation)
@@ -139,6 +133,11 @@ namespace Jabberwocky.SoC.Library
       this.gameBoardManager.Data.PlaceSettlement(this.currentPlayer.Id, location);
       this.currentPlayer.PlaceSettlement();
       this.SettlementBuiltEvent?.Invoke();
+    }
+
+    public void BuyDevelopmentCard(TurnToken turnToken)
+    {
+      throw new NotImplementedException();
     }
 
     public void ChooseResourceFromOpponent(Guid opponentId, Int32 resourceIndex)
@@ -561,6 +560,13 @@ namespace Jabberwocky.SoC.Library
       {
         resources.Add(resourceType);
       }
+    }
+
+    private void BuildCity(UInt32 location)
+    {
+      this.gameBoardManager.Data.PlaceCity(this.currentPlayer.Id, location);
+      this.currentPlayer.PlaceCity();
+      this.CityBuiltEvent?.Invoke();
     }
 
     private void BuildRoadSegment(UInt32 roadStartLocation, UInt32 roadEndLocation)
