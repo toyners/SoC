@@ -15,6 +15,13 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
   {
     #region Methods
     [Test]
+    [TestCase(0, 0, 0, "Cannot buy development card. Missing 1 grain and 1 ore and 1 wool.")]
+    [TestCase(0, 0, 1, "Cannot buy development card. Missing 1 grain and 1 ore.")]
+    [TestCase(0, 1, 0, "Cannot buy development card. Missing 1 grain and 1 wool.")]
+    [TestCase(0, 1, 1, "Cannot buy development card. Missing 1 grain.")]
+    [TestCase(1, 0, 0, "Cannot buy development card. Missing 1 ore and 1 wool.")]
+    [TestCase(1, 0, 1, "Cannot buy development card. Missing 1 ore.")]
+    [TestCase(1, 1, 0, "Cannot buy development card. Missing 1 wool.")]
     public void BuyDevelopmentCard_InsufficientResources_MeaningfulErrorIsReceived(Int32 grainCount, Int32 oreCount, Int32 woolCount, String expectedErrorMessage)
     {
       // Arrange
