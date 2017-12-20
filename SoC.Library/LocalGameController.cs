@@ -137,6 +137,12 @@ namespace Jabberwocky.SoC.Library
 
     public void BuyDevelopmentCard(TurnToken turnToken)
     {
+      if (!this.CanBuyDevelopmentCard())
+      {
+        this.TryRaiseDevelopmentCardBuyingError();
+        return;
+      }
+
       throw new NotImplementedException();
     }
 
@@ -597,6 +603,11 @@ namespace Jabberwocky.SoC.Library
           this.currentPlayer.RemainingSettlements > 0;
     }
 
+    private Boolean CanBuyDevelopmentCard()
+    {
+      return this.currentPlayer.GrainCount >= 1 && this.currentPlayer.OreCount >= 1 && this.currentPlayer.WoolCount >= 1;
+    }
+
     private List<ResourceTypes> CollapsePlayerResourcesToList(IPlayer player)
     {
       var resources = new List<ResourceTypes>(player.ResourcesCount);
@@ -867,6 +878,51 @@ namespace Jabberwocky.SoC.Library
           this.ErrorRaisedEvent?.Invoke(new ErrorDetails("Cannot build city. There is already a city at location " + location + " belonging to '" + player.Name + "'."));
         }
 
+        return;
+      }
+    }
+
+    private void TryRaiseDevelopmentCardBuyingError()
+    {
+      if (this.currentPlayer.GrainCount < 1 && this.currentPlayer.OreCount < 1 && this.currentPlayer.WoolCount < 1)
+      {
+        this.ErrorRaisedEvent?.Invoke(new ErrorDetails("Cannot buy development card. Missing 1 grain and 1 ore and 1 wool."));
+        return;
+      }
+
+      if (this.currentPlayer.GrainCount < 1 && this.currentPlayer.OreCount < 1)
+      {
+        this.ErrorRaisedEvent?.Invoke(new ErrorDetails("Cannot buy development card. Missing 1 grain and 1 ore."));
+        return;
+      }
+
+      if (this.currentPlayer.GrainCount < 1 && this.currentPlayer.WoolCount < 1)
+      {
+        this.ErrorRaisedEvent?.Invoke(new ErrorDetails("Cannot buy development card. Missing 1 grain and 1 wool."));
+        return;
+      }
+
+      if (this.currentPlayer.OreCount < 1 && this.currentPlayer.WoolCount < 1)
+      {
+        this.ErrorRaisedEvent?.Invoke(new ErrorDetails("Cannot buy development card. Missing 1 ore and 1 wool."));
+        return;
+      }
+
+      if (this.currentPlayer.GrainCount < 1)
+      {
+        this.ErrorRaisedEvent?.Invoke(new ErrorDetails("Cannot buy development card. Missing 1 grain."));
+        return;
+      }
+
+      if (this.currentPlayer.OreCount < 1)
+      {
+        this.ErrorRaisedEvent?.Invoke(new ErrorDetails("Cannot buy development card. Missing 1 ore."));
+        return;
+      }
+
+      if (this.currentPlayer.WoolCount < 1)
+      {
+        this.ErrorRaisedEvent?.Invoke(new ErrorDetails("Cannot buy development card. Missing 1 wool."));
         return;
       }
     }
