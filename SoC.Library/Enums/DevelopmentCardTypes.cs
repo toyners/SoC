@@ -6,7 +6,7 @@ namespace Jabberwocky.SoC.Library
     Knight,
     YearOfPlenty,
     Monopoly,
-    RoadBuilder,
+    RoadBuilding,
     VictoryPoint
   }
 }
