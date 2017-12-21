@@ -70,6 +70,11 @@ namespace Jabberwocky.SoC.Library
       this.WoolCount += resourceClutch.WoolCount;
     }
 
+    public void BuyDevelopmentCard()
+    {
+      throw new NotImplementedException();
+    }
+
     public PlayerDataView GetDataView()
     {
       var dataView = new PlayerDataView();

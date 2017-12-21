@@ -25,6 +25,7 @@ namespace Jabberwocky.SoC.Library.Interfaces
     #region Methods
     PlayerDataView GetDataView();
     void AddResources(ResourceClutch resourceClutch);
+    void BuyDevelopmentCard();
     void RemoveResources(ResourceClutch resourceClutch);
     void PlaceCity();
     void PlaceRoadSegment();

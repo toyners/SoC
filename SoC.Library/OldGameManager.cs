@@ -13,11 +13,11 @@ namespace Jabberwocky.SoC.Library
 
     private PlayerData[] players;
 
-    private DevelopmentCardPile cardPile;
+    private Object cardPile;
     #endregion
 
     #region Construction
-    public OldGameManager(GameBoardManager board, UInt32 playerCount, IDice diceRoller, DevelopmentCardPile cardPile)
+    public OldGameManager(GameBoardManager board, UInt32 playerCount, IDice diceRoller, Object cardPile)
     {
       //TODO: Check for null references
       this.Board = board;

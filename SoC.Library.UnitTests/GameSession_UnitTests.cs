@@ -8,6 +8,8 @@ namespace Jabberwocky.SoC.Library.UnitTests
   using NUnit.Framework;
   using Shouldly;
 
+  public class DevelopmentCardPile { }
+
   [TestFixture]
   public class GameSession_UnitTests
   {

@@ -42,6 +42,7 @@ namespace Jabberwocky.SoC.Library
     private Dictionary<Guid, Int32> robbingChoices;
     private TurnToken currentTurnToken;
     private IPlayer currentPlayer;
+    private IDevelopmentCardHolder developmentCardHolder;
     #endregion
 
     #region Construction
@@ -149,7 +150,10 @@ namespace Jabberwocky.SoC.Library
         return;
       }
 
-      throw new NotImplementedException();
+      DevelopmentCard developmentCard;
+      this.developmentCardHolder.TryGetNextCard(out developmentCard);
+      this.currentPlayer.BuyDevelopmentCard();
+      this.DevelopmentCardPurchasedEvent?.Invoke();
     }
 
     public void ChooseResourceFromOpponent(Guid opponentId, Int32 resourceIndex)
@@ -611,7 +615,8 @@ namespace Jabberwocky.SoC.Library
 
     private Boolean CanBuyDevelopmentCard()
     {
-      return this.currentPlayer.GrainCount >= 1 && this.currentPlayer.OreCount >= 1 && this.currentPlayer.WoolCount >= 1;
+      return this.currentPlayer.GrainCount >= 1 && this.currentPlayer.OreCount >= 1 && this.currentPlayer.WoolCount >= 1
+        && this.developmentCardHolder.HasCards;
     }
 
     private List<ResourceTypes> CollapsePlayerResourcesToList(IPlayer player)
@@ -890,6 +895,12 @@ namespace Jabberwocky.SoC.Library
 
     private void TryRaiseDevelopmentCardBuyingError()
     {
+      if (!this.developmentCardHolder.HasCards)
+      {
+        this.ErrorRaisedEvent?.Invoke(new ErrorDetails("Cannot buy development card. No more cards available"));
+        return;
+      }
+
       if (this.currentPlayer.GrainCount < 1 && this.currentPlayer.OreCount < 1 && this.currentPlayer.WoolCount < 1)
       {
         this.ErrorRaisedEvent?.Invoke(new ErrorDetails("Cannot buy development card. Missing 1 grain and 1 ore and 1 wool."));
