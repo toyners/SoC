@@ -3,7 +3,6 @@
 namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
 {
   using System;
-  using NSubstitute;
   using NUnit.Framework;
   using Shouldly;
 
@@ -82,6 +81,38 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       // Assert
       developmentCardPurchased.ShouldBeTrue();
       errorDetails.ShouldBeNull();
+    }
+
+    [Test]
+    public void BuyDevelopmentCard_NoMoreDevelopmentCards_MeaningfulErrorIsReceived()
+    {
+      // Arrange
+      MockDice mockDice = null;
+      MockPlayer player;
+      MockComputerPlayer firstOpponent, secondOpponent, thirdOpponent;
+      var localGameController = this.CreateLocalGameControllerAndCompleteGameSetup(out mockDice, out player, out firstOpponent, out secondOpponent, out thirdOpponent);
+
+      mockDice.AddSequence(new[] { 8u });
+      player.AddResources(ResourceClutch.DevelopmentCard * 26);
+
+      TurnToken turnToken = null;
+      localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
+
+      ErrorDetails errorDetails = null;
+      localGameController.ErrorRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
+
+      localGameController.StartGamePlay();
+      for (var i = 25; i > 0; i--)
+      {
+        localGameController.BuyDevelopmentCard(turnToken);
+      }
+
+      // Act
+      localGameController.BuyDevelopmentCard(turnToken);
+
+      // Assert
+      errorDetails.ShouldNotBeNull();
+      errorDetails.Message.ShouldBe("Cannot buy development card. No more cards available");
     }
     #endregion 
   }
