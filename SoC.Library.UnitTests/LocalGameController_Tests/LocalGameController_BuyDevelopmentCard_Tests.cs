@@ -14,6 +14,32 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
   {
     #region Methods
     [Test]
+    public void BuildCity_TurnTokenNotCorrect_MeaningfulErrorIsReceived()
+    {
+      // Arrange
+      MockDice mockDice = null;
+      MockPlayer player;
+      MockComputerPlayer firstOpponent, secondOpponent, thirdOpponent;
+      var localGameController = this.CreateLocalGameControllerAndCompleteGameSetup(out mockDice, out player, out firstOpponent, out secondOpponent, out thirdOpponent);
+
+      mockDice.AddSequence(new[] { 8u });
+
+      ErrorDetails errorDetails = null;
+      localGameController.ErrorRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
+
+      TurnToken turnToken = null;
+      localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
+      localGameController.StartGamePlay();
+
+      // Act
+      localGameController.BuyDevelopmentCard(new TurnToken());
+
+      // Assert
+      errorDetails.ShouldNotBeNull();
+      errorDetails.Message.ShouldBe("Turn token not recognised.");
+    }
+
+    [Test]
     [TestCase(0, 0, 0, "Cannot buy development card. Missing 1 grain and 1 ore and 1 wool.")]
     [TestCase(0, 0, 1, "Cannot buy development card. Missing 1 grain and 1 ore.")]
     [TestCase(0, 1, 0, "Cannot buy development card. Missing 1 grain and 1 wool.")]

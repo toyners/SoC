@@ -137,6 +137,12 @@ namespace Jabberwocky.SoC.Library
 
     public void BuyDevelopmentCard(TurnToken turnToken)
     {
+      if (turnToken != this.currentTurnToken)
+      {
+        this.ErrorRaisedEvent?.Invoke(new ErrorDetails("Turn token not recognised."));
+        return;
+      }
+
       if (!this.CanBuyDevelopmentCard())
       {
         this.TryRaiseDevelopmentCardBuyingError();
