@@ -1489,42 +1489,6 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       playerDataView.IsComputer.ShouldBe(player.IsComputer);
     }
 
-    private LocalGameController CreateLocalGameController(IDice dice, GameBoardManager gameBoardManager, IPlayer firstPlayer, params IPlayer[] otherPlayers)
-    {
-      var mockPlayerPool = CreatePlayerPool(firstPlayer, otherPlayers);
-
-      return new LocalGameControllerCreator()
-        .ChangeDice(dice)
-        .ChangeGameBoardManager(gameBoardManager)
-        .ChangePlayerPool(mockPlayerPool)
-        .Create();
-    }
-
-    private LocalGameController CreateLocalGameControllerAndCompleteGameSetup(out MockDice mockDice, out GameBoardManager gameBoardManager, out MockPlayer player, out MockComputerPlayer firstOpponent, out MockComputerPlayer secondOpponent, out MockComputerPlayer thirdOpponent)
-    {
-      var gameSetupOrder = new[] { 12u, 10u, 8u, 6u };
-      var gameTurnOrder = gameSetupOrder;
-      mockDice = new MockDiceCreator()
-        .AddExplicitDiceRollSequence(gameSetupOrder)
-        .AddExplicitDiceRollSequence(gameTurnOrder)
-        .Create();
-
-      gameBoardManager = new GameBoardManager(BoardSizes.Standard);
-
-      this.CreateDefaultPlayerInstances(out player, out firstOpponent, out secondOpponent, out thirdOpponent);
-
-      var localGameController = this.CreateLocalGameController(mockDice, gameBoardManager, player, firstOpponent, secondOpponent, thirdOpponent);
-
-      localGameController.JoinGame();
-      localGameController.LaunchGame();
-      localGameController.StartGameSetup();
-      localGameController.ContinueGameSetup(MainSettlementOneLocation, MainRoadOneEnd);
-      localGameController.CompleteGameSetup(MainSettlementTwoLocation, MainRoadTwoEnd);
-      localGameController.FinalisePlayerTurnOrder();
-
-      return localGameController;
-    }
-
     private LocalGameController CreateLocalGameControllerWithMainPlayerGoingFirstInSetup()
     {
       var mockDice = Substitute.For<IDice>();
