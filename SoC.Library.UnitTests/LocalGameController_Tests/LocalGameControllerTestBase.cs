@@ -65,12 +65,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
 
     protected LocalGameController CreateLocalGameControllerAndCompleteGameSetup(out MockDice mockDice, out MockPlayer player, out MockComputerPlayer firstOpponent, out MockComputerPlayer secondOpponent, out MockComputerPlayer thirdOpponent)
     {
-      var gameSetupOrder = new[] { 12u, 10u, 8u, 6u };
-      var gameTurnOrder = gameSetupOrder;
-      mockDice = new MockDiceCreator()
-        .AddExplicitDiceRollSequence(gameSetupOrder)
-        .AddExplicitDiceRollSequence(gameTurnOrder)
-        .Create();
+      mockDice = this.CreateMockDice();
 
       this.CreateDefaultPlayerInstances(out player, out firstOpponent, out secondOpponent, out thirdOpponent);
 
@@ -86,18 +81,49 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       return localGameController;
     }
 
-    protected LocalGameController CreateLocalGameControllerAndCompleteGameSetup(LocalGameControllerCreator localGameControllerCreator)
+    protected void CompleteGameSetup(LocalGameController localGameController)
     {
-      var localGameController = localGameControllerCreator.Create();
-
       localGameController.JoinGame();
       localGameController.LaunchGame();
       localGameController.StartGameSetup();
       localGameController.ContinueGameSetup(MainSettlementOneLocation, MainRoadOneEnd);
       localGameController.CompleteGameSetup(MainSettlementTwoLocation, MainRoadTwoEnd);
       localGameController.FinalisePlayerTurnOrder();
+    }
+
+    protected LocalGameController CreateLocalGameController(IDice dice, IPlayerPool playerPool, IDevelopmentCardHolder developmentCardHolder)
+    {
+      var localGameControllerCreator = new LocalGameControllerCreator();
+
+      if (dice != null)
+      {
+        localGameControllerCreator.ChangeDice(dice);
+      }
+
+      if (playerPool != null)
+      {
+        localGameControllerCreator.ChangePlayerPool(playerPool);
+      }
+
+      if (developmentCardHolder != null)
+      {
+        localGameControllerCreator.ChangeDevelopmentCardHolder(developmentCardHolder);
+      }
+
+      var localGameController = localGameControllerCreator.Create();
+      localGameController.ErrorRaisedEvent = (ErrorDetails e) => { throw new Exception(e.Message); };
 
       return localGameController;
+    }
+
+    protected MockDice CreateMockDice()
+    {
+      var gameSetupOrder = new[] { 12u, 10u, 8u, 6u };
+      var gameTurnOrder = gameSetupOrder;
+      return new MockDiceCreator()
+          .AddExplicitDiceRollSequence(gameSetupOrder)
+          .AddExplicitDiceRollSequence(gameTurnOrder)
+          .Create();
     }
 
     protected IPlayerPool CreatePlayerPool(IPlayer player, IPlayer[] otherPlayers)

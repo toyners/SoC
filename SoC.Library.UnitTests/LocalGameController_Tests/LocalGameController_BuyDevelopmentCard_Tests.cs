@@ -12,7 +12,24 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
   [Category("LocalGameController.BuyDevelopmentCard")]
   public class LocalGameController_BuyDevelopmentCard_Tests : LocalGameControllerTestBase
   {
+    private MockPlayer player;
+    private MockComputerPlayer firstOpponent, secondOpponent, thirdOpponent;
+    private MockDice dice;
+    private LocalGameController localGameController;
+
     #region Methods
+    [SetUp]
+    public void TestSetup()
+    {
+      this.CreateDefaultPlayerInstances(out this.player, out this.firstOpponent, out this.secondOpponent, out this.thirdOpponent);
+      this.dice = this.CreateMockDice();
+      this.dice.AddSequence(new[] { 8u });
+
+      var playerPool = this.CreatePlayerPool(this.player, new[] { this.firstOpponent, this.secondOpponent, this.thirdOpponent });
+      this.localGameController = this.CreateLocalGameController(dice, playerPool, null);
+      this.CompleteGameSetup(this.localGameController);
+    }
+
     [Test]
     public void BuildCity_TurnTokenNotCorrect_MeaningfulErrorIsReceived()
     {
@@ -50,27 +67,21 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
     public void BuyDevelopmentCard_InsufficientResources_MeaningfulErrorIsReceived(Int32 grainCount, Int32 oreCount, Int32 woolCount, String expectedErrorMessage)
     {
       // Arrange
-      MockDice mockDice = null;
-      MockPlayer player;
-      MockComputerPlayer firstOpponent, secondOpponent, thirdOpponent;
-      var localGameController = this.CreateLocalGameControllerAndCompleteGameSetup(out mockDice, out player, out firstOpponent, out secondOpponent, out thirdOpponent);
-
-      mockDice.AddSequence(new[] { 8u });
-      player.AddResources(new ResourceClutch(0, grainCount, 0, oreCount, woolCount));
+      this.player.AddResources(new ResourceClutch(0, grainCount, 0, oreCount, woolCount));
 
       TurnToken turnToken = null;
-      localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
+      this.localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
 
       ErrorDetails errorDetails = null;
-      localGameController.ErrorRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
+      this.localGameController.ErrorRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
 
       Boolean developmentCardPurchased = false;
-      localGameController.DevelopmentCardPurchasedEvent = () => { developmentCardPurchased = true; };
+      this.localGameController.DevelopmentCardPurchasedEvent = () => { developmentCardPurchased = true; };
 
-      localGameController.StartGamePlay();
+      this.localGameController.StartGamePlay();
 
       // Act
-      localGameController.BuyDevelopmentCard(turnToken);
+      this.localGameController.BuyDevelopmentCard(turnToken);
 
       // Assert
       developmentCardPurchased.ShouldBeFalse();
