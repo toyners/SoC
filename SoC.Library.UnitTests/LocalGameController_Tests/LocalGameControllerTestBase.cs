@@ -86,6 +86,20 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       return localGameController;
     }
 
+    protected LocalGameController CreateLocalGameControllerAndCompleteGameSetup(LocalGameControllerCreator localGameControllerCreator)
+    {
+      var localGameController = localGameControllerCreator.Create();
+
+      localGameController.JoinGame();
+      localGameController.LaunchGame();
+      localGameController.StartGameSetup();
+      localGameController.ContinueGameSetup(MainSettlementOneLocation, MainRoadOneEnd);
+      localGameController.CompleteGameSetup(MainSettlementTwoLocation, MainRoadTwoEnd);
+      localGameController.FinalisePlayerTurnOrder();
+
+      return localGameController;
+    }
+
     protected IPlayerPool CreatePlayerPool(IPlayer player, IPlayer[] otherPlayers)
     {
       var mockPlayerPool = Substitute.For<IPlayerPool>();
