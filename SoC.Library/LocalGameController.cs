@@ -46,11 +46,12 @@ namespace Jabberwocky.SoC.Library
     #endregion
 
     #region Construction
-    public LocalGameController(IDice dice, IPlayerPool computerPlayerFactory, GameBoardManager gameBoardManager)
+    public LocalGameController(IDice dice, IPlayerPool computerPlayerFactory, GameBoardManager gameBoardManager, IDevelopmentCardHolder developmentCardHolder)
     {
       this.dice = dice;
       this.playerPool = computerPlayerFactory;
       this.gameBoardManager = gameBoardManager;
+      this.developmentCardHolder = developmentCardHolder;
       this.GamePhase = GamePhases.Initial;
     }
     #endregion

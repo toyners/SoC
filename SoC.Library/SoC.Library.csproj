@@ -47,6 +47,7 @@
     <Compile Include="ComputerPlayer.cs" />
     <Compile Include="Constants.cs" />
     <Compile Include="DevelopmentCard.cs" />
+    <Compile Include="DevelopmentCardHolder.cs" />
     <Compile Include="Interfaces\IDevelopmentCardHolder.cs" />
     <Compile Include="PlayerPool.cs" />
     <Compile Include="ErrorDetails.cs" />
