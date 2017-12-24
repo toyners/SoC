@@ -37,8 +37,24 @@ namespace Jabberwocky.SoC.Library
         }
         else if (number < (knightCardCount + roadBuildingCardCount))
         {
+          var card = new RoadBuildingDevelopmentCard();
+          this.cards.Enqueue(card);
           roadBuildingCardCount--;
         }
+        else if (number < (knightCardCount + roadBuildingCardCount + yearOfPlentyCardCount))
+        {
+          var card = new YearOfPlentyDevelopmentCard();
+          this.cards.Enqueue(card);
+          yearOfPlentyCardCount--;
+        }
+        else if (number < (knightCardCount + roadBuildingCardCount + yearOfPlentyCardCount + monopolyCardCount))
+        {
+          var card = new MonopolyDevelopmentCard();
+          this.cards.Enqueue(card);
+          monopolyCardCount--;
+        }
+
+
 
       } while (allCardCount > 0);
     }

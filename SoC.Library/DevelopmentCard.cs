@@ -21,4 +21,32 @@ namespace Jabberwocky.SoC.Library
     {
     }
   }
+
+  public class RoadBuildingDevelopmentCard : DevelopmentCard
+  {
+    public RoadBuildingDevelopmentCard() : base(DevelopmentCardTypes.RoadBuilding, "Place 2 new roads as if you had just built them.")
+    {
+    }
+  }
+
+  public class YearOfPlentyDevelopmentCard : DevelopmentCard
+  {
+    public YearOfPlentyDevelopmentCard() : base(DevelopmentCardTypes.YearOfPlenty, "Take any 2 resources from the bank. Add them to your hand. They can be 2 of the same resource or 2 different resources.")
+    {
+    }
+  }
+
+  public class MonopolyDevelopmentCard : DevelopmentCard
+  {
+    public MonopolyDevelopmentCard() : base(DevelopmentCardTypes.Monopoly, "When you play this card, announce 1 type of resource. All other players must give you all of their resources of that type.")
+    {
+    }
+  }
+
+  public class VictoryPointDevelopmentCard : DevelopmentCard
+  {
+    public VictoryPointDevelopmentCard() : base(DevelopmentCardTypes.VictoryPoint, "Reveal this card on your turn if, with it, you reach the number of points required for victory.")
+    {
+    }
+  }
 }
