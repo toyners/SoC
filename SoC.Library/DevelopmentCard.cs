@@ -14,4 +14,11 @@ namespace Jabberwocky.SoC.Library
 
     }
   }
+
+  public class KnightDevelopmentCard : DevelopmentCard
+  {
+    public KnightDevelopmentCard() : base(DevelopmentCardTypes.Knight, "")
+    {
+    }
+  }
 }

@@ -3,6 +3,7 @@
 namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
 {
   using System;
+  using Interfaces;
   using NUnit.Framework;
   using Shouldly;
 
@@ -16,6 +17,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
     private MockComputerPlayer firstOpponent, secondOpponent, thirdOpponent;
     private MockDice dice;
     private LocalGameController localGameController;
+    private IDevelopmentCardHolder developmentCardHolder;
 
     #region Methods
     [SetUp]
@@ -24,9 +26,10 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       this.CreateDefaultPlayerInstances(out this.player, out this.firstOpponent, out this.secondOpponent, out this.thirdOpponent);
       this.dice = this.CreateMockDice();
       this.dice.AddSequence(new[] { 8u });
+      this.developmentCardHolder = new DevelopmentCardHolder();
 
       var playerPool = this.CreatePlayerPool(this.player, new[] { this.firstOpponent, this.secondOpponent, this.thirdOpponent });
-      this.localGameController = this.CreateLocalGameController(dice, playerPool, null);
+      this.localGameController = this.CreateLocalGameController(dice, playerPool, this.developmentCardHolder);
       this.CompleteGameSetup(this.localGameController);
     }
 
@@ -34,22 +37,15 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
     public void BuildCity_TurnTokenNotCorrect_MeaningfulErrorIsReceived()
     {
       // Arrange
-      MockDice mockDice = null;
-      MockPlayer player;
-      MockComputerPlayer firstOpponent, secondOpponent, thirdOpponent;
-      var localGameController = this.CreateLocalGameControllerAndCompleteGameSetup(out mockDice, out player, out firstOpponent, out secondOpponent, out thirdOpponent);
-
-      mockDice.AddSequence(new[] { 8u });
-
       ErrorDetails errorDetails = null;
-      localGameController.ErrorRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
+      this.localGameController.ErrorRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
 
       TurnToken turnToken = null;
-      localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
-      localGameController.StartGamePlay();
+      this.localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
+      this.localGameController.StartGamePlay();
 
       // Act
-      localGameController.BuyDevelopmentCard(new TurnToken());
+      this.localGameController.BuyDevelopmentCard(new TurnToken());
 
       // Assert
       errorDetails.ShouldNotBeNull();
