@@ -9,10 +9,41 @@ namespace Jabberwocky.SoC.Library
   {
     #region Fields
     private Queue<DevelopmentCard> cards;
+    private IRandom random;
     #endregion
 
     #region Construction
     public DevelopmentCardHolder()
+    {
+      this.random = new NumberSequence();
+      this.Initialise();
+    }
+
+    public DevelopmentCardHolder(IRandom random)
+    {
+      this.random = random;
+      this.Initialise();
+    }
+    #endregion
+
+    #region Properties
+    public Boolean HasCards { get { return this.cards.Count > 0; } }
+    #endregion
+
+    #region Methods
+    public Boolean TryGetNextCard(out DevelopmentCard card)
+    {
+      card = null;
+      if (!this.HasCards)
+      {
+        return false;
+      }
+
+      card = this.cards.Dequeue();
+      return true;
+    }
+
+    private void Initialise()
     {
       this.cards = new Queue<DevelopmentCard>();
 
@@ -21,15 +52,14 @@ namespace Jabberwocky.SoC.Library
       var yearOfPlentyCardCount = 2;
       var monopolyCardCount = 2;
       var victoryPointCardCount = 5;
-       
-      var rand = new Random((Int32)DateTime.Now.Ticks);
+
       var victoryPointCardTitles = new Queue<String>(new[] { "Chapel", "Great Hall", "Library", "Market", "University" });
 
       var allCardCount = 0;
       do
       {
         allCardCount = knightCardCount + roadBuildingCardCount + yearOfPlentyCardCount + monopolyCardCount + victoryPointCardCount;
-        var number = rand.Next(0, allCardCount);
+        var number = this.random.Next(0, allCardCount);
         if (number < knightCardCount)
         {
           var card = new KnightDevelopmentCard();
@@ -66,21 +96,20 @@ namespace Jabberwocky.SoC.Library
     }
     #endregion
 
-    #region Properties
-    public Boolean HasCards { get { return this.cards.Count > 0; } }
-    #endregion
-
-    #region Methods
-    public Boolean TryGetNextCard(out DevelopmentCard card)
+    #region Structures
+    public interface IRandom
     {
-      card = null;
-      if (!this.HasCards)
-      {
-        return false;
-      }
+      Int32 Next(Int32 inclusiveMinium, Int32 exclusiveMaximum);
+    }
 
-      card = this.cards.Dequeue();
-      return true;
+    private class NumberSequence : IRandom
+    {
+      private Random random = new Random((Int32)DateTime.Now.Ticks);
+
+      public Int32 Next(Int32 inclusiveMinium, Int32 exclusiveMaximum)
+      {
+        return random.Next(inclusiveMinium, exclusiveMaximum);
+      }
     }
     #endregion
   }
