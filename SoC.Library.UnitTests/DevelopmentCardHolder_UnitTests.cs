@@ -31,6 +31,24 @@ namespace Jabberwocky.SoC.Library.UnitTests
       result.ShouldBeTrue();
       developmentCard.ShouldNotBeNull();
     }
+
+    [Test]
+    public void Cstr_KnightCardsFirst_ReturnsValid()
+    {
+      var numberSequencer = Substitute.For<DevelopmentCardHolder.IRandom>();
+      numberSequencer.Next(Arg.Any<Int32>(), Arg.Any<Int32>()).Returns(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+
+      var developmentCardHolder = new DevelopmentCardHolder(numberSequencer);
+
+      var i = 0;
+      for (; i < 15; i++)
+      {
+        DevelopmentCard developmentCard;
+        developmentCardHolder.TryGetNextCard(out developmentCard).ShouldBeTrue();
+        developmentCard.Type.ShouldBe(DevelopmentCardTypes.Knight);
+      }
+
+    }
     #endregion 
   }
 }
