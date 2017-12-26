@@ -55,7 +55,7 @@ namespace Jabberwocky.SoC.Library
         }
 
 
-
+        
       } while (allCardCount > 0);
     }
     #endregion

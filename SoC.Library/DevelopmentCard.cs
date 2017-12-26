@@ -7,9 +7,10 @@ namespace Jabberwocky.SoC.Library
   {
     public readonly Guid Id;
     public readonly String Text;
+    public readonly String Title;
     public readonly DevelopmentCardTypes Type;
 
-    public DevelopmentCard(DevelopmentCardTypes type, String text)
+    public DevelopmentCard(DevelopmentCardTypes type, String title, String text)
     {
 
     }
@@ -17,35 +18,35 @@ namespace Jabberwocky.SoC.Library
 
   public class KnightDevelopmentCard : DevelopmentCard
   {
-    public KnightDevelopmentCard() : base(DevelopmentCardTypes.Knight, "")
+    public KnightDevelopmentCard() : base(DevelopmentCardTypes.Knight, "Knight", "Move the robber. Steal 1 resource from the owner of a settlement or city adjacent to the robber's new hex.")
     {
     }
   }
 
   public class RoadBuildingDevelopmentCard : DevelopmentCard
   {
-    public RoadBuildingDevelopmentCard() : base(DevelopmentCardTypes.RoadBuilding, "Place 2 new roads as if you had just built them.")
+    public RoadBuildingDevelopmentCard() : base(DevelopmentCardTypes.RoadBuilding, "Road Building", "Place 2 new roads as if you had just built them.")
     {
     }
   }
 
   public class YearOfPlentyDevelopmentCard : DevelopmentCard
   {
-    public YearOfPlentyDevelopmentCard() : base(DevelopmentCardTypes.YearOfPlenty, "Take any 2 resources from the bank. Add them to your hand. They can be 2 of the same resource or 2 different resources.")
+    public YearOfPlentyDevelopmentCard() : base(DevelopmentCardTypes.YearOfPlenty, "Year of Plenty", "Take any 2 resources from the bank. Add them to your hand. They can be 2 of the same resource or 2 different resources.")
     {
     }
   }
 
   public class MonopolyDevelopmentCard : DevelopmentCard
   {
-    public MonopolyDevelopmentCard() : base(DevelopmentCardTypes.Monopoly, "When you play this card, announce 1 type of resource. All other players must give you all of their resources of that type.")
+    public MonopolyDevelopmentCard() : base(DevelopmentCardTypes.Monopoly, "Monopoly", "When you play this card, announce 1 type of resource. All other players must give you all of their resources of that type.")
     {
     }
   }
 
   public class VictoryPointDevelopmentCard : DevelopmentCard
   {
-    public VictoryPointDevelopmentCard() : base(DevelopmentCardTypes.VictoryPoint, "Reveal this card on your turn if, with it, you reach the number of points required for victory.")
+    public VictoryPointDevelopmentCard(String title) : base(DevelopmentCardTypes.VictoryPoint, title, "Reveal this card on your turn if, with it, you reach the number of points required for victory.")
     {
     }
   }
