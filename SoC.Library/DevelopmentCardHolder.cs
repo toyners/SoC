@@ -23,6 +23,7 @@ namespace Jabberwocky.SoC.Library
       var victoryPointCardCount = 5;
        
       var rand = new Random((Int32)DateTime.Now.Ticks);
+      var victoryPointCardTitles = new Queue<String>(new[] { "Chapel", "Great Hall", "Library", "Market", "University" });
 
       var allCardCount = 0;
       do
@@ -53,9 +54,14 @@ namespace Jabberwocky.SoC.Library
           this.cards.Enqueue(card);
           monopolyCardCount--;
         }
+        else if (number < allCardCount)
+        {
+          var title = victoryPointCardTitles.Dequeue();
+          var card = new VictoryPointDevelopmentCard(title);
+          this.cards.Enqueue(card);
+          victoryPointCardCount--;
+        }
 
-
-        
       } while (allCardCount > 0);
     }
     #endregion
