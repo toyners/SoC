@@ -70,9 +70,11 @@ namespace Jabberwocky.SoC.Library
       this.WoolCount += resourceClutch.WoolCount;
     }
 
-    public void BuyDevelopmentCard()
+    public void PayForDevelopmentCard()
     {
-      throw new NotImplementedException();
+      this.GrainCount--;
+      this.OreCount--;
+      this.WoolCount--;
     }
 
     public PlayerDataView GetDataView()

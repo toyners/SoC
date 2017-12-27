@@ -153,7 +153,7 @@ namespace Jabberwocky.SoC.Library
 
       DevelopmentCard developmentCard;
       this.developmentCardHolder.TryGetNextCard(out developmentCard);
-      this.currentPlayer.BuyDevelopmentCard();
+      this.currentPlayer.PayForDevelopmentCard();
       this.DevelopmentCardPurchasedEvent?.Invoke();
     }
 
