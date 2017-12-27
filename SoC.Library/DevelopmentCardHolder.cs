@@ -8,6 +8,12 @@ namespace Jabberwocky.SoC.Library
   public class DevelopmentCardHolder : IDevelopmentCardHolder
   {
     #region Fields
+    private const Int32 KnightCardCount = 14;
+    private const Int32 RoadBuildingCardCount = 2;
+    private const Int32 YearOfPlentyCardCount = 2;
+    private const Int32 MonopolyCardCount = 2;
+    private const Int32 VictoryPointCardCount = 5;
+
     private Queue<DevelopmentCard> cards;
     #endregion
 
@@ -44,38 +50,32 @@ namespace Jabberwocky.SoC.Library
     {
       this.cards = new Queue<DevelopmentCard>();
 
-      var knightCardCount = 14;
-      var roadBuildingCardCount = 2;
-      var yearOfPlentyCardCount = 2;
-      var monopolyCardCount = 2;
-      var victoryPointCardCount = 5;
-
       var victoryPointCardTitles = new Queue<String>(new[] { "Chapel", "Great Hall", "Library", "Market", "University" });
 
       var index = -1;
       while (random.TryGetNextIndex(out index))
       {
-        if (index < knightCardCount)
+        if (index < KnightCardCount)
         {
           var card = new KnightDevelopmentCard();
           this.cards.Enqueue(card);
         }
-        else if (index < (knightCardCount + monopolyCardCount))
+        else if (index < (KnightCardCount + MonopolyCardCount))
         {
           var card = new MonopolyDevelopmentCard();
           this.cards.Enqueue(card);
         }
-        else if (index < (knightCardCount + monopolyCardCount + roadBuildingCardCount))
+        else if (index < (KnightCardCount + MonopolyCardCount + RoadBuildingCardCount))
         {
           var card = new RoadBuildingDevelopmentCard();
           this.cards.Enqueue(card);
         }
-        else if (index < (knightCardCount + monopolyCardCount + roadBuildingCardCount + yearOfPlentyCardCount))
+        else if (index < (KnightCardCount + MonopolyCardCount + RoadBuildingCardCount + YearOfPlentyCardCount))
         {
           var card = new YearOfPlentyDevelopmentCard();
           this.cards.Enqueue(card);
         }
-        else if (index < (knightCardCount + monopolyCardCount + roadBuildingCardCount + yearOfPlentyCardCount + victoryPointCardCount))
+        else if (index < (KnightCardCount + MonopolyCardCount + RoadBuildingCardCount + YearOfPlentyCardCount + VictoryPointCardCount))
         {
           var title = victoryPointCardTitles.Dequeue();
           var card = new VictoryPointDevelopmentCard(title);
