@@ -89,27 +89,21 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
     public void BuyDevelopmentCard_GotResources_DevelopmentCardPurchasedEventIsRaised()
     {
       // Arrange
-      MockDice mockDice = null;
-      MockPlayer player;
-      MockComputerPlayer firstOpponent, secondOpponent, thirdOpponent;
-      var localGameController = this.CreateLocalGameControllerAndCompleteGameSetup(out mockDice, out player, out firstOpponent, out secondOpponent, out thirdOpponent);
-
-      mockDice.AddSequence(new[] { 8u });
-      player.AddResources(ResourceClutch.DevelopmentCard);
+      this.player.AddResources(ResourceClutch.DevelopmentCard);
 
       TurnToken turnToken = null;
-      localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
+      this.localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
 
       ErrorDetails errorDetails = null;
-      localGameController.ErrorRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
+      this.localGameController.ErrorRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
 
       Boolean developmentCardPurchased = false;
-      localGameController.DevelopmentCardPurchasedEvent = () => { developmentCardPurchased = true; };
+      this.localGameController.DevelopmentCardPurchasedEvent = () => { developmentCardPurchased = true; };
 
-      localGameController.StartGamePlay();
+      this.localGameController.StartGamePlay();
 
       // Act
-      localGameController.BuyDevelopmentCard(turnToken);
+      this.localGameController.BuyDevelopmentCard(turnToken);
 
       // Assert
       developmentCardPurchased.ShouldBeTrue();
@@ -120,28 +114,22 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
     public void BuyDevelopmentCard_NoMoreDevelopmentCards_MeaningfulErrorIsReceived()
     {
       // Arrange
-      MockDice mockDice = null;
-      MockPlayer player;
-      MockComputerPlayer firstOpponent, secondOpponent, thirdOpponent;
-      var localGameController = this.CreateLocalGameControllerAndCompleteGameSetup(out mockDice, out player, out firstOpponent, out secondOpponent, out thirdOpponent);
-
-      mockDice.AddSequence(new[] { 8u });
-      player.AddResources(ResourceClutch.DevelopmentCard * 26);
+      this.player.AddResources(ResourceClutch.DevelopmentCard * 26);
 
       TurnToken turnToken = null;
-      localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
+      this.localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
 
       ErrorDetails errorDetails = null;
-      localGameController.ErrorRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
+      this.localGameController.ErrorRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
 
-      localGameController.StartGamePlay();
+      this.localGameController.StartGamePlay();
       for (var i = 25; i > 0; i--)
       {
-        localGameController.BuyDevelopmentCard(turnToken);
+        this.localGameController.BuyDevelopmentCard(turnToken);
       }
 
       // Act
-      localGameController.BuyDevelopmentCard(turnToken);
+      this.localGameController.BuyDevelopmentCard(turnToken);
 
       // Assert
       errorDetails.ShouldNotBeNull();
