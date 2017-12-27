@@ -60,22 +60,22 @@ namespace Jabberwocky.SoC.Library
           var card = new KnightDevelopmentCard();
           this.cards.Enqueue(card);
         }
-        else if (index < (knightCardCount + roadBuildingCardCount))
-        {
-          var card = new RoadBuildingDevelopmentCard();
-          this.cards.Enqueue(card);
-        }
-        else if (index < (knightCardCount + roadBuildingCardCount + yearOfPlentyCardCount))
-        {
-          var card = new YearOfPlentyDevelopmentCard();
-          this.cards.Enqueue(card);
-        }
-        else if (index < (knightCardCount + roadBuildingCardCount + yearOfPlentyCardCount + monopolyCardCount))
+        else if (index < (knightCardCount + monopolyCardCount))
         {
           var card = new MonopolyDevelopmentCard();
           this.cards.Enqueue(card);
         }
-        else if (index < (knightCardCount + roadBuildingCardCount + yearOfPlentyCardCount + monopolyCardCount + victoryPointCardCount))
+        else if (index < (knightCardCount + monopolyCardCount + roadBuildingCardCount))
+        {
+          var card = new RoadBuildingDevelopmentCard();
+          this.cards.Enqueue(card);
+        }
+        else if (index < (knightCardCount + monopolyCardCount + roadBuildingCardCount + yearOfPlentyCardCount))
+        {
+          var card = new YearOfPlentyDevelopmentCard();
+          this.cards.Enqueue(card);
+        }
+        else if (index < (knightCardCount + monopolyCardCount + roadBuildingCardCount + yearOfPlentyCardCount + victoryPointCardCount))
         {
           var title = victoryPointCardTitles.Dequeue();
           var card = new VictoryPointDevelopmentCard(title);

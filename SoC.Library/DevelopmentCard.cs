@@ -12,7 +12,9 @@ namespace Jabberwocky.SoC.Library
 
     public DevelopmentCard(DevelopmentCardTypes type, String title, String text)
     {
-
+      this.Type = type;
+      this.Title = title;
+      this.Text = text;
     }
   }
 
