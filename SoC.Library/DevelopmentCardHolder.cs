@@ -9,20 +9,17 @@ namespace Jabberwocky.SoC.Library
   {
     #region Fields
     private Queue<DevelopmentCard> cards;
-    private IRandom random;
     #endregion
 
     #region Construction
     public DevelopmentCardHolder()
     {
-      this.random = new NumberSequence();
-      this.Initialise();
+      this.Initialise(new IndexSequence());
     }
 
-    public DevelopmentCardHolder(IRandom random)
+    public DevelopmentCardHolder(IIndexSequence random)
     {
-      this.random = random;
-      this.Initialise();
+      this.Initialise(random);
     }
     #endregion
 
@@ -43,7 +40,7 @@ namespace Jabberwocky.SoC.Library
       return true;
     }
 
-    private void Initialise()
+    private void Initialise(IIndexSequence random)
     {
       this.cards = new Queue<DevelopmentCard>();
 
@@ -55,60 +52,75 @@ namespace Jabberwocky.SoC.Library
 
       var victoryPointCardTitles = new Queue<String>(new[] { "Chapel", "Great Hall", "Library", "Market", "University" });
 
-      var allCardCount = 0;
-      do
+      var index = -1;
+      while (random.TryGetNextIndex(out index))
       {
-        allCardCount = knightCardCount + roadBuildingCardCount + yearOfPlentyCardCount + monopolyCardCount + victoryPointCardCount;
-        var number = this.random.Next(0, allCardCount);
-        if (number < knightCardCount)
+        if (index < knightCardCount)
         {
           var card = new KnightDevelopmentCard();
           this.cards.Enqueue(card);
-          knightCardCount--;
         }
-        else if (number < (knightCardCount + roadBuildingCardCount))
+        else if (index < (knightCardCount + roadBuildingCardCount))
         {
           var card = new RoadBuildingDevelopmentCard();
           this.cards.Enqueue(card);
-          roadBuildingCardCount--;
         }
-        else if (number < (knightCardCount + roadBuildingCardCount + yearOfPlentyCardCount))
+        else if (index < (knightCardCount + roadBuildingCardCount + yearOfPlentyCardCount))
         {
           var card = new YearOfPlentyDevelopmentCard();
           this.cards.Enqueue(card);
-          yearOfPlentyCardCount--;
         }
-        else if (number < (knightCardCount + roadBuildingCardCount + yearOfPlentyCardCount + monopolyCardCount))
+        else if (index < (knightCardCount + roadBuildingCardCount + yearOfPlentyCardCount + monopolyCardCount))
         {
           var card = new MonopolyDevelopmentCard();
           this.cards.Enqueue(card);
-          monopolyCardCount--;
         }
-        else if (number < allCardCount)
+        else if (index < (knightCardCount + roadBuildingCardCount + yearOfPlentyCardCount + monopolyCardCount + victoryPointCardCount))
         {
           var title = victoryPointCardTitles.Dequeue();
           var card = new VictoryPointDevelopmentCard(title);
           this.cards.Enqueue(card);
-          victoryPointCardCount--;
         }
-
-      } while (allCardCount > 0);
+      }
     }
     #endregion
 
     #region Structures
-    public interface IRandom
+    public interface IIndexSequence
     {
-      Int32 Next(Int32 inclusiveMinium, Int32 exclusiveMaximum);
+      Boolean TryGetNextIndex(out Int32 index);
     }
 
-    private class NumberSequence : IRandom
+    private class IndexSequence : IIndexSequence
     {
-      private Random random = new Random((Int32)DateTime.Now.Ticks);
+      private Queue<Int32> numbers = new Queue<Int32>();
 
-      public Int32 Next(Int32 inclusiveMinium, Int32 exclusiveMaximum)
+      public IndexSequence()
       {
-        return random.Next(inclusiveMinium, exclusiveMaximum);
+        Random random = new Random((Int32)DateTime.Now.Ticks);
+        var numbersSelected = new HashSet<Int32>();
+        
+        while (numbersSelected.Count < 25)
+        {
+          var index = random.Next(0, 25);
+          if (!numbersSelected.Contains(index))
+          {
+            this.numbers.Enqueue(index);
+            numbersSelected.Add(index);
+          }
+        }
+      }
+
+      public Boolean TryGetNextIndex(out Int32 index)
+      {
+        index = -1;
+        if (this.numbers.Count == 0)
+        {
+          return false;
+        }
+
+        index = this.numbers.Dequeue();
+        return true;
       }
     }
     #endregion

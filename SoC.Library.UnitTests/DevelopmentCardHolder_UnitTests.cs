@@ -33,21 +33,62 @@ namespace Jabberwocky.SoC.Library.UnitTests
     }
 
     [Test]
-    public void Cstr_KnightCardsFirst_ReturnsValid()
+    public void Cstr_TakeFirstCardEachTime_ReturnsDefaultOrder()
     {
-      var numberSequencer = Substitute.For<DevelopmentCardHolder.IRandom>();
-      numberSequencer.Next(Arg.Any<Int32>(), Arg.Any<Int32>()).Returns(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      var index = -1;
+      var numberSequencer = Substitute.For<DevelopmentCardHolder.IIndexSequence>();
+      var indexes = new System.Collections.Generic.Queue<Int32>(new [] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24 });
+      numberSequencer
+        .TryGetNextIndex(out index)
+        .Returns(x => {
+          if (indexes.Count > 0)
+          {
+            x[0] = indexes.Dequeue();
+            return true;
+          }
+
+          x[0] = -1;
+          return false;
+        });
 
       var developmentCardHolder = new DevelopmentCardHolder(numberSequencer);
 
-      var i = 0;
-      for (; i < 15; i++)
+      for (var i = 0; i < 15; i++)
       {
         DevelopmentCard developmentCard;
         developmentCardHolder.TryGetNextCard(out developmentCard).ShouldBeTrue();
         developmentCard.Type.ShouldBe(DevelopmentCardTypes.Knight);
       }
 
+      for (var i = 0; i < 2; i++)
+      {
+        DevelopmentCard developmentCard;
+        developmentCardHolder.TryGetNextCard(out developmentCard).ShouldBeTrue();
+        developmentCard.Type.ShouldBe(DevelopmentCardTypes.Monopoly);
+      }
+
+      for (var i = 0; i < 2; i++)
+      {
+        DevelopmentCard developmentCard;
+        developmentCardHolder.TryGetNextCard(out developmentCard).ShouldBeTrue();
+        developmentCard.Type.ShouldBe(DevelopmentCardTypes.RoadBuilding);
+      }
+
+      for (var i = 0; i < 2; i++)
+      {
+        DevelopmentCard developmentCard;
+        developmentCardHolder.TryGetNextCard(out developmentCard).ShouldBeTrue();
+        developmentCard.Type.ShouldBe(DevelopmentCardTypes.YearOfPlenty);
+      }
+
+      for (var i = 0; i < 5; i++)
+      {
+        DevelopmentCard developmentCard;
+        developmentCardHolder.TryGetNextCard(out developmentCard).ShouldBeTrue();
+        developmentCard.Type.ShouldBe(DevelopmentCardTypes.YearOfPlenty);
+      }
+
+      developmentCardHolder.HasCards.ShouldBeFalse();
     }
     #endregion 
   }
