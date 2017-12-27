@@ -7,7 +7,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
   using Shouldly;
 
   [TestFixture]
-  [Category("Äll")]
+  [Category("All")]
   [Category("DevelopmentCardHolder")]
   public class DevelopmentCardHolder_UnitTests
   {
