@@ -14,10 +14,12 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
   [Category("LocalGameController.BuyDevelopmentCard")]
   public class LocalGameController_BuyDevelopmentCard_Tests : LocalGameControllerTestBase
   {
+    #region Fields
     private MockPlayer player;
     private MockComputerPlayer firstOpponent, secondOpponent, thirdOpponent;
     private MockDice dice;
     private LocalGameController localGameController;
+    #endregion
 
     #region Methods
     [Test]
