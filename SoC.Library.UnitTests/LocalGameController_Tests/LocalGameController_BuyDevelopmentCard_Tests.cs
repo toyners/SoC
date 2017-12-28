@@ -4,6 +4,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
 {
   using System;
   using Interfaces;
+  using NSubstitute;
   using NUnit.Framework;
   using Shouldly;
 
@@ -91,8 +92,8 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
     public void BuyDevelopmentCard_GotResources_DevelopmentCardPurchasedEventIsRaised()
     {
       // Arrange
-
-      this.TestSetup();
+      var knightDevelopmentCard = new KnightDevelopmentCard();
+      this.TestSetup(this.CreateMockOneCardDevelopmentCardHolder(knightDevelopmentCard));
       this.player.AddResources(ResourceClutch.DevelopmentCard);
 
       TurnToken turnToken = null;
@@ -155,6 +156,16 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       var playerPool = this.CreatePlayerPool(this.player, new[] { this.firstOpponent, this.secondOpponent, this.thirdOpponent });
       this.localGameController = this.CreateLocalGameController(dice, playerPool, developmentCardHolder);
       this.CompleteGameSetup(this.localGameController);
+    }
+
+    private IDevelopmentCardHolder CreateMockOneCardDevelopmentCardHolder(DevelopmentCard developmentCard)
+    {
+      DevelopmentCard card;
+      var developmentCardHolder = Substitute.For<IDevelopmentCardHolder>();
+      developmentCardHolder
+        .TryGetNextCard(out card)
+        .Returns(x => { x[0] = developmentCard; return true; });
+      return developmentCardHolder;
     }
     #endregion 
   }
