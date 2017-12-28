@@ -11,7 +11,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
   [TestFixture]
   [Category("All")]
   [Category("LocalGameController")]
-  [Category("LocalGameController.UseDevelopmentCard")]
+  [Category("LocalGameController.UseKnightDevelopmentCard")]
   public class LocalGameController_UseDevelopmentCard_Tests : LocalGameControllerTestBase
   {
     #region Fields
@@ -23,7 +23,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
 
     #region Methods
     [Test]
-    public void UseDevelopmentCard_TurnTokenNotCorrect_MeaningfulErrorIsReceived()
+    public void UseKnightDevelopmentCard_TurnTokenNotCorrect_MeaningfulErrorIsReceived()
     {
       // Arrange
       this.TestSetup();
@@ -36,14 +36,15 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       this.localGameController.StartGamePlay();
 
       // Act
-      this.localGameController.UseDevelopmentCard(new TurnToken(), null);
+      this.localGameController.UseKnightDevelopmentCard(new TurnToken(), null);
 
       // Assert
       errorDetails.ShouldNotBeNull();
       errorDetails.Message.ShouldBe("Turn token not recognised.");
     }
 
-    public void UseDevelopmentCard_UseCardPurchasedInSameTurn_MeaningfulErrorIsReceived()
+    [Test]
+    public void UseKnightDevelopmentCard_UseCardPurchasedInSameTurn_MeaningfulErrorIsReceived()
     {
       // Arrange
       var knightDevelopmentCard = new KnightDevelopmentCard();
@@ -63,14 +64,15 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       this.localGameController.BuyDevelopmentCard(turnToken);
 
       // Act
-      this.localGameController.UseDevelopmentCard(turnToken, purchasedDevelopmentCard);
+      this.localGameController.UseKnightDevelopmentCard(turnToken, (KnightDevelopmentCard)purchasedDevelopmentCard);
 
       // Assert
       errorDetails.ShouldNotBeNull();
       errorDetails.Message.ShouldBe("Cannot use development card that is purchased in the same turn.");
     }
 
-    public void UseDevelopmentCard_UseKnightDevelopmentCardAndTryToMoveRobberToSameSpot_MeaningfulErrorIsReceived()
+    [Test]
+    public void UseKnightDevelopmentCard_UseKnightDevelopmentCardAndTryToMoveRobberToSameSpot_MeaningfulErrorIsReceived()
     {
       // Arrange
       var knightDevelopmentCard = new KnightDevelopmentCard();
@@ -88,15 +90,47 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       this.localGameController.EndTurn(turnToken);
 
       // Act
-      this.localGameController.UseDevelopmentCard(turnToken, purchasedDevelopmentCard);
-      //this.localGameController
+      this.localGameController.UseKnightDevelopmentCard(turnToken, (KnightDevelopmentCard)purchasedDevelopmentCard);
+      this.localGameController.SetRobberLocation(0);
 
       // Assert
       errorDetails.ShouldNotBeNull();
-      errorDetails.Message.ShouldBe("Must move Robber away from starting hex.");
+      errorDetails.Message.ShouldBe("Must move Robber away from present hex (0).");
     }
 
-    public void UseDevelopmentCard_PlayerPlaysThirdKnightDevelopmentCard_LargestArmyEventRaised()
+    [Test]
+    public void UseKnightDevelopmentCard_PlayerPlaysThirdKnightDevelopmentCard_LargestArmyEventRaised()
+    {
+      // Arrange
+      var knightDevelopmentCard1 = new KnightDevelopmentCard();
+      var knightDevelopmentCard2 = new KnightDevelopmentCard();
+      var knightDevelopmentCard3 = new KnightDevelopmentCard();
+      this.TestSetup(knightDevelopmentCard1, knightDevelopmentCard2, knightDevelopmentCard3);
+
+      ErrorDetails errorDetails = null;
+      this.localGameController.ErrorRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
+
+      TurnToken turnToken = null;
+      this.localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
+
+      Guid newPlayer = Guid.Empty, oldPlayer = Guid.Empty;
+      this.localGameController.LargestArmyEvent = (Guid np, Guid op) => { newPlayer = np; oldPlayer = op; };
+
+      this.localGameController.StartGamePlay();
+      this.localGameController.EndTurn(turnToken);
+
+      // Act
+      this.localGameController.UseKnightDevelopmentCard(turnToken, knightDevelopmentCard1);
+      this.localGameController.UseKnightDevelopmentCard(turnToken, knightDevelopmentCard2);
+      this.localGameController.UseKnightDevelopmentCard(turnToken, knightDevelopmentCard3);
+
+      // Assert
+      newPlayer.ShouldBe(this.player.Id);
+      oldPlayer.ShouldBeNull();
+    }
+
+    [Test]
+    public void UseKnightDevelopmentCard_OpponentPlaysMoreKnightDevelopmentCardThanPlayer_LargestArmyEventRaised()
     {
       // Arrange
       this.TestSetup();
@@ -108,14 +142,15 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       this.localGameController.StartGamePlay();
 
       // Act
-      this.localGameController.UseDevelopmentCard(new TurnToken(), null);
+      this.localGameController.UseKnightDevelopmentCard(new TurnToken(), null);
 
       // Assert
       errorDetails.ShouldNotBeNull();
       errorDetails.Message.ShouldBe("Turn token not recognised.");
     }
 
-    public void UseDevelopmentCard_OpponentPlaysMoreKnightDevelopmentCardThanPlayer_LargestArmyEventRaised()
+    [Test]
+    public void UseKnightDevelopmentCard_PlayerPlaysMoreKnightDevelopmentCardThanOpponent_LargestArmyEventRaised()
     {
       // Arrange
       this.TestSetup();
@@ -127,26 +162,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       this.localGameController.StartGamePlay();
 
       // Act
-      this.localGameController.UseDevelopmentCard(new TurnToken(), null);
-
-      // Assert
-      errorDetails.ShouldNotBeNull();
-      errorDetails.Message.ShouldBe("Turn token not recognised.");
-    }
-
-    public void UseDevelopmentCard_PlayerPlaysMoreKnightDevelopmentCardThanOpponent_LargestArmyEventRaised()
-    {
-      // Arrange
-      this.TestSetup();
-      ErrorDetails errorDetails = null;
-      this.localGameController.ErrorRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
-
-      TurnToken turnToken = null;
-      this.localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
-      this.localGameController.StartGamePlay();
-
-      // Act
-      this.localGameController.UseDevelopmentCard(new TurnToken(), null);
+      this.localGameController.UseKnightDevelopmentCard(new TurnToken(), null);
 
       // Assert
       errorDetails.ShouldNotBeNull();

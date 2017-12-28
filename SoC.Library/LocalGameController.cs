@@ -80,6 +80,7 @@ namespace Jabberwocky.SoC.Library
     public Action<ResourceUpdate> GameSetupResourcesEvent { get; set; }
     public Action<PlayerDataView[]> TurnOrderFinalisedEvent { get; set; }
     public Action RoadSegmentBuiltEvent { get; set; }
+    public Action<Guid, Guid> LargestArmyEvent { get; set; }
     public Action<Guid> LongestRoadBuiltEvent { get; set; }
     public Action SettlementBuiltEvent { get; set; }
     public Action CityBuiltEvent { get; set; }
@@ -356,7 +357,7 @@ namespace Jabberwocky.SoC.Library
       this.GamePhase = GamePhases.Quitting;
     }
 
-    public void UseDevelopmentCard(TurnToken turnToken, DevelopmentCard developmentCard)
+    public void UseKnightDevelopmentCard(TurnToken turnToken, KnightDevelopmentCard developmentCard)
     {
       throw new NotImplementedException();
     }
