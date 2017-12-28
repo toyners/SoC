@@ -75,7 +75,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       this.localGameController.ErrorRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
 
       Boolean developmentCardPurchased = false;
-      this.localGameController.DevelopmentCardPurchasedEvent = () => { developmentCardPurchased = true; };
+      this.localGameController.DevelopmentCardPurchasedEvent = (DevelopmentCard d) => { developmentCardPurchased = true; };
 
       this.localGameController.StartGamePlay();
 
@@ -102,8 +102,9 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       ErrorDetails errorDetails = null;
       this.localGameController.ErrorRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
 
-      Boolean developmentCardPurchased = false;
-      this.localGameController.DevelopmentCardPurchasedEvent = () => { developmentCardPurchased = true; };
+
+      DevelopmentCard purchaseddDevelopmentCard = null;
+      this.localGameController.DevelopmentCardPurchasedEvent = (DevelopmentCard d) => { purchaseddDevelopmentCard = d; };
 
       this.localGameController.StartGamePlay();
 
@@ -111,7 +112,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       this.localGameController.BuyDevelopmentCard(turnToken);
 
       // Assert
-      developmentCardPurchased.ShouldBeTrue();
+      purchaseddDevelopmentCard.ShouldNotBeNull();
       errorDetails.ShouldBeNull();
     }
 

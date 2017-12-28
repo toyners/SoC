@@ -83,7 +83,7 @@ namespace Jabberwocky.SoC.Library
     public Action<Guid> LongestRoadBuiltEvent { get; set; }
     public Action SettlementBuiltEvent { get; set; }
     public Action CityBuiltEvent { get; set; }
-    public Action DevelopmentCardPurchasedEvent { get; set; }
+    public Action<DevelopmentCard> DevelopmentCardPurchasedEvent { get; set; }
     #endregion
 
     #region Methods
@@ -154,7 +154,7 @@ namespace Jabberwocky.SoC.Library
       DevelopmentCard developmentCard;
       this.developmentCardHolder.TryGetNextCard(out developmentCard);
       this.currentPlayer.PayForDevelopmentCard();
-      this.DevelopmentCardPurchasedEvent?.Invoke();
+      this.DevelopmentCardPurchasedEvent?.Invoke(null);
     }
 
     public void ChooseResourceFromOpponent(Guid opponentId, Int32 resourceIndex)
