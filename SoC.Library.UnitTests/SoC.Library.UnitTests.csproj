@@ -66,6 +66,7 @@
     <Compile Include="LocalGameController_Tests\LocalGameController_BuildRoadSegment_Tests.cs" />
     <Compile Include="LocalGameController_Tests\LocalGameController_BuildSettlement_Tests.cs" />
     <Compile Include="LocalGameController_Tests\LocalGameController_BuyDevelopmentCard_Tests.cs" />
+    <Compile Include="LocalGameController_Tests\LocalGameController_UseDevelopmentCard_Tests.cs" />
     <Compile Include="MockComputerPlayer.cs" />
     <Compile Include="MockDice.cs" />
     <Compile Include="MockDiceCreator.cs" />

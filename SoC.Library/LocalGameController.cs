@@ -356,6 +356,11 @@ namespace Jabberwocky.SoC.Library
       this.GamePhase = GamePhases.Quitting;
     }
 
+    public void UseDevelopmentCard(TurnToken turnToken, DevelopmentCard developmentCard)
+    {
+      throw new NotImplementedException();
+    }
+
     public void JoinGame()
     {
       this.JoinGame(null);

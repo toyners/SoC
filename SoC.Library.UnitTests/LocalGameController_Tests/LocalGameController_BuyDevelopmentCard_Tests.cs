@@ -158,6 +158,6 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       developmentCardHolder.HasCards.Returns(true);
       return developmentCardHolder;
     }
-    #endregion 
+    #endregion
   }
 }
