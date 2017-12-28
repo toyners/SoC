@@ -18,22 +18,8 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
     private MockComputerPlayer firstOpponent, secondOpponent, thirdOpponent;
     private MockDice dice;
     private LocalGameController localGameController;
-    //private IDevelopmentCardHolder developmentCardHolder;
 
     #region Methods
-    /*[SetUp]
-    public void TestSetup()
-    {
-      this.CreateDefaultPlayerInstances(out this.player, out this.firstOpponent, out this.secondOpponent, out this.thirdOpponent);
-      this.dice = this.CreateMockDice();
-      this.dice.AddSequence(new[] { 8u });
-      this.developmentCardHolder = new DevelopmentCardHolder();
-
-      var playerPool = this.CreatePlayerPool(this.player, new[] { this.firstOpponent, this.secondOpponent, this.thirdOpponent });
-      this.localGameController = this.CreateLocalGameController(dice, playerPool, this.developmentCardHolder);
-      this.CompleteGameSetup(this.localGameController);
-    }*/
-
     [Test]
     public void BuildCity_TurnTokenNotCorrect_MeaningfulErrorIsReceived()
     {
