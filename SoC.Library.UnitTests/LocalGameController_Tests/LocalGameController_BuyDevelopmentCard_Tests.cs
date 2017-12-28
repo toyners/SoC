@@ -113,6 +113,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
 
       // Assert
       purchaseddDevelopmentCard.ShouldNotBeNull();
+      purchaseddDevelopmentCard.ShouldBeSameAs(knightDevelopmentCard);
       errorDetails.ShouldBeNull();
     }
 
@@ -166,6 +167,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       developmentCardHolder
         .TryGetNextCard(out card)
         .Returns(x => { x[0] = developmentCard; return true; });
+      developmentCardHolder.HasCards.Returns(true);
       return developmentCardHolder;
     }
     #endregion 

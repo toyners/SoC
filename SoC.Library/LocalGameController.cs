@@ -154,7 +154,7 @@ namespace Jabberwocky.SoC.Library
       DevelopmentCard developmentCard;
       this.developmentCardHolder.TryGetNextCard(out developmentCard);
       this.currentPlayer.PayForDevelopmentCard();
-      this.DevelopmentCardPurchasedEvent?.Invoke(null);
+      this.DevelopmentCardPurchasedEvent?.Invoke(developmentCard);
     }
 
     public void ChooseResourceFromOpponent(Guid opponentId, Int32 resourceIndex)
