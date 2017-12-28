@@ -357,7 +357,7 @@ namespace Jabberwocky.SoC.Library
       this.GamePhase = GamePhases.Quitting;
     }
 
-    public void UseKnightDevelopmentCard(TurnToken turnToken, KnightDevelopmentCard developmentCard)
+    public void UseKnightDevelopmentCard(TurnToken turnToken, KnightDevelopmentCard developmentCard, UInt32 newRobberHex)
     {
       throw new NotImplementedException();
     }
