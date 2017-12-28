@@ -17,10 +17,10 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
     private MockComputerPlayer firstOpponent, secondOpponent, thirdOpponent;
     private MockDice dice;
     private LocalGameController localGameController;
-    private IDevelopmentCardHolder developmentCardHolder;
+    //private IDevelopmentCardHolder developmentCardHolder;
 
     #region Methods
-    [SetUp]
+    /*[SetUp]
     public void TestSetup()
     {
       this.CreateDefaultPlayerInstances(out this.player, out this.firstOpponent, out this.secondOpponent, out this.thirdOpponent);
@@ -31,12 +31,13 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       var playerPool = this.CreatePlayerPool(this.player, new[] { this.firstOpponent, this.secondOpponent, this.thirdOpponent });
       this.localGameController = this.CreateLocalGameController(dice, playerPool, this.developmentCardHolder);
       this.CompleteGameSetup(this.localGameController);
-    }
+    }*/
 
     [Test]
     public void BuildCity_TurnTokenNotCorrect_MeaningfulErrorIsReceived()
     {
       // Arrange
+      this.TestSetup();
       ErrorDetails errorDetails = null;
       this.localGameController.ErrorRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
 
@@ -63,6 +64,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
     public void BuyDevelopmentCard_InsufficientResources_MeaningfulErrorIsReceived(Int32 grainCount, Int32 oreCount, Int32 woolCount, String expectedErrorMessage)
     {
       // Arrange
+      this.TestSetup();
       this.player.AddResources(new ResourceClutch(0, grainCount, 0, oreCount, woolCount));
 
       TurnToken turnToken = null;
@@ -89,6 +91,8 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
     public void BuyDevelopmentCard_GotResources_DevelopmentCardPurchasedEventIsRaised()
     {
       // Arrange
+
+      this.TestSetup();
       this.player.AddResources(ResourceClutch.DevelopmentCard);
 
       TurnToken turnToken = null;
@@ -114,6 +118,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
     public void BuyDevelopmentCard_NoMoreDevelopmentCards_MeaningfulErrorIsReceived()
     {
       // Arrange
+      this.TestSetup();
       this.player.AddResources(ResourceClutch.DevelopmentCard * 26);
 
       TurnToken turnToken = null;
@@ -134,6 +139,22 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       // Assert
       errorDetails.ShouldNotBeNull();
       errorDetails.Message.ShouldBe("Cannot buy development card. No more cards available");
+    }
+
+    private void TestSetup()
+    {
+      this.TestSetup(new DevelopmentCardHolder());
+    }
+
+    private void TestSetup(IDevelopmentCardHolder developmentCardHolder)
+    {
+      this.CreateDefaultPlayerInstances(out this.player, out this.firstOpponent, out this.secondOpponent, out this.thirdOpponent);
+      this.dice = this.CreateMockDice();
+      this.dice.AddSequence(new[] { 8u });
+
+      var playerPool = this.CreatePlayerPool(this.player, new[] { this.firstOpponent, this.secondOpponent, this.thirdOpponent });
+      this.localGameController = this.CreateLocalGameController(dice, playerPool, developmentCardHolder);
+      this.CompleteGameSetup(this.localGameController);
     }
     #endregion 
   }
