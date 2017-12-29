@@ -44,6 +44,27 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
     }
 
     [Test]
+    public void UseKnightDevelopmentCard_CardIsNull_MeaningfulErrorIsReceived()
+    {
+      // Arrange
+      this.TestSetup();
+
+      ErrorDetails errorDetails = null;
+      this.localGameController.ErrorRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
+
+      TurnToken turnToken = null;
+      this.localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
+      this.localGameController.StartGamePlay();
+
+      // Act
+      this.localGameController.UseKnightDevelopmentCard(turnToken, null, 0);
+
+      // Assert
+      errorDetails.ShouldNotBeNull();
+      errorDetails.Message.ShouldBe("Knight development card parameter is null.");
+    }
+
+    [Test]
     public void UseKnightDevelopmentCard_UseCardPurchasedInSameTurn_MeaningfulErrorIsReceived()
     {
       // Arrange
@@ -87,6 +108,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       this.localGameController.DevelopmentCardPurchasedEvent = (DevelopmentCard d) => { purchasedDevelopmentCard = d; };
 
       this.localGameController.StartGamePlay();
+      this.localGameController.BuyDevelopmentCard(turnToken);
       this.localGameController.EndTurn(turnToken);
 
       // Act

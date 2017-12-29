@@ -359,6 +359,18 @@ namespace Jabberwocky.SoC.Library
 
     public void UseKnightDevelopmentCard(TurnToken turnToken, KnightDevelopmentCard developmentCard, UInt32 newRobberHex)
     {
+      if (turnToken != this.currentTurnToken)
+      {
+        this.ErrorRaisedEvent?.Invoke(new ErrorDetails("Turn token not recognised."));
+        return;
+      }
+
+      if (developmentCard == null)
+      {
+        this.ErrorRaisedEvent?.Invoke(new ErrorDetails("Knight development card parameter is null."));
+        return;
+      }
+
       throw new NotImplementedException();
     }
 
