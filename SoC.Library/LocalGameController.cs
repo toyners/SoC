@@ -63,28 +63,28 @@ namespace Jabberwocky.SoC.Library
 
     #region Events
     public Action<GameBoardUpdate> BoardUpdatedEvent { get; set; }
+    public Action CityBuiltEvent { get; set; }
+    public Action<DevelopmentCard> DevelopmentCardPurchasedEvent { get; set; }
+    public Action<UInt32> DiceRollEvent { get; set; }
+    public Action<ErrorDetails> ErrorRaisedEvent { get; set; }
+    public Action<GameBoardData> InitialBoardSetupEvent { get; set; }
     public Action<PlayerDataView[]> GameJoinedEvent { get; set; }
     public Action<PlayerDataView[], GameBoardData> GameLoadedEvent { get; set; }
-    public Action<GameBoardData> InitialBoardSetupEvent { get; set; }
-    public Action<ClientAccount> LoggedInEvent { get; set; }
-    public Action<GameBoardUpdate> StartInitialSetupTurnEvent { get; set; }
+    public Action<ResourceUpdate> GameSetupResourcesEvent { get; set; }
     public Action<GameBoardUpdate> GameSetupUpdateEvent { get; set; }
-    public Action<ErrorDetails> ErrorRaisedEvent { get; set; }
-    public Action<TurnToken> StartPlayerTurnEvent { get; set; }
-    public Action<UInt32> DiceRollEvent { get; set; }
+    public Action<Guid, Guid> LargestArmyEvent { get; set; }
+    public Action<ClientAccount> LoggedInEvent { get; set; }
+    public Action<Guid> LongestRoadBuiltEvent { get; set; }
     public Action<ResourceUpdate> ResourcesCollectedEvent { get; set; }
     public Action<ResourceClutch> ResourcesGainedEvent { get; set; }
     public Action<ResourceUpdate> ResourcesLostEvent { get; set; }
+    public Action RoadSegmentBuiltEvent { get; set; }
     public Action<Int32> RobberEvent { get; set; }
     public Action<Dictionary<Guid, Int32>> RobbingChoicesEvent { get; set; }
-    public Action<ResourceUpdate> GameSetupResourcesEvent { get; set; }
-    public Action<PlayerDataView[]> TurnOrderFinalisedEvent { get; set; }
-    public Action RoadSegmentBuiltEvent { get; set; }
-    public Action<Guid, Guid> LargestArmyEvent { get; set; }
-    public Action<Guid> LongestRoadBuiltEvent { get; set; }
     public Action SettlementBuiltEvent { get; set; }
-    public Action CityBuiltEvent { get; set; }
-    public Action<DevelopmentCard> DevelopmentCardPurchasedEvent { get; set; }
+    public Action<GameBoardUpdate> StartInitialSetupTurnEvent { get; set; }
+    public Action<TurnToken> StartPlayerTurnEvent { get; set; }
+    public Action<PlayerDataView[]> TurnOrderFinalisedEvent { get; set; }
     #endregion
 
     #region Methods
