@@ -204,6 +204,64 @@ namespace Jabberwocky.SoC.Library
       this.ResourcesGainedEvent?.Invoke(gainedResources);
     }
 
+    public void CompleteGameSetup(UInt32 settlementLocation, UInt32 roadEndLocation)
+    {
+      if (this.GamePhase != GamePhases.CompleteGameSetup)
+      {
+        var errorDetails = new ErrorDetails("Cannot call 'CompleteGameSetup' until 'ContinueGameSetup' has completed.");
+        this.ErrorRaisedEvent?.Invoke(errorDetails);
+        return;
+      }
+
+      if (!this.VerifyStartingInfrastructurePlacementRequest(settlementLocation, roadEndLocation))
+      {
+        return;
+      }
+
+      this.gameBoardManager.Data.PlaceStartingInfrastructure(this.mainPlayer.Id, settlementLocation, roadEndLocation);
+      this.mainPlayer.PlaceStartingInfrastructure();
+      this.CollectInitialResourcesForPlayer(this.mainPlayer.Id, settlementLocation);
+
+      var gameBoardData = this.gameBoardManager.Data;
+      GameBoardUpdate gameBoardUpdate = this.CompleteSetupForComputerPlayers(gameBoardData, null);
+      this.GameSetupUpdateEvent?.Invoke(gameBoardUpdate);
+
+      this.GameSetupResourcesEvent?.Invoke(this.gameSetupResources);
+      this.GamePhase = GamePhases.FinalisePlayerTurnOrder;
+    }
+
+    public void ContinueGameSetup(UInt32 settlementLocation, UInt32 roadEndLocation)
+    {
+      if (this.GamePhase != GamePhases.ContinueGameSetup)
+      {
+        var errorDetails = new ErrorDetails("Cannot call 'ContinueGameSetup' until 'StartGameSetup' has completed.");
+        this.ErrorRaisedEvent?.Invoke(errorDetails);
+        return;
+      }
+
+      if (!this.VerifyStartingInfrastructurePlacementRequest(settlementLocation, roadEndLocation))
+      {
+        return;
+      }
+
+      var gameBoardData = this.gameBoardManager.Data;
+      gameBoardData.PlaceStartingInfrastructure(this.mainPlayer.Id, settlementLocation, roadEndLocation);
+      this.mainPlayer.PlaceStartingInfrastructure();
+
+      GameBoardUpdate gameBoardUpdate = this.ContinueSetupForComputerPlayers(gameBoardData);
+
+      this.playerIndex = this.players.Length - 1;
+      gameBoardUpdate = this.CompleteSetupForComputerPlayers(gameBoardData, gameBoardUpdate);
+
+      this.GameSetupUpdateEvent?.Invoke(gameBoardUpdate);
+      this.GamePhase = GamePhases.CompleteGameSetup;
+    }
+
+    public void DropResources(ResourceClutch resourceClutch)
+    {
+      this.mainPlayer.RemoveResources(resourceClutch);
+    }
+
     public void EndTurn(TurnToken turnToken)
     {
       if (turnToken != this.currentTurnToken)
@@ -247,6 +305,47 @@ namespace Jabberwocky.SoC.Library
 
         this.currentPlayer = this.players[this.playerIndex];
       }
+    }
+
+    public void FinalisePlayerTurnOrder()
+    {
+      if (this.GamePhase != GamePhases.FinalisePlayerTurnOrder)
+      {
+        var errorDetails = new ErrorDetails("Cannot call 'FinalisePlayerTurnOrder' until 'CompleteGameSetup' has completed.");
+        this.ErrorRaisedEvent?.Invoke(errorDetails);
+        return;
+      }
+
+      // Set the order for the main game loop
+      this.players = PlayerTurnOrderCreator.Create(this.players, this.dice);
+      var playerData = this.CreatePlayerDataViews();
+      this.TurnOrderFinalisedEvent?.Invoke(playerData);
+      this.GamePhase = GamePhases.StartGamePlay;
+    }
+
+    public void JoinGame()
+    {
+      this.JoinGame(null);
+    }
+
+    public void JoinGame(GameOptions gameOptions)
+    {
+      if (this.GamePhase != GamePhases.Initial)
+      {
+        var errorDetails = new ErrorDetails("Cannot call 'JoinGame' more than once.");
+        this.ErrorRaisedEvent?.Invoke(errorDetails);
+        return;
+      }
+
+      if (gameOptions == null)
+      {
+        gameOptions = new GameOptions { MaxPlayers = 1, MaxAIPlayers = 3 };
+      }
+
+      this.CreatePlayers(gameOptions);
+      var playerData = this.CreatePlayerDataViews();
+      this.GameJoinedEvent?.Invoke(playerData);
+      this.GamePhase = GamePhases.WaitingLaunch;
     }
 
     public void LaunchGame()
@@ -357,68 +456,31 @@ namespace Jabberwocky.SoC.Library
       this.GamePhase = GamePhases.Quitting;
     }
 
-    public void UseKnightDevelopmentCard(TurnToken turnToken, KnightDevelopmentCard developmentCard, UInt32 newRobberHex)
+    public void SetRobberLocation(UInt32 location)
     {
-      if (turnToken != this.currentTurnToken)
+      if (this.GamePhase != GamePhases.SetRobberLocation)
       {
-        this.ErrorRaisedEvent?.Invoke(new ErrorDetails("Turn token not recognised."));
+        var resourceDropErrorDetails = new ErrorDetails(String.Format("Cannot set robber location until expected resources ({0}) have been dropped via call to DropResources method.", this.resourcesToDrop));
+        this.ErrorRaisedEvent?.Invoke(resourceDropErrorDetails);
         return;
       }
 
-      if (developmentCard == null)
+      var playerIds = this.gameBoardManager.Data.GetPlayersForHex(location);
+      if (this.PlayerIdsIsEmptyOrOnlyContainsMainPlayer(playerIds))
       {
-        this.ErrorRaisedEvent?.Invoke(new ErrorDetails("Knight development card parameter is null."));
+        this.GamePhase = GamePhases.NextStep;
+        this.RobbingChoicesEvent?.Invoke(null);
         return;
       }
 
-      throw new NotImplementedException();
-    }
-
-    public void JoinGame()
-    {
-      this.JoinGame(null);
-    }
-
-    public void JoinGame(GameOptions gameOptions)
-    {
-      if (this.GamePhase != GamePhases.Initial)
+      this.robbingChoices = new Dictionary<Guid, Int32>();
+      foreach (var playerId in playerIds)
       {
-        var errorDetails = new ErrorDetails("Cannot call 'JoinGame' more than once.");
-        this.ErrorRaisedEvent?.Invoke(errorDetails);
-        return;
+        this.robbingChoices.Add(playerId, this.playersById[playerId].ResourcesCount);
       }
 
-      if (gameOptions == null)
-      {
-        gameOptions = new GameOptions { MaxPlayers = 1, MaxAIPlayers = 3 };
-      }
-
-      this.CreatePlayers(gameOptions);
-      var playerData = this.CreatePlayerDataViews();
-      this.GameJoinedEvent?.Invoke(playerData);
-      this.GamePhase = GamePhases.WaitingLaunch;
-    }
-
-    public void Save(String v)
-    {
-      throw new NotImplementedException();
-    }
-
-    public Boolean StartGameSetup()
-    {
-      if (this.GamePhase != GamePhases.StartGameSetup)
-      {
-        return false;
-      }
-
-      this.players = PlayerTurnOrderCreator.Create(this.players, this.dice);
-
-      this.playerIndex = 0;
-      GameBoardUpdate gameBoardUpdate = this.ContinueSetupForComputerPlayers(this.gameBoardManager.Data);
-      this.GameSetupUpdateEvent?.Invoke(gameBoardUpdate);
-      this.GamePhase = GamePhases.ContinueGameSetup;
-
-      return true;
+      this.GamePhase = GamePhases.ChooseResourceFromOpponent;
+      this.RobbingChoicesEvent?.Invoke(this.robbingChoices);
     }
 
     public void StartGamePlay()
@@ -488,105 +550,43 @@ namespace Jabberwocky.SoC.Library
       }
     }
 
-    public void ContinueGameSetup(UInt32 settlementLocation, UInt32 roadEndLocation)
+    public Boolean StartGameSetup()
     {
-      if (this.GamePhase != GamePhases.ContinueGameSetup)
+      if (this.GamePhase != GamePhases.StartGameSetup)
       {
-        var errorDetails = new ErrorDetails("Cannot call 'ContinueGameSetup' until 'StartGameSetup' has completed.");
-        this.ErrorRaisedEvent?.Invoke(errorDetails);
-        return;
+        return false;
       }
 
-      if (!this.VerifyStartingInfrastructurePlacementRequest(settlementLocation, roadEndLocation))
-      {
-        return;
-      }
-
-      var gameBoardData = this.gameBoardManager.Data;
-      gameBoardData.PlaceStartingInfrastructure(this.mainPlayer.Id, settlementLocation, roadEndLocation);
-      this.mainPlayer.PlaceStartingInfrastructure();
-
-      GameBoardUpdate gameBoardUpdate = this.ContinueSetupForComputerPlayers(gameBoardData);
-
-      this.playerIndex = this.players.Length - 1;
-      gameBoardUpdate = this.CompleteSetupForComputerPlayers(gameBoardData, gameBoardUpdate);
-
-      this.GameSetupUpdateEvent?.Invoke(gameBoardUpdate);
-      this.GamePhase = GamePhases.CompleteGameSetup;
-    }
-
-    public void CompleteGameSetup(UInt32 settlementLocation, UInt32 roadEndLocation)
-    {
-      if (this.GamePhase != GamePhases.CompleteGameSetup)
-      {
-        var errorDetails = new ErrorDetails("Cannot call 'CompleteGameSetup' until 'ContinueGameSetup' has completed.");
-        this.ErrorRaisedEvent?.Invoke(errorDetails);
-        return;
-      }
-
-      if (!this.VerifyStartingInfrastructurePlacementRequest(settlementLocation, roadEndLocation))
-      {
-        return;
-      }
-
-      this.gameBoardManager.Data.PlaceStartingInfrastructure(this.mainPlayer.Id, settlementLocation, roadEndLocation);
-      this.mainPlayer.PlaceStartingInfrastructure();
-      this.CollectInitialResourcesForPlayer(this.mainPlayer.Id, settlementLocation);
-
-      var gameBoardData = this.gameBoardManager.Data;
-      GameBoardUpdate gameBoardUpdate = this.CompleteSetupForComputerPlayers(gameBoardData, null);
-      this.GameSetupUpdateEvent?.Invoke(gameBoardUpdate);
-
-      this.GameSetupResourcesEvent?.Invoke(this.gameSetupResources);
-      this.GamePhase = GamePhases.FinalisePlayerTurnOrder;
-    }
-
-    public void DropResources(ResourceClutch resourceClutch)
-    {
-      this.mainPlayer.RemoveResources(resourceClutch);
-    }
-
-    public void FinalisePlayerTurnOrder()
-    {
-      if (this.GamePhase != GamePhases.FinalisePlayerTurnOrder)
-      {
-        var errorDetails = new ErrorDetails("Cannot call 'FinalisePlayerTurnOrder' until 'CompleteGameSetup' has completed.");
-        this.ErrorRaisedEvent?.Invoke(errorDetails);
-        return;
-      }
-
-      // Set the order for the main game loop
       this.players = PlayerTurnOrderCreator.Create(this.players, this.dice);
-      var playerData = this.CreatePlayerDataViews();
-      this.TurnOrderFinalisedEvent?.Invoke(playerData);
-      this.GamePhase = GamePhases.StartGamePlay;
+
+      this.playerIndex = 0;
+      GameBoardUpdate gameBoardUpdate = this.ContinueSetupForComputerPlayers(this.gameBoardManager.Data);
+      this.GameSetupUpdateEvent?.Invoke(gameBoardUpdate);
+      this.GamePhase = GamePhases.ContinueGameSetup;
+
+      return true;
     }
 
-    public void SetRobberLocation(UInt32 location)
+    public void UseKnightDevelopmentCard(TurnToken turnToken, KnightDevelopmentCard developmentCard, UInt32 newRobberHex)
     {
-      if (this.GamePhase != GamePhases.SetRobberLocation)
+      if (turnToken != this.currentTurnToken)
       {
-        var resourceDropErrorDetails = new ErrorDetails(String.Format("Cannot set robber location until expected resources ({0}) have been dropped via call to DropResources method.", this.resourcesToDrop));
-        this.ErrorRaisedEvent?.Invoke(resourceDropErrorDetails);
+        this.ErrorRaisedEvent?.Invoke(new ErrorDetails("Turn token not recognised."));
         return;
       }
 
-      var playerIds = this.gameBoardManager.Data.GetPlayersForHex(location);
-      if (this.PlayerIdsIsEmptyOrOnlyContainsMainPlayer(playerIds))
+      if (developmentCard == null)
       {
-        this.GamePhase = GamePhases.NextStep;
-        this.RobbingChoicesEvent?.Invoke(null);
+        this.ErrorRaisedEvent?.Invoke(new ErrorDetails("Knight development card parameter is null."));
         return;
       }
 
-      this.robbingChoices = new Dictionary<Guid, Int32>();
-      foreach(var playerId in playerIds)
-      {
-        this.robbingChoices.Add(playerId, this.playersById[playerId].ResourcesCount);
-      }
+      throw new NotImplementedException();
+    }
 
-      this.GamePhase = GamePhases.ChooseResourceFromOpponent;
-      this.RobbingChoicesEvent?.Invoke(this.robbingChoices);
+    public void Save(String v)
+    {
+      throw new NotImplementedException();
     }
 
     private void AddResourcesToList(List<ResourceTypes> resources, ResourceTypes resourceType, Int32 total)
