@@ -98,6 +98,9 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       // Arrange
       var knightDevelopmentCard = new KnightDevelopmentCard();
       this.TestSetup(knightDevelopmentCard);
+
+      this.player.AddResources(ResourceClutch.DevelopmentCard);
+
       ErrorDetails errorDetails = null;
       this.localGameController.ErrorRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
 
