@@ -150,6 +150,11 @@ namespace Jabberwocky.SoC.Library.GameBoards
       return new VerificationResults { Status = VerificationStatus.Valid };
     }
 
+    public Boolean CanPlaceRobber(UInt32 hex)
+    {
+      return hex < StandardBoardHexCount;
+    }
+
     private Guid GetOwningPlayerForLocation(UInt32 location)
     {
       if (!this.settlements.ContainsKey(location))
@@ -616,6 +621,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
 
       return resources;
     }
+
 
     public Tuple<UInt32, UInt32, Guid>[] GetRoadInformation()
     {

@@ -591,6 +591,12 @@ namespace Jabberwocky.SoC.Library
         return;
       }
 
+      if (!this.gameBoardManager.Data.CanPlaceRobber(newRobberHex))
+      {
+        this.ErrorRaisedEvent?.Invoke(new ErrorDetails("Cannot move robber to hex " + newRobberHex + " because it is out of bounds (0.. " + (GameBoardData.StandardBoardHexCount - 1) +")."));
+        return;
+      }
+
       throw new NotImplementedException();
     }
 

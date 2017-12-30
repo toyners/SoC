@@ -28,12 +28,13 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       // Arrange
       this.TestSetup();
 
-      ErrorDetails errorDetails = null;
-      this.localGameController.ErrorRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
-
       TurnToken turnToken = null;
       this.localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
+
       this.localGameController.StartGamePlay();
+
+      ErrorDetails errorDetails = null;
+      this.localGameController.ErrorRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
 
       // Act
       this.localGameController.UseKnightDevelopmentCard(new TurnToken(), null, 0);
@@ -48,13 +49,14 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
     {
       // Arrange
       this.TestSetup();
+      
+      TurnToken turnToken = null;
+      this.localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
+
+      this.localGameController.StartGamePlay();
 
       ErrorDetails errorDetails = null;
       this.localGameController.ErrorRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
-
-      TurnToken turnToken = null;
-      this.localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
-      this.localGameController.StartGamePlay();
 
       // Act
       this.localGameController.UseKnightDevelopmentCard(turnToken, null, 0);
@@ -71,8 +73,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       var knightDevelopmentCard = new KnightDevelopmentCard();
       this.TestSetup(knightDevelopmentCard);
 
-      ErrorDetails errorDetails = null;
-      this.localGameController.ErrorRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
+      this.player.AddResources(ResourceClutch.DevelopmentCard);
 
       TurnToken turnToken = null;
       this.localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
@@ -83,6 +84,9 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       this.localGameController.StartGamePlay();
       this.localGameController.BuyDevelopmentCard(turnToken);
       this.localGameController.EndTurn(turnToken);
+
+      ErrorDetails errorDetails = null;
+      this.localGameController.ErrorRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
 
       // Act
       this.localGameController.UseKnightDevelopmentCard(turnToken, (KnightDevelopmentCard)purchasedDevelopmentCard, GameBoards.GameBoardData.StandardBoardHexCount);
@@ -100,9 +104,6 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       this.TestSetup(knightDevelopmentCard);
       this.player.AddResources(ResourceClutch.DevelopmentCard);
 
-      ErrorDetails errorDetails = null;
-      this.localGameController.ErrorRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
-
       TurnToken turnToken = null;
       this.localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
 
@@ -111,6 +112,9 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
 
       this.localGameController.StartGamePlay();
       this.localGameController.BuyDevelopmentCard(turnToken);
+
+      ErrorDetails errorDetails = null;
+      this.localGameController.ErrorRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
 
       // Act
       this.localGameController.UseKnightDevelopmentCard(turnToken, (KnightDevelopmentCard)purchasedDevelopmentCard, 0);
@@ -129,9 +133,6 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
 
       this.player.AddResources(ResourceClutch.DevelopmentCard);
 
-      ErrorDetails errorDetails = null;
-      this.localGameController.ErrorRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
-
       TurnToken turnToken = null;
       this.localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
 
@@ -141,6 +142,9 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       this.localGameController.StartGamePlay();
       this.localGameController.BuyDevelopmentCard(turnToken);
       this.localGameController.EndTurn(turnToken);
+
+      ErrorDetails errorDetails = null;
+      this.localGameController.ErrorRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
 
       // Act
       this.localGameController.UseKnightDevelopmentCard(turnToken, (KnightDevelopmentCard)purchasedDevelopmentCard, 0);
@@ -157,8 +161,6 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       var knightDevelopmentCard1 = new KnightDevelopmentCard();
       var knightDevelopmentCard2 = new KnightDevelopmentCard();
       this.TestSetup(knightDevelopmentCard1, knightDevelopmentCard2);
-      ErrorDetails errorDetails = null;
-      this.localGameController.ErrorRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
 
       TurnToken turnToken = null;
       this.localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
@@ -168,9 +170,12 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
 
       this.localGameController.StartGamePlay();
       this.localGameController.EndTurn(turnToken);
+      this.localGameController.UseKnightDevelopmentCard(turnToken, (KnightDevelopmentCard)purchasedDevelopmentCards.Dequeue(), 3);
+
+      ErrorDetails errorDetails = null;
+      this.localGameController.ErrorRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
 
       // Act
-      this.localGameController.UseKnightDevelopmentCard(turnToken, (KnightDevelopmentCard)purchasedDevelopmentCards.Dequeue(), 3);
       this.localGameController.UseKnightDevelopmentCard(turnToken, (KnightDevelopmentCard)purchasedDevelopmentCards.Dequeue(), 0);
 
       // Assert
@@ -189,8 +194,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
 
       this.player.AddResources(ResourceClutch.DevelopmentCard * 3);
 
-      ErrorDetails errorDetails = null;
-      this.localGameController.ErrorRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
+      this.localGameController.ErrorRaisedEvent = (ErrorDetails e) => { throw new Exception(e.Message); };
 
       TurnToken turnToken = null;
       this.localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
@@ -237,8 +241,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       this.player.AddResources(ResourceClutch.DevelopmentCard * 3);
       this.firstOpponent.AddResources(ResourceClutch.DevelopmentCard * 4);
 
-      ErrorDetails errorDetails = null;
-      this.localGameController.ErrorRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
+      this.localGameController.ErrorRaisedEvent = (ErrorDetails e) => { throw new Exception(e.Message); };
 
       TurnToken turnToken = null;
       this.localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
@@ -290,8 +293,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       this.player.AddResources(ResourceClutch.DevelopmentCard * 5);
       this.firstOpponent.AddResources(ResourceClutch.DevelopmentCard * 4);
 
-      ErrorDetails errorDetails = null;
-      this.localGameController.ErrorRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
+      this.localGameController.ErrorRaisedEvent = (ErrorDetails e) => { throw new Exception(e.Message); };
 
       TurnToken turnToken = null;
       this.localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
@@ -340,6 +342,10 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
 
       var playerPool = this.CreatePlayerPool(this.player, new[] { this.firstOpponent, this.secondOpponent, this.thirdOpponent });
       this.localGameController = this.CreateLocalGameController(dice, playerPool, developmentCardHolder);
+
+      // Throw any errors as exceptions by default
+      this.localGameController.ErrorRaisedEvent = (ErrorDetails e) => { throw new Exception(e.Message); };
+
       this.CompleteGameSetup(this.localGameController);
     }
 
