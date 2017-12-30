@@ -30,6 +30,7 @@ namespace Jabberwocky.SoC.Library
 
     #region Fields
     private IPlayerPool playerPool;
+    private HashSet<DevelopmentCard> cardsPurchasedThisTurn = new HashSet<DevelopmentCard>();
     private IDice dice;
     private GameBoardManager gameBoardManager;
     private IGameSession gameSession;
@@ -155,6 +156,7 @@ namespace Jabberwocky.SoC.Library
       DevelopmentCard developmentCard;
       this.developmentCardHolder.TryGetNextCard(out developmentCard);
       this.currentPlayer.PayForDevelopmentCard();
+      this.cardsPurchasedThisTurn.Add(developmentCard);
       this.DevelopmentCardPurchasedEvent?.Invoke(developmentCard);
     }
 
@@ -268,6 +270,8 @@ namespace Jabberwocky.SoC.Library
       {
         return;
       }
+
+      this.cardsPurchasedThisTurn.Clear();
 
       this.playerIndex++;
       this.currentPlayer = this.players[this.playerIndex];
@@ -578,6 +582,12 @@ namespace Jabberwocky.SoC.Library
       if (developmentCard == null)
       {
         this.ErrorRaisedEvent?.Invoke(new ErrorDetails("Knight development card parameter is null."));
+        return;
+      }
+
+      if (cardsPurchasedThisTurn.Contains(developmentCard))
+      {
+        this.ErrorRaisedEvent?.Invoke(new ErrorDetails("Cannot use development card that has been purchased this turn."));
         return;
       }
 

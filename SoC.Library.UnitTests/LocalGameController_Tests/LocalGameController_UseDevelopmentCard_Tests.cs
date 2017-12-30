@@ -89,7 +89,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
 
       // Assert
       errorDetails.ShouldNotBeNull();
-      errorDetails.Message.ShouldBe("Cannot use development card that is purchased in the same turn.");
+      errorDetails.Message.ShouldBe("Cannot use development card that has been purchased this turn.");
     }
 
     [Test]
