@@ -65,6 +65,34 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
     }
 
     [Test]
+    public void UseKnightDevelopmentCard_NewRobberHexIsOutOfBounds_MeaningfulErrorIsReceived()
+    {
+      // Arrange
+      var knightDevelopmentCard = new KnightDevelopmentCard();
+      this.TestSetup(knightDevelopmentCard);
+
+      ErrorDetails errorDetails = null;
+      this.localGameController.ErrorRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
+
+      TurnToken turnToken = null;
+      this.localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
+
+      DevelopmentCard purchasedDevelopmentCard = null;
+      this.localGameController.DevelopmentCardPurchasedEvent = (DevelopmentCard d) => { purchasedDevelopmentCard = d; };
+
+      this.localGameController.StartGamePlay();
+      this.localGameController.BuyDevelopmentCard(turnToken);
+      this.localGameController.EndTurn(turnToken);
+
+      // Act
+      this.localGameController.UseKnightDevelopmentCard(turnToken, (KnightDevelopmentCard)purchasedDevelopmentCard, GameBoards.GameBoardData.StandardBoardHexCount);
+
+      // Assert
+      errorDetails.ShouldNotBeNull();
+      errorDetails.Message.ShouldBe("Cannot move robber to hex 19 because it is out of bounds (0.. 18).");
+    }
+
+    [Test]
     public void UseKnightDevelopmentCard_UseCardPurchasedInSameTurn_MeaningfulErrorIsReceived()
     {
       // Arrange
