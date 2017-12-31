@@ -162,6 +162,8 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       var knightDevelopmentCard2 = new KnightDevelopmentCard();
       this.TestSetup(knightDevelopmentCard1, knightDevelopmentCard2);
 
+      this.player.AddResources(ResourceClutch.DevelopmentCard * 2);
+
       TurnToken turnToken = null;
       this.localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
 
@@ -169,6 +171,8 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       this.localGameController.DevelopmentCardPurchasedEvent = (DevelopmentCard d) => { purchasedDevelopmentCards.Enqueue(d); };
 
       this.localGameController.StartGamePlay();
+      this.localGameController.BuyDevelopmentCard(turnToken);
+      this.localGameController.BuyDevelopmentCard(turnToken);
       this.localGameController.EndTurn(turnToken);
       this.localGameController.UseKnightDevelopmentCard(turnToken, (KnightDevelopmentCard)purchasedDevelopmentCards.Dequeue(), 3);
 
