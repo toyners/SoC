@@ -571,7 +571,7 @@ namespace Jabberwocky.SoC.Library
       return true;
     }
 
-    public void UseKnightDevelopmentCard(TurnToken turnToken, KnightDevelopmentCard developmentCard, UInt32 newRobberHex)
+    public void UseKnightDevelopmentCard(TurnToken turnToken, KnightDevelopmentCard developmentCard, UInt32 robberHex)
     {
       if (turnToken != this.currentTurnToken)
       {
@@ -579,6 +579,17 @@ namespace Jabberwocky.SoC.Library
         return;
       }
 
+      if (!this.CanUseDevelopmentCard(developmentCard, robberHex))
+      {
+        this.TryRaiseDevelopmentCardUsageError(developmentCard, robberHex);
+        return;
+      }
+
+      throw new NotImplementedException();
+    }
+
+    private void TryRaiseDevelopmentCardUsageError(KnightDevelopmentCard developmentCard, UInt32 newRobberHex)
+    {
       if (developmentCard == null)
       {
         this.ErrorRaisedEvent?.Invoke(new ErrorDetails("Knight development card parameter is null."));
@@ -593,11 +604,16 @@ namespace Jabberwocky.SoC.Library
 
       if (!this.gameBoardManager.Data.CanPlaceRobber(newRobberHex))
       {
-        this.ErrorRaisedEvent?.Invoke(new ErrorDetails("Cannot move robber to hex " + newRobberHex + " because it is out of bounds (0.. " + (GameBoardData.StandardBoardHexCount - 1) +")."));
+        this.ErrorRaisedEvent?.Invoke(new ErrorDetails("Cannot move robber to hex " + newRobberHex + " because it is out of bounds (0.. " + (GameBoardData.StandardBoardHexCount - 1) + ")."));
         return;
       }
+    }
 
-      throw new NotImplementedException();
+    private Boolean CanUseDevelopmentCard(KnightDevelopmentCard developmentCard, UInt32 newRobberHex)
+    {
+      return developmentCard != null && 
+        !cardsPurchasedThisTurn.Contains(developmentCard) && 
+        this.gameBoardManager.Data.CanPlaceRobber(newRobberHex);
     }
 
     public void Save(String v)
