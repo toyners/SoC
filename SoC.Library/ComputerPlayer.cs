@@ -18,6 +18,11 @@ namespace Jabberwocky.SoC.Library
     #endregion
 
     #region Methods
+    public virtual void AddDevelopmentCard(DevelopmentCard developmentCard)
+    {
+      throw new NotImplementedException();
+    }
+
     public virtual UInt32 ChooseCityLocation(GameBoardData gameBoardData)
     {
       throw new NotImplementedException();
@@ -56,6 +61,11 @@ namespace Jabberwocky.SoC.Library
       roadStartLocation = shortestPathInformation.Item1;
       var shortestPath = shortestPathInformation.Item2;
       roadEndLocation = shortestPath[shortestPath.Count - 1];
+    }
+
+    public virtual UInt32 ChooseRobberLocation()
+    {
+      throw new NotImplementedException();
     }
 
     public virtual ResourceClutch ChooseResourcesToDrop()

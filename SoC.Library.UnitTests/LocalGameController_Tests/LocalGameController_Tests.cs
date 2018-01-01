@@ -1000,7 +1000,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       ErrorDetails errorDetails = null;
       localGameController.ErrorRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
       localGameController.StartGamePlay();
-      localGameController.SetRobberLocation(0u);
+      localGameController.SetRobberHex(0u);
 
       // Assert
       errorDetails.ShouldNotBeNull();
@@ -1051,7 +1051,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       Dictionary<Guid, Int32> robberingChoices = null;
       localGameController.RobbingChoicesEvent = (Dictionary<Guid, Int32> rc) => { robberingChoices = rc; };
       localGameController.StartGamePlay();
-      localGameController.SetRobberLocation(FirstSettlementOneLocation);
+      localGameController.SetRobberHex(FirstSettlementOneLocation);
 
       // Assert
       robberingChoices.ShouldNotBeNull();
@@ -1078,7 +1078,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       ResourceClutch resourceClutch = ResourceClutch.Zero;
       localGameController.ResourcesGainedEvent = (ResourceClutch rc) => { resourceClutch = rc; };
       localGameController.StartGamePlay();
-      localGameController.SetRobberLocation(7u);
+      localGameController.SetRobberHex(7u);
       localGameController.ChooseResourceFromOpponent(firstOpponent.Id, 0);
 
       // Assert
@@ -1113,7 +1113,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       localGameController.ResourcesGainedEvent = (ResourceClutch rc) => { resourceClutch = rc; };
       localGameController.ErrorRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
       localGameController.StartGamePlay();
-      localGameController.SetRobberLocation(3u);
+      localGameController.SetRobberHex(3u);
       localGameController.ChooseResourceFromOpponent(firstOpponent.Id, index);
 
       // Assert
@@ -1148,7 +1148,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       localGameController.ResourcesGainedEvent = (ResourceClutch rc) => { resourceClutch = rc; };
       localGameController.ErrorRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
       localGameController.StartGamePlay();
-      localGameController.SetRobberLocation(3u);
+      localGameController.SetRobberHex(3u);
       localGameController.ChooseResourceFromOpponent(secondOpponent.Id, 0);
 
       // Assert
@@ -1184,7 +1184,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       localGameController.ResourcesGainedEvent = (ResourceClutch rc) => { resourceClutch = rc; };
       localGameController.ErrorRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
       localGameController.StartGamePlay();
-      localGameController.SetRobberLocation(3u);
+      localGameController.SetRobberHex(3u);
       localGameController.ChooseResourceFromOpponent(player.Id, 0);
 
       // Assert
@@ -1246,7 +1246,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       Dictionary<Guid, Int32> robbingChoices = new Dictionary<Guid, Int32>();
       localGameController.RobbingChoicesEvent = (Dictionary<Guid, Int32> rc) => { robbingChoices = rc; };
       localGameController.StartGamePlay();
-      localGameController.SetRobberLocation(0u);
+      localGameController.SetRobberHex(0u);
 
       // Assert
       robbingChoices.ShouldBeNull();
@@ -1273,7 +1273,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       ErrorDetails errorDetails = null;
       localGameController.ErrorRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
       localGameController.StartGamePlay();
-      localGameController.SetRobberLocation(0u);
+      localGameController.SetRobberHex(0u);
       localGameController.ChooseResourceFromOpponent(Guid.NewGuid(), 0);
 
       // Assert
@@ -1301,7 +1301,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       Dictionary<Guid, Int32> robbingChoices = new Dictionary<Guid, Int32>();
       localGameController.RobbingChoicesEvent = (Dictionary<Guid, Int32> rc) => { robbingChoices = rc; };
       localGameController.StartGamePlay();
-      localGameController.SetRobberLocation(2u);
+      localGameController.SetRobberHex(2u);
 
       // Assert
       robbingChoices.ShouldBeNull();
@@ -1328,7 +1328,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       ErrorDetails errorDetails = null;
       localGameController.ErrorRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
       localGameController.StartGamePlay();
-      localGameController.SetRobberLocation(2u);
+      localGameController.SetRobberHex(2u);
       localGameController.ChooseResourceFromOpponent(Guid.NewGuid(), 0);
 
       // Assert

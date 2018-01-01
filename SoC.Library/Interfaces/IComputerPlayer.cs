@@ -6,9 +6,11 @@ namespace Jabberwocky.SoC.Library.Interfaces
 {
   public enum PlayerAction
   {
+    EndTurn,
     BuildCity,
     BuildRoad,
-    EndTurn,
+    BuyDevelopmentCard,
+    PlayKnightCard,
   }
 
   public interface IComputerPlayer : IPlayer
@@ -19,7 +21,9 @@ namespace Jabberwocky.SoC.Library.Interfaces
     void ChooseRoad(GameBoardData gameBoardData, out UInt32 startRoadLocation, out UInt32 endRoadLocation);
     void ChooseInitialInfrastructure(GameBoardData gameBoardData, out UInt32 settlementLocation, out UInt32 roadEndLocation);
     ResourceClutch ChooseResourcesToDrop();
+    UInt32 ChooseRobberLocation();
     PlayerAction GetPlayerAction();
+    void AddDevelopmentCard(DevelopmentCard developmentCard);
     #endregion
   }
 }

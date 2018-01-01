@@ -8,6 +8,7 @@ namespace Jabberwocky.SoC.Library.Interfaces
     #region Properties
     Int32 BrickCount { get; }
     Int32 GrainCount { get; }
+    UInt32 KnightCards { get; }
     Int32 LumberCount { get; }
     Int32 OreCount { get; }
     Int32 WoolCount { get; }
@@ -23,14 +24,15 @@ namespace Jabberwocky.SoC.Library.Interfaces
     #endregion
 
     #region Methods
-    PlayerDataView GetDataView();
     void AddResources(ResourceClutch resourceClutch);
-    void RemoveResources(ResourceClutch resourceClutch);
+    PlayerDataView GetDataView();
     void PayForDevelopmentCard();
     void PlaceCity();
+    void PlaceKnightDevelopmentCard();
     void PlaceRoadSegment();
     void PlaceSettlement();
     void PlaceStartingInfrastructure();
+    void RemoveResources(ResourceClutch resourceClutch);
     #endregion
   }
 }

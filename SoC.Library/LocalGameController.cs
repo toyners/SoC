@@ -21,7 +21,7 @@ namespace Jabberwocky.SoC.Library
       CompleteGameSetup,
       FinalisePlayerTurnOrder,
       StartGamePlay,
-      SetRobberLocation,
+      SetRobberHex,
       DropResources,
       Quitting,
       NextStep,
@@ -30,16 +30,20 @@ namespace Jabberwocky.SoC.Library
 
     #region Fields
     private IPlayerPool playerPool;
-    private HashSet<DevelopmentCard> cardsPurchasedThisTurn = new HashSet<DevelopmentCard>();
+    private Boolean cardPlayedThisTurn;
+    private HashSet<DevelopmentCard> cardsPlayed;
+    private HashSet<DevelopmentCard> cardsPurchasedThisTurn;
     private IDice dice;
     private GameBoardManager gameBoardManager;
     private IGameSession gameSession;
     private Int32 playerIndex;
     private IPlayer[] players;
     private Dictionary<Guid, IPlayer> playersById;
+    private IPlayer playerWithLargestArmy;
     private IPlayer mainPlayer;
     private ResourceUpdate gameSetupResources;
     private Int32 resourcesToDrop;
+    private UInt32 robberHex;
     private Dictionary<Guid, Int32> robbingChoices;
     private TurnToken currentTurnToken;
     private IPlayer currentPlayer;
@@ -54,6 +58,8 @@ namespace Jabberwocky.SoC.Library
       this.gameBoardManager = gameBoardManager;
       this.developmentCardHolder = developmentCardHolder;
       this.GamePhase = GamePhases.Initial;
+      this.cardsPlayed = new HashSet<DevelopmentCard>();
+      this.cardsPurchasedThisTurn = new HashSet<DevelopmentCard>();
     }
     #endregion
 
@@ -153,10 +159,7 @@ namespace Jabberwocky.SoC.Library
         return;
       }
 
-      DevelopmentCard developmentCard;
-      this.developmentCardHolder.TryGetNextCard(out developmentCard);
-      this.currentPlayer.PayForDevelopmentCard();
-      this.cardsPurchasedThisTurn.Add(developmentCard);
+      DevelopmentCard developmentCard = this.BuyDevelopmentCard();      
       this.DevelopmentCardPurchasedEvent?.Invoke(developmentCard);
     }
 
@@ -272,6 +275,7 @@ namespace Jabberwocky.SoC.Library
       }
 
       this.cardsPurchasedThisTurn.Clear();
+      this.cardPlayedThisTurn = false;
 
       this.playerIndex++;
       this.currentPlayer = this.players[this.playerIndex];
@@ -296,6 +300,20 @@ namespace Jabberwocky.SoC.Library
               UInt32 startRoadLocation, endRoadLocation;
               computerPlayer.ChooseRoad(this.gameBoardManager.Data, out startRoadLocation, out endRoadLocation);
               this.BuildRoadSegment(startRoadLocation, endRoadLocation);
+              break;
+            }
+
+            case PlayerAction.BuyDevelopmentCard:
+            {
+              var developmentCard = this.BuyDevelopmentCard();
+              computerPlayer.AddDevelopmentCard(developmentCard);
+              break;
+            }
+
+            case PlayerAction.PlayKnightCard:
+            {
+              var newRobberHex = computerPlayer.ChooseRobberLocation();
+              this.SetRobberHex(newRobberHex);
               break;
             }
           }
@@ -460,9 +478,9 @@ namespace Jabberwocky.SoC.Library
       this.GamePhase = GamePhases.Quitting;
     }
 
-    public void SetRobberLocation(UInt32 location)
+    public void SetRobberHex(UInt32 location)
     {
-      if (this.GamePhase != GamePhases.SetRobberLocation)
+      if (this.GamePhase != GamePhases.SetRobberHex)
       {
         var resourceDropErrorDetails = new ErrorDetails(String.Format("Cannot set robber location until expected resources ({0}) have been dropped via call to DropResources method.", this.resourcesToDrop));
         this.ErrorRaisedEvent?.Invoke(resourceDropErrorDetails);
@@ -536,7 +554,7 @@ namespace Jabberwocky.SoC.Library
           }
         }
 
-        this.GamePhase = GamePhases.SetRobberLocation;
+        this.GamePhase = GamePhases.SetRobberHex;
 
         if (this.mainPlayer.ResourcesCount > 7)
         {
@@ -571,7 +589,7 @@ namespace Jabberwocky.SoC.Library
       return true;
     }
 
-    public void UseKnightDevelopmentCard(TurnToken turnToken, KnightDevelopmentCard developmentCard, UInt32 robberHex)
+    public void UseKnightDevelopmentCard(TurnToken turnToken, KnightDevelopmentCard developmentCard, UInt32 newRobberHex)
     {
       if (turnToken != this.currentTurnToken)
       {
@@ -579,13 +597,59 @@ namespace Jabberwocky.SoC.Library
         return;
       }
 
-      if (!this.CanUseDevelopmentCard(developmentCard, robberHex))
+      if (!this.CanUseDevelopmentCard(developmentCard, newRobberHex))
       {
-        this.TryRaiseDevelopmentCardUsageError(developmentCard, robberHex);
         return;
+      } 
+
+      this.cardPlayedThisTurn = true;
+      this.cardsPlayed.Add(developmentCard);
+      this.currentPlayer.PlaceKnightDevelopmentCard();
+      var playerWithMostKnightCards = this.DeterminePlayerWithLargestArmy();
+      if (playerWithMostKnightCards != null)
+      {
+        if (this.playerWithLargestArmy != null)
+        {
+          this.LargestArmyEvent?.Invoke(this.playerWithLargestArmy.Id, playerWithMostKnightCards.Id);
+        }
+        else
+        {
+          this.LargestArmyEvent?.Invoke(Guid.Empty, playerWithMostKnightCards.Id);
+        }
+
+        this.playerWithLargestArmy = playerWithMostKnightCards;
       }
 
-      throw new NotImplementedException();
+      this.robberHex = newRobberHex;
+
+      //throw new NotImplementedException();
+    }
+
+    private IPlayer DeterminePlayerWithLargestArmy()
+    {
+      IPlayer playerWithMostKnightCards = null;
+      UInt32 workingKnightCardCount = 3;
+      foreach (var player in this.players)
+      {
+        if (player.KnightCards > workingKnightCardCount)
+        {
+          playerWithMostKnightCards = player;
+          workingKnightCardCount = player.KnightCards;
+        }
+        else if (player.KnightCards == workingKnightCardCount)
+        {
+          if (playerWithMostKnightCards == null)
+          {
+            playerWithMostKnightCards = player;
+          }
+          else
+          {
+            playerWithMostKnightCards = null;
+          }
+        }
+      }
+
+      return playerWithMostKnightCards;
     }
 
     private void TryRaiseDevelopmentCardUsageError(KnightDevelopmentCard developmentCard, UInt32 newRobberHex)
@@ -607,13 +671,40 @@ namespace Jabberwocky.SoC.Library
         this.ErrorRaisedEvent?.Invoke(new ErrorDetails("Cannot move robber to hex " + newRobberHex + " because it is out of bounds (0.. " + (GameBoardData.StandardBoardHexCount - 1) + ")."));
         return;
       }
+
+      if (this.cardPlayedThisTurn)
+      {
+        this.ErrorRaisedEvent?.Invoke(new ErrorDetails("Cannot play more than one development card in a turn."));
+        return;
+      }
+
+      if (newRobberHex == this.robberHex)
+      {
+        this.ErrorRaisedEvent?.Invoke(new ErrorDetails("Cannot place robber back on present hex (" + this.robberHex + ")."));
+        return;
+      }
+
+      if (this.cardsPlayed.Contains(developmentCard))
+      {
+        this.ErrorRaisedEvent?.Invoke(new ErrorDetails("Cannot play the same development card more than once."));
+        return;
+      }
     }
 
     private Boolean CanUseDevelopmentCard(KnightDevelopmentCard developmentCard, UInt32 newRobberHex)
     {
-      return developmentCard != null && 
-        !cardsPurchasedThisTurn.Contains(developmentCard) && 
-        this.gameBoardManager.Data.CanPlaceRobber(newRobberHex);
+      if (developmentCard != null && 
+        !this.cardsPurchasedThisTurn.Contains(developmentCard) && 
+        !this.cardPlayedThisTurn && 
+        this.gameBoardManager.Data.CanPlaceRobber(newRobberHex) &&
+        this.robberHex != newRobberHex &&
+        !this.cardsPlayed.Contains(developmentCard))
+      {
+        return true;
+      }
+
+      this.TryRaiseDevelopmentCardUsageError(developmentCard, newRobberHex);
+      return false;
     }
 
     public void Save(String v)
@@ -643,6 +734,15 @@ namespace Jabberwocky.SoC.Library
       this.RoadSegmentBuiltEvent?.Invoke();
 
       this.RaiseLongestRoadBuiltEventIfRelevant();
+    }
+
+    private DevelopmentCard BuyDevelopmentCard()
+    {
+      DevelopmentCard developmentCard;
+      this.developmentCardHolder.TryGetNextCard(out developmentCard);
+      this.currentPlayer.PayForDevelopmentCard();
+      this.cardsPurchasedThisTurn.Add(developmentCard);
+      return developmentCard;
     }
 
     private Boolean CanBuildCity()

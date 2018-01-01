@@ -31,9 +31,8 @@ namespace Jabberwocky.SoC.Library
     public Int32 GrainCount { get; protected set; }
 
     public Guid Id { get; private set; }
-
     public virtual Boolean IsComputer { get { return false; } }
-
+    public UInt32 KnightCards { get; private set; }
     public Int32 LumberCount { get; protected set; }
 
     public String Name { get; private set; }
@@ -70,13 +69,6 @@ namespace Jabberwocky.SoC.Library
       this.WoolCount += resourceClutch.WoolCount;
     }
 
-    public void PayForDevelopmentCard()
-    {
-      this.GrainCount--;
-      this.OreCount--;
-      this.WoolCount--;
-    }
-
     public PlayerDataView GetDataView()
     {
       var dataView = new PlayerDataView();
@@ -91,11 +83,23 @@ namespace Jabberwocky.SoC.Library
       return dataView;
     }
 
+    public void PayForDevelopmentCard()
+    {
+      this.GrainCount--;
+      this.OreCount--;
+      this.WoolCount--;
+    }
+
     public void PlaceCity()
     {
       this.GrainCount -= Constants.GrainForBuildingCity;
       this.OreCount -= Constants.OreForBuildingCity;
       this.CitiesBuilt++;
+    }
+
+    public void PlaceKnightDevelopmentCard()
+    {
+      this.KnightCards++;
     }
 
     public void PlaceRoadSegment()
