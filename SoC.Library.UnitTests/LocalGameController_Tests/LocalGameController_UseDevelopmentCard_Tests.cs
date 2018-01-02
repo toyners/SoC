@@ -12,7 +12,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
   [Category("All")]
   [Category("LocalGameController")]
   [Category("LocalGameController.UseKnightDevelopmentCard")]
-  public class LocalGameController_UseDevelopmentCard_Tests : LocalGameControllerTestBase
+  public class LocalGameController_UseKnightDevelopmentCard_Tests : LocalGameControllerTestBase
   {
     #region Fields
     private MockPlayer player;
