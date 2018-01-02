@@ -274,11 +274,9 @@ namespace Jabberwocky.SoC.Library
         return;
       }
 
-      this.cardsPurchasedThisTurn.Clear();
-      this.cardPlayedThisTurn = false;
+      this.EndTurn();
+      this.ChangeToNextPlayer();
 
-      this.playerIndex++;
-      this.currentPlayer = this.players[this.playerIndex];
       while (this.currentPlayer.IsComputer)
       {
         var computerPlayer = this.currentPlayer as IComputerPlayer;
@@ -286,6 +284,8 @@ namespace Jabberwocky.SoC.Library
 
         while ((playerAction = computerPlayer.GetPlayerAction()) != PlayerAction.EndTurn)
         {
+          var actions = new Queue<PlayerAction>();
+
           switch (playerAction)
           {
             case PlayerAction.BuildCity:
@@ -312,20 +312,17 @@ namespace Jabberwocky.SoC.Library
 
             case PlayerAction.PlayKnightCard:
             {
+              var knightCard = computerPlayer.ChooseKnightCard();
               var newRobberHex = computerPlayer.ChooseRobberLocation();
-              this.SetRobberHex(newRobberHex);
+              this.UseKnightDevelopmentCard(knightCard, newRobberHex);
+
               break;
             }
           }
         }
 
-        this.playerIndex++;
-        if (this.playerIndex == this.players.Length)
-        {
-          this.playerIndex = 0;
-        }
-
-        this.currentPlayer = this.players[this.playerIndex];
+        this.EndTurn();
+        this.ChangeToNextPlayer();
       }
     }
 
@@ -600,29 +597,27 @@ namespace Jabberwocky.SoC.Library
       if (!this.CanUseDevelopmentCard(developmentCard, newRobberHex))
       {
         return;
-      } 
+      }
 
-      this.cardPlayedThisTurn = true;
-      this.cardsPlayed.Add(developmentCard);
-      this.currentPlayer.PlaceKnightDevelopmentCard();
+      this.UseKnightDevelopmentCard(developmentCard, newRobberHex);
+
       var playerWithMostKnightCards = this.DeterminePlayerWithLargestArmy();
       if (playerWithMostKnightCards != null)
       {
-        if (this.playerWithLargestArmy != null)
-        {
-          this.LargestArmyEvent?.Invoke(this.playerWithLargestArmy.Id, playerWithMostKnightCards.Id);
-        }
-        else
-        {
-          this.LargestArmyEvent?.Invoke(Guid.Empty, playerWithMostKnightCards.Id);
-        }
-
+        this.TryRaiseLargestArmyEvent(playerWithMostKnightCards);
         this.playerWithLargestArmy = playerWithMostKnightCards;
       }
+    }
 
-      this.robberHex = newRobberHex;
+    private void ChangeToNextPlayer()
+    {
+      this.playerIndex++;
+      if (this.playerIndex == this.players.Length)
+      {
+        this.playerIndex = 0;
+      }
 
-      //throw new NotImplementedException();
+      this.currentPlayer = this.players[this.playerIndex];
     }
 
     private IPlayer DeterminePlayerWithLargestArmy()
@@ -650,6 +645,24 @@ namespace Jabberwocky.SoC.Library
       }
 
       return playerWithMostKnightCards;
+    }
+
+    private void EndTurn()
+    {
+      this.cardsPurchasedThisTurn.Clear();
+      this.cardPlayedThisTurn = false;
+    }
+
+    private void TryRaiseLargestArmyEvent(IPlayer playerWithMostKnightCards)
+    {
+      if (this.playerWithLargestArmy != null)
+      {
+        this.LargestArmyEvent?.Invoke(this.playerWithLargestArmy.Id, playerWithMostKnightCards.Id);
+      }
+      else
+      {
+        this.LargestArmyEvent?.Invoke(Guid.Empty, playerWithMostKnightCards.Id);
+      }
     }
 
     private void TryRaiseDevelopmentCardUsageError(KnightDevelopmentCard developmentCard, UInt32 newRobberHex)
@@ -1240,6 +1253,14 @@ namespace Jabberwocky.SoC.Library
         this.ErrorRaisedEvent(new ErrorDetails("Cannot build settlement. Location " + verificationResults.LocationIndex + " not connected to existing road."));
         return;
       }
+    }
+
+    private void UseKnightDevelopmentCard(KnightDevelopmentCard developmentCard, UInt32 newRobberHex)
+    {
+      this.cardPlayedThisTurn = true;
+      this.cardsPlayed.Add(developmentCard);
+      this.currentPlayer.PlaceKnightDevelopmentCard();
+      this.robberHex = newRobberHex;
     }
 
     private Boolean VerifyBuildCityRequest(UInt32 location)

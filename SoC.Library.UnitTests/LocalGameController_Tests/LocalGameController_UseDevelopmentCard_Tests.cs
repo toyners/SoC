@@ -277,8 +277,11 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
 
       this.player.AddResources(ResourceClutch.DevelopmentCard * 3);
       this.firstOpponent.AddResources(ResourceClutch.DevelopmentCard * 4);
-      this.firstOpponent.AddBuyDevelopmentCardChoice(4);
-      this.firstOpponent.AddPlaceRobberChoices(0, 0, 0, 0);
+      this.firstOpponent.AddBuyDevelopmentCardChoice(4).EndTurn()
+        .AddPlaceKnightCard(0).EndTurn()
+        .AddPlaceKnightCard(0).EndTurn()
+        .AddPlaceKnightCard(0).EndTurn()
+        .AddPlaceKnightCard(0).EndTurn();
 
       this.localGameController.ErrorRaisedEvent = (ErrorDetails e) => { throw new Exception(e.Message); };
 
@@ -329,8 +332,10 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
 
       this.player.AddResources(ResourceClutch.DevelopmentCard * 4);
       this.firstOpponent.AddResources(ResourceClutch.DevelopmentCard * 3);
-      this.firstOpponent.AddBuyDevelopmentCardChoice(3);
-      this.firstOpponent.AddPlaceRobberChoices(0, 0, 0);
+      this.firstOpponent.AddBuyDevelopmentCardChoice(3).EndTurn()
+        .AddPlaceKnightCard(0).EndTurn()
+        .AddPlaceKnightCard(0).EndTurn()
+        .AddPlaceKnightCard(0).EndTurn();
 
       this.localGameController.ErrorRaisedEvent = (ErrorDetails e) => { throw new Exception(e.Message); };
 

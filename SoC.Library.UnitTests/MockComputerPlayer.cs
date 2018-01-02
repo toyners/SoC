@@ -18,7 +18,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
     public Queue<UInt32> CityLocations = new Queue<UInt32>();
     private Queue<KnightDevelopmentCard> knightCards = new Queue<KnightDevelopmentCard>();
-    public Queue<UInt32> RobberLocations = new Queue<UInt32>();
+    private Queue<UInt32> robberLocations = new Queue<UInt32>();
     public Queue<UInt32> SettlementLocations;
     public Queue<Tuple<UInt32, UInt32>> Roads = new Queue<Tuple<UInt32, UInt32>>();
     public Queue<Tuple<UInt32, UInt32>> InitialInfrastructure = new Queue<Tuple<UInt32, UInt32>>();
@@ -55,12 +55,14 @@ namespace Jabberwocky.SoC.Library.UnitTests
       }
     }
 
-    public void AddBuyDevelopmentCardChoice(UInt32 count)
+    public MockComputerPlayer AddBuyDevelopmentCardChoice(UInt32 count)
     {
       for (; count > 0; count--)
       {
         this.Actions.Enqueue(PlayerAction.BuyDevelopmentCard);
       }
+
+      return this;
     }
 
     public override void AddDevelopmentCard(DevelopmentCard developmentCard)
@@ -75,13 +77,11 @@ namespace Jabberwocky.SoC.Library.UnitTests
       throw new Exception("Development card is not recognised.");
     }
 
-    public void AddPlaceRobberChoices(params UInt32[] robberLocations)
+    public MockComputerPlayer AddPlaceKnightCard(UInt32 robberLocation)
     {
-      foreach (var robberLocation in robberLocations)
-      {
-        this.RobberLocations.Enqueue(robberLocation);
-        this.Actions.Enqueue(PlayerAction.PlayKnightCard);
-      }
+      this.robberLocations.Enqueue(robberLocation);
+      this.Actions.Enqueue(PlayerAction.PlayKnightCard);
+      return this;
     }
 
     public override UInt32 ChooseCityLocation(GameBoardData gameBoardData)
@@ -96,6 +96,11 @@ namespace Jabberwocky.SoC.Library.UnitTests
       roadEndLocation = infrastructure.Item2;
     }
 
+    public override KnightDevelopmentCard ChooseKnightCard()
+    {
+      return this.knightCards.Dequeue();
+    }
+
     public override ResourceClutch ChooseResourcesToDrop()
     {
       return DroppedResources;
@@ -103,7 +108,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
     public override UInt32 ChooseRobberLocation()
     {
-      return this.RobberLocations.Dequeue();
+      return this.robberLocations.Dequeue();
     }
 
     public override void ChooseRoad(GameBoardData gameBoardData, out UInt32 roadStartLocation, out UInt32 roadEndLocation)
@@ -116,6 +121,12 @@ namespace Jabberwocky.SoC.Library.UnitTests
     public override UInt32 ChooseSettlementLocation(GameBoardData gameBoardData)
     {
       return this.SettlementLocations.Dequeue();
+    }
+
+    public MockComputerPlayer EndTurn()
+    {
+      this.Actions.Enqueue(PlayerAction.EndTurn);
+      return this;
     }
 
     public override PlayerAction GetPlayerAction()
