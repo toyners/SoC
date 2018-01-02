@@ -286,8 +286,15 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       TurnToken turnToken = null;
       this.localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
 
-      Guid newPlayer = Guid.Empty, oldPlayer = Guid.Empty;
-      this.localGameController.LargestArmyEvent = (Guid np, Guid op) => { newPlayer = np; oldPlayer = op; };
+      //Guid newPlayer = Guid.Empty, oldPlayer = Guid.Empty;
+      //this.localGameController.LargestArmyEvent = (Guid np, Guid op) => { newPlayer = np; oldPlayer = op; };
+
+      var turn = 1;
+      var playerActions = new Dictionary<Int32, Tuple<Guid, List<PlayerAction>>>();
+      this.localGameController.OpponentActionsEvent = (Guid g, List<PlayerAction> a) => 
+      {
+        
+      };
 
       this.localGameController.StartGamePlay();
 
@@ -311,8 +318,10 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       this.localGameController.EndTurn(turnToken); // Opponent plays last knight card
 
       // Assert
-      newPlayer.ShouldBe(this.firstOpponent.Id);
-      oldPlayer.ShouldBe(this.player.Id);
+      playerActions.ShouldNotBeNull();
+      //playerActions.Count
+      //newPlayer.ShouldBe(this.firstOpponent.Id);
+      //oldPlayer.ShouldBe(this.player.Id);
     }
 
     [Test]
