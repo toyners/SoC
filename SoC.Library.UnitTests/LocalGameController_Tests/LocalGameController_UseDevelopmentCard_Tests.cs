@@ -156,7 +156,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
 
     [Test]
     public void UseKnightDevelopmentCard_UseMoreThanOneKnightDevelopmentCardInSingleTurn_MeaningfulErrorIsReceived()
-     {
+    {
       // Arrange
       var knightDevelopmentCard1 = new KnightDevelopmentCard();
       var knightDevelopmentCard2 = new KnightDevelopmentCard();
@@ -230,8 +230,6 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       this.TestSetup(knightDevelopmentCard1, knightDevelopmentCard2, knightDevelopmentCard3);
 
       this.player.AddResources(ResourceClutch.DevelopmentCard * 3);
-
-      this.localGameController.ErrorRaisedEvent = (ErrorDetails e) => { throw new Exception(e.Message); };
 
       TurnToken turnToken = null;
       this.localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
