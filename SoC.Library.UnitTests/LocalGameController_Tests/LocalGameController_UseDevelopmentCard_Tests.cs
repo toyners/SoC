@@ -19,6 +19,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
     private MockComputerPlayer firstOpponent, secondOpponent, thirdOpponent;
     private MockDice dice;
     private LocalGameController localGameController;
+    private Dictionary<Guid, IPlayer> playersById;
     #endregion
 
     #region Methods
@@ -392,7 +393,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
 
       // Assert
       newPlayer.ShouldBe(this.player.Id);
-      oldPlayer.ShouldBe(this.firstOpponent.Id);
+      oldPlayer.ShouldBe(this.firstOpponent.Id, "oldPlayer should be '" + this.firstOpponent.Name + "' but was '" + this.playersById[oldPlayer].Name + "'");
     }
 
     private void TestSetup()
@@ -405,6 +406,12 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       this.CreateDefaultPlayerInstances(out this.player, out this.firstOpponent, out this.secondOpponent, out this.thirdOpponent);
       this.dice = this.CreateMockDice();
       this.dice.AddSequence(new[] { 8u });
+
+      this.playersById = new Dictionary<Guid, IPlayer>();
+      this.playersById.Add(this.player.Id, this.player);
+      this.playersById.Add(this.firstOpponent.Id, this.firstOpponent);
+      this.playersById.Add(this.secondOpponent.Id, this.secondOpponent);
+      this.playersById.Add(this.thirdOpponent.Id, this.thirdOpponent);
 
       var playerPool = this.CreatePlayerPool(this.player, new[] { this.firstOpponent, this.secondOpponent, this.thirdOpponent });
       this.localGameController = this.CreateLocalGameController(dice, playerPool, developmentCardHolder);
