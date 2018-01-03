@@ -6,6 +6,39 @@ namespace Jabberwocky.SoC.Library
   using GameBoards;
   using System.Collections.Generic;
 
+  public class GameEvent
+  {
+    public readonly Guid PlayerId;
+
+    public GameEvent(Guid playerId)
+    {
+      this.PlayerId = playerId;
+    }
+  }
+
+  public class BuyDevelopmentCardEvent : GameEvent
+  {
+    public BuyDevelopmentCardEvent(Guid playerId, DevelopmentCardTypes cardType) : base(playerId) { }
+  }
+
+  public class PlayKnightCardEvent : GameEvent
+  {
+    public readonly Guid PreviousPlayerWithLargestArmyId;
+    public readonly Boolean HasLargestArmy;
+
+    public PlayKnightCardEvent(Guid playerId, Boolean hasLargestArmy, Guid previousPlayerWithLargestArmyId) : base(playerId)
+    {
+      this.HasLargestArmy = hasLargestArmy;
+      this.PreviousPlayerWithLargestArmyId = previousPlayerWithLargestArmyId;
+    }
+  }
+
+  public class PlayerActionz
+  {
+
+  }
+
+
   public class ComputerPlayer : Player, IComputerPlayer
   {
     #region Construction
@@ -108,15 +141,25 @@ namespace Jabberwocky.SoC.Library
         switch (productionValue)
         {
           case 2:
-          case 12: totalChance += 1; break;
+          case 12:
+          totalChance += 1;
+          break;
           case 3:
-          case 11: totalChance += 2; break;
+          case 11:
+          totalChance += 2;
+          break;
           case 4:
-          case 10: totalChance += 3; break;
+          case 10:
+          totalChance += 3;
+          break;
           case 5:
-          case 9: totalChance += 4; break;
+          case 9:
+          totalChance += 4;
+          break;
           case 6:
-          case 8: totalChance += 5; break;
+          case 8:
+          totalChance += 5;
+          break;
         }
       }
 
