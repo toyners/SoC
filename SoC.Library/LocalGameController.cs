@@ -82,7 +82,7 @@ namespace Jabberwocky.SoC.Library
     public Action<Guid, Guid> LargestArmyEvent { get; set; }
     public Action<ClientAccount> LoggedInEvent { get; set; }
     public Action<Guid> LongestRoadBuiltEvent { get; set; }
-    public Action<Guid, List<PlayerAction>> OpponentActionsEvent { get; set; }
+    public Action<Guid, List<GameEvent>> OpponentActionsEvent { get; set; }
     public Action<ResourceUpdate> ResourcesCollectedEvent { get; set; }
     public Action<ResourceClutch> ResourcesGainedEvent { get; set; }
     public Action<ResourceUpdate> ResourcesLostEvent { get; set; }

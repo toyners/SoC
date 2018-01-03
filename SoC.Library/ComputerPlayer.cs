@@ -18,17 +18,25 @@ namespace Jabberwocky.SoC.Library
 
   public class BuyDevelopmentCardEvent : GameEvent
   {
-    public BuyDevelopmentCardEvent(Guid playerId, DevelopmentCardTypes cardType) : base(playerId) { }
+    public readonly DevelopmentCardTypes CardType;
+
+    public BuyDevelopmentCardEvent(Guid playerId, DevelopmentCardTypes cardType) : base(playerId)
+    {
+      this.CardType = cardType;
+    }
   }
 
   public class PlayKnightCardEvent : GameEvent
   {
-    public readonly Guid PreviousPlayerWithLargestArmyId;
-    public readonly Boolean HasLargestArmy;
+    public PlayKnightCardEvent(Guid playerId) : base(playerId) { }
+  }
 
-    public PlayKnightCardEvent(Guid playerId, Boolean hasLargestArmy, Guid previousPlayerWithLargestArmyId) : base(playerId)
+  public class PlayerWithLargestArmyChangedEvent : GameEvent
+  {
+    public readonly Guid PreviousPlayerWithLargestArmyId;
+
+    public PlayerWithLargestArmyChangedEvent(Guid playerId, Guid previousPlayerWithLargestArmyId) : base(playerId)
     {
-      this.HasLargestArmy = hasLargestArmy;
       this.PreviousPlayerWithLargestArmyId = previousPlayerWithLargestArmyId;
     }
   }
