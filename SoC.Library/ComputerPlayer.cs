@@ -2,9 +2,9 @@
 namespace Jabberwocky.SoC.Library
 {
   using System;
-  using Interfaces;
-  using GameBoards;
   using System.Collections.Generic;
+  using GameBoards;
+  using Interfaces;
 
   public class GameEvent
   {
@@ -14,16 +14,23 @@ namespace Jabberwocky.SoC.Library
     {
       this.PlayerId = playerId;
     }
+
+    public override Boolean Equals(Object obj)
+    {
+      // TODO: Test for reference equality and null parameter. Also write tests.
+
+      return this.PlayerId == ((GameEvent)obj).PlayerId;
+    }
+
+    public override Int32 GetHashCode()
+    {
+      return base.GetHashCode();
+    }
   }
 
   public class BuyDevelopmentCardEvent : GameEvent
   {
-    public readonly DevelopmentCardTypes CardType;
-
-    public BuyDevelopmentCardEvent(Guid playerId, DevelopmentCardTypes cardType) : base(playerId)
-    {
-      this.CardType = cardType;
-    }
+    public BuyDevelopmentCardEvent(Guid playerId) : base(playerId) { }
   }
 
   public class PlayKnightCardEvent : GameEvent
@@ -38,6 +45,21 @@ namespace Jabberwocky.SoC.Library
     public PlayerWithLargestArmyChangedEvent(Guid playerId, Guid previousPlayerWithLargestArmyId) : base(playerId)
     {
       this.PreviousPlayerWithLargestArmyId = previousPlayerWithLargestArmyId;
+    }
+
+    public override Boolean Equals(Object obj)
+    {
+      if (!base.Equals(obj))
+      {
+        return false;
+      }
+
+      return this.PreviousPlayerWithLargestArmyId == ((PlayerWithLargestArmyChangedEvent)obj).PreviousPlayerWithLargestArmyId;
+    }
+
+    public override Int32 GetHashCode()
+    {
+      return base.GetHashCode();
     }
   }
 

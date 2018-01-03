@@ -281,12 +281,11 @@ namespace Jabberwocky.SoC.Library
       while (this.currentPlayer.IsComputer)
       {
         var computerPlayer = this.currentPlayer as IComputerPlayer;
+        var events = new List<GameEvent>();
         PlayerAction playerAction;
 
         while ((playerAction = computerPlayer.GetPlayerAction()) != PlayerAction.EndTurn)
         {
-          var actions = new Queue<PlayerAction>();
-
           switch (playerAction)
           {
             case PlayerAction.BuildCity:
@@ -308,6 +307,7 @@ namespace Jabberwocky.SoC.Library
             {
               var developmentCard = this.BuyDevelopmentCard();
               computerPlayer.AddDevelopmentCard(developmentCard);
+              events.Add(new BuyDevelopmentCardEvent(computerPlayer.Id));
               break;
             }
 
@@ -316,15 +316,23 @@ namespace Jabberwocky.SoC.Library
               var knightCard = computerPlayer.ChooseKnightCard();
               var newRobberHex = computerPlayer.ChooseRobberLocation();
               this.UseKnightDevelopmentCard(knightCard, newRobberHex);
-
+              events.Add(new PlayKnightCardEvent(computerPlayer.Id));
               break;
             }
           }
         }
 
+        if (events.Count > 0)
+        {
+          this.OpponentActionsEvent?.Invoke(computerPlayer.Id, events);
+        }
+
         this.EndTurn();
         this.ChangeToNextPlayer();
       }
+
+      this.currentTurnToken = new TurnToken();
+      this.StartPlayerTurnEvent?.Invoke(this.currentTurnToken);
     }
 
     public void FinalisePlayerTurnOrder()
@@ -513,8 +521,8 @@ namespace Jabberwocky.SoC.Library
       }
 
       this.playerIndex = 0;
-      this.currentTurnToken = new TurnToken();
       this.currentPlayer = this.players[this.playerIndex];
+      this.currentTurnToken = new TurnToken();
       this.StartPlayerTurnEvent?.Invoke(this.currentTurnToken);
 
       var resourceRoll = this.dice.RollTwoDice();

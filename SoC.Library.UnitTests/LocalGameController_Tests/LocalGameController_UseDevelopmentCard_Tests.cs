@@ -319,7 +319,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       this.localGameController.EndTurn(turnToken); // Opponent plays last knight card
 
       // Assert
-      var expectedBuyDevelopmentCardEvent = new BuyDevelopmentCardEvent(this.firstOpponent.Id, DevelopmentCardTypes.Knight);
+      var expectedBuyDevelopmentCardEvent = new BuyDevelopmentCardEvent(this.firstOpponent.Id);
       var expectedPlayKnightCardEvent = new PlayKnightCardEvent(this.firstOpponent.Id);
       var expectedDifferentPlayerHasLargestArmyEvent = new PlayerWithLargestArmyChangedEvent(this.firstOpponent.Id, this.player.Id);
 
@@ -337,7 +337,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       actualEvents.Count.ShouldBe(expectedEvents.Length);
       for (var index = 0; index < actualEvents.Count; index++)
       {
-        actualEvents[index].ShouldBeSameAs(expectedEvents[index]);
+        actualEvents[index].ShouldBe(expectedEvents[index]);
       }
     }
 
