@@ -35,7 +35,6 @@ namespace Jabberwocky.SoC.Library
     private HashSet<DevelopmentCard> cardsPurchasedThisTurn;
     private IDice dice;
     private GameBoardManager gameBoardManager;
-    private IGameSession gameSession;
     private Int32 playerIndex;
     private IPlayer[] players;
     private Dictionary<Guid, IPlayer> playersById;
@@ -624,117 +623,7 @@ namespace Jabberwocky.SoC.Library
         this.playerWithLargestArmy = playerWithMostKnightCards;
       }
     }
-
-    private void ChangeToNextPlayer()
-    {
-      this.playerIndex++;
-      if (this.playerIndex == this.players.Length)
-      {
-        this.playerIndex = 0;
-      }
-
-      this.currentPlayer = this.players[this.playerIndex];
-    }
-
-    private IPlayer DeterminePlayerWithMostKnightCards()
-    {
-      IPlayer playerWithMostKnightCards = null;
-      UInt32 workingKnightCardCount = 3;
-
-      foreach (var player in this.players)
-      {
-        if (player.KnightCards > workingKnightCardCount)
-        {
-          playerWithMostKnightCards = player;
-          workingKnightCardCount = player.KnightCards;
-        }
-        else if (player.KnightCards == workingKnightCardCount)
-        {
-          playerWithMostKnightCards = (playerWithMostKnightCards == null ? player : null);
-        }
-      }
-
-      return playerWithMostKnightCards;
-    }
-
-    private void EndTurn()
-    {
-      this.cardsPurchasedThisTurn.Clear();
-      this.cardPlayedThisTurn = false;
-    }
-
-    private void TryRaiseLargestArmyEvent(IPlayer playerWithMostKnightCards)
-    {
-      if (this.playerWithLargestArmy != null)
-      {
-        this.LargestArmyEvent?.Invoke(this.playerWithLargestArmy.Id, playerWithMostKnightCards.Id);
-      }
-      else
-      {
-        this.LargestArmyEvent?.Invoke(Guid.Empty, playerWithMostKnightCards.Id);
-      }
-    }
-
-    private void TryRaiseDevelopmentCardUsageError(KnightDevelopmentCard developmentCard, UInt32 newRobberHex)
-    {
-      if (developmentCard == null)
-      {
-        this.ErrorRaisedEvent?.Invoke(new ErrorDetails("Knight development card parameter is null."));
-        return;
-      }
-
-      if (cardsPurchasedThisTurn.Contains(developmentCard))
-      {
-        this.ErrorRaisedEvent?.Invoke(new ErrorDetails("Cannot use development card that has been purchased this turn."));
-        return;
-      }
-
-      if (!this.gameBoardManager.Data.CanPlaceRobber(newRobberHex))
-      {
-        this.ErrorRaisedEvent?.Invoke(new ErrorDetails("Cannot move robber to hex " + newRobberHex + " because it is out of bounds (0.. " + (GameBoardData.StandardBoardHexCount - 1) + ")."));
-        return;
-      }
-
-      if (this.cardPlayedThisTurn)
-      {
-        this.ErrorRaisedEvent?.Invoke(new ErrorDetails("Cannot play more than one development card in a turn."));
-        return;
-      }
-
-      if (newRobberHex == this.robberHex)
-      {
-        this.ErrorRaisedEvent?.Invoke(new ErrorDetails("Cannot place robber back on present hex (" + this.robberHex + ")."));
-        return;
-      }
-
-      if (this.cardsPlayed.Contains(developmentCard))
-      {
-        this.ErrorRaisedEvent?.Invoke(new ErrorDetails("Cannot play the same development card more than once."));
-        return;
-      }
-    }
-
-    private Boolean CanUseDevelopmentCard(KnightDevelopmentCard developmentCard, UInt32 newRobberHex)
-    {
-      if (developmentCard != null && 
-        !this.cardsPurchasedThisTurn.Contains(developmentCard) && 
-        !this.cardPlayedThisTurn && 
-        this.gameBoardManager.Data.CanPlaceRobber(newRobberHex) &&
-        this.robberHex != newRobberHex &&
-        !this.cardsPlayed.Contains(developmentCard))
-      {
-        return true;
-      }
-
-      this.TryRaiseDevelopmentCardUsageError(developmentCard, newRobberHex);
-      return false;
-    }
-
-    public void Save(String v)
-    {
-      throw new NotImplementedException();
-    }
-
+    
     private void AddResourcesToList(List<ResourceTypes> resources, ResourceTypes resourceType, Int32 total)
     {
       for (var i = 0; i < total; i++)
@@ -791,6 +680,33 @@ namespace Jabberwocky.SoC.Library
     {
       return this.currentPlayer.GrainCount >= 1 && this.currentPlayer.OreCount >= 1 && this.currentPlayer.WoolCount >= 1
         && this.developmentCardHolder.HasCards;
+    }
+
+    private Boolean CanUseDevelopmentCard(KnightDevelopmentCard developmentCard, UInt32 newRobberHex)
+    {
+      if (developmentCard != null &&
+        !this.cardsPurchasedThisTurn.Contains(developmentCard) &&
+        !this.cardPlayedThisTurn &&
+        this.gameBoardManager.Data.CanPlaceRobber(newRobberHex) &&
+        this.robberHex != newRobberHex &&
+        !this.cardsPlayed.Contains(developmentCard))
+      {
+        return true;
+      }
+
+      this.TryRaiseDevelopmentCardUsageError(developmentCard, newRobberHex);
+      return false;
+    }
+
+    private void ChangeToNextPlayer()
+    {
+      this.playerIndex++;
+      if (this.playerIndex == this.players.Length)
+      {
+        this.playerIndex = 0;
+      }
+
+      this.currentPlayer = this.players[this.playerIndex];
     }
 
     private List<ResourceTypes> CollapsePlayerResourcesToList(IPlayer player)
@@ -942,6 +858,33 @@ namespace Jabberwocky.SoC.Library
         this.playersById.Add(player.Id, player);
         index++;
       }
+    }
+
+    private IPlayer DeterminePlayerWithMostKnightCards()
+    {
+      IPlayer playerWithMostKnightCards = null;
+      UInt32 workingKnightCardCount = 3;
+
+      foreach (var player in this.players)
+      {
+        if (player.KnightCards > workingKnightCardCount)
+        {
+          playerWithMostKnightCards = player;
+          workingKnightCardCount = player.KnightCards;
+        }
+        else if (player.KnightCards == workingKnightCardCount)
+        {
+          playerWithMostKnightCards = (playerWithMostKnightCards == null ? player : null);
+        }
+      }
+
+      return playerWithMostKnightCards;
+    }
+
+    private void EndTurn()
+    {
+      this.cardsPurchasedThisTurn.Clear();
+      this.cardPlayedThisTurn = false;
     }
 
     private void HandlePlaceRoadError(GameBoardData.VerificationStatus status)
@@ -1118,6 +1061,45 @@ namespace Jabberwocky.SoC.Library
       }
     }
 
+    private void TryRaiseDevelopmentCardUsageError(KnightDevelopmentCard developmentCard, UInt32 newRobberHex)
+    {
+      if (developmentCard == null)
+      {
+        this.ErrorRaisedEvent?.Invoke(new ErrorDetails("Knight development card parameter is null."));
+        return;
+      }
+
+      if (cardsPurchasedThisTurn.Contains(developmentCard))
+      {
+        this.ErrorRaisedEvent?.Invoke(new ErrorDetails("Cannot use development card that has been purchased this turn."));
+        return;
+      }
+
+      if (!this.gameBoardManager.Data.CanPlaceRobber(newRobberHex))
+      {
+        this.ErrorRaisedEvent?.Invoke(new ErrorDetails("Cannot move robber to hex " + newRobberHex + " because it is out of bounds (0.. " + (GameBoardData.StandardBoardHexCount - 1) + ")."));
+        return;
+      }
+
+      if (this.cardPlayedThisTurn)
+      {
+        this.ErrorRaisedEvent?.Invoke(new ErrorDetails("Cannot play more than one development card in a turn."));
+        return;
+      }
+
+      if (newRobberHex == this.robberHex)
+      {
+        this.ErrorRaisedEvent?.Invoke(new ErrorDetails("Cannot place robber back on present hex (" + this.robberHex + ")."));
+        return;
+      }
+
+      if (this.cardsPlayed.Contains(developmentCard))
+      {
+        this.ErrorRaisedEvent?.Invoke(new ErrorDetails("Cannot play the same development card more than once."));
+        return;
+      }
+    }
+
     private void TryRaiseRoadSegmentBuildingError()
     {
       if (this.currentPlayer.RemainingRoadSegments == 0)
@@ -1169,6 +1151,18 @@ namespace Jabberwocky.SoC.Library
       {
         this.ErrorRaisedEvent?.Invoke(new ErrorDetails("Cannot build road segment. Road segment [" + settlementLocation + ", " + roadEndLocation + "] not connected to existing road segment."));
         return;
+      }
+    }
+
+    private void TryRaiseLargestArmyEvent(IPlayer playerWithMostKnightCards)
+    {
+      if (this.playerWithLargestArmy != null)
+      {
+        this.LargestArmyEvent?.Invoke(this.playerWithLargestArmy.Id, playerWithMostKnightCards.Id);
+      }
+      else
+      {
+        this.LargestArmyEvent?.Invoke(Guid.Empty, playerWithMostKnightCards.Id);
       }
     }
 
