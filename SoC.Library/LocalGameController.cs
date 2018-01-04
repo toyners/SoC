@@ -317,6 +317,13 @@ namespace Jabberwocky.SoC.Library
               var newRobberHex = computerPlayer.ChooseRobberLocation();
               this.UseKnightDevelopmentCard(knightCard, newRobberHex);
               events.Add(new PlayKnightCardEvent(computerPlayer.Id));
+              var playerWithMostKnightCards = this.DeterminePlayerWithMostKnightCards();
+              if (playerWithMostKnightCards == computerPlayer)
+              {
+                var g = new PlayerWithLargestArmyChangedEvent(computerPlayer.Id, this.playerWithLargestArmy.Id);
+                events.Add(g);
+                this.playerWithLargestArmy = computerPlayer;
+              }
               break;
             }
           }
@@ -610,7 +617,7 @@ namespace Jabberwocky.SoC.Library
 
       this.UseKnightDevelopmentCard(developmentCard, newRobberHex);
 
-      var playerWithMostKnightCards = this.DeterminePlayerWithLargestArmy();
+      var playerWithMostKnightCards = this.DeterminePlayerWithMostKnightCards();
       if (playerWithMostKnightCards != null)
       {
         this.TryRaiseLargestArmyEvent(playerWithMostKnightCards);
@@ -629,10 +636,11 @@ namespace Jabberwocky.SoC.Library
       this.currentPlayer = this.players[this.playerIndex];
     }
 
-    private IPlayer DeterminePlayerWithLargestArmy()
+    private IPlayer DeterminePlayerWithMostKnightCards()
     {
       IPlayer playerWithMostKnightCards = null;
       UInt32 workingKnightCardCount = 3;
+
       foreach (var player in this.players)
       {
         if (player.KnightCards > workingKnightCardCount)
@@ -642,14 +650,7 @@ namespace Jabberwocky.SoC.Library
         }
         else if (player.KnightCards == workingKnightCardCount)
         {
-          if (playerWithMostKnightCards == null)
-          {
-            playerWithMostKnightCards = player;
-          }
-          else
-          {
-            playerWithMostKnightCards = null;
-          }
+          playerWithMostKnightCards = (playerWithMostKnightCards == null ? player : null);
         }
       }
 
