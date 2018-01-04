@@ -332,6 +332,9 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       this.AssertThatPlayerActionsForTurnAreCorrect(playerActions[keys[4]], expectedPlayKnightCardEvent, expectedDifferentPlayerHasLargestArmyEvent);
     }
 
+    /// <summary>
+    /// Test that the largest army event is not raised when the opponent plays knight cards and already has the largest army
+    /// </summary>
     [Test]
     public void Scenario_LargestArmyEventOnlyRaisedFirstTimeThatOpponentHasMostKnightCardsPlayed()
     {
@@ -370,7 +373,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       // Act
       this.localGameController.EndTurn(turnToken); // Opponent plays knight card
       this.localGameController.EndTurn(turnToken); // Opponent plays knight card
-      this.localGameController.EndTurn(turnToken); // Opponent plays knight card; Largest Army event for Opponent
+      this.localGameController.EndTurn(turnToken); // Opponent plays knight card; raises Largest Army event for Opponent
       this.localGameController.EndTurn(turnToken); // Opponent plays knight card
 
       // Assert
