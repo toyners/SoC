@@ -332,6 +332,61 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       this.AssertThatPlayerActionsForTurnAreCorrect(playerActions[keys[4]], expectedPlayKnightCardEvent, expectedDifferentPlayerHasLargestArmyEvent);
     }
 
+    [Test]
+    public void Scenario_LargestArmyEventOnlyRaisedFirstTimeThatOpponentHasMostKnightCardsPlayed()
+    {
+      // Arrange
+      var knightDevelopmentCard1 = new KnightDevelopmentCard();
+      var knightDevelopmentCard2 = new KnightDevelopmentCard();
+      var knightDevelopmentCard3 = new KnightDevelopmentCard();
+      var knightDevelopmentCard4 = new KnightDevelopmentCard();
+      this.TestSetup(knightDevelopmentCard1, knightDevelopmentCard2, knightDevelopmentCard3, knightDevelopmentCard4);
+
+      this.firstOpponent.AddResources(ResourceClutch.DevelopmentCard * 4);
+      this.firstOpponent.AddBuyDevelopmentCardChoice(4).EndTurn()
+        .AddPlaceKnightCard(0).EndTurn()
+        .AddPlaceKnightCard(0).EndTurn()
+        .AddPlaceKnightCard(0).EndTurn()
+        .AddPlaceKnightCard(0).EndTurn();
+
+      this.localGameController.ErrorRaisedEvent = (ErrorDetails e) => { throw new Exception(e.Message); };
+
+      var turn = 0;
+      TurnToken turnToken = null;
+      this.localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; turn++; };
+
+      var playerActions = new Dictionary<String, List<GameEvent>>();
+      var keys = new List<String>();
+      this.localGameController.OpponentActionsEvent = (Guid g, List<GameEvent> e) =>
+      {
+        var key = turn + "-" + g.ToString();
+        keys.Add(key);
+        playerActions.Add(key, e);
+      };
+
+      this.localGameController.StartGamePlay();
+      this.localGameController.EndTurn(turnToken); // Opponent buys development cards
+
+      // Act
+      this.localGameController.EndTurn(turnToken); // Opponent plays knight card
+      this.localGameController.EndTurn(turnToken); // Opponent plays knight card
+      this.localGameController.EndTurn(turnToken); // Opponent plays knight card; Largest Army event for Opponent
+      this.localGameController.EndTurn(turnToken); // Opponent plays knight card
+
+      // Assert
+      var expectedBuyDevelopmentCardEvent = new BuyDevelopmentCardEvent(this.firstOpponent.Id);
+      var expectedPlayKnightCardEvent = new PlayKnightCardEvent(this.firstOpponent.Id);
+      var expectedDifferentPlayerHasLargestArmyEvent = new PlayerWithLargestArmyChangedEvent(this.firstOpponent.Id, this.player.Id);
+
+      playerActions.Count.ShouldBe(5);
+      keys.Count.ShouldBe(5);
+      this.AssertThatPlayerActionsForTurnAreCorrect(playerActions[keys[0]], expectedBuyDevelopmentCardEvent, expectedBuyDevelopmentCardEvent, expectedBuyDevelopmentCardEvent, expectedBuyDevelopmentCardEvent);
+      this.AssertThatPlayerActionsForTurnAreCorrect(playerActions[keys[1]], expectedPlayKnightCardEvent);
+      this.AssertThatPlayerActionsForTurnAreCorrect(playerActions[keys[2]], expectedPlayKnightCardEvent);
+      this.AssertThatPlayerActionsForTurnAreCorrect(playerActions[keys[3]], expectedPlayKnightCardEvent, expectedDifferentPlayerHasLargestArmyEvent);
+      this.AssertThatPlayerActionsForTurnAreCorrect(playerActions[keys[4]], expectedPlayKnightCardEvent);
+    }
+
     private void AssertThatPlayerActionsForTurnAreCorrect(List<GameEvent> actualEvents, params GameEvent[] expectedEvents)
     {
       actualEvents.Count.ShouldBe(expectedEvents.Length);
