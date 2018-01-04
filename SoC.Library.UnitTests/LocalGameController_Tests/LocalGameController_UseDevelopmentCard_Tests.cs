@@ -316,7 +316,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       this.localGameController.EndTurn(turnToken); // Opponent plays knight card
 
       // Act
-      this.localGameController.EndTurn(turnToken); // Opponent plays last knight card
+      this.localGameController.EndTurn(turnToken); // Opponent plays last knight card. Largest Army event raised
 
       // Assert
       var expectedBuyDevelopmentCardEvent = new BuyDevelopmentCardEvent(this.firstOpponent.Id);
