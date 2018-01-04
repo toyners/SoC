@@ -312,7 +312,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       this.localGameController.UseKnightDevelopmentCard(turnToken, knightDevelopmentCard2, 3);
       this.localGameController.EndTurn(turnToken); // Opponent plays knight card
 
-      this.localGameController.UseKnightDevelopmentCard(turnToken, knightDevelopmentCard3, 3);
+      this.localGameController.UseKnightDevelopmentCard(turnToken, knightDevelopmentCard3, 3); // Largest Army event raised
       this.localGameController.EndTurn(turnToken); // Opponent plays knight card
 
       // Act
