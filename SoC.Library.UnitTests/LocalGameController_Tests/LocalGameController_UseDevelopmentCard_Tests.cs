@@ -235,7 +235,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       TurnToken turnToken = null;
       this.localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
 
-      Guid newPlayer = Guid.Empty, oldPlayer = Guid.Empty;
+      Guid oldPlayer = Guid.NewGuid(), newPlayer = Guid.Empty;
       this.localGameController.LargestArmyEvent = (Guid op, Guid np) => { oldPlayer = op; newPlayer = np; };
 
       this.localGameController.StartGamePlay();
@@ -261,8 +261,12 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       oldPlayer.ShouldBe(Guid.Empty);
     }
 
+    /// <summary>
+    /// Test that the largest army event is raised when the player has played 3 knight cards. Also
+    /// the largest army event is returned once the opponent has played 4 cards.
+    /// </summary>
     [Test]
-    public void UseKnightDevelopmentCard_OpponentPlaysMoreKnightDevelopmentCardThanPlayer_LargestArmyEventRaisedForOpponent()
+    public void Scenario_LargestArmyEventsRaisedWhenBothPlayerAndOpponentPlayTheMostKnightDevelopmentCards()
     {
       // Arrange
       var knightDevelopmentCard1 = new KnightDevelopmentCard();
@@ -283,6 +287,9 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
         .AddPlaceKnightCard(0).EndTurn();
 
       this.localGameController.ErrorRaisedEvent = (ErrorDetails e) => { throw new Exception(e.Message); };
+
+      Guid oldPlayerId = Guid.NewGuid(), newPlayerId = Guid.Empty;
+      this.localGameController.LargestArmyEvent = (Guid o, Guid n) => { oldPlayerId = o; newPlayerId = n; };
 
       var turn = 0;
       TurnToken turnToken = null;
@@ -316,9 +323,12 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       this.localGameController.EndTurn(turnToken); // Opponent plays knight card
 
       // Act
-      this.localGameController.EndTurn(turnToken); // Opponent plays last knight card. Largest Army event raised
+      this.localGameController.EndTurn(turnToken); // Opponent plays last knight card. Largest Army event returned
 
       // Assert
+      oldPlayerId.ShouldBe(Guid.Empty);
+      newPlayerId.ShouldBe(this.player.Id);
+
       var expectedBuyDevelopmentCardEvent = new BuyDevelopmentCardEvent(this.firstOpponent.Id);
       var expectedPlayKnightCardEvent = new PlayKnightCardEvent(this.firstOpponent.Id);
       var expectedDifferentPlayerHasLargestArmyEvent = new PlayerWithLargestArmyChangedEvent(this.firstOpponent.Id, this.player.Id);
@@ -336,7 +346,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
     /// Test that the largest army event is not raised when the opponent plays knight cards and already has the largest army
     /// </summary>
     [Test]
-    public void Scenario_LargestArmyEventOnlyRaisedFirstTimeThatOpponentHasMostKnightCardsPlayed()
+    public void Scenario_LargestArmyEventOnlyReturnedFirstTimeThatOpponentHasMostKnightCardsPlayed()
     {
       // Arrange
       var knightDevelopmentCard1 = new KnightDevelopmentCard();
