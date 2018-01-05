@@ -235,8 +235,8 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       TurnToken turnToken = null;
       this.localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
 
-      Guid oldPlayer = Guid.NewGuid(), newPlayer = Guid.Empty;
-      this.localGameController.LargestArmyEvent = (Guid op, Guid np) => { oldPlayer = op; newPlayer = np; };
+      Guid oldPlayerId = Guid.NewGuid(), newPlayerId = Guid.Empty;
+      this.localGameController.LargestArmyEvent = (Guid op, Guid np) => { oldPlayerId = op; newPlayerId = np; };
 
       this.localGameController.StartGamePlay();
 
@@ -257,8 +257,8 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       this.localGameController.UseKnightDevelopmentCard(turnToken, knightDevelopmentCard3, 3);
 
       // Assert
-      newPlayer.ShouldBe(this.player.Id);
-      oldPlayer.ShouldBe(Guid.Empty);
+      oldPlayerId.ShouldBe(Guid.Empty);
+      this.AssertThatPlayerIdIsCorrect("newPlayer", newPlayerId, this.player.Id, this.player.Name);
     }
 
     /// <summary>
@@ -327,7 +327,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
 
       // Assert
       oldPlayerId.ShouldBe(Guid.Empty);
-      newPlayerId.ShouldBe(this.player.Id);
+      this.AssertThatPlayerIdIsCorrect("newPlayer", newPlayerId, this.player.Id, this.player.Name);
 
       var expectedBuyDevelopmentCardEvent = new BuyDevelopmentCardEvent(this.firstOpponent.Id);
       var expectedPlayKnightCardEvent = new PlayKnightCardEvent(this.firstOpponent.Id);
@@ -400,15 +400,6 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       this.AssertThatPlayerActionsForTurnAreCorrect(playerActions[keys[4]], expectedPlayKnightCardEvent);
     }
 
-    private void AssertThatPlayerActionsForTurnAreCorrect(List<GameEvent> actualEvents, params GameEvent[] expectedEvents)
-    {
-      actualEvents.Count.ShouldBe(expectedEvents.Length);
-      for (var index = 0; index < actualEvents.Count; index++)
-      {
-        actualEvents[index].ShouldBe(expectedEvents[index]);
-      }
-    }
-
     [Test]
     public void UseKnightDevelopmentCard_PlayerPlaysMoreKnightDevelopmentCardThanOpponent_LargestArmyEventRaised()
     {
@@ -434,8 +425,8 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       TurnToken turnToken = null;
       this.localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
 
-      Guid newPlayer = Guid.Empty, oldPlayer = Guid.Empty;
-      this.localGameController.LargestArmyEvent = (Guid np, Guid op) => { newPlayer = np; oldPlayer = op; };
+      Guid newPlayerId = Guid.Empty, oldPlayerId = Guid.Empty;
+      this.localGameController.LargestArmyEvent = (Guid np, Guid op) => { newPlayerId = np; oldPlayerId = op; };
 
       this.localGameController.StartGamePlay();
 
@@ -460,8 +451,29 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       this.localGameController.UseKnightDevelopmentCard(turnToken, knightDevelopmentCard4, 3);
 
       // Assert
-      newPlayer.ShouldBe(this.player.Id);
-      oldPlayer.ShouldBe(this.firstOpponent.Id, "oldPlayer should be '" + this.firstOpponent.Name + "' but was '" + this.playersById[oldPlayer].Name + "'");
+      this.AssertThatPlayerIdIsCorrect("newPlayer", newPlayerId, this.player.Id, this.player.Name);
+      this.AssertThatPlayerIdIsCorrect("oldPlayer", oldPlayerId, this.firstOpponent.Id, this.firstOpponent.Name);
+    }
+
+    private void AssertThatPlayerActionsForTurnAreCorrect(List<GameEvent> actualEvents, params GameEvent[] expectedEvents)
+    {
+      actualEvents.Count.ShouldBe(expectedEvents.Length);
+      for (var index = 0; index < actualEvents.Count; index++)
+      {
+        actualEvents[index].ShouldBe(expectedEvents[index]);
+      }
+    }
+
+    private void AssertThatPlayerIdIsCorrect(String variableName, Guid actualPlayerId, Guid expectedPlayerId, String expectedPlayerName)
+    {
+      if (actualPlayerId != expectedPlayerId)
+      {
+        var actualPlayer = this.playersById[actualPlayerId];
+        var actualPlayerName = (actualPlayer != null ? actualPlayer.Name : actualPlayerId.ToString());
+
+        var message = variableName + " should be '" + expectedPlayerName + "' but was '" + actualPlayerName + "'";
+        actualPlayerId.ShouldBe(expectedPlayerId, message);
+      }
     }
 
     private void TestSetup()
