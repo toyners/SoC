@@ -9,16 +9,20 @@ namespace Jabberwocky.SoC.Library
 
   public class GameEvent
   {
+    #region Fields
     public readonly Guid PlayerId;
+    #endregion
 
+    #region Construction
     public GameEvent(Guid playerId)
     {
       this.PlayerId = playerId;
     }
+    #endregion
 
+    #region Methods
     public override Boolean Equals(Object obj)
     {
-      // TODO: Test for reference equality and null parameter. Also write tests.
       if (obj == null)
       {
         return false;
@@ -31,6 +35,7 @@ namespace Jabberwocky.SoC.Library
     {
       return base.GetHashCode();
     }
+    #endregion
   }
 
   public class BuyDevelopmentCardEvent : GameEvent
