@@ -316,11 +316,12 @@ namespace Jabberwocky.SoC.Library
               var newRobberHex = computerPlayer.ChooseRobberLocation();
               this.UseKnightDevelopmentCard(knightCard, newRobberHex);
               events.Add(new PlayKnightCardEvent(computerPlayer.Id));
+
               var playerWithMostKnightCards = this.DeterminePlayerWithMostKnightCards();
-              if (playerWithMostKnightCards == computerPlayer)
+              if (playerWithMostKnightCards == computerPlayer && this.playerWithLargestArmy != computerPlayer)
               {
-                var g = new PlayerWithLargestArmyChangedEvent(computerPlayer.Id, this.playerWithLargestArmy.Id);
-                events.Add(g);
+                var oldPlayerId = (this.playerWithLargestArmy != null ? this.playerWithLargestArmy.Id : Guid.Empty);
+                events.Add(new PlayerWithLargestArmyChangedEvent(oldPlayerId, computerPlayer.Id));
                 this.playerWithLargestArmy = computerPlayer;
               }
               break;
@@ -617,9 +618,10 @@ namespace Jabberwocky.SoC.Library
       this.UseKnightDevelopmentCard(developmentCard, newRobberHex);
 
       var playerWithMostKnightCards = this.DeterminePlayerWithMostKnightCards();
-      if (playerWithMostKnightCards != null)
+      if (playerWithMostKnightCards == this.mainPlayer && this.playerWithLargestArmy != this.mainPlayer)
       {
-        this.TryRaiseLargestArmyEvent(playerWithMostKnightCards);
+        var oldPlayerId = (this.playerWithLargestArmy != null ? this.playerWithLargestArmy.Id : Guid.Empty);
+        this.LargestArmyEvent?.Invoke(oldPlayerId, playerWithMostKnightCards.Id);
         this.playerWithLargestArmy = playerWithMostKnightCards;
       }
     }
@@ -1153,19 +1155,7 @@ namespace Jabberwocky.SoC.Library
         return;
       }
     }
-
-    private void TryRaiseLargestArmyEvent(IPlayer playerWithMostKnightCards)
-    {
-      if (this.playerWithLargestArmy != null)
-      {
-        this.LargestArmyEvent?.Invoke(this.playerWithLargestArmy.Id, playerWithMostKnightCards.Id);
-      }
-      else
-      {
-        this.LargestArmyEvent?.Invoke(Guid.Empty, playerWithMostKnightCards.Id);
-      }
-    }
-
+    
     private void TryRaiseSettlementBuildingError()
     {
       if (this.ErrorRaisedEvent == null)

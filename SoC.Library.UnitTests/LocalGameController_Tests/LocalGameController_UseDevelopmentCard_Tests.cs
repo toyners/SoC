@@ -334,7 +334,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
 
       var expectedBuyDevelopmentCardEvent = new BuyDevelopmentCardEvent(this.firstOpponent.Id);
       var expectedPlayKnightCardEvent = new PlayKnightCardEvent(this.firstOpponent.Id);
-      var expectedDifferentPlayerHasLargestArmyEvent = new PlayerWithLargestArmyChangedEvent(this.firstOpponent.Id, this.player.Id);
+      var expectedDifferentPlayerHasLargestArmyEvent = new PlayerWithLargestArmyChangedEvent(this.player.Id, this.firstOpponent.Id);
 
       playerActions.Count.ShouldBe(5);
       keys.Count.ShouldBe(5);
@@ -390,7 +390,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       // Assert
       var expectedBuyDevelopmentCardEvent = new BuyDevelopmentCardEvent(this.firstOpponent.Id);
       var expectedPlayKnightCardEvent = new PlayKnightCardEvent(this.firstOpponent.Id);
-      var expectedDifferentPlayerHasLargestArmyEvent = new PlayerWithLargestArmyChangedEvent(this.firstOpponent.Id, this.player.Id);
+      var expectedDifferentPlayerHasLargestArmyEvent = new PlayerWithLargestArmyChangedEvent(Guid.Empty, this.firstOpponent.Id);
 
       playerActions.Count.ShouldBe(5);
       keys.Count.ShouldBe(5);
@@ -432,7 +432,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
 
       Guid newPlayerId = Guid.Empty, oldPlayerId = Guid.Empty;
       var expectedTurn = -1;
-      this.localGameController.LargestArmyEvent = (Guid np, Guid op) => { newPlayerId = np; oldPlayerId = op; expectedTurn = turn; };
+      this.localGameController.LargestArmyEvent = (Guid o, Guid n) => { oldPlayerId = o; newPlayerId = n; expectedTurn = turn; };
 
       this.localGameController.StartGamePlay();
 
@@ -452,16 +452,16 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       this.localGameController.EndTurn(turnToken); // Opponent plays knight card
 
       // Turn 4: Play knight card
-      this.localGameController.UseKnightDevelopmentCard(turnToken, knightDevelopmentCard3, 3);
+      this.localGameController.UseKnightDevelopmentCard(turnToken, knightDevelopmentCard3, 3); // Largest Army event raised
       this.localGameController.EndTurn(turnToken); // Opponent plays knight card
 
       // Turn 5: Play knight card
-      this.localGameController.UseKnightDevelopmentCard(turnToken, knightDevelopmentCard4, 3);
+      this.localGameController.UseKnightDevelopmentCard(turnToken, knightDevelopmentCard4, 3); // Largest Army event not raised
 
       // Assert
       expectedTurn.ShouldBe(4);
+      oldPlayerId.ShouldBe(Guid.Empty);
       this.AssertThatPlayerIdIsCorrect("newPlayer", newPlayerId, this.player.Id, this.player.Name);
-      this.AssertThatPlayerIdIsCorrect("oldPlayer", oldPlayerId, this.firstOpponent.Id, this.firstOpponent.Name);
     }
 
     private void AssertThatPlayerActionsForTurnAreCorrect(List<GameEvent> actualEvents, params GameEvent[] expectedEvents)
@@ -469,7 +469,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       actualEvents.Count.ShouldBe(expectedEvents.Length);
       for (var index = 0; index < actualEvents.Count; index++)
       {
-        actualEvents[index].ShouldBe(expectedEvents[index]);
+        actualEvents[index].ShouldBe(expectedEvents[index], "Index is " + index);
       }
     }
 
@@ -477,8 +477,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
     {
       if (actualPlayerId != expectedPlayerId)
       {
-        var actualPlayer = this.playersById[actualPlayerId];
-        var actualPlayerName = (actualPlayer != null ? actualPlayer.Name : actualPlayerId.ToString());
+        var actualPlayerName = (this.playersById.ContainsKey(actualPlayerId) ? this.playersById[actualPlayerId].Name : actualPlayerId.ToString());
 
         var message = variableName + " should be '" + expectedPlayerName + "' but was '" + actualPlayerName + "'";
         actualPlayerId.ShouldBe(expectedPlayerId, message);
