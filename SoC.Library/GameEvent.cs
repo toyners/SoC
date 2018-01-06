@@ -19,6 +19,10 @@ namespace Jabberwocky.SoC.Library
     public override Boolean Equals(Object obj)
     {
       // TODO: Test for reference equality and null parameter. Also write tests.
+      if (obj == null)
+      {
+        return false;
+      }
 
       return this.PlayerId == ((GameEvent)obj).PlayerId;
     }
