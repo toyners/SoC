@@ -288,12 +288,13 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
 
       this.localGameController.ErrorRaisedEvent = (ErrorDetails e) => { throw new Exception(e.Message); };
 
-      Guid oldPlayerId = Guid.NewGuid(), newPlayerId = Guid.Empty;
-      this.localGameController.LargestArmyEvent = (Guid o, Guid n) => { oldPlayerId = o; newPlayerId = n; };
-
       var turn = 0;
       TurnToken turnToken = null;
       this.localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; turn++; };
+
+      Guid oldPlayerId = Guid.NewGuid(), newPlayerId = Guid.Empty;
+      var expectedTurn = -1;
+      this.localGameController.LargestArmyEvent = (Guid o, Guid n) => { oldPlayerId = o; newPlayerId = n; expectedTurn = turn; };
 
       var playerActions = new Dictionary<String, List<GameEvent>>();
       var keys = new List<String>();
@@ -306,23 +307,25 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
 
       this.localGameController.StartGamePlay();
 
-      // Buy the knight cards
+      // Turn 1: Buy the knight cards
       this.localGameController.BuyDevelopmentCard(turnToken);
       this.localGameController.BuyDevelopmentCard(turnToken);
       this.localGameController.BuyDevelopmentCard(turnToken);
       this.localGameController.EndTurn(turnToken); // Opponent buys development cards
 
-      // Play one knight card each turn for the next two turns
+      // Turn 2: Play knight card
       this.localGameController.UseKnightDevelopmentCard(turnToken, knightDevelopmentCard1, 3);
       this.localGameController.EndTurn(turnToken); // Opponent plays knight card
 
+      // Turn 3: Play knight card
       this.localGameController.UseKnightDevelopmentCard(turnToken, knightDevelopmentCard2, 3);
       this.localGameController.EndTurn(turnToken); // Opponent plays knight card
 
+      // Turn 4: Play knight card
       this.localGameController.UseKnightDevelopmentCard(turnToken, knightDevelopmentCard3, 3); // Largest Army event raised
       this.localGameController.EndTurn(turnToken); // Opponent plays knight card
 
-      // Act
+      // Turn 5: Play knight card
       this.localGameController.EndTurn(turnToken); // Opponent plays last knight card. Largest Army event returned
 
       // Assert
@@ -343,7 +346,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
     }
 
     /// <summary>
-    /// Test that the largest army event is not raised when the opponent plays knight cards and already has the largest army
+    /// Test that the largest army event is not returned when the opponent plays knight cards and already has the largest army
     /// </summary>
     [Test]
     public void Scenario_LargestArmyEventOnlyReturnedFirstTimeThatOpponentHasMostKnightCardsPlayed()
@@ -379,8 +382,6 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
 
       this.localGameController.StartGamePlay();
       this.localGameController.EndTurn(turnToken); // Opponent buys development cards
-
-      // Act
       this.localGameController.EndTurn(turnToken); // Opponent plays knight card
       this.localGameController.EndTurn(turnToken); // Opponent plays knight card
       this.localGameController.EndTurn(turnToken); // Opponent plays knight card; raises Largest Army event for Opponent
@@ -400,8 +401,11 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       this.AssertThatPlayerActionsForTurnAreCorrect(playerActions[keys[4]], expectedPlayKnightCardEvent);
     }
 
+    /// <summary>
+    /// Test that the largest army event is not raised when the player plays knight cards and already has the largest army
+    /// </summary>
     [Test]
-    public void UseKnightDevelopmentCard_PlayerPlaysMoreKnightDevelopmentCardThanOpponent_LargestArmyEventRaised()
+    public void Scenario_LargestArmyEventOnlyRaisedFirstTimeThatPlayerHasMostKnightCardsPlayed()
     {
       // Arrange
       var knightDevelopmentCard1 = new KnightDevelopmentCard();
@@ -422,35 +426,40 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
 
       this.localGameController.ErrorRaisedEvent = (ErrorDetails e) => { throw new Exception(e.Message); };
 
+      var turn = 0;
       TurnToken turnToken = null;
-      this.localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
+      this.localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; turn++; };
 
       Guid newPlayerId = Guid.Empty, oldPlayerId = Guid.Empty;
-      this.localGameController.LargestArmyEvent = (Guid np, Guid op) => { newPlayerId = np; oldPlayerId = op; };
+      var expectedTurn = -1;
+      this.localGameController.LargestArmyEvent = (Guid np, Guid op) => { newPlayerId = np; oldPlayerId = op; expectedTurn = turn; };
 
       this.localGameController.StartGamePlay();
 
-      // Buy the knight cards
+      // Turn 1: Buy the knight cards
       this.localGameController.BuyDevelopmentCard(turnToken);
       this.localGameController.BuyDevelopmentCard(turnToken);
       this.localGameController.BuyDevelopmentCard(turnToken);
       this.localGameController.BuyDevelopmentCard(turnToken);
       this.localGameController.EndTurn(turnToken); // Opponent buys development cards
 
-      // Play one knight card each turn for the next two turns
+      // Turn 2: Play knight card
       this.localGameController.UseKnightDevelopmentCard(turnToken, knightDevelopmentCard1, 3);
       this.localGameController.EndTurn(turnToken); // Opponent plays knight card
 
+      // Turn 3: Play kight card
       this.localGameController.UseKnightDevelopmentCard(turnToken, knightDevelopmentCard2, 3);
       this.localGameController.EndTurn(turnToken); // Opponent plays knight card
 
+      // Turn 4: Play knight card
       this.localGameController.UseKnightDevelopmentCard(turnToken, knightDevelopmentCard3, 3);
       this.localGameController.EndTurn(turnToken); // Opponent plays knight card
 
-      // Act
+      // Turn 5: Play knight card
       this.localGameController.UseKnightDevelopmentCard(turnToken, knightDevelopmentCard4, 3);
 
       // Assert
+      expectedTurn.ShouldBe(4);
       this.AssertThatPlayerIdIsCorrect("newPlayer", newPlayerId, this.player.Id, this.player.Name);
       this.AssertThatPlayerIdIsCorrect("oldPlayer", oldPlayerId, this.firstOpponent.Id, this.firstOpponent.Name);
     }
