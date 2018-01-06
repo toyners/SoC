@@ -73,6 +73,7 @@
     <Compile Include="MockDiceCreator.cs" />
     <Compile Include="MockPlayer.cs" />
     <Compile Include="PlayerPool_UnitTests.cs" />
+    <Compile Include="PlayerWithLargestArmyChangedEvent_UnitTests.cs" />
     <Compile Include="Player_UnitTests.cs" />
     <Compile Include="ResourceClutch_UnitTests.cs" />
     <Compile Include="RoadSegment_UnitTests.cs" />
