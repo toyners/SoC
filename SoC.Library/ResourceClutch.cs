@@ -30,6 +30,10 @@ namespace Jabberwocky.SoC.Library
     }
     #endregion
 
+    #region Properties
+    public Int32 Count { get { return this.BrickCount + this.GrainCount + this.LumberCount + this.OreCount + this.WoolCount; } }
+    #endregion
+
     #region Methods
     public static ResourceClutch operator* (ResourceClutch operand1, Int32 operand2)
     {

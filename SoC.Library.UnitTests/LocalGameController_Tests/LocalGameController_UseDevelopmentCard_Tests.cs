@@ -464,6 +464,56 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       this.AssertThatPlayerIdIsCorrect("newPlayer", newPlayerId, this.player.Id, this.player.Name);
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    [Test]
+    public void Scenario_CompleteTransactionWhenPlayingKnightDevelopmentCards()
+    {
+      // Arrange
+      var knightDevelopmentCard1 = new KnightDevelopmentCard();
+      this.TestSetup(knightDevelopmentCard1);
+
+      this.player.AddResources(ResourceClutch.DevelopmentCard * 3);
+
+      this.localGameController.ErrorRaisedEvent = (ErrorDetails e) => { throw new Exception(e.Message); };
+
+      var turn = 0;
+      TurnToken turnToken = null;
+      this.localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; turn++; };
+
+      Dictionary<Guid, Int32> robbingChoices = null;
+      this.localGameController.RobbingChoicesEvent = (Dictionary<Guid, Int32> r) => { robbingChoices = r; };
+
+      this.localGameController.StartGamePlay();
+
+      // Turn 1: Buy the knight cards
+      this.localGameController.BuyDevelopmentCard(turnToken);
+      this.localGameController.EndTurn(turnToken); // Opponent buys development cards
+
+      // Turn 2: Play knight card. Event raised with robbing choices for user to select from
+      this.localGameController.UseKnightDevelopmentCard(turnToken, knightDevelopmentCard1, 11);
+
+      // Make choice using call to LGC
+      this.localGameController.ChooseResourceFromOpponent(this.firstOpponent.Id, 1);
+
+      // Event raised with card received update
+      ResourceClutch gainedResources = ResourceClutch.Zero;
+      this.localGameController.ResourcesGainedEvent = (ResourceClutch r) => { gainedResources = r; };
+
+      this.localGameController.EndTurn(turnToken); // Opponent plays knight card
+
+      // Assert
+      robbingChoices.ShouldNotBeNull();
+      robbingChoices.Count.ShouldBe(1);
+      robbingChoices.ShouldContainKeyAndValue(this.firstOpponent.Id, 3);
+
+      gainedResources.Count.ShouldBe(1);
+
+      this.player.ResourcesCount.ShouldBe(4);
+      this.firstOpponent.ResourcesCount.ShouldBe(2);
+    }
+
     private void AssertThatPlayerActionsForTurnAreCorrect(List<GameEvent> actualEvents, params GameEvent[] expectedEvents)
     {
       actualEvents.Count.ShouldBe(expectedEvents.Length);
