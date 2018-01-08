@@ -15,6 +15,8 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
   public class LocalGameController_UseKnightDevelopmentCard_Tests : LocalGameControllerTestBase
   {
     #region Fields
+    private const UInt32 SecondSettlementOneHex = 8;
+
     private MockPlayer player;
     private MockComputerPlayer firstOpponent, secondOpponent, thirdOpponent;
     private MockDice dice;
@@ -465,25 +467,28 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
     }
 
     /// <summary>
-    /// 
+    /// Test that the transaction between players happens as expected when Human plays the knight card and the robber
+    /// is moved to a populated hex.
     /// </summary>
     [Test]
-    public void Scenario_CompleteTransactionWhenPlayingKnightDevelopmentCards()
+    public void Scenario_CompleteTransactionHappensWhenPlayerPlaysTheKnightDevelopmentCard()
     {
       // Arrange
-      var knightDevelopmentCard1 = new KnightDevelopmentCard();
-      this.TestSetup(knightDevelopmentCard1);
+      var knightDevelopmentCard = new KnightDevelopmentCard();
+      this.TestSetup(knightDevelopmentCard);
 
       this.player.AddResources(ResourceClutch.DevelopmentCard * 3);
 
       this.localGameController.ErrorRaisedEvent = (ErrorDetails e) => { throw new Exception(e.Message); };
 
-      var turn = 0;
       TurnToken turnToken = null;
-      this.localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; turn++; };
+      this.localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
 
       Dictionary<Guid, Int32> robbingChoices = null;
       this.localGameController.RobbingChoicesEvent = (Dictionary<Guid, Int32> r) => { robbingChoices = r; };
+
+      ResourceClutch gainedResources = ResourceClutch.Zero;
+      this.localGameController.ResourcesGainedEvent = (ResourceClutch r) => { gainedResources = r; };
 
       this.localGameController.StartGamePlay();
 
@@ -492,26 +497,22 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       this.localGameController.EndTurn(turnToken); // Opponent buys development cards
 
       // Turn 2: Play knight card. Event raised with robbing choices for user to select from
-      this.localGameController.UseKnightDevelopmentCard(turnToken, knightDevelopmentCard1, 11);
+      this.localGameController.UseKnightDevelopmentCard(turnToken, knightDevelopmentCard, SecondSettlementOneHex);
 
-      // Make choice using call to LGC
+      // Select card to take from opponent
       this.localGameController.ChooseResourceFromOpponent(this.firstOpponent.Id, 1);
-
-      // Event raised with card received update
-      ResourceClutch gainedResources = ResourceClutch.Zero;
-      this.localGameController.ResourcesGainedEvent = (ResourceClutch r) => { gainedResources = r; };
-
-      this.localGameController.EndTurn(turnToken); // Opponent plays knight card
 
       // Assert
       robbingChoices.ShouldNotBeNull();
-      robbingChoices.Count.ShouldBe(1);
+      robbingChoices.Count.ShouldBe(2);
       robbingChoices.ShouldContainKeyAndValue(this.firstOpponent.Id, 3);
+      robbingChoices.ShouldContainKeyAndValue(this.secondOpponent.Id, 3);
 
       gainedResources.Count.ShouldBe(1);
 
       this.player.ResourcesCount.ShouldBe(4);
       this.firstOpponent.ResourcesCount.ShouldBe(2);
+      this.secondOpponent.ResourcesCount.ShouldBe(2);
     }
 
     private void AssertThatPlayerActionsForTurnAreCorrect(List<GameEvent> actualEvents, params GameEvent[] expectedEvents)
