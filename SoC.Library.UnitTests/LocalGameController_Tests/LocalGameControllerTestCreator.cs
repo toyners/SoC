@@ -51,6 +51,8 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       var playerPool = LocalGameControllerTestCreator.CreateMockPlayerPool(player, firstOpponent, secondOpponent, thirdOpponent);
 
       var localGameController = LocalGameControllerTestCreator.CreateLocalGameController(dice, playerPool, developmentCardHolder);
+      localGameController.ErrorRaisedEvent = (ErrorDetails e) => { throw new Exception(e.Message); };
+
       var testInstances = new TestInstances(localGameController, player, firstOpponent, secondOpponent, thirdOpponent, dice);
 
       return testInstances;

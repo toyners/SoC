@@ -296,8 +296,6 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
         .AddPlaceKnightCard(0).EndTurn()
         .AddPlaceKnightCard(0).EndTurn();
 
-      localGameController.ErrorRaisedEvent = (ErrorDetails e) => { throw new Exception(e.Message); };
-
       var turn = 0;
       TurnToken turnToken = null;
       localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; turn++; };
@@ -377,8 +375,6 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
         .AddPlaceKnightCard(0).EndTurn()
         .AddPlaceKnightCard(0).EndTurn();
 
-      localGameController.ErrorRaisedEvent = (ErrorDetails e) => { throw new Exception(e.Message); };
-
       var turn = 0;
       TurnToken turnToken = null;
       localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; turn++; };
@@ -439,8 +435,6 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
         .AddPlaceKnightCard(0).EndTurn()
         .AddPlaceKnightCard(0).EndTurn();
 
-      localGameController.ErrorRaisedEvent = (ErrorDetails e) => { throw new Exception(e.Message); };
-
       var turn = 0;
       TurnToken turnToken = null;
       localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; turn++; };
@@ -480,8 +474,8 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
     }
 
     /// <summary>
-    /// Test that the transaction between players happens as expected when Human plays the knight card and the robber
-    /// is moved to a populated hex.
+    /// Test that the transaction between players happens as expected when human plays the knight card and the robber
+    /// is moved to a hex populated by two computer players.
     /// </summary>
     [Test]
     public void Scenario_CompleteTransactionHappensWhenPlayerPlaysTheKnightDevelopmentCard()
@@ -494,9 +488,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       var firstOpponent = testInstances.FirstOpponent;
       var secondOpponent = testInstances.SecondOpponent;
 
-      player.AddResources(ResourceClutch.DevelopmentCard * 3);
-
-      localGameController.ErrorRaisedEvent = (ErrorDetails e) => { throw new Exception(e.Message); };
+      player.AddResources(ResourceClutch.DevelopmentCard);
 
       TurnToken turnToken = null;
       localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
@@ -511,7 +503,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
 
       // Turn 1: Buy the knight cards
       localGameController.BuyDevelopmentCard(turnToken);
-      localGameController.EndTurn(turnToken); // Opponent buys development cards
+      localGameController.EndTurn(turnToken);
 
       // Turn 2: Play knight card. Event raised with robbing choices for user to select from
       localGameController.UseKnightCard(turnToken, knightCard, SecondSettlementOneHex);
@@ -530,6 +522,53 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       player.ResourcesCount.ShouldBe(4);
       firstOpponent.ResourcesCount.ShouldBe(2);
       secondOpponent.ResourcesCount.ShouldBe(2);
+    }
+
+    [Test]
+    public void Scenario_CompleteTransactionHappensWhenOpponentPlaysTheKnightDevelopmentCard()
+    {
+      // Arrange
+      var knightCard = new KnightDevelopmentCard();
+      var testInstances = this.TestSetup(knightCard);
+      var localGameController = testInstances.LocalGameController;
+      var player = testInstances.MainPlayer;
+      var firstOpponent = testInstances.FirstOpponent;
+
+      firstOpponent.AddResources(ResourceClutch.DevelopmentCard);
+      firstOpponent.AddBuyDevelopmentCardChoice(1).EndTurn()
+        .AddPlaceKnightCard(1).EndTurn();
+
+      var turn = 0;
+      TurnToken turnToken = null;
+      localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; turn++; };
+
+      var playerActions = new Dictionary<String, List<GameEvent>>();
+      var keys = new List<String>();
+      localGameController.OpponentActionsEvent = (Guid g, List<GameEvent> e) =>
+      {
+        var key = turn + "-" + g.ToString();
+        keys.Add(key);
+        playerActions.Add(key, e);
+      };
+
+      localGameController.StartGamePlay();
+
+      // Turn 1: Buy the knight cards
+      localGameController.EndTurn(turnToken); // Opponent buys development cards
+      localGameController.EndTurn(turnToken); // Opponent plays knight cards
+
+      // Assert
+      var expectedBuyDevelopmentCardEvent = new BuyDevelopmentCardEvent(firstOpponent.Id);
+      var expectedPlayKnightCardEvent = new PlayKnightCardEvent(firstOpponent.Id);
+
+      playerActions.Count.ShouldBe(3);
+      keys.Count.ShouldBe(playerActions.Count);
+      this.AssertThatPlayerActionsForTurnAreCorrect(playerActions[keys[0]], expectedBuyDevelopmentCardEvent);
+      this.AssertThatPlayerActionsForTurnAreCorrect(playerActions[keys[1]], expectedPlayKnightCardEvent);
+      this.AssertThatPlayerActionsForTurnAreCorrect(playerActions[keys[2]], expectedPlayKnightCardEvent);
+      
+      player.ResourcesCount.ShouldBe(2);
+      firstOpponent.ResourcesCount.ShouldBe(4);
     }
 
     private void AssertThatPlayerActionsForTurnAreCorrect(List<GameEvent> actualEvents, params GameEvent[] expectedEvents)
@@ -608,31 +647,13 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
         testInstances.ThirdOpponent);
 
       return testInstances;
-
-      /*this.CreateDefaultPlayerInstances(out this.player, out this.firstOpponent, out this.secondOpponent, out this.thirdOpponent);
-      this.dice = this.CreateMockDice();
-      this.dice.AddSequence(new[] { 8u });
-
-      this.playersById = new Dictionary<Guid, IPlayer>();
-      this.playersById.Add(this.player.Id, this.player);
-      this.playersById.Add(this.firstOpponent.Id, this.firstOpponent);
-      this.playersById.Add(this.secondOpponent.Id, this.secondOpponent);
-      this.playersById.Add(this.thirdOpponent.Id, this.thirdOpponent);
-
-      var playerPool = this.CreatePlayerPool(this.player, new[] { this.firstOpponent, this.secondOpponent, this.thirdOpponent });
-      this.localGameController = this.CreateLocalGameController(dice, playerPool, developmentCardHolder);
-
-      // Throw any errors as exceptions by default
-      this.localGameController.ErrorRaisedEvent = (ErrorDetails e) => { throw new Exception(e.Message); };
-
-      this.CompleteGameSetup(this.localGameController);*/
     }
 
     private LocalGameControllerTestCreator.TestInstances TestSetup(DevelopmentCard firstDevelopmentCard, params DevelopmentCard[] otherDevelopmentCards)
     {
-      return this.TestSetup(this.CreateMockCardDevelopmentCardHolder(firstDevelopmentCard, otherDevelopmentCards));
+      var developmentCardHolder = this.CreateMockCardDevelopmentCardHolder(firstDevelopmentCard, otherDevelopmentCards);
+      return this.TestSetup(developmentCardHolder);
     }
-
     #endregion
   }
 }
