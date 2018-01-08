@@ -12,15 +12,10 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
   [Category("All")]
   [Category("LocalGameController")]
   [Category("LocalGameController.UseKnightCard")]
-  public class LocalGameController_UseKnightCard_Tests : LocalGameControllerTestBase
+  public class LocalGameController_UseKnightCard_Tests
   {
     #region Fields
     private const UInt32 SecondSettlementOneHex = 8;
-
-    private MockPlayer player;
-    private MockComputerPlayer firstOpponent, secondOpponent, thirdOpponent;
-    private MockDice dice;
-    private LocalGameController localGameController;
     private Dictionary<Guid, IPlayer> playersById;
     #endregion
 
@@ -29,7 +24,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
     public void UseKnightDevelopmentCard_TurnTokenNotCorrect_MeaningfulErrorIsReceived()
     {
       // Arrange
-      var testInstances = this.TestSetup2();
+      var testInstances = this.TestSetup();
       var localGameController = testInstances.LocalGameController;
 
       TurnToken turnToken = null;
@@ -52,18 +47,19 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
     public void UseKnightDevelopmentCard_CardIsNull_MeaningfulErrorIsReceived()
     {
       // Arrange
-      this.TestSetup();
+      var testInstances = this.TestSetup();
+      var localGameController = testInstances.LocalGameController;
 
       TurnToken turnToken = null;
-      this.localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
+      localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
 
-      this.localGameController.StartGamePlay();
+      localGameController.StartGamePlay();
 
       ErrorDetails errorDetails = null;
-      this.localGameController.ErrorRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
+      localGameController.ErrorRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
 
       // Act
-      this.localGameController.UseKnightDevelopmentCard(turnToken, null, 0);
+      localGameController.UseKnightDevelopmentCard(turnToken, null, 0);
 
       // Assert
       errorDetails.ShouldNotBeNull();
@@ -75,25 +71,26 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
     {
       // Arrange
       var knightDevelopmentCard = new KnightDevelopmentCard();
-      this.TestSetup(knightDevelopmentCard);
+      var testInstances = this.TestSetup(knightDevelopmentCard);
+      var localGameController = testInstances.LocalGameController;
 
-      this.player.AddResources(ResourceClutch.DevelopmentCard);
+      testInstances.MainPlayer.AddResources(ResourceClutch.DevelopmentCard);
 
       TurnToken turnToken = null;
-      this.localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
+      localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
 
       DevelopmentCard purchasedDevelopmentCard = null;
-      this.localGameController.DevelopmentCardPurchasedEvent = (DevelopmentCard d) => { purchasedDevelopmentCard = d; };
+      localGameController.DevelopmentCardPurchasedEvent = (DevelopmentCard d) => { purchasedDevelopmentCard = d; };
 
-      this.localGameController.StartGamePlay();
-      this.localGameController.BuyDevelopmentCard(turnToken);
-      this.localGameController.EndTurn(turnToken);
+      localGameController.StartGamePlay();
+      localGameController.BuyDevelopmentCard(turnToken);
+      localGameController.EndTurn(turnToken);
 
       ErrorDetails errorDetails = null;
-      this.localGameController.ErrorRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
+      localGameController.ErrorRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
 
       // Act
-      this.localGameController.UseKnightDevelopmentCard(turnToken, (KnightDevelopmentCard)purchasedDevelopmentCard, GameBoards.GameBoardData.StandardBoardHexCount);
+      localGameController.UseKnightDevelopmentCard(turnToken, (KnightDevelopmentCard)purchasedDevelopmentCard, GameBoards.GameBoardData.StandardBoardHexCount);
 
       // Assert
       errorDetails.ShouldNotBeNull();
@@ -105,23 +102,25 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
     {
       // Arrange
       var knightDevelopmentCard = new KnightDevelopmentCard();
-      this.TestSetup(knightDevelopmentCard);
-      this.player.AddResources(ResourceClutch.DevelopmentCard);
+      var testInstances = this.TestSetup(knightDevelopmentCard);
+      var localGameController = testInstances.LocalGameController;
+
+      testInstances.MainPlayer.AddResources(ResourceClutch.DevelopmentCard);
 
       TurnToken turnToken = null;
-      this.localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
+      localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
 
       DevelopmentCard purchasedDevelopmentCard = null;
-      this.localGameController.DevelopmentCardPurchasedEvent = (DevelopmentCard d) => { purchasedDevelopmentCard = d; };
+      localGameController.DevelopmentCardPurchasedEvent = (DevelopmentCard d) => { purchasedDevelopmentCard = d; };
 
-      this.localGameController.StartGamePlay();
-      this.localGameController.BuyDevelopmentCard(turnToken);
+      localGameController.StartGamePlay();
+      localGameController.BuyDevelopmentCard(turnToken);
 
       ErrorDetails errorDetails = null;
-      this.localGameController.ErrorRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
+      localGameController.ErrorRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
 
       // Act
-      this.localGameController.UseKnightDevelopmentCard(turnToken, (KnightDevelopmentCard)purchasedDevelopmentCard, 0);
+      localGameController.UseKnightDevelopmentCard(turnToken, (KnightDevelopmentCard)purchasedDevelopmentCard, 0);
 
       // Assert
       errorDetails.ShouldNotBeNull();
@@ -133,25 +132,26 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
     {
       // Arrange
       var knightDevelopmentCard = new KnightDevelopmentCard();
-      this.TestSetup(knightDevelopmentCard);
+      var testInstances = this.TestSetup(knightDevelopmentCard);
+      var localGameController = testInstances.LocalGameController;
 
-      this.player.AddResources(ResourceClutch.DevelopmentCard);
+      testInstances.MainPlayer.AddResources(ResourceClutch.DevelopmentCard);
 
       TurnToken turnToken = null;
-      this.localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
+      localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
 
       DevelopmentCard purchasedDevelopmentCard = null;
-      this.localGameController.DevelopmentCardPurchasedEvent = (DevelopmentCard d) => { purchasedDevelopmentCard = d; };
+      localGameController.DevelopmentCardPurchasedEvent = (DevelopmentCard d) => { purchasedDevelopmentCard = d; };
 
-      this.localGameController.StartGamePlay();
-      this.localGameController.BuyDevelopmentCard(turnToken);
-      this.localGameController.EndTurn(turnToken);
+      localGameController.StartGamePlay();
+      localGameController.BuyDevelopmentCard(turnToken);
+      localGameController.EndTurn(turnToken);
 
       ErrorDetails errorDetails = null;
-      this.localGameController.ErrorRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
+      localGameController.ErrorRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
 
       // Act
-      this.localGameController.UseKnightDevelopmentCard(turnToken, (KnightDevelopmentCard)purchasedDevelopmentCard, 0);
+      localGameController.UseKnightDevelopmentCard(turnToken, (KnightDevelopmentCard)purchasedDevelopmentCard, 0);
 
       // Assert
       errorDetails.ShouldNotBeNull();
@@ -164,27 +164,28 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       // Arrange
       var knightDevelopmentCard1 = new KnightDevelopmentCard();
       var knightDevelopmentCard2 = new KnightDevelopmentCard();
-      this.TestSetup(knightDevelopmentCard1, knightDevelopmentCard2);
+      var testInstances = this.TestSetup(knightDevelopmentCard1, knightDevelopmentCard2);
+      var localGameController = testInstances.LocalGameController;
 
-      this.player.AddResources(ResourceClutch.DevelopmentCard * 2);
+      testInstances.MainPlayer.AddResources(ResourceClutch.DevelopmentCard * 2);
 
       TurnToken turnToken = null;
-      this.localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
+      localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
 
       var purchasedDevelopmentCards = new Queue<DevelopmentCard>();
-      this.localGameController.DevelopmentCardPurchasedEvent = (DevelopmentCard d) => { purchasedDevelopmentCards.Enqueue(d); };
+      localGameController.DevelopmentCardPurchasedEvent = (DevelopmentCard d) => { purchasedDevelopmentCards.Enqueue(d); };
 
-      this.localGameController.StartGamePlay();
-      this.localGameController.BuyDevelopmentCard(turnToken);
-      this.localGameController.BuyDevelopmentCard(turnToken);
-      this.localGameController.EndTurn(turnToken);
-      this.localGameController.UseKnightDevelopmentCard(turnToken, (KnightDevelopmentCard)purchasedDevelopmentCards.Dequeue(), 3);
+      localGameController.StartGamePlay();
+      localGameController.BuyDevelopmentCard(turnToken);
+      localGameController.BuyDevelopmentCard(turnToken);
+      localGameController.EndTurn(turnToken);
+      localGameController.UseKnightDevelopmentCard(turnToken, (KnightDevelopmentCard)purchasedDevelopmentCards.Dequeue(), 3);
 
       ErrorDetails errorDetails = null;
-      this.localGameController.ErrorRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
+      localGameController.ErrorRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
 
       // Act
-      this.localGameController.UseKnightDevelopmentCard(turnToken, (KnightDevelopmentCard)purchasedDevelopmentCards.Dequeue(), 0);
+      localGameController.UseKnightDevelopmentCard(turnToken, (KnightDevelopmentCard)purchasedDevelopmentCards.Dequeue(), 0);
 
       // Assert
       errorDetails.ShouldNotBeNull();
@@ -196,28 +197,29 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
     {
       // Arrange
       var knightDevelopmentCard = new KnightDevelopmentCard();
-      this.TestSetup(knightDevelopmentCard);
+      var testInstances = this.TestSetup(knightDevelopmentCard);
+      var localGameController = testInstances.LocalGameController;
 
-      this.player.AddResources(ResourceClutch.DevelopmentCard);
+      testInstances.MainPlayer.AddResources(ResourceClutch.DevelopmentCard);
 
       TurnToken turnToken = null;
-      this.localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
+      localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
 
-      this.localGameController.StartGamePlay();
+      localGameController.StartGamePlay();
 
       // Buy the knight cards
-      this.localGameController.BuyDevelopmentCard(turnToken);
-      this.localGameController.EndTurn(turnToken);
+      localGameController.BuyDevelopmentCard(turnToken);
+      localGameController.EndTurn(turnToken);
 
       // Play one knight card each turn for the next two turns
-      this.localGameController.UseKnightDevelopmentCard(turnToken, knightDevelopmentCard, 3);
-      this.localGameController.EndTurn(turnToken);
+      localGameController.UseKnightDevelopmentCard(turnToken, knightDevelopmentCard, 3);
+      localGameController.EndTurn(turnToken);
 
       ErrorDetails errorDetails = null;
-      this.localGameController.ErrorRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
+      localGameController.ErrorRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
 
       // Act
-      this.localGameController.UseKnightDevelopmentCard(turnToken, knightDevelopmentCard, 0);
+      localGameController.UseKnightDevelopmentCard(turnToken, knightDevelopmentCard, 0);
 
       // Assert
       errorDetails.ShouldNotBeNull();
@@ -231,37 +233,39 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       var knightDevelopmentCard1 = new KnightDevelopmentCard();
       var knightDevelopmentCard2 = new KnightDevelopmentCard();
       var knightDevelopmentCard3 = new KnightDevelopmentCard();
-      this.TestSetup(knightDevelopmentCard1, knightDevelopmentCard2, knightDevelopmentCard3);
+      var testInstances = this.TestSetup(knightDevelopmentCard1, knightDevelopmentCard2, knightDevelopmentCard3);
+      var localGameController = testInstances.LocalGameController;
+      var player = testInstances.MainPlayer;
 
-      this.player.AddResources(ResourceClutch.DevelopmentCard * 3);
+      player.AddResources(ResourceClutch.DevelopmentCard * 3);
 
       TurnToken turnToken = null;
-      this.localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
+      localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
 
       Guid oldPlayerId = Guid.NewGuid(), newPlayerId = Guid.Empty;
-      this.localGameController.LargestArmyEvent = (Guid op, Guid np) => { oldPlayerId = op; newPlayerId = np; };
+      localGameController.LargestArmyEvent = (Guid op, Guid np) => { oldPlayerId = op; newPlayerId = np; };
 
-      this.localGameController.StartGamePlay();
+      localGameController.StartGamePlay();
 
       // Buy the knight cards
-      this.localGameController.BuyDevelopmentCard(turnToken);
-      this.localGameController.BuyDevelopmentCard(turnToken);
-      this.localGameController.BuyDevelopmentCard(turnToken);
-      this.localGameController.EndTurn(turnToken);
+      localGameController.BuyDevelopmentCard(turnToken);
+      localGameController.BuyDevelopmentCard(turnToken);
+      localGameController.BuyDevelopmentCard(turnToken);
+      localGameController.EndTurn(turnToken);
 
       // Play one knight card each turn for the next two turns
-      this.localGameController.UseKnightDevelopmentCard(turnToken, knightDevelopmentCard1, 3);
-      this.localGameController.EndTurn(turnToken);
+      localGameController.UseKnightDevelopmentCard(turnToken, knightDevelopmentCard1, 3);
+      localGameController.EndTurn(turnToken);
 
-      this.localGameController.UseKnightDevelopmentCard(turnToken, knightDevelopmentCard2, 0);
-      this.localGameController.EndTurn(turnToken);
+      localGameController.UseKnightDevelopmentCard(turnToken, knightDevelopmentCard2, 0);
+      localGameController.EndTurn(turnToken);
 
       // Act
-      this.localGameController.UseKnightDevelopmentCard(turnToken, knightDevelopmentCard3, 3);
+      localGameController.UseKnightDevelopmentCard(turnToken, knightDevelopmentCard3, 3);
 
       // Assert
       oldPlayerId.ShouldBe(Guid.Empty);
-      this.AssertThatPlayerIdIsCorrect("newPlayer", newPlayerId, this.player.Id, this.player.Name);
+      this.AssertThatPlayerIdIsCorrect("newPlayer", newPlayerId, player.Id, player.Name);
     }
 
     /// <summary>
@@ -279,65 +283,68 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       var knightDevelopmentCard5 = new KnightDevelopmentCard();
       var knightDevelopmentCard6 = new KnightDevelopmentCard();
       var knightDevelopmentCard7 = new KnightDevelopmentCard();
-      this.TestSetup(knightDevelopmentCard1, knightDevelopmentCard2, knightDevelopmentCard3, knightDevelopmentCard4, knightDevelopmentCard5, knightDevelopmentCard6, knightDevelopmentCard7);
+      var testInstances = this.TestSetup(knightDevelopmentCard1, knightDevelopmentCard2, knightDevelopmentCard3, knightDevelopmentCard4, knightDevelopmentCard5, knightDevelopmentCard6, knightDevelopmentCard7);
+      var localGameController = testInstances.LocalGameController;
+      var player = testInstances.MainPlayer;
+      var firstOpponent = testInstances.FirstOpponent;
 
-      this.player.AddResources(ResourceClutch.DevelopmentCard * 3);
-      this.firstOpponent.AddResources(ResourceClutch.DevelopmentCard * 4);
-      this.firstOpponent.AddBuyDevelopmentCardChoice(4).EndTurn()
+      player.AddResources(ResourceClutch.DevelopmentCard * 3);
+      firstOpponent.AddResources(ResourceClutch.DevelopmentCard * 4);
+      firstOpponent.AddBuyDevelopmentCardChoice(4).EndTurn()
         .AddPlaceKnightCard(0).EndTurn()
         .AddPlaceKnightCard(0).EndTurn()
         .AddPlaceKnightCard(0).EndTurn()
         .AddPlaceKnightCard(0).EndTurn();
 
-      this.localGameController.ErrorRaisedEvent = (ErrorDetails e) => { throw new Exception(e.Message); };
+      localGameController.ErrorRaisedEvent = (ErrorDetails e) => { throw new Exception(e.Message); };
 
       var turn = 0;
       TurnToken turnToken = null;
-      this.localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; turn++; };
+      localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; turn++; };
 
       Guid oldPlayerId = Guid.NewGuid(), newPlayerId = Guid.Empty;
       var expectedTurn = -1;
-      this.localGameController.LargestArmyEvent = (Guid o, Guid n) => { oldPlayerId = o; newPlayerId = n; expectedTurn = turn; };
+      localGameController.LargestArmyEvent = (Guid o, Guid n) => { oldPlayerId = o; newPlayerId = n; expectedTurn = turn; };
 
       var playerActions = new Dictionary<String, List<GameEvent>>();
       var keys = new List<String>();
-      this.localGameController.OpponentActionsEvent = (Guid g, List<GameEvent> e) =>
+      localGameController.OpponentActionsEvent = (Guid g, List<GameEvent> e) =>
       {
         var key = turn + "-" + g.ToString();
         keys.Add(key);
         playerActions.Add(key, e);
       };
 
-      this.localGameController.StartGamePlay();
+      localGameController.StartGamePlay();
 
       // Turn 1: Buy the knight cards
-      this.localGameController.BuyDevelopmentCard(turnToken);
-      this.localGameController.BuyDevelopmentCard(turnToken);
-      this.localGameController.BuyDevelopmentCard(turnToken);
-      this.localGameController.EndTurn(turnToken); // Opponent buys development cards
+      localGameController.BuyDevelopmentCard(turnToken);
+      localGameController.BuyDevelopmentCard(turnToken);
+      localGameController.BuyDevelopmentCard(turnToken);
+      localGameController.EndTurn(turnToken); // Opponent buys development cards
 
       // Turn 2: Play knight card
-      this.localGameController.UseKnightDevelopmentCard(turnToken, knightDevelopmentCard1, 3);
-      this.localGameController.EndTurn(turnToken); // Opponent plays knight card
+      localGameController.UseKnightDevelopmentCard(turnToken, knightDevelopmentCard1, 3);
+      localGameController.EndTurn(turnToken); // Opponent plays knight card
 
       // Turn 3: Play knight card
-      this.localGameController.UseKnightDevelopmentCard(turnToken, knightDevelopmentCard2, 3);
-      this.localGameController.EndTurn(turnToken); // Opponent plays knight card
+      localGameController.UseKnightDevelopmentCard(turnToken, knightDevelopmentCard2, 3);
+      localGameController.EndTurn(turnToken); // Opponent plays knight card
 
       // Turn 4: Play knight card
-      this.localGameController.UseKnightDevelopmentCard(turnToken, knightDevelopmentCard3, 3); // Largest Army event raised
-      this.localGameController.EndTurn(turnToken); // Opponent plays knight card
+      localGameController.UseKnightDevelopmentCard(turnToken, knightDevelopmentCard3, 3); // Largest Army event raised
+      localGameController.EndTurn(turnToken); // Opponent plays knight card
 
       // Turn 5: Play knight card
-      this.localGameController.EndTurn(turnToken); // Opponent plays last knight card. Largest Army event returned
+      localGameController.EndTurn(turnToken); // Opponent plays last knight card. Largest Army event returned
 
       // Assert
       oldPlayerId.ShouldBe(Guid.Empty);
-      this.AssertThatPlayerIdIsCorrect("newPlayer", newPlayerId, this.player.Id, this.player.Name);
+      this.AssertThatPlayerIdIsCorrect("newPlayer", newPlayerId, player.Id, player.Name);
 
-      var expectedBuyDevelopmentCardEvent = new BuyDevelopmentCardEvent(this.firstOpponent.Id);
-      var expectedPlayKnightCardEvent = new PlayKnightCardEvent(this.firstOpponent.Id);
-      var expectedDifferentPlayerHasLargestArmyEvent = new PlayerWithLargestArmyChangedEvent(this.player.Id, this.firstOpponent.Id);
+      var expectedBuyDevelopmentCardEvent = new BuyDevelopmentCardEvent(firstOpponent.Id);
+      var expectedPlayKnightCardEvent = new PlayKnightCardEvent(firstOpponent.Id);
+      var expectedDifferentPlayerHasLargestArmyEvent = new PlayerWithLargestArmyChangedEvent(player.Id, firstOpponent.Id);
 
       playerActions.Count.ShouldBe(5);
       keys.Count.ShouldBe(5);
@@ -359,41 +366,43 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       var knightDevelopmentCard2 = new KnightDevelopmentCard();
       var knightDevelopmentCard3 = new KnightDevelopmentCard();
       var knightDevelopmentCard4 = new KnightDevelopmentCard();
-      this.TestSetup(knightDevelopmentCard1, knightDevelopmentCard2, knightDevelopmentCard3, knightDevelopmentCard4);
+      var testInstances = this.TestSetup(knightDevelopmentCard1, knightDevelopmentCard2, knightDevelopmentCard3, knightDevelopmentCard4);
+      var localGameController = testInstances.LocalGameController;
+      var firstOpponent = testInstances.FirstOpponent;
 
-      this.firstOpponent.AddResources(ResourceClutch.DevelopmentCard * 4);
-      this.firstOpponent.AddBuyDevelopmentCardChoice(4).EndTurn()
+      firstOpponent.AddResources(ResourceClutch.DevelopmentCard * 4);
+      firstOpponent.AddBuyDevelopmentCardChoice(4).EndTurn()
         .AddPlaceKnightCard(0).EndTurn()
         .AddPlaceKnightCard(0).EndTurn()
         .AddPlaceKnightCard(0).EndTurn()
         .AddPlaceKnightCard(0).EndTurn();
 
-      this.localGameController.ErrorRaisedEvent = (ErrorDetails e) => { throw new Exception(e.Message); };
+      localGameController.ErrorRaisedEvent = (ErrorDetails e) => { throw new Exception(e.Message); };
 
       var turn = 0;
       TurnToken turnToken = null;
-      this.localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; turn++; };
+      localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; turn++; };
 
       var playerActions = new Dictionary<String, List<GameEvent>>();
       var keys = new List<String>();
-      this.localGameController.OpponentActionsEvent = (Guid g, List<GameEvent> e) =>
+      localGameController.OpponentActionsEvent = (Guid g, List<GameEvent> e) =>
       {
         var key = turn + "-" + g.ToString();
         keys.Add(key);
         playerActions.Add(key, e);
       };
 
-      this.localGameController.StartGamePlay();
-      this.localGameController.EndTurn(turnToken); // Opponent buys development cards
-      this.localGameController.EndTurn(turnToken); // Opponent plays knight card
-      this.localGameController.EndTurn(turnToken); // Opponent plays knight card
-      this.localGameController.EndTurn(turnToken); // Opponent plays knight card; raises Largest Army event for Opponent
-      this.localGameController.EndTurn(turnToken); // Opponent plays knight card
+      localGameController.StartGamePlay();
+      localGameController.EndTurn(turnToken); // Opponent buys development cards
+      localGameController.EndTurn(turnToken); // Opponent plays knight card
+      localGameController.EndTurn(turnToken); // Opponent plays knight card
+      localGameController.EndTurn(turnToken); // Opponent plays knight card; raises Largest Army event for Opponent
+      localGameController.EndTurn(turnToken); // Opponent plays knight card
 
       // Assert
-      var expectedBuyDevelopmentCardEvent = new BuyDevelopmentCardEvent(this.firstOpponent.Id);
-      var expectedPlayKnightCardEvent = new PlayKnightCardEvent(this.firstOpponent.Id);
-      var expectedDifferentPlayerHasLargestArmyEvent = new PlayerWithLargestArmyChangedEvent(Guid.Empty, this.firstOpponent.Id);
+      var expectedBuyDevelopmentCardEvent = new BuyDevelopmentCardEvent(firstOpponent.Id);
+      var expectedPlayKnightCardEvent = new PlayKnightCardEvent(firstOpponent.Id);
+      var expectedDifferentPlayerHasLargestArmyEvent = new PlayerWithLargestArmyChangedEvent(Guid.Empty, firstOpponent.Id);
 
       playerActions.Count.ShouldBe(5);
       keys.Count.ShouldBe(5);
@@ -418,53 +427,56 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       var knightDevelopmentCard5 = new KnightDevelopmentCard();
       var knightDevelopmentCard6 = new KnightDevelopmentCard();
       var knightDevelopmentCard7 = new KnightDevelopmentCard();
-      this.TestSetup(knightDevelopmentCard1, knightDevelopmentCard2, knightDevelopmentCard3, knightDevelopmentCard4, knightDevelopmentCard5, knightDevelopmentCard6, knightDevelopmentCard7);
+      var testInstances = this.TestSetup(knightDevelopmentCard1, knightDevelopmentCard2, knightDevelopmentCard3, knightDevelopmentCard4, knightDevelopmentCard5, knightDevelopmentCard6, knightDevelopmentCard7);
+      var localGameController = testInstances.LocalGameController;
+      var player = testInstances.MainPlayer;
+      var firstOpponent = testInstances.FirstOpponent;
 
-      this.player.AddResources(ResourceClutch.DevelopmentCard * 4);
-      this.firstOpponent.AddResources(ResourceClutch.DevelopmentCard * 3);
-      this.firstOpponent.AddBuyDevelopmentCardChoice(3).EndTurn()
+      player.AddResources(ResourceClutch.DevelopmentCard * 4);
+      firstOpponent.AddResources(ResourceClutch.DevelopmentCard * 3);
+      firstOpponent.AddBuyDevelopmentCardChoice(3).EndTurn()
         .AddPlaceKnightCard(0).EndTurn()
         .AddPlaceKnightCard(0).EndTurn()
         .AddPlaceKnightCard(0).EndTurn();
 
-      this.localGameController.ErrorRaisedEvent = (ErrorDetails e) => { throw new Exception(e.Message); };
+      localGameController.ErrorRaisedEvent = (ErrorDetails e) => { throw new Exception(e.Message); };
 
       var turn = 0;
       TurnToken turnToken = null;
-      this.localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; turn++; };
+      localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; turn++; };
 
       Guid newPlayerId = Guid.Empty, oldPlayerId = Guid.Empty;
       var expectedTurn = -1;
-      this.localGameController.LargestArmyEvent = (Guid o, Guid n) => { oldPlayerId = o; newPlayerId = n; expectedTurn = turn; };
+      localGameController.LargestArmyEvent = (Guid o, Guid n) => { oldPlayerId = o; newPlayerId = n; expectedTurn = turn; };
 
-      this.localGameController.StartGamePlay();
+      localGameController.StartGamePlay();
 
       // Turn 1: Buy the knight cards
-      this.localGameController.BuyDevelopmentCard(turnToken);
-      this.localGameController.BuyDevelopmentCard(turnToken);
-      this.localGameController.BuyDevelopmentCard(turnToken);
-      this.localGameController.BuyDevelopmentCard(turnToken);
-      this.localGameController.EndTurn(turnToken); // Opponent buys development cards
+      localGameController.BuyDevelopmentCard(turnToken);
+      localGameController.BuyDevelopmentCard(turnToken);
+      localGameController.BuyDevelopmentCard(turnToken);
+      localGameController.BuyDevelopmentCard(turnToken);
+      localGameController.EndTurn(turnToken); // Opponent buys development cards
 
       // Turn 2: Play knight card
-      this.localGameController.UseKnightDevelopmentCard(turnToken, knightDevelopmentCard1, 3);
-      this.localGameController.EndTurn(turnToken); // Opponent plays knight card
+      localGameController.UseKnightDevelopmentCard(turnToken, knightDevelopmentCard1, 3);
+      localGameController.EndTurn(turnToken); // Opponent plays knight card
 
       // Turn 3: Play kight card
-      this.localGameController.UseKnightDevelopmentCard(turnToken, knightDevelopmentCard2, 3);
-      this.localGameController.EndTurn(turnToken); // Opponent plays knight card
+      localGameController.UseKnightDevelopmentCard(turnToken, knightDevelopmentCard2, 3);
+      localGameController.EndTurn(turnToken); // Opponent plays knight card
 
       // Turn 4: Play knight card
-      this.localGameController.UseKnightDevelopmentCard(turnToken, knightDevelopmentCard3, 3); // Largest Army event raised
-      this.localGameController.EndTurn(turnToken); // Opponent plays knight card
+      localGameController.UseKnightDevelopmentCard(turnToken, knightDevelopmentCard3, 3); // Largest Army event raised
+      localGameController.EndTurn(turnToken); // Opponent plays knight card
 
       // Turn 5: Play knight card
-      this.localGameController.UseKnightDevelopmentCard(turnToken, knightDevelopmentCard4, 3); // Largest Army event not raised
+      localGameController.UseKnightDevelopmentCard(turnToken, knightDevelopmentCard4, 3); // Largest Army event not raised
 
       // Assert
       expectedTurn.ShouldBe(4);
       oldPlayerId.ShouldBe(Guid.Empty);
-      this.AssertThatPlayerIdIsCorrect("newPlayer", newPlayerId, this.player.Id, this.player.Name);
+      this.AssertThatPlayerIdIsCorrect("newPlayer", newPlayerId, player.Id, player.Name);
     }
 
     /// <summary>
@@ -476,44 +488,48 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
     {
       // Arrange
       var knightDevelopmentCard = new KnightDevelopmentCard();
-      this.TestSetup(knightDevelopmentCard);
+      var testInstances = this.TestSetup(knightDevelopmentCard);
+      var localGameController = testInstances.LocalGameController;
+      var player = testInstances.MainPlayer;
+      var firstOpponent = testInstances.FirstOpponent;
+      var secondOpponent = testInstances.SecondOpponent;
 
-      this.player.AddResources(ResourceClutch.DevelopmentCard * 3);
+      player.AddResources(ResourceClutch.DevelopmentCard * 3);
 
-      this.localGameController.ErrorRaisedEvent = (ErrorDetails e) => { throw new Exception(e.Message); };
+      localGameController.ErrorRaisedEvent = (ErrorDetails e) => { throw new Exception(e.Message); };
 
       TurnToken turnToken = null;
-      this.localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
+      localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
 
       Dictionary<Guid, Int32> robbingChoices = null;
-      this.localGameController.RobbingChoicesEvent = (Dictionary<Guid, Int32> r) => { robbingChoices = r; };
+      localGameController.RobbingChoicesEvent = (Dictionary<Guid, Int32> r) => { robbingChoices = r; };
 
       ResourceClutch gainedResources = ResourceClutch.Zero;
-      this.localGameController.ResourcesGainedEvent = (ResourceClutch r) => { gainedResources = r; };
+      localGameController.ResourcesGainedEvent = (ResourceClutch r) => { gainedResources = r; };
 
-      this.localGameController.StartGamePlay();
+      localGameController.StartGamePlay();
 
       // Turn 1: Buy the knight cards
-      this.localGameController.BuyDevelopmentCard(turnToken);
-      this.localGameController.EndTurn(turnToken); // Opponent buys development cards
+      localGameController.BuyDevelopmentCard(turnToken);
+      localGameController.EndTurn(turnToken); // Opponent buys development cards
 
       // Turn 2: Play knight card. Event raised with robbing choices for user to select from
-      this.localGameController.UseKnightDevelopmentCard(turnToken, knightDevelopmentCard, SecondSettlementOneHex);
+      localGameController.UseKnightDevelopmentCard(turnToken, knightDevelopmentCard, SecondSettlementOneHex);
 
       // Select card to take from opponent
-      this.localGameController.ChooseResourceFromOpponent(this.firstOpponent.Id, 1);
+      localGameController.ChooseResourceFromOpponent(firstOpponent.Id, 1);
 
       // Assert
       robbingChoices.ShouldNotBeNull();
       robbingChoices.Count.ShouldBe(2);
-      robbingChoices.ShouldContainKeyAndValue(this.firstOpponent.Id, 3);
-      robbingChoices.ShouldContainKeyAndValue(this.secondOpponent.Id, 3);
+      robbingChoices.ShouldContainKeyAndValue(firstOpponent.Id, 3);
+      robbingChoices.ShouldContainKeyAndValue(secondOpponent.Id, 3);
 
       gainedResources.Count.ShouldBe(1);
 
-      this.player.ResourcesCount.ShouldBe(4);
-      this.firstOpponent.ResourcesCount.ShouldBe(2);
-      this.secondOpponent.ResourcesCount.ShouldBe(2);
+      player.ResourcesCount.ShouldBe(4);
+      firstOpponent.ResourcesCount.ShouldBe(2);
+      secondOpponent.ResourcesCount.ShouldBe(2);
     }
 
     private void AssertThatPlayerActionsForTurnAreCorrect(List<GameEvent> actualEvents, params GameEvent[] expectedEvents)
@@ -536,9 +552,23 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       }
     }
 
-    private LocalGameControllerTestCreator.TestInstances TestSetup2()
+    private void LoadPlayersByIdForCustomAsserts(MockPlayer player, MockComputerPlayer firstOpponent, MockComputerPlayer secondOpponent, MockComputerPlayer thirdOpponent)
     {
-      var testInstances = LocalGameControllerTestCreator.CreateTestInstances();
+      this.playersById = new Dictionary<Guid, IPlayer>();
+      this.playersById.Add(player.Id, player);
+      this.playersById.Add(firstOpponent.Id, firstOpponent);
+      this.playersById.Add(secondOpponent.Id, secondOpponent);
+      this.playersById.Add(thirdOpponent.Id, thirdOpponent);
+    }
+
+    private LocalGameControllerTestCreator.TestInstances TestSetup()
+    {
+      return this.TestSetup(new DevelopmentCardHolder());
+    }
+
+    private LocalGameControllerTestCreator.TestInstances TestSetup(IDevelopmentCardHolder developmentCardHolder)
+    {
+      var testInstances = LocalGameControllerTestCreator.CreateTestInstances(developmentCardHolder);
       testInstances.Dice.AddSequence(new[] { 8u });
 
       LocalGameControllerTestSetup.LaunchGameAndCompleteSetup(testInstances.LocalGameController);
@@ -549,25 +579,8 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
         testInstances.ThirdOpponent);
 
       return testInstances;
-    }
 
-    private void LoadPlayersByIdForCustomAsserts(MockPlayer player, MockComputerPlayer firstOpponent, MockComputerPlayer secondOpponent, MockComputerPlayer thirdOpponent)
-    {
-      this.playersById = new Dictionary<Guid, IPlayer>();
-      this.playersById.Add(player.Id, player);
-      this.playersById.Add(firstOpponent.Id, firstOpponent);
-      this.playersById.Add(secondOpponent.Id, secondOpponent);
-      this.playersById.Add(thirdOpponent.Id, thirdOpponent);
-    }
-
-    private void TestSetup()
-    {
-      this.TestSetup(new DevelopmentCardHolder());
-    }
-
-    private void TestSetup(IDevelopmentCardHolder developmentCardHolder)
-    {
-      this.CreateDefaultPlayerInstances(out this.player, out this.firstOpponent, out this.secondOpponent, out this.thirdOpponent);
+      /*this.CreateDefaultPlayerInstances(out this.player, out this.firstOpponent, out this.secondOpponent, out this.thirdOpponent);
       this.dice = this.CreateMockDice();
       this.dice.AddSequence(new[] { 8u });
 
@@ -583,12 +596,12 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       // Throw any errors as exceptions by default
       this.localGameController.ErrorRaisedEvent = (ErrorDetails e) => { throw new Exception(e.Message); };
 
-      this.CompleteGameSetup(this.localGameController);
+      this.CompleteGameSetup(this.localGameController);*/
     }
 
-    private void TestSetup(DevelopmentCard firstDevelopmentCard, params DevelopmentCard[] otherDevelopmentCards)
+    private LocalGameControllerTestCreator.TestInstances TestSetup(DevelopmentCard firstDevelopmentCard, params DevelopmentCard[] otherDevelopmentCards)
     {
-      this.TestSetup(this.CreateMockCardDevelopmentCardHolder(firstDevelopmentCard, otherDevelopmentCards));
+      return this.TestSetup(this.CreateMockCardDevelopmentCardHolder(firstDevelopmentCard, otherDevelopmentCards));
     }
 
     private IDevelopmentCardHolder CreateMockCardDevelopmentCardHolder(DevelopmentCard firstDevelopmentCard, params DevelopmentCard[] otherDevelopmentCards)
