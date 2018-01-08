@@ -134,4 +134,32 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
     }
     #endregion
   }
+
+  public class LocalGameControllerTestSetup
+  {
+    public void LaunchGame(LocalGameController localGameController)
+    {
+
+    }
+  }
+
+  public class LocalGameControllerTestCreator
+  {
+    public struct TestInstances
+    {
+      public readonly LocalGameController LocalGameController;
+      public readonly MockPlayer MainPlayer;
+      public readonly MockComputerPlayer FirstOpponent;
+      public readonly MockComputerPlayer SecondOpponent;
+      public readonly MockComputerPlayer ThirdOpponent;
+      public readonly MockDice Dice;
+    }
+
+    public TestInstances CreateTestInstances()
+    {
+      throw new NotImplementedException();
+    }
+  }
+
+
 }
