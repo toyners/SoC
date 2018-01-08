@@ -602,7 +602,7 @@ namespace Jabberwocky.SoC.Library
       return true;
     }
 
-    public void UseKnightDevelopmentCard(TurnToken turnToken, KnightDevelopmentCard developmentCard, UInt32 newRobberHex)
+    public void UseKnightCard(TurnToken turnToken, KnightDevelopmentCard developmentCard, UInt32 newRobberHex)
     {
       if (turnToken != this.currentTurnToken)
       {
