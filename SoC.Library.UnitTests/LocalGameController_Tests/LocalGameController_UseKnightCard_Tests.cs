@@ -478,7 +478,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
     /// is moved to a hex populated by two computer players.
     /// </summary>
     [Test]
-    public void Scenario_CompleteTransactionHappensWhenPlayerPlaysTheKnightDevelopmentCard()
+    public void Scenario_CompleteTransactionHappensWhenPlayerPlaysTheKnightCard()
     {
       // Arrange
       var knightCard = new KnightDevelopmentCard();
@@ -525,7 +525,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
     }
 
     [Test]
-    public void Scenario_CompleteTransactionHappensWhenOpponentPlaysTheKnightDevelopmentCard()
+    public void Scenario_CompleteTransactionHappensWhenOpponentPlaysTheKnightCard()
     {
       // Arrange
       var knightCard = new KnightDevelopmentCard();
