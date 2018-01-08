@@ -11,8 +11,8 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
   [TestFixture]
   [Category("All")]
   [Category("LocalGameController")]
-  [Category("LocalGameController.UseKnightDevelopmentCard")]
-  public class LocalGameController_UseKnightDevelopmentCard_Tests : LocalGameControllerTestBase
+  [Category("LocalGameController.UseKnightCard")]
+  public class LocalGameController_UseKnightCard_Tests : LocalGameControllerTestBase
   {
     #region Fields
     private const UInt32 SecondSettlementOneHex = 8;
