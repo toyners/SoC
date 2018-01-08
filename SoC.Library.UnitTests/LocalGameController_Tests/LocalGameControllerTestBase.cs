@@ -8,33 +8,34 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
   public class LocalGameControllerTestBase
   {
     #region Fields
-    protected const String PlayerName = "Player";
-    protected const String FirstOpponentName = "Bob";
-    protected const String SecondOpponentName = "Sally";
-    protected const String ThirdOpponentName = "Rich";
+    public const String PlayerName = "Player";
+    public const String FirstOpponentName = "Bob";
+    public const String SecondOpponentName = "Sally";
+    public const String ThirdOpponentName = "Rich";
 
-    protected const UInt32 MainSettlementOneLocation = 12u;
-    protected const UInt32 FirstSettlementOneLocation = 18u;
-    protected const UInt32 SecondSettlementOneLocation = 25u;
-    protected const UInt32 ThirdSettlementOneLocation = 31u;
+    public const UInt32 MainSettlementOneLocation = 12u;
+    public const UInt32 FirstSettlementOneLocation = 18u;
+    public const UInt32 SecondSettlementOneLocation = 25u;
+    public const UInt32 ThirdSettlementOneLocation = 31u;
 
-    protected const UInt32 ThirdSettlementTwoLocation = 33u;
-    protected const UInt32 SecondSettlementTwoLocation = 35u;
-    protected const UInt32 FirstSettlementTwoLocation = 43u;
-    protected const UInt32 MainSettlementTwoLocation = 40u;
+    public const UInt32 ThirdSettlementTwoLocation = 33u;
+    public const UInt32 SecondSettlementTwoLocation = 35u;
+    public const UInt32 FirstSettlementTwoLocation = 43u;
+    public const UInt32 MainSettlementTwoLocation = 40u;
 
-    protected const UInt32 MainRoadOneEnd = 4;
-    protected const UInt32 FirstRoadOneEnd = 17;
-    protected const UInt32 SecondRoadOneEnd = 15;
-    protected const UInt32 ThirdRoadOneEnd = 30;
+    public const UInt32 MainRoadOneEnd = 4;
+    public const UInt32 FirstRoadOneEnd = 17;
+    public const UInt32 SecondRoadOneEnd = 15;
+    public const UInt32 ThirdRoadOneEnd = 30;
 
-    protected const UInt32 ThirdRoadTwoEnd = 32;
-    protected const UInt32 SecondRoadTwoEnd = 24;
-    protected const UInt32 FirstRoadTwoEnd = 44;
-    protected const UInt32 MainRoadTwoEnd = 39;
+    public const UInt32 ThirdRoadTwoEnd = 32;
+    public const UInt32 SecondRoadTwoEnd = 24;
+    public const UInt32 FirstRoadTwoEnd = 44;
+    public const UInt32 MainRoadTwoEnd = 39;
     #endregion
 
     #region Methods
+    [Obsolete("Deprecated. Use LocalGameControllerTestCreator class.")]
     protected void CreateDefaultPlayerInstances(out MockPlayer player, out MockComputerPlayer firstOpponent, out MockComputerPlayer secondOpponent, out MockComputerPlayer thirdOpponent)
     {
       player = new MockPlayer(PlayerName);
@@ -49,6 +50,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       thirdOpponent.AddInitialInfrastructureChoices(ThirdSettlementOneLocation, ThirdRoadOneEnd, ThirdSettlementTwoLocation, ThirdRoadTwoEnd);
     }
 
+    [Obsolete("Deprecated. Use LocalGameControllerTestCreator class.")]
     protected LocalGameController CreateLocalGameController(IDice dice, IPlayer firstPlayer, params IPlayer[] otherPlayers)
     {
       var mockPlayerPool = CreatePlayerPool(firstPlayer, otherPlayers);
@@ -63,6 +65,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       return localGameController;
     }
 
+    [Obsolete("Deprecated. Use LocalGameControllerTestCreator and LocalGameControllerTestSetup classes.")]
     protected LocalGameController CreateLocalGameControllerAndCompleteGameSetup(out MockDice mockDice, out MockPlayer player, out MockComputerPlayer firstOpponent, out MockComputerPlayer secondOpponent, out MockComputerPlayer thirdOpponent)
     {
       mockDice = this.CreateMockDice();
@@ -81,6 +84,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       return localGameController;
     }
 
+    [Obsolete("Deprecated. Use LocalGameControllerTestCreator and LocalGameControllerTestSetup classes.")]
     protected void CompleteGameSetup(LocalGameController localGameController)
     {
       localGameController.JoinGame();
@@ -91,6 +95,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       localGameController.FinalisePlayerTurnOrder();
     }
 
+    [Obsolete("Deprecated. Use LocalGameControllerTestCreator class.")]
     protected LocalGameController CreateLocalGameController(IDice dice, IPlayerPool playerPool, IDevelopmentCardHolder developmentCardHolder)
     {
       var localGameControllerCreator = new LocalGameControllerCreator();
@@ -116,6 +121,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       return localGameController;
     }
 
+    [Obsolete("Deprecated. Use LocalGameControllerTestCreator class.")]
     protected MockDice CreateMockDice()
     {
       var gameSetupOrder = new[] { 12u, 10u, 8u, 6u };
@@ -126,6 +132,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
           .Create();
     }
 
+    [Obsolete("Deprecated. Use LocalGameControllerTestCreator class.")]
     protected IPlayerPool CreatePlayerPool(IPlayer player, IPlayer[] otherPlayers)
     {
       var mockPlayerPool = Substitute.For<IPlayerPool>();
@@ -134,32 +141,4 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
     }
     #endregion
   }
-
-  public class LocalGameControllerTestSetup
-  {
-    public void LaunchGame(LocalGameController localGameController)
-    {
-
-    }
-  }
-
-  public class LocalGameControllerTestCreator
-  {
-    public struct TestInstances
-    {
-      public readonly LocalGameController LocalGameController;
-      public readonly MockPlayer MainPlayer;
-      public readonly MockComputerPlayer FirstOpponent;
-      public readonly MockComputerPlayer SecondOpponent;
-      public readonly MockComputerPlayer ThirdOpponent;
-      public readonly MockDice Dice;
-    }
-
-    public TestInstances CreateTestInstances()
-    {
-      throw new NotImplementedException();
-    }
-  }
-
-
 }

@@ -29,18 +29,19 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
     public void UseKnightDevelopmentCard_TurnTokenNotCorrect_MeaningfulErrorIsReceived()
     {
       // Arrange
-      this.TestSetup();
+      var testInstances = this.TestSetup2();
+      var localGameController = testInstances.LocalGameController;
 
       TurnToken turnToken = null;
-      this.localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
+      localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
 
-      this.localGameController.StartGamePlay();
+      localGameController.StartGamePlay();
 
       ErrorDetails errorDetails = null;
-      this.localGameController.ErrorRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
+      localGameController.ErrorRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
 
       // Act
-      this.localGameController.UseKnightDevelopmentCard(new TurnToken(), null, 0);
+      localGameController.UseKnightDevelopmentCard(new TurnToken(), null, 0);
 
       // Assert
       errorDetails.ShouldNotBeNull();
@@ -533,6 +534,30 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
         var message = variableName + " should be '" + expectedPlayerName + "' but was '" + actualPlayerName + "'";
         actualPlayerId.ShouldBe(expectedPlayerId, message);
       }
+    }
+
+    private LocalGameControllerTestCreator.TestInstances TestSetup2()
+    {
+      var testInstances = LocalGameControllerTestCreator.CreateTestInstances();
+      testInstances.Dice.AddSequence(new[] { 8u });
+
+      LocalGameControllerTestSetup.LaunchGameAndCompleteSetup(testInstances.LocalGameController);
+
+      this.LoadPlayersByIdForCustomAsserts(testInstances.MainPlayer,
+        testInstances.FirstOpponent,
+        testInstances.SecondOpponent,
+        testInstances.ThirdOpponent);
+
+      return testInstances;
+    }
+
+    private void LoadPlayersByIdForCustomAsserts(MockPlayer player, MockComputerPlayer firstOpponent, MockComputerPlayer secondOpponent, MockComputerPlayer thirdOpponent)
+    {
+      this.playersById = new Dictionary<Guid, IPlayer>();
+      this.playersById.Add(player.Id, player);
+      this.playersById.Add(firstOpponent.Id, firstOpponent);
+      this.playersById.Add(secondOpponent.Id, secondOpponent);
+      this.playersById.Add(thirdOpponent.Id, thirdOpponent);
     }
 
     private void TestSetup()
