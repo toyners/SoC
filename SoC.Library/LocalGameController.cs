@@ -317,6 +317,15 @@ namespace Jabberwocky.SoC.Library
               this.UseKnightDevelopmentCard(knightCard, newRobberHex);
               events.Add(new PlayKnightCardEvent(computerPlayer.Id));
 
+              var robbedPlayerId = computerPlayer.ChoosePlayerToRob();
+              if (robbedPlayerId != Guid.Empty)
+              {
+                var robbedPlayer = this.playersById[robbedPlayerId];
+                var takenResource = robbedPlayer.LoseRandomResource(this.dice);
+                var resourceLostEvent = new ResourceLostEvent(computerPlayer.Id, takenResource);
+                events.Add(resourceLostEvent);
+              }
+
               var playerWithMostKnightCards = this.DeterminePlayerWithMostKnightCards();
               if (playerWithMostKnightCards == computerPlayer && this.playerWithLargestArmy != computerPlayer)
               {

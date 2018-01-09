@@ -142,6 +142,11 @@ namespace Jabberwocky.SoC.Library
       this.WoolCount -= resourceClutch.WoolCount;
     }
 
+    public ResourceClutch LoseRandomResource(IDice dice)
+    {
+      throw new NotImplementedException();
+    }
+
     /// <summary>
     /// Loads player properties from XML reader.
     /// </summary>

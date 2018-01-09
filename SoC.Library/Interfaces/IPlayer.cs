@@ -33,6 +33,7 @@ namespace Jabberwocky.SoC.Library.Interfaces
     void PlaceSettlement();
     void PlaceStartingInfrastructure();
     void RemoveResources(ResourceClutch resourceClutch);
+    ResourceClutch LoseRandomResource(IDice dice);
     #endregion
   }
 }
