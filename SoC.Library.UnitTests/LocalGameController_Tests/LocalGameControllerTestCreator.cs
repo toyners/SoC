@@ -89,7 +89,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       thirdOpponent.AddInitialInfrastructureChoices(ThirdSettlementOneLocation, ThirdRoadOneEnd, ThirdSettlementTwoLocation, ThirdRoadTwoEnd);
     }
 
-    private static LocalGameController CreateLocalGameController(IDice dice, IPlayerPool playerPool, IDevelopmentCardHolder developmentCardHolder)
+    private static LocalGameController CreateLocalGameController(INumberGenerator dice, IPlayerPool playerPool, IDevelopmentCardHolder developmentCardHolder)
     {
       var localGameControllerCreator = new LocalGameControllerCreator();
 

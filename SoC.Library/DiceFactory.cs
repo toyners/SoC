@@ -5,7 +5,7 @@ namespace Jabberwocky.SoC.Library
 
   public class DiceFactory : IDiceFactory
   {
-    public IDice Create()
+    public INumberGenerator Create()
     {
       return new Dice();
     }

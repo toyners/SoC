@@ -7,7 +7,7 @@ namespace Jabberwocky.SoC.Library
 
   public static class PlayerTurnOrderCreator
   {
-    public static IPlayer[] Create(IPlayer[] players, IDice dice)
+    public static IPlayer[] Create(IPlayer[] players, INumberGenerator dice)
     {
       // Roll dice for each player
       var rollsByPlayer = new Dictionary<UInt32, UInt32>();

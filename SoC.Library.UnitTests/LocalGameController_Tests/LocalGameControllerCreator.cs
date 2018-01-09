@@ -8,7 +8,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
   {
     #region Fields
     private IPlayerPool playerPool;
-    private IDice dice;
+    private INumberGenerator dice;
     private GameBoardManager gameBoardManager;
     private IDevelopmentCardHolder developmentCardHolder;
     #endregion
@@ -30,7 +30,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
       return this;
     }
 
-    public LocalGameControllerCreator ChangeDice(IDice dice)
+    public LocalGameControllerCreator ChangeDice(INumberGenerator dice)
     {
       this.dice = dice;
       return this;

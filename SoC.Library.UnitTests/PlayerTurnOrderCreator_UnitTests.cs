@@ -26,7 +26,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
       var player4 = new Player();
 
       var players = new IPlayer[] { player1, player2, player3, player4 };
-      var mockDice = NSubstitute.Substitute.For<IDice>();
+      var mockDice = NSubstitute.Substitute.For<INumberGenerator>();
       mockDice.RollTwoDice().Returns(firstRoll, secondRoll, thirdRoll, fourthRoll);
       var setupOrder = PlayerTurnOrderCreator.Create(players, mockDice);
 
@@ -42,7 +42,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     public void Create_DuplicateRollsAreIgnored_ReturnsPlayersInDescendingOrder(UInt32 firstRoll, UInt32 secondRoll, UInt32 thirdRoll, UInt32 fourthRoll, Int32 first, Int32 second, Int32 third)
     {
       var players = new Player[] { new Player(), new Player(), new Player() };
-      var mockDice = NSubstitute.Substitute.For<IDice>(); 
+      var mockDice = NSubstitute.Substitute.For<INumberGenerator>(); 
       mockDice.RollTwoDice().Returns(firstRoll, secondRoll, thirdRoll, fourthRoll);
       var setupOrder = PlayerTurnOrderCreator.Create(players, mockDice);
 

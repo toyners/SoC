@@ -80,7 +80,7 @@
     <Compile Include="Interfaces\IPlayer.cs" />
     <Compile Include="OldGameManager.cs" />
     <Compile Include="GameSessionManager.cs" />
-    <Compile Include="Interfaces\IDice.cs" />
+    <Compile Include="Interfaces\INumberGenerator.cs" />
     <Compile Include="Interfaces\IDiceFactory.cs" />
     <Compile Include="Interfaces\IGameSession.cs" />
     <Compile Include="Interfaces\IGameSessionManager.cs" />

@@ -33,7 +33,7 @@ namespace Jabberwocky.SoC.Library
     private Boolean cardPlayedThisTurn;
     private HashSet<DevelopmentCard> cardsPlayed;
     private HashSet<DevelopmentCard> cardsPurchasedThisTurn;
-    private IDice dice;
+    private INumberGenerator dice;
     private GameBoardManager gameBoardManager;
     private Int32 playerIndex;
     private IPlayer[] players;
@@ -50,7 +50,7 @@ namespace Jabberwocky.SoC.Library
     #endregion
 
     #region Construction
-    public LocalGameController(IDice dice, IPlayerPool computerPlayerFactory, GameBoardManager gameBoardManager, IDevelopmentCardHolder developmentCardHolder)
+    public LocalGameController(INumberGenerator dice, IPlayerPool computerPlayerFactory, GameBoardManager gameBoardManager, IDevelopmentCardHolder developmentCardHolder)
     {
       this.dice = dice;
       this.playerPool = computerPlayerFactory;

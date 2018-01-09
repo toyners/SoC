@@ -89,7 +89,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     [Test]
     public void GetFirstSetupPassOrder_ReturnsPlayerOrderBasedOnDiceRolls()
     {
-      var diceRoller = Substitute.For<IDice>();
+      var diceRoller = Substitute.For<INumberGenerator>();
       diceRoller.RollTwoDice().Returns(4u, 8u, 6u, 10u);
       var gameManager = new GameSession(new GameBoardManager(BoardSizes.Standard), 4, diceRoller, new DevelopmentCardPile());
 
@@ -100,7 +100,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     [Test]
     public void GetFirstSetupPassOrder_SameRollForTwoPlayersCausesReroll_ReturnsPlayerOrderBasedOnDiceRolls()
     {
-      var diceRoller = Substitute.For<IDice>();
+      var diceRoller = Substitute.For<INumberGenerator>();
       diceRoller.RollTwoDice().Returns(10u, 8u, 6u, 10u, 12u);
       var gameManager = new GameSession(new GameBoardManager(BoardSizes.Standard), 4, diceRoller, new DevelopmentCardPile());
 
@@ -111,7 +111,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     [Test]
     public void GetFirstSetupPassOrder_SameRollCausesTwoRoundsOfRerolls_ReturnsPlayerOrderBasedOnDiceRolls()
     {
-      var diceRoller = Substitute.For<IDice>();
+      var diceRoller = Substitute.For<INumberGenerator>();
       diceRoller.RollTwoDice().Returns(10u, 10u, 10u, 10u, 7u, 6u, 7u, 8u);
       var gameManager = new GameSession(new GameBoardManager(BoardSizes.Standard), 4, diceRoller, new DevelopmentCardPile());
 

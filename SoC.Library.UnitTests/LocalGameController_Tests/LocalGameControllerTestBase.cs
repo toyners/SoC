@@ -51,7 +51,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
     }
 
     [Obsolete("Deprecated. Use LocalGameControllerTestCreator class.")]
-    protected LocalGameController CreateLocalGameController(IDice dice, IPlayer firstPlayer, params IPlayer[] otherPlayers)
+    protected LocalGameController CreateLocalGameController(INumberGenerator dice, IPlayer firstPlayer, params IPlayer[] otherPlayers)
     {
       var mockPlayerPool = CreatePlayerPool(firstPlayer, otherPlayers);
 
@@ -96,7 +96,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
     }
 
     [Obsolete("Deprecated. Use LocalGameControllerTestCreator class.")]
-    protected LocalGameController CreateLocalGameController(IDice dice, IPlayerPool playerPool, IDevelopmentCardHolder developmentCardHolder)
+    protected LocalGameController CreateLocalGameController(INumberGenerator dice, IPlayerPool playerPool, IDevelopmentCardHolder developmentCardHolder)
     {
       var localGameControllerCreator = new LocalGameControllerCreator();
 

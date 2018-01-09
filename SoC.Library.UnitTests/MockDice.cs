@@ -4,7 +4,7 @@ using Jabberwocky.SoC.Library.Interfaces;
 
 namespace Jabberwocky.SoC.Library.UnitTests
 {
-  public class MockDice : IDice
+  public class MockDice : INumberGenerator
   {
     #region Fields
     private Int32 index;
@@ -45,6 +45,11 @@ namespace Jabberwocky.SoC.Library.UnitTests
       }
 
       return this.diceRolls[this.index++];
+    }
+
+    public UInt32 GetRandomNumber(Int32 exclusiveMaximum)
+    {
+      throw new NotImplementedException();
     }
     #endregion
   }

@@ -72,7 +72,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
     [Category("LocalGameController")]
     public void LaunchGame_GameLaunchedAfterJoining_InitialBoardPassedBack()
     {
-      var mockDice = NSubstitute.Substitute.For<IDice>();
+      var mockDice = NSubstitute.Substitute.For<INumberGenerator>();
       mockDice.RollTwoDice().Returns(12u, 10u, 8u, 2u);
 
       var player = new MockPlayer(PlayerName);
@@ -462,7 +462,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
     [Category("LocalGameController")]
     public void PlayerSelectsSameLocationAsComputerPlayerDuringFirstSetupRound_MeaningfulErrorIsReceived()
     {
-      var mockDice = Substitute.For<IDice>();
+      var mockDice = Substitute.For<INumberGenerator>();
       mockDice.RollTwoDice().Returns(10u, 12u, 8u, 6u);
 
       MockPlayer player;
@@ -491,7 +491,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
     [Category("LocalGameController")]
     public void PlayerSelectsSameLocationAsComputerPlayerDuringSecondSetupRound_MeaningfulErrorIsReceived()
     {
-      var mockDice = Substitute.For<IDice>();
+      var mockDice = Substitute.For<INumberGenerator>();
       mockDice.RollTwoDice().Returns(12u, 10u, 8u, 6u);
 
       MockPlayer player;
@@ -522,7 +522,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
     [Category("LocalGameController")]
     public void PlayerSelectsLocationTooCloseToComputerPlayerDuringFirstSetupRound_MeaningfulErrorIsReceived()
     {
-      var mockDice = Substitute.For<IDice>();
+      var mockDice = Substitute.For<INumberGenerator>();
       mockDice.RollTwoDice().Returns(10u, 12u, 8u, 6u);
 
       MockPlayer player;
@@ -551,7 +551,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
     [Category("LocalGameController")]
     public void PlayerSelectsLocationTooCloseToComputerPlayerDuringSecondSetupRound_MeaningfulErrorIsReceived()
     {
-      var mockDice = Substitute.For<IDice>();
+      var mockDice = Substitute.For<INumberGenerator>();
       mockDice.RollTwoDice().Returns(12u, 10u, 8u, 6u);
 
       MockPlayer player;
@@ -1491,7 +1491,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
 
     private LocalGameController CreateLocalGameControllerWithMainPlayerGoingFirstInSetup()
     {
-      var mockDice = Substitute.For<IDice>();
+      var mockDice = Substitute.For<INumberGenerator>();
       mockDice.RollTwoDice().Returns(12u, 10u, 8u, 6u);
 
       MockPlayer player;
