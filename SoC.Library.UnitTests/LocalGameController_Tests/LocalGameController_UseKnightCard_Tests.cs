@@ -290,12 +290,14 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       var firstOpponent = testInstances.FirstOpponent;
 
       player.AddResources(ResourceClutch.DevelopmentCard * 3);
+
+      var playKnightCardAction = new PlayKnightAction { RobberHex = 0, RobbedPlayer = Guid.Empty };
       firstOpponent.AddResources(ResourceClutch.DevelopmentCard * 4);
       firstOpponent.AddBuyDevelopmentCardChoice(4).EndTurn()
-        .AddPlaceKnightCard(0).EndTurn()
-        .AddPlaceKnightCard(0).EndTurn()
-        .AddPlaceKnightCard(0).EndTurn()
-        .AddPlaceKnightCard(0).EndTurn();
+        .AddPlaceKnightCard(playKnightCardAction).EndTurn()
+        .AddPlaceKnightCard(playKnightCardAction).EndTurn()
+        .AddPlaceKnightCard(playKnightCardAction).EndTurn()
+        .AddPlaceKnightCard(playKnightCardAction).EndTurn();
 
       var turn = 0;
       TurnToken turnToken = null;
@@ -369,12 +371,13 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       var localGameController = testInstances.LocalGameController;
       var firstOpponent = testInstances.FirstOpponent;
 
+      var playKnightCardAction = new PlayKnightAction { RobberHex = 0, RobbedPlayer = Guid.Empty };
       firstOpponent.AddResources(ResourceClutch.DevelopmentCard * 4);
       firstOpponent.AddBuyDevelopmentCardChoice(4).EndTurn()
-        .AddPlaceKnightCard(0).EndTurn()
-        .AddPlaceKnightCard(0).EndTurn()
-        .AddPlaceKnightCard(0).EndTurn()
-        .AddPlaceKnightCard(0).EndTurn();
+        .AddPlaceKnightCard(playKnightCardAction).EndTurn()
+        .AddPlaceKnightCard(playKnightCardAction).EndTurn()
+        .AddPlaceKnightCard(playKnightCardAction).EndTurn()
+        .AddPlaceKnightCard(playKnightCardAction).EndTurn();
 
       var turn = 0;
       TurnToken turnToken = null;
@@ -430,11 +433,13 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       var firstOpponent = testInstances.FirstOpponent;
 
       player.AddResources(ResourceClutch.DevelopmentCard * 4);
+
+      var playKnightCardAction = new PlayKnightAction { RobberHex = 0, RobbedPlayer = Guid.Empty };
       firstOpponent.AddResources(ResourceClutch.DevelopmentCard * 3);
       firstOpponent.AddBuyDevelopmentCardChoice(3).EndTurn()
-        .AddPlaceKnightCard(0).EndTurn()
-        .AddPlaceKnightCard(0).EndTurn()
-        .AddPlaceKnightCard(0).EndTurn();
+        .AddPlaceKnightCard(playKnightCardAction).EndTurn()
+        .AddPlaceKnightCard(playKnightCardAction).EndTurn()
+        .AddPlaceKnightCard(playKnightCardAction).EndTurn();
 
       var turn = 0;
       TurnToken turnToken = null;
@@ -537,7 +542,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
 
       firstOpponent.AddResources(ResourceClutch.DevelopmentCard);
       firstOpponent.AddBuyDevelopmentCardChoice(1).EndTurn()
-        .AddPlaceKnightCard(MainSettlementOneHex).EndTurn();
+        .AddPlaceKnightCard(new PlayKnightAction { RobberHex = MainSettlementOneHex, RobbedPlayer = player.Id }).EndTurn();
 
       var turn = 0;
       TurnToken turnToken = null;

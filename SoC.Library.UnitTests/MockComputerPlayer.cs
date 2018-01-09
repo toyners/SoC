@@ -18,7 +18,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
     public Queue<UInt32> CityLocations = new Queue<UInt32>();
     private Queue<KnightDevelopmentCard> knightCards = new Queue<KnightDevelopmentCard>();
-    private Queue<UInt32> robberLocations = new Queue<UInt32>();
+    private Queue<PlayKnightAction> playKnightCardActions = new Queue<PlayKnightAction>();
     public Queue<UInt32> SettlementLocations;
     public Queue<Tuple<UInt32, UInt32>> Roads = new Queue<Tuple<UInt32, UInt32>>();
     public Queue<Tuple<UInt32, UInt32>> InitialInfrastructure = new Queue<Tuple<UInt32, UInt32>>();
@@ -77,9 +77,9 @@ namespace Jabberwocky.SoC.Library.UnitTests
       throw new Exception("Development card is not recognised.");
     }
 
-    public MockComputerPlayer AddPlaceKnightCard(UInt32 robberLocation)
+    public MockComputerPlayer AddPlaceKnightCard(PlayKnightAction playKnightCardAction)
     {
-      this.robberLocations.Enqueue(robberLocation);
+      this.playKnightCardActions.Enqueue(playKnightCardAction);
       this.Actions.Enqueue(PlayerAction.PlayKnightCard);
       return this;
     }
@@ -101,6 +101,12 @@ namespace Jabberwocky.SoC.Library.UnitTests
       return this.knightCards.Dequeue();
     }
 
+    public override Guid ChoosePlayerToRob()
+    {
+      var action = this.playKnightCardActions.Dequeue();
+      return action.RobbedPlayer;
+    }
+
     public override ResourceClutch ChooseResourcesToDrop()
     {
       return DroppedResources;
@@ -108,7 +114,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
     public override UInt32 ChooseRobberLocation()
     {
-      return this.robberLocations.Dequeue();
+      return this.playKnightCardActions.Peek().RobberHex;
     }
 
     public override void ChooseRoad(GameBoardData gameBoardData, out UInt32 roadStartLocation, out UInt32 roadEndLocation)
@@ -151,5 +157,11 @@ namespace Jabberwocky.SoC.Library.UnitTests
       return new List<DevelopmentCardTypes>(this.DisplayedDevelopmentCards);
     }
     #endregion
+  }
+
+  public struct PlayKnightAction
+  {
+    public UInt32 RobberHex;
+    public Guid RobbedPlayer;
   }
 }

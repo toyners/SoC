@@ -23,6 +23,7 @@ namespace Jabberwocky.SoC.Library.Interfaces
     KnightDevelopmentCard ChooseKnightCard();
     ResourceClutch ChooseResourcesToDrop();
     UInt32 ChooseRobberLocation();
+    Guid ChoosePlayerToRob();
     PlayerAction GetPlayerAction();
     void AddDevelopmentCard(DevelopmentCard developmentCard);
     #endregion
