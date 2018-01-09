@@ -15,6 +15,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
   public class LocalGameController_UseKnightCard_Tests
   {
     #region Fields
+    private const UInt32 MainSettlementOneHex = 1;
     private const UInt32 SecondSettlementOneHex = 8;
     private Dictionary<Guid, IPlayer> playersById;
     #endregion
@@ -536,7 +537,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
 
       firstOpponent.AddResources(ResourceClutch.DevelopmentCard);
       firstOpponent.AddBuyDevelopmentCardChoice(1).EndTurn()
-        .AddPlaceKnightCard(1).EndTurn();
+        .AddPlaceKnightCard(MainSettlementOneHex).EndTurn();
 
       var turn = 0;
       TurnToken turnToken = null;
@@ -552,20 +553,18 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       };
 
       localGameController.StartGamePlay();
-
-      // Turn 1: Buy the knight cards
       localGameController.EndTurn(turnToken); // Opponent buys development cards
       localGameController.EndTurn(turnToken); // Opponent plays knight cards
 
       // Assert
       var expectedBuyDevelopmentCardEvent = new BuyDevelopmentCardEvent(firstOpponent.Id);
       var expectedPlayKnightCardEvent = new PlayKnightCardEvent(firstOpponent.Id);
+      var expectedResourceLostEvent = new ResourceLostEvent(firstOpponent.Id, ResourceClutch.OneLumber);
 
-      playerActions.Count.ShouldBe(3);
+      playerActions.Count.ShouldBe(2);
       keys.Count.ShouldBe(playerActions.Count);
       this.AssertThatPlayerActionsForTurnAreCorrect(playerActions[keys[0]], expectedBuyDevelopmentCardEvent);
-      this.AssertThatPlayerActionsForTurnAreCorrect(playerActions[keys[1]], expectedPlayKnightCardEvent);
-      this.AssertThatPlayerActionsForTurnAreCorrect(playerActions[keys[2]], expectedPlayKnightCardEvent);
+      this.AssertThatPlayerActionsForTurnAreCorrect(playerActions[keys[1]], expectedPlayKnightCardEvent, expectedResourceLostEvent);
       
       player.ResourcesCount.ShouldBe(2);
       firstOpponent.ResourcesCount.ShouldBe(4);

@@ -47,4 +47,16 @@ namespace Jabberwocky.SoC.Library
   {
     public PlayKnightCardEvent(Guid playerId) : base(playerId) { }
   }
+
+  public class ResourceLostEvent : GameEvent
+  {
+    #region Fields
+    public readonly ResourceClutch Resources;
+    #endregion
+
+    public ResourceLostEvent(Guid playerId, ResourceClutch resources) : base(playerId)
+    {
+
+    }
+  }
 }
