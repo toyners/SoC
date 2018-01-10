@@ -119,7 +119,6 @@ namespace Jabberwocky.SoC.Library.UnitTests
       var result = player.LoseRandomResource(mockDice);
 
       // Assert
-      
       var expectedTotal = expectedBrickCount + expectedGrainCount + expectedLumberCount + expectedOreCount + expectedWoolCount;
       result.ShouldBe(expectedResourceClutch);
       player.ResourcesCount.ShouldBe(expectedTotal);
