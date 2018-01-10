@@ -96,6 +96,10 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
     [Test]
     [TestCase(0, 0, 1, 1, 1, 1)]
+    [TestCase(1, 1, 0, 1, 1, 1)]
+    [TestCase(2, 1, 1, 0, 1, 1)]
+    [TestCase(3, 1, 1, 1, 0, 1)]
+    [TestCase(4, 1, 1, 1, 1, 0)]
     public void LoseRandomResource_OneOfEachResource_ReturnsExpectedResource(Int32 index, Int32 expectedBrickCount, Int32 expectedGrainCount, Int32 expectedLumberCount, Int32 expectedOreCount, Int32 expectedWoolCount)
     {
       // Arrange

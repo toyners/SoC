@@ -144,7 +144,16 @@ namespace Jabberwocky.SoC.Library
 
     public ResourceClutch LoseRandomResource(INumberGenerator dice)
     {
-      //var index = dice.GetRandomNumberBetweenZeroAndMaximum(this.ResourcesCount);
+      if (this.ResourcesCount == 0)
+      {
+        return ResourceClutch.Zero;
+      }
+
+      var index = dice.GetRandomNumberBetweenZeroAndMaximum(this.ResourcesCount);
+      if (index < this.BrickCount)
+      {
+        return ResourceClutch.OneBrick;
+      }
 
       throw new NotImplementedException();
     }

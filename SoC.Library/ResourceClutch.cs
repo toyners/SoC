@@ -11,6 +11,7 @@ namespace Jabberwocky.SoC.Library
     public static ResourceClutch Settlement = new ResourceClutch(1, 1, 1, 0, 1);
     public static ResourceClutch City = new ResourceClutch(0, 2, 0, 3, 0);
     public static ResourceClutch DevelopmentCard = new ResourceClutch(0, 1, 0, 1, 1);
+    public static ResourceClutch OneBrick = new ResourceClutch(1, 0, 0, 0, 0);
     public static ResourceClutch OneLumber = new ResourceClutch(0, 0, 1, 0, 0);
     public static ResourceClutch OneOfEach = new ResourceClutch(1, 1, 1, 1, 1);
 
