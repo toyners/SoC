@@ -2,6 +2,8 @@
 namespace Jabberwocky.SoC.Library.UnitTests
 {
   using System;
+  using Interfaces;
+  using NSubstitute;
   using NUnit.Framework;
   using Shouldly;
 
@@ -58,6 +60,70 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
       // Assert
       Should.Throw<ArithmeticException>(action).Message.ShouldBe("No resource count can be negative.");
+    }
+
+    [Test]
+    public void LoseRandomResource_NoResources_ReturnsZeroResources()
+    {
+      // Arrange
+      var player = new Player();
+      var mockDice = Substitute.For<INumberGenerator>();
+
+      // Act
+      var result = player.LoseRandomResource(mockDice);
+
+      // Assert
+      result.ShouldBe(ResourceClutch.Zero);
+      player.ResourcesCount.ShouldBe(0);
+    }
+
+    [Test]
+    public void LoseRandomResource_OneResource_ReturnsOnlyResource()
+    {
+      // Arrange
+      var player = new Player();
+      player.AddResources(ResourceClutch.OneLumber);
+      var mockDice = Substitute.For<INumberGenerator>();
+      mockDice.GetRandomNumberBetweenZeroAndMaximum(1).Returns(0);
+
+      // Act
+      var result = player.LoseRandomResource(mockDice);
+
+      // Assert
+      result.ShouldBe(ResourceClutch.OneLumber);
+      player.ResourcesCount.ShouldBe(0);
+    }
+
+    [Test]
+    [TestCase(0, 0, 1, 1, 1, 1)]
+    public void LoseRandomResource_OneOfEachResource_ReturnsExpectedResource(Int32 index, Int32 expectedBrickCount, Int32 expectedGrainCount, Int32 expectedLumberCount, Int32 expectedOreCount, Int32 expectedWoolCount)
+    {
+      // Arrange
+      var player = new Player();
+      player.AddResources(ResourceClutch.OneOfEach);
+      var mockDice = Substitute.For<INumberGenerator>();
+      mockDice.GetRandomNumberBetweenZeroAndMaximum(player.ResourcesCount).Returns(index);
+
+      var expectedResourceClutch = new ResourceClutch(
+        player.BrickCount - expectedBrickCount,
+        player.GrainCount - expectedGrainCount,
+        player.LumberCount - expectedLumberCount,
+        player.OreCount - expectedOreCount,
+        player.WoolCount - expectedWoolCount);     
+
+      // Act
+      var result = player.LoseRandomResource(mockDice);
+
+      // Assert
+      
+      var expectedTotal = expectedBrickCount + expectedGrainCount + expectedLumberCount + expectedOreCount + expectedWoolCount;
+      result.ShouldBe(expectedResourceClutch);
+      player.ResourcesCount.ShouldBe(expectedTotal);
+      player.BrickCount.ShouldBe(expectedBrickCount);
+      player.GrainCount.ShouldBe(expectedGrainCount);
+      player.LumberCount.ShouldBe(expectedLumberCount);
+      player.OreCount.ShouldBe(expectedOreCount);
+      player.WoolCount.ShouldBe(expectedWoolCount);
     }
     #endregion 
   }
