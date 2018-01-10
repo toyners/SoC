@@ -12,7 +12,7 @@ namespace Jabberwocky.SoC.Library
 
     public TurnToken()
     {
-      this.id = new Guid();
+      this.id = Guid.NewGuid();
       this.creationDateTime = DateTime.Now;
     }
 
@@ -24,17 +24,12 @@ namespace Jabberwocky.SoC.Library
       }
 
       var other = obj as TurnToken;
-      if (other == null)
+      if (other == null || this.id != other.id)
       {
         return false;
       }
 
-      if (this.id == other.id && this.creationDateTime == other.creationDateTime)
-      {
-        return true;
-      }
-
-      return false;
+      return true;
     }
 
     public override Int32 GetHashCode()
