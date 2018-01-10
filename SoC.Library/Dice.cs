@@ -11,9 +11,9 @@ namespace Jabberwocky.SoC.Library
     #endregion
 
     #region Methods
-    public UInt32 GetRandomNumber(Int32 exclusiveMaximum)
+    public Int32 GetRandomNumberBetweenZeroAndMaximum(UInt16 exclusiveMaximum)
     {
-      return (UInt32)this.random.Next(0, exclusiveMaximum);
+      return this.random.Next(0, exclusiveMaximum);
     }
 
     public UInt32 RollTwoDice() { return (UInt32)(this.random.Next(1, 6) + this.random.Next(1, 6)); }

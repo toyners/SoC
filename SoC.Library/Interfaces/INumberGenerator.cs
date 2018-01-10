@@ -7,6 +7,6 @@ namespace Jabberwocky.SoC.Library.Interfaces
   {
     UInt32 RollTwoDice();
 
-    UInt32 GetRandomNumber(Int32 exclusiveMaximum);
+    Int32 GetRandomNumberBetweenZeroAndMaximum(UInt16 exclusiveMaximum);
   }
 }

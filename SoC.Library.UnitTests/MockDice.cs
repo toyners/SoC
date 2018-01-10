@@ -47,7 +47,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
       return this.diceRolls[this.index++];
     }
 
-    public UInt32 GetRandomNumber(Int32 exclusiveMaximum)
+    public Int32 GetRandomNumberBetweenZeroAndMaximum(UInt16 exclusiveMaximum)
     {
       throw new NotImplementedException();
     }
