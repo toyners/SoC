@@ -6,12 +6,12 @@ namespace Jabberwocky.SoC.Library.UnitTests
   using Shouldly;
 
   [TestFixture]
+  [Category("All")]
+  [Category("Player")]
   public class Player_UnitTests
   {
     #region Methods
     [Test]
-    [Category("All")]
-    [Category("Player")]
     public void AddResources_VariousResourceKinds_CountsAreUpdated()
     {
       // Arrange
@@ -29,8 +29,6 @@ namespace Jabberwocky.SoC.Library.UnitTests
     }
 
     [Test]
-    [Category("All")]
-    [Category("Player")]
     public void RemoveResources_VariousResourceKinds_CountsAreUpdated()
     {
       // Arrange
@@ -49,8 +47,6 @@ namespace Jabberwocky.SoC.Library.UnitTests
     }
 
     [Test]
-    [Category("All")]
-    [Category("Player")]
     public void RemoveResources_ResultingTotalsWillBeBeLowerThanZero_ThrowsMeaningfulException()
     {
       // Arrange
