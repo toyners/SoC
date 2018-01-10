@@ -11,7 +11,7 @@ namespace Jabberwocky.SoC.Library
     #endregion
 
     #region Methods
-    public Int32 GetRandomNumberBetweenZeroAndMaximum(UInt16 exclusiveMaximum)
+    public Int32 GetRandomNumberBetweenZeroAndMaximum(Int32 exclusiveMaximum)
     {
       return this.random.Next(0, exclusiveMaximum);
     }
