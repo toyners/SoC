@@ -291,7 +291,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
 
       player.AddResources(ResourceClutch.DevelopmentCard * 3);
 
-      var playKnightCardAction = new PlayKnightAction { RobberHex = 0, RobbedPlayer = Guid.Empty };
+      var playKnightCardAction = new PlayKnightAction { RobberHex = 0, RobbedPlayerId = Guid.Empty };
       firstOpponent.AddResources(ResourceClutch.DevelopmentCard * 4);
       firstOpponent.AddBuyDevelopmentCardChoice(4).EndTurn()
         .AddPlaceKnightCard(playKnightCardAction).EndTurn()
@@ -371,7 +371,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       var localGameController = testInstances.LocalGameController;
       var firstOpponent = testInstances.FirstOpponent;
 
-      var playKnightCardAction = new PlayKnightAction { RobberHex = 0, RobbedPlayer = Guid.Empty };
+      var playKnightCardAction = new PlayKnightAction { RobberHex = 0, RobbedPlayerId = Guid.Empty };
       firstOpponent.AddResources(ResourceClutch.DevelopmentCard * 4);
       firstOpponent.AddBuyDevelopmentCardChoice(4).EndTurn()
         .AddPlaceKnightCard(playKnightCardAction).EndTurn()
@@ -434,7 +434,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
 
       player.AddResources(ResourceClutch.DevelopmentCard * 4);
 
-      var playKnightCardAction = new PlayKnightAction { RobberHex = 0, RobbedPlayer = Guid.Empty };
+      var playKnightCardAction = new PlayKnightAction { RobberHex = 0, RobbedPlayerId = Guid.Empty };
       firstOpponent.AddResources(ResourceClutch.DevelopmentCard * 3);
       firstOpponent.AddBuyDevelopmentCardChoice(3).EndTurn()
         .AddPlaceKnightCard(playKnightCardAction).EndTurn()
@@ -540,9 +540,10 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       var player = testInstances.MainPlayer;
       var firstOpponent = testInstances.FirstOpponent;
 
+      player.AddResources(new ResourceClutch(1, 0, 0, 1, 1));
       firstOpponent.AddResources(ResourceClutch.DevelopmentCard);
       firstOpponent.AddBuyDevelopmentCardChoice(1).EndTurn()
-        .AddPlaceKnightCard(new PlayKnightAction { RobberHex = MainSettlementOneHex, RobbedPlayer = player.Id }).EndTurn();
+        .AddPlaceKnightCard(new PlayKnightAction { RobberHex = MainSettlementOneHex, RobbedPlayerId = player.Id }).EndTurn();
 
       var turn = 0;
       TurnToken turnToken = null;

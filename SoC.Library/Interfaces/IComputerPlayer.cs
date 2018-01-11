@@ -1,5 +1,6 @@
 ﻿
 using System;
+using System.Collections.Generic;
 using Jabberwocky.SoC.Library.GameBoards;
 
 namespace Jabberwocky.SoC.Library.Interfaces
@@ -23,7 +24,7 @@ namespace Jabberwocky.SoC.Library.Interfaces
     KnightDevelopmentCard ChooseKnightCard();
     ResourceClutch ChooseResourcesToDrop();
     UInt32 ChooseRobberLocation();
-    Guid ChoosePlayerToRob();
+    IPlayer ChoosePlayerToRob(IEnumerable<IPlayer> otherPlayers);
     PlayerAction GetPlayerAction();
     void AddDevelopmentCard(DevelopmentCard developmentCard);
     #endregion

@@ -101,10 +101,18 @@ namespace Jabberwocky.SoC.Library.UnitTests
       return this.knightCards.Dequeue();
     }
 
-    public override Guid ChoosePlayerToRob()
+    public override IPlayer ChoosePlayerToRob(IEnumerable<IPlayer> otherPlayers)
     {
       var action = this.playKnightCardActions.Dequeue();
-      return action.RobbedPlayer;
+      foreach (var otherPlayer in otherPlayers)
+      {
+        if (otherPlayer.Id == action.RobbedPlayerId)
+        {
+          return otherPlayer;
+        }
+      }
+
+      throw new Exception("Cannot find player with Id '" + action.RobbedPlayerId + "' when choosing player to rob.");
     }
 
     public override ResourceClutch ChooseResourcesToDrop()
@@ -162,6 +170,6 @@ namespace Jabberwocky.SoC.Library.UnitTests
   public struct PlayKnightAction
   {
     public UInt32 RobberHex;
-    public Guid RobbedPlayer;
+    public Guid RobbedPlayerId;
   }
 }

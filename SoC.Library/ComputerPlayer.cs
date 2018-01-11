@@ -38,7 +38,7 @@ namespace Jabberwocky.SoC.Library
       throw new NotImplementedException();
     }
 
-    public virtual Guid ChoosePlayerToRob()
+    public virtual IPlayer ChoosePlayerToRob(IEnumerable<IPlayer> otherPlayers)
     {
       throw new NotImplementedException();
     }

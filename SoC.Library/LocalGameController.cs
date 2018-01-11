@@ -317,14 +317,11 @@ namespace Jabberwocky.SoC.Library
               this.UseKnightDevelopmentCard(knightCard, newRobberHex);
               events.Add(new PlayKnightCardEvent(computerPlayer.Id));
 
-              var robbedPlayerId = computerPlayer.ChoosePlayerToRob();
-              if (robbedPlayerId != Guid.Empty)
-              {
-                var robbedPlayer = this.playersById[robbedPlayerId];
-                var takenResource = robbedPlayer.LoseRandomResource(this.dice);
-                var resourceLostEvent = new ResourceLostEvent(computerPlayer.Id, takenResource);
-                events.Add(resourceLostEvent);
-              }
+              var otherPlayers = this.GetOpponents(computerPlayer);
+              var robbedPlayer = computerPlayer.ChoosePlayerToRob(otherPlayers);
+              var takenResource = robbedPlayer.LoseRandomResource(this.dice);
+              var resourceLostEvent = new ResourceLostEvent(computerPlayer.Id, takenResource);
+              events.Add(resourceLostEvent);
 
               var playerWithMostKnightCards = this.DeterminePlayerWithMostKnightCards();
               if (playerWithMostKnightCards == computerPlayer && this.playerWithLargestArmy != computerPlayer)
@@ -896,6 +893,20 @@ namespace Jabberwocky.SoC.Library
     {
       this.cardsPurchasedThisTurn.Clear();
       this.cardPlayedThisTurn = false;
+    }
+
+    private IEnumerable<IPlayer> GetOpponents(IPlayer playerToIgnore)
+    {
+      List<IPlayer> opponents = new List<IPlayer>(3);
+      foreach (var player in this.players)
+      {
+        if (player != playerToIgnore)
+        {
+          opponents.Add(player);
+        }
+      }
+
+      return opponents;
     }
 
     private void HandlePlaceRoadError(GameBoardData.VerificationStatus status)
