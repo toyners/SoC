@@ -152,10 +152,35 @@ namespace Jabberwocky.SoC.Library
       var index = dice.GetRandomNumberBetweenZeroAndMaximum(this.ResourcesCount);
       if (index < this.BrickCount)
       {
+        this.BrickCount--;
         return ResourceClutch.OneBrick;
       }
 
-      throw new NotImplementedException();
+      if (index < this.BrickCount + this.GrainCount)
+      {
+        this.GrainCount--;
+        return ResourceClutch.OneGrain;
+      }
+
+      if (index < this.BrickCount + this.GrainCount + this.LumberCount)
+      {
+        this.LumberCount--;
+        return ResourceClutch.OneLumber;
+      }
+
+      if (index < this.BrickCount + this.GrainCount + this.LumberCount + this.OreCount)
+      {
+        this.OreCount--;
+        return ResourceClutch.OneOre;
+      }
+
+      if (index < this.BrickCount + this.GrainCount + this.LumberCount + this.OreCount + this.WoolCount)
+      {
+        this.WoolCount--;
+        return ResourceClutch.OneWool;
+      }
+
+      throw new NotImplementedException("Should not get here");
     }
 
     /// <summary>
