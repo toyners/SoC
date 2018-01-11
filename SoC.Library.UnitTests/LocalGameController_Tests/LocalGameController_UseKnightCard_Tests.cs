@@ -545,6 +545,8 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       firstOpponent.AddBuyDevelopmentCardChoice(1).EndTurn()
         .AddPlaceKnightCard(new PlayKnightAction { RobberHex = MainSettlementOneHex, RobbedPlayerId = player.Id }).EndTurn();
 
+      testInstances.Dice.AddSequence( new[] { 1u }); // Determine which card to take from player
+
       var turn = 0;
       TurnToken turnToken = null;
       localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; turn++; };
@@ -565,7 +567,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       // Assert
       var expectedBuyDevelopmentCardEvent = new BuyDevelopmentCardEvent(firstOpponent.Id);
       var expectedPlayKnightCardEvent = new PlayKnightCardEvent(firstOpponent.Id);
-      var expectedResourceLostEvent = new ResourceLostEvent(firstOpponent.Id, ResourceClutch.OneLumber);
+      var expectedResourceLostEvent = new ResourceLostEvent(firstOpponent.Id, ResourceClutch.OneOre);
 
       playerActions.Count.ShouldBe(2);
       keys.Count.ShouldBe(playerActions.Count);
