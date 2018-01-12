@@ -317,11 +317,16 @@ namespace Jabberwocky.SoC.Library
               this.UseKnightDevelopmentCard(knightCard, newRobberHex);
               events.Add(new PlayKnightCardEvent(computerPlayer.Id));
 
-              var otherPlayers = this.GetOpponents(computerPlayer);
-              var robbedPlayer = computerPlayer.ChoosePlayerToRob(otherPlayers);
-              var takenResource = robbedPlayer.LoseRandomResource(this.dice);
-              var resourceLostEvent = new ResourceLostEvent(computerPlayer.Id, takenResource);
-              events.Add(resourceLostEvent);
+              var playersOnHex = this.gameBoardManager.Data.GetPlayersForHex(newRobberHex);
+              if (playersOnHex != null)
+              {
+                var otherPlayers = this.GetPlayersFromIds(playersOnHex);
+                var robbedPlayer = computerPlayer.ChoosePlayerToRob(otherPlayers);
+                var takenResource = robbedPlayer.LoseRandomResource(this.dice);
+                computerPlayer.AddResources(takenResource);
+                var resourceLostEvent = new ResourceLostEvent(computerPlayer.Id, takenResource);
+                events.Add(resourceLostEvent);
+              }
 
               var playerWithMostKnightCards = this.DeterminePlayerWithMostKnightCards();
               if (playerWithMostKnightCards == computerPlayer && this.playerWithLargestArmy != computerPlayer)
@@ -895,18 +900,15 @@ namespace Jabberwocky.SoC.Library
       this.cardPlayedThisTurn = false;
     }
 
-    private IEnumerable<IPlayer> GetOpponents(IPlayer playerToIgnore)
+    private IEnumerable<IPlayer> GetPlayersFromIds(Guid[] playerIds)
     {
-      List<IPlayer> opponents = new List<IPlayer>(3);
-      foreach (var player in this.players)
+      var playerList = new List<IPlayer>();
+      foreach (var playerId in playerIds)
       {
-        if (player != playerToIgnore)
-        {
-          opponents.Add(player);
-        }
+        playerList.Add(this.playersById[playerId]);
       }
 
-      return opponents;
+      return playerList;
     }
 
     private void HandlePlaceRoadError(GameBoardData.VerificationStatus status)
