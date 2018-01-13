@@ -431,6 +431,29 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
     }
 
     [Test]
+    public void CompleteGameSetup_ComputerPlayersGetExpectedResources()
+    {
+      var testInstances = LocalGameControllerTestCreator.CreateTestInstances();
+      LocalGameControllerTestSetup.LaunchGameAndCompleteSetup(testInstances.LocalGameController);
+
+      var firstOpponent = testInstances.FirstOpponent;
+      var secondOpponent = testInstances.SecondOpponent;
+      var thirdOpponent = testInstances.ThirdOpponent;
+
+      firstOpponent.GrainCount.ShouldBe(1);
+      firstOpponent.LumberCount.ShouldBe(1);
+      firstOpponent.WoolCount.ShouldBe(1);
+
+      secondOpponent.LumberCount.ShouldBe(1);
+      secondOpponent.OreCount.ShouldBe(1);
+      secondOpponent.WoolCount.ShouldBe(1);
+
+      thirdOpponent.GrainCount.ShouldBe(1);
+      thirdOpponent.LumberCount.ShouldBe(1);
+      thirdOpponent.WoolCount.ShouldBe(1);
+    }
+
+    [Test]
     [Category("LocalGameController")]
     public void ContinueGameSetup_CallOutOfSequence_MeaningfulErrorIsReceived()
     {
