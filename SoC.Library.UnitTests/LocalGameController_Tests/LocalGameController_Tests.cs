@@ -1192,29 +1192,29 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
     [Category("Main Player Turn")]
     public void StartOfMainPlayerTurn_ChooseResourceFromOpponentUsingPlayerId_MeaningfulErrorIsReceived()
     {
-      // Arrange
-      MockDice mockDice = null;
-      MockPlayer player;
-      MockComputerPlayer firstOpponent, secondOpponent, thirdOpponent;
-      var localGameController = this.CreateLocalGameControllerAndCompleteGameSetup(out mockDice, out player, out firstOpponent, out secondOpponent, out thirdOpponent);
-      mockDice.AddSequence(new[] { 7u });
-
-      firstOpponent.AddResources(new ResourceClutch(1, 0, 0, 0, 0));
+      var testInstances = LocalGameControllerTestCreator.CreateTestInstances();
+      var localGameController = testInstances.LocalGameController;
+      var player = testInstances.MainPlayer;
+      LocalGameControllerTestSetup.LaunchGameAndCompleteSetup(localGameController);
+      testInstances.Dice.AddSequence(new[] { 7u });
 
       // Act
-      ResourceClutch resourceClutch = ResourceClutch.Zero;
-      ErrorDetails errorDetails = null;
+      ResourceClutch resourceClutch = ResourceClutch.OneBrick; // To be able to verify any unwanted state change
       localGameController.ResourcesGainedEvent = (ResourceClutch rc) => { resourceClutch = rc; };
+
+      ErrorDetails errorDetails = null;
       localGameController.ErrorRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
+
       localGameController.StartGamePlay();
       localGameController.SetRobberHex(3u);
+
+      // Act
       localGameController.ChooseResourceFromOpponent(player.Id, 0);
 
       // Assert
-      resourceClutch.ShouldBe(ResourceClutch.Zero);
-      player.ResourcesCount.ShouldBe(0);
-      firstOpponent.ResourcesCount.ShouldBe(1);
-      firstOpponent.BrickCount.ShouldBe(1);
+      resourceClutch.ShouldBe(ResourceClutch.OneBrick);
+      player.ResourcesCount.ShouldBe(3);
+      testInstances.FirstOpponent.ResourcesCount.ShouldBe(3);
       errorDetails.ShouldNotBeNull();
       errorDetails.Message.ShouldBe("Cannot pick resource card from invalid opponent.");
     }
@@ -1225,26 +1225,22 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
     public void StartOfMainPlayerTurn_ChooseResourceFromOpponentCalledOutOfSequence_MeaningfulErrorIsReceived()
     {
       // Arrange
-      MockDice mockDice = null;
-      MockPlayer player;
-      MockComputerPlayer firstOpponent, secondOpponent, thirdOpponent;
-      var localGameController = this.CreateLocalGameControllerAndCompleteGameSetup(out mockDice, out player, out firstOpponent, out secondOpponent, out thirdOpponent);
-      mockDice.AddSequence(new[] { 7u });
+      var testInstances = LocalGameControllerTestCreator.CreateTestInstances();
+      var localGameController = testInstances.LocalGameController;
+      LocalGameControllerTestSetup.LaunchGameAndCompleteSetup(localGameController);
+      testInstances.Dice.AddSequence(new[] { 7u });
 
-      firstOpponent.AddResources(new ResourceClutch(1, 0, 0, 0, 0));
+      ErrorDetails errorDetails = null;
+      localGameController.ErrorRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
+
+      ResourceClutch resourceClutch = ResourceClutch.OneBrick; // To be able to verify any unwanted state change
+      localGameController.ResourcesGainedEvent = (ResourceClutch rc) => { resourceClutch = rc; };
 
       // Act
-      ResourceClutch resourceClutch = ResourceClutch.Zero;
-      ErrorDetails errorDetails = null;
-      localGameController.ResourcesGainedEvent = (ResourceClutch rc) => { resourceClutch = rc; };
-      localGameController.ErrorRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
-      localGameController.ChooseResourceFromOpponent(firstOpponent.Id, 0);
+      localGameController.ChooseResourceFromOpponent(testInstances.FirstOpponent.Id, 0);
 
       // Assert
-      resourceClutch.ShouldBe(ResourceClutch.Zero);
-      player.ResourcesCount.ShouldBe(0);
-      firstOpponent.ResourcesCount.ShouldBe(1);
-      firstOpponent.BrickCount.ShouldBe(1);
+      resourceClutch.ShouldBe(ResourceClutch.OneBrick);
       errorDetails.ShouldNotBeNull();
       errorDetails.Message.ShouldBe("Cannot call 'ChooseResourceFromOpponent' until 'SetRobberLocation' has completed.");
     }

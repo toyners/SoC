@@ -226,6 +226,7 @@ namespace Jabberwocky.SoC.Library
       this.gameBoardManager.Data.PlaceStartingInfrastructure(this.mainPlayer.Id, settlementLocation, roadEndLocation);
       this.mainPlayer.PlaceStartingInfrastructure();
       this.CollectInitialResourcesForPlayer(this.mainPlayer.Id, settlementLocation);
+      this.mainPlayer.AddResources(this.gameSetupResources.Resources[this.mainPlayer.Id]);
 
       var gameBoardData = this.gameBoardManager.Data;
       GameBoardUpdate gameBoardUpdate = this.CompleteSetupForComputerPlayers(gameBoardData, null);
@@ -821,6 +822,7 @@ namespace Jabberwocky.SoC.Library
         gameBoardUpdate.NewRoads.Add(new Tuple<UInt32, UInt32, Guid>(chosenSettlementLocation, chosenRoadSegmentEndLocation, computerPlayer.Id));
 
         this.CollectInitialResourcesForPlayer(computerPlayer.Id, chosenSettlementLocation);
+        computerPlayer.AddResources(this.gameSetupResources.Resources[computerPlayer.Id]);
       }
 
       return gameBoardUpdate;
