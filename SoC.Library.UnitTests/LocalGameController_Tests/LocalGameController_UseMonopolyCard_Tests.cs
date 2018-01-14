@@ -69,8 +69,6 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
     private LocalGameControllerTestCreator.TestInstances TestSetup(IDevelopmentCardHolder developmentCardHolder)
     {
       var testInstances = LocalGameControllerTestCreator.CreateTestInstances(developmentCardHolder);
-      testInstances.Dice.AddSequence(new[] { 8u });
-
       LocalGameControllerTestSetup.LaunchGameAndCompleteSetup(testInstances.LocalGameController);
 
       return testInstances;
