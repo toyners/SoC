@@ -658,14 +658,16 @@ namespace Jabberwocky.SoC.Library
         return;
       }
 
-      var player = this.playersById[playerId];
-      if (resourceIndex < 0 || resourceIndex >= player.ResourcesCount)
+      var playerToRob = this.playersById[playerId];
+      if (resourceIndex < 0 || resourceIndex >= playerToRob.ResourcesCount)
       {
-        this.ErrorRaisedEvent?.Invoke(new ErrorDetails("Resource index (" + resourceIndex + ") is out of bounds for players resources (0.." + (player.ResourcesCount - 1) + ")."));
+        this.ErrorRaisedEvent?.Invoke(new ErrorDetails("Resource index (" + resourceIndex + ") is out of bounds for players resources (0.." + (playerToRob.ResourcesCount - 1) + ")."));
         return;
       }
 
       this.UseKnightDevelopmentCard(developmentCard, newRobberHex);
+      var takenResource = playerToRob.LoseResource(resourceIndex);
+      this.ResourcesGainedEvent?.Invoke(takenResource);
 
       var playerWithMostKnightCards = this.DeterminePlayerWithMostKnightCards();
       if (playerWithMostKnightCards == this.mainPlayer && this.playerWithLargestArmy != this.mainPlayer)

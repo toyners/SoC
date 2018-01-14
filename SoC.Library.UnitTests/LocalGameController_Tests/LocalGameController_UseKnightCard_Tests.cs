@@ -562,9 +562,6 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       TurnToken turnToken = null;
       localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
 
-      Dictionary<Guid, Int32> robbingChoices = null;
-      localGameController.RobbingChoicesEvent = (Dictionary<Guid, Int32> r) => { robbingChoices = r; };
-
       ResourceClutch gainedResources = ResourceClutch.Zero;
       localGameController.ResourcesGainedEvent = (ResourceClutch r) => { gainedResources = r; };
 
@@ -574,23 +571,15 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       localGameController.BuyDevelopmentCard(turnToken);
       localGameController.EndTurn(turnToken);
 
-      // Turn 2: Play knight card. Event raised with robbing choices for user to select from
-      localGameController.UseKnightCard(turnToken, knightCard, SecondSettlementOneHex);
-
-      // Select card to take from opponent
-      localGameController.ChooseResourceFromOpponent(firstOpponent.Id, 1);
+      // Act: Turn 2: Play knight card
+      localGameController.UseKnightCard(turnToken, knightCard, SecondSettlementOneHex, firstOpponent.Id, 1);
 
       // Assert
-      robbingChoices.ShouldNotBeNull();
-      robbingChoices.Count.ShouldBe(2);
-      robbingChoices.ShouldContainKeyAndValue(firstOpponent.Id, 3);
-      robbingChoices.ShouldContainKeyAndValue(secondOpponent.Id, 3);
-
       gainedResources.Count.ShouldBe(1);
 
       player.ResourcesCount.ShouldBe(4);
       firstOpponent.ResourcesCount.ShouldBe(2);
-      secondOpponent.ResourcesCount.ShouldBe(2);
+      secondOpponent.ResourcesCount.ShouldBe(3);
     }
 
     [Test]
