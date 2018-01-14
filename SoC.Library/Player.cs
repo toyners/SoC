@@ -124,9 +124,44 @@ namespace Jabberwocky.SoC.Library
       throw new NotImplementedException("Should not get here");
     }
 
-    public ResourceClutch LoseResource(Int32 resourceIndex)
+    public ResourceClutch LoseResource(Int32 index)
     {
-      throw new NotImplementedException();
+      if (index < 0 || index >= this.ResourcesCount)
+      {
+        throw new IndexOutOfRangeException("Index " + index + " is out of bounds (0.." + (this.ResourcesCount - 1) + ").");
+      }
+
+      if (index < this.BrickCount)
+      {
+        this.BrickCount--;
+        return ResourceClutch.OneBrick;
+      }
+
+      if (index < this.BrickCount + this.GrainCount)
+      {
+        this.GrainCount--;
+        return ResourceClutch.OneGrain;
+      }
+
+      if (index < this.BrickCount + this.GrainCount + this.LumberCount)
+      {
+        this.LumberCount--;
+        return ResourceClutch.OneLumber;
+      }
+
+      if (index < this.BrickCount + this.GrainCount + this.LumberCount + this.OreCount)
+      {
+        this.OreCount--;
+        return ResourceClutch.OneOre;
+      }
+
+      if (index < this.BrickCount + this.GrainCount + this.LumberCount + this.OreCount + this.WoolCount)
+      {
+        this.WoolCount--;
+        return ResourceClutch.OneWool;
+      }
+
+      throw new NotImplementedException("Should not get here");
     }
 
     public void PayForDevelopmentCard()

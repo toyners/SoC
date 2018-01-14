@@ -128,6 +128,43 @@ namespace Jabberwocky.SoC.Library.UnitTests
       player.OreCount.ShouldBe(expectedOreCount);
       player.WoolCount.ShouldBe(expectedWoolCount);
     }
+
+    [Test]
+    [TestCase(-1)]
+    [TestCase(5)]
+    public void LoseResource_OutOfBounds_ThrowsMeaningfulException(Int32 index)
+    {
+      // Arrange
+      var player = new Player();
+      player.AddResources(ResourceClutch.OneOfEach);
+
+      // Act
+      Action action = () => { player.LoseResource(index); };
+
+      // Assert
+      action.ShouldThrow<IndexOutOfRangeException>().Message.ShouldBe("Index " + index + " is out of bounds (0.." + (player.ResourcesCount - 1) + ").");
+    }
+
+    [Test]
+    [TestCase(0, 1, 0, 0, 0, 0)]
+    [TestCase(1, 0, 1, 0, 0, 0)]
+    [TestCase(2, 0, 0, 1, 0, 0)]
+    [TestCase(3, 0, 0, 0, 1, 0)]
+    [TestCase(4, 0, 0, 0, 0, 1)]
+    public void LoseResource_SafeIndex_ReturnsExpectedResource(Int32 index, Int32 expectedBrickCount, Int32 expectedGrainCount, Int32 expectedLumberCount, Int32 expectedOreCount, Int32 expectedWoolCount)
+    {
+      // Arrange
+      var player = new Player();
+      player.AddResources(ResourceClutch.OneOfEach);
+
+      var expectedResourceClutch = new ResourceClutch(expectedBrickCount, expectedGrainCount, expectedLumberCount, expectedOreCount, expectedWoolCount);
+
+      // Act
+      var actualResourceClutch = player.LoseResource(index);
+
+      // Assert
+      actualResourceClutch.ShouldBe(expectedResourceClutch);
+    }
     #endregion 
   }
 }
