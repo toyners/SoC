@@ -170,6 +170,74 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       thirdOpponent.BrickCount.ShouldBe(0);
     }
 
+    [Test]
+    public void Scenario_OpponentUsesMonopolyCardAndGetsResourcesFromPlayer()
+    {
+      // Arrange
+      var monopolyCard = new MonopolyDevelopmentCard();
+      var testInstances = this.TestSetup(monopolyCard);
+      var localGameController = testInstances.LocalGameController;
+      var player = testInstances.MainPlayer;
+      var firstOpponent = testInstances.FirstOpponent;
+      var secondOpponent = testInstances.SecondOpponent;
+      var thirdOpponent = testInstances.ThirdOpponent;
+
+      // Clear initial resources
+      player.RemoveAllResources();
+      firstOpponent.RemoveAllResources();
+      thirdOpponent.RemoveAllResources();
+
+      player.AddResources(ResourceClutch.OneBrick);
+      firstOpponent.AddResources(ResourceClutch.DevelopmentCard);
+      firstOpponent.AddBuyDevelopmentCardChoice(1).EndTurn()
+        .AddPlaceMonopolyCardAction(new PlayMonopolyCardAction { MonopolyType = ResourceTypes.Brick }).EndTurn();
+
+      secondOpponent.AddResources(new ResourceClutch(2, 1, 1, 1, 1));
+
+      var turn = 0;
+      TurnToken turnToken = null;
+      localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; turn++; };
+
+      var playerActions = new Dictionary<String, List<GameEvent>>();
+      var keys = new List<String>();
+      localGameController.OpponentActionsEvent = (Guid g, List<GameEvent> e) =>
+      {
+        var key = turn + "-" + g.ToString();
+        keys.Add(key);
+        playerActions.Add(key, e);
+      };
+
+      localGameController.StartGamePlay();
+      localGameController.EndTurn(turnToken); // Opponent buys development cards
+      localGameController.EndTurn(turnToken); // Opponent plays monopoly cards
+
+      // Assert
+      var expectedBuyDevelopmentCardEvent = new BuyDevelopmentCardEvent(firstOpponent.Id);
+      var lostResourcesByPlayerId = new Dictionary<Guid, ResourceClutch>();
+      lostResourcesByPlayerId.Add(player.Id, ResourceClutch.OneBrick);
+      lostResourcesByPlayerId.Add(secondOpponent.Id, ResourceClutch.OneBrick * 2);
+
+      var expectedPlayMonopolyCardEvent = new PlayMonopolyCardEvent(firstOpponent.Id, lostResourcesByPlayerId);
+      var expectedResourceLostEvent = new ResourceLostEvent(firstOpponent.Id, ResourceClutch.OneOre);
+
+      playerActions.Count.ShouldBe(2);
+      keys.Count.ShouldBe(playerActions.Count);
+      this.AssertThatPlayerActionsForTurnAreCorrect(playerActions[keys[0]], expectedBuyDevelopmentCardEvent);
+      this.AssertThatPlayerActionsForTurnAreCorrect(playerActions[keys[1]], expectedPlayMonopolyCardEvent);
+
+      player.ResourcesCount.ShouldBe(2);
+      firstOpponent.ResourcesCount.ShouldBe(4);
+    }
+
+    private void AssertThatPlayerActionsForTurnAreCorrect(List<GameEvent> actualEvents, params GameEvent[] expectedEvents)
+    {
+      actualEvents.Count.ShouldBe(expectedEvents.Length);
+      for (var index = 0; index < actualEvents.Count; index++)
+      {
+        actualEvents[index].ShouldBe(expectedEvents[index], "Index is " + index);
+      }
+    }
+
     private IDevelopmentCardHolder CreateMockCardDevelopmentCardHolder(DevelopmentCard firstDevelopmentCard, params DevelopmentCard[] otherDevelopmentCards)
     {
       var developmentCardHolder = Substitute.For<IDevelopmentCardHolder>();

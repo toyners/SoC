@@ -19,6 +19,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     public Queue<UInt32> CityLocations = new Queue<UInt32>();
     private Queue<KnightDevelopmentCard> knightCards = new Queue<KnightDevelopmentCard>();
     private Queue<PlayKnightAction> playKnightCardActions = new Queue<PlayKnightAction>();
+    private Queue<PlayMonopolyCardAction> playMonopolyCardActions = new Queue<PlayMonopolyCardAction>();
     public Queue<UInt32> SettlementLocations;
     public Queue<Tuple<UInt32, UInt32>> Roads = new Queue<Tuple<UInt32, UInt32>>();
     public Queue<Tuple<UInt32, UInt32>> InitialInfrastructure = new Queue<Tuple<UInt32, UInt32>>();
@@ -75,6 +76,13 @@ namespace Jabberwocky.SoC.Library.UnitTests
       }
 
       throw new Exception("Development card is not recognised.");
+    }
+
+    public MockComputerPlayer AddPlaceMonopolyCardAction(PlayMonopolyCardAction playMonopolyCardAction)
+    {
+      this.playMonopolyCardActions.Enqueue(playMonopolyCardAction);
+      this.Actions.Enqueue(PlayerAction.PlayMonopolyCard);
+      return this;
     }
 
     public MockComputerPlayer AddPlaceKnightCard(PlayKnightAction playKnightCardAction)
@@ -177,5 +185,10 @@ namespace Jabberwocky.SoC.Library.UnitTests
   {
     public UInt32 RobberHex;
     public Guid RobbedPlayerId;
+  }
+
+  public struct PlayMonopolyCardAction
+  {
+    public ResourceTypes MonopolyType;
   }
 }

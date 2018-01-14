@@ -12,6 +12,7 @@ namespace Jabberwocky.SoC.Library.Interfaces
     BuildRoad,
     BuyDevelopmentCard,
     PlayKnightCard,
+    PlayMonopolyCard
   }
 
   public interface IComputerPlayer : IPlayer
