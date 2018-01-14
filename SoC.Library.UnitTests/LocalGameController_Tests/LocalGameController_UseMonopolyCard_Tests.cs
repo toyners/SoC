@@ -9,6 +9,9 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
   using Shouldly;
 
   [TestFixture]
+  [Category("All")]
+  [Category("LocalGameController")]
+  [Category("LocalGameController.UseMonopolyCard")]
   public class LocalGameController_UseMonopolyCard_Tests
   {
     #region Methods
