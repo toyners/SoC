@@ -641,6 +641,11 @@ namespace Jabberwocky.SoC.Library
       this.CompleteResourceTransactionBetweenPlayers(this.playersById[playerId], resourceIndex);
       this.RaiseLargestArmyEventIfPlayerHasLargestArmy();
     }
+
+    public void UseMonopolyCard(TurnToken turnToken, MonopolyDevelopmentCard monopolyCard, ResourceTypes resourceType)
+    {
+      throw new NotImplementedException();
+    }
     
     private void AddResourcesToList(List<ResourceTypes> resources, ResourceTypes resourceType, Int32 total)
     {
