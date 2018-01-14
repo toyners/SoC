@@ -5,6 +5,7 @@ namespace Jabberwocky.SoC.Library
   using System.Collections.Generic;
   using System.IO;
   using System.Xml;
+  using Enums;
   using GameBoards;
   using Interfaces;
 
@@ -642,7 +643,7 @@ namespace Jabberwocky.SoC.Library
       this.RaiseLargestArmyEventIfPlayerHasLargestArmy();
     }
 
-    public void UseMonopolyCard(TurnToken turnToken, MonopolyDevelopmentCard monopolyCard, ResourceTypes resourceType)
+    public void UseMonopolyCard(TurnToken turnToken, MonopolyDevelopmentCard monopolyCard, ResourceKinds resourceType)
     {
       throw new NotImplementedException();
     }
