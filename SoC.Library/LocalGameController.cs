@@ -637,6 +637,44 @@ namespace Jabberwocky.SoC.Library
         this.playerWithLargestArmy = playerWithMostKnightCards;
       }
     }
+
+    public void UseKnightCard(TurnToken turnToken, KnightDevelopmentCard developmentCard, UInt32 newRobberHex, Guid playerId, Int32 resourceIndex)
+    {
+      if (turnToken != this.currentTurnToken)
+      {
+        this.ErrorRaisedEvent?.Invoke(new ErrorDetails("Turn token not recognised."));
+        return;
+      }
+
+      if (!this.CanUseDevelopmentCard(developmentCard, newRobberHex))
+      {
+        return;
+      }
+
+      var playerIdsOnHex = new List<Guid>(this.gameBoardManager.Data.GetPlayersForHex(newRobberHex));
+      if (!playerIdsOnHex.Contains(playerId))
+      {
+        this.ErrorRaisedEvent?.Invoke(new ErrorDetails("Player Id (" + playerId + ") does not match with any players on hex " + newRobberHex + "."));
+        return;
+      }
+
+      var player = this.playersById[playerId];
+      if (resourceIndex < 0 || resourceIndex >= player.ResourcesCount)
+      {
+        this.ErrorRaisedEvent?.Invoke(new ErrorDetails("Resource index (" + resourceIndex + ") is out of bounds for players resources (0.." + (player.ResourcesCount - 1) + ")."));
+        return;
+      }
+
+      this.UseKnightDevelopmentCard(developmentCard, newRobberHex);
+
+      var playerWithMostKnightCards = this.DeterminePlayerWithMostKnightCards();
+      if (playerWithMostKnightCards == this.mainPlayer && this.playerWithLargestArmy != this.mainPlayer)
+      {
+        var oldPlayerId = (this.playerWithLargestArmy != null ? this.playerWithLargestArmy.Id : Guid.Empty);
+        this.LargestArmyEvent?.Invoke(oldPlayerId, playerWithMostKnightCards.Id);
+        this.playerWithLargestArmy = playerWithMostKnightCards;
+      }
+    }
     
     private void AddResourcesToList(List<ResourceTypes> resources, ResourceTypes resourceType, Int32 total)
     {

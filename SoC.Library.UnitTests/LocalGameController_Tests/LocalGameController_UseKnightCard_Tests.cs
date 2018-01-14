@@ -17,6 +17,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
     #region Fields
     private const UInt32 MainSettlementOneHex = 1;
     private const UInt32 SecondSettlementOneHex = 8;
+    private const UInt32 HexWithTwoPlayerSettlements = 14;
     private Dictionary<Guid, IPlayer> playersById;
     #endregion
 
@@ -225,6 +226,68 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       // Assert
       errorDetails.ShouldNotBeNull();
       errorDetails.Message.ShouldBe("Cannot play the same development card more than once.");
+    }
+
+    [Test]
+    public void UseKnightCard_IdParameterDoesNotMatchWithAnyPlayerOnHex_MeaningfulErrorIsReceived()
+    {
+      // Arrange
+      var knightCard = new KnightDevelopmentCard();
+      var testInstances = this.TestSetup(knightCard);
+      var localGameController = testInstances.LocalGameController;
+
+      testInstances.MainPlayer.AddResources(ResourceClutch.DevelopmentCard);
+
+      TurnToken turnToken = null;
+      localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
+
+      localGameController.StartGamePlay();
+
+      // Buy the knight cards
+      localGameController.BuyDevelopmentCard(turnToken);
+      localGameController.EndTurn(turnToken);
+
+      ErrorDetails errorDetails = null;
+      localGameController.ErrorRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
+
+      // Act
+      localGameController.UseKnightCard(turnToken, knightCard, HexWithTwoPlayerSettlements, testInstances.MainPlayer.Id, 0);
+
+      // Assert
+      errorDetails.ShouldNotBeNull();
+      errorDetails.Message.ShouldBe("Player Id (" + testInstances.MainPlayer.Id + ") does not match with any players on hex " + HexWithTwoPlayerSettlements + ".");
+    }
+
+    [Test]
+    [TestCase(-1)]
+    [TestCase(3)]
+    public void UseKnightCard_ResourceIndexParameterIsOutOfBounds_MeaningfulErrorIsReceived(Int32 resourceIndex)
+    {
+      // Arrange
+      var knightCard = new KnightDevelopmentCard();
+      var testInstances = this.TestSetup(knightCard);
+      var localGameController = testInstances.LocalGameController;
+
+      testInstances.MainPlayer.AddResources(ResourceClutch.DevelopmentCard);
+
+      TurnToken turnToken = null;
+      localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
+
+      localGameController.StartGamePlay();
+
+      // Buy the knight cards
+      localGameController.BuyDevelopmentCard(turnToken);
+      localGameController.EndTurn(turnToken);
+
+      ErrorDetails errorDetails = null;
+      localGameController.ErrorRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
+
+      // Act
+      localGameController.UseKnightCard(turnToken, knightCard, HexWithTwoPlayerSettlements, testInstances.FirstOpponent.Id, resourceIndex);
+
+      // Assert
+      errorDetails.ShouldNotBeNull();
+      errorDetails.Message.ShouldBe("Resource index (" + resourceIndex + ") is out of bounds for players resources (0..2).");
     }
 
     [Test]
