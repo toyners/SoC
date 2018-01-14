@@ -53,22 +53,29 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
     public void BuyDevelopmentCard_InsufficientResources_MeaningfulErrorIsReceived(Int32 grainCount, Int32 oreCount, Int32 woolCount, String expectedErrorMessage)
     {
       // Arrange
-      this.TestSetup();
-      this.player.AddResources(new ResourceClutch(0, grainCount, 0, oreCount, woolCount));
+      var testInstances = LocalGameControllerTestCreator.CreateTestInstances(new DevelopmentCardHolder());
+      var localGameController = testInstances.LocalGameController;
+      LocalGameControllerTestSetup.LaunchGameAndCompleteSetup(localGameController);
+      var player = testInstances.MainPlayer;
+
+      testInstances.Dice.AddSequence(new[] { 8u });
+
+      player.RemoveAllResources();  // Clear down the initial resources
+      player.AddResources(new ResourceClutch(0, grainCount, 0, oreCount, woolCount));
 
       TurnToken turnToken = null;
-      this.localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
+      localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
 
       ErrorDetails errorDetails = null;
-      this.localGameController.ErrorRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
+      localGameController.ErrorRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
 
       Boolean developmentCardPurchased = false;
-      this.localGameController.DevelopmentCardPurchasedEvent = (DevelopmentCard d) => { developmentCardPurchased = true; };
+      localGameController.DevelopmentCardPurchasedEvent = (DevelopmentCard d) => { developmentCardPurchased = true; };
 
-      this.localGameController.StartGamePlay();
+      localGameController.StartGamePlay();
 
       // Act
-      this.localGameController.BuyDevelopmentCard(turnToken);
+      localGameController.BuyDevelopmentCard(turnToken);
 
       // Assert
       developmentCardPurchased.ShouldBeFalse();

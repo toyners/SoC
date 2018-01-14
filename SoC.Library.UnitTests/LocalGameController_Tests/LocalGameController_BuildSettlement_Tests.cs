@@ -51,12 +51,14 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
     public void BuildSettlement_InsufficientResources_MeaningfulErrorIsReceived(Int32 brickCount, Int32 grainCount, Int32 lumberCount, Int32 oreCount, Int32 woolCount, String expectedMessage)
     {
       // Arrange
-      MockDice mockDice = null;
-      MockPlayer player;
-      MockComputerPlayer firstOpponent, secondOpponent, thirdOpponent;
-      var localGameController = this.CreateLocalGameControllerAndCompleteGameSetup(out mockDice, out player, out firstOpponent, out secondOpponent, out thirdOpponent);
 
-      mockDice.AddSequence(new[] { 8u });
+      var testInstances = LocalGameControllerTestCreator.CreateTestInstances();
+      var localGameController = testInstances.LocalGameController;
+      var player = testInstances.MainPlayer;
+      LocalGameControllerTestSetup.LaunchGameAndCompleteSetup(localGameController);
+
+      testInstances.Dice.AddSequence(new[] { 8u });
+      player.RemoveAllResources(); // Clear down the initial resources
       player.AddResources(ResourceClutch.RoadSegment); // Need resources to build the precursor road
       player.AddResources(new ResourceClutch(brickCount, grainCount, lumberCount, oreCount, woolCount));
 
@@ -130,12 +132,13 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
     public void BuildSettlement_InsufficientResourcesAfterBuildingSettlement_MeaningfulErrorIsReceived()
     {
       // Arrange
-      MockDice mockDice = null;
-      MockPlayer player;
-      MockComputerPlayer firstOpponent, secondOpponent, thirdOpponent;
-      var localGameController = this.CreateLocalGameControllerAndCompleteGameSetup(out mockDice, out player, out firstOpponent, out secondOpponent, out thirdOpponent);
+      var testInstances = LocalGameControllerTestCreator.CreateTestInstances();
+      var localGameController = testInstances.LocalGameController;
+      var player = testInstances.MainPlayer;
+      LocalGameControllerTestSetup.LaunchGameAndCompleteSetup(localGameController);
+      testInstances.Dice.AddSequence(new[] { 8u });
 
-      mockDice.AddSequence(new[] { 8u });
+      player.RemoveAllResources(); // Clear down the initial resources
       player.AddResources(ResourceClutch.RoadSegment * 3);
       player.AddResources(ResourceClutch.Settlement);
 

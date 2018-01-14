@@ -41,12 +41,14 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
     public void BuildRoadSegment_RequiredResourcesAvailable_PlayerResourcesUpdated()
     {
       // Arrange
-      MockDice mockDice = null;
-      MockPlayer player;
-      MockComputerPlayer firstOpponent, secondOpponent, thirdOpponent;
-      var localGameController = this.CreateLocalGameControllerAndCompleteGameSetup(out mockDice, out player, out firstOpponent, out secondOpponent, out thirdOpponent);
-      mockDice.AddSequence(new[] { 8u });
-      player.AddResources(new ResourceClutch(1, 0, 1, 0, 0));
+      var testInstances = LocalGameControllerTestCreator.CreateTestInstances();
+      var localGameController = testInstances.LocalGameController;
+      var player = testInstances.MainPlayer;
+      LocalGameControllerTestSetup.LaunchGameAndCompleteSetup(localGameController);
+      testInstances.Dice.AddSequence(new[] { 8u });
+
+      player.RemoveAllResources(); // Clear down the initial resources
+      player.AddResources(ResourceClutch.RoadSegment);
 
       TurnToken turnToken = null;
       localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
@@ -280,11 +282,13 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
     public void BuildRoadSegment_WithoutRequiredResourcesAvailable_MeaningfulErrorIsReceived(Int32 brickCount, Int32 lumberCount, String expectedErrorMessage)
     {
       // Arrange
-      MockDice mockDice = null;
-      MockPlayer player;
-      MockComputerPlayer firstOpponent, secondOpponent, thirdOpponent;
-      var localGameController = this.CreateLocalGameControllerAndCompleteGameSetup(out mockDice, out player, out firstOpponent, out secondOpponent, out thirdOpponent);
-      mockDice.AddSequence(new[] { 8u });
+      var testInstances = LocalGameControllerTestCreator.CreateTestInstances();
+      var localGameController = testInstances.LocalGameController;
+      var player = testInstances.MainPlayer;
+      LocalGameControllerTestSetup.LaunchGameAndCompleteSetup(localGameController);
+      testInstances.Dice.AddSequence(new[] { 8u });
+
+      player.RemoveAllResources(); // Clear down the initial resources
       player.AddResources(new ResourceClutch(brickCount, 0, lumberCount, 0, 0));
 
       ErrorDetails errorDetails = null;

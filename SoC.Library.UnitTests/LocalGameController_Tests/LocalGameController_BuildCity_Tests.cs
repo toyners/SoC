@@ -116,12 +116,13 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
     public void BuildCity_InsufficientResources_MeaningfulErrorIsReceived(Int32 grainCount, Int32 oreCount, String expectedMessage)
     {
       // Arrange
-      MockDice mockDice = null;
-      MockPlayer player;
-      MockComputerPlayer firstOpponent, secondOpponent, thirdOpponent;
-      var localGameController = this.CreateLocalGameControllerAndCompleteGameSetup(out mockDice, out player, out firstOpponent, out secondOpponent, out thirdOpponent);
+      var testInstances = LocalGameControllerTestCreator.CreateTestInstances();
+      var localGameController = testInstances.LocalGameController;
+      var player = testInstances.MainPlayer;
+      LocalGameControllerTestSetup.LaunchGameAndCompleteSetup(localGameController);
 
-      mockDice.AddSequence(new[] { 8u });
+      testInstances.Dice.AddSequence(new[] { 8u });
+      player.RemoveAllResources(); // Clear down the initial resources
       player.AddResources(new ResourceClutch(0, grainCount, 0, oreCount, 0));
 
       Boolean cityBuilt = false;
