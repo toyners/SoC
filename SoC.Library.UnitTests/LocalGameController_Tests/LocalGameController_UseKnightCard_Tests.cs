@@ -484,7 +484,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
     /// is moved to a hex populated by two computer players.
     /// </summary>
     [Test]
-    public void Scenario_CompleteTransactionHappensWhenPlayerPlaysTheKnightCard()
+    public void Scenario_OpponentLosesResourceWhenPlayerPlaysTheKnightCard()
     {
       // Arrange
       var knightCard = new KnightDevelopmentCard();
@@ -531,7 +531,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
     }
 
     [Test]
-    public void Scenario_CompleteTransactionHappensWhenOpponentPlaysTheKnightCard()
+    public void Scenario_PlayerLosesResourceWhenOpponentPlaysTheKnightCard()
     {
       // Arrange
       var knightCard = new KnightDevelopmentCard();
@@ -540,7 +540,6 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       var player = testInstances.MainPlayer;
       var firstOpponent = testInstances.FirstOpponent;
 
-      player.AddResources(new ResourceClutch(1, 0, 0, 1, 1));
       firstOpponent.AddResources(ResourceClutch.DevelopmentCard);
       firstOpponent.AddBuyDevelopmentCardChoice(1).EndTurn()
         .AddPlaceKnightCard(new PlayKnightAction { RobberHex = MainSettlementOneHex, RobbedPlayerId = player.Id }).EndTurn();
