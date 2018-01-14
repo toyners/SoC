@@ -91,37 +91,7 @@ namespace Jabberwocky.SoC.Library
       }
 
       var index = dice.GetRandomNumberBetweenZeroAndMaximum(this.ResourcesCount);
-      if (index < this.BrickCount)
-      {
-        this.BrickCount--;
-        return ResourceClutch.OneBrick;
-      }
-
-      if (index < this.BrickCount + this.GrainCount)
-      {
-        this.GrainCount--;
-        return ResourceClutch.OneGrain;
-      }
-
-      if (index < this.BrickCount + this.GrainCount + this.LumberCount)
-      {
-        this.LumberCount--;
-        return ResourceClutch.OneLumber;
-      }
-
-      if (index < this.BrickCount + this.GrainCount + this.LumberCount + this.OreCount)
-      {
-        this.OreCount--;
-        return ResourceClutch.OneOre;
-      }
-
-      if (index < this.BrickCount + this.GrainCount + this.LumberCount + this.OreCount + this.WoolCount)
-      {
-        this.WoolCount--;
-        return ResourceClutch.OneWool;
-      }
-
-      throw new NotImplementedException("Should not get here");
+      return this.GetResourceForIndex(index);
     }
 
     public ResourceClutch LoseResource(Int32 index)
@@ -131,37 +101,12 @@ namespace Jabberwocky.SoC.Library
         throw new IndexOutOfRangeException("Index " + index + " is out of bounds (0.." + (this.ResourcesCount - 1) + ").");
       }
 
-      if (index < this.BrickCount)
+      if (this.ResourcesCount == 0)
       {
-        this.BrickCount--;
-        return ResourceClutch.OneBrick;
+        return ResourceClutch.Zero;
       }
 
-      if (index < this.BrickCount + this.GrainCount)
-      {
-        this.GrainCount--;
-        return ResourceClutch.OneGrain;
-      }
-
-      if (index < this.BrickCount + this.GrainCount + this.LumberCount)
-      {
-        this.LumberCount--;
-        return ResourceClutch.OneLumber;
-      }
-
-      if (index < this.BrickCount + this.GrainCount + this.LumberCount + this.OreCount)
-      {
-        this.OreCount--;
-        return ResourceClutch.OneOre;
-      }
-
-      if (index < this.BrickCount + this.GrainCount + this.LumberCount + this.OreCount + this.WoolCount)
-      {
-        this.WoolCount--;
-        return ResourceClutch.OneWool;
-      }
-
-      throw new NotImplementedException("Should not get here");
+      return this.GetResourceForIndex(index);
     }
 
     public void PayForDevelopmentCard()
@@ -260,6 +205,41 @@ namespace Jabberwocky.SoC.Library
       {
         throw new Exception("No name found for player in stream.");
       }
+    }
+
+    private ResourceClutch GetResourceForIndex(Int32 index)
+    {
+      if (index < this.BrickCount)
+      {
+        this.BrickCount--;
+        return ResourceClutch.OneBrick;
+      }
+
+      if (index < this.BrickCount + this.GrainCount)
+      {
+        this.GrainCount--;
+        return ResourceClutch.OneGrain;
+      }
+
+      if (index < this.BrickCount + this.GrainCount + this.LumberCount)
+      {
+        this.LumberCount--;
+        return ResourceClutch.OneLumber;
+      }
+
+      if (index < this.BrickCount + this.GrainCount + this.LumberCount + this.OreCount)
+      {
+        this.OreCount--;
+        return ResourceClutch.OneOre;
+      }
+
+      if (index < this.BrickCount + this.GrainCount + this.LumberCount + this.OreCount + this.WoolCount)
+      {
+        this.WoolCount--;
+        return ResourceClutch.OneWool;
+      }
+
+      throw new NotImplementedException("Should not get here");
     }
 
     private Int32 GetValueOrZero(XmlReader reader, String attributeName)
