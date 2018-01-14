@@ -7,35 +7,30 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
   using NSubstitute;
   using NUnit.Framework;
   using Shouldly;
+  using static LocalGameControllerTestCreator;
 
   [TestFixture]
   [Category("All")]
   [Category("LocalGameController")]
   [Category("LocalGameController.BuyDevelopmentCard")]
-  public class LocalGameController_BuyDevelopmentCard_Tests : LocalGameControllerTestBase
+  public class LocalGameController_BuyDevelopmentCard_Tests
   {
-    #region Fields
-    private MockPlayer player;
-    private MockComputerPlayer firstOpponent, secondOpponent, thirdOpponent;
-    private MockDice dice;
-    private LocalGameController localGameController;
-    #endregion
-
     #region Methods
     [Test]
     public void BuildCity_TurnTokenNotCorrect_MeaningfulErrorIsReceived()
     {
       // Arrange
-      this.TestSetup();
+      var testInstances = this.TestSetup();
+      var localGameController = testInstances.LocalGameController;
       ErrorDetails errorDetails = null;
-      this.localGameController.ErrorRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
+      localGameController.ErrorRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
 
       TurnToken turnToken = null;
-      this.localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
-      this.localGameController.StartGamePlay();
+      localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
+      localGameController.StartGamePlay();
 
       // Act
-      this.localGameController.BuyDevelopmentCard(new TurnToken());
+      localGameController.BuyDevelopmentCard(new TurnToken());
 
       // Assert
       errorDetails.ShouldNotBeNull();
@@ -53,9 +48,8 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
     public void BuyDevelopmentCard_InsufficientResources_MeaningfulErrorIsReceived(Int32 grainCount, Int32 oreCount, Int32 woolCount, String expectedErrorMessage)
     {
       // Arrange
-      var testInstances = LocalGameControllerTestCreator.CreateTestInstances(new DevelopmentCardHolder());
+      var testInstances = this.TestSetup();
       var localGameController = testInstances.LocalGameController;
-      LocalGameControllerTestSetup.LaunchGameAndCompleteSetup(localGameController);
       var player = testInstances.MainPlayer;
 
       testInstances.Dice.AddSequence(new[] { 8u });
@@ -88,23 +82,24 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
     {
       // Arrange
       var knightDevelopmentCard = new KnightDevelopmentCard();
-      this.TestSetup(this.CreateMockOneCardDevelopmentCardHolder(knightDevelopmentCard));
-      this.player.AddResources(ResourceClutch.DevelopmentCard);
+      var testInstances = this.TestSetup(this.CreateMockOneCardDevelopmentCardHolder(knightDevelopmentCard));
+      testInstances.MainPlayer.AddResources(ResourceClutch.DevelopmentCard);
+      var localGameController = testInstances.LocalGameController;
 
       TurnToken turnToken = null;
-      this.localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
+      localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
 
       ErrorDetails errorDetails = null;
-      this.localGameController.ErrorRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
+      localGameController.ErrorRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
 
 
       DevelopmentCard purchaseddDevelopmentCard = null;
-      this.localGameController.DevelopmentCardPurchasedEvent = (DevelopmentCard d) => { purchaseddDevelopmentCard = d; };
+      localGameController.DevelopmentCardPurchasedEvent = (DevelopmentCard d) => { purchaseddDevelopmentCard = d; };
 
-      this.localGameController.StartGamePlay();
+      localGameController.StartGamePlay();
 
       // Act
-      this.localGameController.BuyDevelopmentCard(turnToken);
+      localGameController.BuyDevelopmentCard(turnToken);
 
       // Assert
       purchaseddDevelopmentCard.ShouldNotBeNull();
@@ -116,43 +111,42 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
     public void BuyDevelopmentCard_NoMoreDevelopmentCards_MeaningfulErrorIsReceived()
     {
       // Arrange
-      this.TestSetup();
-      this.player.AddResources(ResourceClutch.DevelopmentCard * 26);
+      var testInstances = this.TestSetup();
+      testInstances.MainPlayer.AddResources(ResourceClutch.DevelopmentCard * 26);
+      var localGameController = testInstances.LocalGameController;
 
       TurnToken turnToken = null;
-      this.localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
+      localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
 
       ErrorDetails errorDetails = null;
-      this.localGameController.ErrorRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
+      localGameController.ErrorRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
 
-      this.localGameController.StartGamePlay();
+      localGameController.StartGamePlay();
       for (var i = 25; i > 0; i--)
       {
-        this.localGameController.BuyDevelopmentCard(turnToken);
+        localGameController.BuyDevelopmentCard(turnToken);
       }
 
       // Act
-      this.localGameController.BuyDevelopmentCard(turnToken);
+      localGameController.BuyDevelopmentCard(turnToken);
 
       // Assert
       errorDetails.ShouldNotBeNull();
       errorDetails.Message.ShouldBe("Cannot buy development card. No more cards available");
     }
 
-    private void TestSetup()
+    private TestInstances TestSetup()
     {
-      this.TestSetup(new DevelopmentCardHolder());
+      return this.TestSetup(new DevelopmentCardHolder());
     }
 
-    private void TestSetup(IDevelopmentCardHolder developmentCardHolder)
+    private TestInstances TestSetup(IDevelopmentCardHolder developmentCardHolder)
     {
-      this.CreateDefaultPlayerInstances(out this.player, out this.firstOpponent, out this.secondOpponent, out this.thirdOpponent);
-      this.dice = this.CreateMockDice();
-      this.dice.AddSequence(new[] { 8u });
+      var testInstances = LocalGameControllerTestCreator.CreateTestInstances(developmentCardHolder);
+      LocalGameControllerTestSetup.LaunchGameAndCompleteSetup(testInstances.LocalGameController);
+      testInstances.Dice.AddSequence(new[] { 8u });
 
-      var playerPool = this.CreatePlayerPool(this.player, new[] { this.firstOpponent, this.secondOpponent, this.thirdOpponent });
-      this.localGameController = this.CreateLocalGameController(dice, playerPool, developmentCardHolder);
-      this.CompleteGameSetup(this.localGameController);
+      return testInstances;
     }
 
     private IDevelopmentCardHolder CreateMockOneCardDevelopmentCardHolder(DevelopmentCard developmentCard)
