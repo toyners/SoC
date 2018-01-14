@@ -457,12 +457,12 @@ namespace Jabberwocky.SoC.Library.GameBoards
       return new VerificationResults { Status = VerificationStatus.Valid };
     }
 
-    public Tuple<ResourceTypes, UInt32>[] GetHexInformation()
+    public Tuple<ResourceTypes?, UInt32>[] GetHexInformation()
     {
-      var data = new Tuple<ResourceTypes, UInt32>[this.hexes.Length];
+      var data = new Tuple<ResourceTypes?, UInt32>[this.hexes.Length];
       for (var index = 0; index < this.hexes.Length; index++)
       {
-        data[index] = new Tuple<ResourceTypes, uint>(this.hexes[index].Type, this.hexes[index].Production);
+        data[index] = new Tuple<ResourceTypes?, uint>(this.hexes[index].Type, this.hexes[index].Production);
       }
 
       return data;
@@ -860,7 +860,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
           this.hexes[index++].Type = ResourceTypes.Wool;
           break;
           case ' ':
-          this.hexes[index++].Type = ResourceTypes.None;
+          this.hexes[index++].Type = null;
           break;
         }
       }
@@ -890,7 +890,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
     {
       this.hexes = new ResourceProducer[StandardBoardHexCount];
       //d,b8,o5
-      this.hexes[0] = new ResourceProducer { Type = ResourceTypes.None, Production = 0u };
+      this.hexes[0] = new ResourceProducer { Type = null, Production = 0u };
       this.hexes[1] = new ResourceProducer { Type = ResourceTypes.Brick, Production = 8u };
       this.hexes[2] = new ResourceProducer { Type = ResourceTypes.Ore, Production = 5u };
 
@@ -1147,7 +1147,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
     [DebuggerDisplay("Type = {Type}, Production = {Production}")]
     private class ResourceProducer
     {
-      public ResourceTypes Type;
+      public ResourceTypes? Type;
       public UInt32 Production;
     }
 

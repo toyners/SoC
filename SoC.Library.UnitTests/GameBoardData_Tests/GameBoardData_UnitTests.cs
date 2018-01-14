@@ -967,29 +967,29 @@ namespace Jabberwocky.SoC.Library.UnitTests.GameBoardData_Tests
       var data = gameBoard.GetHexInformation();
 
       // Assert
-      data[0].ShouldBe(new Tuple<ResourceTypes, UInt32>(ResourceTypes.None, 0));
-      data[1].ShouldBe(new Tuple<ResourceTypes, UInt32>(ResourceTypes.Brick, 8));
-      data[2].ShouldBe(new Tuple<ResourceTypes, UInt32>(ResourceTypes.Ore, 5));
+      data[0].ShouldBe(new Tuple<ResourceTypes?, UInt32>(null, 0));
+      data[1].ShouldBe(new Tuple<ResourceTypes?, UInt32>(ResourceTypes.Brick, 8));
+      data[2].ShouldBe(new Tuple<ResourceTypes?, UInt32>(ResourceTypes.Ore, 5));
 
-      data[3].ShouldBe(new Tuple<ResourceTypes, UInt32>(ResourceTypes.Brick, 4));
-      data[4].ShouldBe(new Tuple<ResourceTypes, UInt32>(ResourceTypes.Lumber, 3));
-      data[5].ShouldBe(new Tuple<ResourceTypes, UInt32>(ResourceTypes.Wool, 10));
-      data[6].ShouldBe(new Tuple<ResourceTypes, UInt32>(ResourceTypes.Grain, 2));
+      data[3].ShouldBe(new Tuple<ResourceTypes?, UInt32>(ResourceTypes.Brick, 4));
+      data[4].ShouldBe(new Tuple<ResourceTypes?, UInt32>(ResourceTypes.Lumber, 3));
+      data[5].ShouldBe(new Tuple<ResourceTypes?, UInt32>(ResourceTypes.Wool, 10));
+      data[6].ShouldBe(new Tuple<ResourceTypes?, UInt32>(ResourceTypes.Grain, 2));
 
-      data[7].ShouldBe(new Tuple<ResourceTypes, UInt32>(ResourceTypes.Lumber, 11));
-      data[8].ShouldBe(new Tuple<ResourceTypes, UInt32>(ResourceTypes.Ore, 6));
-      data[9].ShouldBe(new Tuple<ResourceTypes, UInt32>(ResourceTypes.Grain, 11));
-      data[10].ShouldBe(new Tuple<ResourceTypes, UInt32>(ResourceTypes.Wool, 9));
-      data[11].ShouldBe(new Tuple<ResourceTypes, UInt32>(ResourceTypes.Lumber, 6));
+      data[7].ShouldBe(new Tuple<ResourceTypes?, UInt32>(ResourceTypes.Lumber, 11));
+      data[8].ShouldBe(new Tuple<ResourceTypes?, UInt32>(ResourceTypes.Ore, 6));
+      data[9].ShouldBe(new Tuple<ResourceTypes?, UInt32>(ResourceTypes.Grain, 11));
+      data[10].ShouldBe(new Tuple<ResourceTypes?, UInt32>(ResourceTypes.Wool, 9));
+      data[11].ShouldBe(new Tuple<ResourceTypes?, UInt32>(ResourceTypes.Lumber, 6));
 
-      data[12].ShouldBe(new Tuple<ResourceTypes, UInt32>(ResourceTypes.Wool, 12));
-      data[13].ShouldBe(new Tuple<ResourceTypes, UInt32>(ResourceTypes.Brick, 5));
-      data[14].ShouldBe(new Tuple<ResourceTypes, UInt32>(ResourceTypes.Lumber, 4));
-      data[15].ShouldBe(new Tuple<ResourceTypes, UInt32>(ResourceTypes.Ore, 3));
+      data[12].ShouldBe(new Tuple<ResourceTypes?, UInt32>(ResourceTypes.Wool, 12));
+      data[13].ShouldBe(new Tuple<ResourceTypes?, UInt32>(ResourceTypes.Brick, 5));
+      data[14].ShouldBe(new Tuple<ResourceTypes?, UInt32>(ResourceTypes.Lumber, 4));
+      data[15].ShouldBe(new Tuple<ResourceTypes?, UInt32>(ResourceTypes.Ore, 3));
 
-      data[16].ShouldBe(new Tuple<ResourceTypes, UInt32>(ResourceTypes.Grain, 9));
-      data[17].ShouldBe(new Tuple<ResourceTypes, UInt32>(ResourceTypes.Wool, 10));
-      data[18].ShouldBe(new Tuple<ResourceTypes, UInt32>(ResourceTypes.Grain, 8));
+      data[16].ShouldBe(new Tuple<ResourceTypes?, UInt32>(ResourceTypes.Grain, 9));
+      data[17].ShouldBe(new Tuple<ResourceTypes?, UInt32>(ResourceTypes.Wool, 10));
+      data[18].ShouldBe(new Tuple<ResourceTypes?, UInt32>(ResourceTypes.Grain, 8));
     }
 
     [Test]
