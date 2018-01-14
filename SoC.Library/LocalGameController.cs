@@ -667,6 +667,7 @@ namespace Jabberwocky.SoC.Library
 
       this.UseKnightDevelopmentCard(developmentCard, newRobberHex);
       var takenResource = playerToRob.LoseResource(resourceIndex);
+      this.mainPlayer.AddResources(takenResource);
       this.ResourcesGainedEvent?.Invoke(takenResource);
 
       var playerWithMostKnightCards = this.DeterminePlayerWithMostKnightCards();
