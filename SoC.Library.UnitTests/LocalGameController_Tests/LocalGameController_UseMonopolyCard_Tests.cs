@@ -31,7 +31,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       localGameController.ErrorRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
 
       // Act
-      localGameController.UseMonopolyCard(new TurnToken(), null, ResourceKinds.Brick);
+      localGameController.UseMonopolyCard(new TurnToken(), null, ResourceTypes.Brick);
 
       // Assert
       errorDetails.ShouldNotBeNull();
@@ -54,7 +54,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       localGameController.ErrorRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
 
       // Act
-      localGameController.UseMonopolyCard(turnToken, null, ResourceKinds.Brick);
+      localGameController.UseMonopolyCard(turnToken, null, ResourceTypes.Brick);
 
       // Assert
       errorDetails.ShouldNotBeNull();
@@ -70,7 +70,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
     {
       var testInstances = LocalGameControllerTestCreator.CreateTestInstances(developmentCardHolder);
       LocalGameControllerTestSetup.LaunchGameAndCompleteSetup(testInstances.LocalGameController);
-
+      testInstances.Dice.AddSequence(new[] { 8u });
       return testInstances;
     }
     #endregion 

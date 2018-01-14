@@ -643,7 +643,7 @@ namespace Jabberwocky.SoC.Library
       this.RaiseLargestArmyEventIfPlayerHasLargestArmy();
     }
 
-    public void UseMonopolyCard(TurnToken turnToken, MonopolyDevelopmentCard monopolyCard, ResourceKinds resourceType)
+    public void UseMonopolyCard(TurnToken turnToken, MonopolyDevelopmentCard monopolyCard, ResourceTypes resourceType)
     {
       throw new NotImplementedException();
     }
