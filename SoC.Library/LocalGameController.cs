@@ -649,9 +649,8 @@ namespace Jabberwocky.SoC.Library
 
     public void UseMonopolyCard(TurnToken turnToken, MonopolyDevelopmentCard monopolyCard, ResourceTypes resourceType)
     {
-      if (turnToken != this.currentTurnToken)
+      if (!this.VerifyParametersForUsingDevelopmentCard(turnToken, monopolyCard))
       {
-        this.ErrorRaisedEvent?.Invoke(new ErrorDetails("Turn token not recognised."));
         return;
       }
 
