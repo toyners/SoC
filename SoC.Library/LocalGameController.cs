@@ -938,11 +938,6 @@ namespace Jabberwocky.SoC.Library
       this.ErrorRaisedEvent?.Invoke(new ErrorDetails(message));
     }
 
-    private Boolean IsComputerPlayer(IPlayer player)
-    {
-      return player is IComputerPlayer;
-    }
-
     private Boolean PlayerIdsIsEmptyOrOnlyContainsMainPlayer(Guid[] playerIds)
     {
       return playerIds == null || playerIds.Length == 0 ||
