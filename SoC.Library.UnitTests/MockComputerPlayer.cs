@@ -17,7 +17,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     public List<DevelopmentCardTypes> DisplayedDevelopmentCards;
 
     public Queue<UInt32> CityLocations = new Queue<UInt32>();
-    private Queue<KnightDevelopmentCard> knightCards = new Queue<KnightDevelopmentCard>();
+    private Dictionary<DevelopmentCardTypes, Queue<DevelopmentCard>> developmentCards = new Dictionary<DevelopmentCardTypes, Queue<DevelopmentCard>>();
     private Queue<PlayKnightAction> playKnightCardActions = new Queue<PlayKnightAction>();
     private Queue<PlayMonopolyCardAction> playMonopolyCardActions = new Queue<PlayMonopolyCardAction>();
     public Queue<UInt32> SettlementLocations;
@@ -68,14 +68,34 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
     public override void AddDevelopmentCard(DevelopmentCard developmentCard)
     {
-      var knightCard = developmentCard as KnightDevelopmentCard;
-      if (knightCard != null)
+      DevelopmentCardTypes? developmentCardType = null;
+
+      if (developmentCard is KnightDevelopmentCard)
       {
-        this.knightCards.Enqueue(knightCard);
-        return;
+        developmentCardType = DevelopmentCardTypes.Knight;
       }
 
-      throw new Exception("Development card is not recognised.");
+      if (developmentCard is MonopolyDevelopmentCard)
+      {
+        developmentCardType = DevelopmentCardTypes.Monopoly;
+      }
+
+      if (developmentCardType == null)
+      {
+        throw new Exception("Development card is not recognised.");
+      }
+
+      var key = developmentCardType.Value;
+      if (!this.developmentCards.ContainsKey(key))
+      {
+        var queue = new Queue<DevelopmentCard>();
+        queue.Enqueue(developmentCard);
+        this.developmentCards.Add(key, queue);
+      }
+      else
+      {
+        this.developmentCards[key].Enqueue(developmentCard);
+      }
     }
 
     public MockComputerPlayer AddPlaceMonopolyCardAction(PlayMonopolyCardAction playMonopolyCardAction)
@@ -106,7 +126,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
     public override KnightDevelopmentCard ChooseKnightCard()
     {
-      return this.knightCards.Dequeue();
+      return this.developmentCards[DevelopmentCardTypes.Knight].Dequeue() as KnightDevelopmentCard;
     }
 
     public override IPlayer ChoosePlayerToRob(IEnumerable<IPlayer> otherPlayers)
