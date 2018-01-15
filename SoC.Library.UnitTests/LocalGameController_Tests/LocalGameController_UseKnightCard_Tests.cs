@@ -65,7 +65,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
 
       // Assert
       errorDetails.ShouldNotBeNull();
-      errorDetails.Message.ShouldBe("Knight development card parameter is null.");
+      errorDetails.Message.ShouldBe("Development card parameter is null.");
     }
 
     [Test]

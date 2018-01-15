@@ -5,7 +5,6 @@ namespace Jabberwocky.SoC.Library
   using System.Collections.Generic;
   using System.IO;
   using System.Xml;
-  using Enums;
   using GameBoards;
   using Interfaces;
 
@@ -617,7 +616,12 @@ namespace Jabberwocky.SoC.Library
 
     public void UseKnightCard(TurnToken turnToken, KnightDevelopmentCard developmentCard, UInt32 newRobberHex)
     {
-      if (!this.VerifyStandardParametersForUsingKnightCard(turnToken, developmentCard, newRobberHex))
+      if (!this.VerifyParametersForUsingDevelopmentCard(turnToken, developmentCard))
+      {
+        return;
+      }
+
+      if (!this.VerifyPlacementOfRobber(newRobberHex))
       {
         return;
       }
@@ -628,7 +632,7 @@ namespace Jabberwocky.SoC.Library
 
     public void UseKnightCard(TurnToken turnToken, KnightDevelopmentCard developmentCard, UInt32 newRobberHex, Guid playerId, Int32 resourceIndex)
     {
-      if (!this.VerifyStandardParametersForUsingKnightCard(turnToken, developmentCard, newRobberHex))
+      if (!this.VerifyParametersForUsingDevelopmentCard(turnToken, developmentCard))
       {
         return;
       }
@@ -710,22 +714,6 @@ namespace Jabberwocky.SoC.Library
     {
       return this.currentPlayer.GrainCount >= 1 && this.currentPlayer.OreCount >= 1 && this.currentPlayer.WoolCount >= 1
         && this.developmentCardHolder.HasCards;
-    }
-
-    private Boolean CanUseDevelopmentCard(KnightDevelopmentCard developmentCard, UInt32 newRobberHex)
-    {
-      if (developmentCard != null &&
-        !this.cardsPurchasedThisTurn.Contains(developmentCard) &&
-        !this.cardPlayedThisTurn &&
-        this.gameBoardManager.Data.CanPlaceRobber(newRobberHex) &&
-        this.robberHex != newRobberHex &&
-        !this.cardsPlayed.Contains(developmentCard))
-      {
-        return true;
-      }
-
-      this.TryRaiseDevelopmentCardUsageError(developmentCard, newRobberHex);
-      return false;
     }
 
     private void ChangeToNextPlayer()
@@ -1129,45 +1117,6 @@ namespace Jabberwocky.SoC.Library
       }
     }
 
-    private void TryRaiseDevelopmentCardUsageError(KnightDevelopmentCard developmentCard, UInt32 newRobberHex)
-    {
-      if (developmentCard == null)
-      {
-        this.ErrorRaisedEvent?.Invoke(new ErrorDetails("Knight development card parameter is null."));
-        return;
-      }
-
-      if (cardsPurchasedThisTurn.Contains(developmentCard))
-      {
-        this.ErrorRaisedEvent?.Invoke(new ErrorDetails("Cannot use development card that has been purchased this turn."));
-        return;
-      }
-
-      if (!this.gameBoardManager.Data.CanPlaceRobber(newRobberHex))
-      {
-        this.ErrorRaisedEvent?.Invoke(new ErrorDetails("Cannot move robber to hex " + newRobberHex + " because it is out of bounds (0.. " + (GameBoardData.StandardBoardHexCount - 1) + ")."));
-        return;
-      }
-
-      if (this.cardPlayedThisTurn)
-      {
-        this.ErrorRaisedEvent?.Invoke(new ErrorDetails("Cannot play more than one development card in a turn."));
-        return;
-      }
-
-      if (newRobberHex == this.robberHex)
-      {
-        this.ErrorRaisedEvent?.Invoke(new ErrorDetails("Cannot place robber back on present hex (" + this.robberHex + ")."));
-        return;
-      }
-
-      if (this.cardsPlayed.Contains(developmentCard))
-      {
-        this.ErrorRaisedEvent?.Invoke(new ErrorDetails("Cannot play the same development card more than once."));
-        return;
-      }
-    }
-
     private void TryRaiseRoadSegmentBuildingError()
     {
       if (this.currentPlayer.RemainingRoadSegments == 0)
@@ -1315,7 +1264,6 @@ namespace Jabberwocky.SoC.Library
       }
     }
 
-
     private Boolean VerifyBuildCityRequest(UInt32 location)
     {
       if (!this.CanBuildCity())
@@ -1372,6 +1320,11 @@ namespace Jabberwocky.SoC.Library
 
     private Boolean VerifyParametersForResourceTransactionWhenUsingKnightCard(UInt32 newRobberHex, Guid playerId, Int32 resourceIndex)
     {
+      if (!this.VerifyPlacementOfRobber(newRobberHex))
+      {
+        return false;
+      }
+
       var playerIdsOnHex = new List<Guid>(this.gameBoardManager.Data.GetPlayersForHex(newRobberHex));
       if (!playerIdsOnHex.Contains(playerId))
       {
@@ -1389,7 +1342,7 @@ namespace Jabberwocky.SoC.Library
       return true;
     }
 
-    private Boolean VerifyStandardParametersForUsingKnightCard(TurnToken turnToken, KnightDevelopmentCard developmentCard, UInt32 newRobberHex)
+    private Boolean VerifyParametersForUsingDevelopmentCard(TurnToken turnToken, DevelopmentCard developmentCard)
     {
       if (turnToken != this.currentTurnToken)
       {
@@ -1397,8 +1350,44 @@ namespace Jabberwocky.SoC.Library
         return false;
       }
 
-      if (!this.CanUseDevelopmentCard(developmentCard, newRobberHex))
+      if (developmentCard == null)
       {
+        this.ErrorRaisedEvent?.Invoke(new ErrorDetails("Development card parameter is null."));
+        return false;
+      }
+
+      if (cardsPurchasedThisTurn.Contains(developmentCard))
+      {
+        this.ErrorRaisedEvent?.Invoke(new ErrorDetails("Cannot use development card that has been purchased this turn."));
+        return false;
+      }
+
+      if (this.cardPlayedThisTurn)
+      {
+        this.ErrorRaisedEvent?.Invoke(new ErrorDetails("Cannot play more than one development card in a turn."));
+        return false;
+      }
+
+      if (this.cardsPlayed.Contains(developmentCard))
+      {
+        this.ErrorRaisedEvent?.Invoke(new ErrorDetails("Cannot play the same development card more than once."));
+        return false;
+      }
+
+      return true;
+    }
+
+    private Boolean VerifyPlacementOfRobber(UInt32 newRobberHex)
+    {
+      if (!this.gameBoardManager.Data.CanPlaceRobber(newRobberHex))
+      {
+        this.ErrorRaisedEvent?.Invoke(new ErrorDetails("Cannot move robber to hex " + newRobberHex + " because it is out of bounds (0.. " + (GameBoardData.StandardBoardHexCount - 1) + ")."));
+        return false;
+      }
+
+      if (newRobberHex == this.robberHex)
+      {
+        this.ErrorRaisedEvent?.Invoke(new ErrorDetails("Cannot place robber back on present hex (" + this.robberHex + ")."));
         return false;
       }
 
