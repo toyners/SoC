@@ -162,6 +162,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       localGameController.UseMonopolyCard(turnToken, monopolyCard, ResourceTypes.Brick);
 
       // Assert
+      gainedResources.ShouldNotBeNull();
       gainedResources.Resources.ShouldContainKeyAndValue(firstOpponent.Id, ResourceClutch.OneBrick);
       gainedResources.Resources.ShouldContainKeyAndValue(secondOpponent.Id, ResourceClutch.OneBrick * 2);
       player.ResourcesCount.ShouldBe(3);

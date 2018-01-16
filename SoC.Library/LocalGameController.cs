@@ -661,11 +661,15 @@ namespace Jabberwocky.SoC.Library
       foreach (var opponent in this.computerPlayers)
       {
         var resources = opponent.LoseResourcesOfType(resourceType);
+        this.mainPlayer.AddResources(resources);
         if (resources != ResourceClutch.Zero)
         {
           resourcesByPlayerId.Add(opponent.Id, resources);
         }
       }
+
+      var resourceUpdate = new ResourceUpdate { Resources = resourcesByPlayerId };
+      this.ResourcesGainedEvent?.Invoke(resourceUpdate);
     }
     
     private void AddResourcesToList(List<ResourceTypes> resources, ResourceTypes resourceType, Int32 total)
@@ -967,6 +971,13 @@ namespace Jabberwocky.SoC.Library
       this.cardsPlayed.Add(developmentCard);
       this.currentPlayer.PlaceKnightDevelopmentCard();
       this.robberHex = newRobberHex;
+    }
+
+    private void PlayMonopolyDevelopmentCard(MonopolyDevelopmentCard developmentCard)
+    {
+      this.cardPlayedThisTurn = true;
+      this.cardsPlayed.Add(developmentCard);
+      this.currentPlayer.PlaceMonopolyDevelopmentCard();
     }
 
     private void RaiseLargestArmyEventIfPlayerHasLargestArmy()
