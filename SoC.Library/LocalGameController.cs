@@ -38,6 +38,7 @@ namespace Jabberwocky.SoC.Library
     private Int32 playerIndex;
     private IPlayer[] players;
     private Dictionary<Guid, IPlayer> playersById;
+    private IPlayer[] computerPlayers;
     private IPlayer playerWithLargestArmy;
     private IPlayer mainPlayer;
     private ResourceUpdate gameSetupResources;
@@ -874,13 +875,15 @@ namespace Jabberwocky.SoC.Library
       this.players[0] = this.mainPlayer;
       this.playersById = new Dictionary<Guid, IPlayer>(this.players.Length);
       this.playersById.Add(this.mainPlayer.Id, this.mainPlayer);
+      this.computerPlayers = new IPlayer[gameOptions.MaxAIPlayers];
 
       var index = 1;
       while ((gameOptions.MaxAIPlayers--) > 0)
       {
-        var player = this.playerPool.CreatePlayer(false);
-        this.players[index] = player;
-        this.playersById.Add(player.Id, player);
+        var computerPlayer = this.playerPool.CreatePlayer(false);
+        this.players[index] = computerPlayer;
+        this.playersById.Add(computerPlayer.Id, computerPlayer);
+        this.computerPlayers[index] = computerPlayer;
         index++;
       }
     }
