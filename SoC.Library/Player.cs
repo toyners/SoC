@@ -111,7 +111,42 @@ namespace Jabberwocky.SoC.Library
 
     public ResourceClutch LoseResourcesOfType(ResourceTypes resourceType)
     {
-      throw new NotImplementedException();
+      if (resourceType == ResourceTypes.Brick)
+      {
+        var resourceClutch = new ResourceClutch(this.BrickCount, 0, 0, 0, 0);
+        this.BrickCount = 0;
+        return resourceClutch;
+      }
+
+      if (resourceType == ResourceTypes.Grain)
+      {
+        var resourceClutch = new ResourceClutch(0, this.GrainCount, 0, 0, 0);
+        this.GrainCount = 0;
+        return resourceClutch;
+      }
+
+      if (resourceType == ResourceTypes.Lumber)
+      {
+        var resourceClutch = new ResourceClutch(0, 0, this.LumberCount, 0, 0);
+        this.LumberCount = 0;
+        return resourceClutch;
+      }
+
+      if (resourceType == ResourceTypes.Ore)
+      {
+        var resourceClutch = new ResourceClutch(0, 0, 0, this.OreCount, 0);
+        this.OreCount = 0;
+        return resourceClutch;
+      }
+
+      if (resourceType == ResourceTypes.Wool)
+      {
+        var resourceClutch = new ResourceClutch(0, 0, 0, 0, this.WoolCount);
+        this.WoolCount = 0;
+        return resourceClutch;
+      }
+
+      throw new NotImplementedException("Should not get here");
     }
 
     public void PayForDevelopmentCard()

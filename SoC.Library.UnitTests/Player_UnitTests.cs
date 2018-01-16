@@ -173,24 +173,53 @@ namespace Jabberwocky.SoC.Library.UnitTests
     }
 
     [Test]
-    [TestCase(0)]
-    [TestCase(1)]
-    [TestCase(10)]
-    public void LoseResourcesOfType_OpponentHasResourcesOfType_ReturnsExpectedResource(Int32 brickCount)
+    [TestCase(0, ResourceTypes.Brick)]
+    [TestCase(1, ResourceTypes.Brick)]
+    [TestCase(10, ResourceTypes.Brick)]
+    [TestCase(0, ResourceTypes.Grain)]
+    [TestCase(1, ResourceTypes.Grain)]
+    [TestCase(10, ResourceTypes.Grain)]
+    [TestCase(0, ResourceTypes.Lumber)]
+    [TestCase(1, ResourceTypes.Lumber)]
+    [TestCase(10, ResourceTypes.Lumber)]
+    [TestCase(0, ResourceTypes.Ore)]
+    [TestCase(1, ResourceTypes.Ore)]
+    [TestCase(10, ResourceTypes.Ore)]
+    [TestCase(0, ResourceTypes.Wool)]
+    [TestCase(1, ResourceTypes.Wool)]
+    [TestCase(10, ResourceTypes.Wool)]
+    public void LoseResourcesOfType_OpponentHasResourcesOfType_ReturnsExpectedResource(Int32 count, ResourceTypes resourceType)
     {
       // Arrange
       var player = new Player();
-      player.AddResources(new ResourceClutch(brickCount, 1, 1, 1, 1));
+      player.AddResources(new ResourceClutch(count, count, count, count, count));
 
-      var expectedResourceClutch = new ResourceClutch(brickCount, 0, 0, 0, 0);
+      ResourceClutch expectedResourceClutch = ResourceClutch.Zero;
+
+      switch (resourceType)
+      {
+        case ResourceTypes.Brick: expectedResourceClutch = new ResourceClutch(count, 0, 0, 0, 0); break;
+        case ResourceTypes.Grain: expectedResourceClutch = new ResourceClutch(0, count, 0, 0, 0); break;
+        case ResourceTypes.Lumber: expectedResourceClutch = new ResourceClutch(0, 0, count, 0, 0); break;
+        case ResourceTypes.Ore: expectedResourceClutch = new ResourceClutch(0, 0, 0, count, 0); break;
+        case ResourceTypes.Wool: expectedResourceClutch = new ResourceClutch(0, 0, 0, 0, count); break;
+      }
 
       // Act
-      var actualResourceClutch = player.LoseResourcesOfType(ResourceTypes.Brick);
+      var actualResourceClutch = player.LoseResourcesOfType(resourceType);
 
       // Assert
       actualResourceClutch.ShouldBe(expectedResourceClutch);
-      player.ResourcesCount.ShouldBe(4);
-      player.BrickCount.ShouldBe(0);
+      player.ResourcesCount.ShouldBe(count * 4);
+
+      switch (resourceType)
+      {
+        case ResourceTypes.Brick: player.BrickCount.ShouldBe(0); break;
+        case ResourceTypes.Grain: player.GrainCount.ShouldBe(0); break;
+        case ResourceTypes.Lumber: player.LumberCount.ShouldBe(0); break;
+        case ResourceTypes.Ore: player.OreCount.ShouldBe(0); break;
+        case ResourceTypes.Wool: player.WoolCount.ShouldBe(0); break;
+      }
     }
     #endregion 
   }
