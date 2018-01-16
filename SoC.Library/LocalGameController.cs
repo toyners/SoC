@@ -84,7 +84,7 @@ namespace Jabberwocky.SoC.Library
     public Action<Guid> LongestRoadBuiltEvent { get; set; }
     public Action<Guid, List<GameEvent>> OpponentActionsEvent { get; set; }
     public Action<ResourceUpdate> ResourcesCollectedEvent { get; set; }
-    public Action<ResourceClutch> ResourcesGainedEvent { get; set; }
+    public Action<ResourceUpdate> ResourcesGainedEvent { get; set; }
     public Action<ResourceUpdate> ResourcesLostEvent { get; set; }
     public Action RoadSegmentBuiltEvent { get; set; }
     public Action<Int32> RobberEvent { get; set; }
@@ -207,7 +207,9 @@ namespace Jabberwocky.SoC.Library
       player.RemoveResources(gainedResources);
       this.mainPlayer.AddResources(gainedResources);
 
-      this.ResourcesGainedEvent?.Invoke(gainedResources);
+      var resourceUpdate = new ResourceUpdate();
+      resourceUpdate.Resources.Add(player.Id, gainedResources);
+      this.ResourcesGainedEvent?.Invoke(resourceUpdate);
     }
 
     public void CompleteGameSetup(UInt32 settlementLocation, UInt32 roadEndLocation)
@@ -809,7 +811,11 @@ namespace Jabberwocky.SoC.Library
     {
       var takenResource = playerToTakeResourceFrom.LoseResourceAtIndex(resourceIndex);
       this.mainPlayer.AddResources(takenResource);
-      this.ResourcesGainedEvent?.Invoke(takenResource);
+
+      var resourceUpdate = new ResourceUpdate();
+      resourceUpdate.Resources.Add(playerToTakeResourceFrom.Id, takenResource);
+
+      this.ResourcesGainedEvent?.Invoke(resourceUpdate);
     }
 
     private GameBoardUpdate CompleteSetupForComputerPlayers(GameBoardData gameBoardData, GameBoardUpdate gameBoardUpdate)

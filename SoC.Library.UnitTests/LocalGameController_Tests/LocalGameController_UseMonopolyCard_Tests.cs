@@ -149,8 +149,8 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       TurnToken turnToken = null;
       localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
 
-      ResourceClutch gainedResources = ResourceClutch.Zero;
-      localGameController.ResourcesGainedEvent = (ResourceClutch r) => { gainedResources = r; };
+      ResourceUpdate gainedResources = null;
+      localGameController.ResourcesGainedEvent = (ResourceUpdate r) => { gainedResources = r; };
 
       localGameController.StartGamePlay();
 
@@ -162,7 +162,8 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       localGameController.UseMonopolyCard(turnToken, monopolyCard, ResourceTypes.Brick);
 
       // Assert
-      gainedResources.ShouldBe(ResourceClutch.OneBrick * 3);
+      gainedResources.Resources.ShouldContainKeyAndValue(firstOpponent.Id, ResourceClutch.OneBrick);
+      gainedResources.Resources.ShouldContainKeyAndValue(secondOpponent.Id, ResourceClutch.OneBrick * 2);
       player.ResourcesCount.ShouldBe(3);
       player.BrickCount.ShouldBe(3);
       firstOpponent.ResourcesCount.ShouldBe(4);

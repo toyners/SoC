@@ -1113,14 +1113,14 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       firstOpponent.AddResources(new ResourceClutch(1, 0, 0, 0, 0));
 
       // Act
-      ResourceClutch resourceClutch = ResourceClutch.Zero;
-      localGameController.ResourcesGainedEvent = (ResourceClutch rc) => { resourceClutch = rc; };
+      ResourceUpdate gainedResources = null;
+      localGameController.ResourcesGainedEvent = (ResourceUpdate r) => { gainedResources = r; };
       localGameController.StartGamePlay();
       localGameController.SetRobberHex(7u);
       localGameController.ChooseResourceFromOpponent(firstOpponent.Id, 0);
 
       // Assert
-      resourceClutch.ShouldBe(new ResourceClutch(1, 0, 0, 0, 0));
+      gainedResources.Resources.ShouldContainKeyAndValue(firstOpponent.Id, ResourceClutch.OneBrick);
       player.ResourcesCount.ShouldBe(1);
       player.BrickCount.ShouldBe(1);
       firstOpponent.ResourcesCount.ShouldBe(0);
@@ -1150,16 +1150,16 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       firstOpponent.AddResources(new ResourceClutch(1, 0, 0, 0, 0));
 
       // Act
-      ResourceClutch resourceClutch = ResourceClutch.Zero;
+      ResourceUpdate resourceUpdate = null;
       ErrorDetails errorDetails = null;
-      localGameController.ResourcesGainedEvent = (ResourceClutch rc) => { resourceClutch = rc; };
+      localGameController.ResourcesGainedEvent = (ResourceUpdate r) => { resourceUpdate = r; };
       localGameController.ErrorRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
       localGameController.StartGamePlay();
       localGameController.SetRobberHex(3u);
       localGameController.ChooseResourceFromOpponent(firstOpponent.Id, index);
 
       // Assert
-      resourceClutch.ShouldBe(ResourceClutch.Zero);
+      resourceUpdate.ShouldBeNull();
       player.ResourcesCount.ShouldBe(0);
       firstOpponent.ResourcesCount.ShouldBe(1);
       firstOpponent.BrickCount.ShouldBe(1);
@@ -1190,16 +1190,16 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       firstOpponent.AddResources(new ResourceClutch(1, 0, 0, 0, 0));
 
       // Act
-      ResourceClutch resourceClutch = ResourceClutch.Zero;
+      Boolean resourceUpdateReceived = false;
       ErrorDetails errorDetails = null;
-      localGameController.ResourcesGainedEvent = (ResourceClutch rc) => { resourceClutch = rc; };
+      localGameController.ResourcesGainedEvent = (ResourceUpdate r) => { resourceUpdateReceived = true; };
       localGameController.ErrorRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
       localGameController.StartGamePlay();
       localGameController.SetRobberHex(3u);
       localGameController.ChooseResourceFromOpponent(secondOpponent.Id, 0);
 
       // Assert
-      resourceClutch.ShouldBe(ResourceClutch.Zero);
+      resourceUpdateReceived.ShouldBeFalse();
       player.ResourcesCount.ShouldBe(0);
       firstOpponent.ResourcesCount.ShouldBe(1);
       firstOpponent.BrickCount.ShouldBe(1);
@@ -1223,8 +1223,8 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       testInstances.Dice.AddSequence(new[] { 7u });
 
       // Act
-      ResourceClutch resourceClutch = ResourceClutch.OneBrick; // To be able to verify any unwanted state change
-      localGameController.ResourcesGainedEvent = (ResourceClutch rc) => { resourceClutch = rc; };
+      ResourceUpdate resourceUpdate = null;
+      localGameController.ResourcesGainedEvent = (ResourceUpdate r) => { resourceUpdate = r; };
 
       ErrorDetails errorDetails = null;
       localGameController.ErrorRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
@@ -1236,7 +1236,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       localGameController.ChooseResourceFromOpponent(player.Id, 0);
 
       // Assert
-      resourceClutch.ShouldBe(ResourceClutch.OneBrick);
+      resourceUpdate.Resources.ShouldContainKeyAndValue(player.Id, ResourceClutch.OneBrick);
       player.ResourcesCount.ShouldBe(3);
       testInstances.FirstOpponent.ResourcesCount.ShouldBe(3);
       errorDetails.ShouldNotBeNull();
@@ -1257,14 +1257,14 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       ErrorDetails errorDetails = null;
       localGameController.ErrorRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
 
-      ResourceClutch resourceClutch = ResourceClutch.OneBrick; // To be able to verify any unwanted state change
-      localGameController.ResourcesGainedEvent = (ResourceClutch rc) => { resourceClutch = rc; };
+      Boolean resourceUpdateReceived = false;
+      localGameController.ResourcesGainedEvent = (ResourceUpdate r) => { resourceUpdateReceived = true; };
 
       // Act
       localGameController.ChooseResourceFromOpponent(testInstances.FirstOpponent.Id, 0);
 
       // Assert
-      resourceClutch.ShouldBe(ResourceClutch.OneBrick);
+      resourceUpdateReceived.ShouldBeFalse();
       errorDetails.ShouldNotBeNull();
       errorDetails.Message.ShouldBe("Cannot call 'ChooseResourceFromOpponent' until 'SetRobberLocation' has completed.");
     }

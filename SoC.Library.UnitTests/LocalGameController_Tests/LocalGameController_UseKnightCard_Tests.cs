@@ -562,8 +562,8 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       TurnToken turnToken = null;
       localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
 
-      ResourceClutch gainedResources = ResourceClutch.Zero;
-      localGameController.ResourcesGainedEvent = (ResourceClutch r) => { gainedResources = r; };
+      ResourceUpdate gainedResources = null;
+      localGameController.ResourcesGainedEvent = (ResourceUpdate r) => { gainedResources = r; };
 
       localGameController.StartGamePlay();
 
@@ -575,7 +575,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       localGameController.UseKnightCard(turnToken, knightCard, SecondSettlementOneHex, firstOpponent.Id, 1);
 
       // Assert
-      gainedResources.Count.ShouldBe(1);
+      gainedResources.Resources.ShouldContainKeyAndValue(firstOpponent.Id, ResourceClutch.OneBrick);
 
       player.ResourcesCount.ShouldBe(4);
       firstOpponent.ResourcesCount.ShouldBe(2);
