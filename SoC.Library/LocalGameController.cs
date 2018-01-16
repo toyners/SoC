@@ -891,7 +891,7 @@ namespace Jabberwocky.SoC.Library
         var computerPlayer = this.playerPool.CreatePlayer(false);
         this.players[index] = computerPlayer;
         this.playersById.Add(computerPlayer.Id, computerPlayer);
-        this.computerPlayers[index] = computerPlayer;
+        this.computerPlayers[index - 1] = computerPlayer;
         index++;
       }
     }
