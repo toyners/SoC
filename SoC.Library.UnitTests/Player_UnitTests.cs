@@ -132,7 +132,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     [Test]
     [TestCase(-1)]
     [TestCase(5)]
-    public void LoseResource_OutOfBounds_ThrowsMeaningfulException(Int32 index)
+    public void LoseResourceAtIndex_OutOfBounds_ThrowsMeaningfulException(Int32 index)
     {
       // Arrange
       var player = new Player();
@@ -151,7 +151,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     [TestCase(2, 0, 0, 1, 0, 0)]
     [TestCase(3, 0, 0, 0, 1, 0)]
     [TestCase(4, 0, 0, 0, 0, 1)]
-    public void LoseResource_SafeIndex_ReturnsExpectedResource(Int32 index, Int32 expectedBrickCount, Int32 expectedGrainCount, Int32 expectedLumberCount, Int32 expectedOreCount, Int32 expectedWoolCount)
+    public void LoseResourceAtIndex_SafeIndex_ReturnsExpectedResource(Int32 index, Int32 expectedBrickCount, Int32 expectedGrainCount, Int32 expectedLumberCount, Int32 expectedOreCount, Int32 expectedWoolCount)
     {
       // Arrange
       var player = new Player();
@@ -164,6 +164,33 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
       // Assert
       actualResourceClutch.ShouldBe(expectedResourceClutch);
+      player.ResourcesCount.ShouldBe(4);
+      player.BrickCount.ShouldBe(1 - expectedBrickCount);
+      player.GrainCount.ShouldBe(1 - expectedGrainCount);
+      player.LumberCount.ShouldBe(1 - expectedLumberCount);
+      player.OreCount.ShouldBe(1 - expectedOreCount);
+      player.WoolCount.ShouldBe(1 - expectedWoolCount);
+    }
+
+    [Test]
+    [TestCase(0)]
+    [TestCase(1)]
+    [TestCase(10)]
+    public void LoseResourcesOfType_OpponentHasResourcesOfType_ReturnsExpectedResource(Int32 brickCount)
+    {
+      // Arrange
+      var player = new Player();
+      player.AddResources(new ResourceClutch(brickCount, 1, 1, 1, 1));
+
+      var expectedResourceClutch = new ResourceClutch(brickCount, 0, 0, 0, 0);
+
+      // Act
+      var actualResourceClutch = player.LoseResourcesOfType(ResourceTypes.Brick);
+
+      // Assert
+      actualResourceClutch.ShouldBe(expectedResourceClutch);
+      player.ResourcesCount.ShouldBe(4);
+      player.BrickCount.ShouldBe(0);
     }
     #endregion 
   }
