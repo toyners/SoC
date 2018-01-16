@@ -94,7 +94,7 @@ namespace Jabberwocky.SoC.Library
       return this.GetResourceForIndex(index);
     }
 
-    public ResourceClutch LoseResource(Int32 index)
+    public ResourceClutch LoseResourceAtIndex(Int32 index)
     {
       if (index < 0 || index >= this.ResourcesCount)
       {
@@ -107,6 +107,11 @@ namespace Jabberwocky.SoC.Library
       }
 
       return this.GetResourceForIndex(index);
+    }
+
+    public ResourceClutch LoseResourcesOfType(ResourceTypes resourceType)
+    {
+      throw new NotImplementedException();
     }
 
     public void PayForDevelopmentCard()

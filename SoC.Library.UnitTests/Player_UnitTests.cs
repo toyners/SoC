@@ -139,7 +139,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
       player.AddResources(ResourceClutch.OneOfEach);
 
       // Act
-      Action action = () => { player.LoseResource(index); };
+      Action action = () => { player.LoseResourceAtIndex(index); };
 
       // Assert
       action.ShouldThrow<IndexOutOfRangeException>().Message.ShouldBe("Index " + index + " is out of bounds (0.." + (player.ResourcesCount - 1) + ").");
@@ -160,7 +160,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
       var expectedResourceClutch = new ResourceClutch(expectedBrickCount, expectedGrainCount, expectedLumberCount, expectedOreCount, expectedWoolCount);
 
       // Act
-      var actualResourceClutch = player.LoseResource(index);
+      var actualResourceClutch = player.LoseResourceAtIndex(index);
 
       // Assert
       actualResourceClutch.ShouldBe(expectedResourceClutch);

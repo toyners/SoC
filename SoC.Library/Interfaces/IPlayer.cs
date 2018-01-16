@@ -34,7 +34,8 @@ namespace Jabberwocky.SoC.Library.Interfaces
     void PlaceStartingInfrastructure();
     void RemoveResources(ResourceClutch resourceClutch);
     ResourceClutch LoseRandomResource(INumberGenerator dice);
-    ResourceClutch LoseResource(Int32 resourceIndex);
+    ResourceClutch LoseResourceAtIndex(Int32 resourceIndex);
+    ResourceClutch LoseResourcesOfType(ResourceTypes resourceType);
     #endregion
   }
 }

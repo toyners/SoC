@@ -655,7 +655,15 @@ namespace Jabberwocky.SoC.Library
         return;
       }
 
-      throw new NotImplementedException();
+      var resourcesByPlayerId = new Dictionary<Guid, ResourceClutch>();
+      foreach (var opponent in this.computerPlayers)
+      {
+        var resources = opponent.LoseResourcesOfType(resourceType);
+        if (resources != ResourceClutch.Zero)
+        {
+          resourcesByPlayerId.Add(opponent.Id, resources);
+        }
+      }
     }
     
     private void AddResourcesToList(List<ResourceTypes> resources, ResourceTypes resourceType, Int32 total)
@@ -799,7 +807,7 @@ namespace Jabberwocky.SoC.Library
 
     private void CompleteResourceTransactionBetweenPlayers(IPlayer playerToTakeResourceFrom, Int32 resourceIndex)
     {
-      var takenResource = playerToTakeResourceFrom.LoseResource(resourceIndex);
+      var takenResource = playerToTakeResourceFrom.LoseResourceAtIndex(resourceIndex);
       this.mainPlayer.AddResources(takenResource);
       this.ResourcesGainedEvent?.Invoke(takenResource);
     }
