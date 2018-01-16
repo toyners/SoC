@@ -3,7 +3,6 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
 {
   using System;
   using System.Collections.Generic;
-  using Enums;
   using Interfaces;
   using NSubstitute;
   using NUnit.Framework;
@@ -138,9 +137,13 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       var secondOpponent = testInstances.SecondOpponent;
       var thirdOpponent = testInstances.ThirdOpponent;
 
+      player.RemoveAllResources();
       player.AddResources(ResourceClutch.DevelopmentCard);
+      firstOpponent.RemoveAllResources();
       firstOpponent.AddResources(ResourceClutch.OneOfEach);
-      secondOpponent.AddResources(new ResourceClutch(2, 0, 0, 0, 0));
+      secondOpponent.RemoveAllResources();
+      secondOpponent.AddResources(ResourceClutch.OneBrick * 2);
+      thirdOpponent.RemoveAllResources();
       thirdOpponent.AddResources(new ResourceClutch(0, 1, 1, 1, 1));
 
       TurnToken turnToken = null;
@@ -160,13 +163,12 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
 
       // Assert
       gainedResources.ShouldBe(ResourceClutch.OneBrick * 3);
-      player.ResourcesCount.ShouldBe(6);
+      player.ResourcesCount.ShouldBe(3);
       player.BrickCount.ShouldBe(3);
-      firstOpponent.ResourcesCount.ShouldBe(7);
+      firstOpponent.ResourcesCount.ShouldBe(4);
       firstOpponent.BrickCount.ShouldBe(0);
-      secondOpponent.ResourcesCount.ShouldBe(3);
-      secondOpponent.BrickCount.ShouldBe(0);
-      thirdOpponent.ResourcesCount.ShouldBe(7);
+      secondOpponent.ResourcesCount.ShouldBe(0);
+      thirdOpponent.ResourcesCount.ShouldBe(4);
       thirdOpponent.BrickCount.ShouldBe(0);
     }
 
