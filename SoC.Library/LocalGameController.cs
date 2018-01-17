@@ -657,27 +657,27 @@ namespace Jabberwocky.SoC.Library
         return;
       }
 
-      var resourcesByPlayerId = new Dictionary<Guid, ResourceClutch>();
-      foreach (var opponent in this.computerPlayers)
-      {
-        var resources = opponent.LoseResourcesOfType(resourceType);
-        this.mainPlayer.AddResources(resources);
-        if (resources != ResourceClutch.Zero)
-        {
-          resourcesByPlayerId.Add(opponent.Id, resources);
-        }
-      }
+      var gainedResources = this.GetAllResourcesFromOpponentsOfType(resourceType);
+      this.AddResourcesToMainPlayer(gainedResources);
 
       this.PlayDevelopmentCard(monopolyCard);
       var resourceUpdate = new ResourceUpdate { Resources = resourcesByPlayerId };
       this.ResourcesGainedEvent?.Invoke(resourceUpdate);
     }
-    
+
     private void AddResourcesToList(List<ResourceTypes> resources, ResourceTypes resourceType, Int32 total)
     {
       for (var i = 0; i < total; i++)
       {
         resources.Add(resourceType);
+      }
+    }
+
+    private void AddResourcesToMainPlayer(ResourceUpdate resourceUpdate)
+    {
+      foreach (var resources in resourceUpdate.Resources.Values)
+      {
+        this.mainPlayer.AddResources(resources);
       }
     }
 
@@ -932,6 +932,21 @@ namespace Jabberwocky.SoC.Library
     {
       this.cardsPurchasedThisTurn.Clear();
       this.cardPlayedThisTurn = false;
+    }
+
+    private ResourceUpdate GetAllResourcesFromOpponentsOfType(ResourceTypes resourceType)
+    {
+      var resourcesByPlayerId = new Dictionary<Guid, ResourceClutch>();
+      foreach (var opponent in this.computerPlayers)
+      {
+        var resources = opponent.LoseResourcesOfType(resourceType);
+        if (resources != ResourceClutch.Zero)
+        {
+          resourcesByPlayerId.Add(opponent.Id, resources);
+        }
+      }
+
+      return new ResourceUpdate { Resources = resourcesByPlayerId };
     }
 
     private IEnumerable<IPlayer> GetPlayersFromIds(Guid[] playerIds)
