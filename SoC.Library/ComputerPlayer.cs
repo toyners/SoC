@@ -43,6 +43,11 @@ namespace Jabberwocky.SoC.Library
       throw new NotImplementedException();
     }
 
+    public virtual MonopolyDevelopmentCard ChooseMonopolyCard()
+    {
+      throw new NotImplementedException();
+    }
+
     public virtual void ChooseRoad(GameBoardData gameBoardData, out UInt32 roadStartLocation, out UInt32 roadEndLocation)
     {
       var settlementsForPlayer = gameBoardData.GetSettlementsForPlayer(this.Id);

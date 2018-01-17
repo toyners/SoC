@@ -31,6 +31,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		SoC Standard.jpg = SoC Standard.jpg
 		SoC Standard.pdn = SoC Standard.pdn
 		SoC turn overview.pdf = SoC turn overview.pdf
+		ToDo.txt = ToDo.txt
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SoC.Client.TestHarness", "SoC.Client.TestHarness\SoC.Client.TestHarness.csproj", "{21989B2D-C26B-47EE-8F5C-BCBF414AE282}"

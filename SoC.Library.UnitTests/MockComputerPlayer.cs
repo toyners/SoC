@@ -143,6 +143,11 @@ namespace Jabberwocky.SoC.Library.UnitTests
       throw new Exception("Cannot find player with Id '" + action.RobbedPlayerId + "' when choosing player to rob.");
     }
 
+    public override MonopolyDevelopmentCard ChooseMonopolyCard()
+    {
+      return this.developmentCards[DevelopmentCardTypes.Monopoly].Dequeue() as MonopolyDevelopmentCard;
+    }
+
     public override ResourceClutch ChooseResourcesToDrop()
     {
       return DroppedResources;

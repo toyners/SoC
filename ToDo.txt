@@ -1,0 +1,5 @@
+- Expand IDevelopmentCardHolder to hold the used cards and to verify the cards being played. Allow cardsPlayed, 
+cardsPurchasedThisTurn and cardPlayedThisTurn fields to be removed from LocalGameController. Hide used cards and
+verify cards functionality from LGC
+
+- Add game board to ChooseKnightCard so the computer player can choose which player to rob from

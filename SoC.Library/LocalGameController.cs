@@ -339,8 +339,17 @@ namespace Jabberwocky.SoC.Library
                 events.Add(new PlayerWithLargestArmyChangedEvent(oldPlayerId, computerPlayer.Id));
                 this.playerWithLargestArmy = computerPlayer;
               }
+
               break;
             }
+
+            case PlayerAction.PlayMonopolyCard:
+            {
+              var monopolyCard = computerPlayer.ChooseMonopolyCard();
+              break;
+            }
+
+            default: throw new NotImplementedException("Player action '" + playerAction + "' is recognised.");
           }
         }
 
