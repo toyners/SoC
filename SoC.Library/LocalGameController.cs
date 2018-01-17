@@ -659,10 +659,9 @@ namespace Jabberwocky.SoC.Library
 
       var gainedResources = this.GetAllResourcesFromOpponentsOfType(resourceType);
       this.AddResourcesToMainPlayer(gainedResources);
-
       this.PlayDevelopmentCard(monopolyCard);
-      var resourceUpdate = new ResourceUpdate { Resources = resourcesByPlayerId };
-      this.ResourcesGainedEvent?.Invoke(resourceUpdate);
+
+      this.ResourcesGainedEvent?.Invoke(gainedResources);
     }
 
     private void AddResourcesToList(List<ResourceTypes> resources, ResourceTypes resourceType, Int32 total)
