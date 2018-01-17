@@ -29,7 +29,6 @@ namespace Jabberwocky.SoC.Library.Interfaces
     void PayForDevelopmentCard();
     void PlaceCity();
     void PlaceKnightDevelopmentCard();
-    void PlaceMonopolyDevelopmentCard();
     void PlaceRoadSegment();
     void PlaceSettlement();
     void PlaceStartingInfrastructure();

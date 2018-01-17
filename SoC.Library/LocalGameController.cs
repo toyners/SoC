@@ -668,6 +668,7 @@ namespace Jabberwocky.SoC.Library
         }
       }
 
+      this.PlayDevelopmentCard(monopolyCard);
       var resourceUpdate = new ResourceUpdate { Resources = resourcesByPlayerId };
       this.ResourcesGainedEvent?.Invoke(resourceUpdate);
     }
@@ -959,6 +960,12 @@ namespace Jabberwocky.SoC.Library
       this.ErrorRaisedEvent?.Invoke(new ErrorDetails(message));
     }
 
+    private void PlayDevelopmentCard(DevelopmentCard developmentCard)
+    {
+      this.cardPlayedThisTurn = true;
+      this.cardsPlayed.Add(developmentCard);
+    }
+
     private Boolean PlayerIdsIsEmptyOrOnlyContainsMainPlayer(Guid[] playerIds)
     {
       return playerIds == null || playerIds.Length == 0 ||
@@ -967,17 +974,9 @@ namespace Jabberwocky.SoC.Library
 
     private void PlayKnightDevelopmentCard(KnightDevelopmentCard developmentCard, UInt32 newRobberHex)
     {
-      this.cardPlayedThisTurn = true;
-      this.cardsPlayed.Add(developmentCard);
+      this.PlayDevelopmentCard(developmentCard);
       this.currentPlayer.PlaceKnightDevelopmentCard();
       this.robberHex = newRobberHex;
-    }
-
-    private void PlayMonopolyDevelopmentCard(MonopolyDevelopmentCard developmentCard)
-    {
-      this.cardPlayedThisTurn = true;
-      this.cardsPlayed.Add(developmentCard);
-      this.currentPlayer.PlaceMonopolyDevelopmentCard();
     }
 
     private void RaiseLargestArmyEventIfPlayerHasLargestArmy()

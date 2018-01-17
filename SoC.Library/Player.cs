@@ -168,11 +168,6 @@ namespace Jabberwocky.SoC.Library
       this.KnightCards++;
     }
 
-    public void PlaceMonopolyDevelopmentCard()
-    {
-
-    }
-
     public void PlaceRoadSegment()
     {
       this.BrickCount--;
