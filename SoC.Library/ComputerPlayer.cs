@@ -88,6 +88,11 @@ namespace Jabberwocky.SoC.Library
       throw new NotImplementedException();
     }
 
+    public virtual ResourceTypes ChooseResourceTypeToRob()
+    {
+      throw new NotImplementedException();
+    }
+
     public virtual UInt32 ChooseSettlementLocation(GameBoardData gameBoardData)
     {
       // Find location that has the highest chance of a return for any roll.

@@ -98,17 +98,17 @@ namespace Jabberwocky.SoC.Library.UnitTests
       }
     }
 
-    public MockComputerPlayer AddPlaceMonopolyCardAction(PlayMonopolyCardAction playMonopolyCardAction)
-    {
-      this.playMonopolyCardActions.Enqueue(playMonopolyCardAction);
-      this.Actions.Enqueue(PlayerAction.PlayMonopolyCard);
-      return this;
-    }
-
     public MockComputerPlayer AddPlaceKnightCard(PlayKnightAction playKnightCardAction)
     {
       this.playKnightCardActions.Enqueue(playKnightCardAction);
       this.Actions.Enqueue(PlayerAction.PlayKnightCard);
+      return this;
+    }
+
+    public MockComputerPlayer AddPlaceMonopolyCardAction(PlayMonopolyCardAction playMonopolyCardAction)
+    {
+      this.playMonopolyCardActions.Enqueue(playMonopolyCardAction);
+      this.Actions.Enqueue(PlayerAction.PlayMonopolyCard);
       return this;
     }
 
@@ -151,6 +151,12 @@ namespace Jabberwocky.SoC.Library.UnitTests
     public override ResourceClutch ChooseResourcesToDrop()
     {
       return DroppedResources;
+    }
+
+    public override ResourceTypes ChooseResourceTypeToRob()
+    {
+      var action = this.playMonopolyCardActions.Dequeue();
+      return action.ResourceType;
     }
 
     public override UInt32 ChooseRobberLocation()
@@ -214,6 +220,6 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
   public struct PlayMonopolyCardAction
   {
-    public ResourceTypes MonopolyType;
+    public ResourceTypes ResourceType;
   }
 }

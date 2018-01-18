@@ -25,6 +25,7 @@ namespace Jabberwocky.SoC.Library.Interfaces
     KnightDevelopmentCard ChooseKnightCard();
     MonopolyDevelopmentCard ChooseMonopolyCard();
     ResourceClutch ChooseResourcesToDrop();
+    ResourceTypes ChooseResourceTypeToRob();
     UInt32 ChooseRobberLocation();
     IPlayer ChoosePlayerToRob(IEnumerable<IPlayer> otherPlayers);
     PlayerAction GetPlayerAction();

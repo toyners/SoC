@@ -346,6 +346,12 @@ namespace Jabberwocky.SoC.Library
             case PlayerAction.PlayMonopolyCard:
             {
               var monopolyCard = computerPlayer.ChooseMonopolyCard();
+              var resourceType = computerPlayer.ChooseResourceTypeToRob();
+              var opponents = this.GetOpponentsForPlayer(computerPlayer);
+              var takenResources = this.GetAllResourcesFromOpponentsOfType(opponents, resourceType);
+              this.AddResourcesToCurrentPlayer(computerPlayer, takenResources);
+
+              //var resourceLostEvent = new ResourceLostEvent(computerPlayer.Id, takenResources);
               break;
             }
 
@@ -666,8 +672,9 @@ namespace Jabberwocky.SoC.Library
         return;
       }
 
-      var gainedResources = this.GetAllResourcesFromOpponentsOfType(resourceType);
-      this.AddResourcesToMainPlayer(gainedResources);
+      var opponents = this.GetOpponentsForPlayer(this.mainPlayer);
+      var gainedResources = this.GetAllResourcesFromOpponentsOfType(opponents, resourceType);
+      this.AddResourcesToCurrentPlayer(this.mainPlayer, gainedResources);
       this.PlayDevelopmentCard(monopolyCard);
 
       this.ResourcesGainedEvent?.Invoke(gainedResources);
@@ -681,11 +688,11 @@ namespace Jabberwocky.SoC.Library
       }
     }
 
-    private void AddResourcesToMainPlayer(ResourceUpdate resourceUpdate)
+    private void AddResourcesToCurrentPlayer(IPlayer player, ResourceUpdate resourceUpdate)
     {
       foreach (var resources in resourceUpdate.Resources.Values)
       {
-        this.mainPlayer.AddResources(resources);
+        player.AddResources(resources);
       }
     }
 
@@ -942,10 +949,10 @@ namespace Jabberwocky.SoC.Library
       this.cardPlayedThisTurn = false;
     }
 
-    private ResourceUpdate GetAllResourcesFromOpponentsOfType(ResourceTypes resourceType)
+    private ResourceUpdate GetAllResourcesFromOpponentsOfType(IEnumerable<IPlayer> opponents, ResourceTypes resourceType)
     {
       var resourcesByPlayerId = new Dictionary<Guid, ResourceClutch>();
-      foreach (var opponent in this.computerPlayers)
+      foreach (var opponent in opponents)
       {
         var resources = opponent.LoseResourcesOfType(resourceType);
         if (resources != ResourceClutch.Zero)
@@ -955,6 +962,20 @@ namespace Jabberwocky.SoC.Library
       }
 
       return new ResourceUpdate { Resources = resourcesByPlayerId };
+    }
+
+    private IEnumerable<IPlayer> GetOpponentsForPlayer(IPlayer player)
+    {
+      var opponents = new List<IPlayer>(3);
+      foreach (var opponent in this.players)
+      {
+        if (opponent != player)
+        {
+          opponents.Add(opponent);
+        }
+      }
+
+      return opponents;
     }
 
     private IEnumerable<IPlayer> GetPlayersFromIds(Guid[] playerIds)
