@@ -85,7 +85,6 @@
     <Compile Include="Interfaces\IGameSession.cs" />
     <Compile Include="Interfaces\IGameSessionManager.cs" />
     <Compile Include="Location.cs" />
-    <Compile Include="Objects.cs" />
     <Compile Include="PlayerData.cs" />
     <Compile Include="PlayerDataBase.cs" />
     <Compile Include="PlayerDataView.cs" />
