@@ -58,15 +58,20 @@ namespace Jabberwocky.SoC.Library
     }
   }
 
-  public class ResourceLostEvent : GameEvent
+  public class ResourceTransactionEvent : GameEvent
   {
     #region Fields
-    public readonly ResourceClutch Resources;
+    public readonly ResourceTransactionList ResourceTransactions;
     #endregion
 
-    public ResourceLostEvent(Guid playerId, ResourceClutch resources) : base(playerId)
+    public ResourceTransactionEvent(Guid playerId, ResourceTransactionList resourceTransactions) : base(playerId)
     {
+    }
 
+    public ResourceTransactionEvent(Guid playerId, ResourceTransaction resourceTransaction) : base(playerId)
+    {
+      this.ResourceTransactions = new ResourceTransactionList();
+      this.ResourceTransactions.Add(resourceTransaction);
     }
   }
 }

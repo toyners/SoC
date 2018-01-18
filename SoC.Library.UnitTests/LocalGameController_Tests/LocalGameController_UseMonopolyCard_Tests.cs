@@ -222,7 +222,10 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       lostResourcesByPlayerId.Add(secondOpponent.Id, ResourceClutch.OneBrick * 2);
 
       var expectedPlayMonopolyCardEvent = new PlayMonopolyCardEvent(firstOpponent.Id, lostResourcesByPlayerId);
-      var expectedResourceLostEvent = new ResourceLostEvent(firstOpponent.Id, ResourceClutch.OneOre);
+      var expectedResourceTransaction = new ResourceTransaction(player.Id, firstOpponent.Id, ResourceClutch.Zero);
+      var expectedResourceTransactionList = new ResourceTransactionList();
+      expectedResourceTransactionList.Add(expectedResourceTransaction);
+      var expectedResourceLostEvent = new ResourceTransactionEvent(firstOpponent.Id, expectedResourceTransactionList);
 
       playerActions.Count.ShouldBe(2);
       keys.Count.ShouldBe(playerActions.Count);

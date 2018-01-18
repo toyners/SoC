@@ -86,6 +86,7 @@ namespace Jabberwocky.SoC.Library
     public Action<ResourceUpdate> ResourcesCollectedEvent { get; set; }
     public Action<ResourceUpdate> ResourcesGainedEvent { get; set; }
     public Action<ResourceUpdate> ResourcesLostEvent { get; set; }
+    public Action<ResourceTransactionList> ResourcesTransactedEvent { get; set; }
     public Action RoadSegmentBuiltEvent { get; set; }
     public Action<Int32> RobberEvent { get; set; }
     public Action<Dictionary<Guid, Int32>> RobbingChoicesEvent { get; set; }
@@ -328,7 +329,8 @@ namespace Jabberwocky.SoC.Library
                 var robbedPlayer = computerPlayer.ChoosePlayerToRob(otherPlayers);
                 var takenResource = robbedPlayer.LoseRandomResource(this.dice);
                 computerPlayer.AddResources(takenResource);
-                var resourceLostEvent = new ResourceLostEvent(computerPlayer.Id, takenResource);
+                var resourceTransaction = new ResourceTransaction(computerPlayer.Id, robbedPlayer.Id, takenResource);
+                var resourceLostEvent = new ResourceTransactionEvent(computerPlayer.Id, resourceTransaction);
                 events.Add(resourceLostEvent);
               }
 
@@ -348,10 +350,10 @@ namespace Jabberwocky.SoC.Library
               var monopolyCard = computerPlayer.ChooseMonopolyCard();
               var resourceType = computerPlayer.ChooseResourceTypeToRob();
               var opponents = this.GetOpponentsForPlayer(computerPlayer);
-              var takenResources = this.GetAllResourcesFromOpponentsOfType(opponents, resourceType);
-              this.AddResourcesToCurrentPlayer(computerPlayer, takenResources);
+              var resourceTransations = this.GetAllResourcesFromOpponentsOfType(computerPlayer, opponents, resourceType);
+              this.AddResourcesToCurrentPlayer(computerPlayer, resourceTransations);
 
-              //var resourceLostEvent = new ResourceLostEvent(computerPlayer.Id, takenResources);
+              var resourceLostEvent = new ResourceTransactionEvent(computerPlayer.Id, resourceTransations);
               break;
             }
 
@@ -673,11 +675,11 @@ namespace Jabberwocky.SoC.Library
       }
 
       var opponents = this.GetOpponentsForPlayer(this.mainPlayer);
-      var gainedResources = this.GetAllResourcesFromOpponentsOfType(opponents, resourceType);
-      this.AddResourcesToCurrentPlayer(this.mainPlayer, gainedResources);
+      var resourceTransactions = this.GetAllResourcesFromOpponentsOfType(this.mainPlayer, opponents, resourceType);
+      this.AddResourcesToCurrentPlayer(this.mainPlayer, resourceTransactions);
       this.PlayDevelopmentCard(monopolyCard);
 
-      this.ResourcesGainedEvent?.Invoke(gainedResources);
+      this.ResourcesTransactedEvent?.Invoke(resourceTransactions);
     }
 
     private void AddResourcesToList(List<ResourceTypes> resources, ResourceTypes resourceType, Int32 total)
@@ -688,11 +690,11 @@ namespace Jabberwocky.SoC.Library
       }
     }
 
-    private void AddResourcesToCurrentPlayer(IPlayer player, ResourceUpdate resourceUpdate)
+    private void AddResourcesToCurrentPlayer(IPlayer player, ResourceTransactionList resourceTransactions)
     {
-      foreach (var resources in resourceUpdate.Resources.Values)
+      foreach (var resourceTransaction in resourceTransactions)
       {
-        player.AddResources(resources);
+        player.AddResources(resourceTransaction.Resources);
       }
     }
 
@@ -949,19 +951,16 @@ namespace Jabberwocky.SoC.Library
       this.cardPlayedThisTurn = false;
     }
 
-    private ResourceUpdate GetAllResourcesFromOpponentsOfType(IEnumerable<IPlayer> opponents, ResourceTypes resourceType)
+    private ResourceTransactionList GetAllResourcesFromOpponentsOfType(IPlayer player, IEnumerable<IPlayer> opponents, ResourceTypes resourceType)
     {
-      var resourcesByPlayerId = new Dictionary<Guid, ResourceClutch>();
+      var transactionList = new ResourceTransactionList();
       foreach (var opponent in opponents)
       {
         var resources = opponent.LoseResourcesOfType(resourceType);
-        if (resources != ResourceClutch.Zero)
-        {
-          resourcesByPlayerId.Add(opponent.Id, resources);
-        }
+        transactionList.Add(new ResourceTransaction(player.Id, opponent.Id, resources));
       }
 
-      return new ResourceUpdate { Resources = resourcesByPlayerId };
+      return transactionList;
     }
 
     private IEnumerable<IPlayer> GetOpponentsForPlayer(IPlayer player)
