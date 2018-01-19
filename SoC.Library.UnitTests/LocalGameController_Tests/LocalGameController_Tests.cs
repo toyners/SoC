@@ -1105,7 +1105,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       LocalGameControllerTestSetup.LaunchGameAndCompleteSetup(localGameController);
       var player = testInstances.MainPlayer;
       var firstOpponent = testInstances.FirstOpponent;
-      testInstances.Dice.AddSequence(new[] { 7u });
+      testInstances.Dice.AddSequence(new[] { 7u, 0u });
 
       // Clear down the initial resources
       player.RemoveAllResources();
@@ -1117,7 +1117,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       localGameController.ResourcesTransferredEvent = (ResourceTransactionList r) => { gainedResources = r; };
       localGameController.StartGamePlay();
       localGameController.SetRobberHex(7u);
-      localGameController.ChooseResourceFromOpponent(firstOpponent.Id, 0);
+      localGameController.ChooseResourceFromOpponent(firstOpponent.Id);
 
       // Assert
       var expectedResources = new ResourceTransactionList();
@@ -1126,48 +1126,6 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       player.ResourcesCount.ShouldBe(1);
       player.BrickCount.ShouldBe(1);
       firstOpponent.ResourcesCount.ShouldBe(0);
-    }
-
-
-    /// <summary>
-    /// Passing in an resource index that is out of the range causes an error to be raised.
-    /// </summary>
-    [Test]
-    [Category("LocalGameController")]
-    [Category("Main Player Turn")]
-    [TestCase(-1)]
-    [TestCase(1)]
-    public void StartOfMainPlayerTurn_RollsSevenAndChoosesOutOfRangeResourceIndexFromOpponent_MeaningfulErrorIsReceived(Int32 index)
-    {
-      // Arrange
-      var testInstances = LocalGameControllerTestCreator.CreateTestInstances();
-      var localGameController = testInstances.LocalGameController;
-      var player = testInstances.MainPlayer;
-      var firstOpponent = testInstances.FirstOpponent;
-      LocalGameControllerTestSetup.LaunchGameAndCompleteSetup(localGameController);
-      testInstances.Dice.AddSequence(new[] { 7u });
-
-      // Clear down the initial resources
-      player.RemoveAllResources();
-      firstOpponent.RemoveAllResources();
-      firstOpponent.AddResources(new ResourceClutch(1, 0, 0, 0, 0));
-
-      // Act
-      Boolean resourceTransactionsReceived = false;
-      ErrorDetails errorDetails = null;
-      localGameController.ResourcesTransferredEvent = (ResourceTransactionList r) => { resourceTransactionsReceived = true; };
-      localGameController.ErrorRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
-      localGameController.StartGamePlay();
-      localGameController.SetRobberHex(3u);
-      localGameController.ChooseResourceFromOpponent(firstOpponent.Id, index);
-
-      // Assert
-      resourceTransactionsReceived.ShouldBeFalse();
-      player.ResourcesCount.ShouldBe(0);
-      firstOpponent.ResourcesCount.ShouldBe(1);
-      firstOpponent.BrickCount.ShouldBe(1);
-      errorDetails.ShouldNotBeNull();
-      errorDetails.Message.ShouldBe("Cannot pick resource card at position " + index + ". Resource card range is 0..0");
     }
 
     /// <summary>
@@ -1185,7 +1143,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       var firstOpponent = testInstances.FirstOpponent;
       var secondOpponent = testInstances.SecondOpponent;
       LocalGameControllerTestSetup.LaunchGameAndCompleteSetup(localGameController);
-      testInstances.Dice.AddSequence(new[] { 7u });
+      testInstances.Dice.AddSequence(new[] { 7u, 0u });
 
       // Clear down the initial resources
       player.RemoveAllResources();
@@ -1199,7 +1157,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       localGameController.ErrorRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
       localGameController.StartGamePlay();
       localGameController.SetRobberHex(3u);
-      localGameController.ChooseResourceFromOpponent(secondOpponent.Id, 0);
+      localGameController.ChooseResourceFromOpponent(secondOpponent.Id);
 
       // Assert
       resourceTransactionsReceived.ShouldBeFalse();
@@ -1223,7 +1181,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       var localGameController = testInstances.LocalGameController;
       var player = testInstances.MainPlayer;
       LocalGameControllerTestSetup.LaunchGameAndCompleteSetup(localGameController);
-      testInstances.Dice.AddSequence(new[] { 7u });
+      testInstances.Dice.AddSequence(new[] { 7u, 0u });
 
       // Act
       var resourceTransactionsReceived = false;
@@ -1236,7 +1194,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       localGameController.SetRobberHex(3u);
 
       // Act
-      localGameController.ChooseResourceFromOpponent(player.Id, 0);
+      localGameController.ChooseResourceFromOpponent(player.Id);
 
       // Assert
       resourceTransactionsReceived.ShouldBeFalse();
@@ -1255,7 +1213,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       var testInstances = LocalGameControllerTestCreator.CreateTestInstances();
       var localGameController = testInstances.LocalGameController;
       LocalGameControllerTestSetup.LaunchGameAndCompleteSetup(localGameController);
-      testInstances.Dice.AddSequence(new[] { 7u });
+      testInstances.Dice.AddSequence(new[] { 7u, 0u });
 
       ErrorDetails errorDetails = null;
       localGameController.ErrorRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
@@ -1264,7 +1222,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       localGameController.ResourcesTransferredEvent = (ResourceTransactionList r) => { resourceUpdateReceived = true; };
 
       // Act
-      localGameController.ChooseResourceFromOpponent(testInstances.FirstOpponent.Id, 0);
+      localGameController.ChooseResourceFromOpponent(testInstances.FirstOpponent.Id);
 
       // Assert
       resourceUpdateReceived.ShouldBeFalse();
@@ -1313,14 +1271,14 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       MockPlayer player;
       MockComputerPlayer firstOpponent, secondOpponent, thirdOpponent;
       var localGameController = this.CreateLocalGameControllerAndCompleteGameSetup(out mockDice, out player, out firstOpponent, out secondOpponent, out thirdOpponent);
-      mockDice.AddSequence(new[] { 7u });
+      mockDice.AddSequence(new[] { 7u, 0u });
 
       // Act
       ErrorDetails errorDetails = null;
       localGameController.ErrorRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
       localGameController.StartGamePlay();
       localGameController.SetRobberHex(0u);
-      localGameController.ChooseResourceFromOpponent(Guid.NewGuid(), 0);
+      localGameController.ChooseResourceFromOpponent(Guid.NewGuid());
 
       // Assert
       errorDetails.ShouldNotBeNull();
@@ -1368,14 +1326,14 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       MockPlayer player;
       MockComputerPlayer firstOpponent, secondOpponent, thirdOpponent;
       var localGameController = this.CreateLocalGameControllerAndCompleteGameSetup(out mockDice, out player, out firstOpponent, out secondOpponent, out thirdOpponent);
-      mockDice.AddSequence(new[] { 7u });
+      mockDice.AddSequence(new[] { 7u, 0u });
 
       // Act
       ErrorDetails errorDetails = null;
       localGameController.ErrorRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
       localGameController.StartGamePlay();
       localGameController.SetRobberHex(2u);
-      localGameController.ChooseResourceFromOpponent(Guid.NewGuid(), 0);
+      localGameController.ChooseResourceFromOpponent(Guid.NewGuid());
 
       // Assert
       errorDetails.ShouldNotBeNull();

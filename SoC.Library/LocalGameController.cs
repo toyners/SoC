@@ -164,7 +164,7 @@ namespace Jabberwocky.SoC.Library
       this.DevelopmentCardPurchasedEvent?.Invoke(developmentCard);
     }
 
-    public void ChooseResourceFromOpponent(Guid opponentId, Int32 resourceIndex)
+    public void ChooseResourceFromOpponent(Guid opponentId)
     {
       if (this.GamePhase == GamePhases.NextStep)
       {
@@ -190,17 +190,9 @@ namespace Jabberwocky.SoC.Library
         return;
       }
 
-      var resourceCount = this.robbingChoices[opponentId];
-      if (resourceIndex < 0 || resourceIndex >= resourceCount)
-      {
-        var message = "Cannot pick resource card at position " + resourceIndex + ". Resource card range is 0.." + (resourceCount - 1);
-        var errorDetails = new ErrorDetails(message);
-        this.ErrorRaisedEvent?.Invoke(errorDetails);
-        return;
-      }
-
       var opponent = this.playersById[opponentId];
-      var takenResource = opponent.LoseRandomResource(this.dice);
+      var resourceIndex = this.dice.GetRandomNumberBetweenZeroAndMaximum(opponent.ResourcesCount);
+      var takenResource = opponent.LoseResourceAtIndex(resourceIndex);
       
       this.mainPlayer.AddResources(takenResource);
 
@@ -646,20 +638,20 @@ namespace Jabberwocky.SoC.Library
       this.RaiseLargestArmyEventIfPlayerHasLargestArmy();
     }
 
-    public void UseKnightCard(TurnToken turnToken, KnightDevelopmentCard developmentCard, UInt32 newRobberHex, Guid playerId, Int32 resourceIndex)
+    public void UseKnightCard(TurnToken turnToken, KnightDevelopmentCard developmentCard, UInt32 newRobberHex, Guid playerId)
     {
       if (!this.VerifyParametersForUsingDevelopmentCard(turnToken, developmentCard))
       {
         return;
       }
 
-      if (!this.VerifyParametersForResourceTransactionWhenUsingKnightCard(newRobberHex, playerId, resourceIndex))
+      if (!this.VerifyParametersForResourceTransactionWhenUsingKnightCard(newRobberHex, playerId))
       {
         return;
       }
 
       this.PlayKnightDevelopmentCard(developmentCard, newRobberHex);
-      this.CompleteResourceTransactionBetweenPlayers(this.playersById[playerId], resourceIndex);
+      this.CompleteResourceTransactionBetweenPlayers(this.playersById[playerId]);
       this.RaiseLargestArmyEventIfPlayerHasLargestArmy();
     }
 
@@ -807,8 +799,9 @@ namespace Jabberwocky.SoC.Library
       return gameBoardUpdate;
     }
 
-    private void CompleteResourceTransactionBetweenPlayers(IPlayer playerToTakeResourceFrom, Int32 resourceIndex)
+    private void CompleteResourceTransactionBetweenPlayers(IPlayer playerToTakeResourceFrom)
     {
+      Int32 resourceIndex = this.dice.GetRandomNumberBetweenZeroAndMaximum(playerToTakeResourceFrom.ResourcesCount);
       var takenResource = playerToTakeResourceFrom.LoseResourceAtIndex(resourceIndex);
       this.mainPlayer.AddResources(takenResource);
 
@@ -1329,7 +1322,7 @@ namespace Jabberwocky.SoC.Library
       return true;
     }
 
-    private Boolean VerifyParametersForResourceTransactionWhenUsingKnightCard(UInt32 newRobberHex, Guid playerId, Int32 resourceIndex)
+    private Boolean VerifyParametersForResourceTransactionWhenUsingKnightCard(UInt32 newRobberHex, Guid playerId)
     {
       if (!this.VerifyPlacementOfRobber(newRobberHex))
       {
@@ -1340,13 +1333,6 @@ namespace Jabberwocky.SoC.Library
       if (!playerIdsOnHex.Contains(playerId))
       {
         this.ErrorRaisedEvent?.Invoke(new ErrorDetails("Player Id (" + playerId + ") does not match with any players on hex " + newRobberHex + "."));
-        return false;
-      }
-
-      var playerToTakeResourceFrom = this.playersById[playerId];
-      if (resourceIndex < 0 || resourceIndex >= playerToTakeResourceFrom.ResourcesCount)
-      {
-        this.ErrorRaisedEvent?.Invoke(new ErrorDetails("Resource index (" + resourceIndex + ") is out of bounds for players resources (0.." + (playerToTakeResourceFrom.ResourcesCount - 1) + ")."));
         return false;
       }
 
