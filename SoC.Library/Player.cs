@@ -83,17 +83,6 @@ namespace Jabberwocky.SoC.Library
       return dataView;
     }
 
-    public ResourceClutch LoseRandomResource(INumberGenerator dice)
-    {
-      if (this.ResourcesCount == 0)
-      {
-        return ResourceClutch.Zero;
-      }
-
-      var index = dice.GetRandomNumberBetweenZeroAndMaximum(this.ResourcesCount);
-      return this.GetResourceForIndex(index);
-    }
-
     public ResourceClutch LoseResourceAtIndex(Int32 index)
     {
       if (index < 0 || index >= this.ResourcesCount)

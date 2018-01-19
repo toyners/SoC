@@ -315,7 +315,10 @@ namespace Jabberwocky.SoC.Library
               {
                 var otherPlayers = this.GetPlayersFromIds(playersOnHex);
                 var robbedPlayer = computerPlayer.ChoosePlayerToRob(otherPlayers);
-                var takenResource = robbedPlayer.LoseRandomResource(this.dice);
+
+                var resourceIndex = this.dice.GetRandomNumberBetweenZeroAndMaximum(robbedPlayer.ResourcesCount);
+                var takenResource = robbedPlayer.LoseResourceAtIndex(resourceIndex);
+
                 computerPlayer.AddResources(takenResource);
                 var resourceTransaction = new ResourceTransaction(computerPlayer.Id, robbedPlayer.Id, takenResource);
                 var resourceLostEvent = new ResourceTransactionEvent(computerPlayer.Id, resourceTransaction);
