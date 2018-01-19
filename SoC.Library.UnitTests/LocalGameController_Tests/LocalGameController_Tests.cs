@@ -1113,18 +1113,21 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       firstOpponent.AddResources(new ResourceClutch(1, 0, 0, 0, 0));
 
       // Act
-      ResourceUpdate gainedResources = null;
-      localGameController.ResourcesGainedEvent = (ResourceUpdate r) => { gainedResources = r; };
+      ResourceTransactionList gainedResources = null;
+      localGameController.ResourcesTransferredEvent = (ResourceTransactionList r) => { gainedResources = r; };
       localGameController.StartGamePlay();
       localGameController.SetRobberHex(7u);
       localGameController.ChooseResourceFromOpponent(firstOpponent.Id, 0);
 
       // Assert
-      gainedResources.Resources.ShouldContainKeyAndValue(firstOpponent.Id, ResourceClutch.OneBrick);
+      var expectedResources = new ResourceTransactionList();
+      expectedResources.Add(new ResourceTransaction(player.Id, firstOpponent.Id, ResourceClutch.OneBrick));
+      ShouldlyToolBox.AssertThatTheResourceTransactionListIsAsExpected(gainedResources, expectedResources);
       player.ResourcesCount.ShouldBe(1);
       player.BrickCount.ShouldBe(1);
       firstOpponent.ResourcesCount.ShouldBe(0);
     }
+
 
     /// <summary>
     /// Passing in an resource index that is out of the range causes an error to be raised.
@@ -1150,16 +1153,16 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       firstOpponent.AddResources(new ResourceClutch(1, 0, 0, 0, 0));
 
       // Act
-      ResourceUpdate resourceUpdate = null;
+      Boolean resourceTransactionsReceived = false;
       ErrorDetails errorDetails = null;
-      localGameController.ResourcesGainedEvent = (ResourceUpdate r) => { resourceUpdate = r; };
+      localGameController.ResourcesTransferredEvent = (ResourceTransactionList r) => { resourceTransactionsReceived = true; };
       localGameController.ErrorRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
       localGameController.StartGamePlay();
       localGameController.SetRobberHex(3u);
       localGameController.ChooseResourceFromOpponent(firstOpponent.Id, index);
 
       // Assert
-      resourceUpdate.ShouldBeNull();
+      resourceTransactionsReceived.ShouldBeFalse();
       player.ResourcesCount.ShouldBe(0);
       firstOpponent.ResourcesCount.ShouldBe(1);
       firstOpponent.BrickCount.ShouldBe(1);
@@ -1190,16 +1193,16 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       firstOpponent.AddResources(new ResourceClutch(1, 0, 0, 0, 0));
 
       // Act
-      Boolean resourceUpdateReceived = false;
+      Boolean resourceTransactionsReceived = false;
       ErrorDetails errorDetails = null;
-      localGameController.ResourcesGainedEvent = (ResourceUpdate r) => { resourceUpdateReceived = true; };
+      localGameController.ResourcesTransferredEvent = (ResourceTransactionList r) => { resourceTransactionsReceived = true; };
       localGameController.ErrorRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
       localGameController.StartGamePlay();
       localGameController.SetRobberHex(3u);
       localGameController.ChooseResourceFromOpponent(secondOpponent.Id, 0);
 
       // Assert
-      resourceUpdateReceived.ShouldBeFalse();
+      resourceTransactionsReceived.ShouldBeFalse();
       player.ResourcesCount.ShouldBe(0);
       firstOpponent.ResourcesCount.ShouldBe(1);
       firstOpponent.BrickCount.ShouldBe(1);
@@ -1223,8 +1226,8 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       testInstances.Dice.AddSequence(new[] { 7u });
 
       // Act
-      ResourceUpdate resourceUpdate = null;
-      localGameController.ResourcesGainedEvent = (ResourceUpdate r) => { resourceUpdate = r; };
+      var resourceTransactionsReceived = false;
+      localGameController.ResourcesTransferredEvent = (ResourceTransactionList r) => { resourceTransactionsReceived = true; };
 
       ErrorDetails errorDetails = null;
       localGameController.ErrorRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
@@ -1236,7 +1239,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       localGameController.ChooseResourceFromOpponent(player.Id, 0);
 
       // Assert
-      resourceUpdate.Resources.ShouldContainKeyAndValue(player.Id, ResourceClutch.OneBrick);
+      resourceTransactionsReceived.ShouldBeFalse();
       player.ResourcesCount.ShouldBe(3);
       testInstances.FirstOpponent.ResourcesCount.ShouldBe(3);
       errorDetails.ShouldNotBeNull();
@@ -1257,8 +1260,8 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       ErrorDetails errorDetails = null;
       localGameController.ErrorRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
 
-      Boolean resourceUpdateReceived = false;
-      localGameController.ResourcesGainedEvent = (ResourceUpdate r) => { resourceUpdateReceived = true; };
+      var resourceUpdateReceived = false;
+      localGameController.ResourcesTransferredEvent = (ResourceTransactionList r) => { resourceUpdateReceived = true; };
 
       // Act
       localGameController.ChooseResourceFromOpponent(testInstances.FirstOpponent.Id, 0);

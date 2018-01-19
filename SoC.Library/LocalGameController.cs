@@ -84,9 +84,9 @@ namespace Jabberwocky.SoC.Library
     public Action<Guid> LongestRoadBuiltEvent { get; set; }
     public Action<Guid, List<GameEvent>> OpponentActionsEvent { get; set; }
     public Action<ResourceUpdate> ResourcesCollectedEvent { get; set; }
-    public Action<ResourceUpdate> ResourcesGainedEvent { get; set; }
+    //public Action<ResourceUpdate> ResourcesGainedEvent { get; set; }
     public Action<ResourceUpdate> ResourcesLostEvent { get; set; }
-    public Action<ResourceTransactionList> ResourcesTransactedEvent { get; set; }
+    public Action<ResourceTransactionList> ResourcesTransferredEvent { get; set; }
     public Action RoadSegmentBuiltEvent { get; set; }
     public Action<Int32> RobberEvent { get; set; }
     public Action<Dictionary<Guid, Int32>> RobbingChoicesEvent { get; set; }
@@ -200,17 +200,17 @@ namespace Jabberwocky.SoC.Library
         return;
       }
 
-      var player = this.playersById[opponentId];
-      var resources = this.CollapsePlayerResourcesToList(player);
+      var opponent = this.playersById[opponentId];
+      var takenResource = opponent.LoseRandomResource(this.dice);
+      /*var resources = this.CollapsePlayerResourcesToList(opponent);
       var randomisedResources = this.RandomiseResourceList(resources);
-      var gainedResources = this.CreateGainedResources(randomisedResources, resourceIndex);
+      var gainedResources = this.CreateGainedResources(randomisedResources, resourceIndex);*/
       
-      player.RemoveResources(gainedResources);
-      this.mainPlayer.AddResources(gainedResources);
+      this.mainPlayer.AddResources(takenResource);
 
-      var resourceUpdate = new ResourceUpdate();
-      resourceUpdate.Resources.Add(player.Id, gainedResources);
-      this.ResourcesGainedEvent?.Invoke(resourceUpdate);
+      var resourceTransactionList = new ResourceTransactionList();
+      resourceTransactionList.Add(new ResourceTransaction(this.mainPlayer.Id, opponentId, takenResource));
+      this.ResourcesTransferredEvent?.Invoke(resourceTransactionList);
     }
 
     public void CompleteGameSetup(UInt32 settlementLocation, UInt32 roadEndLocation)
@@ -679,7 +679,7 @@ namespace Jabberwocky.SoC.Library
       this.AddResourcesToCurrentPlayer(this.mainPlayer, resourceTransactions);
       this.PlayDevelopmentCard(monopolyCard);
 
-      this.ResourcesTransactedEvent?.Invoke(resourceTransactions);
+      this.ResourcesTransferredEvent?.Invoke(resourceTransactions);
     }
 
     private void AddResourcesToList(List<ResourceTypes> resources, ResourceTypes resourceType, Int32 total)
@@ -834,10 +834,10 @@ namespace Jabberwocky.SoC.Library
       var takenResource = playerToTakeResourceFrom.LoseResourceAtIndex(resourceIndex);
       this.mainPlayer.AddResources(takenResource);
 
-      var resourceUpdate = new ResourceUpdate();
-      resourceUpdate.Resources.Add(playerToTakeResourceFrom.Id, takenResource);
+      var resourceTransactionList = new ResourceTransactionList();
+      resourceTransactionList.Add(new ResourceTransaction(this.mainPlayer.Id, playerToTakeResourceFrom.Id, takenResource));
 
-      this.ResourcesGainedEvent?.Invoke(resourceUpdate);
+      this.ResourcesTransferredEvent?.Invoke(resourceTransactionList);
     }
 
     private GameBoardUpdate CompleteSetupForComputerPlayers(GameBoardData gameBoardData, GameBoardUpdate gameBoardUpdate)

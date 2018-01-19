@@ -562,8 +562,8 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       TurnToken turnToken = null;
       localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
 
-      ResourceUpdate gainedResources = null;
-      localGameController.ResourcesGainedEvent = (ResourceUpdate r) => { gainedResources = r; };
+      ResourceTransactionList gainedResources = null;
+      localGameController.ResourcesTransferredEvent = (ResourceTransactionList r) => { gainedResources = r; };
 
       localGameController.StartGamePlay();
 
@@ -575,7 +575,9 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       localGameController.UseKnightCard(turnToken, knightCard, SecondSettlementOneHex, firstOpponent.Id, 1);
 
       // Assert
-      gainedResources.Resources.ShouldContainKeyAndValue(firstOpponent.Id, ResourceClutch.OneBrick);
+      var expectedResources = new ResourceTransactionList();
+      expectedResources.Add(new ResourceTransaction(player.Id, firstOpponent.Id, ResourceClutch.OneBrick));
+      ShouldlyToolBox.AssertThatTheResourceTransactionListIsAsExpected(gainedResources, expectedResources);
 
       player.ResourcesCount.ShouldBe(4);
       firstOpponent.ResourcesCount.ShouldBe(2);
