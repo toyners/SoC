@@ -84,7 +84,6 @@ namespace Jabberwocky.SoC.Library
     public Action<Guid> LongestRoadBuiltEvent { get; set; }
     public Action<Guid, List<GameEvent>> OpponentActionsEvent { get; set; }
     public Action<ResourceUpdate> ResourcesCollectedEvent { get; set; }
-    //public Action<ResourceUpdate> ResourcesGainedEvent { get; set; }
     public Action<ResourceUpdate> ResourcesLostEvent { get; set; }
     public Action<ResourceTransactionList> ResourcesTransferredEvent { get; set; }
     public Action RoadSegmentBuiltEvent { get; set; }
@@ -202,9 +201,6 @@ namespace Jabberwocky.SoC.Library
 
       var opponent = this.playersById[opponentId];
       var takenResource = opponent.LoseRandomResource(this.dice);
-      /*var resources = this.CollapsePlayerResourcesToList(opponent);
-      var randomisedResources = this.RandomiseResourceList(resources);
-      var gainedResources = this.CreateGainedResources(randomisedResources, resourceIndex);*/
       
       this.mainPlayer.AddResources(takenResource);
 
@@ -759,24 +755,6 @@ namespace Jabberwocky.SoC.Library
       this.currentPlayer = this.players[this.playerIndex];
     }
 
-    private List<ResourceTypes> CollapsePlayerResourcesToList(IPlayer player)
-    {
-      var resources = new List<ResourceTypes>(player.ResourcesCount);
-      foreach (ResourceTypes resourceType in Enum.GetValues(typeof(ResourceTypes)))
-      {
-        switch (resourceType)
-        {
-          case ResourceTypes.Brick: this.AddResourcesToList(resources, ResourceTypes.Brick, player.BrickCount); break;
-          case ResourceTypes.Grain: this.AddResourcesToList(resources, ResourceTypes.Grain, player.GrainCount); break;
-          case ResourceTypes.Lumber: this.AddResourcesToList(resources, ResourceTypes.Lumber, player.LumberCount); break;
-          case ResourceTypes.Ore: this.AddResourcesToList(resources, ResourceTypes.Ore, player.OreCount); break;
-          case ResourceTypes.Wool: this.AddResourcesToList(resources, ResourceTypes.Wool, player.WoolCount); break;
-        }
-      }
-
-      return resources;
-    }
-
     private ResourceUpdate CollectTurnResources(UInt32 diceRoll)
     {
       var resourceUpdate = new ResourceUpdate();
@@ -873,23 +851,6 @@ namespace Jabberwocky.SoC.Library
       }
 
       return gameBoardUpdate;
-    }
-
-    private ResourceClutch CreateGainedResources(List<ResourceTypes> resources, Int32 resourceIndex)
-    {
-      var gainedResources = ResourceClutch.Zero;
-      var chosenResourceType = resources[resourceIndex];
-
-      switch (chosenResourceType)
-      {
-        case ResourceTypes.Brick: gainedResources.BrickCount = 1; break;
-        case ResourceTypes.Grain: gainedResources.GrainCount = 1; break;
-        case ResourceTypes.Lumber: gainedResources.LumberCount = 1; break;
-        case ResourceTypes.Ore: gainedResources.OreCount = 1; break;
-        case ResourceTypes.Wool: gainedResources.WoolCount = 1; break;
-      }
-
-      return gainedResources;
     }
 
     private PlayerDataView[] CreatePlayerDataViews()
@@ -1046,20 +1007,6 @@ namespace Jabberwocky.SoC.Library
       {
         this.LongestRoadBuiltEvent?.Invoke(this.currentPlayer.Id);
       }
-    }
-
-    private List<ResourceTypes> RandomiseResourceList(List<ResourceTypes> resources)
-    {
-      var randomisedResources = new List<ResourceTypes>(resources.Count);
-      Random random = new Random();
-      while (resources.Count > 0)
-      {
-        var index = random.Next(resources.Count - 1);
-        randomisedResources.Add(resources[index]);
-        resources.RemoveAt(index);
-      }
-
-      return randomisedResources;
     }
 
     private void TryRaiseCityBuildingError()
