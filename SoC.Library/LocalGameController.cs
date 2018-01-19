@@ -191,9 +191,7 @@ namespace Jabberwocky.SoC.Library
       }
 
       var opponent = this.playersById[opponentId];
-      var resourceIndex = this.dice.GetRandomNumberBetweenZeroAndMaximum(opponent.ResourcesCount);
-      var takenResource = opponent.LoseResourceAtIndex(resourceIndex);
-      
+      var takenResource = this.GetResourceFromPlayer(opponent);
       this.mainPlayer.AddResources(takenResource);
 
       var resourceTransactionList = new ResourceTransactionList();
@@ -315,9 +313,7 @@ namespace Jabberwocky.SoC.Library
               {
                 var otherPlayers = this.GetPlayersFromIds(playersOnHex);
                 var robbedPlayer = computerPlayer.ChoosePlayerToRob(otherPlayers);
-
-                var resourceIndex = this.dice.GetRandomNumberBetweenZeroAndMaximum(robbedPlayer.ResourcesCount);
-                var takenResource = robbedPlayer.LoseResourceAtIndex(resourceIndex);
+                var takenResource = this.GetResourceFromPlayer(robbedPlayer);
 
                 computerPlayer.AddResources(takenResource);
                 var resourceTransaction = new ResourceTransaction(computerPlayer.Id, robbedPlayer.Id, takenResource);
@@ -363,6 +359,12 @@ namespace Jabberwocky.SoC.Library
 
       this.currentTurnToken = new TurnToken();
       this.StartPlayerTurnEvent?.Invoke(this.currentTurnToken);
+    }
+
+    private ResourceClutch GetResourceFromPlayer(IPlayer player)
+    {
+      var resourceIndex = this.dice.GetRandomNumberBetweenZeroAndMaximum(player.ResourcesCount);
+      return player.LoseResourceAtIndex(resourceIndex);
     }
 
     public void FinalisePlayerTurnOrder()
@@ -804,8 +806,7 @@ namespace Jabberwocky.SoC.Library
 
     private void CompleteResourceTransactionBetweenPlayers(IPlayer playerToTakeResourceFrom)
     {
-      Int32 resourceIndex = this.dice.GetRandomNumberBetweenZeroAndMaximum(playerToTakeResourceFrom.ResourcesCount);
-      var takenResource = playerToTakeResourceFrom.LoseResourceAtIndex(resourceIndex);
+      var takenResource = this.GetResourceFromPlayer(playerToTakeResourceFrom);
       this.mainPlayer.AddResources(takenResource);
 
       var resourceTransactionList = new ResourceTransactionList();
