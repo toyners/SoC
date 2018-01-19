@@ -361,12 +361,6 @@ namespace Jabberwocky.SoC.Library
       this.StartPlayerTurnEvent?.Invoke(this.currentTurnToken);
     }
 
-    private ResourceClutch GetResourceFromPlayer(IPlayer player)
-    {
-      var resourceIndex = this.dice.GetRandomNumberBetweenZeroAndMaximum(player.ResourcesCount);
-      return player.LoseResourceAtIndex(resourceIndex);
-    }
-
     public void FinalisePlayerTurnOrder()
     {
       if (this.GamePhase != GamePhases.FinalisePlayerTurnOrder)
@@ -944,6 +938,12 @@ namespace Jabberwocky.SoC.Library
       }
 
       return playerList;
+    }
+
+    private ResourceClutch GetResourceFromPlayer(IPlayer player)
+    {
+      var resourceIndex = this.dice.GetRandomNumberBetweenZeroAndMaximum(player.ResourcesCount);
+      return player.LoseResourceAtIndex(resourceIndex);
     }
 
     private void HandlePlaceRoadError(GameBoardData.VerificationStatus status)
