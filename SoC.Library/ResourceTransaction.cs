@@ -19,17 +19,20 @@ namespace Jabberwocky.SoC.Library
     }
   }
 
-  public class ResourceTransactionList : IEnumerable<ResourceTransaction>
+  public class ResourceTransactionList
   {
-    private ResourceTransaction[] resourceTransactions;
+    #region Fields
+    private List<ResourceTransaction> resourceTransactions = new List<ResourceTransaction>();
+    #endregion
 
+    #region Properties
     public Int32 Count { get;  private set; }
 
     public ResourceTransaction this[Int32 index]
     {
       get
       {
-        if (index < 0 || index >= this.resourceTransactions.Length)
+        if (index < 0 || index >= this.resourceTransactions.Count)
         {
           throw new IndexOutOfRangeException();
         }
@@ -37,20 +40,13 @@ namespace Jabberwocky.SoC.Library
         return this.resourceTransactions[index];
       }
     }
+    #endregion
 
+    #region Methods
     public void Add(ResourceTransaction resourceTransaction)
     {
-      throw new NotImplementedException(); 
+      this.resourceTransactions.Add(resourceTransaction);
     }
-
-    public IEnumerator<ResourceTransaction> GetEnumerator()
-    {
-      throw new NotImplementedException();
-    }
-
-    IEnumerator IEnumerable.GetEnumerator()
-    {
-      throw new NotImplementedException();
-    }
+    #endregion
   }
 }

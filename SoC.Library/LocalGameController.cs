@@ -688,9 +688,9 @@ namespace Jabberwocky.SoC.Library
 
     private void AddResourcesToCurrentPlayer(IPlayer player, ResourceTransactionList resourceTransactions)
     {
-      foreach (var resourceTransaction in resourceTransactions)
+      for (var i = 0; i < resourceTransactions.Count; i++)
       {
-        player.AddResources(resourceTransaction.Resources);
+        player.AddResources(resourceTransactions[i].Resources);
       }
     }
 
