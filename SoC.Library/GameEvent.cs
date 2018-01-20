@@ -53,16 +53,6 @@ namespace Jabberwocky.SoC.Library
     public PlayKnightCardEvent(Guid playerId) : base(playerId) { }
   }
 
-  public class PlayMonopolyCardEvent : GameEvent
-  {
-    public readonly Dictionary<Guid, ResourceClutch> Resources = new Dictionary<Guid, ResourceClutch>();
-
-    public PlayMonopolyCardEvent(Guid playerId, Dictionary<Guid, ResourceClutch> resources) : base(playerId)
-    {
-      this.Resources = resources;
-    }
-  }
-
   public class ResourceTransactionEvent : GameEvent
   {
     #region Fields

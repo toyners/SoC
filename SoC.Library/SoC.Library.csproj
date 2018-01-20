@@ -57,6 +57,7 @@
     <Compile Include="Interfaces\IPlayerPool.cs" />
     <Compile Include="PathFinder.cs" />
     <Compile Include="Player.cs" />
+    <Compile Include="PlayMonopolyCardEvent.cs" />
     <Compile Include="ResourceClutch.cs" />
     <Compile Include="ResourceUpdate.cs" />
     <Compile Include="RoadSegment.cs" />
