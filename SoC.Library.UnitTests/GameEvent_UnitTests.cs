@@ -45,6 +45,15 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
       parameter1.Equals(parameter2).ShouldBeFalse();
     }
+
+    [Test]
+    public void Equals_ParameterIsDifferentType_ReturnsFalse()
+    {
+      var parameter1 = new GameEvent(Guid.NewGuid());
+      var parameter2 = new Object();
+
+      parameter1.Equals(parameter2).ShouldBeFalse();
+    }
     #endregion 
   }
 }
