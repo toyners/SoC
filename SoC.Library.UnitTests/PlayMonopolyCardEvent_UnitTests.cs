@@ -92,6 +92,20 @@ namespace Jabberwocky.SoC.Library.UnitTests
       secondResourceTransactionList.Add(new ResourceTransaction(playerId, opponentId, ResourceClutch.OneGrain));
       ((new PlayMonopolyCardEvent(playerId, firstResourceTransactionList)).Equals(new PlayMonopolyCardEvent(playerId, secondResourceTransactionList))).ShouldBeFalse();
     }
+
+    [Test]
+    public void Equals_DifferentResourceCountOnEachEvent_ReturnsFalse()
+    {
+      var playerId = Guid.NewGuid();
+      var opponentId = Guid.NewGuid();
+      var firstResourceTransactionList = new ResourceTransactionList();
+      firstResourceTransactionList.Add(new ResourceTransaction(playerId, opponentId, ResourceClutch.OneBrick));
+
+      var secondResourceTransactionList = new ResourceTransactionList();
+      secondResourceTransactionList.Add(new ResourceTransaction(playerId, opponentId, ResourceClutch.OneBrick));
+      secondResourceTransactionList.Add(new ResourceTransaction(playerId, opponentId, ResourceClutch.OneGrain));
+      ((new PlayMonopolyCardEvent(playerId, firstResourceTransactionList)).Equals(new PlayMonopolyCardEvent(playerId, secondResourceTransactionList))).ShouldBeFalse();
+    }
     #endregion 
   }
 }

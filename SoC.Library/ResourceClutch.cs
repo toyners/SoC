@@ -2,7 +2,9 @@
 namespace Jabberwocky.SoC.Library
 {
   using System;
+  using System.Diagnostics;
 
+  [DebuggerDisplay("{BrickCount}, {GrainCount}, {LumberCount}, {OreCount}, {WoolCount}")]
   public struct ResourceClutch
   {
     #region Fields
@@ -63,21 +65,23 @@ namespace Jabberwocky.SoC.Library
 
     public static Boolean operator== (ResourceClutch r1, ResourceClutch r2)
     {
-      return r1.BrickCount == r2.BrickCount &&
-             r1.GrainCount == r2.GrainCount &&
-             r1.LumberCount == r2.LumberCount &&
-             r1.OreCount == r2.OreCount &&
-             r1.WoolCount == r2.WoolCount;
+      return r1.Equals(r2);
     }
 
     public static Boolean operator!= (ResourceClutch r1, ResourceClutch r2)
     {
-      return !(r1 == r2);
+      return !r1.Equals(r2);
     }
 
     public override Boolean Equals(Object obj)
     {
-      return base.Equals(obj);
+      var other = (ResourceClutch)obj;
+
+      return this.BrickCount == other.BrickCount &&
+       this.GrainCount == other.GrainCount &&
+       this.LumberCount == other.LumberCount &&
+       this.OreCount == other.OreCount &&
+       this.WoolCount == other.WoolCount;
     }
 
     private static ResourceClutch MultiplyByNaturalNumber(ResourceClutch operand1, Int32 operand2)

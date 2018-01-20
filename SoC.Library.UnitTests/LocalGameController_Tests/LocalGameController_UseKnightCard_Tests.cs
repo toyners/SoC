@@ -526,7 +526,10 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       var secondOpponent = testInstances.SecondOpponent;
       testInstances.Dice.AddSequence(new[] { 0u });
 
+      player.RemoveAllResources();
       player.AddResources(ResourceClutch.DevelopmentCard);
+      firstOpponent.RemoveAllResources();
+      firstOpponent.AddResources(ResourceClutch.OneBrick);
 
       TurnToken turnToken = null;
       localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
@@ -548,8 +551,8 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       expectedResources.Add(new ResourceTransaction(player.Id, firstOpponent.Id, ResourceClutch.OneBrick));
       ShouldlyToolBox.AssertThatTheResourceTransactionListIsAsExpected(gainedResources, expectedResources);
 
-      player.ResourcesCount.ShouldBe(4);
-      firstOpponent.ResourcesCount.ShouldBe(2);
+      player.ResourcesCount.ShouldBe(1);
+      firstOpponent.ResourcesCount.ShouldBe(0);
       secondOpponent.ResourcesCount.ShouldBe(3);
     }
 

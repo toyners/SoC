@@ -2,7 +2,6 @@
 namespace Jabberwocky.SoC.Library
 {
   using System;
-  using System.Collections;
   using System.Collections.Generic;
 
   public struct ResourceTransaction
@@ -26,7 +25,7 @@ namespace Jabberwocky.SoC.Library
     #endregion
 
     #region Properties
-    public Int32 Count { get;  private set; }
+    public Int32 Count { get { return resourceTransactions.Count; } }
 
     public ResourceTransaction this[Int32 index]
     {
