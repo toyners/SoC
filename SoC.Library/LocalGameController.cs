@@ -338,9 +338,12 @@ namespace Jabberwocky.SoC.Library
               var resourceType = computerPlayer.ChooseResourceTypeToRob();
               var opponents = this.GetOpponentsForPlayer(computerPlayer);
               var resourceTransations = this.GetAllResourcesFromOpponentsOfType(computerPlayer, opponents, resourceType);
-              this.AddResourcesToCurrentPlayer(computerPlayer, resourceTransations);
+              if (resourceTransations != null)
+              {
+                this.AddResourcesToCurrentPlayer(computerPlayer, resourceTransations);
+              }
 
-              var resourceLostEvent = new ResourceTransactionEvent(computerPlayer.Id, resourceTransations);
+              events.Add(new PlayMonopolyCardEvent(computerPlayer.Id, resourceTransations));
               break;
             }
 
@@ -663,7 +666,11 @@ namespace Jabberwocky.SoC.Library
 
       var opponents = this.GetOpponentsForPlayer(this.mainPlayer);
       var resourceTransactions = this.GetAllResourcesFromOpponentsOfType(this.mainPlayer, opponents, resourceType);
-      this.AddResourcesToCurrentPlayer(this.mainPlayer, resourceTransactions);
+      if (resourceTransactions != null)
+      {
+        this.AddResourcesToCurrentPlayer(this.mainPlayer, resourceTransactions);
+      }
+
       this.PlayDevelopmentCard(monopolyCard);
 
       this.ResourcesTransferredEvent?.Invoke(resourceTransactions);
@@ -905,11 +912,20 @@ namespace Jabberwocky.SoC.Library
 
     private ResourceTransactionList GetAllResourcesFromOpponentsOfType(IPlayer player, IEnumerable<IPlayer> opponents, ResourceTypes resourceType)
     {
-      var transactionList = new ResourceTransactionList();
+      ResourceTransactionList transactionList = null;
       foreach (var opponent in opponents)
       {
         var resources = opponent.LoseResourcesOfType(resourceType);
-        transactionList.Add(new ResourceTransaction(player.Id, opponent.Id, resources));
+
+        if (resources != ResourceClutch.Zero)
+        {
+          if (transactionList == null)
+          {
+            transactionList = new ResourceTransactionList();
+          }
+
+          transactionList.Add(new ResourceTransaction(player.Id, opponent.Id, resources));
+        }
       }
 
       return transactionList;

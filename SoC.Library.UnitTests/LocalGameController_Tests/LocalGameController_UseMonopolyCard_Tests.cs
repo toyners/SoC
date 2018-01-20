@@ -177,6 +177,53 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
     }
 
     [Test]
+    public void UseMonopolyCard_UseDevelopmentCardWhenOpponentsHaveNoResourcsOfType_ReceiveNullReference()
+    {
+      // Arrange
+      var monopolyCard = new MonopolyDevelopmentCard();
+      var testInstances = this.TestSetup(monopolyCard);
+      var localGameController = testInstances.LocalGameController;
+      var player = testInstances.MainPlayer;
+      var firstOpponent = testInstances.FirstOpponent;
+      var secondOpponent = testInstances.SecondOpponent;
+      var thirdOpponent = testInstances.ThirdOpponent;
+
+      player.RemoveAllResources();
+      player.AddResources(ResourceClutch.DevelopmentCard);
+      firstOpponent.RemoveAllResources();
+      firstOpponent.AddResources(ResourceClutch.OneGrain);
+      secondOpponent.RemoveAllResources();
+      secondOpponent.AddResources(ResourceClutch.OneLumber);
+      thirdOpponent.RemoveAllResources();
+      thirdOpponent.AddResources(ResourceClutch.OneOre);
+
+      TurnToken turnToken = null;
+      localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
+
+      ResourceTransactionList gainedResources = new ResourceTransactionList(); // Ensure that state change can be recognised
+      localGameController.ResourcesTransferredEvent = (ResourceTransactionList r) => { gainedResources = r; };
+
+      localGameController.StartGamePlay();
+
+      // Buy the monopoly card
+      localGameController.BuyDevelopmentCard(turnToken);
+      localGameController.EndTurn(turnToken);
+
+      // Act
+      localGameController.UseMonopolyCard(turnToken, monopolyCard, ResourceTypes.Brick);
+
+      // Assert
+      gainedResources.ShouldBeNull();
+      player.ResourcesCount.ShouldBe(0);
+      firstOpponent.ResourcesCount.ShouldBe(1);
+      firstOpponent.GrainCount.ShouldBe(1);
+      secondOpponent.ResourcesCount.ShouldBe(1);
+      secondOpponent.LumberCount.ShouldBe(1);
+      thirdOpponent.ResourcesCount.ShouldBe(1);
+      thirdOpponent.OreCount.ShouldBe(1);
+    }
+
+    [Test]
     public void Scenario_OpponentUsesMonopolyCardAndGetsResourcesFromPlayer()
     {
       // Arrange
@@ -191,6 +238,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       // Clear initial resources
       player.RemoveAllResources();
       firstOpponent.RemoveAllResources();
+      secondOpponent.RemoveAllResources();
       thirdOpponent.RemoveAllResources();
 
       player.AddResources(ResourceClutch.OneBrick);
@@ -219,23 +267,23 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
 
       // Assert
       var expectedBuyDevelopmentCardEvent = new BuyDevelopmentCardEvent(firstOpponent.Id);
-      var lostResourcesByPlayerId = new Dictionary<Guid, ResourceClutch>();
-      lostResourcesByPlayerId.Add(player.Id, ResourceClutch.OneBrick);
-      lostResourcesByPlayerId.Add(secondOpponent.Id, ResourceClutch.OneBrick * 2);
 
-      var expectedPlayMonopolyCardEvent = new PlayMonopolyCardEvent(firstOpponent.Id, null);
-      var expectedResourceTransaction = new ResourceTransaction(player.Id, firstOpponent.Id, ResourceClutch.Zero);
       var expectedResourceTransactionList = new ResourceTransactionList();
-      expectedResourceTransactionList.Add(expectedResourceTransaction);
-      var expectedResourceLostEvent = new ResourceTransactionEvent(firstOpponent.Id, expectedResourceTransactionList);
+      expectedResourceTransactionList.Add(new ResourceTransaction(firstOpponent.Id, player.Id, ResourceClutch.OneBrick));
+      expectedResourceTransactionList.Add(new ResourceTransaction(firstOpponent.Id, secondOpponent.Id, ResourceClutch.OneBrick * 2));
+      var expectedPlayMonopolyCardEvent = new PlayMonopolyCardEvent(firstOpponent.Id, expectedResourceTransactionList);
 
       playerActions.Count.ShouldBe(2);
       keys.Count.ShouldBe(playerActions.Count);
       this.AssertThatPlayerActionsForTurnAreCorrect(playerActions[keys[0]], expectedBuyDevelopmentCardEvent);
       this.AssertThatPlayerActionsForTurnAreCorrect(playerActions[keys[1]], expectedPlayMonopolyCardEvent);
 
-      player.ResourcesCount.ShouldBe(2);
-      firstOpponent.ResourcesCount.ShouldBe(4);
+      player.ResourcesCount.ShouldBe(0);
+      firstOpponent.ResourcesCount.ShouldBe(3);
+      firstOpponent.BrickCount.ShouldBe(firstOpponent.ResourcesCount);
+      secondOpponent.ResourcesCount.ShouldBe(4);
+      secondOpponent.BrickCount.ShouldBe(0);
+      thirdOpponent.ResourcesCount.ShouldBe(0);
     }
 
     private void AssertThatPlayerActionsForTurnAreCorrect(List<GameEvent> actualEvents, params GameEvent[] expectedEvents)
