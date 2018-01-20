@@ -28,6 +28,11 @@ namespace Jabberwocky.SoC.Library
         return false;
       }
 
+      if (this.GetType() != obj.GetType())
+      {
+        return false;
+      }
+
       return this.PlayerId == ((GameEvent)obj).PlayerId;
     }
 
