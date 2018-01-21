@@ -678,6 +678,11 @@ namespace Jabberwocky.SoC.Library
 
     public void UseYearOfPlentyCard(TurnToken turnToken, YearOfPlentyDevelopmentCard yearOfPlentyCard, ResourceTypes firstChoice, ResourceTypes secondChoice)
     {
+      if (!this.VerifyParametersForUsingDevelopmentCard(turnToken, yearOfPlentyCard))
+      {
+        return;
+      }
+
       throw new NotImplementedException();
     }
 
