@@ -148,63 +148,6 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       gameBoardUpdate.ShouldBeNull();
     }
 
-    private void VerifyNewSettlements(List<Tuple<UInt32, Guid>> actualSettlements, params Tuple<UInt32, Guid>[] expectedSettlements)
-    {
-      actualSettlements.Count.ShouldBe(expectedSettlements.Length);
-
-      foreach(var expectedSettlement in expectedSettlements)
-      {
-        var foundExpectedSettlement = false;
-        for (var index = 0; index < actualSettlements.Count; index++)
-        {
-          var actualSettlement = actualSettlements[index];
-
-          if (actualSettlement.Item1 == expectedSettlement.Item1 &&
-              actualSettlement.Item2 == expectedSettlement.Item2)
-          {
-            actualSettlements.RemoveAt(index);
-            index--;
-            foundExpectedSettlement = true;
-            break;
-          }
-        }
-
-        if (!foundExpectedSettlement)
-        {
-          throw new Exception("Did not find expected settlement: " + expectedSettlement.ToString());
-        }
-      }
-    }
-
-    private void VerifyNewRoads(List<Tuple<UInt32, UInt32, Guid>> actualRoads, params Tuple<UInt32, UInt32, Guid>[] expectedRoads)
-    {
-      actualRoads.Count.ShouldBe(expectedRoads.Length);
-
-      foreach (var expectedRoad in expectedRoads)
-      {
-        var foundExpectedRoad = false;
-        for (var index = 0; index < actualRoads.Count; index++)
-        {
-          var actualRoad = actualRoads[index];
-
-          if (actualRoad.Item1 == expectedRoad.Item1 &&
-              actualRoad.Item2 == expectedRoad.Item2 &&
-              actualRoad.Item3 == expectedRoad.Item3)
-          {
-            foundExpectedRoad = true;
-            actualRoads.RemoveAt(index);
-            index--;
-            break;
-          }
-        }
-
-        if (!foundExpectedRoad)
-        {
-          throw new Exception("Did not find expected road: " + expectedRoad);
-        }
-      }
-    }
-
     [Test]
     [Category("LocalGameController")]
     public void CompleteSetupWithPlayerInSecondSlot_ExpectedPlacementsAreReturned()
@@ -1530,6 +1473,63 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       this.AssertPlayerDataViewIsCorrect(firstOpponent, playerDataViews[1]);
       this.AssertPlayerDataViewIsCorrect(secondOpponent, playerDataViews[2]);
       this.AssertPlayerDataViewIsCorrect(thirdOpponent, playerDataViews[3]);
+    }
+
+    private void VerifyNewSettlements(List<Tuple<UInt32, Guid>> actualSettlements, params Tuple<UInt32, Guid>[] expectedSettlements)
+    {
+      actualSettlements.Count.ShouldBe(expectedSettlements.Length);
+
+      foreach (var expectedSettlement in expectedSettlements)
+      {
+        var foundExpectedSettlement = false;
+        for (var index = 0; index < actualSettlements.Count; index++)
+        {
+          var actualSettlement = actualSettlements[index];
+
+          if (actualSettlement.Item1 == expectedSettlement.Item1 &&
+              actualSettlement.Item2 == expectedSettlement.Item2)
+          {
+            actualSettlements.RemoveAt(index);
+            index--;
+            foundExpectedSettlement = true;
+            break;
+          }
+        }
+
+        if (!foundExpectedSettlement)
+        {
+          throw new Exception("Did not find expected settlement: " + expectedSettlement.ToString());
+        }
+      }
+    }
+
+    private void VerifyNewRoads(List<Tuple<UInt32, UInt32, Guid>> actualRoads, params Tuple<UInt32, UInt32, Guid>[] expectedRoads)
+    {
+      actualRoads.Count.ShouldBe(expectedRoads.Length);
+
+      foreach (var expectedRoad in expectedRoads)
+      {
+        var foundExpectedRoad = false;
+        for (var index = 0; index < actualRoads.Count; index++)
+        {
+          var actualRoad = actualRoads[index];
+
+          if (actualRoad.Item1 == expectedRoad.Item1 &&
+              actualRoad.Item2 == expectedRoad.Item2 &&
+              actualRoad.Item3 == expectedRoad.Item3)
+          {
+            foundExpectedRoad = true;
+            actualRoads.RemoveAt(index);
+            index--;
+            break;
+          }
+        }
+
+        if (!foundExpectedRoad)
+        {
+          throw new Exception("Did not find expected road: " + expectedRoad);
+        }
+      }
     }
     #endregion
   }
