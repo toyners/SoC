@@ -71,6 +71,7 @@
     <Compile Include="LocalGameController_Tests\LocalGameController_BuyDevelopmentCard_Tests.cs" />
     <Compile Include="LocalGameController_Tests\LocalGameController_UseKnightCard_Tests.cs" />
     <Compile Include="LocalGameController_Tests\LocalGameController_UseMonopolyCard_Tests.cs" />
+    <Compile Include="LocalGameController_Tests\LocalGameController_UseYearOfPlentyCard_Tests.cs" />
     <Compile Include="LocalGameController_Tests\ShouldlyToolBox.cs" />
     <Compile Include="MockComputerPlayer.cs" />
     <Compile Include="MockDice.cs" />

@@ -676,6 +676,11 @@ namespace Jabberwocky.SoC.Library
       this.ResourcesTransferredEvent?.Invoke(resourceTransactions);
     }
 
+    public void UseYearOfPlentyCard(TurnToken turnToken, YearOfPlentyDevelopmentCard yearOfPlentyCard, ResourceTypes firstChoice, ResourceTypes secondChoice)
+    {
+      throw new NotImplementedException();
+    }
+
     private void AddResourcesToList(List<ResourceTypes> resources, ResourceTypes resourceType, Int32 total)
     {
       for (var i = 0; i < total; i++)
