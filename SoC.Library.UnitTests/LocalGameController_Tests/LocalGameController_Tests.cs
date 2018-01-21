@@ -1426,6 +1426,73 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       roads[0].ShouldBe(new Tuple<UInt32, UInt32, Guid>(MainSettlementOneLocation, MainRoadOneEnd, playerId));
     }
 
+    [Test]
+    public void Scenario_AllPlayersCollectResourcesAsPartOfTurnStartAfterComputerPlayerCompletesTheirTurn()
+    {
+      // Arrange
+      var testInstances = LocalGameControllerTestCreator.CreateTestInstances();
+      var localGameController = testInstances.LocalGameController;
+      var player = testInstances.MainPlayer;
+      var firstOpponent = testInstances.FirstOpponent;
+      var secondOpponent = testInstances.SecondOpponent;
+      var thirdOpponent = testInstances.ThirdOpponent;
+      LocalGameControllerTestSetup.LaunchGameAndCompleteSetup(localGameController);
+      testInstances.Dice.AddSequence(new UInt32[] { 8u });
+
+      TurnToken firstTurnToken = null;
+      TurnToken secondTurnToken = null;
+      localGameController.StartPlayerTurnEvent = (TurnToken t) => 
+      {
+        if (firstTurnToken == null)
+        {
+          firstTurnToken = t;
+        }
+        else if (secondTurnToken == null)
+        {
+          secondTurnToken = t;
+        }
+        else
+        {
+          throw new Exception("Did not expect to start a third turn");
+        }
+      };
+
+      localGameController.StartGamePlay();
+
+      ResourceUpdate collectedResources = null;
+      localGameController.ResourcesCollectedEvent = (ResourceUpdate c) => { collectedResources = c; };
+
+      // Zero the resources ahead of the next turn - make the asserts easier to read.
+      player.RemoveAllResources();
+      firstOpponent.RemoveAllResources();
+      secondOpponent.RemoveAllResources();
+      thirdOpponent.RemoveAllResources();
+
+      // Act
+      localGameController.EndTurn(firstTurnToken);
+
+      // Assert 
+      collectedResources.ShouldNotBeNull();
+      collectedResources.Resources.Count.ShouldBe(4);
+      collectedResources.Resources.ShouldContainKeyAndValue(player.Id, ResourceClutch.OneLumber);
+      collectedResources.Resources.ShouldContainKeyAndValue(firstOpponent.Id, ResourceClutch.OneOre);
+      collectedResources.Resources.ShouldContainKeyAndValue(firstOpponent.Id, ResourceClutch.OneLumber);
+      collectedResources.Resources.ShouldContainKeyAndValue(secondOpponent.Id, ResourceClutch.OneOre);
+
+      // Resource totals should represent two turns worth of collection
+      player.ResourcesCount.ShouldBe(1);
+      player.LumberCount.ShouldBe(1);
+
+      firstOpponent.ResourcesCount.ShouldBe(2);
+      firstOpponent.LumberCount.ShouldBe(1);
+      firstOpponent.OreCount.ShouldBe(1);
+
+      secondOpponent.ResourcesCount.ShouldBe(1);
+      secondOpponent.OreCount.ShouldBe(1);
+
+      thirdOpponent.ResourcesCount.ShouldBe(0);
+    }
+
     private void AssertPlayerDataViewIsCorrect(IPlayer player, PlayerDataView playerDataView)
     {
       playerDataView.Id.ShouldBe(player.Id);
