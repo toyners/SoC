@@ -13,7 +13,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
   [Category("LocalGameController")]
   [Category("LocalGameController.UseMonopolyCard")]
   public class LocalGameController_UseMonopolyCard_Tests
-  {
+  { 
     #region Methods
     [Test]
     public void UseMonopolyCard_TurnTokenNotCorrect_MeaningfulErrorIsReceived()

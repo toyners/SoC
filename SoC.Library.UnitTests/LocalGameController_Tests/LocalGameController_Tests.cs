@@ -1462,6 +1462,9 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       ResourceUpdate collectedResources = null;
       localGameController.ResourcesCollectedEvent = (ResourceUpdate c) => { collectedResources = c; };
 
+      UInt32 diceRoll = 0;
+      localGameController.DiceRollEvent = (UInt32 r) => { diceRoll = r; };
+
       // Zero the resources ahead of the next turn - make the asserts easier to read.
       player.RemoveAllResources();
       firstOpponent.RemoveAllResources();
@@ -1471,7 +1474,8 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       // Act
       localGameController.EndTurn(firstTurnToken);
 
-      // Assert 
+      // Assert
+      diceRoll.ShouldBe(6u); 
       collectedResources.ShouldNotBeNull();
       collectedResources.Resources.Count.ShouldBe(4);
       collectedResources.Resources.ShouldContainKeyAndValue(player.Id, ResourceClutch.OneLumber);
@@ -1479,7 +1483,6 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       collectedResources.Resources.ShouldContainKeyAndValue(firstOpponent.Id, ResourceClutch.OneLumber);
       collectedResources.Resources.ShouldContainKeyAndValue(secondOpponent.Id, ResourceClutch.OneOre);
 
-      // Resource totals should represent two turns worth of collection
       player.ResourcesCount.ShouldBe(1);
       player.LumberCount.ShouldBe(1);
 

@@ -565,7 +565,13 @@ namespace Jabberwocky.SoC.Library.GameBoards
       return resourceClutch;
     }
 
-    public Dictionary<Guid, ResourceClutch> GetResourcesForRoll(UInt32 diceRoll)
+    public struct ResourceCollection
+    {
+      public UInt32 Location;
+      public ResourceClutch Resources;
+    }
+
+    public Dictionary<Guid, ResourceCollection[]> GetResourcesForRoll(UInt32 diceRoll)
     {
       var resources = new Dictionary<Guid, ResourceClutch>();
 
@@ -619,7 +625,8 @@ namespace Jabberwocky.SoC.Library.GameBoards
         }
       }
 
-      return resources;
+      throw new NotImplementedException();
+      //return resources;
     }
 
     public Tuple<UInt32, UInt32, Guid>[] GetRoadInformation()

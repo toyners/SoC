@@ -857,8 +857,8 @@ namespace Jabberwocky.SoC.Library.UnitTests.GameBoardData_Tests
       var result = gameBoardData.GetResourcesForRoll(roll);
 
       result.Count.ShouldBe(2);
-      result.ShouldContainKeyAndValue(player1_Id, new ResourceClutch(1, 1, 0, 0, 0));
-      result.ShouldContainKeyAndValue(player2_Id, new ResourceClutch(0, 1, 0, 0, 0));
+      result.ShouldContainKeyAndValue(player1_Id, new GameBoardData.ResourceCollection[] { new GameBoardData.ResourceCollection { Location = 12u, Resources = new ResourceClutch(1, 1, 0, 0, 0) } } );
+      result.ShouldContainKeyAndValue(player2_Id, new GameBoardData.ResourceCollection[] { new GameBoardData.ResourceCollection { Location = 43u, Resources = ResourceClutch.OneGrain } } );
     }
 
     [Test]
@@ -872,21 +872,20 @@ namespace Jabberwocky.SoC.Library.UnitTests.GameBoardData_Tests
       var playerId = Guid.NewGuid();
       var gameBoardData = new GameBoardData(BoardSizes.Standard);
       gameBoardData.PlaceStartingInfrastructure(playerId, settlementLocation, roadEndLocation);
-
       var result = gameBoardData.GetResourcesForRoll(diceRoll);
 
-      ResourceClutch expectedResourceCounts = default(ResourceClutch);
+      ResourceClutch expectedResources = default(ResourceClutch);
       switch (expectedType)
       {
-        case ResourceTypes.Brick: expectedResourceCounts = new ResourceClutch(1, 0, 0, 0, 0); break;
-        case ResourceTypes.Grain: expectedResourceCounts = new ResourceClutch(0, 1, 0, 0, 0); break;
-        case ResourceTypes.Lumber: expectedResourceCounts = new ResourceClutch(0, 0, 1, 0, 0); break;
-        case ResourceTypes.Ore: expectedResourceCounts = new ResourceClutch(0, 0, 0, 1, 0); break;
-        case ResourceTypes.Wool: expectedResourceCounts = new ResourceClutch(0, 0, 0, 0, 1); break;
+        case ResourceTypes.Brick: expectedResources = ResourceClutch.OneBrick; break;
+        case ResourceTypes.Grain: expectedResources = ResourceClutch.OneGrain; break;
+        case ResourceTypes.Lumber: expectedResources = ResourceClutch.OneLumber; break;
+        case ResourceTypes.Ore: expectedResources = ResourceClutch.OneOre; break;
+        case ResourceTypes.Wool: expectedResources = ResourceClutch.OneWool; break;
       }
 
       result.Count.ShouldBe(1);
-      result.ShouldContainKeyAndValue(playerId, expectedResourceCounts);
+      result.ShouldContainKeyAndValue(playerId, new GameBoardData.ResourceCollection[] { new GameBoardData.ResourceCollection { Location = settlementLocation, Resources = expectedResources } } );
     }
 
     [Test]
