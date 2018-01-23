@@ -4,6 +4,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.GameBoardData_Tests
   using System;
   using System.Collections.Generic;
   using GameBoards;
+  using LocalGameController_Tests;
   using NUnit.Framework;
   using Shouldly;
 
@@ -865,7 +866,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.GameBoardData_Tests
 
       expected.Add(player2_Id, new ResourceCollection[] { new ResourceCollection(43u, ResourceClutch.OneGrain) });
 
-      AssertThatResourceCollectionsAreTheSame(result, expected);
+      AssertToolBox.AssertThatResourceCollectionsAreTheSame(result, expected);
     }
 
     /// <summary>
@@ -894,7 +895,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.GameBoardData_Tests
         new ResourceCollection(11u, ResourceClutch.OneBrick)
       });
 
-      AssertThatResourceCollectionsAreTheSame(result, expected);
+      AssertToolBox.AssertThatResourceCollectionsAreTheSame(result, expected);
     }
 
     [Test]
@@ -1858,34 +1859,6 @@ namespace Jabberwocky.SoC.Library.UnitTests.GameBoardData_Tests
       result4.Reverse();
 
       this.RoadShouldBeSameAsOneOf(road, result1, result2, result3, result4);
-    }
-
-    private void AssertThatResourceCollectionsAreTheSame(Dictionary<Guid, ResourceCollection[]> actual, Dictionary<Guid, ResourceCollection[]> expected)
-    {
-      actual.Count.ShouldBe(expected.Count);
-      List<Guid> expectedKeys = new List<Guid>(expected.Keys);
-      expectedKeys.Sort();
-
-      foreach (var guid in expectedKeys)
-      {
-        actual.ShouldContainKey(guid);
-        var actualList = new List<ResourceCollection>(actual[guid]);
-        var expectedList = new List<ResourceCollection>(expected[guid]);
-
-        actualList.Count.ShouldBe(expectedList.Count);
-        actualList.Sort();
-        expectedList.Sort();
-
-        for (var i = 0; i < expectedList.Count; i++)
-        {
-          actualList[i].Location.ShouldBe(expectedList[i].Location);
-          actualList[i].Resources.ShouldBe(expectedList[i].Resources);
-        }
-
-        actual.Remove(guid);
-      }
-
-      actual.Count.ShouldBe(0);
     }
 
     private void BuildRoadBranch(GameBoardData gameBoard, Guid playerId, UInt32[] branch)

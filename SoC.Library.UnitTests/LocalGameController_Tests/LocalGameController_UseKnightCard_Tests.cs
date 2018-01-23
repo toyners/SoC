@@ -549,7 +549,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       // Assert
       var expectedResources = new ResourceTransactionList();
       expectedResources.Add(new ResourceTransaction(player.Id, firstOpponent.Id, ResourceClutch.OneBrick));
-      ShouldlyToolBox.AssertThatTheResourceTransactionListIsAsExpected(gainedResources, expectedResources);
+      AssertToolBox.AssertThatTheResourceTransactionListIsAsExpected(gainedResources, expectedResources);
 
       player.ResourcesCount.ShouldBe(1);
       firstOpponent.ResourcesCount.ShouldBe(0);
