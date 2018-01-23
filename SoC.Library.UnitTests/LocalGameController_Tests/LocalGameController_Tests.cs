@@ -870,6 +870,11 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       localGameController.ResourcesCollectedEvent = (ResourceUpdate r) => { resourceUpdate = r; };
       localGameController.StartGamePlay();
 
+      var expectedCollectedResources = new Dictionary<Guid, ResourceCollection[]>
+      {
+
+      };
+
       resourceUpdate.ShouldNotBeNull();
       resourceUpdate.Resources.Count.ShouldBe(2);
       resourceUpdate.Resources[player.Id].BrickCount.ShouldBe(1);
