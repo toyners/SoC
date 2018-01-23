@@ -868,34 +868,6 @@ namespace Jabberwocky.SoC.Library.UnitTests.GameBoardData_Tests
       AssertThatResourceCollectionsAreTheSame(result, expected);
     }
 
-    private void AssertThatResourceCollectionsAreTheSame(Dictionary<Guid, ResourceCollection[]> actual, Dictionary<Guid, ResourceCollection[]> expected)
-    {
-      actual.Count.ShouldBe(expected.Count);
-      List<Guid> expectedKeys = new List<Guid>(expected.Keys);
-      expectedKeys.Sort();
-
-      foreach (var guid in expectedKeys)
-      {
-        actual.ShouldContainKey(guid);
-        var actualList = new List<ResourceCollection>(actual[guid]);
-        var expectedList = new List<ResourceCollection>(expected[guid]);
-
-        actualList.Count.ShouldBe(expectedList.Count);
-        actualList.Sort();
-        expectedList.Sort();
-
-        for (var i = 0; i < expectedList.Count; i++)
-        {
-          actualList[i].Location.ShouldBe(expectedList[i].Location);
-          actualList[i].Resources.ShouldBe(expectedList[i].Resources);
-        }
-
-        actual.Remove(guid);
-      }
-
-      actual.Count.ShouldBe(0);
-    }
-
     [Test]
     [TestCase(5u, 42u, 41u, ResourceTypes.Brick)]
     [TestCase(2u, 23u, 22u, ResourceTypes.Grain)]
@@ -1857,6 +1829,34 @@ namespace Jabberwocky.SoC.Library.UnitTests.GameBoardData_Tests
       result4.Reverse();
 
       this.RoadShouldBeSameAsOneOf(road, result1, result2, result3, result4);
+    }
+
+    private void AssertThatResourceCollectionsAreTheSame(Dictionary<Guid, ResourceCollection[]> actual, Dictionary<Guid, ResourceCollection[]> expected)
+    {
+      actual.Count.ShouldBe(expected.Count);
+      List<Guid> expectedKeys = new List<Guid>(expected.Keys);
+      expectedKeys.Sort();
+
+      foreach (var guid in expectedKeys)
+      {
+        actual.ShouldContainKey(guid);
+        var actualList = new List<ResourceCollection>(actual[guid]);
+        var expectedList = new List<ResourceCollection>(expected[guid]);
+
+        actualList.Count.ShouldBe(expectedList.Count);
+        actualList.Sort();
+        expectedList.Sort();
+
+        for (var i = 0; i < expectedList.Count; i++)
+        {
+          actualList[i].Location.ShouldBe(expectedList[i].Location);
+          actualList[i].Resources.ShouldBe(expectedList[i].Resources);
+        }
+
+        actual.Remove(guid);
+      }
+
+      actual.Count.ShouldBe(0);
     }
 
     private void BuildRoadBranch(GameBoardData gameBoard, Guid playerId, UInt32[] branch)
