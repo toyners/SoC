@@ -83,7 +83,7 @@ namespace Jabberwocky.SoC.Library
     public Action<ClientAccount> LoggedInEvent { get; set; }
     public Action<Guid> LongestRoadBuiltEvent { get; set; }
     public Action<Guid, List<GameEvent>> OpponentActionsEvent { get; set; }
-    public Action<ResourceUpdate> ResourcesCollectedEvent { get; set; }
+    public Action<Dictionary<Guid, ResourceCollection[]>> ResourcesCollectedEvent { get; set; }
     public Action<ResourceUpdate> ResourcesLostEvent { get; set; }
     public Action<ResourceTransactionList> ResourcesTransferredEvent { get; set; }
     public Action RoadSegmentBuiltEvent { get; set; }
@@ -763,11 +763,9 @@ namespace Jabberwocky.SoC.Library
       this.currentPlayer = this.players[this.playerIndex];
     }
 
-    private ResourceUpdate CollectTurnResources(UInt32 diceRoll)
+    private Dictionary<Guid, ResourceCollection[]> CollectTurnResources(UInt32 diceRoll)
     {
-      var resourceUpdate = new ResourceUpdate();
-      //resourceUpdate.Resources = this.gameBoardManager.Data.GetResourcesForRoll(diceRoll);
-      return resourceUpdate;
+      return this.gameBoardManager.Data.GetResourcesForRoll(diceRoll);
     }
 
     private void CollectInitialResourcesForPlayer(Guid playerId, UInt32 settlementLocation)

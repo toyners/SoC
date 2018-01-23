@@ -859,35 +859,24 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
     [Category("Main Player Turn")]
     public void StartOfMainPlayerTurn_DoesNotRollSeven_ReceiveCollectedResourcesDetails()
     {
-      MockDice mockDice = null;
-      MockPlayer player;
-      MockComputerPlayer firstOpponent, secondOpponent, thirdOpponent;
-      var localGameController = this.CreateLocalGameControllerAndCompleteGameSetup(out mockDice, out player, out firstOpponent, out secondOpponent, out thirdOpponent);
+      var testInstances = LocalGameControllerTestCreator.CreateTestInstances();
+      var localGameController = testInstances.LocalGameController;
+      LocalGameControllerTestSetup.LaunchGameAndCompleteSetup(localGameController);
+      testInstances.Dice.AddSequence(new[] { 8u });
+      var playerId = testInstances.MainPlayer.Id;
+      var firstOpponentId = testInstances.FirstOpponent.Id;
 
-      mockDice.AddSequence(new[] { 8u });
-
-      ResourceUpdate resourceUpdate = null;
-      localGameController.ResourcesCollectedEvent = (ResourceUpdate r) => { resourceUpdate = r; };
+      Dictionary<Guid, ResourceCollection[]> actual = null;
+      localGameController.ResourcesCollectedEvent = (Dictionary<Guid, ResourceCollection[]> r) => { actual = r; };
       localGameController.StartGamePlay();
 
-      var expectedCollectedResources = new Dictionary<Guid, ResourceCollection[]>
+      var expected = new Dictionary<Guid, ResourceCollection[]>
       {
-
+        { playerId, new [] { new ResourceCollection(12u, ResourceClutch.OneBrick) } },
+        { firstOpponentId, new[] { new ResourceCollection(43, ResourceClutch.OneGrain) } }
       };
 
-      resourceUpdate.ShouldNotBeNull();
-      resourceUpdate.Resources.Count.ShouldBe(2);
-      resourceUpdate.Resources[player.Id].BrickCount.ShouldBe(1);
-      resourceUpdate.Resources[player.Id].GrainCount.ShouldBe(0);
-      resourceUpdate.Resources[player.Id].LumberCount.ShouldBe(0);
-      resourceUpdate.Resources[player.Id].OreCount.ShouldBe(0);
-      resourceUpdate.Resources[player.Id].WoolCount.ShouldBe(0);
-
-      resourceUpdate.Resources[firstOpponent.Id].BrickCount.ShouldBe(0);
-      resourceUpdate.Resources[firstOpponent.Id].GrainCount.ShouldBe(1);
-      resourceUpdate.Resources[firstOpponent.Id].LumberCount.ShouldBe(0);
-      resourceUpdate.Resources[firstOpponent.Id].OreCount.ShouldBe(0);
-      resourceUpdate.Resources[firstOpponent.Id].WoolCount.ShouldBe(0);
+      AssertToolBox.AssertThatResourceCollectionsAreTheSame(actual, expected);
     }
 
     [Test]
@@ -1464,8 +1453,8 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
 
       localGameController.StartGamePlay();
 
-      ResourceUpdate collectedResources = null;
-      localGameController.ResourcesCollectedEvent = (ResourceUpdate c) => { collectedResources = c; };
+      Dictionary<Guid, ResourceCollection[]> collectedResources = null;
+      localGameController.ResourcesCollectedEvent = (Dictionary<Guid, ResourceCollection[]> c) => { collectedResources = c; };
 
       UInt32 diceRoll = 0;
       localGameController.DiceRollEvent = (UInt32 r) => { diceRoll = r; };
@@ -1480,14 +1469,18 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       localGameController.EndTurn(firstTurnToken);
 
       // Assert
-      diceRoll.ShouldBe(6u); 
-      collectedResources.ShouldNotBeNull();
-      collectedResources.Resources.Count.ShouldBe(4);
-      collectedResources.Resources.ShouldContainKeyAndValue(player.Id, ResourceClutch.OneLumber);
-      collectedResources.Resources.ShouldContainKeyAndValue(firstOpponent.Id, ResourceClutch.OneOre);
-      collectedResources.Resources.ShouldContainKeyAndValue(firstOpponent.Id, ResourceClutch.OneLumber);
-      collectedResources.Resources.ShouldContainKeyAndValue(secondOpponent.Id, ResourceClutch.OneOre);
+      var expected = new Dictionary<Guid, ResourceCollection[]>
+      {
+        { player.Id, new [] { new ResourceCollection(25, ResourceClutch.OneLumber) } },
+        { firstOpponent.Id, new [] { new ResourceCollection(35, ResourceClutch.OneLumber), new ResourceCollection(18, ResourceClutch.OneLumber) } },
+        { secondOpponent.Id, new [] { new ResourceCollection(31, ResourceClutch.OneLumber) } }
+      };
 
+      diceRoll.ShouldBe(6u);
+
+      collectedResources.ShouldNotBeNull();
+      AssertToolBox.AssertThatResourceCollectionsAreTheSame(collectedResources, expected);
+       
       player.ResourcesCount.ShouldBe(1);
       player.LumberCount.ShouldBe(1);
 
