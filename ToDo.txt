@@ -3,3 +3,7 @@ cardsPurchasedThisTurn and cardPlayedThisTurn fields to be removed from LocalGam
 verify cards functionality from LGC
 
 - Add game board to ChooseKnightCard so the computer player can choose which player to rob from
+
+- Turn on failing tests once functionality is being worked on: 
+ChooseRoad_BuildingTowardsNextBestSettlementLocation_ReturnsFirstRoadFragment
+ChooseRoad_BuildingTowardsNextBestSettlementLocationWithFirstRoadPlaced_ReturnsSecondRoadFragment
