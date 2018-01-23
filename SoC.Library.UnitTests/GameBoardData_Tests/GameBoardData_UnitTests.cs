@@ -868,6 +868,35 @@ namespace Jabberwocky.SoC.Library.UnitTests.GameBoardData_Tests
       AssertThatResourceCollectionsAreTheSame(result, expected);
     }
 
+    /// <summary>
+    /// Verify that the collected resources are correct when all three hex locations are owned by the same
+    /// player.
+    /// </summary>
+    [Test]
+    public void GetResourcesForRoll_AllLocationsOnHexOwnedBySamePlayer_ReturnsCorrectResources()
+    {
+      var playerId = Guid.NewGuid();
+
+      var roll = 8u;
+      var gameBoardData = new GameBoardData(BoardSizes.Standard);
+      gameBoardData.PlaceStartingInfrastructure(playerId, 2, 1);
+      gameBoardData.PlaceStartingInfrastructure(playerId, 11, 12);
+      gameBoardData.PlaceRoadSegment(playerId, 12, 4);
+      gameBoardData.PlaceSettlement(playerId, 4);
+
+      var result = gameBoardData.GetResourcesForRoll(roll);
+
+      var expected = new Dictionary<Guid, ResourceCollection[]>();
+      expected.Add(playerId, new ResourceCollection[]
+      {
+        new ResourceCollection(4u, ResourceClutch.OneBrick),
+        new ResourceCollection(2u, ResourceClutch.OneBrick),
+        new ResourceCollection(11u, ResourceClutch.OneBrick)
+      });
+
+      AssertThatResourceCollectionsAreTheSame(result, expected);
+    }
+
     [Test]
     [TestCase(5u, 42u, 41u, ResourceTypes.Brick)]
     [TestCase(2u, 23u, 22u, ResourceTypes.Grain)]
