@@ -565,15 +565,21 @@ namespace Jabberwocky.SoC.Library.GameBoards
       return resourceClutch;
     }
 
-    public struct ResourceCollection
+    public struct ResourceCollection : IComparable
     {
       public UInt32 Location;
       public ResourceClutch Resources;
+
+      public Int32 CompareTo(Object obj)
+      {
+        var other = (ResourceCollection)obj;
+        return this.Location.CompareTo(other.Location);
+      }
     }
 
     public Dictionary<Guid, ResourceCollection[]> GetResourcesForRoll(UInt32 diceRoll)
     {
-      var resources = new Dictionary<Guid, ResourceClutch>();
+      var workingResources = new Dictionary<Guid, List<ResourceCollection>>();
 
       // Iterate over all the resource providers that match the dice roll
       foreach (var resourceProvider in this.resourceProvidersByDiceRolls[diceRoll])
@@ -589,44 +595,42 @@ namespace Jabberwocky.SoC.Library.GameBoards
 
           var owner = this.settlements[location];
 
-          ResourceClutch existingResourceCounts;
+          List<ResourceCollection> resourceCollectionList;
 
           // Got an owner - add to the resource count for the owner.
-          if (resources.ContainsKey(owner))
+          if (workingResources.ContainsKey(owner))
           {
-            existingResourceCounts = resources[owner];
+            resourceCollectionList = workingResources[owner];
           }
           else
           {
-            existingResourceCounts = new ResourceClutch();
-            resources.Add(owner, existingResourceCounts);
+            resourceCollectionList = new List<ResourceCollection>();
+            workingResources.Add(owner, resourceCollectionList);
           }
 
+          ResourceClutch resourceClutch = ResourceClutch.Zero;
           switch (resourceProvider.Type)
           {
-            case ResourceTypes.Brick:
-            existingResourceCounts.BrickCount += 1;
-            break;
-            case ResourceTypes.Grain:
-            existingResourceCounts.GrainCount += 1;
-            break;
-            case ResourceTypes.Lumber:
-            existingResourceCounts.LumberCount += 1;
-            break;
-            case ResourceTypes.Ore:
-            existingResourceCounts.OreCount += 1;
-            break;
-            case ResourceTypes.Wool:
-            existingResourceCounts.WoolCount += 1;
-            break;
+            case ResourceTypes.Brick: resourceClutch = ResourceClutch.OneBrick; break;
+            case ResourceTypes.Grain: resourceClutch = ResourceClutch.OneGrain; break;
+            case ResourceTypes.Lumber: resourceClutch = ResourceClutch.OneLumber; break;
+            case ResourceTypes.Ore: resourceClutch = ResourceClutch.OneOre; break;
+            case ResourceTypes.Wool: resourceClutch = ResourceClutch.OneWool; break;
           }
 
-          resources[owner] = existingResourceCounts;
+          var resourceCollection = new ResourceCollection { Location = location, Resources = resourceClutch };
+          resourceCollectionList.Add(resourceCollection);
         }
       }
 
-      throw new NotImplementedException();
-      //return resources;
+      var resources = new Dictionary<Guid, ResourceCollection[]>();
+
+      foreach (var kv in workingResources)
+      {
+        resources.Add(kv.Key, kv.Value.ToArray());
+      }
+
+      return resources;
     }
 
     public Tuple<UInt32, UInt32, Guid>[] GetRoadInformation()

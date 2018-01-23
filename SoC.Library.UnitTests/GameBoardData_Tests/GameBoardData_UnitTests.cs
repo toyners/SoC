@@ -856,9 +856,44 @@ namespace Jabberwocky.SoC.Library.UnitTests.GameBoardData_Tests
 
       var result = gameBoardData.GetResourcesForRoll(roll);
 
-      result.Count.ShouldBe(2);
-      result.ShouldContainKeyAndValue(player1_Id, new GameBoardData.ResourceCollection[] { new GameBoardData.ResourceCollection { Location = 12u, Resources = new ResourceClutch(1, 1, 0, 0, 0) } } );
-      result.ShouldContainKeyAndValue(player2_Id, new GameBoardData.ResourceCollection[] { new GameBoardData.ResourceCollection { Location = 43u, Resources = ResourceClutch.OneGrain } } );
+      var expected = new Dictionary<Guid, GameBoardData.ResourceCollection[]>();
+      expected.Add(player1_Id, new GameBoardData.ResourceCollection[] 
+      {
+        new GameBoardData.ResourceCollection { Location = 12u, Resources = ResourceClutch.OneBrick },
+        new GameBoardData.ResourceCollection { Location = 53u, Resources = ResourceClutch.OneGrain }
+      });
+
+      expected.Add(player2_Id, new GameBoardData.ResourceCollection[] { new GameBoardData.ResourceCollection { Location = 43u, Resources = ResourceClutch.OneGrain } });
+
+      AssertThatResourceCollectionsAreTheSame(result, expected);
+    }
+
+    private void AssertThatResourceCollectionsAreTheSame(Dictionary<Guid, GameBoardData.ResourceCollection[]> actual, Dictionary<Guid, GameBoardData.ResourceCollection[]> expected)
+    {
+      actual.Count.ShouldBe(expected.Count);
+      List<Guid> expectedKeys = new List<Guid>(expected.Keys);
+      expectedKeys.Sort();
+
+      foreach (var guid in expectedKeys)
+      {
+        actual.ShouldContainKey(guid);
+        var actualList = new List<GameBoardData.ResourceCollection>(actual[guid]);
+        var expectedList = new List<GameBoardData.ResourceCollection>(expected[guid]);
+
+        actualList.Count.ShouldBe(expectedList.Count);
+        actualList.Sort();
+        expectedList.Sort();
+
+        for (var i = 0; i < expectedList.Count; i++)
+        {
+          actualList[i].Location.ShouldBe(expectedList[i].Location);
+          actualList[i].Resources.ShouldBe(expectedList[i].Resources);
+        }
+
+        actual.Remove(guid);
+      }
+
+      actual.Count.ShouldBe(0);
     }
 
     [Test]
@@ -885,7 +920,10 @@ namespace Jabberwocky.SoC.Library.UnitTests.GameBoardData_Tests
       }
 
       result.Count.ShouldBe(1);
-      result.ShouldContainKeyAndValue(playerId, new GameBoardData.ResourceCollection[] { new GameBoardData.ResourceCollection { Location = settlementLocation, Resources = expectedResources } } );
+      result.ShouldContainKey(playerId);
+      var actual = result[playerId];
+      actual[0].Location.ShouldBe(settlementLocation);
+      actual[0].Resources.ShouldBe(expectedResources);
     }
 
     [Test]
