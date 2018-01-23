@@ -362,6 +362,12 @@ namespace Jabberwocky.SoC.Library
 
       this.currentTurnToken = new TurnToken();
       this.StartPlayerTurnEvent?.Invoke(this.currentTurnToken);
+
+      var resourceRoll = this.dice.RollTwoDice();
+      this.DiceRollEvent?.Invoke(resourceRoll);
+
+      var turnResources = this.CollectTurnResources(resourceRoll);
+      this.ResourcesCollectedEvent?.Invoke(turnResources);
     }
 
     public void FinalisePlayerTurnOrder()

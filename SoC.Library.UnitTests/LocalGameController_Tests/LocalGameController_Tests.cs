@@ -1431,7 +1431,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       var secondOpponent = testInstances.SecondOpponent;
       var thirdOpponent = testInstances.ThirdOpponent;
       LocalGameControllerTestSetup.LaunchGameAndCompleteSetup(localGameController);
-      testInstances.Dice.AddSequence(new UInt32[] { 8u });
+      testInstances.Dice.AddSequence(new UInt32[] { 8u, 6u });
 
       TurnToken firstTurnToken = null;
       TurnToken secondTurnToken = null;
