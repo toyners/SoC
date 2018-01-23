@@ -565,18 +565,6 @@ namespace Jabberwocky.SoC.Library.GameBoards
       return resourceClutch;
     }
 
-    public struct ResourceCollection : IComparable
-    {
-      public UInt32 Location;
-      public ResourceClutch Resources;
-
-      public Int32 CompareTo(Object obj)
-      {
-        var other = (ResourceCollection)obj;
-        return this.Location.CompareTo(other.Location);
-      }
-    }
-
     public Dictionary<Guid, ResourceCollection[]> GetResourcesForRoll(UInt32 diceRoll)
     {
       var workingResources = new Dictionary<Guid, List<ResourceCollection>>();
@@ -618,7 +606,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
             case ResourceTypes.Wool: resourceClutch = ResourceClutch.OneWool; break;
           }
 
-          var resourceCollection = new ResourceCollection { Location = location, Resources = resourceClutch };
+          var resourceCollection = new ResourceCollection(location, resourceClutch);
           resourceCollectionList.Add(resourceCollection);
         }
       }

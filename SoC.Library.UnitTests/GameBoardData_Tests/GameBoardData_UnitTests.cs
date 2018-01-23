@@ -856,19 +856,19 @@ namespace Jabberwocky.SoC.Library.UnitTests.GameBoardData_Tests
 
       var result = gameBoardData.GetResourcesForRoll(roll);
 
-      var expected = new Dictionary<Guid, GameBoardData.ResourceCollection[]>();
-      expected.Add(player1_Id, new GameBoardData.ResourceCollection[] 
+      var expected = new Dictionary<Guid, ResourceCollection[]>();
+      expected.Add(player1_Id, new ResourceCollection[] 
       {
-        new GameBoardData.ResourceCollection { Location = 12u, Resources = ResourceClutch.OneBrick },
-        new GameBoardData.ResourceCollection { Location = 53u, Resources = ResourceClutch.OneGrain }
+        new ResourceCollection(12u, ResourceClutch.OneBrick),
+        new ResourceCollection(53u, ResourceClutch.OneGrain)
       });
 
-      expected.Add(player2_Id, new GameBoardData.ResourceCollection[] { new GameBoardData.ResourceCollection { Location = 43u, Resources = ResourceClutch.OneGrain } });
+      expected.Add(player2_Id, new ResourceCollection[] { new ResourceCollection(43u, ResourceClutch.OneGrain) });
 
       AssertThatResourceCollectionsAreTheSame(result, expected);
     }
 
-    private void AssertThatResourceCollectionsAreTheSame(Dictionary<Guid, GameBoardData.ResourceCollection[]> actual, Dictionary<Guid, GameBoardData.ResourceCollection[]> expected)
+    private void AssertThatResourceCollectionsAreTheSame(Dictionary<Guid, ResourceCollection[]> actual, Dictionary<Guid, ResourceCollection[]> expected)
     {
       actual.Count.ShouldBe(expected.Count);
       List<Guid> expectedKeys = new List<Guid>(expected.Keys);
@@ -877,8 +877,8 @@ namespace Jabberwocky.SoC.Library.UnitTests.GameBoardData_Tests
       foreach (var guid in expectedKeys)
       {
         actual.ShouldContainKey(guid);
-        var actualList = new List<GameBoardData.ResourceCollection>(actual[guid]);
-        var expectedList = new List<GameBoardData.ResourceCollection>(expected[guid]);
+        var actualList = new List<ResourceCollection>(actual[guid]);
+        var expectedList = new List<ResourceCollection>(expected[guid]);
 
         actualList.Count.ShouldBe(expectedList.Count);
         actualList.Sort();
