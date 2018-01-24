@@ -76,6 +76,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       var testInstances = this.TestSetup(knightCard);
       var localGameController = testInstances.LocalGameController;
 
+      testInstances.Dice.AddSequence(new[] { 8u });
       testInstances.MainPlayer.AddResources(ResourceClutch.DevelopmentCard);
 
       TurnToken turnToken = null;
@@ -137,6 +138,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       var testInstances = this.TestSetup(knightCard);
       var localGameController = testInstances.LocalGameController;
 
+      testInstances.Dice.AddSequence(new[] { 8u });
       testInstances.MainPlayer.AddResources(ResourceClutch.DevelopmentCard);
 
       TurnToken turnToken = null;
@@ -169,6 +171,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       var testInstances = this.TestSetup(knightCard1, knightCard2);
       var localGameController = testInstances.LocalGameController;
 
+      testInstances.Dice.AddSequence(new[] { 8u });
       testInstances.MainPlayer.AddResources(ResourceClutch.DevelopmentCard * 2);
 
       TurnToken turnToken = null;
@@ -202,6 +205,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       var testInstances = this.TestSetup(knightCard);
       var localGameController = testInstances.LocalGameController;
 
+      testInstances.Dice.AddSequence(new[] { 8u, 8u });
       testInstances.MainPlayer.AddResources(ResourceClutch.DevelopmentCard);
 
       TurnToken turnToken = null;
@@ -236,6 +240,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       var testInstances = this.TestSetup(knightCard);
       var localGameController = testInstances.LocalGameController;
 
+      testInstances.Dice.AddSequence(new[] { 8u });
       testInstances.MainPlayer.AddResources(ResourceClutch.DevelopmentCard);
 
       TurnToken turnToken = null;
@@ -269,6 +274,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       var localGameController = testInstances.LocalGameController;
       var player = testInstances.MainPlayer;
 
+      testInstances.Dice.AddSequence(new[] { 8u, 8u, 8u });
       player.AddResources(ResourceClutch.DevelopmentCard * 3);
 
       TurnToken turnToken = null;
@@ -319,6 +325,8 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       var localGameController = testInstances.LocalGameController;
       var player = testInstances.MainPlayer;
       var firstOpponent = testInstances.FirstOpponent;
+
+      testInstances.Dice.AddSequence(new[] { 8u, 8u, 8u, 8u, 8u });
 
       player.AddResources(ResourceClutch.DevelopmentCard * 3);
 
@@ -402,6 +410,8 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       var localGameController = testInstances.LocalGameController;
       var firstOpponent = testInstances.FirstOpponent;
 
+      testInstances.Dice.AddSequence(new[] { 8u, 8u, 8u, 8u, 8u });
+
       var playKnightCardAction = new PlayKnightAction { RobberHex = 0, RobbedPlayerId = Guid.Empty };
       firstOpponent.AddResources(ResourceClutch.DevelopmentCard * 4);
       firstOpponent.AddBuyDevelopmentCardChoice(4).EndTurn()
@@ -462,6 +472,8 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       var localGameController = testInstances.LocalGameController;
       var player = testInstances.MainPlayer;
       var firstOpponent = testInstances.FirstOpponent;
+
+      testInstances.Dice.AddSequence(new[] { 8u, 8u, 8u, 8u });
 
       player.AddResources(ResourceClutch.DevelopmentCard * 4);
 
@@ -524,7 +536,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       var player = testInstances.MainPlayer;
       var firstOpponent = testInstances.FirstOpponent;
       var secondOpponent = testInstances.SecondOpponent;
-      testInstances.Dice.AddSequence(new[] { 0u });
+      testInstances.Dice.AddSequence(new[] { 8u, 0u });
 
       player.RemoveAllResources();
       player.AddResources(ResourceClutch.DevelopmentCard);
@@ -570,7 +582,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       firstOpponent.AddBuyDevelopmentCardChoice(1).EndTurn()
         .AddPlaceKnightCard(new PlayKnightAction { RobberHex = MainSettlementOneHex, RobbedPlayerId = player.Id }).EndTurn();
 
-      testInstances.Dice.AddSequence( new[] { 1u }); // Determine which card to take from player
+      testInstances.Dice.AddSequence(new[] { 8u, 1u, 8u });
 
       var turn = 0;
       TurnToken turnToken = null;

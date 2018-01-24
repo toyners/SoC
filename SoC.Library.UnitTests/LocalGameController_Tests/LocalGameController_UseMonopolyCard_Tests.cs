@@ -99,6 +99,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       var testInstances = this.TestSetup(monopolyCard);
       var localGameController = testInstances.LocalGameController;
 
+      testInstances.Dice.AddSequence(new[] { 8u, 8u });
       testInstances.MainPlayer.AddResources(ResourceClutch.DevelopmentCard);
 
       TurnToken turnToken = null;
@@ -137,6 +138,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       var secondOpponent = testInstances.SecondOpponent;
       var thirdOpponent = testInstances.ThirdOpponent;
 
+      testInstances.Dice.AddSequence(new[] { 8u });
       player.RemoveAllResources();
       player.AddResources(ResourceClutch.DevelopmentCard);
       firstOpponent.RemoveAllResources();
@@ -188,6 +190,8 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       var secondOpponent = testInstances.SecondOpponent;
       var thirdOpponent = testInstances.ThirdOpponent;
 
+      testInstances.Dice.AddSequence(new[] { 8u });
+
       player.RemoveAllResources();
       player.AddResources(ResourceClutch.DevelopmentCard);
       firstOpponent.RemoveAllResources();
@@ -234,6 +238,8 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       var firstOpponent = testInstances.FirstOpponent;
       var secondOpponent = testInstances.SecondOpponent;
       var thirdOpponent = testInstances.ThirdOpponent;
+
+      testInstances.Dice.AddSequence(new[] { 8u, 8u });
 
       // Clear initial resources
       player.RemoveAllResources();

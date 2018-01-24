@@ -95,12 +95,13 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
     public void BuildRoadSegment_SubsequentLongestRoadBuiltDuringOpponentsTurn_LongestRoadEventRaised()
     {
       // Arrange
-      MockDice mockDice = null;
-      MockPlayer player;
-      MockComputerPlayer firstOpponent, secondOpponent, thirdOpponent;
-      var localGameController = this.CreateLocalGameControllerAndCompleteGameSetup(out mockDice, out player, out firstOpponent, out secondOpponent, out thirdOpponent);
+      var testInstances = LocalGameControllerTestCreator.CreateTestInstances();
+      var localGameController = testInstances.LocalGameController;
+      LocalGameControllerTestSetup.LaunchGameAndCompleteSetup(localGameController);
+      var player = testInstances.MainPlayer;
+      var firstOpponent = testInstances.FirstOpponent;
 
-      mockDice.AddSequence(new[] { 8u });
+      testInstances.Dice.AddSequence(new[] { 8u, 8u });
       player.AddResources(ResourceClutch.RoadSegment * 5);
 
       firstOpponent.AddResources(ResourceClutch.RoadSegment * 6);

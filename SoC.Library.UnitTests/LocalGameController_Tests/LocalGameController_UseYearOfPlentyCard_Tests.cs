@@ -98,6 +98,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       var testInstances = this.TestSetupWithExplictDevelopmentCards(yearOfPlentyCard);
       var localGameController = testInstances.LocalGameController;
 
+      testInstances.Dice.AddSequence(new[] { 8u, 8u });
       testInstances.MainPlayer.AddResources(ResourceClutch.DevelopmentCard);
 
       TurnToken turnToken = null;
