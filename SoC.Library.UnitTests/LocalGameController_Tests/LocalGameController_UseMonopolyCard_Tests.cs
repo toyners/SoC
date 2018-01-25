@@ -239,7 +239,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       var secondOpponent = testInstances.SecondOpponent;
       var thirdOpponent = testInstances.ThirdOpponent;
 
-      testInstances.Dice.AddSequence(new[] { 8u, 8u });
+      testInstances.Dice.AddSequence(new[] { 3u, 3u });  // Only second opp will collect resources (2 Ore)
 
       // Clear initial resources
       player.RemoveAllResources();
@@ -282,12 +282,12 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       playerActions.Count.ShouldBe(2);
       keys.Count.ShouldBe(playerActions.Count);
       this.AssertThatPlayerActionsForTurnAreCorrect(playerActions[keys[0]], expectedBuyDevelopmentCardEvent);
-      this.AssertThatPlayerActionsForTurnAreCorrect(playerActions[keys[1]], expectedPlayMonopolyCardEvent);
+       this.AssertThatPlayerActionsForTurnAreCorrect(playerActions[keys[1]], expectedPlayMonopolyCardEvent);
 
       player.ResourcesCount.ShouldBe(0);
       firstOpponent.ResourcesCount.ShouldBe(3);
       firstOpponent.BrickCount.ShouldBe(firstOpponent.ResourcesCount);
-      secondOpponent.ResourcesCount.ShouldBe(4);
+      secondOpponent.ResourcesCount.ShouldBe(6); // 2 Ore will be added for the dice rolls
       secondOpponent.BrickCount.ShouldBe(0);
       thirdOpponent.ResourcesCount.ShouldBe(0);
     }

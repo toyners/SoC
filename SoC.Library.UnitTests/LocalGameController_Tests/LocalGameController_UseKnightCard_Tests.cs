@@ -536,7 +536,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       var player = testInstances.MainPlayer;
       var firstOpponent = testInstances.FirstOpponent;
       var secondOpponent = testInstances.SecondOpponent;
-      testInstances.Dice.AddSequence(new[] { 8u, 0u });
+      testInstances.Dice.AddSequence(new[] { 3u, 0u }); // Only second opp will collect resources (1 Ore)
 
       player.RemoveAllResources();
       player.AddResources(ResourceClutch.DevelopmentCard);
@@ -565,12 +565,11 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
 
       player.ResourcesCount.ShouldBe(1);
       firstOpponent.ResourcesCount.ShouldBe(0);
-      secondOpponent.ResourcesCount.ShouldBe(3);
     }
 
     [Test]
     public void Scenario_PlayerLosesResourceWhenOpponentPlaysTheKnightCard()
-    {
+     {
       // Arrange
       var knightCard = new KnightDevelopmentCard();
       var testInstances = this.TestSetup(knightCard);
@@ -582,7 +581,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       firstOpponent.AddBuyDevelopmentCardChoice(1).EndTurn()
         .AddPlaceKnightCard(new PlayKnightAction { RobberHex = MainSettlementOneHex, RobbedPlayerId = player.Id }).EndTurn();
 
-      testInstances.Dice.AddSequence(new[] { 8u, 1u, 8u });
+      testInstances.Dice.AddSequence(new[] { 3u, 1u, 3u });  // Only second opp will collect resources (2 Ore)
 
       var turn = 0;
       TurnToken turnToken = null;
