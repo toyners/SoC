@@ -368,6 +368,15 @@ namespace Jabberwocky.SoC.Library
 
       var turnResources = this.CollectTurnResources(resourceRoll);
       this.ResourcesCollectedEvent?.Invoke(turnResources);
+
+      foreach (var kv in turnResources)
+      {
+        var player = this.playersById[kv.Key];
+        foreach (var resourceCollection in kv.Value)
+        {
+          player.AddResources(resourceCollection.Resources);
+        }
+      }
     }
 
     public void FinalisePlayerTurnOrder()

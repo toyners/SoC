@@ -1422,7 +1422,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
 
     [Test]
     public void Scenario_AllPlayersCollectResourcesAsPartOfTurnStartAfterComputerPlayerCompletesTheirTurn()
-    {
+     {
       // Arrange
       var testInstances = LocalGameControllerTestCreator.CreateTestInstances();
       var localGameController = testInstances.LocalGameController;
@@ -1471,27 +1471,26 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       // Assert
       var expected = new Dictionary<Guid, ResourceCollection[]>
       {
-        { player.Id, new [] { new ResourceCollection(25, ResourceClutch.OneLumber) } },
-        { firstOpponent.Id, new [] { new ResourceCollection(35, ResourceClutch.OneLumber), new ResourceCollection(18, ResourceClutch.OneLumber) } },
-        { secondOpponent.Id, new [] { new ResourceCollection(31, ResourceClutch.OneLumber) } }
+        { firstOpponent.Id, new [] { new ResourceCollection(18, ResourceClutch.OneOre) } },
+        { secondOpponent.Id, new [] { new ResourceCollection(25, ResourceClutch.OneLumber), new ResourceCollection(35, ResourceClutch.OneLumber) } },
+        { thirdOpponent.Id, new [] { new ResourceCollection(31, ResourceClutch.OneOre) } },
       };
 
       diceRoll.ShouldBe(6u);
 
       collectedResources.ShouldNotBeNull();
       AssertToolBox.AssertThatResourceCollectionsAreTheSame(collectedResources, expected);
-       
-      player.ResourcesCount.ShouldBe(1);
-      player.LumberCount.ShouldBe(1);
 
-      firstOpponent.ResourcesCount.ShouldBe(2);
-      firstOpponent.LumberCount.ShouldBe(1);
+      player.ResourcesCount.ShouldBe(0); 
+
+      firstOpponent.ResourcesCount.ShouldBe(1);
       firstOpponent.OreCount.ShouldBe(1);
 
-      secondOpponent.ResourcesCount.ShouldBe(1);
-      secondOpponent.OreCount.ShouldBe(1);
+      secondOpponent.ResourcesCount.ShouldBe(2);
+      secondOpponent.LumberCount.ShouldBe(2);
 
-      thirdOpponent.ResourcesCount.ShouldBe(0);
+      thirdOpponent.ResourcesCount.ShouldBe(1);
+      thirdOpponent.OreCount.ShouldBe(1);
     }
 
     private void AssertPlayerDataViewIsCorrect(IPlayer player, PlayerDataView playerDataView)

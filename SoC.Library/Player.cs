@@ -2,9 +2,11 @@
 namespace Jabberwocky.SoC.Library
 {
   using System;
+  using System.Diagnostics;
   using System.Xml;
   using Interfaces;
 
+  [DebuggerDisplay("Name: {Name}, Id: {Id}")]
   public class Player : IPlayer
   {
     #region Fields
