@@ -29,4 +29,27 @@ namespace Jabberwocky.SoC.Library.UnitTests
       return ResourceClutch.Zero;
     }
   }
+
+  public class MockGameBoardData3 : GameBoardData
+  {
+    private Boolean isFirstTime = true;
+
+    public MockGameBoardData3() : base(BoardSizes.Standard) { }
+
+    public override ResourceClutch GetResourcesForLocation(UInt32 location)
+    {
+      return ResourceClutch.Zero;
+    }
+
+    public override Dictionary<Guid, ResourceCollection[]> GetResourcesForRoll(UInt32 diceRoll)
+    {
+      if (this.isFirstTime)
+      {
+        this.isFirstTime = false;
+        return new Dictionary<Guid, ResourceCollection[]>();
+      }
+
+      return base.GetResourcesForRoll(diceRoll);
+    }
+  }
 }

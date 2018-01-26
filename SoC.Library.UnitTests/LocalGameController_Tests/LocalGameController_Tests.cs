@@ -1456,14 +1456,14 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
     public void Scenario_AllPlayersCollectResourcesAsPartOfTurnStartAfterComputerPlayerCompletesTheirTurn()
     {
       // Arrange
-      var testInstances = LocalGameControllerTestCreator.CreateTestInstances();
+      var testInstances = LocalGameControllerTestCreator.CreateTestInstances(new MockGameBoardData3());
       var localGameController = testInstances.LocalGameController;
       var player = testInstances.MainPlayer;
       var firstOpponent = testInstances.FirstOpponent;
       var secondOpponent = testInstances.SecondOpponent;
       var thirdOpponent = testInstances.ThirdOpponent;
       LocalGameControllerTestSetup.LaunchGameAndCompleteSetup(localGameController);
-      testInstances.Dice.AddSequence(new UInt32[] { 3u, 6u }); // Only Opp 2 will get resources from the first roll
+      testInstances.Dice.AddSequence(new UInt32[] { 3u, 6u });
 
       TurnToken firstTurnToken = null;
       TurnToken secondTurnToken = null;
@@ -1512,8 +1512,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       firstOpponent.ResourcesCount.ShouldBe(1);
       firstOpponent.OreCount.ShouldBe(1);
 
-      secondOpponent.ResourcesCount.ShouldBe(3);
-      secondOpponent.OreCount.ShouldBe(1);
+      secondOpponent.ResourcesCount.ShouldBe(2);
       secondOpponent.LumberCount.ShouldBe(2);
 
       thirdOpponent.ResourcesCount.ShouldBe(1);
