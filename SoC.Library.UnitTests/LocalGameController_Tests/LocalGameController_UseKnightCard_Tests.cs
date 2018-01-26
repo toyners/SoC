@@ -3,6 +3,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
 {
   using System;
   using System.Collections.Generic;
+  using GameBoards;
   using Interfaces;
   using MockGameBoards;
   using NSubstitute;
@@ -532,15 +533,14 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
     {
       // Arrange
       var knightCard = new KnightDevelopmentCard();
-      var testInstances = LocalGameControllerTestCreator.CreateTestInstances(
-        this.CreateMockCardDevelopmentCardHolder(knightCard),
-        new MockGameBoardWithNoResourcesCollected());
+      var testInstances = this.TestSetup(knightCard, new MockGameBoardWithNoResourcesCollected());
       var localGameController = testInstances.LocalGameController;
-      LocalGameControllerTestSetup.LaunchGameAndCompleteSetup(localGameController);
+
+      testInstances.Dice.AddSequence(new[] { 3u, 0u }); // Only second opp will collect resources (1 Ore)
+
       var player = testInstances.MainPlayer;
       var firstOpponent = testInstances.FirstOpponent;
       var secondOpponent = testInstances.SecondOpponent;
-      testInstances.Dice.AddSequence(new[] { 8u, 3u, 0u }); // Only second opp will collect resources (1 Ore)
 
       player.AddResources(ResourceClutch.DevelopmentCard);
       firstOpponent.AddResources(ResourceClutch.OneBrick);
@@ -574,11 +574,10 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
      {
       // Arrange
       var knightCard = new KnightDevelopmentCard();
-      var testInstances = LocalGameControllerTestCreator.CreateTestInstances(
-        this.CreateMockCardDevelopmentCardHolder(knightCard),
-        new MockGameBoardWithNoResourcesCollected());
+      var testInstances = this.TestSetup(knightCard, new MockGameBoardWithNoResourcesCollected());
       var localGameController = testInstances.LocalGameController;
-      LocalGameControllerTestSetup.LaunchGameAndCompleteSetup(localGameController);
+
+      testInstances.Dice.AddSequence(new[] { 8u, 0u, 8u });
 
       var player = testInstances.MainPlayer;
       var firstOpponent = testInstances.FirstOpponent;
@@ -587,8 +586,6 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       firstOpponent.AddResources(ResourceClutch.DevelopmentCard);
       firstOpponent.AddBuyDevelopmentCardChoice(1).EndTurn()
         .AddPlaceKnightCard(new PlayKnightAction { RobberHex = MainSettlementOneHex, RobbedPlayerId = player.Id }).EndTurn();
-
-      testInstances.Dice.AddSequence(new[] { 8u, 8u, 0u, 8u });
 
       var turn = 0;
       TurnToken turnToken = null;
@@ -710,6 +707,19 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
     {
       var developmentCardHolder = this.CreateMockCardDevelopmentCardHolder(firstDevelopmentCard, otherDevelopmentCards);
       return this.TestSetup(developmentCardHolder);
+    }
+
+    private LocalGameControllerTestCreator.TestInstances TestSetup(DevelopmentCard developmentCard, GameBoardData gameBoard)
+    {
+      var testInstances = LocalGameControllerTestCreator.CreateTestInstances(
+        this.CreateMockCardDevelopmentCardHolder(developmentCard),
+        gameBoard);
+      var localGameController = testInstances.LocalGameController;
+      LocalGameControllerTestSetup.LaunchGameAndCompleteSetup(localGameController);
+
+      testInstances.Dice.AddSequence(new[] { 8u });
+
+      return testInstances;
     }
     #endregion
   }

@@ -3,6 +3,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
 {
   using System;
   using System.Collections.Generic;
+  using GameBoards;
   using Interfaces;
   using MockGameBoards;
   using NSubstitute;
@@ -132,14 +133,10 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
     {
       // Arrange
       var monopolyCard = new MonopolyDevelopmentCard();
-      var testInstances = LocalGameControllerTestCreator.CreateTestInstances(
-        this.CreateMockCardDevelopmentCardHolder(monopolyCard),
-        new MockGameBoardWithNoResourcesCollected());
+      var testInstances = this.TestSetup(monopolyCard, new MockGameBoardWithNoResourcesCollected());
       var localGameController = testInstances.LocalGameController;
 
-      LocalGameControllerTestSetup.LaunchGameAndCompleteSetup(localGameController);
-
-      testInstances.Dice.AddSequence(new[] { 8u, 3u });
+      testInstances.Dice.AddSequence(new[] { 3u });
 
       var player = testInstances.MainPlayer;
       var firstOpponent = testInstances.FirstOpponent;
@@ -186,14 +183,10 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
     {
       // Arrange
       var monopolyCard = new MonopolyDevelopmentCard();
-      var testInstances = LocalGameControllerTestCreator.CreateTestInstances(
-        this.CreateMockCardDevelopmentCardHolder(monopolyCard),
-        new MockGameBoardWithNoResourcesCollected());
+      var testInstances = this.TestSetup(monopolyCard, new MockGameBoardWithNoResourcesCollected());
       var localGameController = testInstances.LocalGameController;
 
-      LocalGameControllerTestSetup.LaunchGameAndCompleteSetup(localGameController);
-
-      testInstances.Dice.AddSequence(new[] { 8u, 3u });
+      testInstances.Dice.AddSequence(new[] { 3u });
 
       var player = testInstances.MainPlayer;
       var firstOpponent = testInstances.FirstOpponent;
@@ -236,11 +229,8 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
     {
       // Arrange
       var monopolyCard = new MonopolyDevelopmentCard();
-      var testInstances = LocalGameControllerTestCreator.CreateTestInstances(
-        this.CreateMockCardDevelopmentCardHolder(monopolyCard),
-        new MockGameBoardWithNoResourcesCollected());
+      var testInstances = this.TestSetup(monopolyCard, new MockGameBoardWithNoResourcesCollected());
       var localGameController = testInstances.LocalGameController;
-      LocalGameControllerTestSetup.LaunchGameAndCompleteSetup(localGameController);
 
       testInstances.Dice.AddSequence(new[] { 8u });
 
@@ -351,6 +341,19 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
     {
       var developmentCardHolder = this.CreateMockCardDevelopmentCardHolder(firstDevelopmentCard, otherDevelopmentCards);
       return this.TestSetup(developmentCardHolder);
+    }
+
+    private LocalGameControllerTestCreator.TestInstances TestSetup(DevelopmentCard developmentCard, GameBoardData gameBoard)
+    {
+      var testInstances = LocalGameControllerTestCreator.CreateTestInstances(
+        this.CreateMockCardDevelopmentCardHolder(developmentCard),
+        gameBoard);
+      var localGameController = testInstances.LocalGameController;
+      LocalGameControllerTestSetup.LaunchGameAndCompleteSetup(localGameController);
+
+      testInstances.Dice.AddSequence(new[] { 8u });
+
+      return testInstances;
     }
     #endregion 
   }
