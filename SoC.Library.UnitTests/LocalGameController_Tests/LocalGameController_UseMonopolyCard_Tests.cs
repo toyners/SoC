@@ -4,6 +4,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
   using System;
   using System.Collections.Generic;
   using Interfaces;
+  using MockGameBoards;
   using NSubstitute;
   using NUnit.Framework;
   using Shouldly;
@@ -133,7 +134,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       var monopolyCard = new MonopolyDevelopmentCard();
       var testInstances = LocalGameControllerTestCreator.CreateTestInstances(
         this.CreateMockCardDevelopmentCardHolder(monopolyCard),
-        new MockGameBoardData());
+        new MockGameBoardWithNoResourcesCollected());
       var localGameController = testInstances.LocalGameController;
 
       LocalGameControllerTestSetup.LaunchGameAndCompleteSetup(localGameController);
@@ -187,7 +188,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       var monopolyCard = new MonopolyDevelopmentCard();
       var testInstances = LocalGameControllerTestCreator.CreateTestInstances(
         this.CreateMockCardDevelopmentCardHolder(monopolyCard),
-        new MockGameBoardData());
+        new MockGameBoardWithNoResourcesCollected());
       var localGameController = testInstances.LocalGameController;
 
       LocalGameControllerTestSetup.LaunchGameAndCompleteSetup(localGameController);
@@ -237,7 +238,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       var monopolyCard = new MonopolyDevelopmentCard();
       var testInstances = LocalGameControllerTestCreator.CreateTestInstances(
         this.CreateMockCardDevelopmentCardHolder(monopolyCard),
-        new MockGameBoardData());
+        new MockGameBoardWithNoResourcesCollected());
       var localGameController = testInstances.LocalGameController;
       LocalGameControllerTestSetup.LaunchGameAndCompleteSetup(localGameController);
 

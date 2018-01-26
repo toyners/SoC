@@ -4,6 +4,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
   using System;
   using System.Collections.Generic;
   using Interfaces;
+  using MockGameBoards;
   using NSubstitute;
   using NUnit.Framework;
   using Shouldly;
@@ -533,7 +534,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       var knightCard = new KnightDevelopmentCard();
       var testInstances = LocalGameControllerTestCreator.CreateTestInstances(
         this.CreateMockCardDevelopmentCardHolder(knightCard),
-        new MockGameBoardData());
+        new MockGameBoardWithNoResourcesCollected());
       var localGameController = testInstances.LocalGameController;
       LocalGameControllerTestSetup.LaunchGameAndCompleteSetup(localGameController);
       var player = testInstances.MainPlayer;
@@ -575,7 +576,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       var knightCard = new KnightDevelopmentCard();
       var testInstances = LocalGameControllerTestCreator.CreateTestInstances(
         this.CreateMockCardDevelopmentCardHolder(knightCard),
-        new MockGameBoardData());
+        new MockGameBoardWithNoResourcesCollected());
       var localGameController = testInstances.LocalGameController;
       LocalGameControllerTestSetup.LaunchGameAndCompleteSetup(localGameController);
 

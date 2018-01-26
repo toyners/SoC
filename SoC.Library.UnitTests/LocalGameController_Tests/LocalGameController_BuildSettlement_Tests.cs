@@ -2,6 +2,7 @@
 namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
 {
   using System;
+  using MockGameBoards;
   using NUnit.Framework;
   using Shouldly;
 
@@ -52,7 +53,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
     {
       // Arrange
 
-      var testInstances = LocalGameControllerTestCreator.CreateTestInstances(new MockGameBoardData());
+      var testInstances = LocalGameControllerTestCreator.CreateTestInstances(new MockGameBoardWithNoResourcesCollected());
       var localGameController = testInstances.LocalGameController;
       var player = testInstances.MainPlayer;
       LocalGameControllerTestSetup.LaunchGameAndCompleteSetup(localGameController);
@@ -132,7 +133,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
     public void BuildSettlement_InsufficientResourcesAfterBuildingSettlement_MeaningfulErrorIsReceived()
     {
       // Arrange
-      var testInstances = LocalGameControllerTestCreator.CreateTestInstances(new MockGameBoardData());
+      var testInstances = LocalGameControllerTestCreator.CreateTestInstances(new MockGameBoardWithNoResourcesCollected());
       var localGameController = testInstances.LocalGameController;
       var player = testInstances.MainPlayer;
       LocalGameControllerTestSetup.LaunchGameAndCompleteSetup(localGameController);

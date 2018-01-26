@@ -2,6 +2,7 @@
 namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
 {
   using System;
+  using MockGameBoards;
   using NUnit.Framework;
   using Shouldly;
 
@@ -116,7 +117,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
     public void BuildCity_InsufficientResources_MeaningfulErrorIsReceived(Int32 grainCount, Int32 oreCount, String expectedMessage)
     {
       // Arrange
-      var testInstances = LocalGameControllerTestCreator.CreateTestInstances(new MockGameBoardData());
+      var testInstances = LocalGameControllerTestCreator.CreateTestInstances(new MockGameBoardWithNoResourcesCollected());
       var localGameController = testInstances.LocalGameController;
       var player = testInstances.MainPlayer;
       LocalGameControllerTestSetup.LaunchGameAndCompleteSetup(localGameController);

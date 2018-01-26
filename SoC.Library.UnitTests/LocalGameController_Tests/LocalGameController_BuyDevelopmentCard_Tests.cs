@@ -4,6 +4,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
 {
   using System;
   using Interfaces;
+  using MockGameBoards;
   using NSubstitute;
   using NUnit.Framework;
   using Shouldly;
@@ -48,7 +49,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
     public void BuyDevelopmentCard_InsufficientResources_MeaningfulErrorIsReceived(Int32 grainCount, Int32 oreCount, Int32 woolCount, String expectedErrorMessage)
     {
       // Arrange
-      var testInstances = LocalGameControllerTestCreator.CreateTestInstances(new MockGameBoardData());
+      var testInstances = LocalGameControllerTestCreator.CreateTestInstances(new MockGameBoardWithNoResourcesCollected());
       var localGameController = testInstances.LocalGameController;
       LocalGameControllerTestSetup.LaunchGameAndCompleteSetup(localGameController);
       var player = testInstances.MainPlayer;
