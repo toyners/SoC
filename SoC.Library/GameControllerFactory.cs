@@ -28,7 +28,7 @@ namespace Jabberwocky.SoC.Library
       IGameController gameController = null;
       if (gameOptions == null || gameOptions.Connection == GameConnectionTypes.Local)
       {
-        gameController = new LocalGameController(this.diceRollerFactory.Create(), this.computerPlayerFactory, new GameBoards.GameBoardManager(BoardSizes.Standard), null);
+        gameController = new LocalGameController(this.diceRollerFactory.Create(), this.computerPlayerFactory, new GameBoards.GameBoardData(BoardSizes.Standard), null);
       }
       else
       {
