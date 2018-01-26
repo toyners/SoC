@@ -706,7 +706,32 @@ namespace Jabberwocky.SoC.Library
         return;
       }
 
-      throw new NotImplementedException();
+      var resources = ResourceClutch.Zero;
+      switch (firstChoice)
+      {
+        case ResourceTypes.Brick: resources.BrickCount++; break;
+        case ResourceTypes.Lumber: resources.LumberCount++; break;
+        case ResourceTypes.Grain: resources.GrainCount++; break;
+        case ResourceTypes.Ore: resources.OreCount++; break;
+        case ResourceTypes.Wool: resources.WoolCount++; break;
+      }
+
+      switch (secondChoice)
+      {
+        case ResourceTypes.Brick: resources.BrickCount++; break;
+        case ResourceTypes.Lumber: resources.LumberCount++; break;
+        case ResourceTypes.Grain: resources.GrainCount++; break;
+        case ResourceTypes.Ore: resources.OreCount++; break;
+        case ResourceTypes.Wool: resources.WoolCount++; break;
+      }
+
+      this.mainPlayer.AddResources(resources);
+
+      this.PlayDevelopmentCard(yearOfPlentyCard);
+
+      var resourceTransactions = new ResourceTransactionList();
+      resourceTransactions.Add(new ResourceTransaction(this.mainPlayer.Id, Guid.Empty, resources));
+      this.ResourcesTransferredEvent?.Invoke(resourceTransactions);
     }
 
     private void AddResourcesToList(List<ResourceTypes> resources, ResourceTypes resourceType, Int32 total)
@@ -722,6 +747,16 @@ namespace Jabberwocky.SoC.Library
       for (var i = 0; i < resourceTransactions.Count; i++)
       {
         player.AddResources(resourceTransactions[i].Resources);
+      }
+    }
+
+    private void AddResourcesToPlayer(ResourceTransactionList resourceTransactions)
+    {
+      for (var i = 0; i < resourceTransactions.Count; i++)
+      {
+        var resourceTransaction = resourceTransactions[i];
+        var player = this.playersById[resourceTransaction.ReceivingPlayerId];
+        player.AddResources(resourceTransaction.Resources);
       }
     }
 
