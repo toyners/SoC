@@ -2,6 +2,7 @@
 namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
 {
   using System;
+  using GameBoards;
   using Interfaces;
   using NSubstitute;
 
@@ -37,10 +38,20 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
     #region Methods
     public static TestInstances CreateTestInstances()
     {
-      return LocalGameControllerTestCreator.CreateTestInstances(new DevelopmentCardHolder());
+      return LocalGameControllerTestCreator.CreateTestInstances(new DevelopmentCardHolder(), new GameBoardData(BoardSizes.Standard));
     }
 
     public static TestInstances CreateTestInstances(IDevelopmentCardHolder developmentCardHolder)
+    {
+      return LocalGameControllerTestCreator.CreateTestInstances(developmentCardHolder, new GameBoardData(BoardSizes.Standard));
+    }
+
+    public static TestInstances CreateTestInstances(GameBoardData gameBoardData)
+    {
+      return LocalGameControllerTestCreator.CreateTestInstances(new DevelopmentCardHolder(), gameBoardData);
+    }
+
+    public static TestInstances CreateTestInstances(IDevelopmentCardHolder developmentCardHolder, GameBoardData gameBoard)
     {
       var dice = LocalGameControllerTestCreator.CreateMockDice();
 
@@ -50,7 +61,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
 
       var playerPool = LocalGameControllerTestCreator.CreateMockPlayerPool(player, firstOpponent, secondOpponent, thirdOpponent);
 
-      var localGameController = LocalGameControllerTestCreator.CreateLocalGameController(dice, playerPool, developmentCardHolder);
+      var localGameController = LocalGameControllerTestCreator.CreateLocalGameController(dice, playerPool, developmentCardHolder, gameBoard);
       localGameController.ErrorRaisedEvent = (ErrorDetails e) => { throw new Exception(e.Message); };
 
       var testInstances = new TestInstances(localGameController, player, firstOpponent, secondOpponent, thirdOpponent, dice);
@@ -89,7 +100,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       thirdOpponent.AddInitialInfrastructureChoices(ThirdSettlementOneLocation, ThirdRoadOneEnd, ThirdSettlementTwoLocation, ThirdRoadTwoEnd);
     }
 
-    private static LocalGameController CreateLocalGameController(INumberGenerator dice, IPlayerPool playerPool, IDevelopmentCardHolder developmentCardHolder)
+    private static LocalGameController CreateLocalGameController(INumberGenerator dice, IPlayerPool playerPool, IDevelopmentCardHolder developmentCardHolder, GameBoardData gameBoard)
     {
       var localGameControllerCreator = new LocalGameControllerCreator();
 
@@ -106,6 +117,11 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       if (developmentCardHolder != null)
       {
         localGameControllerCreator.ChangeDevelopmentCardHolder(developmentCardHolder);
+      }
+
+      if (gameBoard != null)
+      {
+        localGameControllerCreator.ChangeGameBoard(gameBoard);
       }
 
       var localGameController = localGameControllerCreator.Create();

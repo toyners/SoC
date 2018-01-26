@@ -565,7 +565,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
       return resourceClutch;
     }
 
-    public Dictionary<Guid, ResourceCollection[]> GetResourcesForRoll(UInt32 diceRoll)
+    public virtual Dictionary<Guid, ResourceCollection[]> GetResourcesForRoll(UInt32 diceRoll)
     {
       var workingResources = new Dictionary<Guid, List<ResourceCollection>>();
 
