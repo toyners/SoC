@@ -193,12 +193,6 @@ namespace Jabberwocky.SoC.Library.UnitTests
       return playerAction;
     }
 
-    public void RemoveAllResources()
-    {
-      var resources = new ResourceClutch(this.BrickCount, this.GrainCount, this.LumberCount, this.OreCount, this.WoolCount);
-      this.RemoveResources(resources);
-    }
-
     private List<DevelopmentCardTypes> CreateListOfDisplayedDevelopmentCards()
     {
       // TODO: Use Jabberwocky

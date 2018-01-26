@@ -218,8 +218,7 @@ namespace Jabberwocky.SoC.Library
       this.CollectInitialResourcesForPlayer(this.mainPlayer.Id, settlementLocation);
       this.mainPlayer.AddResources(this.gameSetupResources.Resources[this.mainPlayer.Id]);
 
-      var gameBoardData = this.gameBoard;
-      GameBoardUpdate gameBoardUpdate = this.CompleteSetupForComputerPlayers(gameBoardData, null);
+      GameBoardUpdate gameBoardUpdate = this.CompleteSetupForComputerPlayers(this.gameBoard, null);
       this.GameSetupUpdateEvent?.Invoke(gameBoardUpdate);
 
       this.GameSetupResourcesEvent?.Invoke(this.gameSetupResources);
@@ -576,6 +575,15 @@ namespace Jabberwocky.SoC.Library
       {
         var turnResources = this.CollectTurnResources(resourceRoll);
         this.ResourcesCollectedEvent?.Invoke(turnResources);
+
+        foreach (var kv in turnResources)
+        {
+          var player = this.playersById[kv.Key];
+          foreach (var resourceCollection in kv.Value)
+          {
+            player.AddResources(resourceCollection.Resources);
+          }
+        }
       }
       else
       {

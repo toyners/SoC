@@ -885,7 +885,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
     public void StartOfMainPlayerTurn_RollsSevenReceiveResourceCardLossesForComputerPlayers()
     {
       // Arrange
-      var testInstances = LocalGameControllerTestCreator.CreateTestInstances();
+      var testInstances = LocalGameControllerTestCreator.CreateTestInstances(new MockGameBoardData());
       var localGameController = testInstances.LocalGameController;
       var player = testInstances.MainPlayer;
       var firstOpponent = testInstances.FirstOpponent;
@@ -898,11 +898,6 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       var expectedDroppedResourcesForFirstOpponent = new ResourceClutch(1, 1, 1, 1, 0);
       var droppedResourcesForThirdOpponent = new ResourceClutch(1, 1, 1, 1, 1);
       var expectedDroppedResourcesForThirdOpponent = new ResourceClutch(1, 1, 1, 1, 1);
-
-      // Clear down the initial resources
-      firstOpponent.RemoveAllResources();
-      secondOpponent.RemoveAllResources();
-      thirdOpponent.RemoveAllResources();
 
       firstOpponent.AddResources(new ResourceClutch(2, 2, 2, 1, 1));
       firstOpponent.DroppedResources = droppedResourcesForFirstOpponent;
@@ -932,13 +927,12 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
     public void StartOfMainPlayerTurn_RollsSevenReceivesRobberEventNotificationWithDropResourceCardsCount(Int32 brickCount, Int32 expectedResourceDropCount)
     {
       // Arrange
-      var testInstances = LocalGameControllerTestCreator.CreateTestInstances();
+      var testInstances = LocalGameControllerTestCreator.CreateTestInstances(new MockGameBoardData());
       var localGameController = testInstances.LocalGameController;
       var player = testInstances.MainPlayer;
       LocalGameControllerTestSetup.LaunchGameAndCompleteSetup(localGameController);
       testInstances.Dice.AddSequence(new[] { 7u });
 
-      player.RemoveAllResources(); // Clear down the initial resources
       player.AddResources(new ResourceClutch(brickCount, 0, 0, 0, 0));
 
       // Act
@@ -956,13 +950,12 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
     public void StartOfMainPlayerTurn_RollsSevenButDoesNotPassBackExpectedResources_MeaningfulErrorIsReceived()
     {
       // Arrange
-      var testInstances = LocalGameControllerTestCreator.CreateTestInstances();
+      var testInstances = LocalGameControllerTestCreator.CreateTestInstances(new MockGameBoardData());
       var localGameController = testInstances.LocalGameController;
       var player = testInstances.MainPlayer;
       LocalGameControllerTestSetup.LaunchGameAndCompleteSetup(localGameController);
       testInstances.Dice.AddSequence(new[] { 7u });
 
-      player.RemoveAllResources(); // Clear down the initial resources
       player.AddResources(new ResourceClutch(8, 0, 0, 0, 0));
       
       // Act
@@ -982,13 +975,12 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
     public void StartOfMainPlayerTurn_RollsSevenAndPassBackExpectedResources_PlayerResourcesUpdatedCorrectly()
     {
       // Arrange
-      var testInstances = LocalGameControllerTestCreator.CreateTestInstances();
+      var testInstances = LocalGameControllerTestCreator.CreateTestInstances(new MockGameBoardData());
       var localGameController = testInstances.LocalGameController;
       var player = testInstances.MainPlayer;
       LocalGameControllerTestSetup.LaunchGameAndCompleteSetup(localGameController);
       testInstances.Dice.AddSequence(new[] { 7u });
 
-      player.RemoveAllResources(); // Clear down the initial resources
       player.AddResources(new ResourceClutch(8, 0, 0, 0, 0));
       
       // Act
@@ -1009,13 +1001,12 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
     public void StartOfMainPlayerTurn_SetRobberOnHexWithOneOpponent_ReturnListOfOpponentsAndResourceCardsToChooseFrom()
     {
       // Arrange
-      var testInstances = LocalGameControllerTestCreator.CreateTestInstances();
+      var testInstances = LocalGameControllerTestCreator.CreateTestInstances(new MockGameBoardData());
       var localGameController = testInstances.LocalGameController;
       var firstOpponent = testInstances.FirstOpponent;
       LocalGameControllerTestSetup.LaunchGameAndCompleteSetup(localGameController);
       testInstances.Dice.AddSequence(new[] { 7u });
 
-      firstOpponent.RemoveAllResources(); // Clear down the initial resources
       firstOpponent.AddResources(new ResourceClutch(1, 1, 1, 1, 1));
 
       // Act
@@ -1037,16 +1028,13 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
     public void StartOfMainPlayerTurn_RollsSevenAndChoosesBlindResourceFromOpponent_PlayerAndOpponentResourcesUpdated()
     {
       // Arrange
-      var testInstances = LocalGameControllerTestCreator.CreateTestInstances();
+      var testInstances = LocalGameControllerTestCreator.CreateTestInstances(new MockGameBoardData());
       var localGameController = testInstances.LocalGameController;
       LocalGameControllerTestSetup.LaunchGameAndCompleteSetup(localGameController);
       var player = testInstances.MainPlayer;
       var firstOpponent = testInstances.FirstOpponent;
       testInstances.Dice.AddSequence(new[] { 7u, 0u });
 
-      // Clear down the initial resources
-      player.RemoveAllResources();
-      firstOpponent.RemoveAllResources();
       firstOpponent.AddResources(new ResourceClutch(1, 0, 0, 0, 0));
 
       // Act
@@ -1074,7 +1062,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
     public void StartOfMainPlayerTurn_RollsSevenAndPassesInUnknownPlayerId_MeaningfulErrorIsReceived()
     {
       // Arrange
-      var testInstances = LocalGameControllerTestCreator.CreateTestInstances();
+      var testInstances = LocalGameControllerTestCreator.CreateTestInstances(new MockGameBoardData());
       var localGameController = testInstances.LocalGameController;
       var player = testInstances.MainPlayer;
       var firstOpponent = testInstances.FirstOpponent;
@@ -1082,9 +1070,6 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       LocalGameControllerTestSetup.LaunchGameAndCompleteSetup(localGameController);
       testInstances.Dice.AddSequence(new[] { 7u, 0u });
 
-      // Clear down the initial resources
-      player.RemoveAllResources();
-      firstOpponent.RemoveAllResources();
       firstOpponent.AddResources(new ResourceClutch(1, 0, 0, 0, 0));
 
       // Act
@@ -1421,8 +1406,55 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
     }
 
     [Test]
+    public void Scenario_AllPlayersCollectResourcesAsPartOfGameStart()
+    {
+      // Arrange
+      var testInstances = LocalGameControllerTestCreator.CreateTestInstances(new MockGameBoardData2());
+      var localGameController = testInstances.LocalGameController;
+      var player = testInstances.MainPlayer;
+      var firstOpponent = testInstances.FirstOpponent;
+      var secondOpponent = testInstances.SecondOpponent;
+      var thirdOpponent = testInstances.ThirdOpponent;
+      LocalGameControllerTestSetup.LaunchGameAndCompleteSetup(localGameController);
+      testInstances.Dice.AddSequence(new UInt32[] { 6u });
+
+      TurnToken turnToken = null;
+      localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
+
+      Dictionary<Guid, ResourceCollection[]> collectedResources = null;
+      localGameController.ResourcesCollectedEvent = (Dictionary<Guid, ResourceCollection[]> c) => { collectedResources = c; };
+
+      UInt32 diceRoll = 0;
+      localGameController.DiceRollEvent = (UInt32 r) => { diceRoll = r; };
+      
+      // Act
+      localGameController.StartGamePlay();
+
+      // Assert
+      var expected = new Dictionary<Guid, ResourceCollection[]>
+      {
+        { firstOpponent.Id, new [] { new ResourceCollection(18, ResourceClutch.OneOre) } },
+        { secondOpponent.Id, new [] { new ResourceCollection(25, ResourceClutch.OneLumber), new ResourceCollection(35, ResourceClutch.OneLumber) } },
+        { thirdOpponent.Id, new [] { new ResourceCollection(31, ResourceClutch.OneOre) } },
+      };
+
+      diceRoll.ShouldBe(6u);
+
+      collectedResources.ShouldNotBeNull();
+      AssertToolBox.AssertThatResourceCollectionsAreTheSame(collectedResources, expected);
+
+      player.ResourcesCount.ShouldBe(0);
+      firstOpponent.ResourcesCount.ShouldBe(1);
+      firstOpponent.OreCount.ShouldBe(1); // Collected at turn start
+      secondOpponent.ResourcesCount.ShouldBe(2);
+      secondOpponent.LumberCount.ShouldBe(2); // 2 collected at turn start
+      thirdOpponent.ResourcesCount.ShouldBe(1);
+      thirdOpponent.OreCount.ShouldBe(1); // Collected at turn start
+    }
+
+    [Test]
     public void Scenario_AllPlayersCollectResourcesAsPartOfTurnStartAfterComputerPlayerCompletesTheirTurn()
-     {
+    {
       // Arrange
       var testInstances = LocalGameControllerTestCreator.CreateTestInstances();
       var localGameController = testInstances.LocalGameController;
@@ -1431,7 +1463,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       var secondOpponent = testInstances.SecondOpponent;
       var thirdOpponent = testInstances.ThirdOpponent;
       LocalGameControllerTestSetup.LaunchGameAndCompleteSetup(localGameController);
-      testInstances.Dice.AddSequence(new UInt32[] { 8u, 6u });
+      testInstances.Dice.AddSequence(new UInt32[] { 3u, 6u }); // Only Opp 2 will get resources from the first roll
 
       TurnToken firstTurnToken = null;
       TurnToken secondTurnToken = null;
@@ -1459,12 +1491,6 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       UInt32 diceRoll = 0;
       localGameController.DiceRollEvent = (UInt32 r) => { diceRoll = r; };
 
-      // Zero the resources ahead of the next turn - make the asserts easier to read.
-      player.RemoveAllResources();
-      firstOpponent.RemoveAllResources();
-      secondOpponent.RemoveAllResources();
-      thirdOpponent.RemoveAllResources();
-
       // Act
       localGameController.EndTurn(firstTurnToken);
 
@@ -1486,7 +1512,8 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       firstOpponent.ResourcesCount.ShouldBe(1);
       firstOpponent.OreCount.ShouldBe(1);
 
-      secondOpponent.ResourcesCount.ShouldBe(2);
+      secondOpponent.ResourcesCount.ShouldBe(3);
+      secondOpponent.OreCount.ShouldBe(1);
       secondOpponent.LumberCount.ShouldBe(2);
 
       thirdOpponent.ResourcesCount.ShouldBe(1);

@@ -52,13 +52,13 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
     {
       // Arrange
 
-      var testInstances = LocalGameControllerTestCreator.CreateTestInstances();
+      var testInstances = LocalGameControllerTestCreator.CreateTestInstances(new MockGameBoardData());
       var localGameController = testInstances.LocalGameController;
       var player = testInstances.MainPlayer;
       LocalGameControllerTestSetup.LaunchGameAndCompleteSetup(localGameController);
 
       testInstances.Dice.AddSequence(new[] { 8u });
-      player.RemoveAllResources(); // Clear down the initial resources
+
       player.AddResources(ResourceClutch.RoadSegment); // Need resources to build the precursor road
       player.AddResources(new ResourceClutch(brickCount, grainCount, lumberCount, oreCount, woolCount));
 
@@ -132,13 +132,12 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
     public void BuildSettlement_InsufficientResourcesAfterBuildingSettlement_MeaningfulErrorIsReceived()
     {
       // Arrange
-      var testInstances = LocalGameControllerTestCreator.CreateTestInstances();
+      var testInstances = LocalGameControllerTestCreator.CreateTestInstances(new MockGameBoardData());
       var localGameController = testInstances.LocalGameController;
       var player = testInstances.MainPlayer;
       LocalGameControllerTestSetup.LaunchGameAndCompleteSetup(localGameController);
       testInstances.Dice.AddSequence(new[] { 8u });
 
-      player.RemoveAllResources(); // Clear down the initial resources
       player.AddResources(ResourceClutch.RoadSegment * 3);
       player.AddResources(ResourceClutch.Settlement);
 

@@ -531,16 +531,17 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
     {
       // Arrange
       var knightCard = new KnightDevelopmentCard();
-      var testInstances = this.TestSetup(knightCard);
+      var testInstances = LocalGameControllerTestCreator.CreateTestInstances(
+        this.CreateMockCardDevelopmentCardHolder(knightCard),
+        new MockGameBoardData());
       var localGameController = testInstances.LocalGameController;
+      LocalGameControllerTestSetup.LaunchGameAndCompleteSetup(localGameController);
       var player = testInstances.MainPlayer;
       var firstOpponent = testInstances.FirstOpponent;
       var secondOpponent = testInstances.SecondOpponent;
-      testInstances.Dice.AddSequence(new[] { 3u, 0u }); // Only second opp will collect resources (1 Ore)
+      testInstances.Dice.AddSequence(new[] { 8u, 3u, 0u }); // Only second opp will collect resources (1 Ore)
 
-      player.RemoveAllResources();
       player.AddResources(ResourceClutch.DevelopmentCard);
-      firstOpponent.RemoveAllResources();
       firstOpponent.AddResources(ResourceClutch.OneBrick);
 
       TurnToken turnToken = null;
@@ -572,16 +573,21 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
      {
       // Arrange
       var knightCard = new KnightDevelopmentCard();
-      var testInstances = this.TestSetup(knightCard);
+      var testInstances = LocalGameControllerTestCreator.CreateTestInstances(
+        this.CreateMockCardDevelopmentCardHolder(knightCard),
+        new MockGameBoardData());
       var localGameController = testInstances.LocalGameController;
+      LocalGameControllerTestSetup.LaunchGameAndCompleteSetup(localGameController);
+
       var player = testInstances.MainPlayer;
       var firstOpponent = testInstances.FirstOpponent;
 
+      player.AddResources(ResourceClutch.OneOre);
       firstOpponent.AddResources(ResourceClutch.DevelopmentCard);
       firstOpponent.AddBuyDevelopmentCardChoice(1).EndTurn()
         .AddPlaceKnightCard(new PlayKnightAction { RobberHex = MainSettlementOneHex, RobbedPlayerId = player.Id }).EndTurn();
 
-      testInstances.Dice.AddSequence(new[] { 3u, 1u, 3u });  // Only second opp will collect resources (2 Ore)
+      testInstances.Dice.AddSequence(new[] { 8u, 8u, 0u, 8u });
 
       var turn = 0;
       TurnToken turnToken = null;
@@ -598,6 +604,8 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
 
       localGameController.StartGamePlay();
       localGameController.EndTurn(turnToken); // Opponent buys development cards
+
+      // Act
       localGameController.EndTurn(turnToken); // Opponent plays knight cards
 
       // Assert
@@ -614,8 +622,9 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       this.AssertThatPlayerActionsForTurnAreCorrect(playerActions[keys[0]], expectedBuyDevelopmentCardEvent);
       this.AssertThatPlayerActionsForTurnAreCorrect(playerActions[keys[1]], expectedPlayKnightCardEvent, expectedResourceLostEvent);
       
-      player.ResourcesCount.ShouldBe(2);
-      firstOpponent.ResourcesCount.ShouldBe(4);
+      player.ResourcesCount.ShouldBe(0);
+      firstOpponent.ResourcesCount.ShouldBe(1);
+      firstOpponent.OreCount.ShouldBe(1);
     }
 
     private void AssertThatPlayerActionsForTurnAreCorrect(List<GameEvent> actualEvents, params GameEvent[] expectedEvents)

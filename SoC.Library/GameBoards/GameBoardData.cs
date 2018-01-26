@@ -535,7 +535,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
       return productionValues.ToArray();
     }
 
-    public ResourceClutch GetResourcesForLocation(UInt32 location)
+    public virtual ResourceClutch GetResourcesForLocation(UInt32 location)
     {
       var resourceClutch = new ResourceClutch();
       var hexesForLocation = this.hexesForLocations[location];

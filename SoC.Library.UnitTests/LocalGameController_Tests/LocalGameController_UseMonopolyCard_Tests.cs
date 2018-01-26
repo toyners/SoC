@@ -131,22 +131,23 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
     {
       // Arrange
       var monopolyCard = new MonopolyDevelopmentCard();
-      var testInstances = this.TestSetup(monopolyCard);
+      var testInstances = LocalGameControllerTestCreator.CreateTestInstances(
+        this.CreateMockCardDevelopmentCardHolder(monopolyCard),
+        new MockGameBoardData());
       var localGameController = testInstances.LocalGameController;
+
+      LocalGameControllerTestSetup.LaunchGameAndCompleteSetup(localGameController);
+
+      testInstances.Dice.AddSequence(new[] { 8u, 3u });
+
       var player = testInstances.MainPlayer;
       var firstOpponent = testInstances.FirstOpponent;
       var secondOpponent = testInstances.SecondOpponent;
       var thirdOpponent = testInstances.ThirdOpponent;
 
-      testInstances.Dice.AddSequence(new[] { 3u });  // Only second opp will collect resources (1 Ore)
-
-      player.RemoveAllResources();
       player.AddResources(ResourceClutch.DevelopmentCard);
-      firstOpponent.RemoveAllResources();
       firstOpponent.AddResources(ResourceClutch.OneOfEach);
-      secondOpponent.RemoveAllResources();
       secondOpponent.AddResources(ResourceClutch.OneBrick * 2);
-      thirdOpponent.RemoveAllResources();
       thirdOpponent.AddResources(new ResourceClutch(0, 1, 1, 1, 1));
 
       TurnToken turnToken = null;
@@ -174,7 +175,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       player.BrickCount.ShouldBe(3);
       firstOpponent.ResourcesCount.ShouldBe(4);
       firstOpponent.BrickCount.ShouldBe(0);
-      secondOpponent.ResourcesCount.ShouldBe(1); // 1 ore added for the dice roll
+      secondOpponent.ResourcesCount.ShouldBe(0);
       thirdOpponent.ResourcesCount.ShouldBe(4);
       thirdOpponent.BrickCount.ShouldBe(0);
     }
@@ -184,22 +185,23 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
     {
       // Arrange
       var monopolyCard = new MonopolyDevelopmentCard();
-      var testInstances = this.TestSetup(monopolyCard);
+      var testInstances = LocalGameControllerTestCreator.CreateTestInstances(
+        this.CreateMockCardDevelopmentCardHolder(monopolyCard),
+        new MockGameBoardData());
       var localGameController = testInstances.LocalGameController;
+
+      LocalGameControllerTestSetup.LaunchGameAndCompleteSetup(localGameController);
+
+      testInstances.Dice.AddSequence(new[] { 8u, 3u });
+
       var player = testInstances.MainPlayer;
       var firstOpponent = testInstances.FirstOpponent;
       var secondOpponent = testInstances.SecondOpponent;
       var thirdOpponent = testInstances.ThirdOpponent;
 
-      testInstances.Dice.AddSequence(new[] { 3u }); // Only second opp will collect resources (1 Ore)
-
-      player.RemoveAllResources();
       player.AddResources(ResourceClutch.DevelopmentCard);
-      firstOpponent.RemoveAllResources();
       firstOpponent.AddResources(ResourceClutch.OneGrain);
-      secondOpponent.RemoveAllResources();
       secondOpponent.AddResources(ResourceClutch.OneLumber);
-      thirdOpponent.RemoveAllResources();
       thirdOpponent.AddResources(ResourceClutch.OneOre);
 
       TurnToken turnToken = null;
@@ -222,8 +224,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       player.ResourcesCount.ShouldBe(0);
       firstOpponent.ResourcesCount.ShouldBe(1);
       firstOpponent.GrainCount.ShouldBe(1);
-      secondOpponent.ResourcesCount.ShouldBe(2); // Extra ore collected because of dice roll
-      secondOpponent.OreCount.ShouldBe(1);
+      secondOpponent.ResourcesCount.ShouldBe(1);
       secondOpponent.LumberCount.ShouldBe(1);
       thirdOpponent.ResourcesCount.ShouldBe(1);
       thirdOpponent.OreCount.ShouldBe(1);
@@ -234,20 +235,20 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
     {
       // Arrange
       var monopolyCard = new MonopolyDevelopmentCard();
-      var testInstances = this.TestSetup(monopolyCard);
+      var testInstances = LocalGameControllerTestCreator.CreateTestInstances(
+        this.CreateMockCardDevelopmentCardHolder(monopolyCard),
+        new MockGameBoardData());
       var localGameController = testInstances.LocalGameController;
+      LocalGameControllerTestSetup.LaunchGameAndCompleteSetup(localGameController);
+
+      testInstances.Dice.AddSequence(new[] { 8u });
+
       var player = testInstances.MainPlayer;
       var firstOpponent = testInstances.FirstOpponent;
       var secondOpponent = testInstances.SecondOpponent;
       var thirdOpponent = testInstances.ThirdOpponent;
 
       testInstances.Dice.AddSequence(new[] { 3u, 3u });  // Only second opp will collect resources (2 Ore)
-
-      // Clear initial resources
-      player.RemoveAllResources();
-      firstOpponent.RemoveAllResources();
-      secondOpponent.RemoveAllResources();
-      thirdOpponent.RemoveAllResources();
 
       player.AddResources(ResourceClutch.OneBrick);
       firstOpponent.AddResources(ResourceClutch.DevelopmentCard);
@@ -289,7 +290,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       player.ResourcesCount.ShouldBe(0);
       firstOpponent.ResourcesCount.ShouldBe(3);
       firstOpponent.BrickCount.ShouldBe(firstOpponent.ResourcesCount);
-      secondOpponent.ResourcesCount.ShouldBe(6); // 2 Ore will be added for the dice rolls
+      secondOpponent.ResourcesCount.ShouldBe(4);
       secondOpponent.BrickCount.ShouldBe(0);
       thirdOpponent.ResourcesCount.ShouldBe(0);
     }

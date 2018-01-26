@@ -48,13 +48,13 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
     public void BuyDevelopmentCard_InsufficientResources_MeaningfulErrorIsReceived(Int32 grainCount, Int32 oreCount, Int32 woolCount, String expectedErrorMessage)
     {
       // Arrange
-      var testInstances = this.TestSetup();
+      var testInstances = LocalGameControllerTestCreator.CreateTestInstances(new MockGameBoardData());
       var localGameController = testInstances.LocalGameController;
+      LocalGameControllerTestSetup.LaunchGameAndCompleteSetup(localGameController);
       var player = testInstances.MainPlayer;
 
       testInstances.Dice.AddSequence(new[] { 8u });
 
-      player.RemoveAllResources();  // Clear down the initial resources
       player.AddResources(new ResourceClutch(0, grainCount, 0, oreCount, woolCount));
 
       TurnToken turnToken = null;
@@ -91,7 +91,6 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
 
       ErrorDetails errorDetails = null;
       localGameController.ErrorRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
-
 
       DevelopmentCard purchaseddDevelopmentCard = null;
       localGameController.DevelopmentCardPurchasedEvent = (DevelopmentCard d) => { purchaseddDevelopmentCard = d; };

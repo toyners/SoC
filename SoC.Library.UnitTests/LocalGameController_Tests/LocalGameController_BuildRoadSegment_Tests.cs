@@ -41,13 +41,12 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
     public void BuildRoadSegment_RequiredResourcesAvailable_PlayerResourcesUpdated()
     {
       // Arrange
-      var testInstances = LocalGameControllerTestCreator.CreateTestInstances();
+      var testInstances = LocalGameControllerTestCreator.CreateTestInstances(new MockGameBoardData());
       var localGameController = testInstances.LocalGameController;
       var player = testInstances.MainPlayer;
       LocalGameControllerTestSetup.LaunchGameAndCompleteSetup(localGameController);
       testInstances.Dice.AddSequence(new[] { 8u });
 
-      player.RemoveAllResources(); // Clear down the initial resources
       player.AddResources(ResourceClutch.RoadSegment);
 
       TurnToken turnToken = null;
@@ -283,13 +282,12 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
     public void BuildRoadSegment_WithoutRequiredResourcesAvailable_MeaningfulErrorIsReceived(Int32 brickCount, Int32 lumberCount, String expectedErrorMessage)
     {
       // Arrange
-      var testInstances = LocalGameControllerTestCreator.CreateTestInstances();
+      var testInstances = LocalGameControllerTestCreator.CreateTestInstances(new MockGameBoardData());
       var localGameController = testInstances.LocalGameController;
       var player = testInstances.MainPlayer;
       LocalGameControllerTestSetup.LaunchGameAndCompleteSetup(localGameController);
       testInstances.Dice.AddSequence(new[] { 8u });
 
-      player.RemoveAllResources(); // Clear down the initial resources
       player.AddResources(new ResourceClutch(brickCount, 0, lumberCount, 0, 0));
 
       ErrorDetails errorDetails = null;
