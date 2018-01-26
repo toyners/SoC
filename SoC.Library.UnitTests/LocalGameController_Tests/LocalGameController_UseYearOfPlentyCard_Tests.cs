@@ -1,8 +1,11 @@
 ﻿
 namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
 {
+  using System;
   using System.Collections.Generic;
+  using GameBoards;
   using Interfaces;
+  using MockGameBoards;
   using NSubstitute;
   using NUnit.Framework;
   using Shouldly;
@@ -125,6 +128,43 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       errorDetails.Message.ShouldBe("Cannot play the same development card more than once.");
     }
 
+    [Test]
+    public void UseYearOfPlentyCard_UseDevelopmentCard_ResourcesAreCollected()
+    {
+      // Arrange
+      var yearOfPlentyCard = new YearOfPlentyDevelopmentCard();
+      var testInstances = this.TestSetupWithExplictGameBoard(yearOfPlentyCard, new MockGameBoardWithNoResourcesCollected());
+      var localGameController = testInstances.LocalGameController;
+      var player = testInstances.MainPlayer;
+
+      testInstances.Dice.AddSequence(new[] { 8u });
+      testInstances.MainPlayer.AddResources(ResourceClutch.DevelopmentCard);
+
+      TurnToken turnToken = null;
+      localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
+
+      ResourceTransactionList resources = null;
+      localGameController.ResourcesTransferredEvent = (ResourceTransactionList r) => { resources = r; };
+
+      localGameController.StartGamePlay();
+
+      // Buy the year of plenty card
+      localGameController.BuyDevelopmentCard(turnToken);
+      localGameController.EndTurn(turnToken);
+
+      // Act
+      localGameController.UseYearOfPlentyCard(turnToken, yearOfPlentyCard, ResourceTypes.Brick, ResourceTypes.Brick);
+
+      // Assert
+      var expected = new ResourceTransactionList();
+      expected.Add(new ResourceTransaction(player.Id, Guid.Empty, ResourceClutch.OneBrick * 2));
+
+      resources.ShouldNotBeNull();
+      AssertToolBox.AssertThatTheResourceTransactionListIsAsExpected(resources, expected);
+      player.ResourcesCount.ShouldBe(2);
+      player.BrickCount.ShouldBe(2);
+    }
+
     private IDevelopmentCardHolder CreateMockCardDevelopmentCardHolder(DevelopmentCard firstDevelopmentCard, params DevelopmentCard[] otherDevelopmentCards)
     {
       var developmentCardHolder = Substitute.For<IDevelopmentCardHolder>();
@@ -171,6 +211,19 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
     {
       var developmentCardHolder = this.CreateMockCardDevelopmentCardHolder(firstDevelopmentCard, otherDevelopmentCards);
       return this.TestSetupWithExplicitDevelopmentCardHolder(developmentCardHolder);
+    }
+
+    private LocalGameControllerTestCreator.TestInstances TestSetupWithExplictGameBoard(DevelopmentCard developmentCard, GameBoardData gameBoard)
+    {
+      var testInstances = LocalGameControllerTestCreator.CreateTestInstances(
+        this.CreateMockCardDevelopmentCardHolder(developmentCard),
+        gameBoard);
+      var localGameController = testInstances.LocalGameController;
+      LocalGameControllerTestSetup.LaunchGameAndCompleteSetup(localGameController);
+
+      testInstances.Dice.AddSequence(new[] { 8u }); // First turn roll i.e. no robber triggered
+
+      return testInstances;
     }
     #endregion 
   }
