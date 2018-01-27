@@ -275,8 +275,8 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
 
       playerActions.Count.ShouldBe(2);
       keys.Count.ShouldBe(playerActions.Count);
-      this.AssertThatPlayerActionsForTurnAreCorrect(playerActions[keys[0]], expectedBuyDevelopmentCardEvent);
-       this.AssertThatPlayerActionsForTurnAreCorrect(playerActions[keys[1]], expectedPlayMonopolyCardEvent);
+      AssertToolBox.AssertThatPlayerActionsForTurnAreCorrect(playerActions[keys[0]], expectedBuyDevelopmentCardEvent);
+      AssertToolBox.AssertThatPlayerActionsForTurnAreCorrect(playerActions[keys[1]], expectedPlayMonopolyCardEvent);
 
       player.ResourcesCount.ShouldBe(0);
       firstOpponent.ResourcesCount.ShouldBe(3);
@@ -284,15 +284,6 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       secondOpponent.ResourcesCount.ShouldBe(4);
       secondOpponent.BrickCount.ShouldBe(0);
       thirdOpponent.ResourcesCount.ShouldBe(0);
-    }
-
-    private void AssertThatPlayerActionsForTurnAreCorrect(List<GameEvent> actualEvents, params GameEvent[] expectedEvents)
-    {
-      actualEvents.Count.ShouldBe(expectedEvents.Length);
-      for (var index = 0; index < actualEvents.Count; index++)
-      {
-        actualEvents[index].ShouldBe(expectedEvents[index], "Index is " + index);
-      }
     }
 
     private IDevelopmentCardHolder CreateMockCardDevelopmentCardHolder(DevelopmentCard firstDevelopmentCard, params DevelopmentCard[] otherDevelopmentCards)

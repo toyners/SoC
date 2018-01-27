@@ -7,18 +7,12 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
 
   public static class AssertToolBox
   {
-    public static void AssertThatTheResourceTransactionListIsAsExpected(ResourceTransactionList actual, ResourceTransactionList expected)
+    public static void AssertThatPlayerActionsForTurnAreCorrect(List<GameEvent> actualEvents, params GameEvent[] expectedEvents)
     {
-      actual.ShouldNotBeNull();
-      expected.ShouldNotBeNull();
-
-      actual.Count.ShouldBe(expected.Count);
-
-      for (var i = 0; i < actual.Count; i++)
+      actualEvents.Count.ShouldBe(expectedEvents.Length);
+      for (var index = 0; index < actualEvents.Count; index++)
       {
-        actual[i].ReceivingPlayerId.ShouldBe(expected[i].ReceivingPlayerId);
-        actual[i].GivingPlayerId.ShouldBe(expected[i].GivingPlayerId);
-        actual[i].Resources.ShouldBe(expected[i].Resources);
+        actualEvents[index].ShouldBe(expectedEvents[index], "Index is " + index);
       }
     }
 
@@ -48,6 +42,21 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       }
 
       actual.Count.ShouldBe(0);
+    }
+
+    public static void AssertThatTheResourceTransactionListIsAsExpected(ResourceTransactionList actual, ResourceTransactionList expected)
+    {
+      actual.ShouldNotBeNull();
+      expected.ShouldNotBeNull();
+
+      actual.Count.ShouldBe(expected.Count);
+
+      for (var i = 0; i < actual.Count; i++)
+      {
+        actual[i].ReceivingPlayerId.ShouldBe(expected[i].ReceivingPlayerId);
+        actual[i].GivingPlayerId.ShouldBe(expected[i].GivingPlayerId);
+        actual[i].Resources.ShouldBe(expected[i].Resources);
+      }
     }
   }
 }
