@@ -165,6 +165,68 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       player.BrickCount.ShouldBe(2);
     }
 
+    [Test]
+    public void Scenario_OpponentUsesYearOfPlentyCardAndGetsResources()
+    {
+      // Arrange
+      var yearOfPlentyCard = new YearOfPlentyDevelopmentCard();
+      var testInstances = this.TestSetupWithExplictGameBoard(yearOfPlentyCard, new MockGameBoardWithNoResourcesCollected());
+      var localGameController = testInstances.LocalGameController;
+
+      testInstances.Dice.AddSequence(new[] { 8u });
+
+      var player = testInstances.MainPlayer;
+      var firstOpponent = testInstances.FirstOpponent;
+      var secondOpponent = testInstances.SecondOpponent;
+      var thirdOpponent = testInstances.ThirdOpponent;
+
+      testInstances.Dice.AddSequence(new[] { 3u, 3u });  // Only second opp will collect resources (2 Ore)
+
+      player.AddResources(ResourceClutch.OneBrick);
+      firstOpponent.AddResources(ResourceClutch.DevelopmentCard);
+      firstOpponent.AddBuyDevelopmentCardChoice(1).EndTurn()
+        .AddPlaceMonopolyCardAction(new PlayMonopolyCardAction { ResourceType = ResourceTypes.Brick }).EndTurn();
+
+      secondOpponent.AddResources(new ResourceClutch(2, 1, 1, 1, 1));
+
+      var turn = 0;
+      TurnToken turnToken = null;
+      localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; turn++; };
+
+      var playerActions = new Dictionary<String, List<GameEvent>>();
+      var keys = new List<String>();
+      localGameController.OpponentActionsEvent = (Guid g, List<GameEvent> e) =>
+      {
+        var key = turn + "-" + g.ToString();
+        keys.Add(key);
+        playerActions.Add(key, e);
+      };
+
+      localGameController.StartGamePlay();
+      localGameController.EndTurn(turnToken); // Opponent buys development card
+      localGameController.EndTurn(turnToken); // Opponent plays year of plenty card
+
+      // Assert
+      var expectedBuyDevelopmentCardEvent = new BuyDevelopmentCardEvent(firstOpponent.Id);
+
+      var expectedResourceTransactionList = new ResourceTransactionList();
+      expectedResourceTransactionList.Add(new ResourceTransaction(firstOpponent.Id, player.Id, ResourceClutch.OneBrick));
+      expectedResourceTransactionList.Add(new ResourceTransaction(firstOpponent.Id, secondOpponent.Id, ResourceClutch.OneBrick * 2));
+      var expectedPlayMonopolyCardEvent = new PlayMonopolyCardEvent(firstOpponent.Id, expectedResourceTransactionList);
+
+      playerActions.Count.ShouldBe(2);
+      keys.Count.ShouldBe(playerActions.Count);
+      //this.AssertThatPlayerActionsForTurnAreCorrect(playerActions[keys[0]], expectedBuyDevelopmentCardEvent);
+      //this.AssertThatPlayerActionsForTurnAreCorrect(playerActions[keys[1]], expectedPlayMonopolyCardEvent);
+
+      player.ResourcesCount.ShouldBe(0);
+      firstOpponent.ResourcesCount.ShouldBe(3);
+      firstOpponent.BrickCount.ShouldBe(firstOpponent.ResourcesCount);
+      secondOpponent.ResourcesCount.ShouldBe(4);
+      secondOpponent.BrickCount.ShouldBe(0);
+      thirdOpponent.ResourcesCount.ShouldBe(0);
+    }
+
     private IDevelopmentCardHolder CreateMockCardDevelopmentCardHolder(DevelopmentCard firstDevelopmentCard, params DevelopmentCard[] otherDevelopmentCards)
     {
       var developmentCardHolder = Substitute.For<IDevelopmentCardHolder>();
