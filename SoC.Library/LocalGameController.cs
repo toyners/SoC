@@ -662,6 +662,11 @@ namespace Jabberwocky.SoC.Library
       return true;
     }
 
+    public void TradeWithBank(ResourceClutch paymentResources, ResourceClutch requestedResources)
+    {
+      throw new NotImplementedException();
+    }
+
     public void UseKnightCard(TurnToken turnToken, KnightDevelopmentCard developmentCard, UInt32 newRobberHex)
     {
       if (!this.VerifyParametersForUsingDevelopmentCard(turnToken, developmentCard))
