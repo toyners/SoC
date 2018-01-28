@@ -49,8 +49,8 @@
     <Compile Include="DevelopmentCard.cs" />
     <Compile Include="DevelopmentCardHolder.cs" />
     <Compile Include="GameEvents\PlayYearOfPlentyCardEvent.cs" />
-    <Compile Include="PlayerWithLargestArmyChangedEvent.cs" />
-    <Compile Include="GameEvent.cs" />
+    <Compile Include="GameEvents\PlayerWithLargestArmyChangedEvent.cs" />
+    <Compile Include="GameEvents\GameEvent.cs" />
     <Compile Include="Interfaces\IDevelopmentCardHolder.cs" />
     <Compile Include="PlayerPool.cs" />
     <Compile Include="ErrorDetails.cs" />
@@ -58,7 +58,7 @@
     <Compile Include="Interfaces\IPlayerPool.cs" />
     <Compile Include="PathFinder.cs" />
     <Compile Include="Player.cs" />
-    <Compile Include="PlayMonopolyCardEvent.cs" />
+    <Compile Include="GameEvents\PlayMonopolyCardEvent.cs" />
     <Compile Include="ResourceClutch.cs" />
     <Compile Include="ResourceCollection.cs" />
     <Compile Include="ResourceUpdate.cs" />
