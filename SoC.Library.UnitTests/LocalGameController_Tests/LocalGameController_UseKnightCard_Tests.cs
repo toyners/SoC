@@ -536,7 +536,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       var testInstances = this.TestSetup(knightCard, new MockGameBoardWithNoResourcesCollected());
       var localGameController = testInstances.LocalGameController;
 
-      testInstances.Dice.AddSequence(new[] { 3u, 0u }); // Only second opp will collect resources (1 Ore)
+      testInstances.Dice.AddSequence(new[] { 3u, 0u });
 
       var player = testInstances.MainPlayer;
       var firstOpponent = testInstances.FirstOpponent;
