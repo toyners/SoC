@@ -48,6 +48,10 @@ namespace Jabberwocky.SoC.Library
       return player;
     }
 
+    /// <summary>
+    /// Get the id of the bank
+    /// </summary>
+    /// <returns>Bank id</returns>
     public Guid GetBankId()
     {
       return this.bankId;

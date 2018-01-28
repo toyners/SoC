@@ -20,7 +20,10 @@ namespace Jabberwocky.SoC.Library.Interfaces
     /// <returns>Player instance</returns>
     IPlayer CreatePlayer(XmlReader reader);
 
+    /// <summary>
+    /// Get the id of the bank
+    /// </summary>
+    /// <returns>Bank id</returns>
     Guid GetBankId();
-    //IPlayer GetPlayer();
   }
 }
