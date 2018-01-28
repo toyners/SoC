@@ -25,6 +25,8 @@ namespace Jabberwocky.SoC.Library.Interfaces
     void ChooseInitialInfrastructure(GameBoardData gameBoardData, out UInt32 settlementLocation, out UInt32 roadEndLocation);
     KnightDevelopmentCard ChooseKnightCard();
     MonopolyDevelopmentCard ChooseMonopolyCard();
+    YearOfPlentyDevelopmentCard ChooseYearOfPlentyCard();
+    ResourceClutch ChooseResouresToCollectFromBank();
     ResourceClutch ChooseResourcesToDrop();
     ResourceTypes ChooseResourceTypeToRob();
     UInt32 ChooseRobberLocation();

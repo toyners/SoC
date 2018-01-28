@@ -83,6 +83,11 @@ namespace Jabberwocky.SoC.Library
       throw new NotImplementedException();
     }
 
+    public virtual ResourceClutch ChooseResouresToCollectFromBank()
+    {
+      throw new NotImplementedException();
+    }
+
     public virtual ResourceClutch ChooseResourcesToDrop()
     {
       throw new NotImplementedException();
@@ -103,6 +108,11 @@ namespace Jabberwocky.SoC.Library
       }
 
       return bestLocationIndex;
+    }
+
+    public virtual YearOfPlentyDevelopmentCard ChooseYearOfPlentyCard()
+    {
+      throw new NotImplementedException();
     }
 
     public void DropResources(Int32 resourceCount)

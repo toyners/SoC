@@ -6,6 +6,7 @@ namespace Jabberwocky.SoC.Library
   using System.IO;
   using System.Xml;
   using GameBoards;
+  using GameEvents;
   using Interfaces;
 
   public class LocalGameController : IGameController
@@ -346,7 +347,21 @@ namespace Jabberwocky.SoC.Library
               break;
             }
 
-            default: throw new NotImplementedException("Player action '" + playerAction + "' is recognised.");
+            case PlayerAction.PlayYearOfPlentyCard:
+            {
+              var yearOfPlentyCard = computerPlayer.ChooseYearOfPlentyCard();
+              var resourcesCollected = computerPlayer.ChooseResouresToCollectFromBank();
+              computerPlayer.AddResources(resourcesCollected);
+
+              var resourceTransaction = new ResourceTransaction(computerPlayer.Id, this.playerPool.GetBankId(), resourcesCollected);
+              var resourceTransactions = new ResourceTransactionList();
+              resourceTransactions.Add(resourceTransaction);
+
+              events.Add(new PlayYearOfPlentyCardEvent(computerPlayer.Id, resourceTransactions));
+              break;
+            }
+
+            default: throw new NotImplementedException("Player action '" + playerAction + "' is not recognised.");
           }
         }
 
@@ -707,22 +722,16 @@ namespace Jabberwocky.SoC.Library
       }
 
       var resources = ResourceClutch.Zero;
-      switch (firstChoice)
-      {
-        case ResourceTypes.Brick: resources.BrickCount++; break;
-        case ResourceTypes.Lumber: resources.LumberCount++; break;
-        case ResourceTypes.Grain: resources.GrainCount++; break;
-        case ResourceTypes.Ore: resources.OreCount++; break;
-        case ResourceTypes.Wool: resources.WoolCount++; break;
-      }
-
-      switch (secondChoice)
-      {
-        case ResourceTypes.Brick: resources.BrickCount++; break;
-        case ResourceTypes.Lumber: resources.LumberCount++; break;
-        case ResourceTypes.Grain: resources.GrainCount++; break;
-        case ResourceTypes.Ore: resources.OreCount++; break;
-        case ResourceTypes.Wool: resources.WoolCount++; break;
+      foreach (var resourceChoice in new[] { firstChoice, secondChoice })
+      { 
+        switch (resourceChoice)
+        {
+          case ResourceTypes.Brick: resources.BrickCount++; break;
+          case ResourceTypes.Lumber: resources.LumberCount++; break;
+          case ResourceTypes.Grain: resources.GrainCount++; break;
+          case ResourceTypes.Ore: resources.OreCount++; break;
+          case ResourceTypes.Wool: resources.WoolCount++; break;
+        }
       }
 
       this.mainPlayer.AddResources(resources);

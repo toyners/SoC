@@ -81,6 +81,11 @@ namespace Jabberwocky.SoC.Library.UnitTests
         developmentCardType = DevelopmentCardTypes.Monopoly;
       }
 
+      if (developmentCard is YearOfPlentyDevelopmentCard)
+      {
+        developmentCardType = DevelopmentCardTypes.YearOfPlenty;
+      }
+
       if (developmentCardType == null)
       {
         throw new Exception("Development card is not recognised.");
@@ -156,6 +161,26 @@ namespace Jabberwocky.SoC.Library.UnitTests
       return this.developmentCards[DevelopmentCardTypes.Monopoly].Dequeue() as MonopolyDevelopmentCard;
     }
 
+    public override ResourceClutch ChooseResouresToCollectFromBank()
+    {
+      var action = this.playYearOfPlentyCardActions.Dequeue();
+      
+      var resources = ResourceClutch.Zero;
+      foreach (var resourceChoice in new[] { action.FirstResourceChoice, action.SecondResourceChoice })
+      { 
+        switch (resourceChoice)
+        {
+          case ResourceTypes.Brick: resources.BrickCount++; break;
+          case ResourceTypes.Lumber: resources.LumberCount++; break;
+          case ResourceTypes.Grain: resources.GrainCount++; break;
+          case ResourceTypes.Ore: resources.OreCount++; break;
+          case ResourceTypes.Wool: resources.WoolCount++; break;
+        }
+      }
+
+      return resources;
+    }
+
     public override ResourceClutch ChooseResourcesToDrop()
     {
       return DroppedResources;
@@ -182,6 +207,11 @@ namespace Jabberwocky.SoC.Library.UnitTests
     public override UInt32 ChooseSettlementLocation(GameBoardData gameBoardData)
     {
       return this.SettlementLocations.Dequeue();
+    }
+
+    public override YearOfPlentyDevelopmentCard ChooseYearOfPlentyCard()
+    {
+      return this.developmentCards[DevelopmentCardTypes.YearOfPlenty].Dequeue() as YearOfPlentyDevelopmentCard;
     }
 
     public MockComputerPlayer EndTurn()
