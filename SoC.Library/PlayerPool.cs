@@ -7,6 +7,8 @@ namespace Jabberwocky.SoC.Library
 
   public class PlayerPool : IPlayerPool
   {
+    private Guid bankId = Guid.NewGuid();
+
     /// <summary>
     /// Create a player instance.
     /// </summary>
@@ -46,9 +48,9 @@ namespace Jabberwocky.SoC.Library
       return player;
     }
 
-    public IPlayer GetPlayer()
+    public Guid GetBankId()
     {
-      throw new NotImplementedException();
+      return this.bankId;
     }
   }
 }
