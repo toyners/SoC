@@ -83,7 +83,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
         gameBoard = new GameBoardData(BoardSizes.Standard);
       }
 
-      var localGameController = LocalGameControllerTestCreator.CreateLocalGameController(dice, playerPool, gameBoard, developmentCardHolder);
+      var localGameController = new LocalGameController(dice, playerPool, gameBoard, developmentCardHolder);
       localGameController.ErrorRaisedEvent = (ErrorDetails e) => { throw new Exception(e.Message); };
 
       var testInstances = new TestInstances(localGameController, player, firstOpponent, secondOpponent, thirdOpponent, dice);
@@ -120,14 +120,6 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
 
       thirdOpponent = new MockComputerPlayer(ThirdOpponentName);
       thirdOpponent.AddInitialInfrastructureChoices(ThirdSettlementOneLocation, ThirdRoadOneEnd, ThirdSettlementTwoLocation, ThirdRoadTwoEnd);
-    }
-
-    private static LocalGameController CreateLocalGameController(INumberGenerator dice, IPlayerPool playerPool, GameBoardData gameBoard, IDevelopmentCardHolder developmentCardHolder)
-    {
-      var localGameController = new LocalGameController(dice, playerPool, gameBoard, developmentCardHolder);
-      localGameController.ErrorRaisedEvent = (ErrorDetails e) => { throw new Exception(e.Message); };
-
-      return localGameController;
     }
     #endregion
 
