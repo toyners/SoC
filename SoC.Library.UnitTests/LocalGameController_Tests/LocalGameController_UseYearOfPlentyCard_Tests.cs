@@ -9,7 +9,6 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
   using NSubstitute;
   using NUnit.Framework;
   using Shouldly;
-  using static LocalGameControllerTestCreator;
 
   [TestFixture]
   [Category("All")]
@@ -159,8 +158,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
 
       // Assert
       var expected = new ResourceTransactionList();
-      expected.Add(new ResourceTransaction(player.Id, bankId, ResourceClutch.OneBrick));
-      expected.Add(new ResourceTransaction(player.Id, bankId, ResourceClutch.OneGrain));
+      expected.Add(new ResourceTransaction(player.Id, bankId, new ResourceClutch(1, 1, 0, 0, 0)));
 
       resources.ShouldNotBeNull();
       AssertToolBox.AssertThatTheResourceTransactionListIsAsExpected(resources, expected);
@@ -375,7 +373,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       var playerPool = LocalGameControllerTestCreator.CreateMockPlayerPool(player, firstOpponent, secondOpponent, thirdOpponent);
       playerPool.GetBankId().Returns(bankId);
 
-      var playerSetup = new PlayerSetup(player, firstOpponent, secondOpponent, thirdOpponent, playerPool);
+      var playerSetup = new LocalGameControllerTestCreator.PlayerSetup(player, firstOpponent, secondOpponent, thirdOpponent, playerPool);
 
       var testInstances = LocalGameControllerTestCreator.CreateTestInstances(
         playerSetup,

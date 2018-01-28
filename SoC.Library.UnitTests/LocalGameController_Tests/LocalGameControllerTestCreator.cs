@@ -159,6 +159,12 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
         secondOpponent.VerifyThatObjectIsNotNull();
         thirdOpponent.VerifyThatObjectIsNotNull();
         playerPool.VerifyThatObjectIsNotNull();
+
+        this.Player = player;
+        this.FirstOpponent = firstOpponent;
+        this.SecondOpponent = secondOpponent;
+        this.ThirdOpponent = thirdOpponent;
+        this.PlayerPool = playerPool;
       }
     }
     #endregion

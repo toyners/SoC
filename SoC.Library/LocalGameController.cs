@@ -730,7 +730,7 @@ namespace Jabberwocky.SoC.Library
       this.PlayDevelopmentCard(yearOfPlentyCard);
 
       var resourceTransactions = new ResourceTransactionList();
-      resourceTransactions.Add(new ResourceTransaction(this.mainPlayer.Id, Guid.Empty, resources));
+      resourceTransactions.Add(new ResourceTransaction(this.mainPlayer.Id, this.playerPool.GetBankId(), resources));
       this.ResourcesTransferredEvent?.Invoke(resourceTransactions);
     }
 
