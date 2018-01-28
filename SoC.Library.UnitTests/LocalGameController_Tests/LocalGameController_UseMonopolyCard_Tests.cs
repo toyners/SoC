@@ -337,6 +337,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
     private LocalGameControllerTestCreator.TestInstances TestSetup(DevelopmentCard developmentCard, GameBoardData gameBoard)
     {
       var testInstances = LocalGameControllerTestCreator.CreateTestInstances(
+        null,
         this.CreateMockCardDevelopmentCardHolder(developmentCard),
         gameBoard);
       var localGameController = testInstances.LocalGameController;

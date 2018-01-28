@@ -1,9 +1,11 @@
 ﻿
 namespace Jabberwocky.SoC.Library.UnitTests
 {
+  using System;
   using GameBoards;
   using Interfaces;
 
+  [Obsolete("Deprecated. Use LocalGameControllerTestCreator instead.")]
   public class LocalGameControllerCreator
   {
     #region Fields
