@@ -664,6 +664,12 @@ namespace Jabberwocky.SoC.Library
 
     public void TradeWithBank(TurnToken turnToken, ResourceClutch paymentResources, ResourceClutch requestedResources)
     {
+      if (turnToken != this.currentTurnToken)
+      {
+        this.ErrorRaisedEvent?.Invoke(new ErrorDetails("Turn token not recognised."));
+        return;
+      }
+      
       throw new NotImplementedException();
     }
 
