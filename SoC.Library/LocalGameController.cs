@@ -662,7 +662,7 @@ namespace Jabberwocky.SoC.Library
       return true;
     }
 
-    public void TradeWithBank(ResourceClutch paymentResources, ResourceClutch requestedResources)
+    public void TradeWithBank(TurnToken turnToken, ResourceClutch paymentResources, ResourceClutch requestedResources)
     {
       throw new NotImplementedException();
     }
