@@ -28,8 +28,10 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       ErrorDetails errorDetails = null;
       localGameController.ErrorRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
 
+      localGameController.StartGamePlay();
+
       // Act
-      localGameController.TradeWithBank(null, paymentResources, requestedResources);
+      localGameController.TradeWithBank(null, ResourceTypes.Brick, ResourceTypes.Grain);
 
       // Assert
       errorDetails.ShouldNotBeNull();
@@ -43,14 +45,13 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       var testInstances = this.TestSetup();
       var localGameController = testInstances.LocalGameController;
 
-      var paymentResources = ResourceClutch.OneBrick * 4;
-      var requestedResources = ResourceClutch.OneGrain;
-
       ErrorDetails errorDetails = null;
       localGameController.ErrorRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
 
+      localGameController.StartGamePlay();
+
       // Act
-      localGameController.TradeWithBank(new TurnToken(), paymentResources, requestedResources);
+      localGameController.TradeWithBank(new TurnToken(), ResourceTypes.Brick, ResourceTypes.Grain);
 
       // Assert
       errorDetails.ShouldNotBeNull();
@@ -58,14 +59,22 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
     }
 
     [Test]
-    public void TradeWithBank_SwappingFourBrickForOneGrain_ResourceTransactionCompleted()
+    [TestCase(4, 1, 0)]
+    [TestCase(4, 1, 3)]
+    [TestCase(8, 2, 0)]
+    [TestCase(8, 2, 1)]
+    public void TradeWithBank_LegitmateResourcesForTransaction_ResourceTransactionCompleted(Int32 paymentAmount, Int32 requestedAmount, Int32 otherAmount)
     {
       // Arrange
       var bankId = Guid.NewGuid();
       var testInstances = this.TestSetupWithExplictGameBoard(bankId, new MockGameBoardWithNoResourcesCollected());
       var localGameController = testInstances.LocalGameController;
 
+      var paymentResources = ResourceClutch.OneBrick * paymentAmount;
+      var requestedResources = ResourceClutch.OneGrain * requestedAmount;
+
       var player = testInstances.MainPlayer;
+      player.AddResources(ResourceClutch.OneBrick * paymentAmount);
 
       TurnToken turnToken = null;
       localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
@@ -73,67 +82,37 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       ResourceTransactionList resources = null;
       localGameController.ResourcesTransferredEvent = (ResourceTransactionList r) => { resources = r; };
 
-      var paymentResources = ResourceClutch.OneBrick * 4;
-      var requestedResources = ResourceClutch.OneGrain;
+      localGameController.StartGamePlay();
 
       // Act
-      localGameController.TradeWithBank(turnToken, paymentResources, requestedResources);
+      localGameController.TradeWithBank(turnToken, ResourceTypes.Brick, ResourceTypes.Grain);
 
       // Assert
       resources.ShouldNotBeNull();
 
       var expected = new ResourceTransactionList();
+      expected.Add(new ResourceTransaction(bankId, player.Id, paymentResources));
       expected.Add(new ResourceTransaction(player.Id, bankId, requestedResources));
 
       AssertToolBox.AssertThatTheResourceTransactionListIsAsExpected(resources, expected);
 
-      player.ResourcesCount.ShouldBe(1);
-      player.GrainCount.ShouldBe(1);
-    }
-
-    [Test]
-    public void TradeWithBank_SwappingFourBrickForOneGrain2_ResourceTransactionCompleted()
-    {
-      // Arrange
-      var bankId = Guid.NewGuid();
-      var testInstances = this.TestSetupWithExplictGameBoard(bankId, new MockGameBoardWithNoResourcesCollected());
-      var localGameController = testInstances.LocalGameController;
-
-      var player = testInstances.MainPlayer;
-
-      TurnToken turnToken = null;
-      localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
-
-      ResourceTransactionList resources = null;
-      localGameController.ResourcesTransferredEvent = (ResourceTransactionList r) => { resources = r; };
-
-      var paymentResources = new ResourceClutch(4, 0, 0, 4, 0);
-      var requestedResources = new ResourceClutch(0, 1, 0, 0, 1);
-
-      // Act
-      localGameController.TradeWithBank(turnToken, paymentResources, requestedResources);
-
-      // Assert
-      resources.ShouldNotBeNull();
-
-      var expected = new ResourceTransactionList();
-      expected.Add(new ResourceTransaction(player.Id, bankId, requestedResources));
-
-      AssertToolBox.AssertThatTheResourceTransactionListIsAsExpected(resources, expected);
-
-      player.ResourcesCount.ShouldBe(2);
-      player.GrainCount.ShouldBe(1);
-      player.WoolCount.ShouldBe(1);
+      player.ResourcesCount.ShouldBe(requestedAmount + otherAmount);
+      player.GrainCount.ShouldBe(requestedAmount);
+      player.WoolCount.ShouldBe(otherAmount);
     }
 
     [Test]
     [TestCase(3, 1)]
     [TestCase(4, 2)]
+    [TestCase(7, 2)]
     public void TradeWithBank_PaymentIsWrong_MeaningfulErrorIsReceived(Int32 paymentAmount, Int32 requestedAmount)
     {
       // Arrange
       var testInstances = this.TestSetup();
       var localGameController = testInstances.LocalGameController;
+      var player = testInstances.MainPlayer;
+
+      player.AddResources(ResourceClutch.OneBrick * paymentAmount);
 
       TurnToken turnToken = null;
       localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
@@ -143,11 +122,10 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       ErrorDetails errorDetails = null;
       localGameController.ErrorRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
 
-      var paymentResources = ResourceClutch.OneBrick * paymentAmount;
-      var requestedResources = ResourceClutch.OneGrain * requestedAmount;
+      localGameController.StartGamePlay();
 
       // Act
-      localGameController.TradeWithBank(turnToken, paymentResources, requestedResources);
+      localGameController.TradeWithBank(turnToken, ResourceTypes.Brick, ResourceTypes.Grain);
 
       // Assert
       errorDetails.ShouldNotBeNull();
@@ -161,8 +139,6 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       LocalGameControllerTestSetup.LaunchGameAndCompleteSetup(localGameController);
 
       testInstances.Dice.AddSequence(new[] { 8u }); // First turn roll i.e. no robber triggered
-
-      localGameController.StartGamePlay();
 
       return testInstances;
     }
@@ -182,8 +158,6 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       LocalGameControllerTestSetup.LaunchGameAndCompleteSetup(localGameController);
 
       testInstances.Dice.AddSequence(new[] { 8u }); // First turn roll i.e. no robber triggered
-
-      localGameController.StartGamePlay();
 
       return testInstances;
     }

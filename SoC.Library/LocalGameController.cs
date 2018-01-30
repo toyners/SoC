@@ -662,8 +662,20 @@ namespace Jabberwocky.SoC.Library
       return true;
     }
 
-    public void TradeWithBank(TurnToken turnToken, ResourceClutch paymentResources, ResourceClutch requestedResources)
+    /// <summary>
+    /// Trade resources with the bank at a 4-to-1 ratio. Errors will be returned if the transaction cannot be completed.
+    /// </summary>
+    /// <param name="turnToken">Token of the current turn.</param>
+    /// <param name="paymentResourceType">Resource type that the player is giving. Must have at least 4.</param>
+    /// <param name="requestedResourceType">Resource type that the player wants to receive.</param>
+    public void TradeWithBank(TurnToken turnToken, ResourceTypes paymentResourceType, ResourceTypes requestedResourceType)
     {
+      if (turnToken == null)
+      {
+        this.ErrorRaisedEvent?.Invoke(new ErrorDetails("Turn token is null."));
+        return;
+      }
+
       if (turnToken != this.currentTurnToken)
       {
         this.ErrorRaisedEvent?.Invoke(new ErrorDetails("Turn token not recognised."));
