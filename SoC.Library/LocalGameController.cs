@@ -666,9 +666,10 @@ namespace Jabberwocky.SoC.Library
     /// Trade resources with the bank at a 4-to-1 ratio. Errors will be returned if the transaction cannot be completed.
     /// </summary>
     /// <param name="turnToken">Token of the current turn.</param>
-    /// <param name="paymentResourceType">Resource type that the player is giving. Must have at least 4.</param>
-    /// <param name="requestedResourceType">Resource type that the player wants to receive.</param>
-    public void TradeWithBank(TurnToken turnToken, ResourceTypes paymentResourceType, ResourceTypes requestedResourceType)
+    /// <param name="receivingResourceType">Resource type that the player wants to receive.</param>
+    /// <param name="receivingCount">Resource amount that the player wants to receive.</param>
+    /// <param name="givingResourceType">Resource type that the player is giving. Must have at least 4 and be divisible by 4.</param>
+    public void TradeWithBank(TurnToken turnToken, ResourceTypes receivingResourceType, Int32 receivingCount, ResourceTypes givingResourceType)
     {
       if (turnToken == null)
       {
