@@ -59,22 +59,24 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
     }
 
     [Test]
-    [TestCase(4, 1, 0)]
-    [TestCase(4, 1, 3)]
-    [TestCase(8, 2, 0)]
-    [TestCase(8, 2, 1)]
-    public void TradeWithBank_LegitmateResourcesForTransaction_ResourceTransactionCompleted(Int32 paymentCount, Int32 receivingCount, Int32 otherCount)
+    [TestCase(4, 1, 0, 0)]
+    [TestCase(4, 1, 3, 0)]
+    [TestCase(8, 1, 0, 4)]
+    [TestCase(8, 1, 3, 4)]
+    [TestCase(8, 2, 0, 0)]
+    [TestCase(8, 2, 1, 0)]
+    public void TradeWithBank_LegitmateResourcesForTransaction_ResourceTransactionCompleted(Int32 brickCount, Int32 receivingCount, Int32 otherCount, Int32 leftOverBrickCount)
     {
       // Arrange
       var bankId = Guid.NewGuid();
       var testInstances = this.TestSetupWithExplictGameBoard(bankId, new MockGameBoardWithNoResourcesCollected());
       var localGameController = testInstances.LocalGameController;
 
-      var paymentResources = ResourceClutch.OneBrick * paymentCount;
+      var paymentResources = ResourceClutch.OneBrick * (receivingCount * 4);
       var requestedResources = ResourceClutch.OneGrain * receivingCount;
 
       var player = testInstances.MainPlayer;
-      player.AddResources(ResourceClutch.OneBrick * paymentCount);
+      player.AddResources(ResourceClutch.OneBrick * brickCount);
 
       TurnToken turnToken = null;
       localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
@@ -85,7 +87,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       localGameController.StartGamePlay();
 
       // Act
-      localGameController.TradeWithBank(turnToken, ResourceTypes.Grain, 0, ResourceTypes.Brick);
+      localGameController.TradeWithBank(turnToken, ResourceTypes.Grain, receivingCount, ResourceTypes.Brick);
 
       // Assert
       resources.ShouldNotBeNull();
@@ -97,6 +99,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       AssertToolBox.AssertThatTheResourceTransactionListIsAsExpected(resources, expected);
 
       player.ResourcesCount.ShouldBe(receivingCount + otherCount);
+      player.BrickCount.ShouldBe(leftOverBrickCount);
       player.GrainCount.ShouldBe(receivingCount);
       player.WoolCount.ShouldBe(otherCount);
     }
