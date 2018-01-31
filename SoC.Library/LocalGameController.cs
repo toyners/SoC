@@ -706,28 +706,10 @@ namespace Jabberwocky.SoC.Library
         return;
       } 
 
-      var receivingResource = ResourceClutch.Zero;
-      switch (receivingResourceType)
-      {
-        case ResourceTypes.Brick: receivingResource = ResourceClutch.OneBrick; break;
-        case ResourceTypes.Grain: receivingResource = ResourceClutch.OneGrain; break;
-        case ResourceTypes.Lumber: receivingResource = ResourceClutch.OneLumber; break;
-        case ResourceTypes.Ore: receivingResource = ResourceClutch.OneOre; break;
-        case ResourceTypes.Wool: receivingResource = ResourceClutch.OneWool; break;
-      }
-
+      var receivingResource = ResourceClutch.CreateFromResourceType(receivingResourceType);
       receivingResource *= receivingCount;
       
-      var paymentResource = ResourceClutch.Zero;
-      switch (givingResourceType)
-      {
-        case ResourceTypes.Brick: paymentResource = ResourceClutch.OneBrick; break;
-        case ResourceTypes.Grain: paymentResource = ResourceClutch.OneGrain; break;
-        case ResourceTypes.Lumber: paymentResource = ResourceClutch.OneLumber; break;
-        case ResourceTypes.Ore: paymentResource = ResourceClutch.OneOre; break;
-        case ResourceTypes.Wool: paymentResource = ResourceClutch.OneWool; break;
-      }
-
+      var paymentResource = ResourceClutch.CreateFromResourceType(givingResourceType);
       paymentResource *= (receivingCount * 4);
 
       this.mainPlayer.RemoveResources(paymentResource);
