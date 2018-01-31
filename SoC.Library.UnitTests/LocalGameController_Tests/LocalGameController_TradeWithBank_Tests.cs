@@ -77,6 +77,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
 
       var player = testInstances.MainPlayer;
       player.AddResources(ResourceClutch.OneBrick * brickCount);
+      player.AddResources(ResourceClutch.OneWool * otherCount);
 
       TurnToken turnToken = null;
       localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
@@ -98,7 +99,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
 
       AssertToolBox.AssertThatTheResourceTransactionListIsAsExpected(resources, expected);
 
-      player.ResourcesCount.ShouldBe(receivingCount + otherCount);
+      player.ResourcesCount.ShouldBe(receivingCount + otherCount + leftOverBrickCount);
       player.BrickCount.ShouldBe(leftOverBrickCount);
       player.GrainCount.ShouldBe(receivingCount);
       player.WoolCount.ShouldBe(otherCount);
@@ -111,7 +112,8 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
     public void TradeWithBank_PaymentIsWrong_MeaningfulErrorIsReceived(Int32 paymentCount, Int32 receivingCount)
     {
       // Arrange
-      var testInstances = this.TestSetup();
+      var bankId = Guid.NewGuid();
+      var testInstances = this.TestSetupWithExplictGameBoard(bankId, new MockGameBoardWithNoResourcesCollected());
       var localGameController = testInstances.LocalGameController;
       var player = testInstances.MainPlayer;
 
@@ -132,7 +134,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
 
       // Assert
       errorDetails.ShouldNotBeNull();
-      errorDetails.Message.ShouldBe("Cannot complete trade with bank: Need to pay " + (receivingCount * 4) + " brick for " + receivingCount + " grain. Only paying " + paymentCount);
+      errorDetails.Message.ShouldBe("Cannot complete trade with bank: Need to pay " + (receivingCount * 4) + " brick for " + receivingCount + " grain. Only paying " + paymentCount + ".");
     }
 
     [Test]
@@ -162,7 +164,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
 
       // Assert
       errorDetails.ShouldNotBeNull();
-      errorDetails.Message.ShouldBe("Cannot complete trade with bank: Receiving count must be positive. Was " + receivingCount);
+      errorDetails.Message.ShouldBe("Cannot complete trade with bank: Receiving count must be positive. Was " + receivingCount + ".");
     }
 
     private LocalGameControllerTestCreator.TestInstances TestSetup()

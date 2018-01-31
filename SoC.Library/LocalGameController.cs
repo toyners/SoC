@@ -682,8 +682,62 @@ namespace Jabberwocky.SoC.Library
         this.ErrorRaisedEvent?.Invoke(new ErrorDetails("Turn token not recognised."));
         return;
       }
+
+      if (receivingCount <= 0)
+      {
+        this.ErrorRaisedEvent?.Invoke(new ErrorDetails("Cannot complete trade with bank: Receiving count must be positive. Was " + receivingCount + "."));
+        return;
+      }
+
+      Int32 resourceCount = 0;
+      switch (givingResourceType)
+      {
+        case ResourceTypes.Brick: resourceCount = this.mainPlayer.BrickCount; break;
+        case ResourceTypes.Grain: resourceCount = this.mainPlayer.GrainCount; break;
+        case ResourceTypes.Lumber: resourceCount = this.mainPlayer.LumberCount; break;
+        case ResourceTypes.Ore: resourceCount = this.mainPlayer.OreCount; break;
+        case ResourceTypes.Wool: resourceCount = this.mainPlayer.WoolCount; break;
+      }
+
+      if (resourceCount < receivingCount * 4)
+      {
+        var errorMessage = "Cannot complete trade with bank: Need to pay " + (receivingCount * 4) + " " + givingResourceType.ToString().ToLower() + " for " + receivingCount + " " + receivingResourceType.ToString().ToLower() + ". Only paying " + resourceCount + ".";
+        this.ErrorRaisedEvent?.Invoke(new ErrorDetails(errorMessage));
+        return;
+      } 
+
+      var receivingResource = ResourceClutch.Zero;
+      switch (receivingResourceType)
+      {
+        case ResourceTypes.Brick: receivingResource = ResourceClutch.OneBrick; break;
+        case ResourceTypes.Grain: receivingResource = ResourceClutch.OneGrain; break;
+        case ResourceTypes.Lumber: receivingResource = ResourceClutch.OneLumber; break;
+        case ResourceTypes.Ore: receivingResource = ResourceClutch.OneOre; break;
+        case ResourceTypes.Wool: receivingResource = ResourceClutch.OneWool; break;
+      }
+
+      receivingResource *= receivingCount;
       
-      throw new NotImplementedException();
+      var paymentResource = ResourceClutch.Zero;
+      switch (givingResourceType)
+      {
+        case ResourceTypes.Brick: paymentResource = ResourceClutch.OneBrick; break;
+        case ResourceTypes.Grain: paymentResource = ResourceClutch.OneGrain; break;
+        case ResourceTypes.Lumber: paymentResource = ResourceClutch.OneLumber; break;
+        case ResourceTypes.Ore: paymentResource = ResourceClutch.OneOre; break;
+        case ResourceTypes.Wool: paymentResource = ResourceClutch.OneWool; break;
+      }
+
+      paymentResource *= (receivingCount * 4);
+
+      this.mainPlayer.RemoveResources(paymentResource);
+      this.mainPlayer.AddResources(receivingResource);
+
+      var resourceTransactionList = new ResourceTransactionList();
+      resourceTransactionList.Add(new ResourceTransaction(this.playerPool.GetBankId(), this.mainPlayer.Id, paymentResource));
+      resourceTransactionList.Add(new ResourceTransaction(this.mainPlayer.Id, this.playerPool.GetBankId(), receivingResource));
+
+      this.ResourcesTransferredEvent?.Invoke(resourceTransactionList);
     }
 
     public void UseKnightCard(TurnToken turnToken, KnightDevelopmentCard developmentCard, UInt32 newRobberHex)
