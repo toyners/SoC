@@ -28,6 +28,20 @@ namespace Jabberwocky.SoC.Library
     #endregion
 
     #region Construction
+    public static ResourceClutch CreateFromResourceType(ResourceTypes resourceType)
+    {
+      switch (resourceType)
+      {
+        case ResourceTypes.Brick: return ResourceClutch.OneBrick;
+        case ResourceTypes.Grain: return ResourceClutch.OneGrain;
+        case ResourceTypes.Lumber: return ResourceClutch.OneLumber;
+        case ResourceTypes.Ore: return ResourceClutch.OneOre;
+        case ResourceTypes.Wool: return ResourceClutch.OneWool;
+      }
+
+      throw new Exception(resourceType + " not recognised.");
+    }
+
     public ResourceClutch (Int32 brickCount, Int32 grainCount, Int32 lumberCount, Int32 oreCount, Int32 woolCount)
     {
       BrickCount = brickCount;

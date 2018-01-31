@@ -110,6 +110,23 @@ namespace Jabberwocky.SoC.Library.UnitTests
       Should.Throw<ArgumentOutOfRangeException>(() => { var r = op2 * op1; })
         .Message.ShouldBe("Must be a natural number\r\nParameter name: operand1\r\nActual value was -2.");
     }
+
+    [Test]
+    [TestCase(ResourceTypes.Brick, 1, 0, 0, 0, 0)]
+    [TestCase(ResourceTypes.Grain, 0, 1, 0, 0, 0)]
+    [TestCase(ResourceTypes.Lumber, 0, 0, 1, 0, 0)]
+    [TestCase(ResourceTypes.Ore, 0, 0, 0, 1, 0)]
+    [TestCase(ResourceTypes.Wool, 0, 0, 0, 0, 1)]
+    public void CreateFromResourceType_SetToBrick_CreatesOneBrick(ResourceTypes resourceType, Int32 expectedBrickCount, Int32 expectedGrainCount, Int32 expectedLumberCount, Int32 expectedOreCount, Int32 expectedWoolCount)
+    {
+      var result = ResourceClutch.CreateFromResourceType(resourceType);
+
+      result.BrickCount.ShouldBe(expectedBrickCount);
+      result.GrainCount.ShouldBe(expectedGrainCount);
+      result.LumberCount.ShouldBe(expectedLumberCount);
+      result.OreCount.ShouldBe(expectedOreCount);
+      result.WoolCount.ShouldBe(expectedWoolCount);
+    }
     #endregion
   }
 }
