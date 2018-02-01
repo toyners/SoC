@@ -61,7 +61,7 @@ namespace Jabberwocky.SoC.Library
 
     public ResourceTransactionEvent(Guid playerId, ResourceTransactionList resourceTransactions) : base(playerId)
     {
-      throw new NotImplementedException();
+      this.ResourceTransactions = resourceTransactions;
     }
 
     public ResourceTransactionEvent(Guid playerId, ResourceTransaction resourceTransaction) : base(playerId)
