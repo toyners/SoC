@@ -5,7 +5,7 @@ using Jabberwocky.SoC.Library.GameBoards;
 
 namespace Jabberwocky.SoC.Library.Interfaces
 {
-  public enum PlayerAction
+  public enum PlayerActionTypes
   {
     EndTurn,
     BuildCity,
@@ -32,8 +32,25 @@ namespace Jabberwocky.SoC.Library.Interfaces
     ResourceTypes ChooseResourceTypeToRob();
     UInt32 ChooseRobberLocation();
     IPlayer ChoosePlayerToRob(IEnumerable<IPlayer> otherPlayers);
-    PlayerAction GetPlayerAction();
+    Boolean TryGetPlayerAction(out PlayerMove playerMove);
     void AddDevelopmentCard(DevelopmentCard developmentCard);
     #endregion
+  }
+
+  public class PlayerMove
+  {
+    public readonly PlayerActionTypes Action;
+
+    public PlayerMove(PlayerActionTypes action)
+    {
+      this.Action = action;
+    }
+  }
+
+  public class TradeWithBankMove : PlayerMove
+  {
+    public TradeWithBankMove(PlayerActionTypes action) : base(action)
+    {
+    }
   }
 }

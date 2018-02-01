@@ -25,7 +25,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     public Queue<UInt32> SettlementLocations;
     public Queue<Tuple<UInt32, UInt32>> Roads = new Queue<Tuple<UInt32, UInt32>>();
     public Queue<Tuple<UInt32, UInt32>> InitialInfrastructure = new Queue<Tuple<UInt32, UInt32>>();
-    public Queue<PlayerAction> Actions = new Queue<PlayerAction>();
+    public Queue<PlayerActionTypes> Actions = new Queue<PlayerActionTypes>();
     public ResourceClutch DroppedResources;
     #endregion
 
@@ -45,7 +45,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
       foreach (var cityChoice in cityChoices)
       {
         this.CityLocations.Enqueue(cityChoice);
-        this.Actions.Enqueue(PlayerAction.BuildCity);
+        this.Actions.Enqueue(PlayerActionTypes.BuildCity);
       }
     }
 
@@ -54,7 +54,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
       for (var index = 0; index < roadChoices.Length; index += 2)
       {
         this.Roads.Enqueue(new Tuple<UInt32, UInt32>(roadChoices[index], roadChoices[index + 1]));
-        this.Actions.Enqueue(PlayerAction.BuildRoad);
+        this.Actions.Enqueue(PlayerActionTypes.BuildRoad);
       }
     }
 
@@ -62,7 +62,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     {
       for (; count > 0; count--)
       {
-        this.Actions.Enqueue(PlayerAction.BuyDevelopmentCard);
+        this.Actions.Enqueue(PlayerActionTypes.BuyDevelopmentCard);
       }
 
       return this;
@@ -108,28 +108,28 @@ namespace Jabberwocky.SoC.Library.UnitTests
     public MockComputerPlayer AddPlaceKnightCard(PlayKnightAction playKnightCardAction)
     {
       this.playKnightCardActions.Enqueue(playKnightCardAction);
-      this.Actions.Enqueue(PlayerAction.PlayKnightCard);
+      this.Actions.Enqueue(PlayerActionTypes.PlayKnightCard);
       return this;
     }
 
     public MockComputerPlayer AddPlaceMonopolyCardAction(PlayMonopolyCardAction playMonopolyCardAction)
     {
       this.playMonopolyCardActions.Enqueue(playMonopolyCardAction);
-      this.Actions.Enqueue(PlayerAction.PlayMonopolyCard);
+      this.Actions.Enqueue(PlayerActionTypes.PlayMonopolyCard);
       return this;
     }
 
     public MockComputerPlayer AddPlayYearOfPlentyCardAction(PlayYearOfPlentyCardAction playYearOfPlentyCardAction)
     {
       this.playYearOfPlentyCardActions.Enqueue(playYearOfPlentyCardAction);
-      this.Actions.Enqueue(PlayerAction.PlayYearOfPlentyCard);
+      this.Actions.Enqueue(PlayerActionTypes.PlayYearOfPlentyCard);
       return this;
     }
 
     public MockComputerPlayer AddTradeWithBankAction(TradeWithBankAction tradeWithBankAction)
     {
       this.tradeWithBankActions.Enqueue(tradeWithBankAction);
-      this.Actions.Enqueue(PlayerAction.TradeWithBank);
+      this.Actions.Enqueue(PlayerActionTypes.TradeWithBank);
       return this;
     }
 
@@ -224,19 +224,34 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
     public MockComputerPlayer EndTurn()
     {
-      this.Actions.Enqueue(PlayerAction.EndTurn);
+      this.Actions.Enqueue(PlayerActionTypes.EndTurn);
       return this;
     }
 
-    public override PlayerAction GetPlayerAction()
+    public override Boolean TryGetPlayerAction(out PlayerMove playerMove)
     {
+      playerMove = null;
       if (this.Actions.Count == 0)
       {
-        return PlayerAction.EndTurn;
+        return false;
       }
 
-      var playerAction = this.Actions.Dequeue();
-      return playerAction;
+      var actionType = this.Actions.Dequeue();
+      if (actionType == PlayerActionTypes.EndTurn)
+      {
+        return false;
+      }
+
+      if (actionType == PlayerActionTypes.TradeWithBank)
+      {
+        playerMove = new TradeWithBankMove(PlayerActionTypes.TradeWithBank);
+      }
+      else
+      {
+        playerMove = new PlayerMove(actionType);
+      }
+
+      return true;
     }
 
     private List<DevelopmentCardTypes> CreateListOfDisplayedDevelopmentCards()
