@@ -167,6 +167,31 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       errorDetails.Message.ShouldBe("Cannot complete trade with bank: Receiving count must be positive. Was " + receivingCount + ".");
     }
 
+    [Test]
+    public void Scenario_OpponentTradesWithBank()
+    {
+      // Arrange
+      var bankId = Guid.NewGuid();
+      var testInstances = this.TestSetupWithExplictGameBoard(bankId, new MockGameBoardWithNoResourcesCollected());
+      var localGameController = testInstances.LocalGameController;
+
+      var firstOpponent = testInstances.FirstOpponent;
+      firstOpponent.AddResources(ResourceClutch.OneGrain * 4);
+
+      TurnToken turnToken = null;
+      localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
+
+      localGameController.StartGamePlay();
+
+      // Act
+      localGameController.EndTurn(turnToken);
+
+      // Assert
+
+      firstOpponent.ResourcesCount.ShouldBe(1);
+      firstOpponent.WoolCount.ShouldBe(1);
+    }
+
     private LocalGameControllerTestCreator.TestInstances TestSetup()
     {
       var testInstances = LocalGameControllerTestCreator.CreateTestInstances(null, null, new GameBoardData(BoardSizes.Standard));
