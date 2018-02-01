@@ -224,7 +224,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
 
       firstOpponent.AddResources(ResourceClutch.DevelopmentCard);
       firstOpponent.AddBuyDevelopmentCardChoice(1).EndTurn()
-        .AddPlayYearOfPlentyCardAction(new PlayYearOfPlentyCardAction { FirstResourceChoice = ResourceTypes.Brick, SecondResourceChoice = ResourceTypes.Grain }).EndTurn();
+        .AddPlayYearOfPlentyCardInstruction(new PlayYearOfPlentyCardInstruction { FirstResourceChoice = ResourceTypes.Brick, SecondResourceChoice = ResourceTypes.Grain }).EndTurn();
 
       var turn = 0;
       TurnToken turnToken = null;
@@ -282,7 +282,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
 
       firstOpponent.AddResources(ResourceClutch.DevelopmentCard);
       firstOpponent.AddBuyDevelopmentCardChoice(1).EndTurn()
-        .AddPlayYearOfPlentyCardAction(new PlayYearOfPlentyCardAction { FirstResourceChoice = ResourceTypes.Brick, SecondResourceChoice = ResourceTypes.Brick }).EndTurn();
+        .AddPlayYearOfPlentyCardInstruction(new PlayYearOfPlentyCardInstruction { FirstResourceChoice = ResourceTypes.Brick, SecondResourceChoice = ResourceTypes.Brick }).EndTurn();
 
       var turn = 0;
       TurnToken turnToken = null;

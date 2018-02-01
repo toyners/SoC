@@ -272,7 +272,7 @@ namespace Jabberwocky.SoC.Library
       {
         var computerPlayer = this.currentPlayer as IComputerPlayer;
         var events = new List<GameEvent>();
-        PlayerMove playerAction;
+        PlayerAction playerAction;
 
         while (computerPlayer.TryGetPlayerAction(out playerAction))
         {

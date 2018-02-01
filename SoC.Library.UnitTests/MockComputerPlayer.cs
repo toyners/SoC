@@ -18,10 +18,10 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
     public Queue<UInt32> CityLocations = new Queue<UInt32>();
     private Dictionary<DevelopmentCardTypes, Queue<DevelopmentCard>> developmentCards = new Dictionary<DevelopmentCardTypes, Queue<DevelopmentCard>>();
-    private Queue<PlayKnightAction> playKnightCardActions = new Queue<PlayKnightAction>();
-    private Queue<PlayMonopolyCardAction> playMonopolyCardActions = new Queue<PlayMonopolyCardAction>();
-    private Queue<PlayYearOfPlentyCardAction> playYearOfPlentyCardActions = new Queue<PlayYearOfPlentyCardAction>();
-    private Queue<TradeWithBankAction> tradeWithBankActions = new Queue<TradeWithBankAction>();
+    private Queue<PlayKnightInstruction> playKnightCardActions = new Queue<PlayKnightInstruction>();
+    private Queue<PlayMonopolyCardInstruction> playMonopolyCardActions = new Queue<PlayMonopolyCardInstruction>();
+    private Queue<PlayYearOfPlentyCardInstruction> playYearOfPlentyCardActions = new Queue<PlayYearOfPlentyCardInstruction>();
+    private Queue<TradeWithBankInstruction> tradeWithBankActions = new Queue<TradeWithBankInstruction>();
     public Queue<UInt32> SettlementLocations;
     public Queue<Tuple<UInt32, UInt32>> Roads = new Queue<Tuple<UInt32, UInt32>>();
     public Queue<Tuple<UInt32, UInt32>> InitialInfrastructure = new Queue<Tuple<UInt32, UInt32>>();
@@ -105,30 +105,30 @@ namespace Jabberwocky.SoC.Library.UnitTests
       }
     }
 
-    public MockComputerPlayer AddPlaceKnightCard(PlayKnightAction playKnightCardAction)
+    public MockComputerPlayer AddPlaceKnightCardInstruction(PlayKnightInstruction playKnightCardInstruction)
     {
-      this.playKnightCardActions.Enqueue(playKnightCardAction);
+      this.playKnightCardActions.Enqueue(playKnightCardInstruction);
       this.Actions.Enqueue(PlayerActionTypes.PlayKnightCard);
       return this;
     }
 
-    public MockComputerPlayer AddPlaceMonopolyCardAction(PlayMonopolyCardAction playMonopolyCardAction)
+    public MockComputerPlayer AddPlaceMonopolyCardInstruction(PlayMonopolyCardInstruction playMonopolyCardInstruction)
     {
-      this.playMonopolyCardActions.Enqueue(playMonopolyCardAction);
+      this.playMonopolyCardActions.Enqueue(playMonopolyCardInstruction);
       this.Actions.Enqueue(PlayerActionTypes.PlayMonopolyCard);
       return this;
     }
 
-    public MockComputerPlayer AddPlayYearOfPlentyCardAction(PlayYearOfPlentyCardAction playYearOfPlentyCardAction)
+    public MockComputerPlayer AddPlayYearOfPlentyCardInstruction(PlayYearOfPlentyCardInstruction playYearOfPlentyCardInstruction)
     {
-      this.playYearOfPlentyCardActions.Enqueue(playYearOfPlentyCardAction);
+      this.playYearOfPlentyCardActions.Enqueue(playYearOfPlentyCardInstruction);
       this.Actions.Enqueue(PlayerActionTypes.PlayYearOfPlentyCard);
       return this;
     }
 
-    public MockComputerPlayer AddTradeWithBankAction(TradeWithBankAction tradeWithBankAction)
+    public MockComputerPlayer AddTradeWithBankInstruction(TradeWithBankInstruction tradeWithBankInstruction)
     {
-      this.tradeWithBankActions.Enqueue(tradeWithBankAction);
+      this.tradeWithBankActions.Enqueue(tradeWithBankInstruction);
       this.Actions.Enqueue(PlayerActionTypes.TradeWithBank);
       return this;
     }
@@ -228,7 +228,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
       return this;
     }
 
-    public override Boolean TryGetPlayerAction(out PlayerMove playerMove)
+    public override Boolean TryGetPlayerAction(out PlayerAction playerMove)
     {
       playerMove = null;
       if (this.Actions.Count == 0)
@@ -244,11 +244,11 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
       if (actionType == PlayerActionTypes.TradeWithBank)
       {
-        playerMove = new TradeWithBankMove(PlayerActionTypes.TradeWithBank);
+        playerMove = new TradeWithBankAction();
       }
       else
       {
-        playerMove = new PlayerMove(actionType);
+        playerMove = new PlayerAction(actionType);
       }
 
       return true;
@@ -267,24 +267,24 @@ namespace Jabberwocky.SoC.Library.UnitTests
     #endregion
   }
 
-  public struct PlayKnightAction
+  public struct PlayKnightInstruction
   {
     public UInt32 RobberHex;
     public Guid RobbedPlayerId;
   }
 
-  public struct PlayMonopolyCardAction
+  public struct PlayMonopolyCardInstruction
   {
     public ResourceTypes ResourceType;
   }
 
-  public struct PlayYearOfPlentyCardAction
+  public struct PlayYearOfPlentyCardInstruction
   {
     public ResourceTypes FirstResourceChoice;
     public ResourceTypes SecondResourceChoice;
   }
 
-  public struct TradeWithBankAction
+  public struct TradeWithBankInstruction
   {
     public ResourceTypes GivingType;
     public ResourceTypes ReceivingType;

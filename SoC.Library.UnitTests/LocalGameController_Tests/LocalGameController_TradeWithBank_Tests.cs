@@ -182,8 +182,8 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       var firstOpponent = testInstances.FirstOpponent;
       firstOpponent.AddResources(givingResources);
 
-      var tradeWithBankAction = new TradeWithBankAction { GivingType = ResourceTypes.Grain, ReceivingCount = 1, ReceivingType = ResourceTypes.Wool };
-      firstOpponent.AddTradeWithBankAction(tradeWithBankAction).EndTurn();
+      var tradeWithBankAction = new TradeWithBankInstruction { GivingType = ResourceTypes.Grain, ReceivingCount = 1, ReceivingType = ResourceTypes.Wool };
+      firstOpponent.AddTradeWithBankInstruction(tradeWithBankAction).EndTurn();
 
       TurnToken turnToken = null;
       localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };

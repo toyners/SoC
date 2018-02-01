@@ -244,7 +244,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       player.AddResources(ResourceClutch.OneBrick);
       firstOpponent.AddResources(ResourceClutch.DevelopmentCard);
       firstOpponent.AddBuyDevelopmentCardChoice(1).EndTurn()
-        .AddPlaceMonopolyCardAction(new PlayMonopolyCardAction { ResourceType = ResourceTypes.Brick }).EndTurn();
+        .AddPlaceMonopolyCardInstruction(new PlayMonopolyCardInstruction { ResourceType = ResourceTypes.Brick }).EndTurn();
 
       secondOpponent.AddResources(new ResourceClutch(2, 1, 1, 1, 1));
 

@@ -32,24 +32,24 @@ namespace Jabberwocky.SoC.Library.Interfaces
     ResourceTypes ChooseResourceTypeToRob();
     UInt32 ChooseRobberLocation();
     IPlayer ChoosePlayerToRob(IEnumerable<IPlayer> otherPlayers);
-    Boolean TryGetPlayerAction(out PlayerMove playerMove);
+    Boolean TryGetPlayerAction(out PlayerAction playerMove);
     void AddDevelopmentCard(DevelopmentCard developmentCard);
     #endregion
   }
 
-  public class PlayerMove
+  public class PlayerAction
   {
     public readonly PlayerActionTypes Action;
 
-    public PlayerMove(PlayerActionTypes action)
+    public PlayerAction(PlayerActionTypes action)
     {
       this.Action = action;
     }
   }
 
-  public class TradeWithBankMove : PlayerMove
+  public class TradeWithBankAction : PlayerAction
   {
-    public TradeWithBankMove(PlayerActionTypes action) : base(action)
+    public TradeWithBankAction() : base(PlayerActionTypes.TradeWithBank)
     {
     }
   }
