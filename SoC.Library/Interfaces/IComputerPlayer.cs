@@ -14,6 +14,7 @@ namespace Jabberwocky.SoC.Library.Interfaces
     PlayKnightCard,
     PlayMonopolyCard,
     PlayYearOfPlentyCard,
+    TradeWithBank,
   }
 
   public interface IComputerPlayer : IPlayer

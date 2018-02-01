@@ -2,6 +2,7 @@
 namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
 {
   using System;
+  using System.Collections.Generic;
   using GameBoards;
   using MockGameBoards;
   using NSubstitute;
@@ -175,11 +176,27 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       var testInstances = this.TestSetupWithExplictGameBoard(bankId, new MockGameBoardWithNoResourcesCollected());
       var localGameController = testInstances.LocalGameController;
 
+      testInstances.Dice.AddSequence(new[] { 8u });
+
+      var givingResources = ResourceClutch.OneGrain * 4;
       var firstOpponent = testInstances.FirstOpponent;
-      firstOpponent.AddResources(ResourceClutch.OneGrain * 4);
+      firstOpponent.AddResources(givingResources);
+
+      var tradeWithBankAction = new TradeWithBankAction { GivingType = ResourceTypes.Grain, ReceivingCount = 1, ReceivingType = ResourceTypes.Wool };
+      firstOpponent.AddTradeWithBankAction(tradeWithBankAction).EndTurn();
 
       TurnToken turnToken = null;
       localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
+
+      var turn = 0;
+      var playerActions = new Dictionary<String, List<GameEvent>>();
+      var keys = new List<String>();
+      localGameController.OpponentActionsEvent = (Guid g, List<GameEvent> e) =>
+      {
+        var key = turn + "-" + g.ToString();
+        keys.Add(key);
+        playerActions.Add(key, e);
+      };
 
       localGameController.StartGamePlay();
 
@@ -187,6 +204,11 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       localGameController.EndTurn(turnToken);
 
       // Assert
+      var expectedTradeWithBankEvent = new TradeWithBankEvent(firstOpponent.Id, bankId, givingResources, ResourceClutch.OneWool);
+      playerActions.Count.ShouldBe(1);
+      keys.Count.ShouldBe(playerActions.Count);
+
+      AssertToolBox.AssertThatPlayerActionsForTurnAreCorrect(playerActions[keys[0]], expectedTradeWithBankEvent);
 
       firstOpponent.ResourcesCount.ShouldBe(1);
       firstOpponent.WoolCount.ShouldBe(1);

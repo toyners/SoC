@@ -21,6 +21,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     private Queue<PlayKnightAction> playKnightCardActions = new Queue<PlayKnightAction>();
     private Queue<PlayMonopolyCardAction> playMonopolyCardActions = new Queue<PlayMonopolyCardAction>();
     private Queue<PlayYearOfPlentyCardAction> playYearOfPlentyCardActions = new Queue<PlayYearOfPlentyCardAction>();
+    private Queue<TradeWithBankAction> tradeWithBankActions = new Queue<TradeWithBankAction>();
     public Queue<UInt32> SettlementLocations;
     public Queue<Tuple<UInt32, UInt32>> Roads = new Queue<Tuple<UInt32, UInt32>>();
     public Queue<Tuple<UInt32, UInt32>> InitialInfrastructure = new Queue<Tuple<UInt32, UInt32>>();
@@ -122,6 +123,13 @@ namespace Jabberwocky.SoC.Library.UnitTests
     {
       this.playYearOfPlentyCardActions.Enqueue(playYearOfPlentyCardAction);
       this.Actions.Enqueue(PlayerAction.PlayYearOfPlentyCard);
+      return this;
+    }
+
+    public MockComputerPlayer AddTradeWithBankAction(TradeWithBankAction tradeWithBankAction)
+    {
+      this.tradeWithBankActions.Enqueue(tradeWithBankAction);
+      this.Actions.Enqueue(PlayerAction.TradeWithBank);
       return this;
     }
 
@@ -259,5 +267,12 @@ namespace Jabberwocky.SoC.Library.UnitTests
   {
     public ResourceTypes FirstResourceChoice;
     public ResourceTypes SecondResourceChoice;
+  }
+
+  public struct TradeWithBankAction
+  {
+    public ResourceTypes GivingType;
+    public ResourceTypes ReceivingType;
+    public Int32 ReceivingCount;
   }
 }
