@@ -688,15 +688,8 @@ namespace Jabberwocky.SoC.Library
     /// <param name="givingResourceType">Resource type that the player is giving. Must have at least 4 and be divisible by 4.</param>
     public void TradeWithBank(TurnToken turnToken, ResourceTypes receivingResourceType, Int32 receivingCount, ResourceTypes givingResourceType)
     {
-      if (turnToken == null)
+      if (!this.VerifyTurnToken(turnToken))
       {
-        this.ErrorRaisedEvent?.Invoke(new ErrorDetails("Turn token is null."));
-        return;
-      }
-
-      if (turnToken != this.currentTurnToken)
-      {
-        this.ErrorRaisedEvent?.Invoke(new ErrorDetails("Turn token not recognised."));
         return;
       }
 
@@ -1570,6 +1563,23 @@ namespace Jabberwocky.SoC.Library
       this.TryRaiseRoadSegmentPlacingError(verificationResults, settlementLocation, roadEndLocation);
       
       return verificationResults.Status == GameBoardData.VerificationStatus.Valid;
+    }
+
+    private Boolean VerifyTurnToken(TurnToken turnToken)
+    {
+      if (turnToken == null)
+      {
+        this.ErrorRaisedEvent?.Invoke(new ErrorDetails("Turn token is null."));
+        return false;
+      }
+
+      if (turnToken != this.currentTurnToken)
+      {
+        this.ErrorRaisedEvent?.Invoke(new ErrorDetails("Turn token not recognised."));
+        return false;
+      }
+
+      return true;
     }
     #endregion
   }
