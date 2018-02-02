@@ -173,6 +173,7 @@ namespace Jabberwocky.SoC.Library
       this.LumberCount--;
       this.WoolCount--;
       this.SettlementsBuilt++;
+      this.VictoryPoints++;
     }
 
     public void PlaceStartingInfrastructure()
