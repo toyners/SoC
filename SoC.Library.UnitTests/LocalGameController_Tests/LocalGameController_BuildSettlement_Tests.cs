@@ -17,12 +17,13 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
     public void BuildSettlement_ValidScenario_SettlementBuiltEventRaised()
     {
       // Arrange
-      MockDice mockDice = null;
-      MockPlayer player;
-      MockComputerPlayer firstOpponent, secondOpponent, thirdOpponent;
-      var localGameController = this.CreateLocalGameControllerAndCompleteGameSetup(out mockDice, out player, out firstOpponent, out secondOpponent, out thirdOpponent);
+      var testInstances = LocalGameControllerTestCreator.CreateTestInstances(new MockGameBoardWithNoResourcesCollected());
+      var localGameController = testInstances.LocalGameController;
+      LocalGameControllerTestSetup.LaunchGameAndCompleteSetup(localGameController);
 
-      mockDice.AddSequence(new[] { 8u });
+      testInstances.Dice.AddSequence(new[] { 8u });
+
+      var player = testInstances.MainPlayer;
       player.AddResources(ResourceClutch.RoadSegment); // Need resources to build the precursor road
       player.AddResources(ResourceClutch.Settlement);
 
@@ -39,6 +40,8 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
 
       // Assert
       settlementBuilt.ShouldBeTrue();
+      player.VictoryPoints.ShouldBe(3u);
+      player.ResourcesCount.ShouldBe(0);
     }
 
     [Test]
@@ -375,6 +378,37 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       errorDetails.ShouldNotBeNull();
       errorDetails.Message.ShouldBe("Turn token not recognised.");
     }
+
+    [Test]
+    public void BuildSettlement_AlmostGotAllVictoryPoints_EndOfGameEventRaisedWithPlayerAsWinner()
+    {
+      // Arrange
+      /*MockDice mockDice = null;
+      MockPlayer player;
+      MockComputerPlayer firstOpponent, secondOpponent, thirdOpponent;
+      var localGameController = this.CreateLocalGameControllerAndCompleteGameSetup(out mockDice, out player, out firstOpponent, out secondOpponent, out thirdOpponent);
+
+      mockDice.AddSequence(new[] { 8u });
+      player.AddResources(ResourceClutch.RoadSegment);
+      player.AddResources(ResourceClutch.Settlement);
+
+      ErrorDetails errorDetails = null;
+      localGameController.ErrorRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
+
+      TurnToken turnToken = null;
+      localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
+      localGameController.StartGamePlay();
+      localGameController.BuildRoadSegment(turnToken, 4, 3);
+
+      // Act
+      localGameController.BuildSettlement(new TurnToken(), 3);
+
+      // Assert
+      errorDetails.ShouldNotBeNull();
+      errorDetails.Message.ShouldBe("Turn token not recognised.");*/
+      throw new NotImplementedException();
+    }
+
     #endregion 
   }
 }

@@ -339,6 +339,33 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       errorDetails.ShouldNotBeNull();
       errorDetails.Message.ShouldBe("Turn token not recognised.");
     }
+
+    [Test]
+    public void BuildCity_AlmostGotAllVictoryPoints_EndOfGameEventRaisedWithPlayerAsWinner()
+    {
+      // Arrange
+      /*MockDice mockDice = null;
+      MockPlayer player;
+      MockComputerPlayer firstOpponent, secondOpponent, thirdOpponent;
+      var localGameController = this.CreateLocalGameControllerAndCompleteGameSetup(out mockDice, out player, out firstOpponent, out secondOpponent, out thirdOpponent);
+
+      mockDice.AddSequence(new[] { 8u });
+
+      ErrorDetails errorDetails = null;
+      localGameController.ErrorRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
+
+      TurnToken turnToken = null;
+      localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
+      localGameController.StartGamePlay();
+
+      // Act
+      localGameController.BuildCity(turnToken, MainSettlementOneLocation);
+
+      // Assert
+      errorDetails.ShouldNotBeNull();
+      errorDetails.Message.ShouldBe("Turn token not recognised.");*/
+      throw new NotImplementedException();
+    }
     #endregion
   }
 }
