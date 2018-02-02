@@ -363,6 +363,18 @@ namespace Jabberwocky.SoC.Library
 
             case PlayerActionTypes.TradeWithBank:
             {
+              var tradeWithBankAction = (TradeWithBankAction)playerAction;
+
+              var receivingResources = ResourceClutch.CreateFromResourceType(tradeWithBankAction.ReceivingType);
+              receivingResources *= tradeWithBankAction.ReceivingCount;
+
+              var paymentResources = ResourceClutch.CreateFromResourceType(tradeWithBankAction.GivingType);
+              paymentResources *= (tradeWithBankAction.ReceivingCount * 4);
+
+              computerPlayer.RemoveResources(paymentResources);
+              computerPlayer.AddResources(receivingResources);
+
+              events.Add(new TradeWithBankEvent(computerPlayer.Id, this.playerPool.GetBankId(), paymentResources, receivingResources));
               break;
             }
 

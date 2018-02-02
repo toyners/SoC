@@ -120,7 +120,7 @@ namespace Jabberwocky.SoC.Library
       throw new NotImplementedException();
     }
 
-    public virtual Boolean TryGetPlayerAction(out PlayerAction playerMove)
+    public virtual Boolean TryGetPlayerAction(out PlayerAction playerAction)
     {
       throw new NotImplementedException();
     }

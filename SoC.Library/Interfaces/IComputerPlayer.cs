@@ -32,7 +32,7 @@ namespace Jabberwocky.SoC.Library.Interfaces
     ResourceTypes ChooseResourceTypeToRob();
     UInt32 ChooseRobberLocation();
     IPlayer ChoosePlayerToRob(IEnumerable<IPlayer> otherPlayers);
-    Boolean TryGetPlayerAction(out PlayerAction playerMove);
+    Boolean TryGetPlayerAction(out PlayerAction playerAction);
     void AddDevelopmentCard(DevelopmentCard developmentCard);
     #endregion
   }
@@ -49,8 +49,15 @@ namespace Jabberwocky.SoC.Library.Interfaces
 
   public class TradeWithBankAction : PlayerAction
   {
-    public TradeWithBankAction() : base(PlayerActionTypes.TradeWithBank)
+    public readonly ResourceTypes GivingType;
+    public readonly ResourceTypes ReceivingType;
+    public readonly Int32 ReceivingCount;
+
+    public TradeWithBankAction(ResourceTypes givingType, ResourceTypes receivingType, Int32 receivingCount) : base(PlayerActionTypes.TradeWithBank)
     {
+      this.GivingType = givingType;
+      this.ReceivingType = receivingType;
+      this.ReceivingCount = receivingCount;
     }
   }
 }

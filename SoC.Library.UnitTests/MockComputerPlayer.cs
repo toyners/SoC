@@ -21,7 +21,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     private Queue<PlayKnightInstruction> playKnightCardActions = new Queue<PlayKnightInstruction>();
     private Queue<PlayMonopolyCardInstruction> playMonopolyCardActions = new Queue<PlayMonopolyCardInstruction>();
     private Queue<PlayYearOfPlentyCardInstruction> playYearOfPlentyCardActions = new Queue<PlayYearOfPlentyCardInstruction>();
-    private Queue<TradeWithBankInstruction> tradeWithBankActions = new Queue<TradeWithBankInstruction>();
+    private Queue<TradeWithBankInstruction> tradeWithBankInstructions = new Queue<TradeWithBankInstruction>();
     public Queue<UInt32> SettlementLocations;
     public Queue<Tuple<UInt32, UInt32>> Roads = new Queue<Tuple<UInt32, UInt32>>();
     public Queue<Tuple<UInt32, UInt32>> InitialInfrastructure = new Queue<Tuple<UInt32, UInt32>>();
@@ -128,7 +128,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
     public MockComputerPlayer AddTradeWithBankInstruction(TradeWithBankInstruction tradeWithBankInstruction)
     {
-      this.tradeWithBankActions.Enqueue(tradeWithBankInstruction);
+      this.tradeWithBankInstructions.Enqueue(tradeWithBankInstruction);
       this.Actions.Enqueue(PlayerActionTypes.TradeWithBank);
       return this;
     }
@@ -228,9 +228,9 @@ namespace Jabberwocky.SoC.Library.UnitTests
       return this;
     }
 
-    public override Boolean TryGetPlayerAction(out PlayerAction playerMove)
+    public override Boolean TryGetPlayerAction(out PlayerAction playerAction)
     {
-      playerMove = null;
+      playerAction = null;
       if (this.Actions.Count == 0)
       {
         return false;
@@ -244,11 +244,16 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
       if (actionType == PlayerActionTypes.TradeWithBank)
       {
-        playerMove = new TradeWithBankAction();
+        var tradeWithBankInstruction = this.tradeWithBankInstructions.Dequeue();
+        
+        playerAction = new TradeWithBankAction(
+          tradeWithBankInstruction.GivingType,
+          tradeWithBankInstruction.ReceivingType,
+          tradeWithBankInstruction.ReceivingCount);
       }
       else
       {
-        playerMove = new PlayerAction(actionType);
+        playerAction = new PlayerAction(actionType);
       }
 
       return true;
