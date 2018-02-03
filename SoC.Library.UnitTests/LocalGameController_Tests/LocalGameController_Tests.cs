@@ -398,6 +398,17 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
     }
 
     [Test]
+    public void CompleteGameSetup_ComputerPlayersGetExpectedVictoryPoints()
+    {
+      var testInstances = LocalGameControllerTestCreator.CreateTestInstances();
+      LocalGameControllerTestSetup.LaunchGameAndCompleteSetup(testInstances.LocalGameController);
+
+      testInstances.FirstOpponent.VictoryPoints.ShouldBe(2u);
+      testInstances.SecondOpponent.VictoryPoints.ShouldBe(2u);
+      testInstances.ThirdOpponent.VictoryPoints.ShouldBe(2u);
+    }
+
+    [Test]
     [Category("LocalGameController")]
     public void ContinueGameSetup_CallOutOfSequence_MeaningfulErrorIsReceived()
     {
