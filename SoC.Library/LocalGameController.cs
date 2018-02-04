@@ -142,9 +142,7 @@ namespace Jabberwocky.SoC.Library
         return;
       }
 
-      this.gameBoard.PlaceSettlement(this.currentPlayer.Id, location);
-      this.currentPlayer.PlaceSettlement();
-      this.SettlementBuiltEvent?.Invoke();
+      this.BuildSettlement(location);
     }
 
     public void BuyDevelopmentCard(TurnToken turnToken)
@@ -282,6 +280,8 @@ namespace Jabberwocky.SoC.Library
             {
               var location = computerPlayer.ChooseCityLocation(this.gameBoard);
               this.BuildCity(location);
+
+              events.Add(new CityBuiltEvent(computerPlayer.Id, location));
               break;
             }
 
@@ -292,6 +292,15 @@ namespace Jabberwocky.SoC.Library
               this.BuildRoadSegment(startRoadLocation, endRoadLocation);
 
               events.Add(new RoadSegmentBuiltEvent(computerPlayer.Id, startRoadLocation, endRoadLocation));
+              break;
+            }
+
+            case PlayerActionTypes.BuildSettlement:
+            {
+              var location = computerPlayer.ChooseSettlementLocation(this.gameBoard);
+              this.BuildSettlement(location);
+
+              events.Add(new SettlementBuiltEvent(computerPlayer.Id, location));
               break;
             }
 
@@ -855,6 +864,13 @@ namespace Jabberwocky.SoC.Library
       this.RoadSegmentBuiltEvent?.Invoke();
 
       this.RaiseLongestRoadBuiltEventIfRelevant();
+    }
+
+    private void BuildSettlement(UInt32 location)
+    {
+      this.gameBoard.PlaceSettlement(this.currentPlayer.Id, location);
+      this.currentPlayer.PlaceSettlement();
+      this.SettlementBuiltEvent?.Invoke();
     }
 
     private DevelopmentCard BuyDevelopmentCard()

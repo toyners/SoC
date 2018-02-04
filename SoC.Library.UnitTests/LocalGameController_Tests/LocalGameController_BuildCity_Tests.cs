@@ -409,6 +409,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
         new SettlementBuiltEvent(firstOpponent.Id, 7u),
         new CityBuiltEvent(firstOpponent.Id, 7u));
       firstOpponent.ResourcesCount.ShouldBe(0);
+      firstOpponent.VictoryPoints.ShouldBe(4u);
     }
     #endregion
   }

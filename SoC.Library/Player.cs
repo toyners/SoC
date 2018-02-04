@@ -152,6 +152,7 @@ namespace Jabberwocky.SoC.Library
       this.GrainCount -= Constants.GrainForBuildingCity;
       this.OreCount -= Constants.OreForBuildingCity;
       this.CitiesBuilt++;
+      this.VictoryPoints++;
     }
 
     public void PlaceKnightDevelopmentCard()

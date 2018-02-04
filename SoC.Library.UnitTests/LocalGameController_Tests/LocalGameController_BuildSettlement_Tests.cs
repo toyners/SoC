@@ -444,6 +444,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
         new RoadSegmentBuiltEvent(firstOpponent.Id, 17u, 7u),
         new SettlementBuiltEvent(firstOpponent.Id, 7u));
       firstOpponent.ResourcesCount.ShouldBe(0);
+      firstOpponent.VictoryPoints.ShouldBe(3u);
     }
     #endregion 
   }
