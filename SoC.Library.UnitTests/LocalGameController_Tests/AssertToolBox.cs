@@ -3,6 +3,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
 {
   using System;
   using System.Collections.Generic;
+  using GameEvents;
   using Shouldly;
 
   public static class AssertToolBox

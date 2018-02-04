@@ -2,6 +2,7 @@
 namespace Jabberwocky.SoC.Library.UnitTests
 {
   using System;
+  using GameEvents;
   using NUnit.Framework;
   using Shouldly;
 
