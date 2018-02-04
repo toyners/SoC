@@ -412,6 +412,23 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
     [Test]
     public void Scenario_OpponentBuildsSettlement()
     {
+      // Arrange
+      var testInstances = LocalGameControllerTestCreator.CreateTestInstances(new MockGameBoardWithNoResourcesCollected());
+      var localGameController = testInstances.LocalGameController;
+      LocalGameControllerTestSetup.LaunchGameAndCompleteSetup(localGameController);
+
+      var firstOpponent = testInstances.FirstOpponent;
+      firstOpponent.AddResources(ResourceClutch.Settlement);
+
+      TurnToken turnToken = null;
+      localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
+
+      localGameController.StartGamePlay();
+
+      // Act
+      localGameController.EndTurn(turnToken);
+
+      // Assert
       throw new NotImplementedException();
     }
     #endregion 

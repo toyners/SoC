@@ -285,7 +285,7 @@ namespace Jabberwocky.SoC.Library
               break;
             }
 
-            case PlayerActionTypes.BuildRoad:
+            case PlayerActionTypes.BuildRoadSegment:
             {
               UInt32 startRoadLocation, endRoadLocation;
               computerPlayer.ChooseRoad(this.gameBoard, out startRoadLocation, out endRoadLocation);

@@ -188,14 +188,10 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       TurnToken turnToken = null;
       localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
 
-      var turn = 0;
-      var playerActions = new Dictionary<String, List<GameEvent>>();
-      var keys = new List<String>();
+      List<GameEvent> events = null;
       localGameController.OpponentActionsEvent = (Guid g, List<GameEvent> e) =>
       {
-        var key = turn + "-" + g.ToString();
-        keys.Add(key);
-        playerActions.Add(key, e);
+        events = e;
       };
 
       localGameController.StartGamePlay();
@@ -205,10 +201,8 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
 
       // Assert
       var expectedTradeWithBankEvent = new TradeWithBankEvent(firstOpponent.Id, bankId, givingResources, ResourceClutch.OneWool);
-      playerActions.Count.ShouldBe(1);
-      keys.Count.ShouldBe(playerActions.Count);
 
-      AssertToolBox.AssertThatPlayerActionsForTurnAreCorrect(playerActions[keys[0]], expectedTradeWithBankEvent);
+      AssertToolBox.AssertThatPlayerActionsForTurnAreCorrect(events, expectedTradeWithBankEvent);
 
       firstOpponent.ResourcesCount.ShouldBe(1);
       firstOpponent.WoolCount.ShouldBe(1);

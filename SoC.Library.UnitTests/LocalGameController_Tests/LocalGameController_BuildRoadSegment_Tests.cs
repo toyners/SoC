@@ -2,6 +2,7 @@
 namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
 {
   using System;
+  using System.Collections.Generic;
   using MockGameBoards;
   using NUnit.Framework;
   using Shouldly;
@@ -367,6 +368,36 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       // Assert
       errorDetails.ShouldNotBeNull();
       errorDetails.Message.ShouldBe("Turn token not recognised.");
+    }
+
+    [Test]
+    public void Scenario_OpponentBuildsRoad()
+    {
+      // Arrange
+      var testInstances = LocalGameControllerTestCreator.CreateTestInstances(new MockGameBoardWithNoResourcesCollected());
+      var localGameController = testInstances.LocalGameController;
+      LocalGameControllerTestSetup.LaunchGameAndCompleteSetup(localGameController);
+
+      var firstOpponent = testInstances.FirstOpponent;
+      firstOpponent.AddResources(ResourceClutch.RoadSegment);
+
+      TurnToken turnToken = null;
+      localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
+
+      var buildRoadSegmentInstruction = new BuildRoadSegmentInstruction { StartLocation = 17u, EndLocation = 7u };
+      firstOpponent.AddBuildRoadSegmentInstruction(buildRoadSegmentInstruction);
+
+      List<GameEvent> events = null;
+      localGameController.OpponentActionsEvent = (Guid g, List<GameEvent> e) => { events = e; };
+
+      // Act
+      localGameController.EndTurn(turnToken);
+
+      // Assert
+      var expectedRoadSegmentBuiltEvent = new RoadSegmentBuiltEvent(firstOpponent.Id, 17u, 7u);
+
+      AssertToolBox.AssertThatPlayerActionsForTurnAreCorrect(events, expectedRoadSegmentBuiltEvent);
+      firstOpponent.ResourcesCount.ShouldBe(0);
     }
     #endregion 
   }
