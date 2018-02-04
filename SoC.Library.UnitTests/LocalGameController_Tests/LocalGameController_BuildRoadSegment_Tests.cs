@@ -379,19 +379,21 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       var localGameController = testInstances.LocalGameController;
       LocalGameControllerTestSetup.LaunchGameAndCompleteSetup(localGameController);
 
-      testInstances.Dice.AddSequence(new[] { 8u });
+      testInstances.Dice.AddSequence(new[] { 8u, 8u });
 
       var firstOpponent = testInstances.FirstOpponent;
       firstOpponent.AddResources(ResourceClutch.RoadSegment);
 
-      TurnToken turnToken = null;
-      localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
-
       var buildRoadSegmentInstruction = new BuildRoadSegmentInstruction { StartLocation = 17u, EndLocation = 7u };
       firstOpponent.AddBuildRoadSegmentInstruction(buildRoadSegmentInstruction);
 
+      TurnToken turnToken = null;
+      localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
+
       List<GameEvent> events = null;
       localGameController.OpponentActionsEvent = (Guid g, List<GameEvent> e) => { events = e; };
+
+      localGameController.StartGamePlay();
 
       // Act
       localGameController.EndTurn(turnToken);

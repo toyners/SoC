@@ -22,7 +22,6 @@ namespace Jabberwocky.SoC.Library.UnitTests
     private Queue<PlayMonopolyCardInstruction> playMonopolyCardActions = new Queue<PlayMonopolyCardInstruction>();
     private Queue<PlayYearOfPlentyCardInstruction> playYearOfPlentyCardActions = new Queue<PlayYearOfPlentyCardInstruction>();
     private Queue<TradeWithBankInstruction> tradeWithBankInstructions = new Queue<TradeWithBankInstruction>();
-    private Queue<ValueType> instructions = new Queue<ValueType>();
     public Queue<UInt32> SettlementLocations;
     public Queue<Tuple<UInt32, UInt32>> Roads = new Queue<Tuple<UInt32, UInt32>>();
     public Queue<Tuple<UInt32, UInt32>> InitialInfrastructure = new Queue<Tuple<UInt32, UInt32>>();
@@ -108,8 +107,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
     public MockComputerPlayer AddBuildRoadSegmentInstruction(BuildRoadSegmentInstruction instruction)
     {
-      this.instructions.Enqueue(instruction);
-      this.Actions.Enqueue(PlayerActionTypes.BuildRoadSegment);
+      this.AddRoadChoices(new[] { instruction.StartLocation, instruction.EndLocation });
       return this;
     }
 

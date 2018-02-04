@@ -290,6 +290,8 @@ namespace Jabberwocky.SoC.Library
               UInt32 startRoadLocation, endRoadLocation;
               computerPlayer.ChooseRoad(this.gameBoard, out startRoadLocation, out endRoadLocation);
               this.BuildRoadSegment(startRoadLocation, endRoadLocation);
+
+              events.Add(new RoadSegmentBuiltEvent(computerPlayer.Id, startRoadLocation, endRoadLocation));
               break;
             }
 
