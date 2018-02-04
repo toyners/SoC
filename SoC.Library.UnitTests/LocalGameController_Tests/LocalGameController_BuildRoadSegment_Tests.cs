@@ -379,6 +379,8 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       var localGameController = testInstances.LocalGameController;
       LocalGameControllerTestSetup.LaunchGameAndCompleteSetup(localGameController);
 
+      testInstances.Dice.AddSequence(new[] { 8u });
+
       var firstOpponent = testInstances.FirstOpponent;
       firstOpponent.AddResources(ResourceClutch.RoadSegment);
 

@@ -10,6 +10,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
   {
     public static void AssertThatPlayerActionsForTurnAreCorrect(List<GameEvent> actualEvents, params GameEvent[] expectedEvents)
     {
+      actualEvents.ShouldNotBeNull();
       actualEvents.Count.ShouldBe(expectedEvents.Length);
       for (var index = 0; index < actualEvents.Count; index++)
       {
