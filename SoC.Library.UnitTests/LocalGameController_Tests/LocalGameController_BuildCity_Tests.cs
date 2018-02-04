@@ -366,6 +366,12 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       errorDetails.Message.ShouldBe("Turn token not recognised.");*/
       throw new NotImplementedException();
     }
+
+    [Test]
+    public void Scenario_OpponentBuildsCity()
+    {
+      throw new NotImplementedException();
+    }
     #endregion
   }
 }

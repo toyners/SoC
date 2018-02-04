@@ -409,6 +409,11 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       throw new NotImplementedException();
     }
 
+    [Test]
+    public void Scenario_OpponentBuildsSettlement()
+    {
+      throw new NotImplementedException();
+    }
     #endregion 
   }
 }
