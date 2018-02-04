@@ -343,30 +343,44 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
     }
 
     [Test]
-    public void BuildCity_AlmostGotAllVictoryPoints_EndOfGameEventRaisedWithPlayerAsWinner()
+    public void BuildCity_GotNineVictoryPoints_EndOfGameEventRaisedWithPlayerAsWinner()
     {
       // Arrange
-      /*MockDice mockDice = null;
-      MockPlayer player;
-      MockComputerPlayer firstOpponent, secondOpponent, thirdOpponent;
-      var localGameController = this.CreateLocalGameControllerAndCompleteGameSetup(out mockDice, out player, out firstOpponent, out secondOpponent, out thirdOpponent);
+      var testInstances = LocalGameControllerTestCreator.CreateTestInstances(new MockGameBoardWithNoResourcesCollected());
+      var localGameController = testInstances.LocalGameController;
+      LocalGameControllerTestSetup.LaunchGameAndCompleteSetup(localGameController);
 
-      mockDice.AddSequence(new[] { 8u });
+      testInstances.Dice.AddSequence(new[] { 8u, 8u });
 
-      ErrorDetails errorDetails = null;
-      localGameController.ErrorRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
+      var player = testInstances.MainPlayer;
+      player.AddResources(ResourceClutch.RoadSegment * 4);
+      player.AddResources(ResourceClutch.Settlement * 3);
+      player.AddResources(ResourceClutch.City * 5);
 
       TurnToken turnToken = null;
       localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
-      localGameController.StartGamePlay();
+
+      Guid winningPlayer = Guid.Empty;
+      localGameController.GameOverEvent = (Guid g) => { winningPlayer = g; };
+
+      //localGameController.StartGamePlay();
+      localGameController.BuildRoadSegment(turnToken, 17u, 7u);
+      localGameController.BuildSettlement(turnToken, 7u);
+      localGameController.BuildRoadSegment(turnToken, 17u, 16u);
+      localGameController.BuildSettlement(turnToken, 16u);
+      localGameController.BuildRoadSegment(turnToken, 16u, 27u);
+      localGameController.BuildRoadSegment(turnToken, 27u, 28u);
+      localGameController.BuildSettlement(turnToken, 28u);
+      localGameController.BuildCity(turnToken, 43u);
+      localGameController.BuildCity(turnToken, 18u);
+      localGameController.BuildCity(turnToken, 7u);
 
       // Act
-      localGameController.BuildCity(turnToken, MainSettlementOneLocation);
+      localGameController.BuildCity(turnToken, 16u);
 
       // Assert
-      errorDetails.ShouldNotBeNull();
-      errorDetails.Message.ShouldBe("Turn token not recognised.");*/
-      throw new NotImplementedException();
+      winningPlayer.ShouldBe(player.Id);
+      player.VictoryPoints.ShouldBe(10u); 
     }
 
     [Test]
