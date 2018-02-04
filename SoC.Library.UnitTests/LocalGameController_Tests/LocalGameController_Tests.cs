@@ -320,8 +320,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
     }
     
     [Test]
-    [Category("LocalGameController")]
-    public void CompleteSetupWithPlayer_ExpectedResourcesAreReturned()
+    public void CompleteSetupForPlayer_ExpectedResourcesAreReturned()
     {
       var mockDice = new MockDiceCreator()
         .AddRandomSequenceWithNoDuplicates(4)
@@ -375,7 +374,17 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
     }
 
     [Test]
-    public void CompleteGameSetup_ComputerPlayersGetExpectedResources()
+    public void CompleteSetupForPlayer_PlayerGetsExpectedStartingVictoryPoints()
+    {
+      var testInstances = LocalGameControllerTestCreator.CreateTestInstances();
+      var localGameController = testInstances.LocalGameController;
+      LocalGameControllerTestSetup.LaunchGameAndCompleteSetup(localGameController);
+
+      testInstances.MainPlayer.VictoryPoints.ShouldBe(2u);
+    }
+
+    [Test]
+    public void CompleteSetupForComputerPlayers_ComputerPlayersGetExpectedResources()
     {
       var testInstances = LocalGameControllerTestCreator.CreateTestInstances();
       LocalGameControllerTestSetup.LaunchGameAndCompleteSetup(testInstances.LocalGameController);
@@ -398,7 +407,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
     }
 
     [Test]
-    public void CompleteGameSetup_ComputerPlayersGetExpectedVictoryPoints()
+    public void CompleteSetupForComputerPlayers_ComputerPlayersGetExpectedStartingVictoryPoints()
     {
       var testInstances = LocalGameControllerTestCreator.CreateTestInstances();
       LocalGameControllerTestSetup.LaunchGameAndCompleteSetup(testInstances.LocalGameController);

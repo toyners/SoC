@@ -942,6 +942,8 @@ namespace Jabberwocky.SoC.Library
         UInt32 chosenSettlementLocation, chosenRoadSegmentEndLocation;
         computerPlayer.ChooseInitialInfrastructure(gameBoardData, out chosenSettlementLocation, out chosenRoadSegmentEndLocation);
         gameBoardData.PlaceStartingInfrastructure(computerPlayer.Id, chosenSettlementLocation, chosenRoadSegmentEndLocation);
+
+        computerPlayer.PlaceStartingInfrastructure();
         
         gameBoardUpdate.NewSettlements.Add(new Tuple<UInt32, Guid>(chosenSettlementLocation, computerPlayer.Id));
         gameBoardUpdate.NewRoads.Add(new Tuple<UInt32, UInt32, Guid>(chosenSettlementLocation, chosenRoadSegmentEndLocation, computerPlayer.Id));
@@ -985,6 +987,8 @@ namespace Jabberwocky.SoC.Library
         UInt32 chosenSettlementLocation, chosenRoadSegmentEndLocation;
         computerPlayer.ChooseInitialInfrastructure(gameBoardData, out chosenSettlementLocation, out chosenRoadSegmentEndLocation);
         gameBoardData.PlaceStartingInfrastructure(computerPlayer.Id, chosenSettlementLocation, chosenRoadSegmentEndLocation);
+
+        computerPlayer.PlaceStartingInfrastructure();
 
         gameBoardUpdate.NewSettlements.Add(new Tuple<UInt32, Guid>(chosenSettlementLocation, computerPlayer.Id));
         gameBoardUpdate.NewRoads.Add(new Tuple<UInt32, UInt32, Guid>(chosenSettlementLocation, chosenRoadSegmentEndLocation, computerPlayer.Id));

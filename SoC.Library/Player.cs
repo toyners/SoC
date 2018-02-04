@@ -180,6 +180,7 @@ namespace Jabberwocky.SoC.Library
     {
       this.RoadSegmentsBuilt++;
       this.SettlementsBuilt++;
+      this.VictoryPoints++;
     }
 
     public void RemoveResources(ResourceClutch resourceClutch)
