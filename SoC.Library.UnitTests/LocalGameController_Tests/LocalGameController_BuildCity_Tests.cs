@@ -2,6 +2,8 @@
 namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
 {
   using System;
+  using System.Collections.Generic;
+  using GameEvents;
   using MockGameBoards;
   using NUnit.Framework;
   using Shouldly;
@@ -237,7 +239,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       testInstances.Dice.AddSequence(new[] { 8u, 8u });
       player.AddResources(ResourceClutch.City);
       firstOpponent.AddResources(ResourceClutch.City);
-      firstOpponent.AddCityChoices(new[] { FirstSettlementOneLocation });
+      firstOpponent.AddBuildCityInstruction(new BuildCityInstruction { Location = FirstSettlementOneLocation });
 
       TurnToken turnToken = null;
       localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
@@ -370,7 +372,43 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
     [Test]
     public void Scenario_OpponentBuildsCity()
     {
-      throw new NotImplementedException();
+      // Arrange
+      var testInstances = LocalGameControllerTestCreator.CreateTestInstances(new MockGameBoardWithNoResourcesCollected());
+      var localGameController = testInstances.LocalGameController;
+      LocalGameControllerTestSetup.LaunchGameAndCompleteSetup(localGameController);
+
+      testInstances.Dice.AddSequence(new[] { 8u, 8u });
+
+      var firstOpponent = testInstances.FirstOpponent;
+      firstOpponent.AddResources(ResourceClutch.RoadSegment);
+      firstOpponent.AddResources(ResourceClutch.Settlement);
+      firstOpponent.AddResources(ResourceClutch.City);
+
+      var buildRoadSegmentInstruction = new BuildRoadSegmentInstruction { StartLocation = 17u, EndLocation = 7u };
+      firstOpponent
+        .AddBuildRoadSegmentInstruction(new BuildRoadSegmentInstruction { StartLocation = 17u, EndLocation = 7u })
+        .AddBuildSettlementInstruction(new BuildSettlementInstruction { Location = 7u })
+        .AddBuildCityInstruction(new BuildCityInstruction { Location = 7u });
+
+      TurnToken turnToken = null;
+      localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
+
+      List<GameEvent> events = null;
+      localGameController.OpponentActionsEvent = (Guid g, List<GameEvent> e) => { events = e; };
+
+      localGameController.StartGamePlay();
+
+      // Act
+      localGameController.EndTurn(turnToken);
+
+      // Assert
+      var expectedRoadSegmentBuiltEvent = new RoadSegmentBuiltEvent(firstOpponent.Id, 17u, 7u);
+
+      AssertToolBox.AssertThatPlayerActionsForTurnAreCorrect(events,
+        new RoadSegmentBuiltEvent(firstOpponent.Id, 17u, 7u),
+        new SettlementBuiltEvent(firstOpponent.Id, 7u),
+        new CityBuiltEvent(firstOpponent.Id, 7u));
+      firstOpponent.ResourcesCount.ShouldBe(0);
     }
     #endregion
   }

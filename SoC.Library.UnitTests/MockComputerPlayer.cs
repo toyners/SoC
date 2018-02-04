@@ -22,7 +22,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     private Queue<PlayMonopolyCardInstruction> playMonopolyCardActions = new Queue<PlayMonopolyCardInstruction>();
     private Queue<PlayYearOfPlentyCardInstruction> playYearOfPlentyCardActions = new Queue<PlayYearOfPlentyCardInstruction>();
     private Queue<TradeWithBankInstruction> tradeWithBankInstructions = new Queue<TradeWithBankInstruction>();
-    public Queue<UInt32> SettlementLocations;
+    public Queue<UInt32> SettlementLocations = new Queue<UInt32>();
     public Queue<Tuple<UInt32, UInt32>> Roads = new Queue<Tuple<UInt32, UInt32>>();
     public Queue<Tuple<UInt32, UInt32>> InitialInfrastructure = new Queue<Tuple<UInt32, UInt32>>();
     public Queue<PlayerActionTypes> Actions = new Queue<PlayerActionTypes>();
@@ -34,21 +34,26 @@ namespace Jabberwocky.SoC.Library.UnitTests
     #endregion
 
     #region Methods
+    public MockComputerPlayer AddBuildCityInstruction(BuildCityInstruction instruction)
+    {
+      this.CityLocations.Enqueue(instruction.Location);
+      this.Actions.Enqueue(PlayerActionTypes.BuildCity);
+      return this;
+    }
+
+    public MockComputerPlayer AddBuildSettlementInstruction(BuildSettlementInstruction instruction)
+    {
+      this.SettlementLocations.Enqueue(instruction.Location);
+      this.Actions.Enqueue(PlayerActionTypes.BuildSettlement);
+      return this;
+    }
+
     public void AddInitialInfrastructureChoices(UInt32 firstSettlmentLocation, UInt32 firstRoadEndLocation, UInt32 secondSettlementLocation, UInt32 secondRoadEndLocation)
     {
       this.InitialInfrastructure.Enqueue(new Tuple<UInt32, UInt32>(firstSettlmentLocation, firstRoadEndLocation));
       this.InitialInfrastructure.Enqueue(new Tuple<UInt32, UInt32>(secondSettlementLocation, secondRoadEndLocation));
     }
-
-    public void AddCityChoices(UInt32[] cityChoices)
-    {
-      foreach (var cityChoice in cityChoices)
-      {
-        this.CityLocations.Enqueue(cityChoice);
-        this.Actions.Enqueue(PlayerActionTypes.BuildCity);
-      }
-    }
-
+    
     public void AddRoadChoices(UInt32[] roadChoices)
     {
       for (var index = 0; index < roadChoices.Length; index += 2)
@@ -306,5 +311,15 @@ namespace Jabberwocky.SoC.Library.UnitTests
   {
     public UInt32 StartLocation;
     public UInt32 EndLocation;
+  }
+
+  public struct BuildSettlementInstruction
+  {
+    public UInt32 Location;
+  }
+
+  public struct BuildCityInstruction
+  {
+    public UInt32 Location;
   }
 }

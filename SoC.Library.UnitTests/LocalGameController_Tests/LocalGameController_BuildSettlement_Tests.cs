@@ -2,6 +2,8 @@
 namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
 {
   using System;
+  using System.Collections.Generic;
+  using GameEvents;
   using MockGameBoards;
   using NUnit.Framework;
   using Shouldly;
@@ -417,11 +419,20 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       var localGameController = testInstances.LocalGameController;
       LocalGameControllerTestSetup.LaunchGameAndCompleteSetup(localGameController);
 
+      testInstances.Dice.AddSequence(new[] { 8u, 8u });
+
       var firstOpponent = testInstances.FirstOpponent;
+      firstOpponent.AddResources(ResourceClutch.RoadSegment);
       firstOpponent.AddResources(ResourceClutch.Settlement);
+
+      firstOpponent.AddBuildRoadSegmentInstruction(new BuildRoadSegmentInstruction { StartLocation = 17u, EndLocation = 7u })
+        .AddBuildSettlementInstruction(new BuildSettlementInstruction { Location = 7u });
 
       TurnToken turnToken = null;
       localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
+
+      List<GameEvent> events = null;
+      localGameController.OpponentActionsEvent = (Guid g, List<GameEvent> e) => { events = e; };
 
       localGameController.StartGamePlay();
 
@@ -429,7 +440,10 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       localGameController.EndTurn(turnToken);
 
       // Assert
-      throw new NotImplementedException();
+      AssertToolBox.AssertThatPlayerActionsForTurnAreCorrect(events,
+        new RoadSegmentBuiltEvent(firstOpponent.Id, 17u, 7u),
+        new SettlementBuiltEvent(firstOpponent.Id, 7u));
+      firstOpponent.ResourcesCount.ShouldBe(0);
     }
     #endregion 
   }

@@ -10,6 +10,7 @@ namespace Jabberwocky.SoC.Library.Interfaces
     EndTurn,
     BuildCity,
     BuildRoadSegment,
+    BuildSettlement,
     BuyDevelopmentCard,
     PlayKnightCard,
     PlayMonopolyCard,

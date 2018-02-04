@@ -48,11 +48,13 @@
     <Compile Include="Constants.cs" />
     <Compile Include="DevelopmentCard.cs" />
     <Compile Include="DevelopmentCardHolder.cs" />
+    <Compile Include="GameEvents\CityBuiltEvent.cs" />
     <Compile Include="GameEvents\PlayYearOfPlentyCardEvent.cs" />
     <Compile Include="GameEvents\PlayerWithLargestArmyChangedEvent.cs" />
     <Compile Include="GameEvents\GameEvent.cs" />
     <Compile Include="GameEvents\ResourceTransactionEvent.cs" />
     <Compile Include="GameEvents\RoadSegmentBuiltEvent.cs" />
+    <Compile Include="GameEvents\SettlementBuiltEvent.cs" />
     <Compile Include="GameEvents\TradeWithBankEvent.cs" />
     <Compile Include="Interfaces\IDevelopmentCardHolder.cs" />
     <Compile Include="PlayerPool.cs" />
