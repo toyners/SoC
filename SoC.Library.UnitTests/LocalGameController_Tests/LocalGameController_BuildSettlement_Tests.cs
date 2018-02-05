@@ -402,7 +402,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       Guid winningPlayer = Guid.Empty;
       localGameController.GameOverEvent = (Guid g) => { winningPlayer = g; };
 
-      //localGameController.StartGamePlay();
+      localGameController.StartGamePlay();
       localGameController.BuildRoadSegment(turnToken, 17u, 7u);
       localGameController.BuildSettlement(turnToken, 7u);
       localGameController.BuildRoadSegment(turnToken, 17u, 16u);
