@@ -372,6 +372,28 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
     }
 
     [Test]
+    public void BuildRoadSegment_TurnTokenIsNull_MeaningfulErrorIsReceived()
+    {
+      // Arrange
+      var testInstances = LocalGameControllerTestCreator.CreateTestInstances();
+      var localGameController = testInstances.LocalGameController;
+      LocalGameControllerTestSetup.LaunchGameAndCompleteSetup(localGameController);
+
+      testInstances.Dice.AddSequence(new[] { 8u });
+
+      ErrorDetails errorDetails = null;
+      localGameController.ErrorRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
+      localGameController.StartGamePlay();
+
+      // Act
+      localGameController.BuildRoadSegment(null, 4u, 3u);
+
+      // Assert
+      errorDetails.ShouldNotBeNull();
+      errorDetails.Message.ShouldBe("Turn token is null.");
+    }
+
+    [Test]
     public void Scenario_OpponentBuildsRoad()
     {
       // Arrange

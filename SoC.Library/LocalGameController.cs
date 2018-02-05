@@ -116,9 +116,8 @@ namespace Jabberwocky.SoC.Library
 
     public void BuildRoadSegment(TurnToken turnToken, UInt32 roadStartLocation, UInt32 roadEndLocation)
     {
-      if (this.currentTurnToken != turnToken)
+      if (!this.VerifyTurnToken(turnToken))
       {
-        this.ErrorRaisedEvent?.Invoke(new ErrorDetails("Turn token not recognised."));
         return;
       }
 
