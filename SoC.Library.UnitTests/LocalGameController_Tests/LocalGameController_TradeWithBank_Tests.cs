@@ -24,9 +24,6 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       var testInstances = this.TestSetup();
       var localGameController = testInstances.LocalGameController;
 
-      var paymentResources = ResourceClutch.OneBrick * 4;
-      var requestedResources = ResourceClutch.OneGrain;
-
       ErrorDetails errorDetails = null;
       localGameController.ErrorRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
 
