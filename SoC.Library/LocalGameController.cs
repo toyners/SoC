@@ -1506,9 +1506,8 @@ namespace Jabberwocky.SoC.Library
 
     private Boolean VerifyParametersForUsingDevelopmentCard(TurnToken turnToken, DevelopmentCard developmentCard)
     {
-      if (turnToken != this.currentTurnToken)
+      if (!this.VerifyTurnToken(turnToken))
       {
-        this.ErrorRaisedEvent?.Invoke(new ErrorDetails("Turn token not recognised."));
         return false;
       }
 

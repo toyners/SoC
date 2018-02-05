@@ -49,6 +49,26 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
     }
 
     [Test]
+    public void UseKnightCard_TurnTokenIsNull_MeaningfulErrorIsReceived()
+    {
+      // Arrange
+      var testInstances = this.TestSetup();
+      var localGameController = testInstances.LocalGameController;
+
+      localGameController.StartGamePlay();
+
+      ErrorDetails errorDetails = null;
+      localGameController.ErrorRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
+
+      // Act
+      localGameController.UseKnightCard(null, null, 0);
+
+      // Assert
+      errorDetails.ShouldNotBeNull();
+      errorDetails.Message.ShouldBe("Turn token is null.");
+    }
+
+    [Test]
     public void UseKnightCard_CardIsNull_MeaningfulErrorIsReceived()
     {
       // Arrange

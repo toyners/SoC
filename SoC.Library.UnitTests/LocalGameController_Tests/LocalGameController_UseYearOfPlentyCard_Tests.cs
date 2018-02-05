@@ -42,6 +42,26 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
     }
 
     [Test]
+    public void UseYearOfPlentyCard_TurnTokenIsNull_MeaningfulErrorIsReceived()
+    {
+      // Arrange
+      var testInstances = this.TestSetupWithDefaultCardHolder();
+      var localGameController = testInstances.LocalGameController;
+
+      localGameController.StartGamePlay();
+
+      ErrorDetails errorDetails = null;
+      localGameController.ErrorRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
+
+      // Act
+      localGameController.UseYearOfPlentyCard(null, null, ResourceTypes.Brick, ResourceTypes.Brick);
+
+      // Assert
+      errorDetails.ShouldNotBeNull();
+      errorDetails.Message.ShouldBe("Turn token is null.");
+    }
+
+    [Test]
     public void UseYearOfPlentyCard_CardIsNull_MeaningfulErrorIsReceived()
     {
       // Arrange

@@ -42,6 +42,26 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
     }
 
     [Test]
+    public void UseMonopolyCard_TurnTokenIsNull_MeaningfulErrorIsReceived()
+    {
+      // Arrange
+      var testInstances = this.TestSetup();
+      var localGameController = testInstances.LocalGameController;
+
+      localGameController.StartGamePlay();
+
+      ErrorDetails errorDetails = null;
+      localGameController.ErrorRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
+
+      // Act
+      localGameController.UseMonopolyCard(null, null, ResourceTypes.Brick);
+
+      // Assert
+      errorDetails.ShouldNotBeNull();
+      errorDetails.Message.ShouldBe("Turn token is null.");
+    }
+
+    [Test]
     public void UseMonopolyCard_CardIsNull_MeaningfulErrorIsReceived()
     {
       // Arrange
