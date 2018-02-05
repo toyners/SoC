@@ -100,13 +100,7 @@ namespace Jabberwocky.SoC.Library
     #region Methods
     public void BuildCity(TurnToken turnToken, UInt32 location)
     {
-      if (this.currentTurnToken != turnToken)
-      {
-        this.ErrorRaisedEvent?.Invoke(new ErrorDetails("Turn token not recognised."));
-        return;
-      }
-
-      if (!this.VerifyBuildCityRequest(location))
+      if (!this.VerifyTurnToken(turnToken) || !this.VerifyBuildCityRequest(location))
       {
         return;
       }
@@ -116,12 +110,7 @@ namespace Jabberwocky.SoC.Library
 
     public void BuildRoadSegment(TurnToken turnToken, UInt32 roadStartLocation, UInt32 roadEndLocation)
     {
-      if (!this.VerifyTurnToken(turnToken))
-      {
-        return;
-      }
-
-      if (!this.VerifyBuildRoadSegmentRequest(roadStartLocation, roadEndLocation))
+      if (!this.VerifyTurnToken(turnToken) || !this.VerifyBuildRoadSegmentRequest(roadStartLocation, roadEndLocation))
       {
         return;
       }

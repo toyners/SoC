@@ -426,6 +426,6 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       AssertToolBox.AssertThatPlayerActionsForTurnAreCorrect(events, expectedRoadSegmentBuiltEvent);
       firstOpponent.ResourcesCount.ShouldBe(0);
     }
-    #endregion 
+    #endregion
   }
 }
