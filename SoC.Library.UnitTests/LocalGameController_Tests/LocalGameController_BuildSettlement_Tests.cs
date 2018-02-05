@@ -395,7 +395,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
     }
 
     [Test]
-    public void BuildSettlement_AlmostGotNineVictoryPoints_EndOfGameEventRaisedWithPlayerAsWinner()
+    public void BuildSettlement_GotNineVictoryPoints_EndOfGameEventRaisedWithPlayerAsWinner()
     {
       // Arrange
       var testInstances = LocalGameControllerTestCreator.CreateTestInstances(new MockGameBoardWithNoResourcesCollected());
@@ -405,7 +405,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       testInstances.Dice.AddSequence(new[] { 8u, 8u });
 
       var player = testInstances.MainPlayer;
-      player.AddResources(ResourceClutch.RoadSegment * 7);
+      player.AddResources(ResourceClutch.RoadSegment * 6);
       player.AddResources(ResourceClutch.Settlement * 4);
       player.AddResources(ResourceClutch.City * 4);
 
@@ -416,23 +416,23 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       localGameController.GameOverEvent = (Guid g) => { winningPlayer = g; };
 
       localGameController.StartGamePlay();
-      localGameController.BuildRoadSegment(turnToken, 17u, 7u);
-      localGameController.BuildSettlement(turnToken, 7u);
-      localGameController.BuildRoadSegment(turnToken, 17u, 16u);
-      localGameController.BuildSettlement(turnToken, 16u);
-      localGameController.BuildRoadSegment(turnToken, 16u, 27u);
-      localGameController.BuildRoadSegment(turnToken, 27u, 28u);
-      localGameController.BuildSettlement(turnToken, 28u);
-      localGameController.BuildCity(turnToken, 43u);
-      localGameController.BuildCity(turnToken, 18u);
-      localGameController.BuildCity(turnToken, 7u);
-      localGameController.BuildRoadSegment(turnToken, 7u, 8u);
-      localGameController.BuildRoadSegment(turnToken, 8u, 9u);
-      localGameController.BuildSettlement(turnToken, 9u);
-      localGameController.BuildRoadSegment(turnToken, 8u, 0u);
+      localGameController.BuildCity(turnToken, 12);
+      localGameController.BuildCity(turnToken, 40);
+
+      localGameController.BuildRoadSegment(turnToken, 4, 5);
+      localGameController.BuildRoadSegment(turnToken, 5, 6);
+      localGameController.BuildRoadSegment(turnToken, 6, 14);
+      localGameController.BuildRoadSegment(turnToken, 4, 3);
+      localGameController.BuildRoadSegment(turnToken, 3, 2);
+      localGameController.BuildRoadSegment(turnToken, 2, 1);
+
+      localGameController.BuildSettlement(turnToken, 14);
+      localGameController.BuildCity(turnToken, 14);
+      localGameController.BuildSettlement(turnToken, 5);
+      localGameController.BuildCity(turnToken, 5);
 
       // Act
-      localGameController.BuildSettlement(turnToken, 0u);
+      localGameController.BuildSettlement(turnToken, 1);
 
       // Assert
       winningPlayer.ShouldBe(player.Id);
