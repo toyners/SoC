@@ -120,13 +120,7 @@ namespace Jabberwocky.SoC.Library
 
     public void BuildSettlement(TurnToken turnToken, UInt32 location)
     {
-      if (turnToken != this.currentTurnToken)
-      {
-        this.ErrorRaisedEvent?.Invoke(new ErrorDetails("Turn token not recognised."));
-        return;
-      }
-
-      if (!this.VerifyBuildSettlementRequest(location))
+      if (!this.VerifyTurnToken(turnToken) || !this.VerifyBuildSettlementRequest(location))
       {
         return;
       }

@@ -388,7 +388,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       localGameController.StartGamePlay();
 
       // Act
-      localGameController.BuildRoadSegment(null, 4, 3);
+      localGameController.BuildSettlement(null, 4);
 
       // Assert
       errorDetails.ShouldNotBeNull();
