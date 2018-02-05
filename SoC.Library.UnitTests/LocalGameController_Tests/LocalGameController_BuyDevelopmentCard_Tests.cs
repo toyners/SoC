@@ -26,8 +26,6 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       ErrorDetails errorDetails = null;
       localGameController.ErrorRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
 
-      TurnToken turnToken = null;
-      localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
       localGameController.StartGamePlay();
 
       // Act
@@ -36,6 +34,25 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       // Assert
       errorDetails.ShouldNotBeNull();
       errorDetails.Message.ShouldBe("Turn token not recognised.");
+    }
+
+    [Test]
+    public void BuildCity_TurnTokenIsNull_MeaningfulErrorIsReceived()
+    {
+      // Arrange
+      var testInstances = this.TestSetup();
+      var localGameController = testInstances.LocalGameController;
+      ErrorDetails errorDetails = null;
+      localGameController.ErrorRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
+
+      localGameController.StartGamePlay();
+
+      // Act
+      localGameController.BuyDevelopmentCard(null);
+
+      // Assert
+      errorDetails.ShouldNotBeNull();
+      errorDetails.Message.ShouldBe("Turn token is null.");
     }
 
     [Test]
