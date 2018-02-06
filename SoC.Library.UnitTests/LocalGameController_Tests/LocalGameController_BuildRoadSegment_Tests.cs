@@ -158,6 +158,48 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       playerId.ShouldBe(firstOpponent.Id);
     }
 
+    /// <summary>
+    /// When the a player builds the longest road then they get 2VP and the previous longest road holder loses the 2VP.
+    /// </summary>
+    [Test]
+    public void Scenario_SubsequentLongestRoadBuiltDuringOpponentsTurn_VictoryPointsChangesFromPlayerToOpponent()
+    {
+      // Arrange
+      var testInstances = LocalGameControllerTestCreator.CreateTestInstances();
+      var localGameController = testInstances.LocalGameController;
+      LocalGameControllerTestSetup.LaunchGameAndCompleteSetup(localGameController);
+      var player = testInstances.MainPlayer;
+      var firstOpponent = testInstances.FirstOpponent;
+
+      testInstances.Dice.AddSequence(new[] { 8u, 8u });
+      player.AddResources(ResourceClutch.RoadSegment * 5);
+
+      firstOpponent.AddResources(ResourceClutch.RoadSegment * 6);
+      firstOpponent.AddRoadChoices(new UInt32[] { 18, 19, 19, 9, 9, 10, 10, 11, 11, 21 });
+
+      Guid playerId = Guid.Empty;
+      localGameController.LongestRoadBuiltEvent = (Guid pid) => { playerId = pid; };
+
+      TurnToken turnToken = null;
+      localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
+      localGameController.StartGamePlay();
+
+      localGameController.BuildRoadSegment(turnToken, 4, 3);
+      localGameController.BuildRoadSegment(turnToken, 3, 2);
+      localGameController.BuildRoadSegment(turnToken, 2, 1);
+      localGameController.BuildRoadSegment(turnToken, 1, 0);
+
+      player.VictoryPoints.ShouldBe(4u);
+      firstOpponent.VictoryPoints.ShouldBe(2u);
+
+      // Act - Opponent builds longer road.
+      localGameController.EndTurn(turnToken);
+
+      // Assert
+      player.VictoryPoints.ShouldBe(2u);
+      firstOpponent.VictoryPoints.ShouldBe(4u);
+    }
+
     [Test]
     [TestCase(new UInt32[] { 4, 3 })]
     [TestCase(new UInt32[] { 4, 3, 3, 2 })]
