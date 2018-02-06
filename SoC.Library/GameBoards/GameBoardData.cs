@@ -765,7 +765,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
                 gotSingleLongestRoad = false;
               }
 
-              // Process a formark if we have any.
+              // Process a forkmark if we have any.
               if (forkmarks.Count > 0)
               {
                 var forkmark = forkmarks.Pop();
@@ -780,7 +780,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
 
             if (unvisitedSegmentsConnectedToLocation.Count > 1)
             {
-              // At a fork in the route - mark other branchs for processing later
+              // At a fork in the route - mark other branches for processing later
               for (var index = 1; index < unvisitedSegmentsConnectedToLocation.Count; index++)
               {
                 var otherRoadSegment = unvisitedSegmentsConnectedToLocation[index];
