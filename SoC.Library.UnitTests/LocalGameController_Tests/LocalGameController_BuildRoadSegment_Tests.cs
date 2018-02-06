@@ -94,6 +94,36 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
     }
 
     [Test]
+    public void BuildRoadSegment_MainPlayerBuildsLongestRoad_MainPlayerGetsTwoVictoryPoints()
+    {
+      // Arrange
+      var testInstances = LocalGameControllerTestCreator.CreateTestInstances();
+      var localGameController = testInstances.LocalGameController;
+      LocalGameControllerTestSetup.LaunchGameAndCompleteSetup(localGameController);
+      
+      testInstances.Dice.AddSequence(new[] { 8u });
+      var player = testInstances.MainPlayer;
+      player.AddResources(ResourceClutch.RoadSegment * 5);
+
+      Guid playerId = Guid.Empty;
+      localGameController.LongestRoadBuiltEvent = (Guid pid) => { playerId = pid; };
+
+      TurnToken turnToken = null;
+      localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
+      localGameController.StartGamePlay();
+
+      // Act
+      localGameController.BuildRoadSegment(turnToken, 4, 3);
+      localGameController.BuildRoadSegment(turnToken, 3, 2);
+      localGameController.BuildRoadSegment(turnToken, 2, 1);
+      localGameController.BuildRoadSegment(turnToken, 1, 0);
+
+      // Assert
+      playerId.ShouldBe(player.Id);
+      player.VictoryPoints.ShouldBe(4u);
+    }
+
+    [Test]
     public void BuildRoadSegment_SubsequentLongestRoadBuiltDuringOpponentsTurn_LongestRoadEventRaised()
     {
       // Arrange
