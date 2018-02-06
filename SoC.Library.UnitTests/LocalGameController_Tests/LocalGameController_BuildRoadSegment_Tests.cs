@@ -65,16 +65,16 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
     }
 
     [Test]
-    public void BuildRoadSegment_MainPlayerBuildsLongestRoad_LongestRoadEventRaised()
+    public void BuildRoadSegment_MainPlayerFirstToBuildLongestRoad_LongestRoadEventRaised()
     {
       // Arrange
-      MockDice mockDice = null;
-      MockPlayer player;
-      MockComputerPlayer firstOpponent, secondOpponent, thirdOpponent;
-      var localGameController = this.CreateLocalGameControllerAndCompleteGameSetup(out mockDice, out player, out firstOpponent, out secondOpponent, out thirdOpponent);
+      var testInstances = LocalGameControllerTestCreator.CreateTestInstances();
+      var localGameController = testInstances.LocalGameController;
+      LocalGameControllerTestSetup.LaunchGameAndCompleteSetup(localGameController);
 
-      mockDice.AddSequence(new[] { 8u });
-      player.AddResources(new ResourceClutch(5, 0, 5, 0, 0));
+      testInstances.Dice.AddSequence(new[] { 8u });
+      var player = testInstances.MainPlayer;
+      player.AddResources(ResourceClutch.RoadSegment * 5);
 
       Guid playerId = Guid.Empty;
       localGameController.LongestRoadBuiltEvent = (Guid pid) => { playerId = pid; };
@@ -94,7 +94,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
     }
 
     [Test]
-    public void BuildRoadSegment_MainPlayerBuildsLongestRoad_MainPlayerGetsTwoVictoryPoints()
+    public void BuildRoadSegment_MainPlayerFirstToBuildLongestRoad_MainPlayerGetsTwoVictoryPoints()
     {
       // Arrange
       var testInstances = LocalGameControllerTestCreator.CreateTestInstances();
@@ -124,7 +124,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
     }
 
     [Test]
-    public void BuildRoadSegment_SubsequentLongestRoadBuiltDuringOpponentsTurn_LongestRoadEventRaised()
+    public void Scenario_OpponentBuildsLongerRoadThanPlayer_LongestRoadEventReturned()
     {
       // Arrange
       var testInstances = LocalGameControllerTestCreator.CreateTestInstances();
@@ -162,7 +162,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
     /// When the a player builds the longest road then they get 2VP and the previous longest road holder loses the 2VP.
     /// </summary>
     [Test]
-    public void Scenario_SubsequentLongestRoadBuiltDuringOpponentsTurn_VictoryPointsChangesFromPlayerToOpponent()
+    public void Scenario_OpponentBuildsLongerRoadThanPlayer_VictoryPointsChangesFromPlayerToOpponent()
     {
       // Arrange
       var testInstances = LocalGameControllerTestCreator.CreateTestInstances();
@@ -198,6 +198,18 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       // Assert
       player.VictoryPoints.ShouldBe(2u);
       firstOpponent.VictoryPoints.ShouldBe(4u);
+    }
+
+    [Test]
+    public void BuildRoadSegment_MainPlayerBuildsLongerRoadThanOpponent_LongestRoadEventReturned()
+    {
+      throw new NotImplementedException();
+    }
+
+    [Test]
+    public void BuildRoadSegment_MainPlayerBuildsLongerRoadThanOpponent_VictoryPointsChangesFromOpponentToPlayer()
+    {
+      throw new NotImplementedException();
     }
 
     [Test]
