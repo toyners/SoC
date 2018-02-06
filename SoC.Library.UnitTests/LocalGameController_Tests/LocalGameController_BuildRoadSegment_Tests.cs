@@ -77,7 +77,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       player.AddResources(ResourceClutch.RoadSegment * 5);
 
       Guid playerId = Guid.Empty;
-      localGameController.LongestRoadBuiltEvent = (Guid pid) => { playerId = pid; };
+      localGameController.LongestRoadBuiltEvent = (Guid pid, Guid nid) => { playerId = pid; };
 
       TurnToken turnToken = null;
       localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
@@ -106,7 +106,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       player.AddResources(ResourceClutch.RoadSegment * 5);
 
       Guid playerId = Guid.Empty;
-      localGameController.LongestRoadBuiltEvent = (Guid pid) => { playerId = pid; };
+      localGameController.LongestRoadBuiltEvent = (Guid pid, Guid nid) => { playerId = pid; };
 
       TurnToken turnToken = null;
       localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
@@ -139,8 +139,9 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       firstOpponent.AddResources(ResourceClutch.RoadSegment * 6);
       firstOpponent.AddRoadChoices(new UInt32[] { 18, 19, 19, 9, 9, 10, 10, 11, 11, 21 });
 
-      Guid playerId = Guid.Empty;
-      localGameController.LongestRoadBuiltEvent = (Guid pid) => { playerId = pid; };
+      Guid newLongestRoadHolderId = Guid.Empty;
+      Guid previousLongestRoadHolderId = Guid.Empty;
+      localGameController.LongestRoadBuiltEvent = (Guid pid, Guid nid) => { previousLongestRoadHolderId = pid; newLongestRoadHolderId = nid; };
 
       TurnToken turnToken = null;
       localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
@@ -155,7 +156,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       localGameController.EndTurn(turnToken);
 
       // Assert
-      playerId.ShouldBe(firstOpponent.Id);
+      newLongestRoadHolderId.ShouldBe(firstOpponent.Id);
     }
 
     /// <summary>
@@ -178,7 +179,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       firstOpponent.AddRoadChoices(new UInt32[] { 18, 19, 19, 9, 9, 10, 10, 11, 11, 21 });
 
       Guid playerId = Guid.Empty;
-      localGameController.LongestRoadBuiltEvent = (Guid pid) => { playerId = pid; };
+      localGameController.LongestRoadBuiltEvent = (Guid pid, Guid nid) => { playerId = pid; };
 
       TurnToken turnToken = null;
       localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
@@ -231,7 +232,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       player.AddResources(new ResourceClutch(brickCount, 0, lumberCount, 0, 0));
 
       Boolean longestRoadBuiltEventRaised = false;
-      localGameController.LongestRoadBuiltEvent = (Guid pid) => { longestRoadBuiltEventRaised = true; };
+      localGameController.LongestRoadBuiltEvent = (Guid pid, Guid nid) => { longestRoadBuiltEventRaised = true; };
 
       TurnToken turnToken = null;
       localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
@@ -259,7 +260,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       mockDice.AddSequence(new[] { 8u });
       player.AddResources(new ResourceClutch(1, 0, 1, 0, 0));
 
-      localGameController.LongestRoadBuiltEvent = (Guid pid) => { throw new NotImplementedException(); };
+      localGameController.LongestRoadBuiltEvent = (Guid pid, Guid nid) => { throw new NotImplementedException(); };
       ErrorDetails errorDetails = null;
       localGameController.ErrorRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
 
@@ -290,7 +291,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       mockDice.AddSequence(new[] { 8u });
       player.AddResources(new ResourceClutch(1, 0, 1, 0, 0));
 
-      localGameController.LongestRoadBuiltEvent = (Guid pid) => { throw new NotImplementedException(); };
+      localGameController.LongestRoadBuiltEvent = (Guid pid, Guid nid) => { throw new NotImplementedException(); };
       ErrorDetails errorDetails = null;
       localGameController.ErrorRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
 
@@ -318,7 +319,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       mockDice.AddSequence(new[] { 8u });
       player.AddResources(new ResourceClutch(1, 0, 1, 0, 0));
 
-      localGameController.LongestRoadBuiltEvent = (Guid pid) => { throw new NotImplementedException(); };
+      localGameController.LongestRoadBuiltEvent = (Guid pid, Guid nid) => { throw new NotImplementedException(); };
       ErrorDetails errorDetails = null;
       localGameController.ErrorRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
 
@@ -346,7 +347,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       mockDice.AddSequence(new[] { 8u });
       player.AddResources(new ResourceClutch(1, 0, 1, 0, 0));
 
-      localGameController.LongestRoadBuiltEvent = (Guid pid) => { throw new NotImplementedException(); };
+      localGameController.LongestRoadBuiltEvent = (Guid pid, Guid nid) => { throw new NotImplementedException(); };
       ErrorDetails errorDetails = null;
       localGameController.ErrorRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
 

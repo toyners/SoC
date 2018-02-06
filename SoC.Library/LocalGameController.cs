@@ -83,7 +83,7 @@ namespace Jabberwocky.SoC.Library
     public Action<GameBoardUpdate> GameSetupUpdateEvent { get; set; }
     public Action<Guid, Guid> LargestArmyEvent { get; set; }
     public Action<ClientAccount> LoggedInEvent { get; set; }
-    public Action<Guid> LongestRoadBuiltEvent { get; set; }
+    public Action<Guid, Guid> LongestRoadBuiltEvent { get; set; }
     public Action<Guid, List<GameEvent>> OpponentActionsEvent { get; set; }
     public Action<Dictionary<Guid, ResourceCollection[]>> ResourcesCollectedEvent { get; set; }
     public Action<ResourceUpdate> ResourcesLostEvent { get; set; }
@@ -1161,7 +1161,7 @@ namespace Jabberwocky.SoC.Library
       UInt32[] road = null;
       if (this.gameBoard.TryGetLongestRoadDetails(out longestRoadPlayerId, out road) && road.Length > 5)
       {
-        this.LongestRoadBuiltEvent?.Invoke(this.currentPlayer.Id);
+        this.LongestRoadBuiltEvent?.Invoke(new Guid(), this.currentPlayer.Id);
       }
     }
 
