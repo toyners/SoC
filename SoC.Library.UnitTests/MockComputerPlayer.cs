@@ -312,7 +312,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     public UInt32 StartLocation;
     public UInt32 EndLocation;
   }
-
+  
   public struct BuildSettlementInstruction
   {
     public UInt32 Location;
