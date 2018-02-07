@@ -453,7 +453,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       firstOpponent.AddResources(ResourceClutch.RoadSegment);
       firstOpponent.AddResources(ResourceClutch.Settlement);
 
-      firstOpponent.AddBuildRoadSegmentInstruction(new BuildRoadSegmentInstruction { StartLocation = 17u, EndLocation = 7u })
+      firstOpponent.AddBuildRoadSegmentInstruction(new BuildRoadSegmentInstruction { Locations = new[] { 17u, 7u }})
         .AddBuildSettlementInstruction(new BuildSettlementInstruction { Location = 7u });
 
       TurnToken turnToken = null;

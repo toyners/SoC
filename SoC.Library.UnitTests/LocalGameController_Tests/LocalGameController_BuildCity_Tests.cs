@@ -420,9 +420,8 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       firstOpponent.AddResources(ResourceClutch.Settlement);
       firstOpponent.AddResources(ResourceClutch.City);
 
-      var buildRoadSegmentInstruction = new BuildRoadSegmentInstruction { StartLocation = 17u, EndLocation = 7u };
       firstOpponent
-        .AddBuildRoadSegmentInstruction(new BuildRoadSegmentInstruction { StartLocation = 17u, EndLocation = 7u })
+        .AddBuildRoadSegmentInstruction(new BuildRoadSegmentInstruction { Locations = new[] { 17u, 7u } })
         .AddBuildSettlementInstruction(new BuildSettlementInstruction { Location = 7u })
         .AddBuildCityInstruction(new BuildCityInstruction { Location = 7u });
 

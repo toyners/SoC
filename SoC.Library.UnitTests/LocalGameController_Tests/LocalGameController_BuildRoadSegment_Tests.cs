@@ -137,7 +137,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       player.AddResources(ResourceClutch.RoadSegment * 5);
 
       firstOpponent.AddResources(ResourceClutch.RoadSegment * 6);
-      firstOpponent.AddRoadChoices(new UInt32[] { 18, 19, 19, 9, 9, 10, 10, 11, 11, 21 });
+      firstOpponent.AddBuildRoadSegmentInstruction(new BuildRoadSegmentInstruction { Locations = new UInt32[] { 18, 19, 19, 9, 9, 10, 10, 11, 11, 21 }});
 
       Guid newLongestRoadHolderId = Guid.Empty;
       Guid previousLongestRoadHolderId = Guid.Empty;
@@ -176,7 +176,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       player.AddResources(ResourceClutch.RoadSegment * 5);
 
       firstOpponent.AddResources(ResourceClutch.RoadSegment * 6);
-      firstOpponent.AddRoadChoices(new UInt32[] { 18, 19, 19, 9, 9, 10, 10, 11, 11, 21 });
+      firstOpponent.AddBuildRoadSegmentInstruction(new BuildRoadSegmentInstruction { Locations = new UInt32[] { 18, 19, 19, 9, 9, 10, 10, 11, 11, 21 }});
 
       Guid playerId = Guid.Empty;
       localGameController.LongestRoadBuiltEvent = (Guid pid, Guid nid) => { playerId = pid; };
@@ -522,7 +522,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       var firstOpponent = testInstances.FirstOpponent;
       firstOpponent.AddResources(ResourceClutch.RoadSegment);
 
-      var buildRoadSegmentInstruction = new BuildRoadSegmentInstruction { StartLocation = 17u, EndLocation = 7u };
+      var buildRoadSegmentInstruction = new BuildRoadSegmentInstruction { Locations = new[] { 17u, 7u }};
       firstOpponent.AddBuildRoadSegmentInstruction(buildRoadSegmentInstruction);
 
       TurnToken turnToken = null;

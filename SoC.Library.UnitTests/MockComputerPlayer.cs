@@ -54,15 +54,6 @@ namespace Jabberwocky.SoC.Library.UnitTests
       this.InitialInfrastructure.Enqueue(new Tuple<UInt32, UInt32>(secondSettlementLocation, secondRoadEndLocation));
     }
     
-    public void AddRoadChoices(UInt32[] roadChoices)
-    {
-      for (var index = 0; index < roadChoices.Length; index += 2)
-      {
-        this.Roads.Enqueue(new Tuple<UInt32, UInt32>(roadChoices[index], roadChoices[index + 1]));
-        this.Actions.Enqueue(PlayerActionTypes.BuildRoadSegment);
-      }
-    }
-
     public MockComputerPlayer AddBuyDevelopmentCardChoice(UInt32 count)
     {
       for (; count > 0; count--)
@@ -112,7 +103,12 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
     public MockComputerPlayer AddBuildRoadSegmentInstruction(BuildRoadSegmentInstruction instruction)
     {
-      this.AddRoadChoices(new[] { instruction.StartLocation, instruction.EndLocation });
+      for (var index = 0; index < instruction.Locations.Length; index += 2)
+      {
+        this.Roads.Enqueue(new Tuple<UInt32, UInt32>(instruction.Locations[index], instruction.Locations[index + 1]));
+        this.Actions.Enqueue(PlayerActionTypes.BuildRoadSegment);
+      }
+
       return this;
     }
 
@@ -309,8 +305,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
   public struct BuildRoadSegmentInstruction
   {
-    public UInt32 StartLocation;
-    public UInt32 EndLocation;
+    public UInt32[] Locations;
   }
   
   public struct BuildSettlementInstruction
