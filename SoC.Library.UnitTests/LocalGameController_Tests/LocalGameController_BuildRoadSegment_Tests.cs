@@ -137,11 +137,10 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       player.AddResources(ResourceClutch.RoadSegment * 5);
 
       firstOpponent.AddResources(ResourceClutch.RoadSegment * 6);
-      firstOpponent.AddBuildRoadSegmentInstruction(new BuildRoadSegmentInstruction { Locations = new UInt32[] { 18, 19, 19, 9, 9, 10, 10, 11, 11, 21 }});
+      firstOpponent.AddBuildRoadSegmentInstruction(new BuildRoadSegmentInstruction { Locations = new UInt32[] { 17, 16, 16, 27, 27, 28, 28, 29, 29, 18 } });
 
-      Guid newLongestRoadHolderId = Guid.Empty;
-      Guid previousLongestRoadHolderId = Guid.Empty;
-      localGameController.LongestRoadBuiltEvent = (Guid pid, Guid nid) => { previousLongestRoadHolderId = pid; newLongestRoadHolderId = nid; };
+      List<GameEvent> actualEvents = null;
+      localGameController.OpponentActionsEvent = (Guid g, List<GameEvent> e) => { actualEvents = e; };
 
       TurnToken turnToken = null;
       localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
@@ -149,14 +148,23 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
 
       localGameController.BuildRoadSegment(turnToken, 4, 3);
       localGameController.BuildRoadSegment(turnToken, 3, 2);
-      localGameController.BuildRoadSegment(turnToken, 2, 1);
-      localGameController.BuildRoadSegment(turnToken, 1, 0);
+      localGameController.BuildRoadSegment(turnToken, 2, 10);
+      localGameController.BuildRoadSegment(turnToken, 10, 9);
 
       // Act - Opponent builds longer road.
       localGameController.EndTurn(turnToken);
 
       // Assert
-      newLongestRoadHolderId.ShouldBe(firstOpponent.Id);
+      var expectedEvents = new GameEvent[] {
+        new RoadSegmentBuiltEvent(firstOpponent.Id, 17, 16),
+        new RoadSegmentBuiltEvent(firstOpponent.Id, 16, 27),
+        new RoadSegmentBuiltEvent(firstOpponent.Id, 27, 28),
+        new RoadSegmentBuiltEvent(firstOpponent.Id, 28, 29),
+        new RoadSegmentBuiltEvent(firstOpponent.Id, 29, 18),
+        new LongestRoadBuiltEvent(firstOpponent.Id)
+      };
+
+      AssertToolBox.AssertThatPlayerActionsForTurnAreCorrect(actualEvents, expectedEvents);
     }
 
     /// <summary>
@@ -176,7 +184,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       player.AddResources(ResourceClutch.RoadSegment * 5);
 
       firstOpponent.AddResources(ResourceClutch.RoadSegment * 6);
-      firstOpponent.AddBuildRoadSegmentInstruction(new BuildRoadSegmentInstruction { Locations = new UInt32[] { 18, 19, 19, 9, 9, 10, 10, 11, 11, 21 }});
+      firstOpponent.AddBuildRoadSegmentInstruction(new BuildRoadSegmentInstruction { Locations = new UInt32[] { 17, 16, 16, 27, 27, 28, 28, 29, 29, 18 } });
 
       Guid playerId = Guid.Empty;
       localGameController.LongestRoadBuiltEvent = (Guid pid, Guid nid) => { playerId = pid; };
@@ -187,8 +195,8 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
 
       localGameController.BuildRoadSegment(turnToken, 4, 3);
       localGameController.BuildRoadSegment(turnToken, 3, 2);
-      localGameController.BuildRoadSegment(turnToken, 2, 1);
-      localGameController.BuildRoadSegment(turnToken, 1, 0);
+      localGameController.BuildRoadSegment(turnToken, 2, 10);
+      localGameController.BuildRoadSegment(turnToken, 10, 9);
 
       player.VictoryPoints.ShouldBe(4u);
       firstOpponent.VictoryPoints.ShouldBe(2u);

@@ -49,6 +49,7 @@
     <Compile Include="DevelopmentCard.cs" />
     <Compile Include="DevelopmentCardHolder.cs" />
     <Compile Include="GameEvents\CityBuiltEvent.cs" />
+    <Compile Include="GameEvents\LongestRoadBuiltEvent.cs" />
     <Compile Include="GameEvents\PlayYearOfPlentyCardEvent.cs" />
     <Compile Include="GameEvents\PlayerWithLargestArmyChangedEvent.cs" />
     <Compile Include="GameEvents\GameEvent.cs" />
