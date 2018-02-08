@@ -419,6 +419,72 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
     }
 
     /// <summary>
+    /// Test that the largest army VP change as both the player and the opponent have the largest army.
+    /// </summary>
+    [Test]
+    public void Scenario_LargestArmyVictoryPointsChangeAsBothPlayerAndOpponentHaveTheLargestArmy()
+    {
+      // Arrange
+      var knightCard1 = new KnightDevelopmentCard();
+      var knightCard2 = new KnightDevelopmentCard();
+      var knightCard3 = new KnightDevelopmentCard();
+      var knightCard4 = new KnightDevelopmentCard();
+      var knightCard5 = new KnightDevelopmentCard();
+      var knightCard6 = new KnightDevelopmentCard();
+      var knightCard7 = new KnightDevelopmentCard();
+      var knightCard8 = new KnightDevelopmentCard();
+      var testInstances = this.TestSetup(knightCard1, knightCard2, knightCard3, knightCard4, knightCard5, knightCard6, knightCard7, knightCard8);
+      var localGameController = testInstances.LocalGameController;
+      var player = testInstances.MainPlayer;
+      var firstOpponent = testInstances.FirstOpponent;
+
+      testInstances.Dice.AddSequence(new[] { 8u, 8u, 8u, 8u, 8u, 8u });
+
+      player.AddResources(ResourceClutch.DevelopmentCard * 5);
+
+      var playKnightCardAction = new PlayKnightInstruction { RobberHex = 0, RobbedPlayerId = Guid.Empty };
+      firstOpponent.AddResources(ResourceClutch.DevelopmentCard * 4);
+      firstOpponent.AddBuyDevelopmentCardChoice(4).EndTurn()
+        .AddPlaceKnightCardInstruction(playKnightCardAction).EndTurn()
+        .AddPlaceKnightCardInstruction(playKnightCardAction).EndTurn()
+        .AddPlaceKnightCardInstruction(playKnightCardAction).EndTurn()
+        .AddPlaceKnightCardInstruction(playKnightCardAction).EndTurn();
+
+      var turn = 0;
+      TurnToken turnToken = null;
+      localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; turn++; };
+
+      localGameController.StartGamePlay();
+
+      // Turn 1: Buy the knight cards
+      localGameController.BuyDevelopmentCard(turnToken);
+      localGameController.BuyDevelopmentCard(turnToken);
+      localGameController.BuyDevelopmentCard(turnToken);
+      localGameController.EndTurn(turnToken); // Opponent buys 4 knight cards
+
+      // Turn 2: Play knight card
+      localGameController.UseKnightCard(turnToken, knightCard1, 3);
+      localGameController.EndTurn(turnToken); // Opponent plays knight card
+
+      // Turn 3: Play knight card
+      localGameController.UseKnightCard(turnToken, knightCard2, 3);
+      localGameController.EndTurn(turnToken); // Opponent plays knight card
+
+      // Turn 4: Play knight card
+      localGameController.UseKnightCard(turnToken, knightCard3, 3); // Largest Army event raised
+      localGameController.EndTurn(turnToken); // Opponent plays knight card
+
+      player.VictoryPoints.ShouldBe(4u);
+      firstOpponent.VictoryPoints.ShouldBe(2u);
+
+      // Turn 5: Play knight card
+      localGameController.EndTurn(turnToken); // Opponent plays last knight card. Largest Army event returned
+
+      player.VictoryPoints.ShouldBe(2u);
+      firstOpponent.VictoryPoints.ShouldBe(4u);
+    }
+
+    /// <summary>
     /// Test that the largest army event is not returned when the opponent plays knight cards and already has the largest army
     /// </summary>
     [Test]
@@ -475,6 +541,47 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       AssertToolBox.AssertThatPlayerActionsForTurnAreCorrect(playerActions[keys[2]], expectedPlayKnightCardEvent);
       AssertToolBox.AssertThatPlayerActionsForTurnAreCorrect(playerActions[keys[3]], expectedPlayKnightCardEvent, expectedDifferentPlayerHasLargestArmyEvent);
       AssertToolBox.AssertThatPlayerActionsForTurnAreCorrect(playerActions[keys[4]], expectedPlayKnightCardEvent);
+    }
+
+    /// <summary>
+    /// Test that the opponent only gets the Largest Army VP the first time they have the largest army
+    /// (until another player has the largest army).
+    /// </summary>
+    [Test]
+    public void Scenario_LargestArmyVictoryPointsOnlyChangedFirstTimeThatOpponentHasMostKnightCardsPlayed()
+    {
+      // Arrange
+      var knightCard1 = new KnightDevelopmentCard();
+      var knightCard2 = new KnightDevelopmentCard();
+      var knightCard3 = new KnightDevelopmentCard();
+      var knightCard4 = new KnightDevelopmentCard();
+      var testInstances = this.TestSetup(knightCard1, knightCard2, knightCard3, knightCard4);
+      var localGameController = testInstances.LocalGameController;
+      var firstOpponent = testInstances.FirstOpponent;
+
+      testInstances.Dice.AddSequence(new[] { 8u, 8u, 8u, 8u, 8u });
+
+      var playKnightCardAction = new PlayKnightInstruction { RobberHex = 0, RobbedPlayerId = Guid.Empty };
+      firstOpponent.AddResources(ResourceClutch.DevelopmentCard * 4);
+      firstOpponent.AddBuyDevelopmentCardChoice(4).EndTurn()
+        .AddPlaceKnightCardInstruction(playKnightCardAction).EndTurn()
+        .AddPlaceKnightCardInstruction(playKnightCardAction).EndTurn()
+        .AddPlaceKnightCardInstruction(playKnightCardAction).EndTurn()
+        .AddPlaceKnightCardInstruction(playKnightCardAction).EndTurn();
+
+      var turn = 0;
+      TurnToken turnToken = null;
+      localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; turn++; };
+
+      localGameController.StartGamePlay();
+      localGameController.EndTurn(turnToken); // Opponent buys development cards
+      localGameController.EndTurn(turnToken); // Opponent plays knight card
+      localGameController.EndTurn(turnToken); // Opponent plays knight card
+      localGameController.EndTurn(turnToken); // Opponent plays knight card; raises Largest Army event for Opponent
+      localGameController.EndTurn(turnToken); // Opponent plays knight card
+
+      // Assert
+      firstOpponent.VictoryPoints.ShouldBe(4u);
     }
 
     /// <summary>
@@ -543,6 +650,74 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       expectedTurn.ShouldBe(4);
       oldPlayerId.ShouldBe(Guid.Empty);
       this.AssertThatPlayerIdIsCorrect("newPlayer", newPlayerId, player.Id, player.Name);
+    }
+
+    /// <summary>
+    /// Test that the player only gets the largest army VP the first time they have the largest army
+    /// (until another player has the largest army).
+    /// </summary>
+    [Test]
+    public void Scenario_LargestArmyVictoryPointsOnlyChangedFirstTimeThatPlayerHasMostKnightCardsPlayed()
+    {
+      // Arrange
+      var knightCard1 = new KnightDevelopmentCard();
+      var knightCard2 = new KnightDevelopmentCard();
+      var knightCard3 = new KnightDevelopmentCard();
+      var knightCard4 = new KnightDevelopmentCard();
+      var knightCard5 = new KnightDevelopmentCard();
+      var knightCard6 = new KnightDevelopmentCard();
+      var knightCard7 = new KnightDevelopmentCard();
+      var testInstances = this.TestSetup(knightCard1, knightCard2, knightCard3, knightCard4, knightCard5, knightCard6, knightCard7);
+      var localGameController = testInstances.LocalGameController;
+      var player = testInstances.MainPlayer;
+      var firstOpponent = testInstances.FirstOpponent;
+
+      testInstances.Dice.AddSequence(new[] { 8u, 8u, 8u, 8u });
+
+      player.AddResources(ResourceClutch.DevelopmentCard * 4);
+
+      var playKnightCardAction = new PlayKnightInstruction { RobberHex = 0, RobbedPlayerId = Guid.Empty };
+      firstOpponent.AddResources(ResourceClutch.DevelopmentCard * 3);
+      firstOpponent.AddBuyDevelopmentCardChoice(3).EndTurn()
+        .AddPlaceKnightCardInstruction(playKnightCardAction).EndTurn()
+        .AddPlaceKnightCardInstruction(playKnightCardAction).EndTurn()
+        .AddPlaceKnightCardInstruction(playKnightCardAction).EndTurn();
+
+      var turn = 0;
+      TurnToken turnToken = null;
+      localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; turn++; };
+
+      Guid newPlayerId = Guid.Empty, oldPlayerId = Guid.Empty;
+      var expectedTurn = -1;
+      localGameController.LargestArmyEvent = (Guid o, Guid n) => { oldPlayerId = o; newPlayerId = n; expectedTurn = turn; };
+
+      localGameController.StartGamePlay();
+
+      // Turn 1: Buy the knight cards
+      localGameController.BuyDevelopmentCard(turnToken);
+      localGameController.BuyDevelopmentCard(turnToken);
+      localGameController.BuyDevelopmentCard(turnToken);
+      localGameController.BuyDevelopmentCard(turnToken);
+      localGameController.EndTurn(turnToken); // Opponent buys development cards
+
+      // Turn 2: Play knight card
+      localGameController.UseKnightCard(turnToken, knightCard1, 3);
+      localGameController.EndTurn(turnToken); // Opponent plays knight card
+
+      // Turn 3: Play kight card
+      localGameController.UseKnightCard(turnToken, knightCard2, 3);
+      localGameController.EndTurn(turnToken); // Opponent plays knight card
+
+      // Turn 4: Play knight card
+      localGameController.UseKnightCard(turnToken, knightCard3, 3); // Largest Army event raised
+      localGameController.EndTurn(turnToken); // Opponent plays knight card
+
+      // Turn 5: Play knight card
+      localGameController.UseKnightCard(turnToken, knightCard4, 3); // Largest Army event not raised
+
+      // Assert
+      player.VictoryPoints.ShouldBe(4u);
+      firstOpponent.VictoryPoints.ShouldBe(2u);
     }
 
     /// <summary>
@@ -702,10 +877,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
 
     private LocalGameControllerTestCreator.TestInstances TestSetup(IDevelopmentCardHolder developmentCardHolder)
     {
-      var testInstances = LocalGameControllerTestCreator.CreateTestInstances(developmentCardHolder);
-      testInstances.Dice.AddSequence(new[] { 8u });
-
-      LocalGameControllerTestSetup.LaunchGameAndCompleteSetup(testInstances.LocalGameController);
+      var testInstances = this.TestSetup(developmentCardHolder, new GameBoardData(BoardSizes.Standard));
 
       this.LoadPlayersByIdForCustomAsserts(testInstances.MainPlayer,
         testInstances.FirstOpponent,
@@ -715,11 +887,27 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       return testInstances;
     }
 
+    private LocalGameControllerTestCreator.TestInstances TestSetup(IDevelopmentCardHolder developmentCardHolder, GameBoardData gameBoard)
+    {
+      var testInstances = LocalGameControllerTestCreator.CreateTestInstances(
+        null,
+        developmentCardHolder,
+        gameBoard);
+      var localGameController = testInstances.LocalGameController;
+      LocalGameControllerTestSetup.LaunchGameAndCompleteSetup(localGameController);
+
+      testInstances.Dice.AddSequence(new[] { 8u });
+
+      return testInstances;
+    }
+
     private LocalGameControllerTestCreator.TestInstances TestSetup(DevelopmentCard firstDevelopmentCard, params DevelopmentCard[] otherDevelopmentCards)
     {
       var developmentCardHolder = this.CreateMockCardDevelopmentCardHolder(firstDevelopmentCard, otherDevelopmentCards);
       return this.TestSetup(developmentCardHolder);
     }
+
+    
 
     private LocalGameControllerTestCreator.TestInstances TestSetup(DevelopmentCard developmentCard, GameBoardData gameBoard)
     {
