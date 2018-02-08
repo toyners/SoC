@@ -51,7 +51,7 @@
     <Compile Include="GameEvents\CityBuiltEvent.cs" />
     <Compile Include="GameEvents\LongestRoadBuiltEvent.cs" />
     <Compile Include="GameEvents\PlayYearOfPlentyCardEvent.cs" />
-    <Compile Include="GameEvents\PlayerWithLargestArmyChangedEvent.cs" />
+    <Compile Include="GameEvents\LargestArmyChangedEvent.cs" />
     <Compile Include="GameEvents\GameEvent.cs" />
     <Compile Include="GameEvents\ResourceTransactionEvent.cs" />
     <Compile Include="GameEvents\RoadSegmentBuiltEvent.cs" />

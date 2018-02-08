@@ -407,7 +407,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
 
       var expectedBuyDevelopmentCardEvent = new BuyDevelopmentCardEvent(firstOpponent.Id);
       var expectedPlayKnightCardEvent = new PlayKnightCardEvent(firstOpponent.Id);
-      var expectedDifferentPlayerHasLargestArmyEvent = new PlayerWithLargestArmyChangedEvent(player.Id, firstOpponent.Id);
+      var expectedDifferentPlayerHasLargestArmyEvent = new LargestArmyChangedEvent(player.Id, firstOpponent.Id);
 
       playerActions.Count.ShouldBe(5);
       keys.Count.ShouldBe(5);
@@ -466,7 +466,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       // Assert
       var expectedBuyDevelopmentCardEvent = new BuyDevelopmentCardEvent(firstOpponent.Id);
       var expectedPlayKnightCardEvent = new PlayKnightCardEvent(firstOpponent.Id);
-      var expectedDifferentPlayerHasLargestArmyEvent = new PlayerWithLargestArmyChangedEvent(Guid.Empty, firstOpponent.Id);
+      var expectedDifferentPlayerHasLargestArmyEvent = new LargestArmyChangedEvent(Guid.Empty, firstOpponent.Id);
 
       playerActions.Count.ShouldBe(5);
       keys.Count.ShouldBe(5);

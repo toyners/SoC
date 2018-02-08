@@ -264,11 +264,19 @@ namespace Jabberwocky.SoC.Library
 
             case PlayerActionTypes.BuildRoadSegment:
             {
-              UInt32 startRoadLocation, endRoadLocation;
-              computerPlayer.ChooseRoad(this.gameBoard, out startRoadLocation, out endRoadLocation);
-              this.BuildRoadSegment(startRoadLocation, endRoadLocation);
+              UInt32 roadStartLocation, roadEndLocation;
+              computerPlayer.ChooseRoad(this.gameBoard, out roadStartLocation, out roadEndLocation);
+              this.gameBoard.PlaceRoadSegment(this.currentPlayer.Id, roadStartLocation, roadEndLocation);
+              computerPlayer.PlaceRoadSegment();
 
-              events.Add(new RoadSegmentBuiltEvent(computerPlayer.Id, startRoadLocation, endRoadLocation));
+              events.Add(new RoadSegmentBuiltEvent(computerPlayer.Id, roadStartLocation, roadEndLocation));
+
+              Guid previousPlayerWithLongestRoadId;
+              if (this.PlayerHasJustBuiltTheLongestRoad(out previousPlayerWithLongestRoadId))
+              {
+                events.Add(new LongestRoadBuiltEvent(computerPlayer.Id, previousPlayerWithLongestRoadId));
+              }
+
               break;
             }
 
@@ -313,7 +321,7 @@ namespace Jabberwocky.SoC.Library
               if (playerWithMostKnightCards == computerPlayer && this.playerWithLargestArmy != computerPlayer)
               {
                 var oldPlayerId = (this.playerWithLargestArmy != null ? this.playerWithLargestArmy.Id : Guid.Empty);
-                events.Add(new PlayerWithLargestArmyChangedEvent(oldPlayerId, computerPlayer.Id));
+                events.Add(new LargestArmyChangedEvent(oldPlayerId, computerPlayer.Id));
                 this.playerWithLargestArmy = computerPlayer;
               }
 
@@ -396,6 +404,38 @@ namespace Jabberwocky.SoC.Library
           player.AddResources(resourceCollection.Resources);
         }
       }
+    }
+
+    private Boolean PlayerHasJustBuiltTheLongestRoad(out Guid previousPlayerId)
+    {
+      previousPlayerId = Guid.Empty;
+      if (this.currentPlayer.RoadSegmentsBuilt < 5)
+      {
+        return false;
+      }
+
+      Guid longestRoadPlayerId = Guid.Empty;
+      UInt32[] road = null;
+      if (this.gameBoard.TryGetLongestRoadDetails(out longestRoadPlayerId, out road) && road.Length > 5)
+      {
+        var longestRoadPlayer = this.playersById[longestRoadPlayerId];
+        if (longestRoadPlayer == this.currentPlayer && this.playerWithLongestRoad != longestRoadPlayer)
+        {
+          previousPlayerId = Guid.Empty;
+
+          if (this.playerWithLongestRoad != null)
+          {
+            this.playerWithLongestRoad.HasLongestRoad = false;
+            previousPlayerId = this.playerWithLongestRoad.Id;
+          }
+
+          this.playerWithLongestRoad = longestRoadPlayer;
+          this.playerWithLongestRoad.HasLongestRoad = true;
+          return true;
+        }
+      }
+
+      return false;
     }
 
     public void FinalisePlayerTurnOrder()
@@ -840,7 +880,11 @@ namespace Jabberwocky.SoC.Library
       this.currentPlayer.PlaceRoadSegment();
       this.RoadSegmentBuiltEvent?.Invoke();
 
-      this.RaiseLongestRoadBuiltEventIfRelevant();
+      Guid previousPlayerWithLongestRoadId;
+      if (this.PlayerHasJustBuiltTheLongestRoad(out previousPlayerWithLongestRoadId))
+      {
+        this.LongestRoadBuiltEvent?.Invoke(previousPlayerWithLongestRoadId, this.mainPlayer.Id);
+      }
     }
 
     private void BuildSettlement(UInt32 location)
@@ -1151,7 +1195,7 @@ namespace Jabberwocky.SoC.Library
       }
     }
 
-    private void RaiseLongestRoadBuiltEventIfRelevant()
+    /*private void RaiseLongestRoadBuiltEventIfRelevant()
     {
       if (this.currentPlayer.RoadSegmentsBuilt < 5)
       {
@@ -1170,7 +1214,7 @@ namespace Jabberwocky.SoC.Library
           this.playerWithLongestRoad = longestRoadPlayer;
         }
       }
-    }
+    }*/
 
     private void TryRaiseCityBuildingError()
     {

@@ -13,6 +13,9 @@ namespace Jabberwocky.SoC.Library
     private const Int32 TotalRoadSegments = 15;
     private const Int32 TotalSettlements = 5;
     private const Int32 TotalCities = 4;
+
+    private Boolean hasLargestArmy;
+    private Boolean hasLongestRoad;
     #endregion
 
     #region Construction
@@ -59,6 +62,50 @@ namespace Jabberwocky.SoC.Library
     public Int32 SettlementsBuilt { get; protected set; }
     public Int32 CitiesBuilt { get; protected set; }
     public Int32 RemainingCities { get { return TotalCities - this.CitiesBuilt; } }
+
+    public Boolean HasLongestRoad
+    {
+      get { return this.hasLongestRoad; }
+      set
+      {
+        if (this.hasLongestRoad == value)
+        {
+          return;
+        }
+
+        this.hasLongestRoad = value;
+        if (this.hasLongestRoad)
+        {
+          this.VictoryPoints += 2u;
+        }
+        else
+        {
+          this.VictoryPoints -= 2u;
+        }
+      }
+    }
+
+    public Boolean HasLargestArmy
+    {
+      get { return this.hasLargestArmy; }
+      set
+      {
+        if (this.hasLargestArmy == value)
+        {
+          return;
+        }
+
+        this.hasLargestArmy = value;
+        if (this.hasLargestArmy)
+        {
+          this.VictoryPoints += 2u;
+        }
+        else
+        {
+          this.VictoryPoints -= 2u;
+        }
+      }
+    }
     #endregion
 
     #region Methods

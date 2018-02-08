@@ -21,6 +21,8 @@ namespace Jabberwocky.SoC.Library.Interfaces
     Int32 RoadSegmentsBuilt { get; }
     Int32 RemainingSettlements { get; }
     Int32 RemainingCities { get; }
+    Boolean HasLargestArmy { get; set; }
+    Boolean HasLongestRoad { get; set; }
     #endregion
 
     #region Methods
