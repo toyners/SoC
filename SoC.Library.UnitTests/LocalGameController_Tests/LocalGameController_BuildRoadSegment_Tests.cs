@@ -216,6 +216,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
 
       var firstOpponent = testInstances.FirstOpponent;
       firstOpponent.AddResources(ResourceClutch.RoadSegment * 6);
+      firstOpponent.AddBuildRoadSegmentInstruction(new BuildRoadSegmentInstruction { Locations = new UInt32[] { 17, 16, 16, 27, 27, 28, 28, 29, 29, 18  } });
 
       TurnToken turnToken = null;
       localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
@@ -230,8 +231,9 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       localGameController.BuildRoadSegment(turnToken, 3, 2);
       localGameController.BuildRoadSegment(turnToken, 2, 10);
       localGameController.BuildRoadSegment(turnToken, 10, 9);
-      localGameController.EndTurn(turnToken);
+      localGameController.EndTurn(turnToken); // First opponent builds 6 road segments to take the longest road title
 
+      // Build two more road segments for a new longest road of 7
       localGameController.BuildRoadSegment(turnToken, 9, 8);
       localGameController.BuildRoadSegment(turnToken, 8, 0);
 

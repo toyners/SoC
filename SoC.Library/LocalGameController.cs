@@ -41,6 +41,7 @@ namespace Jabberwocky.SoC.Library
     private Dictionary<Guid, IPlayer> playersById;
     private IPlayer[] computerPlayers;
     private IPlayer playerWithLargestArmy;
+    private IPlayer playerWithLongestRoad;
     private IPlayer mainPlayer;
     private ResourceUpdate gameSetupResources;
     private Int32 resourcesToDrop;
@@ -1144,8 +1145,8 @@ namespace Jabberwocky.SoC.Library
       var playerWithMostKnightCards = this.DeterminePlayerWithMostKnightCards();
       if (playerWithMostKnightCards == this.mainPlayer && this.playerWithLargestArmy != this.mainPlayer)
       {
-        var oldPlayerId = (this.playerWithLargestArmy != null ? this.playerWithLargestArmy.Id : Guid.Empty);
-        this.LargestArmyEvent?.Invoke(oldPlayerId, playerWithMostKnightCards.Id);
+        var previousPlayerId = (this.playerWithLargestArmy != null ? this.playerWithLargestArmy.Id : Guid.Empty);
+        this.LargestArmyEvent?.Invoke(previousPlayerId, playerWithMostKnightCards.Id);
         this.playerWithLargestArmy = playerWithMostKnightCards;
       }
     }
@@ -1161,7 +1162,13 @@ namespace Jabberwocky.SoC.Library
       UInt32[] road = null;
       if (this.gameBoard.TryGetLongestRoadDetails(out longestRoadPlayerId, out road) && road.Length > 5)
       {
-        this.LongestRoadBuiltEvent?.Invoke(new Guid(), this.currentPlayer.Id);
+        var longestRoadPlayer = this.playersById[longestRoadPlayerId];
+        if (longestRoadPlayer == this.mainPlayer && this.playerWithLongestRoad != longestRoadPlayer)
+        {
+          var previousPlayerId = (this.playerWithLongestRoad != null ? this.playerWithLongestRoad.Id : Guid.Empty);
+          this.LongestRoadBuiltEvent?.Invoke(previousPlayerId, longestRoadPlayer.Id);
+          this.playerWithLongestRoad = longestRoadPlayer;
+        }
       }
     }
 
