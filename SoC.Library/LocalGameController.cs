@@ -1195,27 +1195,6 @@ namespace Jabberwocky.SoC.Library
       }
     }
 
-    /*private void RaiseLongestRoadBuiltEventIfRelevant()
-    {
-      if (this.currentPlayer.RoadSegmentsBuilt < 5)
-      {
-        return;
-      }
-
-      Guid longestRoadPlayerId = Guid.Empty;
-      UInt32[] road = null;
-      if (this.gameBoard.TryGetLongestRoadDetails(out longestRoadPlayerId, out road) && road.Length > 5)
-      {
-        var longestRoadPlayer = this.playersById[longestRoadPlayerId];
-        if (longestRoadPlayer == this.mainPlayer && this.playerWithLongestRoad != longestRoadPlayer)
-        {
-          var previousPlayerId = (this.playerWithLongestRoad != null ? this.playerWithLongestRoad.Id : Guid.Empty);
-          this.LongestRoadBuiltEvent?.Invoke(previousPlayerId, longestRoadPlayer.Id);
-          this.playerWithLongestRoad = longestRoadPlayer;
-        }
-      }
-    }*/
-
     private void TryRaiseCityBuildingError()
     {
       if (this.currentPlayer.RemainingCities == 0)
