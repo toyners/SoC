@@ -317,12 +317,10 @@ namespace Jabberwocky.SoC.Library
                 events.Add(resourceLostEvent);
               }
 
-              var playerWithMostKnightCards = this.DeterminePlayerWithMostKnightCards();
-              if (playerWithMostKnightCards == computerPlayer && this.playerWithLargestArmy != computerPlayer)
+              Guid previousPlayerId;
+              if (this.PlayerHasJustBuiltTheLargestArmy(out previousPlayerId))
               {
-                var oldPlayerId = (this.playerWithLargestArmy != null ? this.playerWithLargestArmy.Id : Guid.Empty);
-                events.Add(new LargestArmyChangedEvent(oldPlayerId, computerPlayer.Id));
-                this.playerWithLargestArmy = computerPlayer;
+                events.Add(new LargestArmyChangedEvent(previousPlayerId, this.playerWithLargestArmy.Id));
               }
 
               break;
@@ -433,6 +431,20 @@ namespace Jabberwocky.SoC.Library
           this.playerWithLongestRoad.HasLongestRoad = true;
           return true;
         }
+      }
+
+      return false;
+    }
+
+    private Boolean PlayerHasJustBuiltTheLargestArmy(out Guid previousPlayerId)
+    {
+      previousPlayerId = Guid.Empty;
+      var playerWithMostKnightCards = this.DeterminePlayerWithMostKnightCards();
+      if (playerWithMostKnightCards == this.currentPlayer && this.playerWithLargestArmy != this.currentPlayer)
+      {
+        previousPlayerId = (this.playerWithLargestArmy != null ? this.playerWithLargestArmy.Id : Guid.Empty);
+        this.playerWithLargestArmy = this.currentPlayer;
+        return true;
       }
 
       return false;
@@ -773,7 +785,12 @@ namespace Jabberwocky.SoC.Library
       }
 
       this.PlayKnightDevelopmentCard(developmentCard, newRobberHex);
-      this.RaiseLargestArmyEventIfPlayerHasLargestArmy();
+
+      Guid previousPlayerId;
+      if (this.PlayerHasJustBuiltTheLargestArmy(out previousPlayerId))
+      {
+        this.LargestArmyEvent?.Invoke(previousPlayerId, this.playerWithLargestArmy.Id);
+      }
     }
 
     public void UseKnightCard(TurnToken turnToken, KnightDevelopmentCard developmentCard, UInt32 newRobberHex, Guid playerId)
@@ -790,7 +807,12 @@ namespace Jabberwocky.SoC.Library
 
       this.PlayKnightDevelopmentCard(developmentCard, newRobberHex);
       this.CompleteResourceTransactionBetweenPlayers(this.playersById[playerId]);
-      this.RaiseLargestArmyEventIfPlayerHasLargestArmy();
+      
+      Guid previousPlayerId;
+      if (this.PlayerHasJustBuiltTheLargestArmy(out previousPlayerId))
+      {
+        this.LargestArmyEvent?.Invoke(previousPlayerId, this.playerWithLargestArmy.Id);
+      }
     }
 
     public void UseMonopolyCard(TurnToken turnToken, MonopolyDevelopmentCard monopolyCard, ResourceTypes resourceType)
@@ -1182,17 +1204,6 @@ namespace Jabberwocky.SoC.Library
       this.PlayDevelopmentCard(developmentCard);
       this.currentPlayer.PlaceKnightDevelopmentCard();
       this.robberHex = newRobberHex;
-    }
-
-    private void RaiseLargestArmyEventIfPlayerHasLargestArmy()
-    {
-      var playerWithMostKnightCards = this.DeterminePlayerWithMostKnightCards();
-      if (playerWithMostKnightCards == this.mainPlayer && this.playerWithLargestArmy != this.mainPlayer)
-      {
-        var previousPlayerId = (this.playerWithLargestArmy != null ? this.playerWithLargestArmy.Id : Guid.Empty);
-        this.LargestArmyEvent?.Invoke(previousPlayerId, playerWithMostKnightCards.Id);
-        this.playerWithLargestArmy = playerWithMostKnightCards;
-      }
     }
 
     private void TryRaiseCityBuildingError()
