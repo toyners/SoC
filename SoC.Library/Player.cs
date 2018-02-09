@@ -85,7 +85,7 @@ namespace Jabberwocky.SoC.Library
       }
     }
 
-    /*public Boolean HasLargestArmy
+    public Boolean HasLargestArmy
     {
       get { return this.hasLargestArmy; }
       set
@@ -105,7 +105,7 @@ namespace Jabberwocky.SoC.Library
           this.VictoryPoints -= 2u;
         }
       }
-    }*/
+    }
     #endregion
 
     #region Methods

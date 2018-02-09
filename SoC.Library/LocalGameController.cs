@@ -442,8 +442,16 @@ namespace Jabberwocky.SoC.Library
       var playerWithMostKnightCards = this.DeterminePlayerWithMostKnightCards();
       if (playerWithMostKnightCards == this.currentPlayer && this.playerWithLargestArmy != this.currentPlayer)
       {
-        previousPlayerId = (this.playerWithLargestArmy != null ? this.playerWithLargestArmy.Id : Guid.Empty);
-        this.playerWithLargestArmy = this.currentPlayer;
+        previousPlayerId = Guid.Empty;
+
+        if (this.playerWithLargestArmy != null)
+        {
+          this.playerWithLargestArmy.HasLargestArmy = false;
+          previousPlayerId = this.playerWithLargestArmy.Id;
+        }
+
+        this.playerWithLargestArmy = playerWithMostKnightCards;
+        this.playerWithLargestArmy.HasLargestArmy = true;
         return true;
       }
 
