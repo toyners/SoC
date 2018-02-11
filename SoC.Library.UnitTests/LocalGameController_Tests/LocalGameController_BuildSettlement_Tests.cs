@@ -405,7 +405,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       testInstances.Dice.AddSequence(new[] { 8u, 8u });
 
       var player = testInstances.MainPlayer;
-      player.AddResources(ResourceClutch.RoadSegment * 6);
+      player.AddResources(ResourceClutch.RoadSegment * 5);
       player.AddResources(ResourceClutch.Settlement * 4);
       player.AddResources(ResourceClutch.City * 4);
 
@@ -416,20 +416,19 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       localGameController.GameOverEvent = (Guid g) => { winningPlayer = g; };
 
       localGameController.StartGamePlay();
-      localGameController.BuildCity(turnToken, 12);
+      localGameController.BuildRoadSegment(turnToken, 4u, 3u);
+      localGameController.BuildRoadSegment(turnToken, 3u, 2u);
+      localGameController.BuildRoadSegment(turnToken, 2u, 1u);
+      localGameController.BuildRoadSegment(turnToken, 1u, 0u); // Got 2VP for longest road (4VP)
+      localGameController.BuildRoadSegment(turnToken, 2u, 10u);
+
+      localGameController.BuildSettlement(turnToken, 3);
+      localGameController.BuildSettlement(turnToken, 10);
+
+      localGameController.BuildCity(turnToken, 3);
+      localGameController.BuildCity(turnToken, 10);
       localGameController.BuildCity(turnToken, 40);
 
-      localGameController.BuildRoadSegment(turnToken, 4, 5);
-      localGameController.BuildRoadSegment(turnToken, 5, 6);
-      localGameController.BuildRoadSegment(turnToken, 6, 14);
-      localGameController.BuildRoadSegment(turnToken, 4, 3);
-      localGameController.BuildRoadSegment(turnToken, 3, 2);
-      localGameController.BuildRoadSegment(turnToken, 2, 1);
-
-      localGameController.BuildSettlement(turnToken, 14);
-      localGameController.BuildCity(turnToken, 14);
-      localGameController.BuildSettlement(turnToken, 5);
-      localGameController.BuildCity(turnToken, 5);
 
       // Act
       localGameController.BuildSettlement(turnToken, 1);

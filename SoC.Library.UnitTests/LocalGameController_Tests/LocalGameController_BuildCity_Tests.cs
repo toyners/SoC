@@ -372,12 +372,12 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       var localGameController = testInstances.LocalGameController;
       LocalGameControllerTestSetup.LaunchGameAndCompleteSetup(localGameController);
 
-      testInstances.Dice.AddSequence(new[] { 8u, 8u });
+      testInstances.Dice.AddSequence(new[] { 8u });
 
       var player = testInstances.MainPlayer;
-      player.AddResources(ResourceClutch.RoadSegment * 4);
+      player.AddResources(ResourceClutch.RoadSegment * 5);
       player.AddResources(ResourceClutch.Settlement * 3);
-      player.AddResources(ResourceClutch.City * 5);
+      player.AddResources(ResourceClutch.City * 3);
 
       TurnToken turnToken = null;
       localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
@@ -386,19 +386,21 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       localGameController.GameOverEvent = (Guid g) => { winningPlayer = g; };
 
       localGameController.StartGamePlay();
-      localGameController.BuildRoadSegment(turnToken, 17u, 7u);
-      localGameController.BuildSettlement(turnToken, 7u);
-      localGameController.BuildRoadSegment(turnToken, 17u, 16u);
-      localGameController.BuildSettlement(turnToken, 16u);
-      localGameController.BuildRoadSegment(turnToken, 16u, 27u);
-      localGameController.BuildRoadSegment(turnToken, 27u, 28u);
-      localGameController.BuildSettlement(turnToken, 28u);
-      localGameController.BuildCity(turnToken, 43u);
-      localGameController.BuildCity(turnToken, 18u);
-      localGameController.BuildCity(turnToken, 7u);
+      localGameController.BuildRoadSegment(turnToken, 4u, 3u);
+      localGameController.BuildRoadSegment(turnToken, 3u, 2u);
+      localGameController.BuildRoadSegment(turnToken, 2u, 1u);
+      localGameController.BuildRoadSegment(turnToken, 1u, 0u); // Got 2VP for longest road
+      localGameController.BuildRoadSegment(turnToken, 2u, 10u);
+
+      localGameController.BuildSettlement(turnToken, 3u);
+      localGameController.BuildSettlement(turnToken, 1u);
+      localGameController.BuildSettlement(turnToken, 10u);
+
+      localGameController.BuildCity(turnToken, 12u);
+      localGameController.BuildCity(turnToken, 40u);
 
       // Act
-      localGameController.BuildCity(turnToken, 16u);
+      localGameController.BuildCity(turnToken, 3u);
 
       // Assert
       winningPlayer.ShouldBe(player.Id);
