@@ -821,6 +821,123 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       firstOpponent.OreCount.ShouldBe(1);
     }
 
+    [Test]
+    public void UseKnightCard_GotEightVictoryPoints_EndOfGameEventRaisedWithPlayerAsWinner()
+    {
+      // Arrange
+      var testInstances = this.TestSetup(new KnightDevelopmentCard(), new KnightDevelopmentCard(), new KnightDevelopmentCard());
+      var localGameController = testInstances.LocalGameController;
+      LocalGameControllerTestSetup.LaunchGameAndCompleteSetup(localGameController);
+
+      testInstances.Dice.AddSequence(new[] { 8u, 8u });
+
+      var player = testInstances.MainPlayer;
+      player.AddResources(ResourceClutch.RoadSegment * 5);
+      player.AddResources(ResourceClutch.Settlement * 2);
+      player.AddResources(ResourceClutch.City * 2);
+      player.AddResources(ResourceClutch.DevelopmentCard * 3);
+
+      TurnToken turnToken = null;
+      localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
+
+      Guid winningPlayer = Guid.Empty;
+      localGameController.GameOverEvent = (Guid g) => { winningPlayer = g; };
+
+      var knightCards = new Queue<KnightDevelopmentCard>();
+      localGameController.DevelopmentCardPurchasedEvent = (DevelopmentCard d) => { knightCards.Enqueue((KnightDevelopmentCard)d); };
+
+      localGameController.StartGamePlay();
+      localGameController.BuyDevelopmentCard(turnToken);
+      localGameController.BuyDevelopmentCard(turnToken);
+      localGameController.BuyDevelopmentCard(turnToken);
+
+      localGameController.BuildRoadSegment(turnToken, 4, 3);
+      localGameController.BuildRoadSegment(turnToken, 3, 2);
+      localGameController.BuildRoadSegment(turnToken, 2, 1);
+      localGameController.BuildRoadSegment(turnToken, 1, 0); // 2VP for longest road (4VP in total)
+      localGameController.BuildRoadSegment(turnToken, 4, 5);
+
+      localGameController.BuildSettlement(turnToken, 3);
+      localGameController.BuildSettlement(turnToken, 5);
+
+      localGameController.BuildCity(turnToken, 3);
+      localGameController.BuildCity(turnToken, 5);
+
+      // Act
+      localGameController.UseKnightCard(turnToken, knightCards.Dequeue(), 0);
+
+      localGameController.EndTurn(turnToken);
+      localGameController.UseKnightCard(turnToken, knightCards.Dequeue(), 4);
+
+      localGameController.EndTurn(turnToken);
+
+      // Act
+      localGameController.UseKnightCard(turnToken, knightCards.Dequeue(), 0);
+
+      // Assert
+      winningPlayer.ShouldBe(player.Id);
+      player.VictoryPoints.ShouldBe(10u);
+    }
+
+    [Test]
+    public void UseKnightCard_GotNineVictoryPoints_EndOfGameEventRaisedWithPlayerAsWinner()
+    {
+      // Arrange
+      var testInstances = this.TestSetup(new KnightDevelopmentCard(), new KnightDevelopmentCard(), new KnightDevelopmentCard());
+      var localGameController = testInstances.LocalGameController;
+      LocalGameControllerTestSetup.LaunchGameAndCompleteSetup(localGameController);
+
+      testInstances.Dice.AddSequence(new[] { 8u, 8u });
+
+      var player = testInstances.MainPlayer;
+      player.AddResources(ResourceClutch.RoadSegment * 5);
+      player.AddResources(ResourceClutch.Settlement * 2);
+      player.AddResources(ResourceClutch.City * 3);
+      player.AddResources(ResourceClutch.DevelopmentCard * 3);
+
+      TurnToken turnToken = null;
+      localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
+
+      Guid winningPlayer = Guid.Empty;
+      localGameController.GameOverEvent = (Guid g) => { winningPlayer = g; };
+
+      var knightCards = new Queue<KnightDevelopmentCard>();
+      localGameController.DevelopmentCardPurchasedEvent = (DevelopmentCard d) => { knightCards.Enqueue((KnightDevelopmentCard)d); };
+
+      localGameController.StartGamePlay();
+      localGameController.BuyDevelopmentCard(turnToken);
+      localGameController.BuyDevelopmentCard(turnToken);
+      localGameController.BuyDevelopmentCard(turnToken);
+
+      localGameController.BuildRoadSegment(turnToken, 4, 3);
+      localGameController.BuildRoadSegment(turnToken, 3, 2);
+      localGameController.BuildRoadSegment(turnToken, 2, 1);
+      localGameController.BuildRoadSegment(turnToken, 1, 0); // 2VP for longest road (4VP in total)
+      localGameController.BuildRoadSegment(turnToken, 4, 5);
+
+      localGameController.BuildSettlement(turnToken, 3);
+      localGameController.BuildSettlement(turnToken, 5);
+
+      localGameController.BuildCity(turnToken, 3);
+      localGameController.BuildCity(turnToken, 5);
+      localGameController.BuildCity(turnToken, 12);
+
+      // Act
+      localGameController.UseKnightCard(turnToken, knightCards.Dequeue(), 0);
+
+      localGameController.EndTurn(turnToken);
+      localGameController.UseKnightCard(turnToken, knightCards.Dequeue(), 4);
+
+      localGameController.EndTurn(turnToken);
+
+      // Act
+      localGameController.UseKnightCard(turnToken, knightCards.Dequeue(), 0);
+
+      // Assert
+      winningPlayer.ShouldBe(player.Id);
+      player.VictoryPoints.ShouldBe(11u);
+    }
+
     private void AssertThatPlayerIdIsCorrect(String variableName, Guid actualPlayerId, Guid expectedPlayerId, String expectedPlayerName)
     {
       if (actualPlayerId != expectedPlayerId)
@@ -875,6 +992,21 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       return this.TestSetup(new DevelopmentCardHolder(), new GameBoardData(BoardSizes.Standard));
     }
 
+    private LocalGameControllerTestCreator.TestInstances TestSetup(IDevelopmentCardHolder developmentCardHolder, GameBoardData gameBoard)
+    {
+      var testInstances = LocalGameControllerTestCreator.CreateTestInstances(null, developmentCardHolder, gameBoard);
+      testInstances.Dice.AddSequence(new[] { 8u });
+
+      LocalGameControllerTestSetup.LaunchGameAndCompleteSetup(testInstances.LocalGameController);
+
+      this.LoadPlayersByIdForCustomAsserts(testInstances.MainPlayer,
+        testInstances.FirstOpponent,
+        testInstances.SecondOpponent,
+        testInstances.ThirdOpponent);
+
+      return testInstances;
+    }
+
     private LocalGameControllerTestCreator.TestInstances TestSetup(DevelopmentCard firstDevelopmentCard, params DevelopmentCard[] otherDevelopmentCards)
     {
       var developmentCardHolder = this.CreateMockCardDevelopmentCardHolder(firstDevelopmentCard, otherDevelopmentCards);
@@ -883,27 +1015,9 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
 
     private LocalGameControllerTestCreator.TestInstances TestSetup(GameBoardData gameBoardData, DevelopmentCard firstDevelopmentCard, params DevelopmentCard[] otherDevelopmentCards)
     {
+      return this.TestSetup(this.CreateMockCardDevelopmentCardHolder(firstDevelopmentCard, otherDevelopmentCards), new GameBoardData(BoardSizes.Standard));
       var developmentCardHolder = this.CreateMockCardDevelopmentCardHolder(firstDevelopmentCard, otherDevelopmentCards);
       return this.TestSetup(developmentCardHolder, gameBoardData);
-    }
-
-    private LocalGameControllerTestCreator.TestInstances TestSetup(IDevelopmentCardHolder developmentCardHolder, GameBoardData gameBoard)
-    {
-      var testInstances = LocalGameControllerTestCreator.CreateTestInstances(
-        null,
-        developmentCardHolder,
-        gameBoard);
-      var localGameController = testInstances.LocalGameController;
-      LocalGameControllerTestSetup.LaunchGameAndCompleteSetup(localGameController);
-
-      testInstances.Dice.AddSequence(new[] { 8u });
-
-      this.LoadPlayersByIdForCustomAsserts(testInstances.MainPlayer,
-        testInstances.FirstOpponent,
-        testInstances.SecondOpponent,
-        testInstances.ThirdOpponent);
-
-      return testInstances;
     }
     #endregion
   }
