@@ -317,12 +317,10 @@ namespace Jabberwocky.SoC.Library
                 events.Add(resourceLostEvent);
               }
 
-              var playerWithMostKnightCards = this.DeterminePlayerWithMostKnightCards();
-              if (playerWithMostKnightCards == computerPlayer && this.playerWithLargestArmy != computerPlayer)
+              Guid previousPlayerId;
+              if (this.PlayerHasJustBuiltTheLargestArmy(out previousPlayerId))
               {
-                var oldPlayerId = (this.playerWithLargestArmy != null ? this.playerWithLargestArmy.Id : Guid.Empty);
-                events.Add(new LargestArmyChangedEvent(oldPlayerId, computerPlayer.Id));
-                this.playerWithLargestArmy = computerPlayer;
+                events.Add(new LargestArmyChangedEvent(previousPlayerId, this.playerWithLargestArmy.Id));
               }
 
               break;
@@ -433,6 +431,28 @@ namespace Jabberwocky.SoC.Library
           this.playerWithLongestRoad.HasLongestRoad = true;
           return true;
         }
+      }
+
+      return false;
+    }
+
+    private Boolean PlayerHasJustBuiltTheLargestArmy(out Guid previousPlayerId)
+    {
+      previousPlayerId = Guid.Empty;
+      var playerWithMostKnightCards = this.DeterminePlayerWithMostKnightCards();
+      if (playerWithMostKnightCards == this.currentPlayer && this.playerWithLargestArmy != this.currentPlayer)
+      {
+        previousPlayerId = Guid.Empty;
+
+        if (this.playerWithLargestArmy != null)
+        {
+          this.playerWithLargestArmy.HasLargestArmy = false;
+          previousPlayerId = this.playerWithLargestArmy.Id;
+        }
+
+        this.playerWithLargestArmy = playerWithMostKnightCards;
+        this.playerWithLargestArmy.HasLargestArmy = true;
+        return true;
       }
 
       return false;
@@ -773,7 +793,12 @@ namespace Jabberwocky.SoC.Library
       }
 
       this.PlayKnightDevelopmentCard(developmentCard, newRobberHex);
-      this.RaiseLargestArmyEventIfPlayerHasLargestArmy();
+
+      Guid previousPlayerId;
+      if (this.PlayerHasJustBuiltTheLargestArmy(out previousPlayerId))
+      {
+        this.LargestArmyEvent?.Invoke(previousPlayerId, this.playerWithLargestArmy.Id);
+      }
     }
 
     public void UseKnightCard(TurnToken turnToken, KnightDevelopmentCard developmentCard, UInt32 newRobberHex, Guid playerId)
@@ -790,7 +815,12 @@ namespace Jabberwocky.SoC.Library
 
       this.PlayKnightDevelopmentCard(developmentCard, newRobberHex);
       this.CompleteResourceTransactionBetweenPlayers(this.playersById[playerId]);
-      this.RaiseLargestArmyEventIfPlayerHasLargestArmy();
+      
+      Guid previousPlayerId;
+      if (this.PlayerHasJustBuiltTheLargestArmy(out previousPlayerId))
+      {
+        this.LargestArmyEvent?.Invoke(previousPlayerId, this.playerWithLargestArmy.Id);
+      }
     }
 
     public void UseMonopolyCard(TurnToken turnToken, MonopolyDevelopmentCard monopolyCard, ResourceTypes resourceType)
@@ -1183,38 +1213,6 @@ namespace Jabberwocky.SoC.Library
       this.currentPlayer.PlaceKnightDevelopmentCard();
       this.robberHex = newRobberHex;
     }
-
-    private void RaiseLargestArmyEventIfPlayerHasLargestArmy()
-    {
-      var playerWithMostKnightCards = this.DeterminePlayerWithMostKnightCards();
-      if (playerWithMostKnightCards == this.mainPlayer && this.playerWithLargestArmy != this.mainPlayer)
-      {
-        var previousPlayerId = (this.playerWithLargestArmy != null ? this.playerWithLargestArmy.Id : Guid.Empty);
-        this.LargestArmyEvent?.Invoke(previousPlayerId, playerWithMostKnightCards.Id);
-        this.playerWithLargestArmy = playerWithMostKnightCards;
-      }
-    }
-
-    /*private void RaiseLongestRoadBuiltEventIfRelevant()
-    {
-      if (this.currentPlayer.RoadSegmentsBuilt < 5)
-      {
-        return;
-      }
-
-      Guid longestRoadPlayerId = Guid.Empty;
-      UInt32[] road = null;
-      if (this.gameBoard.TryGetLongestRoadDetails(out longestRoadPlayerId, out road) && road.Length > 5)
-      {
-        var longestRoadPlayer = this.playersById[longestRoadPlayerId];
-        if (longestRoadPlayer == this.mainPlayer && this.playerWithLongestRoad != longestRoadPlayer)
-        {
-          var previousPlayerId = (this.playerWithLongestRoad != null ? this.playerWithLongestRoad.Id : Guid.Empty);
-          this.LongestRoadBuiltEvent?.Invoke(previousPlayerId, longestRoadPlayer.Id);
-          this.playerWithLongestRoad = longestRoadPlayer;
-        }
-      }
-    }*/
 
     private void TryRaiseCityBuildingError()
     {
