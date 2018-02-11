@@ -48,4 +48,9 @@ namespace Jabberwocky.SoC.Library.GameEvents
   {
     public PlayKnightCardEvent(Guid playerId) : base(playerId) { }
   }
+
+  public class GameWinEvent : GameEvent
+  {
+    public GameWinEvent(Guid playerId) : base(playerId) { }
+  }
 }

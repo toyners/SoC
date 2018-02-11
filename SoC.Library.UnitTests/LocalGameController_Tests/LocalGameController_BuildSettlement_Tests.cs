@@ -473,6 +473,50 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       firstOpponent.ResourcesCount.ShouldBe(0);
       firstOpponent.VictoryPoints.ShouldBe(3u);
     }
+
+    [Test]
+    public void Scenario_OpponentBuildsSettlementToWinGame()
+    {
+      // Arrange
+      var testInstances = LocalGameControllerTestCreator.CreateTestInstances(new MockGameBoardWithNoResourcesCollected());
+      var localGameController = testInstances.LocalGameController;
+      LocalGameControllerTestSetup.LaunchGameAndCompleteSetup(localGameController);
+
+      testInstances.Dice.AddSequence(new[] { 8u });
+
+      var player = testInstances.MainPlayer;
+      player.AddResources(ResourceClutch.RoadSegment * 5);
+      player.AddResources(ResourceClutch.Settlement * 3);
+      player.AddResources(ResourceClutch.City * 3);
+
+      var firstOpponent = testInstances.FirstOpponent;
+      firstOpponent
+        .AddBuildRoadSegmentInstruction(new BuildRoadSegmentInstruction { Locations = new UInt32[] { 17, 7, 7, 8, 8, 0, 0, 1, 8, 9 } })
+        .AddBuildSettlementInstruction(new BuildSettlementInstruction { Location = 7 })
+        .AddBuildSettlementInstruction(new BuildSettlementInstruction { Location = 0 })
+        .AddBuildCityInstruction(new BuildCityInstruction { Location = 7 })
+        .AddBuildCityInstruction(new BuildCityInstruction { Location = 0 })
+        .AddBuildCityInstruction(new BuildCityInstruction { Location = 18 })
+        .AddBuildSettlementInstruction(new BuildSettlementInstruction { Location = 9 });
+
+      TurnToken turnToken = null;
+      localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
+
+      List<GameEvent> events = null;
+      localGameController.OpponentActionsEvent = (Guid g, List<GameEvent> e) => { events = e; };
+
+      localGameController.StartGamePlay();
+
+      // Act
+      localGameController.EndTurn(turnToken);
+
+      // Assert
+      var expectedWinningGameEvent = new GameWinEvent(firstOpponent.Id);
+
+      events.Count.ShouldBe(12);
+      events[11].ShouldBe(expectedWinningGameEvent);
+      firstOpponent.VictoryPoints.ShouldBe(10u);
+    }
     #endregion 
   }
 }
