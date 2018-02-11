@@ -122,89 +122,6 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
     }
 
     [Test]
-    public void Scenario_OpponentBuildsLongerRoadThanPlayer_LongestRoadEventReturned()
-    {
-      // Arrange
-      var testInstances = LocalGameControllerTestCreator.CreateTestInstances();
-      var localGameController = testInstances.LocalGameController;
-      LocalGameControllerTestSetup.LaunchGameAndCompleteSetup(localGameController);
-      var player = testInstances.MainPlayer;
-      var firstOpponent = testInstances.FirstOpponent;
-
-      testInstances.Dice.AddSequence(new[] { 8u, 8u });
-      player.AddResources(ResourceClutch.RoadSegment * 5);
-
-      firstOpponent.AddResources(ResourceClutch.RoadSegment * 6);
-      firstOpponent.AddBuildRoadSegmentInstruction(new BuildRoadSegmentInstruction { Locations = new UInt32[] { 17, 16, 16, 27, 27, 28, 28, 29, 29, 18 } });
-
-      List<GameEvent> actualEvents = null;
-      localGameController.OpponentActionsEvent = (Guid g, List<GameEvent> e) => { actualEvents = e; };
-
-      TurnToken turnToken = null;
-      localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
-      localGameController.StartGamePlay();
-
-      localGameController.BuildRoadSegment(turnToken, 4, 3);
-      localGameController.BuildRoadSegment(turnToken, 3, 2);
-      localGameController.BuildRoadSegment(turnToken, 2, 10);
-      localGameController.BuildRoadSegment(turnToken, 10, 9);
-
-      // Act - Opponent builds longer road.
-      localGameController.EndTurn(turnToken);
-
-      // Assert
-      var expectedEvents = new GameEvent[] {
-        new RoadSegmentBuiltEvent(firstOpponent.Id, 17, 16),
-        new RoadSegmentBuiltEvent(firstOpponent.Id, 16, 27),
-        new RoadSegmentBuiltEvent(firstOpponent.Id, 27, 28),
-        new RoadSegmentBuiltEvent(firstOpponent.Id, 28, 29),
-        new RoadSegmentBuiltEvent(firstOpponent.Id, 29, 18),
-        new LongestRoadBuiltEvent(firstOpponent.Id, player.Id)
-      };
-
-      AssertToolBox.AssertThatPlayerActionsForTurnAreCorrect(actualEvents, expectedEvents);
-    }
-
-    /// <summary>
-    /// When the a player builds the longest road then they get 2VP and the previous longest road holder loses the 2VP.
-    /// </summary>
-    [Test]
-    public void Scenario_OpponentBuildsLongerRoadThanPlayer_VictoryPointsChangesFromPlayerToOpponent()
-    {
-      // Arrange
-      var testInstances = LocalGameControllerTestCreator.CreateTestInstances();
-      var localGameController = testInstances.LocalGameController;
-      LocalGameControllerTestSetup.LaunchGameAndCompleteSetup(localGameController);
-      var player = testInstances.MainPlayer;
-      var firstOpponent = testInstances.FirstOpponent;
-
-      testInstances.Dice.AddSequence(new[] { 8u, 8u });
-      player.AddResources(ResourceClutch.RoadSegment * 5);
-
-      firstOpponent.AddResources(ResourceClutch.RoadSegment * 6);
-      firstOpponent.AddBuildRoadSegmentInstruction(new BuildRoadSegmentInstruction { Locations = new UInt32[] { 17, 16, 16, 27, 27, 28, 28, 29, 29, 18 } });
-
-      TurnToken turnToken = null;
-      localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
-      localGameController.StartGamePlay();
-
-      localGameController.BuildRoadSegment(turnToken, 4, 3);
-      localGameController.BuildRoadSegment(turnToken, 3, 2);
-      localGameController.BuildRoadSegment(turnToken, 2, 10);
-      localGameController.BuildRoadSegment(turnToken, 10, 9);
-
-      player.VictoryPoints.ShouldBe(4u);
-      firstOpponent.VictoryPoints.ShouldBe(2u);
-
-      // Act - Opponent builds longer road.
-      localGameController.EndTurn(turnToken);
-
-      // Assert
-      player.VictoryPoints.ShouldBe(2u);
-      firstOpponent.VictoryPoints.ShouldBe(4u);
-    }
-
-    [Test]
     public void BuildRoadSegment_MainPlayerBuildsLongerRoadThanOpponent_LongestRoadEventRaised()
     {
       // Arrange
@@ -668,6 +585,89 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
 
       AssertToolBox.AssertThatPlayerActionsForTurnAreCorrect(events, expectedRoadSegmentBuiltEvent);
       firstOpponent.ResourcesCount.ShouldBe(0);
+    }
+
+    [Test]
+    public void Scenario_OpponentBuildsLongerRoadThanPlayer_LongestRoadEventReturned()
+    {
+      // Arrange
+      var testInstances = LocalGameControllerTestCreator.CreateTestInstances();
+      var localGameController = testInstances.LocalGameController;
+      LocalGameControllerTestSetup.LaunchGameAndCompleteSetup(localGameController);
+      var player = testInstances.MainPlayer;
+      var firstOpponent = testInstances.FirstOpponent;
+
+      testInstances.Dice.AddSequence(new[] { 8u, 8u });
+      player.AddResources(ResourceClutch.RoadSegment * 5);
+
+      firstOpponent.AddResources(ResourceClutch.RoadSegment * 6);
+      firstOpponent.AddBuildRoadSegmentInstruction(new BuildRoadSegmentInstruction { Locations = new UInt32[] { 17, 16, 16, 27, 27, 28, 28, 29, 29, 18 } });
+
+      List<GameEvent> actualEvents = null;
+      localGameController.OpponentActionsEvent = (Guid g, List<GameEvent> e) => { actualEvents = e; };
+
+      TurnToken turnToken = null;
+      localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
+      localGameController.StartGamePlay();
+
+      localGameController.BuildRoadSegment(turnToken, 4, 3);
+      localGameController.BuildRoadSegment(turnToken, 3, 2);
+      localGameController.BuildRoadSegment(turnToken, 2, 10);
+      localGameController.BuildRoadSegment(turnToken, 10, 9);
+
+      // Act - Opponent builds longer road.
+      localGameController.EndTurn(turnToken);
+
+      // Assert
+      var expectedEvents = new GameEvent[] {
+        new RoadSegmentBuiltEvent(firstOpponent.Id, 17, 16),
+        new RoadSegmentBuiltEvent(firstOpponent.Id, 16, 27),
+        new RoadSegmentBuiltEvent(firstOpponent.Id, 27, 28),
+        new RoadSegmentBuiltEvent(firstOpponent.Id, 28, 29),
+        new RoadSegmentBuiltEvent(firstOpponent.Id, 29, 18),
+        new LongestRoadBuiltEvent(firstOpponent.Id, player.Id)
+      };
+
+      AssertToolBox.AssertThatPlayerActionsForTurnAreCorrect(actualEvents, expectedEvents);
+    }
+
+    /// <summary>
+    /// When the a player builds the longest road then they get 2VP and the previous longest road holder loses the 2VP.
+    /// </summary>
+    [Test]
+    public void Scenario_OpponentBuildsLongerRoadThanPlayer_VictoryPointsChangesFromPlayerToOpponent()
+    {
+      // Arrange
+      var testInstances = LocalGameControllerTestCreator.CreateTestInstances();
+      var localGameController = testInstances.LocalGameController;
+      LocalGameControllerTestSetup.LaunchGameAndCompleteSetup(localGameController);
+      var player = testInstances.MainPlayer;
+      var firstOpponent = testInstances.FirstOpponent;
+
+      testInstances.Dice.AddSequence(new[] { 8u, 8u });
+      player.AddResources(ResourceClutch.RoadSegment * 5);
+
+      firstOpponent.AddResources(ResourceClutch.RoadSegment * 6);
+      firstOpponent.AddBuildRoadSegmentInstruction(new BuildRoadSegmentInstruction { Locations = new UInt32[] { 17, 16, 16, 27, 27, 28, 28, 29, 29, 18 } });
+
+      TurnToken turnToken = null;
+      localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
+      localGameController.StartGamePlay();
+
+      localGameController.BuildRoadSegment(turnToken, 4, 3);
+      localGameController.BuildRoadSegment(turnToken, 3, 2);
+      localGameController.BuildRoadSegment(turnToken, 2, 10);
+      localGameController.BuildRoadSegment(turnToken, 10, 9);
+
+      player.VictoryPoints.ShouldBe(4u);
+      firstOpponent.VictoryPoints.ShouldBe(2u);
+
+      // Act - Opponent builds longer road.
+      localGameController.EndTurn(turnToken);
+
+      // Assert
+      player.VictoryPoints.ShouldBe(2u);
+      firstOpponent.VictoryPoints.ShouldBe(4u);
     }
     #endregion
   }
