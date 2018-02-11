@@ -718,7 +718,47 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
     [Test]
     public void Scenario_OpponentHasNineVictoryPointsAndBuildsLongestRoadToWin()
     {
-      throw new NotImplementedException();
+      // Arrange
+      var testInstances = LocalGameControllerTestCreator.CreateTestInstances(new MockGameBoardWithNoResourcesCollected());
+      var localGameController = testInstances.LocalGameController;
+      LocalGameControllerTestSetup.LaunchGameAndCompleteSetup(localGameController);
+
+      testInstances.Dice.AddSequence(new[] { 8u });
+
+      var player = testInstances.MainPlayer;
+      player.AddResources(ResourceClutch.RoadSegment * 6);
+      player.AddResources(ResourceClutch.Settlement * 3);
+      player.AddResources(ResourceClutch.City * 4);
+
+      var firstOpponent = testInstances.FirstOpponent;
+      firstOpponent
+        .AddBuildRoadSegmentInstruction(new BuildRoadSegmentInstruction { Locations = new UInt32[] { 17, 7, 7, 8, 8, 0, 8, 9, 44, 45 } })
+        .AddBuildSettlementInstruction(new BuildSettlementInstruction { Location = 7 })
+        .AddBuildSettlementInstruction(new BuildSettlementInstruction { Location = 9 })
+        .AddBuildSettlementInstruction(new BuildSettlementInstruction { Location = 45 })
+        .AddBuildCityInstruction(new BuildCityInstruction { Location = 7 })
+        .AddBuildCityInstruction(new BuildCityInstruction { Location = 9 })
+        .AddBuildCityInstruction(new BuildCityInstruction { Location = 18 })
+        .AddBuildCityInstruction(new BuildCityInstruction { Location = 43 })
+        .AddBuildRoadSegmentInstruction(new BuildRoadSegmentInstruction { Locations = new UInt32[] { 0, 1 } });
+
+      TurnToken turnToken = null;
+      localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
+
+      List<GameEvent> events = null;
+      localGameController.OpponentActionsEvent = (Guid g, List<GameEvent> e) => { events = e; };
+
+      localGameController.StartGamePlay();
+
+      // Act
+      localGameController.EndTurn(turnToken);
+
+      // Assert
+      var expectedWinningGameEvent = new GameWinEvent(firstOpponent.Id);
+
+      events.Count.ShouldBe(14);
+      events[13].ShouldBe(expectedWinningGameEvent);
+      firstOpponent.VictoryPoints.ShouldBe(11u);
     }
     #endregion
   }
