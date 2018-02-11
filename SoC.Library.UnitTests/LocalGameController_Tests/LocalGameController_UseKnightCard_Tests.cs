@@ -1015,7 +1015,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
 
     private LocalGameControllerTestCreator.TestInstances TestSetup(GameBoardData gameBoardData, DevelopmentCard firstDevelopmentCard, params DevelopmentCard[] otherDevelopmentCards)
     {
-      return this.TestSetup(this.CreateMockCardDevelopmentCardHolder(firstDevelopmentCard, otherDevelopmentCards), new GameBoardData(BoardSizes.Standard));
+      return this.TestSetup(this.CreateMockCardDevelopmentCardHolder(firstDevelopmentCard, otherDevelopmentCards), gameBoardData);
       var developmentCardHolder = this.CreateMockCardDevelopmentCardHolder(firstDevelopmentCard, otherDevelopmentCards);
       return this.TestSetup(developmentCardHolder, gameBoardData);
     }
