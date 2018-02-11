@@ -550,6 +550,93 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
     }
 
     [Test]
+    public void BuildRoadSegment_GotEightVictoryPoints_EndOfGameEventRaisedWithPlayerAsWinner()
+    {
+      // Arrange
+      var testInstances = LocalGameControllerTestCreator.CreateTestInstances(new MockGameBoardWithNoResourcesCollected());
+      var localGameController = testInstances.LocalGameController;
+      LocalGameControllerTestSetup.LaunchGameAndCompleteSetup(localGameController);
+
+      testInstances.Dice.AddSequence(new[] { 8u });
+
+      var player = testInstances.MainPlayer;
+      player.AddResources(ResourceClutch.RoadSegment * 5);
+      player.AddResources(ResourceClutch.Settlement * 3);
+      player.AddResources(ResourceClutch.City * 3);
+
+      TurnToken turnToken = null;
+      localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
+
+      Guid winningPlayer = Guid.Empty;
+      localGameController.GameOverEvent = (Guid g) => { winningPlayer = g; };
+
+      localGameController.StartGamePlay();
+      localGameController.BuildRoadSegment(turnToken, 4u, 3u);
+      localGameController.BuildRoadSegment(turnToken, 3u, 2u);
+      localGameController.BuildRoadSegment(turnToken, 2u, 1u);
+      localGameController.BuildRoadSegment(turnToken, 2u, 10u);
+
+      localGameController.BuildSettlement(turnToken, 1);
+      localGameController.BuildSettlement(turnToken, 3);
+      localGameController.BuildSettlement(turnToken, 10);
+
+      localGameController.BuildCity(turnToken, 1);
+      localGameController.BuildCity(turnToken, 3);
+      localGameController.BuildCity(turnToken, 10);
+
+      // Act
+      localGameController.BuildRoadSegment(turnToken, 1, 0);
+
+      // Assert
+      winningPlayer.ShouldBe(player.Id);
+      player.VictoryPoints.ShouldBe(10u);
+    }
+
+    [Test]
+    public void BuildRoadSegment_GotNineVictoryPoints_EndOfGameEventRaisedWithPlayerAsWinner()
+    {
+      // Arrange
+      var testInstances = LocalGameControllerTestCreator.CreateTestInstances(new MockGameBoardWithNoResourcesCollected());
+      var localGameController = testInstances.LocalGameController;
+      LocalGameControllerTestSetup.LaunchGameAndCompleteSetup(localGameController);
+
+      testInstances.Dice.AddSequence(new[] { 8u });
+
+      var player = testInstances.MainPlayer;
+      player.AddResources(ResourceClutch.RoadSegment * 5);
+      player.AddResources(ResourceClutch.Settlement * 3);
+      player.AddResources(ResourceClutch.City * 4);
+
+      TurnToken turnToken = null;
+      localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
+
+      Guid winningPlayer = Guid.Empty;
+      localGameController.GameOverEvent = (Guid g) => { winningPlayer = g; };
+
+      localGameController.StartGamePlay();
+      localGameController.BuildRoadSegment(turnToken, 4u, 3u);
+      localGameController.BuildRoadSegment(turnToken, 3u, 2u);
+      localGameController.BuildRoadSegment(turnToken, 2u, 1u);
+      localGameController.BuildRoadSegment(turnToken, 2u, 10u);
+
+      localGameController.BuildSettlement(turnToken, 1);
+      localGameController.BuildSettlement(turnToken, 3);
+      localGameController.BuildSettlement(turnToken, 10);
+
+      localGameController.BuildCity(turnToken, 1);
+      localGameController.BuildCity(turnToken, 3);
+      localGameController.BuildCity(turnToken, 10);
+      localGameController.BuildCity(turnToken, 12);
+
+      // Act
+      localGameController.BuildRoadSegment(turnToken, 1, 0);
+
+      // Assert
+      winningPlayer.ShouldBe(player.Id);
+      player.VictoryPoints.ShouldBe(11u);
+    }
+
+    [Test]
     public void Scenario_OpponentBuildsRoad()
     {
       // Arrange
