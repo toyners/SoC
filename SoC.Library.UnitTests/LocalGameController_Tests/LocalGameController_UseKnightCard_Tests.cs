@@ -992,6 +992,61 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       firstOpponent.VictoryPoints.ShouldBe(10u);
     }
 
+    [Test]
+    public void Scenario_OpponentHasNineVictoryPointsAndBuildsLargestArmyToWin()
+    {
+      // Arrange
+      var testInstances = this.TestSetup(new MockGameBoardWithNoResourcesCollected(), new KnightDevelopmentCard(), new KnightDevelopmentCard(), new KnightDevelopmentCard());
+      var localGameController = testInstances.LocalGameController;
+
+      testInstances.Dice.AddSequence(new UInt32[] { 8, 8, 8, 8 });
+
+      var firstOpponent = testInstances.FirstOpponent;
+      firstOpponent
+        .AddBuyDevelopmentCardChoice(3)
+        .AddBuildRoadSegmentInstruction(new BuildRoadSegmentInstruction { Locations = new UInt32[] { 17, 7, 17, 16, 7, 8, 8, 0 } })
+        .AddBuildSettlementInstruction(new BuildSettlementInstruction { Location = 7 })
+        .AddBuildSettlementInstruction(new BuildSettlementInstruction { Location = 16 })
+        .AddBuildSettlementInstruction(new BuildSettlementInstruction { Location = 0 })
+        .AddBuildCityInstruction(new BuildCityInstruction { Location = 18 })
+        .AddBuildCityInstruction(new BuildCityInstruction { Location = 7 })
+        .AddBuildCityInstruction(new BuildCityInstruction { Location = 16 })
+        .AddBuildCityInstruction(new BuildCityInstruction { Location = 43 })
+        .EndTurn()
+        .AddPlaceKnightCardInstruction(new PlayKnightInstruction { RobberHex = 4 })
+        .EndTurn()
+        .AddPlaceKnightCardInstruction(new PlayKnightInstruction { RobberHex = 0 })
+        .EndTurn()
+        .AddPlaceKnightCardInstruction(new PlayKnightInstruction { RobberHex = 4 });
+
+      /*var player = testInstances.MainPlayer;
+      player.AddResources(ResourceClutch.RoadSegment * 5);
+      player.AddResources(ResourceClutch.Settlement * 2);
+      player.AddResources(ResourceClutch.City * 2);
+      player.AddResources(ResourceClutch.DevelopmentCard * 3);*/
+
+      TurnToken turnToken = null;
+      localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
+
+      List<GameEvent> events = null;
+      localGameController.OpponentActionsEvent = (Guid g, List<GameEvent> e) => { events = e; };
+
+      localGameController.StartGamePlay();
+
+      // Act
+      localGameController.EndTurn(turnToken);
+      localGameController.EndTurn(turnToken);
+      localGameController.EndTurn(turnToken);
+      localGameController.EndTurn(turnToken);
+
+      // Assert
+      var expectedGameWinEvent = new GameWinEvent(firstOpponent.Id);
+
+      events.Count.ShouldBe(2);
+      events[1].ShouldBe(expectedGameWinEvent);
+      firstOpponent.VictoryPoints.ShouldBe(10u);
+    }
+
     private void AssertThatPlayerIdIsCorrect(String variableName, Guid actualPlayerId, Guid expectedPlayerId, String expectedPlayerName)
     {
       if (actualPlayerId != expectedPlayerId)
