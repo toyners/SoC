@@ -166,7 +166,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
 
       ErrorDetails errorDetails = null;
-      localGameController.ErrorRaisedEvent = (ErrorDetails e) => 
+      localGameController.ErrorRaisedEvent = (ErrorDetails e) =>
       {
         if (errorDetails != null)
         {
@@ -404,7 +404,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
 
       // Assert
       winningPlayer.ShouldBe(player.Id);
-      player.VictoryPoints.ShouldBe(10u); 
+      player.VictoryPoints.ShouldBe(10u);
     }
 
     [Test]
@@ -447,6 +447,45 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
         new CityBuiltEvent(firstOpponent.Id, 7u));
       firstOpponent.ResourcesCount.ShouldBe(0);
       firstOpponent.VictoryPoints.ShouldBe(4u);
+    }
+
+    [Test]
+    public void Scenario_OpponentBuildsCityToWin()
+    {
+      // Arrange
+      var testInstances = LocalGameControllerTestCreator.CreateTestInstances(new MockGameBoardWithNoResourcesCollected());
+      var localGameController = testInstances.LocalGameController;
+      LocalGameControllerTestSetup.LaunchGameAndCompleteSetup(localGameController);
+
+      testInstances.Dice.AddSequence(new UInt32[] { 8, 8 });
+
+      var firstOpponent = testInstances.FirstOpponent;
+      firstOpponent
+        .AddBuildRoadSegmentInstruction(new BuildRoadSegmentInstruction { Locations = new UInt32[] { 17, 7, 7, 8, 8, 0, 0, 1 } })
+        .AddBuildSettlementInstruction(new BuildSettlementInstruction { Location = 1 })
+        .AddBuildSettlementInstruction(new BuildSettlementInstruction { Location = 7 })
+        .AddBuildCityInstruction(new BuildCityInstruction { Location = 1 })
+        .AddBuildCityInstruction(new BuildCityInstruction { Location = 7 })
+        .AddBuildCityInstruction(new BuildCityInstruction { Location = 18 })
+        .AddBuildCityInstruction(new BuildCityInstruction { Location = 43 });
+
+      TurnToken turnToken = null;
+      localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
+
+      List<GameEvent> events = null;
+      localGameController.OpponentActionsEvent = (Guid g, List<GameEvent> e) => { events = e; };
+
+      localGameController.StartGamePlay();
+
+      // Act
+      localGameController.EndTurn(turnToken);
+
+      // Assert
+      var expectedWinningGameEvent = new GameWinEvent(firstOpponent.Id);
+
+      events.Count.ShouldBe(11);
+      events[10].ShouldBe(expectedWinningGameEvent);
+      firstOpponent.VictoryPoints.ShouldBe(10u);
     }
     #endregion
   }

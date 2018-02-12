@@ -827,9 +827,8 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       // Arrange
       var testInstances = this.TestSetup(new KnightDevelopmentCard(), new KnightDevelopmentCard(), new KnightDevelopmentCard());
       var localGameController = testInstances.LocalGameController;
-      LocalGameControllerTestSetup.LaunchGameAndCompleteSetup(localGameController);
 
-      testInstances.Dice.AddSequence(new[] { 8u, 8u });
+      testInstances.Dice.AddSequence(new UInt32[] { 8, 8, 8 });
 
       var player = testInstances.MainPlayer;
       player.AddResources(ResourceClutch.RoadSegment * 5);
@@ -863,16 +862,17 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       localGameController.BuildCity(turnToken, 3);
       localGameController.BuildCity(turnToken, 5);
 
-      // Act
-      localGameController.UseKnightCard(turnToken, knightCards.Dequeue(), 0);
-
       localGameController.EndTurn(turnToken);
+
       localGameController.UseKnightCard(turnToken, knightCards.Dequeue(), 4);
 
       localGameController.EndTurn(turnToken);
+      localGameController.UseKnightCard(turnToken, knightCards.Dequeue(), 0);
+
+      localGameController.EndTurn(turnToken);
 
       // Act
-      localGameController.UseKnightCard(turnToken, knightCards.Dequeue(), 0);
+      localGameController.UseKnightCard(turnToken, knightCards.Dequeue(), 4);
 
       // Assert
       winningPlayer.ShouldBe(player.Id);
@@ -885,9 +885,8 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       // Arrange
       var testInstances = this.TestSetup(new KnightDevelopmentCard(), new KnightDevelopmentCard(), new KnightDevelopmentCard());
       var localGameController = testInstances.LocalGameController;
-      LocalGameControllerTestSetup.LaunchGameAndCompleteSetup(localGameController);
 
-      testInstances.Dice.AddSequence(new[] { 8u, 8u });
+      testInstances.Dice.AddSequence(new UInt32[] { 8, 8, 8 });
 
       var player = testInstances.MainPlayer;
       player.AddResources(ResourceClutch.RoadSegment * 5);
@@ -922,16 +921,17 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       localGameController.BuildCity(turnToken, 5);
       localGameController.BuildCity(turnToken, 12);
 
-      // Act
-      localGameController.UseKnightCard(turnToken, knightCards.Dequeue(), 0);
-
       localGameController.EndTurn(turnToken);
+
       localGameController.UseKnightCard(turnToken, knightCards.Dequeue(), 4);
 
       localGameController.EndTurn(turnToken);
+      localGameController.UseKnightCard(turnToken, knightCards.Dequeue(), 0);
+
+      localGameController.EndTurn(turnToken);
 
       // Act
-      localGameController.UseKnightCard(turnToken, knightCards.Dequeue(), 0);
+      localGameController.UseKnightCard(turnToken, knightCards.Dequeue(), 4);
 
       // Assert
       winningPlayer.ShouldBe(player.Id);
