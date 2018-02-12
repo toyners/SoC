@@ -964,12 +964,6 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
         .EndTurn()
         .AddPlaceKnightCardInstruction(new PlayKnightInstruction { RobberHex = 4 });
 
-      /*var player = testInstances.MainPlayer;
-      player.AddResources(ResourceClutch.RoadSegment * 5);
-      player.AddResources(ResourceClutch.Settlement * 2);
-      player.AddResources(ResourceClutch.City * 2);
-      player.AddResources(ResourceClutch.DevelopmentCard * 3);*/
-
       TurnToken turnToken = null;
       localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
 
@@ -987,8 +981,8 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       // Assert
       var expectedGameWinEvent = new GameWinEvent(firstOpponent.Id);
 
-      events.Count.ShouldBe(2);
-      events[1].ShouldBe(expectedGameWinEvent);
+      events.Count.ShouldBe(3);
+      events[2].ShouldBe(expectedGameWinEvent);
       firstOpponent.VictoryPoints.ShouldBe(10u);
     }
 
