@@ -554,6 +554,52 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
     }
 
     [Test]
+    public void BuildRoadSegment_GameIsOver_MeaningfulErrorIsReceived()
+    {
+      // Arrange
+      var testInstances = LocalGameControllerTestCreator.CreateTestInstances(new MockGameBoardWithNoResourcesCollected());
+      var localGameController = testInstances.LocalGameController;
+      LocalGameControllerTestSetup.LaunchGameAndCompleteSetup(localGameController);
+
+      testInstances.Dice.AddSequence(new[] { 8u });
+
+      var player = testInstances.MainPlayer;
+      player.AddResources(ResourceClutch.RoadSegment * 6);
+      player.AddResources(ResourceClutch.Settlement * 3);
+      player.AddResources(ResourceClutch.City * 4);
+
+      TurnToken turnToken = null;
+      localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
+
+      ErrorDetails errorDetails = null;
+      localGameController.ErrorRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
+
+      localGameController.StartGamePlay();
+      localGameController.BuildRoadSegment(turnToken, 4u, 3u);
+      localGameController.BuildRoadSegment(turnToken, 3u, 2u);
+      localGameController.BuildRoadSegment(turnToken, 2u, 1u);
+      localGameController.BuildRoadSegment(turnToken, 2u, 10u);
+
+      localGameController.BuildSettlement(turnToken, 1);
+      localGameController.BuildSettlement(turnToken, 3);
+      localGameController.BuildSettlement(turnToken, 10);
+
+      localGameController.BuildCity(turnToken, 1);
+      localGameController.BuildCity(turnToken, 3);
+      localGameController.BuildCity(turnToken, 10);
+      localGameController.BuildCity(turnToken, 12);
+
+      localGameController.BuildRoadSegment(turnToken, 1, 0); // Got 10VP, Game is over
+
+      // Act
+      localGameController.BuildRoadSegment(turnToken, 44, 45);
+
+      // Assert
+      errorDetails.ShouldNotBeNull();
+      errorDetails.Message.ShouldBe("Cannot build road segment. Game is over.");
+    }
+
+    [Test]
     public void Scenario_OpponentBuildsRoad()
     {
       // Arrange

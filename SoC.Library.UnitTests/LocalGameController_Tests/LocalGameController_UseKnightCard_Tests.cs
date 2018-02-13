@@ -446,6 +446,50 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       player.VictoryPoints.ShouldBe(11u);
     }
 
+    [Test]
+    public void BuildSettlement_GameIsOver_MeaningfulErrorIsReceived()
+    {
+      // Arrange
+      var testInstances = this.TestSetup(new MockGameBoardWithNoResourcesCollected(), new KnightDevelopmentCard());
+      var localGameController = testInstances.LocalGameController;
+
+      testInstances.Dice.AddSequence(new[] { 8u });
+
+      var player = testInstances.MainPlayer;
+      player.AddResources(ResourceClutch.RoadSegment * 5);
+      player.AddResources(ResourceClutch.Settlement * 3);
+      player.AddResources(ResourceClutch.City * 4);
+      player.AddResources(ResourceClutch.DevelopmentCard);
+
+      TurnToken turnToken = null;
+      localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
+
+      ErrorDetails errorDetails = null;
+      localGameController.ErrorRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
+
+      localGameController.StartGamePlay();
+      localGameController.BuildRoadSegment(turnToken, 4u, 3u);
+      localGameController.BuildRoadSegment(turnToken, 3u, 2u);
+      localGameController.BuildRoadSegment(turnToken, 2u, 1u);
+      localGameController.BuildRoadSegment(turnToken, 1u, 0u); // Got 2VP for longest road (4VP)
+      localGameController.BuildRoadSegment(turnToken, 2u, 10u);
+
+      localGameController.BuildSettlement(turnToken, 3);
+      localGameController.BuildSettlement(turnToken, 10);
+
+      localGameController.BuildCity(turnToken, 3);
+      localGameController.BuildCity(turnToken, 10);
+      localGameController.BuildCity(turnToken, 12);
+      localGameController.BuildCity(turnToken, 40); // Got 10VP, Game over event raised
+
+      // Act
+      localGameController.BuildSettlement(turnToken, 1);
+
+      // Assert
+      errorDetails.ShouldNotBeNull();
+      errorDetails.Message.ShouldBe("Cannot use knight card. Game is over.");
+    }
+
     /// <summary>
     /// Test that the largest army event is raised when the player has played 3 knight cards. Also
     /// the largest army event is returned once the opponent has played 4 cards.
