@@ -922,6 +922,11 @@ namespace Jabberwocky.SoC.Library
       this.gameBoard.PlaceSettlement(this.currentPlayer.Id, location);
       this.currentPlayer.PlaceSettlement();
       this.SettlementBuiltEvent?.Invoke();
+
+      /*if (this.currentPlayer.VictoryPoints >= 10)
+      {
+        this.GameOverEvent?.Invoke(this.currentPlayer.Id);
+      }*/
     }
 
     private DevelopmentCard BuyDevelopmentCard()
