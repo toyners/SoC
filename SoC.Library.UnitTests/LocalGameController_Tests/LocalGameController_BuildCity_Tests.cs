@@ -420,7 +420,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       var player = testInstances.MainPlayer;
       player.AddResources(ResourceClutch.RoadSegment * 5);
       player.AddResources(ResourceClutch.Settlement * 3);
-      player.AddResources(ResourceClutch.City * 3);
+      player.AddResources(ResourceClutch.City * 4);
 
       TurnToken turnToken = null;
       localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };

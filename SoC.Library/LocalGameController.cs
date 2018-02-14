@@ -26,6 +26,7 @@ namespace Jabberwocky.SoC.Library
       DropResources,
       Quitting,
       NextStep,
+      GameOver
     }
     #endregion
 
@@ -799,6 +800,11 @@ namespace Jabberwocky.SoC.Library
       {
         this.LargestArmyEvent?.Invoke(previousPlayerId, this.playerWithLargestArmy.Id);
       }
+
+      if (this.mainPlayer.VictoryPoints >= 10)
+      {
+        this.GameOverEvent?.Invoke(this.mainPlayer.Id);
+      }
     }
 
     public void UseKnightCard(TurnToken turnToken, KnightDevelopmentCard developmentCard, UInt32 newRobberHex, Guid playerId)
@@ -902,6 +908,12 @@ namespace Jabberwocky.SoC.Library
       this.gameBoard.PlaceCity(this.currentPlayer.Id, location);
       this.currentPlayer.PlaceCity();
       this.CityBuiltEvent?.Invoke();
+
+      if (this.mainPlayer.VictoryPoints >= 10)
+      {
+        this.GameOverEvent?.Invoke(this.mainPlayer.Id);
+        this.GamePhase = GamePhases.GameOver;
+      }
     }
 
     private void BuildRoadSegment(UInt32 roadStartLocation, UInt32 roadEndLocation)
@@ -915,6 +927,11 @@ namespace Jabberwocky.SoC.Library
       {
         this.LongestRoadBuiltEvent?.Invoke(previousPlayerWithLongestRoadId, this.mainPlayer.Id);
       }
+
+      if (this.mainPlayer.VictoryPoints >= 10)
+      {
+        this.GameOverEvent?.Invoke(this.mainPlayer.Id);
+      }
     }
 
     private void BuildSettlement(UInt32 location)
@@ -923,10 +940,10 @@ namespace Jabberwocky.SoC.Library
       this.currentPlayer.PlaceSettlement();
       this.SettlementBuiltEvent?.Invoke();
 
-      /*if (this.currentPlayer.VictoryPoints >= 10)
+      if (this.mainPlayer.VictoryPoints >= 10)
       {
-        this.GameOverEvent?.Invoke(this.currentPlayer.Id);
-      }*/
+        this.GameOverEvent?.Invoke(this.mainPlayer.Id);
+      }
     }
 
     private DevelopmentCard BuyDevelopmentCard()
@@ -1436,6 +1453,12 @@ namespace Jabberwocky.SoC.Library
 
     private Boolean VerifyBuildCityRequest(UInt32 location)
     {
+      if (this.GamePhase == GamePhases.GameOver)
+      {
+        this.ErrorRaisedEvent?.Invoke(new ErrorDetails("Cannot build city. Game is over."));
+        return false;
+      }
+
       if (!this.CanBuildCity())
       {
         this.TryRaiseCityBuildingError();

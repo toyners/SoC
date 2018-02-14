@@ -204,7 +204,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       localGameController.BuildCity(turnToken, 40); // Got 10VP, Game over event raised
 
       // Act
-      localGameController.TradeWithBank(turnToken, ResourceTypes.Brick, 1, ResourceTypes.Grain);
+      localGameController.TradeWithBank(turnToken, ResourceTypes.Grain, 1, ResourceTypes.Brick);
 
       // Assert
       errorDetails.ShouldNotBeNull();

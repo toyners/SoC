@@ -519,7 +519,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
     }
 
     [Test]
-    public void Scenario_OpponentBuildsSettlementToWinGame()
+    public void Scenario_OpponentBuildsSettlementToWin()
     {
       // Arrange
       var testInstances = LocalGameControllerTestCreator.CreateTestInstances(new MockGameBoardWithNoResourcesCollected());

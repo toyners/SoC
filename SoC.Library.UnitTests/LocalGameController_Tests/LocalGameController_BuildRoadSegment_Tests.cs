@@ -592,7 +592,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       localGameController.BuildRoadSegment(turnToken, 1, 0); // Got 10VP, Game is over
 
       // Act
-      localGameController.BuildRoadSegment(turnToken, 44, 45);
+      localGameController.BuildRoadSegment(turnToken, LocalGameControllerTestCreator.MainRoadTwoEnd, 47);
 
       // Assert
       errorDetails.ShouldNotBeNull();
