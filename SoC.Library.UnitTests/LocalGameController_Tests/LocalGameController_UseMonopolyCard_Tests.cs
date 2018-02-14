@@ -154,7 +154,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
     {
       // Arrange
       var monopolyCard = new MonopolyDevelopmentCard();
-      var testInstances = this.TestSetup(monopolyCard, new MockGameBoardWithNoResourcesCollected());
+      var testInstances = this.TestSetup(new MockGameBoardWithNoResourcesCollected(), monopolyCard);
       var localGameController = testInstances.LocalGameController;
 
       testInstances.Dice.AddSequence(new[] { 3u });
@@ -204,7 +204,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
     {
       // Arrange
       var monopolyCard = new MonopolyDevelopmentCard();
-      var testInstances = this.TestSetup(monopolyCard, new MockGameBoardWithNoResourcesCollected());
+      var testInstances = this.TestSetup(new MockGameBoardWithNoResourcesCollected(), monopolyCard);
       var localGameController = testInstances.LocalGameController;
 
       testInstances.Dice.AddSequence(new[] { 3u });
@@ -246,11 +246,61 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
     }
 
     [Test]
+    public void UseMonopolyCard_GameIsOver_MeaningfulErrorIsReceived()
+    {
+      // Arrange
+      var testInstances = this.TestSetup(new MockGameBoardWithNoResourcesCollected(), new MonopolyDevelopmentCard());
+      var localGameController = testInstances.LocalGameController;
+
+      testInstances.Dice.AddSequence(new UInt32[] { 8, 8 });
+
+      var player = testInstances.MainPlayer;
+      player.AddResources(ResourceClutch.RoadSegment * 5);
+      player.AddResources(ResourceClutch.Settlement * 3);
+      player.AddResources(ResourceClutch.City * 4);
+      player.AddResources(ResourceClutch.DevelopmentCard);
+
+      TurnToken turnToken = null;
+      localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
+
+      ErrorDetails errorDetails = null;
+      localGameController.ErrorRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
+
+      MonopolyDevelopmentCard monopolyCard = null;
+      localGameController.DevelopmentCardPurchasedEvent = (DevelopmentCard d) => { monopolyCard = (MonopolyDevelopmentCard)d; };
+
+      localGameController.StartGamePlay();
+      localGameController.BuyDevelopmentCard(turnToken);
+      localGameController.EndTurn(turnToken);
+
+      localGameController.BuildRoadSegment(turnToken, 4u, 3u);
+      localGameController.BuildRoadSegment(turnToken, 3u, 2u);
+      localGameController.BuildRoadSegment(turnToken, 2u, 1u);
+      localGameController.BuildRoadSegment(turnToken, 1u, 0u); // Got 2VP for longest road (4VP)
+      localGameController.BuildRoadSegment(turnToken, 2u, 10u);
+
+      localGameController.BuildSettlement(turnToken, 3);
+      localGameController.BuildSettlement(turnToken, 10);
+
+      localGameController.BuildCity(turnToken, 3);
+      localGameController.BuildCity(turnToken, 10);
+      localGameController.BuildCity(turnToken, 12);
+      localGameController.BuildCity(turnToken, 40); // Got 10VP, Game over event raised
+
+      // Act
+      localGameController.UseMonopolyCard(turnToken, monopolyCard, ResourceTypes.Brick);
+
+      // Assert
+      errorDetails.ShouldNotBeNull();
+      errorDetails.Message.ShouldBe("Cannot use monopoly card. Game is over.");
+    }
+
+    [Test]
     public void Scenario_OpponentUsesMonopolyCardAndGetsResourcesFromPlayer()
     {
       // Arrange
       var monopolyCard = new MonopolyDevelopmentCard();
-      var testInstances = this.TestSetup(monopolyCard, new MockGameBoardWithNoResourcesCollected());
+      var testInstances = this.TestSetup(new MockGameBoardWithNoResourcesCollected(), monopolyCard);
       var localGameController = testInstances.LocalGameController;
 
       testInstances.Dice.AddSequence(new[] { 8u });
@@ -338,35 +388,27 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
 
     private LocalGameControllerTestCreator.TestInstances TestSetup()
     {
-      return this.TestSetup(new DevelopmentCardHolder());
+      return this.TestSetup(new DevelopmentCardHolder(), new GameBoardData(BoardSizes.Standard));
     }
 
-    private LocalGameControllerTestCreator.TestInstances TestSetup(IDevelopmentCardHolder developmentCardHolder)
+    private LocalGameControllerTestCreator.TestInstances TestSetup(IDevelopmentCardHolder developmentCardHolder, GameBoardData gameBoard)
     {
-      var testInstances = LocalGameControllerTestCreator.CreateTestInstances(developmentCardHolder);
-      LocalGameControllerTestSetup.LaunchGameAndCompleteSetup(testInstances.LocalGameController);
+      var testInstances = LocalGameControllerTestCreator.CreateTestInstances(null, developmentCardHolder, gameBoard);
       testInstances.Dice.AddSequence(new[] { 8u });
+
+      LocalGameControllerTestSetup.LaunchGameAndCompleteSetup(testInstances.LocalGameController);
       return testInstances;
     }
 
     private LocalGameControllerTestCreator.TestInstances TestSetup(DevelopmentCard firstDevelopmentCard, params DevelopmentCard[] otherDevelopmentCards)
     {
       var developmentCardHolder = this.CreateMockCardDevelopmentCardHolder(firstDevelopmentCard, otherDevelopmentCards);
-      return this.TestSetup(developmentCardHolder);
+      return this.TestSetup(developmentCardHolder, new GameBoardData(BoardSizes.Standard));
     }
 
-    private LocalGameControllerTestCreator.TestInstances TestSetup(DevelopmentCard developmentCard, GameBoardData gameBoard)
+    private LocalGameControllerTestCreator.TestInstances TestSetup(GameBoardData gameBoardData, DevelopmentCard firstDevelopmentCard, params DevelopmentCard[] otherDevelopmentCards)
     {
-      var testInstances = LocalGameControllerTestCreator.CreateTestInstances(
-        null,
-        this.CreateMockCardDevelopmentCardHolder(developmentCard),
-        gameBoard);
-      var localGameController = testInstances.LocalGameController;
-      LocalGameControllerTestSetup.LaunchGameAndCompleteSetup(localGameController);
-
-      testInstances.Dice.AddSequence(new[] { 8u });
-
-      return testInstances;
+      return this.TestSetup(this.CreateMockCardDevelopmentCardHolder(firstDevelopmentCard, otherDevelopmentCards), gameBoardData);
     }
     #endregion 
   }

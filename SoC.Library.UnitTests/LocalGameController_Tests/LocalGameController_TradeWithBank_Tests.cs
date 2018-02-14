@@ -167,7 +167,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
     }
 
     [Test]
-    public void BuildSettlement_GameIsOver_MeaningfulErrorIsReceived()
+    public void TradeWithBank_GameIsOver_MeaningfulErrorIsReceived()
     {
       // Arrange
       var testInstances = LocalGameControllerTestCreator.CreateTestInstances(new MockGameBoardWithNoResourcesCollected());

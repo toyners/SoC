@@ -447,13 +447,13 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
     }
 
     [Test]
-    public void BuildSettlement_GameIsOver_MeaningfulErrorIsReceived()
+    public void UseKnightCard_GameIsOver_MeaningfulErrorIsReceived()
     {
       // Arrange
       var testInstances = this.TestSetup(new MockGameBoardWithNoResourcesCollected(), new KnightDevelopmentCard());
       var localGameController = testInstances.LocalGameController;
 
-      testInstances.Dice.AddSequence(new[] { 8u });
+      testInstances.Dice.AddSequence(new UInt32[] { 8, 8 });
 
       var player = testInstances.MainPlayer;
       player.AddResources(ResourceClutch.RoadSegment * 5);
@@ -467,7 +467,13 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       ErrorDetails errorDetails = null;
       localGameController.ErrorRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
 
+      KnightDevelopmentCard knightCard = null;
+      localGameController.DevelopmentCardPurchasedEvent = (DevelopmentCard d) => { knightCard = (KnightDevelopmentCard)d; };
+
       localGameController.StartGamePlay();
+      localGameController.BuyDevelopmentCard(turnToken);
+      localGameController.EndTurn(turnToken);
+
       localGameController.BuildRoadSegment(turnToken, 4u, 3u);
       localGameController.BuildRoadSegment(turnToken, 3u, 2u);
       localGameController.BuildRoadSegment(turnToken, 2u, 1u);
@@ -483,7 +489,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       localGameController.BuildCity(turnToken, 40); // Got 10VP, Game over event raised
 
       // Act
-      localGameController.BuildSettlement(turnToken, 1);
+      localGameController.UseKnightCard(turnToken, knightCard, 4);
 
       // Assert
       errorDetails.ShouldNotBeNull();
@@ -1163,8 +1169,6 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
     private LocalGameControllerTestCreator.TestInstances TestSetup(GameBoardData gameBoardData, DevelopmentCard firstDevelopmentCard, params DevelopmentCard[] otherDevelopmentCards)
     {
       return this.TestSetup(this.CreateMockCardDevelopmentCardHolder(firstDevelopmentCard, otherDevelopmentCards), gameBoardData);
-      var developmentCardHolder = this.CreateMockCardDevelopmentCardHolder(firstDevelopmentCard, otherDevelopmentCards);
-      return this.TestSetup(developmentCardHolder, gameBoardData);
     }
     #endregion
   }
