@@ -405,60 +405,6 @@ namespace Jabberwocky.SoC.Library
       }
     }
 
-    private Boolean PlayerHasJustBuiltTheLongestRoad(out Guid previousPlayerId)
-    {
-      previousPlayerId = Guid.Empty;
-      if (this.currentPlayer.RoadSegmentsBuilt < 5)
-      {
-        return false;
-      }
-
-      Guid longestRoadPlayerId = Guid.Empty;
-      UInt32[] road = null;
-      if (this.gameBoard.TryGetLongestRoadDetails(out longestRoadPlayerId, out road) && road.Length > 5)
-      {
-        var longestRoadPlayer = this.playersById[longestRoadPlayerId];
-        if (longestRoadPlayer == this.currentPlayer && this.playerWithLongestRoad != longestRoadPlayer)
-        {
-          previousPlayerId = Guid.Empty;
-
-          if (this.playerWithLongestRoad != null)
-          {
-            this.playerWithLongestRoad.HasLongestRoad = false;
-            previousPlayerId = this.playerWithLongestRoad.Id;
-          }
-
-          this.playerWithLongestRoad = longestRoadPlayer;
-          this.playerWithLongestRoad.HasLongestRoad = true;
-          return true;
-        }
-      }
-
-      return false;
-    }
-
-    private Boolean PlayerHasJustBuiltTheLargestArmy(out Guid previousPlayerId)
-    {
-      previousPlayerId = Guid.Empty;
-      var playerWithMostKnightCards = this.DeterminePlayerWithMostKnightCards();
-      if (playerWithMostKnightCards == this.currentPlayer && this.playerWithLargestArmy != this.currentPlayer)
-      {
-        previousPlayerId = Guid.Empty;
-
-        if (this.playerWithLargestArmy != null)
-        {
-          this.playerWithLargestArmy.HasLargestArmy = false;
-          previousPlayerId = this.playerWithLargestArmy.Id;
-        }
-
-        this.playerWithLargestArmy = playerWithMostKnightCards;
-        this.playerWithLargestArmy.HasLargestArmy = true;
-        return true;
-      }
-
-      return false;
-    }
-
     public void FinalisePlayerTurnOrder()
     {
       if (this.GamePhase != GamePhases.FinalisePlayerTurnOrder)
@@ -1225,6 +1171,60 @@ namespace Jabberwocky.SoC.Library
       this.cardsPlayed.Add(developmentCard);
     }
 
+    private Boolean PlayerHasJustBuiltTheLargestArmy(out Guid previousPlayerId)
+    {
+      previousPlayerId = Guid.Empty;
+      var playerWithMostKnightCards = this.DeterminePlayerWithMostKnightCards();
+      if (playerWithMostKnightCards == this.currentPlayer && this.playerWithLargestArmy != this.currentPlayer)
+      {
+        previousPlayerId = Guid.Empty;
+
+        if (this.playerWithLargestArmy != null)
+        {
+          this.playerWithLargestArmy.HasLargestArmy = false;
+          previousPlayerId = this.playerWithLargestArmy.Id;
+        }
+
+        this.playerWithLargestArmy = playerWithMostKnightCards;
+        this.playerWithLargestArmy.HasLargestArmy = true;
+        return true;
+      }
+
+      return false;
+    }
+
+    private Boolean PlayerHasJustBuiltTheLongestRoad(out Guid previousPlayerId)
+    {
+      previousPlayerId = Guid.Empty;
+      if (this.currentPlayer.RoadSegmentsBuilt < 5)
+      {
+        return false;
+      }
+
+      Guid longestRoadPlayerId = Guid.Empty;
+      UInt32[] road = null;
+      if (this.gameBoard.TryGetLongestRoadDetails(out longestRoadPlayerId, out road) && road.Length > 5)
+      {
+        var longestRoadPlayer = this.playersById[longestRoadPlayerId];
+        if (longestRoadPlayer == this.currentPlayer && this.playerWithLongestRoad != longestRoadPlayer)
+        {
+          previousPlayerId = Guid.Empty;
+
+          if (this.playerWithLongestRoad != null)
+          {
+            this.playerWithLongestRoad.HasLongestRoad = false;
+            previousPlayerId = this.playerWithLongestRoad.Id;
+          }
+
+          this.playerWithLongestRoad = longestRoadPlayer;
+          this.playerWithLongestRoad.HasLongestRoad = true;
+          return true;
+        }
+      }
+
+      return false;
+    }
+
     private Boolean PlayerIdsIsEmptyOrOnlyContainsMainPlayer(Guid[] playerIds)
     {
       return playerIds == null || playerIds.Length == 0 ||
@@ -1263,135 +1263,6 @@ namespace Jabberwocky.SoC.Library
         this.ErrorRaisedEvent?.Invoke(new ErrorDetails("Cannot build road segment. Missing 1 lumber."));
         return;
       }
-    }
-
-    private Boolean VerifyRoadSegmentPlacing(UInt32 settlementLocation, UInt32 roadEndLocation)
-    {
-      var placeRoadStatus = this.gameBoard.CanPlaceRoad(this.currentPlayer.Id, settlementLocation, roadEndLocation);
-      return this.VerifyRoadSegmentPlacing(placeRoadStatus, settlementLocation, roadEndLocation);
-    }
-
-    private Boolean VerifyRoadSegmentPlacing(GameBoardData.VerificationResults verificationResults, UInt32 settlementLocation, UInt32 roadEndLocation)
-    {
-      if (verificationResults.Status == GameBoardData.VerificationStatus.RoadIsOffBoard)
-      {
-        this.ErrorRaisedEvent?.Invoke(new ErrorDetails("Cannot build road segment. Locations " + settlementLocation + " and/or " + roadEndLocation + " are outside of board range (0 - 53)."));
-        return false;
-      }
-
-      if (verificationResults.Status == GameBoardData.VerificationStatus.NoDirectConnection)
-      {
-        this.ErrorRaisedEvent?.Invoke(new ErrorDetails("Cannot build road segment. No direct connection between locations [" + settlementLocation + ", " + roadEndLocation + "]."));
-        return false;
-      }
-
-      if (verificationResults.Status == GameBoardData.VerificationStatus.RoadIsOccupied)
-      {
-        this.ErrorRaisedEvent?.Invoke(new ErrorDetails("Cannot build road segment. Road segment between " + settlementLocation + " and " + roadEndLocation + " already exists."));
-        return false;
-      }
-
-      if (verificationResults.Status == GameBoardData.VerificationStatus.RoadNotConnectedToExistingRoad)
-      {
-        this.ErrorRaisedEvent?.Invoke(new ErrorDetails("Cannot build road segment. Road segment [" + settlementLocation + ", " + roadEndLocation + "] not connected to existing road segment."));
-        return false;
-      }
-
-      return true;
-    }
-
-    private Boolean VerifySettlementBuilding()
-    {
-      if (this.mainPlayer.RemainingSettlements == 0)
-      {
-        this.ErrorRaisedEvent?.Invoke(new ErrorDetails("Cannot build settlement. All settlements already built."));
-        return false;
-      }
-
-      String message = null;
-      if (this.mainPlayer.BrickCount == 0)
-      {
-        message += "1 brick and ";
-      }
-
-      if (this.mainPlayer.GrainCount == 0)
-      {
-        message += "1 grain and ";
-      }
-
-      if (this.mainPlayer.LumberCount == 0)
-      {
-        message += "1 lumber and ";
-      }
-
-      if (this.mainPlayer.WoolCount == 0)
-      {
-        message += "1 wool and ";
-      }
-
-      if (message != null)
-      {
-        message = message.Substring(0, message.Length - " and ".Length);
-        message += ".";
-        message = "Cannot build settlement. Missing " + message;
-        this.ErrorRaisedEvent?.Invoke(new ErrorDetails(message));
-        return false;
-      }
-
-      return true;
-    }
-
-    private Boolean VerifySettlementPlacing(UInt32 settlementLocation)
-    {
-      var verificationResults = this.gameBoard.CanPlaceSettlement(this.mainPlayer.Id, settlementLocation);
-      return this.VerifySettlementPlacing(verificationResults, settlementLocation);
-    }
-
-    private Boolean VerifySettlementPlacing(GameBoardData.VerificationResults verificationResults, UInt32 settlementLocation)
-    {
-      if (verificationResults.Status == GameBoardData.VerificationStatus.LocationForSettlementIsInvalid)
-      {
-        this.ErrorRaisedEvent(new ErrorDetails("Cannot build settlement. Location " + settlementLocation + " is outside of board range (0 - 53)."));
-        return false;
-      }
-
-      if (verificationResults.Status == GameBoardData.VerificationStatus.TooCloseToSettlement)
-      {
-        var player = this.playersById[verificationResults.PlayerId];
-        if (player == this.currentPlayer)
-        {
-          this.ErrorRaisedEvent(new ErrorDetails("Cannot build settlement. Too close to own settlement at location " + verificationResults.LocationIndex + "."));
-        }
-        else
-        {
-          this.ErrorRaisedEvent(new ErrorDetails("Cannot build settlement. Too close to player '" + player.Name + "' at location " + verificationResults.LocationIndex + "."));
-        }
-
-        return false;
-      }
-
-      if (verificationResults.Status == GameBoardData.VerificationStatus.LocationIsOccupied)
-      {
-        var player = this.playersById[verificationResults.PlayerId];
-        if (player == this.currentPlayer)
-        {
-          this.ErrorRaisedEvent(new ErrorDetails("Cannot build settlement. Location " + verificationResults.LocationIndex + " already settled by you."));
-        }
-        else
-        {
-          this.ErrorRaisedEvent(new ErrorDetails("Cannot build settlement. Location " + settlementLocation + " already settled by player '" + player.Name + "'."));
-        }
-
-        return false;
-      }
-
-      if (verificationResults.Status == GameBoardData.VerificationStatus.SettlementNotConnectedToExistingRoad)
-      {
-        this.ErrorRaisedEvent(new ErrorDetails("Cannot build settlement. Location " + verificationResults.LocationIndex + " not connected to existing road."));
-        return false;
-      }
-
-      return true;
     }
 
     private Boolean VerifyBuildCityRequest(UInt32 location)
@@ -1482,9 +1353,9 @@ namespace Jabberwocky.SoC.Library
         this.TryRaiseRoadSegmentBuildingError();
         return false;
       }
-      
+
       if (!this.VerifyRoadSegmentPlacing(roadStartLocation, roadEndLocation))
-      { 
+      {
         return false;
       }
 
@@ -1617,6 +1488,135 @@ namespace Jabberwocky.SoC.Library
       if (newRobberHex == this.robberHex)
       {
         this.ErrorRaisedEvent?.Invoke(new ErrorDetails("Cannot place robber back on present hex (" + this.robberHex + ")."));
+        return false;
+      }
+
+      return true;
+    }
+
+    private Boolean VerifyRoadSegmentPlacing(UInt32 settlementLocation, UInt32 roadEndLocation)
+    {
+      var placeRoadStatus = this.gameBoard.CanPlaceRoad(this.currentPlayer.Id, settlementLocation, roadEndLocation);
+      return this.VerifyRoadSegmentPlacing(placeRoadStatus, settlementLocation, roadEndLocation);
+    }
+
+    private Boolean VerifyRoadSegmentPlacing(GameBoardData.VerificationResults verificationResults, UInt32 settlementLocation, UInt32 roadEndLocation)
+    {
+      if (verificationResults.Status == GameBoardData.VerificationStatus.RoadIsOffBoard)
+      {
+        this.ErrorRaisedEvent?.Invoke(new ErrorDetails("Cannot build road segment. Locations " + settlementLocation + " and/or " + roadEndLocation + " are outside of board range (0 - 53)."));
+        return false;
+      }
+
+      if (verificationResults.Status == GameBoardData.VerificationStatus.NoDirectConnection)
+      {
+        this.ErrorRaisedEvent?.Invoke(new ErrorDetails("Cannot build road segment. No direct connection between locations [" + settlementLocation + ", " + roadEndLocation + "]."));
+        return false;
+      }
+
+      if (verificationResults.Status == GameBoardData.VerificationStatus.RoadIsOccupied)
+      {
+        this.ErrorRaisedEvent?.Invoke(new ErrorDetails("Cannot build road segment. Road segment between " + settlementLocation + " and " + roadEndLocation + " already exists."));
+        return false;
+      }
+
+      if (verificationResults.Status == GameBoardData.VerificationStatus.RoadNotConnectedToExistingRoad)
+      {
+        this.ErrorRaisedEvent?.Invoke(new ErrorDetails("Cannot build road segment. Road segment [" + settlementLocation + ", " + roadEndLocation + "] not connected to existing road segment."));
+        return false;
+      }
+
+      return true;
+    }
+
+    private Boolean VerifySettlementBuilding()
+    {
+      if (this.mainPlayer.RemainingSettlements == 0)
+      {
+        this.ErrorRaisedEvent?.Invoke(new ErrorDetails("Cannot build settlement. All settlements already built."));
+        return false;
+      }
+
+      String message = null;
+      if (this.mainPlayer.BrickCount == 0)
+      {
+        message += "1 brick and ";
+      }
+
+      if (this.mainPlayer.GrainCount == 0)
+      {
+        message += "1 grain and ";
+      }
+
+      if (this.mainPlayer.LumberCount == 0)
+      {
+        message += "1 lumber and ";
+      }
+
+      if (this.mainPlayer.WoolCount == 0)
+      {
+        message += "1 wool and ";
+      }
+
+      if (message != null)
+      {
+        message = message.Substring(0, message.Length - " and ".Length);
+        message += ".";
+        message = "Cannot build settlement. Missing " + message;
+        this.ErrorRaisedEvent?.Invoke(new ErrorDetails(message));
+        return false;
+      }
+
+      return true;
+    }
+
+    private Boolean VerifySettlementPlacing(UInt32 settlementLocation)
+    {
+      var verificationResults = this.gameBoard.CanPlaceSettlement(this.mainPlayer.Id, settlementLocation);
+      return this.VerifySettlementPlacing(verificationResults, settlementLocation);
+    }
+
+    private Boolean VerifySettlementPlacing(GameBoardData.VerificationResults verificationResults, UInt32 settlementLocation)
+    {
+      if (verificationResults.Status == GameBoardData.VerificationStatus.LocationForSettlementIsInvalid)
+      {
+        this.ErrorRaisedEvent(new ErrorDetails("Cannot build settlement. Location " + settlementLocation + " is outside of board range (0 - 53)."));
+        return false;
+      }
+
+      if (verificationResults.Status == GameBoardData.VerificationStatus.TooCloseToSettlement)
+      {
+        var player = this.playersById[verificationResults.PlayerId];
+        if (player == this.currentPlayer)
+        {
+          this.ErrorRaisedEvent(new ErrorDetails("Cannot build settlement. Too close to own settlement at location " + verificationResults.LocationIndex + "."));
+        }
+        else
+        {
+          this.ErrorRaisedEvent(new ErrorDetails("Cannot build settlement. Too close to player '" + player.Name + "' at location " + verificationResults.LocationIndex + "."));
+        }
+
+        return false;
+      }
+
+      if (verificationResults.Status == GameBoardData.VerificationStatus.LocationIsOccupied)
+      {
+        var player = this.playersById[verificationResults.PlayerId];
+        if (player == this.currentPlayer)
+        {
+          this.ErrorRaisedEvent(new ErrorDetails("Cannot build settlement. Location " + verificationResults.LocationIndex + " already settled by you."));
+        }
+        else
+        {
+          this.ErrorRaisedEvent(new ErrorDetails("Cannot build settlement. Location " + settlementLocation + " already settled by player '" + player.Name + "'."));
+        }
+
+        return false;
+      }
+
+      if (verificationResults.Status == GameBoardData.VerificationStatus.SettlementNotConnectedToExistingRoad)
+      {
+        this.ErrorRaisedEvent(new ErrorDetails("Cannot build settlement. Location " + verificationResults.LocationIndex + " not connected to existing road."));
         return false;
       }
 
