@@ -1236,74 +1236,6 @@ namespace Jabberwocky.SoC.Library
       this.robberHex = newRobberHex;
     }
 
-    private void TryRaiseCityBuildingError()
-    {
-      if (this.currentPlayer.RemainingCities == 0)
-      {
-        this.ErrorRaisedEvent?.Invoke(new ErrorDetails("Cannot build city. All cities already built."));
-        return;
-      }
-
-      if (this.currentPlayer.GrainCount < Constants.GrainForBuildingCity && this.currentPlayer.OreCount < Constants.OreForBuildingCity)
-      {
-        var missingGrainCount = (Constants.GrainForBuildingCity - this.currentPlayer.GrainCount);
-        var missingOreCount = (Constants.OreForBuildingCity - this.currentPlayer.OreCount);
-        this.ErrorRaisedEvent?.Invoke(new ErrorDetails("Cannot build city. Missing " + missingGrainCount + " grain and " + missingOreCount + " ore."));
-        return;
-      }
-
-      if (this.currentPlayer.GrainCount < Constants.GrainForBuildingCity)
-      {
-        var missingGrainCount = (Constants.GrainForBuildingCity - this.currentPlayer.GrainCount);
-        this.ErrorRaisedEvent?.Invoke(new ErrorDetails("Cannot build city. Missing " + missingGrainCount + " grain."));
-        return;
-      }
-
-      if (this.currentPlayer.OreCount < Constants.OreForBuildingCity)
-      {
-        var missingOreCount = (Constants.OreForBuildingCity - this.currentPlayer.OreCount);
-        this.ErrorRaisedEvent?.Invoke(new ErrorDetails("Cannot build city. Missing " + missingOreCount + " ore."));
-        return;
-      }
-    }
-
-    private void TryRaiseCityPlacingError(GameBoardData.VerificationResults verificationResults, UInt32 location)
-    {
-      if (verificationResults.Status == GameBoardData.VerificationStatus.LocationForCityIsInvalid)
-      {
-        this.ErrorRaisedEvent?.Invoke(new ErrorDetails("Cannot build city. Location " + location + " is outside of board range (0 - 53)."));
-        return;
-      }
-
-      if (verificationResults.Status == GameBoardData.VerificationStatus.LocationIsNotOwned)
-      {
-        var player = this.playersById[verificationResults.PlayerId];
-        this.ErrorRaisedEvent?.Invoke(new ErrorDetails("Cannot build city. Location " + location + " is owned by player '" + player.Name + "'."));
-        return;
-      }
-
-      if (verificationResults.Status == GameBoardData.VerificationStatus.LocationIsNotSettled)
-      {
-        this.ErrorRaisedEvent?.Invoke(new ErrorDetails("Cannot build city. No settlement at location " + location + "."));
-        return;
-      }
-
-      if (verificationResults.Status == GameBoardData.VerificationStatus.LocationIsAlreadyCity)
-      {
-        var player = this.playersById[verificationResults.PlayerId];
-        if (player == this.currentPlayer)
-        {
-          this.ErrorRaisedEvent?.Invoke(new ErrorDetails("Cannot build city. There is already a city at location " + location + " that belongs to you."));
-        }
-        else
-        {
-          this.ErrorRaisedEvent?.Invoke(new ErrorDetails("Cannot build city. There is already a city at location " + location + " belonging to '" + player.Name + "'."));
-        }
-
-        return;
-      }
-    }
-
     private void TryRaiseRoadSegmentBuildingError()
     {
       if (this.currentPlayer.RemainingRoadSegments == 0)
@@ -1459,16 +1391,67 @@ namespace Jabberwocky.SoC.Library
         return false;
       }
 
-      if (!this.CanBuildCity())
+      if (this.currentPlayer.RemainingCities == 0)
       {
-        this.TryRaiseCityBuildingError();
+        this.ErrorRaisedEvent?.Invoke(new ErrorDetails("Cannot build city. All cities already built."));
+        return false;
+      }
+
+      if (this.currentPlayer.GrainCount < Constants.GrainForBuildingCity && this.currentPlayer.OreCount < Constants.OreForBuildingCity)
+      {
+        var missingGrainCount = (Constants.GrainForBuildingCity - this.currentPlayer.GrainCount);
+        var missingOreCount = (Constants.OreForBuildingCity - this.currentPlayer.OreCount);
+        this.ErrorRaisedEvent?.Invoke(new ErrorDetails("Cannot build city. Missing " + missingGrainCount + " grain and " + missingOreCount + " ore."));
+        return false;
+      }
+
+      if (this.currentPlayer.GrainCount < Constants.GrainForBuildingCity)
+      {
+        var missingGrainCount = (Constants.GrainForBuildingCity - this.currentPlayer.GrainCount);
+        this.ErrorRaisedEvent?.Invoke(new ErrorDetails("Cannot build city. Missing " + missingGrainCount + " grain."));
+        return false;
+      }
+
+      if (this.currentPlayer.OreCount < Constants.OreForBuildingCity)
+      {
+        var missingOreCount = (Constants.OreForBuildingCity - this.currentPlayer.OreCount);
+        this.ErrorRaisedEvent?.Invoke(new ErrorDetails("Cannot build city. Missing " + missingOreCount + " ore."));
         return false;
       }
 
       var placeCityResults = this.gameBoard.CanPlaceCity(this.currentPlayer.Id, location);
-      if (placeCityResults.Status != GameBoardData.VerificationStatus.Valid)
+
+      if (placeCityResults.Status == GameBoardData.VerificationStatus.LocationForCityIsInvalid)
       {
-        this.TryRaiseCityPlacingError(placeCityResults, location);
+        this.ErrorRaisedEvent?.Invoke(new ErrorDetails("Cannot build city. Location " + location + " is outside of board range (0 - 53)."));
+        return false;
+      }
+
+      if (placeCityResults.Status == GameBoardData.VerificationStatus.LocationIsNotOwned)
+      {
+        var player = this.playersById[placeCityResults.PlayerId];
+        this.ErrorRaisedEvent?.Invoke(new ErrorDetails("Cannot build city. Location " + location + " is owned by player '" + player.Name + "'."));
+        return false;
+      }
+
+      if (placeCityResults.Status == GameBoardData.VerificationStatus.LocationIsNotSettled)
+      {
+        this.ErrorRaisedEvent?.Invoke(new ErrorDetails("Cannot build city. No settlement at location " + location + "."));
+        return false;
+      }
+
+      if (placeCityResults.Status == GameBoardData.VerificationStatus.LocationIsAlreadyCity)
+      {
+        var player = this.playersById[placeCityResults.PlayerId];
+        if (player == this.currentPlayer)
+        {
+          this.ErrorRaisedEvent?.Invoke(new ErrorDetails("Cannot build city. There is already a city at location " + location + " that belongs to you."));
+        }
+        else
+        {
+          this.ErrorRaisedEvent?.Invoke(new ErrorDetails("Cannot build city. There is already a city at location " + location + " belonging to '" + player.Name + "'."));
+        }
+
         return false;
       }
 
