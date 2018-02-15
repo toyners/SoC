@@ -931,6 +931,7 @@ namespace Jabberwocky.SoC.Library
       if (this.mainPlayer.VictoryPoints >= 10)
       {
         this.GameOverEvent?.Invoke(this.mainPlayer.Id);
+        this.GamePhase = GamePhases.GameOver;
       }
     }
 
@@ -1460,6 +1461,12 @@ namespace Jabberwocky.SoC.Library
 
     private Boolean VerifyBuildRoadSegmentRequest(UInt32 roadStartLocation, UInt32 roadEndLocation)
     {
+      if (this.GamePhase == GamePhases.GameOver)
+      {
+        this.ErrorRaisedEvent?.Invoke(new ErrorDetails("Cannot build road segment. Game is over."));
+        return false;
+      }
+
       if (!this.CanBuildRoadSegment())
       {
         this.TryRaiseRoadSegmentBuildingError();
