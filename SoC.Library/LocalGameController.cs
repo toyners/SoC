@@ -688,12 +688,6 @@ namespace Jabberwocky.SoC.Library
         return;
       }
 
-      if (receivingCount <= 0)
-      {
-        this.ErrorRaisedEvent?.Invoke(new ErrorDetails("Cannot complete trade with bank: Receiving count must be positive. Was " + receivingCount + "."));
-        return;
-      }
-
       Int32 resourceCount = 0;
       switch (givingResourceType)
       {
@@ -704,10 +698,8 @@ namespace Jabberwocky.SoC.Library
         case ResourceTypes.Wool: resourceCount = this.mainPlayer.WoolCount; break;
       }
 
-      if (resourceCount < receivingCount * 4)
+      if (!this.VerifyTradeWithBank(receivingCount, resourceCount, givingResourceType, receivingResourceType))
       {
-        var errorMessage = "Cannot complete trade with bank: Need to pay " + (receivingCount * 4) + " " + givingResourceType.ToString().ToLower() + " for " + receivingCount + " " + receivingResourceType.ToString().ToLower() + ". Only paying " + resourceCount + ".";
-        this.ErrorRaisedEvent?.Invoke(new ErrorDetails(errorMessage));
         return;
       }
 
@@ -729,7 +721,7 @@ namespace Jabberwocky.SoC.Library
 
     public void UseKnightCard(TurnToken turnToken, KnightDevelopmentCard developmentCard, UInt32 newRobberHex)
     {
-      if (!this.VerifyParametersForUsingDevelopmentCard(turnToken, developmentCard))
+      if (!this.VerifyParametersForUsingDevelopmentCard(turnToken, developmentCard, "knight"))
       {
         return;
       }
@@ -755,7 +747,7 @@ namespace Jabberwocky.SoC.Library
 
     public void UseKnightCard(TurnToken turnToken, KnightDevelopmentCard developmentCard, UInt32 newRobberHex, Guid playerId)
     {
-      if (!this.VerifyParametersForUsingDevelopmentCard(turnToken, developmentCard))
+      if (!this.VerifyParametersForUsingDevelopmentCard(turnToken, developmentCard, "knight"))
       {
         return;
       }
@@ -777,7 +769,7 @@ namespace Jabberwocky.SoC.Library
 
     public void UseMonopolyCard(TurnToken turnToken, MonopolyDevelopmentCard monopolyCard, ResourceTypes resourceType)
     {
-      if (!this.VerifyParametersForUsingDevelopmentCard(turnToken, monopolyCard))
+      if (!this.VerifyParametersForUsingDevelopmentCard(turnToken, monopolyCard, "monopoly"))
       {
         return;
       }
@@ -796,7 +788,7 @@ namespace Jabberwocky.SoC.Library
 
     public void UseYearOfPlentyCard(TurnToken turnToken, YearOfPlentyDevelopmentCard yearOfPlentyCard, ResourceTypes firstChoice, ResourceTypes secondChoice)
     {
-      if (!this.VerifyParametersForUsingDevelopmentCard(turnToken, yearOfPlentyCard))
+      if (!this.VerifyParametersForUsingDevelopmentCard(turnToken, yearOfPlentyCard, "year of plenty"))
       {
         return;
       }
@@ -1375,6 +1367,12 @@ namespace Jabberwocky.SoC.Library
 
     private Boolean VerifyBuyDevelopmentCardRequest()
     {
+      if (this.GamePhase == GamePhases.GameOver)
+      {
+        this.ErrorRaisedEvent?.Invoke(new ErrorDetails("Cannot buy development card. Game is over."));
+        return false;
+      }
+
       if (!this.developmentCardHolder.HasCards)
       {
         this.ErrorRaisedEvent?.Invoke(new ErrorDetails("Cannot buy development card. No more cards available"));
@@ -1443,10 +1441,16 @@ namespace Jabberwocky.SoC.Library
       return true;
     }
 
-    private Boolean VerifyParametersForUsingDevelopmentCard(TurnToken turnToken, DevelopmentCard developmentCard)
+    private Boolean VerifyParametersForUsingDevelopmentCard(TurnToken turnToken, DevelopmentCard developmentCard, String shortCardType)
     {
       if (!this.VerifyTurnToken(turnToken))
       {
+        return false;
+      }
+
+      if (this.GamePhase == GamePhases.GameOver)
+      {
+        this.ErrorRaisedEvent?.Invoke(new ErrorDetails("Cannot use " + shortCardType + " card. Game is over."));
         return false;
       }
 
@@ -1627,6 +1631,30 @@ namespace Jabberwocky.SoC.Library
     {
       var verificationResults = this.gameBoard.CanPlaceStartingInfrastructure(this.mainPlayer.Id, settlementLocation, roadEndLocation);
       return this.VerifySettlementPlacing(verificationResults, settlementLocation) && this.VerifyRoadSegmentPlacing(verificationResults, settlementLocation, roadEndLocation);
+    }
+
+    private Boolean VerifyTradeWithBank(Int32 receivingCount, Int32 resourceCount, ResourceTypes givingResourceType, ResourceTypes receivingResourceType)
+    {
+      if (this.GamePhase == GamePhases.GameOver)
+      {
+        this.ErrorRaisedEvent?.Invoke(new ErrorDetails("Cannot trade with bank. Game is over."));
+        return false;
+      }
+
+      if (receivingCount <= 0)
+      {
+        this.ErrorRaisedEvent?.Invoke(new ErrorDetails("Cannot complete trade with bank: Receiving count must be positive. Was " + receivingCount + "."));
+        return false;
+      }
+
+      if (resourceCount < receivingCount * 4)
+      {
+        var errorMessage = "Cannot complete trade with bank: Need to pay " + (receivingCount * 4) + " " + givingResourceType.ToString().ToLower() + " for " + receivingCount + " " + receivingResourceType.ToString().ToLower() + ". Only paying " + resourceCount + ".";
+        this.ErrorRaisedEvent?.Invoke(new ErrorDetails(errorMessage));
+        return false;
+      }
+
+      return true;
     }
 
     private Boolean VerifyTurnToken(TurnToken turnToken)
