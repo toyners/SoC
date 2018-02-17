@@ -527,8 +527,8 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       // Assert
       var expectedWinningGameEvent = new GameWinEvent(firstOpponent.Id);
 
-      events.Count.ShouldBe(11);
-      events[10].ShouldBe(expectedWinningGameEvent);
+      events.Count.ShouldBe(12);
+      events[11].ShouldBe(expectedWinningGameEvent);
       firstOpponent.VictoryPoints.ShouldBe(10u);
     }
     #endregion

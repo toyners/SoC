@@ -108,6 +108,14 @@ namespace Jabberwocky.SoC.Library
       }
 
       this.BuildCity(location);
+
+      this.CityBuiltEvent?.Invoke();
+
+      if (this.mainPlayer.VictoryPoints >= 10)
+      {
+        this.GameOverEvent?.Invoke(this.mainPlayer.Id);
+        this.GamePhase = GamePhases.GameOver;
+      }
     }
 
     public void BuildRoadSegment(TurnToken turnToken, UInt32 roadStartLocation, UInt32 roadEndLocation)
@@ -260,6 +268,12 @@ namespace Jabberwocky.SoC.Library
               this.BuildCity(location);
 
               events.Add(new CityBuiltEvent(computerPlayer.Id, location));
+
+              if (computerPlayer.VictoryPoints >= 10)
+              {
+                events.Add(new GameWinEvent(computerPlayer.Id));
+              }
+
               break;
             }
 
@@ -845,13 +859,6 @@ namespace Jabberwocky.SoC.Library
     {
       this.gameBoard.PlaceCity(this.currentPlayer.Id, location);
       this.currentPlayer.PlaceCity();
-      this.CityBuiltEvent?.Invoke();
-
-      if (this.mainPlayer.VictoryPoints >= 10)
-      {
-        this.GameOverEvent?.Invoke(this.mainPlayer.Id);
-        this.GamePhase = GamePhases.GameOver;
-      }
     }
 
     private void BuildRoadSegment(UInt32 roadStartLocation, UInt32 roadEndLocation)
