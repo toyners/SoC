@@ -756,6 +756,7 @@ namespace Jabberwocky.SoC.Library
       if (this.mainPlayer.VictoryPoints >= 10)
       {
         this.GameOverEvent?.Invoke(this.mainPlayer.Id);
+        this.GamePhase = GamePhases.GameOver;
       }
     }
 

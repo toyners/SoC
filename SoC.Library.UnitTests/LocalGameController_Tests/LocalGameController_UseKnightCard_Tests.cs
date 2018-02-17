@@ -450,16 +450,16 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
     public void UseKnightCard_GameIsOver_MeaningfulErrorIsReceived()
     {
       // Arrange
-      var testInstances = this.TestSetup(new MockGameBoardWithNoResourcesCollected(), new KnightDevelopmentCard());
+      var testInstances = this.TestSetup(new MockGameBoardWithNoResourcesCollected(), new KnightDevelopmentCard(), new KnightDevelopmentCard(), new KnightDevelopmentCard(), new KnightDevelopmentCard());
       var localGameController = testInstances.LocalGameController;
 
-      testInstances.Dice.AddSequence(new UInt32[] { 8, 8 });
+      testInstances.Dice.AddSequence(new UInt32[] { 8, 8, 8, 8, 8, 8, 8 });
 
       var player = testInstances.MainPlayer;
       player.AddResources(ResourceClutch.RoadSegment * 5);
       player.AddResources(ResourceClutch.Settlement * 3);
       player.AddResources(ResourceClutch.City * 4);
-      player.AddResources(ResourceClutch.DevelopmentCard);
+      player.AddResources(ResourceClutch.DevelopmentCard * 4);
 
       TurnToken turnToken = null;
       localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
@@ -467,10 +467,19 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       ErrorDetails errorDetails = null;
       localGameController.ErrorRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
 
-      KnightDevelopmentCard knightCard = null;
-      localGameController.DevelopmentCardPurchasedEvent = (DevelopmentCard d) => { knightCard = (KnightDevelopmentCard)d; };
+      Queue<KnightDevelopmentCard> knightCards = new Queue<KnightDevelopmentCard>();
+      localGameController.DevelopmentCardPurchasedEvent = (DevelopmentCard d) => { knightCards.Enqueue((KnightDevelopmentCard)d); };
 
       localGameController.StartGamePlay();
+      localGameController.BuyDevelopmentCard(turnToken);
+      localGameController.EndTurn(turnToken);
+
+      localGameController.BuyDevelopmentCard(turnToken);
+      localGameController.EndTurn(turnToken);
+
+      localGameController.BuyDevelopmentCard(turnToken);
+      localGameController.EndTurn(turnToken);
+
       localGameController.BuyDevelopmentCard(turnToken);
       localGameController.EndTurn(turnToken);
 
@@ -486,10 +495,18 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       localGameController.BuildCity(turnToken, 3);
       localGameController.BuildCity(turnToken, 10);
       localGameController.BuildCity(turnToken, 12);
-      localGameController.BuildCity(turnToken, 40); // Got 10VP, Game over event raised
+
+      localGameController.UseKnightCard(turnToken, knightCards.Dequeue(), 4);
+      localGameController.EndTurn(turnToken);
+
+      localGameController.UseKnightCard(turnToken, knightCards.Dequeue(), 0);
+      localGameController.EndTurn(turnToken);
+
+      localGameController.UseKnightCard(turnToken, knightCards.Dequeue(), 4); // Got 10VP,  Game over event raised.
+      localGameController.EndTurn(turnToken);
 
       // Act
-      localGameController.UseKnightCard(turnToken, knightCard, 4);
+      localGameController.UseKnightCard(turnToken, knightCards.Dequeue(), 0);
 
       // Assert
       errorDetails.ShouldNotBeNull();
