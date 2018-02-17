@@ -560,6 +560,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       events.Count.ShouldBe(13);
       events[12].ShouldBe(expectedWinningGameEvent);
       firstOpponent.VictoryPoints.ShouldBe(10u);
+      localGameController.GamePhase.ShouldBe(LocalGameController.GamePhases.GameOver);
     }
     #endregion 
   }
