@@ -111,7 +111,7 @@ namespace Jabberwocky.SoC.Library
 
       this.CityBuiltEvent?.Invoke();
 
-      this.CheckForWinner();
+      this.CheckMainPlayerIsWinner();
     }
 
     public void BuildRoadSegment(TurnToken turnToken, UInt32 roadStartLocation, UInt32 roadEndLocation)
@@ -122,8 +122,15 @@ namespace Jabberwocky.SoC.Library
       }
 
       this.BuildRoadSegment(roadStartLocation, roadEndLocation);
+      this.RoadSegmentBuiltEvent?.Invoke();
 
-      this.CheckForWinner();
+      Guid previousPlayerWithLongestRoadId;
+      if (this.PlayerHasJustBuiltTheLongestRoad(out previousPlayerWithLongestRoadId))
+      {
+        this.LongestRoadBuiltEvent?.Invoke(previousPlayerWithLongestRoadId, this.mainPlayer.Id);
+      }
+
+      this.CheckMainPlayerIsWinner();
     }
 
     public void BuildSettlement(TurnToken turnToken, UInt32 location)
@@ -134,8 +141,9 @@ namespace Jabberwocky.SoC.Library
       }
 
       this.BuildSettlement(location);
+      this.SettlementBuiltEvent?.Invoke();
 
-      this.CheckForWinner();
+      this.CheckMainPlayerIsWinner();
     }
 
     public void BuyDevelopmentCard(TurnToken turnToken)
@@ -249,7 +257,7 @@ namespace Jabberwocky.SoC.Library
         return;
       }
 
-      this.EndTurn();
+      this.ClearDevelopmentCardProcessingForTurn();
       this.ChangeToNextPlayer();
 
       while (this.currentPlayer.IsComputer)
@@ -269,10 +277,7 @@ namespace Jabberwocky.SoC.Library
 
               events.Add(new CityBuiltEvent(computerPlayer.Id, location));
 
-              if (computerPlayer.VictoryPoints >= 10)
-              {
-                events.Add(new GameWinEvent(computerPlayer.Id));
-              }
+              this.CheckComputerPlayerIsWinner(computerPlayer, events);
 
               break;
             }
@@ -281,8 +286,7 @@ namespace Jabberwocky.SoC.Library
             {
               UInt32 roadStartLocation, roadEndLocation;
               computerPlayer.ChooseRoad(this.gameBoard, out roadStartLocation, out roadEndLocation);
-              this.gameBoard.PlaceRoadSegment(this.currentPlayer.Id, roadStartLocation, roadEndLocation);
-              computerPlayer.PlaceRoadSegment();
+              this.BuildRoadSegment(roadStartLocation, roadEndLocation);
 
               events.Add(new RoadSegmentBuiltEvent(computerPlayer.Id, roadStartLocation, roadEndLocation));
 
@@ -291,6 +295,8 @@ namespace Jabberwocky.SoC.Library
               {
                 events.Add(new LongestRoadBuiltEvent(computerPlayer.Id, previousPlayerWithLongestRoadId));
               }
+
+              this.CheckComputerPlayerIsWinner(computerPlayer, events);
 
               break;
             }
@@ -301,6 +307,9 @@ namespace Jabberwocky.SoC.Library
               this.BuildSettlement(location);
 
               events.Add(new SettlementBuiltEvent(computerPlayer.Id, location));
+
+              this.CheckComputerPlayerIsWinner(computerPlayer, events);
+
               break;
             }
 
@@ -337,6 +346,8 @@ namespace Jabberwocky.SoC.Library
               {
                 events.Add(new LargestArmyChangedEvent(previousPlayerId, this.playerWithLargestArmy.Id));
               }
+
+              this.CheckComputerPlayerIsWinner(computerPlayer, events);
 
               break;
             }
@@ -396,7 +407,7 @@ namespace Jabberwocky.SoC.Library
           this.OpponentActionsEvent?.Invoke(computerPlayer.Id, events);
         }
 
-        this.EndTurn();
+        this.ClearDevelopmentCardProcessingForTurn();
         this.ChangeToNextPlayer();
       }
 
@@ -827,20 +838,12 @@ namespace Jabberwocky.SoC.Library
     {
       this.gameBoard.PlaceRoadSegment(this.currentPlayer.Id, roadStartLocation, roadEndLocation);
       this.currentPlayer.PlaceRoadSegment();
-      this.RoadSegmentBuiltEvent?.Invoke();
-
-      Guid previousPlayerWithLongestRoadId;
-      if (this.PlayerHasJustBuiltTheLongestRoad(out previousPlayerWithLongestRoadId))
-      {
-        this.LongestRoadBuiltEvent?.Invoke(previousPlayerWithLongestRoadId, this.mainPlayer.Id);
-      }
     }
 
     private void BuildSettlement(UInt32 location)
     {
       this.gameBoard.PlaceSettlement(this.currentPlayer.Id, location);
       this.currentPlayer.PlaceSettlement();
-      this.SettlementBuiltEvent?.Invoke();
     }
 
     private DevelopmentCard BuyDevelopmentCard()
@@ -888,7 +891,16 @@ namespace Jabberwocky.SoC.Library
       this.currentPlayer = this.players[this.playerIndex];
     }
 
-    private void CheckForWinner()
+    private void CheckComputerPlayerIsWinner(IComputerPlayer computerPlayer, List<GameEvent> events)
+    {
+      if (computerPlayer.VictoryPoints >= 10)
+      {
+        events.Add(new GameWinEvent(computerPlayer.Id));
+        this.GamePhase = GamePhases.GameOver;
+      }
+    }
+
+    private void CheckMainPlayerIsWinner()
     {
       if (this.mainPlayer.VictoryPoints >= 10)
       {
@@ -1050,7 +1062,7 @@ namespace Jabberwocky.SoC.Library
       return playerWithMostKnightCards;
     }
 
-    private void EndTurn()
+    private void ClearDevelopmentCardProcessingForTurn()
     {
       this.cardsPurchasedThisTurn.Clear();
       this.cardPlayedThisTurn = false;
@@ -1226,7 +1238,7 @@ namespace Jabberwocky.SoC.Library
         this.LargestArmyEvent?.Invoke(previousPlayerId, this.playerWithLargestArmy.Id);
       }
 
-      this.CheckForWinner();
+      this.CheckMainPlayerIsWinner();
     }
 
     private void TryRaiseRoadSegmentBuildingError()

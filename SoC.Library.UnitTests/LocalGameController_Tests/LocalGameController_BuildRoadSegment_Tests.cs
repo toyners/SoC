@@ -756,9 +756,9 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       // Assert
       var expectedWinningGameEvent = new GameWinEvent(firstOpponent.Id);
 
-      events.Count.ShouldBe(12);
-      events[11].ShouldBe(expectedWinningGameEvent);
+      events[events.Count - 1].ShouldBe(expectedWinningGameEvent);
       firstOpponent.VictoryPoints.ShouldBe(10u);
+      localGameController.GamePhase.ShouldBe(LocalGameController.GamePhases.GameOver);
     }
 
     [Test]
@@ -802,9 +802,9 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       // Assert
       var expectedWinningGameEvent = new GameWinEvent(firstOpponent.Id);
 
-      events.Count.ShouldBe(14);
-      events[13].ShouldBe(expectedWinningGameEvent);
+      events[events.Count - 1].ShouldBe(expectedWinningGameEvent);
       firstOpponent.VictoryPoints.ShouldBe(11u);
+      localGameController.GamePhase.ShouldBe(LocalGameController.GamePhases.GameOver);
     }
     #endregion
   }
