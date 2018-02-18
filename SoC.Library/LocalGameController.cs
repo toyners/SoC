@@ -5,6 +5,7 @@ namespace Jabberwocky.SoC.Library
   using System.Collections.Generic;
   using System.IO;
   using System.Xml;
+  using GameActions;
   using GameBoards;
   using GameEvents;
   using Interfaces;

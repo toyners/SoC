@@ -1,10 +1,11 @@
 ﻿
-using System;
-using System.Collections.Generic;
-using Jabberwocky.SoC.Library.GameBoards;
-
 namespace Jabberwocky.SoC.Library.Interfaces
 {
+  using System;
+  using System.Collections.Generic;
+  using GameActions;
+  using GameBoards;
+
   public enum PlayerActionTypes
   {
     EndTurn,
@@ -36,29 +37,5 @@ namespace Jabberwocky.SoC.Library.Interfaces
     Boolean TryGetPlayerAction(out PlayerAction playerAction);
     void AddDevelopmentCard(DevelopmentCard developmentCard);
     #endregion
-  }
-
-  public class PlayerAction
-  {
-    public readonly PlayerActionTypes Action;
-
-    public PlayerAction(PlayerActionTypes action)
-    {
-      this.Action = action;
-    }
-  }
-
-  public class TradeWithBankAction : PlayerAction
-  {
-    public readonly ResourceTypes GivingType;
-    public readonly ResourceTypes ReceivingType;
-    public readonly Int32 ReceivingCount;
-
-    public TradeWithBankAction(ResourceTypes givingType, ResourceTypes receivingType, Int32 receivingCount) : base(PlayerActionTypes.TradeWithBank)
-    {
-      this.GivingType = givingType;
-      this.ReceivingType = receivingType;
-      this.ReceivingCount = receivingCount;
-    }
   }
 }

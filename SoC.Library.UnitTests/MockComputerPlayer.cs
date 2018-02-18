@@ -5,6 +5,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
   using Interfaces;
   using GameBoards;
   using System.Collections.Generic;
+  using GameActions;
 
   /// <summary>
   /// Used to set opponent player behaviour for testing purposes

@@ -5,6 +5,7 @@ namespace Jabberwocky.SoC.Library
   using System.Collections.Generic;
   using GameBoards;
   using Interfaces;
+  using GameActions;
 
   public class ComputerPlayer : Player, IComputerPlayer
   {
