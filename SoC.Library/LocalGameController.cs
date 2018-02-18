@@ -776,6 +776,8 @@ namespace Jabberwocky.SoC.Library
       {
         this.LargestArmyEvent?.Invoke(previousPlayerId, this.playerWithLargestArmy.Id);
       }
+
+      this.CheckForWinner();
     }
 
     public void UseMonopolyCard(TurnToken turnToken, MonopolyDevelopmentCard monopolyCard, ResourceTypes resourceType)

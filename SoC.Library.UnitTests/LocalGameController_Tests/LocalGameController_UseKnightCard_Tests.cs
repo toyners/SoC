@@ -388,6 +388,64 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
     }
 
     [Test]
+    public void UseKnightCard_Override_GotEightVictoryPoints_EndOfGameEventRaisedWithPlayerAsWinner()
+    {
+      // Arrange
+      var testInstances = this.TestSetup(new KnightDevelopmentCard(), new KnightDevelopmentCard(), new KnightDevelopmentCard());
+      var localGameController = testInstances.LocalGameController;
+
+      testInstances.Dice.AddSequence(new UInt32[] { 8, 8, 8, 0 });
+
+      var player = testInstances.MainPlayer;
+      player.AddResources(ResourceClutch.RoadSegment * 5);
+      player.AddResources(ResourceClutch.Settlement * 2);
+      player.AddResources(ResourceClutch.City * 2);
+      player.AddResources(ResourceClutch.DevelopmentCard * 3);
+
+      TurnToken turnToken = null;
+      localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
+
+      Guid winningPlayer = Guid.Empty;
+      localGameController.GameOverEvent = (Guid g) => { winningPlayer = g; };
+
+      var knightCards = new Queue<KnightDevelopmentCard>();
+      localGameController.DevelopmentCardPurchasedEvent = (DevelopmentCard d) => { knightCards.Enqueue((KnightDevelopmentCard)d); };
+
+      localGameController.StartGamePlay();
+      localGameController.BuyDevelopmentCard(turnToken);
+      localGameController.BuyDevelopmentCard(turnToken);
+      localGameController.BuyDevelopmentCard(turnToken);
+
+      localGameController.BuildRoadSegment(turnToken, 4, 3);
+      localGameController.BuildRoadSegment(turnToken, 3, 2);
+      localGameController.BuildRoadSegment(turnToken, 2, 1);
+      localGameController.BuildRoadSegment(turnToken, 1, 0); // 2VP for longest road (4VP in total)
+      localGameController.BuildRoadSegment(turnToken, 4, 5);
+
+      localGameController.BuildSettlement(turnToken, 3);
+      localGameController.BuildSettlement(turnToken, 5);
+
+      localGameController.BuildCity(turnToken, 3);
+      localGameController.BuildCity(turnToken, 5);
+
+      localGameController.EndTurn(turnToken);
+
+      localGameController.UseKnightCard(turnToken, knightCards.Dequeue(), 4);
+
+      localGameController.EndTurn(turnToken);
+      localGameController.UseKnightCard(turnToken, knightCards.Dequeue(), 0);
+
+      localGameController.EndTurn(turnToken);
+
+      // Act
+      localGameController.UseKnightCard(turnToken, knightCards.Dequeue(), 3, testInstances.FirstOpponent.Id);
+
+      // Assert
+      winningPlayer.ShouldBe(player.Id);
+      player.VictoryPoints.ShouldBe(10u);
+    }
+
+    [Test]
     public void UseKnightCard_GotNineVictoryPoints_EndOfGameEventRaisedWithPlayerAsWinner()
     {
       // Arrange
@@ -440,6 +498,67 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
 
       // Act
       localGameController.UseKnightCard(turnToken, knightCards.Dequeue(), 4);
+
+      // Assert
+      winningPlayer.ShouldBe(player.Id);
+      player.VictoryPoints.ShouldBe(11u);
+    }
+
+    [Test]
+    public void UseKnightCard_Override_GotNineVictoryPoints_EndOfGameEventRaisedWithPlayerAsWinner()
+    {
+      // Arrange
+      var testInstances = this.TestSetup(new KnightDevelopmentCard(), new KnightDevelopmentCard(), new KnightDevelopmentCard());
+      var localGameController = testInstances.LocalGameController;
+
+      testInstances.Dice.AddSequence(new UInt32[] { 8, 8, 8, 0 });
+
+      var player = testInstances.MainPlayer;
+      player.AddResources(ResourceClutch.RoadSegment * 5);
+      player.AddResources(ResourceClutch.Settlement * 2);
+      player.AddResources(ResourceClutch.City * 3);
+      player.AddResources(ResourceClutch.DevelopmentCard * 3);
+
+      testInstances.FirstOpponent.AddResources(ResourceClutch.OneBrick);
+
+      TurnToken turnToken = null;
+      localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
+
+      Guid winningPlayer = Guid.Empty;
+      localGameController.GameOverEvent = (Guid g) => { winningPlayer = g; };
+
+      var knightCards = new Queue<KnightDevelopmentCard>();
+      localGameController.DevelopmentCardPurchasedEvent = (DevelopmentCard d) => { knightCards.Enqueue((KnightDevelopmentCard)d); };
+
+      localGameController.StartGamePlay();
+      localGameController.BuyDevelopmentCard(turnToken);
+      localGameController.BuyDevelopmentCard(turnToken);
+      localGameController.BuyDevelopmentCard(turnToken);
+
+      localGameController.BuildRoadSegment(turnToken, 4, 3);
+      localGameController.BuildRoadSegment(turnToken, 3, 2);
+      localGameController.BuildRoadSegment(turnToken, 2, 1);
+      localGameController.BuildRoadSegment(turnToken, 1, 0); // 2VP for longest road (4VP in total)
+      localGameController.BuildRoadSegment(turnToken, 4, 5);
+
+      localGameController.BuildSettlement(turnToken, 3);
+      localGameController.BuildSettlement(turnToken, 5);
+
+      localGameController.BuildCity(turnToken, 3);
+      localGameController.BuildCity(turnToken, 5);
+      localGameController.BuildCity(turnToken, 12);
+
+      localGameController.EndTurn(turnToken);
+
+      localGameController.UseKnightCard(turnToken, knightCards.Dequeue(), 4);
+
+      localGameController.EndTurn(turnToken);
+      localGameController.UseKnightCard(turnToken, knightCards.Dequeue(), 0);
+
+      localGameController.EndTurn(turnToken);
+
+      // Act
+      localGameController.UseKnightCard(turnToken, knightCards.Dequeue(), 3, testInstances.FirstOpponent.Id);
 
       // Assert
       winningPlayer.ShouldBe(player.Id);
