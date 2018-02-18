@@ -22,6 +22,7 @@ namespace Jabberwocky.SoC.Library.Interfaces
   public interface IComputerPlayer : IPlayer
   {
     #region Methods
+    void BuildInitialPlayerActions(GameBoardData gameBoard, PlayerDataView[] playerData);
     UInt32 ChooseCityLocation(GameBoardData gameBoardData);
     UInt32 ChooseSettlementLocation(GameBoardData gameBoardData);
     void ChooseRoad(GameBoardData gameBoardData, out UInt32 startRoadLocation, out UInt32 endRoadLocation);

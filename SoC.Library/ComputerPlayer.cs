@@ -24,6 +24,11 @@ namespace Jabberwocky.SoC.Library
       throw new NotImplementedException();
     }
 
+    public void BuildInitialPlayerActions(GameBoardData gameBoard, PlayerDataView[] playerData)
+    {
+      throw new NotImplementedException();
+    }
+
     public virtual UInt32 ChooseCityLocation(GameBoardData gameBoardData)
     {
       throw new NotImplementedException();

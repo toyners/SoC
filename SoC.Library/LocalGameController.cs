@@ -264,9 +264,11 @@ namespace Jabberwocky.SoC.Library
       while (this.currentPlayer.IsComputer)
       {
         var computerPlayer = this.currentPlayer as IComputerPlayer;
-        var events = new List<GameEvent>();
-        PlayerAction playerAction;
 
+        computerPlayer.BuildInitialPlayerActions(this.gameBoard, null);
+        var events = new List<GameEvent>();
+
+        PlayerAction playerAction;
         while (computerPlayer.TryGetPlayerAction(out playerAction))
         {
           switch (playerAction.Action)
