@@ -111,11 +111,7 @@ namespace Jabberwocky.SoC.Library
 
       this.CityBuiltEvent?.Invoke();
 
-      if (this.mainPlayer.VictoryPoints >= 10)
-      {
-        this.GameOverEvent?.Invoke(this.mainPlayer.Id);
-        this.GamePhase = GamePhases.GameOver;
-      }
+      this.CheckForWinner();
     }
 
     public void BuildRoadSegment(TurnToken turnToken, UInt32 roadStartLocation, UInt32 roadEndLocation)
@@ -126,6 +122,8 @@ namespace Jabberwocky.SoC.Library
       }
 
       this.BuildRoadSegment(roadStartLocation, roadEndLocation);
+
+      this.CheckForWinner();
     }
 
     public void BuildSettlement(TurnToken turnToken, UInt32 location)
@@ -136,6 +134,8 @@ namespace Jabberwocky.SoC.Library
       }
 
       this.BuildSettlement(location);
+
+      this.CheckForWinner();
     }
 
     public void BuyDevelopmentCard(TurnToken turnToken)
@@ -753,11 +753,7 @@ namespace Jabberwocky.SoC.Library
         this.LargestArmyEvent?.Invoke(previousPlayerId, this.playerWithLargestArmy.Id);
       }
 
-      if (this.mainPlayer.VictoryPoints >= 10)
-      {
-        this.GameOverEvent?.Invoke(this.mainPlayer.Id);
-        this.GamePhase = GamePhases.GameOver;
-      }
+      this.CheckForWinner();
     }
 
     public void UseKnightCard(TurnToken turnToken, KnightDevelopmentCard developmentCard, UInt32 newRobberHex, Guid playerId)
@@ -873,12 +869,6 @@ namespace Jabberwocky.SoC.Library
       {
         this.LongestRoadBuiltEvent?.Invoke(previousPlayerWithLongestRoadId, this.mainPlayer.Id);
       }
-
-      if (this.mainPlayer.VictoryPoints >= 10)
-      {
-        this.GameOverEvent?.Invoke(this.mainPlayer.Id);
-        this.GamePhase = GamePhases.GameOver;
-      }
     }
 
     private void BuildSettlement(UInt32 location)
@@ -886,12 +876,6 @@ namespace Jabberwocky.SoC.Library
       this.gameBoard.PlaceSettlement(this.currentPlayer.Id, location);
       this.currentPlayer.PlaceSettlement();
       this.SettlementBuiltEvent?.Invoke();
-
-      if (this.mainPlayer.VictoryPoints >= 10)
-      {
-        this.GameOverEvent?.Invoke(this.mainPlayer.Id);
-        this.GamePhase = GamePhases.GameOver;
-      }
     }
 
     private DevelopmentCard BuyDevelopmentCard()
@@ -937,6 +921,15 @@ namespace Jabberwocky.SoC.Library
       }
 
       this.currentPlayer = this.players[this.playerIndex];
+    }
+
+    private void CheckForWinner()
+    {
+      if (this.mainPlayer.VictoryPoints >= 10)
+      {
+        this.GameOverEvent?.Invoke(this.mainPlayer.Id);
+        this.GamePhase = GamePhases.GameOver;
+      }
     }
 
     private Dictionary<Guid, ResourceCollection[]> CollectTurnResources(UInt32 diceRoll)
