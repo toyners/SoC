@@ -74,7 +74,7 @@
     <Compile Include="RoadSegment.cs" />
     <Compile Include="PlayerTurnOrderCreator.cs" />
     <Compile Include="Enums\GameConnectionTypes.cs" />
-    <Compile Include="GameBoards\GameBoardData.cs" />
+    <Compile Include="GameBoards\GameBoard.cs" />
     <Compile Include="GameBoards\GameBoardManager.cs" />
     <Compile Include="GameBoards\GameBoardUpdate.cs" />
     <Compile Include="ClientAccount.cs" />
