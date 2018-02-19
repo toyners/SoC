@@ -5,6 +5,7 @@ namespace Jabberwocky.SoC.Library
   using System.Collections.Generic;
   using System.IO;
   using System.Xml;
+  using Enums;
   using GameActions;
   using GameBoards;
   using GameEvents;
@@ -268,12 +269,12 @@ namespace Jabberwocky.SoC.Library
         computerPlayer.BuildInitialPlayerActions(this.gameBoard, null);
         var events = new List<GameEvent>();
 
-        PlayerAction playerAction;
+        ComputerPlayerAction playerAction;
         while (computerPlayer.TryGetPlayerAction(out playerAction))
         {
           switch (playerAction.Action)
           {
-            case PlayerActionTypes.BuildCity:
+            case ComputerPlayerActionTypes.BuildCity:
             {
               var location = computerPlayer.ChooseCityLocation(this.gameBoard);
               this.BuildCity(location);
@@ -285,7 +286,7 @@ namespace Jabberwocky.SoC.Library
               break;
             }
 
-            case PlayerActionTypes.BuildRoadSegment:
+            case ComputerPlayerActionTypes.BuildRoadSegment:
             {
               UInt32 roadStartLocation, roadEndLocation;
               computerPlayer.ChooseRoad(this.gameBoard, out roadStartLocation, out roadEndLocation);
@@ -304,7 +305,7 @@ namespace Jabberwocky.SoC.Library
               break;
             }
 
-            case PlayerActionTypes.BuildSettlement:
+            case ComputerPlayerActionTypes.BuildSettlement:
             {
               var location = computerPlayer.ChooseSettlementLocation(this.gameBoard);
               this.BuildSettlement(location);
@@ -316,7 +317,7 @@ namespace Jabberwocky.SoC.Library
               break;
             }
 
-            case PlayerActionTypes.BuyDevelopmentCard:
+            case ComputerPlayerActionTypes.BuyDevelopmentCard:
             {
               var developmentCard = this.BuyDevelopmentCard();
               computerPlayer.AddDevelopmentCard(developmentCard);
@@ -324,7 +325,7 @@ namespace Jabberwocky.SoC.Library
               break;
             }
 
-            case PlayerActionTypes.PlayKnightCard:
+            case ComputerPlayerActionTypes.PlayKnightCard:
             {
               var knightCard = computerPlayer.ChooseKnightCard();
               var newRobberHex = computerPlayer.ChooseRobberLocation();
@@ -355,7 +356,7 @@ namespace Jabberwocky.SoC.Library
               break;
             }
 
-            case PlayerActionTypes.PlayMonopolyCard:
+            case ComputerPlayerActionTypes.PlayMonopolyCard:
             {
               var monopolyCard = computerPlayer.ChooseMonopolyCard();
               var resourceType = computerPlayer.ChooseResourceTypeToRob();
@@ -370,7 +371,7 @@ namespace Jabberwocky.SoC.Library
               break;
             }
 
-            case PlayerActionTypes.PlayYearOfPlentyCard:
+            case ComputerPlayerActionTypes.PlayYearOfPlentyCard:
             {
               var yearOfPlentyCard = computerPlayer.ChooseYearOfPlentyCard();
               var resourcesCollected = computerPlayer.ChooseResouresToCollectFromBank();
@@ -384,7 +385,7 @@ namespace Jabberwocky.SoC.Library
               break;
             }
 
-            case PlayerActionTypes.TradeWithBank:
+            case ComputerPlayerActionTypes.TradeWithBank:
             {
               var tradeWithBankAction = (TradeWithBankAction)playerAction;
 

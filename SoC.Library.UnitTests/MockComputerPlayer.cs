@@ -6,6 +6,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
   using GameBoards;
   using System.Collections.Generic;
   using GameActions;
+  using Enums;
 
   /// <summary>
   /// Used to set opponent player behaviour for testing purposes
@@ -26,7 +27,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     public Queue<UInt32> SettlementLocations = new Queue<UInt32>();
     public Queue<Tuple<UInt32, UInt32>> Roads = new Queue<Tuple<UInt32, UInt32>>();
     public Queue<Tuple<UInt32, UInt32>> InitialInfrastructure = new Queue<Tuple<UInt32, UInt32>>();
-    public Queue<PlayerActionTypes> Actions = new Queue<PlayerActionTypes>();
+    public Queue<ComputerPlayerActionTypes> Actions = new Queue<ComputerPlayerActionTypes>();
     public ResourceClutch DroppedResources;
     #endregion
 
@@ -38,14 +39,14 @@ namespace Jabberwocky.SoC.Library.UnitTests
     public MockComputerPlayer AddBuildCityInstruction(BuildCityInstruction instruction)
     {
       this.CityLocations.Enqueue(instruction.Location);
-      this.Actions.Enqueue(PlayerActionTypes.BuildCity);
+      this.Actions.Enqueue(ComputerPlayerActionTypes.BuildCity);
       return this;
     }
 
     public MockComputerPlayer AddBuildSettlementInstruction(BuildSettlementInstruction instruction)
     {
       this.SettlementLocations.Enqueue(instruction.Location);
-      this.Actions.Enqueue(PlayerActionTypes.BuildSettlement);
+      this.Actions.Enqueue(ComputerPlayerActionTypes.BuildSettlement);
       return this;
     }
 
@@ -59,7 +60,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     {
       for (; count > 0; count--)
       {
-        this.Actions.Enqueue(PlayerActionTypes.BuyDevelopmentCard);
+        this.Actions.Enqueue(ComputerPlayerActionTypes.BuyDevelopmentCard);
       }
 
       return this;
@@ -107,7 +108,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
       for (var index = 0; index < instruction.Locations.Length; index += 2)
       {
         this.Roads.Enqueue(new Tuple<UInt32, UInt32>(instruction.Locations[index], instruction.Locations[index + 1]));
-        this.Actions.Enqueue(PlayerActionTypes.BuildRoadSegment);
+        this.Actions.Enqueue(ComputerPlayerActionTypes.BuildRoadSegment);
       }
 
       return this;
@@ -116,28 +117,28 @@ namespace Jabberwocky.SoC.Library.UnitTests
     public MockComputerPlayer AddPlaceKnightCardInstruction(PlayKnightInstruction playKnightCardInstruction)
     {
       this.playKnightCardActions.Enqueue(playKnightCardInstruction);
-      this.Actions.Enqueue(PlayerActionTypes.PlayKnightCard);
+      this.Actions.Enqueue(ComputerPlayerActionTypes.PlayKnightCard);
       return this;
     }
 
     public MockComputerPlayer AddPlaceMonopolyCardInstruction(PlayMonopolyCardInstruction playMonopolyCardInstruction)
     {
       this.playMonopolyCardActions.Enqueue(playMonopolyCardInstruction);
-      this.Actions.Enqueue(PlayerActionTypes.PlayMonopolyCard);
+      this.Actions.Enqueue(ComputerPlayerActionTypes.PlayMonopolyCard);
       return this;
     }
 
     public MockComputerPlayer AddPlayYearOfPlentyCardInstruction(PlayYearOfPlentyCardInstruction playYearOfPlentyCardInstruction)
     {
       this.playYearOfPlentyCardActions.Enqueue(playYearOfPlentyCardInstruction);
-      this.Actions.Enqueue(PlayerActionTypes.PlayYearOfPlentyCard);
+      this.Actions.Enqueue(ComputerPlayerActionTypes.PlayYearOfPlentyCard);
       return this;
     }
 
     public MockComputerPlayer AddTradeWithBankInstruction(TradeWithBankInstruction tradeWithBankInstruction)
     {
       this.tradeWithBankInstructions.Enqueue(tradeWithBankInstruction);
-      this.Actions.Enqueue(PlayerActionTypes.TradeWithBank);
+      this.Actions.Enqueue(ComputerPlayerActionTypes.TradeWithBank);
       return this;
     }
 
@@ -237,11 +238,11 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
     public MockComputerPlayer EndTurn()
     {
-      this.Actions.Enqueue(PlayerActionTypes.EndTurn);
+      this.Actions.Enqueue(ComputerPlayerActionTypes.EndTurn);
       return this;
     }
 
-    public override Boolean TryGetPlayerAction(out PlayerAction playerAction)
+    public override Boolean TryGetPlayerAction(out ComputerPlayerAction playerAction)
     {
       playerAction = null;
       if (this.Actions.Count == 0)
@@ -250,12 +251,12 @@ namespace Jabberwocky.SoC.Library.UnitTests
       }
 
       var actionType = this.Actions.Dequeue();
-      if (actionType == PlayerActionTypes.EndTurn)
+      if (actionType == ComputerPlayerActionTypes.EndTurn)
       {
         return false;
       }
 
-      if (actionType == PlayerActionTypes.TradeWithBank)
+      if (actionType == ComputerPlayerActionTypes.TradeWithBank)
       {
         var tradeWithBankInstruction = this.tradeWithBankInstructions.Dequeue();
         
@@ -266,7 +267,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
       }
       else
       {
-        playerAction = new PlayerAction(actionType);
+        playerAction = new ComputerPlayerAction(actionType);
       }
 
       return true;

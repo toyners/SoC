@@ -6,19 +6,6 @@ namespace Jabberwocky.SoC.Library.Interfaces
   using GameActions;
   using GameBoards;
 
-  public enum PlayerActionTypes
-  {
-    EndTurn,
-    BuildCity,
-    BuildRoadSegment,
-    BuildSettlement,
-    BuyDevelopmentCard,
-    PlayKnightCard,
-    PlayMonopolyCard,
-    PlayYearOfPlentyCard,
-    TradeWithBank,
-  }
-
   public interface IComputerPlayer : IPlayer
   {
     #region Methods
@@ -35,7 +22,7 @@ namespace Jabberwocky.SoC.Library.Interfaces
     ResourceTypes ChooseResourceTypeToRob();
     UInt32 ChooseRobberLocation();
     IPlayer ChoosePlayerToRob(IEnumerable<IPlayer> otherPlayers);
-    Boolean TryGetPlayerAction(out PlayerAction playerAction);
+    Boolean TryGetPlayerAction(out ComputerPlayerAction playerAction);
     void AddDevelopmentCard(DevelopmentCard developmentCard);
     #endregion
   }
