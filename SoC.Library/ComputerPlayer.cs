@@ -24,17 +24,17 @@ namespace Jabberwocky.SoC.Library
       throw new NotImplementedException();
     }
 
-    public virtual void BuildInitialPlayerActions(GameBoardData gameBoard, PlayerDataView[] playerData)
+    public virtual void BuildInitialPlayerActions(GameBoard gameBoard, PlayerDataView[] playerData)
     {
       throw new NotImplementedException();
     }
 
-    public virtual UInt32 ChooseCityLocation(GameBoardData gameBoardData)
+    public virtual UInt32 ChooseCityLocation(GameBoard gameBoardData)
     {
       throw new NotImplementedException();
     }
 
-    public virtual void ChooseInitialInfrastructure(GameBoardData gameBoardData, out UInt32 settlementLocation, out UInt32 roadEndLocation)
+    public virtual void ChooseInitialInfrastructure(GameBoard gameBoardData, out UInt32 settlementLocation, out UInt32 roadEndLocation)
     {
       throw new NotImplementedException();
     }
@@ -54,7 +54,7 @@ namespace Jabberwocky.SoC.Library
       throw new NotImplementedException();
     }
 
-    public virtual void ChooseRoad(GameBoardData gameBoardData, out UInt32 roadStartLocation, out UInt32 roadEndLocation)
+    public virtual void ChooseRoad(GameBoard gameBoardData, out UInt32 roadStartLocation, out UInt32 roadEndLocation)
     {
       var settlementsForPlayer = gameBoardData.GetSettlementsForPlayer(this.Id);
       if (settlementsForPlayer == null || settlementsForPlayer.Count == 0)
@@ -104,7 +104,7 @@ namespace Jabberwocky.SoC.Library
       throw new NotImplementedException();
     }
 
-    public virtual UInt32 ChooseSettlementLocation(GameBoardData gameBoardData)
+    public virtual UInt32 ChooseSettlementLocation(GameBoard gameBoardData)
     {
       // Find location that has the highest chance of a return for any roll.
       var bestLocationIndex = 0u;
@@ -164,7 +164,7 @@ namespace Jabberwocky.SoC.Library
       return totalChance;
     }
 
-    private Boolean TryGetIndexOfLocationThatHasBestChanceOfReturnOnRoll(GameBoardData gameBoardData, out UInt32 bestLocationIndex)
+    private Boolean TryGetIndexOfLocationThatHasBestChanceOfReturnOnRoll(GameBoard gameBoardData, out UInt32 bestLocationIndex)
     {
       // Find location that has the highest chance of a return for any roll.
       var bestChanceOfReturnOnRoll = 0;
@@ -176,9 +176,9 @@ namespace Jabberwocky.SoC.Library
       {
         //Guid playerId;
         var canPlaceResult = gameBoardData.CanPlaceSettlement(this.Id, index);
-        if (canPlaceResult.Status == GameBoardData.VerificationStatus.LocationForSettlementIsInvalid ||
-            canPlaceResult.Status == GameBoardData.VerificationStatus.LocationIsOccupied ||
-            canPlaceResult.Status == GameBoardData.VerificationStatus.TooCloseToSettlement)
+        if (canPlaceResult.Status == GameBoard.VerificationStatus.LocationForSettlementIsInvalid ||
+            canPlaceResult.Status == GameBoard.VerificationStatus.LocationIsOccupied ||
+            canPlaceResult.Status == GameBoard.VerificationStatus.TooCloseToSettlement)
         {
           continue;
         }
@@ -196,7 +196,7 @@ namespace Jabberwocky.SoC.Library
       return gotBestLocationIndex;
     }
 
-    private List<UInt32> GetPathToLocationThatHasBestChanceOfReturnOnRoll(GameBoardData gameBoardData, UInt32 locationIndex)
+    private List<UInt32> GetPathToLocationThatHasBestChanceOfReturnOnRoll(GameBoard gameBoardData, UInt32 locationIndex)
     {
       var bestLocationIndex = 0u;
 

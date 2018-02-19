@@ -88,8 +88,8 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
 
       var localGameController = new LocalGameControllerCreator().ChangeDice(mockDice).ChangePlayerPool(mockPlayerFactory).Create();
 
-      GameBoardData gameBoardData = null;
-      localGameController.InitialBoardSetupEvent = (GameBoardData g) => { gameBoardData = g; };
+      GameBoard gameBoardData = null;
+      localGameController.InitialBoardSetupEvent = (GameBoard g) => { gameBoardData = g; };
 
       localGameController.JoinGame();
       localGameController.LaunchGame();
@@ -114,7 +114,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
 
       GameBoardUpdate gameBoardUpdate = null;
       localGameController.GameSetupUpdateEvent = (GameBoardUpdate u) => { gameBoardUpdate = u; };
-      localGameController.InitialBoardSetupEvent = (GameBoardData d) => { };
+      localGameController.InitialBoardSetupEvent = (GameBoard d) => { };
 
       localGameController.JoinGame();
       localGameController.LaunchGame();
@@ -166,7 +166,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
 
       GameBoardUpdate gameBoardUpdate = null;
       localGameController.GameSetupUpdateEvent = (GameBoardUpdate u) => { gameBoardUpdate = u; };
-      localGameController.InitialBoardSetupEvent = (GameBoardData d) => { };
+      localGameController.InitialBoardSetupEvent = (GameBoard d) => { };
 
       localGameController.JoinGame();
       localGameController.LaunchGame();
@@ -224,7 +224,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
 
       GameBoardUpdate gameBoardUpdate = null;
       localGameController.GameSetupUpdateEvent = (GameBoardUpdate u) => { gameBoardUpdate = u; };
-      localGameController.InitialBoardSetupEvent = (GameBoardData d) => { };
+      localGameController.InitialBoardSetupEvent = (GameBoard d) => { };
 
       localGameController.JoinGame();
       localGameController.LaunchGame();
@@ -282,7 +282,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
 
       GameBoardUpdate gameBoardUpdate = null;
       localGameController.GameSetupUpdateEvent = (GameBoardUpdate u) => { gameBoardUpdate = u; };
-      localGameController.InitialBoardSetupEvent = (GameBoardData d) => { };
+      localGameController.InitialBoardSetupEvent = (GameBoard d) => { };
 
       localGameController.JoinGame();
       localGameController.LaunchGame();
@@ -1291,8 +1291,8 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       // Arrange
       var localGameController = new LocalGameControllerCreator().Create();
 
-      GameBoardData boardData = null;
-      localGameController.GameLoadedEvent = (PlayerDataView[] pd, GameBoardData bd) => { boardData = bd; };
+      GameBoard boardData = null;
+      localGameController.GameLoadedEvent = (PlayerDataView[] pd, GameBoard bd) => { boardData = bd; };
 
       // Act
       var content = "<game><board><hexes>" +
@@ -1309,7 +1309,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       // Assert
       boardData.ShouldNotBeNull();
       Tuple<ResourceTypes?, UInt32>[] hexes = boardData.GetHexInformation();
-      hexes.Length.ShouldBe(GameBoardData.StandardBoardHexCount);
+      hexes.Length.ShouldBe(GameBoard.StandardBoardHexCount);
       hexes[0].ShouldBe(new Tuple<ResourceTypes?, UInt32>(ResourceTypes.Grain, 9));
       hexes[1].ShouldBe(new Tuple<ResourceTypes?, UInt32>(ResourceTypes.Lumber, 8));
       hexes[2].ShouldBe(new Tuple<ResourceTypes?, UInt32>(ResourceTypes.Brick, 5));
@@ -1349,7 +1349,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       var localGameController = new LocalGameControllerCreator().Create();
 
       PlayerDataView[] playerDataViews = null;
-      localGameController.GameLoadedEvent = (PlayerDataView[] pd, GameBoardData bd) => { playerDataViews = pd; };
+      localGameController.GameLoadedEvent = (PlayerDataView[] pd, GameBoard bd) => { playerDataViews = pd; };
 
       // Act
       var streamContent = "<game>" +
@@ -1385,8 +1385,8 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       Guid playerId = Guid.NewGuid(), firstOpponentId = Guid.NewGuid(), secondOpponentId = Guid.NewGuid(), thirdOpponentId = Guid.NewGuid();
       var localGameController = new LocalGameControllerCreator().Create();
         
-      GameBoardData boardData = null;
-      localGameController.GameLoadedEvent = (PlayerDataView[] pd, GameBoardData bd) => { boardData = bd; };
+      GameBoard boardData = null;
+      localGameController.GameLoadedEvent = (PlayerDataView[] pd, GameBoard bd) => { boardData = bd; };
 
       // Act
       var streamContent = "<game>" +

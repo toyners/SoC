@@ -19,13 +19,13 @@ namespace Jabberwocky.SoC.Library.UnitTests.GameBoardData_Tests
     {
       // Arrange
       var playerId = Guid.NewGuid();
-      var gameBoardData = new GameBoardData(BoardSizes.Standard);
+      var gameBoardData = new GameBoard(BoardSizes.Standard);
 
       // Act
       Action action = () => { gameBoardData.PlaceCity(playerId, FirstPlayerSettlementLocation); };
 
       // Assert
-      action.ShouldThrow<GameBoardData.PlacementException>().Message.ShouldBe("Cannot place city before placing all initial infrastructure.");
+      action.ShouldThrow<GameBoard.PlacementException>().Message.ShouldBe("Cannot place city before placing all initial infrastructure.");
     }
 
     [Test]
@@ -34,14 +34,14 @@ namespace Jabberwocky.SoC.Library.UnitTests.GameBoardData_Tests
     {
       // Arrange
       var playerId = Guid.NewGuid();
-      var gameBoardData = new GameBoardData(BoardSizes.Standard);
+      var gameBoardData = new GameBoard(BoardSizes.Standard);
       gameBoardData.PlaceStartingInfrastructure(playerId, FirstPlayerSettlementLocation, FirstPlayerRoadEndLocation);
 
       // Act
       Action action = () => { gameBoardData.PlaceCity(playerId, FirstPlayerSettlementLocation); };
 
       // Assert
-      action.ShouldThrow<GameBoardData.PlacementException>().Message.ShouldBe("Cannot place city before placing all initial infrastructure.");
+      action.ShouldThrow<GameBoard.PlacementException>().Message.ShouldBe("Cannot place city before placing all initial infrastructure.");
     }
 
     [Test]
@@ -50,7 +50,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.GameBoardData_Tests
     {
       // Arrange
       var playerId = Guid.NewGuid();
-      var gameBoardData = new GameBoardData(BoardSizes.Standard);
+      var gameBoardData = new GameBoard(BoardSizes.Standard);
       gameBoardData.PlaceStartingInfrastructure(playerId, FirstPlayerSettlementLocation, FirstPlayerRoadEndLocation);
       gameBoardData.PlaceStartingInfrastructure(playerId, SecondPlayerSettlementLocation, SecondPlayerRoadEndLocation);
       gameBoardData.PlaceCity(playerId, FirstPlayerSettlementLocation);
@@ -59,7 +59,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.GameBoardData_Tests
       Action action = () => { gameBoardData.PlaceCity(playerId, FirstPlayerSettlementLocation); };
 
       // Assert
-      action.ShouldThrow<GameBoardData.PlacementException>().Message.ShouldBe("Cannot place city on existing city.");
+      action.ShouldThrow<GameBoard.PlacementException>().Message.ShouldBe("Cannot place city on existing city.");
     }
 
     [Test]
@@ -68,7 +68,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.GameBoardData_Tests
     {
       // Arrange
       var playerId = Guid.NewGuid();
-      var gameBoardData = new GameBoardData(BoardSizes.Standard);
+      var gameBoardData = new GameBoard(BoardSizes.Standard);
       gameBoardData.PlaceStartingInfrastructure(playerId, FirstPlayerSettlementLocation, FirstPlayerRoadEndLocation);
       gameBoardData.PlaceStartingInfrastructure(playerId, SecondPlayerSettlementLocation, SecondPlayerRoadEndLocation);
 
@@ -76,7 +76,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.GameBoardData_Tests
       Action action = () => { gameBoardData.PlaceCity(playerId, 100); };
 
       // Assert
-      action.ShouldThrow<GameBoardData.PlacementException>().Message.ShouldBe("Cannot place city because location is not on board.");
+      action.ShouldThrow<GameBoard.PlacementException>().Message.ShouldBe("Cannot place city because location is not on board.");
     }
 
     [Test]
@@ -85,7 +85,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.GameBoardData_Tests
     {
       // Arrange
       var playerId = Guid.NewGuid();
-      var gameBoardData = new GameBoardData(BoardSizes.Standard);
+      var gameBoardData = new GameBoard(BoardSizes.Standard);
       gameBoardData.PlaceStartingInfrastructure(playerId, FirstPlayerSettlementLocation, FirstPlayerRoadEndLocation);
       gameBoardData.PlaceStartingInfrastructure(playerId, SecondPlayerSettlementLocation, SecondPlayerRoadEndLocation);
 
@@ -93,7 +93,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.GameBoardData_Tests
       Action action = () => { gameBoardData.PlaceCity(playerId, 0); };
 
       // Assert
-      action.ShouldThrow<GameBoardData.PlacementException>().Message.ShouldBe("Cannot place city because location is not settled.");
+      action.ShouldThrow<GameBoard.PlacementException>().Message.ShouldBe("Cannot place city because location is not settled.");
     }
 
     [Test]
@@ -102,7 +102,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.GameBoardData_Tests
     {
       // Arrange
       var playerId = Guid.NewGuid();
-      var gameBoardData = new GameBoardData(BoardSizes.Standard);
+      var gameBoardData = new GameBoard(BoardSizes.Standard);
       gameBoardData.PlaceStartingInfrastructure(playerId, FirstPlayerSettlementLocation, FirstPlayerRoadEndLocation);
       gameBoardData.PlaceStartingInfrastructure(playerId, SecondPlayerSettlementLocation, SecondPlayerRoadEndLocation);
 
@@ -114,7 +114,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.GameBoardData_Tests
       Action action = () => { gameBoardData.PlaceCity(playerId, FirstOpponentSettlementLocation); };
 
       // Assert
-      action.ShouldThrow<GameBoardData.PlacementException>().Message.ShouldBe("Cannot place city because location is settled by an opponent.");
+      action.ShouldThrow<GameBoard.PlacementException>().Message.ShouldBe("Cannot place city because location is settled by an opponent.");
     }
 
     [Test]
@@ -123,7 +123,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.GameBoardData_Tests
     {
       // Arrange
       var playerId = Guid.NewGuid();
-      var gameBoardData = new GameBoardData(BoardSizes.Standard);
+      var gameBoardData = new GameBoard(BoardSizes.Standard);
       gameBoardData.PlaceStartingInfrastructure(playerId, FirstPlayerSettlementLocation, FirstPlayerRoadEndLocation);
       gameBoardData.PlaceStartingInfrastructure(playerId, SecondPlayerSettlementLocation, SecondPlayerRoadEndLocation);
 
@@ -136,7 +136,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.GameBoardData_Tests
       Action action = () => { gameBoardData.PlaceCity(playerId, FirstOpponentSettlementLocation); };
 
       // Assert
-      action.ShouldThrow<GameBoardData.PlacementException>().Message.ShouldBe("Cannot place city because location is settled by an opponent.");
+      action.ShouldThrow<GameBoard.PlacementException>().Message.ShouldBe("Cannot place city because location is settled by an opponent.");
     }
 
     [Test]
@@ -145,7 +145,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.GameBoardData_Tests
     {
       // Arrange
       var playerId = Guid.NewGuid();
-      var gameBoardData = new GameBoardData(BoardSizes.Standard);
+      var gameBoardData = new GameBoard(BoardSizes.Standard);
       gameBoardData.PlaceStartingInfrastructure(playerId, FirstPlayerSettlementLocation, FirstPlayerRoadEndLocation);
       gameBoardData.PlaceStartingInfrastructure(playerId, SecondPlayerSettlementLocation, SecondPlayerRoadEndLocation);
       gameBoardData.PlaceRoadSegment(playerId, FirstPlayerRoadEndLocation, 10);
@@ -154,7 +154,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.GameBoardData_Tests
       Action action = () => { gameBoardData.PlaceCity(playerId, 10); };
 
       // Assert
-      action.ShouldThrow<GameBoardData.PlacementException>().Message.ShouldBe("Cannot place city because location is not settled.");
+      action.ShouldThrow<GameBoard.PlacementException>().Message.ShouldBe("Cannot place city because location is not settled.");
     }
     #endregion 
   }

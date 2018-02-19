@@ -38,7 +38,7 @@ namespace Jabberwocky.SoC.Library
     private HashSet<DevelopmentCard> cardsPlayed;
     private HashSet<DevelopmentCard> cardsPurchasedThisTurn;
     private INumberGenerator dice;
-    private GameBoardData gameBoard;
+    private GameBoard gameBoard;
     private Int32 playerIndex;
     private IPlayer[] players;
     private Dictionary<Guid, IPlayer> playersById;
@@ -56,7 +56,7 @@ namespace Jabberwocky.SoC.Library
     #endregion
 
     #region Construction
-    public LocalGameController(INumberGenerator dice, IPlayerPool computerPlayerFactory, GameBoardData gameBoard, IDevelopmentCardHolder developmentCardHolder)
+    public LocalGameController(INumberGenerator dice, IPlayerPool computerPlayerFactory, GameBoard gameBoard, IDevelopmentCardHolder developmentCardHolder)
     {
       this.dice = dice;
       this.playerPool = computerPlayerFactory;
@@ -79,9 +79,9 @@ namespace Jabberwocky.SoC.Library
     public Action<DevelopmentCard> DevelopmentCardPurchasedEvent { get; set; }
     public Action<UInt32> DiceRollEvent { get; set; }
     public Action<ErrorDetails> ErrorRaisedEvent { get; set; }
-    public Action<GameBoardData> InitialBoardSetupEvent { get; set; }
+    public Action<GameBoard> InitialBoardSetupEvent { get; set; }
     public Action<PlayerDataView[]> GameJoinedEvent { get; set; }
-    public Action<PlayerDataView[], GameBoardData> GameLoadedEvent { get; set; }
+    public Action<PlayerDataView[], GameBoard> GameLoadedEvent { get; set; }
     public Action<Guid> GameOverEvent { get; set; }
     public Action<ResourceUpdate> GameSetupResourcesEvent { get; set; }
     public Action<GameBoardUpdate> GameSetupUpdateEvent { get; set; }
@@ -929,7 +929,7 @@ namespace Jabberwocky.SoC.Library
       this.gameSetupResources.Resources.Add(playerId, resources);
     }
 
-    private GameBoardUpdate ContinueSetupForComputerPlayers(GameBoardData gameBoardData)
+    private GameBoardUpdate ContinueSetupForComputerPlayers(GameBoard gameBoardData)
     {
       GameBoardUpdate gameBoardUpdate = null;
 
@@ -976,7 +976,7 @@ namespace Jabberwocky.SoC.Library
       this.ResourcesTransferredEvent?.Invoke(resourceTransactionList);
     }
 
-    private GameBoardUpdate CompleteSetupForComputerPlayers(GameBoardData gameBoardData, GameBoardUpdate gameBoardUpdate)
+    private GameBoardUpdate CompleteSetupForComputerPlayers(GameBoard gameBoardData, GameBoardUpdate gameBoardUpdate)
     {
       while (this.playerIndex >= 0)
       {
@@ -1124,15 +1124,15 @@ namespace Jabberwocky.SoC.Library
       return player.LoseResourceAtIndex(resourceIndex);
     }
 
-    private void HandlePlaceRoadError(GameBoardData.VerificationStatus status)
+    private void HandlePlaceRoadError(GameBoard.VerificationStatus status)
     {
       var message = String.Empty;
       switch (status)
       {
-        case GameBoardData.VerificationStatus.RoadIsOffBoard: message = "Cannot place road segment because board location is not valid."; break;
-        case GameBoardData.VerificationStatus.RoadIsOccupied: message = "Cannot place road segment because road segment already exists."; break;
-        case GameBoardData.VerificationStatus.NoDirectConnection: message = "Cannot build road segment because no direct connection between start location and end location."; break;
-        case GameBoardData.VerificationStatus.RoadNotConnectedToExistingRoad: message = "Cannot place road segment because it is not connected to an existing road segment."; break;
+        case GameBoard.VerificationStatus.RoadIsOffBoard: message = "Cannot place road segment because board location is not valid."; break;
+        case GameBoard.VerificationStatus.RoadIsOccupied: message = "Cannot place road segment because road segment already exists."; break;
+        case GameBoard.VerificationStatus.NoDirectConnection: message = "Cannot build road segment because no direct connection between start location and end location."; break;
+        case GameBoard.VerificationStatus.RoadNotConnectedToExistingRoad: message = "Cannot place road segment because it is not connected to an existing road segment."; break;
         default: message = "Road build segment status not recognised: " + status; break;
       }
 
@@ -1310,26 +1310,26 @@ namespace Jabberwocky.SoC.Library
 
       var placeCityResults = this.gameBoard.CanPlaceCity(this.currentPlayer.Id, location);
 
-      if (placeCityResults.Status == GameBoardData.VerificationStatus.LocationForCityIsInvalid)
+      if (placeCityResults.Status == GameBoard.VerificationStatus.LocationForCityIsInvalid)
       {
         this.ErrorRaisedEvent?.Invoke(new ErrorDetails("Cannot build city. Location " + location + " is outside of board range (0 - 53)."));
         return false;
       }
 
-      if (placeCityResults.Status == GameBoardData.VerificationStatus.LocationIsNotOwned)
+      if (placeCityResults.Status == GameBoard.VerificationStatus.LocationIsNotOwned)
       {
         var player = this.playersById[placeCityResults.PlayerId];
         this.ErrorRaisedEvent?.Invoke(new ErrorDetails("Cannot build city. Location " + location + " is owned by player '" + player.Name + "'."));
         return false;
       }
 
-      if (placeCityResults.Status == GameBoardData.VerificationStatus.LocationIsNotSettled)
+      if (placeCityResults.Status == GameBoard.VerificationStatus.LocationIsNotSettled)
       {
         this.ErrorRaisedEvent?.Invoke(new ErrorDetails("Cannot build city. No settlement at location " + location + "."));
         return false;
       }
 
-      if (placeCityResults.Status == GameBoardData.VerificationStatus.LocationIsAlreadyCity)
+      if (placeCityResults.Status == GameBoard.VerificationStatus.LocationIsAlreadyCity)
       {
         var player = this.playersById[placeCityResults.PlayerId];
         if (player == this.currentPlayer)
@@ -1495,7 +1495,7 @@ namespace Jabberwocky.SoC.Library
     {
       if (!this.gameBoard.CanPlaceRobber(newRobberHex))
       {
-        this.ErrorRaisedEvent?.Invoke(new ErrorDetails("Cannot move robber to hex " + newRobberHex + " because it is out of bounds (0.. " + (GameBoardData.StandardBoardHexCount - 1) + ")."));
+        this.ErrorRaisedEvent?.Invoke(new ErrorDetails("Cannot move robber to hex " + newRobberHex + " because it is out of bounds (0.. " + (GameBoard.StandardBoardHexCount - 1) + ")."));
         return false;
       }
 
@@ -1514,27 +1514,27 @@ namespace Jabberwocky.SoC.Library
       return this.VerifyRoadSegmentPlacing(placeRoadStatus, settlementLocation, roadEndLocation);
     }
 
-    private Boolean VerifyRoadSegmentPlacing(GameBoardData.VerificationResults verificationResults, UInt32 settlementLocation, UInt32 roadEndLocation)
+    private Boolean VerifyRoadSegmentPlacing(GameBoard.VerificationResults verificationResults, UInt32 settlementLocation, UInt32 roadEndLocation)
     {
-      if (verificationResults.Status == GameBoardData.VerificationStatus.RoadIsOffBoard)
+      if (verificationResults.Status == GameBoard.VerificationStatus.RoadIsOffBoard)
       {
         this.ErrorRaisedEvent?.Invoke(new ErrorDetails("Cannot build road segment. Locations " + settlementLocation + " and/or " + roadEndLocation + " are outside of board range (0 - 53)."));
         return false;
       }
 
-      if (verificationResults.Status == GameBoardData.VerificationStatus.NoDirectConnection)
+      if (verificationResults.Status == GameBoard.VerificationStatus.NoDirectConnection)
       {
         this.ErrorRaisedEvent?.Invoke(new ErrorDetails("Cannot build road segment. No direct connection between locations [" + settlementLocation + ", " + roadEndLocation + "]."));
         return false;
       }
 
-      if (verificationResults.Status == GameBoardData.VerificationStatus.RoadIsOccupied)
+      if (verificationResults.Status == GameBoard.VerificationStatus.RoadIsOccupied)
       {
         this.ErrorRaisedEvent?.Invoke(new ErrorDetails("Cannot build road segment. Road segment between " + settlementLocation + " and " + roadEndLocation + " already exists."));
         return false;
       }
 
-      if (verificationResults.Status == GameBoardData.VerificationStatus.RoadNotConnectedToExistingRoad)
+      if (verificationResults.Status == GameBoard.VerificationStatus.RoadNotConnectedToExistingRoad)
       {
         this.ErrorRaisedEvent?.Invoke(new ErrorDetails("Cannot build road segment. Road segment [" + settlementLocation + ", " + roadEndLocation + "] not connected to existing road segment."));
         return false;
@@ -1590,15 +1590,15 @@ namespace Jabberwocky.SoC.Library
       return this.VerifySettlementPlacing(verificationResults, settlementLocation);
     }
 
-    private Boolean VerifySettlementPlacing(GameBoardData.VerificationResults verificationResults, UInt32 settlementLocation)
+    private Boolean VerifySettlementPlacing(GameBoard.VerificationResults verificationResults, UInt32 settlementLocation)
     {
-      if (verificationResults.Status == GameBoardData.VerificationStatus.LocationForSettlementIsInvalid)
+      if (verificationResults.Status == GameBoard.VerificationStatus.LocationForSettlementIsInvalid)
       {
         this.ErrorRaisedEvent(new ErrorDetails("Cannot build settlement. Location " + settlementLocation + " is outside of board range (0 - 53)."));
         return false;
       }
 
-      if (verificationResults.Status == GameBoardData.VerificationStatus.TooCloseToSettlement)
+      if (verificationResults.Status == GameBoard.VerificationStatus.TooCloseToSettlement)
       {
         var player = this.playersById[verificationResults.PlayerId];
         if (player == this.currentPlayer)
@@ -1613,7 +1613,7 @@ namespace Jabberwocky.SoC.Library
         return false;
       }
 
-      if (verificationResults.Status == GameBoardData.VerificationStatus.LocationIsOccupied)
+      if (verificationResults.Status == GameBoard.VerificationStatus.LocationIsOccupied)
       {
         var player = this.playersById[verificationResults.PlayerId];
         if (player == this.currentPlayer)
@@ -1628,7 +1628,7 @@ namespace Jabberwocky.SoC.Library
         return false;
       }
 
-      if (verificationResults.Status == GameBoardData.VerificationStatus.SettlementNotConnectedToExistingRoad)
+      if (verificationResults.Status == GameBoard.VerificationStatus.SettlementNotConnectedToExistingRoad)
       {
         this.ErrorRaisedEvent(new ErrorDetails("Cannot build settlement. Location " + verificationResults.LocationIndex + " not connected to existing road."));
         return false;

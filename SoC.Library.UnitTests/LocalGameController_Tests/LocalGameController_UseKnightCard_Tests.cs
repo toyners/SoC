@@ -116,7 +116,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       localGameController.ErrorRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
 
       // Act
-      localGameController.UseKnightCard(turnToken, (KnightDevelopmentCard)purchasedDevelopmentCard, GameBoards.GameBoardData.StandardBoardHexCount);
+      localGameController.UseKnightCard(turnToken, (KnightDevelopmentCard)purchasedDevelopmentCard, GameBoards.GameBoard.StandardBoardHexCount);
 
       // Assert
       errorDetails.ShouldNotBeNull();
@@ -1273,10 +1273,10 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
 
     private LocalGameControllerTestCreator.TestInstances TestSetup()
     {
-      return this.TestSetup(new DevelopmentCardHolder(), new GameBoardData(BoardSizes.Standard));
+      return this.TestSetup(new DevelopmentCardHolder(), new GameBoard(BoardSizes.Standard));
     }
 
-    private LocalGameControllerTestCreator.TestInstances TestSetup(IDevelopmentCardHolder developmentCardHolder, GameBoardData gameBoard)
+    private LocalGameControllerTestCreator.TestInstances TestSetup(IDevelopmentCardHolder developmentCardHolder, GameBoard gameBoard)
     {
       var testInstances = LocalGameControllerTestCreator.CreateTestInstances(null, developmentCardHolder, gameBoard);
       testInstances.Dice.AddSequence(new[] { 8u });
@@ -1294,10 +1294,10 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
     private LocalGameControllerTestCreator.TestInstances TestSetup(DevelopmentCard firstDevelopmentCard, params DevelopmentCard[] otherDevelopmentCards)
     {
       var developmentCardHolder = this.CreateMockCardDevelopmentCardHolder(firstDevelopmentCard, otherDevelopmentCards);
-      return this.TestSetup(developmentCardHolder, new GameBoardData(BoardSizes.Standard));
+      return this.TestSetup(developmentCardHolder, new GameBoard(BoardSizes.Standard));
     }
 
-    private LocalGameControllerTestCreator.TestInstances TestSetup(GameBoardData gameBoardData, DevelopmentCard firstDevelopmentCard, params DevelopmentCard[] otherDevelopmentCards)
+    private LocalGameControllerTestCreator.TestInstances TestSetup(GameBoard gameBoardData, DevelopmentCard firstDevelopmentCard, params DevelopmentCard[] otherDevelopmentCards)
     {
       return this.TestSetup(this.CreateMockCardDevelopmentCardHolder(firstDevelopmentCard, otherDevelopmentCards), gameBoardData);
     }

@@ -16,7 +16,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     public void ChooseSettlementLocation_GetBestLocationOnEmptyBoard_ReturnsBestLocation()
     {
       var computerPlayer = new ComputerPlayer("ComputerPlayer");
-      var gameBoardData = new GameBoardData(BoardSizes.Standard);
+      var gameBoardData = new GameBoard(BoardSizes.Standard);
       gameBoardData.PlaceStartingInfrastructure(computerPlayer.Id, 0, 1);
       gameBoardData.PlaceStartingInfrastructure(computerPlayer.Id, 53, 52);
 
@@ -29,7 +29,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     public void ChooseSettlementLocation_GetBestLocationOnBoardWithBestLocationUnavailable_ReturnsBestLocation()
     {
       var computerPlayer = new ComputerPlayer("ComputerPlayer");
-      var gameBoardData = new GameBoardData(BoardSizes.Standard);
+      var gameBoardData = new GameBoard(BoardSizes.Standard);
       gameBoardData.PlaceStartingInfrastructure(computerPlayer.Id, 12, 11);
       gameBoardData.PlaceStartingInfrastructure(computerPlayer.Id, 0, 1);
 
@@ -41,7 +41,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     [Test]
     public void ChooseRoad_NoSettlementsForPlayer_ThrowsMeaningfulException()
     {
-      var gameBoardData = new GameBoardData(BoardSizes.Standard);
+      var gameBoardData = new GameBoard(BoardSizes.Standard);
       var computerPlayer = new ComputerPlayer("ComputerPlayer");
 
       Should.Throw<Exception>(() =>
@@ -55,7 +55,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     public void ChooseRoad_BuildingTowardsNextBestSettlementLocation_ReturnsFirstRoadFragment()
     {
       var computerPlayer = new ComputerPlayer("ComputerPlayer");
-      var gameBoardData = new GameBoardData(BoardSizes.Standard);
+      var gameBoardData = new GameBoard(BoardSizes.Standard);
       gameBoardData.PlaceStartingInfrastructure(computerPlayer.Id, 0, 1);
       gameBoardData.PlaceStartingInfrastructure(computerPlayer.Id, 12, 11);
 
@@ -70,7 +70,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     public void ChooseRoad_BuildingTowardsNextBestSettlementLocationWithFirstRoadPlaced_ReturnsSecondRoadFragment()
     {
       var computerPlayer = new ComputerPlayer("ComputerPlayer");
-      var gameBoardData = new GameBoardData(BoardSizes.Standard);
+      var gameBoardData = new GameBoard(BoardSizes.Standard);
       gameBoardData.PlaceStartingInfrastructure(computerPlayer.Id, 0, 1);
       gameBoardData.PlaceStartingInfrastructure(computerPlayer.Id, 12, 11);
       gameBoardData.PlaceRoadSegment(computerPlayer.Id, 11, 21);

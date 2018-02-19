@@ -439,7 +439,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       return this.TestSetupWithExplicitDevelopmentCardHolder(developmentCardHolder);
     }
 
-    private LocalGameControllerTestCreator.TestInstances TestSetupWithExplictGameBoard(Guid bankId, DevelopmentCard developmentCard, GameBoardData gameBoard)
+    private LocalGameControllerTestCreator.TestInstances TestSetupWithExplictGameBoard(Guid bankId, DevelopmentCard developmentCard, GameBoard gameBoard)
     {
       MockPlayer player;
       MockComputerPlayer firstOpponent, secondOpponent, thirdOpponent;

@@ -27,7 +27,7 @@ namespace Jabberwocky.SoC.Client
 
     public Action<PlayerDataView[]> GameJoinedEvent { get; set; }
 
-    public Action<GameBoardData> InitialBoardSetupEvent { get; set; }
+    public Action<GameBoard> InitialBoardSetupEvent { get; set; }
 
     public Action<ClientAccount> LoggedInEvent { get; set; }
 

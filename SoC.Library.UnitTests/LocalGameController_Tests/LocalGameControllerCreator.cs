@@ -11,7 +11,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     #region Fields
     private IPlayerPool playerPool;
     private INumberGenerator dice;
-    private GameBoardData gameBoard;
+    private GameBoard gameBoard;
     private IDevelopmentCardHolder developmentCardHolder;
     #endregion
 
@@ -20,7 +20,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     {
       this.playerPool = new PlayerPool();
       this.dice = new Dice();
-      this.gameBoard = new GameBoardData(BoardSizes.Standard);
+      this.gameBoard = new GameBoard(BoardSizes.Standard);
       this.developmentCardHolder = new DevelopmentCardHolder();
     }
     #endregion
@@ -38,7 +38,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
       return this;
     }
 
-    public LocalGameControllerCreator ChangeGameBoard(GameBoardData gameBoard)
+    public LocalGameControllerCreator ChangeGameBoard(GameBoard gameBoard)
     {
       this.gameBoard = gameBoard;
       return this;

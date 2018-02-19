@@ -19,13 +19,13 @@ namespace Jabberwocky.SoC.Library.UnitTests.GameBoardData_Tests
     {
       // Arrange
       var playerId = Guid.NewGuid();
-      var gameBoardData = new GameBoardData(BoardSizes.Standard);
+      var gameBoardData = new GameBoard(BoardSizes.Standard);
 
       // Act
       var result = gameBoardData.CanPlaceCity(playerId, FirstPlayerSettlementLocation);
 
       // Assert
-      result.Status.ShouldBe(GameBoardData.VerificationStatus.StartingInfrastructureNotPresentWhenPlacingCity);
+      result.Status.ShouldBe(GameBoard.VerificationStatus.StartingInfrastructureNotPresentWhenPlacingCity);
       result.LocationIndex.ShouldBe(0u);
       result.PlayerId.ShouldBe(Guid.Empty);
     }
@@ -36,14 +36,14 @@ namespace Jabberwocky.SoC.Library.UnitTests.GameBoardData_Tests
     {
       // Arrange
       var playerId = Guid.NewGuid();
-      var gameBoardData = new GameBoardData(BoardSizes.Standard);
+      var gameBoardData = new GameBoard(BoardSizes.Standard);
       gameBoardData.PlaceStartingInfrastructure(playerId, FirstPlayerSettlementLocation, FirstPlayerRoadEndLocation);
 
       // Act
       var result = gameBoardData.CanPlaceCity(playerId, FirstPlayerSettlementLocation);
 
       // Assert
-      result.Status.ShouldBe(GameBoardData.VerificationStatus.StartingInfrastructureNotCompleteWhenPlacingCity);
+      result.Status.ShouldBe(GameBoard.VerificationStatus.StartingInfrastructureNotCompleteWhenPlacingCity);
       result.LocationIndex.ShouldBe(0u);
       result.PlayerId.ShouldBe(Guid.Empty);
     }
@@ -54,7 +54,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.GameBoardData_Tests
     {
       // Arrange
       var playerId = Guid.NewGuid();
-      var gameBoardData = new GameBoardData(BoardSizes.Standard);
+      var gameBoardData = new GameBoard(BoardSizes.Standard);
       gameBoardData.PlaceStartingInfrastructure(playerId, FirstPlayerSettlementLocation, FirstPlayerRoadEndLocation);
       gameBoardData.PlaceStartingInfrastructure(playerId, SecondPlayerSettlementLocation, SecondPlayerRoadEndLocation);
       gameBoardData.PlaceCity(playerId, FirstPlayerSettlementLocation);
@@ -63,7 +63,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.GameBoardData_Tests
       var result = gameBoardData.CanPlaceCity(playerId, FirstPlayerSettlementLocation);
 
       // Assert
-      result.Status.ShouldBe(GameBoardData.VerificationStatus.LocationIsAlreadyCity);
+      result.Status.ShouldBe(GameBoard.VerificationStatus.LocationIsAlreadyCity);
       result.LocationIndex.ShouldBe(FirstPlayerSettlementLocation);
       result.PlayerId.ShouldBe(playerId);
     }
@@ -74,7 +74,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.GameBoardData_Tests
     {
       // Arrange
       var playerId = Guid.NewGuid();
-      var gameBoardData = new GameBoardData(BoardSizes.Standard);
+      var gameBoardData = new GameBoard(BoardSizes.Standard);
       gameBoardData.PlaceStartingInfrastructure(playerId, FirstPlayerSettlementLocation, FirstPlayerRoadEndLocation);
       gameBoardData.PlaceStartingInfrastructure(playerId, SecondPlayerSettlementLocation, SecondPlayerRoadEndLocation);
 
@@ -82,7 +82,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.GameBoardData_Tests
       var result = gameBoardData.CanPlaceCity(playerId, 100);
 
       // Assert
-      result.Status.ShouldBe(GameBoardData.VerificationStatus.LocationForCityIsInvalid);
+      result.Status.ShouldBe(GameBoard.VerificationStatus.LocationForCityIsInvalid);
       result.LocationIndex.ShouldBe(0u);
       result.PlayerId.ShouldBe(Guid.Empty);
     }
@@ -93,7 +93,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.GameBoardData_Tests
     {
       // Arrange
       var playerId = Guid.NewGuid();
-      var gameBoardData = new GameBoardData(BoardSizes.Standard);
+      var gameBoardData = new GameBoard(BoardSizes.Standard);
       gameBoardData.PlaceStartingInfrastructure(playerId, FirstPlayerSettlementLocation, FirstPlayerRoadEndLocation);
       gameBoardData.PlaceStartingInfrastructure(playerId, SecondPlayerSettlementLocation, SecondPlayerRoadEndLocation);
 
@@ -101,7 +101,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.GameBoardData_Tests
       var result = gameBoardData.CanPlaceCity(playerId, 0);
 
       // Assert
-      result.Status.ShouldBe(GameBoardData.VerificationStatus.LocationIsNotSettled);
+      result.Status.ShouldBe(GameBoard.VerificationStatus.LocationIsNotSettled);
       result.LocationIndex.ShouldBe(0u);
       result.PlayerId.ShouldBe(Guid.Empty);
     }
@@ -112,7 +112,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.GameBoardData_Tests
     {
       // Arrange
       var playerId = Guid.NewGuid();
-      var gameBoardData = new GameBoardData(BoardSizes.Standard);
+      var gameBoardData = new GameBoard(BoardSizes.Standard);
       gameBoardData.PlaceStartingInfrastructure(playerId, FirstPlayerSettlementLocation, FirstPlayerRoadEndLocation);
       gameBoardData.PlaceStartingInfrastructure(playerId, SecondPlayerSettlementLocation, SecondPlayerRoadEndLocation);
 
@@ -124,7 +124,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.GameBoardData_Tests
       var result = gameBoardData.CanPlaceCity(playerId, FirstOpponentSettlementLocation);
 
       // Assert
-      result.Status.ShouldBe(GameBoardData.VerificationStatus.LocationIsNotOwned);
+      result.Status.ShouldBe(GameBoard.VerificationStatus.LocationIsNotOwned);
       result.LocationIndex.ShouldBe(FirstOpponentSettlementLocation);
       result.PlayerId.ShouldBe(opponentId);
     }
@@ -135,7 +135,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.GameBoardData_Tests
     {
       // Arrange
       var playerId = Guid.NewGuid();
-      var gameBoardData = new GameBoardData(BoardSizes.Standard);
+      var gameBoardData = new GameBoard(BoardSizes.Standard);
       gameBoardData.PlaceStartingInfrastructure(playerId, FirstPlayerSettlementLocation, FirstPlayerRoadEndLocation);
       gameBoardData.PlaceStartingInfrastructure(playerId, SecondPlayerSettlementLocation, SecondPlayerRoadEndLocation);
 
@@ -148,7 +148,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.GameBoardData_Tests
       var result = gameBoardData.CanPlaceCity(playerId, FirstOpponentSettlementLocation);
 
       // Assert
-      result.Status.ShouldBe(GameBoardData.VerificationStatus.LocationIsNotOwned);
+      result.Status.ShouldBe(GameBoard.VerificationStatus.LocationIsNotOwned);
       result.LocationIndex.ShouldBe(FirstOpponentSettlementLocation);
       result.PlayerId.ShouldBe(opponentId);
     }
@@ -159,7 +159,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.GameBoardData_Tests
     {
       // Arrange
       var playerId = Guid.NewGuid();
-      var gameBoardData = new GameBoardData(BoardSizes.Standard);
+      var gameBoardData = new GameBoard(BoardSizes.Standard);
       gameBoardData.PlaceStartingInfrastructure(playerId, FirstPlayerSettlementLocation, FirstPlayerRoadEndLocation);
       gameBoardData.PlaceStartingInfrastructure(playerId, SecondPlayerSettlementLocation, SecondPlayerRoadEndLocation);
       gameBoardData.PlaceRoadSegment(playerId, FirstPlayerRoadEndLocation, 10);
@@ -168,7 +168,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.GameBoardData_Tests
       var result = gameBoardData.CanPlaceCity(playerId, 10);
 
       // Assert
-      result.Status.ShouldBe(GameBoardData.VerificationStatus.LocationIsNotSettled);
+      result.Status.ShouldBe(GameBoard.VerificationStatus.LocationIsNotSettled);
       result.LocationIndex.ShouldBe(0u);
       result.PlayerId.ShouldBe(Guid.Empty);
     }
@@ -179,7 +179,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.GameBoardData_Tests
     {
       // Arrange
       var playerId = Guid.NewGuid();
-      var gameBoardData = new GameBoardData(BoardSizes.Standard);
+      var gameBoardData = new GameBoard(BoardSizes.Standard);
       gameBoardData.PlaceStartingInfrastructure(playerId, FirstPlayerSettlementLocation, FirstPlayerRoadEndLocation);
       gameBoardData.PlaceStartingInfrastructure(playerId, SecondPlayerSettlementLocation, SecondPlayerRoadEndLocation);
 
@@ -187,7 +187,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.GameBoardData_Tests
       var result = gameBoardData.CanPlaceCity(playerId, FirstPlayerSettlementLocation);
 
       // Assert
-      result.Status.ShouldBe(GameBoardData.VerificationStatus.Valid);
+      result.Status.ShouldBe(GameBoard.VerificationStatus.Valid);
       result.LocationIndex.ShouldBe(0u);
       result.PlayerId.ShouldBe(Guid.Empty);
     }

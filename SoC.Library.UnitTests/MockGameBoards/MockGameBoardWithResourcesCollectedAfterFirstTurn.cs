@@ -10,7 +10,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.MockGameBoards
   /// game setup or at start of the first turn. Resources will be collected 
   /// from the second turn onwards.
   /// </summary>
-  public class MockGameBoardWithResourcesCollectedAfterFirstTurn : GameBoardData
+  public class MockGameBoardWithResourcesCollectedAfterFirstTurn : GameBoard
   {
     private Boolean isFirstTime = true;
 

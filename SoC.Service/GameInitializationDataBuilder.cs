@@ -10,9 +10,9 @@ namespace Jabberwocky.SoC.Service
     public static GameInitializationData Build(GameBoardManager board)
     {
       // Standard board only
-      var boardData = new Byte[GameBoardData.StandardBoardHexCount];
+      var boardData = new Byte[GameBoard.StandardBoardHexCount];
       var hexInformation = board.Data.GetHexInformation();
-      for (Int32 index = 0; index < GameBoardData.StandardBoardHexCount; index++)
+      for (Int32 index = 0; index < GameBoard.StandardBoardHexCount; index++)
       {
         boardData[index] = CreateDataForProvider(hexInformation[index]);
       }

@@ -253,7 +253,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
 
     private LocalGameControllerTestCreator.TestInstances TestSetup()
     {
-      var testInstances = LocalGameControllerTestCreator.CreateTestInstances(null, null, new GameBoardData(BoardSizes.Standard));
+      var testInstances = LocalGameControllerTestCreator.CreateTestInstances(null, null, new GameBoard(BoardSizes.Standard));
       var localGameController = testInstances.LocalGameController;
       LocalGameControllerTestSetup.LaunchGameAndCompleteSetup(localGameController);
 
@@ -262,7 +262,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       return testInstances;
     }
 
-    private LocalGameControllerTestCreator.TestInstances TestSetupWithExplictGameBoard(Guid bankId, GameBoardData gameBoard)
+    private LocalGameControllerTestCreator.TestInstances TestSetupWithExplictGameBoard(Guid bankId, GameBoard gameBoard)
     {
       MockPlayer player;
       MockComputerPlayer firstOpponent, secondOpponent, thirdOpponent;

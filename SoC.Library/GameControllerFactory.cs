@@ -28,7 +28,7 @@ namespace Jabberwocky.SoC.Library
       IGameController gameController = null;
       if (gameOptions == null || gameOptions.Connection == GameConnectionTypes.Local)
       {
-        gameController = new LocalGameController(this.diceRollerFactory.Create(), this.computerPlayerFactory, new GameBoards.GameBoardData(BoardSizes.Standard), null);
+        gameController = new LocalGameController(this.diceRollerFactory.Create(), this.computerPlayerFactory, new GameBoards.GameBoard(BoardSizes.Standard), null);
       }
       else
       {
@@ -93,7 +93,7 @@ namespace Jabberwocky.SoC.Library
   public class GameControllerSetup
   {
     public Action<PlayerDataView[]> GameJoinedEventHandler;
-    public Action<GameBoards.GameBoardData> InitialBoardSetupEventHandler;
+    public Action<GameBoards.GameBoard> InitialBoardSetupEventHandler;
     public Action<ClientAccount> LoggedInEventHandler;
     public Action<GameBoards.GameBoardUpdate> StartInitialSetupTurnEvent;
   }

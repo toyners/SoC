@@ -9,7 +9,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.MockGameBoards
   /// Mock class that will return no resources when collecting as part of
   /// game setup or during start of turn.
   /// </summary>
-  public class MockGameBoardWithNoResourcesCollected : GameBoardData
+  public class MockGameBoardWithNoResourcesCollected : GameBoard
   {
     public MockGameBoardWithNoResourcesCollected() : base(BoardSizes.Standard) { }
 

@@ -77,7 +77,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
       return new GameControllerSetup
       {
         GameJoinedEventHandler = (PlayerDataView[] players) => { },
-        InitialBoardSetupEventHandler = (GameBoards.GameBoardData boardData) => { },
+        InitialBoardSetupEventHandler = (GameBoards.GameBoard boardData) => { },
         LoggedInEventHandler = (ClientAccount clientAccount) => { },
         StartInitialSetupTurnEvent = (GameBoards.GameBoardUpdate gameBoardUpdate) => { }
       };

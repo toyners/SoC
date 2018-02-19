@@ -142,17 +142,17 @@ namespace Jabberwocky.SoC.Library.UnitTests
       return this;
     }
 
-    public override void BuildInitialPlayerActions(GameBoardData gameBoard, PlayerDataView[] playerData)
+    public override void BuildInitialPlayerActions(GameBoard gameBoard, PlayerDataView[] playerData)
     {
       
     }
 
-    public override UInt32 ChooseCityLocation(GameBoardData gameBoardData)
+    public override UInt32 ChooseCityLocation(GameBoard gameBoardData)
     {
       return this.CityLocations.Dequeue();
     }
 
-    public override void ChooseInitialInfrastructure(GameBoardData gameBoardData, out UInt32 settlementLocation, out UInt32 roadEndLocation)
+    public override void ChooseInitialInfrastructure(GameBoard gameBoardData, out UInt32 settlementLocation, out UInt32 roadEndLocation)
     {
       var infrastructure = this.InitialInfrastructure.Dequeue();
       settlementLocation = infrastructure.Item1;
@@ -219,14 +219,14 @@ namespace Jabberwocky.SoC.Library.UnitTests
       return this.playKnightCardActions.Peek().RobberHex;
     }
 
-    public override void ChooseRoad(GameBoardData gameBoardData, out UInt32 roadStartLocation, out UInt32 roadEndLocation)
+    public override void ChooseRoad(GameBoard gameBoardData, out UInt32 roadStartLocation, out UInt32 roadEndLocation)
     {
       var roadLocations = this.Roads.Dequeue();
       roadStartLocation = roadLocations.Item1;
       roadEndLocation = roadLocations.Item2;
     }
 
-    public override UInt32 ChooseSettlementLocation(GameBoardData gameBoardData)
+    public override UInt32 ChooseSettlementLocation(GameBoard gameBoardData)
     {
       return this.SettlementLocations.Dequeue();
     }

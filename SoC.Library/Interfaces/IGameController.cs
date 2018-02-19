@@ -12,7 +12,7 @@ namespace Jabberwocky.SoC.Library.Interfaces
 
     Action<PlayerDataView[]> GameJoinedEvent { get; set; }
 
-    Action<GameBoardData> InitialBoardSetupEvent { get; set; }
+    Action<GameBoard> InitialBoardSetupEvent { get; set; }
 
     Action<ClientAccount> LoggedInEvent { get; set; }
 

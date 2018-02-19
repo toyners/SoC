@@ -11,7 +11,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
   /// Holds data for all locations, trails, towns, cities, roads, resource providers and robber location.
   /// Provides methods for verifying locations for placing new settlements, cities and roads for a player.
   /// </summary>
-  public class GameBoardData
+  public class GameBoard
   {
     #region Enums
     public enum VerificationStatus
@@ -65,7 +65,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
     #endregion
 
     #region Construction
-    public GameBoardData(BoardSizes size)
+    public GameBoard(BoardSizes size)
     {
       if (size == BoardSizes.Extended)
       {
@@ -79,15 +79,15 @@ namespace Jabberwocky.SoC.Library.GameBoards
       this.settlementsByPlayer = new Dictionary<Guid, List<UInt32>>();
       this.roadNodes = new RoadNode[StandardBoardLocationCount];
 
-      this.locations = new Location[GameBoardData.StandardBoardLocationCount];
-      for (var i = 0; i < GameBoardData.StandardBoardHexCount; i++)
+      this.locations = new Location[GameBoard.StandardBoardLocationCount];
+      for (var i = 0; i < GameBoard.StandardBoardHexCount; i++)
       {
         this.locations[i] = new Location() { Index = i };
       }
 
       this.CreateHexes();
 
-      this.connections = new Boolean[GameBoardData.StandardBoardLocationCount, GameBoardData.StandardBoardLocationCount];
+      this.connections = new Boolean[GameBoard.StandardBoardLocationCount, GameBoard.StandardBoardLocationCount];
       this.ConnectLocationsVertically();
       this.ConnectLocationsHorizontally();
 

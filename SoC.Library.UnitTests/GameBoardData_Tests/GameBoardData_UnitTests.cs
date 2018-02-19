@@ -20,7 +20,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.GameBoardData_Tests
     {
       // Arrange
       var playerId = Guid.NewGuid();
-      var gameBoardData = new GameBoardData(BoardSizes.Standard);
+      var gameBoardData = new GameBoard(BoardSizes.Standard);
       gameBoardData.PlaceStartingInfrastructure(playerId, FirstPlayerSettlementLocation, FirstPlayerRoadEndLocation);
       gameBoardData.PlaceStartingInfrastructure(playerId, SecondPlayerSettlementLocation, SecondPlayerRoadEndLocation);
 
@@ -28,7 +28,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.GameBoardData_Tests
       var result = gameBoardData.CanPlaceRoad(playerId, 10, FirstPlayerRoadEndLocation);
 
       // Assert
-      result.Status.ShouldBe(GameBoardData.VerificationStatus.Valid);
+      result.Status.ShouldBe(GameBoard.VerificationStatus.Valid);
     }
 
     [Test]
@@ -36,13 +36,13 @@ namespace Jabberwocky.SoC.Library.UnitTests.GameBoardData_Tests
     public void CanPlaceRoad_EmptyBoard_ReturnsStartingInfrastructureNotPresentWhenPlacingRoad()
     {
       // Arrange
-      var gameBoardData = new GameBoardData(BoardSizes.Standard);
+      var gameBoardData = new GameBoard(BoardSizes.Standard);
 
       // Act
       var result = gameBoardData.CanPlaceRoad(Guid.NewGuid(), 0, 1);
 
       // Assert
-      result.Status.ShouldBe(GameBoardData.VerificationStatus.StartingInfrastructureNotPresentWhenPlacingRoad);
+      result.Status.ShouldBe(GameBoard.VerificationStatus.StartingInfrastructureNotPresentWhenPlacingRoad);
     }
 
     [Test]
@@ -51,14 +51,14 @@ namespace Jabberwocky.SoC.Library.UnitTests.GameBoardData_Tests
     {
       // Arrange
       var playerId = Guid.NewGuid();
-      var gameBoardData = new GameBoardData(BoardSizes.Standard);
+      var gameBoardData = new GameBoard(BoardSizes.Standard);
       gameBoardData.PlaceStartingInfrastructure(playerId, FirstPlayerSettlementLocation, FirstPlayerRoadEndLocation);
 
       // Act
       var result = gameBoardData.CanPlaceRoad(playerId, 10, FirstPlayerRoadEndLocation);
 
       // Assert
-      result.Status.ShouldBe(GameBoardData.VerificationStatus.StartingInfrastructureNotCompleteWhenPlacingRoad);
+      result.Status.ShouldBe(GameBoard.VerificationStatus.StartingInfrastructureNotCompleteWhenPlacingRoad);
     }
 
     [Test]
@@ -68,7 +68,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.GameBoardData_Tests
     public void CanPlaceRoad_JoiningToOtherRoads_ReturnsValid(UInt32 roadStartLocation, UInt32 roadEndLocation)
     {
       // Arrange
-      var gameBoardData = new GameBoardData(BoardSizes.Standard);
+      var gameBoardData = new GameBoard(BoardSizes.Standard);
       var playerId = Guid.NewGuid();
       gameBoardData.PlaceStartingInfrastructure(playerId, FirstPlayerSettlementLocation, FirstPlayerRoadEndLocation);
       gameBoardData.PlaceStartingInfrastructure(playerId, SecondPlayerSettlementLocation, SecondPlayerRoadEndLocation);
@@ -77,7 +77,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.GameBoardData_Tests
       var result = gameBoardData.CanPlaceRoad(playerId, roadStartLocation, roadEndLocation);
 
       // Assert
-      result.Status.ShouldBe(GameBoardData.VerificationStatus.Valid);
+      result.Status.ShouldBe(GameBoard.VerificationStatus.Valid);
     }
 
     [Test]
@@ -89,7 +89,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.GameBoardData_Tests
     {
       // Arrange
       var playerId = Guid.NewGuid();
-      var gameBoardData = new GameBoardData(BoardSizes.Standard);
+      var gameBoardData = new GameBoard(BoardSizes.Standard);
       gameBoardData.PlaceStartingInfrastructure(playerId, FirstPlayerSettlementLocation, FirstPlayerRoadEndLocation);
       gameBoardData.PlaceStartingInfrastructure(playerId, SecondPlayerSettlementLocation, SecondPlayerRoadEndLocation);
 
@@ -97,7 +97,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.GameBoardData_Tests
       var result = gameBoardData.CanPlaceRoad(playerId, start, end);
 
       // Assert
-      result.Status.ShouldBe(GameBoardData.VerificationStatus.RoadIsOffBoard);
+      result.Status.ShouldBe(GameBoard.VerificationStatus.RoadIsOffBoard);
     }
 
     [Test]
@@ -108,7 +108,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.GameBoardData_Tests
     {
       // Arrange
       var playerId = Guid.NewGuid();
-      var gameBoardData = new GameBoardData(BoardSizes.Standard);
+      var gameBoardData = new GameBoard(BoardSizes.Standard);
       gameBoardData.PlaceStartingInfrastructure(playerId, FirstPlayerSettlementLocation, FirstPlayerRoadEndLocation);
       gameBoardData.PlaceStartingInfrastructure(playerId, SecondPlayerSettlementLocation, SecondPlayerRoadEndLocation);
 
@@ -116,7 +116,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.GameBoardData_Tests
       var result = gameBoardData.CanPlaceRoad(playerId, start, end);
 
       // Assert
-      result.Status.ShouldBe(GameBoardData.VerificationStatus.NoDirectConnection);
+      result.Status.ShouldBe(GameBoard.VerificationStatus.NoDirectConnection);
     }
 
     [Test]
@@ -124,13 +124,13 @@ namespace Jabberwocky.SoC.Library.UnitTests.GameBoardData_Tests
     public void CanPlaceRoad_RoadAlreadyBuilt_ReturnsRoadIsOccupied()
     {
       // Arrange
-      var gameBoardData = new GameBoardData(BoardSizes.Standard);
+      var gameBoardData = new GameBoard(BoardSizes.Standard);
       var playerId = Guid.NewGuid();
       gameBoardData.PlaceStartingInfrastructure(playerId, FirstPlayerSettlementLocation, FirstPlayerRoadEndLocation);
       gameBoardData.PlaceStartingInfrastructure(playerId, SecondPlayerSettlementLocation, SecondPlayerRoadEndLocation);
 
       var result = gameBoardData.CanPlaceRoad(playerId, FirstPlayerSettlementLocation, FirstPlayerRoadEndLocation);
-      result.Status.ShouldBe(GameBoardData.VerificationStatus.RoadIsOccupied);
+      result.Status.ShouldBe(GameBoard.VerificationStatus.RoadIsOccupied);
     }
 
     [Test]
@@ -141,7 +141,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.GameBoardData_Tests
     {
       // Arrange
       var playerId = Guid.NewGuid();
-      var gameBoardData = new GameBoardData(BoardSizes.Standard);
+      var gameBoardData = new GameBoard(BoardSizes.Standard);
       gameBoardData.PlaceStartingInfrastructure(playerId, FirstPlayerSettlementLocation, FirstPlayerRoadEndLocation);
       gameBoardData.PlaceStartingInfrastructure(playerId, SecondPlayerSettlementLocation, SecondPlayerRoadEndLocation);
 
@@ -149,7 +149,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.GameBoardData_Tests
       var result = gameBoardData.CanPlaceRoad(playerId, roadStartLocation, roadEndLocation);
 
       // Assert
-      result.Status.ShouldBe(GameBoardData.VerificationStatus.RoadNotConnectedToExistingRoad);
+      result.Status.ShouldBe(GameBoard.VerificationStatus.RoadNotConnectedToExistingRoad);
     }
 
     [Test]
@@ -158,13 +158,13 @@ namespace Jabberwocky.SoC.Library.UnitTests.GameBoardData_Tests
     {
       // Arrange
       var playerId = Guid.NewGuid();
-      var gameBoardData = new GameBoardData(BoardSizes.Standard);
+      var gameBoardData = new GameBoard(BoardSizes.Standard);
 
       // Act
       var result = gameBoardData.CanPlaceSettlement(playerId, 0);
 
       // Assert
-      result.Status.ShouldBe(GameBoardData.VerificationStatus.StartingInfrastructureNotPresentWhenPlacingSettlement);
+      result.Status.ShouldBe(GameBoard.VerificationStatus.StartingInfrastructureNotPresentWhenPlacingSettlement);
       result.LocationIndex.ShouldBe(0u);
       result.PlayerId.ShouldBe(Guid.Empty);
     }
@@ -175,14 +175,14 @@ namespace Jabberwocky.SoC.Library.UnitTests.GameBoardData_Tests
     {
       // Arrange
       var playerId = Guid.NewGuid();
-      var gameBoardData = new GameBoardData(BoardSizes.Standard);
+      var gameBoardData = new GameBoard(BoardSizes.Standard);
       gameBoardData.PlaceStartingInfrastructure(playerId, FirstPlayerSettlementLocation, FirstPlayerRoadEndLocation);
 
       // Act
       var result = gameBoardData.CanPlaceSettlement(playerId, 0);
 
       // Assert
-      result.Status.ShouldBe(GameBoardData.VerificationStatus.StartingInfrastructureNotCompleteWhenPlacingSettlement);
+      result.Status.ShouldBe(GameBoard.VerificationStatus.StartingInfrastructureNotCompleteWhenPlacingSettlement);
       result.LocationIndex.ShouldBe(0u);
       result.PlayerId.ShouldBe(Guid.Empty);
     }
@@ -193,7 +193,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.GameBoardData_Tests
     {
       // Arrange
       var playerId = Guid.NewGuid();
-      var gameBoardData = new GameBoardData(BoardSizes.Standard);
+      var gameBoardData = new GameBoard(BoardSizes.Standard);
       gameBoardData.PlaceStartingInfrastructure(playerId, FirstPlayerSettlementLocation, FirstPlayerRoadEndLocation);
       gameBoardData.PlaceStartingInfrastructure(playerId, SecondPlayerSettlementLocation, SecondPlayerRoadEndLocation);
 
@@ -201,7 +201,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.GameBoardData_Tests
       var result = gameBoardData.CanPlaceSettlement(playerId, FirstPlayerSettlementLocation);
 
       // Assert
-      result.Status.ShouldBe(GameBoardData.VerificationStatus.LocationIsOccupied);
+      result.Status.ShouldBe(GameBoard.VerificationStatus.LocationIsOccupied);
       result.LocationIndex.ShouldBe(FirstPlayerSettlementLocation);
       result.PlayerId.ShouldBe(playerId);
     }
@@ -212,7 +212,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.GameBoardData_Tests
     {
       // Arrange
       var playerId = Guid.NewGuid();
-      var gameBoardData = new GameBoardData(BoardSizes.Standard);
+      var gameBoardData = new GameBoard(BoardSizes.Standard);
       gameBoardData.PlaceStartingInfrastructure(playerId, FirstPlayerSettlementLocation, FirstPlayerRoadEndLocation);
       gameBoardData.PlaceStartingInfrastructure(playerId, SecondPlayerSettlementLocation, SecondPlayerRoadEndLocation);
 
@@ -220,7 +220,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.GameBoardData_Tests
       var result = gameBoardData.CanPlaceSettlement(playerId, 100);
 
       // Assert
-      result.Status.ShouldBe(GameBoardData.VerificationStatus.LocationForSettlementIsInvalid);
+      result.Status.ShouldBe(GameBoard.VerificationStatus.LocationForSettlementIsInvalid);
       result.LocationIndex.ShouldBe(0u);
       result.PlayerId.ShouldBe(Guid.Empty);
     }
@@ -234,7 +234,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.GameBoardData_Tests
     {
       // Arrange
       var playerId = Guid.NewGuid();
-      var gameBoardData = new GameBoardData(BoardSizes.Standard);
+      var gameBoardData = new GameBoard(BoardSizes.Standard);
       gameBoardData.PlaceStartingInfrastructure(playerId, FirstPlayerSettlementLocation, FirstPlayerRoadEndLocation);
       gameBoardData.PlaceStartingInfrastructure(playerId, SecondPlayerSettlementLocation, SecondPlayerRoadEndLocation);
 
@@ -242,7 +242,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.GameBoardData_Tests
       var result = gameBoardData.CanPlaceSettlement(playerId, newSettlementLocation);
 
       // Assert
-      result.Status.ShouldBe(GameBoardData.VerificationStatus.TooCloseToSettlement);
+      result.Status.ShouldBe(GameBoard.VerificationStatus.TooCloseToSettlement);
       result.LocationIndex.ShouldBe(FirstPlayerSettlementLocation);
       result.PlayerId.ShouldBe(playerId);
     }
@@ -253,7 +253,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.GameBoardData_Tests
     {
       // Arrange
       var playerId = Guid.NewGuid();
-      var gameBoardData = new GameBoardData(BoardSizes.Standard);
+      var gameBoardData = new GameBoard(BoardSizes.Standard);
       gameBoardData.PlaceStartingInfrastructure(playerId, FirstPlayerSettlementLocation, FirstPlayerRoadEndLocation);
       gameBoardData.PlaceStartingInfrastructure(playerId, SecondPlayerSettlementLocation, SecondPlayerRoadEndLocation);
       gameBoardData.PlaceRoadSegment(playerId, FirstPlayerRoadEndLocation, 10);
@@ -262,7 +262,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.GameBoardData_Tests
       var result = gameBoardData.CanPlaceSettlement(playerId, 10);
 
       // Assert
-      result.Status.ShouldBe(GameBoardData.VerificationStatus.Valid);
+      result.Status.ShouldBe(GameBoard.VerificationStatus.Valid);
     }
 
     [Test]
@@ -271,7 +271,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.GameBoardData_Tests
     {
       // Arrange
       var playerId = Guid.NewGuid();
-      var gameBoardData = new GameBoardData(BoardSizes.Standard);
+      var gameBoardData = new GameBoard(BoardSizes.Standard);
       gameBoardData.PlaceStartingInfrastructure(playerId, FirstPlayerSettlementLocation, FirstPlayerRoadEndLocation);
       gameBoardData.PlaceStartingInfrastructure(playerId, SecondPlayerSettlementLocation, SecondPlayerRoadEndLocation);
 
@@ -279,7 +279,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.GameBoardData_Tests
       var result = gameBoardData.CanPlaceSettlement(playerId, 10);
 
       // Assert
-      result.Status.ShouldBe(GameBoardData.VerificationStatus.SettlementNotConnectedToExistingRoad);
+      result.Status.ShouldBe(GameBoard.VerificationStatus.SettlementNotConnectedToExistingRoad);
     }
 
     [Test]
@@ -290,13 +290,13 @@ namespace Jabberwocky.SoC.Library.UnitTests.GameBoardData_Tests
       var playerId = Guid.NewGuid();
       var locationIndex = 20u;
       var roadEndIndex = 21u;
-      var gameBoardData = new GameBoardData(BoardSizes.Standard);
+      var gameBoardData = new GameBoard(BoardSizes.Standard);
 
       // Act
       var result = gameBoardData.CanPlaceStartingInfrastructure(playerId, locationIndex, roadEndIndex);
 
       // Assert
-      result.Status.ShouldBe(GameBoardData.VerificationStatus.Valid);
+      result.Status.ShouldBe(GameBoard.VerificationStatus.Valid);
       result.LocationIndex.ShouldBe(0u);
       result.PlayerId.ShouldBe(Guid.Empty);
     }
@@ -305,13 +305,13 @@ namespace Jabberwocky.SoC.Library.UnitTests.GameBoardData_Tests
     [Category("GameBoardData.CanPlaceStartingInfrastructure")]
     public void CanPlaceStartingInfrastructure_TryPlacingOnSettledLocation_ReturnsLocationIsOccupiedStatus()
     {
-      var gameBoardData = new GameBoardData(BoardSizes.Standard);
+      var gameBoardData = new GameBoard(BoardSizes.Standard);
       var firstPlayerId = Guid.NewGuid();
       var secondPlayerId = Guid.NewGuid();
       gameBoardData.PlaceStartingInfrastructure(firstPlayerId, FirstPlayerSettlementLocation, FirstPlayerRoadEndLocation);
 
       var result = gameBoardData.CanPlaceStartingInfrastructure(secondPlayerId, FirstPlayerSettlementLocation, 4);
-      result.Status.ShouldBe(GameBoardData.VerificationStatus.LocationIsOccupied);
+      result.Status.ShouldBe(GameBoard.VerificationStatus.LocationIsOccupied);
       result.LocationIndex.ShouldBe(FirstPlayerSettlementLocation);
       result.PlayerId.ShouldBe(firstPlayerId);
     }
@@ -322,13 +322,13 @@ namespace Jabberwocky.SoC.Library.UnitTests.GameBoardData_Tests
     {
       // Arrange
       var playerId = Guid.NewGuid();
-      var gameBoardData = new GameBoardData(BoardSizes.Standard);
+      var gameBoardData = new GameBoard(BoardSizes.Standard);
 
       // Act
       var result = gameBoardData.CanPlaceStartingInfrastructure(playerId, 100, 101);
 
       // Assert
-      result.Status.ShouldBe(GameBoardData.VerificationStatus.LocationForSettlementIsInvalid);
+      result.Status.ShouldBe(GameBoard.VerificationStatus.LocationForSettlementIsInvalid);
       result.LocationIndex.ShouldBe(0u);
       result.PlayerId.ShouldBe(Guid.Empty);
     }
@@ -341,14 +341,14 @@ namespace Jabberwocky.SoC.Library.UnitTests.GameBoardData_Tests
       var locationOneIndex = 20u;
       var roadOneEndIndex = 21u;
 
-      var gameBoardData = new GameBoardData(BoardSizes.Standard);
+      var gameBoardData = new GameBoard(BoardSizes.Standard);
       gameBoardData.PlaceStartingInfrastructure(playerId, locationOneIndex, roadOneEndIndex);
 
       var locationTwoIndex = 0u;
       var roadTwoEndIndex = 1u;
       var result = gameBoardData.CanPlaceStartingInfrastructure(playerId, locationTwoIndex, roadTwoEndIndex);
 
-      result.Status.ShouldBe(GameBoardData.VerificationStatus.Valid);
+      result.Status.ShouldBe(GameBoard.VerificationStatus.Valid);
     }
 
     [Test]
@@ -357,7 +357,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.GameBoardData_Tests
     {
       // Arrange
       var playerId = Guid.NewGuid();
-      var gameBoardData = new GameBoardData(BoardSizes.Standard);
+      var gameBoardData = new GameBoard(BoardSizes.Standard);
       gameBoardData.PlaceStartingInfrastructure(playerId, FirstPlayerSettlementLocation, FirstPlayerRoadEndLocation);
       gameBoardData.PlaceStartingInfrastructure(playerId, SecondPlayerSettlementLocation, SecondPlayerRoadEndLocation);
 
@@ -368,7 +368,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.GameBoardData_Tests
       var result = gameBoardData.CanPlaceStartingInfrastructure(playerId, locationThreeIndex, roadThreeEndIndex);
 
       // Assert
-      result.Status.ShouldBe(GameBoardData.VerificationStatus.StartingInfrastructureAlreadyPresent);
+      result.Status.ShouldBe(GameBoard.VerificationStatus.StartingInfrastructureAlreadyPresent);
       result.LocationIndex.ShouldBe(0u);
       result.PlayerId.ShouldBe(Guid.Empty);
     }
@@ -383,14 +383,14 @@ namespace Jabberwocky.SoC.Library.UnitTests.GameBoardData_Tests
       // Arrange
       var firstPlayerId = Guid.NewGuid();
       var secondPlayerId = Guid.NewGuid();
-      var gameBoardData = new GameBoardData(BoardSizes.Standard);
+      var gameBoardData = new GameBoard(BoardSizes.Standard);
       gameBoardData.PlaceStartingInfrastructure(firstPlayerId, firstSettlementLocation, firstEndRoadLocation);
 
       // Act
       var result = gameBoardData.CanPlaceStartingInfrastructure(secondPlayerId, secondSettlementLocation, secondEndRoadLocation);
 
       // Assert
-      result.Status.ShouldBe(GameBoardData.VerificationStatus.TooCloseToSettlement);
+      result.Status.ShouldBe(GameBoard.VerificationStatus.TooCloseToSettlement);
       result.LocationIndex.ShouldBe(firstSettlementLocation);
       result.PlayerId.ShouldBe(firstPlayerId);
     }
@@ -401,26 +401,26 @@ namespace Jabberwocky.SoC.Library.UnitTests.GameBoardData_Tests
     {
       // Arrange
       var playerId = Guid.NewGuid();
-      var gameBoardData = new GameBoardData(BoardSizes.Standard);
+      var gameBoardData = new GameBoard(BoardSizes.Standard);
 
       // Act
       var result = gameBoardData.CanPlaceStartingInfrastructure(playerId, 20u, 22u);
 
       // Assert
-      result.Status.ShouldBe(GameBoardData.VerificationStatus.NoDirectConnection);
+      result.Status.ShouldBe(GameBoard.VerificationStatus.NoDirectConnection);
       result.LocationIndex.ShouldBe(0u);
       result.PlayerId.ShouldBe(Guid.Empty);
     }
 
     [Test]
     [Category("GameBoardData.CanPlaceStartingInfrastructure")]
-    [TestCase(53u, 54u, GameBoardData.VerificationStatus.RoadIsOffBoard)] // Hanging over the edge 
-    [TestCase(54u, 53u, GameBoardData.VerificationStatus.LocationForSettlementIsInvalid)] // Hanging over the edge
-    [TestCase(100u, 101u, GameBoardData.VerificationStatus.LocationForSettlementIsInvalid)]
-    public void CanPlaceStartingInfrastructure_RoadOffBoard_ReturnsRoadIsOffBoard(UInt32 settlementLocation, UInt32 roadEndLocation, GameBoardData.VerificationStatus expectedStatus)
+    [TestCase(53u, 54u, GameBoard.VerificationStatus.RoadIsOffBoard)] // Hanging over the edge 
+    [TestCase(54u, 53u, GameBoard.VerificationStatus.LocationForSettlementIsInvalid)] // Hanging over the edge
+    [TestCase(100u, 101u, GameBoard.VerificationStatus.LocationForSettlementIsInvalid)]
+    public void CanPlaceStartingInfrastructure_RoadOffBoard_ReturnsRoadIsOffBoard(UInt32 settlementLocation, UInt32 roadEndLocation, GameBoard.VerificationStatus expectedStatus)
     {
       // Arrange
-      var gameBoardData = new GameBoardData(BoardSizes.Standard);
+      var gameBoardData = new GameBoard(BoardSizes.Standard);
 
       // Act
       var result = gameBoardData.CanPlaceStartingInfrastructure(Guid.NewGuid(), settlementLocation, roadEndLocation);
@@ -436,13 +436,13 @@ namespace Jabberwocky.SoC.Library.UnitTests.GameBoardData_Tests
     public void PlaceRoad_EmptyBoard_ThrowsMeaningfulException()
     {
       // Arrange
-      var gameBoardData = new GameBoardData(BoardSizes.Standard);
+      var gameBoardData = new GameBoard(BoardSizes.Standard);
 
       // Act
       Action action = () => { gameBoardData.PlaceRoadSegment(Guid.NewGuid(), 0, 1); };
 
       // Assert
-      action.ShouldThrow<GameBoardData.PlacementException>().Message.ShouldBe("Cannot place road before placing all initial infrastructure.");
+      action.ShouldThrow<GameBoard.PlacementException>().Message.ShouldBe("Cannot place road before placing all initial infrastructure.");
     }
 
     [Test]
@@ -451,14 +451,14 @@ namespace Jabberwocky.SoC.Library.UnitTests.GameBoardData_Tests
     {
       // Arrange
       var playerId = Guid.NewGuid();
-      var gameBoardData = new GameBoardData(BoardSizes.Standard);
+      var gameBoardData = new GameBoard(BoardSizes.Standard);
       gameBoardData.PlaceStartingInfrastructure(playerId, FirstPlayerSettlementLocation, FirstPlayerRoadEndLocation);
 
       // Act
       Action action = () => { gameBoardData.PlaceRoadSegment(playerId, 10, FirstPlayerRoadEndLocation); };
 
       // Assert
-      action.ShouldThrow<GameBoardData.PlacementException>().Message.ShouldBe("Cannot place road before placing all initial infrastructure.");
+      action.ShouldThrow<GameBoard.PlacementException>().Message.ShouldBe("Cannot place road before placing all initial infrastructure.");
     }
 
     [Test]
@@ -470,7 +470,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.GameBoardData_Tests
     {
       // Arrange
       var playerId = Guid.NewGuid();
-      var gameBoardData = new GameBoardData(BoardSizes.Standard);
+      var gameBoardData = new GameBoard(BoardSizes.Standard);
       gameBoardData.PlaceStartingInfrastructure(playerId, FirstPlayerSettlementLocation, FirstPlayerRoadEndLocation);
       gameBoardData.PlaceStartingInfrastructure(playerId, SecondPlayerSettlementLocation, SecondPlayerRoadEndLocation);
 
@@ -478,7 +478,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.GameBoardData_Tests
       Action action = () => { gameBoardData.PlaceRoadSegment(playerId, start, end); };
 
       // Assert
-      action.ShouldThrow<GameBoardData.PlacementException>().Message.ShouldBe("Cannot place road because board location is not valid.");
+      action.ShouldThrow<GameBoard.PlacementException>().Message.ShouldBe("Cannot place road because board location is not valid.");
     }
 
     [Test]
@@ -489,7 +489,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.GameBoardData_Tests
     {
       // Arrange
       var playerId = Guid.NewGuid();
-      var gameBoardData = new GameBoardData(BoardSizes.Standard);
+      var gameBoardData = new GameBoard(BoardSizes.Standard);
       gameBoardData.PlaceStartingInfrastructure(playerId, FirstPlayerSettlementLocation, FirstPlayerRoadEndLocation);
       gameBoardData.PlaceStartingInfrastructure(playerId, SecondPlayerSettlementLocation, SecondPlayerRoadEndLocation);
 
@@ -497,7 +497,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.GameBoardData_Tests
       Action action = () => { gameBoardData.PlaceRoadSegment(playerId, start, end); };
 
       // Assert
-      action.ShouldThrow<GameBoardData.PlacementException>().Message.ShouldBe("Cannot place road because no direct connection between start location and end location.");
+      action.ShouldThrow<GameBoard.PlacementException>().Message.ShouldBe("Cannot place road because no direct connection between start location and end location.");
     }
 
     [Test]
@@ -505,7 +505,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.GameBoardData_Tests
     public void PlaceRoad_RoadAlreadyBuilt_ThrowsMeaningfulException()
     {
       // Arrange
-      var gameBoardData = new GameBoardData(BoardSizes.Standard);
+      var gameBoardData = new GameBoard(BoardSizes.Standard);
       var playerId = Guid.NewGuid();
       gameBoardData.PlaceStartingInfrastructure(playerId, FirstPlayerSettlementLocation, FirstPlayerRoadEndLocation);
       gameBoardData.PlaceStartingInfrastructure(playerId, SecondPlayerSettlementLocation, SecondPlayerRoadEndLocation);
@@ -514,7 +514,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.GameBoardData_Tests
       Action action = () => { gameBoardData.PlaceRoadSegment(playerId, FirstPlayerSettlementLocation, FirstPlayerRoadEndLocation); };
 
       // Assert
-      action.ShouldThrow<GameBoardData.PlacementException>().Message.ShouldBe("Cannot place road because road already exists.");
+      action.ShouldThrow<GameBoard.PlacementException>().Message.ShouldBe("Cannot place road because road already exists.");
     }
 
     [Test]
@@ -525,7 +525,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.GameBoardData_Tests
     {
       // Arrange
       var playerId = Guid.NewGuid();
-      var gameBoardData = new GameBoardData(BoardSizes.Standard);
+      var gameBoardData = new GameBoard(BoardSizes.Standard);
       gameBoardData.PlaceStartingInfrastructure(playerId, FirstPlayerSettlementLocation, FirstPlayerRoadEndLocation);
       gameBoardData.PlaceStartingInfrastructure(playerId, SecondPlayerSettlementLocation, SecondPlayerRoadEndLocation);
 
@@ -533,7 +533,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.GameBoardData_Tests
       Action action = () => { gameBoardData.PlaceRoadSegment(playerId, roadStartLocation, roadEndLocation); };
 
       // Assert
-      action.ShouldThrow<GameBoardData.PlacementException>().Message.ShouldBe("Cannot place road because it is not connected to an existing road segment.");
+      action.ShouldThrow<GameBoard.PlacementException>().Message.ShouldBe("Cannot place road because it is not connected to an existing road segment.");
     }
 
     [Test]
@@ -541,13 +541,13 @@ namespace Jabberwocky.SoC.Library.UnitTests.GameBoardData_Tests
     public void PlaceSettlement_EmptyBoard_ThrowsMeaningfulException()
     {
       // Arrange
-      var gameBoardData = new GameBoardData(BoardSizes.Standard);
+      var gameBoardData = new GameBoard(BoardSizes.Standard);
 
       // Act
       Action action = () => { gameBoardData.PlaceSettlement(Guid.NewGuid(), 20u); };
 
       // Assert
-      action.ShouldThrow<GameBoardData.PlacementException>().Message.ShouldBe("Cannot place settlement before placing all initial infrastructure.");
+      action.ShouldThrow<GameBoard.PlacementException>().Message.ShouldBe("Cannot place settlement before placing all initial infrastructure.");
     }
 
     [Test]
@@ -556,14 +556,14 @@ namespace Jabberwocky.SoC.Library.UnitTests.GameBoardData_Tests
     {
       // Arrange
       var playerId = Guid.NewGuid();
-      var gameBoardData = new GameBoardData(BoardSizes.Standard);
+      var gameBoardData = new GameBoard(BoardSizes.Standard);
       gameBoardData.PlaceStartingInfrastructure(playerId, FirstPlayerSettlementLocation, FirstPlayerRoadEndLocation);
 
       // Act
       Action action = () => { gameBoardData.PlaceSettlement(playerId, 0); };
 
       // Assert
-      action.ShouldThrow<GameBoardData.PlacementException>().Message.ShouldBe("Cannot place settlement before placing all initial infrastructure.");
+      action.ShouldThrow<GameBoard.PlacementException>().Message.ShouldBe("Cannot place settlement before placing all initial infrastructure.");
     }
 
     [Test]
@@ -572,7 +572,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.GameBoardData_Tests
     {
       // Arrange
       var playerId = Guid.NewGuid();
-      var gameBoardData = new GameBoardData(BoardSizes.Standard);
+      var gameBoardData = new GameBoard(BoardSizes.Standard);
       gameBoardData.PlaceStartingInfrastructure(playerId, FirstPlayerSettlementLocation, FirstPlayerRoadEndLocation);
       gameBoardData.PlaceStartingInfrastructure(playerId, SecondPlayerSettlementLocation, SecondPlayerRoadEndLocation);
 
@@ -580,7 +580,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.GameBoardData_Tests
       Action action = () => { gameBoardData.PlaceSettlement(playerId, FirstPlayerSettlementLocation); };
 
       // Assert
-      action.ShouldThrow<GameBoardData.PlacementException>().Message.ShouldBe("Cannot place settlement because location is already settled.");
+      action.ShouldThrow<GameBoard.PlacementException>().Message.ShouldBe("Cannot place settlement because location is already settled.");
     }
 
     [Test]
@@ -589,7 +589,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.GameBoardData_Tests
     {
       // Arrange
       var playerId = Guid.NewGuid();
-      var gameBoardData = new GameBoardData(BoardSizes.Standard);
+      var gameBoardData = new GameBoard(BoardSizes.Standard);
       gameBoardData.PlaceStartingInfrastructure(playerId, FirstPlayerSettlementLocation, FirstPlayerRoadEndLocation);
       gameBoardData.PlaceStartingInfrastructure(playerId, SecondPlayerSettlementLocation, SecondPlayerRoadEndLocation);
 
@@ -597,7 +597,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.GameBoardData_Tests
       Action action = () => { gameBoardData.PlaceSettlement(playerId, 100); };
 
       // Assert
-      action.ShouldThrow<GameBoardData.PlacementException>().Message.ShouldBe("Cannot place settlement because location is not on board.");
+      action.ShouldThrow<GameBoard.PlacementException>().Message.ShouldBe("Cannot place settlement because location is not on board.");
     }
 
     [Test]
@@ -609,7 +609,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.GameBoardData_Tests
     {
       // Arrange
       var playerId = Guid.NewGuid();
-      var gameBoardData = new GameBoardData(BoardSizes.Standard);
+      var gameBoardData = new GameBoard(BoardSizes.Standard);
       gameBoardData.PlaceStartingInfrastructure(playerId, FirstPlayerSettlementLocation, FirstPlayerRoadEndLocation);
       gameBoardData.PlaceStartingInfrastructure(playerId, SecondPlayerSettlementLocation, SecondPlayerRoadEndLocation);
 
@@ -617,7 +617,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.GameBoardData_Tests
       Action action = () => { gameBoardData.PlaceSettlement(playerId, newSettlementLocation); };
 
       // Assert
-      action.ShouldThrow<GameBoardData.PlacementException>().Message.ShouldBe("Cannot place settlement because location is too close to exising settlement.");
+      action.ShouldThrow<GameBoard.PlacementException>().Message.ShouldBe("Cannot place settlement because location is too close to exising settlement.");
     }
 
     [Test]
@@ -626,7 +626,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.GameBoardData_Tests
     {
       // Arrange
       var playerId = Guid.NewGuid();
-      var gameBoardData = new GameBoardData(BoardSizes.Standard);
+      var gameBoardData = new GameBoard(BoardSizes.Standard);
       gameBoardData.PlaceStartingInfrastructure(playerId, FirstPlayerSettlementLocation, FirstPlayerRoadEndLocation);
       gameBoardData.PlaceStartingInfrastructure(playerId, SecondPlayerSettlementLocation, SecondPlayerRoadEndLocation);
 
@@ -634,7 +634,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.GameBoardData_Tests
       Action action = () => { gameBoardData.PlaceSettlement(playerId, 10); };
 
       // Assert
-      action.ShouldThrow<GameBoardData.PlacementException>().Message.ShouldBe("Cannot place settlement because location is not on a road.");
+      action.ShouldThrow<GameBoard.PlacementException>().Message.ShouldBe("Cannot place settlement because location is not on a road.");
     }
 
     [Test]
@@ -642,7 +642,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.GameBoardData_Tests
     public void PlaceStartingInfrastructure_TryPlacingOnSettledLocation_ThrowsMeaningfulException()
     {
       // Arrange
-      var gameBoardData = new GameBoardData(BoardSizes.Standard);
+      var gameBoardData = new GameBoard(BoardSizes.Standard);
       var firstPlayerId = Guid.NewGuid();
       var secondPlayerId = Guid.NewGuid();
       gameBoardData.PlaceStartingInfrastructure(firstPlayerId, 1, 2);
@@ -651,7 +651,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.GameBoardData_Tests
       Action action = () => { gameBoardData.PlaceStartingInfrastructure(secondPlayerId, 1, 0); };
 
       // Assert
-      action.ShouldThrow<GameBoardData.PlacementException>().Message.ShouldBe("Cannot place settlement because location is already settled.");
+      action.ShouldThrow<GameBoard.PlacementException>().Message.ShouldBe("Cannot place settlement because location is already settled.");
     }
 
     [Test]
@@ -660,13 +660,13 @@ namespace Jabberwocky.SoC.Library.UnitTests.GameBoardData_Tests
     {
       // Arrange
       var playerId = Guid.NewGuid();
-      var gameBoardData = new GameBoardData(BoardSizes.Standard);
+      var gameBoardData = new GameBoard(BoardSizes.Standard);
 
       // Act
       Action action = () => { gameBoardData.PlaceStartingInfrastructure(playerId, 100, 101); };
 
       // Assert
-      action.ShouldThrow<GameBoardData.PlacementException>().Message.ShouldBe("Cannot place settlement because location is not on board.");
+      action.ShouldThrow<GameBoard.PlacementException>().Message.ShouldBe("Cannot place settlement because location is not on board.");
     }
 
     [Test]
@@ -674,13 +674,13 @@ namespace Jabberwocky.SoC.Library.UnitTests.GameBoardData_Tests
     public void PlaceStartingInfrastructure_PlayerAlreadyPlacedAllStartingInfrastructure_ThrowsMeaningfulException()
     {
       var playerId = Guid.NewGuid();
-      var gameBoardData = new GameBoardData(BoardSizes.Standard);
+      var gameBoardData = new GameBoard(BoardSizes.Standard);
       gameBoardData.PlaceStartingInfrastructure(playerId, FirstPlayerSettlementLocation, FirstPlayerRoadEndLocation);
       gameBoardData.PlaceStartingInfrastructure(playerId, SecondPlayerSettlementLocation, SecondPlayerRoadEndLocation);
 
       Action action = () => { gameBoardData.PlaceStartingInfrastructure(playerId, 0u, 1u); };
 
-      action.ShouldThrow<GameBoardData.PlacementException>().Message.ShouldBe("Cannot place starting infrastructure more than once per player.");
+      action.ShouldThrow<GameBoard.PlacementException>().Message.ShouldBe("Cannot place starting infrastructure more than once per player.");
     }
 
     [Test]
@@ -692,14 +692,14 @@ namespace Jabberwocky.SoC.Library.UnitTests.GameBoardData_Tests
     {
       var firstPlayerId = Guid.NewGuid();
       var secondPlayerId = Guid.NewGuid();
-      var gameBoardData = new GameBoardData(BoardSizes.Standard);
+      var gameBoardData = new GameBoard(BoardSizes.Standard);
       gameBoardData.PlaceStartingInfrastructure(firstPlayerId, firstSettlementLocation, firstEndRoadLocation);
 
       // Act
       Action action = () => { gameBoardData.PlaceStartingInfrastructure(secondPlayerId, secondSettlementLocation, secondEndRoadLocation); };
 
       // Assert
-      action.ShouldThrow<GameBoardData.PlacementException>().Message.ShouldBe("Cannot place settlement because location is too close to exising settlement.");
+      action.ShouldThrow<GameBoard.PlacementException>().Message.ShouldBe("Cannot place settlement because location is too close to exising settlement.");
     }
 
     [Test]
@@ -708,13 +708,13 @@ namespace Jabberwocky.SoC.Library.UnitTests.GameBoardData_Tests
     {
       // Arrange
       var playerId = Guid.NewGuid();
-      var gameBoardData = new GameBoardData(BoardSizes.Standard);
+      var gameBoardData = new GameBoard(BoardSizes.Standard);
 
       // Act
       Action action = () => { gameBoardData.PlaceStartingInfrastructure(playerId, 20u, 22u); };
 
       // Assert
-      action.ShouldThrow<GameBoardData.PlacementException>().Message.ShouldBe("Cannot place road because no direct connection between start location and end location.");
+      action.ShouldThrow<GameBoard.PlacementException>().Message.ShouldBe("Cannot place road because no direct connection between start location and end location.");
     }
 
     [Test]
@@ -725,13 +725,13 @@ namespace Jabberwocky.SoC.Library.UnitTests.GameBoardData_Tests
     public void PlaceStartingInfrastructure_InfrastructureOffBoard_ThrowsMeaningfulException(UInt32 settlementLocation, UInt32 roadEndLocation, String expectedMessage)
     {
       // Arrange
-      var gameBoardData = new GameBoardData(BoardSizes.Standard);
+      var gameBoardData = new GameBoard(BoardSizes.Standard);
 
       // Act
       Action action = () => { gameBoardData.PlaceStartingInfrastructure(Guid.NewGuid(), settlementLocation, roadEndLocation); };
 
       // Assert
-      action.ShouldThrow<GameBoardData.PlacementException>().Message.ShouldBe(expectedMessage);
+      action.ShouldThrow<GameBoard.PlacementException>().Message.ShouldBe(expectedMessage);
     }
 
     [Test]
@@ -740,14 +740,14 @@ namespace Jabberwocky.SoC.Library.UnitTests.GameBoardData_Tests
     {
       var playerId = Guid.NewGuid();
       var location = 20u;
-      var gameBoardData = new GameBoardData(BoardSizes.Standard);
+      var gameBoardData = new GameBoard(BoardSizes.Standard);
 
       // Road end not valid so will not be placed.
       try
       {
         gameBoardData.PlaceStartingInfrastructure(playerId, location, 22);
       }
-      catch (GameBoardData.PlacementException pe)
+      catch (GameBoard.PlacementException pe)
       {
         // ignore it
       }
@@ -755,13 +755,13 @@ namespace Jabberwocky.SoC.Library.UnitTests.GameBoardData_Tests
       // Check placing the settlement in the same location with a correct road end - will pass since nothing is there.
       var results = gameBoardData.CanPlaceStartingInfrastructure(playerId, location, 21);
 
-      results.Status.ShouldBe(GameBoardData.VerificationStatus.Valid);
+      results.Status.ShouldBe(GameBoard.VerificationStatus.Valid);
     }
 
     [Test]
     public void GetPathBetweenLocations_StartAndEndAreSame_ReturnsNull()
     {
-      var gameBoardData = new GameBoardData(BoardSizes.Standard);
+      var gameBoardData = new GameBoard(BoardSizes.Standard);
       var result = gameBoardData.GetPathBetweenLocations(0, 0);
       result.ShouldBeNull();
     }
@@ -771,7 +771,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.GameBoardData_Tests
     [TestCase(8u, 48u)]
     public void GetPathBetweenLocations_StartAndEndAreNeighbours_ReturnsOneStep(UInt32 endPoint, UInt32 stepIndex)
     {
-      var gameBoardData = new GameBoardData(BoardSizes.Standard);
+      var gameBoardData = new GameBoard(BoardSizes.Standard);
       var result = gameBoardData.GetPathBetweenLocations(0, endPoint);
       result.ShouldBe(new List<UInt32> { endPoint });
     }
@@ -779,7 +779,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.GameBoardData_Tests
     [Test]
     public void GetPathBetweenLocations_StartAndEndAreNeighbours()
     {
-      var gameBoardData = new GameBoardData(BoardSizes.Standard);
+      var gameBoardData = new GameBoard(BoardSizes.Standard);
       var result = gameBoardData.GetPathBetweenLocations(0, 10);
       result.ShouldBe(new List<UInt32> { 10, 2, 1 });
     }
@@ -787,7 +787,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.GameBoardData_Tests
     [Test]
     public void GetSettlementsForPlayers_EmptyBoard_ReturnsNull()
     {
-      var gameBoardData = new GameBoardData(BoardSizes.Standard);
+      var gameBoardData = new GameBoard(BoardSizes.Standard);
       var settlements = gameBoardData.GetSettlementsForPlayer(Guid.NewGuid());
       settlements.ShouldBeNull();
     }
@@ -796,7 +796,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.GameBoardData_Tests
     public void GetSettlementsForPlayers_PlayerHasNoSettlementsOnBoard_ReturnsNull()
     {
       // Arrange
-      var gameBoardData = new GameBoardData(BoardSizes.Standard);
+      var gameBoardData = new GameBoard(BoardSizes.Standard);
       gameBoardData.PlaceStartingInfrastructure(Guid.NewGuid(), FirstPlayerSettlementLocation, FirstPlayerRoadEndLocation);
 
       // Act
@@ -810,7 +810,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.GameBoardData_Tests
     public void PlaceStartingInfrastructure_SettlementAndRoadAreValid_NoMeaningfulExceptionThrown()
     {
       var playerId = Guid.NewGuid();
-      var gameBoardData = new GameBoardData(BoardSizes.Standard);
+      var gameBoardData = new GameBoard(BoardSizes.Standard);
 
       // Act
       Action action = () =>
@@ -821,8 +821,8 @@ namespace Jabberwocky.SoC.Library.UnitTests.GameBoardData_Tests
 
       // Assert
       action.ShouldNotThrow();
-      gameBoardData.CanPlaceSettlement(playerId, FirstPlayerSettlementLocation).Status.ShouldBe(GameBoardData.VerificationStatus.LocationIsOccupied);
-      gameBoardData.CanPlaceRoad(playerId, FirstPlayerSettlementLocation, FirstPlayerRoadEndLocation).Status.ShouldBe(GameBoardData.VerificationStatus.RoadIsOccupied);
+      gameBoardData.CanPlaceSettlement(playerId, FirstPlayerSettlementLocation).Status.ShouldBe(GameBoard.VerificationStatus.LocationIsOccupied);
+      gameBoardData.CanPlaceRoad(playerId, FirstPlayerSettlementLocation, FirstPlayerRoadEndLocation).Status.ShouldBe(GameBoard.VerificationStatus.RoadIsOccupied);
     }
 
     [Test]
@@ -832,7 +832,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.GameBoardData_Tests
     [TestCase(20u, 0, 1, 1, 1, 0)]
     public void GetResourcesForLocation_StandardBoard_ReturnsExpectedResources(UInt32 location, Int32 expectedBrickCount, Int32 expectedGrainCount, Int32 expectedLumberCount, Int32 expectedOreCount, Int32 expectedWoolCount)
     {
-      var gameBoardData = new GameBoardData(BoardSizes.Standard);
+      var gameBoardData = new GameBoard(BoardSizes.Standard);
       var result = gameBoardData.GetResourcesForLocation(location);
       result.BrickCount.ShouldBe(expectedBrickCount);
       result.GrainCount.ShouldBe(expectedGrainCount);
@@ -849,7 +849,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.GameBoardData_Tests
       var player3_Id = Guid.NewGuid();
 
       var roll = 8u;
-      var gameBoardData = new GameBoardData(BoardSizes.Standard);
+      var gameBoardData = new GameBoard(BoardSizes.Standard);
       gameBoardData.PlaceStartingInfrastructure(player1_Id, 12, 11);
       gameBoardData.PlaceStartingInfrastructure(player1_Id, 53, 52);
       gameBoardData.PlaceStartingInfrastructure(player2_Id, 43, 42);
@@ -879,7 +879,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.GameBoardData_Tests
       var playerId = Guid.NewGuid();
 
       var roll = 8u;
-      var gameBoardData = new GameBoardData(BoardSizes.Standard);
+      var gameBoardData = new GameBoard(BoardSizes.Standard);
       gameBoardData.PlaceStartingInfrastructure(playerId, 2, 1);
       gameBoardData.PlaceStartingInfrastructure(playerId, 11, 12);
       gameBoardData.PlaceRoadSegment(playerId, 12, 4);
@@ -907,7 +907,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.GameBoardData_Tests
     public void GetResourcesForRoll_StandardBoard_ReturnsCorrectResources(UInt32 diceRoll, UInt32 settlementLocation, UInt32 roadEndLocation, ResourceTypes expectedType)
     {
       var playerId = Guid.NewGuid();
-      var gameBoardData = new GameBoardData(BoardSizes.Standard);
+      var gameBoardData = new GameBoard(BoardSizes.Standard);
       gameBoardData.PlaceStartingInfrastructure(playerId, settlementLocation, roadEndLocation);
       var result = gameBoardData.GetResourcesForRoll(diceRoll);
 
@@ -933,7 +933,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.GameBoardData_Tests
     {
       // Arrange
       var playerId = Guid.NewGuid();
-      var gameBoardData = new GameBoardData(BoardSizes.Standard);
+      var gameBoardData = new GameBoard(BoardSizes.Standard);
       gameBoardData.PlaceStartingInfrastructure(playerId, 0, 8);
 
       // Act
@@ -950,7 +950,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.GameBoardData_Tests
       // Arrange
       var firstPlayerId = Guid.NewGuid();
       var secondPlayerId = Guid.NewGuid();
-      var gameBoardData = new GameBoardData(BoardSizes.Standard);
+      var gameBoardData = new GameBoard(BoardSizes.Standard);
       gameBoardData.PlaceStartingInfrastructure(firstPlayerId, 0, 8);
       gameBoardData.PlaceStartingInfrastructure(secondPlayerId, 2, 1);
 
@@ -968,7 +968,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.GameBoardData_Tests
     {
       // Arrange
       var playerId = Guid.NewGuid();
-      var gameBoardData = new GameBoardData(BoardSizes.Standard);
+      var gameBoardData = new GameBoard(BoardSizes.Standard);
       gameBoardData.PlaceStartingInfrastructure(playerId, 0, 8);
       gameBoardData.PlaceStartingInfrastructure(playerId, SecondPlayerSettlementLocation, SecondPlayerRoadEndLocation);
       gameBoardData.PlaceRoadSegment(playerId, 8, 9);
@@ -987,7 +987,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.GameBoardData_Tests
     {
       // Arrange
       var playerId = Guid.NewGuid();
-      var gameBoardData = new GameBoardData(BoardSizes.Standard);
+      var gameBoardData = new GameBoard(BoardSizes.Standard);
 
       // Act
       var results = gameBoardData.GetPlayersForHex(0);
@@ -1000,7 +1000,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.GameBoardData_Tests
     public void GetHexInformation_StandardBoard_ReturnsResourceTypeArray()
     {
       // Arrange
-      var gameBoard = new GameBoardData(BoardSizes.Standard);
+      var gameBoard = new GameBoard(BoardSizes.Standard);
 
       // Act
       var data = gameBoard.GetHexInformation();
@@ -1036,7 +1036,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.GameBoardData_Tests
     {
       // Arrange
       var playerId = Guid.NewGuid();
-      var gameBoard = new GameBoardData(BoardSizes.Standard);
+      var gameBoard = new GameBoard(BoardSizes.Standard);
       var settlementLocation = 12u;
       gameBoard.PlaceStartingInfrastructure(playerId, FirstPlayerSettlementLocation, FirstPlayerRoadEndLocation);
 
@@ -1053,7 +1053,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.GameBoardData_Tests
     {
       // Arrange
       var playerId = Guid.NewGuid();
-      var gameBoard = new GameBoardData(BoardSizes.Standard);
+      var gameBoard = new GameBoard(BoardSizes.Standard);
       gameBoard.PlaceStartingInfrastructure(playerId, 12, 4);
 
       // Act
@@ -1068,7 +1068,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.GameBoardData_Tests
     public void GetProductionValuesForLocation_LocationWithThreeResourceProducers_ReturnsExpectedProductionValues()
     {
       // Arrange
-      var gameBoard = new GameBoardData(BoardSizes.Standard);
+      var gameBoard = new GameBoard(BoardSizes.Standard);
 
       // Act
       var productionValues = gameBoard.GetProductionValuesForLocation(12u);
@@ -1084,7 +1084,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.GameBoardData_Tests
     public void GetProductionValuesForLocation_LocationWithTwoResourceProducers_ReturnsExpectedProductionValues()
     {
       // Arrange
-      var gameBoard = new GameBoardData(BoardSizes.Standard);
+      var gameBoard = new GameBoard(BoardSizes.Standard);
 
       // Act
       var productionValues = gameBoard.GetProductionValuesForLocation(4u);
@@ -1099,7 +1099,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.GameBoardData_Tests
     public void GetProductionValuesForLocation_LocationIsOnDesertOnly_ReturnsEmptyArray()
     {
       // Arrange
-      var gameBoard = new GameBoardData(BoardSizes.Standard);
+      var gameBoard = new GameBoard(BoardSizes.Standard);
 
       // Act
       var productionValues = gameBoard.GetProductionValuesForLocation(0u);
@@ -1118,7 +1118,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.GameBoardData_Tests
       // Arrange
       UInt32[] road;
       Guid longestRoadPlayerId;
-      var gameBoard = new GameBoardData(BoardSizes.Standard);
+      var gameBoard = new GameBoard(BoardSizes.Standard);
 
       // Act
       var result = gameBoard.TryGetLongestRoadDetails(out longestRoadPlayerId, out road);
@@ -1138,7 +1138,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.GameBoardData_Tests
     public void TryGetLongestRoadDetails_OnePlayerHasLongestRoad_ReturnsTrue()
     {
       // Arrange
-      var gameBoard = new GameBoardData(BoardSizes.Standard);
+      var gameBoard = new GameBoard(BoardSizes.Standard);
 
       var playerId = Guid.NewGuid();
       var opponentId = Guid.NewGuid();
@@ -1173,7 +1173,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.GameBoardData_Tests
     public void TryGetLongestRoadDetails_TwoPlayersHaveTheLongestRoad_ReturnsFalse()
     {
       // Arrange
-      var gameBoard = new GameBoardData(BoardSizes.Standard);
+      var gameBoard = new GameBoard(BoardSizes.Standard);
 
       var playerId = Guid.NewGuid();
       var opponentId = Guid.NewGuid();
@@ -1204,7 +1204,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.GameBoardData_Tests
     public void TryGetLongestRoadDetails_OnePlayerHasTwoRoadsOfEqualLength_ReturnsLongestRoadDetails()
     {
       // Arrange      
-      var gameBoard = new GameBoardData(BoardSizes.Standard);
+      var gameBoard = new GameBoard(BoardSizes.Standard);
 
       var playerId = Guid.NewGuid();
       gameBoard.PlaceStartingInfrastructure(playerId, FirstPlayerSettlementLocation, FirstPlayerRoadEndLocation);
@@ -1242,7 +1242,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.GameBoardData_Tests
     public void TryGetLongestRoadDetails_LongestRoadIsCycle_ReturnsLongestRoadDetails()
     {
       // Arrange
-      var gameBoard = new GameBoardData(BoardSizes.Standard);
+      var gameBoard = new GameBoard(BoardSizes.Standard);
 
       var playerId = Guid.NewGuid();
       gameBoard.PlaceStartingInfrastructure(playerId, FirstPlayerSettlementLocation, FirstPlayerRoadEndLocation);
@@ -1277,7 +1277,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.GameBoardData_Tests
     public void TryGetLongestRoadDetails_LongestRoadIsFigureOfEight_ReturnsLongestRoadDetails()
     {
       // Arrange
-      var gameBoard = new GameBoardData(BoardSizes.Standard);
+      var gameBoard = new GameBoard(BoardSizes.Standard);
 
       var playerId = Guid.NewGuid();
       gameBoard.PlaceStartingInfrastructure(playerId, FirstPlayerSettlementLocation, FirstPlayerRoadEndLocation);
@@ -1324,7 +1324,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.GameBoardData_Tests
     public void TryGetLongestRoadDetails_LongestRoadContainsFork_ReturnsLongestRoadDetails(UInt32[] locations)
     {
       // Arrange
-      var gameBoard = new GameBoardData(BoardSizes.Standard);
+      var gameBoard = new GameBoard(BoardSizes.Standard);
 
       var playerId = Guid.NewGuid();
       gameBoard.PlaceStartingInfrastructure(playerId, 0, 1);
@@ -1366,7 +1366,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.GameBoardData_Tests
     public void TryGetLongestRoadDetails_LongestRoadContainsMultipleForks_ReturnsLongestRoadDetails(UInt32[] firstBranch, UInt32[] secondBranch, UInt32[] lastBranch)
     {
       // Arrange
-      var gameBoard = new GameBoardData(BoardSizes.Standard);
+      var gameBoard = new GameBoard(BoardSizes.Standard);
 
       var playerId = Guid.NewGuid();
       gameBoard.PlaceStartingInfrastructure(playerId, 0, 1);
@@ -1398,7 +1398,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.GameBoardData_Tests
     public void TryGetLongestRoadDetails_TwoRoadsAreConnectedWithRoadSegment_ReturnsTrue()
     {
       // Arrange
-      var gameBoard = new GameBoardData(BoardSizes.Standard);
+      var gameBoard = new GameBoard(BoardSizes.Standard);
 
       var playerId = Guid.NewGuid();
       gameBoard.PlaceStartingInfrastructure(playerId, 21, 20);
@@ -1442,7 +1442,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.GameBoardData_Tests
     public void TryGetLongestRoadDetails_OnePlayerHasLongestRoadWithOneEndPoint_ReturnsLongestRoadDetails()
     {
       // Arrange
-      var gameBoard = new GameBoardData(BoardSizes.Standard);
+      var gameBoard = new GameBoard(BoardSizes.Standard);
 
       var playerId = Guid.NewGuid();
       gameBoard.PlaceStartingInfrastructure(playerId, FirstPlayerSettlementLocation, FirstPlayerRoadEndLocation);
@@ -1479,7 +1479,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.GameBoardData_Tests
     public void TryGetLongestRoadDetails_StartingSettlementNotOnEndOfRoad_ReturnsLongestRoadDetails()
     {
       // Arrange
-      var gameBoard = new GameBoardData(BoardSizes.Standard);
+      var gameBoard = new GameBoard(BoardSizes.Standard);
 
       var playerId = Guid.NewGuid();
       gameBoard.PlaceStartingInfrastructure(playerId, FirstPlayerSettlementLocation, FirstPlayerRoadEndLocation);
@@ -1508,7 +1508,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.GameBoardData_Tests
     public void TryGetLongestRoadDetails_SettlementHasRoadsInAllDirections_ReturnsLongestRoadDetails()
     {
       // Arrange
-      var gameBoard = new GameBoardData(BoardSizes.Standard);
+      var gameBoard = new GameBoard(BoardSizes.Standard);
 
       var playerId = Guid.NewGuid();
       gameBoard.PlaceStartingInfrastructure(playerId, FirstPlayerSettlementLocation, FirstPlayerRoadEndLocation);
@@ -1542,7 +1542,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.GameBoardData_Tests
     public void TryGetLongestRoadDetails_SettlementBetweenTwoLoops_ReturnsLongestRoadDetails()
     {
       // Arrange
-      var gameBoard = new GameBoardData(BoardSizes.Standard);
+      var gameBoard = new GameBoard(BoardSizes.Standard);
 
       var playerId = Guid.NewGuid();
       gameBoard.PlaceStartingInfrastructure(playerId, FirstPlayerSettlementLocation, FirstPlayerRoadEndLocation);
@@ -1595,7 +1595,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.GameBoardData_Tests
     public void TryGetLongestRoadDetails_StartingSettlementOnLongestRoadWithFork_ReturnsLongestRoadDetails()
     {
       // Arrange
-      var gameBoard = new GameBoardData(BoardSizes.Standard);
+      var gameBoard = new GameBoard(BoardSizes.Standard);
 
       var playerId = Guid.NewGuid();
       gameBoard.PlaceStartingInfrastructure(playerId, FirstPlayerSettlementLocation, FirstPlayerRoadEndLocation);
@@ -1631,7 +1631,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.GameBoardData_Tests
     public void TryGetLongestRoadDetails_SettlementOnLoopIntersectionWithShortBranch_ReturnsLongestRoadDetails()
     {
       // Arrange
-      var gameBoard = new GameBoardData(BoardSizes.Standard);
+      var gameBoard = new GameBoard(BoardSizes.Standard);
 
       var playerId = Guid.NewGuid();
       gameBoard.PlaceStartingInfrastructure(playerId, FirstPlayerSettlementLocation, FirstPlayerRoadEndLocation);
@@ -1671,7 +1671,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.GameBoardData_Tests
     public void TryGetLongestRoadDetails_SettlementOnLoopWithShortBranch_ReturnsLongestRoadDetails()
     {
       // Arrange
-      var gameBoard = new GameBoardData(BoardSizes.Standard);
+      var gameBoard = new GameBoard(BoardSizes.Standard);
 
       var playerId = Guid.NewGuid();
       gameBoard.PlaceStartingInfrastructure(playerId, FirstPlayerSettlementLocation, 4);
@@ -1716,7 +1716,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.GameBoardData_Tests
     public void TryGetLongestRoadDetails_SettlementOnIntersectionOfThreeLoops_ReturnsLongestRoadDetails(UInt32[] locations)
     {
       // Arrange
-      var gameBoard = new GameBoardData(BoardSizes.Standard);
+      var gameBoard = new GameBoard(BoardSizes.Standard);
 
       var playerId = Guid.NewGuid();
       gameBoard.PlaceStartingInfrastructure(playerId, SecondPlayerSettlementLocation, SecondPlayerRoadEndLocation);
@@ -1790,7 +1790,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.GameBoardData_Tests
     public void TryGetLongestRoadDetails_TwoRoutesToSameDestinationAreEqual_ReturnsLongestRoadDetails(UInt32[] locations)
     {
       // Arrange
-      var gameBoard = new GameBoardData(BoardSizes.Standard);
+      var gameBoard = new GameBoard(BoardSizes.Standard);
 
       var playerId = Guid.NewGuid();
       gameBoard.PlaceStartingInfrastructure(playerId, 0, 1);
@@ -1831,7 +1831,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.GameBoardData_Tests
     public void TryGetLongestRoadDetails_TwoRoutesToSameDestinationAreDifferent_ReturnsLongestRoadDetails(UInt32[] locations)
     {
       // Arrange
-      var gameBoard = new GameBoardData(BoardSizes.Standard);
+      var gameBoard = new GameBoard(BoardSizes.Standard);
 
       var playerId = Guid.NewGuid();
       gameBoard.PlaceStartingInfrastructure(playerId, 0, 1);
@@ -1861,7 +1861,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.GameBoardData_Tests
       this.RoadShouldBeSameAsOneOf(road, result1, result2, result3, result4);
     }
 
-    private void BuildRoadBranch(GameBoardData gameBoard, Guid playerId, UInt32[] branch)
+    private void BuildRoadBranch(GameBoard gameBoard, Guid playerId, UInt32[] branch)
     {
       for (var index = 0; index < branch.Length; index += 2)
       {

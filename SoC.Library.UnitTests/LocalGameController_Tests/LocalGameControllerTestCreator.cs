@@ -68,12 +68,12 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       return LocalGameControllerTestCreator.CreateTestInstances(null, developmentCardHolder, null);
     }
 
-    public static TestInstances CreateTestInstances(GameBoardData gameBoardData)
+    public static TestInstances CreateTestInstances(GameBoard gameBoardData)
     {
       return LocalGameControllerTestCreator.CreateTestInstances(null, null, gameBoardData);
     }
 
-    public static TestInstances CreateTestInstances(PlayerSetup playerSetup, IDevelopmentCardHolder developmentCardHolder, GameBoardData gameBoard)
+    public static TestInstances CreateTestInstances(PlayerSetup playerSetup, IDevelopmentCardHolder developmentCardHolder, GameBoard gameBoard)
     {
       var dice = LocalGameControllerTestCreator.CreateMockDice();
 
@@ -101,7 +101,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
 
       if (gameBoard == null)
       {
-        gameBoard = new GameBoardData(BoardSizes.Standard);
+        gameBoard = new GameBoard(BoardSizes.Standard);
       }
 
       var localGameController = new LocalGameController(dice, playerPool, gameBoard, developmentCardHolder);
