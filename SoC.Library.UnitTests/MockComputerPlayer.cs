@@ -141,6 +141,11 @@ namespace Jabberwocky.SoC.Library.UnitTests
       return this;
     }
 
+    public override void BuildInitialPlayerActions(GameBoardData gameBoard, PlayerDataView[] playerData)
+    {
+      
+    }
+
     public override UInt32 ChooseCityLocation(GameBoardData gameBoardData)
     {
       return this.CityLocations.Dequeue();

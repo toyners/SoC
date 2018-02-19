@@ -24,7 +24,7 @@ namespace Jabberwocky.SoC.Library
       throw new NotImplementedException();
     }
 
-    public void BuildInitialPlayerActions(GameBoardData gameBoard, PlayerDataView[] playerData)
+    public virtual void BuildInitialPlayerActions(GameBoardData gameBoard, PlayerDataView[] playerData)
     {
       throw new NotImplementedException();
     }
