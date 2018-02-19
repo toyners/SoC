@@ -24,8 +24,8 @@ namespace Jabberwocky.SoC.Library.UnitTests
     private Queue<PlayMonopolyCardInstruction> playMonopolyCardActions = new Queue<PlayMonopolyCardInstruction>();
     private Queue<PlayYearOfPlentyCardInstruction> playYearOfPlentyCardActions = new Queue<PlayYearOfPlentyCardInstruction>();
     private Queue<TradeWithBankInstruction> tradeWithBankInstructions = new Queue<TradeWithBankInstruction>();
+    private Queue<BuildRoadSegmentInstruction> buildRoadSegmentInstructions = new Queue<BuildRoadSegmentInstruction>();
     public Queue<UInt32> SettlementLocations = new Queue<UInt32>();
-    public Queue<Tuple<UInt32, UInt32>> Roads = new Queue<Tuple<UInt32, UInt32>>();
     public Queue<Tuple<UInt32, UInt32>> InitialInfrastructure = new Queue<Tuple<UInt32, UInt32>>();
     public Queue<ComputerPlayerActionTypes> Actions = new Queue<ComputerPlayerActionTypes>();
     public ResourceClutch DroppedResources;
@@ -105,12 +105,8 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
     public MockComputerPlayer AddBuildRoadSegmentInstruction(BuildRoadSegmentInstruction instruction)
     {
-      for (var index = 0; index < instruction.Locations.Length; index += 2)
-      {
-        this.Roads.Enqueue(new Tuple<UInt32, UInt32>(instruction.Locations[index], instruction.Locations[index + 1]));
-        this.Actions.Enqueue(ComputerPlayerActionTypes.BuildRoadSegment);
-      }
-
+      this.buildRoadSegmentInstructions.Enqueue(instruction);
+      this.Actions.Enqueue(ComputerPlayerActionTypes.BuildRoadSegment);
       return this;
     }
 
@@ -219,13 +215,6 @@ namespace Jabberwocky.SoC.Library.UnitTests
       return this.playKnightCardActions.Peek().RobberHex;
     }
 
-    public override void ChooseRoad(GameBoard gameBoardData, out UInt32 roadStartLocation, out UInt32 roadEndLocation)
-    {
-      var roadLocations = this.Roads.Dequeue();
-      roadStartLocation = roadLocations.Item1;
-      roadEndLocation = roadLocations.Item2;
-    }
-
     public override UInt32 ChooseSettlementLocation(GameBoard gameBoardData)
     {
       return this.SettlementLocations.Dequeue();
@@ -256,18 +245,21 @@ namespace Jabberwocky.SoC.Library.UnitTests
         return false;
       }
 
-      if (actionType == ComputerPlayerActionTypes.TradeWithBank)
+      switch (actionType)
       {
-        var tradeWithBankInstruction = this.tradeWithBankInstructions.Dequeue();
-        
-        playerAction = new TradeWithBankAction(
-          tradeWithBankInstruction.GivingType,
-          tradeWithBankInstruction.ReceivingType,
-          tradeWithBankInstruction.ReceivingCount);
-      }
-      else
-      {
-        playerAction = new ComputerPlayerAction(actionType);
+        case ComputerPlayerActionTypes.BuildRoadSegment:
+          var instruction = this.buildRoadSegmentInstructions.Dequeue();
+          playerAction = new BuildRoadAction(actionType, instruction.Locations);
+          break;
+        case ComputerPlayerActionTypes.TradeWithBank:
+          var tradeWithBankInstruction = this.tradeWithBankInstructions.Dequeue();
+          playerAction = new TradeWithBankAction(
+            tradeWithBankInstruction.GivingType,
+            tradeWithBankInstruction.ReceivingType,
+            tradeWithBankInstruction.ReceivingCount);
+          break;
+        default:
+          playerAction = new ComputerPlayerAction(actionType); break;
       }
 
       return true;
