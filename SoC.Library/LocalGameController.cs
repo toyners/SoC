@@ -289,10 +289,10 @@ namespace Jabberwocky.SoC.Library
             case ComputerPlayerActionTypes.BuildRoadSegment:
             {
               var buildRoadAction = (BuildRoadAction)playerAction;
-              foreach (var roadSegment in buildRoadAction.RoadSegments())
+              for (var index = 0; index < buildRoadAction.Locations.Length; index += 2)
               {
-                var roadStartLocation = roadSegment.Item1;
-                var roadEndLocation = roadSegment.Item2;
+                var roadStartLocation = buildRoadAction.Locations[index];
+                var roadEndLocation = buildRoadAction.Locations[index + 1];
                 this.BuildRoadSegment(roadStartLocation, roadEndLocation);
                 events.Add(new RoadSegmentBuiltEvent(computerPlayer.Id, roadStartLocation, roadEndLocation));
               }

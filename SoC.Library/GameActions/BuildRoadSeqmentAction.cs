@@ -7,23 +7,11 @@ namespace Jabberwocky.SoC.Library.GameActions
 
   public class BuildRoadAction : ComputerPlayerAction
   {
-    private UInt32[] locations;
+    public UInt32[] Locations;
 
     public BuildRoadAction(ComputerPlayerActionTypes action, UInt32[] locations) : base(action)
     {
-      this.locations = locations;
-    }
-
-    public IEnumerable<Tuple<UInt32, UInt32>> RoadSegments()
-    {
-      for (var index = 0; index < this.locations.Length; index += 2)
-      {
-        var segmentStartLocation = this.locations[index];
-        var segmentEndLocation = this.locations[index + 1];
-        yield return new Tuple<UInt32, UInt32>(segmentStartLocation, segmentEndLocation);
-      }
-
-      yield break;
+      this.Locations = locations;
     }
   }
 }
