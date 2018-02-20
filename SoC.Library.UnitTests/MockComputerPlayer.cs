@@ -231,38 +231,47 @@ namespace Jabberwocky.SoC.Library.UnitTests
       return this;
     }
 
-    public override Boolean TryGetPlayerAction(out ComputerPlayerAction playerAction)
+    public override ComputerPlayerAction GetPlayerAction()
     {
-      playerAction = null;
       if (this.Actions.Count == 0)
       {
-        return false;
+        return null;
       }
 
       var actionType = this.Actions.Dequeue();
       if (actionType == ComputerPlayerActionTypes.EndTurn)
       {
-        return false;
+        return null;
       }
 
+      ComputerPlayerAction playerAction = null;
       switch (actionType)
       {
         case ComputerPlayerActionTypes.BuildRoadSegment:
+        {
           var instruction = this.buildRoadSegmentInstructions.Dequeue();
-          playerAction = new BuildRoadAction(actionType, instruction.Locations);
+          playerAction = new BuildRoadSegmentsAction(actionType, instruction.Locations);
           break;
+        }
+
         case ComputerPlayerActionTypes.TradeWithBank:
+        {
           var tradeWithBankInstruction = this.tradeWithBankInstructions.Dequeue();
           playerAction = new TradeWithBankAction(
             tradeWithBankInstruction.GivingType,
             tradeWithBankInstruction.ReceivingType,
             tradeWithBankInstruction.ReceivingCount);
           break;
+        }
+
         default:
-          playerAction = new ComputerPlayerAction(actionType); break;
+        {
+          playerAction = new ComputerPlayerAction(actionType);
+          break;
+        }
       }
 
-      return true;
+      return playerAction;
     }
 
     private List<DevelopmentCardTypes> CreateListOfDisplayedDevelopmentCards()

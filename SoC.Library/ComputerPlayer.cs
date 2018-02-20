@@ -126,7 +126,7 @@ namespace Jabberwocky.SoC.Library
       throw new NotImplementedException();
     }
 
-    public virtual Boolean TryGetPlayerAction(out ComputerPlayerAction playerAction)
+    public virtual ComputerPlayerAction GetPlayerAction()
     {
       throw new NotImplementedException();
     }

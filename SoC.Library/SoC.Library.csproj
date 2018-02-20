@@ -49,7 +49,7 @@
     <Compile Include="DevelopmentCard.cs" />
     <Compile Include="DevelopmentCardHolder.cs" />
     <Compile Include="Enums\ComputerPlayerActionTypes.cs" />
-    <Compile Include="GameActions\BuildRoadSeqmentAction.cs" />
+    <Compile Include="GameActions\BuildRoadSeqmentsAction.cs" />
     <Compile Include="GameEvents\CityBuiltEvent.cs" />
     <Compile Include="GameActions\ComputerPlayerAction.cs" />
     <Compile Include="GameActions\TradeWithBankAction.cs" />

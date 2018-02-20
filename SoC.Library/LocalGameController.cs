@@ -270,7 +270,7 @@ namespace Jabberwocky.SoC.Library
         var events = new List<GameEvent>();
 
         ComputerPlayerAction playerAction;
-        while (computerPlayer.TryGetPlayerAction(out playerAction))
+        while ((playerAction = computerPlayer.GetPlayerAction()) != null)
         {
           switch (playerAction.Action)
           {
@@ -288,7 +288,7 @@ namespace Jabberwocky.SoC.Library
 
             case ComputerPlayerActionTypes.BuildRoadSegment:
             {
-              var buildRoadAction = (BuildRoadAction)playerAction;
+              var buildRoadAction = (BuildRoadSegmentsAction)playerAction;
               for (var index = 0; index < buildRoadAction.Locations.Length; index += 2)
               {
                 var roadStartLocation = buildRoadAction.Locations[index];
