@@ -2,6 +2,7 @@
 namespace Jabberwocky.SoC.Library.UnitTests
 {
   using System;
+  using GameActions;
   using GameBoards;
   using NUnit.Framework;
   using Shouldly;
@@ -44,26 +45,39 @@ namespace Jabberwocky.SoC.Library.UnitTests
       var gameBoardData = new GameBoard(BoardSizes.Standard);
       var computerPlayer = new ComputerPlayer("ComputerPlayer");
 
-      Should.Throw<Exception>(() =>
+      /*Should.Throw<Exception>(() =>
       {
         UInt32 startRoadLocation, endRoadLocation;
         computerPlayer.ChooseRoad(gameBoardData, out startRoadLocation, out endRoadLocation);
-      }).Message.ShouldBe("No settlements found for player with id " + computerPlayer.Id);
+      }).Message.ShouldBe("No settlements found for player with id " + computerPlayer.Id);*/
+
+      throw new NotImplementedException();
     }
 
-    // [Test] - TODO Turned off until functionality can be completed
+    [Test]
     public void ChooseRoad_BuildingTowardsNextBestSettlementLocation_ReturnsFirstRoadFragment()
     {
       var computerPlayer = new ComputerPlayer("ComputerPlayer");
-      var gameBoardData = new GameBoard(BoardSizes.Standard);
-      gameBoardData.PlaceStartingInfrastructure(computerPlayer.Id, 0, 1);
-      gameBoardData.PlaceStartingInfrastructure(computerPlayer.Id, 12, 11);
+      var gameBoard = new GameBoard(BoardSizes.Standard);
+      gameBoard.PlaceStartingInfrastructure(computerPlayer.Id, 12, 4);
+      gameBoard.PlaceStartingInfrastructure(computerPlayer.Id, 40, 39);
+
+      computerPlayer.AddResources(ResourceClutch.RoadSegment);
+      computerPlayer.BuildInitialPlayerActions(gameBoard, null);
+      var firstAction = computerPlayer.GetPlayerAction();
+      var endAction = computerPlayer.GetPlayerAction();
+
+      firstAction.ShouldBeOfType<BuildRoadSegmentAction>();
+      var buildRoadSegmentsAction = (BuildRoadSegmentAction)firstAction;
+      
+      endAction.ShouldBeNull();
 
       UInt32 roadStartLocation, roadEndLocation;
-      computerPlayer.ChooseRoad(gameBoardData, out roadStartLocation, out roadEndLocation);
+      //computerPlayer.ChooseRoad(gameBoard, out roadStartLocation, out roadEndLocation);
 
-      var tuple = new Tuple<UInt32, UInt32>(roadStartLocation, roadEndLocation);
-      tuple.ShouldBeOneOf(new Tuple<UInt32, UInt32>(11, 21), new Tuple<UInt32, UInt32>(21, 11));
+      //var tuple = new Tuple<UInt32, UInt32>(roadStartLocation, roadEndLocation);
+      //tuple.ShouldBeOneOf(new Tuple<UInt32, UInt32>(11, 21), new Tuple<UInt32, UInt32>(21, 11));
+      throw new NotImplementedException();
     }
 
     // [Test] - TODO Turned off until functionality can be completed
@@ -76,10 +90,11 @@ namespace Jabberwocky.SoC.Library.UnitTests
       gameBoardData.PlaceRoadSegment(computerPlayer.Id, 11, 21);
 
       UInt32 roadStartLocation, roadEndLocation;
-      computerPlayer.ChooseRoad(gameBoardData, out roadStartLocation, out roadEndLocation);
+      //computerPlayer.ChooseRoad(gameBoardData, out roadStartLocation, out roadEndLocation);
 
-      var tuple = new Tuple<UInt32, UInt32>(roadStartLocation, roadEndLocation);
-      tuple.ShouldBeOneOf(new Tuple<UInt32, UInt32>(20, 21), new Tuple<UInt32, UInt32>(21, 20));
+      //var tuple = new Tuple<UInt32, UInt32>(roadStartLocation, roadEndLocation);
+      //tuple.ShouldBeOneOf(new Tuple<UInt32, UInt32>(20, 21), new Tuple<UInt32, UInt32>(21, 20));
+      throw new NotImplementedException();
     }
     #endregion 
   }

@@ -24,7 +24,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     private Queue<PlayMonopolyCardInstruction> playMonopolyCardActions = new Queue<PlayMonopolyCardInstruction>();
     private Queue<PlayYearOfPlentyCardInstruction> playYearOfPlentyCardActions = new Queue<PlayYearOfPlentyCardInstruction>();
     private Queue<TradeWithBankInstruction> tradeWithBankInstructions = new Queue<TradeWithBankInstruction>();
-    private Queue<BuildRoadSegmentInstruction> buildRoadSegmentInstructions = new Queue<BuildRoadSegmentInstruction>();
+    private Queue<BuildRoadSegmentAction> buildRoadSegmentActions = new Queue<BuildRoadSegmentAction>();
     public Queue<UInt32> SettlementLocations = new Queue<UInt32>();
     public Queue<Tuple<UInt32, UInt32>> InitialInfrastructure = new Queue<Tuple<UInt32, UInt32>>();
     public Queue<ComputerPlayerActionTypes> Actions = new Queue<ComputerPlayerActionTypes>();
@@ -105,8 +105,15 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
     public MockComputerPlayer AddBuildRoadSegmentInstruction(BuildRoadSegmentInstruction instruction)
     {
-      this.buildRoadSegmentInstructions.Enqueue(instruction);
-      this.Actions.Enqueue(ComputerPlayerActionTypes.BuildRoadSegment);
+      for (var index = 0; index < instruction.Locations.Length; index += 2)
+      {
+        var startLocation = instruction.Locations[index];
+        var endLocation = instruction.Locations[index + 1];
+
+        this.buildRoadSegmentActions.Enqueue(new BuildRoadSegmentAction(ComputerPlayerActionTypes.BuildRoadSegment, startLocation, endLocation));
+        this.Actions.Enqueue(ComputerPlayerActionTypes.BuildRoadSegment);
+      }
+      
       return this;
     }
 
@@ -249,8 +256,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
       {
         case ComputerPlayerActionTypes.BuildRoadSegment:
         {
-          var instruction = this.buildRoadSegmentInstructions.Dequeue();
-          playerAction = new BuildRoadSegmentsAction(actionType, instruction.Locations);
+          playerAction = this.buildRoadSegmentActions.Dequeue();
           break;
         }
 

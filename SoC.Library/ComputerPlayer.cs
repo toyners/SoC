@@ -9,6 +9,8 @@ namespace Jabberwocky.SoC.Library
 
   public class ComputerPlayer : Player, IComputerPlayer
   {
+    private Queue<ComputerPlayerAction> actions = new Queue<ComputerPlayerAction>();
+
     #region Construction
     public ComputerPlayer() { }
     public ComputerPlayer(String name) : base(name) { }
@@ -54,7 +56,7 @@ namespace Jabberwocky.SoC.Library
       throw new NotImplementedException();
     }
 
-    public virtual void ChooseRoad(GameBoard gameBoardData, out UInt32 roadStartLocation, out UInt32 roadEndLocation)
+    private void ChooseRoad(GameBoard gameBoardData, out UInt32 roadStartLocation, out UInt32 roadEndLocation)
     {
       var settlementsForPlayer = gameBoardData.GetSettlementsForPlayer(this.Id);
       if (settlementsForPlayer == null || settlementsForPlayer.Count == 0)

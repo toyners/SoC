@@ -2,16 +2,17 @@
 namespace Jabberwocky.SoC.Library.GameActions
 {
   using System;
-  using System.Collections.Generic;
   using Enums;
 
-  public class BuildRoadSegmentsAction : ComputerPlayerAction
+  public class BuildRoadSegmentAction : ComputerPlayerAction
   {
-    public UInt32[] Locations;
+    public readonly UInt32 StartLocation;
+    public readonly UInt32 EndLocation;
 
-    public BuildRoadSegmentsAction(ComputerPlayerActionTypes action, UInt32[] locations) : base(action)
+    public BuildRoadSegmentAction(ComputerPlayerActionTypes action, UInt32 startLocation, UInt32 endLocation) : base(action)
     {
-      this.Locations = locations;
+      this.StartLocation = startLocation;
+      this.EndLocation = endLocation;
     }
   }
 }

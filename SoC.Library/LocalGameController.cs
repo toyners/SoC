@@ -288,14 +288,14 @@ namespace Jabberwocky.SoC.Library
 
             case ComputerPlayerActionTypes.BuildRoadSegment:
             {
-              var buildRoadAction = (BuildRoadSegmentsAction)playerAction;
-              for (var index = 0; index < buildRoadAction.Locations.Length; index += 2)
+              var buildRoadAction = (BuildRoadSegmentAction)playerAction;
+              /*for (var index = 0; index < buildRoadAction.Locations.Length; index += 2)
               {
                 var roadStartLocation = buildRoadAction.Locations[index];
                 var roadEndLocation = buildRoadAction.Locations[index + 1];
                 this.BuildRoadSegment(roadStartLocation, roadEndLocation);
                 events.Add(new RoadSegmentBuiltEvent(computerPlayer.Id, roadStartLocation, roadEndLocation));
-              }
+              }*/
 
               Guid previousPlayerWithLongestRoadId;
               if (this.PlayerHasJustBuiltTheLongestRoad(out previousPlayerWithLongestRoadId))
