@@ -147,7 +147,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
     public override void BuildInitialPlayerActions(GameBoard gameBoard, PlayerDataView[] playerData)
     {
-      
+      // Nothing to do - all actions set by instruction.
     }
 
     public override UInt32 ChooseCityLocation(GameBoard gameBoardData)
