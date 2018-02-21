@@ -1,0 +1,11 @@
+Strategies
+Road Builder - get longest road
+ - Place starting settlements on locations that provide most brick (8 - 2,3,4,10,11,12) and Lumber (6 - 24,25,26,35,36,37)
+
+Development Card Buyer - get VP cards, Knight cards for largest army
+ - Place starting settlements on locations that provide most grain (8 - 43,44,45,51,52,53) and ore (6 - 18,19,20,29,30,31) and wool (9 - 22,23,24,33,34,35)
+
+UInt32[] GetPossibleSettlementLocationsForBestReturningResourceOfType(ResourcesType, out productionFactor)
+
+UInt32[] GetRouteFromPlayerInfrastructureToLocation(UInt32 location, Guid playerId)
+	 
