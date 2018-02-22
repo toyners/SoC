@@ -54,7 +54,18 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
     public static IPlayerPool CreateMockPlayerPool(IPlayer player, params IPlayer[] otherPlayers)
     {
       var mockPlayerPool = Substitute.For<IPlayerPool>();
-      mockPlayerPool.CreatePlayer(Arg.Any<Boolean>()).Returns(player, otherPlayers);
+      mockPlayerPool.CreatePlayer().Returns(player);
+
+      var index = 0;
+      mockPlayerPool.CreateComputerPlayer(Arg.Any<GameBoard>()).Returns(x =>
+        {
+          if (index >= otherPlayers.Length)
+          {
+            throw new Exception("No more computer players to create.");
+          }
+
+          return otherPlayers[index++];
+        });
       return mockPlayerPool;
     }
 

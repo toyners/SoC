@@ -140,7 +140,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     public void CreatePlayer_IsComputerParameterIsFalse_PlayerInstanceIsNotComputerControlled()
     {
       var playerPool = new PlayerPool();
-      var player = playerPool.CreatePlayer(false);
+      var player = playerPool.CreatePlayer();
 
       player.IsComputer.ShouldBeFalse();
     }
@@ -148,10 +148,10 @@ namespace Jabberwocky.SoC.Library.UnitTests
     [Test]
     [Category("All")]
     [Category("PlayerPool")]
-    public void CreatePlayer_IsComputerParameterIsTrue_PlayerInstanceIsComputerControlled()
+    public void CreateComputerPlayer_NoGameBoardArgument_PlayerInstanceIsComputerControlled()
     {
       var playerPool = new PlayerPool();
-      var player = playerPool.CreatePlayer(true);
+      var player = playerPool.CreateComputerPlayer(null);
 
       player.IsComputer.ShouldBeTrue();
     }

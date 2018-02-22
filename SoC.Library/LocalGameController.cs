@@ -1025,7 +1025,7 @@ namespace Jabberwocky.SoC.Library
 
     private void CreatePlayers(GameOptions gameOptions)
     {
-      this.mainPlayer = this.playerPool.CreatePlayer(true);
+      this.mainPlayer = this.playerPool.CreatePlayer();
       this.players = new IPlayer[gameOptions.MaxAIPlayers + 1];
       this.players[0] = this.mainPlayer;
       this.playersById = new Dictionary<Guid, IPlayer>(this.players.Length);
@@ -1035,7 +1035,7 @@ namespace Jabberwocky.SoC.Library
       var index = 1;
       while ((gameOptions.MaxAIPlayers--) > 0)
       {
-        var computerPlayer = this.playerPool.CreatePlayer(false);
+        var computerPlayer = this.playerPool.CreateComputerPlayer(this.gameBoard);
         this.players[index] = computerPlayer;
         this.playersById.Add(computerPlayer.Id, computerPlayer);
         this.computerPlayers[index - 1] = computerPlayer;

@@ -4,23 +4,28 @@ namespace Jabberwocky.SoC.Library
   using System;
   using System.Xml;
   using Interfaces;
+  using GameBoards;
 
   public class PlayerPool : IPlayerPool
   {
     private Guid bankId = Guid.NewGuid();
 
     /// <summary>
+    /// Create a computer player instance
+    /// </summary>
+    /// <param name="gameBoard">Game board instance for use in decision making.</param>
+    /// <returns>Computer player instance.</returns>
+    public IPlayer CreateComputerPlayer(GameBoard gameBoard)
+    {
+      return new ComputerPlayer();
+    }
+
+    /// <summary>
     /// Create a player instance.
     /// </summary>
-    /// <param name="isComputer">True to create a computer player; otherwise false</param>
     /// <returns>Player instance</returns>
-    public IPlayer CreatePlayer(Boolean isComputer)
+    public IPlayer CreatePlayer()
     {
-      if (isComputer)
-      {
-        return new ComputerPlayer();
-      }
-
       return new Player();
     }
 

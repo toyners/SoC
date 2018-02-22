@@ -53,7 +53,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
     [Obsolete("Deprecated. Use LocalGameControllerTestCreator class.")]
     protected LocalGameController CreateLocalGameController(INumberGenerator dice, IPlayer firstPlayer, params IPlayer[] otherPlayers)
     {
-      var mockPlayerPool = CreatePlayerPool(firstPlayer, otherPlayers);
+      var mockPlayerPool = LocalGameControllerTestCreator.CreateMockPlayerPool(firstPlayer, otherPlayers);
 
       var localGameController = new LocalGameControllerCreator()
         .ChangeDice(dice)
@@ -130,14 +130,6 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
           .AddExplicitDiceRollSequence(gameSetupOrder)
           .AddExplicitDiceRollSequence(gameTurnOrder)
           .Create();
-    }
-
-    [Obsolete("Deprecated. Use LocalGameControllerTestCreator class.")]
-    protected IPlayerPool CreatePlayerPool(IPlayer player, IPlayer[] otherPlayers)
-    {
-      var mockPlayerPool = Substitute.For<IPlayerPool>();
-      mockPlayerPool.CreatePlayer(Arg.Any<Boolean>()).Returns(player, otherPlayers);
-      return mockPlayerPool;
     }
     #endregion
   }

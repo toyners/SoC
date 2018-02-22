@@ -44,7 +44,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
         new MockComputerPlayer(ThirdOpponentName)
       };
 
-      var mockPlayerFactory = this.CreatePlayerPool(player, opponents);
+      var mockPlayerFactory = LocalGameControllerTestCreator.CreateMockPlayerPool(player, opponents);
 
       var localGameController = new LocalGameControllerCreator().ChangePlayerPool(mockPlayerFactory).Create();
       ErrorDetails errorDetails = null;
@@ -84,7 +84,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
         new MockComputerPlayer(ThirdOpponentName)
       };
 
-      var mockPlayerFactory = this.CreatePlayerPool(player, opponents);
+      var mockPlayerFactory = LocalGameControllerTestCreator.CreateMockPlayerPool(player, opponents);
 
       var localGameController = new LocalGameControllerCreator().ChangeDice(mockDice).ChangePlayerPool(mockPlayerFactory).Create();
 
@@ -1569,12 +1569,16 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       var secondOpponent = new MockComputerPlayer(SecondOpponentName);
       var thirdOpponent = new MockComputerPlayer(ThirdOpponentName);
 
-      var mockPlayerPool = Substitute.For<IPlayerPool>();
-      mockPlayerPool.CreatePlayer(true).Returns(player);
-      mockPlayerPool.CreatePlayer(false).Returns(firstOpponent, secondOpponent, thirdOpponent);
+      var mockPlayerPool = LocalGameControllerTestCreator.CreateMockPlayerPool(player, firstOpponent, secondOpponent, thirdOpponent);
+      LocalGameControllerTestCreator.PlayerSetup playerSetup = new LocalGameControllerTestCreator.PlayerSetup(player, firstOpponent, secondOpponent, thirdOpponent, mockPlayerPool);
+      var localGameController = LocalGameControllerTestCreator.CreateTestInstances(playerSetup, null, null).LocalGameController;
+
+      /*var mockPlayerPool = Substitute.For<IPlayerPool>();
+      mockPlayerPool.CreatePlayer().Returns(player);
+      mockPlayerPool.CreateComputerPlayer(Arg.Any<GameBoard>()).Returns(firstOpponent, secondOpponent, thirdOpponent);
       var localGameController = new LocalGameControllerCreator()
         .ChangePlayerPool(mockPlayerPool)
-        .Create();
+        .Create();*/
 
       PlayerDataView[] playerDataViews = null;
       localGameController.GameJoinedEvent = (PlayerDataView[] p) => { playerDataViews = p; };
