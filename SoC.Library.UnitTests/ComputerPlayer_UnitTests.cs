@@ -21,7 +21,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
       gameBoard.PlaceStartingInfrastructure(computerPlayer.Id, 0, 1);
       gameBoard.PlaceStartingInfrastructure(computerPlayer.Id, 53, 52);
 
-      var location = computerPlayer.ChooseSettlementLocation(gameBoard);
+      var location = computerPlayer.ChooseSettlementLocation();
 
       location.ShouldBe(12u);
     }
@@ -34,7 +34,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
       gameBoard.PlaceStartingInfrastructure(computerPlayer.Id, 12, 11);
       gameBoard.PlaceStartingInfrastructure(computerPlayer.Id, 0, 1);
 
-      var location = computerPlayer.ChooseSettlementLocation(gameBoard);
+      var location = computerPlayer.ChooseSettlementLocation();
 
       location.ShouldBe(31u);
     }

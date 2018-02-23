@@ -11,7 +11,7 @@ namespace Jabberwocky.SoC.Library.Interfaces
     #region Methods
     void BuildInitialPlayerActions(GameBoard gameBoard, PlayerDataView[] playerData);
     UInt32 ChooseCityLocation(GameBoard gameBoardData);
-    UInt32 ChooseSettlementLocation(GameBoard gameBoardData);
+    UInt32 ChooseSettlementLocation();
     void ChooseInitialInfrastructure(out UInt32 settlementLocation, out UInt32 roadEndLocation);
     KnightDevelopmentCard ChooseKnightCard();
     MonopolyDevelopmentCard ChooseMonopolyCard();

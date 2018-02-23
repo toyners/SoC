@@ -119,11 +119,11 @@ namespace Jabberwocky.SoC.Library
       throw new NotImplementedException();
     }
 
-    public virtual UInt32 ChooseSettlementLocation(GameBoard gameBoardData)
+    public virtual UInt32 ChooseSettlementLocation()
     {
       // Find location that has the highest chance of a return for any roll.
       var bestLocationIndex = 0u;
-      if (!this.TryGetIndexOfLocationThatHasBestChanceOfReturnOnRoll(gameBoardData, out bestLocationIndex))
+      if (!this.TryGetIndexOfLocationThatHasBestChanceOfReturnOnRoll(this.gameBoard, out bestLocationIndex))
       {
         throw new Exception("Should not get here"); //TODO: Clean up
       }

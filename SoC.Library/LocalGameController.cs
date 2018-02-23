@@ -305,7 +305,7 @@ namespace Jabberwocky.SoC.Library
 
             case ComputerPlayerActionTypes.BuildSettlement:
             {
-              var location = computerPlayer.ChooseSettlementLocation(this.gameBoard);
+              var location = computerPlayer.ChooseSettlementLocation();
               this.BuildSettlement(location);
 
               events.Add(new SettlementBuiltEvent(computerPlayer.Id, location));

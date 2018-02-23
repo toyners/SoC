@@ -222,7 +222,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
       return this.playKnightCardActions.Peek().RobberHex;
     }
 
-    public override UInt32 ChooseSettlementLocation(GameBoard gameBoardData)
+    public override UInt32 ChooseSettlementLocation()
     {
       return this.SettlementLocations.Dequeue();
     }
