@@ -145,7 +145,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
       return this;
     }
 
-    public override void BuildInitialPlayerActions(GameBoard gameBoard, PlayerDataView[] playerData)
+    public override void BuildInitialPlayerActions(PlayerDataView[] playerData)
     {
       // Nothing to do - all actions set by instruction.
     }

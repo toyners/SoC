@@ -8,7 +8,7 @@ namespace Jabberwocky.SoC.Library
   using GameActions;
   using System.Xml;
 
-  public class ComputerPlayer : Player, IComputerPlayer
+  public class ComputerPlayer : Player,  IComputerPlayer
   {
     private Queue<ComputerPlayerAction> actions = new Queue<ComputerPlayerAction>();
     private GameBoard gameBoard;
@@ -39,7 +39,7 @@ namespace Jabberwocky.SoC.Library
       throw new NotImplementedException();
     }
 
-    public virtual void BuildInitialPlayerActions(GameBoard gameBoard, PlayerDataView[] playerData)
+    public virtual void BuildInitialPlayerActions(PlayerDataView[] playerData)
     {
       throw new NotImplementedException();
     }

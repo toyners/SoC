@@ -63,7 +63,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
       gameBoard.PlaceStartingInfrastructure(computerPlayer.Id, 40, 39);
 
       computerPlayer.AddResources(ResourceClutch.RoadSegment);
-      computerPlayer.BuildInitialPlayerActions(gameBoard, null);
+      computerPlayer.BuildInitialPlayerActions(null);
       var firstAction = computerPlayer.GetPlayerAction();
       var endAction = computerPlayer.GetPlayerAction();
 

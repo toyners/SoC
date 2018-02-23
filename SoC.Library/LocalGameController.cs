@@ -266,7 +266,7 @@ namespace Jabberwocky.SoC.Library
       {
         var computerPlayer = this.currentPlayer as IComputerPlayer;
 
-        computerPlayer.BuildInitialPlayerActions(this.gameBoard, null);
+        computerPlayer.BuildInitialPlayerActions(null);
         var events = new List<GameEvent>();
 
         ComputerPlayerAction playerAction;
