@@ -951,7 +951,7 @@ namespace Jabberwocky.SoC.Library
 
         var computerPlayer = (IComputerPlayer)player;
         UInt32 chosenSettlementLocation, chosenRoadSegmentEndLocation;
-        computerPlayer.ChooseInitialInfrastructure(gameBoardData, out chosenSettlementLocation, out chosenRoadSegmentEndLocation);
+        computerPlayer.ChooseInitialInfrastructure(out chosenSettlementLocation, out chosenRoadSegmentEndLocation);
         gameBoardData.PlaceStartingInfrastructure(computerPlayer.Id, chosenSettlementLocation, chosenRoadSegmentEndLocation);
 
         computerPlayer.PlaceStartingInfrastructure();
@@ -996,7 +996,7 @@ namespace Jabberwocky.SoC.Library
 
         var computerPlayer = (IComputerPlayer)player;
         UInt32 chosenSettlementLocation, chosenRoadSegmentEndLocation;
-        computerPlayer.ChooseInitialInfrastructure(gameBoardData, out chosenSettlementLocation, out chosenRoadSegmentEndLocation);
+        computerPlayer.ChooseInitialInfrastructure(out chosenSettlementLocation, out chosenRoadSegmentEndLocation);
         gameBoardData.PlaceStartingInfrastructure(computerPlayer.Id, chosenSettlementLocation, chosenRoadSegmentEndLocation);
 
         computerPlayer.PlaceStartingInfrastructure();

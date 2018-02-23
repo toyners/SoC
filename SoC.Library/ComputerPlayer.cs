@@ -36,7 +36,7 @@ namespace Jabberwocky.SoC.Library
       throw new NotImplementedException();
     }
 
-    public virtual void ChooseInitialInfrastructure(GameBoard gameBoardData, out UInt32 settlementLocation, out UInt32 roadEndLocation)
+    public virtual void ChooseInitialInfrastructure(out UInt32 settlementLocation, out UInt32 roadEndLocation)
     {
       throw new NotImplementedException();
     }

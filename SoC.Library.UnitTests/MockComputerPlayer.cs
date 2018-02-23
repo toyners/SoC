@@ -155,7 +155,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
       return this.CityLocations.Dequeue();
     }
 
-    public override void ChooseInitialInfrastructure(GameBoard gameBoardData, out UInt32 settlementLocation, out UInt32 roadEndLocation)
+    public override void ChooseInitialInfrastructure(out UInt32 settlementLocation, out UInt32 roadEndLocation)
     {
       var infrastructure = this.InitialInfrastructure.Dequeue();
       settlementLocation = infrastructure.Item1;

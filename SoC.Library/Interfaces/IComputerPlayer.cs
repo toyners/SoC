@@ -12,7 +12,7 @@ namespace Jabberwocky.SoC.Library.Interfaces
     void BuildInitialPlayerActions(GameBoard gameBoard, PlayerDataView[] playerData);
     UInt32 ChooseCityLocation(GameBoard gameBoardData);
     UInt32 ChooseSettlementLocation(GameBoard gameBoardData);
-    void ChooseInitialInfrastructure(GameBoard gameBoardData, out UInt32 settlementLocation, out UInt32 roadEndLocation);
+    void ChooseInitialInfrastructure(out UInt32 settlementLocation, out UInt32 roadEndLocation);
     KnightDevelopmentCard ChooseKnightCard();
     MonopolyDevelopmentCard ChooseMonopolyCard();
     YearOfPlentyDevelopmentCard ChooseYearOfPlentyCard();
