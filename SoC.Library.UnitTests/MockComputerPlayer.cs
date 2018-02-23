@@ -150,7 +150,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
       // Nothing to do - all actions set by instruction.
     }
 
-    public override UInt32 ChooseCityLocation(GameBoard gameBoardData)
+    public override UInt32 ChooseCityLocation()
     {
       return this.CityLocations.Dequeue();
     }

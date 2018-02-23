@@ -44,7 +44,7 @@ namespace Jabberwocky.SoC.Library
       throw new NotImplementedException();
     }
 
-    public virtual UInt32 ChooseCityLocation(GameBoard gameBoardData)
+    public virtual UInt32 ChooseCityLocation()
     {
       throw new NotImplementedException();
     }

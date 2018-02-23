@@ -276,7 +276,7 @@ namespace Jabberwocky.SoC.Library
           {
             case ComputerPlayerActionTypes.BuildCity:
             {
-              var location = computerPlayer.ChooseCityLocation(this.gameBoard);
+              var location = computerPlayer.ChooseCityLocation();
               this.BuildCity(location);
 
               events.Add(new CityBuiltEvent(computerPlayer.Id, location));
