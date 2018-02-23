@@ -5,10 +5,12 @@ namespace Jabberwocky.SoC.Library
   using System.Xml;
   using Interfaces;
   using GameBoards;
+  using System.Collections.Generic;
 
   public class PlayerPool : IPlayerPool
   {
     private Guid bankId = Guid.NewGuid();
+    private Queue<String> names = new Queue<String>(new[] { "Bob", "Carol", "Dana" });
 
     /// <summary>
     /// Create a computer player instance
@@ -17,7 +19,7 @@ namespace Jabberwocky.SoC.Library
     /// <returns>Computer player instance.</returns>
     public IPlayer CreateComputerPlayer(GameBoard gameBoard)
     {
-      return new ComputerPlayer();
+      return new ComputerPlayer(this.names.Dequeue(), gameBoard);
     }
 
     /// <summary>
@@ -38,14 +40,9 @@ namespace Jabberwocky.SoC.Library
     {
       var isComputer = false;
       var isComputerValue = reader.GetAttribute("iscomputer");
-      if (!String.IsNullOrEmpty(isComputerValue))
+      if (!String.IsNullOrEmpty(isComputerValue) && Boolean.TryParse(isComputerValue, out isComputer) && isComputer)
       {
-        if (Boolean.TryParse(isComputerValue, out isComputer) && isComputer)
-        {
-          var computerPlayer = new ComputerPlayer();
-          computerPlayer.Load(reader);
-          return computerPlayer;
-        }
+        return ComputerPlayer.CreateFromXML(reader);
       }
 
       var player = new Player();

@@ -32,7 +32,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     #endregion
 
     #region Construction
-    public MockComputerPlayer(String name) : base(name) { }
+    public MockComputerPlayer(String name) : base(name, null) { }
     #endregion
 
     #region Methods

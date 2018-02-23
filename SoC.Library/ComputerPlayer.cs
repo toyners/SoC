@@ -6,14 +6,20 @@ namespace Jabberwocky.SoC.Library
   using GameBoards;
   using Interfaces;
   using GameActions;
+  using System.Xml;
 
   public class ComputerPlayer : Player, IComputerPlayer
   {
     private Queue<ComputerPlayerAction> actions = new Queue<ComputerPlayerAction>();
+    private GameBoard gameBoard;
 
     #region Construction
-    public ComputerPlayer() { }
-    public ComputerPlayer(String name) : base(name) { }
+    private ComputerPlayer() { } // For use when inflating from file. 
+
+    public ComputerPlayer(String name, GameBoard gameBoard) : base(name)
+    {
+      this.gameBoard = gameBoard;
+    }
     #endregion
 
     #region Properties
@@ -21,6 +27,13 @@ namespace Jabberwocky.SoC.Library
     #endregion
 
     #region Methods
+    public static ComputerPlayer CreateFromXML(XmlReader reader)
+    {
+      var computerPlayer = new ComputerPlayer();
+      computerPlayer.Load(reader);
+      return computerPlayer;
+    }
+
     public virtual void AddDevelopmentCard(DevelopmentCard developmentCard)
     {
       throw new NotImplementedException();
