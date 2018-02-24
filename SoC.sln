@@ -19,7 +19,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SoC.Client", "SoC.Client\So
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SoC.Library", "SoC.Library\SoC.Library.csproj", "{5CAC4497-470C-49FE-9CFD-AD5C908BEA79}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SoC.Library.UnitTests", "SoC.Library.UnitTests\SoC.Library.UnitTests.csproj", "{A2A13612-A3F5-4219-B21B-E2DE1220B632}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SoC.Library.Tests", "SoC.Library.Tests\SoC.Library.Tests.csproj", "{A2A13612-A3F5-4219-B21B-E2DE1220B632}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{0FA0AA7F-FFDA-4B3C-9EB9-C82D793AE8AB}"
 	ProjectSection(SolutionItems) = preProject
