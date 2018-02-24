@@ -58,6 +58,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AI_Tests.cs" />
     <Compile Include="ComputerPlayer_UnitTests.cs" />
     <Compile Include="DevelopmentCardHolder_UnitTests.cs" />
     <Compile Include="GameBoardData_Tests\GameBoardDataTestBase.cs" />
