@@ -255,6 +255,11 @@ namespace Jabberwocky.SoC.Library.GameBoards
       return new VerificationResults { Status = VerificationStatus.Valid };
     }
 
+    public Tuple<UInt32, Int32> GetLocationsForResourceTypeWithProductionFactors(ResourceTypes resourceType)
+    {
+      throw new NotImplementedException();
+    }
+
     public void PlaceCity(Guid playerId, UInt32 location)
     {
       var verificationResults = this.CanPlaceCity(playerId, location);

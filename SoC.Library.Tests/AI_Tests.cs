@@ -8,6 +8,8 @@ namespace Jabberwocky.SoC.Library.UnitTests
   using Shouldly;
 
   [TestFixture]
+  [Category("All")]
+  [Category("ArtificialIntelligence")]
   public class AI_Tests
   {
     #region Methods
@@ -30,12 +32,11 @@ namespace Jabberwocky.SoC.Library.UnitTests
     #endregion 
   }
 
-  public static class Extensions2
+  public static class ShouldContainExtensions
   {
     public static void ShouldContainAll(this IEnumerable<UInt32> actualCollection, IEnumerable<UInt32> expectedCollection)
     {
       throw new NotImplementedException();
     }
   }
-
 }
