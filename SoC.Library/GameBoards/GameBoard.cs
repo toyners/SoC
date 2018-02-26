@@ -57,7 +57,8 @@ namespace Jabberwocky.SoC.Library.GameBoards
     private Boolean[,] connections;
     private Dictionary<Guid, List<RoadSegment>> roadSegmentsByPlayer;
     private Dictionary<UInt32, ResourceProducer[]> resourceProvidersByDiceRolls;
-    private Dictionary<ResourceProducer, UInt32[]> locationsForResourceProvider;
+    private Dictionary<ResourceTypes, ResourceProducer[]> resourceProducersByType;
+    private Dictionary<ResourceProducer, UInt32[]> locationsByResourceProvider;
     private Dictionary<UInt32, UInt32[]> locationsForHex;
     private Dictionary<UInt32, UInt32[]> hexesForLocations;
     #endregion
@@ -246,14 +247,36 @@ namespace Jabberwocky.SoC.Library.GameBoards
       return new VerificationResults { Status = VerificationStatus.Valid };
     }
 
-    public UInt32[] GetLocationsForResourceTypeWithProductionFactors(ResourceTypes resourceType, out Int32 highestProductionFactor)
+    public UInt32[] GetLocationsForResourceTypeWithProductionFactors(ResourceTypes resourceType, out UInt32 highestProductionFactor)
     {
       // Get locations for resources of type: return locations and their production factor
       // Order by production factor
       // Verify that the location is viable for settlement by using CanPlaceSettlement
       // Add to list
-      highestProductionFactor = -1;
+      highestProductionFactor = 0;
       var locationsForResourceType = new List<UInt32>();
+
+      var resourceProducers = this.resourceProducersByType[resourceType];
+
+      foreach (var resourceProducer in resourceProducers)
+      {
+        var locationsForResourceProvider = this.locationsByResourceProvider[resourceProducer];
+        foreach (var locationForResourceProvider in locationsForResourceProvider)
+        {
+          Guid id;
+          UInt32 index;
+          if (!this.SettlementLocationIsOccupied(locationForResourceProvider) && !this.TooCloseToSettlement(locationForResourceProvider, out id, out index))
+          {
+            locationsForResourceType.Add(locationForResourceProvider);
+          }
+        }
+
+        if (locationsForResourceType.Count > 0)
+        {
+          highestProductionFactor = resourceProducer.Production;
+          break;
+        }
+      }
 
       return locationsForResourceType.ToArray();
     }
@@ -576,7 +599,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
       foreach (var resourceProvider in this.resourceProvidersByDiceRolls[diceRoll])
       {
         // Iterate over all the locations bordering the resource provider
-        foreach (var location in this.locationsForResourceProvider[resourceProvider])
+        foreach (var location in this.locationsByResourceProvider[resourceProvider])
         {
           if (!this.settlements.ContainsKey(location))
           {
@@ -918,6 +941,18 @@ namespace Jabberwocky.SoC.Library.GameBoards
       this.hexes[16] = new ResourceProducer { Type = ResourceTypes.Grain, Production = 9u };
       this.hexes[17] = new ResourceProducer { Type = ResourceTypes.Wool, Production = 10u };
       this.hexes[18] = new ResourceProducer { Type = ResourceTypes.Grain, Production = 8u };
+
+      this.resourceProducersByType = new Dictionary<ResourceTypes, ResourceProducer[]>();
+      // 8, 5, 4
+      this.resourceProducersByType.Add(ResourceTypes.Brick, new[] { this.hexes[1], this.hexes[13], this.hexes[3] });
+      // 8, 9, 11, 2
+      this.resourceProducersByType.Add(ResourceTypes.Grain, new[] { this.hexes[18], this.hexes[16], this.hexes[9], this.hexes[6] });
+      // 6, 4, 3, 11
+      this.resourceProducersByType.Add(ResourceTypes.Lumber, new[] { this.hexes[11], this.hexes[14],  this.hexes[4], this.hexes[7] });
+      // 6, 5, 3
+      this.resourceProducersByType.Add(ResourceTypes.Ore, new[] { this.hexes[8], this.hexes[2], this.hexes[15] });
+      // 9, 10, 10, 12
+      this.resourceProducersByType.Add(ResourceTypes.Wool, new[] { this.hexes[10], this.hexes[5], this.hexes[17], this.hexes[12] });
     }
 
     private void AssignResourceProvidersToDiceRolls()
@@ -960,7 +995,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
 
     private void AssignLocationsToResourceProviders()
     {
-      this.locationsForResourceProvider = new Dictionary<ResourceProducer, UInt32[]>();
+      this.locationsByResourceProvider = new Dictionary<ResourceProducer, UInt32[]>();
 
       // Column 1
       UInt32 lhs = 0;
@@ -973,7 +1008,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
         lhs = lhs + 2;
         rhs = rhs + 2;
 
-        this.locationsForResourceProvider.Add(resourceProvider, locations);
+        this.locationsByResourceProvider.Add(resourceProvider, locations);
       }
 
       // Column 2
@@ -986,7 +1021,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
         lhs = lhs + 2;
         rhs = rhs + 2;
 
-        this.locationsForResourceProvider.Add(resourceProvider, locations);
+        this.locationsByResourceProvider.Add(resourceProvider, locations);
       }
 
       // Column 3
@@ -999,7 +1034,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
         lhs = lhs + 2;
         rhs = rhs + 2;
 
-        this.locationsForResourceProvider.Add(resourceProvider, locations);
+        this.locationsByResourceProvider.Add(resourceProvider, locations);
       }
 
       // Column 4
@@ -1012,7 +1047,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
         lhs = lhs + 2;
         rhs = rhs + 2;
 
-        this.locationsForResourceProvider.Add(resourceProvider, locations);
+        this.locationsByResourceProvider.Add(resourceProvider, locations);
       }
 
       // Column 5
@@ -1025,7 +1060,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
         lhs = lhs + 2;
         rhs = rhs + 2;
 
-        this.locationsForResourceProvider.Add(resourceProvider, locations);
+        this.locationsByResourceProvider.Add(resourceProvider, locations);
       }
     }
 
