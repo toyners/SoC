@@ -60,8 +60,6 @@ namespace Jabberwocky.SoC.Library.GameBoards
     private Dictionary<ResourceProducer, UInt32[]> locationsForResourceProvider;
     private Dictionary<UInt32, UInt32[]> locationsForHex;
     private Dictionary<UInt32, UInt32[]> hexesForLocations;
-    private RoadNode[] roadNodes;
-    private Location[] locations;
     #endregion
 
     #region Construction
@@ -77,13 +75,6 @@ namespace Jabberwocky.SoC.Library.GameBoards
       this.settlements = new Dictionary<UInt32, Guid>();
       this.roadSegmentsByPlayer = new Dictionary<Guid, List<RoadSegment>>();
       this.settlementsByPlayer = new Dictionary<Guid, List<UInt32>>();
-      this.roadNodes = new RoadNode[StandardBoardLocationCount];
-
-      this.locations = new Location[GameBoard.StandardBoardLocationCount];
-      for (var i = 0; i < GameBoard.StandardBoardHexCount; i++)
-      {
-        this.locations[i] = new Location() { Index = i };
-      }
 
       this.CreateHexes();
 
@@ -255,9 +246,16 @@ namespace Jabberwocky.SoC.Library.GameBoards
       return new VerificationResults { Status = VerificationStatus.Valid };
     }
 
-    public Tuple<UInt32, Int32> GetLocationsForResourceTypeWithProductionFactors(ResourceTypes resourceType)
+    public UInt32[] GetLocationsForResourceTypeWithProductionFactors(ResourceTypes resourceType, out Int32 highestProductionFactor)
     {
-      throw new NotImplementedException();
+      // Get locations for resources of type: return locations and their production factor
+      // Order by production factor
+      // Verify that the location is viable for settlement by using CanPlaceSettlement
+      // Add to list
+      highestProductionFactor = -1;
+      var locationsForResourceType = new List<UInt32>();
+
+      return locationsForResourceType.ToArray();
     }
 
     public void PlaceCity(Guid playerId, UInt32 location)
