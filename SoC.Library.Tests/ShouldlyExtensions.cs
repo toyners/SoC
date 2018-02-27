@@ -3,12 +3,26 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
 {
   using System;
   using System.Collections.Generic;
-  using GameEvents;
   using Shouldly;
 
   public static class ShouldlyExtensions
   {
-    public static void ShouldContainAll<T>(this IList<T> actualCollection, IList<T> expectedCollection)
+    public static void ShouldBe(this ResourceTransactionList actual, ResourceTransactionList expected)
+    {
+      actual.ShouldNotBeNull();
+      expected.ShouldNotBeNull();
+
+      actual.Count.ShouldBe(expected.Count);
+
+      for (var i = 0; i < actual.Count; i++)
+      {
+        actual[i].ReceivingPlayerId.ShouldBe(expected[i].ReceivingPlayerId);
+        actual[i].GivingPlayerId.ShouldBe(expected[i].GivingPlayerId);
+        actual[i].Resources.ShouldBe(expected[i].Resources);
+      }
+    }
+
+    public static void ShouldContainExact<T>(this IList<T> actualCollection, IList<T> expectedCollection)
     {
       actualCollection.ShouldNotBeNull();
       expectedCollection.ShouldNotBeNull();
@@ -21,17 +35,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       }
     }
 
-    public static void AssertThatPlayerActionsForTurnAreCorrect(List<GameEvent> actualEvents, params GameEvent[] expectedEvents)
-    {
-      actualEvents.ShouldNotBeNull();
-      actualEvents.Count.ShouldBe(expectedEvents.Length);
-      for (var index = 0; index < actualEvents.Count; index++)
-      {
-        actualEvents[index].ShouldBe(expectedEvents[index], "Index is " + index);
-      }
-    }
-
-    public static void AssertThatResourceCollectionsAreTheSame(Dictionary<Guid, ResourceCollection[]> actual, Dictionary<Guid, ResourceCollection[]> expected)
+    public static void ShouldContainExact(this Dictionary<Guid, ResourceCollection[]> actual, Dictionary<Guid, ResourceCollection[]> expected)
     {
       actual.Count.ShouldBe(expected.Count);
       List<Guid> expectedKeys = new List<Guid>(expected.Keys);
@@ -57,21 +61,6 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       }
 
       actual.Count.ShouldBe(0);
-    }
-
-    public static void AssertThatTheResourceTransactionListIsAsExpected(ResourceTransactionList actual, ResourceTransactionList expected)
-    {
-      actual.ShouldNotBeNull();
-      expected.ShouldNotBeNull();
-
-      actual.Count.ShouldBe(expected.Count);
-
-      for (var i = 0; i < actual.Count; i++)
-      {
-        actual[i].ReceivingPlayerId.ShouldBe(expected[i].ReceivingPlayerId);
-        actual[i].GivingPlayerId.ShouldBe(expected[i].GivingPlayerId);
-        actual[i].Resources.ShouldBe(expected[i].Resources);
-      }
     }
   }
 }

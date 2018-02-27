@@ -714,11 +714,11 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
 
       playerActions.Count.ShouldBe(5);
       keys.Count.ShouldBe(5);
-      ShouldlyExtensions.AssertThatPlayerActionsForTurnAreCorrect(playerActions[keys[0]], expectedBuyDevelopmentCardEvent, expectedBuyDevelopmentCardEvent, expectedBuyDevelopmentCardEvent, expectedBuyDevelopmentCardEvent);
-      ShouldlyExtensions.AssertThatPlayerActionsForTurnAreCorrect(playerActions[keys[1]], expectedPlayKnightCardEvent);
-      ShouldlyExtensions.AssertThatPlayerActionsForTurnAreCorrect(playerActions[keys[2]], expectedPlayKnightCardEvent);
-      ShouldlyExtensions.AssertThatPlayerActionsForTurnAreCorrect(playerActions[keys[3]], expectedPlayKnightCardEvent);
-      ShouldlyExtensions.AssertThatPlayerActionsForTurnAreCorrect(playerActions[keys[4]], expectedPlayKnightCardEvent, expectedDifferentPlayerHasLargestArmyEvent);
+      playerActions[keys[0]].ShouldContainExact(new GameEvent[] { expectedBuyDevelopmentCardEvent, expectedBuyDevelopmentCardEvent, expectedBuyDevelopmentCardEvent, expectedBuyDevelopmentCardEvent });
+      playerActions[keys[1]].ShouldContainExact(new GameEvent[] { expectedPlayKnightCardEvent });
+      playerActions[keys[2]].ShouldContainExact(new GameEvent[] { expectedPlayKnightCardEvent });
+      playerActions[keys[3]].ShouldContainExact(new GameEvent[] { expectedPlayKnightCardEvent });
+      playerActions[keys[4]].ShouldContainExact(new GameEvent[] { expectedPlayKnightCardEvent, expectedDifferentPlayerHasLargestArmyEvent });
     }
 
     /// <summary>
@@ -839,11 +839,11 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
 
       playerActions.Count.ShouldBe(5);
       keys.Count.ShouldBe(5);
-      ShouldlyExtensions.AssertThatPlayerActionsForTurnAreCorrect(playerActions[keys[0]], expectedBuyDevelopmentCardEvent, expectedBuyDevelopmentCardEvent, expectedBuyDevelopmentCardEvent, expectedBuyDevelopmentCardEvent);
-      ShouldlyExtensions.AssertThatPlayerActionsForTurnAreCorrect(playerActions[keys[1]], expectedPlayKnightCardEvent);
-      ShouldlyExtensions.AssertThatPlayerActionsForTurnAreCorrect(playerActions[keys[2]], expectedPlayKnightCardEvent);
-      ShouldlyExtensions.AssertThatPlayerActionsForTurnAreCorrect(playerActions[keys[3]], expectedPlayKnightCardEvent, expectedDifferentPlayerHasLargestArmyEvent);
-      ShouldlyExtensions.AssertThatPlayerActionsForTurnAreCorrect(playerActions[keys[4]], expectedPlayKnightCardEvent);
+      playerActions[keys[0]].ShouldContainExact(new GameEvent[] { expectedBuyDevelopmentCardEvent, expectedBuyDevelopmentCardEvent, expectedBuyDevelopmentCardEvent, expectedBuyDevelopmentCardEvent });
+      playerActions[keys[1]].ShouldContainExact(new GameEvent[] { expectedPlayKnightCardEvent });
+      playerActions[keys[2]].ShouldContainExact(new GameEvent[] { expectedPlayKnightCardEvent });
+      playerActions[keys[3]].ShouldContainExact(new GameEvent[] { expectedPlayKnightCardEvent, expectedDifferentPlayerHasLargestArmyEvent });
+      playerActions[keys[4]].ShouldContainExact(new GameEvent[] { expectedPlayKnightCardEvent });
     }
 
     /// <summary>
@@ -1062,7 +1062,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       // Assert
       var expectedResources = new ResourceTransactionList();
       expectedResources.Add(new ResourceTransaction(player.Id, firstOpponent.Id, ResourceClutch.OneBrick));
-      ShouldlyExtensions.AssertThatTheResourceTransactionListIsAsExpected(gainedResources, expectedResources);
+      gainedResources.ShouldBe(expectedResources);
 
       player.ResourcesCount.ShouldBe(1);
       firstOpponent.ResourcesCount.ShouldBe(0);
@@ -1116,8 +1116,8 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
 
       playerActions.Count.ShouldBe(2);
       keys.Count.ShouldBe(playerActions.Count);
-      ShouldlyExtensions.AssertThatPlayerActionsForTurnAreCorrect(playerActions[keys[0]], expectedBuyDevelopmentCardEvent);
-      ShouldlyExtensions.AssertThatPlayerActionsForTurnAreCorrect(playerActions[keys[1]], expectedPlayKnightCardEvent, expectedResourceLostEvent);
+      playerActions[keys[0]].ShouldContainExact(new GameEvent[] { expectedBuyDevelopmentCardEvent });
+      playerActions[keys[1]].ShouldContainExact(new GameEvent[] { expectedPlayKnightCardEvent, expectedResourceLostEvent });
       
       player.ResourcesCount.ShouldBe(0);
       firstOpponent.ResourcesCount.ShouldBe(1);

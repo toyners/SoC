@@ -897,7 +897,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
         { firstOpponentId, new[] { new ResourceCollection(43, ResourceClutch.OneGrain) } }
       };
 
-      ShouldlyExtensions.AssertThatResourceCollectionsAreTheSame(actual, expected);
+      actual.ShouldContainExact(expected);
     }
 
     [Test]
@@ -1068,7 +1068,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       // Assert
       var expectedResources = new ResourceTransactionList();
       expectedResources.Add(new ResourceTransaction(player.Id, firstOpponent.Id, ResourceClutch.OneBrick));
-      ShouldlyExtensions.AssertThatTheResourceTransactionListIsAsExpected(gainedResources, expectedResources);
+      gainedResources.ShouldBe(expectedResources);
       player.ResourcesCount.ShouldBe(1);
       player.BrickCount.ShouldBe(1);
       firstOpponent.ResourcesCount.ShouldBe(0);
@@ -1462,7 +1462,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       diceRoll.ShouldBe(6u);
 
       collectedResources.ShouldNotBeNull();
-      ShouldlyExtensions.AssertThatResourceCollectionsAreTheSame(collectedResources, expected);
+      collectedResources.ShouldContainExact(expected);
 
       player.ResourcesCount.ShouldBe(0);
       firstOpponent.ResourcesCount.ShouldBe(1);
@@ -1526,7 +1526,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       diceRoll.ShouldBe(6u);
 
       collectedResources.ShouldNotBeNull();
-      ShouldlyExtensions.AssertThatResourceCollectionsAreTheSame(collectedResources, expected);
+      collectedResources.ShouldContainExact(expected);
 
       player.ResourcesCount.ShouldBe(0); 
 

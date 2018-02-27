@@ -96,7 +96,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       expected.Add(new ResourceTransaction(bankId, player.Id, paymentResources));
       expected.Add(new ResourceTransaction(player.Id, bankId, requestedResources));
 
-      ShouldlyExtensions.AssertThatTheResourceTransactionListIsAsExpected(resources, expected);
+      resources.ShouldBe(expected);
 
       player.ResourcesCount.ShouldBe(receivingCount + otherCount + leftOverBrickCount);
       player.BrickCount.ShouldBe(leftOverBrickCount);
@@ -244,8 +244,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
 
       // Assert
       var expectedTradeWithBankEvent = new TradeWithBankEvent(firstOpponent.Id, bankId, givingResources, ResourceClutch.OneWool);
-
-      ShouldlyExtensions.AssertThatPlayerActionsForTurnAreCorrect(events, expectedTradeWithBankEvent);
+      events.ShouldContainExact(new GameEvent[] { expectedTradeWithBankEvent });
 
       firstOpponent.ResourcesCount.ShouldBe(1);
       firstOpponent.WoolCount.ShouldBe(1);

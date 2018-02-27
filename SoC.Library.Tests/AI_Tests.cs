@@ -2,7 +2,6 @@
 namespace Jabberwocky.SoC.Library.UnitTests
 {
   using System;
-  using System.Collections.Generic;
   using GameBoards;
   using LocalGameController_Tests;
   using NUnit.Framework;
@@ -27,7 +26,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
       var actualLocations = AI.GetPossibleSettlementLocationsForBestReturningResourceType(gameBoard, resourceType, out actualProductionFactor);
 
       actualProductionFactor.ShouldBe(expectedProductionFactor);
-      actualLocations.ShouldContainAll<UInt32>(expectedLocations);
+      actualLocations.ShouldContainExact(expectedLocations);
     }
 
     #endregion 

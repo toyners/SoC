@@ -189,7 +189,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       expectedResources.Add(new ResourceTransaction(player.Id, firstOpponent.Id, ResourceClutch.OneBrick));
       expectedResources.Add(new ResourceTransaction(player.Id, secondOpponent.Id, ResourceClutch.OneBrick * 2));
 
-      ShouldlyExtensions.AssertThatTheResourceTransactionListIsAsExpected(gainedResources, expectedResources);
+      gainedResources.ShouldBe(expectedResources);
       player.ResourcesCount.ShouldBe(3);
       player.BrickCount.ShouldBe(3);
       firstOpponent.ResourcesCount.ShouldBe(4);
@@ -346,8 +346,8 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
 
       playerActions.Count.ShouldBe(2);
       keys.Count.ShouldBe(playerActions.Count);
-      ShouldlyExtensions.AssertThatPlayerActionsForTurnAreCorrect(playerActions[keys[0]], expectedBuyDevelopmentCardEvent);
-      ShouldlyExtensions.AssertThatPlayerActionsForTurnAreCorrect(playerActions[keys[1]], expectedPlayMonopolyCardEvent);
+      playerActions[keys[0]].ShouldContainExact(new GameEvent[] { expectedBuyDevelopmentCardEvent });
+      playerActions[keys[1]].ShouldContainExact(new GameEvent[] { expectedPlayMonopolyCardEvent });
 
       player.ResourcesCount.ShouldBe(0);
       firstOpponent.ResourcesCount.ShouldBe(3);
