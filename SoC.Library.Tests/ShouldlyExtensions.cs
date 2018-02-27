@@ -6,8 +6,21 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
   using GameEvents;
   using Shouldly;
 
-  public static class AssertToolBox
+  public static class ShouldlyExtensions
   {
+    public static void ShouldContainAll<T>(this IList<T> actualCollection, IList<T> expectedCollection)
+    {
+      actualCollection.ShouldNotBeNull();
+      expectedCollection.ShouldNotBeNull();
+
+      actualCollection.Count.ShouldBe(expectedCollection.Count);
+
+      for (var index = 0; index < actualCollection.Count; index++)
+      {
+        actualCollection[index].ShouldBe(expectedCollection[index], "Index is " + index);
+      }
+    }
+
     public static void AssertThatPlayerActionsForTurnAreCorrect(List<GameEvent> actualEvents, params GameEvent[] expectedEvents)
     {
       actualEvents.ShouldNotBeNull();

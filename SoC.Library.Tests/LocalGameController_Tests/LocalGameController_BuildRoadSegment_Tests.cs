@@ -629,7 +629,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       // Assert
       var expectedRoadSegmentBuiltEvent = new RoadSegmentBuiltEvent(firstOpponent.Id, 17u, 7u);
 
-      AssertToolBox.AssertThatPlayerActionsForTurnAreCorrect(events, expectedRoadSegmentBuiltEvent);
+      ShouldlyExtensions.AssertThatPlayerActionsForTurnAreCorrect(events, expectedRoadSegmentBuiltEvent);
       firstOpponent.ResourcesCount.ShouldBe(0);
     }
 
@@ -674,7 +674,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
         new LongestRoadBuiltEvent(firstOpponent.Id, player.Id)
       };
 
-      AssertToolBox.AssertThatPlayerActionsForTurnAreCorrect(actualEvents, expectedEvents);
+      ShouldlyExtensions.AssertThatPlayerActionsForTurnAreCorrect(actualEvents, expectedEvents);
     }
 
     /// <summary>

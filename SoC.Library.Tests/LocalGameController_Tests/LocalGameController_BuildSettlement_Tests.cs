@@ -511,7 +511,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       localGameController.EndTurn(turnToken);
 
       // Assert
-      AssertToolBox.AssertThatPlayerActionsForTurnAreCorrect(events,
+      ShouldlyExtensions.AssertThatPlayerActionsForTurnAreCorrect(events,
         new RoadSegmentBuiltEvent(firstOpponent.Id, 17u, 7u),
         new SettlementBuiltEvent(firstOpponent.Id, 7u));
       firstOpponent.ResourcesCount.ShouldBe(0);

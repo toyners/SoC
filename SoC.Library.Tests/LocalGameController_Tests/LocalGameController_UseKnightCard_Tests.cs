@@ -714,11 +714,11 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
 
       playerActions.Count.ShouldBe(5);
       keys.Count.ShouldBe(5);
-      AssertToolBox.AssertThatPlayerActionsForTurnAreCorrect(playerActions[keys[0]], expectedBuyDevelopmentCardEvent, expectedBuyDevelopmentCardEvent, expectedBuyDevelopmentCardEvent, expectedBuyDevelopmentCardEvent);
-      AssertToolBox.AssertThatPlayerActionsForTurnAreCorrect(playerActions[keys[1]], expectedPlayKnightCardEvent);
-      AssertToolBox.AssertThatPlayerActionsForTurnAreCorrect(playerActions[keys[2]], expectedPlayKnightCardEvent);
-      AssertToolBox.AssertThatPlayerActionsForTurnAreCorrect(playerActions[keys[3]], expectedPlayKnightCardEvent);
-      AssertToolBox.AssertThatPlayerActionsForTurnAreCorrect(playerActions[keys[4]], expectedPlayKnightCardEvent, expectedDifferentPlayerHasLargestArmyEvent);
+      ShouldlyExtensions.AssertThatPlayerActionsForTurnAreCorrect(playerActions[keys[0]], expectedBuyDevelopmentCardEvent, expectedBuyDevelopmentCardEvent, expectedBuyDevelopmentCardEvent, expectedBuyDevelopmentCardEvent);
+      ShouldlyExtensions.AssertThatPlayerActionsForTurnAreCorrect(playerActions[keys[1]], expectedPlayKnightCardEvent);
+      ShouldlyExtensions.AssertThatPlayerActionsForTurnAreCorrect(playerActions[keys[2]], expectedPlayKnightCardEvent);
+      ShouldlyExtensions.AssertThatPlayerActionsForTurnAreCorrect(playerActions[keys[3]], expectedPlayKnightCardEvent);
+      ShouldlyExtensions.AssertThatPlayerActionsForTurnAreCorrect(playerActions[keys[4]], expectedPlayKnightCardEvent, expectedDifferentPlayerHasLargestArmyEvent);
     }
 
     /// <summary>
@@ -839,11 +839,11 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
 
       playerActions.Count.ShouldBe(5);
       keys.Count.ShouldBe(5);
-      AssertToolBox.AssertThatPlayerActionsForTurnAreCorrect(playerActions[keys[0]], expectedBuyDevelopmentCardEvent, expectedBuyDevelopmentCardEvent, expectedBuyDevelopmentCardEvent, expectedBuyDevelopmentCardEvent);
-      AssertToolBox.AssertThatPlayerActionsForTurnAreCorrect(playerActions[keys[1]], expectedPlayKnightCardEvent);
-      AssertToolBox.AssertThatPlayerActionsForTurnAreCorrect(playerActions[keys[2]], expectedPlayKnightCardEvent);
-      AssertToolBox.AssertThatPlayerActionsForTurnAreCorrect(playerActions[keys[3]], expectedPlayKnightCardEvent, expectedDifferentPlayerHasLargestArmyEvent);
-      AssertToolBox.AssertThatPlayerActionsForTurnAreCorrect(playerActions[keys[4]], expectedPlayKnightCardEvent);
+      ShouldlyExtensions.AssertThatPlayerActionsForTurnAreCorrect(playerActions[keys[0]], expectedBuyDevelopmentCardEvent, expectedBuyDevelopmentCardEvent, expectedBuyDevelopmentCardEvent, expectedBuyDevelopmentCardEvent);
+      ShouldlyExtensions.AssertThatPlayerActionsForTurnAreCorrect(playerActions[keys[1]], expectedPlayKnightCardEvent);
+      ShouldlyExtensions.AssertThatPlayerActionsForTurnAreCorrect(playerActions[keys[2]], expectedPlayKnightCardEvent);
+      ShouldlyExtensions.AssertThatPlayerActionsForTurnAreCorrect(playerActions[keys[3]], expectedPlayKnightCardEvent, expectedDifferentPlayerHasLargestArmyEvent);
+      ShouldlyExtensions.AssertThatPlayerActionsForTurnAreCorrect(playerActions[keys[4]], expectedPlayKnightCardEvent);
     }
 
     /// <summary>
@@ -1062,7 +1062,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       // Assert
       var expectedResources = new ResourceTransactionList();
       expectedResources.Add(new ResourceTransaction(player.Id, firstOpponent.Id, ResourceClutch.OneBrick));
-      AssertToolBox.AssertThatTheResourceTransactionListIsAsExpected(gainedResources, expectedResources);
+      ShouldlyExtensions.AssertThatTheResourceTransactionListIsAsExpected(gainedResources, expectedResources);
 
       player.ResourcesCount.ShouldBe(1);
       firstOpponent.ResourcesCount.ShouldBe(0);
@@ -1116,8 +1116,8 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
 
       playerActions.Count.ShouldBe(2);
       keys.Count.ShouldBe(playerActions.Count);
-      AssertToolBox.AssertThatPlayerActionsForTurnAreCorrect(playerActions[keys[0]], expectedBuyDevelopmentCardEvent);
-      AssertToolBox.AssertThatPlayerActionsForTurnAreCorrect(playerActions[keys[1]], expectedPlayKnightCardEvent, expectedResourceLostEvent);
+      ShouldlyExtensions.AssertThatPlayerActionsForTurnAreCorrect(playerActions[keys[0]], expectedBuyDevelopmentCardEvent);
+      ShouldlyExtensions.AssertThatPlayerActionsForTurnAreCorrect(playerActions[keys[1]], expectedPlayKnightCardEvent, expectedResourceLostEvent);
       
       player.ResourcesCount.ShouldBe(0);
       firstOpponent.ResourcesCount.ShouldBe(1);

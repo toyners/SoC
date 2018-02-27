@@ -182,7 +182,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       expected.Add(new ResourceTransaction(player.Id, bankId, new ResourceClutch(1, 1, 0, 0, 0)));
 
       resources.ShouldNotBeNull();
-      AssertToolBox.AssertThatTheResourceTransactionListIsAsExpected(resources, expected);
+      ShouldlyExtensions.AssertThatTheResourceTransactionListIsAsExpected(resources, expected);
       player.ResourcesCount.ShouldBe(2);
       player.BrickCount.ShouldBe(1);
       player.GrainCount.ShouldBe(1);
@@ -221,7 +221,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       expected.Add(new ResourceTransaction(player.Id, bankId, ResourceClutch.OneBrick * 2));
 
       resources.ShouldNotBeNull();
-      AssertToolBox.AssertThatTheResourceTransactionListIsAsExpected(resources, expected);
+      ShouldlyExtensions.AssertThatTheResourceTransactionListIsAsExpected(resources, expected);
       player.ResourcesCount.ShouldBe(2);
       player.BrickCount.ShouldBe(2);
     }
@@ -322,8 +322,8 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
 
       playerActions.Count.ShouldBe(2);
       keys.Count.ShouldBe(playerActions.Count);
-      AssertToolBox.AssertThatPlayerActionsForTurnAreCorrect(playerActions[keys[0]], expectedBuyDevelopmentCardEvent);
-      AssertToolBox.AssertThatPlayerActionsForTurnAreCorrect(playerActions[keys[1]], expectedPlayYearOfPlentyCardEvent);
+      ShouldlyExtensions.AssertThatPlayerActionsForTurnAreCorrect(playerActions[keys[0]], expectedBuyDevelopmentCardEvent);
+      ShouldlyExtensions.AssertThatPlayerActionsForTurnAreCorrect(playerActions[keys[1]], expectedPlayYearOfPlentyCardEvent);
 
       player.ResourcesCount.ShouldBe(0);
       firstOpponent.ResourcesCount.ShouldBe(2);
@@ -380,8 +380,8 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
 
       playerActions.Count.ShouldBe(2);
       keys.Count.ShouldBe(playerActions.Count);
-      AssertToolBox.AssertThatPlayerActionsForTurnAreCorrect(playerActions[keys[0]], expectedBuyDevelopmentCardEvent);
-      AssertToolBox.AssertThatPlayerActionsForTurnAreCorrect(playerActions[keys[1]], expectedPlayYearOfPlentyCardEvent);
+      ShouldlyExtensions.AssertThatPlayerActionsForTurnAreCorrect(playerActions[keys[0]], expectedBuyDevelopmentCardEvent);
+      ShouldlyExtensions.AssertThatPlayerActionsForTurnAreCorrect(playerActions[keys[1]], expectedPlayYearOfPlentyCardEvent);
 
       player.ResourcesCount.ShouldBe(0);
       firstOpponent.ResourcesCount.ShouldBe(2);

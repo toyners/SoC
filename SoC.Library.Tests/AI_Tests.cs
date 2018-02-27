@@ -4,6 +4,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
   using System;
   using System.Collections.Generic;
   using GameBoards;
+  using LocalGameController_Tests;
   using NUnit.Framework;
   using Shouldly;
 
@@ -26,17 +27,9 @@ namespace Jabberwocky.SoC.Library.UnitTests
       var actualLocations = AI.GetPossibleSettlementLocationsForBestReturningResourceType(gameBoard, resourceType, out actualProductionFactor);
 
       actualProductionFactor.ShouldBe(expectedProductionFactor);
-      actualLocations.ShouldContainAll(expectedLocations);
+      actualLocations.ShouldContainAll<UInt32>(expectedLocations);
     }
 
     #endregion 
-  }
-
-  public static class ShouldContainExtensions
-  {
-    public static void ShouldContainAll(this IEnumerable<UInt32> actualCollection, IEnumerable<UInt32> expectedCollection)
-    {
-      throw new NotImplementedException();
-    }
   }
 }

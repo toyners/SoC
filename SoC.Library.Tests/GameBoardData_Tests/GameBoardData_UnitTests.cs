@@ -866,7 +866,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.GameBoardData_Tests
 
       expected.Add(player2_Id, new ResourceCollection[] { new ResourceCollection(43u, ResourceClutch.OneGrain) });
 
-      AssertToolBox.AssertThatResourceCollectionsAreTheSame(result, expected);
+      ShouldlyExtensions.AssertThatResourceCollectionsAreTheSame(result, expected);
     }
 
     /// <summary>
@@ -895,7 +895,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.GameBoardData_Tests
         new ResourceCollection(11u, ResourceClutch.OneBrick)
       });
 
-      AssertToolBox.AssertThatResourceCollectionsAreTheSame(result, expected);
+      ShouldlyExtensions.AssertThatResourceCollectionsAreTheSame(result, expected);
     }
 
     [Test]
