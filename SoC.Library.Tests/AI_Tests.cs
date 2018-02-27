@@ -29,6 +29,17 @@ namespace Jabberwocky.SoC.Library.UnitTests
       actualLocations.ShouldContainExact(expectedLocations);
     }
 
+    [Test]
+    public void GetPossibleSettlementLocationsForBestReturningResourceOfType_HighestProductionFactorHexFullyOccupied_ReturnsLocationsForNextBestProducingHex()
+    {
+      var gameBoard = new GameBoard(BoardSizes.Standard);
+      UInt32 actualProductionFactor = 0;
+      var actualLocations = AI.GetPossibleSettlementLocationsForBestReturningResourceType(gameBoard, ResourceTypes.Ore, out actualProductionFactor);
+
+      actualProductionFactor.ShouldBe(5u);
+      actualLocations.ShouldContainExact(new[] { 4u, 5u, 6u, 12u, 13u, 14u });
+    }
+
     #endregion 
   }
 }
