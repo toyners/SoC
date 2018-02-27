@@ -39,7 +39,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
       location.ShouldBe(31u);
     }
 
-    [Test]
+    // [Test]
     public void ChooseRoad_NoSettlementsForPlayer_ThrowsMeaningfulException()
     {
       var gameBoard = new GameBoard(BoardSizes.Standard);
@@ -54,7 +54,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
       throw new NotImplementedException();
     }
 
-    [Test]
+    // [Test]
     public void ChooseRoad_BuildingTowardsNextBestSettlementLocation_ReturnsFirstRoadFragment()
     {
       var gameBoard = new GameBoard(BoardSizes.Standard);
