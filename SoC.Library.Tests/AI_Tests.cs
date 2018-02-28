@@ -30,16 +30,40 @@ namespace Jabberwocky.SoC.Library.UnitTests
     }
 
     [Test]
+    public void GetPossibleSettlementLocationsForBestReturningResourceOfType_HighestProductionFactorHexHasLastLocationAvailable_ReturnsLastLocation()
+    {
+      var firstOpponentId = Guid.NewGuid();
+      var secondOpponentId = Guid.NewGuid();
+
+      var gameBoard = new GameBoard(BoardSizes.Standard);
+      gameBoard.PlaceStartingInfrastructure(firstOpponentId, 18, 17);
+      gameBoard.PlaceStartingInfrastructure(secondOpponentId, 20, 21);
+
+      UInt32 actualProductionFactor = 0;
+      var actualLocations = AI.GetPossibleSettlementLocationsForBestReturningResourceType(gameBoard, ResourceTypes.Ore, out actualProductionFactor);
+
+      actualProductionFactor.ShouldBe(6u);
+      actualLocations.ShouldContainExact(new[] { 30u });
+    }
+
+    [Test]
     public void GetPossibleSettlementLocationsForBestReturningResourceOfType_HighestProductionFactorHexFullyOccupied_ReturnsLocationsForNextBestProducingHex()
     {
+      var firstOpponentId = Guid.NewGuid();
+      var secondOpponentId = Guid.NewGuid();
+      var thirdOpponentId = Guid.NewGuid();
+
       var gameBoard = new GameBoard(BoardSizes.Standard);
+      gameBoard.PlaceStartingInfrastructure(firstOpponentId, 18, 17);
+      gameBoard.PlaceStartingInfrastructure(secondOpponentId, 20, 21);
+      gameBoard.PlaceStartingInfrastructure(thirdOpponentId, 30, 40);
+
       UInt32 actualProductionFactor = 0;
       var actualLocations = AI.GetPossibleSettlementLocationsForBestReturningResourceType(gameBoard, ResourceTypes.Ore, out actualProductionFactor);
 
       actualProductionFactor.ShouldBe(5u);
       actualLocations.ShouldContainExact(new[] { 4u, 5u, 6u, 12u, 13u, 14u });
     }
-
     #endregion 
   }
 }

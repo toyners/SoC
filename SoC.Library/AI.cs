@@ -7,7 +7,7 @@ namespace Jabberwocky.SoC.Library
   public static class AI
   {
     public static UInt32[] GetPossibleSettlementLocationsForBestReturningResourceType(GameBoard gameBoard, ResourceTypes resourceType, out UInt32 productionFactor)
-    { 
+    {
       return gameBoard.GetLocationsForResourceTypeWithProductionFactors(resourceType, out productionFactor);
     }
 
