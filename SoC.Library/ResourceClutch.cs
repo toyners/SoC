@@ -9,10 +9,10 @@ namespace Jabberwocky.SoC.Library
   {
     #region Fields
     public static ResourceClutch Zero = new ResourceClutch();
-    public static ResourceClutch RoadSegment = new ResourceClutch(1, 0, 1, 0, 0);
+    public static ResourceClutch RoadSegment = new ResourceClutch(1, 0, 1, 0, 0); // 1 brick, 1 lumber
     public static ResourceClutch Settlement = new ResourceClutch(1, 1, 1, 0, 1);
     public static ResourceClutch City = new ResourceClutch(0, 2, 0, 3, 0);
-    public static ResourceClutch DevelopmentCard = new ResourceClutch(0, 1, 0, 1, 1);
+    public static ResourceClutch DevelopmentCard = new ResourceClutch(0, 1, 0, 1, 1); // 1 grain, 1 ore, 1 wool
     public static ResourceClutch OneBrick = new ResourceClutch(1, 0, 0, 0, 0);
     public static ResourceClutch OneGrain = new ResourceClutch(0, 1, 0, 0, 0);
     public static ResourceClutch OneLumber = new ResourceClutch(0, 0, 1, 0, 0);
