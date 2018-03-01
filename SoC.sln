@@ -23,8 +23,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SoC.Library.Tests", "SoC.Li
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{0FA0AA7F-FFDA-4B3C-9EB9-C82D793AE8AB}"
 	ProjectSection(SolutionItems) = preProject
+		Computer Player Strategy notes.txt = Computer Player Strategy notes.txt
 		Design notes.txt = Design notes.txt
 		README.md = README.md
+		Road building strategy.txt = Road building strategy.txt
 		SoC 5th ed rules for 5-6 players.pdf = SoC 5th ed rules for 5-6 players.pdf
 		SoC 5th ed rules.pdf = SoC 5th ed rules.pdf
 		SoC Alternate.jpg = SoC Alternate.jpg
