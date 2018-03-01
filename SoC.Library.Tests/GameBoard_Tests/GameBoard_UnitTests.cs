@@ -344,6 +344,13 @@ namespace Jabberwocky.SoC.Library.UnitTests.GameBoard_Tests
       // Assert
       productionValues.Length.ShouldBe(0);
     }
+
+    [Test]
+    [TestCase(ResourceTypes.Brick)]
+    public void GetLocationsForResourceProducerOrderedByProductionFactorDescending_ReturnsLocationList(ResourceTypes resourcesType)
+    {
+      throw new NotImplementedException();
+    }
     #endregion
   }
 }

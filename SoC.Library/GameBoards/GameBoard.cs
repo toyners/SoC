@@ -647,7 +647,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
       return resources;
     }
 
-    public Tuple<UInt32, Int32>[] GetResourceProducerOrderedByProductionFactorDescending(ResourceTypes resource)
+    public Tuple<UInt32, Int32>[] GetLocationsForResourceProducerOrderedByProductionFactorDescending(ResourceTypes resource)
     {
       throw new NotImplementedException();
     }
