@@ -647,6 +647,11 @@ namespace Jabberwocky.SoC.Library.GameBoards
       return resources;
     }
 
+    public Tuple<UInt32, Int32>[] GetResourceProducerOrderedByProductionFactorDescending(ResourceTypes resource)
+    {
+      throw new NotImplementedException();
+    }
+
     public Tuple<UInt32, UInt32, Guid>[] GetRoadInformation()
     {
       var count = 0;

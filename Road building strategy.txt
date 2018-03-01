@@ -1,18 +1,19 @@
 Road builder strategy
 Initial infrastructure setup
-Find the best brick and lumber producers
+Find the best brick and lumber producers (GameBoard.GetResourceProducerOrderedByProductionFactor(ResourcesType) returns Tuple<HexIndex, PF>)
 	- If production factor is too low for either or both producers then switch strategy
 Find best locations on those producers
 	- Best location criteria in order of priority
 		a) locations shared by both producers (1 settlement can collect both, use second settlement for other resource capture
 		b) locations on producer AND port that ships that resource (very rare)
-		c) locations close to grain and wool resource (allows building of settlements)
-		d) locations close to port
+		c) locations closest to grain and wool resource (allows building of settlements)
+		d) locations closest to port
 	- Regardless of best location always settlement on the producers if possible
 
 Road building
+  ???
 
 Game play
 Build towards best grain and wool producers
 	- best location 
-Acrue resources for building settlement
+Accrue resources for building settlements/cities/development cards
