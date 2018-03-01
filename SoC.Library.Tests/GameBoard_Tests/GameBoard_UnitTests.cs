@@ -63,6 +63,61 @@ namespace Jabberwocky.SoC.Library.UnitTests.GameBoard_Tests
     }
 
     [Test]
+    public void GetSettlementsForPlayers_PlayerHasFirstInfrastructureOnBoard_ReturnsOneSettlement()
+    {
+      // Arrange
+      var playerId = Guid.NewGuid();
+      var gameBoardData = new GameBoard(BoardSizes.Standard);
+      gameBoardData.PlaceStartingInfrastructure(playerId, FirstPlayerSettlementLocation, FirstPlayerRoadEndLocation);
+
+      // Act
+      var settlements = gameBoardData.GetSettlementsForPlayer(playerId);
+
+      // Assert
+      settlements.Count.ShouldBe(1);
+      settlements.ShouldContain(FirstPlayerSettlementLocation);
+    }
+
+    [Test]
+    public void GetSettlementsForPlayers_PlayerHasAllInfrastructureOnBoard_ReturnsBothSettlements()
+    {
+      // Arrange
+      var playerId = Guid.NewGuid();
+      var gameBoardData = new GameBoard(BoardSizes.Standard);
+      gameBoardData.PlaceStartingInfrastructure(playerId, FirstPlayerSettlementLocation, FirstPlayerRoadEndLocation);
+      gameBoardData.PlaceStartingInfrastructure(playerId, SecondPlayerSettlementLocation, SecondPlayerRoadEndLocation);
+
+      // Act
+      var settlements = gameBoardData.GetSettlementsForPlayer(playerId);
+
+      // Assert
+      settlements.Count.ShouldBe(2);
+      settlements.ShouldContain(FirstPlayerSettlementLocation);
+      settlements.ShouldContain(SecondPlayerSettlementLocation);
+    }
+
+    [Test]
+    public void GetSettlementsForPlayers_PlayerBuildsSettlementOnBoard_ReturnsAllThreeSettlements()
+    {
+      // Arrange
+      var playerId = Guid.NewGuid();
+      var gameBoard = new GameBoard(BoardSizes.Standard);
+      gameBoard.PlaceStartingInfrastructure(playerId, FirstPlayerSettlementLocation, FirstPlayerRoadEndLocation);
+      gameBoard.PlaceStartingInfrastructure(playerId, SecondPlayerSettlementLocation, SecondPlayerRoadEndLocation);
+      gameBoard.PlaceRoadSegment(playerId, FirstPlayerRoadEndLocation, 10);
+      gameBoard.PlaceSettlement(playerId, 10);
+
+      // Act
+      var settlements = gameBoard.GetSettlementsForPlayer(playerId);
+
+      // Assert
+      settlements.Count.ShouldBe(3);
+      settlements.ShouldContain(FirstPlayerSettlementLocation);
+      settlements.ShouldContain(SecondPlayerSettlementLocation);
+      settlements.ShouldContain(10u);
+    }
+
+    [Test]
     [TestCase(12u, 1, 0, 0, 1, 1)]
     [TestCase(45u, 0, 1, 0, 1, 0)]
     [TestCase(53u, 0, 1, 0, 0, 0)]
@@ -330,6 +385,20 @@ namespace Jabberwocky.SoC.Library.UnitTests.GameBoard_Tests
       productionValues.Length.ShouldBe(2);
       productionValues.ShouldContain(8u);
       productionValues.ShouldContain(5u);
+    }
+
+    [Test]
+    public void GetProductionValuesForLocation_LocationWithOneResourceProducers_ReturnsExpectedProductionValues()
+    {
+      // Arrange
+      var gameBoard = new GameBoard(BoardSizes.Standard);
+
+      // Act
+      var productionValues = gameBoard.GetProductionValuesForLocation(3u);
+
+      // Assert
+      productionValues.Length.ShouldBe(1);
+      productionValues.ShouldContain(8u);
     }
 
     [Test]
