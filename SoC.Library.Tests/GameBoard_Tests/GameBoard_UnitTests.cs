@@ -416,8 +416,12 @@ namespace Jabberwocky.SoC.Library.UnitTests.GameBoard_Tests
 
     [Test]
     [TestCase(ResourceTypes.Brick)]
-    public void GetLocationsForResourceProducerOrderedByProductionFactorDescending_ReturnsLocationList(ResourceTypes resourcesType)
+    public void GetLocationsForResourceProducerOrderedByProductionFactorDescending_ReturnsLocationList(ResourceTypes resourceType)
     {
+      var gameBoard = new GameBoard(BoardSizes.Standard);
+
+      var results = gameBoard.GetLocationsForResourceProducerOrderedByProductionFactorDescending(resourceType);
+
       throw new NotImplementedException();
     }
     #endregion
