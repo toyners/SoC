@@ -1,9 +1,9 @@
 ﻿
-namespace Jabberwocky.SoC.Library.UnitTests.GameBoardData_Tests
+namespace Jabberwocky.SoC.Library.UnitTests.GameBoard_Tests
 {
   using System;
 
-  public class GameBoardDataTestBase
+  public class GameBoardTestBase
   {
     protected const UInt32 FirstPlayerSettlementLocation = 12;
     protected const UInt32 FirstPlayerRoadEndLocation = 11;
@@ -14,6 +14,5 @@ namespace Jabberwocky.SoC.Library.UnitTests.GameBoardData_Tests
     protected const UInt32 FirstOpponentRoadEndLocation = 43;
     protected const UInt32 SecondOpponentSettlementLocation = 41;
     protected const UInt32 SecondOpponentRoadEndLocation = 49;
-
   }
 }

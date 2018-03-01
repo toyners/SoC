@@ -1,20 +1,19 @@
 ﻿
-namespace Jabberwocky.SoC.Library.UnitTests.GameBoardData_Tests
+namespace Jabberwocky.SoC.Library.UnitTests.GameBoard_Tests
 {
   using System;
   using GameBoards;
-  using NSubstitute;
   using NUnit.Framework;
   using Shouldly;
 
   [TestFixture]
   [Category("All")]
-  [Category("GameBoardData")]
-  public class GameBoardData_PlaceCity_UnitTests : GameBoardDataTestBase
+  [Category("GameBoard")]
+  [Category("GameBoard.PlaceCity")]
+  public class GameBoard_PlaceCity_UnitTests : GameBoardTestBase
   {
     #region Methods
     [Test]
-    [Category("GameBoardData.PlaceCity")]
     public void PlaceCity_EmptyBoard_ThrowsMeaningfulException()
     {
       // Arrange
@@ -29,7 +28,6 @@ namespace Jabberwocky.SoC.Library.UnitTests.GameBoardData_Tests
     }
 
     [Test]
-    [Category("GameBoardData.PlaceCity")]
     public void PlaceCity_OnlyPlacedFirstStartingInfrastructure_ThrowsMeaningfulException()
     {
       // Arrange
@@ -45,7 +43,6 @@ namespace Jabberwocky.SoC.Library.UnitTests.GameBoardData_Tests
     }
 
     [Test]
-    [Category("GameBoardData.PlaceCity")]
     public void PlaceCity_TryPlacingOnExistingCity_ThrowsMeaningfulException()
     {
       // Arrange
@@ -63,7 +60,6 @@ namespace Jabberwocky.SoC.Library.UnitTests.GameBoardData_Tests
     }
 
     [Test]
-    [Category("GameBoardData.PlaceCity")]
     public void PlaceCity_TryPlacingOnInvalidLocation_ThrowsMeaningfulException()
     {
       // Arrange
@@ -80,7 +76,6 @@ namespace Jabberwocky.SoC.Library.UnitTests.GameBoardData_Tests
     }
 
     [Test]
-    [Category("GameBoardData.PlaceCity")]
     public void PlaceCity_TryPlacingOnEmptyLocation_ThrowsMeaningfulException()
     {
       // Arrange
@@ -97,7 +92,6 @@ namespace Jabberwocky.SoC.Library.UnitTests.GameBoardData_Tests
     }
 
     [Test]
-    [Category("GameBoardData.PlaceCity")]
     public void PlaceCity_TryPlacingOnOpponentSettlement_ThrowsMeaningfulException()
     {
       // Arrange
@@ -118,7 +112,6 @@ namespace Jabberwocky.SoC.Library.UnitTests.GameBoardData_Tests
     }
 
     [Test]
-    [Category("GameBoardData.PlaceCity")]
     public void PlaceCity_TryPlacingOnOpponentCity_ThrowsMeaningfulException()
     {
       // Arrange
@@ -140,7 +133,6 @@ namespace Jabberwocky.SoC.Library.UnitTests.GameBoardData_Tests
     }
 
     [Test]
-    [Category("GameBoardData.PlaceCity")]
     public void PlaceCity_TryPlacingOnEmptyLocationConnectedViaRoad_ThrowsMeaningfulException()
     {
       // Arrange

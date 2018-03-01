@@ -1,20 +1,19 @@
 ﻿
-namespace Jabberwocky.SoC.Library.UnitTests.GameBoardData_Tests
+namespace Jabberwocky.SoC.Library.UnitTests.GameBoard_Tests
 {
   using System;
   using GameBoards;
-  using NSubstitute;
   using NUnit.Framework;
   using Shouldly;
 
   [TestFixture]
   [Category("All")]
-  [Category("GameBoardData")]
-  public class GameBoardData_CanPlaceCity_UnitTests : GameBoardDataTestBase
+  [Category("GameBoard")]
+  [Category("GameBoard.CanPlaceCity")]
+  public class GameBoard_CanPlaceCity_UnitTests : GameBoardTestBase
   {
     #region Methods
     [Test]
-    [Category("GameBoardData.CanPlaceCity")]
     public void CanPlaceCity_EmptyBoard_ReturnsStartingInfrastructureNotPresentWhenPlacingCity()
     {
       // Arrange
@@ -31,7 +30,6 @@ namespace Jabberwocky.SoC.Library.UnitTests.GameBoardData_Tests
     }
 
     [Test]
-    [Category("GameBoardData.CanPlaceCity")]
     public void CanPlaceCity_OnlyPlacedFirstStartingInfrastructure_ReturnsStartingInfrastructureNotCompleteWhenPlacingCity()
     {
       // Arrange
@@ -49,7 +47,6 @@ namespace Jabberwocky.SoC.Library.UnitTests.GameBoardData_Tests
     }
 
     [Test]
-    [Category("GameBoardData.CanPlaceCity")]
     public void CanPlaceCity_TryPlacingOnExistingCity_ReturnsLocationIsOccupiedStatus()
     {
       // Arrange
@@ -69,7 +66,6 @@ namespace Jabberwocky.SoC.Library.UnitTests.GameBoardData_Tests
     }
 
     [Test]
-    [Category("GameBoardData.CanPlaceCity")]
     public void CanPlaceCity_TryPlacingOnInvalidLocation_ReturnsLocationIsInvalidStatus()
     {
       // Arrange
@@ -88,7 +84,6 @@ namespace Jabberwocky.SoC.Library.UnitTests.GameBoardData_Tests
     }
 
     [Test]
-    [Category("GameBoardData.CanPlaceCity")]
     public void CanPlaceCity_TryPlacingOnEmptyLocation_ReturnsLocationIsNotSettledStatus()
     {
       // Arrange
@@ -107,7 +102,6 @@ namespace Jabberwocky.SoC.Library.UnitTests.GameBoardData_Tests
     }
 
     [Test]
-    [Category("GameBoardData.CanPlaceCity")]
     public void CanPlaceCity_TryPlacingOnOpponentSettlement_ReturnsLocationIsNotOwnedStatus()
     {
       // Arrange
@@ -130,7 +124,6 @@ namespace Jabberwocky.SoC.Library.UnitTests.GameBoardData_Tests
     }
 
     [Test]
-    [Category("GameBoardData.CanPlaceCity")]
     public void CanPlaceCity_TryPlacingOnOpponentCity_ReturnsLocationIsNotOwnedStatus()
     {
       // Arrange
@@ -154,7 +147,6 @@ namespace Jabberwocky.SoC.Library.UnitTests.GameBoardData_Tests
     }
 
     [Test]
-    [Category("GameBoardData.CanPlaceCity")]
     public void CanPlaceCity_TryPlacingOnEmptyLocationConnectedViaRoad_ReturnsLocationIsNotSettledStatus()
     {
       // Arrange
@@ -174,7 +166,6 @@ namespace Jabberwocky.SoC.Library.UnitTests.GameBoardData_Tests
     }
 
     [Test]
-    [Category("GameBoardData.CanPlaceCity")]
     public void CanPlaceCity_OnPlayerSettlement_ReturnsValidStatus()
     {
       // Arrange
