@@ -11,6 +11,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.GameBoard_Tests
   [TestFixture]
   [Category("All")]
   [Category("GameBoard")]
+  [Category("GameBoard.<Miscellenous>")]
   public class GameBoard_UnitTests : GameBoardTestBase
   {
     #region Methods
