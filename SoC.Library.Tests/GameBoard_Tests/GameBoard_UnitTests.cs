@@ -416,12 +416,12 @@ namespace Jabberwocky.SoC.Library.UnitTests.GameBoard_Tests
     }
 
     [Test]
-    [TestCase(ResourceTypes.Brick, new[] { 2, 8, 3, 8, 4, 8, 10, 8, 11, 8, 12, 8, 30, 5, 31, 5, 32, 5, 40, 5, 41, 5, 42, 5, 7, 4, 8, 4, 9, 4, 17, 4, 18, 4, 19, 4 })]
-    [TestCase(ResourceTypes.Grain, new[] { 43, 8, 44, 8, 45, 8, 51, 8, 52, 8, 53, 8, 39, 9, 40, 9, 41, 9, 47, 9, 48, 9, 49, 9, 20, 11, 21, 11, 22, 11, 31, 11, 32, 11, 33, 11, 13, 2, 14, 2, 15, 2 })]
-    [TestCase(ResourceTypes.Lumber, new[] { 24, 6, 25, 6, 26, 6, 35, 6, 36, 6, 37, 6, 32, 4, 33, 4, 34, 4, 42, 4, 43, 4, 44, 4, 16, 11, 17, 11, 18, 11, 27, 11, 28, 11, 29, 11, 9, 3, 10, 3, 11, 3, 19, 3, 20, 3, 21, 3 })]
-    [TestCase(ResourceTypes.Ore, new[] { 18, 6, 19, 6, 20, 6, 29, 6, 30, 6, 31, 6, 4, 5, 5, 5, 6, 5, 12, 5, 13, 5, 14, 5, 34, 3, 35, 3, 36, 3, 44, 3, 45, 3, 46, 3 })]
-    [TestCase(ResourceTypes.Wool, new[] { 22, 9, 23, 9, 24, 9, 33, 9, 34, 9, 35, 9, 11, 10, 12, 10, 13, 10, 21, 10, 22, 10, 23, 10, 41, 10, 42, 10, 43, 10, 49, 10, 50, 10, 51, 10, 28, 12, 29, 12, 30, 12, 38, 12, 39, 12, 40, 12 })]
-    public void GetLocationsForResourceProducerOrderedByProductionFactorDescending_ReturnsLocationList(ResourceTypes resourceType, Int32[] expectedRawLocationProductionFactorData)
+    [TestCase(ResourceTypes.Brick, new UInt32[] { 2, 8, 3, 8, 4, 8, 10, 8, 11, 8, 12, 8, 30, 5, 31, 5, 32, 5, 40, 5, 41, 5, 42, 5, 7, 4, 8, 4, 9, 4, 17, 4, 18, 4, 19, 4 })]
+    [TestCase(ResourceTypes.Grain, new UInt32[] { 43, 8, 44, 8, 45, 8, 51, 8, 52, 8, 53, 8, 39, 9, 40, 9, 41, 9, 47, 9, 48, 9, 49, 9, 20, 11, 21, 11, 22, 11, 31, 11, 32, 11, 33, 11, 13, 2, 14, 2, 15, 2 })]
+    [TestCase(ResourceTypes.Lumber, new UInt32[] { 24, 6, 25, 6, 26, 6, 35, 6, 36, 6, 37, 6, 32, 4, 33, 4, 34, 4, 42, 4, 43, 4, 44, 4, 16, 11, 17, 11, 18, 11, 27, 11, 28, 11, 29, 11, 9, 3, 10, 3, 11, 3, 19, 3, 20, 3, 21, 3 })]
+    [TestCase(ResourceTypes.Ore, new UInt32[] { 18, 6, 19, 6, 20, 6, 29, 6, 30, 6, 31, 6, 4, 5, 5, 5, 6, 5, 12, 5, 13, 5, 14, 5, 34, 3, 35, 3, 36, 3, 44, 3, 45, 3, 46, 3 })]
+    [TestCase(ResourceTypes.Wool, new UInt32[] { 22, 9, 23, 9, 24, 9, 33, 9, 34, 9, 35, 9, 11, 10, 12, 10, 13, 10, 21, 10, 22, 10, 23, 10, 41, 10, 42, 10, 43, 10, 49, 10, 50, 10, 51, 10, 28, 12, 29, 12, 30, 12, 38, 12, 39, 12, 40, 12 })]
+    public void GetLocationsForResourceProducerOrderedByProductionFactorDescending_ReturnsLocationList(ResourceTypes resourceType, UInt32[] expectedRawLocationProductionFactorData)
     {
       var gameBoard = new GameBoard(BoardSizes.Standard);
 
@@ -431,13 +431,13 @@ namespace Jabberwocky.SoC.Library.UnitTests.GameBoard_Tests
       results.ShouldContainExact(this.CreateExpectedLocationProductionFactorCollection(expectedRawLocationProductionFactorData));
     }
 
-    private Tuple<UInt32, Int32>[] CreateExpectedLocationProductionFactorCollection(Int32[] data)
+    private Tuple<UInt32, UInt32>[] CreateExpectedLocationProductionFactorCollection(UInt32[] data)
     {
-      var result = new Tuple<UInt32, Int32>[data.Length / 2];
+      var result = new Tuple<UInt32, UInt32>[data.Length / 2];
       var index = 0;
       for (var i = 0; i < data.Length; i += 2)
       {
-        result[index++] = new Tuple<uint, int>((UInt32)data[i], data[i + 1]);
+        result[index++] = new Tuple<UInt32, UInt32>(data[i], data[i + 1]);
       }
 
       return result;

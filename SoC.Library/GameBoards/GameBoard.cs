@@ -647,9 +647,33 @@ namespace Jabberwocky.SoC.Library.GameBoards
       return resources;
     }
 
-    public Tuple<UInt32, Int32>[] GetLocationsForResourceProducerOrderedByProductionFactorDescending(ResourceTypes resource)
+    public Tuple<UInt32, UInt32>[] GetLocationsForResourceProducerOrderedByProductionFactorDescending(ResourceTypes resource)
     {
-      throw new NotImplementedException();
+      var results = new List<Tuple<UInt32, UInt32>>();
+      var resourceProducers = this.resourceProducersByType[resource];
+      foreach (var resourceProducer in resourceProducers)
+      {
+        foreach(var location in locationsByResourceProvider[resourceProducer])
+        {
+          results.Add(new Tuple<UInt32, UInt32>(location, resourceProducer.Production));
+        }
+      }
+
+      results.Sort((x, y) => {
+        if (x.Item2 > y.Item2)
+        {
+          return -1;
+        }
+
+        if (x.Item2 > y.Item2)
+        {
+          return 1;
+        }
+
+        return x.Item1.CompareTo(y.Item1);
+      });
+
+      return results.ToArray();
     }
 
     public Tuple<UInt32, UInt32, Guid>[] GetRoadInformation()
