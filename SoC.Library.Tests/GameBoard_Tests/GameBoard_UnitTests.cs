@@ -421,7 +421,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.GameBoard_Tests
     [TestCase(ResourceTypes.Lumber, new UInt32[] { 24, 6, 25, 6, 26, 6, 35, 6, 36, 6, 37, 6, 32, 4, 33, 4, 34, 4, 42, 4, 43, 4, 44, 4, 16, 11, 17, 11, 18, 11, 27, 11, 28, 11, 29, 11, 9, 3, 10, 3, 11, 3, 19, 3, 20, 3, 21, 3 })]
     [TestCase(ResourceTypes.Ore, new UInt32[] { 18, 6, 19, 6, 20, 6, 29, 6, 30, 6, 31, 6, 4, 5, 5, 5, 6, 5, 12, 5, 13, 5, 14, 5, 34, 3, 35, 3, 36, 3, 44, 3, 45, 3, 46, 3 })]
     [TestCase(ResourceTypes.Wool, new UInt32[] { 22, 9, 23, 9, 24, 9, 33, 9, 34, 9, 35, 9, 11, 10, 12, 10, 13, 10, 21, 10, 22, 10, 23, 10, 41, 10, 42, 10, 43, 10, 49, 10, 50, 10, 51, 10, 28, 12, 29, 12, 30, 12, 38, 12, 39, 12, 40, 12 })]
-    public void GetLocationsForResourceProducerOrderedByProductionFactorDescending_ReturnsLocationList(ResourceTypes resourceType, UInt32[] expectedRawLocationProductionFactorData)
+    public void GetLocationsForResourceProducerOrderedByProductionFactorDescending_StandardBoard_ReturnsLocationList(ResourceTypes resourceType, UInt32[] expectedRawLocationProductionFactorData)
     {
       var gameBoard = new GameBoard(BoardSizes.Standard);
 
@@ -441,6 +441,22 @@ namespace Jabberwocky.SoC.Library.UnitTests.GameBoard_Tests
       }
 
       return result;
+    }
+    #endregion
+  }
+
+  [TestFixture]
+  [Category("All")]
+  [Category("ProductionFactorComparison")]
+  public class ProductionFactorComparison_UnitTests
+  {
+    #region Methods
+    [Test]
+    [TestCase(8, 6, -1)]
+    public void ProductionFactorComparison_ReturnsLocationList(UInt32 productionFactor1, UInt32 productionFactor2, Int32 expectedRelativeOrder)
+    {
+      var result = ProductionFactorComparison.Compare(productionFactor1, productionFactor2);
+      result.ShouldBe(expectedRelativeOrder);
     }
     #endregion
   }

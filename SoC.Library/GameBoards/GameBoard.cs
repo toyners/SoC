@@ -1282,4 +1282,12 @@ namespace Jabberwocky.SoC.Library.GameBoards
     }
     #endregion
   }
+
+  public static class ProductionFactorComparison
+  {
+    public static Int32 Compare(UInt32 pf1, UInt32 pf2)
+    {
+      throw new NotImplementedException();
+    }
+  }
 }
