@@ -61,6 +61,7 @@
     <Compile Include="AI_Tests.cs" />
     <Compile Include="ComputerPlayer_UnitTests.cs" />
     <Compile Include="DevelopmentCardHolder_UnitTests.cs" />
+    <Compile Include="ProductionFactorComparison_UnitTests.cs" />
     <Compile Include="GameBoard_Tests\GameBoard_PlaceStartingInfrastructure_UnitTests.cs" />
     <Compile Include="GameBoard_Tests\GameBoard_PlaceSettlement_UnitTests.cs" />
     <Compile Include="GameBoard_Tests\GameBoard_PlaceRoad_UnitTests.cs" />

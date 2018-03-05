@@ -444,20 +444,4 @@ namespace Jabberwocky.SoC.Library.UnitTests.GameBoard_Tests
     }
     #endregion
   }
-
-  [TestFixture]
-  [Category("All")]
-  [Category("ProductionFactorComparison")]
-  public class ProductionFactorComparison_UnitTests
-  {
-    #region Methods
-    [Test]
-    [TestCase(8, 6, -1)]
-    public void ProductionFactorComparison_ReturnsLocationList(UInt32 productionFactor1, UInt32 productionFactor2, Int32 expectedRelativeOrder)
-    {
-      var result = ProductionFactorComparison.Compare(productionFactor1, productionFactor2);
-      result.ShouldBe(expectedRelativeOrder);
-    }
-    #endregion
-  }
 }
