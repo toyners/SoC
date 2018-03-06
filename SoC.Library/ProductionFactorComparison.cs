@@ -3,6 +3,10 @@ namespace Jabberwocky.SoC.Library
 {
   using System;
 
+  /// <summary>
+  /// Provides relative difference between two production factors. Used with List.Sort. This
+  /// comparison will return the production factors in  descending order from 8 to 2  
+  /// </summary>
   public static class ProductionFactorComparison
   {
     private static UInt32[] normalisedValues = { 0, 2, 4, 6, 8, 0, 9, 7, 5, 3, 1 };
@@ -29,7 +33,7 @@ namespace Jabberwocky.SoC.Library
 
       if (normalised1 > normalised2)
       {
-        return -1;
+        return -1; // Descending order
       }
 
       return 1;
