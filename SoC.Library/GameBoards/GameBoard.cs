@@ -659,20 +659,6 @@ namespace Jabberwocky.SoC.Library.GameBoards
         }
       }
 
-      results.Sort((x, y) => {
-        if (x.Item2 > y.Item2)
-        {
-          return -1;
-        }
-
-        if (x.Item2 > y.Item2)
-        {
-          return 1;
-        }
-
-        return x.Item1.CompareTo(y.Item1);
-      });
-
       return results.ToArray();
     }
 
@@ -939,51 +925,6 @@ namespace Jabberwocky.SoC.Library.GameBoards
       }
     }
 
-    private void CreateHexes()
-    {
-      this.hexes = new ResourceProducer[StandardBoardHexCount];
-      //d,b8,o5
-      this.hexes[0] = new ResourceProducer { Type = null, Production = 0u };
-      this.hexes[1] = new ResourceProducer { Type = ResourceTypes.Brick, Production = 8u };
-      this.hexes[2] = new ResourceProducer { Type = ResourceTypes.Ore, Production = 5u };
-
-      //b4,l3,w10,g2,
-      this.hexes[3] = new ResourceProducer { Type = ResourceTypes.Brick, Production = 4u };
-      this.hexes[4] = new ResourceProducer { Type = ResourceTypes.Lumber, Production = 3u };
-      this.hexes[5] = new ResourceProducer { Type = ResourceTypes.Wool, Production = 10u };
-      this.hexes[6] = new ResourceProducer { Type = ResourceTypes.Grain, Production = 2u };
-
-      //l11,o6,g11,w9,l6,
-      this.hexes[7] = new ResourceProducer { Type = ResourceTypes.Lumber, Production = 11u };
-      this.hexes[8] = new ResourceProducer { Type = ResourceTypes.Ore, Production = 6u };
-      this.hexes[9] = new ResourceProducer { Type = ResourceTypes.Grain, Production = 11u };
-      this.hexes[10] = new ResourceProducer { Type = ResourceTypes.Wool, Production = 9u };
-      this.hexes[11] = new ResourceProducer { Type = ResourceTypes.Lumber, Production = 6u };
-
-      //w12,b5,l4,o3
-      this.hexes[12] = new ResourceProducer { Type = ResourceTypes.Wool, Production = 12u };
-      this.hexes[13] = new ResourceProducer { Type = ResourceTypes.Brick, Production = 5u };
-      this.hexes[14] = new ResourceProducer { Type = ResourceTypes.Lumber, Production = 4u };
-      this.hexes[15] = new ResourceProducer { Type = ResourceTypes.Ore, Production = 3u };
-
-      //g9,w10 (see above),g8
-      this.hexes[16] = new ResourceProducer { Type = ResourceTypes.Grain, Production = 9u };
-      this.hexes[17] = new ResourceProducer { Type = ResourceTypes.Wool, Production = 10u };
-      this.hexes[18] = new ResourceProducer { Type = ResourceTypes.Grain, Production = 8u };
-
-      this.resourceProducersByType = new Dictionary<ResourceTypes, ResourceProducer[]>();
-      // 8, 5, 4
-      this.resourceProducersByType.Add(ResourceTypes.Brick, new[] { this.hexes[1], this.hexes[13], this.hexes[3] });
-      // 8, 9, 11, 2
-      this.resourceProducersByType.Add(ResourceTypes.Grain, new[] { this.hexes[18], this.hexes[16], this.hexes[9], this.hexes[6] });
-      // 6, 4, 3, 11
-      this.resourceProducersByType.Add(ResourceTypes.Lumber, new[] { this.hexes[11], this.hexes[14],  this.hexes[4], this.hexes[7] });
-      // 6, 5, 3
-      this.resourceProducersByType.Add(ResourceTypes.Ore, new[] { this.hexes[8], this.hexes[2], this.hexes[15] });
-      // 9, 10, 10, 12
-      this.resourceProducersByType.Add(ResourceTypes.Wool, new[] { this.hexes[10], this.hexes[5], this.hexes[17], this.hexes[12] });
-    }
-
     private void AssignResourceProvidersToDiceRolls()
     {
       var tempResourceProvidersByDiceRolls = new List<ResourceProducer>[13];
@@ -1205,6 +1146,77 @@ namespace Jabberwocky.SoC.Library.GameBoards
           endIndex++;
         }
       }
+    }
+
+    private void CreateHexes()
+    {
+      this.hexes = new ResourceProducer[StandardBoardHexCount];
+      //d,b8,o5
+      this.hexes[0] = new ResourceProducer { Type = null, Production = 0u };
+      this.hexes[1] = new ResourceProducer { Type = ResourceTypes.Brick, Production = 8u };
+      this.hexes[2] = new ResourceProducer { Type = ResourceTypes.Ore, Production = 5u };
+
+      //b4,l3,w10,g2,
+      this.hexes[3] = new ResourceProducer { Type = ResourceTypes.Brick, Production = 4u };
+      this.hexes[4] = new ResourceProducer { Type = ResourceTypes.Lumber, Production = 3u };
+      this.hexes[5] = new ResourceProducer { Type = ResourceTypes.Wool, Production = 10u };
+      this.hexes[6] = new ResourceProducer { Type = ResourceTypes.Grain, Production = 2u };
+
+      //l11,o6,g11,w9,l6,
+      this.hexes[7] = new ResourceProducer { Type = ResourceTypes.Lumber, Production = 11u };
+      this.hexes[8] = new ResourceProducer { Type = ResourceTypes.Ore, Production = 6u };
+      this.hexes[9] = new ResourceProducer { Type = ResourceTypes.Grain, Production = 11u };
+      this.hexes[10] = new ResourceProducer { Type = ResourceTypes.Wool, Production = 9u };
+      this.hexes[11] = new ResourceProducer { Type = ResourceTypes.Lumber, Production = 6u };
+
+      //w12,b5,l4,o3
+      this.hexes[12] = new ResourceProducer { Type = ResourceTypes.Wool, Production = 12u };
+      this.hexes[13] = new ResourceProducer { Type = ResourceTypes.Brick, Production = 5u };
+      this.hexes[14] = new ResourceProducer { Type = ResourceTypes.Lumber, Production = 4u };
+      this.hexes[15] = new ResourceProducer { Type = ResourceTypes.Ore, Production = 3u };
+
+      //g9,w10 (see above),g8
+      this.hexes[16] = new ResourceProducer { Type = ResourceTypes.Grain, Production = 9u };
+      this.hexes[17] = new ResourceProducer { Type = ResourceTypes.Wool, Production = 10u };
+      this.hexes[18] = new ResourceProducer { Type = ResourceTypes.Grain, Production = 8u };
+
+      this.resourceProducersByType = this.CreateResourceProducersByType(this.hexes);
+    }
+
+    private Dictionary<ResourceTypes, ResourceProducer[]> CreateResourceProducersByType(ResourceProducer[] hexData)
+    {
+      var workingResourceProducersByType = new Dictionary<ResourceTypes, List<ResourceProducer>>();
+      foreach (var resourceProducer in hexData)
+      {
+        if (!resourceProducer.Type.HasValue)
+        {
+          // Desert
+          continue;
+        }
+
+        var resourceType = resourceProducer.Type.Value;
+        List<ResourceProducer> resourceProducers = null;
+        if (!workingResourceProducersByType.ContainsKey(resourceType))
+        {
+          resourceProducers = new List<ResourceProducer>();
+          workingResourceProducersByType.Add(resourceType, resourceProducers);
+        }
+        else
+        {
+          resourceProducers = workingResourceProducersByType[resourceType];
+        }
+
+        resourceProducers.Add(resourceProducer);
+      }
+
+      var newResourceProducersByType = new Dictionary<ResourceTypes, ResourceProducer[]>();
+      foreach (var kv in workingResourceProducersByType)
+      {
+        kv.Value.Sort((x, y) => { return ProductionFactorComparison.Compare(x.Production, y.Production); });
+        newResourceProducersByType.Add(kv.Key, kv.Value.ToArray());
+      }
+
+      return newResourceProducersByType;
     }
     #endregion
 

@@ -3,7 +3,6 @@ namespace Jabberwocky.SoC.Library.UnitTests
 {
   using System;
   using System.Collections.Generic;
-  using GameBoards;
   using LocalGameController_Tests;
   using NUnit.Framework;
   using Shouldly;
