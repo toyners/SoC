@@ -11,7 +11,7 @@ Find best locations on those producers
 	- Regardless of best location always settlement on the producers if possible
 
 Road building
-  ???
+  Place roads towards best grain and wool producers
 
 Game play
 Build towards best grain and wool producers
