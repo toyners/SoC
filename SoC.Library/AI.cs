@@ -15,5 +15,15 @@ namespace Jabberwocky.SoC.Library
     {
       throw new NotImplementedException();
     }
+
+    public static UInt32[] GetLocationsSharedByResourceProducers()
+    {
+      throw new NotImplementedException();
+    }
+
+    public static UInt32[] GetLocationsOnHexClosestToAnotherHex()
+    {
+      throw new NotImplementedException();
+    }
   }
 }

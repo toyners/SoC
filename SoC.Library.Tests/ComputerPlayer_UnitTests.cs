@@ -39,6 +39,20 @@ namespace Jabberwocky.SoC.Library.UnitTests
       location.ShouldBe(31u);
     }
 
+    [Test]
+    public void ChooseInitialInfrastructure_RoadBuilderStrategyOnEmptyBoard_ReturnBestLocation()
+    {
+      var gameBoard = new GameBoard(BoardSizes.Standard);
+      var computerPlayer = new ComputerPlayer("Bob", gameBoard);
+
+      var settlementLocation = 0u;
+      var roadEndLocation = 0u;
+      computerPlayer.ChooseInitialInfrastructure(out settlementLocation, out roadEndLocation);
+
+      settlementLocation.ShouldBe(24u);
+      roadEndLocation.ShouldBe(23u);
+    }
+
     // [Test]
     public void ChooseRoad_NoSettlementsForPlayer_ThrowsMeaningfulException()
     {
