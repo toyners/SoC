@@ -6,7 +6,7 @@ namespace Jabberwocky.SoC.Library
 
   public static class AI
   {
-    public static UInt32[] GetPossibleSettlementLocationsForBestReturningResourceType(GameBoard gameBoard, ResourceTypes resourceType, out UInt32 productionFactor)
+    public static UInt32[] GetLocationsForBestReturningResourceType(GameBoard gameBoard, ResourceTypes resourceType, out UInt32 productionFactor)
     {
       return gameBoard.GetLocationsForResourceTypeWithProductionFactors(resourceType, out productionFactor);
     }
@@ -21,9 +21,21 @@ namespace Jabberwocky.SoC.Library
       throw new NotImplementedException();
     }
 
-    public static UInt32[] GetLocationsOnHexClosestToAnotherHex()
+    public static Tuple<UInt32, UInt32> GetLocationsOnHexClosestToAnotherHex(UInt32 hex1, UInt32 hex2)
     {
       throw new NotImplementedException();
+    }
+  }
+
+  public class LocationPairing
+  {
+    public readonly UInt32 Location1;
+    public readonly UInt32 Location2;
+
+    public LocationPairing(UInt32 location1, UInt32 location2)
+    {
+      this.Location1 = location1;
+      this.Location2 = location2;
     }
   }
 }

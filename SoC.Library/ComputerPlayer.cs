@@ -51,6 +51,12 @@ namespace Jabberwocky.SoC.Library
 
     public virtual void ChooseInitialInfrastructure(out UInt32 settlementLocation, out UInt32 roadEndLocation)
     {
+      var pf = 0u;
+      var locations = AI.GetLocationsForBestReturningResourceType(this.gameBoard, ResourceTypes.Brick, out pf);
+
+      // Chance to change strategy if production factor is no good
+      
+
       throw new NotImplementedException();
     }
 

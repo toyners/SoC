@@ -23,7 +23,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     {
       var gameBoard = new GameBoard(BoardSizes.Standard);
       UInt32 actualProductionFactor = 0;
-      var actualLocations = AI.GetPossibleSettlementLocationsForBestReturningResourceType(gameBoard, resourceType, out actualProductionFactor);
+      var actualLocations = AI.GetLocationsForBestReturningResourceType(gameBoard, resourceType, out actualProductionFactor);
 
       actualProductionFactor.ShouldBe(expectedProductionFactor);
       actualLocations.ShouldContainExact(expectedLocations);
@@ -40,7 +40,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
       gameBoard.PlaceStartingInfrastructure(secondOpponentId, 20, 21);
 
       UInt32 actualProductionFactor = 0;
-      var actualLocations = AI.GetPossibleSettlementLocationsForBestReturningResourceType(gameBoard, ResourceTypes.Ore, out actualProductionFactor);
+      var actualLocations = AI.GetLocationsForBestReturningResourceType(gameBoard, ResourceTypes.Ore, out actualProductionFactor);
 
       actualProductionFactor.ShouldBe(6u);
       actualLocations.ShouldContainExact(new[] { 30u });
@@ -59,7 +59,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
       gameBoard.PlaceStartingInfrastructure(thirdOpponentId, 30, 40);
 
       UInt32 actualProductionFactor = 0;
-      var actualLocations = AI.GetPossibleSettlementLocationsForBestReturningResourceType(gameBoard, ResourceTypes.Ore, out actualProductionFactor);
+      var actualLocations = AI.GetLocationsForBestReturningResourceType(gameBoard, ResourceTypes.Ore, out actualProductionFactor);
 
       actualProductionFactor.ShouldBe(5u);
       actualLocations.ShouldContainExact(new[] { 4u, 5u, 6u, 12u, 13u, 14u });
