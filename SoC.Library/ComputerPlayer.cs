@@ -51,11 +51,34 @@ namespace Jabberwocky.SoC.Library
 
     public virtual void ChooseInitialInfrastructure(out UInt32 settlementLocation, out UInt32 roadEndLocation)
     {
-      var pf = 0u;
-      var locations = AI.GetLocationsForBestReturningResourceType(this.gameBoard, ResourceTypes.Brick, out pf);
-
+      UInt32 brickProduction, lumberProduction;
+      var brickLocations = AI.GetLocationsForBestReturningResourceType(this.gameBoard, ResourceTypes.Brick, out brickProduction);
       // Chance to change strategy if production factor is no good
-      
+
+      var lumberLocations = AI.GetLocationsForBestReturningResourceType(this.gameBoard, ResourceTypes.Lumber, out lumberProduction);
+      // Chance to change strategy if production factor is no good
+
+      var gotLocation = false;
+      // Check for any locations that are on both producers
+      // Nested foreach loops is bad but the total possible combinations is 36 so
+      foreach(var brickLocation in brickLocations)
+      {
+        foreach (var lumberLocation in lumberLocations)
+        {
+          if (brickLocation == lumberLocation)
+          {
+            settlementLocation = brickLocation;
+            gotLocation = true;
+            break;
+          }
+        }
+      }
+
+      if (!gotLocation)
+      {
+        var grainLocations = AI.GetLocationsForResourceType(this.gameBoard, ResourceTypes.Grain);
+        var woolLocations = AI.GetLocationsForResourceType(this.gameBoard, ResourceTypes.Wool);
+      }
 
       throw new NotImplementedException();
     }

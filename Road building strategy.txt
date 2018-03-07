@@ -8,7 +8,7 @@ Find best locations on those producers
 		b) locations on producer AND port that ships that resource (very rare)
 		c) locations closest to grain and wool resource (allows building of settlements)
 		d) locations closest to port
-	- Regardless of best location always settlement on the producers if possible
+	- Regardless of best location always settle on the producers if possible
 
 Road building
   Place roads towards best grain and wool producers

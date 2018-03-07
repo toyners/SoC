@@ -25,6 +25,11 @@ namespace Jabberwocky.SoC.Library
     {
       throw new NotImplementedException();
     }
+
+    internal static Object GetLocationsForResourceType(GameBoard gameBoard, ResourceTypes grain)
+    {
+      throw new NotImplementedException();
+    }
   }
 
   public class LocationPairing
