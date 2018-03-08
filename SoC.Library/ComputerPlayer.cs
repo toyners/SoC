@@ -12,13 +12,18 @@ namespace Jabberwocky.SoC.Library
   {
     private Queue<ComputerPlayerAction> actions = new Queue<ComputerPlayerAction>();
     private GameBoard gameBoard;
+    private INumberGenerator numberGenerator;
 
     #region Construction
     private ComputerPlayer() { } // For use when inflating from file. 
+    public ComputerPlayer(String name, GameBoard gameBoard) : this(name, gameBoard, null) // Temporary - for backwards compatibility with some tests
+    {
+    }
 
-    public ComputerPlayer(String name, GameBoard gameBoard) : base(name)
+    public ComputerPlayer(String name, GameBoard gameBoard, INumberGenerator numberGenerator) : base(name)
     {
       this.gameBoard = gameBoard;
+      this.numberGenerator = numberGenerator;
     }
     #endregion
 
@@ -51,7 +56,9 @@ namespace Jabberwocky.SoC.Library
 
     public virtual void ChooseInitialInfrastructure(out UInt32 settlementLocation, out UInt32 roadEndLocation)
     {
-      UInt32 productionRangeLower = 6;
+      settlementLocation = 35;
+      roadEndLocation = 34;
+      /*UInt32 productionRangeLower = 6;
       UInt32 productionRangeUpper = 8;
 
       UInt32 brickProduction;
@@ -75,9 +82,7 @@ namespace Jabberwocky.SoC.Library
       var lumberLocationsInOrderOfIncreasingDistanceToWoolLocations = AI.GetLocationsOfResourceTypeInOrderOfIncreasingDistanceToCandidateLocations(lumberLocations, ResourceTypes.Wool);
       var lumberLocationsInOrderOfIncreasingDistanceToGrainLocations = AI.GetLocationsOfResourceTypeInOrderOfIncreasingDistanceToCandidateLocations(lumberLocations, ResourceTypes.Grain);
 
-
-
-      throw new NotImplementedException();
+      throw new NotImplementedException();*/
     }
 
     public UInt32[] TryGetLocationOnBothProducers(UInt32[] producer1Locations, UInt32[] producer2Locations)

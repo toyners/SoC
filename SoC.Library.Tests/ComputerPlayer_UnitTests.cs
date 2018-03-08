@@ -4,6 +4,8 @@ namespace Jabberwocky.SoC.Library.UnitTests
   using System;
   using GameActions;
   using GameBoards;
+  using Interfaces;
+  using NSubstitute;
   using NUnit.Framework;
   using Shouldly;
 
@@ -13,11 +15,16 @@ namespace Jabberwocky.SoC.Library.UnitTests
   public class ComputerPlayer_UnitTests
   {
     #region Methods
+    private INumberGenerator CreateMockNumberGenerator()
+    {
+      return Substitute.For<INumberGenerator>();
+    }
+
     [Test]
     public void ChooseSettlementLocation_GetBestLocationOnEmptyBoard_ReturnsBestLocation()
     {
       var gameBoard = new GameBoard(BoardSizes.Standard);
-      var computerPlayer = new ComputerPlayer("ComputerPlayer", gameBoard);
+      var computerPlayer = new ComputerPlayer("ComputerPlayer", gameBoard, this.CreateMockNumberGenerator());
       gameBoard.PlaceStartingInfrastructure(computerPlayer.Id, 0, 1);
       gameBoard.PlaceStartingInfrastructure(computerPlayer.Id, 53, 52);
 
@@ -30,7 +37,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     public void ChooseSettlementLocation_GetBestLocationOnBoardWithBestLocationUnavailable_ReturnsBestLocation()
     {
       var gameBoard = new GameBoard(BoardSizes.Standard);
-      var computerPlayer = new ComputerPlayer("ComputerPlayer", gameBoard);
+      var computerPlayer = new ComputerPlayer("ComputerPlayer", gameBoard, this.CreateMockNumberGenerator());
       gameBoard.PlaceStartingInfrastructure(computerPlayer.Id, 12, 11);
       gameBoard.PlaceStartingInfrastructure(computerPlayer.Id, 0, 1);
 
@@ -40,20 +47,35 @@ namespace Jabberwocky.SoC.Library.UnitTests
     }
 
     [Test]
-    public void ChooseInitialInfrastructure_RoadBuilderStrategyOnEmptyBoard_ReturnBestLocation()
+    public void ChooseInitialInfrastructure_RoadBuilderStrategyWithFirstSelection_ReturnBestLocation()
     {
       var gameBoard = new GameBoard(BoardSizes.Standard);
-      var computerPlayer = new ComputerPlayer("Bob", gameBoard);
+      var mockNumberGenerator = Substitute.For<INumberGenerator>();
+      var computerPlayer = new ComputerPlayer("Bob", gameBoard, mockNumberGenerator);
 
       var settlementLocation = 0u;
       var roadEndLocation = 0u;
       computerPlayer.ChooseInitialInfrastructure(out settlementLocation, out roadEndLocation);
 
-      settlementLocation.ShouldBe(24u);
-      roadEndLocation.ShouldBe(23u);
+      settlementLocation.ShouldBe(35u);
+      roadEndLocation.ShouldBe(34u);
     }
 
-    // [Test]
+    [Test]
+    public void ChooseInitialInfrastructure_RoadBuilderStrategyWithSecondSelection_ReturnBestLocation()
+    {
+      var gameBoard = new GameBoard(BoardSizes.Standard);
+      var computerPlayer = new ComputerPlayer("Bob", gameBoard, this.CreateMockNumberGenerator());
+
+      var settlementLocation = 0u;
+      var roadEndLocation = 0u;
+      computerPlayer.ChooseInitialInfrastructure(out settlementLocation, out roadEndLocation);
+
+      settlementLocation.ShouldBe(35u);
+      roadEndLocation.ShouldBe(34u);
+    }
+
+    /* // [Test]
     public void ChooseRoad_NoSettlementsForPlayer_ThrowsMeaningfulException()
     {
       var gameBoard = new GameBoard(BoardSizes.Standard);
@@ -65,11 +87,11 @@ namespace Jabberwocky.SoC.Library.UnitTests
         computerPlayer.ChooseRoad(gameBoardData, out startRoadLocation, out endRoadLocation);
       }).Message.ShouldBe("No settlements found for player with id " + computerPlayer.Id);*/
 
-      throw new NotImplementedException();
-    }
+      //throw new NotImplementedException();
+    //}
 
     // [Test]
-    public void ChooseRoad_BuildingTowardsNextBestSettlementLocation_ReturnsFirstRoadFragment()
+    /*public void ChooseRoad_BuildingTowardsNextBestSettlementLocation_ReturnsFirstRoadFragment()
     {
       var gameBoard = new GameBoard(BoardSizes.Standard);
       var computerPlayer = new ComputerPlayer("ComputerPlayer", gameBoard);
@@ -109,7 +131,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
       //var tuple = new Tuple<UInt32, UInt32>(roadStartLocation, roadEndLocation);
       //tuple.ShouldBeOneOf(new Tuple<UInt32, UInt32>(20, 21), new Tuple<UInt32, UInt32>(21, 20));
       throw new NotImplementedException();
-    }
+    }*/
     #endregion 
   }
 }

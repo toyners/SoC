@@ -1,3 +1,6 @@
+General strategy
+Look for locations that give the most return AND make sense for building infrastructure (road, settlement)
+
 Road builder strategy
 Initial infrastructure setup
 Find the best brick and lumber producers (GameBoard.GetResourceProducerOrderedByProductionFactor(ResourcesType) returns Tuple<HexIndex, PF>)
