@@ -38,5 +38,10 @@ namespace Jabberwocky.SoC.Library
 
       return 1;
     }
+
+    internal static Boolean WithinRange(UInt32 production, UInt32 brickProductionRangeLower, UInt32 brickProductionRangeUpper)
+    {
+      throw new NotImplementedException();
+    }
   }
 }

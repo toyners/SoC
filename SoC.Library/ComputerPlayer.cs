@@ -51,35 +51,38 @@ namespace Jabberwocky.SoC.Library
 
     public virtual void ChooseInitialInfrastructure(out UInt32 settlementLocation, out UInt32 roadEndLocation)
     {
-      UInt32 brickProduction, lumberProduction;
+      UInt32 productionRangeLower = 6;
+      UInt32 productionRangeUpper = 8;
+
+      UInt32 brickProduction;
       var brickLocations = AI.GetLocationsForBestReturningResourceType(this.gameBoard, ResourceTypes.Brick, out brickProduction);
-      // Chance to change strategy if production factor is no good
+      if (!ProductionFactorComparison.WithinRange(brickProduction, productionRangeLower, productionRangeUpper))
+      {
+        // Change the strategy, maybe
+      }
 
+      UInt32 lumberProduction;
       var lumberLocations = AI.GetLocationsForBestReturningResourceType(this.gameBoard, ResourceTypes.Lumber, out lumberProduction);
-      // Chance to change strategy if production factor is no good
-
-      var gotLocation = false;
-      // Check for any locations that are on both producers
-      // Nested foreach loops is bad but the total possible combinations is 36 so
-      foreach(var brickLocation in brickLocations)
+      if (!ProductionFactorComparison.WithinRange(lumberProduction, productionRangeLower, productionRangeUpper))
       {
-        foreach (var lumberLocation in lumberLocations)
-        {
-          if (brickLocation == lumberLocation)
-          {
-            settlementLocation = brickLocation;
-            gotLocation = true;
-            break;
-          }
-        }
+        // Change the strategy, maybe
       }
 
-      if (!gotLocation)
-      {
-        var grainLocations = AI.GetLocationsForResourceType(this.gameBoard, ResourceTypes.Grain);
-        var woolLocations = AI.GetLocationsForResourceType(this.gameBoard, ResourceTypes.Wool);
-      }
+      var locationsOnBothProducers = this.TryGetLocationOnBothProducers(brickLocations, lumberLocations);
 
+      var brickLocationsInOrderOfIncreasingDistanceToWoolLocations = AI.GetLocationsOfResourceTypeInOrderOfIncreasingDistanceToCandidateLocations(brickLocations, ResourceTypes.Wool);
+      var brickLocationsInOrderOfIncreasingDistanceToGrainLocations = AI.GetLocationsOfResourceTypeInOrderOfIncreasingDistanceToCandidateLocations(brickLocations, ResourceTypes.Grain);
+      var lumberLocationsInOrderOfIncreasingDistanceToWoolLocations = AI.GetLocationsOfResourceTypeInOrderOfIncreasingDistanceToCandidateLocations(lumberLocations, ResourceTypes.Wool);
+      var lumberLocationsInOrderOfIncreasingDistanceToGrainLocations = AI.GetLocationsOfResourceTypeInOrderOfIncreasingDistanceToCandidateLocations(lumberLocations, ResourceTypes.Grain);
+
+
+
+      throw new NotImplementedException();
+    }
+
+    public UInt32[] TryGetLocationOnBothProducers(UInt32[] producer1Locations, UInt32[] producer2Locations)
+    {
+      // Check for any locations that are on both producers (there will be a minimum of 2)
       throw new NotImplementedException();
     }
 

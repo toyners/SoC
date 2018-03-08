@@ -26,7 +26,18 @@ namespace Jabberwocky.SoC.Library
       throw new NotImplementedException();
     }
 
-    internal static Object GetLocationsForResourceType(GameBoard gameBoard, ResourceTypes grain)
+    public static GameBoard.LocationProduction GetLocationsForResourceType(GameBoard gameBoard, ResourceTypes resourceType)
+    {
+      throw new NotImplementedException();
+    }
+
+    public static GameBoard.ResourceProducerLocation GetBestResourceProducerWithViableSettlementLocations(ResourceTypes resourceType)
+    {
+      throw new NotImplementedException();
+    }
+
+    // Starting location, resource type location, production factor, distance in steps, 
+    public static Tuple<UInt32, UInt32, UInt32, UInt32>[] GetLocationsOfResourceTypeInOrderOfIncreasingDistanceToCandidateLocations(UInt32[] locations, ResourceTypes resourceType)
     {
       throw new NotImplementedException();
     }

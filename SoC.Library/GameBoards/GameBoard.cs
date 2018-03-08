@@ -1228,6 +1228,18 @@ namespace Jabberwocky.SoC.Library.GameBoards
       public UInt32 Production;
     }
 
+    public class ResourceProducerLocation
+    {
+      public readonly UInt32 Location;
+      public readonly UInt32 Production;
+
+      public ResourceProducerLocation(UInt32 location, UInt32 production)
+      {
+        this.Location = location;
+        this.Production = production;
+      }
+    }
+
     [DebuggerDisplay("Status = {Status}, PlayerId = {PlayerId}, LocationIndex = {LocationIndex}")]
     public struct VerificationResults
     {
@@ -1291,6 +1303,12 @@ namespace Jabberwocky.SoC.Library.GameBoards
     {
       public PlacementException() : base() { }
       public PlacementException(String message) : base(message) { }
+    }
+
+    public class LocationProduction
+    {
+      public UInt32 Location1;
+      public UInt32 Location2;
     }
     #endregion
   }
