@@ -61,12 +61,14 @@ namespace Jabberwocky.SoC.Library.UnitTests
       var gameBoard = new GameBoard(BoardSizes.Standard);
       var computerPlayer = new ComputerPlayer("Bob", gameBoard, this.CreateMockNumberGenerator());
 
+      gameBoard.PlaceStartingInfrastructure(Guid.NewGuid(), 24, 23);
+
       var settlementLocation = 0u;
       var roadEndLocation = 0u;
       computerPlayer.ChooseInitialInfrastructure(out settlementLocation, out roadEndLocation);
 
-      settlementLocation.ShouldBe(35u);
-      roadEndLocation.ShouldBe(34u);
+      settlementLocation.ShouldBe(36u);
+      roadEndLocation.ShouldBe(46u);
     }
 
     /* // [Test]
@@ -127,9 +129,10 @@ namespace Jabberwocky.SoC.Library.UnitTests
       throw new NotImplementedException();
     }*/
 
-    private INumberGenerator CreateMockNumberGenerator()
+    private INumberGenerator CreateMockNumberGenerator(UInt32[] values = null)
     {
-      return Substitute.For<INumberGenerator>();
+      var mockNumberGenerator = Substitute.For<INumberGenerator>();
+      return mockNumberGenerator;
     }
     #endregion 
   }

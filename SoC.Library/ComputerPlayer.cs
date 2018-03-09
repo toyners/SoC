@@ -55,6 +55,16 @@ namespace Jabberwocky.SoC.Library
     {
       settlementLocation = 35;
       roadEndLocation = 34;
+
+      var placementResult = gameBoard.CanPlaceStartingInfrastructure(this.Id, settlementLocation, roadEndLocation);  
+      if (placementResult.Status != GameBoard.VerificationStatus.Valid)
+      {
+        settlementLocation = 36;
+        roadEndLocation = 46;
+        return;
+      }
+
+      //throw new NotImplementedException();
       /*UInt32 productionRangeLower = 6;
       UInt32 productionRangeUpper = 8;
 
