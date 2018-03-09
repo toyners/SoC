@@ -16,10 +16,7 @@ namespace Jabberwocky.SoC.Library
 
     #region Construction
     private ComputerPlayer() { } // For use when inflating from file. 
-    public ComputerPlayer(String name, GameBoard gameBoard) : this(name, gameBoard, null) // Temporary - for backwards compatibility with some tests
-    {
-    }
-
+    
     public ComputerPlayer(String name, GameBoard gameBoard, INumberGenerator numberGenerator) : base(name)
     {
       this.gameBoard = gameBoard;

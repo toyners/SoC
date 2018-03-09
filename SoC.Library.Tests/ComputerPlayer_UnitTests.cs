@@ -15,11 +15,6 @@ namespace Jabberwocky.SoC.Library.UnitTests
   public class ComputerPlayer_UnitTests
   {
     #region Methods
-    private INumberGenerator CreateMockNumberGenerator()
-    {
-      return Substitute.For<INumberGenerator>();
-    }
-
     [Test]
     public void ChooseSettlementLocation_GetBestLocationOnEmptyBoard_ReturnsBestLocation()
     {
@@ -50,8 +45,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     public void ChooseInitialInfrastructure_RoadBuilderStrategyWithFirstSelection_ReturnBestLocation()
     {
       var gameBoard = new GameBoard(BoardSizes.Standard);
-      var mockNumberGenerator = Substitute.For<INumberGenerator>();
-      var computerPlayer = new ComputerPlayer("Bob", gameBoard, mockNumberGenerator);
+      var computerPlayer = new ComputerPlayer("Bob", gameBoard, this.CreateMockNumberGenerator());
 
       var settlementLocation = 0u;
       var roadEndLocation = 0u;
@@ -87,7 +81,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
         computerPlayer.ChooseRoad(gameBoardData, out startRoadLocation, out endRoadLocation);
       }).Message.ShouldBe("No settlements found for player with id " + computerPlayer.Id);*/
 
-      //throw new NotImplementedException();
+    //throw new NotImplementedException();
     //}
 
     // [Test]
@@ -132,6 +126,11 @@ namespace Jabberwocky.SoC.Library.UnitTests
       //tuple.ShouldBeOneOf(new Tuple<UInt32, UInt32>(20, 21), new Tuple<UInt32, UInt32>(21, 20));
       throw new NotImplementedException();
     }*/
+
+    private INumberGenerator CreateMockNumberGenerator()
+    {
+      return Substitute.For<INumberGenerator>();
+    }
     #endregion 
   }
 }
