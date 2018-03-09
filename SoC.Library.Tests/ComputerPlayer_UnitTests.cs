@@ -42,17 +42,23 @@ namespace Jabberwocky.SoC.Library.UnitTests
     }
 
     [Test]
-    public void ChooseInitialInfrastructure_RoadBuilderStrategyWithFirstSelection_ReturnBestLocation()
+    [TestCase(0, 35u, 34u)]
+    [TestCase(39, 35u, 34u)]
+    [TestCase(40, 36u, 46u)]
+    [TestCase(79, 36u, 46u)]
+    [TestCase(80, 42u, 43u)]
+    [TestCase(99, 42u, 43u)]
+    public void ChooseInitialInfrastructure_RoadBuilderStrategyWithFirstSelection_ReturnBestLocation(Int32 generatedChance, UInt32 expectedSettlementLocation, UInt32 expectedRoadEndLocation)
     {
       var gameBoard = new GameBoard(BoardSizes.Standard);
-      var computerPlayer = new ComputerPlayer("Bob", gameBoard, this.CreateMockNumberGenerator());
+      var computerPlayer = new ComputerPlayer("Bob", gameBoard, this.CreateMockNumberGenerator(generatedChance));
 
       var settlementLocation = 0u;
       var roadEndLocation = 0u;
       computerPlayer.ChooseInitialInfrastructure(out settlementLocation, out roadEndLocation);
 
-      settlementLocation.ShouldBe(35u);
-      roadEndLocation.ShouldBe(34u);
+      settlementLocation.ShouldBe(expectedSettlementLocation);
+      roadEndLocation.ShouldBe(expectedRoadEndLocation);
     }
 
     [Test]
@@ -129,9 +135,18 @@ namespace Jabberwocky.SoC.Library.UnitTests
       throw new NotImplementedException();
     }*/
 
-    private INumberGenerator CreateMockNumberGenerator(UInt32[] values = null)
+    private INumberGenerator CreateMockNumberGenerator(params Int32[] values)
     {
       var mockNumberGenerator = Substitute.For<INumberGenerator>();
+      var index = 0;
+      if (values != null && values.Length > 0)
+      {
+        mockNumberGenerator.GetRandomNumberBetweenZeroAndMaximum(100).Returns(x => 
+        {
+          return values[index++];
+        });
+      }
+      
       return mockNumberGenerator;
     }
     #endregion 
