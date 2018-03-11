@@ -64,6 +64,18 @@ namespace Jabberwocky.SoC.Library
         return;
       }
 
+      var decision = this.numberGenerator.GetRandomNumberBetweenZeroAndMaximum(100);
+      if (decision >= 40 && decision < 80)
+      {
+        settlementLocation = 36;
+        roadEndLocation = 46;
+      } 
+      else if (decision >= 80)
+      {
+        settlementLocation = 42;
+        roadEndLocation = 43;
+      }
+
       //throw new NotImplementedException();
       /*UInt32 productionRangeLower = 6;
       UInt32 productionRangeUpper = 8;
