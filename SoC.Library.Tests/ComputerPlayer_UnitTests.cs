@@ -55,10 +55,18 @@ namespace Jabberwocky.SoC.Library.UnitTests
       roadEndLocation.ShouldBe(34u);
     }
 
+    /// <summary>
+    /// Another player has taken either the second or third best road builder location Lumber 6. Road builder strategy will
+    /// take what is best from the remaining viable choices.
+    /// </summary>
+    /// <param name="firstSettlementLocation"></param>
+    /// <param name="firstRoadEndLocation"></param>
+    /// <param name="expectedSettlementLocation"></param>
+    /// <param name="expectedRoadEndLocation"></param>
     [Test]
-    [TestCase(24u, 23u, 36u, 46u)]
+    [TestCase(24u, 35u, 36u, 46u)]
     [TestCase(36u, 46u, 24u, 35u)]
-    public void ChooseInitialInfrastructure_RoadBuilderStrategyWithSecondSelection_ReturnSecondChoiceLocation(UInt32 firstSettlementLocation, UInt32 firstRoadEndLocation, UInt32 expectedSettlementLocation, UInt32 expectedRoadEndLocation)
+    public void ChooseInitialInfrastructure_RoadBuilderStrategyWithSecondSelectionAndBestLumberHexIsOccupied_ReturnBestPossibleLocationOnHex(UInt32 firstSettlementLocation, UInt32 firstRoadEndLocation, UInt32 expectedSettlementLocation, UInt32 expectedRoadEndLocation)
     {
       var gameBoard = new GameBoard(BoardSizes.Standard);
       var computerPlayer = new ComputerPlayer("Bob", gameBoard, this.CreateMockNumberGenerator());
