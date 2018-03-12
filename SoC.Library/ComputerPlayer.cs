@@ -53,18 +53,27 @@ namespace Jabberwocky.SoC.Library
 
     public virtual void ChooseInitialInfrastructure(out UInt32 settlementLocation, out UInt32 roadEndLocation)
     {
-      settlementLocation = 35;
-      roadEndLocation = 34;
+      var choices = new List<Tuple<UInt32, UInt32>> {
+        new Tuple<UInt32, UInt32>(35, 34),
+        new Tuple<UInt32, UInt32>(24, 35),
+        new Tuple<UInt32, UInt32>(36, 46)
+      };
 
-      var placementResult = gameBoard.CanPlaceStartingInfrastructure(this.Id, settlementLocation, roadEndLocation);  
-      if (placementResult.Status != GameBoard.VerificationStatus.Valid)
+
+      foreach (var choice in choices)
       {
-        settlementLocation = 36;
-        roadEndLocation = 46;
-        return;
+        var placementResult = gameBoard.CanPlaceStartingInfrastructure(this.Id, choice.Item1, choice.Item2);
+        if (placementResult.Status == GameBoard.VerificationStatus.Valid)
+        {
+          settlementLocation = choice.Item1;
+          roadEndLocation = choice.Item2;
+          return;
+        }
       }
 
-      var decision = this.numberGenerator.GetRandomNumberBetweenZeroAndMaximum(100);
+      throw new NotImplementedException();
+
+      /*var decision = this.numberGenerator.GetRandomNumberBetweenZeroAndMaximum(100);
       if (decision >= 40 && decision < 80)
       {
         settlementLocation = 36;
@@ -74,7 +83,7 @@ namespace Jabberwocky.SoC.Library
       {
         settlementLocation = 42;
         roadEndLocation = 43;
-      }
+      }*/
 
       //throw new NotImplementedException();
       /*UInt32 productionRangeLower = 6;

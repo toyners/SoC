@@ -42,28 +42,22 @@ namespace Jabberwocky.SoC.Library.UnitTests
     }
 
     [Test]
-    [TestCase(0, 35u, 34u)]
-    [TestCase(39, 35u, 34u)]
-    [TestCase(40, 36u, 46u)]
-    [TestCase(79, 36u, 46u)]
-    [TestCase(80, 42u, 43u)]
-    [TestCase(99, 42u, 43u)]
-    public void ChooseInitialInfrastructure_RoadBuilderStrategyWithFirstSelection_ReturnFirstChoiceLocation(Int32 generatedChance, UInt32 expectedSettlementLocation, UInt32 expectedRoadEndLocation)
+    public void ChooseInitialInfrastructure_RoadBuilderStrategyWithFirstSelection_ReturnFirstChoiceLocation()
     {
       var gameBoard = new GameBoard(BoardSizes.Standard);
-      var computerPlayer = new ComputerPlayer("Bob", gameBoard, this.CreateMockNumberGenerator(generatedChance));
+      var computerPlayer = new ComputerPlayer("Bob", gameBoard, this.CreateMockNumberGenerator());
 
       var settlementLocation = 0u;
       var roadEndLocation = 0u;
       computerPlayer.ChooseInitialInfrastructure(out settlementLocation, out roadEndLocation);
 
-      settlementLocation.ShouldBe(expectedSettlementLocation);
-      roadEndLocation.ShouldBe(expectedRoadEndLocation);
+      settlementLocation.ShouldBe(35u);
+      roadEndLocation.ShouldBe(34u);
     }
 
     [Test]
-    [TestCase(24, 23, 36, 46)]
-    [TestCase(36, 46, 24, 35)]
+    [TestCase(24u, 23u, 36u, 46u)]
+    [TestCase(36u, 46u, 24u, 35u)]
     public void ChooseInitialInfrastructure_RoadBuilderStrategyWithSecondSelection_ReturnSecondChoiceLocation(UInt32 firstSettlementLocation, UInt32 firstRoadEndLocation, UInt32 expectedSettlementLocation, UInt32 expectedRoadEndLocation)
     {
       var gameBoard = new GameBoard(BoardSizes.Standard);
