@@ -59,19 +59,40 @@ namespace Jabberwocky.SoC.Library.UnitTests
     /// Another player has taken either the second or third best road builder location Lumber 6. Road builder strategy will
     /// take what is best from the remaining viable choices.
     /// </summary>
-    /// <param name="firstSettlementLocation"></param>
-    /// <param name="firstRoadEndLocation"></param>
-    /// <param name="expectedSettlementLocation"></param>
-    /// <param name="expectedRoadEndLocation"></param>
     [Test]
     [TestCase(24u, 35u, 36u, 46u)]
     [TestCase(36u, 46u, 24u, 35u)]
+    [TestCase(35u, 34u, 42u, 43u)]
     public void ChooseInitialInfrastructure_RoadBuilderStrategyWithSecondSelectionAndBestLumberHexIsOccupied_ReturnBestPossibleLocationOnHex(UInt32 firstSettlementLocation, UInt32 firstRoadEndLocation, UInt32 expectedSettlementLocation, UInt32 expectedRoadEndLocation)
     {
       var gameBoard = new GameBoard(BoardSizes.Standard);
       var computerPlayer = new ComputerPlayer("Bob", gameBoard, this.CreateMockNumberGenerator());
 
       gameBoard.PlaceStartingInfrastructure(Guid.NewGuid(), firstSettlementLocation, firstRoadEndLocation);
+
+      var settlementLocation = 0u;
+      var roadEndLocation = 0u;
+      computerPlayer.ChooseInitialInfrastructure(out settlementLocation, out roadEndLocation);
+
+      settlementLocation.ShouldBe(expectedSettlementLocation);
+      roadEndLocation.ShouldBe(expectedRoadEndLocation);
+    }
+
+    /// <summary>
+    /// Two other players take two positions on the lumber 6 hex. Two
+    /// </summary>
+    /// <param name="firstSettlementLocation"></param>
+    /// <param name="firstRoadEndLocation"></param>
+    /// <param name="expectedSettlementLocation"></param>
+    /// <param name="expectedRoadEndLocation"></param>
+    [Test]
+    public void ChooseInitialInfrastructure_RoadBuilderStrategyWithThirdSelectionAndBestLumberHexIsOccupied_ReturnBestPossibleLocationOnHex(UInt32 firstSettlementLocation, UInt32 firstRoadEndLocation, UInt32 expectedSettlementLocation, UInt32 expectedRoadEndLocation)
+    {
+      var gameBoard = new GameBoard(BoardSizes.Standard);
+      var computerPlayer = new ComputerPlayer("Bob", gameBoard, this.CreateMockNumberGenerator());
+
+      gameBoard.PlaceStartingInfrastructure(Guid.NewGuid(), 35, 34);
+      gameBoard.PlaceStartingInfrastructure(Guid.NewGuid(), 25, 24);
 
       var settlementLocation = 0u;
       var roadEndLocation = 0u;

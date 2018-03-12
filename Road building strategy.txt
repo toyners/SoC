@@ -20,3 +20,59 @@ Game play
 Build towards best grain and wool producers
 	- best location 
 Accrue resources for building settlements/cities/development cards
+
+
+Road Builder A - One settlement on each of Lumber6 and Brick8. 
+Locations in descending order of attractiveness for Lumber6
+Location 35
+- 3 Resource providers (best return)
+- On best Wool
+- Close to Grain 8 (2 road segments)
+Location 24
+- On best Wool
+- 3 Resource Providers
+Location 36
+- 2 Resoure providers
+- Close to Grain 8 (2 road segments)
+Location 25
+- 2 Resource providers
+Location 37, 26
+- 1 Resource provider
+
+Locations in descending order of attractiveness for Brick8
+Location 12
+- 3 Resource providers (best return)
+- On Wool
+Location 11
+- 3 Resource providers
+- On Wool
+- On Lumber
+Location 10
+- 2 Resource providers
+- On Lumber
+Location 4
+- 2 Resource providers
+Location 3, 2
+- 1 Resource provider
+
+Road Builder B - One settlement on each of Lumber4 and Brick5, Lumber3 and Brick8, Lumber3 and Brick4.
+Locations in descending order of attractiveness for Lumber3 and Brick8
+Location 11
+- 3 Resource providers
+- On Wool
+Location 10
+- 2 Resource providers
+
+Locations in descending order of attractiveness for Lumber3 and Brick8
+Location 42
+- 3 Resource providers (best return)
+- On Wool
+Location 32
+- 3 Resource providers
+
+Locations in descending order of attractiveness for Lumber3 and Brick4.
+Location 19
+- 3 Resource providers (best return)
+- On Ore6
+Location 9
+- 2 Resource providers
