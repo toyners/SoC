@@ -22,7 +22,7 @@ Build towards best grain and wool producers
 Accrue resources for building settlements/cities/development cards
 
 
-Road Builder A - One settlement on each of Lumber6 and Brick8. 
+Road Builder Alpha - One settlement on each of Lumber6 and Brick8. 
 Locations in descending order of attractiveness for Lumber6
 Location 35
 - 3 Resource providers (best return)
@@ -55,7 +55,7 @@ Location 4
 Location 3, 2
 - 1 Resource provider
 
-Road Builder B - One settlement on each of Lumber4 and Brick5, Lumber3 and Brick8, Lumber3 and Brick4.
+Road Builder Beta - One settlement on each of Lumber4 and Brick5, Lumber3 and Brick8, Lumber3 and Brick4.
 Locations in descending order of attractiveness for Lumber3 and Brick8
 Location 11
 - 3 Resource providers

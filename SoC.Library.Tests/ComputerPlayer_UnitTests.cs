@@ -2,6 +2,7 @@
 namespace Jabberwocky.SoC.Library.UnitTests
 {
   using System;
+  using System.Collections.Generic;
   using GameActions;
   using GameBoards;
   using Interfaces;
@@ -56,14 +57,14 @@ namespace Jabberwocky.SoC.Library.UnitTests
     }
 
     /// <summary>
-    /// Another player has taken either the second or third best road builder location Lumber 6. Road builder strategy will
+    /// Another player has taken either the first, second or third best road builder location Lumber 6. Road builder strategy will
     /// take what is best from the remaining viable choices.
     /// </summary>
     [Test]
     [TestCase(24u, 35u, 36u, 46u)]
     [TestCase(36u, 46u, 24u, 35u)]
-    [TestCase(35u, 34u, 42u, 43u)]
-    public void ChooseInitialInfrastructure_RoadBuilderStrategyWithSecondSelectionAndBestLumberHexIsOccupied_ReturnBestPossibleLocationOnHex(UInt32 firstSettlementLocation, UInt32 firstRoadEndLocation, UInt32 expectedSettlementLocation, UInt32 expectedRoadEndLocation)
+    [TestCase(35u, 34u, 25u, 24u)]
+    public void ChooseInitialInfrastructure_RoadBuilderAlphaStrategyWithSecondSelectionAndBestLumberHexIsOccupied_ReturnBestPossibleLocationOnHex(UInt32 firstSettlementLocation, UInt32 firstRoadEndLocation, UInt32 expectedSettlementLocation, UInt32 expectedRoadEndLocation)
     {
       var gameBoard = new GameBoard(BoardSizes.Standard);
       var computerPlayer = new ComputerPlayer("Bob", gameBoard, this.CreateMockNumberGenerator());
@@ -81,18 +82,17 @@ namespace Jabberwocky.SoC.Library.UnitTests
     /// <summary>
     /// Two other players take two positions on the lumber 6 hex. Two
     /// </summary>
-    /// <param name="firstSettlementLocation"></param>
-    /// <param name="firstRoadEndLocation"></param>
+    /// <param name="infrastructureData"></param>
     /// <param name="expectedSettlementLocation"></param>
     /// <param name="expectedRoadEndLocation"></param>
     [Test]
-    public void ChooseInitialInfrastructure_RoadBuilderStrategyWithThirdSelectionAndBestLumberHexIsOccupied_ReturnBestPossibleLocationOnHex(UInt32 firstSettlementLocation, UInt32 firstRoadEndLocation, UInt32 expectedSettlementLocation, UInt32 expectedRoadEndLocation)
+    [TestCase(new UInt32[] { 35, 34, 25, 24 }, 37u, 36u)]
+    public void ChooseInitialInfrastructure_RoadBuilderAlphaStrategyWithThirdSelectionAndBestLumberHexIsOccupied_ReturnBestPossibleLocationOnHex(UInt32[] infrastructureData, UInt32 expectedSettlementLocation, UInt32 expectedRoadEndLocation)
     {
       var gameBoard = new GameBoard(BoardSizes.Standard);
       var computerPlayer = new ComputerPlayer("Bob", gameBoard, this.CreateMockNumberGenerator());
 
-      gameBoard.PlaceStartingInfrastructure(Guid.NewGuid(), 35, 34);
-      gameBoard.PlaceStartingInfrastructure(Guid.NewGuid(), 25, 24);
+      this.PlaceInfrastructure(gameBoard, infrastructureData);
 
       var settlementLocation = 0u;
       var roadEndLocation = 0u;
@@ -173,6 +173,32 @@ namespace Jabberwocky.SoC.Library.UnitTests
       }
       
       return mockNumberGenerator;
+    }
+
+    private void PlaceInfrastructure(GameBoard gameBoard, UInt32[] data)
+    {
+      var playerIds = new List<Guid>();
+      var playerId = Guid.Empty;
+      var playerIdIndex = 0;
+      for (var i = 0; i < data.Length; i += 2)
+      {
+        if (playerIds.Count < 4)
+        {
+          playerId = Guid.NewGuid();
+          playerIds.Add(playerId);
+        }
+        else if (playerIdIndex == playerIds.Count)
+        {
+          playerIdIndex = 0;
+          playerId = playerIds[playerIdIndex++];
+        }
+        else
+        {
+          playerId = playerIds[playerIdIndex++];
+        }
+
+        gameBoard.PlaceStartingInfrastructure(playerId, data[i], data[i + 1]);
+      }
     }
     #endregion 
   }

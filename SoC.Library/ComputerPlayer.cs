@@ -56,9 +56,10 @@ namespace Jabberwocky.SoC.Library
       var choices = new List<Tuple<UInt32, UInt32>> {
         new Tuple<UInt32, UInt32>(35, 34),
         new Tuple<UInt32, UInt32>(24, 35),
-        new Tuple<UInt32, UInt32>(36, 46)
+        new Tuple<UInt32, UInt32>(36, 46),
+        new Tuple<UInt32, UInt32>(25, 24),
+        new Tuple<UInt32, UInt32>(37, 36),
       };
-
 
       foreach (var choice in choices)
       {
