@@ -87,6 +87,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     /// <param name="expectedRoadEndLocation"></param>
     [Test]
     [TestCase(new UInt32[] { 35, 34, 25, 24 }, 37u, 36u)]
+    [TestCase(new UInt32[] { 24, 23, 36, 46 }, 26u, 25u)]
     public void ChooseInitialInfrastructure_RoadBuilderAlphaStrategyWithThirdSelectionAndBestLumberHexIsOccupied_ReturnBestPossibleLocationOnHex(UInt32[] infrastructureData, UInt32 expectedSettlementLocation, UInt32 expectedRoadEndLocation)
     {
       var gameBoard = new GameBoard(BoardSizes.Standard);
