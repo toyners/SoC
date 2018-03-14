@@ -80,7 +80,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     }
 
     /// <summary>
-    /// Two other players take two positions on the lumber 6 hex. Two
+    /// Two other players take positions on the lumber 6 hex. Take what is left.
     /// </summary>
     /// <param name="infrastructureData"></param>
     /// <param name="expectedSettlementLocation"></param>
@@ -103,6 +103,43 @@ namespace Jabberwocky.SoC.Library.UnitTests
       roadEndLocation.ShouldBe(expectedRoadEndLocation);
     }
 
+    [Test]
+    [TestCase(new UInt32[] { 35, 34, 25, 24, 37, 36 }, 42u, 43u)]
+    [TestCase(new UInt32[] { 24, 23, 36, 46, 26, 25 }, 42u, 43u)]
+    public void ChooseInitialInfrastructure_ChangeToRoadBuilderBetaStrategyWhenInFourthSlotAndBestLumberHexIsFull_ReturnBestPossibleLocationOnHex(UInt32[] infrastructureData, UInt32 expectedSettlementLocation, UInt32 expectedRoadEndLocation)
+    {
+      var gameBoard = new GameBoard(BoardSizes.Standard);
+      var computerPlayer = new ComputerPlayer("Bob", gameBoard, this.CreateMockNumberGenerator());
+
+      this.PlaceInfrastructure(gameBoard, infrastructureData);
+
+      var settlementLocation = 0u;
+      var roadEndLocation = 0u;
+      computerPlayer.ChooseInitialInfrastructure(out settlementLocation, out roadEndLocation);
+
+      settlementLocation.ShouldBe(expectedSettlementLocation);
+      roadEndLocation.ShouldBe(expectedRoadEndLocation);
+    }
+
+    [Test]
+    [TestCase(new UInt32[] { 35, 34, 25, 24, 37, 36, 42, 43 }, 11u, 21u)]
+    [TestCase(new UInt32[] { 35, 34, 25, 24, 37, 36, 42, 43, 11, 21 }, 4u, 12u)]
+    [TestCase(new UInt32[] { 35, 34, 25, 24, 37, 36, 42, 43, 11, 21, 4, 12 }, 2u, 10u)]
+    [TestCase(new UInt32[] { 35, 34, 25, 24, 37, 36, 42, 43, 11, 21, 4, 12, 2, 10 }, 31u, 30u)]
+    public void ChooseInitialInfrastructure_ChangeToRoadBuilderBetaStrategyWhenInFifthSlot_ReturnBestPossibleLocationOnHex(UInt32[] infrastructureData, UInt32 expectedSettlementLocation, UInt32 expectedRoadEndLocation)
+    {
+      var gameBoard = new GameBoard(BoardSizes.Standard);
+      var computerPlayer = new ComputerPlayer("Bob", gameBoard, this.CreateMockNumberGenerator());
+
+      this.PlaceInfrastructure(gameBoard, infrastructureData);
+
+      var settlementLocation = 0u;
+      var roadEndLocation = 0u;
+      computerPlayer.ChooseInitialInfrastructure(out settlementLocation, out roadEndLocation);
+
+      settlementLocation.ShouldBe(expectedSettlementLocation);
+      roadEndLocation.ShouldBe(expectedRoadEndLocation);
+    }
     /* // [Test]
     public void ChooseRoad_NoSettlementsForPlayer_ThrowsMeaningfulException()
     {

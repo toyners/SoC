@@ -59,6 +59,12 @@ namespace Jabberwocky.SoC.Library
         new Tuple<UInt32, UInt32>(36, 46),
         new Tuple<UInt32, UInt32>(25, 24),
         new Tuple<UInt32, UInt32>(37, 36),
+        new Tuple<UInt32, UInt32>(26, 25),
+        new Tuple<UInt32, UInt32>(42, 43),
+        new Tuple<UInt32, UInt32>(11, 21),
+        new Tuple<UInt32, UInt32>(4, 12),
+        new Tuple<UInt32, UInt32>(2, 10),
+        new Tuple<UInt32, UInt32>(31, 30)
       };
 
       foreach (var choice in choices)
