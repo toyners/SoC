@@ -431,6 +431,12 @@ namespace Jabberwocky.SoC.Library.UnitTests.GameBoard_Tests
       results.ShouldContainExact(this.CreateExpectedLocationProductionFactorCollection(expectedRawLocationProductionFactorData));
     }
 
+    [Test]
+    public void GetLocationsByProductionFactorDescending()
+    {
+      throw new NotImplementedException();
+    }
+
     private Tuple<UInt32, UInt32>[] CreateExpectedLocationProductionFactorCollection(UInt32[] data)
     {
       var result = new Tuple<UInt32, UInt32>[data.Length / 2];
