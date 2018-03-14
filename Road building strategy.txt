@@ -40,13 +40,13 @@ Location 37, 26
 - 1 Resource provider
 
 Locations in descending order of attractiveness for Brick8
-Location 12
-- 3 Resource providers (best return)
-- On Wool
 Location 11
 - 3 Resource providers
 - On Wool
 - On Lumber
+Location 12
+- 3 Resource providers (best return)
+- On Wool
 Location 10
 - 2 Resource providers
 - On Lumber
