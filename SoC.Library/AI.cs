@@ -4,34 +4,39 @@ namespace Jabberwocky.SoC.Library
   using System;
   using GameBoards;
 
-  public static class AI
+  public class AI
   {
-    public static UInt32[] GetLocationsForBestReturningResourceType(GameBoard gameBoard, ResourceTypes resourceType, out UInt32 productionFactor)
+    public AI(GameBoard gameBoard)
+    {
+
+    }
+
+    public UInt32[] GetLocationsForBestReturningResourceType(GameBoard gameBoard, ResourceTypes resourceType, out UInt32 productionFactor)
     {
       return gameBoard.GetLocationsForResourceTypeWithProductionFactors(resourceType, out productionFactor);
     }
 
-    public static UInt32[] GetRouteFromPlayerInfrastructureToLocation(GameBoard gameBoard, UInt32 location, Guid playerId)
+    public UInt32[] GetRouteFromPlayerInfrastructureToLocation(GameBoard gameBoard, UInt32 location, Guid playerId)
     {
       throw new NotImplementedException();
     }
 
-    public static UInt32[] GetLocationsSharedByResourceProducers()
+    public UInt32[] GetLocationsSharedByResourceProducers()
     {
       throw new NotImplementedException();
     }
 
-    public static Tuple<UInt32, UInt32> GetLocationsOnHexClosestToAnotherHex(UInt32 hex1, UInt32 hex2)
+    public Tuple<UInt32, UInt32> GetLocationsOnHexClosestToAnotherHex(UInt32 hex1, UInt32 hex2)
     {
       throw new NotImplementedException();
     }
 
-    public static GameBoard.LocationProduction GetLocationsForResourceType(GameBoard gameBoard, ResourceTypes resourceType)
+    public GameBoard.LocationProduction GetLocationsForResourceType(GameBoard gameBoard, ResourceTypes resourceType)
     {
       throw new NotImplementedException();
     }
 
-    public static GameBoard.ResourceProducerLocation GetBestResourceProducerWithViableSettlementLocations(ResourceTypes resourceType)
+    public GameBoard.ResourceProducerLocation GetBestResourceProducerWithViableSettlementLocations(ResourceTypes resourceType)
     {
       throw new NotImplementedException();
     }
