@@ -147,21 +147,6 @@ namespace Jabberwocky.SoC.Library.GameBoards
       return hex < StandardBoardHexCount;
     }
 
-    private Guid GetOwningPlayerForLocation(UInt32 location)
-    {
-      if (!this.settlements.ContainsKey(location))
-      {
-        return Guid.Empty;
-      }
-
-      return this.settlements[location];
-    }
-
-    private Boolean LocationHasPlayerCity(Guid playerId, UInt32 location)
-    {
-      return this.cities.ContainsKey(location) && this.settlements[location] == playerId;
-    }
-
     public VerificationResults CanPlaceRoad(Guid playerId, UInt32 roadStartLocation, UInt32 roadEndLocation)
     {
       // Has the player placed their starting infrastructure
@@ -247,184 +232,6 @@ namespace Jabberwocky.SoC.Library.GameBoards
       return new VerificationResults { Status = VerificationStatus.Valid };
     }
 
-    public UInt32[] GetLocationsForResourceTypeWithProductionFactors(ResourceTypes resourceType, out UInt32 highestProductionFactor)
-    {
-      // Get locations for resources of type: return locations and their production factor
-      // Order by production factor
-      // Verify that the location is viable for settlement by using CanPlaceSettlement
-      // Add to list
-      highestProductionFactor = 0;
-      var locationsForResourceType = new List<UInt32>();
-
-      var resourceProducers = this.resourceProducersByType[resourceType];
-
-      foreach (var resourceProducer in resourceProducers)
-      {
-        var locationsForResourceProvider = this.locationsByResourceProvider[resourceProducer];
-        foreach (var locationForResourceProvider in locationsForResourceProvider)
-        {
-          Guid id;
-          UInt32 index;
-          if (!this.SettlementLocationIsOccupied(locationForResourceProvider) && !this.TooCloseToSettlement(locationForResourceProvider, out id, out index))
-          {
-            locationsForResourceType.Add(locationForResourceProvider);
-          }
-        }
-
-        if (locationsForResourceType.Count > 0)
-        {
-          highestProductionFactor = resourceProducer.Production;
-          break;
-        }
-      }
-
-      return locationsForResourceType.ToArray();
-    }
-
-    public void PlaceCity(Guid playerId, UInt32 location)
-    {
-      var verificationResults = this.CanPlaceCity(playerId, location);
-      this.ThrowExceptionOnBadVerificationResult(verificationResults);
-
-      this.PlaceCityOnBoard(playerId, location);
-    }
-
-    public void PlaceRoadSegment(Guid playerId, UInt32 roadStartLocation, UInt32 roadEndLocation)
-    {
-      var verificationResults = this.CanPlaceRoad(playerId, roadStartLocation, roadEndLocation);
-      this.ThrowExceptionOnBadVerificationResult(verificationResults);
-
-      this.PlaceRoadSegmentOnBoard(playerId, roadStartLocation, roadEndLocation);
-    }
-
-    public void PlaceSettlement(Guid playerId, UInt32 locationIndex)
-    {
-      var verificationResults = this.CanPlaceSettlement(playerId, locationIndex);
-      this.ThrowExceptionOnBadVerificationResult(verificationResults);
-
-      this.PlaceSettlementOnBoard(playerId, locationIndex);
-    }
-
-    /// <summary>
-    /// Place starting infrastructure (settlement and connecting road segment).
-    /// </summary>
-    /// <param name="playerId">Id of player placing the infrastructure.</param>
-    /// <param name="settlementLocation">Location to place settlement. Also the starting location of the road segment.</param>
-    /// <param name="roadEndLocation">End location of road segment.</param>
-    public void PlaceStartingInfrastructure(Guid playerId, UInt32 settlementLocation, UInt32 roadEndLocation)
-    {
-      var verificationResults = this.CanPlaceStartingInfrastructure(playerId, settlementLocation, roadEndLocation);
-      this.ThrowExceptionOnBadVerificationResult(verificationResults);
-
-      this.PlaceSettlementOnBoard(playerId, settlementLocation);
-      this.PlaceRoadSegmentOnBoard(playerId, settlementLocation, roadEndLocation);
-    }
-
-    internal void PlaceCityOnBoard(Guid playerId, UInt32 location)
-    {
-      this.cities.Add(location, playerId);
-    }
-
-    internal void PlaceRoadSegmentOnBoard(Guid playerId, UInt32 roadStartLocationIndex, UInt32 roadEndLocationIndex)
-    {
-      var newRoadSegment = new RoadSegment(roadStartLocationIndex, roadEndLocationIndex);
-
-      if (!this.roadSegmentsByPlayer.ContainsKey(playerId))
-      {
-        var roadSegmentList = new List<RoadSegment>();
-        roadSegmentList.Add(newRoadSegment);
-        this.roadSegmentsByPlayer.Add(playerId, roadSegmentList);
-      }
-      else
-      {
-        this.roadSegmentsByPlayer[playerId].Add(newRoadSegment);
-      }
-    }
-
-    internal void PlaceSettlementOnBoard(Guid playerId, UInt32 settlementLocation)
-    {
-      if (this.settlementsByPlayer.ContainsKey(playerId))
-      {
-        this.settlementsByPlayer[playerId].Add(settlementLocation);
-      }
-      else
-      {
-        this.settlementsByPlayer.Add(playerId, new List<uint> { settlementLocation });
-      }
-
-      this.settlements.Add(settlementLocation, playerId);
-    }
-
-    private Boolean DirectConnectionBetweenRoadLocations(UInt32 roadStartLocation, UInt32 roadEndLocation)
-    {
-      return this.connections[roadStartLocation, roadEndLocation];
-    }
-
-    private Boolean RoadLocationsOnBoard(UInt32 roadStartLocation, UInt32 roadEndLocation)
-    {
-      var length = (UInt32)this.connections.GetLength(0); // TODO: Change to use Location array
-      return roadStartLocation < length && roadEndLocation < length;
-    }
-
-    private Boolean RoadAlreadyPresent(UInt32 roadStartLocationIndex, UInt32 roadEndLocationIndex)
-    {
-      foreach (var kv in this.roadSegmentsByPlayer)
-      {
-        var roadSegment = kv.Value.Where(r => (r.Location1 == roadStartLocationIndex && r.Location2 == roadEndLocationIndex)
-        || (r.Location2 == roadStartLocationIndex && r.Location1 == roadEndLocationIndex)).FirstOrDefault();
-
-        if (roadSegment != null)
-        {
-          return true;
-        }
-      }
-
-      return false;
-    }
-
-    private Boolean WillConnectToExistingRoad(Guid playerId, UInt32 roadStartLocationIndex, UInt32 roadEndLocationIndex)
-    {
-      var roadSegment = this.roadSegmentsByPlayer[playerId].Where(r => (r.Location1 == roadStartLocationIndex || r.Location2 == roadStartLocationIndex ||
-        r.Location1 == roadEndLocationIndex || r.Location2 == roadEndLocationIndex)).FirstOrDefault();
-
-      return roadSegment != null;
-    }
-
-    private Boolean SettlementIsOnRoad(Guid playerId, UInt32 locationIndex)
-    {
-      if (this.roadSegmentsByPlayer.ContainsKey(playerId))
-      {
-        return this.roadSegmentsByPlayer[playerId].FirstOrDefault(r => r.Location1 == locationIndex || r.Location2 == locationIndex) != null;
-      }
-
-      return false;
-    }
-
-    private Boolean TooCloseToSettlement(UInt32 locationIndex, out Guid id, out UInt32 index)
-    {
-      id = Guid.Empty;
-      for (index = 0; index < this.connections.GetLength(1); index++)
-      {
-        if (this.connections[locationIndex, index] && this.settlements.ContainsKey(index))
-        {
-          id = this.settlements[index];
-          return true;
-        }
-      }
-
-      return false;
-    }
-
-    private Boolean SettlementLocationIsOccupied(UInt32 locationIndex)
-    {
-      return this.settlements.ContainsKey(locationIndex);
-    }
-
-    private Boolean SettlementLocationOnBoard(UInt32 settlementLocation)
-    {
-      return settlementLocation < (UInt32)this.connections.GetLength(0); // TODO: Change to use Location array
-    }
-
     public VerificationResults CanPlaceStartingInfrastructure(Guid playerId, UInt32 settlementLocation, UInt32 roadEndLocation)
     {
       if (this.PlacedStartingInfrastructureStatus(playerId) == StartingInfrastructureStatus.Complete)
@@ -494,6 +301,55 @@ namespace Jabberwocky.SoC.Library.GameBoards
       return data;
     }
 
+    public Tuple<UInt32, UInt32>[] GetLocationsForResourceProducerOrderedByProductionFactorDescending(ResourceTypes resource)
+    {
+      var results = new List<Tuple<UInt32, UInt32>>();
+      var resourceProducers = this.resourceProducersByType[resource];
+      foreach (var resourceProducer in resourceProducers)
+      {
+        foreach (var location in locationsByResourceProvider[resourceProducer])
+        {
+          results.Add(new Tuple<UInt32, UInt32>(location, resourceProducer.Production));
+        }
+      }
+
+      return results.ToArray();
+    }
+
+    public UInt32[] GetLocationsForResourceTypeWithProductionFactors(ResourceTypes resourceType, out UInt32 highestProductionFactor)
+    {
+      // Get locations for resources of type: return locations and their production factor
+      // Order by production factor
+      // Verify that the location is viable for settlement by using CanPlaceSettlement
+      // Add to list
+      highestProductionFactor = 0;
+      var locationsForResourceType = new List<UInt32>();
+
+      var resourceProducers = this.resourceProducersByType[resourceType];
+
+      foreach (var resourceProducer in resourceProducers)
+      {
+        var locationsForResourceProvider = this.locationsByResourceProvider[resourceProducer];
+        foreach (var locationForResourceProvider in locationsForResourceProvider)
+        {
+          Guid id;
+          UInt32 index;
+          if (!this.SettlementLocationIsOccupied(locationForResourceProvider) && !this.TooCloseToSettlement(locationForResourceProvider, out id, out index))
+          {
+            locationsForResourceType.Add(locationForResourceProvider);
+          }
+        }
+
+        if (locationsForResourceType.Count > 0)
+        {
+          highestProductionFactor = resourceProducer.Production;
+          break;
+        }
+      }
+
+      return locationsForResourceType.ToArray();
+    }
+
     public List<UInt32> GetPathBetweenLocations(UInt32 startIndex, UInt32 endIndex)
     {
       if (startIndex == endIndex)
@@ -561,6 +417,27 @@ namespace Jabberwocky.SoC.Library.GameBoards
       return productionValues.ToArray();
     }
 
+    public Tuple<UInt32, UInt32, Guid>[] GetRoadInformation()
+    {
+      var count = 0;
+      foreach (var kv in this.roadSegmentsByPlayer)
+      {
+        count += kv.Value.Count;
+      }
+
+      var data = new Tuple<UInt32, UInt32, Guid>[count];
+      var index = 0;
+      foreach (var kv in this.roadSegmentsByPlayer)
+      {
+        foreach (var roadSegment in kv.Value)
+        {
+          data[index++] = new Tuple<UInt32, UInt32, Guid>(roadSegment.Location1, roadSegment.Location2, kv.Key);
+        }
+      }
+
+      return data;
+    }
+
     public virtual ResourceClutch GetResourcesForLocation(UInt32 location)
     {
       var resourceClutch = new ResourceClutch();
@@ -625,11 +502,21 @@ namespace Jabberwocky.SoC.Library.GameBoards
           ResourceClutch resourceClutch = ResourceClutch.Zero;
           switch (resourceProvider.Type)
           {
-            case ResourceTypes.Brick: resourceClutch = ResourceClutch.OneBrick; break;
-            case ResourceTypes.Grain: resourceClutch = ResourceClutch.OneGrain; break;
-            case ResourceTypes.Lumber: resourceClutch = ResourceClutch.OneLumber; break;
-            case ResourceTypes.Ore: resourceClutch = ResourceClutch.OneOre; break;
-            case ResourceTypes.Wool: resourceClutch = ResourceClutch.OneWool; break;
+            case ResourceTypes.Brick:
+            resourceClutch = ResourceClutch.OneBrick;
+            break;
+            case ResourceTypes.Grain:
+            resourceClutch = ResourceClutch.OneGrain;
+            break;
+            case ResourceTypes.Lumber:
+            resourceClutch = ResourceClutch.OneLumber;
+            break;
+            case ResourceTypes.Ore:
+            resourceClutch = ResourceClutch.OneOre;
+            break;
+            case ResourceTypes.Wool:
+            resourceClutch = ResourceClutch.OneWool;
+            break;
           }
 
           var resourceCollection = new ResourceCollection(location, resourceClutch);
@@ -645,42 +532,6 @@ namespace Jabberwocky.SoC.Library.GameBoards
       }
 
       return resources;
-    }
-
-    public Tuple<UInt32, UInt32>[] GetLocationsForResourceProducerOrderedByProductionFactorDescending(ResourceTypes resource)
-    {
-      var results = new List<Tuple<UInt32, UInt32>>();
-      var resourceProducers = this.resourceProducersByType[resource];
-      foreach (var resourceProducer in resourceProducers)
-      {
-        foreach(var location in locationsByResourceProvider[resourceProducer])
-        {
-          results.Add(new Tuple<UInt32, UInt32>(location, resourceProducer.Production));
-        }
-      }
-
-      return results.ToArray();
-    }
-
-    public Tuple<UInt32, UInt32, Guid>[] GetRoadInformation()
-    {
-      var count = 0;
-      foreach (var kv in this.roadSegmentsByPlayer)
-      {
-        count += kv.Value.Count;
-      }
-
-      var data = new Tuple<UInt32, UInt32, Guid>[count];
-      var index = 0;
-      foreach (var kv in this.roadSegmentsByPlayer)
-      {
-        foreach (var roadSegment in kv.Value)
-        {
-          data[index++] = new Tuple<UInt32, UInt32, Guid>(roadSegment.Location1, roadSegment.Location2, kv.Key);
-        }
-      }
-
-      return data;
     }
 
     public List<UInt32> GetSettlementsForPlayer(Guid playerId)
@@ -704,54 +555,43 @@ namespace Jabberwocky.SoC.Library.GameBoards
       return data;
     }
 
-    private StartingInfrastructureStatus PlacedStartingInfrastructureStatus(Guid playerId)
+    public void PlaceCity(Guid playerId, UInt32 location)
     {
-      if (!this.settlementsByPlayer.ContainsKey(playerId) || 
-        this.settlementsByPlayer[playerId] == null ||
-        this.settlementsByPlayer[playerId].Count == 0)
-      {
-        return StartingInfrastructureStatus.None;
-      }
+      var verificationResults = this.CanPlaceCity(playerId, location);
+      this.ThrowExceptionOnBadVerificationResult(verificationResults);
 
-      if (this.settlementsByPlayer[playerId].Count == 1)
-      {
-        return StartingInfrastructureStatus.Partial;
-      }
-
-      if (!this.roadSegmentsByPlayer.ContainsKey(playerId) ||
-          this.roadSegmentsByPlayer[playerId] == null ||
-          this.roadSegmentsByPlayer[playerId].Count == 0)
-      {
-        return StartingInfrastructureStatus.None;
-      }
-
-      return this.roadSegmentsByPlayer[playerId].Count == 1 ? StartingInfrastructureStatus.Partial : StartingInfrastructureStatus.Complete;
+      this.PlaceCityOnBoard(playerId, location);
     }
 
-    private void ThrowExceptionOnBadVerificationResult(VerificationResults verificationResults)
+    public void PlaceRoadSegment(Guid playerId, UInt32 roadStartLocation, UInt32 roadEndLocation)
     {
-      switch (verificationResults.Status)
-      {
-        case VerificationStatus.LocationForCityIsInvalid: throw new PlacementException("Cannot place city because location is not on board.");
-        case VerificationStatus.LocationIsAlreadyCity: throw new PlacementException("Cannot place city on existing city.");
-        case VerificationStatus.LocationForSettlementIsInvalid: throw new PlacementException("Cannot place settlement because location is not on board.");
-        case VerificationStatus.LocationIsOccupied: throw new PlacementException("Cannot place settlement because location is already settled.");
-        case VerificationStatus.LocationIsNotOwned: throw new PlacementException("Cannot place city because location is settled by an opponent.");
-        case VerificationStatus.LocationIsNotSettled: throw new PlacementException("Cannot place city because location is not settled.");
-        case VerificationStatus.NoDirectConnection: throw new PlacementException("Cannot place road because no direct connection between start location and end location.");
-        case VerificationStatus.RoadNotConnectedToExistingRoad: throw new PlacementException("Cannot place road because it is not connected to an existing road segment.");
-        case VerificationStatus.RoadIsOccupied: throw new PlacementException("Cannot place road because road already exists.");
-        case VerificationStatus.RoadIsOffBoard: throw new PlacementException("Cannot place road because board location is not valid.");
-        case VerificationStatus.SettlementNotConnectedToExistingRoad: throw new PlacementException("Cannot place settlement because location is not on a road.");
-        case VerificationStatus.StartingInfrastructureAlreadyPresent: throw new PlacementException("Cannot place starting infrastructure more than once per player.");
-        case VerificationStatus.StartingInfrastructureNotPresentWhenPlacingCity:
-        case VerificationStatus.StartingInfrastructureNotCompleteWhenPlacingCity: throw new PlacementException("Cannot place city before placing all initial infrastructure.");        
-        case VerificationStatus.StartingInfrastructureNotCompleteWhenPlacingRoad:
-        case VerificationStatus.StartingInfrastructureNotPresentWhenPlacingRoad: throw new PlacementException("Cannot place road before placing all initial infrastructure.");
-        case VerificationStatus.StartingInfrastructureNotCompleteWhenPlacingSettlement:
-        case VerificationStatus.StartingInfrastructureNotPresentWhenPlacingSettlement: throw new PlacementException("Cannot place settlement before placing all initial infrastructure.");
-        case VerificationStatus.TooCloseToSettlement: throw new PlacementException("Cannot place settlement because location is too close to exising settlement.");
-      }
+      var verificationResults = this.CanPlaceRoad(playerId, roadStartLocation, roadEndLocation);
+      this.ThrowExceptionOnBadVerificationResult(verificationResults);
+
+      this.PlaceRoadSegmentOnBoard(playerId, roadStartLocation, roadEndLocation);
+    }
+
+    public void PlaceSettlement(Guid playerId, UInt32 locationIndex)
+    {
+      var verificationResults = this.CanPlaceSettlement(playerId, locationIndex);
+      this.ThrowExceptionOnBadVerificationResult(verificationResults);
+
+      this.PlaceSettlementOnBoard(playerId, locationIndex);
+    }
+
+    /// <summary>
+    /// Place starting infrastructure (settlement and connecting road segment).
+    /// </summary>
+    /// <param name="playerId">Id of player placing the infrastructure.</param>
+    /// <param name="settlementLocation">Location to place settlement. Also the starting location of the road segment.</param>
+    /// <param name="roadEndLocation">End location of road segment.</param>
+    public void PlaceStartingInfrastructure(Guid playerId, UInt32 settlementLocation, UInt32 roadEndLocation)
+    {
+      var verificationResults = this.CanPlaceStartingInfrastructure(playerId, settlementLocation, roadEndLocation);
+      this.ThrowExceptionOnBadVerificationResult(verificationResults);
+
+      this.PlaceSettlementOnBoard(playerId, settlementLocation);
+      this.PlaceRoadSegmentOnBoard(playerId, settlementLocation, roadEndLocation);
     }
 
     public Boolean TryGetLongestRoadDetails(out Guid playerId, out UInt32[] road)
@@ -784,7 +624,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
               .Where(r => r.IsOnLocation(currentLocation) && !visitedRoadSegments.Contains(r))
               .ToList();
 
-            if (unvisitedSegmentsConnectedToLocation.Count == 0)  
+            if (unvisitedSegmentsConnectedToLocation.Count == 0)
             {
               // No unvisited segments connected to this location so at end of route.
               // If this route end has not been discovered or processed then place it in the 
@@ -852,6 +692,176 @@ namespace Jabberwocky.SoC.Library.GameBoards
       }
 
       return gotSingleLongestRoad;
+    }
+
+    internal void PlaceCityOnBoard(Guid playerId, UInt32 location)
+    {
+      this.cities.Add(location, playerId);
+    }
+
+    internal void PlaceRoadSegmentOnBoard(Guid playerId, UInt32 roadStartLocationIndex, UInt32 roadEndLocationIndex)
+    {
+      var newRoadSegment = new RoadSegment(roadStartLocationIndex, roadEndLocationIndex);
+
+      if (!this.roadSegmentsByPlayer.ContainsKey(playerId))
+      {
+        var roadSegmentList = new List<RoadSegment>();
+        roadSegmentList.Add(newRoadSegment);
+        this.roadSegmentsByPlayer.Add(playerId, roadSegmentList);
+      }
+      else
+      {
+        this.roadSegmentsByPlayer[playerId].Add(newRoadSegment);
+      }
+    }
+
+    internal void PlaceSettlementOnBoard(Guid playerId, UInt32 settlementLocation)
+    {
+      if (this.settlementsByPlayer.ContainsKey(playerId))
+      {
+        this.settlementsByPlayer[playerId].Add(settlementLocation);
+      }
+      else
+      {
+        this.settlementsByPlayer.Add(playerId, new List<uint> { settlementLocation });
+      }
+
+      this.settlements.Add(settlementLocation, playerId);
+    }
+
+    private Boolean DirectConnectionBetweenRoadLocations(UInt32 roadStartLocation, UInt32 roadEndLocation)
+    {
+      return this.connections[roadStartLocation, roadEndLocation];
+    }
+
+    private Guid GetOwningPlayerForLocation(UInt32 location)
+    {
+      if (!this.settlements.ContainsKey(location))
+      {
+        return Guid.Empty;
+      }
+
+      return this.settlements[location];
+    }
+
+    private Boolean LocationHasPlayerCity(Guid playerId, UInt32 location)
+    {
+      return this.cities.ContainsKey(location) && this.settlements[location] == playerId;
+    }
+
+    private Boolean RoadLocationsOnBoard(UInt32 roadStartLocation, UInt32 roadEndLocation)
+    {
+      var length = (UInt32)this.connections.GetLength(0); // TODO: Change to use Location array
+      return roadStartLocation < length && roadEndLocation < length;
+    }
+
+    private Boolean RoadAlreadyPresent(UInt32 roadStartLocationIndex, UInt32 roadEndLocationIndex)
+    {
+      foreach (var kv in this.roadSegmentsByPlayer)
+      {
+        var roadSegment = kv.Value.Where(r => (r.Location1 == roadStartLocationIndex && r.Location2 == roadEndLocationIndex)
+        || (r.Location2 == roadStartLocationIndex && r.Location1 == roadEndLocationIndex)).FirstOrDefault();
+
+        if (roadSegment != null)
+        {
+          return true;
+        }
+      }
+
+      return false;
+    }
+
+    private Boolean WillConnectToExistingRoad(Guid playerId, UInt32 roadStartLocationIndex, UInt32 roadEndLocationIndex)
+    {
+      var roadSegment = this.roadSegmentsByPlayer[playerId].Where(r => (r.Location1 == roadStartLocationIndex || r.Location2 == roadStartLocationIndex ||
+        r.Location1 == roadEndLocationIndex || r.Location2 == roadEndLocationIndex)).FirstOrDefault();
+
+      return roadSegment != null;
+    }
+
+    private Boolean SettlementIsOnRoad(Guid playerId, UInt32 locationIndex)
+    {
+      if (this.roadSegmentsByPlayer.ContainsKey(playerId))
+      {
+        return this.roadSegmentsByPlayer[playerId].FirstOrDefault(r => r.Location1 == locationIndex || r.Location2 == locationIndex) != null;
+      }
+
+      return false;
+    }
+
+    private Boolean TooCloseToSettlement(UInt32 locationIndex, out Guid id, out UInt32 index)
+    {
+      id = Guid.Empty;
+      for (index = 0; index < this.connections.GetLength(1); index++)
+      {
+        if (this.connections[locationIndex, index] && this.settlements.ContainsKey(index))
+        {
+          id = this.settlements[index];
+          return true;
+        }
+      }
+
+      return false;
+    }
+
+    private Boolean SettlementLocationIsOccupied(UInt32 locationIndex)
+    {
+      return this.settlements.ContainsKey(locationIndex);
+    }
+
+    private Boolean SettlementLocationOnBoard(UInt32 settlementLocation)
+    {
+      return settlementLocation < (UInt32)this.connections.GetLength(0); // TODO: Change to use Location array
+    }
+
+    private StartingInfrastructureStatus PlacedStartingInfrastructureStatus(Guid playerId)
+    {
+      if (!this.settlementsByPlayer.ContainsKey(playerId) || 
+        this.settlementsByPlayer[playerId] == null ||
+        this.settlementsByPlayer[playerId].Count == 0)
+      {
+        return StartingInfrastructureStatus.None;
+      }
+
+      if (this.settlementsByPlayer[playerId].Count == 1)
+      {
+        return StartingInfrastructureStatus.Partial;
+      }
+
+      if (!this.roadSegmentsByPlayer.ContainsKey(playerId) ||
+          this.roadSegmentsByPlayer[playerId] == null ||
+          this.roadSegmentsByPlayer[playerId].Count == 0)
+      {
+        return StartingInfrastructureStatus.None;
+      }
+
+      return this.roadSegmentsByPlayer[playerId].Count == 1 ? StartingInfrastructureStatus.Partial : StartingInfrastructureStatus.Complete;
+    }
+
+    private void ThrowExceptionOnBadVerificationResult(VerificationResults verificationResults)
+    {
+      switch (verificationResults.Status)
+      {
+        case VerificationStatus.LocationForCityIsInvalid: throw new PlacementException("Cannot place city because location is not on board.");
+        case VerificationStatus.LocationIsAlreadyCity: throw new PlacementException("Cannot place city on existing city.");
+        case VerificationStatus.LocationForSettlementIsInvalid: throw new PlacementException("Cannot place settlement because location is not on board.");
+        case VerificationStatus.LocationIsOccupied: throw new PlacementException("Cannot place settlement because location is already settled.");
+        case VerificationStatus.LocationIsNotOwned: throw new PlacementException("Cannot place city because location is settled by an opponent.");
+        case VerificationStatus.LocationIsNotSettled: throw new PlacementException("Cannot place city because location is not settled.");
+        case VerificationStatus.NoDirectConnection: throw new PlacementException("Cannot place road because no direct connection between start location and end location.");
+        case VerificationStatus.RoadNotConnectedToExistingRoad: throw new PlacementException("Cannot place road because it is not connected to an existing road segment.");
+        case VerificationStatus.RoadIsOccupied: throw new PlacementException("Cannot place road because road already exists.");
+        case VerificationStatus.RoadIsOffBoard: throw new PlacementException("Cannot place road because board location is not valid.");
+        case VerificationStatus.SettlementNotConnectedToExistingRoad: throw new PlacementException("Cannot place settlement because location is not on a road.");
+        case VerificationStatus.StartingInfrastructureAlreadyPresent: throw new PlacementException("Cannot place starting infrastructure more than once per player.");
+        case VerificationStatus.StartingInfrastructureNotPresentWhenPlacingCity:
+        case VerificationStatus.StartingInfrastructureNotCompleteWhenPlacingCity: throw new PlacementException("Cannot place city before placing all initial infrastructure.");        
+        case VerificationStatus.StartingInfrastructureNotCompleteWhenPlacingRoad:
+        case VerificationStatus.StartingInfrastructureNotPresentWhenPlacingRoad: throw new PlacementException("Cannot place road before placing all initial infrastructure.");
+        case VerificationStatus.StartingInfrastructureNotCompleteWhenPlacingSettlement:
+        case VerificationStatus.StartingInfrastructureNotPresentWhenPlacingSettlement: throw new PlacementException("Cannot place settlement before placing all initial infrastructure.");
+        case VerificationStatus.TooCloseToSettlement: throw new PlacementException("Cannot place settlement because location is too close to exising settlement.");
+      }
     }
 
     internal void ClearRoads()
