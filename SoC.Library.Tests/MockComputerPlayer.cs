@@ -3,7 +3,6 @@ namespace Jabberwocky.SoC.Library.UnitTests
 {
   using System;
   using Interfaces;
-  using GameBoards;
   using System.Collections.Generic;
   using GameActions;
   using Enums;
@@ -186,7 +185,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
       return this.developmentCards[DevelopmentCardTypes.Monopoly].Dequeue() as MonopolyDevelopmentCard;
     }
 
-    public override ResourceClutch ChooseResouresToCollectFromBank()
+    public override ResourceClutch ChooseResourcesToCollectFromBank()
     {
       var action = this.playYearOfPlentyCardActions.Dequeue();
       

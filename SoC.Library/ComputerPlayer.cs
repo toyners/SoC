@@ -176,7 +176,7 @@ namespace Jabberwocky.SoC.Library
       throw new NotImplementedException();
     }
 
-    public virtual ResourceClutch ChooseResouresToCollectFromBank()
+    public virtual ResourceClutch ChooseResourcesToCollectFromBank()
     {
       throw new NotImplementedException();
     }

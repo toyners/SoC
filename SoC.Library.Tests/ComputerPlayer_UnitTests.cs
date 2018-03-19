@@ -140,6 +140,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
       settlementLocation.ShouldBe(expectedSettlementLocation);
       roadEndLocation.ShouldBe(expectedRoadEndLocation);
     }
+
     /* // [Test]
     public void ChooseRoad_NoSettlementsForPlayer_ThrowsMeaningfulException()
     {

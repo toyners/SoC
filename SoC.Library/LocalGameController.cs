@@ -372,7 +372,7 @@ namespace Jabberwocky.SoC.Library
             case ComputerPlayerActionTypes.PlayYearOfPlentyCard:
             {
               var yearOfPlentyCard = computerPlayer.ChooseYearOfPlentyCard();
-              var resourcesCollected = computerPlayer.ChooseResouresToCollectFromBank();
+              var resourcesCollected = computerPlayer.ChooseResourcesToCollectFromBank();
               computerPlayer.AddResources(resourcesCollected);
 
               var resourceTransaction = new ResourceTransaction(computerPlayer.Id, this.playerPool.GetBankId(), resourcesCollected);
