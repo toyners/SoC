@@ -59,4 +59,9 @@ namespace Jabberwocky.SoC.Library
       this.Location2 = location2;
     }
   }
+
+  public interface IInfrastructureAI
+  {
+
+  }
 }

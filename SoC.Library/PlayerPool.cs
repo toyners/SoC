@@ -19,7 +19,7 @@ namespace Jabberwocky.SoC.Library
     /// <returns>Computer player instance.</returns>
     public IPlayer CreateComputerPlayer(GameBoard gameBoard)
     {
-      return new ComputerPlayer(this.names.Dequeue(), gameBoard, null);
+      return new ComputerPlayer(this.names.Dequeue(), gameBoard, null, null);
     }
 
     /// <summary>

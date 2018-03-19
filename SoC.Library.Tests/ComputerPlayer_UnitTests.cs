@@ -3,7 +3,6 @@ namespace Jabberwocky.SoC.Library.UnitTests
 {
   using System;
   using System.Collections.Generic;
-  using GameActions;
   using GameBoards;
   using Interfaces;
   using NSubstitute;
@@ -20,7 +19,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     public void ChooseSettlementLocation_GetBestLocationOnEmptyBoard_ReturnsBestLocation()
     {
       var gameBoard = new GameBoard(BoardSizes.Standard);
-      var computerPlayer = new ComputerPlayer("ComputerPlayer", gameBoard, this.CreateMockNumberGenerator());
+      var computerPlayer = this.CreateComputerPlayer("ComputerPlayer", gameBoard);
       gameBoard.PlaceStartingInfrastructure(computerPlayer.Id, 0, 1);
       gameBoard.PlaceStartingInfrastructure(computerPlayer.Id, 53, 52);
 
@@ -33,7 +32,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     public void ChooseSettlementLocation_GetBestLocationOnBoardWithBestLocationUnavailable_ReturnsBestLocation()
     {
       var gameBoard = new GameBoard(BoardSizes.Standard);
-      var computerPlayer = new ComputerPlayer("ComputerPlayer", gameBoard, this.CreateMockNumberGenerator());
+      var computerPlayer = this.CreateComputerPlayer("ComputerPlayer", gameBoard);
       gameBoard.PlaceStartingInfrastructure(computerPlayer.Id, 12, 11);
       gameBoard.PlaceStartingInfrastructure(computerPlayer.Id, 0, 1);
 
@@ -46,7 +45,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     public void ChooseInitialInfrastructure_RoadBuilderStrategyWithFirstSelection_ReturnFirstChoiceLocation()
     {
       var gameBoard = new GameBoard(BoardSizes.Standard);
-      var computerPlayer = new ComputerPlayer("Bob", gameBoard, this.CreateMockNumberGenerator());
+      var computerPlayer = this.CreateComputerPlayer("Bob", gameBoard);
 
       var settlementLocation = 0u;
       var roadEndLocation = 0u;
@@ -67,7 +66,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     public void ChooseInitialInfrastructure_RoadBuilderAlphaStrategyWithSecondSelectionAndBestLumberHexIsOccupied_ReturnBestPossibleLocationOnHex(UInt32 firstSettlementLocation, UInt32 firstRoadEndLocation, UInt32 expectedSettlementLocation, UInt32 expectedRoadEndLocation)
     {
       var gameBoard = new GameBoard(BoardSizes.Standard);
-      var computerPlayer = new ComputerPlayer("Bob", gameBoard, this.CreateMockNumberGenerator());
+      var computerPlayer = this.CreateComputerPlayer("Bob", gameBoard);
 
       gameBoard.PlaceStartingInfrastructure(Guid.NewGuid(), firstSettlementLocation, firstRoadEndLocation);
 
@@ -91,7 +90,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     public void ChooseInitialInfrastructure_RoadBuilderAlphaStrategyWithThirdSelectionAndBestLumberHexIsOccupied_ReturnBestPossibleLocationOnHex(UInt32[] infrastructureData, UInt32 expectedSettlementLocation, UInt32 expectedRoadEndLocation)
     {
       var gameBoard = new GameBoard(BoardSizes.Standard);
-      var computerPlayer = new ComputerPlayer("Bob", gameBoard, this.CreateMockNumberGenerator());
+      var computerPlayer = this.CreateComputerPlayer("Bob", gameBoard);
 
       this.PlaceInfrastructure(gameBoard, infrastructureData);
 
@@ -109,7 +108,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     public void ChooseInitialInfrastructure_ChangeToRoadBuilderBetaStrategyWhenInFourthSlotAndBestLumberHexIsFull_ReturnBestPossibleLocationOnHex(UInt32[] infrastructureData, UInt32 expectedSettlementLocation, UInt32 expectedRoadEndLocation)
     {
       var gameBoard = new GameBoard(BoardSizes.Standard);
-      var computerPlayer = new ComputerPlayer("Bob", gameBoard, this.CreateMockNumberGenerator());
+      var computerPlayer = this.CreateComputerPlayer("Bob", gameBoard);
 
       this.PlaceInfrastructure(gameBoard, infrastructureData);
 
@@ -129,7 +128,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     public void ChooseInitialInfrastructure_ChangeToRoadBuilderBetaStrategyWhenInFifthSlot_ReturnBestPossibleLocationOnHex(UInt32[] infrastructureData, UInt32 expectedSettlementLocation, UInt32 expectedRoadEndLocation)
     {
       var gameBoard = new GameBoard(BoardSizes.Standard);
-      var computerPlayer = new ComputerPlayer("Bob", gameBoard, this.CreateMockNumberGenerator());
+      var computerPlayer = this.CreateComputerPlayer("Bob", gameBoard);
 
       this.PlaceInfrastructure(gameBoard, infrastructureData);
 
@@ -238,6 +237,11 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
         gameBoard.PlaceStartingInfrastructure(playerId, data[i], data[i + 1]);
       }
+    }
+
+    private ComputerPlayer CreateComputerPlayer(String name, GameBoard gameBoard)
+    {
+      return new ComputerPlayer("ComputerPlayer", gameBoard, null, null);
     }
     #endregion 
   }
