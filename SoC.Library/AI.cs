@@ -62,6 +62,21 @@ namespace Jabberwocky.SoC.Library
 
   public interface IInfrastructureAI
   {
+    void GetInitialInfrastructure(out UInt32 settlementLocation, out UInt32 roadEndLocation);
+  }
 
+  public class RoadBuilderInfrastructureAI : IInfrastructureAI
+  {
+    private GameBoard gameBoard;
+
+    public RoadBuilderInfrastructureAI(GameBoard gameBoard)
+    {
+      this.gameBoard = gameBoard;
+    }
+
+    public void GetInitialInfrastructure(out UInt32 settlementLocation, out UInt32 roadEndLocation)
+    {
+      throw new NotImplementedException();
+    }
   }
 }
