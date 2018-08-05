@@ -3,7 +3,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
 {
   using System;
   using Interfaces;
-  using NSubstitute;
+  using Jabberwocky.SoC.Library.UnitTests.Mock;
 
   public class LocalGameControllerTestBase
   {

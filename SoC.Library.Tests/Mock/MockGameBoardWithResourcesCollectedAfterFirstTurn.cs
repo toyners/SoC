@@ -1,5 +1,5 @@
 ﻿
-namespace Jabberwocky.SoC.Library.UnitTests.MockGameBoards
+namespace Jabberwocky.SoC.Library.UnitTests.Mock
 {
   using System;
   using System.Collections.Generic;

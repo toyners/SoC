@@ -4,7 +4,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
   using System;
   using System.Collections.Generic;
   using GameEvents;
-  using MockGameBoards;
+  using Mock;
   using NUnit.Framework;
   using Shouldly;
 

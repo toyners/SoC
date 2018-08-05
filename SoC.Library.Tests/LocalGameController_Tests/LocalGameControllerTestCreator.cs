@@ -6,6 +6,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
   using Interfaces;
   using NSubstitute;
   using Jabberwocky.Toolkit.Object;
+  using Jabberwocky.SoC.Library.UnitTests.Mock;
 
   public static class LocalGameControllerTestCreator
   {

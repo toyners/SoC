@@ -1,9 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using Jabberwocky.SoC.Library.Interfaces;
-
-namespace Jabberwocky.SoC.Library.UnitTests
+﻿
+namespace Jabberwocky.SoC.Library.UnitTests.Mock
 {
+  using System;
+  using System.Collections.Generic;
+  using Jabberwocky.SoC.Library.Interfaces;
+
   public class MockDice : INumberGenerator
   {
     #region Fields
