@@ -795,7 +795,6 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
     }
 
     [Test]
-    [Category("All")]
     [Category("LocalGameController")]
     public void StartGamePlayer_PlayerTurnNotFinalised_MeaningfulErrorIsReceived()
     {
@@ -1043,7 +1042,6 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
     }
 
     [Test]
-    [Category("All")]
     [Category("LocalGameController")]
     [Category("Main Player Turn")]
     public void StartOfMainPlayerTurn_RollsSevenAndChoosesBlindResourceFromOpponent_PlayerAndOpponentResourcesUpdated()
@@ -1115,7 +1113,6 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
     /// Passing in the player id when choosing the resource from an opponent causes an error to be raised.
     /// </summary>
     [Test]
-    [Category("All")]
     [Category("LocalGameController")]
     [Category("Main Player Turn")]
     public void StartOfMainPlayerTurn_ChooseResourceFromOpponentUsingPlayerId_MeaningfulErrorIsReceived()
@@ -1204,7 +1201,6 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
     /// method raises an error
     /// </summary>
     [Test]
-    [Category("All")]
     [Category("LocalGameController")]
     [Category("Main Player Turn")]
     public void StartOfMainPlayerTurn_RobberLocationHasNoSettlementsAndCallingChooseResourceFromOpponent_MeaningfulErrorIsReceived()
@@ -1232,7 +1228,6 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
     /// The robber hex set by the player has only player settlements so the returned robbing choices is null.
     /// </summary>
     [Test]
-    [Category("All")]
     [Category("LocalGameController")]
     [Category("Main Player Turn")]
     public void StartOfMainPlayerTurn_RobberLocationHasOnlyPlayerSettlements_ReturnedRobbingChoicesIsNull()
@@ -1259,7 +1254,6 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
     /// method raises an error
     /// </summary>
     [Test]
-    [Category("All")]
     [Category("LocalGameController")]
     [Category("Main Player Turn")]
     public void StartOfMainPlayerTurn_RobberLocationHasOnlyPlayerSettlementsAndCallingChooseResourceFromOpponent_MeaningfulErrorIsReceived()
@@ -1284,7 +1278,6 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
     }
 
     [Test]
-    [Category("All")]
     [Category("LocalGameController")]
     public void Load_HexDataOnly_ResourceProvidersLoadedCorrectly()
     {
@@ -1332,7 +1325,6 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
     }
 
     [Test]
-    [Category("All")]
     [Category("LocalGameController")]
     public void Load_PlayerDataOnly_PlayerDataViewsAreAsExpected()
     {
@@ -1377,7 +1369,6 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
     }
 
     [Test]
-    [Category("All")]
     [Category("LocalGameController")]
     public void Load_PlayerAndInfrastructureData_GameBoardIsAsExpected()
     {
