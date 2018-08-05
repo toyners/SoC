@@ -21,7 +21,6 @@ Build towards best grain and wool producers
 	- best location 
 Accrue resources for building settlements/cities/development cards
 
-
 Road Builder Alpha - One settlement on each of Lumber6 and Brick8. 
 Locations in descending order of attractiveness for Lumber6
 Location 35
