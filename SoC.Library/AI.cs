@@ -6,9 +6,19 @@ namespace Jabberwocky.SoC.Library
 
   public class AI
   {
+    private GameBoard gameBoard;
     public AI(GameBoard gameBoard)
     {
+      this.gameBoard = gameBoard;
+    }
 
+    /// <summary>
+    /// Get the 5 locations with highest resource returns that are valid for settlement
+    /// </summary>
+    /// <returns></returns>
+    public UInt32[] GetLocationsWithBestReturningResources()
+    {
+      throw new NotImplementedException();
     }
 
     public UInt32[] GetLocationsForBestReturningResourceType(GameBoard gameBoard, ResourceTypes resourceType, out UInt32 productionFactor)

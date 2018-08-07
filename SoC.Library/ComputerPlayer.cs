@@ -69,7 +69,7 @@ namespace Jabberwocky.SoC.Library
 
       foreach (var choice in choices)
       {
-        var placementResult = gameBoard.CanPlaceStartingInfrastructure(this.Id, choice.Item1, choice.Item2);
+        var placementResult = this.gameBoard.CanPlaceStartingInfrastructure(this.Id, choice.Item1, choice.Item2);
         if (placementResult.Status == GameBoard.VerificationStatus.Valid)
         {
           settlementLocation = choice.Item1;
