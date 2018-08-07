@@ -6,6 +6,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
   using GameBoards;
   using GameEvents;
   using Interfaces;
+  using Jabberwocky.SoC.Library.UnitTests.Extensions;
   using Mock;
   using NSubstitute;
   using NUnit.Framework;

@@ -1,5 +1,5 @@
 ﻿
-namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
+namespace Jabberwocky.SoC.Library.UnitTests.Extensions
 {
   using System;
   using System.Collections.Generic;
