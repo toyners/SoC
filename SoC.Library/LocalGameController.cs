@@ -10,6 +10,7 @@ namespace Jabberwocky.SoC.Library
   using GameBoards;
   using GameEvents;
   using Interfaces;
+  using Jabberwocky.SoC.Library.Storage;
 
   public class LocalGameController : IGameController
   {
@@ -576,7 +577,7 @@ namespace Jabberwocky.SoC.Library
       }
     }
 
-    public void Load(GameDataReader reader)
+    public void Load(IGameDataReader reader)
     {
 
     }
