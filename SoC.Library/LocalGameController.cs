@@ -576,6 +576,11 @@ namespace Jabberwocky.SoC.Library
       }
     }
 
+    public void Load(GameDataReader reader)
+    {
+
+    }
+
     public void Quit()
     {
       this.GamePhase = GamePhases.Quitting;
