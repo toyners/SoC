@@ -12,15 +12,6 @@ namespace Jabberwocky.SoC.Library
       this.gameBoard = gameBoard;
     }
 
-    /// <summary>
-    /// Get the 5 locations with highest resource returns that are valid for settlement
-    /// </summary>
-    /// <returns></returns>
-    public UInt32[] GetLocationsWithBestReturningResources()
-    {
-      throw new NotImplementedException();
-    }
-
     public UInt32[] GetLocationsForBestReturningResourceType(GameBoard gameBoard, ResourceTypes resourceType, out UInt32 productionFactor)
     {
       return gameBoard.GetLocationsForResourceTypeWithProductionFactors(resourceType, out productionFactor);
@@ -85,6 +76,25 @@ namespace Jabberwocky.SoC.Library
     }
 
     public void GetInitialInfrastructure(out UInt32 settlementLocation, out UInt32 roadEndLocation)
+    {
+      throw new NotImplementedException();
+    }
+  }
+
+  public class BoardQueryEngine
+  {
+    private GameBoard board;
+
+    public BoardQueryEngine(GameBoard board)
+    {
+      this.board = board;
+    }
+
+    /// <summary>
+    /// Get the first n locations with highest resource returns that are valid for settlement
+    /// </summary>
+    /// <returns></returns>
+    public UInt32[] GetLocationsWithBestYield(UInt32 count)
     {
       throw new NotImplementedException();
     }
