@@ -579,7 +579,102 @@ namespace Jabberwocky.SoC.Library
 
     public void Load(IGameDataReader reader)
     {
+      try
+      {
+        var loadedPlayers = new List<IPlayer>();
 
+        var player = this.playerPool.CreatePlayer(reader.Section(GameDataSectionKeys.PlayerOne));
+        loadedPlayers.Add(player);
+
+        GameDataSection data = null;
+        var key = GameDataSectionKeys.PlayerTwo;
+        while (key <= GameDataSectionKeys.PlayerFour && (data = reader.Section(key++)) != null)
+        {
+          player = this.playerPool.CreatePlayer(data);
+          loadedPlayers.Add(player);
+        }
+
+        this.gameBoard.Load(reader.Section(GameDataSectionKeys.GameBoard));
+
+        /*using (var reader = XmlReader.Create(stream, new XmlReaderSettings { CloseInput = false, IgnoreWhitespace = true, IgnoreComments = true }))
+        {
+          while (!reader.EOF)
+          {
+            if (reader.Name == "player" && reader.NodeType == XmlNodeType.Element)
+            {
+              var player = this.playerPool.CreatePlayer(reader);
+              loadedPlayers.Add(player);
+            }
+
+            if (reader.Name == "resources" && reader.NodeType == XmlNodeType.Element)
+            {
+              this.gameBoard.LoadHexResources(reader);
+            }
+
+            if (reader.Name == "production" && reader.NodeType == XmlNodeType.Element)
+            {
+              this.gameBoard.LoadHexProduction(reader);
+            }
+
+            if (reader.Name == "settlements" && reader.NodeType == XmlNodeType.Element)
+            {
+              this.gameBoard.ClearSettlements();
+            }
+
+            if (reader.Name == "settlement" && reader.NodeType == XmlNodeType.Element)
+            {
+              var playerId = Guid.Parse(reader.GetAttribute("playerid"));
+              var location = UInt32.Parse(reader.GetAttribute("location"));
+
+              this.gameBoard.PlaceSettlementOnBoard(playerId, location);
+            }
+
+            if (reader.Name == "roads" && reader.NodeType == XmlNodeType.Element)
+            {
+              this.gameBoard.ClearRoads();
+            }
+
+            if (reader.Name == "road" && reader.NodeType == XmlNodeType.Element)
+            {
+              var playerId = Guid.Parse(reader.GetAttribute("playerid"));
+              var start = UInt32.Parse(reader.GetAttribute("start"));
+              var end = UInt32.Parse(reader.GetAttribute("end"));
+
+              this.gameBoard.PlaceRoadSegmentOnBoard(playerId, start, end);
+            }
+
+            reader.Read();
+          }
+        }
+
+        if (loadedPlayers.Count > 0)
+        {
+          this.mainPlayer = loadedPlayers[0];
+          this.players = new IPlayer[loadedPlayers.Count];
+          this.players[0] = this.mainPlayer;
+          this.playersById = new Dictionary<Guid, IPlayer>(this.players.Length);
+          this.playersById.Add(this.mainPlayer.Id, this.mainPlayer);
+
+          for (var index = 1; index < loadedPlayers.Count; index++)
+          {
+            var player = loadedPlayers[index];
+            this.players[index] = player;
+            this.playersById.Add(player.Id, player);
+          }
+        }
+        else
+        {
+          this.CreatePlayers(new GameOptions());
+        }
+
+        var playerDataViews = this.CreatePlayerDataViews();
+
+        this.GameLoadedEvent?.Invoke(playerDataViews, this.gameBoard);*/
+      }
+      catch (Exception e)
+      {
+        throw new Exception("Exception thrown during board loading.", e);
+      }
     }
 
     public void Quit()

@@ -2,6 +2,7 @@
 using System;
 using System.Xml;
 using Jabberwocky.SoC.Library.GameBoards;
+using Jabberwocky.SoC.Library.Storage;
 
 namespace Jabberwocky.SoC.Library.Interfaces
 {
@@ -26,6 +27,8 @@ namespace Jabberwocky.SoC.Library.Interfaces
     /// <param name="reader">Xml reader containing player data.</param>
     /// <returns>Player instance</returns>
     IPlayer CreatePlayer(XmlReader reader);
+
+    IPlayer CreatePlayer(GameDataSection data);
 
     /// <summary>
     /// Get the id of the bank

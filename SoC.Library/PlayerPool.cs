@@ -6,6 +6,7 @@ namespace Jabberwocky.SoC.Library
   using Interfaces;
   using GameBoards;
   using System.Collections.Generic;
+  using Jabberwocky.SoC.Library.Storage;
 
   public class PlayerPool : IPlayerPool
   {
@@ -48,6 +49,11 @@ namespace Jabberwocky.SoC.Library
       var player = new Player();
       player.Load(reader);
       return player;
+    }
+
+    public IPlayer CreatePlayer(GameDataSection data)
+    {
+      throw new NotImplementedException();
     }
 
     /// <summary>

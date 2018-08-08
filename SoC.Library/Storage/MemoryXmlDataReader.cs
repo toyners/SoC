@@ -5,7 +5,7 @@ namespace Jabberwocky.SoC.Library.Storage
 
   public class MemoryXmlDataReader : IGameDataReader
   {
-    public GameDataSection Section(string key)
+    public GameDataSection Section(GameDataSectionKeys key)
     {
       throw new NotImplementedException();
     }

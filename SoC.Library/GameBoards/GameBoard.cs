@@ -6,6 +6,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
   using System.Diagnostics;
   using System.Linq;
   using System.Xml;
+  using Jabberwocky.SoC.Library.Storage;
 
   /// <summary>
   /// Holds data for all locations, trails, towns, cities, roads, resource providers and robber location.
@@ -913,6 +914,11 @@ namespace Jabberwocky.SoC.Library.GameBoards
           break;
         }
       }
+    }
+
+    internal void Load(GameDataSection data)
+    {
+
     }
 
     private void AddLocationsToHex(UInt32 lhs, UInt32 rhs, UInt32 hexIndex, UInt32 count)
