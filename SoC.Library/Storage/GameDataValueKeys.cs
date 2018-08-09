@@ -9,6 +9,7 @@ namespace Jabberwocky.SoC.Library.Storage
     PlayerGrain,
     PlayerLumber,
     PlayerOre,
-    PlayerWool
+    PlayerWool,
+    IsComputerPlayer
   }
 }

@@ -109,7 +109,7 @@
     <Compile Include="PlayerDataView.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ResourceProvider.cs" />
-    <Compile Include="Storage\IGameDataSection.cs" />
+    <Compile Include="Storage\GameDataSection.cs" />
     <Compile Include="Trail.cs" />
     <Compile Include="ResourceTransaction.cs" />
     <Compile Include="TurnToken.cs" />

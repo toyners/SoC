@@ -7,6 +7,7 @@ namespace Jabberwocky.SoC.Library
   using Interfaces;
   using GameActions;
   using System.Xml;
+  using Jabberwocky.SoC.Library.Storage;
 
   public class ComputerPlayer : Player,  IComputerPlayer
   {
@@ -22,6 +23,8 @@ namespace Jabberwocky.SoC.Library
       this.gameBoard = gameBoard;
       this.numberGenerator = numberGenerator;
     }
+
+    public ComputerPlayer(GameDataSection data) : base(data) { }
     #endregion
 
     #region Properties

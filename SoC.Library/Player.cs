@@ -5,6 +5,7 @@ namespace Jabberwocky.SoC.Library
   using System.Diagnostics;
   using System.Xml;
   using Interfaces;
+  using Jabberwocky.SoC.Library.Storage;
 
   [DebuggerDisplay("Name: {Name}, Id: {Id}")]
   public class Player : IPlayer
@@ -27,6 +28,17 @@ namespace Jabberwocky.SoC.Library
     public Player(String name) : this()
     {
       this.Name = name;
+    }
+
+    public Player(GameDataSection data)
+    {
+      this.Id = data.IdentityValue(GameDataValueKeys.PlayerId);
+      this.Name = data.StringValue(GameDataValueKeys.PlayerName);
+      this.BrickCount = data.IntegerValue(GameDataValueKeys.PlayerBrick);
+      this.GrainCount = data.IntegerValue(GameDataValueKeys.PlayerGrain);
+      this.LumberCount = data.IntegerValue(GameDataValueKeys.PlayerLumber);
+      this.OreCount = data.IntegerValue(GameDataValueKeys.PlayerOre);
+      this.WoolCount = data.IntegerValue(GameDataValueKeys.PlayerWool);
     }
     #endregion
 

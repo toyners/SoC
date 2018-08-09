@@ -53,7 +53,12 @@ namespace Jabberwocky.SoC.Library
 
     public IPlayer CreatePlayer(GameDataSection data)
     {
-      throw new NotImplementedException();
+      if (data.BooleanValue(GameDataValueKeys.IsComputerPlayer))
+      {
+        return new ComputerPlayer(data);
+      }
+
+      return new Player(data);
     }
 
     /// <summary>
