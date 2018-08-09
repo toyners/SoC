@@ -895,30 +895,64 @@ namespace Jabberwocky.SoC.Library.GameBoards
         switch (resource)
         {
           case 'b':
-          this.hexes[index++].Type = ResourceTypes.Brick;
-          break;
+            this.hexes[index++].Type = ResourceTypes.Brick;
+            break;
           case 'g':
-          this.hexes[index++].Type = ResourceTypes.Grain;
-          break;
+            this.hexes[index++].Type = ResourceTypes.Grain;
+            break;
           case 'l':
-          this.hexes[index++].Type = ResourceTypes.Lumber;
-          break;
+            this.hexes[index++].Type = ResourceTypes.Lumber;
+            break;
           case 'o':
-          this.hexes[index++].Type = ResourceTypes.Ore;
-          break;
+            this.hexes[index++].Type = ResourceTypes.Ore;
+            break;
           case 'w':
-          this.hexes[index++].Type = ResourceTypes.Wool;
-          break;
+            this.hexes[index++].Type = ResourceTypes.Wool;
+            break;
           case ' ':
-          this.hexes[index++].Type = null;
-          break;
+            this.hexes[index++].Type = null;
+            break;
         }
       }
     }
 
-    internal void Load(GameDataSection data)
+    internal void Load(IGameDataReader reader)
     {
+      var data = reader.GetSection(GameDataSectionKeys.GameBoard);
 
+      var index = 0;
+      foreach (var resource in data.GetStringValue(GameDataValueKeys.HexResources))
+      {
+        switch (resource)
+        {
+          case 'b':
+            this.hexes[index++].Type = ResourceTypes.Brick;
+            break;
+          case 'g':
+            this.hexes[index++].Type = ResourceTypes.Grain;
+            break;
+          case 'l':
+            this.hexes[index++].Type = ResourceTypes.Lumber;
+            break;
+          case 'o':
+            this.hexes[index++].Type = ResourceTypes.Ore;
+            break;
+          case 'w':
+            this.hexes[index++].Type = ResourceTypes.Wool;
+            break;
+          case ' ':
+            this.hexes[index++].Type = null;
+            break;
+        }
+      }
+
+      index = 0;
+      foreach (var productionValue in data.GetIntegerArrayValue(GameDataValueKeys.HexProduction))
+      {
+        this.hexes[index++].Production = (UInt32)productionValue;
+      }
+
+      data = reader.GetSection(GameDataSectionKeys.Buildings);
     }
 
     private void AddLocationsToHex(UInt32 lhs, UInt32 rhs, UInt32 hexIndex, UInt32 count)

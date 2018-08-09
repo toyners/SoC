@@ -20,6 +20,11 @@ namespace Jabberwocky.SoC.Library.Storage
       throw new NotImplementedException();
     }
 
+    public Int32[] GetIntegerArrayValue(GameDataValueKeys key)
+    {
+      throw new NotImplementedException();
+    }
+
     public GameDataSection GetSection(GameDataValueKeys key)
     {
       throw new NotImplementedException();

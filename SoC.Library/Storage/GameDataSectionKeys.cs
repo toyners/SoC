@@ -8,5 +8,6 @@ namespace Jabberwocky.SoC.Library.Storage
     PlayerThree,
     PlayerFour,
     GameBoard,
+    Buildings,
   }
 }

@@ -594,7 +594,7 @@ namespace Jabberwocky.SoC.Library
           loadedPlayers.Add(player);
         }
 
-        this.gameBoard.Load(reader.GetSection(GameDataSectionKeys.GameBoard));
+        this.gameBoard.Load(reader);
 
         /*using (var reader = XmlReader.Create(stream, new XmlReaderSettings { CloseInput = false, IgnoreWhitespace = true, IgnoreComments = true }))
         {

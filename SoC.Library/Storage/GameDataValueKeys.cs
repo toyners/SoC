@@ -10,6 +10,8 @@ namespace Jabberwocky.SoC.Library.Storage
     PlayerLumber,
     PlayerOre,
     PlayerWool,
-    IsComputerPlayer
+    IsComputerPlayer,
+    HexResources,
+    HexProduction
   }
 }
