@@ -583,18 +583,18 @@ namespace Jabberwocky.SoC.Library
       {
         var loadedPlayers = new List<IPlayer>();
 
-        var player = this.playerPool.CreatePlayer(reader.Section(GameDataSectionKeys.PlayerOne));
+        var player = this.playerPool.CreatePlayer(reader.GetSection(GameDataSectionKeys.PlayerOne));
         loadedPlayers.Add(player);
 
         GameDataSection data = null;
         var key = GameDataSectionKeys.PlayerTwo;
-        while (key <= GameDataSectionKeys.PlayerFour && (data = reader.Section(key++)) != null)
+        while (key <= GameDataSectionKeys.PlayerFour && (data = reader.GetSection(key++)) != null)
         {
           player = this.playerPool.CreatePlayer(data);
           loadedPlayers.Add(player);
         }
 
-        this.gameBoard.Load(reader.Section(GameDataSectionKeys.GameBoard));
+        this.gameBoard.Load(reader.GetSection(GameDataSectionKeys.GameBoard));
 
         /*using (var reader = XmlReader.Create(stream, new XmlReaderSettings { CloseInput = false, IgnoreWhitespace = true, IgnoreComments = true }))
         {

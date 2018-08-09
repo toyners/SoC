@@ -5,22 +5,27 @@ namespace Jabberwocky.SoC.Library.Storage
 
   public class GameDataSection
   {
-    public Boolean BooleanValue(GameDataValueKeys key)
+    public Boolean GetBooleanValue(GameDataValueKeys key)
     {
       throw new NotImplementedException();
     }
 
-    public Guid IdentityValue(GameDataValueKeys key)
+    public Guid GetIdentityValue(GameDataValueKeys key)
     {
       throw new NotImplementedException();
     }
 
-    public Int32 IntegerValue(GameDataValueKeys key)
+    public Int32 GetIntegerValue(GameDataValueKeys key)
     {
       throw new NotImplementedException();
     }
 
-    public String StringValue(GameDataValueKeys key)
+    public GameDataSection GetSection(GameDataValueKeys key)
+    {
+      throw new NotImplementedException();
+    }
+
+    public String GetStringValue(GameDataValueKeys key)
     {
       throw new NotImplementedException();
     }

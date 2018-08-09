@@ -32,13 +32,13 @@ namespace Jabberwocky.SoC.Library
 
     public Player(GameDataSection data)
     {
-      this.Id = data.IdentityValue(GameDataValueKeys.PlayerId);
-      this.Name = data.StringValue(GameDataValueKeys.PlayerName);
-      this.BrickCount = data.IntegerValue(GameDataValueKeys.PlayerBrick);
-      this.GrainCount = data.IntegerValue(GameDataValueKeys.PlayerGrain);
-      this.LumberCount = data.IntegerValue(GameDataValueKeys.PlayerLumber);
-      this.OreCount = data.IntegerValue(GameDataValueKeys.PlayerOre);
-      this.WoolCount = data.IntegerValue(GameDataValueKeys.PlayerWool);
+      this.Id = data.GetIdentityValue(GameDataValueKeys.PlayerId);
+      this.Name = data.GetStringValue(GameDataValueKeys.PlayerName);
+      this.BrickCount = data.GetIntegerValue(GameDataValueKeys.PlayerBrick);
+      this.GrainCount = data.GetIntegerValue(GameDataValueKeys.PlayerGrain);
+      this.LumberCount = data.GetIntegerValue(GameDataValueKeys.PlayerLumber);
+      this.OreCount = data.GetIntegerValue(GameDataValueKeys.PlayerOre);
+      this.WoolCount = data.GetIntegerValue(GameDataValueKeys.PlayerWool);
     }
     #endregion
 
