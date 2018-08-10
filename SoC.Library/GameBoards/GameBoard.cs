@@ -916,7 +916,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
       }
     }
 
-    internal void Load(IGameDataReader reader)
+    internal void Load(IGameDataReader<GameDataSectionKeys, GameDataValueKeys, ResourceTypes> reader)
     {
       var data = reader.GetSection(GameDataSectionKeys.GameBoard);
 

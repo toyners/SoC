@@ -51,7 +51,7 @@ namespace Jabberwocky.SoC.Library
       return player;
     }
 
-    public IPlayer CreatePlayer(GameDataSection data)
+    public IPlayer CreatePlayer(IGameDataSection<GameDataSectionKeys, GameDataValueKeys, ResourceTypes> data)
     {
       if (data.GetBooleanValue(GameDataValueKeys.IsComputerPlayer))
       {

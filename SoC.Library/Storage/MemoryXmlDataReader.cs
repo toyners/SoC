@@ -3,11 +3,11 @@ namespace Jabberwocky.SoC.Library.Storage
 {
   using System;
 
-  public class MemoryXmlDataReader : IGameDataReader
+  public class MemoryXmlDataReader : IGameDataReader<GameDataSectionKeys, GameDataValueKeys, ResourceTypes>
   {
-    public GameDataSection GetSection(GameDataSectionKeys key)
+    public IGameDataSection<GameDataSectionKeys, GameDataValueKeys, ResourceTypes> GetSection(GameDataSectionKeys sectionKey)
     {
-      throw new NotImplementedException();
+      return new XmlDataSection();
     }
   }
 }

@@ -1,8 +1,8 @@
 ﻿
 namespace Jabberwocky.SoC.Library.Storage
 {
-  public interface IGameDataReader
+  public interface IGameDataReader<SectionKey, Key, Enum>
   {
-    GameDataSection GetSection(GameDataSectionKeys key);
+    IGameDataSection<SectionKey, Key, Enum> GetSection(SectionKey sectionKey);
   }
 }

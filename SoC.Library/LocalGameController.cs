@@ -577,7 +577,7 @@ namespace Jabberwocky.SoC.Library
       }
     }
 
-    public void Load(IGameDataReader reader)
+    public void Load(IGameDataReader<GameDataSectionKeys, GameDataValueKeys, ResourceTypes> reader)
     {
       try
       {
@@ -586,7 +586,7 @@ namespace Jabberwocky.SoC.Library
         var player = this.playerPool.CreatePlayer(reader.GetSection(GameDataSectionKeys.PlayerOne));
         loadedPlayers.Add(player);
 
-        GameDataSection data = null;
+        IGameDataSection<GameDataSectionKeys, GameDataValueKeys, ResourceTypes> data = null;
         var key = GameDataSectionKeys.PlayerTwo;
         while (key <= GameDataSectionKeys.PlayerFour && (data = reader.GetSection(key++)) != null)
         {

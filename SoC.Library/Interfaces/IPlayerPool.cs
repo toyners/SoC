@@ -28,7 +28,7 @@ namespace Jabberwocky.SoC.Library.Interfaces
     /// <returns>Player instance</returns>
     IPlayer CreatePlayer(XmlReader reader);
 
-    IPlayer CreatePlayer(GameDataSection data);
+    IPlayer CreatePlayer(IGameDataSection<GameDataSectionKeys, GameDataValueKeys, ResourceTypes> data);
 
     /// <summary>
     /// Get the id of the bank

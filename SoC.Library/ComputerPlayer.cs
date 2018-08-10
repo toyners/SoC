@@ -24,7 +24,7 @@ namespace Jabberwocky.SoC.Library
       this.numberGenerator = numberGenerator;
     }
 
-    public ComputerPlayer(GameDataSection data) : base(data) { }
+    public ComputerPlayer(IGameDataSection<GameDataSectionKeys, GameDataValueKeys, ResourceTypes> data) : base(data) { }
     #endregion
 
     #region Properties

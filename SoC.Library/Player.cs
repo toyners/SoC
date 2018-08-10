@@ -30,7 +30,7 @@ namespace Jabberwocky.SoC.Library
       this.Name = name;
     }
 
-    public Player(GameDataSection data)
+    public Player(IGameDataSection<GameDataSectionKeys, GameDataValueKeys, ResourceTypes> data)
     {
       this.Id = data.GetIdentityValue(GameDataValueKeys.PlayerId);
       this.Name = data.GetStringValue(GameDataValueKeys.PlayerName);
