@@ -1,11 +1,14 @@
 ﻿
 namespace Jabberwocky.SoC.Library.Storage
 {
+  using System.Collections.Generic;
   using System.IO;
   using System.Xml;
 
   public class XmlGameDataReader : IGameDataReader<GameDataSectionKeys, GameDataValueKeys, ResourceTypes>
   {
+    private Dictionary<GameDataSectionKeys, XmlGameDataSection> sections;
+
     public XmlGameDataReader(MemoryStream stream)
     {
     }
@@ -18,7 +21,12 @@ namespace Jabberwocky.SoC.Library.Storage
     {
       get
       {
-        return new XmlGameDataSection(null);
+        if (!this.sections.TryGetValue(sectionKey, out var section))
+        {
+          throw new KeyNotFoundException($"{sectionKey} not found in game data");
+        }
+
+        return section;
       }
     }
   }

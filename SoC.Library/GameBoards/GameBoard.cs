@@ -104,9 +104,9 @@ namespace Jabberwocky.SoC.Library.GameBoards
       switch (this.PlacedStartingInfrastructureStatus(playerId))
       {
         case StartingInfrastructureStatus.None:
-        return new VerificationResults { Status = VerificationStatus.StartingInfrastructureNotPresentWhenPlacingCity };
+          return new VerificationResults { Status = VerificationStatus.StartingInfrastructureNotPresentWhenPlacingCity };
         case StartingInfrastructureStatus.Partial:
-        return new VerificationResults { Status = VerificationStatus.StartingInfrastructureNotCompleteWhenPlacingCity };
+          return new VerificationResults { Status = VerificationStatus.StartingInfrastructureNotCompleteWhenPlacingCity };
       }
 
       if (!this.SettlementLocationOnBoard(location))
@@ -158,7 +158,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
       }
 
       // Are both road locations on the board.
-      if (!this.RoadLocationsOnBoard(roadStartLocation, roadEndLocation))      
+      if (!this.RoadLocationsOnBoard(roadStartLocation, roadEndLocation))
       {
         return new VerificationResults { Status = VerificationStatus.RoadIsOffBoard };
       }
@@ -189,9 +189,9 @@ namespace Jabberwocky.SoC.Library.GameBoards
       switch (this.PlacedStartingInfrastructureStatus(playerId))
       {
         case StartingInfrastructureStatus.None:
-        return new VerificationResults { Status = VerificationStatus.StartingInfrastructureNotPresentWhenPlacingSettlement };
+          return new VerificationResults { Status = VerificationStatus.StartingInfrastructureNotPresentWhenPlacingSettlement };
         case StartingInfrastructureStatus.Partial:
-        return new VerificationResults { Status = VerificationStatus.StartingInfrastructureNotCompleteWhenPlacingSettlement };
+          return new VerificationResults { Status = VerificationStatus.StartingInfrastructureNotCompleteWhenPlacingSettlement };
       }
 
       if (!this.SettlementLocationOnBoard(locationIndex))
@@ -449,20 +449,20 @@ namespace Jabberwocky.SoC.Library.GameBoards
         switch (this.hexes[hexIndex].Type)
         {
           case ResourceTypes.Brick:
-          resourceClutch.BrickCount++;
-          break;
+            resourceClutch.BrickCount++;
+            break;
           case ResourceTypes.Grain:
-          resourceClutch.GrainCount++;
-          break;
+            resourceClutch.GrainCount++;
+            break;
           case ResourceTypes.Lumber:
-          resourceClutch.LumberCount++;
-          break;
+            resourceClutch.LumberCount++;
+            break;
           case ResourceTypes.Ore:
-          resourceClutch.OreCount++;
-          break;
+            resourceClutch.OreCount++;
+            break;
           case ResourceTypes.Wool:
-          resourceClutch.WoolCount++;
-          break;
+            resourceClutch.WoolCount++;
+            break;
         }
       }
 
@@ -504,20 +504,20 @@ namespace Jabberwocky.SoC.Library.GameBoards
           switch (resourceProvider.Type)
           {
             case ResourceTypes.Brick:
-            resourceClutch = ResourceClutch.OneBrick;
-            break;
+              resourceClutch = ResourceClutch.OneBrick;
+              break;
             case ResourceTypes.Grain:
-            resourceClutch = ResourceClutch.OneGrain;
-            break;
+              resourceClutch = ResourceClutch.OneGrain;
+              break;
             case ResourceTypes.Lumber:
-            resourceClutch = ResourceClutch.OneLumber;
-            break;
+              resourceClutch = ResourceClutch.OneLumber;
+              break;
             case ResourceTypes.Ore:
-            resourceClutch = ResourceClutch.OneOre;
-            break;
+              resourceClutch = ResourceClutch.OneOre;
+              break;
             case ResourceTypes.Wool:
-            resourceClutch = ResourceClutch.OneWool;
-            break;
+              resourceClutch = ResourceClutch.OneWool;
+              break;
           }
 
           var resourceCollection = new ResourceCollection(location, resourceClutch);
@@ -817,7 +817,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
 
     private StartingInfrastructureStatus PlacedStartingInfrastructureStatus(Guid playerId)
     {
-      if (!this.settlementsByPlayer.ContainsKey(playerId) || 
+      if (!this.settlementsByPlayer.ContainsKey(playerId) ||
         this.settlementsByPlayer[playerId] == null ||
         this.settlementsByPlayer[playerId].Count == 0)
       {
@@ -856,7 +856,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
         case VerificationStatus.SettlementNotConnectedToExistingRoad: throw new PlacementException("Cannot place settlement because location is not on a road.");
         case VerificationStatus.StartingInfrastructureAlreadyPresent: throw new PlacementException("Cannot place starting infrastructure more than once per player.");
         case VerificationStatus.StartingInfrastructureNotPresentWhenPlacingCity:
-        case VerificationStatus.StartingInfrastructureNotCompleteWhenPlacingCity: throw new PlacementException("Cannot place city before placing all initial infrastructure.");        
+        case VerificationStatus.StartingInfrastructureNotCompleteWhenPlacingCity: throw new PlacementException("Cannot place city before placing all initial infrastructure.");
         case VerificationStatus.StartingInfrastructureNotCompleteWhenPlacingRoad:
         case VerificationStatus.StartingInfrastructureNotPresentWhenPlacingRoad: throw new PlacementException("Cannot place road before placing all initial infrastructure.");
         case VerificationStatus.StartingInfrastructureNotCompleteWhenPlacingSettlement:
@@ -919,20 +919,19 @@ namespace Jabberwocky.SoC.Library.GameBoards
     internal void Load(IGameDataReader<GameDataSectionKeys, GameDataValueKeys, ResourceTypes> reader)
     {
       var data = reader[GameDataSectionKeys.GameBoard];
+      var resourceTypes = data.GetEnumArrayValue(GameDataValueKeys.HexResources);
+      var productionValues = data.GetIntegerArrayValue(GameDataValueKeys.HexProduction);
 
-      var index = 0;
-      foreach (var resourceType in data.GetEnumArrayValue(GameDataValueKeys.HexResources))
+      for (var index = 0; index < this.hexes.Length; index++)
       {
-        this.hexes[index++].Type = resourceType;
-      }
-
-      index = 0;
-      foreach (var productionValue in data.GetIntegerArrayValue(GameDataValueKeys.HexProduction))
-      {
-        this.hexes[index++].Production = (UInt32)productionValue;
+        this.hexes[index].Type = resourceTypes[index];
+        this.hexes[index].Production = (UInt32)productionValues[index];
       }
 
       data = reader[GameDataSectionKeys.Buildings];
+
+
+      data = reader[GameDataSectionKeys.Roads];
     }
 
     private void AddLocationsToHex(UInt32 lhs, UInt32 rhs, UInt32 hexIndex, UInt32 count)
@@ -1326,7 +1325,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
     {
       public Int32 Index;
       public Guid Owner;
-      public Connection[] connections; 
+      public Connection[] connections;
     }
 
     public class PlacementException : Exception
