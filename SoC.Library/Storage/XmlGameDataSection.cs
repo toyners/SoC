@@ -2,9 +2,13 @@
 namespace Jabberwocky.SoC.Library.Storage
 {
   using System;
+  using System.IO;
 
-  public class XmlDataSection : IGameDataSection<GameDataSectionKeys, GameDataValueKeys, ResourceTypes>
+  public class XmlGameDataSection : IGameDataSection<GameDataSectionKeys, GameDataValueKeys, ResourceTypes>
   {
+    public XmlGameDataSection(MemoryStream stream)
+    { }
+
     public bool GetBooleanValue(GameDataValueKeys key)
     {
       throw new NotImplementedException();
@@ -30,9 +34,12 @@ namespace Jabberwocky.SoC.Library.Storage
       throw new NotImplementedException();
     }
 
-    public IGameDataSection<GameDataSectionKeys, GameDataValueKeys, ResourceTypes> GetSection(GameDataSectionKeys sectionKey)
+    public IGameDataSection<GameDataSectionKeys, GameDataValueKeys, ResourceTypes> this[GameDataSectionKeys sectionKey]
     {
-      throw new NotImplementedException();
+      get
+      {
+        throw new NotImplementedException();
+      }
     }
 
     public IGameDataSection<GameDataSectionKeys, GameDataValueKeys, ResourceTypes>[] GetSections(GameDataSectionKeys sectionKey)

@@ -49,11 +49,11 @@
     <Compile Include="Constants.cs" />
     <Compile Include="DevelopmentCard.cs" />
     <Compile Include="DevelopmentCardHolder.cs" />
-    <Compile Include="Storage\XmlDataSection.cs" />
+    <Compile Include="Storage\XmlGameDataSection.cs" />
     <Compile Include="Storage\GameDataSectionKeys.cs" />
     <Compile Include="Storage\GameDataValueKeys.cs" />
     <Compile Include="Storage\IGameDataSection.cs" />
-    <Compile Include="Storage\MemoryXmlDataReader.cs" />
+    <Compile Include="Storage\XmlGameDataReader.cs" />
     <Compile Include="Storage\IGameDataReader.cs" />
     <Compile Include="ProductionFactorComparison.cs" />
     <Compile Include="Enums\ComputerPlayerActionTypes.cs" />

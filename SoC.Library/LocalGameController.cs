@@ -583,12 +583,12 @@ namespace Jabberwocky.SoC.Library
       {
         var loadedPlayers = new List<IPlayer>();
 
-        var player = this.playerPool.CreatePlayer(reader.GetSection(GameDataSectionKeys.PlayerOne));
+        var player = this.playerPool.CreatePlayer(reader[GameDataSectionKeys.PlayerOne]);
         loadedPlayers.Add(player);
 
         IGameDataSection<GameDataSectionKeys, GameDataValueKeys, ResourceTypes> data = null;
         var key = GameDataSectionKeys.PlayerTwo;
-        while (key <= GameDataSectionKeys.PlayerFour && (data = reader.GetSection(key++)) != null)
+        while (key <= GameDataSectionKeys.PlayerFour && (data = reader[key++]) != null)
         {
           player = this.playerPool.CreatePlayer(data);
           loadedPlayers.Add(player);

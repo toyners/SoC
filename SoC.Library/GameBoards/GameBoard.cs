@@ -918,32 +918,12 @@ namespace Jabberwocky.SoC.Library.GameBoards
 
     internal void Load(IGameDataReader<GameDataSectionKeys, GameDataValueKeys, ResourceTypes> reader)
     {
-      var data = reader.GetSection(GameDataSectionKeys.GameBoard);
+      var data = reader[GameDataSectionKeys.GameBoard];
 
       var index = 0;
-      foreach (var resource in data.GetStringValue(GameDataValueKeys.HexResources))
+      foreach (var resourceType in data.GetEnumArrayValue(GameDataValueKeys.HexResources))
       {
-        switch (resource)
-        {
-          case 'b':
-            this.hexes[index++].Type = ResourceTypes.Brick;
-            break;
-          case 'g':
-            this.hexes[index++].Type = ResourceTypes.Grain;
-            break;
-          case 'l':
-            this.hexes[index++].Type = ResourceTypes.Lumber;
-            break;
-          case 'o':
-            this.hexes[index++].Type = ResourceTypes.Ore;
-            break;
-          case 'w':
-            this.hexes[index++].Type = ResourceTypes.Wool;
-            break;
-          case ' ':
-            this.hexes[index++].Type = null;
-            break;
-        }
+        this.hexes[index++].Type = resourceType;
       }
 
       index = 0;
@@ -952,7 +932,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
         this.hexes[index++].Production = (UInt32)productionValue;
       }
 
-      data = reader.GetSection(GameDataSectionKeys.Buildings);
+      data = reader[GameDataSectionKeys.Buildings];
     }
 
     private void AddLocationsToHex(UInt32 lhs, UInt32 rhs, UInt32 hexIndex, UInt32 count)
