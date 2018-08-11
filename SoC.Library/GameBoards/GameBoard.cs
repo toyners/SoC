@@ -929,9 +929,18 @@ namespace Jabberwocky.SoC.Library.GameBoards
       }
 
       data = reader[GameDataSectionKeys.Buildings];
-
+      var settlements = data.GetSections(GameDataSectionKeys.Building);
+      foreach (var settlement in settlements)
+      {
+        this.PlaceSettlementOnBoard(settlement.GetIdentityValue(GameDataValueKeys.SettlementOwner), (UInt32)settlement.GetIntegerValue(GameDataValueKeys.SettlementLocation));
+      }
 
       data = reader[GameDataSectionKeys.Roads];
+      var roads = data.GetSections(GameDataSectionKeys.Road);
+      foreach (var road in roads)
+      {
+        this.PlaceRoadSegmentOnBoard(road.GetIdentityValue(GameDataValueKeys.RoadOwner), (UInt32)road.GetIntegerValue(GameDataValueKeys.RoadStart), (UInt32)road.GetIntegerValue(GameDataValueKeys.RoadEnd));
+      }
     }
 
     private void AddLocationsToHex(UInt32 lhs, UInt32 rhs, UInt32 hexIndex, UInt32 count)

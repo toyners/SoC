@@ -12,6 +12,11 @@ namespace Jabberwocky.SoC.Library.Storage
     PlayerWool,
     IsComputerPlayer,
     HexResources,
-    HexProduction
+    HexProduction,
+    SettlementOwner,
+    SettlementLocation,
+    RoadOwner,
+    RoadStart,
+    RoadEnd
   }
 }

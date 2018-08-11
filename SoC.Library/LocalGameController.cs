@@ -596,57 +596,6 @@ namespace Jabberwocky.SoC.Library
 
         this.gameBoard.Load(reader);
 
-        /*using (var reader = XmlReader.Create(stream, new XmlReaderSettings { CloseInput = false, IgnoreWhitespace = true, IgnoreComments = true }))
-        {
-          while (!reader.EOF)
-          {
-            if (reader.Name == "player" && reader.NodeType == XmlNodeType.Element)
-            {
-              var player = this.playerPool.CreatePlayer(reader);
-              loadedPlayers.Add(player);
-            }
-
-            if (reader.Name == "resources" && reader.NodeType == XmlNodeType.Element)
-            {
-              this.gameBoard.LoadHexResources(reader);
-            }
-
-            if (reader.Name == "production" && reader.NodeType == XmlNodeType.Element)
-            {
-              this.gameBoard.LoadHexProduction(reader);
-            }
-
-            if (reader.Name == "settlements" && reader.NodeType == XmlNodeType.Element)
-            {
-              this.gameBoard.ClearSettlements();
-            }
-
-            if (reader.Name == "settlement" && reader.NodeType == XmlNodeType.Element)
-            {
-              var playerId = Guid.Parse(reader.GetAttribute("playerid"));
-              var location = UInt32.Parse(reader.GetAttribute("location"));
-
-              this.gameBoard.PlaceSettlementOnBoard(playerId, location);
-            }
-
-            if (reader.Name == "roads" && reader.NodeType == XmlNodeType.Element)
-            {
-              this.gameBoard.ClearRoads();
-            }
-
-            if (reader.Name == "road" && reader.NodeType == XmlNodeType.Element)
-            {
-              var playerId = Guid.Parse(reader.GetAttribute("playerid"));
-              var start = UInt32.Parse(reader.GetAttribute("start"));
-              var end = UInt32.Parse(reader.GetAttribute("end"));
-
-              this.gameBoard.PlaceRoadSegmentOnBoard(playerId, start, end);
-            }
-
-            reader.Read();
-          }
-        }
-
         if (loadedPlayers.Count > 0)
         {
           this.mainPlayer = loadedPlayers[0];
@@ -657,7 +606,7 @@ namespace Jabberwocky.SoC.Library
 
           for (var index = 1; index < loadedPlayers.Count; index++)
           {
-            var player = loadedPlayers[index];
+            player = loadedPlayers[index];
             this.players[index] = player;
             this.playersById.Add(player.Id, player);
           }
@@ -669,7 +618,7 @@ namespace Jabberwocky.SoC.Library
 
         var playerDataViews = this.CreatePlayerDataViews();
 
-        this.GameLoadedEvent?.Invoke(playerDataViews, this.gameBoard);*/
+        this.GameLoadedEvent?.Invoke(playerDataViews, this.gameBoard);
       }
       catch (Exception e)
       {
