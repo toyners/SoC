@@ -4,41 +4,21 @@ namespace Jabberwocky.SoC.Library.Storage
   using System.Collections.Generic;
   using System.IO;
   using System.Xml;
-  using System.Xml.Linq;
 
   public class XmlGameDataReader : IGameDataReader<GameDataSectionKeys, GameDataValueKeys, ResourceTypes>
   {
     private Dictionary<GameDataSectionKeys, XmlGameDataSection> sections;
 
-    public XmlGameDataReader(MemoryStream stream)
+    public XmlGameDataReader(Stream stream)
     {
+      var sr = new StreamReader(stream);
+      var content = sr.ReadToEnd();
+      var doc = new XmlDocument();
+      doc.LoadXml(content);
+
       this.sections = new Dictionary<GameDataSectionKeys, XmlGameDataSection>();
-
-      using (var reader = XmlReader.Create(stream, new XmlReaderSettings { CloseInput = false, IgnoreWhitespace = true, IgnoreComments = true }))
-      {
-        while (!reader.EOF)
-        {
-          if (reader.Name == "resources" && reader.NodeType == XmlNodeType.Element)
-          {
-            if (!this.sections.TryGetValue(GameDataSectionKeys.GameBoard, out var section))
-            {
-              section = new XmlGameDataSection(null);
-              this.sections.Add(GameDataSectionKeys.GameBoard, section);
-            }
-
-            reader.ReadElementContentAsString();
-          }
-
-          if (reader.Name == "production" && reader.NodeType == XmlNodeType.Element)
-          {
-
-          }
-        }
-      }
-    }
-
-    public XmlGameDataReader(XmlReader stream)
-    {
+      var section = new XmlGameDataSection(new XmlGameBoardDataSectionFactory(doc));
+      this.sections.Add(GameDataSectionKeys.GameBoard, section);
     }
 
     public IGameDataSection<GameDataSectionKeys, GameDataValueKeys, ResourceTypes> this[GameDataSectionKeys sectionKey]

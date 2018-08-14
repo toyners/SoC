@@ -17,7 +17,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.Storage_Tests
     public void Load_HexDataOnly_ResourceProvidersLoadedCorrectly()
     {
       // Arrange
-      var content = "<game><board><hexes>" +
+      var content = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><game><board><hexes>" +
         "<resources>glbglogob gwwwlwlbo</resources>" +
         "<production>9,8,5,12,11,3,6,10,6,0,4,11,2,4,3,5,9,10,8</production>" +
         "</hexes></board></game>";

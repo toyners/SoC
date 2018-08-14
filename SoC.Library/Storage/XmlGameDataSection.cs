@@ -3,20 +3,23 @@ namespace Jabberwocky.SoC.Library.Storage
 {
   using System;
   using System.Collections.Generic;
-  using System.IO;
   using System.Xml;
 
   public class XmlGameDataSection : IGameDataSection<GameDataSectionKeys, GameDataValueKeys, ResourceTypes>
   {
-    private readonly Dictionary<GameDataSectionKeys, XmlGameDataSection> sections;
-    private readonly Dictionary<GameDataValueKeys, Int32> integerValues;
     private readonly Dictionary<GameDataValueKeys, Boolean> booleanValues;
+    private readonly Dictionary<GameDataValueKeys, int[]> integerArrayValues;
+    private readonly Dictionary<GameDataValueKeys, Int32> integerValues;
+    private readonly Dictionary<GameDataSectionKeys, XmlGameDataSection> sections;
+    private readonly Dictionary<GameDataValueKeys, String> stringValues;
 
     public XmlGameDataSection(XmlGameDataSectionBaseFactory factory)
     {
-      this.sections = factory.GetSections();
-      this.integerValues = factory.GetIntegers();
       this.booleanValues = factory.GetBooleans();
+      this.integerValues = factory.GetIntegers();
+      this.integerArrayValues = factory.GetIntegerArrays();
+      this.sections = factory.GetSections();
+      this.stringValues = factory.GetStrings();
     }
 
     public bool GetBooleanValue(GameDataValueKeys key)
@@ -36,7 +39,7 @@ namespace Jabberwocky.SoC.Library.Storage
 
     public int[] GetIntegerArrayValue(GameDataValueKeys key)
     {
-      throw new NotImplementedException();
+      return this.integerArrayValues[key];
     }
 
     public int GetIntegerValue(GameDataValueKeys key)
@@ -59,7 +62,7 @@ namespace Jabberwocky.SoC.Library.Storage
 
     public string GetStringValue(GameDataValueKeys key)
     {
-      throw new NotImplementedException();
+      return this.stringValues[key];
     }
 
     public string GetStringValues(GameDataValueKeys key)
@@ -80,37 +83,56 @@ namespace Jabberwocky.SoC.Library.Storage
       return null;
     }
 
+    public virtual Dictionary<GameDataValueKeys, int[]> GetIntegerArrays()
+    {
+      return null;
+    }
+
     public virtual Dictionary<GameDataSectionKeys, XmlGameDataSection> GetSections()
+    {
+      return null;
+    }
+
+    public virtual Dictionary<GameDataValueKeys, String> GetStrings()
     {
       return null;
     }
   }
 
-  public class XmlGameBoardDataSection : XmlGameDataSectionBaseFactory
+  public class XmlGameBoardDataSectionFactory : XmlGameDataSectionBaseFactory
   {
     private readonly Dictionary<GameDataValueKeys, String> stringValues;
     private readonly Dictionary<GameDataValueKeys, Int32[]> integerArrayValues;
 
-    public XmlGameBoardDataSection(XmlReader reader)
+    public XmlGameBoardDataSectionFactory(XmlDocument document)
     {
-      var startingName = reader.Name;
-      while (!reader.EOF && reader.Name != startingName && reader.NodeType != XmlNodeType.EndElement)
+      var root = document.DocumentElement;
+      var node = root.SelectSingleNode("/game/board/hexes/resources");
+      this.stringValues = new Dictionary<GameDataValueKeys, string> { { GameDataValueKeys.HexResources, node.InnerText } };
+
+      node = root.SelectSingleNode("/game/board/hexes/production");
+      var rawValues = node.InnerText.Split(',');
+      if (rawValues.Length > 0)
       {
-        if (reader.Name == "resources" && reader.NodeType == XmlNodeType.Element)
+        var values = new int[rawValues.Length];
+
+        for (var index = 0; index < values.Length; index++)
         {
-          this.stringValues = new Dictionary<GameDataValueKeys, string> { { GameDataValueKeys.HexResources, reader.ReadElementContentAsString() } };
-          continue;
+          values[index] = Int32.Parse(rawValues[index]);
         }
 
-        if (reader.Name == "production" && reader.NodeType == XmlNodeType.Element)
-        {
-          var production = reader.ReadElementContentAsString();
-          var values = production.Split(',');
-          continue;
-        }
-
-        reader.Read();
+        this.integerArrayValues = new Dictionary<GameDataValueKeys, int[]> { { GameDataValueKeys.HexProduction, values } };
       }
+    }
+
+    public override Dictionary<GameDataValueKeys, int[]> GetIntegerArrays()
+    {
+      return this.integerArrayValues;
+    }
+
+    public override Dictionary<GameDataValueKeys, string> GetStrings()
+    {
+      return this.stringValues;
     }
   }
 }
