@@ -14,7 +14,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.Storage_Tests
   {
     [Test]
     [Category("XmlGameDataReader")]
-    public void Load_HexDataOnly_ResourceProvidersLoadedCorrectly()
+    public void Load_HexDataOnly_DataLoadedCorrectly()
     {
       // Arrange
       var content = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><game><board><hexes>" +
@@ -43,7 +43,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.Storage_Tests
 
     [Test]
     [Category("XmlGameDataReader")]
-    public void Load_PlayerDataOnly_PlayerDataLoadedCorrectly()
+    public void Load_PlayerDataOnly_DataLoadedCorrectly()
     {
       // Arrange
       Guid firstId = Guid.NewGuid(), secondId = Guid.NewGuid(), thirdId = Guid.NewGuid(), fourthId = Guid.NewGuid();
@@ -55,10 +55,10 @@ namespace Jabberwocky.SoC.Library.UnitTests.Storage_Tests
 
       // Act
       var content = "<game><players>" +
-        $"<player id=\"{firstId}\" name=\"{firstName}\" brick=\"{firstBrickCount}\" grain=\"{firstGrainCount}\" lumber=\"{firstLumberCount}\" ore=\"{firstOreCount}\" wool=\"{firstWoolCount}\" />" +
-        $"<player id=\"{secondId}\" name=\"{secondName}\" brick=\"{secondBrickCount}\" grain=\"{secondGrainCount}\" lumber=\"{secondLumberCount}\" ore=\"{secondOreCount}\" wool=\"{secondWoolCount}\" />" +
-        $"<player id=\"{thirdId}\" name=\"{thirdName}\" brick=\"{thirdBrickCount}\" grain=\"{thirdGrainCount}\" lumber=\"{thirdLumberCount}\" ore=\"{thirdOreCount}\" wool=\"{thirdWoolCount}\" />" +
-        $"<player id=\"{fourthId}\" name=\"{fourthName}\" brick=\"{fourthBrickCount}\" grain=\"{fourthGrainCount}\" lumber=\"{fourthLumberCount}\" ore=\"{fourthOreCount}\" wool=\"{fourthWoolCount}\" />" +
+        $"<playerOne id=\"{firstId}\" name=\"{firstName}\" brick=\"{firstBrickCount}\" grain=\"{firstGrainCount}\" lumber=\"{firstLumberCount}\" ore=\"{firstOreCount}\" wool=\"{firstWoolCount}\" />" +
+        $"<playerTwo id=\"{secondId}\" name=\"{secondName}\" brick=\"{secondBrickCount}\" grain=\"{secondGrainCount}\" lumber=\"{secondLumberCount}\" ore=\"{secondOreCount}\" wool=\"{secondWoolCount}\" />" +
+        $"<playerThree id=\"{thirdId}\" name=\"{thirdName}\" brick=\"{thirdBrickCount}\" grain=\"{thirdGrainCount}\" lumber=\"{thirdLumberCount}\" ore=\"{thirdOreCount}\" wool=\"{thirdWoolCount}\" />" +
+        $"<playerFour id=\"{fourthId}\" name=\"{fourthName}\" brick=\"{fourthBrickCount}\" grain=\"{fourthGrainCount}\" lumber=\"{fourthLumberCount}\" ore=\"{fourthOreCount}\" wool=\"{fourthWoolCount}\" />" +
         "</players></game>";
 
       XmlGameDataReader xmlGameDataReader;

@@ -44,7 +44,7 @@ namespace Jabberwocky.SoC.Library.Storage
 
     public int GetIntegerValue(GameDataValueKeys key)
     {
-      throw new NotImplementedException();
+      return this.integerValues[key];
     }
 
     public IGameDataSection<GameDataSectionKeys, GameDataValueKeys, ResourceTypes> this[GameDataSectionKeys sectionKey]
@@ -133,6 +133,28 @@ namespace Jabberwocky.SoC.Library.Storage
     public override Dictionary<GameDataValueKeys, string> GetStrings()
     {
       return this.stringValues;
+    }
+  }
+
+  public class XmlGamePlayerDataSectionFactory : XmlGameDataSectionBaseFactory
+  {
+    private Dictionary<GameDataSectionKeys, XmlGameDataSection> sections = new Dictionary<GameDataSectionKeys, XmlGameDataSection>();
+
+    public XmlGamePlayerDataSectionFactory(XmlDocument document)
+    {
+      var root = document.DocumentElement;
+      var node = root.SelectSingleNode("/game/players/playerOne");
+
+      
+
+      node = root.SelectSingleNode("/game/players/playerTwo");
+      node = root.SelectSingleNode("/game/players/playerThree");
+      node = root.SelectSingleNode("/game/players/playerFour");
+    }
+
+    public XmlGameDataSection GetPlayerSection(GameDataSectionKeys playerEnum)
+    {
+      return this.sections[playerEnum];
     }
   }
 }

@@ -19,6 +19,18 @@ namespace Jabberwocky.SoC.Library.Storage
       this.sections = new Dictionary<GameDataSectionKeys, XmlGameDataSection>();
       var section = new XmlGameDataSection(new XmlGameBoardDataSectionFactory(doc));
       this.sections.Add(GameDataSectionKeys.GameBoard, section);
+
+      var playerFactory = new XmlGamePlayerDataSectionFactory(doc);
+      for (var playerEnum = GameDataSectionKeys.PlayerOne; playerEnum <= GameDataSectionKeys.PlayerFour; playerEnum++)
+      {
+        section = playerFactory.GetPlayerSection(playerEnum);
+        if (section == null)
+        {
+          continue;
+        }
+
+        this.sections.Add(playerEnum, section);
+      }
     }
 
     public IGameDataSection<GameDataSectionKeys, GameDataValueKeys, ResourceTypes> this[GameDataSectionKeys sectionKey]
