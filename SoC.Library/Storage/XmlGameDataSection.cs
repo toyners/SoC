@@ -8,7 +8,8 @@ namespace Jabberwocky.SoC.Library.Storage
   public class XmlGameDataSection : IGameDataSection<GameDataSectionKeys, GameDataValueKeys, ResourceTypes>
   {
     private readonly Dictionary<GameDataValueKeys, Boolean> booleanValues;
-    private readonly Dictionary<GameDataValueKeys, int[]> integerArrayValues;
+    private readonly Dictionary<GameDataValueKeys, Guid> identityValues;
+    private readonly Dictionary<GameDataValueKeys, Int32[]> integerArrayValues;
     private readonly Dictionary<GameDataValueKeys, Int32> integerValues;
     private readonly Dictionary<GameDataSectionKeys, XmlGameDataSection> sections;
     private readonly Dictionary<GameDataValueKeys, String> stringValues;
@@ -16,6 +17,7 @@ namespace Jabberwocky.SoC.Library.Storage
     public XmlGameDataSection(XmlGameDataSectionBaseFactory factory)
     {
       this.booleanValues = factory.GetBooleans();
+      this.identityValues = factory.GetIdentities();
       this.integerValues = factory.GetIntegers();
       this.integerArrayValues = factory.GetIntegerArrays();
       this.sections = factory.GetSections();
@@ -97,6 +99,11 @@ namespace Jabberwocky.SoC.Library.Storage
     {
       return null;
     }
+
+    public virtual Dictionary<GameDataValueKeys, Guid> GetIdentities()
+    {
+      return null;
+    }
   }
 
   public class XmlGameBoardDataSectionFactory : XmlGameDataSectionBaseFactory
@@ -138,23 +145,24 @@ namespace Jabberwocky.SoC.Library.Storage
 
   public class XmlGamePlayerDataSectionFactory : XmlGameDataSectionBaseFactory
   {
-    private Dictionary<GameDataSectionKeys, XmlGameDataSection> sections = new Dictionary<GameDataSectionKeys, XmlGameDataSection>();
+    private readonly Dictionary<GameDataValueKeys, Guid> identityValues;
+    private readonly Dictionary<GameDataValueKeys, Int32> integerValues;
+    private readonly Dictionary<GameDataValueKeys, String> stringValues;
 
-    public XmlGamePlayerDataSectionFactory(XmlDocument document)
+    public XmlGamePlayerDataSectionFactory(XmlNode playerNode)
     {
-      var root = document.DocumentElement;
-      var node = root.SelectSingleNode("/game/players/playerOne");
+      var id = new Guid(playerNode["id"].Value);
+      this.identityValues = new Dictionary<GameDataValueKeys, Guid> { { GameDataValueKeys.PlayerId, id } };
 
-      
+      this.integerValues = new Dictionary<GameDataValueKeys, Int32> {
+        { GameDataValueKeys.PlayerBrick, Int32.Parse(playerNode["brick"].Value)  },
+        { GameDataValueKeys.PlayerGrain, Int32.Parse(playerNode["grain"].Value)  },
+        { GameDataValueKeys.PlayerLumber, Int32.Parse(playerNode["lumber"].Value)  },
+        { GameDataValueKeys.PlayerOre, Int32.Parse(playerNode["ore"].Value)  },
+        { GameDataValueKeys.PlayerWool, Int32.Parse(playerNode["wool"].Value)  }
+      };
 
-      node = root.SelectSingleNode("/game/players/playerTwo");
-      node = root.SelectSingleNode("/game/players/playerThree");
-      node = root.SelectSingleNode("/game/players/playerFour");
-    }
-
-    public XmlGameDataSection GetPlayerSection(GameDataSectionKeys playerEnum)
-    {
-      return this.sections[playerEnum];
+      this.stringValues = new Dictionary<GameDataValueKeys, String> { { GameDataValueKeys.PlayerName, playerNode["name"].Value } };
     }
   }
 }

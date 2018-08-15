@@ -1,6 +1,7 @@
 ﻿
 namespace Jabberwocky.SoC.Library.Storage
 {
+  using System;
   using System.Collections.Generic;
   using System.IO;
   using System.Xml;
@@ -17,19 +18,27 @@ namespace Jabberwocky.SoC.Library.Storage
       doc.LoadXml(content);
 
       this.sections = new Dictionary<GameDataSectionKeys, XmlGameDataSection>();
+
       var section = new XmlGameDataSection(new XmlGameBoardDataSectionFactory(doc));
       this.sections.Add(GameDataSectionKeys.GameBoard, section);
 
-      var playerFactory = new XmlGamePlayerDataSectionFactory(doc);
-      for (var playerEnum = GameDataSectionKeys.PlayerOne; playerEnum <= GameDataSectionKeys.PlayerFour; playerEnum++)
+      var playerNode = doc.DocumentElement.SelectSingleNode("/game/players/playerOne");
+      section = new XmlGameDataSection(new XmlGamePlayerDataSectionFactory(playerNode));
+      this.sections.Add(GameDataSectionKeys.PlayerOne, section);
+
+      foreach (var token in new List<Tuple<String, GameDataSectionKeys>> {
+        new Tuple<string, GameDataSectionKeys>("playerTwo", GameDataSectionKeys.PlayerOne),
+        new Tuple<string, GameDataSectionKeys>("playerThree", GameDataSectionKeys.PlayerOne),
+        new Tuple<string, GameDataSectionKeys>("playerFour", GameDataSectionKeys.PlayerOne)})
       {
-        section = playerFactory.GetPlayerSection(playerEnum);
-        if (section == null)
+        playerNode = doc.DocumentElement.SelectSingleNode("/game/players/" + token.Item1);
+        if (playerNode == null)
         {
           continue;
         }
 
-        this.sections.Add(playerEnum, section);
+        section = new XmlGameDataSection(new XmlGamePlayerDataSectionFactory(playerNode));
+        this.sections.Add(token.Item2, section);
       }
     }
 
