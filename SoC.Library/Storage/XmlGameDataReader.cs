@@ -27,9 +27,9 @@ namespace Jabberwocky.SoC.Library.Storage
       this.sections.Add(GameDataSectionKeys.PlayerOne, section);
 
       foreach (var token in new List<Tuple<String, GameDataSectionKeys>> {
-        new Tuple<string, GameDataSectionKeys>("playerTwo", GameDataSectionKeys.PlayerOne),
-        new Tuple<string, GameDataSectionKeys>("playerThree", GameDataSectionKeys.PlayerOne),
-        new Tuple<string, GameDataSectionKeys>("playerFour", GameDataSectionKeys.PlayerOne)})
+        new Tuple<string, GameDataSectionKeys>("playerTwo", GameDataSectionKeys.PlayerTwo),
+        new Tuple<string, GameDataSectionKeys>("playerThree", GameDataSectionKeys.PlayerThree),
+        new Tuple<string, GameDataSectionKeys>("playerFour", GameDataSectionKeys.PlayerFour)})
       {
         playerNode = doc.DocumentElement.SelectSingleNode("/game/players/" + token.Item1);
         if (playerNode == null)
@@ -40,6 +40,9 @@ namespace Jabberwocky.SoC.Library.Storage
         section = new XmlGameDataSection(new XmlGamePlayerDataSectionFactory(playerNode));
         this.sections.Add(token.Item2, section);
       }
+
+      section = new XmlGameDataSection(new XmlBuildingDataSectionFactory(doc));
+      this.sections.Add(GameDataSectionKeys.Buildings, section);
     }
 
     public IGameDataSection<GameDataSectionKeys, GameDataValueKeys, ResourceTypes> this[GameDataSectionKeys sectionKey]

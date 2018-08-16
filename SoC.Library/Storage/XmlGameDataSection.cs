@@ -12,6 +12,7 @@ namespace Jabberwocky.SoC.Library.Storage
     private readonly Dictionary<GameDataValueKeys, Int32[]> integerArrayValues;
     private readonly Dictionary<GameDataValueKeys, Int32> integerValues;
     private readonly Dictionary<GameDataSectionKeys, XmlGameDataSection> sections;
+    private readonly Dictionary<GameDataSectionKeys, XmlGameDataSection[]> sectionArrays;
     private readonly Dictionary<GameDataValueKeys, String> stringValues;
 
     public XmlGameDataSection(XmlGameDataSectionBaseFactory factory)
@@ -36,7 +37,7 @@ namespace Jabberwocky.SoC.Library.Storage
 
     public Guid GetIdentityValue(GameDataValueKeys key)
     {
-      throw new NotImplementedException();
+      return this.identityValues[key];
     }
 
     public int[] GetIntegerArrayValue(GameDataValueKeys key)
@@ -59,7 +60,7 @@ namespace Jabberwocky.SoC.Library.Storage
 
     public IGameDataSection<GameDataSectionKeys, GameDataValueKeys, ResourceTypes>[] GetSections(GameDataSectionKeys sectionKey)
     {
-      throw new NotImplementedException();
+      return this.sectionArrays[sectionKey];
     }
 
     public string GetStringValue(GameDataValueKeys key)
@@ -130,6 +131,12 @@ namespace Jabberwocky.SoC.Library.Storage
 
         this.integerArrayValues = new Dictionary<GameDataValueKeys, int[]> { { GameDataValueKeys.HexProduction, values } };
       }
+
+      var settlementNodes = root.SelectNodes("/game/settlements/settlement");
+      foreach (var settlementNode in settlementNodes)
+      {
+
+      }
     }
 
     public override Dictionary<GameDataValueKeys, int[]> GetIntegerArrays()
@@ -155,14 +162,40 @@ namespace Jabberwocky.SoC.Library.Storage
       this.identityValues = new Dictionary<GameDataValueKeys, Guid> { { GameDataValueKeys.PlayerId, id } };
 
       this.integerValues = new Dictionary<GameDataValueKeys, Int32> {
-        { GameDataValueKeys.PlayerBrick, Int32.Parse(playerNode["brick"].Value)  },
-        { GameDataValueKeys.PlayerGrain, Int32.Parse(playerNode["grain"].Value)  },
-        { GameDataValueKeys.PlayerLumber, Int32.Parse(playerNode["lumber"].Value)  },
-        { GameDataValueKeys.PlayerOre, Int32.Parse(playerNode["ore"].Value)  },
-        { GameDataValueKeys.PlayerWool, Int32.Parse(playerNode["wool"].Value)  }
+        { GameDataValueKeys.PlayerBrick, Int32.Parse(playerNode.Attributes["brick"].Value)  },
+        { GameDataValueKeys.PlayerGrain, Int32.Parse(playerNode.Attributes["grain"].Value)  },
+        { GameDataValueKeys.PlayerLumber, Int32.Parse(playerNode.Attributes["lumber"].Value)  },
+        { GameDataValueKeys.PlayerOre, Int32.Parse(playerNode.Attributes["ore"].Value)  },
+        { GameDataValueKeys.PlayerWool, Int32.Parse(playerNode.Attributes["wool"].Value)  }
       };
 
-      this.stringValues = new Dictionary<GameDataValueKeys, String> { { GameDataValueKeys.PlayerName, playerNode["name"].Value } };
+      this.stringValues = new Dictionary<GameDataValueKeys, String> { { GameDataValueKeys.PlayerName, playerNode.Attributes["name"].Value } };
+    }
+
+    public override Dictionary<GameDataValueKeys, Guid> GetIdentities()
+    {
+      return this.identityValues;
+    }
+
+    public override Dictionary<GameDataValueKeys, int> GetIntegers()
+    {
+      return this.integerValues;
+    }
+
+    public override Dictionary<GameDataValueKeys, string> GetStrings()
+    {
+      return this.stringValues;
+    }
+  }
+
+  public class XmlBuildingDataSectionFactory : XmlGameDataSectionBaseFactory
+  {
+    public XmlBuildingDataSectionFactory(XmlDocument doc)
+    {
+      var settlementNodes = doc.SelectNodes("/game/settlements/settlement");
+      var sections = new XmlGameDataSection[settlementNodes.Count];
+
+
     }
   }
 }
