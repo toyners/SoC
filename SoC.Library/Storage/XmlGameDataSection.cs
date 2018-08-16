@@ -151,7 +151,7 @@ namespace Jabberwocky.SoC.Library.Storage
 
     public XmlGamePlayerDataSectionFactory(XmlNode playerNode)
     {
-      var id = new Guid(playerNode["id"].Value);
+      var id = new Guid(playerNode.Attributes["id"].Value);
       this.identityValues = new Dictionary<GameDataValueKeys, Guid> { { GameDataValueKeys.PlayerId, id } };
 
       this.integerValues = new Dictionary<GameDataValueKeys, Int32> {
