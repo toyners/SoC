@@ -115,18 +115,18 @@ namespace Jabberwocky.SoC.Library.UnitTests.Storage_Tests
 
       var roadData = xmlGameDataReader[GameDataSectionKeys.Roads].GetSections(GameDataSectionKeys.Road);
       roadData.Length.ShouldBe(4);
-      roadData[0].GetIdentityValue(GameDataValueKeys.RoadOwner).ShouldBe(firstId);
-      roadData[0].GetIntegerValue(GameDataValueKeys.RoadStart).ShouldBe(firstStart);
-      roadData[0].GetIntegerValue(GameDataValueKeys.RoadEnd).ShouldBe(firstEnd);
-      roadData[1].GetIdentityValue(GameDataValueKeys.RoadOwner).ShouldBe(secondId);
-      roadData[1].GetIntegerValue(GameDataValueKeys.RoadStart).ShouldBe(secondStart);
-      roadData[1].GetIntegerValue(GameDataValueKeys.RoadEnd).ShouldBe(secondEnd);
-      roadData[2].GetIdentityValue(GameDataValueKeys.RoadOwner).ShouldBe(thirdId);
-      roadData[2].GetIntegerValue(GameDataValueKeys.RoadStart).ShouldBe(thirdStart);
-      roadData[2].GetIntegerValue(GameDataValueKeys.RoadEnd).ShouldBe(thirdEnd);
-      roadData[3].GetIdentityValue(GameDataValueKeys.RoadOwner).ShouldBe(fourthId);
-      roadData[3].GetIntegerValue(GameDataValueKeys.RoadStart).ShouldBe(fourthStart);
-      roadData[3].GetIntegerValue(GameDataValueKeys.RoadEnd).ShouldBe(fourthEnd);
+      roadData[0].GetIdentityValue(GameDataValueKeys.RoadOwner).ShouldBe(this.firstId);
+      roadData[0].GetIntegerValue(GameDataValueKeys.RoadStart).ShouldBe(this.firstStart);
+      roadData[0].GetIntegerValue(GameDataValueKeys.RoadEnd).ShouldBe(this.firstEnd);
+      roadData[1].GetIdentityValue(GameDataValueKeys.RoadOwner).ShouldBe(this.secondId);
+      roadData[1].GetIntegerValue(GameDataValueKeys.RoadStart).ShouldBe(this.secondStart);
+      roadData[1].GetIntegerValue(GameDataValueKeys.RoadEnd).ShouldBe(this.secondEnd);
+      roadData[2].GetIdentityValue(GameDataValueKeys.RoadOwner).ShouldBe(this.thirdId);
+      roadData[2].GetIntegerValue(GameDataValueKeys.RoadStart).ShouldBe(this.thirdStart);
+      roadData[2].GetIntegerValue(GameDataValueKeys.RoadEnd).ShouldBe(this.thirdEnd);
+      roadData[3].GetIdentityValue(GameDataValueKeys.RoadOwner).ShouldBe(this.fourthId);
+      roadData[3].GetIntegerValue(GameDataValueKeys.RoadStart).ShouldBe(this.fourthStart);
+      roadData[3].GetIntegerValue(GameDataValueKeys.RoadEnd).ShouldBe(this.fourthEnd);
     }
 
     private MemoryStream GetXmlStream()
@@ -136,21 +136,21 @@ namespace Jabberwocky.SoC.Library.UnitTests.Storage_Tests
         "<production>9,8,5,12,11,3,6,10,6,0,4,11,2,4,3,5,9,10,8</production>" +
         "</hexes></board>" +
         "<players> " +
-        $"<playerOne id=\"{this.firstId}\" name=\"{firstName}\" brick=\"{firstBrickCount}\" grain=\"{firstGrainCount}\" lumber=\"{firstLumberCount}\" ore=\"{firstOreCount}\" wool=\"{firstWoolCount}\" />" +
-        $"<playerTwo id=\"{this.secondId}\" name=\"{secondName}\" brick=\"{secondBrickCount}\" grain=\"{secondGrainCount}\" lumber=\"{secondLumberCount}\" ore=\"{secondOreCount}\" wool=\"{secondWoolCount}\" />" +
-        $"<playerThree id=\"{this.thirdId}\" name=\"{thirdName}\" brick=\"{thirdBrickCount}\" grain=\"{thirdGrainCount}\" lumber=\"{thirdLumberCount}\" ore=\"{thirdOreCount}\" wool=\"{thirdWoolCount}\" />" +
-        $"<playerFour id=\"{this.fourthId}\" name=\"{fourthName}\" brick=\"{fourthBrickCount}\" grain=\"{fourthGrainCount}\" lumber=\"{fourthLumberCount}\" ore=\"{fourthOreCount}\" wool=\"{fourthWoolCount}\" />" +
+        $"<playerOne id=\"{this.firstId}\" name=\"{this.firstName}\" brick=\"{this.firstBrickCount}\" grain=\"{this.firstGrainCount}\" lumber=\"{this.firstLumberCount}\" ore=\"{this.firstOreCount}\" wool=\"{this.firstWoolCount}\" />" +
+        $"<playerTwo id=\"{this.secondId}\" name=\"{this.secondName}\" brick=\"{this.secondBrickCount}\" grain=\"{this.secondGrainCount}\" lumber=\"{this.secondLumberCount}\" ore=\"{this.secondOreCount}\" wool=\"{this.secondWoolCount}\" />" +
+        $"<playerThree id=\"{this.thirdId}\" name=\"{this.thirdName}\" brick=\"{this.thirdBrickCount}\" grain=\"{this.thirdGrainCount}\" lumber=\"{this.thirdLumberCount}\" ore=\"{this.thirdOreCount}\" wool=\"{this.thirdWoolCount}\" />" +
+        $"<playerFour id=\"{this.fourthId}\" name=\"{this.fourthName}\" brick=\"{this.fourthBrickCount}\" grain=\"{this.fourthGrainCount}\" lumber=\"{this.fourthLumberCount}\" ore=\"{this.fourthOreCount}\" wool=\"{this.fourthWoolCount}\" />" +
         "</players>" +
         "<settlements>" +
-        $"<settlement playerid=\"{firstId}\" location=\"{firstLocation}\" />" +
-        $"<settlement playerid=\"{secondId}\" location=\"{secondLocation}\" />" +
-        $"<settlement playerid=\"{thirdId}\" location=\"{thirdLocation}\" />" +
-        $"<settlement playerid=\"{fourthId}\" location=\"{fourthLocation}\" />" +
+        $"<settlement playerid=\"{this.firstId}\" location=\"{this.firstLocation}\" />" +
+        $"<settlement playerid=\"{this.secondId}\" location=\"{this.secondLocation}\" />" +
+        $"<settlement playerid=\"{this.thirdId}\" location=\"{this.thirdLocation}\" />" +
+        $"<settlement playerid=\"{this.fourthId}\" location=\"{this.fourthLocation}\" />" +
         "</settlements><roads>" +
-        $"<road playerid=\"{firstId}\" start=\"{firstStart}\" end=\"{firstEnd}\" />" +
-        $"<road playerid=\"{secondId}\" start=\"{secondStart}\" end=\"{secondEnd}\" />" +
-        $"<road playerid=\"{thirdId}\" start=\"{thirdStart}\" end=\"{thirdEnd}\" />" +
-        $"<road playerid=\"{fourthId}\" start=\"{fourthStart}\" end=\"{fourthEnd}\" />" +
+        $"<road playerid=\"{this.firstId}\" start=\"{this.firstStart}\" end=\"{this.firstEnd}\" />" +
+        $"<road playerid=\"{this.secondId}\" start=\"{this.secondStart}\" end=\"{this.secondEnd}\" />" +
+        $"<road playerid=\"{this.thirdId}\" start=\"{this.thirdStart}\" end=\"{this.thirdEnd}\" />" +
+        $"<road playerid=\"{this.fourthId}\" start=\"{this.fourthStart}\" end=\"{this.fourthEnd}\" />" +
         "</roads>" +
         "</game>";
 
