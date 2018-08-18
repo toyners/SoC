@@ -56,37 +56,37 @@ namespace Jabberwocky.SoC.Library.UnitTests.Storage_Tests
 
       // Assert
       xmlGameDataReader.ShouldNotBeNull();
-      xmlGameDataReader[GameDataSectionKeys.PlayerOne].GetIdentityValue(GameDataValueKeys.PlayerId).ShouldBe(firstId);
-      xmlGameDataReader[GameDataSectionKeys.PlayerOne].GetStringValue(GameDataValueKeys.PlayerName).ShouldBe(firstName);
-      xmlGameDataReader[GameDataSectionKeys.PlayerOne].GetIntegerValue(GameDataValueKeys.PlayerBrick).ShouldBe(firstBrickCount);
-      xmlGameDataReader[GameDataSectionKeys.PlayerOne].GetIntegerValue(GameDataValueKeys.PlayerGrain).ShouldBe(firstGrainCount);
-      xmlGameDataReader[GameDataSectionKeys.PlayerOne].GetIntegerValue(GameDataValueKeys.PlayerLumber).ShouldBe(firstLumberCount);
-      xmlGameDataReader[GameDataSectionKeys.PlayerOne].GetIntegerValue(GameDataValueKeys.PlayerOre).ShouldBe(firstOreCount);
-      xmlGameDataReader[GameDataSectionKeys.PlayerOne].GetIntegerValue(GameDataValueKeys.PlayerWool).ShouldBe(firstWoolCount);
+      xmlGameDataReader[GameDataSectionKeys.PlayerOne].GetIdentityValue(GameDataValueKeys.PlayerId).ShouldBe(this.firstId);
+      xmlGameDataReader[GameDataSectionKeys.PlayerOne].GetStringValue(GameDataValueKeys.PlayerName).ShouldBe(this.firstName);
+      xmlGameDataReader[GameDataSectionKeys.PlayerOne].GetIntegerValue(GameDataValueKeys.PlayerBrick).ShouldBe(this.firstBrickCount);
+      xmlGameDataReader[GameDataSectionKeys.PlayerOne].GetIntegerValue(GameDataValueKeys.PlayerGrain).ShouldBe(this.firstGrainCount);
+      xmlGameDataReader[GameDataSectionKeys.PlayerOne].GetIntegerValue(GameDataValueKeys.PlayerLumber).ShouldBe(this.firstLumberCount);
+      xmlGameDataReader[GameDataSectionKeys.PlayerOne].GetIntegerValue(GameDataValueKeys.PlayerOre).ShouldBe(this.firstOreCount);
+      xmlGameDataReader[GameDataSectionKeys.PlayerOne].GetIntegerValue(GameDataValueKeys.PlayerWool).ShouldBe(this.firstWoolCount);
 
-      xmlGameDataReader[GameDataSectionKeys.PlayerTwo].GetIdentityValue(GameDataValueKeys.PlayerId).ShouldBe(secondId);
-      xmlGameDataReader[GameDataSectionKeys.PlayerTwo].GetStringValue(GameDataValueKeys.PlayerName).ShouldBe(secondName);
-      xmlGameDataReader[GameDataSectionKeys.PlayerTwo].GetIntegerValue(GameDataValueKeys.PlayerBrick).ShouldBe(secondBrickCount);
-      xmlGameDataReader[GameDataSectionKeys.PlayerTwo].GetIntegerValue(GameDataValueKeys.PlayerGrain).ShouldBe(secondGrainCount);
-      xmlGameDataReader[GameDataSectionKeys.PlayerTwo].GetIntegerValue(GameDataValueKeys.PlayerLumber).ShouldBe(secondLumberCount);
-      xmlGameDataReader[GameDataSectionKeys.PlayerTwo].GetIntegerValue(GameDataValueKeys.PlayerOre).ShouldBe(secondOreCount);
-      xmlGameDataReader[GameDataSectionKeys.PlayerTwo].GetIntegerValue(GameDataValueKeys.PlayerWool).ShouldBe(secondWoolCount);
+      xmlGameDataReader[GameDataSectionKeys.PlayerTwo].GetIdentityValue(GameDataValueKeys.PlayerId).ShouldBe(this.secondId);
+      xmlGameDataReader[GameDataSectionKeys.PlayerTwo].GetStringValue(GameDataValueKeys.PlayerName).ShouldBe(this.secondName);
+      xmlGameDataReader[GameDataSectionKeys.PlayerTwo].GetIntegerValue(GameDataValueKeys.PlayerBrick).ShouldBe(this.secondBrickCount);
+      xmlGameDataReader[GameDataSectionKeys.PlayerTwo].GetIntegerValue(GameDataValueKeys.PlayerGrain).ShouldBe(this.secondGrainCount);
+      xmlGameDataReader[GameDataSectionKeys.PlayerTwo].GetIntegerValue(GameDataValueKeys.PlayerLumber).ShouldBe(this.secondLumberCount);
+      xmlGameDataReader[GameDataSectionKeys.PlayerTwo].GetIntegerValue(GameDataValueKeys.PlayerOre).ShouldBe(this.secondOreCount);
+      xmlGameDataReader[GameDataSectionKeys.PlayerTwo].GetIntegerValue(GameDataValueKeys.PlayerWool).ShouldBe(this.secondWoolCount);
 
-      xmlGameDataReader[GameDataSectionKeys.PlayerThree].GetIdentityValue(GameDataValueKeys.PlayerId).ShouldBe(thirdId);
-      xmlGameDataReader[GameDataSectionKeys.PlayerThree].GetStringValue(GameDataValueKeys.PlayerName).ShouldBe(thirdName);
-      xmlGameDataReader[GameDataSectionKeys.PlayerThree].GetIntegerValue(GameDataValueKeys.PlayerBrick).ShouldBe(thirdBrickCount);
-      xmlGameDataReader[GameDataSectionKeys.PlayerThree].GetIntegerValue(GameDataValueKeys.PlayerGrain).ShouldBe(thirdGrainCount);
-      xmlGameDataReader[GameDataSectionKeys.PlayerThree].GetIntegerValue(GameDataValueKeys.PlayerLumber).ShouldBe(thirdLumberCount);
-      xmlGameDataReader[GameDataSectionKeys.PlayerThree].GetIntegerValue(GameDataValueKeys.PlayerOre).ShouldBe(thirdOreCount);
-      xmlGameDataReader[GameDataSectionKeys.PlayerThree].GetIntegerValue(GameDataValueKeys.PlayerWool).ShouldBe(thirdWoolCount);
+      xmlGameDataReader[GameDataSectionKeys.PlayerThree].GetIdentityValue(GameDataValueKeys.PlayerId).ShouldBe(this.thirdId);
+      xmlGameDataReader[GameDataSectionKeys.PlayerThree].GetStringValue(GameDataValueKeys.PlayerName).ShouldBe(this.thirdName);
+      xmlGameDataReader[GameDataSectionKeys.PlayerThree].GetIntegerValue(GameDataValueKeys.PlayerBrick).ShouldBe(this.thirdBrickCount);
+      xmlGameDataReader[GameDataSectionKeys.PlayerThree].GetIntegerValue(GameDataValueKeys.PlayerGrain).ShouldBe(this.thirdGrainCount);
+      xmlGameDataReader[GameDataSectionKeys.PlayerThree].GetIntegerValue(GameDataValueKeys.PlayerLumber).ShouldBe(this.thirdLumberCount);
+      xmlGameDataReader[GameDataSectionKeys.PlayerThree].GetIntegerValue(GameDataValueKeys.PlayerOre).ShouldBe(this.thirdOreCount);
+      xmlGameDataReader[GameDataSectionKeys.PlayerThree].GetIntegerValue(GameDataValueKeys.PlayerWool).ShouldBe(this.thirdWoolCount);
 
-      xmlGameDataReader[GameDataSectionKeys.PlayerFour].GetIdentityValue(GameDataValueKeys.PlayerId).ShouldBe(fourthId);
-      xmlGameDataReader[GameDataSectionKeys.PlayerFour].GetStringValue(GameDataValueKeys.PlayerName).ShouldBe(fourthName);
-      xmlGameDataReader[GameDataSectionKeys.PlayerFour].GetIntegerValue(GameDataValueKeys.PlayerBrick).ShouldBe(fourthBrickCount);
-      xmlGameDataReader[GameDataSectionKeys.PlayerFour].GetIntegerValue(GameDataValueKeys.PlayerGrain).ShouldBe(fourthGrainCount);
-      xmlGameDataReader[GameDataSectionKeys.PlayerFour].GetIntegerValue(GameDataValueKeys.PlayerLumber).ShouldBe(fourthLumberCount);
-      xmlGameDataReader[GameDataSectionKeys.PlayerFour].GetIntegerValue(GameDataValueKeys.PlayerOre).ShouldBe(fourthOreCount);
-      xmlGameDataReader[GameDataSectionKeys.PlayerFour].GetIntegerValue(GameDataValueKeys.PlayerWool).ShouldBe(fourthWoolCount);
+      xmlGameDataReader[GameDataSectionKeys.PlayerFour].GetIdentityValue(GameDataValueKeys.PlayerId).ShouldBe(this.fourthId);
+      xmlGameDataReader[GameDataSectionKeys.PlayerFour].GetStringValue(GameDataValueKeys.PlayerName).ShouldBe(this.fourthName);
+      xmlGameDataReader[GameDataSectionKeys.PlayerFour].GetIntegerValue(GameDataValueKeys.PlayerBrick).ShouldBe(this.fourthBrickCount);
+      xmlGameDataReader[GameDataSectionKeys.PlayerFour].GetIntegerValue(GameDataValueKeys.PlayerGrain).ShouldBe(this.fourthGrainCount);
+      xmlGameDataReader[GameDataSectionKeys.PlayerFour].GetIntegerValue(GameDataValueKeys.PlayerLumber).ShouldBe(this.fourthLumberCount);
+      xmlGameDataReader[GameDataSectionKeys.PlayerFour].GetIntegerValue(GameDataValueKeys.PlayerOre).ShouldBe(this.fourthOreCount);
+      xmlGameDataReader[GameDataSectionKeys.PlayerFour].GetIntegerValue(GameDataValueKeys.PlayerWool).ShouldBe(this.fourthWoolCount);
     }
 
     [Test]
@@ -104,14 +104,14 @@ namespace Jabberwocky.SoC.Library.UnitTests.Storage_Tests
       xmlGameDataReader.ShouldNotBeNull();
       var settlementData = xmlGameDataReader[GameDataSectionKeys.Buildings].GetSections(GameDataSectionKeys.Building);
       settlementData.Length.ShouldBe(4);
-      settlementData[0].GetIdentityValue(GameDataValueKeys.SettlementOwner).ShouldBe(firstId);
-      settlementData[0].GetIntegerValue(GameDataValueKeys.SettlementLocation).ShouldBe(firstLocation);
-      settlementData[1].GetIdentityValue(GameDataValueKeys.SettlementOwner).ShouldBe(secondId);
-      settlementData[1].GetIntegerValue(GameDataValueKeys.SettlementLocation).ShouldBe(secondLocation);
-      settlementData[2].GetIdentityValue(GameDataValueKeys.SettlementOwner).ShouldBe(thirdId);
-      settlementData[2].GetIntegerValue(GameDataValueKeys.SettlementLocation).ShouldBe(thirdLocation);
-      settlementData[3].GetIdentityValue(GameDataValueKeys.SettlementOwner).ShouldBe(fourthId);
-      settlementData[3].GetIntegerValue(GameDataValueKeys.SettlementLocation).ShouldBe(fourthLocation);
+      settlementData[0].GetIdentityValue(GameDataValueKeys.SettlementOwner).ShouldBe(this.firstId);
+      settlementData[0].GetIntegerValue(GameDataValueKeys.SettlementLocation).ShouldBe(this.firstLocation);
+      settlementData[1].GetIdentityValue(GameDataValueKeys.SettlementOwner).ShouldBe(this.secondId);
+      settlementData[1].GetIntegerValue(GameDataValueKeys.SettlementLocation).ShouldBe(this.secondLocation);
+      settlementData[2].GetIdentityValue(GameDataValueKeys.SettlementOwner).ShouldBe(this.thirdId);
+      settlementData[2].GetIntegerValue(GameDataValueKeys.SettlementLocation).ShouldBe(this.thirdLocation);
+      settlementData[3].GetIdentityValue(GameDataValueKeys.SettlementOwner).ShouldBe(this.fourthId);
+      settlementData[3].GetIntegerValue(GameDataValueKeys.SettlementLocation).ShouldBe(this.fourthLocation);
 
       var roadData = xmlGameDataReader[GameDataSectionKeys.Roads].GetSections(GameDataSectionKeys.Road);
       roadData.Length.ShouldBe(4);
