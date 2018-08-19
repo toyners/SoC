@@ -13,14 +13,14 @@ namespace Jabberwocky.SoC.Library.UnitTests.Storage_Tests
   public class XmlGameDataReader_UnitTests
   {
     private Guid firstId = Guid.NewGuid(), secondId = Guid.NewGuid(), thirdId = Guid.NewGuid(), fourthId = Guid.NewGuid();
-    private String firstName = "Name_1", secondName = "Name_2", thirdName = "Name_3", fourthName = "Name_4";
-    private Int32 firstBrickCount = 1, firstGrainCount = 2, firstLumberCount = 3, firstOreCount = 4, firstWoolCount = 5;
-    private Int32 secondBrickCount = 1, secondGrainCount = 2, secondLumberCount = 3, secondOreCount = 4, secondWoolCount = 5;
-    private Int32 thirdBrickCount = 1, thirdGrainCount = 2, thirdLumberCount = 3, thirdOreCount = 4, thirdWoolCount = 5;
-    private Int32 fourthBrickCount = 1, fourthGrainCount = 2, fourthLumberCount = 3, fourthOreCount = 4, fourthWoolCount = 5;
-    private Int32 firstLocation = 1, secondLocation = 3, thirdLocation = 7, fourthLocation = 15;
-    private Int32 firstStart = 1, firstEnd = 2, secondStart = 3, secondEnd = 4;
-    private Int32 thirdStart = 7, thirdEnd = 8, fourthStart = 15, fourthEnd = 16;
+    private readonly String firstName = "Name_1", secondName = "Name_2", thirdName = "Name_3", fourthName = "Name_4";
+    private readonly Int32 firstBrickCount = 1, firstGrainCount = 2, firstLumberCount = 3, firstOreCount = 4, firstWoolCount = 5;
+    private readonly Int32 secondBrickCount = 1, secondGrainCount = 2, secondLumberCount = 3, secondOreCount = 4, secondWoolCount = 5;
+    private readonly Int32 thirdBrickCount = 1, thirdGrainCount = 2, thirdLumberCount = 3, thirdOreCount = 4, thirdWoolCount = 5;
+    private readonly Int32 fourthBrickCount = 1, fourthGrainCount = 2, fourthLumberCount = 3, fourthOreCount = 4, fourthWoolCount = 5;
+    private readonly Int32 firstLocation = 1, secondLocation = 3, thirdLocation = 7, fourthLocation = 15;
+    private readonly Int32 firstStart = 1, firstEnd = 2, secondStart = 3, secondEnd = 4;
+    private readonly Int32 thirdStart = 7, thirdEnd = 8, fourthStart = 15, fourthEnd = 16;
 
     [Test]
     [Category("XmlGameDataReader")]
