@@ -41,8 +41,11 @@ namespace Jabberwocky.SoC.Library.Storage
         this.sections.Add(token.Item2, section);
       }
 
-      section = new XmlGameDataSection(new XmlBuildingDataSectionFactory(doc));
+      section = new XmlGameDataSection(new XmlBuildingsDataSectionFactory(doc));
       this.sections.Add(GameDataSectionKeys.Buildings, section);
+
+      section = new XmlGameDataSection(new XmlRoadsDataSectionFactory(doc));
+      this.sections.Add(GameDataSectionKeys.Roads, section);
     }
 
     public IGameDataSection<GameDataSectionKeys, GameDataValueKeys, ResourceTypes> this[GameDataSectionKeys sectionKey]

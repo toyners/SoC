@@ -22,6 +22,7 @@ namespace Jabberwocky.SoC.Library.Storage
       this.integerValues = factory.GetIntegers();
       this.integerArrayValues = factory.GetIntegerArrays();
       this.sections = factory.GetSections();
+      this.sectionArrays = factory.GetSectionArrays();
       this.stringValues = factory.GetStrings();
     }
 
@@ -105,12 +106,18 @@ namespace Jabberwocky.SoC.Library.Storage
     {
       return null;
     }
+
+    public virtual Dictionary<GameDataSectionKeys, XmlGameDataSection[]> GetSectionArrays()
+    {
+      return null;
+    }
   }
 
   public class XmlGameBoardDataSectionFactory : XmlGameDataSectionBaseFactory
   {
     private readonly Dictionary<GameDataValueKeys, String> stringValues;
     private readonly Dictionary<GameDataValueKeys, Int32[]> integerArrayValues;
+    private readonly Dictionary<GameDataSectionKeys, XmlGameDataSection[]> sectionArraysValues;
 
     public XmlGameBoardDataSectionFactory(XmlDocument document)
     {
@@ -132,11 +139,20 @@ namespace Jabberwocky.SoC.Library.Storage
         this.integerArrayValues = new Dictionary<GameDataValueKeys, int[]> { { GameDataValueKeys.HexProduction, values } };
       }
 
-      var settlementNodes = root.SelectNodes("/game/settlements/settlement");
-      foreach (var settlementNode in settlementNodes)
-      {
+      this.sectionArraysValues = new Dictionary<GameDataSectionKeys, XmlGameDataSection[]>();
 
+      var builder = new XmlBuildingsDataSectionFactory(document);
+      foreach (var kv in builder.GetSectionArrays())
+      {
+        this.sectionArraysValues.Add(kv.Key, kv.Value);
       }
+
+      //var settlementNodes = root.SelectNodes("/game/settlements/settlement");
+      //var sections = new XmlGameDataSection[settlementNodes.Count];
+      //for (var index = 0; index < settlementNodes.Count; index++)
+      //{
+        //sections[index] =  builder.SetValues(settlementNodes[index]);
+      //}
     }
 
     public override Dictionary<GameDataValueKeys, int[]> GetIntegerArrays()
@@ -188,14 +204,100 @@ namespace Jabberwocky.SoC.Library.Storage
     }
   }
 
-  public class XmlBuildingDataSectionFactory : XmlGameDataSectionBaseFactory
+  public class XmlBuildingsDataSectionFactory : XmlGameDataSectionBaseFactory
   {
-    public XmlBuildingDataSectionFactory(XmlDocument doc)
+    private readonly Dictionary<GameDataSectionKeys, XmlGameDataSection[]> sectionArrays;
+
+    public XmlBuildingsDataSectionFactory(XmlDocument doc)
     {
       var settlementNodes = doc.SelectNodes("/game/settlements/settlement");
-      var sections = new XmlGameDataSection[settlementNodes.Count];
+      var buildingSections = new XmlGameDataSection[settlementNodes.Count];
 
+      var builder = new XmlBuildingDataSectionFactory();
 
+      for (var index = 0; index < settlementNodes.Count; index++)
+      {
+        builder.SetValues(settlementNodes[index]);
+        buildingSections[index++] = new XmlGameDataSection(builder);
+      }
+
+      this.sectionArrays = new Dictionary<GameDataSectionKeys, XmlGameDataSection[]>();
+      this.sectionArrays.Add(GameDataSectionKeys.Buildings, buildingSections);
+    }
+
+    public override Dictionary<GameDataSectionKeys, XmlGameDataSection[]> GetSectionArrays()
+    {
+      return this.sectionArrays;
+    }
+  }
+
+  public class XmlBuildingDataSectionFactory : XmlGameDataSectionBaseFactory
+  {
+    private readonly Dictionary<GameDataValueKeys, Guid> identityValues = new Dictionary<GameDataValueKeys, Guid>();
+    private readonly Dictionary<GameDataValueKeys, Int32> integerValues = new Dictionary<GameDataValueKeys, Int32>();
+
+    public void SetValues(XmlNode buildingNode)
+    {
+      this.identityValues.Clear();
+      this.integerValues.Clear();
+
+      this.identityValues.Add(GameDataValueKeys.PlayerId, Guid.Parse(buildingNode.Attributes["playerid"].Value));
+      this.integerValues.Add(GameDataValueKeys.SettlementLocation, Int32.Parse(buildingNode.Attributes["location"].Value));
+    }
+
+    public override Dictionary<GameDataValueKeys, Guid> GetIdentities()
+    {
+      return this.identityValues;
+    }
+
+    public override Dictionary<GameDataValueKeys, int> GetIntegers()
+    {
+      return this.integerValues;
+    }
+  }
+
+  public class XmlRoadsDataSectionFactory : XmlGameDataSectionBaseFactory
+  {
+    private XmlGameDataSection[] sections;
+
+    public XmlRoadsDataSectionFactory(XmlDocument doc)
+    {
+      var roadsNodes = doc.SelectNodes("/game/roads/road");
+      this.sections = new XmlGameDataSection[roadsNodes.Count];
+
+      var builder = new XmlRoadDataSectionFactory();
+
+      for (var index = 0; index < roadsNodes.Count; index++)
+      {
+        builder.SetValues(roadsNodes[index]);
+        this.sections[index++] = new XmlGameDataSection(builder);
+      }
+    }
+  }
+
+  public class XmlRoadDataSectionFactory : XmlGameDataSectionBaseFactory
+  {
+    private readonly Dictionary<GameDataValueKeys, Guid> identityValues = new Dictionary<GameDataValueKeys, Guid>();
+    private readonly Dictionary<GameDataValueKeys, Int32> integerValues = new Dictionary<GameDataValueKeys, Int32>();
+
+    public void SetValues(XmlNode roadNode)
+    {
+      this.identityValues.Clear();
+      this.integerValues.Clear();
+
+      this.identityValues.Add(GameDataValueKeys.PlayerId, Guid.Parse(roadNode.Attributes["playerid"].Value));
+      this.integerValues.Add(GameDataValueKeys.RoadStart, Int32.Parse(roadNode.Attributes["start"].Value));
+      this.integerValues.Add(GameDataValueKeys.RoadEnd, Int32.Parse(roadNode.Attributes["end"].Value));
+    }
+
+    public override Dictionary<GameDataValueKeys, Guid> GetIdentities()
+    {
+      return this.identityValues;
+    }
+
+    public override Dictionary<GameDataValueKeys, int> GetIntegers()
+    {
+      return this.integerValues;
     }
   }
 }
