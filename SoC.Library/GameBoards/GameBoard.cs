@@ -928,15 +928,13 @@ namespace Jabberwocky.SoC.Library.GameBoards
         this.hexes[index].Production = (UInt32)productionValues[index];
       }
 
-      data = reader[GameDataSectionKeys.Buildings];
-      var settlements = data.GetSections(GameDataSectionKeys.Building);
+      var settlements = reader.GetSections(GameDataSectionKeys.Buildings);
       foreach (var settlement in settlements)
       {
         this.PlaceSettlementOnBoard(settlement.GetIdentityValue(GameDataValueKeys.SettlementOwner), (UInt32)settlement.GetIntegerValue(GameDataValueKeys.SettlementLocation));
       }
 
-      data = reader[GameDataSectionKeys.Roads];
-      var roads = data.GetSections(GameDataSectionKeys.Road);
+      var roads = reader.GetSections(GameDataSectionKeys.Roads);
       foreach (var road in roads)
       {
         this.PlaceRoadSegmentOnBoard(road.GetIdentityValue(GameDataValueKeys.RoadOwner), (UInt32)road.GetIntegerValue(GameDataValueKeys.RoadStart), (UInt32)road.GetIntegerValue(GameDataValueKeys.RoadEnd));

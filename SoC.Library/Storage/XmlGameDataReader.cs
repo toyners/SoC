@@ -9,6 +9,7 @@ namespace Jabberwocky.SoC.Library.Storage
   public class XmlGameDataReader : IGameDataReader<GameDataSectionKeys, GameDataValueKeys, ResourceTypes>
   {
     private Dictionary<GameDataSectionKeys, XmlGameDataSection> sections;
+    private Dictionary<GameDataSectionKeys, XmlGameDataSection[]> sectionArrays;
 
     public XmlGameDataReader(Stream stream)
     {
@@ -18,6 +19,7 @@ namespace Jabberwocky.SoC.Library.Storage
       doc.LoadXml(content);
 
       this.sections = new Dictionary<GameDataSectionKeys, XmlGameDataSection>();
+      this.sectionArrays = new Dictionary<GameDataSectionKeys, XmlGameDataSection[]>();
 
       var section = new XmlGameDataSection(new XmlGameBoardDataSectionFactory(doc));
       this.sections.Add(GameDataSectionKeys.GameBoard, section);
@@ -41,11 +43,11 @@ namespace Jabberwocky.SoC.Library.Storage
         this.sections.Add(token.Item2, section);
       }
 
-      section = new XmlGameDataSection(new XmlBuildingsDataSectionFactory(doc));
-      this.sections.Add(GameDataSectionKeys.Buildings, section);
+      var sections = XmlBuildingsDataSectionFactory.CreateSectionArray(doc);
+      this.sectionArrays.Add(GameDataSectionKeys.Buildings, sections);
 
-      section = new XmlGameDataSection(new XmlRoadsDataSectionFactory(doc));
-      this.sections.Add(GameDataSectionKeys.Roads, section);
+      sections = XmlRoadsDataSectionFactory.CreateSectionArray(doc);
+      this.sectionArrays.Add(GameDataSectionKeys.Roads, sections);
     }
 
     public IGameDataSection<GameDataSectionKeys, GameDataValueKeys, ResourceTypes> this[GameDataSectionKeys sectionKey]
@@ -59,6 +61,16 @@ namespace Jabberwocky.SoC.Library.Storage
 
         return section;
       }
+    }
+
+    public IGameDataSection<GameDataSectionKeys, GameDataValueKeys, ResourceTypes>[] GetSections(GameDataSectionKeys sectionKey)
+    {
+      if (!this.sectionArrays.TryGetValue(sectionKey, out var sections))
+      {
+        throw new KeyNotFoundException($"{sectionKey} not found in game data");
+      }
+
+      return sections;
     }
   }
 }

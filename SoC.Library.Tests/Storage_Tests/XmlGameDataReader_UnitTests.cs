@@ -102,7 +102,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.Storage_Tests
 
       // Assert
       xmlGameDataReader.ShouldNotBeNull();
-      var settlementData = xmlGameDataReader[GameDataSectionKeys.Buildings].GetSections(GameDataSectionKeys.Building);
+      var settlementData = xmlGameDataReader.GetSections(GameDataSectionKeys.Buildings);
       settlementData.Length.ShouldBe(4);
       settlementData[0].GetIdentityValue(GameDataValueKeys.SettlementOwner).ShouldBe(this.firstId);
       settlementData[0].GetIntegerValue(GameDataValueKeys.SettlementLocation).ShouldBe(this.firstLocation);
@@ -113,7 +113,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.Storage_Tests
       settlementData[3].GetIdentityValue(GameDataValueKeys.SettlementOwner).ShouldBe(this.fourthId);
       settlementData[3].GetIntegerValue(GameDataValueKeys.SettlementLocation).ShouldBe(this.fourthLocation);
 
-      var roadData = xmlGameDataReader[GameDataSectionKeys.Roads].GetSections(GameDataSectionKeys.Road);
+      var roadData = xmlGameDataReader.GetSections(GameDataSectionKeys.Roads);
       roadData.Length.ShouldBe(4);
       roadData[0].GetIdentityValue(GameDataValueKeys.RoadOwner).ShouldBe(this.firstId);
       roadData[0].GetIntegerValue(GameDataValueKeys.RoadStart).ShouldBe(this.firstStart);

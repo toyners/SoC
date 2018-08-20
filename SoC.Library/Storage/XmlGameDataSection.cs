@@ -138,21 +138,6 @@ namespace Jabberwocky.SoC.Library.Storage
 
         this.integerArrayValues = new Dictionary<GameDataValueKeys, int[]> { { GameDataValueKeys.HexProduction, values } };
       }
-
-      this.sectionArraysValues = new Dictionary<GameDataSectionKeys, XmlGameDataSection[]>();
-
-      var builder = new XmlBuildingsDataSectionFactory(document);
-      foreach (var kv in builder.GetSectionArrays())
-      {
-        this.sectionArraysValues.Add(kv.Key, kv.Value);
-      }
-
-      //var settlementNodes = root.SelectNodes("/game/settlements/settlement");
-      //var sections = new XmlGameDataSection[settlementNodes.Count];
-      //for (var index = 0; index < settlementNodes.Count; index++)
-      //{
-        //sections[index] =  builder.SetValues(settlementNodes[index]);
-      //}
     }
 
     public override Dictionary<GameDataValueKeys, int[]> GetIntegerArrays()
@@ -204,11 +189,9 @@ namespace Jabberwocky.SoC.Library.Storage
     }
   }
 
-  public class XmlBuildingsDataSectionFactory : XmlGameDataSectionBaseFactory
+  public class XmlBuildingsDataSectionFactory
   {
-    private readonly Dictionary<GameDataSectionKeys, XmlGameDataSection[]> sectionArrays;
-
-    public XmlBuildingsDataSectionFactory(XmlDocument doc)
+    public static XmlGameDataSection[] CreateSectionArray(XmlDocument doc)
     {
       var settlementNodes = doc.SelectNodes("/game/settlements/settlement");
       var buildingSections = new XmlGameDataSection[settlementNodes.Count];
@@ -218,16 +201,10 @@ namespace Jabberwocky.SoC.Library.Storage
       for (var index = 0; index < settlementNodes.Count; index++)
       {
         builder.SetValues(settlementNodes[index]);
-        buildingSections[index++] = new XmlGameDataSection(builder);
+        buildingSections[index] = new XmlGameDataSection(builder);
       }
 
-      this.sectionArrays = new Dictionary<GameDataSectionKeys, XmlGameDataSection[]>();
-      this.sectionArrays.Add(GameDataSectionKeys.Buildings, buildingSections);
-    }
-
-    public override Dictionary<GameDataSectionKeys, XmlGameDataSection[]> GetSectionArrays()
-    {
-      return this.sectionArrays;
+      return buildingSections;
     }
   }
 
@@ -241,7 +218,7 @@ namespace Jabberwocky.SoC.Library.Storage
       this.identityValues.Clear();
       this.integerValues.Clear();
 
-      this.identityValues.Add(GameDataValueKeys.PlayerId, Guid.Parse(buildingNode.Attributes["playerid"].Value));
+      this.identityValues.Add(GameDataValueKeys.SettlementOwner, Guid.Parse(buildingNode.Attributes["playerid"].Value));
       this.integerValues.Add(GameDataValueKeys.SettlementLocation, Int32.Parse(buildingNode.Attributes["location"].Value));
     }
 
@@ -256,22 +233,22 @@ namespace Jabberwocky.SoC.Library.Storage
     }
   }
 
-  public class XmlRoadsDataSectionFactory : XmlGameDataSectionBaseFactory
+  public class XmlRoadsDataSectionFactory
   {
-    private XmlGameDataSection[] sections;
-
-    public XmlRoadsDataSectionFactory(XmlDocument doc)
+    public static XmlGameDataSection[] CreateSectionArray(XmlDocument doc)
     {
       var roadsNodes = doc.SelectNodes("/game/roads/road");
-      this.sections = new XmlGameDataSection[roadsNodes.Count];
+      var sections = new XmlGameDataSection[roadsNodes.Count];
 
       var builder = new XmlRoadDataSectionFactory();
 
       for (var index = 0; index < roadsNodes.Count; index++)
       {
         builder.SetValues(roadsNodes[index]);
-        this.sections[index++] = new XmlGameDataSection(builder);
+        sections[index++] = new XmlGameDataSection(builder);
       }
+
+      return sections;
     }
   }
 
@@ -285,7 +262,7 @@ namespace Jabberwocky.SoC.Library.Storage
       this.identityValues.Clear();
       this.integerValues.Clear();
 
-      this.identityValues.Add(GameDataValueKeys.PlayerId, Guid.Parse(roadNode.Attributes["playerid"].Value));
+      this.identityValues.Add(GameDataValueKeys.RoadOwner, Guid.Parse(roadNode.Attributes["playerid"].Value));
       this.integerValues.Add(GameDataValueKeys.RoadStart, Int32.Parse(roadNode.Attributes["start"].Value));
       this.integerValues.Add(GameDataValueKeys.RoadEnd, Int32.Parse(roadNode.Attributes["end"].Value));
     }
