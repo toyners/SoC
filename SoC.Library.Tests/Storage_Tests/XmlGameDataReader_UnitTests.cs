@@ -10,6 +10,8 @@ namespace Jabberwocky.SoC.Library.UnitTests.Storage_Tests
   using Shouldly;
 
   [TestFixture]
+  [Category("All")]
+  [Category("XmlGameDataReader")]
   public class XmlGameDataReader_UnitTests
   {
     private Guid firstId = Guid.NewGuid(), secondId = Guid.NewGuid(), thirdId = Guid.NewGuid(), fourthId = Guid.NewGuid();
@@ -23,7 +25,6 @@ namespace Jabberwocky.SoC.Library.UnitTests.Storage_Tests
     private readonly Int32 thirdStart = 7, thirdEnd = 8, fourthStart = 15, fourthEnd = 16;
 
     [Test]
-    [Category("XmlGameDataReader")]
     public void Load_HexDataOnly_DataLoadedCorrectly()
     {
       // Act
@@ -44,7 +45,6 @@ namespace Jabberwocky.SoC.Library.UnitTests.Storage_Tests
     }
 
     [Test]
-    [Category("XmlGameDataReader")]
     public void Load_PlayerDataOnly_DataLoadedCorrectly()
     {
       // Act
@@ -90,7 +90,6 @@ namespace Jabberwocky.SoC.Library.UnitTests.Storage_Tests
     }
 
     [Test]
-    [Category("XmlGameDataReader")]
     public void Load_PlayerAndInfrastructureData_GameBoardIsAsExpected()
     {
       // Act

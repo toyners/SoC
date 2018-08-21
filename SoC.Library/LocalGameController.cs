@@ -491,6 +491,7 @@ namespace Jabberwocky.SoC.Library
     /// Load the game controller data from stream.
     /// </summary>
     /// <param name="stream">Stream containing game controller data.</param>
+    [Obsolete("Deprecated. Use Load(IGameDataReader<GameDataSectionKeys, GameDataValueKeys, ResourceTypes> reader) instead.")]
     public void Load(Stream stream)
     {
       try
