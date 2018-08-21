@@ -12,7 +12,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
   public class BoardQueryEngine_UnitTests
   {
     [Test]
-    public void GetLocationsWithBestYield_EmptySettlements()
+    public void GetLocationsWithBestYield_FirstLocationFromEmptyBoard_ReturnsExpectedLocation()
     {
       var gameBoard = new GameBoard(BoardSizes.Standard);
 
@@ -20,7 +20,19 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
       var results = queryEngine.GetLocationsWithBestYield(5);
 
-      results.ShouldContainExact(new[] {31u, 30u, 43u, 44u, 19u });
+      results.ShouldContainExact(new[] { 31u });
+    }
+
+    [Test]
+    public void GetLocationsWithBestYield_FirstFiveLocationsFromEmptyBoard_ReturnsExpectedLocations()
+    {
+      var gameBoard = new GameBoard(BoardSizes.Standard);
+
+      var queryEngine = new BoardQueryEngine(gameBoard);
+
+      var results = queryEngine.GetLocationsWithBestYield(5);
+
+      results.ShouldContainExact(new[] { 31u, 30u, 43u, 44u, 19u });
     }
   }
 }
