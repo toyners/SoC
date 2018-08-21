@@ -49,6 +49,9 @@
     <Compile Include="Constants.cs" />
     <Compile Include="DevelopmentCard.cs" />
     <Compile Include="DevelopmentCardHolder.cs" />
+    <Compile Include="Storage\XmlBuildingDataSectionFactory.cs" />
+    <Compile Include="Storage\XmlBuildingsDataSectionFactory.cs" />
+    <Compile Include="Storage\XmlGameBoardDataSectionFactory.cs" />
     <Compile Include="Storage\XmlGameDataSection.cs" />
     <Compile Include="Storage\GameDataSectionKeys.cs" />
     <Compile Include="Storage\GameDataValueKeys.cs" />
@@ -111,6 +114,10 @@
     <Compile Include="PlayerDataView.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ResourceProvider.cs" />
+    <Compile Include="Storage\XmlGameDataSectionBaseFactory.cs" />
+    <Compile Include="Storage\XmlGamePlayerDataSectionFactory.cs" />
+    <Compile Include="Storage\XmlRoadDataSectionFactory.cs" />
+    <Compile Include="Storage\XmlRoadsDataSectionFactory.cs" />
     <Compile Include="Trail.cs" />
     <Compile Include="ResourceTransaction.cs" />
     <Compile Include="TurnToken.cs" />
