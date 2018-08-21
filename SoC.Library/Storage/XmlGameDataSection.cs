@@ -193,7 +193,7 @@ namespace Jabberwocky.SoC.Library.Storage
   {
     public static XmlGameDataSection[] CreateSectionArray(XmlDocument doc)
     {
-      var settlementNodes = doc.SelectNodes("/game/settlements/settlement");
+       var settlementNodes = doc.SelectNodes("/game/settlements/settlement");
       var buildingSections = new XmlGameDataSection[settlementNodes.Count];
 
       var builder = new XmlBuildingDataSectionFactory();
@@ -210,13 +210,13 @@ namespace Jabberwocky.SoC.Library.Storage
 
   public class XmlBuildingDataSectionFactory : XmlGameDataSectionBaseFactory
   {
-    private readonly Dictionary<GameDataValueKeys, Guid> identityValues = new Dictionary<GameDataValueKeys, Guid>();
-    private readonly Dictionary<GameDataValueKeys, Int32> integerValues = new Dictionary<GameDataValueKeys, Int32>();
+    private Dictionary<GameDataValueKeys, Guid> identityValues;
+    private Dictionary<GameDataValueKeys, Int32> integerValues;
 
     public void SetValues(XmlNode buildingNode)
     {
-      this.identityValues.Clear();
-      this.integerValues.Clear();
+      this.identityValues = new Dictionary<GameDataValueKeys, Guid>();
+      this.integerValues = new Dictionary<GameDataValueKeys, Int32>();
 
       this.identityValues.Add(GameDataValueKeys.SettlementOwner, Guid.Parse(buildingNode.Attributes["playerid"].Value));
       this.integerValues.Add(GameDataValueKeys.SettlementLocation, Int32.Parse(buildingNode.Attributes["location"].Value));
@@ -245,7 +245,7 @@ namespace Jabberwocky.SoC.Library.Storage
       for (var index = 0; index < roadsNodes.Count; index++)
       {
         builder.SetValues(roadsNodes[index]);
-        sections[index++] = new XmlGameDataSection(builder);
+        sections[index] = new XmlGameDataSection(builder);
       }
 
       return sections;
@@ -254,13 +254,13 @@ namespace Jabberwocky.SoC.Library.Storage
 
   public class XmlRoadDataSectionFactory : XmlGameDataSectionBaseFactory
   {
-    private readonly Dictionary<GameDataValueKeys, Guid> identityValues = new Dictionary<GameDataValueKeys, Guid>();
-    private readonly Dictionary<GameDataValueKeys, Int32> integerValues = new Dictionary<GameDataValueKeys, Int32>();
+    private Dictionary<GameDataValueKeys, Guid> identityValues;
+    private Dictionary<GameDataValueKeys, Int32> integerValues;
 
     public void SetValues(XmlNode roadNode)
     {
-      this.identityValues.Clear();
-      this.integerValues.Clear();
+      this.identityValues = new Dictionary<GameDataValueKeys, Guid>();
+      this.integerValues = new Dictionary<GameDataValueKeys, Int32>();
 
       this.identityValues.Add(GameDataValueKeys.RoadOwner, Guid.Parse(roadNode.Attributes["playerid"].Value));
       this.integerValues.Add(GameDataValueKeys.RoadStart, Int32.Parse(roadNode.Attributes["start"].Value));
