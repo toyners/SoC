@@ -18,7 +18,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
       var queryEngine = new BoardQueryEngine(gameBoard);
 
-      var results = queryEngine.GetLocationsWithBestYield(5);
+      var results = queryEngine.GetLocationsWithBestYield(1);
 
       results.ShouldContainExact(new[] { 31u });
     }
