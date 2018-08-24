@@ -37,24 +37,48 @@ namespace Jabberwocky.SoC.Library.GameBoards
       }
     }
 
+    private UInt32 CalculateYield(UInt32 productionFactor)
+    {
+      switch (productionFactor)
+      {
+        case 2:
+        case 12: return 3;
+        case 3:
+        case 11: return 6;
+        case 4:
+        case 10: return 8;
+        case 5:
+        case 9: return 11;
+        case 6:
+        case 8: return 14;
+        case 0:
+        case 7: return 0;
+      }
+
+      throw new Exception("Should not get here");
+    }
+
     /// <summary>
     /// Get the first n locations with highest resource returns that are valid for settlement
     /// </summary>
     /// <returns></returns>
-    public UInt32[] GetLocationsWithBestYield(UInt32 count)
+    public UInt32[] GetLocationsWithBestYield(Int32 count)
     {
       var result = new UInt32[count];
-      var sorted = new List<Int32>();
+      var sorted = new List<UInt32>(new UInt32[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16,
+        17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40,
+        41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53 });
 
-      var yieldsByLocation = new Dictionary<Int32, UInt32>();
+      var yieldsByLocation = new Dictionary<UInt32, UInt32>();
 
       sorted.Sort((firstLocation, secondLocation) => {
 
         if (!yieldsByLocation.TryGetValue(firstLocation, out var firstLocationYield))
         {
+          //firstLocationYield = 0;
           foreach (var hexId in this.locationInformation[firstLocation])
           {
-            //this.hexInformation[hexId].Item2
+            firstLocationYield += this.CalculateYield(this.hexInformation[hexId].Item2);
           }
 
           yieldsByLocation.Add(firstLocation, firstLocationYield);
@@ -62,6 +86,12 @@ namespace Jabberwocky.SoC.Library.GameBoards
 
         if (!yieldsByLocation.TryGetValue(secondLocation, out var secondLocationYield))
         {
+          secondLocationYield = 0;
+          foreach (var hexId in this.locationInformation[secondLocation])
+          {
+            secondLocationYield += this.CalculateYield(this.hexInformation[hexId].Item2);
+          }
+
           yieldsByLocation.Add(secondLocation, secondLocationYield);
         }
 
@@ -70,21 +100,10 @@ namespace Jabberwocky.SoC.Library.GameBoards
           return 0;
         }
 
-        return (firstLocationYield < secondLocationYield ? -1 : 1);
+        return (firstLocationYield < secondLocationYield ? 1 : -1);
       });
 
-      for (var locationIndex = 0; locationIndex < this.locationInformation.Length; locationIndex++)
-      {
-        
-      }
-
-
-      if (count == 1)
-      {
-        return new[] { 31u };
-      }
-
-      return new[] { 31u, 30u, 43u, 44u, 19u };
+      return sorted.GetRange(0, count).ToArray();
     }
   }
 }
