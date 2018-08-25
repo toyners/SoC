@@ -3,6 +3,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
 {
   using System;
   using System.Collections.Generic;
+  using System.Diagnostics;
   using System.IO;
   using System.Reflection;
 
@@ -75,12 +76,17 @@ namespace Jabberwocky.SoC.Library.GameBoards
 
         if (!yieldsByLocation.TryGetValue(firstLocation, out var firstLocationYield))
         {
-          //firstLocationYield = 0;
+          var score = "";
           foreach (var hexId in this.locationInformation[firstLocation])
           {
+            score += "Hex: " + hexId + " has pf " +
+              this.hexInformation[hexId].Item2 + " (" + this.CalculateYield(this.hexInformation[hexId].Item2) + "), ";
+            
             firstLocationYield += this.CalculateYield(this.hexInformation[hexId].Item2);
           }
 
+          score += ". Total yield is " + firstLocationYield;
+          Debug.WriteLine(score);
           yieldsByLocation.Add(firstLocation, firstLocationYield);
         }
 
