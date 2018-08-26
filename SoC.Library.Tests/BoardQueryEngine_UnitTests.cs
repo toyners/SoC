@@ -30,7 +30,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
       var results = queryEngine.GetLocationsWithBestYield(5);
 
-      results.ShouldContainExact(new[] { 12u, 30u, 43u, 44u, 19u });
+      results.ShouldContainExact(new[] { 12u, 31u, 35u, 44u, 19u });
     }
 
     [Test]

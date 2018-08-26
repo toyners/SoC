@@ -59,6 +59,22 @@ namespace Jabberwocky.SoC.Library.GameBoards
       throw new Exception("Should not get here");
     }
 
+    private void OutputScore(UInt32 location, List<UInt32> hexes)
+    {
+      var score = "" + location + " - ";
+      UInt32 yield = 0;
+      foreach (var hexId in hexes)
+      {
+        score += "Hex: " + hexId + " has pf " +
+          this.hexInformation[hexId].Item2 + " (" + this.CalculateYield(this.hexInformation[hexId].Item2) + ") ";
+
+        yield += this.CalculateYield(this.hexInformation[hexId].Item2);
+      }
+
+      score += ". Total yield is " + yield;
+      Debug.WriteLine(score);
+    }
+
     /// <summary>
     /// Get the first n locations with highest resource returns that are valid for settlement
     /// </summary>
@@ -76,23 +92,18 @@ namespace Jabberwocky.SoC.Library.GameBoards
 
         if (!yieldsByLocation.TryGetValue(firstLocation, out var firstLocationYield))
         {
-          var score = "";
+          this.OutputScore(firstLocation, this.locationInformation[firstLocation]);
           foreach (var hexId in this.locationInformation[firstLocation])
           {
-            score += "Hex: " + hexId + " has pf " +
-              this.hexInformation[hexId].Item2 + " (" + this.CalculateYield(this.hexInformation[hexId].Item2) + "), ";
-            
             firstLocationYield += this.CalculateYield(this.hexInformation[hexId].Item2);
           }
 
-          score += ". Total yield is " + firstLocationYield;
-          Debug.WriteLine(score);
           yieldsByLocation.Add(firstLocation, firstLocationYield);
         }
 
         if (!yieldsByLocation.TryGetValue(secondLocation, out var secondLocationYield))
         {
-          secondLocationYield = 0;
+          this.OutputScore(secondLocation, this.locationInformation[secondLocation]);
           foreach (var hexId in this.locationInformation[secondLocation])
           {
             secondLocationYield += this.CalculateYield(this.hexInformation[hexId].Item2);
