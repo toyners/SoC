@@ -30,17 +30,17 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
       var results = queryEngine.GetLocationsWithBestYield(5);
 
-      results.ShouldContainExact(new[] { 12u, 31u, 35u, 44u, 19u });
+      results.ShouldContainExact(new[] { 12u, 31u, 35u, 41u, 43u });
     }
 
     [Test]
-    [TestCase(31u, 20u, 43u, 44u, 19u, 18u, 12u)]
+    [TestCase(12u, 4u, 31u, 35u, 41u, 43u, 11u)]
     [TestCase(30u, 29u, 43u, 44u, 19u, 18u, 12u)]
     [TestCase(43u, 51u, 31u, 30u, 19u, 18u, 12u)]
     [TestCase(44u, 45u, 31u, 30u, 19u, 18u, 12u)]
     [TestCase(19u, 20u, 31u, 30u, 43u, 44u, 12u)]
     [TestCase(18u, 29u, 31u, 30u, 43u, 44u, 12u)]
-    public void GetLocationsWithBestYield_FiveLocationsWhenBestLocationIsTaken_ReturnsExpectedLocations(UInt32 settlementLocation, UInt32 roadEndLocation, UInt32 firstLocation, UInt32 secondLocation, UInt32 thirdLocation, UInt32 fourthLocation,  UInt32 fifthLocation)
+    public void GetLocationsWithBestYield_FiveLocationsWhenLocationIsTaken_ReturnsExpectedLocations(UInt32 settlementLocation, UInt32 roadEndLocation, UInt32 firstLocation, UInt32 secondLocation, UInt32 thirdLocation, UInt32 fourthLocation,  UInt32 fifthLocation)
     {
       var gameBoard = new GameBoard(BoardSizes.Standard);
       gameBoard.PlaceStartingInfrastructure(Guid.NewGuid(), settlementLocation, roadEndLocation);

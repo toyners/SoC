@@ -114,13 +114,30 @@ namespace Jabberwocky.SoC.Library.GameBoards
 
         if (firstLocationYield == secondLocationYield)
         {
-          return 0;
+          // if the yield is the same then order by location in ascending order
+          return firstLocation.CompareTo(secondLocation);
         }
 
         return (firstLocationYield < secondLocationYield ? 1 : -1);
       });
 
-      return sorted.GetRange(0, count).ToArray();
+      foreach (var j in sorted)
+      {
+        Debug.WriteLine(j);
+      }
+
+      var queue = new Queue<UInt32>();
+      var index = 0;
+      while (queue.Count < count)
+      {
+        var location = sorted[index++];
+        if (!this.board.SettlementLocationIsOccupied(location) && !this.board.TooCloseToSettlement(location, out var id, out var i))
+        {
+          queue.Enqueue(location);
+        }
+      }
+
+      return queue.ToArray();
     }
   }
 }

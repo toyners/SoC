@@ -790,7 +790,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
       return false;
     }
 
-    private Boolean TooCloseToSettlement(UInt32 locationIndex, out Guid id, out UInt32 index)
+    public Boolean TooCloseToSettlement(UInt32 locationIndex, out Guid id, out UInt32 index)
     {
       id = Guid.Empty;
       for (index = 0; index < this.connections.GetLength(1); index++)
@@ -805,7 +805,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
       return false;
     }
 
-    private Boolean SettlementLocationIsOccupied(UInt32 locationIndex)
+    public Boolean SettlementLocationIsOccupied(UInt32 locationIndex)
     {
       return this.settlements.ContainsKey(locationIndex);
     }
