@@ -12,6 +12,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
     private GameBoard board;
     private readonly List<UInt32>[] locationInformation;
     private readonly Tuple<ResourceTypes?, UInt32>[] hexInformation;
+    private readonly Int32[] locationsOrderedByBestYield;
 
     public BoardQueryEngine(GameBoard board)
     {
@@ -36,59 +37,19 @@ namespace Jabberwocky.SoC.Library.GameBoards
           }
         }
       }
+
+      this.locationsOrderedByBestYield = this.GetLocationsOrderedByBestYield();
     }
 
-    private UInt32 CalculateYield(UInt32 productionFactor)
+    private Int32[] GetLocationsOrderedByBestYield()
     {
-      switch (productionFactor)
-      {
-        case 2:
-        case 12: return 3;
-        case 3:
-        case 11: return 6;
-        case 4:
-        case 10: return 8;
-        case 5:
-        case 9: return 11;
-        case 6:
-        case 8: return 14;
-        case 0:
-        case 7: return 0;
-      }
-
-      throw new Exception("Should not get here");
-    }
-
-    private void OutputScore(UInt32 location, List<UInt32> hexes)
-    {
-      var score = "" + location + " - ";
-      UInt32 yield = 0;
-      foreach (var hexId in hexes)
-      {
-        score += "Hex: " + hexId + " has pf " +
-          this.hexInformation[hexId].Item2 + " (" + this.CalculateYield(this.hexInformation[hexId].Item2) + ") ";
-
-        yield += this.CalculateYield(this.hexInformation[hexId].Item2);
-      }
-
-      score += ". Total yield is " + yield;
-      Debug.WriteLine(score);
-    }
-
-    /// <summary>
-    /// Get the first n locations with highest resource returns that are valid for settlement
-    /// </summary>
-    /// <returns></returns>
-    public UInt32[] GetLocationsWithBestYield(Int32 count)
-    {
-      var result = new UInt32[count];
-      var sorted = new List<UInt32>(new UInt32[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16,
+      var locations = new List<Int32>(new Int32[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16,
         17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40,
         41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53 });
 
-      var yieldsByLocation = new Dictionary<UInt32, UInt32>();
+      var yieldsByLocation = new Dictionary<Int32, Int32>();
 
-      sorted.Sort((firstLocation, secondLocation) => {
+      locations.Sort((firstLocation, secondLocation) => {
 
         if (!yieldsByLocation.TryGetValue(firstLocation, out var firstLocationYield))
         {
@@ -119,15 +80,72 @@ namespace Jabberwocky.SoC.Library.GameBoards
         return (firstLocationYield < secondLocationYield ? 1 : -1);
       });
 
+      return locations.ToArray();
+    }
+
+    private Int32 CalculateYield(UInt32 productionFactor)
+    {
+      switch (productionFactor)
+      {
+        case 2:
+        case 12: return 3;
+        case 3:
+        case 11: return 6;
+        case 4:
+        case 10: return 8;
+        case 5:
+        case 9: return 11;
+        case 6:
+        case 8: return 14;
+        case 0:
+        case 7: return 0;
+      }
+
+      throw new Exception("Should not get here");
+    }
+
+    private void OutputScore(UInt32 location, List<UInt32> hexes)
+    {
+      var score = "" + location + " - ";
+      Int32 yield = 0;
+      foreach (var hexId in hexes)
+      {
+        score += "Hex: " + hexId + " has pf " +
+          this.hexInformation[hexId].Item2 + " (" + this.CalculateYield(this.hexInformation[hexId].Item2) + ") ";
+
+        yield += this.CalculateYield(this.hexInformation[hexId].Item2);
+      }
+
+      score += ". Total yield is " + yield;
+      Debug.WriteLine(score);
+    }
+
+    /// <summary>
+    /// Get the first n locations with highest resource returns that are valid for settlement
+    /// </summary>
+    /// <returns></returns>
+    public UInt32[] GetLocationsWithBestYield(Int32 count)
+    {
+      var result = new UInt32[count];
+      
       var queue = new Queue<UInt32>();
       var index = 0;
-      while (queue.Count < count)
+      while (queue.Count < count && index < this.locationsOrderedByBestYield.Length)
       {
-        var location = sorted[index++];
-        if (!this.board.SettlementLocationIsOccupied(location) && !this.board.TooCloseToSettlement(location, out var id, out var i))
+        var location = this.locationsOrderedByBestYield[index++];
+        if (location == -1)
         {
-          queue.Enqueue(location);
+          continue;
         }
+
+        var convertedLocation = (UInt32)location;
+        if (this.board.SettlementLocationIsOccupied(convertedLocation) || this.board.TooCloseToSettlement(convertedLocation, out var id, out var i))
+        {
+          this.locationsOrderedByBestYield[index - 1] = -1;
+          continue;
+        }
+
+        queue.Enqueue(convertedLocation);
       }
 
       return queue.ToArray();
