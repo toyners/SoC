@@ -92,7 +92,6 @@ namespace Jabberwocky.SoC.Library.GameBoards
 
         if (!yieldsByLocation.TryGetValue(firstLocation, out var firstLocationYield))
         {
-          this.OutputScore(firstLocation, this.locationInformation[firstLocation]);
           foreach (var hexId in this.locationInformation[firstLocation])
           {
             firstLocationYield += this.CalculateYield(this.hexInformation[hexId].Item2);
@@ -103,7 +102,6 @@ namespace Jabberwocky.SoC.Library.GameBoards
 
         if (!yieldsByLocation.TryGetValue(secondLocation, out var secondLocationYield))
         {
-          this.OutputScore(secondLocation, this.locationInformation[secondLocation]);
           foreach (var hexId in this.locationInformation[secondLocation])
           {
             secondLocationYield += this.CalculateYield(this.hexInformation[hexId].Item2);
@@ -120,11 +118,6 @@ namespace Jabberwocky.SoC.Library.GameBoards
 
         return (firstLocationYield < secondLocationYield ? 1 : -1);
       });
-
-      foreach (var j in sorted)
-      {
-        Debug.WriteLine(j);
-      }
 
       var queue = new Queue<UInt32>();
       var index = 0;
