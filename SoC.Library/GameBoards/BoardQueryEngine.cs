@@ -41,6 +41,58 @@ namespace Jabberwocky.SoC.Library.GameBoards
       this.locationsOrderedByBestYield = this.GetLocationsOrderedByBestYield();
     }
 
+    /// <summary>
+    /// Get the first n locations with highest resource returns that are valid for settlement
+    /// </summary>
+    /// <returns></returns>
+    public UInt32[] GetLocationsWithBestYield(Int32 count)
+    {
+      var result = new UInt32[count];
+      
+      var queue = new Queue<UInt32>();
+      var index = 0;
+      while (queue.Count < count && index < this.locationsOrderedByBestYield.Length)
+      {
+        var location = this.locationsOrderedByBestYield[index++];
+        if (location == -1)
+        {
+          continue;
+        }
+
+        var convertedLocation = (UInt32)location;
+        if (this.board.SettlementLocationIsOccupied(convertedLocation) || this.board.TooCloseToSettlement(convertedLocation, out var id, out var i))
+        {
+          this.locationsOrderedByBestYield[index - 1] = -1;
+          continue;
+        }
+
+        queue.Enqueue(convertedLocation);
+      }
+
+      return queue.ToArray();
+    }
+
+    private Int32 CalculateYield(UInt32 productionFactor)
+    {
+      switch (productionFactor)
+      {
+        case 2:
+        case 12: return 3;
+        case 3:
+        case 11: return 6;
+        case 4:
+        case 10: return 8;
+        case 5:
+        case 9: return 11;
+        case 6:
+        case 8: return 14;
+        case 0:
+        case 7: return 0;
+      }
+
+      throw new Exception("Should not get here");
+    }
+
     private Int32[] GetLocationsOrderedByBestYield()
     {
       var locations = new List<Int32>(new Int32[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16,
@@ -83,27 +135,6 @@ namespace Jabberwocky.SoC.Library.GameBoards
       return locations.ToArray();
     }
 
-    private Int32 CalculateYield(UInt32 productionFactor)
-    {
-      switch (productionFactor)
-      {
-        case 2:
-        case 12: return 3;
-        case 3:
-        case 11: return 6;
-        case 4:
-        case 10: return 8;
-        case 5:
-        case 9: return 11;
-        case 6:
-        case 8: return 14;
-        case 0:
-        case 7: return 0;
-      }
-
-      throw new Exception("Should not get here");
-    }
-
     private void OutputScore(UInt32 location, List<UInt32> hexes)
     {
       var score = "" + location + " - ";
@@ -118,37 +149,6 @@ namespace Jabberwocky.SoC.Library.GameBoards
 
       score += ". Total yield is " + yield;
       Debug.WriteLine(score);
-    }
-
-    /// <summary>
-    /// Get the first n locations with highest resource returns that are valid for settlement
-    /// </summary>
-    /// <returns></returns>
-    public UInt32[] GetLocationsWithBestYield(Int32 count)
-    {
-      var result = new UInt32[count];
-      
-      var queue = new Queue<UInt32>();
-      var index = 0;
-      while (queue.Count < count && index < this.locationsOrderedByBestYield.Length)
-      {
-        var location = this.locationsOrderedByBestYield[index++];
-        if (location == -1)
-        {
-          continue;
-        }
-
-        var convertedLocation = (UInt32)location;
-        if (this.board.SettlementLocationIsOccupied(convertedLocation) || this.board.TooCloseToSettlement(convertedLocation, out var id, out var i))
-        {
-          this.locationsOrderedByBestYield[index - 1] = -1;
-          continue;
-        }
-
-        queue.Enqueue(convertedLocation);
-      }
-
-      return queue.ToArray();
     }
   }
 }
