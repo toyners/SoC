@@ -13,6 +13,7 @@ namespace Jabberwocky.SoC.Library
   {
     private Queue<ComputerPlayerAction> actions = new Queue<ComputerPlayerAction>();
     private GameBoard gameBoard;
+    private IBoardQueryEngine boardQuery;
     private INumberGenerator numberGenerator;
 
     #region Construction
@@ -56,6 +57,33 @@ namespace Jabberwocky.SoC.Library
 
     public virtual void ChooseInitialInfrastructure(out UInt32 settlementLocation, out UInt32 roadEndLocation)
     {
+      if (this.SettlementsBuilt == 0)
+      {
+        var bestLocations = this.boardQuery.GetLocationsWithBestYield(5);
+        var n = this.numberGenerator.GetRandomNumberBetweenZeroAndMaximum(100);
+
+        if (n < 60)
+        {
+          settlementLocation = bestLocations[0];
+        }
+        else if (n < 80)
+        {
+          settlementLocation = bestLocations[1];
+        }
+        else if (n < 90)
+        {
+          settlementLocation = bestLocations[2];
+        }
+        else if (n < 95)
+        {
+          settlementLocation = bestLocations[3];
+        }
+        else
+        {
+          settlementLocation = bestLocations[4];
+        }
+      }
+      throw new Exception();
       var choices = new List<Tuple<UInt32, UInt32>> {
         new Tuple<UInt32, UInt32>(35, 34),
         new Tuple<UInt32, UInt32>(24, 35),

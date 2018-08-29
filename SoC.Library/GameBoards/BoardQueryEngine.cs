@@ -7,7 +7,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
   using System.IO;
   using System.Reflection;
 
-  public class BoardQueryEngine
+  public class BoardQueryEngine : IBoardQueryEngine
   {
     #region Fields
     private GameBoard board;

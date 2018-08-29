@@ -50,6 +50,7 @@
     <Compile Include="DevelopmentCard.cs" />
     <Compile Include="DevelopmentCardHolder.cs" />
     <Compile Include="GameBoards\BoardQueryEngine.cs" />
+    <Compile Include="GameBoards\IBoardQueryEngine.cs" />
     <Compile Include="Storage\XmlBuildingDataSectionFactory.cs" />
     <Compile Include="Storage\XmlBuildingsDataSectionFactory.cs" />
     <Compile Include="Storage\XmlGameBoardDataSectionFactory.cs" />
