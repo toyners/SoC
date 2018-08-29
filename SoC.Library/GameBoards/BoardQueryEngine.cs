@@ -9,11 +9,14 @@ namespace Jabberwocky.SoC.Library.GameBoards
 
   public class BoardQueryEngine
   {
+    #region Fields
     private GameBoard board;
     private readonly List<UInt32>[] locationInformation;
     private readonly Tuple<ResourceTypes?, UInt32>[] hexInformation;
     private readonly Int32[] locationsOrderedByBestYield;
+    #endregion
 
+    #region Construction
     public BoardQueryEngine(GameBoard board)
     {
       this.board = board;
@@ -40,7 +43,9 @@ namespace Jabberwocky.SoC.Library.GameBoards
 
       this.locationsOrderedByBestYield = this.GetLocationsOrderedByBestYield();
     }
+    #endregion
 
+    #region Methods
     /// <summary>
     /// Get the first n locations with highest resource returns that are valid for settlement
     /// </summary>
@@ -150,5 +155,6 @@ namespace Jabberwocky.SoC.Library.GameBoards
       score += ". Total yield is " + yield;
       Debug.WriteLine(score);
     }
+    #endregion
   }
 }
