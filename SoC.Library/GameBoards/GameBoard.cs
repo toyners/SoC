@@ -209,9 +209,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
         };
       }
 
-      Guid id;
-      UInt32 index;
-      if (this.TooCloseToSettlement(locationIndex, out id, out index))
+      if (this.TooCloseToSettlement(locationIndex, out Guid id, out var index))
       {
         return new VerificationResults
         {
@@ -255,9 +253,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
         };
       }
 
-      Guid id;
-      UInt32 index;
-      if (this.TooCloseToSettlement(settlementLocation, out id, out index))
+      if (this.TooCloseToSettlement(settlementLocation, out Guid id, out var index))
       {
         return new VerificationResults
         {
@@ -308,7 +304,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
       var resourceProducers = this.resourceProducersByType[resource];
       foreach (var resourceProducer in resourceProducers)
       {
-        foreach (var location in locationsByResourceProvider[resourceProducer])
+        foreach (var location in this.locationsByResourceProvider[resourceProducer])
         {
           results.Add(new Tuple<UInt32, UInt32>(location, resourceProducer.Production));
         }
@@ -333,9 +329,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
         var locationsForResourceProvider = this.locationsByResourceProvider[resourceProducer];
         foreach (var locationForResourceProvider in locationsForResourceProvider)
         {
-          Guid id;
-          UInt32 index;
-          if (!this.SettlementLocationIsOccupied(locationForResourceProvider) && !this.TooCloseToSettlement(locationForResourceProvider, out id, out index))
+          if (!this.SettlementLocationIsOccupied(locationForResourceProvider) && !this.TooCloseToSettlement(locationForResourceProvider, out Guid id, out var index))
           {
             locationsForResourceType.Add(locationForResourceProvider);
           }
