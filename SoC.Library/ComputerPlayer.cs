@@ -60,27 +60,33 @@ namespace Jabberwocky.SoC.Library
       {
         var bestLocations = this.gameBoard.BoardQuery.GetLocationsWithBestYield(5);
         var n = this.numberGenerator.GetRandomNumberBetweenZeroAndMaximum(100);
+        var settlementIndex = -1;
 
         if (n < 55)
         {
-          settlementLocation = bestLocations[0];
+          settlementIndex = 0;
         }
         else if (n < 75)
         {
-          settlementLocation = bestLocations[1];
+          settlementIndex = 1;
         }
         else if (n < 85)
         {
-          settlementLocation = bestLocations[2];
+          settlementIndex = 2;
         }
         else if (n < 95)
         {
-          settlementLocation = bestLocations[3];
+          settlementIndex = 3;
         }
         else
         {
-          settlementLocation = bestLocations[4];
+          settlementIndex = 4;
         }
+
+        settlementLocation = bestLocations[settlementIndex];
+
+        // Build road towards another random location 
+        n = this.numberGenerator.GetRandomNumberBetweenZeroAndMaximum(100);
       }
       throw new Exception();
       var choices = new List<Tuple<UInt32, UInt32>> {
