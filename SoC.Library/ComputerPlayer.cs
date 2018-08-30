@@ -12,9 +12,8 @@ namespace Jabberwocky.SoC.Library
   public class ComputerPlayer : Player,  IComputerPlayer
   {
     private Queue<ComputerPlayerAction> actions = new Queue<ComputerPlayerAction>();
-    private GameBoard gameBoard;
-    private IBoardQueryEngine boardQuery;
-    private INumberGenerator numberGenerator;
+    private readonly GameBoard gameBoard;
+    private readonly INumberGenerator numberGenerator;
 
     #region Construction
     private ComputerPlayer() { } // For use when inflating from file. 
@@ -59,18 +58,18 @@ namespace Jabberwocky.SoC.Library
     {
       if (this.SettlementsBuilt == 0)
       {
-        var bestLocations = this.boardQuery.GetLocationsWithBestYield(5);
+        var bestLocations = this.gameBoard.BoardQuery.GetLocationsWithBestYield(5);
         var n = this.numberGenerator.GetRandomNumberBetweenZeroAndMaximum(100);
 
-        if (n < 60)
+        if (n < 55)
         {
           settlementLocation = bestLocations[0];
         }
-        else if (n < 80)
+        else if (n < 75)
         {
           settlementLocation = bestLocations[1];
         }
-        else if (n < 90)
+        else if (n < 85)
         {
           settlementLocation = bestLocations[2];
         }

@@ -91,11 +91,15 @@ namespace Jabberwocky.SoC.Library.GameBoards
       this.AssignLocationsToHex();
 
       this.AssignHexesToLocation();
+
+      this.BoardQuery = new BoardQueryEngine(this);
     }
     #endregion
 
     #region Properties
     public UInt32 Length { get; private set; }
+
+    public IBoardQueryEngine BoardQuery { get; private set; }
     #endregion
 
     #region Methods
