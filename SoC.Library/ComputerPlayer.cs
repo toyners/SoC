@@ -86,7 +86,10 @@ namespace Jabberwocky.SoC.Library
         settlementLocation = bestLocations[settlementIndex];
 
         // Build road towards another random location 
-        n = this.numberGenerator.GetRandomNumberBetweenZeroAndMaximum(100);
+        do
+        {
+          n = this.numberGenerator.GetRandomNumberBetweenZeroAndMaximum(bestLocations.Length);
+        } while (n == settlementIndex);
       }
       throw new Exception();
       var choices = new List<Tuple<UInt32, UInt32>> {
