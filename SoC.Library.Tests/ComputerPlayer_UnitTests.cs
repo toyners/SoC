@@ -128,7 +128,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     public void ChooseInitialInfrastructure_ChangeToRoadBuilderBetaStrategyWhenInFifthSlot_ReturnBestPossibleLocationOnHex(UInt32[] infrastructureData, UInt32 expectedSettlementLocation, UInt32 expectedRoadEndLocation)
     {
       var gameBoard = new GameBoard(BoardSizes.Standard);
-      var computerPlayer = this.CreateComputerPlayer("Bob", gameBoard);
+      var computerPlayer = new ComputerPlayer("Bob", gameBoard, new Dice(), null);
 
       this.PlaceInfrastructure(gameBoard, infrastructureData);
 

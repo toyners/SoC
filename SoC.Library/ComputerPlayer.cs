@@ -58,9 +58,10 @@ namespace Jabberwocky.SoC.Library
     {
       if (this.SettlementsBuilt == 0)
       {
+        var settlementIndex = -1;
         var bestLocations = this.gameBoard.BoardQuery.GetLocationsWithBestYield(5);
         var n = this.numberGenerator.GetRandomNumberBetweenZeroAndMaximum(100);
-        var settlementIndex = -1;
+        
 
         if (n < 55)
         {
@@ -86,11 +87,39 @@ namespace Jabberwocky.SoC.Library
         settlementLocation = bestLocations[settlementIndex];
 
         // Build road towards another random location 
+        var roadDestinationIndex = -1;
         do
         {
-          n = this.numberGenerator.GetRandomNumberBetweenZeroAndMaximum(bestLocations.Length);
-        } while (n == settlementIndex);
+          n = this.numberGenerator.GetRandomNumberBetweenZeroAndMaximum(100);
+
+          if (n < 55)
+          {
+            roadDestinationIndex = 0;
+          }
+          else if (n < 75)
+          {
+            roadDestinationIndex = 1;
+          }
+          else if (n < 85)
+          {
+            roadDestinationIndex = 2;
+          }
+          else if (n < 95)
+          {
+            roadDestinationIndex = 3;
+          }
+          else
+          {
+            roadDestinationIndex = 4;
+          }
+
+        } while (roadDestinationIndex == settlementIndex);
+
+        var trek = this.gameBoard.GetPathBetweenLocations(settlementLocation, bestLocations[roadDestinationIndex]);
+
+        roadEndLocation = trek[trek.Count - 1];
       }
+
       throw new Exception();
       var choices = new List<Tuple<UInt32, UInt32>> {
         new Tuple<UInt32, UInt32>(35, 34),

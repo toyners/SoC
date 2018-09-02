@@ -7,7 +7,7 @@ namespace Jabberwocky.SoC.Library
   public class Dice : INumberGenerator
   {
     #region Fields
-    private Random random = new Random();
+    private readonly Random random = new Random();
     #endregion
 
     #region Methods
