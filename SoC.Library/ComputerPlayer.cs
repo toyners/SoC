@@ -56,136 +56,70 @@ namespace Jabberwocky.SoC.Library
 
     public virtual void ChooseInitialInfrastructure(out UInt32 settlementLocation, out UInt32 roadEndLocation)
     {
-      if (this.SettlementsBuilt == 0)
+      if (this.SettlementsBuilt >= 2)
       {
-        var settlementIndex = -1;
-        var bestLocations = this.gameBoard.BoardQuery.GetLocationsWithBestYield(5);
-        var n = this.numberGenerator.GetRandomNumberBetweenZeroAndMaximum(100);
+        throw new Exception("Should not get here");
+      }
+
+      var settlementIndex = -1;
+      var bestLocations = this.gameBoard.BoardQuery.GetLocationsWithBestYield(5);
+      var n = this.numberGenerator.GetRandomNumberBetweenZeroAndMaximum(100);
         
+      if (n < 55)
+      {
+        settlementIndex = 0;
+      }
+      else if (n < 75)
+      {
+        settlementIndex = 1;
+      }
+      else if (n < 85)
+      {
+        settlementIndex = 2;
+      }
+      else if (n < 95)
+      {
+        settlementIndex = 3;
+      }
+      else
+      {
+        settlementIndex = 4;
+      }
+
+      settlementLocation = bestLocations[settlementIndex];
+
+      // Build road towards another random location 
+      var roadDestinationIndex = -1;
+      do
+      {
+        n = this.numberGenerator.GetRandomNumberBetweenZeroAndMaximum(100);
 
         if (n < 55)
         {
-          settlementIndex = 0;
+          roadDestinationIndex = 0;
         }
         else if (n < 75)
         {
-          settlementIndex = 1;
+          roadDestinationIndex = 1;
         }
         else if (n < 85)
         {
-          settlementIndex = 2;
+          roadDestinationIndex = 2;
         }
         else if (n < 95)
         {
-          settlementIndex = 3;
+          roadDestinationIndex = 3;
         }
         else
         {
-          settlementIndex = 4;
+          roadDestinationIndex = 4;
         }
 
-        settlementLocation = bestLocations[settlementIndex];
+      } while (roadDestinationIndex == settlementIndex);
 
-        // Build road towards another random location 
-        var roadDestinationIndex = -1;
-        do
-        {
-          n = this.numberGenerator.GetRandomNumberBetweenZeroAndMaximum(100);
+      var trek = this.gameBoard.GetPathBetweenLocations(settlementLocation, bestLocations[roadDestinationIndex]);
 
-          if (n < 55)
-          {
-            roadDestinationIndex = 0;
-          }
-          else if (n < 75)
-          {
-            roadDestinationIndex = 1;
-          }
-          else if (n < 85)
-          {
-            roadDestinationIndex = 2;
-          }
-          else if (n < 95)
-          {
-            roadDestinationIndex = 3;
-          }
-          else
-          {
-            roadDestinationIndex = 4;
-          }
-
-        } while (roadDestinationIndex == settlementIndex);
-
-        var trek = this.gameBoard.GetPathBetweenLocations(settlementLocation, bestLocations[roadDestinationIndex]);
-
-        roadEndLocation = trek[trek.Count - 1];
-      }
-
-      throw new Exception();
-      var choices = new List<Tuple<UInt32, UInt32>> {
-        new Tuple<UInt32, UInt32>(35, 34),
-        new Tuple<UInt32, UInt32>(24, 35),
-        new Tuple<UInt32, UInt32>(36, 46),
-        new Tuple<UInt32, UInt32>(25, 24),
-        new Tuple<UInt32, UInt32>(37, 36),
-        new Tuple<UInt32, UInt32>(26, 25),
-        new Tuple<UInt32, UInt32>(42, 43),
-        new Tuple<UInt32, UInt32>(11, 21),
-        new Tuple<UInt32, UInt32>(4, 12),
-        new Tuple<UInt32, UInt32>(2, 10),
-        new Tuple<UInt32, UInt32>(31, 30)
-      };
-
-      foreach (var choice in choices)
-      {
-        var placementResult = this.gameBoard.CanPlaceStartingInfrastructure(this.Id, choice.Item1, choice.Item2);
-        if (placementResult.Status == GameBoard.VerificationStatus.Valid)
-        {
-          settlementLocation = choice.Item1;
-          roadEndLocation = choice.Item2;
-          return;
-        }
-      }
-
-      throw new NotImplementedException();
-
-      /*var decision = this.numberGenerator.GetRandomNumberBetweenZeroAndMaximum(100);
-      if (decision >= 40 && decision < 80)
-      {
-        settlementLocation = 36;
-        roadEndLocation = 46;
-      } 
-      else if (decision >= 80)
-      {
-        settlementLocation = 42;
-        roadEndLocation = 43;
-      }*/
-
-      //throw new NotImplementedException();
-      /*UInt32 productionRangeLower = 6;
-      UInt32 productionRangeUpper = 8;
-
-      UInt32 brickProduction;
-      var brickLocations = AI.GetLocationsForBestReturningResourceType(this.gameBoard, ResourceTypes.Brick, out brickProduction);
-      if (!ProductionFactorComparison.WithinRange(brickProduction, productionRangeLower, productionRangeUpper))
-      {
-        // Change the strategy, maybe
-      }
-
-      UInt32 lumberProduction;
-      var lumberLocations = AI.GetLocationsForBestReturningResourceType(this.gameBoard, ResourceTypes.Lumber, out lumberProduction);
-      if (!ProductionFactorComparison.WithinRange(lumberProduction, productionRangeLower, productionRangeUpper))
-      {
-        // Change the strategy, maybe
-      }
-
-      var locationsOnBothProducers = this.TryGetLocationOnBothProducers(brickLocations, lumberLocations);
-
-      var brickLocationsInOrderOfIncreasingDistanceToWoolLocations = AI.GetLocationsOfResourceTypeInOrderOfIncreasingDistanceToCandidateLocations(brickLocations, ResourceTypes.Wool);
-      var brickLocationsInOrderOfIncreasingDistanceToGrainLocations = AI.GetLocationsOfResourceTypeInOrderOfIncreasingDistanceToCandidateLocations(brickLocations, ResourceTypes.Grain);
-      var lumberLocationsInOrderOfIncreasingDistanceToWoolLocations = AI.GetLocationsOfResourceTypeInOrderOfIncreasingDistanceToCandidateLocations(lumberLocations, ResourceTypes.Wool);
-      var lumberLocationsInOrderOfIncreasingDistanceToGrainLocations = AI.GetLocationsOfResourceTypeInOrderOfIncreasingDistanceToCandidateLocations(lumberLocations, ResourceTypes.Grain);
-
-      throw new NotImplementedException();*/
+      roadEndLocation = trek[trek.Count - 1];
     }
 
     public UInt32[] TryGetLocationOnBothProducers(UInt32[] producer1Locations, UInt32[] producer2Locations)
