@@ -349,6 +349,13 @@ namespace Jabberwocky.SoC.Library.GameBoards
       return locationsForResourceType.ToArray();
     }
 
+    /// <summary>
+    /// Gets the path between two locations. Path consists of the in-between locations in reverse order (first location
+    /// in list will be the end location, last location in list will be the first step from the start location)
+    /// </summary>
+    /// <param name="startIndex">Start location</param>
+    /// <param name="endIndex">End location</param>
+    /// <returns>List of locations between start and end location</returns>
     public List<UInt32> GetPathBetweenLocations(UInt32 startIndex, UInt32 endIndex)
     {
       if (startIndex == endIndex)

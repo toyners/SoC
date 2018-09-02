@@ -122,12 +122,6 @@ namespace Jabberwocky.SoC.Library
       roadEndLocation = trek[trek.Count - 1];
     }
 
-    public UInt32[] TryGetLocationOnBothProducers(UInt32[] producer1Locations, UInt32[] producer2Locations)
-    {
-      // Check for any locations that are on both producers (there will be a minimum of 2)
-      throw new NotImplementedException();
-    }
-
     public virtual KnightDevelopmentCard ChooseKnightCard()
     {
       throw new NotImplementedException();
@@ -141,36 +135,6 @@ namespace Jabberwocky.SoC.Library
     public virtual MonopolyDevelopmentCard ChooseMonopolyCard()
     {
       throw new NotImplementedException();
-    }
-
-    private void ChooseRoad(GameBoard gameBoardData, out UInt32 roadStartLocation, out UInt32 roadEndLocation)
-    {
-      var settlementsForPlayer = gameBoardData.GetSettlementsForPlayer(this.Id);
-      if (settlementsForPlayer == null || settlementsForPlayer.Count == 0)
-      {
-        throw new Exception("No settlements found for player with id " + this.Id);
-      }
-
-      UInt32 bestLocationIndex = 0;
-      if (!this.TryGetIndexOfLocationThatHasBestChanceOfReturnOnRoll(gameBoardData, out bestLocationIndex))
-      {
-        throw new Exception("Should not get here"); // TODO: Clean up
-      }
-
-      Tuple<UInt32, List<UInt32>> shortestPathInformation = null;
-      foreach (var locationIndex in settlementsForPlayer)
-      {
-        var path = gameBoardData.GetPathBetweenLocations(locationIndex, bestLocationIndex);
-
-        if (shortestPathInformation == null || shortestPathInformation.Item2.Count > path.Count)
-        {
-          shortestPathInformation = new Tuple<UInt32, List<UInt32>>(locationIndex, path);
-        }
-      }
-
-      roadStartLocation = shortestPathInformation.Item1;
-      var shortestPath = shortestPathInformation.Item2;
-      roadEndLocation = shortestPath[shortestPath.Count - 1];
     }
 
     public virtual UInt32 ChooseRobberLocation()
@@ -251,6 +215,36 @@ namespace Jabberwocky.SoC.Library
       }
 
       return totalChance;
+    }
+
+    private void ChooseRoad(GameBoard gameBoardData, out UInt32 roadStartLocation, out UInt32 roadEndLocation)
+    {
+      var settlementsForPlayer = gameBoardData.GetSettlementsForPlayer(this.Id);
+      if (settlementsForPlayer == null || settlementsForPlayer.Count == 0)
+      {
+        throw new Exception("No settlements found for player with id " + this.Id);
+      }
+
+      UInt32 bestLocationIndex = 0;
+      if (!this.TryGetIndexOfLocationThatHasBestChanceOfReturnOnRoll(gameBoardData, out bestLocationIndex))
+      {
+        throw new Exception("Should not get here"); // TODO: Clean up
+      }
+
+      Tuple<UInt32, List<UInt32>> shortestPathInformation = null;
+      foreach (var locationIndex in settlementsForPlayer)
+      {
+        var path = gameBoardData.GetPathBetweenLocations(locationIndex, bestLocationIndex);
+
+        if (shortestPathInformation == null || shortestPathInformation.Item2.Count > path.Count)
+        {
+          shortestPathInformation = new Tuple<UInt32, List<UInt32>>(locationIndex, path);
+        }
+      }
+
+      roadStartLocation = shortestPathInformation.Item1;
+      var shortestPath = shortestPathInformation.Item2;
+      roadEndLocation = shortestPath[shortestPath.Count - 1];
     }
 
     private Boolean TryGetIndexOfLocationThatHasBestChanceOfReturnOnRoll(GameBoard gameBoardData, out UInt32 bestLocationIndex)
