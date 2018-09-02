@@ -46,6 +46,26 @@ namespace Jabberwocky.SoC.Library
 
     public virtual void BuildInitialPlayerActions(PlayerDataView[] playerData)
     {
+      if (this.BrickCount > 0 && this.LumberCount > 0)
+      {
+        // Can build road
+      }
+
+      if (this.BrickCount > 0 && this.GrainCount > 0 && this.LumberCount > 0 && this.WoolCount > 0)
+      {
+        // Can build settlement
+      }
+
+      if (this.GrainCount >= 2 && this.OreCount >= 3)
+      {
+        // Can build city
+      }
+
+      if (this.GrainCount > 0 && this.OreCount > 0 && this.WoolCount > 0)
+      {
+        // Can build development card
+      }
+
       throw new NotImplementedException();
     }
 
