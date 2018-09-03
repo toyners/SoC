@@ -16,6 +16,7 @@ namespace Jabberwocky.SoC.Library
     private readonly GameBoard gameBoard;
     private readonly INumberGenerator numberGenerator;
     private readonly List<UInt32> targetSettlements = new List<UInt32>();
+    private readonly DecisionMaker decisionMaker;
 
     #region Construction
     private ComputerPlayer() { } // For use when inflating from file. 
@@ -24,6 +25,7 @@ namespace Jabberwocky.SoC.Library
     {
       this.gameBoard = gameBoard;
       this.numberGenerator = numberGenerator;
+      this.decisionMaker = new DecisionMaker(this.numberGenerator);
     }
 
     public ComputerPlayer(IGameDataSection<GameDataSectionKeys, GameDataValueKeys, ResourceTypes> data) : base(data) { }
