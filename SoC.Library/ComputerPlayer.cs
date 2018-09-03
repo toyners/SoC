@@ -8,12 +8,14 @@ namespace Jabberwocky.SoC.Library
   using GameActions;
   using System.Xml;
   using Jabberwocky.SoC.Library.Storage;
+  using Jabberwocky.SoC.Library.Enums;
 
   public class ComputerPlayer : Player,  IComputerPlayer
   {
     private Queue<ComputerPlayerAction> actions = new Queue<ComputerPlayerAction>();
     private readonly GameBoard gameBoard;
     private readonly INumberGenerator numberGenerator;
+    private readonly List<UInt32> targetSettlements = new List<UInt32>();
 
     #region Construction
     private ComputerPlayer() { } // For use when inflating from file. 
@@ -46,24 +48,26 @@ namespace Jabberwocky.SoC.Library
 
     public virtual void BuildInitialPlayerActions(PlayerDataView[] playerData)
     {
-      if (this.BrickCount > 0 && this.LumberCount > 0)
+      if (this.BrickCount > 0 && this.LumberCount > 0 && this.RemainingRoadSegments > 0)
       {
         // Can build road
+        var roadBuildSegmentAction = new BuildRoadSegmentAction(ComputerPlayerActionTypes.BuildRoadSegment, 0, 0);
+        this.actions.Enqueue(roadBuildSegmentAction);
       }
 
-      if (this.BrickCount > 0 && this.GrainCount > 0 && this.LumberCount > 0 && this.WoolCount > 0)
+      if (this.BrickCount > 0 && this.GrainCount > 0 && this.LumberCount > 0 && this.WoolCount > 0 && this.RemainingSettlements > 0)
       {
         // Can build settlement
       }
 
-      if (this.GrainCount >= 2 && this.OreCount >= 3)
+      if (this.GrainCount >= 2 && this.OreCount >= 3 && this.RemainingCities > 0)
       {
-        // Can build city
+        // Can build city - find settlement to promote
       }
 
       if (this.GrainCount > 0 && this.OreCount > 0 && this.WoolCount > 0)
       {
-        // Can build development card
+        // Can buy development card
       }
 
       throw new NotImplementedException();
