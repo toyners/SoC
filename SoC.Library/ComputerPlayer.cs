@@ -55,9 +55,13 @@ namespace Jabberwocky.SoC.Library
 
     public virtual void BuildInitialPlayerActions(PlayerDataView[] playerData)
     {
+      this.decisionMaker.Reset();
+
       if (this.BrickCount > 0 && this.LumberCount > 0 && this.RemainingRoadSegments > 0)
       {
-        // Can build road
+        // Can build road - boost it if road builder strategy or if building the next road segment
+        // will capture the 2VP
+        this.decisionMaker.AddDecision(1);
         var roadBuildSegmentAction = new BuildRoadSegmentAction(ComputerPlayerActionTypes.BuildRoadSegment, 0, 0);
         this.actions.Enqueue(roadBuildSegmentAction);
       }
@@ -65,6 +69,7 @@ namespace Jabberwocky.SoC.Library
       if (this.BrickCount > 0 && this.GrainCount > 0 && this.LumberCount > 0 && this.WoolCount > 0 && this.RemainingSettlements > 0)
       {
         // Can build settlement
+        
       }
 
       if (this.GrainCount >= 2 && this.OreCount >= 3 && this.RemainingCities > 0)
