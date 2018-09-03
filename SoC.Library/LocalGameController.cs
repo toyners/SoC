@@ -582,6 +582,8 @@ namespace Jabberwocky.SoC.Library
     {
       try
       {
+        this.gameBoard.Load(reader);
+
         var loadedPlayers = new List<IPlayer>();
 
         var player = this.playerPool.CreatePlayer(reader[GameDataSectionKeys.PlayerOne]);
@@ -591,11 +593,9 @@ namespace Jabberwocky.SoC.Library
         var key = GameDataSectionKeys.PlayerTwo;
         while (key <= GameDataSectionKeys.PlayerFour && (data = reader[key++]) != null)
         {
-          player = this.playerPool.CreatePlayer(data);
+          player = this.playerPool.CreateComputerPlayer(data, this.gameBoard, this.dice);
           loadedPlayers.Add(player);
         }
-
-        this.gameBoard.Load(reader);
 
         if (loadedPlayers.Count > 0)
         {

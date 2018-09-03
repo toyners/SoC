@@ -14,7 +14,9 @@ namespace Jabberwocky.SoC.Library.Interfaces
     /// <param name="gameBoard">Game board instance for use in decision making.</param>
     /// <returns>Computer player instance.</returns>
     IPlayer CreateComputerPlayer(GameBoard gameBoard);
-    
+
+    IPlayer CreateComputerPlayer(IGameDataSection<GameDataSectionKeys, GameDataValueKeys, ResourceTypes> data, GameBoard board, INumberGenerator numberGenerator);
+
     /// <summary>
     /// Create a player instance.
     /// </summary>

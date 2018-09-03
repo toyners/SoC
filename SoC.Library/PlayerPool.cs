@@ -23,6 +23,11 @@ namespace Jabberwocky.SoC.Library
       return new ComputerPlayer(this.names.Dequeue(), gameBoard, null, null);
     }
 
+    public IPlayer CreateComputerPlayer(IGameDataSection<GameDataSectionKeys, GameDataValueKeys, ResourceTypes> data, GameBoard board, INumberGenerator numberGenerator)
+    {
+      return new ComputerPlayer(data, board, numberGenerator);
+    }
+
     /// <summary>
     /// Create a player instance.
     /// </summary>
@@ -53,11 +58,6 @@ namespace Jabberwocky.SoC.Library
 
     public IPlayer CreatePlayer(IGameDataSection<GameDataSectionKeys, GameDataValueKeys, ResourceTypes> data)
     {
-      if (data.GetBooleanValue(GameDataValueKeys.IsComputerPlayer))
-      {
-        return new ComputerPlayer(data);
-      }
-
       return new Player(data);
     }
 

@@ -28,7 +28,7 @@ namespace Jabberwocky.SoC.Library
       this.decisionMaker = new DecisionMaker(this.numberGenerator);
     }
 
-    public ComputerPlayer(IGameDataSection<GameDataSectionKeys, GameDataValueKeys, ResourceTypes> data) : base(data) { }
+    public ComputerPlayer(IGameDataSection<GameDataSectionKeys, GameDataValueKeys, ResourceTypes> data, GameBoard board, INumberGenerator numberGenerator) : base(data) { }
     #endregion
 
     #region Properties
