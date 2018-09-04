@@ -15,7 +15,7 @@ namespace Jabberwocky.SoC.Library
     private Queue<ComputerPlayerAction> actions = new Queue<ComputerPlayerAction>();
     private readonly GameBoard gameBoard;
     private readonly INumberGenerator numberGenerator;
-    private readonly List<UInt32> targetSettlements = new List<UInt32>();
+    private readonly List<UInt32> targetSettlementCandidates = new List<UInt32>();
     private readonly DecisionMaker decisionMaker;
 
     #region Construction
@@ -57,7 +57,9 @@ namespace Jabberwocky.SoC.Library
     {
       this.decisionMaker.Reset();
 
-      if (this.BrickCount > 0 && this.LumberCount > 0 && this.RemainingRoadSegments > 0)
+      ResourceClutch resourceClutch = new ResourceClutch(this.BrickCount, this.GrainCount, this.LumberCount, this.OreCount, this.WoolCount);
+
+      if (resourceClutch >= ResourceClutch.RoadSegment && this.RemainingRoadSegments > 0)
       {
         // Can build road - boost it if road builder strategy or if building the next road segment
         // will capture the 2VP
@@ -66,23 +68,26 @@ namespace Jabberwocky.SoC.Library
         this.actions.Enqueue(roadBuildSegmentAction);
       }
 
-      if (this.BrickCount > 0 && this.GrainCount > 0 && this.LumberCount > 0 && this.WoolCount > 0 && this.RemainingSettlements > 0)
+      if (resourceClutch >= ResourceClutch.Settlement && this.RemainingSettlements > 0)
       {
-        // Can build settlement
-        
+        // Got the resources to build settlement. Find locations that can be build on 
+        // Boost it if can build on target settlement - increase boost multiplier based on desirablity of target settlement
+        // If building the settlement on any location will win the game then do it
       }
 
-      if (this.GrainCount >= 2 && this.OreCount >= 3 && this.RemainingCities > 0)
+      if (resourceClutch >= ResourceClutch.City && this.RemainingCities > 0)
       {
-        // Can build city - find settlement to promote
+        // Got resources to build city. Find settlements to promote
+        // If building the city will win the game then do it
       }
 
-      if (this.GrainCount > 0 && this.OreCount > 0 && this.WoolCount > 0)
+      if (resourceClutch >= ResourceClutch.DevelopmentCard)
       {
         // Can buy development card
+        // Boost it if playing development card buyer strategy
       }
 
-      throw new NotImplementedException();
+
     }
 
     public virtual UInt32 ChooseCityLocation()
