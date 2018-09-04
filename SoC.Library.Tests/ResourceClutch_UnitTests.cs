@@ -117,7 +117,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     [TestCase(ResourceTypes.Lumber, 0, 0, 1, 0, 0)]
     [TestCase(ResourceTypes.Ore, 0, 0, 0, 1, 0)]
     [TestCase(ResourceTypes.Wool, 0, 0, 0, 0, 1)]
-    public void CreateFromResourceType_SetToBrick_CreatesOneBrick(ResourceTypes resourceType, Int32 expectedBrickCount, Int32 expectedGrainCount, Int32 expectedLumberCount, Int32 expectedOreCount, Int32 expectedWoolCount)
+    public void CreateFromResourceType_SetToResourceType_CreatesOneOfResourceType(ResourceTypes resourceType, Int32 expectedBrickCount, Int32 expectedGrainCount, Int32 expectedLumberCount, Int32 expectedOreCount, Int32 expectedWoolCount)
     {
       var result = ResourceClutch.CreateFromResourceType(resourceType);
 
@@ -126,6 +126,14 @@ namespace Jabberwocky.SoC.Library.UnitTests
       result.LumberCount.ShouldBe(expectedLumberCount);
       result.OreCount.ShouldBe(expectedOreCount);
       result.WoolCount.ShouldBe(expectedWoolCount);
+    }
+
+    [Test]
+    public void Subtraction_GreaterMinusLesser_CreatesCorrectResourceClutch()
+    {
+      var result = ResourceClutch.OneBrick - ResourceClutch.Zero;
+
+      result.ShouldBe(ResourceClutch.OneBrick);
     }
     #endregion
   }

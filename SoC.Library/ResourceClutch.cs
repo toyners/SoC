@@ -4,7 +4,7 @@ namespace Jabberwocky.SoC.Library
   using System;
   using System.Diagnostics;
 
-  [DebuggerDisplay("{BrickCount}, {GrainCount}, {LumberCount}, {OreCount}, {WoolCount}")]
+  [DebuggerDisplay("B{BrickCount}, G{GrainCount}, L{LumberCount}, O{OreCount}, W{WoolCount}")]
   public struct ResourceClutch
   {
     #region Fields
@@ -44,11 +44,20 @@ namespace Jabberwocky.SoC.Library
 
     public ResourceClutch (Int32 brickCount, Int32 grainCount, Int32 lumberCount, Int32 oreCount, Int32 woolCount)
     {
-      BrickCount = brickCount;
-      GrainCount = grainCount;
-      LumberCount = lumberCount;
-      OreCount = oreCount;
-      WoolCount = woolCount;
+      this.BrickCount = brickCount;
+      this.GrainCount = grainCount;
+      this.LumberCount = lumberCount;
+      this.OreCount = oreCount;
+      this.WoolCount = woolCount;
+    }
+
+    public ResourceClutch(ResourceClutch r)
+    {
+      this.BrickCount = r.BrickCount;
+      this.GrainCount = r.GrainCount;
+      this.LumberCount = r.LumberCount;
+      this.OreCount = r.OreCount;
+      this.WoolCount = r.WoolCount;
     }
     #endregion
 
@@ -87,6 +96,33 @@ namespace Jabberwocky.SoC.Library
       return !r1.Equals(r2);
     }
 
+    public static Boolean operator<= (ResourceClutch r1, ResourceClutch r2)
+    {
+      return r1.BrickCount <= r2.BrickCount &&
+        r1.GrainCount <= r2.GrainCount &&
+        r1.LumberCount <= r2.LumberCount &&
+        r1.OreCount <= r2.OreCount &&
+        r1.WoolCount <= r2.WoolCount;
+    }
+
+    public static Boolean operator>= (ResourceClutch r1, ResourceClutch r2)
+    {
+      return r1.BrickCount >= r2.BrickCount &&
+        r1.GrainCount >= r2.GrainCount &&
+        r1.LumberCount >= r2.LumberCount &&
+        r1.OreCount >= r2.OreCount &&
+        r1.WoolCount >= r2.WoolCount;
+    }
+
+    public static ResourceClutch operator- (ResourceClutch r1, ResourceClutch r2)
+    {
+      return new ResourceClutch(r1.BrickCount - r2.BrickCount,
+        r1.GrainCount - r2.GrainCount,
+        r1.LumberCount - r2.LumberCount,
+        r1.OreCount - r2.OreCount,
+        r1.WoolCount - r2.WoolCount);
+    }
+
     public override Boolean Equals(Object obj)
     {
       var other = (ResourceClutch)obj;
@@ -106,6 +142,17 @@ namespace Jabberwocky.SoC.Library
         operand1.LumberCount * operand2,
         operand1.OreCount * operand2,
         operand1.WoolCount * operand2);
+    }
+
+    public override int GetHashCode()
+    {
+      var hashCode = -2128923598;
+      hashCode = hashCode * -1521134295 + this.BrickCount.GetHashCode();
+      hashCode = hashCode * -1521134295 + this.GrainCount.GetHashCode();
+      hashCode = hashCode * -1521134295 + this.LumberCount.GetHashCode();
+      hashCode = hashCode * -1521134295 + this.OreCount.GetHashCode();
+      hashCode = hashCode * -1521134295 + this.WoolCount.GetHashCode();
+      return hashCode;
     }
     #endregion
   }
