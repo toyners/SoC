@@ -47,6 +47,7 @@
     <Compile Include="AI.cs" />
     <Compile Include="ComputerPlayer.cs" />
     <Compile Include="Constants.cs" />
+    <Compile Include="DecisionMaker.cs" />
     <Compile Include="DevelopmentCard.cs" />
     <Compile Include="DevelopmentCardHolder.cs" />
     <Compile Include="GameBoards\BoardQueryEngine.cs" />
