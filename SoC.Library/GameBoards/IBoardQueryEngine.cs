@@ -1,10 +1,11 @@
 ﻿
 namespace Jabberwocky.SoC.Library.GameBoards
 {
-  using System;
+  using System.Collections.Generic;
 
   public interface IBoardQueryEngine
   {
-    UInt32[] GetLocationsWithBestYield(Int32 count);
+    uint[] GetLocationsWithBestYield(uint count);
+    List<KeyValuePair<uint, List<uint>>> GetRoadSegmentCandidates(List<uint> settlementCandidates);
   }
 }

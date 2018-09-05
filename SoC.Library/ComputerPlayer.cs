@@ -15,7 +15,7 @@ namespace Jabberwocky.SoC.Library
     private Queue<ComputerPlayerAction> actions = new Queue<ComputerPlayerAction>();
     private readonly GameBoard gameBoard;
     private readonly INumberGenerator numberGenerator;
-    private readonly List<UInt32> targetSettlementCandidates = new List<UInt32>();
+    private readonly List<uint> settlementCandidates = new List<uint>();
     private readonly DecisionMaker decisionMaker;
 
     #region Construction
@@ -57,12 +57,22 @@ namespace Jabberwocky.SoC.Library
     {
       this.decisionMaker.Reset();
 
-      ResourceClutch resourceClutch = new ResourceClutch(this.BrickCount, this.GrainCount, this.LumberCount, this.OreCount, this.WoolCount);
+      var resourceClutch = new ResourceClutch(this.BrickCount, this.GrainCount, this.LumberCount, this.OreCount, this.WoolCount);
 
       if (resourceClutch >= ResourceClutch.RoadSegment && this.RemainingRoadSegments > 0)
       {
-        // Can build road - boost it if road builder strategy or if building the next road segment
-        // will capture the 2VP
+        // Get the current road segment build candidates 
+        var roadSegmentCandidates = this.gameBoard.BoardQuery.GetRoadSegmentCandidates(this.settlementCandidates);
+
+        if (roadSegmentCandidates.Count > 1)
+        {
+          // Can build road - boost it if road builder strategy or if building the next road segment
+          // will capture the 2VP
+          uint multiplier = 1;
+
+          this.decisionMaker.AddDecision(1, multiplier);
+        }
+
         this.decisionMaker.AddDecision(1);
         var roadBuildSegmentAction = new BuildRoadSegmentAction(ComputerPlayerActionTypes.BuildRoadSegment, 0, 0);
         this.actions.Enqueue(roadBuildSegmentAction);
