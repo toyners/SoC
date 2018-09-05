@@ -1,13 +1,14 @@
 ﻿
 namespace Jabberwocky.SoC.Library
 {
+  using System;
   using System.Collections.Generic;
   using Jabberwocky.SoC.Library.Interfaces;
 
   public class DecisionMaker
   {
-    private INumberGenerator numberGenerator;
-    private List<int> decisionTable = new List<int>();
+    private readonly INumberGenerator numberGenerator;
+    private readonly List<Action> decisionTable = new List<Action>();
 
     public DecisionMaker(INumberGenerator numberGenerator)
     {
@@ -19,7 +20,7 @@ namespace Jabberwocky.SoC.Library
       this.decisionTable.Clear();
     }
 
-    public void AddDecision(int id, uint multiplier = 1)
+    public void AddDecision(Action action, uint multiplier = 1)
     {
       if (this.decisionTable.Count + multiplier > this.decisionTable.Capacity)
       {
@@ -28,11 +29,11 @@ namespace Jabberwocky.SoC.Library
 
       for (var count = multiplier; count > 0; count--)
       {
-        this.decisionTable.Add(id);
+        this.decisionTable.Add(action);
       }
     }
 
-    public int DetermineDecision()
+    public Action DetermineDecision()
     {
       var n = this.numberGenerator.GetRandomNumberBetweenZeroAndMaximum(this.decisionTable.Count);
       return this.decisionTable[n];

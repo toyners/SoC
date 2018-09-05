@@ -70,12 +70,16 @@ namespace Jabberwocky.SoC.Library
           // will capture the 2VP
           uint multiplier = 1;
 
-          this.decisionMaker.AddDecision(1, multiplier);
-        }
+          uint startLocation = 0, endLocation = 0;
 
-        this.decisionMaker.AddDecision(1);
-        var roadBuildSegmentAction = new BuildRoadSegmentAction(ComputerPlayerActionTypes.BuildRoadSegment, 0, 0);
-        this.actions.Enqueue(roadBuildSegmentAction);
+          Action action = () =>
+          {
+            var roadBuildSegmentAction = new BuildRoadSegmentAction(ComputerPlayerActionTypes.BuildRoadSegment, startLocation, endLocation);
+            this.actions.Enqueue(roadBuildSegmentAction);
+          };
+
+          this.decisionMaker.AddDecision(action, multiplier);
+        }
       }
 
       if (resourceClutch >= ResourceClutch.Settlement && this.RemainingSettlements > 0)
@@ -97,7 +101,7 @@ namespace Jabberwocky.SoC.Library
         // Boost it if playing development card buyer strategy
       }
 
-
+      this.decisionMaker.DetermineDecision().Invoke();
     }
 
     public virtual UInt32 ChooseCityLocation()
