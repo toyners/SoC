@@ -64,21 +64,25 @@ namespace Jabberwocky.SoC.Library
         // Get the current road segment build candidates 
         var roadSegmentCandidates = this.gameBoard.BoardQuery.GetRoadSegmentCandidates(this.settlementCandidates);
 
-        if (roadSegmentCandidates.Count > 1)
+        if (roadSegmentCandidates != null)
         {
-          // Can build road - boost it if road builder strategy or if building the next road segment
-          // will capture the 2VP
-          uint multiplier = 1;
-
-          uint startLocation = 0, endLocation = 0;
-
-          Action action = () =>
+          foreach (var kv in roadSegmentCandidates)
           {
-            var roadBuildSegmentAction = new BuildRoadSegmentAction(ComputerPlayerActionTypes.BuildRoadSegment, startLocation, endLocation);
-            this.actions.Enqueue(roadBuildSegmentAction);
-          };
+            foreach (var destination in kv.Value)
+            {
+              // Can build road - boost it if road builder strategy or if building the next road segment
+              // will capture the 2VP
+              uint multiplier = 1;
 
-          this.decisionMaker.AddDecision(action, multiplier);
+              Action action = () =>
+              {
+                var roadBuildSegmentAction = new BuildRoadSegmentAction(ComputerPlayerActionTypes.BuildRoadSegment, kv.Key, destination);
+                this.actions.Enqueue(roadBuildSegmentAction);
+              };
+
+              this.decisionMaker.AddDecision(action, multiplier);
+            }
+          }
         }
       }
 
