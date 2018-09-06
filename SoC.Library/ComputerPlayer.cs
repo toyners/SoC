@@ -66,6 +66,12 @@ namespace Jabberwocky.SoC.Library
 
         if (roadPathCandidates != null)
         {
+          var roadSegmentCandidateCount = 0;
+          foreach (var rpc in roadPathCandidates)
+          {
+            roadSegmentCandidateCount += rpc.Value.Count;
+          }
+
           // Can build at least one road segment
           // if building the next road segment wins the game then do this
           if (this.VictoryPoints >= 8 && !this.HasLongestRoad)
