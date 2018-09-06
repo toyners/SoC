@@ -53,7 +53,7 @@ namespace Jabberwocky.SoC.Library
       throw new NotImplementedException();
     }
 
-    public virtual void BuildInitialPlayerActions(PlayerDataView[] playerData)
+    public virtual void BuildInitialPlayerActions(PlayerDataView[] otherPlayerData)
     {
       this.decisionMaker.Reset();
 
@@ -62,10 +62,42 @@ namespace Jabberwocky.SoC.Library
       if (resourceClutch >= ResourceClutch.RoadSegment && this.RemainingRoadSegments > 0)
       {
         // Get the current road segment build candidates 
-        var roadSegmentCandidates = this.gameBoard.BoardQuery.GetRoadSegmentCandidates(this.settlementCandidates);
+        var roadSegmentCandidates = this.gameBoard.BoardQuery.GetRoadPathCandidates(this.settlementCandidates);
 
         if (roadSegmentCandidates != null)
         {
+          // Can build at least one road segment
+          // if building the next road segment wins the game then do this
+          if (this.VictoryPoints >= 8 && !this.HasLongestRoad)
+          {
+            foreach (var otherPlayer in otherPlayerData)
+            {
+              if (!otherPlayer.HasLongestRoad)
+              {
+                continue;
+              }
+
+              //var roadSegmentCandidateIndex
+              var roadSegmentCandidate = roadSegmentCandidates[0];
+
+              var requiredRoadSegmentCount = this.gameBoard.BoardQuery.GetLongestRoadForPlayer(otherPlayer.Id).Count - 
+                this.gameBoard.BoardQuery.GetLongestRoadForPlayer(this.Id).Count + 1;
+              var requiredResources = ResourceClutch.RoadSegment * requiredRoadSegmentCount;
+              if (requiredResources <= resourceClutch && requiredRoadSegmentCount <= this.RemainingRoadSegments)
+              {
+
+                while (requiredRoadSegmentCount-- > 0)
+                {
+                  //var roadBuildSegmentAction = new BuildRoadSegmentAction(ComputerPlayerActionTypes.BuildRoadSegment, kv.Key, destination);
+                  //this.actions.Enqueue(roadBuildSegmentAction);
+                }
+              }
+            }
+          }
+          
+
+          var workingRemainingRoadSegments = this.RemainingRoadSegments;
+
           foreach (var kv in roadSegmentCandidates)
           {
             foreach (var destination in kv.Value)

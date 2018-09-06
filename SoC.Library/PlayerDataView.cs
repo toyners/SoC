@@ -12,5 +12,7 @@ namespace Jabberwocky.SoC.Library
     public Int32 ResourceCards { get; set; }
     public Int32 HiddenDevelopmentCards { get; set; }
     public String Name;
+    public bool HasLongestRoad;
+    public int LongestRoadSegmentCount;
   }
 }
