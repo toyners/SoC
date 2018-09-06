@@ -15,6 +15,12 @@ namespace Jabberwocky.SoC.Library.GameBoards
     /// <param name="settlementCandidates"></param>
     /// <returns></returns>
     List<KeyValuePair<uint, List<uint>>> GetRoadPathCandidates(List<uint> settlementCandidates);
+
+    /// <summary>
+    /// Get the longest road for a player.
+    /// </summary>
+    /// <param name="id">Id of player</param>
+    /// <returns>Locations of the road.</returns>
     List<uint> GetLongestRoadForPlayer(Guid id);
   }
 }

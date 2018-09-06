@@ -62,9 +62,9 @@ namespace Jabberwocky.SoC.Library
       if (resourceClutch >= ResourceClutch.RoadSegment && this.RemainingRoadSegments > 0)
       {
         // Get the current road segment build candidates 
-        var roadSegmentCandidates = this.gameBoard.BoardQuery.GetRoadPathCandidates(this.settlementCandidates);
+        var roadPathCandidates = this.gameBoard.BoardQuery.GetRoadPathCandidates(this.settlementCandidates);
 
-        if (roadSegmentCandidates != null)
+        if (roadPathCandidates != null)
         {
           // Can build at least one road segment
           // if building the next road segment wins the game then do this
@@ -77,28 +77,35 @@ namespace Jabberwocky.SoC.Library
                 continue;
               }
 
-              //var roadSegmentCandidateIndex
-              var roadSegmentCandidate = roadSegmentCandidates[0];
+              var roadPathCandidateIndex = 0;
+              var roadPathCandidate = roadPathCandidates[roadPathCandidateIndex++];
 
               var requiredRoadSegmentCount = this.gameBoard.BoardQuery.GetLongestRoadForPlayer(otherPlayer.Id).Count - 
                 this.gameBoard.BoardQuery.GetLongestRoadForPlayer(this.Id).Count + 1;
               var requiredResources = ResourceClutch.RoadSegment * requiredRoadSegmentCount;
               if (requiredResources <= resourceClutch && requiredRoadSegmentCount <= this.RemainingRoadSegments)
               {
-
+                var index = 0;
                 while (requiredRoadSegmentCount-- > 0)
                 {
-                  //var roadBuildSegmentAction = new BuildRoadSegmentAction(ComputerPlayerActionTypes.BuildRoadSegment, kv.Key, destination);
-                  //this.actions.Enqueue(roadBuildSegmentAction);
+                  if (index == roadPathCandidate.Value.Count)
+                  {
+                    index = 0;
+                    roadPathCandidate = roadPathCandidates[roadPathCandidateIndex++];
+                  }
+
+                  var destination = roadPathCandidate.Value[index++];
+
+                  var roadBuildSegmentAction = new BuildRoadSegmentAction(ComputerPlayerActionTypes.BuildRoadSegment, roadPathCandidate.Key, destination);
+                  this.actions.Enqueue(roadBuildSegmentAction);
                 }
               }
             }
           }
-          
 
           var workingRemainingRoadSegments = this.RemainingRoadSegments;
 
-          foreach (var kv in roadSegmentCandidates)
+          foreach (var kv in roadPathCandidates)
           {
             foreach (var destination in kv.Value)
             {
@@ -153,7 +160,7 @@ namespace Jabberwocky.SoC.Library
       }
 
       var settlementIndex = -1;
-      var bestLocations = this.gameBoard.BoardQuery.GetLocationsWithBestYield(5);
+      var bestLocations = this.gameBoard.BoardQuery.GetLocationsWithBestYield(5u);
       var n = this.numberGenerator.GetRandomNumberBetweenZeroAndMaximum(100);
         
       if (n < 55)

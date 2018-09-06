@@ -155,6 +155,21 @@ namespace Jabberwocky.SoC.Library.GameBoards
       score += ". Total yield is " + yield;
       Debug.WriteLine(score);
     }
+
+    public uint[] GetLocationsWithBestYield(uint count)
+    {
+      throw new NotImplementedException();
+    }
+
+    public List<KeyValuePair<uint, List<uint>>> GetRoadPathCandidates(List<uint> settlementCandidates)
+    {
+      throw new NotImplementedException();
+    }
+
+    public List<uint> GetLongestRoadForPlayer(Guid id)
+    {
+      throw new NotImplementedException();
+    }
     #endregion
   }
 }
