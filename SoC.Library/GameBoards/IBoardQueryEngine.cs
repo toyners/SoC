@@ -10,7 +10,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
 
     /// <summary>
     /// Returns possible paths to settlement candidates from existing player roads. Returns shortest routes only.
-    /// Ordered by the settlement candidates.
+    /// Ordered by the settlement candidates and then all other paths after that.
     /// </summary>
     /// <param name="settlementCandidates"></param>
     /// <returns></returns>

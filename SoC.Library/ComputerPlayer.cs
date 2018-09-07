@@ -66,16 +66,18 @@ namespace Jabberwocky.SoC.Library
 
         if (roadPathCandidates != null)
         {
+          // Can build at least one road segment
+          // Get the total number of road segments that we could build regardless of resources
           var roadSegmentCandidateCount = 0;
           foreach (var rpc in roadPathCandidates)
           {
             roadSegmentCandidateCount += rpc.Value.Count;
           }
 
-          // Can build at least one road segment
           // if building the next road segment wins the game then do this
           if (this.VictoryPoints >= 8 && !this.HasLongestRoad)
           {
+            var requiredRoadSegmentCount = 0;
             foreach (var otherPlayer in otherPlayerData)
             {
               if (!otherPlayer.HasLongestRoad)
@@ -83,14 +85,25 @@ namespace Jabberwocky.SoC.Library
                 continue;
               }
 
-              var roadPathCandidateIndex = 0;
-              var roadPathCandidate = roadPathCandidates[roadPathCandidateIndex++];
+              requiredRoadSegmentCount = this.gameBoard.BoardQuery.GetLongestRoadForPlayer(otherPlayer.Id).Count -
+                this.gameBoard.BoardQuery.GetLongestRoadForPlayer(this.Id).Count;
 
-              var requiredRoadSegmentCount = this.gameBoard.BoardQuery.GetLongestRoadForPlayer(otherPlayer.Id).Count - 
-                this.gameBoard.BoardQuery.GetLongestRoadForPlayer(this.Id).Count + 1;
+              break;
+            }
+
+            // Number of road segments to build to have the longest road 
+            requiredRoadSegmentCount++;
+            
+            if (requiredRoadSegmentCount <= roadSegmentCandidateCount)
+            {
+              // The number of road segments that is required to have the longest road is smaller than
+              // the number of possible road segments that can be built.
               var requiredResources = ResourceClutch.RoadSegment * requiredRoadSegmentCount;
               if (requiredResources <= resourceClutch && requiredRoadSegmentCount <= this.RemainingRoadSegments)
               {
+                // Got the required resources to build the required road segments
+                var roadPathCandidateIndex = 0;
+                var roadPathCandidate = roadPathCandidates[roadPathCandidateIndex++];
                 var index = 0;
                 while (requiredRoadSegmentCount-- > 0)
                 {
