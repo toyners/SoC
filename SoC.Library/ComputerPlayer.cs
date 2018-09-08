@@ -151,10 +151,12 @@ namespace Jabberwocky.SoC.Library
         // If building the settlement on any location will win the game then do it
       }
 
-      if (resourceClutch >= ResourceClutch.City && this.RemainingCities > 0)
+      if (resourceClutch >= ResourceClutch.City && this.RemainingCities > 0 && this.SettlementsBuilt > this.CitiesBuilt)
       {
-        // Got resources to build city. Find settlements to promote
+        // Got resources to build city and got settlements to promote.
         // If building the city will win the game then do it
+
+        // Otherwise include city promotion as a possible decision
       }
 
       if (resourceClutch >= ResourceClutch.DevelopmentCard)
