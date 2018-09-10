@@ -19,25 +19,25 @@ namespace SoC.Harness
       
       var resourceBitmaps = new[]
       {
-        new BitmapImage(new Uri(@"resources\desert.png")),
-        new BitmapImage(new Uri(@"resources\brick.png")),
-        new BitmapImage(new Uri(@"resources\grain.png")),
-        new BitmapImage(new Uri(@"resources\lumber.png")),
-        new BitmapImage(new Uri(@"resources\ore.png")),
-        new BitmapImage(new Uri(@"resources\wool.png"))
+        new BitmapImage(new Uri(@"resources\desert.png", UriKind.Relative)),
+        new BitmapImage(new Uri(@"resources\brick.png", UriKind.Relative)),
+        new BitmapImage(new Uri(@"resources\grain.png", UriKind.Relative)),
+        new BitmapImage(new Uri(@"resources\lumber.png", UriKind.Relative)),
+        new BitmapImage(new Uri(@"resources\ore.png", UriKind.Relative)),
+        new BitmapImage(new Uri(@"resources\wool.png", UriKind.Relative))
       };
 
       var numberBitmaps = new Dictionary<int, BitmapImage>();
-      numberBitmaps.Add(2, new BitmapImage(new Uri(@"resources\2.png")));
-      numberBitmaps.Add(3, new BitmapImage(new Uri(@"resources\3.png")));
-      numberBitmaps.Add(4, new BitmapImage(new Uri(@"resources\4.png")));
-      numberBitmaps.Add(5, new BitmapImage(new Uri(@"resources\5.png")));
-      numberBitmaps.Add(6, new BitmapImage(new Uri(@"resources\6.png")));
-      numberBitmaps.Add(8, new BitmapImage(new Uri(@"resources\8.png")));
-      numberBitmaps.Add(9, new BitmapImage(new Uri(@"resources\9.png")));
-      numberBitmaps.Add(10, new BitmapImage(new Uri(@"resources\10.png")));
-      numberBitmaps.Add(11, new BitmapImage(new Uri(@"resources\11.png")));
-      numberBitmaps.Add(12, new BitmapImage(new Uri(@"resources\12.png")));
+      numberBitmaps.Add(2, new BitmapImage(new Uri(@"resources\2.png", UriKind.Relative)));
+      numberBitmaps.Add(3, new BitmapImage(new Uri(@"resources\3.png", UriKind.Relative)));
+      numberBitmaps.Add(4, new BitmapImage(new Uri(@"resources\4.png", UriKind.Relative)));
+      numberBitmaps.Add(5, new BitmapImage(new Uri(@"resources\5.png", UriKind.Relative)));
+      numberBitmaps.Add(6, new BitmapImage(new Uri(@"resources\6.png", UriKind.Relative)));
+      numberBitmaps.Add(8, new BitmapImage(new Uri(@"resources\8.png", UriKind.Relative)));
+      numberBitmaps.Add(9, new BitmapImage(new Uri(@"resources\9.png", UriKind.Relative)));
+      numberBitmaps.Add(10, new BitmapImage(new Uri(@"resources\10.png", UriKind.Relative)));
+      numberBitmaps.Add(11, new BitmapImage(new Uri(@"resources\11.png", UriKind.Relative)));
+      numberBitmaps.Add(12, new BitmapImage(new Uri(@"resources\12.png", UriKind.Relative)));
 
       var layoutColumnData = new[]
       {
