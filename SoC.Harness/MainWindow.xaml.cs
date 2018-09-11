@@ -3,6 +3,7 @@ namespace SoC.Harness
 {
   using System.Windows;
   using Jabberwocky.SoC.Library;
+  using Jabberwocky.SoC.Library.GameBoards;
 
   /// <summary>
   /// Interaction logic for MainWindow.xaml
@@ -14,8 +15,16 @@ namespace SoC.Harness
     public MainWindow()
     {
       this.InitializeComponent();
-      
-      //this.Board.Initialise()
+
+      // TODO: Investigate IoC containers for initialisation
+      var numberGenerator = new Dice();
+      var playerPool = new PlayerPool();
+      var board = new GameBoard(BoardSizes.Standard);
+      var developmentCardHolder = new DevelopmentCardHolder();
+
+      this.localGameController = new LocalGameController(numberGenerator, playerPool, board, developmentCardHolder);
+
+      this.Board.Initialise(board);
     }
   }
 }

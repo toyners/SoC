@@ -20,27 +20,8 @@ namespace SoC.Harness
 
     public void Initialise(IGameBoard board)
     {
-      var resourceBitmaps = new Dictionary<ResourceTypes?, BitmapImage>
-      {
-        { null, new BitmapImage(new Uri(@"resources\desert.png", UriKind.Relative)) },
-        { ResourceTypes.Brick, new BitmapImage(new Uri(@"resources\brick.png", UriKind.Relative)) },
-        { ResourceTypes.Grain, new BitmapImage(new Uri(@"resources\grain.png", UriKind.Relative)) },
-        { ResourceTypes.Lumber, new BitmapImage(new Uri(@"resources\lumber.png", UriKind.Relative)) },
-        { ResourceTypes.Ore, new BitmapImage(new Uri(@"resources\ore.png", UriKind.Relative)) },
-        { ResourceTypes.Wool, new BitmapImage(new Uri(@"resources\wool.png", UriKind.Relative)) }
-      };
-
-      var numberBitmaps = new Dictionary<uint, BitmapImage>();
-      numberBitmaps.Add(2, new BitmapImage(new Uri(@"resources\2.png", UriKind.Relative)));
-      numberBitmaps.Add(3, new BitmapImage(new Uri(@"resources\3.png", UriKind.Relative)));
-      numberBitmaps.Add(4, new BitmapImage(new Uri(@"resources\4.png", UriKind.Relative)));
-      numberBitmaps.Add(5, new BitmapImage(new Uri(@"resources\5.png", UriKind.Relative)));
-      numberBitmaps.Add(6, new BitmapImage(new Uri(@"resources\6.png", UriKind.Relative)));
-      numberBitmaps.Add(8, new BitmapImage(new Uri(@"resources\8.png", UriKind.Relative)));
-      numberBitmaps.Add(9, new BitmapImage(new Uri(@"resources\9.png", UriKind.Relative)));
-      numberBitmaps.Add(10, new BitmapImage(new Uri(@"resources\10.png", UriKind.Relative)));
-      numberBitmaps.Add(11, new BitmapImage(new Uri(@"resources\11.png", UriKind.Relative)));
-      numberBitmaps.Add(12, new BitmapImage(new Uri(@"resources\12.png", UriKind.Relative)));
+      var resourceBitmaps = this.CreateResourceBitmaps();
+      var numberBitmaps = this.CreateNumberBitmaps();
 
       var layoutColumnData = new[]
       {
@@ -65,7 +46,7 @@ namespace SoC.Harness
 
         while (count-- > 0)
         {
-          GetBitmaps(hexData[hexDataIndex], resourceBitmaps, numberBitmaps, out resourceBitmap, out numberBitmap);
+          this.GetBitmaps(hexData[hexDataIndex++], resourceBitmaps, numberBitmaps, out resourceBitmap, out numberBitmap);
           this.PlaceHex(resourceBitmap, numberBitmap, x, y);
           y += cellHeight;
         }
@@ -83,13 +64,54 @@ namespace SoC.Harness
       };
     }
 
-    private void GetBitmaps(Tuple<ResourceTypes?, uint> hexData, Dictionary<ResourceTypes?, BitmapImage> resourceBitmaps, Dictionary<uint, BitmapImage> numberBitmaps, out BitmapImage resourceBitmap, out BitmapImage numberBitmap)
+    private Dictionary<uint, BitmapImage> CreateNumberBitmaps()
     {
-      resourceBitmap = resourceBitmaps[hexData.Item1];
-      numberBitmap = numberBitmaps[hexData.Item2];
+#pragma warning disable IDE0009 // Member access should be qualified.
+      return new Dictionary<uint, BitmapImage>
+      {
+        { 2, new BitmapImage(new Uri(@"resources\2.png", UriKind.Relative)) },
+        { 3, new BitmapImage(new Uri(@"resources\3.png", UriKind.Relative)) },
+        { 4, new BitmapImage(new Uri(@"resources\4.png", UriKind.Relative)) },
+        { 5, new BitmapImage(new Uri(@"resources\5.png", UriKind.Relative)) },
+        { 6, new BitmapImage(new Uri(@"resources\6.png", UriKind.Relative)) },
+        { 8, new BitmapImage(new Uri(@"resources\8.png", UriKind.Relative)) },
+        { 9, new BitmapImage(new Uri(@"resources\9.png", UriKind.Relative)) },
+        { 10, new BitmapImage(new Uri(@"resources\10.png", UriKind.Relative)) },
+        { 11, new BitmapImage(new Uri(@"resources\11.png", UriKind.Relative)) },
+        { 12, new BitmapImage(new Uri(@"resources\12.png", UriKind.Relative)) }
+      };
+#pragma warning restore IDE0009 // Member access should be qualified.
     }
 
-    private void PlaceHex(BitmapImage resourceBitmap, BitmapImage numberBitmap, Int32 x, Int32 y)
+    private Dictionary<ResourceTypes, BitmapImage> CreateResourceBitmaps()
+    {
+#pragma warning disable IDE0009 // Member access should be qualified.
+      return new Dictionary<ResourceTypes, BitmapImage>
+      {
+        { ResourceTypes.Brick, new BitmapImage(new Uri(@"resources\brick.png", UriKind.Relative)) },
+        { ResourceTypes.Grain, new BitmapImage(new Uri(@"resources\grain.png", UriKind.Relative)) },
+        { ResourceTypes.Lumber, new BitmapImage(new Uri(@"resources\lumber.png", UriKind.Relative)) },
+        { ResourceTypes.Ore, new BitmapImage(new Uri(@"resources\ore.png", UriKind.Relative)) },
+        { ResourceTypes.Wool, new BitmapImage(new Uri(@"resources\wool.png", UriKind.Relative)) }
+      };
+#pragma warning restore IDE0009 // Member access should be qualified.
+    }
+
+    private void GetBitmaps(Tuple<ResourceTypes?, uint> hexData, Dictionary<ResourceTypes, BitmapImage> resourceBitmaps, Dictionary<uint, BitmapImage> numberBitmaps, out BitmapImage resourceBitmap, out BitmapImage numberBitmap)
+    {
+      if (!hexData.Item1.HasValue)
+      {
+        resourceBitmap = new BitmapImage(new Uri(@"resources\desert.png", UriKind.Relative));
+      }
+      else
+      {
+        resourceBitmap = resourceBitmaps[hexData.Item1.Value];
+      }
+
+      numberBitmap = (hexData.Item2 != 0 ? numberBitmaps[hexData.Item2] : null);
+    }
+
+    private void PlaceHex(BitmapImage resourceBitmap, BitmapImage numberBitmap, int x, int y)
     {
       var resourceImage = this.CreateImage(resourceBitmap, string.Empty);
       this.Background.Children.Add(resourceImage);
