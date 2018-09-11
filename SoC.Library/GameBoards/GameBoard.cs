@@ -12,7 +12,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
   /// Holds data for all locations, trails, towns, cities, roads, resource providers and robber location.
   /// Provides methods for verifying locations for placing new settlements, cities and roads for a player.
   /// </summary>
-  public class GameBoard
+  public class GameBoard : IGameBoard
   {
     #region Enums
     public enum VerificationStatus
@@ -291,9 +291,9 @@ namespace Jabberwocky.SoC.Library.GameBoards
       return new VerificationResults { Status = VerificationStatus.Valid };
     }
 
-    public Tuple<ResourceTypes?, UInt32>[] GetHexInformation()
+    public Tuple<ResourceTypes?, uint>[] GetHexInformation()
     {
-      var data = new Tuple<ResourceTypes?, UInt32>[this.hexes.Length];
+      var data = new Tuple<ResourceTypes?, uint>[this.hexes.Length];
       for (var index = 0; index < this.hexes.Length; index++)
       {
         data[index] = new Tuple<ResourceTypes?, uint>(this.hexes[index].Type, this.hexes[index].Production);

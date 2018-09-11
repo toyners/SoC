@@ -23,7 +23,7 @@
       <local:PlayerUI Grid.Row="1" />
     </Grid>
 
-    <local:BoardUI Grid.Column="1" />
+    <local:BoardUI x:Name="Board" Grid.Column="1" />
 
     <Grid Grid.Column="2">
       <Grid.RowDefinitions>

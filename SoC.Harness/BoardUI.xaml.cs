@@ -5,6 +5,8 @@ namespace SoC.Harness
   using System.Collections.Generic;
   using System.Windows.Controls;
   using System.Windows.Media.Imaging;
+  using Jabberwocky.SoC.Library;
+  using Jabberwocky.SoC.Library.GameBoards;
 
   /// <summary>
   /// Interaction logic for BoardUI.xaml
@@ -14,20 +16,21 @@ namespace SoC.Harness
     public BoardUI()
     {
       this.InitializeComponent();
+    }
 
-      //var bs = BitmapSource.Create()
-      
-      var resourceBitmaps = new[]
+    public void Initialise(IGameBoard board)
+    {
+      var resourceBitmaps = new Dictionary<ResourceTypes?, BitmapImage>
       {
-        new BitmapImage(new Uri(@"resources\desert.png", UriKind.Relative)),
-        new BitmapImage(new Uri(@"resources\brick.png", UriKind.Relative)),
-        new BitmapImage(new Uri(@"resources\grain.png", UriKind.Relative)),
-        new BitmapImage(new Uri(@"resources\lumber.png", UriKind.Relative)),
-        new BitmapImage(new Uri(@"resources\ore.png", UriKind.Relative)),
-        new BitmapImage(new Uri(@"resources\wool.png", UriKind.Relative))
+        { null, new BitmapImage(new Uri(@"resources\desert.png", UriKind.Relative)) },
+        { ResourceTypes.Brick, new BitmapImage(new Uri(@"resources\brick.png", UriKind.Relative)) },
+        { ResourceTypes.Grain, new BitmapImage(new Uri(@"resources\grain.png", UriKind.Relative)) },
+        { ResourceTypes.Lumber, new BitmapImage(new Uri(@"resources\lumber.png", UriKind.Relative)) },
+        { ResourceTypes.Ore, new BitmapImage(new Uri(@"resources\ore.png", UriKind.Relative)) },
+        { ResourceTypes.Wool, new BitmapImage(new Uri(@"resources\wool.png", UriKind.Relative)) }
       };
 
-      var numberBitmaps = new Dictionary<int, BitmapImage>();
+      var numberBitmaps = new Dictionary<uint, BitmapImage>();
       numberBitmaps.Add(2, new BitmapImage(new Uri(@"resources\2.png", UriKind.Relative)));
       numberBitmaps.Add(3, new BitmapImage(new Uri(@"resources\3.png", UriKind.Relative)));
       numberBitmaps.Add(4, new BitmapImage(new Uri(@"resources\4.png", UriKind.Relative)));
@@ -49,9 +52,10 @@ namespace SoC.Harness
       };
 
       const int cellHeight = 45;
-      var dataIndex = 0;
       BitmapImage resourceBitmap = null;
       BitmapImage numberBitmap = null;
+      var hexData = board.GetHexInformation();
+      var hexDataIndex = 0;
 
       foreach (var columnData in layoutColumnData)
       {
@@ -61,7 +65,7 @@ namespace SoC.Harness
 
         while (count-- > 0)
         {
-          //GetBitmap(gameData.BoardData[dataIndex++], resourceBitmaps, numberBitmaps, out resourceBitmap, out numberBitmap);
+          GetBitmaps(hexData[hexDataIndex], resourceBitmaps, numberBitmaps, out resourceBitmap, out numberBitmap);
           this.PlaceHex(resourceBitmap, numberBitmap, x, y);
           y += cellHeight;
         }
@@ -79,19 +83,10 @@ namespace SoC.Harness
       };
     }
 
-    private void GetBitmap(Byte hexData, BitmapImage[] resourceBitmaps, Dictionary<Int32, BitmapImage> numberBitmaps, out BitmapImage resourceBitmap, out BitmapImage numberBitmap)
+    private void GetBitmaps(Tuple<ResourceTypes?, uint> hexData, Dictionary<ResourceTypes?, BitmapImage> resourceBitmaps, Dictionary<uint, BitmapImage> numberBitmaps, out BitmapImage resourceBitmap, out BitmapImage numberBitmap)
     {
-      var index = hexData % 10;
-      resourceBitmap = resourceBitmaps[index];
-
-      if (hexData == 0)
-      {
-        numberBitmap = null;
-      }
-      else
-      {
-        numberBitmap = numberBitmaps[hexData / 10];
-      }
+      resourceBitmap = resourceBitmaps[hexData.Item1];
+      numberBitmap = numberBitmaps[hexData.Item2];
     }
 
     private void PlaceHex(BitmapImage resourceBitmap, BitmapImage numberBitmap, Int32 x, Int32 y)
