@@ -13,11 +13,14 @@ namespace SoC.Harness
   /// </summary>
   public partial class BoardUI : UserControl
   {
+    #region Construction
     public BoardUI()
     {
       this.InitializeComponent();
     }
+    #endregion
 
+    #region Methods
     public void Initialise(IGameBoard board)
     {
       var resourceBitmaps = this.CreateResourceBitmaps();
@@ -128,6 +131,7 @@ namespace SoC.Harness
       Canvas.SetLeft(numberImage, x);
       Canvas.SetTop(numberImage, y);
     }
+    #endregion
 
     #region Structures
     private struct LayoutColumnData
