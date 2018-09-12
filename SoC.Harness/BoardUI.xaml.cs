@@ -26,16 +26,19 @@ namespace SoC.Harness
       var resourceBitmaps = this.CreateResourceBitmaps();
       var numberBitmaps = this.CreateNumberBitmaps();
 
+      var factor = 2;
+
       var layoutColumnData = new[]
       {
-        new LayoutColumnData { X = 10, Y = 54, Count = 3 },
-        new LayoutColumnData { X = 44, Y = 32, Count = 4 },
-        new LayoutColumnData { X = 78, Y = 10, Count = 5 },
-        new LayoutColumnData { X = 112, Y = 32, Count = 4 },
-        new LayoutColumnData { X = 146, Y = 54, Count = 3 }
+        new LayoutColumnData { X = 10 * factor, Y = 54 * factor, Count = 3 },
+        new LayoutColumnData { X = 44 * factor, Y = 32* factor, Count = 4 },
+        new LayoutColumnData { X = 78* factor, Y = 10* factor, Count = 5 },
+        new LayoutColumnData { X = 112* factor, Y = 32* factor, Count = 4 },
+        new LayoutColumnData { X = 146* factor, Y = 54* factor, Count = 3 }
       };
 
-      const int cellHeight = 45;
+      const int cellHeight = 45 * 2;
+      const int cellWidth = 45 * 2;
       BitmapImage resourceBitmap = null;
       BitmapImage numberBitmap = null;
       var hexData = board.GetHexInformation();
@@ -60,10 +63,11 @@ namespace SoC.Harness
     {
       return new Image
       {
-        Width = bitmapImage.Width,
-        Height = bitmapImage.Height,
+        Width = bitmapImage.Width * 2,
+        Height = bitmapImage.Height * 2,
         Name = name,
-        Source = bitmapImage
+        Source = bitmapImage,
+        StretchDirection = StretchDirection.Both
       };
     }
 
