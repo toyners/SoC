@@ -182,7 +182,7 @@
     <Content Include="Resources\9.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Resource Include="Resources\blue_settlement.png" />
+    <Resource Include="Resources\Settlements\blue_settlement.png" />
     <Content Include="Resources\brick.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -192,21 +192,23 @@
     <Content Include="Resources\grain.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Resource Include="Resources\green_settlement.png" />
+    <Resource Include="Resources\Settlements\green_settlement.png" />
     <Content Include="Resources\lumber.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Resources\ore.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Resource Include="Resources\red_settlement.png" />
+    <Resource Include="Resources\Settlements\red_settlement.png" />
+    <Resource Include="Resources\Settlements\settlement_indicator.png" />
     <Content Include="Resources\town.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Resources\wool.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Resource Include="Resources\yellow_settlement.png" />
+    <Resource Include="Resources\Settlements\yellow_settlement.png" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
