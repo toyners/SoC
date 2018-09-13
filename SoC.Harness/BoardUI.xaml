@@ -7,10 +7,8 @@
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
   <Grid>
-    <Canvas Name="Background" Height="450" Width="800">
-      <Label>Board</Label>
-    </Canvas>
+    <Canvas Name="Background" Height="450" Width="800" />
 
-    <Canvas Name="Foreground" />
+    <Canvas Name="Foreground" Height="450" Width="800"/>
   </Grid>
 </UserControl>

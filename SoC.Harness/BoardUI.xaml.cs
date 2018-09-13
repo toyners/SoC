@@ -45,57 +45,6 @@ namespace SoC.Harness
       var hexData = board.GetHexInformation();
       int hexDataIndex = 0;
 
-      /*var x = middleX - (cellWidth / 2);
-      var y = middleY - (cellHeight / 2) - (cellHeight * 2);
-
-      for (hexDataIndex = 7; hexDataIndex < 12; hexDataIndex++)
-      {
-        this.GetBitmaps(hexData[hexDataIndex], resourceBitmaps, numberBitmaps, out resourceBitmap, out numberBitmap);
-        this.PlaceHex(resourceBitmap, numberBitmap, x, y);
-        y += cellHeight;
-      }
-
-      x = middleX - (cellWidth / 4) * 5;
-      y = middleY - (cellHeight * 2);
-
-      for(hexDataIndex = 3; hexDataIndex < 7; hexDataIndex++)
-      {
-        this.GetBitmaps(hexData[hexDataIndex], resourceBitmaps, numberBitmaps, out resourceBitmap, out numberBitmap);
-        this.PlaceHex(resourceBitmap, numberBitmap, x, y);
-        y += cellHeight;
-      }
-
-      x = middleX - (cellWidth * 2) + 4;
-      y = middleY - (cellHeight / 2) - cellHeight;
-
-      for (hexDataIndex = 0; hexDataIndex < 3; hexDataIndex++)
-      {
-        this.GetBitmaps(hexData[hexDataIndex], resourceBitmaps, numberBitmaps, out resourceBitmap, out numberBitmap);
-        this.PlaceHex(resourceBitmap, numberBitmap, x, y);
-        y += cellHeight;
-      }
-
-      x = middleX + (cellWidth / 4) - 2;
-      y = middleY - (cellHeight * 2);
-
-      for (hexDataIndex = 12; hexDataIndex < 16; hexDataIndex++)
-      {
-        this.GetBitmaps(hexData[hexDataIndex], resourceBitmaps, numberBitmaps, out resourceBitmap, out numberBitmap);
-        this.PlaceHex(resourceBitmap, numberBitmap, x, y);
-        y += cellHeight;
-      }
-
-      x = middleX + cellWidth - 4;
-      y = middleY - (cellHeight / 2) - cellHeight;
-
-      for (hexDataIndex = 16; hexDataIndex < 19; hexDataIndex++)
-      {
-        this.GetBitmaps(hexData[hexDataIndex], resourceBitmaps, numberBitmaps, out resourceBitmap, out numberBitmap);
-        this.PlaceHex(resourceBitmap, numberBitmap, x, y);
-        y += cellHeight;
-      }
-
-      return;*/
       foreach (var columnData in layoutColumnData)
       {
         var count = columnData.Count;

@@ -8,9 +8,9 @@
         Title="MainWindow" Height="450" Width="800" WindowState="Maximized">
   <Grid>
     <Grid.ColumnDefinitions>
+      <ColumnDefinition Width="300"/>
       <ColumnDefinition />
-      <ColumnDefinition Width="4*"/>
-      <ColumnDefinition />
+      <ColumnDefinition Width="300"/>
     </Grid.ColumnDefinitions>
 
     <Grid>
