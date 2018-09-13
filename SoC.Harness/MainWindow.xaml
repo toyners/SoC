@@ -6,34 +6,27 @@
         xmlns:local="clr-namespace:SoC.Harness"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800" WindowState="Maximized">
-  <Grid>
-    <Grid.ColumnDefinitions>
-      <ColumnDefinition Width="300"/>
-      <ColumnDefinition />
-      <ColumnDefinition Width="300"/>
-    </Grid.ColumnDefinitions>
-
-    <Grid>
+  <DockPanel>
+    <Grid DockPanel.Dock="Left">
       <Grid.RowDefinitions>
         <RowDefinition />
         <RowDefinition />
       </Grid.RowDefinitions>
-      
+
+      <local:PlayerUI />
+      <local:PlayerUI Grid.Row="1" />
+    </Grid>
+
+    <Grid DockPanel.Dock="Right">
+      <Grid.RowDefinitions>
+        <RowDefinition />
+        <RowDefinition />
+      </Grid.RowDefinitions>
+
       <local:PlayerUI />
       <local:PlayerUI Grid.Row="1" />
     </Grid>
 
     <local:BoardUI x:Name="Board" Grid.Column="1" />
-
-    <Grid Grid.Column="2">
-      <Grid.RowDefinitions>
-        <RowDefinition />
-        <RowDefinition />
-      </Grid.RowDefinitions>
-
-      <local:PlayerUI />
-      <local:PlayerUI Grid.Row="1" />
-
-    </Grid>
-  </Grid>
+  </DockPanel>
 </Window>
