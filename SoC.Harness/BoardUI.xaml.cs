@@ -37,6 +37,9 @@ namespace SoC.Harness
         new LayoutColumnData { X = 146* factor, Y = 54* factor, Count = 3 }
       };
 
+      var middleX = this.Background.Width / 2;
+      var middleY = this.Background.Height / 2;
+
       const int cellHeight = 45 * 2;
       const int cellWidth = 45 * 2;
       BitmapImage resourceBitmap = null;
