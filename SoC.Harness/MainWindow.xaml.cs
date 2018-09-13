@@ -24,7 +24,7 @@ namespace SoC.Harness
 
       this.localGameController = new LocalGameController(numberGenerator, playerPool, board, developmentCardHolder);
 
-      this.Board.Initialise(board);
+      this.PlayArea.Initialise(board);
     }
   }
 }

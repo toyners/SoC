@@ -11,10 +11,10 @@ namespace SoC.Harness
   /// <summary>
   /// Interaction logic for BoardUI.xaml
   /// </summary>
-  public partial class BoardUI : UserControl
+  public partial class PlayAreaControl : UserControl
   {
     #region Construction
-    public BoardUI()
+    public PlayAreaControl()
     {
       this.InitializeComponent();
     }
@@ -77,16 +77,16 @@ namespace SoC.Harness
 #pragma warning disable IDE0009 // Member access should be qualified.
       return new Dictionary<uint, BitmapImage>
       {
-        { 2, new BitmapImage(new Uri(@"resources\2.png", UriKind.Relative)) },
-        { 3, new BitmapImage(new Uri(@"resources\3.png", UriKind.Relative)) },
-        { 4, new BitmapImage(new Uri(@"resources\4.png", UriKind.Relative)) },
-        { 5, new BitmapImage(new Uri(@"resources\5.png", UriKind.Relative)) },
-        { 6, new BitmapImage(new Uri(@"resources\6.png", UriKind.Relative)) },
-        { 8, new BitmapImage(new Uri(@"resources\8.png", UriKind.Relative)) },
-        { 9, new BitmapImage(new Uri(@"resources\9.png", UriKind.Relative)) },
-        { 10, new BitmapImage(new Uri(@"resources\10.png", UriKind.Relative)) },
-        { 11, new BitmapImage(new Uri(@"resources\11.png", UriKind.Relative)) },
-        { 12, new BitmapImage(new Uri(@"resources\12.png", UriKind.Relative)) }
+        { 2, new BitmapImage(new Uri(@"resources\productionfactors\2.png", UriKind.Relative)) },
+        { 3, new BitmapImage(new Uri(@"resources\productionfactors\3.png", UriKind.Relative)) },
+        { 4, new BitmapImage(new Uri(@"resources\productionfactors\4.png", UriKind.Relative)) },
+        { 5, new BitmapImage(new Uri(@"resources\productionfactors\5.png", UriKind.Relative)) },
+        { 6, new BitmapImage(new Uri(@"resources\productionfactors\6.png", UriKind.Relative)) },
+        { 8, new BitmapImage(new Uri(@"resources\productionfactors\8.png", UriKind.Relative)) },
+        { 9, new BitmapImage(new Uri(@"resources\productionfactors\9.png", UriKind.Relative)) },
+        { 10, new BitmapImage(new Uri(@"resources\productionfactors\10.png", UriKind.Relative)) },
+        { 11, new BitmapImage(new Uri(@"resources\productionfactors\11.png", UriKind.Relative)) },
+        { 12, new BitmapImage(new Uri(@"resources\productionfactors\12.png", UriKind.Relative)) }
       };
 #pragma warning restore IDE0009 // Member access should be qualified.
     }
@@ -96,11 +96,11 @@ namespace SoC.Harness
 #pragma warning disable IDE0009 // Member access should be qualified.
       return new Dictionary<ResourceTypes, BitmapImage>
       {
-        { ResourceTypes.Brick, new BitmapImage(new Uri(@"resources\brick.png", UriKind.Relative)) },
-        { ResourceTypes.Grain, new BitmapImage(new Uri(@"resources\grain.png", UriKind.Relative)) },
-        { ResourceTypes.Lumber, new BitmapImage(new Uri(@"resources\lumber.png", UriKind.Relative)) },
-        { ResourceTypes.Ore, new BitmapImage(new Uri(@"resources\ore.png", UriKind.Relative)) },
-        { ResourceTypes.Wool, new BitmapImage(new Uri(@"resources\wool.png", UriKind.Relative)) }
+        { ResourceTypes.Brick, new BitmapImage(new Uri(@"resources\resourcetypes\brick.png", UriKind.Relative)) },
+        { ResourceTypes.Grain, new BitmapImage(new Uri(@"resources\resourcetypes\grain.png", UriKind.Relative)) },
+        { ResourceTypes.Lumber, new BitmapImage(new Uri(@"resources\resourcetypes\lumber.png", UriKind.Relative)) },
+        { ResourceTypes.Ore, new BitmapImage(new Uri(@"resources\resourcetypes\ore.png", UriKind.Relative)) },
+        { ResourceTypes.Wool, new BitmapImage(new Uri(@"resources\resourcetypes\wool.png", UriKind.Relative)) }
       };
 #pragma warning restore IDE0009 // Member access should be qualified.
     }

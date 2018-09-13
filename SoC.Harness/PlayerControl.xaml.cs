@@ -6,9 +6,9 @@ namespace SoC.Harness
   /// <summary>
   /// Interaction logic for PlayerUI.xaml
   /// </summary>
-  public partial class PlayerUI : UserControl
+  public partial class PlayerControl : UserControl
   {
-    public PlayerUI()
+    public PlayerControl()
     {
       this.InitializeComponent();
     }

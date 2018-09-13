@@ -72,13 +72,13 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="BoardUI.xaml.cs">
-      <DependentUpon>BoardUI.xaml</DependentUpon>
+    <Compile Include="PlayAreaControl.xaml.cs">
+      <DependentUpon>PlayAreaControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="CircleButton.xaml.cs">
       <DependentUpon>CircleButton.xaml</DependentUpon>
     </Compile>
-    <Page Include="BoardUI.xaml">
+    <Page Include="PlayAreaControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -90,7 +90,6 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="BoardDisplay.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -99,14 +98,14 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="PlayerUI.xaml">
+    <Page Include="PlayerControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="PlayerUI.xaml.cs">
-      <DependentUpon>PlayerUI.xaml</DependentUpon>
+    <Compile Include="PlayerControl.xaml.cs">
+      <DependentUpon>PlayerControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
@@ -152,59 +151,56 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Resources\10.png">
+    <Content Include="Resources\ProductionFactors\10.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Resources\11.png">
+    <Content Include="Resources\ProductionFactors\11.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Resources\12.png">
+    <Content Include="Resources\ProductionFactors\12.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Resources\2.png">
+    <Content Include="Resources\ProductionFactors\2.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Resources\3.png">
+    <Content Include="Resources\ProductionFactors\3.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Resources\4.png">
+    <Content Include="Resources\ProductionFactors\4.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Resources\5.png">
+    <Content Include="Resources\ProductionFactors\5.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Resources\6.png">
+    <Content Include="Resources\ProductionFactors\6.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Resources\8.png">
+    <Content Include="Resources\ProductionFactors\8.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Resources\9.png">
+    <Content Include="Resources\ProductionFactors\9.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Resource Include="Resources\Settlements\blue_settlement.png" />
-    <Content Include="Resources\brick.png">
+    <Content Include="Resources\ResourceTypes\brick.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Resources\desert.png">
+    <Content Include="Resources\ResourceTypes\desert.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Resources\grain.png">
+    <Content Include="Resources\ResourceTypes\grain.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Resource Include="Resources\Settlements\green_settlement.png" />
-    <Content Include="Resources\lumber.png">
+    <Content Include="Resources\ResourceTypes\lumber.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Resources\ore.png">
+    <Content Include="Resources\ResourceTypes\ore.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Resource Include="Resources\Settlements\red_settlement.png" />
     <Resource Include="Resources\Settlements\settlement_indicator.png" />
-    <Content Include="Resources\town.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Resources\wool.png">
+    <Content Include="Resources\ResourceTypes\wool.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Resource Include="Resources\Settlements\yellow_settlement.png" />
