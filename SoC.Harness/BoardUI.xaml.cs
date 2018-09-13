@@ -37,21 +37,37 @@ namespace SoC.Harness
         new LayoutColumnData { X = 146* factor, Y = 54* factor, Count = 3 }
       };
 
-      var middleX = this.Background.Width / 2;
-      var middleY = this.Background.Height / 2;
+      var middleX = (int)this.Background.Width / 2;
+      var middleY = (int)this.Background.Height / 2;
 
       const int cellHeight = 45 * 2;
       const int cellWidth = 45 * 2;
       BitmapImage resourceBitmap = null;
       BitmapImage numberBitmap = null;
       var hexData = board.GetHexInformation();
-      var hexDataIndex = 0;
+      var hexDataIndex = 9;
+      var x = middleX - (cellWidth / 2);
+      var y = middleY - (cellHeight / 2);
 
+      this.GetBitmaps(hexData[hexDataIndex], resourceBitmaps, numberBitmaps, out resourceBitmap, out numberBitmap);
+      this.PlaceHex(resourceBitmap, numberBitmap, x, y);
+
+      y -= cellHeight;
+      hexDataIndex--;
+      this.GetBitmaps(hexData[hexDataIndex], resourceBitmaps, numberBitmaps, out resourceBitmap, out numberBitmap);
+      this.PlaceHex(resourceBitmap, numberBitmap, x, y);
+
+      y -= cellHeight;
+      hexDataIndex--;
+      this.GetBitmaps(hexData[hexDataIndex], resourceBitmaps, numberBitmaps, out resourceBitmap, out numberBitmap);
+      this.PlaceHex(resourceBitmap, numberBitmap, x, y);
+
+      return;
       foreach (var columnData in layoutColumnData)
       {
         var count = columnData.Count;
-        var x = columnData.X;
-        var y = columnData.Y;
+        x = columnData.X;
+        y = columnData.Y;
 
         while (count-- > 0)
         {
