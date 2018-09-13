@@ -26,48 +26,81 @@ namespace SoC.Harness
       var resourceBitmaps = this.CreateResourceBitmaps();
       var numberBitmaps = this.CreateNumberBitmaps();
 
-      var factor = 2;
+      var middleX = (int)this.Background.Width / 2;
+      var middleY = (int)this.Background.Height / 2;
+      const int cellHeight = 90;
+      const int cellWidth = 90;
 
       var layoutColumnData = new[]
       {
-        new LayoutColumnData { X = 10 * factor, Y = 54 * factor, Count = 3 },
-        new LayoutColumnData { X = 44 * factor, Y = 32* factor, Count = 4 },
-        new LayoutColumnData { X = 78* factor, Y = 10* factor, Count = 5 },
-        new LayoutColumnData { X = 112* factor, Y = 32* factor, Count = 4 },
-        new LayoutColumnData { X = 146* factor, Y = 54* factor, Count = 3 }
+        new LayoutColumnData { X = middleX - (cellWidth * 2) + 4, Y = middleY - (cellHeight / 2) - cellHeight, Count = 3 },
+        new LayoutColumnData { X = middleX - (cellWidth / 4) * 5, Y = middleY - (cellHeight * 2), Count = 4 },
+        new LayoutColumnData { X = middleX - (cellWidth / 2), Y = middleY - (cellHeight / 2) - (cellHeight * 2), Count = 5 },
+        new LayoutColumnData { X = middleX + (cellWidth / 4) - 2, Y = middleY - (cellHeight * 2), Count = 4 },
+        new LayoutColumnData { X = middleX + cellWidth - 4, Y = middleY - (cellHeight / 2) - cellHeight, Count = 3 }
       };
 
-      var middleX = (int)this.Background.Width / 2;
-      var middleY = (int)this.Background.Height / 2;
-
-      const int cellHeight = 45 * 2;
-      const int cellWidth = 45 * 2;
       BitmapImage resourceBitmap = null;
       BitmapImage numberBitmap = null;
       var hexData = board.GetHexInformation();
-      var hexDataIndex = 9;
-      var x = middleX - (cellWidth / 2);
-      var y = middleY - (cellHeight / 2);
+      int hexDataIndex = 0;
 
-      this.GetBitmaps(hexData[hexDataIndex], resourceBitmaps, numberBitmaps, out resourceBitmap, out numberBitmap);
-      this.PlaceHex(resourceBitmap, numberBitmap, x, y);
+      /*var x = middleX - (cellWidth / 2);
+      var y = middleY - (cellHeight / 2) - (cellHeight * 2);
 
-      y -= cellHeight;
-      hexDataIndex--;
-      this.GetBitmaps(hexData[hexDataIndex], resourceBitmaps, numberBitmaps, out resourceBitmap, out numberBitmap);
-      this.PlaceHex(resourceBitmap, numberBitmap, x, y);
+      for (hexDataIndex = 7; hexDataIndex < 12; hexDataIndex++)
+      {
+        this.GetBitmaps(hexData[hexDataIndex], resourceBitmaps, numberBitmaps, out resourceBitmap, out numberBitmap);
+        this.PlaceHex(resourceBitmap, numberBitmap, x, y);
+        y += cellHeight;
+      }
 
-      y -= cellHeight;
-      hexDataIndex--;
-      this.GetBitmaps(hexData[hexDataIndex], resourceBitmaps, numberBitmaps, out resourceBitmap, out numberBitmap);
-      this.PlaceHex(resourceBitmap, numberBitmap, x, y);
+      x = middleX - (cellWidth / 4) * 5;
+      y = middleY - (cellHeight * 2);
 
-      return;
+      for(hexDataIndex = 3; hexDataIndex < 7; hexDataIndex++)
+      {
+        this.GetBitmaps(hexData[hexDataIndex], resourceBitmaps, numberBitmaps, out resourceBitmap, out numberBitmap);
+        this.PlaceHex(resourceBitmap, numberBitmap, x, y);
+        y += cellHeight;
+      }
+
+      x = middleX - (cellWidth * 2) + 4;
+      y = middleY - (cellHeight / 2) - cellHeight;
+
+      for (hexDataIndex = 0; hexDataIndex < 3; hexDataIndex++)
+      {
+        this.GetBitmaps(hexData[hexDataIndex], resourceBitmaps, numberBitmaps, out resourceBitmap, out numberBitmap);
+        this.PlaceHex(resourceBitmap, numberBitmap, x, y);
+        y += cellHeight;
+      }
+
+      x = middleX + (cellWidth / 4) - 2;
+      y = middleY - (cellHeight * 2);
+
+      for (hexDataIndex = 12; hexDataIndex < 16; hexDataIndex++)
+      {
+        this.GetBitmaps(hexData[hexDataIndex], resourceBitmaps, numberBitmaps, out resourceBitmap, out numberBitmap);
+        this.PlaceHex(resourceBitmap, numberBitmap, x, y);
+        y += cellHeight;
+      }
+
+      x = middleX + cellWidth - 4;
+      y = middleY - (cellHeight / 2) - cellHeight;
+
+      for (hexDataIndex = 16; hexDataIndex < 19; hexDataIndex++)
+      {
+        this.GetBitmaps(hexData[hexDataIndex], resourceBitmaps, numberBitmaps, out resourceBitmap, out numberBitmap);
+        this.PlaceHex(resourceBitmap, numberBitmap, x, y);
+        y += cellHeight;
+      }
+
+      return;*/
       foreach (var columnData in layoutColumnData)
       {
         var count = columnData.Count;
-        x = columnData.X;
-        y = columnData.Y;
+        var x = columnData.X;
+        var y = columnData.Y;
 
         while (count-- > 0)
         {
