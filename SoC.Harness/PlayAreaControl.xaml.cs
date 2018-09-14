@@ -60,6 +60,15 @@ namespace SoC.Harness
       }
     }
 
+    public void OverlaySettlementPlacement()
+    {
+      this.PlaceSettlementButton(1, 1, 0, "(nothing)");
+      /*this.PlaceSettlementButton(3, 70, 1, "(nothing)");
+      this.PlaceSettlementButton(13, 92, 2, "Brick (20%)");
+      this.PlaceSettlementButton(3, 114, 3, "Brick (20%)");
+      this.PlaceSettlementButton(37, 48, 8, "Brick (20%)");*/
+    }
+
     private Image CreateImage(BitmapImage bitmapImage, String name)
     {
       return new Image
@@ -135,6 +144,20 @@ namespace SoC.Harness
       this.Background.Children.Add(numberImage);
       Canvas.SetLeft(numberImage, x);
       Canvas.SetTop(numberImage, y);
+    }
+
+    private void PlaceSettlementButton(Double x, Double y, Int32 index, String toolTip)
+    {
+      var button = new SettlementButtonControl(index, this.PlaceSettlementButtonClickHandler);
+      button.ToolTip = toolTip;
+      this.Foreground.Children.Add(button);
+      Canvas.SetLeft(button, x);
+      Canvas.SetTop(button, y);
+    }
+
+    private void PlaceSettlementButtonClickHandler(int id)
+    {
+
     }
     #endregion
 

@@ -78,6 +78,9 @@
     <Compile Include="CircleButton.xaml.cs">
       <DependentUpon>CircleButton.xaml</DependentUpon>
     </Compile>
+    <Compile Include="SettlementButtonControl.xaml.cs">
+      <DependentUpon>SettlementButtonControl.xaml</DependentUpon>
+    </Compile>
     <Page Include="PlayAreaControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -99,6 +102,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="PlayerControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="SettlementButtonControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
