@@ -189,25 +189,25 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Resource Include="Resources\Settlements\blue_settlement.png" />
-    <Content Include="Resources\ResourceTypes\brick.png">
+    <Content Include="Resources\HexTypes\brick.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Resources\ResourceTypes\desert.png">
+    <Content Include="Resources\HexTypes\desert.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Resources\ResourceTypes\grain.png">
+    <Content Include="Resources\HexTypes\grain.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Resource Include="Resources\Settlements\green_settlement.png" />
-    <Content Include="Resources\ResourceTypes\lumber.png">
+    <Content Include="Resources\HexTypes\lumber.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Resources\ResourceTypes\ore.png">
+    <Content Include="Resources\HexTypes\ore.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Resource Include="Resources\Settlements\red_settlement.png" />
     <Resource Include="Resources\Settlements\settlement_indicator.png" />
-    <Content Include="Resources\ResourceTypes\wool.png">
+    <Content Include="Resources\HexTypes\wool.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Resource Include="Resources\Settlements\yellow_settlement.png" />

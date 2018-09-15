@@ -21,13 +21,18 @@ namespace SoC.Harness
     #endregion
 
     #region Methods
+    public void ClearControlLayer()
+    {
+      this.ControlLayer.Children.Clear();
+    }
+
     public void Initialise(IGameBoard board)
     {
       var resourceBitmaps = this.CreateResourceBitmaps();
       var numberBitmaps = this.CreateNumberBitmaps();
 
-      var middleX = (int)this.Background.Width / 2;
-      var middleY = (int)this.Background.Height / 2;
+      var middleX = (int)this.BoardLayer.Width / 2;
+      var middleY = (int)this.BoardLayer.Height / 2;
       const int cellHeight = 90;
       const int cellWidth = 90;
 
@@ -60,7 +65,7 @@ namespace SoC.Harness
       }
     }
 
-    public void OverlaySettlementPlacement()
+    public void OverlaySettlementPlacementOptions()
     {
       this.PlaceSettlementButton(1, 1, 0, "(nothing)");
       /*this.PlaceSettlementButton(3, 70, 1, "(nothing)");
@@ -105,11 +110,11 @@ namespace SoC.Harness
 #pragma warning disable IDE0009 // Member access should be qualified.
       return new Dictionary<ResourceTypes, BitmapImage>
       {
-        { ResourceTypes.Brick, new BitmapImage(new Uri(@"resources\resourcetypes\brick.png", UriKind.Relative)) },
-        { ResourceTypes.Grain, new BitmapImage(new Uri(@"resources\resourcetypes\grain.png", UriKind.Relative)) },
-        { ResourceTypes.Lumber, new BitmapImage(new Uri(@"resources\resourcetypes\lumber.png", UriKind.Relative)) },
-        { ResourceTypes.Ore, new BitmapImage(new Uri(@"resources\resourcetypes\ore.png", UriKind.Relative)) },
-        { ResourceTypes.Wool, new BitmapImage(new Uri(@"resources\resourcetypes\wool.png", UriKind.Relative)) }
+        { ResourceTypes.Brick, new BitmapImage(new Uri(@"resources\hextypes\brick.png", UriKind.Relative)) },
+        { ResourceTypes.Grain, new BitmapImage(new Uri(@"resources\hextypes\grain.png", UriKind.Relative)) },
+        { ResourceTypes.Lumber, new BitmapImage(new Uri(@"resources\hextypes\lumber.png", UriKind.Relative)) },
+        { ResourceTypes.Ore, new BitmapImage(new Uri(@"resources\hextypes\ore.png", UriKind.Relative)) },
+        { ResourceTypes.Wool, new BitmapImage(new Uri(@"resources\hextypes\wool.png", UriKind.Relative)) }
       };
 #pragma warning restore IDE0009 // Member access should be qualified.
     }
@@ -118,7 +123,7 @@ namespace SoC.Harness
     {
       if (!hexData.Item1.HasValue)
       {
-        resourceBitmap = new BitmapImage(new Uri(@"resources\desert.png", UriKind.Relative));
+        resourceBitmap = new BitmapImage(new Uri(@"resources\hextypes\desert.png", UriKind.Relative));
       }
       else
       {
@@ -131,7 +136,7 @@ namespace SoC.Harness
     private void PlaceHex(BitmapImage resourceBitmap, BitmapImage numberBitmap, int x, int y)
     {
       var resourceImage = this.CreateImage(resourceBitmap, string.Empty);
-      this.Background.Children.Add(resourceImage);
+      this.BoardLayer.Children.Add(resourceImage);
       Canvas.SetLeft(resourceImage, x);
       Canvas.SetTop(resourceImage, y);
 
@@ -141,7 +146,7 @@ namespace SoC.Harness
       }
 
       var numberImage = this.CreateImage(numberBitmap, string.Empty);
-      this.Background.Children.Add(numberImage);
+      this.BoardLayer.Children.Add(numberImage);
       Canvas.SetLeft(numberImage, x);
       Canvas.SetTop(numberImage, y);
     }
@@ -150,7 +155,7 @@ namespace SoC.Harness
     {
       var button = new SettlementButtonControl(index, this.PlaceSettlementButtonClickHandler);
       button.ToolTip = toolTip;
-      this.Foreground.Children.Add(button);
+      this.ControlLayer.Children.Add(button);
       Canvas.SetLeft(button, x);
       Canvas.SetTop(button, y);
     }
@@ -168,5 +173,12 @@ namespace SoC.Harness
       public uint Count;
     }
     #endregion
+
+    private void StartButton_Click(object sender, System.Windows.RoutedEventArgs e)
+    {
+      this.ControlLayer.Children.Remove(this.StartGameButton);
+      //this.StartButton.Visibility = System.Windows.Visibility.Hidden;
+      this.BoardLayer.Visibility = System.Windows.Visibility.Visible;
+    }
   }
 }
