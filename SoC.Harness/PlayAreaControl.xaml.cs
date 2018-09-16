@@ -3,6 +3,7 @@ namespace SoC.Harness
 {
   using System;
   using System.Collections.Generic;
+  using System.Windows;
   using System.Windows.Controls;
   using System.Windows.Media.Imaging;
   using Jabberwocky.SoC.Library;
@@ -151,9 +152,9 @@ namespace SoC.Harness
       Canvas.SetTop(numberImage, y);
     }
 
-    private void PlaceSettlementButton(Double x, Double y, Int32 index, String toolTip)
+    private void PlaceSettlementButton(double x, double y, int id, string toolTip)
     {
-      var button = new SettlementButtonControl(index, this.PlaceSettlementButtonClickHandler);
+      var button = new SettlementButtonControl(id, this.PlaceSettlementButtonClickHandler);
       button.ToolTip = toolTip;
       this.WorkingLayer.Children.Add(button);
       Canvas.SetLeft(button, x);
@@ -162,7 +163,15 @@ namespace SoC.Harness
 
     private void PlaceSettlementButtonClickHandler(int id)
     {
+    }
 
+    private void StartButton_Click(object sender, RoutedEventArgs e)
+    {
+      this.StartGameButton.Visibility = Visibility.Hidden;
+      this.BoardLayer.Visibility = Visibility.Visible;
+
+      // Display selections for player 1
+      this.PlaceSettlementButton(100, 100, 0, "Test");
     }
     #endregion
 
@@ -173,14 +182,5 @@ namespace SoC.Harness
       public uint Count;
     }
     #endregion
-
-    private void StartButton_Click(object sender, System.Windows.RoutedEventArgs e)
-    {
-      this.StartGameButton.Visibility = System.Windows.Visibility.Hidden;
-      this.BoardLayer.Visibility = System.Windows.Visibility.Visible;
-
-      // Display selections for player 1
-      this.PlaceSettlementButton(100, 100, 0, "Test");
-    }
   }
 }
