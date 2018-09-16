@@ -155,7 +155,7 @@ namespace SoC.Harness
     {
       var button = new SettlementButtonControl(index, this.PlaceSettlementButtonClickHandler);
       button.ToolTip = toolTip;
-      this.ControlLayer.Children.Add(button);
+      this.WorkingLayer.Children.Add(button);
       Canvas.SetLeft(button, x);
       Canvas.SetTop(button, y);
     }
@@ -176,9 +176,11 @@ namespace SoC.Harness
 
     private void StartButton_Click(object sender, System.Windows.RoutedEventArgs e)
     {
-      this.ControlLayer.Children.Remove(this.StartGameButton);
-      //this.StartButton.Visibility = System.Windows.Visibility.Hidden;
+      this.StartGameButton.Visibility = System.Windows.Visibility.Hidden;
       this.BoardLayer.Visibility = System.Windows.Visibility.Visible;
+
+      // Display selections for player 1
+      this.PlaceSettlementButton(100, 100, 0, "Test");
     }
   }
 }

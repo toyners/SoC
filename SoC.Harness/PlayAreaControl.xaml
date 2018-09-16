@@ -12,7 +12,7 @@
     <Canvas Name="WorkingLayer" Height="450" Width="800" />
 
     <Canvas Name="ControlLayer" Height="450" Width="800">
-      <Button Name="StartGameButton" Canvas.Left="350" Canvas.Top="225" Click="StartButton_Click">Start Game</Button>
+      <Button Name="StartGameButton" Canvas.Left="350" Canvas.Top="219" Click="StartButton_Click">Start Game</Button>
     </Canvas>
     
   </Grid>
