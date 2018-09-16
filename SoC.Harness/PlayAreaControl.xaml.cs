@@ -14,12 +14,16 @@ namespace SoC.Harness
   /// </summary>
   public partial class PlayAreaControl : UserControl
   {
+    private IGameBoard board;
+
     #region Construction
     public PlayAreaControl()
     {
       this.InitializeComponent();
     }
     #endregion
+
+    public Action<uint, uint> settlementSelection;
 
     #region Methods
     public void ClearControlLayer()
@@ -29,6 +33,8 @@ namespace SoC.Harness
 
     public void Initialise(IGameBoard board)
     {
+      this.board = board;
+
       var resourceBitmaps = this.CreateResourceBitmaps();
       var numberBitmaps = this.CreateNumberBitmaps();
 
@@ -48,7 +54,7 @@ namespace SoC.Harness
 
       BitmapImage resourceBitmap = null;
       BitmapImage numberBitmap = null;
-      var hexData = board.GetHexInformation();
+      var hexData = this.board.GetHexInformation();
       int hexDataIndex = 0;
 
       foreach (var columnData in layoutColumnData)
@@ -152,17 +158,23 @@ namespace SoC.Harness
       Canvas.SetTop(numberImage, y);
     }
 
-    private void PlaceSettlementButton(double x, double y, int id, string toolTip)
+    private void PlaceSettlementButton(double x, double y, uint id, string toolTip)
     {
-      var button = new SettlementButtonControl(id, this.PlaceSettlementButtonClickHandler);
+      var button = new SettlementButtonControl(id, this.SettlementSelectedEventHandler);
       button.ToolTip = toolTip;
       this.WorkingLayer.Children.Add(button);
       Canvas.SetLeft(button, x);
       Canvas.SetTop(button, y);
     }
 
-    private void PlaceSettlementButtonClickHandler(int id)
+    uint workingLocation;
+
+    private void SettlementSelectedEventHandler(uint location)
     {
+      this.workingLocation = location;
+
+      this.board.BoardQuery.GetValidConnectedLocationsFrom(location);
+
     }
 
     private void StartButton_Click(object sender, RoutedEventArgs e)

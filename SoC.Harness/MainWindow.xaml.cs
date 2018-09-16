@@ -24,7 +24,14 @@ namespace SoC.Harness
 
       this.localGameController = new LocalGameController(numberGenerator, playerPool, board, developmentCardHolder);
 
+      this.PlayArea.settlementSelection = this.PlaceSettlementClickEventHandler;
+
       this.PlayArea.Initialise(board);
+    }
+
+    private void PlaceSettlementClickEventHandler(uint settlementLocation, uint roadEndLocation)
+    {
+      this.localGameController.ContinueGameSetup(settlementLocation, roadEndLocation);
     }
   }
 }
