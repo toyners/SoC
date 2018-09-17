@@ -26,11 +26,6 @@ namespace SoC.Harness
     public Action<uint, uint> settlementSelection;
 
     #region Methods
-    public void ClearControlLayer()
-    {
-      this.ControlLayer.Children.Clear();
-    }
-
     public void Initialise(IGameBoard board)
     {
       this.board = board;
@@ -70,15 +65,29 @@ namespace SoC.Harness
           y += cellHeight;
         }
       }
+
+      this.InitialiseSettlementLayer();
     }
 
-    public void OverlaySettlementPlacementOptions()
+    public void InitialiseSettlementLayer()
     {
-      this.PlaceSettlementButton(1, 1, 0, "(nothing)");
-      /*this.PlaceSettlementButton(3, 70, 1, "(nothing)");
-      this.PlaceSettlementButton(13, 92, 2, "Brick (20%)");
-      this.PlaceSettlementButton(3, 114, 3, "Brick (20%)");
-      this.PlaceSettlementButton(37, 48, 8, "Brick (20%)");*/
+      var x = 240;
+      var y = 82;
+      var dx = 20;
+      var dy = 43;
+
+      this.PlaceSettlementButton(x, y, 0, "Test");
+      y += dy;
+      this.PlaceSettlementButton(x - dx, y, 1, "Test");
+      y += dy;
+
+      this.PlaceSettlementButton(x, y, 2, "Test");
+      y += dy;
+
+      this.PlaceSettlementButton(x - dx, y, 2, "Test");
+
+
+      this.PlaceSettlementButton(285, 82, 8, "Test");
     }
 
     private Image CreateImage(BitmapImage bitmapImage, String name)
@@ -162,7 +171,7 @@ namespace SoC.Harness
     {
       var button = new SettlementButtonControl(id, this.SettlementSelectedEventHandler);
       button.ToolTip = toolTip;
-      this.WorkingLayer.Children.Add(button);
+      this.SettlementLayer.Children.Add(button);
       Canvas.SetLeft(button, x);
       Canvas.SetTop(button, y);
     }
@@ -173,17 +182,16 @@ namespace SoC.Harness
     {
       this.workingLocation = location;
 
-      this.board.BoardQuery.GetValidConnectedLocationsFrom(location);
-
+      var roadEndLocations = this.board.BoardQuery.GetValidConnectedLocationsFrom(location);
     }
 
-    private void StartButton_Click(object sender, RoutedEventArgs e)
+    private void StartGameButton_Click(object sender, RoutedEventArgs e)
     {
       this.StartGameButton.Visibility = Visibility.Hidden;
-      this.BoardLayer.Visibility = Visibility.Visible;
+      this.TopLayer.Visibility = Visibility.Hidden;
 
-      // Display selections for player 1
-      this.PlaceSettlementButton(100, 100, 0, "Test");
+      this.BoardLayer.Visibility = Visibility.Visible;
+      this.SettlementLayer.Visibility = Visibility.Visible;
     }
     #endregion
 

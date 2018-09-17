@@ -23,6 +23,6 @@ namespace Jabberwocky.SoC.Library.GameBoards
     /// <returns>Locations of the road.</returns>
     List<uint> GetLongestRoadForPlayer(Guid id);
 
-    void GetValidConnectedLocationsFrom(uint location);
+    uint[] GetValidConnectedLocationsFrom(uint location);
   }
 }

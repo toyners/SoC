@@ -171,7 +171,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
       throw new NotImplementedException();
     }
 
-    public void GetValidConnectedLocationsFrom(uint location)
+    public uint[] GetValidConnectedLocationsFrom(uint location)
     {
       throw new NotImplementedException();
     }

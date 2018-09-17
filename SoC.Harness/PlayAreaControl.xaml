@@ -9,11 +9,13 @@
   <Grid>
     <Canvas Name="BoardLayer" Height="450" Width="800" Visibility="Hidden"/>
 
-    <Canvas Name="WorkingLayer" Height="450" Width="800" />
+    <Canvas Name="RoadLayer" Height="450" Width="800" Visibility="Hidden"/>
 
-    <Canvas Name="ControlLayer" Height="450" Width="800">
-      <Button Name="StartGameButton" Canvas.Left="350" Canvas.Top="219" Click="StartButton_Click">Start Game</Button>
+    <Canvas Name="SettlementLayer" Height="450" Width="800" Visibility="Hidden"/>
+
+    <Canvas Name="TopLayer" Height="450" Width="800">
+      <Button Name="StartGameButton" Canvas.Left="350" Canvas.Top="219" Click="StartGameButton_Click">Start Game</Button>
     </Canvas>
-    
+
   </Grid>
 </UserControl>
