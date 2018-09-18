@@ -71,26 +71,53 @@ namespace SoC.Harness
 
     public void InitialiseSettlementLayer()
     {
-      var x = 240;
-      var y = 82;
-      var dx = 20;
-      var dy = 43;
+      //var dx = 21;
+      //var dy = 44;
+      uint location = 0;
+      var layoutColumnData = new[]
+      {
+        new LayoutColumnData { X = 240, Y = 82, Dx = 21, Dy = 44, DirectionX = -1, Count = 7 },
+        new LayoutColumnData { X = 304, Y = 38, Dx = 21, Dy = 44, DirectionX = -1, Count = 9 },
+        new LayoutColumnData { X = 368, Y = -6, Dx = 21, Dy = 44, DirectionX = -1, Count = 11 },
+        new LayoutColumnData { X = 412, Y = -6, Dx = 21, Dy = 44, DirectionX = 1, Count = 11 },
+      };
 
-      this.PlaceSettlementButton(x, y, 0, "Test");
+      foreach (var columnData in layoutColumnData)
+      {
+        var count = columnData.Count;
+        var x = columnData.X;
+        var y = columnData.Y;
+        var direction = columnData.DirectionX;
+        var dx = columnData.Dx;
+        var dy = columnData.Dy;
+
+        while (count-- > 0)
+        {
+          this.PlaceSettlementButton(x, y, location++, "Test");
+          y += dy;
+
+          x += direction * dx;
+          direction = direction == -1 ? 1 : -1;
+        }
+      }
+
+      /*var index = 0;
+      for ()
+      this.PlaceSettlementButton(x, y, index, "Test");
       y += dy;
-      this.PlaceSettlementButton(x - dx, y, 1, "Test");
+      this.PlaceSettlementButton(x - dx, y, index, "Test");
       y += dy;
 
-      this.PlaceSettlementButton(x, y, 2, "Test");
+      this.PlaceSettlementButton(x, y, index, "Test");
       y += dy;
 
-      this.PlaceSettlementButton(x - dx, y, 2, "Test");
+      this.PlaceSettlementButton(x - dx, y, index, "Test");
 
       dx += 50;
       this.PlaceSettlementButton(x - dx, y, 2, "Test");
 
 
-      this.PlaceSettlementButton(285, 82, 8, "Test");
+      this.PlaceSettlementButton(285, 82, 8, "Test");*/
     }
 
     private Image CreateImage(BitmapImage bitmapImage, String name)
@@ -201,7 +228,7 @@ namespace SoC.Harness
     #region Structures
     private struct LayoutColumnData
     {
-      public int X, Y;
+      public int X, Y, Dx, Dy, DirectionX;
       public uint Count;
     }
     #endregion
