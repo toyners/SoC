@@ -100,24 +100,6 @@ namespace SoC.Harness
           direction = direction == -1 ? 1 : -1;
         }
       }
-
-      /*var index = 0;
-      for ()
-      this.PlaceSettlementButton(x, y, index, "Test");
-      y += dy;
-      this.PlaceSettlementButton(x - dx, y, index, "Test");
-      y += dy;
-
-      this.PlaceSettlementButton(x, y, index, "Test");
-      y += dy;
-
-      this.PlaceSettlementButton(x - dx, y, index, "Test");
-
-      dx += 50;
-      this.PlaceSettlementButton(x - dx, y, 2, "Test");
-
-
-      this.PlaceSettlementButton(285, 82, 8, "Test");*/
     }
 
     private Image CreateImage(BitmapImage bitmapImage, String name)
