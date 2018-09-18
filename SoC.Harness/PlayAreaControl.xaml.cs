@@ -86,6 +86,9 @@ namespace SoC.Harness
 
       this.PlaceSettlementButton(x - dx, y, 2, "Test");
 
+      dx += 50;
+      this.PlaceSettlementButton(x - dx, y, 2, "Test");
+
 
       this.PlaceSettlementButton(285, 82, 8, "Test");
     }
