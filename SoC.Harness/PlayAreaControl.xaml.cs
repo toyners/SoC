@@ -17,6 +17,7 @@ namespace SoC.Harness
     private IGameBoard board;
 
     private SettlementButtonControl[] settlementControls;
+    private UserControl[] roadControls;
 
     #region Construction
     public PlayAreaControl()
@@ -202,12 +203,20 @@ namespace SoC.Harness
       this.workingLocation = control.Location;
       this.SettlementLayer.Visibility = Visibility.Hidden;
 
+      // Turn off the controls for the location and its neighbours
       control.Visibility = Visibility.Hidden;
-
       var neighbouringLocations = this.board.BoardQuery.GetNeighbouringLocationsFrom(this.workingLocation);
+      for (var index = 0; index < neighbouringLocations.Length; index++)
+      {
+        this.settlementControls[index].Visibility = Visibility.Hidden;
+      }
 
-
+      // Turn on the possible road controls for the location
       var roadEndLocations = this.board.BoardQuery.GetValidConnectedLocationsFrom(this.workingLocation);
+      for (var index = 0; index < roadEndLocations.Length; index++)
+      {
+        this.roadControls[index].Visibility = Visibility.Visible;
+      }
     }
 
     private void StartGameButton_Click(object sender, RoutedEventArgs e)
