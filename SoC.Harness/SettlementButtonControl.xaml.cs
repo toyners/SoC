@@ -22,12 +22,16 @@ namespace SoC.Harness
   {
     private Action<SettlementButtonControl> clickEventHandler;
     public readonly uint Location;
+    public readonly double X;
+    public readonly double Y;
 
-    public SettlementButtonControl(uint location, Action<SettlementButtonControl> clickEventHandler)
+    public SettlementButtonControl(uint location, double x, double y, Action<SettlementButtonControl> clickEventHandler)
     {
       this.InitializeComponent();
-
+      
       this.Location = location;
+      this.X = x;
+      this.Y = y;
       this.clickEventHandler = clickEventHandler;
     }
 

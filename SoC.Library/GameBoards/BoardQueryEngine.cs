@@ -173,12 +173,12 @@ namespace Jabberwocky.SoC.Library.GameBoards
 
     public uint[] GetValidConnectedLocationsFrom(uint location)
     {
-      throw new NotImplementedException();
+      return new uint[0];
     }
 
     public uint[] GetNeighbouringLocationsFrom(uint location)
     {
-      throw new NotImplementedException();
+      return new uint[0];
     }
     #endregion
   }

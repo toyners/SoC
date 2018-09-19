@@ -187,9 +187,9 @@ namespace SoC.Harness
 
     private SettlementButtonControl PlaceSettlementControl(double x, double y, uint id, string toolTip)
     {
-      var control = new SettlementButtonControl(id, this.SettlementSelectedEventHandler);
+      var control = new SettlementButtonControl(id, x, y, this.SettlementSelectedEventHandler);
       control.ToolTip = toolTip;
-      this.SettlementLayer.Children.Add(control);
+      this.BuildingSelectionLayer.Children.Add(control);
       Canvas.SetLeft(control, x);
       Canvas.SetTop(control, y);
 
@@ -201,7 +201,7 @@ namespace SoC.Harness
     private void SettlementSelectedEventHandler(SettlementButtonControl control)
     {
       this.workingLocation = control.Location;
-      this.SettlementLayer.Visibility = Visibility.Hidden;
+      this.BuildingSelectionLayer.Visibility = Visibility.Hidden;
 
       // Turn off the controls for the location and its neighbours
       control.Visibility = Visibility.Hidden;
@@ -210,6 +210,11 @@ namespace SoC.Harness
       {
         this.settlementControls[index].Visibility = Visibility.Hidden;
       }
+
+      var control1 = new UserControl1();
+      this.SettlementLayer.Children.Add(control1);
+      Canvas.SetLeft(control1, control.X);
+      Canvas.SetTop(control1, control.Y);
 
       // Turn on the possible road controls for the location
       var roadEndLocations = this.board.BoardQuery.GetValidConnectedLocationsFrom(this.workingLocation);
@@ -225,7 +230,7 @@ namespace SoC.Harness
       this.TopLayer.Visibility = Visibility.Hidden;
 
       this.BoardLayer.Visibility = Visibility.Visible;
-      this.SettlementLayer.Visibility = Visibility.Visible;
+      this.BuildingSelectionLayer.Visibility = Visibility.Visible;
     }
     #endregion
 
