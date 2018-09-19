@@ -16,6 +16,8 @@ namespace SoC.Harness
   {
     private IGameBoard board;
 
+    private SettlementButtonControl[] settlementControls;
+
     #region Construction
     public PlayAreaControl()
     {
@@ -71,8 +73,8 @@ namespace SoC.Harness
 
     public void InitialiseSettlementLayer()
     {
-      //var dx = 21;
-      //var dy = 44;
+      this.settlementControls = new SettlementButtonControl[GameBoard.StandardBoardLocationCount];
+
       uint location = 0;
       var settlementLayoutData = new[]
       {
@@ -95,7 +97,8 @@ namespace SoC.Harness
 
         while (count-- > 0)
         {
-          this.PlaceSettlementButton(x, y, location++, "Test");
+          var control = this.PlaceSettlementControl(x, y, location, "Test");
+          this.settlementControls[location++] = control;
           y += dy;
 
           x += direction * dx;
@@ -181,22 +184,30 @@ namespace SoC.Harness
       Canvas.SetTop(numberImage, y);
     }
 
-    private void PlaceSettlementButton(double x, double y, uint id, string toolTip)
+    private SettlementButtonControl PlaceSettlementControl(double x, double y, uint id, string toolTip)
     {
-      var button = new SettlementButtonControl(id, this.SettlementSelectedEventHandler);
-      button.ToolTip = toolTip;
-      this.SettlementLayer.Children.Add(button);
-      Canvas.SetLeft(button, x);
-      Canvas.SetTop(button, y);
+      var control = new SettlementButtonControl(id, this.SettlementSelectedEventHandler);
+      control.ToolTip = toolTip;
+      this.SettlementLayer.Children.Add(control);
+      Canvas.SetLeft(control, x);
+      Canvas.SetTop(control, y);
+
+      return control;
     }
 
     uint workingLocation;
 
-    private void SettlementSelectedEventHandler(uint location)
+    private void SettlementSelectedEventHandler(SettlementButtonControl control)
     {
-      this.workingLocation = location;
+      this.workingLocation = control.Location;
+      this.SettlementLayer.Visibility = Visibility.Hidden;
 
-      var roadEndLocations = this.board.BoardQuery.GetValidConnectedLocationsFrom(location);
+      control.Visibility = Visibility.Hidden;
+
+      var neighbouringLocations = this.board.BoardQuery.GetNeighbouringLocations(this.workingLocation);
+
+
+      var roadEndLocations = this.board.BoardQuery.GetValidConnectedLocationsFrom(this.workingLocation);
     }
 
     private void StartGameButton_Click(object sender, RoutedEventArgs e)

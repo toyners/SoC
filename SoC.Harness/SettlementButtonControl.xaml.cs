@@ -20,20 +20,20 @@ namespace SoC.Harness
   /// </summary>
   public partial class SettlementButtonControl : UserControl
   {
-    private Action<uint> clickEventHandler;
-    private uint id;
+    private Action<SettlementButtonControl> clickEventHandler;
+    public readonly uint Location;
 
-    public SettlementButtonControl(uint id, Action<uint> clickEventHandler)
+    public SettlementButtonControl(uint location, Action<SettlementButtonControl> clickEventHandler)
     {
       this.InitializeComponent();
 
-      this.id = id;
+      this.Location = location;
       this.clickEventHandler = clickEventHandler;
     }
 
     private void Button_Click(object sender, RoutedEventArgs e)
     {
-      this.clickEventHandler?.Invoke(this.id);
+      this.clickEventHandler?.Invoke(this);
     }
   }
 }

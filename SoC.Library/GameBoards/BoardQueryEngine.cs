@@ -175,6 +175,11 @@ namespace Jabberwocky.SoC.Library.GameBoards
     {
       throw new NotImplementedException();
     }
+
+    public uint[] GetNeighbouringLocationsFrom(uint location)
+    {
+      throw new NotImplementedException();
+    }
     #endregion
   }
 }
