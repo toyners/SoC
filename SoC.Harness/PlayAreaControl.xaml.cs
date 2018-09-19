@@ -204,7 +204,7 @@ namespace SoC.Harness
 
       control.Visibility = Visibility.Hidden;
 
-      var neighbouringLocations = this.board.BoardQuery.GetNeighbouringLocations(this.workingLocation);
+      var neighbouringLocations = this.board.BoardQuery.GetNeighbouringLocationsFrom(this.workingLocation);
 
 
       var roadEndLocations = this.board.BoardQuery.GetValidConnectedLocationsFrom(this.workingLocation);
