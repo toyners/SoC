@@ -38,13 +38,13 @@ namespace SoC.Harness
       const int cellHeight = 90;
       const int cellWidth = 90;
 
-      var layoutColumnData = new[]
+      var hexLayoutData = new[]
       {
-        new LayoutColumnData { X = middleX - (cellWidth * 2) + 4, Y = middleY - (cellHeight / 2) - cellHeight, Count = 3 },
-        new LayoutColumnData { X = middleX - (cellWidth / 4) * 5, Y = middleY - (cellHeight * 2), Count = 4 },
-        new LayoutColumnData { X = middleX - (cellWidth / 2), Y = middleY - (cellHeight / 2) - (cellHeight * 2), Count = 5 },
-        new LayoutColumnData { X = middleX + (cellWidth / 4) - 2, Y = middleY - (cellHeight * 2), Count = 4 },
-        new LayoutColumnData { X = middleX + cellWidth - 4, Y = middleY - (cellHeight / 2) - cellHeight, Count = 3 }
+        new HexLayoutData { X = middleX - (cellWidth * 2) + 4, Y = middleY - (cellHeight / 2) - cellHeight, Count = 3 },
+        new HexLayoutData { X = middleX - (cellWidth / 4) * 5, Y = middleY - (cellHeight * 2), Count = 4 },
+        new HexLayoutData { X = middleX - (cellWidth / 2), Y = middleY - (cellHeight / 2) - (cellHeight * 2), Count = 5 },
+        new HexLayoutData { X = middleX + (cellWidth / 4) - 2, Y = middleY - (cellHeight * 2), Count = 4 },
+        new HexLayoutData { X = middleX + cellWidth - 4, Y = middleY - (cellHeight / 2) - cellHeight, Count = 3 }
       };
 
       BitmapImage resourceBitmap = null;
@@ -52,11 +52,11 @@ namespace SoC.Harness
       var hexData = this.board.GetHexInformation();
       int hexDataIndex = 0;
 
-      foreach (var columnData in layoutColumnData)
+      foreach (var hexLayout in hexLayoutData)
       {
-        var count = columnData.Count;
-        var x = columnData.X;
-        var y = columnData.Y;
+        var count = hexLayout.Count;
+        var x = hexLayout.X;
+        var y = hexLayout.Y;
 
         while (count-- > 0)
         {
@@ -74,22 +74,24 @@ namespace SoC.Harness
       //var dx = 21;
       //var dy = 44;
       uint location = 0;
-      var layoutColumnData = new[]
+      var settlementLayoutData = new[]
       {
-        new LayoutColumnData { X = 240, Y = 82, Dx = 21, Dy = 44, DirectionX = -1, Count = 7 },
-        new LayoutColumnData { X = 304, Y = 38, Dx = 21, Dy = 44, DirectionX = -1, Count = 9 },
-        new LayoutColumnData { X = 368, Y = -6, Dx = 21, Dy = 44, DirectionX = -1, Count = 11 },
-        new LayoutColumnData { X = 412, Y = -6, Dx = 21, Dy = 44, DirectionX = 1, Count = 11 },
+        new SettlementLayoutData { X = 240, Y = 82, Dx = 21, Dy = 44, DirectionX = -1, Count = 7 },
+        new SettlementLayoutData { X = 304, Y = 38, Dx = 21, Dy = 44, DirectionX = -1, Count = 9 },
+        new SettlementLayoutData { X = 368, Y = -6, Dx = 21, Dy = 44, DirectionX = -1, Count = 11 },
+        new SettlementLayoutData { X = 412, Y = -6, Dx = 21, Dy = 44, DirectionX = 1, Count = 11 },
+        new SettlementLayoutData { X = 476, Y = 38, Dx = 21, Dy = 44, DirectionX = 1, Count = 9 },
+        new SettlementLayoutData { X = 540, Y = 82, Dx = 21, Dy = 44, DirectionX = 1, Count = 7 },
       };
 
-      foreach (var columnData in layoutColumnData)
+      foreach (var settlementData in settlementLayoutData)
       {
-        var count = columnData.Count;
-        var x = columnData.X;
-        var y = columnData.Y;
-        var direction = columnData.DirectionX;
-        var dx = columnData.Dx;
-        var dy = columnData.Dy;
+        var count = settlementData.Count;
+        var x = settlementData.X;
+        var y = settlementData.Y;
+        var direction = settlementData.DirectionX;
+        var dx = settlementData.Dx;
+        var dy = settlementData.Dy;
 
         while (count-- > 0)
         {
@@ -208,7 +210,13 @@ namespace SoC.Harness
     #endregion
 
     #region Structures
-    private struct LayoutColumnData
+    private struct HexLayoutData
+    {
+      public int X, Y;
+      public uint Count;
+    }
+
+    public struct SettlementLayoutData
     {
       public int X, Y, Dx, Dy, DirectionX;
       public uint Count;
