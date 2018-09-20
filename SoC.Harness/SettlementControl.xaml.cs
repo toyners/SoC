@@ -14,7 +14,6 @@ namespace SoC.Harness
     {
       this.ImageName = @"resources\settlements\blue_settlement.png";
       this.InitializeComponent();
-
     }
   }
 }
