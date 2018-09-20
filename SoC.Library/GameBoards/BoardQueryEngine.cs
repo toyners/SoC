@@ -14,6 +14,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
     private readonly List<UInt32>[] locationInformation;
     private readonly Tuple<ResourceTypes?, UInt32>[] hexInformation;
     private readonly Int32[] locationsOrderedByBestYield;
+    private readonly uint[][] neighboursOfLocation; //TODO: Push to board - this is static (maybe)
     #endregion
 
     #region Construction
@@ -42,6 +43,8 @@ namespace Jabberwocky.SoC.Library.GameBoards
       }
 
       this.locationsOrderedByBestYield = this.GetLocationsOrderedByBestYield();
+
+      this.neighboursOfLocation = this.CreateNeighboursOfLocation();
     }
     #endregion
 
@@ -98,7 +101,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
       throw new Exception("Should not get here");
     }
 
-    private Int32[] GetLocationsOrderedByBestYield()
+    private int[] GetLocationsOrderedByBestYield()
     {
       var locations = new List<Int32>(new Int32[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16,
         17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40,
@@ -140,6 +143,21 @@ namespace Jabberwocky.SoC.Library.GameBoards
       return locations.ToArray();
     }
 
+    private uint[][] CreateNeighboursOfLocation()
+    {
+      var result = new uint[GameBoard.StandardBoardLocationCount][];
+
+      using (var stream = this.GetType().GetTypeInfo().Assembly.GetManifestResourceStream("Jabberwocky.SoC.Library.GameBoards.Locations.txt"))
+      {
+        using (var streamReader = new StreamReader(stream))
+        {
+
+        }
+      }
+
+      return result;
+    }
+
     private void OutputScore(UInt32 location, List<UInt32> hexes)
     {
       var score = "" + location + " - ";
@@ -178,7 +196,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
 
     public uint[] GetNeighbouringLocationsFrom(uint location)
     {
-      return new uint[0];
+      return this.neighboursOfLocation[location];
     }
     #endregion
   }
