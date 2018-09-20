@@ -81,8 +81,8 @@
     <Compile Include="SettlementButtonControl.xaml.cs">
       <DependentUpon>SettlementButtonControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UserControl1.xaml.cs">
-      <DependentUpon>UserControl1.xaml</DependentUpon>
+    <Compile Include="SettlementControl.xaml.cs">
+      <DependentUpon>SettlementControl.xaml</DependentUpon>
     </Compile>
     <Page Include="PlayAreaControl.xaml">
       <SubType>Designer</SubType>
@@ -112,7 +112,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="UserControl1.xaml">
+    <Page Include="SettlementControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

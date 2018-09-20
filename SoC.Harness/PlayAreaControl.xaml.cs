@@ -98,7 +98,7 @@ namespace SoC.Harness
 
         while (count-- > 0)
         {
-          var control = this.PlaceSettlementControl(x, y, location, "Test");
+          var control = this.PlaceSettlementButtonControl(x, y, location, "Test");
           this.settlementControls[location++] = control;
           y += dy;
 
@@ -185,7 +185,7 @@ namespace SoC.Harness
       Canvas.SetTop(numberImage, y);
     }
 
-    private SettlementButtonControl PlaceSettlementControl(double x, double y, uint id, string toolTip)
+    private SettlementButtonControl PlaceSettlementButtonControl(double x, double y, uint id, string toolTip)
     {
       var control = new SettlementButtonControl(id, x, y, this.SettlementSelectedEventHandler);
       control.ToolTip = toolTip;
@@ -196,26 +196,32 @@ namespace SoC.Harness
       return control;
     }
 
+    private void PlaceSettlementControl(double x, double y, string toolTip)
+    {
+      var control = new SettlementControl();
+      control.ToolTip = toolTip;
+      this.SettlementLayer.Children.Add(control);
+      Canvas.SetLeft(control, x);
+      Canvas.SetTop(control, y);
+    }
+
     uint workingLocation;
 
-    private void SettlementSelectedEventHandler(SettlementButtonControl control)
+    private void SettlementSelectedEventHandler(SettlementButtonControl settlementButtonControl)
     {
-      this.workingLocation = control.Location;
+      this.workingLocation = settlementButtonControl.Location;
       this.BuildingSelectionLayer.Visibility = Visibility.Hidden;
 
       // Turn off the controls for the location and its neighbours
-      control.Visibility = Visibility.Hidden;
+      settlementButtonControl.Visibility = Visibility.Hidden;
       var neighbouringLocations = this.board.BoardQuery.GetNeighbouringLocationsFrom(this.workingLocation);
       for (var index = 0; index < neighbouringLocations.Length; index++)
       {
         this.settlementControls[index].Visibility = Visibility.Hidden;
       }
 
-      var control1 = new UserControl1();
-      this.SettlementLayer.Children.Add(control1);
-      Canvas.SetLeft(control1, control.X);
-      Canvas.SetTop(control1, control.Y);
-
+      this.PlaceSettlementControl(settlementButtonControl.X, settlementButtonControl.Y, "Test");
+      
       // Turn on the possible road controls for the location
       var roadEndLocations = this.board.BoardQuery.GetValidConnectedLocationsFrom(this.workingLocation);
       for (var index = 0; index < roadEndLocations.Length; index++)
