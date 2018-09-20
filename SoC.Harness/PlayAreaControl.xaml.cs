@@ -196,9 +196,9 @@ namespace SoC.Harness
       return control;
     }
 
-    private void PlaceSettlementControl(double x, double y, string toolTip)
+    private void PlaceSettlementControl(double x, double y, string toolTip, string imagePath)
     {
-      var control = new SettlementControl();
+      var control = new SettlementControl(imagePath);
       control.ToolTip = toolTip;
       this.SettlementLayer.Children.Add(control);
       Canvas.SetLeft(control, x);
@@ -220,7 +220,7 @@ namespace SoC.Harness
         this.settlementControls[index].Visibility = Visibility.Hidden;
       }
 
-      this.PlaceSettlementControl(settlementButtonControl.X, settlementButtonControl.Y, "Test");
+      this.PlaceSettlementControl(settlementButtonControl.X, settlementButtonControl.Y, "Test", @"resources\settlements\blue_settlement.png");
       
       // Turn on the possible road controls for the location
       var roadEndLocations = this.board.BoardQuery.GetValidConnectedLocationsFrom(this.workingLocation);

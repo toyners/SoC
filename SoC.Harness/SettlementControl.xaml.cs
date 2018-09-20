@@ -8,11 +8,12 @@ namespace SoC.Harness
   /// </summary>
   public partial class SettlementControl : UserControl
   {
-    public string ImageName { get; private set; }
+    public string ImagePath { get; private set; }
 
-    public SettlementControl()
+    public SettlementControl(string imagePath)
     {
-      this.ImageName = @"resources\settlements\blue_settlement.png";
+      this.DataContext = this;
+      this.ImagePath = imagePath;
       this.InitializeComponent();
     }
   }
