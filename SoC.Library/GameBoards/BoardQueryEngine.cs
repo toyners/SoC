@@ -147,7 +147,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
     {
       var result = new uint[GameBoard.StandardBoardLocationCount][];
 
-      using (var stream = this.GetType().GetTypeInfo().Assembly.GetManifestResourceStream("Jabberwocky.SoC.Library.GameBoards.Locations.txt"))
+      using (var stream = this.GetType().GetTypeInfo().Assembly.GetManifestResourceStream("Jabberwocky.SoC.Library.GameBoards.NeighboursByLocation.txt"))
       {
         using (var streamReader = new StreamReader(stream))
         {
