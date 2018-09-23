@@ -70,6 +70,8 @@ namespace SoC.Harness
       }
 
       this.InitialiseSettlementLayer();
+
+      this.PlaceRoadImage(246, 87);
     }
 
     public void InitialiseSettlementLayer()
@@ -183,6 +185,14 @@ namespace SoC.Harness
       this.BoardLayer.Children.Add(numberImage);
       Canvas.SetLeft(numberImage, x);
       Canvas.SetTop(numberImage, y);
+    }
+
+    private void PlaceRoadImage(double x, double y)
+    {
+      var control = new RoadHorizontalControl();
+      this.RoadLayer.Children.Add(control);
+      Canvas.SetLeft(control, x);
+      Canvas.SetTop(control, y);
     }
 
     private SettlementButtonControl PlaceSettlementButtonControl(double x, double y, uint id, string toolTip)

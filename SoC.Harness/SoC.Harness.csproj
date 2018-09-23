@@ -78,6 +78,9 @@
     <Compile Include="CircleButton.xaml.cs">
       <DependentUpon>CircleButton.xaml</DependentUpon>
     </Compile>
+    <Compile Include="RoadHorizontalControl.xaml.cs">
+      <DependentUpon>RoadHorizontalControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="SettlementButtonControl.xaml.cs">
       <DependentUpon>SettlementButtonControl.xaml</DependentUpon>
     </Compile>
@@ -105,6 +108,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="PlayerControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="RoadHorizontalControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -195,6 +202,7 @@
     <Content Include="Resources\ProductionFactors\9.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Resource Include="Resources\Roads\blue_road_horizontal.png" />
     <Resource Include="Resources\Settlements\blue_settlement.png" />
     <Content Include="Resources\HexTypes\brick.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
