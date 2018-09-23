@@ -151,7 +151,20 @@ namespace Jabberwocky.SoC.Library.GameBoards
       {
         using (var streamReader = new StreamReader(stream))
         {
+          while(!streamReader.EndOfStream)
+          {
+            var line = streamReader.ReadLine();
+            var barIndex = line.IndexOf("|");
+            var neighboursRaw = line.Substring(barIndex + 1).Split(',');
+            var location = int.Parse(line.Substring(0, barIndex));
+            result[location] = new uint[neighboursRaw.Length];
 
+            var neighbourIndex = 0;
+            foreach(var neighbourRaw in neighboursRaw)
+            {
+              result[location][neighbourIndex++] = uint.Parse(neighbourRaw);
+            }
+          }
         }
       }
 
