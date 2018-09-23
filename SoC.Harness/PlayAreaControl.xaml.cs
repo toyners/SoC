@@ -70,9 +70,9 @@ namespace SoC.Harness
 
       this.InitialiseSettlementLayer();
 
-      this.PlaceRoadControl(246, 87, "resources\roads\blue_road_horizontal.png");
-      this.PlaceRoadControl(277, 89, "resources\roads\blue_road_left.png");
-      this.PlaceRoadControl(230, 89, "resources\roads\blue_road_right.png");
+      this.PlaceRoadControl(246, 87, @"resources\roads\blue_road_horizontal.png");
+      this.PlaceRoadControl(277, 89, @"resources\roads\blue_road_left.png");
+      this.PlaceRoadControl(230, 89, @"resources\roads\blue_road_right.png");
     }
 
     public void InitialiseSettlementLayer()
