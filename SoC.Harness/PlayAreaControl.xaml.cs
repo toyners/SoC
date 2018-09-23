@@ -15,7 +15,6 @@ namespace SoC.Harness
   public partial class PlayAreaControl : UserControl
   {
     private IGameBoard board;
-
     private SettlementButtonControl[] settlementControls;
     private UserControl[] roadControls;
 
@@ -71,7 +70,9 @@ namespace SoC.Harness
 
       this.InitialiseSettlementLayer();
 
-      this.PlaceRoadImage(246, 87);
+      this.PlaceRoadControl(246, 87, "resources\roads\blue_road_horizontal.png");
+      this.PlaceRoadControl(277, 89, "resources\roads\blue_road_left.png");
+      this.PlaceRoadControl(230, 89, "resources\roads\blue_road_right.png");
     }
 
     public void InitialiseSettlementLayer()
@@ -187,9 +188,9 @@ namespace SoC.Harness
       Canvas.SetTop(numberImage, y);
     }
 
-    private void PlaceRoadImage(double x, double y)
+    private void PlaceRoadControl(double x, double y, string imagePath)
     {
-      var control = new RoadHorizontalControl();
+      var control = new RoadControl(imagePath);
       this.RoadLayer.Children.Add(control);
       Canvas.SetLeft(control, x);
       Canvas.SetTop(control, y);

@@ -16,11 +16,11 @@ using System.Windows.Shapes;
 namespace SoC.Harness
 {
   /// <summary>
-  /// Interaction logic for RoadHorizontalControl.xaml
+  /// Interaction logic for RoadLeftControl.xaml
   /// </summary>
-  public partial class RoadHorizontalControl : UserControl
+  public partial class RoadLeftControl : UserControl
   {
-    public RoadHorizontalControl()
+    public RoadLeftControl()
     {
       InitializeComponent();
     }

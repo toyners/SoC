@@ -78,8 +78,11 @@
     <Compile Include="CircleButton.xaml.cs">
       <DependentUpon>CircleButton.xaml</DependentUpon>
     </Compile>
-    <Compile Include="RoadHorizontalControl.xaml.cs">
-      <DependentUpon>RoadHorizontalControl.xaml</DependentUpon>
+    <Compile Include="RoadControl.xaml.cs">
+      <DependentUpon>RoadControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="RoadLeftControl.xaml.cs">
+      <DependentUpon>RoadLeftControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="SettlementButtonControl.xaml.cs">
       <DependentUpon>SettlementButtonControl.xaml</DependentUpon>
@@ -111,7 +114,11 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="RoadHorizontalControl.xaml">
+    <Page Include="RoadControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="RoadLeftControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -202,6 +209,8 @@
     <Content Include="Resources\ProductionFactors\9.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Resource Include="Resources\Roads\blue_road_right.png" />
+    <Resource Include="Resources\Roads\blue_road_left.png" />
     <Resource Include="Resources\Roads\blue_road_horizontal.png" />
     <Resource Include="Resources\Settlements\blue_settlement.png" />
     <Content Include="Resources\HexTypes\brick.png">
