@@ -81,9 +81,6 @@
     <Compile Include="RoadControl.xaml.cs">
       <DependentUpon>RoadControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="RoadLeftControl.xaml.cs">
-      <DependentUpon>RoadLeftControl.xaml</DependentUpon>
-    </Compile>
     <Compile Include="SettlementButtonControl.xaml.cs">
       <DependentUpon>SettlementButtonControl.xaml</DependentUpon>
     </Compile>
@@ -115,10 +112,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="RoadControl.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="RoadLeftControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -209,6 +202,7 @@
     <Content Include="Resources\ProductionFactors\9.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Resource Include="Resources\Roads\road_left_indicator.png" />
     <Resource Include="Resources\Roads\blue_road_right.png" />
     <Resource Include="Resources\Roads\blue_road_left.png" />
     <Resource Include="Resources\Roads\blue_road_horizontal.png" />
