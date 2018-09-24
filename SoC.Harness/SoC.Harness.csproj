@@ -78,6 +78,9 @@
     <Compile Include="CircleButton.xaml.cs">
       <DependentUpon>CircleButton.xaml</DependentUpon>
     </Compile>
+    <Compile Include="RoadButtonControl.xaml.cs">
+      <DependentUpon>RoadButtonControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="RoadControl.xaml.cs">
       <DependentUpon>RoadControl.xaml</DependentUpon>
     </Compile>
@@ -108,6 +111,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="PlayerControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="RoadButtonControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

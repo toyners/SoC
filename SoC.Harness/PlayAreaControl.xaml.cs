@@ -16,7 +16,7 @@ namespace SoC.Harness
   {
     private IGameBoard board;
     private SettlementButtonControl[] settlementControls;
-    private UserControl[] roadControls;
+    private RoadControl[] roadControls;
 
     #region Construction
     public PlayAreaControl()
