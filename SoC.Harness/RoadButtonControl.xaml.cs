@@ -20,9 +20,13 @@ namespace SoC.Harness
   /// </summary>
   public partial class RoadButtonControl : UserControl
   {
-    public RoadButtonControl()
+    public string ImagePath { get; private set; }
+
+    public RoadButtonControl(string imagePath)
     {
-      InitializeComponent();
+      this.DataContext = this;
+      this.ImagePath = imagePath;
+      this.InitializeComponent();
     }
   }
 }
