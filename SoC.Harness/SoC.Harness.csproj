@@ -75,9 +75,6 @@
     <Compile Include="PlayAreaControl.xaml.cs">
       <DependentUpon>PlayAreaControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="CircleButton.xaml.cs">
-      <DependentUpon>CircleButton.xaml</DependentUpon>
-    </Compile>
     <Compile Include="RoadButtonControl.xaml.cs">
       <DependentUpon>RoadButtonControl.xaml</DependentUpon>
     </Compile>
@@ -106,10 +103,6 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="CircleButton.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="PlayerControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -209,6 +202,8 @@
     <Content Include="Resources\ProductionFactors\9.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Resource Include="Resources\Roads\road_horizontal_indicator.png" />
+    <Resource Include="Resources\Roads\road_right_indicator.png" />
     <Resource Include="Resources\Roads\road_left_indicator.png" />
     <Resource Include="Resources\Roads\blue_road_right.png" />
     <Resource Include="Resources\Roads\blue_road_left.png" />

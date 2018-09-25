@@ -15,8 +15,8 @@ namespace SoC.Harness
   public partial class PlayAreaControl : UserControl
   {
     private IGameBoard board;
-    private SettlementButtonControl[] settlementControls;
-    private RoadControl[] roadControls;
+    private SettlementButtonControl[] settlementButtonControls;
+    private RoadButtonControl[] roadButtonControls;
 
     #region Construction
     public PlayAreaControl()
@@ -68,17 +68,16 @@ namespace SoC.Harness
         }
       }
 
-      this.InitialiseBuildingSelectionLayer();
+      this.InitialiseSettlementSelectionLayer();
 
-      this.PlaceRoadControl(246, 87, @"resources\roads\blue_road_horizontal.png");
-      this.PlaceRoadControl(277, 89, @"resources\roads\blue_road_left.png");
-      this.PlaceRoadControl(210, 89, @"resources\roads\blue_road_right.png");
-      this.PlaceRoadControl(210, 132, @"resources\roads\blue_road_left.png");
+      this.InitialiseRoadSelectionLayer();
+
+      
     }
 
-    public void InitialiseBuildingSelectionLayer()
+    public void InitialiseSettlementSelectionLayer()
     {
-      this.settlementControls = new SettlementButtonControl[GameBoard.StandardBoardLocationCount];
+      this.settlementButtonControls = new SettlementButtonControl[GameBoard.StandardBoardLocationCount];
 
       uint location = 0;
       var settlementLayoutData = new[]
@@ -103,13 +102,36 @@ namespace SoC.Harness
         while (count-- > 0)
         {
           var control = this.PlaceSettlementButtonControl(x, y, location, "Test");
-          this.settlementControls[location++] = control;
+          this.settlementButtonControls[location++] = control;
           y += dy;
 
           x += direction * dx;
           direction = direction == -1 ? 1 : -1;
         }
       }
+    }
+
+    public void InitialiseRoadSelectionLayer()
+    {
+      this.roadButtonControls = new RoadButtonControl[GameBoard.StandardBoardTrailCount];
+
+      int dy = 43;
+      this.PlaceRoadControl(210, 89, @"resources\roads\road_right_indicator.png");
+      this.PlaceRoadControl(210, 132, @"resources\roads\road_left_indicator.png");
+      this.PlaceRoadControl(210, 177, @"resources\roads\road_right_indicator.png");
+      this.PlaceRoadControl(210, 220, @"resources\roads\road_left_indicator.png");
+      this.PlaceRoadControl(210, 266, @"resources\roads\road_right_indicator.png");
+      this.PlaceRoadControl(210, 309, @"resources\roads\road_left_indicator.png");
+
+      this.PlaceRoadControl(277, 89, @"resources\roads\road_left_indicator.png");
+      this.PlaceRoadControl(277, 132, @"resources\roads\road_right_indicator.png");
+      this.PlaceRoadControl(277, 177, @"resources\roads\road_left_indicator.png");
+      this.PlaceRoadControl(277, 220, @"resources\roads\road_right_indicator.png");
+      this.PlaceRoadControl(277, 266, @"resources\roads\road_left_indicator.png");
+      this.PlaceRoadControl(277, 309, @"resources\roads\road_right_indicator.png");
+
+      this.PlaceRoadControl(246, 87, @"resources\roads\road_horizontal_indicator.png");
+      this.PlaceRoadControl(246, 175, @"resources\roads\road_horizontal_indicator.png");
     }
 
     private Image CreateImage(BitmapImage bitmapImage, String name)
@@ -222,14 +244,13 @@ namespace SoC.Harness
     private void SettlementSelectedEventHandler(SettlementButtonControl settlementButtonControl)
     {
       this.workingLocation = settlementButtonControl.Location;
-      this.SettlementSelectionLayer.Visibility = Visibility.Hidden;
 
       // Turn off the controls for the location and its neighbours
       settlementButtonControl.Visibility = Visibility.Hidden;
       var neighbouringLocations = this.board.BoardQuery.GetNeighbouringLocationsFrom(this.workingLocation);
       for (var index = 0; index < neighbouringLocations.Length; index++)
       {
-        this.settlementControls[index].Visibility = Visibility.Hidden;
+        this.settlementButtonControls[index].Visibility = Visibility.Hidden;
       }
 
       this.PlaceSettlementControl(settlementButtonControl.X, settlementButtonControl.Y, "Test", @"resources\settlements\blue_settlement.png");
@@ -238,8 +259,11 @@ namespace SoC.Harness
       var roadEndLocations = this.board.BoardQuery.GetValidConnectedLocationsFrom(this.workingLocation);
       for (var index = 0; index < roadEndLocations.Length; index++)
       {
-        this.roadControls[index].Visibility = Visibility.Visible;
+        this.roadButtonControls[index].Visibility = Visibility.Visible;
       }
+
+      this.SettlementSelectionLayer.Visibility = Visibility.Hidden;
+      this.RoadSelectionLayer.Visibility = Visibility.Hidden;
     }
 
     private void StartGameButton_Click(object sender, RoutedEventArgs e)
