@@ -115,7 +115,8 @@ namespace SoC.Harness
     {
       this.roadButtonControls = new RoadButtonControl[GameBoard.StandardBoardTrailCount];
 
-      int dy = 43;
+      // Column 1 Vertical
+      int dy = 43 + 2;
       this.PlaceRoadControl(210, 89, @"resources\roads\road_right_indicator.png");
       this.PlaceRoadControl(210, 132, @"resources\roads\road_left_indicator.png");
       this.PlaceRoadControl(210, 177, @"resources\roads\road_right_indicator.png");
@@ -123,15 +124,53 @@ namespace SoC.Harness
       this.PlaceRoadControl(210, 266, @"resources\roads\road_right_indicator.png");
       this.PlaceRoadControl(210, 309, @"resources\roads\road_left_indicator.png");
 
+      // Column 2 Vertical
+      this.PlaceRoadControl(277, 44, @"resources\roads\road_right_indicator.png");
       this.PlaceRoadControl(277, 89, @"resources\roads\road_left_indicator.png");
       this.PlaceRoadControl(277, 132, @"resources\roads\road_right_indicator.png");
       this.PlaceRoadControl(277, 177, @"resources\roads\road_left_indicator.png");
       this.PlaceRoadControl(277, 220, @"resources\roads\road_right_indicator.png");
       this.PlaceRoadControl(277, 266, @"resources\roads\road_left_indicator.png");
       this.PlaceRoadControl(277, 309, @"resources\roads\road_right_indicator.png");
+      this.PlaceRoadControl(277, 354, @"resources\roads\road_left_indicator.png");
 
+      // Column 3 Vertical
+      this.PlaceRoadControl(342, 1, @"resources\roads\road_right_indicator.png");
+      this.PlaceRoadControl(342, 44, @"resources\roads\road_left_indicator.png");
+      this.PlaceRoadControl(342, 89, @"resources\roads\road_right_indicator.png");
+      this.PlaceRoadControl(342, 132, @"resources\roads\road_left_indicator.png");
+      this.PlaceRoadControl(342, 177, @"resources\roads\road_right_indicator.png");
+      this.PlaceRoadControl(342, 220, @"resources\roads\road_left_indicator.png");
+      this.PlaceRoadControl(342, 266, @"resources\roads\road_right_indicator.png");
+      this.PlaceRoadControl(342, 309, @"resources\roads\road_left_indicator.png");
+      this.PlaceRoadControl(342, 354, @"resources\roads\road_right_indicator.png");
+      this.PlaceRoadControl(342, 399, @"resources\roads\road_left_indicator.png");
+
+      // Column 4 Vertical
+      this.PlaceRoadControl(409, 1, @"resources\roads\road_left_indicator.png");
+      this.PlaceRoadControl(409, 44, @"resources\roads\road_right_indicator.png");
+      this.PlaceRoadControl(409, 89, @"resources\roads\road_left_indicator.png");
+      this.PlaceRoadControl(409, 132, @"resources\roads\road_right_indicator.png");
+      this.PlaceRoadControl(409, 177, @"resources\roads\road_left_indicator.png");
+      this.PlaceRoadControl(409, 220, @"resources\roads\road_right_indicator.png");
+      this.PlaceRoadControl(409, 266, @"resources\roads\road_left_indicator.png");
+      this.PlaceRoadControl(409, 309, @"resources\roads\road_right_indicator.png");
+      this.PlaceRoadControl(409, 354, @"resources\roads\road_left_indicator.png");
+      this.PlaceRoadControl(409, 399, @"resources\roads\road_right_indicator.png");
+
+      // Column 1 Horizontal
+      dy = 88 + 1;
       this.PlaceRoadControl(246, 87, @"resources\roads\road_horizontal_indicator.png");
       this.PlaceRoadControl(246, 175, @"resources\roads\road_horizontal_indicator.png");
+      this.PlaceRoadControl(246, 264, @"resources\roads\road_horizontal_indicator.png");
+      this.PlaceRoadControl(246, 352, @"resources\roads\road_horizontal_indicator.png");
+
+      // Column 2 Horizontal
+      this.PlaceRoadControl(312, 42, @"resources\roads\road_horizontal_indicator.png");
+      this.PlaceRoadControl(312, 130, @"resources\roads\road_horizontal_indicator.png");
+      this.PlaceRoadControl(312, 218, @"resources\roads\road_horizontal_indicator.png");
+      this.PlaceRoadControl(312, 306, @"resources\roads\road_horizontal_indicator.png");
+      this.PlaceRoadControl(312, 394, @"resources\roads\road_horizontal_indicator.png");
     }
 
     private Image CreateImage(BitmapImage bitmapImage, String name)
