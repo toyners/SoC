@@ -114,11 +114,12 @@ namespace SoC.Harness
       string leftRoadImagePath = @"resources\roads\road_left_indicator.png";
       string rightRoadImagePath = @"resources\roads\road_right_indicator.png";
       string horzRoadImagePath = @"resources\roads\road_horizontal_indicator.png";
-      this.roadButtonControls = new RoadButtonControl[GameBoard.StandardBoardTrailCount];
+      this.roadButtonControls = new RoadButtonControl[GameBoard.StandardBoardTrailCount * 2];
 
       // Column 1 Vertical
       int dy = 43 + 2;
-      this.PlaceRoadButtonControl(210, 89, rightRoadImagePath);
+      var control = this.PlaceRoadButtonControl(210, 89, rightRoadImagePath);
+
       this.PlaceRoadButtonControl(210, 132, leftRoadImagePath);
       this.PlaceRoadButtonControl(210, 177, rightRoadImagePath);
       this.PlaceRoadButtonControl(210, 220, leftRoadImagePath);
