@@ -147,16 +147,34 @@ namespace SoC.Harness
       this.PlaceRoadControl(342, 399, @"resources\roads\road_left_indicator.png");
 
       // Column 4 Vertical
-      this.PlaceRoadControl(409, 1, @"resources\roads\road_left_indicator.png");
-      this.PlaceRoadControl(409, 44, @"resources\roads\road_right_indicator.png");
-      this.PlaceRoadControl(409, 89, @"resources\roads\road_left_indicator.png");
-      this.PlaceRoadControl(409, 132, @"resources\roads\road_right_indicator.png");
-      this.PlaceRoadControl(409, 177, @"resources\roads\road_left_indicator.png");
-      this.PlaceRoadControl(409, 220, @"resources\roads\road_right_indicator.png");
-      this.PlaceRoadControl(409, 266, @"resources\roads\road_left_indicator.png");
-      this.PlaceRoadControl(409, 309, @"resources\roads\road_right_indicator.png");
-      this.PlaceRoadControl(409, 354, @"resources\roads\road_left_indicator.png");
-      this.PlaceRoadControl(409, 399, @"resources\roads\road_right_indicator.png");
+      this.PlaceRoadControl(408, 1, @"resources\roads\road_left_indicator.png");
+      this.PlaceRoadControl(408, 44, @"resources\roads\road_right_indicator.png");
+      this.PlaceRoadControl(408, 89, @"resources\roads\road_left_indicator.png");
+      this.PlaceRoadControl(408, 132, @"resources\roads\road_right_indicator.png");
+      this.PlaceRoadControl(408, 177, @"resources\roads\road_left_indicator.png");
+      this.PlaceRoadControl(408, 220, @"resources\roads\road_right_indicator.png");
+      this.PlaceRoadControl(408, 266, @"resources\roads\road_left_indicator.png");
+      this.PlaceRoadControl(408, 309, @"resources\roads\road_right_indicator.png");
+      this.PlaceRoadControl(408, 354, @"resources\roads\road_left_indicator.png");
+      this.PlaceRoadControl(408, 399, @"resources\roads\road_right_indicator.png");
+
+      // Column 5 Vertical
+      this.PlaceRoadControl(472, 44, @"resources\roads\road_left_indicator.png");
+      this.PlaceRoadControl(472, 89, @"resources\roads\road_right_indicator.png");
+      this.PlaceRoadControl(472, 132, @"resources\roads\road_left_indicator.png");
+      this.PlaceRoadControl(472, 177, @"resources\roads\road_right_indicator.png");
+      this.PlaceRoadControl(472, 220, @"resources\roads\road_left_indicator.png");
+      this.PlaceRoadControl(472, 266, @"resources\roads\road_right_indicator.png");
+      this.PlaceRoadControl(472, 309, @"resources\roads\road_left_indicator.png");
+      this.PlaceRoadControl(472, 354, @"resources\roads\road_right_indicator.png");
+
+      // Column 6 Vertical
+      this.PlaceRoadControl(538, 89, @"resources\roads\road_left_indicator.png");
+      this.PlaceRoadControl(538, 132, @"resources\roads\road_right_indicator.png");
+      this.PlaceRoadControl(538, 177, @"resources\roads\road_left_indicator.png");
+      this.PlaceRoadControl(538, 220, @"resources\roads\road_right_indicator.png");
+      this.PlaceRoadControl(538, 266, @"resources\roads\road_left_indicator.png");
+      this.PlaceRoadControl(538, 309, @"resources\roads\road_right_indicator.png");
 
       // Column 1 Horizontal
       dy = 88 + 1;
@@ -169,8 +187,29 @@ namespace SoC.Harness
       this.PlaceRoadControl(312, 42, @"resources\roads\road_horizontal_indicator.png");
       this.PlaceRoadControl(312, 130, @"resources\roads\road_horizontal_indicator.png");
       this.PlaceRoadControl(312, 218, @"resources\roads\road_horizontal_indicator.png");
-      this.PlaceRoadControl(312, 306, @"resources\roads\road_horizontal_indicator.png");
-      this.PlaceRoadControl(312, 394, @"resources\roads\road_horizontal_indicator.png");
+      this.PlaceRoadControl(312, 308, @"resources\roads\road_horizontal_indicator.png");
+      this.PlaceRoadControl(312, 395, @"resources\roads\road_horizontal_indicator.png");
+
+      // Column 3 Horizontal
+      this.PlaceRoadControl(378, -3, @"resources\roads\road_horizontal_indicator.png");
+      this.PlaceRoadControl(378, 85, @"resources\roads\road_horizontal_indicator.png");
+      this.PlaceRoadControl(378, 174, @"resources\roads\road_horizontal_indicator.png");
+      this.PlaceRoadControl(378, 263, @"resources\roads\road_horizontal_indicator.png");
+      this.PlaceRoadControl(378, 354, @"resources\roads\road_horizontal_indicator.png");
+      this.PlaceRoadControl(378, 441, @"resources\roads\road_horizontal_indicator.png");
+
+      // Column 4 Horizontal
+      this.PlaceRoadControl(444, 42, @"resources\roads\road_horizontal_indicator.png");
+      this.PlaceRoadControl(444, 130, @"resources\roads\road_horizontal_indicator.png");
+      this.PlaceRoadControl(444, 218, @"resources\roads\road_horizontal_indicator.png");
+      this.PlaceRoadControl(444, 308, @"resources\roads\road_horizontal_indicator.png");
+      this.PlaceRoadControl(444, 395, @"resources\roads\road_horizontal_indicator.png");
+
+      // Column 5 Horizontal
+      this.PlaceRoadControl(510, 87, @"resources\roads\road_horizontal_indicator.png");
+      this.PlaceRoadControl(510, 175, @"resources\roads\road_horizontal_indicator.png");
+      this.PlaceRoadControl(510, 264, @"resources\roads\road_horizontal_indicator.png");
+      this.PlaceRoadControl(510, 352, @"resources\roads\road_horizontal_indicator.png");
     }
 
     private Image CreateImage(BitmapImage bitmapImage, String name)
