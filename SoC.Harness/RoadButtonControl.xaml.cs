@@ -20,13 +20,21 @@ namespace SoC.Harness
   /// </summary>
   public partial class RoadButtonControl : UserControl
   {
+    private Action<RoadButtonControl> clickEventHandler;
     public string ImagePath { get; private set; }
 
-    public RoadButtonControl(string imagePath)
+    public RoadButtonControl(string imagePath, Action<RoadButtonControl> clickEventHandler)
     {
       this.DataContext = this;
       this.ImagePath = imagePath;
       this.InitializeComponent();
+
+      this.clickEventHandler = clickEventHandler;
+    }
+
+    private void Button_Click(object sender, RoutedEventArgs e)
+    {
+      this.clickEventHandler?.Invoke(this);
     }
   }
 }

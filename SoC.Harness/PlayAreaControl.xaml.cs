@@ -71,8 +71,6 @@ namespace SoC.Harness
       this.InitialiseSettlementSelectionLayer();
 
       this.InitialiseRoadSelectionLayer();
-
-      
     }
 
     public void InitialiseSettlementSelectionLayer()
@@ -113,103 +111,106 @@ namespace SoC.Harness
 
     public void InitialiseRoadSelectionLayer()
     {
+      string leftRoadImagePath = @"resources\roads\road_left_indicator.png";
+      string rightRoadImagePath = @"resources\roads\road_right_indicator.png";
+      string horzRoadImagePath = @"resources\roads\road_horizontal_indicator.png";
       this.roadButtonControls = new RoadButtonControl[GameBoard.StandardBoardTrailCount];
 
       // Column 1 Vertical
       int dy = 43 + 2;
-      this.PlaceRoadControl(210, 89, @"resources\roads\road_right_indicator.png");
-      this.PlaceRoadControl(210, 132, @"resources\roads\road_left_indicator.png");
-      this.PlaceRoadControl(210, 177, @"resources\roads\road_right_indicator.png");
-      this.PlaceRoadControl(210, 220, @"resources\roads\road_left_indicator.png");
-      this.PlaceRoadControl(210, 266, @"resources\roads\road_right_indicator.png");
-      this.PlaceRoadControl(210, 309, @"resources\roads\road_left_indicator.png");
+      this.PlaceRoadButtonControl(210, 89, rightRoadImagePath);
+      this.PlaceRoadButtonControl(210, 132, leftRoadImagePath);
+      this.PlaceRoadButtonControl(210, 177, rightRoadImagePath);
+      this.PlaceRoadButtonControl(210, 220, leftRoadImagePath);
+      this.PlaceRoadButtonControl(210, 266, rightRoadImagePath);
+      this.PlaceRoadButtonControl(210, 309, leftRoadImagePath);
 
       // Column 2 Vertical
-      this.PlaceRoadControl(277, 44, @"resources\roads\road_right_indicator.png");
-      this.PlaceRoadControl(277, 89, @"resources\roads\road_left_indicator.png");
-      this.PlaceRoadControl(277, 132, @"resources\roads\road_right_indicator.png");
-      this.PlaceRoadControl(277, 177, @"resources\roads\road_left_indicator.png");
-      this.PlaceRoadControl(277, 220, @"resources\roads\road_right_indicator.png");
-      this.PlaceRoadControl(277, 266, @"resources\roads\road_left_indicator.png");
-      this.PlaceRoadControl(277, 309, @"resources\roads\road_right_indicator.png");
-      this.PlaceRoadControl(277, 354, @"resources\roads\road_left_indicator.png");
+      this.PlaceRoadButtonControl(277, 44, rightRoadImagePath);
+      this.PlaceRoadButtonControl(277, 89, leftRoadImagePath);
+      this.PlaceRoadButtonControl(277, 132, rightRoadImagePath);
+      this.PlaceRoadButtonControl(277, 177, leftRoadImagePath);
+      this.PlaceRoadButtonControl(277, 220, rightRoadImagePath);
+      this.PlaceRoadButtonControl(277, 266, leftRoadImagePath);
+      this.PlaceRoadButtonControl(277, 309, rightRoadImagePath);
+      this.PlaceRoadButtonControl(277, 354, leftRoadImagePath);
 
       // Column 3 Vertical
-      this.PlaceRoadControl(342, 1, @"resources\roads\road_right_indicator.png");
-      this.PlaceRoadControl(342, 44, @"resources\roads\road_left_indicator.png");
-      this.PlaceRoadControl(342, 89, @"resources\roads\road_right_indicator.png");
-      this.PlaceRoadControl(342, 132, @"resources\roads\road_left_indicator.png");
-      this.PlaceRoadControl(342, 177, @"resources\roads\road_right_indicator.png");
-      this.PlaceRoadControl(342, 220, @"resources\roads\road_left_indicator.png");
-      this.PlaceRoadControl(342, 266, @"resources\roads\road_right_indicator.png");
-      this.PlaceRoadControl(342, 309, @"resources\roads\road_left_indicator.png");
-      this.PlaceRoadControl(342, 354, @"resources\roads\road_right_indicator.png");
-      this.PlaceRoadControl(342, 399, @"resources\roads\road_left_indicator.png");
+      this.PlaceRoadButtonControl(342, 1, rightRoadImagePath);
+      this.PlaceRoadButtonControl(342, 44, leftRoadImagePath);
+      this.PlaceRoadButtonControl(342, 89, rightRoadImagePath);
+      this.PlaceRoadButtonControl(342, 132, leftRoadImagePath);
+      this.PlaceRoadButtonControl(342, 177, rightRoadImagePath);
+      this.PlaceRoadButtonControl(342, 220, leftRoadImagePath);
+      this.PlaceRoadButtonControl(342, 266, rightRoadImagePath);
+      this.PlaceRoadButtonControl(342, 309, leftRoadImagePath);
+      this.PlaceRoadButtonControl(342, 354, rightRoadImagePath);
+      this.PlaceRoadButtonControl(342, 399, leftRoadImagePath);
 
       // Column 4 Vertical
-      this.PlaceRoadControl(408, 1, @"resources\roads\road_left_indicator.png");
-      this.PlaceRoadControl(408, 44, @"resources\roads\road_right_indicator.png");
-      this.PlaceRoadControl(408, 89, @"resources\roads\road_left_indicator.png");
-      this.PlaceRoadControl(408, 132, @"resources\roads\road_right_indicator.png");
-      this.PlaceRoadControl(408, 177, @"resources\roads\road_left_indicator.png");
-      this.PlaceRoadControl(408, 220, @"resources\roads\road_right_indicator.png");
-      this.PlaceRoadControl(408, 266, @"resources\roads\road_left_indicator.png");
-      this.PlaceRoadControl(408, 309, @"resources\roads\road_right_indicator.png");
-      this.PlaceRoadControl(408, 354, @"resources\roads\road_left_indicator.png");
-      this.PlaceRoadControl(408, 399, @"resources\roads\road_right_indicator.png");
+      this.PlaceRoadButtonControl(408, 1, leftRoadImagePath);
+      this.PlaceRoadButtonControl(408, 44, rightRoadImagePath);
+      this.PlaceRoadButtonControl(408, 89, leftRoadImagePath);
+      this.PlaceRoadButtonControl(408, 132, rightRoadImagePath);
+      this.PlaceRoadButtonControl(408, 177, leftRoadImagePath);
+      this.PlaceRoadButtonControl(408, 220, rightRoadImagePath);
+      this.PlaceRoadButtonControl(408, 266, leftRoadImagePath);
+      this.PlaceRoadButtonControl(408, 309, rightRoadImagePath);
+      this.PlaceRoadButtonControl(408, 354, leftRoadImagePath);
+      this.PlaceRoadButtonControl(408, 399, rightRoadImagePath);
 
       // Column 5 Vertical
-      this.PlaceRoadControl(472, 44, @"resources\roads\road_left_indicator.png");
-      this.PlaceRoadControl(472, 89, @"resources\roads\road_right_indicator.png");
-      this.PlaceRoadControl(472, 132, @"resources\roads\road_left_indicator.png");
-      this.PlaceRoadControl(472, 177, @"resources\roads\road_right_indicator.png");
-      this.PlaceRoadControl(472, 220, @"resources\roads\road_left_indicator.png");
-      this.PlaceRoadControl(472, 266, @"resources\roads\road_right_indicator.png");
-      this.PlaceRoadControl(472, 309, @"resources\roads\road_left_indicator.png");
-      this.PlaceRoadControl(472, 354, @"resources\roads\road_right_indicator.png");
+      this.PlaceRoadButtonControl(472, 44, leftRoadImagePath);
+      this.PlaceRoadButtonControl(472, 89, rightRoadImagePath);
+      this.PlaceRoadButtonControl(472, 132, leftRoadImagePath);
+      this.PlaceRoadButtonControl(472, 177, rightRoadImagePath);
+      this.PlaceRoadButtonControl(472, 220, leftRoadImagePath);
+      this.PlaceRoadButtonControl(472, 266, rightRoadImagePath);
+      this.PlaceRoadButtonControl(472, 309, leftRoadImagePath);
+      this.PlaceRoadButtonControl(472, 354, rightRoadImagePath);
 
       // Column 6 Vertical
-      this.PlaceRoadControl(538, 89, @"resources\roads\road_left_indicator.png");
-      this.PlaceRoadControl(538, 132, @"resources\roads\road_right_indicator.png");
-      this.PlaceRoadControl(538, 177, @"resources\roads\road_left_indicator.png");
-      this.PlaceRoadControl(538, 220, @"resources\roads\road_right_indicator.png");
-      this.PlaceRoadControl(538, 266, @"resources\roads\road_left_indicator.png");
-      this.PlaceRoadControl(538, 309, @"resources\roads\road_right_indicator.png");
+      this.PlaceRoadButtonControl(538, 89, leftRoadImagePath);
+      this.PlaceRoadButtonControl(538, 132, rightRoadImagePath);
+      this.PlaceRoadButtonControl(538, 177, leftRoadImagePath);
+      this.PlaceRoadButtonControl(538, 220, rightRoadImagePath);
+      this.PlaceRoadButtonControl(538, 266, leftRoadImagePath);
+      this.PlaceRoadButtonControl(538, 309, rightRoadImagePath);
 
       // Column 1 Horizontal
       dy = 88 + 1;
-      this.PlaceRoadControl(246, 87, @"resources\roads\road_horizontal_indicator.png");
-      this.PlaceRoadControl(246, 175, @"resources\roads\road_horizontal_indicator.png");
-      this.PlaceRoadControl(246, 264, @"resources\roads\road_horizontal_indicator.png");
-      this.PlaceRoadControl(246, 352, @"resources\roads\road_horizontal_indicator.png");
+      this.PlaceRoadButtonControl(246, 87, horzRoadImagePath);
+      this.PlaceRoadButtonControl(246, 175, horzRoadImagePath);
+      this.PlaceRoadButtonControl(246, 264, horzRoadImagePath);
+      this.PlaceRoadButtonControl(246, 352, horzRoadImagePath);
 
       // Column 2 Horizontal
-      this.PlaceRoadControl(312, 42, @"resources\roads\road_horizontal_indicator.png");
-      this.PlaceRoadControl(312, 130, @"resources\roads\road_horizontal_indicator.png");
-      this.PlaceRoadControl(312, 218, @"resources\roads\road_horizontal_indicator.png");
-      this.PlaceRoadControl(312, 308, @"resources\roads\road_horizontal_indicator.png");
-      this.PlaceRoadControl(312, 395, @"resources\roads\road_horizontal_indicator.png");
+      this.PlaceRoadButtonControl(312, 42, horzRoadImagePath);
+      this.PlaceRoadButtonControl(312, 130, horzRoadImagePath);
+      this.PlaceRoadButtonControl(312, 218, horzRoadImagePath);
+      this.PlaceRoadButtonControl(312, 308, horzRoadImagePath);
+      this.PlaceRoadButtonControl(312, 395, horzRoadImagePath);
 
       // Column 3 Horizontal
-      this.PlaceRoadControl(378, -3, @"resources\roads\road_horizontal_indicator.png");
-      this.PlaceRoadControl(378, 85, @"resources\roads\road_horizontal_indicator.png");
-      this.PlaceRoadControl(378, 174, @"resources\roads\road_horizontal_indicator.png");
-      this.PlaceRoadControl(378, 263, @"resources\roads\road_horizontal_indicator.png");
-      this.PlaceRoadControl(378, 354, @"resources\roads\road_horizontal_indicator.png");
-      this.PlaceRoadControl(378, 441, @"resources\roads\road_horizontal_indicator.png");
+      this.PlaceRoadButtonControl(378, -3, horzRoadImagePath);
+      this.PlaceRoadButtonControl(378, 85, horzRoadImagePath);
+      this.PlaceRoadButtonControl(378, 174, horzRoadImagePath);
+      this.PlaceRoadButtonControl(378, 263, horzRoadImagePath);
+      this.PlaceRoadButtonControl(378, 354, horzRoadImagePath);
+      this.PlaceRoadButtonControl(378, 441, horzRoadImagePath);
 
       // Column 4 Horizontal
-      this.PlaceRoadControl(444, 42, @"resources\roads\road_horizontal_indicator.png");
-      this.PlaceRoadControl(444, 130, @"resources\roads\road_horizontal_indicator.png");
-      this.PlaceRoadControl(444, 218, @"resources\roads\road_horizontal_indicator.png");
-      this.PlaceRoadControl(444, 308, @"resources\roads\road_horizontal_indicator.png");
-      this.PlaceRoadControl(444, 395, @"resources\roads\road_horizontal_indicator.png");
+      this.PlaceRoadButtonControl(444, 42, horzRoadImagePath);
+      this.PlaceRoadButtonControl(444, 130, horzRoadImagePath);
+      this.PlaceRoadButtonControl(444, 218, horzRoadImagePath);
+      this.PlaceRoadButtonControl(444, 308, horzRoadImagePath);
+      this.PlaceRoadButtonControl(444, 395, horzRoadImagePath);
 
       // Column 5 Horizontal
-      this.PlaceRoadControl(510, 87, @"resources\roads\road_horizontal_indicator.png");
-      this.PlaceRoadControl(510, 175, @"resources\roads\road_horizontal_indicator.png");
-      this.PlaceRoadControl(510, 264, @"resources\roads\road_horizontal_indicator.png");
-      this.PlaceRoadControl(510, 352, @"resources\roads\road_horizontal_indicator.png");
+      this.PlaceRoadButtonControl(510, 87, horzRoadImagePath);
+      this.PlaceRoadButtonControl(510, 175, horzRoadImagePath);
+      this.PlaceRoadButtonControl(510, 264, horzRoadImagePath);
+      this.PlaceRoadButtonControl(510, 352, horzRoadImagePath);
     }
 
     private Image CreateImage(BitmapImage bitmapImage, String name)
@@ -297,6 +298,16 @@ namespace SoC.Harness
       Canvas.SetTop(control, y);
     }
 
+    private RoadButtonControl PlaceRoadButtonControl(double x, double y, string imagePath)
+    {
+      var control = new RoadButtonControl(imagePath, null);
+      this.RoadSelectionLayer.Children.Add(control);
+      Canvas.SetLeft(control, x);
+      Canvas.SetTop(control, y);
+
+      return control;
+    }
+
     private SettlementButtonControl PlaceSettlementButtonControl(double x, double y, uint id, string toolTip)
     {
       var control = new SettlementButtonControl(id, x, y, this.SettlementSelectedEventHandler);
@@ -341,7 +352,7 @@ namespace SoC.Harness
       }
 
       this.SettlementSelectionLayer.Visibility = Visibility.Hidden;
-      this.RoadSelectionLayer.Visibility = Visibility.Hidden;
+      this.RoadSelectionLayer.Visibility = Visibility.Visible;
     }
 
     private void StartGameButton_Click(object sender, RoutedEventArgs e)
