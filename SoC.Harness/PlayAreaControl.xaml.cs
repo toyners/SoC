@@ -162,13 +162,6 @@ namespace SoC.Harness
         }
       };
 
-      // Column 1 Vertical
-      //int dy = 43 + 2;
-      //int x = 210;
-      //var locations = new int[] { 1, 2, 3, 4, 5, 6 };
-      //var yList = new int[] { 89, 132, 177, 220, 266, 309 };
-      //var useRightImage = true;
-      //var imagePath = rightRoadImagePath;
       foreach (var verticalRoadLayout in verticalRoadLayoutData)
       {
         var useRightImage = verticalRoadLayout.StartWithRightImage;
@@ -186,58 +179,6 @@ namespace SoC.Harness
           this.roadButtonControls.Add(id, control);
         }
       }
-
-      // Column 2 Vertical
-      /*this.PlaceRoadButtonControl(277, 44, rightRoadImagePath);
-      this.PlaceRoadButtonControl(277, 89, leftRoadImagePath);
-      this.PlaceRoadButtonControl(277, 132, rightRoadImagePath);
-      this.PlaceRoadButtonControl(277, 177, leftRoadImagePath);
-      this.PlaceRoadButtonControl(277, 220, rightRoadImagePath);
-      this.PlaceRoadButtonControl(277, 266, leftRoadImagePath);
-      this.PlaceRoadButtonControl(277, 309, rightRoadImagePath);
-      this.PlaceRoadButtonControl(277, 354, leftRoadImagePath);
-
-      // Column 3 Vertical
-      this.PlaceRoadButtonControl(342, 1, rightRoadImagePath);
-      this.PlaceRoadButtonControl(342, 44, leftRoadImagePath);
-      this.PlaceRoadButtonControl(342, 89, rightRoadImagePath);
-      this.PlaceRoadButtonControl(342, 132, leftRoadImagePath);
-      this.PlaceRoadButtonControl(342, 177, rightRoadImagePath);
-      this.PlaceRoadButtonControl(342, 220, leftRoadImagePath);
-      this.PlaceRoadButtonControl(342, 266, rightRoadImagePath);
-      this.PlaceRoadButtonControl(342, 309, leftRoadImagePath);
-      this.PlaceRoadButtonControl(342, 354, rightRoadImagePath);
-      this.PlaceRoadButtonControl(342, 399, leftRoadImagePath);
-
-      // Column 4 Vertical
-      this.PlaceRoadButtonControl(408, 1, leftRoadImagePath);
-      this.PlaceRoadButtonControl(408, 44, rightRoadImagePath);
-      this.PlaceRoadButtonControl(408, 89, leftRoadImagePath);
-      this.PlaceRoadButtonControl(408, 132, rightRoadImagePath);
-      this.PlaceRoadButtonControl(408, 177, leftRoadImagePath);
-      this.PlaceRoadButtonControl(408, 220, rightRoadImagePath);
-      this.PlaceRoadButtonControl(408, 266, leftRoadImagePath);
-      this.PlaceRoadButtonControl(408, 309, rightRoadImagePath);
-      this.PlaceRoadButtonControl(408, 354, leftRoadImagePath);
-      this.PlaceRoadButtonControl(408, 399, rightRoadImagePath);
-
-      // Column 5 Vertical
-      this.PlaceRoadButtonControl(472, 44, leftRoadImagePath);
-      this.PlaceRoadButtonControl(472, 89, rightRoadImagePath);
-      this.PlaceRoadButtonControl(472, 132, leftRoadImagePath);
-      this.PlaceRoadButtonControl(472, 177, rightRoadImagePath);
-      this.PlaceRoadButtonControl(472, 220, leftRoadImagePath);
-      this.PlaceRoadButtonControl(472, 266, rightRoadImagePath);
-      this.PlaceRoadButtonControl(472, 309, leftRoadImagePath);
-      this.PlaceRoadButtonControl(472, 354, rightRoadImagePath);
-
-      // Column 6 Vertical
-      this.PlaceRoadButtonControl(538, 89, leftRoadImagePath);
-      this.PlaceRoadButtonControl(538, 132, rightRoadImagePath);
-      this.PlaceRoadButtonControl(538, 177, leftRoadImagePath);
-      this.PlaceRoadButtonControl(538, 220, rightRoadImagePath);
-      this.PlaceRoadButtonControl(538, 266, leftRoadImagePath);
-      this.PlaceRoadButtonControl(538, 309, rightRoadImagePath);*/
 
       var horizontalRoadLayoutData = new HorizontalRoadLayoutData[]
       {
@@ -287,41 +228,6 @@ namespace SoC.Harness
           this.roadButtonControls.Add(id, control);
         }
       }
-
-      // Column 1 Horizontal
-      //int dy = 88 + 1;
-      /*this.PlaceRoadButtonControl(246, 87, horzRoadImagePath);
-      this.PlaceRoadButtonControl(246, 175, horzRoadImagePath);
-      this.PlaceRoadButtonControl(246, 264, horzRoadImagePath);
-      this.PlaceRoadButtonControl(246, 352, horzRoadImagePath);
-
-      // Column 2 Horizontal
-      this.PlaceRoadButtonControl(312, 42, horzRoadImagePath);
-      this.PlaceRoadButtonControl(312, 130, horzRoadImagePath);
-      this.PlaceRoadButtonControl(312, 218, horzRoadImagePath);
-      this.PlaceRoadButtonControl(312, 308, horzRoadImagePath);
-      this.PlaceRoadButtonControl(312, 395, horzRoadImagePath);
-
-      // Column 3 Horizontal
-      this.PlaceRoadButtonControl(378, -3, horzRoadImagePath);
-      this.PlaceRoadButtonControl(378, 85, horzRoadImagePath);
-      this.PlaceRoadButtonControl(378, 174, horzRoadImagePath);
-      this.PlaceRoadButtonControl(378, 263, horzRoadImagePath);
-      this.PlaceRoadButtonControl(378, 354, horzRoadImagePath);
-      this.PlaceRoadButtonControl(378, 441, horzRoadImagePath);
-
-      // Column 4 Horizontal
-      this.PlaceRoadButtonControl(444, 42, horzRoadImagePath);
-      this.PlaceRoadButtonControl(444, 130, horzRoadImagePath);
-      this.PlaceRoadButtonControl(444, 218, horzRoadImagePath);
-      this.PlaceRoadButtonControl(444, 308, horzRoadImagePath);
-      this.PlaceRoadButtonControl(444, 395, horzRoadImagePath);
-
-      // Column 5 Horizontal
-      this.PlaceRoadButtonControl(510, 87, horzRoadImagePath);
-      this.PlaceRoadButtonControl(510, 175, horzRoadImagePath);
-      this.PlaceRoadButtonControl(510, 264, horzRoadImagePath);
-      this.PlaceRoadButtonControl(510, 352, horzRoadImagePath);*/
     }
 
     private Image CreateImage(BitmapImage bitmapImage, String name)
