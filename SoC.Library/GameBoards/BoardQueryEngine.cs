@@ -204,7 +204,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
 
     public uint[] GetValidConnectedLocationsFrom(uint location)
     {
-      return new uint[0];
+      return this.neighboursOfLocation[location];
     }
 
     public uint[] GetNeighbouringLocationsFrom(uint location)
