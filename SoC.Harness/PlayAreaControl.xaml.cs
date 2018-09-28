@@ -317,7 +317,7 @@ namespace SoC.Harness
 
     private RoadButtonControl PlaceRoadButtonControl(string id, double x, double y, string imagePath)
     {
-      var control = new RoadButtonControl(id, imagePath, null);
+      var control = new RoadButtonControl(id, imagePath, this.RoadSelectedEventHandler);
       this.RoadSelectionLayer.Children.Add(control);
       Canvas.SetLeft(control, x);
       Canvas.SetTop(control, y);
@@ -345,8 +345,13 @@ namespace SoC.Harness
       Canvas.SetTop(control, y);
     }
 
-    uint workingLocation;
+    string workingRoadId;
+    private void RoadSelectedEventHandler(RoadButtonControl roadButtonControl)
+    {
+      this.workingRoadId = roadButtonControl.Id;
+    }
 
+    uint workingLocation;
     private void SettlementSelectedEventHandler(SettlementButtonControl settlementButtonControl)
     {
       this.workingLocation = settlementButtonControl.Location;
@@ -365,7 +370,7 @@ namespace SoC.Harness
       var roadEndLocations = this.board.BoardQuery.GetValidConnectedLocationsFrom(this.workingLocation);
       for (var index = 0; index < roadEndLocations.Length; index++)
       {
-        var id = string.Format("{0}-{1}", workingLocation, roadEndLocations[index]);
+        var id = string.Format("{0}-{1}", this.workingLocation, roadEndLocations[index]);
         this.roadButtonControls[id].Visibility = Visibility.Visible;
       }
 
