@@ -84,8 +84,8 @@
     <Compile Include="SettlementButtonControl.xaml.cs">
       <DependentUpon>SettlementButtonControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="SettlementControl.xaml.cs">
-      <DependentUpon>SettlementControl.xaml</DependentUpon>
+    <Compile Include="BuildingControl.xaml.cs">
+      <DependentUpon>BuildingControl.xaml</DependentUpon>
     </Compile>
     <Page Include="PlayAreaControl.xaml">
       <SubType>Designer</SubType>
@@ -119,7 +119,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="SettlementControl.xaml">
+    <Page Include="BuildingControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -205,9 +205,9 @@
     <Resource Include="Resources\Roads\road_horizontal_indicator.png" />
     <Resource Include="Resources\Roads\road_right_indicator.png" />
     <Resource Include="Resources\Roads\road_left_indicator.png" />
-    <Resource Include="Resources\Roads\blue_road_right.png" />
-    <Resource Include="Resources\Roads\blue_road_left.png" />
-    <Resource Include="Resources\Roads\blue_road_horizontal.png" />
+    <Resource Include="Resources\Roads\road_right.png" />
+    <Resource Include="Resources\Roads\road_left.png" />
+    <Resource Include="Resources\Roads\road_horizontal.png" />
     <Resource Include="Resources\Settlements\blue_settlement.png" />
     <Content Include="Resources\HexTypes\brick.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

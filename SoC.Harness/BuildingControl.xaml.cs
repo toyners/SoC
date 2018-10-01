@@ -6,11 +6,11 @@ namespace SoC.Harness
   /// <summary>
   /// Interaction logic for UserControl1.xaml
   /// </summary>
-  public partial class SettlementControl : UserControl
+  public partial class BuildingControl : UserControl
   {
     public string ImagePath { get; private set; }
 
-    public SettlementControl(string imagePath)
+    public BuildingControl(string imagePath)
     {
       this.DataContext = this;
       this.ImagePath = imagePath;

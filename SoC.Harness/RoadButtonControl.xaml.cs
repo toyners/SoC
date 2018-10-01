@@ -24,14 +24,16 @@ namespace SoC.Harness
     public readonly string Id;
     public readonly double X;
     public readonly double Y;
-    public string ImagePath { get; private set; }
+    public readonly string ImagePath;
+    public string IndicatorImagePath { get; private set; }
 
-    public RoadButtonControl(string id, double x, double y, string imagePath, Action<RoadButtonControl> clickEventHandler)
+    public RoadButtonControl(string id, double x, double y, string indicatorImagePath, string imagePath, Action<RoadButtonControl> clickEventHandler)
     {
       this.Id = id;
       this.X = x;
       this.Y = y;
       this.DataContext = this;
+      this.IndicatorImagePath = indicatorImagePath;
       this.ImagePath = imagePath;
       this.InitializeComponent();
 

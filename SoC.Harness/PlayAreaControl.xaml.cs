@@ -111,12 +111,104 @@ namespace SoC.Harness
 
     public void InitialiseRoadSelectionLayer()
     {
-      string leftRoadImagePath = @"resources\roads\road_left_indicator.png";
-      string rightRoadImagePath = @"resources\roads\road_right_indicator.png";
-      string horzRoadImagePath = @"resources\roads\road_horizontal_indicator.png";
+      string roadLeftIndicatorImagePath = @"resources\roads\road_left_indicator.png";
+      string roadLeftImagePath = @"resources\roads\road_left.png";
+      string roadRightIndicatorImagePath = @"resources\roads\road_right_indicator.png";
+      string roadRightImagePath = @"resources\roads\road_right.png";
+      string roadHorizontalIndicatorImagePath = @"resources\roads\road_horizontal_indicator.png";
+      string roadHorizontalImagePath = @"resources\roads\road_horizontal.png";
       this.roadButtonControls = new Dictionary<string, RoadButtonControl>();
 
-      var verticalRoadLayoutData = new VerticalRoadLayoutData[]
+      var verticalRoadLayoutData = this.GetVerticalRoadLayoutData();
+
+      string indicatorImagePath = null;
+      string imagePath = null;
+      foreach (var verticalRoadLayout in verticalRoadLayoutData)
+      {
+        var useRightImage = verticalRoadLayout.StartWithRightImage;
+        for (var index = 0; index < verticalRoadLayout.Locations.Length; index++)
+        {
+          if (useRightImage)
+          {
+            indicatorImagePath = roadRightIndicatorImagePath;
+            imagePath = roadRightImagePath;
+          }
+          else
+          {
+            indicatorImagePath = roadLeftIndicatorImagePath;
+            imagePath = roadLeftImagePath;
+          }
+
+          var locationA = verticalRoadLayout.Locations[index];
+          var locationB = locationA - 1;
+          var id = string.Format("{0}-{1}", locationA, locationB);
+          var control = this.PlaceRoadButtonControl(id, verticalRoadLayout.XCoordinate, verticalRoadLayout.YCoordinates[index], indicatorImagePath, imagePath);
+          useRightImage = !useRightImage;
+
+          this.roadButtonControls.Add(id, control);
+          id = string.Format("{0}-{1}", locationB, locationA);
+          this.roadButtonControls.Add(id, control);
+        }
+      }
+
+      var horizontalRoadLayoutData = this.GetHorizontalRoadLayoutData();
+
+      foreach (var horizontalRoadLayout in horizontalRoadLayoutData)
+      {
+        for (var index = 0; index < horizontalRoadLayout.Locations.Length; index++)
+        {
+          var locationA = horizontalRoadLayout.Locations[index].X;
+          var locationB = horizontalRoadLayout.Locations[index].Y;
+          var id = string.Format("{0}-{1}", locationA, locationB);
+          var control = this.PlaceRoadButtonControl(id, horizontalRoadLayout.XCoordinate, horizontalRoadLayout.YCoordinates[index], roadHorizontalIndicatorImagePath, roadHorizontalImagePath);
+
+          this.roadButtonControls.Add(id, control);
+          id = string.Format("{0}-{1}", locationB, locationA);
+          this.roadButtonControls.Add(id, control);
+        }
+      }
+    }
+
+    private HorizontalRoadLayoutData[] GetHorizontalRoadLayoutData()
+    {
+      return new HorizontalRoadLayoutData[]
+      {
+        new HorizontalRoadLayoutData
+        {
+          XCoordinate = 246,
+          Locations = new [] { new Point(0, 8), new Point(2, 10), new Point(4, 12), new Point(6, 14)},
+          YCoordinates = new int[] { 87, 175, 264, 352 }
+        },
+        new HorizontalRoadLayoutData
+        {
+          XCoordinate = 312,
+          Locations = new [] { new Point(7, 17), new Point(9, 19), new Point(11, 21), new Point(13, 23), new Point(15, 25)},
+          YCoordinates = new int[] { 42, 130, 218, 308, 395 }
+        },
+        new HorizontalRoadLayoutData
+        {
+          XCoordinate = 378,
+          Locations = new [] { new Point(16, 27), new Point(18, 29), new Point(20, 31), new Point(22, 33), new Point(24, 35), new Point(26, 37)},
+          YCoordinates = new int[] { -3, 85, 174, 263, 354, 441 }
+        },
+        new HorizontalRoadLayoutData
+        {
+          XCoordinate = 444,
+          Locations = new [] { new Point(28, 38), new Point(30, 40), new Point(32, 42), new Point(34, 44), new Point(36, 46)},
+          YCoordinates = new int[] { 42, 130, 218, 308, 395 }
+        },
+        new HorizontalRoadLayoutData
+        {
+          XCoordinate = 510,
+          Locations = new [] { new Point(39, 47), new Point(41, 49), new Point(43, 51), new Point(45, 53)},
+          YCoordinates = new int[] { 87, 175, 264, 352 }
+        }
+      };
+    }
+
+    private VerticalRoadLayoutData[] GetVerticalRoadLayoutData()
+    {
+      return new VerticalRoadLayoutData[]
       {
         new VerticalRoadLayoutData
         {
@@ -161,73 +253,6 @@ namespace SoC.Harness
           YCoordinates = new int[] { 89, 132, 177, 220, 266, 309 }
         }
       };
-
-      foreach (var verticalRoadLayout in verticalRoadLayoutData)
-      {
-        var useRightImage = verticalRoadLayout.StartWithRightImage;
-        for (var index = 0; index < verticalRoadLayout.Locations.Length; index++)
-        {
-          var imagePath = useRightImage ? rightRoadImagePath : leftRoadImagePath;
-          var locationA = verticalRoadLayout.Locations[index];
-          var locationB = locationA - 1;
-          var id = string.Format("{0}-{1}", locationA, locationB);
-          var control = this.PlaceRoadButtonControl(id, verticalRoadLayout.XCoordinate, verticalRoadLayout.YCoordinates[index], imagePath);
-          useRightImage = !useRightImage;
-
-          this.roadButtonControls.Add(id, control);
-          id = string.Format("{0}-{1}", locationB, locationA);
-          this.roadButtonControls.Add(id, control);
-        }
-      }
-
-      var horizontalRoadLayoutData = new HorizontalRoadLayoutData[]
-      {
-        new HorizontalRoadLayoutData
-        {
-          XCoordinate = 246,
-          Locations = new [] { new Point(0, 8), new Point(2, 10), new Point(4, 12), new Point(6, 14)},
-          YCoordinates = new int[] { 87, 175, 264, 352 }
-        },
-        new HorizontalRoadLayoutData
-        {
-          XCoordinate = 312,
-          Locations = new [] { new Point(7, 17), new Point(9, 19), new Point(11, 21), new Point(13, 23), new Point(15, 25)},
-          YCoordinates = new int[] { 42, 130, 218, 308, 395 }
-        },
-        new HorizontalRoadLayoutData
-        {
-          XCoordinate = 378,
-          Locations = new [] { new Point(16, 27), new Point(18, 29), new Point(20, 31), new Point(22, 33), new Point(24, 35), new Point(26, 37)},
-          YCoordinates = new int[] { -3, 85, 174, 263, 354, 441 }
-        },
-        new HorizontalRoadLayoutData
-        {
-          XCoordinate = 444,
-          Locations = new [] { new Point(28, 38), new Point(30, 40), new Point(32, 42), new Point(34, 44), new Point(36, 46)},
-          YCoordinates = new int[] { 42, 130, 218, 308, 395 }
-        },
-        new HorizontalRoadLayoutData
-        {
-          XCoordinate = 510,
-          Locations = new [] { new Point(39, 47), new Point(41, 49), new Point(43, 51), new Point(45, 53)},
-          YCoordinates = new int[] { 87, 175, 264, 352 }
-        }
-      };
-
-      foreach (var horizontalRoadLayout in horizontalRoadLayoutData)
-      {
-        for (var index = 0; index < horizontalRoadLayout.Locations.Length; index++)
-        {
-          var locationA = horizontalRoadLayout.Locations[index].X;
-          var locationB = horizontalRoadLayout.Locations[index].Y;
-          var id = string.Format("{0}-{1}", locationA, locationB);
-          var control = this.PlaceRoadButtonControl(id, horizontalRoadLayout.XCoordinate, horizontalRoadLayout.YCoordinates[index], horzRoadImagePath);
-
-          this.roadButtonControls.Add(id, control);
-          id = string.Format("{0}-{1}", locationB, locationA);
-          this.roadButtonControls.Add(id, control);
-        }
-      }
     }
 
     private Image CreateImage(BitmapImage bitmapImage, String name)
@@ -315,9 +340,9 @@ namespace SoC.Harness
       Canvas.SetTop(control, y);
     }
 
-    private RoadButtonControl PlaceRoadButtonControl(string id, double x, double y, string imagePath)
+    private RoadButtonControl PlaceRoadButtonControl(string id, double x, double y, string imagePath, string path)
     {
-      var control = new RoadButtonControl(id, x, y, imagePath, this.RoadSelectedEventHandler);
+      var control = new RoadButtonControl(id, x, y, imagePath, path, this.RoadSelectedEventHandler);
       this.RoadSelectionLayer.Children.Add(control);
       Canvas.SetLeft(control, x);
       Canvas.SetTop(control, y);
@@ -336,11 +361,11 @@ namespace SoC.Harness
       return control;
     }
 
-    private void PlaceSettlementControl(double x, double y, string toolTip, string imagePath)
+    private void PlaceBuildingControl(double x, double y, string toolTip, string imagePath, Canvas canvas)
     {
-      var control = new SettlementControl(imagePath);
+      var control = new BuildingControl(imagePath);
       control.ToolTip = toolTip;
-      this.SettlementLayer.Children.Add(control);
+      canvas.Children.Add(control);
       Canvas.SetLeft(control, x);
       Canvas.SetTop(control, y);
     }
@@ -351,7 +376,7 @@ namespace SoC.Harness
       this.workingRoadId = roadButtonControl.Id;
       roadButtonControl.Visibility = Visibility.Hidden;
 
-      this.PlaceSettlementControl(roadButtonControl.X, roadButtonControl.Y, string.Empty, @"resources\settlements\blue_settlement.png");
+      this.PlaceBuildingControl(roadButtonControl.X, roadButtonControl.Y, string.Empty, roadButtonControl.ImagePath, this.RoadLayer);
 
       this.RoadSelectionLayer.Visibility = Visibility.Hidden;
     }
@@ -369,7 +394,7 @@ namespace SoC.Harness
         this.settlementButtonControls[index].Visibility = Visibility.Hidden;
       }
 
-      this.PlaceSettlementControl(settlementButtonControl.X, settlementButtonControl.Y, "Test", @"resources\settlements\blue_settlement.png");
+      this.PlaceBuildingControl(settlementButtonControl.X, settlementButtonControl.Y, "Test", @"resources\settlements\blue_settlement.png", this.SettlementLayer);
       
       // Turn on the possible road controls for the location
       var roadEndLocations = this.board.BoardQuery.GetValidConnectedLocationsFrom(this.workingLocation);
