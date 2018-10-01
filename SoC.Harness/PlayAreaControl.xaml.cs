@@ -317,7 +317,7 @@ namespace SoC.Harness
 
     private RoadButtonControl PlaceRoadButtonControl(string id, double x, double y, string imagePath)
     {
-      var control = new RoadButtonControl(id, imagePath, this.RoadSelectedEventHandler);
+      var control = new RoadButtonControl(id, x, y, imagePath, this.RoadSelectedEventHandler);
       this.RoadSelectionLayer.Children.Add(control);
       Canvas.SetLeft(control, x);
       Canvas.SetTop(control, y);
@@ -349,6 +349,11 @@ namespace SoC.Harness
     private void RoadSelectedEventHandler(RoadButtonControl roadButtonControl)
     {
       this.workingRoadId = roadButtonControl.Id;
+      roadButtonControl.Visibility = Visibility.Hidden;
+
+      this.PlaceSettlementControl(roadButtonControl.X, roadButtonControl.Y, string.Empty, @"resources\settlements\blue_settlement.png");
+
+      this.RoadSelectionLayer.Visibility = Visibility.Hidden;
     }
 
     uint workingLocation;
