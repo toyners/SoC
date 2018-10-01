@@ -379,6 +379,9 @@ namespace SoC.Harness
       this.PlaceBuildingControl(roadButtonControl.X, roadButtonControl.Y, string.Empty, roadButtonControl.ImagePath, this.RoadLayer);
 
       this.RoadSelectionLayer.Visibility = Visibility.Hidden;
+
+      this.EndTurnButton.Visibility = Visibility.Visible;
+      this.TopLayer.Visibility = Visibility.Visible;
     }
 
     uint workingLocation;
@@ -415,6 +418,11 @@ namespace SoC.Harness
 
       this.BoardLayer.Visibility = Visibility.Visible;
       this.SettlementSelectionLayer.Visibility = Visibility.Visible;
+    }
+
+    private void EndTurnButton_Click(object sender, RoutedEventArgs e)
+    {
+
     }
     #endregion
 
