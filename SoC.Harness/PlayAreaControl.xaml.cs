@@ -397,7 +397,7 @@ namespace SoC.Harness
         this.settlementButtonControls[index].Visibility = Visibility.Hidden;
       }
 
-      this.PlaceBuildingControl(settlementButtonControl.X, settlementButtonControl.Y, "Test", @"resources\settlements\blue_settlement.png", this.SettlementLayer);
+      this.PlaceBuildingControl(settlementButtonControl.X, settlementButtonControl.Y, string.Empty, @"resources\settlements\blue_settlement.png", this.SettlementLayer);
       
       // Turn on the possible road controls for the location
       var roadEndLocations = this.board.BoardQuery.GetValidConnectedLocationsFrom(this.workingLocation);
