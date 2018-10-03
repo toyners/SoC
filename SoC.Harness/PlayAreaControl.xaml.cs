@@ -18,6 +18,8 @@ namespace SoC.Harness
     private IGameBoard board;
     private SettlementButtonControl[] settlementButtonControls;
     private Dictionary<string, RoadButtonControl> roadButtonControls;
+    uint workingLocation;
+    RoadButtonControl workingRoadControl;
     #endregion
 
     #region Construction
@@ -150,13 +152,11 @@ namespace SoC.Harness
 
           var locationA = verticalRoadLayout.Locations[index];
           var locationB = locationA - 1;
-          var id = string.Format("{0}-{1}", locationA, locationB);
-          var control = this.PlaceRoadButtonControl(id, verticalRoadLayout.XCoordinate, verticalRoadLayout.YCoordinates[index], indicatorImagePath, imagePath);
+          var control = this.PlaceRoadButtonControl(locationA, locationB, verticalRoadLayout.XCoordinate, verticalRoadLayout.YCoordinates[index], indicatorImagePath, imagePath);
           useRightImage = !useRightImage;
 
-          this.roadButtonControls.Add(id, control);
-          id = string.Format("{0}-{1}", locationB, locationA);
-          this.roadButtonControls.Add(id, control);
+          this.roadButtonControls.Add(control.Id, control);
+          this.roadButtonControls.Add(control.AlternativeId, control);
         }
       }
 
@@ -166,14 +166,12 @@ namespace SoC.Harness
       {
         for (var index = 0; index < horizontalRoadLayout.Locations.Length; index++)
         {
-          var locationA = horizontalRoadLayout.Locations[index].X;
-          var locationB = horizontalRoadLayout.Locations[index].Y;
-          var id = string.Format("{0}-{1}", locationA, locationB);
-          var control = this.PlaceRoadButtonControl(id, horizontalRoadLayout.XCoordinate, horizontalRoadLayout.YCoordinates[index], roadHorizontalIndicatorImagePath, roadHorizontalImagePath);
+          var locationA = horizontalRoadLayout.Locations[index].Start;
+          var locationB = horizontalRoadLayout.Locations[index].End;
+          var control = this.PlaceRoadButtonControl(locationA, locationB, horizontalRoadLayout.XCoordinate, horizontalRoadLayout.YCoordinates[index], roadHorizontalIndicatorImagePath, roadHorizontalImagePath);
 
-          this.roadButtonControls.Add(id, control);
-          id = string.Format("{0}-{1}", locationB, locationA);
-          this.roadButtonControls.Add(id, control);
+          this.roadButtonControls.Add(control.Id, control);
+          this.roadButtonControls.Add(control.AlternativeId, control);
         }
       }
     }
@@ -185,31 +183,31 @@ namespace SoC.Harness
         new HorizontalRoadLayoutData
         {
           XCoordinate = 246,
-          Locations = new [] { new Point(0, 8), new Point(2, 10), new Point(4, 12), new Point(6, 14)},
+          Locations = new [] { new RoadData(0, 8), new RoadData(2, 10), new RoadData(4, 12), new RoadData(6, 14)},
           YCoordinates = new int[] { 87, 175, 264, 352 }
         },
         new HorizontalRoadLayoutData
         {
           XCoordinate = 312,
-          Locations = new [] { new Point(7, 17), new Point(9, 19), new Point(11, 21), new Point(13, 23), new Point(15, 25)},
+          Locations = new [] { new RoadData(7, 17), new RoadData(9, 19), new RoadData(11, 21), new RoadData(13, 23), new RoadData(15, 25)},
           YCoordinates = new int[] { 42, 130, 218, 308, 395 }
         },
         new HorizontalRoadLayoutData
         {
           XCoordinate = 378,
-          Locations = new [] { new Point(16, 27), new Point(18, 29), new Point(20, 31), new Point(22, 33), new Point(24, 35), new Point(26, 37)},
+          Locations = new [] { new RoadData(16, 27), new RoadData(18, 29), new RoadData(20, 31), new RoadData(22, 33), new RoadData(24, 35), new RoadData(26, 37)},
           YCoordinates = new int[] { -3, 85, 174, 263, 354, 441 }
         },
         new HorizontalRoadLayoutData
         {
           XCoordinate = 444,
-          Locations = new [] { new Point(28, 38), new Point(30, 40), new Point(32, 42), new Point(34, 44), new Point(36, 46)},
+          Locations = new [] { new RoadData(28, 38), new RoadData(30, 40), new RoadData(32, 42), new RoadData(34, 44), new RoadData(36, 46)},
           YCoordinates = new int[] { 42, 130, 218, 308, 395 }
         },
         new HorizontalRoadLayoutData
         {
           XCoordinate = 510,
-          Locations = new [] { new Point(39, 47), new Point(41, 49), new Point(43, 51), new Point(45, 53)},
+          Locations = new [] { new RoadData(39, 47), new RoadData(41, 49), new RoadData(43, 51), new RoadData(45, 53)},
           YCoordinates = new int[] { 87, 175, 264, 352 }
         }
       };
@@ -223,42 +221,42 @@ namespace SoC.Harness
         {
           XCoordinate = 210,
           StartWithRightImage = true,
-          Locations = new int[] { 1, 2, 3, 4, 5, 6 },
+          Locations = new uint[] { 1, 2, 3, 4, 5, 6 },
           YCoordinates = new int[] { 89, 132, 177, 220, 266, 309 }
         },
         new VerticalRoadLayoutData
         {
           XCoordinate = 277,
           StartWithRightImage = true,
-          Locations = new int[] { 8, 9, 10, 11, 12, 13, 14, 15 },
+          Locations = new uint[] { 8, 9, 10, 11, 12, 13, 14, 15 },
           YCoordinates = new int[] { 44, 89, 132, 177, 220, 266, 309, 354 }
         },
         new VerticalRoadLayoutData
         {
           XCoordinate = 342,
           StartWithRightImage = true,
-          Locations = new int[] { 17, 18, 19, 20, 21, 22, 23, 24, 25, 26 },
+          Locations = new uint[] { 17, 18, 19, 20, 21, 22, 23, 24, 25, 26 },
           YCoordinates = new int[] { 1, 44, 89, 132, 177, 220, 266, 309, 354, 399 }
         },
         new VerticalRoadLayoutData
         {
           XCoordinate = 408,
           StartWithRightImage = false,
-          Locations = new int[] { 28, 29, 30, 31, 32, 33, 34, 35, 36, 37 },
+          Locations = new uint[] { 28, 29, 30, 31, 32, 33, 34, 35, 36, 37 },
           YCoordinates = new int[] { 1, 44, 89, 132, 177, 220, 266, 309, 354, 399 }
         },
         new VerticalRoadLayoutData
         {
           XCoordinate = 472,
           StartWithRightImage = false,
-          Locations = new int[] { 39, 40, 41, 42, 43, 44, 45, 46 },
+          Locations = new uint[] { 39, 40, 41, 42, 43, 44, 45, 46 },
           YCoordinates = new int[] { 44, 89, 132, 177, 220, 266, 309, 354 }
         },
         new VerticalRoadLayoutData
         {
           XCoordinate = 538,
           StartWithRightImage = false,
-          Locations = new int[] { 48, 49, 50, 51, 52, 53 },
+          Locations = new uint[] { 48, 49, 50, 51, 52, 53 },
           YCoordinates = new int[] { 89, 132, 177, 220, 266, 309 }
         }
       };
@@ -349,9 +347,9 @@ namespace SoC.Harness
       Canvas.SetTop(control, y);
     }
 
-    private RoadButtonControl PlaceRoadButtonControl(string id, double x, double y, string imagePath, string path)
+    private RoadButtonControl PlaceRoadButtonControl(uint start, uint end, double x, double y, string imagePath, string path)
     {
-      var control = new RoadButtonControl(id, x, y, imagePath, path, this.RoadSelectedEventHandler);
+      var control = new RoadButtonControl(start, end, x, y, imagePath, path, this.RoadSelectedEventHandler);
       this.RoadSelectionLayer.Children.Add(control);
       Canvas.SetLeft(control, x);
       Canvas.SetTop(control, y);
@@ -379,10 +377,9 @@ namespace SoC.Harness
       Canvas.SetTop(control, y);
     }
 
-    string workingRoadId;
     private void RoadSelectedEventHandler(RoadButtonControl roadButtonControl)
     {
-      this.workingRoadId = roadButtonControl.Id;
+      this.workingRoadControl = roadButtonControl;
       roadButtonControl.Visibility = Visibility.Hidden;
 
       this.PlaceBuildingControl(roadButtonControl.X, roadButtonControl.Y, string.Empty, roadButtonControl.ImagePath, this.RoadLayer);
@@ -393,7 +390,6 @@ namespace SoC.Harness
       this.TopLayer.Visibility = Visibility.Visible;
     }
 
-    uint workingLocation;
     private void SettlementSelectedEventHandler(SettlementButtonControl settlementButtonControl)
     {
       this.workingLocation = settlementButtonControl.Location;
@@ -431,7 +427,8 @@ namespace SoC.Harness
 
     private void EndTurnButton_Click(object sender, RoutedEventArgs e)
     {
-      var infrastructureInstructions = new Tuple<uint, uint>(this.workingLocation, 0);
+      var roadEndLocation = this.workingRoadControl.Start == this.workingLocation ? this.workingRoadControl.End : this.workingRoadControl.Start;
+      var infrastructureInstructions = new Tuple<uint, uint>(this.workingLocation, roadEndLocation);
       this.EndTurnEvent?.Invoke(1, infrastructureInstructions);
     }
     #endregion
@@ -443,6 +440,17 @@ namespace SoC.Harness
       public uint Count;
     }
 
+    public struct RoadData
+    {
+      public uint Start, End;
+
+      public RoadData(uint start, uint end)
+      {
+        this.Start = start;
+        this.End = end;
+      }
+    }
+
     public struct SettlementLayoutData
     {
       public int X, Y, Dx, Dy, DirectionX;
@@ -452,14 +460,15 @@ namespace SoC.Harness
     public struct VerticalRoadLayoutData
     {
       public int XCoordinate;
-      public int[] Locations, YCoordinates;
+      public uint[] Locations;
+      public int[] YCoordinates;
       public bool StartWithRightImage;
     }
 
     public struct HorizontalRoadLayoutData
     {
       public int XCoordinate;
-      public Point[] Locations;
+      public RoadData[] Locations;
       public int[] YCoordinates;
     }
     #endregion

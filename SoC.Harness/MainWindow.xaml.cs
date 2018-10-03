@@ -40,7 +40,6 @@ namespace SoC.Harness
             break;
           }
       }
-      //this.localGameController.ContinueGameSetup(settlementLocation, roadEndLocation);
     }
   }
 }
