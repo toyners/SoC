@@ -82,7 +82,7 @@ namespace SoC.Harness
       }
     }
 
-    public void InitialiseSettlementSelectionLayer()
+    private void InitialiseSettlementSelectionLayer()
     {
       this.settlementButtonControls = new SettlementButtonControl[GameBoard.StandardBoardLocationCount];
 
@@ -118,7 +118,7 @@ namespace SoC.Harness
       }
     }
 
-    public void InitialiseRoadSelectionLayer()
+    private void InitialiseRoadSelectionLayer()
     {
       string roadLeftIndicatorImagePath = @"resources\roads\road_left_indicator.png";
       string roadLeftImagePath = @"resources\roads\road_left.png";
