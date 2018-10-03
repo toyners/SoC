@@ -1,6 +1,7 @@
 ﻿
 namespace SoC.Harness
 {
+  using System;
   using System.Windows;
   using Jabberwocky.SoC.Library;
   using Jabberwocky.SoC.Library.GameBoards;
@@ -24,14 +25,22 @@ namespace SoC.Harness
 
       this.localGameController = new LocalGameController(numberGenerator, playerPool, board, developmentCardHolder);
 
-      this.PlayArea.settlementSelection = this.PlaceSettlementClickEventHandler;
+      this.PlayArea.EndTurnEvent = this.EndTurnEventHandler;
 
       this.PlayArea.Initialise(board);
     }
 
-    private void PlaceSettlementClickEventHandler(uint settlementLocation, uint roadEndLocation)
+    private void EndTurnEventHandler(int message, object data)
     {
-      this.localGameController.ContinueGameSetup(settlementLocation, roadEndLocation);
+      switch (message)
+      {
+        case 1: {
+            var tuple = (Tuple<uint, uint>)data;
+            this.localGameController.ContinueGameSetup(tuple.Item1, tuple.Item2);
+            break;
+          }
+      }
+      //this.localGameController.ContinueGameSetup(settlementLocation, roadEndLocation);
     }
   }
 }

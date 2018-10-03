@@ -25,7 +25,7 @@ namespace SoC.Harness
     }
     #endregion
 
-    public Action<uint, uint> settlementSelection;
+    public Action<int, object> EndTurnEvent;
 
     #region Methods
     public void Initialise(IGameBoard board)
@@ -422,7 +422,8 @@ namespace SoC.Harness
 
     private void EndTurnButton_Click(object sender, RoutedEventArgs e)
     {
-
+      var infrastructureInstructions = new Tuple<uint, uint>(this.workingLocation, 0);
+      this.EndTurnEvent?.Invoke(1, infrastructureInstructions);
     }
     #endregion
 
