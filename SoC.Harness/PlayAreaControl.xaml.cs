@@ -14,9 +14,11 @@ namespace SoC.Harness
   /// </summary>
   public partial class PlayAreaControl : UserControl
   {
+    #region Fields
     private IGameBoard board;
     private SettlementButtonControl[] settlementButtonControls;
     private Dictionary<string, RoadButtonControl> roadButtonControls;
+    #endregion
 
     #region Construction
     public PlayAreaControl()
@@ -25,13 +27,24 @@ namespace SoC.Harness
     }
     #endregion
 
+    #region Events
     public Action<int, object> EndTurnEvent;
+    #endregion
 
     #region Methods
     public void Initialise(IGameBoard board)
     {
       this.board = board;
 
+      this.InitialiseBoardLayer();
+
+      this.InitialiseSettlementSelectionLayer();
+
+      this.InitialiseRoadSelectionLayer();
+    }
+
+    private void InitialiseBoardLayer()
+    {
       var resourceBitmaps = this.CreateResourceBitmaps();
       var numberBitmaps = this.CreateNumberBitmaps();
 
@@ -67,10 +80,6 @@ namespace SoC.Harness
           y += cellHeight;
         }
       }
-
-      this.InitialiseSettlementSelectionLayer();
-
-      this.InitialiseRoadSelectionLayer();
     }
 
     public void InitialiseSettlementSelectionLayer()
