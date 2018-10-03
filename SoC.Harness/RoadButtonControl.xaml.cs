@@ -28,6 +28,7 @@ namespace SoC.Harness
       this.IndicatorImagePath = indicatorImagePath;
       this.ImagePath = imagePath;
       this.InitializeComponent();
+      this.Visibility = Visibility.Hidden;
 
       this.clickEventHandler = clickEventHandler;
     }
