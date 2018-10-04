@@ -31,6 +31,7 @@ namespace SoC.Harness
 
     #region Events
     public Action<int, object> EndTurnEvent;
+    public Action StartGameEvent; 
     #endregion
 
     #region Methods
@@ -418,6 +419,8 @@ namespace SoC.Harness
 
     private void StartGameButton_Click(object sender, RoutedEventArgs e)
     {
+      this.StartGameEvent?.Invoke();
+
       this.StartGameButton.Visibility = Visibility.Hidden;
       this.TopLayer.Visibility = Visibility.Hidden;
 
