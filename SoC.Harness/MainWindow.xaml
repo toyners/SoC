@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:SoC.Harness"
+        xmlns:views="clr-namespace:SoC.Harness.Views"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800" WindowState="Maximized">
   <DockPanel>
@@ -13,8 +14,8 @@
         <RowDefinition />
       </Grid.RowDefinitions>
 
-      <local:PlayerControl x:Name="TopLeftPlayer" />
-      <local:PlayerControl x:Name="BottomLeftPlayer" Grid.Row="1" />
+      <views:PlayerControl x:Name="TopLeftPlayer" />
+      <views:PlayerControl x:Name="BottomLeftPlayer" Grid.Row="1" />
     </Grid>
 
     <Grid DockPanel.Dock="Right">
@@ -23,8 +24,8 @@
         <RowDefinition />
       </Grid.RowDefinitions>
 
-      <local:PlayerControl x:Name="TopRightPlayer"/>
-      <local:PlayerControl x:Name="BottomRightPlayer" Grid.Row="1" />
+      <views:PlayerControl x:Name="TopRightPlayer"/>
+      <views:PlayerControl x:Name="BottomRightPlayer" Grid.Row="1" />
     </Grid>
 
     <local:PlayAreaControl x:Name="PlayArea" Grid.Column="1" />

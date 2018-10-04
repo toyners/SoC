@@ -105,7 +105,7 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="PlayerControl.xaml">
+    <Page Include="Views\PlayerControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -127,7 +127,7 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="PlayerControl.xaml.cs">
+    <Compile Include="Views\PlayerControl.xaml.cs">
       <DependentUpon>PlayerControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs">
@@ -234,8 +234,6 @@
     </Content>
     <Resource Include="Resources\Settlements\yellow_settlement.png" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Views\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
