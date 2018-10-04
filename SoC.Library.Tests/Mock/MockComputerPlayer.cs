@@ -144,7 +144,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.Mock
       return this;
     }
 
-    public override void BuildInitialPlayerActions(PlayerDataView[] playerData)
+    public override void BuildInitialPlayerActions(PlayerDataModel[] playerData)
     {
       // Nothing to do - all actions set by instruction.
     }

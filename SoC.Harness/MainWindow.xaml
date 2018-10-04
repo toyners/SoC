@@ -13,8 +13,8 @@
         <RowDefinition />
       </Grid.RowDefinitions>
 
-      <local:PlayerControl />
-      <local:PlayerControl Grid.Row="1" />
+      <local:PlayerControl x:Name="TopLeftPlayer" />
+      <local:PlayerControl x:Name="BottomLeftPlayer" Grid.Row="1" />
     </Grid>
 
     <Grid DockPanel.Dock="Right">
@@ -23,8 +23,8 @@
         <RowDefinition />
       </Grid.RowDefinitions>
 
-      <local:PlayerControl />
-      <local:PlayerControl Grid.Row="1" />
+      <local:PlayerControl x:Name="TopRightPlayer"/>
+      <local:PlayerControl x:Name="BottomRightPlayer" Grid.Row="1" />
     </Grid>
 
     <local:PlayAreaControl x:Name="PlayArea" Grid.Column="1" />

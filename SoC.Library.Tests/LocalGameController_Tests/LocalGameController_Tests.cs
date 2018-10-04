@@ -742,8 +742,8 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       localGameController.CompleteGameSetup(MainSettlementTwoLocation, MainRoadTwoEnd);
 
       // Act
-      PlayerDataView[] turnOrder = null;
-      localGameController.TurnOrderFinalisedEvent = (PlayerDataView[] p) => { turnOrder = p; };
+      PlayerDataModel[] turnOrder = null;
+      localGameController.TurnOrderFinalisedEvent = (PlayerDataModel[] p) => { turnOrder = p; };
       localGameController.FinalisePlayerTurnOrder();
 
       // Assert
@@ -781,8 +781,8 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       localGameController.CompleteGameSetup(MainSettlementTwoLocation, MainRoadTwoEnd);
 
       // Act
-      PlayerDataView[] turnOrder = null;
-      localGameController.TurnOrderFinalisedEvent = (PlayerDataView[] p) => { turnOrder = p; };
+      PlayerDataModel[] turnOrder = null;
+      localGameController.TurnOrderFinalisedEvent = (PlayerDataModel[] p) => { turnOrder = p; };
       localGameController.FinalisePlayerTurnOrder();
 
       // Assert
@@ -1286,7 +1286,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       var localGameController = new LocalGameControllerCreator().Create();
 
       GameBoard boardData = null;
-      localGameController.GameLoadedEvent = (PlayerDataView[] pd, GameBoard bd) => { boardData = bd; };
+      localGameController.GameLoadedEvent = (PlayerDataModel[] pd, GameBoard bd) => { boardData = bd; };
 
       // Act
       var content = "<game><board><hexes>" +
@@ -1341,8 +1341,8 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
 
       var localGameController = new LocalGameControllerCreator().Create();
 
-      PlayerDataView[] playerDataViews = null;
-      localGameController.GameLoadedEvent = (PlayerDataView[] pd, GameBoard bd) => { playerDataViews = pd; };
+      PlayerDataModel[] playerDataViews = null;
+      localGameController.GameLoadedEvent = (PlayerDataModel[] pd, GameBoard bd) => { playerDataViews = pd; };
 
       // Act
       var streamContent = "<game>" +
@@ -1378,7 +1378,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       var localGameController = new LocalGameControllerCreator().Create();
         
       GameBoard boardData = null;
-      localGameController.GameLoadedEvent = (PlayerDataView[] pd, GameBoard bd) => { boardData = bd; };
+      localGameController.GameLoadedEvent = (PlayerDataModel[] pd, GameBoard bd) => { boardData = bd; };
 
       // Act
       var streamContent = "<game>" +
@@ -1532,7 +1532,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       thirdOpponent.OreCount.ShouldBe(1);
     }
 
-    private void AssertPlayerDataViewIsCorrect(IPlayer player, PlayerDataView playerDataView)
+    private void AssertPlayerDataViewIsCorrect(IPlayer player, PlayerDataModel playerDataView)
     {
       playerDataView.Id.ShouldBe(player.Id);
       playerDataView.Name.ShouldBe(player.Name);
@@ -1572,8 +1572,8 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
         .ChangePlayerPool(mockPlayerPool)
         .Create();*/
 
-      PlayerDataView[] playerDataViews = null;
-      localGameController.GameJoinedEvent = (PlayerDataView[] p) => { playerDataViews = p; };
+      PlayerDataModel[] playerDataViews = null;
+      localGameController.GameJoinedEvent = (PlayerDataModel[] p) => { playerDataViews = p; };
       localGameController.JoinGame(gameOptions);
 
       playerDataViews.ShouldNotBeNull();

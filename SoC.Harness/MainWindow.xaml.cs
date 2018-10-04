@@ -2,11 +2,10 @@
 namespace SoC.Harness
 {
   using System;
-  using System.Collections.Generic;
   using System.Windows;
   using Jabberwocky.SoC.Library;
   using Jabberwocky.SoC.Library.GameBoards;
-  using Jabberwocky.SoC.Library.Interfaces;
+  using SoC.Harness.ViewModels;
 
   /// <summary>
   /// Interaction logic for MainWindow.xaml
@@ -22,7 +21,7 @@ namespace SoC.Harness
       this.PlayArea.EndTurnEvent = this.EndTurnEventHandler;
       this.PlayArea.StartGameEvent = this.StartGameEventHandler;
 
-      this.localGameController = new LocalGameController(new TestDice());
+      this.localGameController = new LocalGameController(new NumberGenerator());
       this.localGameController.GameJoinedEvent = this.GameJoinedEventHandler;
       this.localGameController.InitialBoardSetupEvent = this.InitialBoardSetupEventHandler;
     }
@@ -42,44 +41,21 @@ namespace SoC.Harness
             var tuple = (Tuple<uint, uint>)data;
             this.localGameController.ContinueGameSetup(tuple.Item1, tuple.Item2);
             break;
-          }
+        }
       }
     }
 
-    private void GameJoinedEventHandler(PlayerDataView[] playerDataViews)
+    private void GameJoinedEventHandler(PlayerDataModel[] playerDataModels)
     {
-
+      this.TopLeftPlayer.DataContext = new PlayerViewModel(playerDataModels[0]);
+      this.BottomLeftPlayer.DataContext = new PlayerViewModel(playerDataModels[1]);
+      this.TopRightPlayer.DataContext = new PlayerViewModel(playerDataModels[2]);
+      this.BottomRightPlayer.DataContext = new PlayerViewModel(playerDataModels[3]);
     }
 
     private void InitialBoardSetupEventHandler(GameBoard board)
     {
       this.PlayArea.Initialise(board);
-    }
-  }
-
-  public class TestDice : INumberGenerator
-  {
-    private Dice dice;
-    private Queue<uint> diceRolls; 
-    public TestDice()
-    {
-      this.diceRolls = new Queue<uint>(new uint[] { 12, 6, 4, 3 });
-      this.dice = new Dice();
-    }
-
-    public int GetRandomNumberBetweenZeroAndMaximum(int exclusiveMaximum)
-    {
-      return this.dice.GetRandomNumberBetweenZeroAndMaximum(exclusiveMaximum);
-    }
-
-    public uint RollTwoDice()
-    {
-      if (this.diceRolls.Count > 0)
-      {
-        return this.diceRolls.Dequeue();
-      }
-
-      return this.dice.RollTwoDice();
     }
   }
 }

@@ -17,16 +17,16 @@ namespace SoC.Library.IntegrationTests
       var gameControllerSetup = new GameControllerSetup();
       var gameControllerFactory = new GameControllerFactory();
       var gameController = gameControllerFactory.Create(gameOptions, gameControllerSetup);
-      PlayerDataView[] playerData = null;
-      gameController.GameJoinedEvent = (PlayerDataView[] p) => { playerData = p; };
+      PlayerDataModel[] playerData = null;
+      gameController.GameJoinedEvent = (PlayerDataModel[] p) => { playerData = p; };
       gameController.JoinGame(gameOptions);
 
       playerData.ShouldNotBeNull();
       playerData.Length.ShouldBe(4);
       playerData[0].ShouldBeOfType<PlayerData>();
-      playerData[1].ShouldBeOfType<PlayerDataView>();
-      playerData[2].ShouldBeOfType<PlayerDataView>();
-      playerData[3].ShouldBeOfType<PlayerDataView>();
+      playerData[1].ShouldBeOfType<PlayerDataModel>();
+      playerData[2].ShouldBeOfType<PlayerDataModel>();
+      playerData[3].ShouldBeOfType<PlayerDataModel>();
     }
 
     [Test]
@@ -35,16 +35,16 @@ namespace SoC.Library.IntegrationTests
       var gameControllerSetup = new GameControllerSetup();
       var gameControllerFactory = new GameControllerFactory();
       var gameController = gameControllerFactory.Create(null, gameControllerSetup);
-      PlayerDataView[] playerData = null;
-      gameController.GameJoinedEvent = (PlayerDataView[] p) => { playerData = p; };
+      PlayerDataModel[] playerData = null;
+      gameController.GameJoinedEvent = (PlayerDataModel[] p) => { playerData = p; };
       gameController.JoinGame(null);
 
       playerData.ShouldNotBeNull();
       playerData.Length.ShouldBe(4);
       playerData[0].ShouldBeOfType<PlayerData>();
-      playerData[1].ShouldBeOfType<PlayerDataView>();
-      playerData[2].ShouldBeOfType<PlayerDataView>();
-      playerData[3].ShouldBeOfType<PlayerDataView>();
+      playerData[1].ShouldBeOfType<PlayerDataModel>();
+      playerData[2].ShouldBeOfType<PlayerDataModel>();
+      playerData[3].ShouldBeOfType<PlayerDataModel>();
     }
     #endregion 
   }

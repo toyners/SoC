@@ -130,9 +130,9 @@ namespace Jabberwocky.SoC.Library
       this.WoolCount += resourceClutch.WoolCount;
     }
 
-    public PlayerDataView GetDataView()
+    public PlayerDataModel GetDataView()
     {
-      var dataView = new PlayerDataView();
+      var dataView = new PlayerDataModel();
 
       dataView.Id = this.Id;
       dataView.Name = this.Name;

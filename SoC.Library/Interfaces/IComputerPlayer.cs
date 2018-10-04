@@ -9,7 +9,7 @@ namespace Jabberwocky.SoC.Library.Interfaces
   {
     #region Methods
     void AddDevelopmentCard(DevelopmentCard developmentCard);
-    void BuildInitialPlayerActions(PlayerDataView[] playerData);
+    void BuildInitialPlayerActions(PlayerDataModel[] playerData);
     UInt32 ChooseCityLocation();
     UInt32 ChooseSettlementLocation();
     void ChooseInitialInfrastructure(out UInt32 settlementLocation, out UInt32 roadEndLocation);

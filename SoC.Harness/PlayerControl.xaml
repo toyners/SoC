@@ -15,7 +15,7 @@
 
     <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
       <TextBlock Margin="2,0">Name:</TextBlock>
-      <TextBlock Margin="2,0">Player</TextBlock>
+      <TextBlock Margin="2,0" Text="{Binding Name}" />
     </StackPanel>
 
     <Grid Grid.Row="1" VerticalAlignment="Center">

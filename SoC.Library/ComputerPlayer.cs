@@ -53,7 +53,7 @@ namespace Jabberwocky.SoC.Library
       throw new NotImplementedException();
     }
 
-    public virtual void BuildInitialPlayerActions(PlayerDataView[] otherPlayerData)
+    public virtual void BuildInitialPlayerActions(PlayerDataModel[] otherPlayerData)
     {
       this.decisionMaker.Reset();
 

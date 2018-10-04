@@ -87,6 +87,8 @@
     <Compile Include="BuildingControl.xaml.cs">
       <DependentUpon>BuildingControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="TestDice.cs" />
+    <Compile Include="ViewModels\PlayerViewModel.cs" />
     <Page Include="PlayAreaControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -232,6 +234,8 @@
     </Content>
     <Resource Include="Resources\Settlements\yellow_settlement.png" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Views\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

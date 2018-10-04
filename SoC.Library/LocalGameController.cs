@@ -89,8 +89,8 @@ namespace Jabberwocky.SoC.Library
     public Action<UInt32> DiceRollEvent { get; set; }
     public Action<ErrorDetails> ErrorRaisedEvent { get; set; }
     public Action<GameBoard> InitialBoardSetupEvent { get; set; }
-    public Action<PlayerDataView[]> GameJoinedEvent { get; set; }
-    public Action<PlayerDataView[], GameBoard> GameLoadedEvent { get; set; }
+    public Action<PlayerDataModel[]> GameJoinedEvent { get; set; }
+    public Action<PlayerDataModel[], GameBoard> GameLoadedEvent { get; set; }
     public Action<Guid> GameOverEvent { get; set; }
     public Action<ResourceUpdate> GameSetupResourcesEvent { get; set; }
     public Action<GameBoardUpdate> GameSetupUpdateEvent { get; set; }
@@ -107,7 +107,7 @@ namespace Jabberwocky.SoC.Library
     public Action SettlementBuiltEvent { get; set; }
     public Action<GameBoardUpdate> StartInitialSetupTurnEvent { get; set; }
     public Action<TurnToken> StartPlayerTurnEvent { get; set; }
-    public Action<PlayerDataView[]> TurnOrderFinalisedEvent { get; set; }
+    public Action<PlayerDataModel[]> TurnOrderFinalisedEvent { get; set; }
     #endregion
 
     #region Methods
@@ -457,12 +457,7 @@ namespace Jabberwocky.SoC.Library
       this.GamePhase = GamePhases.StartGamePlay;
     }
 
-    public void JoinGame()
-    {
-      this.JoinGame(null);
-    }
-
-    public void JoinGame(GameOptions gameOptions)
+    public void JoinGame(GameOptions gameOptions = null)
     {
       if (this.GamePhase != GamePhases.Initial)
       {
@@ -1070,9 +1065,9 @@ namespace Jabberwocky.SoC.Library
       return gameBoardUpdate;
     }
 
-    private PlayerDataView[] CreatePlayerDataViews()
+    private PlayerDataModel[] CreatePlayerDataViews()
     {
-      var playerDataViews = new PlayerDataView[this.players.Length];
+      var playerDataViews = new PlayerDataModel[this.players.Length];
 
       for (var index = 0; index < playerDataViews.Length; index++)
       {
