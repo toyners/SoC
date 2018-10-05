@@ -72,24 +72,24 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="PlayAreaControl.xaml.cs">
+    <Compile Include="Views\PlayAreaControl.xaml.cs">
       <DependentUpon>PlayAreaControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="RoadButtonControl.xaml.cs">
+    <Compile Include="Views\RoadButtonControl.xaml.cs">
       <DependentUpon>RoadButtonControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="RoadControl.xaml.cs">
+    <Compile Include="Views\RoadControl.xaml.cs">
       <DependentUpon>RoadControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="SettlementButtonControl.xaml.cs">
+    <Compile Include="Views\SettlementButtonControl.xaml.cs">
       <DependentUpon>SettlementButtonControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="BuildingControl.xaml.cs">
+    <Compile Include="Views\BuildingControl.xaml.cs">
       <DependentUpon>BuildingControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="TestDice.cs" />
     <Compile Include="ViewModels\PlayerViewModel.cs" />
-    <Page Include="PlayAreaControl.xaml">
+    <Page Include="Views\PlayAreaControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -109,19 +109,19 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="RoadButtonControl.xaml">
+    <Page Include="Views\RoadButtonControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="RoadControl.xaml">
+    <Page Include="Views\RoadControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="SettlementButtonControl.xaml">
+    <Page Include="Views\SettlementButtonControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="BuildingControl.xaml">
+    <Page Include="Views\BuildingControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

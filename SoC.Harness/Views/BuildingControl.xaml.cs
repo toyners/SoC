@@ -1,5 +1,5 @@
 ﻿
-namespace SoC.Harness
+namespace SoC.Harness.Views
 {
   using System.Windows.Controls;
 

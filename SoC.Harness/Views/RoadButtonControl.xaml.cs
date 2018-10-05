@@ -1,11 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Windows;
-using System.Windows.Controls;
-
-namespace SoC.Harness
+﻿
+namespace SoC.Harness.Views
 {
+  using System;
+  using System.Windows;
+  using System.Windows.Controls;
+
   /// <summary>
   /// Interaction logic for RoadButtonControl.xaml
   /// </summary>

@@ -1,6 +1,6 @@
 ﻿using System.Windows.Controls;
 
-namespace SoC.Harness
+namespace SoC.Harness.Views
 {
   /// <summary>
   /// Interaction logic for RoadControl.xaml

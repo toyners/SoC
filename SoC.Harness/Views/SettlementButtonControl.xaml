@@ -1,9 +1,11 @@
-﻿<UserControl x:Class="SoC.Harness.RoadControl"
+﻿<UserControl x:Class="SoC.Harness.Views.SettlementButtonControl"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:SoC.Harness"
-             mc:Ignorable="d" >
-  <Image Source="{Binding Path=ImagePath}" />
+             mc:Ignorable="d">
+  <Button Height="20" Width="20" Click="Button_Click" Background="Transparent" BorderThickness="0">
+    <Image Source="..\resources\settlements\settlement_indicator.png" />
+  </Button>
 </UserControl>
