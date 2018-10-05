@@ -57,10 +57,10 @@ namespace Jabberwocky.SoC.Library
     #endregion
 
     #region Construction
-    public LocalGameController(INumberGenerator dice)
+    public LocalGameController(INumberGenerator dice, IPlayerPool playerPool)
     {
       this.dice = dice;
-      this.playerPool = new PlayerPool();
+      this.playerPool = playerPool;
       this.gameBoard = new GameBoard(BoardSizes.Standard);
       this.developmentCardHolder = new DevelopmentCardHolder();
     }
