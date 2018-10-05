@@ -72,6 +72,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="PlayerPool.cs" />
     <Compile Include="Views\PlayAreaControl.xaml.cs">
       <DependentUpon>PlayAreaControl.xaml</DependentUpon>
     </Compile>
@@ -87,7 +88,7 @@
     <Compile Include="Views\BuildingControl.xaml.cs">
       <DependentUpon>BuildingControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="TestDice.cs" />
+    <Compile Include="NumberGenerator.cs" />
     <Compile Include="ViewModels\PlayerViewModel.cs" />
     <Page Include="Views\PlayAreaControl.xaml">
       <SubType>Designer</SubType>
