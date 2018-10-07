@@ -6,7 +6,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
 
   public interface IBoardQueryEngine
   {
-    uint[] GetLocationsWithBestYield(uint count);
+    uint[] GetLocationsWithBestYield(int count);
 
     /// <summary>
     /// Returns possible paths to settlement candidates from existing player roads. Returns shortest routes only.

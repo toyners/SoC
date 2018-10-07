@@ -18,9 +18,9 @@ namespace Jabberwocky.SoC.Library
     /// </summary>
     /// <param name="gameBoard">Game board instance for use in decision making.</param>
     /// <returns>Computer player instance.</returns>
-    public IPlayer CreateComputerPlayer(GameBoard gameBoard)
+    public IPlayer CreateComputerPlayer(GameBoard gameBoard, INumberGenerator numberGenerator)
     {
-      return new ComputerPlayer(this.names.Dequeue(), gameBoard, null, null);
+      return new ComputerPlayer(this.names.Dequeue(), gameBoard, numberGenerator, null);
     }
 
     public IPlayer CreateComputerPlayer(IGameDataSection<GameDataSectionKeys, GameDataValueKeys, ResourceTypes> data, GameBoard board, INumberGenerator numberGenerator)

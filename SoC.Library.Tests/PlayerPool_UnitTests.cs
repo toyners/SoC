@@ -151,7 +151,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     public void CreateComputerPlayer_NoGameBoardArgument_PlayerInstanceIsComputerControlled()
     {
       var playerPool = new PlayerPool();
-      var player = playerPool.CreateComputerPlayer(null);
+      var player = playerPool.CreateComputerPlayer(null, null);
 
       player.IsComputer.ShouldBeTrue();
     }

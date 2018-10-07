@@ -53,11 +53,11 @@ namespace Jabberwocky.SoC.Library.GameBoards
     /// Get the first n locations with highest resource returns that are valid for settlement
     /// </summary>
     /// <returns></returns>
-    public UInt32[] GetLocationsWithBestYield(Int32 count)
+    public uint[] GetLocationsWithBestYield(int count)
     {
-      var result = new UInt32[count];
+      var result = new uint[count];
       
-      var queue = new Queue<UInt32>();
+      var queue = new Queue<uint>();
       var index = 0;
       while (queue.Count < count && index < this.locationsOrderedByBestYield.Length)
       {
@@ -67,7 +67,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
           continue;
         }
 
-        var convertedLocation = (UInt32)location;
+        var convertedLocation = (uint)location;
         if (this.board.SettlementLocationIsOccupied(convertedLocation) || this.board.TooCloseToSettlement(convertedLocation, out var id, out var i))
         {
           this.locationsOrderedByBestYield[index - 1] = -1;

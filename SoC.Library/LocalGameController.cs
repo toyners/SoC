@@ -1089,7 +1089,7 @@ namespace Jabberwocky.SoC.Library
       var index = 1;
       while ((gameOptions.MaxAIPlayers--) > 0)
       {
-        var computerPlayer = this.playerPool.CreateComputerPlayer(this.gameBoard);
+        var computerPlayer = this.playerPool.CreateComputerPlayer(this.gameBoard, this.dice);
         this.players[index] = computerPlayer;
         this.playersById.Add(computerPlayer.Id, computerPlayer);
         this.computerPlayers[index - 1] = computerPlayer;

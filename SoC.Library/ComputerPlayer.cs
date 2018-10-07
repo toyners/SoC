@@ -181,7 +181,7 @@ namespace Jabberwocky.SoC.Library
       }
 
       var settlementIndex = -1;
-      var bestLocations = this.gameBoard.BoardQuery.GetLocationsWithBestYield(5u);
+      var bestLocations = this.gameBoard.BoardQuery.GetLocationsWithBestYield(5);
       var n = this.numberGenerator.GetRandomNumberBetweenZeroAndMaximum(100);
         
       if (n < 55)
