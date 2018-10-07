@@ -123,12 +123,12 @@ namespace SoC.Harness.Views
 
     private void InitialiseRoadSelectionLayer()
     {
-      string roadLeftIndicatorImagePath = @"resources\roads\road_left_indicator.png";
-      string roadLeftImagePath = @"resources\roads\road_left.png";
-      string roadRightIndicatorImagePath = @"resources\roads\road_right_indicator.png";
-      string roadRightImagePath = @"resources\roads\road_right.png";
-      string roadHorizontalIndicatorImagePath = @"resources\roads\road_horizontal_indicator.png";
-      string roadHorizontalImagePath = @"resources\roads\road_horizontal.png";
+      string roadLeftIndicatorImagePath = @"..\resources\roads\road_left_indicator.png";
+      string roadLeftImagePath = @"..\resources\roads\road_left.png";
+      string roadRightIndicatorImagePath = @"..\resources\roads\road_right_indicator.png";
+      string roadRightImagePath = @"..\resources\roads\road_right.png";
+      string roadHorizontalIndicatorImagePath = @"..\resources\roads\road_horizontal_indicator.png";
+      string roadHorizontalImagePath = @"..\resources\roads\road_horizontal.png";
       this.roadButtonControls = new Dictionary<string, RoadButtonControl>();
 
       var verticalRoadLayoutData = this.GetVerticalRoadLayoutData();
