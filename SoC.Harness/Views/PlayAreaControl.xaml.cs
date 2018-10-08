@@ -125,6 +125,19 @@ namespace SoC.Harness.Views
           this.settlementButtonControls[neighbouringLocation].Visibility = Visibility.Hidden;
         }
       }
+
+      foreach (var roadDetails in boardUpdate.NewRoads)
+      {
+        var startLocation = roadDetails.Item1;
+        var endLocation = roadDetails.Item2;
+        var playerId = roadDetails.Item3;
+
+        var settlementImagePath = this.settlementImagesByPlayerId[playerId];
+
+        var key = $"{startLocation}_{endLocation}";
+        var control = this.roadButtonControls[key];
+
+      }
     }
 
     private void InitialiseSettlementSelectionLayer()

@@ -205,12 +205,21 @@
     <Content Include="Resources\ProductionFactors\9.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Resource Include="Resources\Roads\green_road_horizontal.png" />
+    <Resource Include="Resources\Roads\green_road_left.png" />
+    <Resource Include="Resources\Roads\green_road_right.png" />
+    <Resource Include="Resources\Roads\yellow_road_horizontal.png" />
+    <Resource Include="Resources\Roads\yellow_road_left.png" />
+    <Resource Include="Resources\Roads\yellow_road_right.png" />
+    <Resource Include="Resources\Roads\red_road_horizontal.png" />
+    <Resource Include="Resources\Roads\red_road_left.png" />
+    <Resource Include="Resources\Roads\red_road_right.png" />
     <Resource Include="Resources\Roads\road_horizontal_indicator.png" />
     <Resource Include="Resources\Roads\road_right_indicator.png" />
     <Resource Include="Resources\Roads\road_left_indicator.png" />
-    <Resource Include="Resources\Roads\road_right.png" />
-    <Resource Include="Resources\Roads\road_left.png" />
-    <Resource Include="Resources\Roads\road_horizontal.png" />
+    <Resource Include="Resources\Roads\blue_road_right.png" />
+    <Resource Include="Resources\Roads\blue_road_left.png" />
+    <Resource Include="Resources\Roads\blue_road_horizontal.png" />
     <Resource Include="Resources\Settlements\blue_settlement.png" />
     <Content Include="Resources\HexTypes\brick.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
