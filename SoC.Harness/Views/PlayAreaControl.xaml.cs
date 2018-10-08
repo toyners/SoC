@@ -165,6 +165,8 @@ namespace SoC.Harness.Views
 
         this.PlaceRoadControl(control.X, control.Y, roadImagePath);
       }
+
+      this.SettlementSelectionLayer.Visibility = Visibility.Visible;
     }
 
     private void InitialiseSettlementSelectionLayer()
@@ -472,7 +474,7 @@ namespace SoC.Harness.Views
       this.workingRoadControl = roadButtonControl;
       this.workingRoadControl.Visibility = Visibility.Hidden;
 
-      var roadImagePath = this.roadImagesByPlayerId[this.player][(int)workingRoadControl.RoadImageType];
+      var roadImagePath = this.roadImagesByPlayerId[this.player][(int)this.workingRoadControl.RoadImageType];
 
       this.PlaceBuildingControl(roadButtonControl.X, roadButtonControl.Y, string.Empty, roadImagePath, this.RoadLayer);
 
@@ -489,7 +491,7 @@ namespace SoC.Harness.Views
       // Turn off the controls for the location and its neighbours
       settlementButtonControl.Visibility = Visibility.Hidden;
       var neighbouringLocations = this.board.BoardQuery.GetNeighbouringLocationsFrom(this.workingLocation);
-      for (var index = 0; index < neighbouringLocations.Length; index++)
+      foreach (var index in neighbouringLocations)
       {
         this.settlementButtonControls[index].Visibility = Visibility.Hidden;
       }
