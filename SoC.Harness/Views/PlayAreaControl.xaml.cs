@@ -15,11 +15,16 @@ namespace SoC.Harness.Views
   public partial class PlayAreaControl : UserControl
   {
     #region Fields
+    private const string blueSettlementImagePath = @"..\resources\settlements\blue_settlement.png";
+    private const string redSettlementImagePath = @"..\resources\settlements\red_settlement.png";
+    private const string greenSettlementImagePath = @"..\resources\settlements\green_settlement.png";
+    private const string yellowSettlementImagePath = @"..\resources\settlements\yellow_settlement.png";
     private IGameBoard board;
     private SettlementButtonControl[] settlementButtonControls;
     private Dictionary<string, RoadButtonControl> roadButtonControls;
-    uint workingLocation;
-    RoadButtonControl workingRoadControl;
+    private uint workingLocation;
+    private RoadButtonControl workingRoadControl;
+    private Dictionary<Guid, string> settlementImagesByPlayerId;
     #endregion
 
     #region Construction
@@ -81,6 +86,38 @@ namespace SoC.Harness.Views
           this.GetBitmaps(hexData[hexDataIndex++], resourceBitmaps, numberBitmaps, out resourceBitmap, out numberBitmap);
           this.PlaceHex(resourceBitmap, numberBitmap, x, y);
           y += cellHeight;
+        }
+      }
+    }
+
+    public void InitialisePlayerData(PlayerDataModel[] playerDataModels)
+    {
+      this.settlementImagesByPlayerId = new Dictionary<Guid, string>();
+      this.settlementImagesByPlayerId.Add(playerDataModels[0].Id, blueSettlementImagePath);
+      this.settlementImagesByPlayerId.Add(playerDataModels[1].Id, redSettlementImagePath);
+      this.settlementImagesByPlayerId.Add(playerDataModels[2].Id, greenSettlementImagePath);
+      this.settlementImagesByPlayerId.Add(playerDataModels[3].Id, yellowSettlementImagePath);
+    }
+
+
+    public void Update(GameBoardUpdate boardUpdate)
+    {
+      foreach (var settlementDetails in boardUpdate.NewSettlements)
+      {
+        var location = settlementDetails.Item1;
+        var playerId = settlementDetails.Item2;
+
+        var settlementImagePath = this.settlementImagesByPlayerId[playerId];
+
+        var control = this.settlementButtonControls[location];
+        this.PlaceBuildingControl(control.X, control.Y, "", settlementImagePath, this.SettlementLayer);
+
+        control.Visibility = Visibility.Hidden;
+
+        var neighbouringLocations = this.board.BoardQuery.GetNeighbouringLocationsFrom(location);
+        foreach (var neighbouringLocation in neighbouringLocations)
+        {
+          this.settlementButtonControls[neighbouringLocation].Visibility = Visibility.Hidden;
         }
       }
     }
@@ -372,7 +409,11 @@ namespace SoC.Harness.Views
     private void PlaceBuildingControl(double x, double y, string toolTip, string imagePath, Canvas canvas)
     {
       var control = new BuildingControl(imagePath);
-      control.ToolTip = toolTip;
+      if (!string.IsNullOrEmpty(toolTip))
+      {
+        control.ToolTip = toolTip;
+      }
+
       canvas.Children.Add(control);
       Canvas.SetLeft(control, x);
       Canvas.SetTop(control, y);
