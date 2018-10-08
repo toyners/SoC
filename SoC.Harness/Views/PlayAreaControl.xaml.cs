@@ -102,6 +102,11 @@ namespace SoC.Harness.Views
 
     public void Update(GameBoardUpdate boardUpdate)
     {
+      if (boardUpdate == null)
+      {
+        return; // Should a null boardupdate be valid?
+      }
+
       foreach (var settlementDetails in boardUpdate.NewSettlements)
       {
         var location = settlementDetails.Item1;
