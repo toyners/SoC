@@ -10,24 +10,31 @@ namespace SoC.Harness.Views
   /// </summary>
   public partial class RoadButtonControl : UserControl
   {
+    public enum RoadImageTypes
+    {
+      Horizontal = 0,
+      Left,
+      Right
+    }
+
     private Action<RoadButtonControl> clickEventHandler;
     public readonly uint Start, End;
     public readonly double X;
     public readonly double Y;
-    public readonly string ImagePath;
-    public string IndicatorImagePath { get; private set; }
+    public RoadImageTypes RoadImageType;
+    public string ImagePath { get; private set; }
 
-    public RoadButtonControl(uint start, uint end, double x, double y, string indicatorImagePath, string imagePath, Action<RoadButtonControl> clickEventHandler)
+    public RoadButtonControl(uint start, uint end, double x, double y, string imagePath, RoadImageTypes roadImageType, Action<RoadButtonControl> clickEventHandler)
     {
       this.Start = start;
       this.End = end;
       this.X = x;
       this.Y = y;
       this.DataContext = this;
-      this.IndicatorImagePath = indicatorImagePath;
       this.ImagePath = imagePath;
       this.InitializeComponent();
       this.Visibility = Visibility.Hidden;
+      this.RoadImageType = roadImageType;
 
       this.clickEventHandler = clickEventHandler;
     }

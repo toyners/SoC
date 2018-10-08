@@ -33,6 +33,6 @@
     </Style>
   </UserControl.Resources>
   <Button Click="Button_Click" Background="Transparent" BorderThickness="0">
-    <Image Source="{Binding Path=IndicatorImagePath}" />
+    <Image Source="{Binding Path=ImagePath}" />
   </Button>
 </UserControl>

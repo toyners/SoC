@@ -19,12 +19,28 @@ namespace SoC.Harness.Views
     private const string redSettlementImagePath = @"..\resources\settlements\red_settlement.png";
     private const string greenSettlementImagePath = @"..\resources\settlements\green_settlement.png";
     private const string yellowSettlementImagePath = @"..\resources\settlements\yellow_settlement.png";
+
+    private const string blueRoadHorizontalImagePath = @"..\resources\roads\blue_road_horizontal.png";
+    private const string blueRoadLeftImagePath = @"..\resources\roads\blue_road_left.png";
+    private const string blueRoadRightImagePath = @"..\resources\roads\blue_road_right.png";
+    private const string redRoadHorizontalImagePath = @"..\resources\roads\red_road_horizontal.png";
+    private const string redRoadLeftImagePath = @"..\resources\roads\red_road_left.png";
+    private const string redRoadRightImagePath = @"..\resources\roads\red_road_right.png";
+    private const string greenRoadHorizontalImagePath = @"..\resources\roads\green_road_horizontal.png";
+    private const string greenRoadLeftImagePath = @"..\resources\roads\green_road_left.png";
+    private const string greenRoadRightImagePath = @"..\resources\roads\green_road_right.png";
+    private const string yellowRoadHorizontalImagePath = @"..\resources\roads\yellow_road_horizontal.png";
+    private const string yellowRoadLeftImagePath = @"..\resources\roads\yellow_road_left.png";
+    private const string yellowRoadRightImagePath = @"..\resources\roads\yellow_road_right.png";
+
     private IGameBoard board;
     private SettlementButtonControl[] settlementButtonControls;
     private Dictionary<string, RoadButtonControl> roadButtonControls;
     private uint workingLocation;
     private RoadButtonControl workingRoadControl;
     private Dictionary<Guid, string> settlementImagesByPlayerId;
+    private Dictionary<Guid, string[]> roadImagesByPlayerId;
+    private Guid player;
     #endregion
 
     #region Construction
@@ -92,11 +108,19 @@ namespace SoC.Harness.Views
 
     public void InitialisePlayerData(PlayerDataModel[] playerDataModels)
     {
+      this.player = playerDataModels[0].Id;
+
       this.settlementImagesByPlayerId = new Dictionary<Guid, string>();
       this.settlementImagesByPlayerId.Add(playerDataModels[0].Id, blueSettlementImagePath);
       this.settlementImagesByPlayerId.Add(playerDataModels[1].Id, redSettlementImagePath);
       this.settlementImagesByPlayerId.Add(playerDataModels[2].Id, greenSettlementImagePath);
       this.settlementImagesByPlayerId.Add(playerDataModels[3].Id, yellowSettlementImagePath);
+
+      this.roadImagesByPlayerId = new Dictionary<Guid, string[]>(); 
+      this.roadImagesByPlayerId.Add(playerDataModels[0].Id, new[] { blueRoadHorizontalImagePath, blueRoadLeftImagePath, blueRoadRightImagePath });
+      this.roadImagesByPlayerId.Add(playerDataModels[1].Id, new[] { redRoadHorizontalImagePath, redRoadLeftImagePath, redRoadRightImagePath });
+      this.roadImagesByPlayerId.Add(playerDataModels[2].Id, new[] { greenRoadHorizontalImagePath, greenRoadLeftImagePath, greenRoadRightImagePath });
+      this.roadImagesByPlayerId.Add(playerDataModels[3].Id, new[] { yellowRoadHorizontalImagePath, yellowRoadLeftImagePath, yellowRoadRightImagePath });
     }
 
 
@@ -132,11 +156,14 @@ namespace SoC.Harness.Views
         var endLocation = roadDetails.Item2;
         var playerId = roadDetails.Item3;
 
-        var settlementImagePath = this.settlementImagesByPlayerId[playerId];
-
-        var key = $"{startLocation}_{endLocation}";
+        var key = $"{startLocation}-{endLocation}";
         var control = this.roadButtonControls[key];
 
+        var roadImagePath = this.roadImagesByPlayerId[playerId][(int)control.RoadImageType];
+        
+        control.Visibility = Visibility.Hidden;
+
+        this.PlaceRoadControl(control.X, control.Y, roadImagePath);
       }
     }
 
@@ -190,6 +217,7 @@ namespace SoC.Harness.Views
 
       string indicatorImagePath = null;
       string imagePath = null;
+      RoadButtonControl.RoadImageTypes roadImageType;
       foreach (var verticalRoadLayout in verticalRoadLayoutData)
       {
         var useRightImage = verticalRoadLayout.StartWithRightImage;
@@ -199,16 +227,18 @@ namespace SoC.Harness.Views
           {
             indicatorImagePath = roadRightIndicatorImagePath;
             imagePath = roadRightImagePath;
+            roadImageType = RoadButtonControl.RoadImageTypes.Right;
           }
           else
           {
             indicatorImagePath = roadLeftIndicatorImagePath;
             imagePath = roadLeftImagePath;
+            roadImageType = RoadButtonControl.RoadImageTypes.Left;
           }
 
           var locationA = verticalRoadLayout.Locations[index];
           var locationB = locationA - 1;
-          var control = this.PlaceRoadButtonControl(locationA, locationB, verticalRoadLayout.XCoordinate, verticalRoadLayout.YCoordinates[index], indicatorImagePath, imagePath);
+          var control = this.PlaceRoadButtonControl(locationA, locationB, verticalRoadLayout.XCoordinate, verticalRoadLayout.YCoordinates[index], indicatorImagePath, roadImageType);
           useRightImage = !useRightImage;
 
           this.roadButtonControls.Add(control.Id, control);
@@ -224,7 +254,7 @@ namespace SoC.Harness.Views
         {
           var locationA = horizontalRoadLayout.Locations[index].Start;
           var locationB = horizontalRoadLayout.Locations[index].End;
-          var control = this.PlaceRoadButtonControl(locationA, locationB, horizontalRoadLayout.XCoordinate, horizontalRoadLayout.YCoordinates[index], roadHorizontalIndicatorImagePath, roadHorizontalImagePath);
+          var control = this.PlaceRoadButtonControl(locationA, locationB, horizontalRoadLayout.XCoordinate, horizontalRoadLayout.YCoordinates[index], roadHorizontalIndicatorImagePath, RoadButtonControl.RoadImageTypes.Horizontal);
 
           this.roadButtonControls.Add(control.Id, control);
           this.roadButtonControls.Add(control.AlternativeId, control);
@@ -403,9 +433,9 @@ namespace SoC.Harness.Views
       Canvas.SetTop(control, y);
     }
 
-    private RoadButtonControl PlaceRoadButtonControl(uint start, uint end, double x, double y, string imagePath, string path)
+    private RoadButtonControl PlaceRoadButtonControl(uint start, uint end, double x, double y, string imagePath, RoadButtonControl.RoadImageTypes roadImageType)
     {
-      var control = new RoadButtonControl(start, end, x, y, imagePath, path, this.RoadSelectedEventHandler);
+      var control = new RoadButtonControl(start, end, x, y, imagePath, roadImageType, this.RoadSelectedEventHandler);
       this.RoadSelectionLayer.Children.Add(control);
       Canvas.SetLeft(control, x);
       Canvas.SetTop(control, y);
@@ -440,9 +470,11 @@ namespace SoC.Harness.Views
     private void RoadSelectedEventHandler(RoadButtonControl roadButtonControl)
     {
       this.workingRoadControl = roadButtonControl;
-      roadButtonControl.Visibility = Visibility.Hidden;
+      this.workingRoadControl.Visibility = Visibility.Hidden;
 
-      this.PlaceBuildingControl(roadButtonControl.X, roadButtonControl.Y, string.Empty, roadButtonControl.ImagePath, this.RoadLayer);
+      var roadImagePath = this.roadImagesByPlayerId[this.player][(int)workingRoadControl.RoadImageType];
+
+      this.PlaceBuildingControl(roadButtonControl.X, roadButtonControl.Y, string.Empty, roadImagePath, this.RoadLayer);
 
       this.RoadSelectionLayer.Visibility = Visibility.Hidden;
 
