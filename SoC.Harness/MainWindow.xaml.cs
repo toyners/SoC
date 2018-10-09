@@ -30,6 +30,12 @@ namespace SoC.Harness
       this.localGameController.InitialBoardSetupEvent = this.PlayArea.Initialise;
       this.localGameController.GameSetupUpdateEvent = this.PlayArea.Update;
       this.localGameController.BoardUpdatedEvent = this.BoardUpdatedEventHandler;
+      this.localGameController.StartPlayerTurnEvent = this.StartPlayerTurnEventHandler;
+    }
+
+    private void StartPlayerTurnEventHandler(TurnToken turnToken)
+    {
+      throw new NotImplementedException();
     }
 
     private void BoardUpdatedEventHandler(GameBoardUpdate boardUpdate)
