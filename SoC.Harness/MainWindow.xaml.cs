@@ -61,11 +61,27 @@ namespace SoC.Harness
 
     private void GameJoinedEventHandler(PlayerDataModel[] playerDataModels)
     {
-      this.TopLeftPlayer.DataContext = new PlayerViewModel(playerDataModels[0]);
-      this.BottomLeftPlayer.DataContext = new PlayerViewModel(playerDataModels[1]);
-      this.TopRightPlayer.DataContext = new PlayerViewModel(playerDataModels[2]);
-      this.BottomRightPlayer.DataContext = new PlayerViewModel(playerDataModels[3]);
+      string firstPlayerIconPath = @"..\resources\icons\blue_icon.png";
+      string secondPlayerIconPath = @"..\resources\icons\red_icon.png";
+      string thirdPlayerIconPath = @"..\resources\icons\green_icon.png";
+      string fourthPlayerIconPath = @"..\resources\icons\yellow_icon.png";
+      this.TopLeftPlayer.DataContext = new PlayerViewModel(playerDataModels[0], firstPlayerIconPath);
+      this.BottomLeftPlayer.DataContext = new PlayerViewModel(playerDataModels[1], secondPlayerIconPath);
+      this.TopRightPlayer.DataContext = new PlayerViewModel(playerDataModels[2], thirdPlayerIconPath);
+      this.BottomRightPlayer.DataContext = new PlayerViewModel(playerDataModels[3], fourthPlayerIconPath);
       this.PlayArea.InitialisePlayerData(playerDataModels);
+    }
+  }
+
+  public class PlayerViewModel
+  {
+    public string Name { get; private set; }
+    public string IconPath { get; private set; }
+
+    public PlayerViewModel(PlayerDataModel playerDataModel, string iconPath)
+    {
+      this.Name = playerDataModel.Name;
+      this.IconPath = iconPath;
     }
   }
 }
