@@ -212,7 +212,6 @@ namespace SoC.Harness.Views
       string roadRightIndicatorImagePath = @"..\resources\roads\road_right_indicator.png";
       string roadRightImagePath = @"..\resources\roads\road_right.png";
       string roadHorizontalIndicatorImagePath = @"..\resources\roads\road_horizontal_indicator.png";
-      string roadHorizontalImagePath = @"..\resources\roads\road_horizontal.png";
       this.roadButtonControls = new Dictionary<string, RoadButtonControl>();
 
       var verticalRoadLayoutData = this.GetVerticalRoadLayoutData();
