@@ -19,7 +19,9 @@
 
     <Canvas Name="TopLayer" Height="450" Width="800">
       <Button Name="StartGameButton" Canvas.Left="350" Canvas.Top="219" Click="StartGameButton_Click">Start Game</Button>
-      <Button Name="EndTurnButton" Canvas.Left="700" Canvas.Right="420" Visibility="Hidden" Click="EndTurnButton_Click">End Turn</Button>
+      <Button Name="EndTurnButton" Canvas.Left="700" Canvas.Top="420" Visibility="Hidden" Click="EndTurnButton_Click">End Turn</Button>
+      <Image Name="DiceOne" Canvas.Left="670" Canvas.Top="500" Source="{Binding DiceOne}" />
+      <Image Name="DiceTwo" Canvas.Left="740" Canvas.Top="500" Source="{Binding DiceTwo}" />
     </Canvas>
 
   </Grid>

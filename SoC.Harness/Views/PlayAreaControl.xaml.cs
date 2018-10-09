@@ -50,6 +50,11 @@ namespace SoC.Harness.Views
     }
     #endregion
 
+    #region Properties
+    public string DiceOne { get; private set; }
+    public string DiceTwo { get; private set; }
+    #endregion
+
     #region Events
     public Action<int, object> EndTurnEvent;
     public Action StartGameEvent; 

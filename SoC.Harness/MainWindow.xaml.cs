@@ -72,16 +72,4 @@ namespace SoC.Harness
       this.PlayArea.InitialisePlayerData(playerDataModels);
     }
   }
-
-  public class PlayerViewModel
-  {
-    public string Name { get; private set; }
-    public string IconPath { get; private set; }
-
-    public PlayerViewModel(PlayerDataModel playerDataModel, string iconPath)
-    {
-      this.Name = playerDataModel.Name;
-      this.IconPath = iconPath;
-    }
-  }
 }

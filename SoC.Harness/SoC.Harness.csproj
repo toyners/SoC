@@ -179,6 +179,7 @@
     <Resource Include="Resources\Icons\green_icon.png" />
     <Resource Include="Resources\Icons\red_icon.png" />
     <Resource Include="Resources\Icons\yellow_icon.png" />
+    <Resource Include="Resources\Dice\One.png" />
     <Content Include="Resources\ProductionFactors\10.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
