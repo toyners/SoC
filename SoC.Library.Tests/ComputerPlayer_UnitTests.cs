@@ -239,7 +239,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
       }
     }
 
-    private ComputerPlayer CreateComputerPlayer(String name, GameBoard gameBoard)
+    private ComputerPlayer CreateComputerPlayer(string name, GameBoard gameBoard)
     {
       return new ComputerPlayer("ComputerPlayer", gameBoard, null, null);
     }

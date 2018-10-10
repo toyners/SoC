@@ -41,6 +41,7 @@ namespace SoC.Harness.Views
     private Dictionary<Guid, string> settlementImagesByPlayerId;
     private Dictionary<Guid, string[]> roadImagesByPlayerId;
     private Guid player;
+    private HashSet<RoadButtonControl> visibleRoadButtonControls = new HashSet<RoadButtonControl>();
     #endregion
 
     #region Construction
@@ -486,12 +487,19 @@ namespace SoC.Harness.Views
 
       this.PlaceBuildingControl(roadButtonControl.X, roadButtonControl.Y, string.Empty, roadImagePath, this.RoadLayer);
 
+      foreach (var visibleRoadButtonControl in this.visibleRoadButtonControls)
+      {
+        visibleRoadButtonControl.Visibility = Visibility.Hidden;
+      }
+
+      this.visibleRoadButtonControls.Clear();
+
       this.RoadSelectionLayer.Visibility = Visibility.Hidden;
 
       this.EndTurnButton.Visibility = Visibility.Visible;
       this.TopLayer.Visibility = Visibility.Visible;
     }
-
+    
     private void SettlementSelectedEventHandler(SettlementButtonControl settlementButtonControl)
     {
       this.workingLocation = settlementButtonControl.Location;
@@ -511,7 +519,9 @@ namespace SoC.Harness.Views
       for (var index = 0; index < roadEndLocations.Length; index++)
       {
         var id = string.Format("{0}-{1}", this.workingLocation, roadEndLocations[index]);
-        this.roadButtonControls[id].Visibility = Visibility.Visible;
+        var roadButtonControl = this.roadButtonControls[id];
+        roadButtonControl.Visibility = Visibility.Visible;
+        this.visibleRoadButtonControls.Add(roadButtonControl);
       }
 
       this.SettlementSelectionLayer.Visibility = Visibility.Hidden;
