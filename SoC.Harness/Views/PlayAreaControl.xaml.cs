@@ -51,8 +51,8 @@ namespace SoC.Harness.Views
     #endregion
 
     #region Properties
-    public string DiceOne { get; private set; }
-    public string DiceTwo { get; private set; }
+    public string DiceOneImagePath { get; private set; }
+    public string DiceTwoImagePath { get; private set; }
     #endregion
 
     #region Events
@@ -128,8 +128,7 @@ namespace SoC.Harness.Views
       this.roadImagesByPlayerId.Add(playerDataModels[3].Id, new[] { yellowRoadHorizontalImagePath, yellowRoadLeftImagePath, yellowRoadRightImagePath });
     }
 
-
-    public void Update(GameBoardUpdate boardUpdate)
+    public void BoardUpdatedEventHandler(GameBoardUpdate boardUpdate)
     {
       if (boardUpdate == null)
       {
@@ -172,6 +171,11 @@ namespace SoC.Harness.Views
       }
 
       this.SettlementSelectionLayer.Visibility = Visibility.Visible;
+    }
+
+    internal void DiceRollEventHandler(uint dice1, uint dice2)
+    {
+      throw new NotImplementedException();
     }
 
     private void InitialiseSettlementSelectionLayer()

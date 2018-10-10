@@ -86,7 +86,7 @@ namespace Jabberwocky.SoC.Library
     public Action<GameBoardUpdate> BoardUpdatedEvent { get; set; }
     public Action CityBuiltEvent { get; set; }
     public Action<DevelopmentCard> DevelopmentCardPurchasedEvent { get; set; }
-    public Action<UInt32> DiceRollEvent { get; set; }
+    public Action<uint, uint> DiceRollEvent { get; set; }
     public Action<ErrorDetails> ErrorRaisedEvent { get; set; }
     public Action<GameBoard> InitialBoardSetupEvent { get; set; }
     public Action<PlayerDataModel[]> GameJoinedEvent { get; set; }
@@ -425,8 +425,9 @@ namespace Jabberwocky.SoC.Library
       this.currentTurnToken = new TurnToken();
       this.StartPlayerTurnEvent?.Invoke(this.currentTurnToken);
 
-      var resourceRoll = this.dice.RollTwoDice();
-      this.DiceRollEvent?.Invoke(resourceRoll);
+      this.dice.RollTwoDice(out var dice1, out var dice2);
+      var resourceRoll = dice1 + dice2;
+      this.DiceRollEvent?.Invoke(dice1, dice2);
 
       var turnResources = this.CollectTurnResources(resourceRoll);
       this.ResourcesCollectedEvent?.Invoke(turnResources);
@@ -676,8 +677,9 @@ namespace Jabberwocky.SoC.Library
       this.currentTurnToken = new TurnToken();
       this.StartPlayerTurnEvent?.Invoke(this.currentTurnToken);
 
-      var resourceRoll = this.dice.RollTwoDice();
-      this.DiceRollEvent?.Invoke(resourceRoll);
+      this.dice.RollTwoDice(out var dice1, out var dice2);
+      var resourceRoll = dice1 + dice2;
+      this.DiceRollEvent?.Invoke(dice1, dice2);
 
       if (resourceRoll != 7)
       {

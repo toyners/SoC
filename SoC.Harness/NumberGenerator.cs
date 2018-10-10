@@ -1,6 +1,7 @@
 ﻿
 namespace SoC.Harness
 {
+  using System;
   using System.Collections.Generic;
   using Jabberwocky.SoC.Library;
   using Jabberwocky.SoC.Library.Interfaces;
@@ -8,11 +9,17 @@ namespace SoC.Harness
   public class NumberGenerator : INumberGenerator
   {
     private Dice dice;
-    private Queue<uint> diceRolls;
+    private Queue<Tuple<uint, uint>> diceRolls;
 
     public NumberGenerator()
     {
-      this.diceRolls = new Queue<uint>(new uint[] { 12, 6, 4, 3 });
+      this.diceRolls = new Queue<Tuple<uint, uint>>(new [] 
+        {
+          new Tuple<uint, uint>(6, 6),
+          new Tuple<uint, uint>(3, 3),
+          new Tuple<uint, uint>(1, 3),
+          new Tuple<uint, uint>(2, 1)
+        });
       this.dice = new Dice();
     }
 
@@ -21,14 +28,17 @@ namespace SoC.Harness
       return this.dice.GetRandomNumberBetweenZeroAndMaximum(exclusiveMaximum);
     }
 
-    public uint RollTwoDice()
+    public void RollTwoDice(out uint dice1, out uint dice2)
     {
       if (this.diceRolls.Count > 0)
       {
-        return this.diceRolls.Dequeue();
+        var diceRoll = this.diceRolls.Dequeue();
+        dice1 = diceRoll.Item1;
+        dice2 = diceRoll.Item2;
+        return; 
       }
 
-      return this.dice.RollTwoDice();
+      this.dice.RollTwoDice(out dice1, out dice2);
     }
   }
 }

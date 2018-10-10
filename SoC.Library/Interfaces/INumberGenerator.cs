@@ -5,7 +5,7 @@ namespace Jabberwocky.SoC.Library.Interfaces
 
   public interface INumberGenerator
   {
-    UInt32 RollTwoDice();
+    void RollTwoDice(out uint dice1, out uint dice2);
 
     Int32 GetRandomNumberBetweenZeroAndMaximum(Int32 exclusiveMaximum);
   }

@@ -3,6 +3,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
 {
   using System;
   using Interfaces;
+  using Jabberwocky.SoC.Library.UnitTests.Mock;
   using NSubstitute;
   using NUnit.Framework;
   using Shouldly;
@@ -26,8 +27,9 @@ namespace Jabberwocky.SoC.Library.UnitTests
       var player4 = new Player();
 
       var players = new IPlayer[] { player1, player2, player3, player4 };
-      var mockDice = NSubstitute.Substitute.For<INumberGenerator>();
-      mockDice.RollTwoDice().Returns(firstRoll, secondRoll, thirdRoll, fourthRoll);
+      var mockDice = new MockDiceCreator()
+        .AddExplicitDiceRollSequence(new uint[] { firstRoll, secondRoll, thirdRoll, fourthRoll })
+        .Create();
       var setupOrder = PlayerTurnOrderCreator.Create(players, mockDice);
 
       setupOrder.ShouldBe(new IPlayer[] { players[first], players[second], players[third], players[fourth]});
@@ -42,8 +44,11 @@ namespace Jabberwocky.SoC.Library.UnitTests
     public void Create_DuplicateRollsAreIgnored_ReturnsPlayersInDescendingOrder(UInt32 firstRoll, UInt32 secondRoll, UInt32 thirdRoll, UInt32 fourthRoll, Int32 first, Int32 second, Int32 third)
     {
       var players = new Player[] { new Player(), new Player(), new Player() };
-      var mockDice = NSubstitute.Substitute.For<INumberGenerator>(); 
-      mockDice.RollTwoDice().Returns(firstRoll, secondRoll, thirdRoll, fourthRoll);
+
+      var mockDice = new MockDiceCreator()
+          .AddExplicitDiceRollSequence(new uint[] { firstRoll, secondRoll, thirdRoll, fourthRoll })
+          .Create();
+
       var setupOrder = PlayerTurnOrderCreator.Create(players, mockDice);
 
       setupOrder.ShouldBe(new IPlayer[] { players[first], players[second], players[third] });

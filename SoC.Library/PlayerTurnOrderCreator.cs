@@ -15,12 +15,13 @@ namespace Jabberwocky.SoC.Library
       UInt32 index = 0;
       for (; index < players.Length; index++)
       {
-        UInt32 roll = dice.RollTwoDice();
-        while (rolls.Contains(roll))
+        uint roll;
+        do
         {
-          roll = dice.RollTwoDice();
-        }
-
+          dice.RollTwoDice(out var dice1, out var dice2);
+          roll = dice1 + dice2;
+        } while (rolls.Contains(roll));
+        
         rollsByPlayer.Add(roll, index);
         rolls.Add(roll);
       }

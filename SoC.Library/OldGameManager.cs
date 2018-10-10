@@ -58,14 +58,14 @@ namespace Jabberwocky.SoC.Library
       UInt32 index = 0;
       for (; index < this.players.Length; index++)
       {
-        UInt32 roll = this.diceRoller.RollTwoDice();
+        /*UInt32 roll = this.diceRoller.RollTwoDice();
         while (rolls.Contains(roll))
         {
           roll = this.diceRoller.RollTwoDice();
         }
 
         rollsByPlayer.Add(roll, index);
-        rolls.Add(roll);
+        rolls.Add(roll);*/
       }
 
       // Reverse sort the rolls

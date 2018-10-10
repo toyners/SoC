@@ -16,7 +16,8 @@ namespace SoC.Harness
   /// </summary>
   public partial class MainWindow : Window
   {
-    LocalGameController localGameController;
+    private LocalGameController localGameController;
+    private TurnToken currentTurnToken;
 
     public MainWindow()
     {
@@ -28,22 +29,15 @@ namespace SoC.Harness
       this.localGameController = new LocalGameController(new NumberGenerator(), new PlayerPool());
       this.localGameController.GameJoinedEvent = this.GameJoinedEventHandler;
       this.localGameController.InitialBoardSetupEvent = this.PlayArea.Initialise;
-      this.localGameController.GameSetupUpdateEvent = this.PlayArea.Update;
-      this.localGameController.BoardUpdatedEvent = this.BoardUpdatedEventHandler;
+      this.localGameController.GameSetupUpdateEvent = this.PlayArea.BoardUpdatedEventHandler;
+      this.localGameController.BoardUpdatedEvent = this.PlayArea.BoardUpdatedEventHandler;
       this.localGameController.StartPlayerTurnEvent = this.StartPlayerTurnEventHandler;
+      this.localGameController.DiceRollEvent = this.PlayArea.DiceRollEventHandler;
     }
 
     private void StartPlayerTurnEventHandler(TurnToken turnToken)
     {
-      throw new NotImplementedException();
-    }
-
-    private void BoardUpdatedEventHandler(GameBoardUpdate boardUpdate)
-    {
-      if (boardUpdate != null)
-      {
-        this.PlayArea.Update(boardUpdate);
-      }
+      this.currentTurnToken = turnToken;
     }
 
     private void StartGameEventHandler()

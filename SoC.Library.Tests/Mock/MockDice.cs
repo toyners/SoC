@@ -8,54 +8,65 @@ namespace Jabberwocky.SoC.Library.UnitTests.Mock
   public class MockDice : INumberGenerator
   {
     #region Fields
-    private Int32 index;
-    private List<UInt32> numbers;
+    private Queue<Tuple<uint, uint>> diceRolls = new Queue<Tuple<uint, uint>>();
     #endregion
 
     #region Construction
-    public MockDice(UInt32[] first, params UInt32[][] rest)
+    public MockDice(uint[] first, params uint[][] rest)
     {
-      this.numbers = new List<UInt32>(first);
+      this.AddSequence(first);
       foreach (var sequence in rest)
       {
-        this.numbers.AddRange(sequence);
+        this.AddSequence(sequence);
       }
     }
 
-    public MockDice(List<UInt32[]> numbers)
+    public MockDice(List<uint[]> numberLists)
     {
-      this.numbers = new List<UInt32>(numbers[0]);
-      for (Int32 i = 1; i < numbers.Count; i++)
+      foreach (var numberList in numberLists)
       {
-        this.numbers.AddRange(numbers[i]);
+        this.AddSequence(numberList);
       }
     }
     #endregion
 
     #region Methods
-    public void AddSequence(UInt32[] rolls)
+    public void AddSequence(uint[] rolls)
     {
-      this.numbers.AddRange(rolls);
+      foreach(var roll in rolls)
+      {
+        if (roll % 2 == 0)
+        {
+          this.diceRolls.Enqueue(new Tuple<uint, uint>(roll / 2, roll / 2));
+        }
+        else
+        {
+          this.diceRolls.Enqueue(new Tuple<uint, uint>((roll / 2) + 1, roll / 2));
+        }
+      }
     }
 
-    public UInt32 RollTwoDice()
+    public void RollTwoDice(out uint dice1, out uint dice2)
     {
-      return this.GetNextNumber();
+      this.GetNextNumber(out dice1, out dice2);
     }
 
-    public Int32 GetRandomNumberBetweenZeroAndMaximum(Int32 exclusiveMaximum)
+    public int GetRandomNumberBetweenZeroAndMaximum(int exclusiveMaximum)
     {
-      return (Int32)this.GetNextNumber();
+      this.GetNextNumber(out var dice1, out var dice2);
+      return (int)(dice1 + dice2);
     }
 
-    private UInt32 GetNextNumber()
+    private void GetNextNumber(out uint dice1, out uint dice2)
     {
-      if (this.index >= this.numbers.Count)
+      if (this.diceRolls.Count == 0)
       {
         throw new IndexOutOfRangeException("No more dice rolls.");
       }
 
-      return this.numbers[this.index++];
+      var roll = this.diceRolls.Dequeue();
+      dice1 = roll.Item1;
+      dice2 = roll.Item2;
     }
     #endregion
   }

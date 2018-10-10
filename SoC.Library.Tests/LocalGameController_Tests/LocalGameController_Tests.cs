@@ -74,8 +74,9 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
     [Category("LocalGameController")]
     public void LaunchGame_GameLaunchedAfterJoining_InitialBoardPassedBack()
     {
-      var mockDice = NSubstitute.Substitute.For<INumberGenerator>();
-      mockDice.RollTwoDice().Returns(12u, 10u, 8u, 2u);
+      var mockDice = new MockDiceCreator()
+          .AddExplicitDiceRollSequence(new uint[] { 12, 10, 8, 2 })
+          .Create();
 
       var player = new MockPlayer(PlayerName);
       var opponents = new[] 
@@ -450,8 +451,9 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
     [Category("LocalGameController")]
     public void PlayerSelectsSameLocationAsComputerPlayerDuringFirstSetupRound_MeaningfulErrorIsReceived()
     {
-      var mockDice = Substitute.For<INumberGenerator>();
-      mockDice.RollTwoDice().Returns(10u, 12u, 8u, 6u);
+      var mockDice = new MockDiceCreator()
+          .AddExplicitDiceRollSequence(new uint[] { 10, 12, 8, 6 })
+          .Create();
 
       MockPlayer player;
       MockComputerPlayer firstOpponent, secondOpponent, thirdOpponent;
@@ -479,8 +481,9 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
     [Category("LocalGameController")]
     public void PlayerSelectsSameLocationAsComputerPlayerDuringSecondSetupRound_MeaningfulErrorIsReceived()
     {
-      var mockDice = Substitute.For<INumberGenerator>();
-      mockDice.RollTwoDice().Returns(12u, 10u, 8u, 6u);
+      var mockDice = new MockDiceCreator()
+          .AddExplicitDiceRollSequence(new uint[] { 12, 10, 8, 6 })
+          .Create();
 
       MockPlayer player;
       MockComputerPlayer firstOpponent, secondOpponent, thirdOpponent;
@@ -510,8 +513,9 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
     [Category("LocalGameController")]
     public void PlayerSelectsLocationTooCloseToComputerPlayerDuringFirstSetupRound_MeaningfulErrorIsReceived()
     {
-      var mockDice = Substitute.For<INumberGenerator>();
-      mockDice.RollTwoDice().Returns(10u, 12u, 8u, 6u);
+      var mockDice = new MockDiceCreator()
+          .AddExplicitDiceRollSequence(new uint[] { 10, 12, 8, 6 })
+          .Create();
 
       MockPlayer player;
       MockComputerPlayer firstOpponent, secondOpponent, thirdOpponent;
@@ -539,8 +543,9 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
     [Category("LocalGameController")]
     public void PlayerSelectsLocationTooCloseToComputerPlayerDuringSecondSetupRound_MeaningfulErrorIsReceived()
     {
-      var mockDice = Substitute.For<INumberGenerator>();
-      mockDice.RollTwoDice().Returns(12u, 10u, 8u, 6u);
+      var mockDice = new MockDiceCreator()
+          .AddExplicitDiceRollSequence(new uint[] { 12, 10, 8, 6 })
+          .Create();
 
       MockPlayer player;
       MockComputerPlayer firstOpponent, secondOpponent, thirdOpponent;
@@ -868,7 +873,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
 
       // Act
       var diceRoll = 0u;
-      localGameController.DiceRollEvent = (UInt32 d) => { diceRoll = d; };
+      localGameController.DiceRollEvent = (uint d1, uint d2) => { diceRoll = d1 + d2; };
       localGameController.StartGamePlay();
 
       // Assert
@@ -1438,7 +1443,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       localGameController.ResourcesCollectedEvent = (Dictionary<Guid, ResourceCollection[]> c) => { collectedResources = c; };
 
       UInt32 diceRoll = 0;
-      localGameController.DiceRollEvent = (UInt32 r) => { diceRoll = r; };
+      localGameController.DiceRollEvent = (uint d1, uint d2) => { diceRoll = d1 + d2; };
       
       // Act
       localGameController.StartGamePlay();
@@ -1502,7 +1507,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       localGameController.ResourcesCollectedEvent = (Dictionary<Guid, ResourceCollection[]> c) => { collectedResources = c; };
 
       UInt32 diceRoll = 0;
-      localGameController.DiceRollEvent = (UInt32 r) => { diceRoll = r; };
+      localGameController.DiceRollEvent = (uint d1, uint d2) => { diceRoll = d1 + d2; };
 
       // Act
       localGameController.EndTurn(firstTurnToken);
@@ -1544,8 +1549,9 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
 
     private LocalGameController CreateLocalGameControllerWithMainPlayerGoingFirstInSetup()
     {
-      var mockDice = Substitute.For<INumberGenerator>();
-      mockDice.RollTwoDice().Returns(12u, 10u, 8u, 6u);
+      var mockDice = new MockDiceCreator()
+          .AddExplicitDiceRollSequence(new uint[] { 12, 10, 8, 6 })
+          .Create();
 
       MockPlayer player;
       MockComputerPlayer firstOpponent, secondOpponent, thirdOpponent;

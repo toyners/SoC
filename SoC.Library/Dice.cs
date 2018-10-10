@@ -16,7 +16,11 @@ namespace Jabberwocky.SoC.Library
       return this.random.Next(0, exclusiveMaximum);
     }
 
-    public UInt32 RollTwoDice() { return (UInt32)(this.random.Next(1, 6) + this.random.Next(1, 6)); }
+    public void RollTwoDice(out uint dice1, out uint dice2)
+    {
+      dice1 = (uint)this.random.Next(1, 6);
+      dice2 = (uint)this.random.Next(1, 6);
+    }
     #endregion
   }
 }

@@ -4,7 +4,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
   using System;
   using GameBoards;
   using Interfaces;
-  using NSubstitute;
+  using Jabberwocky.SoC.Library.UnitTests.Mock;
   using NUnit.Framework;
   using Shouldly;
 
@@ -89,10 +89,11 @@ namespace Jabberwocky.SoC.Library.UnitTests
     [Test]
     public void GetFirstSetupPassOrder_ReturnsPlayerOrderBasedOnDiceRolls()
     {
-      var diceRoller = Substitute.For<INumberGenerator>();
-      diceRoller.RollTwoDice().Returns(4u, 8u, 6u, 10u);
-      var gameManager = new GameSession(new GameBoardManager(BoardSizes.Standard), 4, diceRoller, new DevelopmentCardPile());
+      var mockDice = new MockDiceCreator()
+        .AddExplicitDiceRollSequence(new uint[] { 4, 8, 6, 10})
+        .Create();
 
+      var gameManager = new GameSession(new GameBoardManager(BoardSizes.Standard), 4, mockDice, new DevelopmentCardPile());
 
       gameManager.GetFirstSetupPassOrder().ShouldBe(new [] { 3u, 1u, 2u, 0u });
     }
@@ -100,10 +101,11 @@ namespace Jabberwocky.SoC.Library.UnitTests
     [Test]
     public void GetFirstSetupPassOrder_SameRollForTwoPlayersCausesReroll_ReturnsPlayerOrderBasedOnDiceRolls()
     {
-      var diceRoller = Substitute.For<INumberGenerator>();
-      diceRoller.RollTwoDice().Returns(10u, 8u, 6u, 10u, 12u);
-      var gameManager = new GameSession(new GameBoardManager(BoardSizes.Standard), 4, diceRoller, new DevelopmentCardPile());
+      var mockDice = new MockDiceCreator()
+          .AddExplicitDiceRollSequence(new uint[] { 10, 8, 6, 10, 12 })
+          .Create();
 
+      var gameManager = new GameSession(new GameBoardManager(BoardSizes.Standard), 4, mockDice, new DevelopmentCardPile());
 
       gameManager.GetFirstSetupPassOrder().ShouldBe(new[] { 3u, 0u, 1u, 2u });
     }
@@ -111,9 +113,11 @@ namespace Jabberwocky.SoC.Library.UnitTests
     [Test]
     public void GetFirstSetupPassOrder_SameRollCausesTwoRoundsOfRerolls_ReturnsPlayerOrderBasedOnDiceRolls()
     {
-      var diceRoller = Substitute.For<INumberGenerator>();
-      diceRoller.RollTwoDice().Returns(10u, 10u, 10u, 10u, 7u, 6u, 7u, 8u);
-      var gameManager = new GameSession(new GameBoardManager(BoardSizes.Standard), 4, diceRoller, new DevelopmentCardPile());
+      var mockDice = new MockDiceCreator()
+          .AddExplicitDiceRollSequence(new uint[] { 10, 10, 10, 10, 7, 6, 7, 8 })
+          .Create();
+
+      var gameManager = new GameSession(new GameBoardManager(BoardSizes.Standard), 4, mockDice, new DevelopmentCardPile());
 
 
       gameManager.GetFirstSetupPassOrder().ShouldBe(new[] { 0u, 3u, 1u, 2u });
