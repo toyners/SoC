@@ -6,6 +6,9 @@
         xmlns:views="clr-namespace:SoC.Harness.Views"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800" WindowState="Maximized">
+  <Window.Resources>
+    
+  </Window.Resources>
   <DockPanel>
     <Grid DockPanel.Dock="Left">
       <Grid.RowDefinitions>
