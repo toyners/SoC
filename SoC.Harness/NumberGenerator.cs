@@ -18,7 +18,11 @@ namespace SoC.Harness
           new Tuple<uint, uint>(6, 6),
           new Tuple<uint, uint>(3, 3),
           new Tuple<uint, uint>(1, 3),
-          new Tuple<uint, uint>(2, 1)
+          new Tuple<uint, uint>(2, 1),
+          new Tuple<uint, uint>(6, 5),
+          new Tuple<uint, uint>(5, 4),
+          new Tuple<uint, uint>(4, 3),
+          new Tuple<uint, uint>(3, 2)
         });
       this.dice = new Dice();
     }

@@ -42,6 +42,7 @@ namespace SoC.Harness.Views
     private Dictionary<Guid, string[]> roadImagesByPlayerId;
     private Guid player;
     private HashSet<RoadButtonControl> visibleRoadButtonControls = new HashSet<RoadButtonControl>();
+    private int setupTurns = 2;
     #endregion
 
     #region Construction
@@ -57,7 +58,7 @@ namespace SoC.Harness.Views
     #endregion
 
     #region Events
-    public Action<int, object> EndTurnEvent;
+    public Action<EventTypes, object> EndTurnEvent;
     public Action StartGameEvent; 
     #endregion
 
@@ -176,7 +177,14 @@ namespace SoC.Harness.Views
 
     internal void DiceRollEventHandler(uint dice1, uint dice2)
     {
-      throw new NotImplementedException();
+      this.DiceOneImagePath = this.GetDiceImage(dice1);
+      this.DiceTwoImagePath = this.GetDiceImage(dice2);
+    }
+
+    private string GetDiceImage(uint dice2)
+    {
+      const string oneImagePath = @"..\resources\dice\one.png";
+      return oneImagePath;
     }
 
     private void InitialiseSettlementSelectionLayer()
@@ -541,9 +549,20 @@ namespace SoC.Harness.Views
 
     private void EndTurnButton_Click(object sender, RoutedEventArgs e)
     {
-      var roadEndLocation = this.workingRoadControl.Start == this.workingLocation ? this.workingRoadControl.End : this.workingRoadControl.Start;
-      var infrastructureInstructions = new Tuple<uint, uint>(this.workingLocation, roadEndLocation);
-      this.EndTurnEvent?.Invoke(1, infrastructureInstructions);
+      if (this.setupTurns == 2)
+      {
+        this.setupTurns--;
+        var roadEndLocation = this.workingRoadControl.Start == this.workingLocation ? this.workingRoadControl.End : this.workingRoadControl.Start;
+        var infrastructureInstructions = new Tuple<uint, uint>(this.workingLocation, roadEndLocation);
+        this.EndTurnEvent?.Invoke(EventTypes.EndFirstSetupTurn, infrastructureInstructions);
+      }
+      else if (this.setupTurns == 1)
+      {
+        this.setupTurns--;
+        var roadEndLocation = this.workingRoadControl.Start == this.workingLocation ? this.workingRoadControl.End : this.workingRoadControl.Start;
+        var infrastructureInstructions = new Tuple<uint, uint>(this.workingLocation, roadEndLocation);
+        this.EndTurnEvent?.Invoke(EventTypes.EndSecondSetupTurn, infrastructureInstructions);
+      }
     }
     #endregion
 

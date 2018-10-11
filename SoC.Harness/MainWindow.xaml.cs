@@ -27,12 +27,30 @@ namespace SoC.Harness
       this.PlayArea.StartGameEvent = this.StartGameEventHandler;
 
       this.localGameController = new LocalGameController(new NumberGenerator(), new PlayerPool());
+      this.localGameController.ErrorRaisedEvent = this.ErrorRaisedEventHandler;
       this.localGameController.GameJoinedEvent = this.GameJoinedEventHandler;
       this.localGameController.InitialBoardSetupEvent = this.PlayArea.Initialise;
       this.localGameController.GameSetupUpdateEvent = this.PlayArea.BoardUpdatedEventHandler;
       this.localGameController.BoardUpdatedEvent = this.PlayArea.BoardUpdatedEventHandler;
       this.localGameController.StartPlayerTurnEvent = this.StartPlayerTurnEventHandler;
       this.localGameController.DiceRollEvent = this.PlayArea.DiceRollEventHandler;
+      this.localGameController.GameSetupResourcesEvent = this.GameSetupResourcesEventHandler;
+      this.localGameController.TurnOrderFinalisedEvent = this.TurnOrderFinalisedEventHandler;
+    }
+
+    private void ErrorRaisedEventHandler(ErrorDetails obj)
+    {
+      throw new NotImplementedException();
+    }
+
+    private void TurnOrderFinalisedEventHandler(PlayerDataModel[] obj)
+    {
+      throw new NotImplementedException();
+    }
+
+    private void GameSetupResourcesEventHandler(ResourceUpdate obj)
+    {
+      // Do nothing??
     }
 
     private void StartPlayerTurnEventHandler(TurnToken turnToken)
@@ -47,15 +65,24 @@ namespace SoC.Harness
       this.localGameController.StartGameSetup();
     }
 
-    private void EndTurnEventHandler(int message, object data)
+    private void EndTurnEventHandler(EventTypes eventType, object data)
     {
-      switch (message)
+      switch (eventType)
       {
-        case 1: {
-            var tuple = (Tuple<uint, uint>)data;
-            this.localGameController.ContinueGameSetup(tuple.Item1, tuple.Item2);
-            break;
+        case EventTypes.EndFirstSetupTurn:
+        {
+          var tuple = (Tuple<uint, uint>)data;
+          this.localGameController.ContinueGameSetup(tuple.Item1, tuple.Item2);
+          break;
         }
+        case EventTypes.EndSecondSetupTurn:
+        {
+          var tuple = (Tuple<uint, uint>)data;
+          this.localGameController.CompleteGameSetup(tuple.Item1, tuple.Item2);
+          this.localGameController.FinalisePlayerTurnOrder();
+          break;
+        }
+        default: throw new NotImplementedException();
       }
     }
 

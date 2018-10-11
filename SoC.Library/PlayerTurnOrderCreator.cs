@@ -10,9 +10,9 @@ namespace Jabberwocky.SoC.Library
     public static IPlayer[] Create(IPlayer[] players, INumberGenerator dice)
     {
       // Roll dice for each player
-      var rollsByPlayer = new Dictionary<UInt32, UInt32>();
-      var rolls = new List<UInt32>(players.Length);
-      UInt32 index = 0;
+      var rollsByPlayer = new Dictionary<uint, uint>();
+      var rolls = new List<uint>(players.Length);
+      uint index = 0;
       for (; index < players.Length; index++)
       {
         uint roll;
