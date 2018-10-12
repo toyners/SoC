@@ -18,6 +18,7 @@ namespace SoC.Harness
   {
     private LocalGameController localGameController;
     private TurnToken currentTurnToken;
+    private Dictionary<Guid, PlayerViewModel> playerViewModelsById = new Dictionary<Guid, PlayerViewModel>();
 
     public MainWindow()
     {
@@ -45,12 +46,15 @@ namespace SoC.Harness
 
     private void TurnOrderFinalisedEventHandler(PlayerDataModel[] obj)
     {
-      throw new NotImplementedException();
+      //throw new NotImplementedException();
     }
 
-    private void GameSetupResourcesEventHandler(ResourceUpdate obj)
+    private void GameSetupResourcesEventHandler(ResourceUpdate resourceUpdate)
     {
-      // Do nothing??
+      foreach (var resourceData in resourceUpdate.Resources)
+      {
+        this.playerViewModelsById[resourceData.Key].Update(resourceData.Value);
+      }
     }
 
     private void StartPlayerTurnEventHandler(TurnToken turnToken)
@@ -92,10 +96,23 @@ namespace SoC.Harness
       string secondPlayerIconPath = @"..\resources\icons\red_icon.png";
       string thirdPlayerIconPath = @"..\resources\icons\green_icon.png";
       string fourthPlayerIconPath = @"..\resources\icons\yellow_icon.png";
-      this.TopLeftPlayer.DataContext = new PlayerViewModel(playerDataModels[0], firstPlayerIconPath);
-      this.BottomLeftPlayer.DataContext = new PlayerViewModel(playerDataModels[1], secondPlayerIconPath);
-      this.TopRightPlayer.DataContext = new PlayerViewModel(playerDataModels[2], thirdPlayerIconPath);
-      this.BottomRightPlayer.DataContext = new PlayerViewModel(playerDataModels[3], fourthPlayerIconPath);
+
+      var playerViewModel = new PlayerViewModel(playerDataModels[0], firstPlayerIconPath);
+      this.playerViewModelsById.Add(playerDataModels[0].Id, playerViewModel);
+      this.TopLeftPlayer.DataContext = playerViewModel;
+
+      playerViewModel = new PlayerViewModel(playerDataModels[1], secondPlayerIconPath);
+      this.playerViewModelsById.Add(playerDataModels[1].Id, playerViewModel);
+      this.BottomLeftPlayer.DataContext = playerViewModel;
+
+      playerViewModel = new PlayerViewModel(playerDataModels[2], thirdPlayerIconPath);
+      this.playerViewModelsById.Add(playerDataModels[2].Id, playerViewModel);
+      this.TopRightPlayer.DataContext = playerViewModel;
+
+      playerViewModel = new PlayerViewModel(playerDataModels[3], fourthPlayerIconPath);
+      this.playerViewModelsById.Add(playerDataModels[3].Id, playerViewModel);
+      this.BottomRightPlayer.DataContext = playerViewModel;
+
       this.PlayArea.InitialisePlayerData(playerDataModels);
     }
   }

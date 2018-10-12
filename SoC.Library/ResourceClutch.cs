@@ -123,6 +123,15 @@ namespace Jabberwocky.SoC.Library
         r1.WoolCount - r2.WoolCount);
     }
 
+    public static ResourceClutch operator+ (ResourceClutch r1, ResourceClutch r2)
+    {
+      return new ResourceClutch(r1.BrickCount + r2.BrickCount,
+        r1.GrainCount + r2.GrainCount,
+        r1.LumberCount + r2.LumberCount,
+        r1.OreCount + r2.OreCount,
+        r1.WoolCount + r2.WoolCount);
+    }
+
     public override Boolean Equals(Object obj)
     {
       var other = (ResourceClutch)obj;

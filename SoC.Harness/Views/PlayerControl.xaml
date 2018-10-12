@@ -21,25 +21,21 @@
 
     <Grid Grid.Row="1" VerticalAlignment="Center">
       <Grid.ColumnDefinitions>
-        <ColumnDefinition />
-        <ColumnDefinition />
-        <ColumnDefinition />
+        <ColumnDefinition Width="3*"/>
         <ColumnDefinition />
         <ColumnDefinition />
         <ColumnDefinition />
         <ColumnDefinition />
         <ColumnDefinition />
       </Grid.ColumnDefinitions>
-      <TextBlock>B:</TextBlock>
+      <TextBlock Text="{Binding ResourceSummary}" />
       <TextBlock Grid.Column="1"></TextBlock>
-      <TextBlock Grid.Column="2">G:</TextBlock>
+      <TextBlock Grid.Column="2"></TextBlock>
       <TextBlock Grid.Column="3"></TextBlock>
-      <TextBlock Grid.Column="4">L:</TextBlock>
+      <TextBlock Grid.Column="4"></TextBlock>
       <TextBlock Grid.Column="5"></TextBlock>
-      <TextBlock Grid.Column="6">0:</TextBlock>
+      <TextBlock Grid.Column="6"></TextBlock>
       <TextBlock Grid.Column="7"></TextBlock>
-      <TextBlock Grid.Column="8">W:</TextBlock>
-      <TextBlock Grid.Column="9"></TextBlock>
       <TextBlock></TextBlock>
     </Grid>
 
