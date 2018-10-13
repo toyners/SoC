@@ -3,6 +3,7 @@ namespace SoC.Harness.Views
 {
   using System;
   using System.Collections.Generic;
+  using System.Threading.Tasks;
   using System.Windows;
   using System.Windows.Controls;
   using System.Windows.Media.Imaging;
@@ -67,11 +68,14 @@ namespace SoC.Harness.Views
     {
       this.board = board;
 
-      this.InitialiseBoardLayer();
+      Application.Current.Dispatcher.Invoke(() =>
+      {
+        this.InitialiseBoardLayer();
 
-      this.InitialiseSettlementSelectionLayer();
+        this.InitialiseSettlementSelectionLayer();
 
-      this.InitialiseRoadSelectionLayer();
+        this.InitialiseRoadSelectionLayer();
+      });
     }
 
     private void InitialiseBoardLayer()

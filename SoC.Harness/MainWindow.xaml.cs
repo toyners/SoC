@@ -3,6 +3,7 @@ namespace SoC.Harness
 {
   using System;
   using System.Collections.Generic;
+  using System.Threading.Tasks;
   using System.Windows;
   using System.Xml;
   using Jabberwocky.SoC.Library;
@@ -64,9 +65,11 @@ namespace SoC.Harness
 
     private void StartGameEventHandler()
     {
-      this.localGameController.JoinGame();
-      this.localGameController.LaunchGame();
-      this.localGameController.StartGameSetup();
+      Task.Factory.StartNew(() => {
+        this.localGameController.JoinGame();
+        this.localGameController.LaunchGame();
+        this.localGameController.StartGameSetup();
+      });
     }
 
     private void EndTurnEventHandler(EventTypes eventType, object data)
@@ -97,23 +100,27 @@ namespace SoC.Harness
       string thirdPlayerIconPath = @"..\resources\icons\green_icon.png";
       string fourthPlayerIconPath = @"..\resources\icons\yellow_icon.png";
 
-      var playerViewModel = new PlayerViewModel(playerDataModels[0], firstPlayerIconPath);
-      this.playerViewModelsById.Add(playerDataModels[0].Id, playerViewModel);
-      this.TopLeftPlayer.DataContext = playerViewModel;
+      var topLeftPlayerViewModel = new PlayerViewModel(playerDataModels[0], firstPlayerIconPath);
+      this.playerViewModelsById.Add(playerDataModels[0].Id, topLeftPlayerViewModel);
 
-      playerViewModel = new PlayerViewModel(playerDataModels[1], secondPlayerIconPath);
-      this.playerViewModelsById.Add(playerDataModels[1].Id, playerViewModel);
-      this.BottomLeftPlayer.DataContext = playerViewModel;
+      var bottomLeftPlayerViewModel = new PlayerViewModel(playerDataModels[1], secondPlayerIconPath);
+      this.playerViewModelsById.Add(playerDataModels[1].Id, bottomLeftPlayerViewModel);
 
-      playerViewModel = new PlayerViewModel(playerDataModels[2], thirdPlayerIconPath);
-      this.playerViewModelsById.Add(playerDataModels[2].Id, playerViewModel);
-      this.TopRightPlayer.DataContext = playerViewModel;
+      var topRightPlayerViewModel = new PlayerViewModel(playerDataModels[2], thirdPlayerIconPath);
+      this.playerViewModelsById.Add(playerDataModels[2].Id, topRightPlayerViewModel);
 
-      playerViewModel = new PlayerViewModel(playerDataModels[3], fourthPlayerIconPath);
-      this.playerViewModelsById.Add(playerDataModels[3].Id, playerViewModel);
-      this.BottomRightPlayer.DataContext = playerViewModel;
+      var bottomRightPlayerViewModel = new PlayerViewModel(playerDataModels[3], fourthPlayerIconPath);
+      this.playerViewModelsById.Add(playerDataModels[3].Id, bottomRightPlayerViewModel);
+      
 
-      this.PlayArea.InitialisePlayerData(playerDataModels);
+      Application.Current.Dispatcher.Invoke(() =>
+      {
+        this.TopLeftPlayer.DataContext = topLeftPlayerViewModel;
+        this.BottomLeftPlayer.DataContext = bottomLeftPlayerViewModel;
+        this.TopRightPlayer.DataContext = topRightPlayerViewModel;
+        this.BottomRightPlayer.DataContext = bottomRightPlayerViewModel;
+        this.PlayArea.InitialisePlayerData(playerDataModels);
+      });
     }
   }
 }
