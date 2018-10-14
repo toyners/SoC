@@ -118,6 +118,7 @@ namespace SoC.Harness
           var tuple = (Tuple<uint, uint>)data;
           this.localGameController.CompleteGameSetup(tuple.Item1, tuple.Item2);
           this.localGameController.FinalisePlayerTurnOrder();
+          this.localGameController.StartGamePlay();
           break;
         }
         default: throw new NotImplementedException();
@@ -142,7 +143,6 @@ namespace SoC.Harness
 
       var bottomRightPlayerViewModel = new PlayerViewModel(playerDataModels[3], fourthPlayerIconPath);
       this.playerViewModelsById.Add(playerDataModels[3].Id, bottomRightPlayerViewModel);
-      
 
       Application.Current.Dispatcher.Invoke(() =>
       {
