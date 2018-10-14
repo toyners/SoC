@@ -3,7 +3,6 @@ namespace SoC.Harness.Views
 {
   using System;
   using System.Collections.Generic;
-  using System.Threading.Tasks;
   using System.Windows;
   using System.Windows.Controls;
   using System.Windows.Media.Imaging;
@@ -140,12 +139,11 @@ namespace SoC.Harness.Views
       {
         return; // Should a null boardupdate be valid?
       }
-
+      
       foreach (var settlementDetails in boardUpdate.NewSettlements)
       {
         var location = settlementDetails.Item1;
         var playerId = settlementDetails.Item2;
-
         var settlementImagePath = this.settlementImagesByPlayerId[playerId];
 
         var control = this.settlementButtonControls[location];

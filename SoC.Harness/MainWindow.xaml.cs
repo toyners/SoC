@@ -32,12 +32,43 @@ namespace SoC.Harness
       this.localGameController.ErrorRaisedEvent = this.ErrorRaisedEventHandler;
       this.localGameController.GameJoinedEvent = this.GameJoinedEventHandler;
       this.localGameController.InitialBoardSetupEvent = this.PlayArea.Initialise;
-      this.localGameController.GameSetupUpdateEvent = this.PlayArea.BoardUpdatedEventHandler;
+      this.localGameController.GameSetupUpdateEvent = this.GameSetupUpdateEventHandler;
       this.localGameController.BoardUpdatedEvent = this.PlayArea.BoardUpdatedEventHandler;
       this.localGameController.StartPlayerTurnEvent = this.StartPlayerTurnEventHandler;
       this.localGameController.DiceRollEvent = this.PlayArea.DiceRollEventHandler;
       this.localGameController.GameSetupResourcesEvent = this.GameSetupResourcesEventHandler;
       this.localGameController.TurnOrderFinalisedEvent = this.TurnOrderFinalisedEventHandler;
+    }
+
+    private void GameSetupUpdateEventHandler(GameBoardUpdate boardUpdate)
+    {
+      if (boardUpdate == null)
+      {
+        return;
+      }
+
+      foreach (var settlementDetails in boardUpdate.NewSettlements)
+      {
+        var location = settlementDetails.Item1;
+        var playerId = settlementDetails.Item2;
+
+        var playerViewModel = this.playerViewModelsById[playerId];
+        var line = "Built settlement at " + location;
+        playerViewModel.UpdateHistory(line);
+      }
+
+      foreach (var roadDetails in boardUpdate.NewRoads)
+      {
+        var startLocation = roadDetails.Item1;
+        var endLocation = roadDetails.Item2;
+        var playerId = roadDetails.Item3;
+
+        var playerViewModel = this.playerViewModelsById[playerId];
+        var line = "Built road from " + startLocation + " to " + endLocation;
+        playerViewModel.UpdateHistory(line);
+      }
+
+      this.PlayArea.BoardUpdatedEventHandler(boardUpdate);
     }
 
     private void ErrorRaisedEventHandler(ErrorDetails obj)
