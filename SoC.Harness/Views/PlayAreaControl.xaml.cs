@@ -3,6 +3,7 @@ namespace SoC.Harness.Views
 {
   using System;
   using System.Collections.Generic;
+  using System.ComponentModel;
   using System.Windows;
   using System.Windows.Controls;
   using System.Windows.Media.Imaging;
@@ -12,7 +13,7 @@ namespace SoC.Harness.Views
   /// <summary>
   /// Interaction logic for BoardUI.xaml
   /// </summary>
-  public partial class PlayAreaControl : UserControl
+  public partial class PlayAreaControl : UserControl, INotifyPropertyChanged
   {
     #region Fields
     private const string blueSettlementImagePath = @"..\resources\settlements\blue_settlement.png";
@@ -59,7 +60,9 @@ namespace SoC.Harness.Views
 
     #region Events
     public Action<EventTypes, object> EndTurnEvent;
-    public Action StartGameEvent; 
+    public Action StartGameEvent;
+
+    public event PropertyChangedEventHandler PropertyChanged;
     #endregion
 
     #region Methods
@@ -180,7 +183,10 @@ namespace SoC.Harness.Views
     internal void DiceRollEventHandler(uint dice1, uint dice2)
     {
       this.DiceOneImagePath = this.GetDiceImage(dice1);
+      this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("DiceOneImagePath"));
+
       this.DiceTwoImagePath = this.GetDiceImage(dice2);
+      this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("DiceTwoImagePath"));
     }
 
     private string GetDiceImage(uint dice2)

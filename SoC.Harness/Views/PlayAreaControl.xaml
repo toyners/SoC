@@ -17,11 +17,11 @@
 
     <Canvas Name="SettlementLayer" Height="450" Width="800" />
 
-    <Canvas Name="TopLayer" Height="450" Width="800">
+    <Canvas Name="TopLayer" Height="500" Width="800">
       <Button Name="StartGameButton" Canvas.Left="350" Canvas.Top="219" Click="StartGameButton_Click">Start Game</Button>
       <Button Name="EndTurnButton" Canvas.Left="700" Canvas.Top="420" Visibility="Hidden" Click="EndTurnButton_Click">End Turn</Button>
-      <Image Name="DiceOne" Canvas.Left="670" Canvas.Top="500" Source="{Binding DiceOneImagePath}" />
-      <Image Name="DiceTwo" Canvas.Left="740" Canvas.Top="500" Source="{Binding DiceTwoImagePath}" />
+      <Image Name="DiceOne" Canvas.Left="670" Canvas.Top="400" Source="{Binding Path=DiceOneImagePath}" />
+      <Image Name="DiceTwo" Canvas.Left="740" Canvas.Top="400" Source="..\resources\dice\one.png" />
     </Canvas>
 
   </Grid>
