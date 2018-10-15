@@ -49,6 +49,7 @@ namespace SoC.Harness.Views
     #region Construction
     public PlayAreaControl()
     {
+      this.DataContext = this;
       this.InitializeComponent();
     }
     #endregion
@@ -183,16 +184,32 @@ namespace SoC.Harness.Views
     internal void DiceRollEventHandler(uint dice1, uint dice2)
     {
       this.DiceOneImagePath = this.GetDiceImage(dice1);
-      this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("DiceOneImagePath"));
-
       this.DiceTwoImagePath = this.GetDiceImage(dice2);
+
+      this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("DiceOneImagePath"));
       this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("DiceTwoImagePath"));
     }
 
-    private string GetDiceImage(uint dice2)
+    private string GetDiceImage(uint diceRoll)
     {
-      const string oneImagePath = @"..\resources\dice\one.png";
-      return oneImagePath;
+      const string OneImagePath = @"..\resources\dice\one.png";
+      const string TwoImagePath = @"..\resources\dice\two.png";
+      const string ThreeImagePath = @"..\resources\dice\three.png";
+      const string FourImagePath = @"..\resources\dice\four.png";
+      const string FiveImagePath = @"..\resources\dice\five.png";
+      const string SixImagePath = @"..\resources\dice\six.png";
+
+      switch (diceRoll)
+      {
+        case 1: return OneImagePath;
+        case 2: return TwoImagePath;
+        case 3: return ThreeImagePath;
+        case 4: return FourImagePath;
+        case 5: return FiveImagePath;
+        case 6: return SixImagePath;
+      }
+
+      throw new NotImplementedException("Should not get here");
     }
 
     private void InitialiseSettlementSelectionLayer()

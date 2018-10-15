@@ -185,6 +185,11 @@
     <Resource Include="Resources\Icons\red_icon.png" />
     <Resource Include="Resources\Icons\yellow_icon.png" />
     <Resource Include="Resources\Dice\one.png" />
+    <Resource Include="Resources\Dice\five.png" />
+    <Resource Include="Resources\Dice\four.png" />
+    <Resource Include="Resources\Dice\six.png" />
+    <Resource Include="Resources\Dice\three.png" />
+    <Resource Include="Resources\Dice\two.png" />
     <Content Include="Resources\ProductionFactors\10.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
