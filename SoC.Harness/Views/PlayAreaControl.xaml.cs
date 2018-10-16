@@ -151,7 +151,7 @@ namespace SoC.Harness.Views
         var settlementImagePath = this.settlementImagesByPlayerId[playerId];
 
         var control = this.settlementButtonControls[location];
-        this.PlaceBuildingControl(control.X, control.Y, "", settlementImagePath, this.SettlementLayer);
+        this.PlaceBuildingControl(control.X, control.Y, location.ToString(), settlementImagePath, this.SettlementLayer);
 
         control.Visibility = Visibility.Hidden;
 
@@ -238,7 +238,7 @@ namespace SoC.Harness.Views
 
         while (count-- > 0)
         {
-          var control = this.PlaceSettlementButtonControl(x, y, location, "Test");
+          var control = this.PlaceSettlementButtonControl(x, y, location, location.ToString());
           this.settlementButtonControls[location++] = control;
           y += dy;
 
