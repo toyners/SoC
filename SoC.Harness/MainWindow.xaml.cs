@@ -20,9 +20,13 @@ namespace SoC.Harness
     private LocalGameController localGameController;
     private TurnToken currentTurnToken;
     private Dictionary<Guid, PlayerViewModel> playerViewModelsById = new Dictionary<Guid, PlayerViewModel>();
+    private ControllerViewModel controllerViewModel;
 
     public MainWindow()
     {
+      this.controllerViewModel = new ControllerViewModel(new LocalGameController(new NumberGenerator(), new PlayerPool()));
+      this.controllerViewModel.PlayerUpdateEvent = this.PlayerUpdateEventHandler;
+
       this.InitializeComponent();
 
       this.PlayArea.EndTurnEvent = this.EndTurnEventHandler;
@@ -39,6 +43,18 @@ namespace SoC.Harness
       this.localGameController.GameSetupResourcesEvent = this.GameSetupResourcesEventHandler;
       this.localGameController.TurnOrderFinalisedEvent = this.TurnOrderFinalisedEventHandler;
       this.localGameController.ResourcesCollectedEvent = this.ResourcesCollectedEventHandler;
+    }
+
+    private void PlayerUpdateEventHandler(PlayerViewModel arg1, PlayerViewModel arg2, PlayerViewModel arg3, PlayerViewModel arg4)
+    {
+      Application.Current.Dispatcher.Invoke(() =>
+      {
+        this.TopLeftPlayer.DataContext = arg1;
+        this.BottomLeftPlayer.DataContext = arg2;
+        this.TopRightPlayer.DataContext = arg3;
+        this.BottomRightPlayer.DataContext = arg4;
+        //this.PlayArea.InitialisePlayerData(new[] { arg1, arg2, arg3, arg4 });
+      });
     }
 
     private void ResourcesCollectedEventHandler(Dictionary<Guid, ResourceCollection[]> obj)
