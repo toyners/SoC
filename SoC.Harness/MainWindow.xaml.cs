@@ -38,6 +38,12 @@ namespace SoC.Harness
       this.localGameController.DiceRollEvent = this.PlayArea.DiceRollEventHandler;
       this.localGameController.GameSetupResourcesEvent = this.GameSetupResourcesEventHandler;
       this.localGameController.TurnOrderFinalisedEvent = this.TurnOrderFinalisedEventHandler;
+      this.localGameController.ResourcesCollectedEvent = this.ResourcesCollectedEventHandler;
+    }
+
+    private void ResourcesCollectedEventHandler(Dictionary<Guid, ResourceCollection[]> obj)
+    {
+      throw new NotImplementedException();
     }
 
     private void GameSetupUpdateEventHandler(GameBoardUpdate boardUpdate)
