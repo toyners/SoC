@@ -78,6 +78,7 @@
     <Compile Include="Messages.cs" />
     <Compile Include="PlayerPool.cs" />
     <Compile Include="ViewModels\ControllerViewModel.cs" />
+    <Compile Include="ViewModels\PlayAreaViewModel.cs" />
     <Compile Include="Views\PlayAreaControl.xaml.cs">
       <DependentUpon>PlayAreaControl.xaml</DependentUpon>
     </Compile>

@@ -9,6 +9,7 @@ namespace SoC.Harness.Views
   using System.Windows.Media.Imaging;
   using Jabberwocky.SoC.Library;
   using Jabberwocky.SoC.Library.GameBoards;
+  using SoC.Harness.ViewModels;
 
   /// <summary>
   /// Interaction logic for BoardUI.xaml
@@ -130,11 +131,28 @@ namespace SoC.Harness.Views
       this.settlementImagesByPlayerId.Add(playerDataModels[2].Id, greenSettlementImagePath);
       this.settlementImagesByPlayerId.Add(playerDataModels[3].Id, yellowSettlementImagePath);
 
-      this.roadImagesByPlayerId = new Dictionary<Guid, string[]>(); 
+      this.roadImagesByPlayerId = new Dictionary<Guid, string[]>();
       this.roadImagesByPlayerId.Add(playerDataModels[0].Id, new[] { blueRoadHorizontalImagePath, blueRoadLeftImagePath, blueRoadRightImagePath });
       this.roadImagesByPlayerId.Add(playerDataModels[1].Id, new[] { redRoadHorizontalImagePath, redRoadLeftImagePath, redRoadRightImagePath });
       this.roadImagesByPlayerId.Add(playerDataModels[2].Id, new[] { greenRoadHorizontalImagePath, greenRoadLeftImagePath, greenRoadRightImagePath });
       this.roadImagesByPlayerId.Add(playerDataModels[3].Id, new[] { yellowRoadHorizontalImagePath, yellowRoadLeftImagePath, yellowRoadRightImagePath });
+    }
+
+    public void InitialisePlayerViews(PlayerViewModel player1, PlayerViewModel player2, PlayerViewModel player3, PlayerViewModel player4)
+    {
+      this.player = player1.Id;
+
+      this.settlementImagesByPlayerId = new Dictionary<Guid, string>();
+      this.settlementImagesByPlayerId.Add(player1.Id, blueSettlementImagePath);
+      this.settlementImagesByPlayerId.Add(player2.Id, redSettlementImagePath);
+      this.settlementImagesByPlayerId.Add(player3.Id, greenSettlementImagePath);
+      this.settlementImagesByPlayerId.Add(player4.Id, yellowSettlementImagePath);
+
+      this.roadImagesByPlayerId = new Dictionary<Guid, string[]>();
+      this.roadImagesByPlayerId.Add(player1.Id, new[] { blueRoadHorizontalImagePath, blueRoadLeftImagePath, blueRoadRightImagePath });
+      this.roadImagesByPlayerId.Add(player2.Id, new[] { redRoadHorizontalImagePath, redRoadLeftImagePath, redRoadRightImagePath });
+      this.roadImagesByPlayerId.Add(player3.Id, new[] { greenRoadHorizontalImagePath, greenRoadLeftImagePath, greenRoadRightImagePath });
+      this.roadImagesByPlayerId.Add(player4.Id, new[] { yellowRoadHorizontalImagePath, yellowRoadLeftImagePath, yellowRoadRightImagePath });
     }
 
     public void BoardUpdatedEventHandler(GameBoardUpdate boardUpdate)

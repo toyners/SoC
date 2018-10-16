@@ -4,6 +4,7 @@ namespace SoC.Harness.ViewModels
   using System;
   using System.Collections.Generic;
   using Jabberwocky.SoC.Library;
+  using Jabberwocky.SoC.Library.GameBoards;
 
   public class ControllerViewModel
   {
@@ -16,8 +17,15 @@ namespace SoC.Harness.ViewModels
       this.localGameController = localGameController;
     }
 
-    public Action<PlayerViewModel, PlayerViewModel, PlayerViewModel, PlayerViewModel> PlayerUpdateEvent;
+    public event Action<PlayerViewModel, PlayerViewModel, PlayerViewModel, PlayerViewModel> GameJoinedEvent;
+    public event Action<PlayerViewModel, PlayerViewModel, PlayerViewModel, PlayerViewModel> PlayerUpdateEvent;
+    public event Action<IGameBoard> InitialBoardSetupEvent;
 
-
+    public void StartGame()
+    {
+      this.localGameController.JoinGame();
+      this.localGameController.LaunchGame();
+      this.localGameController.StartGameSetup();
+    }
   }
 }

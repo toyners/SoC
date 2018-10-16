@@ -15,6 +15,7 @@ namespace SoC.Harness.ViewModels
 
     public PlayerViewModel(PlayerDataModel playerModel, string iconPath)
     {
+      this.Id = playerModel.Id;
       this.Name = playerModel.Name;
       this.IconPath = iconPath;
       this.UpdateHistory(this.Name + " initialised");
@@ -26,6 +27,7 @@ namespace SoC.Harness.ViewModels
       private set { this.SetField(ref this.historyText, value); }
     }
     public string IconPath { get; private set; }
+    public Guid Id { get; private set; }
     public string Name { get; private set; }
     public string ResourceText
     {

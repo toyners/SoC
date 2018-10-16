@@ -25,7 +25,10 @@ namespace SoC.Harness
     public MainWindow()
     {
       this.controllerViewModel = new ControllerViewModel(new LocalGameController(new NumberGenerator(), new PlayerPool()));
-      this.controllerViewModel.PlayerUpdateEvent = this.PlayerUpdateEventHandler;
+      this.controllerViewModel.GameJoinedEvent += this.GameJoinedEventHandler;
+      this.controllerViewModel.GameJoinedEvent += this.PlayArea.InitialisePlayerViews;
+      this.controllerViewModel.PlayerUpdateEvent += this.PlayerUpdateEventHandler;
+      this.controllerViewModel.InitialBoardSetupEvent += this.PlayArea.Initialise;
 
       this.InitializeComponent();
 
@@ -119,9 +122,10 @@ namespace SoC.Harness
     private void StartGameEventHandler()
     {
       Task.Factory.StartNew(() => {
-        this.localGameController.JoinGame();
+        /*this.localGameController.JoinGame();
         this.localGameController.LaunchGame();
-        this.localGameController.StartGameSetup();
+        this.localGameController.StartGameSetup();*/
+        this.controllerViewModel.StartGame();
       });
     }
 
@@ -145,6 +149,17 @@ namespace SoC.Harness
         }
         default: throw new NotImplementedException();
       }
+    }
+
+    private void GameJoinedEventHandler(PlayerViewModel topLeftPlayerViewModel, PlayerViewModel bottomLeftPlayerViewModel, PlayerViewModel topRightPlayerViewModel, PlayerViewModel bottomRightPlayerViewModel)
+    {
+      Application.Current.Dispatcher.Invoke(() =>
+      {
+        this.TopLeftPlayer.DataContext = topLeftPlayerViewModel;
+        this.BottomLeftPlayer.DataContext = bottomLeftPlayerViewModel;
+        this.TopRightPlayer.DataContext = topRightPlayerViewModel;
+        this.BottomRightPlayer.DataContext = bottomRightPlayerViewModel;
+      });
     }
 
     private void GameJoinedEventHandler(PlayerDataModel[] playerDataModels)
