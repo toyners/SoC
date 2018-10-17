@@ -21,6 +21,7 @@ namespace SoC.Harness.ViewModels
       this.localGameController.StartPlayerTurnEvent = this.StartPlayerTurnEventHandler;
       this.localGameController.GameSetupResourcesEvent = this.GameSetupResourcesEventHandler;
       this.localGameController.InitialBoardSetupEvent = this.InitialBoardSetupEventHandler;
+      this.localGameController.DiceRollEvent = this.DiceRollEventHandler;
     }
 
     public event Action<PlayerViewModel, PlayerViewModel, PlayerViewModel, PlayerViewModel> GameJoinedEvent;
@@ -56,6 +57,11 @@ namespace SoC.Harness.ViewModels
           }
         default: throw new NotImplementedException();
       }
+    }
+
+    private void DiceRollEventHandler(uint arg1, uint arg2)
+    {
+      this.DiceRollEvent?.Invoke(arg1, arg2);
     }
 
     private void GameJoinedEventHandler(PlayerDataModel[] playerDataModels)
