@@ -20,12 +20,12 @@ namespace SoC.Harness.ViewModels
       this.localGameController.BoardUpdatedEvent = this.BoardUpdatedEvent;
       this.localGameController.StartPlayerTurnEvent = this.StartPlayerTurnEventHandler;
       this.localGameController.GameSetupResourcesEvent = this.GameSetupResourcesEventHandler;
+      this.localGameController.InitialBoardSetupEvent = this.InitialBoardSetupEventHandler;
     }
 
     public event Action<PlayerViewModel, PlayerViewModel, PlayerViewModel, PlayerViewModel> GameJoinedEvent;
     public event Action<PlayerViewModel, PlayerViewModel, PlayerViewModel, PlayerViewModel> PlayerUpdateEvent;
     public event Action<IGameBoard> InitialBoardSetupEvent;
-    //public event Action<GameBoardUpdate> GameSetupUpdateEvent;
     public event Action<GameBoardUpdate> BoardUpdatedEvent;
     public event Action<uint, uint> DiceRollEvent;
 
@@ -34,6 +34,28 @@ namespace SoC.Harness.ViewModels
       this.localGameController.JoinGame();
       this.localGameController.LaunchGame();
       this.localGameController.StartGameSetup();
+    }
+
+    public void EndTurnEventHandler(EventTypes eventType, object data)
+    {
+      switch (eventType)
+      {
+        case EventTypes.EndFirstSetupTurn:
+          {
+            var tuple = (Tuple<uint, uint>)data;
+            this.localGameController.ContinueGameSetup(tuple.Item1, tuple.Item2);
+            break;
+          }
+        case EventTypes.EndSecondSetupTurn:
+          {
+            var tuple = (Tuple<uint, uint>)data;
+            this.localGameController.CompleteGameSetup(tuple.Item1, tuple.Item2);
+            this.localGameController.FinalisePlayerTurnOrder();
+            this.localGameController.StartGamePlay();
+            break;
+          }
+        default: throw new NotImplementedException();
+      }
     }
 
     private void GameJoinedEventHandler(PlayerDataModel[] playerDataModels)
@@ -95,6 +117,11 @@ namespace SoC.Harness.ViewModels
       }
 
       this.BoardUpdatedEvent?.Invoke(boardUpdate);
+    }
+
+    private void InitialBoardSetupEventHandler(GameBoard gameBoard)
+    {
+      this.InitialBoardSetupEvent?.Invoke(gameBoard);
     }
 
     private void StartPlayerTurnEventHandler(TurnToken turnToken)

@@ -82,62 +82,6 @@ namespace SoC.Harness.Views
       });
     }
 
-    private void InitialiseBoardLayer()
-    {
-      var resourceBitmaps = this.CreateResourceBitmaps();
-      var numberBitmaps = this.CreateNumberBitmaps();
-
-      var middleX = (int)this.BoardLayer.Width / 2;
-      var middleY = (int)this.BoardLayer.Height / 2;
-      const int cellHeight = 90;
-      const int cellWidth = 90;
-
-      var hexLayoutData = new[]
-      {
-        new HexLayoutData { X = middleX - (cellWidth * 2) + 4, Y = middleY - (cellHeight / 2) - cellHeight, Count = 3 },
-        new HexLayoutData { X = middleX - (cellWidth / 4) * 5, Y = middleY - (cellHeight * 2), Count = 4 },
-        new HexLayoutData { X = middleX - (cellWidth / 2), Y = middleY - (cellHeight / 2) - (cellHeight * 2), Count = 5 },
-        new HexLayoutData { X = middleX + (cellWidth / 4) - 2, Y = middleY - (cellHeight * 2), Count = 4 },
-        new HexLayoutData { X = middleX + cellWidth - 4, Y = middleY - (cellHeight / 2) - cellHeight, Count = 3 }
-      };
-
-      BitmapImage resourceBitmap = null;
-      BitmapImage numberBitmap = null;
-      var hexData = this.board.GetHexInformation();
-      int hexDataIndex = 0;
-
-      foreach (var hexLayout in hexLayoutData)
-      {
-        var count = hexLayout.Count;
-        var x = hexLayout.X;
-        var y = hexLayout.Y;
-
-        while (count-- > 0)
-        {
-          this.GetBitmaps(hexData[hexDataIndex++], resourceBitmaps, numberBitmaps, out resourceBitmap, out numberBitmap);
-          this.PlaceHex(resourceBitmap, numberBitmap, x, y);
-          y += cellHeight;
-        }
-      }
-    }
-
-    public void InitialisePlayerData(PlayerDataModel[] playerDataModels)
-    {
-      this.player = playerDataModels[0].Id;
-
-      this.settlementImagesByPlayerId = new Dictionary<Guid, string>();
-      this.settlementImagesByPlayerId.Add(playerDataModels[0].Id, blueSettlementImagePath);
-      this.settlementImagesByPlayerId.Add(playerDataModels[1].Id, redSettlementImagePath);
-      this.settlementImagesByPlayerId.Add(playerDataModels[2].Id, greenSettlementImagePath);
-      this.settlementImagesByPlayerId.Add(playerDataModels[3].Id, yellowSettlementImagePath);
-
-      this.roadImagesByPlayerId = new Dictionary<Guid, string[]>();
-      this.roadImagesByPlayerId.Add(playerDataModels[0].Id, new[] { blueRoadHorizontalImagePath, blueRoadLeftImagePath, blueRoadRightImagePath });
-      this.roadImagesByPlayerId.Add(playerDataModels[1].Id, new[] { redRoadHorizontalImagePath, redRoadLeftImagePath, redRoadRightImagePath });
-      this.roadImagesByPlayerId.Add(playerDataModels[2].Id, new[] { greenRoadHorizontalImagePath, greenRoadLeftImagePath, greenRoadRightImagePath });
-      this.roadImagesByPlayerId.Add(playerDataModels[3].Id, new[] { yellowRoadHorizontalImagePath, yellowRoadLeftImagePath, yellowRoadRightImagePath });
-    }
-
     public void InitialisePlayerViews(PlayerViewModel player1, PlayerViewModel player2, PlayerViewModel player3, PlayerViewModel player4)
     {
       this.player = player1.Id;
@@ -228,6 +172,45 @@ namespace SoC.Harness.Views
       }
 
       throw new NotImplementedException("Should not get here");
+    }
+
+    private void InitialiseBoardLayer()
+    {
+      var resourceBitmaps = this.CreateResourceBitmaps();
+      var numberBitmaps = this.CreateNumberBitmaps();
+
+      var middleX = (int)this.BoardLayer.Width / 2;
+      var middleY = (int)this.BoardLayer.Height / 2;
+      const int cellHeight = 90;
+      const int cellWidth = 90;
+
+      var hexLayoutData = new[]
+      {
+        new HexLayoutData { X = middleX - (cellWidth * 2) + 4, Y = middleY - (cellHeight / 2) - cellHeight, Count = 3 },
+        new HexLayoutData { X = middleX - (cellWidth / 4) * 5, Y = middleY - (cellHeight * 2), Count = 4 },
+        new HexLayoutData { X = middleX - (cellWidth / 2), Y = middleY - (cellHeight / 2) - (cellHeight * 2), Count = 5 },
+        new HexLayoutData { X = middleX + (cellWidth / 4) - 2, Y = middleY - (cellHeight * 2), Count = 4 },
+        new HexLayoutData { X = middleX + cellWidth - 4, Y = middleY - (cellHeight / 2) - cellHeight, Count = 3 }
+      };
+
+      BitmapImage resourceBitmap = null;
+      BitmapImage numberBitmap = null;
+      var hexData = this.board.GetHexInformation();
+      int hexDataIndex = 0;
+
+      foreach (var hexLayout in hexLayoutData)
+      {
+        var count = hexLayout.Count;
+        var x = hexLayout.X;
+        var y = hexLayout.Y;
+
+        while (count-- > 0)
+        {
+          this.GetBitmaps(hexData[hexDataIndex++], resourceBitmaps, numberBitmaps, out resourceBitmap, out numberBitmap);
+          this.PlaceHex(resourceBitmap, numberBitmap, x, y);
+          y += cellHeight;
+        }
+      }
     }
 
     private void InitialiseSettlementSelectionLayer()
