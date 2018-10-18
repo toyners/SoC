@@ -13,7 +13,6 @@ namespace SoC.Harness
   /// </summary>
   public partial class MainWindow : Window
   {
-    private Dictionary<Guid, PlayerViewModel> playerViewModelsById = new Dictionary<Guid, PlayerViewModel>();
     private ControllerViewModel controllerViewModel;
 
     public MainWindow()
