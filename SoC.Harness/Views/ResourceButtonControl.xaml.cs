@@ -18,12 +18,20 @@ namespace SoC.Harness.Views
   /// <summary>
   /// Interaction logic for ResourceControl.xaml
   /// </summary>
-  public partial class ResourceControl : UserControl
+  public partial class ResourceButtonControl : UserControl
   {
-    public ResourceControl(string imagePath)
+    private Action<ResourceButtonControl> clickEventHandler;
+
+    public ResourceButtonControl(string imagePath, Action<ResourceButtonControl> clickEventHandler)
     {
       this.DataContext = this;
       this.InitializeComponent();
+      this.clickEventHandler = clickEventHandler;
+    }
+
+    private void Button_Click(object sender, RoutedEventArgs e)
+    {
+      this.clickEventHandler?.Invoke(this);
     }
   }
 }

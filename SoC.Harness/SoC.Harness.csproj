@@ -82,8 +82,8 @@
     <Compile Include="Views\PlayAreaControl.xaml.cs">
       <DependentUpon>PlayAreaControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\ResourceControl.xaml.cs">
-      <DependentUpon>ResourceControl.xaml</DependentUpon>
+    <Compile Include="Views\ResourceButtonControl.xaml.cs">
+      <DependentUpon>ResourceButtonControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\RoadButtonControl.xaml.cs">
       <DependentUpon>RoadButtonControl.xaml</DependentUpon>
@@ -119,7 +119,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\ResourceControl.xaml">
+    <Page Include="Views\ResourceButtonControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

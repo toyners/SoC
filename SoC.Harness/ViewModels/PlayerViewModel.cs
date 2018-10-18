@@ -10,7 +10,7 @@ namespace SoC.Harness.ViewModels
   {
     private ResourceClutch resources;
     private string resourceText;
-    private Queue<string> historyLines = new Queue<string>();
+    private readonly Queue<string> historyLines = new Queue<string>();
     private string historyText;
 
     public PlayerViewModel(PlayerDataModel playerModel, string iconPath)
