@@ -25,7 +25,6 @@ namespace SoC.Harness.ViewModels
     }
 
     public event Action<PlayerViewModel, PlayerViewModel, PlayerViewModel, PlayerViewModel> GameJoinedEvent;
-    public event Action<PlayerViewModel, PlayerViewModel, PlayerViewModel, PlayerViewModel> PlayerUpdateEvent;
     public event Action<IGameBoard> InitialBoardSetupEvent;
     public event Action<GameBoardUpdate> BoardUpdatedEvent;
     public event Action<uint, uint> DiceRollEvent;

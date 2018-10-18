@@ -23,7 +23,6 @@ namespace SoC.Harness
       this.controllerViewModel = new ControllerViewModel(new LocalGameController(new NumberGenerator(), new PlayerPool()));
       this.controllerViewModel.GameJoinedEvent += this.GameJoinedEventHandler;
       this.controllerViewModel.GameJoinedEvent += this.PlayArea.InitialisePlayerViews;
-      this.controllerViewModel.PlayerUpdateEvent += this.PlayerUpdateEventHandler;
       this.controllerViewModel.InitialBoardSetupEvent += this.PlayArea.Initialise;
       this.controllerViewModel.BoardUpdatedEvent += this.PlayArea.BoardUpdatedEventHandler;
       this.controllerViewModel.DiceRollEvent += this.PlayArea.DiceRollEventHandler;
@@ -32,27 +31,9 @@ namespace SoC.Harness
       this.PlayArea.StartGameEvent = this.StartGameEventHandler;
     }
 
-    private void PlayerUpdateEventHandler(PlayerViewModel arg1, PlayerViewModel arg2, PlayerViewModel arg3, PlayerViewModel arg4)
-    {
-      Application.Current.Dispatcher.Invoke(() =>
-      {
-        this.TopLeftPlayer.DataContext = arg1;
-        this.BottomLeftPlayer.DataContext = arg2;
-        this.TopRightPlayer.DataContext = arg3;
-        this.BottomRightPlayer.DataContext = arg4;
-      });
-    }
-
     private void ErrorRaisedEventHandler(ErrorDetails obj)
     {
       throw new NotImplementedException();
-    }
-
-    private void StartGameEventHandler()
-    {
-      Task.Factory.StartNew(() => {
-        this.controllerViewModel.StartGame();
-      });
     }
 
     private void GameJoinedEventHandler(PlayerViewModel topLeftPlayerViewModel, PlayerViewModel bottomLeftPlayerViewModel, PlayerViewModel topRightPlayerViewModel, PlayerViewModel bottomRightPlayerViewModel)
@@ -63,6 +44,13 @@ namespace SoC.Harness
         this.BottomLeftPlayer.DataContext = bottomLeftPlayerViewModel;
         this.TopRightPlayer.DataContext = topRightPlayerViewModel;
         this.BottomRightPlayer.DataContext = bottomRightPlayerViewModel;
+      });
+    }
+
+    private void StartGameEventHandler()
+    {
+      Task.Factory.StartNew(() => {
+        this.controllerViewModel.StartGame();
       });
     }
   }
