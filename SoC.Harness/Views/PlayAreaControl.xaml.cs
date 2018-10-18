@@ -45,6 +45,7 @@ namespace SoC.Harness.Views
     private Guid player;
     private HashSet<RoadButtonControl> visibleRoadButtonControls = new HashSet<RoadButtonControl>();
     private int setupTurns = 2;
+    private IList<ResourceButtonControl> resourceControls = new List<ResourceButtonControl>();
     #endregion
 
     #region Construction
@@ -153,17 +154,64 @@ namespace SoC.Harness.Views
     }
 
     private int numberOfResourcesToSelect;
-    public void RobberEventHandler(int numberOfResourcesToSelect)
+    public void RobberEventHandler(PlayerViewModel player, int numberOfResourcesToSelect)
     {
       if (numberOfResourcesToSelect > 0)
       {
-        this.numberOfResourcesToSelect = numberOfResourcesToSelect;
-        this.ResourceSelectionLayer.Visibility = Visibility.Visible;
-
         // Display resources for player to discard
+        this.numberOfResourcesToSelect = numberOfResourcesToSelect;
+
+        var width = 100;
+        var gutter = 10;
+        var midX = 100;
+        var midY = 100;
+        var x = midX - ((player.Resources.Count * width) + ((player.Resources.Count - 1) * gutter) / 2);
+
+        for (int i = 0; i < player.Resources.Count; i++)
+        {
+          if (i >= this.resourceControls.Count)
+          {
+            var newButton = new ResourceButtonControl(this.ResourceSelectedEventHandler);
+            this.resourceControls.Add(newButton);
+            this.ResourceSelectionLayer.Children.Add(newButton);
+          }
+          
+          var resourceButton = this.resourceControls[i];
+          resourceButton.ImagePath = this.GetResourceCardImage(this.GetResourceTypeAt(i, player.Resources));
+
+          Canvas.SetLeft(resourceButton, x);
+          Canvas.SetTop(resourceButton, midY);
+          x += width + gutter;
+
+          resourceButton.Visibility = Visibility.Visible;
+        }
+
+        this.ResourceSelectionLayer.Visibility = Visibility.Visible;
       }
 
       // Select hex to place robber
+    }
+
+    private ResourceTypes GetResourceTypeAt(int i, ResourceClutch resources)
+    {
+      if (i < resources.BrickCount)
+        return ResourceTypes.Brick;
+
+      if (i < resources.BrickCount + resources.GrainCount)
+        return ResourceTypes.Grain;
+
+      if (i < resources.BrickCount + resources.GrainCount + resources.LumberCount)
+        return ResourceTypes.Lumber;
+
+      if (i < resources.BrickCount + resources.GrainCount + resources.LumberCount + resources.OreCount)
+        return ResourceTypes.Ore;
+
+      return ResourceTypes.Wool;
+    }
+
+    private string GetResourceCardImage(ResourceTypes resourceType)
+    {
+      throw new NotImplementedException();
     }
 
     private string GetDiceImage(uint diceRoll)
@@ -524,6 +572,11 @@ namespace SoC.Harness.Views
       canvas.Children.Add(control);
       Canvas.SetLeft(control, x);
       Canvas.SetTop(control, y);
+    }
+
+    private void ResourceSelectedEventHandler(ResourceButtonControl resourceButton)
+    {
+
     }
 
     private void RoadSelectedEventHandler(RoadButtonControl roadButtonControl)

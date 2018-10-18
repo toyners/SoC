@@ -20,17 +20,33 @@ namespace SoC.Harness.Views
   /// </summary>
   public partial class ResourceButtonControl : UserControl
   {
+    private bool isSelected;
     private Action<ResourceButtonControl> clickEventHandler;
 
-    public ResourceButtonControl(string imagePath, Action<ResourceButtonControl> clickEventHandler)
+    public ResourceButtonControl(Action<ResourceButtonControl> clickEventHandler)
     {
       this.DataContext = this;
       this.InitializeComponent();
       this.clickEventHandler = clickEventHandler;
     }
 
+    public string ImagePath { get; set; }
+    public string OriginalImagePath { get; set; }
+    public string SelectedImagePath { get; set; }
+
     private void Button_Click(object sender, RoutedEventArgs e)
     {
+      if (this.isSelected)
+      {
+        this.isSelected = false;
+        this.ImagePath = this.SelectedImagePath;
+      }
+      else
+      {
+        this.isSelected = true;
+        this.ImagePath = this.OriginalImagePath;
+      }
+
       this.clickEventHandler?.Invoke(this);
     }
   }

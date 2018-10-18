@@ -8,7 +8,7 @@ namespace SoC.Harness.ViewModels
 
   public class PlayerViewModel : NotifyPropertyChangedBase
   {
-    private ResourceClutch resources;
+    //private ResourceClutch resources;
     private string resourceText;
     private readonly Queue<string> historyLines = new Queue<string>();
     private string historyText;
@@ -19,6 +19,7 @@ namespace SoC.Harness.ViewModels
       this.Name = playerModel.Name;
       this.IconPath = iconPath;
       this.UpdateHistory(this.Name + " initialised");
+      this.Resources = ResourceClutch.Zero;
     }
 
     public string HistoryText
@@ -29,6 +30,7 @@ namespace SoC.Harness.ViewModels
     public string IconPath { get; private set; }
     public Guid Id { get; private set; }
     public string Name { get; private set; }
+    public ResourceClutch Resources { get; private set; }
     public string ResourceText
     {
       get { return this.resourceText; }
@@ -42,13 +44,13 @@ namespace SoC.Harness.ViewModels
 
     public void Update(ResourceClutch resources)
     {
-      this.resources += resources;
+      this.Resources += resources;
       this.ResourceText = 
-        $"B{this.resources.BrickCount} " +
-        $"G{this.resources.GrainCount} " +
-        $"L{this.resources.LumberCount} " +
-        $"O{this.resources.OreCount} " +
-        $"W{this.resources.WoolCount}";
+        $"B{this.Resources.BrickCount} " +
+        $"G{this.Resources.GrainCount} " +
+        $"L{this.Resources.LumberCount} " +
+        $"O{this.Resources.OreCount} " +
+        $"W{this.Resources.WoolCount}";
 
       var line = "Received ";
       if (resources.BrickCount > 0)

@@ -30,7 +30,7 @@ namespace SoC.Harness.ViewModels
     public event Action<IGameBoard> InitialBoardSetupEvent;
     public event Action<GameBoardUpdate> BoardUpdatedEvent;
     public event Action<uint, uint> DiceRollEvent;
-    public event Action<int> RobberEvent;
+    public event Action<PlayerViewModel, int> RobberEvent;
 
     public void StartGame()
     {
@@ -145,7 +145,7 @@ namespace SoC.Harness.ViewModels
 
     private void RobberEventHandler(int numberOfResourcesToSelect)
     {
-      this.RobberEvent?.Invoke(numberOfResourcesToSelect);
+      this.RobberEvent?.Invoke(null, numberOfResourcesToSelect);
     }
 
     private void StartPlayerTurnEventHandler(TurnToken turnToken)
