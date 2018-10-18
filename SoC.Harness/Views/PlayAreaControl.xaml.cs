@@ -143,13 +143,18 @@ namespace SoC.Harness.Views
       this.SettlementSelectionLayer.Visibility = Visibility.Visible;
     }
 
-    internal void DiceRollEventHandler(uint dice1, uint dice2)
+    public void DiceRollEventHandler(uint dice1, uint dice2)
     {
       this.DiceOneImagePath = this.GetDiceImage(dice1);
       this.DiceTwoImagePath = this.GetDiceImage(dice2);
 
       this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("DiceOneImagePath"));
       this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("DiceTwoImagePath"));
+    }
+
+    public void RobberEventHandler(int numberOfResourcesToSelect)
+    {
+      
     }
 
     private string GetDiceImage(uint diceRoll)
@@ -533,7 +538,7 @@ namespace SoC.Harness.Views
       this.EndTurnButton.Visibility = Visibility.Visible;
       this.TopLayer.Visibility = Visibility.Visible;
     }
-    
+
     private void SettlementSelectedEventHandler(SettlementButtonControl settlementButtonControl)
     {
       this.workingLocation = settlementButtonControl.Location;

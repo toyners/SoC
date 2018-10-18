@@ -2,7 +2,6 @@
 namespace SoC.Harness
 {
   using System;
-  using System.Collections.Generic;
   using System.Threading.Tasks;
   using System.Windows;
   using Jabberwocky.SoC.Library;
@@ -25,6 +24,7 @@ namespace SoC.Harness
       this.controllerViewModel.InitialBoardSetupEvent += this.PlayArea.Initialise;
       this.controllerViewModel.BoardUpdatedEvent += this.PlayArea.BoardUpdatedEventHandler;
       this.controllerViewModel.DiceRollEvent += this.PlayArea.DiceRollEventHandler;
+      this.controllerViewModel.RobberEvent += this.PlayArea.RobberEventHandler;
 
       this.PlayArea.EndTurnEvent = this.controllerViewModel.EndTurnEventHandler;
       this.PlayArea.StartGameEvent = this.StartGameEventHandler;

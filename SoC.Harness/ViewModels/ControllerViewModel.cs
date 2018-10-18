@@ -22,12 +22,15 @@ namespace SoC.Harness.ViewModels
       this.localGameController.GameSetupResourcesEvent = this.GameSetupResourcesEventHandler;
       this.localGameController.InitialBoardSetupEvent = this.InitialBoardSetupEventHandler;
       this.localGameController.DiceRollEvent = this.DiceRollEventHandler;
+      this.localGameController.ResourcesCollectedEvent = this.ResourcesCollectedEventHandler;
+      this.localGameController.RobberEvent = this.RobberEventHandler;
     }
 
     public event Action<PlayerViewModel, PlayerViewModel, PlayerViewModel, PlayerViewModel> GameJoinedEvent;
     public event Action<IGameBoard> InitialBoardSetupEvent;
     public event Action<GameBoardUpdate> BoardUpdatedEvent;
     public event Action<uint, uint> DiceRollEvent;
+    public event Action<int> RobberEvent;
 
     public void StartGame()
     {
@@ -127,6 +130,22 @@ namespace SoC.Harness.ViewModels
     private void InitialBoardSetupEventHandler(GameBoard gameBoard)
     {
       this.InitialBoardSetupEvent?.Invoke(gameBoard);
+    }
+
+    private void ResourcesCollectedEventHandler(Dictionary<Guid, ResourceCollection[]> resources)
+    {
+      foreach (var entry in resources)
+      {
+        foreach (var rc in entry.Value)
+        {
+          this.playerViewModelsById[entry.Key].Update(rc.Resources);
+        }
+      }
+    }
+
+    private void RobberEventHandler(int numberOfResourcesToSelect)
+    {
+      this.RobberEvent?.Invoke(numberOfResourcesToSelect);
     }
 
     private void StartPlayerTurnEventHandler(TurnToken turnToken)
