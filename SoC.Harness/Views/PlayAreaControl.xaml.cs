@@ -152,9 +152,18 @@ namespace SoC.Harness.Views
       this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("DiceTwoImagePath"));
     }
 
+    private int numberOfResourcesToSelect;
     public void RobberEventHandler(int numberOfResourcesToSelect)
     {
-      
+      if (numberOfResourcesToSelect > 0)
+      {
+        this.numberOfResourcesToSelect = numberOfResourcesToSelect;
+        this.ResourceSelectionLayer.Visibility = Visibility.Visible;
+
+        // Display resources for player to discard
+      }
+
+      // Select hex to place robber
     }
 
     private string GetDiceImage(uint diceRoll)
