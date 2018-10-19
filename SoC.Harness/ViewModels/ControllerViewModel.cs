@@ -10,6 +10,7 @@ namespace SoC.Harness.ViewModels
   {
     private readonly LocalGameController localGameController;
     private TurnToken currentTurnToken;
+    private PlayerViewModel player;
     private Dictionary<Guid, PlayerViewModel> playerViewModelsById = new Dictionary<Guid, PlayerViewModel>();
 
     public ControllerViewModel(LocalGameController localGameController)
@@ -74,6 +75,7 @@ namespace SoC.Harness.ViewModels
       string fourthPlayerIconPath = @"..\resources\icons\yellow_icon.png";
 
       var playerViewModel1 = new PlayerViewModel(playerDataModels[0], firstPlayerIconPath);
+      this.player = playerViewModel1;
       this.playerViewModelsById.Add(playerDataModels[0].Id, playerViewModel1);
 
       var playerViewModel2 = new PlayerViewModel(playerDataModels[1], secondPlayerIconPath);
@@ -145,7 +147,8 @@ namespace SoC.Harness.ViewModels
 
     private void RobberEventHandler(int numberOfResourcesToSelect)
     {
-      this.RobberEvent?.Invoke(null, numberOfResourcesToSelect);
+      numberOfResourcesToSelect = 1;
+      this.RobberEvent?.Invoke(this.player, numberOfResourcesToSelect);
     }
 
     private void StartPlayerTurnEventHandler(TurnToken turnToken)

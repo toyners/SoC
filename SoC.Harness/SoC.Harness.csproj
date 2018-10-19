@@ -189,6 +189,11 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="Resources\ResourceCards\graincard.png" />
+    <Resource Include="Resources\ResourceCards\lumbercard.png" />
+    <Resource Include="Resources\ResourceCards\orecard.png" />
+    <Resource Include="Resources\ResourceCards\woolcard.png" />
+    <Resource Include="Resources\ResourceCards\brickcard.png" />
     <Resource Include="Resources\Icons\blue_icon.png" />
     <Resource Include="Resources\Icons\green_icon.png" />
     <Resource Include="Resources\Icons\red_icon.png" />

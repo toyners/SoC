@@ -163,8 +163,8 @@ namespace SoC.Harness.Views
 
         var width = 100;
         var gutter = 10;
-        var midX = 100;
-        var midY = 100;
+        var midX = 400;
+        var midY = 200;
         var x = midX - ((player.Resources.Count * width) + ((player.Resources.Count - 1) * gutter) / 2);
 
         for (int i = 0; i < player.Resources.Count; i++)
@@ -177,7 +177,8 @@ namespace SoC.Harness.Views
           }
           
           var resourceButton = this.resourceControls[i];
-          resourceButton.ImagePath = this.GetResourceCardImage(this.GetResourceTypeAt(i, player.Resources));
+          resourceButton.OriginalImagePath = resourceButton.ImagePath = 
+            this.GetResourceCardImage(this.GetResourceTypeAt(i, player.Resources));
 
           Canvas.SetLeft(resourceButton, x);
           Canvas.SetTop(resourceButton, midY);
@@ -211,7 +212,14 @@ namespace SoC.Harness.Views
 
     private string GetResourceCardImage(ResourceTypes resourceType)
     {
-      throw new NotImplementedException();
+      switch (resourceType)
+      {
+        case ResourceTypes.Brick: return @"..\resources\resourcecards\brickcard.png";
+        case ResourceTypes.Grain: return @"..\resources\resourcecards\graincard.png";
+        case ResourceTypes.Lumber: return @"..\resources\resourcecards\lumbercard.png";
+        case ResourceTypes.Ore: return @"..\resources\resourcecards\orecard.png";
+        default: return @"..\resources\resourcecards\woolcard.png";
+      }
     }
 
     private string GetDiceImage(uint diceRoll)
