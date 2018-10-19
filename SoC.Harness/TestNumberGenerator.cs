@@ -6,12 +6,12 @@ namespace SoC.Harness
   using Jabberwocky.SoC.Library;
   using Jabberwocky.SoC.Library.Interfaces;
 
-  public class NumberGenerator : INumberGenerator
+  public class TestNumberGenerator : INumberGenerator
   {
     private Dice dice;
     private Queue<Tuple<uint, uint>> diceRolls;
 
-    public NumberGenerator()
+    public TestNumberGenerator()
     {
       this.diceRolls = new Queue<Tuple<uint, uint>>(new [] 
         {
@@ -22,7 +22,9 @@ namespace SoC.Harness
           new Tuple<uint, uint>(6, 5),
           new Tuple<uint, uint>(5, 4),
           new Tuple<uint, uint>(4, 3),
-          new Tuple<uint, uint>(3, 2)
+          new Tuple<uint, uint>(3, 2),
+
+          new Tuple<uint, uint>(1, 6),
         });
       this.dice = new Dice();
     }

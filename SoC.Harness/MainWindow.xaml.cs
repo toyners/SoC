@@ -18,7 +18,7 @@ namespace SoC.Harness
     {
       this.InitializeComponent();
 
-      this.controllerViewModel = new ControllerViewModel(new LocalGameController(new NumberGenerator(), new PlayerPool()));
+      this.controllerViewModel = new ControllerViewModel(new LocalGameController(new TestNumberGenerator(), new PlayerPool()));
       this.controllerViewModel.GameJoinedEvent += this.GameJoinedEventHandler;
       this.controllerViewModel.GameJoinedEvent += this.PlayArea.InitialisePlayerViews;
       this.controllerViewModel.InitialBoardSetupEvent += this.PlayArea.Initialise;

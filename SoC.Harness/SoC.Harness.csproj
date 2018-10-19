@@ -97,7 +97,7 @@
     <Compile Include="Views\BuildingControl.xaml.cs">
       <DependentUpon>BuildingControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="NumberGenerator.cs" />
+    <Compile Include="TestNumberGenerator.cs" />
     <Compile Include="ViewModels\PlayerViewModel.cs" />
     <Page Include="Views\PlayAreaControl.xaml">
       <SubType>Designer</SubType>
