@@ -50,12 +50,12 @@ namespace SoC.Harness.Views
       if (this.isSelected)
       {
         this.isSelected = false;
-        this.ImagePath = this.SelectedImagePath;
+        this.ImagePath = this.OriginalImagePath;
       }
       else
       {
         this.isSelected = true;
-        this.ImagePath = this.OriginalImagePath;
+        this.ImagePath = this.SelectedImagePath;
       }
 
       this.clickEventHandler?.Invoke(this);

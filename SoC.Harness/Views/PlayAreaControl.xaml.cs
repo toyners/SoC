@@ -177,8 +177,10 @@ namespace SoC.Harness.Views
           }
           
           var resourceButton = this.resourceControls[i];
-          resourceButton.OriginalImagePath = resourceButton.ImagePath = 
-            this.GetResourceCardImage(this.GetResourceTypeAt(i, player.Resources));
+          
+          this.GetResourceCardImages(this.GetResourceTypeAt(i, player.Resources), out var imagePath, out var selectedImagePath);
+          resourceButton.OriginalImagePath = resourceButton.ImagePath = imagePath;
+          resourceButton.SelectedImagePath = selectedImagePath;
 
           Canvas.SetLeft(resourceButton, x);
           Canvas.SetTop(resourceButton, midY);
@@ -210,15 +212,40 @@ namespace SoC.Harness.Views
       return ResourceTypes.Wool;
     }
 
-    private string GetResourceCardImage(ResourceTypes resourceType)
+    private void GetResourceCardImages(ResourceTypes resourceType, out string imagePath, out string selectedImagePath)
     {
       switch (resourceType)
       {
-        case ResourceTypes.Brick: return @"..\resources\resourcecards\brickcard.png";
-        case ResourceTypes.Grain: return @"..\resources\resourcecards\graincard.png";
-        case ResourceTypes.Lumber: return @"..\resources\resourcecards\lumbercard.png";
-        case ResourceTypes.Ore: return @"..\resources\resourcecards\orecard.png";
-        default: return @"..\resources\resourcecards\woolcard.png";
+        case ResourceTypes.Brick:
+          {
+            imagePath = @"..\resources\resourcecards\brickcard.png";
+            selectedImagePath = @"..\resources\resourcecards\selected_brickcard.png";
+            break;
+          }
+        case ResourceTypes.Grain:
+          {
+            imagePath = @"..\resources\resourcecards\graincard.png";
+            selectedImagePath = @"..\resources\resourcecards\selected_graincard.png";
+            break;
+          }
+        case ResourceTypes.Lumber:
+          {
+            imagePath = @"..\resources\resourcecards\lumbercard.png";
+            selectedImagePath = @"..\resources\resourcecards\selected_lumbercard.png";
+            break;
+          }
+        case ResourceTypes.Ore:
+          {
+            imagePath = @"..\resources\resourcecards\orecard.png";
+            selectedImagePath = @"..\resources\resourcecards\selected_orecard.png";
+            break;
+          }
+        default:
+          {
+            imagePath = @"..\resources\resourcecards\woolcard.png";
+            selectedImagePath = @"..\resources\resourcecards\selected_woolcard.png";
+            break;
+          }
       }
     }
 
