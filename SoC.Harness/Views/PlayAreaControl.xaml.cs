@@ -42,10 +42,12 @@ namespace SoC.Harness.Views
     private RoadButtonControl workingRoadControl;
     private Dictionary<Guid, string> settlementImagesByPlayerId;
     private Dictionary<Guid, string[]> roadImagesByPlayerId;
-    private Guid player;
+    private Guid playerId;
     private HashSet<RoadButtonControl> visibleRoadButtonControls = new HashSet<RoadButtonControl>();
     private int setupTurns = 2;
     private IList<ResourceButtonControl> resourceControls = new List<ResourceButtonControl>();
+    private string resourceSelectionMessage;
+    private PropertyChangedEventArgs confirmMessageChanged = new PropertyChangedEventArgs("ConfirmMessage");
     #endregion
 
     #region Construction
@@ -59,11 +61,21 @@ namespace SoC.Harness.Views
     #region Properties
     public string DiceOneImagePath { get; private set; }
     public string DiceTwoImagePath { get; private set; }
+    public string ConfirmMessage
+    {
+      get { return this.resourceSelectionMessage; }
+      private set
+      {
+        this.resourceSelectionMessage = value;
+        this.PropertyChanged.Invoke(this, this.confirmMessageChanged);
+      }
+    }
     #endregion
 
     #region Events
     public Action<EventTypes, object> EndTurnEvent;
     public Action StartGameEvent;
+    public Action<int, int, int, int, int> ResourcesSelectedEvent;
 
     public event PropertyChangedEventHandler PropertyChanged;
     #endregion
@@ -85,7 +97,7 @@ namespace SoC.Harness.Views
 
     public void InitialisePlayerViews(PlayerViewModel player1, PlayerViewModel player2, PlayerViewModel player3, PlayerViewModel player4)
     {
-      this.player = player1.Id;
+      this.playerId = player1.Id;
 
       this.settlementImagesByPlayerId = new Dictionary<Guid, string>();
       this.settlementImagesByPlayerId.Add(player1.Id, blueSettlementImagePath);
@@ -160,6 +172,7 @@ namespace SoC.Harness.Views
       {
         // Display resources for player to discard
         this.numberOfResourcesToSelect = numberOfResourcesToSelect;
+        this.ConfirmMessage = $"Select {this.numberOfResourcesToSelect} more resources to drop";
 
         var width = 100;
         var gutter = 10;
@@ -611,7 +624,14 @@ namespace SoC.Harness.Views
 
     private void ResourceSelectedEventHandler(ResourceButtonControl resourceButton)
     {
+      this.numberOfResourcesToSelect -= resourceButton.IsSelected ? 1 : -1;
+      this.ConfirmMessage = $"Select {this.numberOfResourcesToSelect} more resources to drop";
+      this.ConfirmButton.IsEnabled = this.numberOfResourcesToSelect == 0;
+    }
 
+    private void ResourceSelectionConfirmButton_Click(object sender, RoutedEventArgs e)
+    {
+      this.ResourceSelectionLayer.Visibility = Visibility.Hidden;
     }
 
     private void RoadSelectedEventHandler(RoadButtonControl roadButtonControl)
@@ -619,7 +639,7 @@ namespace SoC.Harness.Views
       this.workingRoadControl = roadButtonControl;
       this.workingRoadControl.Visibility = Visibility.Hidden;
 
-      var roadImagePath = this.roadImagesByPlayerId[this.player][(int)this.workingRoadControl.RoadImageType];
+      var roadImagePath = this.roadImagesByPlayerId[this.playerId][(int)this.workingRoadControl.RoadImageType];
 
       this.PlaceBuildingControl(roadButtonControl.X, roadButtonControl.Y, string.Empty, roadImagePath, this.RoadLayer);
 

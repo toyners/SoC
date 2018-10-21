@@ -17,9 +17,13 @@
 
     <Canvas Name="SettlementLayer" Height="450" Width="800" />
 
-    <Canvas Name="ResourceSelectionLayer" Visibility="Hidden">
-      <TextBlock Text="{Binding ConfirmMessage}" />
-      <Button Name="ConfirmButton" />
+    <Canvas Name="ResourceSelectionLayer" Visibility="Hidden" Background="White">
+      <Border BorderBrush="Black" BorderThickness="1" Canvas.Left="200" Canvas.Top="100">
+        <TextBlock Text="{Binding ConfirmMessage}" Background="LightGray" Foreground="Black" 
+                   FontSize="24"/>
+      </Border>
+      <Button Name="ConfirmButton" Canvas.Left="600" Canvas.Top="300" FontSize="24" 
+              Click="ResourceSelectionConfirmButton_Click">Confirm</Button>
     </Canvas>
 
     <Canvas Name="TopLayer" Height="500" Width="800">

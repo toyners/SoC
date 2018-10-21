@@ -22,7 +22,7 @@ namespace SoC.Harness.Views
   public partial class ResourceButtonControl : UserControl, INotifyPropertyChanged
   {
     private string imagePath;
-    private bool isSelected;
+    public bool IsSelected;
     private Action<ResourceButtonControl> clickEventHandler;
     private PropertyChangedEventArgs imagePathChanged = new PropertyChangedEventArgs("ImagePath");
 
@@ -47,14 +47,14 @@ namespace SoC.Harness.Views
 
     private void Button_Click(object sender, RoutedEventArgs e)
     {
-      if (this.isSelected)
+      if (this.IsSelected)
       {
-        this.isSelected = false;
+        this.IsSelected = false;
         this.ImagePath = this.OriginalImagePath;
       }
       else
       {
-        this.isSelected = true;
+        this.IsSelected = true;
         this.ImagePath = this.SelectedImagePath;
       }
 
