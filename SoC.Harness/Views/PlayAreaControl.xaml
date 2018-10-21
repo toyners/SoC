@@ -17,7 +17,10 @@
 
     <Canvas Name="SettlementLayer" Height="450" Width="800" />
 
-    <Canvas Name="ResourceSelectionLayer" Visibility="Hidden"/>
+    <Canvas Name="ResourceSelectionLayer" Visibility="Hidden">
+      <TextBlock Text="{Binding ConfirmMessage}" />
+      <Button Name="ConfirmButton" />
+    </Canvas>
 
     <Canvas Name="TopLayer" Height="500" Width="800">
       <Button Name="StartGameButton" Canvas.Left="350" Canvas.Top="219" Click="StartGameButton_Click">Start Game</Button>
