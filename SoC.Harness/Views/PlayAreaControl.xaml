@@ -20,15 +20,15 @@
     <Canvas Name="ResourceSelectionLayer" Visibility="Hidden" Background="White">
       <Border BorderBrush="Black" BorderThickness="1" Canvas.Left="200" Canvas.Top="100">
         <TextBlock Text="{Binding ConfirmMessage}" Background="LightGray" Foreground="Black" 
-                   FontSize="24"/>
+                   FontSize="20"/>
       </Border>
-      <Button Name="ConfirmButton" Canvas.Left="600" Canvas.Top="300" FontSize="24" 
+      <Button Name="ConfirmButton" Canvas.Left="350" Canvas.Top="400" FontSize="20" 
               Click="ResourceSelectionConfirmButton_Click">Confirm</Button>
     </Canvas>
 
     <Canvas Name="TopLayer" Height="500" Width="800">
-      <Button Name="StartGameButton" Canvas.Left="350" Canvas.Top="219" Click="StartGameButton_Click">Start Game</Button>
-      <Button Name="EndTurnButton" Canvas.Left="700" Canvas.Top="420" Visibility="Hidden" Click="EndTurnButton_Click">End Turn</Button>
+      <Button Name="StartGameButton" Canvas.Left="350" Canvas.Top="220" Click="StartGameButton_Click" FontSize="20">Start Game</Button>
+      <Button Name="EndTurnButton" Canvas.Left="350" Canvas.Top="520" Visibility="Hidden" Click="EndTurnButton_Click" FontSize="20">End Turn</Button>
       <Image Name="DiceOne" Canvas.Left="570" Canvas.Top="500" Source="{Binding Path=DiceOneImagePath}" />
       <Image Name="DiceTwo" Canvas.Left="640" Canvas.Top="500" Source="{Binding Path=DiceTwoImagePath}" />
     </Canvas>

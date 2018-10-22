@@ -173,6 +173,7 @@ namespace SoC.Harness.Views
         // Display resources for player to discard
         this.numberOfResourcesToSelect = numberOfResourcesToSelect;
         this.ConfirmMessage = $"Select {this.numberOfResourcesToSelect} more resources to drop";
+        this.ConfirmButton.IsEnabled = false;
 
         var width = 100;
         var gutter = 10;
@@ -697,6 +698,7 @@ namespace SoC.Harness.Views
 
     private void EndTurnButton_Click(object sender, RoutedEventArgs e)
     {
+      this.EndTurnButton.Visibility = Visibility.Hidden;
       if (this.setupTurns == 2)
       {
         this.setupTurns--;
