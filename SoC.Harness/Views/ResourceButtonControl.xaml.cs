@@ -13,6 +13,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Jabberwocky.SoC.Library;
 
 namespace SoC.Harness.Views
 {
@@ -41,6 +42,7 @@ namespace SoC.Harness.Views
       }
     }
     public string OriginalImagePath { get; set; }
+    public ResourceTypes ResourceType { get; set; }
     public string SelectedImagePath { get; set; }
 
     public event PropertyChangedEventHandler PropertyChanged;

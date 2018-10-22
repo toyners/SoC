@@ -191,10 +191,12 @@ namespace SoC.Harness.Views
           }
           
           var resourceButton = this.resourceControls[i];
-          
-          this.GetResourceCardImages(this.GetResourceTypeAt(i, player.Resources), out var imagePath, out var selectedImagePath);
+
+          var resourceType = this.GetResourceTypeAt(i, player.Resources);
+          this.GetResourceCardImages(resourceType, out var imagePath, out var selectedImagePath);
           resourceButton.OriginalImagePath = resourceButton.ImagePath = imagePath;
           resourceButton.SelectedImagePath = selectedImagePath;
+          resourceButton.ResourceType = resourceType;
 
           Canvas.SetLeft(resourceButton, x);
           Canvas.SetTop(resourceButton, midY);
@@ -633,6 +635,28 @@ namespace SoC.Harness.Views
     private void ResourceSelectionConfirmButton_Click(object sender, RoutedEventArgs e)
     {
       this.ResourceSelectionLayer.Visibility = Visibility.Hidden;
+      var brickCount = 0;
+      var grainCount = 0;
+      var lumberCount = 0;
+      var oreCount = 0;
+      var woolCount = 0;
+
+      foreach (var resourceButton in this.resourceControls)
+      {
+        if (resourceButton.IsSelected)
+        {
+          switch (resourceButton.ResourceType)
+          {
+            case ResourceTypes.Brick: brickCount++; break;
+            case ResourceTypes.Grain: grainCount++; break;
+            case ResourceTypes.Lumber: lumberCount++; break;
+            case ResourceTypes.Ore: oreCount++; break;
+            case ResourceTypes.Wool: woolCount++; break;
+          }
+        }
+      }
+
+      this.ResourcesSelectedEvent.Invoke(brickCount, grainCount, lumberCount, oreCount, woolCount);
     }
 
     private void RoadSelectedEventHandler(RoadButtonControl roadButtonControl)
