@@ -75,7 +75,7 @@ namespace SoC.Harness.Views
     #region Events
     public Action<EventTypes, object> EndTurnEvent;
     public Action StartGameEvent;
-    public Action<int, int, int, int, int> ResourcesSelectedEvent;
+    public Action<ResourceClutch> ResourcesSelectedEvent;
 
     public event PropertyChangedEventHandler PropertyChanged;
     #endregion
@@ -656,7 +656,7 @@ namespace SoC.Harness.Views
         }
       }
 
-      this.ResourcesSelectedEvent.Invoke(brickCount, grainCount, lumberCount, oreCount, woolCount);
+      this.ResourcesSelectedEvent.Invoke(new ResourceClutch(brickCount, grainCount, lumberCount, oreCount, woolCount));
     }
 
     private void RoadSelectedEventHandler(RoadButtonControl roadButtonControl)

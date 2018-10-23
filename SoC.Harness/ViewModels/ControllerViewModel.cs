@@ -27,11 +27,6 @@ namespace SoC.Harness.ViewModels
       this.localGameController.RobberEvent = this.RobberEventHandler;
     }
 
-    public void ResourceSelectedEventHandler(int arg1, int arg2, int arg3, int arg4, int arg5)
-    {
-      throw new NotImplementedException();
-    }
-
     public event Action<PlayerViewModel, PlayerViewModel, PlayerViewModel, PlayerViewModel> GameJoinedEvent;
     public event Action<IGameBoard> InitialBoardSetupEvent;
     public event Action<GameBoardUpdate> BoardUpdatedEvent;
@@ -67,6 +62,12 @@ namespace SoC.Harness.ViewModels
       }
     }
 
+    public void ResourceSelectedEventHandler(ResourceClutch dropResources)
+    {
+      this.localGameController.DropResources(dropResources);
+      this.player.Update(dropResources, false);
+    }
+
     private void DiceRollEventHandler(uint arg1, uint arg2)
     {
       this.DiceRollEvent?.Invoke(arg1, arg2);
@@ -99,7 +100,7 @@ namespace SoC.Harness.ViewModels
     {
       foreach (var resourceData in resourceUpdate.Resources)
       {
-        this.playerViewModelsById[resourceData.Key].Update(resourceData.Value);
+        this.playerViewModelsById[resourceData.Key].Update(resourceData.Value, true);
       }
     }
 
@@ -145,7 +146,7 @@ namespace SoC.Harness.ViewModels
       {
         foreach (var rc in entry.Value)
         {
-          this.playerViewModelsById[entry.Key].Update(rc.Resources);
+          this.playerViewModelsById[entry.Key].Update(rc.Resources, true);
         }
       }
     }

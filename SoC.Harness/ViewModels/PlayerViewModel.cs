@@ -42,9 +42,21 @@ namespace SoC.Harness.ViewModels
       throw new NotImplementedException();
     }
 
-    public void Update(ResourceClutch resources)
+    public void Update(ResourceClutch resources, bool addResources)
     {
-      this.Resources += resources;
+      string line;
+
+      if (addResources)
+      {
+        line = "Received ";
+        this.Resources += resources;
+      }
+      else
+      {
+        line = "Lost ";
+        this.Resources -= resources;
+      }
+
       this.ResourceText = 
         $"B{this.Resources.BrickCount} " +
         $"G{this.Resources.GrainCount} " +
@@ -52,7 +64,6 @@ namespace SoC.Harness.ViewModels
         $"O{this.Resources.OreCount} " +
         $"W{this.Resources.WoolCount}";
 
-      var line = "Received ";
       if (resources.BrickCount > 0)
       {
         line += "B" + resources.BrickCount + " ";
