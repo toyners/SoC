@@ -27,6 +27,11 @@ namespace SoC.Harness.ViewModels
       this.localGameController.RobberEvent = this.RobberEventHandler;
     }
 
+    public void ResourceSelectedEventHandler(int arg1, int arg2, int arg3, int arg4, int arg5)
+    {
+      throw new NotImplementedException();
+    }
+
     public event Action<PlayerViewModel, PlayerViewModel, PlayerViewModel, PlayerViewModel> GameJoinedEvent;
     public event Action<IGameBoard> InitialBoardSetupEvent;
     public event Action<GameBoardUpdate> BoardUpdatedEvent;

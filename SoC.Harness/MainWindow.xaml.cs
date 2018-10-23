@@ -28,6 +28,7 @@ namespace SoC.Harness
 
       this.PlayArea.EndTurnEvent = this.controllerViewModel.EndTurnEventHandler;
       this.PlayArea.StartGameEvent = this.StartGameEventHandler;
+      this.PlayArea.ResourcesSelectedEvent = this.controllerViewModel.ResourceSelectedEventHandler;
     }
 
     private void ErrorRaisedEventHandler(ErrorDetails obj)
