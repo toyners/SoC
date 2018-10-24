@@ -48,6 +48,8 @@ namespace SoC.Harness.Views
     private IList<ResourceButtonControl> resourceControls = new List<ResourceButtonControl>();
     private string resourceSelectionMessage;
     private PropertyChangedEventArgs confirmMessageChanged = new PropertyChangedEventArgs("ConfirmMessage");
+    private Point[] robberLocations;
+    private RobberControl robber;
     #endregion
 
     #region Construction
@@ -319,7 +321,14 @@ namespace SoC.Harness.Views
 
         while (count-- > 0)
         {
-          this.GetBitmaps(hexData[hexDataIndex++], resourceBitmaps, numberBitmaps, out resourceBitmap, out numberBitmap);
+          var hexDetails = hexData[hexDataIndex++];
+          if (hexDetails.Item1 == null)
+          {
+            this.Robber.Visibility = Visibility.Visible;
+            Canvas.SetLeft(this.Robber, x);
+            Canvas.SetTop(this.Robber, y);
+          }
+          this.GetBitmaps(hexDetails, resourceBitmaps, numberBitmaps, out resourceBitmap, out numberBitmap);
           this.PlaceHex(resourceBitmap, numberBitmap, x, y);
           y += cellHeight;
         }

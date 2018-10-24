@@ -91,6 +91,9 @@
     <Compile Include="Views\RoadControl.xaml.cs">
       <DependentUpon>RoadControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\RobberControl.xaml.cs">
+      <DependentUpon>RobberControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\SettlementButtonControl.xaml.cs">
       <DependentUpon>SettlementButtonControl.xaml</DependentUpon>
     </Compile>
@@ -128,6 +131,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\RoadControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\RobberControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -9,6 +9,10 @@
   <Grid>
     <Canvas Name="BoardLayer" Height="450" Width="800" Visibility="Hidden"/>
 
+    <Canvas Name="RobberLayer">
+      <Image Name="Robber" Source="..\resources\robber.png" Visibility="Hidden"/>
+    </Canvas>
+
     <Canvas Name="RoadSelectionLayer" Height="450" Width="800" Visibility="Hidden"/>
     
     <Canvas Name="SettlementSelectionLayer" Height="450" Width="800" Visibility="Hidden"/>
@@ -24,6 +28,10 @@
       </Border>
       <Button Name="ConfirmButton" Canvas.Left="350" Canvas.Top="400" FontSize="20" 
               Click="ResourceSelectionConfirmButton_Click">Confirm</Button>
+    </Canvas>
+
+    <Canvas Name="RobberSelectionLayer" Visibility="Hidden">
+      
     </Canvas>
 
     <Canvas Name="TopLayer" Height="500" Width="800">
