@@ -9,9 +9,7 @@
   <Grid>
     <Canvas Name="BoardLayer" Height="450" Width="800" Visibility="Hidden"/>
 
-    <Canvas Name="RobberLayer">
-      <Image Name="Robber" Source="..\resources\robber.png" Visibility="Hidden" StretchDirection="Both"/>
-    </Canvas>
+    <Canvas Name="RobberLayer" Height="450" Width="800" />
 
     <Canvas Name="RoadSelectionLayer" Height="450" Width="800" Visibility="Hidden"/>
     

@@ -311,7 +311,8 @@ namespace SoC.Harness.Views
       BitmapImage resourceBitmap = null;
       BitmapImage numberBitmap = null;
       var hexData = this.board.GetHexInformation();
-      int hexDataIndex = 0;
+      int hexIndex = 0;
+      this.robberLocations = new Point[hexData.Length];
 
       foreach (var hexLayout in hexLayoutData)
       {
@@ -321,15 +322,19 @@ namespace SoC.Harness.Views
 
         while (count-- > 0)
         {
-          var hexDetails = hexData[hexDataIndex++];
+          this.robberLocations[hexIndex] = new Point(x + 2, y);
+          var hexDetails = hexData[hexIndex++];
+
           if (hexDetails.Item1 == null)
           {
+            // Initial starting location for the robber is the Desert hex
             var robberImage = new BitmapImage(new Uri(@"resources\robber.png", UriKind.Relative));
             var robber = this.CreateImage(robberImage, "");
             this.RobberLayer.Children.Add(robber);
-            Canvas.SetLeft(robber, x);
+            Canvas.SetLeft(robber, x + 2);
             Canvas.SetTop(robber, y);
           }
+
           this.GetBitmaps(hexDetails, resourceBitmaps, numberBitmaps, out resourceBitmap, out numberBitmap);
           this.PlaceHex(resourceBitmap, numberBitmap, x, y);
           y += cellHeight;

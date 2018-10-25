@@ -199,6 +199,7 @@
     <Content Include="Resources\robber.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Resource Include="Resources\robber_selection.png" />
     <Resource Include="Resources\ResourceCards\selected_brickcard.png" />
     <Resource Include="Resources\ResourceCards\selected_graincard.png" />
     <Resource Include="Resources\ResourceCards\selected_lumbercard.png" />
