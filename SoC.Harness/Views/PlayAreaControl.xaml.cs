@@ -324,9 +324,11 @@ namespace SoC.Harness.Views
           var hexDetails = hexData[hexDataIndex++];
           if (hexDetails.Item1 == null)
           {
-            this.Robber.Visibility = Visibility.Visible;
-            Canvas.SetLeft(this.Robber, x);
-            Canvas.SetTop(this.Robber, y);
+            var robberImage = new BitmapImage(new Uri(@"resources\robber.png", UriKind.Relative));
+            var robber = this.CreateImage(robberImage, "");
+            this.RobberLayer.Children.Add(robber);
+            Canvas.SetLeft(robber, x);
+            Canvas.SetTop(robber, y);
           }
           this.GetBitmaps(hexDetails, resourceBitmaps, numberBitmaps, out resourceBitmap, out numberBitmap);
           this.PlaceHex(resourceBitmap, numberBitmap, x, y);

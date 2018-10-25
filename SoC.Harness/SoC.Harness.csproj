@@ -196,7 +196,9 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Resources\robber.png" />
+    <Content Include="Resources\robber.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Resource Include="Resources\ResourceCards\selected_brickcard.png" />
     <Resource Include="Resources\ResourceCards\selected_graincard.png" />
     <Resource Include="Resources\ResourceCards\selected_lumbercard.png" />
