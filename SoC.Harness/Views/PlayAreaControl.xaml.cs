@@ -6,6 +6,7 @@ namespace SoC.Harness.Views
   using System.ComponentModel;
   using System.Windows;
   using System.Windows.Controls;
+  using System.Windows.Input;
   using System.Windows.Media.Imaging;
   using Jabberwocky.SoC.Library;
   using Jabberwocky.SoC.Library.GameBoards;
@@ -49,7 +50,7 @@ namespace SoC.Harness.Views
     private string resourceSelectionMessage;
     private PropertyChangedEventArgs confirmMessageChanged = new PropertyChangedEventArgs("ConfirmMessage");
     private Point[] robberLocations;
-    private RobberControl robber;
+    private Image robberImage, selectedRobberLocationImage;
     #endregion
 
     #region Construction
@@ -328,11 +329,15 @@ namespace SoC.Harness.Views
           if (hexDetails.Item1 == null)
           {
             // Initial starting location for the robber is the Desert hex
-            var robberImage = new BitmapImage(new Uri(@"resources\robber.png", UriKind.Relative));
-            var robber = this.CreateImage(robberImage, "");
-            this.RobberLayer.Children.Add(robber);
-            Canvas.SetLeft(robber, x + 2);
-            Canvas.SetTop(robber, y);
+            var robberBitmap = new BitmapImage(new Uri(@"resources\robber.png", UriKind.Relative));
+            this.robberImage = this.CreateImage(robberBitmap);
+            this.RobberLayer.Children.Add(this.robberImage);
+            Canvas.SetLeft(this.robberImage, x + 2);
+            Canvas.SetTop(this.robberImage, y);
+
+            var selectedRobberLocationBitmap = new BitmapImage(new Uri(@"resources\robber_selection.png", UriKind.Relative));
+            this.selectedRobberLocationImage = this.CreateImage(selectedRobberLocationBitmap);
+            this.RobberSelectionLayer.Children.Add(this.selectedRobberLocationImage);
           }
 
           this.GetBitmaps(hexDetails, resourceBitmaps, numberBitmaps, out resourceBitmap, out numberBitmap);
@@ -522,13 +527,13 @@ namespace SoC.Harness.Views
       };
     }
 
-    private Image CreateImage(BitmapImage bitmapImage, String name)
+    private Image CreateImage(BitmapImage bitmapImage)
     {
       return new Image
       {
         Width = bitmapImage.Width * 2,
         Height = bitmapImage.Height * 2,
-        Name = name,
+        //Name = name,
         Source = bitmapImage,
         StretchDirection = StretchDirection.Both
       };
@@ -583,20 +588,59 @@ namespace SoC.Harness.Views
 
     private void PlaceHex(BitmapImage resourceBitmap, BitmapImage numberBitmap, int x, int y)
     {
-      var resourceImage = this.CreateImage(resourceBitmap, string.Empty);
+      var resourceImage = this.CreateImage(resourceBitmap);
       this.BoardLayer.Children.Add(resourceImage);
       Canvas.SetLeft(resourceImage, x);
       Canvas.SetTop(resourceImage, y);
 
       if (numberBitmap == null)
       {
+        this.locationsByImage.Add(resourceImage, new Point(x, y));
+        resourceImage.MouseEnter += this.Image_MouseEnter;
+        resourceImage.MouseLeftButtonUp += this.Image_MouseLeftButtonUp;
         return;
       }
 
-      var numberImage = this.CreateImage(numberBitmap, string.Empty);
+      var numberImage = this.CreateImage(numberBitmap);
+      numberImage.MouseEnter += this.Image_MouseEnter;
+      numberImage.MouseLeftButtonUp += this.Image_MouseLeftButtonUp;
+      numberImage.PreviewMouseLeftButtonUp += this.Image_MouseLeftButtonUp;
       this.BoardLayer.Children.Add(numberImage);
       Canvas.SetLeft(numberImage, x);
       Canvas.SetTop(numberImage, y);
+
+      this.locationsByImage.Add(numberImage, new Point(x, y));
+    }
+
+    private void Image_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+    {
+      if (!this.selectNewRobberHex)
+      {
+        return;
+      }
+
+      var location = this.locationsByImage[lastImage];
+      Canvas.SetLeft(this.robberImage, location.X);
+      Canvas.SetTop(this.robberImage, location.Y);
+      this.RobberSelectionLayer.Visibility = Visibility.Hidden;
+      this.selectNewRobberHex = false;
+    }
+
+    bool selectNewRobberHex = true;
+    Dictionary<Image, Point> locationsByImage = new Dictionary<Image, Point>();
+    Image lastImage = null;
+    private void Image_MouseEnter(object sender, MouseEventArgs e)
+    {
+      if (!this.selectNewRobberHex || sender == lastImage)
+      {
+        return;
+      }
+
+      lastImage = (Image)sender;
+      this.RobberSelectionLayer.Visibility = Visibility.Visible; //selectedRobberLocationImage.Visibility = Visibility.Visible;
+      var location = this.locationsByImage[lastImage];
+      Canvas.SetLeft(this.selectedRobberLocationImage, location.X);
+      Canvas.SetTop(this.selectedRobberLocationImage, location.Y);
     }
 
     private void PlaceRoadControl(double x, double y, string imagePath)

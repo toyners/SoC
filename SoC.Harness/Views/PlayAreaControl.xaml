@@ -28,9 +28,7 @@
               Click="ResourceSelectionConfirmButton_Click">Confirm</Button>
     </Canvas>
 
-    <Canvas Name="RobberSelectionLayer" Visibility="Hidden">
-      
-    </Canvas>
+    <Canvas Name="RobberSelectionLayer" Height="450" Width="800" Visibility="Hidden" />
 
     <Canvas Name="TopLayer" Height="500" Width="800">
       <Button Name="StartGameButton" Canvas.Left="350" Canvas.Top="220" Click="StartGameButton_Click" FontSize="20">Start Game</Button>
