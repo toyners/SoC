@@ -8,11 +8,14 @@ namespace SoC.Harness.ViewModels
 
   public class ControllerViewModel
   {
+    #region Fields
     private readonly LocalGameController localGameController;
     private TurnToken currentTurnToken;
     private PlayerViewModel player;
     private Dictionary<Guid, PlayerViewModel> playerViewModelsById = new Dictionary<Guid, PlayerViewModel>();
+    #endregion
 
+    #region Construction
     public ControllerViewModel(LocalGameController localGameController)
     {
       this.localGameController = localGameController;
@@ -26,13 +29,17 @@ namespace SoC.Harness.ViewModels
       this.localGameController.ResourcesCollectedEvent = this.ResourcesCollectedEventHandler;
       this.localGameController.RobberEvent = this.RobberEventHandler;
     }
+    #endregion
 
+    #region Events
     public event Action<PlayerViewModel, PlayerViewModel, PlayerViewModel, PlayerViewModel> GameJoinedEvent;
     public event Action<IGameBoard> InitialBoardSetupEvent;
     public event Action<GameBoardUpdate> BoardUpdatedEvent;
     public event Action<uint, uint> DiceRollEvent;
     public event Action<PlayerViewModel, int> RobberEvent;
+    #endregion
 
+    #region Methods
     public void StartGame()
     {
       this.localGameController.JoinGame();
@@ -161,5 +168,6 @@ namespace SoC.Harness.ViewModels
     {
       this.currentTurnToken = turnToken;
     }
+    #endregion
   }
 }

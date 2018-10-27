@@ -337,6 +337,7 @@ namespace SoC.Harness.Views
 
             var selectedRobberLocationBitmap = new BitmapImage(new Uri(@"resources\robber_selection.png", UriKind.Relative));
             this.selectedRobberLocationImage = this.CreateImage(selectedRobberLocationBitmap);
+            this.selectedRobberLocationImage.MouseLeftButtonUp += this.Image_MouseLeftButtonUp;
             this.RobberSelectionLayer.Children.Add(this.selectedRobberLocationImage);
           }
 
@@ -597,14 +598,11 @@ namespace SoC.Harness.Views
       {
         this.locationsByImage.Add(resourceImage, new Point(x, y));
         resourceImage.MouseEnter += this.Image_MouseEnter;
-        resourceImage.MouseLeftButtonUp += this.Image_MouseLeftButtonUp;
         return;
       }
 
       var numberImage = this.CreateImage(numberBitmap);
       numberImage.MouseEnter += this.Image_MouseEnter;
-      numberImage.MouseLeftButtonUp += this.Image_MouseLeftButtonUp;
-      numberImage.PreviewMouseLeftButtonUp += this.Image_MouseLeftButtonUp;
       this.BoardLayer.Children.Add(numberImage);
       Canvas.SetLeft(numberImage, x);
       Canvas.SetTop(numberImage, y);
@@ -637,7 +635,7 @@ namespace SoC.Harness.Views
       }
 
       lastImage = (Image)sender;
-      this.RobberSelectionLayer.Visibility = Visibility.Visible; //selectedRobberLocationImage.Visibility = Visibility.Visible;
+      this.RobberSelectionLayer.Visibility = Visibility.Visible;
       var location = this.locationsByImage[lastImage];
       Canvas.SetLeft(this.selectedRobberLocationImage, location.X);
       Canvas.SetTop(this.selectedRobberLocationImage, location.Y);
