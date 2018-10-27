@@ -4,6 +4,7 @@ namespace SoC.Harness.Views
   using System;
   using System.Collections.Generic;
   using System.ComponentModel;
+  using System.Threading.Tasks;
   using System.Windows;
   using System.Windows.Controls;
   using System.Windows.Input;
@@ -51,6 +52,7 @@ namespace SoC.Harness.Views
     private PropertyChangedEventArgs confirmMessageChanged = new PropertyChangedEventArgs("ConfirmMessage");
     private Point[] robberLocations;
     private Image robberImage, selectedRobberLocationImage;
+    private ControllerViewModel controllerViewModel;
     #endregion
 
     #region Construction
@@ -77,7 +79,6 @@ namespace SoC.Harness.Views
 
     #region Events
     public Action<EventTypes, object> EndTurnEvent;
-    public Action StartGameEvent;
     public Action<ResourceClutch> ResourcesSelectedEvent;
 
     public event PropertyChangedEventHandler PropertyChanged;
@@ -96,6 +97,19 @@ namespace SoC.Harness.Views
 
         this.InitialiseRoadSelectionLayer();
       });
+    }
+
+    public void Initialise(ControllerViewModel controllerViewModel)
+    {
+      this.controllerViewModel = controllerViewModel;
+      this.controllerViewModel.GameJoinedEvent += this.InitialisePlayerViews;
+      this.controllerViewModel.InitialBoardSetupEvent += this.Initialise;
+      this.controllerViewModel.BoardUpdatedEvent += this.BoardUpdatedEventHandler;
+      this.controllerViewModel.DiceRollEvent += this.DiceRollEventHandler;
+      this.controllerViewModel.RobberEvent += this.RobberEventHandler;
+
+      this.EndTurnEvent = this.controllerViewModel.EndTurnEventHandler;
+      this.ResourcesSelectedEvent = this.controllerViewModel.ResourceSelectedEventHandler;
     }
 
     public void InitialisePlayerViews(PlayerViewModel player1, PlayerViewModel player2, PlayerViewModel player3, PlayerViewModel player4)
@@ -624,7 +638,7 @@ namespace SoC.Harness.Views
       this.selectNewRobberHex = false;
     }
 
-    bool selectNewRobberHex = true;
+    bool selectNewRobberHex = false;
     Dictionary<Image, Point> locationsByImage = new Dictionary<Image, Point>();
     Image lastImage = null;
     private void Image_MouseEnter(object sender, MouseEventArgs e)
@@ -769,13 +783,15 @@ namespace SoC.Harness.Views
 
     private void StartGameButton_Click(object sender, RoutedEventArgs e)
     {
-      this.StartGameEvent?.Invoke();
-
       this.StartGameButton.Visibility = Visibility.Hidden;
       this.TopLayer.Visibility = Visibility.Hidden;
 
       this.BoardLayer.Visibility = Visibility.Visible;
       this.SettlementSelectionLayer.Visibility = Visibility.Visible;
+
+      Task.Factory.StartNew(() => {
+        this.controllerViewModel.StartGame();
+      });
     }
 
     private void EndTurnButton_Click(object sender, RoutedEventArgs e)
