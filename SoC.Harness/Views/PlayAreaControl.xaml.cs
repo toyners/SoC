@@ -24,6 +24,7 @@ namespace SoC.Harness.Views
       AwaitingSecondInfrastructure,
       AwaitingResourceDropSelection,
       RobberLocationSelection,
+      RobbedPlayerSelection,
       Unknown,
     }
 
@@ -77,7 +78,7 @@ namespace SoC.Harness.Views
     #region Properties
     public string DiceOneImagePath { get; private set; }
     public string DiceTwoImagePath { get; private set; }
-    public string ConfirmMessage
+    public string ResourceSelectionMessage
     {
       get { return this.resourceSelectionMessage; }
       private set
@@ -179,8 +180,8 @@ namespace SoC.Harness.Views
       {
         // Display resources for player to discard
         this.workingNumberOfResourcesToSelect = numberOfResourcesToSelect;
-        this.ConfirmMessage = $"Select {this.workingNumberOfResourcesToSelect} more resources to drop";
-        this.ConfirmButton.IsEnabled = false;
+        this.ResourceSelectionMessage = $"Select {this.workingNumberOfResourcesToSelect} more resources to drop";
+        this.ResourceSelectionConfirmButton.IsEnabled = false;
 
         var width = 100;
         var gutter = 10;
@@ -713,8 +714,8 @@ namespace SoC.Harness.Views
     private void ResourceSelectedEventHandler(ResourceButtonControl resourceButton)
     {
       this.workingNumberOfResourcesToSelect -= resourceButton.IsSelected ? 1 : -1;
-      this.ConfirmMessage = $"Select {this.workingNumberOfResourcesToSelect} more resources to drop";
-      this.ConfirmButton.IsEnabled = this.workingNumberOfResourcesToSelect == 0;
+      this.ResourceSelectionMessage = $"Select {this.workingNumberOfResourcesToSelect} more resources to drop";
+      this.ResourceSelectionConfirmButton.IsEnabled = this.workingNumberOfResourcesToSelect == 0;
     }
 
     private void ResourceSelectionConfirmButton_Click(object sender, RoutedEventArgs e)

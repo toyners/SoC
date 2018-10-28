@@ -19,16 +19,30 @@
 
     <Canvas Name="SettlementLayer" Height="450" Width="800" />
 
-    <Canvas Name="ResourceSelectionLayer" Visibility="Hidden" Background="White">
-      <Border BorderBrush="Black" BorderThickness="1" Canvas.Left="200" Canvas.Top="100">
-        <TextBlock Text="{Binding ConfirmMessage}" Background="LightGray" Foreground="Black" 
+    <Canvas Name="RobberSelectionLayer" Height="450" Width="800" Visibility="Hidden" >
+      <Border BorderBrush="Black" BorderThickness="1" Canvas.Left="200" Canvas.Top="-50">
+        <TextBlock Text="Select a new location for the robber" Background="LightGray" Foreground="Black" 
                    FontSize="20"/>
       </Border>
-      <Button Name="ConfirmButton" Canvas.Left="350" Canvas.Top="400" FontSize="20" 
+    </Canvas>
+
+    <Canvas Name="PlayerSelectionLayer" Visibility="Hidden" Background="White">
+      <Border BorderBrush="Black" BorderThickness="1" Canvas.Left="200" Canvas.Top="100">
+        <TextBlock Text="Select a player to get a random resource from" Background="LightGray" Foreground="Black" 
+                   FontSize="20"/>
+      </Border>
+      <Button Name="PlayerSelectionConfirmButton" Canvas.Left="350" Canvas.Top="400" FontSize="20" 
               Click="ResourceSelectionConfirmButton_Click">Confirm</Button>
     </Canvas>
 
-    <Canvas Name="RobberSelectionLayer" Height="450" Width="800" Visibility="Hidden" />
+    <Canvas Name="ResourceSelectionLayer" Visibility="Hidden" Background="White">
+      <Border BorderBrush="Black" BorderThickness="1" Canvas.Left="200" Canvas.Top="100">
+        <TextBlock Text="{Binding ResourceSelectionMessage}" Background="LightGray" Foreground="Black" 
+                   FontSize="20"/>
+      </Border>
+      <Button Name="ResourceSelectionConfirmButton" Canvas.Left="350" Canvas.Top="400" FontSize="20" 
+              Click="ResourceSelectionConfirmButton_Click">Confirm</Button>
+    </Canvas>
 
     <Canvas Name="TopLayer" Height="500" Width="800">
       <Button Name="StartGameButton" Canvas.Left="350" Canvas.Top="220" Click="StartGameButton_Click" FontSize="20">Start Game</Button>
