@@ -58,7 +58,7 @@ namespace SoC.Harness.Views
     private HashSet<RoadButtonControl> visibleRoadButtonControls = new HashSet<RoadButtonControl>();
     private IList<ResourceButtonControl> resourceControls = new List<ResourceButtonControl>();
     private string resourceSelectionMessage;
-    private PropertyChangedEventArgs confirmMessageChanged = new PropertyChangedEventArgs("ConfirmMessage");
+    private PropertyChangedEventArgs confirmMessageChanged = new PropertyChangedEventArgs("ResourceSelectionMessage");
     private Point[] robberLocations;
     private Image robberImage, selectedRobberLocationImage;
     private ControllerViewModel controllerViewModel;
@@ -227,6 +227,7 @@ namespace SoC.Harness.Views
       }
 
       // Select hex to place robber
+      this.RobberSelectionLayer.Visibility = Visibility.Visible;
       this.state = States.RobberLocationSelection;
     }
 
@@ -651,7 +652,8 @@ namespace SoC.Harness.Views
       Canvas.SetLeft(this.robberImage, location.X);
       Canvas.SetTop(this.robberImage, location.Y);
       this.RobberSelectionLayer.Visibility = Visibility.Hidden;
-      this.state = States.Unknown;
+      //this.state = States.RobbedPlayerSelection;
+      this.PlayerSelectionLayer.Visibility = Visibility.Visible;
     }
 
     Dictionary<Image, Point> locationsByImage = new Dictionary<Image, Point>();

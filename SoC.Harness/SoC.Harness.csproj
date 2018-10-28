@@ -196,6 +196,10 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="Resources\Icons\big_blue_icon.png" />
+    <Resource Include="Resources\Icons\big_green_icon.png" />
+    <Resource Include="Resources\Icons\big_red_icon.png" />
+    <Resource Include="Resources\Icons\big_yellow_icon.png" />
     <Content Include="Resources\robber.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
