@@ -18,6 +18,15 @@ namespace SoC.Harness.Views
   /// </summary>
   public partial class PlayAreaControl : UserControl, INotifyPropertyChanged
   {
+    private enum States
+    {
+      AwaitingFirstInfrastructure,
+      AwaitingSecondInfrastructure,
+      AwaitingResourceDropSelection,
+      RobberLocationSelection,
+      Unknown,
+    }
+
     #region Fields
     private const string blueSettlementImagePath = @"..\resources\settlements\blue_settlement.png";
     private const string redSettlementImagePath = @"..\resources\settlements\red_settlement.png";
@@ -46,7 +55,6 @@ namespace SoC.Harness.Views
     private Dictionary<Guid, string[]> roadImagesByPlayerId;
     private Guid playerId;
     private HashSet<RoadButtonControl> visibleRoadButtonControls = new HashSet<RoadButtonControl>();
-    private int setupTurns = 2;
     private IList<ResourceButtonControl> resourceControls = new List<ResourceButtonControl>();
     private string resourceSelectionMessage;
     private PropertyChangedEventArgs confirmMessageChanged = new PropertyChangedEventArgs("ConfirmMessage");
@@ -54,6 +62,8 @@ namespace SoC.Harness.Views
     private Image robberImage, selectedRobberLocationImage;
     private ControllerViewModel controllerViewModel;
     private int workingNumberOfResourcesToSelect;
+    private States state = States.AwaitingFirstInfrastructure;
+    private Image currentRobberLocationHoverImage = null;
     #endregion
 
     #region Construction
@@ -79,27 +89,10 @@ namespace SoC.Harness.Views
     #endregion
 
     #region Events
-    public Action<EventTypes, object> EndTurnEvent;
-    public Action<ResourceClutch> ResourcesSelectedEvent;
-
     public event PropertyChangedEventHandler PropertyChanged;
     #endregion
 
     #region Methods
-    public void Initialise(IGameBoard board)
-    {
-      this.board = board;
-
-      Application.Current.Dispatcher.Invoke(() =>
-      {
-        this.InitialiseBoardLayer();
-
-        this.InitialiseSettlementSelectionLayer();
-
-        this.InitialiseRoadSelectionLayer();
-      });
-    }
-
     public void Initialise(ControllerViewModel controllerViewModel)
     {
       this.controllerViewModel = controllerViewModel;
@@ -108,9 +101,6 @@ namespace SoC.Harness.Views
       this.controllerViewModel.BoardUpdatedEvent += this.BoardUpdatedEventHandler;
       this.controllerViewModel.DiceRollEvent += this.DiceRollEventHandler;
       this.controllerViewModel.RobberEvent += this.RobberEventHandler;
-
-      this.EndTurnEvent = this.controllerViewModel.EndTurnEventHandler;
-      this.ResourcesSelectedEvent = this.controllerViewModel.ResourceSelectedEventHandler;
     }
 
     public void InitialisePlayerViews(PlayerViewModel player1, PlayerViewModel player2, PlayerViewModel player3, PlayerViewModel player4)
@@ -198,18 +188,20 @@ namespace SoC.Harness.Views
         var midY = 200;
         var x = midX - ((player.Resources.Count * width) + ((player.Resources.Count - 1) * gutter) / 2);
 
-        for (int i = 0; i < player.Resources.Count; i++)
+        int resourceIndex = 0;
+        for (; resourceIndex < player.Resources.Count; resourceIndex++)
         {
-          if (i >= this.resourceControls.Count)
+          if (resourceIndex >= this.resourceControls.Count)
           {
+            // Need a new resource control
             var newButton = new ResourceButtonControl(this.ResourceSelectedEventHandler);
             this.resourceControls.Add(newButton);
             this.ResourceSelectionLayer.Children.Add(newButton);
           }
           
-          var resourceButton = this.resourceControls[i];
+          var resourceButton = this.resourceControls[resourceIndex];
 
-          var resourceType = this.GetResourceTypeAt(i, player.Resources);
+          var resourceType = this.GetResourceTypeAt(resourceIndex, player.Resources);
           this.GetResourceCardImages(resourceType, out var imagePath, out var selectedImagePath);
           resourceButton.OriginalImagePath = resourceButton.ImagePath = imagePath;
           resourceButton.SelectedImagePath = selectedImagePath;
@@ -222,10 +214,19 @@ namespace SoC.Harness.Views
           resourceButton.Visibility = Visibility.Visible;
         }
 
+        // Hide resource controls that are not needed this time.
+        var resourceControlIndex = resourceIndex;
+        for (; resourceControlIndex < this.resourceControls.Count; resourceControlIndex++)
+        {
+          this.resourceControls[resourceControlIndex].Visibility = Visibility.Hidden;
+        }
+
         this.ResourceSelectionLayer.Visibility = Visibility.Visible;
+        return;
       }
 
       // Select hex to place robber
+      this.state = States.RobberLocationSelection;
     }
 
     private ResourceTypes GetResourceTypeAt(int index, ResourceClutch resources)
@@ -302,6 +303,20 @@ namespace SoC.Harness.Views
       }
 
       throw new NotImplementedException("Should not get here");
+    }
+
+    private void Initialise(IGameBoard board)
+    {
+      this.board = board;
+
+      Application.Current.Dispatcher.Invoke(() =>
+      {
+        this.InitialiseBoardLayer();
+
+        this.InitialiseSettlementSelectionLayer();
+
+        this.InitialiseRoadSelectionLayer();
+      });
     }
 
     private void InitialiseBoardLayer()
@@ -626,31 +641,29 @@ namespace SoC.Harness.Views
 
     private void Image_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
     {
-      if (!this.selectNewRobberHex)
+      if (this.state != States.RobberLocationSelection)
       {
         return;
       }
 
-      var location = this.locationsByImage[lastImage];
+      var location = this.locationsByImage[this.currentRobberLocationHoverImage];
       Canvas.SetLeft(this.robberImage, location.X);
       Canvas.SetTop(this.robberImage, location.Y);
       this.RobberSelectionLayer.Visibility = Visibility.Hidden;
-      this.selectNewRobberHex = false;
+      this.state = States.Unknown;
     }
 
-    bool selectNewRobberHex = false;
     Dictionary<Image, Point> locationsByImage = new Dictionary<Image, Point>();
-    Image lastImage = null;
     private void Image_MouseEnter(object sender, MouseEventArgs e)
     {
-      if (!this.selectNewRobberHex || sender == lastImage)
+      if (this.state != States.RobberLocationSelection || sender == this.currentRobberLocationHoverImage)
       {
         return;
       }
 
-      lastImage = (Image)sender;
+      this.currentRobberLocationHoverImage = (Image)sender;
       this.RobberSelectionLayer.Visibility = Visibility.Visible;
-      var location = this.locationsByImage[lastImage];
+      var location = this.locationsByImage[this.currentRobberLocationHoverImage];
       Canvas.SetLeft(this.selectedRobberLocationImage, location.X);
       Canvas.SetTop(this.selectedRobberLocationImage, location.Y);
     }
@@ -706,7 +719,6 @@ namespace SoC.Harness.Views
 
     private void ResourceSelectionConfirmButton_Click(object sender, RoutedEventArgs e)
     {
-      this.ResourceSelectionLayer.Visibility = Visibility.Hidden;
       var brickCount = 0;
       var grainCount = 0;
       var lumberCount = 0;
@@ -728,7 +740,9 @@ namespace SoC.Harness.Views
         }
       }
 
-      this.ResourcesSelectedEvent.Invoke(new ResourceClutch(brickCount, grainCount, lumberCount, oreCount, woolCount));
+      this.ResourceSelectionLayer.Visibility = Visibility.Hidden;
+      this.controllerViewModel.DropResourcesFromPlayer(new ResourceClutch(brickCount, grainCount, lumberCount, oreCount, woolCount));
+      this.state = States.RobberLocationSelection;
     }
 
     private void RoadSelectedEventHandler(RoadButtonControl roadButtonControl)
@@ -797,19 +811,16 @@ namespace SoC.Harness.Views
     private void EndTurnButton_Click(object sender, RoutedEventArgs e)
     {
       this.EndTurnButton.Visibility = Visibility.Hidden;
-      if (this.setupTurns == 2)
+      if (this.state == States.AwaitingFirstInfrastructure)
       {
-        this.setupTurns--;
+        this.state = States.AwaitingSecondInfrastructure;
         var roadEndLocation = this.workingRoadControl.Start == this.workingLocation ? this.workingRoadControl.End : this.workingRoadControl.Start;
-        var infrastructureInstructions = new Tuple<uint, uint>(this.workingLocation, roadEndLocation);
-        this.EndTurnEvent?.Invoke(EventTypes.EndFirstSetupTurn, infrastructureInstructions);
+        this.controllerViewModel.CompleteFirstInfrastructureSetup(this.workingLocation, roadEndLocation);
       }
-      else if (this.setupTurns == 1)
+      else if (this.state == States.AwaitingSecondInfrastructure)
       {
-        this.setupTurns--;
         var roadEndLocation = this.workingRoadControl.Start == this.workingLocation ? this.workingRoadControl.End : this.workingRoadControl.Start;
-        var infrastructureInstructions = new Tuple<uint, uint>(this.workingLocation, roadEndLocation);
-        this.EndTurnEvent?.Invoke(EventTypes.EndSecondSetupTurn, infrastructureInstructions);
+        this.controllerViewModel.CompleteSecondInfrastructureSetup(this.workingLocation, roadEndLocation);
       }
     }
     #endregion

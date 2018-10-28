@@ -28,6 +28,7 @@ namespace SoC.Harness.ViewModels
       this.localGameController.DiceRollEvent = this.DiceRollEventHandler;
       this.localGameController.ResourcesCollectedEvent = this.ResourcesCollectedEventHandler;
       this.localGameController.RobberEvent = this.RobberEventHandler;
+      this.localGameController.ResourcesLostEvent = this.ResourcesLostEventHandler;
     }
     #endregion
 
@@ -47,29 +48,19 @@ namespace SoC.Harness.ViewModels
       this.localGameController.StartGameSetup();
     }
 
-    public void EndTurnEventHandler(EventTypes eventType, object data)
+    public void CompleteFirstInfrastructureSetup(uint settlementLocation, uint roadEndLocation)
     {
-      switch (eventType)
-      {
-        case EventTypes.EndFirstSetupTurn:
-          {
-            var tuple = (Tuple<uint, uint>)data;
-            this.localGameController.ContinueGameSetup(tuple.Item1, tuple.Item2);
-            break;
-          }
-        case EventTypes.EndSecondSetupTurn:
-          {
-            var tuple = (Tuple<uint, uint>)data;
-            this.localGameController.CompleteGameSetup(tuple.Item1, tuple.Item2);
-            this.localGameController.FinalisePlayerTurnOrder();
-            this.localGameController.StartGamePlay();
-            break;
-          }
-        default: throw new NotImplementedException();
-      }
+      this.localGameController.ContinueGameSetup(settlementLocation, roadEndLocation);
     }
 
-    public void ResourceSelectedEventHandler(ResourceClutch dropResources)
+    public void CompleteSecondInfrastructureSetup(uint settlementLocation, uint roadEndLocation)
+    { 
+      this.localGameController.CompleteGameSetup(settlementLocation, roadEndLocation);
+      this.localGameController.FinalisePlayerTurnOrder();
+      this.localGameController.StartGamePlay();
+    }
+
+    public void DropResourcesFromPlayer(ResourceClutch dropResources)
     {
       this.localGameController.DropResources(dropResources);
       this.player.Update(dropResources, false);
@@ -158,9 +149,14 @@ namespace SoC.Harness.ViewModels
       }
     }
 
+    private void ResourcesLostEventHandler(ResourceUpdate obj)
+    {
+      // Resources lost by Computer players during robber roll
+      throw new NotImplementedException();
+    }
+
     private void RobberEventHandler(int numberOfResourcesToSelect)
     {
-      numberOfResourcesToSelect = 1;
       this.RobberEvent?.Invoke(this.player, numberOfResourcesToSelect);
     }
 
