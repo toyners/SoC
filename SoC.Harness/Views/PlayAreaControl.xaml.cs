@@ -53,6 +53,7 @@ namespace SoC.Harness.Views
     private Point[] robberLocations;
     private Image robberImage, selectedRobberLocationImage;
     private ControllerViewModel controllerViewModel;
+    private int workingNumberOfResourcesToSelect;
     #endregion
 
     #region Construction
@@ -182,14 +183,13 @@ namespace SoC.Harness.Views
       this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("DiceTwoImagePath"));
     }
 
-    private int numberOfResourcesToSelect;
     public void RobberEventHandler(PlayerViewModel player, int numberOfResourcesToSelect)
     {
       if (numberOfResourcesToSelect > 0)
       {
         // Display resources for player to discard
-        this.numberOfResourcesToSelect = numberOfResourcesToSelect;
-        this.ConfirmMessage = $"Select {this.numberOfResourcesToSelect} more resources to drop";
+        this.workingNumberOfResourcesToSelect = numberOfResourcesToSelect;
+        this.ConfirmMessage = $"Select {this.workingNumberOfResourcesToSelect} more resources to drop";
         this.ConfirmButton.IsEnabled = false;
 
         var width = 100;
@@ -228,18 +228,18 @@ namespace SoC.Harness.Views
       // Select hex to place robber
     }
 
-    private ResourceTypes GetResourceTypeAt(int i, ResourceClutch resources)
+    private ResourceTypes GetResourceTypeAt(int index, ResourceClutch resources)
     {
-      if (i < resources.BrickCount)
+      if (index < resources.BrickCount)
         return ResourceTypes.Brick;
 
-      if (i < resources.BrickCount + resources.GrainCount)
+      if (index < resources.BrickCount + resources.GrainCount)
         return ResourceTypes.Grain;
 
-      if (i < resources.BrickCount + resources.GrainCount + resources.LumberCount)
+      if (index < resources.BrickCount + resources.GrainCount + resources.LumberCount)
         return ResourceTypes.Lumber;
 
-      if (i < resources.BrickCount + resources.GrainCount + resources.LumberCount + resources.OreCount)
+      if (index < resources.BrickCount + resources.GrainCount + resources.LumberCount + resources.OreCount)
         return ResourceTypes.Ore;
 
       return ResourceTypes.Wool;
@@ -699,9 +699,9 @@ namespace SoC.Harness.Views
 
     private void ResourceSelectedEventHandler(ResourceButtonControl resourceButton)
     {
-      this.numberOfResourcesToSelect -= resourceButton.IsSelected ? 1 : -1;
-      this.ConfirmMessage = $"Select {this.numberOfResourcesToSelect} more resources to drop";
-      this.ConfirmButton.IsEnabled = this.numberOfResourcesToSelect == 0;
+      this.workingNumberOfResourcesToSelect -= resourceButton.IsSelected ? 1 : -1;
+      this.ConfirmMessage = $"Select {this.workingNumberOfResourcesToSelect} more resources to drop";
+      this.ConfirmButton.IsEnabled = this.workingNumberOfResourcesToSelect == 0;
     }
 
     private void ResourceSelectionConfirmButton_Click(object sender, RoutedEventArgs e)
