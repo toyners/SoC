@@ -229,7 +229,7 @@ namespace Jabberwocky.SoC.Library
       this.GamePhase = GamePhases.FinalisePlayerTurnOrder;
     }
 
-    public void ContinueGameSetup(UInt32 settlementLocation, UInt32 roadEndLocation)
+    public void ContinueGameSetup(uint settlementLocation, uint roadEndLocation)
     {
       if (this.GamePhase != GamePhases.ContinueGameSetup)
       {
@@ -258,6 +258,8 @@ namespace Jabberwocky.SoC.Library
 
     public void DropResources(ResourceClutch resourceClutch)
     {
+      // TODO: Valid the parameter - the total should match the expected resources to drop
+      // when robber roll occurred.
       this.mainPlayer.RemoveResources(resourceClutch);
     }
 
@@ -636,7 +638,7 @@ namespace Jabberwocky.SoC.Library
       this.GamePhase = GamePhases.Quitting;
     }
 
-    public void SetRobberHex(UInt32 location)
+    public void SetRobberHex(uint location)
     {
       if (this.GamePhase != GamePhases.SetRobberHex)
       {
@@ -653,7 +655,7 @@ namespace Jabberwocky.SoC.Library
         return;
       }
 
-      this.robbingChoices = new Dictionary<Guid, Int32>();
+      this.robbingChoices = new Dictionary<Guid, int>();
       foreach (var playerId in playerIds)
       {
         this.robbingChoices.Add(playerId, this.playersById[playerId].ResourcesCount);

@@ -29,6 +29,7 @@ namespace SoC.Harness.ViewModels
       this.localGameController.ResourcesCollectedEvent = this.ResourcesCollectedEventHandler;
       this.localGameController.RobberEvent = this.RobberEventHandler;
       this.localGameController.ResourcesLostEvent = this.ResourcesLostEventHandler;
+      this.localGameController.RobbingChoicesEvent = this.RobbingChoicesEventHandler;
     }
     #endregion
 
@@ -41,13 +42,6 @@ namespace SoC.Harness.ViewModels
     #endregion
 
     #region Methods
-    public void StartGame()
-    {
-      this.localGameController.JoinGame();
-      this.localGameController.LaunchGame();
-      this.localGameController.StartGameSetup();
-    }
-
     public void CompleteFirstInfrastructureSetup(uint settlementLocation, uint roadEndLocation)
     {
       this.localGameController.ContinueGameSetup(settlementLocation, roadEndLocation);
@@ -64,6 +58,18 @@ namespace SoC.Harness.ViewModels
     {
       this.localGameController.DropResources(dropResources);
       this.player.Update(dropResources, false);
+    }
+
+    public void SetRobberLocation(uint hexIndex)
+    {
+      this.localGameController.SetRobberHex(hexIndex);
+    }
+
+    public void StartGame()
+    {
+      this.localGameController.JoinGame();
+      this.localGameController.LaunchGame();
+      this.localGameController.StartGameSetup();
     }
 
     private void DiceRollEventHandler(uint arg1, uint arg2)
@@ -152,6 +158,11 @@ namespace SoC.Harness.ViewModels
     private void ResourcesLostEventHandler(ResourceUpdate obj)
     {
       // Resources lost by Computer players during robber roll
+      throw new NotImplementedException();
+    }
+
+    private void RobbingChoicesEventHandler(Dictionary<Guid, int> choicesByPlayerId)
+    {
       throw new NotImplementedException();
     }
 
