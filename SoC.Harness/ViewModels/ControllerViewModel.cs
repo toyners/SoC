@@ -149,23 +149,38 @@ namespace SoC.Harness.ViewModels
     {
       foreach (var entry in resources)
       {
+        var playerViewModel = this.playerViewModelsById[entry.Key];
         foreach (var rc in entry.Value)
         {
+          playerViewModel.UpdateHistory($"{playerViewModel.Name} gained {rc.Resources.ToString()} from {rc.Location}");
           this.playerViewModelsById[entry.Key].Update(rc.Resources, true);
         }
       }
     }
 
-    private void ResourcesLostEventHandler(ResourceUpdate obj)
+    private void ResourcesLostEventHandler(ResourceUpdate resourceUpdate)
     {
-      // Resources lost by Computer players during robber roll
-      throw new NotImplementedException();
+      // Resources lost by computer players during robber roll
+      foreach (var kv in resourceUpdate.Resources)
+      {
+        var playerViewModel = this.playerViewModelsById[kv.Key];
+        playerViewModel.UpdateHistory($"{playerViewModel.Name} lost resources to the robber");
+        playerViewModel.Update(kv.Value, false);
+      }
     }
 
     private void RobbingChoicesEventHandler(Dictionary<Guid, int> choicesByPlayerId)
     {
-      if (choicesByPlayerId != null)
+      // if there are no choices or the only choice is the player then there is nothing
+      // more to do
+      var gotMeaningfulChoices = choicesByPlayerId != null && choicesByPlayerId.Count > 0 &&
+        (choicesByPlayerId.Count == 1 && !choicesByPlayerId.ContainsKey(this.player.Id) ||
+        choicesByPlayerId.Count > 1);
+
+      if (gotMeaningfulChoices)
       {
+        // Remove the player id
+        choicesByPlayerId.Remove(this.player.Id);
         this.RobbingChoicesEvent?.Invoke(choicesByPlayerId); 
       }
     }

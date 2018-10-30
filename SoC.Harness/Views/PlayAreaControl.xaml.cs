@@ -102,7 +102,7 @@ namespace SoC.Harness.Views
       this.controllerViewModel.BoardUpdatedEvent += this.BoardUpdatedEventHandler;
       this.controllerViewModel.DiceRollEvent += this.DiceRollEventHandler;
       this.controllerViewModel.RobberEvent += this.RobberEventHandler;
-      this.controllerViewModel.RobbingChoicesEvent += this.RobbingChoicesEvent;
+      this.controllerViewModel.RobbingChoicesEvent += this.RobbingChoicesEventHandler;
     }
 
     public void InitialisePlayerViews(PlayerViewModel player1, PlayerViewModel player2, PlayerViewModel player3, PlayerViewModel player4)
@@ -771,9 +771,15 @@ namespace SoC.Harness.Views
       this.TopLayer.Visibility = Visibility.Visible;
     }
 
-    private void RobbingChoicesEvent(Dictionary<Guid, int> obj)
+    private void RobbingChoicesEventHandler(Dictionary<Guid, int> choices)
     {
-      throw new NotImplementedException();
+      var width = 60;
+      var gutter = 10;
+      var midX = 400;
+      var midY = 200;
+      var x = midX - ((choices.Count * width) + ((choices.Count - 1) * gutter) / 2);
+
+      this.PlayerSelectionLayer.Visibility = Visibility.Visible;
     }
 
     private void SettlementSelectedEventHandler(SettlementButtonControl settlementButtonControl)

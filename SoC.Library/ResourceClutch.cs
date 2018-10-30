@@ -163,6 +163,31 @@ namespace Jabberwocky.SoC.Library
       hashCode = hashCode * -1521134295 + this.WoolCount.GetHashCode();
       return hashCode;
     }
+
+    public override string ToString()
+    {
+      var result = "";
+
+      if (this.BrickCount > 0)
+        result += $"Brick {this.BrickCount}, ";
+
+      if (this.GrainCount > 0)
+        result += $"Grain {this.GrainCount}, ";
+
+      if (this.LumberCount > 0)
+        result += $"Lumber {this.LumberCount}, ";
+
+      if (this.OreCount > 0)
+        result += $"Ore {this.OreCount}, ";
+
+      if (this.WoolCount > 0)
+        result += $"Wool {this.WoolCount}";
+
+      if (result.EndsWith(", "))
+        result = result.Substring(0, result.Length - 2);
+
+      return result;
+    }
     #endregion
   }
 }
