@@ -102,6 +102,7 @@ namespace SoC.Harness.Views
       this.controllerViewModel.BoardUpdatedEvent += this.BoardUpdatedEventHandler;
       this.controllerViewModel.DiceRollEvent += this.DiceRollEventHandler;
       this.controllerViewModel.RobberEvent += this.RobberEventHandler;
+      this.controllerViewModel.RobbingChoicesEvent += this.RobbingChoicesEvent;
     }
 
     public void InitialisePlayerViews(PlayerViewModel player1, PlayerViewModel player2, PlayerViewModel player3, PlayerViewModel player4)
@@ -653,7 +654,7 @@ namespace SoC.Harness.Views
       Canvas.SetTop(this.robberImage, location.Item2.Y);
       this.RobberSelectionLayer.Visibility = Visibility.Hidden;
       //this.state = States.RobbedPlayerSelection;
-      this.PlayerSelectionLayer.Visibility = Visibility.Visible;
+      //this.PlayerSelectionLayer.Visibility = Visibility.Visible;
       this.controllerViewModel.SetRobberLocation(location.Item1);
     }
 
@@ -768,6 +769,11 @@ namespace SoC.Harness.Views
 
       this.EndTurnButton.Visibility = Visibility.Visible;
       this.TopLayer.Visibility = Visibility.Visible;
+    }
+
+    private void RobbingChoicesEvent(Dictionary<Guid, int> obj)
+    {
+      throw new NotImplementedException();
     }
 
     private void SettlementSelectedEventHandler(SettlementButtonControl settlementButtonControl)

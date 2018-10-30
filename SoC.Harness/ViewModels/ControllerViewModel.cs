@@ -39,6 +39,7 @@ namespace SoC.Harness.ViewModels
     public event Action<GameBoardUpdate> BoardUpdatedEvent;
     public event Action<uint, uint> DiceRollEvent;
     public event Action<PlayerViewModel, int> RobberEvent;
+    public event Action<Dictionary<Guid, int>> RobbingChoicesEvent;
     #endregion
 
     #region Methods
@@ -163,7 +164,10 @@ namespace SoC.Harness.ViewModels
 
     private void RobbingChoicesEventHandler(Dictionary<Guid, int> choicesByPlayerId)
     {
-      throw new NotImplementedException();
+      if (choicesByPlayerId != null)
+      {
+        this.RobbingChoicesEvent?.Invoke(choicesByPlayerId); 
+      }
     }
 
     private void RobberEventHandler(int numberOfResourcesToSelect)
