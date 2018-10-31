@@ -82,8 +82,11 @@
     <Compile Include="Views\PlayAreaControl.xaml.cs">
       <DependentUpon>PlayAreaControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\ResourceButtonControl.xaml.cs">
-      <DependentUpon>ResourceButtonControl.xaml</DependentUpon>
+    <Compile Include="Views\PlayerButton.xaml.cs">
+      <DependentUpon>PlayerButton.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ResourceButton.xaml.cs">
+      <DependentUpon>ResourceButton.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\RoadButtonControl.xaml.cs">
       <DependentUpon>RoadButtonControl.xaml</DependentUpon>
@@ -118,11 +121,15 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="Views\PlayerControl.xaml">
+    <Page Include="Views\PlayerButton.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\ResourceButtonControl.xaml">
+    <Page Include="Views\PlayerPanel.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\ResourceButton.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -148,8 +155,8 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Views\PlayerControl.xaml.cs">
-      <DependentUpon>PlayerControl.xaml</DependentUpon>
+    <Compile Include="Views\PlayerPanel.xaml.cs">
+      <DependentUpon>PlayerPanel.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>

@@ -16,8 +16,8 @@
         <RowDefinition />
       </Grid.RowDefinitions>
 
-      <views:PlayerControl x:Name="TopLeftPlayer" />
-      <views:PlayerControl x:Name="BottomLeftPlayer" Grid.Row="1" />
+      <views:PlayerPanel x:Name="TopLeftPlayer" />
+      <views:PlayerPanel x:Name="BottomLeftPlayer" Grid.Row="1" />
     </Grid>
 
     <Grid DockPanel.Dock="Right">
@@ -26,8 +26,8 @@
         <RowDefinition />
       </Grid.RowDefinitions>
 
-      <views:PlayerControl x:Name="TopRightPlayer"/>
-      <views:PlayerControl x:Name="BottomRightPlayer" Grid.Row="1" />
+      <views:PlayerPanel x:Name="TopRightPlayer"/>
+      <views:PlayerPanel x:Name="BottomRightPlayer" Grid.Row="1" />
     </Grid>
 
     <views:PlayAreaControl x:Name="PlayArea" Grid.Column="1" />

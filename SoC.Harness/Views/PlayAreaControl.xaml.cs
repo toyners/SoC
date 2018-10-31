@@ -56,7 +56,7 @@ namespace SoC.Harness.Views
     private Dictionary<Guid, string[]> roadImagesByPlayerId;
     private Guid playerId;
     private HashSet<RoadButtonControl> visibleRoadButtonControls = new HashSet<RoadButtonControl>();
-    private IList<ResourceButtonControl> resourceControls = new List<ResourceButtonControl>();
+    private IList<ResourceButton> resourceControls = new List<ResourceButton>();
     private string resourceSelectionMessage;
     private PropertyChangedEventArgs confirmMessageChanged = new PropertyChangedEventArgs("ResourceSelectionMessage");
     private Image robberImage, selectedRobberLocationImage;
@@ -196,7 +196,7 @@ namespace SoC.Harness.Views
           if (resourceIndex >= this.resourceControls.Count)
           {
             // Need a new resource control
-            var newButton = new ResourceButtonControl(this.ResourceSelectedEventHandler);
+            var newButton = new ResourceButton(this.ResourceSelectedEventHandler);
             this.resourceControls.Add(newButton);
             this.ResourceSelectionLayer.Children.Add(newButton);
           }
@@ -714,7 +714,7 @@ namespace SoC.Harness.Views
       Canvas.SetTop(control, y);
     }
 
-    private void ResourceSelectedEventHandler(ResourceButtonControl resourceButton)
+    private void ResourceSelectedEventHandler(ResourceButton resourceButton)
     {
       this.workingNumberOfResourcesToSelect -= resourceButton.IsSelected ? 1 : -1;
       this.ResourceSelectionMessage = $"Select {this.workingNumberOfResourcesToSelect} more resources to drop";

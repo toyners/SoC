@@ -20,14 +20,14 @@ namespace SoC.Harness.Views
   /// <summary>
   /// Interaction logic for ResourceControl.xaml
   /// </summary>
-  public partial class ResourceButtonControl : UserControl, INotifyPropertyChanged
+  public partial class ResourceButton : UserControl, INotifyPropertyChanged
   {
     private string imagePath;
-    public bool IsSelected;
-    private Action<ResourceButtonControl> clickEventHandler;
+    private Action<ResourceButton> clickEventHandler;
     private PropertyChangedEventArgs imagePathChanged = new PropertyChangedEventArgs("ImagePath");
+    public bool IsSelected;
 
-    public ResourceButtonControl(Action<ResourceButtonControl> clickEventHandler)
+    public ResourceButton(Action<ResourceButton> clickEventHandler)
     {
       this.DataContext = this;
       this.InitializeComponent();
