@@ -22,15 +22,14 @@ namespace SoC.Harness.Views
   public partial class PlayerButton : UserControl, INotifyPropertyChanged
   {
     private string imagePath;
-    private Action<PlayerButton> clickEventHandler;
     private PropertyChangedEventArgs imagePathChanged = new PropertyChangedEventArgs("ImagePath");
     public bool IsSelected;
+    public Action<PlayerButton> clickEventHandler;
 
-    public PlayerButton(Action<PlayerButton> clickEventHandler)
+    public PlayerButton()
     {
       this.DataContext = this;
       this.InitializeComponent();
-      this.clickEventHandler = clickEventHandler;
     }
 
     public string ImagePath

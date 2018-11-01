@@ -13,7 +13,7 @@
     <Canvas Name="RobberLayer" Height="450" Width="800" />
 
     <Canvas Name="RoadSelectionLayer" Height="450" Width="800" Visibility="Hidden"/>
-    
+
     <Canvas Name="SettlementSelectionLayer" Height="450" Width="800" Visibility="Hidden"/>
 
     <Canvas Name="RoadLayer" Height="450" Width="800"/>
@@ -29,10 +29,20 @@
 
     <Canvas Name="PlayerSelectionLayer" Visibility="Hidden" Background="White">
       <Border BorderBrush="Black" BorderThickness="1" Canvas.Left="200" Canvas.Top="100">
-        <views:PlayerButton />
         <TextBlock Text="Select a player to get a random resource from" Background="LightGray" Foreground="Black" 
                    FontSize="20"/>
       </Border>
+      <Grid Canvas.Left="200" Canvas.Top="200" Width="600" Height="200">
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition />
+          <ColumnDefinition />
+          <ColumnDefinition />
+        </Grid.ColumnDefinitions>
+        <views:PlayerButton x:Name="LeftPlayerButton"/>
+        <views:PlayerButton x:Name="MiddlePlayerButton" Grid.Column="1" />
+        <views:PlayerButton x:Name="RightPlayerButton" Grid.Column="2" />
+      </Grid>
+
       <Button Name="PlayerSelectionConfirmButton" Canvas.Left="350" Canvas.Top="400" FontSize="20" 
               Click="ResourceSelectionConfirmButton_Click">Confirm</Button>
     </Canvas>
