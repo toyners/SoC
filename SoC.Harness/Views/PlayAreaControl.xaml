@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:SoC.Harness"
+             xmlns:views="clr-namespace:SoC.Harness.Views"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
   <Grid>
@@ -28,6 +29,7 @@
 
     <Canvas Name="PlayerSelectionLayer" Visibility="Hidden" Background="White">
       <Border BorderBrush="Black" BorderThickness="1" Canvas.Left="200" Canvas.Top="100">
+        <views:PlayerButton />
         <TextBlock Text="Select a player to get a random resource from" Background="LightGray" Foreground="Black" 
                    FontSize="20"/>
       </Border>
