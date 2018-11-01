@@ -8,7 +8,7 @@
   <Button Click="Button_Click" Background="Transparent" BorderThickness="0" Style="{StaticResource NoHoverButton}">
     <StackPanel>
       <Image Source="{Binding Path=ImagePath}" />
-      <TextBlock Text="{Binding Path=Name}" />
+      <TextBlock Text="{Binding Path=PlayerName}" />
       <TextBlock Text="{Binding Path=ResourceCountMessage}" />
     </StackPanel>
   </Button>

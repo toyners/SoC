@@ -179,9 +179,9 @@ namespace SoC.Harness.ViewModels
 
       if (gotMeaningfulChoices)
       {
-        // Remove the player id
+        // Remove the player
         choicesByPlayerId.Remove(this.player.Id);
-        this.RobbingChoicesEvent?.Invoke(choicesByPlayerId); 
+        this.RobbingChoicesEvent?.Invoke(choicesByPlayerId);
       }
     }
 

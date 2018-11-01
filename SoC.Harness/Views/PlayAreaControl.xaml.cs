@@ -54,6 +54,8 @@ namespace SoC.Harness.Views
     private RoadButtonControl workingRoadControl;
     private Dictionary<Guid, string> settlementImagesByPlayerId;
     private Dictionary<Guid, string[]> roadImagesByPlayerId;
+    private Dictionary<Guid, Tuple<string, string>> bigIconImagesByPlayerId;
+    private Dictionary<Guid, string> namesByPlayerId;
     private Guid playerId;
     private HashSet<RoadButtonControl> visibleRoadButtonControls = new HashSet<RoadButtonControl>();
     private IList<ResourceButton> resourceControls = new List<ResourceButton>();
@@ -65,6 +67,7 @@ namespace SoC.Harness.Views
     private States state = States.AwaitingFirstInfrastructure;
     private Image currentRobberLocationHoverImage = null;
     private Dictionary<Image, Tuple<uint, Point>> locationsByImage = new Dictionary<Image, Tuple<uint, Point>>();
+    private PlayerButton[] playerButtons;
     #endregion
 
     #region Construction
@@ -72,6 +75,23 @@ namespace SoC.Harness.Views
     {
       this.DataContext = this;
       this.InitializeComponent();
+
+      this.playerButtons = new[] { this.LeftPlayerButton, this.MiddlePlayerButton, this.RightPlayerButton };
+      this.LeftPlayerButton.ButtonClickEventHandler = 
+      this.MiddlePlayerButton.ButtonClickEventHandler = 
+      this.RightPlayerButton.ButtonClickEventHandler = this.PlayerSelectionButton_Click;
+    }
+
+    PlayerButton selectedPlayerButton = null;
+    private void PlayerSelectionButton_Click(PlayerButton playerButton)
+    {
+      if (this.selectedPlayerButton != null && playerButton != this.selectedPlayerButton)
+      {
+        this.selectedPlayerButton.IsSelected = false;
+        this.selectedPlayerButton = playerButton;
+      }
+
+      this.PlayerSelectionConfirmButton.IsEnabled = true;
     }
     #endregion
 
@@ -778,6 +798,39 @@ namespace SoC.Harness.Views
       var midX = 400;
       var midY = 200;
       var x = midX - ((choices.Count * width) + ((choices.Count - 1) * gutter) / 2);
+
+      if (choices.Count == 1)
+      {
+        this.LeftPlayerButton.Visibility = Visibility.Visible;
+        this.MiddlePlayerButton.Visibility = this.RightPlayerButton.Visibility = Visibility.Hidden;
+      }
+      else if (choices.Count == 2)
+      {
+        this.LeftPlayerButton.Visibility = this.MiddlePlayerButton.Visibility = Visibility.Visible;
+        this.RightPlayerButton.Visibility = Visibility.Hidden;
+      }
+      else
+      {
+        this.LeftPlayerButton.Visibility = 
+        this.MiddlePlayerButton.Visibility = 
+        this.RightPlayerButton.Visibility = Visibility.Visible;
+      }
+
+      var playerButtonIndex = 0;
+      foreach (var kv in choices)
+      {
+        var images = this.bigIconImagesByPlayerId[kv.Key];
+        var playerButton = this.playerButtons[playerButtonIndex++];
+        playerButton.Visibility = Visibility.Visible;
+        playerButton.OriginalImagePath = images.Item1;
+        playerButton.SelectedImagePath = images.Item2;
+        playerButton.PlayerName = this.namesByPlayerId[kv.Key];
+        playerButton.ResourceCountMessage = $"{kv.Value} resource{(kv.Value != 1 ? "s" : "")}";
+      }
+
+      // Hide player buttons that are not needed
+      for (; playerButtonIndex < this.playerButtons.Length; playerButtonIndex++)
+        this.playerButtons[playerButtonIndex].Visibility = Visibility.Hidden;
 
       this.PlayerSelectionLayer.Visibility = Visibility.Visible;
     }
