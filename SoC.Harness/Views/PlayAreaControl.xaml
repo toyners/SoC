@@ -7,7 +7,7 @@
              xmlns:views="clr-namespace:SoC.Harness.Views"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
-  <Grid>
+  <Grid Margin="0,9,0,-9">
     <Canvas Name="BoardLayer" Height="450" Width="800" Visibility="Hidden"/>
 
     <Canvas Name="RobberLayer" Height="450" Width="800" />
@@ -27,24 +27,18 @@
       </Border>
     </Canvas>
 
-    <Canvas Name="PlayerSelectionLayer" Visibility="Hidden" Background="White">
+    <Canvas Name="PlayerSelectionLayer" Visibility="Hidden" Background="Gray">
       <Border BorderBrush="Black" BorderThickness="1" Canvas.Left="200" Canvas.Top="100">
         <TextBlock Text="Select a player to get a random resource from" Background="LightGray" Foreground="Black" 
                    FontSize="20"/>
       </Border>
-      <Grid Canvas.Left="200" Canvas.Top="200" Width="600" Height="200">
-        <Grid.ColumnDefinitions>
-          <ColumnDefinition />
-          <ColumnDefinition />
-          <ColumnDefinition />
-        </Grid.ColumnDefinitions>
-        <views:PlayerButton x:Name="LeftPlayerButton"/>
-        <views:PlayerButton x:Name="MiddlePlayerButton" Grid.Column="1" />
-        <views:PlayerButton x:Name="RightPlayerButton" Grid.Column="2" />
-      </Grid>
+      
+      <views:PlayerButton x:Name="LeftPlayerButton" Canvas.Left="150" Canvas.Top="200"/>
+      <views:PlayerButton x:Name="MiddlePlayerButton" Canvas.Left="260" Canvas.Top="200"/>
+      <views:PlayerButton x:Name="RightPlayerButton" Canvas.Left="370" Canvas.Top="200"/>
 
       <Button Name="PlayerSelectionConfirmButton" Canvas.Left="350" Canvas.Top="400" FontSize="20" 
-              Click="ResourceSelectionConfirmButton_Click">Confirm</Button>
+              Click="PlayerSelectionConfirmButton_Click">Confirm</Button>
     </Canvas>
 
     <Canvas Name="ResourceSelectionLayer" Visibility="Hidden" Background="White">
@@ -60,7 +54,7 @@
       <Button Name="StartGameButton" Canvas.Left="350" Canvas.Top="220" Click="StartGameButton_Click" FontSize="20">Start Game</Button>
       <Button Name="EndTurnButton" Canvas.Left="350" Canvas.Top="520" Visibility="Hidden" Click="EndTurnButton_Click" FontSize="20">End Turn</Button>
       <Image Name="DiceOne" Canvas.Left="570" Canvas.Top="500" Source="{Binding Path=DiceOneImagePath}" />
-      <Image Name="DiceTwo" Canvas.Left="640" Canvas.Top="500" Source="{Binding Path=DiceTwoImagePath}" />
+      <Image Name="DiceTwo" Canvas.Left="640" Canvas.Top="-204" Source="{Binding Path=DiceTwoImagePath}" />
     </Canvas>
 
   </Grid>

@@ -39,7 +39,7 @@ namespace SoC.Harness.ViewModels
     public event Action<GameBoardUpdate> BoardUpdatedEvent;
     public event Action<uint, uint> DiceRollEvent;
     public event Action<PlayerViewModel, int> RobberEvent;
-    public event Action<Dictionary<Guid, int>> RobbingChoicesEvent;
+    public event Action<List<Tuple<Guid, string, int>>> RobbingChoicesEvent;
     #endregion
 
     #region Methods
@@ -59,6 +59,11 @@ namespace SoC.Harness.ViewModels
     {
       this.localGameController.DropResources(dropResources);
       this.player.Update(dropResources, false);
+    }
+
+    public void GetRandomResourceFromOpponent(Guid opponentId)
+    {
+      this.localGameController.ChooseResourceFromOpponent(opponentId);
     }
 
     public void SetRobberLocation(uint hexIndex)
@@ -169,20 +174,51 @@ namespace SoC.Harness.ViewModels
       }
     }
 
+    public class RobbingCandidate
+    {
+      public Guid PlayerId;
+      public string PlayerName;
+      public int ResourceCount;
+    }
+
+    private List<RobbingCandidate> robbingChoices = new List<RobbingCandidate>(3);
+    private RobbingCandidate robbingChoice1 = new RobbingCandidate();
+    private RobbingCandidate robbingChoice2 = new RobbingCandidate();
+    private RobbingCandidate robbingChoice3 = new RobbingCandidate();
     private void RobbingChoicesEventHandler(Dictionary<Guid, int> choicesByPlayerId)
     {
-      // if there are no choices or the only choice is the player then there is nothing
-      // more to do
-      var gotMeaningfulChoices = choicesByPlayerId != null && choicesByPlayerId.Count > 0 &&
-        (choicesByPlayerId.Count == 1 && !choicesByPlayerId.ContainsKey(this.player.Id) ||
-        choicesByPlayerId.Count > 1);
-
-      if (gotMeaningfulChoices)
+      if (choicesByPlayerId == null)
       {
-        // Remove the player
-        choicesByPlayerId.Remove(this.player.Id);
-        this.RobbingChoicesEvent?.Invoke(choicesByPlayerId);
+        // No meaningful choices i.e. robber location has no adjacent players or
+        // just the main player.
+        return;
       }
+
+      if (choicesByPlayerId.Count == 1)
+      {
+        // Only one opponent so the choice is automatic
+        // No simple way to get the only key from the dictionary - hence the foreach
+        foreach(var kv in choicesByPlayerId)
+          this.localGameController.ChooseResourceFromOpponent(kv.Key);
+
+        return;
+      }
+
+      var choiceList = new List<Tuple<Guid, string, int>>();
+      foreach (var kv in choicesByPlayerId)
+      {
+        // Ensure the local player is not included.
+        if (kv.Key != this.player.Id)
+        {
+          choiceList.Add(new Tuple<Guid, string, int>(
+            kv.Key,
+            this.playerViewModelsById[kv.Key].Name,
+            kv.Value
+            ));
+        }
+      }
+
+      this.RobbingChoicesEvent?.Invoke(choiceList);
     }
 
     private void RobberEventHandler(int numberOfResourcesToSelect)

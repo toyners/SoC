@@ -207,6 +207,10 @@
     <Resource Include="Resources\Icons\big_green_icon.png" />
     <Resource Include="Resources\Icons\big_red_icon.png" />
     <Resource Include="Resources\Icons\big_yellow_icon.png" />
+    <Resource Include="Resources\Icons\big_selected_blue_icon.png" />
+    <Resource Include="Resources\Icons\big_selected_green_icon.png" />
+    <Resource Include="Resources\Icons\big_selected_red_icon.png" />
+    <Resource Include="Resources\Icons\big_selected_yellow_icon.png" />
     <Content Include="Resources\robber.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

@@ -47,6 +47,13 @@ namespace SoC.Harness.Views
     private const string yellowRoadLeftImagePath = @"..\resources\roads\yellow_road_left.png";
     private const string yellowRoadRightImagePath = @"..\resources\roads\yellow_road_right.png";
 
+    private const string greenBigIconImagePath = @"..\resources\icons\big_green_icon.png";
+    private const string greenBigSelectedIconImagePath = @"..\resources\icons\big_selected_green_icon.png";
+    private const string redBigIconImagePath = @"..\resources\icons\big_red_icon.png";
+    private const string redBigSelectedIconImagePath = @"..\resources\icons\big_selected_red_icon.png";
+    private const string yellowBigIconImagePath = @"..\resources\icons\big_yellow_icon.png";
+    private const string yellowBigSelectedIconImagePath = @"..\resources\icons\big_selected_yellow_icon.png";
+
     private IGameBoard board;
     private SettlementButtonControl[] settlementButtonControls;
     private Dictionary<string, RoadButtonControl> roadButtonControls;
@@ -55,7 +62,6 @@ namespace SoC.Harness.Views
     private Dictionary<Guid, string> settlementImagesByPlayerId;
     private Dictionary<Guid, string[]> roadImagesByPlayerId;
     private Dictionary<Guid, Tuple<string, string>> bigIconImagesByPlayerId;
-    private Dictionary<Guid, string> namesByPlayerId;
     private Guid playerId;
     private HashSet<RoadButtonControl> visibleRoadButtonControls = new HashSet<RoadButtonControl>();
     private IList<ResourceButton> resourceControls = new List<ResourceButton>();
@@ -91,6 +97,7 @@ namespace SoC.Harness.Views
         this.selectedPlayerButton = playerButton;
       }
 
+      this.selectedPlayerButton = playerButton;
       this.PlayerSelectionConfirmButton.IsEnabled = true;
     }
     #endregion
@@ -140,6 +147,11 @@ namespace SoC.Harness.Views
       this.roadImagesByPlayerId.Add(player2.Id, new[] { redRoadHorizontalImagePath, redRoadLeftImagePath, redRoadRightImagePath });
       this.roadImagesByPlayerId.Add(player3.Id, new[] { greenRoadHorizontalImagePath, greenRoadLeftImagePath, greenRoadRightImagePath });
       this.roadImagesByPlayerId.Add(player4.Id, new[] { yellowRoadHorizontalImagePath, yellowRoadLeftImagePath, yellowRoadRightImagePath });
+
+      this.bigIconImagesByPlayerId = new Dictionary<Guid, Tuple<string, string>>();
+      this.bigIconImagesByPlayerId.Add(player2.Id, new Tuple<string, string>(redBigIconImagePath, redBigSelectedIconImagePath));
+      this.bigIconImagesByPlayerId.Add(player3.Id, new Tuple<string, string>(greenBigIconImagePath, greenBigSelectedIconImagePath));
+      this.bigIconImagesByPlayerId.Add(player4.Id, new Tuple<string, string>(yellowBigIconImagePath, yellowBigSelectedIconImagePath));
     }
 
     public void BoardUpdatedEventHandler(GameBoardUpdate boardUpdate)
@@ -734,6 +746,11 @@ namespace SoC.Harness.Views
       Canvas.SetTop(control, y);
     }
 
+    private void PlayerSelectionConfirmButton_Click(object sender, RoutedEventArgs e)
+    {
+      this.controllerViewModel.GetRandomResourceFromOpponent(this.selectedPlayerButton.PlayerId);
+    }
+
     private void ResourceSelectedEventHandler(ResourceButton resourceButton)
     {
       this.workingNumberOfResourcesToSelect -= resourceButton.IsSelected ? 1 : -1;
@@ -791,47 +808,26 @@ namespace SoC.Harness.Views
       this.TopLayer.Visibility = Visibility.Visible;
     }
 
-    private void RobbingChoicesEventHandler(Dictionary<Guid, int> choices)
+    private void RobbingChoicesEventHandler(List<Tuple<Guid, string, int>> choices)
     {
-      var width = 60;
-      var gutter = 10;
-      var midX = 400;
-      var midY = 200;
-      var x = midX - ((choices.Count * width) + ((choices.Count - 1) * gutter) / 2);
-
-      if (choices.Count == 1)
-      {
-        this.LeftPlayerButton.Visibility = Visibility.Visible;
-        this.MiddlePlayerButton.Visibility = this.RightPlayerButton.Visibility = Visibility.Hidden;
-      }
-      else if (choices.Count == 2)
-      {
-        this.LeftPlayerButton.Visibility = this.MiddlePlayerButton.Visibility = Visibility.Visible;
-        this.RightPlayerButton.Visibility = Visibility.Hidden;
-      }
-      else
-      {
-        this.LeftPlayerButton.Visibility = 
-        this.MiddlePlayerButton.Visibility = 
-        this.RightPlayerButton.Visibility = Visibility.Visible;
-      }
-
       var playerButtonIndex = 0;
-      foreach (var kv in choices)
+      foreach (var tuple in choices)
       {
-        var images = this.bigIconImagesByPlayerId[kv.Key];
+        var images = this.bigIconImagesByPlayerId[tuple.Item1];
         var playerButton = this.playerButtons[playerButtonIndex++];
         playerButton.Visibility = Visibility.Visible;
-        playerButton.OriginalImagePath = images.Item1;
+        playerButton.PlayerId = tuple.Item1;
+        playerButton.ImagePath = playerButton.OriginalImagePath = images.Item1;
         playerButton.SelectedImagePath = images.Item2;
-        playerButton.PlayerName = this.namesByPlayerId[kv.Key];
-        playerButton.ResourceCountMessage = $"{kv.Value} resource{(kv.Value != 1 ? "s" : "")}";
+        playerButton.PlayerName = tuple.Item2;
+        playerButton.ResourceCountMessage = $"{tuple.Item3} resource{(tuple.Item3 != 1 ? "s" : "")}";
       }
 
       // Hide player buttons that are not needed
       for (; playerButtonIndex < this.playerButtons.Length; playerButtonIndex++)
         this.playerButtons[playerButtonIndex].Visibility = Visibility.Hidden;
 
+      this.PlayerSelectionConfirmButton.IsEnabled = false;
       this.PlayerSelectionLayer.Visibility = Visibility.Visible;
     }
 
