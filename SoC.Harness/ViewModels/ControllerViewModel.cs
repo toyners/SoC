@@ -174,17 +174,6 @@ namespace SoC.Harness.ViewModels
       }
     }
 
-    public class RobbingCandidate
-    {
-      public Guid PlayerId;
-      public string PlayerName;
-      public int ResourceCount;
-    }
-
-    private List<RobbingCandidate> robbingChoices = new List<RobbingCandidate>(3);
-    private RobbingCandidate robbingChoice1 = new RobbingCandidate();
-    private RobbingCandidate robbingChoice2 = new RobbingCandidate();
-    private RobbingCandidate robbingChoice3 = new RobbingCandidate();
     private void RobbingChoicesEventHandler(Dictionary<Guid, int> choicesByPlayerId)
     {
       if (choicesByPlayerId == null)
