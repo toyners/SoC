@@ -54,7 +54,7 @@
       <Button Name="StartGameButton" Canvas.Left="350" Canvas.Top="220" Click="StartGameButton_Click" FontSize="20">Start Game</Button>
       <Button Name="EndTurnButton" Canvas.Left="350" Canvas.Top="520" Visibility="Hidden" Click="EndTurnButton_Click" FontSize="20">End Turn</Button>
       <Image Name="DiceOne" Canvas.Left="570" Canvas.Top="500" Source="{Binding Path=DiceOneImagePath}" />
-      <Image Name="DiceTwo" Canvas.Left="640" Canvas.Top="-204" Source="{Binding Path=DiceTwoImagePath}" />
+      <Image Name="DiceTwo" Canvas.Left="640" Canvas.Top="500" Source="{Binding Path=DiceTwoImagePath}" />
     </Canvas>
 
   </Grid>
