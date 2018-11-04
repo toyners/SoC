@@ -21,6 +21,7 @@ namespace SoC.Harness.ViewModels
         private PlayerViewModel player;
         private Dictionary<Guid, PlayerViewModel> playerViewModelsById = new Dictionary<Guid, PlayerViewModel>();
         private States state;
+        private PlayerActions playerActions;
         #endregion
 
         #region Construction
@@ -49,7 +50,7 @@ namespace SoC.Harness.ViewModels
         public event Action<uint, uint> DiceRollEvent;
         public event Action<PlayerViewModel, int> RobberEvent;
         public event Action<List<Tuple<Guid, string, int>>> RobbingChoicesEvent;
-        public event Action StartTurnEvent;
+        public event Action<PlayerActions> StartTurnEvent;
         #endregion
 
         #region Methods
@@ -202,7 +203,7 @@ namespace SoC.Harness.ViewModels
             {
                 // No meaningful choices i.e. robber location has no adjacent players or
                 // just the main player.
-                this.StartTurnEvent?.Invoke();
+                this.StartTurnEvent?.Invoke(this.playerActions);
                 return;
             }
 
@@ -216,6 +217,7 @@ namespace SoC.Harness.ViewModels
 
                 this.localGameController.ChooseResourceFromOpponent(opponentId);
 
+                this.StartTurnEvent?.Invoke(this.playerActions);
                 return;
             }
 

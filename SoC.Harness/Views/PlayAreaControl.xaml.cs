@@ -895,9 +895,15 @@ namespace SoC.Harness.Views
             });
         }
 
-        private void StartTurnEventHandler()
+        private void StartTurnEventHandler(PlayerActions playerActions)
         {
-            throw new NotImplementedException();
+            this.TradeButton.Visibility = Visibility.Visible;
+            this.BuildButton.Visibility = Visibility.Visible;
+            this.BuildButton.IsEnabled = playerActions.CanBuildSettlement | playerActions.CanBuildRoad | playerActions.CanBuildCity;
+            this.BuyButton.Visibility = Visibility.Visible;
+            this.BuyButton.IsEnabled = playerActions.CanBuyDevelopmentCard;
+            this.UseButton.Visibility = Visibility.Visible;
+            this.UseButton.IsEnabled = playerActions.CanUseDevelopmentCard; 
         }
 
         private void TradeButton_Click(object sender, RoutedEventArgs e)
