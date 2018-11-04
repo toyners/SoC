@@ -25,7 +25,7 @@ namespace Jabberwocky.SoC.Library
     #endregion
 
     #region Properties
-    public Int32 Count { get { return resourceTransactions.Count; } }
+    public Int32 Count { get { return this.resourceTransactions.Count; } }
 
     public ResourceTransaction this[Int32 index]
     {

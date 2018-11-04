@@ -742,7 +742,7 @@ namespace Jabberwocky.SoC.Library
       }
     }
 
-    public Boolean StartGameSetup()
+    public bool StartGameSetup()
     {
       if (this.GamePhase != GamePhases.StartGameSetup)
       {
