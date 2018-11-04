@@ -17,12 +17,12 @@ namespace SoC.Harness.Views
     {
         private enum States
         {
-          AwaitingFirstInfrastructure,
-          AwaitingSecondInfrastructure,
-          AwaitingResourceDropSelection,
-          RobberLocationSelection,
-          RobbedPlayerSelection,
-          Unknown,
+            AwaitingFirstInfrastructure,
+            AwaitingSecondInfrastructure,
+            AwaitingResourceDropSelection,
+            RobberLocationSelection,
+            RobbedPlayerSelection,
+            Unknown,
         }
 
         #region Fields
@@ -77,13 +77,13 @@ namespace SoC.Harness.Views
         #region Construction
         public PlayAreaControl()
         {
-          this.DataContext = this;
-          this.InitializeComponent();
+            this.DataContext = this;
+            this.InitializeComponent();
 
-          this.playerButtons = new[] { this.LeftPlayerButton, this.MiddlePlayerButton, this.RightPlayerButton };
-          this.LeftPlayerButton.ButtonClickEventHandler = 
-          this.MiddlePlayerButton.ButtonClickEventHandler = 
-          this.RightPlayerButton.ButtonClickEventHandler = this.PlayerSelectionButton_Click;
+            this.playerButtons = new[] { this.LeftPlayerButton, this.MiddlePlayerButton, this.RightPlayerButton };
+            this.LeftPlayerButton.ButtonClickEventHandler =
+            this.MiddlePlayerButton.ButtonClickEventHandler =
+            this.RightPlayerButton.ButtonClickEventHandler = this.PlayerSelectionButton_Click;
         }
         #endregion
 
@@ -92,12 +92,12 @@ namespace SoC.Harness.Views
         public string DiceTwoImagePath { get; private set; }
         public string ResourceSelectionMessage
         {
-          get { return this.resourceSelectionMessage; }
-          private set
-          {
-            this.resourceSelectionMessage = value;
-            this.PropertyChanged.Invoke(this, this.confirmMessageChanged);
-          }
+            get { return this.resourceSelectionMessage; }
+            private set
+            {
+                this.resourceSelectionMessage = value;
+                this.PropertyChanged.Invoke(this, this.confirmMessageChanged);
+            }
         }
         #endregion
 
@@ -106,6 +106,59 @@ namespace SoC.Harness.Views
         #endregion
 
         #region Methods
+        public void BoardUpdatedEventHandler(GameBoardUpdate boardUpdate)
+        {
+            if (boardUpdate == null)
+            {
+                return; // Should a null boardupdate be valid?
+            }
+
+            foreach (var settlementDetails in boardUpdate.NewSettlements)
+            {
+                var location = settlementDetails.Item1;
+                var playerId = settlementDetails.Item2;
+                var settlementImagePath = this.settlementImagesByPlayerId[playerId];
+
+                var control = this.settlementButtonControls[location];
+                this.PlaceBuildingControl(control.X, control.Y, location.ToString(), settlementImagePath, this.SettlementLayer);
+
+                control.Visibility = Visibility.Hidden;
+
+                var neighbouringLocations = this.board.BoardQuery.GetNeighbouringLocationsFrom(location);
+                foreach (var neighbouringLocation in neighbouringLocations)
+                {
+                    this.settlementButtonControls[neighbouringLocation].Visibility = Visibility.Hidden;
+                }
+            }
+
+            foreach (var roadDetails in boardUpdate.NewRoads)
+            {
+                var startLocation = roadDetails.Item1;
+                var endLocation = roadDetails.Item2;
+                var playerId = roadDetails.Item3;
+
+                var key = $"{startLocation}-{endLocation}";
+                var control = this.roadButtonControls[key];
+
+                var roadImagePath = this.roadImagesByPlayerId[playerId][(int)control.RoadImageType];
+
+                control.Visibility = Visibility.Hidden;
+
+                this.PlaceRoadControl(control.X, control.Y, roadImagePath);
+            }
+
+            this.SettlementSelectionLayer.Visibility = Visibility.Visible;
+        }
+
+        public void DiceRollEventHandler(uint dice1, uint dice2)
+        {
+            this.DiceOneImagePath = this.GetDiceImage(dice1);
+            this.DiceTwoImagePath = this.GetDiceImage(dice2);
+
+            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("DiceOneImagePath"));
+            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("DiceTwoImagePath"));
+        }
+
         public void Initialise(ControllerViewModel controllerViewModel)
         {
             this.controllerViewModel = controllerViewModel;
@@ -118,245 +171,213 @@ namespace SoC.Harness.Views
             this.controllerViewModel.StartTurnEvent += this.StartTurnEventHandler;
         }
 
-        private void StartTurnEventHandler()
-        {
-            throw new NotImplementedException();    
-        }
-
         public void InitialisePlayerViews(PlayerViewModel player1, PlayerViewModel player2, PlayerViewModel player3, PlayerViewModel player4)
         {
-          this.playerId = player1.Id;
+            this.playerId = player1.Id;
 
-          this.settlementImagesByPlayerId = new Dictionary<Guid, string>();
-          this.settlementImagesByPlayerId.Add(player1.Id, blueSettlementImagePath);
-          this.settlementImagesByPlayerId.Add(player2.Id, redSettlementImagePath);
-          this.settlementImagesByPlayerId.Add(player3.Id, greenSettlementImagePath);
-          this.settlementImagesByPlayerId.Add(player4.Id, yellowSettlementImagePath);
+            this.settlementImagesByPlayerId = new Dictionary<Guid, string>();
+            this.settlementImagesByPlayerId.Add(player1.Id, blueSettlementImagePath);
+            this.settlementImagesByPlayerId.Add(player2.Id, redSettlementImagePath);
+            this.settlementImagesByPlayerId.Add(player3.Id, greenSettlementImagePath);
+            this.settlementImagesByPlayerId.Add(player4.Id, yellowSettlementImagePath);
 
-          this.roadImagesByPlayerId = new Dictionary<Guid, string[]>();
-          this.roadImagesByPlayerId.Add(player1.Id, new[] { blueRoadHorizontalImagePath, blueRoadLeftImagePath, blueRoadRightImagePath });
-          this.roadImagesByPlayerId.Add(player2.Id, new[] { redRoadHorizontalImagePath, redRoadLeftImagePath, redRoadRightImagePath });
-          this.roadImagesByPlayerId.Add(player3.Id, new[] { greenRoadHorizontalImagePath, greenRoadLeftImagePath, greenRoadRightImagePath });
-          this.roadImagesByPlayerId.Add(player4.Id, new[] { yellowRoadHorizontalImagePath, yellowRoadLeftImagePath, yellowRoadRightImagePath });
+            this.roadImagesByPlayerId = new Dictionary<Guid, string[]>();
+            this.roadImagesByPlayerId.Add(player1.Id, new[] { blueRoadHorizontalImagePath, blueRoadLeftImagePath, blueRoadRightImagePath });
+            this.roadImagesByPlayerId.Add(player2.Id, new[] { redRoadHorizontalImagePath, redRoadLeftImagePath, redRoadRightImagePath });
+            this.roadImagesByPlayerId.Add(player3.Id, new[] { greenRoadHorizontalImagePath, greenRoadLeftImagePath, greenRoadRightImagePath });
+            this.roadImagesByPlayerId.Add(player4.Id, new[] { yellowRoadHorizontalImagePath, yellowRoadLeftImagePath, yellowRoadRightImagePath });
 
-          this.bigIconImagesByPlayerId = new Dictionary<Guid, Tuple<string, string>>();
-          this.bigIconImagesByPlayerId.Add(player2.Id, new Tuple<string, string>(redBigIconImagePath, redBigSelectedIconImagePath));
-          this.bigIconImagesByPlayerId.Add(player3.Id, new Tuple<string, string>(greenBigIconImagePath, greenBigSelectedIconImagePath));
-          this.bigIconImagesByPlayerId.Add(player4.Id, new Tuple<string, string>(yellowBigIconImagePath, yellowBigSelectedIconImagePath));
-        }
-
-        public void BoardUpdatedEventHandler(GameBoardUpdate boardUpdate)
-        {
-          if (boardUpdate == null)
-          {
-            return; // Should a null boardupdate be valid?
-          }
-      
-          foreach (var settlementDetails in boardUpdate.NewSettlements)
-          {
-            var location = settlementDetails.Item1;
-            var playerId = settlementDetails.Item2;
-            var settlementImagePath = this.settlementImagesByPlayerId[playerId];
-
-            var control = this.settlementButtonControls[location];
-            this.PlaceBuildingControl(control.X, control.Y, location.ToString(), settlementImagePath, this.SettlementLayer);
-
-            control.Visibility = Visibility.Hidden;
-
-            var neighbouringLocations = this.board.BoardQuery.GetNeighbouringLocationsFrom(location);
-            foreach (var neighbouringLocation in neighbouringLocations)
-            {
-              this.settlementButtonControls[neighbouringLocation].Visibility = Visibility.Hidden;
-            }
-          }
-
-          foreach (var roadDetails in boardUpdate.NewRoads)
-          {
-            var startLocation = roadDetails.Item1;
-            var endLocation = roadDetails.Item2;
-            var playerId = roadDetails.Item3;
-
-            var key = $"{startLocation}-{endLocation}";
-            var control = this.roadButtonControls[key];
-
-            var roadImagePath = this.roadImagesByPlayerId[playerId][(int)control.RoadImageType];
-        
-            control.Visibility = Visibility.Hidden;
-
-            this.PlaceRoadControl(control.X, control.Y, roadImagePath);
-          }
-
-          this.SettlementSelectionLayer.Visibility = Visibility.Visible;
-        }
-
-        public void DiceRollEventHandler(uint dice1, uint dice2)
-        {
-          this.DiceOneImagePath = this.GetDiceImage(dice1);
-          this.DiceTwoImagePath = this.GetDiceImage(dice2);
-
-          this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("DiceOneImagePath"));
-          this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("DiceTwoImagePath"));
+            this.bigIconImagesByPlayerId = new Dictionary<Guid, Tuple<string, string>>();
+            this.bigIconImagesByPlayerId.Add(player2.Id, new Tuple<string, string>(redBigIconImagePath, redBigSelectedIconImagePath));
+            this.bigIconImagesByPlayerId.Add(player3.Id, new Tuple<string, string>(greenBigIconImagePath, greenBigSelectedIconImagePath));
+            this.bigIconImagesByPlayerId.Add(player4.Id, new Tuple<string, string>(yellowBigIconImagePath, yellowBigSelectedIconImagePath));
         }
 
         public void RobberEventHandler(PlayerViewModel player, int numberOfResourcesToSelect)
         {
-          if (numberOfResourcesToSelect > 0)
-          {
-            // Display resources for player to discard
-            this.workingNumberOfResourcesToSelect = numberOfResourcesToSelect;
-            this.ResourceSelectionMessage = $"Select {this.workingNumberOfResourcesToSelect} more resources to drop";
-            this.ResourceSelectionConfirmButton.IsEnabled = false;
-
-            var width = 100;
-            var gutter = 10;
-            var midX = 400;
-            var midY = 200;
-            var x = midX - ((player.Resources.Count * width) + ((player.Resources.Count - 1) * gutter) / 2);
-
-            int resourceIndex = 0;
-            for (; resourceIndex < player.Resources.Count; resourceIndex++)
+            if (numberOfResourcesToSelect > 0)
             {
-              if (resourceIndex >= this.resourceControls.Count)
-              {
-                // Need a new resource control
-                var newButton = new ResourceButton(this.ResourceSelectedEventHandler);
-                this.resourceControls.Add(newButton);
-                this.ResourceSelectionLayer.Children.Add(newButton);
-              }
-          
-              var resourceButton = this.resourceControls[resourceIndex];
+                // Display resources for player to discard
+                this.workingNumberOfResourcesToSelect = numberOfResourcesToSelect;
+                this.ResourceSelectionMessage = $"Select {this.workingNumberOfResourcesToSelect} more resources to drop";
+                this.ResourceSelectionConfirmButton.IsEnabled = false;
 
-              var resourceType = this.GetResourceTypeAt(resourceIndex, player.Resources);
-              this.GetResourceCardImages(resourceType, out var imagePath, out var selectedImagePath);
-              resourceButton.OriginalImagePath = resourceButton.ImagePath = imagePath;
-              resourceButton.SelectedImagePath = selectedImagePath;
-              resourceButton.ResourceType = resourceType;
+                var width = 100;
+                var gutter = 10;
+                var midX = 400;
+                var midY = 200;
+                var x = midX - ((player.Resources.Count * width) + ((player.Resources.Count - 1) * gutter) / 2);
 
-              Canvas.SetLeft(resourceButton, x);
-              Canvas.SetTop(resourceButton, midY);
-              x += width + gutter;
+                int resourceIndex = 0;
+                for (; resourceIndex < player.Resources.Count; resourceIndex++)
+                {
+                    if (resourceIndex >= this.resourceControls.Count)
+                    {
+                        // Need a new resource control
+                        var newButton = new ResourceButton(this.ResourceSelectedEventHandler);
+                        this.resourceControls.Add(newButton);
+                        this.ResourceSelectionLayer.Children.Add(newButton);
+                    }
 
-              resourceButton.Visibility = Visibility.Visible;
+                    var resourceButton = this.resourceControls[resourceIndex];
+
+                    var resourceType = this.GetResourceTypeAt(resourceIndex, player.Resources);
+                    this.GetResourceCardImages(resourceType, out var imagePath, out var selectedImagePath);
+                    resourceButton.OriginalImagePath = resourceButton.ImagePath = imagePath;
+                    resourceButton.SelectedImagePath = selectedImagePath;
+                    resourceButton.ResourceType = resourceType;
+
+                    Canvas.SetLeft(resourceButton, x);
+                    Canvas.SetTop(resourceButton, midY);
+                    x += width + gutter;
+
+                    resourceButton.Visibility = Visibility.Visible;
+                }
+
+                // Hide resource controls that are not needed this time.
+                var resourceControlIndex = resourceIndex;
+                for (; resourceControlIndex < this.resourceControls.Count; resourceControlIndex++)
+                {
+                    this.resourceControls[resourceControlIndex].Visibility = Visibility.Hidden;
+                }
+
+                this.ResourceSelectionLayer.Visibility = Visibility.Visible;
+                return;
             }
 
-            // Hide resource controls that are not needed this time.
-            var resourceControlIndex = resourceIndex;
-            for (; resourceControlIndex < this.resourceControls.Count; resourceControlIndex++)
+            // Select hex to place robber
+            this.RobberSelectionLayer.Visibility = Visibility.Visible;
+            this.state = States.RobberLocationSelection;
+        }
+
+        private void BuildButton_Click(object sender, RoutedEventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void BuyButton_Click(object sender, RoutedEventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void EndTurnButton_Click(object sender, RoutedEventArgs e)
+        {
+            this.EndTurnButton.Visibility = Visibility.Hidden;
+            if (this.state == States.AwaitingFirstInfrastructure)
             {
-              this.resourceControls[resourceControlIndex].Visibility = Visibility.Hidden;
+                this.state = States.AwaitingSecondInfrastructure;
+                var roadEndLocation = this.workingRoadControl.Start == this.workingLocation ? this.workingRoadControl.End : this.workingRoadControl.Start;
+                this.controllerViewModel.CompleteFirstInfrastructureSetup(this.workingLocation, roadEndLocation);
             }
-
-            this.ResourceSelectionLayer.Visibility = Visibility.Visible;
-            return;
-          }
-
-          // Select hex to place robber
-          this.RobberSelectionLayer.Visibility = Visibility.Visible;
-          this.state = States.RobberLocationSelection;
+            else if (this.state == States.AwaitingSecondInfrastructure)
+            {
+                var roadEndLocation = this.workingRoadControl.Start == this.workingLocation ? this.workingRoadControl.End : this.workingRoadControl.Start;
+                this.controllerViewModel.CompleteSecondInfrastructureSetup(this.workingLocation, roadEndLocation);
+            }
         }
 
         private ResourceTypes GetResourceTypeAt(int index, ResourceClutch resources)
         {
-          if (index < resources.BrickCount)
-            return ResourceTypes.Brick;
+            if (index < resources.BrickCount)
+                return ResourceTypes.Brick;
 
-          if (index < resources.BrickCount + resources.GrainCount)
-            return ResourceTypes.Grain;
+            if (index < resources.BrickCount + resources.GrainCount)
+                return ResourceTypes.Grain;
 
-          if (index < resources.BrickCount + resources.GrainCount + resources.LumberCount)
-            return ResourceTypes.Lumber;
+            if (index < resources.BrickCount + resources.GrainCount + resources.LumberCount)
+                return ResourceTypes.Lumber;
 
-          if (index < resources.BrickCount + resources.GrainCount + resources.LumberCount + resources.OreCount)
-            return ResourceTypes.Ore;
+            if (index < resources.BrickCount + resources.GrainCount + resources.LumberCount + resources.OreCount)
+                return ResourceTypes.Ore;
 
-          return ResourceTypes.Wool;
+            return ResourceTypes.Wool;
         }
 
         private void GetResourceCardImages(ResourceTypes resourceType, out string imagePath, out string selectedImagePath)
         {
-          switch (resourceType)
-          {
-            case ResourceTypes.Brick:
-              {
-                imagePath = @"..\resources\resourcecards\brickcard.png";
-                selectedImagePath = @"..\resources\resourcecards\selected_brickcard.png";
-                break;
-              }
-            case ResourceTypes.Grain:
-              {
-                imagePath = @"..\resources\resourcecards\graincard.png";
-                selectedImagePath = @"..\resources\resourcecards\selected_graincard.png";
-                break;
-              }
-            case ResourceTypes.Lumber:
-              {
-                imagePath = @"..\resources\resourcecards\lumbercard.png";
-                selectedImagePath = @"..\resources\resourcecards\selected_lumbercard.png";
-                break;
-              }
-            case ResourceTypes.Ore:
-              {
-                imagePath = @"..\resources\resourcecards\orecard.png";
-                selectedImagePath = @"..\resources\resourcecards\selected_orecard.png";
-                break;
-              }
-            default:
-              {
-                imagePath = @"..\resources\resourcecards\woolcard.png";
-                selectedImagePath = @"..\resources\resourcecards\selected_woolcard.png";
-                break;
-              }
-          }
+            switch (resourceType)
+            {
+                case ResourceTypes.Brick:
+                    {
+                        imagePath = @"..\resources\resourcecards\brickcard.png";
+                        selectedImagePath = @"..\resources\resourcecards\selected_brickcard.png";
+                        break;
+                    }
+                case ResourceTypes.Grain:
+                    {
+                        imagePath = @"..\resources\resourcecards\graincard.png";
+                        selectedImagePath = @"..\resources\resourcecards\selected_graincard.png";
+                        break;
+                    }
+                case ResourceTypes.Lumber:
+                    {
+                        imagePath = @"..\resources\resourcecards\lumbercard.png";
+                        selectedImagePath = @"..\resources\resourcecards\selected_lumbercard.png";
+                        break;
+                    }
+                case ResourceTypes.Ore:
+                    {
+                        imagePath = @"..\resources\resourcecards\orecard.png";
+                        selectedImagePath = @"..\resources\resourcecards\selected_orecard.png";
+                        break;
+                    }
+                default:
+                    {
+                        imagePath = @"..\resources\resourcecards\woolcard.png";
+                        selectedImagePath = @"..\resources\resourcecards\selected_woolcard.png";
+                        break;
+                    }
+            }
         }
 
         private string GetDiceImage(uint diceRoll)
         {
-          const string OneImagePath = @"..\resources\dice\one.png";
-          const string TwoImagePath = @"..\resources\dice\two.png";
-          const string ThreeImagePath = @"..\resources\dice\three.png";
-          const string FourImagePath = @"..\resources\dice\four.png";
-          const string FiveImagePath = @"..\resources\dice\five.png";
-          const string SixImagePath = @"..\resources\dice\six.png";
+            const string OneImagePath = @"..\resources\dice\one.png";
+            const string TwoImagePath = @"..\resources\dice\two.png";
+            const string ThreeImagePath = @"..\resources\dice\three.png";
+            const string FourImagePath = @"..\resources\dice\four.png";
+            const string FiveImagePath = @"..\resources\dice\five.png";
+            const string SixImagePath = @"..\resources\dice\six.png";
 
-          switch (diceRoll)
-          {
-            case 1: return OneImagePath;
-            case 2: return TwoImagePath;
-            case 3: return ThreeImagePath;
-            case 4: return FourImagePath;
-            case 5: return FiveImagePath;
-            case 6: return SixImagePath;
-          }
+            switch (diceRoll)
+            {
+                case 1: return OneImagePath;
+                case 2: return TwoImagePath;
+                case 3: return ThreeImagePath;
+                case 4: return FourImagePath;
+                case 5: return FiveImagePath;
+                case 6: return SixImagePath;
+            }
 
-          throw new NotImplementedException("Should not get here");
+            throw new NotImplementedException("Should not get here");
         }
 
         private void Initialise(IGameBoard board)
         {
-          this.board = board;
+            this.board = board;
 
-          Application.Current.Dispatcher.Invoke(() =>
-          {
-            this.InitialiseBoardLayer();
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                this.InitialiseBoardLayer();
 
-            this.InitialiseSettlementSelectionLayer();
+                this.InitialiseSettlementSelectionLayer();
 
-            this.InitialiseRoadSelectionLayer();
-          });
+                this.InitialiseRoadSelectionLayer();
+            });
         }
 
         private void InitialiseBoardLayer()
         {
-          var resourceBitmaps = this.CreateResourceBitmaps();
-          var numberBitmaps = this.CreateNumberBitmaps();
+            var resourceBitmaps = this.CreateResourceBitmaps();
+            var numberBitmaps = this.CreateNumberBitmaps();
 
-          var middleX = (int)this.BoardLayer.Width / 2;
-          var middleY = (int)this.BoardLayer.Height / 2;
-          const int cellHeight = 90;
-          const int cellWidth = 90;
+            var middleX = (int)this.BoardLayer.Width / 2;
+            var middleY = (int)this.BoardLayer.Height / 2;
+            const int cellHeight = 90;
+            const int cellWidth = 90;
 
-          var hexLayoutData = new[]
-          {
+            var hexLayoutData = new[]
+            {
             new HexLayoutData { X = middleX - (cellWidth * 2) + 4, Y = middleY - (cellHeight / 2) - cellHeight, Count = 3 },
             new HexLayoutData { X = middleX - (cellWidth / 4) * 5, Y = middleY - (cellHeight * 2), Count = 4 },
             new HexLayoutData { X = middleX - (cellWidth / 2), Y = middleY - (cellHeight / 2) - (cellHeight * 2), Count = 5 },
@@ -364,52 +385,52 @@ namespace SoC.Harness.Views
             new HexLayoutData { X = middleX + cellWidth - 4, Y = middleY - (cellHeight / 2) - cellHeight, Count = 3 }
           };
 
-          BitmapImage resourceBitmap = null;
-          BitmapImage numberBitmap = null;
-          var hexData = this.board.GetHexInformation();
-          uint hexIndex = 0;
+            BitmapImage resourceBitmap = null;
+            BitmapImage numberBitmap = null;
+            var hexData = this.board.GetHexInformation();
+            uint hexIndex = 0;
 
-          foreach (var hexLayout in hexLayoutData)
-          {
-            var count = hexLayout.Count;
-            var x = hexLayout.X;
-            var y = hexLayout.Y;
-
-            while (count-- > 0)
+            foreach (var hexLayout in hexLayoutData)
             {
-              var hexDetails = hexData[hexIndex];
+                var count = hexLayout.Count;
+                var x = hexLayout.X;
+                var y = hexLayout.Y;
 
-              this.GetBitmaps(hexDetails, resourceBitmaps, numberBitmaps, out resourceBitmap, out numberBitmap);
+                while (count-- > 0)
+                {
+                    var hexDetails = hexData[hexIndex];
 
-              if (hexDetails.Item1 == null)
-              {
-                // Initial starting location for the robber is the Desert hex
-                var robberBitmap = new BitmapImage(new Uri(@"resources\robber.png", UriKind.Relative));
-                this.robberImage = this.CreateImage(robberBitmap);
-                this.RobberLayer.Children.Add(this.robberImage);
-                Canvas.SetLeft(this.robberImage, x + 2);
-                Canvas.SetTop(this.robberImage, y);
+                    this.GetBitmaps(hexDetails, resourceBitmaps, numberBitmaps, out resourceBitmap, out numberBitmap);
 
-                var selectedRobberLocationBitmap = new BitmapImage(new Uri(@"resources\robber_selection.png", UriKind.Relative));
-                this.selectedRobberLocationImage = this.CreateImage(selectedRobberLocationBitmap);
-                this.selectedRobberLocationImage.MouseLeftButtonUp += this.Image_MouseLeftButtonUp;
-                this.RobberSelectionLayer.Children.Add(this.selectedRobberLocationImage);
-              }
-          
-              this.PlaceHex(hexIndex, resourceBitmap, numberBitmap, x, y);
-              y += cellHeight;
-              hexIndex++;
+                    if (hexDetails.Item1 == null)
+                    {
+                        // Initial starting location for the robber is the Desert hex
+                        var robberBitmap = new BitmapImage(new Uri(@"resources\robber.png", UriKind.Relative));
+                        this.robberImage = this.CreateImage(robberBitmap);
+                        this.RobberLayer.Children.Add(this.robberImage);
+                        Canvas.SetLeft(this.robberImage, x + 2);
+                        Canvas.SetTop(this.robberImage, y);
+
+                        var selectedRobberLocationBitmap = new BitmapImage(new Uri(@"resources\robber_selection.png", UriKind.Relative));
+                        this.selectedRobberLocationImage = this.CreateImage(selectedRobberLocationBitmap);
+                        this.selectedRobberLocationImage.MouseLeftButtonUp += this.Location_MouseClick;
+                        this.RobberSelectionLayer.Children.Add(this.selectedRobberLocationImage);
+                    }
+
+                    this.PlaceHex(hexIndex, resourceBitmap, numberBitmap, x, y);
+                    y += cellHeight;
+                    hexIndex++;
+                }
             }
-          }
         }
 
         private void InitialiseSettlementSelectionLayer()
         {
-          this.settlementButtonControls = new SettlementButtonControl[GameBoard.StandardBoardLocationCount];
+            this.settlementButtonControls = new SettlementButtonControl[GameBoard.StandardBoardLocationCount];
 
-          uint location = 0;
-          var settlementLayoutData = new[]
-          {
+            uint location = 0;
+            var settlementLayoutData = new[]
+            {
             new SettlementLayoutData { X = 240, Y = 82, Dx = 21, Dy = 44, DirectionX = -1, Count = 7 },
             new SettlementLayoutData { X = 304, Y = 38, Dx = 21, Dy = 44, DirectionX = -1, Count = 9 },
             new SettlementLayoutData { X = 368, Y = -6, Dx = 21, Dy = 44, DirectionX = -1, Count = 11 },
@@ -418,89 +439,89 @@ namespace SoC.Harness.Views
             new SettlementLayoutData { X = 540, Y = 82, Dx = 21, Dy = 44, DirectionX = 1, Count = 7 },
           };
 
-          foreach (var settlementData in settlementLayoutData)
-          {
-            var count = settlementData.Count;
-            var x = settlementData.X;
-            var y = settlementData.Y;
-            var direction = settlementData.DirectionX;
-            var dx = settlementData.Dx;
-            var dy = settlementData.Dy;
-
-            while (count-- > 0)
+            foreach (var settlementData in settlementLayoutData)
             {
-              var control = this.PlaceSettlementButtonControl(x, y, location, location.ToString());
-              this.settlementButtonControls[location++] = control;
-              y += dy;
+                var count = settlementData.Count;
+                var x = settlementData.X;
+                var y = settlementData.Y;
+                var direction = settlementData.DirectionX;
+                var dx = settlementData.Dx;
+                var dy = settlementData.Dy;
 
-              x += direction * dx;
-              direction = direction == -1 ? 1 : -1;
+                while (count-- > 0)
+                {
+                    var control = this.PlaceSettlementButtonControl(x, y, location, location.ToString());
+                    this.settlementButtonControls[location++] = control;
+                    y += dy;
+
+                    x += direction * dx;
+                    direction = direction == -1 ? 1 : -1;
+                }
             }
-          }
         }
 
         private void InitialiseRoadSelectionLayer()
         {
-          string roadLeftIndicatorImagePath = @"..\resources\roads\road_left_indicator.png";
-          string roadLeftImagePath = @"..\resources\roads\road_left.png";
-          string roadRightIndicatorImagePath = @"..\resources\roads\road_right_indicator.png";
-          string roadRightImagePath = @"..\resources\roads\road_right.png";
-          string roadHorizontalIndicatorImagePath = @"..\resources\roads\road_horizontal_indicator.png";
-          this.roadButtonControls = new Dictionary<string, RoadButtonControl>();
+            string roadLeftIndicatorImagePath = @"..\resources\roads\road_left_indicator.png";
+            string roadLeftImagePath = @"..\resources\roads\road_left.png";
+            string roadRightIndicatorImagePath = @"..\resources\roads\road_right_indicator.png";
+            string roadRightImagePath = @"..\resources\roads\road_right.png";
+            string roadHorizontalIndicatorImagePath = @"..\resources\roads\road_horizontal_indicator.png";
+            this.roadButtonControls = new Dictionary<string, RoadButtonControl>();
 
-          var verticalRoadLayoutData = this.GetVerticalRoadLayoutData();
+            var verticalRoadLayoutData = this.GetVerticalRoadLayoutData();
 
-          string indicatorImagePath = null;
-          string imagePath = null;
-          RoadButtonControl.RoadImageTypes roadImageType;
-          foreach (var verticalRoadLayout in verticalRoadLayoutData)
-          {
-            var useRightImage = verticalRoadLayout.StartWithRightImage;
-            for (var index = 0; index < verticalRoadLayout.Locations.Length; index++)
+            string indicatorImagePath = null;
+            string imagePath = null;
+            RoadButtonControl.RoadImageTypes roadImageType;
+            foreach (var verticalRoadLayout in verticalRoadLayoutData)
             {
-              if (useRightImage)
-              {
-                indicatorImagePath = roadRightIndicatorImagePath;
-                imagePath = roadRightImagePath;
-                roadImageType = RoadButtonControl.RoadImageTypes.Right;
-              }
-              else
-              {
-                indicatorImagePath = roadLeftIndicatorImagePath;
-                imagePath = roadLeftImagePath;
-                roadImageType = RoadButtonControl.RoadImageTypes.Left;
-              }
+                var useRightImage = verticalRoadLayout.StartWithRightImage;
+                for (var index = 0; index < verticalRoadLayout.Locations.Length; index++)
+                {
+                    if (useRightImage)
+                    {
+                        indicatorImagePath = roadRightIndicatorImagePath;
+                        imagePath = roadRightImagePath;
+                        roadImageType = RoadButtonControl.RoadImageTypes.Right;
+                    }
+                    else
+                    {
+                        indicatorImagePath = roadLeftIndicatorImagePath;
+                        imagePath = roadLeftImagePath;
+                        roadImageType = RoadButtonControl.RoadImageTypes.Left;
+                    }
 
-              var locationA = verticalRoadLayout.Locations[index];
-              var locationB = locationA - 1;
-              var control = this.PlaceRoadButtonControl(locationA, locationB, verticalRoadLayout.XCoordinate, verticalRoadLayout.YCoordinates[index], indicatorImagePath, roadImageType);
-              useRightImage = !useRightImage;
+                    var locationA = verticalRoadLayout.Locations[index];
+                    var locationB = locationA - 1;
+                    var control = this.PlaceRoadButtonControl(locationA, locationB, verticalRoadLayout.XCoordinate, verticalRoadLayout.YCoordinates[index], indicatorImagePath, roadImageType);
+                    useRightImage = !useRightImage;
 
-              this.roadButtonControls.Add(control.Id, control);
-              this.roadButtonControls.Add(control.AlternativeId, control);
+                    this.roadButtonControls.Add(control.Id, control);
+                    this.roadButtonControls.Add(control.AlternativeId, control);
+                }
             }
-          }
 
-          var horizontalRoadLayoutData = this.GetHorizontalRoadLayoutData();
+            var horizontalRoadLayoutData = this.GetHorizontalRoadLayoutData();
 
-          foreach (var horizontalRoadLayout in horizontalRoadLayoutData)
-          {
-            for (var index = 0; index < horizontalRoadLayout.Locations.Length; index++)
+            foreach (var horizontalRoadLayout in horizontalRoadLayoutData)
             {
-              var locationA = horizontalRoadLayout.Locations[index].Start;
-              var locationB = horizontalRoadLayout.Locations[index].End;
-              var control = this.PlaceRoadButtonControl(locationA, locationB, horizontalRoadLayout.XCoordinate, horizontalRoadLayout.YCoordinates[index], roadHorizontalIndicatorImagePath, RoadButtonControl.RoadImageTypes.Horizontal);
+                for (var index = 0; index < horizontalRoadLayout.Locations.Length; index++)
+                {
+                    var locationA = horizontalRoadLayout.Locations[index].Start;
+                    var locationB = horizontalRoadLayout.Locations[index].End;
+                    var control = this.PlaceRoadButtonControl(locationA, locationB, horizontalRoadLayout.XCoordinate, horizontalRoadLayout.YCoordinates[index], roadHorizontalIndicatorImagePath, RoadButtonControl.RoadImageTypes.Horizontal);
 
-              this.roadButtonControls.Add(control.Id, control);
-              this.roadButtonControls.Add(control.AlternativeId, control);
+                    this.roadButtonControls.Add(control.Id, control);
+                    this.roadButtonControls.Add(control.AlternativeId, control);
+                }
             }
-          }
         }
 
         private HorizontalRoadLayoutData[] GetHorizontalRoadLayoutData()
         {
-          return new HorizontalRoadLayoutData[]
-          {
+            return new HorizontalRoadLayoutData[]
+            {
             new HorizontalRoadLayoutData
             {
               XCoordinate = 246,
@@ -531,13 +552,13 @@ namespace SoC.Harness.Views
               Locations = new [] { new RoadData(39, 47), new RoadData(41, 49), new RoadData(43, 51), new RoadData(45, 53)},
               YCoordinates = new int[] { 87, 175, 264, 352 }
             }
-          };
+            };
         }
 
         private VerticalRoadLayoutData[] GetVerticalRoadLayoutData()
         {
-          return new VerticalRoadLayoutData[]
-          {
+            return new VerticalRoadLayoutData[]
+            {
             new VerticalRoadLayoutData
             {
               XCoordinate = 210,
@@ -580,25 +601,25 @@ namespace SoC.Harness.Views
               Locations = new uint[] { 48, 49, 50, 51, 52, 53 },
               YCoordinates = new int[] { 89, 132, 177, 220, 266, 309 }
             }
-          };
+            };
         }
 
         private Image CreateImage(BitmapImage bitmapImage)
         {
-          return new Image
-          {
-            Width = bitmapImage.Width * 2,
-            Height = bitmapImage.Height * 2,
-            //Name = name,
-            Source = bitmapImage,
-            StretchDirection = StretchDirection.Both
-          };
+            return new Image
+            {
+                Width = bitmapImage.Width * 2,
+                Height = bitmapImage.Height * 2,
+                //Name = name,
+                Source = bitmapImage,
+                StretchDirection = StretchDirection.Both
+            };
         }
 
         private Dictionary<uint, BitmapImage> CreateNumberBitmaps()
         {
-    #pragma warning disable IDE0009 // Member access should be qualified.
-          return new Dictionary<uint, BitmapImage>
+#pragma warning disable IDE0009 // Member access should be qualified.
+            return new Dictionary<uint, BitmapImage>
           {
             { 2, new BitmapImage(new Uri(@"resources\productionfactors\2.png", UriKind.Relative)) },
             { 3, new BitmapImage(new Uri(@"resources\productionfactors\3.png", UriKind.Relative)) },
@@ -611,13 +632,13 @@ namespace SoC.Harness.Views
             { 11, new BitmapImage(new Uri(@"resources\productionfactors\11.png", UriKind.Relative)) },
             { 12, new BitmapImage(new Uri(@"resources\productionfactors\12.png", UriKind.Relative)) }
           };
-    #pragma warning restore IDE0009 // Member access should be qualified.
+#pragma warning restore IDE0009 // Member access should be qualified.
         }
 
         private Dictionary<ResourceTypes, BitmapImage> CreateResourceBitmaps()
         {
-    #pragma warning disable IDE0009 // Member access should be qualified.
-          return new Dictionary<ResourceTypes, BitmapImage>
+#pragma warning disable IDE0009 // Member access should be qualified.
+            return new Dictionary<ResourceTypes, BitmapImage>
           {
             { ResourceTypes.Brick, new BitmapImage(new Uri(@"resources\hextypes\brick.png", UriKind.Relative)) },
             { ResourceTypes.Grain, new BitmapImage(new Uri(@"resources\hextypes\grain.png", UriKind.Relative)) },
@@ -625,116 +646,114 @@ namespace SoC.Harness.Views
             { ResourceTypes.Ore, new BitmapImage(new Uri(@"resources\hextypes\ore.png", UriKind.Relative)) },
             { ResourceTypes.Wool, new BitmapImage(new Uri(@"resources\hextypes\wool.png", UriKind.Relative)) }
           };
-    #pragma warning restore IDE0009 // Member access should be qualified.
+#pragma warning restore IDE0009 // Member access should be qualified.
         }
 
         private void GetBitmaps(Tuple<ResourceTypes?, uint> hexData, Dictionary<ResourceTypes, BitmapImage> resourceBitmaps, Dictionary<uint, BitmapImage> numberBitmaps, out BitmapImage resourceBitmap, out BitmapImage numberBitmap)
         {
-          if (!hexData.Item1.HasValue)
-          {
-            resourceBitmap = new BitmapImage(new Uri(@"resources\hextypes\desert.png", UriKind.Relative));
-          }
-          else
-          {
-            resourceBitmap = resourceBitmaps[hexData.Item1.Value];
-          }
+            if (!hexData.Item1.HasValue)
+            {
+                resourceBitmap = new BitmapImage(new Uri(@"resources\hextypes\desert.png", UriKind.Relative));
+            }
+            else
+            {
+                resourceBitmap = resourceBitmaps[hexData.Item1.Value];
+            }
 
-          numberBitmap = (hexData.Item2 != 0 ? numberBitmaps[hexData.Item2] : null);
+            numberBitmap = (hexData.Item2 != 0 ? numberBitmaps[hexData.Item2] : null);
+        }
+
+        private void Location_MouseClick(object sender, MouseButtonEventArgs e)
+        {
+            if (this.state != States.RobberLocationSelection)
+            {
+                return;
+            }
+
+            var location = this.locationsByImage[this.currentRobberLocationHoverImage];
+            Canvas.SetLeft(this.robberImage, location.Item2.X);
+            Canvas.SetTop(this.robberImage, location.Item2.Y);
+            this.RobberSelectionLayer.Visibility = Visibility.Hidden;
+            this.controllerViewModel.SetRobberLocation(location.Item1);
+        }
+
+        private void Location_MouseHover(object sender, MouseEventArgs e)
+        {
+            if (this.state != States.RobberLocationSelection || sender == this.currentRobberLocationHoverImage)
+            {
+                return;
+            }
+
+            this.currentRobberLocationHoverImage = (Image)sender;
+            this.RobberSelectionLayer.Visibility = Visibility.Visible;
+            var location = this.locationsByImage[this.currentRobberLocationHoverImage];
+            Canvas.SetLeft(this.selectedRobberLocationImage, location.Item2.X);
+            Canvas.SetTop(this.selectedRobberLocationImage, location.Item2.Y);
         }
 
         private void PlaceHex(uint hexIndex, BitmapImage resourceBitmap, BitmapImage numberBitmap, int x, int y)
         {
-          var resourceImage = this.CreateImage(resourceBitmap);
-          this.BoardLayer.Children.Add(resourceImage);
-          Canvas.SetLeft(resourceImage, x);
-          Canvas.SetTop(resourceImage, y);
+            var resourceImage = this.CreateImage(resourceBitmap);
+            this.BoardLayer.Children.Add(resourceImage);
+            Canvas.SetLeft(resourceImage, x);
+            Canvas.SetTop(resourceImage, y);
 
-          if (numberBitmap == null)
-          {
-            this.locationsByImage.Add(resourceImage, new Tuple<uint, Point>(hexIndex, new Point(x, y)));
-            resourceImage.MouseEnter += this.Image_MouseEnter;
-            return;
-          }
+            if (numberBitmap == null)
+            {
+                this.locationsByImage.Add(resourceImage, new Tuple<uint, Point>(hexIndex, new Point(x, y)));
+                resourceImage.MouseEnter += this.Location_MouseHover;
+                return;
+            }
 
-          var numberImage = this.CreateImage(numberBitmap);
-          numberImage.MouseEnter += this.Image_MouseEnter;
-          this.BoardLayer.Children.Add(numberImage);
-          Canvas.SetLeft(numberImage, x);
-          Canvas.SetTop(numberImage, y);
+            var numberImage = this.CreateImage(numberBitmap);
+            numberImage.MouseEnter += this.Location_MouseHover;
+            this.BoardLayer.Children.Add(numberImage);
+            Canvas.SetLeft(numberImage, x);
+            Canvas.SetTop(numberImage, y);
 
-          this.locationsByImage.Add(numberImage, new Tuple<uint, Point>(hexIndex, new Point(x, y)));
-        }
-
-        private void Image_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
-        {
-          if (this.state != States.RobberLocationSelection)
-          {
-            return;
-          }
-
-          var location = this.locationsByImage[this.currentRobberLocationHoverImage];
-          Canvas.SetLeft(this.robberImage, location.Item2.X);
-          Canvas.SetTop(this.robberImage, location.Item2.Y);
-          this.RobberSelectionLayer.Visibility = Visibility.Hidden;
-          //this.state = States.RobbedPlayerSelection;
-          //this.PlayerSelectionLayer.Visibility = Visibility.Visible;
-          this.controllerViewModel.SetRobberLocation(location.Item1);
-        }
-
-        private void Image_MouseEnter(object sender, MouseEventArgs e)
-        {
-          if (this.state != States.RobberLocationSelection || sender == this.currentRobberLocationHoverImage)
-          {
-            return;
-          }
-
-          this.currentRobberLocationHoverImage = (Image)sender;
-          this.RobberSelectionLayer.Visibility = Visibility.Visible;
-          var location = this.locationsByImage[this.currentRobberLocationHoverImage];
-          Canvas.SetLeft(this.selectedRobberLocationImage, location.Item2.X);
-          Canvas.SetTop(this.selectedRobberLocationImage, location.Item2.Y);
+            this.locationsByImage.Add(numberImage, new Tuple<uint, Point>(hexIndex, new Point(x, y)));
         }
 
         private void PlaceRoadControl(double x, double y, string imagePath)
         {
-          var control = new RoadControl(imagePath);
-          this.RoadLayer.Children.Add(control);
-          Canvas.SetLeft(control, x);
-          Canvas.SetTop(control, y);
+            var control = new RoadControl(imagePath);
+            this.RoadLayer.Children.Add(control);
+            Canvas.SetLeft(control, x);
+            Canvas.SetTop(control, y);
         }
 
         private RoadButtonControl PlaceRoadButtonControl(uint start, uint end, double x, double y, string imagePath, RoadButtonControl.RoadImageTypes roadImageType)
         {
-          var control = new RoadButtonControl(start, end, x, y, imagePath, roadImageType, this.RoadSelectedEventHandler);
-          this.RoadSelectionLayer.Children.Add(control);
-          Canvas.SetLeft(control, x);
-          Canvas.SetTop(control, y);
+            var control = new RoadButtonControl(start, end, x, y, imagePath, roadImageType, this.RoadSelectedEventHandler);
+            this.RoadSelectionLayer.Children.Add(control);
+            Canvas.SetLeft(control, x);
+            Canvas.SetTop(control, y);
 
-          return control;
+            return control;
         }
 
         private SettlementButtonControl PlaceSettlementButtonControl(double x, double y, uint id, string toolTip)
         {
-          var control = new SettlementButtonControl(id, x, y, this.SettlementSelectedEventHandler);
-          control.ToolTip = toolTip;
-          this.SettlementSelectionLayer.Children.Add(control);
-          Canvas.SetLeft(control, x);
-          Canvas.SetTop(control, y);
+            var control = new SettlementButtonControl(id, x, y, this.SettlementSelectedEventHandler);
+            control.ToolTip = toolTip;
+            this.SettlementSelectionLayer.Children.Add(control);
+            Canvas.SetLeft(control, x);
+            Canvas.SetTop(control, y);
 
-          return control;
+            return control;
         }
 
         private void PlaceBuildingControl(double x, double y, string toolTip, string imagePath, Canvas canvas)
         {
-          var control = new BuildingControl(imagePath);
-          if (!string.IsNullOrEmpty(toolTip))
-          {
-            control.ToolTip = toolTip;
-          }
+            var control = new BuildingControl(imagePath);
+            if (!string.IsNullOrEmpty(toolTip))
+            {
+                control.ToolTip = toolTip;
+            }
 
-          canvas.Children.Add(control);
-          Canvas.SetLeft(control, x);
-          Canvas.SetTop(control, y);
+            canvas.Children.Add(control);
+            Canvas.SetLeft(control, x);
+            Canvas.SetTop(control, y);
         }
 
         private void PlayerSelectionButton_Click(PlayerButton playerButton)
@@ -751,185 +770,185 @@ namespace SoC.Harness.Views
 
         private void PlayerSelectionConfirmButton_Click(object sender, RoutedEventArgs e)
         {
-          this.controllerViewModel.GetRandomResourceFromOpponent(this.selectedPlayerButton.PlayerId);
+            this.controllerViewModel.GetRandomResourceFromOpponent(this.selectedPlayerButton.PlayerId);
         }
 
         private void ResourceSelectedEventHandler(ResourceButton resourceButton)
         {
-          this.workingNumberOfResourcesToSelect -= resourceButton.IsSelected ? 1 : -1;
-          this.ResourceSelectionMessage = $"Select {this.workingNumberOfResourcesToSelect} more resources to drop";
-          this.ResourceSelectionConfirmButton.IsEnabled = this.workingNumberOfResourcesToSelect == 0;
+            this.workingNumberOfResourcesToSelect -= resourceButton.IsSelected ? 1 : -1;
+            this.ResourceSelectionMessage = $"Select {this.workingNumberOfResourcesToSelect} more resources to drop";
+            this.ResourceSelectionConfirmButton.IsEnabled = this.workingNumberOfResourcesToSelect == 0;
         }
 
         private void ResourceSelectionConfirmButton_Click(object sender, RoutedEventArgs e)
         {
-          var brickCount = 0;
-          var grainCount = 0;
-          var lumberCount = 0;
-          var oreCount = 0;
-          var woolCount = 0;
+            var brickCount = 0;
+            var grainCount = 0;
+            var lumberCount = 0;
+            var oreCount = 0;
+            var woolCount = 0;
 
-          foreach (var resourceButton in this.resourceControls)
-          {
-            if (resourceButton.IsSelected)
+            foreach (var resourceButton in this.resourceControls)
             {
-              switch (resourceButton.ResourceType)
-              {
-                case ResourceTypes.Brick: brickCount++; break;
-                case ResourceTypes.Grain: grainCount++; break;
-                case ResourceTypes.Lumber: lumberCount++; break;
-                case ResourceTypes.Ore: oreCount++; break;
-                case ResourceTypes.Wool: woolCount++; break;
-              }
+                if (resourceButton.IsSelected)
+                {
+                    switch (resourceButton.ResourceType)
+                    {
+                        case ResourceTypes.Brick: brickCount++; break;
+                        case ResourceTypes.Grain: grainCount++; break;
+                        case ResourceTypes.Lumber: lumberCount++; break;
+                        case ResourceTypes.Ore: oreCount++; break;
+                        case ResourceTypes.Wool: woolCount++; break;
+                    }
+                }
             }
-          }
 
-          this.ResourceSelectionLayer.Visibility = Visibility.Hidden;
-          this.controllerViewModel.DropResourcesFromPlayer(new ResourceClutch(brickCount, grainCount, lumberCount, oreCount, woolCount));
-          this.state = States.RobberLocationSelection;
+            this.ResourceSelectionLayer.Visibility = Visibility.Hidden;
+            this.controllerViewModel.DropResourcesFromPlayer(new ResourceClutch(brickCount, grainCount, lumberCount, oreCount, woolCount));
+            this.state = States.RobberLocationSelection;
         }
 
         private void RoadSelectedEventHandler(RoadButtonControl roadButtonControl)
         {
-          this.workingRoadControl = roadButtonControl;
-          this.workingRoadControl.Visibility = Visibility.Hidden;
+            this.workingRoadControl = roadButtonControl;
+            this.workingRoadControl.Visibility = Visibility.Hidden;
 
-          var roadImagePath = this.roadImagesByPlayerId[this.playerId][(int)this.workingRoadControl.RoadImageType];
+            var roadImagePath = this.roadImagesByPlayerId[this.playerId][(int)this.workingRoadControl.RoadImageType];
 
-          this.PlaceBuildingControl(roadButtonControl.X, roadButtonControl.Y, string.Empty, roadImagePath, this.RoadLayer);
+            this.PlaceBuildingControl(roadButtonControl.X, roadButtonControl.Y, string.Empty, roadImagePath, this.RoadLayer);
 
-          foreach (var visibleRoadButtonControl in this.visibleRoadButtonControls)
-          {
-            visibleRoadButtonControl.Visibility = Visibility.Hidden;
-          }
+            foreach (var visibleRoadButtonControl in this.visibleRoadButtonControls)
+            {
+                visibleRoadButtonControl.Visibility = Visibility.Hidden;
+            }
 
-          this.visibleRoadButtonControls.Clear();
+            this.visibleRoadButtonControls.Clear();
 
-          this.RoadSelectionLayer.Visibility = Visibility.Hidden;
+            this.RoadSelectionLayer.Visibility = Visibility.Hidden;
 
-          this.EndTurnButton.Visibility = Visibility.Visible;
-          this.TopLayer.Visibility = Visibility.Visible;
+            this.EndTurnButton.Visibility = Visibility.Visible;
+            this.TopLayer.Visibility = Visibility.Visible;
         }
 
         private void RobbingChoicesEventHandler(List<Tuple<Guid, string, int>> choices)
         {
-          var playerButtonIndex = 0;
-          foreach (var tuple in choices)
-          {
-            var images = this.bigIconImagesByPlayerId[tuple.Item1];
-            var playerButton = this.playerButtons[playerButtonIndex++];
-            playerButton.Visibility = Visibility.Visible;
-            playerButton.PlayerId = tuple.Item1;
-            playerButton.ImagePath = playerButton.OriginalImagePath = images.Item1;
-            playerButton.SelectedImagePath = images.Item2;
-            playerButton.PlayerName = tuple.Item2;
-            playerButton.ResourceCountMessage = $"{tuple.Item3} resource{(tuple.Item3 != 1 ? "s" : "")}";
-          }
+            var playerButtonIndex = 0;
+            foreach (var tuple in choices)
+            {
+                var images = this.bigIconImagesByPlayerId[tuple.Item1];
+                var playerButton = this.playerButtons[playerButtonIndex++];
+                playerButton.Visibility = Visibility.Visible;
+                playerButton.PlayerId = tuple.Item1;
+                playerButton.ImagePath = playerButton.OriginalImagePath = images.Item1;
+                playerButton.SelectedImagePath = images.Item2;
+                playerButton.PlayerName = tuple.Item2;
+                playerButton.ResourceCountMessage = $"{tuple.Item3} resource{(tuple.Item3 != 1 ? "s" : "")}";
+            }
 
-          // Hide player buttons that are not needed
-          for (; playerButtonIndex < this.playerButtons.Length; playerButtonIndex++)
-            this.playerButtons[playerButtonIndex].Visibility = Visibility.Hidden;
+            // Hide player buttons that are not needed
+            for (; playerButtonIndex < this.playerButtons.Length; playerButtonIndex++)
+                this.playerButtons[playerButtonIndex].Visibility = Visibility.Hidden;
 
-          this.PlayerSelectionConfirmButton.IsEnabled = false;
-          this.PlayerSelectionLayer.Visibility = Visibility.Visible;
+            this.PlayerSelectionConfirmButton.IsEnabled = false;
+            this.PlayerSelectionLayer.Visibility = Visibility.Visible;
         }
 
         private void SettlementSelectedEventHandler(SettlementButtonControl settlementButtonControl)
         {
-          this.workingLocation = settlementButtonControl.Location;
+            this.workingLocation = settlementButtonControl.Location;
 
-          // Turn off the controls for the location and its neighbours
-          settlementButtonControl.Visibility = Visibility.Hidden;
-          var neighbouringLocations = this.board.BoardQuery.GetNeighbouringLocationsFrom(this.workingLocation);
-          foreach (var index in neighbouringLocations)
-          {
-            this.settlementButtonControls[index].Visibility = Visibility.Hidden;
-          }
+            // Turn off the controls for the location and its neighbours
+            settlementButtonControl.Visibility = Visibility.Hidden;
+            var neighbouringLocations = this.board.BoardQuery.GetNeighbouringLocationsFrom(this.workingLocation);
+            foreach (var index in neighbouringLocations)
+            {
+                this.settlementButtonControls[index].Visibility = Visibility.Hidden;
+            }
 
-          this.PlaceBuildingControl(settlementButtonControl.X, settlementButtonControl.Y, string.Empty, @"..\resources\settlements\blue_settlement.png", this.SettlementLayer);
-      
-          // Turn on the possible road controls for the location
-          var roadEndLocations = this.board.BoardQuery.GetValidConnectedLocationsFrom(this.workingLocation);
-          for (var index = 0; index < roadEndLocations.Length; index++)
-          {
-            var id = string.Format("{0}-{1}", this.workingLocation, roadEndLocations[index]);
-            var roadButtonControl = this.roadButtonControls[id];
-            roadButtonControl.Visibility = Visibility.Visible;
-            this.visibleRoadButtonControls.Add(roadButtonControl);
-          }
+            this.PlaceBuildingControl(settlementButtonControl.X, settlementButtonControl.Y, string.Empty, @"..\resources\settlements\blue_settlement.png", this.SettlementLayer);
 
-          this.SettlementSelectionLayer.Visibility = Visibility.Hidden;
-          this.RoadSelectionLayer.Visibility = Visibility.Visible;
+            // Turn on the possible road controls for the location
+            var roadEndLocations = this.board.BoardQuery.GetValidConnectedLocationsFrom(this.workingLocation);
+            for (var index = 0; index < roadEndLocations.Length; index++)
+            {
+                var id = string.Format("{0}-{1}", this.workingLocation, roadEndLocations[index]);
+                var roadButtonControl = this.roadButtonControls[id];
+                roadButtonControl.Visibility = Visibility.Visible;
+                this.visibleRoadButtonControls.Add(roadButtonControl);
+            }
+
+            this.SettlementSelectionLayer.Visibility = Visibility.Hidden;
+            this.RoadSelectionLayer.Visibility = Visibility.Visible;
         }
 
         private void StartGameButton_Click(object sender, RoutedEventArgs e)
         {
-          this.StartGameButton.Visibility = Visibility.Hidden;
-          this.TopLayer.Visibility = Visibility.Hidden;
+            this.StartGameButton.Visibility = Visibility.Hidden;
+            this.TopLayer.Visibility = Visibility.Hidden;
 
-          this.BoardLayer.Visibility = Visibility.Visible;
-          this.SettlementSelectionLayer.Visibility = Visibility.Visible;
+            this.BoardLayer.Visibility = Visibility.Visible;
+            this.SettlementSelectionLayer.Visibility = Visibility.Visible;
 
-          Task.Factory.StartNew(() => {
-            this.controllerViewModel.StartGame();
-          });
+            Task.Factory.StartNew(() =>
+            {
+                this.controllerViewModel.StartGame();
+            });
         }
 
-        private void EndTurnButton_Click(object sender, RoutedEventArgs e)
+        private void StartTurnEventHandler()
         {
-          this.EndTurnButton.Visibility = Visibility.Hidden;
-          if (this.state == States.AwaitingFirstInfrastructure)
-          {
-            this.state = States.AwaitingSecondInfrastructure;
-            var roadEndLocation = this.workingRoadControl.Start == this.workingLocation ? this.workingRoadControl.End : this.workingRoadControl.Start;
-            this.controllerViewModel.CompleteFirstInfrastructureSetup(this.workingLocation, roadEndLocation);
-          }
-          else if (this.state == States.AwaitingSecondInfrastructure)
-          {
-            var roadEndLocation = this.workingRoadControl.Start == this.workingLocation ? this.workingRoadControl.End : this.workingRoadControl.Start;
-            this.controllerViewModel.CompleteSecondInfrastructureSetup(this.workingLocation, roadEndLocation);
-          }
+            throw new NotImplementedException();
+        }
+
+        private void TradeButton_Click(object sender, RoutedEventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void UseButton_Click(object sender, RoutedEventArgs e)
+        {
+            throw new NotImplementedException();
         }
         #endregion
 
         #region Structures
-    private struct HexLayoutData
-    {
-      public int X, Y;
-      public uint Count;
-    }
+        private struct HexLayoutData
+        {
+            public int X, Y;
+            public uint Count;
+        }
 
-    public struct RoadData
-    {
-      public uint Start, End;
+        public struct RoadData
+        {
+            public uint Start, End;
 
-      public RoadData(uint start, uint end)
-      {
-        this.Start = start;
-        this.End = end;
-      }
-    }
+            public RoadData(uint start, uint end)
+            {
+                this.Start = start;
+                this.End = end;
+            }
+        }
 
-    public struct SettlementLayoutData
-    {
-      public int X, Y, Dx, Dy, DirectionX;
-      public uint Count;
-    }
+        public struct SettlementLayoutData
+        {
+            public int X, Y, Dx, Dy, DirectionX;
+            public uint Count;
+        }
 
-    public struct VerticalRoadLayoutData
-    {
-      public int XCoordinate;
-      public uint[] Locations;
-      public int[] YCoordinates;
-      public bool StartWithRightImage;
-    }
+        public struct VerticalRoadLayoutData
+        {
+            public int XCoordinate;
+            public uint[] Locations;
+            public int[] YCoordinates;
+            public bool StartWithRightImage;
+        }
 
-    public struct HorizontalRoadLayoutData
-    {
-      public int XCoordinate;
-      public RoadData[] Locations;
-      public int[] YCoordinates;
-    }
-    #endregion
+        public struct HorizontalRoadLayoutData
+        {
+            public int XCoordinate;
+            public RoadData[] Locations;
+            public int[] YCoordinates;
+        }
+        #endregion
     }
 }

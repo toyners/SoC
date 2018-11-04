@@ -50,28 +50,11 @@
               Click="ResourceSelectionConfirmButton_Click">Confirm</Button>
         </Canvas>
 
-        <Canvas Name="PlayerTradeActions" Visibility="Hidden">
-            <TextBlock  Canvas.Left="25" Canvas.Top="25" FontSize="20">Trade?</TextBlock>  
-            <Button Name="TradeYesButton" Canvas.Left="100" Canvas.Top="25" FontSize="20" Padding="5,0">Yes</Button>
-            <Button Name="TradeNoButton" Canvas.Left="150" Canvas.Top="25" FontSize="20" Padding="5,0">No</Button>
-        </Canvas>
-
-        <Canvas Name="PlayerBuildActions" Visibility="Hidden">
-            <TextBlock  Canvas.Left="25" Canvas.Top="25" FontSize="20">Build?</TextBlock>
-            <Button Name="BuildYesButton" Canvas.Left="100" Canvas.Top="25" FontSize="20">Yes</Button>
-            <Button Name="BuildNoButton" Canvas.Left="150" Canvas.Top="25" FontSize="20">No</Button>
-        </Canvas>
-
-        <Canvas Name="PlayerBuyActions" Visibility="Hidden">
-            <TextBlock  Canvas.Left="25" Canvas.Top="25" FontSize="20">Buy Development Card?</TextBlock>
-            <Button Name="BuyYesButton" Canvas.Left="100" Canvas.Top="25" FontSize="20">Yes</Button>
-            <Button Name="BuyNoButton" Canvas.Left="150" Canvas.Top="25" FontSize="20">No</Button>
-        </Canvas>
-
-        <Canvas Name="PlayerPlayActions" Visibility="Hidden">
-            <TextBlock  Canvas.Left="25" Canvas.Top="25" FontSize="20">Play Development Card?</TextBlock>
-            <Button Name="PlayYesButton" Canvas.Left="100" Canvas.Top="25" FontSize="20">Yes</Button>
-            <Button Name="PlayNoButton" Canvas.Left="150" Canvas.Top="25" FontSize="20">No</Button>
+        <Canvas Name="PlayerActions" Visibility="Visible">
+            <Button Name="TradeButton" Click="TradeButton_Click" Canvas.Left="25" Canvas.Top="25" FontSize="20" Width="100">Trade</Button>
+            <Button Name="BuildButton" Click="BuildButton_Click" Canvas.Left="25" Canvas.Top="65" FontSize="20" Width="100">Build</Button>
+            <Button Name="BuyButton" Click="BuyButton_Click" Canvas.Left="25" Canvas.Top="105" FontSize="20" Width="100">Buy</Button>
+            <Button Name="UseButton" Click="UseButton_Click" Canvas.Left="25" Canvas.Top="145" FontSize="20" Width="100">Use</Button>
         </Canvas>
 
         <Canvas Name="TopLayer" Height="500" Width="800">
@@ -80,6 +63,5 @@
             <Image Name="DiceOne" Canvas.Left="570" Canvas.Top="500" Source="{Binding Path=DiceOneImagePath}" />
             <Image Name="DiceTwo" Canvas.Left="640" Canvas.Top="500" Source="{Binding Path=DiceTwoImagePath}" />
         </Canvas>
-
     </Grid>
 </UserControl>
