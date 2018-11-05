@@ -21,7 +21,7 @@ namespace SoC.Harness.ViewModels
         private PlayerViewModel player;
         private Dictionary<Guid, PlayerViewModel> playerViewModelsById = new Dictionary<Guid, PlayerViewModel>();
         private States state;
-        private PlayerActions playerActions;
+        private PlayerActions playerActions = new PlayerActions();
         #endregion
 
         #region Construction
@@ -75,6 +75,7 @@ namespace SoC.Harness.ViewModels
         public void GetRandomResourceFromOpponent(Guid opponentId)
         {
             this.localGameController.ChooseResourceFromOpponent(opponentId);
+            this.StartTurn();
         }
 
         public void SetRobberLocation(uint hexIndex)
@@ -203,7 +204,7 @@ namespace SoC.Harness.ViewModels
             {
                 // No meaningful choices i.e. robber location has no adjacent players or
                 // just the main player.
-                this.StartTurnEvent?.Invoke(this.playerActions);
+                this.StartTurn();
                 return;
             }
 
@@ -217,7 +218,7 @@ namespace SoC.Harness.ViewModels
 
                 this.localGameController.ChooseResourceFromOpponent(opponentId);
 
-                this.StartTurnEvent?.Invoke(this.playerActions);
+                this.StartTurn();
                 return;
             }
 
@@ -236,6 +237,12 @@ namespace SoC.Harness.ViewModels
             }
 
             this.RobbingChoicesEvent?.Invoke(choiceList);
+        }
+
+        private void StartTurn()
+        {
+            //this.playerActions.CanBuildSettlement = this.localGameController.CanBuildSettlement();
+            this.StartTurnEvent?.Invoke(this.playerActions);
         }
 
         private void RobberEventHandler(int numberOfResourcesToSelect)
