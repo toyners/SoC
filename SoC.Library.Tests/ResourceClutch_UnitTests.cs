@@ -54,6 +54,42 @@ namespace Jabberwocky.SoC.Library.UnitTests
         }
 
         [Test]
+        public void GreaterThanOrEqualOperator_ResourceClutchesAreEqual_ReturnsTrue()
+        {
+            var r1 = new ResourceClutch(1, 1, 1, 1, 1);
+            var r2 = new ResourceClutch(1, 1, 1, 1, 1);
+
+            (r1 >= r2).ShouldBeTrue();
+        }
+
+        [Test]
+        public void GreaterThanOrEqualOperator_OneResourceClutchIsGreaterThanOther_ReturnsTrue()
+        {
+            var r1 = new ResourceClutch(1, 1, 1, 1, 2);
+            var r2 = new ResourceClutch(1, 1, 1, 1, 1);
+
+            (r1 >= r2).ShouldBeTrue();
+        }
+
+        [Test]
+        public void LessThanOrEqualOperator_ResourceClutchesAreEqual_ReturnsTrue()
+        {
+            var r1 = new ResourceClutch(1, 1, 1, 1, 1);
+            var r2 = new ResourceClutch(1, 1, 1, 1, 1);
+
+            (r1 <= r2).ShouldBeTrue();
+        }
+
+        [Test]
+        public void LessThanOrEqualOperator_OneResourceClutchIsGreaterThanOther_ReturnsTrue()
+        {
+            var r1 = new ResourceClutch(1, 1, 1, 1, 0);
+            var r2 = new ResourceClutch(1, 1, 1, 1, 1);
+
+            (r1 <= r2).ShouldBeTrue();
+        }
+
+        [Test]
         public void MultiplyByNaturalNumberOperator_FirstOperandIsZero_ResultIsZero()
         {
             var op1 = new ResourceClutch(1, 1, 1, 1, 1);
