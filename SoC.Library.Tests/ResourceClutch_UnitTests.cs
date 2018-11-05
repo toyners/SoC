@@ -63,12 +63,21 @@ namespace Jabberwocky.SoC.Library.UnitTests
         }
 
         [Test]
-        public void GreaterThanOrEqualOperator_OneResourceClutchIsGreaterThanOther_ReturnsTrue()
+        public void GreaterThanOrEqualOperator_FirstResourceClutchIsGreater_ReturnsTrue()
         {
             var r1 = new ResourceClutch(1, 1, 1, 1, 2);
             var r2 = new ResourceClutch(1, 1, 1, 1, 1);
 
             (r1 >= r2).ShouldBeTrue();
+        }
+
+        [Test]
+        public void GreaterThanOrEqualOperator_SecondResourceClutchIsGreater_ReturnsFalse()
+        {
+            var r1 = new ResourceClutch(1, 1, 1, 1, 1);
+            var r2 = new ResourceClutch(1, 1, 1, 1, 2);
+
+            (r1 >= r2).ShouldBeFalse();
         }
 
         [Test]
@@ -81,12 +90,75 @@ namespace Jabberwocky.SoC.Library.UnitTests
         }
 
         [Test]
-        public void LessThanOrEqualOperator_OneResourceClutchIsGreaterThanOther_ReturnsTrue()
+        public void LessThanOrEqualOperator_FirstResourceClutchIsLess_ReturnsTrue()
         {
             var r1 = new ResourceClutch(1, 1, 1, 1, 0);
             var r2 = new ResourceClutch(1, 1, 1, 1, 1);
 
             (r1 <= r2).ShouldBeTrue();
+        }
+
+        [Test]
+        public void LessThanOrEqualOperator_SecondResourceClutchIsLess_ReturnsFalse()
+        {
+            var r1 = new ResourceClutch(1, 1, 1, 1, 1);
+            var r2 = new ResourceClutch(1, 1, 1, 1, 0);
+
+            (r1 <= r2).ShouldBeFalse();
+        }
+
+        [Test]
+        public void GreaterThanOperator_FirstResourceClutchIsGreater_ReturnsTrue()
+        {
+            var r1 = new ResourceClutch(1, 1, 1, 1, 1);
+            var r2 = new ResourceClutch(1, 1, 1, 1, 0);
+
+            (r1 > r2).ShouldBeTrue();
+        }
+
+        [Test]
+        public void GreaterThanOperator_SecondResourceClutchIsGreater_ReturnsFalse()
+        {
+            var r1 = new ResourceClutch(1, 1, 1, 1, 0);
+            var r2 = new ResourceClutch(1, 1, 1, 1, 1);
+
+            (r1 > r2).ShouldBeFalse();
+        }
+
+        [Test]
+        public void GreaterThanOperator_ResourcesAreEqual_ReturnsFalse()
+        {
+            var r1 = new ResourceClutch(1, 1, 1, 1, 1);
+            var r2 = new ResourceClutch(1, 1, 1, 1, 1);
+
+            (r1 > r2).ShouldBeFalse();
+        }
+
+        [Test]
+        public void LessThanOperator_FirstResourceClutchIsLess_ReturnsTrue()
+        {
+            var r1 = new ResourceClutch(1, 1, 1, 1, 0);
+            var r2 = new ResourceClutch(1, 1, 1, 1, 1);
+
+            (r1 < r2).ShouldBeTrue();
+        }
+
+        [Test]
+        public void LessThanOperator_SecondResourceClutchIsLess_ReturnsFalse()
+        {
+            var r1 = new ResourceClutch(1, 1, 1, 1, 1);
+            var r2 = new ResourceClutch(1, 1, 1, 1, 0);
+
+            (r1 < r2).ShouldBeFalse();
+        }
+
+        [Test]
+        public void LessThanOperator_ResourcesAreEqual_ReturnsFalse()
+        {
+            var r1 = new ResourceClutch(1, 1, 1, 1, 1);
+            var r2 = new ResourceClutch(1, 1, 1, 1, 1);
+
+            (r1 < r2).ShouldBeFalse();
         }
 
         [Test]
