@@ -900,6 +900,8 @@ namespace SoC.Harness.Views
             this.TradeButton.Visibility = Visibility.Visible;
             this.BuildButton.Visibility = Visibility.Visible;
             this.BuildButton.IsEnabled = playerActions.CanBuildSettlement | playerActions.CanBuildRoad | playerActions.CanBuildCity;
+            if (!this.BuildButton.IsEnabled)
+                this.BuildButton.ToolTip = playerActions.BuildSettlementMessages;
             this.BuyButton.Visibility = Visibility.Visible;
             this.BuyButton.IsEnabled = playerActions.CanBuyDevelopmentCard;
             this.UseButton.Visibility = Visibility.Visible;

@@ -241,7 +241,16 @@ namespace SoC.Harness.ViewModels
 
         private void StartTurn()
         {
-            //this.playerActions.CanBuildSettlement = this.localGameController.CanBuildSettlement();
+            this.playerActions.Clear();
+            var buildSettlementStatus = this.localGameController.CanBuildSettlement();
+            
+            if (buildSettlementStatus == (LocalGameController.BuildStatuses.NotEnoughResourcesForSettlement | LocalGameController.BuildStatuses.NoSettlements))
+                this.playerActions.AddBuildSettlementMessages("Not enough resources for a settlement", "No settlements");
+            else if (buildSettlementStatus == LocalGameController.BuildStatuses.NotEnoughResourcesForSettlement)
+                this.playerActions.AddBuildSettlementMessages("Not enough resources for a settlement");
+            else if (buildSettlementStatus == LocalGameController.BuildStatuses.NoSettlements)
+                this.playerActions.AddBuildSettlementMessages("No settlements");
+
             this.StartTurnEvent?.Invoke(this.playerActions);
         }
 
