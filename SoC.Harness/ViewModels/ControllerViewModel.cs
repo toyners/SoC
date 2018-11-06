@@ -242,14 +242,30 @@ namespace SoC.Harness.ViewModels
         private void StartTurn()
         {
             this.playerActions.Clear();
+
             var buildSettlementStatus = this.localGameController.CanBuildSettlement();
-            
             if (buildSettlementStatus == (LocalGameController.BuildStatuses.NotEnoughResourcesForSettlement | LocalGameController.BuildStatuses.NoSettlements))
                 this.playerActions.AddBuildSettlementMessages("Not enough resources for a settlement", "No settlements");
             else if (buildSettlementStatus == LocalGameController.BuildStatuses.NotEnoughResourcesForSettlement)
                 this.playerActions.AddBuildSettlementMessages("Not enough resources for a settlement");
             else if (buildSettlementStatus == LocalGameController.BuildStatuses.NoSettlements)
                 this.playerActions.AddBuildSettlementMessages("No settlements");
+
+            buildSettlementStatus = this.localGameController.CanBuildRoadSegment();
+            if (buildSettlementStatus == (LocalGameController.BuildStatuses.NotEnoughResourcesForRoad | LocalGameController.BuildStatuses.NoRoads))
+                this.playerActions.AddBuildSettlementMessages("Not enough resources for a road", "No roads");
+            else if (buildSettlementStatus == LocalGameController.BuildStatuses.NotEnoughResourcesForRoad)
+                this.playerActions.AddBuildSettlementMessages("Not enough resources for a road");
+            else if (buildSettlementStatus == LocalGameController.BuildStatuses.NoRoads)
+                this.playerActions.AddBuildSettlementMessages("No roads");
+
+            buildSettlementStatus = this.localGameController.CanBuildCity();
+            if (buildSettlementStatus == (LocalGameController.BuildStatuses.NotEnoughResourcesForCity | LocalGameController.BuildStatuses.NoCities))
+                this.playerActions.AddBuildSettlementMessages("Not enough resources for a city", "No cities");
+            else if (buildSettlementStatus == LocalGameController.BuildStatuses.NotEnoughResourcesForCity)
+                this.playerActions.AddBuildSettlementMessages("Not enough resources for a city");
+            else if (buildSettlementStatus == LocalGameController.BuildStatuses.NoRoads)
+                this.playerActions.AddBuildSettlementMessages("No cities");
 
             this.StartTurnEvent?.Invoke(this.playerActions);
         }

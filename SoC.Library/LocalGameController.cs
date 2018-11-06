@@ -180,6 +180,30 @@ namespace Jabberwocky.SoC.Library
             this.DevelopmentCardPurchasedEvent?.Invoke(developmentCard);
         }
 
+        public BuildStatuses CanBuildCity()
+        {
+            BuildStatuses result = BuildStatuses.Successful;
+            if (this.mainPlayer.Resources < ResourceClutch.City)
+                result |= BuildStatuses.NotEnoughResourcesForCity;
+
+            if (this.currentPlayer.RemainingCities == 0)
+                result |= BuildStatuses.NoCities;
+
+            return result;
+        }
+
+        public BuildStatuses CanBuildRoadSegment()
+        {
+            BuildStatuses result = BuildStatuses.Successful;
+            if (this.mainPlayer.Resources < ResourceClutch.RoadSegment)
+                result |= BuildStatuses.NotEnoughResourcesForRoad;
+
+            if (this.currentPlayer.RemainingRoadSegments == 0)
+                result |= BuildStatuses.NoRoads;
+
+            return result;
+        }
+
         public BuildStatuses CanBuildSettlement()
         {
             BuildStatuses result = BuildStatuses.Successful;
@@ -939,17 +963,17 @@ namespace Jabberwocky.SoC.Library
             return developmentCard;
         }
 
-        private Boolean CanBuildCity()
+        /*private Boolean CanBuildCity()
         {
             return this.currentPlayer.GrainCount >= 2 && this.currentPlayer.OreCount >= 3 && this.currentPlayer.RemainingCities > 0;
-        }
+        }*/
 
-        private Boolean CanBuildRoadSegment()
+        /*private Boolean CanBuildRoadSegment()
         {
             return this.currentPlayer.BrickCount > 0 &&
               this.currentPlayer.LumberCount > 0 &&
               this.currentPlayer.RemainingRoadSegments > 0;
-        }
+        }*/
 
         private Boolean CanBuyDevelopmentCard()
         {
@@ -1420,7 +1444,7 @@ namespace Jabberwocky.SoC.Library
             return true;
         }
 
-        private Boolean VerifyBuildRoadSegmentRequest(UInt32 roadStartLocation, UInt32 roadEndLocation)
+        private bool VerifyBuildRoadSegmentRequest(uint roadStartLocation, uint roadEndLocation)
         {
             if (this.GamePhase == GamePhases.GameOver)
             {
@@ -1428,7 +1452,7 @@ namespace Jabberwocky.SoC.Library
                 return false;
             }
 
-            if (!this.CanBuildRoadSegment())
+            if (this.CanBuildRoadSegment() != BuildStatuses.Successful)
             {
                 this.TryRaiseRoadSegmentBuildingError();
                 return false;

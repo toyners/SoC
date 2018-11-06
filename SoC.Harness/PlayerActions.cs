@@ -1,17 +1,28 @@
 ﻿
 namespace SoC.Harness
 {
-    using System.Collections.Generic;
-
     public class PlayerActions
     {
-        private List<string> buildMessages = new List<string>(6);
-        public bool CanBuildSettlement { get { return string.IsNullOrEmpty(this.BuildSettlementMessages); } }
+        public string BuildCityMessages { get; private set; }
+        public string BuildRoadMessages { get; private set; }
         public string BuildSettlementMessages { get; private set; }
-        public bool CanBuildRoad;
-        public bool CanBuildCity;
+
+        public bool CanBuildCity { get { return string.IsNullOrEmpty(this.BuildCityMessages); } }
+        public bool CanBuildRoad { get { return string.IsNullOrEmpty(this.BuildRoadMessages); } }
+        public bool CanBuildSettlement { get { return string.IsNullOrEmpty(this.BuildSettlementMessages); } }
+
         public bool CanBuyDevelopmentCard;
         public bool CanUseDevelopmentCard;
+
+        public void AddBuildCityMessages(params string[] messages)
+        {
+            this.BuildCityMessages = string.Join("\r\n", messages);
+        }
+
+        public void AddBuildRoadMessages(params string[] messages)
+        {
+            this.BuildRoadMessages = string.Join("\r\n", messages);
+        }
 
         public void AddBuildSettlementMessages(params string[] messages)
         {

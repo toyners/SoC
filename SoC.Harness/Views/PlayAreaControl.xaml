@@ -56,6 +56,9 @@
         <Canvas Name="PlayerActions">
             <Button Name="TradeButton" Click="TradeButton_Click" Visibility="Hidden" Canvas.Left="25" Canvas.Top="25" FontSize="20" Width="100">Trade</Button>
             <Button Name="BuildButton" Click="BuildButton_Click" Visibility="Hidden" Canvas.Left="25" Canvas.Top="65" FontSize="20" Width="100">Build</Button>
+            <Button Name="BuildSettlementButton" Click="BuildSettlementButton_Click" Visibility="Hidden" Canvas.Left="140" Canvas.Top="65" FontSize="20" Width="120">Settlement</Button>
+            <Button Name="BuildRoadButton" Visibility="Hidden" Canvas.Left="140" Canvas.Top="105" FontSize="20" Width="120">Road</Button>
+            <Button Name="BuildCityButton" Visibility="Hidden" Canvas.Left="140" Canvas.Top="145" FontSize="20" Width="120">City</Button>
             <Button Name="BuyButton" Click="BuyButton_Click" Visibility="Hidden" Canvas.Left="25" Canvas.Top="105" FontSize="20" Width="100">Buy</Button>
             <Button Name="UseButton" Click="UseButton_Click" Visibility="Hidden" Canvas.Left="25" Canvas.Top="145" FontSize="20" Width="100">Use</Button>
             <Button Name="EndTurnButton" Click="EndTurnButton_Click" Visibility="Hidden" Canvas.Left="350" Canvas.Top="600" FontSize="20">End Turn</Button>
