@@ -21,7 +21,7 @@ namespace SoC.Harness.ViewModels
         private PlayerViewModel player;
         private Dictionary<Guid, PlayerViewModel> playerViewModelsById = new Dictionary<Guid, PlayerViewModel>();
         private States state;
-        private PlayerActions playerActions = new PlayerActions();
+        private PhaseActions phaseActions = new PhaseActions();
         #endregion
 
         #region Construction
@@ -50,7 +50,7 @@ namespace SoC.Harness.ViewModels
         public event Action<uint, uint> DiceRollEvent;
         public event Action<PlayerViewModel, int> RobberEvent;
         public event Action<List<Tuple<Guid, string, int>>> RobbingChoicesEvent;
-        public event Action<PlayerActions> StartTurnEvent;
+        public event Action<PhaseActions> StartPhaseEvent;
         #endregion
 
         #region Methods
@@ -241,33 +241,33 @@ namespace SoC.Harness.ViewModels
 
         private void StartTurn()
         {
-            this.playerActions.Clear();
+            this.phaseActions.Clear();
 
             var buildSettlementStatus = this.localGameController.CanBuildSettlement();
             if (buildSettlementStatus == (LocalGameController.BuildStatuses.NotEnoughResourcesForSettlement | LocalGameController.BuildStatuses.NoSettlements))
-                this.playerActions.AddBuildSettlementMessages("Not enough resources for a settlement", "No settlements");
+                this.phaseActions.AddBuildSettlementMessages("Not enough resources for a settlement", "No settlements");
             else if (buildSettlementStatus == LocalGameController.BuildStatuses.NotEnoughResourcesForSettlement)
-                this.playerActions.AddBuildSettlementMessages("Not enough resources for a settlement");
+                this.phaseActions.AddBuildSettlementMessages("Not enough resources for a settlement");
             else if (buildSettlementStatus == LocalGameController.BuildStatuses.NoSettlements)
-                this.playerActions.AddBuildSettlementMessages("No settlements");
+                this.phaseActions.AddBuildSettlementMessages("No settlements");
 
             buildSettlementStatus = this.localGameController.CanBuildRoadSegment();
             if (buildSettlementStatus == (LocalGameController.BuildStatuses.NotEnoughResourcesForRoad | LocalGameController.BuildStatuses.NoRoads))
-                this.playerActions.AddBuildSettlementMessages("Not enough resources for a road", "No roads");
+                this.phaseActions.AddBuildRoadMessages("Not enough resources for a road", "No roads");
             else if (buildSettlementStatus == LocalGameController.BuildStatuses.NotEnoughResourcesForRoad)
-                this.playerActions.AddBuildSettlementMessages("Not enough resources for a road");
+                this.phaseActions.AddBuildRoadMessages("Not enough resources for a road");
             else if (buildSettlementStatus == LocalGameController.BuildStatuses.NoRoads)
-                this.playerActions.AddBuildSettlementMessages("No roads");
+                this.phaseActions.AddBuildRoadMessages("No roads");
 
             buildSettlementStatus = this.localGameController.CanBuildCity();
             if (buildSettlementStatus == (LocalGameController.BuildStatuses.NotEnoughResourcesForCity | LocalGameController.BuildStatuses.NoCities))
-                this.playerActions.AddBuildSettlementMessages("Not enough resources for a city", "No cities");
+                this.phaseActions.AddBuildCityMessages("Not enough resources for a city", "No cities");
             else if (buildSettlementStatus == LocalGameController.BuildStatuses.NotEnoughResourcesForCity)
-                this.playerActions.AddBuildSettlementMessages("Not enough resources for a city");
+                this.phaseActions.AddBuildCityMessages("Not enough resources for a city");
             else if (buildSettlementStatus == LocalGameController.BuildStatuses.NoRoads)
-                this.playerActions.AddBuildSettlementMessages("No cities");
+                this.phaseActions.AddBuildCityMessages("No cities");
 
-            this.StartTurnEvent?.Invoke(this.playerActions);
+            this.StartPhaseEvent?.Invoke(this.phaseActions);
         }
 
         private void RobberEventHandler(int numberOfResourcesToSelect)

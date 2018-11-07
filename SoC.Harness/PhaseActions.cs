@@ -1,7 +1,7 @@
 ﻿
 namespace SoC.Harness
 {
-    public class PlayerActions
+    public class PhaseActions
     {
         public string BuildCityMessages { get; private set; }
         public string BuildRoadMessages { get; private set; }

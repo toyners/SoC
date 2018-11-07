@@ -22,6 +22,7 @@ namespace SoC.Harness.Views
             AwaitingResourceDropSelection,
             RobberLocationSelection,
             RobbedPlayerSelection,
+            AwaitingPhaseAction,
             Unknown,
         }
 
@@ -71,7 +72,7 @@ namespace SoC.Harness.Views
         private Image currentRobberLocationHoverImage = null;
         private Dictionary<Image, Tuple<uint, Point>> locationsByImage = new Dictionary<Image, Tuple<uint, Point>>();
         private PlayerButton[] playerButtons;
-        PlayerButton selectedPlayerButton = null;
+        private PlayerButton selectedPlayerButton = null;
         #endregion
 
         #region Construction
@@ -168,7 +169,7 @@ namespace SoC.Harness.Views
             this.controllerViewModel.DiceRollEvent += this.DiceRollEventHandler;
             this.controllerViewModel.RobberEvent += this.RobberEventHandler;
             this.controllerViewModel.RobbingChoicesEvent += this.RobbingChoicesEventHandler;
-            this.controllerViewModel.StartTurnEvent += this.StartTurnEventHandler;
+            this.controllerViewModel.StartPhaseEvent += this.StartPhaseEventHandler;
         }
 
         public void InitialisePlayerViews(PlayerViewModel player1, PlayerViewModel player2, PlayerViewModel player3, PlayerViewModel player4)
@@ -252,6 +253,8 @@ namespace SoC.Harness.Views
 
         private void BuildButton_Click(object sender, RoutedEventArgs e)
         {
+            this.BuildButton.Visibility = Visibility.Hidden;
+            this.BuildTextBlock.Visibility = Visibility.Visible;
             this.BuildSettlementButton.Visibility = Visibility.Visible;
             this.BuildRoadButton.Visibility = Visibility.Visible;
             this.BuildCityButton.Visibility = Visibility.Visible;
@@ -682,6 +685,7 @@ namespace SoC.Harness.Views
             Canvas.SetTop(this.robberImage, location.Item2.Y);
             this.RobberSelectionLayer.Visibility = Visibility.Hidden;
             this.controllerViewModel.SetRobberLocation(location.Item1);
+            this.state = States.AwaitingPhaseAction;
         }
 
         private void Location_MouseHover(object sender, MouseEventArgs e)
@@ -902,19 +906,27 @@ namespace SoC.Harness.Views
             });
         }
 
-        private void StartTurnEventHandler(PlayerActions playerActions)
+        private void StartPhaseEventHandler(PhaseActions playerActions)
         {
             this.TradeButton.Visibility = Visibility.Visible;
 
+            this.BuildSettlementButton.IsEnabled = playerActions.CanBuildSettlement;
+            this.BuildSettlementButton.ToolTip = playerActions.BuildSettlementMessages;
+
+            this.BuildRoadButton.IsEnabled = playerActions.CanBuildRoad;
+            this.BuildRoadButton.ToolTip = playerActions.BuildRoadMessages;
+
+            this.BuildCityButton.IsEnabled = playerActions.CanBuildCity;
+            this.BuildCityButton.ToolTip = playerActions.BuildCityMessages;
+
             this.BuildButton.Visibility = Visibility.Visible;
             this.BuildButton.IsEnabled = playerActions.CanBuildSettlement | playerActions.CanBuildRoad | playerActions.CanBuildCity;
-            if (!this.BuildButton.IsEnabled)
-                this.BuildButton.ToolTip = playerActions.BuildSettlementMessages + playerActions.BuildRoadMessages + playerActions.BuildCityMessages;
+            this.BuildButton.ToolTip = playerActions.BuildSettlementMessages + playerActions.BuildRoadMessages + playerActions.BuildCityMessages;
 
             this.BuyButton.Visibility = Visibility.Visible;
             this.BuyButton.IsEnabled = playerActions.CanBuyDevelopmentCard;
             this.UseButton.Visibility = Visibility.Visible;
-            this.UseButton.IsEnabled = playerActions.CanUseDevelopmentCard; 
+            this.UseButton.IsEnabled = playerActions.CanUseDevelopmentCard;
         }
 
         private void TradeButton_Click(object sender, RoutedEventArgs e)
@@ -958,6 +970,11 @@ namespace SoC.Harness.Views
             public uint[] Locations;
             public int[] YCoordinates;
             public bool StartWithRightImage;
+        }
+
+        private void BuildBackButton_Click(object sender, RoutedEventArgs e)
+        {
+
         }
 
         public struct HorizontalRoadLayoutData
