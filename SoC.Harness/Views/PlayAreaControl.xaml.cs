@@ -925,6 +925,8 @@ namespace SoC.Harness.Views
             this.BuyButton.IsEnabled = playerActions.CanBuyDevelopmentCard;
             this.UseButton.Visibility = Visibility.Visible;
             this.UseButton.IsEnabled = playerActions.CanUseDevelopmentCard;
+
+            this.PhaseActions.Visibility = Visibility.Visible;
         }
 
         private void TradeButton_Click(object sender, RoutedEventArgs e)
