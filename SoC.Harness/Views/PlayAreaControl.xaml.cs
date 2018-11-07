@@ -838,7 +838,6 @@ namespace SoC.Harness.Views
             this.RoadSelectionLayer.Visibility = Visibility.Hidden;
 
             this.EndTurnButton.Visibility = Visibility.Visible;
-            this.TopLayer.Visibility = Visibility.Visible;
         }
 
         private void RobbingChoicesEventHandler(List<Tuple<Guid, string, int>> choices)
@@ -895,7 +894,6 @@ namespace SoC.Harness.Views
         private void StartGameButton_Click(object sender, RoutedEventArgs e)
         {
             this.StartGameButton.Visibility = Visibility.Hidden;
-            this.TopLayer.Visibility = Visibility.Hidden;
 
             this.BoardLayer.Visibility = Visibility.Visible;
             this.SettlementSelectionLayer.Visibility = Visibility.Visible;
@@ -973,6 +971,21 @@ namespace SoC.Harness.Views
         }
 
         private void BuildBackButton_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void TradeMarketButton_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void TradePlayerButton_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void TradeBackButton_Click(object sender, RoutedEventArgs e)
         {
 
         }
