@@ -277,7 +277,6 @@ namespace SoC.Harness.ViewModels
 
         private void RobberEventHandler(int numberOfResourcesToSelect)
         {
-            numberOfResourcesToSelect = 1;
             this.RobberEvent?.Invoke(this.player, numberOfResourcesToSelect);
         }
 

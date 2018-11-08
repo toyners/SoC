@@ -347,130 +347,130 @@ namespace Jabberwocky.SoC.Library
                     switch (playerAction.Action)
                     {
                         case ComputerPlayerActionTypes.BuildCity:
-                            {
-                                var location = computerPlayer.ChooseCityLocation();
-                                this.BuildCity(location);
+                        {
+                            var location = computerPlayer.ChooseCityLocation();
+                            this.BuildCity(location);
 
-                                events.Add(new CityBuiltEvent(computerPlayer.Id, location));
+                            events.Add(new CityBuiltEvent(computerPlayer.Id, location));
 
-                                this.CheckComputerPlayerIsWinner(computerPlayer, events);
+                            this.CheckComputerPlayerIsWinner(computerPlayer, events);
 
-                                break;
-                            }
+                            break;
+                        }
 
                         case ComputerPlayerActionTypes.BuildRoadSegment:
+                        {
+                            var buildRoadAction = (BuildRoadSegmentAction)playerAction;
+                            this.BuildRoadSegment(buildRoadAction.StartLocation, buildRoadAction.EndLocation);
+                            events.Add(new RoadSegmentBuiltEvent(computerPlayer.Id, buildRoadAction.StartLocation, buildRoadAction.EndLocation));
+
+                            Guid previousPlayerWithLongestRoadId;
+                            if (this.PlayerHasJustBuiltTheLongestRoad(out previousPlayerWithLongestRoadId))
                             {
-                                var buildRoadAction = (BuildRoadSegmentAction)playerAction;
-                                this.BuildRoadSegment(buildRoadAction.StartLocation, buildRoadAction.EndLocation);
-                                events.Add(new RoadSegmentBuiltEvent(computerPlayer.Id, buildRoadAction.StartLocation, buildRoadAction.EndLocation));
-
-                                Guid previousPlayerWithLongestRoadId;
-                                if (this.PlayerHasJustBuiltTheLongestRoad(out previousPlayerWithLongestRoadId))
-                                {
-                                    events.Add(new LongestRoadBuiltEvent(computerPlayer.Id, previousPlayerWithLongestRoadId));
-                                }
-
-                                this.CheckComputerPlayerIsWinner(computerPlayer, events);
-
-                                break;
+                                events.Add(new LongestRoadBuiltEvent(computerPlayer.Id, previousPlayerWithLongestRoadId));
                             }
+
+                            this.CheckComputerPlayerIsWinner(computerPlayer, events);
+
+                            break;
+                        }
 
                         case ComputerPlayerActionTypes.BuildSettlement:
-                            {
-                                var location = computerPlayer.ChooseSettlementLocation();
-                                this.BuildSettlement(location);
+                        {
+                            var location = computerPlayer.ChooseSettlementLocation();
+                            this.BuildSettlement(location);
 
-                                events.Add(new SettlementBuiltEvent(computerPlayer.Id, location));
+                            events.Add(new SettlementBuiltEvent(computerPlayer.Id, location));
 
-                                this.CheckComputerPlayerIsWinner(computerPlayer, events);
+                            this.CheckComputerPlayerIsWinner(computerPlayer, events);
 
-                                break;
-                            }
+                            break;
+                        }
 
                         case ComputerPlayerActionTypes.BuyDevelopmentCard:
-                            {
-                                var developmentCard = this.BuyDevelopmentCard();
-                                computerPlayer.AddDevelopmentCard(developmentCard);
-                                events.Add(new BuyDevelopmentCardEvent(computerPlayer.Id));
-                                break;
-                            }
+                        {
+                            var developmentCard = this.BuyDevelopmentCard();
+                            computerPlayer.AddDevelopmentCard(developmentCard);
+                            events.Add(new BuyDevelopmentCardEvent(computerPlayer.Id));
+                            break;
+                        }
 
                         case ComputerPlayerActionTypes.PlayKnightCard:
+                        {
+                            var knightCard = computerPlayer.ChooseKnightCard();
+                            var newRobberHex = computerPlayer.ChooseRobberLocation();
+                            this.PlayKnightDevelopmentCard(knightCard, newRobberHex);
+                            events.Add(new PlayKnightCardEvent(computerPlayer.Id));
+
+                            var playersOnHex = this.gameBoard.GetPlayersForHex(newRobberHex);
+                            if (playersOnHex != null)
                             {
-                                var knightCard = computerPlayer.ChooseKnightCard();
-                                var newRobberHex = computerPlayer.ChooseRobberLocation();
-                                this.PlayKnightDevelopmentCard(knightCard, newRobberHex);
-                                events.Add(new PlayKnightCardEvent(computerPlayer.Id));
+                                var otherPlayers = this.GetPlayersFromIds(playersOnHex);
+                                var robbedPlayer = computerPlayer.ChoosePlayerToRob(otherPlayers);
+                                var takenResource = this.GetResourceFromPlayer(robbedPlayer);
 
-                                var playersOnHex = this.gameBoard.GetPlayersForHex(newRobberHex);
-                                if (playersOnHex != null)
-                                {
-                                    var otherPlayers = this.GetPlayersFromIds(playersOnHex);
-                                    var robbedPlayer = computerPlayer.ChoosePlayerToRob(otherPlayers);
-                                    var takenResource = this.GetResourceFromPlayer(robbedPlayer);
-
-                                    computerPlayer.AddResources(takenResource);
-                                    var resourceTransaction = new ResourceTransaction(computerPlayer.Id, robbedPlayer.Id, takenResource);
-                                    var resourceLostEvent = new ResourceTransactionEvent(computerPlayer.Id, resourceTransaction);
-                                    events.Add(resourceLostEvent);
-                                }
-
-                                Guid previousPlayerId;
-                                if (this.PlayerHasJustBuiltTheLargestArmy(out previousPlayerId))
-                                {
-                                    events.Add(new LargestArmyChangedEvent(previousPlayerId, this.playerWithLargestArmy.Id));
-                                }
-
-                                this.CheckComputerPlayerIsWinner(computerPlayer, events);
-
-                                break;
+                                computerPlayer.AddResources(takenResource);
+                                var resourceTransaction = new ResourceTransaction(computerPlayer.Id, robbedPlayer.Id, takenResource);
+                                var resourceLostEvent = new ResourceTransactionEvent(computerPlayer.Id, resourceTransaction);
+                                events.Add(resourceLostEvent);
                             }
+
+                            Guid previousPlayerId;
+                            if (this.PlayerHasJustBuiltTheLargestArmy(out previousPlayerId))
+                            {
+                                events.Add(new LargestArmyChangedEvent(previousPlayerId, this.playerWithLargestArmy.Id));
+                            }
+
+                            this.CheckComputerPlayerIsWinner(computerPlayer, events);
+
+                            break;
+                        }
 
                         case ComputerPlayerActionTypes.PlayMonopolyCard:
+                        {
+                            var monopolyCard = computerPlayer.ChooseMonopolyCard();
+                            var resourceType = computerPlayer.ChooseResourceTypeToRob();
+                            var opponents = this.GetOpponentsForPlayer(computerPlayer);
+                            var resourceTransations = this.GetAllResourcesFromOpponentsOfType(computerPlayer, opponents, resourceType);
+                            if (resourceTransations != null)
                             {
-                                var monopolyCard = computerPlayer.ChooseMonopolyCard();
-                                var resourceType = computerPlayer.ChooseResourceTypeToRob();
-                                var opponents = this.GetOpponentsForPlayer(computerPlayer);
-                                var resourceTransations = this.GetAllResourcesFromOpponentsOfType(computerPlayer, opponents, resourceType);
-                                if (resourceTransations != null)
-                                {
-                                    this.AddResourcesToCurrentPlayer(computerPlayer, resourceTransations);
-                                }
-
-                                events.Add(new PlayMonopolyCardEvent(computerPlayer.Id, resourceTransations));
-                                break;
+                                this.AddResourcesToCurrentPlayer(computerPlayer, resourceTransations);
                             }
+
+                            events.Add(new PlayMonopolyCardEvent(computerPlayer.Id, resourceTransations));
+                            break;
+                        }
 
                         case ComputerPlayerActionTypes.PlayYearOfPlentyCard:
-                            {
-                                var yearOfPlentyCard = computerPlayer.ChooseYearOfPlentyCard();
-                                var resourcesCollected = computerPlayer.ChooseResourcesToCollectFromBank();
-                                computerPlayer.AddResources(resourcesCollected);
+                        {
+                            var yearOfPlentyCard = computerPlayer.ChooseYearOfPlentyCard();
+                            var resourcesCollected = computerPlayer.ChooseResourcesToCollectFromBank();
+                            computerPlayer.AddResources(resourcesCollected);
 
-                                var resourceTransaction = new ResourceTransaction(computerPlayer.Id, this.playerPool.GetBankId(), resourcesCollected);
-                                var resourceTransactions = new ResourceTransactionList();
-                                resourceTransactions.Add(resourceTransaction);
+                            var resourceTransaction = new ResourceTransaction(computerPlayer.Id, this.playerPool.GetBankId(), resourcesCollected);
+                            var resourceTransactions = new ResourceTransactionList();
+                            resourceTransactions.Add(resourceTransaction);
 
-                                events.Add(new PlayYearOfPlentyCardEvent(computerPlayer.Id, resourceTransactions));
-                                break;
-                            }
+                            events.Add(new PlayYearOfPlentyCardEvent(computerPlayer.Id, resourceTransactions));
+                            break;
+                        }
 
                         case ComputerPlayerActionTypes.TradeWithBank:
-                            {
-                                var tradeWithBankAction = (TradeWithBankAction)playerAction;
+                        {
+                            var tradeWithBankAction = (TradeWithBankAction)playerAction;
 
-                                var receivingResources = ResourceClutch.CreateFromResourceType(tradeWithBankAction.ReceivingType);
-                                receivingResources *= tradeWithBankAction.ReceivingCount;
+                            var receivingResources = ResourceClutch.CreateFromResourceType(tradeWithBankAction.ReceivingType);
+                            receivingResources *= tradeWithBankAction.ReceivingCount;
 
-                                var paymentResources = ResourceClutch.CreateFromResourceType(tradeWithBankAction.GivingType);
-                                paymentResources *= (tradeWithBankAction.ReceivingCount * 4);
+                            var paymentResources = ResourceClutch.CreateFromResourceType(tradeWithBankAction.GivingType);
+                            paymentResources *= (tradeWithBankAction.ReceivingCount * 4);
 
-                                computerPlayer.RemoveResources(paymentResources);
-                                computerPlayer.AddResources(receivingResources);
+                            computerPlayer.RemoveResources(paymentResources);
+                            computerPlayer.AddResources(receivingResources);
 
-                                events.Add(new TradeWithBankEvent(computerPlayer.Id, this.playerPool.GetBankId(), paymentResources, receivingResources));
-                                break;
-                            }
+                            events.Add(new TradeWithBankEvent(computerPlayer.Id, this.playerPool.GetBankId(), paymentResources, receivingResources));
+                            break;
+                        }
 
                         default: throw new NotImplementedException("Player action '" + playerAction + "' is not recognised.");
                     }

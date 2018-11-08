@@ -302,7 +302,18 @@ namespace Jabberwocky.SoC.Library
 
         public virtual ComputerPlayerAction GetPlayerAction()
         {
-            throw new NotImplementedException();
+            if (this.actions.Count == 0)
+            {
+                return null;
+            }
+
+            var action = this.actions.Dequeue();
+            if (action.Action == ComputerPlayerActionTypes.EndTurn)
+            {
+                return null;
+            }
+
+            return action;
         }
 
         private int CalculateChanceOfReturnOnRoll(uint[] productionValues)
