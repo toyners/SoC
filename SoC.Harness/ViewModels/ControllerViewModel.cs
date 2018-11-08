@@ -97,6 +97,8 @@ namespace SoC.Harness.ViewModels
 
         private void DiceRollEventHandler(uint arg1, uint arg2)
         {
+            var diceRoll = (arg1 + arg2);
+            this.player.UpdateHistory("Rolled " + diceRoll);
             this.DiceRollEvent?.Invoke(arg1, arg2);
         }
 
