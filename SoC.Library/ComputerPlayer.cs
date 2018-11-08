@@ -295,7 +295,7 @@ namespace Jabberwocky.SoC.Library
             throw new NotImplementedException();
         }
 
-        public void DropResources(Int32 resourceCount)
+        public void DropResources(int resourceCount)
         {
             throw new NotImplementedException();
         }
@@ -305,9 +305,9 @@ namespace Jabberwocky.SoC.Library
             throw new NotImplementedException();
         }
 
-        private Int32 CalculateChanceOfReturnOnRoll(UInt32[] productionValues)
+        private int CalculateChanceOfReturnOnRoll(uint[] productionValues)
         {
-            Int32 totalChance = 0;
+            int totalChance = 0;
             foreach (var productionValue in productionValues)
             {
                 switch (productionValue)
