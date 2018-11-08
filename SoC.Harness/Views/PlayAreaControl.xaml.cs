@@ -22,7 +22,7 @@ namespace SoC.Harness.Views
             AwaitingResourceDropSelection,
             RobberLocationSelection,
             RobbedPlayerSelection,
-            AwaitingPhaseAction,
+            ChoosePhaseAction,
             Unknown,
         }
 
@@ -283,6 +283,10 @@ namespace SoC.Harness.Views
             {
                 var roadEndLocation = this.workingRoadControl.Start == this.workingLocation ? this.workingRoadControl.End : this.workingRoadControl.Start;
                 this.controllerViewModel.CompleteSecondInfrastructureSetup(this.workingLocation, roadEndLocation);
+            }
+            else if (this.state == States.ChoosePhaseAction)
+            {
+                this.controllerViewModel.EndTurn();
             }
         }
 
@@ -685,7 +689,7 @@ namespace SoC.Harness.Views
             Canvas.SetTop(this.robberImage, location.Item2.Y);
             this.RobberSelectionLayer.Visibility = Visibility.Hidden;
             this.controllerViewModel.SetRobberLocation(location.Item1);
-            this.state = States.AwaitingPhaseAction;
+            this.state = States.ChoosePhaseAction;
         }
 
         private void Location_MouseHover(object sender, MouseEventArgs e)
@@ -907,6 +911,7 @@ namespace SoC.Harness.Views
         private void StartPhaseEventHandler(PhaseActions playerActions)
         {
             this.TradeButton.Visibility = Visibility.Visible;
+            this.TradeMarketButton.IsEnabled = playerActions.CanTradeWithMarket;
 
             this.BuildSettlementButton.IsEnabled = playerActions.CanBuildSettlement;
             this.BuildSettlementButton.ToolTip = playerActions.BuildSettlementMessages;
@@ -927,6 +932,7 @@ namespace SoC.Harness.Views
             this.UseButton.IsEnabled = playerActions.CanUseDevelopmentCard;
 
             this.PhaseActions.Visibility = Visibility.Visible;
+            this.EndTurnButton.Visibility = Visibility.Visible;
         }
 
         private void TradeButton_Click(object sender, RoutedEventArgs e)

@@ -72,10 +72,15 @@ namespace SoC.Harness.ViewModels
             this.player.Update(dropResources, false);
         }
 
+        public void EndTurn()
+        {
+            this.localGameController.EndTurn(this.currentTurnToken);
+        }
+
         public void GetRandomResourceFromOpponent(Guid opponentId)
         {
             this.localGameController.ChooseResourceFromOpponent(opponentId);
-            this.StartTurn();
+            this.GetPhaseAction();
         }
 
         public void SetRobberLocation(uint hexIndex)
@@ -204,7 +209,7 @@ namespace SoC.Harness.ViewModels
             {
                 // No meaningful choices i.e. robber location has no adjacent players or
                 // just the main player.
-                this.StartTurn();
+                this.GetPhaseAction();
                 return;
             }
 
@@ -218,7 +223,7 @@ namespace SoC.Harness.ViewModels
 
                 this.localGameController.ChooseResourceFromOpponent(opponentId);
 
-                this.StartTurn();
+                this.GetPhaseAction();
                 return;
             }
 
@@ -239,7 +244,7 @@ namespace SoC.Harness.ViewModels
             this.RobbingChoicesEvent?.Invoke(choiceList);
         }
 
-        private void StartTurn()
+        private void GetPhaseAction()
         {
             this.phaseActions.Clear();
 

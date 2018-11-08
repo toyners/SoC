@@ -43,6 +43,13 @@ namespace Jabberwocky.SoC.Library
             NoCities,
             NotEnoughResourcesForCity
         }
+
+        public enum BuyStatuses
+        {
+            Successful = 0,
+            NoCards,
+            NotEnoughResources
+        }
         #endregion
 
         #region Fields
@@ -70,12 +77,7 @@ namespace Jabberwocky.SoC.Library
 
         #region Construction
         public LocalGameController(INumberGenerator dice, IPlayerPool playerPool)
-        {
-            this.dice = dice;
-            this.playerPool = playerPool;
-            this.gameBoard = new GameBoard(BoardSizes.Standard);
-            this.developmentCardHolder = new DevelopmentCardHolder();
-        }
+            : this(dice, playerPool, new GameBoard(BoardSizes.Standard), new DevelopmentCardHolder()) { }
 
         public LocalGameController(INumberGenerator dice, IPlayerPool computerPlayerFactory, GameBoard gameBoard, IDevelopmentCardHolder developmentCardHolder)
         {
@@ -214,6 +216,17 @@ namespace Jabberwocky.SoC.Library
                 result |= BuildStatuses.NoSettlements;
 
             return result;
+        }
+
+        public BuyStatuses CanBuyDevelopmentCard()
+        {
+            if (!this.developmentCardHolder.HasCards)
+                return BuyStatuses.NoCards;
+
+            if (this.mainPlayer.Resources < ResourceClutch.DevelopmentCard)
+                return BuyStatuses.NotEnoughResources;
+
+            return BuyStatuses.Successful;
         }
 
         public void ChooseResourceFromOpponent(Guid opponentId)
@@ -961,24 +974,6 @@ namespace Jabberwocky.SoC.Library
             this.currentPlayer.PayForDevelopmentCard();
             this.cardsPurchasedThisTurn.Add(developmentCard);
             return developmentCard;
-        }
-
-        /*private Boolean CanBuildCity()
-        {
-            return this.currentPlayer.GrainCount >= 2 && this.currentPlayer.OreCount >= 3 && this.currentPlayer.RemainingCities > 0;
-        }*/
-
-        /*private Boolean CanBuildRoadSegment()
-        {
-            return this.currentPlayer.BrickCount > 0 &&
-              this.currentPlayer.LumberCount > 0 &&
-              this.currentPlayer.RemainingRoadSegments > 0;
-        }*/
-
-        private Boolean CanBuyDevelopmentCard()
-        {
-            return this.currentPlayer.GrainCount >= 1 && this.currentPlayer.OreCount >= 1 && this.currentPlayer.WoolCount >= 1
-              && this.developmentCardHolder.HasCards;
         }
 
         private void ChangeToNextPlayer()
