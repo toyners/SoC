@@ -251,13 +251,13 @@ namespace SoC.Harness.Views
             this.state = States.RobberLocationSelection;
         }
 
+        private void BuildBackButton_Click(object sender, RoutedEventArgs e)
+        {
+        }
+
         private void BuildButton_Click(object sender, RoutedEventArgs e)
         {
-            this.BuildButton.Visibility = Visibility.Hidden;
-            this.BuildTextBlock.Visibility = Visibility.Visible;
-            this.BuildSettlementButton.Visibility = Visibility.Visible;
-            this.BuildRoadButton.Visibility = Visibility.Visible;
-            this.BuildCityButton.Visibility = Visibility.Visible;
+            this.BuildActions.Visibility = Visibility.Visible;
         }
 
         private void BuildSettlementButton_Click(object sender, RoutedEventArgs e)
@@ -677,6 +677,11 @@ namespace SoC.Harness.Views
             numberBitmap = (hexData.Item2 != 0 ? numberBitmaps[hexData.Item2] : null);
         }
 
+        private void LoadGameButton_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
         private void Location_MouseClick(object sender, MouseButtonEventArgs e)
         {
             if (this.state != States.RobberLocationSelection)
@@ -704,6 +709,20 @@ namespace SoC.Harness.Views
             var location = this.locationsByImage[this.currentRobberLocationHoverImage];
             Canvas.SetLeft(this.selectedRobberLocationImage, location.Item2.X);
             Canvas.SetTop(this.selectedRobberLocationImage, location.Item2.Y);
+        }
+
+        private void NewGameButton_Click(object sender, RoutedEventArgs e)
+        {
+            this.NewGameButton.Visibility = Visibility.Hidden;
+            this.LoadGameButton.Visibility = Visibility.Hidden;
+
+            this.BoardLayer.Visibility = Visibility.Visible;
+            this.SettlementSelectionLayer.Visibility = Visibility.Visible;
+
+            Task.Factory.StartNew(() =>
+            {
+                this.controllerViewModel.StartGame();
+            });
         }
 
         private void PlaceHex(uint hexIndex, BitmapImage resourceBitmap, BitmapImage numberBitmap, int x, int y)
@@ -895,23 +914,11 @@ namespace SoC.Harness.Views
             this.RoadSelectionLayer.Visibility = Visibility.Visible;
         }
 
-        private void StartGameButton_Click(object sender, RoutedEventArgs e)
-        {
-            this.StartGameButton.Visibility = Visibility.Hidden;
-
-            this.BoardLayer.Visibility = Visibility.Visible;
-            this.SettlementSelectionLayer.Visibility = Visibility.Visible;
-
-            Task.Factory.StartNew(() =>
-            {
-                this.controllerViewModel.StartGame();
-            });
-        }
-
         private void StartPhaseEventHandler(PhaseActions playerActions)
         {
             this.TradeButton.Visibility = Visibility.Visible;
             this.TradeMarketButton.IsEnabled = playerActions.CanTradeWithMarket;
+            this.TradePlayerButton.IsEnabled = playerActions.CanTradeWithPlayers;
 
             this.BuildSettlementButton.IsEnabled = playerActions.CanBuildSettlement;
             this.BuildSettlementButton.ToolTip = playerActions.BuildSettlementMessages;
@@ -935,9 +942,26 @@ namespace SoC.Harness.Views
             this.EndTurnButton.Visibility = Visibility.Visible;
         }
 
+        private void TradeBackButton_Click(object sender, RoutedEventArgs e)
+        {
+            this.TradeActions.Visibility = Visibility.Hidden;
+            this.PhaseActions.Visibility = Visibility.Visible;
+        }
+
         private void TradeButton_Click(object sender, RoutedEventArgs e)
         {
-            throw new NotImplementedException();
+            this.PhaseActions.Visibility = Visibility.Hidden;
+            this.TradeActions.Visibility = Visibility.Visible;
+        }
+
+        private void TradeMarketButton_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void TradePlayerButton_Click(object sender, RoutedEventArgs e)
+        {
+
         }
 
         private void UseButton_Click(object sender, RoutedEventArgs e)
@@ -976,26 +1000,6 @@ namespace SoC.Harness.Views
             public uint[] Locations;
             public int[] YCoordinates;
             public bool StartWithRightImage;
-        }
-
-        private void BuildBackButton_Click(object sender, RoutedEventArgs e)
-        {
-
-        }
-
-        private void TradeMarketButton_Click(object sender, RoutedEventArgs e)
-        {
-
-        }
-
-        private void TradePlayerButton_Click(object sender, RoutedEventArgs e)
-        {
-
-        }
-
-        private void TradeBackButton_Click(object sender, RoutedEventArgs e)
-        {
-
         }
 
         public struct HorizontalRoadLayoutData

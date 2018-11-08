@@ -13,6 +13,7 @@ namespace SoC.Harness
         public bool CanBuildSettlement { get { return string.IsNullOrEmpty(this.BuildSettlementMessages); } }
 
         public bool CanTradeWithMarket { get { return string.IsNullOrEmpty(this.TradeMarketMessage); } }
+        public bool CanTradeWithPlayers { get { return string.IsNullOrEmpty(null);  } }
 
         public bool CanBuyDevelopmentCard;
         public bool CanUseDevelopmentCard;
