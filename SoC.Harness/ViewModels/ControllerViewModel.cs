@@ -80,7 +80,7 @@ namespace SoC.Harness.ViewModels
         public void GetRandomResourceFromOpponent(Guid opponentId)
         {
             this.localGameController.ChooseResourceFromOpponent(opponentId);
-            this.GetPhaseAction();
+            this.StartPhase();
         }
 
         public void SetRobberLocation(uint hexIndex)
@@ -178,6 +178,8 @@ namespace SoC.Harness.ViewModels
                     this.playerViewModelsById[entry.Key].Update(rc.Resources, true);
                 }
             }
+
+            this.StartPhase();
         }
 
         private void ResourcesLostEventHandler(ResourceUpdate resourceUpdate)
@@ -209,7 +211,7 @@ namespace SoC.Harness.ViewModels
             {
                 // No meaningful choices i.e. robber location has no adjacent players or
                 // just the main player.
-                this.GetPhaseAction();
+                this.StartPhase();
                 return;
             }
 
@@ -223,7 +225,7 @@ namespace SoC.Harness.ViewModels
 
                 this.localGameController.ChooseResourceFromOpponent(opponentId);
 
-                this.GetPhaseAction();
+                this.StartPhase();
                 return;
             }
 
@@ -244,7 +246,7 @@ namespace SoC.Harness.ViewModels
             this.RobbingChoicesEvent?.Invoke(choiceList);
         }
 
-        private void GetPhaseAction()
+        private void StartPhase()
         {
             this.phaseActions.Clear();
 

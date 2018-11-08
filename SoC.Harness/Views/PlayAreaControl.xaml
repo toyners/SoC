@@ -79,7 +79,6 @@
             <Button Name="NewGameButton" Canvas.Left="350" Canvas.Top="220" Click="NewGameButton_Click" Width="120" FontSize="20">New Game</Button>
             <Button Name="LoadGameButton" Click="LoadGameButton_Click" Canvas.Left="350" Canvas.Top="260" Width="120" FontSize="20">Load Game</Button>
             <Button Name="EndTurnButton" Visibility="Hidden" Click="EndTurnButton_Click" Canvas.Left="350" Canvas.Top="500" Width="120" FontSize="20">End Turn</Button>
-            
         </Canvas>
     </Grid>
 </UserControl>
