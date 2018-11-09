@@ -6,30 +6,47 @@
         xmlns:views="clr-namespace:SoC.Harness.Views"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800" WindowState="Maximized">
-  <Window.Resources>
-    
-  </Window.Resources>
-  <DockPanel>
-    <Grid DockPanel.Dock="Left">
-      <Grid.RowDefinitions>
-        <RowDefinition />
-        <RowDefinition />
-      </Grid.RowDefinitions>
+    <Window.Resources>
 
-      <views:PlayerPanel x:Name="TopLeftPlayer" />
-      <views:PlayerPanel x:Name="BottomLeftPlayer" Grid.Row="1" />
-    </Grid>
+    </Window.Resources>
 
-    <Grid DockPanel.Dock="Right">
-      <Grid.RowDefinitions>
-        <RowDefinition />
-        <RowDefinition />
-      </Grid.RowDefinitions>
+    <Window.CommandBindings>
+        <CommandBinding Command="ApplicationCommands.New" Executed="New_Executed" />
+        <CommandBinding Command="ApplicationCommands.Open" Executed="Open_Executed" />
+        <CommandBinding Command="ApplicationCommands.Save" Executed="Save_Executed" />
+    </Window.CommandBindings>
 
-      <views:PlayerPanel x:Name="TopRightPlayer"/>
-      <views:PlayerPanel x:Name="BottomRightPlayer" Grid.Row="1" />
-    </Grid>
+    <DockPanel>
+        <Menu DockPanel.Dock="Top" Background="White">
+            <MenuItem Header="_File">
+                <MenuItem Header="_New" Command="ApplicationCommands.New"/>
+                <MenuItem Header="_Open" Command="ApplicationCommands.Open"/>
+                <MenuItem Header="_Save" Command="ApplicationCommands.Save" />
+                <Separator />
+                <MenuItem Header="_Exit" Command="ApplicationCommands.Close" InputGestureText="Alt+F4"/>
+            </MenuItem>
+        </Menu>
+        
+        <Grid DockPanel.Dock="Left">
+            <Grid.RowDefinitions>
+                <RowDefinition />
+                <RowDefinition />
+            </Grid.RowDefinitions>
 
-    <views:PlayAreaControl x:Name="PlayArea" Grid.Column="1" />
-  </DockPanel>
+            <views:PlayerPanel x:Name="TopLeftPlayer" />
+            <views:PlayerPanel x:Name="BottomLeftPlayer" Grid.Row="1" />
+        </Grid>
+
+        <Grid DockPanel.Dock="Right">
+            <Grid.RowDefinitions>
+                <RowDefinition />
+                <RowDefinition />
+            </Grid.RowDefinitions>
+
+            <views:PlayerPanel x:Name="TopRightPlayer"/>
+            <views:PlayerPanel x:Name="BottomRightPlayer" Grid.Row="1" />
+        </Grid>
+
+        <views:PlayAreaControl x:Name="PlayArea" Grid.Column="1" />
+    </DockPanel>
 </Window>

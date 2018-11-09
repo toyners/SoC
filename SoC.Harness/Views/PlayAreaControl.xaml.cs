@@ -251,6 +251,17 @@ namespace SoC.Harness.Views
             this.state = States.RobberLocationSelection;
         }
 
+        public void StartGame()
+        {
+            this.BoardLayer.Visibility = Visibility.Visible;
+            this.SettlementSelectionLayer.Visibility = Visibility.Visible;
+
+            Task.Factory.StartNew(() =>
+            {
+                this.controllerViewModel.StartGame();
+            });
+        }
+
         private void BuildBackButton_Click(object sender, RoutedEventArgs e)
         {
         }
@@ -677,11 +688,6 @@ namespace SoC.Harness.Views
             numberBitmap = (hexData.Item2 != 0 ? numberBitmaps[hexData.Item2] : null);
         }
 
-        private void LoadGameButton_Click(object sender, RoutedEventArgs e)
-        {
-
-        }
-
         private void Location_MouseClick(object sender, MouseButtonEventArgs e)
         {
             if (this.state != States.RobberLocationSelection)
@@ -709,20 +715,6 @@ namespace SoC.Harness.Views
             var location = this.locationsByImage[this.currentRobberLocationHoverImage];
             Canvas.SetLeft(this.selectedRobberLocationImage, location.Item2.X);
             Canvas.SetTop(this.selectedRobberLocationImage, location.Item2.Y);
-        }
-
-        private void NewGameButton_Click(object sender, RoutedEventArgs e)
-        {
-            this.NewGameButton.Visibility = Visibility.Hidden;
-            this.LoadGameButton.Visibility = Visibility.Hidden;
-
-            this.BoardLayer.Visibility = Visibility.Visible;
-            this.SettlementSelectionLayer.Visibility = Visibility.Visible;
-
-            Task.Factory.StartNew(() =>
-            {
-                this.controllerViewModel.StartGame();
-            });
         }
 
         private void PlaceHex(uint hexIndex, BitmapImage resourceBitmap, BitmapImage numberBitmap, int x, int y)

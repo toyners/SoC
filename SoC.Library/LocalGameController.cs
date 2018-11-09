@@ -699,6 +699,11 @@ namespace Jabberwocky.SoC.Library
             this.GamePhase = GamePhases.Quitting;
         }
 
+        public void Save(string filePath)
+        {
+
+        }
+
         public void SetRobberHex(uint location)
         {
             if (this.GamePhase != GamePhases.SetRobberHex)

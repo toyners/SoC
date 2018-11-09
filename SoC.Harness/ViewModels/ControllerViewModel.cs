@@ -54,6 +54,11 @@ namespace SoC.Harness.ViewModels
         #endregion
 
         #region Methods
+        public static ControllerViewModel Load(string fileName)
+        {
+            throw new NotImplementedException();
+        }
+
         public void CompleteFirstInfrastructureSetup(uint settlementLocation, uint roadEndLocation)
         {
             this.localGameController.ContinueGameSetup(settlementLocation, roadEndLocation);
