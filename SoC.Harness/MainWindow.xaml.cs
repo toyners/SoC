@@ -47,6 +47,9 @@ namespace SoC.Harness
         private void Open_Executed(object sender, System.Windows.Input.ExecutedRoutedEventArgs e)
         {
             var ofd = new OpenFileDialog();
+            ofd.CheckFileExists = true;
+            ofd.Title = "Select game file to open";
+            ofd.Filter = "Game save files (*.soc)|*.soc";
             var dialogResult = ofd.ShowDialog();
             if (dialogResult == System.Windows.Forms.DialogResult.OK)
             {
