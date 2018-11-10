@@ -125,6 +125,7 @@ namespace Jabberwocky.SoC.Library
         #region Methods
         public void AddResources(ResourceClutch resourceClutch)
         {
+            this.Resources += resourceClutch;
             this.BrickCount += resourceClutch.BrickCount;
             this.GrainCount += resourceClutch.GrainCount;
             this.LumberCount += resourceClutch.LumberCount;
