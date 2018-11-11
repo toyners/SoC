@@ -88,6 +88,11 @@ namespace SoC.Harness.ViewModels
             this.StartPhase();
         }
 
+        public void Save(string saveFilePath)
+        {
+            System.IO.File.WriteAllText(saveFilePath, "test");
+        }
+
         public void SetRobberLocation(uint hexIndex)
         {
             this.localGameController.SetRobberHex(hexIndex);

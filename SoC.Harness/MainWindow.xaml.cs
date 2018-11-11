@@ -2,6 +2,7 @@
 namespace SoC.Harness
 {
     using System;
+    using System.ComponentModel;
     using System.Windows;
     using System.Windows.Forms;
     using Jabberwocky.SoC.Library;
@@ -10,13 +11,27 @@ namespace SoC.Harness
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class MainWindow : Window, INotifyPropertyChanged
     {
+        private bool canSave;
         private ControllerViewModel controllerViewModel;
+
+        public event PropertyChangedEventHandler PropertyChanged;
 
         public MainWindow()
         {
+            this.DataContext = this;
             this.InitializeComponent();
+        }
+
+        public bool CanSave
+        {
+            get { return this.canSave; }
+            set
+            {
+                this.canSave = value;
+                this.PropertyChanged(this, new PropertyChangedEventArgs("CanSave"));
+            }
         }
 
         private void ErrorRaisedEventHandler(ErrorDetails obj)
@@ -37,6 +52,7 @@ namespace SoC.Harness
 
         private void New_Executed(object sender, System.Windows.Input.ExecutedRoutedEventArgs e)
         {
+            this.CanSave = true;
             this.controllerViewModel = new ControllerViewModel(new LocalGameController(new TestNumberGenerator(), new PlayerPool()));
             this.controllerViewModel.GameJoinedEvent += this.GameJoinedEventHandler;
 
@@ -61,7 +77,14 @@ namespace SoC.Harness
 
         private void Save_Executed(object sender, System.Windows.Input.ExecutedRoutedEventArgs e)
         {
+            var saveFilePath = $"Game_{DateTime.Now.ToString("dd-MM-yyyy HH-mm-ss")}.soc";
+            this.controllerViewModel.Save(saveFilePath);
+            System.Windows.MessageBox.Show("Game Saved.", "Save Status");
+        }
 
+        private void CommandBinding_CanExecute(object sender, System.Windows.Input.CanExecuteRoutedEventArgs e)
+        {
+            e.CanExecute = this.CanSave;
         }
     }
 }
