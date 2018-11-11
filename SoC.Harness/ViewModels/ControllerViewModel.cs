@@ -90,7 +90,7 @@ namespace SoC.Harness.ViewModels
 
         public void Save(string saveFilePath)
         {
-            System.IO.File.WriteAllText(saveFilePath, "test");
+            this.localGameController.Save(saveFilePath);
         }
 
         public void SetRobberLocation(uint hexIndex)

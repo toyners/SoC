@@ -4,6 +4,7 @@ namespace Jabberwocky.SoC.Library
     using System;
     using System.Collections.Generic;
     using System.IO;
+    using System.Runtime.Serialization;
     using System.Xml;
     using Enums;
     using GameActions;
@@ -11,7 +12,9 @@ namespace Jabberwocky.SoC.Library
     using GameEvents;
     using Interfaces;
     using Jabberwocky.SoC.Library.Storage;
+    using Newtonsoft.Json;
 
+    [JsonObject(MemberSerialization.OptIn)]
     public class LocalGameController : IGameController
     {
         #region Enums
@@ -54,12 +57,12 @@ namespace Jabberwocky.SoC.Library
 
         #region Fields
         private IPlayerPool playerPool;
-        private Boolean cardPlayedThisTurn;
+        private bool cardPlayedThisTurn;
         private HashSet<DevelopmentCard> cardsPlayed;
         private HashSet<DevelopmentCard> cardsPurchasedThisTurn;
         private INumberGenerator dice;
         private GameBoard gameBoard;
-        private Int32 playerIndex;
+        private int playerIndex;
         private IPlayer[] players;
         private Dictionary<Guid, IPlayer> playersById;
         private IPlayer[] computerPlayers;
@@ -67,9 +70,9 @@ namespace Jabberwocky.SoC.Library
         private IPlayer playerWithLongestRoad;
         private IPlayer mainPlayer;
         private ResourceUpdate gameSetupResources;
-        private Int32 resourcesToDrop;
-        private UInt32 robberHex;
-        private Dictionary<Guid, Int32> robbingChoices;
+        private int resourcesToDrop;
+        private uint robberHex;
+        private Dictionary<Guid, int> robbingChoices;
         private TurnToken currentTurnToken;
         private IPlayer currentPlayer;
         private IDevelopmentCardHolder developmentCardHolder;
@@ -92,6 +95,7 @@ namespace Jabberwocky.SoC.Library
         #endregion
 
         #region Properties
+        [JsonProperty]
         public Guid GameId { get; private set; }
         public GamePhases GamePhase { get; private set; }
         #endregion
@@ -521,6 +525,11 @@ namespace Jabberwocky.SoC.Library
             this.GamePhase = GamePhases.StartGamePlay;
         }
 
+        public GameState GetState()
+        {
+            return new GameState();
+        }
+
         public void JoinGame(GameOptions gameOptions = null)
         {
             if (this.GamePhase != GamePhases.Initial)
@@ -701,7 +710,14 @@ namespace Jabberwocky.SoC.Library
 
         public void Save(string filePath)
         {
+            var content = JsonConvert.SerializeObject(this, Newtonsoft.Json.Formatting.Indented);
+            File.WriteAllText(filePath, content);
+        }
 
+        [OnSerializing]
+        private void OnSerializingMethod(StreamingContext context)
+        {
+            int i = 0;
         }
 
         public void SetRobberHex(uint location)

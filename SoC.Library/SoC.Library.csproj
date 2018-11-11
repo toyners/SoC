@@ -34,6 +34,9 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.11.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -53,6 +56,7 @@
     <Compile Include="GameBoards\BoardQueryEngine.cs" />
     <Compile Include="GameBoards\IBoardQueryEngine.cs" />
     <Compile Include="GameBoards\IGameBoard.cs" />
+    <Compile Include="GameState.cs" />
     <Compile Include="Storage\XmlBuildingDataSectionFactory.cs" />
     <Compile Include="Storage\XmlBuildingsDataSectionFactory.cs" />
     <Compile Include="Storage\XmlGameBoardDataSectionFactory.cs" />
@@ -135,6 +139,9 @@
     <EmbeddedResource Include="GameBoards\NeighboursByLocation.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
