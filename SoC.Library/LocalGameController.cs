@@ -710,7 +710,15 @@ namespace Jabberwocky.SoC.Library
 
         public void Save(string filePath)
         {
-            var content = JsonConvert.SerializeObject(this, Newtonsoft.Json.Formatting.Indented);
+            var saveObject = new SaveObject();
+            saveObject.Hexes = this.gameBoard.GetHexInformation();
+            saveObject.Roads = this.gameBoard.GetRoadInformation();
+            saveObject.Settlements = this.gameBoard.GetSettlementInformation();
+            saveObject.Player1 = new PlayerSaveModel(this.mainPlayer);
+            saveObject.Player2 = new PlayerSaveModel(this.computerPlayers[0]);
+            saveObject.Player3 = new PlayerSaveModel(this.computerPlayers[1]);
+            saveObject.Player4 = new PlayerSaveModel(this.computerPlayers[2]);
+            var content = JsonConvert.SerializeObject(saveObject, Newtonsoft.Json.Formatting.Indented);
             File.WriteAllText(filePath, content);
         }
 

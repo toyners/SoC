@@ -57,6 +57,7 @@
     <Compile Include="GameBoards\IBoardQueryEngine.cs" />
     <Compile Include="GameBoards\IGameBoard.cs" />
     <Compile Include="GameState.cs" />
+    <Compile Include="SaveObject.cs" />
     <Compile Include="Storage\XmlBuildingDataSectionFactory.cs" />
     <Compile Include="Storage\XmlBuildingsDataSectionFactory.cs" />
     <Compile Include="Storage\XmlGameBoardDataSectionFactory.cs" />

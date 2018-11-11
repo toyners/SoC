@@ -48,20 +48,20 @@ namespace Jabberwocky.SoC.Library.GameBoards
     #endregion
 
     #region Fields
-    public const Int32 StandardBoardLocationCount = 54;
-    public const Int32 StandardBoardTrailCount = 72;
-    public const Int32 StandardBoardHexCount = 19;
-    private Dictionary<UInt32, Guid> cities;
+    public const int StandardBoardLocationCount = 54;
+    public const int StandardBoardTrailCount = 72;
+    public const int StandardBoardHexCount = 19;
+    private Dictionary<uint, Guid> cities;
     private ResourceProducer[] hexes;
-    private Dictionary<UInt32, Guid> settlements;
-    private Dictionary<Guid, List<UInt32>> settlementsByPlayer;
-    private Boolean[,] connections;
+    private Dictionary<uint, Guid> settlements;
+    private Dictionary<Guid, List<uint>> settlementsByPlayer;
+    private bool[,] connections;
     private Dictionary<Guid, List<RoadSegment>> roadSegmentsByPlayer;
-    private Dictionary<UInt32, ResourceProducer[]> resourceProvidersByDiceRolls;
+    private Dictionary<uint, ResourceProducer[]> resourceProvidersByDiceRolls;
     private Dictionary<ResourceTypes, ResourceProducer[]> resourceProducersByType;
-    private Dictionary<ResourceProducer, UInt32[]> locationsByResourceProvider;
-    private Dictionary<UInt32, UInt32[]> locationsForHex;
-    private Dictionary<UInt32, UInt32[]> hexesForLocations;
+    private Dictionary<ResourceProducer, uint[]> locationsByResourceProvider;
+    private Dictionary<uint, uint[]> locationsForHex;
+    private Dictionary<uint, uint[]> hexesForLocations;
     #endregion
 
     #region Construction
@@ -73,14 +73,14 @@ namespace Jabberwocky.SoC.Library.GameBoards
       }
 
       this.Length = StandardBoardLocationCount;
-      this.cities = new Dictionary<UInt32, Guid>();
-      this.settlements = new Dictionary<UInt32, Guid>();
+      this.cities = new Dictionary<uint, Guid>();
+      this.settlements = new Dictionary<uint, Guid>();
       this.roadSegmentsByPlayer = new Dictionary<Guid, List<RoadSegment>>();
-      this.settlementsByPlayer = new Dictionary<Guid, List<UInt32>>();
+      this.settlementsByPlayer = new Dictionary<Guid, List<uint>>();
 
       this.CreateHexes();
 
-      this.connections = new Boolean[GameBoard.StandardBoardLocationCount, GameBoard.StandardBoardLocationCount];
+      this.connections = new bool[GameBoard.StandardBoardLocationCount, GameBoard.StandardBoardLocationCount];
       this.ConnectLocationsVertically();
       this.ConnectLocationsHorizontally();
 
@@ -97,13 +97,13 @@ namespace Jabberwocky.SoC.Library.GameBoards
     #endregion
 
     #region Properties
-    public UInt32 Length { get; private set; }
+    public uint Length { get; private set; }
 
     public IBoardQueryEngine BoardQuery { get; private set; }
     #endregion
 
     #region Methods
-    public VerificationResults CanPlaceCity(Guid playerId, UInt32 location)
+    public VerificationResults CanPlaceCity(Guid playerId, uint location)
     {
       switch (this.PlacedStartingInfrastructureStatus(playerId))
       {
@@ -147,12 +147,12 @@ namespace Jabberwocky.SoC.Library.GameBoards
       return new VerificationResults { Status = VerificationStatus.Valid };
     }
 
-    public Boolean CanPlaceRobber(UInt32 hex)
+    public bool CanPlaceRobber(uint hex)
     {
       return hex < StandardBoardHexCount;
     }
 
-    public VerificationResults CanPlaceRoad(Guid playerId, UInt32 roadStartLocation, UInt32 roadEndLocation)
+    public VerificationResults CanPlaceRoad(Guid playerId, uint roadStartLocation, uint roadEndLocation)
     {
       // Has the player placed their starting infrastructure
       switch (this.PlacedStartingInfrastructureStatus(playerId))
@@ -188,7 +188,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
       return new VerificationResults { Status = VerificationStatus.Valid };
     }
 
-    public VerificationResults CanPlaceSettlement(Guid playerId, UInt32 locationIndex)
+    public VerificationResults CanPlaceSettlement(Guid playerId, uint locationIndex)
     {
       switch (this.PlacedStartingInfrastructureStatus(playerId))
       {
@@ -235,7 +235,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
       return new VerificationResults { Status = VerificationStatus.Valid };
     }
 
-    public VerificationResults CanPlaceStartingInfrastructure(Guid playerId, UInt32 settlementLocation, UInt32 roadEndLocation)
+    public VerificationResults CanPlaceStartingInfrastructure(Guid playerId, uint settlementLocation, uint roadEndLocation)
     {
       if (this.PlacedStartingInfrastructureStatus(playerId) == StartingInfrastructureStatus.Complete)
       {
@@ -302,29 +302,29 @@ namespace Jabberwocky.SoC.Library.GameBoards
       return data;
     }
 
-    public Tuple<UInt32, UInt32>[] GetLocationsForResourceProducerOrderedByProductionFactorDescending(ResourceTypes resource)
+    public Tuple<uint, uint>[] GetLocationsForResourceProducerOrderedByProductionFactorDescending(ResourceTypes resource)
     {
-      var results = new List<Tuple<UInt32, UInt32>>();
+      var results = new List<Tuple<uint, uint>>();
       var resourceProducers = this.resourceProducersByType[resource];
       foreach (var resourceProducer in resourceProducers)
       {
         foreach (var location in this.locationsByResourceProvider[resourceProducer])
         {
-          results.Add(new Tuple<UInt32, UInt32>(location, resourceProducer.Production));
+          results.Add(new Tuple<uint, uint>(location, resourceProducer.Production));
         }
       }
 
       return results.ToArray();
     }
 
-    public UInt32[] GetLocationsForResourceTypeWithProductionFactors(ResourceTypes resourceType, out UInt32 highestProductionFactor)
+    public uint[] GetLocationsForResourceTypeWithProductionFactors(ResourceTypes resourceType, out uint highestProductionFactor)
     {
       // Get locations for resources of type: return locations and their production factor
       // Order by production factor
       // Verify that the location is viable for settlement by using CanPlaceSettlement
       // Add to list
       highestProductionFactor = 0;
-      var locationsForResourceType = new List<UInt32>();
+      var locationsForResourceType = new List<uint>();
 
       var resourceProducers = this.resourceProducersByType[resourceType];
 
@@ -356,7 +356,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
     /// <param name="startIndex">Start location</param>
     /// <param name="endIndex">End location</param>
     /// <returns>List of locations between start and end location</returns>
-    public List<UInt32> GetPathBetweenLocations(UInt32 startIndex, UInt32 endIndex)
+    public List<uint> GetPathBetweenLocations(uint startIndex, uint endIndex)
     {
       if (startIndex == endIndex)
       {
@@ -371,7 +371,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
     /// </summary>
     /// <param name="hex">Index of location hex.</param>
     /// <returns>List of player ids.</returns>
-    public Guid[] GetPlayersForHex(UInt32 hex)
+    public Guid[] GetPlayersForHex(uint hex)
     {
       List<Guid> players = null;
 
@@ -406,10 +406,10 @@ namespace Jabberwocky.SoC.Library.GameBoards
     /// </summary>
     /// <param name="location">Index of the location to get production values for.</param>
     /// <returns>Array of production values.</returns>
-    public UInt32[] GetProductionValuesForLocation(UInt32 location)
+    public uint[] GetProductionValuesForLocation(uint location)
     {
       var hexesForLocation = this.hexesForLocations[location];
-      var productionValues = new List<UInt32>();
+      var productionValues = new List<uint>();
 
       foreach (var hexIndex in hexesForLocation)
       {
@@ -423,7 +423,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
       return productionValues.ToArray();
     }
 
-    public Tuple<UInt32, UInt32, Guid>[] GetRoadInformation()
+    public Tuple<uint, uint, Guid>[] GetRoadInformation()
     {
       var count = 0;
       foreach (var kv in this.roadSegmentsByPlayer)
@@ -431,20 +431,20 @@ namespace Jabberwocky.SoC.Library.GameBoards
         count += kv.Value.Count;
       }
 
-      var data = new Tuple<UInt32, UInt32, Guid>[count];
+      var data = new Tuple<uint, uint, Guid>[count];
       var index = 0;
       foreach (var kv in this.roadSegmentsByPlayer)
       {
         foreach (var roadSegment in kv.Value)
         {
-          data[index++] = new Tuple<UInt32, UInt32, Guid>(roadSegment.Location1, roadSegment.Location2, kv.Key);
+          data[index++] = new Tuple<uint, uint, Guid>(roadSegment.Location1, roadSegment.Location2, kv.Key);
         }
       }
 
       return data;
     }
 
-    public virtual ResourceClutch GetResourcesForLocation(UInt32 location)
+    public virtual ResourceClutch GetResourcesForLocation(uint location)
     {
       var resourceClutch = new ResourceClutch();
       var hexesForLocation = this.hexesForLocations[location];
@@ -474,7 +474,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
       return resourceClutch;
     }
 
-    public virtual Dictionary<Guid, ResourceCollection[]> GetResourcesForRoll(UInt32 diceRoll)
+    public virtual Dictionary<Guid, ResourceCollection[]> GetResourcesForRoll(uint diceRoll)
     {
       var workingResources = new Dictionary<Guid, List<ResourceCollection>>();
 
@@ -540,7 +540,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
       return resources;
     }
 
-    public List<UInt32> GetSettlementsForPlayer(Guid playerId)
+    public List<uint> GetSettlementsForPlayer(Guid playerId)
     {
       if (!this.settlementsByPlayer.ContainsKey(playerId))
       {
@@ -550,9 +550,9 @@ namespace Jabberwocky.SoC.Library.GameBoards
       return this.settlementsByPlayer[playerId];
     }
 
-    public Dictionary<UInt32, Guid> GetSettlementInformation()
+    public Dictionary<uint, Guid> GetSettlementInformation()
     {
-      var data = new Dictionary<UInt32, Guid>(this.settlements.Count);
+      var data = new Dictionary<uint, Guid>(this.settlements.Count);
       foreach (var kv in this.settlements)
       {
         data.Add(kv.Key, kv.Value);
@@ -561,7 +561,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
       return data;
     }
 
-    public void PlaceCity(Guid playerId, UInt32 location)
+    public void PlaceCity(Guid playerId, uint location)
     {
       var verificationResults = this.CanPlaceCity(playerId, location);
       this.ThrowExceptionOnBadVerificationResult(verificationResults);
@@ -569,7 +569,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
       this.PlaceCityOnBoard(playerId, location);
     }
 
-    public void PlaceRoadSegment(Guid playerId, UInt32 roadStartLocation, UInt32 roadEndLocation)
+    public void PlaceRoadSegment(Guid playerId, uint roadStartLocation, uint roadEndLocation)
     {
       var verificationResults = this.CanPlaceRoad(playerId, roadStartLocation, roadEndLocation);
       this.ThrowExceptionOnBadVerificationResult(verificationResults);
@@ -577,7 +577,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
       this.PlaceRoadSegmentOnBoard(playerId, roadStartLocation, roadEndLocation);
     }
 
-    public void PlaceSettlement(Guid playerId, UInt32 locationIndex)
+    public void PlaceSettlement(Guid playerId, uint locationIndex)
     {
       var verificationResults = this.CanPlaceSettlement(playerId, locationIndex);
       this.ThrowExceptionOnBadVerificationResult(verificationResults);
@@ -591,7 +591,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
     /// <param name="playerId">Id of player placing the infrastructure.</param>
     /// <param name="settlementLocation">Location to place settlement. Also the starting location of the road segment.</param>
     /// <param name="roadEndLocation">End location of road segment.</param>
-    public void PlaceStartingInfrastructure(Guid playerId, UInt32 settlementLocation, UInt32 roadEndLocation)
+    public void PlaceStartingInfrastructure(Guid playerId, uint settlementLocation, uint roadEndLocation)
     {
       var verificationResults = this.CanPlaceStartingInfrastructure(playerId, settlementLocation, roadEndLocation);
       this.ThrowExceptionOnBadVerificationResult(verificationResults);
@@ -600,27 +600,27 @@ namespace Jabberwocky.SoC.Library.GameBoards
       this.PlaceRoadSegmentOnBoard(playerId, settlementLocation, roadEndLocation);
     }
 
-    public Boolean TryGetLongestRoadDetails(out Guid playerId, out UInt32[] road)
+    public bool TryGetLongestRoadDetails(out Guid playerId, out uint[] road)
     {
       playerId = Guid.Empty;
       road = null;
-      List<UInt32> longestRoute = null;
-      Boolean gotSingleLongestRoad = false;
+      List<uint> longestRoute = null;
+      bool gotSingleLongestRoad = false;
 
       foreach (var playerRoadSegments in this.roadSegmentsByPlayer)
       {
         var roadSegments = playerRoadSegments.Value;
         var settlementsPlacedByPlayer = this.settlementsByPlayer[playerRoadSegments.Key];
-        var roadEnds = new Queue<UInt32>();
+        var roadEnds = new Queue<uint>();
         roadEnds.Enqueue(settlementsPlacedByPlayer[0]);
         roadEnds.Enqueue(settlementsPlacedByPlayer[1]);
-        var visitedRoadEnds = new HashSet<UInt32>();
+        var visitedRoadEnds = new HashSet<uint>();
 
         while (roadEnds.Count > 0)
         {
           var currentLocation = roadEnds.Dequeue();
           var visitedRoadSegments = new HashSet<RoadSegment>();
-          var workingRoute = new List<UInt32> { currentLocation };
+          var workingRoute = new List<uint> { currentLocation };
           visitedRoadEnds.Add(currentLocation);
           var forkmarks = new Stack<Forkmark>();
 
@@ -700,12 +700,12 @@ namespace Jabberwocky.SoC.Library.GameBoards
       return gotSingleLongestRoad;
     }
 
-    internal void PlaceCityOnBoard(Guid playerId, UInt32 location)
+    internal void PlaceCityOnBoard(Guid playerId, uint location)
     {
       this.cities.Add(location, playerId);
     }
 
-    internal void PlaceRoadSegmentOnBoard(Guid playerId, UInt32 roadStartLocationIndex, UInt32 roadEndLocationIndex)
+    internal void PlaceRoadSegmentOnBoard(Guid playerId, uint roadStartLocationIndex, uint roadEndLocationIndex)
     {
       var newRoadSegment = new RoadSegment(roadStartLocationIndex, roadEndLocationIndex);
 
@@ -721,7 +721,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
       }
     }
 
-    internal void PlaceSettlementOnBoard(Guid playerId, UInt32 settlementLocation)
+    internal void PlaceSettlementOnBoard(Guid playerId, uint settlementLocation)
     {
       if (this.settlementsByPlayer.ContainsKey(playerId))
       {
@@ -735,12 +735,12 @@ namespace Jabberwocky.SoC.Library.GameBoards
       this.settlements.Add(settlementLocation, playerId);
     }
 
-    private Boolean DirectConnectionBetweenRoadLocations(UInt32 roadStartLocation, UInt32 roadEndLocation)
+    private bool DirectConnectionBetweenRoadLocations(uint roadStartLocation, uint roadEndLocation)
     {
       return this.connections[roadStartLocation, roadEndLocation];
     }
 
-    private Guid GetOwningPlayerForLocation(UInt32 location)
+    private Guid GetOwningPlayerForLocation(uint location)
     {
       if (!this.settlements.ContainsKey(location))
       {
@@ -750,18 +750,18 @@ namespace Jabberwocky.SoC.Library.GameBoards
       return this.settlements[location];
     }
 
-    private Boolean LocationHasPlayerCity(Guid playerId, UInt32 location)
+    private bool LocationHasPlayerCity(Guid playerId, uint location)
     {
       return this.cities.ContainsKey(location) && this.settlements[location] == playerId;
     }
 
-    private Boolean RoadLocationsOnBoard(UInt32 roadStartLocation, UInt32 roadEndLocation)
+    private bool RoadLocationsOnBoard(uint roadStartLocation, uint roadEndLocation)
     {
-      var length = (UInt32)this.connections.GetLength(0); // TODO: Change to use Location array
+      var length = (uint)this.connections.GetLength(0); // TODO: Change to use Location array
       return roadStartLocation < length && roadEndLocation < length;
     }
 
-    private Boolean RoadAlreadyPresent(UInt32 roadStartLocationIndex, UInt32 roadEndLocationIndex)
+    private bool RoadAlreadyPresent(uint roadStartLocationIndex, uint roadEndLocationIndex)
     {
       foreach (var kv in this.roadSegmentsByPlayer)
       {
@@ -777,7 +777,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
       return false;
     }
 
-    private Boolean WillConnectToExistingRoad(Guid playerId, UInt32 roadStartLocationIndex, UInt32 roadEndLocationIndex)
+    private bool WillConnectToExistingRoad(Guid playerId, uint roadStartLocationIndex, uint roadEndLocationIndex)
     {
       var roadSegment = this.roadSegmentsByPlayer[playerId].Where(r => (r.Location1 == roadStartLocationIndex || r.Location2 == roadStartLocationIndex ||
         r.Location1 == roadEndLocationIndex || r.Location2 == roadEndLocationIndex)).FirstOrDefault();
@@ -785,7 +785,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
       return roadSegment != null;
     }
 
-    private Boolean SettlementIsOnRoad(Guid playerId, UInt32 locationIndex)
+    private bool SettlementIsOnRoad(Guid playerId, uint locationIndex)
     {
       if (this.roadSegmentsByPlayer.ContainsKey(playerId))
       {
@@ -795,7 +795,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
       return false;
     }
 
-    public Boolean TooCloseToSettlement(UInt32 locationIndex, out Guid id, out UInt32 index)
+    public bool TooCloseToSettlement(uint locationIndex, out Guid id, out uint index)
     {
       id = Guid.Empty;
       for (index = 0; index < this.connections.GetLength(1); index++)
@@ -810,14 +810,14 @@ namespace Jabberwocky.SoC.Library.GameBoards
       return false;
     }
 
-    public Boolean SettlementLocationIsOccupied(UInt32 locationIndex)
+    public bool SettlementLocationIsOccupied(uint locationIndex)
     {
       return this.settlements.ContainsKey(locationIndex);
     }
 
-    private Boolean SettlementLocationOnBoard(UInt32 settlementLocation)
+    private bool SettlementLocationOnBoard(uint settlementLocation)
     {
-      return settlementLocation < (UInt32)this.connections.GetLength(0); // TODO: Change to use Location array
+      return settlementLocation < (uint)this.connections.GetLength(0); // TODO: Change to use Location array
     }
 
     private StartingInfrastructureStatus PlacedStartingInfrastructureStatus(Guid playerId)
@@ -887,7 +887,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
       var index = 0;
       foreach (var productionValue in productionValues)
       {
-        this.hexes[index++].Production = UInt32.Parse(productionValue);
+        this.hexes[index++].Production = uint.Parse(productionValue);
       }
     }
 
@@ -930,28 +930,28 @@ namespace Jabberwocky.SoC.Library.GameBoards
       for (var index = 0; index < this.hexes.Length; index++)
       {
         this.hexes[index].Type = resourceTypes[index];
-        this.hexes[index].Production = (UInt32)productionValues[index];
+        this.hexes[index].Production = (uint)productionValues[index];
       }
 
       var settlements = reader.GetSections(GameDataSectionKeys.Buildings);
       foreach (var settlement in settlements)
       {
-        this.PlaceSettlementOnBoard(settlement.GetIdentityValue(GameDataValueKeys.SettlementOwner), (UInt32)settlement.GetIntegerValue(GameDataValueKeys.SettlementLocation));
+        this.PlaceSettlementOnBoard(settlement.GetIdentityValue(GameDataValueKeys.SettlementOwner), (uint)settlement.GetIntegerValue(GameDataValueKeys.SettlementLocation));
       }
 
       var roads = reader.GetSections(GameDataSectionKeys.Roads);
       foreach (var road in roads)
       {
-        this.PlaceRoadSegmentOnBoard(road.GetIdentityValue(GameDataValueKeys.RoadOwner), (UInt32)road.GetIntegerValue(GameDataValueKeys.RoadStart), (UInt32)road.GetIntegerValue(GameDataValueKeys.RoadEnd));
+        this.PlaceRoadSegmentOnBoard(road.GetIdentityValue(GameDataValueKeys.RoadOwner), (uint)road.GetIntegerValue(GameDataValueKeys.RoadStart), (uint)road.GetIntegerValue(GameDataValueKeys.RoadEnd));
       }
     }
 
-    private void AddLocationsToHex(UInt32 lhs, UInt32 rhs, UInt32 hexIndex, UInt32 count)
+    private void AddLocationsToHex(uint lhs, uint rhs, uint hexIndex, uint count)
     {
       var lastIndex = hexIndex + count - 1;
       for (; hexIndex <= lastIndex; hexIndex++)
       {
-        var locations = new UInt32[6];
+        var locations = new uint[6];
         locations[0] = lhs;
         locations[1] = lhs + 1;
         locations[2] = lhs + 2;
@@ -991,9 +991,9 @@ namespace Jabberwocky.SoC.Library.GameBoards
         tempResourceProvidersByDiceRolls[hex.Production].Add(hex);
       }
 
-      this.resourceProvidersByDiceRolls = new Dictionary<UInt32, ResourceProducer[]>();
+      this.resourceProvidersByDiceRolls = new Dictionary<uint, ResourceProducer[]>();
 
-      for (UInt32 diceRoll = 2; diceRoll <= 12; diceRoll++)
+      for (uint diceRoll = 2; diceRoll <= 12; diceRoll++)
       {
         if (diceRoll == 7)
         {
@@ -1006,16 +1006,16 @@ namespace Jabberwocky.SoC.Library.GameBoards
 
     private void AssignLocationsToResourceProviders()
     {
-      this.locationsByResourceProvider = new Dictionary<ResourceProducer, UInt32[]>();
+      this.locationsByResourceProvider = new Dictionary<ResourceProducer, uint[]>();
 
       // Column 1
-      UInt32 lhs = 0;
-      UInt32 rhs = 8;
-      Int32 hexIndex = 0;
+      uint lhs = 0;
+      uint rhs = 8;
+      int hexIndex = 0;
       for (; hexIndex < 3; hexIndex++)
       {
         var resourceProvider = this.hexes[hexIndex];
-        var locations = new UInt32[] { lhs, lhs + 1, lhs + 2, rhs, rhs + 1, rhs + 2 };
+        var locations = new uint[] { lhs, lhs + 1, lhs + 2, rhs, rhs + 1, rhs + 2 };
         lhs = lhs + 2;
         rhs = rhs + 2;
 
@@ -1028,7 +1028,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
       for (; hexIndex < 7; hexIndex++)
       {
         var resourceProvider = this.hexes[hexIndex];
-        var locations = new UInt32[] { lhs, lhs + 1, lhs + 2, rhs, rhs + 1, rhs + 2 };
+        var locations = new uint[] { lhs, lhs + 1, lhs + 2, rhs, rhs + 1, rhs + 2 };
         lhs = lhs + 2;
         rhs = rhs + 2;
 
@@ -1041,7 +1041,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
       for (; hexIndex < 12; hexIndex++)
       {
         var resourceProvider = this.hexes[hexIndex];
-        var locations = new UInt32[] { lhs, lhs + 1, lhs + 2, rhs, rhs + 1, rhs + 2 };
+        var locations = new uint[] { lhs, lhs + 1, lhs + 2, rhs, rhs + 1, rhs + 2 };
         lhs = lhs + 2;
         rhs = rhs + 2;
 
@@ -1054,7 +1054,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
       for (; hexIndex < 16; hexIndex++)
       {
         var resourceProvider = this.hexes[hexIndex];
-        var locations = new UInt32[] { lhs, lhs + 1, lhs + 2, rhs, rhs + 1, rhs + 2 };
+        var locations = new uint[] { lhs, lhs + 1, lhs + 2, rhs, rhs + 1, rhs + 2 };
         lhs = lhs + 2;
         rhs = rhs + 2;
 
@@ -1067,7 +1067,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
       for (; hexIndex < 19; hexIndex++)
       {
         var resourceProvider = this.hexes[hexIndex];
-        var locations = new UInt32[] { lhs, lhs + 1, lhs + 2, rhs, rhs + 1, rhs + 2 };
+        var locations = new uint[] { lhs, lhs + 1, lhs + 2, rhs, rhs + 1, rhs + 2 };
         lhs = lhs + 2;
         rhs = rhs + 2;
 
@@ -1142,7 +1142,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
 
     private void AssignLocationsToHex()
     {
-      this.locationsForHex = new Dictionary<UInt32, UInt32[]>();
+      this.locationsForHex = new Dictionary<uint, uint[]>();
 
       this.AddLocationsToHex(0u, 8u, 0u, 3u);
       this.AddLocationsToHex(7u, 17u, 3u, 4u);
@@ -1266,15 +1266,15 @@ namespace Jabberwocky.SoC.Library.GameBoards
     private class ResourceProducer
     {
       public ResourceTypes? Type;
-      public UInt32 Production;
+      public uint Production;
     }
 
     public class ResourceProducerLocation
     {
-      public readonly UInt32 Location;
-      public readonly UInt32 Production;
+      public readonly uint Location;
+      public readonly uint Production;
 
-      public ResourceProducerLocation(UInt32 location, UInt32 production)
+      public ResourceProducerLocation(uint location, uint production)
       {
         this.Location = location;
         this.Production = production;
@@ -1286,16 +1286,16 @@ namespace Jabberwocky.SoC.Library.GameBoards
     {
       public VerificationStatus Status;
       public Guid PlayerId;
-      public UInt32 LocationIndex;
+      public uint LocationIndex;
     }
 
     private struct HorizontalTrailSetup
     {
-      public Int32 LocationIndexStart;
-      public Int32 TrailCount;
-      public Int32 LocationIndexDiff;
+      public int LocationIndexStart;
+      public int TrailCount;
+      public int LocationIndexDiff;
 
-      public HorizontalTrailSetup(Int32 locationIndexStart, Int32 trailCount, Int32 locationIndexDiff)
+      public HorizontalTrailSetup(int locationIndexStart, int trailCount, int locationIndexDiff)
       {
         this.LocationIndexStart = locationIndexStart;
         this.TrailCount = trailCount;
@@ -1305,7 +1305,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
 
     private class RoadNode
     {
-      public Tuple<UInt32, Guid>[] Trails = new Tuple<UInt32, Guid>[3];
+      public Tuple<uint, Guid>[] Trails = new Tuple<uint, Guid>[3];
     }
 
     private class Connection
@@ -1317,25 +1317,25 @@ namespace Jabberwocky.SoC.Library.GameBoards
 
     private class Forkmark
     {
-      public readonly UInt32 StartingLocation;
-      public readonly Int32 RoadLength;
+      public readonly uint StartingLocation;
+      public readonly int RoadLength;
       public readonly HashSet<RoadSegment> VisitedRoadSegments;
-      public readonly List<UInt32> WorkingRoute;
+      public readonly List<uint> WorkingRoute;
 
-      public Forkmark(RoadSegment segment, UInt32 startingLocation, Int32 roadLength, HashSet<RoadSegment> visitedRoadSegments, List<UInt32> workingRoute)
+      public Forkmark(RoadSegment segment, uint startingLocation, int roadLength, HashSet<RoadSegment> visitedRoadSegments, List<uint> workingRoute)
       {
         this.StartingLocation = startingLocation;
         this.RoadLength = roadLength;
         this.VisitedRoadSegments = new HashSet<RoadSegment>(visitedRoadSegments);
         this.VisitedRoadSegments.Add(segment);
-        this.WorkingRoute = new List<UInt32>(workingRoute);
+        this.WorkingRoute = new List<uint>(workingRoute);
         this.WorkingRoute.Add(startingLocation);
       }
     }
 
     private class Location
     {
-      public Int32 Index;
+      public int Index;
       public Guid Owner;
       public Connection[] connections;
     }
@@ -1348,8 +1348,8 @@ namespace Jabberwocky.SoC.Library.GameBoards
 
     public class LocationProduction
     {
-      public UInt32 Location1;
-      public UInt32 Location2;
+      public uint Location1;
+      public uint Location2;
     }
     #endregion
   }

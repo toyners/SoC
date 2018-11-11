@@ -11,12 +11,12 @@ namespace Jabberwocky.SoC.Library
     public class Player : IPlayer
     {
         #region Fields
-        private const Int32 TotalRoadSegments = 15;
-        private const Int32 TotalSettlements = 5;
-        private const Int32 TotalCities = 4;
+        private const int TotalRoadSegments = 15;
+        private const int TotalSettlements = 5;
+        private const int TotalCities = 4;
 
-        private Boolean hasLargestArmy;
-        private Boolean hasLongestRoad;
+        private bool hasLargestArmy;
+        private bool hasLongestRoad;
         #endregion
 
         #region Construction
@@ -25,7 +25,7 @@ namespace Jabberwocky.SoC.Library
             this.Id = Guid.NewGuid();
         }
 
-        public Player(String name) : this()
+        public Player(string name) : this()
         {
             this.Name = name;
         }
@@ -43,20 +43,20 @@ namespace Jabberwocky.SoC.Library
         #endregion
 
         #region Properties
-        public Int32 BrickCount { get; protected set; }
+        public int BrickCount { get; protected set; }
 
-        public Int32 GrainCount { get; protected set; }
+        public int GrainCount { get; protected set; }
 
         public Guid Id { get; private set; }
-        public virtual Boolean IsComputer { get { return false; } }
-        public UInt32 KnightCards { get; private set; }
-        public Int32 LumberCount { get; protected set; }
+        public virtual bool IsComputer { get { return false; } }
+        public uint KnightCards { get; private set; }
+        public int LumberCount { get; protected set; }
 
-        public String Name { get; private set; }
+        public string Name { get; private set; }
 
-        public Int32 OreCount { get; protected set; }
+        public int OreCount { get; protected set; }
 
-        public virtual Int32 ResourcesCount
+        public virtual int ResourcesCount
         {
             get
             {
@@ -66,18 +66,18 @@ namespace Jabberwocky.SoC.Library
 
         public ResourceClutch Resources { get; protected set; }
 
-        public Int32 WoolCount { get; protected set; }
+        public int WoolCount { get; protected set; }
 
-        public UInt32 VictoryPoints { get; protected set; }
+        public uint VictoryPoints { get; protected set; }
 
-        public Int32 RemainingRoadSegments { get { return TotalRoadSegments - this.RoadSegmentsBuilt; } }
-        public Int32 RoadSegmentsBuilt { get; protected set; }
-        public Int32 RemainingSettlements { get { return TotalSettlements - this.SettlementsBuilt; } }
-        public Int32 SettlementsBuilt { get; protected set; }
-        public Int32 CitiesBuilt { get; protected set; }
-        public Int32 RemainingCities { get { return TotalCities - this.CitiesBuilt; } }
+        public int RemainingRoadSegments { get { return TotalRoadSegments - this.RoadSegmentsBuilt; } }
+        public int RoadSegmentsBuilt { get; protected set; }
+        public int RemainingSettlements { get { return TotalSettlements - this.SettlementsBuilt; } }
+        public int SettlementsBuilt { get; protected set; }
+        public int CitiesBuilt { get; protected set; }
+        public int RemainingCities { get { return TotalCities - this.CitiesBuilt; } }
 
-        public Boolean HasLongestRoad
+        public bool HasLongestRoad
         {
             get { return this.hasLongestRoad; }
             set
@@ -99,7 +99,7 @@ namespace Jabberwocky.SoC.Library
             }
         }
 
-        public Boolean HasLargestArmy
+        public bool HasLargestArmy
         {
             get { return this.hasLargestArmy; }
             set
@@ -147,7 +147,7 @@ namespace Jabberwocky.SoC.Library
             return dataView;
         }
 
-        public ResourceClutch LoseResourceAtIndex(Int32 index)
+        public ResourceClutch LoseResourceAtIndex(int index)
         {
             if (index < 0 || index >= this.ResourcesCount)
             {
@@ -303,7 +303,7 @@ namespace Jabberwocky.SoC.Library
             }
         }
 
-        private ResourceClutch GetResourceForIndex(Int32 index)
+        private ResourceClutch GetResourceForIndex(int index)
         {
             if (index < this.BrickCount)
             {
@@ -338,10 +338,10 @@ namespace Jabberwocky.SoC.Library
             throw new NotImplementedException("Should not get here");
         }
 
-        private Int32 GetValueOrZero(XmlReader reader, String attributeName)
+        private int GetValueOrZero(XmlReader reader, String attributeName)
         {
             var value = reader.GetAttribute(attributeName);
-            return !String.IsNullOrEmpty(value) ? Int32.Parse(value) : 0;
+            return !String.IsNullOrEmpty(value) ? int.Parse(value) : 0;
         }
         #endregion
     }

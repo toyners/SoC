@@ -77,7 +77,10 @@ namespace SoC.Harness
 
         private void Save_Executed(object sender, System.Windows.Input.ExecutedRoutedEventArgs e)
         {
-            var saveFilePath = $"Game_{DateTime.Now.ToString("dd-MM-yyyy HH-mm-ss")}.soc";
+            if (!System.IO.Directory.Exists("Output"))
+                System.IO.Directory.CreateDirectory("Output");
+
+            var saveFilePath = $"Output\\Game_{DateTime.Now.ToString("dd-MM-yyyy HH-mm-ss")}.soc";
             this.controllerViewModel.Save(saveFilePath);
             System.Windows.MessageBox.Show("Game Saved.", "Save Status");
         }
