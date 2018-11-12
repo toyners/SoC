@@ -654,6 +654,16 @@ namespace Jabberwocky.SoC.Library
             }
         }
 
+        public void Load(string filePath)
+        {
+            var content = File.ReadAllText(filePath);
+            var saveObject = JsonConvert.DeserializeObject<SaveObject>(content);
+            this.mainPlayer = Player.CreatePlayer(saveObject.Player1);
+            this.computerPlayers[0] = ComputerPlayer.CreatePlayer(saveObject.Player2);
+            this.computerPlayers[1] = ComputerPlayer.CreatePlayer(saveObject.Player2);
+            this.computerPlayers[2] = ComputerPlayer.CreatePlayer(saveObject.Player2);
+        }
+
         public void Load(IGameDataReader<GameDataSectionKeys, GameDataValueKeys, ResourceTypes> reader)
         {
             try

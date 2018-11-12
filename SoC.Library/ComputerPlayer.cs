@@ -19,7 +19,7 @@ namespace Jabberwocky.SoC.Library
         private readonly DecisionMaker decisionMaker;
 
         #region Construction
-        private ComputerPlayer() { } // For use when inflating from file. 
+        public ComputerPlayer() { } // For use when inflating from file. 
 
         public ComputerPlayer(String name, GameBoard gameBoard, INumberGenerator numberGenerator, IInfrastructureAI infrastructureAI) : base(name)
         {
