@@ -30,7 +30,7 @@ namespace Jabberwocky.SoC.Library
     #endregion
 
     #region Properties
-    public Boolean HasCards { get { return this.cards.Count > 0; } }
+    public bool HasCards { get { return this.cards.Count > 0; } }
     #endregion
 
     #region Methods
