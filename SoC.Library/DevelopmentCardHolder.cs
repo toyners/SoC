@@ -8,11 +8,11 @@ namespace Jabberwocky.SoC.Library
   public class DevelopmentCardHolder : IDevelopmentCardHolder
   {
     #region Fields
-    private const Int32 KnightCardCount = 14;
-    private const Int32 RoadBuildingCardCount = 2;
-    private const Int32 YearOfPlentyCardCount = 2;
-    private const Int32 MonopolyCardCount = 2;
-    private const Int32 VictoryPointCardCount = 5;
+    private const int KnightCardCount = 14;
+    private const int RoadBuildingCardCount = 2;
+    private const int YearOfPlentyCardCount = 2;
+    private const int MonopolyCardCount = 2;
+    private const int VictoryPointCardCount = 5;
 
     private Queue<DevelopmentCard> cards;
     #endregion
@@ -34,7 +34,7 @@ namespace Jabberwocky.SoC.Library
     #endregion
 
     #region Methods
-    public Boolean TryGetNextCard(out DevelopmentCard card)
+    public bool TryGetNextCard(out DevelopmentCard card)
     {
       card = null;
       if (!this.HasCards)
@@ -50,7 +50,7 @@ namespace Jabberwocky.SoC.Library
     {
       this.cards = new Queue<DevelopmentCard>();
 
-      var victoryPointCardTitles = new Queue<String>(new[] { "Chapel", "Great Hall", "Library", "Market", "University" });
+      var victoryPointCardTitles = new Queue<string>(new[] { "Chapel", "Great Hall", "Library", "Market", "University" });
 
       var index = -1;
       while (random.TryGetNextIndex(out index))
@@ -88,17 +88,17 @@ namespace Jabberwocky.SoC.Library
     #region Structures
     public interface IIndexSequence
     {
-      Boolean TryGetNextIndex(out Int32 index);
+      bool TryGetNextIndex(out int index);
     }
 
     private class IndexSequence : IIndexSequence
     {
-      private Queue<Int32> numbers = new Queue<Int32>();
+      private Queue<int> numbers = new Queue<int>();
 
       public IndexSequence()
       {
-        Random random = new Random((Int32)DateTime.Now.Ticks);
-        var numbersSelected = new HashSet<Int32>();
+        var random = new Random((int)DateTime.Now.Ticks);
+        var numbersSelected = new HashSet<int>();
         
         while (numbersSelected.Count < 25)
         {
@@ -111,7 +111,7 @@ namespace Jabberwocky.SoC.Library
         }
       }
 
-      public Boolean TryGetNextIndex(out Int32 index)
+      public bool TryGetNextIndex(out int index)
       {
         index = -1;
         if (this.numbers.Count == 0)

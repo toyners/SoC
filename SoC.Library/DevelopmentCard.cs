@@ -6,11 +6,11 @@ namespace Jabberwocky.SoC.Library
   public class DevelopmentCard
   {
     public readonly Guid Id;
-    public readonly String Text;
-    public readonly String Title;
+    public readonly string Text;
+    public readonly string Title;
     public readonly DevelopmentCardTypes Type;
 
-    public DevelopmentCard(DevelopmentCardTypes type, String title, String text)
+    public DevelopmentCard(DevelopmentCardTypes type, string title, string text)
     {
       this.Type = type;
       this.Title = title;
@@ -48,7 +48,7 @@ namespace Jabberwocky.SoC.Library
 
   public class VictoryPointDevelopmentCard : DevelopmentCard
   {
-    public VictoryPointDevelopmentCard(String title) : base(DevelopmentCardTypes.VictoryPoint, title, "Reveal this card on your turn if, with it, you reach the number of points required for victory.")
+    public VictoryPointDevelopmentCard(string title) : base(DevelopmentCardTypes.VictoryPoint, title, "Reveal this card on your turn if, with it, you reach the number of points required for victory.")
     {
     }
   }
