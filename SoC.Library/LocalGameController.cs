@@ -658,12 +658,16 @@ namespace Jabberwocky.SoC.Library
         {
             var content = File.ReadAllText(filePath);
             var saveObject = JsonConvert.DeserializeObject<SaveObject>(content);
+
+            this.gameBoard = new GameBoard(BoardSizes.Standard, saveObject.Hexes);
+
             this.mainPlayer = Player.CreatePlayer(saveObject.Player1);
             this.computerPlayers[0] = ComputerPlayer.CreatePlayer(saveObject.Player2);
             this.computerPlayers[1] = ComputerPlayer.CreatePlayer(saveObject.Player2);
             this.computerPlayers[2] = ComputerPlayer.CreatePlayer(saveObject.Player2);
         }
 
+        [Obsolete("Deprecated. Use Load(string filePath) instead.")]
         public void Load(IGameDataReader<GameDataSectionKeys, GameDataValueKeys, ResourceTypes> reader)
         {
             try
@@ -1270,6 +1274,11 @@ namespace Jabberwocky.SoC.Library
             }
 
             this.ErrorRaisedEvent?.Invoke(new ErrorDetails(message));
+        }
+
+        private void LoadHexes()
+        {
+
         }
 
         private void PlayDevelopmentCard(DevelopmentCard developmentCard)

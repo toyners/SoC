@@ -6,6 +6,7 @@ namespace SoC.Harness.ViewModels
     using System.Linq;
     using Jabberwocky.SoC.Library;
     using Jabberwocky.SoC.Library.GameBoards;
+    using Jabberwocky.SoC.Library.Interfaces;
 
     public class ControllerViewModel
     {
@@ -25,7 +26,7 @@ namespace SoC.Harness.ViewModels
         #endregion
 
         #region Construction
-        public ControllerViewModel(LocalGameController localGameController)
+        private ControllerViewModel(LocalGameController localGameController)
         {
             this.localGameController = localGameController;
             this.localGameController.GameJoinedEvent = this.GameJoinedEventHandler;
@@ -54,9 +55,16 @@ namespace SoC.Harness.ViewModels
         #endregion
 
         #region Methods
-        public static ControllerViewModel Load(string fileName)
+        public static ControllerViewModel Load(string filePath)
         {
-            throw new NotImplementedException();
+            var localGameController = new LocalGameController(new TestNumberGenerator(), null);
+            localGameController.Load(filePath);
+            return new ControllerViewModel(localGameController);
+        }
+
+        public static ControllerViewModel New()
+        {
+            return new ControllerViewModel(new LocalGameController(new TestNumberGenerator(), new PlayerPool()));
         }
 
         public void CompleteFirstInfrastructureSetup(uint settlementLocation, uint roadEndLocation)

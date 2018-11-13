@@ -53,7 +53,7 @@ namespace SoC.Harness
         private void New_Executed(object sender, System.Windows.Input.ExecutedRoutedEventArgs e)
         {
             this.CanSave = true;
-            this.controllerViewModel = new ControllerViewModel(new LocalGameController(new TestNumberGenerator(), new PlayerPool()));
+            this.controllerViewModel = ControllerViewModel.New();
             this.controllerViewModel.GameJoinedEvent += this.GameJoinedEventHandler;
 
             this.PlayArea.Initialise(this.controllerViewModel);
