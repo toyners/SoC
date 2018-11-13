@@ -1,12 +1,12 @@
 ﻿
 namespace Jabberwocky.SoC.Library.Interfaces
 {
-  using System;
+    public interface IDevelopmentCardHolder
+    {
+        bool HasCards { get; }
 
-  public interface IDevelopmentCardHolder
-  {
-    Boolean HasCards { get; }
+        bool TryGetNextCard(out DevelopmentCard card);
 
-    Boolean TryGetNextCard(out DevelopmentCard card);
-  }
+        DevelopmentCard[] GetDevelopmentCards();    
+    }
 }
