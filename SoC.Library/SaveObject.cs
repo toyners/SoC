@@ -15,7 +15,7 @@ namespace Jabberwocky.SoC.Library
         public Dictionary<uint, Guid> Settlements;
         public Tuple<uint, uint, Guid>[] Roads;
         public uint RobberLocation;
-        public List<DevelopmentCard> DevelopmentCards;
+        public DevelopmentCard[] DevelopmentCards;
     }
 
     public class PlayerSaveModel

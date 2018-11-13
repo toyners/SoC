@@ -729,6 +729,7 @@ namespace Jabberwocky.SoC.Library
             saveObject.Player3 = new PlayerSaveModel(this.computerPlayers[1]);
             saveObject.Player4 = new PlayerSaveModel(this.computerPlayers[2]);
             saveObject.RobberLocation = this.robberHex;
+            saveObject.DevelopmentCards = this.developmentCardHolder.GetDevelopmentCards();
             var content = JsonConvert.SerializeObject(saveObject, Newtonsoft.Json.Formatting.Indented);
             File.WriteAllText(filePath, content);
         }
