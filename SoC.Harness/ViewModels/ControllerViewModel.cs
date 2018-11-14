@@ -58,8 +58,11 @@ namespace SoC.Harness.ViewModels
         public static ControllerViewModel Load(string filePath)
         {
             var localGameController = new LocalGameController(new TestNumberGenerator(), null);
+            var controller = new ControllerViewModel(localGameController);
+
             localGameController.Load(filePath);
-            return new ControllerViewModel(localGameController);
+
+            return controller;
         }
 
         public static ControllerViewModel New()
@@ -77,6 +80,11 @@ namespace SoC.Harness.ViewModels
             this.localGameController.CompleteGameSetup(settlementLocation, roadEndLocation);
             this.localGameController.FinalisePlayerTurnOrder();
             this.localGameController.StartGamePlay();
+        }
+
+        public void ContinueGame()
+        {
+            this.localGameController.ContinueGamePlay();
         }
 
         public void DropResourcesFromPlayer(ResourceClutch dropResources)

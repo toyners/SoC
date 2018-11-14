@@ -151,6 +151,14 @@ namespace SoC.Harness.Views
             this.SettlementSelectionLayer.Visibility = Visibility.Visible;
         }
 
+        public void ContinueGame()
+        {
+            Task.Factory.StartNew(() =>
+            {
+                this.controllerViewModel.ContinueGame();
+            });
+        }
+
         public void DiceRollEventHandler(uint dice1, uint dice2)
         {
             this.DiceOneImagePath = this.GetDiceImage(dice1);

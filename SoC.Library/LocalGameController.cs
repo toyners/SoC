@@ -28,6 +28,7 @@ namespace Jabberwocky.SoC.Library
             CompleteGameSetup,
             FinalisePlayerTurnOrder,
             StartGamePlay,
+            ContinueGamePlay,
             SetRobberHex,
             DropResources,
             Quitting,
@@ -76,6 +77,7 @@ namespace Jabberwocky.SoC.Library
         private TurnToken currentTurnToken;
         private IPlayer currentPlayer;
         private IDevelopmentCardHolder developmentCardHolder;
+        private uint dice1, dice2;
         #endregion
 
         #region Construction
@@ -292,6 +294,23 @@ namespace Jabberwocky.SoC.Library
 
             this.GameSetupResourcesEvent?.Invoke(this.gameSetupResources);
             this.GamePhase = GamePhases.FinalisePlayerTurnOrder;
+        }
+
+        public void ContinueGamePlay()
+        {
+            if (this.GamePhase != GamePhases.ContinueGamePlay)
+            {
+                var errorDetails = new ErrorDetails("Can only call 'ContinueGamePlay' when loading from file.");
+                this.ErrorRaisedEvent?.Invoke(errorDetails);
+                return;
+            }
+
+            var playerData = this.CreatePlayerDataViews();
+            this.GameJoinedEvent?.Invoke(playerData);
+            this.currentTurnToken = new TurnToken();
+            this.StartPlayerTurnEvent?.Invoke(this.currentTurnToken);
+
+            this.DiceRollEvent?.Invoke(this.dice1, this.dice2);
         }
 
         public void ContinueGameSetup(uint settlementLocation, uint roadEndLocation)
@@ -661,10 +680,17 @@ namespace Jabberwocky.SoC.Library
 
             this.gameBoard = new GameBoard(BoardSizes.Standard, saveObject.Hexes);
 
-            this.mainPlayer = Player.CreatePlayer(saveObject.Player1);
-            this.computerPlayers[0] = ComputerPlayer.CreatePlayer(saveObject.Player2);
-            this.computerPlayers[1] = ComputerPlayer.CreatePlayer(saveObject.Player2);
-            this.computerPlayers[2] = ComputerPlayer.CreatePlayer(saveObject.Player2);
+            this.computerPlayers = new IPlayer[3]; // TODO - Change to handle different number of computer players
+            this.players = new IPlayer[4]; // TODO - Change to handle different number of players
+
+            this.mainPlayer = this.players[0] = Player.CreatePlayer(saveObject.Player1);
+            this.computerPlayers[0] = this.players[1] = ComputerPlayer.CreatePlayer(saveObject.Player2);
+            this.computerPlayers[1] = this.players[2] = ComputerPlayer.CreatePlayer(saveObject.Player3);
+            this.computerPlayers[2] = this.players[3] = ComputerPlayer.CreatePlayer(saveObject.Player4);
+            this.dice1 = saveObject.Dice1;
+            this.dice2 = saveObject.Dice2;
+
+            this.GamePhase = GamePhases.ContinueGamePlay;
         }
 
         [Obsolete("Deprecated. Use Load(string filePath) instead.")]
@@ -734,6 +760,8 @@ namespace Jabberwocky.SoC.Library
             saveObject.Player4 = new PlayerSaveModel(this.computerPlayers[2]);
             saveObject.RobberLocation = this.robberHex;
             saveObject.DevelopmentCards = this.developmentCardHolder.GetDevelopmentCards();
+            saveObject.Dice1 = this.dice1;
+            saveObject.Dice2 = this.dice2;
             var content = JsonConvert.SerializeObject(saveObject, Newtonsoft.Json.Formatting.Indented);
             File.WriteAllText(filePath, content);
         }
@@ -785,10 +813,10 @@ namespace Jabberwocky.SoC.Library
             this.currentTurnToken = new TurnToken();
             this.StartPlayerTurnEvent?.Invoke(this.currentTurnToken);
 
-            this.dice.RollTwoDice(out var dice1, out var dice2);
-            var resourceRoll = dice1 + dice2;
-            this.DiceRollEvent?.Invoke(dice1, dice2);
+            this.dice.RollTwoDice(out this.dice1, out this.dice2);
+            this.DiceRollEvent?.Invoke(this.dice1, this.dice2);
 
+            var resourceRoll = this.dice1 + this.dice2;
             if (resourceRoll != 7)
             {
                 var turnResources = this.CollectTurnResources(resourceRoll);

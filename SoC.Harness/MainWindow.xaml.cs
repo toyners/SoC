@@ -67,12 +67,13 @@ namespace SoC.Harness
             ofd.Title = "Select game file to open";
             ofd.Filter = "Game save files (*.soc)|*.soc";
             var dialogResult = ofd.ShowDialog();
-            if (dialogResult == System.Windows.Forms.DialogResult.OK)
-            {
-                this.controllerViewModel = ControllerViewModel.Load(ofd.FileName);
-                this.controllerViewModel.GameJoinedEvent += this.GameJoinedEventHandler;
-                this.PlayArea.Initialise(this.controllerViewModel);
-            }
+            if (dialogResult != System.Windows.Forms.DialogResult.OK)
+                return;
+
+            this.controllerViewModel = ControllerViewModel.Load(ofd.FileName);
+            this.controllerViewModel.GameJoinedEvent += this.GameJoinedEventHandler;
+            this.PlayArea.Initialise(this.controllerViewModel);
+            this.PlayArea.ContinueGame();
         }
 
         private void Save_Executed(object sender, System.Windows.Input.ExecutedRoutedEventArgs e)

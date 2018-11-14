@@ -16,6 +16,7 @@ namespace Jabberwocky.SoC.Library
         public Tuple<uint, uint, Guid>[] Roads;
         public uint RobberLocation;
         public DevelopmentCard[] DevelopmentCards;
+        public uint Dice1, Dice2;
     }
 
     public class PlayerSaveModel
@@ -29,6 +30,8 @@ namespace Jabberwocky.SoC.Library
         public int RoadSegmentsBuilt;
         public int SettlementsBuilt;
         public uint VictoryPoints;
+
+        public PlayerSaveModel() { }
 
         public PlayerSaveModel(IPlayer player)
         {
