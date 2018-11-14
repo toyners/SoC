@@ -754,10 +754,10 @@ namespace Jabberwocky.SoC.Library
             saveObject.Hexes = this.gameBoard.GetHexInformation();
             saveObject.Roads = this.gameBoard.GetRoadInformation();
             saveObject.Settlements = this.gameBoard.GetSettlementInformation();
-            saveObject.Player1 = new PlayerSaveModel(this.mainPlayer);
-            saveObject.Player2 = new PlayerSaveModel(this.computerPlayers[0]);
-            saveObject.Player3 = new PlayerSaveModel(this.computerPlayers[1]);
-            saveObject.Player4 = new PlayerSaveModel(this.computerPlayers[2]);
+            saveObject.Player1 = new PlayerSaveObject(this.mainPlayer);
+            saveObject.Player2 = new PlayerSaveObject(this.computerPlayers[0]);
+            saveObject.Player3 = new PlayerSaveObject(this.computerPlayers[1]);
+            saveObject.Player4 = new PlayerSaveObject(this.computerPlayers[2]);
             saveObject.RobberLocation = this.robberHex;
             saveObject.DevelopmentCards = this.developmentCardHolder.GetDevelopmentCards();
             saveObject.Dice1 = this.dice1;

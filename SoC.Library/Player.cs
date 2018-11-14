@@ -2,6 +2,7 @@
 namespace Jabberwocky.SoC.Library
 {
     using System;
+    using System.Collections.Generic;
     using System.Diagnostics;
     using System.Xml;
     using Interfaces;
@@ -30,6 +31,7 @@ namespace Jabberwocky.SoC.Library
             this.Name = name;
         }
 
+        [Obsolete("Deprecated. Use Player::ctor(PlayerSaveObject) instead.")]
         public Player(IGameDataSection<GameDataSectionKeys, GameDataValueKeys, ResourceTypes> data)
         {
             this.Id = data.GetIdentityValue(GameDataValueKeys.PlayerId);
@@ -40,65 +42,21 @@ namespace Jabberwocky.SoC.Library
             this.OreCount = data.GetIntegerValue(GameDataValueKeys.PlayerOre);
             this.WoolCount = data.GetIntegerValue(GameDataValueKeys.PlayerWool);
         }
+
+        public Player(PlayerSaveObject playerSaveObject)
+        {
+            this.CitiesBuilt = playerSaveObject.CitiesBuilt;
+            this.Id = playerSaveObject.Id;
+            this.KnightCards = playerSaveObject.KnightCards;
+            this.Name = playerSaveObject.Name;
+            this.Resources = playerSaveObject.Resources;
+            this.RoadSegmentsBuilt = playerSaveObject.RoadSegmentsBuilt;
+            this.SettlementsBuilt = playerSaveObject.SettlementsBuilt;
+        }
         #endregion
 
         #region Properties
-        public int BrickCount { get; protected set; }
-
-        public int GrainCount { get; protected set; }
-
-        public Guid Id { get; private set; }
-        public virtual bool IsComputer { get { return false; } }
-        public uint KnightCards { get; private set; }
-        public int LumberCount { get; protected set; }
-
-        public string Name { get; private set; }
-
-        public int OreCount { get; protected set; }
-
-        public virtual int ResourcesCount
-        {
-            get
-            {
-                return this.BrickCount + this.GrainCount + this.LumberCount + this.OreCount + this.WoolCount;
-            }
-        }
-
-        public ResourceClutch Resources { get; protected set; }
-
-        public int WoolCount { get; protected set; }
-
-        public uint VictoryPoints { get; protected set; }
-
-        public int RemainingRoadSegments { get { return TotalRoadSegments - this.RoadSegmentsBuilt; } }
-        public int RoadSegmentsBuilt { get; protected set; }
-        public int RemainingSettlements { get { return TotalSettlements - this.SettlementsBuilt; } }
-        public int SettlementsBuilt { get; protected set; }
         public int CitiesBuilt { get; protected set; }
-        public int RemainingCities { get { return TotalCities - this.CitiesBuilt; } }
-
-        public bool HasLongestRoad
-        {
-            get { return this.hasLongestRoad; }
-            set
-            {
-                if (this.hasLongestRoad == value)
-                {
-                    return;
-                }
-
-                this.hasLongestRoad = value;
-                if (this.hasLongestRoad)
-                {
-                    this.VictoryPoints += 2u;
-                }
-                else
-                {
-                    this.VictoryPoints -= 2u;
-                }
-            }
-        }
-
         public bool HasLargestArmy
         {
             get { return this.hasLargestArmy; }
@@ -120,10 +78,58 @@ namespace Jabberwocky.SoC.Library
                 }
             }
         }
+        public bool HasLongestRoad
+        {
+            get { return this.hasLongestRoad; }
+            set
+            {
+                if (this.hasLongestRoad == value)
+                {
+                    return;
+                }
+
+                this.hasLongestRoad = value;
+                if (this.hasLongestRoad)
+                {
+                    this.VictoryPoints += 2u;
+                }
+                else
+                {
+                    this.VictoryPoints -= 2u;
+                }
+            }
+        }
+        public List<DevelopmentCard> HeldCards => throw new NotImplementedException();
+        public Guid Id { get; private set; }
+        public virtual bool IsComputer { get { return false; } }
+        public uint KnightCards { get; private set; }
+        public string Name { get; private set; }
+        public List<DevelopmentCard> PlayedCards => throw new NotImplementedException();
+        public int RemainingCities { get { return TotalCities - this.CitiesBuilt; } }
+        public int RemainingRoadSegments { get { return TotalRoadSegments - this.RoadSegmentsBuilt; } }
+        public int RemainingSettlements { get { return TotalSettlements - this.SettlementsBuilt; } }
+        public ResourceClutch Resources { get; protected set; }
+        public int RoadSegmentsBuilt { get; protected set; }
+        public int SettlementsBuilt { get; protected set; }
+        public uint VictoryPoints { get; protected set; }
+
+        // TODO: Obsolete. 
+        public int BrickCount { get; protected set; }
+        public int GrainCount { get; protected set; }
+        public int LumberCount { get; protected set; }
+        public int OreCount { get; protected set; }
+        public int WoolCount { get; protected set; }
+        public virtual int ResourcesCount
+        {
+            get
+            {
+                return this.BrickCount + this.GrainCount + this.LumberCount + this.OreCount + this.WoolCount;
+            }
+        }
         #endregion
 
         #region Methods
-        public static IPlayer CreatePlayer(PlayerSaveModel playerSaveModel)
+        public static IPlayer CreatePlayer(PlayerSaveObject playerSaveModel)
         {
             if (playerSaveModel.IsComputer)
             {

@@ -2,28 +2,35 @@
 namespace Jabberwocky.SoC.Library.Interfaces
 {
     using System;
+    using System.Collections.Generic;
 
     public interface IPlayer
     {
         #region Properties
-        ResourceClutch Resources { get; }
-        Int32 BrickCount { get; }
-        Int32 GrainCount { get; }
-        UInt32 KnightCards { get; }
-        Int32 LumberCount { get; }
-        Int32 OreCount { get; }
-        Int32 WoolCount { get; }
+        int CitiesBuilt { get; }
+        bool HasLargestArmy { get; set; }
+        bool HasLongestRoad { get; set; }
+        List<DevelopmentCard> HeldCards { get; }
         Guid Id { get; }
-        String Name { get; }
-        Int32 ResourcesCount { get; }
-        Boolean IsComputer { get; }
-        UInt32 VictoryPoints { get; }
-        Int32 RemainingRoadSegments { get; }
-        Int32 RoadSegmentsBuilt { get; }
-        Int32 RemainingSettlements { get; }
-        Int32 RemainingCities { get; }
-        Boolean HasLargestArmy { get; set; }
-        Boolean HasLongestRoad { get; set; }
+        bool IsComputer { get; }
+        uint KnightCards { get; }
+        string Name { get; }
+        List<DevelopmentCard> PlayedCards { get; }
+        int RemainingCities { get; }
+        int RemainingRoadSegments { get; }
+        int RemainingSettlements { get; }
+        ResourceClutch Resources { get; }
+        int ResourcesCount { get; }
+        int RoadSegmentsBuilt { get; }
+        int SettlementsBuilt { get; }
+        uint VictoryPoints { get; }
+
+        // TODO: Obsolete properties
+        int BrickCount { get; }
+        int GrainCount { get; }
+        int LumberCount { get; }
+        int OreCount { get; }
+        int WoolCount { get; }
         #endregion
 
         #region Methods
@@ -36,7 +43,7 @@ namespace Jabberwocky.SoC.Library.Interfaces
         void PlaceSettlement();
         void PlaceStartingInfrastructure();
         void RemoveResources(ResourceClutch resourceClutch);
-        ResourceClutch LoseResourceAtIndex(Int32 resourceIndex);
+        ResourceClutch LoseResourceAtIndex(int resourceIndex);
         ResourceClutch LoseResourcesOfType(ResourceTypes resourceType);
         #endregion
     }

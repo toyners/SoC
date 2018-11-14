@@ -21,18 +21,24 @@ namespace Jabberwocky.SoC.Library
         #region Construction
         public ComputerPlayer() { } // For use when inflating from file. 
 
-        public ComputerPlayer(String name, GameBoard gameBoard, INumberGenerator numberGenerator, IInfrastructureAI infrastructureAI) : base(name)
+        public ComputerPlayer(string name, GameBoard gameBoard, INumberGenerator numberGenerator, IInfrastructureAI infrastructureAI) : base(name)
         {
             this.gameBoard = gameBoard;
             this.numberGenerator = numberGenerator;
             this.decisionMaker = new DecisionMaker(this.numberGenerator);
         }
 
+        [Obsolete("Deprecated. Use ComputerPlayer::ctor(PlayerSaveObject) instead")]
         public ComputerPlayer(IGameDataSection<GameDataSectionKeys, GameDataValueKeys, ResourceTypes> data, GameBoard board, INumberGenerator numberGenerator) : base(data)
         {
             this.gameBoard = board;
             this.numberGenerator = numberGenerator;
             this.decisionMaker = new DecisionMaker(this.numberGenerator);
+        }
+
+        public ComputerPlayer(PlayerSaveObject playerSaveObject)
+        {
+
         }
         #endregion
 
