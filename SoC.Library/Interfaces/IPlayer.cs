@@ -20,7 +20,6 @@ namespace Jabberwocky.SoC.Library.Interfaces
         int RemainingRoadSegments { get; }
         int RemainingSettlements { get; }
         ResourceClutch Resources { get; }
-        int ResourcesCount { get; }
         int RoadSegmentsBuilt { get; }
         int SettlementsBuilt { get; }
         uint VictoryPoints { get; }
@@ -31,6 +30,7 @@ namespace Jabberwocky.SoC.Library.Interfaces
         int LumberCount { get; }
         int OreCount { get; }
         int WoolCount { get; }
+        int ResourcesCount { get; }
         #endregion
 
         #region Methods

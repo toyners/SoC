@@ -46,9 +46,11 @@ namespace Jabberwocky.SoC.Library
         public Player(PlayerSaveObject playerSaveObject)
         {
             this.CitiesBuilt = playerSaveObject.CitiesBuilt;
+            this.HeldCards = playerSaveObject.HeldCards;
             this.Id = playerSaveObject.Id;
             this.KnightCards = playerSaveObject.KnightCards;
             this.Name = playerSaveObject.Name;
+            this.PlayedCards = playerSaveObject.PlayedCards;
             this.Resources = playerSaveObject.Resources;
             this.RoadSegmentsBuilt = playerSaveObject.RoadSegmentsBuilt;
             this.SettlementsBuilt = playerSaveObject.SettlementsBuilt;
@@ -99,12 +101,12 @@ namespace Jabberwocky.SoC.Library
                 }
             }
         }
-        public List<DevelopmentCard> HeldCards => throw new NotImplementedException();
+        public List<DevelopmentCard> HeldCards { get; protected set; }
         public Guid Id { get; private set; }
         public virtual bool IsComputer { get { return false; } }
         public uint KnightCards { get; private set; }
         public string Name { get; private set; }
-        public List<DevelopmentCard> PlayedCards => throw new NotImplementedException();
+        public List<DevelopmentCard> PlayedCards { get; protected set; }
         public int RemainingCities { get { return TotalCities - this.CitiesBuilt; } }
         public int RemainingRoadSegments { get { return TotalRoadSegments - this.RoadSegmentsBuilt; } }
         public int RemainingSettlements { get { return TotalSettlements - this.SettlementsBuilt; } }
