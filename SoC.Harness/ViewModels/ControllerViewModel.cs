@@ -6,7 +6,6 @@ namespace SoC.Harness.ViewModels
     using System.Linq;
     using Jabberwocky.SoC.Library;
     using Jabberwocky.SoC.Library.GameBoards;
-    using Jabberwocky.SoC.Library.Interfaces;
 
     public class ControllerViewModel
     {
@@ -84,7 +83,7 @@ namespace SoC.Harness.ViewModels
 
         public void ContinueGame()
         {
-            this.localGameController.ContinueGamePlay();
+              this.localGameController.ContinueGamePlay();
         }
 
         public void DropResourcesFromPlayer(ResourceClutch dropResources)
