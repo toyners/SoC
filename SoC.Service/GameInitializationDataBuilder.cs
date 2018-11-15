@@ -23,12 +23,12 @@ namespace Jabberwocky.SoC.Service
             };
         }
 
-        private static Byte CreateDataForProvider(Tuple<ResourceTypes?, UInt32> resourceProducer)
+        private static byte CreateDataForProvider(Tuple<ResourceTypes?, uint> resourceProducer)
         {
-            return (Byte)((resourceProducer.Item2 * 10) + TranslateProviderTypeToNumber(resourceProducer.Item1));
+            return (byte)((resourceProducer.Item2 * 10) + TranslateProviderTypeToNumber(resourceProducer.Item1));
         }
 
-        private static Byte TranslateProviderTypeToNumber(ResourceTypes? type)
+        private static byte TranslateProviderTypeToNumber(ResourceTypes? type)
         {
             if (type != null)
             {
