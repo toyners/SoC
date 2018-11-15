@@ -43,17 +43,17 @@ namespace Jabberwocky.SoC.Library
             this.WoolCount = data.GetIntegerValue(GameDataValueKeys.PlayerWool);
         }
 
-        public Player(PlayerModel playerSaveObject)
+        public Player(PlayerModel playerModel)
         {
-            this.CitiesBuilt = playerSaveObject.CitiesBuilt;
-            this.HeldCards = playerSaveObject.HeldCards;
-            this.Id = playerSaveObject.Id;
-            this.KnightCards = playerSaveObject.KnightCards;
-            this.Name = playerSaveObject.Name;
-            this.PlayedCards = playerSaveObject.PlayedCards;
-            this.Resources = playerSaveObject.Resources;
-            this.RoadSegmentsBuilt = playerSaveObject.RoadSegmentsBuilt;
-            this.SettlementsBuilt = playerSaveObject.SettlementsBuilt;
+            this.CitiesBuilt = playerModel.CitiesBuilt;
+            this.HeldCards = playerModel.HeldCards;
+            this.Id = playerModel.Id;
+            this.KnightCards = playerModel.KnightCards;
+            this.Name = playerModel.Name;
+            this.PlayedCards = playerModel.PlayedCards;
+            this.Resources = playerModel.Resources;
+            this.RoadSegmentsBuilt = playerModel.RoadSegmentsBuilt;
+            this.SettlementsBuilt = playerModel.SettlementsBuilt;
         }
         #endregion
 

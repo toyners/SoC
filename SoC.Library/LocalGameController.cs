@@ -683,10 +683,10 @@ namespace Jabberwocky.SoC.Library
             this.computerPlayers = new IPlayer[3]; // TODO - Change to handle different number of computer players
             this.players = new IPlayer[4]; // TODO - Change to handle different number of players
 
-            this.mainPlayer = this.players[0] = Player.CreatePlayer(gameModel.Player1);
-            this.computerPlayers[0] = this.players[1] = ComputerPlayer.CreatePlayer(gameModel.Player2);
-            this.computerPlayers[1] = this.players[2] = ComputerPlayer.CreatePlayer(gameModel.Player3);
-            this.computerPlayers[2] = this.players[3] = ComputerPlayer.CreatePlayer(gameModel.Player4);
+            this.mainPlayer = this.players[0] = PlayerModel.CreatePlayer(gameModel.Player1);
+            this.computerPlayers[0] = this.players[1] = PlayerModel.CreatePlayer(gameModel.Player2);
+            this.computerPlayers[1] = this.players[2] = PlayerModel.CreatePlayer(gameModel.Player3);
+            this.computerPlayers[2] = this.players[3] = PlayerModel.CreatePlayer(gameModel.Player4);
             this.dice1 = gameModel.Dice1;
             this.dice2 = gameModel.Dice2;
 

@@ -36,12 +36,12 @@ namespace Jabberwocky.SoC.Library.Store
             this.VictoryPoints = player.VictoryPoints;
         }
 
-        public static IPlayer CreatePlayer(PlayerModel playerSaveObject)
+        public static IPlayer CreatePlayer(PlayerModel playerModel)
         {
-            if (playerSaveObject.IsComputer)
-                return new ComputerPlayer(playerSaveObject);
+            if (playerModel.IsComputer)
+                return new ComputerPlayer(playerModel);
 
-            return new Player(playerSaveObject);
+            return new Player(playerModel);
         }
     }
 }

@@ -36,14 +36,13 @@ namespace Jabberwocky.SoC.Library
             this.decisionMaker = new DecisionMaker(this.numberGenerator);
         }
 
-        public ComputerPlayer(PlayerModel playerSaveObject)
+        public ComputerPlayer(PlayerModel playerModel) : base(playerModel)
         {
-
         }
         #endregion
 
         #region Properties
-        public override Boolean IsComputer { get { return true; } }
+        public override bool IsComputer { get { return true; } }
         #endregion
 
         #region Methods
