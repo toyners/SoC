@@ -307,6 +307,8 @@ namespace Jabberwocky.SoC.Library
 
             var playerData = this.CreatePlayerDataViews();
             this.GameJoinedEvent?.Invoke(playerData);
+            this.InitialBoardSetupEvent?.Invoke(this.gameBoard);
+
             this.currentTurnToken = new TurnToken();
             this.StartPlayerTurnEvent?.Invoke(this.currentTurnToken);
 

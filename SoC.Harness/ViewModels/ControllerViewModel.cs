@@ -9,18 +9,11 @@ namespace SoC.Harness.ViewModels
 
     public class ControllerViewModel
     {
-        public enum States
-        {
-            Start,
-            StartTurn,
-        }
-
         #region Fields
         private readonly LocalGameController localGameController;
         private TurnToken currentTurnToken;
         private PlayerViewModel player;
         private Dictionary<Guid, PlayerViewModel> playerViewModelsById = new Dictionary<Guid, PlayerViewModel>();
-        private States state;
         private PhaseActions phaseActions = new PhaseActions();
         #endregion
 
