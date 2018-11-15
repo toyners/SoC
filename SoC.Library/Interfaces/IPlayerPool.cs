@@ -2,7 +2,7 @@
 using System;
 using System.Xml;
 using Jabberwocky.SoC.Library.GameBoards;
-using Jabberwocky.SoC.Library.Storage;
+using Jabberwocky.SoC.Library.Store;
 
 namespace Jabberwocky.SoC.Library.Interfaces
 {

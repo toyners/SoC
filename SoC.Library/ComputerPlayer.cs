@@ -7,7 +7,7 @@ namespace Jabberwocky.SoC.Library
     using Interfaces;
     using GameActions;
     using System.Xml;
-    using Jabberwocky.SoC.Library.Storage;
+    using Jabberwocky.SoC.Library.Store;
     using Jabberwocky.SoC.Library.Enums;
 
     public class ComputerPlayer : Player, IComputerPlayer
@@ -36,7 +36,7 @@ namespace Jabberwocky.SoC.Library
             this.decisionMaker = new DecisionMaker(this.numberGenerator);
         }
 
-        public ComputerPlayer(PlayerSaveObject playerSaveObject)
+        public ComputerPlayer(PlayerModel playerSaveObject)
         {
 
         }

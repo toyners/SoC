@@ -1,5 +1,5 @@
 ﻿
-namespace Jabberwocky.SoC.Library.Storage
+namespace Jabberwocky.SoC.Library.Store
 {
   using System;
 

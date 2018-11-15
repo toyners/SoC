@@ -21,7 +21,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
     public BoardQueryEngine(GameBoard board)
     {
       this.board = board;
-      this.hexInformation = this.board.GetHexInformation();
+      this.hexInformation = this.board.GetHexData();
       this.locationInformation = new List<UInt32>[GameBoard.StandardBoardLocationCount];
 
       using (var stream = this.GetType().GetTypeInfo().Assembly.GetManifestResourceStream("Jabberwocky.SoC.Library.GameBoards.Locations.txt"))

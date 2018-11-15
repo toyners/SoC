@@ -11,7 +11,7 @@ namespace Jabberwocky.SoC.Library
     using GameBoards;
     using GameEvents;
     using Interfaces;
-    using Jabberwocky.SoC.Library.Storage;
+    using Jabberwocky.SoC.Library.Store;
     using Newtonsoft.Json;
 
     [JsonObject(MemberSerialization.OptIn)]
@@ -622,7 +622,7 @@ namespace Jabberwocky.SoC.Library
                             var playerId = Guid.Parse(reader.GetAttribute("playerid"));
                             var location = UInt32.Parse(reader.GetAttribute("location"));
 
-                            this.gameBoard.PlaceSettlementOnBoard(playerId, location);
+                            //this.gameBoard.InternalPlaceSettlement(playerId, location);
                         }
 
                         if (reader.Name == "roads" && reader.NodeType == XmlNodeType.Element)
@@ -636,7 +636,7 @@ namespace Jabberwocky.SoC.Library
                             var start = UInt32.Parse(reader.GetAttribute("start"));
                             var end = UInt32.Parse(reader.GetAttribute("end"));
 
-                            this.gameBoard.PlaceRoadSegmentOnBoard(playerId, start, end);
+                            //this.gameBoard.InternalPlaceRoadSegment(playerId, start, end);
                         }
 
                         reader.Read();
@@ -676,19 +676,19 @@ namespace Jabberwocky.SoC.Library
         public void Load(string filePath)
         {
             var content = File.ReadAllText(filePath);
-            var saveObject = JsonConvert.DeserializeObject<SaveObject>(content);
+            var gameModel = JsonConvert.DeserializeObject<GameModel>(content);
 
-            this.gameBoard = new GameBoard(BoardSizes.Standard, saveObject.Hexes);
+            this.gameBoard = new GameBoard(BoardSizes.Standard, gameModel.Board);
 
             this.computerPlayers = new IPlayer[3]; // TODO - Change to handle different number of computer players
             this.players = new IPlayer[4]; // TODO - Change to handle different number of players
 
-            this.mainPlayer = this.players[0] = Player.CreatePlayer(saveObject.Player1);
-            this.computerPlayers[0] = this.players[1] = ComputerPlayer.CreatePlayer(saveObject.Player2);
-            this.computerPlayers[1] = this.players[2] = ComputerPlayer.CreatePlayer(saveObject.Player3);
-            this.computerPlayers[2] = this.players[3] = ComputerPlayer.CreatePlayer(saveObject.Player4);
-            this.dice1 = saveObject.Dice1;
-            this.dice2 = saveObject.Dice2;
+            this.mainPlayer = this.players[0] = Player.CreatePlayer(gameModel.Player1);
+            this.computerPlayers[0] = this.players[1] = ComputerPlayer.CreatePlayer(gameModel.Player2);
+            this.computerPlayers[1] = this.players[2] = ComputerPlayer.CreatePlayer(gameModel.Player3);
+            this.computerPlayers[2] = this.players[3] = ComputerPlayer.CreatePlayer(gameModel.Player4);
+            this.dice1 = gameModel.Dice1;
+            this.dice2 = gameModel.Dice2;
 
             this.GamePhase = GamePhases.ContinueGamePlay;
         }
@@ -750,19 +750,17 @@ namespace Jabberwocky.SoC.Library
 
         public void Save(string filePath)
         {
-            var saveObject = new SaveObject();
-            saveObject.Hexes = this.gameBoard.GetHexInformation();
-            saveObject.Roads = this.gameBoard.GetRoadInformation();
-            saveObject.Settlements = this.gameBoard.GetSettlementInformation();
-            saveObject.Player1 = new PlayerSaveObject(this.mainPlayer);
-            saveObject.Player2 = new PlayerSaveObject(this.computerPlayers[0]);
-            saveObject.Player3 = new PlayerSaveObject(this.computerPlayers[1]);
-            saveObject.Player4 = new PlayerSaveObject(this.computerPlayers[2]);
-            saveObject.RobberLocation = this.robberHex;
-            saveObject.DevelopmentCards = this.developmentCardHolder.GetDevelopmentCards();
-            saveObject.Dice1 = this.dice1;
-            saveObject.Dice2 = this.dice2;
-            var content = JsonConvert.SerializeObject(saveObject, Newtonsoft.Json.Formatting.Indented);
+            var gameModel = new GameModel();
+            gameModel.Board = new GameBoardModel(this.gameBoard);
+            gameModel.Player1 = new PlayerModel(this.mainPlayer);
+            gameModel.Player2 = new PlayerModel(this.computerPlayers[0]);
+            gameModel.Player3 = new PlayerModel(this.computerPlayers[1]);
+            gameModel.Player4 = new PlayerModel(this.computerPlayers[2]);
+            gameModel.RobberLocation = this.robberHex;
+            gameModel.DevelopmentCards = this.developmentCardHolder.GetDevelopmentCards();
+            gameModel.Dice1 = this.dice1;
+            gameModel.Dice2 = this.dice2;
+            var content = JsonConvert.SerializeObject(gameModel, Newtonsoft.Json.Formatting.Indented);
             File.WriteAllText(filePath, content);
         }
 

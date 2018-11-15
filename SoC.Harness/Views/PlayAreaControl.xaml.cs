@@ -420,7 +420,7 @@ namespace SoC.Harness.Views
 
             BitmapImage resourceBitmap = null;
             BitmapImage numberBitmap = null;
-            var hexData = this.board.GetHexInformation();
+            var hexData = this.board.GetHexData();
             uint hexIndex = 0;
 
             foreach (var hexLayout in hexLayoutData)

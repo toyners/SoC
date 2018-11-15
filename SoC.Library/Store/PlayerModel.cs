@@ -1,11 +1,11 @@
 ﻿
-namespace Jabberwocky.SoC.Library.Storage
+namespace Jabberwocky.SoC.Library.Store
 {
     using System;
     using System.Collections.Generic;
     using Jabberwocky.SoC.Library.Interfaces;
 
-    public class PlayerSaveObject
+    public class PlayerModel
     {
         public int CitiesBuilt;
         public List<DevelopmentCard> HeldCards;
@@ -19,9 +19,9 @@ namespace Jabberwocky.SoC.Library.Storage
         public int SettlementsBuilt;
         public uint VictoryPoints; // TODO: This should derived from the other properties
 
-        public PlayerSaveObject() { }
+        public PlayerModel() { }
 
-        public PlayerSaveObject(IPlayer player)
+        public PlayerModel(IPlayer player)
         {
             this.CitiesBuilt = player.CitiesBuilt;
             this.HeldCards = player.HeldCards;
@@ -36,7 +36,7 @@ namespace Jabberwocky.SoC.Library.Storage
             this.VictoryPoints = player.VictoryPoints;
         }
 
-        public static IPlayer CreatePlayer(PlayerSaveObject playerSaveObject)
+        public static IPlayer CreatePlayer(PlayerModel playerSaveObject)
         {
             if (playerSaveObject.IsComputer)
                 return new ComputerPlayer(playerSaveObject);

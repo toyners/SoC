@@ -4,7 +4,7 @@ using System.Xml;
 using Jabberwocky.SoC.Library;
 using Jabberwocky.SoC.Library.GameBoards;
 using Jabberwocky.SoC.Library.Interfaces;
-using Jabberwocky.SoC.Library.Storage;
+using Jabberwocky.SoC.Library.Store;
 
 namespace SoC.Harness
 {

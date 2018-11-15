@@ -6,7 +6,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
     using System.Diagnostics;
     using System.Linq;
     using System.Xml;
-    using Jabberwocky.SoC.Library.Storage;
+    using Jabberwocky.SoC.Library.Store;
 
     /// <summary>
     /// Holds data for all locations, trails, towns, cities, roads, resource providers and robber location.
@@ -67,7 +67,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
         #region Construction
         public GameBoard(BoardSizes size) : this(size, null) { }
 
-        internal GameBoard(BoardSizes size, Tuple<ResourceTypes?, uint>[] hexes)
+        public GameBoard(BoardSizes size, GameBoardModel boardModel)
         {
             if (size == BoardSizes.Extended)
             {
@@ -84,10 +84,17 @@ namespace Jabberwocky.SoC.Library.GameBoards
             this.ConnectLocationsVertically();
             this.ConnectLocationsHorizontally();
 
-            if (hexes != null && hexes.Length > 0)
-                this.LoadHexes(hexes);
+            if (boardModel != null)
+            {
+                this.LoadHexData(boardModel.Hexes);
+                this.LoadSettlementData(boardModel.Settlements);
+                this.LoadRoadData(boardModel.Roads);
+                this.LoadCityData(boardModel);
+            }
             else
+            {
                 this.CreateHexes();
+            }
 
             this.AssignResourceProvidersToDiceRolls();
 
@@ -296,7 +303,18 @@ namespace Jabberwocky.SoC.Library.GameBoards
             return new VerificationResults { Status = VerificationStatus.Valid };
         }
 
-        public Tuple<ResourceTypes?, uint>[] GetHexInformation()
+        public Dictionary<uint, Guid> GetCityData()
+        {
+            var data = new Dictionary<uint, Guid>(this.cities.Count);
+            foreach (var kv in this.cities)
+            {
+                data.Add(kv.Key, kv.Value);
+            }
+
+            return data;
+        }
+
+        public Tuple<ResourceTypes?, uint>[] GetHexData()
         {
             var data = new Tuple<ResourceTypes?, uint>[this.hexes.Length];
             for (var index = 0; index < this.hexes.Length; index++)
@@ -428,7 +446,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
             return productionValues.ToArray();
         }
 
-        public Tuple<uint, uint, Guid>[] GetRoadInformation()
+        public Tuple<uint, uint, Guid>[] GetRoadData()
         {
             var count = 0;
             foreach (var kv in this.roadSegmentsByPlayer)
@@ -545,17 +563,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
             return resources;
         }
 
-        public List<uint> GetSettlementsForPlayer(Guid playerId)
-        {
-            if (!this.settlementsByPlayer.ContainsKey(playerId))
-            {
-                return null;
-            }
-
-            return this.settlementsByPlayer[playerId];
-        }
-
-        public Dictionary<uint, Guid> GetSettlementInformation()
+        public Dictionary<uint, Guid> GetSettlementData()
         {
             var data = new Dictionary<uint, Guid>(this.settlements.Count);
             foreach (var kv in this.settlements)
@@ -566,12 +574,22 @@ namespace Jabberwocky.SoC.Library.GameBoards
             return data;
         }
 
+        public List<uint> GetSettlementsForPlayer(Guid playerId)
+        {
+            if (!this.settlementsByPlayer.ContainsKey(playerId))
+            {
+                return null;
+            }
+
+            return this.settlementsByPlayer[playerId];
+        }
+
         public void PlaceCity(Guid playerId, uint location)
         {
             var verificationResults = this.CanPlaceCity(playerId, location);
             this.ThrowExceptionOnBadVerificationResult(verificationResults);
 
-            this.PlaceCityOnBoard(playerId, location);
+            this.InternalPlaceCity(playerId, location);
         }
 
         public void PlaceRoadSegment(Guid playerId, uint roadStartLocation, uint roadEndLocation)
@@ -579,7 +597,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
             var verificationResults = this.CanPlaceRoad(playerId, roadStartLocation, roadEndLocation);
             this.ThrowExceptionOnBadVerificationResult(verificationResults);
 
-            this.PlaceRoadSegmentOnBoard(playerId, roadStartLocation, roadEndLocation);
+            this.InternalPlaceRoadSegment(playerId, roadStartLocation, roadEndLocation);
         }
 
         public void PlaceSettlement(Guid playerId, uint locationIndex)
@@ -587,7 +605,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
             var verificationResults = this.CanPlaceSettlement(playerId, locationIndex);
             this.ThrowExceptionOnBadVerificationResult(verificationResults);
 
-            this.PlaceSettlementOnBoard(playerId, locationIndex);
+            this.InternalPlaceSettlement(playerId, locationIndex);
         }
 
         /// <summary>
@@ -601,8 +619,28 @@ namespace Jabberwocky.SoC.Library.GameBoards
             var verificationResults = this.CanPlaceStartingInfrastructure(playerId, settlementLocation, roadEndLocation);
             this.ThrowExceptionOnBadVerificationResult(verificationResults);
 
-            this.PlaceSettlementOnBoard(playerId, settlementLocation);
-            this.PlaceRoadSegmentOnBoard(playerId, settlementLocation, roadEndLocation);
+            this.InternalPlaceSettlement(playerId, settlementLocation);
+            this.InternalPlaceRoadSegment(playerId, settlementLocation, roadEndLocation);
+        }
+
+        public bool SettlementLocationIsOccupied(uint locationIndex)
+        {
+            return this.settlements.ContainsKey(locationIndex);
+        }
+
+        public bool TooCloseToSettlement(uint locationIndex, out Guid id, out uint index)
+        {
+            id = Guid.Empty;
+            for (index = 0; index < this.connections.GetLength(1); index++)
+            {
+                if (this.connections[locationIndex, index] && this.settlements.ContainsKey(index))
+                {
+                    id = this.settlements[index];
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         public bool TryGetLongestRoadDetails(out Guid playerId, out uint[] road)
@@ -705,12 +743,13 @@ namespace Jabberwocky.SoC.Library.GameBoards
             return gotSingleLongestRoad;
         }
 
-        internal void PlaceCityOnBoard(Guid playerId, uint location)
+        // TODO: Make the Internal* methods private
+        internal void InternalPlaceCity(Guid playerId, uint location)
         {
             this.cities.Add(location, playerId);
         }
 
-        internal void PlaceRoadSegmentOnBoard(Guid playerId, uint roadStartLocationIndex, uint roadEndLocationIndex)
+        internal void InternalPlaceRoadSegment(Guid playerId, uint roadStartLocationIndex, uint roadEndLocationIndex)
         {
             var newRoadSegment = new RoadSegment(roadStartLocationIndex, roadEndLocationIndex);
 
@@ -726,7 +765,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
             }
         }
 
-        internal void PlaceSettlementOnBoard(Guid playerId, uint settlementLocation)
+        internal void InternalPlaceSettlement(Guid playerId, uint settlementLocation)
         {
             if (this.settlementsByPlayer.ContainsKey(playerId))
             {
@@ -753,6 +792,36 @@ namespace Jabberwocky.SoC.Library.GameBoards
             }
 
             return this.settlements[location];
+        }
+
+        private void LoadCityData(GameBoardModel boardModel)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void LoadHexData(Tuple<ResourceTypes?, uint>[] hexes)
+        {
+            this.hexes = new ResourceProducer[StandardBoardHexCount];
+            for (var i = 0; i < this.hexes.Length; i++)
+            {
+                this.hexes[i] = new ResourceProducer { Type = hexes[i].Item1, Production = hexes[i].Item2 };
+            }
+        }
+
+        private void LoadRoadData(Tuple<uint, uint, Guid>[] roads)
+        {
+            foreach (var tuple in roads)
+            {
+                this.InternalPlaceRoadSegment(tuple.Item3, tuple.Item1, tuple.Item2);
+            }
+        }
+
+        private void LoadSettlementData(Dictionary<uint, Guid> settlements)
+        {
+            foreach (var kv in settlements)
+            {
+                this.InternalPlaceSettlement(kv.Value, kv.Key);
+            }
         }
 
         private bool LocationHasPlayerCity(Guid playerId, uint location)
@@ -798,26 +867,6 @@ namespace Jabberwocky.SoC.Library.GameBoards
             }
 
             return false;
-        }
-
-        public bool TooCloseToSettlement(uint locationIndex, out Guid id, out uint index)
-        {
-            id = Guid.Empty;
-            for (index = 0; index < this.connections.GetLength(1); index++)
-            {
-                if (this.connections[locationIndex, index] && this.settlements.ContainsKey(index))
-                {
-                    id = this.settlements[index];
-                    return true;
-                }
-            }
-
-            return false;
-        }
-
-        public bool SettlementLocationIsOccupied(uint locationIndex)
-        {
-            return this.settlements.ContainsKey(locationIndex);
         }
 
         private bool SettlementLocationOnBoard(uint settlementLocation)
@@ -941,13 +990,13 @@ namespace Jabberwocky.SoC.Library.GameBoards
             var settlements = reader.GetSections(GameDataSectionKeys.Buildings);
             foreach (var settlement in settlements)
             {
-                this.PlaceSettlementOnBoard(settlement.GetIdentityValue(GameDataValueKeys.SettlementOwner), (uint)settlement.GetIntegerValue(GameDataValueKeys.SettlementLocation));
+                this.InternalPlaceSettlement(settlement.GetIdentityValue(GameDataValueKeys.SettlementOwner), (uint)settlement.GetIntegerValue(GameDataValueKeys.SettlementLocation));
             }
 
             var roads = reader.GetSections(GameDataSectionKeys.Roads);
             foreach (var road in roads)
             {
-                this.PlaceRoadSegmentOnBoard(road.GetIdentityValue(GameDataValueKeys.RoadOwner), (uint)road.GetIntegerValue(GameDataValueKeys.RoadStart), (uint)road.GetIntegerValue(GameDataValueKeys.RoadEnd));
+                this.InternalPlaceRoadSegment(road.GetIdentityValue(GameDataValueKeys.RoadOwner), (uint)road.GetIntegerValue(GameDataValueKeys.RoadStart), (uint)road.GetIntegerValue(GameDataValueKeys.RoadEnd));
             }
         }
 
@@ -1263,15 +1312,6 @@ namespace Jabberwocky.SoC.Library.GameBoards
             }
 
             return newResourceProducersByType;
-        }
-
-        private void LoadHexes(Tuple<ResourceTypes?, uint>[] hexes)
-        {
-            this.hexes = new ResourceProducer[StandardBoardHexCount];
-            for (var i = 0; i < this.hexes.Length; i++)
-            {
-                this.hexes[i] = new ResourceProducer { Type = hexes[i].Item1, Production = hexes[i].Item2 };
-            }
         }
         #endregion
 

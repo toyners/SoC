@@ -5,7 +5,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
 
   public interface IGameBoard
   {
-    Tuple<ResourceTypes?, uint>[] GetHexInformation();
+    Tuple<ResourceTypes?, uint>[] GetHexData();
 
     IBoardQueryEngine BoardQuery { get; }
   }

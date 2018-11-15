@@ -1307,7 +1307,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
 
       // Assert
       boardData.ShouldNotBeNull();
-      Tuple<ResourceTypes?, UInt32>[] hexes = boardData.GetHexInformation();
+      Tuple<ResourceTypes?, UInt32>[] hexes = boardData.GetHexData();
       hexes.Length.ShouldBe(GameBoard.StandardBoardHexCount);
       hexes[0].ShouldBe(new Tuple<ResourceTypes?, UInt32>(ResourceTypes.Grain, 9));
       hexes[1].ShouldBe(new Tuple<ResourceTypes?, UInt32>(ResourceTypes.Lumber, 8));
@@ -1412,13 +1412,13 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       // Assert
       boardData.ShouldNotBeNull();
 
-      var settlements = boardData.GetSettlementInformation();
+      var settlements = boardData.GetSettlementData();
       settlements.Count.ShouldBe(3);
       settlements.ShouldContainKeyAndValue(MainSettlementOneLocation, playerId);
       settlements.ShouldContainKeyAndValue(MainSettlementTwoLocation, playerId);
       settlements.ShouldContainKeyAndValue(FirstSettlementOneLocation, firstOpponentId);
 
-      var roads = boardData.GetRoadInformation();
+      var roads = boardData.GetRoadData();
       roads.Length.ShouldBe(1);
       roads[0].ShouldBe(new Tuple<UInt32, UInt32, Guid>(MainSettlementOneLocation, MainRoadOneEnd, playerId));
     }

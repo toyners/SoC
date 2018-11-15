@@ -6,7 +6,7 @@ namespace Jabberwocky.SoC.Library
   using Interfaces;
   using GameBoards;
   using System.Collections.Generic;
-  using Jabberwocky.SoC.Library.Storage;
+  using Jabberwocky.SoC.Library.Store;
 
   public class PlayerPool : IPlayerPool
   {

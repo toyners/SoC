@@ -297,7 +297,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.GameBoard_Tests
       var gameBoard = new GameBoard(BoardSizes.Standard);
 
       // Act
-      var data = gameBoard.GetHexInformation();
+      var data = gameBoard.GetHexData();
 
       // Assert
       data[0].ShouldBe(new Tuple<ResourceTypes?, UInt32>(null, 0));
@@ -335,7 +335,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.GameBoard_Tests
       gameBoard.PlaceStartingInfrastructure(playerId, FirstPlayerSettlementLocation, FirstPlayerRoadEndLocation);
 
       // Act
-      var settlements = gameBoard.GetSettlementInformation();
+      var settlements = gameBoard.GetSettlementData();
 
       // Assert
       settlements.Count.ShouldBe(1);
@@ -351,7 +351,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.GameBoard_Tests
       gameBoard.PlaceStartingInfrastructure(playerId, 12, 4);
 
       // Act
-      var roads = gameBoard.GetRoadInformation();
+      var roads = gameBoard.GetRoadData();
 
       // Assert
       roads.Length.ShouldBe(1);

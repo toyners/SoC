@@ -4,7 +4,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.Storage_Tests
   using System;
   using System.IO;
   using System.Text;
-  using Jabberwocky.SoC.Library.Storage;
+  using Jabberwocky.SoC.Library.Store;
   using Jabberwocky.SoC.Library.UnitTests.Extensions;
   using NUnit.Framework;
   using Shouldly;

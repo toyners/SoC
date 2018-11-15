@@ -6,7 +6,7 @@ namespace Jabberwocky.SoC.Library
     using System.Diagnostics;
     using System.Xml;
     using Interfaces;
-    using Jabberwocky.SoC.Library.Storage;
+    using Jabberwocky.SoC.Library.Store;
 
     [DebuggerDisplay("Name: {Name}, Id: {Id}")]
     public class Player : IPlayer
@@ -43,7 +43,7 @@ namespace Jabberwocky.SoC.Library
             this.WoolCount = data.GetIntegerValue(GameDataValueKeys.PlayerWool);
         }
 
-        public Player(PlayerSaveObject playerSaveObject)
+        public Player(PlayerModel playerSaveObject)
         {
             this.CitiesBuilt = playerSaveObject.CitiesBuilt;
             this.HeldCards = playerSaveObject.HeldCards;
@@ -131,7 +131,7 @@ namespace Jabberwocky.SoC.Library
         #endregion
 
         #region Methods
-        public static IPlayer CreatePlayer(PlayerSaveObject playerSaveModel)
+        public static IPlayer CreatePlayer(PlayerModel playerSaveModel)
         {
             if (playerSaveModel.IsComputer)
             {
