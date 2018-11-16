@@ -8,7 +8,7 @@ using Jabberwocky.SoC.Library.Store;
 
 namespace SoC.Harness
 {
-  public class PlayerPool : IPlayerPool
+  public class LocalPlayerPool : IPlayerPool
   {
     private Queue<string> names = new Queue<string>(new[] { "Barbara", "Charlie", "Dana" });
 

@@ -59,7 +59,7 @@ namespace SoC.Harness.ViewModels
 
         public static ControllerViewModel New()
         {
-            return new ControllerViewModel(new LocalGameController(new TestNumberGenerator(), new PlayerPool()));
+            return new ControllerViewModel(new LocalGameController(new TestNumberGenerator(), new LocalPlayerPool()));
         }
 
         public void CompleteFirstInfrastructureSetup(uint settlementLocation, uint roadEndLocation)
