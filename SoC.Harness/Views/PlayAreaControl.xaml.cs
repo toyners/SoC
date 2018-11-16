@@ -393,10 +393,35 @@ namespace SoC.Harness.Views
             {
                 this.InitialiseBoardLayer();
 
+                var settlementData = board.GetSettlementData();
+                var roadData = board.GetRoadData();
+                var cityData = board.GetCityData();
+                if (settlementData != null)
+                    this.PlaceSettlements(settlementData);
+                if (roadData != null)
+                    this.PlaceRoads(roadData);
+                if (cityData != null)
+                    this.PlaceCities(cityData);
+
                 this.InitialiseSettlementSelectionLayer();
 
                 this.InitialiseRoadSelectionLayer();
             });
+        }
+
+        private void PlaceCities(Dictionary<uint, Guid> cityData)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void PlaceRoads(Tuple<uint, uint, Guid>[] roadData)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void PlaceSettlements(Dictionary<uint, Guid> settlementData)
+        {
+            throw new NotImplementedException();
         }
 
         private void InitialiseBoardLayer()
