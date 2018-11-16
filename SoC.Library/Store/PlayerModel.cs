@@ -19,7 +19,7 @@ namespace Jabberwocky.SoC.Library.Store
         public int SettlementsBuilt;
         public uint VictoryPoints; // TODO: This should derived from the other properties
 
-        public PlayerModel() { }
+        public PlayerModel() { } // For deserialization
 
         public PlayerModel(IPlayer player)
         {

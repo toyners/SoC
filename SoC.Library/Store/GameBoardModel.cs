@@ -12,6 +12,8 @@ namespace Jabberwocky.SoC.Library.Store
         public Tuple<uint, uint, Guid>[] Roads;
         public Dictionary<uint, Guid> Settlements;
 
+        public GameBoardModel() { } // For deserialization
+
         public GameBoardModel(GameBoard gameBoard)
         {
             this.Cities = gameBoard.GetCityData();

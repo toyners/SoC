@@ -87,9 +87,12 @@ namespace Jabberwocky.SoC.Library.GameBoards
             if (boardModel != null)
             {
                 this.LoadHexData(boardModel.Hexes);
-                this.LoadSettlementData(boardModel.Settlements);
-                this.LoadRoadData(boardModel.Roads);
-                this.LoadCityData(boardModel);
+                if (boardModel.Hexes != null)
+                    this.LoadSettlementData(boardModel.Settlements);
+                if (boardModel.Roads != null)
+                    this.LoadRoadData(boardModel.Roads);
+                if (boardModel.Cities != null)
+                    this.LoadCityData(boardModel);
             }
             else
             {
@@ -796,7 +799,6 @@ namespace Jabberwocky.SoC.Library.GameBoards
 
         private void LoadCityData(GameBoardModel boardModel)
         {
-            throw new NotImplementedException();
         }
 
         private void LoadHexData(Tuple<ResourceTypes?, uint>[] hexes)
