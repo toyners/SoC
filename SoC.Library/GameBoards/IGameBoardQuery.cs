@@ -4,7 +4,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
   using System;
   using System.Collections.Generic;
 
-  public interface IBoardQueryEngine
+  public interface IGameBoardQuery
   {
     uint[] GetLocationsWithBestYield(int count);
 

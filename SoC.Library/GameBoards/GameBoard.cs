@@ -107,14 +107,14 @@ namespace Jabberwocky.SoC.Library.GameBoards
 
             this.AssignHexesToLocation();
 
-            this.BoardQuery = new BoardQueryEngine(this);
+            this.BoardQuery = new GameBoardQuery(this);
         }
         #endregion
 
         #region Properties
         public uint Length { get; private set; }
 
-        public IBoardQueryEngine BoardQuery { get; private set; }
+        public IGameBoardQuery BoardQuery { get; private set; }
         #endregion
 
         #region Methods

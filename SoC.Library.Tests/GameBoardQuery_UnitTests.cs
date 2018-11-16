@@ -8,14 +8,14 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
   [TestFixture]
   [Category("All")]
-  [Category("BoardQueryEngine")]
-  public class BoardQueryEngine_UnitTests
-  {
+  [Category("GameBoardQuery")]
+  public class GameBoardQuery_UnitTests
+    {
     [Test]
     public void GetLocationsWithBestYield_FirstLocationFromEmptyBoard_ReturnsExpectedLocation()
     {
       var gameBoard = new GameBoard(BoardSizes.Standard);
-      var queryEngine = new BoardQueryEngine(gameBoard);
+      var queryEngine = new GameBoardQuery(gameBoard);
 
       var results = queryEngine.GetLocationsWithBestYield(1);
 
@@ -26,7 +26,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     public void GetLocationsWithBestYield_FirstFiveLocationsFromEmptyBoard_ReturnsExpectedLocations()
     {
       var gameBoard = new GameBoard(BoardSizes.Standard);
-      var queryEngine = new BoardQueryEngine(gameBoard);
+      var queryEngine = new GameBoardQuery(gameBoard);
 
       var results = queryEngine.GetLocationsWithBestYield(5);
 
@@ -44,7 +44,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     {
       var gameBoard = new GameBoard(BoardSizes.Standard);
       gameBoard.PlaceStartingInfrastructure(Guid.NewGuid(), settlementLocation, roadEndLocation);
-      var queryEngine = new BoardQueryEngine(gameBoard);
+      var queryEngine = new GameBoardQuery(gameBoard);
 
       var results = queryEngine.GetLocationsWithBestYield(5);
 

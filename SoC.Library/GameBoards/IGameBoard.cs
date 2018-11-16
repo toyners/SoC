@@ -6,7 +6,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
 
     public interface IGameBoard
     {
-        IBoardQueryEngine BoardQuery { get; }
+        IGameBoardQuery BoardQuery { get; }
 
         Dictionary<uint, Guid> GetCityData();
 

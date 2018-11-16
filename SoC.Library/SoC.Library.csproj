@@ -54,7 +54,7 @@
     <Compile Include="DevelopmentCard.cs" />
     <Compile Include="DevelopmentCardHolder.cs" />
     <Compile Include="GameBoards\BoardQueryEngine.cs" />
-    <Compile Include="GameBoards\IBoardQueryEngine.cs" />
+    <Compile Include="GameBoards\IGameBoardQuery.cs" />
     <Compile Include="GameBoards\IGameBoard.cs" />
     <Compile Include="GameState.cs" />
     <Compile Include="Store\GameBoardModel.cs" />

@@ -61,7 +61,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AI_Tests.cs" />
-    <Compile Include="BoardQueryEngine_UnitTests.cs" />
+    <Compile Include="GameBoardQuery_UnitTests.cs" />
     <Compile Include="ComputerPlayer_UnitTests.cs" />
     <Compile Include="DevelopmentCardHolder_UnitTests.cs" />
     <Compile Include="ProductionFactorComparison_UnitTests.cs" />

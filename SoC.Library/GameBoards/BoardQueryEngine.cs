@@ -7,7 +7,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
   using System.IO;
   using System.Reflection;
 
-  public class BoardQueryEngine : IBoardQueryEngine
+  public class GameBoardQuery : IGameBoardQuery
   {
     #region Fields
     private GameBoard board;
@@ -18,7 +18,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
     #endregion
 
     #region Construction
-    public BoardQueryEngine(GameBoard board)
+    public GameBoardQuery(GameBoard board)
     {
       this.board = board;
       this.hexInformation = this.board.GetHexData();
