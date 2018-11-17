@@ -118,34 +118,12 @@ namespace SoC.Harness.Views
             {
                 var location = settlementDetails.Item1;
                 var playerId = settlementDetails.Item2;
-                var settlementImagePath = this.settlementImagesByPlayerId[playerId];
-
-                var control = this.settlementButtonControls[location];
-                this.PlaceBuildingControl(control.X, control.Y, location.ToString(), settlementImagePath, this.SettlementLayer);
-
-                control.Visibility = Visibility.Hidden;
-
-                var neighbouringLocations = this.board.BoardQuery.GetNeighbouringLocationsFrom(location);
-                foreach (var neighbouringLocation in neighbouringLocations)
-                {
-                    this.settlementButtonControls[neighbouringLocation].Visibility = Visibility.Hidden;
-                }
+                this.PlaceSettlement(location, playerId);
             }
 
             foreach (var roadDetails in boardUpdate.NewRoads)
             {
-                var startLocation = roadDetails.Item1;
-                var endLocation = roadDetails.Item2;
-                var playerId = roadDetails.Item3;
-
-                var key = $"{startLocation}-{endLocation}";
-                var control = this.roadButtonControls[key];
-
-                var roadImagePath = this.roadImagesByPlayerId[playerId][(int)control.RoadImageType];
-
-                control.Visibility = Visibility.Hidden;
-
-                this.PlaceRoadControl(control.X, control.Y, roadImagePath);
+                this.PlaceRoad(roadDetails.Item1, roadDetails.Item2, roadDetails.Item3);
             }
 
             this.SettlementSelectionLayer.Visibility = Visibility.Visible;
@@ -393,35 +371,71 @@ namespace SoC.Harness.Views
             {
                 this.InitialiseBoardLayer();
 
-                var settlementData = board.GetSettlementData();
-                var roadData = board.GetRoadData();
-                var cityData = board.GetCityData();
-                if (settlementData != null)
-                    this.PlaceSettlements(settlementData);
-                if (roadData != null)
-                    this.PlaceRoads(roadData);
-                if (cityData != null)
-                    this.PlaceCities(cityData);
-
                 this.InitialiseSettlementSelectionLayer();
 
                 this.InitialiseRoadSelectionLayer();
+
+                var settlementData = board.GetSettlementData();
+                if (settlementData != null)
+                    this.PlaceSettlements(settlementData);
+
+                var roadData = board.GetRoadData();
+                if (roadData != null)
+                    this.PlaceRoads(roadData);
+
+                var cityData = board.GetCityData();
+                if (cityData != null)
+                    this.PlaceCities(cityData);
             });
         }
 
         private void PlaceCities(Dictionary<uint, Guid> cityData)
         {
-            throw new NotImplementedException();
         }
 
         private void PlaceRoads(Tuple<uint, uint, Guid>[] roadData)
         {
-            throw new NotImplementedException();
+            foreach (var tuple in roadData)
+                this.PlaceRoad(tuple.Item1, tuple.Item2, tuple.Item3);
+        }
+
+        private void PlaceRoad(uint startLocation, uint endLocation, Guid playerId)
+        {
+            var key = $"{startLocation}-{endLocation}";
+            var control = this.roadButtonControls[key];
+            this.PlaceRoad(control, playerId);
+        }
+
+        private void PlaceRoad(RoadButtonControl control, Guid playerId)
+        {
+            var roadImagePath = this.roadImagesByPlayerId[playerId][(int)control.RoadImageType];
+            control.Visibility = Visibility.Hidden;
+            this.PlaceRoadControl(control.X, control.Y, roadImagePath);
         }
 
         private void PlaceSettlements(Dictionary<uint, Guid> settlementData)
         {
-            throw new NotImplementedException();
+            foreach (var kv in settlementData)
+                this.PlaceSettlement(kv.Key, kv.Value);
+        }
+
+        private void PlaceSettlement(uint location, Guid playerId)
+        {
+            var control = this.settlementButtonControls[location];
+            var settlementImagePath = this.settlementImagesByPlayerId[playerId];
+            this.PlaceBuilding(control.X, control.Y, location.ToString(), settlementImagePath, this.SettlementLayer);
+
+            this.HideLocalSettlementButtons(control);
+        }
+
+        private void HideLocalSettlementButtons(SettlementButtonControl control)
+        {
+            control.Visibility = Visibility.Hidden;
+            var neighbouringLocations = this.board.BoardQuery.GetNeighbouringLocationsFrom(control.Location);
+            foreach (var neighbouringLocation in neighbouringLocations)
+            {
+                this.settlementButtonControls[neighbouringLocation].Visibility = Visibility.Hidden;
+            }
         }
 
         private void InitialiseBoardLayer()
@@ -508,7 +522,7 @@ namespace SoC.Harness.Views
 
                 while (count-- > 0)
                 {
-                    var control = this.PlaceSettlementButtonControl(x, y, location, location.ToString());
+                    var control = this.PlaceSettlementButton(x, y, location, location.ToString());
                     this.settlementButtonControls[location++] = control;
                     y += dy;
 
@@ -552,7 +566,7 @@ namespace SoC.Harness.Views
 
                     var locationA = verticalRoadLayout.Locations[index];
                     var locationB = locationA - 1;
-                    var control = this.PlaceRoadButtonControl(locationA, locationB, verticalRoadLayout.XCoordinate, verticalRoadLayout.YCoordinates[index], indicatorImagePath, roadImageType);
+                    var control = this.PlaceRoadButton(locationA, locationB, verticalRoadLayout.XCoordinate, verticalRoadLayout.YCoordinates[index], indicatorImagePath, roadImageType);
                     useRightImage = !useRightImage;
 
                     this.roadButtonControls.Add(control.Id, control);
@@ -568,7 +582,7 @@ namespace SoC.Harness.Views
                 {
                     var locationA = horizontalRoadLayout.Locations[index].Start;
                     var locationB = horizontalRoadLayout.Locations[index].End;
-                    var control = this.PlaceRoadButtonControl(locationA, locationB, horizontalRoadLayout.XCoordinate, horizontalRoadLayout.YCoordinates[index], roadHorizontalIndicatorImagePath, RoadButtonControl.RoadImageTypes.Horizontal);
+                    var control = this.PlaceRoadButton(locationA, locationB, horizontalRoadLayout.XCoordinate, horizontalRoadLayout.YCoordinates[index], roadHorizontalIndicatorImagePath, RoadButtonControl.RoadImageTypes.Horizontal);
 
                     this.roadButtonControls.Add(control.Id, control);
                     this.roadButtonControls.Add(control.AlternativeId, control);
@@ -781,7 +795,7 @@ namespace SoC.Harness.Views
             Canvas.SetTop(control, y);
         }
 
-        private RoadButtonControl PlaceRoadButtonControl(uint start, uint end, double x, double y, string imagePath, RoadButtonControl.RoadImageTypes roadImageType)
+        private RoadButtonControl PlaceRoadButton(uint start, uint end, double x, double y, string imagePath, RoadButtonControl.RoadImageTypes roadImageType)
         {
             var control = new RoadButtonControl(start, end, x, y, imagePath, roadImageType, this.RoadSelectedEventHandler);
             this.RoadSelectionLayer.Children.Add(control);
@@ -791,7 +805,7 @@ namespace SoC.Harness.Views
             return control;
         }
 
-        private SettlementButtonControl PlaceSettlementButtonControl(double x, double y, uint id, string toolTip)
+        private SettlementButtonControl PlaceSettlementButton(double x, double y, uint id, string toolTip)
         {
             var control = new SettlementButtonControl(id, x, y, this.SettlementSelectedEventHandler);
             control.ToolTip = toolTip;
@@ -802,7 +816,7 @@ namespace SoC.Harness.Views
             return control;
         }
 
-        private void PlaceBuildingControl(double x, double y, string toolTip, string imagePath, Canvas canvas)
+        private void PlaceBuilding(double x, double y, string toolTip, string imagePath, Canvas canvas)
         {
             var control = new BuildingControl(imagePath);
             if (!string.IsNullOrEmpty(toolTip))
@@ -870,11 +884,7 @@ namespace SoC.Harness.Views
         private void RoadSelectedEventHandler(RoadButtonControl roadButtonControl)
         {
             this.workingRoadControl = roadButtonControl;
-            this.workingRoadControl.Visibility = Visibility.Hidden;
-
-            var roadImagePath = this.roadImagesByPlayerId[this.playerId][(int)this.workingRoadControl.RoadImageType];
-
-            this.PlaceBuildingControl(roadButtonControl.X, roadButtonControl.Y, string.Empty, roadImagePath, this.RoadLayer);
+            this.PlaceRoad(this.workingRoadControl, this.playerId);
 
             foreach (var visibleRoadButtonControl in this.visibleRoadButtonControls)
             {
@@ -916,14 +926,9 @@ namespace SoC.Harness.Views
             this.workingLocation = settlementButtonControl.Location;
 
             // Turn off the controls for the location and its neighbours
-            settlementButtonControl.Visibility = Visibility.Hidden;
-            var neighbouringLocations = this.board.BoardQuery.GetNeighbouringLocationsFrom(this.workingLocation);
-            foreach (var index in neighbouringLocations)
-            {
-                this.settlementButtonControls[index].Visibility = Visibility.Hidden;
-            }
+            this.HideLocalSettlementButtons(settlementButtonControl);
 
-            this.PlaceBuildingControl(settlementButtonControl.X, settlementButtonControl.Y, string.Empty, @"..\resources\settlements\blue_settlement.png", this.SettlementLayer);
+            this.PlaceBuilding(settlementButtonControl.X, settlementButtonControl.Y, string.Empty, @"..\resources\settlements\blue_settlement.png", this.SettlementLayer);
 
             // Turn on the possible road controls for the location
             var roadEndLocations = this.board.BoardQuery.GetValidConnectedLocationsFrom(this.workingLocation);

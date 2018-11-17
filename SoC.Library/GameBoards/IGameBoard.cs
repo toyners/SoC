@@ -15,6 +15,5 @@ namespace Jabberwocky.SoC.Library.GameBoards
         Tuple<uint, uint, Guid>[] GetRoadData();
 
         Dictionary<uint, Guid> GetSettlementData();
-
     }
 }

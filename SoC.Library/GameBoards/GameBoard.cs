@@ -308,6 +308,9 @@ namespace Jabberwocky.SoC.Library.GameBoards
 
         public Dictionary<uint, Guid> GetCityData()
         {
+            if (this.cities.Count == 0)
+                return null;
+
             var data = new Dictionary<uint, Guid>(this.cities.Count);
             foreach (var kv in this.cities)
             {
@@ -457,6 +460,9 @@ namespace Jabberwocky.SoC.Library.GameBoards
                 count += kv.Value.Count;
             }
 
+            if (count == 0)
+                return null;
+
             var data = new Tuple<uint, uint, Guid>[count];
             var index = 0;
             foreach (var kv in this.roadSegmentsByPlayer)
@@ -568,6 +574,9 @@ namespace Jabberwocky.SoC.Library.GameBoards
 
         public Dictionary<uint, Guid> GetSettlementData()
         {
+            if (this.settlements.Count == 0)
+                return null;
+
             var data = new Dictionary<uint, Guid>(this.settlements.Count);
             foreach (var kv in this.settlements)
             {
