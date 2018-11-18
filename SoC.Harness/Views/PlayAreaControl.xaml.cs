@@ -285,7 +285,7 @@ namespace SoC.Harness.Views
         {
             this.RoadSelectionLayer.Visibility = Visibility.Visible;
             // Turn on the road buttons for all possible choices
-            var roadEndLocations = this.board.BoardQuery.GetValidConnectedLocationsFrom(this.workingLocation);
+            var roadEndLocations = this.board.BoardQuery.GetValidConnectionsForPlayer(this.playerId);
         }
 
         private void BuildSettlementButton_Click(object sender, RoutedEventArgs e)
