@@ -49,6 +49,27 @@ namespace Jabberwocky.SoC.Library.GameBoards
         #endregion
 
         #region Methods
+        private Int32 CalculateYield(UInt32 productionFactor)
+        {
+            switch (productionFactor)
+            {
+                case 2:
+                case 12: return 3;
+                case 3:
+                case 11: return 6;
+                case 4:
+                case 10: return 8;
+                case 5:
+                case 9: return 11;
+                case 6:
+                case 8: return 14;
+                case 0:
+                case 7: return 0;
+            }
+
+            throw new Exception("Should not get here");
+        }
+
         /// <summary>
         /// Get the first n locations with highest resource returns that are valid for settlement
         /// </summary>
@@ -80,26 +101,36 @@ namespace Jabberwocky.SoC.Library.GameBoards
             return queue.ToArray();
         }
 
-        private Int32 CalculateYield(UInt32 productionFactor)
+        public uint[] GetLocationsWithBestYield(uint count)
         {
-            switch (productionFactor)
-            {
-                case 2:
-                case 12: return 3;
-                case 3:
-                case 11: return 6;
-                case 4:
-                case 10: return 8;
-                case 5:
-                case 9: return 11;
-                case 6:
-                case 8: return 14;
-                case 0:
-                case 7: return 0;
-            }
-
-            throw new Exception("Should not get here");
+            throw new NotImplementedException();
         }
+
+        public List<uint> GetLongestRoadForPlayer(Guid id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public uint[] GetNeighbouringLocationsFrom(uint location)
+        {
+            return this.neighboursOfLocation[location];
+        }
+
+        public List<KeyValuePair<uint, List<uint>>> GetRoadPathCandidates(List<uint> settlementCandidates)
+        {
+            throw new NotImplementedException();
+        }
+
+        public uint[] GetValidConnectedLocationsFrom(uint location)
+        {
+            return this.neighboursOfLocation[location];
+        }
+
+        public List<Tuple<uint, uint>> GetValidConnectionsForPlayer(Guid playerId)
+        {
+            throw new NotImplementedException();
+        }
+
 
         private int[] GetLocationsOrderedByBestYield()
         {
@@ -188,35 +219,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
             Debug.WriteLine(score);
         }
 
-        public uint[] GetLocationsWithBestYield(uint count)
-        {
-            throw new NotImplementedException();
-        }
-
-        public List<KeyValuePair<uint, List<uint>>> GetRoadPathCandidates(List<uint> settlementCandidates)
-        {
-            throw new NotImplementedException();
-        }
-
-        public List<uint> GetLongestRoadForPlayer(Guid id)
-        {
-            throw new NotImplementedException();
-        }
-
-        public uint[] GetValidConnectedLocationsFrom(uint location)
-        {
-            return this.neighboursOfLocation[location];
-        }
-
-        public uint[] GetNeighbouringLocationsFrom(uint location)
-        {
-            return this.neighboursOfLocation[location];
-        }
-
-        public List<Tuple<uint, uint>> GetValidConnectionsForPlayer(Guid playerId)
-        {
-            throw new NotImplementedException();
-        }
+        
         #endregion
     }
 }
