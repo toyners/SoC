@@ -75,6 +75,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="CustomCommands.cs" />
     <Compile Include="Messages.cs" />
     <Compile Include="PhaseActions.cs" />
     <Compile Include="PlayerPool.cs" />

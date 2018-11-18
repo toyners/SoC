@@ -148,6 +148,26 @@ namespace SoC.Harness.Views
             this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("DiceTwoImagePath"));
         }
 
+        public void EndTurn()
+        {
+            this.EndTurnButton.Visibility = Visibility.Hidden;
+            if (this.state == States.AwaitingFirstInfrastructure)
+            {
+                this.state = States.AwaitingSecondInfrastructure;
+                var roadEndLocation = this.workingRoadControl.Start == this.workingLocation ? this.workingRoadControl.End : this.workingRoadControl.Start;
+                this.controllerViewModel.CompleteFirstInfrastructureSetup(this.workingLocation, roadEndLocation);
+            }
+            else if (this.state == States.AwaitingSecondInfrastructure)
+            {
+                var roadEndLocation = this.workingRoadControl.Start == this.workingLocation ? this.workingRoadControl.End : this.workingRoadControl.Start;
+                this.controllerViewModel.CompleteSecondInfrastructureSetup(this.workingLocation, roadEndLocation);
+            }
+            else if (this.state == States.ChoosePhaseAction)
+            {
+                this.controllerViewModel.EndTurn();
+            }
+        }
+
         public void Initialise(ControllerViewModel controllerViewModel)
         {
             this.controllerViewModel = controllerViewModel;
@@ -252,11 +272,20 @@ namespace SoC.Harness.Views
 
         private void BuildBackButton_Click(object sender, RoutedEventArgs e)
         {
+            this.BuildActions.Visibility = Visibility.Hidden;
+            this.PhaseActions.Visibility = Visibility.Visible;
         }
 
         private void BuildButton_Click(object sender, RoutedEventArgs e)
         {
             this.BuildActions.Visibility = Visibility.Visible;
+        }
+
+        private void BuildRoadButton_Click(object sender, RoutedEventArgs e)
+        {
+            this.RoadSelectionLayer.Visibility = Visibility.Visible;
+            // Turn on the road buttons for all possible choices
+            var roadEndLocations = this.board.BoardQuery.GetValidConnectedLocationsFrom(this.workingLocation);
         }
 
         private void BuildSettlementButton_Click(object sender, RoutedEventArgs e)
@@ -271,22 +300,7 @@ namespace SoC.Harness.Views
 
         private void EndTurnButton_Click(object sender, RoutedEventArgs e)
         {
-            this.EndTurnButton.Visibility = Visibility.Hidden;
-            if (this.state == States.AwaitingFirstInfrastructure)
-            {
-                this.state = States.AwaitingSecondInfrastructure;
-                var roadEndLocation = this.workingRoadControl.Start == this.workingLocation ? this.workingRoadControl.End : this.workingRoadControl.Start;
-                this.controllerViewModel.CompleteFirstInfrastructureSetup(this.workingLocation, roadEndLocation);
-            }
-            else if (this.state == States.AwaitingSecondInfrastructure)
-            {
-                var roadEndLocation = this.workingRoadControl.Start == this.workingLocation ? this.workingRoadControl.End : this.workingRoadControl.Start;
-                this.controllerViewModel.CompleteSecondInfrastructureSetup(this.workingLocation, roadEndLocation);
-            }
-            else if (this.state == States.ChoosePhaseAction)
-            {
-                this.controllerViewModel.EndTurn();
-            }
+            this.EndTurn();
         }
 
         private ResourceTypes GetResourceTypeAt(int index, ResourceClutch resources)

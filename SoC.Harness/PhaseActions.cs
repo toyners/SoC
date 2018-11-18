@@ -41,6 +41,8 @@ namespace SoC.Harness
         public void Clear()
         {
             this.BuildSettlementMessages = null;
+            this.BuildRoadMessages = null;
+            this.BuildCityMessages = null;
         }
     }
 }

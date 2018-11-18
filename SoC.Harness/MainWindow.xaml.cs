@@ -90,5 +90,10 @@ namespace SoC.Harness
         {
             e.CanExecute = this.CanSave;
         }
+
+        private void EndTurn_Executed(object sender, System.Windows.Input.ExecutedRoutedEventArgs e)
+        {
+            this.PlayArea.EndTurn();
+        }
     }
 }

@@ -3,18 +3,24 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:SoC.Harness"
         xmlns:views="clr-namespace:SoC.Harness.Views"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800" WindowState="Maximized">
     <Window.Resources>
-
+        
     </Window.Resources>
+
+    <Window.InputBindings>
+        <KeyBinding Modifiers="Ctrl" Key="E" Command="local:CustomCommands.EndTurn" />
+    </Window.InputBindings>
 
     <Window.CommandBindings>
         <CommandBinding Command="ApplicationCommands.New" Executed="New_Executed" />
         <CommandBinding Command="ApplicationCommands.Open" Executed="Open_Executed" />
         <CommandBinding Command="ApplicationCommands.Save" Executed="Save_Executed" CanExecute="CommandBinding_CanExecute" />
-    </Window.CommandBindings>
+        <CommandBinding Command="local:CustomCommands.EndTurn" Executed="EndTurn_Executed" />
+            </Window.CommandBindings>
 
     <DockPanel>
         <Menu DockPanel.Dock="Top" Background="White">
@@ -24,6 +30,9 @@
                 <MenuItem Header="_Save" Command="ApplicationCommands.Save" IsEnabled="{Binding CanSave}" />
                 <Separator />
                 <MenuItem Header="_Exit" Command="ApplicationCommands.Close" InputGestureText="Alt+F4"/>
+            </MenuItem>
+            <MenuItem Header="_Game">
+                <MenuItem Header="End Turn" Command=""/>
             </MenuItem>
         </Menu>
         

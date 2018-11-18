@@ -69,10 +69,10 @@
 
         <Canvas Name="BuildActions" Visibility="Hidden">
             <Button Name="BuildButtonDecoration" IsEnabled="False" Canvas.Left="25" Canvas.Top="65" FontSize="20" Width="120">Build</Button>
-            <Button Name="BuildBackButton" Click="BuildBackButton_Click" Canvas.Left="140" Canvas.Top="65" FontSize="20" Width="120">Back</Button>
-            <Button Name="BuildSettlementButton" Click="BuildSettlementButton_Click" Canvas.Left="140" Canvas.Top="105" FontSize="20" Width="120">Settlement</Button>
-            <Button Name="BuildRoadButton" Canvas.Left="140" Canvas.Top="145" FontSize="20" Width="120">Road</Button>
-            <Button Name="BuildCityButton" Canvas.Left="140" Canvas.Top="185" FontSize="20" Width="120">City</Button>
+            <Button Name="BuildBackButton" Click="BuildBackButton_Click" Canvas.Left="160" Canvas.Top="65" FontSize="20" Width="120">Back</Button>
+            <Button Name="BuildSettlementButton" Click="BuildSettlementButton_Click" Canvas.Left="160" Canvas.Top="105" FontSize="20" Width="120">Settlement</Button>
+            <Button Name="BuildRoadButton" Click="BuildRoadButton_Click" Canvas.Left="160" Canvas.Top="145" FontSize="20" Width="120">Road</Button>
+            <Button Name="BuildCityButton" Canvas.Left="160" Canvas.Top="185" FontSize="20" Width="120">City</Button>
         </Canvas>
 
         <Canvas Name="TopLayer" Height="450" Width="800">

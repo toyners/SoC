@@ -689,6 +689,11 @@ namespace Jabberwocky.SoC.Library
             this.computerPlayers[0] = this.players[1] = new ComputerPlayer(gameModel.Player2, this.numberGenerator);
             this.computerPlayers[1] = this.players[2] = new ComputerPlayer(gameModel.Player3, this.numberGenerator);
             this.computerPlayers[2] = this.players[3] = new ComputerPlayer(gameModel.Player4, this.numberGenerator);
+
+            this.playersById = new Dictionary<Guid, IPlayer>(4);
+            foreach (var player in this.players)
+                this.playersById.Add(player.Id, player);
+
             this.dice1 = gameModel.Dice1;
             this.dice2 = gameModel.Dice2;
 
