@@ -11,9 +11,9 @@ namespace Jabberwocky.SoC.Library.GameBoards
     {
         #region Fields
         private GameBoard board;
-        private readonly List<UInt32>[] locationInformation;
-        private readonly Tuple<ResourceTypes?, UInt32>[] hexInformation;
-        private readonly Int32[] locationsOrderedByBestYield;
+        private readonly List<uint>[] locationInformation;
+        private readonly Tuple<ResourceTypes?, uint>[] hexInformation;
+        private readonly int[] locationsOrderedByBestYield;
         private readonly uint[][] neighboursOfLocation; //TODO: Push to board - this is static (maybe)
         #endregion
 
