@@ -4,6 +4,7 @@ namespace SoC.Harness.Views
     using System;
     using System.Collections.Generic;
     using System.ComponentModel;
+    using System.Threading;
     using System.Threading.Tasks;
     using System.Windows;
     using System.Windows.Controls;
@@ -131,6 +132,7 @@ namespace SoC.Harness.Views
 
         public void ContinueGame()
         {
+            this.state = States.ChoosePhaseAction;
             Task.Factory.StartNew(() =>
             {
                 this.controllerViewModel.ContinueGame();
@@ -946,30 +948,33 @@ namespace SoC.Harness.Views
 
         private void StartPhaseEventHandler(PhaseActions playerActions)
         {
-            this.TradeButton.Visibility = Visibility.Visible;
-            this.TradeMarketButton.IsEnabled = playerActions.CanTradeWithMarket;
-            this.TradePlayerButton.IsEnabled = playerActions.CanTradeWithPlayers;
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                this.TradeButton.Visibility = Visibility.Visible;
+                this.TradeMarketButton.IsEnabled = playerActions.CanTradeWithMarket;
+                this.TradePlayerButton.IsEnabled = playerActions.CanTradeWithPlayers;
 
-            this.BuildSettlementButton.IsEnabled = playerActions.CanBuildSettlement;
-            this.BuildSettlementButton.ToolTip = playerActions.BuildSettlementMessages;
+                this.BuildSettlementButton.IsEnabled = playerActions.CanBuildSettlement;
+                this.BuildSettlementButton.ToolTip = playerActions.BuildSettlementMessages;
 
-            this.BuildRoadButton.IsEnabled = playerActions.CanBuildRoad;
-            this.BuildRoadButton.ToolTip = playerActions.BuildRoadMessages;
+                this.BuildRoadButton.IsEnabled = playerActions.CanBuildRoad;
+                this.BuildRoadButton.ToolTip = playerActions.BuildRoadMessages;
 
-            this.BuildCityButton.IsEnabled = playerActions.CanBuildCity;
-            this.BuildCityButton.ToolTip = playerActions.BuildCityMessages;
+                this.BuildCityButton.IsEnabled = playerActions.CanBuildCity;
+                this.BuildCityButton.ToolTip = playerActions.BuildCityMessages;
 
-            this.BuildButton.Visibility = Visibility.Visible;
-            this.BuildButton.IsEnabled = playerActions.CanBuildSettlement | playerActions.CanBuildRoad | playerActions.CanBuildCity;
-            this.BuildButton.ToolTip = playerActions.BuildSettlementMessages + playerActions.BuildRoadMessages + playerActions.BuildCityMessages;
+                this.BuildButton.Visibility = Visibility.Visible;
+                this.BuildButton.IsEnabled = playerActions.CanBuildSettlement | playerActions.CanBuildRoad | playerActions.CanBuildCity;
+                this.BuildButton.ToolTip = playerActions.BuildSettlementMessages + playerActions.BuildRoadMessages + playerActions.BuildCityMessages;
 
-            this.BuyButton.Visibility = Visibility.Visible;
-            this.BuyButton.IsEnabled = playerActions.CanBuyDevelopmentCard;
-            this.UseButton.Visibility = Visibility.Visible;
-            this.UseButton.IsEnabled = playerActions.CanUseDevelopmentCard;
+                this.BuyButton.Visibility = Visibility.Visible;
+                this.BuyButton.IsEnabled = playerActions.CanBuyDevelopmentCard;
+                this.UseButton.Visibility = Visibility.Visible;
+                this.UseButton.IsEnabled = playerActions.CanUseDevelopmentCard;
 
-            this.PhaseActions.Visibility = Visibility.Visible;
-            this.EndTurnButton.Visibility = Visibility.Visible;
+                this.PhaseActions.Visibility = Visibility.Visible;
+                this.EndTurnButton.Visibility = Visibility.Visible;
+            });
         }
 
         private void TradeBackButton_Click(object sender, RoutedEventArgs e)

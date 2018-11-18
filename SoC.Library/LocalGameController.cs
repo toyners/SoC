@@ -61,7 +61,7 @@ namespace Jabberwocky.SoC.Library
         private bool cardPlayedThisTurn;
         private HashSet<DevelopmentCard> cardsPlayed;
         private HashSet<DevelopmentCard> cardsPurchasedThisTurn;
-        private INumberGenerator dice;
+        private INumberGenerator numberGenerator;
         private GameBoard gameBoard;
         private int playerIndex;
         private IPlayer[] players;
@@ -86,7 +86,7 @@ namespace Jabberwocky.SoC.Library
 
         public LocalGameController(INumberGenerator dice, IPlayerPool computerPlayerFactory, GameBoard gameBoard, IDevelopmentCardHolder developmentCardHolder)
         {
-            this.dice = dice;
+            this.numberGenerator = dice;
             this.playerPool = computerPlayerFactory;
             this.gameBoard = gameBoard;
             this.developmentCardHolder = developmentCardHolder;
@@ -194,7 +194,7 @@ namespace Jabberwocky.SoC.Library
             if (this.mainPlayer.Resources < ResourceClutch.City)
                 result |= BuildStatuses.NotEnoughResourcesForCity;
 
-            if (this.currentPlayer.RemainingCities == 0)
+            if (this.mainPlayer.RemainingCities == 0)
                 result |= BuildStatuses.NoCities;
 
             return result;
@@ -206,7 +206,7 @@ namespace Jabberwocky.SoC.Library
             if (this.mainPlayer.Resources < ResourceClutch.RoadSegment)
                 result |= BuildStatuses.NotEnoughResourcesForRoad;
 
-            if (this.currentPlayer.RemainingRoadSegments == 0)
+            if (this.mainPlayer.RemainingRoadSegments == 0)
                 result |= BuildStatuses.NoRoads;
 
             return result;
@@ -218,7 +218,7 @@ namespace Jabberwocky.SoC.Library
             if (this.mainPlayer.Resources < ResourceClutch.Settlement)
                 result |= BuildStatuses.NotEnoughResourcesForSettlement;
 
-            if (this.currentPlayer.RemainingSettlements == 0)
+            if (this.mainPlayer.RemainingSettlements == 0)
                 result |= BuildStatuses.NoSettlements;
 
             return result;
@@ -513,7 +513,7 @@ namespace Jabberwocky.SoC.Library
             this.currentTurnToken = new TurnToken();
             this.StartPlayerTurnEvent?.Invoke(this.currentTurnToken);
 
-            this.dice.RollTwoDice(out var dice1, out var dice2);
+            this.numberGenerator.RollTwoDice(out var dice1, out var dice2);
             var resourceRoll = dice1 + dice2;
             this.DiceRollEvent?.Invoke(dice1, dice2);
 
@@ -540,7 +540,7 @@ namespace Jabberwocky.SoC.Library
             }
 
             // Set the order for the main game loop
-            this.players = PlayerTurnOrderCreator.Create(this.players, this.dice);
+            this.players = PlayerTurnOrderCreator.Create(this.players, this.numberGenerator);
             var playerData = this.CreatePlayerDataViews();
             this.TurnOrderFinalisedEvent?.Invoke(playerData);
             this.GamePhase = GamePhases.StartGamePlay;
@@ -685,10 +685,10 @@ namespace Jabberwocky.SoC.Library
             this.computerPlayers = new IPlayer[3]; // TODO - Change to handle different number of computer players
             this.players = new IPlayer[4]; // TODO - Change to handle different number of players
 
-            this.mainPlayer = this.players[0] = PlayerModel.CreatePlayer(gameModel.Player1);
-            this.computerPlayers[0] = this.players[1] = PlayerModel.CreatePlayer(gameModel.Player2);
-            this.computerPlayers[1] = this.players[2] = PlayerModel.CreatePlayer(gameModel.Player3);
-            this.computerPlayers[2] = this.players[3] = PlayerModel.CreatePlayer(gameModel.Player4);
+            this.mainPlayer = this.players[0] = new Player(gameModel.Player1);
+            this.computerPlayers[0] = this.players[1] = new ComputerPlayer(gameModel.Player2, this.numberGenerator);
+            this.computerPlayers[1] = this.players[2] = new ComputerPlayer(gameModel.Player3, this.numberGenerator);
+            this.computerPlayers[2] = this.players[3] = new ComputerPlayer(gameModel.Player4, this.numberGenerator);
             this.dice1 = gameModel.Dice1;
             this.dice2 = gameModel.Dice2;
 
@@ -711,7 +711,7 @@ namespace Jabberwocky.SoC.Library
                 var key = GameDataSectionKeys.PlayerTwo;
                 while (key <= GameDataSectionKeys.PlayerFour && (data = reader[key++]) != null)
                 {
-                    player = this.playerPool.CreateComputerPlayer(data, this.gameBoard, this.dice);
+                    player = this.playerPool.CreateComputerPlayer(data, this.gameBoard, this.numberGenerator);
                     loadedPlayers.Add(player);
                 }
 
@@ -813,7 +813,7 @@ namespace Jabberwocky.SoC.Library
             this.currentTurnToken = new TurnToken();
             this.StartPlayerTurnEvent?.Invoke(this.currentTurnToken);
 
-            this.dice.RollTwoDice(out this.dice1, out this.dice2);
+            this.numberGenerator.RollTwoDice(out this.dice1, out this.dice2);
             this.DiceRollEvent?.Invoke(this.dice1, this.dice2);
 
             var resourceRoll = this.dice1 + this.dice2;
@@ -883,7 +883,7 @@ namespace Jabberwocky.SoC.Library
                 return false;
             }
 
-            this.players = PlayerTurnOrderCreator.Create(this.players, this.dice);
+            this.players = PlayerTurnOrderCreator.Create(this.players, this.numberGenerator);
 
             this.playerIndex = 0;
             GameBoardUpdate gameBoardUpdate = this.ContinueSetupForComputerPlayers(this.gameBoard);
@@ -1202,7 +1202,7 @@ namespace Jabberwocky.SoC.Library
             var index = 1;
             while ((gameOptions.MaxAIPlayers--) > 0)
             {
-                var computerPlayer = this.playerPool.CreateComputerPlayer(this.gameBoard, this.dice);
+                var computerPlayer = this.playerPool.CreateComputerPlayer(this.gameBoard, this.numberGenerator);
                 this.players[index] = computerPlayer;
                 this.playersById.Add(computerPlayer.Id, computerPlayer);
                 this.computerPlayers[index - 1] = computerPlayer;
@@ -1285,7 +1285,7 @@ namespace Jabberwocky.SoC.Library
 
         private ResourceClutch GetResourceFromPlayer(IPlayer player)
         {
-            var resourceIndex = this.dice.GetRandomNumberBetweenZeroAndMaximum(player.ResourcesCount);
+            var resourceIndex = this.numberGenerator.GetRandomNumberBetweenZeroAndMaximum(player.ResourcesCount);
             return player.LoseResourceAtIndex(resourceIndex);
         }
 

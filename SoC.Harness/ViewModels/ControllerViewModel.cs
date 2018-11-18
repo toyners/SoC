@@ -76,7 +76,8 @@ namespace SoC.Harness.ViewModels
 
         public void ContinueGame()
         {
-              this.localGameController.ContinueGamePlay();
+            this.localGameController.ContinueGamePlay();
+            this.StartPhase();
         }
 
         public void DropResourcesFromPlayer(ResourceClutch dropResources)

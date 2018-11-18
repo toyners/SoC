@@ -131,23 +131,6 @@ namespace Jabberwocky.SoC.Library
         #endregion
 
         #region Methods
-        public static IPlayer CreatePlayer(PlayerModel playerSaveModel)
-        {
-            if (playerSaveModel.IsComputer)
-            {
-                return new ComputerPlayer
-                {
-                    Id = playerSaveModel.Id,
-                    Name = playerSaveModel.Name
-                };
-            }
-
-            return new Player
-            {
-                CitiesBuilt = playerSaveModel.CitiesBuilt
-            };
-        }
-
         public void AddResources(ResourceClutch resourceClutch)
         {
             this.Resources += resourceClutch;
