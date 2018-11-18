@@ -49,7 +49,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
         #endregion
 
         #region Methods
-        private Int32 CalculateYield(UInt32 productionFactor)
+        private Int32 CalculateYield(uint productionFactor)
         {
             switch (productionFactor)
             {
@@ -131,7 +131,6 @@ namespace Jabberwocky.SoC.Library.GameBoards
             throw new NotImplementedException();
         }
 
-
         private int[] GetLocationsOrderedByBestYield()
         {
             var locations = new List<Int32>(new Int32[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16,
@@ -203,7 +202,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
             return result;
         }
 
-        private void OutputScore(UInt32 location, List<UInt32> hexes)
+        private void OutputScore(uint location, List<uint> hexes)
         {
             var score = "" + location + " - ";
             Int32 yield = 0;
@@ -218,8 +217,6 @@ namespace Jabberwocky.SoC.Library.GameBoards
             score += ". Total yield is " + yield;
             Debug.WriteLine(score);
         }
-
-        
         #endregion
     }
 }
