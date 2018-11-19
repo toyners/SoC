@@ -2,7 +2,6 @@
 namespace Jabberwocky.SoC.Library
 {
   using System;
-  using System.Collections.Generic;
   using System.Diagnostics;
 
   [DebuggerDisplay("({Location1}, {Location2})")]
@@ -27,7 +26,7 @@ namespace Jabberwocky.SoC.Library
     #endregion
 
     #region Methods
-    public static Boolean operator ==(RoadSegment road1, RoadSegment road2)
+    public static bool operator ==(RoadSegment road1, RoadSegment road2)
     {
       if (Object.ReferenceEquals(road1, null) && Object.ReferenceEquals(road2, null))
       {
@@ -52,12 +51,12 @@ namespace Jabberwocky.SoC.Library
       return false;
     }
 
-    public static Boolean operator !=(RoadSegment road1, RoadSegment road2)
+    public static bool operator !=(RoadSegment road1, RoadSegment road2)
     {
       return !(road1 == road2);
     }
 
-    public override Boolean Equals(Object obj)
+    public override bool Equals(Object obj)
     {
       if (!(obj is RoadSegment))
       {
@@ -67,7 +66,7 @@ namespace Jabberwocky.SoC.Library
       return this == (RoadSegment)obj;
     }
 
-    public override Int32 GetHashCode()
+    public override int GetHashCode()
     {
       return base.GetHashCode();
     }
@@ -78,7 +77,7 @@ namespace Jabberwocky.SoC.Library
     /// </summary>
     /// <param name="road">Another road segment.</param>
     /// <returns>True if connected; otherwise false.</returns>
-    public Boolean IsConnected(RoadSegment road)
+    public bool IsConnected(RoadSegment road)
     {
       if (this == road)
       {
@@ -93,7 +92,7 @@ namespace Jabberwocky.SoC.Library
     /// </summary>
     /// <param name="location">Location to check.</param>
     /// <returns>True if this road segment is on the location; otherwise false.</returns>
-    public Boolean IsOnLocation(UInt32 location)
+    public bool IsOnLocation(uint location)
     {
       return this.Location1 == location || this.Location2 == location;
     }

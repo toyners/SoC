@@ -5,6 +5,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     using Jabberwocky.SoC.Library.GameBoards;
     using Jabberwocky.SoC.Library.UnitTests.Extensions;
     using NUnit.Framework;
+    using Shouldly;
 
     [TestFixture]
     [Category("All")]
@@ -51,9 +52,27 @@ namespace Jabberwocky.SoC.Library.UnitTests
             results.ShouldContainExact(new[] { firstLocation, secondLocation, thirdLocation, fourthLocation, fifthLocation });
         }
 
-        public void GetValidConnectionsForPlayerInfrastructure_Tests()
+        [Test]
+        public void GetValidConnectionsForPlayerInfrastructure_NoInfrastructure_ReturnsExpectedException()
         {
+            var gameBoard = new GameBoard(BoardSizes.Standard);
+            var queryEngine = new GameBoardQuery(gameBoard);
+            var playerId = Guid.NewGuid();
+            Action action = () => { queryEngine.GetValidConnectionsForPlayerInfrastructure(playerId); };
+            action.ShouldThrow<Exception>().Message.ShouldBe($"Player {playerId} not recognised.");
+        }
 
+        [Test]
+        public void GetValidConnectionsForPlayerInfrastructure_StartingInfrastructurePlaced_ExpectedConnections()
+        {
+            var gameBoard = new GameBoard(BoardSizes.Standard);
+            var queryEngine = new GameBoardQuery(gameBoard);
+            var playerId = Guid.NewGuid();
+            gameBoard.PlaceStartingInfrastructure(playerId, 0, 8);
+            gameBoard.PlaceStartingInfrastructure(playerId, 19, 18);
+
+            var results = queryEngine.GetValidConnectionsForPlayerInfrastructure(playerId);
+            throw new NotImplementedException();
         }
     }
 }
