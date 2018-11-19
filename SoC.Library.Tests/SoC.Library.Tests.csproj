@@ -102,7 +102,7 @@
     <Compile Include="Player_UnitTests.cs" />
     <Compile Include="PlayMonopolyCardEvent_UnitTests.cs" />
     <Compile Include="ResourceClutch_UnitTests.cs" />
-    <Compile Include="RoadSegment_UnitTests.cs" />
+    <Compile Include="Connecrtion_UnitTests.cs" />
     <Compile Include="PlayerTurnOrderCreator_UnitTests.cs" />
     <Compile Include="GameControllerFactory_UnitTests.cs" />
     <Compile Include="GameSession_UnitTests.cs" />
