@@ -126,7 +126,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
             return this.neighboursOfLocation[location];
         }
 
-        public List<Tuple<uint, uint>> GetValidConnectionsForPlayer(Guid playerId)
+        public List<Tuple<uint, uint>> GetValidConnectionsForPlayerInfrastructure(Guid playerId)
         {
             throw new NotImplementedException();
         }
