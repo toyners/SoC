@@ -126,8 +126,11 @@ namespace Jabberwocky.SoC.Library.GameBoards
             return this.neighboursOfLocation[location];
         }
 
-        public List<Tuple<uint, uint>> GetValidConnectionsForPlayerInfrastructure(Guid playerId)
+        public ISet<Connection> GetValidConnectionsForPlayerInfrastructure(Guid playerId)
         {
+            // Get all road segments for the player.
+            // For each road segment get all locations that connect to both ends. 
+            // Build tuples and put into set to avoid duplicates
             throw new NotImplementedException();
         }
 

@@ -2,6 +2,7 @@
 namespace Jabberwocky.SoC.Library.UnitTests
 {
     using System;
+    using System.Collections.Generic;
     using Jabberwocky.SoC.Library.GameBoards;
     using Jabberwocky.SoC.Library.UnitTests.Extensions;
     using NUnit.Framework;
@@ -72,7 +73,12 @@ namespace Jabberwocky.SoC.Library.UnitTests
             gameBoard.PlaceStartingInfrastructure(playerId, 19, 18);
 
             var results = queryEngine.GetValidConnectionsForPlayerInfrastructure(playerId);
-            throw new NotImplementedException();
+
+            var expected = new HashSet<Connection>();
+            expected.Add(new Connection(0, 1));
+            expected.Add(new Connection(8, 7));
+            expected.Add(new Connection(8, 9));
+            results.ShouldBeSameAs(expected);
         }
     }
 }

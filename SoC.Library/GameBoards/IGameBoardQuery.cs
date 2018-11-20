@@ -25,6 +25,6 @@ namespace Jabberwocky.SoC.Library.GameBoards
 
         uint[] GetValidConnectedLocationsFrom(uint location);
         uint[] GetNeighbouringLocationsFrom(uint location);
-        List<Tuple<uint, uint>> GetValidConnectionsForPlayerInfrastructure(Guid playerId);
+        ISet<Connection> GetValidConnectionsForPlayerInfrastructure(Guid playerId);
     }
 }
