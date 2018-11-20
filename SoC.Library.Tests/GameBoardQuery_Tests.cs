@@ -78,7 +78,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
             expected.Add(new Connection(0, 1));
             expected.Add(new Connection(8, 7));
             expected.Add(new Connection(8, 9));
-            results.ShouldBeSameAs(expected);
+            results.ShouldBe(expected);
         }
     }
 }

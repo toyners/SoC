@@ -162,6 +162,11 @@ namespace Jabberwocky.SoC.Library.GameBoards
             return new VerificationResults { Status = VerificationStatus.Valid };
         }
 
+        internal IList<RoadSegment> GetRoadSegmentsByPlayer(Guid playerId)
+        {
+            return this.roadSegmentsByPlayer[playerId];
+        }
+
         public bool CanPlaceRobber(uint hex)
         {
             return hex < StandardBoardHexCount;

@@ -131,7 +131,14 @@ namespace Jabberwocky.SoC.Library.GameBoards
             // Get all road segments for the player.
             // For each road segment get all locations that connect to both ends. 
             // Build tuples and put into set to avoid duplicates
-            throw new NotImplementedException();
+            HashSet<Connection> result = null;
+            var roadSegments = this.board.GetRoadSegmentsByPlayer(playerId);
+            if (roadSegments != null && roadSegments.Count > 0)
+            {
+                result = new HashSet<Connection>();
+            }
+
+            return result;
         }
 
         private int[] GetLocationsOrderedByBestYield()
