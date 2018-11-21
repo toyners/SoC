@@ -78,6 +78,36 @@ namespace Jabberwocky.SoC.Library.UnitTests
             expected.Add(new Connection(0, 1));
             expected.Add(new Connection(8, 7));
             expected.Add(new Connection(8, 9));
+            expected.Add(new Connection(17, 18));
+            expected.Add(new Connection(18, 29));
+            expected.Add(new Connection(9, 19));
+            expected.Add(new Connection(19, 20));
+            results.ShouldBe(expected);
+        }
+
+        [Test]
+        public void GetValidConnectionsForPlayerInfrastructure_ShephardsCrook_ExpectedConnectionsWithNoDuplicates()
+        {
+            var gameBoard = new GameBoard(BoardSizes.Standard);
+            var queryEngine = new GameBoardQuery(gameBoard);
+            var playerId = Guid.NewGuid();
+            gameBoard.PlaceStartingInfrastructure(playerId, 21, 22);
+            gameBoard.PlaceStartingInfrastructure(playerId, 33, 22);
+            gameBoard.PlaceRoadSegment(playerId, 33, 34);
+            gameBoard.PlaceRoadSegment(playerId, 35, 34);
+            gameBoard.PlaceRoadSegment(playerId, 35, 24);
+
+            var results = queryEngine.GetValidConnectionsForPlayerInfrastructure(playerId);
+
+            var expected = new HashSet<Connection>();
+            expected.Add(new Connection(11, 21));
+            expected.Add(new Connection(21, 20));
+            expected.Add(new Connection(22, 23));
+            expected.Add(new Connection(33, 32));
+            expected.Add(new Connection(34, 44));
+            expected.Add(new Connection(35, 36));
+            expected.Add(new Connection(24, 25));
+            expected.Add(new Connection(23, 24));
             results.ShouldBe(expected);
         }
     }

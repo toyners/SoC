@@ -164,7 +164,10 @@ namespace Jabberwocky.SoC.Library.GameBoards
 
         internal IList<RoadSegment> GetRoadSegmentsByPlayer(Guid playerId)
         {
-            return this.roadSegmentsByPlayer[playerId];
+            if (this.roadSegmentsByPlayer.TryGetValue(playerId, out var list))
+                return list;
+
+            return null;
         }
 
         public bool CanPlaceRobber(uint hex)

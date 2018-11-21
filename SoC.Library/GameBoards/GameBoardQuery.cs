@@ -133,9 +133,9 @@ namespace Jabberwocky.SoC.Library.GameBoards
             // Build tuples and put into set to avoid duplicates
             HashSet<Connection> result = null;
             var roadSegments = this.board.GetRoadSegmentsByPlayer(playerId);
-            if (roadSegments != null && roadSegments.Count > 0)
+            if (roadSegments == null || roadSegments.Count == 0)
             {
-                result = new HashSet<Connection>();
+                throw new Exception($"Player {playerId} not recognised.");
             }
 
             return result;
