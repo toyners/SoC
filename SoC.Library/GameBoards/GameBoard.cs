@@ -55,8 +55,9 @@ namespace Jabberwocky.SoC.Library.GameBoards
         private ResourceProducer[] hexes;
         private Dictionary<uint, Guid> settlements;
         private Dictionary<Guid, List<uint>> settlementsByPlayer;
-        private bool[,] connections;
-        private Dictionary<Guid, List<RoadSegment>> roadSegmentsByPlayer;
+        //private bool[,] connections;
+        private Connection[] connections;
+        private Dictionary<Guid, List<Connection>> roadSegmentsByPlayer;
         private Dictionary<uint, ResourceProducer[]> resourceProvidersByDiceRolls;
         private Dictionary<ResourceTypes, ResourceProducer[]> resourceProducersByType;
         private Dictionary<ResourceProducer, uint[]> locationsByResourceProvider;
@@ -77,10 +78,11 @@ namespace Jabberwocky.SoC.Library.GameBoards
             this.Length = StandardBoardLocationCount;
             this.cities = new Dictionary<uint, Guid>();
             this.settlements = new Dictionary<uint, Guid>();
-            this.roadSegmentsByPlayer = new Dictionary<Guid, List<RoadSegment>>();
+            this.roadSegmentsByPlayer = new Dictionary<Guid, List<Connection>>();
             this.settlementsByPlayer = new Dictionary<Guid, List<uint>>();
 
-            this.connections = new bool[GameBoard.StandardBoardLocationCount, GameBoard.StandardBoardLocationCount];
+            //this.connections = new bool[GameBoard.StandardBoardLocationCount, GameBoard.StandardBoardLocationCount];
+            this.connections = new Connection[GameBoard.StandardBoardLocationCount];
             this.ConnectLocationsVertically();
             this.ConnectLocationsHorizontally();
 
@@ -162,7 +164,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
             return new VerificationResults { Status = VerificationStatus.Valid };
         }
 
-        internal IList<RoadSegment> GetRoadSegmentsByPlayer(Guid playerId)
+        internal IList<Connection> GetRoadSegmentsByPlayer(Guid playerId)
         {
             if (this.roadSegmentsByPlayer.TryGetValue(playerId, out var list))
                 return list;
@@ -191,7 +193,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
             }
 
             // Is direct connection possible
-            if (!this.DirectConnectionBetweenRoadLocations(roadStartLocation, roadEndLocation))
+            if (!this.DirectConnectionBetweenLocations(roadStartLocation, roadEndLocation))
             {
                 return new VerificationResults { Status = VerificationStatus.NoDirectConnection };
             }
@@ -297,7 +299,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
             }
 
             // Verify #2 - Is direct connection possible
-            if (!this.DirectConnectionBetweenRoadLocations(settlementLocation, roadEndLocation))
+            if (!this.DirectConnectionBetweenLocations(settlementLocation, roadEndLocation))
             {
                 return new VerificationResults { Status = VerificationStatus.NoDirectConnection };
             }
@@ -400,7 +402,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
                 return null;
             }
 
-            return PathFinder.GetPathBetweenPoints(startIndex, endIndex, this.connections);
+            return PathFinder.GetPathBetweenPoints(startIndex, endIndex, (uint)this.connections.Length, this.DirectConnectionBetweenLocations);
         }
 
         /// <summary>
@@ -651,9 +653,9 @@ namespace Jabberwocky.SoC.Library.GameBoards
         public bool TooCloseToSettlement(uint locationIndex, out Guid id, out uint index)
         {
             id = Guid.Empty;
-            for (index = 0; index < this.connections.GetLength(1); index++)
+            for (index = 0; index < this.connections.Length; index++)
             {
-                if (this.connections[locationIndex, index] && this.settlements.ContainsKey(index))
+                if (this.DirectConnectionBetweenLocations(locationIndex, index) && this.settlements.ContainsKey(index))
                 {
                     id = this.settlements[index];
                     return true;
@@ -682,7 +684,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
                 while (roadEnds.Count > 0)
                 {
                     var currentLocation = roadEnds.Dequeue();
-                    var visitedRoadSegments = new HashSet<RoadSegment>();
+                    var visitedRoadSegments = new HashSet<Connection>();
                     var workingRoute = new List<uint> { currentLocation };
                     visitedRoadEnds.Add(currentLocation);
                     var forkmarks = new Stack<Forkmark>();
@@ -771,11 +773,11 @@ namespace Jabberwocky.SoC.Library.GameBoards
 
         internal void InternalPlaceRoadSegment(Guid playerId, uint roadStartLocationIndex, uint roadEndLocationIndex)
         {
-            var newRoadSegment = new RoadSegment(roadStartLocationIndex, roadEndLocationIndex);
+            var newRoadSegment = new Connection(roadStartLocationIndex, roadEndLocationIndex);
 
             if (!this.roadSegmentsByPlayer.ContainsKey(playerId))
             {
-                var roadSegmentList = new List<RoadSegment>();
+                var roadSegmentList = new List<Connection>();
                 roadSegmentList.Add(newRoadSegment);
                 this.roadSegmentsByPlayer.Add(playerId, roadSegmentList);
             }
@@ -799,9 +801,9 @@ namespace Jabberwocky.SoC.Library.GameBoards
             this.settlements.Add(settlementLocation, playerId);
         }
 
-        private bool DirectConnectionBetweenRoadLocations(uint roadStartLocation, uint roadEndLocation)
+        private bool DirectConnectionBetweenLocations(uint location1, uint location2)
         {
-            return this.connections[roadStartLocation, roadEndLocation];
+            return this.connections[location1] == this.connections[location2];
         }
 
         private Guid GetOwningPlayerForLocation(uint location)
@@ -850,7 +852,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
 
         private bool RoadLocationsOnBoard(uint roadStartLocation, uint roadEndLocation)
         {
-            var length = (uint)this.connections.GetLength(0); // TODO: Change to use Location array
+            var length = (uint)this.connections.Length; // TODO: Change to use Location array
             return roadStartLocation < length && roadEndLocation < length;
         }
 
@@ -890,7 +892,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
 
         private bool SettlementLocationOnBoard(uint settlementLocation)
         {
-            return settlementLocation < (uint)this.connections.GetLength(0); // TODO: Change to use Location array
+            return settlementLocation < (uint)this.connections.Length;
         }
 
         private StartingInfrastructureStatus PlacedStartingInfrastructureStatus(Guid playerId)
@@ -1239,7 +1241,8 @@ namespace Jabberwocky.SoC.Library.GameBoards
                 while (count-- > 0)
                 {
                     var endIndex = startIndex + setup.LocationIndexDiff;
-                    this.connections[startIndex, endIndex] = this.connections[endIndex, startIndex] = true;
+                    var connection = new Connection(startIndex, endIndex);
+                    this.connections[startIndex] = this.connections[endIndex] = connection;
                     startIndex += 2;
                 }
             }
@@ -1247,15 +1250,16 @@ namespace Jabberwocky.SoC.Library.GameBoards
 
         private void ConnectLocationsVertically()
         {
-            var startIndex = -1;
+            uint? startIndex = null;
             foreach (var trailCount in new[] { 6, 8, 10, 10, 8, 6 })
             {
                 var count = trailCount;
-                startIndex++;
-                var endIndex = startIndex + 1;
+                startIndex = startIndex == null ? 0 : startIndex + 1;
+                uint endIndex = startIndex.Value + 1;
                 while (count-- > 0)
                 {
-                    this.connections[startIndex, endIndex] = this.connections[endIndex, startIndex] = true;
+                    var connection = new Connection(startIndex.Value, endIndex);
+                    this.connections[startIndex.Value] = this.connections[endIndex] = connection;
                     startIndex++;
                     endIndex++;
                 }
@@ -1364,11 +1368,11 @@ namespace Jabberwocky.SoC.Library.GameBoards
 
         private struct HorizontalTrailSetup
         {
-            public int LocationIndexStart;
+            public uint LocationIndexStart;
             public int TrailCount;
-            public int LocationIndexDiff;
+            public uint LocationIndexDiff;
 
-            public HorizontalTrailSetup(int locationIndexStart, int trailCount, int locationIndexDiff)
+            public HorizontalTrailSetup(uint locationIndexStart, int trailCount, uint locationIndexDiff)
             {
                 this.LocationIndexStart = locationIndexStart;
                 this.TrailCount = trailCount;
@@ -1381,25 +1385,25 @@ namespace Jabberwocky.SoC.Library.GameBoards
             public Tuple<uint, Guid>[] Trails = new Tuple<uint, Guid>[3];
         }
 
-        private class Connection
+        /*private class Connection
         {
             public Guid Owner;
             public Location Location1;
             public Location Location2;
-        }
+        }*/
 
         private class Forkmark
         {
             public readonly uint StartingLocation;
             public readonly int RoadLength;
-            public readonly HashSet<RoadSegment> VisitedRoadSegments;
+            public readonly HashSet<Connection> VisitedRoadSegments;
             public readonly List<uint> WorkingRoute;
 
-            public Forkmark(RoadSegment segment, uint startingLocation, int roadLength, HashSet<RoadSegment> visitedRoadSegments, List<uint> workingRoute)
+            public Forkmark(Connection segment, uint startingLocation, int roadLength, HashSet<Connection> visitedRoadSegments, List<uint> workingRoute)
             {
                 this.StartingLocation = startingLocation;
                 this.RoadLength = roadLength;
-                this.VisitedRoadSegments = new HashSet<RoadSegment>(visitedRoadSegments);
+                this.VisitedRoadSegments = new HashSet<Connection>(visitedRoadSegments);
                 this.VisitedRoadSegments.Add(segment);
                 this.WorkingRoute = new List<uint>(workingRoute);
                 this.WorkingRoute.Add(startingLocation);

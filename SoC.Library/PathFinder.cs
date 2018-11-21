@@ -6,7 +6,7 @@ namespace Jabberwocky.SoC.Library
 
   public static class PathFinder
   {
-    public static List<UInt32> GetPathBetweenPoints(UInt32 startIndex, UInt32 endIndex, Boolean[,] connections)
+    public static List<uint> GetPathBetweenPoints(uint startIndex, uint endIndex, uint locationCount, Func<uint, uint, bool> canBeReached)
     {
       var closedSet = new HashSet<UInt32>();
       var openSet = new HashSet<UInt32>();
@@ -27,7 +27,7 @@ namespace Jabberwocky.SoC.Library
       // The cost of going from start to start is zero.
       distancesFromStartToPoint.Add(startIndex, 0f);
 
-      UInt32 distanceCoveringAllPermanentPoints = (UInt32)connections.Length;
+      UInt32 distanceCoveringAllPermanentPoints = locationCount;
 
       totalCostOfStartToGoalViaThisPoint.Add(startIndex, distanceCoveringAllPermanentPoints);
 
@@ -44,7 +44,7 @@ namespace Jabberwocky.SoC.Library
         openSet.Remove(currentIndex);
         closedSet.Add(currentIndex);
 
-        for (UInt32 index = 0; index < connections.GetLength(0); index++)
+        for (uint index = 0; index < locationCount; index++)
         {
           if (currentIndex == index)
           {
@@ -56,7 +56,7 @@ namespace Jabberwocky.SoC.Library
             continue;
           }
 
-          var canReach = connections[currentIndex, index];
+          var canReach = canBeReached(currentIndex, index);
           if (!canReach)
           {
             continue;

@@ -129,8 +129,8 @@ namespace Jabberwocky.SoC.Library.GameBoards
         public ISet<Connection> GetValidConnectionsForPlayerInfrastructure(Guid playerId)
         {
             // Get all road segments for the player.
-            // For each road segment get all locations that connect to both ends. 
-            // Build tuples and put into set to avoid duplicates
+            // For each road segment get all connections that connect to either ends. 
+            // Put connections into set to avoid duplicates
             HashSet<Connection> result = null;
             var roadSegments = this.board.GetRoadSegmentsByPlayer(playerId);
             if (roadSegments == null || roadSegments.Count == 0)

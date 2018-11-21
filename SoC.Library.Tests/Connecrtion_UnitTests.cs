@@ -77,7 +77,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     [Category("Connection")]
     public void EqualityOperator_BothConnectionsAreNull_ReturnTrue()
     {
-      ((Connection)null == (Connection)null).ShouldBeTrue();
+      (null == (Connection)null).ShouldBeTrue();
     }
 
     [Test]
