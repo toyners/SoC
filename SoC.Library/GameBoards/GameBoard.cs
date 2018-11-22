@@ -162,6 +162,11 @@ namespace Jabberwocky.SoC.Library.GameBoards
             return new VerificationResults { Status = VerificationStatus.Valid };
         }
 
+        internal Connection GetConnection(uint location1, uint location2)
+        {
+            return this.connections[location1, location2];
+        }
+
         internal IList<Connection> GetRoadSegmentsByPlayer(Guid playerId)
         {
             if (this.roadSegmentsByPlayer.TryGetValue(playerId, out var list))

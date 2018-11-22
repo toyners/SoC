@@ -2,7 +2,9 @@
 namespace Jabberwocky.SoC.Library
 {
     using System;
+    using System.Diagnostics;
 
+    [DebuggerDisplay("{Location1}, {Location2}")]
     public class Connection
     {
         #region Fields

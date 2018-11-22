@@ -6,6 +6,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
     using System.Diagnostics;
     using System.IO;
     using System.Reflection;
+    using static Jabberwocky.SoC.Library.GameBoards.GameBoard;
 
     public class GameBoardQuery : IGameBoardQuery
     {
@@ -131,11 +132,30 @@ namespace Jabberwocky.SoC.Library.GameBoards
             // Get all road segments for the player.
             // For each road segment get all connections that connect to either ends. 
             // Put connections into set to avoid duplicates
-            HashSet<Connection> result = null;
             var roadSegments = this.board.GetRoadSegmentsByPlayer(playerId);
             if (roadSegments == null || roadSegments.Count == 0)
             {
                 throw new Exception($"Player {playerId} not recognised.");
+            }
+
+            var result = new HashSet<Connection>();
+            foreach (var connection in roadSegments)
+            {
+                foreach (var neighbouringLocation in this.neighboursOfLocation[connection.Location1])
+                {
+                    if (this.board.CanPlaceRoad(playerId, connection.Location1, neighbouringLocation).Status == VerificationStatus.Valid)
+                    {
+                        result.Add(this.board.GetConnection(connection.Location1, neighbouringLocation));
+                    }
+                }
+
+                foreach (var neighbouringLocation in this.neighboursOfLocation[connection.Location2])
+                {
+                    if (this.board.CanPlaceRoad(playerId, connection.Location2, neighbouringLocation).Status == VerificationStatus.Valid)
+                    {
+                        result.Add(this.board.GetConnection(connection.Location2, neighbouringLocation));
+                    }
+                }
             }
 
             return result;
