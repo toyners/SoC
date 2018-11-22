@@ -55,8 +55,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
         private ResourceProducer[] hexes;
         private Dictionary<uint, Guid> settlements;
         private Dictionary<Guid, List<uint>> settlementsByPlayer;
-        //private bool[,] connections;
-        private Connection[] connections;
+        private Connection[,] connections;
         private Dictionary<Guid, List<Connection>> roadSegmentsByPlayer;
         private Dictionary<uint, ResourceProducer[]> resourceProvidersByDiceRolls;
         private Dictionary<ResourceTypes, ResourceProducer[]> resourceProducersByType;
@@ -81,8 +80,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
             this.roadSegmentsByPlayer = new Dictionary<Guid, List<Connection>>();
             this.settlementsByPlayer = new Dictionary<Guid, List<uint>>();
 
-            //this.connections = new bool[GameBoard.StandardBoardLocationCount, GameBoard.StandardBoardLocationCount];
-            this.connections = new Connection[GameBoard.StandardBoardLocationCount];
+            this.connections = new Connection[GameBoard.StandardBoardLocationCount, GameBoard.StandardBoardLocationCount];
             this.ConnectLocationsVertically();
             this.ConnectLocationsHorizontally();
 
@@ -402,7 +400,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
                 return null;
             }
 
-            return PathFinder.GetPathBetweenPoints(startIndex, endIndex, (uint)this.connections.Length, this.DirectConnectionBetweenLocations);
+            return PathFinder.GetPathBetweenPoints(startIndex, endIndex, (uint)this.connections.GetLength(0), this.DirectConnectionBetweenLocations);
         }
 
         /// <summary>
@@ -653,7 +651,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
         public bool TooCloseToSettlement(uint locationIndex, out Guid id, out uint index)
         {
             id = Guid.Empty;
-            for (index = 0; index < this.connections.Length; index++)
+            for (index = 0; index < this.connections.GetLength(0); index++)
             {
                 if (this.DirectConnectionBetweenLocations(locationIndex, index) && this.settlements.ContainsKey(index))
                 {
@@ -803,7 +801,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
 
         private bool DirectConnectionBetweenLocations(uint location1, uint location2)
         {
-            return this.connections[location1] == this.connections[location2];
+            return this.connections[location1, location2] != null;
         }
 
         private Guid GetOwningPlayerForLocation(uint location)
@@ -852,7 +850,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
 
         private bool RoadLocationsOnBoard(uint roadStartLocation, uint roadEndLocation)
         {
-            var length = (uint)this.connections.Length; // TODO: Change to use Location array
+            var length = (uint)this.connections.GetLength(0); // TODO: Change to use Location array
             return roadStartLocation < length && roadEndLocation < length;
         }
 
@@ -892,7 +890,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
 
         private bool SettlementLocationOnBoard(uint settlementLocation)
         {
-            return settlementLocation < (uint)this.connections.Length;
+            return settlementLocation < (uint)this.connections.GetLength(0);
         }
 
         private StartingInfrastructureStatus PlacedStartingInfrastructureStatus(Guid playerId)
@@ -1242,7 +1240,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
                 {
                     var endIndex = startIndex + setup.LocationIndexDiff;
                     var connection = new Connection(startIndex, endIndex);
-                    this.connections[startIndex] = this.connections[endIndex] = connection;
+                    this.connections[startIndex, endIndex] = this.connections[endIndex, startIndex] = connection;
                     startIndex += 2;
                 }
             }
@@ -1259,7 +1257,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
                 while (count-- > 0)
                 {
                     var connection = new Connection(startIndex.Value, endIndex);
-                    this.connections[startIndex.Value] = this.connections[endIndex] = connection;
+                    this.connections[startIndex.Value, endIndex] = this.connections[endIndex, startIndex.Value] = connection;
                     startIndex++;
                     endIndex++;
                 }
