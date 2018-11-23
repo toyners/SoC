@@ -75,7 +75,7 @@ namespace Jabberwocky.SoC.Library
         /// Returns true if another connection is connected (i.e. shares only one location) to this connection.
         /// If the other connection is the same as this connection then false is returned.
         /// </summary>
-        /// <param name="road">Another road segment.</param>
+        /// <param name="connection">Other connection.</param>
         /// <returns>True if connected; otherwise false.</returns>
         public bool IsConnected(Connection connection)
         {
@@ -88,10 +88,10 @@ namespace Jabberwocky.SoC.Library
         }
 
         /// <summary>
-        /// Returns true if this road segment is on the location passed in.
+        /// Returns true if this connection contains the location passed in.
         /// </summary>
         /// <param name="location">Location to check.</param>
-        /// <returns>True if this road segment is on the location; otherwise false.</returns>
+        /// <returns>True if this connection is on the location; otherwise false.</returns>
         public bool IsOnLocation(uint location)
         {
             return this.Location1 == location || this.Location2 == location;
