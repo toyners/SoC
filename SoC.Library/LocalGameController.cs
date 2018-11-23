@@ -145,7 +145,7 @@ namespace Jabberwocky.SoC.Library
             this.CheckMainPlayerIsWinner();
         }
 
-        public void BuildRoadSegment(TurnToken turnToken, UInt32 roadStartLocation, UInt32 roadEndLocation)
+        public void BuildRoadSegment(TurnToken turnToken, uint roadStartLocation, uint roadEndLocation)
         {
             if (!this.VerifyTurnToken(turnToken) || !this.VerifyBuildRoadSegmentRequest(roadStartLocation, roadEndLocation))
             {

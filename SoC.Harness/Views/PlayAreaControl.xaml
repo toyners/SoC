@@ -54,25 +54,25 @@
         </Canvas>
 
         <Canvas Name="PhaseActions" Visibility="Hidden">
-            <Button Name="TradeButton" Click="TradeButton_Click" Canvas.Left="25" Canvas.Top="25" FontSize="20" Width="120">Trade</Button>
-            <Button Name="BuildButton" Click="BuildButton_Click" Canvas.Left="25" Canvas.Top="65" FontSize="20" Width="120">Build</Button>
-            <Button Name="BuyButton" Click="BuyButton_Click" Canvas.Left="25" Canvas.Top="105" FontSize="20" Width="120">Buy</Button>
-            <Button Name="UseButton" Click="UseButton_Click" Canvas.Left="25" Canvas.Top="145" FontSize="20" Width="120">Use</Button>
+            <Button Name="TradeButton" Click="TradeButton_Click" Canvas.Left="25" Canvas.Top="0" FontSize="20" Width="120">Trade</Button>
+            <Button Name="BuildButton" Click="BuildButton_Click" Canvas.Left="25" Canvas.Top="40" FontSize="20" Width="120">Build</Button>
+            <Button Name="BuyButton" Click="BuyButton_Click" Canvas.Left="25" Canvas.Top="80" FontSize="20" Width="120">Buy</Button>
+            <Button Name="UseButton" Click="UseButton_Click" Canvas.Left="25" Canvas.Top="120" FontSize="20" Width="120">Use</Button>
         </Canvas>
 
         <Canvas Name="TradeActions" Visibility="Hidden">
-            <Button Name="TradeButtonDecoration" IsEnabled="False" Canvas.Left="25" Canvas.Top="25" FontSize="20" Width="120">Trade</Button>
-            <Button Name="TradeBackButton" Click="TradeBackButton_Click" Canvas.Left="160" Canvas.Top="25" FontSize="20" Width="120">Back</Button>
-            <Button Name="TradeMarketButton" Click="TradeMarketButton_Click" Canvas.Left="160" Canvas.Top="65" FontSize="20" Width="120">Market</Button>
-            <Button Name="TradePlayerButton" Click="TradePlayerButton_Click" Canvas.Left="160" Canvas.Top="105" FontSize="20" Width="120">Player</Button>
+            <Button Name="TradeButtonDecoration" IsEnabled="False" Canvas.Left="25" Canvas.Top="0" FontSize="20" Width="120">Trade</Button>
+            <Button Name="TradeBackButton" Click="TradeBackButton_Click" Canvas.Left="160" Canvas.Top="0" FontSize="20" Width="120">Back</Button>
+            <Button Name="TradeMarketButton" Click="TradeMarketButton_Click" Canvas.Left="160" Canvas.Top="40" FontSize="20" Width="120">Market</Button>
+            <Button Name="TradePlayerButton" Click="TradePlayerButton_Click" Canvas.Left="160" Canvas.Top="80" FontSize="20" Width="120">Player</Button>
         </Canvas>
 
         <Canvas Name="BuildActions" Visibility="Hidden">
-            <Button Name="BuildButtonDecoration" IsEnabled="False" Canvas.Left="25" Canvas.Top="65" FontSize="20" Width="120">Build</Button>
-            <Button Name="BuildBackButton" Click="BuildBackButton_Click" Canvas.Left="160" Canvas.Top="65" FontSize="20" Width="120">Back</Button>
-            <Button Name="BuildSettlementButton" Click="BuildSettlementButton_Click" Canvas.Left="160" Canvas.Top="105" FontSize="20" Width="120">Settlement</Button>
-            <Button Name="BuildRoadButton" Click="BuildRoadButton_Click" Canvas.Left="160" Canvas.Top="145" FontSize="20" Width="120">Road</Button>
-            <Button Name="BuildCityButton" Canvas.Left="160" Canvas.Top="185" FontSize="20" Width="120">City</Button>
+            <Button Name="BuildButtonDecoration" IsEnabled="False" Canvas.Left="25" Canvas.Top="40" FontSize="20" Width="120">Build</Button>
+            <Button Name="BuildBackButton" Click="BuildBackButton_Click" Canvas.Left="160" Canvas.Top="40" FontSize="20" Width="120">Back</Button>
+            <Button Name="BuildSettlementButton" Click="BuildSettlementButton_Click" Canvas.Left="160" Canvas.Top="80" FontSize="20" Width="120">Settlement</Button>
+            <Button Name="BuildRoadButton" Click="BuildRoadButton_Click" Canvas.Left="160" Canvas.Top="120" FontSize="20" Width="120">Road</Button>
+            <Button Name="BuildCityButton" Canvas.Left="160" Canvas.Top="160" FontSize="20" Width="120">City</Button>
         </Canvas>
 
         <Canvas Name="TopLayer" Height="450" Width="800">

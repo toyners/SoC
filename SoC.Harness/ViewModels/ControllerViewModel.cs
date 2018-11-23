@@ -307,6 +307,11 @@ namespace SoC.Harness.ViewModels
         {
             this.currentTurnToken = turnToken;
         }
+
+        public void BuildRoadSegment(uint start, uint end)
+        {
+            this.localGameController.BuildRoadSegment(this.currentTurnToken, start, end);
+        }
         #endregion
     }
 }

@@ -919,6 +919,12 @@ namespace SoC.Harness.Views
             this.RoadSelectionLayer.Visibility = Visibility.Hidden;
 
             this.EndTurnButton.Visibility = Visibility.Visible;
+            this.BuildActions.Visibility = Visibility.Hidden;
+
+            if (this.state == States.ChoosePhaseAction)
+            {
+                this.controllerViewModel.BuildRoadSegment(roadButtonControl.Start, roadButtonControl.End);
+            }
         }
 
         private void RobbingChoicesEventHandler(List<Tuple<Guid, string, int>> choices)
