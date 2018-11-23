@@ -82,7 +82,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
             expected.Add(new Connection(18, 29));
             expected.Add(new Connection(9, 19));
             expected.Add(new Connection(19, 20));
-            results.ShouldBe(expected);
+            results.ShouldMatch(expected);
         }
 
         [Test]
@@ -108,7 +108,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
             expected.Add(new Connection(35, 36));
             expected.Add(new Connection(24, 25));
             expected.Add(new Connection(23, 24));
-            results.ShouldBe(expected);
+            results.ShouldMatch(expected);
         }
     }
 }

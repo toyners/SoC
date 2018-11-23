@@ -96,6 +96,11 @@ namespace Jabberwocky.SoC.Library
         {
             return this.Location1 == location || this.Location2 == location;
         }
+
+        public override string ToString()
+        {
+            return $"Connection ({this.Location1}, {this.Location2})";
+        }
         #endregion
     }
 }
