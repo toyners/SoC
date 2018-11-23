@@ -305,6 +305,26 @@ namespace SoC.Harness.Views
             throw new NotImplementedException();
         }
 
+        private void ConfirmButton_Click(object sender, RoutedEventArgs e)
+        {
+            this.ConfirmButton.Visibility = Visibility.Hidden;
+            if (this.state == States.AwaitingFirstInfrastructure)
+            {
+                this.state = States.AwaitingSecondInfrastructure;
+                var roadEndLocation = this.workingRoadControl.Start == this.workingLocation ? this.workingRoadControl.End : this.workingRoadControl.Start;
+                this.controllerViewModel.CompleteFirstInfrastructureSetup(this.workingLocation, roadEndLocation);
+            }
+            else if (this.state == States.AwaitingSecondInfrastructure)
+            {
+                var roadEndLocation = this.workingRoadControl.Start == this.workingLocation ? this.workingRoadControl.End : this.workingRoadControl.Start;
+                this.controllerViewModel.CompleteSecondInfrastructureSetup(this.workingLocation, roadEndLocation);
+            }
+            else
+            {
+                throw new Exception("Should not get here");
+            }
+        }
+
         private void EndTurnButton_Click(object sender, RoutedEventArgs e)
         {
             this.EndTurn();
@@ -918,12 +938,16 @@ namespace SoC.Harness.Views
 
             this.RoadSelectionLayer.Visibility = Visibility.Hidden;
 
-            this.EndTurnButton.Visibility = Visibility.Visible;
-            this.BuildActions.Visibility = Visibility.Hidden;
-
             if (this.state == States.ChoosePhaseAction)
             {
+                this.EndTurnButton.Visibility = Visibility.Visible;
+                this.BuildActions.Visibility = Visibility.Hidden;
+
                 this.controllerViewModel.BuildRoadSegment(roadButtonControl.Start, roadButtonControl.End);
+            }
+            else
+            {
+                this.ConfirmButton.Visibility = Visibility.Visible;
             }
         }
 

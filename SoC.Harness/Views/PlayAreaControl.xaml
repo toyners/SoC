@@ -76,7 +76,9 @@
         </Canvas>
 
         <Canvas Name="TopLayer" Height="450" Width="800">
+            <TextBlock Name="TextLabel" Canvas.Left="170" Canvas.Top="-50" FontSize="20" Text="Select location for FIRST Settlement and Road Segment"/>
             <Button Name="EndTurnButton" Visibility="Hidden" Click="EndTurnButton_Click" Canvas.Left="350" Canvas.Top="500" Width="120" FontSize="20">End Turn</Button>
+            <Button Name="ConfirmButton" Visibility="Hidden" Click="ConfirmButton_Click" Canvas.Left="350" Canvas.Top="500" Width="120" FontSize="20">Confirm</Button>
         </Canvas>
     </Grid>
 </UserControl>
