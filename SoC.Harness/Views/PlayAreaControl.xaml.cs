@@ -285,7 +285,14 @@ namespace SoC.Harness.Views
         {
             this.RoadSelectionLayer.Visibility = Visibility.Visible;
             // Turn on the road buttons for all possible choices
-            var roadEndLocations = this.board.BoardQuery.GetValidConnectionsForPlayerInfrastructure(this.playerId);
+            var connections = this.board.BoardQuery.GetValidConnectionsForPlayerInfrastructure(this.playerId);
+            if (connections == null || connections.Count == 0)
+                return; //TODO: Show message that user has no valid connections to build on
+
+            foreach(var connection in connections)
+            {
+                this.roadButtonControls[$"{connection.Location1}-{connection.Location2}"].Visibility = Visibility.Visible;
+            }
         }
 
         private void BuildSettlementButton_Click(object sender, RoutedEventArgs e)
