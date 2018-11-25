@@ -122,8 +122,8 @@ namespace Jabberwocky.SoC.Library
         public Action<ResourceUpdate> ResourcesLostEvent { get; set; }
         public Action<ResourceTransactionList> ResourcesTransferredEvent { get; set; }
         public Action RoadSegmentBuiltEvent { get; set; }
-        public Action<Int32> RobberEvent { get; set; }
-        public Action<Dictionary<Guid, Int32>> RobbingChoicesEvent { get; set; }
+        public Action<int> RobberEvent { get; set; }
+        public Action<Dictionary<Guid, int>> RobbingChoicesEvent { get; set; }
         public Action SettlementBuiltEvent { get; set; }
         public Action<GameBoardUpdate> StartInitialSetupTurnEvent { get; set; }
         public Action<TurnToken> StartPlayerTurnEvent { get; set; }
@@ -131,7 +131,7 @@ namespace Jabberwocky.SoC.Library
         #endregion
 
         #region Methods
-        public void BuildCity(TurnToken turnToken, UInt32 location)
+        public void BuildCity(TurnToken turnToken, uint location)
         {
             if (!this.VerifyTurnToken(turnToken) || !this.VerifyBuildCityRequest(location))
             {
@@ -160,11 +160,11 @@ namespace Jabberwocky.SoC.Library
             {
                 this.LongestRoadBuiltEvent?.Invoke(previousPlayerWithLongestRoadId, this.mainPlayer.Id);
             }
-
+        
             this.CheckMainPlayerIsWinner();
         }
 
-        public void BuildSettlement(TurnToken turnToken, UInt32 location)
+        public void BuildSettlement(TurnToken turnToken, uint location)
         {
             if (!this.VerifyTurnToken(turnToken) || !this.VerifyBuildSettlementRequest(location))
             {
@@ -270,7 +270,7 @@ namespace Jabberwocky.SoC.Library
             this.ResourcesTransferredEvent?.Invoke(resourceTransactionList);
         }
 
-        public void CompleteGameSetup(UInt32 settlementLocation, UInt32 roadEndLocation)
+        public void CompleteGameSetup(uint settlementLocation, uint roadEndLocation)
         {
             if (this.GamePhase != GamePhases.CompleteGameSetup)
             {
@@ -622,7 +622,7 @@ namespace Jabberwocky.SoC.Library
                         if (reader.Name == "settlement" && reader.NodeType == XmlNodeType.Element)
                         {
                             var playerId = Guid.Parse(reader.GetAttribute("playerid"));
-                            var location = UInt32.Parse(reader.GetAttribute("location"));
+                            var location = uint.Parse(reader.GetAttribute("location"));
 
                             //this.gameBoard.InternalPlaceSettlement(playerId, location);
                         }
@@ -635,8 +635,8 @@ namespace Jabberwocky.SoC.Library
                         if (reader.Name == "road" && reader.NodeType == XmlNodeType.Element)
                         {
                             var playerId = Guid.Parse(reader.GetAttribute("playerid"));
-                            var start = UInt32.Parse(reader.GetAttribute("start"));
-                            var end = UInt32.Parse(reader.GetAttribute("end"));
+                            var start = uint.Parse(reader.GetAttribute("start"));
+                            var end = uint.Parse(reader.GetAttribute("end"));
 
                             //this.gameBoard.InternalPlaceRoadSegment(playerId, start, end);
                         }
@@ -771,12 +771,6 @@ namespace Jabberwocky.SoC.Library
             File.WriteAllText(filePath, content);
         }
 
-        [OnSerializing]
-        private void OnSerializingMethod(StreamingContext context)
-        {
-            int i = 0;
-        }
-
         public void SetRobberHex(uint location)
         {
             if (this.GamePhase != GamePhases.SetRobberHex)
@@ -905,14 +899,14 @@ namespace Jabberwocky.SoC.Library
         /// <param name="receivingResourceType">Resource type that the player wants to receive.</param>
         /// <param name="receivingCount">Resource amount that the player wants to receive.</param>
         /// <param name="givingResourceType">Resource type that the player is giving. Must have at least 4 and be divisible by 4.</param>
-        public void TradeWithBank(TurnToken turnToken, ResourceTypes receivingResourceType, Int32 receivingCount, ResourceTypes givingResourceType)
+        public void TradeWithBank(TurnToken turnToken, ResourceTypes receivingResourceType, int receivingCount, ResourceTypes givingResourceType)
         {
             if (!this.VerifyTurnToken(turnToken))
             {
                 return;
             }
 
-            Int32 resourceCount = 0;
+            int resourceCount = 0;
             switch (givingResourceType)
             {
                 case ResourceTypes.Brick: resourceCount = this.mainPlayer.BrickCount; break;
@@ -943,12 +937,12 @@ namespace Jabberwocky.SoC.Library
             this.ResourcesTransferredEvent?.Invoke(resourceTransactionList);
         }
 
-        public void UseKnightCard(TurnToken turnToken, KnightDevelopmentCard developmentCard, UInt32 newRobberHex)
+        public void UseKnightCard(TurnToken turnToken, KnightDevelopmentCard developmentCard, uint newRobberHex)
         {
             this.ProcessKnightCard(turnToken, developmentCard, newRobberHex, null);
         }
 
-        public void UseKnightCard(TurnToken turnToken, KnightDevelopmentCard developmentCard, UInt32 newRobberHex, Guid playerId)
+        public void UseKnightCard(TurnToken turnToken, KnightDevelopmentCard developmentCard, uint newRobberHex, Guid playerId)
         {
             this.ProcessKnightCard(turnToken, developmentCard, newRobberHex, playerId);
         }
@@ -1001,7 +995,7 @@ namespace Jabberwocky.SoC.Library
             this.ResourcesTransferredEvent?.Invoke(resourceTransactions);
         }
 
-        private void AddResourcesToList(List<ResourceTypes> resources, ResourceTypes resourceType, Int32 total)
+        private void AddResourcesToList(List<ResourceTypes> resources, ResourceTypes resourceType, int total)
         {
             for (var i = 0; i < total; i++)
             {
@@ -1027,19 +1021,19 @@ namespace Jabberwocky.SoC.Library
             }
         }
 
-        private void BuildCity(UInt32 location)
+        private void BuildCity(uint location)
         {
             this.gameBoard.PlaceCity(this.currentPlayer.Id, location);
             this.currentPlayer.PlaceCity();
         }
 
-        private void BuildRoadSegment(UInt32 roadStartLocation, UInt32 roadEndLocation)
+        private void BuildRoadSegment(uint roadStartLocation, uint roadEndLocation)
         {
             this.gameBoard.PlaceRoadSegment(this.currentPlayer.Id, roadStartLocation, roadEndLocation);
             this.currentPlayer.PlaceRoadSegment();
         }
 
-        private void BuildSettlement(UInt32 location)
+        private void BuildSettlement(uint location)
         {
             this.gameBoard.PlaceSettlement(this.currentPlayer.Id, location);
             this.currentPlayer.PlaceSettlement();
@@ -1083,12 +1077,12 @@ namespace Jabberwocky.SoC.Library
             }
         }
 
-        private Dictionary<Guid, ResourceCollection[]> CollectTurnResources(UInt32 diceRoll)
+        private Dictionary<Guid, ResourceCollection[]> CollectTurnResources(uint diceRoll)
         {
             return this.gameBoard.GetResourcesForRoll(diceRoll);
         }
 
-        private void CollectInitialResourcesForPlayer(Guid playerId, UInt32 settlementLocation)
+        private void CollectInitialResourcesForPlayer(Guid playerId, uint settlementLocation)
         {
             if (this.gameSetupResources == null)
             {
@@ -1116,20 +1110,20 @@ namespace Jabberwocky.SoC.Library
                 {
                     gameBoardUpdate = new GameBoardUpdate
                     {
-                        NewSettlements = new List<Tuple<UInt32, Guid>>(),
-                        NewRoads = new List<Tuple<UInt32, UInt32, Guid>>()
+                        NewSettlements = new List<Tuple<uint, Guid>>(),
+                        NewRoads = new List<Tuple<uint, uint, Guid>>()
                     };
                 }
 
                 var computerPlayer = (IComputerPlayer)player;
-                UInt32 chosenSettlementLocation, chosenRoadSegmentEndLocation;
+                uint chosenSettlementLocation, chosenRoadSegmentEndLocation;
                 computerPlayer.ChooseInitialInfrastructure(out chosenSettlementLocation, out chosenRoadSegmentEndLocation);
                 gameBoardData.PlaceStartingInfrastructure(computerPlayer.Id, chosenSettlementLocation, chosenRoadSegmentEndLocation);
 
                 computerPlayer.PlaceStartingInfrastructure();
 
-                gameBoardUpdate.NewSettlements.Add(new Tuple<UInt32, Guid>(chosenSettlementLocation, computerPlayer.Id));
-                gameBoardUpdate.NewRoads.Add(new Tuple<UInt32, UInt32, Guid>(chosenSettlementLocation, chosenRoadSegmentEndLocation, computerPlayer.Id));
+                gameBoardUpdate.NewSettlements.Add(new Tuple<uint, Guid>(chosenSettlementLocation, computerPlayer.Id));
+                gameBoardUpdate.NewRoads.Add(new Tuple<uint, uint, Guid>(chosenSettlementLocation, chosenRoadSegmentEndLocation, computerPlayer.Id));
             }
 
             return gameBoardUpdate;
@@ -1161,20 +1155,20 @@ namespace Jabberwocky.SoC.Library
                 {
                     gameBoardUpdate = new GameBoardUpdate
                     {
-                        NewSettlements = new List<Tuple<UInt32, Guid>>(),
-                        NewRoads = new List<Tuple<UInt32, UInt32, Guid>>()
+                        NewSettlements = new List<Tuple<uint, Guid>>(),
+                        NewRoads = new List<Tuple<uint, uint, Guid>>()
                     };
                 }
 
                 var computerPlayer = (IComputerPlayer)player;
-                UInt32 chosenSettlementLocation, chosenRoadSegmentEndLocation;
+                uint chosenSettlementLocation, chosenRoadSegmentEndLocation;
                 computerPlayer.ChooseInitialInfrastructure(out chosenSettlementLocation, out chosenRoadSegmentEndLocation);
                 gameBoardData.PlaceStartingInfrastructure(computerPlayer.Id, chosenSettlementLocation, chosenRoadSegmentEndLocation);
 
                 computerPlayer.PlaceStartingInfrastructure();
 
-                gameBoardUpdate.NewSettlements.Add(new Tuple<UInt32, Guid>(chosenSettlementLocation, computerPlayer.Id));
-                gameBoardUpdate.NewRoads.Add(new Tuple<UInt32, UInt32, Guid>(chosenSettlementLocation, chosenRoadSegmentEndLocation, computerPlayer.Id));
+                gameBoardUpdate.NewSettlements.Add(new Tuple<uint, Guid>(chosenSettlementLocation, computerPlayer.Id));
+                gameBoardUpdate.NewRoads.Add(new Tuple<uint, uint, Guid>(chosenSettlementLocation, chosenRoadSegmentEndLocation, computerPlayer.Id));
 
                 this.CollectInitialResourcesForPlayer(computerPlayer.Id, chosenSettlementLocation);
                 computerPlayer.AddResources(this.gameSetupResources.Resources[computerPlayer.Id]);
@@ -1218,7 +1212,7 @@ namespace Jabberwocky.SoC.Library
         private IPlayer DeterminePlayerWithMostKnightCards()
         {
             IPlayer playerWithMostKnightCards = null;
-            UInt32 workingKnightCardCount = 3;
+            uint workingKnightCardCount = 3;
 
             foreach (var player in this.players)
             {
@@ -1351,7 +1345,7 @@ namespace Jabberwocky.SoC.Library
             }
 
             Guid longestRoadPlayerId = Guid.Empty;
-            UInt32[] road = null;
+            uint[] road = null;
             if (this.gameBoard.TryGetLongestRoadDetails(out longestRoadPlayerId, out road) && road.Length > 5)
             {
                 var longestRoadPlayer = this.playersById[longestRoadPlayerId];
@@ -1380,14 +1374,14 @@ namespace Jabberwocky.SoC.Library
                    (playerIds.Length == 1 && playerIds[0] == this.mainPlayer.Id);
         }
 
-        private void PlayKnightDevelopmentCard(KnightDevelopmentCard developmentCard, UInt32 newRobberHex)
+        private void PlayKnightDevelopmentCard(KnightDevelopmentCard developmentCard, uint newRobberHex)
         {
             this.PlayDevelopmentCard(developmentCard);
             this.currentPlayer.PlaceKnightDevelopmentCard();
             this.robberHex = newRobberHex;
         }
 
-        private void ProcessKnightCard(TurnToken turnToken, KnightDevelopmentCard developmentCard, UInt32 newRobberHex, Guid? playerId)
+        private void ProcessKnightCard(TurnToken turnToken, KnightDevelopmentCard developmentCard, uint newRobberHex, Guid? playerId)
         {
             if (!this.VerifyParametersForUsingDevelopmentCard(turnToken, developmentCard, "knight"))
             {
@@ -1447,7 +1441,7 @@ namespace Jabberwocky.SoC.Library
             }
         }
 
-        private Boolean VerifyBuildCityRequest(UInt32 location)
+        private Boolean VerifyBuildCityRequest(uint location)
         {
             if (this.GamePhase == GamePhases.GameOver)
             {
@@ -1544,7 +1538,7 @@ namespace Jabberwocky.SoC.Library
             return true;
         }
 
-        private Boolean VerifyBuildSettlementRequest(UInt32 settlementLocation)
+        private Boolean VerifyBuildSettlementRequest(uint settlementLocation)
         {
             if (this.GamePhase == GamePhases.GameOver)
             {
@@ -1614,7 +1608,7 @@ namespace Jabberwocky.SoC.Library
             return true;
         }
 
-        private Boolean VerifyPlayerForResourceTransactionWhenUsingKnightCard(UInt32 newRobberHex, Guid playerId)
+        private Boolean VerifyPlayerForResourceTransactionWhenUsingKnightCard(uint newRobberHex, Guid playerId)
         {
             var playerIdsOnHex = new List<Guid>(this.gameBoard.GetPlayersForHex(newRobberHex));
             if (!playerIdsOnHex.Contains(playerId))
@@ -1666,7 +1660,7 @@ namespace Jabberwocky.SoC.Library
             return true;
         }
 
-        private Boolean VerifyPlacementOfRobber(UInt32 newRobberHex)
+        private Boolean VerifyPlacementOfRobber(uint newRobberHex)
         {
             if (!this.gameBoard.CanPlaceRobber(newRobberHex))
             {
@@ -1683,13 +1677,13 @@ namespace Jabberwocky.SoC.Library
             return true;
         }
 
-        private Boolean VerifyRoadSegmentPlacing(UInt32 settlementLocation, UInt32 roadEndLocation)
+        private Boolean VerifyRoadSegmentPlacing(uint settlementLocation, uint roadEndLocation)
         {
             var placeRoadStatus = this.gameBoard.CanPlaceRoad(this.currentPlayer.Id, settlementLocation, roadEndLocation);
             return this.VerifyRoadSegmentPlacing(placeRoadStatus, settlementLocation, roadEndLocation);
         }
 
-        private Boolean VerifyRoadSegmentPlacing(GameBoard.VerificationResults verificationResults, UInt32 settlementLocation, UInt32 roadEndLocation)
+        private Boolean VerifyRoadSegmentPlacing(GameBoard.VerificationResults verificationResults, uint settlementLocation, uint roadEndLocation)
         {
             if (verificationResults.Status == GameBoard.VerificationStatus.RoadIsOffBoard)
             {
@@ -1759,13 +1753,13 @@ namespace Jabberwocky.SoC.Library
             return true;
         }
 
-        private Boolean VerifySettlementPlacing(UInt32 settlementLocation)
+        private Boolean VerifySettlementPlacing(uint settlementLocation)
         {
             var verificationResults = this.gameBoard.CanPlaceSettlement(this.mainPlayer.Id, settlementLocation);
             return this.VerifySettlementPlacing(verificationResults, settlementLocation);
         }
 
-        private Boolean VerifySettlementPlacing(GameBoard.VerificationResults verificationResults, UInt32 settlementLocation)
+        private Boolean VerifySettlementPlacing(GameBoard.VerificationResults verificationResults, uint settlementLocation)
         {
             if (verificationResults.Status == GameBoard.VerificationStatus.LocationForSettlementIsInvalid)
             {
@@ -1812,13 +1806,13 @@ namespace Jabberwocky.SoC.Library
             return true;
         }
 
-        private Boolean VerifyStartingInfrastructurePlacementRequest(UInt32 settlementLocation, UInt32 roadEndLocation)
+        private Boolean VerifyStartingInfrastructurePlacementRequest(uint settlementLocation, uint roadEndLocation)
         {
             var verificationResults = this.gameBoard.CanPlaceStartingInfrastructure(this.mainPlayer.Id, settlementLocation, roadEndLocation);
             return this.VerifySettlementPlacing(verificationResults, settlementLocation) && this.VerifyRoadSegmentPlacing(verificationResults, settlementLocation, roadEndLocation);
         }
 
-        private Boolean VerifyTradeWithBank(Int32 receivingCount, Int32 resourceCount, ResourceTypes givingResourceType, ResourceTypes receivingResourceType)
+        private Boolean VerifyTradeWithBank(int receivingCount, int resourceCount, ResourceTypes givingResourceType, ResourceTypes receivingResourceType)
         {
             if (this.GamePhase == GamePhases.GameOver)
             {
