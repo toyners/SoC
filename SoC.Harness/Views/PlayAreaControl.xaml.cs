@@ -156,6 +156,8 @@ namespace SoC.Harness.Views
                 this.state = States.AwaitingSecondInfrastructure;
                 var roadEndLocation = this.workingRoadControl.Start == this.workingLocation ? this.workingRoadControl.End : this.workingRoadControl.Start;
                 this.controllerViewModel.CompleteFirstInfrastructureSetup(this.workingLocation, roadEndLocation);
+
+                this.GeneralLabel.Text = "Select location for SECOND Settlement and Road Segment";
             }
             else if (this.state == States.AwaitingSecondInfrastructure)
             {
@@ -263,6 +265,7 @@ namespace SoC.Harness.Views
         {
             this.BoardLayer.Visibility = Visibility.Visible;
             this.SettlementSelectionLayer.Visibility = Visibility.Visible;
+            
 
             Task.Factory.StartNew(() =>
             {
@@ -429,6 +432,9 @@ namespace SoC.Harness.Views
                 var cityData = board.GetCityData();
                 if (cityData != null)
                     this.PlaceCities(cityData);
+
+                this.GeneralLabel.Visibility = Visibility.Visible;
+                this.GeneralLabel.Text = "Select location for FIRST Settlement and Road Segment";
             });
         }
 
