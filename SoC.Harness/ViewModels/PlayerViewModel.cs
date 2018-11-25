@@ -8,7 +8,6 @@ namespace SoC.Harness.ViewModels
 
   public class PlayerViewModel : NotifyPropertyChangedBase
   {
-    //private ResourceClutch resources;
     private string resourceText;
     private readonly Queue<string> historyLines = new Queue<string>();
     private string historyText;

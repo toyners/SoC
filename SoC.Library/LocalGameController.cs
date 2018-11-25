@@ -4,7 +4,6 @@ namespace Jabberwocky.SoC.Library
     using System;
     using System.Collections.Generic;
     using System.IO;
-    using System.Runtime.Serialization;
     using System.Xml;
     using Enums;
     using GameActions;
@@ -14,7 +13,6 @@ namespace Jabberwocky.SoC.Library
     using Jabberwocky.SoC.Library.Store;
     using Newtonsoft.Json;
 
-    [JsonObject(MemberSerialization.OptIn)]
     public class LocalGameController : IGameController
     {
         #region Enums
@@ -270,6 +268,7 @@ namespace Jabberwocky.SoC.Library
             this.ResourcesTransferredEvent?.Invoke(resourceTransactionList);
         }
 
+        // 05 Complete game setup
         public void CompleteGameSetup(uint settlementLocation, uint roadEndLocation)
         {
             if (this.GamePhase != GamePhases.CompleteGameSetup)
@@ -315,6 +314,7 @@ namespace Jabberwocky.SoC.Library
             this.DiceRollEvent?.Invoke(this.dice1, this.dice2);
         }
 
+        // 04 Continue game setup
         public void ContinueGameSetup(uint settlementLocation, uint roadEndLocation)
         {
             if (this.GamePhase != GamePhases.ContinueGameSetup)
@@ -530,6 +530,7 @@ namespace Jabberwocky.SoC.Library
             }
         }
 
+        // 06 Finalise player turn order
         public void FinalisePlayerTurnOrder()
         {
             if (this.GamePhase != GamePhases.FinalisePlayerTurnOrder)
@@ -551,6 +552,7 @@ namespace Jabberwocky.SoC.Library
             return new GameState();
         }
 
+        // 01 Join game
         public void JoinGame(GameOptions gameOptions = null)
         {
             if (this.GamePhase != GamePhases.Initial)
@@ -571,6 +573,7 @@ namespace Jabberwocky.SoC.Library
             this.GamePhase = GamePhases.WaitingLaunch;
         }
 
+        // 02 Launch Game
         public void LaunchGame()
         {
             if (this.GamePhase != GamePhases.WaitingLaunch)
@@ -875,6 +878,7 @@ namespace Jabberwocky.SoC.Library
             }
         }
 
+        // 03 Start game setup
         public bool StartGameSetup()
         {
             if (this.GamePhase != GamePhases.StartGameSetup)
