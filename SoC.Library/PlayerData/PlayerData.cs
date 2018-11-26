@@ -1,9 +1,9 @@
 ﻿
-namespace Jabberwocky.SoC.Library
+namespace Jabberwocky.SoC.Library.PlayerData
 {
   using System;
 
-  public class PlayerData : PlayerDataBase
+  public class PlayerDataOld : PlayerDataBase
   {
     public DevelopmentCard[] DevelopmentCards { get; private set; }
 

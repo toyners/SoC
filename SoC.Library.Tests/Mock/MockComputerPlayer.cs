@@ -6,11 +6,12 @@ namespace Jabberwocky.SoC.Library.UnitTests.Mock
   using System.Collections.Generic;
   using GameActions;
   using Enums;
+    using Jabberwocky.SoC.Library.PlayerData;
 
-  /// <summary>
-  /// Used to set opponent player behaviour for testing purposes
-  /// </summary>
-  public class MockComputerPlayer : ComputerPlayer
+    /// <summary>
+    /// Used to set opponent player behaviour for testing purposes
+    /// </summary>
+    public class MockComputerPlayer : ComputerPlayer
   {
     #region Fields
     public UInt32 HiddenDevelopmentCards;

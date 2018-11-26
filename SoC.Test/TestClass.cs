@@ -7,7 +7,8 @@ namespace SoC.Test
   using System.Threading.Tasks;
   using Jabberwocky.SoC.Client;
   using Jabberwocky.SoC.Library;
-  using NUnit.Framework;
+    using Jabberwocky.SoC.Library.PlayerData;
+    using NUnit.Framework;
   using Shouldly;
 
   [TestFixture]

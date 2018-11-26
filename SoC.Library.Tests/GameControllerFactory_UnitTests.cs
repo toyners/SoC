@@ -3,7 +3,8 @@ namespace Jabberwocky.SoC.Library.UnitTests
 {
   using System;
   using Interfaces;
-  using NSubstitute;
+    using Jabberwocky.SoC.Library.PlayerData;
+    using NSubstitute;
   using NUnit.Framework;
   using Shouldly;
 

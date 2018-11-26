@@ -10,6 +10,7 @@ namespace Jabberwocky.SoC.Library
     using GameBoards;
     using GameEvents;
     using Interfaces;
+    using Jabberwocky.SoC.Library.PlayerData;
     using Jabberwocky.SoC.Library.Store;
     using Newtonsoft.Json;
 

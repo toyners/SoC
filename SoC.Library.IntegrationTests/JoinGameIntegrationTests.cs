@@ -3,7 +3,8 @@ namespace SoC.Library.IntegrationTests
 {
   using Jabberwocky.SoC.Library;
   using Jabberwocky.SoC.Library.Interfaces;
-  using NUnit.Framework;
+    using Jabberwocky.SoC.Library.PlayerData;
+    using NUnit.Framework;
   using Shouldly;
 
   [TestFixture]
@@ -23,7 +24,7 @@ namespace SoC.Library.IntegrationTests
 
       playerData.ShouldNotBeNull();
       playerData.Length.ShouldBe(4);
-      playerData[0].ShouldBeOfType<PlayerData>();
+      playerData[0].ShouldBeOfType<PlayerDataOld>();
       playerData[1].ShouldBeOfType<PlayerDataModel>();
       playerData[2].ShouldBeOfType<PlayerDataModel>();
       playerData[3].ShouldBeOfType<PlayerDataModel>();
@@ -41,7 +42,7 @@ namespace SoC.Library.IntegrationTests
 
       playerData.ShouldNotBeNull();
       playerData.Length.ShouldBe(4);
-      playerData[0].ShouldBeOfType<PlayerData>();
+      playerData[0].ShouldBeOfType<PlayerDataOld>();
       playerData[1].ShouldBeOfType<PlayerDataModel>();
       playerData[2].ShouldBeOfType<PlayerDataModel>();
       playerData[3].ShouldBeOfType<PlayerDataModel>();

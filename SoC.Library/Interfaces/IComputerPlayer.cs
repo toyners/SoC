@@ -4,8 +4,9 @@ namespace Jabberwocky.SoC.Library.Interfaces
   using System;
   using System.Collections.Generic;
   using GameActions;
+    using Jabberwocky.SoC.Library.PlayerData;
 
-  public interface IComputerPlayer : IPlayer
+    public interface IComputerPlayer : IPlayer
   {
     #region Methods
     void AddDevelopmentCard(DevelopmentCard developmentCard);

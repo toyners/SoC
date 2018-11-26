@@ -1,5 +1,5 @@
 ﻿
-namespace Jabberwocky.SoC.Library
+namespace Jabberwocky.SoC.Library.PlayerData
 {
     using System;
     using System.Collections.Generic;

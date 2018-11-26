@@ -3,6 +3,7 @@ namespace Jabberwocky.SoC.Library.Interfaces
 {
     using System;
     using System.Collections.Generic;
+    using Jabberwocky.SoC.Library.PlayerData;
 
     public interface IPlayer
     {

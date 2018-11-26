@@ -6,6 +6,7 @@ namespace SoC.Harness.ViewModels
     using System.Linq;
     using Jabberwocky.SoC.Library;
     using Jabberwocky.SoC.Library.GameBoards;
+    using Jabberwocky.SoC.Library.PlayerData;
 
     public class ControllerViewModel
     {

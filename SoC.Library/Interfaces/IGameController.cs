@@ -4,8 +4,9 @@ namespace Jabberwocky.SoC.Library.Interfaces
   using System;
   using System.Collections.Generic;
   using GameBoards;
+    using Jabberwocky.SoC.Library.PlayerData;
 
-  public interface IGameController
+    public interface IGameController
   {
     #region Events
     Action<GameBoardUpdate> BoardUpdatedEvent { get; set; }
@@ -48,7 +49,7 @@ namespace Jabberwocky.SoC.Library.Interfaces
 
   public struct Offer
   {
-    PlayerData player;
+    PlayerDataOld player;
 
     Int32 OfferedOre;
     Int32 OfferedWheat;

@@ -4,8 +4,9 @@ namespace Jabberwocky.SoC.Library
   using System;
   using Enums;
   using Interfaces;
+    using Jabberwocky.SoC.Library.PlayerData;
 
-  public class GameControllerFactory
+    public class GameControllerFactory
   {
     private IPlayerPool computerPlayerFactory;
     private IDiceFactory diceRollerFactory;

@@ -5,6 +5,7 @@ using Jabberwocky.SoC.Client.ServiceReference;
 using Jabberwocky.SoC.Library;
 using Jabberwocky.SoC.Library.GameBoards;
 using Jabberwocky.SoC.Library.Interfaces;
+using Jabberwocky.SoC.Library.PlayerData;
 
 namespace Jabberwocky.SoC.Client
 {
@@ -76,7 +77,7 @@ namespace Jabberwocky.SoC.Client
 
     public void ConfirmGameSessionReadyToLaunch()
     {
-      this.GameJoinedEvent?.Invoke(new[] { new Library.PlayerDataModel() });
+      this.GameJoinedEvent?.Invoke(new[] { new PlayerDataModel() });
     }
 
     public void ConfirmOtherPlayerHasLeftGame(String username)
@@ -91,7 +92,7 @@ namespace Jabberwocky.SoC.Client
 
     public void GameJoined()
     {
-      this.GameJoinedEvent?.Invoke(new[] { new Library.PlayerDataModel() });
+      this.GameJoinedEvent?.Invoke(new[] { new PlayerDataModel() });
     }
 
     public void InitializeGame(GameInitializationData gameData)

@@ -5,13 +5,14 @@ namespace Jabberwocky.SoC.Library
   using System.Collections.Generic;
   using GameBoards;
   using Interfaces;
+    using Jabberwocky.SoC.Library.PlayerData;
 
-  public class OldGameManager
+    public class OldGameManager
   {
     #region Fields
     private INumberGenerator diceRoller;
 
-    private PlayerData[] players;
+    private PlayerDataOld[] players;
 
     private Object cardPile;
     #endregion
@@ -21,7 +22,7 @@ namespace Jabberwocky.SoC.Library
     {
       //TODO: Check for null references
       this.Board = board;
-      this.players = new PlayerData[playerCount];
+      this.players = new PlayerDataOld[playerCount];
       this.diceRoller = diceRoller;
       this.cardPile = cardPile;
     }
@@ -36,12 +37,12 @@ namespace Jabberwocky.SoC.Library
     {
     }
 
-    private PlayerData[] DeterminePlayingOrder(PlayerData[] players)
+    private PlayerDataOld[] DeterminePlayingOrder(PlayerDataOld[] players)
     {
       throw new NotImplementedException();
     }
 
-    private PlayerData[] DetermineSetupOrder(PlayerData[] players)
+    private PlayerDataOld[] DetermineSetupOrder(PlayerDataOld[] players)
     {
       throw new NotImplementedException();
     }
