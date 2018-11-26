@@ -1187,7 +1187,7 @@ namespace Jabberwocky.SoC.Library
 
             for (var index = 0; index < playerDataViews.Length; index++)
             {
-                playerDataViews[index] = this.players[index].GetDataView();
+                playerDataViews[index] = this.players[index].GetDataModel();
             }
 
             return playerDataViews;

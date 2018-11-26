@@ -1,12 +1,15 @@
 ﻿
 namespace Jabberwocky.SoC.Library
 {
-  using System;
-  using System.Collections.Generic;
+    using System;
+    using System.Collections.Generic;
 
-  public class PlayerDataBase
-  {
-    public Guid Id { get; protected set; }
-    public List<DevelopmentCard> DisplayedDevelopmentCards { get; protected set; }
-  }
+    public class PlayerDataBase
+    {
+        public List<DevelopmentCard> PlayedDevelopmentCards;
+        public bool HasLongestRoad;
+        public Guid Id;
+        public bool IsComputer;
+        public string Name;
+    }
 }

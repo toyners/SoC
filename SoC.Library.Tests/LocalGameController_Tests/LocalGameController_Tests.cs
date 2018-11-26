@@ -1542,7 +1542,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
         {
             playerDataView.Id.ShouldBe(player.Id);
             playerDataView.Name.ShouldBe(player.Name);
-            playerDataView.DisplayedDevelopmentCards.ShouldBeNull();
+            playerDataView.PlayedDevelopmentCards.ShouldBeNull();
             playerDataView.HiddenDevelopmentCards.ShouldBe(0);
             playerDataView.ResourceCards.ShouldBe(player.ResourcesCount);
             playerDataView.IsComputer.ShouldBe(player.IsComputer);

@@ -1,18 +1,18 @@
 ﻿
+using System.Collections.Generic;
+
 namespace Jabberwocky.SoC.Library
 {
-  using System;
-  using System.Collections.Generic;
+    public class PlayerDataModel : PlayerDataBase
+    {
+        public int ResourceCards;
+        public int HiddenDevelopmentCards;
+        //public int LongestRoadSegmentCount; // TODO: Do we need this?
+    }
 
-  public class PlayerDataModel
-  {
-    public Guid Id { get; set; }
-    public bool IsComputer { get; set; }
-    public List<DevelopmentCardTypes> DisplayedDevelopmentCards { get; set; }
-    public int ResourceCards { get; set; }
-    public int HiddenDevelopmentCards { get; set; }
-    public string Name;
-    public bool HasLongestRoad;
-    public int LongestRoadSegmentCount;
-  }
+    public class PlayerFullDataModel : PlayerDataBase
+    {
+        public List<DevelopmentCard> HiddenDevelopmentCards;
+        public ResourceClutch Resources;
+    }
 }
