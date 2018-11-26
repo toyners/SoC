@@ -122,24 +122,24 @@ namespace SoC.Harness.ViewModels
             this.DiceRollEvent?.Invoke(arg1, arg2);
         }
 
-        private void GameJoinedEventHandler(PlayerDataModel[] playerDataModels)
+        private void GameJoinedEventHandler(PlayerDataBase[] playerDataModels)
         {
             string firstPlayerIconPath = @"..\resources\icons\blue_icon.png";
             string secondPlayerIconPath = @"..\resources\icons\red_icon.png";
             string thirdPlayerIconPath = @"..\resources\icons\green_icon.png";
             string fourthPlayerIconPath = @"..\resources\icons\yellow_icon.png";
 
-            var playerViewModel1 = new PlayerViewModel(playerDataModels[0], firstPlayerIconPath);
+            var playerViewModel1 = new PlayerViewModel((PlayerFullDataModel)playerDataModels[0], firstPlayerIconPath);
             this.player = playerViewModel1;
             this.playerViewModelsById.Add(playerDataModels[0].Id, playerViewModel1);
 
-            var playerViewModel2 = new PlayerViewModel(playerDataModels[1], secondPlayerIconPath);
+            var playerViewModel2 = new PlayerViewModel((PlayerFullDataModel)playerDataModels[1], secondPlayerIconPath);
             this.playerViewModelsById.Add(playerDataModels[1].Id, playerViewModel2);
 
-            var playerViewModel3 = new PlayerViewModel(playerDataModels[2], thirdPlayerIconPath);
+            var playerViewModel3 = new PlayerViewModel((PlayerFullDataModel)playerDataModels[2], thirdPlayerIconPath);
             this.playerViewModelsById.Add(playerDataModels[2].Id, playerViewModel3);
 
-            var playerViewModel4 = new PlayerViewModel(playerDataModels[3], fourthPlayerIconPath);
+            var playerViewModel4 = new PlayerViewModel((PlayerFullDataModel)playerDataModels[3], fourthPlayerIconPath);
             this.playerViewModelsById.Add(playerDataModels[3].Id, playerViewModel4);
 
             this.GameJoinedEvent?.Invoke(playerViewModel1, playerViewModel2, playerViewModel3, playerViewModel4);

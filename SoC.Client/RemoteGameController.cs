@@ -26,7 +26,7 @@ namespace Jabberwocky.SoC.Client
     #region Events
     public Action<GameBoardUpdate> BoardUpdatedEvent { get; set; }
 
-    public Action<PlayerDataModel[]> GameJoinedEvent { get; set; }
+    public Action<PlayerDataBase[]> GameJoinedEvent { get; set; }
 
     public Action<GameBoard> InitialBoardSetupEvent { get; set; }
 

@@ -1580,17 +1580,17 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
               .ChangePlayerPool(mockPlayerPool)
               .Create();*/
 
-            PlayerDataModel[] playerDataViews = null;
-            localGameController.GameJoinedEvent = (PlayerDataModel[] p) => { playerDataViews = p; };
+            PlayerDataBase[] playerDataViews = null;
+            localGameController.GameJoinedEvent = (PlayerDataBase[] p) => { playerDataViews = p; };
             localGameController.JoinGame(gameOptions);
 
             playerDataViews.ShouldNotBeNull();
             playerDataViews.Length.ShouldBe(4);
 
-            this.AssertPlayerDataViewIsCorrect(player, playerDataViews[0]);
-            this.AssertPlayerDataViewIsCorrect(firstOpponent, playerDataViews[1]);
-            this.AssertPlayerDataViewIsCorrect(secondOpponent, playerDataViews[2]);
-            this.AssertPlayerDataViewIsCorrect(thirdOpponent, playerDataViews[3]);
+            this.AssertPlayerDataViewIsCorrect(player, (PlayerDataModel)playerDataViews[0]);
+            this.AssertPlayerDataViewIsCorrect(firstOpponent, (PlayerDataModel)playerDataViews[1]);
+            this.AssertPlayerDataViewIsCorrect(secondOpponent, (PlayerDataModel)playerDataViews[2]);
+            this.AssertPlayerDataViewIsCorrect(thirdOpponent, (PlayerDataModel)playerDataViews[3]);
         }
 
         private void VerifyNewSettlements(List<Tuple<UInt32, Guid>> actualSettlements, params Tuple<UInt32, Guid>[] expectedSettlements)

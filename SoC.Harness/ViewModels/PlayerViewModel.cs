@@ -13,7 +13,7 @@ namespace SoC.Harness.ViewModels
         private readonly Queue<string> historyLines = new Queue<string>();
         private string historyText;
 
-        public PlayerViewModel(PlayerDataModel playerModel, string iconPath)
+        public PlayerViewModel(PlayerFullDataModel playerModel, string iconPath)
         {
             this.Id = playerModel.Id;
             this.Name = playerModel.Name;

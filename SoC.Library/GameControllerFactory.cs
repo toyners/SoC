@@ -93,7 +93,7 @@ namespace Jabberwocky.SoC.Library
 
   public class GameControllerSetup
   {
-    public Action<PlayerDataModel[]> GameJoinedEventHandler;
+    public Action<PlayerDataBase[]> GameJoinedEventHandler;
     public Action<GameBoards.GameBoard> InitialBoardSetupEventHandler;
     public Action<ClientAccount> LoggedInEventHandler;
     public Action<GameBoards.GameBoardUpdate> StartInitialSetupTurnEvent;

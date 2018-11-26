@@ -1,66 +1,65 @@
 ﻿
 namespace Jabberwocky.SoC.Library.Interfaces
 {
-  using System;
-  using System.Collections.Generic;
-  using GameBoards;
+    using System;
+    using GameBoards;
     using Jabberwocky.SoC.Library.PlayerData;
 
     public interface IGameController
-  {
-    #region Events
-    Action<GameBoardUpdate> BoardUpdatedEvent { get; set; }
+    {
+        #region Events
+        Action<GameBoardUpdate> BoardUpdatedEvent { get; set; }
 
-    Action<PlayerDataModel[]> GameJoinedEvent { get; set; }
+        Action<PlayerDataBase[]> GameJoinedEvent { get; set; }
 
-    Action<GameBoard> InitialBoardSetupEvent { get; set; }
+        Action<GameBoard> InitialBoardSetupEvent { get; set; }
 
-    Action<ClientAccount> LoggedInEvent { get; set; }
+        Action<ClientAccount> LoggedInEvent { get; set; }
 
-    Action<GameBoardUpdate> StartInitialSetupTurnEvent { get; set; }
-    #endregion
+        Action<GameBoardUpdate> StartInitialSetupTurnEvent { get; set; }
+        #endregion
 
-    Guid GameId { get; }
+        Guid GameId { get; }
 
-    //void StartLogIntoAccount(String username, String password);
+        //void StartLogIntoAccount(String username, String password);
 
-    void JoinGame(GameOptions gameOptions);
+        void JoinGame(GameOptions gameOptions);
 
-    //void StartJoiningGame(GameOptions gameFilter, Guid accountToken);
+        //void StartJoiningGame(GameOptions gameFilter, Guid accountToken);
 
-    //void PlaceTown(Location location);
+        //void PlaceTown(Location location);
 
-    //void UpgradeToCity(Location location);
+        //void UpgradeToCity(Location location);
 
-    //void BuildRoad(Location startingLocation, Location finishingLocation);
+        //void BuildRoad(Location startingLocation, Location finishingLocation);
 
-    //DevelopmentCard BuyDevelopmentCard();
+        //DevelopmentCard BuyDevelopmentCard();
 
-    //ResourceTypes TradeResourcesWithBank();
+        //ResourceTypes TradeResourcesWithBank();
 
-    //ResourceTypes TradeResourcesAtPort(Location location);
+        //ResourceTypes TradeResourcesAtPort(Location location);
 
-    //ICollection<Offer> MakeOffer(Offer offer);
+        //ICollection<Offer> MakeOffer(Offer offer);
 
-    //void AcceptOffer(Offer offer);
+        //void AcceptOffer(Offer offer);
 
-    void Quit();
-  }
+        void Quit();
+    }
 
-  public struct Offer
-  {
-    PlayerDataOld player;
+    public struct Offer
+    {
+        PlayerDataOld player;
 
-    Int32 OfferedOre;
-    Int32 OfferedWheat;
-    Int32 OfferedSheep;
-    Int32 OfferedLumber;
-    Int32 OfferedBrick;
+        Int32 OfferedOre;
+        Int32 OfferedWheat;
+        Int32 OfferedSheep;
+        Int32 OfferedLumber;
+        Int32 OfferedBrick;
 
-    Int32 WantedOreCount;
-    Int32 WantedWheatCount;
-    Int32 WantedSheepCount;
-    Int32 WantedLumberCount;
-    Int32 WantedBrickCount;
-  }
+        Int32 WantedOreCount;
+        Int32 WantedWheatCount;
+        Int32 WantedSheepCount;
+        Int32 WantedLumberCount;
+        Int32 WantedBrickCount;
+    }
 }

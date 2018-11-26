@@ -108,7 +108,7 @@ namespace Jabberwocky.SoC.Library
         public Action<uint, uint> DiceRollEvent { get; set; }
         public Action<ErrorDetails> ErrorRaisedEvent { get; set; }
         public Action<GameBoard> InitialBoardSetupEvent { get; set; }
-        public Action<PlayerDataModel[]> GameJoinedEvent { get; set; }
+        public Action<PlayerDataBase[]> GameJoinedEvent { get; set; }
         public Action<PlayerDataModel[], GameBoard> GameLoadedEvent { get; set; }
         public Action<Guid> GameOverEvent { get; set; }
         public Action<ResourceUpdate> GameSetupResourcesEvent { get; set; }
