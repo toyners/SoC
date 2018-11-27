@@ -50,7 +50,7 @@ namespace SoC.Harness.ViewModels
         #region Methods
         public static ControllerViewModel Load(string filePath)
         {
-            var localGameController = new LocalGameController(new TestNumberGenerator(), null);
+            var localGameController = new LocalGameController(new TestNumberGenerator(), null, true);
             var controller = new ControllerViewModel(localGameController);
 
             localGameController.Load(filePath);
@@ -60,7 +60,7 @@ namespace SoC.Harness.ViewModels
 
         public static ControllerViewModel New()
         {
-            return new ControllerViewModel(new LocalGameController(new TestNumberGenerator(), new LocalPlayerPool()));
+            return new ControllerViewModel(new LocalGameController(new TestNumberGenerator(), new LocalPlayerPool(), true));
         }
 
         public void CompleteFirstInfrastructureSetup(uint settlementLocation, uint roadEndLocation)
