@@ -1292,7 +1292,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
             var localGameController = new LocalGameControllerCreator().Create();
 
             GameBoard boardData = null;
-            localGameController.GameLoadedEvent = (PlayerDataModel[] pd, GameBoard bd) => { boardData = bd; };
+            localGameController.GameLoadedEvent = (PlayerDataBase[] pd, GameBoard bd) => { boardData = bd; };
 
             // Act
             var content = "<game><board><hexes>" +
@@ -1347,8 +1347,8 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
 
             var localGameController = new LocalGameControllerCreator().Create();
 
-            PlayerDataModel[] playerDataViews = null;
-            localGameController.GameLoadedEvent = (PlayerDataModel[] pd, GameBoard bd) => { playerDataViews = pd; };
+            PlayerDataBase[] playerDataViews = null;
+            localGameController.GameLoadedEvent = (PlayerDataBase[] pd, GameBoard bd) => { playerDataViews = pd; };
 
             // Act
             var streamContent = "<game>" +
@@ -1369,10 +1369,10 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
             playerDataViews.ShouldNotBeNull();
             playerDataViews.Length.ShouldBe(4);
 
-            this.AssertPlayerDataViewIsCorrect(player, playerDataViews[0]);
-            this.AssertPlayerDataViewIsCorrect(firstOpponent, playerDataViews[1]);
-            this.AssertPlayerDataViewIsCorrect(secondOpponent, playerDataViews[2]);
-            this.AssertPlayerDataViewIsCorrect(thirdOpponent, playerDataViews[3]);
+            this.AssertPlayerDataViewIsCorrect(player, (PlayerDataModel)playerDataViews[0]);
+            this.AssertPlayerDataViewIsCorrect(firstOpponent, (PlayerDataModel)playerDataViews[1]);
+            this.AssertPlayerDataViewIsCorrect(secondOpponent, (PlayerDataModel)playerDataViews[2]);
+            this.AssertPlayerDataViewIsCorrect(thirdOpponent, (PlayerDataModel)playerDataViews[3]);
         }
 
         //TODO: Replace with test for latest Load method
@@ -1385,7 +1385,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
             var localGameController = new LocalGameControllerCreator().Create();
 
             GameBoard boardData = null;
-            localGameController.GameLoadedEvent = (PlayerDataModel[] pd, GameBoard bd) => { boardData = bd; };
+            localGameController.GameLoadedEvent = (PlayerDataBase[] pd, GameBoard bd) => { boardData = bd; };
 
             // Act
             var streamContent = "<game>" +
