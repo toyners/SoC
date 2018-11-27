@@ -12,7 +12,7 @@ namespace Jabberwocky.SoC.Library.PlayerData
         public PlayerDataModel(IPlayer player) : base(player)
         {
             this.ResourceCards = player.Resources.Count;
-            // TODO: Hidden development cards
+            this.HiddenDevelopmentCards = player.HeldCards.Count;
         }
     }
 }
