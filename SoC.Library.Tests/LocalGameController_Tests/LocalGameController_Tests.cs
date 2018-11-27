@@ -1331,6 +1331,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
             hexes[18].ShouldBe(new Tuple<ResourceTypes?, UInt32>(ResourceTypes.Ore, 8));
         }
 
+        //TODO: Replace with test for latest Load method
         [Test]
         [Category("LocalGameController")]
         public void Load_PlayerDataOnly_PlayerDataViewsAreAsExpected()
