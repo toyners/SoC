@@ -68,6 +68,7 @@ namespace Jabberwocky.SoC.Library
         private IPlayer[] computerPlayers;
         private IPlayer playerWithLargestArmy;
         private IPlayer playerWithLongestRoad;
+        private bool provideFullPlayerData;
         private IPlayer mainPlayer;
         private ResourceUpdate gameSetupResources;
         private int resourcesToDrop;
@@ -80,10 +81,10 @@ namespace Jabberwocky.SoC.Library
         #endregion
 
         #region Construction
-        public LocalGameController(INumberGenerator dice, IPlayerPool playerPool)
-            : this(dice, playerPool, new GameBoard(BoardSizes.Standard), new DevelopmentCardHolder()) { }
+        public LocalGameController(INumberGenerator dice, IPlayerPool playerPool, bool provideFullPlayerData = false)
+            : this(dice, playerPool, new GameBoard(BoardSizes.Standard), new DevelopmentCardHolder(), provideFullPlayerData) { }
 
-        public LocalGameController(INumberGenerator dice, IPlayerPool computerPlayerFactory, GameBoard gameBoard, IDevelopmentCardHolder developmentCardHolder)
+        public LocalGameController(INumberGenerator dice, IPlayerPool computerPlayerFactory, GameBoard gameBoard, IDevelopmentCardHolder developmentCardHolder, bool provideFullPlayerData = false)
         {
             this.numberGenerator = dice;
             this.playerPool = computerPlayerFactory;
@@ -92,6 +93,7 @@ namespace Jabberwocky.SoC.Library
             this.GamePhase = GamePhases.Initial;
             this.cardsPlayed = new HashSet<DevelopmentCard>();
             this.cardsPurchasedThisTurn = new HashSet<DevelopmentCard>();
+            this.provideFullPlayerData = provideFullPlayerData;
         }
         #endregion
 
@@ -126,7 +128,7 @@ namespace Jabberwocky.SoC.Library
         public Action SettlementBuiltEvent { get; set; }
         public Action<GameBoardUpdate> StartInitialSetupTurnEvent { get; set; }
         public Action<TurnToken> StartPlayerTurnEvent { get; set; }
-        public Action<PlayerDataModel[]> TurnOrderFinalisedEvent { get; set; }
+        public Action<PlayerDataBase[]> TurnOrderFinalisedEvent { get; set; }
         #endregion
 
         #region Methods
@@ -305,7 +307,7 @@ namespace Jabberwocky.SoC.Library
                 return;
             }
 
-            var playerData = this.CreatePlayerDataViews();
+            var playerData = this.CreatePlayerData();
             this.GameJoinedEvent?.Invoke(playerData);
             this.InitialBoardSetupEvent?.Invoke(this.gameBoard);
 
@@ -543,7 +545,7 @@ namespace Jabberwocky.SoC.Library
 
             // Set the order for the main game loop
             this.players = PlayerTurnOrderCreator.Create(this.players, this.numberGenerator);
-            var playerData = this.CreatePlayerDataViews();
+            var playerData = this.CreatePlayerData();
             this.TurnOrderFinalisedEvent?.Invoke(playerData);
             this.GamePhase = GamePhases.StartGamePlay;
         }
@@ -569,7 +571,7 @@ namespace Jabberwocky.SoC.Library
             }
 
             this.CreatePlayers(gameOptions);
-            var playerData = this.CreatePlayerDataViews();
+            var playerData = this.CreatePlayerData();
             this.GameJoinedEvent?.Invoke(playerData);
             this.GamePhase = GamePhases.WaitingLaunch;
         }
@@ -669,7 +671,7 @@ namespace Jabberwocky.SoC.Library
                     this.CreatePlayers(new GameOptions());
                 }
 
-                var playerDataViews = this.CreatePlayerDataViews();
+                var playerDataViews = this.CreatePlayerData();
 
                 this.GameLoadedEvent?.Invoke(playerDataViews, this.gameBoard);
             }
@@ -744,7 +746,7 @@ namespace Jabberwocky.SoC.Library
                     this.CreatePlayers(new GameOptions());
                 }
 
-                var playerDataViews = this.CreatePlayerDataViews();
+                var playerDataViews = this.CreatePlayerData();
 
                 this.GameLoadedEvent?.Invoke(playerDataViews, this.gameBoard);
             }
@@ -1182,13 +1184,13 @@ namespace Jabberwocky.SoC.Library
             return gameBoardUpdate;
         }
 
-        private PlayerDataModel[] CreatePlayerDataViews()
+        private PlayerDataBase[] CreatePlayerData()
         {
-            var playerDataViews = new PlayerDataModel[this.players.Length];
+            var playerDataViews = new PlayerDataBase[this.players.Length];
 
             for (var index = 0; index < playerDataViews.Length; index++)
             {
-                playerDataViews[index] = this.players[index].GetDataModel();
+                playerDataViews[index] = this.players[index].GetDataModel(this.provideFullPlayerData);
             }
 
             return playerDataViews;

@@ -77,7 +77,7 @@ namespace Jabberwocky.SoC.Client
 
     public void ConfirmGameSessionReadyToLaunch()
     {
-      this.GameJoinedEvent?.Invoke(new[] { new PlayerDataModel() });
+      this.GameJoinedEvent?.Invoke(new[] { new PlayerDataModel(null) });
     }
 
     public void ConfirmOtherPlayerHasLeftGame(String username)
@@ -92,7 +92,7 @@ namespace Jabberwocky.SoC.Client
 
     public void GameJoined()
     {
-      this.GameJoinedEvent?.Invoke(new[] { new PlayerDataModel() });
+      this.GameJoinedEvent?.Invoke(new[] { new PlayerDataModel(null) });
     }
 
     public void InitializeGame(GameInitializationData gameData)

@@ -36,7 +36,7 @@ namespace Jabberwocky.SoC.Library.Interfaces
 
         #region Methods
         void AddResources(ResourceClutch resourceClutch);
-        PlayerDataModel GetDataModel();
+        PlayerDataBase GetDataModel(bool provideFullPlayerData);
         void PayForDevelopmentCard();
         void PlaceCity();
         void PlaceKnightDevelopmentCard();

@@ -748,18 +748,18 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
             localGameController.CompleteGameSetup(MainSettlementTwoLocation, MainRoadTwoEnd);
 
             // Act
-            PlayerDataModel[] turnOrder = null;
-            localGameController.TurnOrderFinalisedEvent = (PlayerDataModel[] p) => { turnOrder = p; };
+            PlayerDataBase[] turnOrder = null;
+            localGameController.TurnOrderFinalisedEvent = (PlayerDataBase[] p) => { turnOrder = p; };
             localGameController.FinalisePlayerTurnOrder();
 
             // Assert
             turnOrder.ShouldNotBeNull();
             turnOrder.Length.ShouldBe(4);
 
-            this.AssertPlayerDataViewIsCorrect(player, turnOrder[3]);
-            this.AssertPlayerDataViewIsCorrect(firstOpponent, turnOrder[2]);
-            this.AssertPlayerDataViewIsCorrect(secondOpponent, turnOrder[1]);
-            this.AssertPlayerDataViewIsCorrect(thirdOpponent, turnOrder[0]);
+            this.AssertPlayerDataViewIsCorrect(player, (PlayerDataModel)turnOrder[3]);
+            this.AssertPlayerDataViewIsCorrect(firstOpponent, (PlayerDataModel)turnOrder[2]);
+            this.AssertPlayerDataViewIsCorrect(secondOpponent, (PlayerDataModel)turnOrder[1]);
+            this.AssertPlayerDataViewIsCorrect(thirdOpponent, (PlayerDataModel)turnOrder[0]);
         }
 
         [Test]
@@ -787,18 +787,18 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
             localGameController.CompleteGameSetup(MainSettlementTwoLocation, MainRoadTwoEnd);
 
             // Act
-            PlayerDataModel[] turnOrder = null;
-            localGameController.TurnOrderFinalisedEvent = (PlayerDataModel[] p) => { turnOrder = p; };
+            PlayerDataBase[] turnOrder = null;
+            localGameController.TurnOrderFinalisedEvent = (PlayerDataBase[] p) => { turnOrder = p; };
             localGameController.FinalisePlayerTurnOrder();
 
             // Assert
             turnOrder.ShouldNotBeNull();
             turnOrder.Length.ShouldBe(4);
 
-            this.AssertPlayerDataViewIsCorrect(player, turnOrder[0]);
-            this.AssertPlayerDataViewIsCorrect(firstOpponent, turnOrder[1]);
-            this.AssertPlayerDataViewIsCorrect(secondOpponent, turnOrder[2]);
-            this.AssertPlayerDataViewIsCorrect(thirdOpponent, turnOrder[3]);
+            this.AssertPlayerDataViewIsCorrect(player, (PlayerDataModel)turnOrder[0]);
+            this.AssertPlayerDataViewIsCorrect(firstOpponent, (PlayerDataModel)turnOrder[1]);
+            this.AssertPlayerDataViewIsCorrect(secondOpponent, (PlayerDataModel)turnOrder[2]);
+            this.AssertPlayerDataViewIsCorrect(thirdOpponent, (PlayerDataModel)turnOrder[3]);
         }
 
         [Test]

@@ -142,18 +142,16 @@ namespace Jabberwocky.SoC.Library
             this.WoolCount += resourceClutch.WoolCount;
         }
 
-        public PlayerDataModel GetDataModel()
+        public PlayerDataBase GetDataModel(bool provideFullPlayerData)
         {
-            var dataModel = new PlayerDataModel();
+            PlayerDataBase result = null;
 
-            dataModel.Id = this.Id;
-            dataModel.Name = this.Name;
-            dataModel.ResourceCards = this.ResourcesCount;
-            dataModel.HiddenDevelopmentCards = 0;
-            dataModel.PlayedDevelopmentCards = null;
-            dataModel.IsComputer = this.IsComputer;
+            if (provideFullPlayerData)
+                result = new PlayerFullDataModel(this);
+            else
+                result = new PlayerDataModel(this);
 
-            return dataModel;
+            return result;
         }
 
         public ResourceClutch LoseResourceAtIndex(int index)
