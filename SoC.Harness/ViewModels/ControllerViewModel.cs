@@ -34,6 +34,7 @@ namespace SoC.Harness.ViewModels
             this.localGameController.ResourcesLostEvent = this.ResourcesLostEventHandler;
             this.localGameController.RobbingChoicesEvent = this.RobbingChoicesEventHandler;
             this.localGameController.ResourcesTransferredEvent = this.ResourcesTransferredEventHandler;
+            this.localGameController.RoadSegmentBuiltEvent = this.RoadSegmentBuiltEventHandler;
         }
         #endregion
 
@@ -225,6 +226,11 @@ namespace SoC.Harness.ViewModels
                 givingPlayerViewModel.Update(resourceTransaction.Resources, false);
                 receivingPlayerViewModel.Update(resourceTransaction.Resources, true);
             }
+        }
+
+        private void RoadSegmentBuiltEventHandler(PlayerDataBase playerDataBase)
+        {
+            throw new NotImplementedException();
         }
 
         private void RobbingChoicesEventHandler(Dictionary<Guid, int> choicesByPlayerId)
