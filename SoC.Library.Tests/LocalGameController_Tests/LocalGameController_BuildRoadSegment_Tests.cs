@@ -28,9 +28,8 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
             mockDice.AddSequence(new[] { 8u });
             player.AddResources(new ResourceClutch(1, 0, 1, 0, 0));
 
-            var buildCompleted = false;
-            localGameController.RoadSegmentBuiltEvent = (PlayerDataBase p) => { buildCompleted = true; };
-            throw new Exception("Examine PlayerDataBase parameter");
+            PlayerDataBase playerDataBase = null;
+            localGameController.RoadSegmentBuiltEvent = (PlayerDataBase p) => { playerDataBase = p; };
             TurnToken turnToken = null;
             localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
             localGameController.StartGamePlay();
@@ -39,7 +38,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
             localGameController.BuildRoadSegment(turnToken, 4u, 3u);
 
             // Assert
-            buildCompleted.ShouldBeTrue();
+            playerDataBase.ShouldNotBeNull();
         }
 
         [Test]
@@ -256,16 +255,15 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
 
             TurnToken turnToken = null;
             localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
-            bool roadSegmentBuiltEventRaised = false;
-            localGameController.RoadSegmentBuiltEvent = (PlayerDataBase p) => { roadSegmentBuiltEventRaised = true; };
-            throw new Exception("Examine PlayerDataBase parameter");
+            PlayerDataBase playerData = null;
+            localGameController.RoadSegmentBuiltEvent = (PlayerDataBase p) => { playerData = p; };
             localGameController.StartGamePlay();
 
             // Act
             localGameController.BuildRoadSegment(turnToken, MainRoadOneEnd, MainSettlementOneLocation);
 
             // Assert
-            roadSegmentBuiltEventRaised.ShouldBeFalse();
+            playerData.ShouldBeNull();
             errorDetails.ShouldNotBeNull();
             errorDetails.Message.ShouldBe("Cannot build road segment. Road segment between " + MainRoadOneEnd + " and " + MainSettlementOneLocation + " already exists.");
         }

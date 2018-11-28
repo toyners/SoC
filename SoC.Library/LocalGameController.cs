@@ -1197,9 +1197,9 @@ namespace Jabberwocky.SoC.Library
             return playerDataViews;
         }
 
-        private PlayerDataBase CreateSinglePlayerData(IPlayer mainPlayer)
+        private PlayerDataBase CreateSinglePlayerData(IPlayer player)
         {
-            throw new NotImplementedException();
+            return player.GetDataModel(this.provideFullPlayerData);
         }
 
         private void CreatePlayers(GameOptions gameOptions)

@@ -32,7 +32,7 @@ namespace Jabberwocky.SoC.Library
             this.Name = name;
         }
 
-        [Obsolete("Deprecated. Use Player::ctor(PlayerSaveObject) instead.")]
+        [Obsolete("Deprecated. Use Player::ctor(PlayerModel) instead.")]
         public Player(IGameDataSection<GameDataSectionKeys, GameDataValueKeys, ResourceTypes> data)
         {
             this.Id = data.GetIdentityValue(GameDataValueKeys.PlayerId);
