@@ -4,7 +4,8 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
   using System;
   using System.Collections.Generic;
   using GameEvents;
-  using Jabberwocky.SoC.Library.UnitTests.Extensions;
+    using Jabberwocky.SoC.Library.PlayerData;
+    using Jabberwocky.SoC.Library.UnitTests.Extensions;
   using Mock;
   using NUnit.Framework;
   using Shouldly;
@@ -28,8 +29,8 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       player.AddResources(new ResourceClutch(1, 0, 1, 0, 0));
 
       var buildCompleted = false;
-      localGameController.RoadSegmentBuiltEvent = () => { buildCompleted = true; };
-
+      localGameController.RoadSegmentBuiltEvent = (PlayerDataBase p) => { buildCompleted = true; };
+            throw new Exception("Examine PlayerDataBase parameter");
       TurnToken turnToken = null;
       localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
       localGameController.StartGamePlay();
@@ -255,9 +256,10 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
 
       TurnToken turnToken = null;
       localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
-      Boolean roadSegmentBuiltEventRaised = false;
-      localGameController.RoadSegmentBuiltEvent = () => { roadSegmentBuiltEventRaised = true; };
-      localGameController.StartGamePlay();
+      bool roadSegmentBuiltEventRaised = false;
+      localGameController.RoadSegmentBuiltEvent = (PlayerDataBase p) => { roadSegmentBuiltEventRaised = true; };
+            throw new Exception("Examine PlayerDataBase parameter");
+            localGameController.StartGamePlay();
 
       // Act
       localGameController.BuildRoadSegment(turnToken, MainRoadOneEnd, MainSettlementOneLocation);

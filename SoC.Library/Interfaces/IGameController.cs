@@ -9,41 +9,20 @@ namespace Jabberwocky.SoC.Library.Interfaces
     {
         #region Events
         Action<GameBoardUpdate> BoardUpdatedEvent { get; set; }
-
         Action<PlayerDataBase[]> GameJoinedEvent { get; set; }
-
         Action<GameBoard> InitialBoardSetupEvent { get; set; }
-
         Action<ClientAccount> LoggedInEvent { get; set; }
-
         Action<GameBoardUpdate> StartInitialSetupTurnEvent { get; set; }
         #endregion
 
+        #region Properties
         Guid GameId { get; }
+        #endregion
 
-        //void StartLogIntoAccount(String username, String password);
-
+        #region Methods
         void JoinGame(GameOptions gameOptions);
-
-        //void StartJoiningGame(GameOptions gameFilter, Guid accountToken);
-
-        //void PlaceTown(Location location);
-
-        //void UpgradeToCity(Location location);
-
-        //void BuildRoad(Location startingLocation, Location finishingLocation);
-
-        //DevelopmentCard BuyDevelopmentCard();
-
-        //ResourceTypes TradeResourcesWithBank();
-
-        //ResourceTypes TradeResourcesAtPort(Location location);
-
-        //ICollection<Offer> MakeOffer(Offer offer);
-
-        //void AcceptOffer(Offer offer);
-
         void Quit();
+        #endregion
     }
 
     public struct Offer
