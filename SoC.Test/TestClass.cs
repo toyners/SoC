@@ -1,12 +1,10 @@
 ﻿
 namespace SoC.Test
 {
-    using System;
     using System.ServiceModel;
     using System.Threading;
     using System.Threading.Tasks;
     using Jabberwocky.SoC.Client;
-    using Jabberwocky.SoC.Library;
     using Jabberwocky.SoC.Library.PlayerData;
     using NUnit.Framework;
     using Shouldly;
