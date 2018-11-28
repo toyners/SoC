@@ -423,18 +423,31 @@ namespace SoC.Harness.Views
 
                 var settlementData = board.GetSettlementData();
                 if (settlementData != null)
+                {
                     this.PlaceSettlements(settlementData);
+                    this.state = States.ChoosePhaseAction;
+                }
 
                 var roadData = board.GetRoadData();
                 if (roadData != null)
+                {
                     this.PlaceRoads(roadData);
+                    this.state = States.ChoosePhaseAction;
+                }
 
                 var cityData = board.GetCityData();
                 if (cityData != null)
+                {
                     this.PlaceCities(cityData);
+                    this.state = States.ChoosePhaseAction;
+                }
 
-                this.GeneralLabel.Visibility = Visibility.Visible;
-                this.GeneralLabel.Text = "Select location for FIRST Settlement and Road Segment";
+                if (this.state == States.AwaitingFirstInfrastructure)
+                {
+                    // This is only needed for a new game
+                    this.GeneralLabel.Visibility = Visibility.Visible;
+                    this.GeneralLabel.Text = "Select location for FIRST Settlement and Road Segment";
+                }
             });
         }
 

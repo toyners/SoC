@@ -7,9 +7,6 @@
         xmlns:views="clr-namespace:SoC.Harness.Views"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800" WindowState="Maximized">
-    <Window.Resources>
-        
-    </Window.Resources>
 
     <Window.InputBindings>
         <KeyBinding Modifiers="Ctrl" Key="E" Command="local:CustomCommands.EndTurn" />
