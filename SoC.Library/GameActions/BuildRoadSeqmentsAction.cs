@@ -1,18 +1,17 @@
 ﻿
 namespace Jabberwocky.SoC.Library.GameActions
 {
-  using System;
-  using Enums;
+    using Enums;
 
-  public class BuildRoadSegmentAction : ComputerPlayerAction
-  {
-    public readonly UInt32 StartLocation;
-    public readonly UInt32 EndLocation;
-
-    public BuildRoadSegmentAction(ComputerPlayerActionTypes action, UInt32 startLocation, UInt32 endLocation) : base(action)
+    public class BuildRoadSegmentAction : ComputerPlayerAction
     {
-      this.StartLocation = startLocation;
-      this.EndLocation = endLocation;
+        public readonly uint StartLocation;
+        public readonly uint EndLocation;
+
+        public BuildRoadSegmentAction(uint startLocation, uint endLocation) : base(ComputerPlayerActionTypes.BuildRoadSegment)
+        {
+            this.StartLocation = startLocation;
+            this.EndLocation = endLocation;
+        }
     }
-  }
 }

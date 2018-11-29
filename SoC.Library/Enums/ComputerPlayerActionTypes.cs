@@ -12,5 +12,6 @@ namespace Jabberwocky.SoC.Library.Enums
         PlayMonopolyCard,
         PlayYearOfPlentyCard,
         TradeWithBank,
+        RolledDice,
     }
 }
