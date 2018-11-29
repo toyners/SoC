@@ -425,20 +425,15 @@ namespace SoC.Harness.Views
                 if (settlementData != null)
                 {
                     this.PlaceSettlements(settlementData);
-                    this.state = States.ChoosePhaseAction;
-                }
 
-                var roadData = board.GetRoadData();
-                if (roadData != null)
-                {
-                    this.PlaceRoads(roadData);
-                    this.state = States.ChoosePhaseAction;
-                }
+                    var roadData = board.GetRoadData();
+                    if (roadData != null)
+                        this.PlaceRoads(roadData);
 
-                var cityData = board.GetCityData();
-                if (cityData != null)
-                {
-                    this.PlaceCities(cityData);
+                    var cityData = board.GetCityData();
+                    if (cityData != null)
+                        this.PlaceCities(cityData);
+
                     this.state = States.ChoosePhaseAction;
                 }
 
