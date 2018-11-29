@@ -367,6 +367,11 @@ namespace Jabberwocky.SoC.Library
             {
                 var computerPlayer = this.currentPlayer as IComputerPlayer;
 
+                this.numberGenerator.RollTwoDice(out this.dice1, out this.dice2);
+                this.DiceRollEvent?.Invoke(this.dice1, this.dice2);
+
+                this.CollectResourcesAtStartOfTurn(this.dice1 + this.dice2);
+
                 computerPlayer.BuildInitialPlayerActions(null);
                 var events = new List<GameEvent>();
 
@@ -521,17 +526,7 @@ namespace Jabberwocky.SoC.Library
             var resourceRoll = dice1 + dice2;
             this.DiceRollEvent?.Invoke(dice1, dice2);
 
-            var turnResources = this.CollectTurnResources(resourceRoll);
-            this.ResourcesCollectedEvent?.Invoke(turnResources);
-
-            foreach (var kv in turnResources)
-            {
-                var player = this.playersById[kv.Key];
-                foreach (var resourceCollection in kv.Value)
-                {
-                    player.AddResources(resourceCollection.Resources);
-                }
-            }
+            this.CollectResourcesAtStartOfTurn(resourceRoll);
         }
 
         // 06 Finalise player turn order
@@ -825,17 +820,7 @@ namespace Jabberwocky.SoC.Library
             var resourceRoll = this.dice1 + this.dice2;
             if (resourceRoll != 7)
             {
-                var turnResources = this.CollectTurnResources(resourceRoll);
-                this.ResourcesCollectedEvent?.Invoke(turnResources);
-
-                foreach (var kv in turnResources)
-                {
-                    var player = this.playersById[kv.Key];
-                    foreach (var resourceCollection in kv.Value)
-                    {
-                        player.AddResources(resourceCollection.Resources);
-                    }
-                }
+                this.CollectResourcesAtStartOfTurn(resourceRoll);
             }
             else
             {
@@ -1085,11 +1070,6 @@ namespace Jabberwocky.SoC.Library
             }
         }
 
-        private Dictionary<Guid, ResourceCollection[]> CollectTurnResources(uint diceRoll)
-        {
-            return this.gameBoard.GetResourcesForRoll(diceRoll);
-        }
-
         private void CollectInitialResourcesForPlayer(Guid playerId, uint settlementLocation)
         {
             if (this.gameSetupResources == null)
@@ -1099,6 +1079,21 @@ namespace Jabberwocky.SoC.Library
 
             var resources = this.gameBoard.GetResourcesForLocation(settlementLocation);
             this.gameSetupResources.Resources.Add(playerId, resources);
+        }
+
+        private void CollectResourcesAtStartOfTurn(uint resourceRoll)
+        {
+            var turnResources = this.GetTurnResources(resourceRoll);
+            this.ResourcesCollectedEvent?.Invoke(turnResources);
+
+            foreach (var kv in turnResources)
+            {
+                var player = this.playersById[kv.Key];
+                foreach (var resourceCollection in kv.Value)
+                {
+                    player.AddResources(resourceCollection.Resources);
+                }
+            }
         }
 
         private GameBoardUpdate ContinueSetupForComputerPlayers(GameBoard gameBoardData)
@@ -1299,6 +1294,11 @@ namespace Jabberwocky.SoC.Library
         {
             var resourceIndex = this.numberGenerator.GetRandomNumberBetweenZeroAndMaximum(player.ResourcesCount);
             return player.LoseResourceAtIndex(resourceIndex);
+        }
+
+        private Dictionary<Guid, ResourceCollection[]> GetTurnResources(uint diceRoll)
+        {
+            return this.gameBoard.GetResourcesForRoll(diceRoll);
         }
 
         private void HandlePlaceRoadError(GameBoard.VerificationStatus status)
