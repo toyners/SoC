@@ -110,7 +110,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.Mock
                 var startLocation = instruction.Locations[index];
                 var endLocation = instruction.Locations[index + 1];
 
-                this.buildRoadSegmentActions.Enqueue(new BuildRoadSegmentAction(ComputerPlayerActionTypes.BuildRoadSegment, startLocation, endLocation));
+                this.buildRoadSegmentActions.Enqueue(new BuildRoadSegmentAction(startLocation, endLocation));
                 this.Actions.Enqueue(ComputerPlayerActionTypes.BuildRoadSegment);
             }
 

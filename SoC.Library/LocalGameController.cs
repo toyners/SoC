@@ -365,15 +365,16 @@ namespace Jabberwocky.SoC.Library
 
             while (this.currentPlayer.IsComputer)
             {
-                var computerPlayer = this.currentPlayer as IComputerPlayer;
+                var computerPlayer = (IComputerPlayer)this.currentPlayer;
+                var events = new List<GameEvent>();
 
                 this.numberGenerator.RollTwoDice(out this.dice1, out this.dice2);
-                this.DiceRollEvent?.Invoke(this.dice1, this.dice2);
+                var rolledDiceEvent = new RolledDiceEvent(computerPlayer.Id, this.dice1, this.dice2);
+                events.Add(rolledDiceEvent);
 
                 this.CollectResourcesAtStartOfTurn(this.dice1 + this.dice2);
 
                 computerPlayer.BuildInitialPlayerActions(null);
-                var events = new List<GameEvent>();
 
                 ComputerPlayerAction playerAction;
                 while ((playerAction = computerPlayer.GetPlayerAction()) != null)
