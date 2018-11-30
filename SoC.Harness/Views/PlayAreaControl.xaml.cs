@@ -161,6 +161,7 @@ namespace SoC.Harness.Views
             }
             else if (this.state == States.AwaitingSecondInfrastructure)
             {
+                this.state = States.ChoosePhaseAction;
                 var roadEndLocation = this.workingRoadControl.Start == this.workingLocation ? this.workingRoadControl.End : this.workingRoadControl.Start;
                 this.controllerViewModel.CompleteSecondInfrastructureSetup(this.workingLocation, roadEndLocation);
             }
