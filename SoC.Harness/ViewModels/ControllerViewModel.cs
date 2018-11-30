@@ -6,6 +6,7 @@ namespace SoC.Harness.ViewModels
     using System.Linq;
     using Jabberwocky.SoC.Library;
     using Jabberwocky.SoC.Library.GameBoards;
+    using Jabberwocky.SoC.Library.GameEvents;
     using Jabberwocky.SoC.Library.PlayerData;
 
     public class ControllerViewModel
@@ -35,6 +36,7 @@ namespace SoC.Harness.ViewModels
             this.localGameController.RobbingChoicesEvent = this.RobbingChoicesEventHandler;
             this.localGameController.ResourcesTransferredEvent = this.ResourcesTransferredEventHandler;
             this.localGameController.RoadSegmentBuiltEvent = this.RoadSegmentBuiltEventHandler;
+            this.localGameController.OpponentActionsEvent = this.OpponentActionsEventHandler;
         }
         #endregion
 
@@ -188,6 +190,20 @@ namespace SoC.Harness.ViewModels
         private void InitialBoardSetupEventHandler(GameBoard gameBoard)
         {
             this.InitialBoardSetupEvent?.Invoke(gameBoard);
+        }
+
+        private void OpponentActionsEventHandler(Guid playerId, List<GameEvent> events)
+        {
+            foreach(var e in events)
+            {
+                if (e is RolledDiceEvent rolledDiceEvent)
+                {
+                    var diceRoll = rolledDiceEvent.Dice1 + rolledDiceEvent.Dice2;
+                    var playerViewModel = this.playerViewModelsById[playerId];
+                    playerViewModel.UpdateHistory($"{playerViewModel.Name} rolled {diceRoll}");
+                }
+            }
+            //throw new NotImplementedException();
         }
 
         private void ResourcesCollectedEventHandler(Dictionary<Guid, ResourceCollection[]> resources)
