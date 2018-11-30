@@ -54,6 +54,7 @@
     <Compile Include="DecisionMaker.cs" />
     <Compile Include="DevelopmentCard.cs" />
     <Compile Include="DevelopmentCardHolder.cs" />
+    <Compile Include="GameEvents\ResourceCollectedEvent.cs" />
     <Compile Include="GameEvents\RolledDiceEvent.cs" />
     <Compile Include="GameBoards\GameBoardQuery.cs" />
     <Compile Include="GameBoards\IGameBoardQuery.cs" />

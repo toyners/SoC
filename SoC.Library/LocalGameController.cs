@@ -372,7 +372,7 @@ namespace Jabberwocky.SoC.Library
                 var rolledDiceEvent = new RolledDiceEvent(computerPlayer.Id, this.dice1, this.dice2);
                 events.Add(rolledDiceEvent);
 
-                this.CollectResourcesAtStartOfTurn(this.dice1 + this.dice2);
+                var turnResources = this.GetTurnResources(this.dice1 + this.dice2);
 
                 computerPlayer.BuildInitialPlayerActions(null);
 
@@ -524,10 +524,9 @@ namespace Jabberwocky.SoC.Library
             this.StartPlayerTurnEvent?.Invoke(this.currentTurnToken);
 
             this.numberGenerator.RollTwoDice(out var dice1, out var dice2);
-            var resourceRoll = dice1 + dice2;
             this.DiceRollEvent?.Invoke(dice1, dice2);
 
-            this.CollectResourcesAtStartOfTurn(resourceRoll);
+            this.CollectResourcesAtStartOfTurn(dice1 + dice2);
         }
 
         // 06 Finalise player turn order
