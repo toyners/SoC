@@ -1,23 +1,23 @@
 ﻿
 namespace Jabberwocky.SoC.Library
 {
-  using System;
+    using System;
 
-  public struct ResourceCollection : IComparable
-  {
-    public readonly UInt32 Location;
-    public readonly ResourceClutch Resources;
-
-    public ResourceCollection(UInt32 location, ResourceClutch resourceClutch)
+    public struct ResourceCollection : IComparable
     {
-      this.Location = location;
-      this.Resources = resourceClutch;
-    }
+        public readonly uint Location;
+        public readonly ResourceClutch Resources;
 
-    public Int32 CompareTo(Object obj)
-    {
-      var other = (ResourceCollection)obj;
-      return this.Location.CompareTo(other.Location);
+        public ResourceCollection(uint location, ResourceClutch resourceClutch)
+        {
+            this.Location = location;
+            this.Resources = resourceClutch;
+        }
+
+        public int CompareTo(object obj)
+        {
+            var other = (ResourceCollection)obj;
+            return this.Location.CompareTo(other.Location);
+        }
     }
-  }
 }
