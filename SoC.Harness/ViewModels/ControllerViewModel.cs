@@ -192,18 +192,21 @@ namespace SoC.Harness.ViewModels
             this.InitialBoardSetupEvent?.Invoke(gameBoard);
         }
 
-        private void OpponentActionsEventHandler(Guid playerId, List<GameEvent> events)
+        private void OpponentActionsEventHandler(Guid playerId, List<GameEvent> gameEvents)
         {
-            foreach(var e in events)
+            foreach(var gameEvent in gameEvents)
             {
-                if (e is RolledDiceEvent rolledDiceEvent)
+                if (gameEvent is RolledDiceEvent rolledDiceEvent)
                 {
                     var diceRoll = rolledDiceEvent.Dice1 + rolledDiceEvent.Dice2;
                     var playerViewModel = this.playerViewModelsById[playerId];
                     playerViewModel.UpdateHistory($"{playerViewModel.Name} rolled {diceRoll}");
                 }
+                else
+                {
+                    throw new NotImplementedException();
+                }
             }
-            //throw new NotImplementedException();
         }
 
         private void ResourcesCollectedEventHandler(Dictionary<Guid, ResourceCollection[]> resources)
