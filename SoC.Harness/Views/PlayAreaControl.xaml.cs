@@ -52,7 +52,7 @@ namespace SoC.Harness.Views
         private const string yellowBigIconImagePath = @"..\resources\icons\big_yellow_icon.png";
         private const string yellowBigSelectedIconImagePath = @"..\resources\icons\big_selected_yellow_icon.png";
 
-        private IGameBoard board;
+        //private IGameBoard board;
         private SettlementButtonControl[] settlementButtonControls;
         private Dictionary<string, RoadButtonControl> roadButtonControls;
         private uint workingLocation;
@@ -174,7 +174,7 @@ namespace SoC.Harness.Views
         {
             this.controllerViewModel = controllerViewModel;
             this.controllerViewModel.GameJoinedEvent += this.InitialisePlayerViews;
-            this.controllerViewModel.InitialBoardSetupEvent += this.Initialise;
+            this.controllerViewModel.InitialBoardSetupEvent += this.InitialBoardSetupEventHandler;
             this.controllerViewModel.BoardUpdatedEvent += this.BoardUpdatedEventHandler;
             this.controllerViewModel.DiceRollEvent += this.DiceRollEventHandler;
             this.controllerViewModel.RobberEvent += this.RobberEventHandler;
@@ -288,7 +288,7 @@ namespace SoC.Harness.Views
         {
             this.RoadSelectionLayer.Visibility = Visibility.Visible;
             // Turn on the road buttons for all possible choices
-            var connections = this.board.BoardQuery.GetValidConnectionsForPlayerInfrastructure(this.playerId);
+            var connections = this.controllerViewModel.GetValidConnectionsForPlayerInfrastructure(this.playerId);
             if (connections == null || connections.Count == 0)
                 return; //TODO: Show message that user has no valid connections to build on
 
@@ -409,10 +409,8 @@ namespace SoC.Harness.Views
             throw new NotImplementedException("Should not get here");
         }
 
-        private void Initialise(IGameBoard board)
+        private void InitialBoardSetupEventHandler()
         {
-            this.board = board;
-
             Application.Current.Dispatcher.Invoke(() =>
             {
                 this.InitialiseBoardLayer();
@@ -421,16 +419,16 @@ namespace SoC.Harness.Views
 
                 this.InitialiseRoadSelectionLayer();
 
-                var settlementData = board.GetSettlementData();
+                var settlementData = this.controllerViewModel.GetSettlementData();
                 if (settlementData != null)
                 {
                     this.PlaceSettlements(settlementData);
 
-                    var roadData = board.GetRoadData();
+                    var roadData = this.controllerViewModel.GetRoadData();
                     if (roadData != null)
                         this.PlaceRoads(roadData);
 
-                    var cityData = board.GetCityData();
+                    var cityData = this.controllerViewModel.GetCityData();
                     if (cityData != null)
                         this.PlaceCities(cityData);
 
@@ -488,7 +486,7 @@ namespace SoC.Harness.Views
         private void HideLocalSettlementButtons(SettlementButtonControl control)
         {
             control.Visibility = Visibility.Hidden;
-            var neighbouringLocations = this.board.BoardQuery.GetNeighbouringLocationsFrom(control.Location);
+            var neighbouringLocations = this.controllerViewModel.GetNeighbouringLocationsFrom(control.Location);
             foreach (var neighbouringLocation in neighbouringLocations)
             {
                 this.settlementButtonControls[neighbouringLocation].Visibility = Visibility.Hidden;
@@ -516,7 +514,7 @@ namespace SoC.Harness.Views
 
             BitmapImage resourceBitmap = null;
             BitmapImage numberBitmap = null;
-            var hexData = this.board.GetHexData();
+            var hexData = this.controllerViewModel.GetHexData();
             uint hexIndex = 0;
 
             foreach (var hexLayout in hexLayoutData)
@@ -998,7 +996,7 @@ namespace SoC.Harness.Views
             this.PlaceBuilding(settlementButtonControl.X, settlementButtonControl.Y, string.Empty, @"..\resources\settlements\blue_settlement.png", this.SettlementLayer);
 
             // Turn on the possible road controls for the location
-            var roadEndLocations = this.board.BoardQuery.GetValidConnectedLocationsFrom(this.workingLocation);
+            var roadEndLocations = this.controllerViewModel.GetValidConnectedLocationsFrom(this.workingLocation);
             for (var index = 0; index < roadEndLocations.Length; index++)
             {
                 var id = string.Format("{0}-{1}", this.workingLocation, roadEndLocations[index]);

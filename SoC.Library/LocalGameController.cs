@@ -536,6 +536,16 @@ namespace Jabberwocky.SoC.Library
             this.CollectResourcesAtStartOfTurn(dice1 + dice2);
         }
 
+        public Dictionary<uint, Guid> GetCityData()
+        {
+            return this.gameBoard.GetCityData();
+        }
+
+        public Tuple<uint, uint, Guid>[] GetRoadData()
+        {
+            return this.gameBoard.GetRoadData();
+        }
+
         // 06 Finalise player turn order
         public void FinalisePlayerTurnOrder()
         {
@@ -551,6 +561,16 @@ namespace Jabberwocky.SoC.Library
             var playerData = this.CreatePlayerData();
             this.TurnOrderFinalisedEvent?.Invoke(playerData);
             this.GamePhase = GamePhases.StartGamePlay;
+        }
+
+        public Tuple<ResourceTypes?, uint>[] GetHexData()
+        {
+            return this.gameBoard.GetHexData();
+        }
+
+        public Dictionary<uint, Guid> GetSettlementData()
+        {
+            return this.gameBoard.GetSettlementData();
         }
 
         public GameState GetState()

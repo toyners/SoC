@@ -42,7 +42,7 @@ namespace SoC.Harness.ViewModels
 
         #region Events
         public event Action<PlayerViewModel, PlayerViewModel, PlayerViewModel, PlayerViewModel> GameJoinedEvent;
-        public event Action<IGameBoard> InitialBoardSetupEvent;
+        public event Action InitialBoardSetupEvent;
         public event Action<GameBoardUpdate> BoardUpdatedEvent;
         public event Action<uint, uint> DiceRollEvent;
         public event Action<PlayerViewModel, int> RobberEvent;
@@ -189,7 +189,7 @@ namespace SoC.Harness.ViewModels
 
         private void InitialBoardSetupEventHandler(GameBoard gameBoard)
         {
-            this.InitialBoardSetupEvent?.Invoke(gameBoard);
+            this.InitialBoardSetupEvent?.Invoke();
         }
 
         private void OpponentActionsEventHandler(Guid playerId, List<GameEvent> gameEvents)
@@ -324,6 +324,11 @@ namespace SoC.Harness.ViewModels
             this.StartPhaseEvent?.Invoke(this.phaseActions);
         }
 
+        internal IList<Connection> GetValidConnectionsForPlayerInfrastructure(Guid playerId)
+        {
+            throw new NotImplementedException();
+        }
+
         private void RobberEventHandler(int numberOfResourcesToSelect)
         {
             this.RobberEvent?.Invoke(this.player, numberOfResourcesToSelect);
@@ -337,6 +342,36 @@ namespace SoC.Harness.ViewModels
         public void BuildRoadSegment(uint start, uint end)
         {
             this.localGameController.BuildRoadSegment(this.currentTurnToken, start, end);
+        }
+
+        internal uint[] GetNeighbouringLocationsFrom(uint location)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Tuple<ResourceTypes?, uint>[] GetHexData()
+        {
+            return this.localGameController.GetHexData();
+        }
+
+        internal uint[] GetValidConnectedLocationsFrom(uint workingLocation)
+        {
+            throw new NotImplementedException();
+        }
+
+        internal Dictionary<uint, Guid> GetSettlementData()
+        {
+            return this.localGameController.GetSettlementData();
+        }
+
+        public Tuple<uint, uint, Guid>[] GetRoadData()
+        {
+            return this.localGameController.GetRoadData();
+        }
+
+        public Dictionary<uint, Guid> GetCityData()
+        {
+            return this.localGameController.GetCityData();
         }
         #endregion
     }
