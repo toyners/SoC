@@ -91,8 +91,8 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
 
             var localGameController = new LocalGameControllerCreator().ChangeDice(mockDice).ChangePlayerPool(mockPlayerFactory).Create();
 
-            GameBoard gameBoardData = null;
-            localGameController.InitialBoardSetupEvent = (GameBoard g) => { gameBoardData = g; };
+            GameBoardSetup gameBoardData = null;
+            localGameController.InitialBoardSetupEvent = (GameBoardSetup g) => { gameBoardData = g; };
 
             localGameController.JoinGame();
             localGameController.LaunchGame();
@@ -117,7 +117,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
 
             GameBoardUpdate gameBoardUpdate = null;
             localGameController.GameSetupUpdateEvent = (GameBoardUpdate u) => { gameBoardUpdate = u; };
-            localGameController.InitialBoardSetupEvent = (GameBoard d) => { };
+            localGameController.InitialBoardSetupEvent = (GameBoardSetup g) => { };
 
             localGameController.JoinGame();
             localGameController.LaunchGame();
@@ -169,7 +169,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
 
             GameBoardUpdate gameBoardUpdate = null;
             localGameController.GameSetupUpdateEvent = (GameBoardUpdate u) => { gameBoardUpdate = u; };
-            localGameController.InitialBoardSetupEvent = (GameBoard d) => { };
+            localGameController.InitialBoardSetupEvent = (GameBoardSetup g) => { };
 
             localGameController.JoinGame();
             localGameController.LaunchGame();
@@ -227,7 +227,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
 
             GameBoardUpdate gameBoardUpdate = null;
             localGameController.GameSetupUpdateEvent = (GameBoardUpdate u) => { gameBoardUpdate = u; };
-            localGameController.InitialBoardSetupEvent = (GameBoard d) => { };
+            localGameController.InitialBoardSetupEvent = (GameBoardSetup g) => { };
 
             localGameController.JoinGame();
             localGameController.LaunchGame();
@@ -285,7 +285,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
 
             GameBoardUpdate gameBoardUpdate = null;
             localGameController.GameSetupUpdateEvent = (GameBoardUpdate u) => { gameBoardUpdate = u; };
-            localGameController.InitialBoardSetupEvent = (GameBoard d) => { };
+            localGameController.InitialBoardSetupEvent = (GameBoardSetup g) => { };
 
             localGameController.JoinGame();
             localGameController.LaunchGame();

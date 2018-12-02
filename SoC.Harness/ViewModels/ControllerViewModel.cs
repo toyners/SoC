@@ -17,6 +17,7 @@ namespace SoC.Harness.ViewModels
         private PlayerViewModel player;
         private Dictionary<Guid, PlayerViewModel> playerViewModelsById = new Dictionary<Guid, PlayerViewModel>();
         private PhaseActions phaseActions = new PhaseActions();
+        private GameBoardSetup gameBoardSetup;
         #endregion
 
         #region Construction
@@ -25,7 +26,6 @@ namespace SoC.Harness.ViewModels
             this.localGameController = localGameController;
             this.localGameController.GameJoinedEvent = this.GameJoinedEventHandler;
             this.localGameController.GameSetupUpdateEvent = this.GameSetupUpdateEventHandler;
-            this.localGameController.BoardUpdatedEvent = this.BoardUpdatedEvent;
             this.localGameController.StartPlayerTurnEvent = this.StartPlayerTurnEventHandler;
             this.localGameController.GameSetupResourcesEvent = this.GameSetupResourcesEventHandler;
             this.localGameController.InitialBoardSetupEvent = this.InitialBoardSetupEventHandler;
@@ -43,7 +43,6 @@ namespace SoC.Harness.ViewModels
         #region Events
         public event Action<PlayerViewModel, PlayerViewModel, PlayerViewModel, PlayerViewModel> GameJoinedEvent;
         public event Action InitialBoardSetupEvent;
-        public event Action<GameBoardUpdate> BoardUpdatedEvent;
         public event Action<uint, uint> DiceRollEvent;
         public event Action<PlayerViewModel, int> RobberEvent;
         public event Action<List<Tuple<Guid, string, int>>> RobbingChoicesEvent;
@@ -83,7 +82,7 @@ namespace SoC.Harness.ViewModels
             this.localGameController.ContinueGamePlay();
             this.StartPhase();
         }
-
+    
         public void DropResourcesFromPlayer(ResourceClutch dropResources)
         {
             this.localGameController.DropResources(dropResources);
@@ -184,11 +183,12 @@ namespace SoC.Harness.ViewModels
                 playerViewModel.UpdateHistory(line);
             }
 
-            this.BoardUpdatedEvent?.Invoke(boardUpdate);
+            //this.BoardUpdatedEvent?.Invoke(boardUpdate);
         }
 
-        private void InitialBoardSetupEventHandler(GameBoard gameBoard)
+        private void InitialBoardSetupEventHandler(GameBoardSetup gameBoardSetup)
         {
+            this.gameBoardSetup = gameBoardSetup;
             this.InitialBoardSetupEvent?.Invoke();
         }
 
@@ -344,34 +344,34 @@ namespace SoC.Harness.ViewModels
             this.localGameController.BuildRoadSegment(this.currentTurnToken, start, end);
         }
 
+        public Tuple<ResourceTypes?, uint>[] GetHexData()
+        {
+            return this.gameBoardSetup != null ? this.gameBoardSetup.HexData : null;
+        }
+
+        public Dictionary<uint, Guid> GetInitialSettlementData()
+        {
+            return this.gameBoardSetup != null ? this.gameBoardSetup.SettlementData : null;
+        }
+
+        public Tuple<uint, uint, Guid>[] GetInitialRoadSegmentData()
+        {
+            return this.gameBoardSetup != null ? this.gameBoardSetup.RoadSegmentData : null;
+        }
+
+        public Dictionary<uint, Guid> GetInitialCityData()
+        {
+            return this.gameBoardSetup != null ? this.gameBoardSetup.CityData : null;
+        }
+
         internal uint[] GetNeighbouringLocationsFrom(uint location)
         {
             throw new NotImplementedException();
         }
 
-        public Tuple<ResourceTypes?, uint>[] GetHexData()
-        {
-            return this.localGameController.GetHexData();
-        }
-
         internal uint[] GetValidConnectedLocationsFrom(uint workingLocation)
         {
             throw new NotImplementedException();
-        }
-
-        internal Dictionary<uint, Guid> GetSettlementData()
-        {
-            return this.localGameController.GetSettlementData();
-        }
-
-        public Tuple<uint, uint, Guid>[] GetRoadData()
-        {
-            return this.localGameController.GetRoadData();
-        }
-
-        public Dictionary<uint, Guid> GetCityData()
-        {
-            return this.localGameController.GetCityData();
         }
         #endregion
     }

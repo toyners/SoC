@@ -8,9 +8,8 @@ namespace Jabberwocky.SoC.Library.Interfaces
     public interface IGameController
     {
         #region Events
-        Action<GameBoardUpdate> BoardUpdatedEvent { get; set; }
         Action<PlayerDataBase[]> GameJoinedEvent { get; set; }
-        Action<GameBoard> InitialBoardSetupEvent { get; set; }
+        Action<GameBoardSetup> InitialBoardSetupEvent { get; set; }
         Action<ClientAccount> LoggedInEvent { get; set; }
         Action<GameBoardUpdate> StartInitialSetupTurnEvent { get; set; }
         #endregion

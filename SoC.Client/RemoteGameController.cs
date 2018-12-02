@@ -24,14 +24,9 @@ namespace Jabberwocky.SoC.Client
         }
 
         #region Events
-        public Action<GameBoardUpdate> BoardUpdatedEvent { get; set; }
-
         public Action<PlayerDataBase[]> GameJoinedEvent { get; set; }
-
-        public Action<GameBoard> InitialBoardSetupEvent { get; set; }
-
+        public Action<GameBoardSetup> InitialBoardSetupEvent { get; set; }
         public Action<ClientAccount> LoggedInEvent { get; set; }
-
         public Action<GameBoardUpdate> StartInitialSetupTurnEvent { get; set; }
         #endregion
 

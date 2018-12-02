@@ -107,7 +107,7 @@ namespace SoC.Harness.Views
         #endregion
 
         #region Methods
-        public void BoardUpdatedEventHandler(GameBoardUpdate boardUpdate)
+        /*public void BoardUpdatedEventHandler(GameBoardUpdate boardUpdate)
         {
             if (boardUpdate == null)
             {
@@ -127,7 +127,7 @@ namespace SoC.Harness.Views
             }
 
             this.SettlementSelectionLayer.Visibility = Visibility.Visible;
-        }
+        }*/
 
         public void ContinueGame()
         {
@@ -175,7 +175,7 @@ namespace SoC.Harness.Views
             this.controllerViewModel = controllerViewModel;
             this.controllerViewModel.GameJoinedEvent += this.InitialisePlayerViews;
             this.controllerViewModel.InitialBoardSetupEvent += this.InitialBoardSetupEventHandler;
-            this.controllerViewModel.BoardUpdatedEvent += this.BoardUpdatedEventHandler;
+            //this.controllerViewModel.BoardUpdatedEvent += this.BoardUpdatedEventHandler;
             this.controllerViewModel.DiceRollEvent += this.DiceRollEventHandler;
             this.controllerViewModel.RobberEvent += this.RobberEventHandler;
             this.controllerViewModel.RobbingChoicesEvent += this.RobbingChoicesEventHandler;
@@ -265,7 +265,7 @@ namespace SoC.Harness.Views
         {
             this.BoardLayer.Visibility = Visibility.Visible;
             this.SettlementSelectionLayer.Visibility = Visibility.Visible;
-            
+
 
             Task.Factory.StartNew(() =>
             {
@@ -292,7 +292,7 @@ namespace SoC.Harness.Views
             if (connections == null || connections.Count == 0)
                 return; //TODO: Show message that user has no valid connections to build on
 
-            foreach(var connection in connections)
+            foreach (var connection in connections)
             {
                 this.roadButtonControls[$"{connection.Location1}-{connection.Location2}"].Visibility = Visibility.Visible;
             }
@@ -419,16 +419,16 @@ namespace SoC.Harness.Views
 
                 this.InitialiseRoadSelectionLayer();
 
-                var settlementData = this.controllerViewModel.GetSettlementData();
+                var settlementData = this.controllerViewModel.GetInitialSettlementData();
                 if (settlementData != null)
                 {
                     this.PlaceSettlements(settlementData);
 
-                    var roadData = this.controllerViewModel.GetRoadData();
+                    var roadData = this.controllerViewModel.GetInitialRoadSegmentData();
                     if (roadData != null)
                         this.PlaceRoads(roadData);
 
-                    var cityData = this.controllerViewModel.GetCityData();
+                    var cityData = this.controllerViewModel.GetInitialCityData();
                     if (cityData != null)
                         this.PlaceCities(cityData);
 
@@ -505,12 +505,12 @@ namespace SoC.Harness.Views
 
             var hexLayoutData = new[]
             {
-            new HexLayoutData { X = middleX - (cellWidth * 2) + 4, Y = middleY - (cellHeight / 2) - cellHeight, Count = 3 },
-            new HexLayoutData { X = middleX - (cellWidth / 4) * 5, Y = middleY - (cellHeight * 2), Count = 4 },
-            new HexLayoutData { X = middleX - (cellWidth / 2), Y = middleY - (cellHeight / 2) - (cellHeight * 2), Count = 5 },
-            new HexLayoutData { X = middleX + (cellWidth / 4) - 2, Y = middleY - (cellHeight * 2), Count = 4 },
-            new HexLayoutData { X = middleX + cellWidth - 4, Y = middleY - (cellHeight / 2) - cellHeight, Count = 3 }
-          };
+                new HexLayoutData { X = middleX - (cellWidth * 2) + 4, Y = middleY - (cellHeight / 2) - cellHeight, Count = 3 },
+                new HexLayoutData { X = middleX - (cellWidth / 4) * 5, Y = middleY - (cellHeight * 2), Count = 4 },
+                new HexLayoutData { X = middleX - (cellWidth / 2), Y = middleY - (cellHeight / 2) - (cellHeight * 2), Count = 5 },
+                new HexLayoutData { X = middleX + (cellWidth / 4) - 2, Y = middleY - (cellHeight * 2), Count = 4 },
+                new HexLayoutData { X = middleX + cellWidth - 4, Y = middleY - (cellHeight / 2) - cellHeight, Count = 3 }
+            };
 
             BitmapImage resourceBitmap = null;
             BitmapImage numberBitmap = null;

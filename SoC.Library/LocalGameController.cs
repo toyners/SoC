@@ -104,12 +104,11 @@ namespace Jabberwocky.SoC.Library
         #endregion
 
         #region Events
-        public Action<GameBoardUpdate> BoardUpdatedEvent { get; set; }
         public Action CityBuiltEvent { get; set; }
         public Action<DevelopmentCard> DevelopmentCardPurchasedEvent { get; set; }
         public Action<uint, uint> DiceRollEvent { get; set; }
         public Action<ErrorDetails> ErrorRaisedEvent { get; set; }
-        public Action<GameBoard> InitialBoardSetupEvent { get; set; }
+        public Action<GameBoardSetup> InitialBoardSetupEvent { get; set; }
         public Action<PlayerDataBase[]> GameJoinedEvent { get; set; }
         public Action<PlayerDataBase[], GameBoard> GameLoadedEvent { get; set; }
         public Action<Guid> GameOverEvent { get; set; }
@@ -310,7 +309,9 @@ namespace Jabberwocky.SoC.Library
 
             var playerData = this.CreatePlayerData();
             this.GameJoinedEvent?.Invoke(playerData);
-            this.InitialBoardSetupEvent?.Invoke(this.gameBoard);
+
+            var gameBoardSetup = new GameBoardSetup(this.gameBoard);
+            this.InitialBoardSetupEvent?.Invoke(gameBoardSetup);
 
             this.currentTurnToken = new TurnToken();
             this.StartPlayerTurnEvent?.Invoke(this.currentTurnToken);
@@ -536,16 +537,6 @@ namespace Jabberwocky.SoC.Library
             this.CollectResourcesAtStartOfTurn(dice1 + dice2);
         }
 
-        public Dictionary<uint, Guid> GetCityData()
-        {
-            return this.gameBoard.GetCityData();
-        }
-
-        public Tuple<uint, uint, Guid>[] GetRoadData()
-        {
-            return this.gameBoard.GetRoadData();
-        }
-
         // 06 Finalise player turn order
         public void FinalisePlayerTurnOrder()
         {
@@ -561,16 +552,6 @@ namespace Jabberwocky.SoC.Library
             var playerData = this.CreatePlayerData();
             this.TurnOrderFinalisedEvent?.Invoke(playerData);
             this.GamePhase = GamePhases.StartGamePlay;
-        }
-
-        public Tuple<ResourceTypes?, uint>[] GetHexData()
-        {
-            return this.gameBoard.GetHexData();
-        }
-
-        public Dictionary<uint, Guid> GetSettlementData()
-        {
-            return this.gameBoard.GetSettlementData();
         }
 
         public GameState GetState()
@@ -609,7 +590,8 @@ namespace Jabberwocky.SoC.Library
                 return;
             }
 
-            this.InitialBoardSetupEvent?.Invoke(this.gameBoard);
+            var gameBoardSetup = new GameBoardSetup(this.gameBoard);
+            this.InitialBoardSetupEvent?.Invoke(gameBoardSetup);
             this.GamePhase = GamePhases.StartGameSetup;
         }
 
