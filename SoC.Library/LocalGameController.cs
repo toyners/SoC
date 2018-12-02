@@ -372,7 +372,14 @@ namespace Jabberwocky.SoC.Library
                 var rolledDiceEvent = new RolledDiceEvent(computerPlayer.Id, this.dice1, this.dice2);
                 events.Add(rolledDiceEvent);
 
-                var turnResources = this.GetTurnResources(this.dice1 + this.dice2);
+                if (this.dice1 + this.dice2 == 7)
+                {
+                    // Robber activated
+                }
+                else
+                {
+                    var turnResources = this.GetTurnResources(this.dice1 + this.dice2);
+                }
 
                 computerPlayer.BuildInitialPlayerActions(null);
 
