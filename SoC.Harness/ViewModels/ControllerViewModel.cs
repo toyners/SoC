@@ -364,14 +364,14 @@ namespace SoC.Harness.ViewModels
             return this.gameBoardSetup != null ? this.gameBoardSetup.CityData : null;
         }
 
-        internal uint[] GetNeighbouringLocationsFrom(uint location)
+        public uint[] GetNeighbouringLocationsFrom(uint location)
         {
-            throw new NotImplementedException();
+            return this.localGameController.GetNeighbouringLocationsFrom(location);
         }
 
-        internal uint[] GetValidConnectedLocationsFrom(uint workingLocation)
+        public uint[] GetValidConnectedLocationsFrom(uint location)
         {
-            throw new NotImplementedException();
+            return this.localGameController.GetValidConnectedLocationsFrom(location);
         }
         #endregion
     }

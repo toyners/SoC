@@ -554,9 +554,19 @@ namespace Jabberwocky.SoC.Library
             this.GamePhase = GamePhases.StartGamePlay;
         }
 
+        public uint[] GetNeighbouringLocationsFrom(uint location)
+        {
+            return this.gameBoard.BoardQuery.GetNeighbouringLocationsFrom(location);
+        }
+
         public GameState GetState()
         {
             return new GameState();
+        }
+
+        public uint[] GetValidConnectedLocationsFrom(uint location)
+        {
+            return this.gameBoard.BoardQuery.GetValidConnectedLocationsFrom(location);
         }
 
         // 01 Join game
