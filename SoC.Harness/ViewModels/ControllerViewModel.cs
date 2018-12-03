@@ -11,6 +11,15 @@ namespace SoC.Harness.ViewModels
 
     public class ControllerViewModel
     {
+        public enum States
+        {
+            PlaceFirstInfrastructure,
+            PlaceSecondInfrastructure,
+            SelectRobberLocation,
+            SelectPlayerToRob,
+            ChoosePhaseAction,
+        }
+
         #region Fields
         private readonly LocalGameController localGameController;
         private TurnToken currentTurnToken;
@@ -37,7 +46,13 @@ namespace SoC.Harness.ViewModels
             this.localGameController.ResourcesTransferredEvent = this.ResourcesTransferredEventHandler;
             this.localGameController.RoadSegmentBuiltEvent = this.RoadSegmentBuiltEventHandler;
             this.localGameController.OpponentActionsEvent = this.OpponentActionsEventHandler;
+
+            this.State = States.PlaceFirstInfrastructure;
         }
+        #endregion
+
+        #region Properties
+        public States State { get; private set; }
         #endregion
 
         #region Events
@@ -80,6 +95,7 @@ namespace SoC.Harness.ViewModels
 
         public void ContinueGame()
         {
+            this.State = States.ChoosePhaseAction;
             this.localGameController.ContinueGamePlay();
             this.StartPhase();
         }

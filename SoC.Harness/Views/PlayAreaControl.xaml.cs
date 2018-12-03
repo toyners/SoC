@@ -52,7 +52,6 @@ namespace SoC.Harness.Views
         private const string yellowBigIconImagePath = @"..\resources\icons\big_yellow_icon.png";
         private const string yellowBigSelectedIconImagePath = @"..\resources\icons\big_selected_yellow_icon.png";
 
-        //private IGameBoard board;
         private SettlementButtonControl[] settlementButtonControls;
         private Dictionary<string, RoadButtonControl> roadButtonControls;
         private uint workingLocation;
@@ -109,7 +108,7 @@ namespace SoC.Harness.Views
         #region Methods
         public void ContinueGame()
         {
-            this.state = States.ChoosePhaseAction;
+            //this.state = States.ChoosePhaseAction;
             Task.Factory.StartNew(() =>
             {
                 this.controllerViewModel.ContinueGame();
