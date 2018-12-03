@@ -107,28 +107,6 @@ namespace SoC.Harness.Views
         #endregion
 
         #region Methods
-        /*public void BoardUpdatedEventHandler(GameBoardUpdate boardUpdate)
-        {
-            if (boardUpdate == null)
-            {
-                return; // Should a null boardupdate be valid?
-            }
-
-            foreach (var settlementDetails in boardUpdate.NewSettlements)
-            {
-                var location = settlementDetails.Item1;
-                var playerId = settlementDetails.Item2;
-                this.PlaceSettlement(location, playerId);
-            }
-
-            foreach (var roadDetails in boardUpdate.NewRoads)
-            {
-                this.PlaceRoad(roadDetails.Item1, roadDetails.Item2, roadDetails.Item3);
-            }
-
-            this.SettlementSelectionLayer.Visibility = Visibility.Visible;
-        }*/
-
         public void ContinueGame()
         {
             this.state = States.ChoosePhaseAction;
@@ -170,12 +148,34 @@ namespace SoC.Harness.Views
             }
         }
 
+        public void GameSetupUpdateEventHandler(GameBoardUpdate boardUpdate)
+        {
+            if (boardUpdate == null)
+            {
+                return; // Should a null boardupdate be valid?
+            }
+
+            foreach (var settlementDetails in boardUpdate.NewSettlements)
+            {
+                var location = settlementDetails.Item1;
+                var playerId = settlementDetails.Item2;
+                this.PlaceSettlement(location, playerId);
+            }
+
+            foreach (var roadDetails in boardUpdate.NewRoads)
+            {
+                this.PlaceRoad(roadDetails.Item1, roadDetails.Item2, roadDetails.Item3);
+            }
+
+            this.SettlementSelectionLayer.Visibility = Visibility.Visible;
+        }
+
         public void Initialise(ControllerViewModel controllerViewModel)
         {
             this.controllerViewModel = controllerViewModel;
             this.controllerViewModel.GameJoinedEvent += this.InitialisePlayerViews;
             this.controllerViewModel.InitialBoardSetupEvent += this.InitialBoardSetupEventHandler;
-            //this.controllerViewModel.BoardUpdatedEvent += this.BoardUpdatedEventHandler;
+            this.controllerViewModel.GameSetupUpdateEvent += this.GameSetupUpdateEventHandler;
             this.controllerViewModel.DiceRollEvent += this.DiceRollEventHandler;
             this.controllerViewModel.RobberEvent += this.RobberEventHandler;
             this.controllerViewModel.RobbingChoicesEvent += this.RobbingChoicesEventHandler;

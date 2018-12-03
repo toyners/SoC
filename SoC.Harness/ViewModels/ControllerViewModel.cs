@@ -41,9 +41,10 @@ namespace SoC.Harness.ViewModels
         #endregion
 
         #region Events
-        public event Action<PlayerViewModel, PlayerViewModel, PlayerViewModel, PlayerViewModel> GameJoinedEvent;
-        public event Action InitialBoardSetupEvent;
         public event Action<uint, uint> DiceRollEvent;
+        public event Action<PlayerViewModel, PlayerViewModel, PlayerViewModel, PlayerViewModel> GameJoinedEvent;
+        public event Action<GameBoardUpdate> GameSetupUpdateEvent;
+        public event Action InitialBoardSetupEvent;
         public event Action<PlayerViewModel, int> RobberEvent;
         public event Action<List<Tuple<Guid, string, int>>> RobbingChoicesEvent;
         public event Action<PhaseActions> StartPhaseEvent;
@@ -183,7 +184,7 @@ namespace SoC.Harness.ViewModels
                 playerViewModel.UpdateHistory(line);
             }
 
-            //this.BoardUpdatedEvent?.Invoke(boardUpdate);
+            this.GameSetupUpdateEvent?.Invoke(boardUpdate);
         }
 
         private void InitialBoardSetupEventHandler(GameBoardSetup gameBoardSetup)
