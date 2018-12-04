@@ -78,12 +78,19 @@ namespace SoC.Harness
 
         private void Save_Executed(object sender, System.Windows.Input.ExecutedRoutedEventArgs e)
         {
-            if (!System.IO.Directory.Exists("Output"))
-                System.IO.Directory.CreateDirectory("Output");
+            var sfd = new SaveFileDialog();
+            sfd.CheckPathExists = true;
+            sfd.Title = "Select file to save";
+            sfd.Filter = "Game save files (*.soc)|*.soc";
+            sfd.DefaultExt = "soc";
+            sfd.AddExtension = true;
+            var dialogResult = sfd.ShowDialog();
+            if (dialogResult != System.Windows.Forms.DialogResult.OK)
+                return;
 
             var saveFilePath = $"Output\\Game_{DateTime.Now.ToString("dd-MM-yyyy HH-mm-ss")}.soc";
-            this.controllerViewModel.Save(saveFilePath);
-            System.Windows.MessageBox.Show("Game Saved.", "Save Status");
+            this.controllerViewModel.Save(sfd.FileName);
+            System.Windows.MessageBox.Show($"Game saved to\r\n{sfd.FileName}", "Game Saved", MessageBoxButton.OK, MessageBoxImage.Information);
         }
 
         private void CommandBinding_CanExecute(object sender, System.Windows.Input.CanExecuteRoutedEventArgs e)
