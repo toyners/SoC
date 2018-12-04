@@ -65,7 +65,6 @@ namespace SoC.Harness.Views
         #region Construction
         public PlayAreaControl()
         {
-            //this.DataContext = this;
             this.InitializeComponent();
 
             this.playerButtons = new[] { this.LeftPlayerButton, this.MiddlePlayerButton, this.RightPlayerButton };
