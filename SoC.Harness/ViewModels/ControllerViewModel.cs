@@ -62,15 +62,24 @@ namespace SoC.Harness.ViewModels
                 this.state = value;
                 switch (this.state)
                 {
-                    case States.PlaceFirstInfrastructure: this.SetupMessage = "test1"; break;
-                    case States.PlaceSecondInfrastructure: this.SetupMessage = "test2"; break;
+                    case States.PlaceFirstInfrastructure: this.SetupMessage = "Select location for FIRST Settlement and Road Segment"; break;
+                    case States.PlaceSecondInfrastructure: this.SetupMessage = "Select location for SECOND Settlement and Road Segment"; break;
                     default: this.SetupMessage = null; break;
                 }
             }
         }
 
-        public string SetupMessage { get; private set; }
-        public bool SetupMessageVisibility { get { return string.IsNullOrEmpty(this.SetupMessage); } }
+        private string setupMessage;
+        private PropertyChangedEventArgs setupMessagePropertyChangedEventArgs = new PropertyChangedEventArgs("SetupMessage");
+        public string SetupMessage
+        {
+            get { return this.setupMessage; }
+            private set
+            {
+                this.setupMessage = value;
+                this.PropertyChanged?.Invoke(this, this.setupMessagePropertyChangedEventArgs);
+            }
+        }
         #endregion
 
         #region Events

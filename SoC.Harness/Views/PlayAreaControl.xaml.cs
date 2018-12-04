@@ -65,7 +65,7 @@ namespace SoC.Harness.Views
         #region Construction
         public PlayAreaControl()
         {
-            this.DataContext = this;
+            //this.DataContext = this;
             this.InitializeComponent();
 
             this.playerButtons = new[] { this.LeftPlayerButton, this.MiddlePlayerButton, this.RightPlayerButton };
@@ -142,7 +142,7 @@ namespace SoC.Harness.Views
 
         public void Initialise(ControllerViewModel controllerViewModel)
         {
-            this.controllerViewModel = controllerViewModel;
+            this.DataContext = this.controllerViewModel = controllerViewModel;
             this.controllerViewModel.GameJoinedEvent += this.InitialisePlayerViews;
             this.controllerViewModel.InitialBoardSetupEvent += this.InitialBoardSetupEventHandler;
             this.controllerViewModel.GameSetupUpdateEvent += this.GameSetupUpdateEventHandler;
@@ -386,13 +386,6 @@ namespace SoC.Harness.Views
                     var cityData = this.controllerViewModel.GetInitialCityData();
                     if (cityData != null)
                         this.PlaceCities(cityData);
-                }
-
-                if (this.controllerViewModel.State == ControllerViewModel.States.PlaceFirstInfrastructure)
-                {
-                    // This is only needed for a new game
-                    this.GeneralLabel.Visibility = Visibility.Visible;
-                    this.GeneralLabel.Text = "Select location for FIRST Settlement and Road Segment";
                 }
             });
         }
