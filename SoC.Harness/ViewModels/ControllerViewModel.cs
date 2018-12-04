@@ -3,13 +3,14 @@ namespace SoC.Harness.ViewModels
 {
     using System;
     using System.Collections.Generic;
+    using System.ComponentModel;
     using System.Linq;
     using Jabberwocky.SoC.Library;
     using Jabberwocky.SoC.Library.GameBoards;
     using Jabberwocky.SoC.Library.GameEvents;
     using Jabberwocky.SoC.Library.PlayerData;
 
-    public class ControllerViewModel
+    public class ControllerViewModel : INotifyPropertyChanged
     {
         public enum States
         {
@@ -52,7 +53,24 @@ namespace SoC.Harness.ViewModels
         #endregion
 
         #region Properties
-        public States State { get; private set; }
+        private States state;
+        public States State
+        {
+            get { return this.state; }
+            private set
+            {
+                this.state = value;
+                switch (this.state)
+                {
+                    case States.PlaceFirstInfrastructure: this.SetupMessage = "test1"; break;
+                    case States.PlaceSecondInfrastructure: this.SetupMessage = "test2"; break;
+                    default: this.SetupMessage = null; break;
+                }
+            }
+        }
+
+        public string SetupMessage { get; private set; }
+        public bool SetupMessageVisibility { get { return string.IsNullOrEmpty(this.SetupMessage); } }
         #endregion
 
         #region Events
@@ -63,6 +81,7 @@ namespace SoC.Harness.ViewModels
         public event Action<PlayerViewModel, int> RobberEvent;
         public event Action<List<Tuple<Guid, string, int>>> RobbingChoicesEvent;
         public event Action<PhaseActions> StartPhaseEvent;
+        public event PropertyChangedEventHandler PropertyChanged;
         #endregion
 
         #region Methods
