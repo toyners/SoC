@@ -81,16 +81,22 @@ namespace SoC.Harness.ViewModels
             return new ControllerViewModel(new LocalGameController(new TestNumberGenerator(), new LocalPlayerPool(), true));
         }
 
-        public void CompleteFirstInfrastructureSetup(uint settlementLocation, uint roadEndLocation)
+        public void CompleteInfrastructure(uint settlementLocation, uint roadEndLocation)
         {
-            this.localGameController.ContinueGameSetup(settlementLocation, roadEndLocation);
-        }
-
-        public void CompleteSecondInfrastructureSetup(uint settlementLocation, uint roadEndLocation)
-        {
-            this.localGameController.CompleteGameSetup(settlementLocation, roadEndLocation);
-            this.localGameController.FinalisePlayerTurnOrder();
-            this.localGameController.StartGamePlay();
+            if (this.State == States.PlaceFirstInfrastructure)
+            {
+                this.localGameController.ContinueGameSetup(settlementLocation, roadEndLocation);
+            }
+            else if (this.State == States.PlaceSecondInfrastructure)
+            {
+                this.localGameController.CompleteGameSetup(settlementLocation, roadEndLocation);
+                this.localGameController.FinalisePlayerTurnOrder();
+                this.localGameController.StartGamePlay();
+            }
+            else
+            {
+                throw new Exception("Infrastructure already placed");
+            }
         }
 
         public void ContinueGame()
@@ -102,6 +108,7 @@ namespace SoC.Harness.ViewModels
     
         public void DropResourcesFromPlayer(ResourceClutch dropResources)
         {
+            this.State = States.SelectRobberLocation;
             this.localGameController.DropResources(dropResources);
             this.player.Update(dropResources, false);
         }
@@ -125,6 +132,7 @@ namespace SoC.Harness.ViewModels
         public void SetRobberLocation(uint hexIndex)
         {
             this.localGameController.SetRobberHex(hexIndex);
+            this.State = States.ChoosePhaseAction;
         }
 
         public void StartGame()
@@ -166,6 +174,7 @@ namespace SoC.Harness.ViewModels
 
         private void GameSetupResourcesEventHandler(ResourceUpdate resourceUpdate)
         {
+            this.State = States.ChoosePhaseAction;
             foreach (var resourceData in resourceUpdate.Resources)
             {
                 this.playerViewModelsById[resourceData.Key].Update(resourceData.Value, true);
@@ -178,6 +187,8 @@ namespace SoC.Harness.ViewModels
             {
                 return;
             }
+
+            this.State = States.PlaceSecondInfrastructure;
 
             foreach (var settlementDetails in boardUpdate.NewSettlements)
             {
@@ -348,6 +359,7 @@ namespace SoC.Harness.ViewModels
 
         private void RobberEventHandler(int numberOfResourcesToSelect)
         {
+            this.State = States.SelectRobberLocation;
             this.RobberEvent?.Invoke(this.player, numberOfResourcesToSelect);
         }
 

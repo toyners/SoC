@@ -15,17 +15,6 @@ namespace SoC.Harness.Views
 
     public partial class PlayAreaControl : UserControl, INotifyPropertyChanged
     {
-        private enum States
-        {
-            AwaitingFirstInfrastructure,
-            AwaitingSecondInfrastructure,
-            AwaitingResourceDropSelection,
-            RobberLocationSelection,
-            RobbedPlayerSelection,
-            ChoosePhaseAction,
-            Unknown,
-        }
-
         #region Fields
         private const string blueSettlementImagePath = @"..\resources\settlements\blue_settlement.png";
         private const string redSettlementImagePath = @"..\resources\settlements\red_settlement.png";
@@ -67,7 +56,6 @@ namespace SoC.Harness.Views
         private Image robberImage, selectedRobberLocationImage;
         private ControllerViewModel controllerViewModel;
         private int workingNumberOfResourcesToSelect;
-        private States state = States.AwaitingFirstInfrastructure;
         private Image currentRobberLocationHoverImage = null;
         private Dictionary<Image, Tuple<uint, Point>> locationsByImage = new Dictionary<Image, Tuple<uint, Point>>();
         private PlayerButton[] playerButtons;
@@ -127,24 +115,7 @@ namespace SoC.Harness.Views
         public void EndTurn()
         {
             this.EndTurnButton.Visibility = Visibility.Hidden;
-            if (this.state == States.AwaitingFirstInfrastructure)
-            {
-                this.state = States.AwaitingSecondInfrastructure;
-                var roadEndLocation = this.workingRoadControl.Start == this.workingLocation ? this.workingRoadControl.End : this.workingRoadControl.Start;
-                this.controllerViewModel.CompleteFirstInfrastructureSetup(this.workingLocation, roadEndLocation);
-
-                this.GeneralLabel.Text = "Select location for SECOND Settlement and Road Segment";
-            }
-            else if (this.state == States.AwaitingSecondInfrastructure)
-            {
-                this.state = States.ChoosePhaseAction;
-                var roadEndLocation = this.workingRoadControl.Start == this.workingLocation ? this.workingRoadControl.End : this.workingRoadControl.Start;
-                this.controllerViewModel.CompleteSecondInfrastructureSetup(this.workingLocation, roadEndLocation);
-            }
-            else if (this.state == States.ChoosePhaseAction)
-            {
-                this.controllerViewModel.EndTurn();
-            }
+             this.controllerViewModel.EndTurn();
         }
 
         public void GameSetupUpdateEventHandler(GameBoardUpdate boardUpdate)
@@ -257,14 +228,12 @@ namespace SoC.Harness.Views
 
             // Select hex to place robber
             this.RobberSelectionLayer.Visibility = Visibility.Visible;
-            this.state = States.RobberLocationSelection;
         }
 
         public void StartGame()
         {
             this.BoardLayer.Visibility = Visibility.Visible;
             this.SettlementSelectionLayer.Visibility = Visibility.Visible;
-
 
             Task.Factory.StartNew(() =>
             {
@@ -310,21 +279,8 @@ namespace SoC.Harness.Views
         private void ConfirmButton_Click(object sender, RoutedEventArgs e)
         {
             this.ConfirmButton.Visibility = Visibility.Hidden;
-            if (this.state == States.AwaitingFirstInfrastructure)
-            {
-                this.state = States.AwaitingSecondInfrastructure;
-                var roadEndLocation = this.workingRoadControl.Start == this.workingLocation ? this.workingRoadControl.End : this.workingRoadControl.Start;
-                this.controllerViewModel.CompleteFirstInfrastructureSetup(this.workingLocation, roadEndLocation);
-            }
-            else if (this.state == States.AwaitingSecondInfrastructure)
-            {
-                var roadEndLocation = this.workingRoadControl.Start == this.workingLocation ? this.workingRoadControl.End : this.workingRoadControl.Start;
-                this.controllerViewModel.CompleteSecondInfrastructureSetup(this.workingLocation, roadEndLocation);
-            }
-            else
-            {
-                throw new Exception("Should not get here");
-            }
+            var roadEndLocation = this.workingRoadControl.Start == this.workingLocation ? this.workingRoadControl.End : this.workingRoadControl.Start;
+            this.controllerViewModel.CompleteInfrastructure(this.workingLocation, roadEndLocation);
         }
 
         private void EndTurnButton_Click(object sender, RoutedEventArgs e)
@@ -354,35 +310,35 @@ namespace SoC.Harness.Views
             switch (resourceType)
             {
                 case ResourceTypes.Brick:
-                    {
-                        imagePath = @"..\resources\resourcecards\brickcard.png";
-                        selectedImagePath = @"..\resources\resourcecards\selected_brickcard.png";
-                        break;
-                    }
+                {
+                    imagePath = @"..\resources\resourcecards\brickcard.png";
+                    selectedImagePath = @"..\resources\resourcecards\selected_brickcard.png";
+                    break;
+                }
                 case ResourceTypes.Grain:
-                    {
-                        imagePath = @"..\resources\resourcecards\graincard.png";
-                        selectedImagePath = @"..\resources\resourcecards\selected_graincard.png";
-                        break;
-                    }
+                {
+                    imagePath = @"..\resources\resourcecards\graincard.png";
+                    selectedImagePath = @"..\resources\resourcecards\selected_graincard.png";
+                    break;
+                }
                 case ResourceTypes.Lumber:
-                    {
-                        imagePath = @"..\resources\resourcecards\lumbercard.png";
-                        selectedImagePath = @"..\resources\resourcecards\selected_lumbercard.png";
-                        break;
-                    }
+                {
+                    imagePath = @"..\resources\resourcecards\lumbercard.png";
+                    selectedImagePath = @"..\resources\resourcecards\selected_lumbercard.png";
+                    break;
+                }
                 case ResourceTypes.Ore:
-                    {
-                        imagePath = @"..\resources\resourcecards\orecard.png";
-                        selectedImagePath = @"..\resources\resourcecards\selected_orecard.png";
-                        break;
-                    }
+                {
+                    imagePath = @"..\resources\resourcecards\orecard.png";
+                    selectedImagePath = @"..\resources\resourcecards\selected_orecard.png";
+                    break;
+                }
                 default:
-                    {
-                        imagePath = @"..\resources\resourcecards\woolcard.png";
-                        selectedImagePath = @"..\resources\resourcecards\selected_woolcard.png";
-                        break;
-                    }
+                {
+                    imagePath = @"..\resources\resourcecards\woolcard.png";
+                    selectedImagePath = @"..\resources\resourcecards\selected_woolcard.png";
+                    break;
+                }
             }
         }
 
@@ -430,11 +386,9 @@ namespace SoC.Harness.Views
                     var cityData = this.controllerViewModel.GetInitialCityData();
                     if (cityData != null)
                         this.PlaceCities(cityData);
-
-                    this.state = States.ChoosePhaseAction;
                 }
 
-                if (this.state == States.AwaitingFirstInfrastructure)
+                if (this.controllerViewModel.State == ControllerViewModel.States.PlaceFirstInfrastructure)
                 {
                     // This is only needed for a new game
                     this.GeneralLabel.Visibility = Visibility.Visible;
@@ -791,7 +745,7 @@ namespace SoC.Harness.Views
 
         private void Location_MouseClick(object sender, MouseButtonEventArgs e)
         {
-            if (this.state != States.RobberLocationSelection)
+            if (this.controllerViewModel.State != ControllerViewModel.States.SelectRobberLocation)
             {
                 return;
             }
@@ -801,12 +755,11 @@ namespace SoC.Harness.Views
             Canvas.SetTop(this.robberImage, location.Item2.Y);
             this.RobberSelectionLayer.Visibility = Visibility.Hidden;
             this.controllerViewModel.SetRobberLocation(location.Item1);
-            this.state = States.ChoosePhaseAction;
         }
 
         private void Location_MouseHover(object sender, MouseEventArgs e)
         {
-            if (this.state != States.RobberLocationSelection || sender == this.currentRobberLocationHoverImage)
+            if (this.controllerViewModel.State != ControllerViewModel.States.SelectRobberLocation || sender == this.currentRobberLocationHoverImage)
             {
                 return;
             }
@@ -932,7 +885,6 @@ namespace SoC.Harness.Views
 
             this.ResourceSelectionLayer.Visibility = Visibility.Hidden;
             this.controllerViewModel.DropResourcesFromPlayer(new ResourceClutch(brickCount, grainCount, lumberCount, oreCount, woolCount));
-            this.state = States.RobberLocationSelection;
         }
 
         private void RoadSelectedEventHandler(RoadButtonControl roadButtonControl)
@@ -949,7 +901,7 @@ namespace SoC.Harness.Views
 
             this.RoadSelectionLayer.Visibility = Visibility.Hidden;
 
-            if (this.state == States.ChoosePhaseAction)
+            if (this.controllerViewModel.State == ControllerViewModel.States.ChoosePhaseAction)
             {
                 this.EndTurnButton.Visibility = Visibility.Visible;
                 this.BuildActions.Visibility = Visibility.Hidden;
