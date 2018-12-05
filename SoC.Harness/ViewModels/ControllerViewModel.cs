@@ -28,6 +28,10 @@ namespace SoC.Harness.ViewModels
         private Dictionary<Guid, PlayerViewModel> playerViewModelsById = new Dictionary<Guid, PlayerViewModel>();
         private PhaseActions phaseActions = new PhaseActions();
         private GameBoardSetup gameBoardSetup;
+        private string setupMessage;
+        private PropertyChangedEventArgs setupMessagePropertyChangedEventArgs = new PropertyChangedEventArgs("SetupMessage");
+        private States state;
+
         #endregion
 
         #region Construction
@@ -53,7 +57,9 @@ namespace SoC.Harness.ViewModels
         #endregion
 
         #region Properties
-        private States state;
+        public uint InitialSettlementLocation { get; set; }
+        public uint InitialRoadEndLocation { get; set; }
+
         public States State
         {
             get { return this.state; }
@@ -69,8 +75,6 @@ namespace SoC.Harness.ViewModels
             }
         }
 
-        private string setupMessage;
-        private PropertyChangedEventArgs setupMessagePropertyChangedEventArgs = new PropertyChangedEventArgs("SetupMessage");
         public string SetupMessage
         {
             get { return this.setupMessage; }
@@ -123,8 +127,6 @@ namespace SoC.Harness.ViewModels
             this.player.Update(dropResources, false);
         }
 
-        public uint InitialSettlementLocation { get; set; }
-        public uint InitialRoadEndLocation { get; set; }
         public void EndTurn()
         {
             if (this.State == States.PlaceFirstInfrastructure)

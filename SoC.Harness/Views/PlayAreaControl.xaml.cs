@@ -43,8 +43,6 @@ namespace SoC.Harness.Views
 
         private SettlementButtonControl[] settlementButtonControls;
         private Dictionary<string, RoadButtonControl> roadButtonControls;
-        //private uint workingLocation;
-        //private RoadButtonControl workingRoadControl;
         private Dictionary<Guid, string> settlementImagesByPlayerId;
         private Dictionary<Guid, string[]> roadImagesByPlayerId;
         private Dictionary<Guid, Tuple<string, string>> bigIconImagesByPlayerId;
