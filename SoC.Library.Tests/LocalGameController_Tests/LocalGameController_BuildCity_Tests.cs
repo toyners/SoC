@@ -28,7 +28,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
             mockDice.AddSequence(new[] { 8u });
             player.AddResources(ResourceClutch.City);
 
-            Boolean cityBuilt = false;
+            bool cityBuilt = false;
             localGameController.CityBuiltEvent = () => { cityBuilt = true; };
 
             TurnToken turnToken = null;
@@ -60,7 +60,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
             mockDice.AddSequence(new[] { 8u });
             player.AddResources(ResourceClutch.City);
 
-            Boolean cityBuilt = false;
+            bool cityBuilt = false;
             localGameController.CityBuiltEvent = () => { cityBuilt = true; };
 
             TurnToken turnToken = null;
@@ -487,9 +487,9 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
             var expectedRoadSegmentBuiltEvent = new RoadSegmentBuiltEvent(firstOpponent.Id, 17u, 7u);
 
             events.ShouldContainExact(new GameEvent[] {
-        new RoadSegmentBuiltEvent(firstOpponent.Id, 17u, 7u),
-        new SettlementBuiltEvent(firstOpponent.Id, 7u),
-        new CityBuiltEvent(firstOpponent.Id, 7u)});
+                new RoadSegmentBuiltEvent(firstOpponent.Id, 17u, 7u),
+                new SettlementBuiltEvent(firstOpponent.Id, 7u),
+                new CityBuiltEvent(firstOpponent.Id, 7u)});
 
             firstOpponent.ResourcesCount.ShouldBe(0);
             firstOpponent.VictoryPoints.ShouldBe(4u);
