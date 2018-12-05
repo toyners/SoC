@@ -179,19 +179,19 @@ namespace Jabberwocky.SoC.Library
             var result = "";
 
             if (this.BrickCount > 0)
-                result += $"Brick {this.BrickCount}, ";
+                result += $"{this.BrickCount} Brick, ";
 
             if (this.GrainCount > 0)
-                result += $"Grain {this.GrainCount}, ";
+                result += $"{this.GrainCount} Grain, ";
 
             if (this.LumberCount > 0)
-                result += $"Lumber {this.LumberCount}, ";
+                result += $"{this.LumberCount} Lumber, ";
 
             if (this.OreCount > 0)
-                result += $"Ore {this.OreCount}, ";
+                result += $"{this.OreCount} Ore, ";
 
             if (this.WoolCount > 0)
-                result += $"Wool {this.WoolCount}";
+                result += $"{this.WoolCount} Wool";
 
             if (result.EndsWith(", "))
                 result = result.Substring(0, result.Length - 2);

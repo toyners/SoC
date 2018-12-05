@@ -44,16 +44,12 @@ namespace SoC.Harness.ViewModels
 
         public void Update(ResourceClutch resources, bool addResources)
         {
-            string line;
-
             if (addResources)
             {
-                line = "Received ";
                 this.Resources += resources;
             }
             else
             {
-                line = "Lost ";
                 this.Resources -= resources;
             }
 
@@ -63,33 +59,6 @@ namespace SoC.Harness.ViewModels
               $"L{this.Resources.LumberCount} " +
               $"O{this.Resources.OreCount} " +
               $"W{this.Resources.WoolCount}";
-
-            if (resources.BrickCount > 0)
-            {
-                line += "B" + resources.BrickCount + " ";
-            }
-
-            if (resources.GrainCount > 0)
-            {
-                line += "G" + resources.GrainCount + " ";
-            }
-
-            if (resources.LumberCount > 0)
-            {
-                line += "L" + resources.LumberCount + " ";
-            }
-
-            if (resources.OreCount > 0)
-            {
-                line += "O" + resources.OreCount + " ";
-            }
-
-            if (resources.WoolCount > 0)
-            {
-                line += "W" + resources.WoolCount + " ";
-            }
-
-            this.UpdateHistory(line);
         }
 
         public void UpdateHistory(string line)
