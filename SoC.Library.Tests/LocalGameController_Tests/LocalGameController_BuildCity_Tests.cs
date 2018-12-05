@@ -237,7 +237,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
             var player = testInstances.MainPlayer;
             var firstOpponent = testInstances.FirstOpponent;
 
-            testInstances.Dice.AddSequence(new[] { 8u, 8u });
+            testInstances.Dice.AddSequence(new[] { 8u, 8u, 8u, 8u, 8u });
             player.AddResources(ResourceClutch.City);
             firstOpponent.AddResources(ResourceClutch.City);
             firstOpponent.AddBuildCityInstruction(new BuildCityInstruction { Location = FirstSettlementOneLocation });

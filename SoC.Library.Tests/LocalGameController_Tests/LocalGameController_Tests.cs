@@ -1484,7 +1484,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
             var secondOpponent = testInstances.SecondOpponent;
             var thirdOpponent = testInstances.ThirdOpponent;
             LocalGameControllerTestSetup.LaunchGameAndCompleteSetup(localGameController);
-            testInstances.Dice.AddSequence(new UInt32[] { 3u, 6u });
+            testInstances.Dice.AddSequence(new uint[] { 3, 8, 8, 8, 6 });
 
             TurnToken firstTurnToken = null;
             TurnToken secondTurnToken = null;
@@ -1509,7 +1509,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
             Dictionary<Guid, ResourceCollection[]> collectedResources = null;
             localGameController.ResourcesCollectedEvent = (Dictionary<Guid, ResourceCollection[]> c) => { collectedResources = c; };
 
-            UInt32 diceRoll = 0;
+            uint diceRoll = 0;
             localGameController.DiceRollEvent = (uint d1, uint d2) => { diceRoll = d1 + d2; };
 
             // Act
@@ -1517,11 +1517,11 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
 
             // Assert
             var expected = new Dictionary<Guid, ResourceCollection[]>
-      {
-        { firstOpponent.Id, new [] { new ResourceCollection(18, ResourceClutch.OneOre) } },
-        { secondOpponent.Id, new [] { new ResourceCollection(25, ResourceClutch.OneLumber), new ResourceCollection(35, ResourceClutch.OneLumber) } },
-        { thirdOpponent.Id, new [] { new ResourceCollection(31, ResourceClutch.OneOre) } },
-      };
+            {
+                { firstOpponent.Id, new [] { new ResourceCollection(18, ResourceClutch.OneOre) } },
+                { secondOpponent.Id, new [] { new ResourceCollection(25, ResourceClutch.OneLumber), new ResourceCollection(35, ResourceClutch.OneLumber) } },
+                { thirdOpponent.Id, new [] { new ResourceCollection(31, ResourceClutch.OneOre) } },
+            };
 
             diceRoll.ShouldBe(6u);
 
