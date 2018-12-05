@@ -109,24 +109,6 @@ namespace SoC.Harness.ViewModels
             return new ControllerViewModel(new LocalGameController(new TestNumberGenerator(), new LocalPlayerPool(), true));
         }
 
-        public void CompleteInfrastructure(uint settlementLocation, uint roadEndLocation)
-        {
-            if (this.State == States.PlaceFirstInfrastructure)
-            {
-                this.localGameController.ContinueGameSetup(settlementLocation, roadEndLocation);
-            }
-            else if (this.State == States.PlaceSecondInfrastructure)
-            {
-                this.localGameController.CompleteGameSetup(settlementLocation, roadEndLocation);
-                this.localGameController.FinalisePlayerTurnOrder();
-                this.localGameController.StartGamePlay();
-            }
-            else
-            {
-                throw new Exception("Infrastructure already placed");
-            }
-        }
-
         public void ContinueGame()
         {
             this.State = States.ChoosePhaseAction;
@@ -141,9 +123,24 @@ namespace SoC.Harness.ViewModels
             this.player.Update(dropResources, false);
         }
 
+        public uint InitialSettlementLocation { get; set; }
+        public uint InitialRoadEndLocation { get; set; }
         public void EndTurn()
         {
-            this.localGameController.EndTurn(this.currentTurnToken);
+            if (this.State == States.PlaceFirstInfrastructure)
+            {
+                this.localGameController.ContinueGameSetup(this.InitialSettlementLocation, this.InitialRoadEndLocation);
+            }
+            else if (this.State == States.PlaceSecondInfrastructure)
+            {
+                this.localGameController.CompleteGameSetup(this.InitialSettlementLocation, this.InitialRoadEndLocation);
+                this.localGameController.FinalisePlayerTurnOrder();
+                this.localGameController.StartGamePlay();
+            }
+            else
+            {
+                this.localGameController.EndTurn(this.currentTurnToken);
+            }
         }
 
         public void GetRandomResourceFromOpponent(Guid opponentId)

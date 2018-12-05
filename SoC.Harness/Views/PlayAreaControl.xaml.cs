@@ -43,8 +43,8 @@ namespace SoC.Harness.Views
 
         private SettlementButtonControl[] settlementButtonControls;
         private Dictionary<string, RoadButtonControl> roadButtonControls;
-        private uint workingLocation;
-        private RoadButtonControl workingRoadControl;
+        //private uint workingLocation;
+        //private RoadButtonControl workingRoadControl;
         private Dictionary<Guid, string> settlementImagesByPlayerId;
         private Dictionary<Guid, string[]> roadImagesByPlayerId;
         private Dictionary<Guid, Tuple<string, string>> bigIconImagesByPlayerId;
@@ -113,8 +113,8 @@ namespace SoC.Harness.Views
 
         public void EndTurn()
         {
-            this.EndTurnButton.Visibility = Visibility.Hidden;
-             this.controllerViewModel.EndTurn();
+            this.ConfirmButton.Visibility = this.EndTurnButton.Visibility = Visibility.Hidden;
+            this.controllerViewModel.EndTurn();
         }
 
         public void GameSetupUpdateEventHandler(GameBoardUpdate boardUpdate)
@@ -277,9 +277,7 @@ namespace SoC.Harness.Views
 
         private void ConfirmButton_Click(object sender, RoutedEventArgs e)
         {
-            this.ConfirmButton.Visibility = Visibility.Hidden;
-            var roadEndLocation = this.workingRoadControl.Start == this.workingLocation ? this.workingRoadControl.End : this.workingRoadControl.Start;
-            this.controllerViewModel.CompleteInfrastructure(this.workingLocation, roadEndLocation);
+            this.EndTurn();
         }
 
         private void EndTurnButton_Click(object sender, RoutedEventArgs e)
@@ -881,8 +879,11 @@ namespace SoC.Harness.Views
 
         private void RoadSelectedEventHandler(RoadButtonControl roadButtonControl)
         {
-            this.workingRoadControl = roadButtonControl;
-            this.PlaceRoad(this.workingRoadControl, this.playerId);
+            this.controllerViewModel.InitialRoadEndLocation =
+                roadButtonControl.Start == this.controllerViewModel.InitialRoadEndLocation
+                ? roadButtonControl.End : roadButtonControl.Start;
+
+            this.PlaceRoad(roadButtonControl, this.playerId);
 
             foreach (var visibleRoadButtonControl in this.visibleRoadButtonControls)
             {
@@ -931,7 +932,7 @@ namespace SoC.Harness.Views
 
         private void SettlementSelectedEventHandler(SettlementButtonControl settlementButtonControl)
         {
-            this.workingLocation = settlementButtonControl.Location;
+            this.controllerViewModel.InitialSettlementLocation = settlementButtonControl.Location;
 
             // Turn off the controls for the location and its neighbours
             this.HideLocalSettlementButtons(settlementButtonControl);
@@ -939,10 +940,10 @@ namespace SoC.Harness.Views
             this.PlaceBuilding(settlementButtonControl.X, settlementButtonControl.Y, string.Empty, @"..\resources\settlements\blue_settlement.png", this.SettlementLayer);
 
             // Turn on the possible road controls for the location
-            var roadEndLocations = this.controllerViewModel.GetValidConnectedLocationsFrom(this.workingLocation);
+            var roadEndLocations = this.controllerViewModel.GetValidConnectedLocationsFrom(settlementButtonControl.Location);
             for (var index = 0; index < roadEndLocations.Length; index++)
             {
-                var id = string.Format("{0}-{1}", this.workingLocation, roadEndLocations[index]);
+                var id = string.Format("{0}-{1}", settlementButtonControl.Location, roadEndLocations[index]);
                 var roadButtonControl = this.roadButtonControls[id];
                 roadButtonControl.Visibility = Visibility.Visible;
                 this.visibleRoadButtonControls.Add(roadButtonControl);
