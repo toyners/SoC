@@ -93,7 +93,6 @@ namespace SoC.Harness.Views
         #region Methods
         public void ContinueGame()
         {
-            //this.state = States.ChoosePhaseAction;
             Task.Factory.StartNew(() =>
             {
                 this.controllerViewModel.ContinueGame();
@@ -678,7 +677,6 @@ namespace SoC.Harness.Views
             {
                 Width = bitmapImage.Width * 2,
                 Height = bitmapImage.Height * 2,
-                //Name = name,
                 Source = bitmapImage,
                 StretchDirection = StretchDirection.Both
             };
