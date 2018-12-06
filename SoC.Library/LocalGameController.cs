@@ -385,7 +385,7 @@ namespace Jabberwocky.SoC.Library
                 computerPlayer.BuildInitialPlayerActions(null);
 
                 ComputerPlayerAction playerAction;
-                while ((playerAction = computerPlayer.GetPlayerAction()) != null)
+                while ((playerAction = computerPlayer.GetPlayerAction()) != null && computerPlayer.VictoryPoints < 10)
                 {
                     switch (playerAction.Action)
                     {
@@ -426,7 +426,6 @@ namespace Jabberwocky.SoC.Library
                             events.Add(new SettlementBuiltEvent(computerPlayer.Id, location));
 
                             this.CheckComputerPlayerIsWinner(computerPlayer, events);
-
                             break;
                         }
 
@@ -1071,13 +1070,16 @@ namespace Jabberwocky.SoC.Library
             this.currentPlayer = this.players[this.playerIndex];
         }
 
-        private void CheckComputerPlayerIsWinner(IComputerPlayer computerPlayer, List<GameEvent> events)
+        private bool CheckComputerPlayerIsWinner(IComputerPlayer computerPlayer, List<GameEvent> events)
         {
             if (computerPlayer.VictoryPoints >= 10)
             {
                 events.Add(new GameWinEvent(computerPlayer.Id));
                 this.GamePhase = GamePhases.GameOver;
+                return true;
             }
+
+            return false;
         }
 
         private void CheckMainPlayerIsWinner()

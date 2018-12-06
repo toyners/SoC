@@ -747,8 +747,8 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
             TurnToken turnToken = null;
             localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
 
-            List<GameEvent> events = null;
-            localGameController.OpponentActionsEvent = (Guid g, List<GameEvent> e) => { events = e; };
+            var gameEvents = new List<List<GameEvent>>();
+            localGameController.OpponentActionsEvent = (Guid g, List<GameEvent> e) => { gameEvents.Add(e); };
 
             localGameController.StartGamePlay();
 
@@ -758,7 +758,8 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
             // Assert
             var expectedWinningGameEvent = new GameWinEvent(firstOpponent.Id);
 
-            events[events.Count - 1].ShouldBe(expectedWinningGameEvent);
+            gameEvents.Count.ShouldBe(3);
+            gameEvents[0][13].ShouldBe(expectedWinningGameEvent);
             firstOpponent.VictoryPoints.ShouldBe(10u);
             localGameController.GamePhase.ShouldBe(LocalGameController.GamePhases.GameOver);
         }
@@ -793,8 +794,11 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
             TurnToken turnToken = null;
             localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
 
-            List<GameEvent> events = null;
-            localGameController.OpponentActionsEvent = (Guid g, List<GameEvent> e) => { events = e; };
+            var gameEvents = new List<List<GameEvent>>();
+            localGameController.OpponentActionsEvent = (Guid g, List<GameEvent> e) => { gameEvents.Add(e); };
+
+            Guid winningPlayer = Guid.Empty;
+            localGameController.GameOverEvent = (Guid g) => { winningPlayer = g; };
 
             localGameController.StartGamePlay();
 
@@ -804,9 +808,11 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
             // Assert
             var expectedWinningGameEvent = new GameWinEvent(firstOpponent.Id);
 
-            events[events.Count - 1].ShouldBe(expectedWinningGameEvent);
+            gameEvents.Count.ShouldBe(1);
+            gameEvents[0].Count.ShouldBe(16);
+            gameEvents[0][15].ShouldBe(expectedWinningGameEvent);
             firstOpponent.VictoryPoints.ShouldBe(11u);
-            localGameController.GamePhase.ShouldBe(LocalGameController.GamePhases.GameOver);
+            winningPlayer.ShouldBe(firstOpponent.Id);
         }
         #endregion
     }

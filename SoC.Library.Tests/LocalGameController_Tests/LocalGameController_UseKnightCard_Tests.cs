@@ -712,9 +712,9 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
             var expectedBuyDevelopmentCardEvent = new BuyDevelopmentCardEvent(firstOpponent.Id);
             var expectedPlayKnightCardEvent = new PlayKnightCardEvent(firstOpponent.Id);
             var expectedDifferentPlayerHasLargestArmyEvent = new LargestArmyChangedEvent(player.Id, firstOpponent.Id);
-            var expectedFirstDiceRollEvent = new DiceRollEvent(firstOpponent.Id, 8, 8);
-            var expectedSecondDiceRollEvent = new DiceRollEvent(testInstances.SecondOpponent.Id, 8, 8);
-            var expectedThirdDiceRollEvent = new DiceRollEvent(testInstances.ThirdOpponent.Id, 8, 8);
+            var expectedFirstDiceRollEvent = new DiceRollEvent(firstOpponent.Id, 4, 4);
+            var expectedSecondDiceRollEvent = new DiceRollEvent(testInstances.SecondOpponent.Id, 4, 4);
+            var expectedThirdDiceRollEvent = new DiceRollEvent(testInstances.ThirdOpponent.Id, 4, 4);
 
             gameEvents.Count.ShouldBe(15);
             gameEvents[keys[0]].ShouldContainExact(new GameEvent[] { expectedFirstDiceRollEvent, expectedBuyDevelopmentCardEvent, expectedBuyDevelopmentCardEvent, expectedBuyDevelopmentCardEvent, expectedBuyDevelopmentCardEvent });
@@ -829,14 +829,9 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
             TurnToken turnToken = null;
             localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; turn++; };
 
-            var opponentActions = new Dictionary<string, List<GameEvent>>();
+            var gameEvents = new List<List<GameEvent>>();
             var keys = new List<string>();
-            localGameController.OpponentActionsEvent = (Guid g, List<GameEvent> e) =>
-            {
-                var key = turn + "-" + g.ToString();
-                keys.Add(key);
-                opponentActions.Add(key, e);
-            };
+            localGameController.OpponentActionsEvent = (Guid g, List<GameEvent> e) => { gameEvents.Add(e); };
 
             localGameController.StartGamePlay();
             localGameController.EndTurn(turnToken); // Opponent buys development cards
@@ -849,26 +844,26 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
             var expectedBuyDevelopmentCardEvent = new BuyDevelopmentCardEvent(firstOpponent.Id);
             var expectedPlayKnightCardEvent = new PlayKnightCardEvent(firstOpponent.Id);
             var expectedDifferentPlayerHasLargestArmyEvent = new LargestArmyChangedEvent(Guid.Empty, firstOpponent.Id);
-            var expectedFirstDiceRollEvent = new DiceRollEvent(firstOpponent.Id, 8, 8);
-            var expectedSecondDiceRollEvent = new DiceRollEvent(testInstances.SecondOpponent.Id, 8, 8);
-            var expectedThirdDiceRollEvent = new DiceRollEvent(testInstances.ThirdOpponent.Id, 8, 8);
+            var expectedFirstDiceRollEvent = new DiceRollEvent(firstOpponent.Id, 4, 4);
+            var expectedSecondDiceRollEvent = new DiceRollEvent(testInstances.SecondOpponent.Id, 4, 4);
+            var expectedThirdDiceRollEvent = new DiceRollEvent(testInstances.ThirdOpponent.Id, 4, 4);
 
-            opponentActions.Count.ShouldBe(15);
-            opponentActions[keys[0]].ShouldContainExact(new GameEvent[] { expectedFirstDiceRollEvent, expectedBuyDevelopmentCardEvent, expectedBuyDevelopmentCardEvent, expectedBuyDevelopmentCardEvent, expectedBuyDevelopmentCardEvent });
-            opponentActions[keys[1]].ShouldContainExact(new GameEvent[] { expectedSecondDiceRollEvent });
-            opponentActions[keys[2]].ShouldContainExact(new GameEvent[] { expectedThirdDiceRollEvent });
-            opponentActions[keys[3]].ShouldContainExact(new GameEvent[] { expectedFirstDiceRollEvent, expectedPlayKnightCardEvent });
-            opponentActions[keys[4]].ShouldContainExact(new GameEvent[] { expectedSecondDiceRollEvent });
-            opponentActions[keys[5]].ShouldContainExact(new GameEvent[] { expectedThirdDiceRollEvent });
-            opponentActions[keys[6]].ShouldContainExact(new GameEvent[] { expectedFirstDiceRollEvent, expectedPlayKnightCardEvent });
-            opponentActions[keys[7]].ShouldContainExact(new GameEvent[] { expectedSecondDiceRollEvent });
-            opponentActions[keys[8]].ShouldContainExact(new GameEvent[] { expectedThirdDiceRollEvent });
-            opponentActions[keys[9]].ShouldContainExact(new GameEvent[] { expectedFirstDiceRollEvent, expectedPlayKnightCardEvent, expectedDifferentPlayerHasLargestArmyEvent });
-            opponentActions[keys[10]].ShouldContainExact(new GameEvent[] { expectedSecondDiceRollEvent });
-            opponentActions[keys[11]].ShouldContainExact(new GameEvent[] { expectedThirdDiceRollEvent });
-            opponentActions[keys[12]].ShouldContainExact(new GameEvent[] { expectedFirstDiceRollEvent, expectedPlayKnightCardEvent });
-            opponentActions[keys[13]].ShouldContainExact(new GameEvent[] { expectedSecondDiceRollEvent });
-            opponentActions[keys[14]].ShouldContainExact(new GameEvent[] { expectedThirdDiceRollEvent });
+            gameEvents.Count.ShouldBe(15);
+            gameEvents[0].ShouldContainExact(new GameEvent[] { expectedFirstDiceRollEvent, expectedBuyDevelopmentCardEvent, expectedBuyDevelopmentCardEvent, expectedBuyDevelopmentCardEvent, expectedBuyDevelopmentCardEvent });
+            gameEvents[1].ShouldContainExact(new GameEvent[] { expectedSecondDiceRollEvent });
+            gameEvents[2].ShouldContainExact(new GameEvent[] { expectedThirdDiceRollEvent });
+            gameEvents[3].ShouldContainExact(new GameEvent[] { expectedFirstDiceRollEvent, expectedPlayKnightCardEvent });
+            gameEvents[4].ShouldContainExact(new GameEvent[] { expectedSecondDiceRollEvent });
+            gameEvents[5].ShouldContainExact(new GameEvent[] { expectedThirdDiceRollEvent });
+            gameEvents[6].ShouldContainExact(new GameEvent[] { expectedFirstDiceRollEvent, expectedPlayKnightCardEvent });
+            gameEvents[7].ShouldContainExact(new GameEvent[] { expectedSecondDiceRollEvent });
+            gameEvents[8].ShouldContainExact(new GameEvent[] { expectedThirdDiceRollEvent });
+            gameEvents[9].ShouldContainExact(new GameEvent[] { expectedFirstDiceRollEvent, expectedPlayKnightCardEvent, expectedDifferentPlayerHasLargestArmyEvent });
+            gameEvents[10].ShouldContainExact(new GameEvent[] { expectedSecondDiceRollEvent });
+            gameEvents[11].ShouldContainExact(new GameEvent[] { expectedThirdDiceRollEvent });
+            gameEvents[12].ShouldContainExact(new GameEvent[] { expectedFirstDiceRollEvent, expectedPlayKnightCardEvent });
+            gameEvents[13].ShouldContainExact(new GameEvent[] { expectedSecondDiceRollEvent });
+            gameEvents[14].ShouldContainExact(new GameEvent[] { expectedThirdDiceRollEvent });
         }
 
         /// <summary>
@@ -1178,8 +1173,8 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
             TurnToken turnToken = null;
             localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
 
-            List<GameEvent> events = null;
-            localGameController.OpponentActionsEvent = (Guid g, List<GameEvent> e) => { events = e; };
+            var gameEvents = new List<List<GameEvent>>();
+            localGameController.OpponentActionsEvent = (Guid g, List<GameEvent> e) => { gameEvents.Add(e); };
 
             localGameController.StartGamePlay();
 
@@ -1192,8 +1187,8 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
             // Assert
             var expectedGameWinEvent = new GameWinEvent(firstOpponent.Id);
 
-            events.Count.ShouldBe(3);
-            events[2].ShouldBe(expectedGameWinEvent);
+            gameEvents.Count.ShouldBe(12);
+            gameEvents[9][3].ShouldBe(expectedGameWinEvent);
             firstOpponent.VictoryPoints.ShouldBe(10u);
             localGameController.GamePhase.ShouldBe(LocalGameController.GamePhases.GameOver);
         }
@@ -1228,8 +1223,8 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
             TurnToken turnToken = null;
             localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
 
-            List<GameEvent> events = null;
-            localGameController.OpponentActionsEvent = (Guid g, List<GameEvent> e) => { events = e; };
+            var gameEvents = new List<List<GameEvent>>();
+            localGameController.OpponentActionsEvent = (Guid g, List<GameEvent> e) => { gameEvents.Add(e); };
 
             localGameController.StartGamePlay();
 
@@ -1242,7 +1237,8 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
             // Assert
             var expectedGameWinEvent = new GameWinEvent(firstOpponent.Id);
 
-            events[events.Count - 1].ShouldBe(expectedGameWinEvent);
+            gameEvents.Count.ShouldBe(12);
+            gameEvents[9][3].ShouldBe(expectedGameWinEvent);
             firstOpponent.VictoryPoints.ShouldBe(11u);
             localGameController.GamePhase.ShouldBe(LocalGameController.GamePhases.GameOver);
         }
