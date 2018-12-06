@@ -304,7 +304,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       var testInstances = this.TestSetup(new MockGameBoardWithNoResourcesCollected(), monopolyCard);
       var localGameController = testInstances.LocalGameController;
 
-      testInstances.Dice.AddSequence(new[] { 8u });
+      testInstances.Dice.AddSequence(new uint[] { 8, 8, 8, 8 });
 
       var player = testInstances.MainPlayer;
       var firstOpponent = testInstances.FirstOpponent;

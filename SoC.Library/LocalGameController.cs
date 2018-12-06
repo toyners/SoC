@@ -370,7 +370,7 @@ namespace Jabberwocky.SoC.Library
                 var events = new List<GameEvent>();
 
                 this.numberGenerator.RollTwoDice(out this.dice1, out this.dice2);
-                var rolledDiceEvent = new RolledDiceEvent(computerPlayer.Id, this.dice1, this.dice2);
+                var rolledDiceEvent = new DiceRollEvent(computerPlayer.Id, this.dice1, this.dice2);
                 events.Add(rolledDiceEvent);
 
                 if (this.dice1 + this.dice2 == 7)

@@ -460,7 +460,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
             var localGameController = testInstances.LocalGameController;
             LocalGameControllerTestSetup.LaunchGameAndCompleteSetup(localGameController);
 
-            testInstances.Dice.AddSequence(new[] { 8u, 8u });
+            testInstances.Dice.AddSequence(new uint[] { 8, 8, 8, 8, 8 });
 
             var firstOpponent = testInstances.FirstOpponent;
             firstOpponent.AddResources(ResourceClutch.RoadSegment);
@@ -475,8 +475,8 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
             TurnToken turnToken = null;
             localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
 
-            List<GameEvent> events = null;
-            localGameController.OpponentActionsEvent = (Guid g, List<GameEvent> e) => { events = e; };
+            var gameEvents = new List<List<GameEvent>>();
+            localGameController.OpponentActionsEvent = (Guid g, List<GameEvent> e) => { gameEvents.Add(e); };
 
             localGameController.StartGamePlay();
 
@@ -486,7 +486,8 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
             // Assert
             var expectedRoadSegmentBuiltEvent = new RoadSegmentBuiltEvent(firstOpponent.Id, 17u, 7u);
 
-            events.ShouldContainExact(new GameEvent[] {
+            gameEvents[0].ShouldContainExact(new GameEvent[] {
+                new DiceRollEvent(firstOpponent.Id, 4, 4),
                 new RoadSegmentBuiltEvent(firstOpponent.Id, 17u, 7u),
                 new SettlementBuiltEvent(firstOpponent.Id, 7u),
                 new CityBuiltEvent(firstOpponent.Id, 7u)});
@@ -503,7 +504,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
             var localGameController = testInstances.LocalGameController;
             LocalGameControllerTestSetup.LaunchGameAndCompleteSetup(localGameController);
 
-            testInstances.Dice.AddSequence(new UInt32[] { 8, 8 });
+            testInstances.Dice.AddSequence(new uint[] { 8, 8, 8, 8, 8 });
 
             var firstOpponent = testInstances.FirstOpponent;
             firstOpponent
@@ -518,8 +519,11 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
             TurnToken turnToken = null;
             localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
 
-            List<GameEvent> events = null;
-            localGameController.OpponentActionsEvent = (Guid g, List<GameEvent> e) => { events = e; };
+            var gameEvents = new List<List<GameEvent>>();
+            localGameController.OpponentActionsEvent = (Guid g, List<GameEvent> e) => 
+            {
+                gameEvents.Add(e);
+            };
 
             localGameController.StartGamePlay();
 
@@ -529,8 +533,9 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
             // Assert
             var expectedWinningGameEvent = new GameWinEvent(firstOpponent.Id);
 
-            events.Count.ShouldBe(12);
-            events[11].ShouldBe(expectedWinningGameEvent);
+            gameEvents.Count.ShouldBe(3);
+            gameEvents[0].Count.ShouldBe(13);
+            gameEvents[0][12].ShouldBe(expectedWinningGameEvent);
             firstOpponent.VictoryPoints.ShouldBe(10u);
             localGameController.GamePhase.ShouldBe(LocalGameController.GamePhases.GameOver);
         }

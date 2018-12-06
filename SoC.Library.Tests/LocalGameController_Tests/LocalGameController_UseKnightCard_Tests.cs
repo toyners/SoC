@@ -653,7 +653,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
             var player = testInstances.MainPlayer;
             var firstOpponent = testInstances.FirstOpponent;
 
-            testInstances.Dice.AddSequence(new[] { 8u, 8u, 8u, 8u, 8u });
+            testInstances.Dice.AddSequenceWithRepeatingRoll(new uint[] { 8, 8, 8, 8, 8 }, 8);
 
             player.AddResources(ResourceClutch.DevelopmentCard * 3);
 
@@ -673,13 +673,13 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
             var expectedTurn = -1;
             localGameController.LargestArmyEvent = (Guid o, Guid n) => { oldPlayerId = o; newPlayerId = n; expectedTurn = turn; };
 
-            var playerActions = new Dictionary<String, List<GameEvent>>();
-            var keys = new List<String>();
+            var gameEvents = new Dictionary<string, List<GameEvent>>();
+            var keys = new List<string>();
             localGameController.OpponentActionsEvent = (Guid g, List<GameEvent> e) =>
             {
                 var key = turn + "-" + g.ToString();
                 keys.Add(key);
-                playerActions.Add(key, e);
+                gameEvents.Add(key, e);
             };
 
             localGameController.StartGamePlay();
@@ -712,14 +712,26 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
             var expectedBuyDevelopmentCardEvent = new BuyDevelopmentCardEvent(firstOpponent.Id);
             var expectedPlayKnightCardEvent = new PlayKnightCardEvent(firstOpponent.Id);
             var expectedDifferentPlayerHasLargestArmyEvent = new LargestArmyChangedEvent(player.Id, firstOpponent.Id);
+            var expectedFirstDiceRollEvent = new DiceRollEvent(firstOpponent.Id, 8, 8);
+            var expectedSecondDiceRollEvent = new DiceRollEvent(testInstances.SecondOpponent.Id, 8, 8);
+            var expectedThirdDiceRollEvent = new DiceRollEvent(testInstances.ThirdOpponent.Id, 8, 8);
 
-            playerActions.Count.ShouldBe(5);
-            keys.Count.ShouldBe(5);
-            playerActions[keys[0]].ShouldContainExact(new GameEvent[] { expectedBuyDevelopmentCardEvent, expectedBuyDevelopmentCardEvent, expectedBuyDevelopmentCardEvent, expectedBuyDevelopmentCardEvent });
-            playerActions[keys[1]].ShouldContainExact(new GameEvent[] { expectedPlayKnightCardEvent });
-            playerActions[keys[2]].ShouldContainExact(new GameEvent[] { expectedPlayKnightCardEvent });
-            playerActions[keys[3]].ShouldContainExact(new GameEvent[] { expectedPlayKnightCardEvent });
-            playerActions[keys[4]].ShouldContainExact(new GameEvent[] { expectedPlayKnightCardEvent, expectedDifferentPlayerHasLargestArmyEvent });
+            gameEvents.Count.ShouldBe(15);
+            gameEvents[keys[0]].ShouldContainExact(new GameEvent[] { expectedFirstDiceRollEvent, expectedBuyDevelopmentCardEvent, expectedBuyDevelopmentCardEvent, expectedBuyDevelopmentCardEvent, expectedBuyDevelopmentCardEvent });
+            gameEvents[keys[1]].ShouldContainExact(new GameEvent[] { expectedSecondDiceRollEvent });
+            gameEvents[keys[2]].ShouldContainExact(new GameEvent[] { expectedThirdDiceRollEvent });
+            gameEvents[keys[3]].ShouldContainExact(new GameEvent[] { expectedFirstDiceRollEvent, expectedPlayKnightCardEvent });
+            gameEvents[keys[4]].ShouldContainExact(new GameEvent[] { expectedSecondDiceRollEvent });
+            gameEvents[keys[5]].ShouldContainExact(new GameEvent[] { expectedThirdDiceRollEvent });
+            gameEvents[keys[6]].ShouldContainExact(new GameEvent[] { expectedFirstDiceRollEvent, expectedPlayKnightCardEvent });
+            gameEvents[keys[7]].ShouldContainExact(new GameEvent[] { expectedSecondDiceRollEvent });
+            gameEvents[keys[8]].ShouldContainExact(new GameEvent[] { expectedThirdDiceRollEvent });
+            gameEvents[keys[9]].ShouldContainExact(new GameEvent[] { expectedFirstDiceRollEvent, expectedPlayKnightCardEvent });
+            gameEvents[keys[10]].ShouldContainExact(new GameEvent[] { expectedSecondDiceRollEvent });
+            gameEvents[keys[11]].ShouldContainExact(new GameEvent[] { expectedThirdDiceRollEvent });
+            gameEvents[keys[12]].ShouldContainExact(new GameEvent[] { expectedFirstDiceRollEvent, expectedPlayKnightCardEvent, expectedDifferentPlayerHasLargestArmyEvent });
+            gameEvents[keys[13]].ShouldContainExact(new GameEvent[] { expectedSecondDiceRollEvent });
+            gameEvents[keys[14]].ShouldContainExact(new GameEvent[] { expectedThirdDiceRollEvent });
         }
 
         /// <summary>
@@ -742,7 +754,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
             var player = testInstances.MainPlayer;
             var firstOpponent = testInstances.FirstOpponent;
 
-            testInstances.Dice.AddSequence(new[] { 8u, 8u, 8u, 8u, 8u, 8u });
+            testInstances.Dice.AddSequenceWithRepeatingRoll(new uint[] { 8, 8, 8, 8, 8, 8 }, 8);
 
             player.AddResources(ResourceClutch.DevelopmentCard * 5);
 
@@ -837,14 +849,26 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
             var expectedBuyDevelopmentCardEvent = new BuyDevelopmentCardEvent(firstOpponent.Id);
             var expectedPlayKnightCardEvent = new PlayKnightCardEvent(firstOpponent.Id);
             var expectedDifferentPlayerHasLargestArmyEvent = new LargestArmyChangedEvent(Guid.Empty, firstOpponent.Id);
+            var expectedFirstDiceRollEvent = new DiceRollEvent(firstOpponent.Id, 8, 8);
+            var expectedSecondDiceRollEvent = new DiceRollEvent(testInstances.SecondOpponent.Id, 8, 8);
+            var expectedThirdDiceRollEvent = new DiceRollEvent(testInstances.ThirdOpponent.Id, 8, 8);
 
-            opponentActions.Count.ShouldBe(5);
-            keys.Count.ShouldBe(5);
-            opponentActions[keys[0]].ShouldContainExact(new GameEvent[] { expectedBuyDevelopmentCardEvent, expectedBuyDevelopmentCardEvent, expectedBuyDevelopmentCardEvent, expectedBuyDevelopmentCardEvent });
-            opponentActions[keys[1]].ShouldContainExact(new GameEvent[] { expectedPlayKnightCardEvent });
-            opponentActions[keys[2]].ShouldContainExact(new GameEvent[] { expectedPlayKnightCardEvent });
-            opponentActions[keys[3]].ShouldContainExact(new GameEvent[] { expectedPlayKnightCardEvent, expectedDifferentPlayerHasLargestArmyEvent });
-            opponentActions[keys[4]].ShouldContainExact(new GameEvent[] { expectedPlayKnightCardEvent });
+            opponentActions.Count.ShouldBe(15);
+            opponentActions[keys[0]].ShouldContainExact(new GameEvent[] { expectedFirstDiceRollEvent, expectedBuyDevelopmentCardEvent, expectedBuyDevelopmentCardEvent, expectedBuyDevelopmentCardEvent, expectedBuyDevelopmentCardEvent });
+            opponentActions[keys[1]].ShouldContainExact(new GameEvent[] { expectedSecondDiceRollEvent });
+            opponentActions[keys[2]].ShouldContainExact(new GameEvent[] { expectedThirdDiceRollEvent });
+            opponentActions[keys[3]].ShouldContainExact(new GameEvent[] { expectedFirstDiceRollEvent, expectedPlayKnightCardEvent });
+            opponentActions[keys[4]].ShouldContainExact(new GameEvent[] { expectedSecondDiceRollEvent });
+            opponentActions[keys[5]].ShouldContainExact(new GameEvent[] { expectedThirdDiceRollEvent });
+            opponentActions[keys[6]].ShouldContainExact(new GameEvent[] { expectedFirstDiceRollEvent, expectedPlayKnightCardEvent });
+            opponentActions[keys[7]].ShouldContainExact(new GameEvent[] { expectedSecondDiceRollEvent });
+            opponentActions[keys[8]].ShouldContainExact(new GameEvent[] { expectedThirdDiceRollEvent });
+            opponentActions[keys[9]].ShouldContainExact(new GameEvent[] { expectedFirstDiceRollEvent, expectedPlayKnightCardEvent, expectedDifferentPlayerHasLargestArmyEvent });
+            opponentActions[keys[10]].ShouldContainExact(new GameEvent[] { expectedSecondDiceRollEvent });
+            opponentActions[keys[11]].ShouldContainExact(new GameEvent[] { expectedThirdDiceRollEvent });
+            opponentActions[keys[12]].ShouldContainExact(new GameEvent[] { expectedFirstDiceRollEvent, expectedPlayKnightCardEvent });
+            opponentActions[keys[13]].ShouldContainExact(new GameEvent[] { expectedSecondDiceRollEvent });
+            opponentActions[keys[14]].ShouldContainExact(new GameEvent[] { expectedThirdDiceRollEvent });
         }
 
         /// <summary>
@@ -863,7 +887,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
             var localGameController = testInstances.LocalGameController;
             var firstOpponent = testInstances.FirstOpponent;
 
-            testInstances.Dice.AddSequence(new[] { 8u, 8u, 8u, 8u, 8u });
+            testInstances.Dice.AddSequenceWithRepeatingRoll(new uint[] { 8, 8, 8, 8, 8 }, 8);
 
             var playKnightCardAction = new PlayKnightInstruction { RobberHex = 0, RobbedPlayerId = Guid.Empty };
             firstOpponent.AddResources(ResourceClutch.DevelopmentCard * 4);
@@ -976,7 +1000,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
             var player = testInstances.MainPlayer;
             var firstOpponent = testInstances.FirstOpponent;
 
-            testInstances.Dice.AddSequence(new[] { 8u, 8u, 8u, 8u });
+            testInstances.Dice.AddSequenceWithRepeatingRoll(new uint[] { 8, 8, 8, 8 }, 8);
 
             player.AddResources(ResourceClutch.DevelopmentCard * 4);
 
@@ -1036,7 +1060,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
             var testInstances = this.TestSetup(new MockGameBoardWithNoResourcesCollected(), knightCard);
             var localGameController = testInstances.LocalGameController;
 
-            testInstances.Dice.AddSequence(new[] { 3u, 0u });
+            testInstances.Dice.AddSequence(new uint[] { 3, 0, 8, 8, 8 });
 
             var player = testInstances.MainPlayer;
             var firstOpponent = testInstances.FirstOpponent;
@@ -1077,7 +1101,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
             var testInstances = this.TestSetup(new MockGameBoardWithNoResourcesCollected(), knightCard);
             var localGameController = testInstances.LocalGameController;
 
-            testInstances.Dice.AddSequence(new[] { 8u, 0u, 8u });
+            testInstances.Dice.AddSequence(new uint[] { 8, 0, 8, 8, 8, 8 });
 
             var player = testInstances.MainPlayer;
             var firstOpponent = testInstances.FirstOpponent;
@@ -1132,7 +1156,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
             var testInstances = this.TestSetup(new MockGameBoardWithNoResourcesCollected(), new KnightDevelopmentCard(), new KnightDevelopmentCard(), new KnightDevelopmentCard());
             var localGameController = testInstances.LocalGameController;
 
-            testInstances.Dice.AddSequence(new UInt32[] { 8, 8, 8, 8 });
+            testInstances.Dice.AddSequenceWithRepeatingRoll(new uint[] { 8, 8, 8, 8 }, 8);
 
             var firstOpponent = testInstances.FirstOpponent;
             firstOpponent
@@ -1181,7 +1205,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
             var testInstances = this.TestSetup(new MockGameBoardWithNoResourcesCollected(), new KnightDevelopmentCard(), new KnightDevelopmentCard(), new KnightDevelopmentCard());
             var localGameController = testInstances.LocalGameController;
 
-            testInstances.Dice.AddSequence(new UInt32[] { 8, 8, 8, 8 });
+            testInstances.Dice.AddSequenceWithRepeatingRoll(new uint[] { 8, 8, 8, 8 }, 8);
 
             var firstOpponent = testInstances.FirstOpponent;
             firstOpponent

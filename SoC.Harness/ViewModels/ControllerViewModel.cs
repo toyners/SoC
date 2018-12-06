@@ -251,7 +251,7 @@ namespace SoC.Harness.ViewModels
         {
             foreach(var gameEvent in gameEvents)
             {
-                if (gameEvent is RolledDiceEvent rolledDiceEvent)
+                if (gameEvent is DiceRollEvent rolledDiceEvent)
                 {
                     var diceRoll = rolledDiceEvent.Dice1 + rolledDiceEvent.Dice2;
                     var playerViewModel = this.playerViewModelsById[playerId];

@@ -220,7 +220,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       var testInstances = this.TestSetupWithExplictGameBoard(bankId, new MockGameBoardWithNoResourcesCollected());
       var localGameController = testInstances.LocalGameController;
 
-      testInstances.Dice.AddSequence(new[] { 8u });
+      testInstances.Dice.AddSequence(new uint[] { 8, 8, 8, 8 });
 
       var givingResources = ResourceClutch.OneGrain * 4;
       var firstOpponent = testInstances.FirstOpponent;
