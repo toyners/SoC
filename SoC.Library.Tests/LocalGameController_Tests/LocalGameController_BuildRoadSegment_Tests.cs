@@ -750,6 +750,9 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
             var gameEvents = new List<List<GameEvent>>();
             localGameController.OpponentActionsEvent = (Guid g, List<GameEvent> e) => { gameEvents.Add(e); };
 
+            var winningPlayer = Guid.Empty;
+            localGameController.GameOverEvent = (Guid g) => { winningPlayer = g; };
+
             localGameController.StartGamePlay();
 
             // Act
@@ -758,9 +761,11 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
             // Assert
             var expectedWinningGameEvent = new GameWinEvent(firstOpponent.Id);
 
-            gameEvents.Count.ShouldBe(3);
+            gameEvents.Count.ShouldBe(1);
+            gameEvents[0].Count.ShouldBe(14);
             gameEvents[0][13].ShouldBe(expectedWinningGameEvent);
             firstOpponent.VictoryPoints.ShouldBe(10u);
+            winningPlayer.ShouldBe(firstOpponent.Id);
             localGameController.GamePhase.ShouldBe(LocalGameController.GamePhases.GameOver);
         }
 

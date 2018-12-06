@@ -533,7 +533,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
             // Assert
             var expectedWinningGameEvent = new GameWinEvent(firstOpponent.Id);
 
-            gameEvents.Count.ShouldBe(3);
+            gameEvents.Count.ShouldBe(1);
             gameEvents[0].Count.ShouldBe(13);
             gameEvents[0][12].ShouldBe(expectedWinningGameEvent);
             firstOpponent.VictoryPoints.ShouldBe(10u);

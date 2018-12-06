@@ -346,7 +346,6 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       var expectedPlayMonopolyCardEvent = new PlayMonopolyCardEvent(firstOpponent.Id, expectedResourceTransactionList);
 
       playerActions.Count.ShouldBe(2);
-      keys.Count.ShouldBe(playerActions.Count);
       playerActions[keys[0]].ShouldContainExact(new GameEvent[] { expectedBuyDevelopmentCardEvent });
       playerActions[keys[1]].ShouldContainExact(new GameEvent[] { expectedPlayMonopolyCardEvent });
 

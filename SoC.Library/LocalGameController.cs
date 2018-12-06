@@ -523,6 +523,12 @@ namespace Jabberwocky.SoC.Library
                     this.OpponentActionsEvent?.Invoke(computerPlayer.Id, events);
                 }
 
+                if (computerPlayer.VictoryPoints >= 10)
+                {
+                    this.GameOverEvent?.Invoke(computerPlayer.Id);
+                    return;
+                }
+
                 this.ClearDevelopmentCardProcessingForTurn();
                 this.ChangeToNextPlayer();
             }
