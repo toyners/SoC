@@ -100,7 +100,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
             var testInstances = this.TestSetup(knightCard);
             var localGameController = testInstances.LocalGameController;
 
-            testInstances.Dice.AddSequence(new[] { 8u });
+            testInstances.Dice.AddSequence(new uint[] { 8, 8, 8, 8 });
             testInstances.MainPlayer.AddResources(ResourceClutch.DevelopmentCard);
 
             TurnToken turnToken = null;
@@ -264,7 +264,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
             var testInstances = this.TestSetup(knightCard);
             var localGameController = testInstances.LocalGameController;
 
-            testInstances.Dice.AddSequence(new[] { 8u });
+            testInstances.Dice.AddSequence(new uint[] { 8, 8, 8, 8 });
             testInstances.MainPlayer.AddResources(ResourceClutch.DevelopmentCard);
 
             TurnToken turnToken = null;
@@ -337,7 +337,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
             var testInstances = this.TestSetup(new KnightDevelopmentCard(), new KnightDevelopmentCard(), new KnightDevelopmentCard());
             var localGameController = testInstances.LocalGameController;
 
-            testInstances.Dice.AddSequence(new UInt32[] { 8, 8, 8 });
+            testInstances.Dice.AddSequence(new UInt32[] { 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8 });
 
             var player = testInstances.MainPlayer;
             player.AddResources(ResourceClutch.RoadSegment * 5);
@@ -453,7 +453,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
             var testInstances = this.TestSetup(new KnightDevelopmentCard(), new KnightDevelopmentCard(), new KnightDevelopmentCard());
             var localGameController = testInstances.LocalGameController;
 
-            testInstances.Dice.AddSequence(new UInt32[] { 8, 8, 8 });
+            testInstances.Dice.AddSequence(new UInt32[] { 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8 });
 
             var player = testInstances.MainPlayer;
             player.AddResources(ResourceClutch.RoadSegment * 5);
@@ -573,7 +573,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
             var testInstances = this.TestSetup(new MockGameBoardWithNoResourcesCollected(), new KnightDevelopmentCard(), new KnightDevelopmentCard(), new KnightDevelopmentCard(), new KnightDevelopmentCard());
             var localGameController = testInstances.LocalGameController;
 
-            testInstances.Dice.AddSequence(new UInt32[] { 8, 8, 8, 8, 8, 8, 8 });
+            testInstances.Dice.AddSequenceWithRepeatingRoll(new uint[] { }, 8);
 
             var player = testInstances.MainPlayer;
             player.AddResources(ResourceClutch.RoadSegment * 5);
@@ -1055,7 +1055,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
             var testInstances = this.TestSetup(new MockGameBoardWithNoResourcesCollected(), knightCard);
             var localGameController = testInstances.LocalGameController;
 
-            testInstances.Dice.AddSequence(new uint[] { 3, 0, 8, 8, 8 });
+            testInstances.Dice.AddSequence(new uint[] { 3, 0, 8, 8, 0 });
 
             var player = testInstances.MainPlayer;
             var firstOpponent = testInstances.FirstOpponent;
@@ -1096,7 +1096,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
             var testInstances = this.TestSetup(new MockGameBoardWithNoResourcesCollected(), knightCard);
             var localGameController = testInstances.LocalGameController;
 
-            testInstances.Dice.AddSequence(new uint[] { 8, 0, 8, 8, 8, 8 });
+            testInstances.Dice.AddSequence(new uint[] { 8, 8, 8, 8, 8, 0, 8, 8, 8 }); // 0 is the resource card selection index
 
             var player = testInstances.MainPlayer;
             var firstOpponent = testInstances.FirstOpponent;
@@ -1110,14 +1110,8 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
             TurnToken turnToken = null;
             localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; turn++; };
 
-            var playerActions = new Dictionary<String, List<GameEvent>>();
-            var keys = new List<String>();
-            localGameController.OpponentActionsEvent = (Guid g, List<GameEvent> e) =>
-            {
-                var key = turn + "-" + g.ToString();
-                keys.Add(key);
-                playerActions.Add(key, e);
-            };
+            var gameEvents = new List<List<GameEvent>>();
+            localGameController.OpponentActionsEvent = (Guid g, List<GameEvent> e) => { gameEvents.Add(e); };
 
             localGameController.StartGamePlay();
             localGameController.EndTurn(turnToken); // Opponent buys development cards
@@ -1134,10 +1128,12 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
             expectedResourceTransactionList.Add(expectedResourceTransaction);
             var expectedResourceLostEvent = new ResourceTransactionEvent(firstOpponent.Id, expectedResourceTransactionList);
 
-            playerActions.Count.ShouldBe(2);
-            keys.Count.ShouldBe(playerActions.Count);
-            playerActions[keys[0]].ShouldContainExact(new GameEvent[] { expectedBuyDevelopmentCardEvent });
-            playerActions[keys[1]].ShouldContainExact(new GameEvent[] { expectedPlayKnightCardEvent, expectedResourceLostEvent });
+            gameEvents.Count.ShouldBe(6);
+            gameEvents[0].Count.ShouldBe(2);
+            gameEvents[0][1].ShouldBe(expectedBuyDevelopmentCardEvent);
+            gameEvents[3].Count.ShouldBe(3);
+            gameEvents[3][1].ShouldBe(expectedPlayKnightCardEvent);
+            gameEvents[3][2].ShouldBe(expectedResourceLostEvent);
 
             player.ResourcesCount.ShouldBe(0);
             firstOpponent.ResourcesCount.ShouldBe(1);
