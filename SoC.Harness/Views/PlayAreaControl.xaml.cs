@@ -73,8 +73,7 @@ namespace SoC.Harness.Views
         #endregion
 
         #region Properties
-        public string DiceOneImagePath { get; private set; }
-        public string DiceTwoImagePath { get; private set; }
+        
         public string ResourceSelectionMessage
         {
             get { return this.resourceSelectionMessage; }
@@ -97,15 +96,6 @@ namespace SoC.Harness.Views
             {
                 this.controllerViewModel.ContinueGame();
             });
-        }
-
-        public void DiceRollEventHandler(uint dice1, uint dice2)
-        {
-            this.DiceOneImagePath = this.GetDiceImage(dice1);
-            this.DiceTwoImagePath = this.GetDiceImage(dice2);
-
-            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("DiceOneImagePath"));
-            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("DiceTwoImagePath"));
         }
 
         public void EndTurn()
@@ -142,7 +132,6 @@ namespace SoC.Harness.Views
             this.controllerViewModel.GameJoinedEvent += this.InitialisePlayerViews;
             this.controllerViewModel.InitialBoardSetupEvent += this.InitialBoardSetupEventHandler;
             this.controllerViewModel.GameSetupUpdateEvent += this.GameSetupUpdateEventHandler;
-            this.controllerViewModel.DiceRollEvent += this.DiceRollEventHandler;
             this.controllerViewModel.RobberEvent += this.RobberEventHandler;
             this.controllerViewModel.RobbingChoicesEvent += this.RobbingChoicesEventHandler;
             this.controllerViewModel.StartPhaseEvent += this.StartPhaseEventHandler;
@@ -334,28 +323,6 @@ namespace SoC.Harness.Views
                     break;
                 }
             }
-        }
-
-        private string GetDiceImage(uint diceRoll)
-        {
-            const string OneImagePath = @"..\resources\dice\one.png";
-            const string TwoImagePath = @"..\resources\dice\two.png";
-            const string ThreeImagePath = @"..\resources\dice\three.png";
-            const string FourImagePath = @"..\resources\dice\four.png";
-            const string FiveImagePath = @"..\resources\dice\five.png";
-            const string SixImagePath = @"..\resources\dice\six.png";
-
-            switch (diceRoll)
-            {
-                case 1: return OneImagePath;
-                case 2: return TwoImagePath;
-                case 3: return ThreeImagePath;
-                case 4: return FourImagePath;
-                case 5: return FiveImagePath;
-                case 6: return SixImagePath;
-            }
-
-            throw new NotImplementedException("Should not get here");
         }
 
         private void InitialBoardSetupEventHandler()
@@ -876,7 +843,7 @@ namespace SoC.Harness.Views
         private void RoadSelectedEventHandler(RoadButtonControl roadButtonControl)
         {
             this.controllerViewModel.InitialRoadEndLocation =
-                roadButtonControl.Start == this.controllerViewModel.InitialRoadEndLocation
+                roadButtonControl.Start == this.controllerViewModel.InitialSettlementLocation
                 ? roadButtonControl.End : roadButtonControl.Start;
 
             this.PlaceRoad(roadButtonControl, this.playerId);

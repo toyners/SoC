@@ -20,6 +20,12 @@ namespace SoC.Harness.ViewModels
             this.IconPath = iconPath;
             this.UpdateHistory(this.Name + " initialised");
             this.Resources = ResourceClutch.Zero;
+            this.ResourceText =
+              $"Brick {this.Resources.BrickCount} " +
+              $"Grain {this.Resources.GrainCount} " +
+              $"Lumber {this.Resources.LumberCount} " +
+              $"Ore {this.Resources.OreCount} " +
+              $"Wool {this.Resources.WoolCount}";
         }
 
         public string HistoryText
@@ -54,11 +60,11 @@ namespace SoC.Harness.ViewModels
             }
 
             this.ResourceText =
-              $"B{this.Resources.BrickCount} " +
-              $"G{this.Resources.GrainCount} " +
-              $"L{this.Resources.LumberCount} " +
-              $"O{this.Resources.OreCount} " +
-              $"W{this.Resources.WoolCount}";
+              $"Brick {this.Resources.BrickCount} " +
+              $"Grain {this.Resources.GrainCount} " +
+              $"Lumber {this.Resources.LumberCount} " +
+              $"Ore {this.Resources.OreCount} " +
+              $"Wool {this.Resources.WoolCount}";
         }
 
         public void UpdateHistory(string line)

@@ -22,14 +22,16 @@ namespace SoC.Harness.ViewModels
         }
 
         #region Fields
-        private readonly LocalGameController localGameController;
         private TurnToken currentTurnToken;
+        readonly PropertyChangedEventArgs diceOneChangedEventArgs = new PropertyChangedEventArgs("DiceOneImagePath");
+        readonly PropertyChangedEventArgs diceTwoChangedEventArgs = new PropertyChangedEventArgs("DiceTwoImagePath");
+        private GameBoardSetup gameBoardSetup;
+        private readonly LocalGameController localGameController;
         private PlayerViewModel player;
         private Dictionary<Guid, PlayerViewModel> playerViewModelsById = new Dictionary<Guid, PlayerViewModel>();
         private PhaseActions phaseActions = new PhaseActions();
-        private GameBoardSetup gameBoardSetup;
         private string setupMessage;
-        private PropertyChangedEventArgs setupMessagePropertyChangedEventArgs = new PropertyChangedEventArgs("SetupMessage");
+        private readonly PropertyChangedEventArgs setupMessagePropertyChangedEventArgs = new PropertyChangedEventArgs("SetupMessage");
         private States state;
 
         #endregion
@@ -57,6 +59,8 @@ namespace SoC.Harness.ViewModels
         #endregion
 
         #region Properties
+        public string DiceOneImagePath { get; private set; }
+        public string DiceTwoImagePath { get; private set; }
         public uint InitialSettlementLocation { get; set; }
         public uint InitialRoadEndLocation { get; set; }
 
@@ -87,7 +91,7 @@ namespace SoC.Harness.ViewModels
         #endregion
 
         #region Events
-        public event Action<uint, uint> DiceRollEvent;
+        //public event Action<uint, uint> DiceRollEvent;
         public event Action<PlayerViewModel, PlayerViewModel, PlayerViewModel, PlayerViewModel> GameJoinedEvent;
         public event Action<GameBoardUpdate> GameSetupUpdateEvent;
         public event Action InitialBoardSetupEvent;
@@ -169,11 +173,15 @@ namespace SoC.Harness.ViewModels
             this.localGameController.StartGameSetup();
         }
 
-        private void DiceRollEventHandler(uint arg1, uint arg2)
+        private void DiceRollEventHandler(uint dice1, uint dice2)
         {
-            var diceRoll = arg1 + arg2;
+            var diceRoll = dice1 + dice2;
             this.player.UpdateHistory("Rolled " + diceRoll);
-            this.DiceRollEvent?.Invoke(arg1, arg2);
+
+            this.DiceOneImagePath = this.GetDiceImage(dice1);
+            this.DiceTwoImagePath = this.GetDiceImage(dice2);
+            this.PropertyChanged?.Invoke(this, this.diceOneChangedEventArgs);
+            this.PropertyChanged?.Invoke(this, this.diceTwoChangedEventArgs);
         }
 
         private void GameJoinedEventHandler(PlayerDataBase[] playerDataModels)
@@ -239,6 +247,28 @@ namespace SoC.Harness.ViewModels
             }
 
             this.GameSetupUpdateEvent?.Invoke(boardUpdate);
+        }
+
+        private string GetDiceImage(uint diceRoll)
+        {
+            const string OneImagePath = @"..\resources\dice\one.png";
+            const string TwoImagePath = @"..\resources\dice\two.png";
+            const string ThreeImagePath = @"..\resources\dice\three.png";
+            const string FourImagePath = @"..\resources\dice\four.png";
+            const string FiveImagePath = @"..\resources\dice\five.png";
+            const string SixImagePath = @"..\resources\dice\six.png";
+
+            switch (diceRoll)
+            {
+                case 1: return OneImagePath;
+                case 2: return TwoImagePath;
+                case 3: return ThreeImagePath;
+                case 4: return FourImagePath;
+                case 5: return FiveImagePath;
+                case 6: return SixImagePath;
+            }
+
+            throw new NotImplementedException("Should not get here");
         }
 
         private void InitialBoardSetupEventHandler(GameBoardSetup gameBoardSetup)
