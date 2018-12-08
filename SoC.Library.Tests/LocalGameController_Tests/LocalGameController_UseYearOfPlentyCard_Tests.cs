@@ -123,7 +123,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
             var testInstances = this.TestSetupWithExplictDevelopmentCards(yearOfPlentyCard);
             var localGameController = testInstances.LocalGameController;
 
-            testInstances.Dice.AddSequence(new[] { 8u, 8u });
+            testInstances.Dice.AddSequenceWithRepeatingRoll(null, 6);
             testInstances.MainPlayer.AddResources(ResourceClutch.DevelopmentCard);
 
             TurnToken turnToken = null;
@@ -160,7 +160,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
             var localGameController = testInstances.LocalGameController;
             var player = testInstances.MainPlayer;
 
-            testInstances.Dice.AddSequence(new[] { 8u });
+            testInstances.Dice.AddSequenceWithRepeatingRoll(null, 8);
             testInstances.MainPlayer.AddResources(ResourceClutch.DevelopmentCard);
 
             TurnToken turnToken = null;
@@ -198,7 +198,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
             var localGameController = testInstances.LocalGameController;
             var player = testInstances.MainPlayer;
 
-            testInstances.Dice.AddSequence(new[] { 8u });
+            testInstances.Dice.AddSequenceWithRepeatingRoll(null, 8);
             testInstances.MainPlayer.AddResources(ResourceClutch.DevelopmentCard);
 
             TurnToken turnToken = null;
@@ -232,7 +232,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
             var testInstances = this.TestSetupWithExplictGameBoard(Guid.Empty, new YearOfPlentyDevelopmentCard(), new MockGameBoardWithNoResourcesCollected());
             var localGameController = testInstances.LocalGameController;
 
-            testInstances.Dice.AddSequence(new UInt32[] { 8, 8 });
+            testInstances.Dice.AddSequenceWithRepeatingRoll(null, 6);
 
             var player = testInstances.MainPlayer;
             player.AddResources(ResourceClutch.RoadSegment * 5);

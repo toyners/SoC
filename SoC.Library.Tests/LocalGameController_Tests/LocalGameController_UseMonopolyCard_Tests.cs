@@ -123,7 +123,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
             var testInstances = this.TestSetup(monopolyCard);
             var localGameController = testInstances.LocalGameController;
 
-            testInstances.Dice.AddSequence(new[] { 8u, 8u });
+            testInstances.Dice.AddSequenceWithRepeatingRoll(null, 6);
             testInstances.MainPlayer.AddResources(ResourceClutch.DevelopmentCard);
 
             TurnToken turnToken = null;
@@ -158,7 +158,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
             var testInstances = this.TestSetup(new MockGameBoardWithNoResourcesCollected(), monopolyCard);
             var localGameController = testInstances.LocalGameController;
 
-            testInstances.Dice.AddSequence(new[] { 3u });
+            testInstances.Dice.AddSequenceWithRepeatingRoll(null, 8);
 
             var player = testInstances.MainPlayer;
             var firstOpponent = testInstances.FirstOpponent;
@@ -201,14 +201,14 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
         }
 
         [Test]
-        public void UseMonopolyCard_UseDevelopmentCardWhenOpponentsHaveNoResourcsOfType_ReceiveNullReference()
+        public void UseMonopolyCard_UseDevelopmentCardWhenOpponentsHaveNoResourcesOfType_ReceivedNullReference()
         {
             // Arrange
             var monopolyCard = new MonopolyDevelopmentCard();
             var testInstances = this.TestSetup(new MockGameBoardWithNoResourcesCollected(), monopolyCard);
             var localGameController = testInstances.LocalGameController;
 
-            testInstances.Dice.AddSequence(new[] { 3u });
+            testInstances.Dice.AddSequence(new uint[] { 8, 8, 8, 3, 8 });
 
             var player = testInstances.MainPlayer;
             var firstOpponent = testInstances.FirstOpponent;
@@ -223,7 +223,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
             TurnToken turnToken = null;
             localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
 
-            ResourceTransactionList gainedResources = new ResourceTransactionList(); // Ensure that state change can be recognised
+            var gainedResources = new ResourceTransactionList(); // Ensure that state change can be recognised
             localGameController.ResourcesTransferredEvent = (ResourceTransactionList r) => { gainedResources = r; };
 
             localGameController.StartGamePlay();
@@ -253,7 +253,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
             var testInstances = this.TestSetup(new MockGameBoardWithNoResourcesCollected(), new MonopolyDevelopmentCard());
             var localGameController = testInstances.LocalGameController;
 
-            testInstances.Dice.AddSequence(new UInt32[] { 8, 8 });
+            testInstances.Dice.AddSequenceWithRepeatingRoll(null, 6);
 
             var player = testInstances.MainPlayer;
             player.AddResources(ResourceClutch.RoadSegment * 5);

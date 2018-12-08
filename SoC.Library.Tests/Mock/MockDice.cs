@@ -50,7 +50,8 @@ namespace Jabberwocky.SoC.Library.UnitTests.Mock
 
         public void AddSequenceWithRepeatingRoll(uint[] rolls, uint repeatingRoll)
         {
-            this.AddSequence(rolls);
+            if (rolls != null && rolls.Length > 0)
+                this.AddSequence(rolls);
 
             if (repeatingRoll % 2 == 0)
             {
