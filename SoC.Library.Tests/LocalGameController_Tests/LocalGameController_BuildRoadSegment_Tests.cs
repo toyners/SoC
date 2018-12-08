@@ -620,7 +620,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
             localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
 
             var actualEvents = new List<List<GameEvent>>();
-            localGameController.OpponentActionsEvent = (Guid g, List<GameEvent> e) => { actualEvents.Add(e); };
+            localGameController.GameEvents = (Guid g, List<GameEvent> e) => { actualEvents.Add(e); };
 
             localGameController.StartGamePlay();
 
@@ -652,7 +652,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
             firstOpponent.AddBuildRoadSegmentInstruction(new BuildRoadSegmentInstruction { Locations = new UInt32[] { 17, 16, 16, 27, 27, 28, 28, 29, 29, 18 } });
 
             var actualEvents = new List<List<GameEvent>>();
-            localGameController.OpponentActionsEvent = (Guid g, List<GameEvent> e) => { actualEvents.Add(e); };
+            localGameController.GameEvents = (Guid g, List<GameEvent> e) => { actualEvents.Add(e); };
 
             TurnToken turnToken = null;
             localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
@@ -748,7 +748,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
             localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
 
             var gameEvents = new List<List<GameEvent>>();
-            localGameController.OpponentActionsEvent = (Guid g, List<GameEvent> e) => { gameEvents.Add(e); };
+            localGameController.GameEvents = (Guid g, List<GameEvent> e) => { gameEvents.Add(e); };
 
             var winningPlayer = Guid.Empty;
             localGameController.GameOverEvent = (Guid g) => { winningPlayer = g; };
@@ -800,7 +800,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
             localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
 
             var gameEvents = new List<List<GameEvent>>();
-            localGameController.OpponentActionsEvent = (Guid g, List<GameEvent> e) => { gameEvents.Add(e); };
+            localGameController.GameEvents = (Guid g, List<GameEvent> e) => { gameEvents.Add(e); };
 
             Guid winningPlayer = Guid.Empty;
             localGameController.GameOverEvent = (Guid g) => { winningPlayer = g; };

@@ -675,7 +675,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
 
             var gameEvents = new Dictionary<string, List<GameEvent>>();
             var keys = new List<string>();
-            localGameController.OpponentActionsEvent = (Guid g, List<GameEvent> e) =>
+            localGameController.GameEvents = (Guid g, List<GameEvent> e) =>
             {
                 var key = turn + "-" + g.ToString();
                 keys.Add(key);
@@ -831,7 +831,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
 
             var gameEvents = new List<List<GameEvent>>();
             var keys = new List<string>();
-            localGameController.OpponentActionsEvent = (Guid g, List<GameEvent> e) => { gameEvents.Add(e); };
+            localGameController.GameEvents = (Guid g, List<GameEvent> e) => { gameEvents.Add(e); };
 
             localGameController.StartGamePlay();
             localGameController.EndTurn(turnToken); // Opponent buys development cards
@@ -1111,7 +1111,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
             localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; turn++; };
 
             var gameEvents = new List<List<GameEvent>>();
-            localGameController.OpponentActionsEvent = (Guid g, List<GameEvent> e) => { gameEvents.Add(e); };
+            localGameController.GameEvents = (Guid g, List<GameEvent> e) => { gameEvents.Add(e); };
 
             localGameController.StartGamePlay();
             localGameController.EndTurn(turnToken); // Opponent buys development cards
@@ -1170,7 +1170,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
             localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
 
             var gameEvents = new List<List<GameEvent>>();
-            localGameController.OpponentActionsEvent = (Guid g, List<GameEvent> e) => { gameEvents.Add(e); };
+            localGameController.GameEvents = (Guid g, List<GameEvent> e) => { gameEvents.Add(e); };
 
             var winningPlayer = Guid.Empty;
             localGameController.GameOverEvent = (Guid g) => { winningPlayer = g; };
@@ -1225,7 +1225,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
             localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
 
             var gameEvents = new List<List<GameEvent>>();
-            localGameController.OpponentActionsEvent = (Guid g, List<GameEvent> e) => { gameEvents.Add(e); };
+            localGameController.GameEvents = (Guid g, List<GameEvent> e) => { gameEvents.Add(e); };
 
             var winningPlayer = Guid.Empty;
             localGameController.GameOverEvent = (Guid g) => { winningPlayer = g; };

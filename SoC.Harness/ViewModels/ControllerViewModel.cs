@@ -52,7 +52,7 @@ namespace SoC.Harness.ViewModels
             this.localGameController.RobbingChoicesEvent = this.RobbingChoicesEventHandler;
             this.localGameController.ResourcesTransferredEvent = this.ResourcesTransferredEventHandler;
             this.localGameController.RoadSegmentBuiltEvent = this.RoadSegmentBuiltEventHandler;
-            this.localGameController.OpponentActionsEvent = this.OpponentActionsEventHandler;
+            this.localGameController.GameEvents = this.OpponentActionsEventHandler;
 
             this.State = States.PlaceFirstInfrastructure;
         }

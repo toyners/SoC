@@ -300,7 +300,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
             localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; turn++; };
 
             var gameEvents = new List<List<GameEvent>>();
-            localGameController.OpponentActionsEvent = (Guid g, List<GameEvent> e) => { gameEvents.Add(e); };
+            localGameController.GameEvents = (Guid g, List<GameEvent> e) => { gameEvents.Add(e); };
 
             localGameController.StartGamePlay();
             localGameController.EndTurn(turnToken); // Opponent buys development card
@@ -353,7 +353,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
             localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; turn++; };
 
             var gameEvents = new List<List<GameEvent>>();
-            localGameController.OpponentActionsEvent = (Guid g, List<GameEvent> e) => { gameEvents.Add(e); };
+            localGameController.GameEvents = (Guid g, List<GameEvent> e) => { gameEvents.Add(e); };
 
             localGameController.StartGamePlay();
             localGameController.EndTurn(turnToken); // Opponent buys development card

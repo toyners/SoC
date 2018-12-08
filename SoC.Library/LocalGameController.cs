@@ -117,7 +117,7 @@ namespace Jabberwocky.SoC.Library
         public Action<Guid, Guid> LargestArmyEvent { get; set; }
         public Action<ClientAccount> LoggedInEvent { get; set; }
         public Action<Guid, Guid> LongestRoadBuiltEvent { get; set; }
-        public Action<Guid, List<GameEvent>> OpponentActionsEvent { get; set; }
+        public Action<Guid, List<GameEvent>> GameEvents { get; set; }
         public Action<Dictionary<Guid, ResourceCollection[]>> ResourcesCollectedEvent { get; set; }
         public Action<ResourceUpdate> ResourcesLostEvent { get; set; }
         public Action<ResourceTransactionList> ResourcesTransferredEvent { get; set; }
@@ -522,7 +522,7 @@ namespace Jabberwocky.SoC.Library
 
                 if (events.Count > 0)
                 {
-                    this.OpponentActionsEvent?.Invoke(computerPlayer.Id, events);
+                    this.GameEvents?.Invoke(computerPlayer.Id, events);
                 }
 
                 if (computerPlayer.VictoryPoints >= 10)
