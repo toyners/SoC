@@ -331,8 +331,6 @@ namespace Jabberwocky.SoC.Library
 
             if (!this.VerifyStartingInfrastructurePlacementRequest(settlementLocation, roadEndLocation))
             {
-                var errorDetails = new ErrorDetails($"Cannot place infrastructure at {settlementLocation} with road from {settlementLocation} to {roadEndLocation}.");
-                this.ErrorRaisedEvent?.Invoke(errorDetails);
                 return;
             }
 
