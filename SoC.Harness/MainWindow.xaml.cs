@@ -55,6 +55,7 @@ namespace SoC.Harness
             this.CanSave = true;
             this.controllerViewModel = ControllerViewModel.New();
             this.controllerViewModel.GameJoinedEvent += this.GameJoinedEventHandler;
+            this.controllerViewModel.ErrorRaisedEvent += this.ErrorRaisedEventHandler;
 
             this.PlayArea.Initialise(this.controllerViewModel);
             this.PlayArea.StartGame();

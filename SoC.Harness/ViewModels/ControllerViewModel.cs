@@ -33,13 +33,13 @@ namespace SoC.Harness.ViewModels
         private string setupMessage;
         private readonly PropertyChangedEventArgs setupMessagePropertyChangedEventArgs = new PropertyChangedEventArgs("SetupMessage");
         private States state;
-
         #endregion
 
         #region Construction
         private ControllerViewModel(LocalGameController localGameController)
         {
             this.localGameController = localGameController;
+            this.localGameController.ErrorRaisedEvent = this.ErrorRaisedEventHandler;
             this.localGameController.GameJoinedEvent = this.GameJoinedEventHandler;
             this.localGameController.GameSetupUpdateEvent = this.GameSetupUpdateEventHandler;
             this.localGameController.StartPlayerTurnEvent = this.StartPlayerTurnEventHandler;
@@ -91,7 +91,7 @@ namespace SoC.Harness.ViewModels
         #endregion
 
         #region Events
-        //public event Action<uint, uint> DiceRollEvent;
+        public event Action<ErrorDetails> ErrorRaisedEvent;
         public event Action<PlayerViewModel, PlayerViewModel, PlayerViewModel, PlayerViewModel> GameJoinedEvent;
         public event Action<GameBoardUpdate> GameSetupUpdateEvent;
         public event Action InitialBoardSetupEvent;
@@ -182,6 +182,11 @@ namespace SoC.Harness.ViewModels
             this.DiceTwoImagePath = this.GetDiceImage(dice2);
             this.PropertyChanged?.Invoke(this, this.diceOneChangedEventArgs);
             this.PropertyChanged?.Invoke(this, this.diceTwoChangedEventArgs);
+        }
+
+        private void ErrorRaisedEventHandler(ErrorDetails errorDetails)
+        {
+            this.ErrorRaisedEvent?.Invoke(errorDetails);
         }
 
         private void GameJoinedEventHandler(PlayerDataBase[] playerDataModels)

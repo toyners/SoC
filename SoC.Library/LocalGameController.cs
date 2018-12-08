@@ -331,6 +331,8 @@ namespace Jabberwocky.SoC.Library
 
             if (!this.VerifyStartingInfrastructurePlacementRequest(settlementLocation, roadEndLocation))
             {
+                var errorDetails = new ErrorDetails($"Cannot place infrastructure at {settlementLocation} with road from {settlementLocation} to {roadEndLocation}.");
+                this.ErrorRaisedEvent?.Invoke(errorDetails);
                 return;
             }
 
@@ -1846,13 +1848,13 @@ namespace Jabberwocky.SoC.Library
             return true;
         }
 
-        private Boolean VerifyStartingInfrastructurePlacementRequest(uint settlementLocation, uint roadEndLocation)
+        private bool VerifyStartingInfrastructurePlacementRequest(uint settlementLocation, uint roadEndLocation)
         {
             var verificationResults = this.gameBoard.CanPlaceStartingInfrastructure(this.mainPlayer.Id, settlementLocation, roadEndLocation);
             return this.VerifySettlementPlacing(verificationResults, settlementLocation) && this.VerifyRoadSegmentPlacing(verificationResults, settlementLocation, roadEndLocation);
         }
 
-        private Boolean VerifyTradeWithBank(int receivingCount, int resourceCount, ResourceTypes givingResourceType, ResourceTypes receivingResourceType)
+        private bool VerifyTradeWithBank(int receivingCount, int resourceCount, ResourceTypes givingResourceType, ResourceTypes receivingResourceType)
         {
             if (this.GamePhase == GamePhases.GameOver)
             {
