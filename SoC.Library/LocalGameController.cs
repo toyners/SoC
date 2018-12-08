@@ -903,7 +903,8 @@ namespace Jabberwocky.SoC.Library
 
             this.playerIndex = 0;
             GameBoardUpdate gameBoardUpdate = this.ContinueSetupForComputerPlayers(this.gameBoard);
-            this.GameSetupUpdateEvent?.Invoke(gameBoardUpdate);
+            //this.GameSetupUpdateEvent?.Invoke(gameBoardUpdate);
+            this.GameEvents?.Invoke(Guid.Empty, null);
             this.GamePhase = GamePhases.ContinueGameSetup;
 
             return true;
