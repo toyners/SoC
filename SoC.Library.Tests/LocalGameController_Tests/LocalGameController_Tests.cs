@@ -119,10 +119,6 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
             var gameEvents = new List<List<GameEvent>>();
             localGameController.GameEvents = (List<GameEvent> e) => { gameEvents.Add(e); };
 
-            var expectedFirstOpponentFirstInfrastructureBuiltEvent = new InfrastructureBuiltEvent(firstOpponent.Id, FirstSettlementOneLocation, FirstRoadOneEnd);
-            var expectedSecondOpponentFirstInfrastructureBuiltEvent = new InfrastructureBuiltEvent(secondOpponent.Id, SecondSettlementOneLocation, SecondRoadOneEnd);
-            var expectedThirdOpponentFirstInfrastructureBuiltEvent = new InfrastructureBuiltEvent(thirdOpponent.Id, ThirdSettlementOneLocation, ThirdRoadOneEnd);
-
             localGameController.JoinGame();
             localGameController.LaunchGame();
 
@@ -132,36 +128,18 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
             localGameController.ContinueGameSetup(MainSettlementOneLocation, MainRoadOneEnd);
             gameEvents.Count.ShouldBe(6);
             gameEvents[0].Count.ShouldBe(1);
-            gameEvents[0][0].ShouldBe(expectedFirstOpponentFirstInfrastructureBuiltEvent);
+            gameEvents[0][0].ShouldBe(new InfrastructureBuiltEvent(firstOpponent.Id, FirstSettlementOneLocation, FirstRoadOneEnd));
             gameEvents[1].Count.ShouldBe(1);
-            gameEvents[1][0].ShouldBe(expectedSecondOpponentFirstInfrastructureBuiltEvent);
+            gameEvents[1][0].ShouldBe(new InfrastructureBuiltEvent(secondOpponent.Id, SecondSettlementOneLocation, SecondRoadOneEnd));
             gameEvents[2].Count.ShouldBe(1);
-            gameEvents[2][0].ShouldBe(expectedThirdOpponentFirstInfrastructureBuiltEvent);
+            gameEvents[2][0].ShouldBe(new InfrastructureBuiltEvent(thirdOpponent.Id, ThirdSettlementOneLocation, ThirdRoadOneEnd));
             gameEvents[3].Count.ShouldBe(1);
-            gameEvents[3][0].ShouldBe(expectedThirdOpponentFirstInfrastructureBuiltEvent);
+            gameEvents[3][0].ShouldBe(new InfrastructureBuiltEvent(firstOpponent.Id, FirstSettlementTwoLocation, FirstRoadTwoEnd));
             gameEvents[4].Count.ShouldBe(1);
-            gameEvents[4][0].ShouldBe(expectedThirdOpponentFirstInfrastructureBuiltEvent);
+            gameEvents[4][0].ShouldBe(new InfrastructureBuiltEvent(secondOpponent.Id, SecondSettlementTwoLocation, SecondRoadTwoEnd));
             gameEvents[5].Count.ShouldBe(1);
-            gameEvents[5][0].ShouldBe(expectedThirdOpponentFirstInfrastructureBuiltEvent);
+            gameEvents[5][0].ShouldBe(new InfrastructureBuiltEvent(thirdOpponent.Id, ThirdSettlementTwoLocation, ThirdRoadTwoEnd));
 
-            /*this.VerifyNewSettlements(gameBoardUpdate.NewSettlements,
-              new Tuple<UInt32, Guid>(FirstSettlementOneLocation, firstOpponent.Id),
-              new Tuple<UInt32, Guid>(FirstSettlementTwoLocation, firstOpponent.Id),
-              new Tuple<UInt32, Guid>(SecondSettlementOneLocation, secondOpponent.Id),
-              new Tuple<UInt32, Guid>(SecondSettlementTwoLocation, secondOpponent.Id),
-              new Tuple<UInt32, Guid>(ThirdSettlementOneLocation, thirdOpponent.Id),
-              new Tuple<UInt32, Guid>(ThirdSettlementTwoLocation, thirdOpponent.Id));
-
-            this.VerifyNewRoads(gameBoardUpdate.NewRoads,
-              new Tuple<UInt32, UInt32, Guid>(FirstSettlementOneLocation, FirstRoadOneEnd, firstOpponent.Id),
-              new Tuple<UInt32, UInt32, Guid>(FirstSettlementTwoLocation, FirstRoadTwoEnd, firstOpponent.Id),
-              new Tuple<UInt32, UInt32, Guid>(SecondSettlementOneLocation, SecondRoadOneEnd, secondOpponent.Id),
-              new Tuple<UInt32, UInt32, Guid>(SecondSettlementTwoLocation, SecondRoadTwoEnd, secondOpponent.Id),
-              new Tuple<UInt32, UInt32, Guid>(ThirdSettlementOneLocation, ThirdRoadOneEnd, thirdOpponent.Id),
-              new Tuple<UInt32, UInt32, Guid>(ThirdSettlementTwoLocation, ThirdRoadTwoEnd, thirdOpponent.Id));
-
-            gameBoardUpdate = new GameBoardUpdate(); // Ensure that there is a state change for the gameBoardUpdate variable 
-            */
             gameEvents.Clear();
             localGameController.CompleteGameSetup(MainSettlementTwoLocation, MainRoadTwoEnd);
             gameEvents.Count.ShouldBe(0);
