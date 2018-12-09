@@ -142,7 +142,11 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
 
             gameEvents.Clear();
             localGameController.CompleteGameSetup(MainSettlementTwoLocation, MainRoadTwoEnd);
-            gameEvents.Count.ShouldBe(0);
+            gameEvents.Count.ShouldBe(4);
+            gameEvents[0].ShouldContainExact(new ResourceCollectedEvent(testInstances.MainPlayer.Id, new[] { new ResourceCollection(MainSettlementTwoLocation, new ResourceClutch(1, 1, 0, 0, 1)) }));
+            gameEvents[1].ShouldContainExact(new ResourceCollectedEvent(firstOpponent.Id, new[] { new ResourceCollection(FirstSettlementTwoLocation, new ResourceClutch(0, 1, 1, 0, 1)) }));
+            gameEvents[2].ShouldContainExact(new ResourceCollectedEvent(secondOpponent.Id, new[] { new ResourceCollection(SecondSettlementTwoLocation, new ResourceClutch(0, 0, 1, 1, 1)) }));
+            gameEvents[3].ShouldContainExact(new ResourceCollectedEvent(thirdOpponent.Id, new[] { new ResourceCollection(ThirdSettlementTwoLocation, new ResourceClutch(0, 1, 1, 0, 1)) }));
         }
 
         [Test]
@@ -187,9 +191,12 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
             gameEvents.Clear();
             localGameController.CompleteGameSetup(MainSettlementTwoLocation, MainRoadTwoEnd);
 
-            gameEvents.Count.ShouldBe(1);
-            gameEvents[0].Count.ShouldBe(1);
-            gameEvents[0][0].ShouldBe(new InfrastructureBuiltEvent(firstOpponent.Id, FirstSettlementTwoLocation, FirstRoadTwoEnd));
+            gameEvents.Count.ShouldBe(5);
+            gameEvents[0].ShouldContainExact(new InfrastructureBuiltEvent(firstOpponent.Id, FirstSettlementTwoLocation, FirstRoadTwoEnd));
+            gameEvents[1].ShouldContainExact(new ResourceCollectedEvent(testInstances.MainPlayer.Id, new[] { new ResourceCollection(MainSettlementTwoLocation, new ResourceClutch(1, 1, 0, 0, 1)) }));
+            gameEvents[2].ShouldContainExact(new ResourceCollectedEvent(firstOpponent.Id, new[] { new ResourceCollection(FirstSettlementTwoLocation, new ResourceClutch(0, 1, 1, 0, 1)) }));
+            gameEvents[3].ShouldContainExact(new ResourceCollectedEvent(secondOpponent.Id, new[] { new ResourceCollection(SecondSettlementTwoLocation, new ResourceClutch(0, 0, 1, 1, 1)) }));
+            gameEvents[4].ShouldContainExact(new ResourceCollectedEvent(thirdOpponent.Id, new[] { new ResourceCollection(ThirdSettlementTwoLocation, new ResourceClutch(0, 1, 1, 0, 1)) }));
         }
 
         [Test]
@@ -201,53 +208,42 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
               .AddExplicitDiceRollSequence(gameSetupOrders)
               .Create();
 
-            MockPlayer player;
-            MockComputerPlayer firstOpponent, secondOpponent, thirdOpponent;
-            this.CreateDefaultPlayerInstances(out player, out firstOpponent, out secondOpponent, out thirdOpponent);
+            var testInstances = LocalGameControllerTestCreator.CreateTestInstances(mockDice);
+            var firstOpponent = testInstances.FirstOpponent;
+            var secondOpponent = testInstances.SecondOpponent;
+            var thirdOpponent = testInstances.ThirdOpponent;
+            var localGameController = testInstances.LocalGameController;
 
-            var localGameController = this.CreateLocalGameController(mockDice, player, firstOpponent, secondOpponent, thirdOpponent);
-
-            GameBoardUpdate gameBoardUpdate = null;
-            localGameController.GameSetupUpdateEvent = (GameBoardUpdate u) => { gameBoardUpdate = u; };
-            localGameController.InitialBoardSetupEvent = (GameBoardSetup g) => { };
+            var gameEvents = new List<List<GameEvent>>();
+            localGameController.GameEvents = (List<GameEvent> e) => { gameEvents.Add(e); };
 
             localGameController.JoinGame();
             localGameController.LaunchGame();
 
             localGameController.StartGameSetup();
-            gameBoardUpdate.ShouldNotBeNull();
+            gameEvents.Count.ShouldBe(2);
+            gameEvents[0].Count.ShouldBe(1);
+            gameEvents[0][0].ShouldBe(new InfrastructureBuiltEvent(firstOpponent.Id, FirstSettlementOneLocation, FirstRoadOneEnd));
+            gameEvents[1].Count.ShouldBe(1);
+            gameEvents[1][0].ShouldBe(new InfrastructureBuiltEvent(secondOpponent.Id, SecondSettlementOneLocation, SecondRoadOneEnd));
 
-            this.VerifyNewSettlements(gameBoardUpdate.NewSettlements,
-              new Tuple<UInt32, Guid>(FirstSettlementOneLocation, firstOpponent.Id),
-              new Tuple<UInt32, Guid>(SecondSettlementOneLocation, secondOpponent.Id));
-
-            this.VerifyNewRoads(gameBoardUpdate.NewRoads,
-              new Tuple<UInt32, UInt32, Guid>(FirstSettlementOneLocation, FirstRoadOneEnd, firstOpponent.Id),
-              new Tuple<UInt32, UInt32, Guid>(SecondSettlementOneLocation, SecondRoadOneEnd, secondOpponent.Id));
-
-            gameBoardUpdate = null; // Ensure that there is a state change for the gameBoardUpdate variable 
+            gameEvents.Clear();
             localGameController.ContinueGameSetup(MainSettlementOneLocation, MainRoadOneEnd);
+            gameEvents.Count.ShouldBe(2);
+            gameEvents[0].Count.ShouldBe(1);
+            gameEvents[0][0].ShouldBe(new InfrastructureBuiltEvent(thirdOpponent.Id, ThirdSettlementOneLocation, ThirdRoadOneEnd));
+            gameEvents[1].Count.ShouldBe(1);
+            gameEvents[1][0].ShouldBe(new InfrastructureBuiltEvent(thirdOpponent.Id, ThirdSettlementTwoLocation, ThirdRoadTwoEnd));
 
-            gameBoardUpdate.ShouldNotBeNull();
-
-            this.VerifyNewSettlements(gameBoardUpdate.NewSettlements,
-              new Tuple<UInt32, Guid>(ThirdSettlementOneLocation, thirdOpponent.Id),
-              new Tuple<UInt32, Guid>(ThirdSettlementTwoLocation, thirdOpponent.Id));
-
-            this.VerifyNewRoads(gameBoardUpdate.NewRoads,
-              new Tuple<UInt32, UInt32, Guid>(ThirdSettlementOneLocation, ThirdRoadOneEnd, thirdOpponent.Id),
-              new Tuple<UInt32, UInt32, Guid>(ThirdSettlementTwoLocation, ThirdRoadTwoEnd, thirdOpponent.Id));
-
-            gameBoardUpdate = null; // Ensure that there is a state change for the gameBoardUpdate variable 
+            gameEvents.Clear();
             localGameController.CompleteGameSetup(MainSettlementTwoLocation, MainRoadTwoEnd);
-
-            this.VerifyNewSettlements(gameBoardUpdate.NewSettlements,
-              new Tuple<UInt32, Guid>(SecondSettlementTwoLocation, secondOpponent.Id),
-              new Tuple<UInt32, Guid>(FirstSettlementTwoLocation, firstOpponent.Id));
-
-            this.VerifyNewRoads(gameBoardUpdate.NewRoads,
-              new Tuple<UInt32, UInt32, Guid>(SecondSettlementTwoLocation, SecondRoadTwoEnd, secondOpponent.Id),
-              new Tuple<UInt32, UInt32, Guid>(FirstSettlementTwoLocation, FirstRoadTwoEnd, firstOpponent.Id));
+            gameEvents.Count.ShouldBe(6);
+            gameEvents[0].ShouldContainExact(new InfrastructureBuiltEvent(secondOpponent.Id, SecondSettlementTwoLocation, SecondRoadTwoEnd));
+            gameEvents[1].ShouldContainExact(new InfrastructureBuiltEvent(firstOpponent.Id, FirstSettlementTwoLocation, FirstRoadTwoEnd));
+            gameEvents[2].ShouldContainExact(new ResourceCollectedEvent(testInstances.MainPlayer.Id, new[] { new ResourceCollection(MainSettlementTwoLocation, new ResourceClutch(1, 1, 0, 0, 1)) }));
+            gameEvents[3].ShouldContainExact(new ResourceCollectedEvent(firstOpponent.Id, new[] { new ResourceCollection(FirstSettlementTwoLocation, new ResourceClutch(0, 1, 1, 0, 1)) }));
+            gameEvents[4].ShouldContainExact(new ResourceCollectedEvent(secondOpponent.Id, new[] { new ResourceCollection(SecondSettlementTwoLocation, new ResourceClutch(0, 0, 1, 1, 1)) }));
+            gameEvents[5].ShouldContainExact(new ResourceCollectedEvent(thirdOpponent.Id, new[] { new ResourceCollection(ThirdSettlementTwoLocation, new ResourceClutch(0, 1, 1, 0, 1)) }));
         }
 
         [Test]
@@ -259,103 +255,37 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
               .AddExplicitDiceRollSequence(gameSetupOrder)
               .Create();
 
-            MockPlayer player;
-            MockComputerPlayer firstOpponent, secondOpponent, thirdOpponent;
-            this.CreateDefaultPlayerInstances(out player, out firstOpponent, out secondOpponent, out thirdOpponent);
+            var testInstances = LocalGameControllerTestCreator.CreateTestInstances(mockDice);
+            var firstOpponent = testInstances.FirstOpponent;
+            var secondOpponent = testInstances.SecondOpponent;
+            var thirdOpponent = testInstances.ThirdOpponent;
+            var localGameController = testInstances.LocalGameController;
 
-            var localGameController = this.CreateLocalGameController(mockDice, player, firstOpponent, secondOpponent, thirdOpponent);
-
-            GameBoardUpdate gameBoardUpdate = null;
-            localGameController.GameSetupUpdateEvent = (GameBoardUpdate u) => { gameBoardUpdate = u; };
-            localGameController.InitialBoardSetupEvent = (GameBoardSetup g) => { };
+            var gameEvents = new List<List<GameEvent>>();
+            localGameController.GameEvents = (List<GameEvent> e) => { gameEvents.Add(e); };
 
             localGameController.JoinGame();
             localGameController.LaunchGame();
 
             localGameController.StartGameSetup();
-            gameBoardUpdate.ShouldNotBeNull();
+            gameEvents.Count.ShouldBe(3);
+            gameEvents[0].ShouldContainExact(new[] { new InfrastructureBuiltEvent(firstOpponent.Id, FirstSettlementOneLocation, FirstRoadOneEnd) });
+            gameEvents[1].ShouldContainExact(new[] { new InfrastructureBuiltEvent(secondOpponent.Id, SecondSettlementOneLocation, SecondRoadOneEnd) });
+            gameEvents[2].ShouldContainExact(new[] { new InfrastructureBuiltEvent(thirdOpponent.Id, ThirdSettlementOneLocation, ThirdRoadOneEnd) });
 
-            this.VerifyNewSettlements(gameBoardUpdate.NewSettlements,
-              new Tuple<UInt32, Guid>(FirstSettlementOneLocation, firstOpponent.Id),
-              new Tuple<UInt32, Guid>(SecondSettlementOneLocation, secondOpponent.Id),
-              new Tuple<UInt32, Guid>(ThirdSettlementOneLocation, thirdOpponent.Id));
-
-            this.VerifyNewRoads(gameBoardUpdate.NewRoads,
-              new Tuple<UInt32, UInt32, Guid>(FirstSettlementOneLocation, FirstRoadOneEnd, firstOpponent.Id),
-              new Tuple<UInt32, UInt32, Guid>(SecondSettlementOneLocation, SecondRoadOneEnd, secondOpponent.Id),
-              new Tuple<UInt32, UInt32, Guid>(ThirdSettlementOneLocation, ThirdRoadOneEnd, thirdOpponent.Id));
-
-            gameBoardUpdate = new GameBoardUpdate(); // Ensure that there is a state change for the gameBoardUpdate variable 
+            gameEvents.Clear();
             localGameController.ContinueGameSetup(MainSettlementOneLocation, MainRoadOneEnd);
-            gameBoardUpdate.ShouldBeNull();
+            gameEvents.Count.ShouldBe(0);
 
-            gameBoardUpdate = null; // Ensure that there is a state change for the gameBoardUpdate variable 
             localGameController.CompleteGameSetup(MainSettlementTwoLocation, MainRoadTwoEnd);
-
-            gameBoardUpdate.ShouldNotBeNull();
-            this.VerifyNewSettlements(gameBoardUpdate.NewSettlements,
-              new Tuple<UInt32, Guid>(ThirdSettlementTwoLocation, thirdOpponent.Id),
-              new Tuple<UInt32, Guid>(SecondSettlementTwoLocation, secondOpponent.Id),
-              new Tuple<UInt32, Guid>(FirstSettlementTwoLocation, firstOpponent.Id));
-
-            this.VerifyNewRoads(gameBoardUpdate.NewRoads,
-              new Tuple<UInt32, UInt32, Guid>(ThirdSettlementTwoLocation, ThirdRoadTwoEnd, thirdOpponent.Id),
-              new Tuple<UInt32, UInt32, Guid>(SecondSettlementTwoLocation, SecondRoadTwoEnd, secondOpponent.Id),
-              new Tuple<UInt32, UInt32, Guid>(FirstSettlementTwoLocation, FirstRoadTwoEnd, firstOpponent.Id));
-        }
-
-        [Test]
-        public void CompleteSetupForPlayer_ExpectedResourcesAreReturned()
-        {
-            var mockDice = new MockDiceCreator()
-              .AddRandomSequenceWithNoDuplicates(4)
-              .Create();
-
-            MockPlayer player;
-            MockComputerPlayer firstOpponent, secondOpponent, thirdOpponent;
-            this.CreateDefaultPlayerInstances(out player, out firstOpponent, out secondOpponent, out thirdOpponent);
-
-            var localGameController = this.CreateLocalGameController(mockDice, player, firstOpponent, secondOpponent, thirdOpponent);
-
-            ResourceUpdate resourceUpdate = null;
-            localGameController.GameSetupResourcesEvent = (ResourceUpdate r) => { resourceUpdate = r; };
-
-            localGameController.JoinGame();
-            localGameController.LaunchGame();
-            localGameController.StartGameSetup();
-            localGameController.ContinueGameSetup(MainSettlementOneLocation, MainRoadOneEnd);
-            localGameController.CompleteGameSetup(MainSettlementTwoLocation, MainRoadTwoEnd);
-
-            resourceUpdate.ShouldNotBeNull();
-            resourceUpdate.Resources.Count.ShouldBe(4);
-            resourceUpdate.Resources.ShouldContainKey(player.Id);
-            resourceUpdate.Resources.ShouldContainKey(firstOpponent.Id);
-            resourceUpdate.Resources.ShouldContainKey(secondOpponent.Id);
-            resourceUpdate.Resources.ShouldContainKey(thirdOpponent.Id);
-
-            resourceUpdate.Resources[player.Id].BrickCount.ShouldBe(1);
-            resourceUpdate.Resources[player.Id].GrainCount.ShouldBe(1);
-            resourceUpdate.Resources[player.Id].LumberCount.ShouldBe(0);
-            resourceUpdate.Resources[player.Id].OreCount.ShouldBe(0);
-            resourceUpdate.Resources[player.Id].WoolCount.ShouldBe(1);
-
-            resourceUpdate.Resources[firstOpponent.Id].BrickCount.ShouldBe(0);
-            resourceUpdate.Resources[firstOpponent.Id].GrainCount.ShouldBe(1);
-            resourceUpdate.Resources[firstOpponent.Id].LumberCount.ShouldBe(1);
-            resourceUpdate.Resources[firstOpponent.Id].OreCount.ShouldBe(0);
-            resourceUpdate.Resources[firstOpponent.Id].WoolCount.ShouldBe(1);
-
-            resourceUpdate.Resources[secondOpponent.Id].BrickCount.ShouldBe(0);
-            resourceUpdate.Resources[secondOpponent.Id].GrainCount.ShouldBe(0);
-            resourceUpdate.Resources[secondOpponent.Id].LumberCount.ShouldBe(1);
-            resourceUpdate.Resources[secondOpponent.Id].OreCount.ShouldBe(1);
-            resourceUpdate.Resources[secondOpponent.Id].WoolCount.ShouldBe(1);
-
-            resourceUpdate.Resources[thirdOpponent.Id].BrickCount.ShouldBe(0);
-            resourceUpdate.Resources[thirdOpponent.Id].GrainCount.ShouldBe(1);
-            resourceUpdate.Resources[thirdOpponent.Id].LumberCount.ShouldBe(1);
-            resourceUpdate.Resources[thirdOpponent.Id].OreCount.ShouldBe(0);
-            resourceUpdate.Resources[thirdOpponent.Id].WoolCount.ShouldBe(1);
+            gameEvents.Count.ShouldBe(7);
+            gameEvents[0].ShouldContainExact(new InfrastructureBuiltEvent(thirdOpponent.Id, ThirdSettlementTwoLocation, ThirdRoadTwoEnd));
+            gameEvents[1].ShouldContainExact(new InfrastructureBuiltEvent(secondOpponent.Id, SecondSettlementTwoLocation, SecondRoadTwoEnd));
+            gameEvents[2].ShouldContainExact(new InfrastructureBuiltEvent(firstOpponent.Id, FirstSettlementTwoLocation, FirstRoadTwoEnd));
+            gameEvents[3].ShouldContainExact(new ResourceCollectedEvent(testInstances.MainPlayer.Id, new[] { new ResourceCollection(MainSettlementTwoLocation, new ResourceClutch(1, 1, 0, 0, 1)) }));
+            gameEvents[4].ShouldContainExact(new ResourceCollectedEvent(firstOpponent.Id, new[] { new ResourceCollection(FirstSettlementTwoLocation, new ResourceClutch(0, 1, 1, 0, 1)) }));
+            gameEvents[5].ShouldContainExact(new ResourceCollectedEvent(secondOpponent.Id, new[] { new ResourceCollection(SecondSettlementTwoLocation, new ResourceClutch(0, 0, 1, 1, 1)) }));
+            gameEvents[6].ShouldContainExact(new ResourceCollectedEvent(thirdOpponent.Id, new[] { new ResourceCollection(ThirdSettlementTwoLocation, new ResourceClutch(0, 1, 1, 0, 1)) }));
         }
 
         [Test]

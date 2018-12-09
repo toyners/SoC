@@ -292,7 +292,7 @@ namespace Jabberwocky.SoC.Library
             this.mainPlayer.AddResources(this.gameSetupResources.Resources[this.mainPlayer.Id]);
 
             GameBoardUpdate gameBoardUpdate = this.CompleteSetupForComputerPlayers(this.gameBoard, null);
-            this.GameSetupUpdateEvent?.Invoke(gameBoardUpdate);
+            //this.GameSetupUpdateEvent?.Invoke(gameBoardUpdate);
 
             //this.GameSetupResourcesEvent?.Invoke(this.gameSetupResources);
             this.GameEvents?.Invoke(null);

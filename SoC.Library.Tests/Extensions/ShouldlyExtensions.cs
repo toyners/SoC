@@ -63,6 +63,15 @@ namespace Jabberwocky.SoC.Library.UnitTests.Extensions
             actual.Count.ShouldBe(0);
         }
 
+        public static void ShouldContainExact<T>(this IList<T> actualCollection, T expectedItem)
+        {
+            actualCollection.ShouldNotBeNull();
+            expectedItem.ShouldNotBeNull();
+
+            actualCollection.Count.ShouldBe(1);
+            actualCollection[0].ShouldBe(expectedItem);
+        }
+
         public static void ShouldMatch<T>(this ISet<T> actual, ISet<T> expected)
         {
             expected.ShouldNotBeNull($"ISet<{typeof(T).Name}>: Expected parameter is null");
