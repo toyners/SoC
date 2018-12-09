@@ -110,7 +110,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
               .AddExplicitDiceRollSequence(gameSetupOrder)
               .Create();
 
-            var testInstances = LocalGameControllerTestCreator.CreateTestInstances();
+            var testInstances = LocalGameControllerTestCreator.CreateTestInstances(mockDice);
             var firstOpponent = testInstances.FirstOpponent;
             var secondOpponent = testInstances.SecondOpponent;
             var thirdOpponent = testInstances.ThirdOpponent;
@@ -134,11 +134,11 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
             gameEvents[2].Count.ShouldBe(1);
             gameEvents[2][0].ShouldBe(new InfrastructureBuiltEvent(thirdOpponent.Id, ThirdSettlementOneLocation, ThirdRoadOneEnd));
             gameEvents[3].Count.ShouldBe(1);
-            gameEvents[3][0].ShouldBe(new InfrastructureBuiltEvent(firstOpponent.Id, FirstSettlementTwoLocation, FirstRoadTwoEnd));
+            gameEvents[3][0].ShouldBe(new InfrastructureBuiltEvent(thirdOpponent.Id, ThirdSettlementTwoLocation, ThirdRoadTwoEnd));
             gameEvents[4].Count.ShouldBe(1);
             gameEvents[4][0].ShouldBe(new InfrastructureBuiltEvent(secondOpponent.Id, SecondSettlementTwoLocation, SecondRoadTwoEnd));
             gameEvents[5].Count.ShouldBe(1);
-            gameEvents[5][0].ShouldBe(new InfrastructureBuiltEvent(thirdOpponent.Id, ThirdSettlementTwoLocation, ThirdRoadTwoEnd));
+            gameEvents[5][0].ShouldBe(new InfrastructureBuiltEvent(firstOpponent.Id, FirstSettlementTwoLocation, FirstRoadTwoEnd));
 
             gameEvents.Clear();
             localGameController.CompleteGameSetup(MainSettlementTwoLocation, MainRoadTwoEnd);
@@ -154,53 +154,42 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
               .AddExplicitDiceRollSequence(gameSetupOrder)
               .Create();
 
-            MockPlayer player;
-            MockComputerPlayer firstOpponent, secondOpponent, thirdOpponent;
-            this.CreateDefaultPlayerInstances(out player, out firstOpponent, out secondOpponent, out thirdOpponent);
+            var testInstances = LocalGameControllerTestCreator.CreateTestInstances(mockDice);
+            var firstOpponent = testInstances.FirstOpponent;
+            var secondOpponent = testInstances.SecondOpponent;
+            var thirdOpponent = testInstances.ThirdOpponent;
+            var localGameController = testInstances.LocalGameController;
 
-            var localGameController = this.CreateLocalGameController(mockDice, player, firstOpponent, secondOpponent, thirdOpponent);
-
-            GameBoardUpdate gameBoardUpdate = null;
-            localGameController.GameSetupUpdateEvent = (GameBoardUpdate u) => { gameBoardUpdate = u; };
-            localGameController.InitialBoardSetupEvent = (GameBoardSetup g) => { };
+            var gameEvents = new List<List<GameEvent>>();
+            localGameController.GameEvents = (List<GameEvent> e) => { gameEvents.Add(e); };
 
             localGameController.JoinGame();
             localGameController.LaunchGame();
 
             localGameController.StartGameSetup();
-            gameBoardUpdate.ShouldNotBeNull();
+            gameEvents.Count.ShouldBe(1);
+            gameEvents[0].Count.ShouldBe(1);
+            gameEvents[0][0].ShouldBe(new InfrastructureBuiltEvent(firstOpponent.Id, FirstSettlementOneLocation, FirstRoadOneEnd));
 
-            this.VerifyNewSettlements(gameBoardUpdate.NewSettlements,
-              new Tuple<UInt32, Guid>(FirstSettlementOneLocation, firstOpponent.Id));
-
-            this.VerifyNewRoads(gameBoardUpdate.NewRoads,
-              new Tuple<UInt32, UInt32, Guid>(FirstSettlementOneLocation, FirstRoadOneEnd, firstOpponent.Id));
-
-            gameBoardUpdate = null; // Ensure that there is a state change for the gameBoardUpdate variable 
+            gameEvents.Clear();
             localGameController.ContinueGameSetup(MainSettlementOneLocation, MainRoadOneEnd);
 
-            gameBoardUpdate.ShouldNotBeNull();
+            gameEvents.Count.ShouldBe(4);
+            gameEvents[0].Count.ShouldBe(1);
+            gameEvents[0][0].ShouldBe(new InfrastructureBuiltEvent(secondOpponent.Id, SecondSettlementOneLocation, SecondRoadOneEnd));
+            gameEvents[1].Count.ShouldBe(1);
+            gameEvents[1][0].ShouldBe(new InfrastructureBuiltEvent(thirdOpponent.Id, ThirdSettlementOneLocation, ThirdRoadOneEnd));
+            gameEvents[2].Count.ShouldBe(1);
+            gameEvents[2][0].ShouldBe(new InfrastructureBuiltEvent(thirdOpponent.Id, ThirdSettlementTwoLocation, ThirdRoadTwoEnd));
+            gameEvents[3].Count.ShouldBe(1);
+            gameEvents[3][0].ShouldBe(new InfrastructureBuiltEvent(secondOpponent.Id, SecondSettlementTwoLocation, SecondRoadTwoEnd));
 
-            this.VerifyNewSettlements(gameBoardUpdate.NewSettlements,
-              new Tuple<UInt32, Guid>(SecondSettlementOneLocation, secondOpponent.Id),
-              new Tuple<UInt32, Guid>(SecondSettlementTwoLocation, secondOpponent.Id),
-              new Tuple<UInt32, Guid>(ThirdSettlementOneLocation, thirdOpponent.Id),
-              new Tuple<UInt32, Guid>(ThirdSettlementTwoLocation, thirdOpponent.Id));
-
-            this.VerifyNewRoads(gameBoardUpdate.NewRoads,
-              new Tuple<UInt32, UInt32, Guid>(SecondSettlementOneLocation, SecondRoadOneEnd, secondOpponent.Id),
-              new Tuple<UInt32, UInt32, Guid>(SecondSettlementTwoLocation, SecondRoadTwoEnd, secondOpponent.Id),
-              new Tuple<UInt32, UInt32, Guid>(ThirdSettlementOneLocation, ThirdRoadOneEnd, thirdOpponent.Id),
-              new Tuple<UInt32, UInt32, Guid>(ThirdSettlementTwoLocation, ThirdRoadTwoEnd, thirdOpponent.Id));
-
-            gameBoardUpdate = null; // Ensure that there is a state change for the gameBoardUpdate variable 
+            gameEvents.Clear();
             localGameController.CompleteGameSetup(MainSettlementTwoLocation, MainRoadTwoEnd);
 
-            this.VerifyNewSettlements(gameBoardUpdate.NewSettlements,
-              new Tuple<UInt32, Guid>(FirstSettlementTwoLocation, firstOpponent.Id));
-
-            this.VerifyNewRoads(gameBoardUpdate.NewRoads,
-              new Tuple<UInt32, UInt32, Guid>(FirstSettlementTwoLocation, FirstRoadTwoEnd, firstOpponent.Id));
+            gameEvents.Count.ShouldBe(1);
+            gameEvents[0].Count.ShouldBe(1);
+            gameEvents[0][0].ShouldBe(new InfrastructureBuiltEvent(firstOpponent.Id, FirstSettlementTwoLocation, FirstRoadTwoEnd));
         }
 
         [Test]
@@ -1564,15 +1553,8 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
             var thirdOpponent = new MockComputerPlayer(ThirdOpponentName);
 
             var mockPlayerPool = LocalGameControllerTestCreator.CreateMockPlayerPool(player, firstOpponent, secondOpponent, thirdOpponent);
-            LocalGameControllerTestCreator.PlayerSetup playerSetup = new LocalGameControllerTestCreator.PlayerSetup(player, firstOpponent, secondOpponent, thirdOpponent, mockPlayerPool);
-            var localGameController = LocalGameControllerTestCreator.CreateTestInstances(playerSetup, null, null).LocalGameController;
-
-            /*var mockPlayerPool = Substitute.For<IPlayerPool>();
-            mockPlayerPool.CreatePlayer().Returns(player);
-            mockPlayerPool.CreateComputerPlayer(Arg.Any<GameBoard>()).Returns(firstOpponent, secondOpponent, thirdOpponent);
-            var localGameController = new LocalGameControllerCreator()
-              .ChangePlayerPool(mockPlayerPool)
-              .Create();*/
+            var playerSetup = new LocalGameControllerTestCreator.PlayerSetup(player, firstOpponent, secondOpponent, thirdOpponent, mockPlayerPool);
+            var localGameController = LocalGameControllerTestCreator.CreateTestInstances(null, playerSetup, null, null).LocalGameController;
 
             PlayerDataBase[] playerDataViews = null;
             localGameController.GameJoinedEvent = (PlayerDataBase[] p) => { playerDataViews = p; };

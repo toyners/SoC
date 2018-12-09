@@ -439,6 +439,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
             var playerSetup = new LocalGameControllerTestCreator.PlayerSetup(player, firstOpponent, secondOpponent, thirdOpponent, playerPool);
 
             var testInstances = LocalGameControllerTestCreator.CreateTestInstances(
+                null,
               playerSetup,
               this.CreateMockCardDevelopmentCardHolder(developmentCard),
               gameBoard);

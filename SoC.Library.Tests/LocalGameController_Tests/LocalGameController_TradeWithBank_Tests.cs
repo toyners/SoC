@@ -252,7 +252,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
 
         private LocalGameControllerTestCreator.TestInstances TestSetup()
         {
-            var testInstances = LocalGameControllerTestCreator.CreateTestInstances(null, null, new GameBoard(BoardSizes.Standard));
+            var testInstances = LocalGameControllerTestCreator.CreateTestInstances(null, null, null, new GameBoard(BoardSizes.Standard));
             var localGameController = testInstances.LocalGameController;
             LocalGameControllerTestSetup.LaunchGameAndCompleteSetup(localGameController);
 
@@ -271,7 +271,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
 
             var playerSetup = new LocalGameControllerTestCreator.PlayerSetup(player, firstOpponent, secondOpponent, thirdOpponent, playerPool);
 
-            var testInstances = LocalGameControllerTestCreator.CreateTestInstances(playerSetup, null, gameBoard);
+            var testInstances = LocalGameControllerTestCreator.CreateTestInstances(null, playerSetup, null, gameBoard);
             var localGameController = testInstances.LocalGameController;
             LocalGameControllerTestSetup.LaunchGameAndCompleteSetup(localGameController);
 

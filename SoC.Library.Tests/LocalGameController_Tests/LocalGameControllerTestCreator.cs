@@ -72,22 +72,31 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
 
         public static TestInstances CreateTestInstances()
         {
-            return LocalGameControllerTestCreator.CreateTestInstances(null, null, null);
+            return LocalGameControllerTestCreator.CreateTestInstances(null, null, null, null);
+        }
+
+        public static TestInstances CreateTestInstances(MockDice mockNumGenerator)
+        {
+            return LocalGameControllerTestCreator.CreateTestInstances(mockNumGenerator, null, null, null);
         }
 
         public static TestInstances CreateTestInstances(IDevelopmentCardHolder developmentCardHolder)
         {
-            return LocalGameControllerTestCreator.CreateTestInstances(null, developmentCardHolder, null);
+            return LocalGameControllerTestCreator.CreateTestInstances(null, null, developmentCardHolder, null);
         }
 
         public static TestInstances CreateTestInstances(GameBoard gameBoardData)
         {
-            return LocalGameControllerTestCreator.CreateTestInstances(null, null, gameBoardData);
+            return LocalGameControllerTestCreator.CreateTestInstances(null, null, null, gameBoardData);
         }
 
-        public static TestInstances CreateTestInstances(PlayerSetup playerSetup, IDevelopmentCardHolder developmentCardHolder, GameBoard gameBoard)
+        public static TestInstances CreateTestInstances(MockDice mockNumGenerator, PlayerSetup playerSetup, IDevelopmentCardHolder developmentCardHolder, GameBoard gameBoard)
         {
-            var dice = LocalGameControllerTestCreator.CreateMockDice();
+            MockDice mockNumberGenerator = null;
+            if (mockNumGenerator != null)
+                mockNumberGenerator = mockNumGenerator;
+            else
+                mockNumberGenerator = LocalGameControllerTestCreator.CreateMockNumberGenerator();
 
             MockPlayer player;
             MockComputerPlayer firstOpponent, secondOpponent, thirdOpponent;
@@ -116,15 +125,15 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
                 gameBoard = new GameBoard(BoardSizes.Standard);
             }
 
-            var localGameController = new LocalGameController(dice, playerPool, gameBoard, developmentCardHolder);
+            var localGameController = new LocalGameController(mockNumberGenerator, playerPool, gameBoard, developmentCardHolder);
             localGameController.ErrorRaisedEvent = (ErrorDetails e) => { throw new Exception(e.Message); };
 
-            var testInstances = new TestInstances(localGameController, player, firstOpponent, secondOpponent, thirdOpponent, dice);
+            var testInstances = new TestInstances(localGameController, player, firstOpponent, secondOpponent, thirdOpponent, mockNumberGenerator);
 
             return testInstances;
         }
 
-        private static MockDice CreateMockDice()
+        private static MockDice CreateMockNumberGenerator()
         {
             var gameSetupOrder = new[] { 12u, 10u, 8u, 6u };
             var gameTurnOrder = gameSetupOrder;

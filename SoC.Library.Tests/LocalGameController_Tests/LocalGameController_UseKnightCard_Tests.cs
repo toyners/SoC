@@ -1299,7 +1299,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
 
         private LocalGameControllerTestCreator.TestInstances TestSetup(IDevelopmentCardHolder developmentCardHolder, GameBoard gameBoard)
         {
-            var testInstances = LocalGameControllerTestCreator.CreateTestInstances(null, developmentCardHolder, gameBoard);
+            var testInstances = LocalGameControllerTestCreator.CreateTestInstances(null, null, developmentCardHolder, gameBoard);
             testInstances.Dice.AddSequence(new[] { 8u });
 
             LocalGameControllerTestSetup.LaunchGameAndCompleteSetup(testInstances.LocalGameController);
