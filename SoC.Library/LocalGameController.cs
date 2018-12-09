@@ -117,7 +117,7 @@ namespace Jabberwocky.SoC.Library
         public Action<Guid, Guid> LargestArmyEvent { get; set; }
         public Action<ClientAccount> LoggedInEvent { get; set; }
         public Action<Guid, Guid> LongestRoadBuiltEvent { get; set; }
-        public Action<Guid, List<GameEvent>> GameEvents { get; set; }
+        public Action<List<GameEvent>> GameEvents { get; set; }
         public Action<Dictionary<Guid, ResourceCollection[]>> ResourcesCollectedEvent { get; set; }
         public Action<ResourceUpdate> ResourcesLostEvent { get; set; }
         public Action<ResourceTransactionList> ResourcesTransferredEvent { get; set; }
@@ -294,7 +294,8 @@ namespace Jabberwocky.SoC.Library
             GameBoardUpdate gameBoardUpdate = this.CompleteSetupForComputerPlayers(this.gameBoard, null);
             this.GameSetupUpdateEvent?.Invoke(gameBoardUpdate);
 
-            this.GameSetupResourcesEvent?.Invoke(this.gameSetupResources);
+            //this.GameSetupResourcesEvent?.Invoke(this.gameSetupResources);
+            this.GameEvents?.Invoke(null);
             this.GamePhase = GamePhases.FinalisePlayerTurnOrder;
         }
 
@@ -343,7 +344,8 @@ namespace Jabberwocky.SoC.Library
             this.playerIndex = this.players.Length - 1;
             gameBoardUpdate = this.CompleteSetupForComputerPlayers(gameBoardData, gameBoardUpdate);
 
-            this.GameSetupUpdateEvent?.Invoke(gameBoardUpdate);
+            //this.GameSetupUpdateEvent?.Invoke(gameBoardUpdate);
+            this.GameEvents?.Invoke(null);
             this.GamePhase = GamePhases.CompleteGameSetup;
         }
 
@@ -520,7 +522,7 @@ namespace Jabberwocky.SoC.Library
 
                 if (events.Count > 0)
                 {
-                    this.GameEvents?.Invoke(computerPlayer.Id, events);
+                    this.GameEvents?.Invoke(events);
                 }
 
                 if (computerPlayer.VictoryPoints >= 10)
@@ -904,7 +906,7 @@ namespace Jabberwocky.SoC.Library
             this.playerIndex = 0;
             GameBoardUpdate gameBoardUpdate = this.ContinueSetupForComputerPlayers(this.gameBoard);
             //this.GameSetupUpdateEvent?.Invoke(gameBoardUpdate);
-            this.GameEvents?.Invoke(Guid.Empty, null);
+            this.GameEvents?.Invoke(null);
             this.GamePhase = GamePhases.ContinueGameSetup;
 
             return true;

@@ -52,7 +52,7 @@ namespace SoC.Harness.ViewModels
             this.localGameController.RobbingChoicesEvent = this.RobbingChoicesEventHandler;
             this.localGameController.ResourcesTransferredEvent = this.ResourcesTransferredEventHandler;
             this.localGameController.RoadSegmentBuiltEvent = this.RoadSegmentBuiltEventHandler;
-            this.localGameController.GameEvents = this.OpponentActionsEventHandler;
+            this.localGameController.GameEvents = this.GameEventsHandler;
 
             this.State = States.PlaceFirstInfrastructure;
         }
@@ -282,14 +282,14 @@ namespace SoC.Harness.ViewModels
             this.InitialBoardSetupEvent?.Invoke();
         }
 
-        private void OpponentActionsEventHandler(Guid playerId, List<GameEvent> gameEvents)
+        private void GameEventsHandler(List<GameEvent> gameEvents)
         {
             foreach(var gameEvent in gameEvents)
             {
                 if (gameEvent is DiceRollEvent rolledDiceEvent)
                 {
                     var diceRoll = rolledDiceEvent.Dice1 + rolledDiceEvent.Dice2;
-                    var playerViewModel = this.playerViewModelsById[playerId];
+                    var playerViewModel = this.playerViewModelsById[gameEvent.PlayerId];
                     playerViewModel.UpdateHistory($"{playerViewModel.Name} rolled {diceRoll}");
                 }
                 else

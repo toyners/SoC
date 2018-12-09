@@ -7,6 +7,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
     using System.Text;
     using GameBoards;
     using Interfaces;
+    using Jabberwocky.SoC.Library.GameEvents;
     using Jabberwocky.SoC.Library.PlayerData;
     using Jabberwocky.SoC.Library.UnitTests.Extensions;
     using Mock;
@@ -109,24 +110,31 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
               .AddExplicitDiceRollSequence(gameSetupOrder)
               .Create();
 
-            MockPlayer player;
-            MockComputerPlayer firstOpponent, secondOpponent, thirdOpponent;
-            this.CreateDefaultPlayerInstances(out player, out firstOpponent, out secondOpponent, out thirdOpponent);
+            //MockPlayer player;
+            //MockComputerPlayer firstOpponent, secondOpponent, thirdOpponent;
+            var testInstances = LocalGameControllerTestCreator.CreateTestInstances();
+            var firstOpponent = testInstances.FirstOpponent;
+            var secondOpponent = testInstances.SecondOpponent;
+            var thirdOpponent = testInstances.ThirdOpponent;
+            var localGameController = testInstances.LocalGameController;
+            //this.CreateDefaultPlayerInstances(out player, out firstOpponent, out secondOpponent, out thirdOpponent);
 
-            var localGameController = this.CreateLocalGameController(mockDice, player, firstOpponent, secondOpponent, thirdOpponent);
+            //var localGameController = this.CreateLocalGameController(mockDice, player, firstOpponent, secondOpponent, thirdOpponent);
 
-            GameBoardUpdate gameBoardUpdate = null;
-            localGameController.GameSetupUpdateEvent = (GameBoardUpdate u) => { gameBoardUpdate = u; };
-            localGameController.InitialBoardSetupEvent = (GameBoardSetup g) => { };
+            //GameBoardUpdate gameBoardUpdate = null;
+            //localGameController.GameSetupUpdateEvent = (GameBoardUpdate u) => { gameBoardUpdate = u; };
+
+            var events = new List<List<GameEvent>>();
+            localGameController.GameEvents = (List<GameEvent> e) => { events.Add(e); };
 
             localGameController.JoinGame();
             localGameController.LaunchGame();
 
-            gameBoardUpdate = new GameBoardUpdate(); // Ensure that there is a state change for the gameBoardUpdate variable 
+            //gameBoardUpdate = new GameBoardUpdate(); // Ensure that there is a state change for the gameBoardUpdate variable 
             localGameController.StartGameSetup();
-            gameBoardUpdate.ShouldBeNull();
+            //gameBoardUpdate.ShouldBeNull();
 
-            gameBoardUpdate = null; // Ensure that there is a state change for the gameBoardUpdate variable
+            //gameBoardUpdate = null; // Ensure that there is a state change for the gameBoardUpdate variable
 
             localGameController.ContinueGameSetup(MainSettlementOneLocation, MainRoadOneEnd);
             gameBoardUpdate.ShouldNotBeNull();

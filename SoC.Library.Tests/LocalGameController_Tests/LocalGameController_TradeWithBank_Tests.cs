@@ -233,7 +233,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
             localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
 
             var gameEvents = new List<List<GameEvent>>();
-            localGameController.GameEvents = (Guid g, List<GameEvent> e) => { gameEvents.Add(e); };
+            localGameController.GameEvents = (List<GameEvent> e) => { gameEvents.Add(e); };
 
             localGameController.StartGamePlay();
 
