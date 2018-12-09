@@ -5,14 +5,14 @@ namespace Jabberwocky.SoC.Library.GameEvents
 
   public class SettlementBuiltEvent : GameEvent
   {
-    public readonly UInt32 Location;
+    public readonly uint Location;
 
-    public SettlementBuiltEvent(Guid playerId, UInt32 location) : base(playerId)
+    public SettlementBuiltEvent(Guid playerId, uint location) : base(playerId)
     {
       this.Location = location;
     }
 
-    public override Boolean Equals(Object obj)
+    public override bool Equals(object obj)
     {
       if (!base.Equals(obj))
       {
