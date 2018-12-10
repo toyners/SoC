@@ -1057,11 +1057,9 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
         public void StartOfMainPlayerTurn_RobberLocationHasNoSettlementsAndCallingChooseResourceFromOpponent_MeaningfulErrorIsReceived()
         {
             // Arrange
-            MockDice mockDice = null;
-            MockPlayer player;
-            MockComputerPlayer firstOpponent, secondOpponent, thirdOpponent;
-            var localGameController = this.CreateLocalGameControllerAndCompleteGameSetup(out mockDice, out player, out firstOpponent, out secondOpponent, out thirdOpponent);
-            mockDice.AddSequence(new[] { 7u, 0u });
+            var testInstances = LocalGameControllerTestCreator.CreateTestInstances();
+            var localGameController = testInstances.LocalGameController;
+            testInstances.Dice.AddSequence(new[] { 7u, 0u });
 
             // Act
             ErrorDetails errorDetails = null;
