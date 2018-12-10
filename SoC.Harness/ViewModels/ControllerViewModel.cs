@@ -39,20 +39,20 @@ namespace SoC.Harness.ViewModels
         private ControllerViewModel(LocalGameController localGameController)
         {
             this.localGameController = localGameController;
-            this.localGameController.ErrorRaisedEvent = this.ErrorRaisedEventHandler;
-            this.localGameController.GameJoinedEvent = this.GameJoinedEventHandler;
-            this.localGameController.GameSetupUpdateEvent = this.GameSetupUpdateEventHandler;
-            this.localGameController.StartPlayerTurnEvent = this.StartPlayerTurnEventHandler;
-            this.localGameController.GameSetupResourcesEvent = this.GameSetupResourcesEventHandler;
-            this.localGameController.InitialBoardSetupEvent = this.InitialBoardSetupEventHandler;
             this.localGameController.DiceRollEvent = this.DiceRollEventHandler;
+            this.localGameController.ErrorRaisedEvent = this.ErrorRaisedEventHandler;
+            this.localGameController.GameEvents = this.GameEventsHandler;
+            this.localGameController.GameJoinedEvent = this.GameJoinedEventHandler;
+            //this.localGameController.GameSetupUpdateEvent = this.GameSetupUpdateEventHandler;
+            this.localGameController.StartPlayerTurnEvent = this.StartPlayerTurnEventHandler;
+            //this.localGameController.GameSetupResourcesEvent = this.GameSetupResourcesEventHandler;
+            this.localGameController.InitialBoardSetupEvent = this.InitialBoardSetupEventHandler;
             this.localGameController.ResourcesCollectedEvent = this.ResourcesCollectedEventHandler;
             this.localGameController.RobberEvent = this.RobberEventHandler;
             this.localGameController.ResourcesLostEvent = this.ResourcesLostEventHandler;
             this.localGameController.RobbingChoicesEvent = this.RobbingChoicesEventHandler;
             this.localGameController.ResourcesTransferredEvent = this.ResourcesTransferredEventHandler;
             this.localGameController.RoadSegmentBuiltEvent = this.RoadSegmentBuiltEventHandler;
-            this.localGameController.GameEvents = this.GameEventsHandler;
 
             this.State = States.PlaceFirstInfrastructure;
         }
@@ -291,6 +291,19 @@ namespace SoC.Harness.ViewModels
                     var diceRoll = rolledDiceEvent.Dice1 + rolledDiceEvent.Dice2;
                     var playerViewModel = this.playerViewModelsById[gameEvent.PlayerId];
                     playerViewModel.UpdateHistory($"{playerViewModel.Name} rolled {diceRoll}");
+                }
+                else if (gameEvent is InfrastructureBuiltEvent infrastructureBuiltEvent)
+                {
+                    var playerViewModel = this.playerViewModelsById[infrastructureBuiltEvent.PlayerId];
+                    var line = "Built settlement at " + infrastructureBuiltEvent.SettlementLocation;
+                    playerViewModel.UpdateHistory(line);
+                    line = $"Built road from {infrastructureBuiltEvent.SettlementLocation} to {infrastructureBuiltEvent.RoadSegmentEndLocation}";
+                    playerViewModel.UpdateHistory(line);
+                }
+                else if (gameEvent is ResourceCollectedEvent resourcesCollectedEvent)
+                {
+                    this.playerViewModelsById[resourcesCollectedEvent.PlayerId]
+                        .Update(resourcesCollectedEvent.Resources[0].Resources, true);
                 }
                 else
                 {

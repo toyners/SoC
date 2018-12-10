@@ -349,11 +349,8 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
                 .AddExplicitDiceRollSequence(new uint[] { 10, 12, 8, 6 })
                 .Create();
 
-            MockPlayer player;
-            MockComputerPlayer firstOpponent, secondOpponent, thirdOpponent;
-            this.CreateDefaultPlayerInstances(out player, out firstOpponent, out secondOpponent, out thirdOpponent);
-
-            var localGameController = this.CreateLocalGameController(mockDice, player, firstOpponent, secondOpponent, thirdOpponent);
+            var localGameController = LocalGameControllerTestCreator.CreateTestInstances(mockDice, null, null, null)
+                .LocalGameController;
 
             ErrorDetails exception = null;
             localGameController.ErrorRaisedEvent = (ErrorDetails e) => { exception = e; };
@@ -362,29 +359,20 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
             localGameController.LaunchGame();
             localGameController.StartGameSetup();
 
-            GameBoardUpdate gameBoardUpdate = null;
-            localGameController.GameSetupUpdateEvent = (GameBoardUpdate u) => { gameBoardUpdate = u; };
-
             localGameController.ContinueGameSetup(FirstSettlementOneLocation, 1u);
+
             exception.ShouldNotBeNull();
             exception.Message.ShouldBe("Cannot build settlement. Location " + FirstSettlementOneLocation + " already settled by player '" + FirstOpponentName + "'.");
-            gameBoardUpdate.ShouldBeNull();
         }
 
         [Test]
         [Category("LocalGameController")]
         public void PlayerSelectsSameLocationAsComputerPlayerDuringSecondSetupRound_MeaningfulErrorIsReceived()
         {
-            var mockDice = new MockDiceCreator()
-                .AddExplicitDiceRollSequence(new uint[] { 12, 10, 8, 6 })
-                .Create();
+            var localGameController = LocalGameControllerTestCreator.CreateTestInstances()
+                .LocalGameController;
 
-            MockPlayer player;
-            MockComputerPlayer firstOpponent, secondOpponent, thirdOpponent;
-            this.CreateDefaultPlayerInstances(out player, out firstOpponent, out secondOpponent, out thirdOpponent);
-
-            var localGameController = this.CreateLocalGameController(mockDice, player, firstOpponent, secondOpponent, thirdOpponent);
-
+                
             ErrorDetails exception = null;
             localGameController.ErrorRaisedEvent = (ErrorDetails e) => { exception = e; };
 
@@ -393,14 +381,10 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
             localGameController.StartGameSetup();
             localGameController.ContinueGameSetup(0, 1);
 
-            GameBoardUpdate gameBoardUpdate = null;
-            localGameController.GameSetupUpdateEvent = (GameBoardUpdate u) => { gameBoardUpdate = u; };
-
             localGameController.CompleteGameSetup(FirstSettlementOneLocation, 1);
 
             exception.ShouldNotBeNull();
             exception.Message.ShouldBe("Cannot build settlement. Location " + FirstSettlementOneLocation + " already settled by player '" + FirstOpponentName + "'.");
-            gameBoardUpdate.ShouldBeNull();
         }
 
         [Test]
@@ -423,29 +407,19 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
             localGameController.LaunchGame();
             localGameController.StartGameSetup();
 
-            GameBoardUpdate gameBoardUpdate = null;
-            localGameController.GameSetupUpdateEvent = (GameBoardUpdate u) => { gameBoardUpdate = u; };
-
             localGameController.ContinueGameSetup(19u, 1u);
 
             exception.ShouldNotBeNull();
             exception.Message.ShouldBe("Cannot build settlement. Too close to player '" + FirstOpponentName + "' at location " + FirstSettlementOneLocation + ".");
-            gameBoardUpdate.ShouldBeNull();
         }
 
         [Test]
         [Category("LocalGameController")]
         public void PlayerSelectsLocationTooCloseToComputerPlayerDuringSecondSetupRound_MeaningfulErrorIsReceived()
         {
-            var mockDice = new MockDiceCreator()
-                .AddExplicitDiceRollSequence(new uint[] { 12, 10, 8, 6 })
-                .Create();
 
-            MockPlayer player;
-            MockComputerPlayer firstOpponent, secondOpponent, thirdOpponent;
-            this.CreateDefaultPlayerInstances(out player, out firstOpponent, out secondOpponent, out thirdOpponent);
-
-            var localGameController = this.CreateLocalGameController(mockDice, player, firstOpponent, secondOpponent, thirdOpponent);
+            var localGameController = LocalGameControllerTestCreator.CreateTestInstances()
+                .LocalGameController;
 
             ErrorDetails exception = null;
             localGameController.ErrorRaisedEvent = (ErrorDetails e) => { exception = e; };
@@ -454,27 +428,21 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
             localGameController.StartGameSetup();
             localGameController.ContinueGameSetup(0, 1);
 
-            GameBoardUpdate gameBoardUpdate = null;
-            localGameController.GameSetupUpdateEvent = (GameBoardUpdate u) => { gameBoardUpdate = u; };
-
             localGameController.CompleteGameSetup(19, 18);
 
             exception.ShouldNotBeNull();
             exception.Message.ShouldBe("Cannot build settlement. Too close to player '" + FirstOpponentName + "' at location " + FirstSettlementOneLocation + ".");
-            gameBoardUpdate.ShouldBeNull();
         }
 
         [Test]
         [Category("LocalGameController")]
         public void PlayerPlacesSettlementOffGameBoardDuringFirstSetupRound_MeaningfulErrorReceived()
         {
-            var localGameController = CreateLocalGameControllerWithMainPlayerGoingFirstInSetup();
+            var localGameController = LocalGameControllerTestCreator.CreateTestInstances()
+                .LocalGameController;
 
             ErrorDetails errorDetails = null;
             localGameController.ErrorRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
-
-            GameBoardUpdate gameBoardUpdate = null;
-            localGameController.GameSetupUpdateEvent = (GameBoardUpdate u) => { gameBoardUpdate = u; };
 
             localGameController.JoinGame();
             localGameController.LaunchGame();
@@ -483,20 +451,17 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
 
             errorDetails.ShouldNotBeNull();
             errorDetails.Message.ShouldBe("Cannot build settlement. Location 100 is outside of board range (0 - 53).");
-            gameBoardUpdate.ShouldBeNull();
         }
 
         [Test]
         [Category("LocalGameController")]
         public void PlayerPlacesRoadOverEdgeOfGameBoardDuringFirstSetupRound_MeaningfulErrorIsReceived()
         {
-            var localGameController = CreateLocalGameControllerWithMainPlayerGoingFirstInSetup();
+            var localGameController = LocalGameControllerTestCreator.CreateTestInstances()
+                .LocalGameController;
 
             ErrorDetails errorDetails = null;
             localGameController.ErrorRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
-
-            GameBoardUpdate gameBoardUpdate = null;
-            localGameController.GameSetupUpdateEvent = (GameBoardUpdate u) => { gameBoardUpdate = u; };
 
             localGameController.JoinGame();
             localGameController.LaunchGame();
@@ -505,20 +470,17 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
 
             errorDetails.ShouldNotBeNull();
             errorDetails.Message.ShouldBe("Cannot build road segment. Locations 53 and/or 54 are outside of board range (0 - 53).");
-            gameBoardUpdate.ShouldBeNull();
         }
 
         [Test]
         [Category("LocalGameController")]
         public void PlayerPlacesRoadWhereNoConnectionExistsDuringFirstSetupRound_MeaningfulErrorIsReceived()
         {
-            var localGameController = CreateLocalGameControllerWithMainPlayerGoingFirstInSetup();
+            var localGameController = LocalGameControllerTestCreator.CreateTestInstances()
+                .LocalGameController;
 
             ErrorDetails errorDetails = null;
             localGameController.ErrorRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
-
-            GameBoardUpdate gameBoardUpdate = null;
-            localGameController.GameSetupUpdateEvent = (GameBoardUpdate u) => { gameBoardUpdate = u; };
 
             localGameController.JoinGame();
             localGameController.LaunchGame();
@@ -527,14 +489,14 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
 
             errorDetails.ShouldNotBeNull();
             errorDetails.Message.ShouldBe("Cannot build road segment. No direct connection between locations [28, 40].");
-            gameBoardUpdate.ShouldBeNull();
         }
 
         [Test]
         [Category("LocalGameController")]
         public void PlayerPlacesSettlementOffGameBoardDuringSecondSetupRound_MeaningfulErrorIsReceived()
         {
-            var localGameController = CreateLocalGameControllerWithMainPlayerGoingFirstInSetup();
+            var localGameController = LocalGameControllerTestCreator.CreateTestInstances()
+                .LocalGameController;
 
             ErrorDetails errorDetails = null;
             localGameController.ErrorRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
@@ -544,21 +506,18 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
             localGameController.StartGameSetup();
             localGameController.ContinueGameSetup(0, 1);
 
-            GameBoardUpdate gameBoardUpdate = null;
-            localGameController.GameSetupUpdateEvent = (GameBoardUpdate u) => { gameBoardUpdate = u; };
-
             localGameController.CompleteGameSetup(100, 101);
 
             errorDetails.ShouldNotBeNull();
             errorDetails.Message.ShouldBe("Cannot build settlement. Location 100 is outside of board range (0 - 53).");
-            gameBoardUpdate.ShouldBeNull();
         }
 
         [Test]
         [Category("LocalGameController")]
         public void PlayerPlacesRoadOverEdgeOfGameBoardDuringSecondSetupRound_MeaningfulErrorIsReceived()
         {
-            var localGameController = CreateLocalGameControllerWithMainPlayerGoingFirstInSetup();
+            var localGameController = LocalGameControllerTestCreator.CreateTestInstances()
+                .LocalGameController;
 
             ErrorDetails errorDetails = null;
             localGameController.ErrorRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
@@ -568,21 +527,17 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
             localGameController.StartGameSetup();
             localGameController.ContinueGameSetup(0, 1);
 
-            GameBoardUpdate gameBoardUpdate = null;
-            localGameController.GameSetupUpdateEvent = (GameBoardUpdate u) => { gameBoardUpdate = u; };
-
             localGameController.CompleteGameSetup(53, 54);
 
             errorDetails.ShouldNotBeNull();
             errorDetails.Message.ShouldBe("Cannot build road segment. Locations 53 and/or 54 are outside of board range (0 - 53).");
-            gameBoardUpdate.ShouldBeNull();
         }
 
         [Test]
         [Category("LocalGameController")]
         public void PlayerPlacesRoadWhereNoConnectionExistsDuringSecondSetupRound_MeaningfulErrorIsReceived()
         {
-            var localGameController = CreateLocalGameControllerWithMainPlayerGoingFirstInSetup();
+            var localGameController = this.CreateLocalGameControllerWithMainPlayerGoingFirstInSetup();
 
             ErrorDetails errorDetails = null;
             localGameController.ErrorRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
@@ -592,14 +547,10 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
             localGameController.StartGameSetup();
             localGameController.ContinueGameSetup(0, 1);
 
-            GameBoardUpdate gameBoardUpdate = null;
-            localGameController.GameSetupUpdateEvent = (GameBoardUpdate u) => { gameBoardUpdate = u; };
-
             localGameController.CompleteGameSetup(28, 40);
 
             errorDetails.ShouldNotBeNull();
             errorDetails.Message.ShouldBe("Cannot build road segment. No direct connection between locations [28, 40].");
-            gameBoardUpdate.ShouldBeNull();
         }
 
         [Test]

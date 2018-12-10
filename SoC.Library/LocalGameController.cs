@@ -111,8 +111,6 @@ namespace Jabberwocky.SoC.Library
         public Action<PlayerDataBase[]> GameJoinedEvent { get; set; }
         public Action<PlayerDataBase[], GameBoard> GameLoadedEvent { get; set; }
         public Action<Guid> GameOverEvent { get; set; }
-        public Action<ResourceUpdate> GameSetupResourcesEvent { get; set; }
-        public Action<GameBoardUpdate> GameSetupUpdateEvent { get; set; }
         public Action<Guid, Guid> LargestArmyEvent { get; set; }
         public Action<ClientAccount> LoggedInEvent { get; set; }
         public Action<Guid, Guid> LongestRoadBuiltEvent { get; set; }
