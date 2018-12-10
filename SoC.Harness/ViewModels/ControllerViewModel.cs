@@ -12,15 +12,6 @@ namespace SoC.Harness.ViewModels
 
     public class ControllerViewModel : INotifyPropertyChanged
     {
-        public enum States
-        {
-            PlaceFirstInfrastructure,
-            PlaceSecondInfrastructure,
-            SelectRobberLocation,
-            SelectPlayerToRob,
-            ChoosePhaseAction,
-        }
-
         #region Fields
         private TurnToken currentTurnToken;
         readonly PropertyChangedEventArgs diceOneChangedEventArgs = new PropertyChangedEventArgs("DiceOneImagePath");
@@ -32,7 +23,6 @@ namespace SoC.Harness.ViewModels
         private PhaseActions phaseActions = new PhaseActions();
         private string setupMessage;
         private readonly PropertyChangedEventArgs setupMessagePropertyChangedEventArgs = new PropertyChangedEventArgs("SetupMessage");
-        private States state;
         #endregion
 
         #region Construction
@@ -54,30 +44,18 @@ namespace SoC.Harness.ViewModels
             this.localGameController.ResourcesTransferredEvent = this.ResourcesTransferredEventHandler;
             this.localGameController.RoadSegmentBuiltEvent = this.RoadSegmentBuiltEventHandler;
 
-            this.State = States.PlaceFirstInfrastructure;
+            this.SetupMessage = "Select location for FIRST Settlement and Road Segment";
         }
         #endregion
 
         #region Properties
         public string DiceOneImagePath { get; private set; }
         public string DiceTwoImagePath { get; private set; }
+        
+        public bool InGameSetup { get { return this.localGameController.GamePhase < LocalGameController.GamePhases.ContinueGameSetup; }}
+
         public uint InitialSettlementLocation { get; set; }
         public uint InitialRoadEndLocation { get; set; }
-
-        public States State
-        {
-            get { return this.state; }
-            private set
-            {
-                this.state = value;
-                switch (this.state)
-                {
-                    case States.PlaceFirstInfrastructure: this.SetupMessage = "Select location for FIRST Settlement and Road Segment"; break;
-                    case States.PlaceSecondInfrastructure: this.SetupMessage = "Select location for SECOND Settlement and Road Segment"; break;
-                    default: this.SetupMessage = null; break;
-                }
-            }
-        }
 
         public string SetupMessage
         {
@@ -88,6 +66,8 @@ namespace SoC.Harness.ViewModels
                 this.PropertyChanged?.Invoke(this, this.setupMessagePropertyChangedEventArgs);
             }
         }
+
+        public bool SelectRobberLocation { get { return this.localGameController.GamePhase == LocalGameController.GamePhases.SetRobberHex; } }
         #endregion
 
         #region Events
@@ -119,29 +99,29 @@ namespace SoC.Harness.ViewModels
 
         public void ContinueGame()
         {
-            this.State = States.ChoosePhaseAction;
             this.localGameController.ContinueGamePlay();
             this.StartPhase();
         }
     
         public void DropResourcesFromPlayer(ResourceClutch dropResources)
         {
-            this.State = States.SelectRobberLocation;
             this.localGameController.DropResources(dropResources);
             this.player.Update(dropResources, false);
         }
 
         public void EndTurn()
         {
-            if (this.State == States.PlaceFirstInfrastructure)
+            if (this.localGameController.GamePhase == LocalGameController.GamePhases.ContinueGameSetup)
             {
                 this.localGameController.ContinueGameSetup(this.InitialSettlementLocation, this.InitialRoadEndLocation);
+                this.SetupMessage = "Select location for SECOND Settlement and Road Segment";
             }
-            else if (this.State == States.PlaceSecondInfrastructure)
+            else if (this.localGameController.GamePhase == LocalGameController.GamePhases.CompleteGameSetup)
             {
                 this.localGameController.CompleteGameSetup(this.InitialSettlementLocation, this.InitialRoadEndLocation);
                 this.localGameController.FinalisePlayerTurnOrder();
                 this.localGameController.StartGamePlay();
+                this.SetupMessage = null;
             }
             else
             {
@@ -163,7 +143,6 @@ namespace SoC.Harness.ViewModels
         public void SetRobberLocation(uint hexIndex)
         {
             this.localGameController.SetRobberHex(hexIndex);
-            this.State = States.ChoosePhaseAction;
         }
 
         public void StartGame()
@@ -214,7 +193,6 @@ namespace SoC.Harness.ViewModels
 
         private void GameSetupResourcesEventHandler(ResourceUpdate resourceUpdate)
         {
-            this.State = States.ChoosePhaseAction;
             foreach (var resourceData in resourceUpdate.Resources)
             {
                 this.playerViewModelsById[resourceData.Key].Update(resourceData.Value, true);
@@ -227,8 +205,6 @@ namespace SoC.Harness.ViewModels
             {
                 return;
             }
-
-            this.State = States.PlaceSecondInfrastructure;
 
             foreach (var settlementDetails in boardUpdate.NewSettlements)
             {
@@ -434,7 +410,6 @@ namespace SoC.Harness.ViewModels
 
         private void RobberEventHandler(int numberOfResourcesToSelect)
         {
-            this.State = States.SelectRobberLocation;
             this.RobberEvent?.Invoke(this.player, numberOfResourcesToSelect);
         }
 

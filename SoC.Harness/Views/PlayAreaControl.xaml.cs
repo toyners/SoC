@@ -698,7 +698,7 @@ namespace SoC.Harness.Views
 
         private void Location_MouseClick(object sender, MouseButtonEventArgs e)
         {
-            if (this.controllerViewModel.State != ControllerViewModel.States.SelectRobberLocation)
+            if (!this.controllerViewModel.SelectRobberLocation)
             {
                 return;
             }
@@ -712,7 +712,7 @@ namespace SoC.Harness.Views
 
         private void Location_MouseHover(object sender, MouseEventArgs e)
         {
-            if (this.controllerViewModel.State != ControllerViewModel.States.SelectRobberLocation || sender == this.currentRobberLocationHoverImage)
+            if (!this.controllerViewModel.SelectRobberLocation || sender == this.currentRobberLocationHoverImage)
             {
                 return;
             }
@@ -857,7 +857,7 @@ namespace SoC.Harness.Views
 
             this.RoadSelectionLayer.Visibility = Visibility.Hidden;
 
-            if (this.controllerViewModel.State == ControllerViewModel.States.ChoosePhaseAction)
+            if (!this.controllerViewModel.InGameSetup)
             {
                 this.EndTurnButton.Visibility = Visibility.Visible;
                 this.BuildActions.Visibility = Visibility.Hidden;

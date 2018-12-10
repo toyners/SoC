@@ -22,16 +22,15 @@ namespace Jabberwocky.SoC.Library
             Initial,
             WaitingLaunch,
             StartGameSetup,
-            ChooseResourceFromOpponent,
             ContinueGameSetup,
             CompleteGameSetup,
             FinalisePlayerTurnOrder,
             StartGamePlay,
             ContinueGamePlay,
             SetRobberHex,
+            ChooseResourceFromOpponent,
             DropResources,
             Quitting,
-            NextStep,
             GameOver
         }
 
@@ -235,14 +234,6 @@ namespace Jabberwocky.SoC.Library
 
         public void ChooseResourceFromOpponent(Guid opponentId)
         {
-            if (this.GamePhase == GamePhases.NextStep)
-            {
-                var message = "Cannot call 'ChooseResourceFromOpponent' when 'RobbingChoicesEvent' is not raised.";
-                var errorDetails = new ErrorDetails(message);
-                this.ErrorRaisedEvent?.Invoke(errorDetails);
-                return;
-            }
-
             if (this.GamePhase != GamePhases.ChooseResourceFromOpponent)
             {
                 var message = "Cannot call 'ChooseResourceFromOpponent' until 'SetRobberLocation' has completed.";
@@ -806,7 +797,7 @@ namespace Jabberwocky.SoC.Library
             var playerIds = this.gameBoard.GetPlayersForHex(location);
             if (this.PlayerIdsIsEmptyOrOnlyContainsMainPlayer(playerIds))
             {
-                this.GamePhase = GamePhases.NextStep;
+                this.GamePhase = GamePhases.ContinueGamePlay;
                 this.RobbingChoicesEvent?.Invoke(null);
                 return;
             }
@@ -842,6 +833,7 @@ namespace Jabberwocky.SoC.Library
             if (resourceRoll != 7)
             {
                 this.CollectResourcesAtStartOfTurn(resourceRoll);
+                this.GamePhase = GamePhases.ContinueGamePlay;
             }
             else
             {
