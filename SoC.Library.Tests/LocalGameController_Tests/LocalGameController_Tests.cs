@@ -116,8 +116,8 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
             var thirdOpponent = testInstances.ThirdOpponent;
             var localGameController = testInstances.LocalGameController;
 
-            var gameEvents = new List<List<GameEvent>>();
-            localGameController.GameEvents = (List<GameEvent> e) => { gameEvents.Add(e); };
+            List<GameEvent> gameEvents = null;
+            localGameController.GameEvents = (List<GameEvent> e) => { gameEvents = e; };
 
             localGameController.JoinGame();
             localGameController.LaunchGame();
@@ -126,27 +126,20 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
             gameEvents.Count.ShouldBe(0);
 
             localGameController.ContinueGameSetup(MainSettlementOneLocation, MainRoadOneEnd);
-            gameEvents.Count.ShouldBe(6);
-            gameEvents[0].Count.ShouldBe(1);
-            gameEvents[0][0].ShouldBe(new InfrastructureBuiltEvent(firstOpponent.Id, FirstSettlementOneLocation, FirstRoadOneEnd));
-            gameEvents[1].Count.ShouldBe(1);
-            gameEvents[1][0].ShouldBe(new InfrastructureBuiltEvent(secondOpponent.Id, SecondSettlementOneLocation, SecondRoadOneEnd));
-            gameEvents[2].Count.ShouldBe(1);
-            gameEvents[2][0].ShouldBe(new InfrastructureBuiltEvent(thirdOpponent.Id, ThirdSettlementOneLocation, ThirdRoadOneEnd));
-            gameEvents[3].Count.ShouldBe(1);
-            gameEvents[3][0].ShouldBe(new InfrastructureBuiltEvent(thirdOpponent.Id, ThirdSettlementTwoLocation, ThirdRoadTwoEnd));
-            gameEvents[4].Count.ShouldBe(1);
-            gameEvents[4][0].ShouldBe(new InfrastructureBuiltEvent(secondOpponent.Id, SecondSettlementTwoLocation, SecondRoadTwoEnd));
-            gameEvents[5].Count.ShouldBe(1);
-            gameEvents[5][0].ShouldBe(new InfrastructureBuiltEvent(firstOpponent.Id, FirstSettlementTwoLocation, FirstRoadTwoEnd));
+            gameEvents.Count.ShouldBe(9);
+            gameEvents[0].ShouldBe(new InfrastructureBuiltEvent(firstOpponent.Id, FirstSettlementOneLocation, FirstRoadOneEnd));
+            gameEvents[1].ShouldBe(new InfrastructureBuiltEvent(secondOpponent.Id, SecondSettlementOneLocation, SecondRoadOneEnd));
+            gameEvents[2].ShouldBe(new InfrastructureBuiltEvent(thirdOpponent.Id, ThirdSettlementOneLocation, ThirdRoadOneEnd));
+            gameEvents[3].ShouldBe(new InfrastructureBuiltEvent(thirdOpponent.Id, ThirdSettlementTwoLocation, ThirdRoadTwoEnd));
+            gameEvents[4].ShouldBe(new ResourceCollectedEvent(thirdOpponent.Id, new[] { new ResourceCollection(ThirdSettlementTwoLocation, new ResourceClutch(0, 1, 1, 0, 1)) }));
+            gameEvents[5].ShouldBe(new InfrastructureBuiltEvent(secondOpponent.Id, SecondSettlementTwoLocation, SecondRoadTwoEnd));
+            gameEvents[6].ShouldBe(new ResourceCollectedEvent(secondOpponent.Id, new[] { new ResourceCollection(SecondSettlementTwoLocation, new ResourceClutch(0, 0, 1, 1, 1)) }));
+            gameEvents[7].ShouldBe(new InfrastructureBuiltEvent(firstOpponent.Id, FirstSettlementTwoLocation, FirstRoadTwoEnd));
+            gameEvents[8].ShouldBe(new ResourceCollectedEvent(firstOpponent.Id, new[] { new ResourceCollection(FirstSettlementTwoLocation, new ResourceClutch(0, 1, 1, 0, 1)) }));
 
-            gameEvents.Clear();
             localGameController.CompleteGameSetup(MainSettlementTwoLocation, MainRoadTwoEnd);
-            gameEvents.Count.ShouldBe(4);
-            gameEvents[0].ShouldContainExact(new ResourceCollectedEvent(testInstances.MainPlayer.Id, new[] { new ResourceCollection(MainSettlementTwoLocation, new ResourceClutch(1, 1, 0, 0, 1)) }));
-            gameEvents[1].ShouldContainExact(new ResourceCollectedEvent(firstOpponent.Id, new[] { new ResourceCollection(FirstSettlementTwoLocation, new ResourceClutch(0, 1, 1, 0, 1)) }));
-            gameEvents[2].ShouldContainExact(new ResourceCollectedEvent(secondOpponent.Id, new[] { new ResourceCollection(SecondSettlementTwoLocation, new ResourceClutch(0, 0, 1, 1, 1)) }));
-            gameEvents[3].ShouldContainExact(new ResourceCollectedEvent(thirdOpponent.Id, new[] { new ResourceCollection(ThirdSettlementTwoLocation, new ResourceClutch(0, 1, 1, 0, 1)) }));
+            gameEvents.Count.ShouldBe(1);
+            gameEvents[0].ShouldBe(new ResourceCollectedEvent(testInstances.MainPlayer.Id, new[] { new ResourceCollection(MainSettlementTwoLocation, new ResourceClutch(1, 1, 0, 0, 1)) }));
         }
 
         [Test]
@@ -164,39 +157,34 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
             var thirdOpponent = testInstances.ThirdOpponent;
             var localGameController = testInstances.LocalGameController;
 
-            var gameEvents = new List<List<GameEvent>>();
-            localGameController.GameEvents = (List<GameEvent> e) => { gameEvents.Add(e); };
+            var gameEvents = new List<GameEvent>();
+            localGameController.GameEvents = (List<GameEvent> e) => { gameEvents = e; };
 
             localGameController.JoinGame();
             localGameController.LaunchGame();
 
             localGameController.StartGameSetup();
             gameEvents.Count.ShouldBe(1);
-            gameEvents[0].Count.ShouldBe(1);
-            gameEvents[0][0].ShouldBe(new InfrastructureBuiltEvent(firstOpponent.Id, FirstSettlementOneLocation, FirstRoadOneEnd));
+            gameEvents[0].ShouldBe(new InfrastructureBuiltEvent(firstOpponent.Id, FirstSettlementOneLocation, FirstRoadOneEnd));
 
             gameEvents.Clear();
             localGameController.ContinueGameSetup(MainSettlementOneLocation, MainRoadOneEnd);
 
-            gameEvents.Count.ShouldBe(4);
-            gameEvents[0].Count.ShouldBe(1);
-            gameEvents[0][0].ShouldBe(new InfrastructureBuiltEvent(secondOpponent.Id, SecondSettlementOneLocation, SecondRoadOneEnd));
-            gameEvents[1].Count.ShouldBe(1);
-            gameEvents[1][0].ShouldBe(new InfrastructureBuiltEvent(thirdOpponent.Id, ThirdSettlementOneLocation, ThirdRoadOneEnd));
-            gameEvents[2].Count.ShouldBe(1);
-            gameEvents[2][0].ShouldBe(new InfrastructureBuiltEvent(thirdOpponent.Id, ThirdSettlementTwoLocation, ThirdRoadTwoEnd));
-            gameEvents[3].Count.ShouldBe(1);
-            gameEvents[3][0].ShouldBe(new InfrastructureBuiltEvent(secondOpponent.Id, SecondSettlementTwoLocation, SecondRoadTwoEnd));
+            gameEvents.Count.ShouldBe(6);
+            gameEvents[0].ShouldBe(new InfrastructureBuiltEvent(secondOpponent.Id, SecondSettlementOneLocation, SecondRoadOneEnd));
+            gameEvents[1].ShouldBe(new InfrastructureBuiltEvent(thirdOpponent.Id, ThirdSettlementOneLocation, ThirdRoadOneEnd));
+            gameEvents[2].ShouldBe(new InfrastructureBuiltEvent(thirdOpponent.Id, ThirdSettlementTwoLocation, ThirdRoadTwoEnd));
+            gameEvents[3].ShouldBe(new ResourceCollectedEvent(thirdOpponent.Id, new[] { new ResourceCollection(ThirdSettlementTwoLocation, new ResourceClutch(0, 1, 1, 0, 1)) }));
+            gameEvents[4].ShouldBe(new InfrastructureBuiltEvent(secondOpponent.Id, SecondSettlementTwoLocation, SecondRoadTwoEnd));
+            gameEvents[5].ShouldBe(new ResourceCollectedEvent(secondOpponent.Id, new[] { new ResourceCollection(SecondSettlementTwoLocation, new ResourceClutch(0, 0, 1, 1, 1)) }));
 
             gameEvents.Clear();
             localGameController.CompleteGameSetup(MainSettlementTwoLocation, MainRoadTwoEnd);
 
-            gameEvents.Count.ShouldBe(5);
-            gameEvents[0].ShouldContainExact(new InfrastructureBuiltEvent(firstOpponent.Id, FirstSettlementTwoLocation, FirstRoadTwoEnd));
-            gameEvents[1].ShouldContainExact(new ResourceCollectedEvent(testInstances.MainPlayer.Id, new[] { new ResourceCollection(MainSettlementTwoLocation, new ResourceClutch(1, 1, 0, 0, 1)) }));
-            gameEvents[2].ShouldContainExact(new ResourceCollectedEvent(firstOpponent.Id, new[] { new ResourceCollection(FirstSettlementTwoLocation, new ResourceClutch(0, 1, 1, 0, 1)) }));
-            gameEvents[3].ShouldContainExact(new ResourceCollectedEvent(secondOpponent.Id, new[] { new ResourceCollection(SecondSettlementTwoLocation, new ResourceClutch(0, 0, 1, 1, 1)) }));
-            gameEvents[4].ShouldContainExact(new ResourceCollectedEvent(thirdOpponent.Id, new[] { new ResourceCollection(ThirdSettlementTwoLocation, new ResourceClutch(0, 1, 1, 0, 1)) }));
+            gameEvents.Count.ShouldBe(3);
+            gameEvents[0].ShouldBe(new ResourceCollectedEvent(testInstances.MainPlayer.Id, new[] { new ResourceCollection(MainSettlementTwoLocation, new ResourceClutch(1, 1, 0, 0, 1)) }));
+            gameEvents[1].ShouldBe(new InfrastructureBuiltEvent(firstOpponent.Id, FirstSettlementTwoLocation, FirstRoadTwoEnd));
+            gameEvents[2].ShouldBe(new ResourceCollectedEvent(firstOpponent.Id, new[] { new ResourceCollection(FirstSettlementTwoLocation, new ResourceClutch(0, 1, 1, 0, 1)) }));
         }
 
         [Test]
@@ -214,36 +202,30 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
             var thirdOpponent = testInstances.ThirdOpponent;
             var localGameController = testInstances.LocalGameController;
 
-            var gameEvents = new List<List<GameEvent>>();
-            localGameController.GameEvents = (List<GameEvent> e) => { gameEvents.Add(e); };
+            var gameEvents = new List<GameEvent>();
+            localGameController.GameEvents = (List<GameEvent> e) => { gameEvents = e; };
 
             localGameController.JoinGame();
             localGameController.LaunchGame();
 
             localGameController.StartGameSetup();
             gameEvents.Count.ShouldBe(2);
-            gameEvents[0].Count.ShouldBe(1);
-            gameEvents[0][0].ShouldBe(new InfrastructureBuiltEvent(firstOpponent.Id, FirstSettlementOneLocation, FirstRoadOneEnd));
-            gameEvents[1].Count.ShouldBe(1);
-            gameEvents[1][0].ShouldBe(new InfrastructureBuiltEvent(secondOpponent.Id, SecondSettlementOneLocation, SecondRoadOneEnd));
+            gameEvents[0].ShouldBe(new InfrastructureBuiltEvent(firstOpponent.Id, FirstSettlementOneLocation, FirstRoadOneEnd));
+            gameEvents[1].ShouldBe(new InfrastructureBuiltEvent(secondOpponent.Id, SecondSettlementOneLocation, SecondRoadOneEnd));
 
-            gameEvents.Clear();
             localGameController.ContinueGameSetup(MainSettlementOneLocation, MainRoadOneEnd);
-            gameEvents.Count.ShouldBe(2);
-            gameEvents[0].Count.ShouldBe(1);
-            gameEvents[0][0].ShouldBe(new InfrastructureBuiltEvent(thirdOpponent.Id, ThirdSettlementOneLocation, ThirdRoadOneEnd));
-            gameEvents[1].Count.ShouldBe(1);
-            gameEvents[1][0].ShouldBe(new InfrastructureBuiltEvent(thirdOpponent.Id, ThirdSettlementTwoLocation, ThirdRoadTwoEnd));
+            gameEvents.Count.ShouldBe(3);
+            gameEvents[0].ShouldBe(new InfrastructureBuiltEvent(thirdOpponent.Id, ThirdSettlementOneLocation, ThirdRoadOneEnd));
+            gameEvents[1].ShouldBe(new InfrastructureBuiltEvent(thirdOpponent.Id, ThirdSettlementTwoLocation, ThirdRoadTwoEnd));
+            gameEvents[2].ShouldBe(new ResourceCollectedEvent(thirdOpponent.Id, new[] { new ResourceCollection(ThirdSettlementTwoLocation, new ResourceClutch(0, 1, 1, 0, 1)) }));
 
-            gameEvents.Clear();
             localGameController.CompleteGameSetup(MainSettlementTwoLocation, MainRoadTwoEnd);
-            gameEvents.Count.ShouldBe(6);
-            gameEvents[0].ShouldContainExact(new InfrastructureBuiltEvent(secondOpponent.Id, SecondSettlementTwoLocation, SecondRoadTwoEnd));
-            gameEvents[1].ShouldContainExact(new InfrastructureBuiltEvent(firstOpponent.Id, FirstSettlementTwoLocation, FirstRoadTwoEnd));
-            gameEvents[2].ShouldContainExact(new ResourceCollectedEvent(testInstances.MainPlayer.Id, new[] { new ResourceCollection(MainSettlementTwoLocation, new ResourceClutch(1, 1, 0, 0, 1)) }));
-            gameEvents[3].ShouldContainExact(new ResourceCollectedEvent(firstOpponent.Id, new[] { new ResourceCollection(FirstSettlementTwoLocation, new ResourceClutch(0, 1, 1, 0, 1)) }));
-            gameEvents[4].ShouldContainExact(new ResourceCollectedEvent(secondOpponent.Id, new[] { new ResourceCollection(SecondSettlementTwoLocation, new ResourceClutch(0, 0, 1, 1, 1)) }));
-            gameEvents[5].ShouldContainExact(new ResourceCollectedEvent(thirdOpponent.Id, new[] { new ResourceCollection(ThirdSettlementTwoLocation, new ResourceClutch(0, 1, 1, 0, 1)) }));
+            gameEvents.Count.ShouldBe(5);
+            gameEvents[0].ShouldBe(new ResourceCollectedEvent(testInstances.MainPlayer.Id, new[] { new ResourceCollection(MainSettlementTwoLocation, new ResourceClutch(1, 1, 0, 0, 1)) }));
+            gameEvents[1].ShouldBe(new InfrastructureBuiltEvent(secondOpponent.Id, SecondSettlementTwoLocation, SecondRoadTwoEnd));
+            gameEvents[2].ShouldBe(new ResourceCollectedEvent(secondOpponent.Id, new[] { new ResourceCollection(SecondSettlementTwoLocation, new ResourceClutch(0, 0, 1, 1, 1)) }));
+            gameEvents[3].ShouldBe(new InfrastructureBuiltEvent(firstOpponent.Id, FirstSettlementTwoLocation, FirstRoadTwoEnd));
+            gameEvents[4].ShouldBe(new ResourceCollectedEvent(firstOpponent.Id, new[] { new ResourceCollection(FirstSettlementTwoLocation, new ResourceClutch(0, 1, 1, 0, 1)) }));
         }
 
         [Test]
@@ -261,31 +243,30 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
             var thirdOpponent = testInstances.ThirdOpponent;
             var localGameController = testInstances.LocalGameController;
 
-            var gameEvents = new List<List<GameEvent>>();
-            localGameController.GameEvents = (List<GameEvent> e) => { gameEvents.Add(e); };
+            var gameEvents = new List<GameEvent>();
+            localGameController.GameEvents = (List<GameEvent> e) => { gameEvents = e; };
 
             localGameController.JoinGame();
             localGameController.LaunchGame();
 
             localGameController.StartGameSetup();
             gameEvents.Count.ShouldBe(3);
-            gameEvents[0].ShouldContainExact(new[] { new InfrastructureBuiltEvent(firstOpponent.Id, FirstSettlementOneLocation, FirstRoadOneEnd) });
-            gameEvents[1].ShouldContainExact(new[] { new InfrastructureBuiltEvent(secondOpponent.Id, SecondSettlementOneLocation, SecondRoadOneEnd) });
-            gameEvents[2].ShouldContainExact(new[] { new InfrastructureBuiltEvent(thirdOpponent.Id, ThirdSettlementOneLocation, ThirdRoadOneEnd) });
+            gameEvents[0].ShouldBe(new InfrastructureBuiltEvent(firstOpponent.Id, FirstSettlementOneLocation, FirstRoadOneEnd));
+            gameEvents[1].ShouldBe(new InfrastructureBuiltEvent(secondOpponent.Id, SecondSettlementOneLocation, SecondRoadOneEnd));
+            gameEvents[2].ShouldBe(new InfrastructureBuiltEvent(thirdOpponent.Id, ThirdSettlementOneLocation, ThirdRoadOneEnd));
 
-            gameEvents.Clear();
             localGameController.ContinueGameSetup(MainSettlementOneLocation, MainRoadOneEnd);
             gameEvents.Count.ShouldBe(0);
 
             localGameController.CompleteGameSetup(MainSettlementTwoLocation, MainRoadTwoEnd);
             gameEvents.Count.ShouldBe(7);
-            gameEvents[0].ShouldContainExact(new InfrastructureBuiltEvent(thirdOpponent.Id, ThirdSettlementTwoLocation, ThirdRoadTwoEnd));
-            gameEvents[1].ShouldContainExact(new InfrastructureBuiltEvent(secondOpponent.Id, SecondSettlementTwoLocation, SecondRoadTwoEnd));
-            gameEvents[2].ShouldContainExact(new InfrastructureBuiltEvent(firstOpponent.Id, FirstSettlementTwoLocation, FirstRoadTwoEnd));
-            gameEvents[3].ShouldContainExact(new ResourceCollectedEvent(testInstances.MainPlayer.Id, new[] { new ResourceCollection(MainSettlementTwoLocation, new ResourceClutch(1, 1, 0, 0, 1)) }));
-            gameEvents[4].ShouldContainExact(new ResourceCollectedEvent(firstOpponent.Id, new[] { new ResourceCollection(FirstSettlementTwoLocation, new ResourceClutch(0, 1, 1, 0, 1)) }));
-            gameEvents[5].ShouldContainExact(new ResourceCollectedEvent(secondOpponent.Id, new[] { new ResourceCollection(SecondSettlementTwoLocation, new ResourceClutch(0, 0, 1, 1, 1)) }));
-            gameEvents[6].ShouldContainExact(new ResourceCollectedEvent(thirdOpponent.Id, new[] { new ResourceCollection(ThirdSettlementTwoLocation, new ResourceClutch(0, 1, 1, 0, 1)) }));
+            gameEvents[0].ShouldBe(new ResourceCollectedEvent(testInstances.MainPlayer.Id, new[] { new ResourceCollection(MainSettlementTwoLocation, new ResourceClutch(1, 1, 0, 0, 1)) }));
+            gameEvents[1].ShouldBe(new InfrastructureBuiltEvent(thirdOpponent.Id, ThirdSettlementTwoLocation, ThirdRoadTwoEnd));
+            gameEvents[2].ShouldBe(new ResourceCollectedEvent(thirdOpponent.Id, new[] { new ResourceCollection(ThirdSettlementTwoLocation, new ResourceClutch(0, 1, 1, 0, 1)) }));
+            gameEvents[3].ShouldBe(new InfrastructureBuiltEvent(secondOpponent.Id, SecondSettlementTwoLocation, SecondRoadTwoEnd));
+            gameEvents[4].ShouldBe(new ResourceCollectedEvent(secondOpponent.Id, new[] { new ResourceCollection(SecondSettlementTwoLocation, new ResourceClutch(0, 0, 1, 1, 1)) }));
+            gameEvents[5].ShouldBe(new InfrastructureBuiltEvent(firstOpponent.Id, FirstSettlementTwoLocation, FirstRoadTwoEnd));
+            gameEvents[6].ShouldBe(new ResourceCollectedEvent(firstOpponent.Id, new[] { new ResourceCollection(FirstSettlementTwoLocation, new ResourceClutch(0, 1, 1, 0, 1)) }));
         }
 
         [Test]

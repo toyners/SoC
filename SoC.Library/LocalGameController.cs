@@ -70,7 +70,6 @@ namespace Jabberwocky.SoC.Library
         private IPlayer playerWithLongestRoad;
         private bool provideFullPlayerData;
         private IPlayer mainPlayer;
-        private ResourceUpdate gameSetupResources;
         private int resourcesToDrop;
         private uint robberHex;
         private Dictionary<Guid, int> robbingChoices;
@@ -288,14 +287,14 @@ namespace Jabberwocky.SoC.Library
 
             this.gameBoard.PlaceStartingInfrastructure(this.mainPlayer.Id, settlementLocation, roadEndLocation);
             this.mainPlayer.PlaceStartingInfrastructure();
-            this.CollectInitialResourcesForPlayer(this.mainPlayer.Id, settlementLocation);
-            this.mainPlayer.AddResources(this.gameSetupResources.Resources[this.mainPlayer.Id]);
+            var initialResources = this.GetInitialResourcesForPlayer(settlementLocation);
+            this.mainPlayer.AddResources(initialResources.Resources);
 
-            GameBoardUpdate gameBoardUpdate = this.CompleteSetupForComputerPlayers(this.gameBoard, null);
-            //this.GameSetupUpdateEvent?.Invoke(gameBoardUpdate);
+            var gameEvents = new List<GameEvent>();
+            gameEvents.Add(new ResourceCollectedEvent(this.mainPlayer.Id, new[] { initialResources }));
+            this.CompleteSetupForComputerPlayers(gameEvents);
 
-            //this.GameSetupResourcesEvent?.Invoke(this.gameSetupResources);
-            this.GameEvents?.Invoke(null);
+            this.GameEvents?.Invoke(gameEvents);
             this.GamePhase = GamePhases.FinalisePlayerTurnOrder;
         }
 
@@ -335,17 +334,15 @@ namespace Jabberwocky.SoC.Library
                 return;
             }
 
-            var gameBoardData = this.gameBoard;
-            gameBoardData.PlaceStartingInfrastructure(this.mainPlayer.Id, settlementLocation, roadEndLocation);
+            this.gameBoard.PlaceStartingInfrastructure(this.mainPlayer.Id, settlementLocation, roadEndLocation);
             this.mainPlayer.PlaceStartingInfrastructure();
 
-            GameBoardUpdate gameBoardUpdate = this.ContinueSetupForComputerPlayers(gameBoardData);
+            var gameEvents = this.ContinueSetupForComputerPlayers();
 
             this.playerIndex = this.players.Length - 1;
-            gameBoardUpdate = this.CompleteSetupForComputerPlayers(gameBoardData, gameBoardUpdate);
+            this.CompleteSetupForComputerPlayers(gameEvents);
 
-            //this.GameSetupUpdateEvent?.Invoke(gameBoardUpdate);
-            this.GameEvents?.Invoke(null);
+            this.GameEvents?.Invoke(gameEvents);
             this.GamePhase = GamePhases.CompleteGameSetup;
         }
 
@@ -904,9 +901,8 @@ namespace Jabberwocky.SoC.Library
             this.players = PlayerTurnOrderCreator.Create(this.players, this.numberGenerator);
 
             this.playerIndex = 0;
-            GameBoardUpdate gameBoardUpdate = this.ContinueSetupForComputerPlayers(this.gameBoard);
-            //this.GameSetupUpdateEvent?.Invoke(gameBoardUpdate);
-            this.GameEvents?.Invoke(null);
+            var gameEvents = this.ContinueSetupForComputerPlayers();
+            this.GameEvents?.Invoke(gameEvents);
             this.GamePhase = GamePhases.ContinueGameSetup;
 
             return true;
@@ -1100,15 +1096,11 @@ namespace Jabberwocky.SoC.Library
             }
         }
 
-        private void CollectInitialResourcesForPlayer(Guid playerId, uint settlementLocation)
+        private ResourceCollection GetInitialResourcesForPlayer(uint settlementLocation)
         {
-            if (this.gameSetupResources == null)
-            {
-                this.gameSetupResources = new ResourceUpdate();
-            }
-
             var resources = this.gameBoard.GetResourcesForLocation(settlementLocation);
-            this.gameSetupResources.Resources.Add(playerId, resources);
+            var collectedResources = new ResourceCollection(settlementLocation, resources);
+            return collectedResources;
         }
 
         private void CollectResourcesAtStartOfTurn(uint resourceRoll)
@@ -1126,9 +1118,9 @@ namespace Jabberwocky.SoC.Library
             }
         }
 
-        private GameBoardUpdate ContinueSetupForComputerPlayers(GameBoard gameBoardData)
+        private List<GameEvent> ContinueSetupForComputerPlayers()
         {
-            GameBoardUpdate gameBoardUpdate = null;
+            var gameEvents = new List<GameEvent>();
 
             while (this.playerIndex < this.players.Length)
             {
@@ -1136,30 +1128,19 @@ namespace Jabberwocky.SoC.Library
 
                 if (!player.IsComputer)
                 {
-                    return gameBoardUpdate;
-                }
-
-                if (gameBoardUpdate == null)
-                {
-                    gameBoardUpdate = new GameBoardUpdate
-                    {
-                        NewSettlements = new List<Tuple<uint, Guid>>(),
-                        NewRoads = new List<Tuple<uint, uint, Guid>>()
-                    };
+                    break;
                 }
 
                 var computerPlayer = (IComputerPlayer)player;
-                uint chosenSettlementLocation, chosenRoadSegmentEndLocation;
-                computerPlayer.ChooseInitialInfrastructure(out chosenSettlementLocation, out chosenRoadSegmentEndLocation);
-                gameBoardData.PlaceStartingInfrastructure(computerPlayer.Id, chosenSettlementLocation, chosenRoadSegmentEndLocation);
+                computerPlayer.ChooseInitialInfrastructure(out var chosenSettlementLocation, out var chosenRoadSegmentEndLocation);
+                this.gameBoard.PlaceStartingInfrastructure(computerPlayer.Id, chosenSettlementLocation, chosenRoadSegmentEndLocation);
 
                 computerPlayer.PlaceStartingInfrastructure();
 
-                gameBoardUpdate.NewSettlements.Add(new Tuple<uint, Guid>(chosenSettlementLocation, computerPlayer.Id));
-                gameBoardUpdate.NewRoads.Add(new Tuple<uint, uint, Guid>(chosenSettlementLocation, chosenRoadSegmentEndLocation, computerPlayer.Id));
+                gameEvents.Add(new InfrastructureBuiltEvent(computerPlayer.Id, chosenSettlementLocation, chosenRoadSegmentEndLocation));
             }
 
-            return gameBoardUpdate;
+            return gameEvents;
         }
 
         private void CompleteResourceTransactionBetweenPlayers(IPlayer playerToTakeResourceFrom)
@@ -1173,7 +1154,7 @@ namespace Jabberwocky.SoC.Library
             this.ResourcesTransferredEvent?.Invoke(resourceTransactionList);
         }
 
-        private GameBoardUpdate CompleteSetupForComputerPlayers(GameBoard gameBoardData, GameBoardUpdate gameBoardUpdate)
+        private void CompleteSetupForComputerPlayers(List<GameEvent> gameEvents)
         {
             while (this.playerIndex >= 0)
             {
@@ -1181,33 +1162,22 @@ namespace Jabberwocky.SoC.Library
 
                 if (!player.IsComputer)
                 {
-                    return gameBoardUpdate;
-                }
-
-                if (gameBoardUpdate == null)
-                {
-                    gameBoardUpdate = new GameBoardUpdate
-                    {
-                        NewSettlements = new List<Tuple<uint, Guid>>(),
-                        NewRoads = new List<Tuple<uint, uint, Guid>>()
-                    };
+                    return;
                 }
 
                 var computerPlayer = (IComputerPlayer)player;
-                uint chosenSettlementLocation, chosenRoadSegmentEndLocation;
-                computerPlayer.ChooseInitialInfrastructure(out chosenSettlementLocation, out chosenRoadSegmentEndLocation);
-                gameBoardData.PlaceStartingInfrastructure(computerPlayer.Id, chosenSettlementLocation, chosenRoadSegmentEndLocation);
+                computerPlayer.ChooseInitialInfrastructure(out var chosenSettlementLocation, out var chosenRoadSegmentEndLocation);
+                this.gameBoard.PlaceStartingInfrastructure(computerPlayer.Id, chosenSettlementLocation, chosenRoadSegmentEndLocation);
 
                 computerPlayer.PlaceStartingInfrastructure();
 
-                gameBoardUpdate.NewSettlements.Add(new Tuple<uint, Guid>(chosenSettlementLocation, computerPlayer.Id));
-                gameBoardUpdate.NewRoads.Add(new Tuple<uint, uint, Guid>(chosenSettlementLocation, chosenRoadSegmentEndLocation, computerPlayer.Id));
+                gameEvents.Add(new InfrastructureBuiltEvent(computerPlayer.Id, chosenSettlementLocation, chosenRoadSegmentEndLocation));
 
-                this.CollectInitialResourcesForPlayer(computerPlayer.Id, chosenSettlementLocation);
-                computerPlayer.AddResources(this.gameSetupResources.Resources[computerPlayer.Id]);
+                var initialResources = this.GetInitialResourcesForPlayer(chosenSettlementLocation);
+                computerPlayer.AddResources(initialResources.Resources);
+
+                gameEvents.Add(new ResourceCollectedEvent(computerPlayer.Id, new[] { initialResources }));
             }
-
-            return gameBoardUpdate;
         }
 
         private PlayerDataBase[] CreatePlayerData()
