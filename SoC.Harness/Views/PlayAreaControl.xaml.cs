@@ -104,37 +104,21 @@ namespace SoC.Harness.Views
             this.controllerViewModel.EndTurn();
         }
 
-        public void GameSetupUpdateEventHandler(GameBoardUpdate boardUpdate)
-        {
-            if (boardUpdate == null)
-            {
-                return; // Should a null boardupdate be valid?
-            }
-
-            foreach (var settlementDetails in boardUpdate.NewSettlements)
-            {
-                var location = settlementDetails.Item1;
-                var playerId = settlementDetails.Item2;
-                this.PlaceSettlement(location, playerId);
-            }
-
-            foreach (var roadDetails in boardUpdate.NewRoads)
-            {
-                this.PlaceRoad(roadDetails.Item1, roadDetails.Item2, roadDetails.Item3);
-            }
-
-            this.SettlementSelectionLayer.Visibility = Visibility.Visible;
-        }
-
         public void Initialise(ControllerViewModel controllerViewModel)
         {
             this.DataContext = this.controllerViewModel = controllerViewModel;
             this.controllerViewModel.GameJoinedEvent += this.InitialisePlayerViews;
             this.controllerViewModel.InitialBoardSetupEvent += this.InitialBoardSetupEventHandler;
-            this.controllerViewModel.GameSetupUpdateEvent += this.GameSetupUpdateEventHandler;
             this.controllerViewModel.RobberEvent += this.RobberEventHandler;
             this.controllerViewModel.RobbingChoicesEvent += this.RobbingChoicesEventHandler;
             this.controllerViewModel.StartPhaseEvent += this.StartPhaseEventHandler;
+            this.controllerViewModel.PlaceInfrastructureEvent += this.PlaceInfrastructureEventHandler;
+        }
+
+        private void PlaceInfrastructureEventHandler(Guid playerId, uint settlementLocation, uint roadSegmentEndLocation)
+        {
+            this.PlaceSettlement(settlementLocation, playerId);
+            this.PlaceRoad(settlementLocation, roadSegmentEndLocation, playerId);
         }
 
         public void InitialisePlayerViews(PlayerViewModel player1, PlayerViewModel player2, PlayerViewModel player3, PlayerViewModel player4)

@@ -33,7 +33,6 @@ namespace SoC.Harness.ViewModels
             this.localGameController.ErrorRaisedEvent = this.ErrorRaisedEventHandler;
             this.localGameController.GameEvents = this.GameEventsHandler;
             this.localGameController.GameJoinedEvent = this.GameJoinedEventHandler;
-            //this.localGameController.GameSetupUpdateEvent = this.GameSetupUpdateEventHandler;
             this.localGameController.StartPlayerTurnEvent = this.StartPlayerTurnEventHandler;
             //this.localGameController.GameSetupResourcesEvent = this.GameSetupResourcesEventHandler;
             this.localGameController.InitialBoardSetupEvent = this.InitialBoardSetupEventHandler;
@@ -73,7 +72,7 @@ namespace SoC.Harness.ViewModels
         #region Events
         public event Action<ErrorDetails> ErrorRaisedEvent;
         public event Action<PlayerViewModel, PlayerViewModel, PlayerViewModel, PlayerViewModel> GameJoinedEvent;
-        public event Action<GameBoardUpdate> GameSetupUpdateEvent;
+        public event Action<Guid, uint, uint> PlaceInfrastructureEvent;
         public event Action InitialBoardSetupEvent;
         public event Action<PlayerViewModel, int> RobberEvent;
         public event Action<List<Tuple<Guid, string, int>>> RobbingChoicesEvent;
@@ -199,37 +198,6 @@ namespace SoC.Harness.ViewModels
             }
         }
 
-        private void GameSetupUpdateEventHandler(GameBoardUpdate boardUpdate)
-        {
-            if (boardUpdate == null)
-            {
-                return;
-            }
-
-            foreach (var settlementDetails in boardUpdate.NewSettlements)
-            {
-                var location = settlementDetails.Item1;
-                var playerId = settlementDetails.Item2;
-
-                var playerViewModel = this.playerViewModelsById[playerId];
-                var line = "Built settlement at " + location;
-                playerViewModel.UpdateHistory(line);
-            }
-
-            foreach (var roadDetails in boardUpdate.NewRoads)
-            {
-                var startLocation = roadDetails.Item1;
-                var endLocation = roadDetails.Item2;
-                var playerId = roadDetails.Item3;
-
-                var playerViewModel = this.playerViewModelsById[playerId];
-                var line = "Built road from " + startLocation + " to " + endLocation;
-                playerViewModel.UpdateHistory(line);
-            }
-
-            this.GameSetupUpdateEvent?.Invoke(boardUpdate);
-        }
-
         private string GetDiceImage(uint diceRoll)
         {
             const string OneImagePath = @"..\resources\dice\one.png";
@@ -275,6 +243,11 @@ namespace SoC.Harness.ViewModels
                     playerViewModel.UpdateHistory(line);
                     line = $"Built road from {infrastructureBuiltEvent.SettlementLocation} to {infrastructureBuiltEvent.RoadSegmentEndLocation}";
                     playerViewModel.UpdateHistory(line);
+
+                    this.PlaceInfrastructureEvent.Invoke(
+                        infrastructureBuiltEvent.PlayerId,
+                        infrastructureBuiltEvent.SettlementLocation, 
+                        infrastructureBuiltEvent.RoadSegmentEndLocation);
                 }
                 else if (gameEvent is ResourceCollectedEvent resourcesCollectedEvent)
                 {
