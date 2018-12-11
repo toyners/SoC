@@ -707,7 +707,7 @@ namespace SoC.Harness.Views
             Canvas.SetLeft(this.robberImage, location.Item2.X);
             Canvas.SetTop(this.robberImage, location.Item2.Y);
             this.RobberSelectionLayer.Visibility = Visibility.Hidden;
-            this.controllerViewModel.SetRobberLocation(location.Item1);
+            this.controllerViewModel.SetRobberHex(location.Item1);
         }
 
         private void Location_MouseHover(object sender, MouseEventArgs e)

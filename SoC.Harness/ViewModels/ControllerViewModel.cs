@@ -140,7 +140,7 @@ namespace SoC.Harness.ViewModels
             this.localGameController.Save(saveFilePath);
         }
 
-        public void SetRobberLocation(uint hexIndex)
+        public void SetRobberHex(uint hexIndex)
         {
             this.localGameController.SetRobberHex(hexIndex);
         }

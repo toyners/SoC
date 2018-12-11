@@ -234,6 +234,14 @@ namespace Jabberwocky.SoC.Library
 
         public void ChooseResourceFromOpponent(Guid opponentId)
         {
+            if (this.GamePhase == GamePhases.ContinueGamePlay)
+            {
+                var message = "Cannot call 'ChooseResourceFromOpponent' when no robbing choices are available.";
+                var errorDetails = new ErrorDetails(message);
+                this.ErrorRaisedEvent?.Invoke(errorDetails);
+                return;
+            }
+
             if (this.GamePhase != GamePhases.ChooseResourceFromOpponent)
             {
                 var message = "Cannot call 'ChooseResourceFromOpponent' until 'SetRobberLocation' has completed.";

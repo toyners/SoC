@@ -1061,16 +1061,19 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
             var localGameController = testInstances.LocalGameController;
             testInstances.Dice.AddSequence(new[] { 7u, 0u });
 
-            // Act
             ErrorDetails errorDetails = null;
             localGameController.ErrorRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
+
+            LocalGameControllerTestSetup.LaunchGameAndCompleteSetup(localGameController);
             localGameController.StartGamePlay();
             localGameController.SetRobberHex(0u);
+
+            // Act
             localGameController.ChooseResourceFromOpponent(Guid.NewGuid());
 
             // Assert
             errorDetails.ShouldNotBeNull();
-            errorDetails.Message.ShouldBe("Cannot call 'ChooseResourceFromOpponent' when 'RobbingChoicesEvent' is not raised.");
+            errorDetails.Message.ShouldBe("Cannot call 'ChooseResourceFromOpponent' when no robbing choices are available.");
         }
 
         /// <summary>
@@ -1107,23 +1110,23 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
         [Category("Main Player Turn")]
         public void StartOfMainPlayerTurn_RobberLocationHasOnlyPlayerSettlementsAndCallingChooseResourceFromOpponent_MeaningfulErrorIsReceived()
         {
-            // Arrange
-            MockDice mockDice = null;
-            MockPlayer player;
-            MockComputerPlayer firstOpponent, secondOpponent, thirdOpponent;
-            var localGameController = this.CreateLocalGameControllerAndCompleteGameSetup(out mockDice, out player, out firstOpponent, out secondOpponent, out thirdOpponent);
-            mockDice.AddSequence(new[] { 7u, 0u });
+            var testInstances = LocalGameControllerTestCreator.CreateTestInstances();
+            var localGameController = testInstances.LocalGameController;
+            testInstances.Dice.AddSequence(new[] { 7u, 0u });
 
-            // Act
             ErrorDetails errorDetails = null;
             localGameController.ErrorRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
+
+            LocalGameControllerTestSetup.LaunchGameAndCompleteSetup(localGameController);
             localGameController.StartGamePlay();
             localGameController.SetRobberHex(2u);
+
+            // Act
             localGameController.ChooseResourceFromOpponent(Guid.NewGuid());
 
             // Assert
             errorDetails.ShouldNotBeNull();
-            errorDetails.Message.ShouldBe("Cannot call 'ChooseResourceFromOpponent' when 'RobbingChoicesEvent' is not raised.");
+            errorDetails.Message.ShouldBe("Cannot call 'ChooseResourceFromOpponent' when no robbing choices are available.");
         }
 
         [Test]
@@ -1225,7 +1228,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
         {
             // Arrange
             Guid playerId = Guid.NewGuid(), firstOpponentId = Guid.NewGuid(), secondOpponentId = Guid.NewGuid(), thirdOpponentId = Guid.NewGuid();
-            var localGameController = new LocalGameControllerCreator().Create();
+            var localGameController = LocalGameControllerTestCreator.CreateTestInstances().LocalGameController;
 
             GameBoard boardData = null;
             localGameController.GameLoadedEvent = (PlayerDataBase[] pd, GameBoard bd) => { boardData = bd; };
@@ -1295,11 +1298,11 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
 
             // Assert
             var expected = new Dictionary<Guid, ResourceCollection[]>
-      {
-        { firstOpponent.Id, new [] { new ResourceCollection(18, ResourceClutch.OneOre) } },
-        { secondOpponent.Id, new [] { new ResourceCollection(25, ResourceClutch.OneLumber), new ResourceCollection(35, ResourceClutch.OneLumber) } },
-        { thirdOpponent.Id, new [] { new ResourceCollection(31, ResourceClutch.OneOre) } },
-      };
+            {
+                { firstOpponent.Id, new [] { new ResourceCollection(18, ResourceClutch.OneOre) } },
+                { secondOpponent.Id, new [] { new ResourceCollection(25, ResourceClutch.OneLumber), new ResourceCollection(35, ResourceClutch.OneLumber) } },
+                { thirdOpponent.Id, new [] { new ResourceCollection(31, ResourceClutch.OneOre) } },
+            };
 
             diceRoll.ShouldBe(6u);
 
