@@ -202,7 +202,6 @@ namespace SoC.Harness.Views
         public void StartGame()
         {
             this.BoardLayer.Visibility = Visibility.Visible;
-            this.SettlementSelectionLayer.Visibility = Visibility.Visible;
 
             Task.Factory.StartNew(() =>
             {
@@ -880,6 +879,7 @@ namespace SoC.Harness.Views
         private void SettlementSelectedEventHandler(SettlementButtonControl settlementButtonControl)
         {
             this.controllerViewModel.InitialSettlementLocation = settlementButtonControl.Location;
+            this.controllerViewModel.ShowSettlementSelection = false;
 
             // Turn off the controls for the location and its neighbours
             this.HideLocalSettlementButtons(settlementButtonControl);
@@ -896,7 +896,6 @@ namespace SoC.Harness.Views
                 this.visibleRoadButtonControls.Add(roadButtonControl);
             }
 
-            this.SettlementSelectionLayer.Visibility = Visibility.Hidden;
             this.RoadSelectionLayer.Visibility = Visibility.Visible;
         }
 

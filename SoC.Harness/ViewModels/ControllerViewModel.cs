@@ -63,6 +63,17 @@ namespace SoC.Harness.ViewModels
             }
         }
 
+        private bool showSettlementSelection;
+        public bool ShowSettlementSelection
+        {
+            get { return this.showSettlementSelection; }
+            set
+            {
+                this.showSettlementSelection = value;
+                this.PropertyChanged.Invoke(this, new PropertyChangedEventArgs("ShowSettlementSelection"));
+            }
+        }
+
         public bool SelectRobberLocation { get { return this.localGameController.GamePhase == LocalGameController.GamePhases.SetRobberHex; } }
         #endregion
 
@@ -112,8 +123,7 @@ namespace SoC.Harness.ViewModels
                 this.localGameController.ContinueGameSetup(this.InitialSettlementLocation, this.InitialRoadEndLocation);
                 this.SetupMessage = "Select location for SECOND Settlement and Road Segment";
 
-                //this.SettlementSelectionLayer.Visibility = Visibility.Visible;
-                //this.RoadSelectionLayer.Visibility = Visibility.Visible;
+                this.ShowSettlementSelection = true;
             }
             else if (this.localGameController.GamePhase == LocalGameController.GamePhases.CompleteGameSetup)
             {
@@ -149,6 +159,7 @@ namespace SoC.Harness.ViewModels
             this.localGameController.JoinGame();
             this.localGameController.LaunchGame();
             this.localGameController.StartGameSetup();
+            this.ShowSettlementSelection = true;
         }
 
         private void DiceRollEventHandler(uint dice1, uint dice2)
