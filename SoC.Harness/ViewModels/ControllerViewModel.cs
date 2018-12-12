@@ -253,8 +253,10 @@ namespace SoC.Harness.ViewModels
                 }
                 else if (gameEvent is ResourceCollectedEvent resourcesCollectedEvent)
                 {
-                    this.playerViewModelsById[resourcesCollectedEvent.PlayerId]
-                        .Update(resourcesCollectedEvent.Resources[0].Resources, true);
+                    var playerViewModel = this.playerViewModelsById[resourcesCollectedEvent.PlayerId];
+                    playerViewModel.Update(resourcesCollectedEvent.Resources[0].Resources, true);
+                    var line = $"Collected from ";
+                    playerViewModel.UpdateHistory(line);
                 }
                 else
                 {
