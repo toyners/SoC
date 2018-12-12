@@ -34,7 +34,6 @@ namespace SoC.Harness.ViewModels
             this.localGameController.GameEvents = this.GameEventsHandler;
             this.localGameController.GameJoinedEvent = this.GameJoinedEventHandler;
             this.localGameController.StartPlayerTurnEvent = this.StartPlayerTurnEventHandler;
-            //this.localGameController.GameSetupResourcesEvent = this.GameSetupResourcesEventHandler;
             this.localGameController.InitialBoardSetupEvent = this.InitialBoardSetupEventHandler;
             this.localGameController.ResourcesCollectedEvent = this.ResourcesCollectedEventHandler;
             this.localGameController.RobberEvent = this.RobberEventHandler;
@@ -50,9 +49,7 @@ namespace SoC.Harness.ViewModels
         #region Properties
         public string DiceOneImagePath { get; private set; }
         public string DiceTwoImagePath { get; private set; }
-        
-        public bool InGameSetup { get { return this.localGameController.GamePhase < LocalGameController.GamePhases.ContinueGameSetup; }}
-
+        public bool InGameSetup { get { return this.localGameController.GamePhase < LocalGameController.GamePhases.FinalisePlayerTurnOrder; }}
         public uint InitialSettlementLocation { get; set; }
         public uint InitialRoadEndLocation { get; set; }
 
@@ -114,6 +111,9 @@ namespace SoC.Harness.ViewModels
             {
                 this.localGameController.ContinueGameSetup(this.InitialSettlementLocation, this.InitialRoadEndLocation);
                 this.SetupMessage = "Select location for SECOND Settlement and Road Segment";
+
+                //this.SettlementSelectionLayer.Visibility = Visibility.Visible;
+                //this.RoadSelectionLayer.Visibility = Visibility.Visible;
             }
             else if (this.localGameController.GamePhase == LocalGameController.GamePhases.CompleteGameSetup)
             {
@@ -190,14 +190,6 @@ namespace SoC.Harness.ViewModels
             this.GameJoinedEvent?.Invoke(playerViewModel1, playerViewModel2, playerViewModel3, playerViewModel4);
         }
 
-        private void GameSetupResourcesEventHandler(ResourceUpdate resourceUpdate)
-        {
-            foreach (var resourceData in resourceUpdate.Resources)
-            {
-                this.playerViewModelsById[resourceData.Key].Update(resourceData.Value, true);
-            }
-        }
-
         private string GetDiceImage(uint diceRoll)
         {
             const string OneImagePath = @"..\resources\dice\one.png";
@@ -239,9 +231,7 @@ namespace SoC.Harness.ViewModels
                 else if (gameEvent is InfrastructureBuiltEvent infrastructureBuiltEvent)
                 {
                     var playerViewModel = this.playerViewModelsById[infrastructureBuiltEvent.PlayerId];
-                    var line = "Built settlement at " + infrastructureBuiltEvent.SettlementLocation;
-                    playerViewModel.UpdateHistory(line);
-                    line = $"Built road from {infrastructureBuiltEvent.SettlementLocation} to {infrastructureBuiltEvent.RoadSegmentEndLocation}";
+                    var line = $"Placed settlement at {infrastructureBuiltEvent.SettlementLocation} with road to {infrastructureBuiltEvent.RoadSegmentEndLocation}";
                     playerViewModel.UpdateHistory(line);
 
                     this.PlaceInfrastructureEvent.Invoke(
