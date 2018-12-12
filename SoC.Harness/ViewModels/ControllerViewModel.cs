@@ -23,6 +23,8 @@ namespace SoC.Harness.ViewModels
         private PhaseActions phaseActions = new PhaseActions();
         private string setupMessage;
         private readonly PropertyChangedEventArgs setupMessagePropertyChangedEventArgs = new PropertyChangedEventArgs("SetupMessage");
+        private bool showSettlementSelection;
+        private readonly PropertyChangedEventArgs showSettlementSelectionPropertyChangedEventArgs = new PropertyChangedEventArgs("ShowSettlementSelection");
         #endregion
 
         #region Construction
@@ -63,14 +65,13 @@ namespace SoC.Harness.ViewModels
             }
         }
 
-        private bool showSettlementSelection;
         public bool ShowSettlementSelection
         {
             get { return this.showSettlementSelection; }
             set
             {
                 this.showSettlementSelection = value;
-                this.PropertyChanged.Invoke(this, new PropertyChangedEventArgs("ShowSettlementSelection"));
+                this.PropertyChanged.Invoke(this, this.showSettlementSelectionPropertyChangedEventArgs);
             }
         }
 
