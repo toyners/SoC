@@ -288,7 +288,7 @@ namespace Jabberwocky.SoC.Library
             this.mainPlayer.AddResources(initialResources.Resources);
 
             var gameEvents = new List<GameEvent>();
-            gameEvents.Add(new ResourceCollectedEvent(this.mainPlayer.Id, new[] { initialResources }));
+            gameEvents.Add(new ResourcesCollectedEvent(this.mainPlayer.Id, new[] { initialResources }));
             this.CompleteSetupForComputerPlayers(gameEvents);
 
             this.GameEvents?.Invoke(gameEvents);
@@ -1104,7 +1104,7 @@ namespace Jabberwocky.SoC.Library
         private void CollectResourcesAtStartOfTurn(uint resourceRoll)
         {
             var turnResources = this.GetTurnResources(resourceRoll);
-            this.ResourcesCollectedEvent?.Invoke(turnResources);
+            //this.ResourcesCollectedEvent?.Invoke(turnResources);
 
             foreach (var kv in turnResources)
             {
@@ -1113,6 +1113,8 @@ namespace Jabberwocky.SoC.Library
                 {
                     player.AddResources(resourceCollection.Resources);
                 }
+
+                this.GameEvents?.Invoke(new List<GameEvent> { new ResourcesCollectedEvent(kv.Key, kv.Value) });
             }
         }
 
@@ -1174,7 +1176,7 @@ namespace Jabberwocky.SoC.Library
                 var initialResources = this.GetInitialResourcesForPlayer(chosenSettlementLocation);
                 computerPlayer.AddResources(initialResources.Resources);
 
-                gameEvents.Add(new ResourceCollectedEvent(computerPlayer.Id, new[] { initialResources }));
+                gameEvents.Add(new ResourcesCollectedEvent(computerPlayer.Id, new[] { initialResources }));
             }
         }
 

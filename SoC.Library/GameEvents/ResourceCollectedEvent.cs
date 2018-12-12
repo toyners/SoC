@@ -3,13 +3,13 @@ using System;
 
 namespace Jabberwocky.SoC.Library.GameEvents
 {
-    public class ResourceCollectedEvent : GameEvent
+    public class ResourcesCollectedEvent : GameEvent
     {
-        public readonly ResourceCollection[] Resources;
+        public readonly ResourceCollection[] ResourceCollection;
 
-        public ResourceCollectedEvent(Guid playerId, ResourceCollection[] resources) : base(playerId)
+        public ResourcesCollectedEvent(Guid playerId, ResourceCollection[] resourceCollection) : base(playerId)
         {
-            this.Resources = resources;
+            this.ResourceCollection = resourceCollection;
         }
     }
 }

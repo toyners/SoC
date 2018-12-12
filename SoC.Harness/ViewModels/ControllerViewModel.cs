@@ -37,7 +37,7 @@ namespace SoC.Harness.ViewModels
             this.localGameController.GameJoinedEvent = this.GameJoinedEventHandler;
             this.localGameController.StartPlayerTurnEvent = this.StartPlayerTurnEventHandler;
             this.localGameController.InitialBoardSetupEvent = this.InitialBoardSetupEventHandler;
-            this.localGameController.ResourcesCollectedEvent = this.ResourcesCollectedEventHandler;
+            //this.localGameController.ResourcesCollectedEvent = this.ResourcesCollectedEventHandler;
             this.localGameController.RobberEvent = this.RobberEventHandler;
             this.localGameController.ResourcesLostEvent = this.ResourcesLostEventHandler;
             this.localGameController.RobbingChoicesEvent = this.RobbingChoicesEventHandler;
@@ -251,12 +251,15 @@ namespace SoC.Harness.ViewModels
                         infrastructureBuiltEvent.SettlementLocation, 
                         infrastructureBuiltEvent.RoadSegmentEndLocation);
                 }
-                else if (gameEvent is ResourceCollectedEvent resourcesCollectedEvent)
+                else if (gameEvent is ResourcesCollectedEvent resourcesCollectedEvent)
                 {
                     var playerViewModel = this.playerViewModelsById[resourcesCollectedEvent.PlayerId];
-                    playerViewModel.Update(resourcesCollectedEvent.Resources[0].Resources, true);
-                    var line = $"Collected from ";
-                    playerViewModel.UpdateHistory(line);
+                    foreach (var resourceCollection in resourcesCollectedEvent.ResourceCollection)
+                    {
+                        playerViewModel.Update(resourceCollection.Resources, true);
+                        var line = $"Collected {resourceCollection.Resources} from {resourceCollection.Location}";
+                        playerViewModel.UpdateHistory(line);
+                    }
                 }
                 else
                 {
@@ -393,6 +396,7 @@ namespace SoC.Harness.ViewModels
         private void StartPlayerTurnEventHandler(TurnToken turnToken)
         {
             this.currentTurnToken = turnToken;
+            this.StartPhase();
         }
 
         public void BuildRoadSegment(uint start, uint end)
