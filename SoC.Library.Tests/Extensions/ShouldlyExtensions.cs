@@ -98,7 +98,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.Extensions
             }
         }
 
-        public static void ShouldContain<T>(this IList<T> actual, params T[] expected)
+        public static void ShouldContainItems<T>(this IList<T> actual, params T[] expected)
         {
             actual.Count.ShouldBe(expected.Length);
 

@@ -630,8 +630,8 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
             // Assert
             var expectedDiceRollEvent = new DiceRollEvent(firstOpponent.Id, 4, 4);
             var expectedRoadSegmentBuiltEvent = new RoadSegmentBuiltEvent(firstOpponent.Id, 17u, 7u);
-            actualEvents.Count.ShouldBe(3);
-            actualEvents[0].ShouldContainExact(new GameEvent[] { expectedDiceRollEvent, expectedRoadSegmentBuiltEvent });
+            actualEvents.Count.ShouldBe(8);
+            actualEvents[2].ShouldContainExact(new GameEvent[] { expectedDiceRollEvent, expectedRoadSegmentBuiltEvent });
             firstOpponent.ResourcesCount.ShouldBe(0);
         }
 

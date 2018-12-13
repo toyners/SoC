@@ -486,7 +486,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
             // Assert
             var expectedRoadSegmentBuiltEvent = new RoadSegmentBuiltEvent(firstOpponent.Id, 17u, 7u);
 
-            gameEvents[0].ShouldContainExact(new GameEvent[] {
+            gameEvents[2].ShouldContainExact(new GameEvent[] {
                 new DiceRollEvent(firstOpponent.Id, 4, 4),
                 new RoadSegmentBuiltEvent(firstOpponent.Id, 17u, 7u),
                 new SettlementBuiltEvent(firstOpponent.Id, 7u),
@@ -533,9 +533,9 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
             // Assert
             var expectedWinningGameEvent = new GameWinEvent(firstOpponent.Id);
 
-            gameEvents.Count.ShouldBe(1);
-            gameEvents[0].Count.ShouldBe(13);
-            gameEvents[0][12].ShouldBe(expectedWinningGameEvent);
+            gameEvents.Count.ShouldBe(3);
+            gameEvents[2].Count.ShouldBe(13);
+            gameEvents[2][12].ShouldBe(expectedWinningGameEvent);
             firstOpponent.VictoryPoints.ShouldBe(10u);
             localGameController.GamePhase.ShouldBe(LocalGameController.GamePhases.GameOver);
         }

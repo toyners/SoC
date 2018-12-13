@@ -512,8 +512,8 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
             localGameController.EndTurn(turnToken);
 
             // Assert
-            gameEvents.Count.ShouldBe(3);
-            gameEvents[0].ShouldContainExact(new GameEvent[] {
+            gameEvents.Count.ShouldBe(8);
+            gameEvents[2].ShouldContainExact(new GameEvent[] {
                 new DiceRollEvent(firstOpponent.Id, 4, 4),
                 new RoadSegmentBuiltEvent(firstOpponent.Id, 17u, 7u),
                 new SettlementBuiltEvent(firstOpponent.Id, 7u)});
@@ -563,8 +563,8 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
             // Assert
             var expectedWinningGameEvent = new GameWinEvent(firstOpponent.Id);
 
-            events.Count.ShouldBe(1);
-            events[0][13].ShouldBe(expectedWinningGameEvent);
+            events.Count.ShouldBe(3);
+            events[2][13].ShouldBe(expectedWinningGameEvent);
             firstOpponent.VictoryPoints.ShouldBe(10u);
             winningPlayer.ShouldBe(firstOpponent.Id);
         }

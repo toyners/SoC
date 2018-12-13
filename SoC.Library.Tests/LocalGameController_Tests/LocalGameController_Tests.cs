@@ -1329,13 +1329,14 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
             gameEvents.ShouldContain(new ResourcesCollectedEvent(secondOpponent.Id, new[] { new ResourceCollection(SecondSettlementOneLocation, ResourceClutch.OneLumber), new ResourceCollection(SecondSettlementTwoLocation, ResourceClutch.OneLumber) }));
             gameEvents.ShouldContain(new ResourcesCollectedEvent(thirdOpponent.Id, new[] { new ResourceCollection(ThirdSettlementOneLocation, ResourceClutch.OneOre) }));
 
-            player.ResourcesCount.ShouldBe(0);
-            firstOpponent.ResourcesCount.ShouldBe(1);
-            firstOpponent.OreCount.ShouldBe(1);
-            secondOpponent.ResourcesCount.ShouldBe(2);
-            secondOpponent.LumberCount.ShouldBe(2);
-            thirdOpponent.ResourcesCount.ShouldBe(1);
-            thirdOpponent.OreCount.ShouldBe(1);
+            player.ResourcesCount.ShouldBe(3);
+            player.Resources.ShouldBe(ResourceClutch.OneBrick * 3);
+            firstOpponent.ResourcesCount.ShouldBe(4);
+            firstOpponent.Resources.ShouldBe((ResourceClutch.OneGrain * 3) + ResourceClutch.OneOre);
+            secondOpponent.ResourcesCount.ShouldBe(6);
+            secondOpponent.Resources.ShouldBe(ResourceClutch.OneLumber * 6);
+            thirdOpponent.ResourcesCount.ShouldBe(3);
+            thirdOpponent.Resources.ShouldBe(ResourceClutch.OneOre * 3);
         }
 
         private void AssertPlayerDataViewIsCorrect(IPlayer player, PlayerDataModel playerDataView)
