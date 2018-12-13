@@ -14,6 +14,7 @@ namespace SoC.Harness.ViewModels
     {
         #region Fields
         private TurnToken currentTurnToken;
+        private int currentTurnNumber;
         readonly PropertyChangedEventArgs diceOneChangedEventArgs = new PropertyChangedEventArgs("DiceOneImagePath");
         readonly PropertyChangedEventArgs diceTwoChangedEventArgs = new PropertyChangedEventArgs("DiceTwoImagePath");
         private GameBoardSetup gameBoardSetup;
@@ -37,7 +38,6 @@ namespace SoC.Harness.ViewModels
             this.localGameController.GameJoinedEvent = this.GameJoinedEventHandler;
             this.localGameController.StartPlayerTurnEvent = this.StartPlayerTurnEventHandler;
             this.localGameController.InitialBoardSetupEvent = this.InitialBoardSetupEventHandler;
-            //this.localGameController.ResourcesCollectedEvent = this.ResourcesCollectedEventHandler;
             this.localGameController.RobberEvent = this.RobberEventHandler;
             this.localGameController.ResourcesLostEvent = this.ResourcesLostEventHandler;
             this.localGameController.RobbingChoicesEvent = this.RobbingChoicesEventHandler;
@@ -396,6 +396,11 @@ namespace SoC.Harness.ViewModels
         private void StartPlayerTurnEventHandler(TurnToken turnToken)
         {
             this.currentTurnToken = turnToken;
+            this.currentTurnNumber++;
+
+            foreach (var kv in this.playerViewModelsById)
+                kv.Value.UpdateHistory($"TURN {this.currentTurnNumber}");
+
             this.StartPhase();
         }
 

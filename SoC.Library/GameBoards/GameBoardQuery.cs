@@ -119,7 +119,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
 
         public List<KeyValuePair<uint, List<uint>>> GetRoadPathCandidates(List<uint> settlementCandidates)
         {
-            throw new NotImplementedException();
+            return null;
         }
 
         public uint[] GetValidConnectedLocationsFrom(uint location)
