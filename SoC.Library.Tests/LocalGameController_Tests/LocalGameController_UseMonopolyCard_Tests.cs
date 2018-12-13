@@ -339,11 +339,11 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
             expectedResourceTransactionList.Add(new ResourceTransaction(firstOpponent.Id, secondOpponent.Id, ResourceClutch.OneBrick * 2));
             var expectedPlayMonopolyCardEvent = new PlayMonopolyCardEvent(firstOpponent.Id, expectedResourceTransactionList);
 
-            gameEvents.Count.ShouldBe(6);
-            gameEvents[0].Count.ShouldBe(2);
-            gameEvents[0][1].ShouldBe(expectedBuyDevelopmentCardEvent);
-            gameEvents[3].Count.ShouldBe(2);
-            gameEvents[3][1].ShouldBe(expectedPlayMonopolyCardEvent);
+            gameEvents.Count.ShouldBe(15);
+            gameEvents[2].Count.ShouldBe(2);
+            gameEvents[2][1].ShouldBe(expectedBuyDevelopmentCardEvent);
+            gameEvents[9].Count.ShouldBe(2);
+            gameEvents[9][1].ShouldBe(expectedPlayMonopolyCardEvent);
             
             player.ResourcesCount.ShouldBe(0);
             firstOpponent.ResourcesCount.ShouldBe(3);

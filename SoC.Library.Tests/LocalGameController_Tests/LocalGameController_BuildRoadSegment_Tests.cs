@@ -761,9 +761,9 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
             // Assert
             var expectedWinningGameEvent = new GameWinEvent(firstOpponent.Id);
 
-            gameEvents.Count.ShouldBe(1);
-            gameEvents[0].Count.ShouldBe(14);
-            gameEvents[0][13].ShouldBe(expectedWinningGameEvent);
+            gameEvents.Count.ShouldBe(3);
+            gameEvents[2].Count.ShouldBe(14);
+            gameEvents[2][13].ShouldBe(expectedWinningGameEvent);
             firstOpponent.VictoryPoints.ShouldBe(10u);
             winningPlayer.ShouldBe(firstOpponent.Id);
             localGameController.GamePhase.ShouldBe(LocalGameController.GamePhases.GameOver);
@@ -813,9 +813,9 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
             // Assert
             var expectedWinningGameEvent = new GameWinEvent(firstOpponent.Id);
 
-            gameEvents.Count.ShouldBe(1);
-            gameEvents[0].Count.ShouldBe(16);
-            gameEvents[0][15].ShouldBe(expectedWinningGameEvent);
+            gameEvents.Count.ShouldBe(3);
+            gameEvents[2].Count.ShouldBe(16);
+            gameEvents[2][15].ShouldBe(expectedWinningGameEvent);
             firstOpponent.VictoryPoints.ShouldBe(11u);
             winningPlayer.ShouldBe(firstOpponent.Id);
         }

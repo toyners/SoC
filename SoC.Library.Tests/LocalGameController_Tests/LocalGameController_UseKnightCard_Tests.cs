@@ -1171,12 +1171,12 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
             expectedResourceTransactionList.Add(expectedResourceTransaction);
             var expectedResourceLostEvent = new ResourceTransactionEvent(firstOpponent.Id, expectedResourceTransactionList);
 
-            gameEvents.Count.ShouldBe(6);
-            gameEvents[0].Count.ShouldBe(2);
-            gameEvents[0][1].ShouldBe(expectedBuyDevelopmentCardEvent);
-            gameEvents[3].Count.ShouldBe(3);
-            gameEvents[3][1].ShouldBe(expectedPlayKnightCardEvent);
-            gameEvents[3][2].ShouldBe(expectedResourceLostEvent);
+            gameEvents.Count.ShouldBe(15);
+            gameEvents[2].Count.ShouldBe(2);
+            gameEvents[2][1].ShouldBe(expectedBuyDevelopmentCardEvent);
+            gameEvents[9].Count.ShouldBe(3);
+            gameEvents[9][1].ShouldBe(expectedPlayKnightCardEvent);
+            gameEvents[9][2].ShouldBe(expectedResourceLostEvent);
 
             player.ResourcesCount.ShouldBe(0);
             firstOpponent.ResourcesCount.ShouldBe(1);
@@ -1229,9 +1229,9 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
             // Assert
             var expectedGameWinEvent = new GameWinEvent(firstOpponent.Id);
 
-            gameEvents.Count.ShouldBe(10);
-            gameEvents[9].Count.ShouldBe(4);
-            gameEvents[9][3].ShouldBe(expectedGameWinEvent);
+            gameEvents.Count.ShouldBe(24);
+            gameEvents[23].Count.ShouldBe(4);
+            gameEvents[23][3].ShouldBe(expectedGameWinEvent);
             firstOpponent.VictoryPoints.ShouldBe(10u);
             winningPlayer.ShouldBe(firstOpponent.Id);
             localGameController.GamePhase.ShouldBe(LocalGameController.GamePhases.GameOver);
@@ -1284,9 +1284,9 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
             // Assert
             var expectedGameWinEvent = new GameWinEvent(firstOpponent.Id);
 
-            gameEvents.Count.ShouldBe(10);
-            gameEvents[9].Count.ShouldBe(4);
-            gameEvents[9][3].ShouldBe(expectedGameWinEvent);
+            gameEvents.Count.ShouldBe(24);
+            gameEvents[23].Count.ShouldBe(4);
+            gameEvents[23][3].ShouldBe(expectedGameWinEvent);
             firstOpponent.VictoryPoints.ShouldBe(11u);
             winningPlayer.ShouldBe(firstOpponent.Id);
             localGameController.GamePhase.ShouldBe(LocalGameController.GamePhases.GameOver);

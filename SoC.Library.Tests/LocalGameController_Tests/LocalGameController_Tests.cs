@@ -732,7 +732,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
             var testInstances = LocalGameControllerTestCreator.CreateTestInstances();
             var localGameController = testInstances.LocalGameController;
             LocalGameControllerTestSetup.LaunchGameAndCompleteSetup(localGameController);
-            testInstances.Dice.AddSequence(new[] { 8u });
+            testInstances.Dice.AddSequence(new uint[] { 11 });
             var playerId = testInstances.MainPlayer.Id;
             var firstOpponentId = testInstances.FirstOpponent.Id;
 
@@ -740,7 +740,10 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
             localGameController.GameEvents = (List<GameEvent> g) => { gameEvents = g; };
             localGameController.StartGamePlay();
 
-            gameEvents.Count.ShouldBe(0);
+            gameEvents.ShouldContainItems(
+                new ResourcesCollectedEvent(firstOpponentId, new[] { new ResourceCollection(FirstSettlementOneLocation, ResourceClutch.OneLumber) }),
+                new ResourcesCollectedEvent(testInstances.ThirdOpponent.Id, new[] { new ResourceCollection(ThirdSettlementOneLocation, ResourceClutch.OneGrain), new ResourceCollection(ThirdSettlementTwoLocation, ResourceClutch.OneGrain) })
+            );
         }
 
         [Test]
@@ -1333,10 +1336,10 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
             player.Resources.ShouldBe(ResourceClutch.OneBrick * 3);
             firstOpponent.ResourcesCount.ShouldBe(4);
             firstOpponent.Resources.ShouldBe((ResourceClutch.OneGrain * 3) + ResourceClutch.OneOre);
-            secondOpponent.ResourcesCount.ShouldBe(6);
-            secondOpponent.Resources.ShouldBe(ResourceClutch.OneLumber * 6);
-            thirdOpponent.ResourcesCount.ShouldBe(3);
-            thirdOpponent.Resources.ShouldBe(ResourceClutch.OneOre * 3);
+            secondOpponent.ResourcesCount.ShouldBe(2);
+            secondOpponent.Resources.ShouldBe(ResourceClutch.OneLumber * 2);
+            thirdOpponent.ResourcesCount.ShouldBe(1);
+            thirdOpponent.Resources.ShouldBe(ResourceClutch.OneOre);
         }
 
         private void AssertPlayerDataViewIsCorrect(IPlayer player, PlayerDataModel playerDataView)
