@@ -736,17 +736,11 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
             var playerId = testInstances.MainPlayer.Id;
             var firstOpponentId = testInstances.FirstOpponent.Id;
 
-            //Dictionary<Guid, ResourceCollection[]> actual = null;
-            //localGameController.ResourcesCollectedEvent = (Dictionary<Guid, ResourceCollection[]> r) => { actual = r; };
             List<GameEvent> gameEvents = null;
             localGameController.GameEvents = (List<GameEvent> g) => { gameEvents = g; };
             localGameController.StartGamePlay();
 
             gameEvents.Count.ShouldBe(0);
-            gameEvents.ShouldContainExact(new[] {
-                new ResourcesCollectedEvent(playerId, null),
-                new ResourcesCollectedEvent(firstOpponentId, null)
-            });
         }
 
         [Test]

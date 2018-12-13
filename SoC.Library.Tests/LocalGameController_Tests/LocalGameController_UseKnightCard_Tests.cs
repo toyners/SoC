@@ -710,22 +710,30 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
             var expectedSecondDiceRollEvent = new DiceRollEvent(testInstances.SecondOpponent.Id, 4, 4);
             var expectedThirdDiceRollEvent = new DiceRollEvent(testInstances.ThirdOpponent.Id, 4, 4);
 
-            gameEvents.Count.ShouldBe(15);
-            gameEvents[0].ShouldContainExact(new GameEvent[] { expectedFirstDiceRollEvent, expectedBuyDevelopmentCardEvent, expectedBuyDevelopmentCardEvent, expectedBuyDevelopmentCardEvent, expectedBuyDevelopmentCardEvent });
-            gameEvents[1].ShouldContainExact(new GameEvent[] { expectedSecondDiceRollEvent });
-            gameEvents[2].ShouldContainExact(new GameEvent[] { expectedThirdDiceRollEvent });
-            gameEvents[3].ShouldContainExact(new GameEvent[] { expectedFirstDiceRollEvent, expectedPlayKnightCardEvent });
-            gameEvents[4].ShouldContainExact(new GameEvent[] { expectedSecondDiceRollEvent });
-            gameEvents[5].ShouldContainExact(new GameEvent[] { expectedThirdDiceRollEvent });
+            var expectedPlayerCollectedResources = new ResourcesCollectedEvent(player.Id, new[] { new ResourceCollection(FirstSettlementOneLocation, ResourceClutch.OneBrick) });
+            var expectedFirstOpponentCollectedResources = new ResourcesCollectedEvent(firstOpponent.Id, new[] { new ResourceCollection(SecondSettlementTwoLocation, ResourceClutch.OneGrain) });
+
+            gameEvents.Count.ShouldBe(20);
+            gameEvents[1].ShouldContain(expectedPlayerCollectedResources, expectedFirstOpponentCollectedResources);
+            gameEvents[2].ShouldContainExact(new GameEvent[] { expectedFirstDiceRollEvent, expectedBuyDevelopmentCardEvent, expectedBuyDevelopmentCardEvent, expectedBuyDevelopmentCardEvent, expectedBuyDevelopmentCardEvent });
+            gameEvents[3].ShouldContainExact(new GameEvent[] { expectedSecondDiceRollEvent });
+            gameEvents[4].ShouldContainExact(new GameEvent[] { expectedThirdDiceRollEvent });
+            gameEvents[5].ShouldContain(expectedPlayerCollectedResources, expectedFirstOpponentCollectedResources);
             gameEvents[6].ShouldContainExact(new GameEvent[] { expectedFirstDiceRollEvent, expectedPlayKnightCardEvent });
             gameEvents[7].ShouldContainExact(new GameEvent[] { expectedSecondDiceRollEvent });
             gameEvents[8].ShouldContainExact(new GameEvent[] { expectedThirdDiceRollEvent });
-            gameEvents[9].ShouldContainExact(new GameEvent[] { expectedFirstDiceRollEvent, expectedPlayKnightCardEvent });
-            gameEvents[10].ShouldContainExact(new GameEvent[] { expectedSecondDiceRollEvent });
-            gameEvents[11].ShouldContainExact(new GameEvent[] { expectedThirdDiceRollEvent });
-            gameEvents[12].ShouldContainExact(new GameEvent[] { expectedFirstDiceRollEvent, expectedPlayKnightCardEvent, expectedDifferentPlayerHasLargestArmyEvent });
-            gameEvents[13].ShouldContainExact(new GameEvent[] { expectedSecondDiceRollEvent });
-            gameEvents[14].ShouldContainExact(new GameEvent[] { expectedThirdDiceRollEvent });
+            gameEvents[9].ShouldContain(expectedPlayerCollectedResources, expectedFirstOpponentCollectedResources);
+            gameEvents[10].ShouldContainExact(new GameEvent[] { expectedFirstDiceRollEvent, expectedPlayKnightCardEvent });
+            gameEvents[11].ShouldContainExact(new GameEvent[] { expectedSecondDiceRollEvent });
+            gameEvents[12].ShouldContainExact(new GameEvent[] { expectedThirdDiceRollEvent });
+            gameEvents[13].ShouldContain(expectedPlayerCollectedResources, expectedFirstOpponentCollectedResources);
+            gameEvents[14].ShouldContainExact(new GameEvent[] { expectedFirstDiceRollEvent, expectedPlayKnightCardEvent });
+            gameEvents[15].ShouldContainExact(new GameEvent[] { expectedSecondDiceRollEvent });
+            gameEvents[16].ShouldContainExact(new GameEvent[] { expectedThirdDiceRollEvent });
+            gameEvents[17].ShouldContain(expectedPlayerCollectedResources, expectedFirstOpponentCollectedResources);
+            gameEvents[18].ShouldContainExact(new GameEvent[] { expectedFirstDiceRollEvent, expectedPlayKnightCardEvent, expectedDifferentPlayerHasLargestArmyEvent });
+            gameEvents[19].ShouldContainExact(new GameEvent[] { expectedSecondDiceRollEvent });
+            gameEvents[20].ShouldContainExact(new GameEvent[] { expectedThirdDiceRollEvent });
         }
 
         /// <summary>
@@ -843,50 +851,40 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
             var expectedSecondDiceRollEvent = new DiceRollEvent(testInstances.SecondOpponent.Id, 4, 4);
             var expectedThirdDiceRollEvent = new DiceRollEvent(testInstances.ThirdOpponent.Id, 4, 4);
 
-            gameEvents.Count.ShouldBe(15);
-            gameEvents[0].Count.ShouldBe(2);
-            gameEvents[0].ShouldContain(new ResourcesCollectedEvent(player.Id, new[] { new ResourceCollection(FirstSettlementOneLocation, ResourceClutch.OneBrick) }));
-            gameEvents[0].ShouldContain(new ResourcesCollectedEvent(firstOpponent.Id, new[] { new ResourceCollection(SecondSettlementTwoLocation, ResourceClutch.OneGrain) }));
+            var expectedPlayerCollectedResources = new ResourcesCollectedEvent(player.Id, new[] { new ResourceCollection(FirstSettlementOneLocation, ResourceClutch.OneBrick) });
+            var expectedFirstOpponentCollectedResources = new ResourcesCollectedEvent(firstOpponent.Id, new[] { new ResourceCollection(SecondSettlementTwoLocation, ResourceClutch.OneGrain) });
+
+            gameEvents.Count.ShouldBe(30);
+            gameEvents[0].ShouldContain(expectedPlayerCollectedResources, expectedFirstOpponentCollectedResources);
             gameEvents[1].ShouldContainExact(new GameEvent[] { expectedFirstDiceRollEvent, expectedBuyDevelopmentCardEvent, expectedBuyDevelopmentCardEvent, expectedBuyDevelopmentCardEvent, expectedBuyDevelopmentCardEvent });
-
-            gameEvents[2].Count.ShouldBe(2);
-            gameEvents[2].ShouldContain(new ResourcesCollectedEvent(player.Id, new[] { new ResourceCollection(FirstSettlementOneLocation, ResourceClutch.OneBrick) }));
-            gameEvents[2].ShouldContain(new ResourcesCollectedEvent(firstOpponent.Id, new[] { new ResourceCollection(SecondSettlementTwoLocation, ResourceClutch.OneGrain) }));
+            gameEvents[2].ShouldContain(expectedPlayerCollectedResources, expectedFirstOpponentCollectedResources);
             gameEvents[3].ShouldContainExact(new GameEvent[] { expectedSecondDiceRollEvent });
-
-            gameEvents[4].Count.ShouldBe(2);
-            gameEvents[4].ShouldContain(new ResourcesCollectedEvent(player.Id, new[] { new ResourceCollection(FirstSettlementOneLocation, ResourceClutch.OneBrick) }));
-            gameEvents[4].ShouldContain(new ResourcesCollectedEvent(firstOpponent.Id, new[] { new ResourceCollection(SecondSettlementTwoLocation, ResourceClutch.OneGrain) }));
+            gameEvents[4].ShouldContain(expectedPlayerCollectedResources, expectedFirstOpponentCollectedResources);
             gameEvents[5].ShouldContainExact(new GameEvent[] { expectedThirdDiceRollEvent });
-
-            gameEvents[6].Count.ShouldBe(2);
-            gameEvents[6].ShouldContain(new ResourcesCollectedEvent(player.Id, new[] { new ResourceCollection(FirstSettlementOneLocation, ResourceClutch.OneBrick) }));
-            gameEvents[6].ShouldContain(new ResourcesCollectedEvent(firstOpponent.Id, new[] { new ResourceCollection(SecondSettlementTwoLocation, ResourceClutch.OneGrain) }));
+            gameEvents[6].ShouldContain(expectedPlayerCollectedResources, expectedFirstOpponentCollectedResources);
             gameEvents[7].ShouldContainExact(new GameEvent[] { expectedFirstDiceRollEvent, expectedPlayKnightCardEvent });
-
-            gameEvents[8].Count.ShouldBe(2);
-            gameEvents[8].ShouldContain(new ResourcesCollectedEvent(player.Id, new[] { new ResourceCollection(FirstSettlementOneLocation, ResourceClutch.OneBrick) }));
-            gameEvents[8].ShouldContain(new ResourcesCollectedEvent(firstOpponent.Id, new[] { new ResourceCollection(SecondSettlementTwoLocation, ResourceClutch.OneGrain) }));
+            gameEvents[8].ShouldContain(expectedPlayerCollectedResources, expectedFirstOpponentCollectedResources);
             gameEvents[9].ShouldContainExact(new GameEvent[] { expectedSecondDiceRollEvent });
-
-            gameEvents[10].Count.ShouldBe(2);
-            gameEvents[10].ShouldContain(new ResourcesCollectedEvent(player.Id, new[] { new ResourceCollection(FirstSettlementOneLocation, ResourceClutch.OneBrick) }));
-            gameEvents[10].ShouldContain(new ResourcesCollectedEvent(firstOpponent.Id, new[] { new ResourceCollection(SecondSettlementTwoLocation, ResourceClutch.OneGrain) }));
+            gameEvents[10].ShouldContain(expectedPlayerCollectedResources, expectedFirstOpponentCollectedResources);
             gameEvents[11].ShouldContainExact(new GameEvent[] { expectedThirdDiceRollEvent });
-
-            gameEvents[12].Count.ShouldBe(2);
-            gameEvents[12].ShouldContain(new ResourcesCollectedEvent(player.Id, new[] { new ResourceCollection(FirstSettlementOneLocation, ResourceClutch.OneBrick) }));
-            gameEvents[12].ShouldContain(new ResourcesCollectedEvent(firstOpponent.Id, new[] { new ResourceCollection(SecondSettlementTwoLocation, ResourceClutch.OneGrain) }));
+            gameEvents[12].ShouldContain(expectedPlayerCollectedResources, expectedFirstOpponentCollectedResources);
             gameEvents[13].ShouldContainExact(new GameEvent[] { expectedFirstDiceRollEvent, expectedPlayKnightCardEvent });
-
-            gameEvents[7].ShouldContainExact(new GameEvent[] { expectedSecondDiceRollEvent });
-            gameEvents[8].ShouldContainExact(new GameEvent[] { expectedThirdDiceRollEvent });
-            gameEvents[9].ShouldContainExact(new GameEvent[] { expectedFirstDiceRollEvent, expectedPlayKnightCardEvent, expectedDifferentPlayerHasLargestArmyEvent });
-            gameEvents[10].ShouldContainExact(new GameEvent[] { expectedSecondDiceRollEvent });
-            gameEvents[11].ShouldContainExact(new GameEvent[] { expectedThirdDiceRollEvent });
-            gameEvents[12].ShouldContainExact(new GameEvent[] { expectedFirstDiceRollEvent, expectedPlayKnightCardEvent });
-            gameEvents[13].ShouldContainExact(new GameEvent[] { expectedSecondDiceRollEvent });
-            gameEvents[14].ShouldContainExact(new GameEvent[] { expectedThirdDiceRollEvent });
+            gameEvents[14].ShouldContain(expectedPlayerCollectedResources, expectedFirstOpponentCollectedResources);
+            gameEvents[15].ShouldContainExact(new GameEvent[] { expectedSecondDiceRollEvent });
+            gameEvents[16].ShouldContain(expectedPlayerCollectedResources, expectedFirstOpponentCollectedResources);
+            gameEvents[17].ShouldContainExact(new GameEvent[] { expectedThirdDiceRollEvent });
+            gameEvents[18].ShouldContain(expectedPlayerCollectedResources, expectedFirstOpponentCollectedResources);
+            gameEvents[19].ShouldContainExact(new GameEvent[] { expectedFirstDiceRollEvent, expectedPlayKnightCardEvent, expectedDifferentPlayerHasLargestArmyEvent });
+            gameEvents[20].ShouldContain(expectedPlayerCollectedResources, expectedFirstOpponentCollectedResources);
+            gameEvents[21].ShouldContainExact(new GameEvent[] { expectedSecondDiceRollEvent });
+            gameEvents[22].ShouldContain(expectedPlayerCollectedResources, expectedFirstOpponentCollectedResources);
+            gameEvents[23].ShouldContainExact(new GameEvent[] { expectedThirdDiceRollEvent });
+            gameEvents[24].ShouldContain(expectedPlayerCollectedResources, expectedFirstOpponentCollectedResources);
+            gameEvents[25].ShouldContainExact(new GameEvent[] { expectedFirstDiceRollEvent, expectedPlayKnightCardEvent });
+            gameEvents[26].ShouldContain(expectedPlayerCollectedResources, expectedFirstOpponentCollectedResources);
+            gameEvents[27].ShouldContainExact(new GameEvent[] { expectedSecondDiceRollEvent });
+            gameEvents[28].ShouldContain(expectedPlayerCollectedResources, expectedFirstOpponentCollectedResources);
+            gameEvents[29].ShouldContainExact(new GameEvent[] { expectedThirdDiceRollEvent });
         }
 
         /// <summary>
