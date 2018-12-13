@@ -11,7 +11,6 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
     using Jabberwocky.SoC.Library.PlayerData;
     using Jabberwocky.SoC.Library.UnitTests.Extensions;
     using Mock;
-    using NSubstitute;
     using NUnit.Framework;
     using Shouldly;
 
@@ -737,17 +736,17 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
             var playerId = testInstances.MainPlayer.Id;
             var firstOpponentId = testInstances.FirstOpponent.Id;
 
-            Dictionary<Guid, ResourceCollection[]> actual = null;
-            localGameController.ResourcesCollectedEvent = (Dictionary<Guid, ResourceCollection[]> r) => { actual = r; };
+            //Dictionary<Guid, ResourceCollection[]> actual = null;
+            //localGameController.ResourcesCollectedEvent = (Dictionary<Guid, ResourceCollection[]> r) => { actual = r; };
+            List<GameEvent> gameEvents = null;
+            localGameController.GameEvents = (List<GameEvent> g) => { gameEvents = g; };
             localGameController.StartGamePlay();
 
-            var expected = new Dictionary<Guid, ResourceCollection[]>
-      {
-        { playerId, new [] { new ResourceCollection(12u, ResourceClutch.OneBrick) } },
-        { firstOpponentId, new[] { new ResourceCollection(43, ResourceClutch.OneGrain) } }
-      };
-
-            actual.ShouldContainExact(expected);
+            gameEvents.Count.ShouldBe(0);
+            gameEvents.ShouldContainExact(new[] {
+                new ResourcesCollectedEvent(playerId, null),
+                new ResourcesCollectedEvent(firstOpponentId, null)
+            });
         }
 
         [Test]
@@ -1272,7 +1271,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
         }
 
         [Test]
-        public void Scenario_AllPlayersCollectResourcesAsPartOfGameStart()
+        public void Scenario_AllPlayersCollectResourcesAsPartOfFirstTurnStart()
         {
             // Arrange
             var testInstances = LocalGameControllerTestCreator.CreateTestInstances(new MockGameBoardWithNoResourcesCollectedDuringGameSetup());
@@ -1282,40 +1281,28 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
             var secondOpponent = testInstances.SecondOpponent;
             var thirdOpponent = testInstances.ThirdOpponent;
             LocalGameControllerTestSetup.LaunchGameAndCompleteSetup(localGameController);
-            testInstances.Dice.AddSequence(new UInt32[] { 6u });
+            testInstances.Dice.AddSequence(new [] { 6u });
 
-            TurnToken turnToken = null;
-            localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
-
-            Dictionary<Guid, ResourceCollection[]> collectedResources = null;
-            localGameController.ResourcesCollectedEvent = (Dictionary<Guid, ResourceCollection[]> c) => { collectedResources = c; };
-
-            UInt32 diceRoll = 0;
-            localGameController.DiceRollEvent = (uint d1, uint d2) => { diceRoll = d1 + d2; };
-
+            List<GameEvent> gameEvents = null;
+            localGameController.GameEvents = (List<GameEvent> g) => { gameEvents = g; };
+            
             // Act
             localGameController.StartGamePlay();
 
             // Assert
-            var expected = new Dictionary<Guid, ResourceCollection[]>
-            {
-                { firstOpponent.Id, new [] { new ResourceCollection(18, ResourceClutch.OneOre) } },
-                { secondOpponent.Id, new [] { new ResourceCollection(25, ResourceClutch.OneLumber), new ResourceCollection(35, ResourceClutch.OneLumber) } },
-                { thirdOpponent.Id, new [] { new ResourceCollection(31, ResourceClutch.OneOre) } },
-            };
+            gameEvents.Count.ShouldBe(3);
+            gameEvents.ShouldContain(new ResourcesCollectedEvent(firstOpponent.Id, new[] { new ResourceCollection(FirstSettlementOneLocation, ResourceClutch.OneOre) }));
+            gameEvents.ShouldContain(new ResourcesCollectedEvent(secondOpponent.Id, new[] { new ResourceCollection(SecondSettlementOneLocation, ResourceClutch.OneLumber), new ResourceCollection(SecondSettlementTwoLocation, ResourceClutch.OneLumber) }));
+            gameEvents.ShouldContain(new ResourcesCollectedEvent(thirdOpponent.Id, new[] { new ResourceCollection(ThirdSettlementOneLocation, ResourceClutch.OneOre) }));
 
-            diceRoll.ShouldBe(6u);
-
-            collectedResources.ShouldNotBeNull();
-            collectedResources.ShouldContainExact(expected);
-
+            // Collected at turn start
             player.ResourcesCount.ShouldBe(0);
             firstOpponent.ResourcesCount.ShouldBe(1);
-            firstOpponent.OreCount.ShouldBe(1); // Collected at turn start
+            firstOpponent.OreCount.ShouldBe(1); 
             secondOpponent.ResourcesCount.ShouldBe(2);
-            secondOpponent.LumberCount.ShouldBe(2); // 2 collected at turn start
+            secondOpponent.LumberCount.ShouldBe(2);
             thirdOpponent.ResourcesCount.ShouldBe(1);
-            thirdOpponent.OreCount.ShouldBe(1); // Collected at turn start
+            thirdOpponent.OreCount.ShouldBe(1);
         }
 
         [Test]
@@ -1331,56 +1318,28 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
             LocalGameControllerTestSetup.LaunchGameAndCompleteSetup(localGameController);
             testInstances.Dice.AddSequence(new uint[] { 3, 8, 8, 8, 6 });
 
-            TurnToken firstTurnToken = null;
-            TurnToken secondTurnToken = null;
-            localGameController.StartPlayerTurnEvent = (TurnToken t) =>
-            {
-                if (firstTurnToken == null)
-                {
-                    firstTurnToken = t;
-                }
-                else if (secondTurnToken == null)
-                {
-                    secondTurnToken = t;
-                }
-                else
-                {
-                    throw new Exception("Did not expect to start a third turn");
-                }
-            };
+            TurnToken turnToken = null;
+            localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
+
+            List<GameEvent> gameEvents = null;
+            localGameController.GameEvents = (List<GameEvent> g) => { gameEvents = g; };
 
             localGameController.StartGamePlay();
 
-            Dictionary<Guid, ResourceCollection[]> collectedResources = null;
-            localGameController.ResourcesCollectedEvent = (Dictionary<Guid, ResourceCollection[]> c) => { collectedResources = c; };
-
-            uint diceRoll = 0;
-            localGameController.DiceRollEvent = (uint d1, uint d2) => { diceRoll = d1 + d2; };
-
             // Act
-            localGameController.EndTurn(firstTurnToken);
+            localGameController.EndTurn(turnToken);
 
             // Assert
-            var expected = new Dictionary<Guid, ResourceCollection[]>
-            {
-                { firstOpponent.Id, new [] { new ResourceCollection(18, ResourceClutch.OneOre) } },
-                { secondOpponent.Id, new [] { new ResourceCollection(25, ResourceClutch.OneLumber), new ResourceCollection(35, ResourceClutch.OneLumber) } },
-                { thirdOpponent.Id, new [] { new ResourceCollection(31, ResourceClutch.OneOre) } },
-            };
-
-            diceRoll.ShouldBe(6u);
-
-            collectedResources.ShouldNotBeNull();
-            collectedResources.ShouldContainExact(expected);
+            gameEvents.Count.ShouldBe(3);
+            gameEvents.ShouldContain(new ResourcesCollectedEvent(firstOpponent.Id, new[] { new ResourceCollection(FirstSettlementOneLocation, ResourceClutch.OneOre) }));
+            gameEvents.ShouldContain(new ResourcesCollectedEvent(secondOpponent.Id, new[] { new ResourceCollection(SecondSettlementOneLocation, ResourceClutch.OneLumber), new ResourceCollection(SecondSettlementTwoLocation, ResourceClutch.OneLumber) }));
+            gameEvents.ShouldContain(new ResourcesCollectedEvent(thirdOpponent.Id, new[] { new ResourceCollection(ThirdSettlementOneLocation, ResourceClutch.OneOre) }));
 
             player.ResourcesCount.ShouldBe(0);
-
             firstOpponent.ResourcesCount.ShouldBe(1);
             firstOpponent.OreCount.ShouldBe(1);
-
             secondOpponent.ResourcesCount.ShouldBe(2);
             secondOpponent.LumberCount.ShouldBe(2);
-
             thirdOpponent.ResourcesCount.ShouldBe(1);
             thirdOpponent.OreCount.ShouldBe(1);
         }

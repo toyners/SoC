@@ -114,7 +114,7 @@ namespace Jabberwocky.SoC.Library
         public Action<ClientAccount> LoggedInEvent { get; set; }
         public Action<Guid, Guid> LongestRoadBuiltEvent { get; set; }
         public Action<List<GameEvent>> GameEvents { get; set; }
-        public Action<Dictionary<Guid, ResourceCollection[]>> ResourcesCollectedEvent { get; set; }
+        //public Action<Dictionary<Guid, ResourceCollection[]>> ResourcesCollectedEvent { get; set; }
         public Action<ResourceUpdate> ResourcesLostEvent { get; set; }
         public Action<ResourceTransactionList> ResourcesTransferredEvent { get; set; }
         public Action<PlayerDataBase> RoadSegmentBuiltEvent { get; set; }
@@ -1114,7 +1114,8 @@ namespace Jabberwocky.SoC.Library
                     player.AddResources(resourceCollection.Resources);
                 }
 
-                this.GameEvents?.Invoke(new List<GameEvent> { new ResourcesCollectedEvent(kv.Key, kv.Value) });
+                var resourcesCollectedEvent = new ResourcesCollectedEvent(kv.Key, kv.Value);
+                this.GameEvents?.Invoke(new List<GameEvent> { resourcesCollectedEvent });
             }
         }
 

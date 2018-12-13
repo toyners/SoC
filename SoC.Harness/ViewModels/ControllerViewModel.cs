@@ -268,7 +268,7 @@ namespace SoC.Harness.ViewModels
             }
         }
 
-        private void ResourcesCollectedEventHandler(Dictionary<Guid, ResourceCollection[]> resources)
+        /*private void ResourcesCollectedEventHandler(Dictionary<Guid, ResourceCollection[]> resources)
         {
             foreach (var entry in resources)
             {
@@ -281,7 +281,7 @@ namespace SoC.Harness.ViewModels
             }
 
             this.StartPhase();
-        }
+        }*/
 
         private void ResourcesLostEventHandler(ResourceUpdate resourceUpdate)
         {
