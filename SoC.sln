@@ -48,6 +48,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SoC.Test", "SoC.Test\SoC.Te
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SoC.Harness", "SoC.Harness\SoC.Harness.csproj", "{AEF9C361-8D0E-4957-A379-0A1EAD19100F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SoC.Library.ScenarioTests", "SoC.Library.ScenarioTests\SoC.Library.ScenarioTests.csproj", "{6249F3D5-65EF-439C-87FE-EB60A2C4F613}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -102,6 +104,10 @@ Global
 		{AEF9C361-8D0E-4957-A379-0A1EAD19100F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AEF9C361-8D0E-4957-A379-0A1EAD19100F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AEF9C361-8D0E-4957-A379-0A1EAD19100F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6249F3D5-65EF-439C-87FE-EB60A2C4F613}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6249F3D5-65EF-439C-87FE-EB60A2C4F613}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6249F3D5-65EF-439C-87FE-EB60A2C4F613}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6249F3D5-65EF-439C-87FE-EB60A2C4F613}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
