@@ -36,6 +36,11 @@ namespace SoC.Library.ScenarioTests
 
         private Guid mainPlayerId;
         private readonly List<Guid> opponentPlayerId = new List<Guid>(3);
+        private readonly MockPlayerPool mockPlayerPool = new MockPlayerPool();
+        private PlaceInfrastructureInstruction firstPlaceInfrastructureInstruction;
+        private PlaceInfrastructureInstruction secondPlaceInfrastructureInstruction;
+        private readonly List<PlayerTurnSetupAction> FirstRoundSetupActions = new List<PlayerTurnSetupAction>(4);
+        private readonly List<PlayerTurnSetupAction> SecondRoundSetupActions = new List<PlayerTurnSetupAction>(4);
         private readonly Dictionary<EventTypes, Delegate> eventHandlers;
         private readonly List<PlayerTurn> playerTurns = new List<PlayerTurn>();
 
@@ -53,7 +58,7 @@ namespace SoC.Library.ScenarioTests
 
         public LocalGameController BuildAndRun()
         {
-            var localGameController = new LocalGameController(null, null);
+            var localGameController = new LocalGameController(null, this.mockPlayerPool);
 
             if (this.eventHandlers != null)
             {
@@ -64,7 +69,6 @@ namespace SoC.Library.ScenarioTests
             localGameController.JoinGame();
             localGameController.LaunchGame();
             localGameController.StartGameSetup();
-            //localGameController.ContinueGameSetup()
 
             return localGameController;
         }
@@ -72,18 +76,32 @@ namespace SoC.Library.ScenarioTests
         public LocalGameControllerScenarioRunner WithMainPlayer(Guid id)
         {
             this.mainPlayerId = id;
+            this.mockPlayerPool.AddPlayer(id, false);
             return this;
         }
 
         public LocalGameControllerScenarioRunner WithComputerPlayer(Guid id)
         {
             this.opponentPlayerId.Add(id);
+            this.mockPlayerPool.AddPlayer(id, true);
             return this;
         }
 
-        public LocalGameControllerScenarioRunner WithPlayerSetup(Guid mainPlayer, uint firstSettlementLocation, uint firstRoadEndLocation, uint secondSettlementLocation, uint secondRoadEndLocation)
+        public LocalGameControllerScenarioRunner WithPlayerSetup(Guid playerId, uint firstSettlementLocation, uint firstRoadEndLocation, uint secondSettlementLocation, uint secondRoadEndLocation)
         {
-            throw new NotImplementedException();
+            if (playerId == this.mainPlayerId)
+            {
+                this.firstPlaceInfrastructureInstruction = new PlaceInfrastructureInstruction(playerId, firstSettlementLocation, firstRoadEndLocation);
+                this.secondPlaceInfrastructureInstruction = new PlaceInfrastructureInstruction(playerId, secondSettlementLocation, secondRoadEndLocation);
+            }
+            else
+            {
+                this.mockPlayerPool.ComputerPlayers[playerId].AddInstructions(
+                    new PlaceInfrastructureInstruction(playerId, firstSettlementLocation, firstRoadEndLocation),
+                    new PlaceInfrastructureInstruction(playerId, secondSettlementLocation, secondRoadEndLocation));
+            }
+
+            return this;
         }
 
         public LocalGameControllerScenarioRunner WithTurnOrder(Guid mainPlayer, Guid firstOpponent, Guid secondOpponent, Guid thirdOpponent)
@@ -111,5 +129,23 @@ namespace SoC.Library.ScenarioTests
         {
             return this.localGameControllerScenarioBuilder;
         }
+    }
+
+    public class PlayerTurnAction
+    {
+        public readonly Guid Id;
+        public PlayerTurnAction(Guid playerId) => this.Id = playerId;
+    }
+
+    public class PlayerTurnSetupAction : PlayerTurnAction
+    {
+        public readonly uint SettlementLocation;
+        public readonly uint RoadEndLocation;
+        public PlayerTurnSetupAction(Guid playerId, uint settlementLocation, uint roadEndLocation) : base(playerId)
+        {
+            this.SettlementLocation = settlementLocation;
+            this.RoadEndLocation = roadEndLocation;
+        }
+
     }
 }
