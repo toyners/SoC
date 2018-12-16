@@ -1,12 +1,13 @@
 ﻿
 using System;
-using System.Collections.Generic;
-using Jabberwocky.SoC.Library;
+using NUnit.Framework;
 
 namespace SoC.Library.ScenarioTests
 {
+    [TestFixture]
     public class ScenarioTests
     {
+        [Test]
         public void Test()
         {
             var mainPlayerId = Guid.NewGuid();

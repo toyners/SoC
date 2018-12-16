@@ -20,6 +20,7 @@ namespace SoC.Library.ScenarioTests
         private readonly List<PlayerTurn> playerTurns = new List<PlayerTurn>();
         private readonly MockNumberGenerator mockNumberGenerator = new MockNumberGenerator();
         private readonly Dictionary<string, IPlayer> playersByName = new Dictionary<string, IPlayer>();
+        private readonly Dictionary<string, MockComputerPlayer> computerPlayersByName = new Dictionary<string, MockComputerPlayer>();
         private readonly List<IPlayer> players = new List<IPlayer>(4);
 
         private static LocalGameControllerScenarioRunner localGameControllerScenarioBuilder;
@@ -62,19 +63,13 @@ namespace SoC.Library.ScenarioTests
 
         public LocalGameControllerScenarioRunner WithMainPlayer(string name)
         {
-            var player = new MockPlayer(name);
-            this.players.Add(player);
-            this.playersByName.Add(name, player);
-            this.mockPlayerPool.AddPlayer(player);
+            this.CreatePlayer(name, false);
             return this;
         }
 
         public LocalGameControllerScenarioRunner WithComputerPlayer(string name)
         {
-            var player = new MockComputerPlayer(name, this.mockNumberGenerator);
-            this.players.Add(player);
-            this.playersByName.Add(name, player);
-            this.mockPlayerPool.AddPlayer(player);
+            this.CreatePlayer(name, true);
             return this;
         }
 
@@ -87,23 +82,26 @@ namespace SoC.Library.ScenarioTests
             this.players.Add(player);
             this.playersByName.Add(name, player);
             this.mockPlayerPool.AddPlayer(player);
+            if (isComputerPlayer)
+                this.computerPlayersByName.Add(name, (MockComputerPlayer)player);
 
             return player;
         }
 
         public LocalGameControllerScenarioRunner WithPlayerSetup(string playerName, uint firstSettlementLocation, uint firstRoadEndLocation, uint secondSettlementLocation, uint secondRoadEndLocation)
         {
-            /*if (playerId == this.pl)
+            if (playerName == this.players[0].Name)
             {
-                this.playerInstructions.Enqueue(new PlaceInfrastructureInstruction(playerId, firstSettlementLocation, firstRoadEndLocation));
-                this.playerInstructions.Enqueue(new PlaceInfrastructureInstruction(playerId, secondSettlementLocation, secondRoadEndLocation));
+                this.playerInstructions.Enqueue(new PlaceInfrastructureInstruction(this.players[0].Id, firstSettlementLocation, firstRoadEndLocation));
+                this.playerInstructions.Enqueue(new PlaceInfrastructureInstruction(this.players[0].Id, secondSettlementLocation, secondRoadEndLocation));
             }
             else
             {
-                this.mockPlayerPool.ComputerPlayers[playerId].AddInstructions(
-                    new PlaceInfrastructureInstruction(playerId, firstSettlementLocation, firstRoadEndLocation),
-                    new PlaceInfrastructureInstruction(playerId, secondSettlementLocation, secondRoadEndLocation));
-            }*/
+                var computerPlayer = this.computerPlayersByName[playerName];
+                computerPlayer.AddInstructions(
+                    new PlaceInfrastructureInstruction(computerPlayer.Id, firstSettlementLocation, firstRoadEndLocation),
+                    new PlaceInfrastructureInstruction(computerPlayer.Id, secondSettlementLocation, secondRoadEndLocation));
+            }
 
             return this;
         }

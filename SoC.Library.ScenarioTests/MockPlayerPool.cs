@@ -11,7 +11,7 @@ namespace SoC.Library.ScenarioTests
     public class MockPlayerPool : IPlayerPool
     {
         private readonly Queue<IPlayer> players = new Queue<IPlayer>();
-        public Dictionary<Guid, MockComputerPlayer> ComputerPlayers = new Dictionary<Guid, MockComputerPlayer>(); 
+        //public Dictionary<Guid, MockComputerPlayer> ComputerPlayers = new Dictionary<Guid, MockComputerPlayer>(); 
 
         public IPlayer CreateComputerPlayer(GameBoard gameBoard, INumberGenerator numberGenerator)
         {
@@ -46,8 +46,6 @@ namespace SoC.Library.ScenarioTests
         internal void AddPlayer(IPlayer player)
         {
             this.players.Enqueue(player);
-            if (player is MockComputerPlayer)
-                this.ComputerPlayers.Add(player.Id, (MockComputerPlayer)player);
         }
     }
 }
