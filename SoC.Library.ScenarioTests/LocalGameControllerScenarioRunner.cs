@@ -130,7 +130,18 @@ namespace SoC.Library.ScenarioTests
 
         public PlayerTurn DuringPlayerTurn(string playerName, uint dice1, uint dice2)
         {
-            var playerTurn = new PlayerTurn(this);
+            PlayerTurn playerTurn = null;
+
+            if (playerName == this.players[0].Name)
+            {
+                var player = this.players[0];
+                playerTurn = new PlayerTurn(this, player);
+            }
+            else
+            {
+                var computerPlayer = this.computerPlayersByName[playerName];
+                playerTurn = new PlayerTurn(this, computerPlayer);
+            }
 
             this.playerTurns.Add(playerTurn);
 

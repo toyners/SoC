@@ -1,5 +1,6 @@
 ﻿
 using System;
+using Jabberwocky.SoC.Library.Interfaces;
 using NUnit.Framework;
 
 namespace SoC.Library.ScenarioTests
@@ -10,20 +11,43 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void Test()
         {
-            var mainPlayerId = Guid.NewGuid();
-            var firstOpponentId = Guid.NewGuid();
-            var secondOpponentId = Guid.NewGuid();
-            var thirdOpponentId = Guid.NewGuid();
+            var mainPlayerName = "Player";
+            var firstOpponentName = "Barbara";
+            var secondOpponentName = "Charlie";
+            var thirdOpponentName = "Dana";
+
+            const uint MainPlayerFirstSettlementLocation = 12u;
+            const uint FirstOpponentFirstSettlementLocation = 18u;
+            const uint SecondOpponentFirstSettlementLocation = 25u;
+            const uint ThirdOpponentFirstSettlementLocation = 31u;
+
+            const uint ThirdOpponentSecondSettlementLocation = 33u;
+            const uint SecondOpponentSecondSettlementLocation = 35u;
+            const uint FirstOpponentSecondSettlementLocation = 43u;
+            const uint MainPlayerSecondSettlementLocation = 40u;
+
+            const uint MainPlayerFirstRoadEnd = 4;
+            const uint FirstOpponentFirstRoadEnd = 17;
+            const uint SecondOpponentFirstRoadEnd = 15;
+            const uint ThirdOpponentFirstRoadEnd = 30;
+
+            const uint ThirdOpponentSecondRoadEnd = 32;
+            const uint SecondOpponentSecondRoadEnd = 24;
+            const uint FirstOpponentSecondRoadEnd = 44;
+            const uint MainPlayerSecondRoadEnd = 39;
+
             var localGameController = LocalGameControllerScenarioRunner.LocalGameController()
-                .WithMainPlayer("Player")
-                .WithComputerPlayer("Barbara").WithComputerPlayer("Charlie").WithComputerPlayer("Dana")
-                .WithPlayerSetup("Player", 0u, 1u, 2u, 3u)
-                .WithPlayerSetup("Barbara", 0u, 1u, 2u, 3u)
-                .WithPlayerSetup("Charlie", 0u, 1u, 2u, 3u)
-                .WithPlayerSetup("Dana", 0u, 1u, 2u, 3u)
-                .WithTurnOrder("Player", "Barbara", "Charlie", "Dana")
-                .DuringPlayerTurn("Player", 1, 1).EndTurn()
-                .DuringPlayerTurn("Barbara", 2, 2).EndTurn()
+                .WithMainPlayer(mainPlayerName)
+                .WithComputerPlayer(firstOpponentName).WithComputerPlayer(secondOpponentName).WithComputerPlayer(thirdOpponentName)
+                .WithPlayerSetup(mainPlayerName, MainPlayerFirstSettlementLocation, MainPlayerFirstRoadEnd, MainPlayerSecondSettlementLocation, MainPlayerSecondRoadEnd)
+                .WithPlayerSetup(firstOpponentName, FirstOpponentFirstSettlementLocation, FirstOpponentFirstRoadEnd, FirstOpponentSecondSettlementLocation, FirstOpponentSecondRoadEnd)
+                .WithPlayerSetup(secondOpponentName, SecondOpponentFirstSettlementLocation, SecondOpponentFirstRoadEnd, SecondOpponentSecondSettlementLocation, SecondOpponentSecondRoadEnd)
+                .WithPlayerSetup(thirdOpponentName, ThirdOpponentFirstSettlementLocation, ThirdOpponentFirstRoadEnd, ThirdOpponentSecondSettlementLocation, ThirdOpponentSecondRoadEnd)
+                .WithTurnOrder(mainPlayerName, firstOpponentName, secondOpponentName, thirdOpponentName)
+                .DuringPlayerTurn(mainPlayerName, 1, 1).EndTurn()
+                .DuringPlayerTurn(firstOpponentName, 2, 2).EndTurn()
+                .DuringPlayerTurn(secondOpponentName, 1, 1).EndTurn()
+                .DuringPlayerTurn(thirdOpponentName, 2, 2).EndTurn()
                 .BuildAndRun();
         }
     }
@@ -32,8 +56,13 @@ namespace SoC.Library.ScenarioTests
     internal class PlayerTurn
     {
         private readonly LocalGameControllerScenarioRunner localGameControllerScenarioBuilder;
+        private readonly IPlayer player;
 
-        public PlayerTurn(LocalGameControllerScenarioRunner localGameControllerScenarioBuilder) => this.localGameControllerScenarioBuilder = localGameControllerScenarioBuilder;
+        public PlayerTurn(LocalGameControllerScenarioRunner localGameControllerScenarioBuilder, IPlayer player)
+        {
+            this.localGameControllerScenarioBuilder = localGameControllerScenarioBuilder;
+            this.player = player;
+        }
 
         public LocalGameControllerScenarioRunner EndTurn()
         {
