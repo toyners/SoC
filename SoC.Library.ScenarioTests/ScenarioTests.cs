@@ -44,7 +44,7 @@ namespace SoC.Library.ScenarioTests
                 .WithPlayerSetup(secondOpponentName, SecondOpponentFirstSettlementLocation, SecondOpponentFirstRoadEnd, SecondOpponentSecondSettlementLocation, SecondOpponentSecondRoadEnd)
                 .WithPlayerSetup(thirdOpponentName, ThirdOpponentFirstSettlementLocation, ThirdOpponentFirstRoadEnd, ThirdOpponentSecondSettlementLocation, ThirdOpponentSecondRoadEnd)
                 .WithTurnOrder(mainPlayerName, firstOpponentName, secondOpponentName, thirdOpponentName)
-                .DuringPlayerTurn(mainPlayerName, 1, 1).EndTurn()
+                .DuringPlayerTurn(mainPlayerName, 4, 4).EndTurn()
                 .DuringPlayerTurn(firstOpponentName, 2, 2).EndTurn()
                 .DuringPlayerTurn(secondOpponentName, 1, 1).EndTurn()
                 .DuringPlayerTurn(thirdOpponentName, 2, 2).EndTurn()
