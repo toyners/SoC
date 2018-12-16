@@ -1,12 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using Jabberwocky.SoC.Library;
+using Jabberwocky.SoC.Library.Interfaces;
 
 namespace SoC.Library.ScenarioTests
 {
     public class MockComputerPlayer : ComputerPlayer
     {
         private readonly List<Instruction> instructions = new List<Instruction>();
+
+        public MockComputerPlayer(string name, INumberGenerator numberGenerator) : base(name, numberGenerator) { }
+
         public void AddInstructions(params Instruction[] instructions)
         {
             this.instructions.AddRange(instructions);

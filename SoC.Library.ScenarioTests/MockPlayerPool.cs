@@ -10,7 +10,7 @@ namespace SoC.Library.ScenarioTests
 {
     public class MockPlayerPool : IPlayerPool
     {
-        private Queue<IPlayer> players = new Queue<IPlayer>();
+        private readonly Queue<IPlayer> players = new Queue<IPlayer>();
         public Dictionary<Guid, MockComputerPlayer> ComputerPlayers = new Dictionary<Guid, MockComputerPlayer>(); 
 
         public IPlayer CreateComputerPlayer(GameBoard gameBoard, INumberGenerator numberGenerator)
@@ -43,14 +43,11 @@ namespace SoC.Library.ScenarioTests
             throw new NotImplementedException();
         }
 
-        public void AddPlayer(Guid id, bool isComputerPlayer)
+        internal void AddPlayer(IPlayer player)
         {
-            if (isComputerPlayer)
-            {
-                var mockComputerPlayer = new MockComputerPlayer();
-                this.ComputerPlayers.Add(id, mockComputerPlayer);
-                this.players.Enqueue(mockComputerPlayer);
-            }
+            this.players.Enqueue(player);
+            if (player is MockComputerPlayer)
+                this.ComputerPlayers.Add(player.Id, (MockComputerPlayer)player);
         }
     }
 }

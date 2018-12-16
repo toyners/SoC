@@ -37,6 +37,11 @@ namespace Jabberwocky.SoC.Library
             this.decisionMaker = new DecisionMaker(this.numberGenerator);
         }
 
+        public ComputerPlayer(string name, INumberGenerator numberGenerator) : base(name)
+        {
+            this.numberGenerator = numberGenerator;
+            this.decisionMaker = new DecisionMaker(this.numberGenerator);
+        }
         public ComputerPlayer(PlayerModel playerModel, INumberGenerator numberGenerator) : base(playerModel)
         {
             this.numberGenerator = numberGenerator;
