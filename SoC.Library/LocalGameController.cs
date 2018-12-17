@@ -550,9 +550,9 @@ namespace Jabberwocky.SoC.Library
             }
 
             // Set the order for the main game loop
-            this.players = PlayerTurnOrderCreator.Create(this.players, this.numberGenerator);
-            var playerData = this.CreatePlayerData();
-            this.TurnOrderFinalisedEvent?.Invoke(playerData);
+            //this.players = PlayerTurnOrderCreator.Create(this.players, this.numberGenerator);
+            //var playerData = this.CreatePlayerData();
+            //this.TurnOrderFinalisedEvent?.Invoke(playerData);
             this.GamePhase = GamePhases.StartGamePlay;
         }
 

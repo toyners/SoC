@@ -15,7 +15,7 @@ namespace SoC.Library.ScenarioTests
 
         public IPlayer CreateComputerPlayer(GameBoard gameBoard, INumberGenerator numberGenerator)
         {
-            throw new NotImplementedException();
+            return players.Dequeue();
         }
 
         public IPlayer CreateComputerPlayer(IGameDataSection<GameDataSectionKeys, GameDataValueKeys, ResourceTypes> data, GameBoard board, INumberGenerator numberGenerator)
@@ -25,7 +25,7 @@ namespace SoC.Library.ScenarioTests
 
         public IPlayer CreatePlayer()
         {
-            throw new NotImplementedException();
+            return players.Dequeue();
         }
 
         public IPlayer CreatePlayer(XmlReader reader)
@@ -43,7 +43,7 @@ namespace SoC.Library.ScenarioTests
             throw new NotImplementedException();
         }
 
-        internal void AddPlayer(IPlayer player)
+        public void AddPlayer(IPlayer player)
         {
             this.players.Enqueue(player);
         }

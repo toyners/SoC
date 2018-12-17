@@ -94,6 +94,7 @@ namespace SoC.Library.ScenarioTests
 
             var expectedDiceRollEvent = new DiceRollEvent(player.Id, dice1, dice2);
             this.expectedEvents.Add(expectedDiceRollEvent);
+            this.RegisterEventHandler(EventTypes.DiceRollEvent);
 
             return this;
         }
@@ -107,7 +108,7 @@ namespace SoC.Library.ScenarioTests
                         (uint dice1, uint dice2) =>
                         {
                             this.actualEvents.Add(new DiceRollEvent(Guid.Empty, dice1, dice2));
-                            var customHandler = this.eventHandlers[EventTypes.DiceRollEvent];
+                            var customHandler = this.eventHandlers?[EventTypes.DiceRollEvent];
                             if (customHandler != null)
                                 ((Action<uint, uint>)customHandler).Invoke(dice1, dice2);
                         };
@@ -152,7 +153,7 @@ namespace SoC.Library.ScenarioTests
             else
             {
                 var computerPlayer = this.computerPlayersByName[playerName];
-                computerPlayer.AddInstructions(
+                computerPlayer.AddSetupInstructions(
                     new PlaceInfrastructureInstruction(computerPlayer.Id, firstSettlementLocation, firstRoadEndLocation),
                     new PlaceInfrastructureInstruction(computerPlayer.Id, secondSettlementLocation, secondRoadEndLocation));
             }

@@ -48,11 +48,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Instruction.cs" />
     <Compile Include="LocalGameControllerScenarioRunner.cs" />
     <Compile Include="MockComputerPlayer.cs" />
     <Compile Include="MockNumberGenerator.cs" />
     <Compile Include="MockPlayer.cs" />
     <Compile Include="MockPlayerPool.cs" />
+    <Compile Include="PlaceInfrastructureInstruction.cs" />
     <Compile Include="ScenarioTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
