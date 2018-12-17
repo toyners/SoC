@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Jabberwocky.SoC.Library;
+using Jabberwocky.SoC.Library.GameEvents;
 using Jabberwocky.SoC.Library.Interfaces;
 
 namespace SoC.Library.ScenarioTests
@@ -16,12 +17,13 @@ namespace SoC.Library.ScenarioTests
         private readonly Queue<Instruction> playerInstructions = new Queue<Instruction>();
         private readonly List<PlayerTurnSetupAction> FirstRoundSetupActions = new List<PlayerTurnSetupAction>(4);
         private readonly List<PlayerTurnSetupAction> SecondRoundSetupActions = new List<PlayerTurnSetupAction>(4);
-        private readonly Dictionary<EventTypes, Delegate> eventHandlers;
+        private Dictionary<EventTypes, Delegate> eventHandlers;
         private readonly List<PlayerTurn> playerTurns = new List<PlayerTurn>();
         private readonly MockNumberGenerator mockNumberGenerator = new MockNumberGenerator();
         private readonly Dictionary<string, IPlayer> playersByName = new Dictionary<string, IPlayer>();
         private readonly Dictionary<string, MockComputerPlayer> computerPlayersByName = new Dictionary<string, MockComputerPlayer>();
         private readonly List<IPlayer> players = new List<IPlayer>(4);
+        private LocalGameController localGameController = null;
 
         private static LocalGameControllerScenarioRunner localGameControllerScenarioBuilder;
 
@@ -35,30 +37,82 @@ namespace SoC.Library.ScenarioTests
             this.eventHandlers = eventHandlers;
         }
 
-        public LocalGameController BuildAndRun()
+        public LocalGameControllerScenarioRunner Build()
         {
-            var localGameController = new LocalGameController(null, this.mockPlayerPool);
+            this.localGameController = new LocalGameController(this.mockNumberGenerator, this.mockPlayerPool);
+            return this;
+        }
 
-            if (this.eventHandlers != null)
-            {
-                if (this.eventHandlers.TryGetValue(EventTypes.DiceRollEvent, out var eventHandler))
-                    localGameController.DiceRollEvent = (Action<uint, uint>)eventHandler;
-            }
-
-            localGameController.JoinGame();
-            localGameController.LaunchGame();
-            localGameController.StartGameSetup();
+        public LocalGameController Run()
+        {
+            this.localGameController.JoinGame();
+            this.localGameController.LaunchGame();
+            this.localGameController.StartGameSetup();
 
             var placeInfrastructureInstruction = (PlaceInfrastructureInstruction)this.playerInstructions.Dequeue();
-            localGameController.ContinueGameSetup(placeInfrastructureInstruction.SettlementLocation, placeInfrastructureInstruction.RoadEndLocation);
+            this.localGameController.ContinueGameSetup(placeInfrastructureInstruction.SettlementLocation, placeInfrastructureInstruction.RoadEndLocation);
 
             placeInfrastructureInstruction = (PlaceInfrastructureInstruction)this.playerInstructions.Dequeue();
-            localGameController.CompleteGameSetup(placeInfrastructureInstruction.SettlementLocation, placeInfrastructureInstruction.RoadEndLocation);
+            this.localGameController.CompleteGameSetup(placeInfrastructureInstruction.SettlementLocation, placeInfrastructureInstruction.RoadEndLocation);
 
-            localGameController.FinalisePlayerTurnOrder();
-            localGameController.StartGamePlay();
+            this.localGameController.FinalisePlayerTurnOrder();
+            this.localGameController.StartGamePlay();
 
-            return localGameController;
+            var actualEventIndex = 0;
+            for (var index = 0; index < this.expectedEvents.Count; index++)
+            {
+                var expectedEvent = this.expectedEvents[index];
+
+                var foundEvent = false;
+                for (; actualEventIndex < this.actualEvents.Count; actualEventIndex++)
+                {
+                    if (this.actualEvents[actualEventIndex].Equals(expectedEvent))
+                    {
+                        foundEvent = true;
+                        break;
+                    }
+                }
+
+                if (!foundEvent)
+                    throw new NotImplementedException();
+            }
+
+            return this.localGameController;
+        }
+
+        List<GameEvent> expectedEvents = null;
+        public LocalGameControllerScenarioRunner ExpectingEvents()
+        {
+            this.expectedEvents = new List<GameEvent>();
+            this.actualEvents = new List<GameEvent>();
+            return this;
+        }
+
+        public LocalGameControllerScenarioRunner DiceRollEvent(string playerName, uint dice1, uint dice2)
+        {
+            var player = this.playersByName[playerName];
+
+            var expectedDiceRollEvent = new DiceRollEvent(player.Id, dice1, dice2);
+            this.expectedEvents.Add(expectedDiceRollEvent);
+
+            return this;
+        }
+
+        List<GameEvent> actualEvents = null;
+        private void RegisterEventHandler(EventTypes eventType)
+        {
+            switch (eventType)
+            {
+                case EventTypes.DiceRollEvent: this.localGameController.DiceRollEvent =
+                        (uint dice1, uint dice2) =>
+                        {
+                            this.actualEvents.Add(new DiceRollEvent(Guid.Empty, dice1, dice2));
+                            var customHandler = this.eventHandlers[EventTypes.DiceRollEvent];
+                            if (customHandler != null)
+                                ((Action<uint, uint>)customHandler).Invoke(dice1, dice2);
+                        };
+                        break;
+            }
         }
 
         public LocalGameControllerScenarioRunner WithMainPlayer(string name)
@@ -130,6 +184,8 @@ namespace SoC.Library.ScenarioTests
 
         public PlayerTurn DuringPlayerTurn(string playerName, uint dice1, uint dice2)
         {
+            this.mockNumberGenerator.AddTwoDiceRoll(dice1, dice2);
+
             PlayerTurn playerTurn = null;
 
             if (playerName == this.players[0].Name)

@@ -48,7 +48,13 @@ namespace SoC.Library.ScenarioTests
                 .DuringPlayerTurn(firstOpponentName, 2, 2).EndTurn()
                 .DuringPlayerTurn(secondOpponentName, 1, 1).EndTurn()
                 .DuringPlayerTurn(thirdOpponentName, 2, 2).EndTurn()
-                .BuildAndRun();
+                .Build()
+                .ExpectingEvents()
+                .DiceRollEvent(mainPlayerName, 4, 4)
+                .DiceRollEvent(firstOpponentName, 2, 2)
+                .DiceRollEvent(secondOpponentName, 1, 1)
+                .DiceRollEvent(thirdOpponentName, 2, 2)
+                .Run();
         }
     }
     
