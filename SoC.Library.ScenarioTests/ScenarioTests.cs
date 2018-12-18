@@ -58,16 +58,12 @@ namespace SoC.Library.ScenarioTests
                 .DuringPlayerTurn(MainPlayerName, 1, 5).EndTurn()
                 .Build()
                 .ExpectingEvents()
-                .StartResourcesCollectedEvent(FirstOpponentName)
-                    .AddResourceCollection(FirstOpponentFirstSettlementLocation, ResourceClutch.OneOre)
-                    .FinishResourcesCollectedEvent()
+                .ResourcesCollectedEvent(FirstOpponentName, FirstOpponentFirstSettlementLocation, ResourceClutch.OneOre)
                 .StartResourcesCollectedEvent(SecondOpponentName)
                     .AddResourceCollection(SecondOpponentFirstSettlementLocation, ResourceClutch.OneLumber)
                     .AddResourceCollection(SecondOpponentSecondSettlementLocation, ResourceClutch.OneLumber)
                     .FinishResourcesCollectedEvent()
-                .StartResourcesCollectedEvent(ThirdOpponentName)
-                    .AddResourceCollection(ThirdOpponentFirstSettlementLocation, ResourceClutch.OneOre)
-                    .FinishResourcesCollectedEvent()
+                .ResourcesCollectedEvent(ThirdOpponentName, ThirdOpponentFirstSettlementLocation, ResourceClutch.OneOre)
                 .Run();
         }
 

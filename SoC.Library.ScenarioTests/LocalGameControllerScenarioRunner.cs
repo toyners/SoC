@@ -10,9 +10,12 @@ namespace SoC.Library.ScenarioTests
     {
         internal enum EventTypes
         {
-            DiceRollEvent
+            DiceRollEvent,
+            ResourcesCollectedEvent
         }
 
+        #region Fields
+        private static LocalGameControllerScenarioRunner localGameControllerScenarioBuilder;
         private readonly MockPlayerPool mockPlayerPool = new MockPlayerPool();
         private readonly Queue<Instruction> playerInstructions = new Queue<Instruction>();
         private readonly List<PlayerTurnSetupAction> FirstRoundSetupActions = new List<PlayerTurnSetupAction>(4);
@@ -24,23 +27,53 @@ namespace SoC.Library.ScenarioTests
         private readonly Dictionary<string, MockComputerPlayer> computerPlayersByName = new Dictionary<string, MockComputerPlayer>();
         private readonly List<IPlayer> players = new List<IPlayer>(4);
         private LocalGameController localGameController = null;
+        Queue<GameEvent> expectedEvents = null;
+        List<GameEvent> actualEvents = null;
+        #endregion
 
-        private static LocalGameControllerScenarioRunner localGameControllerScenarioBuilder;
-
-        public static LocalGameControllerScenarioRunner LocalGameController(Dictionary<EventTypes, Delegate> eventHandlers = null)
-        {
-            return localGameControllerScenarioBuilder = new LocalGameControllerScenarioRunner(eventHandlers);
-        }
-
+        #region Construction
         private LocalGameControllerScenarioRunner(Dictionary<EventTypes, Delegate> eventHandlers)
         {
             this.eventHandlers = eventHandlers;
         }
+        #endregion
 
-        public LocalGameControllerScenarioRunner Build()
+        internal static LocalGameControllerScenarioRunner LocalGameController(Dictionary<EventTypes, Delegate> eventHandlers = null)
+        {
+            return localGameControllerScenarioBuilder = new LocalGameControllerScenarioRunner(eventHandlers);
+        }
+
+        internal LocalGameControllerScenarioRunner Build()
         {
             this.localGameController = new LocalGameController(this.mockNumberGenerator, this.mockPlayerPool);
+            this.localGameController.GameEvents = this.GameEventsHandler;
             return this;
+        }
+
+        internal LocalGameControllerScenarioRunner DiceRollEvent(string playerName, uint dice1, uint dice2)
+        {
+            var player = this.playersByName[playerName];
+
+            var expectedDiceRollEvent = new DiceRollEvent(player.Id, dice1, dice2);
+            this.expectedEvents.Enqueue(expectedDiceRollEvent);
+            this.RegisterEventHandler(EventTypes.DiceRollEvent);
+
+            return this;
+        }
+
+        internal LocalGameControllerScenarioRunner ResourcesCollectedEvent(string playerName, uint location, ResourceClutch resourceClutch)
+        {
+            var player = this.playersByName[playerName];
+
+            this.ResourcesCollectedEvent(player.Id, new[] { new ResourceCollection(location, resourceClutch) });
+            return this;
+        }
+
+        internal void ResourcesCollectedEvent(Guid playerId, ResourceCollection[] resourceCollection)
+        {
+            var expectedDiceRollEvent = new ResourcesCollectedEvent(playerId, resourceCollection);
+            this.expectedEvents.Enqueue(expectedDiceRollEvent);
+            this.RegisterEventHandler(EventTypes.ResourcesCollectedEvent);
         }
 
         public LocalGameController Run()
@@ -58,8 +91,9 @@ namespace SoC.Library.ScenarioTests
             this.localGameController.StartGamePlay();
 
             var actualEventIndex = 0;
-            foreach (var expectedEvent in this.expectedEvents)
+            while (this.expectedEvents.Count > 0)
             {
+                var expectedEvent = this.expectedEvents.Dequeue();
                 var foundEvent = false;
                 for (; actualEventIndex < this.actualEvents.Count; actualEventIndex++)
                 {
@@ -77,48 +111,59 @@ namespace SoC.Library.ScenarioTests
             return this.localGameController;
         }
 
-        List<ResourceCollectedEventGroup> eventGroups;
         public ResourceCollectedEventGroup StartResourcesCollectedEvent(string playerName)
         {
             var player = this.playersByName[playerName];
             var eventGroup = new ResourceCollectedEventGroup(player.Id, this);
-            this.eventGroups.Add(eventGroup);
             return eventGroup;
         }
 
-        List<GameEvent> expectedEvents = null;
         public LocalGameControllerScenarioRunner ExpectingEvents()
         {
-            this.expectedEvents = new List<GameEvent>();
+            this.expectedEvents = new Queue<GameEvent>();
             this.actualEvents = new List<GameEvent>();
             return this;
         }
 
-        public LocalGameControllerScenarioRunner DiceRollEvent(string playerName, uint dice1, uint dice2)
-        {
-            var player = this.playersByName[playerName];
-
-            var expectedDiceRollEvent = new DiceRollEvent(player.Id, dice1, dice2);
-            this.expectedEvents.Add(expectedDiceRollEvent);
-            this.RegisterEventHandler(EventTypes.DiceRollEvent);
-
-            return this;
-        }
-
-        List<GameEvent> actualEvents = null;
         private void RegisterEventHandler(EventTypes eventType)
         {
             switch (eventType)
             {
-                case EventTypes.DiceRollEvent: this.localGameController.DiceRollEvent =
-                        (uint dice1, uint dice2) =>
-                        {
-                            this.actualEvents.Add(new DiceRollEvent(Guid.Empty, dice1, dice2));
-                            var customHandler = this.eventHandlers?[EventTypes.DiceRollEvent];
-                            if (customHandler != null)
-                                ((Action<uint, uint>)customHandler).Invoke(dice1, dice2);
-                        };
-                        break;
+                case EventTypes.DiceRollEvent:
+                {
+                    this.localGameController.DiceRollEvent =
+                    (uint dice1, uint dice2) =>
+                    {
+                        this.actualEvents.Add(new DiceRollEvent(Guid.Empty, dice1, dice2));
+                        var customHandler = this.eventHandlers?[EventTypes.DiceRollEvent];
+                        if (customHandler != null)
+                            ((Action<uint, uint>)customHandler).Invoke(dice1, dice2);
+                    };
+                    break;
+                }
+                case EventTypes.ResourcesCollectedEvent:
+                {
+                    this.ResourcesCollectedEventHandler = 
+                    (ResourcesCollectedEvent r) => 
+                    {
+                        this.actualEvents.Add(r);
+                        var customHandler = this.eventHandlers?[EventTypes.ResourcesCollectedEvent];
+                        if (customHandler != null)
+                            ((Action<ResourcesCollectedEvent>)customHandler).Invoke(r);
+                    };
+                    break;
+                }
+            }
+        }
+
+        private Action<ResourcesCollectedEvent> ResourcesCollectedEventHandler;
+
+        private void GameEventsHandler(List<GameEvent> gameEvents)
+        {
+            foreach (var gameEvent in gameEvents)
+            {
+                if (gameEvent is ResourcesCollectedEvent resourceCollectedEvent)
+                    this.ResourcesCollectedEventHandler?.Invoke(resourceCollectedEvent);
             }
         }
 
@@ -232,6 +277,7 @@ namespace SoC.Library.ScenarioTests
 
         internal LocalGameControllerScenarioRunner FinishResourcesCollectedEvent()
         {
+            this.runner.ResourcesCollectedEvent(this.PlayerId, this.resourceCollectionList.ToArray());
             return this.runner;
         }
     }
