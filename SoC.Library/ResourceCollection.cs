@@ -2,7 +2,9 @@
 namespace Jabberwocky.SoC.Library
 {
     using System;
+    using System.Diagnostics;
 
+    [DebuggerDisplay("Location {Location}, Resources {Resources}")]
     public struct ResourceCollection : IComparable
     {
         public readonly uint Location;
