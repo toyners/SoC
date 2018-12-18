@@ -77,6 +77,11 @@ namespace SoC.Library.ScenarioTests
             return this.localGameController;
         }
 
+        public LocalGameControllerScenarioRunner ResourcesCollectedEvent(string playerName)
+        {
+            return this;
+        }
+
         List<GameEvent> expectedEvents = null;
         public LocalGameControllerScenarioRunner ExpectingEvents()
         {
