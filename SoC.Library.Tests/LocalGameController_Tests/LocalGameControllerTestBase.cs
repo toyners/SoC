@@ -79,7 +79,6 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       localGameController.StartGameSetup();
       localGameController.ContinueGameSetup(MainSettlementOneLocation, MainRoadOneEnd);
       localGameController.CompleteGameSetup(MainSettlementTwoLocation, MainRoadTwoEnd);
-      localGameController.FinalisePlayerTurnOrder();
 
       return localGameController;
     }
@@ -92,7 +91,6 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       localGameController.StartGameSetup();
       localGameController.ContinueGameSetup(MainSettlementOneLocation, MainRoadOneEnd);
       localGameController.CompleteGameSetup(MainSettlementTwoLocation, MainRoadTwoEnd);
-      localGameController.FinalisePlayerTurnOrder();
     }
 
     [Obsolete("Deprecated. Use LocalGameControllerTestCreator class.")]

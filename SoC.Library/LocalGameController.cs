@@ -24,7 +24,6 @@ namespace Jabberwocky.SoC.Library
             StartGameSetup,
             ContinueGameSetup,
             CompleteGameSetup,
-            FinalisePlayerTurnOrder,
             StartGamePlay,
             ContinueGamePlay,
             SetRobberHex,
@@ -114,7 +113,6 @@ namespace Jabberwocky.SoC.Library
         public Action<ClientAccount> LoggedInEvent { get; set; }
         public Action<Guid, Guid> LongestRoadBuiltEvent { get; set; }
         public Action<List<GameEvent>> GameEvents { get; set; }
-        //public Action<Dictionary<Guid, ResourceCollection[]>> ResourcesCollectedEvent { get; set; }
         public Action<ResourceUpdate> ResourcesLostEvent { get; set; }
         public Action<ResourceTransactionList> ResourcesTransferredEvent { get; set; }
         public Action<PlayerDataBase> RoadSegmentBuiltEvent { get; set; }
@@ -292,7 +290,7 @@ namespace Jabberwocky.SoC.Library
             this.CompleteSetupForComputerPlayers(gameEvents);
 
             this.GameEvents?.Invoke(gameEvents);
-            this.GamePhase = GamePhases.FinalisePlayerTurnOrder;
+            this.GamePhase = GamePhases.StartGamePlay;
         }
 
         public void ContinueGamePlay()
@@ -538,23 +536,6 @@ namespace Jabberwocky.SoC.Library
 
             this.CollectResourcesAtStartOfTurn(dice1 + dice2);
         } 
-
-        // 06 Finalise player turn order
-        public void FinalisePlayerTurnOrder()
-        {
-            if (this.GamePhase != GamePhases.FinalisePlayerTurnOrder)
-            {
-                var errorDetails = new ErrorDetails("Cannot call 'FinalisePlayerTurnOrder' until 'CompleteGameSetup' has completed.");
-                this.ErrorRaisedEvent?.Invoke(errorDetails);
-                return;
-            }
-
-            // Set the order for the main game loop
-            //this.players = PlayerTurnOrderCreator.Create(this.players, this.numberGenerator);
-            //var playerData = this.CreatePlayerData();
-            //this.TurnOrderFinalisedEvent?.Invoke(playerData);
-            this.GamePhase = GamePhases.StartGamePlay;
-        }
 
         public uint[] GetNeighbouringLocationsFrom(uint location)
         {

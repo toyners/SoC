@@ -55,7 +55,6 @@ namespace SoC.Library.ScenarioTests
             placeInfrastructureInstruction = (PlaceInfrastructureInstruction)this.playerInstructions.Dequeue();
             this.localGameController.CompleteGameSetup(placeInfrastructureInstruction.SettlementLocation, placeInfrastructureInstruction.RoadEndLocation);
 
-            this.localGameController.FinalisePlayerTurnOrder();
             this.localGameController.StartGamePlay();
 
             var actualEventIndex = 0;

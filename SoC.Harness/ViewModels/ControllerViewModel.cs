@@ -51,7 +51,7 @@ namespace SoC.Harness.ViewModels
         #region Properties
         public string DiceOneImagePath { get; private set; }
         public string DiceTwoImagePath { get; private set; }
-        public bool InGameSetup { get { return this.localGameController.GamePhase < LocalGameController.GamePhases.FinalisePlayerTurnOrder; }}
+        public bool InGameSetup { get { return this.localGameController.GamePhase < LocalGameController.GamePhases.StartGamePlay; }}
         public uint InitialSettlementLocation { get; set; }
         public uint InitialRoadEndLocation { get; set; }
 
@@ -129,7 +129,6 @@ namespace SoC.Harness.ViewModels
             else if (this.localGameController.GamePhase == LocalGameController.GamePhases.CompleteGameSetup)
             {
                 this.localGameController.CompleteGameSetup(this.InitialSettlementLocation, this.InitialRoadEndLocation);
-                this.localGameController.FinalisePlayerTurnOrder();
                 this.localGameController.StartGamePlay();
                 this.SetupMessage = null;
             }

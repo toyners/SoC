@@ -10,7 +10,6 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       localGameController.StartGameSetup();
       localGameController.ContinueGameSetup(LocalGameControllerTestCreator.MainSettlementOneLocation, LocalGameControllerTestCreator.MainRoadOneEnd);
       localGameController.CompleteGameSetup(LocalGameControllerTestCreator.MainSettlementTwoLocation, LocalGameControllerTestCreator.MainRoadTwoEnd);
-      localGameController.FinalisePlayerTurnOrder();
     }
   }
 }
