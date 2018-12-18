@@ -19,7 +19,7 @@ namespace Jabberwocky.SoC.Library.GameEvents
         #endregion
 
         #region Methods
-        public override Boolean Equals(Object obj)
+        public override bool Equals(object obj)
         {
             if (obj == null)
             {
@@ -34,7 +34,7 @@ namespace Jabberwocky.SoC.Library.GameEvents
             return this.PlayerId == ((GameEvent)obj).PlayerId;
         }
 
-        public override Int32 GetHashCode()
+        public override int GetHashCode()
         {
             return base.GetHashCode();
         }

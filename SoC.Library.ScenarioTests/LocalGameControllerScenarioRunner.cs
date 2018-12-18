@@ -59,10 +59,8 @@ namespace SoC.Library.ScenarioTests
             this.localGameController.StartGamePlay();
 
             var actualEventIndex = 0;
-            for (var index = 0; index < this.expectedEvents.Count; index++)
+            foreach (var expectedEvent in this.expectedEvents)
             {
-                var expectedEvent = this.expectedEvents[index];
-
                 var foundEvent = false;
                 for (; actualEventIndex < this.actualEvents.Count; actualEventIndex++)
                 {
