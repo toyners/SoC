@@ -1,5 +1,6 @@
 ﻿
 using System;
+using Jabberwocky.SoC.Library;
 using Jabberwocky.SoC.Library.Interfaces;
 using NUnit.Framework;
 
@@ -57,8 +58,16 @@ namespace SoC.Library.ScenarioTests
                 .DuringPlayerTurn(MainPlayerName, 1, 5).EndTurn()
                 .Build()
                 .ExpectingEvents()
-                .ResourcesCollectedEvent(MainPlayerName)
-                .DiceRollEvent(MainPlayerName, 1, 5)
+                .StartResourcesCollectedEvent(FirstOpponentName)
+                    .AddResourceCollection(FirstOpponentFirstSettlementLocation, ResourceClutch.OneOre)
+                    .FinishResourcesCollectedEvent()
+                .StartResourcesCollectedEvent(SecondOpponentName)
+                    .AddResourceCollection(SecondOpponentFirstSettlementLocation, ResourceClutch.OneLumber)
+                    .AddResourceCollection(SecondOpponentSecondSettlementLocation, ResourceClutch.OneLumber)
+                    .FinishResourcesCollectedEvent()
+                .StartResourcesCollectedEvent(ThirdOpponentName)
+                    .AddResourceCollection(ThirdOpponentFirstSettlementLocation, ResourceClutch.OneOre)
+                    .FinishResourcesCollectedEvent()
                 .Run();
         }
 

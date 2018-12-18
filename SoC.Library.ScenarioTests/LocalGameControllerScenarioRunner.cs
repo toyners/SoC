@@ -77,9 +77,13 @@ namespace SoC.Library.ScenarioTests
             return this.localGameController;
         }
 
-        public LocalGameControllerScenarioRunner ResourcesCollectedEvent(string playerName)
+        List<ResourceCollectedEventGroup> eventGroups;
+        public ResourceCollectedEventGroup StartResourcesCollectedEvent(string playerName)
         {
-            return this;
+            var player = this.playersByName[playerName];
+            var eventGroup = new ResourceCollectedEventGroup(player.Id, this);
+            this.eventGroups.Add(eventGroup);
+            return eventGroup;
         }
 
         List<GameEvent> expectedEvents = null;
@@ -205,6 +209,30 @@ namespace SoC.Library.ScenarioTests
             this.playerTurns.Add(playerTurn);
 
             return playerTurn;
+        }
+    }
+
+    internal class ResourceCollectedEventGroup
+    {
+        private List<ResourceCollection> resourceCollectionList = new List<ResourceCollection>();
+        private readonly LocalGameControllerScenarioRunner runner;
+        internal Guid PlayerId { get; }
+
+        internal ResourceCollectedEventGroup(Guid playerId, LocalGameControllerScenarioRunner runner)
+        {
+            this.PlayerId = playerId;
+            this.runner = runner;
+        }
+
+        internal ResourceCollectedEventGroup AddResourceCollection(uint location, ResourceClutch resourceClutch)
+        {
+            this.resourceCollectionList.Add(new ResourceCollection(location, resourceClutch));
+            return this;
+        }
+
+        internal LocalGameControllerScenarioRunner FinishResourcesCollectedEvent()
+        {
+            return this.runner;
         }
     }
 }
