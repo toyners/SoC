@@ -42,7 +42,7 @@ namespace SoC.Library.ScenarioTests
                 .DuringPlayerTurn(MainPlayerName, 4, 4).EndTurn()
                 .DuringPlayerTurn(FirstOpponentName, 2, 2).EndTurn()
                 .DuringPlayerTurn(SecondOpponentName, 1, 1).EndTurn()
-                .DuringPlayerTurn(ThirdOpponentName, 2, 2).EndTurn()
+                .DuringPlayerTurn(ThirdOpponentName, 2, 2).QuitGame()
                 .Build()
                 .ExpectingEvents()
                 .DiceRollEvent(MainPlayerName, 4, 4)
@@ -56,7 +56,7 @@ namespace SoC.Library.ScenarioTests
         public void Scenario_AllPlayersCollectResourcesAsPartOfFirstTurnStart()
         {
             var localGameController = this.CreateStandardLocalGameControllerScenarioRunner()
-                .DuringPlayerTurn(MainPlayerName, 1, 5).EndTurn()
+                .DuringPlayerTurn(MainPlayerName, 1, 5).QuitGame()
                 .Build()
                 .ExpectingEvents()
                 .ResourcesCollectedEvent(FirstOpponentName, FirstOpponentFirstSettlementLocation, ResourceClutch.OneOre)
@@ -76,7 +76,7 @@ namespace SoC.Library.ScenarioTests
                 .DuringPlayerTurn(FirstOpponentName, 4, 4).EndTurn()
                 .DuringPlayerTurn(SecondOpponentName, 4, 4).EndTurn()
                 .DuringPlayerTurn(ThirdOpponentName, 4, 4).EndTurn()
-                .DuringPlayerTurn(MainPlayerName, 3, 3).EndTurn()
+                .DuringPlayerTurn(MainPlayerName, 3, 3).QuitGame()
                 .Build()
                 .ExpectingEvents()
                 .Events(EventTypes.ResourcesCollectedEvent, 4)
@@ -96,6 +96,21 @@ namespace SoC.Library.ScenarioTests
                 .Run();
         }
 
+        [Test]
+        public void Scenario_ComputerPlayerBuildsSettlement()
+        {
+            this.CreateStandardLocalGameControllerScenarioRunner()
+                .DuringPlayerTurn(MainPlayerName, 1, 2).EndTurn()
+                .DuringPlayerTurn(FirstOpponentName, 4, 4).EndTurn()
+                .DuringPlayerTurn(SecondOpponentName, 4, 4).EndTurn()
+                .DuringPlayerTurn(ThirdOpponentName, 4, 4).EndTurn()
+                .DuringPlayerTurn(MainPlayerName, 3, 3).QuitGame()
+                .Build()
+                .ExpectingEvents()
+                .Run();
+        }
+
+
         private LocalGameControllerScenarioRunner CreateStandardLocalGameControllerScenarioRunner()
         {
             return LocalGameController()
@@ -112,6 +127,7 @@ namespace SoC.Library.ScenarioTests
 
     internal class PlayerTurn
     {
+        internal bool IsLastTurn { get; set; }
         private readonly LocalGameControllerScenarioRunner runner;
         private readonly IPlayer player;
 
@@ -123,6 +139,12 @@ namespace SoC.Library.ScenarioTests
 
         public LocalGameControllerScenarioRunner EndTurn()
         {
+            return this.runner;
+        }
+
+        public LocalGameControllerScenarioRunner QuitGame()
+        {
+            this.IsLastTurn = true;
             return this.runner;
         }
     }
@@ -149,6 +171,5 @@ namespace SoC.Library.ScenarioTests
             this.SettlementLocation = settlementLocation;
             this.RoadEndLocation = roadEndLocation;
         }
-
     }
 }

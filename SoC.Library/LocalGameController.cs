@@ -30,7 +30,7 @@ namespace Jabberwocky.SoC.Library
             SetRobberHex,
             ChooseResourceFromOpponent,
             DropResources,
-            Quitting,
+            Quit,
             GameOver
         }
 
@@ -529,6 +529,9 @@ namespace Jabberwocky.SoC.Library
                 this.ChangeToNextPlayer();
             }
 
+            if (this.GamePhase == GamePhases.Quit)
+                return;
+
             this.currentTurnToken = new TurnToken();
             this.StartPlayerTurnEvent?.Invoke(this.currentTurnToken);
 
@@ -757,7 +760,7 @@ namespace Jabberwocky.SoC.Library
 
         public void Quit()
         {
-            this.GamePhase = GamePhases.Quitting;
+            this.GamePhase = GamePhases.Quit;
         }
 
         public void Save(string filePath)

@@ -109,13 +109,13 @@ namespace SoC.Library.ScenarioTests
             this.localGameController.CompleteGameSetup(placeInfrastructureInstruction.SettlementLocation, placeInfrastructureInstruction.RoadEndLocation);
 
             this.localGameController.StartGamePlay();
-            this.playerTurns.Dequeue();
-
-            while (this.playerTurns.Count > 0)
+            
+            do
             {
-                this.playerTurns.Dequeue();
-                this.localGameController.EndTurn(this.currentToken);
-            }
+                var playerTurn = this.playerTurns.Dequeue();
+                if (!playerTurn.IsLastTurn)
+                    this.localGameController.EndTurn(this.currentToken);
+            } while (this.playerTurns.Count > 0);
 
             var actualEventIndex = 0;
             while (this.expectedEvents.Count > 0)
