@@ -22,7 +22,7 @@ namespace SoC.Library.ScenarioTests
         private readonly List<PlayerTurnSetupAction> FirstRoundSetupActions = new List<PlayerTurnSetupAction>(4);
         private readonly List<PlayerTurnSetupAction> SecondRoundSetupActions = new List<PlayerTurnSetupAction>(4);
         private Dictionary<EventTypes, Delegate> eventHandlers;
-        private readonly List<PlayerTurn> playerTurns = new List<PlayerTurn>();
+        private readonly Queue<PlayerTurn> playerTurns = new Queue<PlayerTurn>();
         private readonly MockNumberGenerator mockNumberGenerator = new MockNumberGenerator();
         private readonly Dictionary<string, IPlayer> playersByName = new Dictionary<string, IPlayer>();
         private readonly Dictionary<string, MockComputerPlayer> computerPlayersByName = new Dictionary<string, MockComputerPlayer>();
@@ -31,6 +31,7 @@ namespace SoC.Library.ScenarioTests
         private Queue<GameEvent> expectedEvents = null;
         private List<GameEvent> actualEvents = null;
         private Action<ResourcesCollectedEvent> ResourcesCollectedEventHandler;
+        private TurnToken currentToken;
         #endregion
 
         #region Construction
@@ -49,6 +50,7 @@ namespace SoC.Library.ScenarioTests
         {
             this.localGameController = new LocalGameController(this.mockNumberGenerator, this.mockPlayerPool);
             this.localGameController.GameEvents = this.GameEventsHandler;
+            this.localGameController.StartPlayerTurnEvent = (TurnToken t) => { this.currentToken = t; };
             return this;
         }
 
@@ -66,7 +68,10 @@ namespace SoC.Library.ScenarioTests
         internal LocalGameControllerScenarioRunner Events(EventTypes eventType, uint count)
         {
             while (count-- > 0)
+            {
                 this.expectedEvents.Enqueue(new PlaceholderEvent(eventType));
+                this.RegisterEventHandler(eventType);
+            }
 
             return this;
         }
@@ -104,15 +109,22 @@ namespace SoC.Library.ScenarioTests
             this.localGameController.CompleteGameSetup(placeInfrastructureInstruction.SettlementLocation, placeInfrastructureInstruction.RoadEndLocation);
 
             this.localGameController.StartGamePlay();
+            this.playerTurns.Dequeue();
+
+            while (this.playerTurns.Count > 0)
+            {
+                this.playerTurns.Dequeue();
+                this.localGameController.EndTurn(this.currentToken);
+            }
 
             var actualEventIndex = 0;
             while (this.expectedEvents.Count > 0)
             {
                 var expectedEvent = this.expectedEvents.Dequeue();
                 var foundEvent = false;
-                for (; actualEventIndex < this.actualEvents.Count; actualEventIndex++)
+                while (actualEventIndex < this.actualEvents.Count)
                 {
-                    if (this.actualEvents[actualEventIndex].Equals(expectedEvent))
+                    if (expectedEvent.Equals(this.actualEvents[actualEventIndex++]))
                     {
                         foundEvent = true;
                         break;
@@ -120,7 +132,7 @@ namespace SoC.Library.ScenarioTests
                 }
 
                 if (!foundEvent)
-                    Assert.Fail("Expected event {0} not found", expectedEvent);
+                    Assert.Fail("Expected event '{0}' not found", expectedEvent);
             }
 
             return this.localGameController;
@@ -255,16 +267,13 @@ namespace SoC.Library.ScenarioTests
 
             if (playerName == this.players[0].Name)
             {
-                var player = this.players[0];
-                playerTurn = new PlayerTurn(this, player);
+                playerTurn = new PlayerTurn(this, this.players[0]);
+                this.playerTurns.Enqueue(playerTurn);
             }
             else
             {
-                var computerPlayer = this.computerPlayersByName[playerName];
-                playerTurn = new PlayerTurn(this, computerPlayer);
+                playerTurn = new ComputerPlayerTurn(this, this.computerPlayersByName[playerName]);
             }
-
-            this.playerTurns.Add(playerTurn);
 
             return playerTurn;
         }

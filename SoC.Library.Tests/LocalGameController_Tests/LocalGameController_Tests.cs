@@ -1175,46 +1175,6 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
             roads[0].ShouldBe(new Tuple<UInt32, UInt32, Guid>(MainSettlementOneLocation, MainRoadOneEnd, playerId));
         }
 
-        [Test]
-        public void Scenario_AllPlayersCollectResourcesAsPartOfTurnStartAfterComputerPlayerCompletesTheirTurn()
-        {
-            // Arrange
-            var testInstances = LocalGameControllerTestCreator.CreateTestInstances(new MockGameBoardWithResourcesCollectedAfterFirstTurn());
-            var localGameController = testInstances.LocalGameController;
-            var player = testInstances.MainPlayer;
-            var firstOpponent = testInstances.FirstOpponent;
-            var secondOpponent = testInstances.SecondOpponent;
-            var thirdOpponent = testInstances.ThirdOpponent;
-            LocalGameControllerTestSetup.LaunchGameAndCompleteSetup(localGameController);
-            testInstances.Dice.AddSequence(new uint[] { 3, 8, 8, 8, 6 });
-
-            TurnToken turnToken = null;
-            localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
-
-            List<GameEvent> gameEvents = null;
-            localGameController.GameEvents = (List<GameEvent> g) => { gameEvents = g; };
-
-            localGameController.StartGamePlay();
-
-            // Act
-            localGameController.EndTurn(turnToken);
-
-            // Assert
-            gameEvents.Count.ShouldBe(3);
-            gameEvents.ShouldContain(new ResourcesCollectedEvent(firstOpponent.Id, new[] { new ResourceCollection(FirstSettlementOneLocation, ResourceClutch.OneOre) }));
-            gameEvents.ShouldContain(new ResourcesCollectedEvent(secondOpponent.Id, new[] { new ResourceCollection(SecondSettlementOneLocation, ResourceClutch.OneLumber), new ResourceCollection(SecondSettlementTwoLocation, ResourceClutch.OneLumber) }));
-            gameEvents.ShouldContain(new ResourcesCollectedEvent(thirdOpponent.Id, new[] { new ResourceCollection(ThirdSettlementOneLocation, ResourceClutch.OneOre) }));
-
-            player.ResourcesCount.ShouldBe(3);
-            player.Resources.ShouldBe(ResourceClutch.OneBrick * 3);
-            firstOpponent.ResourcesCount.ShouldBe(4);
-            firstOpponent.Resources.ShouldBe((ResourceClutch.OneGrain * 3) + ResourceClutch.OneOre);
-            secondOpponent.ResourcesCount.ShouldBe(2);
-            secondOpponent.Resources.ShouldBe(ResourceClutch.OneLumber * 2);
-            thirdOpponent.ResourcesCount.ShouldBe(1);
-            thirdOpponent.Resources.ShouldBe(ResourceClutch.OneOre);
-        }
-
         private void AssertPlayerDataViewIsCorrect(IPlayer player, PlayerDataModel playerDataView)
         {
             playerDataView.Id.ShouldBe(player.Id);

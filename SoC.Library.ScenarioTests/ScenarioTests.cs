@@ -79,13 +79,26 @@ namespace SoC.Library.ScenarioTests
                 .DuringPlayerTurn(MainPlayerName, 3, 3).EndTurn()
                 .Build()
                 .ExpectingEvents()
-                //.Events(EventTypes.ResourcesCollectedEvent)
+                .Events(EventTypes.ResourcesCollectedEvent, 4)
+                .ResourcesCollectedEvent(SecondOpponentName, SecondOpponentSecondSettlementLocation, ResourceClutch.OneOre)
+                .ResourcesCollectedEvent(MainPlayerName, MainPlayerFirstSettlementLocation, ResourceClutch.OneBrick)
+                .ResourcesCollectedEvent(FirstOpponentName, FirstOpponentSecondSettlementLocation, ResourceClutch.OneGrain)
+                .ResourcesCollectedEvent(MainPlayerName, MainPlayerFirstSettlementLocation, ResourceClutch.OneBrick)
+                .ResourcesCollectedEvent(FirstOpponentName, FirstOpponentSecondSettlementLocation, ResourceClutch.OneGrain)
+                .ResourcesCollectedEvent(MainPlayerName, MainPlayerFirstSettlementLocation, ResourceClutch.OneBrick)
+                .ResourcesCollectedEvent(FirstOpponentName, FirstOpponentSecondSettlementLocation, ResourceClutch.OneGrain)
+                .ResourcesCollectedEvent(FirstOpponentName, FirstOpponentFirstSettlementLocation, ResourceClutch.OneOre)
+                .StartResourcesCollectedEvent(SecondOpponentName)
+                    .AddResourceCollection(SecondOpponentFirstSettlementLocation, ResourceClutch.OneLumber)
+                    .AddResourceCollection(SecondOpponentSecondSettlementLocation, ResourceClutch.OneLumber)
+                    .FinishResourcesCollectedEvent()
+                .ResourcesCollectedEvent(ThirdOpponentName, ThirdOpponentFirstSettlementLocation, ResourceClutch.OneOre)
                 .Run();
         }
 
         private LocalGameControllerScenarioRunner CreateStandardLocalGameControllerScenarioRunner()
         {
-            return LocalGameControllerScenarioRunner.LocalGameController()
+            return LocalGameController()
                 .WithMainPlayer(MainPlayerName)
                 .WithComputerPlayer(FirstOpponentName).WithComputerPlayer(SecondOpponentName).WithComputerPlayer(ThirdOpponentName)
                 .WithPlayerSetup(MainPlayerName, MainPlayerFirstSettlementLocation, MainPlayerFirstRoadEnd, MainPlayerSecondSettlementLocation, MainPlayerSecondRoadEnd)
@@ -99,18 +112,25 @@ namespace SoC.Library.ScenarioTests
 
     internal class PlayerTurn
     {
-        private readonly LocalGameControllerScenarioRunner localGameControllerScenarioBuilder;
+        private readonly LocalGameControllerScenarioRunner runner;
         private readonly IPlayer player;
 
-        public PlayerTurn(LocalGameControllerScenarioRunner localGameControllerScenarioBuilder, IPlayer player)
+        public PlayerTurn(LocalGameControllerScenarioRunner runner, IPlayer player)
         {
-            this.localGameControllerScenarioBuilder = localGameControllerScenarioBuilder;
+            this.runner = runner;
             this.player = player;
         }
 
         public LocalGameControllerScenarioRunner EndTurn()
         {
-            return this.localGameControllerScenarioBuilder;
+            return this.runner;
+        }
+    }
+
+    internal class ComputerPlayerTurn : PlayerTurn
+    {
+        public ComputerPlayerTurn(LocalGameControllerScenarioRunner runner, IPlayer player) : base(runner, player)
+        {
         }
     }
 
