@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Jabberwocky.SoC.Library;
 using Jabberwocky.SoC.Library.GameEvents;
 using Jabberwocky.SoC.Library.Interfaces;
+using NUnit.Framework;
 
 namespace SoC.Library.ScenarioTests
 {
@@ -27,8 +28,9 @@ namespace SoC.Library.ScenarioTests
         private readonly Dictionary<string, MockComputerPlayer> computerPlayersByName = new Dictionary<string, MockComputerPlayer>();
         private readonly List<IPlayer> players = new List<IPlayer>(4);
         private LocalGameController localGameController = null;
-        Queue<GameEvent> expectedEvents = null;
-        List<GameEvent> actualEvents = null;
+        private Queue<GameEvent> expectedEvents = null;
+        private List<GameEvent> actualEvents = null;
+        private Action<ResourcesCollectedEvent> ResourcesCollectedEventHandler;
         #endregion
 
         #region Construction
@@ -105,7 +107,7 @@ namespace SoC.Library.ScenarioTests
                 }
 
                 if (!foundEvent)
-                    throw new NotImplementedException();
+                    Assert.Fail("Expected event {0} not found", expectedEvent);
             }
 
             return this.localGameController;
@@ -155,8 +157,6 @@ namespace SoC.Library.ScenarioTests
                 }
             }
         }
-
-        private Action<ResourcesCollectedEvent> ResourcesCollectedEventHandler;
 
         private void GameEventsHandler(List<GameEvent> gameEvents)
         {
