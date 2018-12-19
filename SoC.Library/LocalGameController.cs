@@ -4,6 +4,7 @@ namespace Jabberwocky.SoC.Library
     using System;
     using System.Collections.Generic;
     using System.IO;
+    using System.Linq;
     using System.Xml;
     using Enums;
     using GameActions;
@@ -1088,15 +1089,18 @@ namespace Jabberwocky.SoC.Library
             var resourcesCollectedEvents = new List<GameEvent>();
 
             var resources = this.gameBoard.GetResourcesForRoll(resourceRoll);
-            foreach (var tuple in resources)
+            foreach (var player in this.players)
             {
-                var player = this.playersById[tuple.Key];
-                foreach (var resourceCollection in tuple.Value)
-                {
-                    player.AddResources(resourceCollection.Resources);
-                }
+                if (!resources.TryGetValue(player.Id, out var resourcesCollectionForPlayer))
+                    continue;
 
-                var resourcesCollectedEvent = new ResourcesCollectedEvent(tuple.Key, tuple.Value);
+                var resourcesCollectionOrderedByLocation = resourcesCollectionForPlayer
+                    .OrderBy(rc => rc.Location).ToArray();
+
+                foreach (var resourceCollection in resourcesCollectionForPlayer)
+                    player.AddResources(resourceCollection.Resources);
+
+                var resourcesCollectedEvent = new ResourcesCollectedEvent(player.Id, resourcesCollectionOrderedByLocation);
                 resourcesCollectedEvents.Add(resourcesCollectedEvent);
             }
 
