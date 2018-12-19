@@ -1176,41 +1176,6 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
         }
 
         [Test]
-        public void Scenario_AllPlayersCollectResourcesAsPartOfFirstTurnStart()
-        {
-            // Arrange
-            var testInstances = LocalGameControllerTestCreator.CreateTestInstances(new MockGameBoardWithNoResourcesCollectedDuringGameSetup());
-            var localGameController = testInstances.LocalGameController;
-            var player = testInstances.MainPlayer;
-            var firstOpponent = testInstances.FirstOpponent;
-            var secondOpponent = testInstances.SecondOpponent;
-            var thirdOpponent = testInstances.ThirdOpponent;
-            LocalGameControllerTestSetup.LaunchGameAndCompleteSetup(localGameController);
-            testInstances.Dice.AddSequence(new [] { 6u });
-
-            List<GameEvent> gameEvents = null;
-            localGameController.GameEvents = (List<GameEvent> g) => { gameEvents = g; };
-            
-            // Act
-            localGameController.StartGamePlay();
-
-            // Assert
-            gameEvents.Count.ShouldBe(3);
-            gameEvents.ShouldContain(new ResourcesCollectedEvent(firstOpponent.Id, new[] { new ResourceCollection(FirstSettlementOneLocation, ResourceClutch.OneOre) }));
-            gameEvents.ShouldContain(new ResourcesCollectedEvent(secondOpponent.Id, new[] { new ResourceCollection(SecondSettlementOneLocation, ResourceClutch.OneLumber), new ResourceCollection(SecondSettlementTwoLocation, ResourceClutch.OneLumber) }));
-            gameEvents.ShouldContain(new ResourcesCollectedEvent(thirdOpponent.Id, new[] { new ResourceCollection(ThirdSettlementOneLocation, ResourceClutch.OneOre) }));
-
-            // Collected at turn start
-            player.ResourcesCount.ShouldBe(0);
-            firstOpponent.ResourcesCount.ShouldBe(1);
-            firstOpponent.OreCount.ShouldBe(1); 
-            secondOpponent.ResourcesCount.ShouldBe(2);
-            secondOpponent.LumberCount.ShouldBe(2);
-            thirdOpponent.ResourcesCount.ShouldBe(1);
-            thirdOpponent.OreCount.ShouldBe(1);
-        }
-
-        [Test]
         public void Scenario_AllPlayersCollectResourcesAsPartOfTurnStartAfterComputerPlayerCompletesTheirTurn()
         {
             // Arrange

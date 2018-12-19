@@ -63,6 +63,19 @@ namespace SoC.Library.ScenarioTests
             return this;
         }
 
+        internal LocalGameControllerScenarioRunner Events(EventTypes eventType, uint count)
+        {
+            while (count-- > 0)
+                this.expectedEvents.Enqueue(new PlaceholderEvent(eventType));
+
+            return this;
+        }
+
+        internal LocalGameControllerScenarioRunner Event(EventTypes eventType)
+        {
+            return this.Events(eventType, 1);
+        }
+
         internal LocalGameControllerScenarioRunner ResourcesCollectedEvent(string playerName, uint location, ResourceClutch resourceClutch)
         {
             var player = this.playersByName[playerName];
@@ -112,7 +125,7 @@ namespace SoC.Library.ScenarioTests
 
             return this.localGameController;
         }
-
+        
         public ResourceCollectedEventGroup StartResourcesCollectedEvent(string playerName)
         {
             var player = this.playersByName[playerName];

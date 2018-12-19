@@ -3,6 +3,7 @@ using System;
 using Jabberwocky.SoC.Library;
 using Jabberwocky.SoC.Library.Interfaces;
 using NUnit.Framework;
+using static SoC.Library.ScenarioTests.LocalGameControllerScenarioRunner;
 
 namespace SoC.Library.ScenarioTests
 {
@@ -64,6 +65,21 @@ namespace SoC.Library.ScenarioTests
                     .AddResourceCollection(SecondOpponentSecondSettlementLocation, ResourceClutch.OneLumber)
                     .FinishResourcesCollectedEvent()
                 .ResourcesCollectedEvent(ThirdOpponentName, ThirdOpponentFirstSettlementLocation, ResourceClutch.OneOre)
+                .Run();
+        }
+
+        [Test]
+        public void Scenario_AllPlayersCollectResourcesAsPartOfTurnStartAfterComputerPlayersCompleteTheirTurns()
+        {
+            var localGameController = this.CreateStandardLocalGameControllerScenarioRunner()
+                .DuringPlayerTurn(MainPlayerName, 1, 2).EndTurn()
+                .DuringPlayerTurn(FirstOpponentName, 4, 4).EndTurn()
+                .DuringPlayerTurn(SecondOpponentName, 4, 4).EndTurn()
+                .DuringPlayerTurn(ThirdOpponentName, 4, 4).EndTurn()
+                .DuringPlayerTurn(MainPlayerName, 3, 3).EndTurn()
+                .Build()
+                .ExpectingEvents()
+                //.Events(EventTypes.ResourcesCollectedEvent)
                 .Run();
         }
 
