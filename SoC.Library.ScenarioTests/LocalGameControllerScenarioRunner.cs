@@ -133,12 +133,20 @@ namespace SoC.Library.ScenarioTests
 
             this.localGameController.StartGamePlay();
 
-            var turns = new Queue<PlayerTurn>(this.playerTurns.Where(t => t.PlayerId == this.players[0].Id).ToList());
+            var turns = new Queue<PlayerTurn>(this.playerTurns);
 
             do
             {
-                var playerTurn = turns.Dequeue();
-                this.localGameController.EndTurn(this.currentToken);
+                var turn = turns.Dequeue();
+
+                if (turn is ComputerPlayerTurn computerPlayerTurn)
+                {
+                    computerPlayerTurn.ResolveActions();
+                }
+                else if (turn is PlayerTurn playerTurn)
+                {
+                    this.localGameController.EndTurn(this.currentToken);
+                }
             } while (turns.Count > 0);
 
             var actualEventIndex = 0;

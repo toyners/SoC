@@ -1,7 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Jabberwocky.SoC.Library;
+using Jabberwocky.SoC.Library.GameActions;
 using Jabberwocky.SoC.Library.Interfaces;
+using Jabberwocky.SoC.Library.PlayerData;
 
 namespace SoC.Library.ScenarioTests
 {
@@ -9,7 +10,7 @@ namespace SoC.Library.ScenarioTests
     {
         private PlaceInfrastructureInstruction firstInstruction;
         private PlaceInfrastructureInstruction secondInstruction;
-        private readonly List<Instruction> instructions = new List<Instruction>();
+        private readonly List<ComputerPlayerAction> actions = new List<ComputerPlayerAction>();
 
         public MockComputerPlayer(string name, INumberGenerator numberGenerator) : base(name, numberGenerator) { }
 
@@ -19,9 +20,25 @@ namespace SoC.Library.ScenarioTests
             this.secondInstruction = secondInstruction;
         }
 
-        public void AddInstructions(params Instruction[] instructions)
+        public void AddInstructions(IEnumerable<Instruction> instructions)
         {
-            this.instructions.AddRange(instructions);
+            //this.instructions.AddRange(instructions);
+            foreach(var instruction in instructions)
+            {
+                if (instruction is BuildRoadInstruction buidRoadInstruction)
+                {
+                 
+                }
+                else if (instruction is BuildSettlementInstruction buildSettlementLocation)
+                {
+
+                }
+            }
+        }
+
+        public override void BuildInitialPlayerActions(PlayerDataModel[] otherPlayerData)
+        {
+            
         }
 
         public override void ChooseInitialInfrastructure(out uint settlementLocation, out uint roadEndLocation)
@@ -37,6 +54,11 @@ namespace SoC.Library.ScenarioTests
                 settlementLocation = this.secondInstruction.SettlementLocation;
                 roadEndLocation = this.secondInstruction.RoadEndLocation;
             }
+        }
+
+        public override ComputerPlayerAction GetPlayerAction()
+        {
+            return base.GetPlayerAction();
         }
     }
 }

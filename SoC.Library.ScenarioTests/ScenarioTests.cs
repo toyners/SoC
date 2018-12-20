@@ -1,5 +1,6 @@
 ﻿
 using System;
+using System.Collections.Generic;
 using Jabberwocky.SoC.Library;
 using Jabberwocky.SoC.Library.Interfaces;
 using NUnit.Framework;
@@ -145,12 +146,12 @@ namespace SoC.Library.ScenarioTests
             return this.runner;
         }
 
-        public PlayerTurn BuildRoad(int roadSegmentStart, int roadSegmentEnd)
+        public virtual PlayerTurn BuildRoad(uint roadSegmentStart, uint roadSegmentEnd)
         {
             throw new NotImplementedException();
         }
 
-        public PlayerTurn BuildSettlement(int settlementLocation)
+        public virtual PlayerTurn BuildSettlement(uint settlementLocation)
         {
             throw new NotImplementedException();
         }
@@ -158,8 +159,29 @@ namespace SoC.Library.ScenarioTests
 
     internal class ComputerPlayerTurn : PlayerTurn
     {
+        private MockComputerPlayer computerPlayer;
+        private List<Instruction> instructions = new List<Instruction>();
+
         public ComputerPlayerTurn(LocalGameControllerScenarioRunner runner, IPlayer player) : base(runner, player)
         {
+            this.computerPlayer = (MockComputerPlayer)player;
+        }
+
+        public override PlayerTurn BuildRoad(uint roadSegmentStart, uint roadSegmentEnd)
+        {
+            this.instructions.Add(new BuildRoadInstruction(this.computerPlayer.Id, roadSegmentStart, roadSegmentStart));
+            return this;
+        }
+
+        public override PlayerTurn BuildSettlement(uint settlementLocation)
+        {
+            this.instructions.Add(new BuildSettlementInstruction(this.computerPlayer.Id, settlementLocation));
+            return this;
+        }
+
+        public void ResolveActions()
+        {
+            this.computerPlayer.AddInstructions(this.instructions);
         }
     }
 

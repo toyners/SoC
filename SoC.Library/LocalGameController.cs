@@ -344,7 +344,7 @@ namespace Jabberwocky.SoC.Library
 
         public void DropResources(ResourceClutch resourceClutch)
         {
-            // TODO: Valid the parameter - the total should match the expected resources to drop
+            // TODO: Validate the parameter - the total should match the expected resources to drop
             // when robber roll occurred.
             this.mainPlayer.RemoveResources(resourceClutch);
         }
