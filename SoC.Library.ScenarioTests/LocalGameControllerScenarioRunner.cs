@@ -109,12 +109,11 @@ namespace SoC.Library.ScenarioTests
             this.localGameController.CompleteGameSetup(placeInfrastructureInstruction.SettlementLocation, placeInfrastructureInstruction.RoadEndLocation);
 
             this.localGameController.StartGamePlay();
-            
+
             do
             {
                 var playerTurn = this.playerTurns.Dequeue();
-                if (!playerTurn.IsLastTurn)
-                    this.localGameController.EndTurn(this.currentToken);
+                this.localGameController.EndTurn(this.currentToken);
             } while (this.playerTurns.Count > 0);
 
             var actualEventIndex = 0;
@@ -161,6 +160,10 @@ namespace SoC.Library.ScenarioTests
                     this.localGameController.DiceRollEvent =
                     (uint dice1, uint dice2) =>
                     {
+                        // dice1 == dice2 == 0 means that there are no more turns of interest.
+                        if (dice1 == 0 && dice2 == 0)
+                            return;
+
                         this.actualEvents.Add(new DiceRollEvent(Guid.Empty, dice1, dice2));
                         var customHandler = this.eventHandlers?[EventTypes.DiceRollEvent];
                         if (customHandler != null)

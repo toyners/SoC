@@ -529,9 +529,6 @@ namespace Jabberwocky.SoC.Library
                 this.ChangeToNextPlayer();
             }
 
-            if (this.GamePhase == GamePhases.Quit)
-                return;
-
             this.currentTurnToken = new TurnToken();
             this.StartPlayerTurnEvent?.Invoke(this.currentTurnToken);
 

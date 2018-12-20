@@ -26,9 +26,13 @@ namespace SoC.Library.ScenarioTests
 
         public void RollTwoDice(out uint dice1, out uint dice2)
         {
-            var tuple = this.diceRolls.Dequeue();
-            dice1 = tuple.Item1;
-            dice2 = tuple.Item2;
+            dice1 = dice2 = 0;
+            if (this.diceRolls.Count > 0)
+            {
+                var tuple = this.diceRolls.Dequeue();
+                dice1 = tuple.Item1;
+                dice2 = tuple.Item2;
+            }
         }
     }
 }
