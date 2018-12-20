@@ -100,12 +100,16 @@ namespace SoC.Library.ScenarioTests
         public void Scenario_ComputerPlayerBuildsSettlement()
         {
             this.CreateStandardLocalGameControllerScenarioRunner()
-                .DuringPlayerTurn(MainPlayerName, 1, 2).EndTurn()
-                .DuringPlayerTurn(FirstOpponentName, 4, 4).EndTurn()
-                .DuringPlayerTurn(SecondOpponentName, 4, 4).EndTurn()
-                .DuringPlayerTurn(ThirdOpponentName, 4, 4).EndTurn()
+                .DuringPlayerTurn(MainPlayerName, 2, 3).EndTurn()
+                .DuringPlayerTurn(FirstOpponentName, 2, 2).EndTurn()
+                .DuringPlayerTurn(SecondOpponentName, 1, 3).EndTurn()
+                .DuringPlayerTurn(ThirdOpponentName, 2, 3)
+                    .BuildRoad(32, 42)
+                    .BuildSettlement(42).EndTurn()
                 .Build()
                 .ExpectingEvents()
+                .BuildRoadEvent(ThirdOpponentName, 32, 42)
+                .BuildSettlementEvent(ThirdOpponentName, 42)
                 .Run();
         }
 
@@ -128,6 +132,8 @@ namespace SoC.Library.ScenarioTests
         private readonly LocalGameControllerScenarioRunner runner;
         private readonly IPlayer player;
 
+        public Guid PlayerId { get { return this.player.Id; } }
+
         public PlayerTurn(LocalGameControllerScenarioRunner runner, IPlayer player)
         {
             this.runner = runner;
@@ -137,6 +143,16 @@ namespace SoC.Library.ScenarioTests
         public LocalGameControllerScenarioRunner EndTurn()
         {
             return this.runner;
+        }
+
+        public PlayerTurn BuildRoad(int roadSegmentStart, int roadSegmentEnd)
+        {
+            throw new NotImplementedException();
+        }
+
+        public PlayerTurn BuildSettlement(int settlementLocation)
+        {
+            throw new NotImplementedException();
         }
     }
 

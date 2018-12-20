@@ -15,7 +15,7 @@ namespace SoC.Library.ScenarioTests
 
         public IPlayer CreateComputerPlayer(GameBoard gameBoard, INumberGenerator numberGenerator)
         {
-            return players.Dequeue();
+            return this.players.Dequeue();
         }
 
         public IPlayer CreateComputerPlayer(IGameDataSection<GameDataSectionKeys, GameDataValueKeys, ResourceTypes> data, GameBoard board, INumberGenerator numberGenerator)
@@ -25,7 +25,7 @@ namespace SoC.Library.ScenarioTests
 
         public IPlayer CreatePlayer()
         {
-            return players.Dequeue();
+            return this.players.Dequeue();
         }
 
         public IPlayer CreatePlayer(XmlReader reader)

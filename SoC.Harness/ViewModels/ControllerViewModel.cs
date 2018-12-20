@@ -162,7 +162,7 @@ namespace SoC.Harness.ViewModels
             this.ShowSettlementSelection = true;
         }
 
-        private void DiceRollEventHandler(uint dice1, uint dice2)
+        private void DiceRollEventHandler(Guid playerId, uint dice1, uint dice2)
         {
             var diceRoll = dice1 + dice2;
             this.player.UpdateHistory("Rolled " + diceRoll);

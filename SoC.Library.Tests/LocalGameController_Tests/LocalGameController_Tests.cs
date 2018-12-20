@@ -625,7 +625,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
 
             // Act
             var diceRoll = 0u;
-            localGameController.DiceRollEvent = (uint d1, uint d2) => { diceRoll = d1 + d2; };
+            localGameController.DiceRollEvent = (Guid g, uint d1, uint d2) => { diceRoll = d1 + d2; };
             localGameController.StartGamePlay();
 
             // Assert
