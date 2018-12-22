@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using Jabberwocky.SoC.Library;
+using Jabberwocky.SoC.Library.GameActions;
 using Jabberwocky.SoC.Library.Interfaces;
 using NUnit.Framework;
 using static SoC.Library.ScenarioTests.LocalGameControllerScenarioRunner;
@@ -160,7 +161,7 @@ namespace SoC.Library.ScenarioTests
     internal class ComputerPlayerTurn : PlayerTurn
     {
         private MockComputerPlayer computerPlayer;
-        private List<Instruction> instructions = new List<Instruction>();
+        private IList<ComputerPlayerAction> actions = new List<ComputerPlayerAction>();
 
         public ComputerPlayerTurn(LocalGameControllerScenarioRunner runner, IPlayer player) : base(runner, player)
         {
@@ -169,19 +170,19 @@ namespace SoC.Library.ScenarioTests
 
         public override PlayerTurn BuildRoad(uint roadSegmentStart, uint roadSegmentEnd)
         {
-            this.instructions.Add(new BuildRoadInstruction(this.computerPlayer.Id, roadSegmentStart, roadSegmentStart));
+            this.actions.Add(new BuildRoadSegmentAction(roadSegmentStart, roadSegmentStart));
             return this;
         }
 
         public override PlayerTurn BuildSettlement(uint settlementLocation)
         {
-            this.instructions.Add(new BuildSettlementInstruction(this.computerPlayer.Id, settlementLocation));
+            this.actions.Add(new BuildSettlementAction(settlementLocation));
             return this;
         }
 
         public void ResolveActions()
         {
-            this.computerPlayer.AddInstructions(this.instructions);
+            this.computerPlayer.AddInstructions(this.actions);
         }
     }
 

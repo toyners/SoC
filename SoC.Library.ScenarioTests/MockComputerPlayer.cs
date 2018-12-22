@@ -20,20 +20,9 @@ namespace SoC.Library.ScenarioTests
             this.secondInstruction = secondInstruction;
         }
 
-        public void AddInstructions(IEnumerable<Instruction> instructions)
+        public void AddInstructions(IEnumerable<ComputerPlayerAction> actions)
         {
-            //this.instructions.AddRange(instructions);
-            foreach(var instruction in instructions)
-            {
-                if (instruction is BuildRoadInstruction buidRoadInstruction)
-                {
-                 
-                }
-                else if (instruction is BuildSettlementInstruction buildSettlementLocation)
-                {
-
-                }
-            }
+            this.actions.AddRange(actions);
         }
 
         public override void BuildInitialPlayerActions(PlayerDataModel[] otherPlayerData)
