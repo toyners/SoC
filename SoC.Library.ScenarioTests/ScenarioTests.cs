@@ -182,7 +182,7 @@ namespace SoC.Library.ScenarioTests
 
         public void ResolveActions()
         {
-            this.computerPlayer.AddInstructions(this.actions);
+            this.computerPlayer.AddActions(this.actions);
         }
     }
 

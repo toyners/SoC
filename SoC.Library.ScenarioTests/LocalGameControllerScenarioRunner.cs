@@ -57,14 +57,18 @@ namespace SoC.Library.ScenarioTests
             return this;
         }
 
-        public LocalGameControllerScenarioRunner BuildRoadEvent(string thirdOpponentName, int roadSegmentStart, int roadSegmentEnd)
+        public LocalGameControllerScenarioRunner BuildRoadEvent(string thirdOpponentName, uint roadSegmentStart, uint roadSegmentEnd)
         {
-            throw new NotImplementedException();
+            var playerId = this.playersByName[thirdOpponentName].Id;
+            this.expectedEvents.Enqueue(new RoadSegmentBuiltEvent(playerId, roadSegmentStart, roadSegmentEnd));
+            return this;
         }
 
-        public LocalGameControllerScenarioRunner BuildSettlementEvent(string thirdOpponentName, int settlementLocation)
+        public LocalGameControllerScenarioRunner BuildSettlementEvent(string thirdOpponentName, uint settlementLocation)
         {
-            throw new NotImplementedException();
+            var playerId = this.playersByName[thirdOpponentName].Id;
+            this.expectedEvents.Enqueue(new SettlementBuiltEvent(playerId, settlementLocation));
+            return this;
         }
 
         public LocalGameControllerScenarioRunner DiceRollEvent(string playerName, uint dice1, uint dice2)

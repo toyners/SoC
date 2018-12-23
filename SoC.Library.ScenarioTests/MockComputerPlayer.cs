@@ -10,7 +10,7 @@ namespace SoC.Library.ScenarioTests
     {
         private PlaceInfrastructureInstruction firstInstruction;
         private PlaceInfrastructureInstruction secondInstruction;
-        private readonly List<ComputerPlayerAction> actions = new List<ComputerPlayerAction>();
+        private readonly Queue<ComputerPlayerAction> actions = new Queue<ComputerPlayerAction>();
 
         public MockComputerPlayer(string name, INumberGenerator numberGenerator) : base(name, numberGenerator) { }
 
@@ -20,9 +20,10 @@ namespace SoC.Library.ScenarioTests
             this.secondInstruction = secondInstruction;
         }
 
-        public void AddInstructions(IEnumerable<ComputerPlayerAction> actions)
+        public void AddActions(IEnumerable<ComputerPlayerAction> actions)
         {
-            this.actions.AddRange(actions);
+            foreach(var action in actions)
+                this.actions.Enqueue(action);
         }
 
         public override void BuildInitialPlayerActions(PlayerDataModel[] otherPlayerData)
@@ -47,7 +48,7 @@ namespace SoC.Library.ScenarioTests
 
         public override ComputerPlayerAction GetPlayerAction()
         {
-            return base.GetPlayerAction();
+            return this.actions.Dequeue();
         }
     }
 }
