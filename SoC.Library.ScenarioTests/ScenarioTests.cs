@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using Jabberwocky.SoC.Library;
 using Jabberwocky.SoC.Library.GameActions;
+using Jabberwocky.SoC.Library.GameEvents;
 using Jabberwocky.SoC.Library.Interfaces;
 using NUnit.Framework;
 using static SoC.Library.ScenarioTests.LocalGameControllerScenarioRunner;
@@ -81,7 +82,7 @@ namespace SoC.Library.ScenarioTests
                 .DuringPlayerTurn(MainPlayerName, 3, 3).EndTurn()
                 .Build()
                 .ExpectingEvents()
-                .Events(EventTypes.ResourcesCollectedEvent, 4)
+                .IgnoredEvents(typeof(ResourcesCollectedEvent), 4)
                 .ResourcesCollectedEvent(SecondOpponentName, SecondOpponentSecondSettlementLocation, ResourceClutch.OneOre)
                 .ResourcesCollectedEvent(MainPlayerName, MainPlayerFirstSettlementLocation, ResourceClutch.OneBrick)
                 .ResourcesCollectedEvent(FirstOpponentName, FirstOpponentSecondSettlementLocation, ResourceClutch.OneGrain)
@@ -105,13 +106,19 @@ namespace SoC.Library.ScenarioTests
                 .DuringPlayerTurn(MainPlayerName, 2, 3).EndTurn()
                 .DuringPlayerTurn(FirstOpponentName, 2, 2).EndTurn()
                 .DuringPlayerTurn(SecondOpponentName, 1, 3).EndTurn()
+                .DuringPlayerTurn(ThirdOpponentName, 2, 3).EndTurn()
+                .DuringPlayerTurn(MainPlayerName, 2, 3).EndTurn()
+                .DuringPlayerTurn(FirstOpponentName, 2, 2).EndTurn()
+                .DuringPlayerTurn(SecondOpponentName, 1, 3).EndTurn()
                 .DuringPlayerTurn(ThirdOpponentName, 2, 3)
-                    .BuildRoad(32, 42)
-                    .BuildSettlement(42).EndTurn()
+                    .BuildRoad(33, 22)
+                    .BuildRoad(22, 23)
+                    .BuildSettlement(23).EndTurn()
                 .Build()
                 .ExpectingEvents()
-                .BuildRoadEvent(ThirdOpponentName, 32, 42)
-                .BuildSettlementEvent(ThirdOpponentName, 42)
+                .BuildRoadEvent(ThirdOpponentName, 33, 22)
+                .BuildRoadEvent(ThirdOpponentName, 22, 23)
+                .BuildSettlementEvent(ThirdOpponentName, 23)
                 .Run();
         }
 

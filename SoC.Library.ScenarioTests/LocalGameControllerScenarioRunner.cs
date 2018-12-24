@@ -31,7 +31,7 @@ namespace SoC.Library.ScenarioTests
         private Queue<GameEvent> expectedEvents = null;
         private List<GameEvent> actualEvents = null;
         private Action<DiceRollEvent> diceRollEvent;
-        private Action<ResourcesCollectedEvent> ResourcesCollectedEventHandler;
+        private Action<ResourcesCollectedEvent> resourcesCollectedEventHandler;
         private TurnToken currentToken;
         private int lastPlayerTurnCount;
         private Guid lastPlayerId;
@@ -60,14 +60,14 @@ namespace SoC.Library.ScenarioTests
         public LocalGameControllerScenarioRunner BuildRoadEvent(string thirdOpponentName, uint roadSegmentStart, uint roadSegmentEnd)
         {
             var playerId = this.playersByName[thirdOpponentName].Id;
-            this.expectedEvents.Enqueue(new RoadSegmentBuiltEvent(playerId, roadSegmentStart, roadSegmentEnd));
+            this.AddExpectedEvent(new RoadSegmentBuiltEvent(playerId, roadSegmentStart, roadSegmentEnd));
             return this;
         }
 
         public LocalGameControllerScenarioRunner BuildSettlementEvent(string thirdOpponentName, uint settlementLocation)
         {
             var playerId = this.playersByName[thirdOpponentName].Id;
-            this.expectedEvents.Enqueue(new SettlementBuiltEvent(playerId, settlementLocation));
+            this.AddExpectedEvent(new SettlementBuiltEvent(playerId, settlementLocation));
             return this;
         }
 
@@ -76,26 +76,22 @@ namespace SoC.Library.ScenarioTests
             var player = this.playersByName[playerName];
 
             var expectedDiceRollEvent = new DiceRollEvent(player.Id, dice1, dice2);
-            this.expectedEvents.Enqueue(expectedDiceRollEvent);
-            this.RegisterEventHandler(EventTypes.DiceRollEvent);
+            this.AddExpectedEvent(expectedDiceRollEvent);
 
             return this;
         }
 
-        public LocalGameControllerScenarioRunner Events(EventTypes eventType, uint count)
+        public LocalGameControllerScenarioRunner IgnoredEvents(Type matchingType, uint count)
         {
             while (count-- > 0)
-            {
-                this.expectedEvents.Enqueue(new PlaceholderEvent(eventType));
-                this.RegisterEventHandler(eventType);
-            }
+                this.AddExpectedEvent(new IgnoredEvent(matchingType));
 
             return this;
         }
 
-        public LocalGameControllerScenarioRunner Event(EventTypes eventType)
+        public LocalGameControllerScenarioRunner IgnoredEvent(Type matchingType)
         {
-            return this.Events(eventType, 1);
+            return this.IgnoredEvents(matchingType, 1);
         }
 
         public LocalGameControllerScenarioRunner ExpectingEvents()
@@ -115,8 +111,7 @@ namespace SoC.Library.ScenarioTests
         public LocalGameControllerScenarioRunner ResourcesCollectedEvent(Guid playerId, ResourceCollection[] resourceCollection)
         {
             var expectedDiceRollEvent = new ResourcesCollectedEvent(playerId, resourceCollection);
-            this.expectedEvents.Enqueue(expectedDiceRollEvent);
-            this.RegisterEventHandler(EventTypes.ResourcesCollectedEvent);
+            this.AddExpectedEvent(expectedDiceRollEvent);
             return this;
         }
 
@@ -151,7 +146,7 @@ namespace SoC.Library.ScenarioTests
                 {
                     // Do the player turns and then the computer turns for this round
                     var computerPlayerTurns = 3;
-                    while (computerPlayerTurns-- > 0)
+                    while (computerPlayerTurns-- > 0 && turns.Count > 0)
                     {
                         var cpt = (ComputerPlayerTurn)turns.Dequeue();
                         cpt.ResolveActions();
@@ -292,28 +287,50 @@ namespace SoC.Library.ScenarioTests
             foreach (var gameEvent in gameEvents)
             {
                 if (gameEvent is ResourcesCollectedEvent resourceCollectedEvent)
-                    this.ResourcesCollectedEventHandler?.Invoke(resourceCollectedEvent);
+                    this.resourcesCollectedEventHandler?.Invoke(resourceCollectedEvent);
+
+                if (gameEvent is RoadSegmentBuiltEvent roadSegmentBuiltEvent) 
+                    this.roadSegmentBuiltEventHandler?.Invoke(roadSegmentBuiltEvent);
+
+                if (gameEvent is SettlementBuiltEvent settlementBuiltEvent)
+                    this.settlementBuiltEventHandler?.Invoke(settlementBuiltEvent);
             }
         }
 
-        private void RegisterEventHandler(EventTypes eventType)
+        private Action<RoadSegmentBuiltEvent> roadSegmentBuiltEventHandler;
+        private Action<SettlementBuiltEvent> settlementBuiltEventHandler;
+
+        private bool RegisterHandlerFor<T>(Type handlerType, GameEvent gameEvent, ref Action<T> handler) where T : GameEvent
         {
-            switch (eventType)
+            if ((gameEvent is T ||
+                (gameEvent is IgnoredEvent ignoredEvent && ignoredEvent.GameEventType == handlerType)) &&
+                handler == null)
             {
-                case EventTypes.DiceRollEvent:
-                {
-                    this.diceRollEvent = (DiceRollEvent d) => { this.TryAddEvent(d); };
-                    break;
-                }
-                case EventTypes.ResourcesCollectedEvent:
-                {
-                    this.ResourcesCollectedEventHandler = (ResourcesCollectedEvent r) => { this.TryAddEvent(r); };
-                    break;
-                }
+                handler = (T g) => { this.TryAddActualEvent(g); };
+                return true;
             }
+
+            return false;
         }
 
-        private void TryAddEvent(GameEvent gameEvent)
+        private void AddExpectedEvent(GameEvent gameEvent)
+        {
+            this.expectedEvents.Enqueue(gameEvent);
+
+            if (this.RegisterHandlerFor(typeof(DiceRollEvent), gameEvent, ref this.diceRollEvent))
+                return;
+
+            if (this.RegisterHandlerFor(typeof(ResourcesCollectedEvent), gameEvent, ref this.resourcesCollectedEventHandler))
+                return;
+
+            if (this.RegisterHandlerFor(typeof(RoadSegmentBuiltEvent), gameEvent, ref this.roadSegmentBuiltEventHandler))
+                return;
+
+            if (this.RegisterHandlerFor(typeof(SettlementBuiltEvent), gameEvent, ref this.settlementBuiltEventHandler))
+                return;
+        }
+
+        private void TryAddActualEvent(GameEvent gameEvent)
         {
             if (!this.refuseEvents)
                 this.actualEvents.Add(gameEvent);

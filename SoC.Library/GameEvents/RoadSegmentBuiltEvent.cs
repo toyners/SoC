@@ -5,16 +5,16 @@ namespace Jabberwocky.SoC.Library.GameEvents
 
   public class RoadSegmentBuiltEvent : GameEvent
   {
-    public readonly UInt32 StartLocation;
-    public readonly UInt32 EndLocation;
+    public readonly uint StartLocation;
+    public readonly uint EndLocation;
 
-    public RoadSegmentBuiltEvent(Guid playerId, UInt32 startLocation, UInt32 endLocation) : base(playerId)
+    public RoadSegmentBuiltEvent(Guid playerId, uint startLocation, uint endLocation) : base(playerId)
     {
       this.StartLocation = startLocation;
       this.EndLocation = endLocation;
     }
 
-    public override Boolean Equals(Object obj)
+    public override bool Equals(object obj)
     {
       if (!base.Equals(obj))
       {

@@ -54,7 +54,7 @@
     <Compile Include="MockNumberGenerator.cs" />
     <Compile Include="MockPlayer.cs" />
     <Compile Include="MockPlayerPool.cs" />
-    <Compile Include="PlaceholderEvent.cs" />
+    <Compile Include="IgnoredEvent.cs" />
     <Compile Include="PlaceInfrastructureInstruction.cs" />
     <Compile Include="ScenarioTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
