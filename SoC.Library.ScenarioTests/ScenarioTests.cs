@@ -170,7 +170,7 @@ namespace SoC.Library.ScenarioTests
 
         public override PlayerTurn BuildRoad(uint roadSegmentStart, uint roadSegmentEnd)
         {
-            this.actions.Add(new BuildRoadSegmentAction(roadSegmentStart, roadSegmentStart));
+            this.actions.Add(new BuildRoadSegmentAction(roadSegmentStart, roadSegmentEnd));
             return this;
         }
 

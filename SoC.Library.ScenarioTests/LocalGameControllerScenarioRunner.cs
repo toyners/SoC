@@ -149,6 +149,15 @@ namespace SoC.Library.ScenarioTests
                 }
                 else if (turn is PlayerTurn playerTurn)
                 {
+                    // Do the player turns and then the computer turns for this round
+                    var computerPlayerTurns = 3;
+                    while (computerPlayerTurns-- > 0)
+                    {
+                        var cpt = (ComputerPlayerTurn)turns.Dequeue();
+                        cpt.ResolveActions();
+
+                    }
+
                     this.localGameController.EndTurn(this.currentToken);
                 }
             } while (turns.Count > 0);

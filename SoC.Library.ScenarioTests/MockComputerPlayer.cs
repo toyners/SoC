@@ -48,7 +48,7 @@ namespace SoC.Library.ScenarioTests
 
         public override ComputerPlayerAction GetPlayerAction()
         {
-            return this.actions.Dequeue();
+            return this.actions.Count > 0 ? this.actions.Dequeue() : null;
         }
     }
 }
