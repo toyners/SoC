@@ -10,12 +10,6 @@ namespace SoC.Library.ScenarioTests
 {
     internal class LocalGameControllerScenarioRunner
     {
-        internal enum EventTypes
-        {
-            DiceRollEvent,
-            ResourcesCollectedEvent
-        }
-
         #region Fields
         private static LocalGameControllerScenarioRunner localGameControllerScenarioBuilder;
         private readonly MockPlayerPool mockPlayerPool = new MockPlayerPool();
