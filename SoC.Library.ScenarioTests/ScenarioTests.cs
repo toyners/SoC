@@ -122,6 +122,25 @@ namespace SoC.Library.ScenarioTests
                 .Run();
         }
 
+        [Test]
+        public void Scenario_ComputerPlayerBuildsCity()
+        {
+            this.CreateStandardLocalGameControllerScenarioRunner()
+                .DuringPlayerTurn(MainPlayerName, 3, 3).EndTurn()
+                .DuringPlayerTurn(FirstOpponentName, 3, 3).EndTurn()
+                .DuringPlayerTurn(SecondOpponentName, 3, 3).EndTurn()
+                .DuringPlayerTurn(ThirdOpponentName, 2, 3).EndTurn()
+                .DuringPlayerTurn(MainPlayerName, 5, 6).EndTurn()
+                .DuringPlayerTurn(FirstOpponentName, 5, 6).EndTurn()
+                .DuringPlayerTurn(SecondOpponentName, 3, 3).EndTurn()
+                .DuringPlayerTurn(ThirdOpponentName, 3, 3)
+                    .BuildCity(33).EndTurn()
+                .Build()
+                .ExpectingEvents()
+                .BuildCityEvent(ThirdOpponentName, 33)
+                .Run();
+        }
+
         private LocalGameControllerScenarioRunner CreateStandardLocalGameControllerScenarioRunner()
         {
             return LocalGameController()
@@ -163,6 +182,11 @@ namespace SoC.Library.ScenarioTests
         {
             throw new NotImplementedException();
         }
+
+        internal virtual PlayerTurn BuildCity(uint cityLocation)
+        {
+            throw new NotImplementedException();
+        }
     }
 
     internal class ComputerPlayerTurn : PlayerTurn
@@ -173,6 +197,12 @@ namespace SoC.Library.ScenarioTests
         public ComputerPlayerTurn(LocalGameControllerScenarioRunner runner, IPlayer player) : base(runner, player)
         {
             this.computerPlayer = (MockComputerPlayer)player;
+        }
+
+        internal override PlayerTurn BuildCity(uint cityLocation)
+        {
+            this.actions.Add(new BuildCityAction(cityLocation));
+            return this;
         }
 
         public override PlayerTurn BuildRoad(uint roadSegmentStart, uint roadSegmentEnd)
