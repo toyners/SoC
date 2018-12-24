@@ -601,41 +601,6 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
         }
 
         [Test]
-        public void Scenario_OpponentBuildsRoad()
-        {
-            // Arrange
-            var testInstances = LocalGameControllerTestCreator.CreateTestInstances(new MockGameBoardWithNoResourcesCollected());
-            var localGameController = testInstances.LocalGameController;
-            LocalGameControllerTestSetup.LaunchGameAndCompleteSetup(localGameController);
-
-            testInstances.Dice.AddSequence(new uint[] { 8, 8, 8, 8, 8 });
-
-            var firstOpponent = testInstances.FirstOpponent;
-            firstOpponent.AddResources(ResourceClutch.RoadSegment);
-
-            var buildRoadSegmentInstruction = new BuildRoadSegmentInstruction { Locations = new[] { 17u, 7u } };
-            firstOpponent.AddBuildRoadSegmentInstruction(buildRoadSegmentInstruction);
-
-            TurnToken turnToken = null;
-            localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
-
-            var actualEvents = new List<List<GameEvent>>();
-            localGameController.GameEvents = (List<GameEvent> e) => { actualEvents.Add(e); };
-
-            localGameController.StartGamePlay();
-
-            // Act
-            localGameController.EndTurn(turnToken);
-
-            // Assert
-            var expectedDiceRollEvent = new DiceRollEvent(firstOpponent.Id, 4, 4);
-            var expectedRoadSegmentBuiltEvent = new RoadSegmentBuiltEvent(firstOpponent.Id, 17u, 7u);
-            actualEvents.Count.ShouldBe(8);
-            actualEvents[2].ShouldContainExact(new GameEvent[] { expectedDiceRollEvent, expectedRoadSegmentBuiltEvent });
-            firstOpponent.ResourcesCount.ShouldBe(0);
-        }
-
-        [Test]
         public void Scenario_OpponentBuildsLongerRoadThanPlayer_LongestRoadEventReturned()
         {
             // Arrange

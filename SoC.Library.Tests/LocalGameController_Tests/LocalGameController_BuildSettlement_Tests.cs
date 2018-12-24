@@ -484,44 +484,6 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
         }
 
         [Test]
-        public void Scenario_OpponentBuildsSettlement()
-        {
-            // Arrange
-            var testInstances = LocalGameControllerTestCreator.CreateTestInstances(new MockGameBoardWithNoResourcesCollected());
-            var localGameController = testInstances.LocalGameController;
-            LocalGameControllerTestSetup.LaunchGameAndCompleteSetup(localGameController);
-
-            testInstances.Dice.AddSequence(new uint[] { 8, 8, 8, 8, 8 });
-
-            var firstOpponent = testInstances.FirstOpponent;
-            firstOpponent.AddResources(ResourceClutch.RoadSegment);
-            firstOpponent.AddResources(ResourceClutch.Settlement);
-
-            firstOpponent.AddBuildRoadSegmentInstruction(new BuildRoadSegmentInstruction { Locations = new[] { 17u, 7u } })
-              .AddBuildSettlementInstruction(new BuildSettlementInstruction { Location = 7u });
-
-            TurnToken turnToken = null;
-            localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
-
-            var gameEvents = new List<List<GameEvent>>();
-            localGameController.GameEvents = (List<GameEvent> e) => { gameEvents.Add(e); };
-
-            localGameController.StartGamePlay();
-
-            // Act
-            localGameController.EndTurn(turnToken);
-
-            // Assert
-            gameEvents.Count.ShouldBe(8);
-            gameEvents[2].ShouldContainExact(new GameEvent[] {
-                new DiceRollEvent(firstOpponent.Id, 4, 4),
-                new RoadSegmentBuiltEvent(firstOpponent.Id, 17u, 7u),
-                new SettlementBuiltEvent(firstOpponent.Id, 7u)});
-            firstOpponent.ResourcesCount.ShouldBe(0);
-            firstOpponent.VictoryPoints.ShouldBe(3u);
-        }
-
-        [Test]
         public void Scenario_OpponentBuildsSettlementToWin()
         {
             // Arrange
