@@ -39,7 +39,7 @@ namespace SoC.Library.ScenarioTests
         const uint MainPlayerSecondRoadEnd = 39;
 
         [Test]
-        public void Test()
+        public void Scenario_AllPlayersHaveDiceRollEventInTheirTurn()
         {
             var localGameController = this.CreateStandardLocalGameControllerScenarioRunner()
                 .DuringPlayerTurn(MainPlayerName, 4, 4).EndTurn()
