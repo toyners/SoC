@@ -24,8 +24,6 @@ namespace SoC.Library.ScenarioTests
         private LocalGameController localGameController = null;
         private Queue<GameEvent> expectedEvents = null;
         private List<GameEvent> actualEvents = null;
-        private Action<DiceRollEvent> diceRollEvent;
-        private Action<ResourcesCollectedEvent> resourcesCollectedEventHandler;
         private TurnToken currentToken;
         private int lastPlayerTurnCount;
         private Guid lastPlayerId;
@@ -34,6 +32,13 @@ namespace SoC.Library.ScenarioTests
 
         #region Construction
         private LocalGameControllerScenarioRunner() {}
+        #endregion
+
+        #region Events
+        private Action<DiceRollEvent> diceRollEventHandler;
+        private Action<ResourcesCollectedEvent> resourcesCollectedEventHandler;
+        private Action<RoadSegmentBuiltEvent> roadSegmentBuiltEventHandler;
+        private Action<SettlementBuiltEvent> settlementBuiltEventHandler;
         #endregion
 
         #region Methods
@@ -277,7 +282,7 @@ namespace SoC.Library.ScenarioTests
             if (!this.refuseEvents && this.lastPlayerId == playerId && --this.lastPlayerTurnCount < 0)
                 this.refuseEvents = true;
 
-            this.diceRollEvent?.Invoke(new DiceRollEvent(playerId, dice1, dice2));
+            this.diceRollEventHandler?.Invoke(new DiceRollEvent(playerId, dice1, dice2));
         }
 
         private void GameEventsHandler(List<GameEvent> gameEvents)
@@ -295,13 +300,14 @@ namespace SoC.Library.ScenarioTests
 
                 if (gameEvent is SettlementBuiltEvent settlementBuiltEvent)
                     this.settlementBuiltEventHandler?.Invoke(settlementBuiltEvent);
+
+                if (gameEvent is DiceRollEvent diceRollEvent)
+                    this.diceRollEventHandler?.Invoke(diceRollEvent);
             }
         }
 
-        private Action<RoadSegmentBuiltEvent> roadSegmentBuiltEventHandler;
-        private Action<SettlementBuiltEvent> settlementBuiltEventHandler;
 
-        private bool RegisterHandlerFor<T>(Type handlerType, GameEvent gameEvent, ref Action<T> handler) where T : GameEvent
+        private bool RegisterEventHandlerFor<T>(Type handlerType, GameEvent gameEvent, ref Action<T> handler) where T : GameEvent
         {
             if ((gameEvent is T ||
                 (gameEvent is IgnoredEvent ignoredEvent && ignoredEvent.GameEventType == handlerType)) &&
@@ -318,16 +324,16 @@ namespace SoC.Library.ScenarioTests
         {
             this.expectedEvents.Enqueue(gameEvent);
 
-            if (this.RegisterHandlerFor(typeof(DiceRollEvent), gameEvent, ref this.diceRollEvent))
+            if (this.RegisterEventHandlerFor(typeof(DiceRollEvent), gameEvent, ref this.diceRollEventHandler))
                 return;
 
-            if (this.RegisterHandlerFor(typeof(ResourcesCollectedEvent), gameEvent, ref this.resourcesCollectedEventHandler))
+            if (this.RegisterEventHandlerFor(typeof(ResourcesCollectedEvent), gameEvent, ref this.resourcesCollectedEventHandler))
                 return;
 
-            if (this.RegisterHandlerFor(typeof(RoadSegmentBuiltEvent), gameEvent, ref this.roadSegmentBuiltEventHandler))
+            if (this.RegisterEventHandlerFor(typeof(RoadSegmentBuiltEvent), gameEvent, ref this.roadSegmentBuiltEventHandler))
                 return;
 
-            if (this.RegisterHandlerFor(typeof(SettlementBuiltEvent), gameEvent, ref this.settlementBuiltEventHandler))
+            if (this.RegisterEventHandlerFor(typeof(SettlementBuiltEvent), gameEvent, ref this.settlementBuiltEventHandler))
                 return;
         }
 
