@@ -123,6 +123,29 @@ namespace SoC.Library.ScenarioTests
         }
 
         [Test]
+        public void Scenario_ComputerPlayerBuildsSettlementToWin()
+        {
+            this.CreateStandardLocalGameControllerScenarioRunner()
+                .DuringPlayerTurn(MainPlayerName, 2, 3).EndTurn()
+                .DuringPlayerTurn(FirstOpponentName, 2, 2).EndTurn()
+                .DuringPlayerTurn(SecondOpponentName, 1, 3).EndTurn()
+                .DuringPlayerTurn(ThirdOpponentName, 2, 3).EndTurn()
+                .DuringPlayerTurn(MainPlayerName, 2, 3).EndTurn()
+                .DuringPlayerTurn(FirstOpponentName, 2, 2).EndTurn()
+                .DuringPlayerTurn(SecondOpponentName, 1, 3).EndTurn()
+                .DuringPlayerTurn(ThirdOpponentName, 2, 3)
+                    .BuildRoad(33, 22)
+                    .BuildRoad(22, 23)
+                    .BuildSettlement(23).EndTurn()
+                .Build()
+                .ExpectingEvents()
+                .BuildRoadEvent(ThirdOpponentName, 33, 22)
+                .BuildRoadEvent(ThirdOpponentName, 22, 23)
+                .BuildSettlementEvent(ThirdOpponentName, 23)
+                .Run();
+        }
+
+        [Test]
         public void Scenario_ComputerPlayerBuildsCity()
         {
             this.CreateStandardLocalGameControllerScenarioRunner()
@@ -152,6 +175,23 @@ namespace SoC.Library.ScenarioTests
                 .WithPlayerSetup(ThirdOpponentName, ThirdOpponentFirstSettlementLocation, ThirdOpponentFirstRoadEnd, ThirdOpponentSecondSettlementLocation, ThirdOpponentSecondRoadEnd)
                 .WithTurnOrder(MainPlayerName, FirstOpponentName, SecondOpponentName, ThirdOpponentName);
         }
+
+        private LocalGameControllerScenarioRunner CreateStandardLocalGameControllerScenarioRunner(ResourceClutch mainPlayerResources, ResourceClutch firstOpponentResources, ResourceClutch secondOpponentResources, ResourceClutch thirdOpponentResources)
+        {
+            return LocalGameController()
+                .WithMainPlayer(MainPlayerName)
+                .WithComputerPlayer(FirstOpponentName).WithComputerPlayer(SecondOpponentName).WithComputerPlayer(ThirdOpponentName)
+                .WithPlayerSetup(MainPlayerName, MainPlayerFirstSettlementLocation, MainPlayerFirstRoadEnd, MainPlayerSecondSettlementLocation, MainPlayerSecondRoadEnd)
+                .WithPlayerSetup(FirstOpponentName, FirstOpponentFirstSettlementLocation, FirstOpponentFirstRoadEnd, FirstOpponentSecondSettlementLocation, FirstOpponentSecondRoadEnd)
+                .WithPlayerSetup(SecondOpponentName, SecondOpponentFirstSettlementLocation, SecondOpponentFirstRoadEnd, SecondOpponentSecondSettlementLocation, SecondOpponentSecondRoadEnd)
+                .WithPlayerSetup(ThirdOpponentName, ThirdOpponentFirstSettlementLocation, ThirdOpponentFirstRoadEnd, ThirdOpponentSecondSettlementLocation, ThirdOpponentSecondRoadEnd)
+                .WithStartingResourcesForPlayer(mainPlayerResources)
+                .WithStartingResourcesForPlayer(firstOpponentResources)
+                .WithStartingResourcesForPlayer(secondOpponentResources)
+                .WithStartingResourcesForPlayer(thirdOpponentResources)
+                .WithTurnOrder(MainPlayerName, FirstOpponentName, SecondOpponentName, ThirdOpponentName);
+        }
+        
     }
     
 

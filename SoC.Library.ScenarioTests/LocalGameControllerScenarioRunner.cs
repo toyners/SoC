@@ -262,6 +262,11 @@ namespace SoC.Library.ScenarioTests
             return playerTurn;
         }
 
+        public LocalGameControllerScenarioRunner WithStartingResourcesForPlayer(string playerName, ResourceClutch playerResources)
+        {
+            return this;
+        }
+
         private IPlayer CreatePlayer(string name, bool isComputerPlayer)
         {
             IPlayer player = isComputerPlayer
