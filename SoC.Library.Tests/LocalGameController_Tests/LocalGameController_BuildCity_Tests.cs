@@ -451,50 +451,6 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
             errorDetails.ShouldNotBeNull();
             errorDetails.Message.ShouldBe("Cannot build city. Game is over.");
         }
-
-        [Test]
-        public void Scenario_OpponentBuildsCityToWin()
-        {
-            // Arrange
-            var testInstances = LocalGameControllerTestCreator.CreateTestInstances(new MockGameBoardWithNoResourcesCollected());
-            var localGameController = testInstances.LocalGameController;
-            LocalGameControllerTestSetup.LaunchGameAndCompleteSetup(localGameController);
-
-            testInstances.Dice.AddSequence(new uint[] { 8, 8, 8, 8, 8 });
-
-            var firstOpponent = testInstances.FirstOpponent;
-            firstOpponent
-              .AddBuildRoadSegmentInstruction(new BuildRoadSegmentInstruction { Locations = new UInt32[] { 17, 7, 7, 8, 8, 0, 0, 1 } })
-              .AddBuildSettlementInstruction(new BuildSettlementInstruction { Location = 1 })
-              .AddBuildSettlementInstruction(new BuildSettlementInstruction { Location = 7 })
-              .AddBuildCityInstruction(new BuildCityInstruction { Location = 1 })
-              .AddBuildCityInstruction(new BuildCityInstruction { Location = 7 })
-              .AddBuildCityInstruction(new BuildCityInstruction { Location = 18 })
-              .AddBuildCityInstruction(new BuildCityInstruction { Location = 43 });
-
-            TurnToken turnToken = null;
-            localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
-
-            var gameEvents = new List<List<GameEvent>>();
-            localGameController.GameEvents = (List<GameEvent> e) => 
-            {
-                gameEvents.Add(e);
-            };
-
-            localGameController.StartGamePlay();
-
-            // Act
-            localGameController.EndTurn(turnToken);
-
-            // Assert
-            var expectedWinningGameEvent = new GameWinEvent(firstOpponent.Id);
-
-            gameEvents.Count.ShouldBe(3);
-            gameEvents[2].Count.ShouldBe(13);
-            gameEvents[2][12].ShouldBe(expectedWinningGameEvent);
-            firstOpponent.VictoryPoints.ShouldBe(10u);
-            localGameController.GamePhase.ShouldBe(LocalGameController.GamePhases.GameOver);
-        }
         #endregion
     }
 }

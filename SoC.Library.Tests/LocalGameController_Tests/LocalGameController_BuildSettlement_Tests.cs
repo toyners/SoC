@@ -482,54 +482,6 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
             errorDetails.ShouldNotBeNull();
             errorDetails.Message.ShouldBe("Cannot build settlement. Game is over.");
         }
-
-        [Test]
-        public void Scenario_OpponentBuildsSettlementToWin()
-        {
-            // Arrange
-            var testInstances = LocalGameControllerTestCreator.CreateTestInstances(new MockGameBoardWithNoResourcesCollected());
-            var localGameController = testInstances.LocalGameController;
-            LocalGameControllerTestSetup.LaunchGameAndCompleteSetup(localGameController);
-
-            testInstances.Dice.AddSequence(new uint[] { 8, 8, 8, 8, 8 });
-
-            var player = testInstances.MainPlayer;
-            player.AddResources(ResourceClutch.RoadSegment * 5);
-            player.AddResources(ResourceClutch.Settlement * 3);
-            player.AddResources(ResourceClutch.City * 3);
-
-            var firstOpponent = testInstances.FirstOpponent;
-            firstOpponent
-              .AddBuildRoadSegmentInstruction(new BuildRoadSegmentInstruction { Locations = new UInt32[] { 17, 7, 7, 8, 8, 0, 0, 1, 8, 9 } })
-              .AddBuildSettlementInstruction(new BuildSettlementInstruction { Location = 7 })
-              .AddBuildSettlementInstruction(new BuildSettlementInstruction { Location = 0 })
-              .AddBuildCityInstruction(new BuildCityInstruction { Location = 7 })
-              .AddBuildCityInstruction(new BuildCityInstruction { Location = 0 })
-              .AddBuildCityInstruction(new BuildCityInstruction { Location = 18 })
-              .AddBuildSettlementInstruction(new BuildSettlementInstruction { Location = 9 });
-
-            TurnToken turnToken = null;
-            localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
-
-            var events = new List<List<GameEvent>>();
-            localGameController.GameEvents = (List<GameEvent> e) => { events.Add(e); };
-
-            var winningPlayer = Guid.Empty;
-            localGameController.GameOverEvent = (Guid g) => { winningPlayer = g; };
-
-            localGameController.StartGamePlay();
-
-            // Act
-            localGameController.EndTurn(turnToken);
-
-            // Assert
-            var expectedWinningGameEvent = new GameWinEvent(firstOpponent.Id);
-
-            events.Count.ShouldBe(3);
-            events[2][13].ShouldBe(expectedWinningGameEvent);
-            firstOpponent.VictoryPoints.ShouldBe(10u);
-            winningPlayer.ShouldBe(firstOpponent.Id);
-        }
         #endregion
     }
 }
