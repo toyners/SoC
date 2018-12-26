@@ -38,6 +38,11 @@ namespace Jabberwocky.SoC.Library.GameEvents
         {
             return base.GetHashCode();
         }
+
+        public override string ToString()
+        {
+            return this.GetType().ToString();
+        }
         #endregion
     }
 

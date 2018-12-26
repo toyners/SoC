@@ -21,10 +21,10 @@ namespace SoC.Library.ScenarioTests
         private readonly Dictionary<string, IPlayer> playersByName = new Dictionary<string, IPlayer>();
         private readonly Dictionary<string, MockComputerPlayer> computerPlayersByName = new Dictionary<string, MockComputerPlayer>();
         private readonly List<IPlayer> players = new List<IPlayer>(4);
-        private LocalGameController localGameController = null;
-        private Queue<GameEvent> expectedEvents = null;
-        private List<GameEvent> actualEvents = null;
         private TurnToken currentToken;
+        private LocalGameController localGameController = null;
+        private List<GameEvent> actualEvents = null;
+        private Queue<GameEvent> expectedEvents = null;
         private int lastPlayerTurnCount;
         private Guid lastPlayerId;
         private bool refuseEvents;
@@ -36,6 +36,7 @@ namespace SoC.Library.ScenarioTests
 
         #region Events
         private Action<DiceRollEvent> diceRollEventHandler;
+        private Action<GameWinEvent> gameWinEventHandler;
         private Action<ResourcesCollectedEvent> resourcesCollectedEventHandler;
         private Action<RoadSegmentBuiltEvent> roadSegmentBuiltEventHandler;
         private Action<SettlementBuiltEvent> settlementBuiltEventHandler;
@@ -184,6 +185,19 @@ namespace SoC.Library.ScenarioTests
             return this.localGameController;
         }
 
+        private string CreateExpectedEventMessage(GameEvent gameEvent)
+        {
+            return "";
+        }
+
+        public LocalGameControllerScenarioRunner GameWonEvent(string firstOpponentName, uint expectedScore)
+        {
+            var playerId = this.playersByName[firstOpponentName].Id;
+            var expectedGameWonEvent = new GameWinEvent(playerId);
+            this.AddExpectedEvent(expectedGameWonEvent);
+            return this;
+        }
+
         public ResourceCollectedEventGroup StartResourcesCollectedEvent(string playerName)
         {
             var player = this.playersByName[playerName];
@@ -264,6 +278,8 @@ namespace SoC.Library.ScenarioTests
 
         public LocalGameControllerScenarioRunner WithStartingResourcesForPlayer(string playerName, ResourceClutch playerResources)
         {
+            var player = this.playersByName[playerName];
+            player.AddResources(playerResources);
             return this;
         }
 
@@ -308,6 +324,9 @@ namespace SoC.Library.ScenarioTests
 
                 if (gameEvent is DiceRollEvent diceRollEvent)
                     this.diceRollEventHandler?.Invoke(diceRollEvent);
+
+                if (gameEvent is GameWinEvent gameWinEvent)
+                    this.gameWinEventHandler?.Invoke(gameWinEvent);
             }
         }
 
@@ -339,6 +358,9 @@ namespace SoC.Library.ScenarioTests
                 return;
 
             if (this.RegisterEventHandlerFor(typeof(SettlementBuiltEvent), gameEvent, ref this.settlementBuiltEventHandler))
+                return;
+
+            if (this.RegisterEventHandlerFor(typeof(GameWinEvent), gameEvent, ref this.gameWinEventHandler))
                 return;
         }
 

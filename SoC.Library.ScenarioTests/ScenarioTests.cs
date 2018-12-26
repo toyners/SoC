@@ -125,23 +125,23 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void Scenario_ComputerPlayerBuildsSettlementToWin()
         {
-            this.CreateStandardLocalGameControllerScenarioRunner()
-                .DuringPlayerTurn(MainPlayerName, 2, 3).EndTurn()
-                .DuringPlayerTurn(FirstOpponentName, 2, 2).EndTurn()
-                .DuringPlayerTurn(SecondOpponentName, 1, 3).EndTurn()
-                .DuringPlayerTurn(ThirdOpponentName, 2, 3).EndTurn()
-                .DuringPlayerTurn(MainPlayerName, 2, 3).EndTurn()
-                .DuringPlayerTurn(FirstOpponentName, 2, 2).EndTurn()
-                .DuringPlayerTurn(SecondOpponentName, 1, 3).EndTurn()
-                .DuringPlayerTurn(ThirdOpponentName, 2, 3)
-                    .BuildRoad(33, 22)
-                    .BuildRoad(22, 23)
-                    .BuildSettlement(23).EndTurn()
+            var firstOpponentResources = (ResourceClutch.RoadSegment * 5) + (ResourceClutch.Settlement * 3) + (ResourceClutch.City * 3);
+            this.CreateStandardLocalGameControllerScenarioRunner(ResourceClutch.Zero, firstOpponentResources, ResourceClutch.Zero, ResourceClutch.Zero)
+                .DuringPlayerTurn(MainPlayerName, 4, 4).EndTurn()
+                .DuringPlayerTurn(FirstOpponentName, 3, 3)
+                    .BuildRoad(17, 7).BuildRoad(7, 8).BuildRoad(8, 0).BuildRoad(0, 1).BuildRoad(8, 9)
+                    .BuildSettlement(7).BuildSettlement(0)
+                    .BuildCity(7).BuildCity(0).BuildCity(18)
+                    .BuildSettlement(9).EndTurn()
                 .Build()
                 .ExpectingEvents()
-                .BuildRoadEvent(ThirdOpponentName, 33, 22)
-                .BuildRoadEvent(ThirdOpponentName, 22, 23)
-                .BuildSettlementEvent(ThirdOpponentName, 23)
+                    .DiceRollEvent(MainPlayerName, 4, 4)
+                    .DiceRollEvent(FirstOpponentName, 3, 3)
+                    .BuildRoadEvent(FirstOpponentName, 17, 7).BuildRoadEvent(FirstOpponentName, 7, 8).BuildRoadEvent(FirstOpponentName, 8, 0).BuildRoadEvent(FirstOpponentName, 0, 1).BuildRoadEvent(FirstOpponentName, 8, 9)
+                    .BuildSettlementEvent(FirstOpponentName, 7).BuildSettlementEvent(FirstOpponentName, 0)
+                    .BuildCityEvent(FirstOpponentName, 7).BuildCityEvent(FirstOpponentName, 0).BuildCityEvent(FirstOpponentName, 18)
+                    .BuildSettlementEvent(FirstOpponentName, 9)
+                    .GameWonEvent(FirstOpponentName, 10)
                 .Run();
         }
 
@@ -185,10 +185,10 @@ namespace SoC.Library.ScenarioTests
                 .WithPlayerSetup(FirstOpponentName, FirstOpponentFirstSettlementLocation, FirstOpponentFirstRoadEnd, FirstOpponentSecondSettlementLocation, FirstOpponentSecondRoadEnd)
                 .WithPlayerSetup(SecondOpponentName, SecondOpponentFirstSettlementLocation, SecondOpponentFirstRoadEnd, SecondOpponentSecondSettlementLocation, SecondOpponentSecondRoadEnd)
                 .WithPlayerSetup(ThirdOpponentName, ThirdOpponentFirstSettlementLocation, ThirdOpponentFirstRoadEnd, ThirdOpponentSecondSettlementLocation, ThirdOpponentSecondRoadEnd)
-                .WithStartingResourcesForPlayer(mainPlayerResources)
-                .WithStartingResourcesForPlayer(firstOpponentResources)
-                .WithStartingResourcesForPlayer(secondOpponentResources)
-                .WithStartingResourcesForPlayer(thirdOpponentResources)
+                .WithStartingResourcesForPlayer(MainPlayerName, mainPlayerResources)
+                .WithStartingResourcesForPlayer(FirstOpponentName, firstOpponentResources)
+                .WithStartingResourcesForPlayer(SecondOpponentName, secondOpponentResources)
+                .WithStartingResourcesForPlayer(ThirdOpponentName, thirdOpponentResources)
                 .WithTurnOrder(MainPlayerName, FirstOpponentName, SecondOpponentName, ThirdOpponentName);
         }
         
