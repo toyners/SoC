@@ -141,7 +141,7 @@ namespace SoC.Library.ScenarioTests
                     .BuildSettlementEvent(FirstOpponentName, 7).BuildSettlementEvent(FirstOpponentName, 0)
                     .BuildCityEvent(FirstOpponentName, 7).BuildCityEvent(FirstOpponentName, 0).BuildCityEvent(FirstOpponentName, 18)
                     .BuildSettlementEvent(FirstOpponentName, 9)
-                    .GameWonEvent(FirstOpponentName, 10)
+                    .GameWinEvent(FirstOpponentName, 10)
                 .Run();
         }
 
@@ -181,7 +181,7 @@ namespace SoC.Library.ScenarioTests
                     .BuildRoadEvent(FirstOpponentName, 17, 7).BuildRoadEvent(FirstOpponentName, 7, 8).BuildRoadEvent(FirstOpponentName, 8, 0).BuildRoadEvent(FirstOpponentName, 0, 1)
                     .BuildSettlementEvent(FirstOpponentName, 1).BuildSettlementEvent(FirstOpponentName, 7)
                     .BuildCityEvent(FirstOpponentName, 1).BuildCityEvent(FirstOpponentName, 7).BuildCityEvent(FirstOpponentName, 18).BuildCityEvent(FirstOpponentName, 43)
-                    .GameWonEvent(FirstOpponentName, 10)
+                    .GameWinEvent(FirstOpponentName, 10)
                 .Run();
         }
 

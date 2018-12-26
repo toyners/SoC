@@ -185,12 +185,7 @@ namespace SoC.Library.ScenarioTests
             return this.localGameController;
         }
 
-        private string CreateExpectedEventMessage(GameEvent gameEvent)
-        {
-            return "";
-        }
-
-        public LocalGameControllerScenarioRunner GameWonEvent(string firstOpponentName, uint expectedScore)
+        public LocalGameControllerScenarioRunner GameWinEvent(string firstOpponentName, uint expectedVictoryPoints)
         {
             var playerId = this.playersByName[firstOpponentName].Id;
             var expectedGameWonEvent = new GameWinEvent(playerId);
