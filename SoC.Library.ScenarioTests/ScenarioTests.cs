@@ -185,6 +185,21 @@ namespace SoC.Library.ScenarioTests
                 .Run();
         }
 
+        /// <summary>
+        /// Test that the largest army event is not sent when the opponent plays knight cards and already has the largest army
+        /// </summary>
+        [Test]
+        public void Scenario_LargestArmyEventOnlyReturnedFirstTimeThatOpponentHasMostKnightCardsPlayed()
+        {
+            var firstOpponentResources = ResourceClutch.DevelopmentCard * 4;
+            this.CreateStandardLocalGameControllerScenarioRunner(ResourceClutch.Zero, firstOpponentResources, ResourceClutch.Zero, ResourceClutch.Zero)
+                .DuringPlayerTurn(MainPlayerName, 4, 4).EndTurn()
+                .DuringPlayerTurn(FirstOpponentName, 3, 3)
+                    .BuyDevelopmentCard(new KnightDevelopmentCard()).EndTurn()
+                .Build()
+                .Run();
+        }
+
         private LocalGameControllerScenarioRunner CreateStandardLocalGameControllerScenarioRunner()
         {
             return LocalGameController()
@@ -212,9 +227,9 @@ namespace SoC.Library.ScenarioTests
                 .WithStartingResourcesForPlayer(ThirdOpponentName, thirdOpponentResources)
                 .WithTurnOrder(MainPlayerName, FirstOpponentName, SecondOpponentName, ThirdOpponentName);
         }
-        
+
     }
-    
+
 
     internal class PlayerTurn
     {
@@ -248,6 +263,11 @@ namespace SoC.Library.ScenarioTests
         {
             throw new NotImplementedException();
         }
+
+        public virtual PlayerTurn BuyDevelopmentCard(DevelopmentCard developmentCard)
+        {
+            return this;
+        }
     }
 
     internal class ComputerPlayerTurn : PlayerTurn
@@ -276,6 +296,11 @@ namespace SoC.Library.ScenarioTests
         {
             this.actions.Add(new BuildSettlementAction(settlementLocation));
             return this;
+        }
+
+        public override PlayerTurn BuyDevelopmentCard(DevelopmentCard developmentCard)
+        {
+            return base.BuyDevelopmentCard(developmentCard);
         }
 
         public void ResolveActions()

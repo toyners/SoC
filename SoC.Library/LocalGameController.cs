@@ -1060,7 +1060,7 @@ namespace Jabberwocky.SoC.Library
         {
             if (computerPlayer.VictoryPoints >= 10)
             {
-                events.Add(new GameWinEvent(computerPlayer.Id));
+                events.Add(new GameWinEvent(computerPlayer.Id, computerPlayer.VictoryPoints));
                 this.GamePhase = GamePhases.GameOver;
                 return true;
             }

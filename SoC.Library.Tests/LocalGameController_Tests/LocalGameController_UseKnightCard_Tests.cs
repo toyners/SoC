@@ -1227,7 +1227,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
             localGameController.EndTurn(turnToken);
 
             // Assert
-            var expectedGameWinEvent = new GameWinEvent(firstOpponent.Id);
+            var expectedGameWinEvent = new GameWinEvent(firstOpponent.Id, firstOpponent.VictoryPoints);
 
             gameEvents.Count.ShouldBe(24);
             gameEvents[23].Count.ShouldBe(4);
@@ -1282,7 +1282,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
             localGameController.EndTurn(turnToken);
 
             // Assert
-            var expectedGameWinEvent = new GameWinEvent(firstOpponent.Id);
+            var expectedGameWinEvent = new GameWinEvent(firstOpponent.Id, firstOpponent.VictoryPoints);
 
             gameEvents.Count.ShouldBe(24);
             gameEvents[23].Count.ShouldBe(4);

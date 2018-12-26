@@ -188,7 +188,7 @@ namespace SoC.Library.ScenarioTests
         public LocalGameControllerScenarioRunner GameWinEvent(string firstOpponentName, uint expectedVictoryPoints)
         {
             var playerId = this.playersByName[firstOpponentName].Id;
-            var expectedGameWonEvent = new GameWinEvent(playerId);
+            var expectedGameWonEvent = new GameWinEvent(playerId, expectedVictoryPoints);
             this.AddExpectedEvent(expectedGameWonEvent);
             return this;
         }
