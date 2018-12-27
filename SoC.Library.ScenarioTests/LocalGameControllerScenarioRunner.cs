@@ -38,12 +38,17 @@ namespace SoC.Library.ScenarioTests
             return localGameControllerScenarioBuilder = new LocalGameControllerScenarioRunner();
         }
 
-        public LocalGameControllerScenarioRunner Build()
+        public LocalGameControllerScenarioRunner Build(int expectedEventCount = -1)
         {
             this.localGameController = new LocalGameController(this.mockNumberGenerator, this.mockPlayerPool);
             this.localGameController.DiceRollEvent = this.DiceRollEventHandler;
             this.localGameController.GameEvents = this.GameEventsHandler;
             this.localGameController.StartPlayerTurnEvent = (TurnToken t) => { this.currentToken = t; };
+
+            this.expectedEventCount = expectedEventCount;
+            this.relevantEvents = new Queue<GameEvent>();
+            this.actualEvents = new List<GameEvent>();
+
             return this;
         }
 
@@ -89,14 +94,6 @@ namespace SoC.Library.ScenarioTests
         public LocalGameControllerScenarioRunner IgnoredEvent(Type matchingType)
         {
             return this.IgnoredEvents(matchingType, 1);
-        }
-
-        public LocalGameControllerScenarioRunner ExpectingEvents(int expectedEventCount = -1)
-        {
-            this.expectedEventCount = expectedEventCount;
-            this.relevantEvents = new Queue<GameEvent>();
-            this.actualEvents = new List<GameEvent>();
-            return this;
         }
 
         public LocalGameControllerScenarioRunner ResourcesCollectedEvent(string playerName, uint location, ResourceClutch resourceClutch)

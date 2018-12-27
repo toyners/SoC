@@ -48,7 +48,6 @@ namespace SoC.Library.ScenarioTests
                 .DuringPlayerTurn(SecondOpponentName, 1, 1).EndTurn()
                 .DuringPlayerTurn(ThirdOpponentName, 2, 2).EndTurn()
                 .Build()
-                .ExpectingEvents()
                 .DiceRollEvent(MainPlayerName, 4, 4)
                 .DiceRollEvent(FirstOpponentName, 2, 2)
                 .DiceRollEvent(SecondOpponentName, 1, 1)
@@ -62,7 +61,6 @@ namespace SoC.Library.ScenarioTests
             var localGameController = this.CreateStandardLocalGameControllerScenarioRunner()
                 .DuringPlayerTurn(MainPlayerName, 1, 5).EndTurn()
                 .Build()
-                .ExpectingEvents()
                 .ResourcesCollectedEvent(FirstOpponentName, FirstOpponentFirstSettlementLocation, ResourceClutch.OneOre)
                 .StartResourcesCollectedEvent(SecondOpponentName)
                     .AddResourceCollection(SecondOpponentFirstSettlementLocation, ResourceClutch.OneLumber)
@@ -82,7 +80,6 @@ namespace SoC.Library.ScenarioTests
                 .DuringPlayerTurn(ThirdOpponentName, 4, 4).EndTurn()
                 .DuringPlayerTurn(MainPlayerName, 3, 3).EndTurn()
                 .Build()
-                .ExpectingEvents()
                 .IgnoredEvents(typeof(ResourcesCollectedEvent), 4)
                 .ResourcesCollectedEvent(SecondOpponentName, SecondOpponentSecondSettlementLocation, ResourceClutch.OneOre)
                 .ResourcesCollectedEvent(MainPlayerName, MainPlayerFirstSettlementLocation, ResourceClutch.OneBrick)
@@ -116,7 +113,6 @@ namespace SoC.Library.ScenarioTests
                     .BuildRoad(22, 23)
                     .BuildSettlement(23).EndTurn()
                 .Build()
-                .ExpectingEvents()
                 .BuildRoadEvent(ThirdOpponentName, 33, 22)
                 .BuildRoadEvent(ThirdOpponentName, 22, 23)
                 .BuildSettlementEvent(ThirdOpponentName, 23)
@@ -135,7 +131,6 @@ namespace SoC.Library.ScenarioTests
                     .BuildCity(7).BuildCity(0).BuildCity(18)
                     .BuildSettlement(9).EndTurn()
                 .Build()
-                .ExpectingEvents()
                     .DiceRollEvent(MainPlayerName, 4, 4)
                     .DiceRollEvent(FirstOpponentName, 3, 3)
                     .BuildRoadEvent(FirstOpponentName, 17, 7).BuildRoadEvent(FirstOpponentName, 7, 8).BuildRoadEvent(FirstOpponentName, 8, 0).BuildRoadEvent(FirstOpponentName, 0, 1).BuildRoadEvent(FirstOpponentName, 8, 9)
@@ -160,7 +155,6 @@ namespace SoC.Library.ScenarioTests
                 .DuringPlayerTurn(ThirdOpponentName, 3, 3)
                     .BuildCity(33).EndTurn()
                 .Build()
-                .ExpectingEvents()
                 .BuildCityEvent(ThirdOpponentName, 33)
                 .Run();
         }
@@ -176,7 +170,6 @@ namespace SoC.Library.ScenarioTests
                     .BuildSettlement(1).BuildSettlement(7)
                     .BuildCity(1).BuildCity(7).BuildCity(18).BuildCity(43).EndTurn()
                 .Build()
-                .ExpectingEvents()
                     .DiceRollEvent(MainPlayerName, 4, 4)
                     .DiceRollEvent(FirstOpponentName, 3, 3)
                     .BuildRoadEvent(FirstOpponentName, 17, 7).BuildRoadEvent(FirstOpponentName, 7, 8).BuildRoadEvent(FirstOpponentName, 8, 0).BuildRoadEvent(FirstOpponentName, 0, 1)
@@ -198,7 +191,6 @@ namespace SoC.Library.ScenarioTests
                 .DuringPlayerTurn(FirstOpponentName, 3, 3)
                     .BuyDevelopmentCard(DevelopmentCardTypes.Knight).EndTurn()
                 .Build()
-                .ExpectingEvents()
                 .BuyDevelopmentCardEvent(FirstOpponentName, DevelopmentCardTypes.Knight)
                 .Run();
         }
