@@ -22,9 +22,10 @@ namespace SoC.Library.ScenarioTests
         private readonly Dictionary<string, MockComputerPlayer> computerPlayersByName = new Dictionary<string, MockComputerPlayer>();
         private readonly List<IPlayer> players = new List<IPlayer>(4);
         private TurnToken currentToken;
+        private int expectedEventCount;
         private LocalGameController localGameController = null;
         private List<GameEvent> actualEvents = null;
-        private Queue<GameEvent> expectedEvents = null;
+        private Queue<GameEvent> relevantEvents = null;
         #endregion
 
         #region Construction
@@ -49,21 +50,21 @@ namespace SoC.Library.ScenarioTests
         public LocalGameControllerScenarioRunner BuildCityEvent(string playerName, uint cityLocation)
         {
             var playerId = this.playersByName[playerName].Id;
-            this.expectedEvents.Enqueue(new CityBuiltEvent(playerId, cityLocation));
+            this.relevantEvents.Enqueue(new CityBuiltEvent(playerId, cityLocation));
             return this;
         }
 
         public LocalGameControllerScenarioRunner BuildRoadEvent(string playerName, uint roadSegmentStart, uint roadSegmentEnd)
         {
             var playerId = this.playersByName[playerName].Id;
-            this.expectedEvents.Enqueue(new RoadSegmentBuiltEvent(playerId, roadSegmentStart, roadSegmentEnd));
+            this.relevantEvents.Enqueue(new RoadSegmentBuiltEvent(playerId, roadSegmentStart, roadSegmentEnd));
             return this;
         }
 
         public LocalGameControllerScenarioRunner BuildSettlementEvent(string playerName, uint settlementLocation)
         {
             var playerId = this.playersByName[playerName].Id;
-            this.expectedEvents.Enqueue(new SettlementBuiltEvent(playerId, settlementLocation));
+            this.relevantEvents.Enqueue(new SettlementBuiltEvent(playerId, settlementLocation));
             return this;
         }
 
@@ -72,7 +73,7 @@ namespace SoC.Library.ScenarioTests
             var player = this.playersByName[playerName];
 
             var expectedDiceRollEvent = new DiceRollEvent(player.Id, dice1, dice2);
-            this.expectedEvents.Enqueue(expectedDiceRollEvent);
+            this.relevantEvents.Enqueue(expectedDiceRollEvent);
 
             return this;
         }
@@ -80,7 +81,7 @@ namespace SoC.Library.ScenarioTests
         public LocalGameControllerScenarioRunner IgnoredEvents(Type matchingType, uint count)
         {
             while (count-- > 0)
-                this.expectedEvents.Enqueue(new IgnoredEvent(matchingType));
+                this.relevantEvents.Enqueue(new IgnoredEvent(matchingType));
 
             return this;
         }
@@ -90,9 +91,10 @@ namespace SoC.Library.ScenarioTests
             return this.IgnoredEvents(matchingType, 1);
         }
 
-        public LocalGameControllerScenarioRunner ExpectingEvents()
+        public LocalGameControllerScenarioRunner ExpectingEvents(int expectedEventCount = -1)
         {
-            this.expectedEvents = new Queue<GameEvent>();
+            this.expectedEventCount = expectedEventCount;
+            this.relevantEvents = new Queue<GameEvent>();
             this.actualEvents = new List<GameEvent>();
             return this;
         }
@@ -107,7 +109,7 @@ namespace SoC.Library.ScenarioTests
         public LocalGameControllerScenarioRunner ResourcesCollectedEvent(Guid playerId, ResourceCollection[] resourceCollection)
         {
             var expectedDiceRollEvent = new ResourcesCollectedEvent(playerId, resourceCollection);
-            this.expectedEvents.Enqueue(expectedDiceRollEvent);
+            this.relevantEvents.Enqueue(expectedDiceRollEvent);
             return this;
         }
 
@@ -150,12 +152,15 @@ namespace SoC.Library.ScenarioTests
                 }
             } while (turns.Count > 0);
 
-            if (this.expectedEvents != null && this.actualEvents != null)
+            if (this.relevantEvents != null && this.actualEvents != null)
             {
+                if (this.expectedEventCount != -1)
+                    Assert.AreEqual(this.expectedEventCount, this.actualEvents.Count, $"Expected event count {this.expectedEventCount} but found actual event count {this.actualEvents.Count}");
+
                 var actualEventIndex = 0;
-                while (this.expectedEvents.Count > 0)
+                while (this.relevantEvents.Count > 0)
                 {
-                    var expectedEvent = this.expectedEvents.Dequeue();
+                    var expectedEvent = this.relevantEvents.Dequeue();
                     var foundEvent = false;
                     while (actualEventIndex < this.actualEvents.Count)
                     {
@@ -178,7 +183,7 @@ namespace SoC.Library.ScenarioTests
         {
             var playerId = this.playersByName[firstOpponentName].Id;
             var expectedGameWonEvent = new GameWinEvent(playerId, expectedVictoryPoints);
-            this.expectedEvents.Enqueue(expectedGameWonEvent);
+            this.relevantEvents.Enqueue(expectedGameWonEvent);
             return this;
         }
 
