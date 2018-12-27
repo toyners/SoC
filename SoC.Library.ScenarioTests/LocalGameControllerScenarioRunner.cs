@@ -164,22 +164,25 @@ namespace SoC.Library.ScenarioTests
                 }
             } while (turns.Count > 0);
 
-            var actualEventIndex = 0;
-            while (this.expectedEvents.Count > 0)
+            if (this.expectedEvents != null && this.actualEvents != null)
             {
-                var expectedEvent = this.expectedEvents.Dequeue();
-                var foundEvent = false;
-                while (actualEventIndex < this.actualEvents.Count)
+                var actualEventIndex = 0;
+                while (this.expectedEvents.Count > 0)
                 {
-                    if (expectedEvent.Equals(this.actualEvents[actualEventIndex++]))
+                    var expectedEvent = this.expectedEvents.Dequeue();
+                    var foundEvent = false;
+                    while (actualEventIndex < this.actualEvents.Count)
                     {
-                        foundEvent = true;
-                        break;
+                        if (expectedEvent.Equals(this.actualEvents[actualEventIndex++]))
+                        {
+                            foundEvent = true;
+                            break;
+                        }
                     }
-                }
 
-                if (!foundEvent)
-                    Assert.Fail("Expected event '{0}' not found", expectedEvent);
+                    if (!foundEvent)
+                        Assert.Fail("Expected event '{0}' not found", expectedEvent);
+                }
             }
 
             return this.localGameController;
@@ -269,6 +272,11 @@ namespace SoC.Library.ScenarioTests
 
             this.playerTurns.Add(playerTurn);
             return playerTurn;
+        }
+
+        public LocalGameControllerScenarioRunner BuyDevelopmentCardEvent(string playerName, DevelopmentCardTypes developmentCardType)
+        {
+            throw new NotImplementedException();
         }
 
         public LocalGameControllerScenarioRunner WithStartingResourcesForPlayer(string playerName, ResourceClutch playerResources)

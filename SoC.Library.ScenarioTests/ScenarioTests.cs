@@ -10,6 +10,7 @@ using static SoC.Library.ScenarioTests.LocalGameControllerScenarioRunner;
 
 namespace SoC.Library.ScenarioTests
 {
+    [Category("ScenarioTests")]
     [TestFixture]
     public class ScenarioTests
     {
@@ -195,8 +196,10 @@ namespace SoC.Library.ScenarioTests
             this.CreateStandardLocalGameControllerScenarioRunner(ResourceClutch.Zero, firstOpponentResources, ResourceClutch.Zero, ResourceClutch.Zero)
                 .DuringPlayerTurn(MainPlayerName, 4, 4).EndTurn()
                 .DuringPlayerTurn(FirstOpponentName, 3, 3)
-                    .BuyDevelopmentCard(new KnightDevelopmentCard()).EndTurn()
+                    .BuyDevelopmentCard(DevelopmentCardTypes.Knight).EndTurn()
                 .Build()
+                .ExpectingEvents()
+                .BuyDevelopmentCardEvent(FirstOpponentName, DevelopmentCardTypes.Knight)
                 .Run();
         }
 
@@ -264,7 +267,7 @@ namespace SoC.Library.ScenarioTests
             throw new NotImplementedException();
         }
 
-        public virtual PlayerTurn BuyDevelopmentCard(DevelopmentCard developmentCard)
+        public virtual PlayerTurn BuyDevelopmentCard(DevelopmentCardTypes developmentCardType)
         {
             return this;
         }
@@ -298,9 +301,9 @@ namespace SoC.Library.ScenarioTests
             return this;
         }
 
-        public override PlayerTurn BuyDevelopmentCard(DevelopmentCard developmentCard)
+        public override PlayerTurn BuyDevelopmentCard(DevelopmentCardTypes developmentCardType)
         {
-            return base.BuyDevelopmentCard(developmentCard);
+            return base.BuyDevelopmentCard(developmentCardType);
         }
 
         public void ResolveActions()
