@@ -25,21 +25,10 @@ namespace SoC.Library.ScenarioTests
         private LocalGameController localGameController = null;
         private List<GameEvent> actualEvents = null;
         private Queue<GameEvent> expectedEvents = null;
-        private int lastPlayerTurnCount;
-        private Guid lastPlayerId;
-        private bool refuseEvents;
         #endregion
 
         #region Construction
         private LocalGameControllerScenarioRunner() {}
-        #endregion
-
-        #region Events
-        private Action<DiceRollEvent> diceRollEventHandler;
-        private Action<GameWinEvent> gameWinEventHandler;
-        private Action<ResourcesCollectedEvent> resourcesCollectedEventHandler;
-        private Action<RoadSegmentBuiltEvent> roadSegmentBuiltEventHandler;
-        private Action<SettlementBuiltEvent> settlementBuiltEventHandler;
         #endregion
 
         #region Methods
@@ -60,21 +49,21 @@ namespace SoC.Library.ScenarioTests
         public LocalGameControllerScenarioRunner BuildCityEvent(string playerName, uint cityLocation)
         {
             var playerId = this.playersByName[playerName].Id;
-            this.AddExpectedEvent(new CityBuiltEvent(playerId, cityLocation));
+            this.expectedEvents.Enqueue(new CityBuiltEvent(playerId, cityLocation));
             return this;
         }
 
         public LocalGameControllerScenarioRunner BuildRoadEvent(string playerName, uint roadSegmentStart, uint roadSegmentEnd)
         {
             var playerId = this.playersByName[playerName].Id;
-            this.AddExpectedEvent(new RoadSegmentBuiltEvent(playerId, roadSegmentStart, roadSegmentEnd));
+            this.expectedEvents.Enqueue(new RoadSegmentBuiltEvent(playerId, roadSegmentStart, roadSegmentEnd));
             return this;
         }
 
         public LocalGameControllerScenarioRunner BuildSettlementEvent(string playerName, uint settlementLocation)
         {
             var playerId = this.playersByName[playerName].Id;
-            this.AddExpectedEvent(new SettlementBuiltEvent(playerId, settlementLocation));
+            this.expectedEvents.Enqueue(new SettlementBuiltEvent(playerId, settlementLocation));
             return this;
         }
 
@@ -83,7 +72,7 @@ namespace SoC.Library.ScenarioTests
             var player = this.playersByName[playerName];
 
             var expectedDiceRollEvent = new DiceRollEvent(player.Id, dice1, dice2);
-            this.AddExpectedEvent(expectedDiceRollEvent);
+            this.expectedEvents.Enqueue(expectedDiceRollEvent);
 
             return this;
         }
@@ -91,7 +80,7 @@ namespace SoC.Library.ScenarioTests
         public LocalGameControllerScenarioRunner IgnoredEvents(Type matchingType, uint count)
         {
             while (count-- > 0)
-                this.AddExpectedEvent(new IgnoredEvent(matchingType));
+                this.expectedEvents.Enqueue(new IgnoredEvent(matchingType));
 
             return this;
         }
@@ -118,7 +107,7 @@ namespace SoC.Library.ScenarioTests
         public LocalGameControllerScenarioRunner ResourcesCollectedEvent(Guid playerId, ResourceCollection[] resourceCollection)
         {
             var expectedDiceRollEvent = new ResourcesCollectedEvent(playerId, resourceCollection);
-            this.AddExpectedEvent(expectedDiceRollEvent);
+            this.expectedEvents.Enqueue(expectedDiceRollEvent);
             return this;
         }
 
@@ -133,9 +122,6 @@ namespace SoC.Library.ScenarioTests
 
             placeInfrastructureInstruction = (PlaceInfrastructureInstruction)this.playerInstructions.Dequeue();
             this.localGameController.CompleteGameSetup(placeInfrastructureInstruction.SettlementLocation, placeInfrastructureInstruction.RoadEndLocation);
-
-            this.lastPlayerId = this.playerTurns[this.playerTurns.Count - 1].PlayerId;
-            this.lastPlayerTurnCount = this.playerTurns.Count(p => p.PlayerId == this.lastPlayerId);
 
             this.localGameController.StartGamePlay();
 
@@ -192,7 +178,7 @@ namespace SoC.Library.ScenarioTests
         {
             var playerId = this.playersByName[firstOpponentName].Id;
             var expectedGameWonEvent = new GameWinEvent(playerId, expectedVictoryPoints);
-            this.AddExpectedEvent(expectedGameWonEvent);
+            this.expectedEvents.Enqueue(expectedGameWonEvent);
             return this;
         }
 
@@ -303,74 +289,12 @@ namespace SoC.Library.ScenarioTests
 
         private void DiceRollEventHandler(Guid playerId, uint dice1, uint dice2)
         {
-            if (!this.refuseEvents && this.lastPlayerId == playerId && --this.lastPlayerTurnCount < 0)
-                this.refuseEvents = true;
-
-            this.diceRollEventHandler?.Invoke(new DiceRollEvent(playerId, dice1, dice2));
+            this.actualEvents.Add(new DiceRollEvent(playerId, dice1, dice2));
         }
 
         private void GameEventsHandler(List<GameEvent> gameEvents)
         {
-            if (this.refuseEvents)
-                return;
-
-            foreach (var gameEvent in gameEvents)
-            {
-                if (gameEvent is ResourcesCollectedEvent resourceCollectedEvent)
-                    this.resourcesCollectedEventHandler?.Invoke(resourceCollectedEvent);
-
-                if (gameEvent is RoadSegmentBuiltEvent roadSegmentBuiltEvent) 
-                    this.roadSegmentBuiltEventHandler?.Invoke(roadSegmentBuiltEvent);
-
-                if (gameEvent is SettlementBuiltEvent settlementBuiltEvent)
-                    this.settlementBuiltEventHandler?.Invoke(settlementBuiltEvent);
-
-                if (gameEvent is DiceRollEvent diceRollEvent)
-                    this.diceRollEventHandler?.Invoke(diceRollEvent);
-
-                if (gameEvent is GameWinEvent gameWinEvent)
-                    this.gameWinEventHandler?.Invoke(gameWinEvent);
-            }
-        }
-
-
-        private bool RegisterEventHandlerFor<T>(Type handlerType, GameEvent gameEvent, ref Action<T> handler) where T : GameEvent
-        {
-            if ((gameEvent is T ||
-                (gameEvent is IgnoredEvent ignoredEvent && ignoredEvent.GameEventType == handlerType)) &&
-                handler == null)
-            {
-                handler = (T g) => { this.TryAddActualEvent(g); };
-                return true;
-            }
-
-            return false;
-        }
-
-        private void AddExpectedEvent(GameEvent gameEvent)
-        {
-            this.expectedEvents.Enqueue(gameEvent);
-
-            if (this.RegisterEventHandlerFor(typeof(DiceRollEvent), gameEvent, ref this.diceRollEventHandler))
-                return;
-
-            if (this.RegisterEventHandlerFor(typeof(ResourcesCollectedEvent), gameEvent, ref this.resourcesCollectedEventHandler))
-                return;
-
-            if (this.RegisterEventHandlerFor(typeof(RoadSegmentBuiltEvent), gameEvent, ref this.roadSegmentBuiltEventHandler))
-                return;
-
-            if (this.RegisterEventHandlerFor(typeof(SettlementBuiltEvent), gameEvent, ref this.settlementBuiltEventHandler))
-                return;
-
-            if (this.RegisterEventHandlerFor(typeof(GameWinEvent), gameEvent, ref this.gameWinEventHandler))
-                return;
-        }
-
-        private void TryAddActualEvent(GameEvent gameEvent)
-        {
-            if (!this.refuseEvents)
-                this.actualEvents.Add(gameEvent);
+            this.actualEvents.AddRange(gameEvents);
         }
         #endregion
     }
