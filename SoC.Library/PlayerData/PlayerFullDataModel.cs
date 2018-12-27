@@ -2,6 +2,7 @@
 namespace Jabberwocky.SoC.Library.PlayerData
 {
     using System.Collections.Generic;
+    using Jabberwocky.SoC.Library.DevelopmentCards;
     using Jabberwocky.SoC.Library.Interfaces;
 
     public class PlayerFullDataModel : PlayerDataBase

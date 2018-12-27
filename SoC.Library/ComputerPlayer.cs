@@ -10,6 +10,7 @@ namespace Jabberwocky.SoC.Library
     using Jabberwocky.SoC.Library.Store;
     using Jabberwocky.SoC.Library.Enums;
     using Jabberwocky.SoC.Library.PlayerData;
+    using Jabberwocky.SoC.Library.DevelopmentCards;
 
     public class ComputerPlayer : Player, IComputerPlayer
     {

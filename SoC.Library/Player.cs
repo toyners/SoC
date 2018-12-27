@@ -6,6 +6,7 @@ namespace Jabberwocky.SoC.Library
     using System.Diagnostics;
     using System.Xml;
     using Interfaces;
+    using Jabberwocky.SoC.Library.DevelopmentCards;
     using Jabberwocky.SoC.Library.PlayerData;
     using Jabberwocky.SoC.Library.Store;
 

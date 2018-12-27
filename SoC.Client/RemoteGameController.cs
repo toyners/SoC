@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ServiceModel;
 using Jabberwocky.SoC.Client.ServiceReference;
 using Jabberwocky.SoC.Library;
+using Jabberwocky.SoC.Library.DevelopmentCards;
 using Jabberwocky.SoC.Library.GameBoards;
 using Jabberwocky.SoC.Library.Interfaces;
 using Jabberwocky.SoC.Library.PlayerData;

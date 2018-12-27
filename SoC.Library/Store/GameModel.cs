@@ -1,4 +1,6 @@
 ﻿
+using Jabberwocky.SoC.Library.DevelopmentCards;
+
 namespace Jabberwocky.SoC.Library.Store
 {
     public class GameModel

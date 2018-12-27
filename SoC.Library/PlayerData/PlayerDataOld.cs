@@ -2,6 +2,7 @@
 namespace Jabberwocky.SoC.Library.PlayerData
 {
     using System;
+    using Jabberwocky.SoC.Library.DevelopmentCards;
 
     public class PlayerDataOld : PlayerDataBase
     {

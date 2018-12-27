@@ -1,4 +1,6 @@
 ﻿
+using Jabberwocky.SoC.Library.DevelopmentCards;
+
 namespace Jabberwocky.SoC.Library.Interfaces
 {
     public interface IDevelopmentCardHolder

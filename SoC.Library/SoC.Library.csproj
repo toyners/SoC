@@ -52,8 +52,13 @@
     <Compile Include="Connection.cs" />
     <Compile Include="Constants.cs" />
     <Compile Include="DecisionMaker.cs" />
-    <Compile Include="DevelopmentCard.cs" />
+    <Compile Include="DevelopmentCards\DevelopmentCard.cs" />
     <Compile Include="DevelopmentCardHolder.cs" />
+    <Compile Include="DevelopmentCards\KnightDevelopmentCard.cs" />
+    <Compile Include="DevelopmentCards\MonopolyDevelopmentCard.cs" />
+    <Compile Include="DevelopmentCards\RoadBuildingDevelopmentCard.cs" />
+    <Compile Include="DevelopmentCards\VictoryPointDevelopmentCard.cs" />
+    <Compile Include="DevelopmentCards\YearOfPlentyDevelopmentCard.cs" />
     <Compile Include="GameActions\BuildCityAction.cs" />
     <Compile Include="GameActions\BuildSettlementAction.cs" />
     <Compile Include="GameBoards\GameBoardSetup.cs" />

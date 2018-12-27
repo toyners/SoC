@@ -3,6 +3,7 @@ namespace Jabberwocky.SoC.Library.Store
 {
     using System;
     using System.Collections.Generic;
+    using Jabberwocky.SoC.Library.DevelopmentCards;
     using Jabberwocky.SoC.Library.Interfaces;
 
     public class PlayerModel

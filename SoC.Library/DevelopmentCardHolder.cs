@@ -4,6 +4,7 @@ namespace Jabberwocky.SoC.Library
     using System;
     using System.Collections.Generic;
     using Interfaces;
+    using Jabberwocky.SoC.Library.DevelopmentCards;
 
     public class DevelopmentCardHolder : IDevelopmentCardHolder
     {

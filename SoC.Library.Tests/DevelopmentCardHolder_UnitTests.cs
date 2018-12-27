@@ -2,7 +2,8 @@
 namespace Jabberwocky.SoC.Library.UnitTests
 {
   using System;
-  using NSubstitute;
+    using Jabberwocky.SoC.Library.DevelopmentCards;
+    using NSubstitute;
   using NUnit.Framework;
   using Shouldly;
 
