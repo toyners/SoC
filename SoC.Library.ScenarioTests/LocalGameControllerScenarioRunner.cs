@@ -29,7 +29,7 @@ namespace SoC.Library.ScenarioTests
         private LocalGameController localGameController = null;
         private List<GameEvent> actualEvents = null;
         private Queue<GameEvent> relevantEvents = null;
-        private readonly Dictionary<Guid, List<DevelopmentCardTypes>> developmentCardsByPlayerId = new Dictionary<Guid, List<DevelopmentCardTypes>>();
+        private readonly Dictionary<Guid, List<DevelopmentCard>> developmentCardsByPlayerId = new Dictionary<Guid, List<DevelopmentCard>>();
         #endregion
 
         #region Construction
@@ -272,8 +272,15 @@ namespace SoC.Library.ScenarioTests
         public LocalGameControllerScenarioRunner BuyDevelopmentCardEvent(string playerName, DevelopmentCardTypes developmentCardType)
         {
             var player = this.playersByName[playerName];
-            var expectedBuyDevelopmentCardEvent = new MockBuyDevelopmentCardEvent(player.Id, developmentCardType);
-            this.relevantEvents.Enqueue(expectedBuyDevelopmentCardEvent);
+            if (player is MockPlayer mockPlayer)
+            {
+
+            }
+            else if (player is MockComputerPlayer mockComputerPlayer)
+            {
+                var expectedBuyDevelopmentCardEvent = new MockBuyDevelopmentCardEvent(mockComputerPlayer, developmentCardType);
+                this.relevantEvents.Enqueue(expectedBuyDevelopmentCardEvent);
+            }
 
             return this;
         }
@@ -310,7 +317,7 @@ namespace SoC.Library.ScenarioTests
             this.actualEvents.AddRange(gameEvents);
         }
 
-        internal void AddDevelopmentCardToBuy(DevelopmentCardTypes developmentCardType)
+        internal void AddDevelopmentCardToBuy(Guid playerId, DevelopmentCardTypes developmentCardType)
         {
             DevelopmentCard developmentCard = null;
             switch(developmentCardType)
@@ -320,6 +327,14 @@ namespace SoC.Library.ScenarioTests
             }
 
             this.mockDevelopmentCardHolder.AddDevelopmentCard(developmentCard);
+
+            if (!this.developmentCardsByPlayerId.TryGetValue(playerId, out var developmentCardsForPlayerId))
+            {
+                developmentCardsForPlayerId = new List<DevelopmentCard>();
+                this.developmentCardsByPlayerId.Add(playerId, developmentCardsForPlayerId);
+            }
+
+            developmentCardsForPlayerId.Add(developmentCard);
         }
         #endregion
     }

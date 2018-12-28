@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using Jabberwocky.SoC.Library;
 using Jabberwocky.SoC.Library.DevelopmentCards;
 using Jabberwocky.SoC.Library.GameActions;
@@ -12,6 +13,7 @@ namespace SoC.Library.ScenarioTests
         private PlaceInfrastructureInstruction firstInstruction;
         private PlaceInfrastructureInstruction secondInstruction;
         private readonly Queue<ComputerPlayerAction> actions = new Queue<ComputerPlayerAction>();
+        public readonly Queue<DevelopmentCard> BoughtDevelopmentCards = new Queue<DevelopmentCard>();
 
         public MockComputerPlayer(string name, INumberGenerator numberGenerator) : base(name, numberGenerator) { }
 
@@ -55,6 +57,7 @@ namespace SoC.Library.ScenarioTests
         public override void AddDevelopmentCard(DevelopmentCard developmentCard)
         {
             base.AddDevelopmentCard(developmentCard);
+            this.BoughtDevelopmentCards.Enqueue(developmentCard);
         }
     }
 }

@@ -19,7 +19,7 @@ namespace Jabberwocky.SoC.Library
         private readonly INumberGenerator numberGenerator;
         private readonly List<uint> settlementCandidates = new List<uint>();
         private readonly DecisionMaker decisionMaker;
-        private readonly List<DevelopmentCard> developmentCards = new List<DevelopmentCard>();
+        protected readonly List<DevelopmentCard> developmentCards = new List<DevelopmentCard>();
 
         #region Construction
         public ComputerPlayer() { } // For use when inflating from file. 

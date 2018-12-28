@@ -42,9 +42,9 @@ namespace SoC.Library.ScenarioTests
             throw new NotImplementedException();
         }
 
-        protected void AddDevelopmentCard(DevelopmentCardTypes developmentCardType)
+        protected void AddDevelopmentCard(Guid playerId, DevelopmentCardTypes developmentCardType)
         {
-            this.runner.AddDevelopmentCardToBuy(developmentCardType);
+            this.runner.AddDevelopmentCardToBuy(playerId, developmentCardType);
         }
     }
 }

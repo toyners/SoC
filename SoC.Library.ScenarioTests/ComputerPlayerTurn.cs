@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Jabberwocky.SoC.Library;
 using Jabberwocky.SoC.Library.GameActions;
 using Jabberwocky.SoC.Library.Interfaces;
@@ -35,7 +36,7 @@ namespace SoC.Library.ScenarioTests
 
         public override PlayerTurn BuyDevelopmentCard(DevelopmentCardTypes developmentCardType)
         {
-            base.AddDevelopmentCard(developmentCardType);
+            base.AddDevelopmentCard(this.PlayerId, developmentCardType);
             this.actions.Add(new BuyDevelopmentCardAction());
             return this;
         }
