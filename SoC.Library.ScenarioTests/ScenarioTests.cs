@@ -185,6 +185,18 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void Scenario_LargestArmyEventOnlyReturnedFirstTimeThatOpponentHasMostKnightCardsPlayed()
         {
+            int count = 0;
+            Action<LargestArmyChangedEvent> largestArmyEventHandler = (LargestArmyChangedEvent lace) =>
+            {
+                if (count == 0)
+                    count++;
+                else
+                    throw new Exception();
+            };
+
+            var eventHandlersByGameEventType = new Dictionary<GameEventTypes, Delegate>();
+            eventHandlersByGameEventType.Add(GameEventTypes.LargestArmyEvent, largestArmyEventHandler);
+
             var firstOpponentResources = ResourceClutch.DevelopmentCard * 4;
             this.CreateStandardLocalGameControllerScenarioRunner(ResourceClutch.Zero, firstOpponentResources, ResourceClutch.Zero, ResourceClutch.Zero)
                 .DuringPlayerTurn(MainPlayerName, 4, 4).EndTurn()
@@ -198,9 +210,36 @@ namespace SoC.Library.ScenarioTests
                 .DuringPlayerTurn(ThirdOpponentName, 3, 3).EndTurn()
                 .DuringPlayerTurn(MainPlayerName, 4, 4).EndTurn()
                 .DuringPlayerTurn(FirstOpponentName, 3, 3)
-                    .PlayKnightCard().EndTurn()
-                .Build()
-                .BuyDevelopmentCardEvent(FirstOpponentName, DevelopmentCardTypes.Knight)
+                    .PlayKnightCard()
+                    .EndTurn()
+                .DuringPlayerTurn(SecondOpponentName, 3, 3).EndTurn()
+                .DuringPlayerTurn(ThirdOpponentName, 3, 3).EndTurn()
+                .DuringPlayerTurn(MainPlayerName, 4, 4).EndTurn()
+                .DuringPlayerTurn(FirstOpponentName, 3, 3)
+                    .PlayKnightCard()
+                    .EndTurn()
+                .DuringPlayerTurn(SecondOpponentName, 3, 3).EndTurn()
+                .DuringPlayerTurn(ThirdOpponentName, 3, 3).EndTurn()
+                .DuringPlayerTurn(MainPlayerName, 4, 4).EndTurn()
+                .DuringPlayerTurn(FirstOpponentName, 3, 3)
+                    .PlayKnightCard()
+                    .EndTurn()
+                .DuringPlayerTurn(SecondOpponentName, 3, 3).EndTurn()
+                .DuringPlayerTurn(ThirdOpponentName, 3, 3).EndTurn()
+                .DuringPlayerTurn(MainPlayerName, 4, 4).EndTurn()
+                .DuringPlayerTurn(FirstOpponentName, 3, 3)
+                    .PlayKnightCard()
+                    .EndTurn()
+                .Build(eventHandlersByGameEventType)
+                    .BuyDevelopmentCardEvent(FirstOpponentName, DevelopmentCardTypes.Knight)
+                    .BuyDevelopmentCardEvent(FirstOpponentName, DevelopmentCardTypes.Knight)
+                    .BuyDevelopmentCardEvent(FirstOpponentName, DevelopmentCardTypes.Knight)
+                    .BuyDevelopmentCardEvent(FirstOpponentName, DevelopmentCardTypes.Knight)
+                    .PlayKnightCardEvent(FirstOpponentName)
+                    .PlayKnightCardEvent(FirstOpponentName)
+                    .PlayKnightCardEvent(FirstOpponentName)
+                    .LargestArmyChangedEvent(FirstOpponentName)
+                    .PlayKnightCardEvent(FirstOpponentName)
                 .Run();
         }
 

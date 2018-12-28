@@ -12,6 +12,11 @@ namespace SoC.Library.ScenarioTests
 {
     internal class LocalGameControllerScenarioRunner
     {
+        public enum GameEventTypes
+        {
+            LargestArmyEvent
+        }
+
         #region Fields
         private static LocalGameControllerScenarioRunner localGameControllerScenarioBuilder;
         private readonly MockPlayerPool mockPlayerPool = new MockPlayerPool();
@@ -30,6 +35,7 @@ namespace SoC.Library.ScenarioTests
         private List<GameEvent> actualEvents = null;
         private Queue<GameEvent> relevantEvents = null;
         private readonly Dictionary<Guid, List<DevelopmentCard>> developmentCardsByPlayerId = new Dictionary<Guid, List<DevelopmentCard>>();
+        private Dictionary<GameEventTypes, Delegate> eventHandlersByGameEventType;
         #endregion
 
         #region Construction
@@ -42,7 +48,7 @@ namespace SoC.Library.ScenarioTests
             return localGameControllerScenarioBuilder = new LocalGameControllerScenarioRunner();
         }
 
-        public LocalGameControllerScenarioRunner Build(int expectedEventCount = -1)
+        public LocalGameControllerScenarioRunner Build(Dictionary<GameEventTypes, Delegate> eventHandlersByGameEventType = null, int expectedEventCount = -1)
         {
             this.localGameController = new LocalGameController(
                 this.mockNumberGenerator, 
@@ -53,6 +59,7 @@ namespace SoC.Library.ScenarioTests
             this.localGameController.GameEvents = this.GameEventsHandler;
             this.localGameController.StartPlayerTurnEvent = (TurnToken t) => { this.currentToken = t; };
 
+            this.eventHandlersByGameEventType = eventHandlersByGameEventType;
             this.expectedEventCount = expectedEventCount;
             this.relevantEvents = new Queue<GameEvent>();
             this.actualEvents = new List<GameEvent>();
@@ -102,6 +109,11 @@ namespace SoC.Library.ScenarioTests
         public LocalGameControllerScenarioRunner IgnoredEvent(Type matchingType)
         {
             return this.IgnoredEvents(matchingType, 1);
+        }
+
+        public LocalGameControllerScenarioRunner LargestArmyChangedEvent(string firstOpponentName)
+        {
+            throw new NotImplementedException();
         }
 
         public LocalGameControllerScenarioRunner ResourcesCollectedEvent(string playerName, uint location, ResourceClutch resourceClutch)
@@ -189,6 +201,11 @@ namespace SoC.Library.ScenarioTests
             var expectedGameWonEvent = new GameWinEvent(playerId, expectedVictoryPoints);
             this.relevantEvents.Enqueue(expectedGameWonEvent);
             return this;
+        }
+
+        public LocalGameControllerScenarioRunner PlayKnightCardEvent(string firstOpponentName)
+        {
+            throw new NotImplementedException();
         }
 
         public ResourceCollectedEventGroup StartResourcesCollectedEvent(string playerName)
@@ -291,7 +308,7 @@ namespace SoC.Library.ScenarioTests
             player.AddResources(playerResources);
             return this;
         }
-
+    
         private IPlayer CreatePlayer(string name, bool isComputerPlayer)
         {
             IPlayer player = isComputerPlayer
@@ -315,6 +332,15 @@ namespace SoC.Library.ScenarioTests
         private void GameEventsHandler(List<GameEvent> gameEvents)
         {
             this.actualEvents.AddRange(gameEvents);
+
+            if (this.eventHandlersByGameEventType != null)
+            {
+                foreach (var gameEvent in gameEvents)
+                {
+                    if (gameEvent is LargestArmyChangedEvent && this.eventHandlersByGameEventType.TryGetValue(GameEventTypes.LargestArmyEvent, out var eventHandler))
+                        ((Action<LargestArmyChangedEvent>)eventHandler).Invoke((LargestArmyChangedEvent)gameEvent);
+                }
+            }
         }
 
         internal void AddDevelopmentCardToBuy(Guid playerId, DevelopmentCardTypes developmentCardType)
