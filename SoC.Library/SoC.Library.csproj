@@ -61,9 +61,12 @@
     <Compile Include="DevelopmentCards\YearOfPlentyDevelopmentCard.cs" />
     <Compile Include="GameActions\BuildCityAction.cs" />
     <Compile Include="GameActions\BuildSettlementAction.cs" />
+    <Compile Include="GameActions\BuyDevelopmentCardAction.cs" />
     <Compile Include="GameBoards\GameBoardSetup.cs" />
+    <Compile Include="GameEvents\BuyDevelopmentCardEvent.cs" />
     <Compile Include="GameEvents\GameWinEvent.cs" />
     <Compile Include="GameEvents\InfrastructureBuiltEvent.cs" />
+    <Compile Include="GameEvents\PlayKnightCardEvent.cs" />
     <Compile Include="GameEvents\ResourceCollectedEvent.cs" />
     <Compile Include="GameEvents\DiceRollEvent.cs" />
     <Compile Include="GameBoards\GameBoardQuery.cs" />

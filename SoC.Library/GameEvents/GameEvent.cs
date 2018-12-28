@@ -38,14 +38,4 @@ namespace Jabberwocky.SoC.Library.GameEvents
         }
         #endregion
     }
-
-    public class BuyDevelopmentCardEvent : GameEvent
-    {
-        public BuyDevelopmentCardEvent(Guid playerId) : base(playerId) { }
-    }
-
-    public class PlayKnightCardEvent : GameEvent
-    {
-        public PlayKnightCardEvent(Guid playerId) : base(playerId) { }
-    }
 }

@@ -48,14 +48,19 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ComputerPlayerTurn.cs" />
     <Compile Include="Instruction.cs" />
     <Compile Include="LocalGameControllerScenarioRunner.cs" />
+    <Compile Include="MockBuyDevelopmentCardEvent.cs" />
     <Compile Include="MockComputerPlayer.cs" />
+    <Compile Include="MockDevelopmentCardHolder.cs" />
     <Compile Include="MockNumberGenerator.cs" />
     <Compile Include="MockPlayer.cs" />
     <Compile Include="MockPlayerPool.cs" />
     <Compile Include="IgnoredEvent.cs" />
     <Compile Include="PlaceInfrastructureInstruction.cs" />
+    <Compile Include="PlayerTurn.cs" />
+    <Compile Include="ResourceCollectedEventGroup.cs" />
     <Compile Include="ScenarioTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

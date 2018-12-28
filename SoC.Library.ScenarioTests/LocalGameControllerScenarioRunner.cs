@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using Jabberwocky.SoC.Library;
+using Jabberwocky.SoC.Library.DevelopmentCards;
+using Jabberwocky.SoC.Library.GameBoards;
 using Jabberwocky.SoC.Library.GameEvents;
 using Jabberwocky.SoC.Library.Interfaces;
 using NUnit.Framework;
@@ -17,6 +19,7 @@ namespace SoC.Library.ScenarioTests
         private readonly List<PlayerTurnSetupAction> FirstRoundSetupActions = new List<PlayerTurnSetupAction>(4);
         private readonly List<PlayerTurnSetupAction> SecondRoundSetupActions = new List<PlayerTurnSetupAction>(4);
         private readonly List<PlayerTurn> playerTurns = new List<PlayerTurn>();
+        private readonly MockDevelopmentCardHolder mockDevelopmentCardHolder = new MockDevelopmentCardHolder();
         private readonly MockNumberGenerator mockNumberGenerator = new MockNumberGenerator();
         private readonly Dictionary<string, IPlayer> playersByName = new Dictionary<string, IPlayer>();
         private readonly Dictionary<string, MockComputerPlayer> computerPlayersByName = new Dictionary<string, MockComputerPlayer>();
@@ -26,6 +29,7 @@ namespace SoC.Library.ScenarioTests
         private LocalGameController localGameController = null;
         private List<GameEvent> actualEvents = null;
         private Queue<GameEvent> relevantEvents = null;
+        private readonly Dictionary<Guid, List<DevelopmentCardTypes>> developmentCardsByPlayerId = new Dictionary<Guid, List<DevelopmentCardTypes>>();
         #endregion
 
         #region Construction
@@ -40,7 +44,11 @@ namespace SoC.Library.ScenarioTests
 
         public LocalGameControllerScenarioRunner Build(int expectedEventCount = -1)
         {
-            this.localGameController = new LocalGameController(this.mockNumberGenerator, this.mockPlayerPool);
+            this.localGameController = new LocalGameController(
+                this.mockNumberGenerator, 
+                this.mockPlayerPool, 
+                new GameBoard(BoardSizes.Standard), 
+                this.mockDevelopmentCardHolder);
             this.localGameController.DiceRollEvent = this.DiceRollEventHandler;
             this.localGameController.GameEvents = this.GameEventsHandler;
             this.localGameController.StartPlayerTurnEvent = (TurnToken t) => { this.currentToken = t; };
@@ -130,9 +138,9 @@ namespace SoC.Library.ScenarioTests
             {
                 var turn = turns.Dequeue();
 
-                if (turn is ComputerPlayerTurn computerPlayerTurn)
+                if (turn is ComputerPlayerTurn)
                 {
-                    computerPlayerTurn.ResolveActions();
+                    ((ComputerPlayerTurn)turn).ResolveActions();
                 }
                 else if (turn is PlayerTurn playerTurn)
                 {
@@ -140,9 +148,8 @@ namespace SoC.Library.ScenarioTests
                     var computerPlayerTurns = 3;
                     while (computerPlayerTurns-- > 0 && turns.Count > 0)
                     {
-                        var cpt = (ComputerPlayerTurn)turns.Dequeue();
-                        cpt.ResolveActions();
-
+                        var computerPlayerTurn = (ComputerPlayerTurn)turns.Dequeue();
+                        computerPlayerTurn.ResolveActions();
                     }
 
                     this.localGameController.EndTurn(this.currentToken);
@@ -264,7 +271,11 @@ namespace SoC.Library.ScenarioTests
 
         public LocalGameControllerScenarioRunner BuyDevelopmentCardEvent(string playerName, DevelopmentCardTypes developmentCardType)
         {
-            throw new NotImplementedException();
+            var player = this.playersByName[playerName];
+            var expectedBuyDevelopmentCardEvent = new MockBuyDevelopmentCardEvent(player.Id, developmentCardType);
+            this.relevantEvents.Enqueue(expectedBuyDevelopmentCardEvent);
+
+            return this;
         }
 
         public LocalGameControllerScenarioRunner WithStartingResourcesForPlayer(string playerName, ResourceClutch playerResources)
@@ -298,30 +309,18 @@ namespace SoC.Library.ScenarioTests
         {
             this.actualEvents.AddRange(gameEvents);
         }
+
+        internal void AddDevelopmentCardToBuy(DevelopmentCardTypes developmentCardType)
+        {
+            DevelopmentCard developmentCard = null;
+            switch(developmentCardType)
+            {
+                case DevelopmentCardTypes.Knight: developmentCard = new KnightDevelopmentCard(); break;
+                default: throw new Exception($"Development card type {developmentCardType} not recognised");
+            }
+
+            this.mockDevelopmentCardHolder.AddDevelopmentCard(developmentCard);
+        }
         #endregion
-    }
-
-    internal class ResourceCollectedEventGroup
-    {
-        private List<ResourceCollection> resourceCollectionList = new List<ResourceCollection>();
-        private readonly LocalGameControllerScenarioRunner runner;
-        internal Guid PlayerId { get; }
-
-        internal ResourceCollectedEventGroup(Guid playerId, LocalGameControllerScenarioRunner runner)
-        {
-            this.PlayerId = playerId;
-            this.runner = runner;
-        }
-
-        internal ResourceCollectedEventGroup AddResourceCollection(uint location, ResourceClutch resourceClutch)
-        {
-            this.resourceCollectionList.Add(new ResourceCollection(location, resourceClutch));
-            return this;
-        }
-
-        internal LocalGameControllerScenarioRunner FinishResourcesCollectedEvent()
-        {
-            return this.runner.ResourcesCollectedEvent(this.PlayerId, this.resourceCollectionList.ToArray());
-        }
     }
 }

@@ -226,83 +226,9 @@ namespace SoC.Library.ScenarioTests
     }
 
 
-    internal class PlayerTurn
-    {
-        private readonly LocalGameControllerScenarioRunner runner;
-        private readonly IPlayer player;
+    
 
-        public Guid PlayerId { get { return this.player.Id; } }
-
-        public PlayerTurn(LocalGameControllerScenarioRunner runner, IPlayer player)
-        {
-            this.runner = runner;
-            this.player = player;
-        }
-
-        public LocalGameControllerScenarioRunner EndTurn()
-        {
-            return this.runner;
-        }
-
-        public virtual PlayerTurn BuildRoad(uint roadSegmentStart, uint roadSegmentEnd)
-        {
-            throw new NotImplementedException();
-        }
-
-        public virtual PlayerTurn BuildSettlement(uint settlementLocation)
-        {
-            throw new NotImplementedException();
-        }
-
-        internal virtual PlayerTurn BuildCity(uint cityLocation)
-        {
-            throw new NotImplementedException();
-        }
-
-        public virtual PlayerTurn BuyDevelopmentCard(DevelopmentCardTypes developmentCardType)
-        {
-            return this;
-        }
-    }
-
-    internal class ComputerPlayerTurn : PlayerTurn
-    {
-        private MockComputerPlayer computerPlayer;
-        private IList<ComputerPlayerAction> actions = new List<ComputerPlayerAction>();
-
-        public ComputerPlayerTurn(LocalGameControllerScenarioRunner runner, IPlayer player) : base(runner, player)
-        {
-            this.computerPlayer = (MockComputerPlayer)player;
-        }
-
-        internal override PlayerTurn BuildCity(uint cityLocation)
-        {
-            this.actions.Add(new BuildCityAction(cityLocation));
-            return this;
-        }
-
-        public override PlayerTurn BuildRoad(uint roadSegmentStart, uint roadSegmentEnd)
-        {
-            this.actions.Add(new BuildRoadSegmentAction(roadSegmentStart, roadSegmentEnd));
-            return this;
-        }
-
-        public override PlayerTurn BuildSettlement(uint settlementLocation)
-        {
-            this.actions.Add(new BuildSettlementAction(settlementLocation));
-            return this;
-        }
-
-        public override PlayerTurn BuyDevelopmentCard(DevelopmentCardTypes developmentCardType)
-        {
-            return base.BuyDevelopmentCard(developmentCardType);
-        }
-
-        public void ResolveActions()
-        {
-            this.computerPlayer.AddActions(this.actions);
-        }
-    }
+    
 
     public class PlayerTurnAction
     {

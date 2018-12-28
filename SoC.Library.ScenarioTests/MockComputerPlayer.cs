@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Jabberwocky.SoC.Library;
+using Jabberwocky.SoC.Library.DevelopmentCards;
 using Jabberwocky.SoC.Library.GameActions;
 using Jabberwocky.SoC.Library.Interfaces;
 using Jabberwocky.SoC.Library.PlayerData;
@@ -49,6 +50,11 @@ namespace SoC.Library.ScenarioTests
         public override ComputerPlayerAction GetPlayerAction()
         {
             return this.actions.Count > 0 ? this.actions.Dequeue() : null;
+        }
+
+        public override void AddDevelopmentCard(DevelopmentCard developmentCard)
+        {
+            base.AddDevelopmentCard(developmentCard);
         }
     }
 }
