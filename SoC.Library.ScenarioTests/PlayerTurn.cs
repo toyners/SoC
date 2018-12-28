@@ -46,5 +46,10 @@ namespace SoC.Library.ScenarioTests
         {
             this.runner.AddDevelopmentCardToBuy(playerId, developmentCardType);
         }
+
+        internal PlayerTurn PlayKnightCard()
+        {
+            throw new NotImplementedException();
+        }
     }
 }
