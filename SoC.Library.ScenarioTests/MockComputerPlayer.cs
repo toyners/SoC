@@ -15,18 +15,27 @@ namespace SoC.Library.ScenarioTests
         private readonly Queue<ComputerPlayerAction> actions = new Queue<ComputerPlayerAction>();
         public readonly Queue<DevelopmentCard> BoughtDevelopmentCards = new Queue<DevelopmentCard>();
 
+        #region Construction
         public MockComputerPlayer(string name, INumberGenerator numberGenerator) : base(name, numberGenerator) { }
+        #endregion
+
+        #region Methods
+        public void AddActions(IEnumerable<ComputerPlayerAction> actions)
+        {
+            foreach (var action in actions)
+                this.actions.Enqueue(action);
+        }
+
+        public override void AddDevelopmentCard(DevelopmentCard developmentCard)
+        {
+            base.AddDevelopmentCard(developmentCard);
+            this.BoughtDevelopmentCards.Enqueue(developmentCard);
+        }
 
         public void AddSetupInstructions(PlaceInfrastructureInstruction firstInstruction, PlaceInfrastructureInstruction secondInstruction)
         {
             this.firstInstruction = firstInstruction;
             this.secondInstruction = secondInstruction;
-        }
-
-        public void AddActions(IEnumerable<ComputerPlayerAction> actions)
-        {
-            foreach(var action in actions)
-                this.actions.Enqueue(action);
         }
 
         public override void BuildInitialPlayerActions(PlayerDataModel[] otherPlayerData)
@@ -49,15 +58,15 @@ namespace SoC.Library.ScenarioTests
             }
         }
 
+        public override uint ChooseRobberLocation()
+        {
+            return 0;
+        }
+
         public override ComputerPlayerAction GetPlayerAction()
         {
             return this.actions.Count > 0 ? this.actions.Dequeue() : null;
         }
-
-        public override void AddDevelopmentCard(DevelopmentCard developmentCard)
-        {
-            base.AddDevelopmentCard(developmentCard);
-            this.BoughtDevelopmentCards.Enqueue(developmentCard);
-        }
+        #endregion
     }
 }

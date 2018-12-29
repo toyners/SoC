@@ -15,12 +15,11 @@ namespace Jabberwocky.SoC.Library
 
     public class ComputerPlayer : Player, IComputerPlayer
     {
-        private Queue<ComputerPlayerAction> actions = new Queue<ComputerPlayerAction>();
+        private readonly Queue<ComputerPlayerAction> actions = new Queue<ComputerPlayerAction>();
         private readonly GameBoard gameBoard;
         private readonly INumberGenerator numberGenerator;
         private readonly List<uint> settlementCandidates = new List<uint>();
         private readonly DecisionMaker decisionMaker;
-        protected readonly List<DevelopmentCard> developmentCards = new List<DevelopmentCard>();
 
         #region Construction
         public ComputerPlayer() { } // For use when inflating from file. 
@@ -66,7 +65,7 @@ namespace Jabberwocky.SoC.Library
 
         public virtual void AddDevelopmentCard(DevelopmentCard developmentCard)
         {
-            this.developmentCards.Add(developmentCard);
+            this.HeldCards.Add(developmentCard);
         }
 
         public virtual void BuildInitialPlayerActions(PlayerDataModel[] otherPlayerData)
@@ -259,7 +258,7 @@ namespace Jabberwocky.SoC.Library
             roadEndLocation = trek[trek.Count - 1];
         }
 
-        public virtual KnightDevelopmentCard ChooseKnightCard()
+        public virtual KnightDevelopmentCard GetKnightCard()
         {
             var card = this.HeldCards.Where(c => c.Type == DevelopmentCardTypes.Knight).FirstOrDefault();
             this.HeldCards.Remove(card);
@@ -277,7 +276,7 @@ namespace Jabberwocky.SoC.Library
             throw new NotImplementedException();
         }
 
-        public virtual UInt32 ChooseRobberLocation()
+        public virtual uint ChooseRobberLocation()
         {
             throw new NotImplementedException();
         }

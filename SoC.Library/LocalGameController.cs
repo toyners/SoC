@@ -436,7 +436,7 @@ namespace Jabberwocky.SoC.Library
 
                         case ComputerPlayerActionTypes.PlayKnightCard:
                         {
-                            var knightCard = computerPlayer.ChooseKnightCard();
+                            var knightCard = computerPlayer.GetKnightCard();
                             var newRobberHex = computerPlayer.ChooseRobberLocation();
                             this.PlayKnightDevelopmentCard(knightCard, newRobberHex);
                             events.Add(new PlayKnightCardEvent(computerPlayer.Id));
@@ -457,7 +457,7 @@ namespace Jabberwocky.SoC.Library
                             Guid previousPlayerId;
                             if (this.PlayerHasJustBuiltTheLargestArmy(out previousPlayerId))
                             {
-                                events.Add(new LargestArmyChangedEvent(previousPlayerId, this.playerWithLargestArmy.Id));
+                                events.Add(new LargestArmyChangedEvent(this.playerWithLargestArmy.Id, previousPlayerId));
                             }
 
                             this.CheckComputerPlayerIsWinner(computerPlayer, events);
@@ -1312,7 +1312,7 @@ namespace Jabberwocky.SoC.Library
             this.cardsPlayed.Add(developmentCard);
         }
 
-        private Boolean PlayerHasJustBuiltTheLargestArmy(out Guid previousPlayerId)
+        private bool PlayerHasJustBuiltTheLargestArmy(out Guid previousPlayerId)
         {
             previousPlayerId = Guid.Empty;
             var playerWithMostKnightCards = this.DeterminePlayerWithMostKnightCards();

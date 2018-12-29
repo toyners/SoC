@@ -26,13 +26,15 @@ namespace Jabberwocky.SoC.Library
         public Player()
         {
             this.Id = Guid.NewGuid();
+            this.HeldCards = new List<DevelopmentCard>();
+            this.PlayedCards = new List<DevelopmentCard>();
         }
 
         public Player(string name) : this()
         {
             this.Name = name;
         }
-
+    
         [Obsolete("Deprecated. Use Player::ctor(PlayerModel) instead.")]
         public Player(IGameDataSection<GameDataSectionKeys, GameDataValueKeys, ResourceTypes> data)
         {

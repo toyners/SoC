@@ -163,7 +163,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.Mock
             roadEndLocation = infrastructure.Item2;
         }
 
-        public override KnightDevelopmentCard ChooseKnightCard()
+        public override KnightDevelopmentCard GetKnightCard()
         {
             return this.developmentCards[DevelopmentCardTypes.Knight].Dequeue() as KnightDevelopmentCard;
         }
@@ -218,7 +218,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.Mock
             return action.ResourceType;
         }
 
-        public override UInt32 ChooseRobberLocation()
+        public override uint ChooseRobberLocation()
         {
             return this.playKnightCardActions.Peek().RobberHex;
         }

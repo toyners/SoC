@@ -14,7 +14,7 @@ namespace Jabberwocky.SoC.Library.Interfaces
         uint ChooseCityLocation();
         uint ChooseSettlementLocation();
         void ChooseInitialInfrastructure(out uint settlementLocation, out uint roadEndLocation);
-        KnightDevelopmentCard ChooseKnightCard();
+        KnightDevelopmentCard GetKnightCard();
         MonopolyDevelopmentCard ChooseMonopolyCard();
         ResourceClutch ChooseResourcesToCollectFromBank();
         ResourceClutch ChooseResourcesToDrop();

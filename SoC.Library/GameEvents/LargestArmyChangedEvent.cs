@@ -18,7 +18,7 @@ namespace Jabberwocky.SoC.Library.GameEvents
     #endregion
 
     #region Methods
-    public override Boolean Equals(Object obj)
+    public override Boolean Equals(object obj)
     {
       if (!base.Equals(obj))
       {
