@@ -186,12 +186,12 @@ namespace SoC.Library.ScenarioTests
         public void Scenario_LargestArmyEventOnlyReturnedFirstTimeThatOpponentHasMostKnightCardsPlayed()
         {
             int count = 0;
-            Action<LargestArmyChangedEvent> largestArmyEventHandler = (LargestArmyChangedEvent lace) =>
+            Action<LargestArmyChangedEvent> largestArmyEventHandler = (LargestArmyChangedEvent largestArmyChangedEvent) =>
             {
                 if (count == 0)
                     count++;
                 else
-                    throw new Exception();
+                    throw new Exception("LargestArmyEvent raised more than once");
             };
 
             var eventHandlersByGameEventType = new Dictionary<GameEventTypes, Delegate>();
@@ -243,6 +243,16 @@ namespace SoC.Library.ScenarioTests
                 .Run();
         }
 
+        /// <summary>
+        /// Test that the largest army event is raised when the player has played 3 knight cards. Also
+        /// the largest army event is raised once the opponent has played 4 cards.
+        /// </summary>
+        [Test]
+        public void Scenario_LargestArmyEventsRaisedWhenBothPlayerAndOpponentPlayTheMostKnightDevelopmentCards()
+        {
+
+        }
+
         private LocalGameControllerScenarioRunner CreateStandardLocalGameControllerScenarioRunner()
         {
             return LocalGameController()
@@ -274,9 +284,9 @@ namespace SoC.Library.ScenarioTests
     }
 
 
-    
 
-    
+
+
 
     public class PlayerTurnAction
     {
