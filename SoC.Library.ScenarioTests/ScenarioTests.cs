@@ -243,6 +243,8 @@ namespace SoC.Library.ScenarioTests
                 .Run();
         }
 
+        public void SCenario_
+
         private LocalGameControllerScenarioRunner CreateStandardLocalGameControllerScenarioRunner()
         {
             return LocalGameController()

@@ -32,7 +32,7 @@ namespace SoC.Library.ScenarioTests
             throw new NotImplementedException();
         }
 
-        internal virtual PlayerTurn BuildCity(uint cityLocation)
+        public virtual PlayerTurn BuildCity(uint cityLocation)
         {
             throw new NotImplementedException();
         }
@@ -47,7 +47,7 @@ namespace SoC.Library.ScenarioTests
             this.runner.AddDevelopmentCardToBuy(playerId, developmentCardType);
         }
 
-        internal PlayerTurn PlayKnightCard()
+        public virtual PlayerTurn PlayKnightCard()
         {
             throw new NotImplementedException();
         }

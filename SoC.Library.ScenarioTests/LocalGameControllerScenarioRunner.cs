@@ -111,9 +111,15 @@ namespace SoC.Library.ScenarioTests
             return this.IgnoredEvents(matchingType, 1);
         }
 
-        public LocalGameControllerScenarioRunner LargestArmyChangedEvent(string firstOpponentName)
+        public LocalGameControllerScenarioRunner LargestArmyChangedEvent(string newPlayerName, string previousPlayerName = null)
         {
-            throw new NotImplementedException();
+            var newPlayer = this.playersByName[newPlayerName];
+            Guid previousPlayerId = Guid.Empty;
+            if (previousPlayerName != null)
+                previousPlayerId = this.playersByName[previousPlayerName].Id;
+            var expectedLargestArmyChangedEvent = new LargestArmyChangedEvent(newPlayer.Id, previousPlayerId);
+            this.relevantEvents.Enqueue(expectedLargestArmyChangedEvent);
+            return this;
         }
 
         public LocalGameControllerScenarioRunner ResourcesCollectedEvent(string playerName, uint location, ResourceClutch resourceClutch)
@@ -203,9 +209,12 @@ namespace SoC.Library.ScenarioTests
             return this;
         }
 
-        public LocalGameControllerScenarioRunner PlayKnightCardEvent(string firstOpponentName)
+        public LocalGameControllerScenarioRunner PlayKnightCardEvent(string playerName)
         {
-            throw new NotImplementedException();
+            var player = this.playersByName[playerName];
+            var expectedPlayKnightCardEvent = new PlayKnightCardEvent(player.Id);
+            this.relevantEvents.Enqueue(expectedPlayKnightCardEvent);
+            return this;
         }
 
         public ResourceCollectedEventGroup StartResourcesCollectedEvent(string playerName)

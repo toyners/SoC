@@ -11,6 +11,7 @@ namespace Jabberwocky.SoC.Library
     using Jabberwocky.SoC.Library.Enums;
     using Jabberwocky.SoC.Library.PlayerData;
     using Jabberwocky.SoC.Library.DevelopmentCards;
+    using System.Linq;
 
     public class ComputerPlayer : Player, IComputerPlayer
     {
@@ -260,7 +261,10 @@ namespace Jabberwocky.SoC.Library
 
         public virtual KnightDevelopmentCard ChooseKnightCard()
         {
-            throw new NotImplementedException();
+            var card = this.HeldCards.Where(c => c.Type == DevelopmentCardTypes.Knight).FirstOrDefault();
+            this.HeldCards.Remove(card);
+            this.PlayedCards.Add(card);
+            return (KnightDevelopmentCard)card;
         }
 
         public virtual IPlayer ChoosePlayerToRob(IEnumerable<IPlayer> otherPlayers)

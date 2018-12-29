@@ -16,7 +16,7 @@ namespace SoC.Library.ScenarioTests
             this.computerPlayer = (MockComputerPlayer)player;
         }
 
-        internal override PlayerTurn BuildCity(uint cityLocation)
+        public override PlayerTurn BuildCity(uint cityLocation)
         {
             this.actions.Add(new BuildCityAction(cityLocation));
             return this;
@@ -37,13 +37,19 @@ namespace SoC.Library.ScenarioTests
         public override PlayerTurn BuyDevelopmentCard(DevelopmentCardTypes developmentCardType)
         {
             base.AddDevelopmentCard(this.PlayerId, developmentCardType);
-            this.actions.Add(new BuyDevelopmentCardAction());
+            this.actions.Add(new ComputerPlayerAction(Jabberwocky.SoC.Library.Enums.ComputerPlayerActionTypes.BuyDevelopmentCard));
             return this;
         }
 
         public void ResolveActions()
         {
             this.computerPlayer.AddActions(this.actions);
+        }
+
+        public override PlayerTurn PlayKnightCard()
+        {
+            this.actions.Add(new ComputerPlayerAction(Jabberwocky.SoC.Library.Enums.ComputerPlayerActionTypes.PlayKnightCard));
+            return this;
         }
     }
 }
