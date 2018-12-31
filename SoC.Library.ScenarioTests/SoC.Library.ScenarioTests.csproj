@@ -50,6 +50,7 @@
   <ItemGroup>
     <Compile Include="ComputerPlayerTurn.cs" />
     <Compile Include="Instruction.cs" />
+    <Compile Include="IPlayerTurn.cs" />
     <Compile Include="LocalGameControllerScenarioRunner.cs" />
     <Compile Include="MockBuyDevelopmentCardEvent.cs" />
     <Compile Include="MockComputerPlayer.cs" />

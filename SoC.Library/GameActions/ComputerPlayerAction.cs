@@ -5,11 +5,11 @@ namespace Jabberwocky.SoC.Library.GameActions
 
     public class ComputerPlayerAction
     {
-        public readonly ComputerPlayerActionTypes Action;
+        public readonly ComputerPlayerActionTypes ActionType;
 
         public ComputerPlayerAction(ComputerPlayerActionTypes action)
         {
-            this.Action = action;
+            this.ActionType = action;
         }
     }
 }

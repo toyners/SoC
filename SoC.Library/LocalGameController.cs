@@ -115,6 +115,7 @@ namespace Jabberwocky.SoC.Library
         public Action<ClientAccount> LoggedInEvent { get; set; }
         public Action<Guid, Guid> LongestRoadBuiltEvent { get; set; }
         public Action<List<GameEvent>> GameEvents { get; set; }
+        public Action<PlayKnightCardEvent> PlayKnightCardEvent { get; set; }
         public Action<ResourceUpdate> ResourcesLostEvent { get; set; }
         public Action<ResourceTransactionList> ResourcesTransferredEvent { get; set; }
         public Action<PlayerDataBase> RoadSegmentBuiltEvent { get; set; }
@@ -182,6 +183,7 @@ namespace Jabberwocky.SoC.Library
             }
 
             DevelopmentCard developmentCard = this.BuyDevelopmentCard();
+            this.currentPlayer.HeldCards.Add(developmentCard);
             this.DevelopmentCardPurchasedEvent?.Invoke(developmentCard);
         }
 
@@ -384,7 +386,7 @@ namespace Jabberwocky.SoC.Library
                 ComputerPlayerAction playerAction;
                 while ((playerAction = computerPlayer.GetPlayerAction()) != null && computerPlayer.VictoryPoints < 10)
                 {
-                    switch (playerAction.Action)
+                    switch (playerAction.ActionType)
                     {
                         case ComputerPlayerActionTypes.BuildCity:
                         {
@@ -1366,7 +1368,7 @@ namespace Jabberwocky.SoC.Library
             return false;
         }
 
-        private Boolean PlayerIdsIsEmptyOrOnlyContainsMainPlayer(Guid[] playerIds)
+        private bool PlayerIdsIsEmptyOrOnlyContainsMainPlayer(Guid[] playerIds)
         {
             return playerIds == null || playerIds.Length == 0 ||
                    (playerIds.Length == 1 && playerIds[0] == this.mainPlayer.Id);
@@ -1397,6 +1399,8 @@ namespace Jabberwocky.SoC.Library
             }
 
             this.PlayKnightDevelopmentCard(developmentCard, newRobberHex);
+
+            this.PlayKnightCardEvent?.Invoke(new PlayKnightCardEvent(this.mainPlayer.Id));
 
             if (playerId.HasValue)
             {
@@ -1606,7 +1610,7 @@ namespace Jabberwocky.SoC.Library
             return true;
         }
 
-        private Boolean VerifyPlayerForResourceTransactionWhenUsingKnightCard(uint newRobberHex, Guid playerId)
+        private bool VerifyPlayerForResourceTransactionWhenUsingKnightCard(uint newRobberHex, Guid playerId)
         {
             var playerIdsOnHex = new List<Guid>(this.gameBoard.GetPlayersForHex(newRobberHex));
             if (!playerIdsOnHex.Contains(playerId))
@@ -1618,7 +1622,7 @@ namespace Jabberwocky.SoC.Library
             return true;
         }
 
-        private Boolean VerifyParametersForUsingDevelopmentCard(TurnToken turnToken, DevelopmentCard developmentCard, String shortCardType)
+        private bool VerifyParametersForUsingDevelopmentCard(TurnToken turnToken, DevelopmentCard developmentCard, String shortCardType)
         {
             if (!this.VerifyTurnToken(turnToken))
             {
@@ -1637,7 +1641,7 @@ namespace Jabberwocky.SoC.Library
                 return false;
             }
 
-            if (cardsPurchasedThisTurn.Contains(developmentCard))
+            if (this.cardsPurchasedThisTurn.Contains(developmentCard))
             {
                 this.ErrorRaisedEvent?.Invoke(new ErrorDetails("Cannot use development card that has been purchased this turn."));
                 return false;

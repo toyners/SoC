@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using Jabberwocky.SoC.Library;
 using Jabberwocky.SoC.Library.DevelopmentCards;
 using Jabberwocky.SoC.Library.GameBoards;
@@ -58,6 +57,8 @@ namespace SoC.Library.ScenarioTests
             this.localGameController.DiceRollEvent = this.DiceRollEventHandler;
             this.localGameController.GameEvents = this.GameEventsHandler;
             this.localGameController.StartPlayerTurnEvent = (TurnToken t) => { this.currentToken = t; };
+            this.localGameController.DevelopmentCardPurchasedEvent = (DevelopmentCard c) => { this.actualEvents.Add(new BuyDevelopmentCardEvent(this.players[0].Id)); };
+            this.localGameController.PlayKnightCardEvent = (PlayKnightCardEvent p) => { this.actualEvents.Add(p); };
 
             this.eventHandlersByGameEventType = eventHandlersByGameEventType;
             this.expectedEventCount = expectedEventCount;
@@ -163,6 +164,8 @@ namespace SoC.Library.ScenarioTests
                 else if (turn is PlayerTurn playerTurn)
                 {
                     // Do the player turns and then the computer turns for this round
+                    playerTurn.ResolveActions(this.currentToken, this.localGameController);
+                    
                     var computerPlayerTurns = 3;
                     while (computerPlayerTurns-- > 0 && turns.Count > 0)
                     {

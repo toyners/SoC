@@ -326,7 +326,7 @@ namespace Jabberwocky.SoC.Library
             }
 
             var action = this.actions.Dequeue();
-            if (action.Action == ComputerPlayerActionTypes.EndTurn)
+            if (action.ActionType == ComputerPlayerActionTypes.EndTurn)
             {
                 return null;
             }
