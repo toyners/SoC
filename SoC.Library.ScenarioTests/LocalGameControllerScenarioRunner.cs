@@ -114,7 +114,16 @@ namespace SoC.Library.ScenarioTests
             return this.IgnoredEvents(matchingType, 1);
         }
 
-        public LocalGameControllerScenarioRunner LargestArmyChangedEvent(string newPlayerName, string previousPlayerName = null)
+
+        public enum EventPositions
+        {
+            Any,
+            Last
+        }
+
+        private readonly Dictionary<Type, GameEvent> lastEventsByType = new Dictionary<Type, GameEvent>();
+
+        public LocalGameControllerScenarioRunner LargestArmyChangedEvent(string newPlayerName, string previousPlayerName = null, EventPositions eventPosition = EventPositions.Any)
         {
             var newPlayer = this.playersByName[newPlayerName];
             Guid previousPlayerId = Guid.Empty;
@@ -122,6 +131,10 @@ namespace SoC.Library.ScenarioTests
                 previousPlayerId = this.playersByName[previousPlayerName].Id;
             var expectedLargestArmyChangedEvent = new LargestArmyChangedEvent(newPlayer.Id, previousPlayerId);
             this.relevantEvents.Enqueue(expectedLargestArmyChangedEvent);
+
+            if (eventPosition == EventPositions.Last)
+                this.lastEventsByType.Add(expectedLargestArmyChangedEvent.GetType(), expectedLargestArmyChangedEvent);
+
             return this;
         }
 
@@ -187,12 +200,25 @@ namespace SoC.Library.ScenarioTests
                 var actualEventIndex = 0;
                 while (this.relevantEvents.Count > 0)
                 {
+                    GameEvent lastEvent = null;
                     var expectedEvent = this.relevantEvents.Dequeue();
                     var foundEvent = false;
                     while (actualEventIndex < this.actualEvents.Count)
                     {
-                        if (expectedEvent.Equals(this.actualEvents[actualEventIndex++]))
+                        var actualEvent = this.actualEvents[actualEventIndex++];
+
+                        if (this.lastEventsByType.TryGetValue(actualEvent.GetType(), out lastEvent) && lastEvent == null)
                         {
+                            Assert.Fail($"{actualEvent} event found after last event of type {actualEvent.GetType()} was matched.");
+                        }
+
+                        if (expectedEvent.Equals(actualEvent))
+                        {
+                            if (this.lastEventsByType.TryGetValue(actualEvent.GetType(), out lastEvent) && lastEvent != null)
+                            {
+                                this.lastEventsByType[actualEvent.GetType()] = null;
+                            }
+
                             foundEvent = true;
                             break;
                         }
