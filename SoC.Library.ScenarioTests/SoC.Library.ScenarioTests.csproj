@@ -49,6 +49,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ComputerPlayerTurn.cs" />
+    <Compile Include="IgnoredEvent.cs" />
     <Compile Include="Instruction.cs" />
     <Compile Include="IPlayerTurn.cs" />
     <Compile Include="LocalGameControllerScenarioRunner.cs" />
@@ -58,7 +59,6 @@
     <Compile Include="MockNumberGenerator.cs" />
     <Compile Include="MockPlayer.cs" />
     <Compile Include="MockPlayerPool.cs" />
-    <Compile Include="IgnoredEvent.cs" />
     <Compile Include="PlaceInfrastructureInstruction.cs" />
     <Compile Include="PlayerTurn.cs" />
     <Compile Include="ResourceCollectedEventGroup.cs" />
