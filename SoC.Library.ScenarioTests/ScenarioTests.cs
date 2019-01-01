@@ -350,6 +350,16 @@ namespace SoC.Library.ScenarioTests
                 .Run();
         }
 
+        /// <summary>
+        /// Test that the player only gets the largest army VP the first time they have the largest army
+        /// (until another player has the largest army).
+        /// </summary>
+        [Test]
+        public void Scenario_LargestArmyVictoryPointsOnlyChangedFirstTimeThatPlayerHasMostKnightCardsPlayed()
+        {
+            Assert.Fail();
+        }
+
         private LocalGameControllerScenarioRunner CreateStandardLocalGameControllerScenarioRunner()
         {
             return LocalGameController()
