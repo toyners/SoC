@@ -11,13 +11,22 @@ namespace SoC.Library.ScenarioTests
 {
     internal class LocalGameControllerScenarioRunner
     {
+        #region Enums
         public enum GameEventTypes
         {
             LargestArmyEvent
         }
 
+        public enum EventPositions
+        {
+            Any,
+            Last
+        }
+        #endregion
+
         #region Fields
         private static LocalGameControllerScenarioRunner localGameControllerScenarioBuilder;
+        private readonly Dictionary<Type, GameEvent> lastEventsByType = new Dictionary<Type, GameEvent>();
         private readonly MockPlayerPool mockPlayerPool = new MockPlayerPool();
         private readonly Queue<Instruction> playerInstructions = new Queue<Instruction>();
         private readonly List<PlayerTurnSetupAction> FirstRoundSetupActions = new List<PlayerTurnSetupAction>(4);
@@ -101,6 +110,15 @@ namespace SoC.Library.ScenarioTests
             return this;
         }
 
+        private MockPlayer expectedPlayer = null;
+        private readonly Dictionary<string, MockPlayer> expectedPlayersByName = new Dictionary<string, MockPlayer>();
+        public LocalGameControllerScenarioRunner ExpectPlayer(string mainPlayerName)
+        {
+            this.expectedPlayer = new MockPlayer(mainPlayerName);
+            this.expectedPlayersByName.Add(mainPlayerName, this.expectedPlayer);
+            return this;
+        }
+
         public LocalGameControllerScenarioRunner IgnoredEvents(Type matchingType, uint count)
         {
             while (count-- > 0)
@@ -113,15 +131,6 @@ namespace SoC.Library.ScenarioTests
         {
             return this.IgnoredEvents(matchingType, 1);
         }
-
-
-        public enum EventPositions
-        {
-            Any,
-            Last
-        }
-
-        private readonly Dictionary<Type, GameEvent> lastEventsByType = new Dictionary<Type, GameEvent>();
 
         public LocalGameControllerScenarioRunner LargestArmyChangedEvent(string newPlayerName, string previousPlayerName = null, EventPositions eventPosition = EventPositions.Any)
         {
@@ -227,6 +236,14 @@ namespace SoC.Library.ScenarioTests
                     if (!foundEvent)
                         Assert.Fail("Expected event '{0}' not found", expectedEvent);
                 }
+            }
+
+            foreach (var expectedPlayerPair in this.expectedPlayersByName)
+            {
+                var expectedPlayer = expectedPlayerPair.Value;
+                var actualPlayer = this.playersByName[expectedPlayer.Name];
+
+                Assert.AreEqual(expectedPlayer.VictoryPoints, actualPlayer.VictoryPoints, $"Expected player {actualPlayer.Name} to have {expectedPlayer.VictoryPoints} victory points but has {actualPlayer.VictoryPoints} victory points");
             }
 
             return this.localGameController;
@@ -348,7 +365,33 @@ namespace SoC.Library.ScenarioTests
             player.AddResources(playerResources);
             return this;
         }
-    
+
+        public LocalGameControllerScenarioRunner VictoryPoints(uint expectedVictoryPoints)
+        {
+            this.expectedPlayer.SetVictoryPoints(expectedVictoryPoints);
+            return this;
+        }
+
+        internal void AddDevelopmentCardToBuy(Guid playerId, DevelopmentCardTypes developmentCardType)
+        {
+            DevelopmentCard developmentCard = null;
+            switch (developmentCardType)
+            {
+                case DevelopmentCardTypes.Knight: developmentCard = new KnightDevelopmentCard(); break;
+                default: throw new Exception($"Development card type {developmentCardType} not recognised");
+            }
+
+            this.mockDevelopmentCardHolder.AddDevelopmentCard(developmentCard);
+
+            if (!this.developmentCardsByPlayerId.TryGetValue(playerId, out var developmentCardsForPlayerId))
+            {
+                developmentCardsForPlayerId = new List<DevelopmentCard>();
+                this.developmentCardsByPlayerId.Add(playerId, developmentCardsForPlayerId);
+            }
+
+            developmentCardsForPlayerId.Add(developmentCard);
+        }
+
         private IPlayer CreatePlayer(string name, bool isComputerPlayer)
         {
             IPlayer player = isComputerPlayer
@@ -381,26 +424,6 @@ namespace SoC.Library.ScenarioTests
                         ((Action<LargestArmyChangedEvent>)eventHandler).Invoke((LargestArmyChangedEvent)gameEvent);
                 }
             }
-        }
-
-        internal void AddDevelopmentCardToBuy(Guid playerId, DevelopmentCardTypes developmentCardType)
-        {
-            DevelopmentCard developmentCard = null;
-            switch(developmentCardType)
-            {
-                case DevelopmentCardTypes.Knight: developmentCard = new KnightDevelopmentCard(); break;
-                default: throw new Exception($"Development card type {developmentCardType} not recognised");
-            }
-
-            this.mockDevelopmentCardHolder.AddDevelopmentCard(developmentCard);
-
-            if (!this.developmentCardsByPlayerId.TryGetValue(playerId, out var developmentCardsForPlayerId))
-            {
-                developmentCardsForPlayerId = new List<DevelopmentCard>();
-                this.developmentCardsByPlayerId.Add(playerId, developmentCardsForPlayerId);
-            }
-
-            developmentCardsForPlayerId.Add(developmentCard);
         }
         #endregion
     }

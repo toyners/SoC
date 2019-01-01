@@ -357,7 +357,42 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void Scenario_LargestArmyVictoryPointsOnlyChangedFirstTimeThatPlayerHasMostKnightCardsPlayed()
         {
-            Assert.Fail();
+            var mainPlayerResources = ResourceClutch.DevelopmentCard * 4;
+            this.CreateStandardLocalGameControllerScenarioRunner(mainPlayerResources, ResourceClutch.Zero, ResourceClutch.Zero, ResourceClutch.Zero)
+                .DuringPlayerTurn(MainPlayerName, 4, 4)
+                    .BuyDevelopmentCard(DevelopmentCardTypes.Knight)
+                    .BuyDevelopmentCard(DevelopmentCardTypes.Knight)
+                    .BuyDevelopmentCard(DevelopmentCardTypes.Knight)
+                    .BuyDevelopmentCard(DevelopmentCardTypes.Knight)
+                    .EndTurn()
+                .DuringPlayerTurn(FirstOpponentName, 3, 3).EndTurn()
+                .DuringPlayerTurn(SecondOpponentName, 3, 3).EndTurn()
+                .DuringPlayerTurn(ThirdOpponentName, 3, 3).EndTurn()
+                .DuringPlayerTurn(MainPlayerName, 4, 4)
+                    .PlayKnightCard(4)
+                    .EndTurn()
+                .DuringPlayerTurn(FirstOpponentName, 3, 3).EndTurn()
+                .DuringPlayerTurn(SecondOpponentName, 3, 3).EndTurn()
+                .DuringPlayerTurn(ThirdOpponentName, 3, 3).EndTurn()
+                .DuringPlayerTurn(MainPlayerName, 4, 4)
+                    .PlayKnightCard(0)
+                    .EndTurn()
+                .DuringPlayerTurn(FirstOpponentName, 3, 3).EndTurn()
+                .DuringPlayerTurn(SecondOpponentName, 3, 3).EndTurn()
+                .DuringPlayerTurn(ThirdOpponentName, 3, 3).EndTurn()
+                .DuringPlayerTurn(MainPlayerName, 4, 4)
+                    .PlayKnightCard(4)
+                    .EndTurn()
+                .DuringPlayerTurn(FirstOpponentName, 3, 3).EndTurn()
+                .DuringPlayerTurn(SecondOpponentName, 3, 3).EndTurn()
+                .DuringPlayerTurn(ThirdOpponentName, 3, 3).EndTurn()
+                .DuringPlayerTurn(MainPlayerName, 4, 4)
+                    .PlayKnightCard(0)
+                    .EndTurn()
+                .Build()
+                    .ExpectPlayer(MainPlayerName)
+                        .VictoryPoints(4)
+                .Run();
         }
 
         private LocalGameControllerScenarioRunner CreateStandardLocalGameControllerScenarioRunner()
