@@ -2,7 +2,6 @@
 namespace Jabberwocky.SoC.Library.GameEvents
 {
   using System;
-  using GameEvents;
 
   public class LargestArmyChangedEvent : GameEvent
   {
@@ -18,7 +17,7 @@ namespace Jabberwocky.SoC.Library.GameEvents
     #endregion
 
     #region Methods
-    public override Boolean Equals(object obj)
+    public override bool Equals(object obj)
     {
       if (!base.Equals(obj))
       {

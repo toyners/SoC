@@ -62,6 +62,7 @@
     <Compile Include="GameActions\BuildCityAction.cs" />
     <Compile Include="GameActions\BuildSettlementAction.cs" />
     <Compile Include="GameActions\BuyDevelopmentCardAction.cs" />
+    <Compile Include="GameActions\PlayKnightCardAction.cs" />
     <Compile Include="GameBoards\GameBoardSetup.cs" />
     <Compile Include="GameEvents\BuyDevelopmentCardEvent.cs" />
     <Compile Include="GameEvents\GameWinEvent.cs" />

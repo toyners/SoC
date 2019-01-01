@@ -58,7 +58,9 @@ namespace SoC.Library.ScenarioTests
             this.localGameController.GameEvents = this.GameEventsHandler;
             this.localGameController.StartPlayerTurnEvent = (TurnToken t) => { this.currentToken = t; };
             this.localGameController.DevelopmentCardPurchasedEvent = (DevelopmentCard c) => { this.actualEvents.Add(new BuyDevelopmentCardEvent(this.players[0].Id)); };
+            this.localGameController.LargestArmyEvent = (newPlayerId, previousPlayerId) => { this.actualEvents.Add(new LargestArmyChangedEvent(newPlayerId, previousPlayerId)); };
             this.localGameController.PlayKnightCardEvent = (PlayKnightCardEvent p) => { this.actualEvents.Add(p); };
+            this.localGameController.ErrorRaisedEvent = (ErrorDetails e) => { Assert.Fail(e.Message); };
 
             this.eventHandlersByGameEventType = eventHandlersByGameEventType;
             this.expectedEventCount = expectedEventCount;
@@ -163,7 +165,7 @@ namespace SoC.Library.ScenarioTests
                 }
                 else if (turn is PlayerTurn playerTurn)
                 {
-                    // Do the player turns and then the computer turns for this round
+                    // Do the player turn and then the computer turns for this round
                     playerTurn.ResolveActions(this.currentToken, this.localGameController);
                     
                     var computerPlayerTurns = 3;

@@ -1216,12 +1216,12 @@ namespace Jabberwocky.SoC.Library
 
             foreach (var player in this.players)
             {
-                if (player.KnightCards > workingKnightCardCount)
+                if (player.PlayedKnightCards > workingKnightCardCount)
                 {
                     playerWithMostKnightCards = player;
-                    workingKnightCardCount = player.KnightCards;
+                    workingKnightCardCount = player.PlayedKnightCards;
                 }
-                else if (player.KnightCards == workingKnightCardCount)
+                else if (player.PlayedKnightCards == workingKnightCardCount)
                 {
                     playerWithMostKnightCards = (playerWithMostKnightCards == null ? player : null);
                 }
@@ -1374,10 +1374,10 @@ namespace Jabberwocky.SoC.Library
                    (playerIds.Length == 1 && playerIds[0] == this.mainPlayer.Id);
         }
 
-        private void PlayKnightDevelopmentCard(KnightDevelopmentCard developmentCard, uint newRobberHex)
+        private void PlayKnightDevelopmentCard(KnightDevelopmentCard card, uint newRobberHex)
         {
-            this.PlayDevelopmentCard(developmentCard);
-            this.currentPlayer.PlaceKnightDevelopmentCard();
+            this.PlayDevelopmentCard(card);
+            this.currentPlayer.PlaceKnightDevelopmentCard(card);
             this.robberHex = newRobberHex;
         }
 
@@ -1407,10 +1407,9 @@ namespace Jabberwocky.SoC.Library
                 this.CompleteResourceTransactionBetweenPlayers(this.playersById[playerId.Value]);
             }
 
-            Guid previousPlayerId;
-            if (this.PlayerHasJustBuiltTheLargestArmy(out previousPlayerId))
+            if (this.PlayerHasJustBuiltTheLargestArmy(out Guid previousPlayerId))
             {
-                this.LargestArmyEvent?.Invoke(previousPlayerId, this.playerWithLargestArmy.Id);
+                this.LargestArmyEvent?.Invoke(this.playerWithLargestArmy.Id, previousPlayerId);
             }
 
             this.CheckMainPlayerIsWinner();

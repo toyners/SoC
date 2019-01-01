@@ -28,7 +28,7 @@ namespace Jabberwocky.SoC.Library.Store
             this.HeldCards = player.HeldCards;
             this.Id = player.Id;
             this.IsComputer = player.IsComputer;
-            this.KnightCards = player.KnightCards;
+            this.KnightCards = player.PlayedKnightCards;
             this.Name = player.Name;
             this.PlayedCards = player.PlayedCards;
             this.Resources = player.Resources;

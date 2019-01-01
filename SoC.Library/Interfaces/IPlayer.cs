@@ -15,7 +15,7 @@ namespace Jabberwocky.SoC.Library.Interfaces
         List<DevelopmentCard> HeldCards { get; }
         Guid Id { get; }
         bool IsComputer { get; }
-        uint KnightCards { get; }
+        uint PlayedKnightCards { get; }
         string Name { get; }
         List<DevelopmentCard> PlayedCards { get; }
         int RemainingCities { get; }
@@ -40,7 +40,7 @@ namespace Jabberwocky.SoC.Library.Interfaces
         PlayerDataBase GetDataModel(bool provideFullPlayerData);
         void PayForDevelopmentCard();
         void PlaceCity();
-        void PlaceKnightDevelopmentCard();
+        void PlaceKnightDevelopmentCard(KnightDevelopmentCard card);
         void PlaceRoadSegment();
         void PlaceSettlement();
         void PlaceStartingInfrastructure();

@@ -53,9 +53,9 @@ namespace SoC.Library.ScenarioTests
             return this;
         }
 
-        public virtual PlayerTurn PlayKnightCard()
+        public virtual PlayerTurn PlayKnightCard(uint hexLocation)
         {
-            this.actions.Enqueue(new ComputerPlayerAction(ComputerPlayerActionTypes.PlayKnightCard));
+            this.actions.Enqueue(new PlayKnightCardAction(hexLocation));
             return this;
         }
 
@@ -70,7 +70,7 @@ namespace SoC.Library.ScenarioTests
                     case ComputerPlayerActionTypes.PlayKnightCard:
                     {
                         var knightCard = (KnightDevelopmentCard)this.player.HeldCards.Where(c => c.Type == DevelopmentCardTypes.Knight).First();
-                        localGameController.UseKnightCard(turnToken, knightCard, 0);
+                        localGameController.UseKnightCard(turnToken, knightCard, ((PlayKnightCardAction)action).NewRobberHex);
                         break;
                     }
                     default: throw new Exception($"Action type {action.ActionType} not handled");

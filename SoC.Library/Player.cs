@@ -52,7 +52,7 @@ namespace Jabberwocky.SoC.Library
             this.CitiesBuilt = playerModel.CitiesBuilt;
             this.HeldCards = playerModel.HeldCards;
             this.Id = playerModel.Id;
-            this.KnightCards = playerModel.KnightCards;
+            this.PlayedKnightCards = playerModel.KnightCards;
             this.Name = playerModel.Name;
             this.PlayedCards = playerModel.PlayedCards;
             this.Resources = playerModel.Resources;
@@ -108,7 +108,7 @@ namespace Jabberwocky.SoC.Library
         public List<DevelopmentCard> HeldCards { get; protected set; }
         public Guid Id { get; private set; }
         public virtual bool IsComputer { get { return false; } }
-        public uint KnightCards { get; private set; }
+        public uint PlayedKnightCards { get; private set; }
         public string Name { get; private set; }
         public List<DevelopmentCard> PlayedCards { get; protected set; }
         public int RemainingCities { get { return TotalCities - this.CitiesBuilt; } }
@@ -227,9 +227,11 @@ namespace Jabberwocky.SoC.Library
             this.VictoryPoints++;
         }
 
-        public void PlaceKnightDevelopmentCard()
+        public void PlaceKnightDevelopmentCard(KnightDevelopmentCard card)
         {
-            this.KnightCards++;
+            this.PlayedKnightCards++;
+            this.HeldCards.Remove(card);
+            this.PlayedCards.Add(card);
         }
 
         public void PlaceRoadSegment()
