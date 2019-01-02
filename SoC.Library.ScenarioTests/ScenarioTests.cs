@@ -222,6 +222,56 @@ namespace SoC.Library.ScenarioTests
                 .Run();
         }
 
+        [Test]
+        public void Scenario_ComputerPlayerHasEightVictoryPointsAndBuildsLongestRoadToWin()
+        {
+            Assert.Fail();
+        }
+
+        [Test]
+        public void Scenario_ComputerPlayerHasNineVictoryPointsAndBuildsLargestArmyToWin()
+        {
+            var firstOpponentResources = (ResourceClutch.RoadSegment * 3) + (ResourceClutch.Settlement * 3) +
+                (ResourceClutch.City * 4) + (ResourceClutch.DevelopmentCard * 3);
+
+            this.CreateStandardLocalGameControllerScenarioRunner(ResourceClutch.Zero, firstOpponentResources, ResourceClutch.Zero, ResourceClutch.Zero)
+                .DuringPlayerTurn(MainPlayerName, 4, 4).EndTurn()
+                .DuringPlayerTurn(FirstOpponentName, 3, 3)
+                    .BuildRoad(17, 7).BuildRoad(17, 16).BuildRoad(44, 45)
+                    .BuildSettlement(7).BuildSettlement(16).BuildSettlement(45)
+                    .BuildCity(7).BuildCity(16).BuildCity(18).BuildCity(43)
+                    .BuyDevelopmentCard(DevelopmentCardTypes.Knight).BuyDevelopmentCard(DevelopmentCardTypes.Knight).BuyDevelopmentCard(DevelopmentCardTypes.Knight)
+                    .EndTurn()
+                .DuringPlayerTurn(SecondOpponentName, 3, 3).EndTurn()
+                .DuringPlayerTurn(ThirdOpponentName, 3, 3).EndTurn()
+                .DuringPlayerTurn(MainPlayerName, 3, 3).EndTurn()
+                .DuringPlayerTurn(FirstOpponentName, 3, 3)
+                    .PlayKnightCard(4).EndTurn()
+                .DuringPlayerTurn(SecondOpponentName, 3, 3).EndTurn()
+                .DuringPlayerTurn(ThirdOpponentName, 3, 3).EndTurn()
+                .DuringPlayerTurn(MainPlayerName, 3, 3).EndTurn()
+                .DuringPlayerTurn(FirstOpponentName, 3, 3)
+                    .PlayKnightCard(0).EndTurn()
+                .DuringPlayerTurn(SecondOpponentName, 3, 3).EndTurn()
+                .DuringPlayerTurn(ThirdOpponentName, 3, 3).EndTurn()
+                .DuringPlayerTurn(MainPlayerName, 3, 3).EndTurn()
+                .DuringPlayerTurn(FirstOpponentName, 3, 3)
+                    .PlayKnightCard(4).EndTurn()
+                .Build()
+                    .BuildRoadEvent(FirstOpponentName, 17, 7).BuildRoadEvent(FirstOpponentName, 17, 16).BuildRoadEvent(FirstOpponentName, 44, 45)
+                    .BuildSettlementEvent(FirstOpponentName, 7).BuildSettlementEvent(FirstOpponentName, 16).BuildSettlementEvent(FirstOpponentName, 45)
+                    .BuildCityEvent(FirstOpponentName, 7).BuildCityEvent(FirstOpponentName, 16).BuildCityEvent(FirstOpponentName, 18).BuildCityEvent(FirstOpponentName, 43)
+                    .LargestArmyChangedEvent(FirstOpponentName)
+                    .GameWinEvent(FirstOpponentName, 11)
+                .Run();
+        }
+
+        [Test]
+        public void Scenario_ComputerPlayerHasNineVictoryPointsAndBuildsLongestRoadToWin()
+        {
+            Assert.Fail();
+        }
+
         /// <summary>
         /// Test that the largest army event is not raised when the player plays knight cards and already has the largest army
         /// </summary>
