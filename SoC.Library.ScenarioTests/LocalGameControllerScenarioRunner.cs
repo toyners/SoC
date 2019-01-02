@@ -243,7 +243,7 @@ namespace SoC.Library.ScenarioTests
                 var expectedPlayer = expectedPlayerPair.Value;
                 var actualPlayer = this.playersByName[expectedPlayer.Name];
 
-                Assert.AreEqual(expectedPlayer.VictoryPoints, actualPlayer.VictoryPoints, $"Expected player {actualPlayer.Name} to have {expectedPlayer.VictoryPoints} victory points but has {actualPlayer.VictoryPoints} victory points");
+                Assert.AreEqual(expectedPlayer.VictoryPoints, actualPlayer.VictoryPoints, $"Expected player '{actualPlayer.Name}' to have {expectedPlayer.VictoryPoints} victory points but has {actualPlayer.VictoryPoints} victory points");
             }
 
             return this.localGameController;
