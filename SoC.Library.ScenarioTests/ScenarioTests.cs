@@ -179,6 +179,28 @@ namespace SoC.Library.ScenarioTests
                 .Run();
         }
 
+        [Test]
+        public void Scenario_ComputerPlayerHasEightVictoryPointsAndBuildsLargestArmyToWin()
+        {
+            var firstOpponentResources = (ResourceClutch.RoadSegment * 4) + (ResourceClutch.Settlement * 2) + 
+                (ResourceClutch.City * 4) + (ResourceClutch.DevelopmentCard * 3);
+
+            this.CreateStandardLocalGameControllerScenarioRunner(ResourceClutch.Zero, firstOpponentResources, ResourceClutch.Zero, ResourceClutch.Zero)
+                .DuringPlayerTurn(MainPlayerName, 4, 4).EndTurn()
+                .DuringPlayerTurn(FirstOpponentName, 3, 3)
+                    .BuildRoad(17, 7).BuildRoad(7, 8).BuildRoad(8, 0).BuildRoad(0, 1)
+                    .BuildSettlement(1).BuildSettlement(7)
+                    .BuildCity(1).BuildCity(7).BuildCity(18).BuildCity(43).EndTurn()
+                .Build()
+                    .DiceRollEvent(MainPlayerName, 4, 4)
+                    .DiceRollEvent(FirstOpponentName, 3, 3)
+                    .BuildRoadEvent(FirstOpponentName, 17, 7).BuildRoadEvent(FirstOpponentName, 7, 8).BuildRoadEvent(FirstOpponentName, 8, 0).BuildRoadEvent(FirstOpponentName, 0, 1)
+                    .BuildSettlementEvent(FirstOpponentName, 1).BuildSettlementEvent(FirstOpponentName, 7)
+                    .BuildCityEvent(FirstOpponentName, 1).BuildCityEvent(FirstOpponentName, 7).BuildCityEvent(FirstOpponentName, 18).BuildCityEvent(FirstOpponentName, 43)
+                    .GameWinEvent(FirstOpponentName, 10)
+                .Run();
+        }
+
         /// <summary>
         /// Test that the largest army event is not raised when the player plays knight cards and already has the largest army
         /// </summary>
@@ -422,7 +444,6 @@ namespace SoC.Library.ScenarioTests
                 .WithStartingResourcesForPlayer(ThirdOpponentName, thirdOpponentResources)
                 .WithTurnOrder(MainPlayerName, FirstOpponentName, SecondOpponentName, ThirdOpponentName);
         }
-
     }
 
 
