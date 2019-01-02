@@ -162,19 +162,24 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void Scenario_ComputerPlayerBuildsCityToWin()
         {
-            var firstOpponentResources = (ResourceClutch.RoadSegment * 4) + (ResourceClutch.Settlement * 2) + (ResourceClutch.City * 4);
+            var firstOpponentResources = (ResourceClutch.RoadSegment * 5) + (ResourceClutch.Settlement * 4) + (ResourceClutch.City * 4);
+
             this.CreateStandardLocalGameControllerScenarioRunner(ResourceClutch.Zero, firstOpponentResources, ResourceClutch.Zero, ResourceClutch.Zero)
                 .DuringPlayerTurn(MainPlayerName, 4, 4).EndTurn()
                 .DuringPlayerTurn(FirstOpponentName, 3, 3)
-                    .BuildRoad(17, 7).BuildRoad(7, 8).BuildRoad(8, 0).BuildRoad(0, 1)
-                    .BuildSettlement(1).BuildSettlement(7)
-                    .BuildCity(1).BuildCity(7).BuildCity(18).BuildCity(43).EndTurn()
+                    .BuildRoad(17, 7).BuildRoad(17, 16).BuildRoad(43, 51).BuildRoad(51, 50).BuildRoad(51, 52)
+                    .BuildSettlement(7).BuildSettlement(16).BuildSettlement(50).BuildSettlement(52)
+                    .BuildCity(7).BuildCity(16).BuildCity(50).BuildCity(52).EndTurn()
                 .Build()
                     .DiceRollEvent(MainPlayerName, 4, 4)
                     .DiceRollEvent(FirstOpponentName, 3, 3)
-                    .BuildRoadEvent(FirstOpponentName, 17, 7).BuildRoadEvent(FirstOpponentName, 7, 8).BuildRoadEvent(FirstOpponentName, 8, 0).BuildRoadEvent(FirstOpponentName, 0, 1)
-                    .BuildSettlementEvent(FirstOpponentName, 1).BuildSettlementEvent(FirstOpponentName, 7)
-                    .BuildCityEvent(FirstOpponentName, 1).BuildCityEvent(FirstOpponentName, 7).BuildCityEvent(FirstOpponentName, 18).BuildCityEvent(FirstOpponentName, 43)
+                    .BuildRoadEvent(FirstOpponentName, 17, 7).BuildRoadEvent(FirstOpponentName, 17, 16)
+                    .BuildRoadEvent(FirstOpponentName, 43, 51).BuildRoadEvent(FirstOpponentName, 51, 50)
+                    .BuildRoadEvent(FirstOpponentName, 51, 52)
+                    .BuildSettlementEvent(FirstOpponentName, 7).BuildSettlementEvent(FirstOpponentName, 16)
+                    .BuildSettlementEvent(FirstOpponentName, 50).BuildSettlementEvent(FirstOpponentName, 52)
+                    .BuildCityEvent(FirstOpponentName, 7).BuildCityEvent(FirstOpponentName, 16)
+                    .BuildCityEvent(FirstOpponentName, 50).BuildCityEvent(FirstOpponentName, 52)
                     .GameWinEvent(FirstOpponentName, 10)
                 .Run();
         }
@@ -182,21 +187,37 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void Scenario_ComputerPlayerHasEightVictoryPointsAndBuildsLargestArmyToWin()
         {
-            var firstOpponentResources = (ResourceClutch.RoadSegment * 4) + (ResourceClutch.Settlement * 2) + 
+            var firstOpponentResources = (ResourceClutch.RoadSegment * 2) + (ResourceClutch.Settlement * 2) + 
                 (ResourceClutch.City * 4) + (ResourceClutch.DevelopmentCard * 3);
 
             this.CreateStandardLocalGameControllerScenarioRunner(ResourceClutch.Zero, firstOpponentResources, ResourceClutch.Zero, ResourceClutch.Zero)
                 .DuringPlayerTurn(MainPlayerName, 4, 4).EndTurn()
                 .DuringPlayerTurn(FirstOpponentName, 3, 3)
-                    .BuildRoad(17, 7).BuildRoad(7, 8).BuildRoad(8, 0).BuildRoad(0, 1)
-                    .BuildSettlement(1).BuildSettlement(7)
-                    .BuildCity(1).BuildCity(7).BuildCity(18).BuildCity(43).EndTurn()
+                    .BuildRoad(17, 7).BuildRoad(17, 16)
+                    .BuildSettlement(7).BuildSettlement(16)
+                    .BuildCity(7).BuildCity(16).BuildCity(18).BuildCity(43)
+                    .BuyDevelopmentCard(DevelopmentCardTypes.Knight).BuyDevelopmentCard(DevelopmentCardTypes.Knight).BuyDevelopmentCard(DevelopmentCardTypes.Knight)
+                    .EndTurn()
+                .DuringPlayerTurn(SecondOpponentName, 3, 3).EndTurn()
+                .DuringPlayerTurn(ThirdOpponentName, 3, 3).EndTurn()
+                .DuringPlayerTurn(MainPlayerName, 3, 3).EndTurn()
+                .DuringPlayerTurn(FirstOpponentName, 3, 3)
+                    .PlayKnightCard(4).EndTurn()
+                .DuringPlayerTurn(SecondOpponentName, 3, 3).EndTurn()
+                .DuringPlayerTurn(ThirdOpponentName, 3, 3).EndTurn()
+                .DuringPlayerTurn(MainPlayerName, 3, 3).EndTurn()
+                .DuringPlayerTurn(FirstOpponentName, 3, 3)
+                    .PlayKnightCard(0).EndTurn()
+                .DuringPlayerTurn(SecondOpponentName, 3, 3).EndTurn()
+                .DuringPlayerTurn(ThirdOpponentName, 3, 3).EndTurn()
+                .DuringPlayerTurn(MainPlayerName, 3, 3).EndTurn()
+                .DuringPlayerTurn(FirstOpponentName, 3, 3)
+                    .PlayKnightCard(4).EndTurn()
                 .Build()
-                    .DiceRollEvent(MainPlayerName, 4, 4)
-                    .DiceRollEvent(FirstOpponentName, 3, 3)
-                    .BuildRoadEvent(FirstOpponentName, 17, 7).BuildRoadEvent(FirstOpponentName, 7, 8).BuildRoadEvent(FirstOpponentName, 8, 0).BuildRoadEvent(FirstOpponentName, 0, 1)
-                    .BuildSettlementEvent(FirstOpponentName, 1).BuildSettlementEvent(FirstOpponentName, 7)
-                    .BuildCityEvent(FirstOpponentName, 1).BuildCityEvent(FirstOpponentName, 7).BuildCityEvent(FirstOpponentName, 18).BuildCityEvent(FirstOpponentName, 43)
+                    .BuildRoadEvent(FirstOpponentName, 17, 7).BuildRoadEvent(FirstOpponentName, 17, 16)
+                    .BuildSettlementEvent(FirstOpponentName, 7).BuildSettlementEvent(FirstOpponentName, 16)
+                    .BuildCityEvent(FirstOpponentName, 7).BuildCityEvent(FirstOpponentName, 16).BuildCityEvent(FirstOpponentName, 18).BuildCityEvent(FirstOpponentName, 43)
+                    .LargestArmyChangedEvent(FirstOpponentName)
                     .GameWinEvent(FirstOpponentName, 10)
                 .Run();
         }
