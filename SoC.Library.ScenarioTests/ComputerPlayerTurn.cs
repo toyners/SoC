@@ -4,11 +4,11 @@ namespace SoC.Library.ScenarioTests
 {
     internal class ComputerPlayerTurn : PlayerTurn
     {
-        private readonly MockComputerPlayer computerPlayer;
+        private readonly ScenarioComputerPlayer computerPlayer;
 
         public ComputerPlayerTurn(LocalGameControllerScenarioRunner runner, IPlayer player) : base(runner, player)
         {
-            this.computerPlayer = (MockComputerPlayer)player;
+            this.computerPlayer = (ScenarioComputerPlayer)player;
         }
 
         public void ResolveActions()

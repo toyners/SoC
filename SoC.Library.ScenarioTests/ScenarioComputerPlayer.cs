@@ -8,7 +8,7 @@ using Jabberwocky.SoC.Library.PlayerData;
 
 namespace SoC.Library.ScenarioTests
 {
-    public class MockComputerPlayer : ComputerPlayer
+    public class ScenarioComputerPlayer : ComputerPlayer
     {
         private PlaceInfrastructureInstruction firstInstruction;
         private PlaceInfrastructureInstruction secondInstruction;
@@ -16,7 +16,7 @@ namespace SoC.Library.ScenarioTests
         public readonly Queue<DevelopmentCard> BoughtDevelopmentCards = new Queue<DevelopmentCard>();
 
         #region Construction
-        public MockComputerPlayer(string name, INumberGenerator numberGenerator) : base(name, numberGenerator) { }
+        public ScenarioComputerPlayer(string name, INumberGenerator numberGenerator) : base(name, numberGenerator) { }
         #endregion
 
         #region Methods

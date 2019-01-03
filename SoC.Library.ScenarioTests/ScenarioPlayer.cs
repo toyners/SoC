@@ -2,9 +2,9 @@
 
 namespace SoC.Library.ScenarioTests
 {
-    internal class MockPlayer : Player
+    internal class ScenarioPlayer : Player
     {
-        internal MockPlayer(string name) : base(name) { }
+        internal ScenarioPlayer(string name) : base(name) { }
 
         internal void SetVictoryPoints(uint victoryPoints)
         {

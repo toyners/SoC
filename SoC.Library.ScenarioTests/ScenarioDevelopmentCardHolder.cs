@@ -5,7 +5,7 @@ using Jabberwocky.SoC.Library.Interfaces;
 
 namespace SoC.Library.ScenarioTests
 {
-    public class MockDevelopmentCardHolder : IDevelopmentCardHolder
+    public class ScenarioDevelopmentCardHolder : IDevelopmentCardHolder
     {
         private readonly Queue<DevelopmentCard> developmentCards = new Queue<DevelopmentCard>();
 

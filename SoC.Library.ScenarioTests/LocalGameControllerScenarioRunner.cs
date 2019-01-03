@@ -27,15 +27,15 @@ namespace SoC.Library.ScenarioTests
         #region Fields
         private static LocalGameControllerScenarioRunner localGameControllerScenarioBuilder;
         private readonly Dictionary<Type, GameEvent> lastEventsByType = new Dictionary<Type, GameEvent>();
-        private readonly MockPlayerPool mockPlayerPool = new MockPlayerPool();
+        private readonly ScenarioPlayerPool mockPlayerPool = new ScenarioPlayerPool();
         private readonly Queue<Instruction> playerInstructions = new Queue<Instruction>();
         private readonly List<PlayerTurnSetupAction> FirstRoundSetupActions = new List<PlayerTurnSetupAction>(4);
         private readonly List<PlayerTurnSetupAction> SecondRoundSetupActions = new List<PlayerTurnSetupAction>(4);
         private readonly List<PlayerTurn> playerTurns = new List<PlayerTurn>();
-        private readonly MockDevelopmentCardHolder mockDevelopmentCardHolder = new MockDevelopmentCardHolder();
-        private readonly MockNumberGenerator mockNumberGenerator = new MockNumberGenerator();
+        private readonly ScenarioDevelopmentCardHolder mockDevelopmentCardHolder = new ScenarioDevelopmentCardHolder();
+        private readonly ScenarioNumberGenerator mockNumberGenerator = new ScenarioNumberGenerator();
         private readonly Dictionary<string, IPlayer> playersByName = new Dictionary<string, IPlayer>();
-        private readonly Dictionary<string, MockComputerPlayer> computerPlayersByName = new Dictionary<string, MockComputerPlayer>();
+        private readonly Dictionary<string, ScenarioComputerPlayer> computerPlayersByName = new Dictionary<string, ScenarioComputerPlayer>();
         private readonly List<IPlayer> players = new List<IPlayer>(4);
         private TurnToken currentToken;
         private int expectedEventCount;
@@ -110,11 +110,11 @@ namespace SoC.Library.ScenarioTests
             return this;
         }
 
-        private MockPlayer expectedPlayer = null;
-        private readonly Dictionary<string, MockPlayer> expectedPlayersByName = new Dictionary<string, MockPlayer>();
+        private ScenarioPlayer expectedPlayer = null;
+        private readonly Dictionary<string, ScenarioPlayer> expectedPlayersByName = new Dictionary<string, ScenarioPlayer>();
         public LocalGameControllerScenarioRunner ExpectPlayer(string mainPlayerName)
         {
-            this.expectedPlayer = new MockPlayer(mainPlayerName);
+            this.expectedPlayer = new ScenarioPlayer(mainPlayerName);
             this.expectedPlayersByName.Add(mainPlayerName, this.expectedPlayer);
             return this;
         }
@@ -364,13 +364,13 @@ namespace SoC.Library.ScenarioTests
         public LocalGameControllerScenarioRunner BuyDevelopmentCardEvent(string playerName, DevelopmentCardTypes developmentCardType)
         {
             var player = this.playersByName[playerName];
-            if (player is MockPlayer mockPlayer)
+            if (player is ScenarioPlayer mockPlayer)
             {
 
             }
-            else if (player is MockComputerPlayer mockComputerPlayer)
+            else if (player is ScenarioComputerPlayer mockComputerPlayer)
             {
-                var expectedBuyDevelopmentCardEvent = new MockBuyDevelopmentCardEvent(mockComputerPlayer, developmentCardType);
+                var expectedBuyDevelopmentCardEvent = new ScenarioBuyDevelopmentCardEvent(mockComputerPlayer, developmentCardType);
                 this.relevantEvents.Enqueue(expectedBuyDevelopmentCardEvent);
             }
 
@@ -413,14 +413,14 @@ namespace SoC.Library.ScenarioTests
         private IPlayer CreatePlayer(string name, bool isComputerPlayer)
         {
             IPlayer player = isComputerPlayer
-                ? new MockComputerPlayer(name, this.mockNumberGenerator) as IPlayer
-                : new MockPlayer(name) as IPlayer;
+                ? new ScenarioComputerPlayer(name, this.mockNumberGenerator) as IPlayer
+                : new ScenarioPlayer(name) as IPlayer;
 
             this.players.Add(player);
             this.playersByName.Add(name, player);
             this.mockPlayerPool.AddPlayer(player);
             if (isComputerPlayer)
-                this.computerPlayersByName.Add(name, (MockComputerPlayer)player);
+                this.computerPlayersByName.Add(name, (ScenarioComputerPlayer)player);
 
             return player;
         }

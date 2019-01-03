@@ -8,7 +8,7 @@ using Jabberwocky.SoC.Library.Store;
 
 namespace SoC.Library.ScenarioTests
 {
-    public class MockPlayerPool : IPlayerPool
+    public class ScenarioPlayerPool : IPlayerPool
     {
         private readonly Queue<IPlayer> players = new Queue<IPlayer>();
         //public Dictionary<Guid, MockComputerPlayer> ComputerPlayers = new Dictionary<Guid, MockComputerPlayer>(); 

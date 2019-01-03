@@ -4,7 +4,7 @@ using Jabberwocky.SoC.Library.Interfaces;
 
 namespace SoC.Library.ScenarioTests
 {
-    internal class MockNumberGenerator : INumberGenerator
+    internal class ScenarioNumberGenerator : INumberGenerator
     {
         private readonly Queue<Tuple<uint, uint>> diceRolls = new Queue<Tuple<uint, uint>>();
         private readonly Queue<int> numbers = new Queue<int>();
