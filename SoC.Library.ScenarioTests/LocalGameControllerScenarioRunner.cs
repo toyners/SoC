@@ -29,8 +29,8 @@ namespace SoC.Library.ScenarioTests
         private readonly Dictionary<Type, GameEvent> lastEventsByType = new Dictionary<Type, GameEvent>();
         private readonly ScenarioPlayerPool mockPlayerPool = new ScenarioPlayerPool();
         private readonly Queue<Instruction> playerInstructions = new Queue<Instruction>();
-        private readonly List<PlayerTurnSetupAction> FirstRoundSetupActions = new List<PlayerTurnSetupAction>(4);
-        private readonly List<PlayerTurnSetupAction> SecondRoundSetupActions = new List<PlayerTurnSetupAction>(4);
+        private readonly List<PlayerSetupAction> FirstRoundSetupActions = new List<PlayerSetupAction>(4);
+        private readonly List<PlayerSetupAction> SecondRoundSetupActions = new List<PlayerSetupAction>(4);
         private readonly List<PlayerTurn> playerTurns = new List<PlayerTurn>();
         private readonly ScenarioDevelopmentCardHolder mockDevelopmentCardHolder = new ScenarioDevelopmentCardHolder();
         private readonly Dictionary<string, IPlayer> playersByName = new Dictionary<string, IPlayer>();

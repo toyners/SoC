@@ -578,26 +578,4 @@ namespace SoC.Library.ScenarioTests
                 .WithTurnOrder(MainPlayerName, FirstOpponentName, SecondOpponentName, ThirdOpponentName);
         }
     }
-
-
-
-
-
-
-    public class PlayerTurnAction
-    {
-        public readonly Guid Id;
-        public PlayerTurnAction(Guid playerId) => this.Id = playerId;
-    }
-
-    public class PlayerTurnSetupAction : PlayerTurnAction
-    {
-        public readonly uint SettlementLocation;
-        public readonly uint RoadEndLocation;
-        public PlayerTurnSetupAction(Guid playerId, uint settlementLocation, uint roadEndLocation) : base(playerId)
-        {
-            this.SettlementLocation = settlementLocation;
-            this.RoadEndLocation = roadEndLocation;
-        }
-    }
 }
