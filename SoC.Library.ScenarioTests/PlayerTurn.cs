@@ -79,13 +79,16 @@ namespace SoC.Library.ScenarioTests
                     {
                         case ResourceTypes.Ore:
                             randomNumber = selectedPlayer.Resources.BrickCount +
-            selectedPlayer.Resources.GrainCount +
-            selectedPlayer.Resources.LumberCount +
-            selectedPlayer.Resources.OreCount - 1;
+                            selectedPlayer.Resources.GrainCount +
+                            selectedPlayer.Resources.LumberCount;
                             break;
                     }
 
                     this.runner.NumberGenerator.AddRandomNumberAtBeginning(randomNumber);
+
+                    var knightCard = (KnightDevelopmentCard)this.player.HeldCards.Where(c => c.Type == DevelopmentCardTypes.Knight).First();
+                    localGameController.UseKnightCard(turnToken, knightCard, scenarioPlayKnightCardAction.NewRobberHex,
+                        selectedPlayer.Id);
                 }
                 else if (action is ComputerPlayerAction)
                 {
@@ -93,12 +96,12 @@ namespace SoC.Library.ScenarioTests
                     {
                         case ComputerPlayerActionTypes.BuyDevelopmentCard: localGameController.BuyDevelopmentCard(turnToken); break;
                         case ComputerPlayerActionTypes.PlayKnightCard:
-                            {
-                                var playKnightCardAction = (PlayKnightCardAction)action;
-                                var knightCard = (KnightDevelopmentCard)this.player.HeldCards.Where(c => c.Type == DevelopmentCardTypes.Knight).First();
-                                localGameController.UseKnightCard(turnToken, knightCard, playKnightCardAction.NewRobberHex, playKnightCardAction.PlayerId);
-                                break;
-                            }
+                        {
+                            var playKnightCardAction = (PlayKnightCardAction)action;
+                            var knightCard = (KnightDevelopmentCard)this.player.HeldCards.Where(c => c.Type == DevelopmentCardTypes.Knight).First();
+                            localGameController.UseKnightCard(turnToken, knightCard, playKnightCardAction.NewRobberHex, playKnightCardAction.PlayerId);
+                            break;
+                        }
                         default: throw new Exception($"Action type '{action.ActionType}' not handled");
                     }
                 }

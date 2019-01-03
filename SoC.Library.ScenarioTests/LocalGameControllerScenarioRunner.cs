@@ -76,6 +76,10 @@ namespace SoC.Library.ScenarioTests
             this.localGameController.LargestArmyEvent = (newPlayerId, previousPlayerId) => { this.actualEvents.Add(new LargestArmyChangedEvent(newPlayerId, previousPlayerId)); };
             this.localGameController.PlayKnightCardEvent = (PlayKnightCardEvent p) => { this.actualEvents.Add(p); };
             this.localGameController.ErrorRaisedEvent = (ErrorDetails e) => { Assert.Fail(e.Message); };
+            this.localGameController.ResourcesTransferredEvent = (ResourceTransactionList list) =>
+            {
+                this.actualEvents.Add(new ResourceTransactionEvent(this.players[0].Id, list));
+            };
 
             this.eventHandlersByGameEventType = eventHandlersByGameEventType;
             this.expectedEventCount = expectedEventCount;
