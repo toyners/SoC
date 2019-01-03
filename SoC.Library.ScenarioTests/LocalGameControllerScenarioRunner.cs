@@ -169,6 +169,11 @@ namespace SoC.Library.ScenarioTests
             return this;
         }
 
+        public LocalGameControllerScenarioRunner ResourcesGainedEvent(string mainPlayerName, string firstOpponentName, ResourceClutch oneOre)
+        {
+            return this;
+        }
+
         public LocalGameController Run()
         {
             this.localGameController.JoinGame();

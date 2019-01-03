@@ -59,6 +59,11 @@ namespace SoC.Library.ScenarioTests
             return this;
         }
 
+        public virtual PlayerTurn PlayKnightCardAndCollectFrom(uint hexLocation, string selectedPlayerName, ResourceClutch expectedGainedResources)
+        {
+            return this;
+        }
+
         public virtual void ResolveActions(TurnToken turnToken, LocalGameController localGameController)
         {
             while (this.actions.Count > 0)

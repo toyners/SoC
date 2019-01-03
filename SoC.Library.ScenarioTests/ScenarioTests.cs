@@ -311,6 +311,30 @@ namespace SoC.Library.ScenarioTests
         }
 
         /// <summary>
+        /// Test that the transaction between players happens as expected when human plays the knight card and the robber
+        /// is moved to a hex populated by two computer players.
+        /// </summary>
+        [Test]
+        public void Scenario_ComputerPlayerLosesResourceWhenPlayerPlaysTheKnightCard()
+        {
+            var mainPlayerResources = ResourceClutch.DevelopmentCard;
+            this.CreateStandardLocalGameControllerScenarioRunner(mainPlayerResources, ResourceClutch.Zero, ResourceClutch.Zero, ResourceClutch.Zero)
+                .DuringPlayerTurn(MainPlayerName, 4, 4)
+                    .BuyDevelopmentCard(DevelopmentCardTypes.Knight)
+                    .EndTurn()
+                .DuringPlayerTurn(FirstOpponentName, 3, 3).EndTurn()
+                .DuringPlayerTurn(SecondOpponentName, 3, 3).EndTurn()
+                .DuringPlayerTurn(ThirdOpponentName, 3, 3).EndTurn()
+                .DuringPlayerTurn(MainPlayerName, 4, 4)
+                    .PlayKnightCardAndCollectFrom(3, FirstOpponentName, ResourceClutch.OneOre)
+                    .EndTurn()
+                .Build()
+                    .BuyDevelopmentCardEvent(MainPlayerName, DevelopmentCardTypes.Knight)
+                    .ResourcesGainedEvent(MainPlayerName, FirstOpponentName, ResourceClutch.OneOre)
+                .Run();
+        }
+
+        /// <summary>
         /// Test that the largest army event is not raised when the player plays knight cards and already has the largest army
         /// </summary>
         [Test]
