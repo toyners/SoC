@@ -59,8 +59,9 @@ namespace SoC.Library.ScenarioTests
             return this;
         }
 
-        public virtual PlayerTurn PlayKnightCardAndCollectFrom(uint hexLocation, string selectedPlayerName, ResourceClutch expectedGainedResources)
+        public virtual PlayerTurn PlayKnightCardAndCollectFrom(uint hexLocation, string selectedPlayerName, ResourceTypes expectedSingleResource)
         {
+            this.actions.Enqueue(new ScenarioPlayKnightCardAction(hexLocation, selectedPlayerName, expectedSingleResource));
             return this;
         }
 
@@ -69,16 +70,41 @@ namespace SoC.Library.ScenarioTests
             while (this.actions.Count > 0)
             {
                 var action = this.actions.Dequeue();
-                switch(action.ActionType)
+                if (action is ScenarioPlayKnightCardAction scenarioPlayKnightCardAction)
                 {
-                    case ComputerPlayerActionTypes.BuyDevelopmentCard: localGameController.BuyDevelopmentCard(turnToken); break;
-                    case ComputerPlayerActionTypes.PlayKnightCard:
+                    var selectedPlayer = this.runner.GetPlayerFromName(scenarioPlayKnightCardAction.SelectedPlayerName);
+
+                    var randomNumber = int.MinValue;
+                    switch (scenarioPlayKnightCardAction.ExpectedSingleResource)
                     {
-                        var knightCard = (KnightDevelopmentCard)this.player.HeldCards.Where(c => c.Type == DevelopmentCardTypes.Knight).First();
-                        localGameController.UseKnightCard(turnToken, knightCard, ((PlayKnightCardAction)action).NewRobberHex);
-                        break;
+                        case ResourceTypes.Ore:
+                            randomNumber = selectedPlayer.Resources.BrickCount +
+            selectedPlayer.Resources.GrainCount +
+            selectedPlayer.Resources.LumberCount +
+            selectedPlayer.Resources.OreCount - 1;
+                            break;
                     }
-                    default: throw new Exception($"Action type {action.ActionType} not handled");
+
+                    this.runner.NumberGenerator.AddRandomNumberAtBeginning(randomNumber);
+                }
+                else if (action is ComputerPlayerAction)
+                {
+                    switch (action.ActionType)
+                    {
+                        case ComputerPlayerActionTypes.BuyDevelopmentCard: localGameController.BuyDevelopmentCard(turnToken); break;
+                        case ComputerPlayerActionTypes.PlayKnightCard:
+                            {
+                                var playKnightCardAction = (PlayKnightCardAction)action;
+                                var knightCard = (KnightDevelopmentCard)this.player.HeldCards.Where(c => c.Type == DevelopmentCardTypes.Knight).First();
+                                localGameController.UseKnightCard(turnToken, knightCard, playKnightCardAction.NewRobberHex, playKnightCardAction.PlayerId);
+                                break;
+                            }
+                        default: throw new Exception($"Action type '{action.ActionType}' not handled");
+                    }
+                }
+                else
+                {
+                    throw new Exception($"Action of type '{action.GetType()}' not handled");
                 }
             }
         }

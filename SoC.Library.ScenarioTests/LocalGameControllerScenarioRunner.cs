@@ -33,7 +33,6 @@ namespace SoC.Library.ScenarioTests
         private readonly List<PlayerTurnSetupAction> SecondRoundSetupActions = new List<PlayerTurnSetupAction>(4);
         private readonly List<PlayerTurn> playerTurns = new List<PlayerTurn>();
         private readonly ScenarioDevelopmentCardHolder mockDevelopmentCardHolder = new ScenarioDevelopmentCardHolder();
-        private readonly ScenarioNumberGenerator mockNumberGenerator = new ScenarioNumberGenerator();
         private readonly Dictionary<string, IPlayer> playersByName = new Dictionary<string, IPlayer>();
         private readonly Dictionary<string, ScenarioComputerPlayer> computerPlayersByName = new Dictionary<string, ScenarioComputerPlayer>();
         private readonly List<IPlayer> players = new List<IPlayer>(4);
@@ -47,7 +46,14 @@ namespace SoC.Library.ScenarioTests
         #endregion
 
         #region Construction
-        private LocalGameControllerScenarioRunner() {}
+        private LocalGameControllerScenarioRunner()
+        {
+            this.NumberGenerator = new ScenarioNumberGenerator();
+        }
+        #endregion
+
+        #region Properties
+        internal ScenarioNumberGenerator NumberGenerator { get; }
         #endregion
 
         #region Methods
@@ -59,7 +65,7 @@ namespace SoC.Library.ScenarioTests
         public LocalGameControllerScenarioRunner Build(Dictionary<GameEventTypes, Delegate> eventHandlersByGameEventType = null, int expectedEventCount = -1)
         {
             this.localGameController = new LocalGameController(
-                this.mockNumberGenerator, 
+                this.NumberGenerator, 
                 this.mockPlayerPool, 
                 new GameBoard(BoardSizes.Standard), 
                 this.mockDevelopmentCardHolder);
@@ -117,6 +123,11 @@ namespace SoC.Library.ScenarioTests
             this.expectedPlayer = new ScenarioPlayer(mainPlayerName);
             this.expectedPlayersByName.Add(mainPlayerName, this.expectedPlayer);
             return this;
+        }
+
+        public IPlayer GetPlayerFromName(string playerName)
+        {
+            return this.playersByName[playerName];
         }
 
         public LocalGameControllerScenarioRunner IgnoredEvents(Type matchingType, uint count)
@@ -337,14 +348,14 @@ namespace SoC.Library.ScenarioTests
             }
 
             foreach (var roll in rolls)
-                this.mockNumberGenerator.AddTwoDiceRoll(roll / 2, roll / 2);
+                this.NumberGenerator.AddTwoDiceRoll(roll / 2, roll / 2);
 
             return this;
         }
 
         public PlayerTurn DuringPlayerTurn(string playerName, uint dice1, uint dice2)
         {
-            this.mockNumberGenerator.AddTwoDiceRoll(dice1, dice2);
+            this.NumberGenerator.AddTwoDiceRoll(dice1, dice2);
 
             PlayerTurn playerTurn = null;
 
@@ -413,7 +424,7 @@ namespace SoC.Library.ScenarioTests
         private IPlayer CreatePlayer(string name, bool isComputerPlayer)
         {
             IPlayer player = isComputerPlayer
-                ? new ScenarioComputerPlayer(name, this.mockNumberGenerator) as IPlayer
+                ? new ScenarioComputerPlayer(name, this.NumberGenerator) as IPlayer
                 : new ScenarioPlayer(name) as IPlayer;
 
             this.players.Add(player);

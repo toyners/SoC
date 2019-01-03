@@ -326,7 +326,7 @@ namespace SoC.Library.ScenarioTests
                 .DuringPlayerTurn(SecondOpponentName, 3, 3).EndTurn()
                 .DuringPlayerTurn(ThirdOpponentName, 3, 3).EndTurn()
                 .DuringPlayerTurn(MainPlayerName, 4, 4)
-                    .PlayKnightCardAndCollectFrom(3, FirstOpponentName, ResourceClutch.OneOre)
+                    .PlayKnightCardAndCollectFrom(3, FirstOpponentName, ResourceTypes.Ore)
                     .EndTurn()
                 .Build()
                     .BuyDevelopmentCardEvent(MainPlayerName, DevelopmentCardTypes.Knight)

@@ -937,14 +937,38 @@ namespace Jabberwocky.SoC.Library
             this.ResourcesTransferredEvent?.Invoke(resourceTransactionList);
         }
 
-        public void UseKnightCard(TurnToken turnToken, KnightDevelopmentCard developmentCard, uint newRobberHex)
+        public void UseKnightCard(TurnToken turnToken, KnightDevelopmentCard developmentCard, uint newRobberHex, Guid? playerId = null)
         {
-            this.ProcessKnightCard(turnToken, developmentCard, newRobberHex, null);
-        }
+            if (!this.VerifyParametersForUsingDevelopmentCard(turnToken, developmentCard, "knight"))
+            {
+                return;
+            }
 
-        public void UseKnightCard(TurnToken turnToken, KnightDevelopmentCard developmentCard, uint newRobberHex, Guid playerId)
-        {
-            this.ProcessKnightCard(turnToken, developmentCard, newRobberHex, playerId);
+            if (!this.VerifyPlacementOfRobber(newRobberHex))
+            {
+                return;
+            }
+
+            if (playerId.HasValue && !this.VerifyPlayerForResourceTransactionWhenUsingKnightCard(newRobberHex, playerId.Value))
+            {
+                return;
+            }
+
+            this.PlayKnightDevelopmentCard(developmentCard, newRobberHex);
+
+            this.PlayKnightCardEvent?.Invoke(new PlayKnightCardEvent(this.mainPlayer.Id));
+
+            if (playerId.HasValue)
+            {
+                this.CompleteResourceTransactionBetweenPlayers(this.playersById[playerId.Value]);
+            }
+
+            if (this.PlayerHasJustBuiltTheLargestArmy(out Guid previousPlayerId))
+            {
+                this.LargestArmyEvent?.Invoke(this.playerWithLargestArmy.Id, previousPlayerId);
+            }
+
+            this.CheckMainPlayerIsWinner();
         }
 
         public void UseMonopolyCard(TurnToken turnToken, MonopolyDevelopmentCard monopolyCard, ResourceTypes resourceType)
@@ -1379,40 +1403,6 @@ namespace Jabberwocky.SoC.Library
             this.PlayDevelopmentCard(card);
             this.currentPlayer.PlaceKnightDevelopmentCard(card);
             this.robberHex = newRobberHex;
-        }
-
-        private void ProcessKnightCard(TurnToken turnToken, KnightDevelopmentCard developmentCard, uint newRobberHex, Guid? playerId)
-        {
-            if (!this.VerifyParametersForUsingDevelopmentCard(turnToken, developmentCard, "knight"))
-            {
-                return;
-            }
-
-            if (!this.VerifyPlacementOfRobber(newRobberHex))
-            {
-                return;
-            }
-
-            if (playerId.HasValue && !this.VerifyPlayerForResourceTransactionWhenUsingKnightCard(newRobberHex, playerId.Value))
-            {
-                return;
-            }
-
-            this.PlayKnightDevelopmentCard(developmentCard, newRobberHex);
-
-            this.PlayKnightCardEvent?.Invoke(new PlayKnightCardEvent(this.mainPlayer.Id));
-
-            if (playerId.HasValue)
-            {
-                this.CompleteResourceTransactionBetweenPlayers(this.playersById[playerId.Value]);
-            }
-
-            if (this.PlayerHasJustBuiltTheLargestArmy(out Guid previousPlayerId))
-            {
-                this.LargestArmyEvent?.Invoke(this.playerWithLargestArmy.Id, previousPlayerId);
-            }
-
-            this.CheckMainPlayerIsWinner();
         }
 
         private void TryRaiseRoadSegmentBuildingError()

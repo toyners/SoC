@@ -62,6 +62,7 @@
     <Compile Include="PlaceInfrastructureInstruction.cs" />
     <Compile Include="PlayerTurn.cs" />
     <Compile Include="ResourceCollectedEventGroup.cs" />
+    <Compile Include="ScenarioPlayKnightCardAction.cs" />
     <Compile Include="ScenarioTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

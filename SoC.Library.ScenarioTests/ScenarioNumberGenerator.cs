@@ -7,11 +7,16 @@ namespace SoC.Library.ScenarioTests
     internal class ScenarioNumberGenerator : INumberGenerator
     {
         private readonly Queue<Tuple<uint, uint>> diceRolls = new Queue<Tuple<uint, uint>>();
-        private readonly Queue<int> numbers = new Queue<int>();
+        private readonly List<int> numbers = new List<int>();
 
-        public void AddRandomNumber(int number)
+        public void AddRandomNumberAtEnd(int number)
         {
-            this.numbers.Enqueue(number);
+            this.numbers.Add(number);
+        }
+
+        public void AddRandomNumberAtBeginning(int number)
+        {
+            this.numbers.Insert(0, number);
         }
 
         public void AddTwoDiceRoll(uint dice1, uint dice2)
@@ -21,7 +26,9 @@ namespace SoC.Library.ScenarioTests
 
         public int GetRandomNumberBetweenZeroAndMaximum(int exclusiveMaximum)
         {
-            return this.numbers.Dequeue();
+            var number = this.numbers[0];
+            this.numbers.RemoveAt(0);
+            return number;
         }
 
         public void RollTwoDice(out uint dice1, out uint dice2)
