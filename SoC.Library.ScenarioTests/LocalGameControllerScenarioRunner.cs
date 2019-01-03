@@ -169,8 +169,13 @@ namespace SoC.Library.ScenarioTests
             return this;
         }
 
-        public LocalGameControllerScenarioRunner ResourcesGainedEvent(string mainPlayerName, string firstOpponentName, ResourceClutch oneOre)
+        public LocalGameControllerScenarioRunner ResourcesGainedEvent(string receivingPlayerName, string givingPlayerName, ResourceClutch expectedResources)
         {
+            var receivingPlayer = this.playersByName[receivingPlayerName];
+            var givingPlayer = this.playersByName[givingPlayerName];
+            var resourceTransaction = new ResourceTransaction(receivingPlayer.Id, givingPlayer.Id, expectedResources);
+            var expectedResourceTransactonEvent = new ResourceTransactionEvent(receivingPlayer.Id, resourceTransaction);
+            this.relevantEvents.Enqueue(expectedResourceTransactonEvent);
             return this;
         }
 
