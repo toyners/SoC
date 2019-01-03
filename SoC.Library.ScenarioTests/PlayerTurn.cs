@@ -90,18 +90,16 @@ namespace SoC.Library.ScenarioTests
                     localGameController.UseKnightCard(turnToken, knightCard, scenarioPlayKnightCardAction.NewRobberHex,
                         selectedPlayer.Id);
                 }
+                else if (action is PlayKnightCardAction playKnightCardAction)
+                {
+                    var knightCard = (KnightDevelopmentCard)this.player.HeldCards.Where(c => c.Type == DevelopmentCardTypes.Knight).First();
+                    localGameController.UseKnightCard(turnToken, knightCard, playKnightCardAction.NewRobberHex, playKnightCardAction.PlayerId);
+                }
                 else if (action is ComputerPlayerAction)
                 {
                     switch (action.ActionType)
                     {
                         case ComputerPlayerActionTypes.BuyDevelopmentCard: localGameController.BuyDevelopmentCard(turnToken); break;
-                        case ComputerPlayerActionTypes.PlayKnightCard:
-                        {
-                            var playKnightCardAction = (PlayKnightCardAction)action;
-                            var knightCard = (KnightDevelopmentCard)this.player.HeldCards.Where(c => c.Type == DevelopmentCardTypes.Knight).First();
-                            localGameController.UseKnightCard(turnToken, knightCard, playKnightCardAction.NewRobberHex, playKnightCardAction.PlayerId);
-                            break;
-                        }
                         default: throw new Exception($"Action type '{action.ActionType}' not handled");
                     }
                 }

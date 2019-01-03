@@ -550,6 +550,12 @@ namespace SoC.Library.ScenarioTests
                 .Run();
         }
 
+        [Test]
+        public void Scenario_PlayerLosesResourceWhenComputerPlayerPlaysTheKnightCard()
+        {
+            Assert.Fail();
+        }
+
         private LocalGameControllerScenarioRunner CreateStandardLocalGameControllerScenarioRunner()
         {
             return LocalGameController()

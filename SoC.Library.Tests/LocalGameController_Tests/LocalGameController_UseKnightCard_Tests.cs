@@ -809,51 +809,6 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
             firstOpponent.VictoryPoints.ShouldBe(2u);
         }
 
-        /// <summary>
-        /// Test that the transaction between players happens as expected when human plays the knight card and the robber
-        /// is moved to a hex populated by two computer players.
-        /// </summary>
-        [Test]
-        public void Scenario_OpponentLosesResourceWhenPlayerPlaysTheKnightCard()
-        {
-            // Arrange
-            var knightCard = new KnightDevelopmentCard();
-            var testInstances = this.TestSetup(new MockGameBoardWithNoResourcesCollected(), knightCard);
-            var localGameController = testInstances.LocalGameController;
-
-            testInstances.Dice.AddSequence(new uint[] { 3, 0, 8, 8, 0 });
-
-            var player = testInstances.MainPlayer;
-            var firstOpponent = testInstances.FirstOpponent;
-            var secondOpponent = testInstances.SecondOpponent;
-
-            player.AddResources(ResourceClutch.DevelopmentCard);
-            firstOpponent.AddResources(ResourceClutch.OneBrick);
-
-            TurnToken turnToken = null;
-            localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
-
-            ResourceTransactionList gainedResources = null;
-            localGameController.ResourcesTransferredEvent = (ResourceTransactionList r) => { gainedResources = r; };
-
-            localGameController.StartGamePlay();
-
-            // Turn 1: Buy the knight cards
-            localGameController.BuyDevelopmentCard(turnToken);
-            localGameController.EndTurn(turnToken);
-
-            // Act: Turn 2: Play knight card
-            localGameController.UseKnightCard(turnToken, knightCard, SecondSettlementOneHex, firstOpponent.Id);
-
-            // Assert
-            var expectedResources = new ResourceTransactionList();
-            expectedResources.Add(new ResourceTransaction(player.Id, firstOpponent.Id, ResourceClutch.OneBrick));
-            gainedResources.ShouldBe(expectedResources);
-
-            player.ResourcesCount.ShouldBe(1);
-            firstOpponent.ResourcesCount.ShouldBe(0);
-        }
-
         [Test]
         public void Scenario_PlayerLosesResourceWhenOpponentPlaysTheKnightCard()
         {
