@@ -225,7 +225,25 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void Scenario_ComputerPlayerHasEightVictoryPointsAndBuildsLongestRoadToWin()
         {
-            Assert.Fail();
+            var firstOpponentResources = (ResourceClutch.RoadSegment * 4) + (ResourceClutch.Settlement * 2) +
+                (ResourceClutch.City * 4);
+
+            this.CreateStandardLocalGameControllerScenarioRunner(ResourceClutch.Zero, firstOpponentResources, ResourceClutch.Zero, ResourceClutch.Zero)
+                .DuringPlayerTurn(MainPlayerName, 4, 4).EndTurn()
+                .DuringPlayerTurn(FirstOpponentName, 3, 3)
+                    .BuildRoad(17, 7).BuildRoad(7, 8).BuildRoad(8, 0)
+                    .BuildSettlement(7).BuildSettlement(0)
+                    .BuildCity(7).BuildCity(0).BuildCity(18).BuildCity(43)
+                    .BuildRoad(0, 1)
+                    .EndTurn()
+                .Build()
+                    .BuildRoadEvent(FirstOpponentName, 17, 7).BuildRoadEvent(FirstOpponentName, 7, 8).BuildRoadEvent(FirstOpponentName, 8, 0)
+                    .BuildSettlementEvent(FirstOpponentName, 7).BuildSettlementEvent(FirstOpponentName, 0)
+                    .BuildCityEvent(FirstOpponentName, 7).BuildCityEvent(FirstOpponentName, 0).BuildCityEvent(FirstOpponentName, 18).BuildCityEvent(FirstOpponentName, 43)
+                    .BuildRoadEvent(FirstOpponentName, 0, 1)
+                    .LongestRoadBuiltEvent(FirstOpponentName)
+                    .GameWinEvent(FirstOpponentName, 10)
+                .Run();
         }
 
         [Test]
@@ -269,7 +287,27 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void Scenario_ComputerPlayerHasNineVictoryPointsAndBuildsLongestRoadToWin()
         {
-            Assert.Fail();
+            var firstOpponentResources = (ResourceClutch.RoadSegment * 5) + (ResourceClutch.Settlement * 3) +
+                (ResourceClutch.City * 4);
+
+            this.CreateStandardLocalGameControllerScenarioRunner(ResourceClutch.Zero, firstOpponentResources, ResourceClutch.Zero, ResourceClutch.Zero)
+                .DuringPlayerTurn(MainPlayerName, 4, 4).EndTurn()
+                .DuringPlayerTurn(FirstOpponentName, 3, 3)
+                    .BuildRoad(17, 7).BuildRoad(7, 8).BuildRoad(8, 0).BuildRoad(44, 45)
+                    .BuildSettlement(7).BuildSettlement(0).BuildSettlement(45)
+                    .BuildCity(7).BuildCity(0).BuildCity(18).BuildCity(43)
+                    .BuildRoad(0, 1)
+                    .EndTurn()
+                .Build()
+                    .BuildRoadEvent(FirstOpponentName, 17, 7).BuildRoadEvent(FirstOpponentName, 7, 8)
+                    .BuildRoadEvent(FirstOpponentName, 8, 0).BuildRoadEvent(FirstOpponentName, 44, 45)
+                    .BuildSettlementEvent(FirstOpponentName, 7).BuildSettlementEvent(FirstOpponentName, 0)
+                    .BuildSettlementEvent(FirstOpponentName, 45)
+                    .BuildCityEvent(FirstOpponentName, 7).BuildCityEvent(FirstOpponentName, 0).BuildCityEvent(FirstOpponentName, 18).BuildCityEvent(FirstOpponentName, 43)
+                    .BuildRoadEvent(FirstOpponentName, 0, 1)
+                    .LongestRoadBuiltEvent(FirstOpponentName)
+                    .GameWinEvent(FirstOpponentName, 11)
+                .Run();
         }
 
         /// <summary>

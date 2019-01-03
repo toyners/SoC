@@ -147,6 +147,14 @@ namespace SoC.Library.ScenarioTests
             return this;
         }
 
+        public LocalGameControllerScenarioRunner LongestRoadBuiltEvent(string newPlayerName)
+        {
+            var newPlayer = this.playersByName[newPlayerName];
+            var expectedLongestRoadBuiltEvent = new LongestRoadBuiltEvent(newPlayer.Id, Guid.Empty);
+            this.relevantEvents.Enqueue(expectedLongestRoadBuiltEvent);
+            return this;
+        }
+
         public LocalGameControllerScenarioRunner ResourcesCollectedEvent(string playerName, uint location, ResourceClutch resourceClutch)
         {
             var player = this.playersByName[playerName];
