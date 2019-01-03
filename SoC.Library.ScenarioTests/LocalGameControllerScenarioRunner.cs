@@ -70,16 +70,16 @@ namespace SoC.Library.ScenarioTests
                 new GameBoard(BoardSizes.Standard), 
                 this.mockDevelopmentCardHolder);
             this.localGameController.DiceRollEvent = this.DiceRollEventHandler;
-            this.localGameController.GameEvents = this.GameEventsHandler;
-            this.localGameController.StartPlayerTurnEvent = (TurnToken t) => { this.currentToken = t; };
             this.localGameController.DevelopmentCardPurchasedEvent = (DevelopmentCard c) => { this.actualEvents.Add(new BuyDevelopmentCardEvent(this.players[0].Id)); };
+            this.localGameController.ErrorRaisedEvent = (ErrorDetails e) => { Assert.Fail(e.Message); };
+            this.localGameController.GameEvents = this.GameEventsHandler;
             this.localGameController.LargestArmyEvent = (newPlayerId, previousPlayerId) => { this.actualEvents.Add(new LargestArmyChangedEvent(newPlayerId, previousPlayerId)); };
             this.localGameController.PlayKnightCardEvent = (PlayKnightCardEvent p) => { this.actualEvents.Add(p); };
-            this.localGameController.ErrorRaisedEvent = (ErrorDetails e) => { Assert.Fail(e.Message); };
             this.localGameController.ResourcesTransferredEvent = (ResourceTransactionList list) =>
             {
                 this.actualEvents.Add(new ResourceTransactionEvent(this.players[0].Id, list));
             };
+            this.localGameController.StartPlayerTurnEvent = (TurnToken t) => { this.currentToken = t; };
 
             this.eventHandlersByGameEventType = eventHandlersByGameEventType;
             this.expectedEventCount = expectedEventCount;
