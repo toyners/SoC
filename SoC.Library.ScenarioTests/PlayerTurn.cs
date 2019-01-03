@@ -82,6 +82,7 @@ namespace SoC.Library.ScenarioTests
                             selectedPlayer.Resources.GrainCount +
                             selectedPlayer.Resources.LumberCount;
                             break;
+                        default: throw new Exception($"Resource type '{scenarioPlayKnightCardAction.ExpectedSingleResource}' not handled");
                     }
 
                     this.runner.NumberGenerator.AddRandomNumberAtBeginning(randomNumber);
