@@ -48,8 +48,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ComputerPlayerTurn.cs" />
-    <Compile Include="HumanPlayerTurn.cs" />
+    <Compile Include="PlayerTurn\ComputerPlayerTurn.cs" />
+    <Compile Include="PlayerTurn\HumanPlayerTurn.cs" />
     <Compile Include="IgnoredEvent.cs" />
     <Compile Include="Instruction.cs" />
     <Compile Include="IPlayerTurn.cs" />
@@ -62,7 +62,7 @@
     <Compile Include="ScenarioPlayer.cs" />
     <Compile Include="ScenarioPlayerPool.cs" />
     <Compile Include="PlaceInfrastructureInstruction.cs" />
-    <Compile Include="PlayerTurn.cs" />
+    <Compile Include="PlayerTurn\BasePlayerTurn.cs" />
     <Compile Include="ResourceCollectedEventGroup.cs" />
     <Compile Include="ScenarioPlayKnightCardAction.cs" />
     <Compile Include="ScenarioTests.cs" />

@@ -6,6 +6,7 @@ using Jabberwocky.SoC.Library.GameBoards;
 using Jabberwocky.SoC.Library.GameEvents;
 using Jabberwocky.SoC.Library.Interfaces;
 using NUnit.Framework;
+using SoC.Library.ScenarioTests.PlayerTurn;
 
 namespace SoC.Library.ScenarioTests
 {
@@ -31,7 +32,7 @@ namespace SoC.Library.ScenarioTests
         private readonly Queue<Instruction> playerInstructions = new Queue<Instruction>();
         private readonly List<PlayerSetupAction> FirstRoundSetupActions = new List<PlayerSetupAction>(4);
         private readonly List<PlayerSetupAction> SecondRoundSetupActions = new List<PlayerSetupAction>(4);
-        private readonly List<PlayerTurn> playerTurns = new List<PlayerTurn>();
+        private readonly List<BasePlayerTurn> playerTurns = new List<BasePlayerTurn>();
         private readonly ScenarioDevelopmentCardHolder mockDevelopmentCardHolder = new ScenarioDevelopmentCardHolder();
         private readonly Dictionary<string, IPlayer> playersByName = new Dictionary<string, IPlayer>();
         private readonly Dictionary<string, ScenarioComputerPlayer> computerPlayersByName = new Dictionary<string, ScenarioComputerPlayer>();
@@ -335,11 +336,11 @@ namespace SoC.Library.ScenarioTests
             return this;
         }
 
-        public PlayerTurn DuringPlayerTurn(string playerName, uint dice1, uint dice2)
+        public BasePlayerTurn DuringPlayerTurn(string playerName, uint dice1, uint dice2)
         {
             this.NumberGenerator.AddTwoDiceRoll(dice1, dice2);
 
-            PlayerTurn playerTurn = null;
+            BasePlayerTurn playerTurn = null;
 
             if (playerName == this.players[0].Name)
             {

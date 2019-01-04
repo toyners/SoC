@@ -1,9 +1,9 @@
 ﻿using Jabberwocky.SoC.Library;
 using Jabberwocky.SoC.Library.Interfaces;
 
-namespace SoC.Library.ScenarioTests
+namespace SoC.Library.ScenarioTests.PlayerTurn
 {
-    internal class ComputerPlayerTurn : PlayerTurn
+    internal class ComputerPlayerTurn : BasePlayerTurn
     {
         private readonly ScenarioComputerPlayer computerPlayer;
 
