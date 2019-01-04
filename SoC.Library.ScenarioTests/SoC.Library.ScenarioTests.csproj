@@ -48,6 +48,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ScenarioGameBoardWithNoResourcesCollected.cs" />
     <Compile Include="PlayerTurn\ComputerPlayerTurn.cs" />
     <Compile Include="PlayerTurn\HumanPlayerTurn.cs" />
     <Compile Include="IgnoredEvent.cs" />

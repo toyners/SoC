@@ -159,14 +159,14 @@ namespace Jabberwocky.SoC.Library
 
         public ResourceClutch LoseResourceAtIndex(int index)
         {
-            if (index < 0 || index >= this.ResourcesCount)
-            {
-                throw new IndexOutOfRangeException("Index " + index + " is out of bounds (0.." + (this.ResourcesCount - 1) + ").");
-            }
-
             if (this.ResourcesCount == 0)
             {
                 return ResourceClutch.Zero;
+            }
+
+            if (index < 0 || index >= this.ResourcesCount)
+            {
+                throw new IndexOutOfRangeException("Index " + index + " is out of bounds (0.." + (this.ResourcesCount - 1) + ").");
             }
 
             return this.GetResourceForIndex(index);

@@ -27,23 +27,24 @@ namespace SoC.Library.ScenarioTests
 
         #region Fields
         private static LocalGameControllerScenarioRunner localGameControllerScenarioBuilder;
+        private readonly ScenarioDevelopmentCardHolder developmentCardHolder = new ScenarioDevelopmentCardHolder();
+        private readonly Dictionary<Guid, List<DevelopmentCard>> developmentCardsByPlayerId = new Dictionary<Guid, List<DevelopmentCard>>();
+        private readonly List<PlayerSetupAction> firstRoundSetupActions = new List<PlayerSetupAction>(4);
         private readonly Dictionary<Type, GameEvent> lastEventsByType = new Dictionary<Type, GameEvent>();
-        private readonly ScenarioPlayerPool mockPlayerPool = new ScenarioPlayerPool();
-        private readonly Queue<Instruction> playerInstructions = new Queue<Instruction>();
-        private readonly List<PlayerSetupAction> FirstRoundSetupActions = new List<PlayerSetupAction>(4);
-        private readonly List<PlayerSetupAction> SecondRoundSetupActions = new List<PlayerSetupAction>(4);
-        private readonly List<BasePlayerTurn> playerTurns = new List<BasePlayerTurn>();
-        private readonly ScenarioDevelopmentCardHolder mockDevelopmentCardHolder = new ScenarioDevelopmentCardHolder();
         private readonly Dictionary<string, IPlayer> playersByName = new Dictionary<string, IPlayer>();
+        private readonly Queue<Instruction> playerInstructions = new Queue<Instruction>();
+        private readonly ScenarioPlayerPool playerPool = new ScenarioPlayerPool();
+        private readonly List<BasePlayerTurn> playerTurns = new List<BasePlayerTurn>();
+        private readonly List<PlayerSetupAction> secondRoundSetupActions = new List<PlayerSetupAction>(4);
         private readonly Dictionary<string, ScenarioComputerPlayer> computerPlayersByName = new Dictionary<string, ScenarioComputerPlayer>();
         private readonly List<IPlayer> players = new List<IPlayer>(4);
-        private TurnToken currentToken;
-        private int expectedEventCount;
-        private LocalGameController localGameController = null;
         private List<GameEvent> actualEvents = null;
-        private Queue<GameEvent> relevantEvents = null;
-        private readonly Dictionary<Guid, List<DevelopmentCard>> developmentCardsByPlayerId = new Dictionary<Guid, List<DevelopmentCard>>();
+        private TurnToken currentToken;
         private Dictionary<GameEventTypes, Delegate> eventHandlersByGameEventType;
+        private int expectedEventCount;
+        private GameBoard gameBoard;
+        private LocalGameController localGameController = null;
+        private Queue<GameEvent> relevantEvents = null;
         #endregion
 
         #region Construction
@@ -65,11 +66,14 @@ namespace SoC.Library.ScenarioTests
 
         public LocalGameControllerScenarioRunner Build(Dictionary<GameEventTypes, Delegate> eventHandlersByGameEventType = null, int expectedEventCount = -1)
         {
+            if (this.gameBoard == null)
+                this.gameBoard = new GameBoard(BoardSizes.Standard);
+
             this.localGameController = new LocalGameController(
                 this.NumberGenerator, 
-                this.mockPlayerPool, 
-                new GameBoard(BoardSizes.Standard), 
-                this.mockDevelopmentCardHolder);
+                this.playerPool, 
+                this.gameBoard, 
+                this.developmentCardHolder);
             this.localGameController.DiceRollEvent = this.DiceRollEventHandler;
             this.localGameController.DevelopmentCardPurchasedEvent = (DevelopmentCard c) => { this.actualEvents.Add(new BuyDevelopmentCardEvent(this.players[0].Id)); };
             this.localGameController.ErrorRaisedEvent = (ErrorDetails e) => { Assert.Fail(e.Message); };
@@ -296,6 +300,12 @@ namespace SoC.Library.ScenarioTests
             return this;
         }
 
+        public LocalGameControllerScenarioRunner WithNoResourceCollection()
+        {
+            this.gameBoard = new ScenarioGameBoardWithNoResourcesCollected();
+            return this;
+        }
+
         public LocalGameControllerScenarioRunner WithPlayerSetup(string playerName, uint firstSettlementLocation, uint firstRoadEndLocation, uint secondSettlementLocation, uint secondRoadEndLocation)
         {
             if (playerName == this.players[0].Name)
@@ -393,7 +403,7 @@ namespace SoC.Library.ScenarioTests
                 default: throw new Exception($"Development card type {developmentCardType} not recognised");
             }
 
-            this.mockDevelopmentCardHolder.AddDevelopmentCard(developmentCard);
+            this.developmentCardHolder.AddDevelopmentCard(developmentCard);
 
             if (!this.developmentCardsByPlayerId.TryGetValue(playerId, out var developmentCardsForPlayerId))
             {
@@ -426,7 +436,7 @@ namespace SoC.Library.ScenarioTests
 
             this.players.Add(player);
             this.playersByName.Add(name, player);
-            this.mockPlayerPool.AddPlayer(player);
+            this.playerPool.AddPlayer(player);
             if (isComputerPlayer)
                 this.computerPlayersByName.Add(name, (ScenarioComputerPlayer)player);
 

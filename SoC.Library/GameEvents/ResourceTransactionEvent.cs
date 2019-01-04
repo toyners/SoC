@@ -21,5 +21,16 @@ namespace Jabberwocky.SoC.Library.GameEvents
             this.ResourceTransactions.Add(resourceTransaction);
         }
         #endregion
+
+        #region Methods
+        public override bool Equals(object obj)
+        {
+            if (!base.Equals(obj))
+                return false;
+
+            var other = obj as ResourceTransactionEvent;
+            return this.ResourceTransactions.Equals(other.ResourceTransactions);
+        }
+        #endregion
     }
 }

@@ -1,51 +1,88 @@
 ﻿
 namespace Jabberwocky.SoC.Library
 {
-  using System;
-  using System.Collections.Generic;
+    using System;
+    using System.Collections.Generic;
 
-  public struct ResourceTransaction
-  {
-    public readonly Guid ReceivingPlayerId;
-    public readonly Guid GivingPlayerId;
-    public readonly ResourceClutch Resources;
-
-    public ResourceTransaction(Guid receivingPlayerId, Guid givingPlayerId, ResourceClutch resources)
+    public struct ResourceTransaction
     {
-      this.ReceivingPlayerId = receivingPlayerId;
-      this.GivingPlayerId = givingPlayerId;
-      this.Resources = resources;
-    }
-  }
+        #region Fields
+        public readonly Guid ReceivingPlayerId;
+        public readonly Guid GivingPlayerId;
+        public readonly ResourceClutch Resources;
+        #endregion
 
-  public class ResourceTransactionList
-  {
-    #region Fields
-    private List<ResourceTransaction> resourceTransactions = new List<ResourceTransaction>();
-    #endregion
-
-    #region Properties
-    public Int32 Count { get { return this.resourceTransactions.Count; } }
-
-    public ResourceTransaction this[Int32 index]
-    {
-      get
-      {
-        if (index < 0 || index >= this.resourceTransactions.Count)
+        #region Construction
+        public ResourceTransaction(Guid receivingPlayerId, Guid givingPlayerId, ResourceClutch resources)
         {
-          throw new IndexOutOfRangeException();
+            this.ReceivingPlayerId = receivingPlayerId;
+            this.GivingPlayerId = givingPlayerId;
+            this.Resources = resources;
+        }
+        #endregion
+
+        #region Methods
+        public override bool Equals(object obj)
+        {
+            if (obj == null || !(obj is ResourceTransaction))
+                return false;
+
+            var other = (ResourceTransaction)obj;
+            return
+                this.ReceivingPlayerId.Equals(other.ReceivingPlayerId) &&
+                this.GivingPlayerId.Equals(other.GivingPlayerId) &&
+                this.Resources.Equals(other.Resources);
+        }
+        #endregion
+    }
+
+    public class ResourceTransactionList
+    {
+        #region Fields
+        private List<ResourceTransaction> resourceTransactions = new List<ResourceTransaction>();
+        #endregion
+
+        #region Properties
+        public Int32 Count { get { return this.resourceTransactions.Count; } }
+
+        public ResourceTransaction this[Int32 index]
+        {
+            get
+            {
+                if (index < 0 || index >= this.resourceTransactions.Count)
+                {
+                    throw new IndexOutOfRangeException();
+                }
+
+                return this.resourceTransactions[index];
+            }
+        }
+        #endregion
+
+        #region Methods
+        public void Add(ResourceTransaction resourceTransaction)
+        {
+            this.resourceTransactions.Add(resourceTransaction);
         }
 
-        return this.resourceTransactions[index];
-      }
-    }
-    #endregion
+        public override bool Equals(object obj)
+        {
+            if (obj == null || !(obj is ResourceTransactionList))
+                return false;
 
-    #region Methods
-    public void Add(ResourceTransaction resourceTransaction)
-    {
-      this.resourceTransactions.Add(resourceTransaction);
+            var other = (ResourceTransactionList)obj;
+
+            if (!this.resourceTransactions.Count.Equals(other.resourceTransactions.Count))
+                return false;
+
+            for (var index = 0; index < this.resourceTransactions.Count; index++)
+            {
+                if (!this.resourceTransactions[index].Equals(other.resourceTransactions[index]))
+                    return false;
+            }
+
+            return true;
+        }
+        #endregion
     }
-    #endregion
-  }
 }

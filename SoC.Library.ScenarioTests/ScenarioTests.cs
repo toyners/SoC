@@ -1,10 +1,6 @@
 ﻿
-using System;
-using System.Collections.Generic;
 using Jabberwocky.SoC.Library;
-using Jabberwocky.SoC.Library.GameActions;
 using Jabberwocky.SoC.Library.GameEvents;
-using Jabberwocky.SoC.Library.Interfaces;
 using NUnit.Framework;
 using static SoC.Library.ScenarioTests.LocalGameControllerScenarioRunner;
 
@@ -319,6 +315,7 @@ namespace SoC.Library.ScenarioTests
         {
             var mainPlayerResources = ResourceClutch.DevelopmentCard;
             this.CreateStandardLocalGameControllerScenarioRunner(mainPlayerResources, ResourceClutch.Zero, ResourceClutch.Zero, ResourceClutch.Zero)
+                .WithNoResourceCollection()
                 .DuringPlayerTurn(MainPlayerName, 4, 4)
                     .BuyDevelopmentCard(DevelopmentCardTypes.Knight)
                     .EndTurn()
