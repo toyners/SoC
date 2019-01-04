@@ -12,7 +12,7 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
     internal abstract class BasePlayerTurn
     {
         private readonly IPlayer player;
-        private readonly LocalGameControllerScenarioRunner runner;
+        protected readonly LocalGameControllerScenarioRunner runner;
         protected readonly Queue<ComputerPlayerAction> actions = new Queue<ComputerPlayerAction>();
 
         public Guid PlayerId { get { return this.player.Id; } }

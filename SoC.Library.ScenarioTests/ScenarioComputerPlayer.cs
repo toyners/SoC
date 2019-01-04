@@ -10,10 +10,12 @@ namespace SoC.Library.ScenarioTests
 {
     public class ScenarioComputerPlayer : ComputerPlayer
     {
+        #region Fields
         private PlaceInfrastructureInstruction firstInstruction;
         private PlaceInfrastructureInstruction secondInstruction;
         private readonly Queue<ComputerPlayerAction> actions = new Queue<ComputerPlayerAction>();
         public readonly Queue<DevelopmentCard> BoughtDevelopmentCards = new Queue<DevelopmentCard>();
+        #endregion
 
         #region Construction
         public ScenarioComputerPlayer(string name, INumberGenerator numberGenerator) : base(name, numberGenerator) { }

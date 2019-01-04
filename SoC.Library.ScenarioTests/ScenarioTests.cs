@@ -551,7 +551,25 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void Scenario_PlayerLosesResourceWhenComputerPlayerPlaysTheKnightCard()
         {
-            Assert.Fail();
+            var mainPlayerResources = ResourceClutch.OneOre;
+            var firstOpponentResources = ResourceClutch.DevelopmentCard;
+            this.CreateStandardLocalGameControllerScenarioRunner(mainPlayerResources, firstOpponentResources, ResourceClutch.Zero, ResourceClutch.Zero)
+                .WithNoResourceCollection()
+                .DuringPlayerTurn(MainPlayerName, 4, 4).EndTurn()
+                .DuringPlayerTurn(FirstOpponentName, 3, 3)
+                    .BuyDevelopmentCard(DevelopmentCardTypes.Knight)
+                    .EndTurn()
+                .DuringPlayerTurn(SecondOpponentName, 3, 3).EndTurn()
+                .DuringPlayerTurn(ThirdOpponentName, 3, 3).EndTurn()
+                .DuringPlayerTurn(MainPlayerName, 4, 4).EndTurn()
+                .DuringPlayerTurn(FirstOpponentName, 3, 3)
+                    .PlayKnightCardAndCollectFrom(3, MainPlayerName, ResourceTypes.Ore)
+                    .EndTurn()
+                .Build()
+                    .BuyDevelopmentCardEvent(FirstOpponentName, DevelopmentCardTypes.Knight)
+                    .PlayKnightCardEvent(FirstOpponentName)
+                    .ResourcesGainedEvent(FirstOpponentName, MainPlayerName, ResourceClutch.OneOre)
+                .Run();
         }
 
         private LocalGameControllerScenarioRunner CreateStandardLocalGameControllerScenarioRunner()

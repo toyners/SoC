@@ -1,4 +1,7 @@
-﻿using Jabberwocky.SoC.Library;
+﻿using System;
+using System.Linq;
+using Jabberwocky.SoC.Library;
+using Jabberwocky.SoC.Library.GameActions;
 using Jabberwocky.SoC.Library.Interfaces;
 
 namespace SoC.Library.ScenarioTests.PlayerTurn
@@ -14,7 +17,30 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
 
         public override void ResolveActions(TurnToken turnToken, LocalGameController localGameController)
         {
-            this.computerPlayer.AddActions(this.actions.ToArray());
+            var actionArray = this.actions.ToArray();
+            for (var index = 0; index < actionArray.Length; index++)
+            {
+                if (actionArray[index] is ScenarioPlayKnightCardAction scenarioPlayKnightCardAction)
+                {
+                    var selectedPlayer = this.runner.GetPlayerFromName(scenarioPlayKnightCardAction.SelectedPlayerName);
+
+                    var randomNumber = int.MinValue;
+                    switch (scenarioPlayKnightCardAction.ExpectedSingleResource)
+                    {
+                        case ResourceTypes.Ore:
+                            randomNumber = selectedPlayer.Resources.BrickCount +
+                            selectedPlayer.Resources.GrainCount +
+                            selectedPlayer.Resources.LumberCount;
+                            break;
+                        default: throw new Exception($"Resource type '{scenarioPlayKnightCardAction.ExpectedSingleResource}' not handled");
+                    }
+
+                    this.runner.NumberGenerator.AddRandomNumberAtBeginning(randomNumber);
+                    actionArray[index] = new PlayKnightCardAction(scenarioPlayKnightCardAction.NewRobberHex, selectedPlayer.Id);
+                }
+            }
+
+            this.computerPlayer.AddActions(actionArray);
         }
     }
 }
