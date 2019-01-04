@@ -1,4 +1,5 @@
-﻿using Jabberwocky.SoC.Library.Interfaces;
+﻿using Jabberwocky.SoC.Library;
+using Jabberwocky.SoC.Library.Interfaces;
 
 namespace SoC.Library.ScenarioTests
 {
@@ -11,7 +12,7 @@ namespace SoC.Library.ScenarioTests
             this.computerPlayer = (ScenarioComputerPlayer)player;
         }
 
-        public void ResolveActions()
+        public override void ResolveActions(TurnToken turnToken, LocalGameController localGameController)
         {
             this.computerPlayer.AddActions(this.actions.ToArray());
         }

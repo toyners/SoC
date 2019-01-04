@@ -49,6 +49,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ComputerPlayerTurn.cs" />
+    <Compile Include="HumanPlayerTurn.cs" />
     <Compile Include="IgnoredEvent.cs" />
     <Compile Include="Instruction.cs" />
     <Compile Include="IPlayerTurn.cs" />

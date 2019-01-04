@@ -9,7 +9,7 @@ using Jabberwocky.SoC.Library.Interfaces;
 
 namespace SoC.Library.ScenarioTests
 {
-    internal class PlayerTurn //: IPlayerTurn
+    internal abstract class PlayerTurn
     {
         private readonly IPlayer player;
         private readonly LocalGameControllerScenarioRunner runner;

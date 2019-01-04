@@ -208,31 +208,9 @@ namespace SoC.Library.ScenarioTests
 
             this.localGameController.StartGamePlay();
 
-            var turns = new Queue<PlayerTurn>(this.playerTurns);
+            this.CompleteGamePlay();
 
-            do
-            {
-                var turn = turns.Dequeue();
-
-                if (turn is ComputerPlayerTurn)
-                {
-                    ((ComputerPlayerTurn)turn).ResolveActions();
-                }
-                else if (turn is PlayerTurn playerTurn)
-                {
-                    // Do the player turn and then the computer turns for this round
-                    playerTurn.ResolveActions(this.currentToken, this.localGameController);
-                    
-                    var computerPlayerTurns = 3;
-                    while (computerPlayerTurns-- > 0 && turns.Count > 0)
-                    {
-                        var computerPlayerTurn = (ComputerPlayerTurn)turns.Dequeue();
-                        computerPlayerTurn.ResolveActions();
-                    }
-
-                    this.localGameController.EndTurn(this.currentToken);
-                }
-            } while (turns.Count > 0);
+            
 
             if (this.relevantEvents != null && this.actualEvents != null)
             {
@@ -365,7 +343,7 @@ namespace SoC.Library.ScenarioTests
 
             if (playerName == this.players[0].Name)
             {
-                playerTurn = new PlayerTurn(this, this.players[0]);
+                playerTurn = new HumanPlayerTurn(this, this.players[0]);
             }
             else
             {
@@ -423,6 +401,20 @@ namespace SoC.Library.ScenarioTests
             }
 
             developmentCardsForPlayerId.Add(developmentCard);
+        }
+
+        private void CompleteGamePlay()
+        {
+            for (var index = 0; index < this.playerTurns.Count; index++)
+            {
+                var turn = this.playerTurns[index];
+                if (turn is HumanPlayerTurn && index > 0)
+                    this.localGameController.EndTurn(this.currentToken);
+
+                turn.ResolveActions(this.currentToken, this.localGameController);
+            }
+
+            this.localGameController.EndTurn(this.currentToken);
         }
 
         private IPlayer CreatePlayer(string name, bool isComputerPlayer)
