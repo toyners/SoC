@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Jabberwocky.SoC.Library;
 using Jabberwocky.SoC.Library.DevelopmentCards;
 using Jabberwocky.SoC.Library.GameBoards;
@@ -250,7 +251,7 @@ namespace SoC.Library.ScenarioTests
                     }
 
                     if (!foundEvent)
-                        Assert.Fail("Expected event '{0}' not found", expectedEvent);
+                        Assert.Fail(this.ToMessage(expectedEvent));
                 }
             }
 
@@ -460,6 +461,27 @@ namespace SoC.Library.ScenarioTests
                         ((Action<LargestArmyChangedEvent>)eventHandler).Invoke((LargestArmyChangedEvent)gameEvent);
                 }
             }
+        }
+
+        private string ToMessage(GameEvent gameEvent)
+        {
+            var player = this.players.Where(p => p.Id.Equals(gameEvent.PlayerId)).FirstOrDefault();
+
+            var message = $"Did not find ResourceTransactionEvent event for '{player.Name}'.";
+                
+            if (gameEvent is ResourceTransactionEvent resourceTransactionEvent)
+            {
+                message += $"\r\nResource transaction count is {resourceTransactionEvent.ResourceTransactions.Count}";
+                for (var index = 0; index < resourceTransactionEvent.ResourceTransactions.Count; index++)
+                {
+                    var resourceTransaction = resourceTransactionEvent.ResourceTransactions[index];
+                    var receivingPlayer = this.players.Where(p => p.Id.Equals(resourceTransaction.ReceivingPlayerId)).FirstOrDefault();
+                    var givingPlayer = this.players.Where(p => p.Id.Equals(resourceTransaction.GivingPlayerId)).FirstOrDefault();
+                    message += $"\r\nTransaction is: Receiving player '{receivingPlayer.Name}', Giving player '{givingPlayer.Name}', Resources {resourceTransaction.Resources}";
+                }
+            }
+
+            return message;
         }
         #endregion
     }

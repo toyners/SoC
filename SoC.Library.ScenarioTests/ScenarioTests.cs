@@ -314,7 +314,8 @@ namespace SoC.Library.ScenarioTests
         public void Scenario_ComputerPlayerLosesResourceWhenPlayerPlaysTheKnightCard()
         {
             var mainPlayerResources = ResourceClutch.DevelopmentCard;
-            this.CreateStandardLocalGameControllerScenarioRunner(mainPlayerResources, ResourceClutch.Zero, ResourceClutch.Zero, ResourceClutch.Zero)
+            var firstOpponentResources = ResourceClutch.OneOre;
+            this.CreateStandardLocalGameControllerScenarioRunner(mainPlayerResources, firstOpponentResources, ResourceClutch.Zero, ResourceClutch.Zero)
                 .WithNoResourceCollection()
                 .DuringPlayerTurn(MainPlayerName, 4, 4)
                     .BuyDevelopmentCard(DevelopmentCardTypes.Knight)
