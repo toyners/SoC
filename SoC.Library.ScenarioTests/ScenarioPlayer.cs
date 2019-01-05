@@ -4,11 +4,21 @@ namespace SoC.Library.ScenarioTests
 {
     internal class ScenarioPlayer : Player
     {
-        internal ScenarioPlayer(string name) : base(name) { }
-
-        internal void SetVictoryPoints(uint victoryPoints)
+        private LocalGameControllerScenarioRunner runner;
+        internal ScenarioPlayer(string name, LocalGameControllerScenarioRunner runner) : base(name)
         {
-            this.VictoryPoints = victoryPoints;
+            this.runner = runner;
+        }
+
+        internal ScenarioPlayer VictoryPoints(uint victoryPoints)
+        {
+            //this.VictoryPoints = victoryPoints;
+            return this;
+        }
+
+        internal LocalGameControllerScenarioRunner End()
+        {
+            return this.runner;
         }
     }
 }

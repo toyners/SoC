@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using Jabberwocky.SoC.Library;
 using Jabberwocky.SoC.Library.DevelopmentCards;
+using Jabberwocky.SoC.Library.Enums;
+using Jabberwocky.SoC.Library.GameActions;
 using Jabberwocky.SoC.Library.GameBoards;
 using Jabberwocky.SoC.Library.GameEvents;
 using Jabberwocky.SoC.Library.Interfaces;
@@ -62,7 +64,7 @@ namespace SoC.Library.ScenarioTests
         #region Methods
         public static LocalGameControllerScenarioRunner LocalGameController()
         {
-            return localGameControllerScenarioBuilder = new LocalGameControllerScenarioRunner();
+            return new LocalGameControllerScenarioRunner();
         }
 
         public LocalGameControllerScenarioRunner Build(Dictionary<GameEventTypes, Delegate> eventHandlersByGameEventType = null, int expectedEventCount = -1)
@@ -128,11 +130,10 @@ namespace SoC.Library.ScenarioTests
 
         private ScenarioPlayer expectedPlayer = null;
         private readonly Dictionary<string, ScenarioPlayer> expectedPlayersByName = new Dictionary<string, ScenarioPlayer>();
-        public LocalGameControllerScenarioRunner ExpectPlayer(string mainPlayerName)
+        public ScenarioPlayer ExpectPlayer(string mainPlayerName)
         {
-            this.expectedPlayer = new ScenarioPlayer(mainPlayerName);
-            this.expectedPlayersByName.Add(mainPlayerName, this.expectedPlayer);
-            return this;
+            var expectedPlayer = new ScenarioPlayer(mainPlayerName, this);
+            return expectedPlayer;
         }
 
         public IPlayer GetPlayerFromName(string playerName)
@@ -214,11 +215,13 @@ namespace SoC.Library.ScenarioTests
 
             this.localGameController.StartGamePlay();
 
-            this.CompleteGamePlay();
+            //this.CompleteGamePlay();
+
+            this.ComepleteGamePlay2();
 
             
 
-            if (this.relevantEvents != null && this.actualEvents != null)
+            /*if (this.relevantEvents != null && this.actualEvents != null)
             {
                 if (this.expectedEventCount != -1)
                     Assert.AreEqual(this.expectedEventCount, this.actualEvents.Count, $"Expected event count {this.expectedEventCount} but found actual event count {this.actualEvents.Count}");
@@ -261,7 +264,7 @@ namespace SoC.Library.ScenarioTests
                 var actualPlayer = this.playersByName[expectedPlayer.Name];
 
                 Assert.AreEqual(expectedPlayer.VictoryPoints, actualPlayer.VictoryPoints, $"Expected player '{actualPlayer.Name}' to have {expectedPlayer.VictoryPoints} victory points but has {actualPlayer.VictoryPoints} victory points");
-            }
+            }*/
 
             return this.localGameController;
         }
@@ -272,6 +275,28 @@ namespace SoC.Library.ScenarioTests
             var expectedGameWonEvent = new GameWinEvent(playerId, expectedVictoryPoints);
             this.relevantEvents.Enqueue(expectedGameWonEvent);
             return this;
+        }
+
+        private GameRound currentGameRound = null;
+        private List<GameRound> gameRounds = new List<GameRound>();
+        public BasePlayerTurn PlayerTurn(string playerName, uint dice1, uint dice2)
+        {
+            if (currentGameRound == null || currentGameRound.IsComplete)
+            {
+                currentGameRound = new GameRound();
+                this.gameRounds.Add(currentGameRound);
+            }
+
+            BasePlayerTurn playerTurn;
+            var player = this.playersByName[playerName];
+            if (player.IsComputer)
+                playerTurn = new ComputerPlayerTurn(player, dice1, dice2, this);
+            else
+                playerTurn = new HumanPlayerTurn(player, dice1, dice2, this);
+
+            currentGameRound.Add(playerTurn);
+
+            return playerTurn;
         }
 
         public LocalGameControllerScenarioRunner PlayKnightCardEvent(string playerName)
@@ -351,7 +376,7 @@ namespace SoC.Library.ScenarioTests
         {
             this.NumberGenerator.AddTwoDiceRoll(dice1, dice2);
 
-            BasePlayerTurn playerTurn = null;
+            /*BasePlayerTurn playerTurn = null;
 
             if (playerName == this.players[0].Name)
             {
@@ -363,7 +388,8 @@ namespace SoC.Library.ScenarioTests
             }
 
             this.playerTurns.Add(playerTurn);
-            return playerTurn;
+            return playerTurn;*/
+            throw new NotImplementedException();
         }
 
         public LocalGameControllerScenarioRunner BuyDevelopmentCardEvent(string playerName, DevelopmentCardTypes developmentCardType)
@@ -391,7 +417,7 @@ namespace SoC.Library.ScenarioTests
 
         public LocalGameControllerScenarioRunner VictoryPoints(uint expectedVictoryPoints)
         {
-            this.expectedPlayer.SetVictoryPoints(expectedVictoryPoints);
+            this.expectedPlayer.VictoryPoints(expectedVictoryPoints);
             return this;
         }
 
@@ -429,11 +455,61 @@ namespace SoC.Library.ScenarioTests
             this.localGameController.EndTurn(this.currentToken);
         }
 
+        private void ComepleteGamePlay2()
+        {
+            var actualEventIndex = 0;
+
+            foreach (var gameRound in this.gameRounds)
+            {
+                foreach (var playerTurn in gameRound.PlayerTurns)
+                {
+                    this.NumberGenerator.AddTwoDiceRoll(playerTurn.Dice1, playerTurn.Dice2);
+
+                    // Run player actions (if any)
+                    var runnerActions = playerTurn.GetRunnerActions();
+                    if (runnerActions != null)
+                    {
+                        foreach (var runnerAction in runnerActions)
+                        {
+                            this.AddDevelopmentCardToBuy(playerTurn.PlayerId, ((InsertDevelopmentCardAction)runnerAction).DevelopmentCardType);
+                        }
+                    }
+
+                    playerTurn.ResolveActions(this.currentToken, this.localGameController);
+
+                    // Check actual events against expected events (if any)
+                    var expectedEvents = playerTurn.GetExpectedEvents();
+
+                    foreach (var expectedEvent in expectedEvents)
+                    {
+                        var foundEvent = false;
+                        while (actualEventIndex < this.actualEvents.Count)
+                        {
+                            var actualEvent = this.actualEvents[actualEventIndex++];
+                            if (expectedEvent.Equals(actualEvent))
+                            {
+                                foundEvent = true;
+                                break;
+                            }
+                        }
+
+                        if (!foundEvent)
+                            Assert.Fail(this.ToMessage(expectedEvent));
+                    }
+
+                    actualEventIndex = this.actualEvents.Count;
+
+                    // Check player state
+
+                }
+            }
+        }
+
         private IPlayer CreatePlayer(string name, bool isComputerPlayer)
         {
             IPlayer player = isComputerPlayer
                 ? new ScenarioComputerPlayer(name, this.NumberGenerator) as IPlayer
-                : new ScenarioPlayer(name) as IPlayer;
+                : new ScenarioPlayer(name, null) as IPlayer;
 
             this.players.Add(player);
             this.playersByName.Add(name, player);
@@ -483,6 +559,96 @@ namespace SoC.Library.ScenarioTests
 
             return message;
         }
+
+        private List<GameRound> rounds = new List<GameRound>();
         #endregion
+    }
+
+    internal class GameRound
+    {
+        public List<BasePlayerTurn> PlayerTurns = new List<BasePlayerTurn>();
+
+        public bool IsComplete { get { return this.PlayerTurns.Count == 4; } }
+
+        public void Add(BasePlayerTurn playerTurn)
+        {
+            this.PlayerTurns.Add(playerTurn);
+        }
+    }
+
+
+    internal abstract class RunnerAction { }
+
+    internal class InsertDevelopmentCardAction : RunnerAction
+    {
+        public DevelopmentCardTypes DevelopmentCardType;
+    }
+
+    internal class PlayerActionBuilder
+    {
+        private BasePlayerTurn playerTurn;
+        public List<RunnerAction> runnerActions = new List<RunnerAction>();
+        public List<ComputerPlayerAction> playerActions = new List<ComputerPlayerAction>();
+        public PlayerActionBuilder(BasePlayerTurn playerTurn)
+        {
+            this.playerTurn = playerTurn;
+        }
+
+        public BasePlayerTurn End()
+        {
+            return this.playerTurn;
+        }
+
+        public PlayerActionBuilder BuyDevelopmentCard(DevelopmentCardTypes developmentCardType)
+        {
+            this.runnerActions.Add(new InsertDevelopmentCardAction { DevelopmentCardType = developmentCardType });
+            this.playerActions.Add(new ComputerPlayerAction(ComputerPlayerActionTypes.BuyDevelopmentCard));
+            return this;
+        }
+    }
+
+    internal class ExpectedEventsBuilder
+    {
+        private BasePlayerTurn playerTurn;
+        public List<GameEvent> expectedEvents = new List<GameEvent>();
+        public ExpectedEventsBuilder(BasePlayerTurn playerTurn)
+        {
+            this.playerTurn = playerTurn;
+        }
+
+        public ExpectedEventsBuilder BuyDevelopmentCardEvent()
+        {
+            return this;
+        }
+
+        public BasePlayerTurn End()
+        {
+            return this.playerTurn;
+        }
+
+        internal ExpectedEventsBuilder DiceRollEvent(uint dice1, uint dice2)
+        {
+            this.expectedEvents.Add(new DiceRollEvent(this.playerTurn.PlayerId, dice1, dice2));
+            return this;
+        }
+    }
+
+    internal class PlayerStateBuilder
+    {
+        private BasePlayerTurn playerTurn;
+        public PlayerStateBuilder(BasePlayerTurn playerTurn)
+        {
+            this.playerTurn = playerTurn;
+        }
+
+        public PlayerStateBuilder HeldCards()
+        {
+            return this;
+        }
+
+        public BasePlayerTurn End()
+        {
+            return this.playerTurn;
+        }
     }
 }

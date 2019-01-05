@@ -635,72 +635,6 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
         }
 
         /// <summary>
-        /// Test that the largest army VP change as both the player and the opponent have the largest army.
-        /// </summary>
-        [Test]
-        public void Scenario_LargestArmyVictoryPointsChangeAsBothPlayerAndOpponentHaveTheLargestArmy()
-        {
-            // Arrange
-            var knightCard1 = new KnightDevelopmentCard();
-            var knightCard2 = new KnightDevelopmentCard();
-            var knightCard3 = new KnightDevelopmentCard();
-            var knightCard4 = new KnightDevelopmentCard();
-            var knightCard5 = new KnightDevelopmentCard();
-            var knightCard6 = new KnightDevelopmentCard();
-            var knightCard7 = new KnightDevelopmentCard();
-            var knightCard8 = new KnightDevelopmentCard();
-            var testInstances = this.TestSetup(new MockGameBoardWithNoResourcesCollected(), knightCard1, knightCard2, knightCard3, knightCard4, knightCard5, knightCard6, knightCard7, knightCard8);
-            var localGameController = testInstances.LocalGameController;
-            var player = testInstances.MainPlayer;
-            var firstOpponent = testInstances.FirstOpponent;
-
-            testInstances.Dice.AddSequenceWithRepeatingRoll(new uint[] { 8, 8, 8, 8, 8, 8 }, 8);
-
-            player.AddResources(ResourceClutch.DevelopmentCard * 5);
-
-            var playKnightCardAction = new PlayKnightInstruction { RobberHex = 0, RobbedPlayerId = Guid.Empty };
-            firstOpponent.AddResources(ResourceClutch.DevelopmentCard * 4);
-            firstOpponent.AddBuyDevelopmentCardChoice(4).EndTurn()
-              .AddPlaceKnightCardInstruction(playKnightCardAction).EndTurn()
-              .AddPlaceKnightCardInstruction(playKnightCardAction).EndTurn()
-              .AddPlaceKnightCardInstruction(playKnightCardAction).EndTurn()
-              .AddPlaceKnightCardInstruction(playKnightCardAction).EndTurn();
-
-            var turn = 0;
-            TurnToken turnToken = null;
-            localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; turn++; };
-
-            localGameController.StartGamePlay();
-
-            // Turn 1: Buy the knight cards
-            localGameController.BuyDevelopmentCard(turnToken);
-            localGameController.BuyDevelopmentCard(turnToken);
-            localGameController.BuyDevelopmentCard(turnToken);
-            localGameController.EndTurn(turnToken); // Opponent buys 4 knight cards
-
-            // Turn 2: Play knight card
-            localGameController.UseKnightCard(turnToken, knightCard1, 3);
-            localGameController.EndTurn(turnToken); // Opponent plays knight card
-
-            // Turn 3: Play knight card
-            localGameController.UseKnightCard(turnToken, knightCard2, 3);
-            localGameController.EndTurn(turnToken); // Opponent plays knight card
-
-            // Turn 4: Play knight card
-            localGameController.UseKnightCard(turnToken, knightCard3, 3); // Largest Army event raised
-            localGameController.EndTurn(turnToken); // Opponent plays knight card
-
-            player.VictoryPoints.ShouldBe(4u);
-            firstOpponent.VictoryPoints.ShouldBe(2u);
-
-            // Turn 5: Play knight card
-            localGameController.EndTurn(turnToken); // Opponent plays last knight card. Largest Army event returned
-
-            player.VictoryPoints.ShouldBe(2u);
-            firstOpponent.VictoryPoints.ShouldBe(4u);
-        }
-
-        /// <summary>
         /// Test that the opponent only gets the Largest Army VP the first time they have the largest army
         /// (until another player has the largest army).
         /// </summary>
@@ -807,58 +741,6 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
             // Assert
             player.VictoryPoints.ShouldBe(4u);
             firstOpponent.VictoryPoints.ShouldBe(2u);
-        }
-
-        [Test]
-        public void Scenario_PlayerLosesResourceWhenOpponentPlaysTheKnightCard()
-        {
-            // Arrange
-            var knightCard = new KnightDevelopmentCard();
-            var testInstances = this.TestSetup(new MockGameBoardWithNoResourcesCollected(), knightCard);
-            var localGameController = testInstances.LocalGameController;
-
-            testInstances.Dice.AddSequence(new uint[] { 8, 8, 8, 8, 8, 0, 8, 8, 8 }); // 0 is the resource card selection index
-
-            var player = testInstances.MainPlayer;
-            var firstOpponent = testInstances.FirstOpponent;
-
-            player.AddResources(ResourceClutch.OneOre);
-            firstOpponent.AddResources(ResourceClutch.DevelopmentCard);
-            firstOpponent.AddBuyDevelopmentCardChoice(1).EndTurn()
-              .AddPlaceKnightCardInstruction(new PlayKnightInstruction { RobberHex = MainSettlementOneHex, RobbedPlayerId = player.Id }).EndTurn();
-
-            var turn = 0;
-            TurnToken turnToken = null;
-            localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; turn++; };
-
-            var gameEvents = new List<List<GameEvent>>();
-            localGameController.GameEvents = (List<GameEvent> e) => { gameEvents.Add(e); };
-
-            localGameController.StartGamePlay();
-            localGameController.EndTurn(turnToken); // Opponent buys development cards
-
-            // Act
-            localGameController.EndTurn(turnToken); // Opponent plays knight cards
-
-            // Assert
-            var expectedBuyDevelopmentCardEvent = new BuyDevelopmentCardEvent(firstOpponent.Id);
-            var expectedPlayKnightCardEvent = new PlayKnightCardEvent(firstOpponent.Id);
-
-            var expectedResourceTransaction = new ResourceTransaction(player.Id, firstOpponent.Id, ResourceClutch.OneOre);
-            var expectedResourceTransactionList = new ResourceTransactionList();
-            expectedResourceTransactionList.Add(expectedResourceTransaction);
-            var expectedResourceLostEvent = new ResourceTransactionEvent(firstOpponent.Id, expectedResourceTransactionList);
-
-            gameEvents.Count.ShouldBe(15);
-            gameEvents[2].Count.ShouldBe(2);
-            gameEvents[2][1].ShouldBe(expectedBuyDevelopmentCardEvent);
-            gameEvents[9].Count.ShouldBe(3);
-            gameEvents[9][1].ShouldBe(expectedPlayKnightCardEvent);
-            gameEvents[9][2].ShouldBe(expectedResourceLostEvent);
-
-            player.ResourcesCount.ShouldBe(0);
-            firstOpponent.ResourcesCount.ShouldBe(1);
-            firstOpponent.OreCount.ShouldBe(1);
         }
 
         private void AssertThatPlayerIdIsCorrect(String variableName, Guid actualPlayerId, Guid expectedPlayerId, String expectedPlayerName)

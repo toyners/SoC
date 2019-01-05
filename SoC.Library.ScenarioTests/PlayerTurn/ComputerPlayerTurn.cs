@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using Jabberwocky.SoC.Library;
 using Jabberwocky.SoC.Library.GameActions;
 using Jabberwocky.SoC.Library.Interfaces;
@@ -10,7 +9,7 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
     {
         private readonly ScenarioComputerPlayer computerPlayer;
 
-        public ComputerPlayerTurn(LocalGameControllerScenarioRunner runner, IPlayer player) : base(runner, player)
+        public ComputerPlayerTurn(IPlayer player, uint dice1, uint dice2, LocalGameControllerScenarioRunner runner) : base(player, dice1, dice2, runner)
         {
             this.computerPlayer = (ScenarioComputerPlayer)player;
         }

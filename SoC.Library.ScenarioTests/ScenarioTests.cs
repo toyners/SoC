@@ -52,6 +52,41 @@ namespace SoC.Library.ScenarioTests
         }
 
         [Test]
+        public void Scenario_AllPlayersHaveDiceRollEventInTheirTurn2()
+        {
+            this.CreateStandardLocalGameControllerScenarioRunner()
+                .PlayerTurn(MainPlayerName, 4, 4)
+                    //.Actions()
+                        //.BuyDevelopmentCard(DevelopmentCardTypes.Knight)
+                        //.End()
+                    .Events()
+                        .DiceRollEvent(4, 4)
+                        //.BuyDevelopmentCardEvent()
+                        .End()
+                    .State()
+                        .HeldCards()
+                        .End()
+                    .End()
+                .PlayerTurn(FirstOpponentName, 2, 2)
+                    .Events()
+                        .DiceRollEvent(2, 2)
+                        .End()
+                    .End()
+                .PlayerTurn(SecondOpponentName, 1, 1)
+                    .Events()
+                        .DiceRollEvent(1, 1)
+                        .End()
+                    .End()
+                .PlayerTurn(ThirdOpponentName, 2, 2)
+                    .Events()
+                        .DiceRollEvent(2, 2)
+                        .End()
+                    .End()
+                .Build()
+                .Run();
+        }
+
+        [Test]
         public void Scenario_AllPlayersCollectResourcesAsPartOfFirstTurnStart()
         {
             var localGameController = this.CreateStandardLocalGameControllerScenarioRunner()
@@ -437,8 +472,8 @@ namespace SoC.Library.ScenarioTests
         }
 
         /// <summary>
-        /// Test that the largest army event is raised when the player has played 3 knight cards. Also
-        /// the largest army event is raised once the opponent has played 4 cards.
+        /// Test that the largest army event is raised when the player has played 3 knight cards and 
+        /// when the opponent plays more knight cards. Verify the victory point changes.
         /// </summary>
         [Test]
         public void Scenario_LargestArmyEventsRaisedWhenBothPlayerAndOpponentPlayTheMostKnightDevelopmentCards()
@@ -497,9 +532,17 @@ namespace SoC.Library.ScenarioTests
                     .PlayKnightCardEvent(FirstOpponentName)
                     .PlayKnightCardEvent(MainPlayerName)
                     .LargestArmyChangedEvent(MainPlayerName)
+                    .ExpectPlayer(MainPlayerName)
+                        .VictoryPoints(4).End()
+                    .ExpectPlayer(FirstOpponentName)
+                        .VictoryPoints(2).End()
                     .PlayKnightCardEvent(FirstOpponentName)
                     .PlayKnightCardEvent(FirstOpponentName)
                     .LargestArmyChangedEvent(FirstOpponentName, MainPlayerName)
+                    .ExpectPlayer(MainPlayerName)
+                        .VictoryPoints(2).End()
+                    .ExpectPlayer(FirstOpponentName)
+                        .VictoryPoints(4).End()
                 .Run();
         }
 
@@ -544,7 +587,7 @@ namespace SoC.Library.ScenarioTests
                     .EndTurn()
                 .Build()
                     .ExpectPlayer(MainPlayerName)
-                        .VictoryPoints(4)
+                        .VictoryPoints(4).End()
                 .Run();
         }
 

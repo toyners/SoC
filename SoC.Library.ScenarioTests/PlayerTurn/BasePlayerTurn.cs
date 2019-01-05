@@ -5,6 +5,7 @@ using Jabberwocky.SoC.Library;
 using Jabberwocky.SoC.Library.DevelopmentCards;
 using Jabberwocky.SoC.Library.Enums;
 using Jabberwocky.SoC.Library.GameActions;
+using Jabberwocky.SoC.Library.GameEvents;
 using Jabberwocky.SoC.Library.Interfaces;
 
 namespace SoC.Library.ScenarioTests.PlayerTurn
@@ -15,12 +16,42 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
         protected readonly LocalGameControllerScenarioRunner runner;
         protected readonly Queue<ComputerPlayerAction> actions = new Queue<ComputerPlayerAction>();
 
-        public Guid PlayerId { get { return this.player.Id; } }
-
-        public BasePlayerTurn(LocalGameControllerScenarioRunner runner, IPlayer player)
+        public BasePlayerTurn(IPlayer player, uint dice1, uint dice2, LocalGameControllerScenarioRunner runner)
         {
             this.runner = runner;
             this.player = player;
+            this.Dice1 = dice1;
+            this.Dice2 = dice2;
+        }
+
+        public Guid PlayerId { get { return this.player.Id; } }
+        public uint Dice1 { get; }
+        public uint Dice2 { get; }
+
+        private PlayerActionBuilder actionBuilder;
+        public PlayerActionBuilder Actions()
+        {
+            this.actionBuilder = new PlayerActionBuilder(this);
+            return this.actionBuilder;
+        }
+
+        private ExpectedEventsBuilder expectedEventsBuilder;
+        public ExpectedEventsBuilder Events()
+        {
+            this.expectedEventsBuilder = new ExpectedEventsBuilder(this);
+            return this.expectedEventsBuilder;
+        }
+
+        private PlayerStateBuilder expectedPlayerState;
+        public PlayerStateBuilder State()
+        {
+            this.expectedPlayerState = new PlayerStateBuilder(this);
+            return this.expectedPlayerState;
+        }
+
+        public LocalGameControllerScenarioRunner End()
+        {
+            return this.runner;
         }
 
         public LocalGameControllerScenarioRunner EndTurn()
@@ -67,9 +98,11 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
 
         public virtual void ResolveActions(TurnToken turnToken, LocalGameController localGameController)
         {
-            while (this.actions.Count > 0)
+            if (this.actionBuilder == null)
+                return;
+
+            foreach (var action in this.actionBuilder.playerActions)
             {
-                var action = this.actions.Dequeue();
                 if (action is ScenarioPlayKnightCardAction scenarioPlayKnightCardAction)
                 {
                     var selectedPlayer = this.runner.GetPlayerFromName(scenarioPlayKnightCardAction.SelectedPlayerName);
@@ -114,6 +147,19 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
         protected void AddDevelopmentCard(Guid playerId, DevelopmentCardTypes developmentCardType)
         {
             this.runner.AddDevelopmentCardToBuy(playerId, developmentCardType);
+        }
+
+        internal List<GameEvent> GetExpectedEvents()
+        {
+            return this.expectedEventsBuilder.expectedEvents;
+        }
+
+        internal List<RunnerAction> GetRunnerActions()
+        {
+            if (this.actionBuilder != null)
+                return this.actionBuilder.runnerActions;
+
+            return null;
         }
     }
 }
