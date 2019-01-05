@@ -438,26 +438,22 @@ namespace Jabberwocky.SoC.Library
 
                         case ComputerPlayerActionTypes.PlayKnightCard:
                         {
+                            var playKnightCardAction = (PlayKnightCardAction)playerAction;
                             var knightCard = computerPlayer.GetKnightCard();
-                            var newRobberHex = computerPlayer.ChooseRobberLocation();
-                            this.PlayKnightDevelopmentCard(knightCard, newRobberHex);
+                            this.PlayKnightDevelopmentCard(knightCard, playKnightCardAction.NewRobberHex);
                             events.Add(new PlayKnightCardEvent(computerPlayer.Id));
 
-                            var playersOnHex = this.gameBoard.GetPlayersForHex(newRobberHex);
-                            if (playersOnHex != null)
+                            if (playKnightCardAction.PlayerId.HasValue)
                             {
-                                var otherPlayers = this.GetPlayersFromIds(playersOnHex);
-                                var robbedPlayer = computerPlayer.ChoosePlayerToRob(otherPlayers);
+                                var robbedPlayer = this.playersById[playKnightCardAction.PlayerId.Value];
                                 var takenResource = this.GetResourceFromPlayer(robbedPlayer);
-
                                 computerPlayer.AddResources(takenResource);
                                 var resourceTransaction = new ResourceTransaction(computerPlayer.Id, robbedPlayer.Id, takenResource);
                                 var resourceLostEvent = new ResourceTransactionEvent(computerPlayer.Id, resourceTransaction);
                                 events.Add(resourceLostEvent);
                             }
 
-                            Guid previousPlayerId;
-                            if (this.PlayerHasJustBuiltTheLargestArmy(out previousPlayerId))
+                            if (this.PlayerHasJustBuiltTheLargestArmy(out Guid previousPlayerId))
                             {
                                 events.Add(new LargestArmyChangedEvent(this.playerWithLargestArmy.Id, previousPlayerId));
                             }

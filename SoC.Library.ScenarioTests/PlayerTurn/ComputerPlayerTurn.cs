@@ -35,7 +35,7 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
                         default: throw new Exception($"Resource type '{scenarioPlayKnightCardAction.ExpectedSingleResource}' not handled");
                     }
 
-                    this.runner.NumberGenerator.AddRandomNumberAtBeginning(randomNumber);
+                    this.runner.NumberGenerator.AddRandomNumberAtEnd(randomNumber);
                     actionArray[index] = new PlayKnightCardAction(scenarioPlayKnightCardAction.NewRobberHex, selectedPlayer.Id);
                 }
             }

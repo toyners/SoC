@@ -467,7 +467,7 @@ namespace SoC.Library.ScenarioTests
         {
             var player = this.players.Where(p => p.Id.Equals(gameEvent.PlayerId)).FirstOrDefault();
 
-            var message = $"Did not find ResourceTransactionEvent event for '{player.Name}'.";
+            var message = $"Did not find {gameEvent.GetType()} event for '{player.Name}'.";
                 
             if (gameEvent is ResourceTransactionEvent resourceTransactionEvent)
             {
