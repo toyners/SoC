@@ -9,14 +9,9 @@ namespace SoC.Library.ScenarioTests
         private readonly Queue<Tuple<uint, uint>> diceRolls = new Queue<Tuple<uint, uint>>();
         private readonly List<int> numbers = new List<int>();
 
-        public void AddRandomNumberAtEnd(int number)
+        public void AddRandomNumber(int number)
         {
             this.numbers.Add(number);
-        }
-
-        public void AddRandomNumberAtBeginning(int number)
-        {
-            this.numbers.Insert(0, number);
         }
 
         public void AddTwoDiceRoll(uint dice1, uint dice2)

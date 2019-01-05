@@ -85,7 +85,7 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
                         default: throw new Exception($"Resource type '{scenarioPlayKnightCardAction.ExpectedSingleResource}' not handled");
                     }
 
-                    this.runner.NumberGenerator.AddRandomNumberAtEnd(randomNumber);
+                    this.runner.NumberGenerator.AddRandomNumber(randomNumber);
 
                     var knightCard = (KnightDevelopmentCard)this.player.HeldCards.Where(c => c.Type == DevelopmentCardTypes.Knight).First();
                     localGameController.UseKnightCard(turnToken, knightCard, scenarioPlayKnightCardAction.NewRobberHex,
