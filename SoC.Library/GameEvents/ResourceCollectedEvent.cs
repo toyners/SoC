@@ -11,5 +11,7 @@ namespace Jabberwocky.SoC.Library.GameEvents
         {
             this.ResourceCollection = resourceCollection;
         }
+
+        // TODO Implement Equals method
     }
 }
