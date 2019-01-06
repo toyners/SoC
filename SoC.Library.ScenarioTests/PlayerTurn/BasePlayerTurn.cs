@@ -52,6 +52,9 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
 
         public void CompareSnapshot()
         {
+            if (this.expectedPlayerState == null)
+                return;
+
             if (player.HeldCards.Count != this.expectedPlayerState.playerSnapshot.heldCards.Count)
                 Assert.Fail("Held cards count is not same");
 

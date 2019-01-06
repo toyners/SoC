@@ -66,7 +66,7 @@ namespace SoC.Library.ScenarioTests
                         .BuyDevelopmentCardEvent()
                         .End()
                     .State()
-                        .HeldCards(DevelopmentCardTypes.Monopoly)
+                        .HeldCards(DevelopmentCardTypes.Knight)
                         .End()
                     .End()
                 .PlayerTurn(FirstOpponentName, 1, 2)
