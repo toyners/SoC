@@ -7,12 +7,13 @@ using Jabberwocky.SoC.Library.Enums;
 using Jabberwocky.SoC.Library.GameActions;
 using Jabberwocky.SoC.Library.GameEvents;
 using Jabberwocky.SoC.Library.Interfaces;
+using NUnit.Framework;
 
 namespace SoC.Library.ScenarioTests.PlayerTurn
 {
     internal abstract class BasePlayerTurn
     {
-        private readonly IPlayer player;
+        public readonly IPlayer player;
         protected readonly LocalGameControllerScenarioRunner runner;
         protected readonly Queue<ComputerPlayerAction> actions = new Queue<ComputerPlayerAction>();
 
@@ -47,6 +48,15 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
         {
             this.expectedPlayerState = new PlayerStateBuilder(this);
             return this.expectedPlayerState;
+        }
+
+        public void CompareSnapshot()
+        {
+            if (player.HeldCards.Count != this.expectedPlayerState.playerSnapshot.heldCards.Count)
+                Assert.Fail("Held cards count is not same");
+
+            if (player.HeldCards[0].Type != this.expectedPlayerState.playerSnapshot.heldCards[0])
+                Assert.Fail("Held card does not match");
         }
 
         public LocalGameControllerScenarioRunner End()
@@ -158,6 +168,14 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
         {
             if (this.actionBuilder != null)
                 return this.actionBuilder.runnerActions;
+
+            return null;
+        }
+
+        internal PlayerSnapshot GetPlayerSnapshot()
+        {
+            if (this.expectedPlayerState != null)
+                return this.expectedPlayerState.playerSnapshot;
 
             return null;
         }

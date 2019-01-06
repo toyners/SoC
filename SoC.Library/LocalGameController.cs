@@ -108,13 +108,13 @@ namespace Jabberwocky.SoC.Library
         public Action<Guid, uint, uint> DiceRollEvent { get; set; }
         public Action<ErrorDetails> ErrorRaisedEvent { get; set; }
         public Action<GameBoardSetup> InitialBoardSetupEvent { get; set; }
+        public Action<List<GameEvent>> GameEvents { get; set; }
         public Action<PlayerDataBase[]> GameJoinedEvent { get; set; }
         public Action<PlayerDataBase[], GameBoard> GameLoadedEvent { get; set; }
         public Action<Guid> GameOverEvent { get; set; }
         public Action<Guid, Guid> LargestArmyEvent { get; set; }
         public Action<ClientAccount> LoggedInEvent { get; set; }
         public Action<Guid, Guid> LongestRoadBuiltEvent { get; set; }
-        public Action<List<GameEvent>> GameEvents { get; set; }
         public Action<PlayKnightCardEvent> PlayKnightCardEvent { get; set; }
         public Action<ResourceUpdate> ResourcesLostEvent { get; set; }
         public Action<ResourceTransactionList> ResourcesTransferredEvent { get; set; }
@@ -124,6 +124,7 @@ namespace Jabberwocky.SoC.Library
         public Action SettlementBuiltEvent { get; set; }
         public Action<GameBoardUpdate> StartInitialSetupTurnEvent { get; set; }
         public Action<TurnToken> StartPlayerTurnEvent { get; set; }
+        public Action<Guid> StartOpponentTurnEvent { get; set; }
         public Action<PlayerDataBase[]> TurnOrderFinalisedEvent { get; set; }
         #endregion
 
@@ -366,6 +367,8 @@ namespace Jabberwocky.SoC.Library
             {
                 var computerPlayer = (IComputerPlayer)this.currentPlayer;
                 var events = new List<GameEvent>();
+
+                this.StartOpponentTurnEvent?.Invoke(computerPlayer.Id);
 
                 this.numberGenerator.RollTwoDice(out this.dice1, out this.dice2);
                 var rolledDiceEvent = new DiceRollEvent(computerPlayer.Id, this.dice1, this.dice2);
@@ -1127,6 +1130,8 @@ namespace Jabberwocky.SoC.Library
                 resourcesCollectedEvents.Add(resourcesCollectedEvent);
             }
 
+            // TODO: For computer player the resource collected event should be added to the list of game events
+            // AFTER the dice roll event
             this.GameEvents?.Invoke(resourcesCollectedEvents);
         }
 

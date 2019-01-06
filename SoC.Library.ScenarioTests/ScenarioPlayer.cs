@@ -1,4 +1,5 @@
-﻿using Jabberwocky.SoC.Library;
+﻿using System.Collections.Generic;
+using Jabberwocky.SoC.Library;
 
 namespace SoC.Library.ScenarioTests
 {
@@ -20,5 +21,10 @@ namespace SoC.Library.ScenarioTests
         {
             return this.runner;
         }
+    }
+
+    internal class PlayerSnapshot
+    {
+        public List<DevelopmentCardTypes> heldCards;
     }
 }
