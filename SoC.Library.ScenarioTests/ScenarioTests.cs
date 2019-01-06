@@ -104,6 +104,34 @@ namespace SoC.Library.ScenarioTests
         }
 
         [Test]
+        public void Scenario_AllPlayersCollectResourcesDuringFirstTurn()
+        {
+            this.CreateStandardLocalGameControllerScenarioRunner()
+                .PlayerTurn(MainPlayerName, 1, 5)
+                    .Events()
+                        .ResourceCollectionEvent()
+                        .End()
+                    .End()
+                .PlayerTurn(FirstOpponentName, 1, 2)
+                    .Events()
+                        .ResourceCollectionEvent()
+                        .End()
+                    .End()
+                .PlayerTurn(SecondOpponentName, 3, 4)
+                    .Events()
+                        .ResourceCollectionEvent()
+                        .End()
+                    .End()
+                .PlayerTurn(ThirdOpponentName, 5, 6)
+                    .Events()
+                        .ResourceCollectionEvent()
+                        .End()
+                    .End()
+                .Build()
+                .Run();
+        }
+
+        [Test]
         public void Scenario_AllPlayersCollectResourcesAsPartOfTurnStartAfterComputerPlayersCompleteTheirTurns()
         {
             var localGameController = this.CreateStandardLocalGameControllerScenarioRunner()

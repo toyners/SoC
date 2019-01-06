@@ -788,6 +788,11 @@ namespace SoC.Library.ScenarioTests
             this.expectedEvents.Add(new DiceRollEvent(this.playerTurn.PlayerId, dice1, dice2));
             return this;
         }
+
+        internal ExpectedEventsBuilder ResourceCollectionEvent()
+        {
+            return this;
+        }
     }
 
     internal class PlayerStateBuilder
