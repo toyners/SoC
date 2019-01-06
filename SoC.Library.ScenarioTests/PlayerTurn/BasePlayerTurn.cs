@@ -39,7 +39,7 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
         private ExpectedEventsBuilder expectedEventsBuilder;
         public ExpectedEventsBuilder Events()
         {
-            this.expectedEventsBuilder = new ExpectedEventsBuilder(this);
+            this.expectedEventsBuilder = new ExpectedEventsBuilder(this, this.runner.playersByName);
             return this.expectedEventsBuilder;
         }
 

@@ -1,4 +1,5 @@
 ﻿
+using System;
 using Jabberwocky.SoC.Library;
 using Jabberwocky.SoC.Library.GameEvents;
 using NUnit.Framework;
@@ -104,27 +105,18 @@ namespace SoC.Library.ScenarioTests
         }
 
         [Test]
-        public void Scenario_AllPlayersCollectResourcesDuringFirstTurn()
+        public void Scenario_Scenario_AllPlayersCollectResourcesAsPartOfFirstTurnStart2()
         {
             this.CreateStandardLocalGameControllerScenarioRunner()
                 .PlayerTurn(MainPlayerName, 1, 5)
                     .Events()
-                        .ResourceCollectionEvent()
-                        .End()
-                    .End()
-                .PlayerTurn(FirstOpponentName, 1, 2)
-                    .Events()
-                        .ResourceCollectionEvent()
-                        .End()
-                    .End()
-                .PlayerTurn(SecondOpponentName, 3, 4)
-                    .Events()
-                        .ResourceCollectionEvent()
-                        .End()
-                    .End()
-                .PlayerTurn(ThirdOpponentName, 5, 6)
-                    .Events()
-                        .ResourceCollectionEvent()
+                        .ResourceCollectionEvent(FirstOpponentName, 
+                            new Tuple<uint, ResourceClutch>(FirstOpponentFirstSettlementLocation, ResourceClutch.OneWool))
+                        .ResourceCollectionEvent(SecondOpponentName,
+                            new Tuple<uint, ResourceClutch>(SecondOpponentFirstSettlementLocation, ResourceClutch.OneLumber),
+                            new Tuple<uint, ResourceClutch>(SecondOpponentSecondSettlementLocation, ResourceClutch.OneLumber))
+                        .ResourceCollectionEvent(ThirdOpponentName,
+                            new Tuple<uint, ResourceClutch>(ThirdOpponentFirstSettlementLocation, ResourceClutch.OneOre))
                         .End()
                     .End()
                 .Build()

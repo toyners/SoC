@@ -34,7 +34,7 @@ namespace SoC.Library.ScenarioTests
         private readonly Dictionary<Guid, List<DevelopmentCard>> developmentCardsByPlayerId = new Dictionary<Guid, List<DevelopmentCard>>();
         private readonly List<PlayerSetupAction> firstRoundSetupActions = new List<PlayerSetupAction>(4);
         private readonly Dictionary<Type, GameEvent> lastEventsByType = new Dictionary<Type, GameEvent>();
-        private readonly Dictionary<string, IPlayer> playersByName = new Dictionary<string, IPlayer>();
+        public readonly Dictionary<string, IPlayer> playersByName = new Dictionary<string, IPlayer>();
         private readonly Queue<Instruction> playerInstructions = new Queue<Instruction>();
         private readonly ScenarioPlayerPool playerPool = new ScenarioPlayerPool();
         private readonly List<BasePlayerTurn> playerTurns = new List<BasePlayerTurn>();
@@ -767,9 +767,11 @@ namespace SoC.Library.ScenarioTests
     {
         private BasePlayerTurn playerTurn;
         public List<GameEvent> expectedEvents = new List<GameEvent>();
-        public ExpectedEventsBuilder(BasePlayerTurn playerTurn)
+        private Dictionary<string, IPlayer> playersByName;
+        public ExpectedEventsBuilder(BasePlayerTurn playerTurn, Dictionary<string, IPlayer> playersByName)
         {
             this.playerTurn = playerTurn;
+            this.playersByName = playersByName;
         }
 
         public ExpectedEventsBuilder BuyDevelopmentCardEvent()
@@ -789,8 +791,14 @@ namespace SoC.Library.ScenarioTests
             return this;
         }
 
-        internal ExpectedEventsBuilder ResourceCollectionEvent()
+        internal ExpectedEventsBuilder ResourceCollectionEvent(string playerName, params Tuple<uint, ResourceClutch>[] resourceCollectionPairs)
         {
+            var playerId = this.playersByName[playerName].Id;
+            ResourceCollection[] rc = new ResourceCollection[resourceCollectionPairs.Length];
+            var index = 0;
+            foreach (var pair in resourceCollectionPairs)
+                rc[index++] = new ResourceCollection(pair.Item1, pair.Item2);
+            this.expectedEvents.Add(new ResourcesCollectedEvent(playerId, rc));
             return this;
         }
     }
