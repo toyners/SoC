@@ -11,10 +11,17 @@ namespace Jabberwocky.SoC.Library.ScenarioTests.Builders
         private BasePlayerTurn playerTurn;
         public List<GameEvent> expectedEvents = new List<GameEvent>();
         private Dictionary<string, IPlayer> playersByName;
+
         public ExpectedEventsBuilder(BasePlayerTurn playerTurn, Dictionary<string, IPlayer> playersByName)
         {
             this.playerTurn = playerTurn;
             this.playersByName = playersByName;
+        }
+
+        public ExpectedEventsBuilder BuildCityEvent(uint cityLocation)
+        {
+            this.expectedEvents.Add(new CityBuiltEvent(this.playerTurn.PlayerId, cityLocation));
+            return this;
         }
 
         public ExpectedEventsBuilder BuyDevelopmentCardEvent()
@@ -23,14 +30,20 @@ namespace Jabberwocky.SoC.Library.ScenarioTests.Builders
             return this;
         }
 
+        public ExpectedEventsBuilder DiceRollEvent(uint dice1, uint dice2)
+        {
+            this.expectedEvents.Add(new DiceRollEvent(this.playerTurn.PlayerId, dice1, dice2));
+            return this;
+        }
+
         public BasePlayerTurn End()
         {
             return this.playerTurn;
         }
 
-        public ExpectedEventsBuilder DiceRollEvent(uint dice1, uint dice2)
+        public ExpectedEventsBuilder GameWinEvent(uint expectedVictoryPoints)
         {
-            this.expectedEvents.Add(new DiceRollEvent(this.playerTurn.PlayerId, dice1, dice2));
+            this.expectedEvents.Add(new GameWinEvent(this.playerTurn.PlayerId, expectedVictoryPoints));
             return this;
         }
 

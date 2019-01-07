@@ -71,11 +71,8 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
             return this.runner;
         }
 
-        public virtual BasePlayerTurn BuildCity(uint cityLocation)
-        {
-            //this.actions.Enqueue(new BuildCityAction(cityLocation));
-            return this;
-        }
+
+        public virtual BasePlayerTurn BuildCity(uint roadSegmentStart) { return this; }
 
         public virtual BasePlayerTurn BuildRoad(uint roadSegmentStart, uint roadSegmentEnd)
         {

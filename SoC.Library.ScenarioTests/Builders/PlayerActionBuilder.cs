@@ -21,10 +21,9 @@ namespace Jabberwocky.SoC.Library.ScenarioTests.Builders
             return this.playerTurn;
         }
 
-        public PlayerActionBuilder BuyDevelopmentCard(DevelopmentCardTypes developmentCardType)
+        public PlayerActionBuilder BuildCity(uint cityLocation)
         {
-            this.runnerActions.Add(new InsertDevelopmentCardAction { DevelopmentCardType = developmentCardType });
-            this.playerActions.Add(new ComputerPlayerAction(ComputerPlayerActionTypes.BuyDevelopmentCard));
+            this.playerActions.Add(new BuildCityAction(cityLocation));
             return this;
         }
 
@@ -37,6 +36,13 @@ namespace Jabberwocky.SoC.Library.ScenarioTests.Builders
         public PlayerActionBuilder BuildSettlement(uint settlementLocation)
         {
             this.playerActions.Add(new BuildSettlementAction(settlementLocation));
+            return this;
+        }
+
+        public PlayerActionBuilder BuyDevelopmentCard(DevelopmentCardTypes developmentCardType)
+        {
+            this.runnerActions.Add(new InsertDevelopmentCardAction { DevelopmentCardType = developmentCardType });
+            this.playerActions.Add(new ComputerPlayerAction(ComputerPlayerActionTypes.BuyDevelopmentCard));
             return this;
         }
     }
