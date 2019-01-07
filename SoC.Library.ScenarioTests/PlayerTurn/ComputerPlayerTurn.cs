@@ -16,10 +16,12 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
 
         public override void ResolveActions(TurnToken turnToken, LocalGameController localGameController)
         {
-            var actionArray = this.actions.ToArray();
-            for (var index = 0; index < actionArray.Length; index++)
+            if (this.actionBuilder == null)
+                return;
+
+            for (var index = 0; index < this.actionBuilder.playerActions.Count; index++)
             {
-                if (actionArray[index] is ScenarioPlayKnightCardAction scenarioPlayKnightCardAction)
+                if (this.actionBuilder.playerActions[index] is ScenarioPlayKnightCardAction scenarioPlayKnightCardAction)
                 {
                     var selectedPlayer = this.runner.GetPlayerFromName(scenarioPlayKnightCardAction.SelectedPlayerName);
 
@@ -35,11 +37,11 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
                     }
 
                     this.runner.NumberGenerator.AddRandomNumber(randomNumber);
-                    actionArray[index] = new PlayKnightCardAction(scenarioPlayKnightCardAction.NewRobberHex, selectedPlayer.Id);
+                    this.actionBuilder.playerActions[index] = new PlayKnightCardAction(scenarioPlayKnightCardAction.NewRobberHex, selectedPlayer.Id);
                 }
             }
 
-            this.computerPlayer.AddActions(actionArray);
+            this.computerPlayer.AddActions(this.actionBuilder.playerActions);
         }
     }
 }

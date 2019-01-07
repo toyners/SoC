@@ -48,6 +48,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Builders\ExpectedEventsBuilder.cs" />
+    <Compile Include="Builders\PlayerActionBuilder.cs" />
+    <Compile Include="Builders\PlayerStateBuilder.cs" />
     <Compile Include="ScenarioGameBoardWithNoResourcesCollected.cs" />
     <Compile Include="PlayerTurn\ComputerPlayerTurn.cs" />
     <Compile Include="PlayerTurn\HumanPlayerTurn.cs" />

@@ -225,8 +225,6 @@ namespace SoC.Library.ScenarioTests
                 {
                     var playerTurn = gameRound.PlayerTurns[playerTurnIndex];
 
-                    this.NumberGenerator.AddTwoDiceRoll(playerTurn.Dice1, playerTurn.Dice2);
-
                     if (gameRoundIndex == 0 && playerTurnIndex == 0)
                         this.localGameController.StartGamePlay();
 
@@ -319,6 +317,8 @@ namespace SoC.Library.ScenarioTests
         private List<GameRound> gameRounds = new List<GameRound>();
         public BasePlayerTurn PlayerTurn(string playerName, uint dice1, uint dice2)
         {
+            this.NumberGenerator.AddTwoDiceRoll(dice1, dice2);
+
             if (currentGameRound == null || currentGameRound.IsComplete)
             {
                 currentGameRound = new GameRound();
@@ -713,6 +713,10 @@ namespace SoC.Library.ScenarioTests
                     message += $"\r\nTransaction is: Receiving player '{receivingPlayer.Name}', Giving player '{givingPlayer.Name}', Resources {resourceTransaction.Resources}";
                 }
             }
+            else if (gameEvent is RoadSegmentBuiltEvent roadSegmentBuildEvent)
+            {
+                message += $"\r\nFrom {roadSegmentBuildEvent.StartLocation} to {roadSegmentBuildEvent.EndLocation}";
+            }
 
             return message;
         }
@@ -739,125 +743,5 @@ namespace SoC.Library.ScenarioTests
     internal class InsertDevelopmentCardAction : RunnerAction
     {
         public DevelopmentCardTypes DevelopmentCardType;
-    }
-
-    internal class PlayerActionBuilder
-    {
-        private BasePlayerTurn playerTurn;
-        public List<RunnerAction> runnerActions = new List<RunnerAction>();
-        public List<ComputerPlayerAction> playerActions = new List<ComputerPlayerAction>();
-        public PlayerActionBuilder(BasePlayerTurn playerTurn)
-        {
-            this.playerTurn = playerTurn;
-        }
-
-        public BasePlayerTurn End()
-        {
-            return this.playerTurn;
-        }
-
-        public PlayerActionBuilder BuyDevelopmentCard(DevelopmentCardTypes developmentCardType)
-        {
-            this.runnerActions.Add(new InsertDevelopmentCardAction { DevelopmentCardType = developmentCardType });
-            this.playerActions.Add(new ComputerPlayerAction(ComputerPlayerActionTypes.BuyDevelopmentCard));
-            return this;
-        }
-
-        public PlayerActionBuilder BuildRoad(uint roadSegmentStart, uint roadSegmentEnd)
-        {
-            this.playerActions.Add(new BuildRoadSegmentAction(roadSegmentStart, roadSegmentEnd));
-            return this;
-        }
-
-        public PlayerActionBuilder BuildSettlement(uint settlementLocation)
-        {
-            this.playerActions.Add(new BuildSettlementAction(settlementLocation));
-            return this;
-        }
-    }
-
-    internal class ExpectedEventsBuilder
-    {
-        private BasePlayerTurn playerTurn;
-        public List<GameEvent> expectedEvents = new List<GameEvent>();
-        private Dictionary<string, IPlayer> playersByName;
-        public ExpectedEventsBuilder(BasePlayerTurn playerTurn, Dictionary<string, IPlayer> playersByName)
-        {
-            this.playerTurn = playerTurn;
-            this.playersByName = playersByName;
-        }
-
-        public ExpectedEventsBuilder BuyDevelopmentCardEvent()
-        {
-            this.expectedEvents.Add(new BuyDevelopmentCardEvent(this.playerTurn.PlayerId));
-            return this;
-        }
-
-        public BasePlayerTurn End()
-        {
-            return this.playerTurn;
-        }
-
-        public ExpectedEventsBuilder DiceRollEvent(uint dice1, uint dice2)
-        {
-            this.expectedEvents.Add(new DiceRollEvent(this.playerTurn.PlayerId, dice1, dice2));
-            return this;
-        }
-
-        public ExpectedEventsBuilder ResourceCollectionEvent(string playerName, params Tuple<uint, ResourceClutch>[] resourceCollectionPairs)
-        {
-            var playerId = this.playersByName[playerName].Id;
-            this.AddResourceCollectionEvent(playerId, resourceCollectionPairs);
-            return this;
-        }
-
-        public ExpectedEventsBuilder ResourceCollectionEvent(params Tuple<uint, ResourceClutch>[] resourceCollectionPairs)
-        {
-            this.AddResourceCollectionEvent(this.playerTurn.PlayerId, resourceCollectionPairs);
-            return this;
-        }
-
-        private void AddResourceCollectionEvent(Guid playerId, Tuple<uint, ResourceClutch>[] resourceCollectionPairs)
-        {
-            ResourceCollection[] rc = new ResourceCollection[resourceCollectionPairs.Length];
-            var index = 0;
-            foreach (var pair in resourceCollectionPairs)
-                rc[index++] = new ResourceCollection(pair.Item1, pair.Item2);
-            this.expectedEvents.Add(new ResourcesCollectedEvent(playerId, rc));
-        }
-
-        public ExpectedEventsBuilder BuildRoadEvent(uint roadSegmentStart, uint roadSegmentEnd)
-        {
-            this.expectedEvents.Add(new RoadSegmentBuiltEvent(this.playerTurn.PlayerId, roadSegmentStart, roadSegmentEnd));
-            return this;
-        }
-
-        public ExpectedEventsBuilder BuildSettlementEvent(uint settlementLocation)
-        {
-            this.expectedEvents.Add(new SettlementBuiltEvent(this.playerTurn.PlayerId, settlementLocation));
-            return this;
-        }
-    }
-
-    internal class PlayerStateBuilder
-    {
-        private BasePlayerTurn playerTurn;
-        public PlayerSnapshot playerSnapshot;
-        public PlayerStateBuilder(BasePlayerTurn playerTurn)
-        {
-            this.playerTurn = playerTurn;
-        }
-
-        public PlayerStateBuilder HeldCards(params DevelopmentCardTypes[] cards)
-        {
-            playerSnapshot = new PlayerSnapshot();
-            playerSnapshot.heldCards = new List<DevelopmentCardTypes>(cards);
-            return this;
-        }
-
-        public BasePlayerTurn End()
-        {
-            return this.playerTurn;
-        }
     }
 }

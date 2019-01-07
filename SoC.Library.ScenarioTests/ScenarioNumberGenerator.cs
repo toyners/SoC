@@ -28,7 +28,6 @@ namespace SoC.Library.ScenarioTests
 
         public void RollTwoDice(out uint dice1, out uint dice2)
         {
-            //dice1 = dice2 = 1;
             if (this.diceRolls.Count == 0)
                 throw new Exception("No dice rolls");
 

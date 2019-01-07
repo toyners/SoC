@@ -53,22 +53,22 @@ namespace SoC.Library.ScenarioTests
                     .State()
                         .HeldCards(DevelopmentCardTypes.Knight)
                         .End()
-                    .End()
+                    .EndTurn()
                 .PlayerTurn(FirstOpponentName, 1, 2)
                     .Events()
                         .DiceRollEvent(1, 2)
                         .End()
-                    .End()
+                    .EndTurn()
                 .PlayerTurn(SecondOpponentName, 3, 4)
                     .Events()
                         .DiceRollEvent(3, 4)
                         .End()
-                    .End()
+                    .EndTurn()
                 .PlayerTurn(ThirdOpponentName, 5, 6)
                     .Events()
                         .DiceRollEvent(5, 6)
                         .End()
-                    .End()
+                    .EndTurn()
                 .Build()
                 .Run();
         }
@@ -87,7 +87,7 @@ namespace SoC.Library.ScenarioTests
                         .ResourceCollectionEvent(ThirdOpponentName,
                             new Tuple<uint, ResourceClutch>(ThirdOpponentFirstSettlementLocation, ResourceClutch.OneOre))
                         .End()
-                    .End()
+                    .EndTurn()
                 .Build()
                 .Run();
         }
@@ -122,11 +122,10 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void Scenario_ComputerPlayerBuildsSettlement()
         {
+            var thirdOpponentStartingResources = (ResourceClutch.RoadSegment * 2) + ResourceClutch.Settlement;
             this.CreateStandardLocalGameControllerScenarioRunner()
-                .PlayerTurn(MainPlayerName, 2, 3).EndTurn()
-                .PlayerTurn(FirstOpponentName, 2, 2).EndTurn()
-                .PlayerTurn(SecondOpponentName, 1, 3).EndTurn()
-                .PlayerTurn(ThirdOpponentName, 2, 3).EndTurn()
+                .WithNoResourceCollection()
+                .WithStartingResourcesForPlayer(ThirdOpponentName, thirdOpponentStartingResources)
                 .PlayerTurn(MainPlayerName, 2, 3).EndTurn()
                 .PlayerTurn(FirstOpponentName, 2, 2).EndTurn()
                 .PlayerTurn(SecondOpponentName, 1, 3).EndTurn()

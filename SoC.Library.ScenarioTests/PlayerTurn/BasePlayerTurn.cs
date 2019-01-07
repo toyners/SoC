@@ -7,15 +7,20 @@ using Jabberwocky.SoC.Library.Enums;
 using Jabberwocky.SoC.Library.GameActions;
 using Jabberwocky.SoC.Library.GameEvents;
 using Jabberwocky.SoC.Library.Interfaces;
+using Jabberwocky.SoC.Library.ScenarioTests.Builders;
 using NUnit.Framework;
+using SoC.Library.ScenarioTests.Builders;
 
 namespace SoC.Library.ScenarioTests.PlayerTurn
 {
     internal abstract class BasePlayerTurn
     {
+        protected PlayerActionBuilder actionBuilder;
+        private ExpectedEventsBuilder expectedEventsBuilder;
+        private PlayerStateBuilder expectedPlayerState;
+
         public readonly IPlayer player;
         protected readonly LocalGameControllerScenarioRunner runner;
-        protected readonly Queue<ComputerPlayerAction> actions = new Queue<ComputerPlayerAction>();
 
         public BasePlayerTurn(IPlayer player, uint dice1, uint dice2, LocalGameControllerScenarioRunner runner)
         {
@@ -25,29 +30,16 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
             this.Dice2 = dice2;
         }
 
+        #region Properties
         public Guid PlayerId { get { return this.player.Id; } }
         public uint Dice1 { get; }
         public uint Dice2 { get; }
+        #endregion
 
-        private PlayerActionBuilder actionBuilder;
         public PlayerActionBuilder Actions()
         {
             this.actionBuilder = new PlayerActionBuilder(this);
             return this.actionBuilder;
-        }
-
-        private ExpectedEventsBuilder expectedEventsBuilder;
-        public ExpectedEventsBuilder Events()
-        {
-            this.expectedEventsBuilder = new ExpectedEventsBuilder(this, this.runner.playersByName);
-            return this.expectedEventsBuilder;
-        }
-
-        private PlayerStateBuilder expectedPlayerState;
-        public PlayerStateBuilder State()
-        {
-            this.expectedPlayerState = new PlayerStateBuilder(this);
-            return this.expectedPlayerState;
         }
 
         public void CompareSnapshot()
@@ -62,9 +54,16 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
                 Assert.Fail("Held card does not match");
         }
 
-        public LocalGameControllerScenarioRunner End()
+        public ExpectedEventsBuilder Events()
         {
-            return this.runner;
+            this.expectedEventsBuilder = new ExpectedEventsBuilder(this, this.runner.playersByName);
+            return this.expectedEventsBuilder;
+        }
+
+        public PlayerStateBuilder State()
+        {
+            this.expectedPlayerState = new PlayerStateBuilder(this);
+            return this.expectedPlayerState;
         }
 
         public LocalGameControllerScenarioRunner EndTurn()
@@ -74,38 +73,38 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
 
         public virtual BasePlayerTurn BuildCity(uint cityLocation)
         {
-            this.actions.Enqueue(new BuildCityAction(cityLocation));
+            //this.actions.Enqueue(new BuildCityAction(cityLocation));
             return this;
         }
 
         public virtual BasePlayerTurn BuildRoad(uint roadSegmentStart, uint roadSegmentEnd)
         {
-            this.actions.Enqueue(new BuildRoadSegmentAction(roadSegmentStart, roadSegmentEnd));
+            //this.actions.Enqueue(new BuildRoadSegmentAction(roadSegmentStart, roadSegmentEnd));
             return this;
         }
 
         public virtual BasePlayerTurn BuildSettlement(uint settlementLocation)
         {
-            this.actions.Enqueue(new BuildSettlementAction(settlementLocation));
+            //this.actions.Enqueue(new BuildSettlementAction(settlementLocation));
             return this;
         }
 
         public virtual BasePlayerTurn BuyDevelopmentCard(DevelopmentCardTypes developmentCardType)
         {
             this.AddDevelopmentCard(this.PlayerId, developmentCardType);
-            this.actions.Enqueue(new ComputerPlayerAction(ComputerPlayerActionTypes.BuyDevelopmentCard));
+            //this.actions.Enqueue(new ComputerPlayerAction(ComputerPlayerActionTypes.BuyDevelopmentCard));
             return this;
         }
 
         public virtual BasePlayerTurn PlayKnightCard(uint hexLocation)
         {
-            this.actions.Enqueue(new PlayKnightCardAction(hexLocation));
+            //this.actions.Enqueue(new PlayKnightCardAction(hexLocation));
             return this;
         }
 
         public virtual BasePlayerTurn PlayKnightCardAndCollectFrom(uint hexLocation, string selectedPlayerName, ResourceTypes expectedSingleResource)
         {
-            this.actions.Enqueue(new ScenarioPlayKnightCardAction(hexLocation, selectedPlayerName, expectedSingleResource));
+            //this.actions.Enqueue(new ScenarioPlayKnightCardAction(hexLocation, selectedPlayerName, expectedSingleResource));
             return this;
         }
 
