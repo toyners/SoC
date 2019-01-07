@@ -45,5 +45,11 @@ namespace Jabberwocky.SoC.Library.ScenarioTests.Builders
             this.playerActions.Add(new ComputerPlayerAction(ComputerPlayerActionTypes.BuyDevelopmentCard));
             return this;
         }
+
+        public PlayerActionBuilder PlayKnightCard(uint hexLocation)
+        {
+            this.playerActions.Add(new PlayKnightCardAction(hexLocation));
+            return this;
+        }
     }
 }

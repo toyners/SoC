@@ -47,6 +47,20 @@ namespace Jabberwocky.SoC.Library.ScenarioTests.Builders
             return this;
         }
 
+        public ExpectedEventsBuilder LargestArmyChangedEvent(string previousPlayerName = null /*, EventPositions eventPosition = EventPositions.Any*/)
+        {
+            Guid previousPlayerId = Guid.Empty;
+            if (previousPlayerName != null)
+                previousPlayerId = this.playersByName[previousPlayerName].Id;
+            var expectedLargestArmyChangedEvent = new LargestArmyChangedEvent(this.playerTurn.PlayerId, previousPlayerId);
+            this.expectedEvents.Add(expectedLargestArmyChangedEvent);
+
+//            if (eventPosition == EventPositions.Last)
+//               this.lastEventsByType.Add(expectedLargestArmyChangedEvent.GetType(), expectedLargestArmyChangedEvent);
+
+            return this;
+        }
+
         public ExpectedEventsBuilder ResourceCollectionEvent(string playerName, params Tuple<uint, ResourceClutch>[] resourceCollectionPairs)
         {
             var playerId = this.playersByName[playerName].Id;
