@@ -155,7 +155,7 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
 
         protected void AddDevelopmentCard(Guid playerId, DevelopmentCardTypes developmentCardType)
         {
-            this.runner.AddDevelopmentCardToBuy(playerId, developmentCardType);
+            this.runner.AddDevelopmentCardToBuy(developmentCardType);
         }
 
         internal List<GameEvent> GetExpectedEvents()

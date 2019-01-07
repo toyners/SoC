@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Jabberwocky.SoC.Library;
 using Jabberwocky.SoC.Library.DevelopmentCards;
-using Jabberwocky.SoC.Library.Enums;
-using Jabberwocky.SoC.Library.GameActions;
 using Jabberwocky.SoC.Library.GameBoards;
 using Jabberwocky.SoC.Library.GameEvents;
 using Jabberwocky.SoC.Library.Interfaces;
@@ -31,7 +29,7 @@ namespace SoC.Library.ScenarioTests
         #region Fields
         private static LocalGameControllerScenarioRunner localGameControllerScenarioBuilder;
         private readonly ScenarioDevelopmentCardHolder developmentCardHolder = new ScenarioDevelopmentCardHolder();
-        private readonly Dictionary<Guid, List<DevelopmentCard>> developmentCardsByPlayerId = new Dictionary<Guid, List<DevelopmentCard>>();
+        //private readonly Dictionary<Guid, List<DevelopmentCard>> developmentCardsByPlayerId = new Dictionary<Guid, List<DevelopmentCard>>();
         private readonly List<PlayerSetupAction> firstRoundSetupActions = new List<PlayerSetupAction>(4);
         private readonly Dictionary<Type, GameEvent> lastEventsByType = new Dictionary<Type, GameEvent>();
         public readonly Dictionary<string, IPlayer> playersByName = new Dictionary<string, IPlayer>();
@@ -229,9 +227,10 @@ namespace SoC.Library.ScenarioTests
                         this.localGameController.StartGamePlay();
 
                     var runnerActions = playerTurn.GetRunnerActions();
-                    if (runnerActions != null && runnerActions.Count == 1)
+                    if (runnerActions != null && runnerActions.Count > 0)
                     {
-                        this.AddDevelopmentCardToBuy(Guid.Empty, ((InsertDevelopmentCardAction)runnerActions[0]).DevelopmentCardType);
+                        foreach (var runnerAction in runnerActions)
+                            this.AddDevelopmentCardToBuy(((InsertDevelopmentCardAction)runnerAction).DevelopmentCardType);
                     }
 
                     playerTurn.ResolveActions(this.currentToken, this.localGameController);
@@ -459,7 +458,7 @@ namespace SoC.Library.ScenarioTests
             return this;
         }
 
-        internal void AddDevelopmentCardToBuy(Guid playerId, DevelopmentCardTypes developmentCardType)
+        internal void AddDevelopmentCardToBuy(/*Guid playerId,*/ DevelopmentCardTypes developmentCardType)
         {
             DevelopmentCard developmentCard = null;
             switch (developmentCardType)
@@ -470,13 +469,13 @@ namespace SoC.Library.ScenarioTests
 
             this.developmentCardHolder.AddDevelopmentCard(developmentCard);
 
-            if (!this.developmentCardsByPlayerId.TryGetValue(playerId, out var developmentCardsForPlayerId))
+            /*if (!this.developmentCardsByPlayerId.TryGetValue(playerId, out var developmentCardsForPlayerId))
             {
                 developmentCardsForPlayerId = new List<DevelopmentCard>();
                 this.developmentCardsByPlayerId.Add(playerId, developmentCardsForPlayerId);
             }
 
-            developmentCardsForPlayerId.Add(developmentCard);
+            developmentCardsForPlayerId.Add(developmentCard);*/
         }
 
         private void CompleteGamePlay()
@@ -509,7 +508,7 @@ namespace SoC.Library.ScenarioTests
                     {
                         foreach (var runnerAction in runnerActions)
                         {
-                            this.AddDevelopmentCardToBuy(playerTurn.PlayerId, ((InsertDevelopmentCardAction)runnerAction).DevelopmentCardType);
+                            this.AddDevelopmentCardToBuy(((InsertDevelopmentCardAction)runnerAction).DevelopmentCardType);
                         }
                     }
 
