@@ -39,22 +39,6 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void Scenario_AllPlayersHaveDiceRollEventInTheirTurn()
         {
-            var localGameController = this.CreateStandardLocalGameControllerScenarioRunner()
-                .DuringPlayerTurn(MainPlayerName, 4, 4).EndTurn()
-                .DuringPlayerTurn(FirstOpponentName, 2, 2).EndTurn()
-                .DuringPlayerTurn(SecondOpponentName, 1, 1).EndTurn()
-                .DuringPlayerTurn(ThirdOpponentName, 2, 2).EndTurn()
-                .Build()
-                .DiceRollEvent(MainPlayerName, 4, 4)
-                .DiceRollEvent(FirstOpponentName, 2, 2)
-                .DiceRollEvent(SecondOpponentName, 1, 1)
-                .DiceRollEvent(ThirdOpponentName, 2, 2)
-                .Run();
-        }
-
-        [Test]
-        public void Scenario_AllPlayersHaveDiceRollEventInTheirTurn2()
-        {
             this.CreateStandardLocalGameControllerScenarioRunner()
                 .WithStartingResourcesForPlayer(MainPlayerName, ResourceClutch.DevelopmentCard)
                 .WithNoResourceCollection()
@@ -90,28 +74,13 @@ namespace SoC.Library.ScenarioTests
         }
 
         [Test]
-        public void Scenario_AllPlayersCollectResourcesAsPartOfFirstTurnStart()
-        {
-            var localGameController = this.CreateStandardLocalGameControllerScenarioRunner()
-                .DuringPlayerTurn(MainPlayerName, 1, 5).EndTurn()
-                .Build()
-                .ResourcesCollectedEvent(FirstOpponentName, FirstOpponentFirstSettlementLocation, ResourceClutch.OneOre)
-                .StartResourcesCollectedEvent(SecondOpponentName)
-                    .AddResourceCollection(SecondOpponentFirstSettlementLocation, ResourceClutch.OneLumber)
-                    .AddResourceCollection(SecondOpponentSecondSettlementLocation, ResourceClutch.OneLumber)
-                    .FinishResourcesCollectedEvent()
-                .ResourcesCollectedEvent(ThirdOpponentName, ThirdOpponentFirstSettlementLocation, ResourceClutch.OneOre)
-                .Run();
-        }
-
-        [Test]
-        public void Scenario_Scenario_AllPlayersCollectResourcesAsPartOfFirstTurnStart2()
+        public void Scenario_Scenario_AllPlayersCollectResourcesAsPartOfFirstTurnStart()
         {
             this.CreateStandardLocalGameControllerScenarioRunner()
                 .PlayerTurn(MainPlayerName, 1, 5)
                     .Events()
                         .ResourceCollectionEvent(FirstOpponentName, 
-                            new Tuple<uint, ResourceClutch>(FirstOpponentFirstSettlementLocation, ResourceClutch.OneWool))
+                            new Tuple<uint, ResourceClutch>(FirstOpponentFirstSettlementLocation, ResourceClutch.OneOre))
                         .ResourceCollectionEvent(SecondOpponentName,
                             new Tuple<uint, ResourceClutch>(SecondOpponentFirstSettlementLocation, ResourceClutch.OneLumber),
                             new Tuple<uint, ResourceClutch>(SecondOpponentSecondSettlementLocation, ResourceClutch.OneLumber))

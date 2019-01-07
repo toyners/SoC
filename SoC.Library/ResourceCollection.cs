@@ -21,5 +21,14 @@ namespace Jabberwocky.SoC.Library
             var other = (ResourceCollection)obj;
             return this.Location.CompareTo(other.Location);
         }
+
+        public override bool Equals(object obj)
+        {
+            if (obj == null || !(obj is ResourceCollection))
+                return false;
+
+            var other = (ResourceCollection)obj;
+            return this.Location.Equals(other.Location) && this.Resources.Equals(other.Resources);
+        }
     }
 }

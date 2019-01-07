@@ -700,6 +700,12 @@ namespace SoC.Library.ScenarioTests
             {
                 message += $"\r\nDice 1 is {diceRollEvent.Dice1}, Dice roll 2 is {diceRollEvent.Dice2}";
             }
+            else if (gameEvent is ResourcesCollectedEvent resourcesCollectedEvent)
+            {
+                message += $"\r\nResources collected entries count is {resourcesCollectedEvent.ResourceCollection.Length}";
+                foreach (var entry in resourcesCollectedEvent.ResourceCollection)
+                    message += $"\r\nLocation {entry.Location}, Resources {entry.Resources}";
+            }
             else if (gameEvent is ResourceTransactionEvent resourceTransactionEvent)
             {
                 message += $"\r\nResource transaction count is {resourceTransactionEvent.ResourceTransactions.Count}";
@@ -711,7 +717,6 @@ namespace SoC.Library.ScenarioTests
                     message += $"\r\nTransaction is: Receiving player '{receivingPlayer.Name}', Giving player '{givingPlayer.Name}', Resources {resourceTransaction.Resources}";
                 }
             }
-            
 
             return message;
         }
