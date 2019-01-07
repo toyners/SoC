@@ -218,10 +218,6 @@ namespace SoC.Library.ScenarioTests
             placeInfrastructureInstruction = (PlaceInfrastructureInstruction)this.playerInstructions.Dequeue();
             this.localGameController.CompleteGameSetup(placeInfrastructureInstruction.SettlementLocation, placeInfrastructureInstruction.RoadEndLocation);
 
-            //this.currentGameRound = null;
-
-            //playerTurnsToReview.Enqueue(null);
-
             for (var gameRoundIndex = 0; gameRoundIndex < this.gameRounds.Count; gameRoundIndex++)
             {
                 var gameRound = this.gameRounds[gameRoundIndex];
@@ -766,6 +762,18 @@ namespace SoC.Library.ScenarioTests
             this.playerActions.Add(new ComputerPlayerAction(ComputerPlayerActionTypes.BuyDevelopmentCard));
             return this;
         }
+
+        public PlayerActionBuilder BuildRoad(uint roadSegmentStart, uint roadSegmentEnd)
+        {
+            this.playerActions.Add(new BuildRoadSegmentAction(roadSegmentStart, roadSegmentEnd));
+            return this;
+        }
+
+        public PlayerActionBuilder BuildSettlement(uint settlementLocation)
+        {
+            this.playerActions.Add(new BuildSettlementAction(settlementLocation));
+            return this;
+        }
     }
 
     internal class ExpectedEventsBuilder
@@ -790,20 +798,43 @@ namespace SoC.Library.ScenarioTests
             return this.playerTurn;
         }
 
-        internal ExpectedEventsBuilder DiceRollEvent(uint dice1, uint dice2)
+        public ExpectedEventsBuilder DiceRollEvent(uint dice1, uint dice2)
         {
             this.expectedEvents.Add(new DiceRollEvent(this.playerTurn.PlayerId, dice1, dice2));
             return this;
         }
 
-        internal ExpectedEventsBuilder ResourceCollectionEvent(string playerName, params Tuple<uint, ResourceClutch>[] resourceCollectionPairs)
+        public ExpectedEventsBuilder ResourceCollectionEvent(string playerName, params Tuple<uint, ResourceClutch>[] resourceCollectionPairs)
         {
             var playerId = this.playersByName[playerName].Id;
+            this.AddResourceCollectionEvent(playerId, resourceCollectionPairs);
+            return this;
+        }
+
+        public ExpectedEventsBuilder ResourceCollectionEvent(params Tuple<uint, ResourceClutch>[] resourceCollectionPairs)
+        {
+            this.AddResourceCollectionEvent(this.playerTurn.PlayerId, resourceCollectionPairs);
+            return this;
+        }
+
+        private void AddResourceCollectionEvent(Guid playerId, Tuple<uint, ResourceClutch>[] resourceCollectionPairs)
+        {
             ResourceCollection[] rc = new ResourceCollection[resourceCollectionPairs.Length];
             var index = 0;
             foreach (var pair in resourceCollectionPairs)
                 rc[index++] = new ResourceCollection(pair.Item1, pair.Item2);
             this.expectedEvents.Add(new ResourcesCollectedEvent(playerId, rc));
+        }
+
+        public ExpectedEventsBuilder BuildRoadEvent(uint roadSegmentStart, uint roadSegmentEnd)
+        {
+            this.expectedEvents.Add(new RoadSegmentBuiltEvent(this.playerTurn.PlayerId, roadSegmentStart, roadSegmentEnd));
+            return this;
+        }
+
+        public ExpectedEventsBuilder BuildSettlementEvent(uint settlementLocation)
+        {
+            this.expectedEvents.Add(new SettlementBuiltEvent(this.playerTurn.PlayerId, settlementLocation));
             return this;
         }
     }

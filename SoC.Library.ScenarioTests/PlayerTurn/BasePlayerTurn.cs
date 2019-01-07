@@ -164,7 +164,10 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
 
         internal List<GameEvent> GetExpectedEvents()
         {
-            return this.expectedEventsBuilder.expectedEvents;
+            if (this.expectedEventsBuilder != null)
+                return this.expectedEventsBuilder.expectedEvents;
+
+            return null;
         }
 
         internal List<RunnerAction> GetRunnerActions()
