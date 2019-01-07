@@ -2,31 +2,64 @@
 using System.Collections.Generic;
 using Jabberwocky.SoC.Library.GameEvents;
 using Jabberwocky.SoC.Library.Interfaces;
+using SoC.Library.ScenarioTests;
 using SoC.Library.ScenarioTests.PlayerTurn;
 
 namespace Jabberwocky.SoC.Library.ScenarioTests.Builders
 {
     internal class ExpectedEventsBuilder
     {
+        #region Fields
         private BasePlayerTurn playerTurn;
         public List<GameEvent> expectedEvents = new List<GameEvent>();
         private Dictionary<string, IPlayer> playersByName;
+        #endregion
 
+        #region Construction
         public ExpectedEventsBuilder(BasePlayerTurn playerTurn, Dictionary<string, IPlayer> playersByName)
         {
             this.playerTurn = playerTurn;
             this.playersByName = playersByName;
         }
+        #endregion
 
+        #region Methods
         public ExpectedEventsBuilder BuildCityEvent(uint cityLocation)
         {
             this.expectedEvents.Add(new CityBuiltEvent(this.playerTurn.PlayerId, cityLocation));
             return this;
         }
 
+        public ExpectedEventsBuilder BuildRoadEvent(uint roadSegmentStart, uint roadSegmentEnd)
+        {
+            this.expectedEvents.Add(new RoadSegmentBuiltEvent(this.playerTurn.PlayerId, roadSegmentStart, roadSegmentEnd));
+            return this;
+        }
+
+        public ExpectedEventsBuilder BuildSettlementEvent(uint settlementLocation)
+        {
+            this.expectedEvents.Add(new SettlementBuiltEvent(this.playerTurn.PlayerId, settlementLocation));
+            return this;
+        }
+
         public ExpectedEventsBuilder BuyDevelopmentCardEvent()
         {
             this.expectedEvents.Add(new BuyDevelopmentCardEvent(this.playerTurn.PlayerId));
+            return this;
+        }
+
+        public ExpectedEventsBuilder BuyDevelopmentCardEvent(DevelopmentCardTypes developmentCardType)
+        {
+            if (this.playerTurn.player is ScenarioPlayer mockPlayer)
+            {
+
+            }
+            else if (this.playerTurn.player is ScenarioComputerPlayer scenarioComputerPlayer)
+            {
+                var expectedBuyDevelopmentCardEvent = new ScenarioBuyDevelopmentCardEvent(scenarioComputerPlayer, developmentCardType);
+                this.expectedEvents.Add(expectedBuyDevelopmentCardEvent);
+            }
+
             return this;
         }
 
@@ -61,6 +94,21 @@ namespace Jabberwocky.SoC.Library.ScenarioTests.Builders
             return this;
         }
 
+        public ExpectedEventsBuilder LongestRoadBuiltEvent()
+        {
+            var expectedLongestRoadBuiltEvent = new LongestRoadBuiltEvent(this.playerTurn.PlayerId, Guid.Empty);
+            this.expectedEvents.Add(expectedLongestRoadBuiltEvent);
+            return this;
+        }
+
+        public ExpectedEventsBuilder PlayKnightCardEvent(string playerName)
+        {
+            var player = this.playersByName[playerName];
+            var expectedPlayKnightCardEvent = new PlayKnightCardEvent(player.Id);
+            this.expectedEvents.Add(expectedPlayKnightCardEvent);
+            return this;
+        }
+
         public ExpectedEventsBuilder ResourceCollectionEvent(string playerName, params Tuple<uint, ResourceClutch>[] resourceCollectionPairs)
         {
             var playerId = this.playersByName[playerName].Id;
@@ -74,6 +122,15 @@ namespace Jabberwocky.SoC.Library.ScenarioTests.Builders
             return this;
         }
 
+        public ExpectedEventsBuilder ResourcesGainedEvent(string givingPlayerName, ResourceClutch expectedResources)
+        {
+            var givingPlayer = this.playersByName[givingPlayerName];
+            var resourceTransaction = new ResourceTransaction(this.playerTurn.PlayerId, givingPlayer.Id, expectedResources);
+            var expectedResourceTransactonEvent = new ResourceTransactionEvent(this.playerTurn.PlayerId, resourceTransaction);
+            this.expectedEvents.Add(expectedResourceTransactonEvent);
+            return this;
+        }
+
         private void AddResourceCollectionEvent(Guid playerId, Tuple<uint, ResourceClutch>[] resourceCollectionPairs)
         {
             ResourceCollection[] rc = new ResourceCollection[resourceCollectionPairs.Length];
@@ -82,17 +139,6 @@ namespace Jabberwocky.SoC.Library.ScenarioTests.Builders
                 rc[index++] = new ResourceCollection(pair.Item1, pair.Item2);
             this.expectedEvents.Add(new ResourcesCollectedEvent(playerId, rc));
         }
-
-        public ExpectedEventsBuilder BuildRoadEvent(uint roadSegmentStart, uint roadSegmentEnd)
-        {
-            this.expectedEvents.Add(new RoadSegmentBuiltEvent(this.playerTurn.PlayerId, roadSegmentStart, roadSegmentEnd));
-            return this;
-        }
-
-        public ExpectedEventsBuilder BuildSettlementEvent(uint settlementLocation)
-        {
-            this.expectedEvents.Add(new SettlementBuiltEvent(this.playerTurn.PlayerId, settlementLocation));
-            return this;
-        }
+        #endregion
     }
 }

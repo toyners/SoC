@@ -51,5 +51,11 @@ namespace Jabberwocky.SoC.Library.ScenarioTests.Builders
             this.playerActions.Add(new PlayKnightCardAction(hexLocation));
             return this;
         }
+
+        public PlayerActionBuilder PlayKnightCardAndCollectFrom(uint hexLocation, string selectedPlayerName, ResourceTypes expectedSingleResource)
+        {
+            this.playerActions.Add(new ScenarioPlayKnightCardAction(hexLocation, selectedPlayerName, expectedSingleResource));
+            return this;
+        }
     }
 }
