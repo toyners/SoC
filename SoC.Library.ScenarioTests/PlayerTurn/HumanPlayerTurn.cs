@@ -8,4 +8,11 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
         {
         }
     }
+
+    internal class GameSetupTurn : BasePlayerTurn
+    {
+        public GameSetupTurn() : base(null, 1, 1, null)
+        {
+        }
+    }
 }

@@ -78,7 +78,6 @@ namespace SoC.Library.ScenarioTests
             this.localGameController.DiceRollEvent = (Guid playerId, uint dice1, uint dice2) =>
             {
                 this.currentTurn.AddEvent(new DiceRollEvent(playerId, dice1, dice2));
-                //this.actualEvents.Add(new DiceRollEvent(playerId, dice1, dice2));
             };
             this.localGameController.DevelopmentCardPurchasedEvent = (DevelopmentCard c) => { this.currentTurn.AddEvent(new BuyDevelopmentCardEvent(this.players[0].Id)); };
             this.localGameController.ErrorRaisedEvent = (ErrorDetails e) => { Assert.Fail(e.Message); };
@@ -95,7 +94,25 @@ namespace SoC.Library.ScenarioTests
             this.eventHandlersByGameEventType = eventHandlersByGameEventType;
             this.expectedEventCount = expectedEventCount;
             this.relevantEvents = new Queue<GameEvent>();
-            //this.actualEvents = new List<GameEvent>();
+
+            // Flatten game rounds into queue of turns. Fill out the dice rolls
+            for (var gameRoundIndex = 0; gameRoundIndex < this.gameRounds.Count; gameRoundIndex++)
+            {
+                var gameRound = this.gameRounds[gameRoundIndex];
+                
+                for (var playerTurnIndex = 0; playerTurnIndex < gameRound.PlayerTurns.Count; playerTurnIndex++)
+                {
+                    var playerTurn = gameRound.PlayerTurns[playerTurnIndex];
+                    this.turns.Add(playerTurn);
+                }
+
+                if (gameRoundIndex == this.gameRounds.Count - 1)
+                {
+                    var fillDiceRollCount = (4 - gameRound.PlayerTurns.Count) + 1;
+                    while (fillDiceRollCount-- > 0)
+                        this.NumberGenerator.AddTwoDiceRoll(1, 1);
+                }
+            }
 
             return this;
         }
@@ -204,6 +221,9 @@ namespace SoC.Library.ScenarioTests
             return this;
         }
 
+        int actionIndex = 0;
+        int reviewIndex = 0;
+        List<BasePlayerTurn> turns = new List<BasePlayerTurn>();
         public LocalGameController Run()
         {
             this.localGameController.JoinGame();
@@ -216,16 +236,16 @@ namespace SoC.Library.ScenarioTests
             placeInfrastructureInstruction = (PlaceInfrastructureInstruction)this.playerInstructions.Dequeue();
             this.localGameController.CompleteGameSetup(placeInfrastructureInstruction.SettlementLocation, placeInfrastructureInstruction.RoadEndLocation);
 
-            for (var gameRoundIndex = 0; gameRoundIndex < this.gameRounds.Count; gameRoundIndex++)
+            for (; actionIndex < this.turns.Count; actionIndex += 4)
             {
-                var gameRound = this.gameRounds[gameRoundIndex];
-                for (var playerTurnIndex = 0; playerTurnIndex < gameRound.PlayerTurns.Count; playerTurnIndex++)
+                if (actionIndex == 0)
+                    this.localGameController.StartGamePlay();
+
+                var startIndex = actionIndex;
+                var endIndex = actionIndex + 3;
+                while (startIndex++ <= endIndex)
                 {
-                    var playerTurn = gameRound.PlayerTurns[playerTurnIndex];
-
-                    if (gameRoundIndex == 0 && playerTurnIndex == 0)
-                        this.localGameController.StartGamePlay();
-
+                    var playerTurn = this.turns[startIndex];
                     var runnerActions = playerTurn.GetRunnerActions();
                     if (runnerActions != null && runnerActions.Count > 0)
                     {
@@ -234,72 +254,10 @@ namespace SoC.Library.ScenarioTests
                     }
 
                     playerTurn.ResolveActions(this.currentToken, this.localGameController);
-                    playerTurnsToReview.Enqueue(playerTurn);
-                }
-
-                if (gameRoundIndex == this.gameRounds.Count - 1)
-                {
-                    var fillDiceRollCount = (4 - gameRound.PlayerTurns.Count) + 1;
-                    while (fillDiceRollCount-- > 0)
-                        this.NumberGenerator.AddTwoDiceRoll(1, 1);
                 }
 
                 this.localGameController.EndTurn(this.currentToken);
             }
-
-            //this.CompleteGamePlay();
-
-            // Set up first dice roll
-            
-
-            //this.ComepleteGamePlay2();
-
-            
-
-            /*if (this.relevantEvents != null && this.actualEvents != null)
-            {
-                if (this.expectedEventCount != -1)
-                    Assert.AreEqual(this.expectedEventCount, this.actualEvents.Count, $"Expected event count {this.expectedEventCount} but found actual event count {this.actualEvents.Count}");
-
-                var actualEventIndex = 0;
-                while (this.relevantEvents.Count > 0)
-                {
-                    GameEvent lastEvent = null;
-                    var expectedEvent = this.relevantEvents.Dequeue();
-                    var foundEvent = false;
-                    while (actualEventIndex < this.actualEvents.Count)
-                    {
-                        var actualEvent = this.actualEvents[actualEventIndex++];
-
-                        if (this.lastEventsByType.TryGetValue(actualEvent.GetType(), out lastEvent) && lastEvent == null)
-                        {
-                            Assert.Fail($"{actualEvent} event found after last event of type {actualEvent.GetType()} was matched.");
-                        }
-
-                        if (expectedEvent.Equals(actualEvent))
-                        {
-                            if (this.lastEventsByType.TryGetValue(actualEvent.GetType(), out lastEvent) && lastEvent != null)
-                            {
-                                this.lastEventsByType[actualEvent.GetType()] = null;
-                            }
-
-                            foundEvent = true;
-                            break;
-                        }
-                    }
-
-                    if (!foundEvent)
-                        Assert.Fail(this.ToMessage(expectedEvent));
-                }
-            }
-
-            foreach (var expectedPlayerPair in this.expectedPlayersByName)
-            {
-                var expectedPlayer = expectedPlayerPair.Value;
-                var actualPlayer = this.playersByName[expectedPlayer.Name];
-
-                Assert.AreEqual(expectedPlayer.VictoryPoints, actualPlayer.VictoryPoints, $"Expected player '{actualPlayer.Name}' to have {expectedPlayer.VictoryPoints} victory points but has {actualPlayer.VictoryPoints} victory points");
-            }*/
 
             return this.localGameController;
         }
@@ -414,26 +372,6 @@ namespace SoC.Library.ScenarioTests
             return this;
         }
 
-        public BasePlayerTurn DuringPlayerTurn(string playerName, uint dice1, uint dice2)
-        {
-            this.NumberGenerator.AddTwoDiceRoll(dice1, dice2);
-
-            /*BasePlayerTurn playerTurn = null;
-
-            if (playerName == this.players[0].Name)
-            {
-                playerTurn = new HumanPlayerTurn(this, this.players[0]);
-            }
-            else
-            {
-                playerTurn = new ComputerPlayerTurn(this, this.computerPlayersByName[playerName]);
-            }
-
-            this.playerTurns.Add(playerTurn);
-            return playerTurn;*/
-            throw new NotImplementedException();
-        }
-
         public LocalGameControllerScenarioRunner BuyDevelopmentCardEvent(string playerName, DevelopmentCardTypes developmentCardType)
         {
             var player = this.playersByName[playerName];
@@ -463,7 +401,7 @@ namespace SoC.Library.ScenarioTests
             return this;
         }
 
-        internal void AddDevelopmentCardToBuy(/*Guid playerId,*/ DevelopmentCardTypes developmentCardType)
+        internal void AddDevelopmentCardToBuy(DevelopmentCardTypes developmentCardType)
         {
             DevelopmentCard developmentCard = null;
             switch (developmentCardType)
@@ -473,14 +411,6 @@ namespace SoC.Library.ScenarioTests
             }
 
             this.developmentCardHolder.AddDevelopmentCard(developmentCard);
-
-            /*if (!this.developmentCardsByPlayerId.TryGetValue(playerId, out var developmentCardsForPlayerId))
-            {
-                developmentCardsForPlayerId = new List<DevelopmentCard>();
-                this.developmentCardsByPlayerId.Add(playerId, developmentCardsForPlayerId);
-            }
-
-            developmentCardsForPlayerId.Add(developmentCard);*/
         }
 
         private void CompleteGamePlay()
@@ -517,29 +447,24 @@ namespace SoC.Library.ScenarioTests
             this.currentTurn.AddEvent(new DiceRollEvent(playerId, dice1, dice2));
         }
 
+        int currentIndex = 0;
         private void StartOfTurn()
         {
-            if (this.playerTurnsToReview.Count == 0)
-                return;
+            this.currentTurn = this.turns[this.currentIndex];
 
-            var previousTurn = playerTurnsToReview.Dequeue();
-            if (previousTurn == null)
-                return;
-
-            var unwantedEventTypes = previousTurn.GetUnwantedEventTypes();
-            if (unwantedEventTypes != null)
+            if (this.currentIndex - 1 >= 0)
             {
-                var workingActualEventIndex = this.actualEventIndex;
+                var previousTurn = this.turns[this.currentIndex - 1];
+                previousTurn.VerifyEvents();
+                previousTurn.CompareSnapshot();
             }
 
-            previousTurn.VerifyEvents();
-
-            previousTurn.CompareSnapshot();
+            this.currentIndex++;
         }
 
         Queue<BasePlayerTurn> playerTurnsToReview = new Queue<BasePlayerTurn>();
         BasePlayerTurn previousTurn;
-        BasePlayerTurn currentTurn;
+        BasePlayerTurn currentTurn = new GameSetupTurn();
         int actualEventIndex = 0;
 
         int gameRoundIndex = 0;
@@ -565,7 +490,6 @@ namespace SoC.Library.ScenarioTests
 
         private void GameEventsHandler(List<GameEvent> gameEvents)
         {
-            //this.actualEvents.AddRange(gameEvents);
             this.currentTurn.AddEvents(gameEvents);
 
             if (this.eventHandlersByGameEventType != null)
