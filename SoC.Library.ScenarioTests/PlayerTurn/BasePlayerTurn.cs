@@ -207,6 +207,12 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
                 return;
 
             var unwantedEventTypes = this.expectedEventsBuilder.unwantedEventTypes;
+            if (unwantedEventTypes != null && unwantedEventTypes.Count > 0)
+            {
+                var firstUnwantedEvent = this.actualEvents.Where(e => unwantedEventTypes.Contains(e.GetType())).FirstOrDefault();
+                if (firstUnwantedEvent != null)
+                    Assert.Fail($"Event of unwanted type {firstUnwantedEvent.GetType()} found");
+            }
 
             var expectedEvents = this.expectedEventsBuilder.expectedEvents;
             if (expectedEvents == null)
@@ -219,12 +225,6 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
                 while (actualEventIndex < this.actualEvents.Count)
                 {
                     var actualEvent = this.actualEvents[actualEventIndex++];
-
-                    if (unwantedEventTypes != null && unwantedEventTypes.Contains(actualEvent.GetType()))
-                    {
-                        Assert.Fail($"Event of unwanted type {actualEvent.GetType()} found");
-                    }
-
                     if (expectedEvent.Equals(actualEvent))
                     {
                         foundEvent = true;

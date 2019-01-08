@@ -77,16 +77,16 @@ namespace SoC.Library.ScenarioTests
                 this.developmentCardHolder);
             this.localGameController.DiceRollEvent = (Guid playerId, uint dice1, uint dice2) =>
             {
-                this.currentTurn.AddEvent(new DiceRollEvent(playerId, dice1, dice2));
+                this.currentTurn?.AddEvent(new DiceRollEvent(playerId, dice1, dice2));
             };
-            this.localGameController.DevelopmentCardPurchasedEvent = (DevelopmentCard c) => { this.currentTurn.AddEvent(new BuyDevelopmentCardEvent(this.players[0].Id)); };
+            this.localGameController.DevelopmentCardPurchasedEvent = (DevelopmentCard c) => { this.currentTurn?.AddEvent(new BuyDevelopmentCardEvent(this.players[0].Id)); };
             this.localGameController.ErrorRaisedEvent = (ErrorDetails e) => { Assert.Fail(e.Message); };
             this.localGameController.GameEvents = this.GameEventsHandler;
-            this.localGameController.LargestArmyEvent = (newPlayerId, previousPlayerId) => { this.currentTurn.AddEvent(new LargestArmyChangedEvent(newPlayerId, previousPlayerId)); };
-            this.localGameController.PlayKnightCardEvent = (PlayKnightCardEvent p) => { this.currentTurn.AddEvent(p); };
+            this.localGameController.LargestArmyEvent = (newPlayerId, previousPlayerId) => { this.currentTurn?.AddEvent(new LargestArmyChangedEvent(newPlayerId, previousPlayerId)); };
+            this.localGameController.PlayKnightCardEvent = (PlayKnightCardEvent p) => { this.currentTurn?.AddEvent(p); };
             this.localGameController.ResourcesTransferredEvent = (ResourceTransactionList list) =>
             {
-                this.currentTurn.AddEvent(new ResourceTransactionEvent(this.players[0].Id, list));
+                this.currentTurn?.AddEvent(new ResourceTransactionEvent(this.players[0].Id, list));
             };
             this.localGameController.StartPlayerTurnEvent = (TurnToken t) => { this.currentToken = t; StartOfTurn(); };
             this.localGameController.StartOpponentTurnEvent = (Guid g) => { this.StartOfTurn(); };
@@ -241,11 +241,11 @@ namespace SoC.Library.ScenarioTests
                 if (actionIndex == 0)
                     this.localGameController.StartGamePlay();
 
-                var startIndex = actionIndex;
+                var index = actionIndex;
                 var endIndex = actionIndex + 3;
-                while (startIndex++ <= endIndex)
+                while (index <= endIndex && index < this.turns.Count)
                 {
-                    var playerTurn = this.turns[startIndex];
+                    var playerTurn = this.turns[index];
                     var runnerActions = playerTurn.GetRunnerActions();
                     if (runnerActions != null && runnerActions.Count > 0)
                     {
@@ -254,6 +254,7 @@ namespace SoC.Library.ScenarioTests
                     }
 
                     playerTurn.ResolveActions(this.currentToken, this.localGameController);
+                    index++;
                 }
 
                 this.localGameController.EndTurn(this.currentToken);
@@ -450,11 +451,15 @@ namespace SoC.Library.ScenarioTests
         int currentIndex = 0;
         private void StartOfTurn()
         {
-            this.currentTurn = this.turns[this.currentIndex];
+            if (this.currentIndex < this.turns.Count)
+                this.currentTurn = this.turns[this.currentIndex];
+            else
+                this.currentTurn = null;
 
-            if (this.currentIndex - 1 >= 0)
+            var previousIndex = this.currentIndex - 1;
+            if (previousIndex >= 0 && previousIndex < this.turns.Count)
             {
-                var previousTurn = this.turns[this.currentIndex - 1];
+                var previousTurn = this.turns[previousIndex];
                 previousTurn.VerifyEvents();
                 previousTurn.CompareSnapshot();
             }
@@ -490,7 +495,7 @@ namespace SoC.Library.ScenarioTests
 
         private void GameEventsHandler(List<GameEvent> gameEvents)
         {
-            this.currentTurn.AddEvents(gameEvents);
+            this.currentTurn?.AddEvents(gameEvents);
 
             if (this.eventHandlersByGameEventType != null)
             {
