@@ -99,6 +99,11 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
             return this;
         }
 
+        public void AddEvent(GameEvent gameEvent)
+        {
+            this.actualEvents.Add(gameEvent);
+        }
+
         public virtual BasePlayerTurn PlayKnightCardAndCollectFrom(uint hexLocation, string selectedPlayerName, ResourceTypes expectedSingleResource)
         {
             //this.actions.Enqueue(new ScenarioPlayKnightCardAction(hexLocation, selectedPlayerName, expectedSingleResource));
@@ -180,6 +185,83 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
                 return this.expectedPlayerState.playerSnapshot;
 
             return null;
+        }
+
+        internal List<Type> GetUnwantedEventTypes()
+        {
+            if (this.expectedEventsBuilder != null)
+                return this.expectedEventsBuilder.unwantedEventTypes;
+
+            return null;
+        }
+
+        private List<GameEvent> actualEvents = new List<GameEvent>();
+        internal void AddEvents(List<GameEvent> gameEvents)
+        {
+            this.actualEvents.AddRange(gameEvents);
+        }
+
+        internal void VerifyEvents()
+        {
+            if (this.expectedEventsBuilder == null)
+                return;
+
+            var expectedEvents = this.expectedEventsBuilder.expectedEvents;
+            if (expectedEvents == null)
+                return;
+
+            var actualEventIndex = 0;
+            foreach (var expectedEvent in expectedEvents)
+            {
+                var foundEvent = false;
+                while (actualEventIndex < this.actualEvents.Count)
+                {
+                    var actualEvent = this.actualEvents[actualEventIndex++];
+                    if (expectedEvent.Equals(actualEvent))
+                    {
+                        foundEvent = true;
+                        break;
+                    }
+                }
+
+                if (!foundEvent)
+                    Assert.Fail(this.ToMessage(expectedEvent));
+            }
+        }
+
+        private string ToMessage(GameEvent gameEvent)
+        {
+            //var player = this.players.Where(p => p.Id.Equals(gameEvent.PlayerId)).FirstOrDefault();
+
+            var message = $"Did not find {gameEvent.GetType()} event for '{this.player.Name}'.";
+
+            if (gameEvent is DiceRollEvent diceRollEvent)
+            {
+                message += $"\r\nDice 1 is {diceRollEvent.Dice1}, Dice roll 2 is {diceRollEvent.Dice2}";
+            }
+            else if (gameEvent is ResourcesCollectedEvent resourcesCollectedEvent)
+            {
+                message += $"\r\nResources collected entries count is {resourcesCollectedEvent.ResourceCollection.Length}";
+                foreach (var entry in resourcesCollectedEvent.ResourceCollection)
+                    message += $"\r\nLocation {entry.Location}, Resources {entry.Resources}";
+            }
+            else if (gameEvent is ResourceTransactionEvent resourceTransactionEvent)
+            {
+                message += $"\r\nResource transaction count is {resourceTransactionEvent.ResourceTransactions.Count}";
+                for (var index = 0; index < resourceTransactionEvent.ResourceTransactions.Count; index++)
+                {
+                    var resourceTransaction = resourceTransactionEvent.ResourceTransactions[index];
+                    var receivingPlayer = this.runner.GetPlayer(resourceTransaction.ReceivingPlayerId);
+                    var givingPlayer = this.runner.GetPlayer(resourceTransaction.GivingPlayerId);
+                    message += $"\r\nTransaction is: Receiving player '{receivingPlayer.Name}', Giving player '{givingPlayer.Name}', Resources {resourceTransaction.Resources}";
+                }
+            }
+            else if (gameEvent is RoadSegmentBuiltEvent roadSegmentBuildEvent)
+            {
+                message += $"\r\nFrom {roadSegmentBuildEvent.StartLocation} to {roadSegmentBuildEvent.EndLocation}";
+            }
+
+            return message;
         }
     }
 }

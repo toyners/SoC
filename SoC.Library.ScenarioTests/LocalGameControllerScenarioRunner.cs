@@ -39,7 +39,7 @@ namespace SoC.Library.ScenarioTests
         private readonly List<PlayerSetupAction> secondRoundSetupActions = new List<PlayerSetupAction>(4);
         private readonly Dictionary<string, ScenarioComputerPlayer> computerPlayersByName = new Dictionary<string, ScenarioComputerPlayer>();
         private readonly List<IPlayer> players = new List<IPlayer>(4);
-        private List<GameEvent> actualEvents = null;
+        //private List<GameEvent> actualEvents = null;
         private TurnToken currentToken;
         private Dictionary<GameEventTypes, Delegate> eventHandlersByGameEventType;
         private int expectedEventCount;
@@ -77,17 +77,17 @@ namespace SoC.Library.ScenarioTests
                 this.developmentCardHolder);
             this.localGameController.DiceRollEvent = (Guid playerId, uint dice1, uint dice2) =>
             {
-                this.actualEvents.Add(new DiceRollEvent(playerId, dice1, dice2));
-                //this.DiceRollEventHandler2();
+                this.currentTurn.AddEvent(new DiceRollEvent(playerId, dice1, dice2));
+                //this.actualEvents.Add(new DiceRollEvent(playerId, dice1, dice2));
             };
-            this.localGameController.DevelopmentCardPurchasedEvent = (DevelopmentCard c) => { this.actualEvents.Add(new BuyDevelopmentCardEvent(this.players[0].Id)); };
+            this.localGameController.DevelopmentCardPurchasedEvent = (DevelopmentCard c) => { this.currentTurn.AddEvent(new BuyDevelopmentCardEvent(this.players[0].Id)); };
             this.localGameController.ErrorRaisedEvent = (ErrorDetails e) => { Assert.Fail(e.Message); };
             this.localGameController.GameEvents = this.GameEventsHandler;
-            this.localGameController.LargestArmyEvent = (newPlayerId, previousPlayerId) => { this.actualEvents.Add(new LargestArmyChangedEvent(newPlayerId, previousPlayerId)); };
-            this.localGameController.PlayKnightCardEvent = (PlayKnightCardEvent p) => { this.actualEvents.Add(p); };
+            this.localGameController.LargestArmyEvent = (newPlayerId, previousPlayerId) => { this.currentTurn.AddEvent(new LargestArmyChangedEvent(newPlayerId, previousPlayerId)); };
+            this.localGameController.PlayKnightCardEvent = (PlayKnightCardEvent p) => { this.currentTurn.AddEvent(p); };
             this.localGameController.ResourcesTransferredEvent = (ResourceTransactionList list) =>
             {
-                this.actualEvents.Add(new ResourceTransactionEvent(this.players[0].Id, list));
+                this.currentTurn.AddEvent(new ResourceTransactionEvent(this.players[0].Id, list));
             };
             this.localGameController.StartPlayerTurnEvent = (TurnToken t) => { this.currentToken = t; StartOfTurn(); };
             this.localGameController.StartOpponentTurnEvent = (Guid g) => { this.StartOfTurn(); };
@@ -95,7 +95,7 @@ namespace SoC.Library.ScenarioTests
             this.eventHandlersByGameEventType = eventHandlersByGameEventType;
             this.expectedEventCount = expectedEventCount;
             this.relevantEvents = new Queue<GameEvent>();
-            this.actualEvents = new List<GameEvent>();
+            //this.actualEvents = new List<GameEvent>();
 
             return this;
         }
@@ -304,6 +304,11 @@ namespace SoC.Library.ScenarioTests
             return this.localGameController;
         }
 
+        internal IPlayer GetPlayer(Guid playerId)
+        {
+            return this.players.Where(p => p.Id == playerId).First();
+        }
+
         public LocalGameControllerScenarioRunner GameWinEvent(string firstOpponentName, uint expectedVictoryPoints)
         {
             var playerId = this.playersByName[firstOpponentName].Id;
@@ -492,56 +497,6 @@ namespace SoC.Library.ScenarioTests
             this.localGameController.EndTurn(this.currentToken);
         }
 
-        private void ComepleteGamePlay2()
-        {
-            var actualEventIndex = 0;
-
-            foreach (var gameRound in this.gameRounds)
-            {
-                foreach (var playerTurn in gameRound.PlayerTurns)
-                {
-                    this.NumberGenerator.AddTwoDiceRoll(playerTurn.Dice1, playerTurn.Dice2);
-
-                    // Run player actions (if any)
-                    var runnerActions = playerTurn.GetRunnerActions();
-                    if (runnerActions != null)
-                    {
-                        foreach (var runnerAction in runnerActions)
-                        {
-                            this.AddDevelopmentCardToBuy(((InsertDevelopmentCardAction)runnerAction).DevelopmentCardType);
-                        }
-                    }
-
-                    playerTurn.ResolveActions(this.currentToken, this.localGameController);
-
-                    // Check actual events against expected events (if any)
-                    var expectedEvents = playerTurn.GetExpectedEvents();
-
-                    foreach (var expectedEvent in expectedEvents)
-                    {
-                        var foundEvent = false;
-                        while (actualEventIndex < this.actualEvents.Count)
-                        {
-                            var actualEvent = this.actualEvents[actualEventIndex++];
-                            if (expectedEvent.Equals(actualEvent))
-                            {
-                                foundEvent = true;
-                                break;
-                            }
-                        }
-
-                        if (!foundEvent)
-                            Assert.Fail(this.ToMessage(expectedEvent));
-                    }
-
-                    actualEventIndex = this.actualEvents.Count;
-
-                    // Check player state
-
-                }
-            }
-        }
-
         private IPlayer CreatePlayer(string name, bool isComputerPlayer)
         {
             IPlayer player = isComputerPlayer
@@ -559,7 +514,7 @@ namespace SoC.Library.ScenarioTests
 
         private void DiceRollEventHandler(Guid playerId, uint dice1, uint dice2)
         {
-            this.actualEvents.Add(new DiceRollEvent(playerId, dice1, dice2));
+            this.currentTurn.AddEvent(new DiceRollEvent(playerId, dice1, dice2));
         }
 
         private void StartOfTurn()
@@ -571,28 +526,13 @@ namespace SoC.Library.ScenarioTests
             if (previousTurn == null)
                 return;
 
-            var expectedEvents = previousTurn.GetExpectedEvents();
-            if (expectedEvents != null)
+            var unwantedEventTypes = previousTurn.GetUnwantedEventTypes();
+            if (unwantedEventTypes != null)
             {
-                foreach (var expectedEvent in expectedEvents)
-                {
-                    var foundEvent = false;
-                    while (actualEventIndex < this.actualEvents.Count)
-                    {
-                        var actualEvent = this.actualEvents[actualEventIndex++];
-                        if (expectedEvent.Equals(actualEvent))
-                        {
-                            foundEvent = true;
-                            break;
-                        }
-                    }
-
-                    if (!foundEvent)
-                        Assert.Fail(this.ToMessage(expectedEvent));
-                }
-
-                actualEventIndex = this.actualEvents.Count;
+                var workingActualEventIndex = this.actualEventIndex;
             }
+
+            previousTurn.VerifyEvents();
 
             previousTurn.CompareSnapshot();
         }
@@ -601,54 +541,6 @@ namespace SoC.Library.ScenarioTests
         BasePlayerTurn previousTurn;
         BasePlayerTurn currentTurn;
         int actualEventIndex = 0;
-        private void DiceRollEventHandler2()
-        {
-            if (currentTurn != null)
-            {
-                previousTurn = currentTurn;
-            }
-
-            currentTurn = this.GetNextPlayerTurn();
-
-            if (previousTurn != null)
-            {
-                var expectedEvents = previousTurn.GetExpectedEvents();
-                if (expectedEvents != null)
-                {
-                    foreach (var expectedEvent in expectedEvents)
-                    {
-                        var foundEvent = false;
-                        while (actualEventIndex < this.actualEvents.Count)
-                        {
-                            var actualEvent = this.actualEvents[actualEventIndex++];
-                            if (expectedEvent.Equals(actualEvent))
-                            {
-                                foundEvent = true;
-                                break;
-                            }
-                        }
-
-                        if (!foundEvent)
-                            Assert.Fail(this.ToMessage(expectedEvent));
-                    }
-
-                    actualEventIndex = this.actualEvents.Count;
-                }
-
-                var snapshot = previousTurn.GetPlayerSnapshot();
-                if (snapshot != null)
-                {
-
-                }
-            }
-
-            //currentTurn.ResolveActions(this.currentToken, this.localGameController);
-
-            /*if (currentTurn is HumanPlayerTurn)
-                this.localGameController.EndTurn(this.currentToken);
-            else
-                this.NumberGenerator.AddTwoDiceRoll(currentTurn.Dice1, currentTurn.Dice2);*/
-        }
 
         int gameRoundIndex = 0;
         int playerTurnIndex = 0;
@@ -673,7 +565,8 @@ namespace SoC.Library.ScenarioTests
 
         private void GameEventsHandler(List<GameEvent> gameEvents)
         {
-            this.actualEvents.AddRange(gameEvents);
+            //this.actualEvents.AddRange(gameEvents);
+            this.currentTurn.AddEvents(gameEvents);
 
             if (this.eventHandlersByGameEventType != null)
             {
@@ -685,40 +578,7 @@ namespace SoC.Library.ScenarioTests
             }
         }
 
-        private string ToMessage(GameEvent gameEvent)
-        {
-            var player = this.players.Where(p => p.Id.Equals(gameEvent.PlayerId)).FirstOrDefault();
-
-            var message = $"Did not find {gameEvent.GetType()} event for '{player.Name}'.";
-            
-            if (gameEvent is DiceRollEvent diceRollEvent)
-            {
-                message += $"\r\nDice 1 is {diceRollEvent.Dice1}, Dice roll 2 is {diceRollEvent.Dice2}";
-            }
-            else if (gameEvent is ResourcesCollectedEvent resourcesCollectedEvent)
-            {
-                message += $"\r\nResources collected entries count is {resourcesCollectedEvent.ResourceCollection.Length}";
-                foreach (var entry in resourcesCollectedEvent.ResourceCollection)
-                    message += $"\r\nLocation {entry.Location}, Resources {entry.Resources}";
-            }
-            else if (gameEvent is ResourceTransactionEvent resourceTransactionEvent)
-            {
-                message += $"\r\nResource transaction count is {resourceTransactionEvent.ResourceTransactions.Count}";
-                for (var index = 0; index < resourceTransactionEvent.ResourceTransactions.Count; index++)
-                {
-                    var resourceTransaction = resourceTransactionEvent.ResourceTransactions[index];
-                    var receivingPlayer = this.players.Where(p => p.Id.Equals(resourceTransaction.ReceivingPlayerId)).FirstOrDefault();
-                    var givingPlayer = this.players.Where(p => p.Id.Equals(resourceTransaction.GivingPlayerId)).FirstOrDefault();
-                    message += $"\r\nTransaction is: Receiving player '{receivingPlayer.Name}', Giving player '{givingPlayer.Name}', Resources {resourceTransaction.Resources}";
-                }
-            }
-            else if (gameEvent is RoadSegmentBuiltEvent roadSegmentBuildEvent)
-            {
-                message += $"\r\nFrom {roadSegmentBuildEvent.StartLocation} to {roadSegmentBuildEvent.EndLocation}";
-            }
-
-            return message;
-        }
+        
 
         private List<GameRound> rounds = new List<GameRound>();
         #endregion

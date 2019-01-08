@@ -12,6 +12,7 @@ namespace Jabberwocky.SoC.Library.ScenarioTests.Builders
         #region Fields
         private BasePlayerTurn playerTurn;
         public List<GameEvent> expectedEvents = new List<GameEvent>();
+        public List<Type> unwantedEventTypes = new List<Type>();
         private Dictionary<string, IPlayer> playersByName;
         #endregion
 
@@ -80,16 +81,13 @@ namespace Jabberwocky.SoC.Library.ScenarioTests.Builders
             return this;
         }
 
-        public ExpectedEventsBuilder LargestArmyChangedEvent(string previousPlayerName = null /*, EventPositions eventPosition = EventPositions.Any*/)
+        public ExpectedEventsBuilder LargestArmyChangedEvent(string previousPlayerName = null)
         {
             Guid previousPlayerId = Guid.Empty;
             if (previousPlayerName != null)
                 previousPlayerId = this.playersByName[previousPlayerName].Id;
             var expectedLargestArmyChangedEvent = new LargestArmyChangedEvent(this.playerTurn.PlayerId, previousPlayerId);
             this.expectedEvents.Add(expectedLargestArmyChangedEvent);
-
-//            if (eventPosition == EventPositions.Last)
-//               this.lastEventsByType.Add(expectedLargestArmyChangedEvent.GetType(), expectedLargestArmyChangedEvent);
 
             return this;
         }
@@ -101,10 +99,16 @@ namespace Jabberwocky.SoC.Library.ScenarioTests.Builders
             return this;
         }
 
-        public ExpectedEventsBuilder PlayKnightCardEvent(string playerName)
+        public ExpectedEventsBuilder NoEventOfType<T>()
         {
-            var player = this.playersByName[playerName];
-            var expectedPlayKnightCardEvent = new PlayKnightCardEvent(player.Id);
+            var type = typeof(T);
+            this.unwantedEventTypes.Add(type);
+            return this;
+        }
+
+        public ExpectedEventsBuilder PlayKnightCardEvent()
+        {
+            var expectedPlayKnightCardEvent = new PlayKnightCardEvent(this.playerTurn.PlayerId);
             this.expectedEvents.Add(expectedPlayKnightCardEvent);
             return this;
         }
