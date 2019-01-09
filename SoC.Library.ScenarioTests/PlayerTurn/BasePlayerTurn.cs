@@ -22,6 +22,8 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
         public readonly IPlayer player;
         protected readonly LocalGameControllerScenarioRunner runner;
 
+        private List<GameEvent> actualEvents = new List<GameEvent>();
+
         public BasePlayerTurn(IPlayer player, uint dice1, uint dice2, LocalGameControllerScenarioRunner runner)
         {
             this.runner = runner;
@@ -54,60 +56,20 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
                 Assert.Fail("Held card does not match");
         }
 
+        public LocalGameControllerScenarioRunner EndTurn()
+        {
+            return this.runner;
+        }
+
         public ExpectedEventsBuilder Events()
         {
             this.expectedEventsBuilder = new ExpectedEventsBuilder(this, this.runner.playersByName);
             return this.expectedEventsBuilder;
         }
 
-        public PlayerStateBuilder State()
-        {
-            this.expectedPlayerState = new PlayerStateBuilder(this);
-            return this.expectedPlayerState;
-        }
-
-        public LocalGameControllerScenarioRunner EndTurn()
-        {
-            return this.runner;
-        }
-
-
-        public virtual BasePlayerTurn BuildCity(uint roadSegmentStart) { return this; }
-
-        public virtual BasePlayerTurn BuildRoad(uint roadSegmentStart, uint roadSegmentEnd)
-        {
-            //this.actions.Enqueue(new BuildRoadSegmentAction(roadSegmentStart, roadSegmentEnd));
-            return this;
-        }
-
-        public virtual BasePlayerTurn BuildSettlement(uint settlementLocation)
-        {
-            //this.actions.Enqueue(new BuildSettlementAction(settlementLocation));
-            return this;
-        }
-
-        public virtual BasePlayerTurn BuyDevelopmentCard(DevelopmentCardTypes developmentCardType)
-        {
-            this.AddDevelopmentCard(this.PlayerId, developmentCardType);
-            //this.actions.Enqueue(new ComputerPlayerAction(ComputerPlayerActionTypes.BuyDevelopmentCard));
-            return this;
-        }
-
-        public virtual BasePlayerTurn PlayKnightCard(uint hexLocation)
-        {
-            //this.actions.Enqueue(new PlayKnightCardAction(hexLocation));
-            return this;
-        }
-
         public void AddEvent(GameEvent gameEvent)
         {
             this.actualEvents.Add(gameEvent);
-        }
-
-        public virtual BasePlayerTurn PlayKnightCardAndCollectFrom(uint hexLocation, string selectedPlayerName, ResourceTypes expectedSingleResource)
-        {
-            //this.actions.Enqueue(new ScenarioPlayKnightCardAction(hexLocation, selectedPlayerName, expectedSingleResource));
-            return this;
         }
 
         public virtual void ResolveActions(TurnToken turnToken, LocalGameController localGameController)
@@ -125,10 +87,10 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
                     switch (scenarioPlayKnightCardAction.ExpectedSingleResource)
                     {
                         case ResourceTypes.Ore:
-                            randomNumber = selectedPlayer.Resources.BrickCount +
-                            selectedPlayer.Resources.GrainCount +
-                            selectedPlayer.Resources.LumberCount;
-                            break;
+                        randomNumber = selectedPlayer.Resources.BrickCount +
+                        selectedPlayer.Resources.GrainCount +
+                        selectedPlayer.Resources.LumberCount;
+                        break;
                         default: throw new Exception($"Resource type '{scenarioPlayKnightCardAction.ExpectedSingleResource}' not handled");
                     }
 
@@ -158,23 +120,16 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
             }
         }
 
-        protected void AddDevelopmentCard(Guid playerId, DevelopmentCardTypes developmentCardType)
+        public PlayerStateBuilder State()
         {
-            this.runner.AddDevelopmentCardToBuy(developmentCardType);
+            this.expectedPlayerState = new PlayerStateBuilder(this);
+            return this.expectedPlayerState;
         }
 
         internal List<GameEvent> GetExpectedEvents()
         {
             if (this.expectedEventsBuilder != null)
                 return this.expectedEventsBuilder.expectedEvents;
-
-            return null;
-        }
-
-        internal List<RunnerAction> GetRunnerActions()
-        {
-            if (this.actionBuilder != null)
-                return this.actionBuilder.runnerActions;
 
             return null;
         }
@@ -187,6 +142,14 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
             return null;
         }
 
+        internal List<RunnerAction> GetRunnerActions()
+        {
+            if (this.actionBuilder != null)
+                return this.actionBuilder.runnerActions;
+
+            return null;
+        }
+
         internal List<Type> GetUnwantedEventTypes()
         {
             if (this.expectedEventsBuilder != null)
@@ -195,7 +158,6 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
             return null;
         }
 
-        private List<GameEvent> actualEvents = new List<GameEvent>();
         internal void AddEvents(List<GameEvent> gameEvents)
         {
             this.actualEvents.AddRange(gameEvents);
@@ -235,6 +197,11 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
                 if (!foundEvent)
                     Assert.Fail(this.ToMessage(expectedEvent));
             }
+        }
+
+        protected void AddDevelopmentCard(Guid playerId, DevelopmentCardTypes developmentCardType)
+        {
+            this.runner.AddDevelopmentCardToBuy(developmentCardType);
         }
 
         private string ToMessage(GameEvent gameEvent)

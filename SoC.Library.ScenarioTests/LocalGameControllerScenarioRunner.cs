@@ -38,13 +38,13 @@ namespace SoC.Library.ScenarioTests
         private readonly Dictionary<string, ScenarioComputerPlayer> computerPlayersByName = new Dictionary<string, ScenarioComputerPlayer>();
         private readonly List<IPlayer> players = new List<IPlayer>(4);
         private readonly List<BasePlayerTurn> turns = new List<BasePlayerTurn>();
+        private int currentIndex = 0;
         private TurnToken currentToken;
         private BasePlayerTurn currentTurn = new GameSetupTurn();
         private Dictionary<GameEventTypes, Delegate> eventHandlersByGameEventType;
         private int expectedEventCount;
         private GameBoard gameBoard;
         private LocalGameController localGameController = null;
-        private Queue<GameEvent> relevantEvents = null;
         #endregion 
 
         #region Construction
@@ -92,7 +92,6 @@ namespace SoC.Library.ScenarioTests
 
             this.eventHandlersByGameEventType = eventHandlersByGameEventType;
             this.expectedEventCount = expectedEventCount;
-            this.relevantEvents = new Queue<GameEvent>();
 
             // Flatten game rounds into queue of turns. Fill out the dice rolls
             for (var gameRoundIndex = 0; gameRoundIndex < this.gameRounds.Count; gameRoundIndex++)
@@ -116,37 +115,6 @@ namespace SoC.Library.ScenarioTests
             return this;
         }
 
-        public LocalGameControllerScenarioRunner BuildCityEvent(string playerName, uint cityLocation)
-        {
-            var playerId = this.playersByName[playerName].Id;
-            this.relevantEvents.Enqueue(new CityBuiltEvent(playerId, cityLocation));
-            return this;
-        }
-
-        public LocalGameControllerScenarioRunner BuildRoadEvent(string playerName, uint roadSegmentStart, uint roadSegmentEnd)
-        {
-            var playerId = this.playersByName[playerName].Id;
-            this.relevantEvents.Enqueue(new RoadSegmentBuiltEvent(playerId, roadSegmentStart, roadSegmentEnd));
-            return this;
-        }
-
-        public LocalGameControllerScenarioRunner BuildSettlementEvent(string playerName, uint settlementLocation)
-        {
-            var playerId = this.playersByName[playerName].Id;
-            this.relevantEvents.Enqueue(new SettlementBuiltEvent(playerId, settlementLocation));
-            return this;
-        }
-
-        public LocalGameControllerScenarioRunner DiceRollEvent(string playerName, uint dice1, uint dice2)
-        {
-            var player = this.playersByName[playerName];
-
-            var expectedDiceRollEvent = new DiceRollEvent(player.Id, dice1, dice2);
-            this.relevantEvents.Enqueue(expectedDiceRollEvent);
-
-            return this;
-        }
-
         private ScenarioPlayer expectedPlayer = null;
         public ScenarioPlayer ExpectPlayer(string mainPlayerName)
         {
@@ -159,67 +127,6 @@ namespace SoC.Library.ScenarioTests
             return this.playersByName[playerName];
         }
 
-        public LocalGameControllerScenarioRunner IgnoredEvents(Type matchingType, uint count)
-        {
-            while (count-- > 0)
-                this.relevantEvents.Enqueue(new IgnoredEvent(matchingType));
-
-            return this;
-        }
-
-        public LocalGameControllerScenarioRunner IgnoredEvent(Type matchingType)
-        {
-            return this.IgnoredEvents(matchingType, 1);
-        }
-
-        public LocalGameControllerScenarioRunner LargestArmyChangedEvent(string newPlayerName, string previousPlayerName = null, EventPositions eventPosition = EventPositions.Any)
-        {
-            var newPlayer = this.playersByName[newPlayerName];
-            Guid previousPlayerId = Guid.Empty;
-            if (previousPlayerName != null)
-                previousPlayerId = this.playersByName[previousPlayerName].Id;
-            var expectedLargestArmyChangedEvent = new LargestArmyChangedEvent(newPlayer.Id, previousPlayerId);
-            this.relevantEvents.Enqueue(expectedLargestArmyChangedEvent);
-
-            if (eventPosition == EventPositions.Last)
-                this.lastEventsByType.Add(expectedLargestArmyChangedEvent.GetType(), expectedLargestArmyChangedEvent);
-
-            return this;
-        }
-
-        public LocalGameControllerScenarioRunner LongestRoadBuiltEvent(string newPlayerName)
-        {
-            var newPlayer = this.playersByName[newPlayerName];
-            var expectedLongestRoadBuiltEvent = new LongestRoadBuiltEvent(newPlayer.Id, Guid.Empty);
-            this.relevantEvents.Enqueue(expectedLongestRoadBuiltEvent);
-            return this;
-        }
-
-        public LocalGameControllerScenarioRunner ResourcesCollectedEvent(string playerName, uint location, ResourceClutch resourceClutch)
-        {
-            var player = this.playersByName[playerName];
-
-            return this.ResourcesCollectedEvent(player.Id, new[] { new ResourceCollection(location, resourceClutch) });
-        }
-
-        public LocalGameControllerScenarioRunner ResourcesCollectedEvent(Guid playerId, ResourceCollection[] resourceCollection)
-        {
-            var expectedDiceRollEvent = new ResourcesCollectedEvent(playerId, resourceCollection);
-            this.relevantEvents.Enqueue(expectedDiceRollEvent);
-            return this;
-        }
-
-        public LocalGameControllerScenarioRunner ResourcesGainedEvent(string receivingPlayerName, string givingPlayerName, ResourceClutch expectedResources)
-        {
-            var receivingPlayer = this.playersByName[receivingPlayerName];
-            var givingPlayer = this.playersByName[givingPlayerName];
-            var resourceTransaction = new ResourceTransaction(receivingPlayer.Id, givingPlayer.Id, expectedResources);
-            var expectedResourceTransactonEvent = new ResourceTransactionEvent(receivingPlayer.Id, resourceTransaction);
-            this.relevantEvents.Enqueue(expectedResourceTransactonEvent);
-            return this;
-        }
-
-        //private int actionIndex = 0;
         public LocalGameController Run()
         {
             this.localGameController.JoinGame();
@@ -264,14 +171,6 @@ namespace SoC.Library.ScenarioTests
             return this.players.Where(p => p.Id == playerId).First();
         }
 
-        public LocalGameControllerScenarioRunner GameWinEvent(string firstOpponentName, uint expectedVictoryPoints)
-        {
-            var playerId = this.playersByName[firstOpponentName].Id;
-            var expectedGameWonEvent = new GameWinEvent(playerId, expectedVictoryPoints);
-            this.relevantEvents.Enqueue(expectedGameWonEvent);
-            return this;
-        }
-
         private GameRound currentGameRound = null;
         private List<GameRound> gameRounds = new List<GameRound>();
         public BasePlayerTurn PlayerTurn(string playerName, uint dice1, uint dice2)
@@ -294,21 +193,6 @@ namespace SoC.Library.ScenarioTests
             this.currentGameRound.Add(playerTurn);
 
             return playerTurn;
-        }
-
-        public LocalGameControllerScenarioRunner PlayKnightCardEvent(string playerName)
-        {
-            var player = this.playersByName[playerName];
-            var expectedPlayKnightCardEvent = new PlayKnightCardEvent(player.Id);
-            this.relevantEvents.Enqueue(expectedPlayKnightCardEvent);
-            return this;
-        }
-
-        public ResourceCollectedEventGroup StartResourcesCollectedEvent(string playerName)
-        {
-            var player = this.playersByName[playerName];
-            var eventGroup = new ResourceCollectedEventGroup(player.Id, this);
-            return eventGroup;
         }
 
         public LocalGameControllerScenarioRunner WithComputerPlayer(string name)
@@ -365,22 +249,6 @@ namespace SoC.Library.ScenarioTests
 
             foreach (var roll in rolls)
                 this.NumberGenerator.AddTwoDiceRoll(roll / 2, roll / 2);
-
-            return this;
-        }
-
-        public LocalGameControllerScenarioRunner BuyDevelopmentCardEvent(string playerName, DevelopmentCardTypes developmentCardType)
-        {
-            var player = this.playersByName[playerName];
-            if (player is ScenarioPlayer mockPlayer)
-            {
-
-            }
-            else if (player is ScenarioComputerPlayer mockComputerPlayer)
-            {
-                var expectedBuyDevelopmentCardEvent = new ScenarioBuyDevelopmentCardEvent(mockComputerPlayer, developmentCardType);
-                this.relevantEvents.Enqueue(expectedBuyDevelopmentCardEvent);
-            }
 
             return this;
         }
@@ -444,7 +312,6 @@ namespace SoC.Library.ScenarioTests
             this.currentTurn.AddEvent(new DiceRollEvent(playerId, dice1, dice2));
         }
 
-        int currentIndex = 0;
         private void StartOfTurn()
         {
             if (this.currentIndex < this.turns.Count)
