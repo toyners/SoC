@@ -26,5 +26,6 @@ namespace SoC.Library.ScenarioTests
     internal class PlayerSnapshot
     {
         public List<DevelopmentCardTypes> heldCards;
+        public uint VictoryPoints;
     }
 }

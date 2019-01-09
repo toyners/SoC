@@ -17,12 +17,12 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
     {
         protected PlayerActionBuilder actionBuilder;
         private ExpectedEventsBuilder expectedEventsBuilder;
-        private PlayerStateBuilder expectedPlayerState;
+        private readonly Dictionary<string, PlayerStateBuilder> playerStatesByName = new Dictionary<string, PlayerStateBuilder>();
 
         public readonly IPlayer player;
         protected readonly LocalGameControllerScenarioRunner runner;
 
-        private List<GameEvent> actualEvents = new List<GameEvent>();
+        private readonly List<GameEvent> actualEvents = new List<GameEvent>();
 
         public BasePlayerTurn(IPlayer player, uint dice1, uint dice2, LocalGameControllerScenarioRunner runner)
         {
@@ -44,16 +44,16 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
             return this.actionBuilder;
         }
 
-        public void CompareSnapshot()
+        public void VerifyState()
         {
-            if (this.expectedPlayerState == null)
+            /*if (this.expectedPlayerState == null)
                 return;
 
             if (player.HeldCards.Count != this.expectedPlayerState.playerSnapshot.heldCards.Count)
                 Assert.Fail("Held cards count is not same");
 
             if (player.HeldCards[0].Type != this.expectedPlayerState.playerSnapshot.heldCards[0])
-                Assert.Fail("Held card does not match");
+                Assert.Fail("Held card does not match");*/
         }
 
         public LocalGameControllerScenarioRunner EndTurn()
@@ -120,24 +120,18 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
             }
         }
 
-        public PlayerStateBuilder State()
+        public PlayerStateBuilder State(string playerName)
         {
-            this.expectedPlayerState = new PlayerStateBuilder(this);
-            return this.expectedPlayerState;
+            var playerState = new PlayerStateBuilder(this);
+            this.playerStatesByName.Add(playerName, playerState);
+
+            return playerState;
         }
 
         internal List<GameEvent> GetExpectedEvents()
         {
             if (this.expectedEventsBuilder != null)
                 return this.expectedEventsBuilder.expectedEvents;
-
-            return null;
-        }
-
-        internal PlayerSnapshot GetPlayerSnapshot()
-        {
-            if (this.expectedPlayerState != null)
-                return this.expectedPlayerState.playerSnapshot;
 
             return null;
         }

@@ -324,7 +324,7 @@ namespace SoC.Library.ScenarioTests
             {
                 var previousTurn = this.turns[previousIndex];
                 previousTurn.VerifyEvents();
-                previousTurn.CompareSnapshot();
+                previousTurn.VerifyState();
             }
 
             this.currentIndex++;
