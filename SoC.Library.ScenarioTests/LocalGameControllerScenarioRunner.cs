@@ -27,9 +27,7 @@ namespace SoC.Library.ScenarioTests
         #endregion
 
         #region Fields
-        private static LocalGameControllerScenarioRunner localGameControllerScenarioBuilder;
         private readonly ScenarioDevelopmentCardHolder developmentCardHolder = new ScenarioDevelopmentCardHolder();
-        //private readonly Dictionary<Guid, List<DevelopmentCard>> developmentCardsByPlayerId = new Dictionary<Guid, List<DevelopmentCard>>();
         private readonly List<PlayerSetupAction> firstRoundSetupActions = new List<PlayerSetupAction>(4);
         private readonly Dictionary<Type, GameEvent> lastEventsByType = new Dictionary<Type, GameEvent>();
         public readonly Dictionary<string, IPlayer> playersByName = new Dictionary<string, IPlayer>();
@@ -39,8 +37,9 @@ namespace SoC.Library.ScenarioTests
         private readonly List<PlayerSetupAction> secondRoundSetupActions = new List<PlayerSetupAction>(4);
         private readonly Dictionary<string, ScenarioComputerPlayer> computerPlayersByName = new Dictionary<string, ScenarioComputerPlayer>();
         private readonly List<IPlayer> players = new List<IPlayer>(4);
-        //private List<GameEvent> actualEvents = null;
+        private readonly List<BasePlayerTurn> turns = new List<BasePlayerTurn>();
         private TurnToken currentToken;
+        private BasePlayerTurn currentTurn = new GameSetupTurn();
         private Dictionary<GameEventTypes, Delegate> eventHandlersByGameEventType;
         private int expectedEventCount;
         private GameBoard gameBoard;
@@ -88,7 +87,7 @@ namespace SoC.Library.ScenarioTests
             {
                 this.currentTurn?.AddEvent(new ResourceTransactionEvent(this.players[0].Id, list));
             };
-            this.localGameController.StartPlayerTurnEvent = (TurnToken t) => { this.currentToken = t; StartOfTurn(); };
+            this.localGameController.StartPlayerTurnEvent = (TurnToken t) => { this.currentToken = t; this.StartOfTurn(); };
             this.localGameController.StartOpponentTurnEvent = (Guid g) => { this.StartOfTurn(); };
 
             this.eventHandlersByGameEventType = eventHandlersByGameEventType;
@@ -149,7 +148,6 @@ namespace SoC.Library.ScenarioTests
         }
 
         private ScenarioPlayer expectedPlayer = null;
-        private readonly Dictionary<string, ScenarioPlayer> expectedPlayersByName = new Dictionary<string, ScenarioPlayer>();
         public ScenarioPlayer ExpectPlayer(string mainPlayerName)
         {
             var expectedPlayer = new ScenarioPlayer(mainPlayerName, this);
@@ -221,9 +219,7 @@ namespace SoC.Library.ScenarioTests
             return this;
         }
 
-        int actionIndex = 0;
-        int reviewIndex = 0;
-        List<BasePlayerTurn> turns = new List<BasePlayerTurn>();
+        //private int actionIndex = 0;
         public LocalGameController Run()
         {
             this.localGameController.JoinGame();
@@ -236,16 +232,16 @@ namespace SoC.Library.ScenarioTests
             placeInfrastructureInstruction = (PlaceInfrastructureInstruction)this.playerInstructions.Dequeue();
             this.localGameController.CompleteGameSetup(placeInfrastructureInstruction.SettlementLocation, placeInfrastructureInstruction.RoadEndLocation);
 
-            for (; actionIndex < this.turns.Count; actionIndex += 4)
+            for (var index = 0; index < this.turns.Count; index += 4)
             {
-                if (actionIndex == 0)
+                if (index == 0)
                     this.localGameController.StartGamePlay();
 
-                var index = actionIndex;
-                var endIndex = actionIndex + 3;
-                while (index <= endIndex && index < this.turns.Count)
+                var workingIndex = index;
+                var endIndex = index + 3;
+                while (workingIndex <= endIndex && workingIndex < this.turns.Count)
                 {
-                    var playerTurn = this.turns[index];
+                    var playerTurn = this.turns[workingIndex];
                     var runnerActions = playerTurn.GetRunnerActions();
                     if (runnerActions != null && runnerActions.Count > 0)
                     {
@@ -254,7 +250,7 @@ namespace SoC.Library.ScenarioTests
                     }
 
                     playerTurn.ResolveActions(this.currentToken, this.localGameController);
-                    index++;
+                    workingIndex++;
                 }
 
                 this.localGameController.EndTurn(this.currentToken);
@@ -282,10 +278,10 @@ namespace SoC.Library.ScenarioTests
         {
             this.NumberGenerator.AddTwoDiceRoll(dice1, dice2);
 
-            if (currentGameRound == null || currentGameRound.IsComplete)
+            if (this.currentGameRound == null || this.currentGameRound.IsComplete)
             {
-                currentGameRound = new GameRound();
-                this.gameRounds.Add(currentGameRound);
+                this.currentGameRound = new GameRound();
+                this.gameRounds.Add(this.currentGameRound);
             }
 
             BasePlayerTurn playerTurn;
@@ -295,7 +291,7 @@ namespace SoC.Library.ScenarioTests
             else
                 playerTurn = new HumanPlayerTurn(player, dice1, dice2, this);
 
-            currentGameRound.Add(playerTurn);
+            this.currentGameRound.Add(playerTurn);
 
             return playerTurn;
         }
@@ -467,32 +463,6 @@ namespace SoC.Library.ScenarioTests
             this.currentIndex++;
         }
 
-        Queue<BasePlayerTurn> playerTurnsToReview = new Queue<BasePlayerTurn>();
-        BasePlayerTurn previousTurn;
-        BasePlayerTurn currentTurn = new GameSetupTurn();
-        int actualEventIndex = 0;
-
-        int gameRoundIndex = 0;
-        int playerTurnIndex = 0;
-        private BasePlayerTurn GetNextPlayerTurn()
-        {
-            if (this.currentGameRound == null)
-            {
-                this.currentGameRound = this.gameRounds[gameRoundIndex++];
-                playerTurnIndex = 0;
-            }
-            else if (playerTurnIndex == this.currentGameRound.PlayerTurns.Count)
-            {
-                if (gameRoundIndex == this.gameRounds.Count)
-                    return null;
-
-                this.currentGameRound = this.gameRounds[gameRoundIndex++];
-                playerTurnIndex = 0;
-            }
-
-            return this.currentGameRound.PlayerTurns[playerTurnIndex++];
-        }
-
         private void GameEventsHandler(List<GameEvent> gameEvents)
         {
             this.currentTurn?.AddEvents(gameEvents);
@@ -507,24 +477,9 @@ namespace SoC.Library.ScenarioTests
             }
         }
 
-        
-
         private List<GameRound> rounds = new List<GameRound>();
         #endregion
     }
-
-    internal class GameRound
-    {
-        public List<BasePlayerTurn> PlayerTurns = new List<BasePlayerTurn>();
-
-        public bool IsComplete { get { return this.PlayerTurns.Count == 4; } }
-
-        public void Add(BasePlayerTurn playerTurn)
-        {
-            this.PlayerTurns.Add(playerTurn);
-        }
-    }
-
 
     internal abstract class RunnerAction { }
 

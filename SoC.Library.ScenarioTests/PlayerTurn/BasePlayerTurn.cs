@@ -239,8 +239,6 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
 
         private string ToMessage(GameEvent gameEvent)
         {
-            //var player = this.players.Where(p => p.Id.Equals(gameEvent.PlayerId)).FirstOrDefault();
-
             var message = $"Did not find {gameEvent.GetType()} event for '{this.player.Name}'.";
 
             if (gameEvent is DiceRollEvent diceRollEvent)
