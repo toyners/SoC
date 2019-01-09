@@ -171,9 +171,9 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
             var unwantedEventTypes = this.expectedEventsBuilder.unwantedEventTypes;
             if (unwantedEventTypes != null && unwantedEventTypes.Count > 0)
             {
-                var firstUnwantedEvent = this.actualEvents.Where(e => unwantedEventTypes.Contains(e.GetType())).FirstOrDefault();
-                if (firstUnwantedEvent != null)
-                    Assert.Fail($"Event of unwanted type {firstUnwantedEvent.GetType()} found");
+                var unwantedEvents = this.actualEvents.Where(e => unwantedEventTypes.Contains(e.GetType())).ToList();
+                if (unwantedEvents.Count > 0)
+                    Assert.Fail($"{unwantedEvents.Count} events of unwanted type {unwantedEvents[0].GetType()} found.\r\nFirst event:\r\n{GetEventDetails(unwantedEvents[0])}");
             }
 
             var expectedEvents = this.expectedEventsBuilder.expectedEvents;
@@ -195,7 +195,7 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
                 }
 
                 if (!foundEvent)
-                    Assert.Fail(this.ToMessage(expectedEvent));
+                    Assert.Fail($"Did not find {expectedEvent.GetType()} event for '{this.player.Name}'.\r\n{this.GetEventDetails(expectedEvent)}");
             }
         }
 
@@ -204,34 +204,34 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
             this.runner.AddDevelopmentCardToBuy(developmentCardType);
         }
 
-        private string ToMessage(GameEvent gameEvent)
+        private string GetEventDetails(GameEvent gameEvent)
         {
-            var message = $"Did not find {gameEvent.GetType()} event for '{this.player.Name}'.";
+            var message = "";
 
             if (gameEvent is DiceRollEvent diceRollEvent)
             {
-                message += $"\r\nDice 1 is {diceRollEvent.Dice1}, Dice roll 2 is {diceRollEvent.Dice2}";
+                message += $"Dice 1 is {diceRollEvent.Dice1}, Dice roll 2 is {diceRollEvent.Dice2}";
             }
             else if (gameEvent is ResourcesCollectedEvent resourcesCollectedEvent)
             {
-                message += $"\r\nResources collected entries count is {resourcesCollectedEvent.ResourceCollection.Length}";
+                message += $"Resources collected entries count is {resourcesCollectedEvent.ResourceCollection.Length}";
                 foreach (var entry in resourcesCollectedEvent.ResourceCollection)
                     message += $"\r\nLocation {entry.Location}, Resources {entry.Resources}";
             }
             else if (gameEvent is ResourceTransactionEvent resourceTransactionEvent)
             {
-                message += $"\r\nResource transaction count is {resourceTransactionEvent.ResourceTransactions.Count}";
+                message += $"Resource transaction count is {resourceTransactionEvent.ResourceTransactions.Count}";
                 for (var index = 0; index < resourceTransactionEvent.ResourceTransactions.Count; index++)
                 {
                     var resourceTransaction = resourceTransactionEvent.ResourceTransactions[index];
                     var receivingPlayer = this.runner.GetPlayer(resourceTransaction.ReceivingPlayerId);
                     var givingPlayer = this.runner.GetPlayer(resourceTransaction.GivingPlayerId);
-                    message += $"\r\nTransaction is: Receiving player '{receivingPlayer.Name}', Giving player '{givingPlayer.Name}', Resources {resourceTransaction.Resources}";
+                    message += $"\r\nReceiving player '{receivingPlayer.Name}', Giving player '{givingPlayer.Name}', Resources {resourceTransaction.Resources}";
                 }
             }
             else if (gameEvent is RoadSegmentBuiltEvent roadSegmentBuildEvent)
             {
-                message += $"\r\nFrom {roadSegmentBuildEvent.StartLocation} to {roadSegmentBuildEvent.EndLocation}";
+                message += $"From {roadSegmentBuildEvent.StartLocation} to {roadSegmentBuildEvent.EndLocation}";
             }
 
             return message;

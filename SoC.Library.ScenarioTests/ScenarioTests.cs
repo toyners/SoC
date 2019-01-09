@@ -125,7 +125,8 @@ namespace SoC.Library.ScenarioTests
                     .EndTurn()
                 .PlayerTurn(ThirdOpponentName, 1, 2)
                     .Events()
-                        .NoEventOfType<ResourcesCollectedEvent>()
+                        .ResourceCollectedEvent(SecondOpponentName, 
+                            new Tuple<uint, ResourceClutch>(SecondOpponentSecondSettlementLocation, ResourceClutch.OneOre))
                         .End()
                     .EndTurn()
                 .PlayerTurn(MainPlayerName, 6, 4)
