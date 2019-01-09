@@ -113,14 +113,14 @@ namespace Jabberwocky.SoC.Library.ScenarioTests.Builders
             return this;
         }
 
-        public ExpectedEventsBuilder ResourceCollectionEvent(string playerName, params Tuple<uint, ResourceClutch>[] resourceCollectionPairs)
+        public ExpectedEventsBuilder ResourceCollectedEvent(string playerName, params Tuple<uint, ResourceClutch>[] resourceCollectionPairs)
         {
             var playerId = this.playersByName[playerName].Id;
             this.AddResourceCollectionEvent(playerId, resourceCollectionPairs);
             return this;
         }
 
-        public ExpectedEventsBuilder ResourceCollectionEvent(params Tuple<uint, ResourceClutch>[] resourceCollectionPairs)
+        public ExpectedEventsBuilder ResourceCollectedEvent(params Tuple<uint, ResourceClutch>[] resourceCollectionPairs)
         {
             this.AddResourceCollectionEvent(this.playerTurn.PlayerId, resourceCollectionPairs);
             return this;

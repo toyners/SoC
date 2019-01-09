@@ -79,12 +79,12 @@ namespace SoC.Library.ScenarioTests
             this.CreateStandardLocalGameControllerScenarioRunner()
                 .PlayerTurn(MainPlayerName, 1, 5)
                     .Events()
-                        .ResourceCollectionEvent(FirstOpponentName, 
+                        .ResourceCollectedEvent(FirstOpponentName, 
                             new Tuple<uint, ResourceClutch>(FirstOpponentFirstSettlementLocation, ResourceClutch.OneOre))
-                        .ResourceCollectionEvent(SecondOpponentName,
+                        .ResourceCollectedEvent(SecondOpponentName,
                             new Tuple<uint, ResourceClutch>(SecondOpponentFirstSettlementLocation, ResourceClutch.OneLumber),
                             new Tuple<uint, ResourceClutch>(SecondOpponentSecondSettlementLocation, ResourceClutch.OneLumber))
-                        .ResourceCollectionEvent(ThirdOpponentName,
+                        .ResourceCollectedEvent(ThirdOpponentName,
                             new Tuple<uint, ResourceClutch>(ThirdOpponentFirstSettlementLocation, ResourceClutch.OneOre))
                         .End()
                     .EndTurn()
@@ -93,43 +93,50 @@ namespace SoC.Library.ScenarioTests
         }
 
         [Test]
-        public void Scenario_AllPlayersCollectResourcesAsPartOfTurnStartAfterComputerPlayersCompleteTheirTurns()
+        public void Scenario_AllPlayersCollectResourcesAsPartOfTurnStart()
         {
             var localGameController = this.CreateStandardLocalGameControllerScenarioRunner()
                 .PlayerTurn(MainPlayerName, 4, 4)
                     .Events()
-                        .ResourceCollectionEvent(
+                        .ResourceCollectedEvent(
                             new Tuple<uint, ResourceClutch>(MainPlayerFirstSettlementLocation, ResourceClutch.OneBrick))
-                        .ResourceCollectionEvent(FirstOpponentName, 
+                        .ResourceCollectedEvent(FirstOpponentName, 
                             new Tuple<uint, ResourceClutch>(FirstOpponentSecondSettlementLocation, ResourceClutch.OneGrain))
                         .End()
                     .EndTurn()
                 .PlayerTurn(FirstOpponentName, 4, 4)
                     .Events()
-                        .ResourceCollectionEvent(MainPlayerName,
+                        .ResourceCollectedEvent(MainPlayerName,
                             new Tuple<uint, ResourceClutch>(MainPlayerFirstSettlementLocation, ResourceClutch.OneBrick))
-                        .ResourceCollectionEvent(
+                        .ResourceCollectedEvent(
                             new Tuple<uint, ResourceClutch>(FirstOpponentSecondSettlementLocation, ResourceClutch.OneGrain))
                         .End()
                     .EndTurn()
-                .PlayerTurn(SecondOpponentName, 4, 4).EndTurn()
-                .PlayerTurn(ThirdOpponentName, 4, 4).EndTurn()
-                .PlayerTurn(MainPlayerName, 3, 3).EndTurn()
+                .PlayerTurn(SecondOpponentName, 3, 3)
+                    .Events()
+                        .ResourceCollectedEvent(FirstOpponentName,
+                                new Tuple<uint, ResourceClutch>(FirstOpponentFirstSettlementLocation, ResourceClutch.OneOre))
+                        .ResourceCollectedEvent(
+                            new Tuple<uint, ResourceClutch>(SecondOpponentFirstSettlementLocation, ResourceClutch.OneLumber),
+                            new Tuple<uint, ResourceClutch>(SecondOpponentSecondSettlementLocation, ResourceClutch.OneLumber))
+                        .ResourceCollectedEvent(ThirdOpponentName,
+                            new Tuple<uint, ResourceClutch>(ThirdOpponentFirstSettlementLocation, ResourceClutch.OneOre))
+                        .End()
+                    .EndTurn()
+                .PlayerTurn(ThirdOpponentName, 1, 2)
+                    .Events()
+                        .NoEventOfType<ResourcesCollectedEvent>()
+                        .End()
+                    .EndTurn()
+                .PlayerTurn(MainPlayerName, 6, 4)
+                    .Events()
+                        .ResourceCollectedEvent(
+                                new Tuple<uint, ResourceClutch>(MainPlayerFirstSettlementLocation, ResourceClutch.OneWool))
+                        .ResourceCollectedEvent(FirstOpponentName,
+                                new Tuple<uint, ResourceClutch>(FirstOpponentSecondSettlementLocation, ResourceClutch.OneWool))
+                         .End()
+                    .EndTurn()
                 .Build()
-/*                .IgnoredEvents(typeof(ResourcesCollectedEvent), 4)
-                .ResourcesCollectedEvent(SecondOpponentName, SecondOpponentSecondSettlementLocation, ResourceClutch.OneOre)
-                .ResourcesCollectedEvent(MainPlayerName, MainPlayerFirstSettlementLocation, ResourceClutch.OneBrick)
-                .ResourcesCollectedEvent(FirstOpponentName, FirstOpponentSecondSettlementLocation, ResourceClutch.OneGrain)
-                .ResourcesCollectedEvent(MainPlayerName, MainPlayerFirstSettlementLocation, ResourceClutch.OneBrick)
-                .ResourcesCollectedEvent(FirstOpponentName, FirstOpponentSecondSettlementLocation, ResourceClutch.OneGrain)
-                .ResourcesCollectedEvent(MainPlayerName, MainPlayerFirstSettlementLocation, ResourceClutch.OneBrick)
-                .ResourcesCollectedEvent(FirstOpponentName, FirstOpponentSecondSettlementLocation, ResourceClutch.OneGrain)
-                .ResourcesCollectedEvent(FirstOpponentName, FirstOpponentFirstSettlementLocation, ResourceClutch.OneOre)
-                .StartResourcesCollectedEvent(SecondOpponentName)
-                    .AddResourceCollection(SecondOpponentFirstSettlementLocation, ResourceClutch.OneLumber)
-                    .AddResourceCollection(SecondOpponentSecondSettlementLocation, ResourceClutch.OneLumber)
-                    .FinishResourcesCollectedEvent()
-                .ResourcesCollectedEvent(ThirdOpponentName, ThirdOpponentFirstSettlementLocation, ResourceClutch.OneOre)*/
                 .Run();
         }
 
