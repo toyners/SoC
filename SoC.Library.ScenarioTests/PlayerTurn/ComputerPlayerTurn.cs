@@ -23,7 +23,12 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
             {
                 if (this.actionBuilder.playerActions[index] is ScenarioPlayKnightCardAction scenarioPlayKnightCardAction)
                 {
-                    var selectedPlayer = this.runner.GetPlayerFromName(scenarioPlayKnightCardAction.SelectedPlayerName);
+                    this.ResolveScenarioPlayKnightCardAction(scenarioPlayKnightCardAction,
+                        (location, playerId) =>
+                        {
+                            this.actionBuilder.playerActions[index] = new PlayKnightCardAction(location, playerId);
+                        });
+                    /*var selectedPlayer = this.runner.GetPlayerFromName(scenarioPlayKnightCardAction.SelectedPlayerName);
 
                     var randomNumber = int.MinValue;
                     switch (scenarioPlayKnightCardAction.ExpectedSingleResource)
@@ -37,7 +42,7 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
                     }
 
                     this.runner.NumberGenerator.AddRandomNumber(randomNumber);
-                    this.actionBuilder.playerActions[index] = new PlayKnightCardAction(scenarioPlayKnightCardAction.NewRobberHex, selectedPlayer.Id);
+                    this.actionBuilder.playerActions[index] = new PlayKnightCardAction(scenarioPlayKnightCardAction.NewRobberHex, selectedPlayer.Id);*/
                 }
             }
 

@@ -799,6 +799,22 @@ namespace SoC.Library.ScenarioTests
                 .Run();
         }
 
+        [Test]
+        public void Sceanrio_PlayerRollsSeven()
+        {
+            var firstOpponentResources = ResourceClutch.OneGrain;
+            this.CreateStandardLocalGameControllerScenarioRunner()
+                .WithNoResourceCollection()
+                .WithStartingResourcesForPlayer(FirstOpponentName, firstOpponentResources)
+                    .PlayerTurn(MainPlayerName, 3, 4)
+                        .Actions()
+                            .PlaceRobber(3, FirstOpponentName, ResourceTypes.Grain)
+                            .End()
+                        .EndTurn()
+                .Build()
+                .Run();
+        }
+
         private LocalGameControllerScenarioRunner CreateStandardLocalGameControllerScenarioRunner()
         {
             return LocalGameController()

@@ -76,7 +76,13 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
             {
                 if (action is ScenarioPlayKnightCardAction scenarioPlayKnightCardAction)
                 {
-                    var selectedPlayer = this.runner.GetPlayerFromName(scenarioPlayKnightCardAction.SelectedPlayerName);
+                    this.ResolveScenarioPlayKnightCardAction(scenarioPlayKnightCardAction,
+                        (location, playerId) =>
+                        {
+                            var knightCard = (KnightDevelopmentCard)this.player.HeldCards.Where(c => c.Type == DevelopmentCardTypes.Knight).First();
+                            localGameController.UseKnightCard(turnToken, knightCard, location, playerId);
+                        });
+                    /*var selectedPlayer = this.runner.GetPlayerFromName(scenarioPlayKnightCardAction.SelectedPlayerName);
 
                     var randomNumber = int.MinValue;
                     switch (scenarioPlayKnightCardAction.ExpectedSingleResource)
@@ -93,7 +99,7 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
 
                     var knightCard = (KnightDevelopmentCard)this.player.HeldCards.Where(c => c.Type == DevelopmentCardTypes.Knight).First();
                     localGameController.UseKnightCard(turnToken, knightCard, scenarioPlayKnightCardAction.NewRobberHex,
-                        selectedPlayer.Id);
+                        selectedPlayer.Id);*/
                 }
                 else if (action is PlayKnightCardAction playKnightCardAction)
                 {
@@ -198,6 +204,26 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
         protected void AddDevelopmentCard(Guid playerId, DevelopmentCardTypes developmentCardType)
         {
             this.runner.AddDevelopmentCardToBuy(developmentCardType);
+        }
+
+        protected void ResolveScenarioPlayKnightCardAction(ScenarioPlayKnightCardAction scenarioPlayKnightCardAction, Action<uint, Guid> playCardAction)
+        {
+            var selectedPlayer = this.runner.GetPlayerFromName(scenarioPlayKnightCardAction.SelectedPlayerName);
+
+            var randomNumber = int.MinValue;
+            switch (scenarioPlayKnightCardAction.ExpectedSingleResource)
+            {
+                case ResourceTypes.Ore:
+                randomNumber = selectedPlayer.Resources.BrickCount +
+                selectedPlayer.Resources.GrainCount +
+                selectedPlayer.Resources.LumberCount;
+                break;
+                default: throw new Exception($"Resource type '{scenarioPlayKnightCardAction.ExpectedSingleResource}' not handled");
+            }
+
+            this.runner.NumberGenerator.AddRandomNumber(randomNumber);
+
+            playCardAction.Invoke(scenarioPlayKnightCardAction.NewRobberHex, selectedPlayer.Id);
         }
 
         private string GetEventDetails(GameEvent gameEvent)

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Jabberwocky.SoC.Library.Enums;
 using Jabberwocky.SoC.Library.GameActions;
 using SoC.Library.ScenarioTests;
@@ -46,6 +47,12 @@ namespace Jabberwocky.SoC.Library.ScenarioTests.Builders
             return this;
         }
 
+        public PlayerActionBuilder PlaceRobber(uint hexLocation, string selectedPlayerName, ResourceTypes expectedSingleResource)
+        {
+            this.playerActions.Add(new PlaceRobberAction(hexLocation, selectedPlayerName, expectedSingleResource));
+            return this;
+        }
+
         public PlayerActionBuilder PlayKnightCard(uint hexLocation)
         {
             this.playerActions.Add(new PlayKnightCardAction(hexLocation));
@@ -57,5 +64,7 @@ namespace Jabberwocky.SoC.Library.ScenarioTests.Builders
             this.playerActions.Add(new ScenarioPlayKnightCardAction(hexLocation, selectedPlayerName, expectedSingleResource));
             return this;
         }
+
+        
     }
 }

@@ -796,6 +796,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
             robberingChoices.ShouldContainKeyAndValue(firstOpponent.Id, 5);
         }
 
+        // NOTE: Moving this to the Scenario Tests
         [Test]
         [Category("LocalGameController")]
         [Category("Main Player Turn")]

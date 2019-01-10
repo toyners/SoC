@@ -17,4 +17,12 @@ namespace SoC.Library.ScenarioTests
             this.ExpectedSingleResource = expectedSingleResource;
         }
     }
+
+    internal class PlaceRobberAction : ScenarioPlayKnightCardAction
+    {
+        public PlaceRobberAction(uint newRobberHex, string selectedPlayerName, ResourceTypes expectedSingleResource) 
+            : base(newRobberHex, selectedPlayerName, expectedSingleResource)
+        {
+        }
+    }
 }
