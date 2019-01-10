@@ -38,11 +38,13 @@ namespace SoC.Library.ScenarioTests
         private readonly Dictionary<string, ScenarioComputerPlayer> computerPlayersByName = new Dictionary<string, ScenarioComputerPlayer>();
         private readonly List<IPlayer> players = new List<IPlayer>(4);
         private readonly List<BasePlayerTurn> turns = new List<BasePlayerTurn>();
+        private GameRound currentGameRound = null;
         private int currentIndex = 0;
         private TurnToken currentToken;
         private BasePlayerTurn currentTurn = new GameSetupTurn();
         private Dictionary<GameEventTypes, Delegate> eventHandlersByGameEventType;
         private GameBoard gameBoard;
+        private List<GameRound> gameRounds = new List<GameRound>();
         private LocalGameController localGameController = null;
         #endregion 
 
@@ -162,8 +164,6 @@ namespace SoC.Library.ScenarioTests
             return this.players.Where(p => p.Id == playerId).First();
         }
 
-        private GameRound currentGameRound = null;
-        private List<GameRound> gameRounds = new List<GameRound>();
         public BasePlayerTurn PlayerTurn(string playerName, uint dice1, uint dice2)
         {
             this.NumberGenerator.AddTwoDiceRoll(dice1, dice2);
