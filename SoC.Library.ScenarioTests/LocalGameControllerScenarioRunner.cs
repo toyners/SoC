@@ -174,12 +174,15 @@ namespace SoC.Library.ScenarioTests
                 this.gameRounds.Add(this.currentGameRound);
             }
 
+            var roundNumber = this.gameRounds.Count();
+            var turnNumber = this.currentGameRound.PlayerTurns.Count;
+
             BasePlayerTurn playerTurn;
             var player = this.playersByName[playerName];
             if (player.IsComputer)
-                playerTurn = new ComputerPlayerTurn(player, dice1, dice2, this);
+                playerTurn = new ComputerPlayerTurn(player, dice1, dice2, this, roundNumber, turnNumber);
             else
-                playerTurn = new HumanPlayerTurn(player, dice1, dice2, this);
+                playerTurn = new HumanPlayerTurn(player, dice1, dice2, this, roundNumber, turnNumber);
 
             this.currentGameRound.Add(playerTurn);
 

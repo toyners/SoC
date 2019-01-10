@@ -9,7 +9,7 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
     {
         private readonly ScenarioComputerPlayer computerPlayer;
 
-        public ComputerPlayerTurn(IPlayer player, uint dice1, uint dice2, LocalGameControllerScenarioRunner runner) : base(player, dice1, dice2, runner)
+        public ComputerPlayerTurn(IPlayer player, uint dice1, uint dice2, LocalGameControllerScenarioRunner runner, int roundNumber, int turnNumber) : base(player, dice1, dice2, runner, roundNumber, turnNumber)
         {
             this.computerPlayer = (ScenarioComputerPlayer)player;
         }

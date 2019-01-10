@@ -22,15 +22,19 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
         private readonly List<GameEvent> actualEvents = new List<GameEvent>();
         private readonly Dictionary<string, PlayerSnapshot> playerSnapshotsByName = new Dictionary<string, PlayerSnapshot>();
         private ExpectedEventsBuilder expectedEventsBuilder;
+        private readonly int roundNumber;
+        private readonly int turnNumber;
         #endregion
 
         #region Construction
-        public BasePlayerTurn(IPlayer player, uint dice1, uint dice2, LocalGameControllerScenarioRunner runner)
+        public BasePlayerTurn(IPlayer player, uint dice1, uint dice2, LocalGameControllerScenarioRunner runner, int roundNumber, int turnNumber)
         {
             this.runner = runner;
             this.player = player;
             this.Dice1 = dice1;
             this.Dice2 = dice2;
+            this.roundNumber = roundNumber;
+            this.turnNumber = turnNumber;
         }
         #endregion
 
@@ -158,7 +162,7 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
             {
                 var unwantedEvents = this.actualEvents.Where(e => unwantedEventTypes.Contains(e.GetType())).ToList();
                 if (unwantedEvents.Count > 0)
-                    Assert.Fail($"{unwantedEvents.Count} events of unwanted type {unwantedEvents[0].GetType()} found.\r\nFirst event:\r\n{GetEventDetails(unwantedEvents[0])}");
+                    Assert.Fail($"{unwantedEvents.Count} events of unwanted type {unwantedEvents[0].GetType()} found.\r\nFirst event:\r\n{this.GetEventDetails(unwantedEvents[0])}");
             }
 
             var expectedEvents = this.expectedEventsBuilder.expectedEvents;
