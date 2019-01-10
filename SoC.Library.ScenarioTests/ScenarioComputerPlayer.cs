@@ -10,8 +10,6 @@ namespace SoC.Library.ScenarioTests
     public class ScenarioComputerPlayer : ComputerPlayer
     {
         #region Fields
-        private PlaceInfrastructureInstruction firstInstruction;
-        private PlaceInfrastructureInstruction secondInstruction;
         private readonly Queue<ComputerPlayerAction> actions = new Queue<ComputerPlayerAction>();
         public readonly Queue<DevelopmentCard> BoughtDevelopmentCards = new Queue<DevelopmentCard>();
         #endregion
@@ -33,30 +31,21 @@ namespace SoC.Library.ScenarioTests
             this.BoughtDevelopmentCards.Enqueue(developmentCard);
         }
 
-        public void AddSetupInstructions(PlaceInfrastructureInstruction firstInstruction, PlaceInfrastructureInstruction secondInstruction)
+        public void AddSetupInstructions(uint settlementLocation, uint roadSegmentEndLocation)
         {
-            this.firstInstruction = firstInstruction;
-            this.secondInstruction = secondInstruction;
+            this.actions.Enqueue(new PlaceInfrastructureAction(settlementLocation, roadSegmentEndLocation));
         }
 
         public override void BuildInitialPlayerActions(PlayerDataModel[] otherPlayerData)
         {
-            
+            //Do nothing    
         }
 
         public override void ChooseInitialInfrastructure(out uint settlementLocation, out uint roadEndLocation)
         {
-            if (this.firstInstruction != null)
-            {
-                settlementLocation = this.firstInstruction.SettlementLocation;
-                roadEndLocation = this.firstInstruction.RoadEndLocation;
-                this.firstInstruction = null;
-            }
-            else
-            {
-                settlementLocation = this.secondInstruction.SettlementLocation;
-                roadEndLocation = this.secondInstruction.RoadEndLocation;
-            }
+            var placeInfrastructureAction = (PlaceInfrastructureAction)this.actions.Dequeue();
+            settlementLocation = placeInfrastructureAction.SettlementLocation;
+            roadEndLocation = placeInfrastructureAction.RoadEndLocation;
         }
 
         public override uint ChooseRobberLocation()

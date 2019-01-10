@@ -31,17 +31,16 @@ namespace SoC.Library.ScenarioTests
         private readonly List<PlayerSetupAction> firstRoundSetupActions = new List<PlayerSetupAction>(4);
         private readonly Dictionary<Type, GameEvent> lastEventsByType = new Dictionary<Type, GameEvent>();
         public readonly Dictionary<string, IPlayer> playersByName = new Dictionary<string, IPlayer>();
-        private readonly Queue<Instruction> playerInstructions = new Queue<Instruction>();
+        private readonly Queue<PlaceInfrastructureAction> playerSetupActions = new Queue<PlaceInfrastructureAction>();
         private readonly ScenarioPlayerPool playerPool = new ScenarioPlayerPool();
         private readonly List<BasePlayerTurn> playerTurns = new List<BasePlayerTurn>();
         private readonly List<PlayerSetupAction> secondRoundSetupActions = new List<PlayerSetupAction>(4);
         private readonly Dictionary<string, ScenarioComputerPlayer> computerPlayersByName = new Dictionary<string, ScenarioComputerPlayer>();
         private readonly List<IPlayer> players = new List<IPlayer>(4);
         private readonly List<BasePlayerTurn> turns = new List<BasePlayerTurn>();
-        private GameRound currentGameRound = null;
         private int currentIndex = 0;
         private TurnToken currentToken;
-        private BasePlayerTurn currentTurn = new GameSetupTurn();
+        private BasePlayerTurn currentTurn;
         private Dictionary<GameEventTypes, Delegate> eventHandlersByGameEventType;
         private GameBoard gameBoard;
         private List<GameRound> gameRounds = new List<GameRound>();
@@ -93,23 +92,12 @@ namespace SoC.Library.ScenarioTests
 
             this.eventHandlersByGameEventType = eventHandlersByGameEventType;
 
-            // Flatten game rounds into queue of turns. Fill out the dice rolls
-            for (var gameRoundIndex = 0; gameRoundIndex < this.gameRounds.Count; gameRoundIndex++)
+            // Ensure that there is enough dice rolls
+            var fillDiceRollCount = (4 - (this.turns.Count % 4)) + 1;
+            while (fillDiceRollCount > 0)
             {
-                var gameRound = this.gameRounds[gameRoundIndex];
-                
-                for (var playerTurnIndex = 0; playerTurnIndex < gameRound.PlayerTurns.Count; playerTurnIndex++)
-                {
-                    var playerTurn = gameRound.PlayerTurns[playerTurnIndex];
-                    this.turns.Add(playerTurn);
-                }
-
-                if (gameRoundIndex == this.gameRounds.Count - 1)
-                {
-                    var fillDiceRollCount = (4 - gameRound.PlayerTurns.Count) + 1;
-                    while (fillDiceRollCount-- > 0)
-                        this.NumberGenerator.AddTwoDiceRoll(1, 1);
-                }
+                this.NumberGenerator.AddTwoDiceRoll(1, 1);
+                fillDiceRollCount--;
             }
 
             return this;
@@ -126,10 +114,10 @@ namespace SoC.Library.ScenarioTests
             this.localGameController.LaunchGame();
             this.localGameController.StartGameSetup();
 
-            var placeInfrastructureInstruction = (PlaceInfrastructureInstruction)this.playerInstructions.Dequeue();
+            var placeInfrastructureInstruction = this.playerSetupActions.Dequeue();
             this.localGameController.ContinueGameSetup(placeInfrastructureInstruction.SettlementLocation, placeInfrastructureInstruction.RoadEndLocation);
 
-            placeInfrastructureInstruction = (PlaceInfrastructureInstruction)this.playerInstructions.Dequeue();
+            placeInfrastructureInstruction = this.playerSetupActions.Dequeue();
             this.localGameController.CompleteGameSetup(placeInfrastructureInstruction.SettlementLocation, placeInfrastructureInstruction.RoadEndLocation);
 
             for (var index = 0; index < this.turns.Count; index += 4)
@@ -164,27 +152,27 @@ namespace SoC.Library.ScenarioTests
             return this.players.Where(p => p.Id == playerId).First();
         }
 
+        private int roundNumber = 1;
+        private int turnNumber = 1;
         public BasePlayerTurn PlayerTurn(string playerName, uint dice1, uint dice2)
         {
             this.NumberGenerator.AddTwoDiceRoll(dice1, dice2);
 
-            if (this.currentGameRound == null || this.currentGameRound.IsComplete)
-            {
-                this.currentGameRound = new GameRound();
-                this.gameRounds.Add(this.currentGameRound);
-            }
-
-            var roundNumber = this.gameRounds.Count();
-            var turnNumber = this.currentGameRound.PlayerTurns.Count;
-
             BasePlayerTurn playerTurn;
             var player = this.playersByName[playerName];
             if (player.IsComputer)
-                playerTurn = new ComputerPlayerTurn(player, dice1, dice2, this, roundNumber, turnNumber);
+                playerTurn = new ComputerPlayerTurn(player, dice1, dice2, this, this.roundNumber, this.turnNumber);
             else
-                playerTurn = new HumanPlayerTurn(player, dice1, dice2, this, roundNumber, turnNumber);
+                playerTurn = new HumanPlayerTurn(player, dice1, dice2, this, this.roundNumber, this.turnNumber);
 
-            this.currentGameRound.Add(playerTurn);
+            this.turns.Add(playerTurn);
+
+            this.turnNumber++;
+            if (this.turnNumber > 4)
+            {
+                this.roundNumber++;
+                this.turnNumber = 1;
+            }
 
             return playerTurn;
         }
@@ -209,17 +197,16 @@ namespace SoC.Library.ScenarioTests
 
         public LocalGameControllerScenarioRunner WithPlayerSetup(string playerName, uint firstSettlementLocation, uint firstRoadEndLocation, uint secondSettlementLocation, uint secondRoadEndLocation)
         {
-            if (playerName == this.players[0].Name)
+            var player = this.playersByName[playerName];
+            if (player is ScenarioComputerPlayer scenarioComputerPlayer)
             {
-                this.playerInstructions.Enqueue(new PlaceInfrastructureInstruction(this.players[0].Id, firstSettlementLocation, firstRoadEndLocation));
-                this.playerInstructions.Enqueue(new PlaceInfrastructureInstruction(this.players[0].Id, secondSettlementLocation, secondRoadEndLocation));
+                scenarioComputerPlayer.AddSetupInstructions(firstSettlementLocation, firstRoadEndLocation);
+                scenarioComputerPlayer.AddSetupInstructions(secondSettlementLocation, secondRoadEndLocation);
             }
-            else
+            else 
             {
-                var computerPlayer = this.computerPlayersByName[playerName];
-                computerPlayer.AddSetupInstructions(
-                    new PlaceInfrastructureInstruction(computerPlayer.Id, firstSettlementLocation, firstRoadEndLocation),
-                    new PlaceInfrastructureInstruction(computerPlayer.Id, secondSettlementLocation, secondRoadEndLocation));
+                this.playerSetupActions.Enqueue(new PlaceInfrastructureAction(firstSettlementLocation, firstRoadEndLocation));
+                this.playerSetupActions.Enqueue(new PlaceInfrastructureAction(secondSettlementLocation, secondRoadEndLocation));
             }
 
             return this;

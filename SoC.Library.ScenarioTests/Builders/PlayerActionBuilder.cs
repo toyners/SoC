@@ -8,7 +8,7 @@ namespace Jabberwocky.SoC.Library.ScenarioTests.Builders
 {
     internal class PlayerActionBuilder
     {
-        private BasePlayerTurn playerTurn;
+        private readonly BasePlayerTurn playerTurn;
         public List<RunnerAction> runnerActions = new List<RunnerAction>();
         public List<ComputerPlayerAction> playerActions = new List<ComputerPlayerAction>();
         public PlayerActionBuilder(BasePlayerTurn playerTurn)

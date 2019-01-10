@@ -1,13 +1,13 @@
 ﻿
 namespace SoC.Library.ScenarioTests
 {
-    using System;
+    using Jabberwocky.SoC.Library.GameActions;
 
-    public class PlaceInfrastructureInstruction : Instruction
+    public class PlaceInfrastructureAction : ComputerPlayerAction
     {
         public readonly uint SettlementLocation;
         public readonly uint RoadEndLocation;
-        public PlaceInfrastructureInstruction(Guid playerId, uint settlementLocation, uint roadEndLocation) : base(playerId)
+        public PlaceInfrastructureAction(uint settlementLocation, uint roadEndLocation) : base(0)
         {
             this.SettlementLocation = settlementLocation;
             this.RoadEndLocation = roadEndLocation;
