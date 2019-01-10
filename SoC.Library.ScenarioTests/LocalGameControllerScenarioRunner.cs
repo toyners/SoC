@@ -42,7 +42,6 @@ namespace SoC.Library.ScenarioTests
         private TurnToken currentToken;
         private BasePlayerTurn currentTurn = new GameSetupTurn();
         private Dictionary<GameEventTypes, Delegate> eventHandlersByGameEventType;
-        private int expectedEventCount;
         private GameBoard gameBoard;
         private LocalGameController localGameController = null;
         #endregion 
@@ -64,7 +63,7 @@ namespace SoC.Library.ScenarioTests
             return new LocalGameControllerScenarioRunner();
         }
 
-        public LocalGameControllerScenarioRunner Build(Dictionary<GameEventTypes, Delegate> eventHandlersByGameEventType = null, int expectedEventCount = -1)
+        public LocalGameControllerScenarioRunner Build(Dictionary<GameEventTypes, Delegate> eventHandlersByGameEventType = null)
         {
             if (this.gameBoard == null)
                 this.gameBoard = new GameBoard(BoardSizes.Standard);
@@ -91,7 +90,6 @@ namespace SoC.Library.ScenarioTests
             this.localGameController.StartOpponentTurnEvent = (Guid g) => { this.StartOfTurn(); };
 
             this.eventHandlersByGameEventType = eventHandlersByGameEventType;
-            this.expectedEventCount = expectedEventCount;
 
             // Flatten game rounds into queue of turns. Fill out the dice rolls
             for (var gameRoundIndex = 0; gameRoundIndex < this.gameRounds.Count; gameRoundIndex++)
@@ -113,13 +111,6 @@ namespace SoC.Library.ScenarioTests
             }
 
             return this;
-        }
-
-        private ScenarioPlayer expectedPlayer = null;
-        public ScenarioPlayer ExpectPlayer(string mainPlayerName)
-        {
-            var expectedPlayer = new ScenarioPlayer(mainPlayerName, this);
-            return expectedPlayer;
         }
 
         public IPlayer GetPlayerFromName(string playerName)
@@ -260,12 +251,6 @@ namespace SoC.Library.ScenarioTests
             return this;
         }
 
-        public LocalGameControllerScenarioRunner VictoryPoints(uint expectedVictoryPoints)
-        {
-            this.expectedPlayer.VictoryPoints(expectedVictoryPoints);
-            return this;
-        }
-
         internal void AddDevelopmentCardToBuy(DevelopmentCardTypes developmentCardType)
         {
             DevelopmentCard developmentCard = null;
@@ -296,7 +281,7 @@ namespace SoC.Library.ScenarioTests
         {
             IPlayer player = isComputerPlayer
                 ? new ScenarioComputerPlayer(name, this.NumberGenerator) as IPlayer
-                : new ScenarioPlayer(name, null) as IPlayer;
+                : new ScenarioPlayer(name) as IPlayer;
 
             this.players.Add(player);
             this.playersByName.Add(name, player);
@@ -324,7 +309,7 @@ namespace SoC.Library.ScenarioTests
             {
                 var previousTurn = this.turns[previousIndex];
                 previousTurn.VerifyEvents();
-                previousTurn.VerifyState();
+                previousTurn.VerifyState(this.playersByName);
             }
 
             this.currentIndex++;
@@ -343,8 +328,6 @@ namespace SoC.Library.ScenarioTests
                 }
             }
         }
-
-        private List<GameRound> rounds = new List<GameRound>();
         #endregion
     }
 

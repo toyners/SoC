@@ -1,31 +1,31 @@
 ﻿using System.Collections.Generic;
 using Jabberwocky.SoC.Library;
+using Jabberwocky.SoC.Library.Interfaces;
+using NUnit.Framework;
 
 namespace SoC.Library.ScenarioTests
 {
     internal class ScenarioPlayer : Player
     {
-        private LocalGameControllerScenarioRunner runner;
-        internal ScenarioPlayer(string name, LocalGameControllerScenarioRunner runner) : base(name)
+        internal ScenarioPlayer(string name) : base(name)
         {
-            this.runner = runner;
-        }
-
-        internal ScenarioPlayer VictoryPoints(uint victoryPoints)
-        {
-            //this.VictoryPoints = victoryPoints;
-            return this;
-        }
-
-        internal LocalGameControllerScenarioRunner End()
-        {
-            return this.runner;
         }
     }
 
     internal class PlayerSnapshot
     {
-        public List<DevelopmentCardTypes> heldCards;
-        public uint VictoryPoints;
+        public List<DevelopmentCardTypes> HeldCards;
+        public uint? VictoryPoints;
+
+        public void Verify(IPlayer player)
+        {
+            if (this.HeldCards != null)
+            {
+                Assert.AreEqual(this.HeldCards.Count, player.HeldCards.Count, $"Player '{player.Name}' state does not match: Expected {this.HeldCards.Count} held cards, found {player.HeldCards.Count} held cards");
+            }
+
+            if (this.VictoryPoints.HasValue)
+                Assert.AreEqual(this.VictoryPoints.Value, player.VictoryPoints, $"Player '{player.Name}' state does not match: Expected {this.VictoryPoints.Value} vp, found {player.VictoryPoints} vp");
+        }
     }
 }

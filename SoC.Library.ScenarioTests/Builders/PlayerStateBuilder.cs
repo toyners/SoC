@@ -7,16 +7,22 @@ namespace SoC.Library.ScenarioTests.Builders
 {
     internal class PlayerStateBuilder
     {
+        #region Fields
         private readonly BasePlayerTurn playerTurn;
-        public PlayerSnapshot playerSnapshot = new PlayerSnapshot();
-        public PlayerStateBuilder(BasePlayerTurn playerTurn)
+        private readonly PlayerSnapshot playerSnapshot;
+        #endregion
+
+        #region Construction
+        public PlayerStateBuilder(BasePlayerTurn playerTurn, PlayerSnapshot playerSnapshot)
         {
             this.playerTurn = playerTurn;
+            this.playerSnapshot = playerSnapshot;
         }
+        #endregion
 
         public PlayerStateBuilder HeldCards(params DevelopmentCardTypes[] cards)
         {
-            this.playerSnapshot.heldCards = new List<DevelopmentCardTypes>(cards);
+            this.playerSnapshot.HeldCards = new List<DevelopmentCardTypes>(cards);
             return this;
         }
 
@@ -25,7 +31,7 @@ namespace SoC.Library.ScenarioTests.Builders
             return this.playerTurn;
         }
 
-        public PlayerStateBuilder VictoryPoints(int victoryPoints)
+        public PlayerStateBuilder VictoryPoints(uint victoryPoints)
         {
             this.playerSnapshot.VictoryPoints = victoryPoints;
             return this;

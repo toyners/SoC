@@ -15,15 +15,16 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
 {
     internal abstract class BasePlayerTurn
     {
-        protected PlayerActionBuilder actionBuilder;
-        private ExpectedEventsBuilder expectedEventsBuilder;
-        private readonly Dictionary<string, PlayerStateBuilder> playerStatesByName = new Dictionary<string, PlayerStateBuilder>();
-
+        #region Fields
         public readonly IPlayer player;
         protected readonly LocalGameControllerScenarioRunner runner;
-
+        protected PlayerActionBuilder actionBuilder;
         private readonly List<GameEvent> actualEvents = new List<GameEvent>();
+        private readonly Dictionary<string, PlayerSnapshot> playerSnapshotsByName = new Dictionary<string, PlayerSnapshot>();
+        private ExpectedEventsBuilder expectedEventsBuilder;
+        #endregion
 
+        #region Construction
         public BasePlayerTurn(IPlayer player, uint dice1, uint dice2, LocalGameControllerScenarioRunner runner)
         {
             this.runner = runner;
@@ -31,6 +32,7 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
             this.Dice1 = dice1;
             this.Dice2 = dice2;
         }
+        #endregion
 
         #region Properties
         public Guid PlayerId { get { return this.player.Id; } }
@@ -38,22 +40,11 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
         public uint Dice2 { get; }
         #endregion
 
+        #region Methods
         public PlayerActionBuilder Actions()
         {
             this.actionBuilder = new PlayerActionBuilder(this);
             return this.actionBuilder;
-        }
-
-        public void VerifyState()
-        {
-            /*if (this.expectedPlayerState == null)
-                return;
-
-            if (player.HeldCards.Count != this.expectedPlayerState.playerSnapshot.heldCards.Count)
-                Assert.Fail("Held cards count is not same");
-
-            if (player.HeldCards[0].Type != this.expectedPlayerState.playerSnapshot.heldCards[0])
-                Assert.Fail("Held card does not match");*/
         }
 
         public LocalGameControllerScenarioRunner EndTurn()
@@ -122,10 +113,10 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
 
         public PlayerStateBuilder State(string playerName)
         {
-            var playerState = new PlayerStateBuilder(this);
-            this.playerStatesByName.Add(playerName, playerState);
+            var playerSnapshot = new PlayerSnapshot();
+            this.playerSnapshotsByName.Add(playerName, playerSnapshot);
 
-            return playerState;
+            return new PlayerStateBuilder(this, playerSnapshot);
         }
 
         internal List<GameEvent> GetExpectedEvents()
@@ -193,6 +184,13 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
             }
         }
 
+        internal void VerifyState(Dictionary<string, IPlayer> playersByName)
+        {
+            foreach (var kv in this.playerSnapshotsByName)
+                kv.Value.Verify(playersByName[kv.Key]);
+            
+        }
+
         protected void AddDevelopmentCard(Guid playerId, DevelopmentCardTypes developmentCardType)
         {
             this.runner.AddDevelopmentCardToBuy(developmentCardType);
@@ -230,5 +228,6 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
 
             return message;
         }
+        #endregion
     }
 }
