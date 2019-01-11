@@ -64,7 +64,5 @@ namespace Jabberwocky.SoC.Library.ScenarioTests.Builders
             this.playerActions.Add(new ScenarioPlayKnightCardAction(hexLocation, selectedPlayerName, expectedSingleResource));
             return this;
         }
-
-        
     }
 }

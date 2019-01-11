@@ -77,29 +77,11 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
                 if (action is ScenarioPlayKnightCardAction scenarioPlayKnightCardAction)
                 {
                     this.ResolveScenarioPlayKnightCardAction(scenarioPlayKnightCardAction,
-                        (location, playerId) =>
-                        {
-                            var knightCard = (KnightDevelopmentCard)this.player.HeldCards.Where(c => c.Type == DevelopmentCardTypes.Knight).First();
-                            localGameController.UseKnightCard(turnToken, knightCard, location, playerId);
-                        });
-                    /*var selectedPlayer = this.runner.GetPlayerFromName(scenarioPlayKnightCardAction.SelectedPlayerName);
-
-                    var randomNumber = int.MinValue;
-                    switch (scenarioPlayKnightCardAction.ExpectedSingleResource)
+                    (location, playerId) =>
                     {
-                        case ResourceTypes.Ore:
-                        randomNumber = selectedPlayer.Resources.BrickCount +
-                        selectedPlayer.Resources.GrainCount +
-                        selectedPlayer.Resources.LumberCount;
-                        break;
-                        default: throw new Exception($"Resource type '{scenarioPlayKnightCardAction.ExpectedSingleResource}' not handled");
-                    }
-
-                    this.runner.NumberGenerator.AddRandomNumber(randomNumber);
-
-                    var knightCard = (KnightDevelopmentCard)this.player.HeldCards.Where(c => c.Type == DevelopmentCardTypes.Knight).First();
-                    localGameController.UseKnightCard(turnToken, knightCard, scenarioPlayKnightCardAction.NewRobberHex,
-                        selectedPlayer.Id);*/
+                        var knightCard = (KnightDevelopmentCard)this.player.HeldCards.Where(c => c.Type == DevelopmentCardTypes.Knight).First();
+                        localGameController.UseKnightCard(turnToken, knightCard, location, playerId);
+                    });
                 }
                 else if (action is PlayKnightCardAction playKnightCardAction)
                 {
@@ -213,11 +195,18 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
             var randomNumber = int.MinValue;
             switch (scenarioPlayKnightCardAction.ExpectedSingleResource)
             {
+                case ResourceTypes.Grain:
+                {
+                    randomNumber = selectedPlayer.Resources.BrickCount;
+                    break;
+                }
                 case ResourceTypes.Ore:
-                randomNumber = selectedPlayer.Resources.BrickCount +
-                selectedPlayer.Resources.GrainCount +
-                selectedPlayer.Resources.LumberCount;
-                break;
+                {
+                    randomNumber = selectedPlayer.Resources.BrickCount +
+                    selectedPlayer.Resources.GrainCount +
+                    selectedPlayer.Resources.LumberCount;
+                    break;
+                }
                 default: throw new Exception($"Resource type '{scenarioPlayKnightCardAction.ExpectedSingleResource}' not handled");
             }
 

@@ -24,25 +24,10 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
                 if (this.actionBuilder.playerActions[index] is ScenarioPlayKnightCardAction scenarioPlayKnightCardAction)
                 {
                     this.ResolveScenarioPlayKnightCardAction(scenarioPlayKnightCardAction,
-                        (location, playerId) =>
-                        {
-                            this.actionBuilder.playerActions[index] = new PlayKnightCardAction(location, playerId);
-                        });
-                    /*var selectedPlayer = this.runner.GetPlayerFromName(scenarioPlayKnightCardAction.SelectedPlayerName);
-
-                    var randomNumber = int.MinValue;
-                    switch (scenarioPlayKnightCardAction.ExpectedSingleResource)
+                    (location, playerId) =>
                     {
-                        case ResourceTypes.Ore:
-                            randomNumber = selectedPlayer.Resources.BrickCount +
-                            selectedPlayer.Resources.GrainCount +
-                            selectedPlayer.Resources.LumberCount;
-                            break;
-                        default: throw new Exception($"Resource type '{scenarioPlayKnightCardAction.ExpectedSingleResource}' not handled");
-                    }
-
-                    this.runner.NumberGenerator.AddRandomNumber(randomNumber);
-                    this.actionBuilder.playerActions[index] = new PlayKnightCardAction(scenarioPlayKnightCardAction.NewRobberHex, selectedPlayer.Id);*/
+                        this.actionBuilder.playerActions[index] = new PlayKnightCardAction(location, playerId);
+                    });
                 }
             }
 
