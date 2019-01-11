@@ -74,7 +74,11 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
 
             foreach (var action in this.actionBuilder.playerActions)
             {
-                if (action is ScenarioPlayKnightCardAction scenarioPlayKnightCardAction)
+                if (action is PlaceRobberAction placeRobberAction)
+                {
+                    localGameController.SetRobberHex(placeRobberAction.NewRobberHex);
+                }
+                else if (action is ScenarioPlayKnightCardAction scenarioPlayKnightCardAction)
                 {
                     this.ResolveScenarioPlayKnightCardAction(scenarioPlayKnightCardAction,
                     (location, playerId) =>
