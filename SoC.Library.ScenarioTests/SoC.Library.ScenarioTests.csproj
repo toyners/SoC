@@ -54,6 +54,7 @@
     <Compile Include="GameRound.cs" />
     <Compile Include="ScenarioActions\PlaceRobberAction.cs" />
     <Compile Include="ScenarioEvents\ScenarioRobberEvent.cs" />
+    <Compile Include="ScenarioEvents\ScenarioRobbingChoicesEvent.cs" />
     <Compile Include="ScenarioGameBoardWithNoResourcesCollected.cs" />
     <Compile Include="PlayerTurn\ComputerPlayerTurn.cs" />
     <Compile Include="PlayerTurn\HumanPlayerTurn.cs" />

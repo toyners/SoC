@@ -498,15 +498,6 @@ namespace SoC.Library.ScenarioTests
                     .EndTurn()
                 .PlayerTurn(FirstOpponentName, 3, 3).EndTurn()
                 .Build()
-                    /*.BuyDevelopmentCardEvent(MainPlayerName, DevelopmentCardTypes.Knight)
-                    .BuyDevelopmentCardEvent(MainPlayerName, DevelopmentCardTypes.Knight)
-                    .BuyDevelopmentCardEvent(MainPlayerName, DevelopmentCardTypes.Knight)
-                    .BuyDevelopmentCardEvent(MainPlayerName, DevelopmentCardTypes.Knight)
-                    .PlayKnightCardEvent(MainPlayerName)
-                    .PlayKnightCardEvent(MainPlayerName)
-                    .PlayKnightCardEvent(MainPlayerName)
-                    .LargestArmyChangedEvent(MainPlayerName, null, EventPositions.Last)
-                    .PlayKnightCardEvent(MainPlayerName)*/
                 .Run();
         }
 
@@ -830,14 +821,13 @@ namespace SoC.Library.ScenarioTests
                         .Actions()
                             .PlaceRobber(3, FirstOpponentName, ResourceTypes.Grain)
                             .End()
-                        .Events()  
+                        .Events()
+                            .RobbingChoicesEvent(new Tuple<string, int>(FirstOpponentName, 2))
                             .End()
                         .EndTurn()
                 .Build()
                 .Run();
         }
-
-        
 
         private LocalGameControllerScenarioRunner CreateStandardLocalGameControllerScenarioRunner()
         {

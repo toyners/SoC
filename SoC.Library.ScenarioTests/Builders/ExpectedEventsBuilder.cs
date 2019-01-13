@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Jabberwocky.SoC.Library.GameEvents;
 using Jabberwocky.SoC.Library.Interfaces;
 using SoC.Library.ScenarioTests;
@@ -136,11 +137,17 @@ namespace Jabberwocky.SoC.Library.ScenarioTests.Builders
             return this;
         }
 
-
         public ExpectedEventsBuilder RobberEvent(int expectedResourcesToDropCount)
         {
             var expectedRobberEvent = new ScenarioRobberEvent(expectedResourcesToDropCount);
             this.expectedEvents.Add(expectedRobberEvent);
+            return this;
+        }
+
+        public ExpectedEventsBuilder RobbingChoicesEvent(params Tuple<string, int>[] playerResourceCount)
+        {
+            var robbingChoices = playerResourceCount.ToDictionary(t => t.Item1, t => t.Item2);
+            this.expectedEvents.Add(new ScenarioRobbingChoicesEvent(robbingChoices));
             return this;
         }
 
