@@ -1534,7 +1534,7 @@ namespace Jabberwocky.SoC.Library
         {
             if (this.GamePhase == GamePhases.GameOver)
             {
-                ErrorRaisedEvent?.Invoke(new ErrorDetails("Cannot build settlement. Game is over."));
+                this.ErrorRaisedEvent?.Invoke(new ErrorDetails("Cannot build settlement. Game is over."));
                 return false;
             }
 

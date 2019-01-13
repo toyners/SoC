@@ -52,6 +52,8 @@
     <Compile Include="Builders\PlayerActionBuilder.cs" />
     <Compile Include="Builders\PlayerStateBuilder.cs" />
     <Compile Include="GameRound.cs" />
+    <Compile Include="ScenarioActions\PlaceRobberAction.cs" />
+    <Compile Include="ScenarioEvents\ScenarioRobberEvent.cs" />
     <Compile Include="ScenarioGameBoardWithNoResourcesCollected.cs" />
     <Compile Include="PlayerTurn\ComputerPlayerTurn.cs" />
     <Compile Include="PlayerTurn\HumanPlayerTurn.cs" />
@@ -68,7 +70,7 @@
     <Compile Include="ScenarioPlayerPool.cs" />
     <Compile Include="PlaceInfrastructureInstruction.cs" />
     <Compile Include="PlayerTurn\BasePlayerTurn.cs" />
-    <Compile Include="ScenarioPlayKnightCardAction.cs" />
+    <Compile Include="ScenarioActions\ScenarioPlayKnightCardAction.cs" />
     <Compile Include="ScenarioTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

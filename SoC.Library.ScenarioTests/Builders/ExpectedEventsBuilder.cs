@@ -4,6 +4,7 @@ using Jabberwocky.SoC.Library.GameEvents;
 using Jabberwocky.SoC.Library.Interfaces;
 using SoC.Library.ScenarioTests;
 using SoC.Library.ScenarioTests.PlayerTurn;
+using SoC.Library.ScenarioTests.ScenarioEvents;
 
 namespace Jabberwocky.SoC.Library.ScenarioTests.Builders
 {
@@ -132,6 +133,14 @@ namespace Jabberwocky.SoC.Library.ScenarioTests.Builders
             var resourceTransaction = new ResourceTransaction(this.playerTurn.PlayerId, givingPlayer.Id, expectedResources);
             var expectedResourceTransactonEvent = new ResourceTransactionEvent(this.playerTurn.PlayerId, resourceTransaction);
             this.expectedEvents.Add(expectedResourceTransactonEvent);
+            return this;
+        }
+
+
+        public ExpectedEventsBuilder RobberEvent(int expectedResourcesToDropCount)
+        {
+            var expectedRobberEvent = new ScenarioRobberEvent(expectedResourcesToDropCount);
+            this.expectedEvents.Add(expectedRobberEvent);
             return this;
         }
 

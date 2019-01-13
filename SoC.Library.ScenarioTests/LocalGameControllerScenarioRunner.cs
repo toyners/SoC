@@ -8,6 +8,7 @@ using Jabberwocky.SoC.Library.GameEvents;
 using Jabberwocky.SoC.Library.Interfaces;
 using NUnit.Framework;
 using SoC.Library.ScenarioTests.PlayerTurn;
+using SoC.Library.ScenarioTests.ScenarioEvents;
 
 namespace SoC.Library.ScenarioTests
 {
@@ -86,6 +87,10 @@ namespace SoC.Library.ScenarioTests
             this.localGameController.ResourcesTransferredEvent = (ResourceTransactionList list) =>
             {
                 this.currentTurn?.AddEvent(new ResourceTransactionEvent(this.players[0].Id, list));
+            };
+            this.localGameController.RobberEvent = (int r) =>
+            {
+                this.currentTurn.AddEvent(new ScenarioRobberEvent(r));
             };
             this.localGameController.StartPlayerTurnEvent = (TurnToken t) => { this.currentToken = t; this.StartOfTurn(); };
             this.localGameController.StartOpponentTurnEvent = (Guid g) => { this.StartOfTurn(); };

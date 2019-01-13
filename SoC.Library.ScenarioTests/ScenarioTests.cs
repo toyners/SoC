@@ -800,7 +800,27 @@ namespace SoC.Library.ScenarioTests
         }
 
         [Test]
-        public void Sceanrio_PlayerRollsSeven()
+        [TestCase(8)]
+        [TestCase(9)]
+        [TestCase(10)]
+        public void Sceanrio_PlayerRollsSevenWithOverSevenResources(int resourcesCount)
+        {
+            var mainPlayerResources = ResourceClutch.OneBrick * resourcesCount;
+            var expectedResourcesToDrop = mainPlayerResources.Count / 2;
+            this.CreateStandardLocalGameControllerScenarioRunner()
+                .WithNoResourceCollection()
+                .WithStartingResourcesForPlayer(MainPlayerName, mainPlayerResources)
+                    .PlayerTurn(MainPlayerName, 3, 4)
+                        .Events()
+                            .RobberEvent(expectedResourcesToDrop)
+                            .End()
+                        .EndTurn()
+                .Build()
+                .Run();
+        }
+
+        [Test]
+        public void Sceanrio_PlayerRollsSevenAndPicksSingleResourceFromComputerPlayer()
         {
             var firstOpponentResources = ResourceClutch.OneGrain;
             this.CreateStandardLocalGameControllerScenarioRunner()
@@ -810,25 +830,14 @@ namespace SoC.Library.ScenarioTests
                         .Actions()
                             .PlaceRobber(3, FirstOpponentName, ResourceTypes.Grain)
                             .End()
-                        .EndTurn()
-                .Build()
-                .Run();
-        }
-
-        [Test]
-        public void Sceanrio_PlayerRollsSevenWithOverSevenResources()
-        {
-            var mainPlayerResources = ResourceClutch.OneOfEach;
-            this.CreateStandardLocalGameControllerScenarioRunner()
-                .WithNoResourceCollection()
-                .WithStartingResourcesForPlayer(MainPlayerName, mainPlayerResources)
-                    .PlayerTurn(MainPlayerName, 3, 4)
-                        .Events()
+                        .Events()  
                             .End()
                         .EndTurn()
                 .Build()
                 .Run();
         }
+
+        
 
         private LocalGameControllerScenarioRunner CreateStandardLocalGameControllerScenarioRunner()
         {

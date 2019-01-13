@@ -2,7 +2,7 @@
 using Jabberwocky.SoC.Library.Enums;
 using Jabberwocky.SoC.Library.GameActions;
 
-namespace SoC.Library.ScenarioTests
+namespace SoC.Library.ScenarioTests.ScenarioActions
 {
     internal class ScenarioPlayKnightCardAction : ComputerPlayerAction
     {
@@ -18,11 +18,5 @@ namespace SoC.Library.ScenarioTests
         }
     }
 
-    internal class PlaceRobberAction : ScenarioPlayKnightCardAction
-    {
-        public PlaceRobberAction(uint newRobberHex, string selectedPlayerName, ResourceTypes expectedSingleResource) 
-            : base(newRobberHex, selectedPlayerName, expectedSingleResource)
-        {
-        }
-    }
+    
 }

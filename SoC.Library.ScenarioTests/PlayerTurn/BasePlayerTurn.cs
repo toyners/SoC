@@ -10,6 +10,8 @@ using Jabberwocky.SoC.Library.Interfaces;
 using Jabberwocky.SoC.Library.ScenarioTests.Builders;
 using NUnit.Framework;
 using SoC.Library.ScenarioTests.Builders;
+using SoC.Library.ScenarioTests.ScenarioActions;
+using SoC.Library.ScenarioTests.ScenarioEvents;
 
 namespace SoC.Library.ScenarioTests.PlayerTurn
 {
@@ -76,6 +78,9 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
             {
                 if (action is PlaceRobberAction placeRobberAction)
                 {
+                    if (!placeRobberAction.ResourcesToDrop.Equals(ResourceClutch.Zero))
+                        localGameController.DropResources(placeRobberAction.ResourcesToDrop);
+
                     localGameController.SetRobberHex(placeRobberAction.NewRobberHex);
                 }
                 else if (action is ScenarioPlayKnightCardAction scenarioPlayKnightCardAction)
@@ -247,6 +252,10 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
             else if (gameEvent is RoadSegmentBuiltEvent roadSegmentBuildEvent)
             {
                 message += $"From {roadSegmentBuildEvent.StartLocation} to {roadSegmentBuildEvent.EndLocation}";
+            }
+            else if (gameEvent is ScenarioRobberEvent scenarioRobberEvent)
+            {
+                message += $"Expected resource-to-drop count is {scenarioRobberEvent.ExpectedResourcesToDropCount}";
             }
 
             return message;

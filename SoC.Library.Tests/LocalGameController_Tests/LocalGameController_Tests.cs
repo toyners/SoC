@@ -613,28 +613,6 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
         [Test]
         [Category("LocalGameController")]
         [Category("Main Player Turn")]
-        public void StartOfMainPlayerTurn_DiceRollReceived()
-        {
-            // Arrange
-            MockDice mockDice = null;
-            Guid id = Guid.Empty;
-            MockPlayer player;
-            MockComputerPlayer firstComputerPlayer, secondComputerPlayer, thirdComputerPlayer;
-            var localGameController = this.CreateLocalGameControllerAndCompleteGameSetup(out mockDice, out player, out firstComputerPlayer, out secondComputerPlayer, out thirdComputerPlayer);
-            mockDice.AddSequence(new[] { 8u });
-
-            // Act
-            var diceRoll = 0u;
-            localGameController.DiceRollEvent = (Guid g, uint d1, uint d2) => { diceRoll = d1 + d2; };
-            localGameController.StartGamePlay();
-
-            // Assert
-            diceRoll.ShouldBe(8u);
-        }
-
-        [Test]
-        [Category("LocalGameController")]
-        [Category("Main Player Turn")]
         public void StartOfMainPlayerTurn_DoesNotRollSeven_ReceiveCollectedResourcesDetails()
         {
             var testInstances = LocalGameControllerTestCreator.CreateTestInstances();

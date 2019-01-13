@@ -4,6 +4,7 @@ using Jabberwocky.SoC.Library.Enums;
 using Jabberwocky.SoC.Library.GameActions;
 using SoC.Library.ScenarioTests;
 using SoC.Library.ScenarioTests.PlayerTurn;
+using SoC.Library.ScenarioTests.ScenarioActions;
 
 namespace Jabberwocky.SoC.Library.ScenarioTests.Builders
 {
@@ -49,7 +50,13 @@ namespace Jabberwocky.SoC.Library.ScenarioTests.Builders
 
         public PlayerActionBuilder PlaceRobber(uint hexLocation, string selectedPlayerName, ResourceTypes expectedSingleResource)
         {
-            this.playerActions.Add(new PlaceRobberAction(hexLocation, selectedPlayerName, expectedSingleResource));
+            this.playerActions.Add(new PlaceRobberAction(hexLocation, selectedPlayerName, expectedSingleResource, ResourceClutch.Zero));
+            return this;
+        }
+
+        public PlayerActionBuilder PlaceRobber(uint hexLocation, string selectedPlayerName, ResourceTypes expectedSingleResource, ResourceClutch resourcesToDrop)
+        {
+            this.playerActions.Add(new PlaceRobberAction(hexLocation, selectedPlayerName, expectedSingleResource, resourcesToDrop));
             return this;
         }
 

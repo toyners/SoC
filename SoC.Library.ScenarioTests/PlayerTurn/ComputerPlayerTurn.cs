@@ -2,6 +2,7 @@
 using Jabberwocky.SoC.Library;
 using Jabberwocky.SoC.Library.GameActions;
 using Jabberwocky.SoC.Library.Interfaces;
+using SoC.Library.ScenarioTests.ScenarioActions;
 
 namespace SoC.Library.ScenarioTests.PlayerTurn
 {
