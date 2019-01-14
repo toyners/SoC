@@ -794,24 +794,24 @@ namespace SoC.Library.ScenarioTests
         [TestCase(8)]
         [TestCase(9)]
         [TestCase(10)]
-        public void Sceanrio_PlayerRollsSevenWithOverSevenResources(int resourcesCount)
+        public void Scenario_PlayerRollsSevenWithOverSevenResources(int resourcesCount)
         {
             var mainPlayerResources = ResourceClutch.OneBrick * resourcesCount;
             var expectedResourcesToDrop = mainPlayerResources.Count / 2;
             this.CreateStandardLocalGameControllerScenarioRunner()
                 .WithNoResourceCollection()
                 .WithStartingResourcesForPlayer(MainPlayerName, mainPlayerResources)
-                    .PlayerTurn(MainPlayerName, 3, 4)
-                        .Events()
-                            .RobberEvent(expectedResourcesToDrop)
-                            .End()
-                        .EndTurn()
+                .PlayerTurn(MainPlayerName, 3, 4)
+                    .Events()
+                        .RobberEvent(expectedResourcesToDrop)
+                        .End()
+                    .EndTurn()
                 .Build()
                 .Run();
         }
 
         [Test]
-        public void Sceanrio_PlayerRollsSevenAndPicksSingleResourceFromComputerPlayer()
+        public void Scenario_PlayerRollsSevenAndPicksSingleResourceFromComputerPlayer()
         {
             var firstOpponentResources = ResourceClutch.OneGrain * 2;
 
@@ -825,7 +825,24 @@ namespace SoC.Library.ScenarioTests
                         .Events()
                             .RobbingChoicesEvent(new Tuple<string, int>(FirstOpponentName, 2))
                             .End()
-                        .EndTurn()
+                    .EndTurn()
+                .Build()
+                .Run();
+        }
+
+        [Test]
+        public void Scenario_PlayerRollsSevenAndSelectedHexHasNoPlayers()
+        {
+            this.CreateStandardLocalGameControllerScenarioRunner()
+                .WithNoResourceCollection()
+                .PlayerTurn(MainPlayerName, 3, 4)
+                    .Actions()
+                        .PlaceRobber(3)
+                        .End()
+                    .Events()
+                        .RobbingChoicesEvent()
+                        .End()
+                    .EndTurn()
                 .Build()
                 .Run();
         }

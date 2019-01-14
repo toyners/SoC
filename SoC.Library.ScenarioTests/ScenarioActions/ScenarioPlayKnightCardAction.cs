@@ -8,15 +8,13 @@ namespace SoC.Library.ScenarioTests.ScenarioActions
     {
         public readonly uint NewRobberHex;
         public readonly string SelectedPlayerName;
-        public readonly ResourceTypes ExpectedSingleResource;
+        public readonly ResourceTypes? ExpectedSingleResource;
 
-        public ScenarioPlayKnightCardAction(uint newRobberHex, string selectedPlayerName, ResourceTypes expectedSingleResource) : base(ComputerPlayerActionTypes.PlayKnightCard)
+        public ScenarioPlayKnightCardAction(uint newRobberHex, string selectedPlayerName, ResourceTypes? expectedSingleResource) : base(ComputerPlayerActionTypes.PlayKnightCard)
         {
             this.NewRobberHex = newRobberHex;
             this.SelectedPlayerName = selectedPlayerName;
             this.ExpectedSingleResource = expectedSingleResource;
         }
     }
-
-    
 }

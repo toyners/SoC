@@ -48,6 +48,12 @@ namespace Jabberwocky.SoC.Library.ScenarioTests.Builders
             return this;
         }
 
+        public PlayerActionBuilder PlaceRobber(uint hexLocation)
+        {
+            this.playerActions.Add(new PlaceRobberAction(hexLocation, null, null, ResourceClutch.Zero));
+            return this;
+        }
+
         public PlayerActionBuilder PlaceRobber(uint hexLocation, string selectedPlayerName, ResourceTypes expectedSingleResource)
         {
             this.playerActions.Add(new PlaceRobberAction(hexLocation, selectedPlayerName, expectedSingleResource, ResourceClutch.Zero));
