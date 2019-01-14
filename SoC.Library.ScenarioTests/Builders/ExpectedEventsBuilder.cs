@@ -77,6 +77,12 @@ namespace Jabberwocky.SoC.Library.ScenarioTests.Builders
             return this.playerTurn;
         }
 
+        public ExpectedEventsBuilder ErrorMessageEvent(string expectedErrorMessage)
+        {
+            var expectedErrorMessageEvent = new ScenarioErrorMessageEvent(expectedErrorMessage);
+            return this;
+        }
+
         public ExpectedEventsBuilder GameWinEvent(uint expectedVictoryPoints)
         {
             this.expectedEvents.Add(new GameWinEvent(this.playerTurn.PlayerId, expectedVictoryPoints));
@@ -146,7 +152,7 @@ namespace Jabberwocky.SoC.Library.ScenarioTests.Builders
 
         public ExpectedEventsBuilder RobbingChoicesEvent(params Tuple<string, int>[] playerResourceCount)
         {
-            var robbingChoices = playerResourceCount.ToDictionary(t => this.playersByName[t.Item1].Id, t => t.Item2);
+            var robbingChoices = playerResourceCount != null ? playerResourceCount.ToDictionary(t => this.playersByName[t.Item1].Id, t => t.Item2) : null;
             this.expectedEvents.Add(new ScenarioRobbingChoicesEvent(robbingChoices));
             return this;
         }

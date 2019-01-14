@@ -19,6 +19,13 @@ namespace SoC.Library.ScenarioTests.ScenarioEvents
                 return false;
 
             var other = (ScenarioRobbingChoicesEvent)obj;
+
+            if (this.RobbingChoices == null && other.RobbingChoices == null)
+                return true;
+
+            if (this.RobbingChoices == null || other.RobbingChoices == null)
+                return false;
+
             var otherSortedKeys = new List<Guid>(other.RobbingChoices.Keys);
             otherSortedKeys.Sort();
 

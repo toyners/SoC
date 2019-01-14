@@ -811,7 +811,26 @@ namespace SoC.Library.ScenarioTests
         }
 
         [Test]
-        public void Scenario_PlayerRollsSevenAndPicksSingleResourceFromComputerPlayer()
+        public void Scenario_PlayerRollsSevenButDoesNotPassBackResources()
+        {
+            var mainPlayerResources = ResourceClutch.OneBrick * 8;
+            this.CreateStandardLocalGameControllerScenarioRunner()
+                .WithNoResourceCollection()
+                .WithStartingResourcesForPlayer(MainPlayerName, mainPlayerResources)
+                .PlayerTurn(MainPlayerName, 3, 4)
+                    .Actions()
+                        .PlaceRobber(3)
+                        .End()
+                    .Events()
+                        .ErrorMessageEvent("Cannot set robber location until expected resources (4) have been dropped via call to DropResources method.")
+                        .End()
+                    .EndTurn()
+                .Build()
+                .Run();
+        }
+
+        [Test]
+        public void Scenario_PlayerRollsSevenAndSelectedHexHasSingleComputerPlayer()
         {
             var firstOpponentResources = ResourceClutch.OneGrain * 2;
 
@@ -830,6 +849,10 @@ namespace SoC.Library.ScenarioTests
                 .Run();
         }
 
+        /// <summary>
+        /// The robber hex set by the player has no adjacent settlements so the returned robbing choices
+        /// is null.
+        /// </summary>
         [Test]
         public void Scenario_PlayerRollsSevenAndSelectedHexHasNoPlayers()
         {
@@ -837,10 +860,30 @@ namespace SoC.Library.ScenarioTests
                 .WithNoResourceCollection()
                 .PlayerTurn(MainPlayerName, 3, 4)
                     .Actions()
-                        .PlaceRobber(3)
+                        .PlaceRobber(4)
                         .End()
                     .Events()
-                        .RobbingChoicesEvent()
+                        .RobbingChoicesEvent(null)
+                        .End()
+                    .EndTurn()
+                .Build()
+                .Run();
+        }
+
+        /// <summary>
+        /// The robber hex set by the player has only player settlements so the returned robbing choices is null.
+        /// </summary>
+        [Test]
+        public void Scenario_PlayerRollsSevenAndSelectedHexHasPlayerOnly()
+        {
+            this.CreateStandardLocalGameControllerScenarioRunner()
+                .WithNoResourceCollection()
+                .PlayerTurn(MainPlayerName, 3, 4)
+                    .Actions()
+                        .PlaceRobber(2)
+                        .End()
+                    .Events()
+                        .RobbingChoicesEvent(null)
                         .End()
                     .EndTurn()
                 .Build()

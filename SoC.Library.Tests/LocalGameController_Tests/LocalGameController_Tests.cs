@@ -748,32 +748,6 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
             player.WoolCount.ShouldBe(0);
         }
 
-        [Test]
-        [Category("LocalGameController")]
-        [Category("Main Player Turn")]
-        public void StartOfMainPlayerTurn_SetRobberOnHexWithOneOpponent_ReturnListOfOpponentsAndResourceCardsToChooseFrom()
-        {
-            // Arrange
-            var testInstances = LocalGameControllerTestCreator.CreateTestInstances(new MockGameBoardWithNoResourcesCollected());
-            var localGameController = testInstances.LocalGameController;
-            var firstOpponent = testInstances.FirstOpponent;
-            LocalGameControllerTestSetup.LaunchGameAndCompleteSetup(localGameController);
-            testInstances.Dice.AddSequence(new[] { 7u });
-
-            firstOpponent.AddResources(new ResourceClutch(1, 1, 1, 1, 1));
-
-            // Act
-            Dictionary<Guid, Int32> robberingChoices = null;
-            localGameController.RobbingChoicesEvent = (Dictionary<Guid, Int32> rc) => { robberingChoices = rc; };
-            localGameController.StartGamePlay();
-            localGameController.SetRobberHex(FirstSettlementOneLocation);
-
-            // Assert
-            robberingChoices.ShouldNotBeNull();
-            robberingChoices.Count.ShouldBe(1);
-            robberingChoices.ShouldContainKeyAndValue(firstOpponent.Id, 5);
-        }
-
         // NOTE: Moving this to the Scenario Tests
         [Test]
         [Category("LocalGameController")]
@@ -905,32 +879,6 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
         }
 
         /// <summary>
-        /// The robber hex set by the player has no adjacent settlements so the returned robbing choices
-        /// is null.
-        /// </summary>
-        [Test]
-        [Category("LocalGameController")]
-        [Category("Main Player Turn")]
-        public void StartOfMainPlayerTurn_RobberLocationHasNoSettlements_ReturnedRobbingChoicesIsNull()
-        {
-            // Arrange
-            MockDice mockDice = null;
-            MockPlayer player;
-            MockComputerPlayer firstOpponent, secondOpponent, thirdOpponent;
-            var localGameController = this.CreateLocalGameControllerAndCompleteGameSetup(out mockDice, out player, out firstOpponent, out secondOpponent, out thirdOpponent);
-            mockDice.AddSequence(new[] { 7u });
-
-            // Act
-            Dictionary<Guid, Int32> robbingChoices = new Dictionary<Guid, Int32>();
-            localGameController.RobbingChoicesEvent = (Dictionary<Guid, Int32> rc) => { robbingChoices = rc; };
-            localGameController.StartGamePlay();
-            localGameController.SetRobberHex(0u);
-
-            // Assert
-            robbingChoices.ShouldBeNull();
-        }
-
-        /// <summary>
         /// The robber hex set by the player has no adjacent settlements so calling the CallingChooseResourceFromOpponent 
         /// method raises an error
         /// </summary>
@@ -957,31 +905,6 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
             // Assert
             errorDetails.ShouldNotBeNull();
             errorDetails.Message.ShouldBe("Cannot call 'ChooseResourceFromOpponent' when no robbing choices are available.");
-        }
-
-        /// <summary>
-        /// The robber hex set by the player has only player settlements so the returned robbing choices is null.
-        /// </summary>
-        [Test]
-        [Category("LocalGameController")]
-        [Category("Main Player Turn")]
-        public void StartOfMainPlayerTurn_RobberLocationHasOnlyPlayerSettlements_ReturnedRobbingChoicesIsNull()
-        {
-            // Arrange
-            MockDice mockDice = null;
-            MockPlayer player;
-            MockComputerPlayer firstOpponent, secondOpponent, thirdOpponent;
-            var localGameController = this.CreateLocalGameControllerAndCompleteGameSetup(out mockDice, out player, out firstOpponent, out secondOpponent, out thirdOpponent);
-            mockDice.AddSequence(new[] { 7u });
-
-            // Act
-            Dictionary<Guid, Int32> robbingChoices = new Dictionary<Guid, Int32>();
-            localGameController.RobbingChoicesEvent = (Dictionary<Guid, Int32> rc) => { robbingChoices = rc; };
-            localGameController.StartGamePlay();
-            localGameController.SetRobberHex(2u);
-
-            // Assert
-            robbingChoices.ShouldBeNull();
         }
 
         /// <summary>
