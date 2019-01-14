@@ -257,6 +257,11 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
             {
                 message += $"Expected resource-to-drop count is {scenarioRobberEvent.ExpectedResourcesToDropCount}";
             }
+            else if (gameEvent is ScenarioRobbingChoicesEvent scenarioRobbingChoicesEvent)
+            {
+                foreach (var robbingChoicePair in scenarioRobbingChoicesEvent.RobbingChoices)
+                    message += $"Containing '{this.runner.GetPlayer(robbingChoicePair.Key).Name}' with {robbingChoicePair.Value} resources\r\n";
+            }
 
             return message;
         }

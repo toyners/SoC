@@ -7,8 +7,8 @@ namespace SoC.Library.ScenarioTests.ScenarioEvents
 {
     internal class ScenarioRobbingChoicesEvent : GameEvent
     {
-        public readonly Dictionary<string, int> RobbingChoices;
-        public ScenarioRobbingChoicesEvent(Dictionary<string, int> robbingChoices) : base(Guid.Empty)
+        public readonly Dictionary<Guid, int> RobbingChoices;
+        public ScenarioRobbingChoicesEvent(Dictionary<Guid, int> robbingChoices) : base(Guid.Empty)
         {
             this.RobbingChoices = robbingChoices;
         }
@@ -19,10 +19,10 @@ namespace SoC.Library.ScenarioTests.ScenarioEvents
                 return false;
 
             var other = (ScenarioRobbingChoicesEvent)obj;
-            var otherSortedKeys = new List<string>(other.RobbingChoices.Keys);
+            var otherSortedKeys = new List<Guid>(other.RobbingChoices.Keys);
             otherSortedKeys.Sort();
 
-            var sortedKeys = new List<string>(this.RobbingChoices.Keys);
+            var sortedKeys = new List<Guid>(this.RobbingChoices.Keys);
             sortedKeys.Sort();
 
             if (sortedKeys.Count != otherSortedKeys.Count)

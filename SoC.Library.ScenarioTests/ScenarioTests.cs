@@ -813,7 +813,8 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void Sceanrio_PlayerRollsSevenAndPicksSingleResourceFromComputerPlayer()
         {
-            var firstOpponentResources = ResourceClutch.OneGrain;
+            var firstOpponentResources = ResourceClutch.OneGrain * 2;
+
             this.CreateStandardLocalGameControllerScenarioRunner()
                 .WithNoResourceCollection()
                 .WithStartingResourcesForPlayer(FirstOpponentName, firstOpponentResources)

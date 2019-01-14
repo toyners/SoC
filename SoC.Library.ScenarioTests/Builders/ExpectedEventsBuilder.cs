@@ -146,7 +146,7 @@ namespace Jabberwocky.SoC.Library.ScenarioTests.Builders
 
         public ExpectedEventsBuilder RobbingChoicesEvent(params Tuple<string, int>[] playerResourceCount)
         {
-            var robbingChoices = playerResourceCount.ToDictionary(t => t.Item1, t => t.Item2);
+            var robbingChoices = playerResourceCount.ToDictionary(t => this.playersByName[t.Item1].Id, t => t.Item2);
             this.expectedEvents.Add(new ScenarioRobbingChoicesEvent(robbingChoices));
             return this;
         }

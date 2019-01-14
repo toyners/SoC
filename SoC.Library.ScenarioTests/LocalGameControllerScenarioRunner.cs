@@ -92,6 +92,10 @@ namespace SoC.Library.ScenarioTests
             {
                 this.currentTurn.AddEvent(new ScenarioRobberEvent(r));
             };
+            this.localGameController.RobbingChoicesEvent = robbingChoices =>
+            {
+                this.currentTurn.AddEvent(new ScenarioRobbingChoicesEvent(robbingChoices));
+            };
             this.localGameController.StartPlayerTurnEvent = (TurnToken t) => { this.currentToken = t; this.StartOfTurn(); };
             this.localGameController.StartOpponentTurnEvent = (Guid g) => { this.StartOfTurn(); };
 
