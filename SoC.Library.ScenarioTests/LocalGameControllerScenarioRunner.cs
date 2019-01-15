@@ -80,7 +80,13 @@ namespace SoC.Library.ScenarioTests
                 this.currentTurn?.AddEvent(new DiceRollEvent(playerId, dice1, dice2));
             };
             this.localGameController.DevelopmentCardPurchasedEvent = (DevelopmentCard c) => { this.currentTurn?.AddEvent(new BuyDevelopmentCardEvent(this.players[0].Id)); };
-            this.localGameController.ErrorRaisedEvent = (ErrorDetails e) => { Assert.Fail(e.Message); };
+            this.localGameController.ErrorRaisedEvent = (ErrorDetails e) => 
+            {
+                if (this.currentTurn.TreatErrorsAsEvents)
+                    this.currentTurn.AddEvent(new ScenarioErrorMessageEvent(e.Message));
+                else
+                    Assert.Fail(e.Message);
+            };
             this.localGameController.GameEvents = this.GameEventsHandler;
             this.localGameController.LargestArmyEvent = (newPlayerId, previousPlayerId) => { this.currentTurn?.AddEvent(new LargestArmyChangedEvent(newPlayerId, previousPlayerId)); };
             this.localGameController.PlayKnightCardEvent = (PlayKnightCardEvent p) => { this.currentTurn?.AddEvent(p); };
@@ -170,9 +176,9 @@ namespace SoC.Library.ScenarioTests
             BasePlayerTurn playerTurn;
             var player = this.playersByName[playerName];
             if (player.IsComputer)
-                playerTurn = new ComputerPlayerTurn(player, dice1, dice2, this, this.roundNumber, this.turnNumber);
+                playerTurn = new ComputerPlayerTurn(player, this, this.roundNumber, this.turnNumber);
             else
-                playerTurn = new HumanPlayerTurn(player, dice1, dice2, this, this.roundNumber, this.turnNumber);
+                playerTurn = new HumanPlayerTurn(player, this, this.roundNumber, this.turnNumber);
 
             this.turns.Add(playerTurn);
 

@@ -80,6 +80,7 @@ namespace Jabberwocky.SoC.Library.ScenarioTests.Builders
         public ExpectedEventsBuilder ErrorMessageEvent(string expectedErrorMessage)
         {
             var expectedErrorMessageEvent = new ScenarioErrorMessageEvent(expectedErrorMessage);
+            this.expectedEvents.Add(expectedErrorMessageEvent);
             return this;
         }
 

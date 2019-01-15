@@ -29,12 +29,10 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
         #endregion
 
         #region Construction
-        public BasePlayerTurn(IPlayer player, uint dice1, uint dice2, LocalGameControllerScenarioRunner runner, int roundNumber, int turnNumber)
+        public BasePlayerTurn(IPlayer player, LocalGameControllerScenarioRunner runner, int roundNumber, int turnNumber)
         {
             this.runner = runner;
             this.player = player;
-            this.Dice1 = dice1;
-            this.Dice2 = dice2;
             this.roundNumber = roundNumber;
             this.turnNumber = turnNumber;
         }
@@ -42,8 +40,15 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
 
         #region Properties
         public Guid PlayerId { get { return this.player.Id; } }
-        public uint Dice1 { get; }
-        public uint Dice2 { get; }
+        public bool TreatErrorsAsEvents
+        {
+            get
+            {
+                return this.expectedEventsBuilder != null &&
+                    this.expectedEventsBuilder.expectedEvents != null &&
+                    this.expectedEventsBuilder.expectedEvents.FirstOrDefault(e => e.GetType() == typeof(ScenarioErrorMessageEvent)) != null;
+            }
+        }
         #endregion
 
         #region Methods
@@ -120,26 +125,10 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
             return new PlayerStateBuilder(this, playerSnapshot);
         }
 
-        internal List<GameEvent> GetExpectedEvents()
-        {
-            if (this.expectedEventsBuilder != null)
-                return this.expectedEventsBuilder.expectedEvents;
-
-            return null;
-        }
-
         internal List<RunnerAction> GetRunnerActions()
         {
             if (this.actionBuilder != null)
                 return this.actionBuilder.runnerActions;
-
-            return null;
-        }
-
-        internal List<Type> GetUnwantedEventTypes()
-        {
-            if (this.expectedEventsBuilder != null)
-                return this.expectedEventsBuilder.unwantedEventTypes;
 
             return null;
         }
