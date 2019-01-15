@@ -44,7 +44,6 @@ namespace SoC.Library.ScenarioTests
         private BasePlayerTurn currentTurn;
         private Dictionary<GameEventTypes, Delegate> eventHandlersByGameEventType;
         private GameBoard gameBoard;
-        private List<GameRound> gameRounds = new List<GameRound>();
         private LocalGameController localGameController = null;
         #endregion 
 
@@ -145,10 +144,9 @@ namespace SoC.Library.ScenarioTests
                 while (workingIndex <= endIndex && workingIndex < this.turns.Count)
                 {
                     var playerTurn = this.turns[workingIndex];
-                    var runnerActions = playerTurn.GetRunnerActions();
-                    if (runnerActions != null && runnerActions.Count > 0)
+                    if (playerTurn.RunnerActions != null && playerTurn.RunnerActions.Count > 0)
                     {
-                        foreach (var runnerAction in runnerActions)
+                        foreach (var runnerAction in playerTurn.RunnerActions)
                             this.AddDevelopmentCardToBuy(((InsertDevelopmentCardAction)runnerAction).DevelopmentCardType);
                     }
 

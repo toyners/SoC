@@ -51,7 +51,6 @@
     <Compile Include="Builders\ExpectedEventsBuilder.cs" />
     <Compile Include="Builders\PlayerActionBuilder.cs" />
     <Compile Include="Builders\PlayerStateBuilder.cs" />
-    <Compile Include="GameRound.cs" />
     <Compile Include="ScenarioActions\PlaceRobberAction.cs" />
     <Compile Include="ScenarioEvents\ScenarioErrorMessageEvent.cs" />
     <Compile Include="ScenarioEvents\ScenarioRobberEvent.cs" />

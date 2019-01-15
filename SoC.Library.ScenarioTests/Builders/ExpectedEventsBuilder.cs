@@ -12,10 +12,10 @@ namespace Jabberwocky.SoC.Library.ScenarioTests.Builders
     internal class ExpectedEventsBuilder
     {
         #region Fields
-        private BasePlayerTurn playerTurn;
-        public List<GameEvent> expectedEvents = new List<GameEvent>();
-        public List<Type> unwantedEventTypes = new List<Type>();
+        private readonly BasePlayerTurn playerTurn;
         private Dictionary<string, IPlayer> playersByName;
+        private readonly IList<GameEvent> expectedEvents = new List<GameEvent>();
+        private readonly IList<Type> unwantedEventTypes = new List<Type>();
         #endregion
 
         #region Construction
@@ -74,6 +74,8 @@ namespace Jabberwocky.SoC.Library.ScenarioTests.Builders
 
         public BasePlayerTurn End()
         {
+            this.playerTurn.ExpectedEvents = this.expectedEvents;
+            this.playerTurn.UnwantedEventTypes = this.unwantedEventTypes;
             return this.playerTurn;
         }
 

@@ -700,31 +700,6 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
         [Test]
         [Category("LocalGameController")]
         [Category("Main Player Turn")]
-        public void StartOfMainPlayerTurn_RollsSevenButDoesNotPassBackExpectedResources_MeaningfulErrorIsReceived()
-        {
-            // Arrange
-            var testInstances = LocalGameControllerTestCreator.CreateTestInstances(new MockGameBoardWithNoResourcesCollected());
-            var localGameController = testInstances.LocalGameController;
-            var player = testInstances.MainPlayer;
-            LocalGameControllerTestSetup.LaunchGameAndCompleteSetup(localGameController);
-            testInstances.Dice.AddSequence(new[] { 7u });
-
-            player.AddResources(new ResourceClutch(8, 0, 0, 0, 0));
-
-            // Act
-            ErrorDetails errorDetails = null;
-            localGameController.ErrorRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
-            localGameController.StartGamePlay();
-            localGameController.SetRobberHex(0u);
-
-            // Assert
-            errorDetails.ShouldNotBeNull();
-            errorDetails.Message.ShouldBe("Cannot set robber location until expected resources (4) have been dropped via call to DropResources method.");
-        }
-
-        [Test]
-        [Category("LocalGameController")]
-        [Category("Main Player Turn")]
         public void StartOfMainPlayerTurn_RollsSevenAndPassBackExpectedResources_PlayerResourcesUpdatedCorrectly()
         {
             // Arrange

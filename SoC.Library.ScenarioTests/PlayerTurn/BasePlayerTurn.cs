@@ -20,10 +20,8 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
         #region Fields
         public readonly IPlayer player;
         protected readonly LocalGameControllerScenarioRunner runner;
-        protected PlayerActionBuilder actionBuilder;
         private readonly List<GameEvent> actualEvents = new List<GameEvent>();
         private readonly Dictionary<string, PlayerSnapshot> playerSnapshotsByName = new Dictionary<string, PlayerSnapshot>();
-        private ExpectedEventsBuilder expectedEventsBuilder;
         private readonly int roundNumber;
         private readonly int turnNumber;
         #endregion
@@ -39,23 +37,25 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
         #endregion
 
         #region Properties
+        public IList<GameEvent> ExpectedEvents { private get; set; }
+        public IList<ComputerPlayerAction> PlayerActions { protected get; set; }
         public Guid PlayerId { get { return this.player.Id; } }
+        public IList<RunnerAction> RunnerActions { get; set; }
         public bool TreatErrorsAsEvents
         {
             get
             {
-                return this.expectedEventsBuilder != null &&
-                    this.expectedEventsBuilder.expectedEvents != null &&
-                    this.expectedEventsBuilder.expectedEvents.FirstOrDefault(e => e.GetType() == typeof(ScenarioErrorMessageEvent)) != null;
+                return this.ExpectedEvents != null &&
+                    this.ExpectedEvents.FirstOrDefault(e => e.GetType() == typeof(ScenarioErrorMessageEvent)) != null;
             }
         }
+        public IList<Type> UnwantedEventTypes { private get; set; }
         #endregion
 
         #region Methods
         public PlayerActionBuilder Actions()
         {
-            this.actionBuilder = new PlayerActionBuilder(this);
-            return this.actionBuilder;
+            return new PlayerActionBuilder(this);
         }
 
         public LocalGameControllerScenarioRunner EndTurn()
@@ -65,8 +65,7 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
 
         public ExpectedEventsBuilder Events()
         {
-            this.expectedEventsBuilder = new ExpectedEventsBuilder(this, this.runner.playersByName);
-            return this.expectedEventsBuilder;
+            return new ExpectedEventsBuilder(this, this.runner.playersByName);
         }
 
         public void AddEvent(GameEvent gameEvent)
@@ -76,10 +75,10 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
 
         public virtual void ResolveActions(TurnToken turnToken, LocalGameController localGameController)
         {
-            if (this.actionBuilder == null)
+            if (this.PlayerActions == null || this.PlayerActions.Count == 0)
                 return;
 
-            foreach (var action in this.actionBuilder.playerActions)
+            foreach (var action in this.PlayerActions)
             {
                 if (action is PlaceRobberAction placeRobberAction)
                 {
@@ -125,14 +124,6 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
             return new PlayerStateBuilder(this, playerSnapshot);
         }
 
-        internal List<RunnerAction> GetRunnerActions()
-        {
-            if (this.actionBuilder != null)
-                return this.actionBuilder.runnerActions;
-
-            return null;
-        }
-
         internal void AddEvents(List<GameEvent> gameEvents)
         {
             this.actualEvents.AddRange(gameEvents);
@@ -140,23 +131,18 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
 
         internal void VerifyEvents()
         {
-            if (this.expectedEventsBuilder == null)
-                return;
-
-            var unwantedEventTypes = this.expectedEventsBuilder.unwantedEventTypes;
-            if (unwantedEventTypes != null && unwantedEventTypes.Count > 0)
+            if (this.UnwantedEventTypes != null && this.UnwantedEventTypes.Count > 0)
             {
-                var unwantedEvents = this.actualEvents.Where(e => unwantedEventTypes.Contains(e.GetType())).ToList();
+                var unwantedEvents = this.actualEvents.Where(e => this.UnwantedEventTypes.Contains(e.GetType())).ToList();
                 if (unwantedEvents.Count > 0)
                     Assert.Fail($"{unwantedEvents.Count} events of unwanted type {unwantedEvents[0].GetType()} found.\r\nFirst event:\r\n{this.GetEventDetails(unwantedEvents[0])}");
             }
 
-            var expectedEvents = this.expectedEventsBuilder.expectedEvents;
-            if (expectedEvents == null)
+            if (this.ExpectedEvents == null || this.ExpectedEvents.Count == 0)
                 return;
 
             var actualEventIndex = 0;
-            foreach (var expectedEvent in expectedEvents)
+            foreach (var expectedEvent in this.ExpectedEvents)
             {
                 var foundEvent = false;
                 while (actualEventIndex < this.actualEvents.Count)

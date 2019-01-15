@@ -17,22 +17,22 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
 
         public override void ResolveActions(TurnToken turnToken, LocalGameController localGameController)
         {
-            if (this.actionBuilder == null)
+            if (this.PlayerActions == null || this.PlayerActions.Count == 0)
                 return;
 
-            for (var index = 0; index < this.actionBuilder.playerActions.Count; index++)
+            for (var index = 0; index < this.PlayerActions.Count; index++)
             {
-                if (this.actionBuilder.playerActions[index] is ScenarioPlayKnightCardAction scenarioPlayKnightCardAction)
+                if (this.PlayerActions[index] is ScenarioPlayKnightCardAction scenarioPlayKnightCardAction)
                 {
                     this.ResolveScenarioPlayKnightCardAction(scenarioPlayKnightCardAction,
                     (location, playerId) =>
                     {
-                        this.actionBuilder.playerActions[index] = new PlayKnightCardAction(location, playerId);
+                        this.PlayerActions[index] = new PlayKnightCardAction(location, playerId);
                     });
                 }
             }
 
-            this.computerPlayer.AddActions(this.actionBuilder.playerActions);
+            this.computerPlayer.AddActions(this.PlayerActions);
         }
     }
 }
