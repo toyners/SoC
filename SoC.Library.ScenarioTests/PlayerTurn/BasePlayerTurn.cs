@@ -80,7 +80,7 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
 
             foreach (var action in this.PlayerActions)
             {
-                if (action is PlaceRobberAction placeRobberAction)
+                if (action is ScenarioPlaceRobberAction placeRobberAction)
                 {
                     if (!placeRobberAction.ResourcesToDrop.Equals(ResourceClutch.Zero))
                         localGameController.DropResources(placeRobberAction.ResourcesToDrop);

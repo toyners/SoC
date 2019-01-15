@@ -613,28 +613,6 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
         [Test]
         [Category("LocalGameController")]
         [Category("Main Player Turn")]
-        public void StartOfMainPlayerTurn_DoesNotRollSeven_ReceiveCollectedResourcesDetails()
-        {
-            var testInstances = LocalGameControllerTestCreator.CreateTestInstances();
-            var localGameController = testInstances.LocalGameController;
-            LocalGameControllerTestSetup.LaunchGameAndCompleteSetup(localGameController);
-            testInstances.Dice.AddSequence(new uint[] { 11 });
-            var playerId = testInstances.MainPlayer.Id;
-            var firstOpponentId = testInstances.FirstOpponent.Id;
-
-            List<GameEvent> gameEvents = null;
-            localGameController.GameEvents = (List<GameEvent> g) => { gameEvents = g; };
-            localGameController.StartGamePlay();
-
-            gameEvents.ShouldContainItems(
-                new ResourcesCollectedEvent(firstOpponentId, new[] { new ResourceCollection(FirstSettlementOneLocation, ResourceClutch.OneLumber) }),
-                new ResourcesCollectedEvent(testInstances.ThirdOpponent.Id, new[] { new ResourceCollection(ThirdSettlementOneLocation, ResourceClutch.OneGrain), new ResourceCollection(ThirdSettlementTwoLocation, ResourceClutch.OneGrain) })
-            );
-        }
-
-        [Test]
-        [Category("LocalGameController")]
-        [Category("Main Player Turn")]
         public void StartOfMainPlayerTurn_RollsSevenReceiveResourceCardLossesForComputerPlayers()
         {
             // Arrange

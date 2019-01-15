@@ -833,17 +833,17 @@ namespace SoC.Library.ScenarioTests
         public void Scenario_PlayerRollsSevenAndSelectedHexHasSingleComputerPlayer()
         {
             var firstOpponentResources = ResourceClutch.OneGrain * 2;
-
+        
             this.CreateStandardLocalGameControllerScenarioRunner()
                 .WithNoResourceCollection()
                 .WithStartingResourcesForPlayer(FirstOpponentName, firstOpponentResources)
-                    .PlayerTurn(MainPlayerName, 3, 4)
-                        .Actions()
-                            .PlaceRobber(3, FirstOpponentName, ResourceTypes.Grain)
-                            .End()
-                        .Events()
-                            .RobbingChoicesEvent(new Tuple<string, int>(FirstOpponentName, 2))
-                            .End()
+                .PlayerTurn(MainPlayerName, 3, 4)
+                    .Actions()
+                        .PlaceRobber(3, FirstOpponentName, ResourceTypes.Grain)
+                        .End()
+                    .Events()
+                        .RobbingChoicesEvent(new Tuple<string, int>(FirstOpponentName, 2))
+                        .End()
                     .EndTurn()
                 .Build()
                 .Run();
@@ -884,6 +884,32 @@ namespace SoC.Library.ScenarioTests
                         .End()
                     .Events()
                         .RobbingChoicesEvent(null)
+                        .End()
+                    .EndTurn()
+                .Build()
+                .Run();
+        }
+
+        [Test]
+        public void Scenario_PlayerRollsSevenAndGetsResourceFromSelectedComputerPlayer()
+        {
+            var firstOpponentResources = ResourceClutch.OneWool;
+            this.CreateStandardLocalGameControllerScenarioRunner()
+                .WithNoResourceCollection()
+                .WithStartingResourcesForPlayer(FirstOpponentName, firstOpponentResources)
+                .PlayerTurn(MainPlayerName, 3, 4)
+                    .Actions()
+                        .PlaceRobber(3)
+                        .ChooseResourceFromOpponent(FirstOpponentName, ResourceTypes.Wool)
+                        .End()
+                    .Events()
+                        .RobbingChoicesEvent(null)
+                        .End()
+                    .State(MainPlayerName)
+                        .Resources(ResourceClutch.OneWool)
+                        .End()
+                    .State(FirstOpponentName)
+                        .Resources(ResourceClutch.Zero)
                         .End()
                     .EndTurn()
                 .Build()
