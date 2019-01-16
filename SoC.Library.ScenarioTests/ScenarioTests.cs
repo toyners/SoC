@@ -917,6 +917,27 @@ namespace SoC.Library.ScenarioTests
                 .Run();
         }
 
+        [Test]
+        public void Scenario_PlayerRollsSevenAndSelectsInvalidOpponentGettingErrorMessage()
+        {
+            var firstOpponentResources = ResourceClutch.OneWool;
+            this.CreateStandardLocalGameControllerScenarioRunner()
+                .WithNoResourceCollection()
+                .WithStartingResourcesForPlayer(FirstOpponentName, firstOpponentResources)
+                .PlayerTurn(MainPlayerName, 3, 4)
+                    .Actions()
+                        .PlaceRobber(3)
+                        .ChooseResourceFromOpponent(SecondOpponentName, ResourceTypes.Wool)
+                        .End()
+                    .Events()
+                        .RobbingChoicesEvent(new Tuple<string, int>(FirstOpponentName, 1))
+                        .ErrorMessageEvent("Cannot pick resource card from invalid opponent.")
+                        .End()
+                    .EndTurn()
+                .Build()
+                .Run();
+        }
+
         private LocalGameControllerScenarioRunner CreateStandardLocalGameControllerScenarioRunner()
         {
             return LocalGameController()
