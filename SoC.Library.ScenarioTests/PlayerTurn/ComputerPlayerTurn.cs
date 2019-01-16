@@ -24,11 +24,9 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
             {
                 if (this.PlayerActions[index] is ScenarioPlayKnightCardAction scenarioPlayKnightCardAction)
                 {
-                    this.ResolveScenarioSelectResourceFromPlayerAction(scenarioPlayKnightCardAction,
-                    (playerId) =>
-                    {
-                        this.PlayerActions[index] = new PlayKnightCardAction(scenarioPlayKnightCardAction.NewRobberHex, playerId);
-                    });
+                    var selectedPlayer = this.runner.GetPlayerFromName(scenarioPlayKnightCardAction.SelectedPlayerName);
+                    this.SetupResourceSelectionOnPlayer(selectedPlayer, scenarioPlayKnightCardAction.ExpectedSingleResource);
+                    this.PlayerActions[index] = new PlayKnightCardAction(scenarioPlayKnightCardAction.NewRobberHex, selectedPlayer.Id);
                 }
             }
 

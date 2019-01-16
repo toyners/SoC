@@ -89,20 +89,16 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
                 }
                 else if (action is ScenarioPlayKnightCardAction scenarioPlayKnightCardAction)
                 {
-                    this.ResolveScenarioSelectResourceFromPlayerAction(scenarioPlayKnightCardAction,
-                    (playerId) =>
-                    {
-                        var knightCard = (KnightDevelopmentCard)this.player.HeldCards.Where(c => c.Type == DevelopmentCardTypes.Knight).First();
-                        localGameController.UseKnightCard(turnToken, knightCard, scenarioPlayKnightCardAction.NewRobberHex, playerId);
-                    });
+                    var selectedPlayer = this.runner.GetPlayerFromName(scenarioPlayKnightCardAction.SelectedPlayerName);
+                    this.SetupResourceSelectionOnPlayer(selectedPlayer, scenarioPlayKnightCardAction.ExpectedSingleResource);
+                    var knightCard = (KnightDevelopmentCard)this.player.HeldCards.Where(c => c.Type == DevelopmentCardTypes.Knight).First();
+                    localGameController.UseKnightCard(turnToken, knightCard, scenarioPlayKnightCardAction.NewRobberHex, selectedPlayer.Id);
                 }
                 else if (action is ScenarioSelectResourceFromPlayerAction scenarioSelectResourceFromPlayerAction)
                 {
-                    this.ResolveScenarioSelectResourceFromPlayerAction(scenarioSelectResourceFromPlayerAction,
-                    (playerId) => 
-                    {
-                        localGameController.ChooseResourceFromOpponent(playerId);
-                    });
+                    var selectedPlayer = this.runner.GetPlayerFromName(scenarioSelectResourceFromPlayerAction.SelectedPlayerName);
+                    this.SetupResourceSelectionOnPlayer(selectedPlayer, scenarioSelectResourceFromPlayerAction.ExpectedSingleResource);
+                    localGameController.ChooseResourceFromOpponent(selectedPlayer.Id);
                 }
                 else if (action is PlayKnightCardAction playKnightCardAction)
                 {
@@ -180,12 +176,10 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
             this.runner.AddDevelopmentCardToBuy(developmentCardType);
         }
 
-        protected void ResolveScenarioSelectResourceFromPlayerAction(ScenarioSelectResourceFromPlayerAction scenarioSelectResourceFromPlayerAction, Action<Guid> playCardAction)
+        protected void SetupResourceSelectionOnPlayer(IPlayer selectedPlayer, ResourceTypes expectedSingleResource)
         {
-            var selectedPlayer = this.runner.GetPlayerFromName(scenarioSelectResourceFromPlayerAction.SelectedPlayerName);
-
             var randomNumber = int.MinValue;
-            switch (scenarioSelectResourceFromPlayerAction.ExpectedSingleResource)
+            switch (expectedSingleResource)
             {
                 case ResourceTypes.Grain:
                 {
@@ -199,12 +193,10 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
                     selectedPlayer.Resources.LumberCount;
                     break;
                 }
-                default: throw new Exception($"Resource type '{scenarioSelectResourceFromPlayerAction.ExpectedSingleResource}' not handled");
+                default: throw new Exception($"Resource type '{expectedSingleResource}' not handled");
             }
 
             this.runner.NumberGenerator.AddRandomNumber(randomNumber);
-
-            playCardAction?.Invoke(selectedPlayer.Id);
         }
 
         private string GetEventDetails(GameEvent gameEvent)
