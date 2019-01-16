@@ -24,10 +24,10 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
             {
                 if (this.PlayerActions[index] is ScenarioPlayKnightCardAction scenarioPlayKnightCardAction)
                 {
-                    this.ResolveScenarioPlayKnightCardAction(scenarioPlayKnightCardAction,
-                    (location, playerId) =>
+                    this.ResolveScenarioSelectResourceFromPlayerAction(scenarioPlayKnightCardAction,
+                    (playerId) =>
                     {
-                        this.PlayerActions[index] = new PlayKnightCardAction(location, playerId);
+                        this.PlayerActions[index] = new PlayKnightCardAction(scenarioPlayKnightCardAction.NewRobberHex, playerId);
                     });
                 }
             }

@@ -1,15 +1,24 @@
 ﻿
 using Jabberwocky.SoC.Library;
+using Jabberwocky.SoC.Library.GameActions;
 
 namespace SoC.Library.ScenarioTests.ScenarioActions
 {
-    internal class ScenarioPlaceRobberAction : ScenarioPlayKnightCardAction
+    internal class ScenarioPlaceRobberAction : ComputerPlayerAction
     {
+        public readonly uint NewRobberHex;
         public readonly ResourceClutch ResourcesToDrop;
-        public ScenarioPlaceRobberAction(uint newRobberHex, string selectedPlayerName, ResourceTypes? expectedSingleResource, ResourceClutch resourcesToDrop)
-            : base(newRobberHex, selectedPlayerName, expectedSingleResource)
+
+        #region Construction
+        public ScenarioPlaceRobberAction(uint newRobberHex) : this(newRobberHex, ResourceClutch.Zero)
         {
+        }
+
+        public ScenarioPlaceRobberAction(uint newRobberHex, ResourceClutch resourcesToDrop) : base(0)
+        {
+            this.NewRobberHex = newRobberHex;
             this.ResourcesToDrop = resourcesToDrop;
         }
+        #endregion
     }
 }

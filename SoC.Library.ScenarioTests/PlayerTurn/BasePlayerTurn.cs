@@ -89,11 +89,19 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
                 }
                 else if (action is ScenarioPlayKnightCardAction scenarioPlayKnightCardAction)
                 {
-                    this.ResolveScenarioPlayKnightCardAction(scenarioPlayKnightCardAction,
-                    (location, playerId) =>
+                    this.ResolveScenarioSelectResourceFromPlayerAction(scenarioPlayKnightCardAction,
+                    (playerId) =>
                     {
                         var knightCard = (KnightDevelopmentCard)this.player.HeldCards.Where(c => c.Type == DevelopmentCardTypes.Knight).First();
-                        localGameController.UseKnightCard(turnToken, knightCard, location, playerId);
+                        localGameController.UseKnightCard(turnToken, knightCard, scenarioPlayKnightCardAction.NewRobberHex, playerId);
+                    });
+                }
+                else if (action is ScenarioSelectResourceFromPlayerAction scenarioSelectResourceFromPlayerAction)
+                {
+                    this.ResolveScenarioSelectResourceFromPlayerAction(scenarioSelectResourceFromPlayerAction,
+                    (playerId) => 
+                    {
+                        localGameController.ChooseResourceFromOpponent(playerId);
                     });
                 }
                 else if (action is PlayKnightCardAction playKnightCardAction)
@@ -172,12 +180,12 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
             this.runner.AddDevelopmentCardToBuy(developmentCardType);
         }
 
-        protected void ResolveScenarioPlayKnightCardAction(ScenarioPlayKnightCardAction scenarioPlayKnightCardAction, Action<uint, Guid> playCardAction)
+        protected void ResolveScenarioSelectResourceFromPlayerAction(ScenarioSelectResourceFromPlayerAction scenarioSelectResourceFromPlayerAction, Action<Guid> playCardAction)
         {
-            var selectedPlayer = this.runner.GetPlayerFromName(scenarioPlayKnightCardAction.SelectedPlayerName);
+            var selectedPlayer = this.runner.GetPlayerFromName(scenarioSelectResourceFromPlayerAction.SelectedPlayerName);
 
             var randomNumber = int.MinValue;
-            switch (scenarioPlayKnightCardAction.ExpectedSingleResource)
+            switch (scenarioSelectResourceFromPlayerAction.ExpectedSingleResource)
             {
                 case ResourceTypes.Grain:
                 {
@@ -191,12 +199,12 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
                     selectedPlayer.Resources.LumberCount;
                     break;
                 }
-                default: throw new Exception($"Resource type '{scenarioPlayKnightCardAction.ExpectedSingleResource}' not handled");
+                default: throw new Exception($"Resource type '{scenarioSelectResourceFromPlayerAction.ExpectedSingleResource}' not handled");
             }
 
             this.runner.NumberGenerator.AddRandomNumber(randomNumber);
 
-            playCardAction.Invoke(scenarioPlayKnightCardAction.NewRobberHex, selectedPlayer.Id);
+            playCardAction?.Invoke(selectedPlayer.Id);
         }
 
         private string GetEventDetails(GameEvent gameEvent)
@@ -234,8 +242,16 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
             }
             else if (gameEvent is ScenarioRobbingChoicesEvent scenarioRobbingChoicesEvent)
             {
-                foreach (var robbingChoicePair in scenarioRobbingChoicesEvent.RobbingChoices)
-                    message += $"Containing '{this.runner.GetPlayer(robbingChoicePair.Key).Name}' with {robbingChoicePair.Value} resources\r\n";
+                if (scenarioRobbingChoicesEvent.RobbingChoices != null)
+                {
+                    message += "With choices:\r\n";
+                    foreach (var robbingChoicePair in scenarioRobbingChoicesEvent.RobbingChoices)
+                        message += $"'{this.runner.GetPlayer(robbingChoicePair.Key).Name}' with {robbingChoicePair.Value} resources\r\n";
+                }
+                else
+                {
+                    message += "With no choices";
+                }
             }
 
             return message;
