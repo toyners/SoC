@@ -710,41 +710,6 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
             errorDetails.Message.ShouldBe("Cannot pick resource card from invalid opponent.");
         }
 
-        /// <summary>
-        /// Passing in the player id when choosing the resource from an opponent causes an error to be raised.
-        /// </summary>
-        [Test]
-        [Category("LocalGameController")]
-        [Category("Main Player Turn")]
-        public void StartOfMainPlayerTurn_ChooseResourceFromOpponentUsingPlayerId_MeaningfulErrorIsReceived()
-        {
-            var testInstances = LocalGameControllerTestCreator.CreateTestInstances();
-            var localGameController = testInstances.LocalGameController;
-            var player = testInstances.MainPlayer;
-            LocalGameControllerTestSetup.LaunchGameAndCompleteSetup(localGameController);
-            testInstances.Dice.AddSequence(new[] { 7u, 0u });
-
-            // Act
-            var resourceTransactionsReceived = false;
-            localGameController.ResourcesTransferredEvent = (ResourceTransactionList r) => { resourceTransactionsReceived = true; };
-
-            ErrorDetails errorDetails = null;
-            localGameController.ErrorRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
-
-            localGameController.StartGamePlay();
-            localGameController.SetRobberHex(3u);
-
-            // Act
-            localGameController.ChooseResourceFromOpponent(player.Id);
-
-            // Assert
-            resourceTransactionsReceived.ShouldBeFalse();
-            player.ResourcesCount.ShouldBe(3);
-            testInstances.FirstOpponent.ResourcesCount.ShouldBe(3);
-            errorDetails.ShouldNotBeNull();
-            errorDetails.Message.ShouldBe("Cannot pick resource card from invalid opponent.");
-        }
-
         [Test]
         [Category("LocalGameController")]
         [Category("Main Player Turn")]

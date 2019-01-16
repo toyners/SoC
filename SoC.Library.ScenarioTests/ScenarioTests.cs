@@ -916,7 +916,10 @@ namespace SoC.Library.ScenarioTests
                 .Build()
                 .Run();
         }
-
+        /// <summary>
+        /// Passing in an if of a player that is not on the selected robber hex when choosing the resource 
+        /// causes an error to be raised.
+        /// </summary>
         [Test]
         public void Scenario_PlayerRollsSevenAndSelectsInvalidOpponentGettingErrorMessage()
         {
