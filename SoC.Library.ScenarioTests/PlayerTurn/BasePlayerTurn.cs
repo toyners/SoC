@@ -168,7 +168,6 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
         {
             foreach (var kv in this.playerSnapshotsByName)
                 kv.Value.Verify(playersByName[kv.Key]);
-            
         }
 
         protected void AddDevelopmentCard(Guid playerId, DevelopmentCardTypes developmentCardType)
@@ -191,6 +190,11 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
                     randomNumber = selectedPlayer.Resources.BrickCount +
                     selectedPlayer.Resources.GrainCount +
                     selectedPlayer.Resources.LumberCount;
+                    break;
+                }
+                case ResourceTypes.Wool:
+                {
+                    randomNumber = selectedPlayer.Resources.Count - 1;
                     break;
                 }
                 default: throw new Exception($"Resource type '{expectedSingleResource}' not handled");

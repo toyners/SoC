@@ -55,7 +55,6 @@ namespace Jabberwocky.SoC.Library.ScenarioTests.Builders
         {
             var scenarioSelectResourceFromPlayerAction = new ScenarioSelectResourceFromPlayerAction(opponentName, resourceType);
             this.playerActions.Add(scenarioSelectResourceFromPlayerAction);
-            //this.runnerActions.Add(scenarioSelectResourceFromPlayerAction);
             return this;
         }
 

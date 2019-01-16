@@ -23,7 +23,7 @@ namespace SoC.Library.ScenarioTests
             }
 
             if (this.Resources.HasValue)
-                Assert.AreEqual(this.Resources.Value, player.Resources, $"Player '{player.Name}' state does not match: Expected {this.Resources.Value} resources, found {player.Resources} resources");
+                Assert.AreEqual(this.Resources.Value, player.Resources, $"Player '{player.Name}' state does not match: Expected {(this.Resources.Value != ResourceClutch.Zero ? this.Resources.Value.ToString() : "zero")} resources, found {(player.Resources != ResourceClutch.Zero ? player.Resources.ToString() : "zero")} resources");
 
             if (this.VictoryPoints.HasValue)
                 Assert.AreEqual(this.VictoryPoints.Value, player.VictoryPoints, $"Player '{player.Name}' state does not match: Expected {this.VictoryPoints.Value} vp, found {player.VictoryPoints} vp");
