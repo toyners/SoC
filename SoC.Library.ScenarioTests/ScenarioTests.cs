@@ -791,13 +791,13 @@ namespace SoC.Library.ScenarioTests
         }
 
         [Test]
-        [TestCase(8)]
-        [TestCase(9)]
-        [TestCase(10)]
-        public void Scenario_PlayerRollsSevenWithOverSevenResources(int resourcesCount)
+        [TestCase(7, 0)]
+        [TestCase(8, 4)]
+        [TestCase(9, 4)]
+        [TestCase(10, 5)]
+        public void Scenario_PlayerRollsSevenAndReceivesReceivesRobberEventWithDropResourceCardsCount(int resourcesCount, int expectedResourcesToDrop)
         {
             var mainPlayerResources = ResourceClutch.OneBrick * resourcesCount;
-            var expectedResourcesToDrop = mainPlayerResources.Count / 2;
             this.CreateStandardLocalGameControllerScenarioRunner()
                 .WithNoResourceCollection()
                 .WithStartingResourcesForPlayer(MainPlayerName, mainPlayerResources)

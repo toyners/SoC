@@ -648,34 +648,6 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
         }
 
         [Test]
-        [TestCase(6, 0)]
-        [TestCase(7, 0)]
-        [TestCase(8, 4)]
-        [TestCase(9, 4)]
-        [TestCase(10, 5)]
-        [Category("LocalGameController")]
-        [Category("Main Player Turn")]
-        public void StartOfMainPlayerTurn_RollsSevenReceivesRobberEventNotificationWithDropResourceCardsCount(Int32 brickCount, Int32 expectedResourceDropCount)
-        {
-            // Arrange
-            var testInstances = LocalGameControllerTestCreator.CreateTestInstances(new MockGameBoardWithNoResourcesCollected());
-            var localGameController = testInstances.LocalGameController;
-            var player = testInstances.MainPlayer;
-            LocalGameControllerTestSetup.LaunchGameAndCompleteSetup(localGameController);
-            testInstances.Dice.AddSequence(new[] { 7u });
-
-            player.AddResources(new ResourceClutch(brickCount, 0, 0, 0, 0));
-
-            // Act
-            Int32 resourceDropCount = -1;
-            localGameController.RobberEvent = (Int32 r) => { resourceDropCount = r; };
-            localGameController.StartGamePlay();
-
-            // Assert
-            resourceDropCount.ShouldBe(expectedResourceDropCount);
-        }
-
-        [Test]
         [Category("LocalGameController")]
         [Category("Main Player Turn")]
         public void StartOfMainPlayerTurn_RollsSevenAndPassBackExpectedResources_PlayerResourcesUpdatedCorrectly()
@@ -699,38 +671,6 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
             player.LumberCount.ShouldBe(0);
             player.OreCount.ShouldBe(0);
             player.WoolCount.ShouldBe(0);
-        }
-
-        // NOTE: Moving this to the Scenario Tests
-        [Test]
-        [Category("LocalGameController")]
-        [Category("Main Player Turn")]
-        public void StartOfMainPlayerTurn_RollsSevenAndChoosesBlindResourceFromOpponent_PlayerAndOpponentResourcesUpdated()
-        {
-            // Arrange
-            var testInstances = LocalGameControllerTestCreator.CreateTestInstances(new MockGameBoardWithNoResourcesCollected());
-            var localGameController = testInstances.LocalGameController;
-            LocalGameControllerTestSetup.LaunchGameAndCompleteSetup(localGameController);
-            var player = testInstances.MainPlayer;
-            var firstOpponent = testInstances.FirstOpponent;
-            testInstances.Dice.AddSequence(new[] { 7u, 0u });
-
-            firstOpponent.AddResources(new ResourceClutch(1, 0, 0, 0, 0));
-
-            // Act
-            ResourceTransactionList gainedResources = null;
-            localGameController.ResourcesTransferredEvent = (ResourceTransactionList r) => { gainedResources = r; };
-            localGameController.StartGamePlay();
-            localGameController.SetRobberHex(7u);
-            localGameController.ChooseResourceFromOpponent(firstOpponent.Id);
-
-            // Assert
-            var expectedResources = new ResourceTransactionList();
-            expectedResources.Add(new ResourceTransaction(player.Id, firstOpponent.Id, ResourceClutch.OneBrick));
-            gainedResources.ShouldBe(expectedResources);
-            player.ResourcesCount.ShouldBe(1);
-            player.BrickCount.ShouldBe(1);
-            firstOpponent.ResourcesCount.ShouldBe(0);
         }
 
         /// <summary>
