@@ -7,6 +7,7 @@ using static SoC.Library.ScenarioTests.LocalGameControllerScenarioRunner;
 
 namespace SoC.Library.ScenarioTests
 {
+    [Category("All")]
     [Category("ScenarioTests")]
     [TestFixture]
     public class ScenarioTests
@@ -446,6 +447,18 @@ namespace SoC.Library.ScenarioTests
                 .Run();
         }
 
+        [Test]
+        public void Scenario_ComputerPlayerRollsSevenAndTakesResourceFromPlayer() { Assert.Fail(); }
+
+        [Test]
+        public void Scenario_ComputerPlayerRollsSevenAndTakesResourcesFromComputerPlayer() { Assert.Fail(); }
+
+        [Test]
+        public void Scenario_ComputerPlayerRollsSeventAndAllPlayersWithMoreThanSevenResourcesLosesResources()
+        {
+            Assert.Fail();
+        }
+
         /// <summary>
         /// Test that the largest army event is not raised when the player plays knight cards and already has the largest army
         /// </summary>
@@ -811,7 +824,7 @@ namespace SoC.Library.ScenarioTests
         }
 
         [Test]
-        public void Scenario_PlayerRollsSevenButDoesNotPassBackResources()
+        public void Scenario_PlayerRollsSevenDoesNotPassBackResourcesAndReceivesErrorMessage()
         {
             var mainPlayerResources = ResourceClutch.OneBrick * 8;
             this.CreateStandardLocalGameControllerScenarioRunner()
@@ -847,6 +860,12 @@ namespace SoC.Library.ScenarioTests
                     .EndTurn()
                 .Build()
                 .Run();
+        }
+
+        [Test]
+        public void Scenario_PlayerRollsSeventAndAllPlayersWithMoreThanSevenResourcesLosesResources()
+        {
+            Assert.Fail();
         }
 
         /// <summary>
@@ -916,8 +935,9 @@ namespace SoC.Library.ScenarioTests
                 .Build()
                 .Run();
         }
+
         /// <summary>
-        /// Passing in an if of a player that is not on the selected robber hex when choosing the resource 
+        /// Passing in an id of a player that is not on the selected robber hex when choosing the resource 
         /// causes an error to be raised.
         /// </summary>
         [Test]
@@ -939,6 +959,16 @@ namespace SoC.Library.ScenarioTests
                     .EndTurn()
                 .Build()
                 .Run();
+        }
+
+        /// <summary>
+        /// The robber hex set by the player has only player settlements so calling the CallingChooseResourceFromOpponent 
+        /// method raises an error
+        /// </summary>
+        [Test]
+        public void Scenario_RobberLocationOnlyHasPlayerSettlementsSoChooseResourceFromOpponentCallReturnsErrorMessage()
+        {
+            Assert.Fail();
         }
 
         private LocalGameControllerScenarioRunner CreateStandardLocalGameControllerScenarioRunner()
