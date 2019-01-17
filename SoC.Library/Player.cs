@@ -320,30 +320,35 @@ namespace Jabberwocky.SoC.Library
             if (index < this.BrickCount)
             {
                 this.BrickCount--;
+                this.Resources -= ResourceClutch.OneBrick;
                 return ResourceClutch.OneBrick;
             }
 
             if (index < this.BrickCount + this.GrainCount)
             {
                 this.GrainCount--;
+                this.Resources -= ResourceClutch.OneGrain;
                 return ResourceClutch.OneGrain;
             }
 
             if (index < this.BrickCount + this.GrainCount + this.LumberCount)
             {
                 this.LumberCount--;
+                this.Resources -= ResourceClutch.OneLumber;
                 return ResourceClutch.OneLumber;
             }
 
             if (index < this.BrickCount + this.GrainCount + this.LumberCount + this.OreCount)
             {
                 this.OreCount--;
+                this.Resources -= ResourceClutch.OneOre;
                 return ResourceClutch.OneOre;
             }
 
             if (index < this.BrickCount + this.GrainCount + this.LumberCount + this.OreCount + this.WoolCount)
             {
                 this.WoolCount--;
+                this.Resources -= ResourceClutch.OneWool;
                 return ResourceClutch.OneWool;
             }
 

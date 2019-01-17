@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Jabberwocky.SoC.Library;
 using SoC.Library.ScenarioTests.PlayerTurn;
 
@@ -20,15 +19,22 @@ namespace SoC.Library.ScenarioTests.Builders
         }
         #endregion
 
+        #region Methods
+        public BasePlayerTurn End()
+        {
+            return this.playerTurn;
+        }
+
         public PlayerStateBuilder HeldCards(params DevelopmentCardTypes[] cards)
         {
             this.playerSnapshot.HeldCards = new List<DevelopmentCardTypes>(cards);
             return this;
         }
 
-        public BasePlayerTurn End()
+        public PlayerStateBuilder Resources(ResourceClutch resources)
         {
-            return this.playerTurn;
+            this.playerSnapshot.Resources = resources;
+            return this;
         }
 
         public PlayerStateBuilder VictoryPoints(uint victoryPoints)
@@ -36,5 +42,6 @@ namespace SoC.Library.ScenarioTests.Builders
             this.playerSnapshot.VictoryPoints = victoryPoints;
             return this;
         }
+        #endregion
     }
 }

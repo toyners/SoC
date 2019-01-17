@@ -613,28 +613,6 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
         [Test]
         [Category("LocalGameController")]
         [Category("Main Player Turn")]
-        public void StartOfMainPlayerTurn_DoesNotRollSeven_ReceiveCollectedResourcesDetails()
-        {
-            var testInstances = LocalGameControllerTestCreator.CreateTestInstances();
-            var localGameController = testInstances.LocalGameController;
-            LocalGameControllerTestSetup.LaunchGameAndCompleteSetup(localGameController);
-            testInstances.Dice.AddSequence(new uint[] { 11 });
-            var playerId = testInstances.MainPlayer.Id;
-            var firstOpponentId = testInstances.FirstOpponent.Id;
-
-            List<GameEvent> gameEvents = null;
-            localGameController.GameEvents = (List<GameEvent> g) => { gameEvents = g; };
-            localGameController.StartGamePlay();
-
-            gameEvents.ShouldContainItems(
-                new ResourcesCollectedEvent(firstOpponentId, new[] { new ResourceCollection(FirstSettlementOneLocation, ResourceClutch.OneLumber) }),
-                new ResourcesCollectedEvent(testInstances.ThirdOpponent.Id, new[] { new ResourceCollection(ThirdSettlementOneLocation, ResourceClutch.OneGrain), new ResourceCollection(ThirdSettlementTwoLocation, ResourceClutch.OneGrain) })
-            );
-        }
-
-        [Test]
-        [Category("LocalGameController")]
-        [Category("Main Player Turn")]
         public void StartOfMainPlayerTurn_RollsSevenReceiveResourceCardLossesForComputerPlayers()
         {
             // Arrange
@@ -723,38 +701,6 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
             player.WoolCount.ShouldBe(0);
         }
 
-        // NOTE: Moving this to the Scenario Tests
-        [Test]
-        [Category("LocalGameController")]
-        [Category("Main Player Turn")]
-        public void StartOfMainPlayerTurn_RollsSevenAndChoosesBlindResourceFromOpponent_PlayerAndOpponentResourcesUpdated()
-        {
-            // Arrange
-            var testInstances = LocalGameControllerTestCreator.CreateTestInstances(new MockGameBoardWithNoResourcesCollected());
-            var localGameController = testInstances.LocalGameController;
-            LocalGameControllerTestSetup.LaunchGameAndCompleteSetup(localGameController);
-            var player = testInstances.MainPlayer;
-            var firstOpponent = testInstances.FirstOpponent;
-            testInstances.Dice.AddSequence(new[] { 7u, 0u });
-
-            firstOpponent.AddResources(new ResourceClutch(1, 0, 0, 0, 0));
-
-            // Act
-            ResourceTransactionList gainedResources = null;
-            localGameController.ResourcesTransferredEvent = (ResourceTransactionList r) => { gainedResources = r; };
-            localGameController.StartGamePlay();
-            localGameController.SetRobberHex(7u);
-            localGameController.ChooseResourceFromOpponent(firstOpponent.Id);
-
-            // Assert
-            var expectedResources = new ResourceTransactionList();
-            expectedResources.Add(new ResourceTransaction(player.Id, firstOpponent.Id, ResourceClutch.OneBrick));
-            gainedResources.ShouldBe(expectedResources);
-            player.ResourcesCount.ShouldBe(1);
-            player.BrickCount.ShouldBe(1);
-            firstOpponent.ResourcesCount.ShouldBe(0);
-        }
-
         /// <summary>
         /// Passing in an unknown player id causes an error to be raised.
         /// </summary>
@@ -788,41 +734,6 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
             player.ResourcesCount.ShouldBe(0);
             firstOpponent.ResourcesCount.ShouldBe(1);
             firstOpponent.BrickCount.ShouldBe(1);
-            errorDetails.ShouldNotBeNull();
-            errorDetails.Message.ShouldBe("Cannot pick resource card from invalid opponent.");
-        }
-
-        /// <summary>
-        /// Passing in the player id when choosing the resource from an opponent causes an error to be raised.
-        /// </summary>
-        [Test]
-        [Category("LocalGameController")]
-        [Category("Main Player Turn")]
-        public void StartOfMainPlayerTurn_ChooseResourceFromOpponentUsingPlayerId_MeaningfulErrorIsReceived()
-        {
-            var testInstances = LocalGameControllerTestCreator.CreateTestInstances();
-            var localGameController = testInstances.LocalGameController;
-            var player = testInstances.MainPlayer;
-            LocalGameControllerTestSetup.LaunchGameAndCompleteSetup(localGameController);
-            testInstances.Dice.AddSequence(new[] { 7u, 0u });
-
-            // Act
-            var resourceTransactionsReceived = false;
-            localGameController.ResourcesTransferredEvent = (ResourceTransactionList r) => { resourceTransactionsReceived = true; };
-
-            ErrorDetails errorDetails = null;
-            localGameController.ErrorRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
-
-            localGameController.StartGamePlay();
-            localGameController.SetRobberHex(3u);
-
-            // Act
-            localGameController.ChooseResourceFromOpponent(player.Id);
-
-            // Assert
-            resourceTransactionsReceived.ShouldBeFalse();
-            player.ResourcesCount.ShouldBe(3);
-            testInstances.FirstOpponent.ResourcesCount.ShouldBe(3);
             errorDetails.ShouldNotBeNull();
             errorDetails.Message.ShouldBe("Cannot pick resource card from invalid opponent.");
         }

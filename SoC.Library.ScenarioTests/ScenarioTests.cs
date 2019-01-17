@@ -791,13 +791,13 @@ namespace SoC.Library.ScenarioTests
         }
 
         [Test]
-        [TestCase(8)]
-        [TestCase(9)]
-        [TestCase(10)]
-        public void Scenario_PlayerRollsSevenWithOverSevenResources(int resourcesCount)
+        [TestCase(7, 0)]
+        [TestCase(8, 4)]
+        [TestCase(9, 4)]
+        [TestCase(10, 5)]
+        public void Scenario_PlayerRollsSevenAndReceivesReceivesRobberEventWithDropResourceCardsCount(int resourcesCount, int expectedResourcesToDrop)
         {
             var mainPlayerResources = ResourceClutch.OneBrick * resourcesCount;
-            var expectedResourcesToDrop = mainPlayerResources.Count / 2;
             this.CreateStandardLocalGameControllerScenarioRunner()
                 .WithNoResourceCollection()
                 .WithStartingResourcesForPlayer(MainPlayerName, mainPlayerResources)
@@ -833,17 +833,17 @@ namespace SoC.Library.ScenarioTests
         public void Scenario_PlayerRollsSevenAndSelectedHexHasSingleComputerPlayer()
         {
             var firstOpponentResources = ResourceClutch.OneGrain * 2;
-
+        
             this.CreateStandardLocalGameControllerScenarioRunner()
                 .WithNoResourceCollection()
                 .WithStartingResourcesForPlayer(FirstOpponentName, firstOpponentResources)
-                    .PlayerTurn(MainPlayerName, 3, 4)
-                        .Actions()
-                            .PlaceRobber(3, FirstOpponentName, ResourceTypes.Grain)
-                            .End()
-                        .Events()
-                            .RobbingChoicesEvent(new Tuple<string, int>(FirstOpponentName, 2))
-                            .End()
+                .PlayerTurn(MainPlayerName, 3, 4)
+                    .Actions()
+                        .PlaceRobber(3, FirstOpponentName, ResourceTypes.Grain)
+                        .End()
+                    .Events()
+                        .RobbingChoicesEvent(new Tuple<string, int>(FirstOpponentName, 2))
+                        .End()
                     .EndTurn()
                 .Build()
                 .Run();
@@ -884,6 +884,57 @@ namespace SoC.Library.ScenarioTests
                         .End()
                     .Events()
                         .RobbingChoicesEvent(null)
+                        .End()
+                    .EndTurn()
+                .Build()
+                .Run();
+        }
+
+        [Test]
+        public void Scenario_PlayerRollsSevenAndGetsResourceFromSelectedComputerPlayer()
+        {
+            var firstOpponentResources = ResourceClutch.OneWool;
+            this.CreateStandardLocalGameControllerScenarioRunner()
+                .WithNoResourceCollection()
+                .WithStartingResourcesForPlayer(FirstOpponentName, firstOpponentResources)
+                .PlayerTurn(MainPlayerName, 3, 4)
+                    .Actions()
+                        .PlaceRobber(3)
+                        .ChooseResourceFromOpponent(FirstOpponentName, ResourceTypes.Wool)
+                        .End()
+                    .Events()
+                        .RobbingChoicesEvent(new Tuple<string, int>(FirstOpponentName, 1))
+                        .ResourcesGainedEvent(FirstOpponentName, ResourceClutch.OneWool)
+                        .End()
+                    .State(MainPlayerName)
+                        .Resources(ResourceClutch.OneWool)
+                        .End()
+                    .State(FirstOpponentName)
+                        .Resources(ResourceClutch.Zero)
+                        .End()
+                    .EndTurn()
+                .Build()
+                .Run();
+        }
+        /// <summary>
+        /// Passing in an if of a player that is not on the selected robber hex when choosing the resource 
+        /// causes an error to be raised.
+        /// </summary>
+        [Test]
+        public void Scenario_PlayerRollsSevenAndSelectsInvalidOpponentGettingErrorMessage()
+        {
+            var firstOpponentResources = ResourceClutch.OneWool;
+            this.CreateStandardLocalGameControllerScenarioRunner()
+                .WithNoResourceCollection()
+                .WithStartingResourcesForPlayer(FirstOpponentName, firstOpponentResources)
+                .PlayerTurn(MainPlayerName, 3, 4)
+                    .Actions()
+                        .PlaceRobber(3)
+                        .ChooseResourceFromOpponent(SecondOpponentName, ResourceTypes.Wool)
+                        .End()
+                    .Events()
+                        .RobbingChoicesEvent(new Tuple<string, int>(FirstOpponentName, 1))
+                        .ErrorMessageEvent("Cannot pick resource card from invalid opponent.")
                         .End()
                     .EndTurn()
                 .Build()

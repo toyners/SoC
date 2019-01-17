@@ -80,7 +80,7 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
 
             foreach (var action in this.PlayerActions)
             {
-                if (action is PlaceRobberAction placeRobberAction)
+                if (action is ScenarioPlaceRobberAction placeRobberAction)
                 {
                     if (!placeRobberAction.ResourcesToDrop.Equals(ResourceClutch.Zero))
                         localGameController.DropResources(placeRobberAction.ResourcesToDrop);
@@ -89,12 +89,16 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
                 }
                 else if (action is ScenarioPlayKnightCardAction scenarioPlayKnightCardAction)
                 {
-                    this.ResolveScenarioPlayKnightCardAction(scenarioPlayKnightCardAction,
-                    (location, playerId) =>
-                    {
-                        var knightCard = (KnightDevelopmentCard)this.player.HeldCards.Where(c => c.Type == DevelopmentCardTypes.Knight).First();
-                        localGameController.UseKnightCard(turnToken, knightCard, location, playerId);
-                    });
+                    var selectedPlayer = this.runner.GetPlayerFromName(scenarioPlayKnightCardAction.SelectedPlayerName);
+                    this.SetupResourceSelectionOnPlayer(selectedPlayer, scenarioPlayKnightCardAction.ExpectedSingleResource);
+                    var knightCard = (KnightDevelopmentCard)this.player.HeldCards.Where(c => c.Type == DevelopmentCardTypes.Knight).First();
+                    localGameController.UseKnightCard(turnToken, knightCard, scenarioPlayKnightCardAction.NewRobberHex, selectedPlayer.Id);
+                }
+                else if (action is ScenarioSelectResourceFromPlayerAction scenarioSelectResourceFromPlayerAction)
+                {
+                    var selectedPlayer = this.runner.GetPlayerFromName(scenarioSelectResourceFromPlayerAction.SelectedPlayerName);
+                    this.SetupResourceSelectionOnPlayer(selectedPlayer, scenarioSelectResourceFromPlayerAction.ExpectedSingleResource);
+                    localGameController.ChooseResourceFromOpponent(selectedPlayer.Id);
                 }
                 else if (action is PlayKnightCardAction playKnightCardAction)
                 {
@@ -164,7 +168,6 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
         {
             foreach (var kv in this.playerSnapshotsByName)
                 kv.Value.Verify(playersByName[kv.Key]);
-            
         }
 
         protected void AddDevelopmentCard(Guid playerId, DevelopmentCardTypes developmentCardType)
@@ -172,12 +175,10 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
             this.runner.AddDevelopmentCardToBuy(developmentCardType);
         }
 
-        protected void ResolveScenarioPlayKnightCardAction(ScenarioPlayKnightCardAction scenarioPlayKnightCardAction, Action<uint, Guid> playCardAction)
+        protected void SetupResourceSelectionOnPlayer(IPlayer selectedPlayer, ResourceTypes expectedSingleResource)
         {
-            var selectedPlayer = this.runner.GetPlayerFromName(scenarioPlayKnightCardAction.SelectedPlayerName);
-
             var randomNumber = int.MinValue;
-            switch (scenarioPlayKnightCardAction.ExpectedSingleResource)
+            switch (expectedSingleResource)
             {
                 case ResourceTypes.Grain:
                 {
@@ -191,12 +192,15 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
                     selectedPlayer.Resources.LumberCount;
                     break;
                 }
-                default: throw new Exception($"Resource type '{scenarioPlayKnightCardAction.ExpectedSingleResource}' not handled");
+                case ResourceTypes.Wool:
+                {
+                    randomNumber = selectedPlayer.Resources.Count - 1;
+                    break;
+                }
+                default: throw new Exception($"Resource type '{expectedSingleResource}' not handled");
             }
 
             this.runner.NumberGenerator.AddRandomNumber(randomNumber);
-
-            playCardAction.Invoke(scenarioPlayKnightCardAction.NewRobberHex, selectedPlayer.Id);
         }
 
         private string GetEventDetails(GameEvent gameEvent)
@@ -234,8 +238,16 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
             }
             else if (gameEvent is ScenarioRobbingChoicesEvent scenarioRobbingChoicesEvent)
             {
-                foreach (var robbingChoicePair in scenarioRobbingChoicesEvent.RobbingChoices)
-                    message += $"Containing '{this.runner.GetPlayer(robbingChoicePair.Key).Name}' with {robbingChoicePair.Value} resources\r\n";
+                if (scenarioRobbingChoicesEvent.RobbingChoices != null)
+                {
+                    message += "With choices:\r\n";
+                    foreach (var robbingChoicePair in scenarioRobbingChoicesEvent.RobbingChoices)
+                        message += $"'{this.runner.GetPlayer(robbingChoicePair.Key).Name}' with {robbingChoicePair.Value} resources\r\n";
+                }
+                else
+                {
+                    message += "With no choices";
+                }
             }
 
             return message;

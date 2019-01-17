@@ -51,21 +51,30 @@ namespace Jabberwocky.SoC.Library.ScenarioTests.Builders
             return this;
         }
 
+        public PlayerActionBuilder ChooseResourceFromOpponent(string opponentName, ResourceTypes resourceType)
+        {
+            var scenarioSelectResourceFromPlayerAction = new ScenarioSelectResourceFromPlayerAction(opponentName, resourceType);
+            this.playerActions.Add(scenarioSelectResourceFromPlayerAction);
+            return this;
+        }
+
         public PlayerActionBuilder PlaceRobber(uint hexLocation)
         {
-            this.playerActions.Add(new PlaceRobberAction(hexLocation, null, null, ResourceClutch.Zero));
+            this.playerActions.Add(new ScenarioPlaceRobberAction(hexLocation));
             return this;
         }
 
         public PlayerActionBuilder PlaceRobber(uint hexLocation, string selectedPlayerName, ResourceTypes expectedSingleResource)
         {
-            this.playerActions.Add(new PlaceRobberAction(hexLocation, selectedPlayerName, expectedSingleResource, ResourceClutch.Zero));
+            this.playerActions.Add(new ScenarioPlaceRobberAction(hexLocation));
+            this.playerActions.Add(new ScenarioSelectResourceFromPlayerAction(selectedPlayerName, expectedSingleResource));
             return this;
         }
 
         public PlayerActionBuilder PlaceRobber(uint hexLocation, string selectedPlayerName, ResourceTypes expectedSingleResource, ResourceClutch resourcesToDrop)
         {
-            this.playerActions.Add(new PlaceRobberAction(hexLocation, selectedPlayerName, expectedSingleResource, resourcesToDrop));
+            this.playerActions.Add(new ScenarioPlaceRobberAction(hexLocation, resourcesToDrop));
+            this.playerActions.Add(new ScenarioSelectResourceFromPlayerAction(selectedPlayerName, expectedSingleResource));
             return this;
         }
 

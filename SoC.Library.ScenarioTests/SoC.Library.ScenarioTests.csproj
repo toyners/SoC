@@ -51,7 +51,9 @@
     <Compile Include="Builders\ExpectedEventsBuilder.cs" />
     <Compile Include="Builders\PlayerActionBuilder.cs" />
     <Compile Include="Builders\PlayerStateBuilder.cs" />
-    <Compile Include="ScenarioActions\PlaceRobberAction.cs" />
+    <Compile Include="PlayerSnapshot.cs" />
+    <Compile Include="ScenarioActions\ScenarioPlaceRobberAction.cs" />
+    <Compile Include="ScenarioActions\ScenarioSelectResourceFromPlayerAction.cs" />
     <Compile Include="ScenarioEvents\ScenarioErrorMessageEvent.cs" />
     <Compile Include="ScenarioEvents\ScenarioRobberEvent.cs" />
     <Compile Include="ScenarioEvents\ScenarioRobbingChoicesEvent.cs" />
