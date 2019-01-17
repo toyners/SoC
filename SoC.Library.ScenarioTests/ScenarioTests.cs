@@ -448,7 +448,33 @@ namespace SoC.Library.ScenarioTests
         }
 
         [Test]
-        public void Scenario_ComputerPlayerRollsSevenAndTakesResourceFromPlayer() { Assert.Fail(); }
+        public void Scenario_ComputerPlayerRollsSevenAndTakesResourceFromPlayer()
+        {
+            var mainPlayerResources = ResourceClutch.OneWool;
+            this.CreateStandardLocalGameControllerScenarioRunner()
+                .WithNoResourceCollection()
+                .WithStartingResourcesForPlayer(MainPlayerName, mainPlayerResources)
+                .PlayerTurn(MainPlayerName, 3, 3)
+                    .EndTurn()
+                .PlayerTurn(FirstOpponentName, 3, 4)
+                    .Actions()
+                        .PlaceRobber(2)
+                        .ChooseResourceFromOpponent(MainPlayerName, ResourceTypes.Wool)
+                        .End()
+                    .Events()
+                        //.RobbingChoicesEvent(new Tuple<string, int>(FirstOpponentName, 1))
+                        .ResourcesGainedEvent(MainPlayerName, ResourceClutch.OneWool)
+                        .End()
+                    .State(MainPlayerName)
+                        .Resources(ResourceClutch.Zero)
+                        .End()
+                    .State(FirstOpponentName)
+                        .Resources(ResourceClutch.OneWool)
+                        .End()
+                    .EndTurn()
+                .Build()
+                .Run();
+        }
 
         [Test]
         public void Scenario_ComputerPlayerRollsSevenAndTakesResourcesFromComputerPlayer() { Assert.Fail(); }

@@ -68,7 +68,7 @@ namespace Jabberwocky.SoC.Library
             this.HeldCards.Add(developmentCard);
         }
 
-        public virtual void BuildInitialPlayerActions(PlayerDataModel[] otherPlayerData)
+        public virtual void BuildInitialPlayerActions(PlayerDataModel[] otherPlayerData, bool rolledSeven)
         {
             this.decisionMaker.Reset();
 

@@ -375,144 +375,152 @@ namespace Jabberwocky.SoC.Library
                 events.Add(rolledDiceEvent);
                 var roll = this.dice1 + this.dice2;
 
+                var rolledSeven = false;
                 if (roll == 7)
                 {
-                    // Robber activated
+                    rolledSeven = true;
                 }
                 else
                 {
                     this.CollectResourcesAtStartOfTurn(roll);
                 }
 
-                computerPlayer.BuildInitialPlayerActions(null);
+                computerPlayer.BuildInitialPlayerActions(null, rolledSeven);
 
                 ComputerPlayerAction playerAction;
                 while ((playerAction = computerPlayer.GetPlayerAction()) != null && computerPlayer.VictoryPoints < 10)
                 {
-                    switch (playerAction.ActionType)
+                    if (playerAction is PlaceRobberAction placeRobberAction)
                     {
-                        case ComputerPlayerActionTypes.BuildCity:
+                        this.robberHex = placeRobberAction.RobberHex;
+                    }
+                    else
+                    {
+                        switch (playerAction.ActionType)
                         {
-                            var location = ((BuildCityAction)playerAction).CityLocation;
-                            this.BuildCity(location);
-
-                            events.Add(new CityBuiltEvent(computerPlayer.Id, location));
-
-                            this.CheckComputerPlayerIsWinner(computerPlayer, events);
-
-                            break;
-                        }
-
-                        case ComputerPlayerActionTypes.BuildRoadSegment:
-                        {
-                            var buildRoadAction = (BuildRoadSegmentAction)playerAction;
-                            this.BuildRoadSegment(buildRoadAction.StartLocation, buildRoadAction.EndLocation);
-                            events.Add(new RoadSegmentBuiltEvent(computerPlayer.Id, buildRoadAction.StartLocation, buildRoadAction.EndLocation));
-
-                            Guid previousPlayerWithLongestRoadId;
-                            if (this.PlayerHasJustBuiltTheLongestRoad(out previousPlayerWithLongestRoadId))
+                            case ComputerPlayerActionTypes.BuildCity:
                             {
-                                events.Add(new LongestRoadBuiltEvent(computerPlayer.Id, previousPlayerWithLongestRoadId));
+                                var location = ((BuildCityAction)playerAction).CityLocation;
+                                this.BuildCity(location);
+
+                                events.Add(new CityBuiltEvent(computerPlayer.Id, location));
+
+                                this.CheckComputerPlayerIsWinner(computerPlayer, events);
+
+                                break;
                             }
 
-                            this.CheckComputerPlayerIsWinner(computerPlayer, events);
-
-                            break;
-                        }
-
-                        case ComputerPlayerActionTypes.BuildSettlement:
-                        {
-                            var location = ((BuildSettlementAction)playerAction).SettlementLocation;
-                            this.BuildSettlement(location);
-
-                            events.Add(new SettlementBuiltEvent(computerPlayer.Id, location));
-
-                            this.CheckComputerPlayerIsWinner(computerPlayer, events);
-                            break;
-                        }
-
-                        case ComputerPlayerActionTypes.BuyDevelopmentCard:
-                        {
-                            var developmentCard = this.BuyDevelopmentCard();
-                            computerPlayer.AddDevelopmentCard(developmentCard);
-                            events.Add(new BuyDevelopmentCardEvent(computerPlayer.Id));
-                            break;
-                        }
-
-                        case ComputerPlayerActionTypes.PlayKnightCard:
-                        {
-                            var playKnightCardAction = (PlayKnightCardAction)playerAction;
-                            var knightCard = computerPlayer.GetKnightCard();
-                            this.PlayKnightDevelopmentCard(knightCard, playKnightCardAction.NewRobberHex);
-                            events.Add(new PlayKnightCardEvent(computerPlayer.Id));
-
-                            if (playKnightCardAction.PlayerId.HasValue)
+                            case ComputerPlayerActionTypes.BuildRoadSegment:
                             {
-                                var robbedPlayer = this.playersById[playKnightCardAction.PlayerId.Value];
-                                var takenResource = this.GetResourceFromPlayer(robbedPlayer);
-                                computerPlayer.AddResources(takenResource);
-                                var resourceTransaction = new ResourceTransaction(computerPlayer.Id, robbedPlayer.Id, takenResource);
-                                var resourceLostEvent = new ResourceTransactionEvent(computerPlayer.Id, resourceTransaction);
-                                events.Add(resourceLostEvent);
+                                var buildRoadAction = (BuildRoadSegmentAction)playerAction;
+                                this.BuildRoadSegment(buildRoadAction.StartLocation, buildRoadAction.EndLocation);
+                                events.Add(new RoadSegmentBuiltEvent(computerPlayer.Id, buildRoadAction.StartLocation, buildRoadAction.EndLocation));
+
+                                Guid previousPlayerWithLongestRoadId;
+                                if (this.PlayerHasJustBuiltTheLongestRoad(out previousPlayerWithLongestRoadId))
+                                {
+                                    events.Add(new LongestRoadBuiltEvent(computerPlayer.Id, previousPlayerWithLongestRoadId));
+                                }
+
+                                this.CheckComputerPlayerIsWinner(computerPlayer, events);
+
+                                break;
                             }
 
-                            if (this.PlayerHasJustBuiltTheLargestArmy(out Guid previousPlayerId))
+                            case ComputerPlayerActionTypes.BuildSettlement:
                             {
-                                events.Add(new LargestArmyChangedEvent(this.playerWithLargestArmy.Id, previousPlayerId));
+                                var location = ((BuildSettlementAction)playerAction).SettlementLocation;
+                                this.BuildSettlement(location);
+
+                                events.Add(new SettlementBuiltEvent(computerPlayer.Id, location));
+
+                                this.CheckComputerPlayerIsWinner(computerPlayer, events);
+                                break;
                             }
 
-                            this.CheckComputerPlayerIsWinner(computerPlayer, events);
-
-                            break;
-                        }
-
-                        case ComputerPlayerActionTypes.PlayMonopolyCard:
-                        {
-                            var monopolyCard = computerPlayer.ChooseMonopolyCard();
-                            var resourceType = computerPlayer.ChooseResourceTypeToRob();
-                            var opponents = this.GetOpponentsForPlayer(computerPlayer);
-                            var resourceTransations = this.GetAllResourcesFromOpponentsOfType(computerPlayer, opponents, resourceType);
-                            if (resourceTransations != null)
+                            case ComputerPlayerActionTypes.BuyDevelopmentCard:
                             {
-                                this.AddResourcesToCurrentPlayer(computerPlayer, resourceTransations);
+                                var developmentCard = this.BuyDevelopmentCard();
+                                computerPlayer.AddDevelopmentCard(developmentCard);
+                                events.Add(new BuyDevelopmentCardEvent(computerPlayer.Id));
+                                break;
                             }
 
-                            events.Add(new PlayMonopolyCardEvent(computerPlayer.Id, resourceTransations));
-                            break;
+                            case ComputerPlayerActionTypes.PlayKnightCard:
+                            {
+                                var playKnightCardAction = (PlayKnightCardAction)playerAction;
+                                var knightCard = computerPlayer.GetKnightCard();
+                                this.PlayKnightDevelopmentCard(knightCard, playKnightCardAction.NewRobberHex);
+                                events.Add(new PlayKnightCardEvent(computerPlayer.Id));
+
+                                if (playKnightCardAction.PlayerId.HasValue)
+                                {
+                                    var robbedPlayer = this.playersById[playKnightCardAction.PlayerId.Value];
+                                    var takenResource = this.GetResourceFromPlayer(robbedPlayer);
+                                    computerPlayer.AddResources(takenResource);
+                                    var resourceTransaction = new ResourceTransaction(computerPlayer.Id, robbedPlayer.Id, takenResource);
+                                    var resourceLostEvent = new ResourceTransactionEvent(computerPlayer.Id, resourceTransaction);
+                                    events.Add(resourceLostEvent);
+                                }
+
+                                if (this.PlayerHasJustBuiltTheLargestArmy(out Guid previousPlayerId))
+                                {
+                                    events.Add(new LargestArmyChangedEvent(this.playerWithLargestArmy.Id, previousPlayerId));
+                                }
+
+                                this.CheckComputerPlayerIsWinner(computerPlayer, events);
+
+                                break;
+                            }
+
+                            case ComputerPlayerActionTypes.PlayMonopolyCard:
+                            {
+                                var monopolyCard = computerPlayer.ChooseMonopolyCard();
+                                var resourceType = computerPlayer.ChooseResourceTypeToRob();
+                                var opponents = this.GetOpponentsForPlayer(computerPlayer);
+                                var resourceTransations = this.GetAllResourcesFromOpponentsOfType(computerPlayer, opponents, resourceType);
+                                if (resourceTransations != null)
+                                {
+                                    this.AddResourcesToCurrentPlayer(computerPlayer, resourceTransations);
+                                }
+
+                                events.Add(new PlayMonopolyCardEvent(computerPlayer.Id, resourceTransations));
+                                break;
+                            }
+
+                            case ComputerPlayerActionTypes.PlayYearOfPlentyCard:
+                            {
+                                var yearOfPlentyCard = computerPlayer.ChooseYearOfPlentyCard();
+                                var resourcesCollected = computerPlayer.ChooseResourcesToCollectFromBank();
+                                computerPlayer.AddResources(resourcesCollected);
+
+                                var resourceTransaction = new ResourceTransaction(computerPlayer.Id, this.playerPool.GetBankId(), resourcesCollected);
+                                var resourceTransactions = new ResourceTransactionList();
+                                resourceTransactions.Add(resourceTransaction);
+
+                                events.Add(new PlayYearOfPlentyCardEvent(computerPlayer.Id, resourceTransactions));
+                                break;
+                            }
+
+                            case ComputerPlayerActionTypes.TradeWithBank:
+                            {
+                                var tradeWithBankAction = (TradeWithBankAction)playerAction;
+
+                                var receivingResources = ResourceClutch.CreateFromResourceType(tradeWithBankAction.ReceivingType);
+                                receivingResources *= tradeWithBankAction.ReceivingCount;
+
+                                var paymentResources = ResourceClutch.CreateFromResourceType(tradeWithBankAction.GivingType);
+                                paymentResources *= (tradeWithBankAction.ReceivingCount * 4);
+
+                                computerPlayer.RemoveResources(paymentResources);
+                                computerPlayer.AddResources(receivingResources);
+
+                                events.Add(new TradeWithBankEvent(computerPlayer.Id, this.playerPool.GetBankId(), paymentResources, receivingResources));
+                                break;
+                            }
+
+                            default: throw new NotImplementedException("Player action '" + playerAction + "' is not recognised.");
                         }
-
-                        case ComputerPlayerActionTypes.PlayYearOfPlentyCard:
-                        {
-                            var yearOfPlentyCard = computerPlayer.ChooseYearOfPlentyCard();
-                            var resourcesCollected = computerPlayer.ChooseResourcesToCollectFromBank();
-                            computerPlayer.AddResources(resourcesCollected);
-
-                            var resourceTransaction = new ResourceTransaction(computerPlayer.Id, this.playerPool.GetBankId(), resourcesCollected);
-                            var resourceTransactions = new ResourceTransactionList();
-                            resourceTransactions.Add(resourceTransaction);
-
-                            events.Add(new PlayYearOfPlentyCardEvent(computerPlayer.Id, resourceTransactions));
-                            break;
-                        }
-
-                        case ComputerPlayerActionTypes.TradeWithBank:
-                        {
-                            var tradeWithBankAction = (TradeWithBankAction)playerAction;
-
-                            var receivingResources = ResourceClutch.CreateFromResourceType(tradeWithBankAction.ReceivingType);
-                            receivingResources *= tradeWithBankAction.ReceivingCount;
-
-                            var paymentResources = ResourceClutch.CreateFromResourceType(tradeWithBankAction.GivingType);
-                            paymentResources *= (tradeWithBankAction.ReceivingCount * 4);
-
-                            computerPlayer.RemoveResources(paymentResources);
-                            computerPlayer.AddResources(receivingResources);
-
-                            events.Add(new TradeWithBankEvent(computerPlayer.Id, this.playerPool.GetBankId(), paymentResources, receivingResources));
-                            break;
-                        }
-
-                        default: throw new NotImplementedException("Player action '" + playerAction + "' is not recognised.");
                     }
                 }
 
@@ -782,7 +790,7 @@ namespace Jabberwocky.SoC.Library
         {
             if (this.GamePhase != GamePhases.SetRobberHex)
             {
-                var resourceDropErrorDetails = new ErrorDetails(String.Format("Cannot set robber location until expected resources ({0}) have been dropped via call to DropResources method.", this.resourcesToDrop));
+                var resourceDropErrorDetails = new ErrorDetails($"Cannot set robber location until expected resources ({this.resourcesToDrop}) have been dropped via call to DropResources method.");
                 this.ErrorRaisedEvent?.Invoke(resourceDropErrorDetails);
                 return;
             }
@@ -1361,7 +1369,7 @@ namespace Jabberwocky.SoC.Library
             return false;
         }
 
-        private Boolean PlayerHasJustBuiltTheLongestRoad(out Guid previousPlayerId)
+        private bool PlayerHasJustBuiltTheLongestRoad(out Guid previousPlayerId)
         {
             previousPlayerId = Guid.Empty;
             if (this.currentPlayer.RoadSegmentsBuilt < 5)
@@ -1433,7 +1441,7 @@ namespace Jabberwocky.SoC.Library
             }
         }
 
-        private Boolean VerifyBuildCityRequest(uint location)
+        private bool VerifyBuildCityRequest(uint location)
         {
             if (this.GamePhase == GamePhases.GameOver)
             {
@@ -1530,7 +1538,7 @@ namespace Jabberwocky.SoC.Library
             return true;
         }
 
-        private Boolean VerifyBuildSettlementRequest(uint settlementLocation)
+        private bool VerifyBuildSettlementRequest(uint settlementLocation)
         {
             if (this.GamePhase == GamePhases.GameOver)
             {
@@ -1541,7 +1549,7 @@ namespace Jabberwocky.SoC.Library
             return this.VerifySettlementBuilding() && this.VerifySettlementPlacing(settlementLocation);
         }
 
-        private Boolean VerifyBuyDevelopmentCardRequest()
+        private bool VerifyBuyDevelopmentCardRequest()
         {
             if (this.GamePhase == GamePhases.GameOver)
             {
@@ -1652,7 +1660,7 @@ namespace Jabberwocky.SoC.Library
             return true;
         }
 
-        private Boolean VerifyPlacementOfRobber(uint newRobberHex)
+        private bool VerifyPlacementOfRobber(uint newRobberHex)
         {
             if (!this.gameBoard.CanPlaceRobber(newRobberHex))
             {
@@ -1669,13 +1677,13 @@ namespace Jabberwocky.SoC.Library
             return true;
         }
 
-        private Boolean VerifyRoadSegmentPlacing(uint settlementLocation, uint roadEndLocation)
+        private bool VerifyRoadSegmentPlacing(uint settlementLocation, uint roadEndLocation)
         {
             var placeRoadStatus = this.gameBoard.CanPlaceRoad(this.currentPlayer.Id, settlementLocation, roadEndLocation);
             return this.VerifyRoadSegmentPlacing(placeRoadStatus, settlementLocation, roadEndLocation);
         }
 
-        private Boolean VerifyRoadSegmentPlacing(GameBoard.VerificationResults verificationResults, uint settlementLocation, uint roadEndLocation)
+        private bool VerifyRoadSegmentPlacing(GameBoard.VerificationResults verificationResults, uint settlementLocation, uint roadEndLocation)
         {
             if (verificationResults.Status == GameBoard.VerificationStatus.RoadIsOffBoard)
             {
@@ -1704,7 +1712,7 @@ namespace Jabberwocky.SoC.Library
             return true;
         }
 
-        private Boolean VerifySettlementBuilding()
+        private bool VerifySettlementBuilding()
         {
             if (this.mainPlayer.RemainingSettlements == 0)
             {
@@ -1745,13 +1753,13 @@ namespace Jabberwocky.SoC.Library
             return true;
         }
 
-        private Boolean VerifySettlementPlacing(uint settlementLocation)
+        private bool VerifySettlementPlacing(uint settlementLocation)
         {
             var verificationResults = this.gameBoard.CanPlaceSettlement(this.mainPlayer.Id, settlementLocation);
             return this.VerifySettlementPlacing(verificationResults, settlementLocation);
         }
 
-        private Boolean VerifySettlementPlacing(GameBoard.VerificationResults verificationResults, uint settlementLocation)
+        private bool VerifySettlementPlacing(GameBoard.VerificationResults verificationResults, uint settlementLocation)
         {
             if (verificationResults.Status == GameBoard.VerificationStatus.LocationForSettlementIsInvalid)
             {
@@ -1828,7 +1836,7 @@ namespace Jabberwocky.SoC.Library
             return true;
         }
 
-        private Boolean VerifyTurnToken(TurnToken turnToken)
+        private bool VerifyTurnToken(TurnToken turnToken)
         {
             if (turnToken == null)
             {

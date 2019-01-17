@@ -36,9 +36,9 @@ namespace SoC.Library.ScenarioTests
             this.actions.Enqueue(new PlaceInfrastructureAction(settlementLocation, roadSegmentEndLocation));
         }
 
-        public override void BuildInitialPlayerActions(PlayerDataModel[] otherPlayerData)
+        public override void BuildInitialPlayerActions(PlayerDataModel[] otherPlayerData, bool rolledSeven)
         {
-            //Do nothing    
+            //Do nothing
         }
 
         public override void ChooseInitialInfrastructure(out uint settlementLocation, out uint roadEndLocation)
