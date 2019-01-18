@@ -482,7 +482,10 @@ namespace SoC.Library.ScenarioTests
         }
 
         [Test]
-        public void Scenario_ComputerPlayerRollsSevenAndTakesResourcesFromComputerPlayer() { Assert.Fail(); }
+        public void Scenario_ComputerPlayerRollsSevenAndTakesResourcesFromComputerPlayer()
+        {
+            Assert.Fail();
+        }
 
         [Test]
         public void Scenario_ComputerPlayerRollsSeventAndAllPlayersWithMoreThanSevenResourcesLosesResources()
@@ -894,9 +897,21 @@ namespace SoC.Library.ScenarioTests
         }
 
         [Test]
-        public void Scenario_PlayerRollsSeventAndAllPlayersWithMoreThanSevenResourcesLosesResources()
+        public void Scenario_PlayerRollsSevenAndAllPlayersWithMoreThanSevenResourcesLosesResources()
         {
             Assert.Fail();
+            this.CreateStandardLocalGameControllerScenarioRunner()
+                .WithNoResourceCollection()
+                .PlayerTurn(MainPlayerName, 3, 4)
+                    .Actions()
+                        .PlaceRobber(4)
+                        .End()
+                    .Events()
+                        .RobbingChoicesEvent(null)
+                        .End()
+                    .EndTurn()
+                .Build()
+                .Run();
         }
 
         /// <summary>
