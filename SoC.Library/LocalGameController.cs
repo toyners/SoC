@@ -375,17 +375,17 @@ namespace Jabberwocky.SoC.Library
                 events.Add(rolledDiceEvent);
                 var roll = this.dice1 + this.dice2;
 
-                var rolledSeven = false;
+                var moveRobber = false;
                 if (roll == 7)
                 {
-                    rolledSeven = true;
+                    moveRobber = true;
                 }
                 else
                 {
                     this.CollectResourcesAtStartOfTurn(roll);
                 }
 
-                computerPlayer.BuildInitialPlayerActions(null, rolledSeven);
+                computerPlayer.BuildInitialPlayerActions(null, moveRobber);
 
                 ComputerPlayerAction playerAction;
                 while ((playerAction = computerPlayer.GetPlayerAction()) != null && computerPlayer.VictoryPoints < 10)
@@ -393,6 +393,17 @@ namespace Jabberwocky.SoC.Library
                     if (playerAction is PlaceRobberAction placeRobberAction)
                     {
                         this.robberHex = placeRobberAction.RobberHex;
+                    }
+                    else if (playerAction is SelectResourceFromPlayerAction selectResourceFromPlayerAction)
+                    {
+                        var opponent = this.playersById[selectResourceFromPlayerAction.PlayerId];
+                        var takenResource = this.GetResourceFromPlayer(opponent);
+                        computerPlayer.AddResources(takenResource);
+
+                        var resourceTransactionList = new ResourceTransactionList();
+                        resourceTransactionList.Add(new ResourceTransaction(computerPlayer.Id, opponent.Id, takenResource));
+                        events.Add(new ResourceTransactionEvent(computerPlayer.Id, resourceTransactionList));
+                        this.ResourcesTransferredEvent?.Invoke(resourceTransactionList);
                     }
                     else
                     {

@@ -10,7 +10,7 @@ namespace Jabberwocky.SoC.Library.Interfaces
     {
         #region Methods
         void AddDevelopmentCard(DevelopmentCard developmentCard);
-        void BuildInitialPlayerActions(PlayerDataModel[] playerData, bool rolledSeven);
+        void BuildInitialPlayerActions(PlayerDataModel[] playerData, bool moveRobber);
         uint ChooseCityLocation();
         uint ChooseSettlementLocation();
         void ChooseInitialInfrastructure(out uint settlementLocation, out uint roadEndLocation);

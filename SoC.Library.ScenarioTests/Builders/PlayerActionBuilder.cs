@@ -60,7 +60,7 @@ namespace Jabberwocky.SoC.Library.ScenarioTests.Builders
 
         public PlayerActionBuilder PlaceRobber(uint hexLocation)
         {
-            this.playerActions.Add(new ScenarioPlaceRobberAction(hexLocation));
+            this.playerActions.Add(new PlaceRobberAction(hexLocation));
             return this;
         }
 

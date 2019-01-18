@@ -64,6 +64,7 @@
     <Compile Include="GameActions\BuyDevelopmentCardAction.cs" />
     <Compile Include="GameActions\PlaceRobberAction.cs" />
     <Compile Include="GameActions\PlayKnightCardAction.cs" />
+    <Compile Include="GameActions\SelectResourceFromPlayerAction.cs" />
     <Compile Include="GameBoards\GameBoardSetup.cs" />
     <Compile Include="GameEvents\BuyDevelopmentCardEvent.cs" />
     <Compile Include="GameEvents\GameWinEvent.cs" />
