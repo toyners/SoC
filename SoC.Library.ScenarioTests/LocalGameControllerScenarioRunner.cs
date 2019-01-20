@@ -89,10 +89,12 @@ namespace SoC.Library.ScenarioTests
             this.localGameController.GameEvents = this.GameEventsHandler;
             this.localGameController.LargestArmyEvent = (newPlayerId, previousPlayerId) => { this.currentTurn?.AddEvent(new LargestArmyChangedEvent(newPlayerId, previousPlayerId)); };
             this.localGameController.PlayKnightCardEvent = (PlayKnightCardEvent p) => { this.currentTurn?.AddEvent(p); };
+            this.localGameController.ResourcesLostEvent = (r) => this.currentTurn?.AddEvent(r);
             this.localGameController.ResourcesTransferredEvent = (ResourceTransactionList list) =>
             {
                 this.currentTurn?.AddEvent(new ResourceTransactionEvent(this.players[0].Id, list));
             };
+            
             this.localGameController.RobberEvent = (int r) =>
             {
                 this.currentTurn.AddEvent(new ScenarioRobberEvent(r));
@@ -136,10 +138,18 @@ namespace SoC.Library.ScenarioTests
 
             for (var index = 0; index < this.turns.Count; index += 4)
             {
-                if (index == 0)
-                    this.localGameController.StartGamePlay();
                 var workingIndex = index;
                 var endIndex = index + 3;
+                while (workingIndex <= endIndex && workingIndex < this.turns.Count)
+                {
+                    var playerTurn = this.turns[workingIndex];
+                    playerTurn.ResolveResponses(this.localGameController);
+                    workingIndex++;
+                }
+
+                if (index == 0)
+                    this.localGameController.StartGamePlay();
+                workingIndex = index;
                 while (workingIndex <= endIndex && workingIndex < this.turns.Count)
                 {
                     var playerTurn = this.turns[workingIndex];

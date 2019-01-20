@@ -151,7 +151,8 @@ namespace Jabberwocky.SoC.Library.ScenarioTests.Builders
             var dict = new Dictionary<Guid, ResourceClutch>();
             foreach (var pair in resourcesLostPairs)
             {
-
+                var player = this.playersByName[pair.Item1];
+                dict.Add(player.Id, pair.Item2);
             }
 
             this.expectedEvents.Add(new ResourceUpdate(dict));

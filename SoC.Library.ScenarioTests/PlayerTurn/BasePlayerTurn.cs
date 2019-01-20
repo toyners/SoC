@@ -21,6 +21,7 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
         public readonly IPlayer player;
         protected readonly LocalGameControllerScenarioRunner runner;
         private readonly List<GameEvent> actualEvents = new List<GameEvent>();
+        private List<ComputerPlayerAction> playerActions;
         private readonly Dictionary<string, PlayerSnapshot> playerSnapshotsByName = new Dictionary<string, PlayerSnapshot>();
         private readonly int roundNumber;
         private readonly int turnNumber;
@@ -38,7 +39,20 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
 
         #region Properties
         public IList<GameEvent> ExpectedEvents { private get; set; }
-        public IList<ComputerPlayerAction> PlayerActions { protected get; set; }
+        public List<ComputerPlayerAction> PlayerActions
+        {
+            protected get { return this.playerActions; }
+            set
+            {
+                if (this.playerActions == null && value != null)
+                    this.playerActions = value;
+                else if (this.playerActions != null && value != null)
+                    this.playerActions.AddRange(value);
+                else if (value == null)
+                    this.playerActions = null;
+            }
+        }
+        public IDictionary<string, ResourceClutch> PlayerResourcesToDropByName { protected get; set; }
         public Guid PlayerId { get { return this.player.Id; } }
         public IList<RunnerAction> RunnerActions { get; set; }
         public bool TreatErrorsAsEvents
@@ -122,6 +136,44 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
                     throw new Exception($"Action of type '{action.GetType()}' not handled");
                 }
             }
+        }
+
+        public void ResolveResponses(LocalGameController localGameController)
+        {
+            if (this.PlayerResourcesToDropByName == null || this.PlayerResourcesToDropByName.Count == 0)
+                return;
+
+            foreach (var kv in this.PlayerResourcesToDropByName)
+            {
+                var player = this.runner.playersByName[kv.Key];
+
+                if (player is ScenarioPlayer)
+                {
+                    this.PlayerActions = new List<ComputerPlayerAction>();
+                    this.PlayerActions.Add(new ScenarioResourcesToDropAction(kv.Value));
+                }
+                else
+                {
+                    ((ScenarioComputerPlayer)player).AddResourcesToDrop(kv.Value);
+                }
+            }
+        }
+
+        protected virtual void ResolveResponse(ComputerPlayerAction response, LocalGameController localGameController)
+        {
+            if (response is ScenarioResourcesToDropAction scenarioResourcesToDropAction)
+            {
+                localGameController.DropResources(scenarioResourcesToDropAction.Resources);
+            }
+            else
+            {
+                throw new Exception($"Response of type '{response.GetType()}' not handled");
+            }
+        }
+
+        public PlayerResponseBuilder Responses()
+        {
+            return new PlayerResponseBuilder(this, this.runner.playersByName);
         }
 
         public PlayerStateBuilder State(string playerName)
@@ -257,5 +309,30 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
             return message;
         }
         #endregion
+    }
+
+    internal class PlayerResponseBuilder
+    {
+        private readonly BasePlayerTurn playerTurn;
+        private Dictionary<string, IPlayer> playersByName;
+        private readonly IDictionary<string, ResourceClutch> playerResourcesToDropByName = new Dictionary<string, ResourceClutch>();
+
+        public PlayerResponseBuilder(BasePlayerTurn playerTurn, Dictionary<string, IPlayer> playersByName)
+        {
+            this.playerTurn = playerTurn;
+            this.playersByName = playersByName;
+        }
+
+        public BasePlayerTurn End()
+        {
+            this.playerTurn.PlayerResourcesToDropByName = this.playerResourcesToDropByName;
+            return this.playerTurn;
+        }
+
+        public PlayerResponseBuilder ResourcesToDrop(string playerName, ResourceClutch resourceClutch)
+        {
+            this.playerResourcesToDropByName.Add(playerName, resourceClutch);
+            return this;
+        }
     }
 }

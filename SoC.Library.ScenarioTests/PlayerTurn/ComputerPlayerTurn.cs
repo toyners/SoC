@@ -37,12 +37,6 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
                     this.SetupResourceSelectionOnPlayer(selectedPlayer, scenarioSelectResourceFromPlayerAction.ExpectedSingleResource);
                     this.PlayerActions[index] = new SelectResourceFromPlayerAction(selectedPlayer.Id);
                 }
-                else if (this.PlayerActions[index] is Jabberwocky.SoC.Library.ScenarioTests.Builders.ScenarioResourcesToDropAction scenarioResourcesToDropAction )
-                {
-                    var selectedPlayer = this.runner.GetPlayerFromName(scenarioResourcesToDropAction.SelectedPlayerName);
-                    ((ScenarioComputerPlayer)selectedPlayer).AddResourcesToDrop(scenarioResourcesToDropAction.Resources);
-                    this.PlayerActions.RemoveAt(index--);
-                }
             }
 
             this.computerPlayer.AddActions(this.PlayerActions);

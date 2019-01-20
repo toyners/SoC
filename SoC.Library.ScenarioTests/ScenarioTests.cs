@@ -906,7 +906,7 @@ namespace SoC.Library.ScenarioTests
                 .WithStartingResourcesForPlayer(SecondOpponentName, ResourceClutch.OneBrick * 9)
                 .WithStartingResourcesForPlayer(ThirdOpponentName, ResourceClutch.OneBrick * 10)
                 .PlayerTurn(MainPlayerName, 3, 4)
-                    .Actions()
+                    .Responses()
                         .ResourcesToDrop(MainPlayerName, ResourceClutch.OneBrick * 4)
                         .ResourcesToDrop(FirstOpponentName, ResourceClutch.OneBrick * 4)
                         .ResourcesToDrop(SecondOpponentName, ResourceClutch.OneBrick * 5)
