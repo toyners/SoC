@@ -21,6 +21,10 @@ namespace Jabberwocky.SoC.Library
                 return false;
 
             var other = (ResourceUpdate)obj;
+            if ((this.Resources != null && other.Resources == null) ||
+                (this.Resources == null && other.Resources != null))
+                return false;
+
             if (this.Resources.Count != other.Resources.Count)
                 return false;
 
