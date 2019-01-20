@@ -105,6 +105,10 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
                     var knightCard = (KnightDevelopmentCard)this.player.HeldCards.Where(c => c.Type == DevelopmentCardTypes.Knight).First();
                     localGameController.UseKnightCard(turnToken, knightCard, playKnightCardAction.NewRobberHex, playKnightCardAction.PlayerId);
                 }
+                else if (action is ScenarioResourcesToDropAction scenarioResourcesToDropAction)
+                {
+                    localGameController.DropResources(scenarioResourcesToDropAction.Resources);
+                }
                 else if (action is ComputerPlayerAction)
                 {
                     switch (action.ActionType)

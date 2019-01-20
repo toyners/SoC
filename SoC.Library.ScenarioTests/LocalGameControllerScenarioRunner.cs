@@ -138,7 +138,6 @@ namespace SoC.Library.ScenarioTests
             {
                 if (index == 0)
                     this.localGameController.StartGamePlay();
-
                 var workingIndex = index;
                 var endIndex = index + 3;
                 while (workingIndex <= endIndex && workingIndex < this.turns.Count)

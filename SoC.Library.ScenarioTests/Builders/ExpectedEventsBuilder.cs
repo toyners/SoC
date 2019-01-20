@@ -146,6 +146,19 @@ namespace Jabberwocky.SoC.Library.ScenarioTests.Builders
             return this;
         }
 
+        public ExpectedEventsBuilder ResourcesLostEvent(params Tuple<string, ResourceClutch>[] resourcesLostPairs)
+        {
+            var dict = new Dictionary<Guid, ResourceClutch>();
+            foreach (var pair in resourcesLostPairs)
+            {
+
+            }
+
+            this.expectedEvents.Add(new ResourceUpdate(dict));
+
+            return this;
+        }
+
         public ExpectedEventsBuilder RobberEvent(int expectedResourcesToDropCount)
         {
             var expectedRobberEvent = new ScenarioRobberEvent(expectedResourcesToDropCount);
@@ -168,6 +181,8 @@ namespace Jabberwocky.SoC.Library.ScenarioTests.Builders
                 rc[index++] = new ResourceCollection(pair.Item1, pair.Item2);
             this.expectedEvents.Add(new ResourcesCollectedEvent(playerId, rc));
         }
+
+        
         #endregion
     }
 }

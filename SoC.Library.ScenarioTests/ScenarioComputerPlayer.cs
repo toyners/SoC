@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Jabberwocky.SoC.Library;
 using Jabberwocky.SoC.Library.DevelopmentCards;
 using Jabberwocky.SoC.Library.GameActions;
@@ -12,6 +13,7 @@ namespace SoC.Library.ScenarioTests
         #region Fields
         private readonly Queue<ComputerPlayerAction> actions = new Queue<ComputerPlayerAction>();
         public readonly Queue<DevelopmentCard> BoughtDevelopmentCards = new Queue<DevelopmentCard>();
+        private readonly Queue<ResourceClutch> resourcesToDrop = new Queue<ResourceClutch>();
         #endregion
 
         #region Construction
@@ -29,6 +31,11 @@ namespace SoC.Library.ScenarioTests
         {
             base.AddDevelopmentCard(developmentCard);
             this.BoughtDevelopmentCards.Enqueue(developmentCard);
+        }
+
+        public void AddResourcesToDrop(ResourceClutch resourcesToDrop)
+        {
+            this.resourcesToDrop.Enqueue(resourcesToDrop);
         }
 
         public void AddSetupInstructions(uint settlementLocation, uint roadSegmentEndLocation)
@@ -51,6 +58,14 @@ namespace SoC.Library.ScenarioTests
         public override uint ChooseRobberLocation()
         {
             return 0;
+        }
+
+        public override ResourceClutch ChooseResourcesToDrop()
+        {
+            if (this.resourcesToDrop.Count == 0)
+                throw new Exception("No resources have been set up to be dropped");
+            var resourcesToDrop = this.resourcesToDrop.Dequeue();
+            return resourcesToDrop;
         }
 
         public override ComputerPlayerAction GetPlayerAction()

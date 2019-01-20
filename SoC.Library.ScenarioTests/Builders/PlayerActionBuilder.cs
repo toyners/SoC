@@ -60,7 +60,7 @@ namespace Jabberwocky.SoC.Library.ScenarioTests.Builders
 
         public PlayerActionBuilder PlaceRobber(uint hexLocation)
         {
-            this.playerActions.Add(new PlaceRobberAction(hexLocation));
+            this.playerActions.Add(new ScenarioPlaceRobberAction(hexLocation));
             return this;
         }
 
@@ -88,6 +88,24 @@ namespace Jabberwocky.SoC.Library.ScenarioTests.Builders
         {
             this.playerActions.Add(new ScenarioPlayKnightCardAction(hexLocation, selectedPlayerName, expectedSingleResource));
             return this;
+        }
+
+        public PlayerActionBuilder ResourcesToDrop(string playerName, ResourceClutch resourceClutch)
+        {
+            this.playerActions.Add(new ScenarioResourcesToDropAction(playerName, resourceClutch));
+            return this;
+        }
+    }
+
+    internal class ScenarioResourcesToDropAction : ComputerPlayerAction
+    {
+        public readonly string SelectedPlayerName;
+        public readonly ResourceClutch Resources;
+
+        public ScenarioResourcesToDropAction(string playerName, ResourceClutch resources) : base(0)
+        {
+            this.SelectedPlayerName = playerName;
+            this.Resources = resources;
         }
     }
 }

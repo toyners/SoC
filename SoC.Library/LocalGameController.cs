@@ -867,7 +867,7 @@ namespace Jabberwocky.SoC.Library
 
                         if (resourcesDroppedByComputerPlayers == null)
                         {
-                            resourcesDroppedByComputerPlayers = new ResourceUpdate();
+                            resourcesDroppedByComputerPlayers = new ResourceUpdate(new Dictionary<Guid, ResourceClutch>());
                         }
 
                         resourcesDroppedByComputerPlayers.Resources.Add(computerPlayer.Id, resourcesToDropByComputerPlayer);

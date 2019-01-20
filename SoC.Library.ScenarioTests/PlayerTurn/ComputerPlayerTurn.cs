@@ -21,7 +21,11 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
 
             for (var index = 0; index < this.PlayerActions.Count; index++)
             {
-                if (this.PlayerActions[index] is ScenarioPlayKnightCardAction scenarioPlayKnightCardAction)
+                if (this.PlayerActions[index] is ScenarioPlaceRobberAction scenarioPlaceRobberAction)
+                {
+                    this.PlayerActions[index] = new PlaceRobberAction(scenarioPlaceRobberAction.NewRobberHex);
+                }
+                else if (this.PlayerActions[index] is ScenarioPlayKnightCardAction scenarioPlayKnightCardAction)
                 {
                     var selectedPlayer = this.runner.GetPlayerFromName(scenarioPlayKnightCardAction.SelectedPlayerName);
                     this.SetupResourceSelectionOnPlayer(selectedPlayer, scenarioPlayKnightCardAction.ExpectedSingleResource);
@@ -32,6 +36,12 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
                     var selectedPlayer = this.runner.GetPlayerFromName(scenarioSelectResourceFromPlayerAction.SelectedPlayerName);
                     this.SetupResourceSelectionOnPlayer(selectedPlayer, scenarioSelectResourceFromPlayerAction.ExpectedSingleResource);
                     this.PlayerActions[index] = new SelectResourceFromPlayerAction(selectedPlayer.Id);
+                }
+                else if (this.PlayerActions[index] is Jabberwocky.SoC.Library.ScenarioTests.Builders.ScenarioResourcesToDropAction scenarioResourcesToDropAction )
+                {
+                    var selectedPlayer = this.runner.GetPlayerFromName(scenarioResourcesToDropAction.SelectedPlayerName);
+                    ((ScenarioComputerPlayer)selectedPlayer).AddResourcesToDrop(scenarioResourcesToDropAction.Resources);
+                    this.PlayerActions.RemoveAt(index--);
                 }
             }
 
