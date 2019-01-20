@@ -490,7 +490,42 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void Scenario_ComputerPlayerRollsSeventAndAllPlayersWithMoreThanSevenResourcesLosesResources()
         {
-            Assert.Fail("Not Implemented");
+            this.CreateStandardLocalGameControllerScenarioRunner()
+                .WithNoResourceCollection()
+                .WithStartingResourcesForPlayer(MainPlayerName, ResourceClutch.OneBrick * 7)
+                .WithStartingResourcesForPlayer(FirstOpponentName, ResourceClutch.OneBrick * 8)
+                .WithStartingResourcesForPlayer(SecondOpponentName, ResourceClutch.OneBrick * 9)
+                .WithStartingResourcesForPlayer(ThirdOpponentName, ResourceClutch.OneBrick * 10)
+                .PlayerTurn(MainPlayerName, 3, 3)
+                    .EndTurn()
+                .PlayerTurn(FirstOpponentName, 3, 4)
+                    .Responses()
+                        .ResourcesToDrop(MainPlayerName, ResourceClutch.OneBrick * 4)
+                        .ResourcesToDrop(FirstOpponentName, ResourceClutch.OneBrick * 4)
+                        .ResourcesToDrop(SecondOpponentName, ResourceClutch.OneBrick * 5)
+                        .ResourcesToDrop(ThirdOpponentName, ResourceClutch.OneBrick * 5)
+                        .End()
+                    .Events()
+                        .ResourcesLostEvent( 
+                            new Tuple<string, ResourceClutch>(FirstOpponentName, ResourceClutch.OneBrick * 4),
+                            new Tuple<string, ResourceClutch>(SecondOpponentName, ResourceClutch.OneBrick * 5),
+                            new Tuple<string, ResourceClutch>(ThirdOpponentName, ResourceClutch.OneBrick * 5))
+                        .End()
+                    .State(MainPlayerName)
+                        .Resources(ResourceClutch.OneBrick * 3)
+                        .End()
+                    .State(FirstOpponentName)
+                        .Resources(ResourceClutch.OneBrick * 4)
+                        .End()
+                    .State(SecondOpponentName)
+                        .Resources(ResourceClutch.OneBrick * 4)
+                        .End()
+                    .State(ThirdOpponentName)
+                        .Resources(ResourceClutch.OneBrick * 5)
+                        .End()
+                    .EndTurn()
+                .Build()
+                .Run();
         }
 
         /// <summary>
