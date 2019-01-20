@@ -260,20 +260,21 @@ namespace Jabberwocky.SoC.Library
 
         public void RemoveResources(ResourceClutch resourceClutch)
         {
-            if (this.BrickCount - resourceClutch.BrickCount < 0 ||
-                this.GrainCount - resourceClutch.GrainCount < 0 ||
-                this.LumberCount - resourceClutch.LumberCount < 0 ||
-                this.OreCount - resourceClutch.OreCount < 0 ||
-                this.WoolCount - resourceClutch.WoolCount < 0)
+            if (this.Resources.BrickCount - resourceClutch.BrickCount < 0 ||
+                this.Resources.GrainCount - resourceClutch.GrainCount < 0 ||
+                this.Resources.LumberCount - resourceClutch.LumberCount < 0 ||
+                this.Resources.OreCount - resourceClutch.OreCount < 0 ||
+                this.Resources.WoolCount - resourceClutch.WoolCount < 0)
             {
                 throw new ArithmeticException("No resource count can be negative.");
             }
 
-            this.BrickCount -= resourceClutch.BrickCount;
+            this.Resources -= resourceClutch;
+            /*this.BrickCount -= resourceClutch.BrickCount;
             this.GrainCount -= resourceClutch.GrainCount;
             this.LumberCount -= resourceClutch.LumberCount;
             this.OreCount -= resourceClutch.OreCount;
-            this.WoolCount -= resourceClutch.WoolCount;
+            this.WoolCount -= resourceClutch.WoolCount;*/
         }
 
         /// <summary>
@@ -287,7 +288,7 @@ namespace Jabberwocky.SoC.Library
             try
             {
                 var idValue = reader.GetAttribute("id");
-                if (!String.IsNullOrEmpty(idValue))
+                if (!string.IsNullOrEmpty(idValue))
                 {
                     this.Id = Guid.Parse(idValue);
                 }
@@ -309,7 +310,7 @@ namespace Jabberwocky.SoC.Library
                 throw new Exception("No id found for player in stream.");
             }
 
-            if (String.IsNullOrEmpty(this.Name))
+            if (string.IsNullOrEmpty(this.Name))
             {
                 throw new Exception("No name found for player in stream.");
             }
@@ -358,7 +359,7 @@ namespace Jabberwocky.SoC.Library
         private int GetValueOrZero(XmlReader reader, String attributeName)
         {
             var value = reader.GetAttribute(attributeName);
-            return !String.IsNullOrEmpty(value) ? int.Parse(value) : 0;
+            return !string.IsNullOrEmpty(value) ? int.Parse(value) : 0;
         }
         #endregion
     }

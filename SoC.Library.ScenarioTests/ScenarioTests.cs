@@ -913,8 +913,7 @@ namespace SoC.Library.ScenarioTests
                         .ResourcesToDrop(ThirdOpponentName, ResourceClutch.OneBrick * 5)
                         .End()
                     .Events()
-                        .ResourcesLostEvent(new Tuple<string, ResourceClutch>(MainPlayerName, ResourceClutch.OneBrick * 4),
-                            new Tuple<string, ResourceClutch>(FirstOpponentName, ResourceClutch.OneBrick * 4),
+                        .ResourcesLostEvent(new Tuple<string, ResourceClutch>(FirstOpponentName, ResourceClutch.OneBrick * 4),
                             new Tuple<string, ResourceClutch>(SecondOpponentName, ResourceClutch.OneBrick * 5),
                             new Tuple<string, ResourceClutch>(ThirdOpponentName, ResourceClutch.OneBrick * 5))
                         .End()

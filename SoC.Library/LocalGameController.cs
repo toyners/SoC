@@ -863,14 +863,16 @@ namespace Jabberwocky.SoC.Library
                     if (player.ResourcesCount > 7)
                     {
                         var computerPlayer = (IComputerPlayer)player;
-                        var resourcesToDropByComputerPlayer = computerPlayer.ChooseResourcesToDrop();
+                        var resourcesToDrop = computerPlayer.ChooseResourcesToDrop();
+                        computerPlayer.RemoveResources(resourcesToDrop);
 
+                        // TODO: Tidy this up - passing in empty dict is wrong
                         if (resourcesDroppedByComputerPlayers == null)
                         {
                             resourcesDroppedByComputerPlayers = new ResourceUpdate(new Dictionary<Guid, ResourceClutch>());
                         }
 
-                        resourcesDroppedByComputerPlayers.Resources.Add(computerPlayer.Id, resourcesToDropByComputerPlayer);
+                        resourcesDroppedByComputerPlayers.Resources.Add(computerPlayer.Id, resourcesToDrop);
                     }
                 }
 
