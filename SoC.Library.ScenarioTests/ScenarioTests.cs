@@ -1034,7 +1034,21 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void Scenario_RobberLocationOnlyHasPlayerSettlementsSoChooseResourceFromOpponentCallReturnsErrorMessage()
         {
-            Assert.Fail("Not Implemented");
+            var mainPlayerResources = ResourceClutch.OneWool;
+            this.CreateStandardLocalGameControllerScenarioRunner()
+                .WithNoResourceCollection()
+                .WithStartingResourcesForPlayer(MainPlayerName, mainPlayerResources)
+                .PlayerTurn(MainPlayerName, 3, 4)
+                    .Actions()
+                        .PlaceRobber(2)
+                        .ChooseResourceFromOpponent(MainPlayerName, ResourceTypes.Wool)
+                        .End()
+                    .Events()
+                        .ErrorMessageEvent("Cannot call 'ChooseResourceFromOpponent' when no robbing choices are available.")
+                        .End()
+                    .EndTurn()
+                .Build()
+                .Run();
         }
 
         private LocalGameControllerScenarioRunner CreateStandardLocalGameControllerScenarioRunner()

@@ -267,6 +267,10 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
             {
                 message += $"Dice 1 is {diceRollEvent.Dice1}, Dice roll 2 is {diceRollEvent.Dice2}";
             }
+            else if (gameEvent is ScenarioErrorMessageEvent scenarioErrorMessageEvent)
+            {
+                message += $"With error message '{scenarioErrorMessageEvent.ExpectedErrorMessage}'";
+            }
             else if (gameEvent is ResourcesCollectedEvent resourcesCollectedEvent)
             {
                 message += $"Resources collected entries count is {resourcesCollectedEvent.ResourceCollection.Length}";
