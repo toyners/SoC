@@ -40,7 +40,7 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
         #region Properties
         public IDictionary<Guid, ComputerPlayerAction> ActionsByPlayerId { protected get; set; }
         public IList<GameEvent> ExpectedEvents { private get; set; }
-        public IDictionary<Guid, GameEvent> GameEventsByPlayerId { protected get; set; }
+        public IDictionary<Guid, GameEvent> GameEventsByPlayerId { private get; set; }
         public List<ComputerPlayerAction> PlayerActions
         {
             protected get { return this.playerActions; }
@@ -89,7 +89,9 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
         {
             this.actualEvents.Add(gameEvent);
 
-            if (this.GameEventsByPlayerId.TryGetValue(gameEvent.PlayerId, out var expectedEvent) && gameEvent.Equals(expectedEvent))
+            if (this.GameEventsByPlayerId != null && 
+                this.GameEventsByPlayerId.TryGetValue(gameEvent.PlayerId, out var expectedEvent) && 
+                gameEvent.Equals(expectedEvent))
             {
                 var action = (ScenarioResourcesToDropAction)this.ActionsByPlayerId[gameEvent.PlayerId];
             }

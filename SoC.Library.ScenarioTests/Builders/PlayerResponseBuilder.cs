@@ -26,6 +26,8 @@ namespace SoC.Library.ScenarioTests.Builders
         public BasePlayerTurn End()
         {
             this.playerTurn.PlayerResourcesToDropByName = this.playerResourcesToDropByName;
+            this.playerTurn.ActionsByPlayerId = this.actionsByPlayerId;
+            this.playerTurn.GameEventsByPlayerId = this.gameEventsByPlayerId;
             return this.playerTurn;
         }
 

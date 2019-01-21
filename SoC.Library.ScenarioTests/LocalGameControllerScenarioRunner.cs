@@ -140,16 +140,16 @@ namespace SoC.Library.ScenarioTests
             {
                 var workingIndex = index;
                 var endIndex = index + 3;
-                while (workingIndex <= endIndex && workingIndex < this.turns.Count)
+                /*while (workingIndex <= endIndex && workingIndex < this.turns.Count)
                 {
                     var playerTurn = this.turns[workingIndex];
                     playerTurn.ResolveResponses(this.localGameController);
                     workingIndex++;
-                }
+                }*/
 
                 if (index == 0)
                     this.localGameController.StartGamePlay();
-                workingIndex = index;
+                //workingIndex = index;
                 while (workingIndex <= endIndex && workingIndex < this.turns.Count)
                 {
                     var playerTurn = this.turns[workingIndex];
