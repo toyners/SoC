@@ -500,6 +500,7 @@ namespace SoC.Library.ScenarioTests
                     .EndTurn()
                 .PlayerTurn(FirstOpponentName, 3, 4)
                     .Responses()
+                        .WhenDiceRollIsSevenThenDropResources(MainPlayerName, ResourceClutch.OneBrick * 4)
                         .ResourcesToDrop(MainPlayerName, ResourceClutch.OneBrick * 4)
                         .ResourcesToDrop(FirstOpponentName, ResourceClutch.OneBrick * 4)
                         .ResourcesToDrop(SecondOpponentName, ResourceClutch.OneBrick * 5)

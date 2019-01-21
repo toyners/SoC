@@ -90,14 +90,4 @@ namespace Jabberwocky.SoC.Library.ScenarioTests.Builders
             return this;
         }
     }
-
-    internal class ScenarioResourcesToDropAction : ComputerPlayerAction
-    {
-        public readonly ResourceClutch Resources;
-
-        public ScenarioResourcesToDropAction(ResourceClutch resources) : base(0)
-        {
-            this.Resources = resources;
-        }
-    }
 }

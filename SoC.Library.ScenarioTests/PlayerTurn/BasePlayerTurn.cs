@@ -38,7 +38,9 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
         #endregion
 
         #region Properties
+        public IDictionary<Guid, ComputerPlayerAction> ActionsByPlayerId { protected get; set; }
         public IList<GameEvent> ExpectedEvents { private get; set; }
+        public IDictionary<Guid, GameEvent> GameEventsByPlayerId { protected get; set; }
         public List<ComputerPlayerAction> PlayerActions
         {
             protected get { return this.playerActions; }
@@ -64,6 +66,7 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
             }
         }
         public IList<Type> UnwantedEventTypes { private get; set; }
+        public LocalGameController LocalGameController { get; set; }
         #endregion
 
         #region Methods
@@ -85,6 +88,11 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
         public void AddEvent(GameEvent gameEvent)
         {
             this.actualEvents.Add(gameEvent);
+
+            if (this.GameEventsByPlayerId.TryGetValue(gameEvent.PlayerId, out var expectedEvent) && gameEvent.Equals(expectedEvent))
+            {
+                var action = (ScenarioResourcesToDropAction)this.ActionsByPlayerId[gameEvent.PlayerId];
+            }
         }
 
         public virtual void ResolveActions(TurnToken turnToken, LocalGameController localGameController)
@@ -313,30 +321,5 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
             return message;
         }
         #endregion
-    }
-
-    internal class PlayerResponseBuilder
-    {
-        private readonly BasePlayerTurn playerTurn;
-        private Dictionary<string, IPlayer> playersByName;
-        private readonly IDictionary<string, ResourceClutch> playerResourcesToDropByName = new Dictionary<string, ResourceClutch>();
-
-        public PlayerResponseBuilder(BasePlayerTurn playerTurn, Dictionary<string, IPlayer> playersByName)
-        {
-            this.playerTurn = playerTurn;
-            this.playersByName = playersByName;
-        }
-
-        public BasePlayerTurn End()
-        {
-            this.playerTurn.PlayerResourcesToDropByName = this.playerResourcesToDropByName;
-            return this.playerTurn;
-        }
-
-        public PlayerResponseBuilder ResourcesToDrop(string playerName, ResourceClutch resourceClutch)
-        {
-            this.playerResourcesToDropByName.Add(playerName, resourceClutch);
-            return this;
-        }
     }
 }

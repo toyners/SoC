@@ -312,9 +312,14 @@ namespace SoC.Library.ScenarioTests
         private void StartOfTurn()
         {
             if (this.currentIndex < this.turns.Count)
+            {
                 this.currentTurn = this.turns[this.currentIndex];
+                this.currentTurn.LocalGameController = this.localGameController;
+            }
             else
+            {
                 this.currentTurn = null;
+            }
 
             var previousIndex = this.currentIndex - 1;
             if (previousIndex >= 0 && previousIndex < this.turns.Count)
