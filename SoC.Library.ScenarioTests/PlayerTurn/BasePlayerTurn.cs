@@ -89,12 +89,38 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
         {
             this.actualEvents.Add(gameEvent);
 
-            if (this.GameEventsByPlayerId != null && 
+            bool eventProcessed = false;
+            while (this.instructions.Count > 0)
+            {
+                var obj = this.instructions.Peek();
+                if (obj is GameEvent lodgedGameEvent)
+                {
+                    if (gameEvent.Equals(lodgedGameEvent) && !eventProcessed)
+                    {
+                        eventProcessed = true;
+                        this.instructions.Dequeue();
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
+                else if (obj is ComputerPlayerAction action)
+                {
+                    this.instructions.Dequeue();
+                }
+                else if (obj is PlayerSnapshot snapshot)
+                {
+                    this.instructions.Dequeue();
+                }
+            }
+
+            /*if (this.GameEventsByPlayerId != null && 
                 this.GameEventsByPlayerId.TryGetValue(gameEvent.PlayerId, out var expectedEvent) && 
                 gameEvent.Equals(expectedEvent))
             {
                 var action = (ScenarioResourcesToDropAction)this.ActionsByPlayerId[gameEvent.PlayerId];
-            }
+            }*/
         }
 
         public virtual void ResolveActions(TurnToken turnToken, LocalGameController localGameController)
@@ -194,9 +220,10 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
             return new PlayerStateBuilder(this, playerSnapshot);
         }
 
-        internal void AddEvents(List<GameEvent> gameEvents)
+        public void AddEvents(List<GameEvent> gameEvents)
         {
-            this.actualEvents.AddRange(gameEvents);
+            foreach (var gameEvent in gameEvents)
+                this.AddEvent(gameEvent);
         }
 
         internal void VerifyEvents()
@@ -321,6 +348,68 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
             }
 
             return message;
+        }
+
+        internal void StartProcessing(TurnToken currentToken, LocalGameController localGameController)
+        {
+            if (this.instructions == null)
+            {
+                return;
+            }
+
+            this.LocalGameController = localGameController;
+
+            while (this.instructions.Count > 0)
+            {
+                var obj = this.instructions.Peek();
+                if (obj is GameEvent)
+                    break;
+
+                if (obj is ComputerPlayerAction action)
+                {
+                    this.instructions.Dequeue();
+                }
+                else if (obj is PlayerSnapshot snapshot)
+                {
+                    this.instructions.Dequeue();
+                }
+            }
+        }
+
+        private Queue<object> instructions = new Queue<object>();
+        public BasePlayerTurn DiceRollEvent(uint dice1, uint dice2)
+        {
+            this.instructions.Enqueue(new DiceRollEvent(this.PlayerId, dice1, dice2));
+            return this;
+        }
+
+        internal BasePlayerTurn DropResources(string playerName, ResourceClutch resourcesToDrop)
+        {
+            var player = this.runner.GetPlayerFromName(playerName);
+            if (player is ScenarioPlayer)
+            {
+                this.instructions.Enqueue(new ScenarioResourcesToDropAction(resourcesToDrop));
+            }
+            else
+            {
+                ((ScenarioComputerPlayer)player).AddResourcesToDrop(resourcesToDrop);
+            }
+
+            return this;
+        }
+
+        public BasePlayerTurn ResourcesLostEvent(params Tuple<string, ResourceClutch>[] resourcesLostPairs)
+        {
+            var dict = new Dictionary<Guid, ResourceClutch>();
+            foreach (var pair in resourcesLostPairs)
+            {
+                var player = this.runner.GetPlayerFromName(pair.Item1);
+                dict.Add(player.Id, pair.Item2);
+            }
+
+            this.instructions.Enqueue(new ResourceUpdate(dict));
+
+            return this;
         }
         #endregion
     }

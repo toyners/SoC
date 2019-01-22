@@ -488,6 +488,45 @@ namespace SoC.Library.ScenarioTests
         }
 
         [Test]
+        public void Scenario_ComputerPlayerRollsSeventAndAllPlayersWithMoreThanSevenResourcesLosesResources_New()
+        {
+            this.CreateStandardLocalGameControllerScenarioRunner()
+                .WithNoResourceCollection()
+                .WithStartingResourcesForPlayer(MainPlayerName, ResourceClutch.OneBrick * 7)
+                .WithStartingResourcesForPlayer(FirstOpponentName, ResourceClutch.OneBrick * 8)
+                .WithStartingResourcesForPlayer(SecondOpponentName, ResourceClutch.OneBrick * 9)
+                .WithStartingResourcesForPlayer(ThirdOpponentName, ResourceClutch.OneBrick * 10)
+                .PlayerTurn2(MainPlayerName, 3, 3)
+                    .DiceRollEvent(3, 3)
+                    .EndTurn()
+                .PlayerTurn2(FirstOpponentName, 3, 4)
+                    .DiceRollEvent(3, 4)
+                    .DropResources(MainPlayerName, ResourceClutch.OneBrick * 4)
+                    .DropResources(FirstOpponentName, ResourceClutch.OneBrick * 4)
+                    .DropResources(SecondOpponentName, ResourceClutch.OneBrick * 5)
+                    .DropResources(ThirdOpponentName, ResourceClutch.OneBrick * 5)
+                    .ResourcesLostEvent(
+                        new Tuple<string, ResourceClutch>(FirstOpponentName, ResourceClutch.OneBrick * 4),
+                        new Tuple<string, ResourceClutch>(SecondOpponentName, ResourceClutch.OneBrick * 5),
+                        new Tuple<string, ResourceClutch>(ThirdOpponentName, ResourceClutch.OneBrick * 5))
+                    .State(MainPlayerName)
+                        .Resources(ResourceClutch.OneBrick * 3)
+                        .End()
+                    .State(FirstOpponentName)
+                        .Resources(ResourceClutch.OneBrick * 4)
+                        .End()
+                    .State(SecondOpponentName)
+                        .Resources(ResourceClutch.OneBrick * 4)
+                        .End()
+                    .State(ThirdOpponentName)
+                        .Resources(ResourceClutch.OneBrick * 5)
+                        .End()
+                    .EndTurn()
+                .Build()
+                .Run();
+        }
+
+        [Test]
         public void Scenario_ComputerPlayerRollsSeventAndAllPlayersWithMoreThanSevenResourcesLosesResources()
         {
             this.CreateStandardLocalGameControllerScenarioRunner()

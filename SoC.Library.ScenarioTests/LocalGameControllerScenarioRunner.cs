@@ -136,7 +136,16 @@ namespace SoC.Library.ScenarioTests
             placeInfrastructureInstruction = this.playerSetupActions.Dequeue();
             this.localGameController.CompleteGameSetup(placeInfrastructureInstruction.SettlementLocation, placeInfrastructureInstruction.RoadEndLocation);
 
-            for (var index = 0; index < this.turns.Count; index += 4)
+            this.ProcessGame();
+            
+
+            return this.localGameController;
+        }
+
+        private void ProcessGame()
+        {
+            this.localGameController.StartGamePlay();
+            /*for (var index = 0; index < this.turns.Count; index += 4)
             {
                 var workingIndex = index;
                 var endIndex = index + 3;
@@ -145,7 +154,7 @@ namespace SoC.Library.ScenarioTests
                     var playerTurn = this.turns[workingIndex];
                     playerTurn.ResolveResponses(this.localGameController);
                     workingIndex++;
-                }*/
+                }
 
                 if (index == 0)
                     this.localGameController.StartGamePlay();
@@ -164,9 +173,7 @@ namespace SoC.Library.ScenarioTests
                 }
 
                 this.localGameController.EndTurn(this.currentToken);
-            }
-
-            return this.localGameController;
+            }*/
         }
 
         internal IPlayer GetPlayer(Guid playerId)
@@ -309,27 +316,33 @@ namespace SoC.Library.ScenarioTests
             this.currentTurn.AddEvent(new DiceRollEvent(playerId, dice1, dice2));
         }
 
+        private bool isFirstHumanTurn = true;
         private void StartOfTurn()
         {
             if (this.currentIndex < this.turns.Count)
             {
-                this.currentTurn = this.turns[this.currentIndex];
-                this.currentTurn.LocalGameController = this.localGameController;
+                this.currentTurn = this.turns[this.currentIndex++];
+                this.currentTurn.StartProcessing(this.currentToken, this.localGameController);
+                //this.currentTurn.LocalGameController = this.localGameController;
             }
             else
             {
                 this.currentTurn = null;
             }
 
-            var previousIndex = this.currentIndex - 1;
+            if (currentTurn is HumanPlayerTurn)
+                this.localGameController.EndTurn(this.currentToken);
+
+
+            /*var previousIndex = this.currentIndex - 1;
             if (previousIndex >= 0 && previousIndex < this.turns.Count)
             {
                 var previousTurn = this.turns[previousIndex];
                 previousTurn.VerifyEvents();
                 previousTurn.VerifyState(this.playersByName);
-            }
+            }*/
 
-            this.currentIndex++;
+            
         }
 
         private void GameEventsHandler(List<GameEvent> gameEvents)
@@ -345,6 +358,31 @@ namespace SoC.Library.ScenarioTests
                 }
             }
         }
+
+        internal BasePlayerTurn PlayerTurn2(string playerName, uint dice1, uint dice2)
+        {
+            this.NumberGenerator.AddTwoDiceRoll(dice1, dice2);
+
+            BasePlayerTurn playerTurn;
+            var player = this.playersByName[playerName];
+            if (player.IsComputer)
+                playerTurn = new ComputerPlayerTurn(player, this, this.roundNumber, this.turnNumber);
+            else
+                playerTurn = new HumanPlayerTurn(player, this, this.roundNumber, this.turnNumber);
+
+            this.turns.Add(playerTurn);
+
+            this.turnNumber++;
+            if (this.turnNumber > 4)
+            {
+                this.roundNumber++;
+                this.turnNumber = 1;
+            }
+
+            return playerTurn;
+        }
+
+        
         #endregion
     }
 
