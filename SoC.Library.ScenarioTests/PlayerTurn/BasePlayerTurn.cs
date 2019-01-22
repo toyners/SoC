@@ -20,7 +20,7 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
         #region Fields
         public readonly IPlayer player;
         protected readonly LocalGameControllerScenarioRunner runner;
-        private readonly List<GameEvent> actualEvents = new List<GameEvent>();
+        protected readonly List<GameEvent> actualEvents = new List<GameEvent>();
         private List<ComputerPlayerAction> playerActions;
         private readonly Dictionary<string, PlayerSnapshot> playerSnapshotsByName = new Dictionary<string, PlayerSnapshot>();
         private readonly int roundNumber;
@@ -85,7 +85,7 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
             return new ExpectedEventsBuilder(this, this.runner.playersByName);
         }
 
-        public void AddEvent(GameEvent gameEvent)
+        public virtual void AddEvent(GameEvent gameEvent)
         {
             this.actualEvents.Add(gameEvent);
 
@@ -350,7 +350,7 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
             return message;
         }
 
-        internal void StartProcessing(TurnToken currentToken, LocalGameController localGameController)
+        public virtual void Process(TurnToken currentToken, LocalGameController localGameController)
         {
             if (this.instructions == null)
             {
@@ -376,7 +376,7 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
             }
         }
 
-        private Queue<object> instructions = new Queue<object>();
+        protected Queue<object> instructions = new Queue<object>();
         public BasePlayerTurn DiceRollEvent(uint dice1, uint dice2)
         {
             this.instructions.Enqueue(new DiceRollEvent(this.PlayerId, dice1, dice2));

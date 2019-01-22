@@ -145,6 +145,14 @@ namespace SoC.Library.ScenarioTests
         private void ProcessGame()
         {
             this.localGameController.StartGamePlay();
+
+            for (var index = 0; index < this.turns.Count; index++)
+            {
+                this.turns[index].Process(this.currentToken, this.localGameController);
+                if (this.turns[index] is HumanPlayerTurn)
+                    this.localGameController.EndTurn(this.currentToken);
+            }
+
             /*for (var index = 0; index < this.turns.Count; index += 4)
             {
                 var workingIndex = index;
@@ -322,16 +330,23 @@ namespace SoC.Library.ScenarioTests
             if (this.currentIndex < this.turns.Count)
             {
                 this.currentTurn = this.turns[this.currentIndex++];
-                this.currentTurn.StartProcessing(this.currentToken, this.localGameController);
-                //this.currentTurn.LocalGameController = this.localGameController;
+                if (this.currentTurn is ComputerPlayerTurn computerTurn)
+                {
+                    this.currentTurn.Process(null, null);
+                }
+                else
+                {
+                    //this.currentTurn.StartProcessing(this.currentToken, this.localGameController);
+                    this.currentTurn.LocalGameController = this.localGameController;
+                }
             }
             else
             {
                 this.currentTurn = null;
             }
 
-            if (currentTurn is HumanPlayerTurn)
-                this.localGameController.EndTurn(this.currentToken);
+            //if (currentTurn is HumanPlayerTurn)
+            //    this.localGameController.EndTurn(this.currentToken);
 
 
             /*var previousIndex = this.currentIndex - 1;

@@ -21,10 +21,15 @@ namespace SoC.Library.ScenarioTests
         #endregion
 
         #region Methods
+        public void AddAction(ComputerPlayerAction action)
+        {
+            this.actions.Enqueue(action);
+        }
+
         public void AddActions(IEnumerable<ComputerPlayerAction> actions)
         {
             foreach (var action in actions)
-                this.actions.Enqueue(action);
+                this.AddAction(action);
         }
 
         public override void AddDevelopmentCard(DevelopmentCard developmentCard)

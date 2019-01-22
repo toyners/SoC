@@ -488,7 +488,7 @@ namespace SoC.Library.ScenarioTests
         }
 
         [Test]
-        public void Scenario_ComputerPlayerRollsSeventAndAllPlayersWithMoreThanSevenResourcesLosesResources_New()
+        public void Scenario_A()
         {
             this.CreateStandardLocalGameControllerScenarioRunner()
                 .WithNoResourceCollection()
