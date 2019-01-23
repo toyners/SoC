@@ -1,16 +1,15 @@
 ﻿
-namespace Jabberwocky.SoC.Library
+namespace Jabberwocky.SoC.Library.GameEvents
 {
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using Jabberwocky.SoC.Library.GameEvents;
 
-    public class ResourceUpdate : GameEvent
+    public class ResourceUpdateEvent : GameEvent
     {
         public readonly Dictionary<Guid, ResourceClutch> Resources = new Dictionary<Guid, ResourceClutch>();
 
-        public ResourceUpdate(Dictionary<Guid, ResourceClutch> resourcesLost) : base(Guid.Empty)
+        public ResourceUpdateEvent(Dictionary<Guid, ResourceClutch> resourcesLost) : base(Guid.Empty)
         {
             this.Resources = resourcesLost;
         }
@@ -20,7 +19,7 @@ namespace Jabberwocky.SoC.Library
             if (!base.Equals(obj))
                 return false;
 
-            var other = (ResourceUpdate)obj;
+            var other = (ResourceUpdateEvent)obj;
             if ((this.Resources != null && other.Resources == null) ||
                 (this.Resources == null && other.Resources != null))
                 return false;

@@ -15,23 +15,33 @@ using SoC.Library.ScenarioTests.ScenarioEvents;
 
 namespace SoC.Library.ScenarioTests.PlayerTurn
 {
-    internal abstract class BasePlayerTurn
+    internal class BasePlayerTurn
     {
         #region Fields
         public readonly IPlayer player;
         protected readonly LocalGameControllerScenarioRunner runner;
         protected readonly List<GameEvent> actualEvents = new List<GameEvent>();
-        private List<ComputerPlayerAction> playerActions;
-        private readonly Dictionary<string, PlayerSnapshot> playerSnapshotsByName = new Dictionary<string, PlayerSnapshot>();
+        private List<Tuple<string, ComputerPlayerAction>> playerActions;
+        private List<GameEvent> expectedEvents;
         private readonly int roundNumber;
         private readonly int turnNumber;
+        private Dictionary<string, IPlayer> playersByName;
         #endregion
 
         #region Construction
         public BasePlayerTurn(IPlayer player, LocalGameControllerScenarioRunner runner, int roundNumber, int turnNumber)
         {
-            this.runner = runner;
             this.player = player;
+            this.runner = runner;
+            this.roundNumber = roundNumber;
+            this.turnNumber = turnNumber;
+        }
+
+        public BasePlayerTurn(string playerName, Dictionary<string, IPlayer> playersByName, LocalGameControllerScenarioRunner runner, int roundNumber, int turnNumber)
+        {
+            this.player = playersByName[playerName];
+            this.runner = runner;
+            this.playersByName = playersByName;
             this.roundNumber = roundNumber;
             this.turnNumber = turnNumber;
         }
@@ -41,19 +51,6 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
         public IDictionary<Guid, ComputerPlayerAction> ActionsByPlayerId { protected get; set; }
         public IList<GameEvent> ExpectedEvents { private get; set; }
         public IDictionary<Guid, GameEvent> GameEventsByPlayerId { private get; set; }
-        public List<ComputerPlayerAction> PlayerActions
-        {
-            protected get { return this.playerActions; }
-            set
-            {
-                if (this.playerActions == null && value != null)
-                    this.playerActions = value;
-                else if (this.playerActions != null && value != null)
-                    this.playerActions.AddRange(value);
-                else if (value == null)
-                    this.playerActions = null;
-            }
-        }
         public IDictionary<string, ResourceClutch> PlayerResourcesToDropByName { protected get; set; }
         public Guid PlayerId { get { return this.player.Id; } }
         public IList<RunnerAction> RunnerActions { get; set; }
@@ -125,7 +122,7 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
 
         public virtual void ResolveActions(TurnToken turnToken, LocalGameController localGameController)
         {
-            if (this.PlayerActions == null || this.PlayerActions.Count == 0)
+        /*    if (this.PlayerActions == null || this.PlayerActions.Count == 0)
                 return;
 
             foreach (var action in this.PlayerActions)
@@ -171,12 +168,12 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
                 {
                     throw new Exception($"Action of type '{action.GetType()}' not handled");
                 }
-            }
+            }*/
         }
 
         public void ResolveResponses(LocalGameController localGameController)
         {
-            if (this.PlayerResourcesToDropByName == null || this.PlayerResourcesToDropByName.Count == 0)
+            /*if (this.PlayerResourcesToDropByName == null || this.PlayerResourcesToDropByName.Count == 0)
                 return;
 
             foreach (var kv in this.PlayerResourcesToDropByName)
@@ -192,7 +189,7 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
                 {
                     ((ScenarioComputerPlayer)player).AddResourcesToDrop(kv.Value);
                 }
-            }
+            }*/
         }
 
         protected virtual void ResolveResponse(ComputerPlayerAction response, LocalGameController localGameController)
@@ -214,8 +211,8 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
 
         public PlayerStateBuilder State(string playerName)
         {
-            var playerSnapshot = new PlayerSnapshot();
-            this.playerSnapshotsByName.Add(playerName, playerSnapshot);
+            var playerSnapshot = new PlayerSnapshot(playerName);
+            this.instructions.Enqueue(playerSnapshot);
 
             return new PlayerStateBuilder(this, playerSnapshot);
         }
@@ -259,8 +256,8 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
 
         internal void VerifyState(Dictionary<string, IPlayer> playersByName)
         {
-            foreach (var kv in this.playerSnapshotsByName)
-                kv.Value.Verify(playersByName[kv.Key]);
+            /*foreach (var kv in this.playerSnapshotsByName)
+                kv.Value.Verify(playersByName[kv.Key]);*/
         }
 
         protected void AddDevelopmentCard(Guid playerId, DevelopmentCardTypes developmentCardType)
@@ -385,15 +382,10 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
 
         internal BasePlayerTurn DropResources(string playerName, ResourceClutch resourcesToDrop)
         {
-            var player = this.runner.GetPlayerFromName(playerName);
-            if (player is ScenarioPlayer)
-            {
-                this.instructions.Enqueue(new ScenarioResourcesToDropAction(resourcesToDrop));
-            }
-            else
-            {
-                ((ScenarioComputerPlayer)player).AddResourcesToDrop(resourcesToDrop);
-            }
+            //var player = this.runner.GetPlayerFromName(playerName);
+            this.instructions.Enqueue(new ScenarioResourcesToDropAction(playerName, resourcesToDrop));
+            
+            //((ScenarioComputerPlayer)player).AddResourcesToDrop(resourcesToDrop);
 
             return this;
         }
@@ -407,7 +399,7 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
                 dict.Add(player.Id, pair.Item2);
             }
 
-            this.instructions.Enqueue(new ResourceUpdate(dict));
+            this.instructions.Enqueue(new ResourceUpdateEvent(dict));
 
             return this;
         }

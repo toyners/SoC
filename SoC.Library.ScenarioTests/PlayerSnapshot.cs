@@ -11,7 +11,11 @@ namespace SoC.Library.ScenarioTests
         public List<DevelopmentCardTypes> HeldCards;
         public ResourceClutch? Resources;
         public uint? VictoryPoints;
+
+        public readonly string Name;
         #endregion
+
+        public PlayerSnapshot(string name) { this.Name = name; }
 
         #region Methods
         public void Verify(IPlayer player)

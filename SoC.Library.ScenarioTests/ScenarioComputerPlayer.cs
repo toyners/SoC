@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Jabberwocky.SoC.Library;
 using Jabberwocky.SoC.Library.DevelopmentCards;
 using Jabberwocky.SoC.Library.GameActions;
+using Jabberwocky.SoC.Library.GameEvents;
 using Jabberwocky.SoC.Library.Interfaces;
 using Jabberwocky.SoC.Library.PlayerData;
 
@@ -30,6 +31,12 @@ namespace SoC.Library.ScenarioTests
         {
             foreach (var action in actions)
                 this.AddAction(action);
+        }
+
+        private Queue<object> instructions;
+        public void AddInstructions(IEnumerable<object> instructions)
+        {
+            this.instructions = new Queue<object>(instructions);
         }
 
         public override void AddDevelopmentCard(DevelopmentCard developmentCard)
@@ -60,6 +67,12 @@ namespace SoC.Library.ScenarioTests
             roadEndLocation = placeInfrastructureAction.RoadEndLocation;
         }
 
+        List<GameEvent> actualEvents = new List<GameEvent>();
+        internal void AddEvent(GameEvent gameEvent)
+        {
+            this.actualEvents.Add(gameEvent);
+        }
+
         public override uint ChooseRobberLocation()
         {
             return 0;
@@ -73,9 +86,31 @@ namespace SoC.Library.ScenarioTests
             return resourcesToDrop;
         }
 
+
         public override ComputerPlayerAction GetPlayerAction()
         {
-            return this.actions.Count > 0 ? this.actions.Dequeue() : null;
+            ComputerPlayerAction playerAction = null;
+            while (this.instructions.Count > 0)
+            {
+                var obj = this.instructions.Peek();
+                if (obj is GameEvent)
+                    break;
+
+                if (obj is ComputerPlayerAction action)
+                {
+                    if (playerAction != null)
+                        break;
+
+                    playerAction = action;
+                    this.instructions.Dequeue();
+                }
+                else if (obj is PlayerSnapshot snapshot)
+                {
+                    this.instructions.Dequeue();
+                }
+            }
+
+            return playerAction;
         }
         #endregion
     }

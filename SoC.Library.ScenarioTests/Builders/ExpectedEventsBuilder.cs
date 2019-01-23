@@ -155,7 +155,7 @@ namespace Jabberwocky.SoC.Library.ScenarioTests.Builders
                 dict.Add(player.Id, pair.Item2);
             }
 
-            this.expectedEvents.Add(new ResourceUpdate(dict));
+            this.expectedEvents.Add(new ResourceUpdateEvent(dict));
 
             return this;
         }

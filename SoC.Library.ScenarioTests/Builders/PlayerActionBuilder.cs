@@ -21,7 +21,7 @@ namespace Jabberwocky.SoC.Library.ScenarioTests.Builders
 
         public BasePlayerTurn End()
         {
-            this.playerTurn.PlayerActions = this.playerActions;
+            //this.playerTurn.PlayerActions = this.playerActions;
             this.playerTurn.RunnerActions = this.runnerActions;
             return this.playerTurn;
         }

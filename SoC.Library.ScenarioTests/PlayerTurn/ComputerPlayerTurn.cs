@@ -10,8 +10,6 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
     internal class ComputerPlayerTurn : BasePlayerTurn
     {
         private readonly ScenarioComputerPlayer computerPlayer;
-        private List<ComputerPlayerAction> actions;
-        private List<ComputerPlayerAction> expectedEvents;
 
         public ComputerPlayerTurn(IPlayer player, LocalGameControllerScenarioRunner runner, int roundNumber, int turnNumber) : base(player, runner, roundNumber, turnNumber)
         {
@@ -20,7 +18,7 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
 
         public override void ResolveActions(TurnToken turnToken, LocalGameController localGameController)
         {
-            if (this.PlayerActions == null || this.PlayerActions.Count == 0)
+            /*if (this.PlayerActions == null || this.PlayerActions.Count == 0)
                 return;
 
             for (var index = 0; index < this.PlayerActions.Count; index++)
@@ -43,12 +41,12 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
                 }
             }
 
-            this.computerPlayer.AddActions(this.PlayerActions);
+            this.computerPlayer.AddActions(this.PlayerActions);*/
         }
 
         public override void AddEvent(GameEvent gameEvent)
         {
-            this.actualEvents.Add(gameEvent);
+            this.computerPlayer.AddEvent(gameEvent);
         }
 
         public override void Process(TurnToken currentToken, LocalGameController localGameController)
@@ -58,21 +56,7 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
                 return;
             }
 
-            while (this.instructions.Count > 0)
-            {
-                var obj = this.instructions.Peek();
-                if (obj is GameEvent)
-                    break;
-
-                if (obj is ComputerPlayerAction action)
-                {
-                    this.instructions.Dequeue();
-                }
-                else if (obj is PlayerSnapshot snapshot)
-                {
-                    this.instructions.Dequeue();
-                }
-            }
+            this.computerPlayer.AddInstructions(this.instructions.ToArray());
         }
     }
 }

@@ -149,7 +149,8 @@ namespace SoC.Library.ScenarioTests
             for (var index = 0; index < this.turns.Count; index++)
             {
                 this.turns[index].Process(this.currentToken, this.localGameController);
-                if (this.turns[index] is HumanPlayerTurn)
+                //if (this.turns[index] is HumanPlayerTurn)
+                if (index == 0)
                     this.localGameController.EndTurn(this.currentToken);
             }
 
@@ -378,12 +379,12 @@ namespace SoC.Library.ScenarioTests
         {
             this.NumberGenerator.AddTwoDiceRoll(dice1, dice2);
 
-            BasePlayerTurn playerTurn;
-            var player = this.playersByName[playerName];
+            var playerTurn = new BasePlayerTurn(playerName, this.playersByName, this, this.roundNumber, this.turnNumber);
+            /*var player = this.playersByName[playerName];
             if (player.IsComputer)
                 playerTurn = new ComputerPlayerTurn(player, this, this.roundNumber, this.turnNumber);
             else
-                playerTurn = new HumanPlayerTurn(player, this, this.roundNumber, this.turnNumber);
+                playerTurn = new HumanPlayerTurn(player, this, this.roundNumber, this.turnNumber);*/
 
             this.turns.Add(playerTurn);
 

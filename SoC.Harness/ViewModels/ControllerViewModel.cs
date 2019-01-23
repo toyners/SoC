@@ -282,7 +282,7 @@ namespace SoC.Harness.ViewModels
             this.StartPhase();
         }*/
 
-        private void ResourcesLostEventHandler(ResourceUpdate resourceUpdate)
+        private void ResourcesLostEventHandler(ResourceUpdateEvent resourceUpdate)
         {
             // Resources lost by computer players during robber roll
             foreach (var kv in resourceUpdate.Resources)

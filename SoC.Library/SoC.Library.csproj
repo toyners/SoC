@@ -113,7 +113,7 @@
     <Compile Include="GameEvents\PlayMonopolyCardEvent.cs" />
     <Compile Include="ResourceClutch.cs" />
     <Compile Include="ResourceCollection.cs" />
-    <Compile Include="ResourceUpdate.cs" />
+    <Compile Include="GameEvents\ResourceUpdateEvent.cs" />
     <Compile Include="RoadSegment.cs" />
     <Compile Include="PlayerTurnOrderCreator.cs" />
     <Compile Include="Enums\GameConnectionTypes.cs" />

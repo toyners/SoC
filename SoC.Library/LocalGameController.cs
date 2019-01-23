@@ -116,7 +116,7 @@ namespace Jabberwocky.SoC.Library
         public Action<ClientAccount> LoggedInEvent { get; set; }
         public Action<Guid, Guid> LongestRoadBuiltEvent { get; set; }
         public Action<PlayKnightCardEvent> PlayKnightCardEvent { get; set; }
-        public Action<ResourceUpdate> ResourcesLostEvent { get; set; }
+        public Action<ResourceUpdateEvent> ResourcesLostEvent { get; set; }
         public Action<ResourceTransactionList> ResourcesTransferredEvent { get; set; }
         public Action<PlayerDataBase> RoadSegmentBuiltEvent { get; set; }
         public Action<int> RobberEvent { get; set; }
@@ -849,7 +849,7 @@ namespace Jabberwocky.SoC.Library
             }
             else
             {
-                ResourceUpdate resourcesDroppedByComputerPlayers = null;
+                ResourceUpdateEvent resourcesDroppedByComputerPlayers = null;
 
                 for (var index = 0; index < this.players.Length; index++)
                 {
@@ -869,7 +869,7 @@ namespace Jabberwocky.SoC.Library
                         // TODO: Tidy this up - passing in empty dict is wrong
                         if (resourcesDroppedByComputerPlayers == null)
                         {
-                            resourcesDroppedByComputerPlayers = new ResourceUpdate(new Dictionary<Guid, ResourceClutch>());
+                            resourcesDroppedByComputerPlayers = new ResourceUpdateEvent(new Dictionary<Guid, ResourceClutch>());
                         }
 
                         resourcesDroppedByComputerPlayers.Resources.Add(computerPlayer.Id, resourcesToDrop);

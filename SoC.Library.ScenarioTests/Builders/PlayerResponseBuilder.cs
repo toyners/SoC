@@ -43,7 +43,7 @@ namespace SoC.Library.ScenarioTests.Builders
             if (player is ScenarioPlayer)
             {
                 this.gameEventsByPlayerId.Add(player.Id, new DiceRollEvent(player.Id, 3, 4));
-                this.actionsByPlayerId.Add(player.Id, new ScenarioResourcesToDropAction(resourcesToDrop));
+                this.actionsByPlayerId.Add(player.Id, new ScenarioResourcesToDropAction("", resourcesToDrop));
             }
             else
             {
