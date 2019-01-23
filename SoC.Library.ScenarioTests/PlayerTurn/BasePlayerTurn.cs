@@ -105,9 +105,25 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
                 else if (obj is ComputerPlayerAction action)
                 {
                     this.instructions.Dequeue();
+                    if (action is ScenarioDropResourcesAction scenarioResourcesToDropAction)
+                    {
+                        var player = this.playersByName[scenarioResourcesToDropAction.PlayerName];
+                        var dropResourcesAction = scenarioResourcesToDropAction.CreateDropResourcesAction();
+                        
+                        if (player is ScenarioComputerPlayer computerPlayer)
+                        {
+                            computerPlayer.AddDropResourcesAction(dropResourcesAction);
+                        }
+                        else if (player is ScenarioPlayer humanPlayer)
+                        {
+                            this.LocalGameController.DropResources(dropResourcesAction.Resources);
+                        }
+                    }
                 }
                 else if (obj is PlayerSnapshot snapshot)
                 {
+                    // TODO: Drop take snapshot job into queue for computer player. Take
+                    // snapshot for human player
                     this.instructions.Dequeue();
                 }
             }
@@ -194,7 +210,7 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
 
         protected virtual void ResolveResponse(ComputerPlayerAction response, LocalGameController localGameController)
         {
-            if (response is ScenarioResourcesToDropAction scenarioResourcesToDropAction)
+            if (response is ScenarioDropResourcesAction scenarioResourcesToDropAction)
             {
                 localGameController.DropResources(scenarioResourcesToDropAction.Resources);
             }
@@ -383,7 +399,7 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
         internal BasePlayerTurn DropResources(string playerName, ResourceClutch resourcesToDrop)
         {
             //var player = this.runner.GetPlayerFromName(playerName);
-            this.instructions.Enqueue(new ScenarioResourcesToDropAction(playerName, resourcesToDrop));
+            this.instructions.Enqueue(new ScenarioDropResourcesAction(playerName, resourcesToDrop));
             
             //((ScenarioComputerPlayer)player).AddResourcesToDrop(resourcesToDrop);
 

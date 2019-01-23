@@ -86,9 +86,20 @@ namespace SoC.Library.ScenarioTests
             return resourcesToDrop;
         }
 
+        public void AddDropResourcesAction(DropResourcesAction dropResourcesAction)
+        {
+            this.dropResourcesActions.Enqueue(dropResourcesAction);
+        }
+
+        private Queue<DropResourcesAction> dropResourcesActions = new Queue<DropResourcesAction>();
+        public override DropResourcesAction GetDropResourcesAction()
+        {
+            return this.dropResourcesActions.Count > 0 ? this.dropResourcesActions.Dequeue() : null;
+        }
 
         public override ComputerPlayerAction GetPlayerAction()
         {
+            return this.actions.Count > 0 ? this.actions.Dequeue() : null;
             ComputerPlayerAction playerAction = null;
             while (this.instructions.Count > 0)
             {

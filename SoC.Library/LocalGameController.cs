@@ -65,7 +65,7 @@ namespace Jabberwocky.SoC.Library
         private int playerIndex;
         private IPlayer[] players;
         private Dictionary<Guid, IPlayer> playersById;
-        private IPlayer[] computerPlayers;
+        private IComputerPlayer[] computerPlayers;
         private IPlayer playerWithLargestArmy;
         private IPlayer playerWithLongestRoad;
         private bool provideFullPlayerData;
@@ -371,13 +371,32 @@ namespace Jabberwocky.SoC.Library
                 this.StartOpponentTurnEvent?.Invoke(computerPlayer.Id);
 
                 this.numberGenerator.RollTwoDice(out this.dice1, out this.dice2);
-                var rolledDiceEvent = new DiceRollEvent(computerPlayer.Id, this.dice1, this.dice2);
-                events.Add(rolledDiceEvent);
+                this.DiceRollEvent?.Invoke(computerPlayer.Id, this.dice1, this.dice2);
+                //var rolledDiceEvent = new DiceRollEvent(computerPlayer.Id, this.dice1, this.dice2);
+                //events.Add(rolledDiceEvent);
                 var roll = this.dice1 + this.dice2;
 
                 var moveRobber = false;
                 if (roll == 7)
                 {
+                    // TODO: Refactoring - improve names and wrap in method
+                    Dictionary<Guid, ResourceClutch> droppedResourcesByPlayerId = null;
+                    foreach (var cp in this.computerPlayers)
+                    {
+                        var d = cp.GetDropResourcesAction();
+                        if (d != null)
+                        {
+                            if (droppedResourcesByPlayerId == null)
+                                droppedResourcesByPlayerId = new Dictionary<Guid, ResourceClutch>();
+
+                            cp.RemoveResources(d.Resources);
+                            droppedResourcesByPlayerId.Add(cp.Id, d.Resources);
+                        }
+                    }
+
+                    if (droppedResourcesByPlayerId != null)
+                        this.ResourcesLostEvent?.Invoke(new ResourceUpdateEvent(droppedResourcesByPlayerId));
+
                     moveRobber = true;
                 }
                 else
@@ -390,7 +409,11 @@ namespace Jabberwocky.SoC.Library
                 ComputerPlayerAction playerAction;
                 while ((playerAction = computerPlayer.GetPlayerAction()) != null && computerPlayer.VictoryPoints < 10)
                 {
-                    if (playerAction is PlaceRobberAction placeRobberAction)
+                    if (playerAction is DropResourcesAction dropResourcesAction)
+                    {
+                        computerPlayer.RemoveResources(dropResourcesAction.Resources);
+                    }
+                    else if (playerAction is PlaceRobberAction placeRobberAction)
                     {
                         this.robberHex = placeRobberAction.RobberHex;
                     }
@@ -708,13 +731,13 @@ namespace Jabberwocky.SoC.Library
 
             this.gameBoard = new GameBoard(BoardSizes.Standard, gameModel.Board);
 
-            this.computerPlayers = new IPlayer[3]; // TODO - Change to handle different number of computer players
+            this.computerPlayers = new IComputerPlayer[3]; // TODO - Change to handle different number of computer players
             this.players = new IPlayer[4]; // TODO - Change to handle different number of players
 
             this.mainPlayer = this.players[0] = new Player(gameModel.Player1);
-            this.computerPlayers[0] = this.players[1] = new ComputerPlayer(gameModel.Player2, this.numberGenerator);
-            this.computerPlayers[1] = this.players[2] = new ComputerPlayer(gameModel.Player3, this.numberGenerator);
-            this.computerPlayers[2] = this.players[3] = new ComputerPlayer(gameModel.Player4, this.numberGenerator);
+            this.computerPlayers[0] = (IComputerPlayer)(this.players[1] = new ComputerPlayer(gameModel.Player2, this.numberGenerator));
+            this.computerPlayers[1] = (IComputerPlayer)(this.players[2] = new ComputerPlayer(gameModel.Player3, this.numberGenerator));
+            this.computerPlayers[2] = (IComputerPlayer)(this.players[3] = new ComputerPlayer(gameModel.Player4, this.numberGenerator));
 
             this.playersById = new Dictionary<Guid, IPlayer>(4);
             foreach (var player in this.players)
@@ -1242,15 +1265,15 @@ namespace Jabberwocky.SoC.Library
             this.players[0] = this.mainPlayer;
             this.playersById = new Dictionary<Guid, IPlayer>(this.players.Length);
             this.playersById.Add(this.mainPlayer.Id, this.mainPlayer);
-            this.computerPlayers = new IPlayer[gameOptions.MaxAIPlayers];
+            this.computerPlayers = new IComputerPlayer[gameOptions.MaxAIPlayers];
 
             var index = 1;
-            while ((gameOptions.MaxAIPlayers--) > 0)
+            while (gameOptions.MaxAIPlayers-- > 0)
             {
                 var computerPlayer = this.playerPool.CreateComputerPlayer(this.gameBoard, this.numberGenerator);
                 this.players[index] = computerPlayer;
                 this.playersById.Add(computerPlayer.Id, computerPlayer);
-                this.computerPlayers[index - 1] = computerPlayer;
+                this.computerPlayers[index - 1] = (IComputerPlayer)computerPlayer;
                 index++;
             }
         }

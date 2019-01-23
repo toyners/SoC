@@ -21,6 +21,7 @@ namespace Jabberwocky.SoC.Library.Interfaces
         ResourceTypes ChooseResourceTypeToRob();
         uint ChooseRobberLocation();
         IPlayer ChoosePlayerToRob(IEnumerable<IPlayer> otherPlayers);
+        DropResourcesAction GetDropResourcesAction();
         ComputerPlayerAction GetPlayerAction();
         YearOfPlentyDevelopmentCard ChooseYearOfPlentyCard();
         #endregion
