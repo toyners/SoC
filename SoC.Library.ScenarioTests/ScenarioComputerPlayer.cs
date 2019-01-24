@@ -6,6 +6,7 @@ using Jabberwocky.SoC.Library.GameActions;
 using Jabberwocky.SoC.Library.GameEvents;
 using Jabberwocky.SoC.Library.Interfaces;
 using Jabberwocky.SoC.Library.PlayerData;
+using SoC.Library.ScenarioTests.ScenarioActions;
 
 namespace SoC.Library.ScenarioTests
 {
@@ -99,8 +100,22 @@ namespace SoC.Library.ScenarioTests
 
         public override ComputerPlayerAction GetPlayerAction()
         {
-            return this.actions.Count > 0 ? this.actions.Dequeue() : null;
-            ComputerPlayerAction playerAction = null;
+            if (this.actions.Count == 0)
+                return null;
+
+            ComputerPlayerAction action = null;
+            do
+            {
+                action = this.actions.Dequeue();
+                if (action is ScenarioVerifySnapshotAction scenarioVerifySnapshotAction)
+                {
+                    scenarioVerifySnapshotAction.Verify();
+                    action = null;
+                }
+            } while (this.actions.Count > 0 && action == null);
+
+            return action;
+            /*ComputerPlayerAction playerAction = null;
             while (this.instructions.Count > 0)
             {
                 var obj = this.instructions.Peek();
@@ -121,7 +136,7 @@ namespace SoC.Library.ScenarioTests
                 }
             }
 
-            return playerAction;
+            return playerAction;*/
         }
         #endregion
     }

@@ -82,6 +82,10 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
             return new ExpectedEventsBuilder(this, this.runner.playersByName);
         }
 
+        List<PlayerState> playerStates = new List<PlayerState>();
+
+        private int actualEventIndex;
+        private int expectedEventIndex;
         public virtual void AddEvent(GameEvent gameEvent)
         {
             this.actualEvents.Add(gameEvent);
@@ -120,11 +124,22 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
                         }
                     }
                 }
-                else if (obj is PlayerSnapshot snapshot)
+                else if (obj is PlayerState playerState)
                 {
-                    // TODO: Drop take snapshot job into queue for computer player. Take
-                    // snapshot for human player
                     this.instructions.Dequeue();
+
+                    var player = playerState.Player;
+                    this.playerStates.Add(playerState);
+
+                    if (player is ScenarioComputerPlayer computerPlayer)
+                    {
+                        var verifySnapshotAction = new ScenarioVerifySnapshotAction(playerState);
+                        computerPlayer.AddAction(verifySnapshotAction);
+                    }
+                    else if (player is ScenarioPlayer humanPlayer)
+                    {
+                        playerState.Verify();
+                    }
                 }
             }
 
@@ -225,12 +240,18 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
             return new PlayerResponseBuilder(this, this.runner.playersByName);
         }
 
-        public PlayerStateBuilder State(string playerName)
+        public PlayerStateBuilder OldState(string playerName)
         {
-            var playerSnapshot = new PlayerSnapshot(playerName);
-            this.instructions.Enqueue(playerSnapshot);
+            throw new NotImplementedException();
+        }
 
-            return new PlayerStateBuilder(this, playerSnapshot);
+        public PlayerState State(string playerName)
+        {
+            var player = this.playersByName[playerName];
+            var playerState = new PlayerState(this, player);
+            this.instructions.Enqueue(playerState);
+
+            return playerState;
         }
 
         public void AddEvents(List<GameEvent> gameEvents)
