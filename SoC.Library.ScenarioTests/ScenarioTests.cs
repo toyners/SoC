@@ -68,7 +68,7 @@ namespace SoC.Library.ScenarioTests
         }
 
         [Test]
-        public void Scenario_Scenario_AllPlayersCollectResourcesAsPartOfFirstTurnStart()
+        public void Scenario_Scenario_AllPlayersCollectResourcesAsPartOfFirstTurnStart_Old()
         {
             this.CreateStandardLocalGameControllerScenarioRunner()
                 .PlayerTurn(MainPlayerName, 1, 5)
@@ -81,6 +81,23 @@ namespace SoC.Library.ScenarioTests
                         .ResourceCollectedEvent(ThirdOpponentName,
                             new Tuple<uint, ResourceClutch>(ThirdOpponentFirstSettlementLocation, ResourceClutch.OneOre))
                         .End()
+                    .EndTurn()
+                .Build()
+                .Run();
+        }
+
+        [Test]
+        public void Scenario_Scenario_AllPlayersCollectResourcesAsPartOfFirstTurnStart()
+        {
+            this.CreateStandardLocalGameControllerScenarioRunner()
+                .PlayerTurn2(MainPlayerName, 1, 5)
+                    .ResourceCollectedEvent(FirstOpponentName,
+                        new Tuple<uint, ResourceClutch>(FirstOpponentFirstSettlementLocation, ResourceClutch.OneOre))
+                    .ResourceCollectedEvent(SecondOpponentName,
+                        new Tuple<uint, ResourceClutch>(SecondOpponentFirstSettlementLocation, ResourceClutch.OneLumber),
+                        new Tuple<uint, ResourceClutch>(SecondOpponentSecondSettlementLocation, ResourceClutch.OneLumber))
+                    .ResourceCollectedEvent(ThirdOpponentName,
+                        new Tuple<uint, ResourceClutch>(ThirdOpponentFirstSettlementLocation, ResourceClutch.OneOre))
                     .EndTurn()
                 .Build()
                 .Run();
@@ -488,7 +505,7 @@ namespace SoC.Library.ScenarioTests
         }
 
         [Test]
-        public void Scenario_A()
+        public void Scenario_ComputerPlayerRollsSeventAndAllPlayersWithMoreThanSevenResourcesLosesResources()
         {
             this.CreateStandardLocalGameControllerScenarioRunner()
                 .WithNoResourceCollection()
@@ -527,7 +544,7 @@ namespace SoC.Library.ScenarioTests
         }
 
         [Test]
-        public void Scenario_ComputerPlayerRollsSeventAndAllPlayersWithMoreThanSevenResourcesLosesResources()
+        public void Scenario_ComputerPlayerRollsSeventAndAllPlayersWithMoreThanSevenResourcesLosesResources_Old()
         {
             this.CreateStandardLocalGameControllerScenarioRunner()
                 .WithNoResourceCollection()

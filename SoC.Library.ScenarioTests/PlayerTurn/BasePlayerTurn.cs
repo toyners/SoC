@@ -22,7 +22,7 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
         protected readonly LocalGameControllerScenarioRunner runner;
         protected readonly List<GameEvent> actualEvents = new List<GameEvent>();
         private List<Tuple<string, ComputerPlayerAction>> playerActions;
-        private List<GameEvent> expectedEvents;
+        private readonly List<GameEvent> expectedEvents = new List<GameEvent>();
         private readonly int roundNumber;
         private readonly int turnNumber;
         private Dictionary<string, IPlayer> playersByName;
@@ -94,12 +94,16 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
             while (this.instructions.Count > 0)
             {
                 var obj = this.instructions.Peek();
-                if (obj is GameEvent lodgedGameEvent)
+                if (obj is GameEvent expectedGameEvent)
                 {
-                    if (gameEvent.Equals(lodgedGameEvent) && !eventProcessed)
+                    this.instructions.Dequeue();
+                    this.expectedEvents.Add(expectedGameEvent);
+                    if (gameEvent.Equals(expectedGameEvent) && !eventProcessed)
                     {
+                        this.expectedEventIndex++;
+                        this.actualEventIndex++;
                         eventProcessed = true;
-                        this.instructions.Dequeue();
+                        
                     }
                     else
                     {
@@ -149,6 +153,19 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
             {
                 var action = (ScenarioResourcesToDropAction)this.ActionsByPlayerId[gameEvent.PlayerId];
             }*/
+        }
+
+        public BasePlayerTurn ResourceCollectedEvent(string playerName, params Tuple<uint, ResourceClutch>[] resourceCollectionPairs)
+        {
+            var playerId = this.playersByName[playerName].Id;
+
+            ResourceCollection[] rc = new ResourceCollection[resourceCollectionPairs.Length];
+            var index = 0;
+            foreach (var pair in resourceCollectionPairs)
+                rc[index++] = new ResourceCollection(pair.Item1, pair.Item2);
+            this.instructions.Enqueue(new ResourcesCollectedEvent(playerId, rc));
+
+            return this;
         }
 
         public virtual void ResolveActions(TurnToken turnToken, LocalGameController localGameController)
@@ -407,6 +424,25 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
                 {
                     this.instructions.Dequeue();
                 }
+            }
+
+            if (this.expectedEventIndex < this.expectedEvents.Count && this.actualEventIndex < this.actualEvents.Count)
+            {
+                while (this.expectedEventIndex < this.expectedEvents.Count)
+                {
+                    while (this.actualEventIndex < this.actualEvents.Count &&
+                        this.expectedEvents[this.expectedEventIndex].Equals(this.actualEvents[this.actualEventIndex]))
+                    {
+                        this.expectedEventIndex++;
+                        this.actualEventIndex++;
+                    }
+                }
+            }
+
+            if (this.expectedEventIndex < this.expectedEvents.Count)
+            {
+                var expectedEvent = this.expectedEvents[this.expectedEventIndex];
+                Assert.Fail($"Did not find {expectedEvent.GetType()} event for '{this.player.Name}'.\r\n{this.GetEventDetails(expectedEvent)}");
             }
         }
 
