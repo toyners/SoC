@@ -86,33 +86,30 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
 
         private int actualEventIndex;
         private int expectedEventIndex;
-        public virtual void AddEvent(GameEvent gameEvent)
+        public virtual void AddEvent(GameEvent actualEvent)
         {
-            this.actualEvents.Add(gameEvent);
+            this.actualEvents.Add(actualEvent);
 
             bool eventProcessed = false;
             while (this.instructions.Count > 0)
             {
-                var obj = this.instructions.Peek();
-                if (obj is GameEvent expectedGameEvent)
+                var instruction = this.instructions.Dequeue();
+                if (instruction is GameEvent expectedGameEvent)
                 {
-                    this.instructions.Dequeue();
                     this.expectedEvents.Add(expectedGameEvent);
-                    if (gameEvent.Equals(expectedGameEvent) && !eventProcessed)
+                    if (actualEvent.Equals(this.expectedEvents[this.expectedEventIndex]) && !eventProcessed)
                     {
                         this.expectedEventIndex++;
                         this.actualEventIndex++;
                         eventProcessed = true;
-                        
                     }
                     else
                     {
                         break;
                     }
                 }
-                else if (obj is ComputerPlayerAction action)
+                else if (instruction is ComputerPlayerAction action)
                 {
-                    this.instructions.Dequeue();
                     if (action is ScenarioDropResourcesAction scenarioResourcesToDropAction)
                     {
                         var player = this.playersByName[scenarioResourcesToDropAction.PlayerName];
@@ -128,10 +125,8 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
                         }
                     }
                 }
-                else if (obj is PlayerState playerState)
+                else if (instruction is PlayerState playerState)
                 {
-                    this.instructions.Dequeue();
-
                     var player = playerState.Player;
                     this.playerStates.Add(playerState);
 
@@ -146,13 +141,6 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
                     }
                 }
             }
-
-            /*if (this.GameEventsByPlayerId != null && 
-                this.GameEventsByPlayerId.TryGetValue(gameEvent.PlayerId, out var expectedEvent) && 
-                gameEvent.Equals(expectedEvent))
-            {
-                var action = (ScenarioResourcesToDropAction)this.ActionsByPlayerId[gameEvent.PlayerId];
-            }*/
         }
 
         public BasePlayerTurn ResourceCollectedEvent(string playerName, params Tuple<uint, ResourceClutch>[] resourceCollectionPairs)
@@ -412,37 +400,64 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
 
             while (this.instructions.Count > 0)
             {
-                var obj = this.instructions.Peek();
-                if (obj is GameEvent)
-                    break;
-
-                if (obj is ComputerPlayerAction action)
+                var instruction = this.instructions.Peek();
+                if (instruction is GameEvent expectedEvent)
                 {
-                    this.instructions.Dequeue();
+                    this.expectedEvents.Add(expectedEvent);
                 }
-                else if (obj is PlayerSnapshot snapshot)
+                else if (instruction is ComputerPlayerAction action)
                 {
-                    this.instructions.Dequeue();
-                }
-            }
-
-            if (this.expectedEventIndex < this.expectedEvents.Count && this.actualEventIndex < this.actualEvents.Count)
-            {
-                while (this.expectedEventIndex < this.expectedEvents.Count)
-                {
-                    while (this.actualEventIndex < this.actualEvents.Count &&
-                        this.expectedEvents[this.expectedEventIndex].Equals(this.actualEvents[this.actualEventIndex]))
+                    if (action is ScenarioDropResourcesAction scenarioResourcesToDropAction)
                     {
-                        this.expectedEventIndex++;
-                        this.actualEventIndex++;
+                        var player = this.playersByName[scenarioResourcesToDropAction.PlayerName];
+                        var dropResourcesAction = scenarioResourcesToDropAction.CreateDropResourcesAction();
+
+                        if (player is ScenarioComputerPlayer computerPlayer)
+                        {
+                            computerPlayer.AddDropResourcesAction(dropResourcesAction);
+                        }
+                        else if (player is ScenarioPlayer humanPlayer)
+                        {
+                            this.LocalGameController.DropResources(dropResourcesAction.Resources);
+                        }
+                    }
+                }
+                else if (instruction is PlayerState playerState)
+                {
+                    var player = playerState.Player;
+                    this.playerStates.Add(playerState);
+
+                    if (player is ScenarioComputerPlayer computerPlayer)
+                    {
+                        var verifySnapshotAction = new ScenarioVerifySnapshotAction(playerState);
+                        computerPlayer.AddAction(verifySnapshotAction);
+                    }
+                    else if (player is ScenarioPlayer humanPlayer)
+                    {
+                        playerState.Verify();
                     }
                 }
             }
 
+            // If there are expected events yet to check then do it now
             if (this.expectedEventIndex < this.expectedEvents.Count)
             {
-                var expectedEvent = this.expectedEvents[this.expectedEventIndex];
-                Assert.Fail($"Did not find {expectedEvent.GetType()} event for '{this.player.Name}'.\r\n{this.GetEventDetails(expectedEvent)}");
+                while (this.actualEventIndex < this.actualEvents.Count)
+                {
+                    if (this.expectedEvents[this.expectedEventIndex].Equals(this.actualEvents[this.actualEventIndex]))
+                    {
+                        this.expectedEventIndex++;
+                    }
+
+                    this.actualEventIndex++;
+                }
+
+                // At least one expected event was not matched with an actual event.
+                if (this.expectedEventIndex < this.expectedEvents.Count)
+                {
+                    var expectedEvent = this.expectedEvents[this.expectedEventIndex];
+                    Assert.Fail($"Did not find {expectedEvent.GetType()} event for '{this.player.Name}'.\r\n{this.GetEventDetails(expectedEvent)}");
+                }
             }
         }
 
