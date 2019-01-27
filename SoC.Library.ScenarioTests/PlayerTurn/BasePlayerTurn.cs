@@ -341,7 +341,7 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
 
             if (gameEvent is DiceRollEvent diceRollEvent)
             {
-                message += $"Dice 1 is {diceRollEvent.Dice1}, Dice roll 2 is {diceRollEvent.Dice2}";
+                message += $"Dice roll 1 is {diceRollEvent.Dice1}, Dice roll 2 is {diceRollEvent.Dice2}";
             }
             else if (gameEvent is ScenarioErrorMessageEvent scenarioErrorMessageEvent)
             {

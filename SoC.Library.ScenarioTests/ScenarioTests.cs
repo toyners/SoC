@@ -38,7 +38,7 @@ namespace SoC.Library.ScenarioTests
         const uint MainPlayerSecondRoadEnd = 39;
 
         [Test]
-        public void Scenario_AllPlayersHaveDiceRollEventInTheirTurn()
+        public void Scenario_AllPlayersHaveDiceRollEventInTheirTurn_Old()
         {
             this.CreateStandardLocalGameControllerScenarioRunner()
                 .WithStartingResourcesForPlayer(MainPlayerName, ResourceClutch.DevelopmentCard)
@@ -62,6 +62,28 @@ namespace SoC.Library.ScenarioTests
                     .Events()
                         .DiceRollEvent(5, 6)
                         .End()
+                    .EndTurn()
+                .Build()
+                .Run();
+        }
+
+        [Test]
+        public void Scenario_AllPlayersHaveDiceRollEventInTheirTurn()
+        {
+            this.CreateStandardLocalGameControllerScenarioRunner()
+                .WithStartingResourcesForPlayer(MainPlayerName, ResourceClutch.DevelopmentCard)
+                .WithNoResourceCollection()
+                .PlayerTurn(MainPlayerName, 4, 4)
+                    .DiceRollEvent(4, 4)
+                    .EndTurn()
+                .PlayerTurn(FirstOpponentName, 1, 2)
+                    .DiceRollEvent(1, 2)
+                    .EndTurn()
+                .PlayerTurn(SecondOpponentName, 3, 4)
+                    .DiceRollEvent(3, 4)
+                    .EndTurn()
+                .PlayerTurn(ThirdOpponentName, 5, 6)
+                    .DiceRollEvent(5, 6)
                     .EndTurn()
                 .Build()
                 .Run();
