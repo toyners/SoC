@@ -103,7 +103,7 @@ namespace Jabberwocky.SoC.Library
         #endregion
 
         #region Events
-        public Action CityBuiltEvent { get; set; }
+        public Action<CityBuiltEvent> CityBuiltEvent { get; set; }
         public Action<DevelopmentCard> DevelopmentCardPurchasedEvent { get; set; }
         public Action<Guid, uint, uint> DiceRollEvent { get; set; }
         public Action<ErrorDetails> ErrorRaisedEvent { get; set; }
@@ -121,7 +121,7 @@ namespace Jabberwocky.SoC.Library
         public Action<RoadSegmentBuiltEvent> RoadSegmentBuiltEvent { get; set; }
         public Action<int> RobberEvent { get; set; }
         public Action<Dictionary<Guid, int>> RobbingChoicesEvent { get; set; }
-        public Action SettlementBuiltEvent { get; set; }
+        public Action<SettlementBuiltEvent> SettlementBuiltEvent { get; set; }
         public Action<GameBoardUpdate> StartInitialSetupTurnEvent { get; set; }
         public Action<TurnToken> StartPlayerTurnEvent { get; set; }
         public Action<Guid> StartOpponentTurnEvent { get; set; }
@@ -137,9 +137,7 @@ namespace Jabberwocky.SoC.Library
             }
 
             this.BuildCity(location);
-
-            this.CityBuiltEvent?.Invoke();
-
+            this.CityBuiltEvent?.Invoke(new CityBuiltEvent(this.mainPlayer.Id, location));
             this.CheckMainPlayerIsWinner();
         }
 
@@ -171,8 +169,7 @@ namespace Jabberwocky.SoC.Library
             }
 
             this.BuildSettlement(location);
-            this.SettlementBuiltEvent?.Invoke();
-
+            this.SettlementBuiltEvent?.Invoke(new SettlementBuiltEvent(this.mainPlayer.Id, location));
             this.CheckMainPlayerIsWinner();
         }
 
@@ -409,10 +406,15 @@ namespace Jabberwocky.SoC.Library
                 ComputerPlayerAction playerAction;
                 while ((playerAction = computerPlayer.GetPlayerAction()) != null && computerPlayer.VictoryPoints < 10)
                 {
-                    if (playerAction is BuildRoadSegmentAction buildRoadSegmentAction)
+                    if (playerAction is BuildCityAction buildCityAction)
+                    {
+                        this.BuildCity(buildCityAction.CityLocation);
+                        this.CityBuiltEvent?.Invoke(new CityBuiltEvent(computerPlayer.Id, buildCityAction.CityLocation));
+                        this.CheckComputerPlayerIsWinner(computerPlayer, events);
+                    }
+                    else if (playerAction is BuildRoadSegmentAction buildRoadSegmentAction)
                     {
                         this.BuildRoadSegment(buildRoadSegmentAction.StartLocation, buildRoadSegmentAction.EndLocation);
-                        //events.Add(new RoadSegmentBuiltEvent(computerPlayer.Id, buildRoadSegmentAction.StartLocation, buildRoadSegmentAction.EndLocation));
                         this.RoadSegmentBuiltEvent?.Invoke(new RoadSegmentBuiltEvent(computerPlayer.Id, buildRoadSegmentAction.StartLocation, buildRoadSegmentAction.EndLocation));
                         Guid previousPlayerWithLongestRoadId;
                         if (this.PlayerHasJustBuiltTheLongestRoad(out previousPlayerWithLongestRoadId))
@@ -420,6 +422,12 @@ namespace Jabberwocky.SoC.Library
                             events.Add(new LongestRoadBuiltEvent(computerPlayer.Id, previousPlayerWithLongestRoadId));
                         }
 
+                        this.CheckComputerPlayerIsWinner(computerPlayer, events);
+                    }
+                    else if (playerAction is BuildSettlementAction buildSettlementAction)
+                    {
+                        this.BuildSettlement(buildSettlementAction.SettlementLocation);
+                        this.SettlementBuiltEvent?.Invoke(new SettlementBuiltEvent(computerPlayer.Id, buildSettlementAction.SettlementLocation));
                         this.CheckComputerPlayerIsWinner(computerPlayer, events);
                     }
                     else if (playerAction is DropResourcesAction dropResourcesAction)
@@ -445,29 +453,6 @@ namespace Jabberwocky.SoC.Library
                     {
                         switch (playerAction.ActionType)
                         {
-                            case ComputerPlayerActionTypes.BuildCity:
-                            {
-                                var location = ((BuildCityAction)playerAction).CityLocation;
-                                this.BuildCity(location);
-
-                                events.Add(new CityBuiltEvent(computerPlayer.Id, location));
-
-                                this.CheckComputerPlayerIsWinner(computerPlayer, events);
-
-                                break;
-                            }
-
-                            case ComputerPlayerActionTypes.BuildSettlement:
-                            {
-                                var location = ((BuildSettlementAction)playerAction).SettlementLocation;
-                                this.BuildSettlement(location);
-
-                                events.Add(new SettlementBuiltEvent(computerPlayer.Id, location));
-
-                                this.CheckComputerPlayerIsWinner(computerPlayer, events);
-                                break;
-                            }
-
                             case ComputerPlayerActionTypes.BuyDevelopmentCard:
                             {
                                 var developmentCard = this.BuyDevelopmentCard();

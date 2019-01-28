@@ -74,6 +74,7 @@ namespace SoC.Library.ScenarioTests
                 this.playerPool, 
                 this.gameBoard, 
                 this.developmentCardHolder);
+            this.localGameController.CityBuiltEvent = cityBuiltEvent => this.currentTurn?.AddEvent(cityBuiltEvent);
             this.localGameController.DiceRollEvent = (Guid playerId, uint dice1, uint dice2) =>
             {
                 this.currentTurn?.AddEvent(new DiceRollEvent(playerId, dice1, dice2));
@@ -94,7 +95,7 @@ namespace SoC.Library.ScenarioTests
             {
                 this.currentTurn?.AddEvent(new ResourceTransactionEvent(this.players[0].Id, list));
             };
-            
+            this.localGameController.RoadSegmentBuiltEvent = (RoadSegmentBuiltEvent r) => this.currentTurn?.AddEvent(r);
             this.localGameController.RobberEvent = (int r) =>
             {
                 this.currentTurn.AddEvent(new ScenarioRobberEvent(r));
@@ -103,6 +104,7 @@ namespace SoC.Library.ScenarioTests
             {
                 this.currentTurn.AddEvent(new ScenarioRobbingChoicesEvent(robbingChoices));
             };
+            this.localGameController.SettlementBuiltEvent = settlementBuiltEvent => this.currentTurn?.AddEvent(settlementBuiltEvent);
             this.localGameController.StartPlayerTurnEvent = (TurnToken t) => { this.currentToken = t; this.StartOfTurn(); };
             this.localGameController.StartOpponentTurnEvent = (Guid g) => { this.StartOfTurn(); };
 
@@ -330,11 +332,11 @@ namespace SoC.Library.ScenarioTests
             {
                 this.currentTurn = this.turns[this.currentIndex++];
                 this.currentTurn.LocalGameController = this.localGameController;
-                if (this.currentTurn is ComputerPlayerTurn computerTurn)
+                /*if (this.currentTurn is ComputerPlayerTurn computerTurn)
                 {
                     //this.currentTurn.Process(null, null);
                 }
-                /*else
+                else
                 {
                     //this.currentTurn.StartProcessing(this.currentToken, this.localGameController);
                     this.currentTurn.LocalGameController = this.localGameController;

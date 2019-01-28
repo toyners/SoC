@@ -141,14 +141,19 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
         {
             this.actualEvents.Add(actualEvent);
 
-            bool eventProcessed = false;
+            if (this.expectedEventIndex < this.expectedEvents.Count && actualEvent.Equals(this.expectedEvents[this.expectedEventIndex]))
+            {
+                this.expectedEventIndex++;
+                this.actualEventIndex = this.actualEvents.Count;
+            }
+
             while (this.instructions.Count > 0)
             {
                 var instruction = this.instructions.Dequeue();
                 if (instruction is GameEvent expectedGameEvent)
                 {
                     this.expectedEvents.Add(expectedGameEvent);
-                    if (actualEvent.Equals(this.expectedEvents[this.expectedEventIndex]) && !eventProcessed)
+                    /*if (actualEvent.Equals(this.expectedEvents[this.expectedEventIndex]) && !eventProcessed)
                     {
                         this.expectedEventIndex++;
                         this.actualEventIndex = this.actualEvents.Count;
@@ -157,7 +162,7 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
                     else
                     {
                         break;
-                    }
+                    }*/
                 }
                 else if (instruction is ComputerPlayerAction action)
                 {
