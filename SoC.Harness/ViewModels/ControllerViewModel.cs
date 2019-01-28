@@ -305,7 +305,7 @@ namespace SoC.Harness.ViewModels
             }
         }
 
-        private void RoadSegmentBuiltEventHandler(PlayerDataBase playerDataBase)
+        private void RoadSegmentBuiltEventHandler(RoadSegmentBuiltEvent roadSegmentBuiltEvent)
         {
             throw new NotImplementedException();
         }

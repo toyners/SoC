@@ -118,7 +118,7 @@ namespace Jabberwocky.SoC.Library
         public Action<PlayKnightCardEvent> PlayKnightCardEvent { get; set; }
         public Action<ResourceUpdateEvent> ResourcesLostEvent { get; set; }
         public Action<ResourceTransactionList> ResourcesTransferredEvent { get; set; }
-        public Action<PlayerDataBase> RoadSegmentBuiltEvent { get; set; }
+        public Action<RoadSegmentBuiltEvent> RoadSegmentBuiltEvent { get; set; }
         public Action<int> RobberEvent { get; set; }
         public Action<Dictionary<Guid, int>> RobbingChoicesEvent { get; set; }
         public Action SettlementBuiltEvent { get; set; }
@@ -152,7 +152,7 @@ namespace Jabberwocky.SoC.Library
 
             this.BuildRoadSegment(roadStartLocation, roadEndLocation);
             var playerData = this.CreateSinglePlayerData(this.mainPlayer);
-            this.RoadSegmentBuiltEvent?.Invoke(playerData);
+            this.RoadSegmentBuiltEvent?.Invoke(new RoadSegmentBuiltEvent(this.mainPlayer.Id, roadStartLocation, roadEndLocation));
 
             Guid previousPlayerWithLongestRoadId;
             if (this.PlayerHasJustBuiltTheLongestRoad(out previousPlayerWithLongestRoadId))
@@ -409,7 +409,20 @@ namespace Jabberwocky.SoC.Library
                 ComputerPlayerAction playerAction;
                 while ((playerAction = computerPlayer.GetPlayerAction()) != null && computerPlayer.VictoryPoints < 10)
                 {
-                    if (playerAction is DropResourcesAction dropResourcesAction)
+                    if (playerAction is BuildRoadSegmentAction buildRoadSegmentAction)
+                    {
+                        this.BuildRoadSegment(buildRoadSegmentAction.StartLocation, buildRoadSegmentAction.EndLocation);
+                        //events.Add(new RoadSegmentBuiltEvent(computerPlayer.Id, buildRoadSegmentAction.StartLocation, buildRoadSegmentAction.EndLocation));
+                        this.RoadSegmentBuiltEvent?.Invoke(new RoadSegmentBuiltEvent(computerPlayer.Id, buildRoadSegmentAction.StartLocation, buildRoadSegmentAction.EndLocation));
+                        Guid previousPlayerWithLongestRoadId;
+                        if (this.PlayerHasJustBuiltTheLongestRoad(out previousPlayerWithLongestRoadId))
+                        {
+                            events.Add(new LongestRoadBuiltEvent(computerPlayer.Id, previousPlayerWithLongestRoadId));
+                        }
+
+                        this.CheckComputerPlayerIsWinner(computerPlayer, events);
+                    }
+                    else if (playerAction is DropResourcesAction dropResourcesAction)
                     {
                         computerPlayer.RemoveResources(dropResourcesAction.Resources);
                     }
@@ -438,23 +451,6 @@ namespace Jabberwocky.SoC.Library
                                 this.BuildCity(location);
 
                                 events.Add(new CityBuiltEvent(computerPlayer.Id, location));
-
-                                this.CheckComputerPlayerIsWinner(computerPlayer, events);
-
-                                break;
-                            }
-
-                            case ComputerPlayerActionTypes.BuildRoadSegment:
-                            {
-                                var buildRoadAction = (BuildRoadSegmentAction)playerAction;
-                                this.BuildRoadSegment(buildRoadAction.StartLocation, buildRoadAction.EndLocation);
-                                events.Add(new RoadSegmentBuiltEvent(computerPlayer.Id, buildRoadAction.StartLocation, buildRoadAction.EndLocation));
-
-                                Guid previousPlayerWithLongestRoadId;
-                                if (this.PlayerHasJustBuiltTheLongestRoad(out previousPlayerWithLongestRoadId))
-                                {
-                                    events.Add(new LongestRoadBuiltEvent(computerPlayer.Id, previousPlayerWithLongestRoadId));
-                                }
 
                                 this.CheckComputerPlayerIsWinner(computerPlayer, events);
 

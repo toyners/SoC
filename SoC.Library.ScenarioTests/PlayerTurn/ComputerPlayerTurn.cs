@@ -49,7 +49,7 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
             this.computerPlayer.AddEvent(gameEvent);
         }
 
-        public override void Process(TurnToken currentToken, LocalGameController localGameController)
+        public override void CompleteProcessing(TurnToken currentToken, LocalGameController localGameController)
         {
             if (this.instructions == null)
             {

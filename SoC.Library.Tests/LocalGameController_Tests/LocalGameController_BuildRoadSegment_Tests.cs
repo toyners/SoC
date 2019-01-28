@@ -29,7 +29,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
             player.AddResources(new ResourceClutch(1, 0, 1, 0, 0));
 
             PlayerDataBase playerDataBase = null;
-            localGameController.RoadSegmentBuiltEvent = (PlayerDataBase p) => { playerDataBase = p; };
+            //localGameController.RoadSegmentBuiltEvent = (PlayerDataBase p) => { playerDataBase = p; };
             TurnToken turnToken = null;
             localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
             localGameController.StartGamePlay();
@@ -38,7 +38,8 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
             localGameController.BuildRoadSegment(turnToken, 4u, 3u);
 
             // Assert
-            playerDataBase.ShouldNotBeNull();
+            //playerDataBase.ShouldNotBeNull();
+            Assert.Fail("Fail");
         }
 
         [Test]
@@ -256,13 +257,14 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
             TurnToken turnToken = null;
             localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
             PlayerDataBase playerData = null;
-            localGameController.RoadSegmentBuiltEvent = (PlayerDataBase p) => { playerData = p; };
+            //localGameController.RoadSegmentBuiltEvent = (PlayerDataBase p) => { playerData = p; };
             localGameController.StartGamePlay();
 
             // Act
             localGameController.BuildRoadSegment(turnToken, MainRoadOneEnd, MainSettlementOneLocation);
 
             // Assert
+            Assert.Fail("Fail");
             playerData.ShouldBeNull();
             errorDetails.ShouldNotBeNull();
             errorDetails.Message.ShouldBe("Cannot build road segment. Road segment between " + MainRoadOneEnd + " and " + MainSettlementOneLocation + " already exists.");

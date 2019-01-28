@@ -48,6 +48,8 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
         #endregion
 
         #region Properties
+        public bool IsHumanPlayer { get { return this.player is ScenarioPlayer; } }
+        public string PlayerName { get { return this.player.Name; } }
         public IDictionary<Guid, ComputerPlayerAction> ActionsByPlayerId { protected get; set; }
         public IList<GameEvent> ExpectedEvents { private get; set; }
         public IDictionary<Guid, GameEvent> GameEventsByPlayerId { private get; set; }
@@ -72,9 +74,58 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
             return new PlayerActionBuilder(this);
         }
 
+        public BasePlayerTurn BuildCity(uint cityLocation)
+        {
+            this.instructions.Enqueue(new BuildCityAction(cityLocation));
+            return this;
+        }
+
+        public BasePlayerTurn BuildCityEvent(uint cityLocation)
+        {
+            this.instructions.Enqueue(new CityBuiltEvent(this.PlayerId, cityLocation));
+            return this;
+        }
+
+        public BasePlayerTurn BuildRoad(uint roadSegmentStart, uint roadSegmentEnd)
+        {
+            this.instructions.Enqueue(new BuildRoadSegmentAction(roadSegmentStart, roadSegmentEnd));
+            return this;
+        }
+
+        public BasePlayerTurn BuildRoadEvent(uint roadSegmentStart, uint roadSegmentEnd)
+        {
+            this.instructions.Enqueue(new RoadSegmentBuiltEvent(this.PlayerId, roadSegmentStart, roadSegmentEnd));
+            return this;
+        }
+
+        public BasePlayerTurn BuildSettlement(uint settlementLocation)
+        {
+            this.instructions.Enqueue(new BuildSettlementAction(settlementLocation));
+            return this;
+        }
+
+        public BasePlayerTurn BuildSettlementEvent(uint settlementLocation)
+        {
+            this.instructions.Enqueue(new SettlementBuiltEvent(this.PlayerId, settlementLocation));
+            return this;
+        }
+
         public LocalGameControllerScenarioRunner EndTurn()
         {
             return this.runner;
+        }
+
+        public BasePlayerTurn GameWinEvent(uint expectedVictoryPoints)
+        {
+            this.instructions.Enqueue(new GameWinEvent(this.PlayerId, expectedVictoryPoints));
+            return this;
+        }
+
+        public BasePlayerTurn LongestRoadBuiltEvent()
+        {
+            var expectedLongestRoadBuiltEvent = new LongestRoadBuiltEvent(this.PlayerId, Guid.Empty);
+            this.instructions.Enqueue(expectedLongestRoadBuiltEvent);
+            return this;
         }
 
         public ExpectedEventsBuilder Events()
@@ -100,7 +151,7 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
                     if (actualEvent.Equals(this.expectedEvents[this.expectedEventIndex]) && !eventProcessed)
                     {
                         this.expectedEventIndex++;
-                        this.actualEventIndex++;
+                        this.actualEventIndex = this.actualEvents.Count;
                         eventProcessed = true;
                     }
                     else
@@ -123,6 +174,11 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
                         {
                             this.LocalGameController.DropResources(dropResourcesAction.Resources);
                         }
+                    }
+                    else
+                    {
+                        if (this.player is ScenarioComputerPlayer computerPlayer)
+                            computerPlayer.AddAction(action);
                     }
                 }
                 else if (instruction is PlayerState playerState)
@@ -207,27 +263,6 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
             }*/
         }
 
-        public void ResolveResponses(LocalGameController localGameController)
-        {
-            /*if (this.PlayerResourcesToDropByName == null || this.PlayerResourcesToDropByName.Count == 0)
-                return;
-
-            foreach (var kv in this.PlayerResourcesToDropByName)
-            {
-                var player = this.runner.playersByName[kv.Key];
-
-                if (player is ScenarioPlayer)
-                {
-                    this.PlayerActions = new List<ComputerPlayerAction>();
-                    this.PlayerActions.Add(new ScenarioResourcesToDropAction(kv.Value));
-                }
-                else
-                {
-                    ((ScenarioComputerPlayer)player).AddResourcesToDrop(kv.Value);
-                }
-            }*/
-        }
-
         protected virtual void ResolveResponse(ComputerPlayerAction response, LocalGameController localGameController)
         {
             if (response is ScenarioDropResourcesAction scenarioResourcesToDropAction)
@@ -294,12 +329,6 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
                 if (!foundEvent)
                     Assert.Fail($"Did not find {expectedEvent.GetType()} event for '{this.player.Name}'.\r\n{this.GetEventDetails(expectedEvent)}");
             }
-        }
-
-        internal void VerifyState(Dictionary<string, IPlayer> playersByName)
-        {
-            /*foreach (var kv in this.playerSnapshotsByName)
-                kv.Value.Verify(playersByName[kv.Key]);*/
         }
 
         protected void AddDevelopmentCard(Guid playerId, DevelopmentCardTypes developmentCardType)
@@ -389,18 +418,16 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
             return message;
         }
 
-        public virtual void Process(TurnToken currentToken, LocalGameController localGameController)
+        public virtual void CompleteProcessing(TurnToken currentToken, LocalGameController localGameController)
         {
             if (this.instructions == null)
             {
                 return;
             }
 
-            this.LocalGameController = localGameController;
-
             while (this.instructions.Count > 0)
             {
-                var instruction = this.instructions.Peek();
+                var instruction = this.instructions.Dequeue();
                 if (instruction is GameEvent expectedEvent)
                 {
                     this.expectedEvents.Add(expectedEvent);
@@ -468,13 +495,9 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
             return this;
         }
 
-        internal BasePlayerTurn DropResources(string playerName, ResourceClutch resourcesToDrop)
+        public BasePlayerTurn DropResources(string playerName, ResourceClutch resourcesToDrop)
         {
-            //var player = this.runner.GetPlayerFromName(playerName);
             this.instructions.Enqueue(new ScenarioDropResourcesAction(playerName, resourcesToDrop));
-            
-            //((ScenarioComputerPlayer)player).AddResourcesToDrop(resourcesToDrop);
-
             return this;
         }
 

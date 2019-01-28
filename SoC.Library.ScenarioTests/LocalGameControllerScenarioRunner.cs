@@ -137,7 +137,6 @@ namespace SoC.Library.ScenarioTests
             this.localGameController.CompleteGameSetup(placeInfrastructureInstruction.SettlementLocation, placeInfrastructureInstruction.RoadEndLocation);
 
             this.ProcessGame();
-            
 
             return this.localGameController;
         }
@@ -148,9 +147,8 @@ namespace SoC.Library.ScenarioTests
 
             for (var index = 0; index < this.turns.Count; index++)
             {
-                this.turns[index].Process(this.currentToken, this.localGameController);
-                //if (this.turns[index] is HumanPlayerTurn)
-                if (index == 0)
+                this.turns[index].CompleteProcessing(this.currentToken, this.localGameController);
+                if (this.turns[index].IsHumanPlayer)
                     this.localGameController.EndTurn(this.currentToken);
             }
 
@@ -192,7 +190,7 @@ namespace SoC.Library.ScenarioTests
 
         private int roundNumber = 1;
         private int turnNumber = 1;
-        public BasePlayerTurn PlayerTurn(string playerName, uint dice1, uint dice2)
+        public BasePlayerTurn PlayerTurn_Old(string playerName, uint dice1, uint dice2)
         {
             this.NumberGenerator.AddTwoDiceRoll(dice1, dice2);
 
@@ -325,21 +323,22 @@ namespace SoC.Library.ScenarioTests
             this.currentTurn.AddEvent(new DiceRollEvent(playerId, dice1, dice2));
         }
 
-        private bool isFirstHumanTurn = true;
+        //private bool isFirstHumanTurn = true;
         private void StartOfTurn()
         {
             if (this.currentIndex < this.turns.Count)
             {
                 this.currentTurn = this.turns[this.currentIndex++];
+                this.currentTurn.LocalGameController = this.localGameController;
                 if (this.currentTurn is ComputerPlayerTurn computerTurn)
                 {
-                    this.currentTurn.Process(null, null);
+                    //this.currentTurn.Process(null, null);
                 }
-                else
+                /*else
                 {
                     //this.currentTurn.StartProcessing(this.currentToken, this.localGameController);
                     this.currentTurn.LocalGameController = this.localGameController;
-                }
+                }*/
             }
             else
             {
@@ -375,17 +374,11 @@ namespace SoC.Library.ScenarioTests
             }
         }
 
-        internal BasePlayerTurn PlayerTurn2(string playerName, uint dice1, uint dice2)
+        internal BasePlayerTurn PlayerTurn(string playerName, uint dice1, uint dice2)
         {
             this.NumberGenerator.AddTwoDiceRoll(dice1, dice2);
 
             var playerTurn = new BasePlayerTurn(playerName, this.playersByName, this, this.roundNumber, this.turnNumber);
-            /*var player = this.playersByName[playerName];
-            if (player.IsComputer)
-                playerTurn = new ComputerPlayerTurn(player, this, this.roundNumber, this.turnNumber);
-            else
-                playerTurn = new HumanPlayerTurn(player, this, this.roundNumber, this.turnNumber);*/
-
             this.turns.Add(playerTurn);
 
             this.turnNumber++;
