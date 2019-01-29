@@ -114,7 +114,7 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
         public BasePlayerTurn BuyDevelopmentCard(DevelopmentCardTypes developmentCardType)
         {
             this.DevelopmentCardTypes.Add(developmentCardType);
-            this.instructions.Enqueue(new ComputerPlayerAction(ComputerPlayerActionTypes.BuyDevelopmentCard));
+            this.instructions.Enqueue(new BuyDevelopmentCardAction());
             return this;
         }
 

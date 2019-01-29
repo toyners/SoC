@@ -91,7 +91,8 @@ namespace SoC.Library.ScenarioTests
             {
                 this.currentTurn?.AddEvent(new DiceRollEvent(playerId, dice1, dice2));
             };
-            this.localGameController.DevelopmentCardPurchasedEvent = (DevelopmentCard c) => { this.currentTurn?.AddEvent(new BuyDevelopmentCardEvent(this.players[0].Id)); };
+            //this.localGameController.DevelopmentCardPurchasedEvent = (DevelopmentCard c) => { this.currentTurn?.AddEvent(new BuyDevelopmentCardEvent(this.players[0].Id)); };
+            this.localGameController.DevelopmentCardBoughtEvent = gameEvent => { this.currentTurn?.AddEvent(gameEvent); };
             this.localGameController.ErrorRaisedEvent = (ErrorDetails e) => 
             {
                 if (this.currentTurn.TreatErrorsAsEvents)
@@ -101,7 +102,8 @@ namespace SoC.Library.ScenarioTests
             };
             this.localGameController.GameEvents = this.GameEventsHandler;
             this.localGameController.LargestArmyEvent = (newPlayerId, previousPlayerId) => { this.currentTurn?.AddEvent(new LargestArmyChangedEvent(newPlayerId, previousPlayerId)); };
-            this.localGameController.PlayKnightCardEvent = (PlayKnightCardEvent p) => { this.currentTurn?.AddEvent(p); };
+            //this.localGameController.PlayKnightCardEvent = (PlayKnightCardEvent p) => { this.currentTurn?.AddEvent(p); };
+            this.localGameController.KnightCardPlayedEvent = e => { this.currentTurn?.AddEvent(e); };
             this.localGameController.ResourcesLostEvent = (r) => this.currentTurn?.AddEvent(r);
             this.localGameController.ResourcesTransferredEvent = (ResourceTransactionList list) =>
             {

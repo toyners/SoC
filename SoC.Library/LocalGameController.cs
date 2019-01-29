@@ -113,10 +113,11 @@ namespace Jabberwocky.SoC.Library
         public Action<PlayerDataBase[]> GameJoinedEvent { get; set; }
         public Action<PlayerDataBase[], GameBoard> GameLoadedEvent { get; set; }
         public Action<Guid> GameOverEvent { get; set; }
+        public Action<KnightCardPlayedEvent> KnightCardPlayedEvent { get; set; }
         public Action<Guid, Guid> LargestArmyEvent { get; set; }
         public Action<ClientAccount> LoggedInEvent { get; set; }
         public Action<Guid, Guid> LongestRoadBuiltEvent { get; set; }
-        public Action<PlayKnightCardEvent> PlayKnightCardEvent { get; set; }
+        public Action<PlayKnightCardEvent> PlayKnightCardEvent { get; set; } // TODO: Use KnightCardPlayedEvent instead
         public Action<ResourceUpdateEvent> ResourcesLostEvent { get; set; }
         public Action<ResourceTransactionList> ResourcesTransferredEvent { get; set; }
         public Action<RoadSegmentBuiltEvent> RoadSegmentBuiltEvent { get; set; }
@@ -444,6 +445,29 @@ namespace Jabberwocky.SoC.Library
                     {
                         this.robberHex = placeRobberAction.RobberHex;
                     }
+                    else if (playerAction is PlayKnightCardAction playKnightCardAction)
+                    {
+                        var knightCard = computerPlayer.GetKnightCard();
+                        this.PlayKnightDevelopmentCard(knightCard, playKnightCardAction.NewRobberHex);
+                        this.KnightCardPlayedEvent?.Invoke(new KnightCardPlayedEvent(computerPlayer.Id, playKnightCardAction.NewRobberHex));
+
+                        if (playKnightCardAction.PlayerId.HasValue)
+                        {
+                            var robbedPlayer = this.playersById[playKnightCardAction.PlayerId.Value];
+                            var takenResource = this.GetResourceFromPlayer(robbedPlayer);
+                            computerPlayer.AddResources(takenResource);
+                            var resourceTransaction = new ResourceTransaction(computerPlayer.Id, robbedPlayer.Id, takenResource);
+                            var resourceLostEvent = new ResourceTransactionEvent(computerPlayer.Id, resourceTransaction);
+                            events.Add(resourceLostEvent);
+                        }
+
+                        if (this.PlayerHasJustBuiltTheLargestArmy(out Guid previousPlayerId))
+                        {
+                            events.Add(new LargestArmyChangedEvent(this.playerWithLargestArmy.Id, previousPlayerId));
+                        }
+
+                        this.CheckComputerPlayerIsWinner(computerPlayer, events);
+                    }
                     else if (playerAction is SelectResourceFromPlayerAction selectResourceFromPlayerAction)
                     {
                         var opponent = this.playersById[selectResourceFromPlayerAction.PlayerId];
@@ -459,33 +483,6 @@ namespace Jabberwocky.SoC.Library
                     {
                         switch (playerAction.ActionType)
                         {
-                            case ComputerPlayerActionTypes.PlayKnightCard:
-                            {
-                                var playKnightCardAction = (PlayKnightCardAction)playerAction;
-                                var knightCard = computerPlayer.GetKnightCard();
-                                this.PlayKnightDevelopmentCard(knightCard, playKnightCardAction.NewRobberHex);
-                                events.Add(new PlayKnightCardEvent(computerPlayer.Id));
-
-                                if (playKnightCardAction.PlayerId.HasValue)
-                                {
-                                    var robbedPlayer = this.playersById[playKnightCardAction.PlayerId.Value];
-                                    var takenResource = this.GetResourceFromPlayer(robbedPlayer);
-                                    computerPlayer.AddResources(takenResource);
-                                    var resourceTransaction = new ResourceTransaction(computerPlayer.Id, robbedPlayer.Id, takenResource);
-                                    var resourceLostEvent = new ResourceTransactionEvent(computerPlayer.Id, resourceTransaction);
-                                    events.Add(resourceLostEvent);
-                                }
-
-                                if (this.PlayerHasJustBuiltTheLargestArmy(out Guid previousPlayerId))
-                                {
-                                    events.Add(new LargestArmyChangedEvent(this.playerWithLargestArmy.Id, previousPlayerId));
-                                }
-
-                                this.CheckComputerPlayerIsWinner(computerPlayer, events);
-
-                                break;
-                            }
-
                             case ComputerPlayerActionTypes.PlayMonopolyCard:
                             {
                                 var monopolyCard = computerPlayer.ChooseMonopolyCard();
