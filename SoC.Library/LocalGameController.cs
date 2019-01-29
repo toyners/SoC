@@ -184,7 +184,8 @@ namespace Jabberwocky.SoC.Library
 
             DevelopmentCard developmentCard = this.BuyDevelopmentCard();
             this.currentPlayer.HeldCards.Add(developmentCard);
-            this.DevelopmentCardPurchasedEvent?.Invoke(developmentCard);
+            //this.DevelopmentCardPurchasedEvent?.Invoke(developmentCard); TODO: Reuse this name for below event
+            this.DevelopmentCardBoughtEvent?.Invoke(new DevelopmentCardBoughtEvent(this.currentPlayer.Id));
         }
 
         public BuildStatuses CanBuildCity()

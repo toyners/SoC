@@ -13,6 +13,7 @@ namespace SoC.Library.ScenarioTests
     public class ScenarioTests
     {
         const string MainPlayerName = "Player";
+        const string MainPlayer = "Player";
         const string FirstOpponentName = "Barbara";
         const string FirstOpponent_Babara = "Barbara";
         const string SecondOpponentName = "Charlie";
@@ -343,38 +344,6 @@ namespace SoC.Library.ScenarioTests
         }
 
         [Test]
-        public void Scenario_ComputerPlayerHasNineVictoryPointsAndBuildsLongestRoadToWin()
-        {
-            var firstOpponentResources = (ResourceClutch.RoadSegment * 5) + (ResourceClutch.Settlement * 3) +
-                (ResourceClutch.City * 4);
-
-            this.CreateStandardLocalGameControllerScenarioRunner()
-                .WithNoResourceCollection()
-                .WithStartingResourcesForPlayer(FirstOpponentName, firstOpponentResources)
-                .PlayerTurn_Old(MainPlayerName, 4, 4).EndTurn()
-                .PlayerTurn_Old(FirstOpponentName, 3, 3)
-                    .Actions()
-                        .BuildRoad(17, 7).BuildRoad(7, 8).BuildRoad(8, 0).BuildRoad(44, 45)
-                        .BuildSettlement(7).BuildSettlement(0).BuildSettlement(45)
-                        .BuildCity(7).BuildCity(0).BuildCity(18).BuildCity(43)
-                        .BuildRoad(0, 1)
-                        .End()
-                    .Events()
-                        .BuildRoadEvent(17, 7).BuildRoadEvent(7, 8)
-                        .BuildRoadEvent(8, 0).BuildRoadEvent(44, 45)
-                        .BuildSettlementEvent(7).BuildSettlementEvent(0)
-                        .BuildSettlementEvent(45)
-                        .BuildCityEvent(7).BuildCityEvent(0).BuildCityEvent(18).BuildCityEvent(43)
-                        .BuildRoadEvent(0, 1)
-                        .LongestRoadBuiltEvent()
-                        .GameWinEvent(11)
-                        .End()
-                    .EndTurn()
-                .Build()
-                .Run();
-        }
-
-        [Test]
         public void New_Scenario_ComputerPlayerHasNineVictoryPointsAndBuildsLongestRoadToWin()
         {
             var firstOpponentResources = (ResourceClutch.RoadSegment * 5) + (ResourceClutch.Settlement * 3) +
@@ -399,6 +368,9 @@ namespace SoC.Library.ScenarioTests
                         .BuildRoad(0, 1).BuildRoadEvent(0, 1)
                         .LongestRoadBuiltEvent()
                         .GameWinEvent(11)
+                        .State(FirstOpponent_Babara)
+                            .VictoryPoints(11)
+                        .End()
                     .EndTurn()
                 .Build()
                 .Run();
@@ -409,31 +381,30 @@ namespace SoC.Library.ScenarioTests
         /// is moved to a hex populated by two computer players.
         /// </summary>
         [Test]
-        public void Scenario_ComputerPlayerLosesResourceWhenPlayerPlaysTheKnightCard()
+        public void New_Scenario_ComputerPlayerLosesResourceWhenPlayerPlaysTheKnightCard()
         {
             var mainPlayerResources = ResourceClutch.DevelopmentCard;
             var firstOpponentResources = ResourceClutch.OneOre;
             this.CreateStandardLocalGameControllerScenarioRunner()
                 .WithNoResourceCollection()
                 .WithStartingResourcesForPlayer(MainPlayerName, mainPlayerResources).WithStartingResourcesForPlayer(FirstOpponentName, firstOpponentResources)
-                .WithNoResourceCollection()
-                .PlayerTurn_Old(MainPlayerName, 4, 4)
-                    .Actions()
-                        .BuyDevelopmentCard(DevelopmentCardTypes.Knight)
-                        .End()
-                    .Events()
-                        .BuyDevelopmentCardEvent(DevelopmentCardTypes.Knight)
+                .PlayerTurn(MainPlayerName, 4, 4)
+                    .BuyDevelopmentCard(DevelopmentCardTypes.Knight).DevelopmentCardBoughtEvent()
+                    .State(MainPlayerName)
+                        .HeldCards(DevelopmentCardTypes.Knight)
                         .End()
                     .EndTurn()
-                .PlayerTurn_Old(FirstOpponentName, 3, 3).EndTurn()
-                .PlayerTurn_Old(SecondOpponentName, 3, 3).EndTurn()
-                .PlayerTurn_Old(ThirdOpponentName, 3, 3).EndTurn()
-                .PlayerTurn_Old(MainPlayerName, 4, 4)
-                    .Actions()
-                        .PlayKnightCardAndCollectFrom(3, FirstOpponentName, ResourceTypes.Ore)
+                .PlayerTurn(FirstOpponentName, 3, 3).EndTurn()
+                .PlayerTurn(SecondOpponentName, 3, 3).EndTurn()
+                .PlayerTurn(ThirdOpponentName, 3, 3).EndTurn()
+                .PlayerTurn(MainPlayerName, 4, 4)
+                    .PlayKnightCard(3, FirstOpponent_Babara, ResourceTypes.Ore).KnightCardPlayedEvent(3)
+                    .ResourcesGainedEvent(MainPlayer, FirstOpponent_Babara, ResourceClutch.OneOre)
+                    .State(MainPlayer)
+                        .Resources(ResourceClutch.OneOre)
                         .End()
-                    .Events()
-                        .ResourcesGainedEvent(FirstOpponentName, ResourceClutch.OneOre)
+                    .State(FirstOpponent_Babara)
+                        .Resources(ResourceClutch.Zero)
                         .End()
                     .EndTurn()
                 .Build()

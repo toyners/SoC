@@ -344,6 +344,7 @@ namespace SoC.Library.ScenarioTests
             if (this.currentIndex < this.turns.Count)
             {
                 this.currentTurn = this.turns[this.currentIndex++];
+                this.currentTurn.TurnToken = this.currentToken;
             }
             else
             {

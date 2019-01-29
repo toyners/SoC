@@ -66,6 +66,7 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
         }
         public IList<Type> UnwantedEventTypes { private get; set; }
         public LocalGameController LocalGameController { get; set; }
+        public TurnToken TurnToken { get; set; }
         #endregion
 
         #region Methods
@@ -201,7 +202,7 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
                     {
                         var player = this.playersByName[scenarioResourcesToDropAction.PlayerName];
                         var dropResourcesAction = scenarioResourcesToDropAction.CreateDropResourcesAction();
-                        
+
                         if (player is ScenarioComputerPlayer computerPlayer)
                         {
                             computerPlayer.AddDropResourcesAction(dropResourcesAction);
@@ -211,10 +212,16 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
                             this.LocalGameController.DropResources(dropResourcesAction.Resources);
                         }
                     }
-                    else
+                    else if (this.player is ScenarioPlayer)
                     {
-                        if (this.player is ScenarioComputerPlayer computerPlayer)
-                            computerPlayer.AddAction(action);
+                        if (action is BuyDevelopmentCardAction)
+                            this.LocalGameController.BuyDevelopmentCard(this.TurnToken);
+                        else
+                            throw new Exception("Scenario Player action not recognised");
+                    }
+                    else if (this.player is ScenarioComputerPlayer computerPlayer)
+                    {
+                        computerPlayer.AddAction(action);
                     }
                 }
                 else if (instruction is PlayerState playerState)
@@ -241,6 +248,12 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
             return this;
         }
 
+        public BasePlayerTurn PlayKnightCard(uint hexLocation, string targetPlayerName, ResourceTypes resourceTaken)
+        {
+            this.instructions.Enqueue(new ScenarioPlayKnightCardAction(hexLocation, targetPlayerName, resourceTaken));
+            return this;
+        }
+
         public BasePlayerTurn ResourceCollectedEvent(string playerName, params Tuple<uint, ResourceClutch>[] resourceCollectionPairs)
         {
             var playerId = this.playersByName[playerName].Id;
@@ -251,6 +264,16 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
                 rc[index++] = new ResourceCollection(pair.Item1, pair.Item2);
             this.instructions.Enqueue(new ResourcesCollectedEvent(playerId, rc));
 
+            return this;
+        }
+
+        public BasePlayerTurn ResourcesGainedEvent(string receivingPlayerName, string givingPlayerName, ResourceClutch expectedResources)
+        {
+            var receivingPlayer = this.playersByName[receivingPlayerName];
+            var givingPlayer = this.playersByName[givingPlayerName];
+            var resourceTransaction = new ResourceTransaction(receivingPlayer.Id, givingPlayer.Id, expectedResources);
+            var expectedResourceTransactonEvent = new ResourceTransactionEvent(receivingPlayer.Id, resourceTransaction);
+            this.instructions.Enqueue(expectedResourceTransactonEvent);
             return this;
         }
 
