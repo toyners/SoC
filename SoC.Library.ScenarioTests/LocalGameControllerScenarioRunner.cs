@@ -74,6 +74,18 @@ namespace SoC.Library.ScenarioTests
                 this.playerPool, 
                 this.gameBoard, 
                 this.developmentCardHolder);
+
+            foreach (var turn in this.turns)
+            {
+                if (turn.DevelopmentCardTypes != null)
+                {
+                    foreach (var developmentCardType in turn.DevelopmentCardTypes)
+                        this.developmentCardHolder.AddDevelopmentCard(this.CreateDevelopmentCardToBuy(developmentCardType));
+                }
+
+                turn.LocalGameController = this.localGameController;
+            }
+
             this.localGameController.CityBuiltEvent = cityBuiltEvent => this.currentTurn?.AddEvent(cityBuiltEvent);
             this.localGameController.DiceRollEvent = (Guid playerId, uint dice1, uint dice2) =>
             {
@@ -279,7 +291,7 @@ namespace SoC.Library.ScenarioTests
             return this;
         }
 
-        internal void AddDevelopmentCardToBuy(DevelopmentCardTypes developmentCardType)
+        internal DevelopmentCard CreateDevelopmentCardToBuy(DevelopmentCardTypes developmentCardType)
         {
             DevelopmentCard developmentCard = null;
             switch (developmentCardType)
@@ -288,7 +300,7 @@ namespace SoC.Library.ScenarioTests
                 default: throw new Exception($"Development card type {developmentCardType} not recognised");
             }
 
-            this.developmentCardHolder.AddDevelopmentCard(developmentCard);
+            return developmentCard;
         }
 
         private void CompleteGamePlay()
@@ -325,13 +337,12 @@ namespace SoC.Library.ScenarioTests
             this.currentTurn.AddEvent(new DiceRollEvent(playerId, dice1, dice2));
         }
 
-        //private bool isFirstHumanTurn = true;
         private void StartOfTurn()
         {
             if (this.currentIndex < this.turns.Count)
             {
                 this.currentTurn = this.turns[this.currentIndex++];
-                this.currentTurn.LocalGameController = this.localGameController;
+                //this.currentTurn.LocalGameController = this.localGameController;
                 /*if (this.currentTurn is ComputerPlayerTurn computerTurn)
                 {
                     //this.currentTurn.Process(null, null);
@@ -358,8 +369,6 @@ namespace SoC.Library.ScenarioTests
                 previousTurn.VerifyEvents();
                 previousTurn.VerifyState(this.playersByName);
             }*/
-
-            
         }
 
         private void GameEventsHandler(List<GameEvent> gameEvents)

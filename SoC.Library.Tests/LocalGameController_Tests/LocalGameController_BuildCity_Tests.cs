@@ -29,7 +29,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
             player.AddResources(ResourceClutch.City);
 
             bool cityBuilt = false;
-            localGameController.CityBuiltEvent = () => { cityBuilt = true; };
+            localGameController.CityBuiltEvent = c => { cityBuilt = true; };
 
             TurnToken turnToken = null;
             localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
@@ -61,7 +61,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
             player.AddResources(ResourceClutch.City);
 
             bool cityBuilt = false;
-            localGameController.CityBuiltEvent = () => { cityBuilt = true; };
+            localGameController.CityBuiltEvent = c => { cityBuilt = true; };
 
             TurnToken turnToken = null;
             localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
@@ -93,7 +93,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
             player.AddResources(ResourceClutch.City);
 
             Boolean cityBuilt = false;
-            localGameController.CityBuiltEvent = () => { cityBuilt = true; };
+            localGameController.CityBuiltEvent = c => { cityBuilt = true; };
 
             TurnToken turnToken = null;
             localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
@@ -130,7 +130,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
             player.AddResources(new ResourceClutch(0, grainCount, 0, oreCount, 0));
 
             Boolean cityBuilt = false;
-            localGameController.CityBuiltEvent = () => { cityBuilt = true; };
+            localGameController.CityBuiltEvent = c => { cityBuilt = true; };
 
             TurnToken turnToken = null;
             localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };

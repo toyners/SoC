@@ -110,6 +110,14 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
             return this;
         }
 
+        public List<DevelopmentCardTypes> DevelopmentCardTypes = new List<DevelopmentCardTypes>();
+        public BasePlayerTurn BuyDevelopmentCard(DevelopmentCardTypes developmentCardType)
+        {
+            this.DevelopmentCardTypes.Add(developmentCardType);
+            this.instructions.Enqueue(new ComputerPlayerAction(ComputerPlayerActionTypes.BuyDevelopmentCard));
+            return this;
+        }
+
         public LocalGameControllerScenarioRunner EndTurn()
         {
             return this.runner;
@@ -118,6 +126,23 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
         public BasePlayerTurn GameWinEvent(uint expectedVictoryPoints)
         {
             this.instructions.Enqueue(new GameWinEvent(this.PlayerId, expectedVictoryPoints));
+            return this;
+        }
+
+        public BasePlayerTurn KnightCardPlayedEvent(uint hexLocation)
+        {
+            this.instructions.Enqueue(new KnightCardPlayedEvent(this.PlayerId, hexLocation));
+            return this;
+        }
+
+        public BasePlayerTurn LargestArmyChangedEvent(string previousPlayerName = null)
+        {
+            Guid previousPlayerId = Guid.Empty;
+            if (previousPlayerName != null)
+                previousPlayerId = this.playersByName[previousPlayerName].Id;
+            var expectedLargestArmyChangedEvent = new LargestArmyChangedEvent(this.PlayerId, previousPlayerId);
+            this.instructions.Enqueue(expectedLargestArmyChangedEvent);
+
             return this;
         }
 
@@ -202,6 +227,12 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
                     }
                 }
             }
+        }
+
+        public BasePlayerTurn PlayKnightCard(uint hexLocation)
+        {
+            this.instructions.Enqueue(new PlayKnightCardAction(hexLocation));
+            return this;
         }
 
         public BasePlayerTurn ResourceCollectedEvent(string playerName, params Tuple<uint, ResourceClutch>[] resourceCollectionPairs)
@@ -334,11 +365,6 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
                 if (!foundEvent)
                     Assert.Fail($"Did not find {expectedEvent.GetType()} event for '{this.player.Name}'.\r\n{this.GetEventDetails(expectedEvent)}");
             }
-        }
-
-        protected void AddDevelopmentCard(Guid playerId, DevelopmentCardTypes developmentCardType)
-        {
-            this.runner.AddDevelopmentCardToBuy(developmentCardType);
         }
 
         protected void SetupResourceSelectionOnPlayer(IPlayer selectedPlayer, ResourceTypes expectedSingleResource)

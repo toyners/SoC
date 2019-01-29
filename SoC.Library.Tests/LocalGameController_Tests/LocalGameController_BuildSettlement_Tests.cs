@@ -31,7 +31,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
             player.AddResources(ResourceClutch.Settlement);
 
             Boolean settlementBuilt = false;
-            localGameController.SettlementBuiltEvent = () => { settlementBuilt = true; };
+            localGameController.SettlementBuiltEvent = s => { settlementBuilt = true; };
 
             TurnToken turnToken = null;
             localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
@@ -69,7 +69,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
             player.AddResources(new ResourceClutch(brickCount, grainCount, lumberCount, oreCount, woolCount));
 
             Boolean settlementBuilt = false;
-            localGameController.SettlementBuiltEvent = () => { settlementBuilt = true; };
+            localGameController.SettlementBuiltEvent = s => { settlementBuilt = true; };
 
             ErrorDetails errorDetails = null;
             localGameController.ErrorRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
@@ -148,7 +148,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
             player.AddResources(ResourceClutch.Settlement);
 
             Int32 settlementBuilt = 0;
-            localGameController.SettlementBuiltEvent = () => { settlementBuilt++; };
+            localGameController.SettlementBuiltEvent = s => { settlementBuilt++; };
 
             ErrorDetails errorDetails = null;
             localGameController.ErrorRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
