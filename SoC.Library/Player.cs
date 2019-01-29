@@ -214,6 +214,9 @@ namespace Jabberwocky.SoC.Library
 
         public void PayForDevelopmentCard()
         {
+            this.Resources -= ResourceClutch.DevelopmentCard;
+
+            // TODO: Remove these
             this.GrainCount--;
             this.OreCount--;
             this.WoolCount--;

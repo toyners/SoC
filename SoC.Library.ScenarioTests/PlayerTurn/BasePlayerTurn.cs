@@ -215,9 +215,18 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
                     else if (this.player is ScenarioPlayer)
                     {
                         if (action is BuyDevelopmentCardAction)
+                        {
                             this.LocalGameController.BuyDevelopmentCard(this.TurnToken);
+                        }
+                        else if (action is PlayKnightCardAction playKnightCardAction)
+                        {
+                            var knightCard = (KnightDevelopmentCard)this.player.HeldCards.Where(c => c.Type == Jabberwocky.SoC.Library.DevelopmentCardTypes.Knight).First();
+                            this.LocalGameController.UseKnightCard(this.TurnToken, knightCard, playKnightCardAction.NewRobberHex);
+                        }
                         else
+                        {
                             throw new Exception("Scenario Player action not recognised");
+                        }
                     }
                     else if (this.player is ScenarioComputerPlayer computerPlayer)
                     {
@@ -248,9 +257,12 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
             return this;
         }
 
+
+        public List<ScenarioSelectResourceFromPlayerAction> ScenarioSelectResourceFromPlayerActions = new List<ScenarioSelectResourceFromPlayerAction>();
         public BasePlayerTurn PlayKnightCard(uint hexLocation, string targetPlayerName, ResourceTypes resourceTaken)
         {
-            this.instructions.Enqueue(new ScenarioPlayKnightCardAction(hexLocation, targetPlayerName, resourceTaken));
+            this.ScenarioSelectResourceFromPlayerActions.Add(new ScenarioSelectResourceFromPlayerAction(targetPlayerName, resourceTaken));
+            this.instructions.Enqueue(new PlayKnightCardAction(hexLocation, this.playersByName[targetPlayerName].Id));
             return this;
         }
 

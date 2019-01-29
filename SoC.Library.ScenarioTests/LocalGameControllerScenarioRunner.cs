@@ -83,6 +83,15 @@ namespace SoC.Library.ScenarioTests
                         this.developmentCardHolder.AddDevelopmentCard(this.CreateDevelopmentCardToBuy(developmentCardType));
                 }
 
+                if (turn.ScenarioSelectResourceFromPlayerActions != null)
+                {
+                    foreach (var s in turn.ScenarioSelectResourceFromPlayerActions)
+                    {
+                        var selectedPlayer = this.playersByName[s.SelectedPlayerName];
+                        this.NumberGenerator.AddRandomNumber(this.GetResourceSelectionForPlayer(selectedPlayer, s.ExpectedSingleResource));
+                    }
+                }
+
                 turn.LocalGameController = this.localGameController;
             }
 
@@ -351,7 +360,7 @@ namespace SoC.Library.ScenarioTests
                 this.currentTurn = null;
             }
         }
-
+    
         private void GameEventsHandler(List<GameEvent> gameEvents)
         {
             this.currentTurn?.AddEvents(gameEvents);
@@ -364,6 +373,34 @@ namespace SoC.Library.ScenarioTests
                         ((Action<LargestArmyChangedEvent>)eventHandler).Invoke((LargestArmyChangedEvent)gameEvent);
                 }
             }
+        }
+
+        private int GetResourceSelectionForPlayer(IPlayer selectedPlayer, ResourceTypes expectedSingleResource)
+        {
+            var randomNumber = int.MinValue;
+            switch (expectedSingleResource)
+            {
+                case ResourceTypes.Grain:
+                {
+                    randomNumber = selectedPlayer.Resources.BrickCount;
+                    break;
+                }
+                case ResourceTypes.Ore:
+                {
+                    randomNumber = selectedPlayer.Resources.BrickCount +
+                    selectedPlayer.Resources.GrainCount +
+                    selectedPlayer.Resources.LumberCount;
+                    break;
+                }
+                case ResourceTypes.Wool:
+                {
+                    randomNumber = selectedPlayer.Resources.Count - 1;
+                    break;
+                }
+                default: throw new Exception($"Resource type '{expectedSingleResource}' not handled");
+            }
+
+            return randomNumber;
         }
 
         internal BasePlayerTurn PlayerTurn(string playerName, uint dice1, uint dice2)

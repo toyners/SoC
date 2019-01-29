@@ -394,7 +394,7 @@ namespace SoC.Library.ScenarioTests
                         .HeldCards(DevelopmentCardTypes.Knight)
                         .End()
                     .EndTurn()
-                .PlayerTurn(FirstOpponentName, 3, 3).EndTurn()
+                .PlayerTurn(FirstOpponent_Babara, 3, 3).EndTurn()
                 .PlayerTurn(SecondOpponentName, 3, 3).EndTurn()
                 .PlayerTurn(ThirdOpponentName, 3, 3).EndTurn()
                 .PlayerTurn(MainPlayerName, 4, 4)
