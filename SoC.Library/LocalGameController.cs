@@ -105,6 +105,7 @@ namespace Jabberwocky.SoC.Library
         #region Events
         public Action<CityBuiltEvent> CityBuiltEvent { get; set; }
         public Action<DevelopmentCard> DevelopmentCardPurchasedEvent { get; set; }
+        public Action<DevelopmentCardBoughtEvent> DevelopmentCardBoughtEvent { get; set; }
         public Action<Guid, uint, uint> DiceRollEvent { get; set; }
         public Action<ErrorDetails> ErrorRaisedEvent { get; set; }
         public Action<GameBoardSetup> InitialBoardSetupEvent { get; set; }
@@ -416,8 +417,7 @@ namespace Jabberwocky.SoC.Library
                     {
                         this.BuildRoadSegment(buildRoadSegmentAction.StartLocation, buildRoadSegmentAction.EndLocation);
                         this.RoadSegmentBuiltEvent?.Invoke(new RoadSegmentBuiltEvent(computerPlayer.Id, buildRoadSegmentAction.StartLocation, buildRoadSegmentAction.EndLocation));
-                        Guid previousPlayerWithLongestRoadId;
-                        if (this.PlayerHasJustBuiltTheLongestRoad(out previousPlayerWithLongestRoadId))
+                        if (this.PlayerHasJustBuiltTheLongestRoad(out Guid previousPlayerWithLongestRoadId))
                         {
                             events.Add(new LongestRoadBuiltEvent(computerPlayer.Id, previousPlayerWithLongestRoadId));
                         }
@@ -429,6 +429,12 @@ namespace Jabberwocky.SoC.Library
                         this.BuildSettlement(buildSettlementAction.SettlementLocation);
                         this.SettlementBuiltEvent?.Invoke(new SettlementBuiltEvent(computerPlayer.Id, buildSettlementAction.SettlementLocation));
                         this.CheckComputerPlayerIsWinner(computerPlayer, events);
+                    }
+                    else if (playerAction is BuyDevelopmentCardAction)
+                    {
+                        var developmentCard = this.BuyDevelopmentCard();
+                        computerPlayer.AddDevelopmentCard(developmentCard);
+                        this.DevelopmentCardBoughtEvent?.Invoke(new DevelopmentCardBoughtEvent(computerPlayer.Id));
                     }
                     else if (playerAction is DropResourcesAction dropResourcesAction)
                     {
@@ -453,14 +459,6 @@ namespace Jabberwocky.SoC.Library
                     {
                         switch (playerAction.ActionType)
                         {
-                            case ComputerPlayerActionTypes.BuyDevelopmentCard:
-                            {
-                                var developmentCard = this.BuyDevelopmentCard();
-                                computerPlayer.AddDevelopmentCard(developmentCard);
-                                events.Add(new BuyDevelopmentCardEvent(computerPlayer.Id));
-                                break;
-                            }
-
                             case ComputerPlayerActionTypes.PlayKnightCard:
                             {
                                 var playKnightCardAction = (PlayKnightCardAction)playerAction;

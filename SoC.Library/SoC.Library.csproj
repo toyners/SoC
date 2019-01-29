@@ -68,6 +68,7 @@
     <Compile Include="GameActions\SelectResourceFromPlayerAction.cs" />
     <Compile Include="GameBoards\GameBoardSetup.cs" />
     <Compile Include="GameEvents\BuyDevelopmentCardEvent.cs" />
+    <Compile Include="GameEvents\DevelopmentCardBoughtEvent.cs" />
     <Compile Include="GameEvents\GameWinEvent.cs" />
     <Compile Include="GameEvents\InfrastructureBuiltEvent.cs" />
     <Compile Include="GameEvents\KnightCardPlayedEvent.cs" />

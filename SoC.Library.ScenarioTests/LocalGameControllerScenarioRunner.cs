@@ -342,33 +342,11 @@ namespace SoC.Library.ScenarioTests
             if (this.currentIndex < this.turns.Count)
             {
                 this.currentTurn = this.turns[this.currentIndex++];
-                //this.currentTurn.LocalGameController = this.localGameController;
-                /*if (this.currentTurn is ComputerPlayerTurn computerTurn)
-                {
-                    //this.currentTurn.Process(null, null);
-                }
-                else
-                {
-                    //this.currentTurn.StartProcessing(this.currentToken, this.localGameController);
-                    this.currentTurn.LocalGameController = this.localGameController;
-                }*/
             }
             else
             {
                 this.currentTurn = null;
             }
-
-            //if (currentTurn is HumanPlayerTurn)
-            //    this.localGameController.EndTurn(this.currentToken);
-
-
-            /*var previousIndex = this.currentIndex - 1;
-            if (previousIndex >= 0 && previousIndex < this.turns.Count)
-            {
-                var previousTurn = this.turns[previousIndex];
-                previousTurn.VerifyEvents();
-                previousTurn.VerifyState(this.playersByName);
-            }*/
         }
 
         private void GameEventsHandler(List<GameEvent> gameEvents)

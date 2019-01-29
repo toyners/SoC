@@ -118,6 +118,12 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
             return this;
         }
 
+        public BasePlayerTurn DevelopmentCardBoughtEvent()
+        {
+            this.instructions.Enqueue(new DevelopmentCardBoughtEvent(this.PlayerId));
+            return this;
+        }
+
         public LocalGameControllerScenarioRunner EndTurn()
         {
             return this.runner;
@@ -514,7 +520,7 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
                 if (this.expectedEventIndex < this.expectedEvents.Count)
                 {
                     var expectedEvent = this.expectedEvents[this.expectedEventIndex];
-                    Assert.Fail($"Did not find {expectedEvent.GetType()} event for '{this.player.Name}'.\r\n{this.GetEventDetails(expectedEvent)}");
+                    Assert.Fail($"Did not find {expectedEvent.GetType()} event for '{this.player.Name}' in round {this.roundNumber}, turn {this.turnNumber}.\r\n{this.GetEventDetails(expectedEvent)}");
                 }
             }
         }
