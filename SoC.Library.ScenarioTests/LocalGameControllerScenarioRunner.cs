@@ -430,4 +430,9 @@ namespace SoC.Library.ScenarioTests
     {
         public DevelopmentCardTypes DevelopmentCardType;
     }
+
+    public interface IActionProcessor
+    {
+        void Add(Jabberwocky.SoC.Library.GameActions.ComputerPlayerAction action);
+    }
 }

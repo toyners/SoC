@@ -26,6 +26,8 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
         private readonly int roundNumber;
         private readonly int turnNumber;
         private Dictionary<string, IPlayer> playersByName;
+        private Dictionary<IPlayer, Action<ComputerPlayerAction>> actionProcessorsByPlayer;
+        private Dictionary<IPlayer, Action<ComputerPlayerAction>> actionResolversByPlayer;
         #endregion
 
         #region Construction
@@ -44,6 +46,57 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
             this.playersByName = playersByName;
             this.roundNumber = roundNumber;
             this.turnNumber = turnNumber;
+            this.actionProcessorsByPlayer = new Dictionary<IPlayer, Action<ComputerPlayerAction>>();
+            this.actionResolversByPlayer = new Dictionary<IPlayer, Action<ComputerPlayerAction>>();
+            foreach (var player in playersByName.Values)
+            {
+                if (player is ScenarioComputerPlayer computerPlayer)
+                {
+                    this.actionProcessorsByPlayer.Add(player, computerPlayer.AddAction);
+                    this.actionResolversByPlayer.Add(player, computerPlayer.AddAction);
+                }
+                else
+                {
+                    this.actionProcessorsByPlayer.Add(player, this.AddActionForHumanPlayer);
+                    this.actionResolversByPlayer.Add(player, this.ProcessActionForHumanPlayer);
+                }
+            }
+        }
+
+        private void ProcessActionForHumanPlayer(ComputerPlayerAction action)
+        {
+            if (action is ScenarioDropResourcesAction scenarioResourcesToDropAction)
+            {
+                this.LocalGameController.DropResources(scenarioResourcesToDropAction.Resources);
+            }
+            else if (action is BuildCityAction buildCityAction)
+            {
+                this.LocalGameController.BuildCity(this.TurnToken, buildCityAction.CityLocation);
+            }
+            else if (action is BuyDevelopmentCardAction)
+            {
+                this.LocalGameController.BuyDevelopmentCard(this.TurnToken);
+            }
+            else if (action is PlayKnightCardAction playKnightCardAction)
+            {
+                var knightCard = (KnightDevelopmentCard)this.player.HeldCards.Where(c => c.Type == Jabberwocky.SoC.Library.DevelopmentCardTypes.Knight).First();
+                this.LocalGameController.UseKnightCard(this.TurnToken, knightCard, playKnightCardAction.NewRobberHex, playKnightCardAction.PlayerId);
+            }
+            else
+            {
+                throw new Exception("Scenario Player action not recognised");
+            }
+        }
+
+        private void AddActionForComputerPlayer(ComputerPlayerAction obj)
+        {
+            throw new NotImplementedException();
+        }
+
+        private Queue<ComputerPlayerAction> actions = new Queue<ComputerPlayerAction>();
+        private void AddActionForHumanPlayer(ComputerPlayerAction obj)
+        {
+            this.actions.Enqueue(obj);
         }
         #endregion
 
@@ -165,19 +218,13 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
             return new ExpectedEventsBuilder(this, this.runner.playersByName);
         }
 
-        List<PlayerState> playerStates = new List<PlayerState>();
+        //List<PlayerState> playerStates = new List<PlayerState>();
 
         private int actualEventIndex;
         private int expectedEventIndex;
         public virtual void AddEvent(GameEvent actualEvent)
         {
             this.actualEvents.Add(actualEvent);
-
-            /*if (this.expectedEventIndex < this.expectedEvents.Count && actualEvent.Equals(this.expectedEvents[this.expectedEventIndex]))
-            {
-                this.expectedEventIndex++;
-                this.actualEventIndex = this.actualEvents.Count;
-            }*/
             var eventProcessed = false;
 
             while (this.instructions.Count > 0)
@@ -199,7 +246,8 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
                 }
                 else if (instruction is ComputerPlayerAction action)
                 {
-                    if (action is ScenarioDropResourcesAction scenarioResourcesToDropAction)
+                    this.actionProcessorsByPlayer[this.player].Invoke(action);
+                    /*if (action is ScenarioDropResourcesAction scenarioResourcesToDropAction)
                     {
                         var player = this.playersByName[scenarioResourcesToDropAction.PlayerName];
                         var dropResourcesAction = scenarioResourcesToDropAction.CreateDropResourcesAction();
@@ -232,17 +280,18 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
                     else if (this.player is ScenarioComputerPlayer computerPlayer)
                     {
                         computerPlayer.AddAction(action);
-                    }
+                    }*/
                 }
                 else if (instruction is PlayerState playerState)
                 {
                     var player = playerState.Player;
-                    this.playerStates.Add(playerState);
+                    //this.playerStates.Add(playerState);
 
                     if (player is ScenarioComputerPlayer computerPlayer)
                     {
-                        var verifySnapshotAction = new ScenarioVerifySnapshotAction(playerState);
-                        computerPlayer.AddAction(verifySnapshotAction);
+                        playerState.Verify();
+                        //var verifySnapshotAction = new ScenarioVerifySnapshotAction(playerState);
+                        //computerPlayer.AddAction(verifySnapshotAction);
                     }
                     else if (player is ScenarioPlayer humanPlayer)
                     {
@@ -292,53 +341,53 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
 
         public virtual void ResolveActions(TurnToken turnToken, LocalGameController localGameController)
         {
-        /*    if (this.PlayerActions == null || this.PlayerActions.Count == 0)
-                return;
+            /*    if (this.PlayerActions == null || this.PlayerActions.Count == 0)
+                    return;
 
-            foreach (var action in this.PlayerActions)
-            {
-                if (action is ScenarioPlaceRobberAction placeRobberAction)
+                foreach (var action in this.PlayerActions)
                 {
-                    if (!placeRobberAction.ResourcesToDrop.Equals(ResourceClutch.Zero))
-                        localGameController.DropResources(placeRobberAction.ResourcesToDrop);
-
-                    localGameController.SetRobberHex(placeRobberAction.NewRobberHex);
-                }
-                else if (action is ScenarioPlayKnightCardAction scenarioPlayKnightCardAction)
-                {
-                    var selectedPlayer = this.runner.GetPlayerFromName(scenarioPlayKnightCardAction.SelectedPlayerName);
-                    this.SetupResourceSelectionOnPlayer(selectedPlayer, scenarioPlayKnightCardAction.ExpectedSingleResource);
-                    var knightCard = (KnightDevelopmentCard)this.player.HeldCards.Where(c => c.Type == DevelopmentCardTypes.Knight).First();
-                    localGameController.UseKnightCard(turnToken, knightCard, scenarioPlayKnightCardAction.NewRobberHex, selectedPlayer.Id);
-                }
-                else if (action is ScenarioSelectResourceFromPlayerAction scenarioSelectResourceFromPlayerAction)
-                {
-                    var selectedPlayer = this.runner.GetPlayerFromName(scenarioSelectResourceFromPlayerAction.SelectedPlayerName);
-                    this.SetupResourceSelectionOnPlayer(selectedPlayer, scenarioSelectResourceFromPlayerAction.ExpectedSingleResource);
-                    localGameController.ChooseResourceFromOpponent(selectedPlayer.Id);
-                }
-                else if (action is PlayKnightCardAction playKnightCardAction)
-                {
-                    var knightCard = (KnightDevelopmentCard)this.player.HeldCards.Where(c => c.Type == DevelopmentCardTypes.Knight).First();
-                    localGameController.UseKnightCard(turnToken, knightCard, playKnightCardAction.NewRobberHex, playKnightCardAction.PlayerId);
-                }
-                else if (action is ScenarioResourcesToDropAction scenarioResourcesToDropAction)
-                {
-                    localGameController.DropResources(scenarioResourcesToDropAction.Resources);
-                }
-                else if (action is ComputerPlayerAction)
-                {
-                    switch (action.ActionType)
+                    if (action is ScenarioPlaceRobberAction placeRobberAction)
                     {
-                        case ComputerPlayerActionTypes.BuyDevelopmentCard: localGameController.BuyDevelopmentCard(turnToken); break;
-                        default: throw new Exception($"Action type '{action.ActionType}' not handled");
+                        if (!placeRobberAction.ResourcesToDrop.Equals(ResourceClutch.Zero))
+                            localGameController.DropResources(placeRobberAction.ResourcesToDrop);
+
+                        localGameController.SetRobberHex(placeRobberAction.NewRobberHex);
                     }
-                }
-                else
-                {
-                    throw new Exception($"Action of type '{action.GetType()}' not handled");
-                }
-            }*/
+                    else if (action is ScenarioPlayKnightCardAction scenarioPlayKnightCardAction)
+                    {
+                        var selectedPlayer = this.runner.GetPlayerFromName(scenarioPlayKnightCardAction.SelectedPlayerName);
+                        this.SetupResourceSelectionOnPlayer(selectedPlayer, scenarioPlayKnightCardAction.ExpectedSingleResource);
+                        var knightCard = (KnightDevelopmentCard)this.player.HeldCards.Where(c => c.Type == DevelopmentCardTypes.Knight).First();
+                        localGameController.UseKnightCard(turnToken, knightCard, scenarioPlayKnightCardAction.NewRobberHex, selectedPlayer.Id);
+                    }
+                    else if (action is ScenarioSelectResourceFromPlayerAction scenarioSelectResourceFromPlayerAction)
+                    {
+                        var selectedPlayer = this.runner.GetPlayerFromName(scenarioSelectResourceFromPlayerAction.SelectedPlayerName);
+                        this.SetupResourceSelectionOnPlayer(selectedPlayer, scenarioSelectResourceFromPlayerAction.ExpectedSingleResource);
+                        localGameController.ChooseResourceFromOpponent(selectedPlayer.Id);
+                    }
+                    else if (action is PlayKnightCardAction playKnightCardAction)
+                    {
+                        var knightCard = (KnightDevelopmentCard)this.player.HeldCards.Where(c => c.Type == DevelopmentCardTypes.Knight).First();
+                        localGameController.UseKnightCard(turnToken, knightCard, playKnightCardAction.NewRobberHex, playKnightCardAction.PlayerId);
+                    }
+                    else if (action is ScenarioResourcesToDropAction scenarioResourcesToDropAction)
+                    {
+                        localGameController.DropResources(scenarioResourcesToDropAction.Resources);
+                    }
+                    else if (action is ComputerPlayerAction)
+                    {
+                        switch (action.ActionType)
+                        {
+                            case ComputerPlayerActionTypes.BuyDevelopmentCard: localGameController.BuyDevelopmentCard(turnToken); break;
+                            default: throw new Exception($"Action type '{action.ActionType}' not handled");
+                        }
+                    }
+                    else
+                    {
+                        throw new Exception($"Action of type '{action.GetType()}' not handled");
+                    }
+                }*/
         }
 
         protected virtual void ResolveResponse(ComputerPlayerAction response, LocalGameController localGameController)
@@ -493,9 +542,10 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
 
         public virtual void CompleteProcessing(TurnToken currentToken, LocalGameController localGameController)
         {
-            if (this.instructions == null)
+            while (this.actions.Count > 0)
             {
-                return;
+                var action = this.actions.Dequeue();
+                this.actionResolversByPlayer[this.player]?.Invoke(action);
             }
 
             while (this.instructions.Count > 0)
@@ -507,7 +557,8 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
                 }
                 else if (instruction is ComputerPlayerAction action)
                 {
-                    if (action is ScenarioDropResourcesAction scenarioResourcesToDropAction)
+                    this.actionResolversByPlayer[this.player]?.Invoke(action);
+                    /*if (action is ScenarioDropResourcesAction scenarioResourcesToDropAction)
                     {
                         var player = this.playersByName[scenarioResourcesToDropAction.PlayerName];
                         var dropResourcesAction = scenarioResourcesToDropAction.CreateDropResourcesAction();
@@ -520,17 +571,18 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
                         {
                             this.LocalGameController.DropResources(dropResourcesAction.Resources);
                         }
-                    }
+                    }*/
                 }
                 else if (instruction is PlayerState playerState)
                 {
                     var player = playerState.Player;
-                    this.playerStates.Add(playerState);
+                    //this.playerStates.Add(playerState);
 
                     if (player is ScenarioComputerPlayer computerPlayer)
                     {
-                        var verifySnapshotAction = new ScenarioVerifySnapshotAction(playerState);
-                        computerPlayer.AddAction(verifySnapshotAction);
+                        //var verifySnapshotAction = new ScenarioVerifySnapshotAction(playerState);
+                        //computerPlayer.AddAction(verifySnapshotAction);
+                        playerState.Verify();
                     }
                     else if (player is ScenarioPlayer humanPlayer)
                     {
