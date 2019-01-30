@@ -663,7 +663,8 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
 
         public BasePlayerTurn MakeDirectTradeOffer(ResourceClutch wantedResources, params Tuple<string, ResourceClutch>[] playerAnswers)
         {
-            throw new NotImplementedException();
+            this.instructions.Enqueue(new ScenarioMakeDirectTradeOffer(wantedResources));
+            return this;
         }
 
         public BasePlayerTurn FinaliseTrade(ResourceClutch givenResources, string playerName, ResourceClutch receivedResources)
