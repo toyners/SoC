@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Jabberwocky.SoC.Library;
 using Jabberwocky.SoC.Library.Interfaces;
 using NUnit.Framework;
@@ -72,7 +73,12 @@ namespace SoC.Library.ScenarioTests
             if (this.heldCards != null)
             {
                 Assert.AreEqual(this.heldCards.Count, this.Player.HeldCards.Count, $"Player '{this.Player.Name}' state does not match: Expected {this.heldCards.Count} held cards, found {this.Player.HeldCards.Count} held cards");
-                // TODO: Compare cards
+                this.heldCards.Sort();
+                var playerHeldCards = this.Player.HeldCards.Select(c => c.Type).ToList();
+                playerHeldCards.Sort();
+
+                for (var index = 0; index < this.heldCards.Count; index++)
+                    Assert.AreEqual(this.heldCards[index], playerHeldCards[index], $"Player '{this.Player.Name}' state does not match: Expected {this.heldCards[index]} card, found {playerHeldCards[index]}. At index {index} in list");
             }
 
             if (this.resources.HasValue)

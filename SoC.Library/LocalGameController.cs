@@ -976,7 +976,7 @@ namespace Jabberwocky.SoC.Library
 
             this.PlayKnightDevelopmentCard(developmentCard, newRobberHex);
 
-            this.PlayKnightCardEvent?.Invoke(new PlayKnightCardEvent(this.mainPlayer.Id));
+            this.KnightCardPlayedEvent?.Invoke(new KnightCardPlayedEvent(this.mainPlayer.Id, newRobberHex));
 
             if (playerId.HasValue)
             {

@@ -173,11 +173,12 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
         {
             this.actualEvents.Add(actualEvent);
 
-            if (this.expectedEventIndex < this.expectedEvents.Count && actualEvent.Equals(this.expectedEvents[this.expectedEventIndex]))
+            /*if (this.expectedEventIndex < this.expectedEvents.Count && actualEvent.Equals(this.expectedEvents[this.expectedEventIndex]))
             {
                 this.expectedEventIndex++;
                 this.actualEventIndex = this.actualEvents.Count;
-            }
+            }*/
+            var eventProcessed = false;
 
             while (this.instructions.Count > 0)
             {
@@ -185,7 +186,7 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
                 if (instruction is GameEvent expectedGameEvent)
                 {
                     this.expectedEvents.Add(expectedGameEvent);
-                    /*if (actualEvent.Equals(this.expectedEvents[this.expectedEventIndex]) && !eventProcessed)
+                    if (actualEvent.Equals(this.expectedEvents[this.expectedEventIndex]) && !eventProcessed)
                     {
                         this.expectedEventIndex++;
                         this.actualEventIndex = this.actualEvents.Count;
@@ -194,7 +195,7 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
                     else
                     {
                         break;
-                    }*/
+                    }
                 }
                 else if (instruction is ComputerPlayerAction action)
                 {
@@ -221,7 +222,7 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
                         else if (action is PlayKnightCardAction playKnightCardAction)
                         {
                             var knightCard = (KnightDevelopmentCard)this.player.HeldCards.Where(c => c.Type == Jabberwocky.SoC.Library.DevelopmentCardTypes.Knight).First();
-                            this.LocalGameController.UseKnightCard(this.TurnToken, knightCard, playKnightCardAction.NewRobberHex);
+                            this.LocalGameController.UseKnightCard(this.TurnToken, knightCard, playKnightCardAction.NewRobberHex, playKnightCardAction.PlayerId);
                         }
                         else
                         {
@@ -585,6 +586,31 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
             this.instructions.Enqueue(new ResourceUpdateEvent(dict));
 
             return this;
+        }
+
+        public BasePlayerTurn MakeDirectTradeOffer(ResourceClutch wantedResources, params Tuple<string, ResourceClutch>[] playerAnswers)
+        {
+            throw new NotImplementedException();
+        }
+
+        public BasePlayerTurn FinaliseTrade(ResourceClutch givenResources, string playerName, ResourceClutch receivedResources)
+        {
+            throw new NotImplementedException();
+        }
+
+        public BasePlayerTurn TradeFinalisedEvent(string playerName, string otherPlayerName, ResourceClutch givenResources, ResourceClutch receivingResources)
+        {
+            throw new NotImplementedException();
+        }
+
+        public BasePlayerTurn MakeDirectTradeOfferEvent(string firstOpponent_Babara, ResourceClutch oneWool)
+        {
+            throw new NotImplementedException();
+        }
+
+        public BasePlayerTurn AnswerDirectTradeOffer(ResourceClutch oneGrain)
+        {
+            throw new NotImplementedException();
         }
         #endregion
     }

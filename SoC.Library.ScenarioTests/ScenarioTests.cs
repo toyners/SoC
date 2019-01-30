@@ -1,5 +1,6 @@
 ﻿
 using System;
+using System.Collections.Generic;
 using Jabberwocky.SoC.Library;
 using Jabberwocky.SoC.Library.GameEvents;
 using NUnit.Framework;
@@ -1042,6 +1043,56 @@ namespace SoC.Library.ScenarioTests
                         .End()
                     .Events()
                         .ErrorMessageEvent("Cannot call 'ChooseResourceFromOpponent' when no robbing choices are available.")
+                        .End()
+                    .EndTurn()
+                .Build()
+                .Run();
+        }
+
+        [Test]
+        public void New_Scenario_PlayerTradesOneResourceWithComputerPlayer()
+        {
+            var mainPlayerResources = ResourceClutch.OneWool;
+            var firstOpponentResources = ResourceClutch.OneGrain;
+            this.CreateStandardLocalGameControllerScenarioRunner()
+                .WithNoResourceCollection()
+                .WithStartingResourcesForPlayer(MainPlayerName, mainPlayerResources)
+                .WithStartingResourcesForPlayer(FirstOpponent_Babara, firstOpponentResources)
+                .PlayerTurn(MainPlayerName, 3, 3)
+                    .MakeDirectTradeOffer(ResourceClutch.OneGrain,
+                        new Tuple<string, ResourceClutch>(FirstOpponent_Babara, ResourceClutch.OneWool))
+                    .FinaliseTrade(ResourceClutch.OneWool, FirstOpponent_Babara, ResourceClutch.OneGrain)
+                    .TradeFinalisedEvent(MainPlayer, FirstOpponent_Babara, ResourceClutch.OneWool, ResourceClutch.OneGrain)
+                    .State(MainPlayer)
+                        .Resources(ResourceClutch.OneGrain)
+                        .End()
+                    .State(FirstOpponent_Babara)
+                        .Resources(ResourceClutch.OneWool)
+                        .End()
+                    .EndTurn()
+                .Build()
+                .Run();
+        }
+
+        [Test]
+        public void New_Scenario_ComputerPlayerTradesOneResourceWithPlayer()
+        {
+            var mainPlayerResources = ResourceClutch.OneWool;
+            var firstOpponentResources = ResourceClutch.OneGrain;
+            this.CreateStandardLocalGameControllerScenarioRunner()
+                .WithNoResourceCollection()
+                .WithStartingResourcesForPlayer(MainPlayerName, mainPlayerResources)
+                .WithStartingResourcesForPlayer(FirstOpponent_Babara, firstOpponentResources)
+                .PlayerTurn(MainPlayerName, 3, 3).EndTurn()
+                .PlayerTurn(FirstOpponent_Babara, 3, 3)
+                    .MakeDirectTradeOfferEvent(FirstOpponent_Babara, ResourceClutch.OneWool)
+                    .AnswerDirectTradeOffer(ResourceClutch.OneGrain)
+                    .TradeFinalisedEvent(FirstOpponent_Babara, MainPlayer, ResourceClutch.OneGrain, ResourceClutch.OneWool)
+                    .State(MainPlayer)
+                        .Resources(ResourceClutch.OneGrain)
+                        .End()
+                    .State(FirstOpponent_Babara)
+                        .Resources(ResourceClutch.OneWool)
                         .End()
                     .EndTurn()
                 .Build()
