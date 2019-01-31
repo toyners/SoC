@@ -672,19 +672,26 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
             throw new NotImplementedException();
         }
 
-        public BasePlayerTurn TradeFinalisedEvent(string playerName, string otherPlayerName, ResourceClutch givenResources, ResourceClutch receivingResources)
+        public BasePlayerTurn TradeWithPlayerEvent(string initiatingPlayerName, string otherPlayerName, ResourceClutch initiatingResources, ResourceClutch otherResources)
         {
-            throw new NotImplementedException();
+            var initiatingPlayer = this.playersByName[initiatingPlayerName];
+            var otherPlayer = this.playersByName[otherPlayerName];
+            this.instructions.Enqueue(new TradeWithPlayerEvent(initiatingPlayer.Id, otherPlayer.Id, initiatingResources, otherResources));
+            return this;
         }
 
-        public BasePlayerTurn MakeDirectTradeOfferEvent(string firstOpponent_Babara, ResourceClutch oneWool)
+        public BasePlayerTurn MakeDirectTradeOfferEvent(string playerName, ResourceClutch resources)
         {
-            throw new NotImplementedException();
+            var player = this.playersByName[playerName];
+            this.instructions.Enqueue(new MakeDirectTradeOfferEvent(player.Id, resources));
+            return this;
         }
 
-        public BasePlayerTurn AnswerDirectTradeOffer(ResourceClutch oneGrain)
+        public BasePlayerTurn AnswerDirectTradeOffer(string playerName, ResourceClutch resources)
         {
-            throw new NotImplementedException();
+            var player = this.playersByName[playerName];
+            this.instructions.Enqueue(new AnswerDirectTradeOfferAction(playerName, resources));
+            return this;
         }
         #endregion
     }

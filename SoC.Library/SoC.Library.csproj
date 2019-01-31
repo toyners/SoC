@@ -59,6 +59,7 @@
     <Compile Include="DevelopmentCards\RoadBuildingDevelopmentCard.cs" />
     <Compile Include="DevelopmentCards\VictoryPointDevelopmentCard.cs" />
     <Compile Include="DevelopmentCards\YearOfPlentyDevelopmentCard.cs" />
+    <Compile Include="GameActions\AnswerDirectTradeOfferAction.cs" />
     <Compile Include="GameActions\BuildCityAction.cs" />
     <Compile Include="GameActions\BuildSettlementAction.cs" />
     <Compile Include="GameActions\BuyDevelopmentCardAction.cs" />
@@ -72,12 +73,14 @@
     <Compile Include="GameEvents\GameWinEvent.cs" />
     <Compile Include="GameEvents\InfrastructureBuiltEvent.cs" />
     <Compile Include="GameEvents\KnightCardPlayedEvent.cs" />
+    <Compile Include="GameEvents\MakeDirectTradeOfferEvent.cs" />
     <Compile Include="GameEvents\PlayKnightCardEvent.cs" />
     <Compile Include="GameEvents\ResourceCollectedEvent.cs" />
     <Compile Include="GameEvents\DiceRollEvent.cs" />
     <Compile Include="GameBoards\GameBoardQuery.cs" />
     <Compile Include="GameBoards\IGameBoardQuery.cs" />
     <Compile Include="GameBoards\IGameBoard.cs" />
+    <Compile Include="GameEvents\TradeWithPlayerEvent.cs" />
     <Compile Include="GameState.cs" />
     <Compile Include="PlayerData\PlayerFullDataModel.cs" />
     <Compile Include="Store\GameBoardModel.cs" />
