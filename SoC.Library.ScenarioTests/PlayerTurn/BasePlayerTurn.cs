@@ -219,8 +219,6 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
             return new ExpectedEventsBuilder(this, this.runner.playersByName);
         }
 
-        //List<PlayerState> playerStates = new List<PlayerState>();
-
         private int actualEventIndex;
         private int expectedEventIndex;
         public virtual void AddEvent(GameEvent actualEvent)
@@ -265,50 +263,13 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
                     {
                         this.actionProcessorsByPlayer[this.player].Invoke(action);
                     }
-
-                    /*if (action is ScenarioDropResourcesAction scenarioResourcesToDropAction)
-                    {
-                        var player = this.playersByName[scenarioResourcesToDropAction.PlayerName];
-                        var dropResourcesAction = scenarioResourcesToDropAction.CreateDropResourcesAction();
-
-                        if (player is ScenarioComputerPlayer computerPlayer)
-                        {
-                            computerPlayer.AddDropResourcesAction(dropResourcesAction);
-                        }
-                        else if (player is ScenarioPlayer humanPlayer)
-                        {
-                            this.LocalGameController.DropResources(dropResourcesAction.Resources);
-                        }
-                    }
-                    else if (this.player is ScenarioPlayer)
-                    {
-                        if (action is BuyDevelopmentCardAction)
-                        {
-                            this.LocalGameController.BuyDevelopmentCard(this.TurnToken);
-                        }
-                        else if (action is PlayKnightCardAction playKnightCardAction)
-                        {
-                            var knightCard = (KnightDevelopmentCard)this.player.HeldCards.Where(c => c.Type == Jabberwocky.SoC.Library.DevelopmentCardTypes.Knight).First();
-                            this.LocalGameController.UseKnightCard(this.TurnToken, knightCard, playKnightCardAction.NewRobberHex, playKnightCardAction.PlayerId);
-                        }
-                        else
-                        {
-                            throw new Exception("Scenario Player action not recognised");
-                        }
-                    }
-                    else if (this.player is ScenarioComputerPlayer computerPlayer)
-                    {
-                        computerPlayer.AddAction(action);
-                    }*/
                 }
                 else if (instruction is PlayerState playerState)
                 {
                     var player = playerState.Player;
-                    //this.playerStates.Add(playerState);
 
                     if (player is ScenarioComputerPlayer computerPlayer)
                     {
-                        //playerState.Verify();
                         var verifySnapshotAction = new ScenarioVerifySnapshotAction(playerState);
                         computerPlayer.AddAction(verifySnapshotAction);
                     }
@@ -316,7 +277,6 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
                     {
                         var verifySnapshotAction = new ScenarioVerifySnapshotAction(playerState);
                         this.AddActionForHumanPlayer(verifySnapshotAction);
-                        //playerState.Verify();
                     }
                 }
             }
@@ -579,30 +539,13 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
                 else if (instruction is ComputerPlayerAction action)
                 {
                     this.actionResolversByPlayer[this.player]?.Invoke(action);
-                    /*if (action is ScenarioDropResourcesAction scenarioResourcesToDropAction)
-                    {
-                        var player = this.playersByName[scenarioResourcesToDropAction.PlayerName];
-                        var dropResourcesAction = scenarioResourcesToDropAction.CreateDropResourcesAction();
-
-                        if (player is ScenarioComputerPlayer computerPlayer)
-                        {
-                            computerPlayer.AddDropResourcesAction(dropResourcesAction);
-                        }
-                        else if (player is ScenarioPlayer humanPlayer)
-                        {
-                            this.LocalGameController.DropResources(dropResourcesAction.Resources);
-                        }
-                    }*/
                 }
                 else if (instruction is PlayerState playerState)
                 {
                     var player = playerState.Player;
-                    //this.playerStates.Add(playerState);
 
                     if (player is ScenarioComputerPlayer computerPlayer)
                     {
-                        //var verifySnapshotAction = new ScenarioVerifySnapshotAction(playerState);
-                        //computerPlayer.AddAction(verifySnapshotAction);
                         playerState.Verify();
                     }
                     else if (player is ScenarioPlayer humanPlayer)
