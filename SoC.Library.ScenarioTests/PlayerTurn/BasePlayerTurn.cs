@@ -94,6 +94,11 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
             }
         }
 
+        private void AddActionForComputerPlayer(ComputerPlayerAction action)
+        {
+            
+        }
+
         private Queue<ComputerPlayerAction> actions = new Queue<ComputerPlayerAction>();
         private void AddActionForHumanPlayer(ComputerPlayerAction action)
         {
@@ -257,6 +262,14 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
                         else
                         {
                             this.AddActionForHumanPlayer(dropResourcesAction);
+                        }
+                    }
+                    else if (action is ScenarioMakeDirectTradeOffer scenarioMakeDirectTradeOffer)
+                    {
+                        var player = this.playersByName[scenarioMakeDirectTradeOffer.InitiatingPlayerName];
+                        if (player is ScenarioComputerPlayer computerPlayer)
+                        {
+                            computerPlayer.AddAction(scenarioMakeDirectTradeOffer.Action);
                         }
                     }
                     else
@@ -606,7 +619,13 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
 
         public BasePlayerTurn MakeDirectTradeOffer(ResourceClutch wantedResources, params Tuple<string, ResourceClutch>[] playerAnswers)
         {
-            this.instructions.Enqueue(new ScenarioMakeDirectTradeOffer(wantedResources));
+            this.instructions.Enqueue(new ScenarioMakeDirectTradeOffer(this.player.Name, wantedResources));
+            return this;
+        }
+
+        public BasePlayerTurn MakeDirectTradeOffer(ResourceClutch wantedResources)
+        {
+            this.instructions.Enqueue(new ScenarioMakeDirectTradeOffer(this.player.Name, wantedResources));
             return this;
         }
 
@@ -623,10 +642,11 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
             return this;
         }
 
-        public BasePlayerTurn MakeDirectTradeOfferEvent(string playerName, ResourceClutch resources)
+        public BasePlayerTurn MakeDirectTradeOfferEvent(string playerName, string initiatingPlayerName, ResourceClutch resources)
         {
             var player = this.playersByName[playerName];
-            this.instructions.Enqueue(new MakeDirectTradeOfferEvent(player.Id, resources));
+            var initiatingPlayer = this.playersByName[initiatingPlayerName];
+            this.instructions.Enqueue(new MakeDirectTradeOfferEvent(player.Id, initiatingPlayer.Id, resources));
             return this;
         }
 

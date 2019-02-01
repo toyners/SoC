@@ -442,6 +442,10 @@ namespace Jabberwocky.SoC.Library
                     {
                         computerPlayer.RemoveResources(dropResourcesAction.Resources);
                     }
+                    else if (playerAction is MakeDirectTradeOfferAction makeDirectTradeOfferAction)
+                    {
+
+                    }
                     else if (playerAction is PlaceRobberAction placeRobberAction)
                     {
                         this.robberHex = placeRobberAction.RobberHex;

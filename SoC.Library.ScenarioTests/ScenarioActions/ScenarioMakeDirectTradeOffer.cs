@@ -3,12 +3,12 @@ using Jabberwocky.SoC.Library.GameActions;
 
 namespace SoC.Library.ScenarioTests.ScenarioActions
 {
-    public class ScenarioMakeDirectTradeOffer : ComputerPlayerAction
+    public class ScenarioMakeDirectTradeOffer : ComputerPlayerActionWrapper
     {
-        public readonly ResourceClutch WantedResources;
-        public ScenarioMakeDirectTradeOffer(ResourceClutch wantedResources) : base(0)
+        public readonly string InitiatingPlayerName;
+        public ScenarioMakeDirectTradeOffer(string initiatingPlayerName, ResourceClutch wantedResources) : base(new MakeDirectTradeOfferAction(wantedResources))
         {
-            this.WantedResources = wantedResources;
+            this.InitiatingPlayerName = initiatingPlayerName;
         }
     }
 }
