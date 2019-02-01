@@ -5,7 +5,7 @@ namespace Jabberwocky.SoC.Library.GameActions
 {
     public class BuildSettlementAction : ComputerPlayerAction
     {
-        public uint SettlementLocation;
+        public readonly uint SettlementLocation;
 
         public BuildSettlementAction(uint settlementLocation) : base(ComputerPlayerActionTypes.BuildSettlement)
         {
