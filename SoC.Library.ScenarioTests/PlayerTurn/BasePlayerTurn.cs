@@ -646,7 +646,7 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
         {
             var player = this.playersByName[playerName];
             var initiatingPlayer = this.playersByName[initiatingPlayerName];
-            this.instructions.Enqueue(new MakeDirectTradeOfferEvent(player.Id, initiatingPlayer.Id, resources));
+            this.instructions.Enqueue(new ScenarioMakeDirectTradeOfferEvent(player.Id, initiatingPlayer.Id, resources));
             return this;
         }
 

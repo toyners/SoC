@@ -53,6 +53,7 @@
     <Compile Include="Builders\PlayerResponseBuilder.cs" />
     <Compile Include="Builders\PlayerStateBuilder.cs" />
     <Compile Include="PlayerSnapshot.cs" />
+    <Compile Include="PlayerTurn\ScenarioMakeDirectTradeOfferEvent.cs" />
     <Compile Include="ScenarioActions\ComputerPlayerActionWrapper.cs" />
     <Compile Include="ScenarioActions\ScenarioMakeDirectTradeOffer.cs" />
     <Compile Include="ScenarioActions\ScenarioPlaceRobberAction.cs" />

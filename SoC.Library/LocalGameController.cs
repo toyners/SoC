@@ -117,6 +117,7 @@ namespace Jabberwocky.SoC.Library
         public Action<Guid, Guid> LargestArmyEvent { get; set; }
         public Action<ClientAccount> LoggedInEvent { get; set; }
         public Action<Guid, Guid> LongestRoadBuiltEvent { get; set; }
+        public Action<MakeDirectTradeOfferEvent> MakeDirectTradeOfferEvent { get; set; }
         public Action<PlayKnightCardEvent> PlayKnightCardEvent { get; set; } // TODO: Use KnightCardPlayedEvent instead
         public Action<ResourceUpdateEvent> ResourcesLostEvent { get; set; }
         public Action<ResourceTransactionList> ResourcesTransferredEvent { get; set; }
@@ -444,7 +445,7 @@ namespace Jabberwocky.SoC.Library
                     }
                     else if (playerAction is MakeDirectTradeOfferAction makeDirectTradeOfferAction)
                     {
-
+                        this.MakeDirectTradeOfferEvent?.Invoke(new MakeDirectTradeOfferEvent(computerPlayer.Id, makeDirectTradeOfferAction.WantedResources));
                     }
                     else if (playerAction is PlaceRobberAction placeRobberAction)
                     {
