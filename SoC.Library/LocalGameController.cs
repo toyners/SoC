@@ -354,6 +354,41 @@ namespace Jabberwocky.SoC.Library
             this.mainPlayer.RemoveResources(resourceClutch);
         }
 
+        public void EndPlayerTurn(TurnToken turnToken)
+        {
+            // Validate turn token
+
+            // Loop
+            IPlayer player = null;
+            while ((player = this.GetNextPlayer()) != null)
+            {
+                this.ClearDevelopmentCardProcessingForTurn();
+                this.currentTurnToken = new TurnToken();
+
+                if (!(player is ComputerPlayer))
+                    return;
+            }
+            // Change to next player 
+            // If next player is human then quit method
+
+            // Roll dice
+
+            // Collect resources OR handle robber
+
+            // Pass execution to computer player to complete actions - pass in localGamecontroller ref
+
+            // Computer player passes back end of turn event or trade event.
+            // LocalGamecontroller passes to all computer players and human player
+
+            // Human player makes decision and enters it using correct method which passes control back to 
+            // computer player 
+        }
+
+        private IPlayer GetNextPlayer()
+        {
+            throw new NotImplementedException();
+        }
+
         public void EndTurn(TurnToken turnToken)
         {
             if (turnToken != this.currentTurnToken)
@@ -362,7 +397,7 @@ namespace Jabberwocky.SoC.Library
             }
 
             this.ClearDevelopmentCardProcessingForTurn();
-            this.ChangeToNextPlayer();
+            this.ChangeToNextPlayerTurn();
 
             while (this.currentPlayer.IsComputer)
             {
@@ -552,7 +587,7 @@ namespace Jabberwocky.SoC.Library
                 }
 
                 this.ClearDevelopmentCardProcessingForTurn();
-                this.ChangeToNextPlayer();
+                this.ChangeToNextPlayerTurn();
             }
 
             this.currentTurnToken = new TurnToken();
@@ -1097,7 +1132,7 @@ namespace Jabberwocky.SoC.Library
             return developmentCard;
         }
 
-        private void ChangeToNextPlayer()
+        private void ChangeToNextPlayerTurn()
         {
             this.playerIndex++;
             if (this.playerIndex == this.players.Length)

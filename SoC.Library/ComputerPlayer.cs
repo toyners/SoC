@@ -12,6 +12,7 @@ namespace Jabberwocky.SoC.Library
     using Jabberwocky.SoC.Library.PlayerData;
     using Jabberwocky.SoC.Library.DevelopmentCards;
     using System.Linq;
+    using Jabberwocky.SoC.Library.GameEvents;
 
     public class ComputerPlayer : Player, IComputerPlayer
     {
@@ -185,7 +186,7 @@ namespace Jabberwocky.SoC.Library
                 decision.Invoke();
         }
 
-        public virtual UInt32 ChooseCityLocation()
+        public virtual uint ChooseCityLocation()
         {
             throw new NotImplementedException();
         }
@@ -309,6 +310,11 @@ namespace Jabberwocky.SoC.Library
         }
 
         public virtual YearOfPlentyDevelopmentCard ChooseYearOfPlentyCard()
+        {
+            throw new NotImplementedException();
+        }
+
+        public virtual List<GameEvent> PlayTurn(PlayerDataModel[] otherPlayerData)
         {
             throw new NotImplementedException();
         }

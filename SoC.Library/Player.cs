@@ -7,6 +7,7 @@ namespace Jabberwocky.SoC.Library
     using System.Xml;
     using Interfaces;
     using Jabberwocky.SoC.Library.DevelopmentCards;
+    using Jabberwocky.SoC.Library.GameEvents;
     using Jabberwocky.SoC.Library.PlayerData;
     using Jabberwocky.SoC.Library.Store;
 
@@ -143,6 +144,11 @@ namespace Jabberwocky.SoC.Library
             this.LumberCount += resourceClutch.LumberCount;
             this.OreCount += resourceClutch.OreCount;
             this.WoolCount += resourceClutch.WoolCount;
+        }
+
+        public List<GameEvent> PlayTurn(PlayerDataModel[] otherPlayerData)
+        {
+            throw new NotImplementedException();
         }
 
         public PlayerDataBase GetDataModel(bool provideFullPlayerData)
