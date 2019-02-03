@@ -146,11 +146,6 @@ namespace Jabberwocky.SoC.Library
             this.WoolCount += resourceClutch.WoolCount;
         }
 
-        public List<GameEvent> PlayTurn(PlayerDataModel[] otherPlayerData)
-        {
-            throw new NotImplementedException();
-        }
-
         public PlayerDataBase GetDataModel(bool provideFullPlayerData)
         {
             PlayerDataBase result = null;

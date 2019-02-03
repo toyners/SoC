@@ -354,34 +354,93 @@ namespace Jabberwocky.SoC.Library
             this.mainPlayer.RemoveResources(resourceClutch);
         }
 
+        private bool startOfTurn = true;
         public void EndPlayerTurn(TurnToken turnToken)
         {
             // Validate turn token
 
             // Loop
-            IPlayer player = null;
-            while ((player = this.GetNextPlayer()) != null)
-            {
-                this.ClearDevelopmentCardProcessingForTurn();
-                this.currentTurnToken = new TurnToken();
-
-                if (!(player is ComputerPlayer))
-                    return;
-            }
             // Change to next player 
-            // If next player is human then quit method
+            while (true)
+            {
+                var moveRobber = false;
+                if (this.startOfTurn)
+                {
+                    this.ChangeToNextPlayerTurn();
+                    moveRobber = this.ProcessTurnStart(this.currentPlayer);
+                }
 
-            // Roll dice
+                var computerPlayer = this.currentPlayer as IComputerPlayer;
+                // If next player is human then quit method
+                if (computerPlayer == null)
+                {
+                    if (moveRobber)
+                        this.GamePhase = GamePhases.SetRobberHex;
+                    return;
+                }
 
-            // Collect resources OR handle robber
+                // Pass execution to computer player to complete actions - pass in localGamecontroller ref
+                // Computer player passes null for end of turn or action that needs .
+                var action = computerPlayer.PlayTurn(null, this);
+                if (action != null)
+                {
+                    this.startOfTurn = false;
+                }
+            }
 
-            // Pass execution to computer player to complete actions - pass in localGamecontroller ref
-
-            // Computer player passes back end of turn event or trade event.
+            
             // LocalGamecontroller passes to all computer players and human player
 
             // Human player makes decision and enters it using correct method which passes control back to 
             // computer player 
+        }
+
+        private bool ProcessTurnStart(IPlayer player)
+        {
+            this.ClearDevelopmentCardProcessingForTurn();
+            this.currentTurnToken = new TurnToken();
+
+            this.StartOpponentTurnEvent?.Invoke(player.Id);
+
+            // Roll dice
+            this.numberGenerator.RollTwoDice(out this.dice1, out this.dice2);
+            this.DiceRollEvent?.Invoke(player.Id, this.dice1, this.dice2);
+            var roll = this.dice1 + this.dice2;
+
+            // Collect resources OR handle robber
+            var moveRobber = false;
+            if (roll == 7)
+            {
+                this.DropResourcesForPlayers();
+                moveRobber = true;
+            }
+            else
+            {
+                this.CollectResourcesAtStartOfTurn(roll);
+            }
+
+            return moveRobber;
+        }
+
+        private void DropResourcesForPlayers()
+        {
+            // TODO: Refactoring - improve names and wrap in method
+            Dictionary<Guid, ResourceClutch> droppedResourcesByPlayerId = null;
+            foreach (var cp in this.computerPlayers)
+            {
+                var d = cp.GetDropResourcesAction();
+                if (d != null)
+                {
+                    if (droppedResourcesByPlayerId == null)
+                        droppedResourcesByPlayerId = new Dictionary<Guid, ResourceClutch>();
+
+                    cp.RemoveResources(d.Resources);
+                    droppedResourcesByPlayerId.Add(cp.Id, d.Resources);
+                }
+            }
+
+            if (droppedResourcesByPlayerId != null)
+                this.ResourcesLostEvent?.Invoke(new ResourceUpdateEvent(droppedResourcesByPlayerId));
         }
 
         private IPlayer GetNextPlayer()

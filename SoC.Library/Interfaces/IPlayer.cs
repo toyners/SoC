@@ -4,7 +4,6 @@ namespace Jabberwocky.SoC.Library.Interfaces
     using System;
     using System.Collections.Generic;
     using Jabberwocky.SoC.Library.DevelopmentCards;
-    using Jabberwocky.SoC.Library.GameEvents;
     using Jabberwocky.SoC.Library.PlayerData;
 
     public interface IPlayer
@@ -46,7 +45,6 @@ namespace Jabberwocky.SoC.Library.Interfaces
         void PlaceSettlement();
         void PlaceStartingInfrastructure();
         void RemoveResources(ResourceClutch resourceClutch);
-        List<GameEvent> PlayTurn(PlayerDataModel[] otherPlayerData);
         ResourceClutch LoseResourceAtIndex(int resourceIndex);
         ResourceClutch LoseResourcesOfType(ResourceTypes resourceType);
         #endregion

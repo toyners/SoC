@@ -314,7 +314,8 @@ namespace Jabberwocky.SoC.Library
             throw new NotImplementedException();
         }
 
-        public virtual List<GameEvent> PlayTurn(PlayerDataModel[] otherPlayerData)
+        // TODO: Pass in interface that only contains the methods required by the computer player e.g build settlement
+        public ComputerPlayerAction PlayTurn(PlayerDataModel[] otherPlayerData, LocalGameController localGameController)
         {
             throw new NotImplementedException();
         }
