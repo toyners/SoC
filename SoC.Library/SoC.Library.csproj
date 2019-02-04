@@ -83,7 +83,9 @@
     <Compile Include="GameBoards\IGameBoard.cs" />
     <Compile Include="GameEvents\TradeWithPlayerEvent.cs" />
     <Compile Include="GameState.cs" />
+    <Compile Include="NewLocalGameController.cs" />
     <Compile Include="PlayerData\PlayerFullDataModel.cs" />
+    <Compile Include="LocalGameServer.cs" />
     <Compile Include="Store\GameBoardModel.cs" />
     <Compile Include="Store\PlayerModel.cs" />
     <Compile Include="Store\GameModel.cs" />
