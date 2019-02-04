@@ -2,9 +2,12 @@
 namespace Jabberwocky.SoC.Library
 {
     using System;
+    using System.Collections.Concurrent;
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
+    using System.Threading;
+    using System.Threading.Tasks;
     using System.Xml;
     using Enums;
     using GameActions;
@@ -932,10 +935,13 @@ namespace Jabberwocky.SoC.Library
                 return;
             }
 
-            this.playerIndex = 0;
-            this.currentPlayer = this.players[this.playerIndex];
-            this.currentTurnToken = new TurnToken();
-            this.StartPlayerTurnEvent?.Invoke(this.currentTurnToken);
+            // Launch server processing on separate thread
+            Task.Factory.StartNew(() =>
+            {
+                this.GameLoop();
+            });
+
+            
 
             this.numberGenerator.RollTwoDice(out this.dice1, out this.dice2);
             this.DiceRollEvent?.Invoke(this.currentPlayer.Id, this.dice1, this.dice2);
@@ -1963,6 +1969,44 @@ namespace Jabberwocky.SoC.Library
             }
 
             return true;
+        }
+
+        private ConcurrentQueue<ComputerPlayerAction> actionRequests = new ConcurrentQueue<ComputerPlayerAction>();
+        private void GameLoop()
+        {
+            this.playerIndex = 0;
+            this.currentPlayer = this.players[this.playerIndex];
+            // TODO: Common code - refactor to method
+            if (this.currentPlayer is IPlayer)
+            {
+                this.currentTurnToken = new TurnToken();
+                this.StartPlayerTurnEvent?.Invoke(this.currentTurnToken);
+            }
+
+            while (true)
+            {
+                Thread.Sleep(50);
+                if (this.GamePhase == GamePhases.Quit)
+                    return;
+
+                if (this.actionRequests.TryDequeue(out var playerAction))
+                    this.ProcessPlayerAction(playerAction);
+            }
+        }
+
+        private void ProcessPlayerAction(ComputerPlayerAction playerAction)
+        {
+            if (playerAction is EndOfTurnAction)
+            {
+                this.ClearDevelopmentCardProcessingForTurn();
+                this.ChangeToNextPlayerTurn();
+
+                if (this.currentPlayer is IPlayer)
+                {
+                    this.currentTurnToken = new TurnToken();
+                    this.StartPlayerTurnEvent?.Invoke(this.currentTurnToken);
+                }
+            }
         }
         #endregion
     }
