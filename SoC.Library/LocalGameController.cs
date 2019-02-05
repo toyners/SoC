@@ -941,9 +941,7 @@ namespace Jabberwocky.SoC.Library
                 this.GameLoop();
             });
 
-            
-
-            this.numberGenerator.RollTwoDice(out this.dice1, out this.dice2);
+            /*this.numberGenerator.RollTwoDice(out this.dice1, out this.dice2);
             this.DiceRollEvent?.Invoke(this.currentPlayer.Id, this.dice1, this.dice2);
 
             var resourceRoll = this.dice1 + this.dice2;
@@ -996,7 +994,7 @@ namespace Jabberwocky.SoC.Library
 
                 this.RobberEvent?.Invoke(this.resourcesToDrop);
                 return;
-            }
+            }*/
         }
 
         // 03 Start game setup
@@ -1990,7 +1988,29 @@ namespace Jabberwocky.SoC.Library
                     return;
 
                 if (this.actionRequests.TryDequeue(out var playerAction))
-                    this.ProcessPlayerAction(playerAction);
+                {
+                    if (playerAction is EndOfTurnAction)
+                    {
+                        // A.K.A Start of next turn
+                        this.ChangeToNextPlayerTurn();
+                        this.numberGenerator.RollTwoDice(out this.dice1, out this.dice2);
+                        this.DiceRollEvent?.Invoke(this.currentPlayer.Id, this.dice1, this.dice2);
+
+                        var resourceRoll = this.dice1 + this.dice2;
+                        if (resourceRoll != 7)
+                        {
+
+                        }
+                        else
+                        {
+
+                        }
+                    }
+                    else
+                    {
+                        this.ProcessPlayerAction(playerAction);
+                    }
+                }
             }
         }
 

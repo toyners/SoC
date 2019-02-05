@@ -1148,5 +1148,13 @@ namespace SoC.Library.ScenarioTests
                 .WithStartingResourcesForPlayer(ThirdOpponentName, thirdOpponentResources)
                 .WithTurnOrder(MainPlayerName, FirstOpponentName, SecondOpponentName, ThirdOpponentName);
         }
+
+        [Test]
+        public void ATest()
+        {
+            this.CreateStandardLocalGameControllerScenarioRunner()
+                .Build()
+                .Run();
+        }
     }
 }
