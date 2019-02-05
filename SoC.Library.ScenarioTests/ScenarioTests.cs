@@ -1153,6 +1153,20 @@ namespace SoC.Library.ScenarioTests
         public void ATest()
         {
             this.CreateStandardLocalGameControllerScenarioRunner()
+                .WithStartingResourcesForPlayer(MainPlayerName, ResourceClutch.DevelopmentCard)
+                .WithNoResourceCollection()
+                .PlayerTurn(MainPlayerName, 4, 4)
+                    .DiceRollEvent(4, 4)
+                    .EndTurn()
+                .PlayerTurn(FirstOpponentName, 1, 2)
+                    .DiceRollEvent(1, 2)
+                    .EndTurn()
+                .PlayerTurn(SecondOpponentName, 3, 4)
+                    .DiceRollEvent(3, 4)
+                    .EndTurn()
+                .PlayerTurn(ThirdOpponentName, 5, 6)
+                    .DiceRollEvent(5, 6)
+                    .EndTurn()
                 .Build()
                 .Run();
         }

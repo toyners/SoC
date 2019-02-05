@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using Jabberwocky.SoC.Library;
 using Jabberwocky.SoC.Library.DevelopmentCards;
 using Jabberwocky.SoC.Library.GameBoards;
@@ -170,12 +171,23 @@ namespace SoC.Library.ScenarioTests
         {
             this.localGameController.StartGamePlay();
 
-            for (var index = 0; index < this.turns.Count; index++)
+            do
+            {
+                Thread.Sleep(50);
+            } while (this.currentTurn == null);
+
+            do
+            {
+                Thread.Sleep(50);
+                this.currentTurn.Process(this.localGameController);
+            } while (this.currentTurn != null);
+
+            /*for (var index = 0; index < this.turns.Count; index++)
             {
                 this.turns[index].CompleteProcessing(this.currentToken, this.localGameController);
                 if (this.turns[index].IsHumanPlayer)
                     this.localGameController.EndTurn(this.currentToken);
-            }
+            }*/
 
             /*for (var index = 0; index < this.turns.Count; index += 4)
             {

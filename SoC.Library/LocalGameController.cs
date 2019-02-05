@@ -1981,6 +1981,9 @@ namespace Jabberwocky.SoC.Library
                 this.StartPlayerTurnEvent?.Invoke(this.currentTurnToken);
             }
 
+            this.numberGenerator.RollTwoDice(out this.dice1, out this.dice2);
+            this.DiceRollEvent?.Invoke(this.currentPlayer.Id, this.dice1, this.dice2);
+
             while (true)
             {
                 Thread.Sleep(50);

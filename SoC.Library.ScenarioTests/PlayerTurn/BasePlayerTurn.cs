@@ -534,7 +534,7 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
             return message;
         }
 
-        public virtual void CompleteProcessing(TurnToken currentToken, LocalGameController localGameController)
+        public virtual void Process(LocalGameController localGameController)
         {
             while (this.actions.Count > 0)
             {
