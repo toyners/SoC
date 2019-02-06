@@ -75,6 +75,10 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
             {
                 this.LocalGameController.BuyDevelopmentCard(this.TurnToken);
             }
+            else if (action is EndOfTurnAction)
+            {
+                this.LocalGameController.EndTurn(this.TurnToken);
+            }
             else if (action is PlayKnightCardAction playKnightCardAction)
             {
                 var knightCard = (KnightDevelopmentCard)this.player.HeldCards.Where(c => c.Type == Jabberwocky.SoC.Library.DevelopmentCardTypes.Knight).First();
@@ -96,7 +100,7 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
 
         private void AddActionForComputerPlayer(ComputerPlayerAction action)
         {
-            
+
         }
 
         private Queue<ComputerPlayerAction> actions = new Queue<ComputerPlayerAction>();
@@ -186,6 +190,7 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
 
         public LocalGameControllerScenarioRunner EndTurn()
         {
+            this.instructions.Enqueue(new EndOfTurnAction());
             return this.runner;
         }
 
@@ -229,8 +234,9 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
         public virtual void AddEvent(GameEvent actualEvent)
         {
             this.actualEvents.Add(actualEvent);
-            var eventProcessed = false;
 
+            /*var eventProcessed = false;
+            
             while (this.instructions.Count > 0)
             {
                 var instruction = this.instructions.Dequeue();
@@ -292,7 +298,7 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
                         this.AddActionForHumanPlayer(verifySnapshotAction);
                     }
                 }
-            }
+            }*/
         }
 
         public BasePlayerTurn PlayKnightCard(uint hexLocation)
@@ -536,27 +542,34 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
 
         public virtual void Process(LocalGameController localGameController)
         {
-            while (this.actions.Count > 0)
-            {
-                var action = this.actions.Dequeue();
-                this.actionResolversByPlayer[this.player]?.Invoke(action);
-            }
-
+            this.CheckEvents();
             while (this.instructions.Count > 0)
             {
-                var instruction = this.instructions.Dequeue();
+                var instruction = this.instructions.Peek();
                 if (instruction is GameEvent expectedEvent)
                 {
+                    this.instructions.Dequeue();
                     this.expectedEvents.Add(expectedEvent);
+                    //this.CheckEvents();
                 }
                 else if (instruction is ComputerPlayerAction action)
                 {
+                    // Still got unmatched expected events so don't perform action yet
+                    if (this.expectedEventIndex < this.expectedEvents.Count)
+                        return;
+
+                    this.instructions.Dequeue();
                     this.actionResolversByPlayer[this.player]?.Invoke(action);
                 }
                 else if (instruction is PlayerState playerState)
                 {
-                    var player = playerState.Player;
+                    // Still got unmatched expected events so don't verify the player state yet
+                    if (this.expectedEventIndex < this.expectedEvents.Count)
+                        return;
 
+                    this.instructions.Dequeue();
+
+                    var player = playerState.Player;
                     if (player is ScenarioComputerPlayer computerPlayer)
                     {
                         playerState.Verify();
@@ -567,8 +580,23 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
                     }
                 }
             }
+        }
 
+        public void FinishProcessing()
+        {
             // If there are expected events yet to check then do it now
+            this.CheckEvents();
+
+            // At least one expected event was not matched with an actual event.
+            if (this.expectedEventIndex < this.expectedEvents.Count)
+            {
+                var expectedEvent = this.expectedEvents[this.expectedEventIndex];
+                Assert.Fail($"Did not find {expectedEvent.GetType()} event for '{this.player.Name}' in round {this.roundNumber}, turn {this.turnNumber}.\r\n{this.GetEventDetails(expectedEvent)}");
+            }
+        }
+
+        private void CheckEvents()
+        {
             if (this.expectedEventIndex < this.expectedEvents.Count)
             {
                 while (this.actualEventIndex < this.actualEvents.Count)
@@ -579,13 +607,6 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
                     }
 
                     this.actualEventIndex++;
-                }
-
-                // At least one expected event was not matched with an actual event.
-                if (this.expectedEventIndex < this.expectedEvents.Count)
-                {
-                    var expectedEvent = this.expectedEvents[this.expectedEventIndex];
-                    Assert.Fail($"Did not find {expectedEvent.GetType()} event for '{this.player.Name}' in round {this.roundNumber}, turn {this.turnNumber}.\r\n{this.GetEventDetails(expectedEvent)}");
                 }
             }
         }

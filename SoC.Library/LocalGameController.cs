@@ -458,7 +458,9 @@ namespace Jabberwocky.SoC.Library
                 return;
             }
 
-            this.ClearDevelopmentCardProcessingForTurn();
+            this.actionRequests.Enqueue(new EndOfTurnAction());
+
+            /*this.ClearDevelopmentCardProcessingForTurn();
             this.ChangeToNextPlayerTurn();
 
             while (this.currentPlayer.IsComputer)
@@ -658,7 +660,7 @@ namespace Jabberwocky.SoC.Library
             this.numberGenerator.RollTwoDice(out var dice1, out var dice2);
             this.DiceRollEvent?.Invoke(this.mainPlayer.Id, dice1, dice2);
 
-            this.CollectResourcesAtStartOfTurn(dice1 + dice2);
+            this.CollectResourcesAtStartOfTurn(dice1 + dice2);*/
         } 
 
         public uint[] GetNeighbouringLocationsFrom(uint location)
@@ -1994,8 +1996,10 @@ namespace Jabberwocky.SoC.Library
                 {
                     if (playerAction is EndOfTurnAction)
                     {
-                        // A.K.A Start of next turn
+                        // a.k.a Start of next turn
                         this.ChangeToNextPlayerTurn();
+                        this.currentTurnToken = new TurnToken();
+                        this.StartPlayerTurnEvent?.Invoke(this.currentTurnToken);
                         this.numberGenerator.RollTwoDice(out this.dice1, out this.dice2);
                         this.DiceRollEvent?.Invoke(this.currentPlayer.Id, this.dice1, this.dice2);
 

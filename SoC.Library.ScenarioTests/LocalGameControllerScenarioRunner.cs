@@ -360,8 +360,12 @@ namespace SoC.Library.ScenarioTests
             this.currentTurn.AddEvent(new DiceRollEvent(playerId, dice1, dice2));
         }
 
+        private BasePlayerTurn previousTurn;
         private void StartOfTurn()
         {
+            if (this.currentTurn != null)
+                this.currentTurn.FinishProcessing();
+
             if (this.currentIndex < this.turns.Count)
             {
                 this.currentTurn = this.turns[this.currentIndex++];
