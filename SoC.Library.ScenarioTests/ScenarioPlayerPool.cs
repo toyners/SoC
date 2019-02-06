@@ -1,19 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Xml;
-using Jabberwocky.SoC.Library;
-using Jabberwocky.SoC.Library.GameBoards;
-using Jabberwocky.SoC.Library.Interfaces;
-using Jabberwocky.SoC.Library.Store;
-
+﻿
 namespace SoC.Library.ScenarioTests
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Xml;
+    using Jabberwocky.SoC.Library;
+    using Jabberwocky.SoC.Library.GameBoards;
+    using Jabberwocky.SoC.Library.Interfaces;
+    using Jabberwocky.SoC.Library.Store;
+
     public class ScenarioPlayerPool : IPlayerPool
     {
         private readonly Queue<IPlayer> players = new Queue<IPlayer>();
-        //public Dictionary<Guid, MockComputerPlayer> ComputerPlayers = new Dictionary<Guid, MockComputerPlayer>(); 
 
-        public IPlayer CreateComputerPlayer(GameBoard gameBoard, INumberGenerator numberGenerator)
+        public IPlayer CreateComputerPlayer(GameBoard gameBoard, LocalGameController localGameController, INumberGenerator numberGenerator)
         {
             return this.players.Dequeue();
         }

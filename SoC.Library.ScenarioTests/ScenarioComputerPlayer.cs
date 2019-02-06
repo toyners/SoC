@@ -25,7 +25,7 @@ namespace SoC.Library.ScenarioTests
         #region Methods
         public void AddAction(ComputerPlayerAction action)
         {
-            this.actions.Enqueue(action);
+            this.ApplyPlayerAction(action);
         }
 
         public void AddActions(IEnumerable<ComputerPlayerAction> actions)

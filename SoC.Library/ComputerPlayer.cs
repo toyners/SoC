@@ -21,15 +21,17 @@ namespace Jabberwocky.SoC.Library
         private readonly INumberGenerator numberGenerator;
         private readonly List<uint> settlementCandidates = new List<uint>();
         private readonly DecisionMaker decisionMaker;
+        private readonly LocalGameController localGameController;
 
         #region Construction
         public ComputerPlayer() { } // For use when inflating from file. 
 
-        public ComputerPlayer(string name, GameBoard gameBoard, INumberGenerator numberGenerator, IInfrastructureAI infrastructureAI) : base(name)
+        public ComputerPlayer(string name, GameBoard gameBoard, LocalGameController localGameController, INumberGenerator numberGenerator) : base(name)
         {
             this.gameBoard = gameBoard;
             this.numberGenerator = numberGenerator;
             this.decisionMaker = new DecisionMaker(this.numberGenerator);
+            this.localGameController = localGameController;
         }
 
         [Obsolete("Deprecated. Use ComputerPlayer::ctor(PlayerSaveObject) instead")]
@@ -62,6 +64,11 @@ namespace Jabberwocky.SoC.Library
             var computerPlayer = new ComputerPlayer();
             computerPlayer.Load(reader);
             return computerPlayer;
+        }
+
+        protected void ApplyPlayerAction(ComputerPlayerAction action)
+        {
+            this.localGameController.ApplyPlayerAction(action);
         }
 
         public virtual void AddDevelopmentCard(DevelopmentCard developmentCard)

@@ -6,7 +6,8 @@ namespace Jabberwocky.SoC.Library.UnitTests
   using System.Text;
   using System.Xml;
   using Interfaces;
-  using NUnit.Framework;
+    using Jabberwocky.SoC.Library.GameBoards;
+    using NUnit.Framework;
   using Shouldly;
 
   [TestFixture]
@@ -151,7 +152,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     public void CreateComputerPlayer_NoGameBoardArgument_PlayerInstanceIsComputerControlled()
     {
       var playerPool = new PlayerPool();
-      var player = playerPool.CreateComputerPlayer(null, null);
+      var player = playerPool.CreateComputerPlayer((GameBoard)null, null, null);
 
       player.IsComputer.ShouldBeTrue();
     }

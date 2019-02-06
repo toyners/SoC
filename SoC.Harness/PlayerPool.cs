@@ -12,9 +12,9 @@ namespace SoC.Harness
   {
     private Queue<string> names = new Queue<string>(new[] { "Barbara", "Charlie", "Dana" });
 
-    public IPlayer CreateComputerPlayer(GameBoard gameBoard, INumberGenerator numberGenerator)
+    public IPlayer CreateComputerPlayer(GameBoard gameBoard, LocalGameController localGameController, INumberGenerator numberGenerator)
     {
-      return new ComputerPlayer(this.names.Dequeue(), gameBoard, numberGenerator, null);
+      return new ComputerPlayer(this.names.Dequeue(), gameBoard, null, numberGenerator);
     }
 
     public IPlayer CreateComputerPlayer(IGameDataSection<GameDataSectionKeys, GameDataValueKeys, ResourceTypes> data, GameBoard board, INumberGenerator numberGenerator)

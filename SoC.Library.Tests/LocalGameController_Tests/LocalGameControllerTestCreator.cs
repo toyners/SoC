@@ -58,7 +58,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
             mockPlayerPool.CreatePlayer().Returns(player);
 
             var index = 0;
-            mockPlayerPool.CreateComputerPlayer(Arg.Any<GameBoard>(), Arg.Any<INumberGenerator>()).Returns(x =>
+            mockPlayerPool.CreateComputerPlayer(Arg.Any<GameBoard>(), Arg.Any<LocalGameController>(), Arg.Any<INumberGenerator>()).Returns(x =>
               {
                   if (index >= otherPlayers.Length)
                   {

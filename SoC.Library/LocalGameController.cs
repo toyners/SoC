@@ -1352,7 +1352,7 @@ namespace Jabberwocky.SoC.Library
             var index = 1;
             while (gameOptions.MaxAIPlayers-- > 0)
             {
-                var computerPlayer = this.playerPool.CreateComputerPlayer(this.gameBoard, this.numberGenerator);
+                var computerPlayer = this.playerPool.CreateComputerPlayer(this.gameBoard, this, this.numberGenerator);
                 this.players[index] = computerPlayer;
                 this.playersById.Add(computerPlayer.Id, computerPlayer);
                 this.computerPlayers[index - 1] = (IComputerPlayer)computerPlayer;
@@ -1952,6 +1952,11 @@ namespace Jabberwocky.SoC.Library
             }
 
             return true;
+        }
+
+        internal void ApplyPlayerAction(ComputerPlayerAction action)
+        {
+            this.actionRequests.Enqueue(action);
         }
 
         private bool VerifyTurnToken(TurnToken turnToken)
