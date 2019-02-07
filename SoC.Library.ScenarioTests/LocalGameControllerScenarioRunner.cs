@@ -420,7 +420,7 @@ namespace SoC.Library.ScenarioTests
         {
             this.NumberGenerator.AddTwoDiceRoll(dice1, dice2);
 
-            var playerTurn = new BasePlayerTurn(playerName, this.PlayersByName, this, this.roundNumber, this.turnNumber);
+            var playerTurn = new BasePlayerTurn(playerName, this, this.roundNumber, this.turnNumber);
             this.turns.Add(playerTurn);
 
             this.turnNumber++;

@@ -27,7 +27,7 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
         private readonly List<GameEvent> expectedEvents = new List<GameEvent>();
         private readonly int roundNumber;
         private readonly int turnNumber;
-        private Dictionary<string, IPlayer> playersByName;
+        //private Dictionary<string, IPlayer> playersByName;
         private Dictionary<IPlayer, Action<ComputerPlayerAction>> actionProcessorsByPlayer;
         private Dictionary<IPlayer, Action<ComputerPlayerAction>> actionResolversByPlayer;
         #endregion
@@ -41,16 +41,16 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
             this.turnNumber = turnNumber;
         }
 
-        public BasePlayerTurn(string playerName, Dictionary<string, IPlayer> playersByName, LocalGameControllerScenarioRunner runner, int roundNumber, int turnNumber)
+        public BasePlayerTurn(string playerName, LocalGameControllerScenarioRunner runner, int roundNumber, int turnNumber)
         {
-            this.player = playersByName[playerName];
+            //this.player = playersByName[playerName];
+            this.PlayerName = playerName;
             this.runner = runner;
-            this.playersByName = playersByName;
             this.roundNumber = roundNumber;
             this.turnNumber = turnNumber;
             this.actionProcessorsByPlayer = new Dictionary<IPlayer, Action<ComputerPlayerAction>>();
             this.actionResolversByPlayer = new Dictionary<IPlayer, Action<ComputerPlayerAction>>();
-            foreach (var player in playersByName.Values)
+            /*foreach (var player in playersByName.Values)
             {
                 if (player is ScenarioComputerPlayer computerPlayer)
                 {
@@ -62,7 +62,7 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
                     this.actionProcessorsByPlayer.Add(player, this.AddActionForHumanPlayer);
                     this.actionResolversByPlayer.Add(player, this.ProcessActionForHumanPlayer);
                 }
-            }
+            }*/
         }
 
         private void ProcessActionForHumanPlayer(ComputerPlayerAction action)
@@ -112,7 +112,7 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
 
         #region Properties
         public bool IsHumanPlayer { get { return this.player is ScenarioPlayer; } }
-        public string PlayerName { get { return this.player.Name; } }
+        public string PlayerName { get; private set; }
         public IDictionary<Guid, ComputerPlayerAction> ActionsByPlayerId { protected get; set; }
         public IList<GameEvent> ExpectedEvents { private get; set; }
         public IDictionary<Guid, GameEvent> GameEventsByPlayerId { private get; set; }
@@ -144,9 +144,21 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
             return this;
         }
 
+        private class CityBuiltEventInstruction
+        {
+            public uint CityLocation;
+            public string PlayerName;
+        }
+
         public BasePlayerTurn BuildCityEvent(uint cityLocation)
         {
-            this.instructions.Enqueue(new CityBuiltEvent(this.PlayerId, cityLocation));
+            //this.instructions.Enqueue(new CityBuiltEvent(this.PlayerId, cityLocation));
+
+            this.instructions.Enqueue(new CityBuiltEventInstruction
+            {
+                CityLocation = cityLocation, PlayerName = this.PlayerName
+            });
+
             return this;
         }
 
@@ -156,9 +168,20 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
             return this;
         }
 
+        private class BuildRoadEventInstruction
+        {
+            public uint RoadSegmentStart, RoadSegmentEnd;
+            public string PlayerName;
+        }
+
         public BasePlayerTurn BuildRoadEvent(uint roadSegmentStart, uint roadSegmentEnd)
         {
-            this.instructions.Enqueue(new RoadSegmentBuiltEvent(this.PlayerId, roadSegmentStart, roadSegmentEnd));
+            //this.instructions.Enqueue(new RoadSegmentBuiltEvent(this.PlayerId, roadSegmentStart, roadSegmentEnd));
+
+            this.instructions.Enqueue(new BuildRoadEventInstruction
+            {
+                RoadSegmentStart = roadSegmentEnd, RoadSegmentEnd = roadSegmentEnd, PlayerName = this.PlayerName
+            });
             return this;
         }
 
@@ -206,13 +229,24 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
             return this;
         }
 
+        private struct LargestArmyChangedEventInstruction
+        {
+            public string CurrentPlayerName, PreviousPlayerName;
+        }
+
         public BasePlayerTurn LargestArmyChangedEvent(string previousPlayerName = null)
         {
-            Guid previousPlayerId = Guid.Empty;
+            /*Guid previousPlayerId = Guid.Empty;
             if (previousPlayerName != null)
                 previousPlayerId = this.playersByName[previousPlayerName].Id;
             var expectedLargestArmyChangedEvent = new LargestArmyChangedEvent(this.PlayerId, previousPlayerId);
-            this.instructions.Enqueue(expectedLargestArmyChangedEvent);
+            this.instructions.Enqueue(expectedLargestArmyChangedEvent);*/
+
+            this.instructions.Enqueue(new LargestArmyChangedEventInstruction
+            {
+                CurrentPlayerName = this.PlayerName,
+                PreviousPlayerName = previousPlayerName
+            });
 
             return this;
         }
@@ -308,35 +342,74 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
             return this;
         }
 
+        private struct PlayKnightCardActionInstruction
+        {
+            public uint HexLocation;
+            public string TargetPlayerName;
+        }
 
         public List<ScenarioSelectResourceFromPlayerAction> ScenarioSelectResourceFromPlayerActions = new List<ScenarioSelectResourceFromPlayerAction>();
         public BasePlayerTurn PlayKnightCard(uint hexLocation, string targetPlayerName, ResourceTypes resourceTaken)
         {
             this.ScenarioSelectResourceFromPlayerActions.Add(new ScenarioSelectResourceFromPlayerAction(targetPlayerName, resourceTaken));
-            this.instructions.Enqueue(new PlayKnightCardAction(hexLocation, this.playersByName[targetPlayerName].Id));
+            //this.instructions.Enqueue(new PlayKnightCardAction(hexLocation, this.playersByName[targetPlayerName].Id));
+
+            this.instructions.Enqueue(new PlayKnightCardActionInstruction()
+            {
+                HexLocation = hexLocation,
+                TargetPlayerName = targetPlayerName
+            });
+
             return this;
+        }
+
+        private class ResourcesCollectedEventInstruction
+        {
+            public string PlayerName;
+            public ResourceCollection[] ResourceCollections;
         }
 
         public BasePlayerTurn ResourceCollectedEvent(string playerName, params Tuple<uint, ResourceClutch>[] resourceCollectionPairs)
         {
-            var playerId = this.playersByName[playerName].Id;
+            //var playerId = this.playersByName[playerName].Id;
 
             ResourceCollection[] rc = new ResourceCollection[resourceCollectionPairs.Length];
             var index = 0;
             foreach (var pair in resourceCollectionPairs)
                 rc[index++] = new ResourceCollection(pair.Item1, pair.Item2);
-            this.instructions.Enqueue(new ResourcesCollectedEvent(playerId, rc));
+            //this.instructions.Enqueue(new ResourcesCollectedEvent(playerId, rc));
+
+            this.instructions.Enqueue(new ResourcesCollectedEventInstruction()
+            {
+                PlayerName = playerName,
+                ResourceCollections = rc
+            });
 
             return this;
         }
 
+        private class ResourcesGainedEventInstruction
+        {
+            public string ReceivingPlayerName;
+            public string GivingPlayerName;
+            public ResourceClutch ExpectedResources;
+        }
+
         public BasePlayerTurn ResourcesGainedEvent(string receivingPlayerName, string givingPlayerName, ResourceClutch expectedResources)
         {
-            var receivingPlayer = this.playersByName[receivingPlayerName];
+            /*var receivingPlayer = this.playersByName[receivingPlayerName];
             var givingPlayer = this.playersByName[givingPlayerName];
             var resourceTransaction = new ResourceTransaction(receivingPlayer.Id, givingPlayer.Id, expectedResources);
             var expectedResourceTransactonEvent = new ResourceTransactionEvent(receivingPlayer.Id, resourceTransaction);
-            this.instructions.Enqueue(expectedResourceTransactonEvent);
+            this.instructions.Enqueue(expectedResourceTransactonEvent);*/
+
+            this.instructions.Enqueue(new ResourcesGainedEventInstruction()
+            {
+                ReceivingPlayerName = receivingPlayerName,
+                GivingPlayerName = givingPlayerName,
+                ExpectedResources = expectedResources
+            });
+
             return this;
         }
 
@@ -414,10 +487,41 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
             throw new NotImplementedException();
         }
 
-        public PlayerState State(string playerName)
+        public class PlayerStateInstruction
         {
-            var player = this.playersByName[playerName];
+            public BasePlayerTurn Turn;
+            public string PlayerName;
+
+            public PlayerStateInstruction HeldCards(DevelopmentCardTypes developmentCardType)
+            {
+                return this;
+            }
+
+            public PlayerStateInstruction VictoryPoints(uint victoryPoints)
+            {
+                return this;
+            }
+
+            public PlayerStateInstruction Resources(ResourceClutch resources)
+            {
+                return this;
+            }
+
+            public BasePlayerTurn End() { return this.Turn; }
+        }
+
+        public PlayerStateInstruction State(string playerName)
+        {
+            /*var player = this.playersByName[playerName];
             var playerState = new PlayerState(this, player);
+            this.instructions.Enqueue(playerState);*/
+
+            var playerState = new PlayerStateInstruction
+            {
+                Turn = this,
+                PlayerName = playerName
+            };
+
             this.instructions.Enqueue(playerState);
 
             return playerState;
@@ -619,10 +723,20 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
             }
         }
 
+        private class DiceRollEventInstruction
+        {
+            public uint Dice1, Dice2;
+            public string PlayerName;
+        }
+
         protected Queue<object> instructions = new Queue<object>();
         public BasePlayerTurn DiceRollEvent(uint dice1, uint dice2)
         {
-            this.instructions.Enqueue(new DiceRollEvent(this.PlayerId, dice1, dice2));
+            //this.instructions.Enqueue(new DiceRollEvent(this.PlayerId, dice1, dice2));
+            this.instructions.Enqueue(new DiceRollEventInstruction
+            {
+                Dice1 = dice1, Dice2 = dice2, PlayerName = this.PlayerName
+            });
             return this;
         }
 
@@ -665,25 +779,28 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
 
         public BasePlayerTurn TradeWithPlayerEvent(string initiatingPlayerName, string otherPlayerName, ResourceClutch initiatingResources, ResourceClutch otherResources)
         {
-            var initiatingPlayer = this.playersByName[initiatingPlayerName];
+            /*var initiatingPlayer = this.playersByName[initiatingPlayerName];
             var otherPlayer = this.playersByName[otherPlayerName];
             this.instructions.Enqueue(new TradeWithPlayerEvent(initiatingPlayer.Id, otherPlayer.Id, initiatingResources, otherResources));
-            return this;
+            return this;*/
+            throw new NotImplementedException();
         }
 
         public BasePlayerTurn MakeDirectTradeOfferEvent(string playerName, string initiatingPlayerName, ResourceClutch resources)
         {
-            var player = this.playersByName[playerName];
+            /*var player = this.playersByName[playerName];
             var initiatingPlayer = this.playersByName[initiatingPlayerName];
             this.instructions.Enqueue(new ScenarioMakeDirectTradeOfferEvent(player.Id, initiatingPlayer.Id, resources));
-            return this;
+            return this;*/
+            throw new NotImplementedException();
         }
 
         public BasePlayerTurn AnswerDirectTradeOffer(string playerName, ResourceClutch resources)
         {
-            var player = this.playersByName[playerName];
+            /*var player = this.playersByName[playerName];
             this.instructions.Enqueue(new AnswerDirectTradeOfferAction(playerName, resources));
-            return this;
+            return this;*/
+            throw new NotImplementedException();
         }
         #endregion
     }
