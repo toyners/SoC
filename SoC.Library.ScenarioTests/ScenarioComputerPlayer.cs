@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Jabberwocky.SoC.Library;
 using Jabberwocky.SoC.Library.DevelopmentCards;
 using Jabberwocky.SoC.Library.GameActions;
+using Jabberwocky.SoC.Library.GameBoards;
 using Jabberwocky.SoC.Library.GameEvents;
 using Jabberwocky.SoC.Library.Interfaces;
 using Jabberwocky.SoC.Library.PlayerData;
@@ -19,7 +20,8 @@ namespace SoC.Library.ScenarioTests
         #endregion
 
         #region Construction
-        public ScenarioComputerPlayer(string name, INumberGenerator numberGenerator) : base(name, numberGenerator) { }
+        public ScenarioComputerPlayer(string name, GameBoard gameBoard, LocalGameController localGameController, INumberGenerator numberGenerator)
+            : base(name, gameBoard, localGameController, numberGenerator) { }
         #endregion
 
         #region Methods

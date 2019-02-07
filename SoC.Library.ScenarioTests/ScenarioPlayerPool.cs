@@ -9,13 +9,17 @@ namespace SoC.Library.ScenarioTests
     using Jabberwocky.SoC.Library.Interfaces;
     using Jabberwocky.SoC.Library.Store;
 
-    public class ScenarioPlayerPool : IPlayerPool
+    internal class ScenarioPlayerPool : IPlayerPool
     {
-        private readonly Queue<IPlayer> players = new Queue<IPlayer>();
+        private readonly Queue<string> names = new Queue<string>();
+
+        public Dictionary<string, IPlayer> PlayersByName { get; } = new Dictionary<string, IPlayer>();
 
         public IPlayer CreateComputerPlayer(GameBoard gameBoard, LocalGameController localGameController, INumberGenerator numberGenerator)
         {
-            return this.players.Dequeue();
+            var player = new ScenarioComputerPlayer(this.names.Dequeue(), gameBoard, localGameController, numberGenerator);
+            this.PlayersByName.Add(player.Name, player);
+            return player;
         }
 
         public IPlayer CreateComputerPlayer(IGameDataSection<GameDataSectionKeys, GameDataValueKeys, ResourceTypes> data, GameBoard board, INumberGenerator numberGenerator)
@@ -25,7 +29,9 @@ namespace SoC.Library.ScenarioTests
 
         public IPlayer CreatePlayer()
         {
-            return this.players.Dequeue();
+            var player = new ScenarioPlayer(this.names.Dequeue());
+            this.PlayersByName.Add(player.Name, player);
+            return player;
         }
 
         public IPlayer CreatePlayer(XmlReader reader)
@@ -43,9 +49,9 @@ namespace SoC.Library.ScenarioTests
             throw new NotImplementedException();
         }
 
-        public void AddPlayer(IPlayer player)
+        public void AddPlayer(string name)
         {
-            this.players.Enqueue(player);
+            this.names.Enqueue(name);
         }
     }
 }

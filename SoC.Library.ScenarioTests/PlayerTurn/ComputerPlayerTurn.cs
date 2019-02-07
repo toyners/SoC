@@ -49,7 +49,7 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
             this.computerPlayer.AddEvent(gameEvent);
         }
 
-        public override void Process(LocalGameController localGameController)
+        public override void Process()
         {
             if (this.instructions == null)
             {

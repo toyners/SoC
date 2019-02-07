@@ -226,7 +226,8 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
 
         public ExpectedEventsBuilder Events()
         {
-            return new ExpectedEventsBuilder(this, this.runner.playersByName);
+            //return new ExpectedEventsBuilder(this, this.runner.PlayersByName);
+            return null;
         }
 
         private int actualEventIndex;
@@ -404,7 +405,8 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
 
         public PlayerResponseBuilder Responses()
         {
-            return new PlayerResponseBuilder(this, this.runner.playersByName);
+            return null;
+            //return new PlayerResponseBuilder(this, this.runner.PlayersByName);
         }
 
         public PlayerStateBuilder OldState(string playerName)
@@ -540,7 +542,13 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
             return message;
         }
 
-        public virtual void Process(LocalGameController localGameController)
+        public bool IsVerified { get { return this.expectedEventIndex >= this.expectedEvents.Count; } }
+
+        public bool HasInstructions { get { return this.instructions.Count > 0; } }
+
+        public bool IsFinished { get; set; }
+
+        public virtual void Process()
         {
             this.CheckEvents();
             while (this.instructions.Count > 0)

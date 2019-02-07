@@ -32,7 +32,7 @@ namespace SoC.Library.ScenarioTests
         private readonly ScenarioDevelopmentCardHolder developmentCardHolder = new ScenarioDevelopmentCardHolder();
         private readonly List<PlayerSetupAction> firstRoundSetupActions = new List<PlayerSetupAction>(4);
         private readonly Dictionary<Type, GameEvent> lastEventsByType = new Dictionary<Type, GameEvent>();
-        public readonly Dictionary<string, IPlayer> playersByName = new Dictionary<string, IPlayer>();
+        //public readonly Dictionary<string, IPlayer> PlayersByName = new Dictionary<string, IPlayer>();
         private readonly Queue<PlaceInfrastructureAction> playerSetupActions = new Queue<PlaceInfrastructureAction>();
         private readonly ScenarioPlayerPool playerPool = new ScenarioPlayerPool();
         private readonly List<BasePlayerTurn> playerTurns = new List<BasePlayerTurn>();
@@ -71,13 +71,14 @@ namespace SoC.Library.ScenarioTests
                 this.gameBoard = new GameBoard(BoardSizes.Standard);
 
             this.localGameController = new LocalGameController(
-                this.NumberGenerator, 
-                this.playerPool, 
-                this.gameBoard, 
+                this.NumberGenerator,
+                this.playerPool,
+                this.gameBoard,
                 this.developmentCardHolder);
 
             foreach (var turn in this.turns)
             {
+                turn.LocalGameController = this.localGameController;
                 if (turn.DevelopmentCardTypes != null)
                 {
                     foreach (var developmentCardType in turn.DevelopmentCardTypes)
@@ -88,7 +89,7 @@ namespace SoC.Library.ScenarioTests
                 {
                     foreach (var s in turn.ScenarioSelectResourceFromPlayerActions)
                     {
-                        var selectedPlayer = this.playersByName[s.SelectedPlayerName];
+                        var selectedPlayer = this.PlayersByName[s.SelectedPlayerName];
                         this.NumberGenerator.AddRandomNumber(this.GetResourceSelectionForPlayer(selectedPlayer, s.ExpectedSingleResource));
                     }
                 }
@@ -103,7 +104,7 @@ namespace SoC.Library.ScenarioTests
             };
             //this.localGameController.DevelopmentCardPurchasedEvent = (DevelopmentCard c) => { this.currentTurn?.AddEvent(new BuyDevelopmentCardEvent(this.players[0].Id)); };
             this.localGameController.DevelopmentCardBoughtEvent = gameEvent => { this.currentTurn?.AddEvent(gameEvent); };
-            this.localGameController.ErrorRaisedEvent = (ErrorDetails e) => 
+            this.localGameController.ErrorRaisedEvent = (ErrorDetails e) =>
             {
                 if (this.currentTurn.TreatErrorsAsEvents)
                     this.currentTurn.AddEvent(new ScenarioErrorMessageEvent(e.Message));
@@ -147,12 +148,12 @@ namespace SoC.Library.ScenarioTests
 
         public IPlayer GetPlayerFromName(string playerName)
         {
-            return this.playersByName[playerName];
+            return this.PlayersByName[playerName];
         }
 
         public LocalGameController Run()
         {
-            this.localGameController.JoinGame();
+            this.localGameController.JoinGame(this.gameOptions);
             this.localGameController.LaunchGame();
             this.localGameController.StartGameSetup();
 
@@ -176,11 +177,24 @@ namespace SoC.Library.ScenarioTests
                 Thread.Sleep(50);
             } while (this.currentTurn == null);
 
+            var index = 0;
+            BasePlayerTurn turn = this.turns[index++];
             do
             {
                 Thread.Sleep(50);
-                this.currentTurn.Process(this.localGameController);
-            } while (this.currentTurn != null);
+                if (!turn.IsVerified || turn.HasInstructions)
+                {
+                    turn.Process();
+                }
+                else if (turn.IsFinished)
+                {
+                    turn.FinishProcessing();
+                    if (index < this.turns.Count)
+                        turn = this.turns[index++];
+                    else
+                        break;
+                }
+            } while (true);
 
             /*for (var index = 0; index < this.turns.Count; index++)
             {
@@ -232,7 +246,7 @@ namespace SoC.Library.ScenarioTests
             this.NumberGenerator.AddTwoDiceRoll(dice1, dice2);
 
             BasePlayerTurn playerTurn;
-            var player = this.playersByName[playerName];
+            var player = this.PlayersByName[playerName];
             if (player.IsComputer)
                 playerTurn = new ComputerPlayerTurn(player, this, this.roundNumber, this.turnNumber);
             else
@@ -250,15 +264,18 @@ namespace SoC.Library.ScenarioTests
             return playerTurn;
         }
 
+        private GameOptions gameOptions = new GameOptions();
         public LocalGameControllerScenarioRunner WithComputerPlayer(string name)
         {
-            this.CreatePlayer(name, true);
+            this.gameOptions.MaxPlayers++;
+            this.playerPool.AddPlayer(name);
             return this;
         }
 
         public LocalGameControllerScenarioRunner WithMainPlayer(string name)
         {
-            this.CreatePlayer(name, false);
+            this.gameOptions.MaxAIPlayers++;
+            this.playerPool.AddPlayer(name);
             return this;
         }
 
@@ -268,19 +285,15 @@ namespace SoC.Library.ScenarioTests
             return this;
         }
 
+        private Dictionary<string, IPlayer> PlayersByName { get { return this.playerPool.PlayersByName; } }
+        private Dictionary<string, PlaceInfrastructureAction[]> setupActionsByPlayerName = new Dictionary<string, PlaceInfrastructureAction[]>();
         public LocalGameControllerScenarioRunner WithPlayerSetup(string playerName, uint firstSettlementLocation, uint firstRoadEndLocation, uint secondSettlementLocation, uint secondRoadEndLocation)
         {
-            var player = this.playersByName[playerName];
-            if (player is ScenarioComputerPlayer scenarioComputerPlayer)
+            this.setupActionsByPlayerName.Add(playerName, new PlaceInfrastructureAction[]
             {
-                scenarioComputerPlayer.AddSetupInstructions(firstSettlementLocation, firstRoadEndLocation);
-                scenarioComputerPlayer.AddSetupInstructions(secondSettlementLocation, secondRoadEndLocation);
-            }
-            else 
-            {
-                this.playerSetupActions.Enqueue(new PlaceInfrastructureAction(firstSettlementLocation, firstRoadEndLocation));
-                this.playerSetupActions.Enqueue(new PlaceInfrastructureAction(secondSettlementLocation, secondRoadEndLocation));
-            }
+                new PlaceInfrastructureAction(firstSettlementLocation, firstRoadEndLocation),
+                new PlaceInfrastructureAction(secondSettlementLocation, secondRoadEndLocation)
+            });
 
             return this;
         }
@@ -307,10 +320,10 @@ namespace SoC.Library.ScenarioTests
             return this;
         }
 
+        private Dictionary<string, ResourceClutch> startingResourcesByName = new Dictionary<string, ResourceClutch>();
         public LocalGameControllerScenarioRunner WithStartingResourcesForPlayer(string playerName, ResourceClutch playerResources)
         {
-            var player = this.playersByName[playerName];
-            player.AddResources(playerResources);
+            this.startingResourcesByName.Add(playerName, playerResources);
             return this;
         }
 
@@ -340,21 +353,6 @@ namespace SoC.Library.ScenarioTests
             this.localGameController.EndTurn(this.currentToken);
         }
 
-        private IPlayer CreatePlayer(string name, bool isComputerPlayer)
-        {
-            IPlayer player = isComputerPlayer
-                ? new ScenarioComputerPlayer(name, this.NumberGenerator) as IPlayer
-                : new ScenarioPlayer(name) as IPlayer;
-
-            this.players.Add(player);
-            this.playersByName.Add(name, player);
-            this.playerPool.AddPlayer(player);
-            if (isComputerPlayer)
-                this.computerPlayersByName.Add(name, (ScenarioComputerPlayer)player);
-
-            return player;
-        }
-
         private void DiceRollEventHandler(Guid playerId, uint dice1, uint dice2)
         {
             this.currentTurn.AddEvent(new DiceRollEvent(playerId, dice1, dice2));
@@ -363,9 +361,8 @@ namespace SoC.Library.ScenarioTests
         private BasePlayerTurn previousTurn;
         private void StartOfTurn()
         {
-            if (this.currentTurn != null)
-                this.currentTurn.FinishProcessing();
-
+            if (this.currentIndex > 0)
+                this.currentTurn.IsFinished = true;
             if (this.currentIndex < this.turns.Count)
             {
                 this.currentTurn = this.turns[this.currentIndex++];
@@ -423,7 +420,7 @@ namespace SoC.Library.ScenarioTests
         {
             this.NumberGenerator.AddTwoDiceRoll(dice1, dice2);
 
-            var playerTurn = new BasePlayerTurn(playerName, this.playersByName, this, this.roundNumber, this.turnNumber);
+            var playerTurn = new BasePlayerTurn(playerName, this.PlayersByName, this, this.roundNumber, this.turnNumber);
             this.turns.Add(playerTurn);
 
             this.turnNumber++;
