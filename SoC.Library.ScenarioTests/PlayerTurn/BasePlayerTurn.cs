@@ -191,9 +191,22 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
             return this;
         }
 
+        private class BuildSettlementEventInstruction
+        {
+            public uint SettlementLocation;
+            public string PlayerName;
+        }
+
         public BasePlayerTurn BuildSettlementEvent(uint settlementLocation)
         {
-            this.instructions.Enqueue(new SettlementBuiltEvent(this.PlayerId, settlementLocation));
+            //this.instructions.Enqueue(new SettlementBuiltEvent(this.PlayerId, settlementLocation));
+
+            this.instructions.Enqueue(new BuildSettlementEventInstruction
+            {
+                SettlementLocation = settlementLocation,
+                PlayerName = this.PlayerName
+            });
+
             return this;
         }
 
