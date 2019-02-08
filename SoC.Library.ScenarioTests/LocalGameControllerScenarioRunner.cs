@@ -153,24 +153,32 @@ namespace SoC.Library.ScenarioTests
         {
             this.localGameController.JoinGame(this.gameOptions);
 
+            PlaceInfrastructureAction[] placeInfrastructureActionsForHumanPlayer = null;
             foreach(var kv in this.setupActionsByPlayerName)
             {
                 var player = this.playerPool.PlayersByName[kv.Key];
                 if (player is ScenarioComputerPlayer computerPlayer)
                 {
                     foreach (var action in kv.Value)
-                        computerPlayer.AddAction(action);
+                        computerPlayer.AddSetupInstructions(action.SettlementLocation, action.RoadEndLocation);
+                }
+                else
+                {
+                    // TODO: Else branch is weak and assumes there is only one human player
+                    placeInfrastructureActionsForHumanPlayer = kv.Value;
                 }
             }
 
             this.localGameController.LaunchGame();
             this.localGameController.StartGameSetup();
 
-            var placeInfrastructureInstruction = this.playerSetupActions.Dequeue();
-            this.localGameController.ContinueGameSetup(placeInfrastructureInstruction.SettlementLocation, placeInfrastructureInstruction.RoadEndLocation);
+            this.localGameController.ContinueGameSetup(
+                placeInfrastructureActionsForHumanPlayer[0].SettlementLocation,
+                placeInfrastructureActionsForHumanPlayer[0].RoadEndLocation);
 
-            placeInfrastructureInstruction = this.playerSetupActions.Dequeue();
-            this.localGameController.CompleteGameSetup(placeInfrastructureInstruction.SettlementLocation, placeInfrastructureInstruction.RoadEndLocation);
+            this.localGameController.CompleteGameSetup(
+                placeInfrastructureActionsForHumanPlayer[1].SettlementLocation,
+                placeInfrastructureActionsForHumanPlayer[1].RoadEndLocation);
 
             this.ProcessGame();
 

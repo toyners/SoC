@@ -685,7 +685,7 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
                 else if (instruction is ComputerPlayerAction action)
                 {
                     // Still got unmatched expected events so don't perform action yet
-                    if (this.expectedEventIndex < this.expectedEvents.Count)
+                    if (!this.IsVerified)
                         return;
 
                     this.instructions.Dequeue();
@@ -694,7 +694,7 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
                 else if (instruction is PlayerState playerState)
                 {
                     // Still got unmatched expected events so don't verify the player state yet
-                    if (this.expectedEventIndex < this.expectedEvents.Count)
+                    if (!this.IsVerified)
                         return;
 
                     this.instructions.Dequeue();
