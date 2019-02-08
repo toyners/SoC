@@ -98,6 +98,11 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
             }
         }
 
+        internal void Initialise(LocalGameController localGameController)
+        {
+            this.LocalGameController = localGameController;
+        }
+
         private void AddActionForComputerPlayer(ComputerPlayerAction action)
         {
 
@@ -128,7 +133,7 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
             }
         }
         public IList<Type> UnwantedEventTypes { private get; set; }
-        public LocalGameController LocalGameController { get; set; }
+        private LocalGameController LocalGameController { get; set; }
         public TurnToken TurnToken { get; set; }
         #endregion
 

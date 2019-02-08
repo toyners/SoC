@@ -78,7 +78,7 @@ namespace SoC.Library.ScenarioTests
 
             foreach (var turn in this.turns)
             {
-                turn.LocalGameController = this.localGameController;
+                turn.Initialise(this.localGameController);
                 if (turn.DevelopmentCardTypes != null)
                 {
                     foreach (var developmentCardType in turn.DevelopmentCardTypes)
@@ -93,8 +93,6 @@ namespace SoC.Library.ScenarioTests
                         this.NumberGenerator.AddRandomNumber(this.GetResourceSelectionForPlayer(selectedPlayer, s.ExpectedSingleResource));
                     }
                 }
-
-                turn.LocalGameController = this.localGameController;
             }
 
             this.localGameController.CityBuiltEvent = cityBuiltEvent => this.currentTurn?.AddEvent(cityBuiltEvent);
@@ -154,6 +152,17 @@ namespace SoC.Library.ScenarioTests
         public LocalGameController Run()
         {
             this.localGameController.JoinGame(this.gameOptions);
+
+            foreach(var kv in this.setupActionsByPlayerName)
+            {
+                var player = this.playerPool.PlayersByName[kv.Key];
+                if (player is ScenarioComputerPlayer computerPlayer)
+                {
+                    foreach (var action in kv.Value)
+                        computerPlayer.AddAction(action);
+                }
+            }
+
             this.localGameController.LaunchGame();
             this.localGameController.StartGameSetup();
 
@@ -267,14 +276,12 @@ namespace SoC.Library.ScenarioTests
         private GameOptions gameOptions = new GameOptions();
         public LocalGameControllerScenarioRunner WithComputerPlayer(string name)
         {
-            this.gameOptions.MaxPlayers++;
             this.playerPool.AddPlayer(name);
             return this;
         }
 
         public LocalGameControllerScenarioRunner WithMainPlayer(string name)
         {
-            this.gameOptions.MaxAIPlayers++;
             this.playerPool.AddPlayer(name);
             return this;
         }
