@@ -1,16 +1,15 @@
 ﻿
 namespace Jabberwocky.SoC.Library
 {
-  using System;
   using Enums;
 
   public class GameOptions
   {
     public GameConnectionTypes Connection;
 
-    public UInt32 MaxPlayers;
+    public uint MaxPlayers;
 
-    public UInt32 MaxAIPlayers;
+    public uint MaxAIPlayers;
 
     public GameOptions()
     {
