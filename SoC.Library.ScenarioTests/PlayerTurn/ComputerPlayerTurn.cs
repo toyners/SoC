@@ -48,15 +48,5 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
         {
             this.computerPlayer.AddEvent(gameEvent);
         }
-
-        public override void Process()
-        {
-            if (this.instructions == null)
-            {
-                return;
-            }
-
-            this.computerPlayer.AddInstructions(this.instructions.ToArray());
-        }
     }
 }

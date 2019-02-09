@@ -189,21 +189,12 @@ namespace SoC.Library.ScenarioTests
         {
             this.localGameController.StartGamePlay();
 
-            do
-            {
-                Thread.Sleep(50);
-            } while (this.currentTurn == null);
-
             var index = 0;
             BasePlayerTurn turn = this.turns[index++];
             do
             {
                 Thread.Sleep(50);
-                if (!turn.IsVerified || turn.HasInstructions)
-                {
-                    turn.Process();
-                }
-                else if (turn.IsFinished)
+                if (turn.IsFinished)
                 {
                     turn.FinishProcessing();
                     if (index < this.turns.Count)
@@ -211,7 +202,14 @@ namespace SoC.Library.ScenarioTests
                     else
                         break;
                 }
+                else if (!turn.IsVerified || turn.HasInstructions)
+                {
+                    turn.Process(this.PlayersByName);
+                }
+
             } while (true);
+
+            this.localGameController.Quit();
 
             /*for (var index = 0; index < this.turns.Count; index++)
             {
@@ -284,12 +282,14 @@ namespace SoC.Library.ScenarioTests
         private GameOptions gameOptions = new GameOptions();
         public LocalGameControllerScenarioRunner WithComputerPlayer(string name)
         {
+            this.initialPlayerOrder.Add(name);
             this.playerPool.AddPlayer(name);
             return this;
         }
 
         public LocalGameControllerScenarioRunner WithMainPlayer(string name)
         {
+            this.initialPlayerOrder.Add(name);
             this.playerPool.AddPlayer(name);
             return this;
         }
@@ -313,17 +313,18 @@ namespace SoC.Library.ScenarioTests
             return this;
         }
 
+        private List<string> initialPlayerOrder = new List<string>();
         public LocalGameControllerScenarioRunner WithTurnOrder(string firstPlayerName, string secondPlayerName, string thirdPlayerName, string fourthPlayerName)
         {
             var rolls = new uint[4];
-            for (var index = 0; index < this.players.Count; index++)
+            for (var index = 0; index < this.initialPlayerOrder.Count; index++)
             {
-                var player = this.players[index];
-                if (firstPlayerName == player.Name)
+                var playerName = this.initialPlayerOrder[index];
+                if (firstPlayerName == playerName)
                     rolls[index] = 12;
-                else if (secondPlayerName == player.Name)
+                else if (secondPlayerName == playerName)
                     rolls[index] = 10;
-                else if (thirdPlayerName == player.Name)
+                else if (thirdPlayerName == playerName)
                     rolls[index] = 8;
                 else
                     rolls[index] = 6;
@@ -376,8 +377,9 @@ namespace SoC.Library.ScenarioTests
         private BasePlayerTurn previousTurn;
         private void StartOfTurn()
         {
-            if (this.currentIndex > 0)
+            if (this.currentIndex > 0 && this.currentTurn != null)
                 this.currentTurn.IsFinished = true;
+
             if (this.currentIndex < this.turns.Count)
             {
                 this.currentTurn = this.turns[this.currentIndex++];

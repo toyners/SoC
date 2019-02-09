@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using SoC.Library.ScenarioTests;
 
@@ -8,12 +9,38 @@ namespace SoC.ScenarioRunnerConsole
     {
         static void Main(string[] args)
         {
-            Task.Factory.StartNew(() =>
+            Exception exception = null;
+            var isFinished = false;
+            var task = Task.Factory.StartNew(() =>
             {
                 new ScenarioTests().ATest();
             });
 
-            Console.WriteLine("Hit any key to exit");
+            task.ContinueWith(t => {
+                isFinished = true;
+                if (t.IsFaulted)
+                {
+                    exception = t.Exception.Flatten().InnerException;
+                }
+            });
+
+            Console.Write("Running... ");
+            while (!isFinished)
+            {
+                Thread.Sleep(50);
+            }
+
+            if (exception != null)
+            {
+                Console.WriteLine("FAILED");
+                Console.WriteLine(exception.Message);
+            }
+            else
+            {
+                Console.WriteLine("Done");
+            }
+
+            Console.WriteLine("Press any key to exit");
             Console.ReadKey();
         }
     }

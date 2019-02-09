@@ -149,6 +149,11 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
             return this;
         }
 
+        private abstract class EventInstruction
+        {
+            public abstract GameEvent Event(Dictionary<string, IPlayer> playersByName);
+        }
+
         private class CityBuiltEventInstruction
         {
             public uint CityLocation;
@@ -670,13 +675,18 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
 
         public bool IsFinished { get; set; }
 
-        public virtual void Process()
+        public virtual void Process(Dictionary<string, IPlayer> playersByName)
         {
             this.CheckEvents();
             while (this.instructions.Count > 0)
             {
                 var instruction = this.instructions.Peek();
-                if (instruction is GameEvent expectedEvent)
+                if (instruction is EventInstruction eventInstruction)
+                {
+                    this.instructions.Dequeue();
+                    this.expectedEvents.Add(eventInstruction.Event(playersByName));
+                }
+                else if (instruction is GameEvent expectedEvent)
                 {
                     this.instructions.Dequeue();
                     this.expectedEvents.Add(expectedEvent);
@@ -689,7 +699,16 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
                         return;
 
                     this.instructions.Dequeue();
-                    this.actionResolversByPlayer[this.player]?.Invoke(action);
+                    var player = playersByName[this.PlayerName];
+                    if (player is ScenarioComputerPlayer computerPlayer)
+                    {
+                        computerPlayer.AddAction(action);
+                    }
+                    else if (player is ScenarioPlayer humanPlayer)
+                    {
+                        this.LocalGameController.EndPlayerTurn(this.TurnToken);
+                    }
+                    //this.actionResolversByPlayer[this.player]?.Invoke(action);
                 }
                 else if (instruction is PlayerState playerState)
                 {
@@ -720,8 +739,9 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
             // At least one expected event was not matched with an actual event.
             if (this.expectedEventIndex < this.expectedEvents.Count)
             {
+                //this.LocalGameController.Quit();
                 var expectedEvent = this.expectedEvents[this.expectedEventIndex];
-                Assert.Fail($"Did not find {expectedEvent.GetType()} event for '{this.player.Name}' in round {this.roundNumber}, turn {this.turnNumber}.\r\n{this.GetEventDetails(expectedEvent)}");
+                Assert.Fail($"Did not find {expectedEvent.GetType()} event for '{this.PlayerName}' in round {this.roundNumber}, turn {this.turnNumber}.\r\n{this.GetEventDetails(expectedEvent)}");
             }
         }
 
@@ -741,10 +761,15 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
             }
         }
 
-        private class DiceRollEventInstruction
+        private class DiceRollEventInstruction : EventInstruction
         {
             public uint Dice1, Dice2;
             public string PlayerName;
+
+            public override GameEvent Event(Dictionary<string, IPlayer> playersByName)
+            {
+                return new DiceRollEvent(playersByName[this.PlayerName].Id, this.Dice1, this.Dice2);
+            }
         }
 
         protected Queue<object> instructions = new Queue<object>();

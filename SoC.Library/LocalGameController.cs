@@ -360,42 +360,9 @@ namespace Jabberwocky.SoC.Library
         private bool startOfTurn = true;
         public void EndPlayerTurn(TurnToken turnToken)
         {
-            // Validate turn token
+            // TODO: Validate turn token
 
-            // Loop
-            // Change to next player 
-            while (true)
-            {
-                var moveRobber = false;
-                if (this.startOfTurn)
-                {
-                    this.ChangeToNextPlayerTurn();
-                    moveRobber = this.ProcessTurnStart(this.currentPlayer);
-                }
-
-                var computerPlayer = this.currentPlayer as IComputerPlayer;
-                // If next player is human then quit method
-                if (computerPlayer == null)
-                {
-                    if (moveRobber)
-                        this.GamePhase = GamePhases.SetRobberHex;
-                    return;
-                }
-
-                // Pass execution to computer player to complete actions - pass in localGamecontroller ref
-                // Computer player passes null for end of turn or action that needs .
-                var action = computerPlayer.PlayTurn(null, this);
-                if (action != null)
-                {
-                    this.startOfTurn = false;
-                }
-            }
-
-            
-            // LocalGamecontroller passes to all computer players and human player
-
-            // Human player makes decision and enters it using correct method which passes control back to 
-            // computer player 
+            this.actionRequests.Enqueue(new EndOfTurnAction());
         }
 
         private bool ProcessTurnStart(IPlayer player)
@@ -1990,39 +1957,45 @@ namespace Jabberwocky.SoC.Library
 
             this.numberGenerator.RollTwoDice(out this.dice1, out this.dice2);
             this.DiceRollEvent?.Invoke(this.currentPlayer.Id, this.dice1, this.dice2);
-
+            var turnStartTime = DateTime.Now;
+            var waitTimeMS = 2000;
             while (true)
             {
                 Thread.Sleep(50);
                 if (this.GamePhase == GamePhases.Quit)
                     return;
 
-                if (this.actionRequests.TryDequeue(out var playerAction))
+                var gotPlayerAction = this.actionRequests.TryDequeue(out var playerAction);
+
+                var elapsedTimeMS = (DateTime.Now - turnStartTime).TotalMilliseconds;
+                if ((elapsedTimeMS >= waitTimeMS) || 
+                    (gotPlayerAction && playerAction is EndOfTurnAction))
                 {
-                    if (playerAction is EndOfTurnAction)
+                    // a.k.a Start of next turn
+                    this.ChangeToNextPlayerTurn();
+                    this.currentTurnToken = new TurnToken();
+                    this.StartPlayerTurnEvent?.Invoke(this.currentTurnToken);
+                    this.numberGenerator.RollTwoDice(out this.dice1, out this.dice2);
+                    this.DiceRollEvent?.Invoke(this.currentPlayer.Id, this.dice1, this.dice2);
+                    turnStartTime = DateTime.Now;
+                    var resourceRoll = this.dice1 + this.dice2;
+                    if (resourceRoll != 7)
                     {
-                        // a.k.a Start of next turn
-                        this.ChangeToNextPlayerTurn();
-                        this.currentTurnToken = new TurnToken();
-                        this.StartPlayerTurnEvent?.Invoke(this.currentTurnToken);
-                        this.numberGenerator.RollTwoDice(out this.dice1, out this.dice2);
-                        this.DiceRollEvent?.Invoke(this.currentPlayer.Id, this.dice1, this.dice2);
 
-                        var resourceRoll = this.dice1 + this.dice2;
-                        if (resourceRoll != 7)
-                        {
-
-                        }
-                        else
-                        {
-
-                        }
                     }
                     else
                     {
-                        this.ProcessPlayerAction(playerAction);
+
                     }
+
+                    continue;
                 }
+
+                if (!gotPlayerAction)
+                    continue;
+
+                // Player action to process
+                this.ProcessPlayerAction(playerAction);
             }
         }
 
