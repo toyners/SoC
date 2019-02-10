@@ -187,29 +187,33 @@ namespace SoC.Library.ScenarioTests
 
         private void ProcessGame()
         {
-            this.localGameController.StartGamePlay();
-
-            var index = 0;
-            BasePlayerTurn turn = this.turns[index++];
-            do
+            try
             {
-                Thread.Sleep(50);
-                if (turn.IsFinished)
-                {
-                    turn.FinishProcessing();
-                    if (index < this.turns.Count)
-                        turn = this.turns[index++];
-                    else
-                        break;
-                }
-                else if (!turn.IsVerified || turn.HasInstructions)
-                {
-                    turn.Process(this.PlayersByName);
-                }
+                this.localGameController.StartGamePlay();
 
-            } while (true);
+                var index = 0;
+                BasePlayerTurn turn = this.turns[index++];
+                do
+                {
+                    Thread.Sleep(50);
+                    if (turn.IsFinished)
+                    {
+                        turn.FinishProcessing();
+                        if (index < this.turns.Count)
+                            turn = this.turns[index++];
+                        else
+                            break;
+                    }
+                    else if (!turn.IsVerified || turn.HasInstructions)
+                    {
+                        turn.Process(this.PlayersByName);
+                    }
 
-            this.localGameController.Quit();
+                } while (true);
+            }
+            finally {
+                this.localGameController.Quit();
+            }
 
             /*for (var index = 0; index < this.turns.Count; index++)
             {

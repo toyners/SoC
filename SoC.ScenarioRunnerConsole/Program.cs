@@ -35,7 +35,9 @@ namespace SoC.ScenarioRunnerConsole
                 isFinished = true;
                 if (t.IsFaulted)
                 {
-                    exception = t.Exception.Flatten().InnerException;
+                    exception = t.Exception.Flatten();
+                    while (exception.InnerException != null)
+                        exception = exception.InnerException;
                 }
             });
 
@@ -48,7 +50,7 @@ namespace SoC.ScenarioRunnerConsole
             if (exception != null)
             {
                 Console.WriteLine("FAILED");
-                Console.WriteLine(exception.Message);
+                Console.WriteLine($" {exception.Message}");
             }
             else
             {
