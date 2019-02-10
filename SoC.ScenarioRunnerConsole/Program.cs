@@ -12,7 +12,7 @@ namespace SoC.ScenarioRunnerConsole
     {
         static void Main(string[] args)
         {
-            Exception exception = null;
+            //Exception exception = null;
             var isFinished = false;
             var assembly = Assembly.GetAssembly(typeof(ScenarioTests));
             var methods = assembly.GetTypes()
@@ -26,12 +26,27 @@ namespace SoC.ScenarioRunnerConsole
             {
                 foreach (MethodInfo method in methods)
                 {
-                    var instance = Activator.CreateInstance(method.DeclaringType);
-                    method.Invoke(instance, null);
+                    try
+                    {
+                        Console.Write($"Running '{method.Name}' ...");
+                        var instance = Activator.CreateInstance(method.DeclaringType);
+                        method.Invoke(instance, null);
+                        Console.WriteLine($"Done");
+                    }
+                    catch (Exception e)
+                    {
+                        var exception = e;
+                        while (exception.InnerException != null)
+                            exception = exception.InnerException;
+                        Console.WriteLine("FAILED");
+                        Console.WriteLine($" {exception.Message}");
+                    }
                 }
+
+                isFinished = true;
             });
 
-            task.ContinueWith(t => {
+            /*task.ContinueWith(t => {
                 isFinished = true;
                 if (t.IsFaulted)
                 {
@@ -39,15 +54,15 @@ namespace SoC.ScenarioRunnerConsole
                     while (exception.InnerException != null)
                         exception = exception.InnerException;
                 }
-            });
+            });*/
 
-            Console.Write("Running... ");
+            //Console.Write("Running... ");
             while (!isFinished)
             {
                 Thread.Sleep(50);
             }
 
-            if (exception != null)
+            /*if (exception != null)
             {
                 Console.WriteLine("FAILED");
                 Console.WriteLine($" {exception.Message}");
@@ -55,7 +70,7 @@ namespace SoC.ScenarioRunnerConsole
             else
             {
                 Console.WriteLine("Done");
-            }
+            }*/
 
             Console.WriteLine("Press any key to exit");
             Console.ReadKey();
