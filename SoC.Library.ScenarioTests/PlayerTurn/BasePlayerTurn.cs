@@ -23,7 +23,7 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
         public readonly IPlayer player;
         protected readonly LocalGameControllerScenarioRunner runner;
         protected readonly List<GameEvent> actualEvents = new List<GameEvent>();
-        private List<Tuple<string, ComputerPlayerAction>> playerActions;
+        //private List<Tuple<string, ComputerPlayerAction>> playerActions;
         private readonly List<GameEvent> expectedEvents = new List<GameEvent>();
         private readonly int roundNumber;
         private readonly int turnNumber;
@@ -292,71 +292,6 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
         public virtual void AddEvent(GameEvent actualEvent)
         {
             this.actualEvents.Add(actualEvent);
-
-            /*var eventProcessed = false;
-            
-            while (this.instructions.Count > 0)
-            {
-                var instruction = this.instructions.Dequeue();
-                if (instruction is GameEvent expectedGameEvent)
-                {
-                    this.expectedEvents.Add(expectedGameEvent);
-                    if (actualEvent.Equals(this.expectedEvents[this.expectedEventIndex]) && !eventProcessed)
-                    {
-                        this.expectedEventIndex++;
-                        this.actualEventIndex = this.actualEvents.Count;
-                        eventProcessed = true;
-                    }
-                    else
-                    {
-                        break;
-                    }
-                }
-                else if (instruction is ComputerPlayerAction action)
-                {
-                    if (action is ScenarioDropResourcesAction scenarioResourcesToDropAction)
-                    {
-                        var player = this.playersByName[scenarioResourcesToDropAction.PlayerName];
-                        var dropResourcesAction = scenarioResourcesToDropAction.CreateDropResourcesAction();
-
-                        if (player is ScenarioComputerPlayer computerPlayer)
-                        {
-                            computerPlayer.AddDropResourcesAction(dropResourcesAction);
-                        }
-                        else
-                        {
-                            this.AddActionForHumanPlayer(dropResourcesAction);
-                        }
-                    }
-                    else if (action is ScenarioMakeDirectTradeOffer scenarioMakeDirectTradeOffer)
-                    {
-                        var player = this.playersByName[scenarioMakeDirectTradeOffer.InitiatingPlayerName];
-                        if (player is ScenarioComputerPlayer computerPlayer)
-                        {
-                            computerPlayer.AddAction(scenarioMakeDirectTradeOffer.Action);
-                        }
-                    }
-                    else
-                    {
-                        this.actionProcessorsByPlayer[this.player].Invoke(action);
-                    }
-                }
-                else if (instruction is PlayerState playerState)
-                {
-                    var player = playerState.Player;
-
-                    if (player is ScenarioComputerPlayer computerPlayer)
-                    {
-                        var verifySnapshotAction = new ScenarioVerifySnapshotAction(playerState);
-                        computerPlayer.AddAction(verifySnapshotAction);
-                    }
-                    else if (player is ScenarioPlayer humanPlayer)
-                    {
-                        var verifySnapshotAction = new ScenarioVerifySnapshotAction(playerState);
-                        this.AddActionForHumanPlayer(verifySnapshotAction);
-                    }
-                }
-            }*/
         }
 
         public BasePlayerTurn PlayKnightCard(uint hexLocation)
