@@ -15,13 +15,20 @@ namespace SoC.ScenarioRunnerConsole
             Exception exception = null;
             var isFinished = false;
             var assembly = Assembly.GetAssembly(typeof(ScenarioTests));
+            var methods = assembly.GetTypes()
+                                .SelectMany(t => t.GetMethods())
+                                .Where(
+                                    m => m.GetCustomAttributes(typeof(TestAttribute), false).Length > 0 &&
+                                    m.Name == "ATest")
+                                .ToArray();
+
             var task = Task.Factory.StartNew(() =>
             {
-                var methods = assembly.GetTypes()
-                                .SelectMany(t => t.GetMethods())
-                                .Where(m => m.GetCustomAttributes(typeof(TestAttribute), false).Length > 0)
-                                .ToArray();
-                new ScenarioTests().ATest();
+                foreach (MethodInfo method in methods)
+                {
+                    var instance = Activator.CreateInstance(method.DeclaringType);
+                    method.Invoke(instance, null);
+                }
             });
 
             task.ContinueWith(t => {
