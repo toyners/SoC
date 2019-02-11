@@ -77,7 +77,7 @@
     <Compile Include="GameEvents\KnightCardPlayedEvent.cs" />
     <Compile Include="GameEvents\MakeDirectTradeOfferEvent.cs" />
     <Compile Include="GameEvents\PlayKnightCardEvent.cs" />
-    <Compile Include="GameEvents\ResourceCollectedEvent.cs" />
+    <Compile Include="GameEvents\ResourcesCollectedEvent.cs" />
     <Compile Include="GameEvents\DiceRollEvent.cs" />
     <Compile Include="GameBoards\GameBoardQuery.cs" />
     <Compile Include="GameBoards\IGameBoardQuery.cs" />

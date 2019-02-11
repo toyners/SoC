@@ -109,10 +109,11 @@ namespace SoC.Library.ScenarioTests
                 else
                     Assert.Fail(e.Message);
             };
-            this.localGameController.GameEvents = this.GameEventsHandler;
+            //this.localGameController.GameEvents = this.GameEventsHandler;
             this.localGameController.LargestArmyEvent = (newPlayerId, previousPlayerId) => { this.currentTurn?.AddEvent(new LargestArmyChangedEvent(newPlayerId, previousPlayerId)); };
             //this.localGameController.PlayKnightCardEvent = (PlayKnightCardEvent p) => { this.currentTurn?.AddEvent(p); };
             this.localGameController.KnightCardPlayedEvent = e => { this.currentTurn?.AddEvent(e); };
+            this.localGameController.ResourcesCollectedEvent = e => this.currentTurn?.AddEvent(e);
             this.localGameController.ResourcesLostEvent = (r) => this.currentTurn?.AddEvent(r);
             this.localGameController.ResourcesTransferredEvent = (ResourceTransactionList list) =>
             {

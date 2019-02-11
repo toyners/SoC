@@ -123,6 +123,7 @@ namespace Jabberwocky.SoC.Library
         public Action<MakeDirectTradeOfferEvent> MakeDirectTradeOfferEvent { get; set; }
         public Action<PlayKnightCardEvent> PlayKnightCardEvent { get; set; } // TODO: Use KnightCardPlayedEvent instead
         public Action<ResourceUpdateEvent> ResourcesLostEvent { get; set; }
+        public Action<ResourcesCollectedEvent> ResourcesCollectedEvent { get; set; }
         public Action<ResourceTransactionList> ResourcesTransferredEvent { get; set; }
         public Action<RoadSegmentBuiltEvent> RoadSegmentBuiltEvent { get; set; }
         public Action<int> RobberEvent { get; set; }
@@ -1205,8 +1206,6 @@ namespace Jabberwocky.SoC.Library
 
         private void CollectResourcesAtStartOfTurn(uint resourceRoll)
         {
-            var resourcesCollectedEvents = new List<GameEvent>();
-
             var resources = this.gameBoard.GetResourcesForRoll(resourceRoll);
             foreach (var player in this.players)
             {
@@ -1220,12 +1219,8 @@ namespace Jabberwocky.SoC.Library
                     player.AddResources(resourceCollection.Resources);
 
                 var resourcesCollectedEvent = new ResourcesCollectedEvent(player.Id, resourcesCollectionOrderedByLocation);
-                resourcesCollectedEvents.Add(resourcesCollectedEvent);
+                this.ResourcesCollectedEvent?.Invoke(resourcesCollectedEvent);
             }
-
-            // TODO: For computer player the resource collected event should be added to the list of game events
-            // AFTER the dice roll event
-            this.GameEvents?.Invoke(resourcesCollectedEvents);
         }
 
         private List<GameEvent> ContinueSetupForComputerPlayers()
@@ -1978,7 +1973,6 @@ namespace Jabberwocky.SoC.Library
 
         private void StartTurn()
         {
-            // a.k.a Start of next turn
             this.ChangeToNextPlayerTurn();
             this.currentTurnToken = new TurnToken();
             this.StartPlayerTurnEvent?.Invoke(this.currentTurnToken);
@@ -1988,7 +1982,7 @@ namespace Jabberwocky.SoC.Library
             var resourceRoll = this.dice1 + this.dice2;
             if (resourceRoll != 7)
             {
-                
+                this.CollectResourcesAtStartOfTurn(resourceRoll);
             }
             else
             {
