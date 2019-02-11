@@ -321,10 +321,15 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
             return this;
         }
 
-        private class ResourcesCollectedEventInstruction
+        private class ResourcesCollectedEventInstruction : EventInstruction
         {
             public string PlayerName;
             public ResourceCollection[] ResourceCollections;
+
+            public override GameEvent Event(Dictionary<string, IPlayer> playersByName)
+            {
+                return new ResourcesCollectedEvent(playersByName[this.PlayerName].Id, this.ResourceCollections);
+            }
         }
 
         public BasePlayerTurn ResourceCollectedEvent(string playerName, params Tuple<uint, ResourceClutch>[] resourceCollectionPairs)

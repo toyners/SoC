@@ -1171,5 +1171,45 @@ namespace SoC.Library.ScenarioTests
                 .Build()
                 .Run();
         }
+
+        [Test]
+        [Scenario]
+        public void Scenario_AllPlayersCollectResourcesAsPartOfTurnStart()
+        {
+            var localGameController = this.CreateStandardLocalGameControllerScenarioRunner()
+                .PlayerTurn(MainPlayerName, 4, 4)
+                    .ResourceCollectedEvent(MainPlayerName,
+                        new Tuple<uint, ResourceClutch>(MainPlayerFirstSettlementLocation, ResourceClutch.OneBrick))
+                    .ResourceCollectedEvent(FirstOpponentName,
+                        new Tuple<uint, ResourceClutch>(FirstOpponentSecondSettlementLocation, ResourceClutch.OneGrain))
+                    .EndTurn()
+                .PlayerTurn(FirstOpponentName, 4, 4)
+                    .ResourceCollectedEvent(MainPlayerName,
+                        new Tuple<uint, ResourceClutch>(MainPlayerFirstSettlementLocation, ResourceClutch.OneBrick))
+                    .ResourceCollectedEvent(FirstOpponentName,
+                        new Tuple<uint, ResourceClutch>(FirstOpponentSecondSettlementLocation, ResourceClutch.OneGrain))
+                    .EndTurn()
+                .PlayerTurn(SecondOpponentName, 3, 3)
+                    .ResourceCollectedEvent(FirstOpponentName,
+                            new Tuple<uint, ResourceClutch>(FirstOpponentFirstSettlementLocation, ResourceClutch.OneOre))
+                    .ResourceCollectedEvent(SecondOpponentName,
+                        new Tuple<uint, ResourceClutch>(SecondOpponentFirstSettlementLocation, ResourceClutch.OneLumber),
+                        new Tuple<uint, ResourceClutch>(SecondOpponentSecondSettlementLocation, ResourceClutch.OneLumber))
+                    .ResourceCollectedEvent(ThirdOpponentName,
+                        new Tuple<uint, ResourceClutch>(ThirdOpponentFirstSettlementLocation, ResourceClutch.OneOre))
+                    .EndTurn()
+                .PlayerTurn(ThirdOpponentName, 1, 2)
+                    .ResourceCollectedEvent(SecondOpponentName,
+                        new Tuple<uint, ResourceClutch>(SecondOpponentSecondSettlementLocation, ResourceClutch.OneOre))
+                    .EndTurn()
+                .PlayerTurn(MainPlayerName, 6, 4)
+                    .ResourceCollectedEvent(MainPlayerName,
+                            new Tuple<uint, ResourceClutch>(MainPlayerFirstSettlementLocation, ResourceClutch.OneWool))
+                    .ResourceCollectedEvent(FirstOpponentName,
+                            new Tuple<uint, ResourceClutch>(FirstOpponentSecondSettlementLocation, ResourceClutch.OneWool))
+                    .EndTurn()
+                .Build()
+                .Run();
+        }
     }
 }
