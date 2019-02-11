@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Reflection;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using NUnit.Framework;
@@ -12,44 +13,63 @@ namespace SoC.ScenarioRunnerConsole
     {
         static void Main(string[] args)
         {
-            var isFinished = false;
             var assembly = Assembly.GetAssembly(typeof(ScenarioTests));
             var methods = assembly.GetTypes()
                                 .SelectMany(t => t.GetMethods())
                                 .Where(m => m.GetCustomAttributes(typeof(ScenarioAttribute), false).Length > 0)
                                 .ToArray();
 
-            var task = Task.Factory.StartNew(() =>
+            while (true)
             {
-                foreach (MethodInfo method in methods)
+                var isFinished = false;
+                var methodNumber = 0;
+                Console.WriteLine($"[{methodNumber++}] - ALL");
+                foreach (var method in methods)
+                    Console.WriteLine($"[{methodNumber++}] - {method.Name}");
+
+                Console.WriteLine("Select number of scenario to run. 0 to run all. X to exit");
+                var key = Console.ReadLine();
+                if (key == "x" || key == "X")
+                    break;
+                methodNumber = int.Parse(key);
+                Console.WriteLine();
+
+                var task = Task.Factory.StartNew(() =>
                 {
-                    try
+                    List<MethodInfo> runningMethods = new List<MethodInfo>();
+                    if (methodNumber != 0)
+                        runningMethods.Add(methods[methodNumber - 1]);
+                    else
+                        runningMethods.AddRange(methods);
+
+                    foreach (MethodInfo method in runningMethods)
                     {
-                        Console.Write($"Running '{method.Name}' ...");
-                        var instance = Activator.CreateInstance(method.DeclaringType);
-                        method.Invoke(instance, null);
-                        Console.WriteLine("Completed");
+                        try
+                        {
+                            Console.Write($"Running '{method.Name}' ...");
+                            var instance = Activator.CreateInstance(method.DeclaringType);
+                            method.Invoke(instance, null);
+                            Console.WriteLine("Completed");
+                        }
+                        catch (Exception e)
+                        {
+                            var exception = e;
+                            while (exception.InnerException != null)
+                                exception = exception.InnerException;
+                            Console.WriteLine($"FAILED - {exception.Message}");
+                        }
                     }
-                    catch (Exception e)
-                    {
-                        var exception = e;
-                        while (exception.InnerException != null)
-                            exception = exception.InnerException;
-                        Console.WriteLine("FAILED");
-                        Console.WriteLine($" {exception.Message}");
-                    }
+
+                    isFinished = true;
+                });
+
+                while (!isFinished)
+                {
+                    Thread.Sleep(50);
                 }
 
-                isFinished = true;
-            });
-            
-            while (!isFinished)
-            {
-                Thread.Sleep(50);
+                Console.WriteLine();
             }
-
-            Console.WriteLine("Press any key to exit");
-            Console.ReadKey();
         }
     }
 }
