@@ -1096,6 +1096,7 @@ namespace SoC.Library.ScenarioTests
         }
 
         [Test]
+        [Scenario]
         public void New_Scenario_ComputerPlayerTradesOneResourceWithPlayer()
         {
             var mainPlayerResources = ResourceClutch.OneWool;
