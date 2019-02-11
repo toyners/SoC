@@ -1946,19 +1946,11 @@ namespace Jabberwocky.SoC.Library
         private ConcurrentQueue<ComputerPlayerAction> actionRequests = new ConcurrentQueue<ComputerPlayerAction>();
         private void GameLoop()
         {
-            this.playerIndex = 0;
-            this.currentPlayer = this.players[this.playerIndex];
-            // TODO: Common code - refactor to method
-            if (this.currentPlayer is IPlayer)
-            {
-                this.currentTurnToken = new TurnToken();
-                this.StartPlayerTurnEvent?.Invoke(this.currentTurnToken);
-            }
-
-            this.numberGenerator.RollTwoDice(out this.dice1, out this.dice2);
-            this.DiceRollEvent?.Invoke(this.currentPlayer.Id, this.dice1, this.dice2);
-            var turnStartTime = DateTime.Now;
+            this.playerIndex = -1;
+            DateTime turnStartTime = DateTime.Now;
             var waitTimeMS = 2000;
+            this.StartTurn();
+            
             while (true)
             {
                 Thread.Sleep(50);
@@ -1971,23 +1963,8 @@ namespace Jabberwocky.SoC.Library
                 if ((elapsedTimeMS >= waitTimeMS) || 
                     (gotPlayerAction && playerAction is EndOfTurnAction))
                 {
-                    // a.k.a Start of next turn
-                    this.ChangeToNextPlayerTurn();
-                    this.currentTurnToken = new TurnToken();
-                    this.StartPlayerTurnEvent?.Invoke(this.currentTurnToken);
-                    this.numberGenerator.RollTwoDice(out this.dice1, out this.dice2);
-                    this.DiceRollEvent?.Invoke(this.currentPlayer.Id, this.dice1, this.dice2);
                     turnStartTime = DateTime.Now;
-                    var resourceRoll = this.dice1 + this.dice2;
-                    if (resourceRoll != 7)
-                    {
-
-                    }
-                    else
-                    {
-
-                    }
-
+                    this.StartTurn();       
                     continue;
                 }
 
@@ -1996,6 +1973,26 @@ namespace Jabberwocky.SoC.Library
 
                 // Player action to process
                 this.ProcessPlayerAction(playerAction);
+            }
+        }
+
+        private void StartTurn()
+        {
+            // a.k.a Start of next turn
+            this.ChangeToNextPlayerTurn();
+            this.currentTurnToken = new TurnToken();
+            this.StartPlayerTurnEvent?.Invoke(this.currentTurnToken);
+            this.numberGenerator.RollTwoDice(out this.dice1, out this.dice2);
+            this.DiceRollEvent?.Invoke(this.currentPlayer.Id, this.dice1, this.dice2);
+            
+            var resourceRoll = this.dice1 + this.dice2;
+            if (resourceRoll != 7)
+            {
+                
+            }
+            else
+            {
+
             }
         }
 
