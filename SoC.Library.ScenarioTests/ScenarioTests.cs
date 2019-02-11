@@ -1151,7 +1151,7 @@ namespace SoC.Library.ScenarioTests
 
         [Test]
         [Scenario]
-        public void ATest()
+        public void Scenario_AllPlayersHaveDiceRollEventInTheirTurn()
         {
             this.CreateStandardLocalGameControllerScenarioRunner()
                 .WithStartingResourcesForPlayer(MainPlayerName, ResourceClutch.DevelopmentCard)

@@ -28,7 +28,7 @@ namespace SoC.ScenarioRunnerConsole
                         Console.Write($"Running '{method.Name}' ...");
                         var instance = Activator.CreateInstance(method.DeclaringType);
                         method.Invoke(instance, null);
-                        Console.WriteLine($"Done");
+                        Console.WriteLine("Completed");
                     }
                     catch (Exception e)
                     {
