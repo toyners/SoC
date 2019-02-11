@@ -17,9 +17,7 @@ namespace SoC.ScenarioRunnerConsole
             var assembly = Assembly.GetAssembly(typeof(ScenarioTests));
             var methods = assembly.GetTypes()
                                 .SelectMany(t => t.GetMethods())
-                                .Where(
-                                    m => m.GetCustomAttributes(typeof(TestAttribute), false).Length > 0 &&
-                                    m.Name == "ATest")
+                                .Where(m => m.GetCustomAttributes(typeof(ScenarioAttribute), false).Length > 0)
                                 .ToArray();
 
             var task = Task.Factory.StartNew(() =>

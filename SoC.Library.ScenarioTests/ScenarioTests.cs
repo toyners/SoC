@@ -1150,6 +1150,7 @@ namespace SoC.Library.ScenarioTests
         }
 
         [Test]
+        [Scenario]
         public void ATest()
         {
             this.CreateStandardLocalGameControllerScenarioRunner()
