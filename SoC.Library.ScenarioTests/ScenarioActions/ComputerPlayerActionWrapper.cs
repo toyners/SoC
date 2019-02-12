@@ -5,8 +5,10 @@ namespace SoC.Library.ScenarioTests.ScenarioActions
 
     public abstract class ComputerPlayerActionWrapper : ComputerPlayerAction
     {
-        public ComputerPlayerActionWrapper(ComputerPlayerAction action) : base(0)
+        public readonly string InitiatingPlayerName;
+        public ComputerPlayerActionWrapper(string initiatingPlayerName, ComputerPlayerAction action) : base(0)
         {
+            this.InitiatingPlayerName = initiatingPlayerName;
             this.Action = action;
         }
 

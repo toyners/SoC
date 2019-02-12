@@ -1992,16 +1992,9 @@ namespace Jabberwocky.SoC.Library
 
         private void ProcessPlayerAction(ComputerPlayerAction playerAction)
         {
-            if (playerAction is EndOfTurnAction)
+            if (playerAction is MakeDirectTradeOfferAction)
             {
-                this.ClearDevelopmentCardProcessingForTurn();
-                this.ChangeToNextPlayerTurn();
-
-                if (this.currentPlayer is IPlayer)
-                {
-                    this.currentTurnToken = new TurnToken();
-                    this.StartPlayerTurnEvent?.Invoke(this.currentTurnToken);
-                }
+                var i = 0;
             }
         }
         #endregion

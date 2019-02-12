@@ -83,6 +83,7 @@
     <Compile Include="GameBoards\GameBoardQuery.cs" />
     <Compile Include="GameBoards\IGameBoardQuery.cs" />
     <Compile Include="GameBoards\IGameBoard.cs" />
+    <Compile Include="GameEvents\TradeWithPlayerCompletedEvent.cs" />
     <Compile Include="GameEvents\TradeWithPlayerEvent.cs" />
     <Compile Include="GameState.cs" />
     <Compile Include="NewLocalGameController.cs" />

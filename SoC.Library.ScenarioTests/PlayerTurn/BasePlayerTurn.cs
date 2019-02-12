@@ -149,8 +149,6 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
             return this;
         }
 
-
-
         private class CityBuiltEventInstruction
         {
             public uint CityLocation;
@@ -726,7 +724,7 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
 
         public BasePlayerTurn MakeDirectTradeOffer(ResourceClutch wantedResources)
         {
-            this.instructions.Enqueue(new ScenarioMakeDirectTradeOffer(this.PlayerName, wantedResources));
+            this.instructions.Enqueue(new MakeDirectTradeOfferAction(wantedResources));
             return this;
         }
 
@@ -735,13 +733,17 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
             throw new NotImplementedException();
         }
 
-        public BasePlayerTurn TradeWithPlayerCompletedEvent(string initiatingPlayerName, string otherPlayerName, ResourceClutch initiatingResources, ResourceClutch otherResources)
+        public BasePlayerTurn TradeWithPlayerCompletedEvent(string sellingPlayerName, string buyingPlayerName, ResourceClutch sellingResources, ResourceClutch buyingResources)
         {
-            /*var initiatingPlayer = this.playersByName[initiatingPlayerName];
-            var otherPlayer = this.playersByName[otherPlayerName];
-            this.instructions.Enqueue(new TradeWithPlayerEvent(initiatingPlayer.Id, otherPlayer.Id, initiatingResources, otherResources));
-            return this;*/
-            throw new NotImplementedException();
+            this.instructions.Enqueue(new TradeWithPlayerCompletedEventInstruction
+            {
+                SellingPlayerName = sellingPlayerName,
+                BuyingPlayerName = buyingPlayerName,
+                SellingResources = sellingResources,
+                BuyingResources = buyingResources
+            });
+
+            return this;
         }
 
         public BasePlayerTurn MakeDirectTradeOfferEvent(string playerName, string buyingPlayerName, ResourceClutch resources)
@@ -830,6 +832,23 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
             public override GameEvent Event(Dictionary<string, IPlayer> playersByName)
             {
                 return new ResourcesCollectedEvent(playersByName[this.PlayerName].Id, this.ResourceCollections);
+            }
+        }
+
+        private class TradeWithPlayerCompletedEventInstruction : EventInstruction
+        {
+            public string BuyingPlayerName;
+            public ResourceClutch BuyingResources;
+            public string SellingPlayerName;
+            public ResourceClutch SellingResources;
+
+            public override GameEvent Event(Dictionary<string, IPlayer> playersByName)
+            {
+                return new TradeWithPlayerCompletedEvent(
+                    playersByName[this.SellingPlayerName].Id,
+                    playersByName[this.BuyingPlayerName].Id,
+                    this.SellingResources,
+                    this.BuyingResources);
             }
         }
         #endregion

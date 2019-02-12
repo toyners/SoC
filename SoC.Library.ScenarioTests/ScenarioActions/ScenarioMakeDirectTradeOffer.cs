@@ -5,10 +5,9 @@ namespace SoC.Library.ScenarioTests.ScenarioActions
 {
     public class ScenarioMakeDirectTradeOffer : ComputerPlayerActionWrapper
     {
-        public readonly string InitiatingPlayerName;
-        public ScenarioMakeDirectTradeOffer(string initiatingPlayerName, ResourceClutch wantedResources) : base(new MakeDirectTradeOfferAction(wantedResources))
+        public ScenarioMakeDirectTradeOffer(string buyingPlayerName, ResourceClutch wantedResources)
+            : base(buyingPlayerName, new MakeDirectTradeOfferAction(wantedResources))
         {
-            this.InitiatingPlayerName = initiatingPlayerName;
         }
     }
 }
