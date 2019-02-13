@@ -718,13 +718,13 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
 
         public BasePlayerTurn MakeDirectTradeOffer(ResourceClutch wantedResources, params Tuple<string, ResourceClutch>[] playerAnswers)
         {
-            this.instructions.Enqueue(new ScenarioMakeDirectTradeOffer(this.player.Name, wantedResources));
+            this.instructions.Enqueue(new ScenarioMakeDirectTradeOfferAction(this.player.Name, wantedResources));
             return this;
         }
 
         public BasePlayerTurn MakeDirectTradeOffer(ResourceClutch wantedResources)
         {
-            this.instructions.Enqueue(new MakeDirectTradeOfferAction(wantedResources));
+            this.instructions.Enqueue(new ScenarioMakeDirectTradeOfferAction(this.player.Name, wantedResources));
             return this;
         }
 

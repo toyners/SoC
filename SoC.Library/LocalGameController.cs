@@ -1994,8 +1994,9 @@ namespace Jabberwocky.SoC.Library
         {
             if (playerAction is MakeDirectTradeOfferAction)
             {
-                this.currentPlayer
-                var i = 0;
+                foreach (var kv in this.playersById.Where(k => k.Key != playerAction.PlayerId).ToList())
+                {
+                }
             }
         }
         #endregion
