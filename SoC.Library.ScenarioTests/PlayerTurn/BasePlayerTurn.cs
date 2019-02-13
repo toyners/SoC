@@ -16,7 +16,7 @@ using SoC.Library.ScenarioTests.ScenarioEvents;
 
 namespace SoC.Library.ScenarioTests.PlayerTurn
 {
-    [DebuggerDisplay("{this.player.Name} {this.roundNumber}-{this.turnNumber}")]
+    [DebuggerDisplay("{this.PlayerName} {this.roundNumber}-{this.turnNumber}")]
     internal class BasePlayerTurn
     {
         #region Fields
@@ -122,7 +122,7 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
         public IList<GameEvent> ExpectedEvents { private get; set; }
         public IDictionary<Guid, GameEvent> GameEventsByPlayerId { private get; set; }
         public IDictionary<string, ResourceClutch> PlayerResourcesToDropByName { protected get; set; }
-        public Guid PlayerId { get { return this.player.Id; } }
+        public Guid PlayerId { get { return this.player.Id; } } // TODO: Fix this
         public IList<RunnerAction> RunnerActions { get; set; }
         public bool TreatErrorsAsEvents
         {

@@ -1942,10 +1942,9 @@ namespace Jabberwocky.SoC.Library
         private void GameLoop()
         {
             this.playerIndex = -1;
-            DateTime turnStartTime = DateTime.Now;
-            var waitTimeMS = 2000;
             this.StartTurn();
-            
+            var pauseCount = 40;
+
             while (true)
             {
                 Thread.Sleep(50);
@@ -1954,14 +1953,15 @@ namespace Jabberwocky.SoC.Library
 
                 var gotPlayerAction = this.actionRequests.TryDequeue(out var playerAction);
 
-                var elapsedTimeMS = (DateTime.Now - turnStartTime).TotalMilliseconds;
-                if ((elapsedTimeMS >= waitTimeMS) || 
+                if ((pauseCount == 0) || 
                     (gotPlayerAction && playerAction is EndOfTurnAction))
                 {
-                    turnStartTime = DateTime.Now;
-                    this.StartTurn();       
+                    this.StartTurn();
+                    pauseCount = 40;
                     continue;
                 }
+
+                pauseCount--;
 
                 if (!gotPlayerAction)
                     continue;
@@ -1994,6 +1994,7 @@ namespace Jabberwocky.SoC.Library
         {
             if (playerAction is MakeDirectTradeOfferAction)
             {
+                this.currentPlayer
                 var i = 0;
             }
         }
