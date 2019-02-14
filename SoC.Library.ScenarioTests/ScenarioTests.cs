@@ -1157,7 +1157,11 @@ namespace SoC.Library.ScenarioTests
         [Scenario]
         public void Scenario_AllPlayersHaveDiceRollEventInTheirTurn()
         {
-            this.CreateStandardLocalGameControllerScenarioRunner()
+            LocalGameController()
+                .WithPlayer(MainPlayerName, MainPlayerFirstSettlementLocation, MainPlayerFirstRoadEnd, MainPlayerSecondSettlementLocation, MainPlayerSecondRoadEnd)
+                .WithPlayer(FirstOpponentName, FirstOpponentFirstSettlementLocation, FirstOpponentFirstRoadEnd, FirstOpponentSecondSettlementLocation, FirstOpponentSecondRoadEnd)
+                .WithPlayer(SecondOpponentName, SecondOpponentFirstSettlementLocation, SecondOpponentFirstRoadEnd, SecondOpponentSecondSettlementLocation, SecondOpponentSecondRoadEnd)
+                .WithPlayer(ThirdOpponentName, ThirdOpponentFirstSettlementLocation, ThirdOpponentFirstRoadEnd, ThirdOpponentSecondSettlementLocation, ThirdOpponentSecondRoadEnd)
                 .WithStartingResourcesForPlayer(MainPlayerName, ResourceClutch.DevelopmentCard)
                 .WithNoResourceCollection()
                 .PlayerTurn(MainPlayerName, 4, 4)

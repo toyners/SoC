@@ -455,7 +455,10 @@ namespace SoC.Library.ScenarioTests
             return playerTurn;
         }
 
-        
+        internal LocalGameControllerScenarioRunner WithPlayer(string mainPlayerName, uint mainPlayerFirstSettlementLocation, uint mainPlayerFirstRoadEnd, uint mainPlayerSecondSettlementLocation, uint mainPlayerSecondRoadEnd)
+        {
+            throw new NotImplementedException();
+        }
         #endregion
     }
 
