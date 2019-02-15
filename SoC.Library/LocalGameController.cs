@@ -133,6 +133,8 @@ namespace Jabberwocky.SoC.Library
         public Action<TurnToken> StartPlayerTurnEvent { get; set; }
         public Action<Guid> StartOpponentTurnEvent { get; set; }
         public Action<PlayerDataBase[]> TurnOrderFinalisedEvent { get; set; }
+
+        public Action<TurnToken> StartPlayerTurnEvent2 { get; set; }
         #endregion
 
         #region Methods

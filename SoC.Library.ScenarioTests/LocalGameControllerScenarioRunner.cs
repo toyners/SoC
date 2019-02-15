@@ -65,6 +65,26 @@ namespace SoC.Library.ScenarioTests
             return new LocalGameControllerScenarioRunner();
         }
 
+        private List<ComputerPlayer2> computerPlayers = new List<ComputerPlayer2>();
+        public LocalGameControllerScenarioRunner Build2()
+        {
+            var gameServer = new GameServer(
+                this.NumberGenerator,
+                this.gameBoard,
+                this.developmentCardHolder
+            );
+
+
+            foreach (var playerName in this.initialPlayerOrder)
+            {
+                var computerPlayer = new ComputerPlayer2(playerName);
+                gameServer.AddController(computerPlayer.GameController);
+                this.computerPlayers.Add(computerPlayer);
+            }
+
+            return this;
+        }
+
         public LocalGameControllerScenarioRunner Build(Dictionary<GameEventTypes, Delegate> eventHandlersByGameEventType = null)
         {
             if (this.gameBoard == null)

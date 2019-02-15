@@ -25,9 +25,8 @@ namespace Jabberwocky.SoC.Library
         private IPlayer[] players;
         private uint dice1, dice2;
 
-        public GameServer(INumberGenerator numberGenerator, GameBoard gameBoard, IDevelopmentCardHolder developmentCardHolder, IPlayerPool playerPool, GameOptions gameOptions = null)
+        public GameServer(INumberGenerator numberGenerator, GameBoard gameBoard, IDevelopmentCardHolder developmentCardHolder)
         {
-            
             throw new NotImplementedException();
         }
 
@@ -107,6 +106,12 @@ namespace Jabberwocky.SoC.Library
             }
         }
 
+        public void AddController(GameController gameController)
+        {
+
+            throw new NotImplementedException();
+        }
+
         private void StartTurn()
         {
             this.ChangeToNextPlayerTurn();
@@ -139,11 +144,18 @@ namespace Jabberwocky.SoC.Library
 
     public class GameController
     {
-
+                
     }
 
     public class ComputerPlayer2
     {
         public GameController GameController;
+
+        private string playerName;
+        public ComputerPlayer2(string playerName)
+        {
+            this.playerName = playerName;
+            this.GameController = new GameController();
+        }
     }
 }
