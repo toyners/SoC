@@ -30,13 +30,12 @@ namespace Jabberwocky.SoC.Library
             throw new NotImplementedException();
         }
 
-        public Action<Guid, uint, uint> DiceRollEvent { get; set; }
+        public event Action<Guid, uint, uint> DiceRollEvent;
         public Action<ResourcesCollectedEvent> ResourcesCollectedEvent { get; set; }
         public Action<TurnToken> StartPlayerTurnEvent { get; set; }
 
         public void StartGame()
         {
-
             // Launch server processing on separate thread
             Task.Factory.StartNew(() =>
             {
@@ -140,22 +139,58 @@ namespace Jabberwocky.SoC.Library
                 }
             }
         }
+
+
+        internal void JoinGame(Player2 player, GameController gameController)
+        {
+            if (player is HumanPlayer)
+                this.DiceRollEvent += gameController.DiceRollEventHandler;
+        }
     }
 
     public class GameController
     {
-                
+        internal void DiceRollEventHandler(Guid arg1, uint arg2, uint arg3)
+        {
+            throw new NotImplementedException();
+        }
     }
 
-    public class ComputerPlayer2
+    public abstract class Player2
     {
-        public GameController GameController;
+
+    }
+
+    public class ComputerPlayer2 : Player2
+    {
+        private GameController GameController;
 
         private string playerName;
         public ComputerPlayer2(string playerName)
         {
             this.playerName = playerName;
             this.GameController = new GameController();
+        }
+
+        public void JoinGame(GameServer gameServer)
+        {
+            gameServer.JoinGame(this, this.GameController);
+        }
+    }
+
+    public class HumanPlayer : Player2
+    {
+        private GameController GameController;
+        private string playerName;
+        public HumanPlayer(string playerName)
+        {
+            this.playerName = playerName;
+            this.GameController = new GameController();
+        }
+
+        public void JoinGame(GameServer gameServer)
+        {
+            gameServer.JoinGame(this, this.GameController);
         }
     }
 }

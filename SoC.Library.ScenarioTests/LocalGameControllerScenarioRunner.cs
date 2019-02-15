@@ -74,11 +74,10 @@ namespace SoC.Library.ScenarioTests
                 this.developmentCardHolder
             );
 
-
             foreach (var playerName in this.initialPlayerOrder)
             {
                 var computerPlayer = new ComputerPlayer2(playerName);
-                gameServer.AddController(computerPlayer.GameController);
+                computerPlayer.JoinGame(gameServer);
                 this.computerPlayers.Add(computerPlayer);
             }
 
