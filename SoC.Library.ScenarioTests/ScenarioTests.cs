@@ -1158,10 +1158,10 @@ namespace SoC.Library.ScenarioTests
         public void Scenario_AllPlayersHaveDiceRollEventInTheirTurn()
         {
             LocalGameController()
-                .WithPlayer(MainPlayerName, MainPlayerFirstSettlementLocation, MainPlayerFirstRoadEnd, MainPlayerSecondSettlementLocation, MainPlayerSecondRoadEnd)
-                .WithPlayer(FirstOpponentName, FirstOpponentFirstSettlementLocation, FirstOpponentFirstRoadEnd, FirstOpponentSecondSettlementLocation, FirstOpponentSecondRoadEnd)
-                .WithPlayer(SecondOpponentName, SecondOpponentFirstSettlementLocation, SecondOpponentFirstRoadEnd, SecondOpponentSecondSettlementLocation, SecondOpponentSecondRoadEnd)
-                .WithPlayer(ThirdOpponentName, ThirdOpponentFirstSettlementLocation, ThirdOpponentFirstRoadEnd, ThirdOpponentSecondSettlementLocation, ThirdOpponentSecondRoadEnd)
+                .WithHumanPlayer(MainPlayerName, MainPlayerFirstSettlementLocation, MainPlayerFirstRoadEnd, MainPlayerSecondSettlementLocation, MainPlayerSecondRoadEnd)
+                .WithComputerPlayer(FirstOpponentName, FirstOpponentFirstSettlementLocation, FirstOpponentFirstRoadEnd, FirstOpponentSecondSettlementLocation, FirstOpponentSecondRoadEnd)
+                .WithComputerPlayer(SecondOpponentName, SecondOpponentFirstSettlementLocation, SecondOpponentFirstRoadEnd, SecondOpponentSecondSettlementLocation, SecondOpponentSecondRoadEnd)
+                .WithComputerPlayer(ThirdOpponentName, ThirdOpponentFirstSettlementLocation, ThirdOpponentFirstRoadEnd, ThirdOpponentSecondSettlementLocation, ThirdOpponentSecondRoadEnd)
                 .WithStartingResourcesForPlayer(MainPlayerName, ResourceClutch.DevelopmentCard)
                 .WithNoResourceCollection()
                 .PlayerTurn(MainPlayerName, 4, 4)
@@ -1176,8 +1176,7 @@ namespace SoC.Library.ScenarioTests
                 .PlayerTurn(ThirdOpponentName, 5, 6)
                     .DiceRollEvent(5, 6)
                     .EndTurn()
-                .Build()
-                .Run();
+                .Run2();
         }
 
         [Test]

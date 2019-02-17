@@ -688,7 +688,6 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
         protected Queue<object> instructions = new Queue<object>();
         public BasePlayerTurn DiceRollEvent(uint dice1, uint dice2)
         {
-            //this.instructions.Enqueue(new DiceRollEvent(this.PlayerId, dice1, dice2));
             this.instructions.Enqueue(new DiceRollEventInstruction
             {
                 Dice1 = dice1, Dice2 = dice2, PlayerName = this.PlayerName

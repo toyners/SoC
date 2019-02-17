@@ -66,22 +66,25 @@ namespace SoC.Library.ScenarioTests
         }
 
         private List<ComputerPlayer2> computerPlayers = new List<ComputerPlayer2>();
-        public LocalGameControllerScenarioRunner Build2()
+        public void Run2()
         {
-            var gameServer = new GameServer(
+            if (this.gameBoard == null)
+                this.gameBoard = new GameBoard(BoardSizes.Standard);
+
+            var gameServer = new LocalGameServer(
                 this.NumberGenerator,
                 this.gameBoard,
                 this.developmentCardHolder
             );
 
-            foreach (var playerName in this.initialPlayerOrder)
+            gameServer.LaunchGame();
+
+            foreach (var player in this.initialPlayerOrder)
             {
-                var computerPlayer = new ComputerPlayer2(playerName);
-                computerPlayer.JoinGame(gameServer);
-                this.computerPlayers.Add(computerPlayer);
+                player.JoinGame(gameServer);
             }
 
-            return this;
+            gameServer.StartGame();
         }
 
         public LocalGameControllerScenarioRunner Build(Dictionary<GameEventTypes, Delegate> eventHandlersByGameEventType = null)
@@ -306,14 +309,14 @@ namespace SoC.Library.ScenarioTests
         private GameOptions gameOptions = new GameOptions();
         public LocalGameControllerScenarioRunner WithComputerPlayer(string name)
         {
-            this.initialPlayerOrder.Add(name);
+            //this.initialPlayerOrder.Add(name);
             this.playerPool.AddPlayer(name);
             return this;
         }
 
         public LocalGameControllerScenarioRunner WithMainPlayer(string name)
         {
-            this.initialPlayerOrder.Add(name);
+            //this.initialPlayerOrder.Add(name);
             this.playerPool.AddPlayer(name);
             return this;
         }
@@ -337,13 +340,13 @@ namespace SoC.Library.ScenarioTests
             return this;
         }
 
-        private List<string> initialPlayerOrder = new List<string>();
+        private List<Player2> initialPlayerOrder = new List<Player2>();
         public LocalGameControllerScenarioRunner WithTurnOrder(string firstPlayerName, string secondPlayerName, string thirdPlayerName, string fourthPlayerName)
         {
             var rolls = new uint[4];
             for (var index = 0; index < this.initialPlayerOrder.Count; index++)
             {
-                var playerName = this.initialPlayerOrder[index];
+                var playerName = this.initialPlayerOrder[index].PlayerName;
                 if (firstPlayerName == playerName)
                     rolls[index] = 12;
                 else if (secondPlayerName == playerName)
@@ -474,9 +477,17 @@ namespace SoC.Library.ScenarioTests
             return playerTurn;
         }
 
-        internal LocalGameControllerScenarioRunner WithPlayer(string mainPlayerName, uint mainPlayerFirstSettlementLocation, uint mainPlayerFirstRoadEnd, uint mainPlayerSecondSettlementLocation, uint mainPlayerSecondRoadEnd)
+
+        internal LocalGameControllerScenarioRunner WithHumanPlayer(string mainPlayerName, uint mainPlayerFirstSettlementLocation, uint mainPlayerFirstRoadEnd, uint mainPlayerSecondSettlementLocation, uint mainPlayerSecondRoadEnd)
         {
-            throw new NotImplementedException();
+            this.initialPlayerOrder.Add(new HumanPlayer(mainPlayerName));
+            return this;
+        }
+
+        internal LocalGameControllerScenarioRunner WithComputerPlayer(string mainPlayerName, uint mainPlayerFirstSettlementLocation, uint mainPlayerFirstRoadEnd, uint mainPlayerSecondSettlementLocation, uint mainPlayerSecondRoadEnd)
+        {
+            this.initialPlayerOrder.Add(new ComputerPlayer2(mainPlayerName));
+            return this;
         }
         #endregion
     }
