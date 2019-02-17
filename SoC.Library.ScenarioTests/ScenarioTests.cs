@@ -1189,6 +1189,9 @@ namespace SoC.Library.ScenarioTests
                 .WithComputerPlayer(ThirdOpponentName, ThirdOpponentFirstSettlementLocation, ThirdOpponentFirstRoadEnd, ThirdOpponentSecondSettlementLocation, ThirdOpponentSecondRoadEnd)
                 .WithStartingResourcesForPlayer(MainPlayerName, ResourceClutch.DevelopmentCard)
                 .WithNoResourceCollection()
+                .PlayerSetupTurn(MainPlayerName)
+                    
+                    .EndTurn()
                 .PlayerTurn(MainPlayerName, 4, 4)
                     .DiceRollEvent(4, 4)
                     .EndTurn()

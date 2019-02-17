@@ -489,6 +489,11 @@ namespace SoC.Library.ScenarioTests
             this.initialPlayerOrder.Add(new ComputerPlayer2(mainPlayerName));
             return this;
         }
+
+        internal BasePlayerTurn PlayerSetupTurn(string mainPlayerName)
+        {
+            throw new NotImplementedException();
+        }
         #endregion
     }
 
