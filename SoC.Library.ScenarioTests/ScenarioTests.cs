@@ -1179,6 +1179,31 @@ namespace SoC.Library.ScenarioTests
                 .Run2();
         }
 
+        [Scenario]
+        public void Scenario_AllPlayersCompleteSetup()
+        {
+            LocalGameController()
+                .WithHumanPlayer(MainPlayerName, MainPlayerFirstSettlementLocation, MainPlayerFirstRoadEnd, MainPlayerSecondSettlementLocation, MainPlayerSecondRoadEnd)
+                .WithComputerPlayer(FirstOpponentName, FirstOpponentFirstSettlementLocation, FirstOpponentFirstRoadEnd, FirstOpponentSecondSettlementLocation, FirstOpponentSecondRoadEnd)
+                .WithComputerPlayer(SecondOpponentName, SecondOpponentFirstSettlementLocation, SecondOpponentFirstRoadEnd, SecondOpponentSecondSettlementLocation, SecondOpponentSecondRoadEnd)
+                .WithComputerPlayer(ThirdOpponentName, ThirdOpponentFirstSettlementLocation, ThirdOpponentFirstRoadEnd, ThirdOpponentSecondSettlementLocation, ThirdOpponentSecondRoadEnd)
+                .WithStartingResourcesForPlayer(MainPlayerName, ResourceClutch.DevelopmentCard)
+                .WithNoResourceCollection()
+                .PlayerTurn(MainPlayerName, 4, 4)
+                    .DiceRollEvent(4, 4)
+                    .EndTurn()
+                .PlayerTurn(FirstOpponentName, 1, 2)
+                    .DiceRollEvent(1, 2)
+                    .EndTurn()
+                .PlayerTurn(SecondOpponentName, 3, 4)
+                    .DiceRollEvent(3, 4)
+                    .EndTurn()
+                .PlayerTurn(ThirdOpponentName, 5, 6)
+                    .DiceRollEvent(5, 6)
+                    .EndTurn()
+                .Run2();
+        }
+
         [Test]
         [Scenario]
         public void Scenario_AllPlayersCollectResourcesAsPartOfTurnStart()

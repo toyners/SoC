@@ -33,16 +33,17 @@ namespace Jabberwocky.SoC.Library
             this.developmentCardHolder = developmentCardHolder;
         }
 
-        public event Action<GameEvent> GameEvent;
-        //public event Action<Guid, uint, uint> DiceRollEvent;
-        //public event Action<TurnToken> StartPlayerTurnEvent;
-        //public event Action<GameBoardSetup> InitialBoardSetupEvent;
-        //public Action<ResourcesCollectedEvent> ResourcesCollectedEvent { get; set; }
-
+        //public event Action<GameEvent> GameEvent;
+        public event Action<GameEvent> PlayerOneGameEvent;
+        public event Action<GameEvent> PlayerTwoGameEvent;
+        public event Action<GameEvent> PlayerThreeGameEvent;
+        public event Action<GameEvent> PlayerFourGameEvent;
+        
         private bool gotHumanPlayer;
+        private EventRaiser eventRaiser = new EventRaiser();
         public void JoinGame(Player2 player, GameController gameController)
         {
-            this.GameEvent += gameController.GameEventHandler;
+            this.eventRaiser.AddEventHandler(player.PlayerName, gameController.GameEventHandler);
             gameController.playerActionEvent += this.PlayerActionEventHandler;
             this.players[this.players.Length] = new Player(player.PlayerName);
         }
@@ -66,29 +67,59 @@ namespace Jabberwocky.SoC.Library
             if (this.gotHumanPlayer)
             {
                 var gameBoardSetup = new GameBoardSetup(this.gameBoard);
-                this.GameEvent.Invoke(new InitialBoardSetupEventArgs(gameBoardSetup));
+                this.eventRaiser.RaiseEvent(null, new InitialBoardSetupEventArgs(gameBoardSetup));
             }
 
             this.players = PlayerTurnOrderCreator.Create(this.players, this.numberGenerator);
 
-            // Notify human player what the order is?
-
-            // Place first settlement
-            for (int i = 0; i < this.players.Length; i++)
-                // 1) Notify player to choose first settlement location (Pass in current locations)
-                // 2) Pause waiting for player to return settlement choice
-                ;
-
-            // Place second settlement
-            for (int i = this.players.Length - 1; i >= 0; i--)
-                // Notify player to choose second settlement location (Pass in current locations)
-                ;
+            // Notify (human?) players what the order is?
 
             // Launch server processing on separate thread
             Task.Factory.StartNew(() =>
             {
+                this.GameSetup();
                 this.MainGameLoop();
             });
+        }
+
+        private void GameSetup()
+        {
+            // Place first settlement
+            for (int i = 0; i < this.players.Length; i++)
+            {
+                this.GameSetupLoop();
+            }
+
+            // Place second settlement
+            for (int i = this.players.Length - 1; i >= 0; i--)
+            {
+                this.GameSetupLoop();
+            }
+        }
+
+        private void GameSetupLoop()
+        {
+            // 1) Notify player to choose settlement location (Pass in current locations)
+            // 2) Pause waiting for player to return settlement choice
+            var pauseCount = 40;
+            while (true)
+            {
+                Thread.Sleep(50);
+                if (this.isQuitting)
+                    return;
+
+                if (--pauseCount == 0)
+                {
+                    // Out of time so game should be killed
+                    throw new Exception();
+                }
+
+                if (this.actionRequests.TryDequeue(out var playerAction) && playerAction is EndOfTurnAction)
+                {
+                    pauseCount = 40;
+                    break;
+                }
+            }
         }
 
         private void MainGameLoop()
@@ -149,7 +180,7 @@ namespace Jabberwocky.SoC.Library
                     player.AddResources(resourceCollection.Resources);
 
                 var resourcesCollectedEvent = new ResourcesCollectedEvent(player.Id, resourcesCollectionOrderedByLocation);
-                this.GameEvent.Invoke(resourcesCollectedEvent);
+                this.eventRaiser.RaiseEvent(null, resourcesCollectedEvent);
             }
         }
 
@@ -157,9 +188,11 @@ namespace Jabberwocky.SoC.Library
         {
             this.ChangeToNextPlayerTurn();
             this.currentTurnToken = new TurnToken();
-            this.GameEvent.Invoke(new StartPlayerTurnEventArgs(this.currentTurnToken));
+            this.eventRaiser.RaiseEvent(this.currentPlayer.Name, new StartPlayerTurnEventArgs(this.currentTurnToken));
+
             this.numberGenerator.RollTwoDice(out this.dice1, out this.dice2);
-            this.GameEvent.Invoke(new DiceRollEventArgs(this.dice1, this.dice2));
+            var diceRollEventArgs = new DiceRollEventArgs(this.dice1, this.dice2);
+            this.eventRaiser.RaiseEvent(null, diceRollEventArgs);
 
             var resourceRoll = this.dice1 + this.dice2;
             if (resourceRoll != 7)
@@ -178,6 +211,30 @@ namespace Jabberwocky.SoC.Library
             {
                 foreach (var kv in this.playersById.Where(k => k.Key != playerAction.PlayerId).ToList())
                 {
+                }
+            }
+        }
+
+        private class EventRaiser
+        {
+            private Dictionary<string, Action<GameEvent>> gameEventHandlersByPlayerName;
+            private event Action<GameEvent> gameEventHandler;
+
+            public void AddEventHandler(string playerName, Action<GameEvent> gameEventHandler)
+            {
+                this.gameEventHandler += gameEventHandler;
+                this.gameEventHandlersByPlayerName.Add(playerName, gameEventHandler);
+            }
+
+            public void RaiseEvent(string playerName, GameEvent gameEvent)
+            {
+                if (playerName == null)
+                {
+                    this.gameEventHandler.Invoke(gameEvent);
+                }
+                else
+                {
+                    this.gameEventHandlersByPlayerName[playerName].Invoke(gameEvent);
                 }
             }
         }
@@ -237,12 +294,12 @@ namespace Jabberwocky.SoC.Library
 
     public class InitialBoardSetupEventArgs : GameEventArg<GameBoardSetup>
     {
-        public InitialBoardSetupEventArgs(GameBoardSetup item) : base(item) {}
+        public InitialBoardSetupEventArgs(GameBoardSetup item) : base(item) { }
     }
 
     public class StartPlayerTurnEventArgs : GameEventArg<TurnToken>
     {
-        public StartPlayerTurnEventArgs(TurnToken item) : base(item) {}
+        public StartPlayerTurnEventArgs(TurnToken item) : base(item) { }
     }
 
     public class DiceRollEventArgs : GameEvent
