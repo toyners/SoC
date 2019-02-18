@@ -511,6 +511,11 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
             }
         }
 
+        internal void BuildStartingInfrastructure(uint settlementLocation, uint roadEnd)
+        {
+            this.instructions.Enqueue(new BuildStartingInfrastructure(settlementLocation, roadEnd));
+        }
+
         protected void SetupResourceSelectionOnPlayer(IPlayer selectedPlayer, ResourceTypes expectedSingleResource)
         {
             var randomNumber = int.MinValue;
@@ -596,6 +601,8 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
         public bool IsVerified { get { return this.expectedEventIndex >= this.expectedEvents.Count; } }
 
         public bool HasInstructions { get { return this.instructions.Count > 0; } }
+
+        public Queue<object> Instructions { get { return this.instructions; } }
 
         public bool IsFinished { get; set; }
 

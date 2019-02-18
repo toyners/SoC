@@ -33,19 +33,12 @@ namespace Jabberwocky.SoC.Library
             this.developmentCardHolder = developmentCardHolder;
         }
 
-        //public event Action<GameEvent> GameEvent;
-        public event Action<GameEvent> PlayerOneGameEvent;
-        public event Action<GameEvent> PlayerTwoGameEvent;
-        public event Action<GameEvent> PlayerThreeGameEvent;
-        public event Action<GameEvent> PlayerFourGameEvent;
-        
-        private bool gotHumanPlayer;
         private EventRaiser eventRaiser = new EventRaiser();
-        public void JoinGame(Player2 player, GameController gameController)
+        public void JoinGame(string playerName, GameController gameController)
         {
-            this.eventRaiser.AddEventHandler(player.PlayerName, gameController.GameEventHandler);
-            gameController.playerActionEvent += this.PlayerActionEventHandler;
-            this.players[this.players.Length] = new Player(player.PlayerName);
+            this.eventRaiser.AddEventHandler(playerName, gameController.GameEventHandler);
+            gameController.PlayerActionEvent += this.PlayerActionEventHandler;
+            this.players[this.players.Length - 1] = new Player(playerName);
         }
 
         private void PlayerActionEventHandler(TurnToken turnToken, ComputerPlayerAction obj)
@@ -64,11 +57,8 @@ namespace Jabberwocky.SoC.Library
         public void StartGame()
         {
             // Complete setup
-            if (this.gotHumanPlayer)
-            {
-                var gameBoardSetup = new GameBoardSetup(this.gameBoard);
-                this.eventRaiser.RaiseEvent(null, new InitialBoardSetupEventArgs(gameBoardSetup));
-            }
+            var gameBoardSetup = new GameBoardSetup(this.gameBoard);
+            this.eventRaiser.RaiseEvent(null, new InitialBoardSetupEventArgs(gameBoardSetup));
 
             this.players = PlayerTurnOrderCreator.Create(this.players, this.numberGenerator);
 
@@ -217,7 +207,7 @@ namespace Jabberwocky.SoC.Library
 
         private class EventRaiser
         {
-            private Dictionary<string, Action<GameEvent>> gameEventHandlersByPlayerName;
+            private Dictionary<string, Action<GameEvent>> gameEventHandlersByPlayerName = new Dictionary<string, Action<GameEvent>>();
             private event Action<GameEvent> gameEventHandler;
 
             public void AddEventHandler(string playerName, Action<GameEvent> gameEventHandler)
@@ -242,53 +232,12 @@ namespace Jabberwocky.SoC.Library
 
     public class GameController
     {
-        public event Action<TurnToken, ComputerPlayerAction> playerActionEvent;
+        public event Action<TurnToken, ComputerPlayerAction> PlayerActionEvent;
+        public event Action<GameEvent> GameEvent;
 
         internal void GameEventHandler(GameEvent gameEvent)
         {
-            throw new NotImplementedException();
-        }
-
-        internal void InitialBoardSetupEventHandler(GameBoardSetup obj)
-        {
-            throw new NotImplementedException();
-        }
-
-        internal void StartPlayerTurnEventHandler(TurnToken turnToken)
-        {
-            throw new NotImplementedException();
-        }
-    }
-
-    public class Player2
-    {
-        protected GameController gameController;
-
-        public string PlayerName { get; private set; }
-
-        public Player2(string playerName)
-        {
-            this.PlayerName = playerName;
-            this.gameController = new GameController();
-        }
-
-        public void JoinGame(LocalGameServer gameServer)
-        {
-            gameServer.JoinGame(this, this.gameController);
-        }
-    }
-
-    public class ComputerPlayer2 : Player2
-    {
-        public ComputerPlayer2(string playerName) : base(playerName)
-        {
-        }
-    }
-
-    public class HumanPlayer : Player2
-    {
-        public HumanPlayer(string playerName) : base(playerName)
-        {
+            this.GameEvent.Invoke(gameEvent);
         }
     }
 

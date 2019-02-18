@@ -52,6 +52,9 @@
     <Compile Include="Builders\PlayerActionBuilder.cs" />
     <Compile Include="Builders\PlayerResponseBuilder.cs" />
     <Compile Include="Builders\PlayerStateBuilder.cs" />
+    <Compile Include="HumanPlayer.cs" />
+    <Compile Include="ComputerPlayer2.cs" />
+    <Compile Include="Player2.cs" />
     <Compile Include="PlayerSnapshot.cs" />
     <Compile Include="PlayerTurn\ScenarioMakeDirectTradeOfferEvent.cs" />
     <Compile Include="ScenarioActions\ComputerPlayerActionWrapper.cs" />

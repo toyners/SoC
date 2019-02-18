@@ -68,6 +68,15 @@ namespace SoC.Library.ScenarioTests
         private List<ComputerPlayer2> computerPlayers = new List<ComputerPlayer2>();
         public void Run2()
         {
+            var playersByName = this.initialPlayerOrder.ToDictionary(player => player.PlayerName, player => player);
+            foreach (var turn in this.turns)
+            {
+                foreach (var player in this.initialPlayerOrder)
+                {
+                    player.InsertTurnInstructions(turn.Instructions);
+                }
+            }
+
             if (this.gameBoard == null)
                 this.gameBoard = new GameBoard(BoardSizes.Standard);
 
@@ -478,21 +487,33 @@ namespace SoC.Library.ScenarioTests
         }
 
 
-        internal LocalGameControllerScenarioRunner WithHumanPlayer(string mainPlayerName, uint mainPlayerFirstSettlementLocation, uint mainPlayerFirstRoadEnd, uint mainPlayerSecondSettlementLocation, uint mainPlayerSecondRoadEnd)
+        internal LocalGameControllerScenarioRunner WithHumanPlayer(string mainPlayerName)
         {
             this.initialPlayerOrder.Add(new HumanPlayer(mainPlayerName));
             return this;
         }
 
-        internal LocalGameControllerScenarioRunner WithComputerPlayer(string mainPlayerName, uint mainPlayerFirstSettlementLocation, uint mainPlayerFirstRoadEnd, uint mainPlayerSecondSettlementLocation, uint mainPlayerSecondRoadEnd)
+        internal LocalGameControllerScenarioRunner WithComputerPlayer2(string mainPlayerName)
         {
             this.initialPlayerOrder.Add(new ComputerPlayer2(mainPlayerName));
             return this;
         }
 
-        internal BasePlayerTurn PlayerSetupTurn(string mainPlayerName)
+        private int setupRoundNumber = -2;
+        internal LocalGameControllerScenarioRunner PlayerSetupTurn(string playerName, uint settlementLocation, uint roadEnd)
         {
-            throw new NotImplementedException();
+            var playerTurn = new BasePlayerTurn(playerName, this, this.setupRoundNumber, this.turnNumber);
+            playerTurn.BuildStartingInfrastructure(settlementLocation, roadEnd);
+            this.turns.Add(playerTurn);
+
+            this.turnNumber++;
+            if (this.turnNumber > 4)
+            {
+                this.setupRoundNumber++;
+                this.turnNumber = 1;
+            }
+
+            return this;
         }
         #endregion
     }

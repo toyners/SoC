@@ -62,6 +62,7 @@
     <Compile Include="GameActions\AnswerDirectTradeOfferAction.cs" />
     <Compile Include="GameActions\BuildCityAction.cs" />
     <Compile Include="GameActions\BuildSettlementAction.cs" />
+    <Compile Include="GameActions\BuildStartingInfrastructure.cs" />
     <Compile Include="GameActions\BuyDevelopmentCardAction.cs" />
     <Compile Include="GameActions\DropResourcesAction.cs" />
     <Compile Include="GameActions\EndOfTurnAction.cs" />
