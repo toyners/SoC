@@ -18,11 +18,11 @@ namespace Jabberwocky.SoC.Library
         private readonly ConcurrentQueue<ComputerPlayerAction> actionRequests = new ConcurrentQueue<ComputerPlayerAction>();
         private IPlayer currentPlayer;
         private TurnToken currentTurnToken;
-        private IDevelopmentCardHolder developmentCardHolder;
+        private readonly IDevelopmentCardHolder developmentCardHolder;
         private readonly EventRaiser eventRaiser = new EventRaiser();
         private bool isQuitting;
-        private GameBoard gameBoard;
-        private INumberGenerator numberGenerator;
+        private readonly GameBoard gameBoard;
+        private readonly INumberGenerator numberGenerator;
         private Dictionary<Guid, IPlayer> playersById;
         private int playerIndex;
         private IPlayer[] players;
