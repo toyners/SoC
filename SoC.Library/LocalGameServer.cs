@@ -18,6 +18,7 @@ namespace Jabberwocky.SoC.Library
         private IPlayer currentPlayer;
         private TurnToken currentTurnToken;
         private IDevelopmentCardHolder developmentCardHolder;
+        private EventRaiser eventRaiser = new EventRaiser();
         private bool isQuitting;
         private GameBoard gameBoard;
         private INumberGenerator numberGenerator;
@@ -33,17 +34,14 @@ namespace Jabberwocky.SoC.Library
             this.developmentCardHolder = developmentCardHolder;
         }
 
-        private EventRaiser eventRaiser = new EventRaiser();
+        private event Action<Exception> GameExceptionEvent;
+
         public void JoinGame(string playerName, GameController gameController)
         {
             this.eventRaiser.AddEventHandler(playerName, gameController.GameEventHandler);
+            this.GameExceptionEvent += gameController.GameExceptionHandler;
             gameController.PlayerActionEvent += this.PlayerActionEventHandler;
-            this.players[this.players.Length - 1] = new Player(playerName);
-        }
-
-        private void PlayerActionEventHandler(TurnToken turnToken, ComputerPlayerAction obj)
-        {
-            throw new NotImplementedException();
+            this.players[this.playerIndex++] = new Player(playerName);
         }
 
         public void LaunchGame(GameOptions gameOptions = null)
@@ -51,25 +49,61 @@ namespace Jabberwocky.SoC.Library
             if (gameOptions == null)
                 gameOptions = new GameOptions();
 
-            this.players = new IPlayer[gameOptions.MaxPlayers];
+            this.playerIndex = 0;
+            this.players = new IPlayer[gameOptions.MaxPlayers + gameOptions.MaxAIPlayers];
         }
 
-        public void StartGame()
+        public void StartGameAsync()
         {
-            // Complete setup
-            var gameBoardSetup = new GameBoardSetup(this.gameBoard);
-            this.eventRaiser.RaiseEvent(null, new InitialBoardSetupEventArgs(gameBoardSetup));
-
-            this.players = PlayerTurnOrderCreator.Create(this.players, this.numberGenerator);
-
-            // Notify (human?) players what the order is?
-
             // Launch server processing on separate thread
             Task.Factory.StartNew(() =>
             {
-                this.GameSetup();
-                this.MainGameLoop();
+                try
+                {
+                    this.players = PlayerTurnOrderCreator.Create(this.players, this.numberGenerator);
+                    // Notify (human?) players what the order is?
+
+                    var gameBoardSetup = new GameBoardSetup(this.gameBoard);
+                    this.eventRaiser.RaiseEvent(null, new InitialBoardSetupEventArgs(gameBoardSetup));
+
+                    this.GameSetup();
+                    this.MainGameLoop();
+                }
+                catch (Exception e)
+                {
+                    this.GameExceptionEvent?.Invoke(e);
+                }
             });
+        }
+
+        private void ChangeToNextPlayerTurn()
+        {
+            this.playerIndex++;
+            if (this.playerIndex == this.players.Length)
+            {
+                this.playerIndex = 0;
+            }
+
+            this.currentPlayer = this.players[this.playerIndex];
+        }
+
+        private void CollectResourcesAtStartOfTurn(uint resourceRoll)
+        {
+            var resources = this.gameBoard.GetResourcesForRoll(resourceRoll);
+            foreach (var player in this.players)
+            {
+                if (!resources.TryGetValue(player.Id, out var resourcesCollectionForPlayer))
+                    continue;
+
+                var resourcesCollectionOrderedByLocation = resourcesCollectionForPlayer
+                    .OrderBy(rc => rc.Location).ToArray();
+
+                foreach (var resourceCollection in resourcesCollectionForPlayer)
+                    player.AddResources(resourceCollection.Resources);
+
+                var resourcesCollectedEvent = new ResourcesCollectedEvent(player.Id, resourcesCollectionOrderedByLocation);
+                this.eventRaiser.RaiseEvent(null, resourcesCollectedEvent);
+            }
         }
 
         private void GameSetup()
@@ -77,17 +111,17 @@ namespace Jabberwocky.SoC.Library
             // Place first settlement
             for (int i = 0; i < this.players.Length; i++)
             {
-                this.GameSetupLoop();
+                this.GameSetupLoop(this.players[i]);
             }
 
             // Place second settlement
             for (int i = this.players.Length - 1; i >= 0; i--)
             {
-                this.GameSetupLoop();
+                this.GameSetupLoop(this.players[i]);
             }
         }
 
-        private void GameSetupLoop()
+        private void GameSetupLoop(IPlayer player)
         {
             // 1) Notify player to choose settlement location (Pass in current locations)
             // 2) Pause waiting for player to return settlement choice
@@ -101,7 +135,7 @@ namespace Jabberwocky.SoC.Library
                 if (--pauseCount == 0)
                 {
                     // Out of time so game should be killed
-                    throw new Exception();
+                    throw new Exception($"Time out exception waiting for player '{player.Name}'");
                 }
 
                 if (this.actionRequests.TryDequeue(out var playerAction) && playerAction is EndOfTurnAction)
@@ -144,33 +178,18 @@ namespace Jabberwocky.SoC.Library
             }
         }
 
-        private void ChangeToNextPlayerTurn()
+        private void PlayerActionEventHandler(TurnToken turnToken, ComputerPlayerAction obj)
         {
-            this.playerIndex++;
-            if (this.playerIndex == this.players.Length)
-            {
-                this.playerIndex = 0;
-            }
-
-            this.currentPlayer = this.players[this.playerIndex];
+            throw new NotImplementedException();
         }
 
-        private void CollectResourcesAtStartOfTurn(uint resourceRoll)
+        private void ProcessPlayerAction(ComputerPlayerAction playerAction)
         {
-            var resources = this.gameBoard.GetResourcesForRoll(resourceRoll);
-            foreach (var player in this.players)
+            if (playerAction is MakeDirectTradeOfferAction)
             {
-                if (!resources.TryGetValue(player.Id, out var resourcesCollectionForPlayer))
-                    continue;
-
-                var resourcesCollectionOrderedByLocation = resourcesCollectionForPlayer
-                    .OrderBy(rc => rc.Location).ToArray();
-
-                foreach (var resourceCollection in resourcesCollectionForPlayer)
-                    player.AddResources(resourceCollection.Resources);
-
-                var resourcesCollectedEvent = new ResourcesCollectedEvent(player.Id, resourcesCollectionOrderedByLocation);
-                this.eventRaiser.RaiseEvent(null, resourcesCollectedEvent);
+                foreach (var kv in this.playersById.Where(k => k.Key != playerAction.PlayerId).ToList())
+                {
+                }
             }
         }
 
@@ -195,16 +214,7 @@ namespace Jabberwocky.SoC.Library
             }
         }
 
-        private void ProcessPlayerAction(ComputerPlayerAction playerAction)
-        {
-            if (playerAction is MakeDirectTradeOfferAction)
-            {
-                foreach (var kv in this.playersById.Where(k => k.Key != playerAction.PlayerId).ToList())
-                {
-                }
-            }
-        }
-
+        #region Structures
         private class EventRaiser
         {
             private Dictionary<string, Action<GameEvent>> gameEventHandlersByPlayerName = new Dictionary<string, Action<GameEvent>>();
@@ -228,16 +238,23 @@ namespace Jabberwocky.SoC.Library
                 }
             }
         }
+        #endregion
     }
 
     public class GameController
     {
         public event Action<TurnToken, ComputerPlayerAction> PlayerActionEvent;
         public event Action<GameEvent> GameEvent;
+        public event Action<Exception> GameExceptionEvent;
 
         internal void GameEventHandler(GameEvent gameEvent)
         {
             this.GameEvent.Invoke(gameEvent);
+        }
+
+        internal void GameExceptionHandler(Exception exception)
+        {
+            this.GameExceptionEvent.Invoke(exception);
         }
     }
 

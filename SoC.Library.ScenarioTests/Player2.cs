@@ -1,6 +1,7 @@
 ﻿
 namespace SoC.Library.ScenarioTests
 {
+    using System;
     using System.Collections.Generic;
     using Jabberwocky.SoC.Library;
     using Jabberwocky.SoC.Library.GameActions;
@@ -14,13 +15,20 @@ namespace SoC.Library.ScenarioTests
         {
             this.PlayerName = playerName;
             this.gameController = new GameController();
+            this.gameController.GameExceptionEvent += this.GameExceptionEventHandler;
         }
 
+        public Exception GameException { get; private set; }
         public string PlayerName { get; private set; }
 
         public void JoinGame(LocalGameServer gameServer)
         {
             gameServer.JoinGame(this.PlayerName, this.gameController);
+        }
+
+        private void GameExceptionEventHandler(Exception exception)
+        {
+            this.GameException = exception;
         }
 
         public void InsertTurnInstructions(IEnumerable<object> instructions)

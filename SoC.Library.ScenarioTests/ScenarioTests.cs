@@ -1189,6 +1189,7 @@ namespace SoC.Library.ScenarioTests
                 .WithComputerPlayer2(ThirdOpponent_Dana)
                 .WithStartingResourcesForPlayer(MainPlayerName, ResourceClutch.DevelopmentCard)
                 .WithNoResourceCollection()
+                .WithTurnOrder(MainPlayer, FirstOpponent_Babara, SecondOpponent_Charlie, ThirdOpponent_Dana)
                 .PlayerSetupTurn(MainPlayer, MainPlayerFirstSettlementLocation, MainPlayerFirstRoadEnd)
                 .PlayerSetupTurn(FirstOpponent_Babara, FirstOpponentFirstSettlementLocation, FirstOpponentFirstRoadEnd)
                 .PlayerSetupTurn(SecondOpponent_Charlie, SecondOpponentFirstSettlementLocation, SecondOpponentFirstRoadEnd)

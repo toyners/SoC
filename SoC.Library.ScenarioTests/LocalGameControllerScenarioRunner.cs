@@ -65,13 +65,12 @@ namespace SoC.Library.ScenarioTests
             return new LocalGameControllerScenarioRunner();
         }
 
-        private List<ComputerPlayer2> computerPlayers = new List<ComputerPlayer2>();
         public void Run2()
         {
-            var playersByName = this.initialPlayerOrder.ToDictionary(player => player.PlayerName, player => player);
+            var playersByName = this.Players.ToDictionary(player => player.PlayerName, player => player);
             foreach (var turn in this.turns)
             {
-                foreach (var player in this.initialPlayerOrder)
+                foreach (var player in this.Players)
                 {
                     player.InsertTurnInstructions(turn.Instructions);
                 }
@@ -88,12 +87,27 @@ namespace SoC.Library.ScenarioTests
 
             gameServer.LaunchGame();
 
-            foreach (var player in this.initialPlayerOrder)
+            foreach (var player in this.Players)
             {
                 player.JoinGame(gameServer);
             }
 
-            gameServer.StartGame();
+            gameServer.StartGameAsync();
+
+            while (true)
+            {
+                Thread.Sleep(50);
+                foreach (var player in this.Players)
+                {
+                    if (player.GameException != null)
+                        throw player.GameException;
+                }
+            }
+        }
+
+        private void GameServerExceptionEventHandler(Exception exception)
+        {
+            throw new NotImplementedException();
         }
 
         public LocalGameControllerScenarioRunner Build(Dictionary<GameEventTypes, Delegate> eventHandlersByGameEventType = null)
@@ -349,13 +363,13 @@ namespace SoC.Library.ScenarioTests
             return this;
         }
 
-        private List<Player2> initialPlayerOrder = new List<Player2>();
+        private List<Player2> Players = new List<Player2>();
         public LocalGameControllerScenarioRunner WithTurnOrder(string firstPlayerName, string secondPlayerName, string thirdPlayerName, string fourthPlayerName)
         {
             var rolls = new uint[4];
-            for (var index = 0; index < this.initialPlayerOrder.Count; index++)
+            for (var index = 0; index < this.Players.Count; index++)
             {
-                var playerName = this.initialPlayerOrder[index].PlayerName;
+                var playerName = this.Players[index].PlayerName;
                 if (firstPlayerName == playerName)
                     rolls[index] = 12;
                 else if (secondPlayerName == playerName)
@@ -489,13 +503,13 @@ namespace SoC.Library.ScenarioTests
 
         internal LocalGameControllerScenarioRunner WithHumanPlayer(string mainPlayerName)
         {
-            this.initialPlayerOrder.Add(new HumanPlayer(mainPlayerName));
+            this.Players.Add(new HumanPlayer(mainPlayerName));
             return this;
         }
 
         internal LocalGameControllerScenarioRunner WithComputerPlayer2(string mainPlayerName)
         {
-            this.initialPlayerOrder.Add(new ComputerPlayer2(mainPlayerName));
+            this.Players.Add(new ComputerPlayer2(mainPlayerName));
             return this;
         }
 
