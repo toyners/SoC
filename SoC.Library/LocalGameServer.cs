@@ -1,17 +1,18 @@
 ﻿
-using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using Jabberwocky.SoC.Library.GameActions;
-using Jabberwocky.SoC.Library.GameBoards;
-using Jabberwocky.SoC.Library.GameEvents;
-using Jabberwocky.SoC.Library.Interfaces;
 
 namespace Jabberwocky.SoC.Library
 {
+    using System;
+    using System.Collections.Concurrent;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Threading;
+    using System.Threading.Tasks;
+    using Jabberwocky.SoC.Library.GameActions;
+    using Jabberwocky.SoC.Library.GameBoards;
+    using Jabberwocky.SoC.Library.GameEvents;
+    using Jabberwocky.SoC.Library.Interfaces;
+
     public class LocalGameServer
     {
         private ConcurrentQueue<ComputerPlayerAction> actionRequests = new ConcurrentQueue<ComputerPlayerAction>();
