@@ -79,6 +79,7 @@
     <Compile Include="GameEvents\InfrastructureBuiltEvent.cs" />
     <Compile Include="GameEvents\KnightCardPlayedEvent.cs" />
     <Compile Include="GameEvents\MakeDirectTradeOfferEvent.cs" />
+    <Compile Include="GameEvents\PlaceSetupInfrastructureEventArgs.cs" />
     <Compile Include="GameEvents\PlayKnightCardEvent.cs" />
     <Compile Include="GameEvents\ResourcesCollectedEvent.cs" />
     <Compile Include="GameEvents\DiceRollEvent.cs" />

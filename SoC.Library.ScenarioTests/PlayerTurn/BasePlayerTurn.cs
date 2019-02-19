@@ -513,7 +513,14 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
 
         internal void BuildStartingInfrastructure(uint settlementLocation, uint roadEnd)
         {
-            this.instructions.Enqueue(new BuildStartingInfrastructure(settlementLocation, roadEnd));
+            var buildStartingInfrastructure = new BuildStartingInfrastructure(settlementLocation, roadEnd);
+            var scenarioAction = new ScenarioActionWrapper(this.PlayerName, buildStartingInfrastructure);
+            this.instructions.Enqueue(scenarioAction);
+        }
+
+        internal void PlaceSetupInfrastructureEvent()
+        {
+            this.instructions.Enqueue(new PlaceSetupInfrastructureEventArgs());
         }
 
         protected void SetupResourceSelectionOnPlayer(IPlayer selectedPlayer, ResourceTypes expectedSingleResource)

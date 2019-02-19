@@ -41,9 +41,10 @@ namespace SoC.Library.ScenarioTests
                 {
                     if (instruction is GameEvent gameEvent)
                         turn.ExpectedEvents.Add(gameEvent);
-                    else if (instruction is ComputerPlayerAction action)
+                    else if (instruction is ScenarioActionWrapper scenarioAction && 
+                        scenarioAction.PlayerName == this.PlayerName)
                     {
-
+                        turn.Actions.Add(scenarioAction.Action);
                     }
                 }
             }

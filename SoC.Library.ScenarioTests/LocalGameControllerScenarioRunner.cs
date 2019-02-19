@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading;
 using Jabberwocky.SoC.Library;
 using Jabberwocky.SoC.Library.DevelopmentCards;
+using Jabberwocky.SoC.Library.GameActions;
 using Jabberwocky.SoC.Library.GameBoards;
 using Jabberwocky.SoC.Library.GameEvents;
 using Jabberwocky.SoC.Library.Interfaces;
@@ -517,6 +518,7 @@ namespace SoC.Library.ScenarioTests
         internal LocalGameControllerScenarioRunner PlayerSetupTurn(string playerName, uint settlementLocation, uint roadEnd)
         {
             var playerTurn = new BasePlayerTurn(playerName, this, this.setupRoundNumber, this.turnNumber);
+            playerTurn.PlaceSetupInfrastructureEvent();
             playerTurn.BuildStartingInfrastructure(settlementLocation, roadEnd);
             this.turns.Add(playerTurn);
 
@@ -541,6 +543,18 @@ namespace SoC.Library.ScenarioTests
 
     public interface IActionProcessor
     {
-        void Add(Jabberwocky.SoC.Library.GameActions.ComputerPlayerAction action);
+        void Add(ComputerPlayerAction action);
+    }
+
+    internal class ScenarioActionWrapper
+    {
+        public ScenarioActionWrapper(string playerName, ComputerPlayerAction action)
+        {
+            this.PlayerName = playerName;
+            this.Action = action;
+        }
+
+        public ComputerPlayerAction Action { get; private set; }
+        public string PlayerName { get; private set; }
     }
 }

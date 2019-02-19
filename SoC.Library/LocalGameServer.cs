@@ -127,6 +127,7 @@ namespace Jabberwocky.SoC.Library
             // 1) Notify player to choose settlement location (Pass in current locations)
             // 2) Pause waiting for player to return settlement choice
             var pauseCount = 40;
+            this.eventRaiser.RaiseEvent(player.Name, new PlaceSetupInfrastructureEventArgs());
             while (true)
             {
                 Thread.Sleep(50);
