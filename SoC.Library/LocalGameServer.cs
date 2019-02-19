@@ -15,11 +15,11 @@ namespace Jabberwocky.SoC.Library
 
     public class LocalGameServer
     {
-        private ConcurrentQueue<ComputerPlayerAction> actionRequests = new ConcurrentQueue<ComputerPlayerAction>();
+        private readonly ConcurrentQueue<ComputerPlayerAction> actionRequests = new ConcurrentQueue<ComputerPlayerAction>();
         private IPlayer currentPlayer;
         private TurnToken currentTurnToken;
         private IDevelopmentCardHolder developmentCardHolder;
-        private EventRaiser eventRaiser = new EventRaiser();
+        private readonly EventRaiser eventRaiser = new EventRaiser();
         private bool isQuitting;
         private GameBoard gameBoard;
         private INumberGenerator numberGenerator;
