@@ -27,6 +27,7 @@ namespace Jabberwocky.SoC.Library
         private int playerIndex;
         private IPlayer[] players;
         private uint dice1, dice2;
+        private IGameTimer turnTimer;
 
         public bool IsFinished { get; set; }
 
@@ -128,25 +129,31 @@ namespace Jabberwocky.SoC.Library
         {
             // 1) Notify player to choose settlement location (Pass in current locations)
             // 2) Pause waiting for player to return settlement choice
-            var pauseCount = 40;
             this.currentTurnToken = new TurnToken();
             this.eventRaiser.RaiseEvent(player.Name, new PlaceSetupInfrastructureEventArgs(this.currentTurnToken));
+            this.turnTimer.Reset();
             while (true)
             {
                 Thread.Sleep(50);
                 if (this.isQuitting)
                     return;
 
-                if (--pauseCount == 0)
+                if (this.turnTimer.IsLate)
                 {
                     // Out of time so game should be killed
                     throw new Exception($"Time out exception waiting for player '{player.Name}'");
                 }
 
-                if (this.actionRequests.TryDequeue(out var playerAction) && playerAction is EndOfTurnAction)
+                if (this.actionRequests.TryDequeue(out var playerAction))
                 {
-                    pauseCount = 40;
-                    break;
+                    if (playerAction is EndOfTurnAction)
+                    {
+                        break;
+                    }
+                    else if (playerAction is BuildStartingInfrastructure buildStartingInfrastructure)
+                    {
+                        // TODO: Place infrastructure
+                    }
                 }
             }
         }
@@ -155,7 +162,7 @@ namespace Jabberwocky.SoC.Library
         {
             this.playerIndex = -1;
             this.StartTurn();
-            var pauseCount = 40;
+            this.turnTimer.Reset();
 
             while (true)
             {
@@ -165,15 +172,13 @@ namespace Jabberwocky.SoC.Library
 
                 var gotPlayerAction = this.actionRequests.TryDequeue(out var playerAction);
 
-                if ((pauseCount == 0) ||
+                if (this.turnTimer.IsLate ||
                     (gotPlayerAction && playerAction is EndOfTurnAction))
                 {
                     this.StartTurn();
-                    pauseCount = 40;
+                    this.turnTimer.Reset();
                     continue;
                 }
-
-                pauseCount--;
 
                 if (!gotPlayerAction)
                     continue;
@@ -288,5 +293,23 @@ namespace Jabberwocky.SoC.Library
     {
         public readonly T Item;
         public GameEventArg(T item) : base(Guid.Empty) => this.Item = item;
+    }
+
+    public interface IGameTimer
+    {
+        void Reset();
+        bool IsLate { get; }
+    }
+
+    public class GameServerTimer : IGameTimer
+    {
+        private int counter = 40;
+
+        public bool IsLate { get { return --this.counter == 0; } }
+
+        public void Reset()
+        {
+            this.counter = 40;
+        }
     }
 }
