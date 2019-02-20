@@ -129,7 +129,8 @@ namespace Jabberwocky.SoC.Library
             // 1) Notify player to choose settlement location (Pass in current locations)
             // 2) Pause waiting for player to return settlement choice
             var pauseCount = 40;
-            this.eventRaiser.RaiseEvent(player.Name, new PlaceSetupInfrastructureEventArgs());
+            this.currentTurnToken = new TurnToken();
+            this.eventRaiser.RaiseEvent(player.Name, new PlaceSetupInfrastructureEventArgs(this.currentTurnToken));
             while (true)
             {
                 Thread.Sleep(50);
@@ -253,6 +254,24 @@ namespace Jabberwocky.SoC.Library
     public class StartPlayerTurnEventArgs : GameEventArg<TurnToken>
     {
         public StartPlayerTurnEventArgs(TurnToken item) : base(item) { }
+    }
+
+    public class ScenarioPlaceSetupInfrastructureEventArgs : GameEvent
+    {
+        public ScenarioPlaceSetupInfrastructureEventArgs() : base(Guid.Empty) { }
+
+        public override bool Equals(object obj)
+        {
+            if (obj == null || obj.GetType() != typeof(PlaceSetupInfrastructureEventArgs))
+                return false;
+
+            return ((PlaceSetupInfrastructureEventArgs)obj).Item != null;
+        }
+    }
+
+    public class PlaceSetupInfrastructureEventArgs : GameEventArg<TurnToken>
+    {
+        public PlaceSetupInfrastructureEventArgs(TurnToken item) : base(item) {}
     }
 
     public class DiceRollEventArgs : GameEvent

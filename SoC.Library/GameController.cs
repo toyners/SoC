@@ -20,5 +20,10 @@ namespace Jabberwocky.SoC.Library
         {
             this.GameExceptionEvent.Invoke(exception);
         }
+
+        public void SendAction(TurnToken turnToken, ComputerPlayerAction action)
+        {
+            this.PlayerActionEvent.Invoke(turnToken, action);
+        }
     }
 }

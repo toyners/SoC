@@ -520,7 +520,7 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
 
         internal void PlaceSetupInfrastructureEvent()
         {
-            this.instructions.Enqueue(new PlaceSetupInfrastructureEventArgs());
+            this.instructions.Enqueue(new ScenarioPlaceSetupInfrastructureEventArgs());
         }
 
         protected void SetupResourceSelectionOnPlayer(IPlayer selectedPlayer, ResourceTypes expectedSingleResource)

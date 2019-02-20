@@ -6,12 +6,14 @@ namespace SoC.Library.ScenarioTests
     using Jabberwocky.SoC.Library;
     using Jabberwocky.SoC.Library.GameActions;
     using Jabberwocky.SoC.Library.GameEvents;
+    using NUnit.Framework;
 
     internal class Player2
     {
         private TurnInstructions currentTurn;
         private int nextTurnIndex;
         protected GameController gameController;
+        private TurnToken currentTurnToken;
 
         public Player2(string playerName)
         {
@@ -46,7 +48,17 @@ namespace SoC.Library.ScenarioTests
 
         protected void GameEventHandler(GameEvent gameEvent)
         {
+            if (gameEvent is InitialBoardSetupEventArgs)
+            {
 
+            }
+            else
+            {
+                if (gameEvent is PlaceSetupInfrastructureEventArgs placeSetupInfrastructureEventArgs)
+                    this.currentTurnToken = placeSetupInfrastructureEventArgs.Item;
+
+                this.currentTurn.AddActualEvent(gameEvent);
+            }
         }
 
         private void GameExceptionEventHandler(Exception exception)
@@ -60,7 +72,8 @@ namespace SoC.Library.ScenarioTests
             this.turns.Add(turn);
             if (instructions != null)
             {
-                foreach (var instruction in instructions)
+                turn.Instructions = new List<object>(instructions);
+                /*foreach (var instruction in instructions)
                 {
                     if (instruction is GameEvent gameEvent)
                         turn.ExpectedEvents.Add(gameEvent);
@@ -69,18 +82,26 @@ namespace SoC.Library.ScenarioTests
                     {
                         turn.Actions.Add(scenarioAction.Action);
                     }
-                }
+                }*/
             }
 
             if (this.currentTurn == null)
                 this.currentTurn = this.turns[this.nextTurnIndex++];
         }
 
+        public void Process()
+        {
+            this.currentTurn.Process((action) => this.gameController.SendAction(this.currentTurnToken, action));
+        }
+
         private List<TurnInstructions> turns = new List<TurnInstructions>();
         private class TurnInstructions
         {
             private int nextActionIndex;
-            private int nextExpectedIndex;
+            private int expectedEventIndex;
+            private int actualEventIndex;
+            private int instructionIndex;
+            public List<object> Instructions = new List<object>();
             public List<GameEvent> ActualEvents = new List<GameEvent>();
             public List<GameEvent> ExpectedEvents = new List<GameEvent>();
             public List<ComputerPlayerAction> Actions = new List<ComputerPlayerAction>();
@@ -89,15 +110,66 @@ namespace SoC.Library.ScenarioTests
             {
                 get
                 {
-                    return this.nextActionIndex >= this.Actions.Count &&
-                        this.nextExpectedIndex >= this.ExpectedEvents.Count;
+                    return this.instructionIndex >= this.Instructions.Count;
                 }
             }
-        }
 
-        public void Process()
-        {
-            throw new NotImplementedException();
+            public void AddActualEvent(GameEvent gameEvent)
+            {
+                this.ActualEvents.Add(gameEvent);
+            }
+
+            public void Process(Action<ComputerPlayerAction> sendActionFunction)
+            {
+                for (; this.instructionIndex < this.Instructions.Count; this.instructionIndex++)
+                {
+                    var instruction = this.Instructions[this.instructionIndex];
+                    if (instruction is ComputerPlayerAction action)
+                    {
+                        if (this.VerifyEvents(false))
+                        {
+                            sendActionFunction(action);
+                            break;
+                        }
+                    }
+                    else if (instruction is GameEvent gameEvent)
+                    {
+                        this.ExpectedEvents.Add(gameEvent);
+                    }
+                }
+
+                this.VerifyEvents(true);
+            }
+
+            private bool VerifyEvents(bool throwIfNotVerified)
+            {
+                if (this.expectedEventIndex < this.ExpectedEvents.Count)
+                {
+                    while (this.actualEventIndex < this.ActualEvents.Count)
+                    {
+                        if (this.ExpectedEvents[this.expectedEventIndex].Equals(this.ActualEvents[this.actualEventIndex]))
+                        {
+                            this.expectedEventIndex++;
+                        }
+
+                        this.actualEventIndex++;
+                    }
+                }
+
+                if (throwIfNotVerified && this.expectedEventIndex < this.ExpectedEvents.Count)
+                {
+                    // At least one expected event was not matched with an actual event.
+                    var expectedEvent = this.ExpectedEvents[this.expectedEventIndex];
+                    Assert.Fail($"Did not find {expectedEvent.GetType()}");
+                    //Assert.Fail($"Did not find {expectedEvent.GetType()} event for '{this.PlayerName}' in round {this.roundNumber}, turn {this.turnNumber}.\r\n{this.GetEventDetails(expectedEvent)}");
+
+                    throw new NotImplementedException(); // Not reached - Have to do this to pass compliation
+                }
+                else
+                {
+                    return this.expectedEventIndex == this.ExpectedEvents.Count;
+                }
+            }
         }
     }
 }

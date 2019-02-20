@@ -36,7 +36,7 @@ namespace SoC.ScenarioRunnerConsole
 
                 var task = Task.Factory.StartNew(() =>
                 {
-                    List<MethodInfo> runningMethods = new List<MethodInfo>();
+                    var runningMethods = new List<MethodInfo>();
                     if (methodNumber != 0)
                         runningMethods.Add(methods[methodNumber - 1]);
                     else
