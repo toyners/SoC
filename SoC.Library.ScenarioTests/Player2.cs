@@ -7,8 +7,10 @@ namespace SoC.Library.ScenarioTests
     using Jabberwocky.SoC.Library.GameActions;
     using Jabberwocky.SoC.Library.GameEvents;
 
-    public class Player2
+    internal class Player2
     {
+        private TurnInstructions currentTurn;
+        private int nextTurnIndex;
         protected GameController gameController;
 
         public Player2(string playerName)
@@ -16,14 +18,35 @@ namespace SoC.Library.ScenarioTests
             this.PlayerName = playerName;
             this.gameController = new GameController();
             this.gameController.GameExceptionEvent += this.GameExceptionEventHandler;
+            this.gameController.GameEvent += this.GameEventHandler;
         }
 
         public Exception GameException { get; private set; }
         public string PlayerName { get; private set; }
+        public bool CurrentTurnIsFinished
+        {
+            get
+            {
+                return this.currentTurn != null &&
+                    this.currentTurn.IsFinished;
+            }
+        }
+        public bool IsFinished
+        {
+            get
+            {
+                return this.nextTurnIndex >= this.turns.Count;
+            }
+        }
 
         public void JoinGame(LocalGameServer gameServer)
         {
             gameServer.JoinGame(this.PlayerName, this.gameController);
+        }
+
+        protected void GameEventHandler(GameEvent gameEvent)
+        {
+
         }
 
         private void GameExceptionEventHandler(Exception exception)
@@ -34,7 +57,7 @@ namespace SoC.Library.ScenarioTests
         public void InsertTurnInstructions(IEnumerable<object> instructions)
         {
             var turn = new TurnInstructions();
-            this.turns.Enqueue(turn);
+            this.turns.Add(turn);
             if (instructions != null)
             {
                 foreach (var instruction in instructions)
@@ -48,13 +71,33 @@ namespace SoC.Library.ScenarioTests
                     }
                 }
             }
+
+            if (this.currentTurn == null)
+                this.currentTurn = this.turns[this.nextTurnIndex++];
         }
 
-        private Queue<TurnInstructions> turns = new Queue<TurnInstructions>();
+        private List<TurnInstructions> turns = new List<TurnInstructions>();
         private class TurnInstructions
         {
+            private int nextActionIndex;
+            private int nextExpectedIndex;
+            public List<GameEvent> ActualEvents = new List<GameEvent>();
             public List<GameEvent> ExpectedEvents = new List<GameEvent>();
             public List<ComputerPlayerAction> Actions = new List<ComputerPlayerAction>();
+
+            public bool IsFinished
+            {
+                get
+                {
+                    return this.nextActionIndex >= this.Actions.Count &&
+                        this.nextExpectedIndex >= this.ExpectedEvents.Count;
+                }
+            }
+        }
+
+        public void Process()
+        {
+            throw new NotImplementedException();
         }
     }
 }

@@ -5,21 +5,22 @@ namespace SoC.Library.ScenarioTests
     using Jabberwocky.SoC.Library;
     using Jabberwocky.SoC.Library.GameEvents;
 
-    public class ComputerPlayer2 : Player2
+    internal class ComputerPlayer2 : Player2
     {
         public ComputerPlayer2(string playerName) : base(playerName)
         {
-            this.gameController.GameEvent += this.GameEventHandler;
+            //this.gameController.GameEvent += this.GameEventHandler;
         }
 
-        private void GameEventHandler(GameEvent gameEvent)
+        /*private void GameEventHandler(GameEvent gameEvent)
         {
             if (gameEvent is InitialBoardSetupEventArgs initialBoardSetupEventArgs)
             {
+                this.curr
                 return;
             }
 
             throw new NotImplementedException($"Game event {gameEvent.GetType()} not handled");
-        }
+        }*/
     }
 }

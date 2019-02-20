@@ -95,14 +95,27 @@ namespace SoC.Library.ScenarioTests
 
             gameServer.StartGameAsync();
 
-            while (true)
+            while (!gameServer.IsFinished)
             {
                 Thread.Sleep(50);
+                var playerIsFinished = 0;
                 foreach (var player in this.Players)
                 {
                     if (player.GameException != null)
                         throw player.GameException;
+
+                    if (player.IsFinished)
+                    {
+                        playerIsFinished++;
+                    }
+                    else if (!player.CurrentTurnIsFinished)
+                    {
+                        player.Process();
+                    }
                 }
+
+                if (playerIsFinished == this.Players.Count)
+                    break;
             }
         }
 
@@ -515,10 +528,11 @@ namespace SoC.Library.ScenarioTests
         }
 
         private int setupRoundNumber = -2;
-        internal LocalGameControllerScenarioRunner PlayerSetupTurn(string playerName, uint settlementLocation, uint roadEnd)
+        internal LocalGameControllerScenarioRunner PlayerSetupTurn(string playerName, uint settlementLocation, uint roadEnd, bool registerPlaceSetupInfrastructureEvent = false)
         {
             var playerTurn = new BasePlayerTurn(playerName, this, this.setupRoundNumber, this.turnNumber);
-            playerTurn.PlaceSetupInfrastructureEvent();
+            if (registerPlaceSetupInfrastructureEvent)
+                playerTurn.PlaceSetupInfrastructureEvent();
             playerTurn.BuildStartingInfrastructure(settlementLocation, roadEnd);
             this.turns.Add(playerTurn);
 

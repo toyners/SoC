@@ -28,6 +28,8 @@ namespace Jabberwocky.SoC.Library
         private IPlayer[] players;
         private uint dice1, dice2;
 
+        public bool IsFinished { get; set; }
+
         public LocalGameServer(INumberGenerator numberGenerator, GameBoard gameBoard, IDevelopmentCardHolder developmentCardHolder)
         {
             this.numberGenerator = numberGenerator;

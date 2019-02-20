@@ -1190,14 +1190,14 @@ namespace SoC.Library.ScenarioTests
                 .WithStartingResourcesForPlayer(MainPlayerName, ResourceClutch.DevelopmentCard)
                 .WithNoResourceCollection()
                 .WithTurnOrder(MainPlayer, FirstOpponent_Babara, SecondOpponent_Charlie, ThirdOpponent_Dana)
-                .PlayerSetupTurn(MainPlayer, MainPlayerFirstSettlementLocation, MainPlayerFirstRoadEnd)
-                .PlayerSetupTurn(FirstOpponent_Babara, FirstOpponentFirstSettlementLocation, FirstOpponentFirstRoadEnd)
-                .PlayerSetupTurn(SecondOpponent_Charlie, SecondOpponentFirstSettlementLocation, SecondOpponentFirstRoadEnd)
-                .PlayerSetupTurn(ThirdOpponent_Dana, ThirdOpponentFirstSettlementLocation, ThirdOpponentFirstRoadEnd)
-                .PlayerSetupTurn(ThirdOpponent_Dana, ThirdOpponentSecondSettlementLocation, ThirdOpponentSecondRoadEnd)
-                .PlayerSetupTurn(SecondOpponent_Charlie, SecondOpponentSecondSettlementLocation, SecondOpponentSecondRoadEnd)
-                .PlayerSetupTurn(FirstOpponent_Babara, FirstOpponentSecondSettlementLocation, FirstOpponentSecondRoadEnd)
-                .PlayerSetupTurn(MainPlayer, MainPlayerSecondSettlementLocation, MainPlayerSecondRoadEnd)
+                .PlayerSetupTurn(MainPlayer, MainPlayerFirstSettlementLocation, MainPlayerFirstRoadEnd, true)
+                .PlayerSetupTurn(FirstOpponent_Babara, FirstOpponentFirstSettlementLocation, FirstOpponentFirstRoadEnd, true)
+                .PlayerSetupTurn(SecondOpponent_Charlie, SecondOpponentFirstSettlementLocation, SecondOpponentFirstRoadEnd, true)
+                .PlayerSetupTurn(ThirdOpponent_Dana, ThirdOpponentFirstSettlementLocation, ThirdOpponentFirstRoadEnd, true)
+                .PlayerSetupTurn(ThirdOpponent_Dana, ThirdOpponentSecondSettlementLocation, ThirdOpponentSecondRoadEnd, true)
+                .PlayerSetupTurn(SecondOpponent_Charlie, SecondOpponentSecondSettlementLocation, SecondOpponentSecondRoadEnd, true)
+                .PlayerSetupTurn(FirstOpponent_Babara, FirstOpponentSecondSettlementLocation, FirstOpponentSecondRoadEnd, true)
+                .PlayerSetupTurn(MainPlayer, MainPlayerSecondSettlementLocation, MainPlayerSecondRoadEnd, true)
                 .Run2();
         }
 
