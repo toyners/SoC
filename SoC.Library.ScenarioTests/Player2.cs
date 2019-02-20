@@ -29,8 +29,9 @@ namespace SoC.Library.ScenarioTests
         {
             get
             {
-                return this.currentTurn != null &&
-                    this.currentTurn.IsFinished;
+                return this.instructionIndex >= this.Instructions.Count;
+                //return this.currentTurn != null &&
+                //    this.currentTurn.IsFinished;
             }
         }
         public bool IsFinished
@@ -57,7 +58,7 @@ namespace SoC.Library.ScenarioTests
                 if (gameEvent is PlaceSetupInfrastructureEventArgs placeSetupInfrastructureEventArgs)
                     this.currentTurnToken = placeSetupInfrastructureEventArgs.Item;
 
-                this.currentTurn.AddActualEvent(gameEvent);
+                this.AddActualEvent(gameEvent);
             }
         }
 
@@ -66,110 +67,113 @@ namespace SoC.Library.ScenarioTests
             this.GameException = exception;
         }
 
-        public void InsertTurnInstructions(IEnumerable<object> instructions)
+        public void InsertTurnInstructions(IEnumerable<object> instructions, int roundNumber, int turnNumber)
         {
-            var turn = new TurnInstructions();
+            var turn = new TurnInstructions
+            {
+                RoundNumber = roundNumber,
+                TurnNumber = turnNumber
+            };
+
             this.turns.Add(turn);
             if (instructions != null)
             {
-                turn.Instructions = new List<object>(instructions);
-                /*foreach (var instruction in instructions)
+                foreach (var instruction in instructions)
                 {
                     if (instruction is GameEvent gameEvent)
-                        turn.ExpectedEvents.Add(gameEvent);
+                        turn.Instructions.Add(gameEvent);
                     else if (instruction is ScenarioActionWrapper scenarioAction && 
                         scenarioAction.PlayerName == this.PlayerName)
                     {
-                        turn.Actions.Add(scenarioAction.Action);
+                        turn.Instructions.Add(scenarioAction.Action);
                     }
-                }*/
+                }
             }
 
             if (this.currentTurn == null)
                 this.currentTurn = this.turns[this.nextTurnIndex++];
         }
 
+        private List<object> Instructions { get { return this.currentTurn.Instructions; } }
+        public List<GameEvent> ActualEvents { get { return this.currentTurn.ActualEvents; } }
+        public List<GameEvent> ExpectedEvents { get { return this.currentTurn.ExpectedEvents; } }
+        private int instructionIndex;
         public void Process()
         {
-            this.currentTurn.Process((action) => this.gameController.SendAction(this.currentTurnToken, action));
+            //this.currentTurn.Process((action) => this.gameController.SendAction(this.currentTurnToken, action));
+            for (; this.instructionIndex < this.Instructions.Count; this.instructionIndex++)
+            {
+                var instruction = this.Instructions[this.instructionIndex];
+                if (instruction is ComputerPlayerAction action)
+                {
+                    if (this.VerifyEvents(false))
+                    {
+                        this.gameController.SendAction(this.currentTurnToken, action);
+                        break;
+                    }
+                }
+                else if (instruction is GameEvent gameEvent)
+                {
+                    this.ExpectedEvents.Add(gameEvent);
+                }
+            }
+
+            this.VerifyEvents(true);
+        }
+
+        private int RoundNumber { get { return this.currentTurn.RoundNumber; } }
+        private int TurnNumber { get { return this.currentTurn.TurnNumber; } }
+
+        private int expectedEventIndex;
+        private int actualEventIndex;
+        private bool VerifyEvents(bool throwIfNotVerified)
+        {
+            if (this.expectedEventIndex < this.ExpectedEvents.Count)
+            {
+                while (this.actualEventIndex < this.ActualEvents.Count)
+                {
+                    if (this.ExpectedEvents[this.expectedEventIndex].Equals(this.ActualEvents[this.actualEventIndex]))
+                    {
+                        this.expectedEventIndex++;
+                    }
+
+                    this.actualEventIndex++;
+                }
+            }
+
+            
+
+            if (throwIfNotVerified && this.expectedEventIndex < this.ExpectedEvents.Count)
+            {
+                // At least one expected event was not matched with an actual event.
+                var expectedEvent = this.ExpectedEvents[this.expectedEventIndex];
+                //Assert.Fail($"Did not find {expectedEvent.GetType()}");
+                //Assert.Fail($"Did not find {expectedEvent.GetType()} event for '{this.PlayerName}' in round {this.RoundNumber}, turn {this.TurnNumber}.\r\n{/*this.GetEventDetails(expectedEvent)*/""}");
+                Assert.Fail($"Did not find {expectedEvent.GetType()} event for '{this.PlayerName}' in round {this.RoundNumber}, turn {this.TurnNumber}.\r\n");
+
+                throw new NotImplementedException(); // Not reached - Have to do this to pass compliation
+            }
+            else
+            {
+                return this.expectedEventIndex == this.ExpectedEvents.Count;
+            }
+        }
+
+        public void AddActualEvent(GameEvent gameEvent)
+        {
+            this.ActualEvents.Add(gameEvent);
         }
 
         private List<TurnInstructions> turns = new List<TurnInstructions>();
         private class TurnInstructions
         {
             private int nextActionIndex;
-            private int expectedEventIndex;
-            private int actualEventIndex;
-            private int instructionIndex;
+            public int RoundNumber, TurnNumber;
+            
             public List<object> Instructions = new List<object>();
             public List<GameEvent> ActualEvents = new List<GameEvent>();
             public List<GameEvent> ExpectedEvents = new List<GameEvent>();
             public List<ComputerPlayerAction> Actions = new List<ComputerPlayerAction>();
-
-            public bool IsFinished
-            {
-                get
-                {
-                    return this.instructionIndex >= this.Instructions.Count;
-                }
-            }
-
-            public void AddActualEvent(GameEvent gameEvent)
-            {
-                this.ActualEvents.Add(gameEvent);
-            }
-
-            public void Process(Action<ComputerPlayerAction> sendActionFunction)
-            {
-                for (; this.instructionIndex < this.Instructions.Count; this.instructionIndex++)
-                {
-                    var instruction = this.Instructions[this.instructionIndex];
-                    if (instruction is ComputerPlayerAction action)
-                    {
-                        if (this.VerifyEvents(false))
-                        {
-                            sendActionFunction(action);
-                            break;
-                        }
-                    }
-                    else if (instruction is GameEvent gameEvent)
-                    {
-                        this.ExpectedEvents.Add(gameEvent);
-                    }
-                }
-
-                this.VerifyEvents(true);
-            }
-
-            private bool VerifyEvents(bool throwIfNotVerified)
-            {
-                if (this.expectedEventIndex < this.ExpectedEvents.Count)
-                {
-                    while (this.actualEventIndex < this.ActualEvents.Count)
-                    {
-                        if (this.ExpectedEvents[this.expectedEventIndex].Equals(this.ActualEvents[this.actualEventIndex]))
-                        {
-                            this.expectedEventIndex++;
-                        }
-
-                        this.actualEventIndex++;
-                    }
-                }
-
-                if (throwIfNotVerified && this.expectedEventIndex < this.ExpectedEvents.Count)
-                {
-                    // At least one expected event was not matched with an actual event.
-                    var expectedEvent = this.ExpectedEvents[this.expectedEventIndex];
-                    Assert.Fail($"Did not find {expectedEvent.GetType()}");
-                    //Assert.Fail($"Did not find {expectedEvent.GetType()} event for '{this.PlayerName}' in round {this.roundNumber}, turn {this.turnNumber}.\r\n{this.GetEventDetails(expectedEvent)}");
-
-                    throw new NotImplementedException(); // Not reached - Have to do this to pass compliation
-                }
-                else
-                {
-                    return this.expectedEventIndex == this.ExpectedEvents.Count;
-                }
-            }
         }
     }
 }

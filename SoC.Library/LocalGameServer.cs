@@ -36,6 +36,7 @@ namespace Jabberwocky.SoC.Library
             this.numberGenerator = numberGenerator;
             this.gameBoard = gameBoard;
             this.developmentCardHolder = developmentCardHolder;
+            this.turnTimer = new GameServerTimer();
         }
 
         private event Action<Exception> GameExceptionEvent;
@@ -188,9 +189,10 @@ namespace Jabberwocky.SoC.Library
             }
         }
 
-        private void PlayerActionEventHandler(TurnToken turnToken, ComputerPlayerAction obj)
+        private void PlayerActionEventHandler(TurnToken turnToken, ComputerPlayerAction action)
         {
-            throw new NotImplementedException();
+            // TODO: Verify turn token
+            this.actionRequests.Enqueue(action);
         }
 
         private void ProcessPlayerAction(ComputerPlayerAction playerAction)

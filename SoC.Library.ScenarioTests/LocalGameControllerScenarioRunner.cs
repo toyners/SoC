@@ -73,7 +73,7 @@ namespace SoC.Library.ScenarioTests
             {
                 foreach (var player in this.Players)
                 {
-                    player.InsertTurnInstructions(turn.Instructions);
+                    player.InsertTurnInstructions(turn.Instructions, turn.RoundNumber, turn.TurnNumber);
                 }
             }
 
@@ -530,11 +530,13 @@ namespace SoC.Library.ScenarioTests
         private int setupRoundNumber = -2;
         internal LocalGameControllerScenarioRunner PlayerSetupTurn(string playerName, uint settlementLocation, uint roadEnd, bool registerPlaceSetupInfrastructureEvent = false)
         {
-            var playerTurn = new BasePlayerTurn(playerName, this, this.setupRoundNumber, this.turnNumber);
+            var turn = new BasePlayerTurn(playerName, this, this.setupRoundNumber, this.turnNumber);
             if (registerPlaceSetupInfrastructureEvent)
-                playerTurn.PlaceSetupInfrastructureEvent();
-            playerTurn.BuildStartingInfrastructure(settlementLocation, roadEnd);
-            this.turns.Add(playerTurn);
+                turn.PlaceSetupInfrastructureEvent();
+            turn.BuildStartingInfrastructure(settlementLocation, roadEnd);
+            turn.EndTurn();
+
+            this.turns.Add(turn);
 
             this.turnNumber++;
             if (this.turnNumber > 4)

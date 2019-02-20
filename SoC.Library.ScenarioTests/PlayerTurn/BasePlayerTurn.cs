@@ -25,8 +25,8 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
         protected readonly List<GameEvent> actualEvents = new List<GameEvent>();
         //private List<Tuple<string, ComputerPlayerAction>> playerActions;
         private readonly List<GameEvent> expectedEvents = new List<GameEvent>();
-        private readonly int roundNumber;
-        private readonly int turnNumber;
+        public readonly int RoundNumber;
+        public readonly int TurnNumber;
         //private Dictionary<string, IPlayer> playersByName;
         private Dictionary<IPlayer, Action<ComputerPlayerAction>> actionProcessorsByPlayer;
         private Dictionary<IPlayer, Action<ComputerPlayerAction>> actionResolversByPlayer;
@@ -37,8 +37,8 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
         {
             this.player = player;
             this.runner = runner;
-            this.roundNumber = roundNumber;
-            this.turnNumber = turnNumber;
+            this.RoundNumber = roundNumber;
+            this.TurnNumber = turnNumber;
         }
 
         public BasePlayerTurn(string playerName, LocalGameControllerScenarioRunner runner, int roundNumber, int turnNumber)
@@ -46,8 +46,8 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
             //this.player = playersByName[playerName];
             this.PlayerName = playerName;
             this.runner = runner;
-            this.roundNumber = roundNumber;
-            this.turnNumber = turnNumber;
+            this.RoundNumber = roundNumber;
+            this.TurnNumber = turnNumber;
             this.actionProcessorsByPlayer = new Dictionary<IPlayer, Action<ComputerPlayerAction>>();
             this.actionResolversByPlayer = new Dictionary<IPlayer, Action<ComputerPlayerAction>>();
             /*foreach (var player in playersByName.Values)
@@ -679,7 +679,7 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
             {
                 //this.LocalGameController.Quit();
                 var expectedEvent = this.expectedEvents[this.expectedEventIndex];
-                Assert.Fail($"Did not find {expectedEvent.GetType()} event for '{this.PlayerName}' in round {this.roundNumber}, turn {this.turnNumber}.\r\n{this.GetEventDetails(expectedEvent)}");
+                Assert.Fail($"Did not find {expectedEvent.GetType()} event for '{this.PlayerName}' in round {this.RoundNumber}, turn {this.TurnNumber}.\r\n{this.GetEventDetails(expectedEvent)}");
             }
         }
 
