@@ -1,8 +1,6 @@
 ﻿
-namespace SoC.Library.ScenarioTests
+namespace Jabberwocky.SoC.Library.GameActions
 {
-    using Jabberwocky.SoC.Library.GameActions;
-
     public class PlaceInfrastructureAction : ComputerPlayerAction
     {
         public readonly uint SettlementLocation;

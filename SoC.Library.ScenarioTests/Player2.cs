@@ -3,7 +3,6 @@ namespace SoC.Library.ScenarioTests
 {
     using System;
     using System.Collections.Generic;
-    using System.Linq;
     using Jabberwocky.SoC.Library;
     using Jabberwocky.SoC.Library.GameActions;
     using Jabberwocky.SoC.Library.GameEvents;
@@ -12,13 +11,11 @@ namespace SoC.Library.ScenarioTests
 
     internal class Player2
     {
-        //private TurnInstructions currentTurn;
         private BasePlayerTurn currentTurn;
         private List<BasePlayerTurn> turns = new List<BasePlayerTurn>();
 
         private int nextTurnIndex;
         protected GameController gameController;
-        private TurnToken currentTurnToken;
 
         public Player2(string playerName)
         {
@@ -60,9 +57,6 @@ namespace SoC.Library.ScenarioTests
             }
             else
             {
-                if (gameEvent is PlaceSetupInfrastructureEventArgs placeSetupInfrastructureEventArgs)
-                    this.currentTurnToken = placeSetupInfrastructureEventArgs.Item;
-
                 this.AddActualEvent(gameEvent);
             }
         }
@@ -118,11 +112,12 @@ namespace SoC.Library.ScenarioTests
 
                 this.Instructions.Dequeue();
                 var payload = instruction.Payload;
-                if (payload is ComputerPlayerAction action)
+                if (payload is ActionInstruction action)
+                //if (payload is ComputerPlayerAction action)
                 {
                     if (this.VerifyEvents(false))
                     {
-                        this.gameController.SendAction(this.currentTurnToken, action);
+                        this.SendAction(action);
                         break;
                     }
                 }
@@ -133,6 +128,18 @@ namespace SoC.Library.ScenarioTests
             }
 
             this.VerifyEvents(true);
+        }
+
+        private void SendAction(ActionInstruction action)
+        {
+            switch (action.Type)
+            {
+                case ActionInstruction.Types.PlaceStartingInfrastructure:
+                {
+                    this.gameController.PlaceStartingInfrastructure((uint)action.Parameters[0], (uint)action.Parameters[1]);
+                    break;
+                }
+            }
         }
 
         private int RoundNumber { get { return this.currentTurn.RoundNumber; } }

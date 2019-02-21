@@ -57,9 +57,11 @@ namespace SoC.ScenarioRunnerConsole
                             Console.Write($"Running '{method.Name}' ...");
                             var instance = Activator.CreateInstance(method.DeclaringType);
 
-                            object[] methodArgs = null;
+                            object[] methodArgs;
                             if (!serverTimerOn)
                                 methodArgs = new object[] { new string[] { "NoTimer" } };
+                            else
+                                methodArgs = new object[] { null };
 
                             method.Invoke(instance, methodArgs);
                             Console.WriteLine("Completed");

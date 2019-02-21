@@ -67,6 +67,7 @@
     <Compile Include="GameActions\DropResourcesAction.cs" />
     <Compile Include="GameActions\EndOfTurnAction.cs" />
     <Compile Include="GameActions\MakeDirectTradeOfferAction.cs" />
+    <Compile Include="GameActions\PlaceInfrastructureInstruction.cs" />
     <Compile Include="GameActions\PlaceRobberAction.cs" />
     <Compile Include="GameActions\PlayKnightCardAction.cs" />
     <Compile Include="GameActions\SelectResourceFromPlayerAction.cs" />

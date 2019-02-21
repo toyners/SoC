@@ -562,6 +562,17 @@ namespace SoC.Library.ScenarioTests
         public void Reset() { }
     }
 
+    internal class ActionInstruction
+    {
+        public enum Types
+        {
+            PlaceStartingInfrastructure
+        }
+
+        public Types Type;
+        public object[] Parameters;
+    }
+
     internal abstract class RunnerAction { }
 
     internal class InsertDevelopmentCardAction : RunnerAction
@@ -582,7 +593,7 @@ namespace SoC.Library.ScenarioTests
             Event
         }
 
-        public Instruction2(string playerName, ComputerPlayerAction payload)
+        public Instruction2(string playerName, ActionInstruction payload)
         {
             this.PlayerName = playerName;
             this.Payload = payload;

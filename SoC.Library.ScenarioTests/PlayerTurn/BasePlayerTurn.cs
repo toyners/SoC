@@ -511,10 +511,14 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
             }
         }
 
-        internal void BuildStartingInfrastructure(uint settlementLocation, uint roadEnd)
+        internal void BuildStartingInfrastructure(uint settlementLocation, uint roadEndLocation)
         {
-            var buildStartingInfrastructure = new BuildStartingInfrastructure(settlementLocation, roadEnd);
-            var scenarioAction = new Instruction2(this.PlayerName, buildStartingInfrastructure);
+            var actionInstruction = new ActionInstruction()
+            {
+                Type = ActionInstruction.Types.PlaceStartingInfrastructure,
+                Parameters = new object[] { settlementLocation, roadEndLocation }
+            };
+            var scenarioAction = new Instruction2(this.PlayerName, actionInstruction);
             this.instructions.Enqueue(scenarioAction);
         }
 
