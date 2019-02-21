@@ -139,6 +139,7 @@ namespace SoC.Library.ScenarioTests
                     this.gameController.PlaceStartingInfrastructure((uint)action.Parameters[0], (uint)action.Parameters[1]);
                     break;
                 }
+                default: throw new Exception();
             }
         }
 
