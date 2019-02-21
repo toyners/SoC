@@ -16,7 +16,7 @@ using SoC.Library.ScenarioTests.ScenarioEvents;
 
 namespace SoC.Library.ScenarioTests.PlayerTurn
 {
-    [DebuggerDisplay("{this.PlayerName} {this.roundNumber}-{this.turnNumber}")]
+    [DebuggerDisplay("{this.PlayerName} {this.RoundNumber}-{this.TurnNumber}")]
     internal class BasePlayerTurn
     {
         #region Fields
@@ -514,13 +514,14 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
         internal void BuildStartingInfrastructure(uint settlementLocation, uint roadEnd)
         {
             var buildStartingInfrastructure = new BuildStartingInfrastructure(settlementLocation, roadEnd);
-            var scenarioAction = new ScenarioActionWrapper(this.PlayerName, buildStartingInfrastructure);
+            var scenarioAction = new Instruction2(this.PlayerName, buildStartingInfrastructure);
             this.instructions.Enqueue(scenarioAction);
         }
 
         internal void PlaceSetupInfrastructureEvent()
         {
-            this.instructions.Enqueue(new ScenarioPlaceSetupInfrastructureEventArgs());
+            var instruction = new Instruction2(this.PlayerName, new ScenarioPlaceSetupInfrastructureEventArgs());
+            this.instructions.Enqueue(instruction);
         }
 
         protected void SetupResourceSelectionOnPlayer(IPlayer selectedPlayer, ResourceTypes expectedSingleResource)
@@ -612,6 +613,8 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
         public Queue<object> Instructions { get { return this.instructions; } }
 
         public bool IsFinished { get; set; }
+
+        public int InstructionIndex;
 
         public virtual void Process(Dictionary<string, IPlayer> playersByName)
         {

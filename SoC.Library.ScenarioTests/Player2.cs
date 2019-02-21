@@ -3,14 +3,19 @@ namespace SoC.Library.ScenarioTests
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using Jabberwocky.SoC.Library;
     using Jabberwocky.SoC.Library.GameActions;
     using Jabberwocky.SoC.Library.GameEvents;
     using NUnit.Framework;
+    using SoC.Library.ScenarioTests.PlayerTurn;
 
     internal class Player2
     {
-        private TurnInstructions currentTurn;
+        //private TurnInstructions currentTurn;
+        private BasePlayerTurn currentTurn;
+        private List<BasePlayerTurn> turns = new List<BasePlayerTurn>();
+
         private int nextTurnIndex;
         protected GameController gameController;
         private TurnToken currentTurnToken;
@@ -29,7 +34,7 @@ namespace SoC.Library.ScenarioTests
         {
             get
             {
-                return this.instructionIndex >= this.Instructions.Count;
+                return this.currentTurn.InstructionIndex >= this.Instructions.Count;
                 //return this.currentTurn != null &&
                 //    this.currentTurn.IsFinished;
             }
@@ -67,9 +72,11 @@ namespace SoC.Library.ScenarioTests
             this.GameException = exception;
         }
 
-        public void InsertTurnInstructions(IEnumerable<object> instructions, int roundNumber, int turnNumber)
+
+        public void InsertTurnInstructions(BasePlayerTurn turn)
         {
-            var turn = new TurnInstructions
+            this.turns.Add(turn);
+            /*var turn = new TurnInstructions
             {
                 RoundNumber = roundNumber,
                 TurnNumber = turnNumber
@@ -82,28 +89,27 @@ namespace SoC.Library.ScenarioTests
                 {
                     if (instruction is GameEvent gameEvent)
                         turn.Instructions.Add(gameEvent);
-                    else if (instruction is ScenarioActionWrapper scenarioAction && 
+                    else if (instruction is Instruction2 scenarioAction && 
                         scenarioAction.PlayerName == this.PlayerName)
                     {
-                        turn.Instructions.Add(scenarioAction.Action);
+                        turn.Instructions.Add(scenarioAction.Payload);
                     }
                 }
-            }
+            }*/
 
             if (this.currentTurn == null)
                 this.currentTurn = this.turns[this.nextTurnIndex++];
         }
 
-        private List<object> Instructions { get { return this.currentTurn.Instructions; } }
-        public List<GameEvent> ActualEvents { get { return this.currentTurn.ActualEvents; } }
-        public List<GameEvent> ExpectedEvents { get { return this.currentTurn.ExpectedEvents; } }
-        private int instructionIndex;
+        private List<GameEvent> ExpectedEvents = new List<GameEvent>();
+        private Queue<object> Instructions { get { return this.currentTurn.Instructions; } }
+        //public List<GameEvent> ActualEvents { get { return this.currentTurn.ActualEvents; } }
+        //public List<GameEvent> ExpectedEvents { get { return this.currentTurn.ExpectedEvents; } }
         public void Process()
         {
-            //this.currentTurn.Process((action) => this.gameController.SendAction(this.currentTurnToken, action));
-            for (; this.instructionIndex < this.Instructions.Count; this.instructionIndex++)
+            while (this.Instructions.Count > 0)
             {
-                var instruction = this.Instructions[this.instructionIndex];
+                var instruction = this.Instructions.Peek();
                 if (instruction is ComputerPlayerAction action)
                 {
                     if (this.VerifyEvents(false))
@@ -130,9 +136,9 @@ namespace SoC.Library.ScenarioTests
         {
             if (this.expectedEventIndex < this.ExpectedEvents.Count)
             {
-                while (this.actualEventIndex < this.ActualEvents.Count)
+                while (this.actualEventIndex < this.actualEvents.Count)
                 {
-                    if (this.ExpectedEvents[this.expectedEventIndex].Equals(this.ActualEvents[this.actualEventIndex]))
+                    if (this.ExpectedEvents[this.expectedEventIndex].Equals(this.actualEvents[this.actualEventIndex]))
                     {
                         this.expectedEventIndex++;
                     }
@@ -159,12 +165,13 @@ namespace SoC.Library.ScenarioTests
             }
         }
 
+        private List<GameEvent> actualEvents = new List<GameEvent>();
         public void AddActualEvent(GameEvent gameEvent)
         {
-            this.ActualEvents.Add(gameEvent);
+            this.actualEvents.Add(gameEvent);
         }
 
-        private List<TurnInstructions> turns = new List<TurnInstructions>();
+        /*private List<TurnInstructions> turns = new List<TurnInstructions>();
         private class TurnInstructions
         {
             private int nextActionIndex;
@@ -174,6 +181,6 @@ namespace SoC.Library.ScenarioTests
             public List<GameEvent> ActualEvents = new List<GameEvent>();
             public List<GameEvent> ExpectedEvents = new List<GameEvent>();
             public List<ComputerPlayerAction> Actions = new List<ComputerPlayerAction>();
-        }
+        }*/
     }
 }

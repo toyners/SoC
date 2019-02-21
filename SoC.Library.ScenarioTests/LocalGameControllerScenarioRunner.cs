@@ -68,12 +68,11 @@ namespace SoC.Library.ScenarioTests
 
         public void Run2()
         {
-            var playersByName = this.Players.ToDictionary(player => player.PlayerName, player => player);
             foreach (var turn in this.turns)
             {
                 foreach (var player in this.Players)
                 {
-                    player.InsertTurnInstructions(turn.Instructions, turn.RoundNumber, turn.TurnNumber);
+                    player.InsertTurnInstructions(turn);
                 }
             }
 
@@ -562,15 +561,30 @@ namespace SoC.Library.ScenarioTests
         void Add(ComputerPlayerAction action);
     }
 
-    internal class ScenarioActionWrapper
+    internal class Instruction2
     {
-        public ScenarioActionWrapper(string playerName, ComputerPlayerAction action)
+        public enum PayloadTypes
         {
-            this.PlayerName = playerName;
-            this.Action = action;
+            Action,
+            Event
         }
 
-        public ComputerPlayerAction Action { get; private set; }
+        public Instruction2(string playerName, ComputerPlayerAction payload)
+        {
+            this.PlayerName = playerName;
+            this.Payload = payload;
+            this.Type = PayloadTypes.Action;
+        }
+
+        public Instruction2(string playerName, GameEvent payload)
+        {
+            this.PlayerName = playerName;
+            this.Payload = payload;
+            this.Type = PayloadTypes.Event;
+        }
+
+        public object Payload { get; private set; }
+        public PayloadTypes Type { get; private set; }
         public string PlayerName { get; private set; }
     }
 }
