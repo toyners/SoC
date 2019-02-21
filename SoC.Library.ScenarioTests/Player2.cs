@@ -109,8 +109,16 @@ namespace SoC.Library.ScenarioTests
         {
             while (this.Instructions.Count > 0)
             {
-                var instruction = this.Instructions.Peek();
-                if (instruction is ComputerPlayerAction action)
+                if (this.GameException != null)
+                    throw this.GameException;
+
+                var instruction = (Instruction2)this.Instructions.Peek();
+                if (instruction.PlayerName != this.PlayerName)
+                    break;
+
+                this.Instructions.Dequeue();
+                var payload = instruction.Payload;
+                if (payload is ComputerPlayerAction action)
                 {
                     if (this.VerifyEvents(false))
                     {
@@ -118,7 +126,7 @@ namespace SoC.Library.ScenarioTests
                         break;
                     }
                 }
-                else if (instruction is GameEvent gameEvent)
+                else if (payload is GameEvent gameEvent)
                 {
                     this.ExpectedEvents.Add(gameEvent);
                 }

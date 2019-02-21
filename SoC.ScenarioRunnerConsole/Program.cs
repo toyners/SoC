@@ -4,7 +4,6 @@ using System.Reflection;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using NUnit.Framework;
 using SoC.Library.ScenarioTests;
 
 namespace SoC.ScenarioRunnerConsole
@@ -13,6 +12,7 @@ namespace SoC.ScenarioRunnerConsole
     {
         static void Main(string[] args)
         {
+            var serverTimerOn = true;
             var assembly = Assembly.GetAssembly(typeof(ScenarioTests));
             var methods = assembly.GetTypes()
                                 .SelectMany(t => t.GetMethods())
@@ -27,10 +27,18 @@ namespace SoC.ScenarioRunnerConsole
                 foreach (var method in methods)
                     Console.WriteLine($"[{methodNumber++}] - {method.Name}");
 
-                Console.WriteLine("Select number of scenario to run. 0 to run all. X to exit");
+                if (!serverTimerOn)
+                    Console.WriteLine("[SERVER TIMER OFF]");
+                Console.WriteLine("Select number of scenario to run. 0 to run all. X to exit. T to toggle server timer");
                 var key = Console.ReadLine();
                 if (key == "x" || key == "X")
                     break;
+                if (key == "t" || key == "T")
+                {
+                    serverTimerOn = !serverTimerOn;
+                    continue;
+                }
+                
                 methodNumber = int.Parse(key);
                 Console.WriteLine();
 
@@ -48,7 +56,12 @@ namespace SoC.ScenarioRunnerConsole
                         {
                             Console.Write($"Running '{method.Name}' ...");
                             var instance = Activator.CreateInstance(method.DeclaringType);
-                            method.Invoke(instance, null);
+
+                            object[] methodArgs = null;
+                            if (!serverTimerOn)
+                                methodArgs = new object[] { new string[] { "NoTimer" } };
+
+                            method.Invoke(instance, methodArgs);
                             Console.WriteLine("Completed");
                         }
                         catch (Exception e)

@@ -1180,9 +1180,9 @@ namespace SoC.Library.ScenarioTests
         }
 
         [Scenario]
-        public void Scenario_AllPlayersCompleteSetup()
+        public void Scenario_AllPlayersCompleteSetup(string[] args)
         {
-            LocalGameController()
+            LocalGameController(args)
                 .WithHumanPlayer(MainPlayer)
                 .WithComputerPlayer2(FirstOpponent_Babara)
                 .WithComputerPlayer2(SecondOpponent_Charlie)

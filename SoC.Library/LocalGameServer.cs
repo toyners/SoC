@@ -31,12 +31,12 @@ namespace Jabberwocky.SoC.Library
 
         public bool IsFinished { get; set; }
 
-        public LocalGameServer(INumberGenerator numberGenerator, GameBoard gameBoard, IDevelopmentCardHolder developmentCardHolder)
+        public LocalGameServer(INumberGenerator numberGenerator, GameBoard gameBoard, IDevelopmentCardHolder developmentCardHolder, IGameTimer turnTimer = null)
         {
             this.numberGenerator = numberGenerator;
             this.gameBoard = gameBoard;
             this.developmentCardHolder = developmentCardHolder;
-            this.turnTimer = new GameServerTimer();
+            this.turnTimer = turnTimer != null ? turnTimer : new GameServerTimer();
         }
 
         private event Action<Exception> GameExceptionEvent;

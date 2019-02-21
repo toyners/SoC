@@ -47,11 +47,15 @@ namespace SoC.Library.ScenarioTests
         private Dictionary<GameEventTypes, Delegate> eventHandlersByGameEventType;
         private GameBoard gameBoard;
         private LocalGameController localGameController = null;
+        private bool useServerTimer = true;
         #endregion 
 
         #region Construction
-        private LocalGameControllerScenarioRunner()
+        private LocalGameControllerScenarioRunner(string[] args)
         {
+            if (args != null && args.Contains("NoTimer"))
+                this.useServerTimer = false;
+
             this.NumberGenerator = new ScenarioNumberGenerator();
         }
         #endregion
@@ -61,9 +65,9 @@ namespace SoC.Library.ScenarioTests
         #endregion
 
         #region Methods
-        public static LocalGameControllerScenarioRunner LocalGameController()
+        public static LocalGameControllerScenarioRunner LocalGameController(string[] args = null)
         {
-            return new LocalGameControllerScenarioRunner();
+            return new LocalGameControllerScenarioRunner(args);
         }
 
         public void Run2()
@@ -79,10 +83,12 @@ namespace SoC.Library.ScenarioTests
             if (this.gameBoard == null)
                 this.gameBoard = new GameBoard(BoardSizes.Standard);
 
+
             var gameServer = new LocalGameServer(
                 this.NumberGenerator,
                 this.gameBoard,
-                this.developmentCardHolder
+                this.developmentCardHolder,
+                this.useServerTimer == false ? new MockTurnTimer() : null
             );
 
             gameServer.LaunchGame();
@@ -547,6 +553,13 @@ namespace SoC.Library.ScenarioTests
             return this;
         }
         #endregion
+    }
+
+    internal class MockTurnTimer : IGameTimer
+    {
+        public bool IsLate => false;
+
+        public void Reset() { }
     }
 
     internal abstract class RunnerAction { }
