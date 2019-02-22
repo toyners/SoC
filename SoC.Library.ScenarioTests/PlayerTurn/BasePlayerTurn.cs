@@ -4,7 +4,6 @@ using System.Diagnostics;
 using System.Linq;
 using Jabberwocky.SoC.Library;
 using Jabberwocky.SoC.Library.DevelopmentCards;
-using Jabberwocky.SoC.Library.Enums;
 using Jabberwocky.SoC.Library.GameActions;
 using Jabberwocky.SoC.Library.GameEvents;
 using Jabberwocky.SoC.Library.Interfaces;
@@ -235,7 +234,8 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
             {
                 Type = ActionInstruction.Types.EndOfTurn,
             };
-            this.instructions.Enqueue(actionInstruction);
+            var instruction = new Instruction2(this.PlayerName, actionInstruction);
+            this.instructions.Enqueue(instruction);
             return this.runner;
         }
 
@@ -258,12 +258,6 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
 
         public BasePlayerTurn LargestArmyChangedEvent(string previousPlayerName = null)
         {
-            /*Guid previousPlayerId = Guid.Empty;
-            if (previousPlayerName != null)
-                previousPlayerId = this.playersByName[previousPlayerName].Id;
-            var expectedLargestArmyChangedEvent = new LargestArmyChangedEvent(this.PlayerId, previousPlayerId);
-            this.instructions.Enqueue(expectedLargestArmyChangedEvent);*/
-
             this.instructions.Enqueue(new LargestArmyChangedEventInstruction
             {
                 CurrentPlayerName = this.PlayerName,
@@ -515,7 +509,7 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
             }
         }
 
-        internal void BuildStartingInfrastructure(uint settlementLocation, uint roadEndLocation)
+        internal void PlaceStartingInfrastructure(uint settlementLocation, uint roadEndLocation)
         {
             var actionInstruction = new ActionInstruction()
             {

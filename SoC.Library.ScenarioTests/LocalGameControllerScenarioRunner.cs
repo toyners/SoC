@@ -537,7 +537,7 @@ namespace SoC.Library.ScenarioTests
             var turn = new BasePlayerTurn(playerName, this, this.setupRoundNumber, this.turnNumber);
             if (registerPlaceSetupInfrastructureEvent)
                 turn.PlaceSetupInfrastructureEvent();
-            turn.BuildStartingInfrastructure(settlementLocation, roadEnd);
+            turn.PlaceStartingInfrastructure(settlementLocation, roadEnd);
             turn.EndTurn();
 
             this.turns.Add(turn);
