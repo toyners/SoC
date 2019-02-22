@@ -83,7 +83,6 @@ namespace SoC.Library.ScenarioTests
             if (this.gameBoard == null)
                 this.gameBoard = new GameBoard(BoardSizes.Standard);
 
-
             var gameServer = new LocalGameServer(
                 this.NumberGenerator,
                 this.gameBoard,
@@ -566,6 +565,7 @@ namespace SoC.Library.ScenarioTests
     {
         public enum Types
         {
+            EndOfTurn,
             PlaceStartingInfrastructure
         }
 

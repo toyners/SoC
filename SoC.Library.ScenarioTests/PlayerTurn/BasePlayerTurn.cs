@@ -231,7 +231,11 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
 
         public LocalGameControllerScenarioRunner EndTurn()
         {
-            this.instructions.Enqueue(new EndOfTurnAction());
+            var actionInstruction = new ActionInstruction()
+            {
+                Type = ActionInstruction.Types.EndOfTurn,
+            };
+            this.instructions.Enqueue(actionInstruction);
             return this.runner;
         }
 

@@ -7,7 +7,7 @@ namespace Jabberwocky.SoC.Library
 {
     public class GameController
     {
-        private TurnToken currentTurnToken;
+        private TurnToken turnToken;
         public event Action<TurnToken, ComputerPlayerAction> PlayerActionEvent;
         public event Action<GameEvent> GameEvent;
         public event Action<Exception> GameExceptionEvent;
@@ -15,7 +15,7 @@ namespace Jabberwocky.SoC.Library
         internal void GameEventHandler(GameEvent gameEvent)
         {
             if (gameEvent is PlaceSetupInfrastructureEventArgs placeSetupInfrastructureEventArgs)
-                this.currentTurnToken = placeSetupInfrastructureEventArgs.Item;
+                this.turnToken = placeSetupInfrastructureEventArgs.Item;
             
             this.GameEvent.Invoke(gameEvent);
         }
@@ -27,12 +27,17 @@ namespace Jabberwocky.SoC.Library
 
         public void PlaceStartingInfrastructure(uint settlementLocation, uint roadEndLocation)
         {
-            this.PlayerActionEvent.Invoke(this.currentTurnToken, new PlaceInfrastructureAction(settlementLocation, roadEndLocation));
+            this.PlayerActionEvent.Invoke(this.turnToken, new PlaceInfrastructureAction(settlementLocation, roadEndLocation));
         }
 
         private void SendAction(TurnToken turnToken, ComputerPlayerAction action)
         {
             this.PlayerActionEvent.Invoke(turnToken, action);
+        }
+
+        public void EndTurn()
+        {
+            this.PlayerActionEvent.Invoke(this.turnToken, new EndOfTurnAction());
         }
     }
 }

@@ -113,7 +113,6 @@ namespace SoC.Library.ScenarioTests
                 this.Instructions.Dequeue();
                 var payload = instruction.Payload;
                 if (payload is ActionInstruction action)
-                //if (payload is ComputerPlayerAction action)
                 {
                     if (this.VerifyEvents(false))
                     {
@@ -134,6 +133,11 @@ namespace SoC.Library.ScenarioTests
         {
             switch (action.Type)
             {
+                case ActionInstruction.Types.EndOfTurn:
+                {
+                    this.gameController.EndTurn();
+                    break;
+                }
                 case ActionInstruction.Types.PlaceStartingInfrastructure:
                 {
                     this.gameController.PlaceStartingInfrastructure((uint)action.Parameters[0], (uint)action.Parameters[1]);

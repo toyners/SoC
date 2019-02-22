@@ -29,8 +29,6 @@ namespace Jabberwocky.SoC.Library
         private uint dice1, dice2;
         private IGameTimer turnTimer;
 
-        public bool IsFinished { get; set; }
-
         public LocalGameServer(INumberGenerator numberGenerator, GameBoard gameBoard, IDevelopmentCardHolder developmentCardHolder, IGameTimer turnTimer = null)
         {
             this.numberGenerator = numberGenerator;
@@ -38,6 +36,8 @@ namespace Jabberwocky.SoC.Library
             this.developmentCardHolder = developmentCardHolder;
             this.turnTimer = turnTimer != null ? turnTimer : new GameServerTimer();
         }
+
+        public bool IsFinished { get; set; }
 
         private event Action<Exception> GameExceptionEvent;
 
