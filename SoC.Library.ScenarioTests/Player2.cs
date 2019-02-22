@@ -4,7 +4,6 @@ namespace SoC.Library.ScenarioTests
     using System;
     using System.Collections.Generic;
     using Jabberwocky.SoC.Library;
-    using Jabberwocky.SoC.Library.GameActions;
     using Jabberwocky.SoC.Library.GameEvents;
     using NUnit.Framework;
     using SoC.Library.ScenarioTests.PlayerTurn;
@@ -31,9 +30,8 @@ namespace SoC.Library.ScenarioTests
         {
             get
             {
-                return this.currentTurn.InstructionIndex >= this.Instructions.Count;
-                //return this.currentTurn != null &&
-                //    this.currentTurn.IsFinished;
+                return this.currentTurn.InstructionIndex >= this.Instructions.Count &&
+                    this.currentTurn.IsVerified;
             }
         }
         public bool IsFinished
