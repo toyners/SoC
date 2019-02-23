@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 using Jabberwocky.SoC.Library;
 using Jabberwocky.SoC.Library.DevelopmentCards;
 using Jabberwocky.SoC.Library.GameActions;
@@ -76,7 +77,7 @@ namespace SoC.Library.ScenarioTests
             {
                 foreach (var player in this.Players)
                 {
-                    player.InsertTurnInstructions(turn);
+                    player.AddTurnInstructions(turn);
                 }
             }
 
@@ -95,6 +96,7 @@ namespace SoC.Library.ScenarioTests
             foreach (var player in this.Players)
             {
                 player.JoinGame(gameServer);
+                player.StartAsync();
             }
 
             gameServer.StartGameAsync();
@@ -102,7 +104,7 @@ namespace SoC.Library.ScenarioTests
             while (!gameServer.IsFinished)
             {
                 Thread.Sleep(50);
-                var playerIsFinished = 0;
+                /*var playerIsFinished = 0;
                 foreach (var player in this.Players)
                 {
                     if (player.GameException != null)
@@ -119,7 +121,7 @@ namespace SoC.Library.ScenarioTests
                 }
 
                 if (playerIsFinished == this.Players.Count)
-                    break;
+                    break;*/
             }
         }
 
