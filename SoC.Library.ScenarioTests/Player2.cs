@@ -126,12 +126,11 @@ namespace SoC.Library.ScenarioTests
                 var payload = instruction.Payload;
                 if (payload is ActionInstruction action)
                 {
-                    if (this.VerifyEvents(false))
-                    {
-                        this.currentInstructionIndex++;
-                        this.SendAction(action);
+                    if (!this.VerifyEvents(false))
                         return;
-                    }
+
+                    this.currentInstructionIndex++;
+                    this.SendAction(action);
                 }
                 else if (payload is GameEvent gameEvent)
                 {
@@ -145,15 +144,18 @@ namespace SoC.Library.ScenarioTests
 
         internal void StartAsync()
         {
-            Task.Factory.StartNew(() => {
-                Thread.CurrentThread.Name = this.PlayerName;
-                while (true)
-                {
-                    Thread.Sleep(50);
-                    if (!this.IsFinished)
-                        this.Process();
-                }
-            });
+            Task.Factory.StartNew(() => this.Run());
+        }
+
+        private void Run()
+        {
+            Thread.CurrentThread.Name = this.PlayerName;
+            while (true)
+            {
+                Thread.Sleep(50);
+                if (!this.IsFinished)
+                    this.Process();
+            }
         }
 
         private void SendAction(ActionInstruction action)
