@@ -2,6 +2,7 @@
 namespace SoC.Library.ScenarioTests
 {
     using System;
+    using System.Collections.Concurrent;
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading;
@@ -15,7 +16,7 @@ namespace SoC.Library.ScenarioTests
     internal class Player2
     {
         private TurnInstructions currentTurn;
-        private List<TurnInstructions> turns = new List<TurnInstructions>();
+        private readonly List<TurnInstructions> turns = new List<TurnInstructions>();
 
         private int nextTurnIndex;
         protected GameController gameController;
@@ -52,14 +53,22 @@ namespace SoC.Library.ScenarioTests
             gameServer.JoinGame(this.PlayerName, this.gameController);
         }
 
+        private ConcurrentQueue<GameEvent> actualEventQueue = new ConcurrentQueue<GameEvent>();
         protected void GameEventHandler(GameEvent gameEvent)
         {
-            if (gameEvent is PlaceSetupInfrastructureEventArgs)
+            this.actualEventQueue.Enqueue(gameEvent);
+            /*if (gameEvent is InitialBoardSetupEventArgs)
             {
                 this.currentTurn = this.turns[this.nextTurnIndex++];
             }
+            else if (gameEvent is PlaceSetupInfrastructureEventArgs)
+            {
+                this.placeSetupInfrastructureEventCount++;
+                if (this.placeSetupInfrastructureEventCount == 2)
+                    this.currentTurn = this.turns[this.nextTurnIndex++];
+            }
 
-            this.AddActualEvent(gameEvent);
+            this.AddActualEvent(gameEvent);*/
         }
 
         private void GameExceptionEventHandler(Exception exception)
@@ -82,24 +91,31 @@ namespace SoC.Library.ScenarioTests
             }
         }
 
-        //private List<GameEvent> ExpectedEvents = new List<GameEvent>();
-        //private Queue<object> Instructions { get { return this.currentTurn.Instructions; } }
         public List<GameEvent> ActualEvents { get { return this.currentTurn.ActualEvents; } }
         public List<GameEvent> ExpectedEvents { get { return this.currentTurn.ExpectedEvents; } }
         private int currentInstructionIndex;
+        private int placeSetupInfrastructureEventCount;
         public void Process()
         {
-            if (this.IsFinished)
+            // Get events from the incoming queue
+            while (this.actualEventQueue.TryDequeue(out var gameEvent))
             {
-                this.currentTurn = null;
-                return;
+                if (gameEvent is InitialBoardSetupEventArgs)
+                {
+                    this.currentTurn = this.turns[this.nextTurnIndex++];
+                }
+                else if (gameEvent is PlaceSetupInfrastructureEventArgs)
+                {
+                    this.placeSetupInfrastructureEventCount++;
+                    if (this.placeSetupInfrastructureEventCount == 2)
+                        this.currentTurn = this.turns[this.nextTurnIndex++];
+                }
+
+                this.ActualEvents.Add(gameEvent);
             }
 
-            if (this.CurrentTurnIsFinished)
-            {
-                this.currentTurn = this.turns[this.nextTurnIndex++];
-                this.currentInstructionIndex = 0;
-            }
+            if (this.currentTurn == null)
+                return;
 
             while (this.currentInstructionIndex < this.currentTurn.Instructions.Count)
             {
@@ -130,10 +146,11 @@ namespace SoC.Library.ScenarioTests
         internal void StartAsync()
         {
             Task.Factory.StartNew(() => {
+                Thread.CurrentThread.Name = this.PlayerName;
                 while (true)
                 {
                     Thread.Sleep(50);
-                    if (this.currentTurn != null)
+                    if (!this.IsFinished)
                         this.Process();
                 }
             });
@@ -181,7 +198,6 @@ namespace SoC.Library.ScenarioTests
             {
                 // At least one expected event was not matched with an actual event.
                 var expectedEvent = this.ExpectedEvents[this.expectedEventIndex];
-                //Assert.Fail($"Did not find {expectedEvent.GetType()}");
                 //Assert.Fail($"Did not find {expectedEvent.GetType()} event for '{this.PlayerName}' in round {this.RoundNumber}, turn {this.TurnNumber}.\r\n{/*this.GetEventDetails(expectedEvent)*/""}");
                 Assert.Fail($"Did not find {expectedEvent.GetType()} event for '{this.PlayerName}' in round {this.RoundNumber}, turn {this.TurnNumber}.\r\n");
 
@@ -200,7 +216,6 @@ namespace SoC.Library.ScenarioTests
 
         private class TurnInstructions
         {
-            private int nextActionIndex;
             public int RoundNumber, TurnNumber;
             
             public List<object> Instructions = new List<object>();

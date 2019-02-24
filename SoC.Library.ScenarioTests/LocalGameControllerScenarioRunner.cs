@@ -73,6 +73,7 @@ namespace SoC.Library.ScenarioTests
 
         public void Run2()
         {
+            Thread.CurrentThread.Name = "Scenario Runner";
             foreach (var turn in this.turns)
             {
                 foreach (var player in this.Players)
@@ -95,7 +96,7 @@ namespace SoC.Library.ScenarioTests
 
             foreach (var player in this.Players)
             {
-                player.JoinGame(gameServer);
+                player.JoinGame(gameServer);    
                 player.StartAsync();
             }
 

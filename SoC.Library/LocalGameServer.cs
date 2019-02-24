@@ -63,6 +63,7 @@ namespace Jabberwocky.SoC.Library
             // Launch server processing on separate thread
             Task.Factory.StartNew(() =>
             {
+                Thread.CurrentThread.Name = "Local Game Server";
                 try
                 {
                     this.players = PlayerTurnOrderCreator.Create(this.players, this.numberGenerator);
