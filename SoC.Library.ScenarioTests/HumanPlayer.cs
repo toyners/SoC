@@ -5,7 +5,7 @@ namespace SoC.Library.ScenarioTests
     using Jabberwocky.SoC.Library;
     using Jabberwocky.SoC.Library.GameEvents;
 
-    internal class HumanPlayer : Player2
+    internal class HumanPlayer : PlayerAgent
     {
         public HumanPlayer(string playerName) : base(playerName)
         {

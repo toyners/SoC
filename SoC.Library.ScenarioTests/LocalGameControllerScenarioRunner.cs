@@ -384,7 +384,7 @@ namespace SoC.Library.ScenarioTests
             return this;
         }
 
-        private List<Player2> Players = new List<Player2>();
+        private List<PlayerAgent> Players = new List<PlayerAgent>();
         public LocalGameControllerScenarioRunner WithTurnOrder(string firstPlayerName, string secondPlayerName, string thirdPlayerName, string fourthPlayerName)
         {
             var rolls = new uint[4];

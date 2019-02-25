@@ -13,7 +13,7 @@ namespace SoC.Library.ScenarioTests
     using NUnit.Framework;
     using SoC.Library.ScenarioTests.PlayerTurn;
 
-    internal class Player2
+    internal class PlayerAgent
     {
         private TurnInstructions currentTurn;
         private readonly List<TurnInstructions> turns = new List<TurnInstructions>();
@@ -21,7 +21,7 @@ namespace SoC.Library.ScenarioTests
         private int nextTurnIndex;
         protected GameController gameController;
 
-        public Player2(string playerName)
+        public PlayerAgent(string playerName)
         {
             this.PlayerName = playerName;
             this.gameController = new GameController();
