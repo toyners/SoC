@@ -124,7 +124,7 @@ namespace SoC.Library.ScenarioTests
                 if (this.actualEventQueue.TryDequeue(out var actualEvent))
                     this.ProcessActualEvent(actualEvent);
 
-                if (this.currentTurn == null)
+                if (this.currentTurn != null)
                     this.ProcessInstructions();
             }
         }
