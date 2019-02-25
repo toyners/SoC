@@ -21,16 +21,16 @@ namespace SoC.Library.ScenarioTests
         private int nextTurnIndex;
         protected GameController gameController;
 
-        public PlayerAgent(string playerName)
+        public PlayerAgent(string name)
         {
-            this.PlayerName = playerName;
+            this.Name = name;
             this.gameController = new GameController();
             this.gameController.GameExceptionEvent += this.GameExceptionEventHandler;
             this.gameController.GameEvent += this.GameEventHandler;
         }
 
         public Exception GameException { get; private set; }
-        public string PlayerName { get; private set; }
+        public string Name { get; private set; }
         private bool CurrentTurnIsFinished
         {
             get
@@ -50,7 +50,7 @@ namespace SoC.Library.ScenarioTests
 
         public void JoinGame(LocalGameServer gameServer)
         {
-            gameServer.JoinGame(this.PlayerName, this.gameController);
+            gameServer.JoinGame(this.Name, this.gameController);
         }
 
         private ConcurrentQueue<GameEvent> actualEventQueue = new ConcurrentQueue<GameEvent>();
@@ -69,7 +69,7 @@ namespace SoC.Library.ScenarioTests
             if (bpt == null || !bpt.HasInstructions)
                 return;
 
-            var instructions = bpt.Instructions.Where(i => ((Instruction2)i).PlayerName == this.PlayerName).ToList();
+            var instructions = bpt.Instructions.Where(i => ((Instruction2)i).PlayerName == this.Name).ToList();
             if (instructions.Count == 0)
                 return;
 
@@ -85,35 +85,8 @@ namespace SoC.Library.ScenarioTests
         public List<GameEvent> ActualEvents { get { return this.currentTurn.ActualEvents; } }
         public List<GameEvent> ExpectedEvents { get { return this.currentTurn.ExpectedEvents; } }
         private int currentInstructionIndex;
-        public void Process(GameEvent actualEvent)
+        public void ProcessInstructions()
         {
-            if (actualEvent != null)
-            {
-                var changeTurn = false;
-                if (actualEvent is InitialBoardSetupEventArgs)
-                {
-                    changeTurn = true;
-                }
-                else if (actualEvent is PlaceSetupInfrastructureEventArgs)
-                {
-                    changeTurn = true;
-                }
-
-                if (changeTurn)
-                {
-                    if (this.currentTurn != null)
-                        this.VerifyEvents(true);
-
-                    this.currentTurn = this.turns[this.nextTurnIndex++];
-                    this.currentInstructionIndex = 0;
-                }
-
-                this.ActualEvents.Add(actualEvent);
-            }
-
-            if (this.currentTurn == null)
-                return;
-
             while (this.currentInstructionIndex < this.currentTurn.Instructions.Count)
             {
                 if (this.GameException != null)
@@ -135,8 +108,6 @@ namespace SoC.Library.ScenarioTests
                     this.ExpectedEvents.Add(expectedEvent);
                 }
             }
-
-            //this.VerifyEvents(true);
         }
 
         internal void StartAsync()
@@ -146,16 +117,40 @@ namespace SoC.Library.ScenarioTests
 
         private void Run()
         {
-            Thread.CurrentThread.Name = this.PlayerName;
-            while (true)
+            Thread.CurrentThread.Name = this.Name;
+            while (!this.IsFinished)
             {
                 Thread.Sleep(50);
-                GameEvent actualEvent = null;
-                this.actualEventQueue.TryDequeue(out actualEvent);
+                if (this.actualEventQueue.TryDequeue(out var actualEvent))
+                    this.ProcessActualEvent(actualEvent);
 
-                if (!this.IsFinished)
-                    this.Process(actualEvent);
+                if (this.currentTurn == null)
+                    this.ProcessInstructions();
             }
+        }
+
+        private void ProcessActualEvent(GameEvent actualEvent)
+        {
+            var changeTurn = false;
+            if (actualEvent is InitialBoardSetupEventArgs)
+            {
+                changeTurn = true;
+            }
+            else if (actualEvent is PlaceSetupInfrastructureEventArgs)
+            {
+                changeTurn = true;
+            }
+
+            if (changeTurn)
+            {
+                if (this.currentTurn != null)
+                    this.VerifyEvents(true);
+
+                this.currentTurn = this.turns[this.nextTurnIndex++];
+                this.currentInstructionIndex = 0;
+            }
+
+            this.ActualEvents.Add(actualEvent);
         }
 
         private void SendAction(ActionInstruction action)
@@ -202,9 +197,9 @@ namespace SoC.Library.ScenarioTests
                 // At least one expected event was not matched with an actual event.
                 var expectedEvent = this.ExpectedEvents[this.ExpectedEventIndex];
                 //Assert.Fail($"Did not find {expectedEvent.GetType()} event for '{this.PlayerName}' in round {this.RoundNumber}, turn {this.TurnNumber}.\r\n{/*this.GetEventDetails(expectedEvent)*/""}");
-                Assert.Fail($"Did not find {expectedEvent.GetType()} event for '{this.PlayerName}' in round {this.RoundNumber}, turn {this.TurnNumber}.\r\n");
+                Assert.Fail($"Did not find {expectedEvent.GetType()} event for '{this.Name}' in round {this.RoundNumber}, turn {this.TurnNumber}.\r\n");
 
-                throw new NotImplementedException(); // Not reached - Have to do this to pass compliation
+                throw new NotImplementedException(); // Never reached - Have to do this to pass compliation
             }
             else
             {

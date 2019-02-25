@@ -390,7 +390,7 @@ namespace SoC.Library.ScenarioTests
             var rolls = new uint[4];
             for (var index = 0; index < this.PlayerAgents.Count; index++)
             {
-                var playerName = this.PlayerAgents[index].PlayerName;
+                var playerName = this.PlayerAgents[index].Name;
                 if (firstPlayerName == playerName)
                     rolls[index] = 12;
                 else if (secondPlayerName == playerName)
@@ -559,7 +559,7 @@ namespace SoC.Library.ScenarioTests
             var number = 1;
             foreach (var playerAgent in this.PlayerAgents)
             {
-                var playerTurn = new BasePlayerTurn(playerAgent.PlayerName, this, -3, number++);
+                var playerTurn = new BasePlayerTurn(playerAgent.Name, this, -3, number++);
                 playerTurn.StartingInfrastructureEvent();
                 this.turns.Add(playerTurn);
             }
