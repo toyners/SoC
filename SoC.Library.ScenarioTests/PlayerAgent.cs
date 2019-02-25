@@ -37,7 +37,7 @@ namespace SoC.Library.ScenarioTests
             {
                 return this.currentTurn != null &&
                     this.currentInstructionIndex >= this.currentTurn.Instructions.Count &&
-                    this.expectedEventIndex == this.ExpectedEvents.Count;
+                    this.ExpectedEventIndex == this.ExpectedEvents.Count;
             }
         }
         public bool IsFinished
@@ -57,18 +57,6 @@ namespace SoC.Library.ScenarioTests
         protected void GameEventHandler(GameEvent gameEvent)
         {
             this.actualEventQueue.Enqueue(gameEvent);
-            /*if (gameEvent is InitialBoardSetupEventArgs)
-            {
-                this.currentTurn = this.turns[this.nextTurnIndex++];
-            }
-            else if (gameEvent is PlaceSetupInfrastructureEventArgs)
-            {
-                this.placeSetupInfrastructureEventCount++;
-                if (this.placeSetupInfrastructureEventCount == 2)
-                    this.currentTurn = this.turns[this.nextTurnIndex++];
-            }
-
-            this.AddActualEvent(gameEvent);*/
         }
 
         private void GameExceptionEventHandler(Exception exception)
@@ -78,40 +66,49 @@ namespace SoC.Library.ScenarioTests
 
         public void AddTurnInstructions(BasePlayerTurn bpt)
         {
+            if (bpt == null || !bpt.HasInstructions)
+                return;
+
+            var instructions = bpt.Instructions.Where(i => ((Instruction2)i).PlayerName == this.PlayerName).ToList();
+            if (instructions.Count == 0)
+                return;
+
             var turn = new TurnInstructions
             {
                 RoundNumber = bpt.RoundNumber,
                 TurnNumber = bpt.TurnNumber
             };
-
+            turn.Instructions = new List<object>(instructions);
             this.turns.Add(turn);
-            if (bpt != null && bpt.HasInstructions)
-            {
-                turn.Instructions = new List<object>(bpt.Instructions.Where(i => ((Instruction2)i).PlayerName == this.PlayerName));
-            }
         }
 
         public List<GameEvent> ActualEvents { get { return this.currentTurn.ActualEvents; } }
         public List<GameEvent> ExpectedEvents { get { return this.currentTurn.ExpectedEvents; } }
         private int currentInstructionIndex;
-        private int placeSetupInfrastructureEventCount;
-        public void Process()
+        public void Process(GameEvent actualEvent)
         {
-            // Get events from the incoming queue
-            while (this.actualEventQueue.TryDequeue(out var gameEvent))
+            if (actualEvent != null)
             {
-                if (gameEvent is InitialBoardSetupEventArgs)
+                var changeTurn = false;
+                if (actualEvent is InitialBoardSetupEventArgs)
                 {
-                    this.currentTurn = this.turns[this.nextTurnIndex++];
+                    changeTurn = true;
                 }
-                else if (gameEvent is PlaceSetupInfrastructureEventArgs)
+                else if (actualEvent is PlaceSetupInfrastructureEventArgs)
                 {
-                    this.placeSetupInfrastructureEventCount++;
-                    if (this.placeSetupInfrastructureEventCount == 2)
-                        this.currentTurn = this.turns[this.nextTurnIndex++];
+                    changeTurn = true;
                 }
 
-                this.ActualEvents.Add(gameEvent);
+                if (changeTurn)
+                {
+                    if (this.currentTurn != null)
+                        this.VerifyEvents(true);
+
+                    this.currentTurn = this.turns[this.nextTurnIndex++];
+                    this.currentInstructionIndex = 0;
+                }
+
+                this.ActualEvents.Add(actualEvent);
             }
 
             if (this.currentTurn == null)
@@ -132,14 +129,14 @@ namespace SoC.Library.ScenarioTests
                     this.currentInstructionIndex++;
                     this.SendAction(action);
                 }
-                else if (payload is GameEvent gameEvent)
+                else if (payload is GameEvent expectedEvent)
                 {
                     this.currentInstructionIndex++;
-                    this.ExpectedEvents.Add(gameEvent);
+                    this.ExpectedEvents.Add(expectedEvent);
                 }
             }
 
-            this.VerifyEvents(true);
+            //this.VerifyEvents(true);
         }
 
         internal void StartAsync()
@@ -153,8 +150,11 @@ namespace SoC.Library.ScenarioTests
             while (true)
             {
                 Thread.Sleep(50);
+                GameEvent actualEvent = null;
+                this.actualEventQueue.TryDequeue(out actualEvent);
+
                 if (!this.IsFinished)
-                    this.Process();
+                    this.Process(actualEvent);
             }
         }
 
@@ -179,27 +179,28 @@ namespace SoC.Library.ScenarioTests
         private int RoundNumber { get { return this.currentTurn.RoundNumber; } }
         private int TurnNumber { get { return this.currentTurn.TurnNumber; } }
 
-        private int expectedEventIndex;
-        private int actualEventIndex;
+        // TODO: Clean up this - either better use of no use of properties to public vars
+        private int ExpectedEventIndex { get { return this.currentTurn.ExpectedEventIndex; }  set { this.currentTurn.ExpectedEventIndex = value; } }
+        private int ActualEventIndex { get { return this.currentTurn.ActualEventIndex; } set { this.currentTurn.ActualEventIndex = value; } }
         private bool VerifyEvents(bool throwIfNotVerified)
         {
-            if (this.expectedEventIndex < this.ExpectedEvents.Count)
+            if (this.ExpectedEventIndex < this.ExpectedEvents.Count)
             {
-                while (this.actualEventIndex < this.ActualEvents.Count)
+                while (this.ActualEventIndex < this.ActualEvents.Count)
                 {
-                    if (this.ExpectedEvents[this.expectedEventIndex].Equals(this.ActualEvents[this.actualEventIndex]))
+                    if (this.ExpectedEvents[this.ExpectedEventIndex].Equals(this.ActualEvents[this.ActualEventIndex]))
                     {
-                        this.expectedEventIndex++;
+                        this.ExpectedEventIndex++;
                     }
 
-                    this.actualEventIndex++;
+                    this.ActualEventIndex++;
                 }
             }
 
-            if (throwIfNotVerified && this.expectedEventIndex < this.ExpectedEvents.Count)
+            if (throwIfNotVerified && this.ExpectedEventIndex < this.ExpectedEvents.Count)
             {
                 // At least one expected event was not matched with an actual event.
-                var expectedEvent = this.ExpectedEvents[this.expectedEventIndex];
+                var expectedEvent = this.ExpectedEvents[this.ExpectedEventIndex];
                 //Assert.Fail($"Did not find {expectedEvent.GetType()} event for '{this.PlayerName}' in round {this.RoundNumber}, turn {this.TurnNumber}.\r\n{/*this.GetEventDetails(expectedEvent)*/""}");
                 Assert.Fail($"Did not find {expectedEvent.GetType()} event for '{this.PlayerName}' in round {this.RoundNumber}, turn {this.TurnNumber}.\r\n");
 
@@ -207,7 +208,7 @@ namespace SoC.Library.ScenarioTests
             }
             else
             {
-                return this.expectedEventIndex == this.ExpectedEvents.Count;
+                return this.ExpectedEventIndex == this.ExpectedEvents.Count;
             }
         }
 
@@ -219,11 +220,13 @@ namespace SoC.Library.ScenarioTests
         private class TurnInstructions
         {
             public int RoundNumber, TurnNumber;
-            
+            public int ExpectedEventIndex, ActualEventIndex;
             public List<object> Instructions = new List<object>();
             public List<GameEvent> ActualEvents = new List<GameEvent>();
             public List<GameEvent> ExpectedEvents = new List<GameEvent>();
             public List<ComputerPlayerAction> Actions = new List<ComputerPlayerAction>();
+
+            public bool IsEmpty { get { return this.Instructions.Count == 0; } }
         }
     }
 }

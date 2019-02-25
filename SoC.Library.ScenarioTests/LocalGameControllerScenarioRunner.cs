@@ -76,9 +76,9 @@ namespace SoC.Library.ScenarioTests
             Thread.CurrentThread.Name = "Scenario Runner";
             foreach (var turn in this.turns)
             {
-                foreach (var player in this.Players)
+                foreach (var playerAgent in this.PlayerAgents)
                 {
-                    player.AddTurnInstructions(turn);
+                    playerAgent.AddTurnInstructions(turn);
                 }
             }
 
@@ -94,10 +94,10 @@ namespace SoC.Library.ScenarioTests
 
             gameServer.LaunchGame();
 
-            foreach (var player in this.Players)
+            foreach (var playerAgent in this.PlayerAgents)
             {
-                player.JoinGame(gameServer);    
-                player.StartAsync();
+                playerAgent.JoinGame(gameServer);    
+                playerAgent.StartAsync();
             }
 
             gameServer.StartGameAsync();
@@ -384,13 +384,13 @@ namespace SoC.Library.ScenarioTests
             return this;
         }
 
-        private List<PlayerAgent> Players = new List<PlayerAgent>();
+        private List<PlayerAgent> PlayerAgents = new List<PlayerAgent>();
         public LocalGameControllerScenarioRunner WithTurnOrder(string firstPlayerName, string secondPlayerName, string thirdPlayerName, string fourthPlayerName)
         {
             var rolls = new uint[4];
-            for (var index = 0; index < this.Players.Count; index++)
+            for (var index = 0; index < this.PlayerAgents.Count; index++)
             {
-                var playerName = this.Players[index].PlayerName;
+                var playerName = this.PlayerAgents[index].PlayerName;
                 if (firstPlayerName == playerName)
                     rolls[index] = 12;
                 else if (secondPlayerName == playerName)
@@ -524,22 +524,21 @@ namespace SoC.Library.ScenarioTests
 
         internal LocalGameControllerScenarioRunner WithHumanPlayer(string mainPlayerName)
         {
-            this.Players.Add(new HumanPlayer(mainPlayerName));
+            this.PlayerAgents.Add(new HumanPlayer(mainPlayerName));
             return this;
         }
 
         internal LocalGameControllerScenarioRunner WithComputerPlayer2(string mainPlayerName)
         {
-            this.Players.Add(new ComputerPlayer2(mainPlayerName));
+            this.PlayerAgents.Add(new ComputerPlayer2(mainPlayerName));
             return this;
         }
 
         private int setupRoundNumber = -2;
-        internal LocalGameControllerScenarioRunner PlayerSetupTurn(string playerName, uint settlementLocation, uint roadEnd, bool registerPlaceSetupInfrastructureEvent = false)
+        internal LocalGameControllerScenarioRunner PlayerSetupTurn(string playerName, uint settlementLocation, uint roadEnd)
         {
-            var turn = new BasePlayerTurn(playerName, this, this.setupRoundNumber, this.turnNumber);
-            if (registerPlaceSetupInfrastructureEvent)
-                turn.PlaceSetupInfrastructureEvent();
+            var turn = new PlayerSetupTurn(playerName, this, this.setupRoundNumber, this.turnNumber);
+            turn.PlaceSetupInfrastructureEvent();
             turn.PlaceStartingInfrastructure(settlementLocation, roadEnd);
             turn.EndTurn();
 
@@ -550,6 +549,19 @@ namespace SoC.Library.ScenarioTests
             {
                 this.setupRoundNumber++;
                 this.turnNumber = 1;
+            }
+
+            return this;
+        }
+
+        internal LocalGameControllerScenarioRunner StartingInfrastructureEvent()
+        {
+            var number = 1;
+            foreach (var playerAgent in this.PlayerAgents)
+            {
+                var playerTurn = new BasePlayerTurn(playerAgent.PlayerName, this, -3, number++);
+                playerTurn.StartingInfrastructureEvent();
+                this.turns.Add(playerTurn);
             }
 
             return this;

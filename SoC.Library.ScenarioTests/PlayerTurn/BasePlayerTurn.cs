@@ -554,6 +554,11 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
             this.runner.NumberGenerator.AddRandomNumber(randomNumber);
         }
 
+        internal void StartingInfrastructureEvent()
+        {
+            this.instructions.Enqueue(new Instruction2(this.PlayerName, new ScenarioInitialBoardSetupEvent()));
+        }
+
         private string GetEventDetails(GameEvent gameEvent)
         {
             var message = "";
@@ -870,5 +875,39 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
             }
         }
         #endregion
+    }
+
+    internal class ScenarioInitialBoardSetupEvent : GameEvent
+    {
+        // TODO: Remove this and use InitialBoardSetupEvent with the game board data
+        public ScenarioInitialBoardSetupEvent() : base(Guid.Empty)
+        {
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (obj == null || obj.GetType() != typeof(InitialBoardSetupEventArgs))
+                return false;
+
+            return ((InitialBoardSetupEventArgs)obj).Item != null;
+        }
+    }
+
+    internal class PlayerSetupTurn : BasePlayerTurn
+    {
+        public PlayerSetupTurn(string playerName, LocalGameControllerScenarioRunner runner, int roundNumber, int turnNumber)
+            : base(playerName, runner, roundNumber, turnNumber)
+        {
+        }
+
+        public PlayerSetupTurn StartingInfrastructure(uint settlementLocation, uint roadEnd)
+        {
+            return this;
+        }
+
+        public PlayerSetupTurn InitalBoardSetupEvent()
+        {
+            return this;
+        }
     }
 }
