@@ -71,7 +71,7 @@ namespace SoC.Library.ScenarioTests
             return new LocalGameControllerScenarioRunner(args);
         }
 
-        public void Run2()
+        public void Run()
         {
             Thread.CurrentThread.Name = "Scenario Runner";
             foreach (var turn in this.turns)
@@ -202,7 +202,7 @@ namespace SoC.Library.ScenarioTests
             return this.PlayersByName[playerName];
         }
 
-        public LocalGameController Run()
+        public LocalGameController Run_Old()
         {
             this.localGameController.JoinGame(this.gameOptions);
 

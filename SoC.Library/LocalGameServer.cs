@@ -168,28 +168,17 @@ namespace Jabberwocky.SoC.Library
 
         private void PlaceInfrastructure(IPlayer player, uint settlementLocation, uint roadEndLocation)
         {
-            /*if (this.GamePhase != GamePhases.ContinueGameSetup)
+            // TODO: Validation
+
+            try
             {
-                var errorDetails = new ErrorDetails("Cannot call 'ContinueGameSetup' until 'StartGameSetup' has completed.");
-                this.ErrorRaisedEvent?.Invoke(errorDetails);
-                return;
-            }*/
-
-            /*if (!this.VerifyStartingInfrastructurePlacementRequest(settlementLocation, roadEndLocation))
+                this.gameBoard.PlaceStartingInfrastructure(player.Id, settlementLocation, roadEndLocation);
+                player.PlaceStartingInfrastructure();
+            }
+            catch (Exception e)
             {
-                return;
-            }*/
-
-            this.gameBoard.PlaceStartingInfrastructure(player.Id, settlementLocation, roadEndLocation);
-            player.PlaceStartingInfrastructure();
-
-            //var gameEvents = this.ContinueSetupForComputerPlayers();
-
-            //this.playerIndex = this.players.Length - 1;
-            //this.CompleteSetupForComputerPlayers(gameEvents);
-
-            //this.GameEvents?.Invoke(gameEvents);
-            //this.GamePhase = GamePhases.CompleteGameSetup;
+                // TODO
+            }
         }
 
         private void MainGameLoop()
