@@ -267,43 +267,6 @@ namespace SoC.Library.ScenarioTests
             finally {
                 this.localGameController.Quit();
             }
-
-            /*for (var index = 0; index < this.turns.Count; index++)
-            {
-                this.turns[index].CompleteProcessing(this.currentToken, this.localGameController);
-                if (this.turns[index].IsHumanPlayer)
-                    this.localGameController.EndTurn(this.currentToken);
-            }*/
-
-            /*for (var index = 0; index < this.turns.Count; index += 4)
-            {
-                var workingIndex = index;
-                var endIndex = index + 3;
-                /*while (workingIndex <= endIndex && workingIndex < this.turns.Count)
-                {
-                    var playerTurn = this.turns[workingIndex];
-                    playerTurn.ResolveResponses(this.localGameController);
-                    workingIndex++;
-                }
-
-                if (index == 0)
-                    this.localGameController.StartGamePlay();
-                //workingIndex = index;
-                while (workingIndex <= endIndex && workingIndex < this.turns.Count)
-                {
-                    var playerTurn = this.turns[workingIndex];
-                    if (playerTurn.RunnerActions != null && playerTurn.RunnerActions.Count > 0)
-                    {
-                        foreach (var runnerAction in playerTurn.RunnerActions)
-                            this.AddDevelopmentCardToBuy(((InsertDevelopmentCardAction)runnerAction).DevelopmentCardType);
-                    }
-
-                    playerTurn.ResolveActions(this.currentToken, this.localGameController);
-                    workingIndex++;
-                }
-
-                this.localGameController.EndTurn(this.currentToken);
-            }*/
         }
 
         internal IPlayer GetPlayer(Guid playerId)
