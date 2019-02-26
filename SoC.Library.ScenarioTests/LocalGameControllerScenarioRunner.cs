@@ -102,28 +102,14 @@ namespace SoC.Library.ScenarioTests
 
             gameServer.StartGameAsync();
 
-            while (!gameServer.IsFinished)
+            var playerAgentsFinished = false;
+            while (!playerAgentsFinished)
             {
                 Thread.Sleep(50);
-                /*var playerIsFinished = 0;
-                foreach (var player in this.Players)
-                {
-                    if (player.GameException != null)
-                        throw player.GameException;
-
-                    if (player.IsFinished)
-                    {
-                        playerIsFinished++;
-                    }
-                    else if (!player.CurrentTurnIsFinished)
-                    {
-                        player.Process();
-                    }
-                }
-
-                if (playerIsFinished == this.Players.Count)
-                    break;*/
+                playerAgentsFinished = this.PlayerAgents.All(p => p.IsFinished);
             }
+
+            gameServer.Quit();
         }
 
         private void GameServerExceptionEventHandler(Exception exception)

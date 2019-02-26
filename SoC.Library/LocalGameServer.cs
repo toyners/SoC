@@ -112,6 +112,12 @@ namespace Jabberwocky.SoC.Library
             }
         }
 
+        public void Quit()
+        {
+            this.isQuitting = true;
+            this.eventRaiser.CanRaiseEvents = false;
+        }
+
         private void GameSetup()
         {
             // Place first settlement
@@ -188,6 +194,9 @@ namespace Jabberwocky.SoC.Library
 
         private void MainGameLoop()
         {
+            if (this.isQuitting)
+                return;
+
             this.playerIndex = -1;
             this.StartTurn();
             this.turnTimer.Reset();
@@ -203,6 +212,7 @@ namespace Jabberwocky.SoC.Library
                 if (this.turnTimer.IsLate ||
                     (gotPlayerAction && playerAction is EndOfTurnAction))
                 {
+                    // TODO: If late the send late message to player before starting new turn
                     this.StartTurn();
                     this.turnTimer.Reset();
                     continue;
@@ -234,22 +244,30 @@ namespace Jabberwocky.SoC.Library
 
         private void StartTurn()
         {
-            this.ChangeToNextPlayerTurn();
-            this.currentTurnToken = new TurnToken();
-            this.eventRaiser.RaiseEvent(this.currentPlayer.Name, new StartPlayerTurnEventArgs(this.currentTurnToken));
-
-            this.numberGenerator.RollTwoDice(out this.dice1, out this.dice2);
-            var diceRollEventArgs = new DiceRollEventArgs(this.dice1, this.dice2);
-            this.eventRaiser.RaiseEvent(null, diceRollEventArgs);
-
-            var resourceRoll = this.dice1 + this.dice2;
-            if (resourceRoll != 7)
+            try
             {
-                this.CollectResourcesAtStartOfTurn(resourceRoll);
+                this.ChangeToNextPlayerTurn();
+                this.currentTurnToken = new TurnToken();
+                this.eventRaiser.RaiseEvent(this.currentPlayer.Name, new StartPlayerTurnEventArgs(this.currentTurnToken));
+
+                this.numberGenerator.RollTwoDice(out this.dice1, out this.dice2);
+                var diceRollEventArgs = new DiceRollEventArgs(this.dice1, this.dice2);
+                this.eventRaiser.RaiseEvent(null, diceRollEventArgs);
+
+                var resourceRoll = this.dice1 + this.dice2;
+                if (resourceRoll != 7)
+                {
+                    this.CollectResourcesAtStartOfTurn(resourceRoll);
+                }
+                else
+                {
+
+                }
             }
-            else
+            catch (Exception e)
             {
-
+                if (!this.isQuitting)
+                    this.GameExceptionEvent?.Invoke(e);
             }
         }
 
@@ -259,6 +277,8 @@ namespace Jabberwocky.SoC.Library
             private Dictionary<string, Action<GameEvent>> gameEventHandlersByPlayerName = new Dictionary<string, Action<GameEvent>>();
             private event Action<GameEvent> gameEventHandler;
 
+            public bool CanRaiseEvents { get; set; } = true;
+
             public void AddEventHandler(string playerName, Action<GameEvent> gameEventHandler)
             {
                 this.gameEventHandler += gameEventHandler;
@@ -267,6 +287,9 @@ namespace Jabberwocky.SoC.Library
 
             public void RaiseEvent(string playerName, GameEvent gameEvent)
             {
+                if (!this.CanRaiseEvents)
+                    return;
+
                 if (playerName == null)
                 {
                     this.gameEventHandler.Invoke(gameEvent);
