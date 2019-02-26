@@ -747,7 +747,10 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
 
         public BasePlayerTurn MakeDirectTradeOffer(ResourceClutch wantedResources)
         {
-            this.instructions.Enqueue(new ScenarioMakeDirectTradeOfferAction(this.player.Name, wantedResources));
+            var makeDirectTradeOfferAction = new ActionInstruction();
+            makeDirectTradeOfferAction.Type = ActionInstruction.Types.MakeDirectTradeOffer;
+            makeDirectTradeOfferAction.Parameters = new object[] { wantedResources };
+            var instruction = new Instruction2(this.PlayerName, makeDirectTradeOfferAction);
             return this;
         }
 

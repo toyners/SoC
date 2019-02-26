@@ -473,7 +473,6 @@ namespace SoC.Library.ScenarioTests
             return playerTurn;
         }
 
-
         internal LocalGameControllerScenarioRunner WithHumanPlayer(string mainPlayerName)
         {
             this.PlayerAgents.Add(new HumanPlayer(mainPlayerName));
@@ -533,6 +532,7 @@ namespace SoC.Library.ScenarioTests
         public enum Types
         {
             EndOfTurn,
+            MakeDirectTradeOffer,
             PlaceStartingInfrastructure
         }
 
