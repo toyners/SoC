@@ -552,7 +552,7 @@ namespace SoC.Library.ScenarioTests
         void Add(ComputerPlayerAction action);
     }
 
-    internal class Instruction2
+    internal class Instruction
     {
         public enum PayloadTypes
         {
@@ -560,14 +560,14 @@ namespace SoC.Library.ScenarioTests
             Event
         }
 
-        public Instruction2(string playerName, ActionInstruction payload)
+        public Instruction(string playerName, ActionInstruction payload)
         {
             this.PlayerName = playerName;
             this.Payload = payload;
             this.Type = PayloadTypes.Action;
         }
 
-        public Instruction2(string playerName, GameEvent payload)
+        public Instruction(string playerName, GameEvent payload)
         {
             this.PlayerName = playerName;
             this.Payload = payload;

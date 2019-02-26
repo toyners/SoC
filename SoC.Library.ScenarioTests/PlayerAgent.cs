@@ -69,7 +69,7 @@ namespace SoC.Library.ScenarioTests
             if (bpt == null || !bpt.HasInstructions)
                 return;
 
-            var instructions = bpt.Instructions.Where(i => ((Instruction2)i).PlayerName == this.Name).ToList();
+            var instructions = bpt.Instructions.Where(i => ((Instruction)i).PlayerName == this.Name).ToList();
             if (instructions.Count == 0)
                 return;
 
@@ -92,7 +92,7 @@ namespace SoC.Library.ScenarioTests
                 if (this.GameException != null)
                     throw this.GameException;
 
-                var instruction = (Instruction2)this.currentTurn.Instructions[this.currentInstructionIndex];
+                var instruction = (Instruction)this.currentTurn.Instructions[this.currentInstructionIndex];
                 var payload = instruction.Payload;
                 if (payload is ActionInstruction action)
                 {

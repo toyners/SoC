@@ -3,13 +3,13 @@ namespace SoC.Library.ScenarioTests
 {
     using System;
 
-    public class Instruction
+    public class Instruction_Old
     {
         public readonly Guid Id;
-        public Instruction(Guid playerId) => this.Id = playerId;
+        public Instruction_Old(Guid playerId) => this.Id = playerId;
     }
 
-    internal class BuildRoadInstruction : Instruction
+    internal class BuildRoadInstruction : Instruction_Old
     {
         public readonly uint roadSegmentStart, roadSegmentEnd;
         public BuildRoadInstruction(Guid id, uint roadSegmentStart, uint roadSegmentEnd) : base(id)
@@ -19,7 +19,7 @@ namespace SoC.Library.ScenarioTests
         }
     }
 
-    internal class BuildSettlementInstruction : Instruction
+    internal class BuildSettlementInstruction : Instruction_Old
     {
         public readonly uint settlementLocation;
         public BuildSettlementInstruction(Guid id, uint settlementLocation) : base(id)

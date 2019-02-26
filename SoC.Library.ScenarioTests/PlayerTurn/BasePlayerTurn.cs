@@ -234,7 +234,7 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
             {
                 Type = ActionInstruction.Types.EndOfTurn,
             };
-            var instruction = new Instruction2(this.PlayerName, actionInstruction);
+            var instruction = new Instruction(this.PlayerName, actionInstruction);
             this.instructions.Enqueue(instruction);
             return this.runner;
         }
@@ -516,13 +516,13 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
                 Type = ActionInstruction.Types.PlaceStartingInfrastructure,
                 Parameters = new object[] { settlementLocation, roadEndLocation }
             };
-            var scenarioAction = new Instruction2(this.PlayerName, actionInstruction);
+            var scenarioAction = new Instruction(this.PlayerName, actionInstruction);
             this.instructions.Enqueue(scenarioAction);
         }
 
         internal void PlaceSetupInfrastructureEvent()
         {
-            var instruction = new Instruction2(this.PlayerName, new ScenarioPlaceSetupInfrastructureEventArgs());
+            var instruction = new Instruction(this.PlayerName, new ScenarioPlaceSetupInfrastructureEventArgs());
             this.instructions.Enqueue(instruction);
         }
 
@@ -556,7 +556,7 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
 
         internal void StartingInfrastructureEvent()
         {
-            this.instructions.Enqueue(new Instruction2(this.PlayerName, new ScenarioInitialBoardSetupEvent()));
+            this.instructions.Enqueue(new Instruction(this.PlayerName, new ScenarioInitialBoardSetupEvent()));
         }
 
         private string GetEventDetails(GameEvent gameEvent)
@@ -750,7 +750,7 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
             var makeDirectTradeOfferAction = new ActionInstruction();
             makeDirectTradeOfferAction.Type = ActionInstruction.Types.MakeDirectTradeOffer;
             makeDirectTradeOfferAction.Parameters = new object[] { wantedResources };
-            var instruction = new Instruction2(this.PlayerName, makeDirectTradeOfferAction);
+            var instruction = new Instruction(this.PlayerName, makeDirectTradeOfferAction);
             return this;
         }
 
