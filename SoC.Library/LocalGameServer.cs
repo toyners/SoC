@@ -112,6 +112,15 @@ namespace Jabberwocky.SoC.Library
             }
         }
 
+        public void AddResourcesToPlayer(string playerName, ResourceClutch value)
+        {
+            // TODO: Return an error if player not found?
+            this.players
+                .Where(p => p.Name == playerName)
+                .FirstOrDefault()
+                ?.AddResources(value);
+        }
+
         public void Quit()
         {
             this.isQuitting = true;

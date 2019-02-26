@@ -1071,7 +1071,7 @@ namespace SoC.Library.ScenarioTests
         }
 
         [Test]
-        public void New_Scenario_PlayerTradesOneResourceWithComputerPlayer()
+        public void New_Scenario_PlayerTradesOneResourceWithComputerPlayer(string[] args)
         {
             var mainPlayerResources = ResourceClutch.OneWool;
             var firstOpponentResources = ResourceClutch.OneGrain;
@@ -1096,11 +1096,11 @@ namespace SoC.Library.ScenarioTests
         }
 
         [Scenario]
-        public void New_Scenario_ComputerPlayerTradesOneResourceWithPlayer()
+        public void New_Scenario_ComputerPlayerTradesOneResourceWithPlayer(string[] args)
         {
             var mainPlayerResources = ResourceClutch.OneWool;
             var firstOpponentResources = ResourceClutch.OneGrain;
-            this.CreateStandardLocalGameControllerScenarioRunner_Old()
+            this.CreateStandardLocalGameControllerScenarioRunner(args)
                 .WithNoResourceCollection()
                 .WithStartingResourcesForPlayer(MainPlayerName, mainPlayerResources)
                 .WithStartingResourcesForPlayer(FirstOpponent_Babara, firstOpponentResources)

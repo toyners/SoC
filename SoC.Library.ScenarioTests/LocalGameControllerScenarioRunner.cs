@@ -100,6 +100,9 @@ namespace SoC.Library.ScenarioTests
                 playerAgent.StartAsync();
             }
 
+            foreach (var kv in this.startingResourcesByName)
+                gameServer.AddResourcesToPlayer(kv.Key, kv.Value);
+
             gameServer.StartGameAsync();
 
             var playerAgentsFinished = false;
