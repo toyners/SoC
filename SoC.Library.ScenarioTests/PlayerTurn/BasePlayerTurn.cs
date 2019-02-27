@@ -230,11 +230,7 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
 
         public LocalGameControllerScenarioRunner EndTurn()
         {
-            var actionInstruction = new ActionInstruction()
-            {
-                Type = ActionInstruction.Types.EndOfTurn,
-            };
-            var instruction = new Instruction(this.PlayerName, actionInstruction);
+            var instruction = new ActionInstruction(this.PlayerName, ActionInstruction.OperationTypes.EndOfTurn, null);
             this.instructions.Enqueue(instruction);
             return this.runner;
         }
@@ -511,18 +507,15 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
 
         internal void PlaceStartingInfrastructure(uint settlementLocation, uint roadEndLocation)
         {
-            var actionInstruction = new ActionInstruction()
-            {
-                Type = ActionInstruction.Types.PlaceStartingInfrastructure,
-                Parameters = new object[] { settlementLocation, roadEndLocation }
-            };
-            var scenarioAction = new Instruction(this.PlayerName, actionInstruction);
-            this.instructions.Enqueue(scenarioAction);
+            var instruction = new ActionInstruction(this.PlayerName,
+                ActionInstruction.OperationTypes.PlaceStartingInfrastructure,
+                new object[] { settlementLocation, roadEndLocation });
+            this.instructions.Enqueue(instruction);
         }
 
         internal void PlaceSetupInfrastructureEvent()
         {
-            var instruction = new Instruction(this.PlayerName, new ScenarioPlaceSetupInfrastructureEventArgs());
+            var instruction = new EventInstruction(this.PlayerName, new ScenarioPlaceSetupInfrastructureEventArgs());
             this.instructions.Enqueue(instruction);
         }
 
@@ -556,7 +549,7 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
 
         internal void StartingInfrastructureEvent()
         {
-            this.instructions.Enqueue(new Instruction(this.PlayerName, new ScenarioInitialBoardSetupEvent()));
+            this.instructions.Enqueue(new EventInstruction(this.PlayerName, new ScenarioInitialBoardSetupEvent()));
         }
 
         private string GetEventDetails(GameEvent gameEvent)
@@ -629,7 +622,7 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
             while (this.instructions.Count > 0)
             {
                 var instruction = this.instructions.Peek();
-                if (instruction is EventInstruction eventInstruction)
+                if (instruction is EventInstruction_Old eventInstruction)
                 {
                     this.instructions.Dequeue();
                     this.expectedEvents.Add(eventInstruction.Event(playersByName));
@@ -747,10 +740,10 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
 
         public BasePlayerTurn MakeDirectTradeOffer(ResourceClutch wantedResources)
         {
-            var makeDirectTradeOfferAction = new ActionInstruction();
-            makeDirectTradeOfferAction.Type = ActionInstruction.Types.MakeDirectTradeOffer;
-            makeDirectTradeOfferAction.Parameters = new object[] { wantedResources };
-            var instruction = new Instruction(this.PlayerName, makeDirectTradeOfferAction);
+            var instruction = new ActionInstruction(this.PlayerName, 
+                ActionInstruction.OperationTypes.MakeDirectTradeOffer,
+                new object[] { wantedResources });
+            //this.instructions.Enqueue(instruciton);
             return this;
         }
 
@@ -774,12 +767,9 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
 
         public BasePlayerTurn MakeDirectTradeOfferEvent(string playerName, string buyingPlayerName, ResourceClutch resources)
         {
-            this.instructions.Enqueue(new MakeDirectTradeOfferEventInstruction
-            {
-                PlayerName = playerName,
-                BuyingPlayerName = buyingPlayerName,
-                Resources = resources
-            });
+            var scenarioMakeDirectTradeOfferEvent = new ScenarioMakeDirectTradeOfferEvent(playerName, buyingPlayerName, resources);
+            var instruction = new EventInstruction(playerName, scenarioMakeDirectTradeOfferEvent);
+            this.instructions.Enqueue(instruction);
 
             return this;
         }
@@ -804,12 +794,12 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
         #endregion
 
         #region Structures
-        private abstract class EventInstruction
+        private abstract class EventInstruction_Old
         {
             public abstract GameEvent Event(Dictionary<string, IPlayer> playersByName);
         }
 
-        private class AnswerDirectTradeOfferEventInstruction : EventInstruction
+        private class AnswerDirectTradeOfferEventInstruction : EventInstruction_Old
         {
             public string PlayerName;
             public string BuyingPlayerName;
@@ -824,7 +814,7 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
             }
         }
 
-        private class DiceRollEventInstruction : EventInstruction
+        private class DiceRollEventInstruction : EventInstruction_Old
         {
             public uint Dice1, Dice2;
             public string PlayerName;
@@ -835,7 +825,7 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
             }
         }
 
-        private class MakeDirectTradeOfferEventInstruction : EventInstruction
+        private class MakeDirectTradeOfferEventInstruction : EventInstruction_Old
         {
             public string PlayerName;
             public string BuyingPlayerName;
@@ -850,7 +840,7 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
             }
         }
 
-        private class ResourcesCollectedEventInstruction : EventInstruction
+        private class ResourcesCollectedEventInstruction : EventInstruction_Old
         {
             public string PlayerName;
             public ResourceCollection[] ResourceCollections;
@@ -861,7 +851,7 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
             }
         }
 
-        private class TradeWithPlayerCompletedEventInstruction : EventInstruction
+        private class TradeWithPlayerCompletedEventInstruction : EventInstruction_Old
         {
             public string BuyingPlayerName;
             public ResourceClutch BuyingResources;

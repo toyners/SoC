@@ -527,17 +527,24 @@ namespace SoC.Library.ScenarioTests
         public void Reset() { }
     }
 
-    internal class ActionInstruction
+    internal class ActionInstruction : Instruction
     {
-        public enum Types
+        public enum OperationTypes
         {
             EndOfTurn,
             MakeDirectTradeOffer,
             PlaceStartingInfrastructure
         }
 
-        public Types Type;
-        public object[] Parameters;
+        public readonly OperationTypes Operation;
+        public readonly object[] Parameters;
+
+        public ActionInstruction(string playerName, OperationTypes operaton, object[] parameters)
+            : base(playerName)
+        {
+            this.Operation = operaton;
+            this.Parameters = parameters;
+        }
     }
 
     internal abstract class RunnerAction { }
@@ -554,28 +561,16 @@ namespace SoC.Library.ScenarioTests
 
     internal class Instruction
     {
-        public enum PayloadTypes
-        {
-            Action,
-            Event
-        }
+        public readonly string PlayerName;
+        public Instruction(string playerName) => this.PlayerName = playerName;
+    }
 
-        public Instruction(string playerName, ActionInstruction payload)
+    internal class EventInstruction : Instruction
+    {
+        public readonly GameEvent Event;
+        public EventInstruction(string playerName, GameEvent gameEvent) : base(playerName)
         {
-            this.PlayerName = playerName;
-            this.Payload = payload;
-            this.Type = PayloadTypes.Action;
+            this.Event = gameEvent;
         }
-
-        public Instruction(string playerName, GameEvent payload)
-        {
-            this.PlayerName = playerName;
-            this.Payload = payload;
-            this.Type = PayloadTypes.Event;
-        }
-
-        public object Payload { get; private set; }
-        public PayloadTypes Type { get; private set; }
-        public string PlayerName { get; private set; }
     }
 }

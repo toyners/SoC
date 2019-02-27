@@ -92,20 +92,19 @@ namespace SoC.Library.ScenarioTests
                 if (this.GameException != null)
                     throw this.GameException;
 
-                var instruction = (Instruction)this.currentTurn.Instructions[this.currentInstructionIndex];
-                var payload = instruction.Payload;
-                if (payload is ActionInstruction action)
+                var instruction = this.currentTurn.Instructions[this.currentInstructionIndex];
+                if (instruction is ActionInstruction actionInstruction)
                 {
                     if (!this.VerifyEvents(false))
                         return;
 
                     this.currentInstructionIndex++;
-                    this.SendAction(action);
+                    this.SendAction(actionInstruction);
                 }
-                else if (payload is GameEvent expectedEvent)
+                else if (instruction is EventInstruction eventInstruction)
                 {
                     this.currentInstructionIndex++;
-                    this.ExpectedEvents.Add(expectedEvent);
+                    this.ExpectedEvents.Add(eventInstruction.Event);
                 }
             }
         }
@@ -155,14 +154,14 @@ namespace SoC.Library.ScenarioTests
 
         private void SendAction(ActionInstruction action)
         {
-            switch (action.Type)
+            switch (action.Operation)
             {
-                case ActionInstruction.Types.EndOfTurn:
+                case ActionInstruction.OperationTypes.EndOfTurn:
                 {
                     this.gameController.EndTurn();
                     break;
                 }
-                case ActionInstruction.Types.PlaceStartingInfrastructure:
+                case ActionInstruction.OperationTypes.PlaceStartingInfrastructure:
                 {
                     this.gameController.PlaceStartingInfrastructure((uint)action.Parameters[0], (uint)action.Parameters[1]);
                     break;
