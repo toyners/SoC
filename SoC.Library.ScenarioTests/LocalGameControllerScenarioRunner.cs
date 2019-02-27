@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
-using System.Threading.Tasks;
 using Jabberwocky.SoC.Library;
 using Jabberwocky.SoC.Library.DevelopmentCards;
 using Jabberwocky.SoC.Library.GameActions;
@@ -34,7 +33,7 @@ namespace SoC.Library.ScenarioTests
         private readonly ScenarioDevelopmentCardHolder developmentCardHolder = new ScenarioDevelopmentCardHolder();
         private readonly List<PlayerSetupAction> firstRoundSetupActions = new List<PlayerSetupAction>(4);
         private readonly Dictionary<Type, GameEvent> lastEventsByType = new Dictionary<Type, GameEvent>();
-        //public readonly Dictionary<string, IPlayer> PlayersByName = new Dictionary<string, IPlayer>();
+        private Dictionary<string, Guid> playerIdsByName = new Dictionary<string, Guid>();
         private readonly Queue<PlaceInfrastructureAction> playerSetupActions = new Queue<PlaceInfrastructureAction>();
         private readonly ScenarioPlayerPool playerPool = new ScenarioPlayerPool();
         private readonly List<BasePlayerTurn> playerTurns = new List<BasePlayerTurn>();
@@ -74,6 +73,7 @@ namespace SoC.Library.ScenarioTests
         public void Run()
         {
             Thread.CurrentThread.Name = "Scenario Runner";
+
             foreach (var turn in this.turns)
             {
                 foreach (var playerAgent in this.PlayerAgents)
@@ -88,9 +88,11 @@ namespace SoC.Library.ScenarioTests
             var gameServer = new LocalGameServer(
                 this.NumberGenerator,
                 this.gameBoard,
-                this.developmentCardHolder,
-                this.useServerTimer == false ? new MockTurnTimer() : null
+                this.developmentCardHolder
             );
+
+            if (!this.useServerTimer)
+                gameServer.SetTurnTimer(new MockTurnTimer());
 
             gameServer.LaunchGame();
 
@@ -473,15 +475,17 @@ namespace SoC.Library.ScenarioTests
             return playerTurn;
         }
 
-        internal LocalGameControllerScenarioRunner WithHumanPlayer(string mainPlayerName)
+        internal LocalGameControllerScenarioRunner WithHumanPlayer(string playerName)
         {
-            this.PlayerAgents.Add(new HumanPlayer(mainPlayerName));
+            this.playerIdsByName.Add(playerName, Guid.NewGuid());
+            this.PlayerAgents.Add(new HumanPlayer(playerName));
             return this;
         }
 
-        internal LocalGameControllerScenarioRunner WithComputerPlayer2(string mainPlayerName)
+        internal LocalGameControllerScenarioRunner WithComputerPlayer2(string playerName)
         {
-            this.PlayerAgents.Add(new ComputerPlayer2(mainPlayerName));
+            this.playerIdsByName.Add(playerName, Guid.NewGuid());
+            this.PlayerAgents.Add(new ComputerPlayer2(playerName));
             return this;
         }
 
@@ -505,13 +509,13 @@ namespace SoC.Library.ScenarioTests
             return this;
         }
 
-        internal LocalGameControllerScenarioRunner StartingInfrastructureEvent()
+        internal LocalGameControllerScenarioRunner InitialBoardSetupEvent()
         {
             var number = 1;
             foreach (var playerAgent in this.PlayerAgents)
             {
                 var playerTurn = new BasePlayerTurn(playerAgent.Name, this, -3, number++);
-                playerTurn.StartingInfrastructureEvent();
+                playerTurn.InitialBoardSetupEvent();
                 this.turns.Add(playerTurn);
             }
 

@@ -7,7 +7,6 @@ namespace Jabberwocky.SoC.Library
     using System.Xml;
     using Interfaces;
     using Jabberwocky.SoC.Library.DevelopmentCards;
-    using Jabberwocky.SoC.Library.GameEvents;
     using Jabberwocky.SoC.Library.PlayerData;
     using Jabberwocky.SoC.Library.Store;
 
@@ -24,18 +23,22 @@ namespace Jabberwocky.SoC.Library
         #endregion
 
         #region Construction
-        public Player()
+        public Player() : this(null, Guid.NewGuid())
         {
-            this.Id = Guid.NewGuid();
+        }
+
+        public Player(string name) : this(name, Guid.NewGuid())
+        {
+        }
+
+        public Player(string name, Guid id)
+        {
+            this.Id = id;
+            this.Name = name;
             this.HeldCards = new List<DevelopmentCard>();
             this.PlayedCards = new List<DevelopmentCard>();
         }
 
-        public Player(string name) : this()
-        {
-            this.Name = name;
-        }
-    
         [Obsolete("Deprecated. Use Player::ctor(PlayerModel) instead.")]
         public Player(IGameDataSection<GameDataSectionKeys, GameDataValueKeys, ResourceTypes> data)
         {

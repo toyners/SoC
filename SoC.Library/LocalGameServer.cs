@@ -28,16 +28,30 @@ namespace Jabberwocky.SoC.Library
         private IPlayer[] players;
         private uint dice1, dice2;
         private IGameTimer turnTimer;
+        private Func<Guid> idGenerator;
 
-        public LocalGameServer(INumberGenerator numberGenerator, GameBoard gameBoard, IDevelopmentCardHolder developmentCardHolder, IGameTimer turnTimer = null)
+        public LocalGameServer(INumberGenerator numberGenerator, GameBoard gameBoard, IDevelopmentCardHolder developmentCardHolder)
         {
             this.numberGenerator = numberGenerator;
             this.gameBoard = gameBoard;
             this.developmentCardHolder = developmentCardHolder;
-            this.turnTimer = turnTimer != null ? turnTimer : new GameServerTimer();
+            this.turnTimer = new GameServerTimer();
+            this.idGenerator = () => { return Guid.NewGuid(); };
         }
 
         public bool IsFinished { get; set; }
+
+        public void SetTurnTimer(IGameTimer turnTimer)
+        {
+            if (turnTimer != null)
+                this.turnTimer = turnTimer;
+        }
+
+        public void SetIdGenerator(Func<Guid> idGenerator)
+        {
+            if (idGenerator != null)
+                this.idGenerator = idGenerator;
+        }
 
         private event Action<Exception> GameExceptionEvent;
 
@@ -46,7 +60,7 @@ namespace Jabberwocky.SoC.Library
             this.eventRaiser.AddEventHandler(playerName, gameController.GameEventHandler);
             this.GameExceptionEvent += gameController.GameExceptionHandler;
             gameController.PlayerActionEvent += this.PlayerActionEventHandler;
-            this.players[this.playerIndex++] = new Player(playerName);
+            this.players[this.playerIndex++] = new Player(playerName, this.idGenerator.Invoke());
         }
 
         public void LaunchGame(GameOptions gameOptions = null)
@@ -70,7 +84,9 @@ namespace Jabberwocky.SoC.Library
                     // Notify (human?) players what the order is?
 
                     var gameBoardSetup = new GameBoardSetup(this.gameBoard);
-                    this.eventRaiser.RaiseEvent(null, new InitialBoardSetupEventArgs(gameBoardSetup));
+                    this.eventRaiser.RaiseEvent(new InitialBoardSetupEventArgs(gameBoardSetup));
+
+                    // TODO: Send event with player details to everyone
 
                     this.GameSetup();
                     this.MainGameLoop();
@@ -283,19 +299,20 @@ namespace Jabberwocky.SoC.Library
                 this.gameEventHandlersByPlayerName.Add(playerName, gameEventHandler);
             }
 
+            public void RaiseEvent(GameEvent gameEvent)
+            {
+                if (!this.CanRaiseEvents)
+                    return;
+
+                this.gameEventHandler.Invoke(gameEvent);
+            }
+
             public void RaiseEvent(string playerName, GameEvent gameEvent)
             {
                 if (!this.CanRaiseEvents)
                     return;
 
-                if (playerName == null)
-                {
-                    this.gameEventHandler.Invoke(gameEvent);
-                }
-                else
-                {
-                    this.gameEventHandlersByPlayerName[playerName].Invoke(gameEvent);
-                }
+                this.gameEventHandlersByPlayerName[playerName].Invoke(gameEvent);
             }
         }
         #endregion

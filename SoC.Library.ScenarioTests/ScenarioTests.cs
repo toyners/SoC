@@ -1183,7 +1183,7 @@ namespace SoC.Library.ScenarioTests
         {
             this.CreateStandardLocalGameControllerScenarioRunner(args)
                 .WithNoResourceCollection()
-                .StartingInfrastructureEvent()
+                .InitialBoardSetupEvent()
                 .PlayerSetupTurn(MainPlayer, MainPlayerFirstSettlementLocation, MainPlayerFirstRoadEnd)
                 .PlayerSetupTurn(FirstOpponent_Babara, FirstOpponentFirstSettlementLocation, FirstOpponentFirstRoadEnd)
                 .PlayerSetupTurn(SecondOpponent_Charlie, SecondOpponentFirstSettlementLocation, SecondOpponentFirstRoadEnd)
