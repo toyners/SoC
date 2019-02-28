@@ -318,11 +318,6 @@ namespace Jabberwocky.SoC.Library
         #endregion
     }
 
-    public class InitialBoardSetupEventArgs : GameEventArg<GameBoardSetup>
-    {
-        public InitialBoardSetupEventArgs(GameBoardSetup item) : base(item) { }
-    }
-
     public class StartPlayerTurnEventArgs : GameEventArg<TurnToken>
     {
         public StartPlayerTurnEventArgs(TurnToken item) : base(item) { }
@@ -353,30 +348,6 @@ namespace Jabberwocky.SoC.Library
         {
             this.Dice1 = dice1;
             this.Dice2 = dice2;
-        }
-    }
-
-    public class GameEventArg<T> : GameEvent
-    {
-        public readonly T Item;
-        public GameEventArg(T item) : base(Guid.Empty) => this.Item = item;
-    }
-
-    public interface IGameTimer
-    {
-        void Reset();
-        bool IsLate { get; }
-    }
-
-    public class GameServerTimer : IGameTimer
-    {
-        private int counter = 40;
-
-        public bool IsLate { get { return --this.counter == 0; } }
-
-        public void Reset()
-        {
-            this.counter = 40;
         }
     }
 }
