@@ -524,57 +524,10 @@ namespace SoC.Library.ScenarioTests
         #endregion
     }
 
-    internal class MockTurnTimer : IGameTimer
-    {
-        public bool IsLate => false;
-
-        public void Reset() { }
-    }
-
-    internal class ActionInstruction : Instruction
-    {
-        public enum OperationTypes
-        {
-            EndOfTurn,
-            MakeDirectTradeOffer,
-            PlaceStartingInfrastructure
-        }
-
-        public readonly OperationTypes Operation;
-        public readonly object[] Parameters;
-
-        public ActionInstruction(string playerName, OperationTypes operaton, object[] parameters)
-            : base(playerName)
-        {
-            this.Operation = operaton;
-            this.Parameters = parameters;
-        }
-    }
-
     internal abstract class RunnerAction { }
 
     internal class InsertDevelopmentCardAction : RunnerAction
     {
         public DevelopmentCardTypes DevelopmentCardType;
-    }
-
-    public interface IActionProcessor
-    {
-        void Add(ComputerPlayerAction action);
-    }
-
-    internal class Instruction
-    {
-        public readonly string PlayerName;
-        public Instruction(string playerName) => this.PlayerName = playerName;
-    }
-
-    internal class EventInstruction : Instruction
-    {
-        public readonly GameEvent Event;
-        public EventInstruction(string playerName, GameEvent gameEvent) : base(playerName)
-        {
-            this.Event = gameEvent;
-        }
     }
 }
