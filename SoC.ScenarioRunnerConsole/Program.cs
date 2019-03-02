@@ -13,7 +13,7 @@ namespace SoC.ScenarioRunnerConsole
         static void Main(string[] args)
         {
             var serverTimerOn = false;
-            var assembly = Assembly.GetAssembly(typeof(ScenarioTests));
+            var assembly = Assembly.GetAssembly(typeof(Scenarios));
             var methods = assembly.GetTypes()
                                 .SelectMany(t => t.GetMethods())
                                 .Where(m => m.GetCustomAttributes(typeof(ScenarioAttribute), false).Length > 0)

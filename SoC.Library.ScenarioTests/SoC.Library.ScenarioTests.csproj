@@ -86,7 +86,8 @@
     <Compile Include="ScenarioPlayerPool.cs" />
     <Compile Include="PlayerTurn\BasePlayerTurn.cs" />
     <Compile Include="ScenarioActions\ScenarioPlayKnightCardAction.cs" />
-    <Compile Include="ScenarioTests.cs" />
+    <Compile Include="Scenarios.cs" />
+    <Compile Include="ScenarioTests_Old.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
