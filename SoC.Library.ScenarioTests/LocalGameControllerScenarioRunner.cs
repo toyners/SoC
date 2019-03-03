@@ -80,7 +80,7 @@ namespace SoC.Library.ScenarioTests
 
             foreach (var turn in this.turns)
             {
-                foreach (var playerAgent in this.PlayerAgents)
+                foreach (var playerAgent in this.playerAgents)
                 {
                     playerIds.Enqueue(playerAgent.Id);
                     playerAgent.AddTurnInstructions(turn);
@@ -103,7 +103,7 @@ namespace SoC.Library.ScenarioTests
 
             gameServer.LaunchGame();
 
-            foreach (var playerAgent in this.PlayerAgents)
+            foreach (var playerAgent in this.playerAgents)
             {
                 playerAgent.JoinGame(gameServer);    
                 playerAgent.StartAsync();
@@ -119,8 +119,8 @@ namespace SoC.Library.ScenarioTests
             while (!playerAgentsFinished && !playerAgentFaulted)
             {
                 Thread.Sleep(50);
-                playerAgentsFinished = this.PlayerAgents.All(p => p.IsFinished);
-                playerAgentFaulted = this.PlayerAgents.Any(p => p.GameException != null);
+                playerAgentsFinished = this.playerAgents.All(p => p.IsFinished);
+                playerAgentFaulted = this.playerAgents.Any(p => p.GameException != null);
             }
 
             gameServer.Quit();
@@ -128,7 +128,7 @@ namespace SoC.Library.ScenarioTests
             if (playerAgentFaulted)
             {
                 string message = null;
-                foreach (var playerAgent in this.PlayerAgents.Where(p => p.GameException != null))
+                foreach (var playerAgent in this.playerAgents.Where(p => p.GameException != null))
                 {
                     var exception = playerAgent.GameException;
                     while (exception.InnerException != null)
@@ -362,13 +362,13 @@ namespace SoC.Library.ScenarioTests
             return this;
         }
 
-        private List<PlayerAgent> PlayerAgents = new List<PlayerAgent>();
+        private readonly List<PlayerAgent> playerAgents = new List<PlayerAgent>();
         public LocalGameControllerScenarioRunner WithTurnOrder(string firstPlayerName, string secondPlayerName, string thirdPlayerName, string fourthPlayerName)
         {
             var rolls = new uint[4];
-            for (var index = 0; index < this.PlayerAgents.Count; index++)
+            for (var index = 0; index < this.playerAgents.Count; index++)
             {
-                var playerName = this.PlayerAgents[index].Name;
+                var playerName = this.playerAgents[index].Name;
                 if (firstPlayerName == playerName)
                     rolls[index] = 12;
                 else if (secondPlayerName == playerName)
@@ -385,7 +385,7 @@ namespace SoC.Library.ScenarioTests
             return this;
         }
 
-        private Dictionary<string, ResourceClutch> startingResourcesByName = new Dictionary<string, ResourceClutch>();
+        private readonly Dictionary<string, ResourceClutch> startingResourcesByName = new Dictionary<string, ResourceClutch>();
         public LocalGameControllerScenarioRunner WithStartingResourcesForPlayer(string playerName, ResourceClutch playerResources)
         {
             this.startingResourcesByName.Add(playerName, playerResources);
@@ -423,7 +423,6 @@ namespace SoC.Library.ScenarioTests
             this.currentTurn.AddEvent(new DiceRollEvent(playerId, dice1, dice2));
         }
 
-        private BasePlayerTurn previousTurn;
         private void StartOfTurn()
         {
             if (this.currentIndex > 0 && this.currentTurn != null)
@@ -502,20 +501,20 @@ namespace SoC.Library.ScenarioTests
         internal LocalGameControllerScenarioRunner WithHumanPlayer(string playerName)
         {
             this.playerIdsByName.Add(playerName, Guid.NewGuid());
-            this.PlayerAgents.Add(new HumanPlayer(playerName));
+            this.playerAgents.Add(new HumanPlayer(playerName));
             return this;
         }
 
         internal LocalGameControllerScenarioRunner WithComputerPlayer2(string playerName)
         {
             this.playerIdsByName.Add(playerName, Guid.NewGuid());
-            this.PlayerAgents.Add(new ComputerPlayer2(playerName));
+            this.playerAgents.Add(new ComputerPlayer2(playerName));
             return this;
         }
 
         internal LocalGameControllerScenarioRunner WithPlayer(string playerName)
         {
-            this.PlayerAgents.Add(new PlayerAgent(playerName));
+            this.playerAgents.Add(new PlayerAgent(playerName));
             return this;
         }
 
@@ -542,7 +541,7 @@ namespace SoC.Library.ScenarioTests
         internal LocalGameControllerScenarioRunner InitialBoardSetupEvent()
         {
             var number = 1;
-            foreach (var playerAgent in this.PlayerAgents)
+            foreach (var playerAgent in this.playerAgents)
             {
                 var playerTurn = new BasePlayerTurn(playerAgent.Name, this, -3, number++);
                 playerTurn.InitialBoardSetupEvent();
@@ -555,7 +554,7 @@ namespace SoC.Library.ScenarioTests
         internal LocalGameControllerScenarioRunner PlayerSetupEvent()
         {
             var number = 1;
-            foreach (var playerAgent in this.PlayerAgents)
+            foreach (var playerAgent in this.playerAgents)
             {
                 var playerTurn = new BasePlayerTurn(playerAgent.Name, this, -3, number++);
                 playerTurn.PlayerSetupEvent();
