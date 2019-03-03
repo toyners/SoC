@@ -24,12 +24,14 @@ namespace SoC.Library.ScenarioTests
         public PlayerAgent(string name)
         {
             this.Name = name;
+            this.Id = Guid.NewGuid();
             this.gameController = new GameController();
             this.gameController.GameExceptionEvent += this.GameExceptionEventHandler;
             this.gameController.GameEvent += this.GameEventHandler;
         }
 
         public Exception GameException { get; private set; }
+        public Guid Id { get; private set; }
         public string Name { get; private set; }
         private bool CurrentTurnIsFinished
         {

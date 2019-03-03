@@ -74,10 +74,13 @@ namespace SoC.Library.ScenarioTests
         {
             Thread.CurrentThread.Name = "Scenario Runner";
 
+            var playerIds = new Queue<Guid>();
+
             foreach (var turn in this.turns)
             {
                 foreach (var playerAgent in this.PlayerAgents)
                 {
+                    playerIds.Enqueue(playerAgent.Id);
                     playerAgent.AddTurnInstructions(turn);
                 }
             }
@@ -93,6 +96,8 @@ namespace SoC.Library.ScenarioTests
 
             if (!this.useServerTimer)
                 gameServer.SetTurnTimer(new MockTurnTimer());
+
+            gameServer.SetIdGenerator(() => { return playerIds.Dequeue(); });
 
             gameServer.LaunchGame();
 

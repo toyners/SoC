@@ -1178,7 +1178,7 @@ namespace SoC.Library.ScenarioTests
                 .Run();
         }
 
-        [Scenario]
+        /*[Scenario]
         public void Scenario_AllPlayersCompleteSetup(string[] args)
         {
             this.CreateStandardLocalGameControllerScenarioRunner(args)
@@ -1193,7 +1193,7 @@ namespace SoC.Library.ScenarioTests
                 .PlayerSetupTurn(FirstOpponent_Babara, FirstOpponentSecondSettlementLocation, FirstOpponentSecondRoadEnd)
                 .PlayerSetupTurn(MainPlayer, MainPlayerSecondSettlementLocation, MainPlayerSecondRoadEnd)
                 .Run();
-        }
+        }*/
 
         private LocalGameControllerScenarioRunner CreateStandardLocalGameControllerScenarioRunner(string[] args)
         {
