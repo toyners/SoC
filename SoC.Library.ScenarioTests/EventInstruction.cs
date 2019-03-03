@@ -42,13 +42,15 @@ namespace SoC.Library.ScenarioTests
 
     internal class PlayerSetupEventInstruction : EventInstruction
     {
-        public PlayerSetupEventInstruction(string playerName) : base(playerName)
+        private IDictionary<string, Guid> playerIdsByName;
+        public PlayerSetupEventInstruction(string playerName, IDictionary<string, Guid> playerIdsByName) : base(playerName)
         {
+            this.playerIdsByName = playerIdsByName;
         }
 
-        public override GameEvent Event(IDictionary<string, Guid> playerIdsByName)
+        public override GameEvent Event(IDictionary<string, Guid> p)
         {
-            return new PlayerSetupEvent(playerIdsByName[this.PlayerName], playerIdsByName);
+            return new PlayerSetupEvent(this.playerIdsByName);
         }
     }
 }

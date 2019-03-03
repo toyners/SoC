@@ -83,6 +83,9 @@ namespace Jabberwocky.SoC.Library
                     this.players = PlayerTurnOrderCreator.Create(this.players, this.numberGenerator);
                     // Notify (human?) players what the order is?
 
+                    var playerIdsByName = this.players.ToDictionary(p => p.Name, p => p.Id);
+                    this.eventRaiser.RaiseEvent(new PlayerSetupEvent(playerIdsByName));
+
                     var gameBoardSetup = new GameBoardSetup(this.gameBoard);
                     this.eventRaiser.RaiseEvent(new InitialBoardSetupEventArgs(gameBoardSetup));
 

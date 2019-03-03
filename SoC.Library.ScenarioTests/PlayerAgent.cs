@@ -55,7 +55,7 @@ namespace SoC.Library.ScenarioTests
             gameServer.JoinGame(this.Name, this.gameController);
         }
 
-        private ConcurrentQueue<GameEvent> actualEventQueue = new ConcurrentQueue<GameEvent>();
+        private readonly ConcurrentQueue<GameEvent> actualEventQueue = new ConcurrentQueue<GameEvent>();
         protected void GameEventHandler(GameEvent gameEvent)
         {
             this.actualEventQueue.Enqueue(gameEvent);
@@ -141,15 +141,9 @@ namespace SoC.Library.ScenarioTests
 
         private void ProcessActualEvent(GameEvent actualEvent)
         {
-            var changeTurn = false;
-            if (actualEvent is InitialBoardSetupEventArgs)
-            {
-                changeTurn = true;
-            }
-            else if (actualEvent is PlaceSetupInfrastructureEvent)
-            {
-                changeTurn = true;
-            }
+            var changeTurn = actualEvent is PlayerSetupEvent ||
+                actualEvent is InitialBoardSetupEventArgs ||
+                actualEvent is PlaceSetupInfrastructureEvent;
 
             if (actualEvent is PlayerSetupEvent playerSetupEvent)
                 this.playerIdsByName = playerSetupEvent.PlayerIdsByName;
@@ -187,7 +181,7 @@ namespace SoC.Library.ScenarioTests
         private int RoundNumber { get { return this.currentTurn.RoundNumber; } }
         private int TurnNumber { get { return this.currentTurn.TurnNumber; } }
 
-        // TODO: Clean up this - either better use of no use of properties to public vars
+        // TODO: Clean up this - either better use or no use of properties to public vars
         private int ExpectedEventIndex { get { return this.currentTurn.ExpectedEventIndex; }  set { this.currentTurn.ExpectedEventIndex = value; } }
         private int ActualEventIndex { get { return this.currentTurn.ActualEventIndex; } set { this.currentTurn.ActualEventIndex = value; } }
         private bool VerifyEvents(bool throwIfNotVerified)

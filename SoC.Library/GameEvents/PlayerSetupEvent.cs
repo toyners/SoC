@@ -4,12 +4,12 @@ namespace Jabberwocky.SoC.Library.GameEvents
     using System;
     using System.Collections.Generic;
 
-    public class PlayerSetupEvent : GameEvent
+    public class PlayerSetupEvent : GameEventArg<IDictionary<string, Guid>>
     {
         public readonly IDictionary<string, Guid> PlayerIdsByName;
-        public PlayerSetupEvent(Guid playerId, IDictionary<string, Guid> playerIdsByName) : base(playerId)
+
+        public PlayerSetupEvent(IDictionary<string, Guid> playerIdsByName) : base(playerIdsByName)
         {
-            this.PlayerIdsByName = playerIdsByName;
         }
 
         public override bool Equals(object obj)

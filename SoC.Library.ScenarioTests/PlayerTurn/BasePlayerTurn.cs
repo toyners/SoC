@@ -547,9 +547,9 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
             this.runner.NumberGenerator.AddRandomNumber(randomNumber);
         }
 
-        internal void PlayerSetupEvent()
+        internal void PlayerSetupEvent(IDictionary<string, Guid> playerIdsByName)
         {
-            this.instructions.Enqueue(new PlayerSetupEventInstruction(this.PlayerName));
+            this.instructions.Enqueue(new PlayerSetupEventInstruction(this.PlayerName, playerIdsByName));
         }
 
         internal void InitialBoardSetupEvent()

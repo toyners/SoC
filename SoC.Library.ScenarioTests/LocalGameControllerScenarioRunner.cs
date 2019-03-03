@@ -553,11 +553,12 @@ namespace SoC.Library.ScenarioTests
 
         internal LocalGameControllerScenarioRunner PlayerSetupEvent()
         {
+            var playerIdsByName = this.playerAgents.ToDictionary(p => p.Name, p => p.Id);
             var number = 1;
             foreach (var playerAgent in this.playerAgents)
             {
                 var playerTurn = new BasePlayerTurn(playerAgent.Name, this, -3, number++);
-                playerTurn.PlayerSetupEvent();
+                playerTurn.PlayerSetupEvent(playerIdsByName);
                 this.turns.Add(playerTurn);
             }
 
