@@ -120,14 +120,22 @@ namespace SoC.Library.ScenarioTests
         private void Run()
         {
             Thread.CurrentThread.Name = this.Name;
-            while (!this.IsFinished)
-            {
-                Thread.Sleep(50);
-                if (this.actualEventQueue.TryDequeue(out var actualEvent))
-                    this.ProcessActualEvent(actualEvent);
 
-                if (this.currentTurn != null)
-                    this.ProcessInstructions();
+            try
+            {
+                while (!this.IsFinished)
+                {
+                    Thread.Sleep(50);
+                    if (this.actualEventQueue.TryDequeue(out var actualEvent))
+                        this.ProcessActualEvent(actualEvent);
+
+                    if (this.currentTurn != null)
+                        this.ProcessInstructions();
+                }
+            }
+            catch (Exception e)
+            {
+                throw e;
             }
         }
 
@@ -142,6 +150,9 @@ namespace SoC.Library.ScenarioTests
             {
                 changeTurn = true;
             }
+
+            if (actualEvent is PlayerSetupEvent playerSetupEvent)
+                this.playerIdsByName = playerSetupEvent.PlayerIdsByName;
 
             if (changeTurn)
             {

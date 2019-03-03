@@ -1094,7 +1094,7 @@ namespace SoC.Library.ScenarioTests
                 .Run_Old();
         }
 
-        [Scenario]
+        //[Scenario]
         public void New_Scenario_ComputerPlayerTradesOneResourceWithPlayer(string[] args)
         {
             var mainPlayerResources = ResourceClutch.OneWool;
@@ -1151,8 +1151,8 @@ namespace SoC.Library.ScenarioTests
                 .WithTurnOrder(MainPlayerName, FirstOpponentName, SecondOpponentName, ThirdOpponentName);
         }
 
+        //[Scenario]
         [Test]
-        [Scenario]
         public void Scenario_AllPlayersHaveDiceRollEventInTheirTurn()
         {
             LocalGameController()
@@ -1204,8 +1204,8 @@ namespace SoC.Library.ScenarioTests
                 .WithTurnOrder(MainPlayer, FirstOpponent_Babara, SecondOpponent_Charlie, ThirdOpponent_Dana);
         }
 
+        //[Scenario]
         [Test]
-        [Scenario]
         public void Scenario_AllPlayersCollectResourcesAsPartOfTurnStart()
         {
             var localGameController = this.CreateStandardLocalGameControllerScenarioRunner_Old()

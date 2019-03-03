@@ -39,4 +39,16 @@ namespace SoC.Library.ScenarioTests
             return new ScenarioPlaceSetupInfrastructureEvent();
         }
     }
+
+    internal class PlayerSetupEventInstruction : EventInstruction
+    {
+        public PlayerSetupEventInstruction(string playerName) : base(playerName)
+        {
+        }
+
+        public override GameEvent Event(IDictionary<string, Guid> playerIdsByName)
+        {
+            return new PlayerSetupEvent(playerIdsByName[this.PlayerName], playerIdsByName);
+        }
+    }
 }

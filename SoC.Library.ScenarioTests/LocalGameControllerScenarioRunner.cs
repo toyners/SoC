@@ -35,6 +35,8 @@ namespace SoC.Library.ScenarioTests
         private readonly Dictionary<Type, GameEvent> lastEventsByType = new Dictionary<Type, GameEvent>();
         private Dictionary<string, Guid> playerIdsByName = new Dictionary<string, Guid>();
         private readonly Queue<PlaceInfrastructureAction> playerSetupActions = new Queue<PlaceInfrastructureAction>();
+
+
         private readonly ScenarioPlayerPool playerPool = new ScenarioPlayerPool();
         private readonly List<BasePlayerTurn> playerTurns = new List<BasePlayerTurn>();
         private readonly List<PlayerSetupAction> secondRoundSetupActions = new List<PlayerSetupAction>(4);
@@ -494,6 +496,12 @@ namespace SoC.Library.ScenarioTests
             return this;
         }
 
+        internal LocalGameControllerScenarioRunner WithPlayer(string playerName)
+        {
+            this.PlayerAgents.Add(new PlayerAgent(playerName));
+            return this;
+        }
+
         private int setupRoundNumber = -2;
         internal LocalGameControllerScenarioRunner PlayerSetupTurn(string playerName, uint settlementLocation, uint roadEnd)
         {
@@ -526,6 +534,20 @@ namespace SoC.Library.ScenarioTests
 
             return this;
         }
+
+        internal LocalGameControllerScenarioRunner PlayerSetupEvent()
+        {
+            var number = 1;
+            foreach (var playerAgent in this.PlayerAgents)
+            {
+                var playerTurn = new BasePlayerTurn(playerAgent.Name, this, -3, number++);
+                playerTurn.PlayerSetupEvent();
+                this.turns.Add(playerTurn);
+            }
+
+            return this;
+        }
+
         #endregion
     }
 

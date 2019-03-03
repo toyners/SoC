@@ -3,56 +3,57 @@ namespace SoC.Library.ScenarioTests
 {
     public class Scenarios
     {
-        const string MainPlayer = "Player";
-        const string FirstOpponent_Babara = "Barbara";
-        const string SecondOpponent_Charlie = "Charlie";
-        const string ThirdOpponent_Dana = "Dana";
+        const string Adam = "Adam";
+        const string Babara = "Barbara";
+        const string Charlie = "Charlie";
+        const string Dana = "Dana";
 
-        const uint MainPlayerFirstSettlementLocation = 12u;
-        const uint FirstOpponentFirstSettlementLocation = 18u;
-        const uint SecondOpponentFirstSettlementLocation = 25u;
-        const uint ThirdOpponentFirstSettlementLocation = 31u;
+        const uint Adam_FirstSettlementLocation = 12u;
+        const uint Babara_FirstSettlementLocation = 18u;
+        const uint Charlie_FirstSettlementLocation = 25u;
+        const uint Dana_FirstSettlementLocation = 31u;
 
-        const uint ThirdOpponentSecondSettlementLocation = 33u;
-        const uint SecondOpponentSecondSettlementLocation = 35u;
-        const uint FirstOpponentSecondSettlementLocation = 43u;
-        const uint MainPlayerSecondSettlementLocation = 40u;
+        const uint Dana_SecondSettlementLocation = 33u;
+        const uint Charlie_SecondSettlementLocation = 35u;
+        const uint Babara_SecondSettlementLocation = 43u;
+        const uint Adam_SecondSettlementLocation = 40u;
 
-        const uint MainPlayerFirstRoadEnd = 4;
-        const uint FirstOpponentFirstRoadEnd = 17;
-        const uint SecondOpponentFirstRoadEnd = 15;
-        const uint ThirdOpponentFirstRoadEnd = 30;
+        const uint Adam_FirstRoadEnd = 4;
+        const uint Babara_FirstRoadEnd = 17;
+        const uint Charlie_FirstRoadEnd = 15;
+        const uint Dana_FirstRoadEnd = 30;
 
-        const uint ThirdOpponentSecondRoadEnd = 32;
-        const uint SecondOpponentSecondRoadEnd = 24;
-        const uint FirstOpponentSecondRoadEnd = 44;
-        const uint MainPlayerSecondRoadEnd = 39;
+        const uint Dana_SecondRoadEnd = 32;
+        const uint Charlie_SecondRoadEnd = 24;
+        const uint Babara_SecondRoadEnd = 44;
+        const uint Adam_SecondRoadEnd = 39;
 
         [Scenario]
         public void Scenario_AllPlayersCompleteSetup(string[] args)
         {
             this.CreateStandardLocalGameControllerScenarioRunner(args)
                 .WithNoResourceCollection()
+                .PlayerSetupEvent()
                 .InitialBoardSetupEvent()
-                .PlayerSetupTurn(MainPlayer, MainPlayerFirstSettlementLocation, MainPlayerFirstRoadEnd)
-                .PlayerSetupTurn(FirstOpponent_Babara, FirstOpponentFirstSettlementLocation, FirstOpponentFirstRoadEnd)
-                .PlayerSetupTurn(SecondOpponent_Charlie, SecondOpponentFirstSettlementLocation, SecondOpponentFirstRoadEnd)
-                .PlayerSetupTurn(ThirdOpponent_Dana, ThirdOpponentFirstSettlementLocation, ThirdOpponentFirstRoadEnd)
-                .PlayerSetupTurn(ThirdOpponent_Dana, ThirdOpponentSecondSettlementLocation, ThirdOpponentSecondRoadEnd)
-                .PlayerSetupTurn(SecondOpponent_Charlie, SecondOpponentSecondSettlementLocation, SecondOpponentSecondRoadEnd)
-                .PlayerSetupTurn(FirstOpponent_Babara, FirstOpponentSecondSettlementLocation, FirstOpponentSecondRoadEnd)
-                .PlayerSetupTurn(MainPlayer, MainPlayerSecondSettlementLocation, MainPlayerSecondRoadEnd)
+                .PlayerSetupTurn(Adam, Adam_FirstSettlementLocation, Adam_FirstRoadEnd)
+                .PlayerSetupTurn(Babara, Babara_FirstSettlementLocation, Babara_FirstRoadEnd)
+                .PlayerSetupTurn(Charlie, Charlie_FirstSettlementLocation, Charlie_FirstRoadEnd)
+                .PlayerSetupTurn(Dana, Dana_FirstSettlementLocation, Dana_FirstRoadEnd)
+                .PlayerSetupTurn(Dana, Dana_SecondSettlementLocation, Dana_SecondRoadEnd)
+                .PlayerSetupTurn(Charlie, Charlie_SecondSettlementLocation, Charlie_SecondRoadEnd)
+                .PlayerSetupTurn(Babara, Babara_SecondSettlementLocation, Babara_SecondRoadEnd)
+                .PlayerSetupTurn(Adam, Adam_SecondSettlementLocation, Adam_SecondRoadEnd)
                 .Run();
         }
 
         private LocalGameControllerScenarioRunner CreateStandardLocalGameControllerScenarioRunner(string[] args)
         {
             return LocalGameControllerScenarioRunner.LocalGameController(args)
-                .WithHumanPlayer(MainPlayer)
-                .WithComputerPlayer2(FirstOpponent_Babara)
-                .WithComputerPlayer2(SecondOpponent_Charlie)
-                .WithComputerPlayer2(ThirdOpponent_Dana)
-                .WithTurnOrder(MainPlayer, FirstOpponent_Babara, SecondOpponent_Charlie, ThirdOpponent_Dana);
+                .WithPlayer(Adam)
+                .WithPlayer(Babara)
+                .WithPlayer(Charlie)
+                .WithPlayer(Dana)
+                .WithTurnOrder(Adam, Babara, Charlie, Dana);
         }
     }
 }
