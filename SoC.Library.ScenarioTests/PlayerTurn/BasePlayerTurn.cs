@@ -515,7 +515,7 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
 
         internal void PlaceSetupInfrastructureEvent()
         {
-            var instruction = new EventInstruction(this.PlayerName, new ScenarioPlaceSetupInfrastructureEventArgs());
+            var instruction = new PlaceSetupInfrastructureEventInstruction(this.PlayerName);
             this.instructions.Enqueue(instruction);
         }
 
@@ -549,7 +549,7 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
 
         internal void InitialBoardSetupEvent()
         {
-            this.instructions.Enqueue(new EventInstruction(this.PlayerName, new ScenarioInitialBoardSetupEvent()));
+            this.instructions.Enqueue(new InitialBoardSetupEventInstruction(this.PlayerName, null));
         }
 
         private string GetEventDetails(GameEvent gameEvent)
@@ -767,8 +767,7 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
 
         public BasePlayerTurn MakeDirectTradeOfferEvent(string playerName, string buyingPlayerName, ResourceClutch resources)
         {
-            var scenarioMakeDirectTradeOfferEvent = new ScenarioMakeDirectTradeOfferEvent(playerName, buyingPlayerName, resources);
-            var instruction = new EventInstruction(playerName, scenarioMakeDirectTradeOfferEvent);
+            var instruction = new ScenarioMakeDirectTradeOfferEventInstruction(playerName, buyingPlayerName, resources);
             this.instructions.Enqueue(instruction);
 
             return this;

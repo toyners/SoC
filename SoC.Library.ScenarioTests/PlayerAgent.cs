@@ -86,6 +86,7 @@ namespace SoC.Library.ScenarioTests
 
         public List<GameEvent> ActualEvents { get { return this.currentTurn.ActualEvents; } }
         public List<GameEvent> ExpectedEvents { get { return this.currentTurn.ExpectedEvents; } }
+        private IDictionary<string, Guid> playerIdsByName;
         private int currentInstructionIndex;
         public void ProcessInstructions()
         {
@@ -106,7 +107,7 @@ namespace SoC.Library.ScenarioTests
                 else if (instruction is EventInstruction eventInstruction)
                 {
                     this.currentInstructionIndex++;
-                    this.ExpectedEvents.Add(eventInstruction.Event);
+                    this.ExpectedEvents.Add(eventInstruction.Event(this.playerIdsByName));
                 }
             }
         }
@@ -137,7 +138,7 @@ namespace SoC.Library.ScenarioTests
             {
                 changeTurn = true;
             }
-            else if (actualEvent is PlaceSetupInfrastructureEventArgs)
+            else if (actualEvent is PlaceSetupInfrastructureEvent)
             {
                 changeTurn = true;
             }

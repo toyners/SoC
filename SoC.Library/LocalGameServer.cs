@@ -163,7 +163,7 @@ namespace Jabberwocky.SoC.Library
             // 1) Notify player to choose settlement location (Pass in current locations)
             // 2) Pause waiting for player to return settlement choice
             this.currentTurnToken = new TurnToken();
-            this.eventRaiser.RaiseEvent(player.Name, new PlaceSetupInfrastructureEventArgs(this.currentTurnToken));
+            this.eventRaiser.RaiseEvent(player.Name, new PlaceSetupInfrastructureEvent(this.currentTurnToken));
             this.turnTimer.Reset();
             while (true)
             {
@@ -318,32 +318,9 @@ namespace Jabberwocky.SoC.Library
         #endregion
     }
 
-    public class InitialBoardSetupEventArgs : GameEventArg<GameBoardSetup>
-    {
-        public InitialBoardSetupEventArgs(GameBoardSetup item) : base(item) { }
-    }
-
     public class StartPlayerTurnEventArgs : GameEventArg<TurnToken>
     {
         public StartPlayerTurnEventArgs(TurnToken item) : base(item) { }
-    }
-
-    public class ScenarioPlaceSetupInfrastructureEventArgs : GameEvent
-    {
-        public ScenarioPlaceSetupInfrastructureEventArgs() : base(Guid.Empty) { }
-
-        public override bool Equals(object obj)
-        {
-            if (obj == null || obj.GetType() != typeof(PlaceSetupInfrastructureEventArgs))
-                return false;
-
-            return ((PlaceSetupInfrastructureEventArgs)obj).Item != null;
-        }
-    }
-
-    public class PlaceSetupInfrastructureEventArgs : GameEventArg<TurnToken>
-    {
-        public PlaceSetupInfrastructureEventArgs(TurnToken item) : base(item) {}
     }
 
     public class DiceRollEventArgs : GameEvent
@@ -353,30 +330,6 @@ namespace Jabberwocky.SoC.Library
         {
             this.Dice1 = dice1;
             this.Dice2 = dice2;
-        }
-    }
-
-    public class GameEventArg<T> : GameEvent
-    {
-        public readonly T Item;
-        public GameEventArg(T item) : base(Guid.Empty) => this.Item = item;
-    }
-
-    public interface IGameTimer
-    {
-        void Reset();
-        bool IsLate { get; }
-    }
-
-    public class GameServerTimer : IGameTimer
-    {
-        private int counter = 40;
-
-        public bool IsLate { get { return --this.counter == 0; } }
-
-        public void Reset()
-        {
-            this.counter = 40;
         }
     }
 }

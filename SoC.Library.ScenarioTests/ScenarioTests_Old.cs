@@ -1,6 +1,5 @@
 ﻿
 using System;
-using System.Collections.Generic;
 using Jabberwocky.SoC.Library;
 using Jabberwocky.SoC.Library.GameEvents;
 using NUnit.Framework;
@@ -11,7 +10,7 @@ namespace SoC.Library.ScenarioTests
     [Category("All")]
     [Category("ScenarioTests")]
     [TestFixture]
-    public class ScenarioTests
+    public class ScenarioTests_Old
     {
         const string MainPlayerName = "Player";
         const string MainPlayer = "Player";

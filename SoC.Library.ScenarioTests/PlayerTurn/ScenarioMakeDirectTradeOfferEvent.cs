@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Jabberwocky.SoC.Library;
 using Jabberwocky.SoC.Library.GameEvents;
 
@@ -18,18 +19,23 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
         }
     }
 
-    internal class ScenarioMakeDirectTradeOfferEvent : GameEvent
+    internal class ScenarioMakeDirectTradeOfferEventInstruction : EventInstruction
     {
-        public readonly string ReceivingPlayerName;
-        private readonly string BuyingPlayerName;
-        private readonly ResourceClutch WantedResources;
+        private readonly string receivingPlayerName;
+        private readonly string buyingPlayerName;
+        private readonly ResourceClutch wantedResources;
 
-        public ScenarioMakeDirectTradeOfferEvent(string receivingPlayerName, string buyingPlayerName, ResourceClutch wantedResources)
-            : base(Guid.Empty)
+        public ScenarioMakeDirectTradeOfferEventInstruction(string receivingPlayerName, string buyingPlayerName, ResourceClutch wantedResources)
+            : base(receivingPlayerName)
         {
-            this.ReceivingPlayerName = receivingPlayerName;
-            this.BuyingPlayerName = buyingPlayerName;
-            this.WantedResources = wantedResources;
+            this.receivingPlayerName = receivingPlayerName;
+            this.buyingPlayerName = buyingPlayerName;
+            this.wantedResources = wantedResources;
+        }
+
+        public override GameEvent Event(IDictionary<string, Guid> playerIdsByName)
+        {
+            return new MakeDirectTradeOfferEvent(playerIdsByName[this.receivingPlayerName], playerIdsByName[this.buyingPlayerName], this.wantedResources);
         }
     }
 }

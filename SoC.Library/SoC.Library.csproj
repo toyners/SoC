@@ -73,6 +73,7 @@
     <Compile Include="GameActions\SelectResourceFromPlayerAction.cs" />
     <Compile Include="GameBoards\GameBoardSetup.cs" />
     <Compile Include="GameController.cs" />
+    <Compile Include="GameEvents\GameEventArg.cs" />
     <Compile Include="GameEvents\AnswerDirectTradeOfferEvent.cs" />
     <Compile Include="GameEvents\BuyDevelopmentCardEvent.cs" />
     <Compile Include="GameEvents\DevelopmentCardBoughtEvent.cs" />
@@ -80,7 +81,6 @@
     <Compile Include="GameEvents\InfrastructureBuiltEvent.cs" />
     <Compile Include="GameEvents\KnightCardPlayedEvent.cs" />
     <Compile Include="GameEvents\MakeDirectTradeOfferEvent.cs" />
-    <Compile Include="GameEvents\PlaceSetupInfrastructureEventArgs.cs" />
     <Compile Include="GameEvents\PlayKnightCardEvent.cs" />
     <Compile Include="GameEvents\ResourcesCollectedEvent.cs" />
     <Compile Include="GameEvents\DiceRollEvent.cs" />
@@ -89,8 +89,12 @@
     <Compile Include="GameBoards\IGameBoard.cs" />
     <Compile Include="GameEvents\TradeWithPlayerCompletedEvent.cs" />
     <Compile Include="GameEvents\TradeWithPlayerEvent.cs" />
+    <Compile Include="GameServerTimer.cs" />
+    <Compile Include="IGameTimer.cs" />
+    <Compile Include="GameEvents\InitialBoardSetupEventArgs.cs" />
     <Compile Include="LocalGameServer.cs" />
     <Compile Include="GameState.cs" />
+    <Compile Include="GameEvents\PlaceSetupInfrastructureEvent.cs" />
     <Compile Include="PlayerData\PlayerFullDataModel.cs" />
     <Compile Include="Store\GameBoardModel.cs" />
     <Compile Include="Store\PlayerModel.cs" />
