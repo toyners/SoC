@@ -135,7 +135,7 @@ namespace SoC.Library.ScenarioTests
             }
             catch (Exception e)
             {
-                throw e;
+                this.GameException = e;
             }
         }
 

@@ -115,13 +115,18 @@ namespace SoC.Library.ScenarioTests
             gameServer.StartGameAsync();
 
             var playerAgentsFinished = false;
-            while (!playerAgentsFinished)
+            PlayerAgent playerAgentFaulted = null;
+            while (!playerAgentsFinished && playerAgentFaulted == null)
             {
                 Thread.Sleep(50);
                 playerAgentsFinished = this.PlayerAgents.All(p => p.IsFinished);
+                playerAgentFaulted = this.PlayerAgents.Where(p => p.GameException != null).FirstOrDefault();
             }
 
             gameServer.Quit();
+
+            if (playerAgentFaulted != null)
+                throw playerAgentFaulted.GameException;
         }
 
         private void GameServerExceptionEventHandler(Exception exception)
