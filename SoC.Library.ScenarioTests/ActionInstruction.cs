@@ -5,6 +5,7 @@
         public enum OperationTypes
         {
             EndOfTurn,
+            AnswerDirectTradeOffer,
             MakeDirectTradeOffer,
             PlaceStartingInfrastructure
         }

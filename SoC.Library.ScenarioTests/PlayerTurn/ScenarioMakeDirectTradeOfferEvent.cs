@@ -19,13 +19,13 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
         }
     }
 
-    internal class ScenarioMakeDirectTradeOfferEventInstruction : EventInstruction
+    internal class MakeDirectTradeOfferEventInstruction : EventInstruction
     {
         private readonly string receivingPlayerName;
         private readonly string buyingPlayerName;
         private readonly ResourceClutch wantedResources;
 
-        public ScenarioMakeDirectTradeOfferEventInstruction(string receivingPlayerName, string buyingPlayerName, ResourceClutch wantedResources)
+        public MakeDirectTradeOfferEventInstruction(string receivingPlayerName, string buyingPlayerName, ResourceClutch wantedResources)
             : base(receivingPlayerName)
         {
             this.receivingPlayerName = receivingPlayerName;
@@ -35,7 +35,33 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
 
         public override GameEvent Event(IDictionary<string, Guid> playerIdsByName)
         {
-            return new MakeDirectTradeOfferEvent(playerIdsByName[this.receivingPlayerName], playerIdsByName[this.buyingPlayerName], this.wantedResources);
+            return new MakeDirectTradeOfferEvent(
+                playerIdsByName[this.receivingPlayerName], 
+                playerIdsByName[this.buyingPlayerName], 
+                this.wantedResources);
+        }
+    }
+
+    internal class AnswerDirectTradeOfferEventInstruction : EventInstruction
+    {
+        private readonly string receivingPlayerName;
+        private readonly string buyingPlayerName;
+        private readonly ResourceClutch wantedResources;
+
+        public AnswerDirectTradeOfferEventInstruction(string receivingPlayerName, string buyingPlayerName, ResourceClutch wantedResources)
+            : base(receivingPlayerName)
+        {
+            this.receivingPlayerName = receivingPlayerName;
+            this.buyingPlayerName = buyingPlayerName;
+            this.wantedResources = wantedResources;
+        }
+
+        public override GameEvent Event(IDictionary<string, Guid> playerIdsByName)
+        {
+            return new AnswerDirectTradeOfferEvent(
+                playerIdsByName[this.receivingPlayerName],
+                playerIdsByName[this.buyingPlayerName],
+                this.wantedResources);
         }
     }
 }

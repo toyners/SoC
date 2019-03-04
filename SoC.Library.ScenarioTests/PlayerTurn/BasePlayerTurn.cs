@@ -428,10 +428,14 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
             throw new NotImplementedException();
         }
 
-        public class PlayerStateInstruction
+        public class PlayerStateInstruction : Instruction
         {
-            public BasePlayerTurn Turn;
-            public string PlayerName;
+            private BasePlayerTurn turn;
+
+            public PlayerStateInstruction(string playerName, BasePlayerTurn turn) : base(playerName)
+            {
+                this.turn = turn;
+            }
 
             public PlayerStateInstruction HeldCards(DevelopmentCardTypes developmentCardType)
             {
@@ -448,22 +452,14 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
                 return this;
             }
 
-            public BasePlayerTurn End() { return this.Turn; }
+            public BasePlayerTurn End() { return this.turn; }
         }
 
         public PlayerStateInstruction State(string playerName)
         {
-            /*var player = this.playersByName[playerName];
-            var playerState = new PlayerState(this, player);
-            this.instructions.Enqueue(playerState);*/
+            var playerState = new PlayerStateInstruction(playerName, this);
 
-            var playerState = new PlayerStateInstruction
-            {
-                Turn = this,
-                PlayerName = playerName
-            };
-
-            this.instructions_old.Enqueue(playerState);
+            this.instructions.Enqueue(playerState);
 
             return playerState;
         }
@@ -750,6 +746,7 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
             var instruction = new ActionInstruction(this.PlayerName, 
                 ActionInstruction.OperationTypes.MakeDirectTradeOffer,
                 new object[] { wantedResources });
+            this.instructions.Enqueue(instruction);
             
             return this;
         }
@@ -774,26 +771,25 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
 
         public BasePlayerTurn MakeDirectTradeOfferEvent(string playerName, string buyingPlayerName, ResourceClutch resources)
         {
-            var instruction = new ScenarioMakeDirectTradeOfferEventInstruction(playerName, buyingPlayerName, resources);
-            this.instructions_old.Enqueue(instruction);
+            var instruction = new MakeDirectTradeOfferEventInstruction(playerName, buyingPlayerName, resources);
+            this.instructions.Enqueue(instruction);
 
             return this;
         }
 
         public BasePlayerTurn AnswerDirectTradeOffer(string playerName, ResourceClutch resources)
         {
-            this.instructions_old.Enqueue(new AnswerDirectTradeOfferAction(playerName, resources));
+            this.instructions.Enqueue(new ActionInstruction(playerName, 
+                ActionInstruction.OperationTypes.AnswerDirectTradeOffer,
+                new object[] { resources }));
+
             return this;
         }
 
-        public BasePlayerTurn AnswerDirectTradeOfferEvent(string playerName, string buyingPlayerName, ResourceClutch offeredResources)
+        public BasePlayerTurn AnswerDirectTradeOfferEvent(string playerName, string buyingPlayerName, ResourceClutch wantedResources)
         {
-            this.instructions_old.Enqueue(new AnswerDirectTradeOfferEventInstruction
-            {
-                PlayerName = playerName,
-                BuyingPlayerName = buyingPlayerName,
-                OfferedResources = offeredResources
-            });
+            var instruction = new AnswerDirectTradeOfferEventInstruction(playerName, buyingPlayerName, wantedResources);
+            this.instructions.Enqueue(instruction);
 
             return this;
         }
@@ -803,21 +799,6 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
         private abstract class EventInstruction_Old
         {
             public abstract GameEvent Event(Dictionary<string, IPlayer> playersByName);
-        }
-
-        private class AnswerDirectTradeOfferEventInstruction : EventInstruction_Old
-        {
-            public string PlayerName;
-            public string BuyingPlayerName;
-            public ResourceClutch OfferedResources;
-
-            public override GameEvent Event(Dictionary<string, IPlayer> playersByName)
-            {
-                return new AnswerDirectTradeOfferEvent(
-                    playersByName[this.PlayerName].Id,
-                    playersByName[this.BuyingPlayerName].Id,
-                    this.OfferedResources);
-            }
         }
 
         private class DiceRollEventInstruction : EventInstruction_Old
@@ -831,7 +812,7 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
             }
         }
 
-        private class MakeDirectTradeOfferEventInstruction : EventInstruction_Old
+        /*private class MakeDirectTradeOfferEventInstruction : EventInstruction_Old
         {
             public string PlayerName;
             public string BuyingPlayerName;
@@ -844,7 +825,7 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
                     playersByName[this.BuyingPlayerName].Id, 
                     this.Resources);
             }
-        }
+        }*/
 
         private class ResourcesCollectedEventInstruction : EventInstruction_Old
         {

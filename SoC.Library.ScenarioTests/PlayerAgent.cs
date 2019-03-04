@@ -12,6 +12,7 @@ namespace SoC.Library.ScenarioTests
     using Jabberwocky.SoC.Library.GameEvents;
     using NUnit.Framework;
     using SoC.Library.ScenarioTests.PlayerTurn;
+    using static SoC.Library.ScenarioTests.PlayerTurn.BasePlayerTurn;
 
     internal class PlayerAgent
     {
@@ -108,6 +109,12 @@ namespace SoC.Library.ScenarioTests
                 {
                     this.currentInstructionIndex++;
                     this.ExpectedEvents.Add(eventInstruction.Event(this.playerIdsByName));
+                }
+                else if (instruction is PlayerStateInstruction playerStateInstruction)
+                {
+                    // Make request for player state from game server - place expected event
+                    // into list for verification
+                    throw new NotImplementedException();
                 }
             }
         }
