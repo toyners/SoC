@@ -146,7 +146,7 @@ namespace SoC.Library.ScenarioTests
                 actualEvent is PlaceSetupInfrastructureEvent;
 
             if (actualEvent is PlayerSetupEvent playerSetupEvent)
-                this.playerIdsByName = playerSetupEvent.PlayerIdsByName;
+                this.playerIdsByName = playerSetupEvent.Item;
 
             if (changeTurn)
             {

@@ -6,10 +6,10 @@ namespace Jabberwocky.SoC.Library.GameEvents
 
     public class PlayerSetupEvent : GameEventArg<IDictionary<string, Guid>>
     {
-        public readonly IDictionary<string, Guid> PlayerIdsByName;
-
         public PlayerSetupEvent(IDictionary<string, Guid> playerIdsByName) : base(playerIdsByName)
         {
+            if (playerIdsByName == null || playerIdsByName.Count == 0)
+                throw new ArgumentNullException("playerIdsByName");
         }
 
         public override bool Equals(object obj)
@@ -18,13 +18,13 @@ namespace Jabberwocky.SoC.Library.GameEvents
                 return false;
 
             var other = (PlayerSetupEvent)obj;
-            if (this.PlayerIdsByName.Count != other.PlayerIdsByName.Count)
+            if (this.Item.Count != other.Item.Count)
                 return false;
-
-            var otherKeys = new List<string>(other.PlayerIdsByName.Keys);
+        
+            var otherKeys = new List<string>(other.Item.Keys);
             otherKeys.Sort();
 
-            var keys = new List<string>(this.PlayerIdsByName.Keys);
+            var keys = new List<string>(this.Item.Keys);
             keys.Sort();
 
             for (int i = 0; i < otherKeys.Count; i++)
@@ -33,7 +33,7 @@ namespace Jabberwocky.SoC.Library.GameEvents
                 var otherKey = otherKeys[i];
                 if (key != otherKey)
                     return false;
-                if (this.PlayerIdsByName[key] != other.PlayerIdsByName[otherKey])
+                if (this.Item[key] != other.Item[otherKey])
                     return false;
             }
 
