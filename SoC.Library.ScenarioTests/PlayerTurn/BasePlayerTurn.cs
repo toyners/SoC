@@ -749,7 +749,7 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
             var instruction = new ActionInstruction(this.PlayerName, 
                 ActionInstruction.OperationTypes.MakeDirectTradeOffer,
                 new object[] { wantedResources });
-            //this.instructions.Enqueue(instruciton);
+            
             return this;
         }
 

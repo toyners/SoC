@@ -1,6 +1,9 @@
 ﻿
+
 namespace SoC.Library.ScenarioTests
 {
+    using Jabberwocky.SoC.Library;
+
     public class Scenarios
     {
         const string Adam = "Adam";
@@ -44,6 +47,35 @@ namespace SoC.Library.ScenarioTests
                 .PlayerSetupTurn(Babara, Babara_SecondSettlementLocation, Babara_SecondRoadEnd)
                 .PlayerSetupTurn(Adam, Adam_SecondSettlementLocation, Adam_SecondRoadEnd)
                 .Run();
+        }
+
+        [Scenario]
+        public void Scenario_PlayerTradesOneResourceWithPlayer(string[] args)
+        {
+            var adamResources = ResourceClutch.OneWool;
+            var babaraResources = ResourceClutch.OneGrain;
+            this.CreateStandardLocalGameControllerScenarioRunner(args)
+                .WithNoResourceCollection()
+                .WithStartingResourcesForPlayer(Adam, adamResources)
+                .WithStartingResourcesForPlayer(Babara, babaraResources)
+                .PlayerTurn(Adam, 3, 3).EndTurn()
+                .PlayerTurn(Babara, 3, 3)
+                    .MakeDirectTradeOffer(ResourceClutch.OneWool)
+                    .MakeDirectTradeOfferEvent(Adam, Babara, ResourceClutch.OneWool)
+                    .MakeDirectTradeOfferEvent(Charlie, Babara, ResourceClutch.OneWool)
+                    .MakeDirectTradeOfferEvent(Dana, Babara, ResourceClutch.OneWool)
+                    .AnswerDirectTradeOffer(Adam, ResourceClutch.OneGrain)
+                    .AnswerDirectTradeOfferEvent(Babara, Adam, ResourceClutch.OneGrain)
+                    .TradeWithPlayerCompletedEvent(Babara, Adam, ResourceClutch.OneGrain, ResourceClutch.OneWool)
+                    .State(Adam)
+                        .Resources(ResourceClutch.OneGrain)
+                        .End()
+                    .State(Babara)
+                        .Resources(ResourceClutch.OneWool)
+                        .End()
+                    .EndTurn()
+                .Build()
+                .Run_Old();
         }
 
         private LocalGameControllerScenarioRunner CreateStandardLocalGameControllerScenarioRunner(string[] args)
