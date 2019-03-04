@@ -144,7 +144,7 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
 
         public BasePlayerTurn BuildCity(uint cityLocation)
         {
-            this.instructions.Enqueue(new BuildCityAction(cityLocation));
+            this.instructions_old.Enqueue(new BuildCityAction(cityLocation));
             return this;
         }
 
@@ -158,7 +158,7 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
         {
             //this.instructions.Enqueue(new CityBuiltEvent(this.PlayerId, cityLocation));
 
-            this.instructions.Enqueue(new CityBuiltEventInstruction
+            this.instructions_old.Enqueue(new CityBuiltEventInstruction
             {
                 CityLocation = cityLocation, PlayerName = this.PlayerName
             });
@@ -168,7 +168,7 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
 
         public BasePlayerTurn BuildRoad(uint roadSegmentStart, uint roadSegmentEnd)
         {
-            this.instructions.Enqueue(new BuildRoadSegmentAction(roadSegmentStart, roadSegmentEnd));
+            this.instructions_old.Enqueue(new BuildRoadSegmentAction(roadSegmentStart, roadSegmentEnd));
             return this;
         }
 
@@ -182,7 +182,7 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
         {
             //this.instructions.Enqueue(new RoadSegmentBuiltEvent(this.PlayerId, roadSegmentStart, roadSegmentEnd));
 
-            this.instructions.Enqueue(new BuildRoadEventInstruction
+            this.instructions_old.Enqueue(new BuildRoadEventInstruction
             {
                 RoadSegmentStart = roadSegmentEnd, RoadSegmentEnd = roadSegmentEnd, PlayerName = this.PlayerName
             });
@@ -191,7 +191,7 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
 
         public BasePlayerTurn BuildSettlement(uint settlementLocation)
         {
-            this.instructions.Enqueue(new BuildSettlementAction(settlementLocation));
+            this.instructions_old.Enqueue(new BuildSettlementAction(settlementLocation));
             return this;
         }
 
@@ -205,7 +205,7 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
         {
             //this.instructions.Enqueue(new SettlementBuiltEvent(this.PlayerId, settlementLocation));
 
-            this.instructions.Enqueue(new BuildSettlementEventInstruction
+            this.instructions_old.Enqueue(new BuildSettlementEventInstruction
             {
                 SettlementLocation = settlementLocation,
                 PlayerName = this.PlayerName
@@ -218,32 +218,32 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
         public BasePlayerTurn BuyDevelopmentCard(DevelopmentCardTypes developmentCardType)
         {
             this.DevelopmentCardTypes.Add(developmentCardType);
-            this.instructions.Enqueue(new BuyDevelopmentCardAction());
+            this.instructions_old.Enqueue(new BuyDevelopmentCardAction());
             return this;
         }
 
         public BasePlayerTurn DevelopmentCardBoughtEvent()
         {
-            this.instructions.Enqueue(new DevelopmentCardBoughtEvent(this.PlayerId));
+            this.instructions_old.Enqueue(new DevelopmentCardBoughtEvent(this.PlayerId));
             return this;
         }
 
         public LocalGameControllerScenarioRunner EndTurn()
         {
             var instruction = new ActionInstruction(this.PlayerName, ActionInstruction.OperationTypes.EndOfTurn, null);
-            this.instructions.Enqueue(instruction);
+            this.instructions_old.Enqueue(instruction);
             return this.runner;
         }
 
         public BasePlayerTurn GameWinEvent(uint expectedVictoryPoints)
         {
-            this.instructions.Enqueue(new GameWinEvent(this.PlayerId, expectedVictoryPoints));
+            this.instructions_old.Enqueue(new GameWinEvent(this.PlayerId, expectedVictoryPoints));
             return this;
         }
 
         public BasePlayerTurn KnightCardPlayedEvent(uint hexLocation)
         {
-            this.instructions.Enqueue(new KnightCardPlayedEvent(this.PlayerId, hexLocation));
+            this.instructions_old.Enqueue(new KnightCardPlayedEvent(this.PlayerId, hexLocation));
             return this;
         }
 
@@ -254,7 +254,7 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
 
         public BasePlayerTurn LargestArmyChangedEvent(string previousPlayerName = null)
         {
-            this.instructions.Enqueue(new LargestArmyChangedEventInstruction
+            this.instructions_old.Enqueue(new LargestArmyChangedEventInstruction
             {
                 CurrentPlayerName = this.PlayerName,
                 PreviousPlayerName = previousPlayerName
@@ -266,7 +266,7 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
         public BasePlayerTurn LongestRoadBuiltEvent()
         {
             var expectedLongestRoadBuiltEvent = new LongestRoadBuiltEvent(this.PlayerId, Guid.Empty);
-            this.instructions.Enqueue(expectedLongestRoadBuiltEvent);
+            this.instructions_old.Enqueue(expectedLongestRoadBuiltEvent);
             return this;
         }
 
@@ -285,7 +285,7 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
 
         public BasePlayerTurn PlayKnightCard(uint hexLocation)
         {
-            this.instructions.Enqueue(new PlayKnightCardAction(hexLocation));
+            this.instructions_old.Enqueue(new PlayKnightCardAction(hexLocation));
             return this;
         }
 
@@ -301,7 +301,7 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
             this.ScenarioSelectResourceFromPlayerActions.Add(new ScenarioSelectResourceFromPlayerAction(targetPlayerName, resourceTaken));
             //this.instructions.Enqueue(new PlayKnightCardAction(hexLocation, this.playersByName[targetPlayerName].Id));
 
-            this.instructions.Enqueue(new PlayKnightCardActionInstruction()
+            this.instructions_old.Enqueue(new PlayKnightCardActionInstruction()
             {
                 HexLocation = hexLocation,
                 TargetPlayerName = targetPlayerName
@@ -320,7 +320,7 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
                 rc[index++] = new ResourceCollection(pair.Item1, pair.Item2);
             //this.instructions.Enqueue(new ResourcesCollectedEvent(playerId, rc));
 
-            this.instructions.Enqueue(new ResourcesCollectedEventInstruction()
+            this.instructions_old.Enqueue(new ResourcesCollectedEventInstruction()
             {
                 PlayerName = playerName,
                 ResourceCollections = rc
@@ -344,7 +344,7 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
             var expectedResourceTransactonEvent = new ResourceTransactionEvent(receivingPlayer.Id, resourceTransaction);
             this.instructions.Enqueue(expectedResourceTransactonEvent);*/
 
-            this.instructions.Enqueue(new ResourcesGainedEventInstruction()
+            this.instructions_old.Enqueue(new ResourcesGainedEventInstruction()
             {
                 ReceivingPlayerName = receivingPlayerName,
                 GivingPlayerName = givingPlayerName,
@@ -463,7 +463,7 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
                 PlayerName = playerName
             };
 
-            this.instructions.Enqueue(playerState);
+            this.instructions_old.Enqueue(playerState);
 
             return playerState;
         }
@@ -547,6 +547,7 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
             this.runner.NumberGenerator.AddRandomNumber(randomNumber);
         }
 
+        private Queue<Instruction> instructions = new Queue<Instruction>();
         internal void PlayerSetupEvent(IDictionary<string, Guid> playerIdsByName)
         {
             this.instructions.Enqueue(new PlayerSetupEventInstruction(this.PlayerName, playerIdsByName));
@@ -614,9 +615,9 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
 
         public bool IsVerified { get { return this.expectedEventIndex >= this.expectedEvents.Count; } }
 
-        public bool HasInstructions { get { return this.instructions.Count > 0; } }
+        public bool HasInstructions { get { return this.instructions_old.Count > 0; } }
 
-        public Queue<object> Instructions { get { return this.instructions; } }
+        public Queue<object> Instructions { get { return this.instructions_old; } }
 
         public bool IsFinished { get; set; }
 
@@ -625,17 +626,17 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
         public virtual void Process(Dictionary<string, IPlayer> playersByName)
         {
             this.CheckEvents();
-            while (this.instructions.Count > 0)
+            while (this.instructions_old.Count > 0)
             {
-                var instruction = this.instructions.Peek();
+                var instruction = this.instructions_old.Peek();
                 if (instruction is EventInstruction_Old eventInstruction)
                 {
-                    this.instructions.Dequeue();
+                    this.instructions_old.Dequeue();
                     this.expectedEvents.Add(eventInstruction.Event(playersByName));
                 }
                 else if (instruction is GameEvent expectedEvent)
                 {
-                    this.instructions.Dequeue();
+                    this.instructions_old.Dequeue();
                     this.expectedEvents.Add(expectedEvent);
                     //this.CheckEvents();
                 }
@@ -645,7 +646,7 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
                     if (!this.IsVerified)
                         return;
 
-                    this.instructions.Dequeue();
+                    this.instructions_old.Dequeue();
                     var player = playersByName[this.PlayerName];
                     if (player is ScenarioComputerPlayer computerPlayer)
                     {
@@ -663,7 +664,7 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
                     if (!this.IsVerified)
                         return;
 
-                    this.instructions.Dequeue();
+                    this.instructions_old.Dequeue();
 
                     var player = playerState.Player;
                     if (player is ScenarioComputerPlayer computerPlayer)
@@ -708,10 +709,10 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
             }
         }
 
-        protected Queue<object> instructions = new Queue<object>();
+        protected Queue<object> instructions_old = new Queue<object>();
         public BasePlayerTurn DiceRollEvent(uint dice1, uint dice2)
         {
-            this.instructions.Enqueue(new DiceRollEventInstruction
+            this.instructions_old.Enqueue(new DiceRollEventInstruction
             {
                 Dice1 = dice1, Dice2 = dice2, PlayerName = this.PlayerName
             });
@@ -720,7 +721,7 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
 
         public BasePlayerTurn DropResources(string playerName, ResourceClutch resourcesToDrop)
         {
-            this.instructions.Enqueue(new ScenarioDropResourcesAction(playerName, resourcesToDrop));
+            this.instructions_old.Enqueue(new ScenarioDropResourcesAction(playerName, resourcesToDrop));
             return this;
         }
 
@@ -733,14 +734,14 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
                 dict.Add(player.Id, pair.Item2);
             }
 
-            this.instructions.Enqueue(new ResourceUpdateEvent(dict));
+            this.instructions_old.Enqueue(new ResourceUpdateEvent(dict));
 
             return this;
         }
 
         public BasePlayerTurn MakeDirectTradeOffer(ResourceClutch wantedResources, params Tuple<string, ResourceClutch>[] playerAnswers)
         {
-            this.instructions.Enqueue(new ScenarioMakeDirectTradeOfferAction(this.player.Name, wantedResources));
+            this.instructions_old.Enqueue(new ScenarioMakeDirectTradeOfferAction(this.player.Name, wantedResources));
             return this;
         }
 
@@ -760,7 +761,7 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
 
         public BasePlayerTurn TradeWithPlayerCompletedEvent(string sellingPlayerName, string buyingPlayerName, ResourceClutch sellingResources, ResourceClutch buyingResources)
         {
-            this.instructions.Enqueue(new TradeWithPlayerCompletedEventInstruction
+            this.instructions_old.Enqueue(new TradeWithPlayerCompletedEventInstruction
             {
                 SellingPlayerName = sellingPlayerName,
                 BuyingPlayerName = buyingPlayerName,
@@ -774,20 +775,20 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
         public BasePlayerTurn MakeDirectTradeOfferEvent(string playerName, string buyingPlayerName, ResourceClutch resources)
         {
             var instruction = new ScenarioMakeDirectTradeOfferEventInstruction(playerName, buyingPlayerName, resources);
-            this.instructions.Enqueue(instruction);
+            this.instructions_old.Enqueue(instruction);
 
             return this;
         }
 
         public BasePlayerTurn AnswerDirectTradeOffer(string playerName, ResourceClutch resources)
         {
-            this.instructions.Enqueue(new AnswerDirectTradeOfferAction(playerName, resources));
+            this.instructions_old.Enqueue(new AnswerDirectTradeOfferAction(playerName, resources));
             return this;
         }
 
         public BasePlayerTurn AnswerDirectTradeOfferEvent(string playerName, string buyingPlayerName, ResourceClutch offeredResources)
         {
-            this.instructions.Enqueue(new AnswerDirectTradeOfferEventInstruction
+            this.instructions_old.Enqueue(new AnswerDirectTradeOfferEventInstruction
             {
                 PlayerName = playerName,
                 BuyingPlayerName = buyingPlayerName,
