@@ -70,6 +70,7 @@
     <Compile Include="GameActions\PlaceInfrastructureInstruction.cs" />
     <Compile Include="GameActions\PlaceRobberAction.cs" />
     <Compile Include="GameActions\PlayKnightCardAction.cs" />
+    <Compile Include="GameActions\RequestStateAction.cs" />
     <Compile Include="GameActions\SelectResourceFromPlayerAction.cs" />
     <Compile Include="GameBoards\GameBoardSetup.cs" />
     <Compile Include="GameController.cs" />

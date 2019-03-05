@@ -7,7 +7,8 @@
             EndOfTurn,
             AnswerDirectTradeOffer,
             MakeDirectTradeOffer,
-            PlaceStartingInfrastructure
+            PlaceStartingInfrastructure,
+            RequestState
         }
 
         public readonly OperationTypes Operation;

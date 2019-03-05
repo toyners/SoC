@@ -30,14 +30,14 @@ namespace Jabberwocky.SoC.Library
             this.PlayerActionEvent.Invoke(this.turnToken, new PlaceInfrastructureAction(settlementLocation, roadEndLocation));
         }
 
-        private void SendAction(TurnToken turnToken, ComputerPlayerAction action)
-        {
-            this.PlayerActionEvent.Invoke(turnToken, action);
-        }
-
         public void EndTurn()
         {
             this.PlayerActionEvent.Invoke(this.turnToken, new EndOfTurnAction());
+        }
+
+        public void RequestState()
+        {
+            this.PlayerActionEvent.Invoke(null, new RequestStateAction(Guid.Empty));
         }
     }
 }
