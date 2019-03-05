@@ -21,14 +21,12 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
 
     internal class MakeDirectTradeOfferEventInstruction : EventInstruction
     {
-        private readonly string receivingPlayerName;
         private readonly string buyingPlayerName;
         private readonly ResourceClutch wantedResources;
 
-        public MakeDirectTradeOfferEventInstruction(string receivingPlayerName, string buyingPlayerName, ResourceClutch wantedResources)
-            : base(receivingPlayerName)
+        public MakeDirectTradeOfferEventInstruction(string playerName, string buyingPlayerName, ResourceClutch wantedResources)
+            : base(playerName)
         {
-            this.receivingPlayerName = receivingPlayerName;
             this.buyingPlayerName = buyingPlayerName;
             this.wantedResources = wantedResources;
         }
@@ -36,7 +34,6 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
         public override GameEvent Event(IDictionary<string, Guid> playerIdsByName)
         {
             return new MakeDirectTradeOfferEvent(
-                playerIdsByName[this.receivingPlayerName], 
                 playerIdsByName[this.buyingPlayerName], 
                 this.wantedResources);
         }

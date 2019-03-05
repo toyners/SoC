@@ -756,15 +756,16 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
             throw new NotImplementedException();
         }
 
-        public BasePlayerTurn TradeWithPlayerCompletedEvent(string sellingPlayerName, string buyingPlayerName, ResourceClutch sellingResources, ResourceClutch buyingResources)
+        public BasePlayerTurn TradeWithPlayerCompletedEvent(string playerName, string buyingPlayerName, ResourceClutch buyingResources, string sellingPlayerName, ResourceClutch sellingResources)
         {
-            this.instructions_old.Enqueue(new TradeWithPlayerCompletedEventInstruction
-            {
-                SellingPlayerName = sellingPlayerName,
-                BuyingPlayerName = buyingPlayerName,
-                SellingResources = sellingResources,
-                BuyingResources = buyingResources
-            });
+            this.instructions.Enqueue(new TradeWithPlayerCompletedEventInstruction
+            (
+                playerName,
+                buyingPlayerName,
+                buyingResources,
+                sellingPlayerName,
+                sellingResources
+            ));
 
             return this;
         }
@@ -838,22 +839,7 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
             }
         }
 
-        private class TradeWithPlayerCompletedEventInstruction : EventInstruction_Old
-        {
-            public string BuyingPlayerName;
-            public ResourceClutch BuyingResources;
-            public string SellingPlayerName;
-            public ResourceClutch SellingResources;
-
-            public override GameEvent Event(Dictionary<string, IPlayer> playersByName)
-            {
-                return new TradeWithPlayerCompletedEvent(
-                    playersByName[this.SellingPlayerName].Id,
-                    playersByName[this.BuyingPlayerName].Id,
-                    this.SellingResources,
-                    this.BuyingResources);
-            }
-        }
+        
         #endregion
     }
 

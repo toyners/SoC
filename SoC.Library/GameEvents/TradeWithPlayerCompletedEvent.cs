@@ -10,7 +10,7 @@ namespace Jabberwocky.SoC.Library.GameEvents
         public readonly Guid SellingPlayerId;
         public readonly ResourceClutch SellingResources;
 
-        public TradeWithPlayerCompletedEvent(Guid sellingPlayerId, Guid buyingPlayerId, ResourceClutch sellingResources, ResourceClutch buyingResources) : base(Guid.Empty)
+        public TradeWithPlayerCompletedEvent(Guid buyingPlayerId, ResourceClutch buyingResources, Guid sellingPlayerId, ResourceClutch sellingResources) : base(Guid.Empty)
         {
             this.BuyingPlayerId = buyingPlayerId;
             this.BuyingResources = buyingResources;

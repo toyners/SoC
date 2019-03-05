@@ -66,7 +66,10 @@ namespace SoC.Library.ScenarioTests
                     .MakeDirectTradeOfferEvent(Dana, Babara, ResourceClutch.OneWool)
                     .AnswerDirectTradeOffer(Adam, ResourceClutch.OneGrain)
                     .AnswerDirectTradeOfferEvent(Babara, Adam, ResourceClutch.OneGrain)
-                    .TradeWithPlayerCompletedEvent(Babara, Adam, ResourceClutch.OneGrain, ResourceClutch.OneWool)
+                    .TradeWithPlayerCompletedEvent(Adam, Babara, ResourceClutch.OneWool, Adam, ResourceClutch.OneGrain)
+                    .TradeWithPlayerCompletedEvent(Babara, Babara, ResourceClutch.OneWool, Adam, ResourceClutch.OneGrain)
+                    .TradeWithPlayerCompletedEvent(Charlie, Babara, ResourceClutch.OneWool, Adam, ResourceClutch.OneGrain)
+                    .TradeWithPlayerCompletedEvent(Dana, Babara, ResourceClutch.OneWool, Adam, ResourceClutch.OneGrain)
                     .State(Adam)
                         .Resources(ResourceClutch.OneGrain)
                         .End()
@@ -75,7 +78,7 @@ namespace SoC.Library.ScenarioTests
                         .End()
                     .EndTurn()
                 .Build()
-                .Run_Old();
+                .Run();
         }
 
         private LocalGameControllerScenarioRunner CreateStandardLocalGameControllerScenarioRunner(string[] args)

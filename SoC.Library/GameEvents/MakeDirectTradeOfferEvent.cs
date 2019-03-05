@@ -7,7 +7,7 @@ namespace Jabberwocky.SoC.Library.GameEvents
         public readonly ResourceClutch WantedResources;
         public readonly Guid BuyingPlayerId;
 
-        public MakeDirectTradeOfferEvent(Guid playerId, Guid buyingPlayerId, ResourceClutch wantedResources) : base(playerId)
+        public MakeDirectTradeOfferEvent(Guid buyingPlayerId, ResourceClutch wantedResources) : base(Guid.Empty)
         {
             this.BuyingPlayerId = buyingPlayerId;
             this.WantedResources = wantedResources;
