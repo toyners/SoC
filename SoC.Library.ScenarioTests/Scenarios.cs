@@ -66,6 +66,8 @@ namespace SoC.Library.ScenarioTests
                     .MakeDirectTradeOfferEvent(Dana, Babara, ResourceClutch.OneWool)
                     .AnswerDirectTradeOffer(Adam, ResourceClutch.OneGrain)
                     .AnswerDirectTradeOfferEvent(Babara, Adam, ResourceClutch.OneGrain)
+                    .AnswerDirectTradeOfferEvent(Charlie, Adam, ResourceClutch.OneGrain)
+                    .AnswerDirectTradeOfferEvent(Dana, Adam, ResourceClutch.OneGrain)
                     .TradeWithPlayerCompletedEvent(Adam, Babara, ResourceClutch.OneWool, Adam, ResourceClutch.OneGrain)
                     .TradeWithPlayerCompletedEvent(Babara, Babara, ResourceClutch.OneWool, Adam, ResourceClutch.OneGrain)
                     .TradeWithPlayerCompletedEvent(Charlie, Babara, ResourceClutch.OneWool, Adam, ResourceClutch.OneGrain)
