@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using Jabberwocky.SoC.Library;
+using Jabberwocky.SoC.Library.GameActions;
 using Jabberwocky.SoC.Library.GameBoards;
 using Jabberwocky.SoC.Library.GameEvents;
+using SoC.Library.ScenarioTests.PlayerTurn;
 using SoC.Library.ScenarioTests.ScenarioEvents;
 
 namespace SoC.Library.ScenarioTests
@@ -11,7 +13,7 @@ namespace SoC.Library.ScenarioTests
     {
         public EventInstruction(string playerName) : base(playerName) {}
 
-        public abstract GameEvent Event(IDictionary<string, Guid> playerIdsByName);
+        public abstract GameEvent GetEvent(IDictionary<string, Guid> playerIdsByName);
     }
 
     internal class InitialBoardSetupEventInstruction : EventInstruction
@@ -23,7 +25,7 @@ namespace SoC.Library.ScenarioTests
             this.gameBoardSetup = gameBoardSetup;
         }
 
-        public override GameEvent Event(IDictionary<string, Guid> playerIdsByName)
+        public override GameEvent GetEvent(IDictionary<string, Guid> playerIdsByName)
         {
             return new InitialBoardSetupEventArgs(this.gameBoardSetup);
         }
@@ -35,7 +37,7 @@ namespace SoC.Library.ScenarioTests
         {
         }
 
-        public override GameEvent Event(IDictionary<string, Guid> playerIdsByName)
+        public override GameEvent GetEvent(IDictionary<string, Guid> playerIdsByName)
         {
             return new ScenarioPlaceSetupInfrastructureEvent();
         }
@@ -49,7 +51,7 @@ namespace SoC.Library.ScenarioTests
             this.playerIdsByName = playerIdsByName;
         }
 
-        public override GameEvent Event(IDictionary<string, Guid> p)
+        public override GameEvent GetEvent(IDictionary<string, Guid> p)
         {
             return new PlayerSetupEvent(this.playerIdsByName);
         }
@@ -75,13 +77,79 @@ namespace SoC.Library.ScenarioTests
             this.sellingResources = sellingResources;
         }
 
-        public override GameEvent Event(IDictionary<string, Guid> playerIdsByName)
+        public override GameEvent GetEvent(IDictionary<string, Guid> playerIdsByName)
         {
             return new TradeWithPlayerCompletedEvent(
                 playerIdsByName[this.buyingPlayerName],
                 this.buyingResources,
                 playerIdsByName[this.sellingPlayerName],
                 this.sellingResources);
+        }
+    }
+
+    internal class PlayerStateInstruction : Instruction
+    {
+        private readonly BasePlayerTurn turn;
+        private ResourceClutch? expectedResources;
+
+        public PlayerStateInstruction(string playerName, BasePlayerTurn turn) : base(playerName)
+        {
+            this.turn = turn;
+        }
+
+        public PlayerStateInstruction HeldCards(DevelopmentCardTypes developmentCardType)
+        {
+            return this;
+        }
+
+        public PlayerStateInstruction VictoryPoints(uint victoryPoints)
+        {
+            return this;
+        }
+
+        public PlayerStateInstruction Resources(ResourceClutch expectedResources)
+        {
+            this.expectedResources = expectedResources;
+            return this;
+        }
+
+        public BasePlayerTurn End() { return this.turn; }
+
+        public ActionInstruction GetAction()
+        {
+            return new ActionInstruction(this.PlayerName, ActionInstruction.OperationTypes.RequestState, null);
+        }
+
+        public GameEvent GetEvent(IDictionary<string, Guid> playerIdsByName)
+        {
+            var requestStateEvent = new ScenarioRequestStateEvent(playerIdsByName[this.PlayerName]);
+            if (this.expectedResources.HasValue)
+                requestStateEvent.Resources = this.expectedResources.Value;
+            return requestStateEvent;
+        }
+    }
+
+    internal class ScenarioRequestStateEvent : GameEvent
+    {
+        public ScenarioRequestStateEvent(Guid playerId) : base(playerId)
+        {
+        }
+
+        public ResourceClutch? Resources { get; set; }
+
+        public override bool Equals(object obj)
+        {
+            if (obj == null || obj.GetType() != typeof(RequestStateEvent) || this.PlayerId != ((GameEvent)obj).PlayerId)
+                return false;
+
+            var other = (RequestStateEvent)obj;
+            if (this.Resources.HasValue)
+            {
+                if (!this.Resources.Value.Equals(other.Resources))
+                    return false;
+            }
+
+            return true;
         }
     }
 }

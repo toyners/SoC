@@ -31,7 +31,7 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
             this.wantedResources = wantedResources;
         }
 
-        public override GameEvent Event(IDictionary<string, Guid> playerIdsByName)
+        public override GameEvent GetEvent(IDictionary<string, Guid> playerIdsByName)
         {
             return new MakeDirectTradeOfferEvent(
                 playerIdsByName[this.buyingPlayerName], 
@@ -53,7 +53,7 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
             this.wantedResources = wantedResources;
         }
 
-        public override GameEvent Event(IDictionary<string, Guid> playerIdsByName)
+        public override GameEvent GetEvent(IDictionary<string, Guid> playerIdsByName)
         {
             return new AnswerDirectTradeOfferEvent(
                 playerIdsByName[this.receivingPlayerName],

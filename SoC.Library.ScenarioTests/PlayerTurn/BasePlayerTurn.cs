@@ -428,33 +428,6 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
             throw new NotImplementedException();
         }
 
-        public class PlayerStateInstruction : Instruction
-        {
-            private BasePlayerTurn turn;
-
-            public PlayerStateInstruction(string playerName, BasePlayerTurn turn) : base(playerName)
-            {
-                this.turn = turn;
-            }
-
-            public PlayerStateInstruction HeldCards(DevelopmentCardTypes developmentCardType)
-            {
-                return this;
-            }
-
-            public PlayerStateInstruction VictoryPoints(uint victoryPoints)
-            {
-                return this;
-            }
-
-            public PlayerStateInstruction Resources(ResourceClutch resources)
-            {
-                return this;
-            }
-
-            public BasePlayerTurn End() { return this.turn; }
-        }
-
         public PlayerStateInstruction State(string playerName)
         {
             var playerState = new PlayerStateInstruction(playerName, this);

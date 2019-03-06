@@ -108,13 +108,14 @@ namespace SoC.Library.ScenarioTests
                 else if (instruction is EventInstruction eventInstruction)
                 {
                     this.currentInstructionIndex++;
-                    this.ExpectedEvents.Add(eventInstruction.Event(this.playerIdsByName));
+                    this.ExpectedEvents.Add(eventInstruction.GetEvent(this.playerIdsByName));
                 }
                 else if (instruction is PlayerStateInstruction playerStateInstruction)
                 {
                     // Make request for player state from game server - place expected event
                     // into list for verification
-                    throw new NotImplementedException();
+                    this.ExpectedEvents.Add(playerStateInstruction.GetEvent());
+                    this.SendAction(playerStateInstruction.GetAction());
                 }
             }
         }
