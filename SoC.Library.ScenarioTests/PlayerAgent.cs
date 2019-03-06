@@ -12,16 +12,20 @@ namespace SoC.Library.ScenarioTests
     using Jabberwocky.SoC.Library.GameEvents;
     using NUnit.Framework;
     using SoC.Library.ScenarioTests.PlayerTurn;
-    using static SoC.Library.ScenarioTests.PlayerTurn.BasePlayerTurn;
 
     internal class PlayerAgent
     {
-        private TurnInstructions currentTurn;
+        #region Fields
+        private readonly ConcurrentQueue<GameEvent> actualEventQueue = new ConcurrentQueue<GameEvent>();
         private readonly List<TurnInstructions> turns = new List<TurnInstructions>();
-
+        private int currentInstructionIndex;
+        private TurnInstructions currentTurn;
+        private GameController gameController;
         private int nextTurnIndex;
-        protected GameController gameController;
+        private IDictionary<string, Guid> playerIdsByName;
+        #endregion
 
+        #region Construction
         public PlayerAgent(string name)
         {
             this.Name = name;
@@ -30,10 +34,20 @@ namespace SoC.Library.ScenarioTests
             this.gameController.GameExceptionEvent += this.GameExceptionEventHandler;
             this.gameController.GameEvent += this.GameEventHandler;
         }
+        #endregion
 
+        #region Properties
         public Exception GameException { get; private set; }
-        public Guid Id { get; private set; }
         public string Name { get; private set; }
+        public Guid Id { get; private set; }
+        public bool IsFinished
+        {
+            get
+            {
+                return this.nextTurnIndex >= this.turns.Count;
+            }
+        }
+        private List<GameEvent> ActualEvents { get { return this.currentTurn.ActualEvents; } }
         private bool CurrentTurnIsFinished
         {
             get
@@ -43,20 +57,22 @@ namespace SoC.Library.ScenarioTests
                     this.ExpectedEventIndex == this.ExpectedEvents.Count;
             }
         }
-        public bool IsFinished
-        {
-            get
-            {
-                return this.nextTurnIndex >= this.turns.Count;
-            }
-        }
+        private List<GameEvent> ExpectedEvents { get { return this.currentTurn.ExpectedEvents; } }
 
+        private int RoundNumber { get { return this.currentTurn.RoundNumber; } }
+        private int TurnNumber { get { return this.currentTurn.TurnNumber; } }
+
+        // TODO: Clean up this - either better use or no use of properties to public vars
+        private int ExpectedEventIndex { get { return this.currentTurn.ExpectedEventIndex; } set { this.currentTurn.ExpectedEventIndex = value; } }
+        private int ActualEventIndex { get { return this.currentTurn.ActualEventIndex; } set { this.currentTurn.ActualEventIndex = value; } }
+        #endregion
+
+        #region Methods
         public void JoinGame(LocalGameServer gameServer)
         {
             gameServer.JoinGame(this.Name, this.gameController);
         }
 
-        private readonly ConcurrentQueue<GameEvent> actualEventQueue = new ConcurrentQueue<GameEvent>();
         protected void GameEventHandler(GameEvent gameEvent)
         {
             this.actualEventQueue.Enqueue(gameEvent);
@@ -85,10 +101,6 @@ namespace SoC.Library.ScenarioTests
             this.turns.Add(turn);
         }
 
-        public List<GameEvent> ActualEvents { get { return this.currentTurn.ActualEvents; } }
-        public List<GameEvent> ExpectedEvents { get { return this.currentTurn.ExpectedEvents; } }
-        private IDictionary<string, Guid> playerIdsByName;
-        private int currentInstructionIndex;
         public void ProcessInstructions()
         {
             while (this.currentInstructionIndex < this.currentTurn.Instructions.Count)
@@ -114,7 +126,11 @@ namespace SoC.Library.ScenarioTests
                 {
                     // Make request for player state from game server - place expected event
                     // into list for verification
-                    this.ExpectedEvents.Add(playerStateInstruction.GetEvent());
+                    if (!this.VerifyEvents(false))
+                        return;
+
+                    this.currentInstructionIndex++;
+                    this.ExpectedEvents.Add(playerStateInstruction.GetEvent(this.playerIdsByName));
                     this.SendAction(playerStateInstruction.GetAction());
                 }
             }
@@ -190,13 +206,7 @@ namespace SoC.Library.ScenarioTests
                 default: throw new Exception();
             }
         }
-
-        private int RoundNumber { get { return this.currentTurn.RoundNumber; } }
-        private int TurnNumber { get { return this.currentTurn.TurnNumber; } }
-
-        // TODO: Clean up this - either better use or no use of properties to public vars
-        private int ExpectedEventIndex { get { return this.currentTurn.ExpectedEventIndex; }  set { this.currentTurn.ExpectedEventIndex = value; } }
-        private int ActualEventIndex { get { return this.currentTurn.ActualEventIndex; } set { this.currentTurn.ActualEventIndex = value; } }
+        
         private bool VerifyEvents(bool throwIfNotVerified)
         {
             if (this.ExpectedEventIndex < this.ExpectedEvents.Count)
@@ -226,12 +236,9 @@ namespace SoC.Library.ScenarioTests
                 return this.ExpectedEventIndex == this.ExpectedEvents.Count;
             }
         }
+        #endregion
 
-        public void AddActualEvent(GameEvent gameEvent)
-        {
-            this.ActualEvents.Add(gameEvent);
-        }
-
+        #region Structures
         private class TurnInstructions
         {
             public int RoundNumber, TurnNumber;
@@ -243,5 +250,6 @@ namespace SoC.Library.ScenarioTests
 
             public bool IsEmpty { get { return this.Instructions.Count == 0; } }
         }
+        #endregion
     }
 }
