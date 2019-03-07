@@ -1,14 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using Jabberwocky.SoC.Library;
-using Jabberwocky.SoC.Library.GameActions;
-using Jabberwocky.SoC.Library.GameBoards;
-using Jabberwocky.SoC.Library.GameEvents;
-using SoC.Library.ScenarioTests.PlayerTurn;
-using SoC.Library.ScenarioTests.ScenarioEvents;
-
+﻿
 namespace SoC.Library.ScenarioTests
 {
+    using System;
+    using System.Collections.Generic;
+    using Jabberwocky.SoC.Library;
+    using Jabberwocky.SoC.Library.GameBoards;
+    using Jabberwocky.SoC.Library.GameEvents;
+    using SoC.Library.ScenarioTests.PlayerTurn;
+    using SoC.Library.ScenarioTests.ScenarioEvents;
+
     internal abstract class EventInstruction : Instruction
     {
         public EventInstruction(string playerName) : base(playerName) {}

@@ -519,10 +519,11 @@ namespace SoC.Library.ScenarioTests
         }
 
         private int setupRoundNumber = -2;
-        internal LocalGameControllerScenarioRunner PlayerSetupTurn(string playerName, uint settlementLocation, uint roadEnd)
+        internal LocalGameControllerScenarioRunner PlayerSetupTurn(string playerName, uint settlementLocation, uint roadEnd, bool verifySetupInfrastructureEvent = true)
         {
             var turn = new PlayerSetupTurn(playerName, this, this.setupRoundNumber, this.turnNumber);
-            turn.PlaceSetupInfrastructureEvent();
+            if (verifySetupInfrastructureEvent)
+                turn.PlaceSetupInfrastructureEvent();
             turn.PlaceStartingInfrastructure(settlementLocation, roadEnd);
             turn.EndTurn();
 
@@ -564,7 +565,6 @@ namespace SoC.Library.ScenarioTests
 
             return this;
         }
-
         #endregion
     }
 

@@ -59,9 +59,6 @@ namespace SoC.Library.ScenarioTests
         }
         private List<GameEvent> ExpectedEvents { get { return this.currentTurn.ExpectedEvents; } }
 
-        private int RoundNumber { get { return this.currentTurn.RoundNumber; } }
-        private int TurnNumber { get { return this.currentTurn.TurnNumber; } }
-
         // TODO: Clean up this - either better use or no use of properties to public vars
         private int ExpectedEventIndex { get { return this.currentTurn.ExpectedEventIndex; } set { this.currentTurn.ExpectedEventIndex = value; } }
         private int ActualEventIndex { get { return this.currentTurn.ActualEventIndex; } set { this.currentTurn.ActualEventIndex = value; } }
@@ -83,21 +80,21 @@ namespace SoC.Library.ScenarioTests
             this.GameException = exception;
         }
 
-        public void AddTurnInstructions(BasePlayerTurn bpt)
+        public void AddTurnInstructions(BasePlayerTurn playerTurn)
         {
-            if (bpt == null || !bpt.HasInstructions)
+            if (playerTurn == null || !playerTurn.HasInstructions)
                 return;
 
-            var instructions = bpt.Instructions.Where(i => ((Instruction)i).PlayerName == this.Name).ToList();
+            var instructions = playerTurn.Instructions.Where(i => i.PlayerName == this.Name).ToList();
             if (instructions.Count == 0)
                 return;
 
             var turn = new TurnInstructions
             {
-                RoundNumber = bpt.RoundNumber,
-                TurnNumber = bpt.TurnNumber
+                RoundNumber = playerTurn.RoundNumber,
+                TurnNumber = playerTurn.TurnNumber
             };
-            turn.Instructions = new List<object>(instructions);
+            turn.Instructions = new List<Instruction>(instructions);
             this.turns.Add(turn);
         }
 
@@ -193,6 +190,11 @@ namespace SoC.Library.ScenarioTests
                     this.gameController.EndTurn();
                     break;
                 }
+                case ActionInstruction.OperationTypes.MakeDirectTradeOffer:
+                {
+                    this.gameController.MakeDirectTradeOffer((ResourceClutch)action.Parameters[0]);
+                    break;
+                }
                 case ActionInstruction.OperationTypes.PlaceStartingInfrastructure:
                 {
                     this.gameController.PlaceStartingInfrastructure((uint)action.Parameters[0], (uint)action.Parameters[1]);
@@ -203,7 +205,7 @@ namespace SoC.Library.ScenarioTests
                     this.gameController.RequestState();
                     break;
                 }
-                default: throw new Exception();
+                default: throw new Exception($"Operation '{action.Operation}' not recognised");
             }
         }
         
@@ -227,7 +229,7 @@ namespace SoC.Library.ScenarioTests
                 // At least one expected event was not matched with an actual event.
                 var expectedEvent = this.ExpectedEvents[this.ExpectedEventIndex];
                 //Assert.Fail($"Did not find {expectedEvent.GetType()} event for '{this.PlayerName}' in round {this.RoundNumber}, turn {this.TurnNumber}.\r\n{/*this.GetEventDetails(expectedEvent)*/""}");
-                Assert.Fail($"Did not find {expectedEvent.GetType()} event for '{this.Name}' in round {this.RoundNumber}, turn {this.TurnNumber}.\r\n");
+                Assert.Fail($"Did not find {expectedEvent.GetType()} event for '{this.Name}' in round {this.currentTurn.RoundNumber}, turn {this.currentTurn.TurnNumber}.\r\n");
 
                 throw new NotImplementedException(); // Never reached - Have to do this to pass compliation
             }
@@ -243,11 +245,11 @@ namespace SoC.Library.ScenarioTests
         {
             public int RoundNumber, TurnNumber;
             public int ExpectedEventIndex, ActualEventIndex;
-            public List<object> Instructions = new List<object>();
+            public List<Instruction> Instructions = new List<Instruction>();
             public List<GameEvent> ActualEvents = new List<GameEvent>();
             public List<GameEvent> ExpectedEvents = new List<GameEvent>();
             public List<ComputerPlayerAction> Actions = new List<ComputerPlayerAction>();
-
+        
             public bool IsEmpty { get { return this.Instructions.Count == 0; } }
         }
         #endregion

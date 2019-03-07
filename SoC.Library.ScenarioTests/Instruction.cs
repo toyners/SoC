@@ -1,5 +1,9 @@
-﻿namespace SoC.Library.ScenarioTests
+﻿
+namespace SoC.Library.ScenarioTests
 {
+    using System.Diagnostics;
+
+    [DebuggerDisplay("{PlayerName}, {GetType().Name}")]
     internal class Instruction
     {
         public readonly string PlayerName;

@@ -39,5 +39,10 @@ namespace Jabberwocky.SoC.Library
         {
             this.PlayerActionEvent.Invoke(null, new RequestStateAction(Guid.Empty));
         }
+
+        public void MakeDirectTradeOffer(ResourceClutch resourceClutch)
+        {
+            this.PlayerActionEvent.Invoke(this.turnToken, new MakeDirectTradeOfferAction(Guid.Empty, resourceClutch));
+        }
     }
 }

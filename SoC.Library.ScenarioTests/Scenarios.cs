@@ -34,7 +34,7 @@ namespace SoC.Library.ScenarioTests
         [Scenario]
         public void Scenario_AllPlayersCompleteSetup(string[] args)
         {
-            this.CreateStandardLocalGameControllerScenarioRunner(args)
+            this.CompletePlayerInitialisation(args)
                 .WithNoResourceCollection()
                 .PlayerSetupEvent()
                 .InitialBoardSetupEvent()
@@ -54,7 +54,7 @@ namespace SoC.Library.ScenarioTests
         {
             var adamResources = ResourceClutch.OneWool;
             var babaraResources = ResourceClutch.OneGrain;
-            this.CreateStandardLocalGameControllerScenarioRunner(args)
+            this.CompletePlayerSetup(args)
                 .WithNoResourceCollection()
                 .WithStartingResourcesForPlayer(Adam, adamResources)
                 .WithStartingResourcesForPlayer(Babara, babaraResources)
@@ -79,11 +79,10 @@ namespace SoC.Library.ScenarioTests
                         .Resources(ResourceClutch.OneWool)
                         .End()
                     .EndTurn()
-                .Build()
                 .Run();
         }
 
-        private LocalGameControllerScenarioRunner CreateStandardLocalGameControllerScenarioRunner(string[] args)
+        private LocalGameControllerScenarioRunner CompletePlayerInitialisation(string[] args)
         {
             return LocalGameControllerScenarioRunner.LocalGameController(args)
                 .WithPlayer(Adam)
@@ -91,6 +90,24 @@ namespace SoC.Library.ScenarioTests
                 .WithPlayer(Charlie)
                 .WithPlayer(Dana)
                 .WithTurnOrder(Adam, Babara, Charlie, Dana);
+        }
+
+        private LocalGameControllerScenarioRunner CompletePlayerSetup(string[] args)
+        {
+            return LocalGameControllerScenarioRunner.LocalGameController(args)
+                .WithPlayer(Adam)
+                .WithPlayer(Babara)
+                .WithPlayer(Charlie)
+                .WithPlayer(Dana)
+                .WithTurnOrder(Adam, Babara, Charlie, Dana)
+                .PlayerSetupTurn(Adam, Adam_FirstSettlementLocation, Adam_FirstRoadEnd)
+                .PlayerSetupTurn(Babara, Babara_FirstSettlementLocation, Babara_FirstRoadEnd)
+                .PlayerSetupTurn(Charlie, Charlie_FirstSettlementLocation, Charlie_FirstRoadEnd)
+                .PlayerSetupTurn(Dana, Dana_FirstSettlementLocation, Dana_FirstRoadEnd)
+                .PlayerSetupTurn(Dana, Dana_SecondSettlementLocation, Dana_SecondRoadEnd)
+                .PlayerSetupTurn(Charlie, Charlie_SecondSettlementLocation, Charlie_SecondRoadEnd)
+                .PlayerSetupTurn(Babara, Babara_SecondSettlementLocation, Babara_SecondRoadEnd)
+                .PlayerSetupTurn(Adam, Adam_SecondSettlementLocation, Adam_SecondRoadEnd);
         }
     }
 }

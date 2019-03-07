@@ -231,7 +231,7 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
         public LocalGameControllerScenarioRunner EndTurn()
         {
             var instruction = new ActionInstruction(this.PlayerName, ActionInstruction.OperationTypes.EndOfTurn, null);
-            this.instructions_old.Enqueue(instruction);
+            this.instructions.Enqueue(instruction);
             return this.runner;
         }
 
@@ -584,9 +584,9 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
 
         public bool IsVerified { get { return this.expectedEventIndex >= this.expectedEvents.Count; } }
 
-        public bool HasInstructions { get { return this.instructions_old.Count > 0; } }
+        public bool HasInstructions { get { return this.instructions.Count > 0; } }
 
-        public Queue<object> Instructions { get { return this.instructions_old; } }
+        public Queue<Instruction> Instructions { get { return this.instructions; } }
 
         public bool IsFinished { get; set; }
 

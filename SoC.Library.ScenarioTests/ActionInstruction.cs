@@ -1,5 +1,9 @@
-﻿namespace SoC.Library.ScenarioTests
+﻿
+namespace SoC.Library.ScenarioTests
 {
+    using System.Diagnostics;
+
+    [DebuggerDisplay("{PlayerName}, Operation: {Operation}")]
     internal class ActionInstruction : Instruction
     {
         public enum OperationTypes
