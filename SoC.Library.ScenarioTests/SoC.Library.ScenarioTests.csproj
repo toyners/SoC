@@ -60,6 +60,7 @@
     <Compile Include="MockTurnTimer.cs" />
     <Compile Include="PlayerAgent.cs" />
     <Compile Include="PlayerSnapshot.cs" />
+    <Compile Include="PlayerTurn\GameTurn.cs" />
     <Compile Include="PlayerTurn\ScenarioMakeDirectTradeOfferEvent.cs" />
     <Compile Include="ScenarioActions\ComputerPlayerActionWrapper.cs" />
     <Compile Include="ScenarioActions\ScenarioMakeDirectTradeOffer.cs" />
@@ -84,7 +85,6 @@
     <Compile Include="ScenarioNumberGenerator.cs" />
     <Compile Include="ScenarioPlayer.cs" />
     <Compile Include="ScenarioPlayerPool.cs" />
-    <Compile Include="PlayerTurn\BasePlayerTurn.cs" />
     <Compile Include="ScenarioActions\ScenarioPlayKnightCardAction.cs" />
     <Compile Include="Scenarios.cs" />
     <Compile Include="ScenarioTests_Old.cs" />

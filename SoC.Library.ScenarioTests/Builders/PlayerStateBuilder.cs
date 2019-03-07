@@ -7,12 +7,12 @@ namespace SoC.Library.ScenarioTests.Builders
     internal class PlayerStateBuilder
     {
         #region Fields
-        private readonly BasePlayerTurn playerTurn;
+        private readonly GameTurn playerTurn;
         private readonly PlayerSnapshot playerSnapshot;
         #endregion
 
         #region Construction
-        public PlayerStateBuilder(BasePlayerTurn playerTurn, PlayerSnapshot playerSnapshot)
+        public PlayerStateBuilder(GameTurn playerTurn, PlayerSnapshot playerSnapshot)
         {
             this.playerTurn = playerTurn;
             this.playerSnapshot = playerSnapshot;
@@ -20,7 +20,7 @@ namespace SoC.Library.ScenarioTests.Builders
         #endregion
 
         #region Methods
-        public BasePlayerTurn End()
+        public GameTurn End()
         {
             return this.playerTurn;
         }

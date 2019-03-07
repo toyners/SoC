@@ -7,7 +7,7 @@ using SoC.Library.ScenarioTests.ScenarioActions;
 
 namespace SoC.Library.ScenarioTests.PlayerTurn
 {
-    internal class ComputerPlayerTurn : BasePlayerTurn
+    internal class ComputerPlayerTurn : GameTurn
     {
         private readonly ScenarioComputerPlayer computerPlayer;
 

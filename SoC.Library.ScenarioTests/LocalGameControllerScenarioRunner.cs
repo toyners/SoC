@@ -38,14 +38,15 @@ namespace SoC.Library.ScenarioTests
 
 
         private readonly ScenarioPlayerPool playerPool = new ScenarioPlayerPool();
-        private readonly List<BasePlayerTurn> playerTurns = new List<BasePlayerTurn>();
+        private readonly List<GameTurn> playerTurns = new List<GameTurn>();
         private readonly List<PlayerSetupAction> secondRoundSetupActions = new List<PlayerSetupAction>(4);
         private readonly Dictionary<string, ScenarioComputerPlayer> computerPlayersByName = new Dictionary<string, ScenarioComputerPlayer>();
         private readonly List<IPlayer> players = new List<IPlayer>(4);
-        private readonly List<BasePlayerTurn> turns = new List<BasePlayerTurn>();
+        private readonly List<GameTurn> gameTurns = new List<GameTurn>();
+        private readonly List<PlayerSetupTurn> playerSetupTurns = new List<PlayerSetupTurn>();
         private int currentIndex = 0;
         private TurnToken currentToken;
-        private BasePlayerTurn currentTurn;
+        private GameTurn currentTurn;
         private Dictionary<GameEventTypes, Delegate> eventHandlersByGameEventType;
         private GameBoard gameBoard;
         private LocalGameController localGameController = null;
@@ -75,20 +76,29 @@ namespace SoC.Library.ScenarioTests
         public void Run()
         {
             Thread.CurrentThread.Name = "Scenario Runner";
+            var roundNumber = 0 - this.playerSetupTurns.Count / this.playerAgents.Count;
+            for (var gameTurnIndex = 0; gameTurnIndex < this.playerSetupTurns.Count; gameTurnIndex++)
+            {
+                if (gameTurnIndex % this.playerAgents.Count == 0)
+                    roundNumber += 1;
+
+                foreach (var playerAgent in this.playerAgents)
+                {
+                    playerAgent.InitialiseTurnInstructions(this.playerSetupTurns[gameTurnIndex], roundNumber.ToString(), playerAgent.Name.Substring(0, 1));
+                }
+            }
 
             var playerIds = new Queue<Guid>();
-
-            var roundNumber = 0;
-            var turnLabels = new[] { "A", "B", "C", "D" };
-            var turnLabelIndex = -1;
-            foreach (var playerTurn in this.turns)
+            roundNumber = 0;
+            for (var gameTurnIndex = 0; gameTurnIndex < this.gameTurns.Count; gameTurnIndex++)
             {
-                roundNumber++;
-                turnLabelIndex = 0;
+                if (gameTurnIndex % this.playerAgents.Count == 0)
+                    roundNumber += 1;
+ 
                 foreach (var playerAgent in this.playerAgents)
                 {
                     playerIds.Enqueue(playerAgent.Id);
-                    playerAgent.AddTurnInstructions(playerTurn, roundNumber, turnLabels[turnLabelIndex++]);
+                    playerAgent.InitialiseTurnInstructions(this.gameTurns[gameTurnIndex], roundNumber.ToString(), playerAgent.Name.Substring(0, 1));
                 }
             }
 
@@ -162,7 +172,7 @@ namespace SoC.Library.ScenarioTests
                 this.gameBoard,
                 this.developmentCardHolder);
 
-            foreach (var turn in this.turns)
+            foreach (var turn in this.gameTurns)
             {
                 turn.Initialise(this.localGameController);
                 if (turn.DevelopmentCardTypes != null)
@@ -221,7 +231,7 @@ namespace SoC.Library.ScenarioTests
             this.eventHandlersByGameEventType = eventHandlersByGameEventType;
 
             // Ensure that there is enough dice rolls
-            var fillDiceRollCount = (4 - (this.turns.Count % 4)) + 1;
+            var fillDiceRollCount = (4 - (this.gameTurns.Count % 4)) + 1;
             while (fillDiceRollCount > 0)
             {
                 this.NumberGenerator.AddTwoDiceRoll(1, 1);
@@ -279,15 +289,15 @@ namespace SoC.Library.ScenarioTests
                 this.localGameController.StartGamePlay();
 
                 var index = 0;
-                BasePlayerTurn turn = this.turns[index++];
+                GameTurn turn = this.gameTurns[index++];
                 do
                 {
                     Thread.Sleep(50);
                     if (turn.IsFinished)
                     {
                         turn.FinishProcessing();
-                        if (index < this.turns.Count)
-                            turn = this.turns[index++];
+                        if (index < this.gameTurns.Count)
+                            turn = this.gameTurns[index++];
                         else
                             break;
                     }
@@ -310,18 +320,18 @@ namespace SoC.Library.ScenarioTests
 
         private int roundNumber = 1;
         private int turnNumber = 1;
-        public BasePlayerTurn PlayerTurn_Old(string playerName, uint dice1, uint dice2)
+        public GameTurn PlayerTurn_Old(string playerName, uint dice1, uint dice2)
         {
             this.NumberGenerator.AddTwoDiceRoll(dice1, dice2);
 
-            BasePlayerTurn playerTurn;
+            GameTurn playerTurn;
             var player = this.PlayersByName[playerName];
             if (player.IsComputer)
                 playerTurn = new ComputerPlayerTurn(player, this, this.roundNumber, this.turnNumber);
             else
                 playerTurn = new HumanPlayerTurn(player, this, this.roundNumber, this.turnNumber);
 
-            this.turns.Add(playerTurn);
+            this.gameTurns.Add(playerTurn);
 
             this.turnNumber++;
             if (this.turnNumber > 4)
@@ -433,9 +443,9 @@ namespace SoC.Library.ScenarioTests
             if (this.currentIndex > 0 && this.currentTurn != null)
                 this.currentTurn.IsFinished = true;
 
-            if (this.currentIndex < this.turns.Count)
+            if (this.currentIndex < this.gameTurns.Count)
             {
-                this.currentTurn = this.turns[this.currentIndex++];
+                this.currentTurn = this.gameTurns[this.currentIndex++];
                 this.currentTurn.TurnToken = this.currentToken;
             }
             else
@@ -486,12 +496,12 @@ namespace SoC.Library.ScenarioTests
             return randomNumber;
         }
 
-        internal BasePlayerTurn PlayerTurn(string playerName, uint dice1, uint dice2)
+        internal GameTurn PlayerTurn(string playerName, uint dice1, uint dice2)
         {
             this.NumberGenerator.AddTwoDiceRoll(dice1, dice2);
 
-            var playerTurn = new BasePlayerTurn(playerName, this);
-            this.turns.Add(playerTurn);
+            var playerTurn = new GameTurn(playerName, this);
+            this.gameTurns.Add(playerTurn);
 
             /*this.turnNumber++;
             if (this.turnNumber > 4)
@@ -525,13 +535,13 @@ namespace SoC.Library.ScenarioTests
 
         internal LocalGameControllerScenarioRunner PlayerSetupTurn(string playerName, uint settlementLocation, uint roadEnd, bool verifySetupInfrastructureEvent = true)
         {
-            var turn = new PlayerSetupTurn(playerName, this);
+            var playerSetupTurn = new PlayerSetupTurn(playerName, this);
             if (verifySetupInfrastructureEvent)
-                turn.PlaceSetupInfrastructureEvent();
-            turn.PlaceStartingInfrastructure(settlementLocation, roadEnd);
-            turn.EndTurn();
+                playerSetupTurn.PlaceSetupInfrastructureEvent();
+            playerSetupTurn.PlaceStartingInfrastructure(settlementLocation, roadEnd);
+            playerSetupTurn.EndTurn();
 
-            this.turns.Add(turn);
+            this.playerSetupTurns.Add(playerSetupTurn);
 
             return this;
         }
@@ -540,9 +550,9 @@ namespace SoC.Library.ScenarioTests
         {
             foreach (var playerAgent in this.playerAgents)
             {
-                var playerTurn = new BasePlayerTurn(playerAgent.Name, this);
+                var playerTurn = new PlayerSetupTurn(playerAgent.Name, this);
                 playerTurn.InitialBoardSetupEvent();
-                this.turns.Add(playerTurn);
+                this.playerSetupTurns.Add(playerTurn);
             }
 
             return this;
@@ -553,9 +563,9 @@ namespace SoC.Library.ScenarioTests
             var playerIdsByName = this.playerAgents.ToDictionary(p => p.Name, p => p.Id);
             foreach (var playerAgent in this.playerAgents)
             {
-                var playerTurn = new BasePlayerTurn(playerAgent.Name, this);
+                var playerTurn = new PlayerSetupTurn(playerAgent.Name, this);
                 playerTurn.PlayerSetupEvent(playerIdsByName);
-                this.turns.Add(playerTurn);
+                this.playerSetupTurns.Add(playerTurn);
             }
 
             return this;

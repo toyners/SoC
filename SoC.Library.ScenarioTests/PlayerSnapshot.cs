@@ -39,19 +39,19 @@ namespace SoC.Library.ScenarioTests
 
     public class PlayerState
     {
-        private BasePlayerTurn playerTurn;
+        private GameTurn playerTurn;
         public readonly IPlayer Player;
         private List<DevelopmentCardTypes> heldCards;
         private ResourceClutch? resources;
         private uint? victoryPoints;
 
-        internal PlayerState(BasePlayerTurn playerTurn, IPlayer player)
+        internal PlayerState(GameTurn playerTurn, IPlayer player)
         {
             this.playerTurn = playerTurn;
             this.Player = player;
         }
 
-        internal BasePlayerTurn End()
+        internal GameTurn End()
         {
             return this.playerTurn;
         }

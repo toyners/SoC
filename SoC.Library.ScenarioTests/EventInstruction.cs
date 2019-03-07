@@ -89,10 +89,10 @@ namespace SoC.Library.ScenarioTests
 
     internal class PlayerStateInstruction : Instruction
     {
-        private readonly BasePlayerTurn turn;
+        private readonly GameTurn turn;
         private ResourceClutch? expectedResources;
 
-        public PlayerStateInstruction(string playerName, BasePlayerTurn turn) : base(playerName)
+        public PlayerStateInstruction(string playerName, GameTurn turn) : base(playerName)
         {
             this.turn = turn;
         }
@@ -113,7 +113,7 @@ namespace SoC.Library.ScenarioTests
             return this;
         }
 
-        public BasePlayerTurn End() { return this.turn; }
+        public GameTurn End() { return this.turn; }
 
         public ActionInstruction GetAction()
         {

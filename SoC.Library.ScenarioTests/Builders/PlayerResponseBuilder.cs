@@ -15,15 +15,15 @@ namespace SoC.Library.ScenarioTests.Builders
         private readonly IDictionary<Guid, GameEvent> gameEventsByPlayerId = new Dictionary<Guid, GameEvent>();
         private readonly IDictionary<string, ResourceClutch> playerResourcesToDropByName = new Dictionary<string, ResourceClutch>();
         private Dictionary<string, IPlayer> playersByName;
-        private readonly BasePlayerTurn playerTurn;
+        private readonly GameTurn playerTurn;
 
-        public PlayerResponseBuilder(BasePlayerTurn playerTurn, Dictionary<string, IPlayer> playersByName)
+        public PlayerResponseBuilder(GameTurn playerTurn, Dictionary<string, IPlayer> playersByName)
         {
             this.playerTurn = playerTurn;
             this.playersByName = playersByName;
         }
 
-        public BasePlayerTurn End()
+        public GameTurn End()
         {
             this.playerTurn.PlayerResourcesToDropByName = this.playerResourcesToDropByName;
             this.playerTurn.ActionsByPlayerId = this.actionsByPlayerId;
