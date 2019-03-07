@@ -4,7 +4,7 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
 {
     internal class HumanPlayerTurn : BasePlayerTurn
     {
-        public HumanPlayerTurn(IPlayer player, LocalGameControllerScenarioRunner runner, int roundNumber, int turnNumber) : base(player, runner, roundNumber, turnNumber)
+        public HumanPlayerTurn(IPlayer player, LocalGameControllerScenarioRunner runner, int roundNumber, int turnNumber) : base(player, runner)
         {
         }
     }

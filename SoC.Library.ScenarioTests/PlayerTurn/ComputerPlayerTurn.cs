@@ -11,7 +11,7 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
     {
         private readonly ScenarioComputerPlayer computerPlayer;
 
-        public ComputerPlayerTurn(IPlayer player, LocalGameControllerScenarioRunner runner, int roundNumber, int turnNumber) : base(player, runner, roundNumber, turnNumber)
+        public ComputerPlayerTurn(IPlayer player, LocalGameControllerScenarioRunner runner, int roundNumber, int turnNumber) : base(player, runner)
         {
             this.computerPlayer = (ScenarioComputerPlayer)player;
         }

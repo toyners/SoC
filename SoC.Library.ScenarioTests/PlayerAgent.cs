@@ -80,7 +80,7 @@ namespace SoC.Library.ScenarioTests
             this.GameException = exception;
         }
 
-        public void AddTurnInstructions(BasePlayerTurn playerTurn)
+        public void AddTurnInstructions(BasePlayerTurn playerTurn, int roundNumber, string turnLabel)
         {
             if (playerTurn == null || !playerTurn.HasInstructions)
                 return;
@@ -91,8 +91,8 @@ namespace SoC.Library.ScenarioTests
 
             var turn = new TurnInstructions
             {
-                RoundNumber = playerTurn.RoundNumber,
-                TurnNumber = playerTurn.TurnNumber
+                RoundNumber = roundNumber,
+                TurnLabel = turnLabel
             };
             turn.Instructions = new List<Instruction>(instructions);
             this.turns.Add(turn);
@@ -229,7 +229,7 @@ namespace SoC.Library.ScenarioTests
                 // At least one expected event was not matched with an actual event.
                 var expectedEvent = this.ExpectedEvents[this.ExpectedEventIndex];
                 //Assert.Fail($"Did not find {expectedEvent.GetType()} event for '{this.PlayerName}' in round {this.RoundNumber}, turn {this.TurnNumber}.\r\n{/*this.GetEventDetails(expectedEvent)*/""}");
-                Assert.Fail($"Did not find {expectedEvent.GetType()} event for '{this.Name}' in round {this.currentTurn.RoundNumber}, turn {this.currentTurn.TurnNumber}.\r\n");
+                Assert.Fail($"Did not find {expectedEvent.GetType()} event for '{this.Name}' in round {this.currentTurn.RoundNumber}, turn {this.currentTurn.TurnLabel}.\r\n");
 
                 throw new NotImplementedException(); // Never reached - Have to do this to pass compliation
             }
@@ -243,7 +243,8 @@ namespace SoC.Library.ScenarioTests
         #region Structures
         private class TurnInstructions
         {
-            public int RoundNumber, TurnNumber;
+            public int RoundNumber;
+            public string TurnLabel;
             public int ExpectedEventIndex, ActualEventIndex;
             public List<Instruction> Instructions = new List<Instruction>();
             public List<GameEvent> ActualEvents = new List<GameEvent>();

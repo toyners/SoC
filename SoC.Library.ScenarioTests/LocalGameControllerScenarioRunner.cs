@@ -78,12 +78,17 @@ namespace SoC.Library.ScenarioTests
 
             var playerIds = new Queue<Guid>();
 
-            foreach (var turn in this.turns)
+            var roundNumber = 0;
+            var turnLabels = new[] { "A", "B", "C", "D" };
+            var turnLabelIndex = -1;
+            foreach (var playerTurn in this.turns)
             {
+                roundNumber++;
+                turnLabelIndex = 0;
                 foreach (var playerAgent in this.playerAgents)
                 {
                     playerIds.Enqueue(playerAgent.Id);
-                    playerAgent.AddTurnInstructions(turn);
+                    playerAgent.AddTurnInstructions(playerTurn, roundNumber, turnLabels[turnLabelIndex++]);
                 }
             }
 
@@ -485,15 +490,15 @@ namespace SoC.Library.ScenarioTests
         {
             this.NumberGenerator.AddTwoDiceRoll(dice1, dice2);
 
-            var playerTurn = new BasePlayerTurn(playerName, this, this.roundNumber, this.turnNumber);
+            var playerTurn = new BasePlayerTurn(playerName, this);
             this.turns.Add(playerTurn);
 
-            this.turnNumber++;
+            /*this.turnNumber++;
             if (this.turnNumber > 4)
             {
                 this.roundNumber++;
                 this.turnNumber = 1;
-            }
+            }*/
 
             return playerTurn;
         }
@@ -518,10 +523,9 @@ namespace SoC.Library.ScenarioTests
             return this;
         }
 
-        private int setupRoundNumber = -2;
         internal LocalGameControllerScenarioRunner PlayerSetupTurn(string playerName, uint settlementLocation, uint roadEnd, bool verifySetupInfrastructureEvent = true)
         {
-            var turn = new PlayerSetupTurn(playerName, this, this.setupRoundNumber, this.turnNumber);
+            var turn = new PlayerSetupTurn(playerName, this);
             if (verifySetupInfrastructureEvent)
                 turn.PlaceSetupInfrastructureEvent();
             turn.PlaceStartingInfrastructure(settlementLocation, roadEnd);
@@ -529,22 +533,14 @@ namespace SoC.Library.ScenarioTests
 
             this.turns.Add(turn);
 
-            this.turnNumber++;
-            if (this.turnNumber > 4)
-            {
-                this.setupRoundNumber++;
-                this.turnNumber = 1;
-            }
-
             return this;
         }
 
         internal LocalGameControllerScenarioRunner InitialBoardSetupEvent()
         {
-            var number = 1;
             foreach (var playerAgent in this.playerAgents)
             {
-                var playerTurn = new BasePlayerTurn(playerAgent.Name, this, -3, number++);
+                var playerTurn = new BasePlayerTurn(playerAgent.Name, this);
                 playerTurn.InitialBoardSetupEvent();
                 this.turns.Add(playerTurn);
             }
@@ -555,10 +551,9 @@ namespace SoC.Library.ScenarioTests
         internal LocalGameControllerScenarioRunner PlayerSetupEvent()
         {
             var playerIdsByName = this.playerAgents.ToDictionary(p => p.Name, p => p.Id);
-            var number = 1;
             foreach (var playerAgent in this.playerAgents)
             {
-                var playerTurn = new BasePlayerTurn(playerAgent.Name, this, -3, number++);
+                var playerTurn = new BasePlayerTurn(playerAgent.Name, this);
                 playerTurn.PlayerSetupEvent(playerIdsByName);
                 this.turns.Add(playerTurn);
             }

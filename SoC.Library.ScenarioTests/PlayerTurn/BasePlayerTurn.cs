@@ -24,29 +24,25 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
         protected readonly List<GameEvent> actualEvents = new List<GameEvent>();
         //private List<Tuple<string, ComputerPlayerAction>> playerActions;
         private readonly List<GameEvent> expectedEvents = new List<GameEvent>();
-        public readonly int RoundNumber;
-        public readonly int TurnNumber;
+        //public readonly int RoundNumber;
+        //public readonly int TurnNumber;
         //private Dictionary<string, IPlayer> playersByName;
         private Dictionary<IPlayer, Action<ComputerPlayerAction>> actionProcessorsByPlayer;
         private Dictionary<IPlayer, Action<ComputerPlayerAction>> actionResolversByPlayer;
         #endregion
 
         #region Construction
-        public BasePlayerTurn(IPlayer player, LocalGameControllerScenarioRunner runner, int roundNumber, int turnNumber)
+        public BasePlayerTurn(IPlayer player, LocalGameControllerScenarioRunner runner)
         {
             this.player = player;
             this.runner = runner;
-            this.RoundNumber = roundNumber;
-            this.TurnNumber = turnNumber;
         }
 
-        public BasePlayerTurn(string playerName, LocalGameControllerScenarioRunner runner, int roundNumber, int turnNumber)
+        public BasePlayerTurn(string playerName, LocalGameControllerScenarioRunner runner)
         {
             //this.player = playersByName[playerName];
             this.PlayerName = playerName;
             this.runner = runner;
-            this.RoundNumber = roundNumber;
-            this.TurnNumber = turnNumber;
             this.actionProcessorsByPlayer = new Dictionary<IPlayer, Action<ComputerPlayerAction>>();
             this.actionResolversByPlayer = new Dictionary<IPlayer, Action<ComputerPlayerAction>>();
             /*foreach (var player in playersByName.Values)
@@ -658,7 +654,7 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
             {
                 //this.LocalGameController.Quit();
                 var expectedEvent = this.expectedEvents[this.expectedEventIndex];
-                Assert.Fail($"Did not find {expectedEvent.GetType()} event for '{this.PlayerName}' in round {this.RoundNumber}, turn {this.TurnNumber}.\r\n{this.GetEventDetails(expectedEvent)}");
+                Assert.Fail($"Did not find {expectedEvent.GetType()} event for '{this.PlayerName}' in round ?, turn ?.\r\n{this.GetEventDetails(expectedEvent)}");
             }
         }
 
@@ -834,8 +830,8 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
 
     internal class PlayerSetupTurn : BasePlayerTurn
     {
-        public PlayerSetupTurn(string playerName, LocalGameControllerScenarioRunner runner, int roundNumber, int turnNumber)
-            : base(playerName, runner, roundNumber, turnNumber)
+        public PlayerSetupTurn(string playerName, LocalGameControllerScenarioRunner runner)
+            : base(playerName, runner)
         {
         }
 
