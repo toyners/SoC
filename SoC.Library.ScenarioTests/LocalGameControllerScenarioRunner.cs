@@ -43,7 +43,7 @@ namespace SoC.Library.ScenarioTests
         private readonly Dictionary<string, ScenarioComputerPlayer> computerPlayersByName = new Dictionary<string, ScenarioComputerPlayer>();
         private readonly List<IPlayer> players = new List<IPlayer>(4);
         private readonly List<GameTurn> gameTurns = new List<GameTurn>();
-        private readonly List<PlayerSetupTurn> playerSetupTurns = new List<PlayerSetupTurn>();
+        private readonly List<SetupTurn> setupTurns = new List<SetupTurn>();
         private int currentIndex = 0;
         private TurnToken currentToken;
         private GameTurn currentTurn;
@@ -76,20 +76,18 @@ namespace SoC.Library.ScenarioTests
         public void Run()
         {
             Thread.CurrentThread.Name = "Scenario Runner";
-            var roundNumber = 0 - this.playerSetupTurns.Count / this.playerAgents.Count;
-            for (var gameTurnIndex = 0; gameTurnIndex < this.playerSetupTurns.Count; gameTurnIndex++)
-            {
-                if (gameTurnIndex % this.playerAgents.Count == 0)
-                    roundNumber += 1;
 
+            var playerIds = new Queue<Guid>(this.playerAgents.Select(agent => agent.Id));
+
+            foreach (var setupTurn in this.setupTurns)
+            {
                 foreach (var playerAgent in this.playerAgents)
                 {
-                    playerAgent.InitialiseTurnInstructions(this.playerSetupTurns[gameTurnIndex], roundNumber.ToString(), playerAgent.Name.Substring(0, 1));
+                    playerAgent.InitialiseTurnInstructions(setupTurn, setupTurn.Label, playerAgent.Name.Substring(0, 1));
                 }
             }
-
-            var playerIds = new Queue<Guid>();
-            roundNumber = 0;
+            
+            var roundNumber = 0;
             for (var gameTurnIndex = 0; gameTurnIndex < this.gameTurns.Count; gameTurnIndex++)
             {
                 if (gameTurnIndex % this.playerAgents.Count == 0)
@@ -533,41 +531,22 @@ namespace SoC.Library.ScenarioTests
             return this;
         }
 
-        internal LocalGameControllerScenarioRunner PlayerSetupTurn(string playerName, uint settlementLocation, uint roadEnd, bool verifySetupInfrastructureEvent = true)
+        internal LocalGameControllerScenarioRunner PlayerInfrastructureSetup(string playerName, uint settlementLocation, uint roadEndLocation, bool verifySetupInfrastructureEvent = true)
         {
-            var playerSetupTurn = new PlayerSetupTurn(playerName, this);
-            if (verifySetupInfrastructureEvent)
-                playerSetupTurn.PlaceSetupInfrastructureEvent();
-            playerSetupTurn.PlaceStartingInfrastructure(settlementLocation, roadEnd);
-            playerSetupTurn.EndTurn();
-
-            this.playerSetupTurns.Add(playerSetupTurn);
-
+            this.setupTurns.Add(SetupTurn.PlayerInfrastructureSetupEvent(playerName, this, settlementLocation, roadEndLocation, verifySetupInfrastructureEvent));
             return this;
         }
 
         internal LocalGameControllerScenarioRunner InitialBoardSetupEvent()
         {
-            foreach (var playerAgent in this.playerAgents)
-            {
-                var playerTurn = new PlayerSetupTurn(playerAgent.Name, this);
-                playerTurn.InitialBoardSetupEvent();
-                this.playerSetupTurns.Add(playerTurn);
-            }
-
+            this.setupTurns.AddRange(this.playerAgents.Select(agent => SetupTurn.InitialBoardSetupEvent(agent.Name, this)));
             return this;
         }
 
         internal LocalGameControllerScenarioRunner PlayerSetupEvent()
         {
             var playerIdsByName = this.playerAgents.ToDictionary(p => p.Name, p => p.Id);
-            foreach (var playerAgent in this.playerAgents)
-            {
-                var playerTurn = new PlayerSetupTurn(playerAgent.Name, this);
-                playerTurn.PlayerSetupEvent(playerIdsByName);
-                this.playerSetupTurns.Add(playerTurn);
-            }
-
+            this.setupTurns.AddRange(this.playerAgents.Select(agent => SetupTurn.PlayerSetupEvent(agent.Name, this, playerIdsByName)));
             return this;
         }
         #endregion

@@ -22,11 +22,8 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
         public readonly IPlayer player;
         protected readonly LocalGameControllerScenarioRunner runner;
         protected readonly List<GameEvent> actualEvents = new List<GameEvent>();
-        //private List<Tuple<string, ComputerPlayerAction>> playerActions;
+        protected readonly Queue<Instruction> instructions = new Queue<Instruction>();
         private readonly List<GameEvent> expectedEvents = new List<GameEvent>();
-        //public readonly int RoundNumber;
-        //public readonly int TurnNumber;
-        //private Dictionary<string, IPlayer> playersByName;
         private Dictionary<IPlayer, Action<ComputerPlayerAction>> actionProcessorsByPlayer;
         private Dictionary<IPlayer, Action<ComputerPlayerAction>> actionResolversByPlayer;
         #endregion
@@ -467,20 +464,6 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
             }
         }
 
-        internal void PlaceStartingInfrastructure(uint settlementLocation, uint roadEndLocation)
-        {
-            var instruction = new ActionInstruction(this.PlayerName,
-                ActionInstruction.OperationTypes.PlaceStartingInfrastructure,
-                new object[] { settlementLocation, roadEndLocation });
-            this.instructions.Enqueue(instruction);
-        }
-
-        internal void PlaceSetupInfrastructureEvent()
-        {
-            var instruction = new PlaceSetupInfrastructureEventInstruction(this.PlayerName);
-            this.instructions.Enqueue(instruction);
-        }
-
         protected void SetupResourceSelectionOnPlayer(IPlayer selectedPlayer, ResourceTypes expectedSingleResource)
         {
             var randomNumber = int.MinValue;
@@ -509,17 +492,12 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
             this.runner.NumberGenerator.AddRandomNumber(randomNumber);
         }
 
-        private Queue<Instruction> instructions = new Queue<Instruction>();
         internal void PlayerSetupEvent(IDictionary<string, Guid> playerIdsByName)
         {
             this.instructions.Enqueue(new PlayerSetupEventInstruction(this.PlayerName, playerIdsByName));
         }
 
-        internal void InitialBoardSetupEvent()
-        {
-            // TODO: Put in the real expected GameBoardSetup data
-            this.instructions.Enqueue(new InitialBoardSetupEventInstruction(this.PlayerName, null));
-        }
+        
 
         private string GetEventDetails(GameEvent gameEvent)
         {
@@ -805,24 +783,6 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
                 return false;
 
             return ((InitialBoardSetupEventArgs)obj).Item != null;
-        }
-    }
-
-    internal class PlayerSetupTurn : GameTurn
-    {
-        public PlayerSetupTurn(string playerName, LocalGameControllerScenarioRunner runner)
-            : base(playerName, runner)
-        {
-        }
-
-        public PlayerSetupTurn StartingInfrastructure(uint settlementLocation, uint roadEnd)
-        {
-            return this;
-        }
-
-        public PlayerSetupTurn InitalBoardSetupEvent()
-        {
-            return this;
         }
     }
 }

@@ -62,6 +62,7 @@
     <Compile Include="PlayerSnapshot.cs" />
     <Compile Include="PlayerTurn\GameTurn.cs" />
     <Compile Include="PlayerTurn\ScenarioMakeDirectTradeOfferEvent.cs" />
+    <Compile Include="PlayerTurn\SetupTurn.cs" />
     <Compile Include="ScenarioActions\ComputerPlayerActionWrapper.cs" />
     <Compile Include="ScenarioActions\ScenarioMakeDirectTradeOffer.cs" />
     <Compile Include="ScenarioActions\ScenarioPlaceRobberAction.cs" />
