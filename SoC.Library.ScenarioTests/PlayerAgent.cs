@@ -14,6 +14,7 @@ namespace SoC.Library.ScenarioTests
     using NUnit.Framework;
     using SoC.Library.ScenarioTests.PlayerTurn;
 
+    [DebuggerDisplay("{Name}")]
     internal class PlayerAgent
     {
         #region Fields
@@ -251,7 +252,6 @@ namespace SoC.Library.ScenarioTests
             public List<Instruction> Instructions = new List<Instruction>();
             public List<GameEvent> ActualEvents = new List<GameEvent>();
             public List<GameEvent> ExpectedEvents = new List<GameEvent>();
-            public List<ComputerPlayerAction> Actions = new List<ComputerPlayerAction>();
         
             public bool IsEmpty { get { return this.Instructions.Count == 0; } }
         }

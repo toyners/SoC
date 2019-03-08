@@ -83,7 +83,7 @@ namespace SoC.Library.ScenarioTests
             {
                 foreach (var playerAgent in this.playerAgents)
                 {
-                    playerAgent.InitialiseTurnInstructions(setupTurn, setupTurn.Label, playerAgent.Name.Substring(0, 1));
+                    playerAgent.InitialiseTurnInstructions(setupTurn, setupTurn.Label, "");
                 }
             }
             
@@ -91,12 +91,15 @@ namespace SoC.Library.ScenarioTests
             for (var gameTurnIndex = 0; gameTurnIndex < this.gameTurns.Count; gameTurnIndex++)
             {
                 if (gameTurnIndex % this.playerAgents.Count == 0)
-                    roundNumber += 1;
+                    roundNumber++;
+
+                var gameTurn = this.gameTurns[gameTurnIndex];
  
                 foreach (var playerAgent in this.playerAgents)
                 {
                     playerIds.Enqueue(playerAgent.Id);
-                    playerAgent.InitialiseTurnInstructions(this.gameTurns[gameTurnIndex], roundNumber.ToString(), playerAgent.Name.Substring(0, 1));
+                    playerAgent.InitialiseTurnInstructions(gameTurn, roundNumber.ToString(), 
+                        $"{gameTurn.PlayerName}");
                 }
             }
 

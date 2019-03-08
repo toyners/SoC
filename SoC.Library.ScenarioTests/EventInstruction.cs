@@ -3,12 +3,14 @@ namespace SoC.Library.ScenarioTests
 {
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics;
     using Jabberwocky.SoC.Library;
     using Jabberwocky.SoC.Library.GameBoards;
     using Jabberwocky.SoC.Library.GameEvents;
     using SoC.Library.ScenarioTests.PlayerTurn;
     using SoC.Library.ScenarioTests.ScenarioEvents;
 
+    [DebuggerDisplay("Event: {GetType().Name}")]
     internal abstract class EventInstruction : Instruction
     {
         public EventInstruction(string playerName) : base(playerName) {}
