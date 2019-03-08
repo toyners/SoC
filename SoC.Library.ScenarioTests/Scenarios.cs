@@ -34,7 +34,7 @@ namespace SoC.Library.ScenarioTests
         [Scenario]
         public void Scenario_AllPlayersCompleteSetup(string[] args)
         {
-            this.CompletePlayerInitialisation(args)
+            this.CompletePlayerSetup(args)
                 .WithNoResourceCollection()
                 .PlayerSetupEvent()
                 .InitialBoardSetupEvent()
@@ -54,7 +54,7 @@ namespace SoC.Library.ScenarioTests
         {
             var adamResources = ResourceClutch.OneWool;
             var babaraResources = ResourceClutch.OneGrain;
-            this.CompletePlayerSetup(args)
+            this.CompletePlayerInfrastructureSetup(args)
                 .WithNoResourceCollection()
                 .WithStartingResourcesForPlayer(Adam, adamResources)
                 .WithStartingResourcesForPlayer(Babara, babaraResources)
@@ -82,7 +82,7 @@ namespace SoC.Library.ScenarioTests
                 .Run();
         }
 
-        private LocalGameControllerScenarioRunner CompletePlayerInitialisation(string[] args)
+        private LocalGameControllerScenarioRunner CompletePlayerSetup(string[] args)
         {
             return LocalGameControllerScenarioRunner.LocalGameController(args)
                 .WithPlayer(Adam)
@@ -92,7 +92,7 @@ namespace SoC.Library.ScenarioTests
                 .WithTurnOrder(Adam, Babara, Charlie, Dana);
         }
 
-        private LocalGameControllerScenarioRunner CompletePlayerSetup(string[] args)
+        private LocalGameControllerScenarioRunner CompletePlayerInfrastructureSetup(string[] args)
         {
             return LocalGameControllerScenarioRunner.LocalGameController(args)
                 .WithPlayer(Adam)

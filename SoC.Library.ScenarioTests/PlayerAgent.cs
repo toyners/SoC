@@ -242,7 +242,7 @@ namespace SoC.Library.ScenarioTests
         #endregion
 
         #region Structures
-        [DebuggerDisplay("{RoundNumber}-{TurnLabel}")]
+        [DebuggerDisplay("{RoundLabel}-{TurnLabel}")]
         private class TurnInstructions
         {
             public string RoundLabel;
