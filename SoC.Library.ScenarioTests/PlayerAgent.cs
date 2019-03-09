@@ -77,6 +77,11 @@ namespace SoC.Library.ScenarioTests
             this.actualEventQueue.Enqueue(gameEvent);
         }
 
+        internal void AddInstruction(Instruction instruction)
+        {
+            throw new NotImplementedException();
+        }
+
         private void GameExceptionEventHandler(Exception exception)
         {
             this.GameException = exception;
@@ -256,5 +261,186 @@ namespace SoC.Library.ScenarioTests
             public bool IsEmpty { get { return this.Instructions.Count == 0; } }
         }
         #endregion
+    }
+
+    internal class PlayerAgent2
+    {
+        private readonly ConcurrentQueue<GameEvent> actualEventQueue = new ConcurrentQueue<GameEvent>();
+        private readonly List<Instruction> instructions = new List<Instruction>();
+        private readonly List<GameEvent> actualEvents = new List<GameEvent>();
+        private int actualEventIndex;
+        private readonly List<GameEvent> expectedEvents = new List<GameEvent>();
+        private int expectedEventIndex;
+        private GameController gameController;
+        private int instructionIndex;
+        private IDictionary<string, Guid> playerIdsByName;
+
+        #region Construction
+        public PlayerAgent2(string name)
+        {
+            this.Name = name;
+            this.Id = Guid.NewGuid();
+            this.gameController = new GameController();
+            this.gameController.GameExceptionEvent += this.GameExceptionEventHandler;
+            this.gameController.GameEvent += this.GameEventHandler;
+        }
+        #endregion
+
+        public Exception GameException { get; private set; }
+        public Guid Id { get; private set; }
+        public bool IsFinished
+        {
+            get { return this.instructionIndex >= this.instructions.Count; }
+        }
+        public string Name { get; private set; }
+
+        public void AddInstruction(Instruction instruction) => this.instructions.Add(instruction);
+
+        public void JoinGame(LocalGameServer gameServer)
+        {
+            gameServer.JoinGame(this.Name, this.gameController);
+        }
+
+        internal void StartAsync()
+        {
+            Task.Factory.StartNew(() => this.Run());
+        }
+
+        private void GameEventHandler(GameEvent gameEvent)
+        {
+            this.actualEventQueue.Enqueue(gameEvent);
+        }
+
+        private void GameExceptionEventHandler(Exception exception)
+        {
+            this.GameException = exception;
+        }
+
+        private void Run()
+        {
+            Thread.CurrentThread.Name = this.Name;
+
+            try
+            {
+                while (!this.IsFinished)
+                {
+                    this.WaitForGameEvent();
+                    this.ProcessInstructions();
+                }
+            }
+            catch (Exception e)
+            {
+                this.GameException = e;
+            }
+        }
+
+        private void ProcessInstructions()
+        {
+            while (this.instructionIndex < this.instructions.Count)
+            {
+                if (this.GameException != null)
+                    throw this.GameException;
+
+                var instruction = this.instructions[this.instructionIndex];
+                if (instruction is ActionInstruction actionInstruction)
+                {
+                    if (!this.VerifyEvents(false))
+                        return;
+
+                    this.instructionIndex++;
+                    this.SendAction(actionInstruction);
+                }
+                else if (instruction is EventInstruction eventInstruction)
+                {
+                    this.instructionIndex++;
+                    this.expectedEvents.Add(eventInstruction.GetEvent(this.playerIdsByName));
+                }
+                else if (instruction is PlayerStateInstruction playerStateInstruction)
+                {
+                    // Make request for player state from game server - place expected event
+                    // into list for verification
+                    if (!this.VerifyEvents(false))
+                        return;
+
+                    this.instructionIndex++;
+                    this.expectedEvents.Add(playerStateInstruction.GetEvent(this.playerIdsByName));
+                    this.SendAction(playerStateInstruction.GetAction());
+                }
+            }
+        }
+
+        private void SendAction(ActionInstruction action)
+        {
+            switch (action.Operation)
+            {
+                case ActionInstruction.OperationTypes.EndOfTurn:
+                {
+                    this.gameController.EndTurn();
+                    break;
+                }
+                case ActionInstruction.OperationTypes.MakeDirectTradeOffer:
+                {
+                    this.gameController.MakeDirectTradeOffer((ResourceClutch)action.Parameters[0]);
+                    break;
+                }
+                case ActionInstruction.OperationTypes.PlaceStartingInfrastructure:
+                {
+                    this.gameController.PlaceStartingInfrastructure((uint)action.Parameters[0], (uint)action.Parameters[1]);
+                    break;
+                }
+                case ActionInstruction.OperationTypes.RequestState:
+                {
+                    this.gameController.RequestState();
+                    break;
+                }
+                default: throw new Exception($"Operation '{action.Operation}' not recognised");
+            }
+        }
+
+        private bool VerifyEvents(bool throwIfNotVerified)
+        {
+            if (this.expectedEventIndex < this.expectedEvents.Count)
+            {
+                while (this.actualEventIndex < this.actualEvents.Count)
+                {
+                    if (this.expectedEvents[this.expectedEventIndex].Equals(this.actualEvents[this.actualEventIndex]))
+                    {
+                        this.expectedEventIndex++;
+                    }
+
+                    this.actualEventIndex++;
+                }
+            }
+
+            if (throwIfNotVerified && this.expectedEventIndex < this.expectedEvents.Count)
+            {
+                // At least one expected event was not matched with an actual event.
+                var expectedEvent = this.expectedEvents[this.expectedEventIndex];
+                //Assert.Fail($"Did not find {expectedEvent.GetType()} event for '{this.PlayerName}' in round {this.RoundNumber}, turn {this.TurnNumber}.\r\n{/*this.GetEventDetails(expectedEvent)*/""}");
+                Assert.Fail($"[LABEL] Did not find {expectedEvent.GetType()} event for '{this.Name}'.\r\n");
+
+                throw new NotImplementedException(); // Never reached - Have to do this to pass compliation
+            }
+            else
+            {
+                return this.expectedEventIndex >= this.expectedEvents.Count;
+            }
+        }
+
+        private void WaitForGameEvent()
+        {
+            while (true)
+            {
+                Thread.Sleep(50);
+                if (!this.actualEventQueue.TryDequeue(out var actualEvent))
+                    continue;
+
+                if (actualEvent is PlayerSetupEvent playerSetupEvent)
+                    this.playerIdsByName = playerSetupEvent.Item;
+
+                this.actualEvents.Add(actualEvent);
+                break;
+            }
+        }
     }
 }

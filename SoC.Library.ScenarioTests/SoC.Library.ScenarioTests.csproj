@@ -87,6 +87,7 @@
     <Compile Include="ScenarioPlayer.cs" />
     <Compile Include="ScenarioPlayerPool.cs" />
     <Compile Include="ScenarioActions\ScenarioPlayKnightCardAction.cs" />
+    <Compile Include="ScenarioRunner.cs" />
     <Compile Include="Scenarios.cs" />
     <Compile Include="ScenarioTests_Old.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

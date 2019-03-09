@@ -82,6 +82,46 @@ namespace SoC.Library.ScenarioTests
                 .Run();
         }
 
+        [Scenario]
+        public void Scenario_PlayerTradesOneResourceWithPlayer2(string[] args)
+        {
+            var adamResources = ResourceClutch.OneWool;
+            var babaraResources = ResourceClutch.OneGrain;
+
+            ScenarioRunner.CreateScenarioRunner(args)
+                .WithPlayer(Adam)
+                .WithPlayer(Babara)
+                .WithPlayer(Charlie)
+                .WithPlayer(Dana)
+                .WithTurnOrder(Adam, Babara, Charlie, Dana)
+                .WithNoResourceCollection()
+                .WithStartingResourcesForPlayer(Adam, adamResources)
+                .WithStartingResourcesForPlayer(Babara, babaraResources)
+                .WhenDiceRollEvent(Adam, 3, 3)
+                .WhenDiceRollEvent(Babara, 3, 3)
+                    .MakeDirectTradeOffer(ResourceClutch.OneWool)
+                .WhenMakeDirectTradeOfferEvent(Adam, Babara, ResourceClutch.OneWool)
+                    .MakeDirectTradeOffer(ResourceClutch.OneGrain)
+                
+                //.MakeDirectTradeOfferEvent(Charlie, Babara, ResourceClutch.OneWool)
+                //.MakeDirectTradeOfferEvent(Dana, Babara, ResourceClutch.OneWool)
+                //    .AnswerDirectTradeOffer(Adam, ResourceClutch.OneGrain)
+                .WhenAnswerDirectTradeOfferEvent(Babara, Adam, ResourceClutch.OneGrain)
+                    .ConfirmDirectTrade()
+                //.AnswerDirectTradeOfferEvent(Dana, Adam, ResourceClutch.OneGrain)
+                //.TradeWithPlayerCompletedEvent(Adam, Babara, ResourceClutch.OneWool, Adam, ResourceClutch.OneGrain)
+                //.TradeWithPlayerCompletedEvent(Babara, Babara, ResourceClutch.OneWool, Adam, ResourceClutch.OneGrain)
+                //.TradeWithPlayerCompletedEvent(Charlie, Babara, ResourceClutch.OneWool, Adam, ResourceClutch.OneGrain)
+                //.TradeWithPlayerCompletedEvent(Dana, Babara, ResourceClutch.OneWool, Adam, ResourceClutch.OneGrain)
+                //.State(Adam)
+                //    .Resources(ResourceClutch.OneGrain)
+                //    .End()
+                //.State(Babara)
+                //    .Resources(ResourceClutch.OneWool)
+                //    .End()
+                .Run();
+        }
+
         private LocalGameControllerScenarioRunner CompletePlayerSetup(string[] args)
         {
             return LocalGameControllerScenarioRunner.LocalGameController(args)
