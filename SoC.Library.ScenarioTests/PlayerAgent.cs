@@ -13,14 +13,16 @@ namespace SoC.Library.ScenarioTests
 
     internal class PlayerAgent
     {
-        private readonly ConcurrentQueue<GameEvent> actualEventQueue = new ConcurrentQueue<GameEvent>();
-        private readonly List<Instruction> instructions = new List<Instruction>();
         private readonly List<GameEvent> actualEvents = new List<GameEvent>();
-        private int actualEventIndex;
+        private readonly ConcurrentQueue<GameEvent> actualEventQueue = new ConcurrentQueue<GameEvent>();
         private readonly List<GameEvent> expectedEvents = new List<GameEvent>();
+        private readonly GameController gameController;
+        private readonly List<Instruction> instructions = new List<Instruction>();
+        private readonly Dictionary<GameEvent, bool> verificationStatusByGameEvent = new Dictionary<GameEvent, bool>();
+        private int actualEventIndex;
         private int expectedEventIndex;
-        private GameController gameController;
         private int instructionIndex;
+        private string label;
         private IDictionary<string, Guid> playerIdsByName;
 
         #region Construction
@@ -90,7 +92,12 @@ namespace SoC.Library.ScenarioTests
                     throw this.GameException;
 
                 var instruction = this.instructions[this.instructionIndex];
-                if (instruction is ActionInstruction actionInstruction)
+                if (instruction is LabelInstruction labelInstruction)
+                {
+                    this.instructionIndex++;
+                    this.label = labelInstruction.Label;
+                }
+                else if (instruction is ActionInstruction actionInstruction)
                 {
                     if (!this.VerifyEvents(false))
                         return;
@@ -101,7 +108,9 @@ namespace SoC.Library.ScenarioTests
                 else if (instruction is EventInstruction eventInstruction)
                 {
                     this.instructionIndex++;
-                    this.expectedEvents.Add(eventInstruction.GetEvent(this.playerIdsByName));
+                    var expectedEvent = eventInstruction.GetEvent(this.playerIdsByName);
+                    this.expectedEvents.Add(expectedEvent);
+                    this.verificationStatusByGameEvent.Add(expectedEvent, false);
                 }
                 else if (instruction is PlayerStateInstruction playerStateInstruction)
                 {
@@ -153,6 +162,7 @@ namespace SoC.Library.ScenarioTests
                 {
                     if (this.expectedEvents[this.expectedEventIndex].Equals(this.actualEvents[this.actualEventIndex]))
                     {
+                        this.verificationStatusByGameEvent[this.expectedEvents[this.expectedEventIndex]] = true;
                         this.expectedEventIndex++;
                     }
 
@@ -165,7 +175,7 @@ namespace SoC.Library.ScenarioTests
                 // At least one expected event was not matched with an actual event.
                 var expectedEvent = this.expectedEvents[this.expectedEventIndex];
                 //Assert.Fail($"Did not find {expectedEvent.GetType()} event for '{this.PlayerName}' in round {this.RoundNumber}, turn {this.TurnNumber}.\r\n{/*this.GetEventDetails(expectedEvent)*/""}");
-                Assert.Fail($"[LABEL] Did not find {expectedEvent.GetType()} event for '{this.Name}'.\r\n");
+                Assert.Fail($"{this.label} Did not find {expectedEvent.GetType()} event for '{this.Name}'.\r\n");
 
                 throw new NotImplementedException(); // Never reached - Have to do this to pass compliation
             }

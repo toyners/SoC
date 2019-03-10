@@ -54,8 +54,9 @@ namespace SoC.Library.ScenarioTests
             return this;
         }
 
-        public ScenarioRunner Label(string label)
+        public ScenarioRunner Label(string playerName, string label)
         {
+            this.instructions.Add(new LabelInstruction(playerName, label));
             return this;
         }
         

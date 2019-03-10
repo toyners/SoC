@@ -59,6 +59,7 @@
     <Compile Include="HumanPlayer.cs" />
     <Compile Include="ComputerPlayer2.cs" />
     <Compile Include="Instructions\Instruction.cs" />
+    <Compile Include="Instructions\LabelInstruction.cs" />
     <Compile Include="Instructions\MakeDirectTradeOfferEventInstruction.cs" />
     <Compile Include="MockTurnTimer.cs" />
     <Compile Include="PlayerAgent.cs" />
