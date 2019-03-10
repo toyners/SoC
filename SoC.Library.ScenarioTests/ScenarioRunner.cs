@@ -29,6 +29,11 @@ namespace SoC.Library.ScenarioTests
         }
         #endregion
 
+        private string LastInstructionPlayerName
+        {
+            get { return this.instructions[this.instructions.Count - 1].PlayerName; }
+        }
+
         public static ScenarioRunner CreateScenarioRunner(string[] args = null)
         {
             return new ScenarioRunner(args);
@@ -46,11 +51,8 @@ namespace SoC.Library.ScenarioTests
 
         public ScenarioRunner AnswerDirectTradeOffer(string playerName, ResourceClutch wantedResources)
         {
-            var actionInstruction = new ActionInstruction(
-                this.LastInstructionPlayerName,
-                ActionInstruction.OperationTypes.AnswerDirectTradeOffer,
+            this.AddActionInstruction(ActionInstruction.OperationTypes.AnswerDirectTradeOffer, 
                 new object[] { wantedResources });
-            this.instructions.Add(actionInstruction);
             return this;
         }
 
@@ -62,11 +64,15 @@ namespace SoC.Library.ScenarioTests
         
         public ScenarioRunner MakeDirectTradeOffer(ResourceClutch wantedResources)
         {
-            var actionInstruction = new ActionInstruction(
-                this.LastInstructionPlayerName,
-                ActionInstruction.OperationTypes.MakeDirectTradeOffer,
+            this.AddActionInstruction(ActionInstruction.OperationTypes.MakeDirectTradeOffer, 
                 new object[] { wantedResources });
-            this.instructions.Add(actionInstruction);
+            return this;
+        }
+
+        public ScenarioRunner PlaceStartingInfrastructure(uint settlementLocation, uint roadEndLocation)
+        {
+            this.AddActionInstruction(ActionInstruction.OperationTypes.PlaceStartingInfrastructure,
+                new object[] { settlementLocation, roadEndLocation });
             return this;
         }
 
@@ -155,6 +161,13 @@ namespace SoC.Library.ScenarioTests
             return this;
         }
 
+        public ScenarioRunner WhenPlaceInfrastructureSetupEvent(string playerName)
+        {
+            var eventInstruction = new ScenarioPlaceSetupInfrastructureEventInstruction(playerName);
+            this.instructions.Add(eventInstruction);
+            return this;
+        }
+
         public ScenarioRunner WithNoResourceCollection()
         {
             this.gameBoard = new ScenarioGameBoardWithNoResourcesCollected();
@@ -195,9 +208,13 @@ namespace SoC.Library.ScenarioTests
             return this;
         }
 
-        private string LastInstructionPlayerName
+        private void AddActionInstruction(ActionInstruction.OperationTypes operation, object[] arguments)
         {
-            get { return this.instructions[this.instructions.Count - 1].PlayerName; }
+            var actionInstruction = new ActionInstruction(
+                this.LastInstructionPlayerName,
+                operation,
+                arguments);
+            this.instructions.Add(actionInstruction);
         }
     }
 }

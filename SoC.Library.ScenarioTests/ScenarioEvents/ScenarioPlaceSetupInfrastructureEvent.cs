@@ -3,7 +3,6 @@
 namespace SoC.Library.ScenarioTests.ScenarioEvents
 {
     using System;
-    using Jabberwocky.SoC.Library;
     using Jabberwocky.SoC.Library.GameEvents;
 
     public class ScenarioPlaceSetupInfrastructureEvent : GameEvent

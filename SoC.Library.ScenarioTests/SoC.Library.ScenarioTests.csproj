@@ -61,6 +61,7 @@
     <Compile Include="Instructions\Instruction.cs" />
     <Compile Include="Instructions\LabelInstruction.cs" />
     <Compile Include="Instructions\MakeDirectTradeOfferEventInstruction.cs" />
+    <Compile Include="Instructions\ScenarioPlaceSetupInfrastructureEventInstruction.cs" />
     <Compile Include="MockTurnTimer.cs" />
     <Compile Include="PlayerAgent.cs" />
     <Compile Include="PlayerAgent_Old.cs" />

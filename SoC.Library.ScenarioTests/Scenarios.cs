@@ -21,31 +21,31 @@ namespace SoC.Library.ScenarioTests
         const uint Babara_SecondSettlementLocation = 43u;
         const uint Adam_SecondSettlementLocation = 40u;
 
-        const uint Adam_FirstRoadEnd = 4;
-        const uint Babara_FirstRoadEnd = 17;
-        const uint Charlie_FirstRoadEnd = 15;
-        const uint Dana_FirstRoadEnd = 30;
+        const uint Adam_FirstRoadEndLocation = 4;
+        const uint Babara_FirstRoadEndLocation = 17;
+        const uint Charlie_FirstRoadEndLocation = 15;
+        const uint Dana_FirstRoadEndLocation = 30;
 
-        const uint Dana_SecondRoadEnd = 32;
-        const uint Charlie_SecondRoadEnd = 24;
-        const uint Babara_SecondRoadEnd = 44;
-        const uint Adam_SecondRoadEnd = 39;
+        const uint Dana_SecondRoadEndLocation = 32;
+        const uint Charlie_SecondRoadEndLocation = 24;
+        const uint Babara_SecondRoadEndLocation = 44;
+        const uint Adam_SecondRoadEndLocation = 39;
 
         //[Scenario]
         public void Scenario_AllPlayersCompleteSetup(string[] args)
         {
-            this.CompletePlayerSetup(args)
+            this.CompletePlayerSetup_Old(args)
                 .WithNoResourceCollection()
                 .PlayerSetupEvent()
                 .InitialBoardSetupEvent()
-                .PlayerInfrastructureSetup(Adam, Adam_FirstSettlementLocation, Adam_FirstRoadEnd)
-                .PlayerInfrastructureSetup(Babara, Babara_FirstSettlementLocation, Babara_FirstRoadEnd)
-                .PlayerInfrastructureSetup(Charlie, Charlie_FirstSettlementLocation, Charlie_FirstRoadEnd)
-                .PlayerInfrastructureSetup(Dana, Dana_FirstSettlementLocation, Dana_FirstRoadEnd)
-                .PlayerInfrastructureSetup(Dana, Dana_SecondSettlementLocation, Dana_SecondRoadEnd)
-                .PlayerInfrastructureSetup(Charlie, Charlie_SecondSettlementLocation, Charlie_SecondRoadEnd)
-                .PlayerInfrastructureSetup(Babara, Babara_SecondSettlementLocation, Babara_SecondRoadEnd)
-                .PlayerInfrastructureSetup(Adam, Adam_SecondSettlementLocation, Adam_SecondRoadEnd)
+                .PlayerInfrastructureSetup(Adam, Adam_FirstSettlementLocation, Adam_FirstRoadEndLocation)
+                .PlayerInfrastructureSetup(Babara, Babara_FirstSettlementLocation, Babara_FirstRoadEndLocation)
+                .PlayerInfrastructureSetup(Charlie, Charlie_FirstSettlementLocation, Charlie_FirstRoadEndLocation)
+                .PlayerInfrastructureSetup(Dana, Dana_FirstSettlementLocation, Dana_FirstRoadEndLocation)
+                .PlayerInfrastructureSetup(Dana, Dana_SecondSettlementLocation, Dana_SecondRoadEndLocation)
+                .PlayerInfrastructureSetup(Charlie, Charlie_SecondSettlementLocation, Charlie_SecondRoadEndLocation)
+                .PlayerInfrastructureSetup(Babara, Babara_SecondSettlementLocation, Babara_SecondRoadEndLocation)
+                .PlayerInfrastructureSetup(Adam, Adam_SecondSettlementLocation, Adam_SecondRoadEndLocation)
                 .Run();
         }
 
@@ -54,7 +54,7 @@ namespace SoC.Library.ScenarioTests
         {
             var adamResources = ResourceClutch.OneWool;
             var babaraResources = ResourceClutch.OneGrain;
-            this.CompletePlayerInfrastructureSetup(args)
+            this.CompletePlayerInfrastructureSetup_Old(args)
                 .WithNoResourceCollection()
                 .WithStartingResourcesForPlayer(Adam, adamResources)
                 .WithStartingResourcesForPlayer(Babara, babaraResources)
@@ -88,7 +88,7 @@ namespace SoC.Library.ScenarioTests
             var adamResources = ResourceClutch.OneWool;
             var babaraResources = ResourceClutch.OneGrain;
 
-            ScenarioRunner.CreateScenarioRunner(args)
+            this.CompletePlayerInfrastructureSetup(args)
                 .WithPlayer(Adam)
                 .WithPlayer(Babara)
                 .WithPlayer(Charlie)
@@ -124,7 +124,7 @@ namespace SoC.Library.ScenarioTests
                 .Run();
         }
 
-        private LocalGameControllerScenarioRunner CompletePlayerSetup(string[] args)
+        private LocalGameControllerScenarioRunner CompletePlayerSetup_Old(string[] args)
         {
             return LocalGameControllerScenarioRunner.LocalGameController(args)
                 .WithPlayer(Adam)
@@ -134,7 +134,17 @@ namespace SoC.Library.ScenarioTests
                 .WithTurnOrder(Adam, Babara, Charlie, Dana);
         }
 
-        private LocalGameControllerScenarioRunner CompletePlayerInfrastructureSetup(string[] args)
+        private ScenarioRunner CompletePlayerSetup(string[] args)
+        {
+            return ScenarioRunner.CreateScenarioRunner(args)
+                .WithPlayer(Adam)
+                .WithPlayer(Babara)
+                .WithPlayer(Charlie)
+                .WithPlayer(Dana)
+                .WithTurnOrder(Adam, Babara, Charlie, Dana);
+        }
+
+        private LocalGameControllerScenarioRunner CompletePlayerInfrastructureSetup_Old(string[] args)
         {
             return LocalGameControllerScenarioRunner.LocalGameController(args)
                 .WithPlayer(Adam)
@@ -142,14 +152,40 @@ namespace SoC.Library.ScenarioTests
                 .WithPlayer(Charlie)
                 .WithPlayer(Dana)
                 .WithTurnOrder(Adam, Babara, Charlie, Dana)
-                .PlayerInfrastructureSetup(Adam, Adam_FirstSettlementLocation, Adam_FirstRoadEnd)
-                .PlayerInfrastructureSetup(Babara, Babara_FirstSettlementLocation, Babara_FirstRoadEnd)
-                .PlayerInfrastructureSetup(Charlie, Charlie_FirstSettlementLocation, Charlie_FirstRoadEnd)
-                .PlayerInfrastructureSetup(Dana, Dana_FirstSettlementLocation, Dana_FirstRoadEnd)
-                .PlayerInfrastructureSetup(Dana, Dana_SecondSettlementLocation, Dana_SecondRoadEnd)
-                .PlayerInfrastructureSetup(Charlie, Charlie_SecondSettlementLocation, Charlie_SecondRoadEnd)
-                .PlayerInfrastructureSetup(Babara, Babara_SecondSettlementLocation, Babara_SecondRoadEnd)
-                .PlayerInfrastructureSetup(Adam, Adam_SecondSettlementLocation, Adam_SecondRoadEnd);
+                .PlayerInfrastructureSetup(Adam, Adam_FirstSettlementLocation, Adam_FirstRoadEndLocation)
+                .PlayerInfrastructureSetup(Babara, Babara_FirstSettlementLocation, Babara_FirstRoadEndLocation)
+                .PlayerInfrastructureSetup(Charlie, Charlie_FirstSettlementLocation, Charlie_FirstRoadEndLocation)
+                .PlayerInfrastructureSetup(Dana, Dana_FirstSettlementLocation, Dana_FirstRoadEndLocation)
+                .PlayerInfrastructureSetup(Dana, Dana_SecondSettlementLocation, Dana_SecondRoadEndLocation)
+                .PlayerInfrastructureSetup(Charlie, Charlie_SecondSettlementLocation, Charlie_SecondRoadEndLocation)
+                .PlayerInfrastructureSetup(Babara, Babara_SecondSettlementLocation, Babara_SecondRoadEndLocation)
+                .PlayerInfrastructureSetup(Adam, Adam_SecondSettlementLocation, Adam_SecondRoadEndLocation);
+        }
+
+        private ScenarioRunner CompletePlayerInfrastructureSetup(string[] args)
+        {
+            return ScenarioRunner.CreateScenarioRunner(args)
+                .WithPlayer(Adam)
+                .WithPlayer(Babara)
+                .WithPlayer(Charlie)
+                .WithPlayer(Dana)
+                .WithTurnOrder(Adam, Babara, Charlie, Dana)
+                .WhenPlaceInfrastructureSetupEvent(Adam)
+                    .PlaceStartingInfrastructure(Adam_FirstSettlementLocation, Adam_FirstRoadEndLocation)
+                .WhenPlaceInfrastructureSetupEvent(Babara)
+                    .PlaceStartingInfrastructure(Babara_FirstSettlementLocation, Babara_FirstRoadEndLocation)
+                .WhenPlaceInfrastructureSetupEvent(Charlie)
+                    .PlaceStartingInfrastructure(Charlie_FirstSettlementLocation, Charlie_FirstRoadEndLocation)
+                .WhenPlaceInfrastructureSetupEvent(Dana)
+                    .PlaceStartingInfrastructure(Dana_FirstSettlementLocation, Dana_FirstRoadEndLocation)
+                .WhenPlaceInfrastructureSetupEvent(Dana)
+                    .PlaceStartingInfrastructure(Dana_SecondSettlementLocation, Dana_SecondRoadEndLocation)
+                .WhenPlaceInfrastructureSetupEvent(Charlie)
+                    .PlaceStartingInfrastructure(Charlie_SecondSettlementLocation, Charlie_SecondRoadEndLocation)
+                .WhenPlaceInfrastructureSetupEvent(Babara)
+                    .PlaceStartingInfrastructure(Babara_SecondSettlementLocation, Babara_SecondRoadEndLocation)
+                .WhenPlaceInfrastructureSetupEvent(Adam)
+                    .PlaceStartingInfrastructure(Adam_SecondSettlementLocation, Adam_SecondRoadEndLocation);
         }
     }
 }
