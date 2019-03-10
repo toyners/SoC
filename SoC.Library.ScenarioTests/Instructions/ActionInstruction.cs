@@ -1,5 +1,5 @@
 ﻿
-namespace SoC.Library.ScenarioTests
+namespace SoC.Library.ScenarioTests.Instructions
 {
     using System.Diagnostics;
 

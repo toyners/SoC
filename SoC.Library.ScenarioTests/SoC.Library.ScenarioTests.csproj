@@ -48,17 +48,21 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ActionInstruction.cs" />
+    <Compile Include="Instructions\AnswerDirectTradeOfferEventInstruction.cs" />
+    <Compile Include="Instructions\DiceRollEventInstruction.cs" />
+    <Compile Include="Instructions\ActionInstruction.cs" />
     <Compile Include="Builders\ExpectedEventsBuilder.cs" />
     <Compile Include="Builders\PlayerActionBuilder.cs" />
     <Compile Include="Builders\PlayerResponseBuilder.cs" />
     <Compile Include="Builders\PlayerStateBuilder.cs" />
-    <Compile Include="EventInstruction.cs" />
+    <Compile Include="Instructions\EventInstruction.cs" />
     <Compile Include="HumanPlayer.cs" />
     <Compile Include="ComputerPlayer2.cs" />
-    <Compile Include="Instruction.cs" />
+    <Compile Include="Instructions\Instruction.cs" />
+    <Compile Include="Instructions\MakeDirectTradeOfferEventInstruction.cs" />
     <Compile Include="MockTurnTimer.cs" />
     <Compile Include="PlayerAgent.cs" />
+    <Compile Include="PlayerAgent_Old.cs" />
     <Compile Include="PlayerSnapshot.cs" />
     <Compile Include="PlayerTurn\GameTurn.cs" />
     <Compile Include="PlayerTurn\ScenarioMakeDirectTradeOfferEvent.cs" />

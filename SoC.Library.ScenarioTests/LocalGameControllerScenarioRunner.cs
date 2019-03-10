@@ -378,7 +378,7 @@ namespace SoC.Library.ScenarioTests
             return this;
         }
 
-        private readonly List<PlayerAgent> playerAgents = new List<PlayerAgent>();
+        private readonly List<PlayerAgent_Old> playerAgents = new List<PlayerAgent_Old>();
         public LocalGameControllerScenarioRunner WithTurnOrder(string firstPlayerName, string secondPlayerName, string thirdPlayerName, string fourthPlayerName)
         {
             var rolls = new uint[4];
@@ -530,7 +530,7 @@ namespace SoC.Library.ScenarioTests
 
         internal LocalGameControllerScenarioRunner WithPlayer(string playerName)
         {
-            this.playerAgents.Add(new PlayerAgent(playerName));
+            this.playerAgents.Add(new PlayerAgent_Old(playerName));
             return this;
         }
 

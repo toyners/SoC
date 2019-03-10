@@ -31,7 +31,7 @@ namespace SoC.Library.ScenarioTests
         const uint Babara_SecondRoadEnd = 44;
         const uint Adam_SecondRoadEnd = 39;
 
-        [Scenario]
+        //[Scenario]
         public void Scenario_AllPlayersCompleteSetup(string[] args)
         {
             this.CompletePlayerSetup(args)
@@ -49,7 +49,7 @@ namespace SoC.Library.ScenarioTests
                 .Run();
         }
 
-        [Scenario]
+        //[Scenario]
         public void Scenario_PlayerTradesOneResourceWithPlayer(string[] args)
         {
             var adamResources = ResourceClutch.OneWool;

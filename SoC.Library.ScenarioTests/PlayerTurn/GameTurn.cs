@@ -10,6 +10,7 @@ using Jabberwocky.SoC.Library.Interfaces;
 using Jabberwocky.SoC.Library.ScenarioTests.Builders;
 using NUnit.Framework;
 using SoC.Library.ScenarioTests.Builders;
+using SoC.Library.ScenarioTests.Instructions;
 using SoC.Library.ScenarioTests.ScenarioActions;
 using SoC.Library.ScenarioTests.ScenarioEvents;
 

@@ -7,12 +7,12 @@ namespace SoC.Library.ScenarioTests
     using System.Threading;
     using Jabberwocky.SoC.Library;
     using Jabberwocky.SoC.Library.GameBoards;
-    using Jabberwocky.SoC.Library.GameEvents;
+    using SoC.Library.ScenarioTests.Instructions;
 
     internal class ScenarioRunner
     {
         private readonly ScenarioDevelopmentCardHolder developmentCardHolder = new ScenarioDevelopmentCardHolder();
-        private readonly List<PlayerAgent2> playerAgents = new List<PlayerAgent2>();
+        private readonly List<PlayerAgent> playerAgents = new List<PlayerAgent>();
         private readonly Dictionary<string, ResourceClutch> startingResourcesByName = new Dictionary<string, ResourceClutch>();
         private GameBoard gameBoard;
         private List<Instruction> instructions = new List<Instruction>();
@@ -162,7 +162,7 @@ namespace SoC.Library.ScenarioTests
 
         public ScenarioRunner WithPlayer(string playerName)
         {
-            this.playerAgents.Add(new PlayerAgent2(playerName));
+            this.playerAgents.Add(new PlayerAgent(playerName));
             return this;
         }
 
@@ -197,68 +197,6 @@ namespace SoC.Library.ScenarioTests
         private string LastInstructionPlayerName
         {
             get { return this.instructions[this.instructions.Count - 1].PlayerName; }
-        }
-    }
-
-    internal class AnswerDirectTradeOfferEventInstruction : EventInstruction
-    {
-        private string playerName;
-        private string buyingPlayerName;
-        private ResourceClutch wantedResources;
-
-        public AnswerDirectTradeOfferEventInstruction(string playerName, string buyingPlayerName, ResourceClutch wantedResources)
-            : base(playerName)
-        {
-            this.playerName = playerName;
-            this.buyingPlayerName = buyingPlayerName;
-            this.wantedResources = wantedResources;
-        }
-
-        public override GameEvent GetEvent(IDictionary<string, Guid> playerIdsByName)
-        {
-            return new AnswerDirectTradeOfferEvent(
-                playerIdsByName[this.playerName],
-                playerIdsByName[this.buyingPlayerName],
-                this.wantedResources);
-        }
-    }
-
-    internal class MakeDirectTradeOfferEventInstruction : EventInstruction
-    {
-        private string playerName;
-        private string buyingPlayerName;
-        private ResourceClutch wantedResources;
-
-        public MakeDirectTradeOfferEventInstruction(string playerName, string buyingPlayerName, ResourceClutch wantedResources)
-            : base(playerName)
-        {
-            this.playerName = playerName;
-            this.buyingPlayerName = buyingPlayerName;
-            this.wantedResources = wantedResources;
-        }
-
-        public override GameEvent GetEvent(IDictionary<string, Guid> playerIdsByName)
-        {
-            return new MakeDirectTradeOfferEvent(playerIdsByName[this.buyingPlayerName], this.wantedResources);
-        }
-    }
-
-    internal class DiceRollEventInstruction : EventInstruction
-    {
-        private string playerName;
-        private uint dice1;
-        private uint dice2;
-
-        public DiceRollEventInstruction(string playerName, uint dice1, uint dice2) : base(playerName)
-        {
-            this.playerName = playerName;
-            this.dice1 = dice1;
-            this.dice2 = dice2;
-        }
-
-        public override GameEvent GetEvent(IDictionary<string, Guid> playerIdsByName)
-        {
-            return new DiceRollEvent(playerIdsByName[this.PlayerName], this.dice1, this.dice2);
         }
     }
 }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Jabberwocky.SoC.Library;
 using Jabberwocky.SoC.Library.GameEvents;
+using SoC.Library.ScenarioTests.Instructions;
 
 namespace SoC.Library.ScenarioTests.PlayerTurn
 {
