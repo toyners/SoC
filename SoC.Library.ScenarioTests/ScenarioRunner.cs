@@ -39,20 +39,22 @@ namespace SoC.Library.ScenarioTests
             return new ScenarioRunner(args);
         }
 
-        public ScenarioRunner ConfirmDirectTrade()
-        {
-            var actionInstruction = new ActionInstruction(
-                this.LastInstructionPlayerName,
-                ActionInstruction.OperationTypes.ConfirmDirectTrade,
-                null);
-            this.instructions.Add(actionInstruction);
-            return this;
-        }
-
         public ScenarioRunner AnswerDirectTradeOffer(string playerName, ResourceClutch wantedResources)
         {
             this.AddActionInstruction(ActionInstruction.OperationTypes.AnswerDirectTradeOffer, 
                 new object[] { wantedResources });
+            return this;
+        }
+
+        public ScenarioRunner ConfirmDirectTrade()
+        {
+            this.AddActionInstruction(ActionInstruction.OperationTypes.ConfirmDirectTrade, null);
+            return this;
+        }
+
+        public ScenarioRunner EndTurn()
+        {
+            this.AddActionInstruction(ActionInstruction.OperationTypes.EndOfTurn, null);
             return this;
         }
 
@@ -149,6 +151,7 @@ namespace SoC.Library.ScenarioTests
 
         public ScenarioRunner WhenDiceRollEvent(string playerName, uint dice1, uint dice2)
         {
+            this.numberGenerator.AddTwoDiceRoll(dice1, dice2);
             var eventInstruction = new DiceRollEventInstruction(playerName, dice1, dice2);
             this.instructions.Add(eventInstruction);
             return this;

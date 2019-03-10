@@ -93,7 +93,7 @@ namespace SoC.Library.ScenarioTests
                 .WithStartingResourcesForPlayer(Adam, adamResources)
                 .WithStartingResourcesForPlayer(Babara, babaraResources)
                 .Label(Adam, "Round 1 - Adam")
-                .WhenDiceRollEvent(Adam, 3, 3)
+                .WhenDiceRollEvent(Adam, 3, 3).EndTurn()
                 .Label(Babara, "Round 1 - Babara")
                 .WhenDiceRollEvent(Babara, 3, 3)
                     .MakeDirectTradeOffer(ResourceClutch.OneWool)

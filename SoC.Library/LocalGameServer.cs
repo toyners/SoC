@@ -269,7 +269,7 @@ namespace Jabberwocky.SoC.Library
 
                 this.numberGenerator.RollTwoDice(out this.dice1, out this.dice2);
                 var diceRollEventArgs = new DiceRollEventArgs(this.dice1, this.dice2);
-                this.eventRaiser.RaiseEvent(null, diceRollEventArgs);
+                this.eventRaiser.RaiseEvent(diceRollEventArgs);
 
                 var resourceRoll = this.dice1 + this.dice2;
                 if (resourceRoll != 7)
