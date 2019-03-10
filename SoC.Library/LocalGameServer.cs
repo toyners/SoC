@@ -188,6 +188,7 @@ namespace Jabberwocky.SoC.Library
                     else if (playerAction is PlaceInfrastructureAction placeInfrastructureAction)
                     {
                         this.PlaceInfrastructure(player, placeInfrastructureAction.SettlementLocation, placeInfrastructureAction.RoadEndLocation);
+                        break;
                     }
                 }
             }

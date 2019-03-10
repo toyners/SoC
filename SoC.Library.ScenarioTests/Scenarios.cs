@@ -89,11 +89,6 @@ namespace SoC.Library.ScenarioTests
             var babaraResources = ResourceClutch.OneGrain;
 
             this.CompletePlayerInfrastructureSetup(args)
-                .WithPlayer(Adam)
-                .WithPlayer(Babara)
-                .WithPlayer(Charlie)
-                .WithPlayer(Dana)
-                .WithTurnOrder(Adam, Babara, Charlie, Dana)
                 .WithNoResourceCollection()
                 .WithStartingResourcesForPlayer(Adam, adamResources)
                 .WithStartingResourcesForPlayer(Babara, babaraResources)
