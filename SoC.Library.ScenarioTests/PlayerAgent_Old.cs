@@ -170,11 +170,11 @@ namespace SoC.Library.ScenarioTests
         private void ProcessActualEvent(GameEvent actualEvent)
         {
             var changeTurn = actualEvent is PlayerSetupEvent ||
-                actualEvent is InitialBoardSetupEventArgs ||
+                actualEvent is InitialBoardSetupEvent ||
                 actualEvent is PlaceSetupInfrastructureEvent;
 
             if (actualEvent is PlayerSetupEvent playerSetupEvent)
-                this.playerIdsByName = playerSetupEvent.Item;
+                this.playerIdsByName = playerSetupEvent.PlayerIdsByName;
 
             if (changeTurn)
             {

@@ -88,7 +88,7 @@ namespace Jabberwocky.SoC.Library
                     this.eventRaiser.RaiseEvent(new PlayerSetupEvent(playerIdsByName));
 
                     var gameBoardSetup = new GameBoardSetup(this.gameBoard);
-                    this.eventRaiser.RaiseEvent(new InitialBoardSetupEventArgs(gameBoardSetup));
+                    this.eventRaiser.RaiseEvent(new InitialBoardSetupEvent(gameBoardSetup));
 
                     this.GameSetup();
                     this.MainGameLoop();
@@ -265,11 +265,11 @@ namespace Jabberwocky.SoC.Library
             {
                 this.ChangeToNextPlayerTurn();
                 this.currentTurnToken = new TurnToken();
-                this.eventRaiser.RaiseEvent(this.currentPlayer.Name, new StartPlayerTurnEventArgs(this.currentTurnToken));
+                this.eventRaiser.RaiseEvent(this.currentPlayer.Name, new StartPlayerTurnEvent(this.currentTurnToken));
 
                 this.numberGenerator.RollTwoDice(out this.dice1, out this.dice2);
-                var diceRollEventArgs = new DiceRollEventArgs(this.dice1, this.dice2);
-                this.eventRaiser.RaiseEvent(diceRollEventArgs);
+                var diceRollEvent = new DiceRollEvent(this.currentPlayer.Id, this.dice1, this.dice2);
+                this.eventRaiser.RaiseEvent(diceRollEvent);
 
                 var resourceRoll = this.dice1 + this.dice2;
                 if (resourceRoll != 7)
@@ -319,20 +319,5 @@ namespace Jabberwocky.SoC.Library
             }
         }
         #endregion
-    }
-
-    public class StartPlayerTurnEventArgs : GameEventArg<TurnToken>
-    {
-        public StartPlayerTurnEventArgs(TurnToken item) : base(item) { }
-    }
-
-    public class DiceRollEventArgs : GameEvent
-    {
-        public uint Dice1, Dice2;
-        public DiceRollEventArgs(uint dice1, uint dice2) : base(Guid.Empty)
-        {
-            this.Dice1 = dice1;
-            this.Dice2 = dice2;
-        }
     }
 }

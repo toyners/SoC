@@ -780,10 +780,10 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
 
         public override bool Equals(object obj)
         {
-            if (obj == null || obj.GetType() != typeof(InitialBoardSetupEventArgs))
+            if (obj == null || obj.GetType() != typeof(InitialBoardSetupEvent))
                 return false;
 
-            return ((InitialBoardSetupEventArgs)obj).Item != null;
+            return ((InitialBoardSetupEvent)obj).GameBoardSetup != null;
         }
     }
 }

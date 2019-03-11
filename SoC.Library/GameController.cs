@@ -15,7 +15,7 @@ namespace Jabberwocky.SoC.Library
         internal void GameEventHandler(GameEvent gameEvent)
         {
             if (gameEvent is PlaceSetupInfrastructureEvent placeSetupInfrastructureEventArgs)
-                this.turnToken = placeSetupInfrastructureEventArgs.Item;
+                this.turnToken = placeSetupInfrastructureEventArgs.TurnToken;
             
             this.GameEvent.Invoke(gameEvent);
         }

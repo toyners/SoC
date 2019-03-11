@@ -194,7 +194,7 @@ namespace SoC.Library.ScenarioTests
                     continue;
 
                 if (actualEvent is PlayerSetupEvent playerSetupEvent)
-                    this.playerIdsByName = playerSetupEvent.Item;
+                    this.playerIdsByName = playerSetupEvent.PlayerIdsByName;
 
                 this.actualEvents.Add(actualEvent);
                 break;

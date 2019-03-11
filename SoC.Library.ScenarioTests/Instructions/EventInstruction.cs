@@ -29,7 +29,7 @@ namespace SoC.Library.ScenarioTests.Instructions
 
         public override GameEvent GetEvent(IDictionary<string, Guid> playerIdsByName)
         {
-            return new InitialBoardSetupEventArgs(this.gameBoardSetup);
+            return new InitialBoardSetupEvent(this.gameBoardSetup);
         }
     }
 

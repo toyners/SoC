@@ -14,7 +14,7 @@ namespace SoC.Library.ScenarioTests.ScenarioEvents
             if (obj == null || obj.GetType() != typeof(PlaceSetupInfrastructureEvent))
                 return false;
 
-            return ((PlaceSetupInfrastructureEvent)obj).Item != null;
+            return ((PlaceSetupInfrastructureEvent)obj).TurnToken != null;
         }
     }
 }
