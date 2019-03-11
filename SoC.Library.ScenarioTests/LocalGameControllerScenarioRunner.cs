@@ -45,7 +45,7 @@ namespace SoC.Library.ScenarioTests
         private readonly List<GameTurn> gameTurns = new List<GameTurn>();
         private readonly List<SetupTurn> setupTurns = new List<SetupTurn>();
         private int currentIndex = 0;
-        private TurnToken currentToken;
+        private GameToken currentToken;
         private GameTurn currentTurn;
         private Dictionary<GameEventTypes, Delegate> eventHandlersByGameEventType;
         private GameBoard gameBoard;
@@ -226,7 +226,7 @@ namespace SoC.Library.ScenarioTests
                 this.currentTurn.AddEvent(new ScenarioRobbingChoicesEvent(robbingChoices));
             };
             this.localGameController.SettlementBuiltEvent = settlementBuiltEvent => this.currentTurn?.AddEvent(settlementBuiltEvent);
-            this.localGameController.StartPlayerTurnEvent = (TurnToken t) => { this.currentToken = t; this.StartOfTurn(); };
+            this.localGameController.StartPlayerTurnEvent = (GameToken t) => { this.currentToken = t; this.StartOfTurn(); };
             this.localGameController.StartOpponentTurnEvent = (Guid g) => { this.StartOfTurn(); };
 
             this.eventHandlersByGameEventType = eventHandlersByGameEventType;

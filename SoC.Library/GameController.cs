@@ -7,8 +7,8 @@ namespace Jabberwocky.SoC.Library
 {
     public class GameController
     {
-        private TurnToken token;
-        public event Action<TurnToken, PlayerAction> PlayerActionEvent;
+        private GameToken token;
+        public event Action<GameToken, PlayerAction> PlayerActionEvent;
         public event Action<GameEvent> GameEvent;
         public event Action<Exception> GameExceptionEvent;
 

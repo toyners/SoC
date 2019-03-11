@@ -33,8 +33,8 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
             Boolean settlementBuilt = false;
             localGameController.SettlementBuiltEvent = s => { settlementBuilt = true; };
 
-            TurnToken turnToken = null;
-            localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
+            GameToken turnToken = null;
+            localGameController.StartPlayerTurnEvent = (GameToken t) => { turnToken = t; };
             localGameController.StartGamePlay();
             localGameController.BuildRoadSegment(turnToken, MainRoadOneEnd, 3);
 
@@ -74,8 +74,8 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
             ErrorDetails errorDetails = null;
             localGameController.ErrorRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
 
-            TurnToken turnToken = null;
-            localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
+            GameToken turnToken = null;
+            localGameController.StartPlayerTurnEvent = (GameToken t) => { turnToken = t; };
             localGameController.StartGamePlay();
             localGameController.BuildRoadSegment(turnToken, MainRoadOneEnd, 3);
 
@@ -112,8 +112,8 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
                 errorDetails = e;
             };
 
-            TurnToken turnToken = null;
-            localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
+            GameToken turnToken = null;
+            localGameController.StartPlayerTurnEvent = (GameToken t) => { turnToken = t; };
             localGameController.StartGamePlay();
 
             var roadSegmentDetails = new UInt32[] { 4, 3, 3, 2, 2, 1, 1, 0, 0, 8, 8, 7, 7, 17 };
@@ -153,8 +153,8 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
             ErrorDetails errorDetails = null;
             localGameController.ErrorRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
 
-            TurnToken turnToken = null;
-            localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
+            GameToken turnToken = null;
+            localGameController.StartPlayerTurnEvent = (GameToken t) => { turnToken = t; };
             localGameController.StartGamePlay();
             localGameController.BuildRoadSegment(turnToken, MainRoadOneEnd, 3);
             localGameController.BuildRoadSegment(turnToken, 3, 2);
@@ -186,8 +186,8 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
             ErrorDetails errorDetails = null;
             localGameController.ErrorRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
 
-            TurnToken turnToken = null;
-            localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
+            GameToken turnToken = null;
+            localGameController.StartPlayerTurnEvent = (GameToken t) => { turnToken = t; };
             localGameController.StartGamePlay();
             localGameController.BuildRoadSegment(turnToken, MainRoadOneEnd, 3);
             localGameController.BuildSettlement(turnToken, 3);
@@ -216,8 +216,8 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
             ErrorDetails errorDetails = null;
             localGameController.ErrorRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
 
-            TurnToken turnToken = null;
-            localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
+            GameToken turnToken = null;
+            localGameController.StartPlayerTurnEvent = (GameToken t) => { turnToken = t; };
             localGameController.StartGamePlay();
 
             var roadSegmentDetails = new UInt32[] { 4, 3, 3, 2, 2, 1, 1, 0, 0, 8, 8, 9, 9, 19, 19, 18 };
@@ -250,8 +250,8 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
             ErrorDetails errorDetails = null;
             localGameController.ErrorRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
 
-            TurnToken turnToken = null;
-            localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
+            GameToken turnToken = null;
+            localGameController.StartPlayerTurnEvent = (GameToken t) => { turnToken = t; };
             localGameController.StartGamePlay();
 
             // Act
@@ -278,8 +278,8 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
             ErrorDetails errorDetails = null;
             localGameController.ErrorRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
 
-            TurnToken turnToken = null;
-            localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
+            GameToken turnToken = null;
+            localGameController.StartPlayerTurnEvent = (GameToken t) => { turnToken = t; };
             localGameController.StartGamePlay();
 
             var roadSegmentDetails = new UInt32[] { 4, 3, 3, 2, 2, 1, 1, 0, 0, 8, 8, 9, 9, 19 };
@@ -311,8 +311,8 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
             ErrorDetails errorDetails = null;
             localGameController.ErrorRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
 
-            TurnToken turnToken = null;
-            localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
+            GameToken turnToken = null;
+            localGameController.StartPlayerTurnEvent = (GameToken t) => { turnToken = t; };
             localGameController.StartGamePlay();
 
             // Act
@@ -339,8 +339,8 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
             ErrorDetails errorDetails = null;
             localGameController.ErrorRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
 
-            TurnToken turnToken = null;
-            localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
+            GameToken turnToken = null;
+            localGameController.StartPlayerTurnEvent = (GameToken t) => { turnToken = t; };
             localGameController.StartGamePlay();
             localGameController.BuildRoadSegment(turnToken, 4, 3);
 
@@ -366,7 +366,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
             localGameController.ErrorRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
 
             // Act
-            localGameController.BuildSettlement(new TurnToken(), 3);
+            localGameController.BuildSettlement(new GameToken(), 3);
 
             // Assert
             errorDetails.ShouldNotBeNull();
@@ -410,8 +410,8 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
             player.AddResources(ResourceClutch.Settlement * 4);
             player.AddResources(ResourceClutch.City * 4);
 
-            TurnToken turnToken = null;
-            localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
+            GameToken turnToken = null;
+            localGameController.StartPlayerTurnEvent = (GameToken t) => { turnToken = t; };
 
             Guid winningPlayer = Guid.Empty;
             localGameController.GameOverEvent = (Guid g) => { winningPlayer = g; };
@@ -454,8 +454,8 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
             player.AddResources(ResourceClutch.Settlement * 3);
             player.AddResources(ResourceClutch.City * 4);
 
-            TurnToken turnToken = null;
-            localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
+            GameToken turnToken = null;
+            localGameController.StartPlayerTurnEvent = (GameToken t) => { turnToken = t; };
 
             ErrorDetails errorDetails = null;
             localGameController.ErrorRaisedEvent = (ErrorDetails e) => { errorDetails = e; };

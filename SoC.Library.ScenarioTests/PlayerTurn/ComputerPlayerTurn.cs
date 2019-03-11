@@ -16,7 +16,7 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
             this.computerPlayer = (ScenarioComputerPlayer)player;
         }
 
-        public override void ResolveActions(TurnToken turnToken, LocalGameController localGameController)
+        public override void ResolveActions(GameToken turnToken, LocalGameController localGameController)
         {
             /*if (this.PlayerActions == null || this.PlayerActions.Count == 0)
                 return;

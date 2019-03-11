@@ -17,7 +17,7 @@ namespace Jabberwocky.SoC.Library
     {
         private readonly ConcurrentQueue<PlayerAction> actionRequests = new ConcurrentQueue<PlayerAction>();
         private IPlayer currentPlayer;
-        private TurnToken currentTurnToken;
+        private GameToken currentTurnToken;
         private readonly IDevelopmentCardHolder developmentCardHolder;
         private readonly EventRaiser eventRaiser = new EventRaiser();
         private bool isQuitting;
@@ -166,7 +166,7 @@ namespace Jabberwocky.SoC.Library
         {
             // 1) Notify player to choose settlement location (Pass in current locations)
             // 2) Pause waiting for player to return settlement choice
-            this.currentTurnToken = new TurnToken();
+            this.currentTurnToken = new GameToken();
             this.eventRaiser.RaiseEvent(player.Name, new PlaceSetupInfrastructureEvent(this.currentTurnToken));
             this.turnTimer.Reset();
             while (true)
@@ -245,7 +245,7 @@ namespace Jabberwocky.SoC.Library
             }
         }
 
-        private void PlayerActionEventHandler(TurnToken turnToken, PlayerAction action)
+        private void PlayerActionEventHandler(GameToken turnToken, PlayerAction action)
         {
             // TODO: Verify turn token
             this.actionRequests.Enqueue(action);
@@ -277,7 +277,7 @@ namespace Jabberwocky.SoC.Library
             try
             {
                 this.ChangeToNextPlayerTurn();
-                this.currentTurnToken = new TurnToken();
+                this.currentTurnToken = new GameToken();
                 this.eventRaiser.RaiseEvent(this.currentPlayer.Name, new StartPlayerTurnEvent(this.currentTurnToken));
 
                 this.numberGenerator.RollTwoDice(out this.dice1, out this.dice2);

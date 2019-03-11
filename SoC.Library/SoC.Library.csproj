@@ -59,6 +59,7 @@
     <Compile Include="DevelopmentCards\RoadBuildingDevelopmentCard.cs" />
     <Compile Include="DevelopmentCards\VictoryPointDevelopmentCard.cs" />
     <Compile Include="DevelopmentCards\YearOfPlentyDevelopmentCard.cs" />
+    <Compile Include="GameToken.cs" />
     <Compile Include="PlayerActions\AnswerDirectTradeOfferAction.cs" />
     <Compile Include="PlayerActions\BuildCityAction.cs" />
     <Compile Include="PlayerActions\BuildSettlementAction.cs" />
@@ -174,7 +175,6 @@
     <Compile Include="Store\XmlRoadsDataSectionFactory.cs" />
     <Compile Include="Trail.cs" />
     <Compile Include="ResourceTransaction.cs" />
-    <Compile Include="TurnToken.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="GameBoards\Locations.txt">

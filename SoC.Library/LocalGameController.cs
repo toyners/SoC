@@ -76,7 +76,7 @@ namespace Jabberwocky.SoC.Library
         private int resourcesToDrop;
         private uint robberHex;
         private Dictionary<Guid, int> robbingChoices;
-        private TurnToken currentTurnToken;
+        private GameToken currentTurnToken;
         private IPlayer currentPlayer;
         private IDevelopmentCardHolder developmentCardHolder;
         private uint dice1, dice2;
@@ -130,15 +130,15 @@ namespace Jabberwocky.SoC.Library
         public Action<Dictionary<Guid, int>> RobbingChoicesEvent { get; set; }
         public Action<SettlementBuiltEvent> SettlementBuiltEvent { get; set; }
         public Action<GameBoardUpdate> StartInitialSetupTurnEvent { get; set; }
-        public Action<TurnToken> StartPlayerTurnEvent { get; set; }
+        public Action<GameToken> StartPlayerTurnEvent { get; set; }
         public Action<Guid> StartOpponentTurnEvent { get; set; }
         public Action<PlayerDataBase[]> TurnOrderFinalisedEvent { get; set; }
 
-        public Action<TurnToken> StartPlayerTurnEvent2 { get; set; }
+        public Action<GameToken> StartPlayerTurnEvent2 { get; set; }
         #endregion
 
         #region Methods
-        public void BuildCity(TurnToken turnToken, uint location)
+        public void BuildCity(GameToken turnToken, uint location)
         {
             if (!this.VerifyTurnToken(turnToken) || !this.VerifyBuildCityRequest(location))
             {
@@ -150,7 +150,7 @@ namespace Jabberwocky.SoC.Library
             this.CheckMainPlayerIsWinner();
         }
 
-        public void BuildRoadSegment(TurnToken turnToken, uint roadStartLocation, uint roadEndLocation)
+        public void BuildRoadSegment(GameToken turnToken, uint roadStartLocation, uint roadEndLocation)
         {
             if (!this.VerifyTurnToken(turnToken) || !this.VerifyBuildRoadSegmentRequest(roadStartLocation, roadEndLocation))
             {
@@ -170,7 +170,7 @@ namespace Jabberwocky.SoC.Library
             this.CheckMainPlayerIsWinner();
         }
 
-        public void BuildSettlement(TurnToken turnToken, uint location)
+        public void BuildSettlement(GameToken turnToken, uint location)
         {
             if (!this.VerifyTurnToken(turnToken) || !this.VerifyBuildSettlementRequest(location))
             {
@@ -182,7 +182,7 @@ namespace Jabberwocky.SoC.Library
             this.CheckMainPlayerIsWinner();
         }
 
-        public void BuyDevelopmentCard(TurnToken turnToken)
+        public void BuyDevelopmentCard(GameToken turnToken)
         {
             if (!this.VerifyTurnToken(turnToken) || !this.VerifyBuyDevelopmentCardRequest())
             {
@@ -320,7 +320,7 @@ namespace Jabberwocky.SoC.Library
             var gameBoardSetup = new GameBoardSetup(this.gameBoard);
             this.InitialBoardSetupEvent?.Invoke(gameBoardSetup);
 
-            this.currentTurnToken = new TurnToken();
+            this.currentTurnToken = new GameToken();
             this.StartPlayerTurnEvent?.Invoke(this.currentTurnToken);
 
             this.DiceRollEvent?.Invoke(this.mainPlayer.Id, this.dice1, this.dice2);
@@ -361,7 +361,7 @@ namespace Jabberwocky.SoC.Library
         }
 
         private bool startOfTurn = true;
-        public void EndPlayerTurn(TurnToken turnToken)
+        public void EndPlayerTurn(GameToken turnToken)
         {
             // TODO: Validate turn token
 
@@ -371,7 +371,7 @@ namespace Jabberwocky.SoC.Library
         private bool ProcessTurnStart(IPlayer player)
         {
             this.ClearDevelopmentCardProcessingForTurn();
-            this.currentTurnToken = new TurnToken();
+            this.currentTurnToken = new GameToken();
 
             this.StartOpponentTurnEvent?.Invoke(player.Id);
 
@@ -421,7 +421,7 @@ namespace Jabberwocky.SoC.Library
             throw new NotImplementedException();
         }
 
-        public void EndTurn(TurnToken turnToken)
+        public void EndTurn(GameToken turnToken)
         {
             if (turnToken != this.currentTurnToken)
             {
@@ -994,7 +994,7 @@ namespace Jabberwocky.SoC.Library
         /// <param name="receivingResourceType">Resource type that the player wants to receive.</param>
         /// <param name="receivingCount">Resource amount that the player wants to receive.</param>
         /// <param name="givingResourceType">Resource type that the player is giving. Must have at least 4 and be divisible by 4.</param>
-        public void TradeWithBank(TurnToken turnToken, ResourceTypes receivingResourceType, int receivingCount, ResourceTypes givingResourceType)
+        public void TradeWithBank(GameToken turnToken, ResourceTypes receivingResourceType, int receivingCount, ResourceTypes givingResourceType)
         {
             if (!this.VerifyTurnToken(turnToken))
             {
@@ -1032,7 +1032,7 @@ namespace Jabberwocky.SoC.Library
             this.ResourcesTransferredEvent?.Invoke(resourceTransactionList);
         }
 
-        public void UseKnightCard(TurnToken turnToken, KnightDevelopmentCard developmentCard, uint newRobberHex, Guid? playerId = null)
+        public void UseKnightCard(GameToken turnToken, KnightDevelopmentCard developmentCard, uint newRobberHex, Guid? playerId = null)
         {
             if (!this.VerifyParametersForUsingDevelopmentCard(turnToken, developmentCard, "knight"))
             {
@@ -1066,7 +1066,7 @@ namespace Jabberwocky.SoC.Library
             this.CheckMainPlayerIsWinner();
         }
 
-        public void UseMonopolyCard(TurnToken turnToken, MonopolyDevelopmentCard monopolyCard, ResourceTypes resourceType)
+        public void UseMonopolyCard(GameToken turnToken, MonopolyDevelopmentCard monopolyCard, ResourceTypes resourceType)
         {
             if (!this.VerifyParametersForUsingDevelopmentCard(turnToken, monopolyCard, "monopoly"))
             {
@@ -1085,7 +1085,7 @@ namespace Jabberwocky.SoC.Library
             this.ResourcesTransferredEvent?.Invoke(resourceTransactions);
         }
 
-        public void UseYearOfPlentyCard(TurnToken turnToken, YearOfPlentyDevelopmentCard yearOfPlentyCard, ResourceTypes firstChoice, ResourceTypes secondChoice)
+        public void UseYearOfPlentyCard(GameToken turnToken, YearOfPlentyDevelopmentCard yearOfPlentyCard, ResourceTypes firstChoice, ResourceTypes secondChoice)
         {
             if (!this.VerifyParametersForUsingDevelopmentCard(turnToken, yearOfPlentyCard, "year of plenty"))
             {
@@ -1702,7 +1702,7 @@ namespace Jabberwocky.SoC.Library
             return true;
         }
 
-        private bool VerifyParametersForUsingDevelopmentCard(TurnToken turnToken, DevelopmentCard developmentCard, String shortCardType)
+        private bool VerifyParametersForUsingDevelopmentCard(GameToken turnToken, DevelopmentCard developmentCard, String shortCardType)
         {
             if (!this.VerifyTurnToken(turnToken))
             {
@@ -1923,7 +1923,7 @@ namespace Jabberwocky.SoC.Library
             this.actionRequests.Enqueue(action);
         }
 
-        private bool VerifyTurnToken(TurnToken turnToken)
+        private bool VerifyTurnToken(GameToken turnToken)
         {
             if (turnToken == null)
             {
@@ -1976,7 +1976,7 @@ namespace Jabberwocky.SoC.Library
         private void StartTurn()
         {
             this.ChangeToNextPlayerTurn();
-            this.currentTurnToken = new TurnToken();
+            this.currentTurnToken = new GameToken();
             this.StartPlayerTurnEvent?.Invoke(this.currentTurnToken);
             this.numberGenerator.RollTwoDice(out this.dice1, out this.dice2);
             this.DiceRollEvent?.Invoke(this.currentPlayer.Id, this.dice1, this.dice2);

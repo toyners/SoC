@@ -13,7 +13,7 @@ namespace SoC.Harness.ViewModels
     public class ControllerViewModel : INotifyPropertyChanged
     {
         #region Fields
-        private TurnToken currentTurnToken;
+        private GameToken currentTurnToken;
         private int currentTurnNumber;
         readonly PropertyChangedEventArgs diceOneChangedEventArgs = new PropertyChangedEventArgs("DiceOneImagePath");
         readonly PropertyChangedEventArgs diceTwoChangedEventArgs = new PropertyChangedEventArgs("DiceTwoImagePath");
@@ -392,7 +392,7 @@ namespace SoC.Harness.ViewModels
             this.RobberEvent?.Invoke(this.player, numberOfResourcesToSelect);
         }
 
-        private void StartPlayerTurnEventHandler(TurnToken turnToken)
+        private void StartPlayerTurnEventHandler(GameToken turnToken)
         {
             this.currentTurnToken = turnToken;
             this.currentTurnNumber++;

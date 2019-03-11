@@ -5,25 +5,25 @@ namespace Jabberwocky.SoC.Library
   using System.Diagnostics;
 
   [DebuggerDisplay("id = {id}, creationDateTime = {creationDateTime}")]
-  public class TurnToken
+  public class GameToken
   {
     private readonly Guid id;
     private readonly DateTime creationDateTime;
 
-    public TurnToken()
+    public GameToken()
     {
       this.id = Guid.NewGuid();
       this.creationDateTime = DateTime.Now;
     }
 
-    public override Boolean Equals(Object obj)
+    public override bool Equals(object obj)
     {
       if (ReferenceEquals(this, obj))
       {
         return true;
       }
 
-      var other = obj as TurnToken;
+      var other = obj as GameToken;
       if (other == null || this.id != other.id)
       {
         return false;
@@ -32,7 +32,7 @@ namespace Jabberwocky.SoC.Library
       return true;
     }
 
-    public override Int32 GetHashCode()
+    public override int GetHashCode()
     {
       return this.id.GetHashCode() + this.creationDateTime.GetHashCode();
     }

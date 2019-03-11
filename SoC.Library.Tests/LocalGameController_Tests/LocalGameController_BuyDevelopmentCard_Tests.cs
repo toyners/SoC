@@ -30,7 +30,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       localGameController.StartGamePlay();
 
       // Act
-      localGameController.BuyDevelopmentCard(new TurnToken());
+      localGameController.BuyDevelopmentCard(new GameToken());
 
       // Assert
       errorDetails.ShouldNotBeNull();
@@ -76,8 +76,8 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
 
       player.AddResources(new ResourceClutch(0, grainCount, 0, oreCount, woolCount));
 
-      TurnToken turnToken = null;
-      localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
+      GameToken turnToken = null;
+      localGameController.StartPlayerTurnEvent = (GameToken t) => { turnToken = t; };
 
       ErrorDetails errorDetails = null;
       localGameController.ErrorRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
@@ -105,8 +105,8 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       testInstances.MainPlayer.AddResources(ResourceClutch.DevelopmentCard);
       var localGameController = testInstances.LocalGameController;
 
-      TurnToken turnToken = null;
-      localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
+      GameToken turnToken = null;
+      localGameController.StartPlayerTurnEvent = (GameToken t) => { turnToken = t; };
 
       ErrorDetails errorDetails = null;
       localGameController.ErrorRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
@@ -133,8 +133,8 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       testInstances.MainPlayer.AddResources(ResourceClutch.DevelopmentCard * 26);
       var localGameController = testInstances.LocalGameController;
 
-      TurnToken turnToken = null;
-      localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
+      GameToken turnToken = null;
+      localGameController.StartPlayerTurnEvent = (GameToken t) => { turnToken = t; };
 
       ErrorDetails errorDetails = null;
       localGameController.ErrorRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
@@ -169,8 +169,8 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
       player.AddResources(ResourceClutch.City * 4);
       player.AddResources(ResourceClutch.DevelopmentCard);
 
-      TurnToken turnToken = null;
-      localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
+      GameToken turnToken = null;
+      localGameController.StartPlayerTurnEvent = (GameToken t) => { turnToken = t; };
 
       ErrorDetails errorDetails = null;
       localGameController.ErrorRaisedEvent = (ErrorDetails e) => { errorDetails = e; };

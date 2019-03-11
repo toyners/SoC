@@ -567,8 +567,8 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
             mockDice.AddSequence(new[] { 8u });
 
             // Act
-            TurnToken turnToken = null;
-            localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
+            GameToken turnToken = null;
+            localGameController.StartPlayerTurnEvent = (GameToken t) => { turnToken = t; };
             localGameController.StartGamePlay();
 
             // Assert

@@ -34,8 +34,8 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
             var testInstances = this.TestSetup();
             var localGameController = testInstances.LocalGameController;
 
-            TurnToken turnToken = null;
-            localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
+            GameToken turnToken = null;
+            localGameController.StartPlayerTurnEvent = (GameToken t) => { turnToken = t; };
 
             localGameController.StartGamePlay();
 
@@ -43,7 +43,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
             localGameController.ErrorRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
 
             // Act
-            localGameController.UseKnightCard(new TurnToken(), null, 0);
+            localGameController.UseKnightCard(new GameToken(), null, 0);
 
             // Assert
             errorDetails.ShouldNotBeNull();
@@ -77,8 +77,8 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
             var testInstances = this.TestSetup();
             var localGameController = testInstances.LocalGameController;
 
-            TurnToken turnToken = null;
-            localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
+            GameToken turnToken = null;
+            localGameController.StartPlayerTurnEvent = (GameToken t) => { turnToken = t; };
 
             localGameController.StartGamePlay();
 
@@ -104,8 +104,8 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
             testInstances.Dice.AddSequence(new uint[] { 8, 8, 8, 8 });
             testInstances.MainPlayer.AddResources(ResourceClutch.DevelopmentCard);
 
-            TurnToken turnToken = null;
-            localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
+            GameToken turnToken = null;
+            localGameController.StartPlayerTurnEvent = (GameToken t) => { turnToken = t; };
 
             DevelopmentCard purchasedDevelopmentCard = null;
             localGameController.DevelopmentCardPurchasedEvent = (DevelopmentCard d) => { purchasedDevelopmentCard = d; };
@@ -135,8 +135,8 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
 
             testInstances.MainPlayer.AddResources(ResourceClutch.DevelopmentCard);
 
-            TurnToken turnToken = null;
-            localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
+            GameToken turnToken = null;
+            localGameController.StartPlayerTurnEvent = (GameToken t) => { turnToken = t; };
 
             DevelopmentCard purchasedDevelopmentCard = null;
             localGameController.DevelopmentCardPurchasedEvent = (DevelopmentCard d) => { purchasedDevelopmentCard = d; };
@@ -166,8 +166,8 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
             testInstances.Dice.AddSequenceWithRepeatingRoll(null, 6);
             testInstances.MainPlayer.AddResources(ResourceClutch.DevelopmentCard);
 
-            TurnToken turnToken = null;
-            localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
+            GameToken turnToken = null;
+            localGameController.StartPlayerTurnEvent = (GameToken t) => { turnToken = t; };
 
             DevelopmentCard purchasedDevelopmentCard = null;
             localGameController.DevelopmentCardPurchasedEvent = (DevelopmentCard d) => { purchasedDevelopmentCard = d; };
@@ -199,8 +199,8 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
             testInstances.Dice.AddSequenceWithRepeatingRoll(null, 6);
             testInstances.MainPlayer.AddResources(ResourceClutch.DevelopmentCard * 2);
 
-            TurnToken turnToken = null;
-            localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
+            GameToken turnToken = null;
+            localGameController.StartPlayerTurnEvent = (GameToken t) => { turnToken = t; };
 
             var purchasedDevelopmentCards = new Queue<DevelopmentCard>();
             localGameController.DevelopmentCardPurchasedEvent = (DevelopmentCard d) => { purchasedDevelopmentCards.Enqueue(d); };
@@ -233,8 +233,8 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
             testInstances.Dice.AddSequenceWithRepeatingRoll(null, 6);
             testInstances.MainPlayer.AddResources(ResourceClutch.DevelopmentCard);
 
-            TurnToken turnToken = null;
-            localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
+            GameToken turnToken = null;
+            localGameController.StartPlayerTurnEvent = (GameToken t) => { turnToken = t; };
 
             localGameController.StartGamePlay();
 
@@ -268,8 +268,8 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
             testInstances.Dice.AddSequence(new uint[] { 8, 8, 8, 8 });
             testInstances.MainPlayer.AddResources(ResourceClutch.DevelopmentCard);
 
-            TurnToken turnToken = null;
-            localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
+            GameToken turnToken = null;
+            localGameController.StartPlayerTurnEvent = (GameToken t) => { turnToken = t; };
 
             localGameController.StartGamePlay();
 
@@ -303,8 +303,8 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
             player.AddResources(ResourceClutch.City * 2);
             player.AddResources(ResourceClutch.DevelopmentCard * 3);
 
-            TurnToken turnToken = null;
-            localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
+            GameToken turnToken = null;
+            localGameController.StartPlayerTurnEvent = (GameToken t) => { turnToken = t; };
 
             Guid winningPlayer = Guid.Empty;
             localGameController.GameOverEvent = (Guid g) => { winningPlayer = g; };
@@ -361,8 +361,8 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
             player.AddResources(ResourceClutch.City * 2);
             player.AddResources(ResourceClutch.DevelopmentCard * 3);
 
-            TurnToken turnToken = null;
-            localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
+            GameToken turnToken = null;
+            localGameController.StartPlayerTurnEvent = (GameToken t) => { turnToken = t; };
 
             Guid winningPlayer = Guid.Empty;
             localGameController.GameOverEvent = (Guid g) => { winningPlayer = g; };
@@ -419,8 +419,8 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
             player.AddResources(ResourceClutch.City * 3);
             player.AddResources(ResourceClutch.DevelopmentCard * 3);
 
-            TurnToken turnToken = null;
-            localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
+            GameToken turnToken = null;
+            localGameController.StartPlayerTurnEvent = (GameToken t) => { turnToken = t; };
 
             Guid winningPlayer = Guid.Empty;
             localGameController.GameOverEvent = (Guid g) => { winningPlayer = g; };
@@ -480,8 +480,8 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
 
             testInstances.FirstOpponent.AddResources(ResourceClutch.OneBrick);
 
-            TurnToken turnToken = null;
-            localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
+            GameToken turnToken = null;
+            localGameController.StartPlayerTurnEvent = (GameToken t) => { turnToken = t; };
 
             Guid winningPlayer = Guid.Empty;
             localGameController.GameOverEvent = (Guid g) => { winningPlayer = g; };
@@ -539,8 +539,8 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
             player.AddResources(ResourceClutch.City * 4);
             player.AddResources(ResourceClutch.DevelopmentCard * 4);
 
-            TurnToken turnToken = null;
-            localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
+            GameToken turnToken = null;
+            localGameController.StartPlayerTurnEvent = (GameToken t) => { turnToken = t; };
 
             ErrorDetails errorDetails = null;
             localGameController.ErrorRaisedEvent = (ErrorDetails e) => { errorDetails = e; };

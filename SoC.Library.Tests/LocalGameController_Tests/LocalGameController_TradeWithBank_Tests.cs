@@ -51,7 +51,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
             localGameController.StartGamePlay();
 
             // Act
-            localGameController.TradeWithBank(new TurnToken(), ResourceTypes.Grain, 0, ResourceTypes.Brick);
+            localGameController.TradeWithBank(new GameToken(), ResourceTypes.Grain, 0, ResourceTypes.Brick);
 
             // Assert
             errorDetails.ShouldNotBeNull();
@@ -79,8 +79,8 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
             player.AddResources(ResourceClutch.OneBrick * brickCount);
             player.AddResources(ResourceClutch.OneWool * otherCount);
 
-            TurnToken turnToken = null;
-            localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
+            GameToken turnToken = null;
+            localGameController.StartPlayerTurnEvent = (GameToken t) => { turnToken = t; };
 
             ResourceTransactionList resources = null;
             localGameController.ResourcesTransferredEvent = (ResourceTransactionList r) => { resources = r; };
@@ -119,8 +119,8 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
 
             player.AddResources(ResourceClutch.OneBrick * paymentCount);
 
-            TurnToken turnToken = null;
-            localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
+            GameToken turnToken = null;
+            localGameController.StartPlayerTurnEvent = (GameToken t) => { turnToken = t; };
 
             localGameController.ResourcesTransferredEvent = (ResourceTransactionList r) => { throw new Exception("ResourcesTransferredEvent should not be called."); };
 
@@ -149,8 +149,8 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
 
             player.AddResources(ResourceClutch.OneBrick * 4);
 
-            TurnToken turnToken = null;
-            localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
+            GameToken turnToken = null;
+            localGameController.StartPlayerTurnEvent = (GameToken t) => { turnToken = t; };
 
             localGameController.ResourcesTransferredEvent = (ResourceTransactionList r) => { throw new Exception("ResourcesTransferredEvent should not be called."); };
 
@@ -183,8 +183,8 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
             player.AddResources(ResourceClutch.City * 4);
             player.AddResources(ResourceClutch.OneBrick * 4);
 
-            TurnToken turnToken = null;
-            localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
+            GameToken turnToken = null;
+            localGameController.StartPlayerTurnEvent = (GameToken t) => { turnToken = t; };
 
             ErrorDetails errorDetails = null;
             localGameController.ErrorRaisedEvent = (ErrorDetails e) => { errorDetails = e; };
@@ -229,8 +229,8 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
             var tradeWithBankAction = new TradeWithBankInstruction { GivingType = ResourceTypes.Grain, ReceivingCount = 1, ReceivingType = ResourceTypes.Wool };
             firstOpponent.AddTradeWithBankInstruction(tradeWithBankAction).EndTurn();
 
-            TurnToken turnToken = null;
-            localGameController.StartPlayerTurnEvent = (TurnToken t) => { turnToken = t; };
+            GameToken turnToken = null;
+            localGameController.StartPlayerTurnEvent = (GameToken t) => { turnToken = t; };
 
             var gameEvents = new List<List<GameEvent>>();
             localGameController.GameEvents = (List<GameEvent> e) => { gameEvents.Add(e); };

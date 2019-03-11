@@ -127,7 +127,7 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
         }
         public IList<Type> UnwantedEventTypes { private get; set; }
         private LocalGameController LocalGameController { get; set; }
-        public TurnToken TurnToken { get; set; }
+        public GameToken TurnToken { get; set; }
         #endregion
 
         #region Methods
@@ -345,7 +345,7 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
             return this;
         }
 
-        public virtual void ResolveActions(TurnToken turnToken, LocalGameController localGameController)
+        public virtual void ResolveActions(GameToken turnToken, LocalGameController localGameController)
         {
             /*    if (this.PlayerActions == null || this.PlayerActions.Count == 0)
                     return;
