@@ -98,7 +98,7 @@ namespace SoC.Library.ScenarioTests
                 .WhenDiceRollEvent(Babara, 3, 3)
                     .MakeDirectTradeOffer(ResourceClutch.OneWool)
                 .WhenMakeDirectTradeOfferEvent(Adam, Babara, ResourceClutch.OneWool)
-                    .MakeDirectTradeOffer(ResourceClutch.OneGrain)
+                    .AnswerDirectTradeOffer(ResourceClutch.OneGrain)
                 
                 //.MakeDirectTradeOfferEvent(Charlie, Babara, ResourceClutch.OneWool)
                 //.MakeDirectTradeOfferEvent(Dana, Babara, ResourceClutch.OneWool)

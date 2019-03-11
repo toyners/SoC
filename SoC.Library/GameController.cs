@@ -7,7 +7,7 @@ namespace Jabberwocky.SoC.Library
 {
     public class GameController
     {
-        private TurnToken turnToken;
+        private TurnToken token;
         public event Action<TurnToken, PlayerAction> PlayerActionEvent;
         public event Action<GameEvent> GameEvent;
         public event Action<Exception> GameExceptionEvent;
@@ -15,7 +15,7 @@ namespace Jabberwocky.SoC.Library
         internal void GameEventHandler(GameEvent gameEvent)
         {
             if (gameEvent is PlaceSetupInfrastructureEvent placeSetupInfrastructureEventArgs)
-                this.turnToken = placeSetupInfrastructureEventArgs.TurnToken;
+                this.token = placeSetupInfrastructureEventArgs.TurnToken;
             
             this.GameEvent.Invoke(gameEvent);
         }
@@ -27,12 +27,12 @@ namespace Jabberwocky.SoC.Library
 
         public void PlaceStartingInfrastructure(uint settlementLocation, uint roadEndLocation)
         {
-            this.PlayerActionEvent.Invoke(this.turnToken, new PlaceInfrastructureAction(settlementLocation, roadEndLocation));
+            this.PlayerActionEvent.Invoke(this.token, new PlaceInfrastructureAction(settlementLocation, roadEndLocation));
         }
 
         public void EndTurn()
         {
-            this.PlayerActionEvent.Invoke(this.turnToken, new EndOfTurnAction());
+            this.PlayerActionEvent.Invoke(this.token, new EndOfTurnAction());
         }
 
         public void RequestState()
@@ -42,7 +42,7 @@ namespace Jabberwocky.SoC.Library
 
         public void MakeDirectTradeOffer(ResourceClutch resourceClutch)
         {
-            this.PlayerActionEvent.Invoke(this.turnToken, new MakeDirectTradeOfferAction(Guid.Empty, resourceClutch));
+            this.PlayerActionEvent.Invoke(this.token, new MakeDirectTradeOfferAction(Guid.Empty, resourceClutch));
         }
     }
 }

@@ -39,7 +39,7 @@ namespace SoC.Library.ScenarioTests
             return new ScenarioRunner(args);
         }
 
-        public ScenarioRunner AnswerDirectTradeOffer(string playerName, ResourceClutch wantedResources)
+        public ScenarioRunner AnswerDirectTradeOffer(ResourceClutch wantedResources)
         {
             this.AddActionInstruction(ActionInstruction.OperationTypes.AnswerDirectTradeOffer, 
                 new object[] { wantedResources });

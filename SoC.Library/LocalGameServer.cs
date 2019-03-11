@@ -261,7 +261,15 @@ namespace Jabberwocky.SoC.Library
                 {
                     this.eventRaiser.RaiseEvent(kv.Value.Name, makeDirectTradeOfferEvent);
                 }
+
+                return;
             }
+
+            if (playerAction is AnswerDirectTradeOfferAction answerDirectTradeOfferAction)
+            {
+
+            }
+
         }
 
         private void StartTurn()
