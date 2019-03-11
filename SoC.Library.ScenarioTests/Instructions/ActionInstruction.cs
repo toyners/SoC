@@ -3,7 +3,7 @@ namespace SoC.Library.ScenarioTests.Instructions
 {
     using System.Diagnostics;
 
-    [DebuggerDisplay("Action: {Operation}")]
+    [DebuggerDisplay("Action: \"{Operation}\"")]
     internal class ActionInstruction : Instruction
     {
         public enum OperationTypes
