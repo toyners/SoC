@@ -1918,7 +1918,7 @@ namespace Jabberwocky.SoC.Library
             return true;
         }
 
-        internal void ApplyPlayerAction(ComputerPlayerAction action)
+        internal void ApplyPlayerAction(PlayerAction action)
         {
             this.actionRequests.Enqueue(action);
         }
@@ -1940,7 +1940,7 @@ namespace Jabberwocky.SoC.Library
             return true;
         }
 
-        private ConcurrentQueue<ComputerPlayerAction> actionRequests = new ConcurrentQueue<ComputerPlayerAction>();
+        private ConcurrentQueue<PlayerAction> actionRequests = new ConcurrentQueue<PlayerAction>();
         private void GameLoop()
         {
             this.playerIndex = -1;
@@ -1992,7 +1992,7 @@ namespace Jabberwocky.SoC.Library
             }
         }
 
-        private void ProcessPlayerAction(ComputerPlayerAction playerAction)
+        private void ProcessPlayerAction(PlayerAction playerAction)
         {
             if (playerAction is MakeDirectTradeOfferAction)
             {

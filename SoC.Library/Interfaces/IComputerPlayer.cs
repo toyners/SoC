@@ -22,9 +22,9 @@ namespace Jabberwocky.SoC.Library.Interfaces
         ResourceTypes ChooseResourceTypeToRob();
         uint ChooseRobberLocation();
         IPlayer ChoosePlayerToRob(IEnumerable<IPlayer> otherPlayers);
-        ComputerPlayerAction PlayTurn(PlayerDataModel[] otherPlayerData, LocalGameController localGameController);
+        PlayerAction PlayTurn(PlayerDataModel[] otherPlayerData, LocalGameController localGameController);
         DropResourcesAction GetDropResourcesAction();
-        ComputerPlayerAction GetPlayerAction();
+        PlayerAction GetPlayerAction();
         YearOfPlentyDevelopmentCard ChooseYearOfPlentyCard();
         #endregion
     }

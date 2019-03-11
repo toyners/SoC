@@ -1,7 +1,7 @@
 ﻿
 namespace Jabberwocky.SoC.Library.GameActions
 {
-    public class EndOfTurnAction : ComputerPlayerAction
+    public class EndOfTurnAction : PlayerAction
     {
         public EndOfTurnAction() : base(0)
         {

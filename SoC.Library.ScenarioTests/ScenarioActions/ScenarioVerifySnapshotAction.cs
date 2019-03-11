@@ -2,7 +2,7 @@
 
 namespace SoC.Library.ScenarioTests.ScenarioActions
 {
-    public class ScenarioVerifySnapshotAction : ComputerPlayerAction
+    public class ScenarioVerifySnapshotAction : PlayerAction
     {
         private PlayerState playerState;
         public ScenarioVerifySnapshotAction(PlayerState playerState) : base(0)

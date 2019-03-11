@@ -1,7 +1,7 @@
 ﻿
 namespace Jabberwocky.SoC.Library.GameActions
 {
-    public class PlaceRobberAction : ComputerPlayerAction
+    public class PlaceRobberAction : PlayerAction
     {
         #region Fields
         public readonly uint RobberHex;

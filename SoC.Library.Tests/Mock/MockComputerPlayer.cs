@@ -239,7 +239,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.Mock
             return this;
         }
 
-        public override ComputerPlayerAction GetPlayerAction()
+        public override PlayerAction GetPlayerAction()
         {
             if (this.Actions.Count == 0)
             {
@@ -252,7 +252,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.Mock
                 return null;
             }
 
-            ComputerPlayerAction playerAction = null;
+            PlayerAction playerAction = null;
             switch (actionType)
             {
                 case ComputerPlayerActionTypes.BuildRoadSegment:
@@ -273,7 +273,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.Mock
 
                 default:
                     {
-                        playerAction = new ComputerPlayerAction(actionType);
+                        playerAction = new PlayerAction(actionType);
                         break;
                     }
             }

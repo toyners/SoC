@@ -14,7 +14,7 @@ namespace SoC.Library.ScenarioTests
     public class ScenarioComputerPlayer : ComputerPlayer
     {
         #region Fields
-        private readonly Queue<ComputerPlayerAction> actions = new Queue<ComputerPlayerAction>();
+        private readonly Queue<PlayerAction> actions = new Queue<PlayerAction>();
         public readonly Queue<DevelopmentCard> BoughtDevelopmentCards = new Queue<DevelopmentCard>();
         private readonly Queue<ResourceClutch> resourcesToDrop = new Queue<ResourceClutch>();
         #endregion
@@ -25,12 +25,12 @@ namespace SoC.Library.ScenarioTests
         #endregion
 
         #region Methods
-        public void AddAction(ComputerPlayerAction action)
+        public void AddAction(PlayerAction action)
         {
             this.ApplyPlayerAction(action);
         }
 
-        public void AddActions(IEnumerable<ComputerPlayerAction> actions)
+        public void AddActions(IEnumerable<PlayerAction> actions)
         {
             foreach (var action in actions)
                 this.AddAction(action);
@@ -100,12 +100,12 @@ namespace SoC.Library.ScenarioTests
             return this.dropResourcesActions.Count > 0 ? this.dropResourcesActions.Dequeue() : null;
         }
 
-        public override ComputerPlayerAction GetPlayerAction()
+        public override PlayerAction GetPlayerAction()
         {
             if (this.actions.Count == 0)
                 return null;
 
-            ComputerPlayerAction action = null;
+            PlayerAction action = null;
             do
             {
                 action = this.actions.Dequeue();

@@ -1,7 +1,7 @@
 ﻿
 namespace Jabberwocky.SoC.Library.GameActions
 {
-    public class PlaceInfrastructureAction : ComputerPlayerAction
+    public class PlaceInfrastructureAction : PlayerAction
     {
         public readonly uint SettlementLocation;
         public readonly uint RoadEndLocation;

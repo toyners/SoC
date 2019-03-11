@@ -3,7 +3,7 @@ using Jabberwocky.SoC.Library.GameActions;
 
 namespace SoC.Library.ScenarioTests.ScenarioActions
 {
-    internal class ScenarioDropResourcesAction : ComputerPlayerAction
+    internal class ScenarioDropResourcesAction : PlayerAction
     {
         public readonly string PlayerName;
         public readonly ResourceClutch Resources;

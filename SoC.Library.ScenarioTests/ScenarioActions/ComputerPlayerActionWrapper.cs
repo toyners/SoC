@@ -3,15 +3,15 @@ namespace SoC.Library.ScenarioTests.ScenarioActions
 {
     using Jabberwocky.SoC.Library.GameActions;
 
-    public abstract class ComputerPlayerActionWrapper : ComputerPlayerAction
+    public abstract class ComputerPlayerActionWrapper : PlayerAction
     {
         public readonly string InitiatingPlayerName;
-        public ComputerPlayerActionWrapper(string initiatingPlayerName, ComputerPlayerAction action) : base(0)
+        public ComputerPlayerActionWrapper(string initiatingPlayerName, PlayerAction action) : base(0)
         {
             this.InitiatingPlayerName = initiatingPlayerName;
             this.Action = action;
         }
 
-        public ComputerPlayerAction Action { get; private set; }
+        public PlayerAction Action { get; private set; }
     }
 }

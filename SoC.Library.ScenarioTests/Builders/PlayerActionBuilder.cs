@@ -12,7 +12,7 @@ namespace Jabberwocky.SoC.Library.ScenarioTests.Builders
     {
         private readonly GameTurn playerTurn;
         private readonly IList<RunnerAction> runnerActions = new List<RunnerAction>();
-        private readonly List<ComputerPlayerAction> playerActions = new List<ComputerPlayerAction>();
+        private readonly List<PlayerAction> playerActions = new List<PlayerAction>();
 
         public PlayerActionBuilder(GameTurn playerTurn)
         {
@@ -47,7 +47,7 @@ namespace Jabberwocky.SoC.Library.ScenarioTests.Builders
         public PlayerActionBuilder BuyDevelopmentCard(DevelopmentCardTypes developmentCardType)
         {
             this.runnerActions.Add(new InsertDevelopmentCardAction { DevelopmentCardType = developmentCardType });
-            this.playerActions.Add(new ComputerPlayerAction(ComputerPlayerActionTypes.BuyDevelopmentCard));
+            this.playerActions.Add(new PlayerAction(ComputerPlayerActionTypes.BuyDevelopmentCard));
             return this;
         }
 

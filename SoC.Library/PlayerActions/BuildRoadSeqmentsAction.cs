@@ -3,7 +3,7 @@ namespace Jabberwocky.SoC.Library.GameActions
 {
     using Enums;
 
-    public class BuildRoadSegmentAction : ComputerPlayerAction
+    public class BuildRoadSegmentAction : PlayerAction
     {
         public readonly uint StartLocation;
         public readonly uint EndLocation;

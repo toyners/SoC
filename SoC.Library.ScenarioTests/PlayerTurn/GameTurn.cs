@@ -25,8 +25,8 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
         protected readonly List<GameEvent> actualEvents = new List<GameEvent>();
         protected readonly Queue<Instruction> instructions = new Queue<Instruction>();
         private readonly List<GameEvent> expectedEvents = new List<GameEvent>();
-        private Dictionary<IPlayer, Action<ComputerPlayerAction>> actionProcessorsByPlayer;
-        private Dictionary<IPlayer, Action<ComputerPlayerAction>> actionResolversByPlayer;
+        private Dictionary<IPlayer, Action<PlayerAction>> actionProcessorsByPlayer;
+        private Dictionary<IPlayer, Action<PlayerAction>> actionResolversByPlayer;
         #endregion
 
         #region Construction
@@ -41,8 +41,8 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
             //this.player = playersByName[playerName];
             this.PlayerName = playerName;
             this.runner = runner;
-            this.actionProcessorsByPlayer = new Dictionary<IPlayer, Action<ComputerPlayerAction>>();
-            this.actionResolversByPlayer = new Dictionary<IPlayer, Action<ComputerPlayerAction>>();
+            this.actionProcessorsByPlayer = new Dictionary<IPlayer, Action<PlayerAction>>();
+            this.actionResolversByPlayer = new Dictionary<IPlayer, Action<PlayerAction>>();
             /*foreach (var player in playersByName.Values)
             {
                 if (player is ScenarioComputerPlayer computerPlayer)
@@ -58,7 +58,7 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
             }*/
         }
 
-        private void ProcessActionForHumanPlayer(ComputerPlayerAction action)
+        private void ProcessActionForHumanPlayer(PlayerAction action)
         {
             if (action is BuildCityAction buildCityAction)
             {
@@ -96,13 +96,13 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
             this.LocalGameController = localGameController;
         }
 
-        private void AddActionForComputerPlayer(ComputerPlayerAction action)
+        private void AddActionForComputerPlayer(PlayerAction action)
         {
 
         }
 
-        private Queue<ComputerPlayerAction> actions = new Queue<ComputerPlayerAction>();
-        private void AddActionForHumanPlayer(ComputerPlayerAction action)
+        private Queue<PlayerAction> actions = new Queue<PlayerAction>();
+        private void AddActionForHumanPlayer(PlayerAction action)
         {
             this.actions.Enqueue(action);
         }
@@ -111,7 +111,7 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
         #region Properties
         public bool IsHumanPlayer { get { return this.player is ScenarioPlayer; } }
         public string PlayerName { get; private set; }
-        public IDictionary<Guid, ComputerPlayerAction> ActionsByPlayerId { protected get; set; }
+        public IDictionary<Guid, PlayerAction> ActionsByPlayerId { protected get; set; }
         public IList<GameEvent> ExpectedEvents { private get; set; }
         public IDictionary<Guid, GameEvent> GameEventsByPlayerId { private get; set; }
         public IDictionary<string, ResourceClutch> PlayerResourcesToDropByName { protected get; set; }
@@ -396,7 +396,7 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
                 }*/
         }
 
-        protected virtual void ResolveResponse(ComputerPlayerAction response, LocalGameController localGameController)
+        protected virtual void ResolveResponse(PlayerAction response, LocalGameController localGameController)
         {
             if (response is ScenarioDropResourcesAction scenarioResourcesToDropAction)
             {
@@ -581,7 +581,7 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
                     this.expectedEvents.Add(expectedEvent);
                     //this.CheckEvents();
                 }
-                else if (instruction is ComputerPlayerAction action)
+                else if (instruction is PlayerAction action)
                 {
                     // Still got unmatched expected events so don't perform action yet
                     if (!this.IsVerified)

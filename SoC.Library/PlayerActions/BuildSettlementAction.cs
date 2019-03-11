@@ -3,7 +3,7 @@ using Jabberwocky.SoC.Library.Enums;
 
 namespace Jabberwocky.SoC.Library.GameActions
 {
-    public class BuildSettlementAction : ComputerPlayerAction
+    public class BuildSettlementAction : PlayerAction
     {
         public readonly uint SettlementLocation;
 

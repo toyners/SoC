@@ -3,7 +3,7 @@ using System;
 
 namespace Jabberwocky.SoC.Library.GameActions
 {
-    public class PlayKnightCardAction : ComputerPlayerAction
+    public class PlayKnightCardAction : PlayerAction
     {
         public readonly uint NewRobberHex;
         public readonly Guid? PlayerId;

@@ -3,7 +3,7 @@ namespace Jabberwocky.SoC.Library.GameActions
 {
     using Enums;
 
-    public class TradeWithBankAction : ComputerPlayerAction
+    public class TradeWithBankAction : PlayerAction
     {
         public readonly ResourceTypes GivingType;
         public readonly ResourceTypes ReceivingType;

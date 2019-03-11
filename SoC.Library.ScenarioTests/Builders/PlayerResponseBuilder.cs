@@ -11,7 +11,7 @@ namespace SoC.Library.ScenarioTests.Builders
 {
     internal class PlayerResponseBuilder
     {
-        private readonly IDictionary<Guid, ComputerPlayerAction> actionsByPlayerId = new Dictionary<Guid, ComputerPlayerAction>();
+        private readonly IDictionary<Guid, PlayerAction> actionsByPlayerId = new Dictionary<Guid, PlayerAction>();
         private readonly IDictionary<Guid, GameEvent> gameEventsByPlayerId = new Dictionary<Guid, GameEvent>();
         private readonly IDictionary<string, ResourceClutch> playerResourcesToDropByName = new Dictionary<string, ResourceClutch>();
         private Dictionary<string, IPlayer> playersByName;

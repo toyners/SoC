@@ -3,7 +3,7 @@ using Jabberwocky.SoC.Library.Enums;
 
 namespace Jabberwocky.SoC.Library.GameActions
 {
-    public class BuildCityAction : ComputerPlayerAction
+    public class BuildCityAction : PlayerAction
     {
         public readonly uint CityLocation;
 

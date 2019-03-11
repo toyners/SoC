@@ -3,7 +3,7 @@ using Jabberwocky.SoC.Library.GameActions;
 
 namespace SoC.Library.ScenarioTests.ScenarioActions
 {
-    internal class ScenarioSelectResourceFromPlayerAction : ComputerPlayerAction
+    internal class ScenarioSelectResourceFromPlayerAction : PlayerAction
     {
         public readonly string SelectedPlayerName;
         public readonly ResourceTypes ExpectedSingleResource;

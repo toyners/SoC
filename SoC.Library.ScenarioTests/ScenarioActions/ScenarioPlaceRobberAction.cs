@@ -4,7 +4,7 @@ using Jabberwocky.SoC.Library.GameActions;
 
 namespace SoC.Library.ScenarioTests.ScenarioActions
 {
-    internal class ScenarioPlaceRobberAction : ComputerPlayerAction
+    internal class ScenarioPlaceRobberAction : PlayerAction
     {
         public readonly uint NewRobberHex;
         public readonly ResourceClutch ResourcesToDrop;

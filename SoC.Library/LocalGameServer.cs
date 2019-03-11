@@ -15,7 +15,7 @@ namespace Jabberwocky.SoC.Library
 
     public class LocalGameServer
     {
-        private readonly ConcurrentQueue<ComputerPlayerAction> actionRequests = new ConcurrentQueue<ComputerPlayerAction>();
+        private readonly ConcurrentQueue<PlayerAction> actionRequests = new ConcurrentQueue<PlayerAction>();
         private IPlayer currentPlayer;
         private TurnToken currentTurnToken;
         private readonly IDevelopmentCardHolder developmentCardHolder;
@@ -245,13 +245,13 @@ namespace Jabberwocky.SoC.Library
             }
         }
 
-        private void PlayerActionEventHandler(TurnToken turnToken, ComputerPlayerAction action)
+        private void PlayerActionEventHandler(TurnToken turnToken, PlayerAction action)
         {
             // TODO: Verify turn token
             this.actionRequests.Enqueue(action);
         }
 
-        private void ProcessPlayerAction(ComputerPlayerAction playerAction)
+        private void ProcessPlayerAction(PlayerAction playerAction)
         {
             if (playerAction is MakeDirectTradeOfferAction makeDirectTradeOfferAction)
             {

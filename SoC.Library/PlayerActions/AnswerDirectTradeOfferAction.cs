@@ -1,7 +1,7 @@
 ﻿
 namespace Jabberwocky.SoC.Library.GameActions
 {
-    public class AnswerDirectTradeOfferAction : ComputerPlayerAction
+    public class AnswerDirectTradeOfferAction : PlayerAction
     {
         public readonly string PlayerName;
         public readonly ResourceClutch OfferedResources;

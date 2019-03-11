@@ -16,7 +16,7 @@ namespace Jabberwocky.SoC.Library
 
     public class ComputerPlayer : Player, IComputerPlayer
     {
-        private readonly Queue<ComputerPlayerAction> actions = new Queue<ComputerPlayerAction>();
+        private readonly Queue<PlayerAction> actions = new Queue<PlayerAction>();
         private readonly GameBoard gameBoard;
         private readonly INumberGenerator numberGenerator;
         private readonly List<uint> settlementCandidates = new List<uint>();
@@ -66,7 +66,7 @@ namespace Jabberwocky.SoC.Library
             return computerPlayer;
         }
 
-        protected void ApplyPlayerAction(ComputerPlayerAction action)
+        protected void ApplyPlayerAction(PlayerAction action)
         {
             this.localGameController.ApplyPlayerAction(action);
         }
@@ -322,7 +322,7 @@ namespace Jabberwocky.SoC.Library
         }
 
         // TODO: Pass in interface that only contains the methods required by the computer player e.g build settlement
-        public ComputerPlayerAction PlayTurn(PlayerDataModel[] otherPlayerData, LocalGameController localGameController)
+        public PlayerAction PlayTurn(PlayerDataModel[] otherPlayerData, LocalGameController localGameController)
         {
             throw new NotImplementedException();
         }
@@ -332,7 +332,7 @@ namespace Jabberwocky.SoC.Library
             throw new NotImplementedException();
         }
 
-        public virtual ComputerPlayerAction GetPlayerAction()
+        public virtual PlayerAction GetPlayerAction()
         {
             if (this.actions.Count == 0)
             {
