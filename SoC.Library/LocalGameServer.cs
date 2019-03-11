@@ -81,7 +81,9 @@ namespace Jabberwocky.SoC.Library
                 try
                 {
                     this.players = PlayerTurnOrderCreator.Create(this.players, this.numberGenerator);
-                    // Notify (human?) players what the order is?
+                    // TODO: Notify players what the order is
+
+                    this.playersById = this.players.ToDictionary(p => p.Id, p => p);
 
                     // TODO: Send event with player details to everyone
                     var playerIdsByName = this.players.ToDictionary(p => p.Name, p => p.Id);
@@ -251,10 +253,13 @@ namespace Jabberwocky.SoC.Library
 
         private void ProcessPlayerAction(ComputerPlayerAction playerAction)
         {
-            if (playerAction is MakeDirectTradeOfferAction)
+            if (playerAction is MakeDirectTradeOfferAction makeDirectTradeOfferAction)
             {
+                var makeDirectTradeOfferEvent = new MakeDirectTradeOfferEvent(
+                        makeDirectTradeOfferAction.PlayerId, makeDirectTradeOfferAction.WantedResources);
                 foreach (var kv in this.playersById.Where(k => k.Key != playerAction.PlayerId).ToList())
                 {
+                    this.eventRaiser.RaiseEvent(kv.Value.Name, makeDirectTradeOfferEvent);
                 }
             }
         }
