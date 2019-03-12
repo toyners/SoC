@@ -1,10 +1,8 @@
 ﻿
 namespace Jabberwocky.SoC.Library.GameEvents
 {
-    public class PlaceSetupInfrastructureEvent : GameEventWithSingleArgument<GameToken>
+    public class PlaceSetupInfrastructureEvent : GameEvent
     {
-        public PlaceSetupInfrastructureEvent(GameToken item) : base(item) {}
-
-        public GameToken TurnToken { get { return this.Item; } }
+        public PlaceSetupInfrastructureEvent(GameToken token) : base(token) {}
     }
 }

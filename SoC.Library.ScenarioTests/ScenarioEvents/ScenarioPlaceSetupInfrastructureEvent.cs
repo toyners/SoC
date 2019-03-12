@@ -11,10 +11,7 @@ namespace SoC.Library.ScenarioTests.ScenarioEvents
 
         public override bool Equals(object obj)
         {
-            if (obj == null || obj.GetType() != typeof(PlaceSetupInfrastructureEvent))
-                return false;
-
-            return ((PlaceSetupInfrastructureEvent)obj).TurnToken != null;
+            return obj != null && obj.GetType() == typeof(PlaceSetupInfrastructureEvent);
         }
     }
 }

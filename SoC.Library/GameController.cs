@@ -11,14 +11,6 @@ namespace Jabberwocky.SoC.Library
         private GameToken token;
         #endregion
 
-        #region Construction
-        internal void GameEventHandler(GameEvent gameEvent)
-        {
-            this.token = gameEvent.Token;
-            this.GameEvent.Invoke(gameEvent);
-        }
-        #endregion
-
         #region Events
         public event Action<GameToken, PlayerAction> PlayerActionEvent;
         public event Action<GameEvent> GameEvent;
@@ -44,6 +36,12 @@ namespace Jabberwocky.SoC.Library
         public void RequestState()
         {
             this.SendAction(new RequestStateAction(Guid.Empty));
+        }
+
+        internal void GameEventHandler(GameEvent gameEvent)
+        {
+            this.token = gameEvent.Token;
+            this.GameEvent.Invoke(gameEvent);
         }
 
         internal void GameExceptionHandler(Exception exception)

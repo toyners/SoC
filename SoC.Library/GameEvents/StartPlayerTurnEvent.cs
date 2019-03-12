@@ -1,10 +1,8 @@
 ﻿
 namespace Jabberwocky.SoC.Library.GameEvents
 {
-    public class StartPlayerTurnEvent : GameEventWithSingleArgument<GameToken>
+    public class StartPlayerTurnEvent : GameEvent
     {
-        public StartPlayerTurnEvent(GameToken item) : base(item) {}
-
-        public GameToken TurnToken { get { return this.Item; } }
+        public StartPlayerTurnEvent(GameToken token) : base(token) {}
     }
 }
