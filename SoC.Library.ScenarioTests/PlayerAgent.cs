@@ -24,6 +24,7 @@ namespace SoC.Library.ScenarioTests
         private int instructionIndex;
         private string label;
         private IDictionary<string, Guid> playerIdsByName;
+        private GameToken token;
 
         #region Construction
         public PlayerAgent(string name)

@@ -17,7 +17,6 @@ namespace Jabberwocky.SoC.Library
     {
         private readonly ConcurrentQueue<PlayerAction> actionRequests = new ConcurrentQueue<PlayerAction>();
         private IPlayer currentPlayer;
-        private GameToken currentTurnToken;
         private readonly IDevelopmentCardHolder developmentCardHolder;
         private readonly EventRaiser eventRaiser = new EventRaiser();
         private bool isQuitting;
@@ -29,6 +28,7 @@ namespace Jabberwocky.SoC.Library
         private uint dice1, dice2;
         private IGameTimer turnTimer;
         private Func<Guid> idGenerator;
+        private ITokenizer tokenizer;
 
         public LocalGameServer(INumberGenerator numberGenerator, GameBoard gameBoard, IDevelopmentCardHolder developmentCardHolder)
         {
@@ -37,9 +37,10 @@ namespace Jabberwocky.SoC.Library
             this.developmentCardHolder = developmentCardHolder;
             this.turnTimer = new GameServerTimer();
             this.idGenerator = () => { return Guid.NewGuid(); };
+            this.tokenizer = new Tokenizer();
         }
 
-        public bool IsFinished { get; set; }
+        private event Action<Exception> GameExceptionEvent;
 
         public void SetTurnTimer(IGameTimer turnTimer)
         {
@@ -52,8 +53,6 @@ namespace Jabberwocky.SoC.Library
             if (idGenerator != null)
                 this.idGenerator = idGenerator;
         }
-
-        private event Action<Exception> GameExceptionEvent;
 
         public void JoinGame(string playerName, GameController gameController)
         {
@@ -92,8 +91,15 @@ namespace Jabberwocky.SoC.Library
                     var gameBoardSetup = new GameBoardSetup(this.gameBoard);
                     this.eventRaiser.RaiseEvent(new InitialBoardSetupEvent(gameBoardSetup));
 
-                    this.GameSetup();
-                    this.MainGameLoop();
+                    try
+                    {
+                        this.GameSetup();
+                        this.MainGameLoop();
+                    }
+                    catch (TaskCanceledException)
+                    {
+                        return;
+                    }
                 }
                 catch (Exception e)
                 {
@@ -102,7 +108,7 @@ namespace Jabberwocky.SoC.Library
             });
         }
 
-        private void ChangeToNextPlayerTurn()
+        private void ChangeToNextPlayer()
         {
             this.playerIndex++;
             if (this.playerIndex == this.players.Length)
@@ -164,34 +170,22 @@ namespace Jabberwocky.SoC.Library
 
         private void GameSetupLoop(IPlayer player)
         {
-            // 1) Notify player to choose settlement location (Pass in current locations)
-            // 2) Pause waiting for player to return settlement choice
-            this.currentTurnToken = new GameToken();
-            this.eventRaiser.RaiseEvent(player.Name, new PlaceSetupInfrastructureEvent(this.currentTurnToken));
-            this.turnTimer.Reset();
+            var token = this.tokenizer.GetTokenForPlayer(player);
+            // TODO: Pass back current settled locations
+            this.eventRaiser.RaiseEvent(player.Name, new PlaceSetupInfrastructureEvent(token));
             while (true)
             {
-                Thread.Sleep(50);
-                if (this.isQuitting)
-                    return;
+                var playerAction = this.WaitForPlayerAction();
+                this.turnTimer.Reset();
 
-                if (this.turnTimer.IsLate)
+                if (playerAction is EndOfTurnAction)
                 {
-                    // Out of time so game should be killed
-                    throw new Exception($"Time out exception waiting for player '{player.Name}'");
+                    break;
                 }
-
-                if (this.actionRequests.TryDequeue(out var playerAction))
+                else if (playerAction is PlaceInfrastructureAction placeInfrastructureAction)
                 {
-                    if (playerAction is EndOfTurnAction)
-                    {
-                        break;
-                    }
-                    else if (playerAction is PlaceInfrastructureAction placeInfrastructureAction)
-                    {
-                        this.PlaceInfrastructure(player, placeInfrastructureAction.SettlementLocation, placeInfrastructureAction.RoadEndLocation);
-                        break;
-                    }
+                    this.PlaceInfrastructure(player, placeInfrastructureAction.SettlementLocation, placeInfrastructureAction.RoadEndLocation);
+                    break;
                 }
             }
         }
@@ -219,29 +213,30 @@ namespace Jabberwocky.SoC.Library
             this.playerIndex = -1;
             this.StartTurn();
             this.turnTimer.Reset();
+            while (true)
+            {
+                var playerAction = this.WaitForPlayerAction();
+                this.turnTimer.Reset();
+                this.ProcessPlayerAction(playerAction);
+            }
+        }
 
+        private PlayerAction WaitForPlayerAction()
+        {
             while (true)
             {
                 Thread.Sleep(50);
                 if (this.isQuitting)
-                    return;
+                    throw new TaskCanceledException();
 
-                var gotPlayerAction = this.actionRequests.TryDequeue(out var playerAction);
-
-                if (this.turnTimer.IsLate ||
-                    (gotPlayerAction && playerAction is EndOfTurnAction))
+                if (this.turnTimer.IsLate)
                 {
-                    // TODO: If late the send late message to player before starting new turn
-                    this.StartTurn();
-                    this.turnTimer.Reset();
-                    continue;
+                    // Out of time so game should be killed
+                    throw new TimeoutException($"Time out exception waiting for player '{this.currentPlayer.Name}'");
                 }
 
-                if (!gotPlayerAction)
-                    continue;
-
-                // Player action to process
-                this.ProcessPlayerAction(playerAction);
+                if (this.actionRequests.TryDequeue(out var playerAction))
+                    return playerAction;
             }
         }
 
@@ -253,6 +248,14 @@ namespace Jabberwocky.SoC.Library
 
         private void ProcessPlayerAction(PlayerAction playerAction)
         {
+            this.tokenizer.ValidatePlayerAction(playerAction);
+
+            if (playerAction is EndOfTurnAction)
+            {
+                this.StartTurn();
+                return;
+            }
+
             if (playerAction is MakeDirectTradeOfferAction makeDirectTradeOfferAction)
             {
                 var makeDirectTradeOfferEvent = new MakeDirectTradeOfferEvent(
@@ -276,9 +279,9 @@ namespace Jabberwocky.SoC.Library
         {
             try
             {
-                this.ChangeToNextPlayerTurn();
-                this.currentTurnToken = new GameToken();
-                this.eventRaiser.RaiseEvent(this.currentPlayer.Name, new StartPlayerTurnEvent(this.currentTurnToken));
+                this.ChangeToNextPlayer();
+                var token = this.tokenizer.GetTokenForPlayer(this.currentPlayer);
+                this.eventRaiser.RaiseEvent(this.currentPlayer.Name, new StartPlayerTurnEvent(token));
 
                 this.numberGenerator.RollTwoDice(out this.dice1, out this.dice2);
                 var diceRollEvent = new DiceRollEvent(this.currentPlayer.Id, this.dice1, this.dice2);
@@ -302,6 +305,12 @@ namespace Jabberwocky.SoC.Library
         }
 
         #region Structures
+        public interface ITokenizer
+        {
+            bool ValidatePlayerAction(PlayerAction action);
+            GameToken GetTokenForPlayer(IPlayer player);
+        }
+
         private class EventRaiser
         {
             private Dictionary<string, Action<GameEvent>> gameEventHandlersByPlayerName = new Dictionary<string, Action<GameEvent>>();
@@ -329,6 +338,35 @@ namespace Jabberwocky.SoC.Library
                     return;
 
                 this.gameEventHandlersByPlayerName[playerName].Invoke(gameEvent);
+            }
+        }
+
+        private class Tokenizer : ITokenizer
+        {
+            private Dictionary<GameToken, IPlayer> playerByToken = new Dictionary<GameToken, IPlayer>();
+            private Dictionary<IPlayer, GameToken> tokenByPlayer = new Dictionary<IPlayer, GameToken>();
+
+            public GameToken GetTokenForPlayer(IPlayer player)
+            {
+                if (this.tokenByPlayer.ContainsKey(player))
+                {
+                    var existingToken = this.tokenByPlayer[player];
+                    this.tokenByPlayer.Remove(player);
+                    if (this.playerByToken.ContainsKey(existingToken))
+                    {
+                        this.playerByToken.Remove(existingToken);
+                    }
+                }
+
+                var token = new GameToken();
+                this.tokenByPlayer.Add(player, token);
+                this.playerByToken.Add(token, player);
+                return token;
+            }
+
+            public bool ValidatePlayerAction(PlayerAction action)
+            {
+                return this.playerByToken.ContainsKey(action.Token);
             }
         }
         #endregion

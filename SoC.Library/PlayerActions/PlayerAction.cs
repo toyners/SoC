@@ -9,6 +9,11 @@ namespace Jabberwocky.SoC.Library.GameActions
         public readonly ComputerPlayerActionTypes ActionType;
         public readonly Guid PlayerId;
 
+        public PlayerAction(GameToken token)
+        {
+            this.Token = token;
+        }
+
         public PlayerAction(ComputerPlayerActionTypes action)
         {
             this.ActionType = action;
@@ -18,5 +23,7 @@ namespace Jabberwocky.SoC.Library.GameActions
         {
             this.PlayerId = playerId;
         }
+
+        public GameToken Token { get; private set; }
     }
 }

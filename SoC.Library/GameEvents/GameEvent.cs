@@ -16,7 +16,14 @@ namespace Jabberwocky.SoC.Library.GameEvents
         {
             this.PlayerId = playerId;
         }
+
+        public GameEvent(GameToken token)
+        {
+            this.Token = token;
+        }
         #endregion
+
+        public GameToken Token { get; private set; }
 
         #region Methods
         public override bool Equals(object obj)
