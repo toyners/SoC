@@ -7,17 +7,43 @@ namespace Jabberwocky.SoC.Library
 {
     public class GameController
     {
+        #region Fields
         private GameToken token;
+        #endregion
+
+        #region Construction
+        internal void GameEventHandler(GameEvent gameEvent)
+        {
+            this.token = gameEvent.Token;
+            this.GameEvent.Invoke(gameEvent);
+        }
+        #endregion
+
+        #region Events
         public event Action<GameToken, PlayerAction> PlayerActionEvent;
         public event Action<GameEvent> GameEvent;
         public event Action<Exception> GameExceptionEvent;
+        #endregion
 
-        internal void GameEventHandler(GameEvent gameEvent)
+        #region Methods
+        public void EndTurn()
         {
-            if (gameEvent is PlaceSetupInfrastructureEvent placeSetupInfrastructureEventArgs)
-                this.token = placeSetupInfrastructureEventArgs.TurnToken;
-            
-            this.GameEvent.Invoke(gameEvent);
+            this.SendAction(new EndOfTurnAction());
+        }
+
+        public void MakeDirectTradeOffer(ResourceClutch resourceClutch)
+        {
+            this.SendAction(new MakeDirectTradeOfferAction(Guid.Empty, resourceClutch));
+        }
+
+        public void PlaceStartingInfrastructure(uint settlementLocation, uint roadEndLocation)
+        {
+            this.SendAction(new PlaceInfrastructureAction(settlementLocation, roadEndLocation));
+        }
+
+        public void RequestState()
+        {
+            this.SendAction(new RequestStateAction(Guid.Empty));
         }
 
         internal void GameExceptionHandler(Exception exception)
@@ -25,24 +51,13 @@ namespace Jabberwocky.SoC.Library
             this.GameExceptionEvent.Invoke(exception);
         }
 
-        public void PlaceStartingInfrastructure(uint settlementLocation, uint roadEndLocation)
+        private void SendAction(PlayerAction playerAction)
         {
-            this.PlayerActionEvent.Invoke(this.token, new PlaceInfrastructureAction(settlementLocation, roadEndLocation));
-        }
+            if (this.token == null)
+                throw new Exception("No token");
 
-        public void EndTurn()
-        {
-            this.PlayerActionEvent.Invoke(this.token, new EndOfTurnAction());
+            this.PlayerActionEvent.Invoke(this.token, playerAction);
         }
-
-        public void RequestState()
-        {
-            this.PlayerActionEvent.Invoke(null, new RequestStateAction(Guid.Empty));
-        }
-
-        public void MakeDirectTradeOffer(ResourceClutch resourceClutch)
-        {
-            this.PlayerActionEvent.Invoke(this.token, new MakeDirectTradeOfferAction(Guid.Empty, resourceClutch));
-        }
+        #endregion
     }
 }

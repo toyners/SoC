@@ -28,7 +28,7 @@ namespace Jabberwocky.SoC.Library
         private uint dice1, dice2;
         private IGameTimer turnTimer;
         private Func<Guid> idGenerator;
-        private ITokenizer tokenizer;
+        private ITokenManager tokenManager;
 
         public LocalGameServer(INumberGenerator numberGenerator, GameBoard gameBoard, IDevelopmentCardHolder developmentCardHolder)
         {
@@ -37,7 +37,7 @@ namespace Jabberwocky.SoC.Library
             this.developmentCardHolder = developmentCardHolder;
             this.turnTimer = new GameServerTimer();
             this.idGenerator = () => { return Guid.NewGuid(); };
-            this.tokenizer = new Tokenizer();
+            this.tokenManager = new TokenManager();
         }
 
         private event Action<Exception> GameExceptionEvent;
@@ -170,7 +170,7 @@ namespace Jabberwocky.SoC.Library
 
         private void GameSetupLoop(IPlayer player)
         {
-            var token = this.tokenizer.GetTokenForPlayer(player);
+            var token = this.tokenManager.GetNewToken(player);
             // TODO: Pass back current settled locations
             this.eventRaiser.RaiseEvent(player.Name, new PlaceSetupInfrastructureEvent(token));
             while (true)
@@ -248,7 +248,7 @@ namespace Jabberwocky.SoC.Library
 
         private void ProcessPlayerAction(PlayerAction playerAction)
         {
-            this.tokenizer.ValidatePlayerAction(playerAction);
+            this.tokenManager.ValidatePlayerAction(playerAction);
 
             if (playerAction is EndOfTurnAction)
             {
@@ -280,7 +280,7 @@ namespace Jabberwocky.SoC.Library
             try
             {
                 this.ChangeToNextPlayer();
-                var token = this.tokenizer.GetTokenForPlayer(this.currentPlayer);
+                var token = this.tokenManager.GetNewToken(this.currentPlayer);
                 this.eventRaiser.RaiseEvent(this.currentPlayer.Name, new StartPlayerTurnEvent(token));
 
                 this.numberGenerator.RollTwoDice(out this.dice1, out this.dice2);
@@ -305,10 +305,11 @@ namespace Jabberwocky.SoC.Library
         }
 
         #region Structures
-        public interface ITokenizer
+        public interface ITokenManager
         {
             bool ValidatePlayerAction(PlayerAction action);
-            GameToken GetTokenForPlayer(IPlayer player);
+            GameToken GetNewToken(IPlayer player);
+            IPlayer GetPlayer(GameToken token);
         }
 
         private class EventRaiser
@@ -341,12 +342,12 @@ namespace Jabberwocky.SoC.Library
             }
         }
 
-        private class Tokenizer : ITokenizer
+        private class TokenManager: ITokenManager
         {
             private Dictionary<GameToken, IPlayer> playerByToken = new Dictionary<GameToken, IPlayer>();
             private Dictionary<IPlayer, GameToken> tokenByPlayer = new Dictionary<IPlayer, GameToken>();
 
-            public GameToken GetTokenForPlayer(IPlayer player)
+            public GameToken GetNewToken(IPlayer player)
             {
                 if (this.tokenByPlayer.ContainsKey(player))
                 {
@@ -362,6 +363,11 @@ namespace Jabberwocky.SoC.Library
                 this.tokenByPlayer.Add(player, token);
                 this.playerByToken.Add(token, player);
                 return token;
+            }
+
+            public IPlayer GetPlayer(GameToken token)
+            {
+                return this.playerByToken[token];
             }
 
             public bool ValidatePlayerAction(PlayerAction action)
