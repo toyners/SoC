@@ -12,7 +12,7 @@ namespace Jabberwocky.SoC.Library
         #endregion
 
         #region Events
-        public event Action<PlayerAction> PlayerActionEvent;
+        public event Action<GameToken, PlayerAction> PlayerActionEvent;
         public event Action<GameEvent> GameEvent;
         public event Action<Exception> GameExceptionEvent;
         #endregion
@@ -54,7 +54,7 @@ namespace Jabberwocky.SoC.Library
             if (this.token == null)
                 throw new Exception("No token");
 
-            this.PlayerActionEvent.Invoke(/*this.token, */playerAction);
+            this.PlayerActionEvent.Invoke(this.token, playerAction);
         }
         #endregion
     }

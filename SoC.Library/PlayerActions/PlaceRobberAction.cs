@@ -8,7 +8,7 @@ namespace Jabberwocky.SoC.Library.GameActions
         #endregion
 
         #region Construction
-        public PlaceRobberAction(uint robberHex) : base(0)
+        public PlaceRobberAction(uint robberHex) : base()
         {
             this.RobberHex = robberHex;
         }

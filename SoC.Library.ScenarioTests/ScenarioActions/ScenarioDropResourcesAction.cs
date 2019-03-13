@@ -8,7 +8,7 @@ namespace SoC.Library.ScenarioTests.ScenarioActions
         public readonly string PlayerName;
         public readonly ResourceClutch Resources;
 
-        public ScenarioDropResourcesAction(string playerName, ResourceClutch resources) : base(0)
+        public ScenarioDropResourcesAction(string playerName, ResourceClutch resources) : base()
         {
             this.PlayerName = playerName;
             this.Resources = resources;

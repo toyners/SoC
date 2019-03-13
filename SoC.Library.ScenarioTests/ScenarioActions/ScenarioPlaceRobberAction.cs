@@ -14,7 +14,7 @@ namespace SoC.Library.ScenarioTests.ScenarioActions
         {
         }
 
-        public ScenarioPlaceRobberAction(uint newRobberHex, ResourceClutch resourcesToDrop) : base(0)
+        public ScenarioPlaceRobberAction(uint newRobberHex, ResourceClutch resourcesToDrop) : base()
         {
             this.NewRobberHex = newRobberHex;
             this.ResourcesToDrop = resourcesToDrop;

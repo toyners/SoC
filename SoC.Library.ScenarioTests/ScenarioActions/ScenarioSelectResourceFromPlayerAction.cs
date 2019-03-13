@@ -8,7 +8,7 @@ namespace SoC.Library.ScenarioTests.ScenarioActions
         public readonly string SelectedPlayerName;
         public readonly ResourceTypes ExpectedSingleResource;
 
-        public ScenarioSelectResourceFromPlayerAction(string selectedPlayerName, ResourceTypes expectedSingleResource) : base(0)
+        public ScenarioSelectResourceFromPlayerAction(string selectedPlayerName, ResourceTypes expectedSingleResource) : base()
         {
             this.SelectedPlayerName = selectedPlayerName;
             this.ExpectedSingleResource = expectedSingleResource;

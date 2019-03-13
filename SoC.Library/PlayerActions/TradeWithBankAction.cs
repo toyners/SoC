@@ -9,7 +9,7 @@ namespace Jabberwocky.SoC.Library.GameActions
         public readonly ResourceTypes ReceivingType;
         public readonly int ReceivingCount;
 
-        public TradeWithBankAction(ResourceTypes givingType, ResourceTypes receivingType, int receivingCount) : base(ComputerPlayerActionTypes.TradeWithBank)
+        public TradeWithBankAction(ResourceTypes givingType, ResourceTypes receivingType, int receivingCount) : base()
         {
             this.GivingType = givingType;
             this.ReceivingType = receivingType;

@@ -47,7 +47,7 @@ namespace Jabberwocky.SoC.Library.ScenarioTests.Builders
         public PlayerActionBuilder BuyDevelopmentCard(DevelopmentCardTypes developmentCardType)
         {
             this.runnerActions.Add(new InsertDevelopmentCardAction { DevelopmentCardType = developmentCardType });
-            this.playerActions.Add(new PlayerAction(ComputerPlayerActionTypes.BuyDevelopmentCard));
+            //this.playerActions.Add(new PlayerAction(ComputerPlayerActionTypes.BuyDevelopmentCard));
             return this;
         }
 

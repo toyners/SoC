@@ -242,9 +242,9 @@ namespace Jabberwocky.SoC.Library
             }
         }
 
-        private void PlayerActionEventHandler(PlayerAction playerAction)
+        private void PlayerActionEventHandler(GameToken token, PlayerAction playerAction)
         {
-            this.tokenManager.ValidatePlayerAction(playerAction.Token);
+            this.tokenManager.ValidatePlayerAction(token);
 
             this.actionRequests.Enqueue(playerAction);
         }

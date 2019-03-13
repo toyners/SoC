@@ -8,7 +8,7 @@ namespace Jabberwocky.SoC.Library.GameActions
         public readonly uint StartLocation;
         public readonly uint EndLocation;
 
-        public BuildRoadSegmentAction(uint startLocation, uint endLocation) : base(ComputerPlayerActionTypes.BuildRoadSegment)
+        public BuildRoadSegmentAction(uint startLocation, uint endLocation) : base()
         {
             this.StartLocation = startLocation;
             this.EndLocation = endLocation;

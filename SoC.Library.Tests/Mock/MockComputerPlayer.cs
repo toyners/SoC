@@ -273,7 +273,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.Mock
 
                 default:
                     {
-                        playerAction = new PlayerAction(actionType);
+                        //playerAction = new PlayerAction(actionType);
                         break;
                     }
             }

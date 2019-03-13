@@ -7,7 +7,7 @@ namespace Jabberwocky.SoC.Library.GameActions
     {
         public readonly uint CityLocation;
 
-        public BuildCityAction(uint cityLocation) : base(ComputerPlayerActionTypes.BuildCity)
+        public BuildCityAction(uint cityLocation) : base()
         {
             this.CityLocation = cityLocation;
         }

@@ -6,7 +6,7 @@ namespace SoC.Library.ScenarioTests.ScenarioActions
     public abstract class ComputerPlayerActionWrapper : PlayerAction
     {
         public readonly string InitiatingPlayerName;
-        public ComputerPlayerActionWrapper(string initiatingPlayerName, PlayerAction action) : base(0)
+        public ComputerPlayerActionWrapper(string initiatingPlayerName, PlayerAction action) : base()
         {
             this.InitiatingPlayerName = initiatingPlayerName;
             this.Action = action;

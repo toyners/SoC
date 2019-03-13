@@ -5,7 +5,7 @@ namespace SoC.Library.ScenarioTests.ScenarioActions
     public class ScenarioVerifySnapshotAction : PlayerAction
     {
         private PlayerState playerState;
-        public ScenarioVerifySnapshotAction(PlayerState playerState) : base(0)
+        public ScenarioVerifySnapshotAction(PlayerState playerState) : base()
         {
             this.playerState = playerState;
         }

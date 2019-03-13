@@ -11,7 +11,7 @@ namespace Jabberwocky.SoC.Library.GameActions
     {
         public readonly ResourceClutch Resources;
 
-        public DropResourcesAction(ResourceClutch resources) : base(0)
+        public DropResourcesAction(ResourceClutch resources) : base()
         {
             this.Resources = resources;
         }
