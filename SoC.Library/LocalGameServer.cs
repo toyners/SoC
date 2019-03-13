@@ -18,7 +18,7 @@ namespace Jabberwocky.SoC.Library
         private readonly ConcurrentQueue<PlayerAction> actionRequests = new ConcurrentQueue<PlayerAction>();
         private IPlayer currentPlayer;
         private readonly IDevelopmentCardHolder developmentCardHolder;
-        private readonly EventRaiser eventRaiser = new EventRaiser();
+        private readonly EventRaiser eventRaiser;
         private bool isQuitting;
         private readonly GameBoard gameBoard;
         private readonly INumberGenerator numberGenerator;
@@ -29,6 +29,7 @@ namespace Jabberwocky.SoC.Library
         private IGameTimer turnTimer;
         private Func<Guid> idGenerator;
         private ITokenManager tokenManager;
+        private ILog log;
 
         public LocalGameServer(INumberGenerator numberGenerator, GameBoard gameBoard, IDevelopmentCardHolder developmentCardHolder)
         {
@@ -38,6 +39,7 @@ namespace Jabberwocky.SoC.Library
             this.turnTimer = new GameServerTimer();
             this.idGenerator = () => { return Guid.NewGuid(); };
             this.tokenManager = new TokenManager();
+            this.eventRaiser = new EventRaiser(this.log);
         }
 
         private event Action<Exception> GameExceptionEvent;
@@ -320,6 +322,12 @@ namespace Jabberwocky.SoC.Library
         {
             private Dictionary<Guid, Action<GameEvent, GameToken>> gameEventHandlersByPlayerId = new Dictionary<Guid, Action<GameEvent, GameToken>>();
             private event Action<GameEvent, GameToken> gameEventHandler;
+            private ILog log;
+
+            public EventRaiser(ILog log)
+            {
+                this.log = log;
+            }
 
             public bool CanRaiseEvents { get; set; } = true;
 
@@ -389,5 +397,11 @@ namespace Jabberwocky.SoC.Library
             }
         }
         #endregion
+    }
+
+    public interface ILog
+    {
+        void Add(string message);
+        void WriteToFile(string filePath);
     }
 }
