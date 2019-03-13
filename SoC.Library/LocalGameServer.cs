@@ -251,6 +251,14 @@ namespace Jabberwocky.SoC.Library
 
         private void ProcessPlayerAction(PlayerAction playerAction)
         {
+            if (playerAction is AnswerDirectTradeOfferAction answerDirectTradeOfferAction)
+            {
+                var answerDirectTradeOfferEvent = new AnswerDirectTradeOfferEvent(Guid.Empty,
+                    answerDirectTradeOfferAction.PlayerId,
+                    answerDirectTradeOfferAction.OfferedResources);
+
+                this.eventRaiser.RaiseEvent(answerDirectTradeOfferEvent, this.PlayerIdsExcept(answerDirectTradeOfferAction.PlayerId));
+            }
 
             if (playerAction is EndOfTurnAction)
             {
@@ -266,12 +274,6 @@ namespace Jabberwocky.SoC.Library
                 this.eventRaiser.RaiseEvent(makeDirectTradeOfferEvent, otherPlayers);
                 return;
             }
-
-            if (playerAction is AnswerDirectTradeOfferAction answerDirectTradeOfferAction)
-            {
-
-            }
-
         }
 
         private IEnumerable<Guid> PlayerIdsExcept(Guid playerId) => this.playersById.Select(kv => kv.Key).Where(id => id != playerId);

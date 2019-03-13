@@ -18,6 +18,11 @@ namespace Jabberwocky.SoC.Library
         #endregion
 
         #region Methods
+        public void AnswerDirectTradeOffer(ResourceClutch resourceClutch)
+        {
+            this.SendAction(new AnswerDirectTradeOfferAction(null, resourceClutch));
+        }
+
         public void EndTurn()
         {
             this.SendAction(new EndOfTurnAction());

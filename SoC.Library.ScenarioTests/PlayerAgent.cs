@@ -24,7 +24,6 @@ namespace SoC.Library.ScenarioTests
         private int instructionIndex;
         private string label;
         private IDictionary<string, Guid> playerIdsByName;
-        private GameToken token;
 
         #region Construction
         public PlayerAgent(string name)
@@ -131,6 +130,11 @@ namespace SoC.Library.ScenarioTests
         {
             switch (action.Operation)
             {
+                case ActionInstruction.OperationTypes.AnswerDirectTradeOffer:
+                {
+                    this.gameController.AnswerDirectTradeOffer((ResourceClutch)action.Parameters[0]);
+                    break;
+                }
                 case ActionInstruction.OperationTypes.EndOfTurn:
                 {
                     this.gameController.EndTurn();
