@@ -174,7 +174,7 @@ namespace Jabberwocky.SoC.Library
         {
             var token = this.tokenManager.GetNewToken(player);
             // TODO: Pass back current settled locations
-            this.eventRaiser.RaiseEvent(player.Id, new PlaceSetupInfrastructureEvent(), token);
+            this.eventRaiser.RaiseEvent(new PlaceSetupInfrastructureEvent(), player.Id, token);
             while (true)
             {
                 var playerAction = this.WaitForPlayerAction();
@@ -242,15 +242,15 @@ namespace Jabberwocky.SoC.Library
             }
         }
 
-        private void PlayerActionEventHandler(GameToken turnToken, PlayerAction action)
+        private void PlayerActionEventHandler(PlayerAction playerAction)
         {
-            // TODO: Verify turn token
-            this.actionRequests.Enqueue(action);
+            this.tokenManager.ValidatePlayerAction(playerAction.Token);
+
+            this.actionRequests.Enqueue(playerAction);
         }
 
         private void ProcessPlayerAction(PlayerAction playerAction)
         {
-            this.tokenManager.ValidatePlayerAction(playerAction);
 
             if (playerAction is EndOfTurnAction)
             {
@@ -264,7 +264,6 @@ namespace Jabberwocky.SoC.Library
                         makeDirectTradeOfferAction.PlayerId, makeDirectTradeOfferAction.WantedResources);
                 var otherPlayers = this.PlayerIdsExcept(playerAction.PlayerId);
                 this.eventRaiser.RaiseEvent(makeDirectTradeOfferEvent, otherPlayers);
-
                 return;
             }
 
@@ -282,12 +281,13 @@ namespace Jabberwocky.SoC.Library
             try
             {
                 this.ChangeToNextPlayer();
-                var token = this.tokenManager.GetNewToken(this.currentPlayer);
-                this.eventRaiser.RaiseEvent(this.currentPlayer.Id, new StartPlayerTurnEvent());
+                this.eventRaiser.RaiseEvent(new StartPlayerTurnEvent(), this.currentPlayer.Id);
 
+                var token = this.tokenManager.GetNewToken(this.currentPlayer);
                 this.numberGenerator.RollTwoDice(out this.dice1, out this.dice2);
                 var diceRollEvent = new DiceRollEvent(this.currentPlayer.Id, this.dice1, this.dice2);
-                this.eventRaiser.RaiseEvent(diceRollEvent);
+                this.eventRaiser.RaiseEvent(diceRollEvent, this.currentPlayer.Id, token);
+                this.eventRaiser.RaiseEvent(diceRollEvent, this.PlayerIdsExcept(this.currentPlayer.Id));
 
                 var resourceRoll = this.dice1 + this.dice2;
                 if (resourceRoll != 7)
@@ -309,7 +309,7 @@ namespace Jabberwocky.SoC.Library
         #region Structures
         public interface ITokenManager
         {
-            bool ValidatePlayerAction(PlayerAction action);
+            bool ValidatePlayerAction(GameToken token);
             GameToken GetNewToken(IPlayer player);
             IPlayer GetPlayer(GameToken token);
         }
@@ -335,7 +335,7 @@ namespace Jabberwocky.SoC.Library
                 this.gameEventHandler.Invoke(gameEvent, null);
             }
 
-            public void RaiseEvent(Guid playerId, GameEvent gameEvent, GameToken gameToken = null)
+            public void RaiseEvent(GameEvent gameEvent, Guid playerId, GameToken gameToken = null)
             {
                 if (!this.CanRaiseEvents)
                     return;
@@ -381,9 +381,9 @@ namespace Jabberwocky.SoC.Library
                 return this.playerByToken[token];
             }
 
-            public bool ValidatePlayerAction(PlayerAction action)
+            public bool ValidatePlayerAction(GameToken token)
             {
-                return this.playerByToken.ContainsKey(action.Token);
+                return this.playerByToken.ContainsKey(token);
             }
         }
         #endregion
