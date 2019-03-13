@@ -1,8 +1,11 @@
 ﻿
+
 namespace Jabberwocky.SoC.Library.GameEvents
 {
+    using System;
+
     public class StartPlayerTurnEvent : GameEvent
     {
-        public StartPlayerTurnEvent(GameToken token) : base(token) {}
+        public StartPlayerTurnEvent() : base(Guid.Empty) {}
     }
 }

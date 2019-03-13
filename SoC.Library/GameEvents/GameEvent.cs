@@ -7,13 +7,6 @@ namespace Jabberwocky.SoC.Library.GameEvents
     [DebuggerDisplay("{GetType().Name}")]
     public class GameEvent
     {
-        public enum GameTokenAction
-        {
-            New,
-            Delete,
-            Hold
-        }
-
         #region Fields
         public readonly Guid PlayerId;
         #endregion
@@ -23,21 +16,7 @@ namespace Jabberwocky.SoC.Library.GameEvents
         {
             this.PlayerId = playerId;
         }
-
-        public GameEvent(GameToken token)
-        {
-            this.Token = token;
-            this.TokenPhase = token != null ? GameTokenAction.New : GameTokenAction.Delete;
-        }
-
-        public GameEvent()
-        {
-            this.TokenPhase = GameTokenAction.Hold;
-        }
         #endregion
-
-        public GameToken Token { get; private set; }
-        public GameTokenAction TokenPhase { get; private set; }
 
         #region Methods
         public override bool Equals(object obj)

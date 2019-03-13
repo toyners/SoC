@@ -38,9 +38,9 @@ namespace Jabberwocky.SoC.Library
             this.SendAction(new RequestStateAction(Guid.Empty));
         }
 
-        internal void GameEventHandler(GameEvent gameEvent)
+        internal void GameEventHandler(GameEvent gameEvent, GameToken gameToken)
         {
-            this.token = gameEvent.Token;
+            this.token = gameToken;
             this.GameEvent.Invoke(gameEvent);
         }
 

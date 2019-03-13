@@ -56,10 +56,12 @@ namespace Jabberwocky.SoC.Library
 
         public void JoinGame(string playerName, GameController gameController)
         {
-            this.eventRaiser.AddEventHandler(playerName, gameController.GameEventHandler);
+            var player = new Player(playerName, this.idGenerator.Invoke());
+            this.players[this.playerIndex++] = player;
+
+            this.eventRaiser.AddEventHandler(player.Id, gameController.GameEventHandler);
             this.GameExceptionEvent += gameController.GameExceptionHandler;
             gameController.PlayerActionEvent += this.PlayerActionEventHandler;
-            this.players[this.playerIndex++] = new Player(playerName, this.idGenerator.Invoke());
         }
 
         public void LaunchGame(GameOptions gameOptions = null)
@@ -134,7 +136,7 @@ namespace Jabberwocky.SoC.Library
                     player.AddResources(resourceCollection.Resources);
 
                 var resourcesCollectedEvent = new ResourcesCollectedEvent(player.Id, resourcesCollectionOrderedByLocation);
-                this.eventRaiser.RaiseEvent(null, resourcesCollectedEvent);
+                this.eventRaiser.RaiseEvent(resourcesCollectedEvent, null);
             }
         }
 
@@ -172,7 +174,7 @@ namespace Jabberwocky.SoC.Library
         {
             var token = this.tokenManager.GetNewToken(player);
             // TODO: Pass back current settled locations
-            this.eventRaiser.RaiseEvent(player.Name, new PlaceSetupInfrastructureEvent(token));
+            this.eventRaiser.RaiseEvent(player.Id, new PlaceSetupInfrastructureEvent(), token);
             while (true)
             {
                 var playerAction = this.WaitForPlayerAction();
@@ -260,10 +262,8 @@ namespace Jabberwocky.SoC.Library
             {
                 var makeDirectTradeOfferEvent = new MakeDirectTradeOfferEvent(
                         makeDirectTradeOfferAction.PlayerId, makeDirectTradeOfferAction.WantedResources);
-                foreach (var kv in this.playersById.Where(k => k.Key != playerAction.PlayerId).ToList())
-                {
-                    this.eventRaiser.RaiseEvent(kv.Value.Name, makeDirectTradeOfferEvent);
-                }
+                var otherPlayers = this.PlayerIdsExcept(playerAction.PlayerId);
+                this.eventRaiser.RaiseEvent(makeDirectTradeOfferEvent, otherPlayers);
 
                 return;
             }
@@ -275,13 +275,15 @@ namespace Jabberwocky.SoC.Library
 
         }
 
+        private IEnumerable<Guid> PlayerIdsExcept(Guid playerId) => this.playersById.Select(kv => kv.Key).Where(id => id != playerId);
+
         private void StartTurn()
         {
             try
             {
                 this.ChangeToNextPlayer();
                 var token = this.tokenManager.GetNewToken(this.currentPlayer);
-                this.eventRaiser.RaiseEvent(this.currentPlayer.Name, new StartPlayerTurnEvent(token));
+                this.eventRaiser.RaiseEvent(this.currentPlayer.Id, new StartPlayerTurnEvent());
 
                 this.numberGenerator.RollTwoDice(out this.dice1, out this.dice2);
                 var diceRollEvent = new DiceRollEvent(this.currentPlayer.Id, this.dice1, this.dice2);
@@ -314,15 +316,15 @@ namespace Jabberwocky.SoC.Library
 
         private class EventRaiser
         {
-            private Dictionary<string, Action<GameEvent>> gameEventHandlersByPlayerName = new Dictionary<string, Action<GameEvent>>();
-            private event Action<GameEvent> gameEventHandler;
+            private Dictionary<Guid, Action<GameEvent, GameToken>> gameEventHandlersByPlayerId = new Dictionary<Guid, Action<GameEvent, GameToken>>();
+            private event Action<GameEvent, GameToken> gameEventHandler;
 
             public bool CanRaiseEvents { get; set; } = true;
 
-            public void AddEventHandler(string playerName, Action<GameEvent> gameEventHandler)
+            public void AddEventHandler(Guid playerId, Action<GameEvent, GameToken> gameEventHandler)
             {
                 this.gameEventHandler += gameEventHandler;
-                this.gameEventHandlersByPlayerName.Add(playerName, gameEventHandler);
+                this.gameEventHandlersByPlayerId.Add(playerId, gameEventHandler);
             }
 
             public void RaiseEvent(GameEvent gameEvent)
@@ -330,15 +332,24 @@ namespace Jabberwocky.SoC.Library
                 if (!this.CanRaiseEvents)
                     return;
 
-                this.gameEventHandler.Invoke(gameEvent);
+                this.gameEventHandler.Invoke(gameEvent, null);
             }
 
-            public void RaiseEvent(string playerName, GameEvent gameEvent)
+            public void RaiseEvent(Guid playerId, GameEvent gameEvent, GameToken gameToken = null)
             {
                 if (!this.CanRaiseEvents)
                     return;
 
-                this.gameEventHandlersByPlayerName[playerName].Invoke(gameEvent);
+                this.gameEventHandlersByPlayerId[playerId].Invoke(gameEvent, gameToken);
+            }
+
+            public void RaiseEvent(GameEvent gameEvent, IEnumerable<Guid> playerIds)
+            {
+                if (!this.CanRaiseEvents)
+                    return;
+
+                foreach (var playerId in playerIds)
+                    this.gameEventHandlersByPlayerId[playerId].Invoke(gameEvent, null);
             }
         }
 
