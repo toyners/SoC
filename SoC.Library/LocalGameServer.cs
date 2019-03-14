@@ -242,7 +242,10 @@ namespace Jabberwocky.SoC.Library
                 }
 
                 if (this.actionRequests.TryDequeue(out var playerAction))
+                {
+                    this.log.Add($"Received {playerAction.GetType().Name} from {this.playersById[playerAction.PlayerId].Name}");
                     return playerAction;
+                }
             }
         }
 
