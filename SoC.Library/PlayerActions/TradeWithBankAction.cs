@@ -1,7 +1,7 @@
 ﻿
 namespace Jabberwocky.SoC.Library.GameActions
 {
-    using Enums;
+    using System;
 
     public class TradeWithBankAction : PlayerAction
     {
@@ -9,7 +9,7 @@ namespace Jabberwocky.SoC.Library.GameActions
         public readonly ResourceTypes ReceivingType;
         public readonly int ReceivingCount;
 
-        public TradeWithBankAction(ResourceTypes givingType, ResourceTypes receivingType, int receivingCount) : base()
+        public TradeWithBankAction(ResourceTypes givingType, ResourceTypes receivingType, int receivingCount) : base(Guid.Empty)
         {
             this.GivingType = givingType;
             this.ReceivingType = receivingType;

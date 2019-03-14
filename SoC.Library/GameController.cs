@@ -57,7 +57,7 @@ namespace Jabberwocky.SoC.Library
         private void SendAction(PlayerAction playerAction)
         {
             if (this.token == null)
-                throw new Exception("No token");
+                throw new Exception($"No token for action {playerAction.GetType().Name}");
 
             this.PlayerActionEvent.Invoke(this.token, playerAction);
         }

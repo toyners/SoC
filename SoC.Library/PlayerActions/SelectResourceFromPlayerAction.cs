@@ -5,10 +5,8 @@ namespace Jabberwocky.SoC.Library.GameActions
 
     public class SelectResourceFromPlayerAction : PlayerAction
     {
-        public readonly Guid PlayerId;
-        public SelectResourceFromPlayerAction(Guid playerId) : base()
+        public SelectResourceFromPlayerAction(Guid playerId) : base(playerId)
         {
-            this.PlayerId = playerId;
         }
     }
 }

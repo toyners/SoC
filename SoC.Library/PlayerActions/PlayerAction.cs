@@ -7,7 +7,7 @@ namespace Jabberwocky.SoC.Library.GameActions
     {
         public readonly Guid PlayerId;
 
-        public PlayerAction() { }
+        //public PlayerAction() { }
 
         public PlayerAction(Guid playerId)
         {

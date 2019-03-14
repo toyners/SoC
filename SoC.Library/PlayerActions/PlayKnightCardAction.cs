@@ -1,13 +1,13 @@
 ﻿
-using System;
-
 namespace Jabberwocky.SoC.Library.GameActions
 {
+    using System;
+
     public class PlayKnightCardAction : PlayerAction
     {
         public readonly uint NewRobberHex;
         public readonly Guid? PlayerId;
-        public PlayKnightCardAction(uint newRobberHex, Guid? playerId = null) : base()
+        public PlayKnightCardAction(uint newRobberHex, Guid? playerId = null) : base(Guid.Empty)
         {
             this.NewRobberHex = newRobberHex;
             this.PlayerId = playerId;

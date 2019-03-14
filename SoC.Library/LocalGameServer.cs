@@ -248,7 +248,7 @@ namespace Jabberwocky.SoC.Library
         {
             this.tokenManager.ValidatePlayerAction(token);
 
-            this.actionRequests.Enqueue(playerAction);
+            this.actionRequests.Enqueue( playerAction);
         }
 
         private void ProcessPlayerAction(PlayerAction playerAction)

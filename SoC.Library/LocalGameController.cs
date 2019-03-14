@@ -365,7 +365,7 @@ namespace Jabberwocky.SoC.Library
         {
             // TODO: Validate turn token
 
-            this.actionRequests.Enqueue(new EndOfTurnAction());
+            this.actionRequests.Enqueue(new EndOfTurnAction(Guid.Empty));
         }
 
         private bool ProcessTurnStart(IPlayer player)
@@ -428,7 +428,7 @@ namespace Jabberwocky.SoC.Library
                 return;
             }
 
-            this.actionRequests.Enqueue(new EndOfTurnAction());
+            this.actionRequests.Enqueue(new EndOfTurnAction(Guid.Empty));
 
             /*this.ClearDevelopmentCardProcessingForTurn();
             this.ChangeToNextPlayerTurn();

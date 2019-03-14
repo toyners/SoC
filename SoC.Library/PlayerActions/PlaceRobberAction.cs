@@ -1,6 +1,8 @@
 ﻿
 namespace Jabberwocky.SoC.Library.GameActions
 {
+    using System;
+
     public class PlaceRobberAction : PlayerAction
     {
         #region Fields
@@ -8,7 +10,7 @@ namespace Jabberwocky.SoC.Library.GameActions
         #endregion
 
         #region Construction
-        public PlaceRobberAction(uint robberHex) : base()
+        public PlaceRobberAction(uint robberHex) : base(Guid.Empty)
         {
             this.RobberHex = robberHex;
         }
