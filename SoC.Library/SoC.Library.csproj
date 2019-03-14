@@ -59,6 +59,7 @@
     <Compile Include="DevelopmentCards\RoadBuildingDevelopmentCard.cs" />
     <Compile Include="DevelopmentCards\VictoryPointDevelopmentCard.cs" />
     <Compile Include="DevelopmentCards\YearOfPlentyDevelopmentCard.cs" />
+    <Compile Include="GameEvents\GameJoinedEvent.cs" />
     <Compile Include="GameToken.cs" />
     <Compile Include="PlayerActions\AnswerDirectTradeOfferAction.cs" />
     <Compile Include="PlayerActions\BuildCityAction.cs" />

@@ -1,9 +1,10 @@
 ﻿
-using Jabberwocky.SoC.Library;
-using Jabberwocky.SoC.Library.GameActions;
-
 namespace SoC.Library.ScenarioTests.ScenarioActions
 {
+    using System;
+    using Jabberwocky.SoC.Library;
+    using Jabberwocky.SoC.Library.GameActions;
+
     internal class ScenarioPlaceRobberAction : PlayerAction
     {
         public readonly uint NewRobberHex;
@@ -14,7 +15,7 @@ namespace SoC.Library.ScenarioTests.ScenarioActions
         {
         }
 
-        public ScenarioPlaceRobberAction(uint newRobberHex, ResourceClutch resourcesToDrop) : base()
+        public ScenarioPlaceRobberAction(uint newRobberHex, ResourceClutch resourcesToDrop) : base(Guid.Empty)
         {
             this.NewRobberHex = newRobberHex;
             this.ResourcesToDrop = resourcesToDrop;

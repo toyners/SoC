@@ -1,17 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Jabberwocky.SoC.Library.Enums;
-
+﻿
 namespace Jabberwocky.SoC.Library.GameActions
 {
+    using System;
+
     public class DropResourcesAction : PlayerAction
     {
         public readonly ResourceClutch Resources;
 
-        public DropResourcesAction(ResourceClutch resources) : base()
+        public DropResourcesAction(ResourceClutch resources) : base(Guid.Empty)
         {
             this.Resources = resources;
         }

@@ -8,7 +8,8 @@ namespace Jabberwocky.SoC.Library
     public class GameController
     {
         #region Fields
-        private GameToken token;
+        private GameToken gameToken;
+        private Guid gameId;
         #endregion
 
         #region Events
@@ -25,12 +26,12 @@ namespace Jabberwocky.SoC.Library
 
         public void EndTurn()
         {
-            this.SendAction(new EndOfTurnAction());
+            this.SendAction(new EndOfTurnAction(this.gameId));
         }
 
         public void MakeDirectTradeOffer(ResourceClutch resourceClutch)
         {
-            this.SendAction(new MakeDirectTradeOfferAction(Guid.Empty, resourceClutch));
+            this.SendAction(new MakeDirectTradeOfferAction(this.gameId, resourceClutch));
         }
 
         public void PlaceStartingInfrastructure(uint settlementLocation, uint roadEndLocation)
@@ -45,7 +46,10 @@ namespace Jabberwocky.SoC.Library
 
         internal void GameEventHandler(GameEvent gameEvent, GameToken gameToken)
         {
-            this.token = gameToken;
+            this.gameToken = gameToken;
+            if (gameEvent is GameJoinedEvent gameJoinedEvent)
+                this.gameId = gameJoinedEvent.PlayerId;
+
             this.GameEvent.Invoke(gameEvent);
         }
 
@@ -56,10 +60,10 @@ namespace Jabberwocky.SoC.Library
 
         private void SendAction(PlayerAction playerAction)
         {
-            if (this.token == null)
+            if (this.gameToken == null)
                 throw new Exception($"No token for action {playerAction.GetType().Name}");
 
-            this.PlayerActionEvent.Invoke(this.token, playerAction);
+            this.PlayerActionEvent.Invoke(this.gameToken, playerAction);
         }
         #endregion
     }

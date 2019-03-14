@@ -64,6 +64,8 @@ namespace Jabberwocky.SoC.Library
             this.eventRaiser.AddEventHandler(player.Id, gameController.GameEventHandler);
             this.GameExceptionEvent += gameController.GameExceptionHandler;
             gameController.PlayerActionEvent += this.PlayerActionEventHandler;
+
+            this.eventRaiser.RaiseEvent(new GameJoinedEvent(player.Id), player.Id);
         }
 
         public void LaunchGame(GameOptions gameOptions = null)
