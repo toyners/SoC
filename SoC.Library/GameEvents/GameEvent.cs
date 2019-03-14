@@ -5,7 +5,7 @@ namespace Jabberwocky.SoC.Library.GameEvents
     using System.Diagnostics;
 
     [DebuggerDisplay("{GetType().Name}")]
-    public class GameEvent
+    public abstract class GameEvent
     {
         #region Fields
         public readonly Guid PlayerId;

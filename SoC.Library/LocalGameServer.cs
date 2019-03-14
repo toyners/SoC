@@ -435,6 +435,7 @@ namespace Jabberwocky.SoC.Library
     public interface ILog
     {
         void Add(string message);
+        void Add(GameEvent gameEvent);
         void WriteToFile(string filePath);
     }
 
@@ -443,6 +444,11 @@ namespace Jabberwocky.SoC.Library
         public List<string> Messages { get; private set; } = new List<string>();
 
         public void Add(string message) => this.Messages.Add(message);
+
+        public void Add(GameEvent gameEvent)
+        {
+
+        }
 
         public void WriteToFile(string filePath) => File.WriteAllLines(filePath, this.Messages);
     }
