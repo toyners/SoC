@@ -240,7 +240,8 @@ namespace Jabberwocky.SoC.Library
 
         private void PlayerActionEventHandler(GameToken token, PlayerAction playerAction)
         {
-            this.tokenManager.ValidatePlayerAction(token);
+            if (!this.tokenManager.ValidateToken(token, playerAction.GetType()))
+                throw new Exception($"Token not valid for {this.playersById[playerAction.PlayerId]}, {playerAction.GetType().Name}");
 
             this.actionRequests.Enqueue( playerAction);
         }
@@ -283,7 +284,7 @@ namespace Jabberwocky.SoC.Library
                         this.eventRaiser.RaiseEvent(
                             makeDirectTradeOfferEvent,
                             player.Id,
-                            this.tokenManager.GetNewToken(player));
+                            this.tokenManager.GetNewToken(player, typeof(AnswerDirectTradeOfferAction)));
                     });
 
                 return;
@@ -346,9 +347,9 @@ namespace Jabberwocky.SoC.Library
         #region Structures
         public interface ITokenManager
         {
-            bool ValidatePlayerAction(GameToken token);
-            GameToken GetNewToken(IPlayer player);
-            IPlayer GetPlayer(GameToken token);
+            bool ValidateToken(GameToken token, Type actionType);
+            GameToken GetNewToken(IPlayer player, Type actionType = null);
+            IPlayer GetPlayerForToken(GameToken token);
         }
 
         private class EventRaiser
@@ -398,35 +399,77 @@ namespace Jabberwocky.SoC.Library
 
         private class TokenManager: ITokenManager
         {
-            private Dictionary<GameToken, IPlayer> playerByToken = new Dictionary<GameToken, IPlayer>();
-            private Dictionary<IPlayer, GameToken> tokenByPlayer = new Dictionary<IPlayer, GameToken>();
+            private Dictionary<TokenInformation, IPlayer> playerByTokenInformation = new Dictionary<TokenInformation, IPlayer>();
+            private Dictionary<IPlayer, TokenInformation> tokenInformationByPlayer = new Dictionary<IPlayer, TokenInformation>();
 
-            public GameToken GetNewToken(IPlayer player)
+            public GameToken GetNewToken(IPlayer player, Type actionType = null)
             {
-                if (this.tokenByPlayer.ContainsKey(player))
+                TokenInformation tokenInformation;
+                if (this.tokenInformationByPlayer.ContainsKey(player))
                 {
-                    var existingToken = this.tokenByPlayer[player];
-                    this.tokenByPlayer.Remove(player);
-                    if (this.playerByToken.ContainsKey(existingToken))
-                    {
-                        this.playerByToken.Remove(existingToken);
-                    }
+                    tokenInformation = this.tokenInformationByPlayer[player];
+                    this.tokenInformationByPlayer.Remove(player);
+                    if (this.playerByTokenInformation.ContainsKey(tokenInformation))
+                        this.playerByTokenInformation.Remove(tokenInformation);
                 }
 
                 var token = new GameToken();
-                this.tokenByPlayer.Add(player, token);
-                this.playerByToken.Add(token, player);
+                tokenInformation = new TokenInformation
+                {
+                    Token = token,
+                    ActionType = actionType
+                };
+                this.tokenInformationByPlayer.Add(player, tokenInformation);
+                this.playerByTokenInformation.Add(tokenInformation, player);
                 return token;
             }
 
-            public IPlayer GetPlayer(GameToken token)
+            public IPlayer GetPlayerForToken(GameToken token)
             {
-                return this.playerByToken[token];
+                return this.playerByTokenInformation.FirstOrDefault(t => t.Key.Token == token).Value;
             }
 
-            public bool ValidatePlayerAction(GameToken token)
+            public bool ValidateToken(GameToken token, Type actionType)
             {
-                return this.playerByToken.ContainsKey(token);
+                var tokenInformation = new TokenInformation { Token = token, ActionType = actionType };
+                return this.playerByTokenInformation.ContainsKey(tokenInformation);
+            }
+
+            private class TokenInformation
+            {
+                public GameToken Token;
+                public Type ActionType;
+
+                public override bool Equals(object obj)
+                {
+                    if (object.ReferenceEquals(this, obj))
+                        return true;
+
+                    if (obj == null)
+                        return false;
+
+                    var other = obj as TokenInformation;
+                    if (other == null)
+                        return false;
+
+                    if (this.Token != other.Token)
+                        return false;
+
+                    if (this.ActionType != null && other.ActionType != null)
+                        return this.ActionType.Equals(other.ActionType);
+                    else if (this.ActionType == null && other.ActionType == null)
+                        return true;
+
+                    return false;
+                }
+
+                public override int GetHashCode()
+                {
+                    var hashCode = 869305385;
+                    hashCode = hashCode * -1521134295 + EqualityComparer<GameToken>.Default.GetHashCode(this.Token);
+                    hashCode = hashCode * -1521134295 + EqualityComparer<Type>.Default.GetHashCode(this.ActionType);
+                    return hashCode;
+                }
             }
         }
         #endregion
