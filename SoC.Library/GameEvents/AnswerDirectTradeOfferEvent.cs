@@ -3,16 +3,11 @@ namespace Jabberwocky.SoC.Library.GameEvents
 {
     using System;
 
-    public class AnswerDirectTradeOfferEvent : GameEvent
+    public class AnswerDirectTradeOfferEvent : MakeDirectTradeOfferEvent
     {
-        public readonly Guid BuyingPlayerId;
-        public readonly ResourceClutch WantedResources;
-
-        public AnswerDirectTradeOfferEvent(Guid playerId, Guid buyingPlayerId, ResourceClutch wantedResources) 
-            : base(playerId)
+        public AnswerDirectTradeOfferEvent(Guid buyingPlayerId, ResourceClutch wantedResources) 
+            : base(buyingPlayerId, wantedResources)
         {
-            this.BuyingPlayerId = buyingPlayerId;
-            this.WantedResources = wantedResources;
         }
     }
 }

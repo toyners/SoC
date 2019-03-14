@@ -371,8 +371,8 @@ namespace SoC.Library.ScenarioTests
         {
             this.setupActionsByPlayerName.Add(playerName, new PlaceInfrastructureAction[]
             {
-                new PlaceInfrastructureAction(firstSettlementLocation, firstRoadEndLocation),
-                new PlaceInfrastructureAction(secondSettlementLocation, secondRoadEndLocation)
+                new PlaceInfrastructureAction(Guid.Empty, firstSettlementLocation, firstRoadEndLocation),
+                new PlaceInfrastructureAction(Guid.Empty, secondSettlementLocation, secondRoadEndLocation)
             });
 
             return this;

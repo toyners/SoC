@@ -9,7 +9,9 @@ namespace Jabberwocky.SoC.Library
     {
         #region Fields
         private GameToken gameToken;
-        private Guid gameId;
+        private Guid playerId;
+        private MakeDirectTradeOfferEvent lastMakeDirectTradeOfferEvent;
+        private AnswerDirectTradeOfferEvent lasetAnswerDirectTradeOffEvent;
         #endregion
 
         #region Events
@@ -21,22 +23,25 @@ namespace Jabberwocky.SoC.Library
         #region Methods
         public void AnswerDirectTradeOffer(ResourceClutch resourceClutch)
         {
-            this.SendAction(new AnswerDirectTradeOfferAction(null, resourceClutch));
+            this.SendAction(new AnswerDirectTradeOfferAction(
+                this.playerId, 
+                this.lastMakeDirectTradeOfferEvent.BuyingPlayerId, 
+                resourceClutch));
         }
 
         public void EndTurn()
         {
-            this.SendAction(new EndOfTurnAction(this.gameId));
+            this.SendAction(new EndOfTurnAction(this.playerId));
         }
 
         public void MakeDirectTradeOffer(ResourceClutch resourceClutch)
         {
-            this.SendAction(new MakeDirectTradeOfferAction(this.gameId, resourceClutch));
+            this.SendAction(new MakeDirectTradeOfferAction(this.playerId, resourceClutch));
         }
 
         public void PlaceStartingInfrastructure(uint settlementLocation, uint roadEndLocation)
         {
-            this.SendAction(new PlaceInfrastructureAction(settlementLocation, roadEndLocation));
+            this.SendAction(new PlaceInfrastructureAction(this.playerId, settlementLocation, roadEndLocation));
         }
 
         public void RequestState()
@@ -48,7 +53,13 @@ namespace Jabberwocky.SoC.Library
         {
             this.gameToken = gameToken;
             if (gameEvent is GameJoinedEvent gameJoinedEvent)
-                this.gameId = gameJoinedEvent.PlayerId;
+                this.playerId = gameJoinedEvent.PlayerId;
+
+            if (gameEvent is MakeDirectTradeOfferEvent makeDirectTradeOfferEvent)
+                this.lastMakeDirectTradeOfferEvent = makeDirectTradeOfferEvent;
+
+            if (gameEvent is AnswerDirectTradeOfferEvent answerDirectTradeOfferEvent)
+                this.lasetAnswerDirectTradeOffEvent = answerDirectTradeOfferEvent;
 
             this.GameEvent.Invoke(gameEvent);
         }

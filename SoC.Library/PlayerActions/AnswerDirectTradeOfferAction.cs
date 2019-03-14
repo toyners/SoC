@@ -5,12 +5,12 @@ namespace Jabberwocky.SoC.Library.GameActions
 
     public class AnswerDirectTradeOfferAction : PlayerAction
     {
-        public readonly string PlayerName;
-        public readonly ResourceClutch OfferedResources;
-        public AnswerDirectTradeOfferAction(string playerName, ResourceClutch offeredResources) : base(Guid.Empty)
+        public readonly ResourceClutch WantedResources;
+        public readonly Guid InitialPlayerId;
+        public AnswerDirectTradeOfferAction(Guid playerId, Guid initialPlayerId, ResourceClutch wantedResources) : base(playerId)
         {
-            this.PlayerName = playerName;
-            this.OfferedResources = offeredResources;
+            this.WantedResources = wantedResources;
+            this.InitialPlayerId = initialPlayerId;
         }
     }
 }

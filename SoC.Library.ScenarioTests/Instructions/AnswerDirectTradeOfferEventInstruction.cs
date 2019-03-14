@@ -23,7 +23,6 @@ namespace SoC.Library.ScenarioTests.Instructions
         public override GameEvent GetEvent(IDictionary<string, Guid> playerIdsByName)
         {
             return new AnswerDirectTradeOfferEvent(
-                playerIdsByName[this.playerName],
                 playerIdsByName[this.buyingPlayerName],
                 this.wantedResources);
         }

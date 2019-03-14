@@ -13,17 +13,20 @@ namespace SoC.Library.ScenarioTests
 
     internal class PlayerAgent
     {
+        #region Fields
         private readonly List<GameEvent> actualEvents = new List<GameEvent>();
         private readonly ConcurrentQueue<GameEvent> actualEventQueue = new ConcurrentQueue<GameEvent>();
         private readonly List<GameEvent> expectedEvents = new List<GameEvent>();
         private readonly GameController gameController;
         private readonly List<Instruction> instructions = new List<Instruction>();
+        private readonly ILog log = new Log();
         private readonly Dictionary<GameEvent, bool> verificationStatusByGameEvent = new Dictionary<GameEvent, bool>();
         private int actualEventIndex;
         private int expectedEventIndex;
         private int instructionIndex;
         private string label;
         private IDictionary<string, Guid> playerIdsByName;
+        #endregion
 
         #region Construction
         public PlayerAgent(string name)
@@ -36,6 +39,7 @@ namespace SoC.Library.ScenarioTests
         }
         #endregion
 
+        #region Properties
         public Exception GameException { get; private set; }
         public Guid Id { get; private set; }
         public bool IsFinished
@@ -43,13 +47,17 @@ namespace SoC.Library.ScenarioTests
             get { return this.instructionIndex >= this.instructions.Count; }
         }
         public string Name { get; private set; }
+        #endregion
 
+        #region Methods
         public void AddInstruction(Instruction instruction) => this.instructions.Add(instruction);
 
         public void JoinGame(LocalGameServer gameServer)
         {
             gameServer.JoinGame(this.Name, this.gameController);
         }
+
+        public void SaveLog(string filePath) => this.log.WriteToFile(filePath);
 
         internal void StartAsync()
         {
@@ -128,6 +136,7 @@ namespace SoC.Library.ScenarioTests
 
         private void SendAction(ActionInstruction action)
         {
+            this.log.Add($"Sending {action.Operation} operation");
             switch (action.Operation)
             {
                 case ActionInstruction.OperationTypes.AnswerDirectTradeOffer:
@@ -201,9 +210,12 @@ namespace SoC.Library.ScenarioTests
                 if (actualEvent is PlayerSetupEvent playerSetupEvent)
                     this.playerIdsByName = playerSetupEvent.PlayerIdsByName;
 
+                this.log.Add($"Received {actualEvent.GetType().Name}");
+
                 this.actualEvents.Add(actualEvent);
                 break;
             }
         }
+        #endregion
     }
 }

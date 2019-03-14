@@ -11,6 +11,7 @@ namespace SoC.Library.ScenarioTests
 
     internal class ScenarioRunner
     {
+        #region Fields
         private readonly ScenarioDevelopmentCardHolder developmentCardHolder = new ScenarioDevelopmentCardHolder();
         private readonly List<PlayerAgent> playerAgents = new List<PlayerAgent>();
         private readonly Dictionary<string, ResourceClutch> startingResourcesByName = new Dictionary<string, ResourceClutch>();
@@ -18,6 +19,7 @@ namespace SoC.Library.ScenarioTests
         private List<Instruction> instructions = new List<Instruction>();
         private bool useServerTimer = true;
         private ScenarioNumberGenerator numberGenerator;
+        #endregion
 
         #region Construction
         private ScenarioRunner(string[] args)
@@ -29,6 +31,7 @@ namespace SoC.Library.ScenarioTests
         }
         #endregion
 
+        #region Methods
         private string LastInstructionPlayerName
         {
             get { return this.instructions[this.instructions.Count - 1].PlayerName; }
@@ -85,8 +88,7 @@ namespace SoC.Library.ScenarioTests
             var playerIds = new Queue<Guid>(this.playerAgents.Select(agent => agent.Id));
 
             var playerAgentsByName = this.playerAgents.ToDictionary(playerAgent => playerAgent.Name, playerAgent => playerAgent);
-            foreach (var instruction in this.instructions)
-                playerAgentsByName[instruction.PlayerName].AddInstruction(instruction);
+            this.instructions.ForEach(instruction => playerAgentsByName[instruction.PlayerName].AddInstruction(instruction));
 
             if (this.gameBoard == null)
                 this.gameBoard = new GameBoard(BoardSizes.Standard);
@@ -104,11 +106,11 @@ namespace SoC.Library.ScenarioTests
 
             gameServer.LaunchGame();
 
-            foreach (var playerAgent in this.playerAgents)
+            this.playerAgents.ForEach(playerAgent =>
             {
                 playerAgent.JoinGame(gameServer);
                 playerAgent.StartAsync();
-            }
+            });
 
             foreach (var kv in this.startingResourcesByName)
                 gameServer.AddResourcesToPlayer(kv.Key, kv.Value);
@@ -140,6 +142,9 @@ namespace SoC.Library.ScenarioTests
 
                 throw new Exception(message);
             }
+
+            gameServer.SaveLog(@"GameServer.log");
+            this.playerAgents.ForEach(playerAgent => playerAgent.SaveLog($"{playerAgent.Name}.log"));
         }
 
         public ScenarioRunner WhenAnswerDirectTradeOfferEvent(string playerName, string buyingPlayerName, ResourceClutch wantedResources)
@@ -219,5 +224,6 @@ namespace SoC.Library.ScenarioTests
                 arguments);
             this.instructions.Add(actionInstruction);
         }
+        #endregion
     }
 }
