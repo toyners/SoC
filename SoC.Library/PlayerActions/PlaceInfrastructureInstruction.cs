@@ -3,7 +3,7 @@ namespace Jabberwocky.SoC.Library.GameActions
 {
     using System;
 
-    public class PlaceInfrastructureAction : PlayerAction
+    public class PlaceInfrastructureAction : TokenConstraintedPlayerAction
     {
         public readonly uint SettlementLocation;
         public readonly uint RoadEndLocation;

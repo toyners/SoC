@@ -21,17 +21,17 @@ namespace Jabberwocky.SoC.Library
         private readonly IDevelopmentCardHolder developmentCardHolder;
         private readonly EventRaiser eventRaiser;
         private readonly GameBoard gameBoard;
+        private readonly ILog log = new Log();
         private readonly INumberGenerator numberGenerator;
         private readonly ITokenManager tokenManager;
         private IPlayer currentPlayer;
         private bool isQuitting;
-        private Dictionary<Guid, IPlayer> playersById;
+        private IDictionary<Guid, IPlayer> playersById;
         private int playerIndex;
         private IPlayer[] players;
         private uint dice1, dice2;
         private IGameTimer turnTimer;
         private Func<Guid> idGenerator;
-        private ILog log;
         #endregion
 
         #region Construction
@@ -43,7 +43,6 @@ namespace Jabberwocky.SoC.Library
             this.turnTimer = new GameServerTimer();
             this.idGenerator = () => { return Guid.NewGuid(); };
             this.tokenManager = new TokenManager();
-            this.log = new Log();
             this.eventRaiser = new EventRaiser(this.log);
         }
         #endregion
@@ -185,7 +184,7 @@ namespace Jabberwocky.SoC.Library
 
         private void GameSetupLoop(IPlayer player)
         {
-            var token = this.tokenManager.GetNewToken(player);
+            var token = this.tokenManager.GetNewToken(player, typeof(PlaceInfrastructureAction));
             // TODO: Pass back current settled locations
             this.eventRaiser.RaiseEvent(new PlaceSetupInfrastructureEvent(), player.Id, token);
             while (true)
@@ -193,14 +192,14 @@ namespace Jabberwocky.SoC.Library
                 var playerAction = this.WaitForPlayerAction();
                 this.turnTimer.Reset();
 
-                if (playerAction is EndOfTurnAction)
-                {
-                    break;
-                }
-                else if (playerAction is PlaceInfrastructureAction placeInfrastructureAction)
+                if (playerAction is PlaceInfrastructureAction placeInfrastructureAction)
                 {
                     this.PlaceInfrastructure(player, placeInfrastructureAction.SettlementLocation, placeInfrastructureAction.RoadEndLocation);
                     break;
+                }
+                else
+                {
+                    //TODO: Handle case where action is not correct
                 }
             }
         }
@@ -253,19 +252,33 @@ namespace Jabberwocky.SoC.Library
                 var answerDirectTradeOfferEvent = new AnswerDirectTradeOfferEvent(
                     answerDirectTradeOfferAction.PlayerId, answerDirectTradeOfferAction.WantedResources);
 
+                var token = this.tokenManager.GetNewToken(
+                        this.playersById[answerDirectTradeOfferAction.InitialPlayerId]);
+
                 // Initial player gets chance to confirm. 
                 this.eventRaiser.RaiseEvent(
                     answerDirectTradeOfferEvent,
                     answerDirectTradeOfferAction.InitialPlayerId,
-                    this.tokenManager.GetNewToken(
-                        this.playersById[answerDirectTradeOfferAction.InitialPlayerId]));
+                    token);
+
+                var message = this.ToPrettyString(
+                    answerDirectTradeOfferEvent, 
+                    token, 
+                    new[] { this.playersById[answerDirectTradeOfferAction.InitialPlayerId].Name });
+                this.log.Add(message);
 
                 // Other two players gets informational event
-                this.eventRaiser.RaiseEvent(
-                    answerDirectTradeOfferEvent, 
-                    this.PlayersExcept(
+                var otherPlayers = this.PlayersExcept(
                         answerDirectTradeOfferAction.PlayerId,
-                        answerDirectTradeOfferAction.InitialPlayerId));
+                        answerDirectTradeOfferAction.InitialPlayerId);
+
+                this.eventRaiser.RaiseEvent(answerDirectTradeOfferEvent, otherPlayers);
+                 
+                message = this.ToPrettyString(
+                    answerDirectTradeOfferEvent, 
+                    null,
+                    otherPlayers.Select(player => player.Name));
+                this.log.Add(message);
             }
 
             if (playerAction is EndOfTurnAction)
@@ -342,6 +355,17 @@ namespace Jabberwocky.SoC.Library
                 }
             }
         }
+
+        private string ToPrettyString(GameEvent gameEvent, GameToken gameToken, IEnumerable<string> playerNames)
+        {
+            var tokenSubstring = gameToken != null ? $" - {gameToken}" : "";
+            var playerSubstring = playerNames.Count() > 0 ? $" - {string.Concat(playerNames)}" : "";
+            var message = $"{gameEvent.GetType().Name}{tokenSubstring}{playerSubstring}";
+            if (gameEvent is DiceRollEvent diceRollEvent)
+                message += $", Dice rolls {diceRollEvent.Dice1} {diceRollEvent.Dice2}";
+
+            return message;
+        }
         #endregion
 
         #region Structures
@@ -414,11 +438,10 @@ namespace Jabberwocky.SoC.Library
                 }
 
                 var token = new GameToken();
-                tokenInformation = new TokenInformation
-                {
-                    Token = token,
-                    ActionType = actionType
-                };
+                tokenInformation =
+                    actionType == typeof(TokenConstraintedPlayerAction) ?
+                        new TokenInformation { Token = token, ActionType = actionType } :
+                        new TokenInformation { Token = token };
                 this.tokenInformationByPlayer.Add(player, tokenInformation);
                 this.playerByTokenInformation.Add(tokenInformation, player);
                 return token;
@@ -431,7 +454,11 @@ namespace Jabberwocky.SoC.Library
 
             public bool ValidateToken(GameToken token, Type actionType)
             {
-                var tokenInformation = new TokenInformation { Token = token, ActionType = actionType };
+                var tokenInformation =
+                actionType == typeof(TokenConstraintedPlayerAction) ? 
+                    new TokenInformation { Token = token, ActionType = actionType } :
+                    new TokenInformation { Token = token };
+
                 return this.playerByTokenInformation.ContainsKey(tokenInformation);
             }
 
@@ -478,7 +505,7 @@ namespace Jabberwocky.SoC.Library
     public interface ILog
     {
         void Add(string message);
-        void Add(GameEvent gameEvent);
+        //void Add(GameEvent gameEvent);
         void WriteToFile(string filePath);
     }
 
@@ -488,10 +515,20 @@ namespace Jabberwocky.SoC.Library
 
         public void Add(string message) => this.Messages.Add(message);
 
-        public void Add(GameEvent gameEvent)
+        /*public void Add(GameEvent gameEvent)
         {
+            var message = $"Event: {gameEvent.GetType().Name}, Initiating Player: {this.playerNamesById[gameEvent.PlayerId]} ";
+            if (gameEvent is DiceRollEvent diceRollEvent)
+            {
+                message += $"Dice: {diceRollEvent.Dice1}, {diceRollEvent.Dice2}";
+            }
+            else if (gameEvent is MakeDirectTradeOfferEvent makeDirectTradeOfferEvent)
+            {
+                message += $"Buying Player: {this.playerNamesById[makeDirectTradeOfferEvent.BuyingPlayerId]}";
+            }
 
-        }
+            this.Messages.Add(message);
+        }*/
 
         public void WriteToFile(string filePath) => File.WriteAllLines(filePath, this.Messages);
     }
