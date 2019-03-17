@@ -1996,7 +1996,7 @@ namespace Jabberwocky.SoC.Library
         {
             if (playerAction is MakeDirectTradeOfferAction)
             {
-                foreach (var kv in this.playersById.Where(k => k.Key != playerAction.PlayerId).ToList())
+                foreach (var kv in this.playersById.Where(k => k.Key != playerAction.InitiatingPlayerId).ToList())
                 {
                 }
             }

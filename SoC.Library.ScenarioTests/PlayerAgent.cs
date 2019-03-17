@@ -156,7 +156,7 @@ namespace SoC.Library.ScenarioTests
                 }
                 case ActionInstruction.OperationTypes.PlaceStartingInfrastructure:
                 {
-                    this.gameController.PlaceStartingInfrastructure((uint)action.Parameters[0], (uint)action.Parameters[1]);
+                    this.gameController.PlaceSetupInfrastructure((uint)action.Parameters[0], (uint)action.Parameters[1]);
                     break;
                 }
                 case ActionInstruction.OperationTypes.RequestState:

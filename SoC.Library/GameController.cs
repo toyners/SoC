@@ -39,9 +39,9 @@ namespace Jabberwocky.SoC.Library
             this.SendAction(new MakeDirectTradeOfferAction(this.playerId, resourceClutch));
         }
 
-        public void PlaceStartingInfrastructure(uint settlementLocation, uint roadEndLocation)
+        public void PlaceSetupInfrastructure(uint settlementLocation, uint roadEndLocation)
         {
-            this.SendAction(new PlaceInfrastructureAction(this.playerId, settlementLocation, roadEndLocation));
+            this.SendAction(new PlaceSetupInfrastructureAction(this.playerId, settlementLocation, roadEndLocation));
         }
 
         public void RequestState()

@@ -5,11 +5,11 @@ namespace Jabberwocky.SoC.Library.GameActions
 
     public abstract class PlayerAction
     {
-        public readonly Guid PlayerId;
+        public readonly Guid InitiatingPlayerId;
 
-        public PlayerAction(Guid playerId)
+        public PlayerAction(Guid initiatingPlayerId)
         {
-            this.PlayerId = playerId;
+            this.InitiatingPlayerId = initiatingPlayerId;
         }
     }
 

@@ -55,7 +55,7 @@ namespace SoC.Library.ScenarioTests
 
         public void AddSetupInstructions(uint settlementLocation, uint roadSegmentEndLocation)
         {
-            this.actions.Enqueue(new PlaceInfrastructureAction(Guid.Empty, settlementLocation, roadSegmentEndLocation));
+            this.actions.Enqueue(new PlaceSetupInfrastructureAction(Guid.Empty, settlementLocation, roadSegmentEndLocation));
         }
 
         public override void BuildInitialPlayerActions(PlayerDataModel[] otherPlayerData, bool rolledSeven)
@@ -65,7 +65,7 @@ namespace SoC.Library.ScenarioTests
 
         public override void ChooseInitialInfrastructure(out uint settlementLocation, out uint roadEndLocation)
         {
-            var placeInfrastructureAction = (PlaceInfrastructureAction)this.actions.Dequeue();
+            var placeInfrastructureAction = (PlaceSetupInfrastructureAction)this.actions.Dequeue();
             settlementLocation = placeInfrastructureAction.SettlementLocation;
             roadEndLocation = placeInfrastructureAction.RoadEndLocation;
         }

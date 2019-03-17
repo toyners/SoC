@@ -18,6 +18,8 @@ namespace Jabberwocky.SoC.Library.GameEvents
         }
         #endregion
 
+        public bool IsInformation { get; set; }
+
         #region Methods
         public override bool Equals(object obj)
         {

@@ -17,7 +17,8 @@ namespace Jabberwocky.SoC.Library
     public class LocalGameServer
     {
         #region Fields
-        private readonly ConcurrentQueue<PlayerAction> actionRequests = new ConcurrentQueue<PlayerAction>();
+        private readonly ActionManager actionManager;
+        private readonly ConcurrentQueue<Tuple<GameToken, PlayerAction>> actionRequests = new ConcurrentQueue<Tuple<GameToken, PlayerAction>>();
         private readonly IDevelopmentCardHolder developmentCardHolder;
         private readonly EventRaiser eventRaiser;
         private readonly GameBoard gameBoard;
@@ -44,6 +45,7 @@ namespace Jabberwocky.SoC.Library
             this.idGenerator = () => { return Guid.NewGuid(); };
             this.tokenManager = new TokenManager();
             this.eventRaiser = new EventRaiser(this.log);
+            this.actionManager = new ActionManager();
         }
         #endregion
 
@@ -184,17 +186,19 @@ namespace Jabberwocky.SoC.Library
 
         private void GameSetupLoop(IPlayer player)
         {
-            var token = this.tokenManager.GetNewToken(player, typeof(PlaceInfrastructureAction));
+            var token = this.tokenManager.CreateNewToken(player);
             // TODO: Pass back current settled locations
-            this.eventRaiser.RaiseEvent(new PlaceSetupInfrastructureEvent(), player.Id, token);
+            var placeSetupInfrastructureEvent = new PlaceSetupInfrastructureEvent();
+            this.actionManager.SetExpectedActionTypeForPlayer(player.Id, typeof(PlaceSetupInfrastructureAction));
+            this.eventRaiser.RaiseEvent(placeSetupInfrastructureEvent, player.Id, token);
             while (true)
             {
                 var playerAction = this.WaitForPlayerAction();
                 this.turnTimer.Reset();
 
-                if (playerAction is PlaceInfrastructureAction placeInfrastructureAction)
+                if (playerAction is PlaceSetupInfrastructureAction placeSetupInfrastructureAction)
                 {
-                    this.PlaceInfrastructure(player, placeInfrastructureAction.SettlementLocation, placeInfrastructureAction.RoadEndLocation);
+                    this.PlaceInfrastructure(player, placeSetupInfrastructureAction.SettlementLocation, placeSetupInfrastructureAction.RoadEndLocation);
                     break;
                 }
                 else
@@ -239,10 +243,8 @@ namespace Jabberwocky.SoC.Library
 
         private void PlayerActionEventHandler(GameToken token, PlayerAction playerAction)
         {
-            if (!this.tokenManager.ValidateToken(token, playerAction.GetType()))
-                throw new Exception($"Token not valid for {this.playersById[playerAction.PlayerId]}, {playerAction.GetType().Name}");
-
-            this.actionRequests.Enqueue( playerAction);
+            // Leave all validation and processing to the game server thread
+            this.actionRequests.Enqueue(new Tuple<GameToken, PlayerAction>(token, playerAction));
         }
 
         private void ProcessPlayerAction(PlayerAction playerAction)
@@ -250,9 +252,9 @@ namespace Jabberwocky.SoC.Library
             if (playerAction is AnswerDirectTradeOfferAction answerDirectTradeOfferAction)
             {
                 var answerDirectTradeOfferEvent = new AnswerDirectTradeOfferEvent(
-                    answerDirectTradeOfferAction.PlayerId, answerDirectTradeOfferAction.WantedResources);
+                    answerDirectTradeOfferAction.InitiatingPlayerId, answerDirectTradeOfferAction.WantedResources);
 
-                var token = this.tokenManager.GetNewToken(
+                var token = this.tokenManager.CreateNewToken(
                         this.playersById[answerDirectTradeOfferAction.InitialPlayerId]);
 
                 // Initial player gets chance to confirm. 
@@ -268,11 +270,15 @@ namespace Jabberwocky.SoC.Library
                 this.log.Add(message);
 
                 // Other two players gets informational event
+                var informationalAnswerDirectTradeOfferEvent = new AnswerDirectTradeOfferEvent(
+                    answerDirectTradeOfferAction.InitiatingPlayerId, answerDirectTradeOfferAction.WantedResources);
+                informationalAnswerDirectTradeOfferEvent.IsInformation = true;
+
                 var otherPlayers = this.PlayersExcept(
-                        answerDirectTradeOfferAction.PlayerId,
+                        answerDirectTradeOfferAction.InitiatingPlayerId,
                         answerDirectTradeOfferAction.InitialPlayerId);
 
-                this.eventRaiser.RaiseEvent(answerDirectTradeOfferEvent, otherPlayers);
+                this.eventRaiser.RaiseEvent(informationalAnswerDirectTradeOfferEvent, otherPlayers);
                  
                 message = this.ToPrettyString(
                     answerDirectTradeOfferEvent, 
@@ -290,14 +296,16 @@ namespace Jabberwocky.SoC.Library
             if (playerAction is MakeDirectTradeOfferAction makeDirectTradeOfferAction)
             {
                 var makeDirectTradeOfferEvent = new MakeDirectTradeOfferEvent(
-                        makeDirectTradeOfferAction.PlayerId, makeDirectTradeOfferAction.WantedResources);
-                this.PlayersExcept(playerAction.PlayerId)
+                        makeDirectTradeOfferAction.InitiatingPlayerId, makeDirectTradeOfferAction.WantedResources);
+
+                this.PlayersExcept(playerAction.InitiatingPlayerId)
                     .ToList()
                     .ForEach(player => {
+                        this.actionManager.SetExpectedActionTypeForPlayer(player.Id, typeof(AnswerDirectTradeOfferAction));
                         this.eventRaiser.RaiseEvent(
                             makeDirectTradeOfferEvent,
                             player.Id,
-                            this.tokenManager.GetNewToken(player, typeof(AnswerDirectTradeOfferAction)));
+                            this.tokenManager.CreateNewToken(player));
                     });
 
                 return;
@@ -311,11 +319,14 @@ namespace Jabberwocky.SoC.Library
                 this.ChangeToNextPlayer();
                 this.eventRaiser.RaiseEvent(new StartPlayerTurnEvent(), this.currentPlayer.Id);
 
-                var token = this.tokenManager.GetNewToken(this.currentPlayer);
+                var token = this.tokenManager.CreateNewToken(this.currentPlayer);
                 this.numberGenerator.RollTwoDice(out this.dice1, out this.dice2);
                 var diceRollEvent = new DiceRollEvent(this.currentPlayer.Id, this.dice1, this.dice2);
                 this.eventRaiser.RaiseEvent(diceRollEvent, this.currentPlayer.Id, token);
-                this.eventRaiser.RaiseEvent(diceRollEvent, this.PlayersExcept(this.currentPlayer.Id));
+
+                var informationDiceRollEvent = new DiceRollEvent(this.currentPlayer.Id, this.dice1, this.dice2);
+                informationDiceRollEvent.IsInformation = true;
+                this.eventRaiser.RaiseEvent(informationDiceRollEvent, this.PlayersExcept(this.currentPlayer.Id));
 
                 var resourceRoll = this.dice1 + this.dice2;
                 if (resourceRoll != 7)
@@ -348,9 +359,23 @@ namespace Jabberwocky.SoC.Library
                     throw new TimeoutException($"Time out exception waiting for player '{this.currentPlayer.Name}'");
                 }
 
-                if (this.actionRequests.TryDequeue(out var playerAction))
+                if (this.actionRequests.TryDequeue(out var actionRequest))
                 {
-                    this.log.Add($"Received {playerAction.GetType().Name} from {this.playersById[playerAction.PlayerId].Name}");
+                    var token = actionRequest.Item1;
+                    var playerAction = actionRequest.Item2;
+                    if (!this.tokenManager.ValidateToken(token))
+                    {
+                        // TODO: Log the exception and continue - don't let this interrupt the game
+                        throw new Exception($"Token not valid for {this.playersById[playerAction.InitiatingPlayerId]}, {playerAction.GetType().Name}");
+                    }
+
+                    if (!this.actionManager.ValidateAction(playerAction))
+                    {
+                        // TODO: Log the exception and continue - don't let this interrupt the game
+                        throw new Exception($"Player action {playerAction.GetType().Name} not valid");
+                    }
+
+                    this.log.Add($"Received {playerAction.GetType().Name} from {this.playersById[playerAction.InitiatingPlayerId].Name}");
                     return playerAction;
                 }
             }
@@ -371,9 +396,37 @@ namespace Jabberwocky.SoC.Library
         #region Structures
         public interface ITokenManager
         {
-            bool ValidateToken(GameToken token, Type actionType);
-            GameToken GetNewToken(IPlayer player, Type actionType = null);
+            GameToken CreateNewToken(IPlayer player);
             IPlayer GetPlayerForToken(GameToken token);
+            bool ValidateToken(GameToken token);
+        }
+
+        public interface IActionManager
+        {
+            void SetExpectedActionTypeForPlayer(Guid initiatingPlayerId, Type actionType);
+            bool ValidateAction(PlayerAction playerAction);
+        }
+
+        private class ActionManager : IActionManager
+        {
+            private readonly Dictionary<Guid, Type> actionTypesByPlayerId = new Dictionary<Guid, Type>();
+            public void SetExpectedActionTypeForPlayer(Guid initiatingPlayerId, Type actionType)
+            {
+                this.actionTypesByPlayerId[initiatingPlayerId] = actionType;
+            }
+
+            public bool ValidateAction(PlayerAction playerAction)
+            {
+                var initiatingPlayerId = playerAction.InitiatingPlayerId;
+                if (this.actionTypesByPlayerId.ContainsKey(initiatingPlayerId))
+                {
+                    return 
+                        this.actionTypesByPlayerId[initiatingPlayerId] == null ||
+                        this.actionTypesByPlayerId[initiatingPlayerId] == playerAction.GetType();
+                }
+
+                return true;
+            }
         }
 
         private class EventRaiser
@@ -423,80 +476,34 @@ namespace Jabberwocky.SoC.Library
 
         private class TokenManager: ITokenManager
         {
-            private Dictionary<TokenInformation, IPlayer> playerByTokenInformation = new Dictionary<TokenInformation, IPlayer>();
-            private Dictionary<IPlayer, TokenInformation> tokenInformationByPlayer = new Dictionary<IPlayer, TokenInformation>();
+            private readonly Dictionary<GameToken, IPlayer> playersByToken = new Dictionary<GameToken, IPlayer>();
+            private readonly Dictionary<IPlayer, GameToken> tokensByPlayer = new Dictionary<IPlayer, GameToken>();
 
-            public GameToken GetNewToken(IPlayer player, Type actionType = null)
+            public GameToken CreateNewToken(IPlayer player)
             {
-                TokenInformation tokenInformation;
-                if (this.tokenInformationByPlayer.ContainsKey(player))
+                GameToken token;
+                if (this.tokensByPlayer.ContainsKey(player))
                 {
-                    tokenInformation = this.tokenInformationByPlayer[player];
-                    this.tokenInformationByPlayer.Remove(player);
-                    if (this.playerByTokenInformation.ContainsKey(tokenInformation))
-                        this.playerByTokenInformation.Remove(tokenInformation);
+                    token = this.tokensByPlayer[player];
+                    this.tokensByPlayer.Remove(player);
+                    if (this.playersByToken.ContainsKey(token))
+                        this.playersByToken.Remove(token);
                 }
 
-                var token = new GameToken();
-                tokenInformation =
-                    actionType == typeof(TokenConstraintedPlayerAction) ?
-                        new TokenInformation { Token = token, ActionType = actionType } :
-                        new TokenInformation { Token = token };
-                this.tokenInformationByPlayer.Add(player, tokenInformation);
-                this.playerByTokenInformation.Add(tokenInformation, player);
+                token = new GameToken();
+                this.tokensByPlayer.Add(player, token);
+                this.playersByToken.Add(token, player);
                 return token;
             }
 
             public IPlayer GetPlayerForToken(GameToken token)
             {
-                return this.playerByTokenInformation.FirstOrDefault(t => t.Key.Token == token).Value;
+                return this.playersByToken.FirstOrDefault(t => t.Key == token).Value;
             }
 
-            public bool ValidateToken(GameToken token, Type actionType)
+            public bool ValidateToken(GameToken token)
             {
-                var tokenInformation =
-                actionType == typeof(TokenConstraintedPlayerAction) ? 
-                    new TokenInformation { Token = token, ActionType = actionType } :
-                    new TokenInformation { Token = token };
-
-                return this.playerByTokenInformation.ContainsKey(tokenInformation);
-            }
-
-            private class TokenInformation
-            {
-                public GameToken Token;
-                public Type ActionType;
-
-                public override bool Equals(object obj)
-                {
-                    if (object.ReferenceEquals(this, obj))
-                        return true;
-
-                    if (obj == null)
-                        return false;
-
-                    var other = obj as TokenInformation;
-                    if (other == null)
-                        return false;
-
-                    if (this.Token != other.Token)
-                        return false;
-
-                    if (this.ActionType != null && other.ActionType != null)
-                        return this.ActionType.Equals(other.ActionType);
-                    else if (this.ActionType == null && other.ActionType == null)
-                        return true;
-
-                    return false;
-                }
-
-                public override int GetHashCode()
-                {
-                    var hashCode = 869305385;
-                    hashCode = hashCode * -1521134295 + EqualityComparer<GameToken>.Default.GetHashCode(this.Token);
-                    hashCode = hashCode * -1521134295 + EqualityComparer<Type>.Default.GetHashCode(this.ActionType);
-                    return hashCode;
-                }
+                return this.playersByToken.ContainsKey(token);
             }
         }
         #endregion
@@ -505,7 +512,6 @@ namespace Jabberwocky.SoC.Library
     public interface ILog
     {
         void Add(string message);
-        //void Add(GameEvent gameEvent);
         void WriteToFile(string filePath);
     }
 
@@ -514,21 +520,6 @@ namespace Jabberwocky.SoC.Library
         public List<string> Messages { get; private set; } = new List<string>();
 
         public void Add(string message) => this.Messages.Add(message);
-
-        /*public void Add(GameEvent gameEvent)
-        {
-            var message = $"Event: {gameEvent.GetType().Name}, Initiating Player: {this.playerNamesById[gameEvent.PlayerId]} ";
-            if (gameEvent is DiceRollEvent diceRollEvent)
-            {
-                message += $"Dice: {diceRollEvent.Dice1}, {diceRollEvent.Dice2}";
-            }
-            else if (gameEvent is MakeDirectTradeOfferEvent makeDirectTradeOfferEvent)
-            {
-                message += $"Buying Player: {this.playerNamesById[makeDirectTradeOfferEvent.BuyingPlayerId]}";
-            }
-
-            this.Messages.Add(message);
-        }*/
 
         public void WriteToFile(string filePath) => File.WriteAllLines(filePath, this.Messages);
     }

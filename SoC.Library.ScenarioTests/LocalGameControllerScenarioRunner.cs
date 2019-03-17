@@ -34,7 +34,7 @@ namespace SoC.Library.ScenarioTests
         private readonly List<PlayerSetupAction> firstRoundSetupActions = new List<PlayerSetupAction>(4);
         private readonly Dictionary<Type, GameEvent> lastEventsByType = new Dictionary<Type, GameEvent>();
         private Dictionary<string, Guid> playerIdsByName = new Dictionary<string, Guid>();
-        private readonly Queue<PlaceInfrastructureAction> playerSetupActions = new Queue<PlaceInfrastructureAction>();
+        private readonly Queue<PlaceSetupInfrastructureAction> playerSetupActions = new Queue<PlaceSetupInfrastructureAction>();
 
 
         private readonly ScenarioPlayerPool playerPool = new ScenarioPlayerPool();
@@ -251,7 +251,7 @@ namespace SoC.Library.ScenarioTests
         {
             this.localGameController.JoinGame(this.gameOptions);
 
-            PlaceInfrastructureAction[] placeInfrastructureActionsForHumanPlayer = null;
+            PlaceSetupInfrastructureAction[] placeInfrastructureActionsForHumanPlayer = null;
             foreach(var kv in this.setupActionsByPlayerName)
             {
                 var player = this.playerPool.PlayersByName[kv.Key];
@@ -366,13 +366,13 @@ namespace SoC.Library.ScenarioTests
         }
 
         private Dictionary<string, IPlayer> PlayersByName { get { return this.playerPool.PlayersByName; } }
-        private Dictionary<string, PlaceInfrastructureAction[]> setupActionsByPlayerName = new Dictionary<string, PlaceInfrastructureAction[]>();
+        private Dictionary<string, PlaceSetupInfrastructureAction[]> setupActionsByPlayerName = new Dictionary<string, PlaceSetupInfrastructureAction[]>();
         public LocalGameControllerScenarioRunner WithPlayerSetup(string playerName, uint firstSettlementLocation, uint firstRoadEndLocation, uint secondSettlementLocation, uint secondRoadEndLocation)
         {
-            this.setupActionsByPlayerName.Add(playerName, new PlaceInfrastructureAction[]
+            this.setupActionsByPlayerName.Add(playerName, new PlaceSetupInfrastructureAction[]
             {
-                new PlaceInfrastructureAction(Guid.Empty, firstSettlementLocation, firstRoadEndLocation),
-                new PlaceInfrastructureAction(Guid.Empty, secondSettlementLocation, secondRoadEndLocation)
+                new PlaceSetupInfrastructureAction(Guid.Empty, firstSettlementLocation, firstRoadEndLocation),
+                new PlaceSetupInfrastructureAction(Guid.Empty, secondSettlementLocation, secondRoadEndLocation)
             });
 
             return this;
