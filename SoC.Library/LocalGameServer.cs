@@ -198,6 +198,7 @@ namespace Jabberwocky.SoC.Library
 
                 if (playerAction is PlaceSetupInfrastructureAction placeSetupInfrastructureAction)
                 {
+                    this.actionManager.SetExpectedActionTypeForPlayer(playerAction.InitiatingPlayerId, null);
                     this.PlaceInfrastructure(player, placeSetupInfrastructureAction.SettlementLocation, placeSetupInfrastructureAction.RoadEndLocation);
                     break;
                 }
@@ -324,9 +325,9 @@ namespace Jabberwocky.SoC.Library
                 var diceRollEvent = new DiceRollEvent(this.currentPlayer.Id, this.dice1, this.dice2);
                 this.eventRaiser.RaiseEvent(diceRollEvent, this.currentPlayer.Id, token);
 
-                var informationDiceRollEvent = new DiceRollEvent(this.currentPlayer.Id, this.dice1, this.dice2);
+                /*var informationDiceRollEvent = new DiceRollEvent(this.currentPlayer.Id, this.dice1, this.dice2);
                 informationDiceRollEvent.IsInformation = true;
-                this.eventRaiser.RaiseEvent(informationDiceRollEvent, this.PlayersExcept(this.currentPlayer.Id));
+                this.eventRaiser.RaiseEvent(informationDiceRollEvent, this.PlayersExcept(this.currentPlayer.Id));*/
 
                 var resourceRoll = this.dice1 + this.dice2;
                 if (resourceRoll != 7)
