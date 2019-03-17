@@ -225,7 +225,7 @@ namespace Jabberwocky.SoC.Library
             }
         }
 
-        private IEnumerable<IPlayer> PlayersExcept(params Guid[] playerIds) => this.playersById.Select(kv => kv.Value).Where(player => playerIds.Contains(player.Id));
+        private IEnumerable<IPlayer> PlayersExcept(params Guid[] playerIds) => this.playersById.Select(kv => kv.Value).Where(player => !playerIds.Contains(player.Id));
 
         private void PlaceInfrastructure(IPlayer player, uint settlementLocation, uint roadEndLocation)
         {
@@ -299,15 +299,14 @@ namespace Jabberwocky.SoC.Library
                 var makeDirectTradeOfferEvent = new MakeDirectTradeOfferEvent(
                         makeDirectTradeOfferAction.InitiatingPlayerId, makeDirectTradeOfferAction.WantedResources);
 
-                this.PlayersExcept(playerAction.InitiatingPlayerId)
-                    .ToList()
-                    .ForEach(player => {
-                        this.actionManager.SetExpectedActionTypeForPlayer(player.Id, typeof(AnswerDirectTradeOfferAction));
-                        this.eventRaiser.RaiseEvent(
-                            makeDirectTradeOfferEvent,
-                            player.Id,
-                            this.tokenManager.CreateNewToken(player));
-                    });
+                var otherPlayers = this.PlayersExcept(playerAction.InitiatingPlayerId).ToList();
+                otherPlayers.ForEach(player => {
+                    this.actionManager.SetExpectedActionTypeForPlayer(player.Id, typeof(AnswerDirectTradeOfferAction));
+                    this.eventRaiser.RaiseEvent(
+                        makeDirectTradeOfferEvent,
+                        player.Id,
+                        this.tokenManager.CreateNewToken(player));
+                });
 
                 return;
             }
