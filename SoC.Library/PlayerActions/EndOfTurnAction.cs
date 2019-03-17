@@ -1,7 +1,7 @@
 ﻿
 using System;
 
-namespace Jabberwocky.SoC.Library.GameActions
+namespace Jabberwocky.SoC.Library.PlayerActions
 {
     public class EndOfTurnAction : PlayerAction
     {

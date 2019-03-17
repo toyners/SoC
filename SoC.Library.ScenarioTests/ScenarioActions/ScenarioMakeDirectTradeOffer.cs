@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Jabberwocky.SoC.Library;
-using Jabberwocky.SoC.Library.GameActions;
 using Jabberwocky.SoC.Library.Interfaces;
+using Jabberwocky.SoC.Library.PlayerActions;
 
 namespace SoC.Library.ScenarioTests.ScenarioActions
 {

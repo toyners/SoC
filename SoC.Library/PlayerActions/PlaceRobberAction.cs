@@ -1,5 +1,5 @@
 ﻿
-namespace Jabberwocky.SoC.Library.GameActions
+namespace Jabberwocky.SoC.Library.PlayerActions
 {
     using System;
 

@@ -66,6 +66,7 @@
     <Compile Include="PlayerActions\BuildSettlementAction.cs" />
     <Compile Include="PlayerActions\BuildStartingInfrastructure.cs" />
     <Compile Include="PlayerActions\BuyDevelopmentCardAction.cs" />
+    <Compile Include="PlayerActions\ConfirmDirectTradeAction.cs" />
     <Compile Include="PlayerActions\DropResourcesAction.cs" />
     <Compile Include="PlayerActions\EndOfTurnAction.cs" />
     <Compile Include="PlayerActions\MakeDirectTradeOfferAction.cs" />

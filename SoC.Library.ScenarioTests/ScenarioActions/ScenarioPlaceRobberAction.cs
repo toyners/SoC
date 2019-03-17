@@ -3,7 +3,7 @@ namespace SoC.Library.ScenarioTests.ScenarioActions
 {
     using System;
     using Jabberwocky.SoC.Library;
-    using Jabberwocky.SoC.Library.GameActions;
+    using Jabberwocky.SoC.Library.PlayerActions;
 
     internal class ScenarioPlaceRobberAction : PlayerAction
     {

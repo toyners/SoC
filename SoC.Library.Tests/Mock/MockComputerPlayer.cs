@@ -4,9 +4,9 @@ namespace Jabberwocky.SoC.Library.UnitTests.Mock
     using System;
     using System.Collections.Generic;
     using Enums;
-    using GameActions;
     using Interfaces;
     using Jabberwocky.SoC.Library.DevelopmentCards;
+    using Jabberwocky.SoC.Library.PlayerActions;
     using Jabberwocky.SoC.Library.PlayerData;
 
     /// <summary>

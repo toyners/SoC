@@ -8,9 +8,10 @@ namespace SoC.Library.ScenarioTests.Instructions
     {
         public enum OperationTypes
         {
-            EndOfTurn,
+            AcceptTrade,
             AnswerDirectTradeOffer,
             ConfirmDirectTrade,
+            EndOfTurn,
             MakeDirectTradeOffer,
             PlaceStartingInfrastructure,
             RequestState

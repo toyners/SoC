@@ -139,6 +139,11 @@ namespace SoC.Library.ScenarioTests
             this.log.Add($"Sending {action.Operation} operation");
             switch (action.Operation)
             {
+                case ActionInstruction.OperationTypes.AcceptTrade:
+                {
+                    this.gameController.AcceptTradeOffer();
+                    break;
+                }
                 case ActionInstruction.OperationTypes.AnswerDirectTradeOffer:
                 {
                     this.gameController.AnswerDirectTradeOffer((ResourceClutch)action.Parameters[0]);

@@ -5,14 +5,12 @@ namespace Jabberwocky.SoC.Library
     using System.Collections.Generic;
     using GameBoards;
     using Interfaces;
-    using GameActions;
     using System.Xml;
     using Jabberwocky.SoC.Library.Store;
-    using Jabberwocky.SoC.Library.Enums;
     using Jabberwocky.SoC.Library.PlayerData;
     using Jabberwocky.SoC.Library.DevelopmentCards;
     using System.Linq;
-    using Jabberwocky.SoC.Library.GameEvents;
+    using Jabberwocky.SoC.Library.PlayerActions;
 
     public class ComputerPlayer : Player, IComputerPlayer
     {

@@ -2,7 +2,7 @@
 namespace SoC.Library.ScenarioTests.ScenarioActions
 {
     using System;
-    using Jabberwocky.SoC.Library.GameActions;
+    using Jabberwocky.SoC.Library.PlayerActions;
 
     public abstract class ComputerPlayerActionWrapper : PlayerAction
     {

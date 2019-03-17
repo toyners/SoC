@@ -1,7 +1,7 @@
 ﻿
 using System;
-using Jabberwocky.SoC.Library.GameActions;
 using Jabberwocky.SoC.Library.GameEvents;
+using Jabberwocky.SoC.Library.PlayerActions;
 
 namespace Jabberwocky.SoC.Library
 {
@@ -21,6 +21,11 @@ namespace Jabberwocky.SoC.Library
         #endregion
 
         #region Methods
+        public void AcceptTradeOffer()
+        {
+            this.SendAction(new ConfirmDirectTradeAction(this.playerId));
+        }
+
         public void AnswerDirectTradeOffer(ResourceClutch resourceClutch)
         {
             this.SendAction(new AnswerDirectTradeOfferAction(
@@ -57,7 +62,7 @@ namespace Jabberwocky.SoC.Library
 
             if (gameEvent is MakeDirectTradeOfferEvent makeDirectTradeOfferEvent)
                 this.lastMakeDirectTradeOfferEvent = makeDirectTradeOfferEvent;
-
+        
             if (gameEvent is AnswerDirectTradeOfferEvent answerDirectTradeOfferEvent)
                 this.lasetAnswerDirectTradeOffEvent = answerDirectTradeOfferEvent;
 

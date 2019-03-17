@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using Jabberwocky.SoC.Library;
-using Jabberwocky.SoC.Library.GameActions;
 using Jabberwocky.SoC.Library.GameEvents;
 using Jabberwocky.SoC.Library.Interfaces;
+using Jabberwocky.SoC.Library.PlayerActions;
 using SoC.Library.ScenarioTests.PlayerTurn;
 using SoC.Library.ScenarioTests.ScenarioActions;
 

@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using Jabberwocky.SoC.Library;
 using Jabberwocky.SoC.Library.DevelopmentCards;
-using Jabberwocky.SoC.Library.GameActions;
 using Jabberwocky.SoC.Library.GameBoards;
 using Jabberwocky.SoC.Library.GameEvents;
 using Jabberwocky.SoC.Library.Interfaces;
+using Jabberwocky.SoC.Library.PlayerActions;
 using Jabberwocky.SoC.Library.PlayerData;
 using SoC.Library.ScenarioTests.ScenarioActions;
 

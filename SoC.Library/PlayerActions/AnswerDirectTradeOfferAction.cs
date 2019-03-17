@@ -1,9 +1,9 @@
 ﻿
-namespace Jabberwocky.SoC.Library.GameActions
+namespace Jabberwocky.SoC.Library.PlayerActions
 {
     using System;
 
-    public class AnswerDirectTradeOfferAction : TokenConstraintedPlayerAction
+    public class AnswerDirectTradeOfferAction : PlayerAction
     {
         public readonly ResourceClutch WantedResources;
         public readonly Guid InitialPlayerId;

@@ -2,9 +2,8 @@
 namespace Jabberwocky.SoC.Library.Interfaces
 {
     using System.Collections.Generic;
-    using GameActions;
     using Jabberwocky.SoC.Library.DevelopmentCards;
-    using Jabberwocky.SoC.Library.GameEvents;
+    using Jabberwocky.SoC.Library.PlayerActions;
     using Jabberwocky.SoC.Library.PlayerData;
 
     public interface IComputerPlayer : IPlayer

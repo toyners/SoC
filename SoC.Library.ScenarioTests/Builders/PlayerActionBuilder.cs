@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using Jabberwocky.SoC.Library.Enums;
-using Jabberwocky.SoC.Library.GameActions;
+﻿using System.Collections.Generic;
+using Jabberwocky.SoC.Library.PlayerActions;
 using SoC.Library.ScenarioTests;
 using SoC.Library.ScenarioTests.PlayerTurn;
 using SoC.Library.ScenarioTests.ScenarioActions;

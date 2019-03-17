@@ -9,12 +9,11 @@ namespace Jabberwocky.SoC.Library
     using System.Threading;
     using System.Threading.Tasks;
     using System.Xml;
-    using Enums;
-    using GameActions;
     using GameBoards;
     using GameEvents;
     using Interfaces;
     using Jabberwocky.SoC.Library.DevelopmentCards;
+    using Jabberwocky.SoC.Library.PlayerActions;
     using Jabberwocky.SoC.Library.PlayerData;
     using Jabberwocky.SoC.Library.Store;
     using Newtonsoft.Json;

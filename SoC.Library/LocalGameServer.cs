@@ -9,10 +9,10 @@ namespace Jabberwocky.SoC.Library
     using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
-    using Jabberwocky.SoC.Library.GameActions;
     using Jabberwocky.SoC.Library.GameBoards;
     using Jabberwocky.SoC.Library.GameEvents;
     using Jabberwocky.SoC.Library.Interfaces;
+    using Jabberwocky.SoC.Library.PlayerActions;
 
     public class LocalGameServer
     {
