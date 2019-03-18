@@ -4,7 +4,6 @@ namespace Jabberwocky.SoC.Library
     using System;
     using System.Collections.Concurrent;
     using System.Collections.Generic;
-    using System.IO;
     using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
@@ -258,14 +257,14 @@ namespace Jabberwocky.SoC.Library
                         this.playersById[answerDirectTradeOfferAction.InitialPlayerId]);
 
                 // Initial player gets chance to confirm. 
+                var message = $"Sending {this.ToPrettyString(answerDirectTradeOfferEvent)} " +
+                    $"to {this.playersById[answerDirectTradeOfferAction.InitialPlayerId].Name}, {token}";
+                this.log.Add(message);
+
                 this.eventRaiser.RaiseEvent(
                     answerDirectTradeOfferEvent,
                     answerDirectTradeOfferAction.InitialPlayerId,
                     token);
-
-                var message = $"Sending {this.ToPrettyString(answerDirectTradeOfferEvent)} " +
-                    $"to {this.playersById[answerDirectTradeOfferAction.InitialPlayerId].Name}, {token}";
-                this.log.Add(message);
 
                 // Other two players gets informational event
                 var informationalAnswerDirectTradeOfferEvent = new AnswerDirectTradeOfferEvent(
@@ -276,13 +275,11 @@ namespace Jabberwocky.SoC.Library
                         answerDirectTradeOfferAction.InitiatingPlayerId,
                         answerDirectTradeOfferAction.InitialPlayerId);
 
-                this.eventRaiser.RaiseEvent(informationalAnswerDirectTradeOfferEvent, otherPlayers);
-                 
-                message = this.ToPrettyString(
-                    answerDirectTradeOfferEvent, 
-                    null,
-                    otherPlayers.Select(player => player.Name));
+                message = $"Sending {this.ToPrettyString(answerDirectTradeOfferEvent)} " +
+                    $"to {string.Join(", ", otherPlayers.Select(player => player.Name))}";
                 this.log.Add(message);
+
+                this.eventRaiser.RaiseEvent(informationalAnswerDirectTradeOfferEvent, otherPlayers);
             }
 
             if (playerAction is EndOfTurnAction)
@@ -314,16 +311,10 @@ namespace Jabberwocky.SoC.Library
             try
             {
                 this.ChangeToNextPlayer();
-                this.eventRaiser.RaiseEvent(new StartPlayerTurnEvent(), this.currentPlayer.Id);
 
-                var token = this.tokenManager.CreateNewToken(this.currentPlayer);
+                this.SendStartPlayerTurnEvent();
                 this.numberGenerator.RollTwoDice(out this.dice1, out this.dice2);
-                var diceRollEvent = new DiceRollEvent(this.currentPlayer.Id, this.dice1, this.dice2);
-                this.eventRaiser.RaiseEvent(diceRollEvent, this.currentPlayer.Id, token);
-
-                /*var informationDiceRollEvent = new DiceRollEvent(this.currentPlayer.Id, this.dice1, this.dice2);
-                informationDiceRollEvent.IsInformation = true;
-                this.eventRaiser.RaiseEvent(informationDiceRollEvent, this.PlayersExcept(this.currentPlayer.Id));*/
+                this.SendDiceRollEvent();
 
                 var resourceRoll = this.dice1 + this.dice2;
                 if (resourceRoll != 7)
@@ -340,6 +331,24 @@ namespace Jabberwocky.SoC.Library
                 if (!this.isQuitting)
                     this.GameExceptionEvent?.Invoke(e);
             }
+        }
+
+        private void SendDiceRollEvent()
+        {
+            var token = this.tokenManager.CreateNewToken(this.currentPlayer);
+            var diceRollEvent = new DiceRollEvent(this.currentPlayer.Id, this.dice1, this.dice2);
+            var message = $"Sending {this.ToPrettyString(diceRollEvent)} " +
+                $"to {this.currentPlayer.Name}, {token}";
+            this.log.Add(message);
+            this.eventRaiser.RaiseEvent(diceRollEvent, this.currentPlayer.Id, token);
+        }
+
+        private void SendStartPlayerTurnEvent()
+        {
+            var startPlayerTurnEvent = new StartPlayerTurnEvent();
+            var message = $"Sending {this.ToPrettyString(startPlayerTurnEvent)} to {this.currentPlayer.Name}";
+            this.log.Add(message);
+            this.eventRaiser.RaiseEvent(startPlayerTurnEvent, this.currentPlayer.Id);
         }
 
         private PlayerAction WaitForPlayerAction()
@@ -518,20 +527,5 @@ namespace Jabberwocky.SoC.Library
             }
         }
         #endregion
-    }
-
-    public interface ILog
-    {
-        void Add(string message);
-        void WriteToFile(string filePath);
-    }
-
-    public class Log : ILog
-    {
-        public List<string> Messages { get; private set; } = new List<string>();
-
-        public void Add(string message) => this.Messages.Add(message);
-
-        public void WriteToFile(string filePath) => File.WriteAllLines(filePath, this.Messages);
     }
 }

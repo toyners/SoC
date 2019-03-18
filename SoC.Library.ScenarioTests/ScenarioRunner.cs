@@ -49,9 +49,9 @@ namespace SoC.Library.ScenarioTests
             return this;
         }
 
-        public ScenarioRunner ConfirmDirectTrade()
+        public ScenarioRunner AcceptTrade()
         {
-            this.AddActionInstruction(ActionInstruction.OperationTypes.ConfirmDirectTrade, null);
+            this.AddActionInstruction(ActionInstruction.OperationTypes.AcceptTrade, null);
             return this;
         }
 

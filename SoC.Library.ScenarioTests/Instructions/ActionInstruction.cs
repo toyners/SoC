@@ -10,7 +10,6 @@ namespace SoC.Library.ScenarioTests.Instructions
         {
             AcceptTrade,
             AnswerDirectTradeOffer,
-            ConfirmDirectTrade,
             EndOfTurn,
             MakeDirectTradeOffer,
             PlaceStartingInfrastructure,
