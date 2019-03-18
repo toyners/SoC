@@ -1,5 +1,4 @@
 ﻿
-
 namespace SoC.Library.ScenarioTests
 {
     using Jabberwocky.SoC.Library;

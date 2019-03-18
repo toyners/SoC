@@ -1,10 +1,10 @@
 ﻿
-using System;
-using Jabberwocky.SoC.Library.GameEvents;
-using Jabberwocky.SoC.Library.PlayerActions;
-
 namespace Jabberwocky.SoC.Library
 {
+    using System;
+    using Jabberwocky.SoC.Library.GameEvents;
+    using Jabberwocky.SoC.Library.PlayerActions;
+
     public class GameController
     {
         #region Fields

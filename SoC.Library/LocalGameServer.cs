@@ -1,5 +1,4 @@
 ﻿
-
 namespace Jabberwocky.SoC.Library
 {
     using System;
