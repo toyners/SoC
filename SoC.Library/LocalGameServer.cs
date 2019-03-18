@@ -263,10 +263,8 @@ namespace Jabberwocky.SoC.Library
                     answerDirectTradeOfferAction.InitialPlayerId,
                     token);
 
-                var message = this.ToPrettyString(
-                    answerDirectTradeOfferEvent, 
-                    token, 
-                    new[] { this.playersById[answerDirectTradeOfferAction.InitialPlayerId].Name });
+                var message = $"Sending {this.ToPrettyString(answerDirectTradeOfferEvent)} " +
+                    $"to {this.playersById[answerDirectTradeOfferAction.InitialPlayerId].Name}, {token}";
                 this.log.Add(message);
 
                 // Other two players gets informational event
@@ -380,11 +378,25 @@ namespace Jabberwocky.SoC.Library
             }
         }
 
+        private string ToPrettyString(GameEvent gameEvent)
+        {
+            var message = $"{gameEvent.GetType().Name}";
+            if (gameEvent is DiceRollEvent diceRollEvent)
+                message += $", Dice rolls {diceRollEvent.Dice1} {diceRollEvent.Dice2}";
+            return message;
+        }
+
+        private string ToPrettyString(IEnumerable<string> playerNames)
+        {
+            return $"{string.Join(", ", playerNames)}";
+        }
+
         private string ToPrettyString(GameEvent gameEvent, GameToken gameToken, IEnumerable<string> playerNames)
         {
             var tokenSubstring = gameToken != null ? $" - {gameToken}" : "";
-            var playerSubstring = playerNames.Count() > 0 ? $" - {string.Concat(playerNames)}" : "";
-            var message = $"{gameEvent.GetType().Name}{tokenSubstring}{playerSubstring}";
+            var playerSubstring = playerNames.Count() > 0 ? $" - {string.Join(", ", playerNames)}" : "";
+
+            var message = $"{gameEvent.GetType().Name}{playerSubstring}{tokenSubstring}";
             if (gameEvent is DiceRollEvent diceRollEvent)
                 message += $", Dice rolls {diceRollEvent.Dice1} {diceRollEvent.Dice2}";
 
