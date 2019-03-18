@@ -63,12 +63,12 @@
     <Compile Include="GameToken.cs" />
     <Compile Include="ILog.cs" />
     <Compile Include="Log.cs" />
+    <Compile Include="PlayerActions\AcceptDirectTradeAction.cs" />
     <Compile Include="PlayerActions\AnswerDirectTradeOfferAction.cs" />
     <Compile Include="PlayerActions\BuildCityAction.cs" />
     <Compile Include="PlayerActions\BuildSettlementAction.cs" />
     <Compile Include="PlayerActions\BuildStartingInfrastructure.cs" />
     <Compile Include="PlayerActions\BuyDevelopmentCardAction.cs" />
-    <Compile Include="PlayerActions\ConfirmDirectTradeAction.cs" />
     <Compile Include="PlayerActions\DropResourcesAction.cs" />
     <Compile Include="PlayerActions\EndOfTurnAction.cs" />
     <Compile Include="PlayerActions\MakeDirectTradeOfferAction.cs" />

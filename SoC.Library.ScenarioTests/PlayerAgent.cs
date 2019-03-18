@@ -141,7 +141,7 @@ namespace SoC.Library.ScenarioTests
             {
                 case ActionInstruction.OperationTypes.AcceptTrade:
                 {
-                    this.gameController.AcceptTradeOffer();
+                    this.gameController.AcceptDirectTradeOffer();
                     break;
                 }
                 case ActionInstruction.OperationTypes.AnswerDirectTradeOffer:

@@ -246,40 +246,46 @@ namespace Jabberwocky.SoC.Library
             this.actionRequests.Enqueue(new Tuple<GameToken, PlayerAction>(token, playerAction));
         }
 
+        private void ProcessAnswerDirectTradeOfferAction(AnswerDirectTradeOfferAction answerDirectTradeOfferAction)
+        {
+            var answerDirectTradeOfferEvent = new AnswerDirectTradeOfferEvent(
+                    answerDirectTradeOfferAction.InitiatingPlayerId, answerDirectTradeOfferAction.WantedResources);
+
+            var token = this.tokenManager.CreateNewToken(
+                    this.playersById[answerDirectTradeOfferAction.InitialPlayerId]);
+
+            // Initial player gets chance to confirm. 
+            var message = $"Sending {this.ToPrettyString(answerDirectTradeOfferEvent)} " +
+                $"to {this.playersById[answerDirectTradeOfferAction.InitialPlayerId].Name}, {token}";
+            this.log.Add(message);
+
+            this.eventRaiser.RaiseEvent(
+                answerDirectTradeOfferEvent,
+                answerDirectTradeOfferAction.InitialPlayerId,
+                token);
+
+            // Other two players gets informational event
+            var informationalAnswerDirectTradeOfferEvent = new AnswerDirectTradeOfferEvent(
+                answerDirectTradeOfferAction.InitiatingPlayerId, answerDirectTradeOfferAction.WantedResources);
+            informationalAnswerDirectTradeOfferEvent.IsInformation = true;
+
+            var otherPlayers = this.PlayersExcept(
+                    answerDirectTradeOfferAction.InitiatingPlayerId,
+                    answerDirectTradeOfferAction.InitialPlayerId);
+
+            message = $"Sending {this.ToPrettyString(answerDirectTradeOfferEvent)} " +
+                $"to {string.Join(", ", otherPlayers.Select(player => player.Name))}";
+            this.log.Add(message);
+
+            this.eventRaiser.RaiseEvent(informationalAnswerDirectTradeOfferEvent, otherPlayers);
+        }
+
         private void ProcessPlayerAction(PlayerAction playerAction)
         {
             if (playerAction is AnswerDirectTradeOfferAction answerDirectTradeOfferAction)
             {
-                var answerDirectTradeOfferEvent = new AnswerDirectTradeOfferEvent(
-                    answerDirectTradeOfferAction.InitiatingPlayerId, answerDirectTradeOfferAction.WantedResources);
-
-                var token = this.tokenManager.CreateNewToken(
-                        this.playersById[answerDirectTradeOfferAction.InitialPlayerId]);
-
-                // Initial player gets chance to confirm. 
-                var message = $"Sending {this.ToPrettyString(answerDirectTradeOfferEvent)} " +
-                    $"to {this.playersById[answerDirectTradeOfferAction.InitialPlayerId].Name}, {token}";
-                this.log.Add(message);
-
-                this.eventRaiser.RaiseEvent(
-                    answerDirectTradeOfferEvent,
-                    answerDirectTradeOfferAction.InitialPlayerId,
-                    token);
-
-                // Other two players gets informational event
-                var informationalAnswerDirectTradeOfferEvent = new AnswerDirectTradeOfferEvent(
-                    answerDirectTradeOfferAction.InitiatingPlayerId, answerDirectTradeOfferAction.WantedResources);
-                informationalAnswerDirectTradeOfferEvent.IsInformation = true;
-
-                var otherPlayers = this.PlayersExcept(
-                        answerDirectTradeOfferAction.InitiatingPlayerId,
-                        answerDirectTradeOfferAction.InitialPlayerId);
-
-                message = $"Sending {this.ToPrettyString(answerDirectTradeOfferEvent)} " +
-                    $"to {string.Join(", ", otherPlayers.Select(player => player.Name))}";
-                this.log.Add(message);
-
-                this.eventRaiser.RaiseEvent(informationalAnswerDirectTradeOfferEvent, otherPlayers);
+                this.ProcessAnswerDirectTradeOfferAction(answerDirectTradeOfferAction);
+                return;
             }
 
             if (playerAction is EndOfTurnAction)
