@@ -169,6 +169,13 @@ namespace SoC.Library.ScenarioTests
             return this;
         }
 
+        public PlayerStateInstruction State(string playerName)
+        {
+            var playerState = new PlayerStateInstruction(playerName, this);
+            this.instructions.Add(playerState);
+            return playerState;
+        }
+
         public ScenarioRunner WhenPlaceInfrastructureSetupEvent(string playerName)
         {
             var eventInstruction = new ScenarioPlaceSetupInfrastructureEventInstruction(playerName);

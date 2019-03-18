@@ -421,11 +421,12 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
 
         public PlayerStateInstruction State(string playerName)
         {
-            var playerState = new PlayerStateInstruction(playerName, this);
+            return null;
+            /*var playerState = new PlayerStateInstruction(playerName, this);
 
             this.instructions.Enqueue(playerState);
 
-            return playerState;
+            return playerState;*/
         }
 
         public void AddEvents(List<GameEvent> gameEvents)

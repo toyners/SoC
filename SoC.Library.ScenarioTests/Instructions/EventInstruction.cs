@@ -91,12 +91,12 @@ namespace SoC.Library.ScenarioTests.Instructions
 
     internal class PlayerStateInstruction : Instruction
     {
-        private readonly GameTurn turn;
+        private readonly ScenarioRunner runner;
         private ResourceClutch? expectedResources;
 
-        public PlayerStateInstruction(string playerName, GameTurn turn) : base(playerName)
+        public PlayerStateInstruction(string playerName, ScenarioRunner runner) : base(playerName)
         {
-            this.turn = turn;
+            this.runner = runner;
         }
 
         public PlayerStateInstruction HeldCards(DevelopmentCardTypes developmentCardType)
@@ -115,7 +115,7 @@ namespace SoC.Library.ScenarioTests.Instructions
             return this;
         }
 
-        public GameTurn End() { return this.turn; }
+        public ScenarioRunner End() { return this.runner; }
 
         public ActionInstruction GetAction()
         {
@@ -125,8 +125,7 @@ namespace SoC.Library.ScenarioTests.Instructions
         public GameEvent GetEvent(IDictionary<string, Guid> playerIdsByName)
         {
             var requestStateEvent = new ScenarioRequestStateEvent(playerIdsByName[this.PlayerName]);
-            if (this.expectedResources.HasValue)
-                requestStateEvent.Resources = this.expectedResources.Value;
+            requestStateEvent.Resources = this.expectedResources.Value;
             return requestStateEvent;
         }
     }
