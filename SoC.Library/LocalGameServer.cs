@@ -280,6 +280,21 @@ namespace Jabberwocky.SoC.Library
             this.eventRaiser.RaiseEvent(informationalAnswerDirectTradeOfferEvent, otherPlayers);
         }
 
+        private void ProcessMakeDirectTradeOfferAction(MakeDirectTradeOfferAction makeDirectTradeOfferAction)
+        {
+            var makeDirectTradeOfferEvent = new MakeDirectTradeOfferEvent(
+                        makeDirectTradeOfferAction.InitiatingPlayerId, makeDirectTradeOfferAction.WantedResources);
+
+            var otherPlayers = this.PlayersExcept(makeDirectTradeOfferAction.InitiatingPlayerId).ToList();
+            otherPlayers.ForEach(player => {
+                this.actionManager.SetExpectedActionTypeForPlayer(player.Id, typeof(AnswerDirectTradeOfferAction));
+                this.eventRaiser.RaiseEvent(
+                    makeDirectTradeOfferEvent,
+                    player.Id,
+                    this.tokenManager.CreateNewToken(player));
+            });
+        }
+
         private void ProcessPlayerAction(PlayerAction playerAction)
         {
             if (playerAction is AnswerDirectTradeOfferAction answerDirectTradeOfferAction)
@@ -296,18 +311,20 @@ namespace Jabberwocky.SoC.Library
 
             if (playerAction is MakeDirectTradeOfferAction makeDirectTradeOfferAction)
             {
-                var makeDirectTradeOfferEvent = new MakeDirectTradeOfferEvent(
-                        makeDirectTradeOfferAction.InitiatingPlayerId, makeDirectTradeOfferAction.WantedResources);
+                this.ProcessMakeDirectTradeOfferAction(makeDirectTradeOfferAction);
+                return;
+            }
 
-                var otherPlayers = this.PlayersExcept(playerAction.InitiatingPlayerId).ToList();
-                otherPlayers.ForEach(player => {
-                    this.actionManager.SetExpectedActionTypeForPlayer(player.Id, typeof(AnswerDirectTradeOfferAction));
-                    this.eventRaiser.RaiseEvent(
-                        makeDirectTradeOfferEvent,
-                        player.Id,
-                        this.tokenManager.CreateNewToken(player));
-                });
+            if (playerAction is RequestStateAction requestStateAction)
+            {
+                var player = this.playersById[requestStateAction.InitiatingPlayerId];
+                var requestStateEvent = new RequestStateEvent(requestStateAction.InitiatingPlayerId);
+                requestStateEvent.Resources = player.Resources;
 
+                var message = $"Sending {this.ToPrettyString(requestStateEvent)} to {player.Name}";
+                this.log.Add(message);
+
+                this.eventRaiser.RaiseEvent(requestStateEvent, requestStateAction.InitiatingPlayerId);
                 return;
             }
         }
@@ -375,19 +392,20 @@ namespace Jabberwocky.SoC.Library
                 {
                     var token = actionRequest.Item1;
                     var playerAction = actionRequest.Item2;
+                    this.log.Add($"Received {playerAction.GetType().Name} from {this.playersById[playerAction.InitiatingPlayerId].Name}");
+
                     if (!this.tokenManager.ValidateToken(token))
                     {
-                        // TODO: Log the exception and continue - don't let this interrupt the game
-                        throw new Exception($"Token not valid for {this.playersById[playerAction.InitiatingPlayerId]}, {playerAction.GetType().Name}");
+                        this.log.Add($"FAILED: Token Validation - {this.playersById[playerAction.InitiatingPlayerId]}, {playerAction.GetType().Name}");
+                        continue;
                     }
 
-                    if (!this.actionManager.ValidateAction(playerAction))
+                    if (!(playerAction is RequestStateAction) && !this.actionManager.ValidateAction(playerAction))
                     {
-                        // TODO: Log the exception and continue - don't let this interrupt the game
-                        throw new Exception($"Player action {playerAction.GetType().Name} not valid");
+                        this.log.Add($"FAILED: Action Validation - {this.playersById[playerAction.InitiatingPlayerId]}, {playerAction.GetType().Name}");
+                        continue;
                     }
 
-                    this.log.Add($"Received {playerAction.GetType().Name} from {this.playersById[playerAction.InitiatingPlayerId].Name}");
                     return playerAction;
                 }
             }
@@ -404,18 +422,6 @@ namespace Jabberwocky.SoC.Library
         private string ToPrettyString(IEnumerable<string> playerNames)
         {
             return $"{string.Join(", ", playerNames)}";
-        }
-
-        private string ToPrettyString(GameEvent gameEvent, GameToken gameToken, IEnumerable<string> playerNames)
-        {
-            var tokenSubstring = gameToken != null ? $" - {gameToken}" : "";
-            var playerSubstring = playerNames.Count() > 0 ? $" - {string.Join(", ", playerNames)}" : "";
-
-            var message = $"{gameEvent.GetType().Name}{playerSubstring}{tokenSubstring}";
-            if (gameEvent is DiceRollEvent diceRollEvent)
-                message += $", Dice rolls {diceRollEvent.Dice1} {diceRollEvent.Dice2}";
-
-            return message;
         }
         #endregion
 

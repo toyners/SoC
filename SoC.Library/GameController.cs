@@ -51,7 +51,7 @@ namespace Jabberwocky.SoC.Library
 
         public void RequestState()
         {
-            this.SendAction(new RequestStateAction(Guid.Empty));
+            this.SendAction(new RequestStateAction(this.playerId));
         }
 
         internal void GameEventHandler(GameEvent gameEvent, GameToken gameToken)
