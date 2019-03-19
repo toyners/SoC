@@ -31,12 +31,14 @@ namespace SoC.Library.ScenarioTests
         }
         #endregion
 
-        #region Methods
+        #region Properties
         private string LastInstructionPlayerName
         {
             get { return this.instructions[this.instructions.Count - 1].PlayerName; }
         }
+        #endregion
 
+        #region Methods
         public static ScenarioRunner CreateScenarioRunner(string[] args = null)
         {
             return new ScenarioRunner(args);
