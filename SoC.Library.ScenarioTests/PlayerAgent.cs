@@ -44,7 +44,10 @@ namespace SoC.Library.ScenarioTests
         public Guid Id { get; private set; }
         public bool IsFinished
         {
-            get { return this.instructionIndex >= this.instructions.Count; }
+            get {
+                return this.instructionIndex >= this.instructions.Count &&
+                  this.expectedEventIndex >= this.expectedEvents.Count;
+            }
         }
         public string Name { get; private set; }
         #endregion
@@ -132,6 +135,8 @@ namespace SoC.Library.ScenarioTests
                     this.SendAction(playerStateInstruction.GetAction());
                 }
             }
+
+            this.VerifyEvents(true);
         }
 
         private void SendAction(ActionInstruction action)
