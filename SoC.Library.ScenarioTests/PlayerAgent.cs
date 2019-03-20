@@ -136,7 +136,7 @@ namespace SoC.Library.ScenarioTests
                 }
             }
 
-            this.VerifyEvents(true);
+            this.VerifyEvents(false);
         }
 
         private void SendAction(ActionInstruction action)

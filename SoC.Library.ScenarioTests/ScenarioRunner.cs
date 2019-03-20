@@ -119,16 +119,21 @@ namespace SoC.Library.ScenarioTests
 
             gameServer.StartGameAsync();
 
-            var playerAgentsFinished = false;
+            var tickCount = 300;
             var playerAgentFaulted = false;
-            while (!playerAgentsFinished && !playerAgentFaulted)
+            while (tickCount > 0)
             {
-                Thread.Sleep(50);
-                playerAgentsFinished = this.playerAgents.All(p => p.IsFinished);
-                playerAgentFaulted = this.playerAgents.Any(p => p.GameException != null);
+                Thread.Sleep(100);
+                tickCount--;
+                if (this.playerAgents.All(p => p.IsFinished) ||
+                    (playerAgentFaulted = this.playerAgents.Any(p => p.GameException != null)))
+                    tickCount = 0;
             }
 
             gameServer.Quit();
+
+            gameServer.SaveLog(@"GameServer.log");
+            this.playerAgents.ForEach(playerAgent => playerAgent.SaveLog($"{playerAgent.Name}.log"));
 
             if (playerAgentFaulted)
             {
@@ -145,8 +150,15 @@ namespace SoC.Library.ScenarioTests
                 throw new Exception(message);
             }
 
-            gameServer.SaveLog(@"GameServer.log");
-            this.playerAgents.ForEach(playerAgent => playerAgent.SaveLog($"{playerAgent.Name}.log"));
+            string timeOutMessage = string.Join("\r\n",
+                this.playerAgents
+                    .Where(playerAgent => !playerAgent.IsFinished)
+                    .Select(playerAgent => $"{playerAgent.Name} did not complete."));
+
+            if (timeOutMessage != null)
+                throw new TimeoutException(timeOutMessage);
+
+            
         }
 
         public ScenarioRunner WhenAnswerDirectTradeOfferEvent(string playerName, string buyingPlayerName, ResourceClutch wantedResources)
