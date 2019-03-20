@@ -71,7 +71,8 @@ namespace SoC.ScenarioRunnerConsole
                             var exception = e;
                             while (exception.InnerException != null)
                                 exception = exception.InnerException;
-                            Console.WriteLine($"FAILED - {exception.Message}");
+                            Console.WriteLine("FAILED");
+                            Console.WriteLine(exception.Message);
                         }
                     }
 

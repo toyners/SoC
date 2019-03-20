@@ -55,6 +55,21 @@ namespace SoC.Library.ScenarioTests
         #region Methods
         public void AddInstruction(Instruction instruction) => this.instructions.Add(instruction);
 
+        public List<Tuple<GameEvent, bool>> GetEventResults()
+        {
+            var eventResults = new List<Tuple<GameEvent, bool>>();
+            this.expectedEvents.ForEach(gameEvent => {
+                eventResults.Add(
+                    new Tuple<GameEvent, bool>(
+                        gameEvent,
+                        this.verificationStatusByGameEvent[gameEvent]
+                    )
+                );
+            });
+
+            return eventResults;
+        }
+
         public void JoinGame(LocalGameServer gameServer)
         {
             gameServer.JoinGame(this.Name, this.gameController);
@@ -62,7 +77,7 @@ namespace SoC.Library.ScenarioTests
 
         public void SaveLog(string filePath) => this.log.WriteToFile(filePath);
 
-        internal void StartAsync()
+        public void StartAsync()
         {
             Task.Factory.StartNew(() => this.Run());
         }
@@ -86,6 +101,7 @@ namespace SoC.Library.ScenarioTests
                 while (!this.IsFinished)
                 {
                     this.WaitForGameEvent();
+                    this.VerifyEvents();
                     this.ProcessInstructions();
                 }
             }
@@ -95,7 +111,7 @@ namespace SoC.Library.ScenarioTests
             }
         }
 
-        private void ProcessInstructions()
+        private bool ProcessInstructions()
         {
             while (this.instructionIndex < this.instructions.Count)
             {
@@ -111,7 +127,7 @@ namespace SoC.Library.ScenarioTests
                 else if (instruction is ActionInstruction actionInstruction)
                 {
                     if (!this.VerifyEvents(false))
-                        return;
+                        return false;
 
                     this.instructionIndex++;
                     this.SendAction(actionInstruction);
@@ -128,15 +144,18 @@ namespace SoC.Library.ScenarioTests
                     // Make request for player state from game server - place expected event
                     // into list for verification
                     if (!this.VerifyEvents(false))
-                        return;
+                        return false;
 
                     this.instructionIndex++;
-                    this.expectedEvents.Add(playerStateInstruction.GetEvent(this.playerIdsByName));
+                    var expectedEvent = playerStateInstruction.GetEvent(this.playerIdsByName);
+                    this.expectedEvents.Add(expectedEvent);
+                    this.verificationStatusByGameEvent.Add(expectedEvent, false);
+
                     this.SendAction(playerStateInstruction.GetAction());
                 }
             }
 
-            this.VerifyEvents(false);
+            return true;
         }
 
         private void SendAction(ActionInstruction action)
@@ -178,7 +197,7 @@ namespace SoC.Library.ScenarioTests
             }
         }
 
-        private bool VerifyEvents(bool throwIfNotVerified)
+        private bool VerifyEvents(bool throwIfNotVerified = false)
         {
             if (this.expectedEventIndex < this.expectedEvents.Count)
             {

@@ -153,12 +153,11 @@ namespace SoC.Library.ScenarioTests
             string timeOutMessage = string.Join("\r\n",
                 this.playerAgents
                     .Where(playerAgent => !playerAgent.IsFinished)
-                    .Select(playerAgent => $"{playerAgent.Name} did not complete."));
+                    .Select(playerAgent => $"{playerAgent.Name} did not finish."));
+
 
             if (timeOutMessage != null)
                 throw new TimeoutException(timeOutMessage);
-
-            
         }
 
         public ScenarioRunner WhenAnswerDirectTradeOfferEvent(string playerName, string buyingPlayerName, ResourceClutch wantedResources)
