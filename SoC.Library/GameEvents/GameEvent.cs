@@ -3,11 +3,13 @@ namespace Jabberwocky.SoC.Library.GameEvents
 {
     using System;
     using System.Diagnostics;
+    using Newtonsoft.Json;
 
     [DebuggerDisplay("{GetType().Name}")]
     public abstract class GameEvent
     {
         #region Fields
+        [JsonProperty] // [JsonIgnore] to ignore property
         public readonly Guid PlayerId;
         #endregion
 
@@ -39,7 +41,7 @@ namespace Jabberwocky.SoC.Library.GameEvents
             return this.GetType().ToString();
         }
 
-        public virtual string ToJSONString() { return ""; }
+        public virtual string ToJSONString() { return JsonConvert.SerializeObject(this); }
         #endregion
     }
 }
