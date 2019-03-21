@@ -58,11 +58,14 @@
     <Compile Include="Instructions\EventInstruction.cs" />
     <Compile Include="HumanPlayer.cs" />
     <Compile Include="ComputerPlayer2.cs" />
+    <Compile Include="Instructions\InitialBoardSetupEventInstruction.cs" />
     <Compile Include="Instructions\Instruction.cs" />
     <Compile Include="Instructions\LabelInstruction.cs" />
     <Compile Include="Instructions\MakeDirectTradeOfferEventInstruction.cs" />
+    <Compile Include="Instructions\PlaceSetupInfrastructureEventInstruction.cs" />
+    <Compile Include="Instructions\PlayerSetupEventInstruction.cs" />
     <Compile Include="Instructions\PlayerStateInstruction.cs" />
-    <Compile Include="Instructions\ScenarioPlaceSetupInfrastructureEventInstruction.cs" />
+    <Compile Include="Instructions\TradeWithPlayerCompletedEventInstruction.cs" />
     <Compile Include="ScenarioEvents\ScenarioRequestStateEvent.cs" />
     <Compile Include="MockTurnTimer.cs" />
     <Compile Include="PlayerAgent.cs" />

@@ -127,7 +127,7 @@ namespace SoC.Library.ScenarioTests
                 tickCount--;
                 if (this.playerAgents.All(p => p.IsFinished) ||
                     (playerAgentFaulted = this.playerAgents.Any(p => p.GameException != null)))
-                    tickCount = 0;
+                    break;
             }
 
             gameServer.Quit();
@@ -153,7 +153,14 @@ namespace SoC.Library.ScenarioTests
             string timeOutMessage = string.Join("\r\n",
                 this.playerAgents
                     .Where(playerAgent => !playerAgent.IsFinished)
-                    .Select(playerAgent => $"{playerAgent.Name} did not finish."));
+                    .Select(playerAgent => {
+                        var message = $"{playerAgent.Name} did not finish.";
+                        playerAgent.GetEventResults().ForEach(tuple => {
+                            message += $"\t{tuple.Item1} - {tuple.Item2}\r\n";
+                        });
+                        return message;
+                    })
+                );
 
 
             if (timeOutMessage != null)
@@ -191,7 +198,7 @@ namespace SoC.Library.ScenarioTests
 
         public ScenarioRunner WhenPlaceInfrastructureSetupEvent(string playerName)
         {
-            var eventInstruction = new ScenarioPlaceSetupInfrastructureEventInstruction(playerName);
+            var eventInstruction = new PlaceSetupInfrastructureEventInstruction(playerName);
             this.instructions.Add(eventInstruction);
             return this;
         }

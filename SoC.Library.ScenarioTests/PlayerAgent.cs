@@ -40,15 +40,11 @@ namespace SoC.Library.ScenarioTests
         #endregion
 
         #region Properties
+        public bool EventsVerified { get { return this.expectedEventIndex >= this.expectedEvents.Count; } }
         public Exception GameException { get; private set; }
         public Guid Id { get; private set; }
-        public bool IsFinished
-        {
-            get {
-                return this.instructionIndex >= this.instructions.Count &&
-                  this.expectedEventIndex >= this.expectedEvents.Count;
-            }
-        }
+        public bool InstructionsProcessed { get { return this.instructionIndex >= this.instructions.Count; } }
+        public bool IsFinished { get { return this.InstructionsProcessed && this.EventsVerified; } }
         public string Name { get; private set; }
         #endregion
 
