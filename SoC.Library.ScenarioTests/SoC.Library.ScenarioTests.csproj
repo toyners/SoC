@@ -84,7 +84,6 @@
     <Compile Include="ScenarioActions\ScenarioSelectResourceFromPlayerAction.cs" />
     <Compile Include="ScenarioActions\ScenarioVerifySnapshotAction.cs" />
     <Compile Include="ScenarioAttribute.cs" />
-    <Compile Include="ScenarioEvents\ScenarioPlaceSetupInfrastructureEvent.cs" />
     <Compile Include="ScenarioEvents\ScenarioErrorMessageEvent.cs" />
     <Compile Include="ScenarioEvents\ScenarioRobberEvent.cs" />
     <Compile Include="ScenarioEvents\ScenarioRobbingChoicesEvent.cs" />
