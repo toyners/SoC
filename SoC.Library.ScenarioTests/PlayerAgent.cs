@@ -8,6 +8,7 @@ namespace SoC.Library.ScenarioTests
     using System.Threading.Tasks;
     using Jabberwocky.SoC.Library;
     using Jabberwocky.SoC.Library.GameEvents;
+    using Newtonsoft.Json.Linq;
     using NUnit.Framework;
     using SoC.Library.ScenarioTests.Instructions;
 
@@ -199,7 +200,9 @@ namespace SoC.Library.ScenarioTests
             {
                 while (this.actualEventIndex < this.actualEvents.Count)
                 {
-                    if (this.expectedEvents[this.expectedEventIndex].Equals(this.actualEvents[this.actualEventIndex]))
+                    var expectedEventToken = JToken.Parse(this.expectedEvents[this.expectedEventIndex].ToJSONString());
+                    var actualEventToken = JToken.Parse(this.actualEvents[this.actualEventIndex].ToJSONString());
+                    if (JToken.DeepEquals(expectedEventToken, actualEventToken))
                     {
                         this.verificationStatusByGameEvent[this.expectedEvents[this.expectedEventIndex]] = true;
                         this.expectedEventIndex++;
