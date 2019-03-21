@@ -200,9 +200,7 @@ namespace SoC.Library.ScenarioTests
             {
                 while (this.actualEventIndex < this.actualEvents.Count)
                 {
-                    var expectedEventToken = JToken.Parse(this.expectedEvents[this.expectedEventIndex].ToJSONString());
-                    var actualEventToken = JToken.Parse(this.actualEvents[this.actualEventIndex].ToJSONString());
-                    if (JToken.DeepEquals(expectedEventToken, actualEventToken))
+                    if (this.VerifyEvent(this.expectedEvents[this.expectedEventIndex], this.actualEvents[this.actualEventIndex]))
                     {
                         this.verificationStatusByGameEvent[this.expectedEvents[this.expectedEventIndex]] = true;
                         this.expectedEventIndex++;
@@ -225,6 +223,29 @@ namespace SoC.Library.ScenarioTests
             {
                 return this.expectedEventIndex >= this.expectedEvents.Count;
             }
+        }
+
+        private bool VerifyEvent(GameEvent expectedEvent, GameEvent actualEvent)
+        {
+            if (expectedEvent is ScenarioRequestStateEvent expectedRequestEvent && actualEvent is RequestStateEvent actualRequestEvent)
+                return this.IsRequestStateEventVerified(expectedRequestEvent, actualRequestEvent);
+
+            return this.IsEventVerified(expectedEvent, actualEvent);
+        }
+
+        private bool IsEventVerified(GameEvent expectedEvent, GameEvent actualEvent)
+        {
+            var expectedJSON = JToken.Parse(expectedEvent.ToJSONString());
+            var actualJSON = JToken.Parse(actualEvent.ToJSONString());
+            return JToken.DeepEquals(expectedJSON, actualJSON);
+        }
+
+        private bool IsRequestStateEventVerified(ScenarioRequestStateEvent expectedEvent, RequestStateEvent actualEvent)
+        {
+            if (expectedEvent.Resources.HasValue && expectedEvent.Resources.Value != actualEvent.Resources)
+                return false;
+
+            return true;
         }
 
         private void WaitForGameEvent()

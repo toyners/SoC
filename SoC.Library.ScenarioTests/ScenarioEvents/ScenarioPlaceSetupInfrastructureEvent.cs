@@ -9,9 +9,9 @@ namespace SoC.Library.ScenarioTests.ScenarioEvents
     {
         public ScenarioPlaceSetupInfrastructureEvent() : base(Guid.Empty) { }
 
-        public override bool Equals(object obj)
+        /*public override bool Equals(object obj)
         {
             return obj != null && obj.GetType() == typeof(PlaceSetupInfrastructureEvent);
-        }
+        }*/
     }
 }

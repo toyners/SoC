@@ -21,20 +21,21 @@ namespace Jabberwocky.SoC.Library.GameEvents
         #endregion
 
         public bool IsInformation { get; set; }
+        public string TypeName { get { return this.GetType().Name; } }
 
         #region Methods
-        public override bool Equals(object obj)
+        /*public override bool Equals(object obj)
         {
             if (obj == null || this.GetType() != obj.GetType())
                 return false;
 
             return this.PlayerId == ((GameEvent)obj).PlayerId;
-        }
+        }*/
 
-        public override int GetHashCode()
+        /*public override int GetHashCode()
         {
             return base.GetHashCode();
-        }
+        }*/
 
         public override string ToString()
         {

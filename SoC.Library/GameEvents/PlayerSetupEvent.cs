@@ -14,7 +14,7 @@ namespace Jabberwocky.SoC.Library.GameEvents
 
         public IDictionary<string, Guid> PlayerIdsByName { get { return this.Item; } }
 
-        public override bool Equals(object obj)
+        /*public override bool Equals(object obj)
         {
             if (!base.Equals(obj))
                 return false;
@@ -40,6 +40,6 @@ namespace Jabberwocky.SoC.Library.GameEvents
             }
 
             return base.Equals(obj);
-        }
+        }*/
     }
 }

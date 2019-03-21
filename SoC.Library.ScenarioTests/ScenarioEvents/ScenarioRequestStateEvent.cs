@@ -13,7 +13,7 @@ namespace SoC.Library.ScenarioTests.Instructions
 
         public ResourceClutch? Resources { get; set; }
 
-        public override bool Equals(object obj)
+        /*public override bool Equals(object obj)
         {
             if (obj == null || obj.GetType() != typeof(RequestStateEvent) || this.PlayerId != ((GameEvent)obj).PlayerId)
                 return false;
@@ -26,6 +26,6 @@ namespace SoC.Library.ScenarioTests.Instructions
             }
 
             return true;
-        }
+        }*/
     }
 }
