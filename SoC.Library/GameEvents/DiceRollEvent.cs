@@ -2,6 +2,7 @@
 namespace Jabberwocky.SoC.Library.GameEvents
 {
     using System;
+    using Newtonsoft.Json;
 
     public class DiceRollEvent : GameEvent
     {
@@ -23,6 +24,11 @@ namespace Jabberwocky.SoC.Library.GameEvents
 
             var other = (DiceRollEvent)obj;
             return this.Dice1 == other.Dice1 && this.Dice2 == other.Dice2;
+        }
+
+        public override string ToJSONString()
+        {
+            return JsonConvert.SerializeObject(this);
         }
     }
 }

@@ -38,6 +38,8 @@ namespace Jabberwocky.SoC.Library.GameEvents
         {
             return this.GetType().ToString();
         }
+
+        public virtual string ToJSONString() { return ""; }
         #endregion
     }
 }
