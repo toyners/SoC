@@ -297,6 +297,12 @@ namespace Jabberwocky.SoC.Library
 
         private void ProcessPlayerAction(PlayerAction playerAction)
         {
+            if (playerAction is AcceptDirectTradeAction acceptDirectTradeAction)
+            {
+
+                return;
+            }
+
             if (playerAction is AnswerDirectTradeOfferAction answerDirectTradeOfferAction)
             {
                 this.ProcessAnswerDirectTradeOfferAction(answerDirectTradeOfferAction);
@@ -327,6 +333,8 @@ namespace Jabberwocky.SoC.Library
                 this.eventRaiser.RaiseEvent(requestStateEvent, requestStateAction.InitiatingPlayerId);
                 return;
             }
+
+            throw new Exception($"Player action {playerAction.GetType()} not recognised.");
         }
 
         private void StartTurn()
