@@ -51,9 +51,10 @@ namespace SoC.Library.ScenarioTests
             return this;
         }
 
-        public ScenarioRunner AcceptTrade()
+        public ScenarioRunner AcceptTrade(string sellerName)
         {
-            this.AddActionInstruction(ActionInstruction.OperationTypes.AcceptTrade, null);
+            this.AddActionInstruction(ActionInstruction.OperationTypes.AcceptTrade,
+                new object[] { sellerName });
             return this;
         }
 

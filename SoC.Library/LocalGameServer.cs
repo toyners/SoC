@@ -31,6 +31,8 @@ namespace Jabberwocky.SoC.Library
         private uint dice1, dice2;
         private IGameTimer turnTimer;
         private Func<Guid> idGenerator;
+        private Tuple<Guid, ResourceClutch> initialDirectTradeOffer;
+        private Dictionary<Guid, ResourceClutch> answeringDirectTradeOffers = new Dictionary<Guid, ResourceClutch>();
         #endregion
 
         #region Construction
@@ -251,6 +253,10 @@ namespace Jabberwocky.SoC.Library
             var answerDirectTradeOfferEvent = new AnswerDirectTradeOfferEvent(
                     answerDirectTradeOfferAction.InitiatingPlayerId, answerDirectTradeOfferAction.WantedResources);
 
+            this.answeringDirectTradeOffers.Add(
+                answerDirectTradeOfferAction.InitiatingPlayerId,
+                answerDirectTradeOfferAction.WantedResources);
+
             var token = this.tokenManager.CreateNewToken(
                     this.playersById[answerDirectTradeOfferAction.InitialPlayerId]);
 
@@ -284,6 +290,10 @@ namespace Jabberwocky.SoC.Library
         {
             var makeDirectTradeOfferEvent = new MakeDirectTradeOfferEvent(
                         makeDirectTradeOfferAction.InitiatingPlayerId, makeDirectTradeOfferAction.WantedResources);
+
+            this.initialDirectTradeOffer = new Tuple<Guid, ResourceClutch>(
+                makeDirectTradeOfferAction.InitiatingPlayerId,
+                makeDirectTradeOfferAction.WantedResources);
 
             var otherPlayers = this.PlayersExcept(makeDirectTradeOfferAction.InitiatingPlayerId).ToList();
             otherPlayers.ForEach(player => {
