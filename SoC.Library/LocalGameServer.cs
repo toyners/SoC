@@ -29,6 +29,7 @@ namespace Jabberwocky.SoC.Library
         private int playerIndex;
         private IPlayer[] players;
         private uint dice1, dice2;
+        private bool requestStateActionsMustHaveToken = true;
         private IGameTimer turnTimer;
         private Func<Guid> idGenerator;
         private Tuple<Guid, ResourceClutch> initialDirectTradeOffer;
@@ -94,6 +95,11 @@ namespace Jabberwocky.SoC.Library
         {
             if (idGenerator != null)
                 this.idGenerator = idGenerator;
+        }
+
+        public void SetRequestStateExemption(bool value)
+        {
+            this.requestStateActionsMustHaveToken = value;
         }
 
         public void SetTurnTimer(IGameTimer turnTimer)
