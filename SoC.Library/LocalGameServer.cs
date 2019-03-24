@@ -242,6 +242,38 @@ namespace Jabberwocky.SoC.Library
             }
         }
 
+        private void ProcessAcceptDirectTradeAction(AcceptDirectTradeAction acceptDirectTradeAction)
+        {
+            var sellingResources = this.answeringDirectTradeOffers[acceptDirectTradeAction.SellerId];
+            var buyingResources = this.initialDirectTradeOffer.Item2;
+            var buyingPlayer = this.playersById[this.initialDirectTradeOffer.Item1];
+            var sellingPlayer = this.playersById[acceptDirectTradeAction.SellerId];
+
+            buyingPlayer.AddResources(buyingResources);
+            sellingPlayer.RemoveResources(buyingResources);
+            buyingPlayer.RemoveResources(sellingResources);
+            sellingPlayer.AddResources(sellingResources);
+
+            var acceptTradeEvent = new AcceptTradeEvent(
+                this.initialDirectTradeOffer.Item1,
+                buyingResources,
+                acceptDirectTradeAction.SellerId,
+                sellingResources);
+
+            // Current player gets token to continue their turn
+            var token = this.tokenManager.CreateNewToken(
+                    this.playersById[this.currentPlayer.Id]);
+
+            this.eventRaiser.RaiseEvent(
+                acceptTradeEvent,
+                this.currentPlayer.Id,
+                token);
+
+            this.eventRaiser.RaiseEvent(
+                acceptTradeEvent,
+                this.PlayersExcept(this.currentPlayer.Id));
+        }
+
         private void PlayerActionEventHandler(GameToken token, PlayerAction playerAction)
         {
             // Leave all validation and processing to the game server thread
@@ -309,7 +341,7 @@ namespace Jabberwocky.SoC.Library
         {
             if (playerAction is AcceptDirectTradeAction acceptDirectTradeAction)
             {
-
+                this.ProcessAcceptDirectTradeAction(acceptDirectTradeAction);
                 return;
             }
 

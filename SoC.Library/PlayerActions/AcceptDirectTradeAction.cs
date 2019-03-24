@@ -5,8 +5,11 @@ namespace Jabberwocky.SoC.Library.PlayerActions
 
     public class AcceptDirectTradeAction : PlayerAction
     {
-        public AcceptDirectTradeAction(Guid initiatingPlayerId) : base(initiatingPlayerId)
+        public readonly Guid SellerId;
+
+        public AcceptDirectTradeAction(Guid initiatingPlayerId, Guid sellerId) : base(initiatingPlayerId)
         {
+            this.SellerId = sellerId;
         }
     }
 }

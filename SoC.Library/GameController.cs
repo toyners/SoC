@@ -21,9 +21,9 @@ namespace Jabberwocky.SoC.Library
         #endregion
 
         #region Methods
-        public void AcceptDirectTradeOffer()
+        public void AcceptDirectTradeOffer(Guid sellerId)
         {
-            this.SendAction(new AcceptDirectTradeAction(this.playerId));
+            this.SendAction(new AcceptDirectTradeAction(this.playerId, sellerId));
         }
 
         public void AnswerDirectTradeOffer(ResourceClutch resourceClutch)

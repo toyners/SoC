@@ -120,7 +120,7 @@ namespace SoC.Library.ScenarioTests
 
             gameServer.StartGameAsync();
 
-            var tickCount = 300;
+            var tickCount = 200;
             var playerAgentFaulted = false;
             while (tickCount > 0)
             {
@@ -171,6 +171,13 @@ namespace SoC.Library.ScenarioTests
         public ScenarioRunner WhenAnswerDirectTradeOfferEvent(string playerName, string buyingPlayerName, ResourceClutch wantedResources)
         {
             var eventInstruction = new AnswerDirectTradeOfferEventInstruction(playerName, buyingPlayerName, wantedResources);
+            this.instructions.Add(eventInstruction);
+            return this;
+        }
+
+        public ScenarioRunner WhenAcceptDirectTradeEvent(string playerName, string buyerName, ResourceClutch buyingResources, string sellerName, ResourceClutch sellingResources)
+        {
+            var eventInstruction = new AcceptDirectTradeEventInstruction(playerName, buyerName, buyingResources, sellerName, sellingResources);
             this.instructions.Add(eventInstruction);
             return this;
         }

@@ -162,7 +162,7 @@ namespace SoC.Library.ScenarioTests
             {
                 case ActionInstruction.OperationTypes.AcceptTrade:
                 {
-                    this.gameController.AcceptDirectTradeOffer();
+                    this.gameController.AcceptDirectTradeOffer(this.playerIdsByName[(string)action.Parameters[0]]);
                     break;
                 }
                 case ActionInstruction.OperationTypes.AnswerDirectTradeOffer:

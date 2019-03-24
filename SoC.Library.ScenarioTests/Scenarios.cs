@@ -110,12 +110,14 @@ namespace SoC.Library.ScenarioTests
                 //.TradeWithPlayerCompletedEvent(Babara, Babara, ResourceClutch.OneWool, Adam, ResourceClutch.OneGrain)
                 //.TradeWithPlayerCompletedEvent(Charlie, Babara, ResourceClutch.OneWool, Adam, ResourceClutch.OneGrain)
                 //.TradeWithPlayerCompletedEvent(Dana, Babara, ResourceClutch.OneWool, Adam, ResourceClutch.OneGrain)
-                .State(Adam)
-                    .Resources(ResourceClutch.OneGrain)
-                    .End()
-                .State(Babara)
-                    .Resources(ResourceClutch.OneWool)
-                    .End()
+                .WhenAcceptDirectTradeEvent(Adam, Babara, ResourceClutch.OneWool, Adam, ResourceClutch.OneGrain)
+                    .State(Adam)
+                        .Resources(ResourceClutch.OneGrain)
+                        .End()
+                .WhenAcceptDirectTradeEvent(Babara, Babara, ResourceClutch.OneWool, Adam, ResourceClutch.OneGrain)
+                    .State(Babara)
+                        .Resources(ResourceClutch.OneWool)
+                        .End()
                 .Run();
         }
 

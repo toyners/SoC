@@ -47,6 +47,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AcceptTradeEvent.cs" />
     <Compile Include="AI.cs" />
     <Compile Include="ComputerPlayer.cs" />
     <Compile Include="Connection.cs" />
