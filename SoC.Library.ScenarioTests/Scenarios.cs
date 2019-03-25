@@ -48,41 +48,8 @@ namespace SoC.Library.ScenarioTests
                 .Run();
         }
 
-        //[Scenario]
-        public void Scenario_PlayerTradesOneResourceWithPlayer(string[] args)
-        {
-            var adamResources = ResourceClutch.OneWool;
-            var babaraResources = ResourceClutch.OneGrain;
-            this.CompletePlayerInfrastructureSetup_Old(args)
-                .WithNoResourceCollection()
-                .WithStartingResourcesForPlayer(Adam, adamResources)
-                .WithStartingResourcesForPlayer(Babara, babaraResources)
-                .PlayerTurn(Adam, 3, 3).EndTurn()
-                .PlayerTurn(Babara, 3, 3)
-                    .MakeDirectTradeOffer(ResourceClutch.OneWool)
-                    .MakeDirectTradeOfferEvent(Adam, Babara, ResourceClutch.OneWool)
-                    .MakeDirectTradeOfferEvent(Charlie, Babara, ResourceClutch.OneWool)
-                    .MakeDirectTradeOfferEvent(Dana, Babara, ResourceClutch.OneWool)
-                    .AnswerDirectTradeOffer(Adam, ResourceClutch.OneGrain)
-                    .AnswerDirectTradeOfferEvent(Babara, Adam, ResourceClutch.OneGrain)
-                    .AnswerDirectTradeOfferEvent(Charlie, Adam, ResourceClutch.OneGrain)
-                    .AnswerDirectTradeOfferEvent(Dana, Adam, ResourceClutch.OneGrain)
-                    .TradeWithPlayerCompletedEvent(Adam, Babara, ResourceClutch.OneWool, Adam, ResourceClutch.OneGrain)
-                    .TradeWithPlayerCompletedEvent(Babara, Babara, ResourceClutch.OneWool, Adam, ResourceClutch.OneGrain)
-                    .TradeWithPlayerCompletedEvent(Charlie, Babara, ResourceClutch.OneWool, Adam, ResourceClutch.OneGrain)
-                    .TradeWithPlayerCompletedEvent(Dana, Babara, ResourceClutch.OneWool, Adam, ResourceClutch.OneGrain)
-                    .State(Adam)
-                        .Resources(ResourceClutch.OneGrain)
-                        .End()
-                    .State(Babara)
-                        .Resources(ResourceClutch.OneWool)
-                        .End()
-                    .EndTurn()
-                .Run();
-        }
-
         [Scenario]
-        public void Scenario_PlayerTradesOneResourceWithPlayer2(string[] args)
+        public void Scenario_PlayerTradesOneResourceWithPlayer(string[] args)
         {
             var adamResources = ResourceClutch.OneWool;
             var babaraResources = ResourceClutch.OneGrain;
@@ -99,10 +66,8 @@ namespace SoC.Library.ScenarioTests
                     .MakeDirectTradeOffer(ResourceClutch.OneWool)
                 .WhenMakeDirectTradeOfferEvent(Adam, Babara, ResourceClutch.OneWool)
                     .AnswerDirectTradeOffer(ResourceClutch.OneGrain)
-                
-                //.MakeDirectTradeOfferEvent(Charlie, Babara, ResourceClutch.OneWool)
-                //.MakeDirectTradeOfferEvent(Dana, Babara, ResourceClutch.OneWool)
-                //    .AnswerDirectTradeOffer(Adam, ResourceClutch.OneGrain)
+                .WhenMakeDirectTradeOfferEvent(Charlie, Babara, ResourceClutch.OneWool)
+                .WhenMakeDirectTradeOfferEvent(Dana, Babara, ResourceClutch.OneWool)
                 .WhenAnswerDirectTradeOfferEvent(Babara, Adam, ResourceClutch.OneGrain)
                     .AcceptTrade(Adam)
                 //.AnswerDirectTradeOfferEvent(Dana, Adam, ResourceClutch.OneGrain)

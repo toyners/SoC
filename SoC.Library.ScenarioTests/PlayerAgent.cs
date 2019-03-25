@@ -72,6 +72,15 @@ namespace SoC.Library.ScenarioTests
             gameServer.JoinGame(this.Name, this.gameController);
         }
 
+        public void SaveEvents(string filePath)
+        {
+            string contents = null;
+            this.GetEventResults().ForEach(tuple => {
+                contents += $"\t{tuple.Item1} - {tuple.Item2}\r\n";
+            });
+            System.IO.File.WriteAllText(filePath, contents);
+        }
+
         public void SaveLog(string filePath) => this.log.WriteToFile(filePath);
 
         public void StartAsync()

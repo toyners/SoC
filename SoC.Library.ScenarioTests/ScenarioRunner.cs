@@ -142,7 +142,10 @@ namespace SoC.Library.ScenarioTests
             gameServer.Quit();
 
             gameServer.SaveLog(@"GameServer.log");
-            this.playerAgents.ForEach(playerAgent => playerAgent.SaveLog($"{playerAgent.Name}.log"));
+            this.playerAgents.ForEach(playerAgent => {
+                playerAgent.SaveEvents($"{playerAgent.Name}.events");
+                playerAgent.SaveLog($"{playerAgent.Name}.log");
+            });
 
             if (playerAgentFaulted)
             {
