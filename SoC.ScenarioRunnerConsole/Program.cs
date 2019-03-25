@@ -59,9 +59,9 @@ namespace SoC.ScenarioRunnerConsole
 
                             object[] methodArgs;
                             if (!serverTimerOn)
-                                methodArgs = new object[] { new string[] { "NoTimer" } };
+                                methodArgs = new object[] { new string[] { "NoTimer", "NoTokenRequiredForRequestState" } };
                             else
-                                methodArgs = new object[] { null };
+                                methodArgs = new object[] { new string[] { "NoTokenRequiredForRequestState" } };
 
                             method.Invoke(instance, methodArgs);
                             Console.WriteLine("Completed");

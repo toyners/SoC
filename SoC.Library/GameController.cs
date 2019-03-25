@@ -76,9 +76,6 @@ namespace Jabberwocky.SoC.Library
 
         private void SendAction(PlayerAction playerAction)
         {
-            if (this.gameToken == null)
-                throw new Exception($"No token for action {playerAction.GetType().Name}");
-
             this.PlayerActionEvent.Invoke(this.gameToken, playerAction);
         }
         #endregion

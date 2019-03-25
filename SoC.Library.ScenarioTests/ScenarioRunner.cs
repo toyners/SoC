@@ -17,15 +17,21 @@ namespace SoC.Library.ScenarioTests
         private readonly Dictionary<string, ResourceClutch> startingResourcesByName = new Dictionary<string, ResourceClutch>();
         private GameBoard gameBoard;
         private List<Instruction> instructions = new List<Instruction>();
-        private bool useServerTimer = true;
         private ScenarioNumberGenerator numberGenerator;
+        private readonly bool requestStateActionsMustHaveToken = true;
+        private readonly bool useServerTimer = true;
         #endregion
 
         #region Construction
         private ScenarioRunner(string[] args)
         {
-            if (args != null && args.Contains("NoTimer"))
-                this.useServerTimer = false;
+            if (args != null)
+            {
+                if (args.Contains("NoTimer"))
+                    this.useServerTimer = false;
+                if (args.Contains("NoTokenRequiredForRequestState"))
+                    this.requestStateActionsMustHaveToken = false;
+            }
 
             this.numberGenerator = new ScenarioNumberGenerator();
         }
@@ -107,6 +113,8 @@ namespace SoC.Library.ScenarioTests
 
             gameServer.SetIdGenerator(() => { return playerIds.Dequeue(); });
 
+            gameServer.SetRequestStateExemption(this.requestStateActionsMustHaveToken);
+
             gameServer.LaunchGame();
 
             this.playerAgents.ForEach(playerAgent =>
@@ -164,7 +172,7 @@ namespace SoC.Library.ScenarioTests
                 );
 
 
-            if (timeOutMessage != null)
+            if (!string.IsNullOrEmpty(timeOutMessage))
                 throw new TimeoutException(timeOutMessage);
         }
 

@@ -450,6 +450,9 @@ namespace Jabberwocky.SoC.Library
                     var playerAction = actionRequest.Item2;
                     this.log.Add($"Received {playerAction.GetType().Name} from {this.playersById[playerAction.InitiatingPlayerId].Name}");
 
+                    if (playerAction is RequestStateAction && !this.requestStateActionsMustHaveToken)
+                        return playerAction;
+
                     if (!this.tokenManager.ValidateToken(token))
                     {
                         this.log.Add($"FAILED: Token Validation - {this.playersById[playerAction.InitiatingPlayerId]}, {playerAction.GetType().Name}");
