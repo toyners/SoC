@@ -70,11 +70,8 @@ namespace SoC.Library.ScenarioTests
                 .WhenMakeDirectTradeOfferEvent(Dana, Babara, ResourceClutch.OneWool)
                 .WhenAnswerDirectTradeOfferEvent(Babara, Adam, ResourceClutch.OneGrain)
                     .AcceptTrade(Adam)
-                //.AnswerDirectTradeOfferEvent(Dana, Adam, ResourceClutch.OneGrain)
-                //.TradeWithPlayerCompletedEvent(Adam, Babara, ResourceClutch.OneWool, Adam, ResourceClutch.OneGrain)
-                //.TradeWithPlayerCompletedEvent(Babara, Babara, ResourceClutch.OneWool, Adam, ResourceClutch.OneGrain)
-                //.TradeWithPlayerCompletedEvent(Charlie, Babara, ResourceClutch.OneWool, Adam, ResourceClutch.OneGrain)
-                //.TradeWithPlayerCompletedEvent(Dana, Babara, ResourceClutch.OneWool, Adam, ResourceClutch.OneGrain)
+                .WhenAnswerDirectTradeOfferEvent(Charlie, Adam, ResourceClutch.OneGrain)
+                .WhenAnswerDirectTradeOfferEvent(Dana, Adam, ResourceClutch.OneGrain)
                 .WhenAcceptDirectTradeEvent(Adam, Babara, ResourceClutch.OneWool, Adam, ResourceClutch.OneGrain)
                     .State(Adam)
                         .Resources(ResourceClutch.OneGrain)
@@ -83,6 +80,8 @@ namespace SoC.Library.ScenarioTests
                     .State(Babara)
                         .Resources(ResourceClutch.OneWool)
                         .End()
+                .WhenAcceptDirectTradeEvent(Charlie, Babara, ResourceClutch.OneWool, Adam, ResourceClutch.OneGrain)
+                .WhenAcceptDirectTradeEvent(Dana, Babara, ResourceClutch.OneWool, Adam, ResourceClutch.OneGrain)
                 .Run();
         }
 
