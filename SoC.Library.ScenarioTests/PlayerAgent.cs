@@ -141,9 +141,7 @@ namespace SoC.Library.ScenarioTests
                 else if (instruction is EventInstruction eventInstruction)
                 {
                     this.instructionIndex++;
-                    var expectedEvent = eventInstruction.GetEvent(this.playerIdsByName);
-                    this.expectedEvents.Add(expectedEvent);
-                    this.verificationStatusByGameEvent.Add(expectedEvent, false);
+                    this.StoreExpectedEvent(eventInstruction.GetEvent(this.playerIdsByName));
                 }
                 else if (instruction is PlayerStateInstruction playerStateInstruction)
                 {
@@ -153,10 +151,8 @@ namespace SoC.Library.ScenarioTests
                         return false;
 
                     this.instructionIndex++;
-                    var expectedEvent = playerStateInstruction.GetEvent(this.playerIdsByName);
-                    this.expectedEvents.Add(expectedEvent);
-                    this.verificationStatusByGameEvent.Add(expectedEvent, false);
-
+                    this.StoreExpectedEvent(playerStateInstruction.GetEvent(this.playerIdsByName));
+                    
                     this.SendAction(playerStateInstruction.GetAction());
                 }
             }
@@ -201,6 +197,12 @@ namespace SoC.Library.ScenarioTests
                 }
                 default: throw new Exception($"Operation '{action.Operation}' not recognised");
             }
+        }
+
+        private void StoreExpectedEvent(GameEvent expectedEvent)
+        {
+            this.expectedEvents.Add(expectedEvent);
+            this.verificationStatusByGameEvent.Add(expectedEvent, false);
         }
 
         private bool VerifyEvents()
