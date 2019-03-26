@@ -201,6 +201,14 @@ namespace SoC.Library.ScenarioTests
             return this;
         }
 
+        public ScenarioRunner WhenDiceRollEvent(string instructionName, string playerName, uint dice1, uint dice2)
+        {
+            this.numberGenerator.AddTwoDiceRoll(dice1, dice2);
+            var eventInstruction = new DiceRollEventInstruction(instructionName, playerName, dice1, dice2);
+            this.instructions.Add(eventInstruction);
+            return this;
+        }
+
         public ScenarioRunner WhenMakeDirectTradeOfferEvent(string playerName, string buyingPlayerName, ResourceClutch wantedResources)
         {
             var eventInstruction = new MakeDirectTradeOfferEventInstruction(playerName, buyingPlayerName, wantedResources);
