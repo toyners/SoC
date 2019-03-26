@@ -132,7 +132,7 @@ namespace SoC.Library.ScenarioTests
                 }
                 else if (instruction is ActionInstruction actionInstruction)
                 {
-                    if (!this.VerifyEvents(false))
+                    if (!this.VerifyEvents())
                         return false;
 
                     this.instructionIndex++;
@@ -149,7 +149,7 @@ namespace SoC.Library.ScenarioTests
                 {
                     // Make request for player state from game server - place expected event
                     // into list for verification
-                    if (!this.VerifyEvents(false))
+                    if (!this.VerifyEvents())
                         return false;
 
                     this.instructionIndex++;
@@ -203,7 +203,7 @@ namespace SoC.Library.ScenarioTests
             }
         }
 
-        private bool VerifyEvents(bool throwIfNotVerified = false)
+        private bool VerifyEvents()
         {
             if (this.expectedEventIndex < this.expectedEvents.Count)
             {
@@ -219,19 +219,7 @@ namespace SoC.Library.ScenarioTests
                 }
             }
 
-            if (throwIfNotVerified && this.expectedEventIndex < this.expectedEvents.Count)
-            {
-                // At least one expected event was not matched with an actual event.
-                var expectedEvent = this.expectedEvents[this.expectedEventIndex];
-                //Assert.Fail($"Did not find {expectedEvent.GetType()} event for '{this.PlayerName}' in round {this.RoundNumber}, turn {this.TurnNumber}.\r\n{/*this.GetEventDetails(expectedEvent)*/""}");
-                Assert.Fail($"{this.label} Did not find {expectedEvent.GetType()} event for '{this.Name}'.\r\n");
-
-                throw new NotImplementedException(); // Never reached - Have to do this to pass compliation
-            }
-            else
-            {
-                return this.expectedEventIndex >= this.expectedEvents.Count;
-            }
+            return this.expectedEventIndex >= this.expectedEvents.Count;
         }
 
         private bool VerifyEvent(GameEvent expectedEvent, GameEvent actualEvent)
