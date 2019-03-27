@@ -33,18 +33,7 @@ namespace SoC.Library.ScenarioTests
         //[Scenario]
         public void Scenario_AllPlayersCompleteSetup(string[] args)
         {
-            this.CompletePlayerSetup_Old(args)
-                .WithNoResourceCollection()
-                .PlayerSetupEvent()
-                .InitialBoardSetupEvent()
-                .PlayerInfrastructureSetup(Adam, Adam_FirstSettlementLocation, Adam_FirstRoadEndLocation)
-                .PlayerInfrastructureSetup(Babara, Babara_FirstSettlementLocation, Babara_FirstRoadEndLocation)
-                .PlayerInfrastructureSetup(Charlie, Charlie_FirstSettlementLocation, Charlie_FirstRoadEndLocation)
-                .PlayerInfrastructureSetup(Dana, Dana_FirstSettlementLocation, Dana_FirstRoadEndLocation)
-                .PlayerInfrastructureSetup(Dana, Dana_SecondSettlementLocation, Dana_SecondRoadEndLocation)
-                .PlayerInfrastructureSetup(Charlie, Charlie_SecondSettlementLocation, Charlie_SecondRoadEndLocation)
-                .PlayerInfrastructureSetup(Babara, Babara_SecondSettlementLocation, Babara_SecondRoadEndLocation)
-                .PlayerInfrastructureSetup(Adam, Adam_SecondSettlementLocation, Adam_SecondRoadEndLocation)
+            this.CompletePlayerInfrastructureSetup(args)
                 .Run();
         }
 
@@ -83,44 +72,6 @@ namespace SoC.Library.ScenarioTests
                 .WhenAcceptDirectTradeEvent(Charlie, Babara, ResourceClutch.OneWool, Adam, ResourceClutch.OneGrain)
                 .WhenAcceptDirectTradeEvent(Dana, Babara, ResourceClutch.OneWool, Adam, ResourceClutch.OneGrain)
                 .Run();
-        }
-
-        private LocalGameControllerScenarioRunner CompletePlayerSetup_Old(string[] args)
-        {
-            return LocalGameControllerScenarioRunner.LocalGameController(args)
-                .WithPlayer(Adam)
-                .WithPlayer(Babara)
-                .WithPlayer(Charlie)
-                .WithPlayer(Dana)
-                .WithTurnOrder(Adam, Babara, Charlie, Dana);
-        }
-
-        private ScenarioRunner CompletePlayerSetup(string[] args)
-        {
-            return ScenarioRunner.CreateScenarioRunner(args)
-                .WithPlayer(Adam)
-                .WithPlayer(Babara)
-                .WithPlayer(Charlie)
-                .WithPlayer(Dana)
-                .WithTurnOrder(Adam, Babara, Charlie, Dana);
-        }
-
-        private LocalGameControllerScenarioRunner CompletePlayerInfrastructureSetup_Old(string[] args)
-        {
-            return LocalGameControllerScenarioRunner.LocalGameController(args)
-                .WithPlayer(Adam)
-                .WithPlayer(Babara)
-                .WithPlayer(Charlie)
-                .WithPlayer(Dana)
-                .WithTurnOrder(Adam, Babara, Charlie, Dana)
-                .PlayerInfrastructureSetup(Adam, Adam_FirstSettlementLocation, Adam_FirstRoadEndLocation)
-                .PlayerInfrastructureSetup(Babara, Babara_FirstSettlementLocation, Babara_FirstRoadEndLocation)
-                .PlayerInfrastructureSetup(Charlie, Charlie_FirstSettlementLocation, Charlie_FirstRoadEndLocation)
-                .PlayerInfrastructureSetup(Dana, Dana_FirstSettlementLocation, Dana_FirstRoadEndLocation)
-                .PlayerInfrastructureSetup(Dana, Dana_SecondSettlementLocation, Dana_SecondRoadEndLocation)
-                .PlayerInfrastructureSetup(Charlie, Charlie_SecondSettlementLocation, Charlie_SecondRoadEndLocation)
-                .PlayerInfrastructureSetup(Babara, Babara_SecondSettlementLocation, Babara_SecondRoadEndLocation)
-                .PlayerInfrastructureSetup(Adam, Adam_SecondSettlementLocation, Adam_SecondRoadEndLocation);
         }
 
         private ScenarioRunner CompletePlayerInfrastructureSetup(string[] args)
