@@ -179,16 +179,23 @@ namespace SoC.Library.ScenarioTests
                 throw new TimeoutException(timeOutMessage);
         }
 
-        public ScenarioRunner WhenAnswerDirectTradeOfferEvent(string playerName, string buyingPlayerName, ResourceClutch wantedResources)
+        public PlayerStateInstruction State(string playerName)
         {
-            var eventInstruction = new AnswerDirectTradeOfferEventInstruction(playerName, buyingPlayerName, wantedResources);
-            this.instructions.Add(eventInstruction);
-            return this;
+            var playerState = new PlayerStateInstruction(playerName, this);
+            this.instructions.Add(playerState);
+            return playerState;
         }
 
         public ScenarioRunner WhenAcceptDirectTradeEvent(string playerName, string buyerName, ResourceClutch buyingResources, string sellerName, ResourceClutch sellingResources)
         {
             var eventInstruction = new AcceptDirectTradeEventInstruction(playerName, buyerName, buyingResources, sellerName, sellingResources);
+            this.instructions.Add(eventInstruction);
+            return this;
+        }
+
+        public ScenarioRunner WhenAnswerDirectTradeOfferEvent(string playerName, string buyingPlayerName, ResourceClutch wantedResources)
+        {
+            var eventInstruction = new AnswerDirectTradeOfferEventInstruction(playerName, buyingPlayerName, wantedResources);
             this.instructions.Add(eventInstruction);
             return this;
         }
@@ -201,26 +208,11 @@ namespace SoC.Library.ScenarioTests
             return this;
         }
 
-        public ScenarioRunner WhenDiceRollEvent(string instructionName, string playerName, uint dice1, uint dice2)
-        {
-            this.numberGenerator.AddTwoDiceRoll(dice1, dice2);
-            var eventInstruction = new DiceRollEventInstruction(instructionName, playerName, dice1, dice2);
-            this.instructions.Add(eventInstruction);
-            return this;
-        }
-
         public ScenarioRunner WhenMakeDirectTradeOfferEvent(string playerName, string buyingPlayerName, ResourceClutch wantedResources)
         {
             var eventInstruction = new MakeDirectTradeOfferEventInstruction(playerName, buyingPlayerName, wantedResources);
             this.instructions.Add(eventInstruction);
             return this;
-        }
-
-        public PlayerStateInstruction State(string playerName)
-        {
-            var playerState = new PlayerStateInstruction(playerName, this);
-            this.instructions.Add(playerState);
-            return playerState;
         }
 
         public ScenarioRunner WhenPlaceInfrastructureSetupEvent(string playerName)
