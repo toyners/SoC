@@ -30,7 +30,7 @@ namespace SoC.Library.ScenarioTests
         const uint Babara_SecondRoadEndLocation = 44;
         const uint Adam_SecondRoadEndLocation = 39;
 
-        //[Scenario]
+        [Scenario]
         public void Scenario_AllPlayersCompleteSetup(string[] args)
         {
             this.CompletePlayerInfrastructureSetup(args)
