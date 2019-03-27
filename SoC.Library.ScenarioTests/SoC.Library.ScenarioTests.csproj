@@ -91,7 +91,6 @@
     <Compile Include="ScenarioGameBoardWithNoResourcesCollected.cs" />
     <Compile Include="PlayerTurn\ComputerPlayerTurn.cs" />
     <Compile Include="PlayerTurn\HumanPlayerTurn.cs" />
-    <Compile Include="IPlayerTurn.cs" />
     <Compile Include="LocalGameControllerScenarioRunner.cs" />
     <Compile Include="PlayerSetupAction.cs" />
     <Compile Include="ScenarioBuyDevelopmentCardEvent.cs" />
