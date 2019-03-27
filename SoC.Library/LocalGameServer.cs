@@ -311,7 +311,6 @@ namespace Jabberwocky.SoC.Library
             // Other two players gets informational event
             var informationalAnswerDirectTradeOfferEvent = new AnswerDirectTradeOfferEvent(
                 answerDirectTradeOfferAction.InitiatingPlayerId, answerDirectTradeOfferAction.WantedResources);
-            informationalAnswerDirectTradeOfferEvent.IsInformation = true;
 
             var otherPlayers = this.PlayersExcept(
                     answerDirectTradeOfferAction.InitiatingPlayerId,

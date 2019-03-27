@@ -228,7 +228,7 @@ namespace SoC.Library.ScenarioTests
         {
             if (expectedEvent is ScenarioRequestStateEvent expectedRequestEvent && actualEvent is RequestStateEvent actualRequestEvent)
                 return this.IsRequestStateEventVerified(expectedRequestEvent, actualRequestEvent);
-
+            
             return this.IsEventVerified(expectedEvent, actualEvent);
         }
 
@@ -236,7 +236,13 @@ namespace SoC.Library.ScenarioTests
         {
             var expectedJSON = JToken.Parse(expectedEvent.ToJSONString());
             var actualJSON = JToken.Parse(actualEvent.ToJSONString());
-            return JToken.DeepEquals(expectedJSON, actualJSON);
+            var result = JToken.DeepEquals(expectedJSON, actualJSON);
+
+            this.log.Add($"{(result ? "MATCHED" : "NOT MATCHED")}");
+            this.log.Add($" EXPECTED: {expectedJSON}");
+            this.log.Add($" ACTUAL: {actualJSON}");
+
+            return result;
         }
 
         private bool IsRequestStateEventVerified(ScenarioRequestStateEvent expectedEvent, RequestStateEvent actualEvent)
