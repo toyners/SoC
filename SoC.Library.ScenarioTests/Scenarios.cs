@@ -33,7 +33,28 @@ namespace SoC.Library.ScenarioTests
         [Scenario]
         public void Scenario_AllPlayersCompleteSetup(string[] args)
         {
-            this.CompletePlayerInfrastructureSetup(args)
+            ScenarioRunner.CreateScenarioRunner(args)
+                .WithPlayer(Adam)
+                .WithPlayer(Babara)
+                .WithPlayer(Charlie)
+                .WithPlayer(Dana)
+                .WithTurnOrder(Adam, Babara, Charlie, Dana)
+                .WhenPlaceInfrastructureSetupEvent(Adam)
+                    .PlaceStartingInfrastructure(Adam_FirstSettlementLocation, Adam_FirstRoadEndLocation)
+                .WhenPlaceInfrastructureSetupEvent(Babara)
+                    .PlaceStartingInfrastructure(Babara_FirstSettlementLocation, Babara_FirstRoadEndLocation)
+                .WhenPlaceInfrastructureSetupEvent(Charlie)
+                    .PlaceStartingInfrastructure(Charlie_FirstSettlementLocation, Charlie_FirstRoadEndLocation)
+                .WhenPlaceInfrastructureSetupEvent(Dana)
+                    .PlaceStartingInfrastructure(Dana_FirstSettlementLocation, Dana_FirstRoadEndLocation)
+                .WhenPlaceInfrastructureSetupEvent(Dana)
+                    .PlaceStartingInfrastructure(Dana_SecondSettlementLocation, Dana_SecondRoadEndLocation)
+                .WhenPlaceInfrastructureSetupEvent(Charlie)
+                    .PlaceStartingInfrastructure(Charlie_SecondSettlementLocation, Charlie_SecondRoadEndLocation)
+                .WhenPlaceInfrastructureSetupEvent(Babara)
+                    .PlaceStartingInfrastructure(Babara_SecondSettlementLocation, Babara_SecondRoadEndLocation)
+                .WhenPlaceInfrastructureSetupEvent(Adam)
+                    .PlaceStartingInfrastructure(Adam_SecondSettlementLocation, Adam_SecondRoadEndLocation)
                 .Run();
         }
 

@@ -222,6 +222,11 @@ namespace SoC.Library.ScenarioTests
             return this;
         }
 
+        public ScenarioRunner WhenPlayerSetupEvent()
+        {
+            return this;
+        }
+
         public ScenarioRunner WithNoResourceCollection()
         {
             this.gameBoard = new ScenarioGameBoardWithNoResourcesCollected();
