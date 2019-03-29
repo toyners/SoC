@@ -52,6 +52,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AcceptDirectTradeEvent.cs" />
+    <Compile Include="Instructions\GameJoinedEventInstruction.cs" />
     <Compile Include="Instructions\AnswerDirectTradeOfferEventInstruction.cs" />
     <Compile Include="Instructions\DiceRollEventInstruction.cs" />
     <Compile Include="Instructions\ActionInstruction.cs" />

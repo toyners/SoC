@@ -209,6 +209,14 @@ namespace SoC.Library.ScenarioTests
             return this;
         }
 
+        public ScenarioRunner WhenGameJoinedEvent(string playerName)
+        {
+            var playerId = this.playerAgents.Where(playerAgent => playerAgent.Name == playerName).First().Id;
+            var eventInstruction = new GameJoinedEventInstruction(playerName, playerId);
+            this.instructions.Add(eventInstruction);
+            return this;
+        }
+
         public ScenarioRunner WhenInitialBoardSetupEvent(string playerName, GameBoardSetup gameBoardSetup)
         {
             var eventInstruction = new InitialBoardSetupEventInstruction(playerName, gameBoardSetup);
