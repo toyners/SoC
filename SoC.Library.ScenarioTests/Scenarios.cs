@@ -37,12 +37,14 @@ namespace SoC.Library.ScenarioTests
         public void Scenario_AllPlayersCompleteSetup(string[] args)
         {
             var expectedGameBoardSetup = new GameBoardSetup(new GameBoard(BoardSizes.Standard));
+            var playerOrder = new[] { Adam, Babara, Charlie, Dana };
             ScenarioRunner.CreateScenarioRunner(args)
                 .WithPlayer(Adam)
                 .WithPlayer(Babara)
                 .WithPlayer(Charlie)
                 .WithPlayer(Dana)
                 .WithTurnOrder(Adam, Babara, Charlie, Dana)
+                .WhenPlayerOrderEvent(Adam, playerOrder)
                 .WhenGameJoinedEvent(Adam)
                 .WhenGameJoinedEvent(Babara)
                 .WhenGameJoinedEvent(Charlie)

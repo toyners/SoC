@@ -121,7 +121,6 @@ namespace Jabberwocky.SoC.Library
 
                     this.playersById = this.players.ToDictionary(p => p.Id, p => p);
 
-                    // TODO: Send event with player details to everyone
                     var playerIdsByName = this.players.ToDictionary(p => p.Name, p => p.Id);
                     this.eventRaiser.RaiseEvent(new PlayerSetupEvent(playerIdsByName));
 

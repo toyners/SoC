@@ -50,6 +50,11 @@ namespace SoC.Library.ScenarioTests
             return new ScenarioRunner(args);
         }
 
+        public ScenarioRunner WhenPlayerOrderEvent(string playerName, string[] playerNames)
+        {
+            throw new NotImplementedException();
+        }
+
         public ScenarioRunner AnswerDirectTradeOffer(ResourceClutch wantedResources)
         {
             this.AddActionInstruction(ActionInstruction.OperationTypes.AnswerDirectTradeOffer, 
