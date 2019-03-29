@@ -92,7 +92,8 @@ namespace SoC.Library.ScenarioTests
 
         public void Run()
         {
-            Thread.CurrentThread.Name = "Scenario Runner";
+            if (Thread.CurrentThread.Name == null)
+                Thread.CurrentThread.Name = "Scenario Runner";
 
             var playerIds = new Queue<Guid>(this.playerAgents.Select(agent => agent.Id));
 
