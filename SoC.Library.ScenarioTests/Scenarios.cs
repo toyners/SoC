@@ -1,7 +1,10 @@
 ﻿
 namespace SoC.Library.ScenarioTests
 {
+    using System;
+    using System.Collections.Generic;
     using Jabberwocky.SoC.Library;
+    using Jabberwocky.SoC.Library.GameBoards;
 
     public class Scenarios
     {
@@ -33,12 +36,21 @@ namespace SoC.Library.ScenarioTests
         [Scenario]
         public void Scenario_AllPlayersCompleteSetup(string[] args)
         {
+            var expectedGameBoardSetup = new GameBoardSetup(new GameBoard(BoardSizes.Standard));
             ScenarioRunner.CreateScenarioRunner(args)
                 .WithPlayer(Adam)
                 .WithPlayer(Babara)
                 .WithPlayer(Charlie)
                 .WithPlayer(Dana)
                 .WithTurnOrder(Adam, Babara, Charlie, Dana)
+                .WhenPlayerSetupEvent(Adam)
+                .WhenPlayerSetupEvent(Babara)
+                .WhenPlayerSetupEvent(Charlie)
+                .WhenPlayerSetupEvent(Dana)
+                .WhenInitialBoardSetupEvent(Adam, expectedGameBoardSetup)
+                .WhenInitialBoardSetupEvent(Babara, expectedGameBoardSetup)
+                .WhenInitialBoardSetupEvent(Charlie, expectedGameBoardSetup)
+                .WhenInitialBoardSetupEvent(Dana, expectedGameBoardSetup)
                 .WhenPlaceInfrastructureSetupEvent(Adam)
                     .PlaceStartingInfrastructure(Adam_FirstSettlementLocation, Adam_FirstRoadEndLocation)
                 .WhenPlaceInfrastructureSetupEvent(Babara)

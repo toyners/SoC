@@ -13,7 +13,7 @@ namespace SoC.Library.ScenarioTests.Instructions
             this.playerIdsByName = playerIdsByName;
         }
 
-        public override GameEvent GetEvent(IDictionary<string, Guid> p)
+        public override GameEvent GetEvent(IDictionary<string, Guid> playerIdsByName)
         {
             return new PlayerSetupEvent(this.playerIdsByName);
         }

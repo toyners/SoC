@@ -496,10 +496,8 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
 
         internal void PlayerSetupEvent(IDictionary<string, Guid> playerIdsByName)
         {
-            this.instructions.Enqueue(new PlayerSetupEventInstruction(this.PlayerName, playerIdsByName));
+            this.instructions.Enqueue(new PlayerSetupEventInstruction(this.PlayerName));
         }
-
-        
 
         private string GetEventDetails(GameEvent gameEvent)
         {

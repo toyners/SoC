@@ -51,7 +51,7 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
 
         private void PlayerSetupEvent(string playerName, IDictionary<string, Guid> playerIdsByName)
         {
-            this.instructions.Enqueue(new PlayerSetupEventInstruction(this.PlayerName, playerIdsByName));
+            this.instructions.Enqueue(new PlayerSetupEventInstruction(this.PlayerName, null));
         }
 
         private void InitialBoardSetupEvent()

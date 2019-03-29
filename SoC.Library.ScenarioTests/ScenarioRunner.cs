@@ -208,6 +208,13 @@ namespace SoC.Library.ScenarioTests
             return this;
         }
 
+        public ScenarioRunner WhenInitialBoardSetupEvent(string playerName, GameBoardSetup gameBoardSetup)
+        {
+            var eventInstruction = new InitialBoardSetupEventInstruction(playerName, gameBoardSetup);
+            this.instructions.Add(eventInstruction);
+            return this;
+        }
+
         public ScenarioRunner WhenMakeDirectTradeOfferEvent(string playerName, string buyingPlayerName, ResourceClutch wantedResources)
         {
             var eventInstruction = new MakeDirectTradeOfferEventInstruction(playerName, buyingPlayerName, wantedResources);
@@ -222,8 +229,11 @@ namespace SoC.Library.ScenarioTests
             return this;
         }
 
-        public ScenarioRunner WhenPlayerSetupEvent()
+        public ScenarioRunner WhenPlayerSetupEvent(string playerName)
         {
+            var playerIdsByName = this.playerAgents.ToDictionary(playerAgent => playerAgent.Name, playerAgent => playerAgent.Id);
+            var eventInstruction = new PlayerSetupEventInstruction(playerName, playerIdsByName);
+            this.instructions.Add(eventInstruction);
             return this;
         }
 
