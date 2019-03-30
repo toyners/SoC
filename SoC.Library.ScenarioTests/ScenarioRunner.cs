@@ -269,17 +269,17 @@ namespace SoC.Library.ScenarioTests
             return this;
         }
 
-        public ScenarioRunner WithTurnOrder(string firstPlayerName, string secondPlayerName, string thirdPlayerName, string fourthPlayerName)
+        public ScenarioRunner WithTurnOrder(string[] playerNames)
         {
             var rolls = new uint[4];
             for (var index = 0; index < this.playerAgents.Count; index++)
             {
                 var playerName = this.playerAgents[index].Name;
-                if (firstPlayerName == playerName)
+                if (playerNames[0] == playerName)
                     rolls[index] = 12;
-                else if (secondPlayerName == playerName)
+                else if (playerNames[1] == playerName)
                     rolls[index] = 10;
-                else if (thirdPlayerName == playerName)
+                else if (playerNames[3] == playerName)
                     rolls[index] = 8;
                 else
                     rolls[index] = 6;
