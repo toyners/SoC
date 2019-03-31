@@ -116,9 +116,6 @@ namespace Jabberwocky.SoC.Library
                 Thread.CurrentThread.Name = "Local Game Server";
                 try
                 {
-                    this.players = PlayerTurnOrderCreator.Create(this.players, this.numberGenerator);
-                    // TODO: Notify players what the order is
-
                     this.playersById = this.players.ToDictionary(p => p.Id, p => p);
 
                     var playerIdsByName = this.players.ToDictionary(p => p.Name, p => p.Id);
@@ -126,6 +123,9 @@ namespace Jabberwocky.SoC.Library
 
                     var gameBoardSetup = new GameBoardSetup(this.gameBoard);
                     this.eventRaiser.RaiseEvent(new InitialBoardSetupEvent(gameBoardSetup));
+
+                    this.players = PlayerTurnOrderCreator.Create(this.players, this.numberGenerator);
+                    // TODO: Notify players what the order is
 
                     try
                     {

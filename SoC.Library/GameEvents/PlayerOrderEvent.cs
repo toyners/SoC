@@ -6,7 +6,7 @@ namespace SoC.Library.ScenarioTests.Instructions
 
     public class PlayerOrderEvent : GameEvent
     {
-        public PlayerOrderEvent(Guid playerId, Guid[] playerTurnOrder) : base(playerId)
+        public PlayerOrderEvent(Guid[] playerTurnOrder) : base(Guid.Empty)
         {
         }
     }

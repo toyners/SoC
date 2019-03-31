@@ -241,7 +241,8 @@ namespace SoC.Library.ScenarioTests
 
         public ScenarioRunner WhenPlayerOrderEvent(string playerName, string[] playerNames)
         {
-            var eventInstruction = new PlayerOrderEventInstruction(playerName, playerNames);
+            var playerIds = this.playerAgents.Select(playerAgent => playerAgent.Id).ToArray();
+            var eventInstruction = new PlayerOrderEventInstruction(playerName, playerIds);
             this.instructions.Add(eventInstruction);
             return this;
         }
