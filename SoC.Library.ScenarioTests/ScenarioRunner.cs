@@ -50,10 +50,6 @@ namespace SoC.Library.ScenarioTests
             return new ScenarioRunner(args);
         }
 
-        public ScenarioRunner WhenPlayerOrderEvent(string playerName, string[] playerNames)
-        {
-            throw new NotImplementedException();
-        }
 
         public ScenarioRunner AnswerDirectTradeOffer(ResourceClutch wantedResources)
         {
@@ -239,6 +235,13 @@ namespace SoC.Library.ScenarioTests
         public ScenarioRunner WhenPlaceInfrastructureSetupEvent(string playerName)
         {
             var eventInstruction = new PlaceSetupInfrastructureEventInstruction(playerName);
+            this.instructions.Add(eventInstruction);
+            return this;
+        }
+
+        public ScenarioRunner WhenPlayerOrderEvent(string playerName, string[] playerNames)
+        {
+            var eventInstruction = new PlayerOrderEventInstruction(playerName, playerNames);
             this.instructions.Add(eventInstruction);
             return this;
         }

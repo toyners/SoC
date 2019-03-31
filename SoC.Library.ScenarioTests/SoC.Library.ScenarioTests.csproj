@@ -71,6 +71,7 @@
     <Compile Include="Instructions\PlayerSetupEventInstruction.cs" />
     <Compile Include="Instructions\PlayerStateInstruction.cs" />
     <Compile Include="Instructions\TradeWithPlayerCompletedEventInstruction.cs" />
+    <Compile Include="Instructions\PlayerOrderEventInstruction.cs" />
     <Compile Include="ScenarioEvents\ScenarioRequestStateEvent.cs" />
     <Compile Include="MockTurnTimer.cs" />
     <Compile Include="PlayerAgent.cs" />
