@@ -11,6 +11,8 @@ namespace SoC.Library.ScenarioTests.Instructions
     {
         public EventInstruction(string playerName) : base(playerName) {}
 
+        public bool Verify { get; set; } = true;
+
         public abstract GameEvent GetEvent(IDictionary<string, Guid> playerIdsByName);
     }
 }

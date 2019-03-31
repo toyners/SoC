@@ -141,7 +141,8 @@ namespace SoC.Library.ScenarioTests
                 else if (instruction is EventInstruction eventInstruction)
                 {
                     this.instructionIndex++;
-                    this.StoreExpectedEvent(eventInstruction.GetEvent(this.playerIdsByName));
+                    if (eventInstruction.Verify)
+                        this.StoreExpectedEvent(eventInstruction.GetEvent(this.playerIdsByName));
                 }
                 else if (instruction is PlayerStateInstruction playerStateInstruction)
                 {

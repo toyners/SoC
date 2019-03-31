@@ -38,9 +38,9 @@ namespace SoC.Library.ScenarioTests
         #endregion
 
         #region Properties
-        private string LastInstructionPlayerName
+        private Instruction LastInstruction
         {
-            get { return this.instructions[this.instructions.Count - 1].PlayerName; }
+            get { return this.instructions[this.instructions.Count - 1]; }
         }
         #endregion
 
@@ -49,7 +49,6 @@ namespace SoC.Library.ScenarioTests
         {
             return new ScenarioRunner(args);
         }
-
 
         public ScenarioRunner AnswerDirectTradeOffer(ResourceClutch wantedResources)
         {
@@ -181,6 +180,12 @@ namespace SoC.Library.ScenarioTests
                 throw new TimeoutException(timeOutMessage);
         }
 
+        public ScenarioRunner SkipVerification()
+        {
+            ((EventInstruction)this.LastInstruction).Verify = false;
+            return this;
+        }
+
         public PlayerStateInstruction State(string playerName)
         {
             var playerState = new PlayerStateInstruction(playerName, this);
@@ -298,7 +303,7 @@ namespace SoC.Library.ScenarioTests
         private void AddActionInstruction(ActionInstruction.OperationTypes operation, object[] arguments)
         {
             var actionInstruction = new ActionInstruction(
-                this.LastInstructionPlayerName,
+                this.LastInstruction.PlayerName,
                 operation,
                 arguments);
             this.instructions.Add(actionInstruction);
