@@ -125,7 +125,8 @@ namespace Jabberwocky.SoC.Library
                     this.eventRaiser.RaiseEvent(new InitialBoardSetupEvent(gameBoardSetup));
 
                     this.players = PlayerTurnOrderCreator.Create(this.players, this.numberGenerator);
-                    // TODO: Notify players what the order is
+                    var playerIds = this.players.Select(player => player.Id).ToArray();
+                    this.eventRaiser.RaiseEvent(new PlayerOrderEvent(playerIds));
 
                     try
                     {
