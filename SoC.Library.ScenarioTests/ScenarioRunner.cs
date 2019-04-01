@@ -14,6 +14,7 @@ namespace SoC.Library.ScenarioTests
         #region Fields
         private readonly ScenarioDevelopmentCardHolder developmentCardHolder = new ScenarioDevelopmentCardHolder();
         private readonly List<PlayerAgent> playerAgents = new List<PlayerAgent>();
+        private readonly Dictionary<string, Guid> playerIdsByName = new Dictionary<string, Guid>();
         private readonly Dictionary<string, ResourceClutch> startingResourcesByName = new Dictionary<string, ResourceClutch>();
         private GameBoard gameBoard;
         private List<Instruction> instructions = new List<Instruction>();
@@ -210,7 +211,7 @@ namespace SoC.Library.ScenarioTests
         public ScenarioRunner WhenDiceRollEvent(string playerName, uint dice1, uint dice2)
         {
             this.numberGenerator.AddTwoDiceRoll(dice1, dice2);
-            var eventInstruction = new DiceRollEventInstruction(playerName, dice1, dice2);
+            var eventInstruction = new DiceRollEventInstruction(playerName, this.playerIdsByName[playerName], dice1, dice2);
             this.instructions.Add(eventInstruction);
             return this;
         }
@@ -268,7 +269,9 @@ namespace SoC.Library.ScenarioTests
 
         public ScenarioRunner WithPlayer(string playerName)
         {
-            this.playerAgents.Add(new PlayerAgent(playerName));
+            var playerAgent = new PlayerAgent(playerName);
+            this.playerAgents.Add(playerAgent);
+            this.playerIdsByName.Add(playerAgent.Name, playerAgent.Id);
             return this;
         }
 

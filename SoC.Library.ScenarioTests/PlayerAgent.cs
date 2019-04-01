@@ -114,6 +114,7 @@ namespace SoC.Library.ScenarioTests
             catch (Exception e)
             {
                 this.GameException = e;
+                this.log.Add($"ERROR: {e.Message}: {e.StackTrace}");
             }
         }
 
@@ -127,6 +128,7 @@ namespace SoC.Library.ScenarioTests
                 var instruction = this.instructions[this.instructionIndex];
                 if (instruction is LabelInstruction labelInstruction)
                 {
+                    this.log.Add($"Processing {labelInstruction.GetType().Name}");
                     this.instructionIndex++;
                     this.label = labelInstruction.Label;
                 }
@@ -135,17 +137,20 @@ namespace SoC.Library.ScenarioTests
                     if (!this.VerifyEvents())
                         return false;
 
+                    this.log.Add($"Processing {actionInstruction.Operation} action");
                     this.instructionIndex++;
                     this.SendAction(actionInstruction);
                 }
                 else if (instruction is EventInstruction eventInstruction)
                 {
+                    this.log.Add($"Processing {eventInstruction.GetType().Name} event");
                     this.instructionIndex++;
                     if (eventInstruction.Verify)
                         this.StoreExpectedEvent(eventInstruction.GetEvent(this.playerIdsByName));
                 }
                 else if (instruction is PlayerStateInstruction playerStateInstruction)
                 {
+                    this.log.Add($"Processing {playerStateInstruction.GetType().Name}");
                     // Make request for player state from game server - place expected event
                     // into list for verification
                     if (!this.VerifyEvents())
