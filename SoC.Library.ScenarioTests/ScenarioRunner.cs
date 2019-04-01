@@ -7,6 +7,7 @@ namespace SoC.Library.ScenarioTests
     using System.Threading;
     using Jabberwocky.SoC.Library;
     using Jabberwocky.SoC.Library.GameBoards;
+    using Jabberwocky.SoC.Library.GameEvents;
     using SoC.Library.ScenarioTests.Instructions;
 
     internal class ScenarioRunner
@@ -196,14 +197,16 @@ namespace SoC.Library.ScenarioTests
 
         public ScenarioRunner WhenAcceptDirectTradeEvent(string playerName, string buyerName, ResourceClutch buyingResources, string sellerName, ResourceClutch sellingResources)
         {
-            var eventInstruction = new AcceptDirectTradeEventInstruction(playerName, buyerName, buyingResources, sellerName, sellingResources);
+            var gameEvent = new AcceptTradeEvent(this.playerIdsByName[buyerName], buyingResources, this.playerIdsByName[sellerName], sellingResources);
+            var eventInstruction = new AcceptDirectTradeEventInstruction(playerName, gameEvent);
             this.instructions.Add(eventInstruction);
             return this;
         }
 
         public ScenarioRunner WhenAnswerDirectTradeOfferEvent(string playerName, string buyingPlayerName, ResourceClutch wantedResources)
         {
-            var eventInstruction = new AnswerDirectTradeOfferEventInstruction(playerName, buyingPlayerName, wantedResources);
+            var gameEvent = new AnswerDirectTradeOfferEvent(this.playerIdsByName[buyingPlayerName], wantedResources);
+            var eventInstruction = new AnswerDirectTradeOfferEventInstruction(playerName, gameEvent);
             this.instructions.Add(eventInstruction);
             return this;
         }
@@ -211,36 +214,40 @@ namespace SoC.Library.ScenarioTests
         public ScenarioRunner WhenDiceRollEvent(string playerName, uint dice1, uint dice2)
         {
             this.numberGenerator.AddTwoDiceRoll(dice1, dice2);
-            var eventInstruction = new DiceRollEventInstruction(playerName, this.playerIdsByName[playerName], dice1, dice2);
+            var gameEvent = new DiceRollEvent(this.playerIdsByName[playerName], dice1, dice2);
+            var eventInstruction = new DiceRollEventInstruction(playerName, gameEvent);
             this.instructions.Add(eventInstruction);
             return this;
         }
 
         public ScenarioRunner WhenGameJoinedEvent(string playerName)
         {
-            var playerId = this.playerAgents.Where(playerAgent => playerAgent.Name == playerName).First().Id;
-            var eventInstruction = new GameJoinedEventInstruction(playerName, playerId);
+            var gameEvent = new GameJoinedEvent(this.playerIdsByName[playerName]);
+            var eventInstruction = new GameJoinedEventInstruction(playerName, gameEvent);
             this.instructions.Add(eventInstruction);
             return this;
         }
 
         public ScenarioRunner WhenInitialBoardSetupEvent(string playerName, GameBoardSetup gameBoardSetup)
         {
-            var eventInstruction = new InitialBoardSetupEventInstruction(playerName, gameBoardSetup);
+            var gameEvent = new InitialBoardSetupEvent(gameBoardSetup);
+            var eventInstruction = new InitialBoardSetupEventInstruction(playerName, gameEvent);
             this.instructions.Add(eventInstruction);
             return this;
         }
 
         public ScenarioRunner WhenMakeDirectTradeOfferEvent(string playerName, string buyingPlayerName, ResourceClutch wantedResources)
         {
-            var eventInstruction = new MakeDirectTradeOfferEventInstruction(playerName, buyingPlayerName, wantedResources);
+            var gameEvent = new MakeDirectTradeOfferEvent(this.playerIdsByName[playerName], wantedResources);
+            var eventInstruction = new MakeDirectTradeOfferEventInstruction(playerName, gameEvent);
             this.instructions.Add(eventInstruction);
             return this;
         }
 
         public ScenarioRunner WhenPlaceInfrastructureSetupEvent(string playerName)
         {
-            var eventInstruction = new PlaceSetupInfrastructureEventInstruction(playerName);
+            var gameEvent = new PlaceSetupInfrastructureEvent();
+            var eventInstruction = new PlaceSetupInfrastructureEventInstruction(playerName, gameEvent);
             this.instructions.Add(eventInstruction);
             return this;
         }
@@ -248,7 +255,8 @@ namespace SoC.Library.ScenarioTests
         public ScenarioRunner WhenPlayerOrderEvent(string playerName, string[] playerNames)
         {
             var playerIds = this.playerAgents.Select(playerAgent => playerAgent.Id).ToArray();
-            var eventInstruction = new PlayerOrderEventInstruction(playerName, playerIds);
+            var gameEvent = new PlayerOrderEvent(playerIds);
+            var eventInstruction = new PlayerOrderEventInstruction(playerName, gameEvent);
             this.instructions.Add(eventInstruction);
             return this;
         }
@@ -256,7 +264,8 @@ namespace SoC.Library.ScenarioTests
         public ScenarioRunner WhenPlayerSetupEvent(string playerName)
         {
             var playerIdsByName = this.playerAgents.ToDictionary(playerAgent => playerAgent.Name, playerAgent => playerAgent.Id);
-            var eventInstruction = new PlayerSetupEventInstruction(playerName, playerIdsByName);
+            var gameEvent = new PlayerSetupEvent(playerIdsByName);
+            var eventInstruction = new PlayerSetupEventInstruction(playerName, gameEvent);
             this.instructions.Add(eventInstruction);
             return this;
         }

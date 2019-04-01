@@ -705,10 +705,7 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
             this.instructions.Enqueue(new TradeWithPlayerCompletedEventInstruction
             (
                 playerName,
-                buyingPlayerName,
-                buyingResources,
-                sellingPlayerName,
-                sellingResources
+                null
             ));
 
             return this;
@@ -716,7 +713,7 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
 
         public GameTurn MakeDirectTradeOfferEvent(string playerName, string buyingPlayerName, ResourceClutch resources)
         {
-            var instruction = new MakeDirectTradeOfferEventInstruction(playerName, buyingPlayerName, resources);
+            var instruction = new MakeDirectTradeOfferEventInstruction(playerName, null);
             this.instructions.Enqueue(instruction);
 
             return this;
@@ -733,8 +730,8 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
 
         public GameTurn AnswerDirectTradeOfferEvent(string playerName, string buyingPlayerName, ResourceClutch wantedResources)
         {
-            var instruction = new AnswerDirectTradeOfferEventInstruction(playerName, buyingPlayerName, wantedResources);
-            this.instructions.Enqueue(instruction);
+            /*var instruction = new AnswerDirectTradeOfferEventInstruction(playerName, null);
+            this.instructions.Enqueue(instruction);*/
 
             return this;
         }

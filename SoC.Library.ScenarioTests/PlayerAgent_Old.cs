@@ -124,7 +124,7 @@ namespace SoC.Library.ScenarioTests
                 else if (instruction is EventInstruction eventInstruction)
                 {
                     this.currentInstructionIndex++;
-                    this.ExpectedEvents.Add(eventInstruction.GetEvent(this.playerIdsByName));
+                    this.ExpectedEvents.Add(eventInstruction.GetEvent());
                 }
                 else if (instruction is PlayerStateInstruction playerStateInstruction)
                 {

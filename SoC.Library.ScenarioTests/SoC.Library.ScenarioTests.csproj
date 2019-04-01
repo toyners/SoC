@@ -51,7 +51,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AcceptDirectTradeEvent.cs" />
+    <Compile Include="Instructions\AcceptDirectTradeEventInstruction.cs" />
     <Compile Include="Instructions\GameJoinedEventInstruction.cs" />
     <Compile Include="Instructions\AnswerDirectTradeOfferEventInstruction.cs" />
     <Compile Include="Instructions\DiceRollEventInstruction.cs" />
