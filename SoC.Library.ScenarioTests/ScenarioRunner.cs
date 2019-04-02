@@ -184,7 +184,7 @@ namespace SoC.Library.ScenarioTests
 
         public ScenarioRunner SkipVerification()
         {
-            ((EventInstruction)this.LastInstruction).Verify = false;
+            //((EventInstruction)this.LastInstruction).Verify = false;
             return this;
         }
 
