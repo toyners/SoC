@@ -140,6 +140,7 @@ namespace Jabberwocky.SoC.Library
                 }
                 catch (Exception e)
                 {
+                    this.log.Add($"ERROR: {e.Message}: {e.StackTrace}");
                     this.GameExceptionEvent?.Invoke(e);
                 }
             });
@@ -551,6 +552,10 @@ namespace Jabberwocky.SoC.Library
                 if (!this.CanRaiseEvents)
                     return;
 
+                if (gameToken != null)
+                    this.log.Add($"Sending {gameEvent.GetType().Name} to player {playerId} with token");
+                else
+                    this.log.Add($"Sending {gameEvent.GetType().Name} to player {playerId} without token");
                 this.gameEventHandlersByPlayerId[playerId].Invoke(gameEvent, gameToken);
             }
 

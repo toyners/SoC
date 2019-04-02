@@ -137,13 +137,13 @@ namespace SoC.Library.ScenarioTests
                     if (!this.VerifyEvents())
                         return false;
 
-                    this.log.Add($"Processing {actionInstruction.Operation} action");
+                    this.log.Add($"Processing action: {actionInstruction.Operation}");
                     this.instructionIndex++;
                     this.SendAction(actionInstruction);
                 }
                 else if (instruction is EventInstruction eventInstruction)
                 {
-                    this.log.Add($"Processing {eventInstruction.GetType().Name} event");
+                    this.log.Add($"Storing expected event: {eventInstruction.GetType().Name}");
                     this.instructionIndex++;
                     if (eventInstruction.Verify)
                         this.StoreExpectedEvent(eventInstruction.GetEvent());
