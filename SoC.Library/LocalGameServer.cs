@@ -71,7 +71,7 @@ namespace Jabberwocky.SoC.Library
             this.GameExceptionEvent += gameController.GameExceptionHandler;
             gameController.PlayerActionEvent += this.PlayerActionEventHandler;
 
-            this.eventRaiser.RaiseEvent(new GameJoinedEvent(player.Id), player.Id);
+            this.RaiseEvent(new GameJoinedEvent(player.Id), player);
         }
 
         public void LaunchGame(GameOptions gameOptions = null)
@@ -119,14 +119,14 @@ namespace Jabberwocky.SoC.Library
                     this.playersById = this.players.ToDictionary(p => p.Id, p => p);
 
                     var playerIdsByName = this.players.ToDictionary(p => p.Name, p => p.Id);
-                    this.eventRaiser.RaiseEvent(new PlayerSetupEvent(playerIdsByName));
+                    this.RaiseEvent(new PlayerSetupEvent(playerIdsByName));
 
                     var gameBoardSetup = new GameBoardSetup(this.gameBoard);
-                    this.eventRaiser.RaiseEvent(new InitialBoardSetupEvent(gameBoardSetup));
+                    this.RaiseEvent(new InitialBoardSetupEvent(gameBoardSetup));
 
                     this.players = PlayerTurnOrderCreator.Create(this.players, this.numberGenerator);
                     var playerIds = this.players.Select(player => player.Id).ToArray();
-                    this.eventRaiser.RaiseEvent(new PlayerOrderEvent(playerIds));
+                    this.RaiseEvent(new PlayerOrderEvent(playerIds));
 
                     try
                     {
@@ -197,7 +197,7 @@ namespace Jabberwocky.SoC.Library
             // TODO: Pass back current settled locations
             var placeSetupInfrastructureEvent = new PlaceSetupInfrastructureEvent();
             this.actionManager.SetExpectedActionTypeForPlayer(player.Id, typeof(PlaceSetupInfrastructureAction));
-            this.eventRaiser.RaiseEvent(placeSetupInfrastructureEvent, player.Id, token);
+            this.RaiseEvent(placeSetupInfrastructureEvent, player, token);
             while (true)
             {
                 var playerAction = this.WaitForPlayerAction();
@@ -385,6 +385,21 @@ namespace Jabberwocky.SoC.Library
             throw new Exception($"Player action {playerAction.GetType()} not recognised.");
         }
 
+        private void RaiseEvent(GameEvent gameEvent)
+        {
+            this.log.Add($"Sending {gameEvent.SimpleTypeName} to all players");
+            this.eventRaiser.RaiseEvent(gameEvent);
+        }
+
+        private void RaiseEvent(GameEvent gameEvent, IPlayer player, GameToken token = null)
+        {
+            if (token != null)
+                this.log.Add($"Sending {gameEvent.SimpleTypeName} to {player.Name} with token");
+            else
+                this.log.Add($"Sending {gameEvent.SimpleTypeName} to {player.Name} without token");
+            this.eventRaiser.RaiseEvent(gameEvent, player.Id, token);
+        }
+
         private void StartTurn()
         {
             try
@@ -455,13 +470,13 @@ namespace Jabberwocky.SoC.Library
 
                     if (!this.tokenManager.ValidateToken(token))
                     {
-                        this.log.Add($"FAILED: Token Validation - {this.playersById[playerAction.InitiatingPlayerId]}, {playerAction.GetType().Name}");
+                        this.log.Add($"FAILED: Token Validation - {this.playersById[playerAction.InitiatingPlayerId].Name}, {playerAction.GetType().Name}");
                         continue;
                     }
 
                     if (!(playerAction is RequestStateAction) && !this.actionManager.ValidateAction(playerAction))
                     {
-                        this.log.Add($"FAILED: Action Validation - {this.playersById[playerAction.InitiatingPlayerId]}, {playerAction.GetType().Name}");
+                        this.log.Add($"FAILED: Action Validation - {this.playersById[playerAction.InitiatingPlayerId].Name}, {playerAction.GetType().Name}");
                         continue;
                     }
 
@@ -551,11 +566,7 @@ namespace Jabberwocky.SoC.Library
             {
                 if (!this.CanRaiseEvents)
                     return;
-
-                if (gameToken != null)
-                    this.log.Add($"Sending {gameEvent.GetType().Name} to player {playerId} with token");
-                else
-                    this.log.Add($"Sending {gameEvent.GetType().Name} to player {playerId} without token");
+                
                 this.gameEventHandlersByPlayerId[playerId].Invoke(gameEvent, gameToken);
             }
 
@@ -598,7 +609,7 @@ namespace Jabberwocky.SoC.Library
 
             public bool ValidateToken(GameToken token)
             {
-                return this.playersByToken.ContainsKey(token);
+                return token != null && this.playersByToken.ContainsKey(token);
             }
         }
         #endregion

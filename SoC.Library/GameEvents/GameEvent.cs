@@ -22,6 +22,16 @@ namespace Jabberwocky.SoC.Library.GameEvents
 
         #region Properties
         public string TypeName { get { return this.GetType().Name; } } // Used in JSON comparison 
+        [JsonIgnore]
+        public string SimpleTypeName
+        {
+            get
+            {
+                var typeName = this.TypeName;
+                var index = typeName.LastIndexOf('.');
+                return index > -1 ? typeName.Substring(index + 1) : typeName;
+            }
+        }
         #endregion
 
         #region Methods
