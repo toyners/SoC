@@ -342,10 +342,7 @@ namespace Jabberwocky.SoC.Library
             var otherPlayers = this.PlayersExcept(makeDirectTradeOfferAction.InitiatingPlayerId).ToList();
             otherPlayers.ForEach(player => {
                 this.actionManager.SetExpectedActionTypeForPlayer(player.Id, typeof(AnswerDirectTradeOfferAction));
-                this.eventRaiser.RaiseEvent(
-                    makeDirectTradeOfferEvent,
-                    player.Id,
-                    this.tokenManager.CreateNewToken(player));
+                this.RaiseEvent(makeDirectTradeOfferEvent, player, this.tokenManager.CreateNewToken(player));
             });
         }
 

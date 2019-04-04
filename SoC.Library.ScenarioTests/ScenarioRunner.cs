@@ -246,7 +246,7 @@ namespace SoC.Library.ScenarioTests
 
         public ScenarioRunner WhenMakeDirectTradeOfferEvent(string playerName, string buyingPlayerName, ResourceClutch wantedResources)
         {
-            var gameEvent = new MakeDirectTradeOfferEvent(this.playerIdsByName[playerName], wantedResources);
+            var gameEvent = new MakeDirectTradeOfferEvent(this.playerIdsByName[buyingPlayerName], wantedResources);
             var eventInstruction = new MakeDirectTradeOfferEventInstruction(playerName, gameEvent);
             this.instructions.Add(eventInstruction);
             return this;
