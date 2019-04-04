@@ -50,6 +50,8 @@ namespace Jabberwocky.SoC.Library
         }
         #endregion
 
+        public bool IsFinished { get; private set; }
+
         private event Action<Exception> GameExceptionEvent;
 
         #region Methods
@@ -143,6 +145,10 @@ namespace Jabberwocky.SoC.Library
                     this.log.Add($"ERROR: {e.Message}: {e.StackTrace}");
                     this.GameExceptionEvent?.Invoke(e);
                 }
+                finally
+                {
+                    this.IsFinished = true;
+                }
             });
         }
 
@@ -219,7 +225,7 @@ namespace Jabberwocky.SoC.Library
         private void MainGameLoop()
         {
             if (this.isQuitting)
-                return;
+                throw new TaskCanceledException();
 
             this.playerIndex = -1;
             this.StartTurn();
@@ -402,28 +408,20 @@ namespace Jabberwocky.SoC.Library
 
         private void StartTurn()
         {
-            try
+            this.ChangeToNextPlayer();
+
+            this.SendStartPlayerTurnEvent();
+            this.numberGenerator.RollTwoDice(out this.dice1, out this.dice2);
+            this.SendDiceRollEvent();
+
+            var resourceRoll = this.dice1 + this.dice2;
+            if (resourceRoll != 7)
             {
-                this.ChangeToNextPlayer();
-
-                this.SendStartPlayerTurnEvent();
-                this.numberGenerator.RollTwoDice(out this.dice1, out this.dice2);
-                this.SendDiceRollEvent();
-
-                var resourceRoll = this.dice1 + this.dice2;
-                if (resourceRoll != 7)
-                {
-                    this.CollectResourcesAtStartOfTurn(resourceRoll);
-                }
-                else
-                {
-
-                }
+                this.CollectResourcesAtStartOfTurn(resourceRoll);
             }
-            catch (Exception e)
+            else
             {
-                if (!this.isQuitting)
-                    this.GameExceptionEvent?.Invoke(e);
+
             }
         }
 

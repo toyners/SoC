@@ -142,7 +142,7 @@ namespace SoC.Library.ScenarioTests
                     break;
             }
 
-            gameServer.Quit();
+            this.QuitGame(gameServer);
 
             gameServer.SaveLog(@"GameServer.log");
             this.playerAgents.ForEach(playerAgent => {
@@ -182,9 +182,17 @@ namespace SoC.Library.ScenarioTests
                 throw new TimeoutException(timeOutMessage);
         }
 
-        public ScenarioRunner SkipVerification()
+        private void QuitGame(LocalGameServer gameServer)
         {
-            ((EventInstruction)this.LastInstruction).Verify = false;
+            gameServer.Quit();
+
+            while (!gameServer.IsFinished)
+                Thread.Sleep(50);
+        }
+
+        public ScenarioRunner VerboseLogging()
+        {
+            ((EventInstruction)this.LastInstruction).Verbose = true;
             return this;
         }
 
@@ -276,9 +284,9 @@ namespace SoC.Library.ScenarioTests
             return this;
         }
 
-        public ScenarioRunner WithPlayer(string playerName)
+        public ScenarioRunner WithPlayer(string playerName, bool verboseLogging = false)
         {
-            var playerAgent = new PlayerAgent(playerName);
+            var playerAgent = new PlayerAgent(playerName, verboseLogging);
             this.playerAgents.Add(playerAgent);
             this.playerIdsByName.Add(playerAgent.Name, playerAgent.Id);
             return this;

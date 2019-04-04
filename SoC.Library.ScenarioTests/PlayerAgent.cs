@@ -9,7 +9,6 @@ namespace SoC.Library.ScenarioTests
     using Jabberwocky.SoC.Library;
     using Jabberwocky.SoC.Library.GameEvents;
     using Newtonsoft.Json.Linq;
-    using NUnit.Framework;
     using SoC.Library.ScenarioTests.Instructions;
 
     internal class PlayerAgent
@@ -18,9 +17,11 @@ namespace SoC.Library.ScenarioTests
         private readonly List<GameEvent> actualEvents = new List<GameEvent>();
         private readonly ConcurrentQueue<GameEvent> actualEventQueue = new ConcurrentQueue<GameEvent>();
         private readonly List<GameEvent> expectedEvents = new List<GameEvent>();
+        private readonly HashSet<GameEvent> expectedEventsWithVerboseLogging = new HashSet<GameEvent>();
         private readonly GameController gameController;
         private readonly List<Instruction> instructions = new List<Instruction>();
         private readonly ILog log = new Log();
+        private readonly bool verboseLogging;
         private readonly Dictionary<GameEvent, bool> verificationStatusByGameEvent = new Dictionary<GameEvent, bool>();
         private int actualEventIndex;
         private int expectedEventIndex;
@@ -30,9 +31,10 @@ namespace SoC.Library.ScenarioTests
         #endregion
 
         #region Construction
-        public PlayerAgent(string name)
+        public PlayerAgent(string name, bool verboseLogging = false)
         {
             this.Name = name;
+            this.verboseLogging = verboseLogging;
             this.Id = Guid.NewGuid();
             this.gameController = new GameController();
             this.gameController.GameExceptionEvent += this.GameExceptionEventHandler;
@@ -145,8 +147,10 @@ namespace SoC.Library.ScenarioTests
                 {
                     this.log.Add($"Storing expected event: {eventInstruction.GetType().Name}");
                     this.instructionIndex++;
-                    if (eventInstruction.Verify)
-                        this.StoreExpectedEvent(eventInstruction.GetEvent());
+                    var expectedEvent = eventInstruction.GetEvent();
+                    if (eventInstruction.Verbose)
+                        this.expectedEventsWithVerboseLogging.Add(expectedEvent);
+                    this.StoreExpectedEvent(expectedEvent);
                 }
                 else if (instruction is PlayerStateInstruction playerStateInstruction)
                 {
@@ -244,9 +248,16 @@ namespace SoC.Library.ScenarioTests
             var actualJSON = JToken.Parse(actualEvent.ToJSONString());
             var result = JToken.DeepEquals(expectedJSON, actualJSON);
 
-            this.log.Add($"{(result ? "MATCHED" : "NOT MATCHED")}");
-            this.log.Add($" EXPECTED: {expectedJSON}");
-            this.log.Add($" ACTUAL: {actualJSON}");
+            if (this.verboseLogging || this.expectedEventsWithVerboseLogging.Contains(expectedEvent))
+            {
+                this.log.Add($"{(result ? "MATCHED" : "NOT MATCHED")}");
+                this.log.Add($" EXPECTED: {expectedJSON}");
+                this.log.Add($" ACTUAL: {actualJSON}");
+            }
+            else
+            {
+                this.log.Add($"{(result ? "MATCHED" : "NOT MATCHED")} - Expected {expectedEvent.SimpleTypeName}, Actual {actualEvent.SimpleTypeName}");
+            }
 
             return result;
         }
