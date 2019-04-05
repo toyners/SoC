@@ -80,6 +80,53 @@ namespace SoC.Library.ScenarioTests
         }
 
         [Scenario]
+        public void Scenario_AllPlayersCollectResourcesAsPartOfTurnStart(string[] args)
+        {
+            this.CompletePlayerInfrastructureSetup(args)
+                .WithNoResourceCollection()
+                .WhenDiceRollEvent(Adam, 3, 3)
+                .WhenResourceCollectionEvent(Adam)
+                    .State(Adam)
+                    .Resources(ResourceClutch.OneGrain)
+                    .End()
+                .Run();
+            /*var localGameController = this.CreateStandardLocalGameControllerScenarioRunner_Old()
+                .PlayerTurn(MainPlayerName, 4, 4)
+                    .ResourceCollectedEvent(MainPlayerName,
+                        new Tuple<uint, ResourceClutch>(MainPlayerFirstSettlementLocation, ResourceClutch.OneBrick))
+                    .ResourceCollectedEvent(FirstOpponentName,
+                        new Tuple<uint, ResourceClutch>(FirstOpponentSecondSettlementLocation, ResourceClutch.OneGrain))
+                    .EndTurn()
+                .PlayerTurn(FirstOpponentName, 4, 4)
+                    .ResourceCollectedEvent(MainPlayerName,
+                        new Tuple<uint, ResourceClutch>(MainPlayerFirstSettlementLocation, ResourceClutch.OneBrick))
+                    .ResourceCollectedEvent(FirstOpponentName,
+                        new Tuple<uint, ResourceClutch>(FirstOpponentSecondSettlementLocation, ResourceClutch.OneGrain))
+                    .EndTurn()
+                .PlayerTurn(SecondOpponentName, 3, 3)
+                    .ResourceCollectedEvent(FirstOpponentName,
+                            new Tuple<uint, ResourceClutch>(FirstOpponentFirstSettlementLocation, ResourceClutch.OneOre))
+                    .ResourceCollectedEvent(SecondOpponentName,
+                        new Tuple<uint, ResourceClutch>(SecondOpponentFirstSettlementLocation, ResourceClutch.OneLumber),
+                        new Tuple<uint, ResourceClutch>(SecondOpponentSecondSettlementLocation, ResourceClutch.OneLumber))
+                    .ResourceCollectedEvent(ThirdOpponentName,
+                        new Tuple<uint, ResourceClutch>(ThirdOpponentFirstSettlementLocation, ResourceClutch.OneOre))
+                    .EndTurn()
+                .PlayerTurn(ThirdOpponentName, 1, 2)
+                    .ResourceCollectedEvent(SecondOpponentName,
+                        new Tuple<uint, ResourceClutch>(SecondOpponentSecondSettlementLocation, ResourceClutch.OneOre))
+                    .EndTurn()
+                .PlayerTurn(MainPlayerName, 6, 4)
+                    .ResourceCollectedEvent(MainPlayerName,
+                            new Tuple<uint, ResourceClutch>(MainPlayerFirstSettlementLocation, ResourceClutch.OneWool))
+                    .ResourceCollectedEvent(FirstOpponentName,
+                            new Tuple<uint, ResourceClutch>(FirstOpponentSecondSettlementLocation, ResourceClutch.OneWool))
+                    .EndTurn()
+                .Build()
+                .Run_Old();*/
+        }
+
+        [Scenario]
         public void Scenario_PlayerTradesOneResourceWithPlayer(string[] args)
         {
             var adamResources = ResourceClutch.OneWool;

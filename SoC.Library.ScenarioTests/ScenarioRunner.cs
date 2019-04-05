@@ -182,6 +182,11 @@ namespace SoC.Library.ScenarioTests
                 throw new TimeoutException(timeOutMessage);
         }
 
+        internal ScenarioRunner WhenResourceCollectionEvent(string playerName)
+        {
+            throw new NotImplementedException();
+        }
+
         private void QuitGame(LocalGameServer gameServer)
         {
             gameServer.Quit();
