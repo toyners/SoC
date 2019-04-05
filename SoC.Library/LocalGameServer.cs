@@ -45,7 +45,7 @@ namespace Jabberwocky.SoC.Library
             this.turnTimer = new GameServerTimer();
             this.idGenerator = () => { return Guid.NewGuid(); };
             this.tokenManager = new TokenManager();
-            this.eventRaiser = new EventRaiser(this.log);
+            this.eventRaiser = new EventRaiser();
             this.actionManager = new ActionManager();
         }
         #endregion
@@ -165,20 +165,22 @@ namespace Jabberwocky.SoC.Library
 
         private void CollectResourcesAtStartOfTurn(uint resourceRoll)
         {
-            var resources = this.gameBoard.GetResourcesForRoll(resourceRoll);
+            var resourcesCollectedByPlayerId = this.gameBoard.GetResourcesForRoll(resourceRoll);
             foreach (var player in this.players)
             {
-                if (!resources.TryGetValue(player.Id, out var resourcesCollectionForPlayer))
+                if (!resourcesCollectedByPlayerId.TryGetValue(player.Id, out var resourcesCollectedForPlayer))
                     continue;
 
-                var resourcesCollectionOrderedByLocation = resourcesCollectionForPlayer
+                var resourcesCollectedOrderedByLocation = resourcesCollectedForPlayer
                     .OrderBy(rc => rc.Location).ToArray();
 
-                foreach (var resourceCollection in resourcesCollectionForPlayer)
+                foreach (var resourceCollection in resourcesCollectedForPlayer)
                     player.AddResources(resourceCollection.Resources);
 
-                var resourcesCollectedEvent = new ResourcesCollectedEvent(player.Id, resourcesCollectionOrderedByLocation);
-                this.eventRaiser.RaiseEvent(resourcesCollectedEvent, null);
+                var resourcesCollectedEvent = new ResourcesCollectedEvent(player.Id, resourcesCollectedOrderedByLocation);
+
+                this.RaiseEvent(resourcesCollectedEvent, player);
+                this.RaiseEvent(resourcesCollectedEvent, this.PlayersExcept(player.Id));
             }
         }
 
@@ -277,14 +279,8 @@ namespace Jabberwocky.SoC.Library
             var token = this.tokenManager.CreateNewToken(
                     this.playersById[this.currentPlayer.Id]);
 
-            this.eventRaiser.RaiseEvent(
-                acceptTradeEvent,
-                this.currentPlayer.Id,
-                token);
-
-            this.eventRaiser.RaiseEvent(
-                acceptTradeEvent,
-                this.PlayersExcept(this.currentPlayer.Id));
+            this.RaiseEvent(acceptTradeEvent, this.currentPlayer, token);
+            this.RaiseEvent(acceptTradeEvent, this.PlayersExcept(this.currentPlayer.Id));
         }
 
         private void PlayerActionEventHandler(GameToken token, PlayerAction playerAction)
@@ -306,13 +302,9 @@ namespace Jabberwocky.SoC.Library
                     this.playersById[answerDirectTradeOfferAction.InitialPlayerId]);
 
             // Initial player gets chance to confirm. 
-            var message = $"Sending {this.ToPrettyString(answerDirectTradeOfferEvent)} " +
-                $"to {this.playersById[answerDirectTradeOfferAction.InitialPlayerId].Name}, {token}";
-            this.log.Add(message);
-
-            this.eventRaiser.RaiseEvent(
+            this.RaiseEvent(
                 answerDirectTradeOfferEvent,
-                answerDirectTradeOfferAction.InitialPlayerId,
+                this.playersById[answerDirectTradeOfferAction.InitialPlayerId],
                 token);
 
             // Other two players gets informational event
@@ -323,11 +315,7 @@ namespace Jabberwocky.SoC.Library
                     answerDirectTradeOfferAction.InitiatingPlayerId,
                     answerDirectTradeOfferAction.InitialPlayerId);
 
-            message = $"Sending {this.ToPrettyString(answerDirectTradeOfferEvent)} " +
-                $"to {string.Join(", ", otherPlayers.Select(player => player.Name))}";
-            this.log.Add(message);
-
-            this.eventRaiser.RaiseEvent(informationalAnswerDirectTradeOfferEvent, otherPlayers);
+            this.RaiseEvent(informationalAnswerDirectTradeOfferEvent, otherPlayers);
         }
 
         private void ProcessMakeDirectTradeOfferAction(MakeDirectTradeOfferAction makeDirectTradeOfferAction)
@@ -378,10 +366,7 @@ namespace Jabberwocky.SoC.Library
                 var requestStateEvent = new RequestStateEvent(requestStateAction.InitiatingPlayerId);
                 requestStateEvent.Resources = player.Resources;
 
-                var message = $"Sending {this.ToPrettyString(requestStateEvent)} to {player.Name}";
-                this.log.Add(message);
-
-                this.eventRaiser.RaiseEvent(requestStateEvent, requestStateAction.InitiatingPlayerId);
+                this.RaiseEvent(requestStateEvent, player);
                 return;
             }
 
@@ -394,10 +379,18 @@ namespace Jabberwocky.SoC.Library
             this.eventRaiser.RaiseEvent(gameEvent);
         }
 
+        private void RaiseEvent(GameEvent gameEvent, IEnumerable<IPlayer> otherPlayers)
+        {
+            var message = $"Sending {this.ToPrettyString(gameEvent)} " +
+                $"to {string.Join(", ", otherPlayers.Select(player => player.Name))}";
+            this.log.Add(message);
+            this.eventRaiser.RaiseEvent(gameEvent, otherPlayers);
+        }
+
         private void RaiseEvent(GameEvent gameEvent, IPlayer player, GameToken token = null)
         {
             if (token != null)
-                this.log.Add($"Sending {gameEvent.SimpleTypeName} to {player.Name} with token");
+                this.log.Add($"Sending {this.ToPrettyString(gameEvent)} to {player.Name} with token {token}");
             else
                 this.log.Add($"Sending {gameEvent.SimpleTypeName} to {player.Name} without token");
             this.eventRaiser.RaiseEvent(gameEvent, player.Id, token);
@@ -426,18 +419,13 @@ namespace Jabberwocky.SoC.Library
         {
             var token = this.tokenManager.CreateNewToken(this.currentPlayer);
             var diceRollEvent = new DiceRollEvent(this.currentPlayer.Id, this.dice1, this.dice2);
-            var message = $"Sending {this.ToPrettyString(diceRollEvent)} " +
-                $"to {this.currentPlayer.Name}, {token}";
-            this.log.Add(message);
-            this.eventRaiser.RaiseEvent(diceRollEvent, this.currentPlayer.Id, token);
+            
+            this.RaiseEvent(diceRollEvent, this.currentPlayer, token);
         }
 
         private void SendStartPlayerTurnEvent()
         {
-            var startPlayerTurnEvent = new StartPlayerTurnEvent();
-            var message = $"Sending {this.ToPrettyString(startPlayerTurnEvent)} to {this.currentPlayer.Name}";
-            this.log.Add(message);
-            this.eventRaiser.RaiseEvent(startPlayerTurnEvent, this.currentPlayer.Id);
+            this.RaiseEvent(new StartPlayerTurnEvent(), this.currentPlayer);
         }
 
         private PlayerAction WaitForPlayerAction()
@@ -482,7 +470,7 @@ namespace Jabberwocky.SoC.Library
 
         private string ToPrettyString(GameEvent gameEvent)
         {
-            var message = $"{gameEvent.GetType().Name}";
+            var message = $"{gameEvent.SimpleTypeName}";
             if (gameEvent is DiceRollEvent diceRollEvent)
                 message += $", Dice rolls {diceRollEvent.Dice1} {diceRollEvent.Dice2}";
             return message;
@@ -534,12 +522,6 @@ namespace Jabberwocky.SoC.Library
         {
             private Dictionary<Guid, Action<GameEvent, GameToken>> gameEventHandlersByPlayerId = new Dictionary<Guid, Action<GameEvent, GameToken>>();
             private event Action<GameEvent, GameToken> gameEventHandler;
-            private ILog log;
-
-            public EventRaiser(ILog log)
-            {
-                this.log = log;
-            }
 
             public bool CanRaiseEvents { get; set; } = true;
 

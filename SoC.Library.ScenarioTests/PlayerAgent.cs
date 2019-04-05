@@ -248,7 +248,7 @@ namespace SoC.Library.ScenarioTests
             var actualJSON = JToken.Parse(actualEvent.ToJSONString());
             var result = JToken.DeepEquals(expectedJSON, actualJSON);
 
-            if (!result && expectedEvent.GetType() == actualEvent.GetType() || 
+            if ((!result && expectedEvent.GetType() == actualEvent.GetType()) || 
                 this.verboseLogging || 
                 this.expectedEventsWithVerboseLogging.Contains(expectedEvent))
             {
