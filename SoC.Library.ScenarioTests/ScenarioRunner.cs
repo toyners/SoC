@@ -182,11 +182,6 @@ namespace SoC.Library.ScenarioTests
                 throw new TimeoutException(timeOutMessage);
         }
 
-        internal ScenarioRunner WhenResourceCollectionEvent(string playerName)
-        {
-            throw new NotImplementedException();
-        }
-
         private void QuitGame(LocalGameServer gameServer)
         {
             gameServer.Quit();
@@ -286,6 +281,14 @@ namespace SoC.Library.ScenarioTests
         public ScenarioRunner WithNoResourceCollection()
         {
             this.gameBoard = new ScenarioGameBoardWithNoResourcesCollected();
+            return this;
+        }
+
+        public ScenarioRunner WhenResourceCollectedEvent(string playerName, ResourceCollection[] collectedResources)
+        {
+            var gameEvent = new ResourcesCollectedEvent(this.playerIdsByName[playerName], collectedResources);
+            var eventInstruction = new ResourceCollectedEventInstruction(playerName, gameEvent);
+            this.instructions.Add(eventInstruction);
             return this;
         }
 

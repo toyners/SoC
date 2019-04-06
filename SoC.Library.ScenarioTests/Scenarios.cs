@@ -85,7 +85,7 @@ namespace SoC.Library.ScenarioTests
             this.CompletePlayerInfrastructureSetup(args)
                 .WithNoResourceCollection()
                 .WhenDiceRollEvent(Adam, 3, 3)
-                .WhenResourceCollectionEvent(Adam)
+                .WhenResourceCollectedEvent(Adam, null)
                     .State(Adam)
                     .Resources(ResourceClutch.OneGrain)
                     .End()
