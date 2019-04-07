@@ -284,8 +284,11 @@ namespace SoC.Library.ScenarioTests
             return this;
         }
 
-        public ScenarioRunner WhenResourceCollectedEvent(string playerName, Dictionary<Guid, ResourceCollection[]> resourcesCollectedByPlayerId)
+        public ScenarioRunner WhenResourceCollectedEvent(string playerName, Dictionary<string, ResourceCollection[]> resourcesCollectedByPlayerName)
         {
+            var resourcesCollectedByPlayerId = new Dictionary<Guid, ResourceCollection[]>();
+            foreach (var kv in resourcesCollectedByPlayerName)
+                resourcesCollectedByPlayerId.Add(this.playerIdsByName[kv.Key], kv.Value);
             var gameEvent = new ResourcesCollectedEvent(resourcesCollectedByPlayerId);
             var eventInstruction = new ResourceCollectedEventInstruction(playerName, gameEvent);
             this.instructions.Add(eventInstruction);

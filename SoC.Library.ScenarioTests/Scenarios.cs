@@ -82,32 +82,27 @@ namespace SoC.Library.ScenarioTests
         [Scenario]
         public void Scenario_AllPlayersCollectResourcesAsPartOfTurnStart(string[] args)
         {
-            var expectedResourcesCollectedByPlayerId = new Dictionary<Guid, ResourceCollection[]>();
+            var expectedResourcesCollectedByPlayerName = new Dictionary<string, ResourceCollection[]>();
+            expectedResourcesCollectedByPlayerName.Add(Adam, new ResourceCollection[] {
+                new ResourceCollection(Adam_FirstSettlementLocation, ResourceClutch.OneBrick)
+            });
+            expectedResourcesCollectedByPlayerName.Add(Babara, new ResourceCollection[] {
+                new ResourceCollection(Babara_SecondSettlementLocation, ResourceClutch.OneGrain)
+            });
             this.CompletePlayerInfrastructureSetup(args)
                 .WithNoResourceCollection()
                 .WhenDiceRollEvent(Adam, 4, 4)
-                .WhenResourceCollectedEvent(Adam, expectedResourcesCollectedByPlayerId)
+                .WhenResourceCollectedEvent(Adam, expectedResourcesCollectedByPlayerName)
                     .State(Adam).Resources(ResourceClutch.OneGrain).End()
-                .WhenResourceCollectedEvent(Babara, expectedResourcesCollectedByPlayerId)
-                    .State(Babara)
-                    .Resources(ResourceClutch.OneGrain)
-                    .End()
-                .WhenResourceCollectedEvent(Charlie, null)
-                    .State(Charlie)
-                    .Resources(ResourceClutch.OneGrain)
-                    .End()
-                .WhenResourceCollectedEvent(Dana, null)
-                    .State(Dana)
-                    .Resources(ResourceClutch.OneGrain)
-                    .End()
+                .WhenResourceCollectedEvent(Babara, expectedResourcesCollectedByPlayerName)
+                    .State(Babara).Resources(ResourceClutch.OneGrain).End()
+                .WhenResourceCollectedEvent(Charlie, expectedResourcesCollectedByPlayerName)
+                    .State(Charlie).Resources(ResourceClutch.OneGrain).End()
+                .WhenResourceCollectedEvent(Dana, expectedResourcesCollectedByPlayerName)
+                    .State(Dana).Resources(ResourceClutch.OneGrain).End()
+                .EndTurn()
                 .Run();
             /*var localGameController = this.CreateStandardLocalGameControllerScenarioRunner_Old()
-                .PlayerTurn(MainPlayerName, 4, 4)
-                    .ResourceCollectedEvent(MainPlayerName,
-                        new Tuple<uint, ResourceClutch>(MainPlayerFirstSettlementLocation, ResourceClutch.OneBrick))
-                    .ResourceCollectedEvent(FirstOpponentName,
-                        new Tuple<uint, ResourceClutch>(FirstOpponentSecondSettlementLocation, ResourceClutch.OneGrain))
-                    .EndTurn()
                 .PlayerTurn(FirstOpponentName, 4, 4)
                     .ResourceCollectedEvent(MainPlayerName,
                         new Tuple<uint, ResourceClutch>(MainPlayerFirstSettlementLocation, ResourceClutch.OneBrick))
