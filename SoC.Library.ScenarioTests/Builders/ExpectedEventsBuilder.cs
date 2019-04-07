@@ -180,7 +180,7 @@ namespace Jabberwocky.SoC.Library.ScenarioTests.Builders
             var index = 0;
             foreach (var pair in resourceCollectionPairs)
                 rc[index++] = new ResourceCollection(pair.Item1, pair.Item2);
-            this.expectedEvents.Add(new ResourcesCollectedEvent(playerId, rc));
+            //this.expectedEvents.Add(new ResourcesCollectedEvent(/*playerId,*/ rc));
         }
 
         

@@ -82,11 +82,22 @@ namespace SoC.Library.ScenarioTests
         [Scenario]
         public void Scenario_AllPlayersCollectResourcesAsPartOfTurnStart(string[] args)
         {
+            var expectedResourcesCollectedByPlayerId = new Dictionary<Guid, ResourceCollection[]>();
             this.CompletePlayerInfrastructureSetup(args)
                 .WithNoResourceCollection()
-                .WhenDiceRollEvent(Adam, 3, 3)
-                .WhenResourceCollectedEvent(Adam, null)
-                    .State(Adam)
+                .WhenDiceRollEvent(Adam, 4, 4)
+                .WhenResourceCollectedEvent(Adam, expectedResourcesCollectedByPlayerId)
+                    .State(Adam).Resources(ResourceClutch.OneGrain).End()
+                .WhenResourceCollectedEvent(Babara, expectedResourcesCollectedByPlayerId)
+                    .State(Babara)
+                    .Resources(ResourceClutch.OneGrain)
+                    .End()
+                .WhenResourceCollectedEvent(Charlie, null)
+                    .State(Charlie)
+                    .Resources(ResourceClutch.OneGrain)
+                    .End()
+                .WhenResourceCollectedEvent(Dana, null)
+                    .State(Dana)
                     .Resources(ResourceClutch.OneGrain)
                     .End()
                 .Run();

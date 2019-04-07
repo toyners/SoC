@@ -166,7 +166,9 @@ namespace Jabberwocky.SoC.Library
         private void CollectResourcesAtStartOfTurn(uint resourceRoll)
         {
             var resourcesCollectedByPlayerId = this.gameBoard.GetResourcesForRoll(resourceRoll);
-            foreach (var player in this.players)
+            var resourcesCollectedEvent = new ResourcesCollectedEvent(resourcesCollectedByPlayerId);
+            this.RaiseEvent(resourcesCollectedEvent);
+            /*foreach (var player in this.players)
             {
                 if (!resourcesCollectedByPlayerId.TryGetValue(player.Id, out var resourcesCollectedForPlayer))
                     continue;
@@ -181,7 +183,7 @@ namespace Jabberwocky.SoC.Library
 
                 this.RaiseEvent(resourcesCollectedEvent, player);
                 this.RaiseEvent(resourcesCollectedEvent, this.PlayersExcept(player.Id));
-            }
+            }*/
         }
 
         private void GameSetup()

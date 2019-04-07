@@ -253,11 +253,12 @@ namespace SoC.Harness.ViewModels
                 else if (gameEvent is ResourcesCollectedEvent resourcesCollectedEvent)
                 {
                     var playerViewModel = this.playerViewModelsById[resourcesCollectedEvent.PlayerId];
-                    foreach (var resourceCollection in resourcesCollectedEvent.ResourceCollection)
+                    foreach (var resourceCollection in resourcesCollectedEvent.ResourcesCollectedByPlayerId)
                     {
-                        playerViewModel.Update(resourceCollection.Resources, true);
-                        var line = $"Collected {resourceCollection.Resources} from {resourceCollection.Location}";
-                        playerViewModel.UpdateHistory(line);
+                        // TODO: Fix this for new resourcesCollectedEvent
+                        //playerViewModel.Update(resourceCollection.Resources, true);
+                        //var line = $"Collected {resourceCollection.Resources} from {resourceCollection.Location}";
+                        //playerViewModel.UpdateHistory(line);
                     }
                 }
                 else

@@ -311,11 +311,11 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
             foreach (var pair in resourceCollectionPairs)
                 rc[index++] = new ResourceCollection(pair.Item1, pair.Item2);
 
-            this.instructions_old.Enqueue(new ResourcesCollectedEventInstruction()
+            /*this.instructions_old.Enqueue(new ResourcesCollectedEventInstruction()
             {
                 PlayerName = playerName,
                 ResourceCollections = rc
-            });
+            });*/
 
             return this;
         }
@@ -513,9 +513,9 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
             }
             else if (gameEvent is ResourcesCollectedEvent resourcesCollectedEvent)
             {
-                message += $"Resources collected entries count is {resourcesCollectedEvent.ResourceCollection.Length}";
-                foreach (var entry in resourcesCollectedEvent.ResourceCollection)
-                    message += $"\r\nLocation {entry.Location}, Resources {entry.Resources}";
+                //message += $"Resources collected entries count is {resourcesCollectedEvent.ResourcesCollectedByPlayerId.Length}";
+                //foreach (var entry in resourcesCollectedEvent.ResourcesCollectedByPlayerId)
+                //    message += $"\r\nLocation {entry.Location}, Resources {entry.Resources}";
             }
             else if (gameEvent is ResourceTransactionEvent resourceTransactionEvent)
             {
@@ -754,7 +754,7 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
             }
         }
 
-        private class ResourcesCollectedEventInstruction : EventInstruction_Old
+        /*private class ResourcesCollectedEventInstruction : EventInstruction_Old
         {
             public string PlayerName;
             public ResourceCollection[] ResourceCollections;
@@ -763,7 +763,7 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
             {
                 return new ResourcesCollectedEvent(playersByName[this.PlayerName].Id, this.ResourceCollections);
             }
-        }
+        }*/
         #endregion
     }
 
