@@ -398,6 +398,12 @@ namespace Jabberwocky.SoC.Library
             this.eventRaiser.RaiseEvent(gameEvent, player.Id, token);
         }
 
+        private void RaiseEventWithReusedToken(GameEvent gameEvent, IPlayer player)
+        {
+            var token = this.tokenManager.GetTokenForPlayer(player);
+            this.RaiseEvent(gameEvent, player, token);
+        }
+
         private void StartTurn()
         {
             this.ChangeToNextPlayer();
@@ -419,15 +425,19 @@ namespace Jabberwocky.SoC.Library
 
         private void SendDiceRollEvent()
         {
-            var token = this.tokenManager.CreateNewToken(this.currentPlayer);
             var diceRollEvent = new DiceRollEvent(this.currentPlayer.Id, this.dice1, this.dice2);
             
-            this.RaiseEvent(diceRollEvent, this.currentPlayer, token);
+            this.RaiseEventWithReusedToken(diceRollEvent, this.currentPlayer);
+
+            this.RaiseEvent(new DiceRollEvent(this.currentPlayer.Id, this.dice1, this.dice2),
+                this.PlayersExcept(this.currentPlayer.Id));
+
         }
 
         private void SendStartPlayerTurnEvent()
         {
-            this.RaiseEvent(new StartPlayerTurnEvent(), this.currentPlayer);
+            var token = this.tokenManager.CreateNewToken(this.currentPlayer);
+            this.RaiseEvent(new StartPlayerTurnEvent(), this.currentPlayer, token);
         }
 
         private PlayerAction WaitForPlayerAction()
@@ -489,6 +499,7 @@ namespace Jabberwocky.SoC.Library
         {
             GameToken CreateNewToken(IPlayer player);
             IPlayer GetPlayerForToken(GameToken token);
+            GameToken GetTokenForPlayer(IPlayer player);
             bool ValidateToken(GameToken token);
         }
 
@@ -581,15 +592,12 @@ namespace Jabberwocky.SoC.Library
                 return token;
             }
 
-            public IPlayer GetPlayerForToken(GameToken token)
-            {
-                return this.playersByToken.FirstOrDefault(t => t.Key == token).Value;
-            }
+            public IPlayer GetPlayerForToken(GameToken token) => this.playersByToken[token];
 
-            public bool ValidateToken(GameToken token)
-            {
-                return token != null && this.playersByToken.ContainsKey(token);
-            }
+            public GameToken GetTokenForPlayer(IPlayer player) => this.tokensByPlayer[player];
+
+            public bool ValidateToken(GameToken token) => 
+                token != null && this.playersByToken.ContainsKey(token);
         }
         #endregion
     }
