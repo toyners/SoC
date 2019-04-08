@@ -20,11 +20,11 @@ namespace Jabberwocky.SoC.Library
         public static ResourceClutch OneWool = new ResourceClutch(0, 0, 0, 0, 1);
         public static ResourceClutch OneOfEach = new ResourceClutch(1, 1, 1, 1, 1);
 
-        public Int32 BrickCount;
-        public Int32 GrainCount;
-        public Int32 LumberCount;
-        public Int32 OreCount;
-        public Int32 WoolCount;
+        public int BrickCount;
+        public int GrainCount;
+        public int LumberCount;
+        public int OreCount;
+        public int WoolCount;
         #endregion
 
         #region Construction
@@ -42,7 +42,7 @@ namespace Jabberwocky.SoC.Library
             throw new Exception(resourceType + " not recognised.");
         }
 
-        public ResourceClutch(Int32 brickCount, Int32 grainCount, Int32 lumberCount, Int32 oreCount, Int32 woolCount)
+        public ResourceClutch(int brickCount, int grainCount, int lumberCount, int oreCount, int woolCount)
         {
             this.BrickCount = brickCount;
             this.GrainCount = grainCount;
@@ -62,11 +62,11 @@ namespace Jabberwocky.SoC.Library
         #endregion
 
         #region Properties
-        public Int32 Count { get { return this.BrickCount + this.GrainCount + this.LumberCount + this.OreCount + this.WoolCount; } }
+        public int Count { get { return this.BrickCount + this.GrainCount + this.LumberCount + this.OreCount + this.WoolCount; } }
         #endregion
 
         #region Methods
-        public static ResourceClutch operator *(ResourceClutch operand1, Int32 operand2)
+        public static ResourceClutch operator *(ResourceClutch operand1, int operand2)
         {
             if (operand2 < 0)
             {
@@ -76,7 +76,7 @@ namespace Jabberwocky.SoC.Library
             return MultiplyByNaturalNumber(operand1, operand2);
         }
 
-        public static ResourceClutch operator *(Int32 operand1, ResourceClutch operand2)
+        public static ResourceClutch operator *(int operand1, ResourceClutch operand2)
         {
             if (operand1 < 0)
             {
@@ -86,17 +86,17 @@ namespace Jabberwocky.SoC.Library
             return MultiplyByNaturalNumber(operand2, operand1);
         }
 
-        public static Boolean operator ==(ResourceClutch r1, ResourceClutch r2)
+        public static bool operator ==(ResourceClutch r1, ResourceClutch r2)
         {
             return r1.Equals(r2);
         }
 
-        public static Boolean operator !=(ResourceClutch r1, ResourceClutch r2)
+        public static bool operator !=(ResourceClutch r1, ResourceClutch r2)
         {
             return !r1.Equals(r2);
         }
 
-        public static Boolean operator <=(ResourceClutch r1, ResourceClutch r2)
+        public static bool operator <=(ResourceClutch r1, ResourceClutch r2)
         {
             return r1.BrickCount <= r2.BrickCount &&
               r1.GrainCount <= r2.GrainCount &&
@@ -110,7 +110,7 @@ namespace Jabberwocky.SoC.Library
             return !(r1 <= r2);
         }
 
-        public static Boolean operator >=(ResourceClutch r1, ResourceClutch r2)
+        public static bool operator >=(ResourceClutch r1, ResourceClutch r2)
         {
             return r1.BrickCount >= r2.BrickCount &&
               r1.GrainCount >= r2.GrainCount &&
@@ -142,7 +142,7 @@ namespace Jabberwocky.SoC.Library
               r1.WoolCount + r2.WoolCount);
         }
 
-        public override Boolean Equals(Object obj)
+        public override bool Equals(Object obj)
         {
             var other = (ResourceClutch)obj;
 
@@ -153,7 +153,7 @@ namespace Jabberwocky.SoC.Library
              this.WoolCount == other.WoolCount;
         }
 
-        private static ResourceClutch MultiplyByNaturalNumber(ResourceClutch operand1, Int32 operand2)
+        private static ResourceClutch MultiplyByNaturalNumber(ResourceClutch operand1, int operand2)
         {
             return new ResourceClutch(
               operand1.BrickCount * operand2,
