@@ -82,90 +82,70 @@ namespace SoC.Library.ScenarioTests
         [Scenario]
         public void Scenario_AllPlayersCollectResourcesAsPartOfTurnStart(string[] args)
         {
-            var firstTurnCollectedResources = new Dictionary<string, ResourceCollection[]>()
-            {
-                { Adam, new ResourceCollection[] { new ResourceCollection(Adam_FirstSettlementLocation, ResourceClutch.OneBrick) } },
-                { Babara, new ResourceCollection[] { new ResourceCollection(Babara_SecondSettlementLocation, ResourceClutch.OneGrain) } }
-            };
+            var firstTurnCollectedResources = CreateExpectedCollectedResources()
+                .Add(Adam, Adam_FirstSettlementLocation, ResourceClutch.OneBrick)
+                .Add(Babara, Babara_SecondSettlementLocation, ResourceClutch.OneGrain)
+                .Build();
 
-            var secondTurnCollectedResources = new Dictionary<string, ResourceCollection[]>()
-            {
-                { Babara, new ResourceCollection[] {
-                    new ResourceCollection(Babara_FirstSettlementLocation, ResourceClutch.OneOre)
-                } },
-                { Charlie, new ResourceCollection[] {
-                    new ResourceCollection(Charlie_FirstSettlementLocation, ResourceClutch.OneLumber),
-                    new ResourceCollection(Charlie_SecondSettlementLocation, ResourceClutch.OneLumber)
-                } },
-                { Dana, new ResourceCollection[] {
-                    new ResourceCollection(Dana_FirstSettlementLocation, ResourceClutch.OneOre)
-                } }
-            };
+            var secondTurnCollectedResources = CreateExpectedCollectedResources()
+                .Add(Babara, Babara_FirstSettlementLocation, ResourceClutch.OneOre)
+                .Add(Charlie, Charlie_FirstSettlementLocation, ResourceClutch.OneLumber)
+                .Add(Charlie, Charlie_SecondSettlementLocation, ResourceClutch.OneLumber)
+                .Add(Dana, Dana_FirstSettlementLocation, ResourceClutch.OneOre)
+                .Build();
 
-            var thirdTurnCollectedResources = new Dictionary<string, ResourceCollection[]>()
-            {
-                { Charlie, new ResourceCollection[] {
-                    new ResourceCollection(Charlie_SecondSettlementLocation, ResourceClutch.OneOre)
-                } }
-            };
+            var thirdTurnCollectedResources = CreateExpectedCollectedResources()
+                .Add(Charlie, Charlie_SecondSettlementLocation, ResourceClutch.OneOre)
+                .Build();
 
-            var fourTurnCollectedResources = new Dictionary<string, ResourceCollection[]>()
-            {
-                { Adam, new ResourceCollection[] {
-                    new ResourceCollection(Adam_FirstSettlementLocation, ResourceClutch.OneWool)
-                } },
-                { Babara, new ResourceCollection[] {
-                    new ResourceCollection(Babara_SecondSettlementLocation, ResourceClutch.OneWool)
-                } }
-            };
+            var fourTurnCollectedResources = CreateExpectedCollectedResources()
+                .Add(Adam, Adam_FirstSettlementLocation, ResourceClutch.OneWool)
+                .Add(Babara, Babara_SecondSettlementLocation, ResourceClutch.OneWool)
+                .Build();
 
             this.CompletePlayerInfrastructureSetup(args)
                 .WithNoResourceCollection()
                 .WhenDiceRollEvent(Adam, 4, 4)
                 .WhenResourceCollectedEvent(Adam, firstTurnCollectedResources)
-                    .State(Adam).Resources(ResourceClutch.OneGrain).End()
+                    .State(Adam).Resources(ResourceClutch.OneBrick).End()
                 .WhenResourceCollectedEvent(Babara, firstTurnCollectedResources)
                     .State(Babara).Resources(ResourceClutch.OneGrain).End()
                 .WhenResourceCollectedEvent(Charlie, firstTurnCollectedResources)
-                    .State(Charlie).Resources(ResourceClutch.OneGrain).End()
+                    .State(Charlie).Resources(ResourceClutch.Zero).End()
                 .WhenResourceCollectedEvent(Dana, firstTurnCollectedResources)
-                    .State(Dana).Resources(ResourceClutch.OneGrain).End()
+                    .State(Dana).Resources(ResourceClutch.Zero).End()
                 .EndTurn()
                 .WhenDiceRollEvent(Babara, 3, 3)
+                .WhenResourceCollectedEvent(Adam, firstTurnCollectedResources)
+                    .State(Adam).Resources(ResourceClutch.OneBrick).End()
+                .WhenResourceCollectedEvent(Babara, firstTurnCollectedResources)
+                    .State(Babara).Resources(ResourceClutch.OneGrain + ResourceClutch.OneOre).End()
+                .WhenResourceCollectedEvent(Charlie, firstTurnCollectedResources)
+                    .State(Charlie).Resources(ResourceClutch.OneLumber * 2).End()
+                .WhenResourceCollectedEvent(Dana, firstTurnCollectedResources)
+                    .State(Dana).Resources(ResourceClutch.OneOre).End()
                 .EndTurn()
                 .WhenDiceRollEvent(Charlie, 1, 2)
+                .WhenResourceCollectedEvent(Adam, firstTurnCollectedResources)
+                    .State(Adam).Resources(ResourceClutch.OneBrick).End()
+                .WhenResourceCollectedEvent(Babara, firstTurnCollectedResources)
+                    .State(Babara).Resources(ResourceClutch.OneGrain + ResourceClutch.OneOre).End()
+                .WhenResourceCollectedEvent(Charlie, firstTurnCollectedResources)
+                    .State(Charlie).Resources((ResourceClutch.OneLumber * 2) + ResourceClutch.OneOre).End()
+                .WhenResourceCollectedEvent(Dana, firstTurnCollectedResources)
+                    .State(Dana).Resources(ResourceClutch.OneOre).End()
                 .EndTurn()
                 .WhenDiceRollEvent(Dana, 6, 4)
+                .WhenResourceCollectedEvent(Adam, firstTurnCollectedResources)
+                    .State(Adam).Resources(ResourceClutch.OneBrick + ResourceClutch.OneWool).End()
+                .WhenResourceCollectedEvent(Babara, firstTurnCollectedResources)
+                    .State(Babara).Resources(ResourceClutch.OneGrain + ResourceClutch.OneOre + ResourceClutch.OneWool).End()
+                .WhenResourceCollectedEvent(Charlie, firstTurnCollectedResources)
+                    .State(Charlie).Resources((ResourceClutch.OneLumber * 2) + ResourceClutch.OneOre).End()
+                .WhenResourceCollectedEvent(Dana, firstTurnCollectedResources)
+                    .State(Dana).Resources(ResourceClutch.OneOre).End()
                 .EndTurn()
                 .Run();
-            /*var localGameController = this.CreateStandardLocalGameControllerScenarioRunner_Old()
-                .PlayerTurn(FirstOpponentName, 4, 4)
-                    .ResourceCollectedEvent(MainPlayerName,
-                        new Tuple<uint, ResourceClutch>(MainPlayerFirstSettlementLocation, ResourceClutch.OneBrick))
-                    .ResourceCollectedEvent(FirstOpponentName,
-                        new Tuple<uint, ResourceClutch>(FirstOpponentSecondSettlementLocation, ResourceClutch.OneGrain))
-                    .EndTurn()
-                .PlayerTurn(SecondOpponentName, 3, 3)
-                    .ResourceCollectedEvent(FirstOpponentName,
-                            new Tuple<uint, ResourceClutch>(FirstOpponentFirstSettlementLocation, ResourceClutch.OneOre))
-                    .ResourceCollectedEvent(SecondOpponentName,
-                        new Tuple<uint, ResourceClutch>(SecondOpponentFirstSettlementLocation, ResourceClutch.OneLumber),
-                        new Tuple<uint, ResourceClutch>(SecondOpponentSecondSettlementLocation, ResourceClutch.OneLumber))
-                    .ResourceCollectedEvent(ThirdOpponentName,
-                        new Tuple<uint, ResourceClutch>(ThirdOpponentFirstSettlementLocation, ResourceClutch.OneOre))
-                    .EndTurn()
-                .PlayerTurn(ThirdOpponentName, 1, 2)
-                    .ResourceCollectedEvent(SecondOpponentName,
-                        new Tuple<uint, ResourceClutch>(SecondOpponentSecondSettlementLocation, ResourceClutch.OneOre))
-                    .EndTurn()
-                .PlayerTurn(MainPlayerName, 6, 4)
-                    .ResourceCollectedEvent(MainPlayerName,
-                            new Tuple<uint, ResourceClutch>(MainPlayerFirstSettlementLocation, ResourceClutch.OneWool))
-                    .ResourceCollectedEvent(FirstOpponentName,
-                            new Tuple<uint, ResourceClutch>(FirstOpponentSecondSettlementLocation, ResourceClutch.OneWool))
-                    .EndTurn()
-                .Build()
-                .Run_Old();*/
         }
 
         [Scenario]
@@ -203,6 +183,11 @@ namespace SoC.Library.ScenarioTests
                 .WhenAcceptDirectTradeEvent(Charlie, Babara, ResourceClutch.OneWool, Adam, ResourceClutch.OneGrain)
                 .WhenAcceptDirectTradeEvent(Dana, Babara, ResourceClutch.OneWool, Adam, ResourceClutch.OneGrain)
                 .Run();
+        }
+
+        private static CollectedResourcesBuilder CreateExpectedCollectedResources()
+        {
+            return new CollectedResourcesBuilder();
         }
 
         private ScenarioRunner CompletePlayerInfrastructureSetup(string[] args)

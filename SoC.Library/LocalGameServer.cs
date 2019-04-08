@@ -431,7 +431,6 @@ namespace Jabberwocky.SoC.Library
 
             this.RaiseEvent(new DiceRollEvent(this.currentPlayer.Id, this.dice1, this.dice2),
                 this.PlayersExcept(this.currentPlayer.Id));
-
         }
 
         private void SendStartPlayerTurnEvent()
