@@ -82,24 +82,60 @@ namespace SoC.Library.ScenarioTests
         [Scenario]
         public void Scenario_AllPlayersCollectResourcesAsPartOfTurnStart(string[] args)
         {
-            var expectedResourcesCollectedByPlayerName = new Dictionary<string, ResourceCollection[]>();
-            expectedResourcesCollectedByPlayerName.Add(Adam, new ResourceCollection[] {
-                new ResourceCollection(Adam_FirstSettlementLocation, ResourceClutch.OneBrick)
-            });
-            expectedResourcesCollectedByPlayerName.Add(Babara, new ResourceCollection[] {
-                new ResourceCollection(Babara_SecondSettlementLocation, ResourceClutch.OneGrain)
-            });
+            var firstTurnCollectedResources = new Dictionary<string, ResourceCollection[]>()
+            {
+                { Adam, new ResourceCollection[] { new ResourceCollection(Adam_FirstSettlementLocation, ResourceClutch.OneBrick) } },
+                { Babara, new ResourceCollection[] { new ResourceCollection(Babara_SecondSettlementLocation, ResourceClutch.OneGrain) } }
+            };
+
+            var secondTurnCollectedResources = new Dictionary<string, ResourceCollection[]>()
+            {
+                { Babara, new ResourceCollection[] {
+                    new ResourceCollection(Babara_FirstSettlementLocation, ResourceClutch.OneOre)
+                } },
+                { Charlie, new ResourceCollection[] {
+                    new ResourceCollection(Charlie_FirstSettlementLocation, ResourceClutch.OneLumber),
+                    new ResourceCollection(Charlie_SecondSettlementLocation, ResourceClutch.OneLumber)
+                } },
+                { Dana, new ResourceCollection[] {
+                    new ResourceCollection(Dana_FirstSettlementLocation, ResourceClutch.OneOre)
+                } }
+            };
+
+            var thirdTurnCollectedResources = new Dictionary<string, ResourceCollection[]>()
+            {
+                { Charlie, new ResourceCollection[] {
+                    new ResourceCollection(Charlie_SecondSettlementLocation, ResourceClutch.OneOre)
+                } }
+            };
+
+            var fourTurnCollectedResources = new Dictionary<string, ResourceCollection[]>()
+            {
+                { Adam, new ResourceCollection[] {
+                    new ResourceCollection(Adam_FirstSettlementLocation, ResourceClutch.OneWool)
+                } },
+                { Babara, new ResourceCollection[] {
+                    new ResourceCollection(Babara_SecondSettlementLocation, ResourceClutch.OneWool)
+                } }
+            };
+
             this.CompletePlayerInfrastructureSetup(args)
                 .WithNoResourceCollection()
                 .WhenDiceRollEvent(Adam, 4, 4)
-                .WhenResourceCollectedEvent(Adam, expectedResourcesCollectedByPlayerName)
+                .WhenResourceCollectedEvent(Adam, firstTurnCollectedResources)
                     .State(Adam).Resources(ResourceClutch.OneGrain).End()
-                .WhenResourceCollectedEvent(Babara, expectedResourcesCollectedByPlayerName)
+                .WhenResourceCollectedEvent(Babara, firstTurnCollectedResources)
                     .State(Babara).Resources(ResourceClutch.OneGrain).End()
-                .WhenResourceCollectedEvent(Charlie, expectedResourcesCollectedByPlayerName)
+                .WhenResourceCollectedEvent(Charlie, firstTurnCollectedResources)
                     .State(Charlie).Resources(ResourceClutch.OneGrain).End()
-                .WhenResourceCollectedEvent(Dana, expectedResourcesCollectedByPlayerName)
+                .WhenResourceCollectedEvent(Dana, firstTurnCollectedResources)
                     .State(Dana).Resources(ResourceClutch.OneGrain).End()
+                .EndTurn()
+                .WhenDiceRollEvent(Babara, 3, 3)
+                .EndTurn()
+                .WhenDiceRollEvent(Charlie, 1, 2)
+                .EndTurn()
+                .WhenDiceRollEvent(Dana, 6, 4)
                 .EndTurn()
                 .Run();
             /*var localGameController = this.CreateStandardLocalGameControllerScenarioRunner_Old()
