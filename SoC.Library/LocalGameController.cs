@@ -1243,7 +1243,7 @@ namespace Jabberwocky.SoC.Library
 
                 computerPlayer.PlaceStartingInfrastructure();
 
-                gameEvents.Add(new InfrastructureBuiltEvent(computerPlayer.Id, chosenSettlementLocation, chosenRoadSegmentEndLocation));
+                gameEvents.Add(new InfrastructurePlacedEvent(computerPlayer.Id, chosenSettlementLocation, chosenRoadSegmentEndLocation));
             }
 
             return gameEvents;
@@ -1277,7 +1277,7 @@ namespace Jabberwocky.SoC.Library
 
                 computerPlayer.PlaceStartingInfrastructure();
 
-                gameEvents.Add(new InfrastructureBuiltEvent(computerPlayer.Id, chosenSettlementLocation, chosenRoadSegmentEndLocation));
+                gameEvents.Add(new InfrastructurePlacedEvent(computerPlayer.Id, chosenSettlementLocation, chosenRoadSegmentEndLocation));
 
                 var initialResources = this.GetInitialResourcesForPlayer(chosenSettlementLocation);
                 computerPlayer.AddResources(initialResources.Resources);

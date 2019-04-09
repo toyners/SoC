@@ -63,6 +63,7 @@
     <Compile Include="Instructions\EventInstruction.cs" />
     <Compile Include="HumanPlayer.cs" />
     <Compile Include="ComputerPlayer2.cs" />
+    <Compile Include="Instructions\InfrastructurePlacedEventInstruction.cs" />
     <Compile Include="Instructions\InitialBoardSetupEventInstruction.cs" />
     <Compile Include="Instructions\Instruction.cs" />
     <Compile Include="Instructions\LabelInstruction.cs" />

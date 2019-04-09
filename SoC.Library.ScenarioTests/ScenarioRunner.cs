@@ -78,7 +78,8 @@ namespace SoC.Library.ScenarioTests
             this.instructions.Add(new LabelInstruction(playerName, label));
             return this;
         }
-        
+
+
         public ScenarioRunner MakeDirectTradeOffer(ResourceClutch wantedResources)
         {
             this.AddActionInstruction(ActionInstruction.OperationTypes.MakeDirectTradeOffer, 
@@ -189,17 +190,26 @@ namespace SoC.Library.ScenarioTests
                 Thread.Sleep(50);
         }
 
+        public PlayerStateInstruction State(string playerName)
+        {
+            var playerState = new PlayerStateInstruction(playerName, this);
+            this.instructions.Add(playerState);
+            return playerState;
+        }
+
         public ScenarioRunner VerboseLogging()
         {
             ((EventInstruction)this.LastInstruction).Verbose = true;
             return this;
         }
 
-        public PlayerStateInstruction State(string playerName)
+        public ScenarioRunner VerifyInfrastructurePlacedEventForAllPlayers(string playerName, uint settlementLocation, uint roadEndLocation)
         {
-            var playerState = new PlayerStateInstruction(playerName, this);
-            this.instructions.Add(playerState);
-            return playerState;
+            var gameEvent = new InfrastructurePlacedEvent(this.playerIdsByName[playerName], settlementLocation, roadEndLocation);
+            this.playerAgents.ForEach(playerAgent =>
+                this.instructions.Add(new InfrastructurePlacedEventInstruction(playerAgent.Name, gameEvent)));
+            
+            return this;
         }
 
         public ScenarioRunner WhenAcceptDirectTradeEvent(string playerName, string buyerName, ResourceClutch buyingResources, string sellerName, ResourceClutch sellingResources)

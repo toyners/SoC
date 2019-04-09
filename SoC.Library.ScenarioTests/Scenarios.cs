@@ -62,6 +62,7 @@ namespace SoC.Library.ScenarioTests
                 .WhenPlayerOrderEvent(Dana, playerOrder)
                 .WhenPlaceInfrastructureSetupEvent(Adam)
                     .PlaceStartingInfrastructure(Adam_FirstSettlementLocation, Adam_FirstRoadEndLocation)
+                .VerifyInfrastructurePlacedEventForAllPlayers(Adam, Adam_FirstSettlementLocation, Adam_FirstRoadEndLocation)
                 .WhenPlaceInfrastructureSetupEvent(Babara)
                     .PlaceStartingInfrastructure(Babara_FirstSettlementLocation, Babara_FirstRoadEndLocation)
                 .WhenPlaceInfrastructureSetupEvent(Charlie)

@@ -239,7 +239,7 @@ namespace SoC.Harness.ViewModels
                     var playerViewModel = this.playerViewModelsById[gameEvent.PlayerId];
                     playerViewModel.UpdateHistory($"{playerViewModel.Name} rolled {diceRoll}");
                 }
-                else if (gameEvent is InfrastructureBuiltEvent infrastructureBuiltEvent)
+                else if (gameEvent is InfrastructurePlacedEvent infrastructureBuiltEvent)
                 {
                     var playerViewModel = this.playerViewModelsById[infrastructureBuiltEvent.PlayerId];
                     var line = $"Placed settlement at {infrastructureBuiltEvent.SettlementLocation} with road to {infrastructureBuiltEvent.RoadSegmentEndLocation}";
