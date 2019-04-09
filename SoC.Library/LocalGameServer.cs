@@ -110,10 +110,10 @@ namespace Jabberwocky.SoC.Library
                 this.turnTimer = turnTimer;
         }
 
-        public void StartGameAsync()
+        public Task StartGameAsync()
         {
             // Launch server processing on separate thread
-            Task.Factory.StartNew(() =>
+            return Task.Factory.StartNew(() =>
             {
                 Thread.CurrentThread.Name = "Local Game Server";
                 try
@@ -143,7 +143,9 @@ namespace Jabberwocky.SoC.Library
                 catch (Exception e)
                 {
                     this.log.Add($"ERROR: {e.Message}: {e.StackTrace}");
-                    this.GameExceptionEvent?.Invoke(e);
+                    //this.GameExceptionEvent?.Invoke(e); TODO: Do I need this? Probably better to send close game
+                    // messages instead
+                    throw e;
                 }
                 finally
                 {

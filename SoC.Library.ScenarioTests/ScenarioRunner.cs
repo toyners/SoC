@@ -5,6 +5,7 @@ namespace SoC.Library.ScenarioTests
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading;
+    using System.Threading.Tasks;
     using Jabberwocky.SoC.Library;
     using Jabberwocky.SoC.Library.GameBoards;
     using Jabberwocky.SoC.Library.GameEvents;
@@ -120,29 +121,34 @@ namespace SoC.Library.ScenarioTests
 
             gameServer.LaunchGame();
 
+            var playerAgentTasks = new List<Task>();
             this.playerAgents.ForEach(playerAgent =>
             {
                 playerAgent.JoinGame(gameServer);
-                playerAgent.StartAsync();
+                playerAgentTasks.Add(playerAgent.StartAsync());
             });
 
             foreach (var kv in this.startingResourcesByName)
                 gameServer.AddResourcesToPlayer(kv.Key, kv.Value);
 
-            gameServer.StartGameAsync();
+            Task gameServerTask = gameServer.StartGameAsync();
 
-            var tickCount = 200;
-            var playerAgentFaulted = false;
-            while (tickCount > 0)
+            Task.WaitAll(playerAgentTasks.ToArray(), 20000);
+            /*var tickCount = 200;
+            while (tickCount > 0 &&
+                !gameServerTask.IsFaulted && Task.WaitAll(,
+                !playerAgentTasks.All(task => task.IsCompleted) &&
+                !playerAgentTasks.Any(task => task.IsFaulted))
             {
                 Thread.Sleep(100);
                 tickCount--;
-                if (this.playerAgents.All(p => p.IsFinished) ||
-                    (playerAgentFaulted = this.playerAgents.Any(p => p.GameException != null)))
-                    break;
             }
 
-            this.QuitGame(gameServer);
+            if (tickCount < 1)
+                this.QuitGame(gameServer);*/
+
+            if (!gameServerTask.IsCompleted)
+                this.QuitGame(gameServer);
 
             gameServer.SaveLog(@"GameServer.log");
             this.playerAgents.ForEach(playerAgent => {
@@ -150,33 +156,38 @@ namespace SoC.Library.ScenarioTests
                 playerAgent.SaveLog($"{playerAgent.Name}.log");
             });
 
-            if (playerAgentFaulted)
+            if (gameServerTask.IsFaulted)
             {
-                string message = null;
-                foreach (var playerAgent in this.playerAgents.Where(p => p.GameException != null))
-                {
-                    var exception = playerAgent.GameException;
-                    while (exception.InnerException != null)
-                        exception = exception.InnerException;
-
-                    message += $"{playerAgent.Name}: {exception.Message}\r\n";
-                }
-
-                throw new Exception(message);
+                var exception = gameServerTask.Exception;
+                var flattenedException = exception.Flatten();
+                throw new Exception($"Game server: {flattenedException.InnerException.Message}");
             }
+
+            string message = string.Join("\r\n",
+                playerAgentTasks
+                    .Where(task => task.IsFaulted)
+                    .Select(playerAgentTask => {
+                        var exception = playerAgentTask.Exception;
+                        var flattenedException = exception.Flatten();
+                        var playerAgent = (PlayerAgent)playerAgentTask.AsyncState;
+                        return $"{playerAgent.Name}: {flattenedException.InnerException.Message}";
+                    })
+                );
+            
+            if (!string.IsNullOrEmpty(message))
+                throw new Exception(message);
 
             string timeOutMessage = string.Join("\r\n",
                 this.playerAgents
                     .Where(playerAgent => !playerAgent.IsFinished)
                     .Select(playerAgent => {
-                        var message = $"{playerAgent.Name} did not finish.";
+                        var playerAgentMessage = $"{playerAgent.Name} did not finish.";
                         playerAgent.GetEventResults().ForEach(tuple => {
-                            message += $"\t{tuple.Item1} - {tuple.Item2}\r\n";
+                            playerAgentMessage += $"\t{tuple.Item1} - {tuple.Item2}\r\n";
                         });
-                        return message;
+                        return playerAgentMessage;
                     })
                 );
-
 
             if (!string.IsNullOrEmpty(timeOutMessage))
                 throw new TimeoutException(timeOutMessage);

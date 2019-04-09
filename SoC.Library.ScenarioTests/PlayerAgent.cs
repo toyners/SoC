@@ -85,9 +85,9 @@ namespace SoC.Library.ScenarioTests
 
         public void SaveLog(string filePath) => this.log.WriteToFile(filePath);
 
-        public void StartAsync()
+        public Task StartAsync()
         {
-            Task.Factory.StartNew(() => this.Run());
+            return Task.Factory.StartNew(o => { this.Run(); }, this, CancellationToken.None);
         }
 
         private void GameEventHandler(GameEvent gameEvent)
