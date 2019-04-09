@@ -170,7 +170,7 @@ namespace SoC.Library.ScenarioTests
                 this.playerAgents
                     .Where(playerAgent => !playerAgent.IsFinished)
                     .Select(playerAgent => {
-                        var playerAgentMessage = $"{playerAgent.Name} did not finish.";
+                        var playerAgentMessage = $"{playerAgent.Name} did not finish.\r\n";
                         playerAgent.GetEventResults().ForEach(tuple => {
                             playerAgentMessage += $"\t{tuple.Item1} - {tuple.Item2}\r\n";
                         });
@@ -205,9 +205,11 @@ namespace SoC.Library.ScenarioTests
 
         public ScenarioRunner VerifyInfrastructurePlacedEventForAllPlayers(string playerName, uint settlementLocation, uint roadEndLocation)
         {
-            var gameEvent = new InfrastructurePlacedEvent(this.playerIdsByName[playerName], settlementLocation, roadEndLocation);
             this.playerAgents.ForEach(playerAgent =>
-                this.instructions.Add(new InfrastructurePlacedEventInstruction(playerAgent.Name, gameEvent)));
+            {
+                var gameEvent = new InfrastructurePlacedEvent(this.playerIdsByName[playerName], settlementLocation, roadEndLocation);
+                this.instructions.Add(new InfrastructurePlacedEventInstruction(playerAgent.Name, gameEvent));
+            });
             
             return this;
         }

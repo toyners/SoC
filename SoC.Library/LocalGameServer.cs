@@ -52,8 +52,6 @@ namespace Jabberwocky.SoC.Library
 
         public bool IsFinished { get; private set; }
 
-        private event Action<Exception> GameExceptionEvent;
-
         #region Methods
         public void AddResourcesToPlayer(string playerName, ResourceClutch value)
         {
@@ -70,7 +68,6 @@ namespace Jabberwocky.SoC.Library
             this.players[this.playerIndex++] = player;
 
             this.eventRaiser.AddEventHandler(player.Id, gameController.GameEventHandler);
-            this.GameExceptionEvent += gameController.GameExceptionHandler;
             gameController.PlayerActionEvent += this.PlayerActionEventHandler;
 
             this.RaiseEvent(new GameJoinedEvent(player.Id), player);
