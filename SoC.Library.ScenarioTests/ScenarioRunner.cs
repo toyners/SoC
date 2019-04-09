@@ -134,18 +134,6 @@ namespace SoC.Library.ScenarioTests
             Task gameServerTask = gameServer.StartGameAsync();
 
             Task.WaitAll(playerAgentTasks.ToArray(), 20000);
-            /*var tickCount = 200;
-            while (tickCount > 0 &&
-                !gameServerTask.IsFaulted && Task.WaitAll(,
-                !playerAgentTasks.All(task => task.IsCompleted) &&
-                !playerAgentTasks.Any(task => task.IsFaulted))
-            {
-                Thread.Sleep(100);
-                tickCount--;
-            }
-
-            if (tickCount < 1)
-                this.QuitGame(gameServer);*/
 
             if (!gameServerTask.IsCompleted)
                 this.QuitGame(gameServer);
