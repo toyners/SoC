@@ -1,8 +1,6 @@
 ﻿
 namespace SoC.Library.ScenarioTests
 {
-    using System;
-    using System.Collections.Generic;
     using Jabberwocky.SoC.Library;
     using Jabberwocky.SoC.Library.GameBoards;
 
