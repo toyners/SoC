@@ -215,7 +215,10 @@ namespace Jabberwocky.SoC.Library
                 if (playerAction is PlaceSetupInfrastructureAction placeSetupInfrastructureAction)
                 {
                     this.actionManager.SetExpectedActionTypeForPlayer(playerAction.InitiatingPlayerId, null);
-                    this.PlaceInfrastructure(player, placeSetupInfrastructureAction.SettlementLocation, placeSetupInfrastructureAction.RoadEndLocation);
+                    var settlementLocation = placeSetupInfrastructureAction.SettlementLocation;
+                    var roadEndLocation = placeSetupInfrastructureAction.RoadEndLocation;
+                    this.PlaceInfrastructure(player, settlementLocation, roadEndLocation);
+                    this.RaiseEvent(new InfrastructurePlacedEvent(playerAction.InitiatingPlayerId, settlementLocation, roadEndLocation));
                     break;
                 }
                 else
