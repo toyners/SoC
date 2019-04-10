@@ -13,11 +13,6 @@ namespace SoC.Library.ScenarioTests.Instructions
 
         public bool Verbose { get; set; }
 
-        public GameEvent GetEvent()
-        {
-            var gameEvent = this.expectedEvent;
-            this.expectedEvent = null;
-            return gameEvent;
-        }
+        public GameEvent GetEvent() => this.expectedEvent;
     }
 }
