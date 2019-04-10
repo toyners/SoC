@@ -330,7 +330,7 @@ namespace SoC.Library.ScenarioTests
                     rolls[index] = 12;
                 else if (playerNames[1] == playerName)
                     rolls[index] = 10;
-                else if (playerNames[3] == playerName)
+                else if (playerNames[2] == playerName)
                     rolls[index] = 8;
                 else
                     rolls[index] = 6;
