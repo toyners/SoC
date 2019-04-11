@@ -130,6 +130,7 @@ namespace Jabberwocky.SoC.Library
                     try
                     {
                         this.GameSetup();
+                        this.WaitForGameStartConfirmationFromPlayers();
                         this.MainGameLoop();
                     }
                     catch (TaskCanceledException)
@@ -439,6 +440,34 @@ namespace Jabberwocky.SoC.Library
         {
             var token = this.tokenManager.CreateNewToken(this.currentPlayer);
             this.RaiseEvent(new StartPlayerTurnEvent(), this.currentPlayer, token);
+        }
+
+        private void WaitForGameStartConfirmationFromPlayers()
+        {
+            foreach (var player in this.players)
+                this.RaiseEvent(new ConfirmGameStartEvent(), player);
+            var playersToConfirm = new HashSet<IPlayer>(this.players);
+            while (playersToConfirm.Count > 0)
+            {
+                var playerAction = this.WaitForPlayerAction();
+                if (playerAction is ConfirmGameStartAction confirmGameStartAction)
+                {
+                    playersToConfirm.Remove(this.playersById[confirmGameStartAction.InitiatingPlayerId]);
+                }
+                else if (playerAction is QuitGameAction quitGameAction)
+                {
+                    playersToConfirm.Remove(this.playersById[quitGameAction.InitiatingPlayerId]);
+                    this.players = this.players.Where(player => player.Id == quitGameAction.InitiatingPlayerId).ToArray();
+                    this.playersById.Remove(quitGameAction.InitiatingPlayerId);
+                }
+                else
+                {
+                    // Illegal command
+                }
+            }
+
+            if (this.players.Length == 0)
+                throw new TaskCanceledException();
         }
 
         private PlayerAction WaitForPlayerAction()

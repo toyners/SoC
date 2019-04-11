@@ -60,6 +60,7 @@
     <Compile Include="DevelopmentCards\RoadBuildingDevelopmentCard.cs" />
     <Compile Include="DevelopmentCards\VictoryPointDevelopmentCard.cs" />
     <Compile Include="DevelopmentCards\YearOfPlentyDevelopmentCard.cs" />
+    <Compile Include="GameEvents\ConfirmGameStartEvent.cs" />
     <Compile Include="GameEvents\GameJoinedEvent.cs" />
     <Compile Include="GameEvents\PlayerOrderEvent.cs" />
     <Compile Include="GameToken.cs" />
@@ -71,6 +72,7 @@
     <Compile Include="PlayerActions\BuildSettlementAction.cs" />
     <Compile Include="PlayerActions\BuildStartingInfrastructure.cs" />
     <Compile Include="PlayerActions\BuyDevelopmentCardAction.cs" />
+    <Compile Include="PlayerActions\ConfirmGameStartAction.cs" />
     <Compile Include="PlayerActions\DropResourcesAction.cs" />
     <Compile Include="PlayerActions\EndOfTurnAction.cs" />
     <Compile Include="PlayerActions\MakeDirectTradeOfferAction.cs" />
@@ -78,6 +80,7 @@
     <Compile Include="PlayerActions\PlaceRobberAction.cs" />
     <Compile Include="PlayerActions\PlayerAction.cs" />
     <Compile Include="PlayerActions\PlayKnightCardAction.cs" />
+    <Compile Include="PlayerActions\QuitGameAction.cs" />
     <Compile Include="PlayerActions\RequestStateAction.cs" />
     <Compile Include="PlayerActions\SelectResourceFromPlayerAction.cs" />
     <Compile Include="GameBoards\GameBoardSetup.cs" />

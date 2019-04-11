@@ -99,7 +99,7 @@ namespace SoC.Library.ScenarioTests
         {
             this.GameException = exception;
         }
-
+    
         private void Run()
         {
             Thread.CurrentThread.Name = this.Name;
@@ -203,6 +203,11 @@ namespace SoC.Library.ScenarioTests
                 case ActionInstruction.OperationTypes.RequestState:
                 {
                     this.gameController.RequestState();
+                    break;
+                }
+                case ActionInstruction.OperationTypes.QuitGame:
+                {
+                    this.gameController.QuitGame();
                     break;
                 }
                 default: throw new Exception($"Operation '{action.Operation}' not recognised");

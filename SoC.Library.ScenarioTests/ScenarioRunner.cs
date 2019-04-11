@@ -79,7 +79,6 @@ namespace SoC.Library.ScenarioTests
             return this;
         }
 
-
         public ScenarioRunner MakeDirectTradeOffer(ResourceClutch wantedResources)
         {
             this.AddActionInstruction(ActionInstruction.OperationTypes.MakeDirectTradeOffer, 
@@ -91,6 +90,12 @@ namespace SoC.Library.ScenarioTests
         {
             this.AddActionInstruction(ActionInstruction.OperationTypes.PlaceStartingInfrastructure,
                 new object[] { settlementLocation, roadEndLocation });
+            return this;
+        }
+
+        public ScenarioRunner QuitGame(string playerName)
+        {
+            this.AddActionInstruction(ActionInstruction.OperationTypes.QuitGame, null);
             return this;
         }
 
@@ -182,14 +187,6 @@ namespace SoC.Library.ScenarioTests
                 throw new TimeoutException(timeOutMessage);
         }
 
-        private void QuitGame(LocalGameServer gameServer)
-        {
-            gameServer.Quit();
-
-            while (!gameServer.IsFinished)
-                Thread.Sleep(50);
-        }
-
         public PlayerStateInstruction State(string playerName)
         {
             var playerState = new PlayerStateInstruction(playerName, this);
@@ -226,6 +223,14 @@ namespace SoC.Library.ScenarioTests
         {
             var gameEvent = new AnswerDirectTradeOfferEvent(this.playerIdsByName[buyingPlayerName], wantedResources);
             var eventInstruction = new AnswerDirectTradeOfferEventInstruction(playerName, gameEvent);
+            this.instructions.Add(eventInstruction);
+            return this;
+        }
+
+        public ScenarioRunner WhenConfirmGameStartEvent(string playerName)
+        {
+            var gameEvent = new ConfirmGameStartEvent();
+            var eventInstruction = new EventInstruction(playerName, gameEvent);
             this.instructions.Add(eventInstruction);
             return this;
         }
@@ -349,6 +354,14 @@ namespace SoC.Library.ScenarioTests
                 operation,
                 arguments);
             this.instructions.Add(actionInstruction);
+        }
+
+        private void QuitGame(LocalGameServer gameServer)
+        {
+            gameServer.Quit();
+
+            while (!gameServer.IsFinished)
+                Thread.Sleep(50);
         }
         #endregion
     }

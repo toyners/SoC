@@ -82,6 +82,14 @@ namespace SoC.Library.ScenarioTests
                 .WhenPlaceInfrastructureSetupEvent(Adam)
                     .PlaceStartingInfrastructure(Adam_SecondSettlementLocation, Adam_SecondRoadEndLocation)
                 .VerifyInfrastructurePlacedEventForAllPlayers(Adam, Adam_SecondSettlementLocation, Adam_SecondRoadEndLocation)
+                .WhenConfirmGameStartEvent(Adam)
+                    .QuitGame(Adam)
+                .WhenConfirmGameStartEvent(Babara)
+                    .QuitGame(Babara)
+                .WhenConfirmGameStartEvent(Charlie)
+                    .QuitGame(Charlie)
+                .WhenConfirmGameStartEvent(Dana)
+                    .QuitGame(Dana)
                 .Run();
         }
 

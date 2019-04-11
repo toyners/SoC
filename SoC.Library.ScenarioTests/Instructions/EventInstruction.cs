@@ -5,7 +5,7 @@ namespace SoC.Library.ScenarioTests.Instructions
     using Jabberwocky.SoC.Library.GameEvents;
 
     [DebuggerDisplay("Event: {GetType().Name}")]
-    internal abstract class EventInstruction : Instruction
+    internal class EventInstruction : Instruction
     {
         private GameEvent expectedEvent;
         public EventInstruction(string playerName, GameEvent expectedEvent) : base(playerName)

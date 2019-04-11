@@ -54,6 +54,11 @@ namespace Jabberwocky.SoC.Library
             this.SendAction(new RequestStateAction(this.playerId));
         }
 
+        public void QuitGame()
+        {
+            this.SendAction(new QuitGameAction(this.playerId));
+        }
+
         internal void GameEventHandler(GameEvent gameEvent, GameToken gameToken)
         {
             this.gameToken = gameToken;

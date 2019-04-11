@@ -13,7 +13,8 @@ namespace SoC.Library.ScenarioTests.Instructions
             EndOfTurn,
             MakeDirectTradeOffer,
             PlaceStartingInfrastructure,
-            RequestState
+            RequestState,
+            QuitGame
         }
 
         public readonly OperationTypes Operation;
