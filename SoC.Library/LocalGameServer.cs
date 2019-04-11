@@ -206,7 +206,7 @@ namespace Jabberwocky.SoC.Library
             var token = this.tokenManager.CreateNewToken(player);
             // TODO: Pass back current settled locations
             var placeSetupInfrastructureEvent = new PlaceSetupInfrastructureEvent();
-            this.actionManager.SetExpectedActionTypeForPlayer(player.Id, typeof(PlaceSetupInfrastructureAction));
+            this.actionManager.SetExpectedActionsForPlayer(player.Id, typeof(PlaceSetupInfrastructureAction));
             this.RaiseEvent(placeSetupInfrastructureEvent, player, token);
             while (true)
             {
@@ -215,7 +215,7 @@ namespace Jabberwocky.SoC.Library
 
                 if (playerAction is PlaceSetupInfrastructureAction placeSetupInfrastructureAction)
                 {
-                    this.actionManager.SetExpectedActionTypeForPlayer(playerAction.InitiatingPlayerId, null);
+                    this.actionManager.SetExpectedActionsForPlayer(playerAction.InitiatingPlayerId, null);
                     var settlementLocation = placeSetupInfrastructureAction.SettlementLocation;
                     var roadEndLocation = placeSetupInfrastructureAction.RoadEndLocation;
                     this.PlaceInfrastructure(player, settlementLocation, roadEndLocation);
@@ -334,7 +334,7 @@ namespace Jabberwocky.SoC.Library
 
             var otherPlayers = this.PlayersExcept(makeDirectTradeOfferAction.InitiatingPlayerId).ToList();
             otherPlayers.ForEach(player => {
-                this.actionManager.SetExpectedActionTypeForPlayer(player.Id, typeof(AnswerDirectTradeOfferAction));
+                this.actionManager.SetExpectedActionsForPlayer(player.Id, typeof(AnswerDirectTradeOfferAction));
                 this.RaiseEvent(makeDirectTradeOfferEvent, player, this.tokenManager.CreateNewToken(player));
             });
         }
@@ -493,13 +493,13 @@ namespace Jabberwocky.SoC.Library
                     if (playerAction is RequestStateAction && !this.requestStateActionsMustHaveToken)
                         return playerAction;
 
-                    if (!this.tokenManager.ValidateToken(token))
+                    /*if (!this.tokenManager.ValidateToken(token))
                     {
                         this.log.Add($"FAILED: Token Validation - {this.playersById[playerAction.InitiatingPlayerId].Name}, {playerAction.GetType().Name}");
                         continue;
-                    }
+                    }*/
 
-                    if (!(playerAction is RequestStateAction) && !this.actionManager.ValidateAction(playerAction))
+                    if (!this.actionManager.ValidateAction(playerAction))
                     {
                         this.log.Add($"FAILED: Action Validation - {this.playersById[playerAction.InitiatingPlayerId].Name}, {playerAction.GetType().Name}");
                         continue;
@@ -532,19 +532,24 @@ namespace Jabberwocky.SoC.Library
             GameToken GetTokenForPlayer(IPlayer player);
             bool ValidateToken(GameToken token);
         }
-
+   
         public interface IActionManager
         {
-            void SetExpectedActionTypeForPlayer(Guid initiatingPlayerId, Type actionType);
+            void SetExpectedActionsForPlayer(Guid playerId, params Type[] actionTypes);
             bool ValidateAction(PlayerAction playerAction);
         }
 
         private class ActionManager : IActionManager
         {
-            private readonly Dictionary<Guid, Type> actionTypesByPlayerId = new Dictionary<Guid, Type>();
-            public void SetExpectedActionTypeForPlayer(Guid initiatingPlayerId, Type actionType)
+            private readonly Dictionary<Guid, Type> actionTypeByPlayerId = new Dictionary<Guid, Type>();
+            private readonly Dictionary<Guid, HashSet<Type>> actionTypesByPlayerId = new Dictionary<Guid, HashSet<Type>>();
+
+            public void SetExpectedActionsForPlayer(Guid playerId, params Type[] actionTypes)
             {
-                this.actionTypesByPlayerId[initiatingPlayerId] = actionType;
+                if (actionTypes == null || actionTypes.Length == 0)
+                    this.actionTypesByPlayerId[playerId] = null;
+                else
+                    this.actionTypesByPlayerId[playerId] = new HashSet<Type>(actionTypes);
             }
 
             public bool ValidateAction(PlayerAction playerAction)
@@ -553,11 +558,11 @@ namespace Jabberwocky.SoC.Library
                 if (this.actionTypesByPlayerId.ContainsKey(initiatingPlayerId))
                 {
                     return 
-                        this.actionTypesByPlayerId[initiatingPlayerId] == null ||
-                        this.actionTypesByPlayerId[initiatingPlayerId] == playerAction.GetType();
+                        this.actionTypesByPlayerId[initiatingPlayerId] != null &&
+                        this.actionTypesByPlayerId[initiatingPlayerId].Contains(playerAction.GetType());
                 }
 
-                return true;
+                return false;
             }
         }
 
