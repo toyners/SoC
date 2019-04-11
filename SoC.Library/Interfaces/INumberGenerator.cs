@@ -7,6 +7,6 @@ namespace Jabberwocky.SoC.Library.Interfaces
   {
     void RollTwoDice(out uint dice1, out uint dice2);
 
-    Int32 GetRandomNumberBetweenZeroAndMaximum(Int32 exclusiveMaximum);
+    int GetRandomNumberBetweenZeroAndMaximum(int exclusiveMaximum);
   }
 }
