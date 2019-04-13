@@ -127,19 +127,20 @@ namespace SoC.Library.ScenarioTests
 
             gameServer.LaunchGame();
 
-            var playerAgentTasks = new List<Task>();
+            var tasks = new List<Task>();
             this.playerAgents.ForEach(playerAgent =>
             {
                 playerAgent.JoinGame(gameServer);
-                playerAgentTasks.Add(playerAgent.StartAsync());
+                tasks.Add(playerAgent.StartAsync());
             });
 
             foreach (var kv in this.startingResourcesByName)
                 gameServer.AddResourcesToPlayer(kv.Key, kv.Value);
 
             Task gameServerTask = gameServer.StartGameAsync();
+            tasks.Add(gameServerTask);
 
-            Task.WaitAll(playerAgentTasks.ToArray(), 20000);
+            Task.WaitAll(tasks.ToArray(), 20000);
 
             if (!gameServerTask.IsCompleted)
                 this.QuitGame(gameServer);
@@ -158,7 +159,7 @@ namespace SoC.Library.ScenarioTests
             }
 
             string message = string.Join("\r\n",
-                playerAgentTasks
+                tasks
                     .Where(task => task.IsFaulted)
                     .Select(playerAgentTask => {
                         var exception = playerAgentTask.Exception;

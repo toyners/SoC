@@ -444,8 +444,11 @@ namespace Jabberwocky.SoC.Library
 
         private void WaitForGameStartConfirmationFromPlayers()
         {
-            foreach (var player in this.players)
+            foreach (var player in this.players) {
+                this.actionManager.SetExpectedActionsForPlayer(player.Id, typeof(QuitGameAction));
                 this.RaiseEvent(new ConfirmGameStartEvent(), player);
+            }
+
             var playersToConfirm = new HashSet<IPlayer>(this.players);
             while (playersToConfirm.Count > 0)
             {
