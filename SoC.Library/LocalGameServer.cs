@@ -497,10 +497,7 @@ namespace Jabberwocky.SoC.Library
                         return playerAction;
 
                     if (!this.actionManager.ValidateAction(playerAction))
-                    {
-                        this.log.Add($"FAILED: Action Validation - {this.playersById[playerAction.InitiatingPlayerId].Name}, {playerAction.GetType().Name}");
-                        continue;
-                    }
+                        throw new Exception($"FAILED: Action Validation - {this.playersById[playerAction.InitiatingPlayerId].Name}, {playerAction.GetType().Name}");
 
                     return playerAction;
                 }
