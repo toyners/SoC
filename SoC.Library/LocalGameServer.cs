@@ -496,12 +496,6 @@ namespace Jabberwocky.SoC.Library
                     if (playerAction is RequestStateAction && !this.requestStateActionsMustHaveToken)
                         return playerAction;
 
-                    /*if (!this.tokenManager.ValidateToken(token))
-                    {
-                        this.log.Add($"FAILED: Token Validation - {this.playersById[playerAction.InitiatingPlayerId].Name}, {playerAction.GetType().Name}");
-                        continue;
-                    }*/
-
                     if (!this.actionManager.ValidateAction(playerAction))
                     {
                         this.log.Add($"FAILED: Action Validation - {this.playersById[playerAction.InitiatingPlayerId].Name}, {playerAction.GetType().Name}");
