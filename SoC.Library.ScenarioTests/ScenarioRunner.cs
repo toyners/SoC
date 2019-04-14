@@ -67,6 +67,12 @@ namespace SoC.Library.ScenarioTests
             return this;
         }
 
+        public ScenarioRunner ConfirmGameStartAction(string playerName)
+        {
+            this.AddActionInstruction(ActionInstruction.OperationTypes.ConfirmStart, null);
+            return this;
+        }
+
         public ScenarioRunner EndTurn()
         {
             this.AddActionInstruction(ActionInstruction.OperationTypes.EndOfTurn, null);

@@ -34,6 +34,11 @@ namespace Jabberwocky.SoC.Library
                 resourceClutch));
         }
 
+        public void ConfirmStart()
+        {
+            this.SendAction(new ConfirmGameStartAction(this.playerId));
+        }
+
         public void EndTurn()
         {
             this.SendAction(new EndOfTurnAction(this.playerId));

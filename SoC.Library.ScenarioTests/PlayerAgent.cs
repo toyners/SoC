@@ -185,6 +185,11 @@ namespace SoC.Library.ScenarioTests
                     this.gameController.AnswerDirectTradeOffer((ResourceClutch)action.Parameters[0]);
                     break;
                 }
+                case ActionInstruction.OperationTypes.ConfirmStart:
+                {
+                    this.gameController.ConfirmStart();
+                    break;
+                }
                 case ActionInstruction.OperationTypes.EndOfTurn:
                 {
                     this.gameController.EndTurn();

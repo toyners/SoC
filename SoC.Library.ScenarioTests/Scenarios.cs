@@ -227,7 +227,15 @@ namespace SoC.Library.ScenarioTests
                 .WhenPlaceInfrastructureSetupEvent(Babara)
                     .PlaceStartingInfrastructure(Babara_SecondSettlementLocation, Babara_SecondRoadEndLocation)
                 .WhenPlaceInfrastructureSetupEvent(Adam)
-                    .PlaceStartingInfrastructure(Adam_SecondSettlementLocation, Adam_SecondRoadEndLocation);
+                    .PlaceStartingInfrastructure(Adam_SecondSettlementLocation, Adam_SecondRoadEndLocation)
+                .WhenConfirmGameStartEvent(Adam)
+                    .ConfirmGameStartAction(Adam)
+                .WhenConfirmGameStartEvent(Babara)
+                    .ConfirmGameStartAction(Babara)
+                .WhenConfirmGameStartEvent(Charlie)
+                    .ConfirmGameStartAction(Charlie)
+                .WhenConfirmGameStartEvent(Dana)
+                    .ConfirmGameStartAction(Dana);
         }
     }
 }

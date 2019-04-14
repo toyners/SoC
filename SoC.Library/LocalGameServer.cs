@@ -445,7 +445,7 @@ namespace Jabberwocky.SoC.Library
         private void WaitForGameStartConfirmationFromPlayers()
         {
             foreach (var player in this.players) {
-                this.actionManager.SetExpectedActionsForPlayer(player.Id, typeof(QuitGameAction));
+                this.actionManager.SetExpectedActionsForPlayer(player.Id, typeof(QuitGameAction), typeof(ConfirmGameStartAction));
                 this.RaiseEvent(new ConfirmGameStartEvent(), player);
             }
 

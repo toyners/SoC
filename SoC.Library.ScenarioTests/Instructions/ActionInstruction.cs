@@ -10,11 +10,12 @@ namespace SoC.Library.ScenarioTests.Instructions
         {
             AcceptTrade,
             AnswerDirectTradeOffer,
+            ConfirmStart,
             EndOfTurn,
             MakeDirectTradeOffer,
             PlaceStartingInfrastructure,
             RequestState,
-            QuitGame
+            QuitGame,
         }
 
         public readonly OperationTypes Operation;
