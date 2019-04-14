@@ -212,7 +212,7 @@ namespace SoC.Library.ScenarioTests
             this.playerAgents.ForEach(playerAgent =>
             {
                 var gameEvent = new InfrastructurePlacedEvent(this.playerIdsByName[playerName], settlementLocation, roadEndLocation);
-                this.instructions.Add(new InfrastructurePlacedEventInstruction(playerAgent.Name, gameEvent));
+                this.instructions.Add(new EventInstruction(playerAgent.Name, gameEvent));
             });
             
             return this;
@@ -254,7 +254,7 @@ namespace SoC.Library.ScenarioTests
         public ScenarioRunner WhenGameJoinedEvent(string playerName)
         {
             var gameEvent = new GameJoinedEvent(this.playerIdsByName[playerName]);
-            var eventInstruction = new GameJoinedEventInstruction(playerName, gameEvent);
+            var eventInstruction = new EventInstruction(playerName, gameEvent);
             this.instructions.Add(eventInstruction);
             return this;
         }
@@ -262,7 +262,7 @@ namespace SoC.Library.ScenarioTests
         public ScenarioRunner WhenInitialBoardSetupEvent(string playerName, GameBoardSetup gameBoardSetup)
         {
             var gameEvent = new InitialBoardSetupEvent(gameBoardSetup);
-            var eventInstruction = new InitialBoardSetupEventInstruction(playerName, gameEvent);
+            var eventInstruction = new EventInstruction(playerName, gameEvent);
             this.instructions.Add(eventInstruction);
             return this;
         }
@@ -278,7 +278,7 @@ namespace SoC.Library.ScenarioTests
         public ScenarioRunner WhenPlaceInfrastructureSetupEvent(string playerName)
         {
             var gameEvent = new PlaceSetupInfrastructureEvent();
-            var eventInstruction = new PlaceSetupInfrastructureEventInstruction(playerName, gameEvent);
+            var eventInstruction = new EventInstruction(playerName, gameEvent);
             this.instructions.Add(eventInstruction);
             return this;
         }
@@ -287,7 +287,7 @@ namespace SoC.Library.ScenarioTests
         {
             var playerIds = this.playerAgents.Select(playerAgent => playerAgent.Id).ToArray();
             var gameEvent = new PlayerOrderEvent(playerIds);
-            var eventInstruction = new PlayerOrderEventInstruction(playerName, gameEvent);
+            var eventInstruction = new EventInstruction(playerName, gameEvent);
             this.instructions.Add(eventInstruction);
             return this;
         }
@@ -296,7 +296,7 @@ namespace SoC.Library.ScenarioTests
         {
             var playerIdsByName = this.playerAgents.ToDictionary(playerAgent => playerAgent.Name, playerAgent => playerAgent.Id);
             var gameEvent = new PlayerSetupEvent(playerIdsByName);
-            var eventInstruction = new PlayerSetupEventInstruction(playerName, gameEvent);
+            var eventInstruction = new EventInstruction(playerName, gameEvent);
             this.instructions.Add(eventInstruction);
             return this;
         }

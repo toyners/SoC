@@ -57,7 +57,7 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
         private void InitialBoardSetupEvent()
         {
             // TODO: Put in the real expected GameBoardSetup data
-            this.instructions.Enqueue(new InitialBoardSetupEventInstruction(this.PlayerName, null));
+            //this.instructions.Enqueue(new InitialBoardSetupEventInstruction(this.PlayerName, null));
         }
 
         private void PlaceSetupInfrastructureEvent()
