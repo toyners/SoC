@@ -66,11 +66,8 @@
     <Compile Include="Instructions\Instruction.cs" />
     <Compile Include="Instructions\LabelInstruction.cs" />
     <Compile Include="Instructions\MakeDirectTradeOfferEventInstruction.cs" />
-    <Compile Include="Instructions\PlayerSetupEventInstruction.cs" />
     <Compile Include="Instructions\PlayerStateInstruction.cs" />
     <Compile Include="Instructions\TradeWithPlayerCompletedEventInstruction.cs" />
-    <Compile Include="Instructions\PlayerOrderEventInstruction.cs" />
-    <Compile Include="Instructions\ResourceCollectionEventInstruction.cs" />
     <Compile Include="ScenarioEvents\ScenarioRequestStateEvent.cs" />
     <Compile Include="MockTurnTimer.cs" />
     <Compile Include="PlayerAgent.cs" />

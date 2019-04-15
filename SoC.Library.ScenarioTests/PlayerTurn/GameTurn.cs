@@ -496,7 +496,7 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
 
         internal void PlayerSetupEvent(IDictionary<string, Guid> playerIdsByName)
         {
-            this.instructions.Enqueue(new PlayerSetupEventInstruction(this.PlayerName, null));
+            //this.instructions.Enqueue(new PlayerSetupEventInstruction(this.PlayerName, null));
         }
 
         private string GetEventDetails(GameEvent gameEvent)
@@ -702,11 +702,11 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
 
         public GameTurn TradeWithPlayerCompletedEvent(string playerName, string buyingPlayerName, ResourceClutch buyingResources, string sellingPlayerName, ResourceClutch sellingResources)
         {
-            this.instructions.Enqueue(new TradeWithPlayerCompletedEventInstruction
+            /*this.instructions.Enqueue(new TradeWithPlayerCompletedEventInstruction
             (
                 playerName,
                 null
-            ));
+            ));*/
 
             return this;
         }

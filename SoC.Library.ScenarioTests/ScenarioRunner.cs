@@ -313,7 +313,7 @@ namespace SoC.Library.ScenarioTests
             foreach (var kv in resourcesCollectedByPlayerName)
                 resourcesCollectedByPlayerId.Add(this.playerIdsByName[kv.Key], kv.Value);
             var gameEvent = new ResourcesCollectedEvent(resourcesCollectedByPlayerId);
-            var eventInstruction = new ResourceCollectedEventInstruction(playerName, gameEvent);
+            var eventInstruction = new EventInstruction(playerName, gameEvent);
             this.instructions.Add(eventInstruction);
             return this;
         }
