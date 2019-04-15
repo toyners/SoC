@@ -50,6 +50,7 @@ namespace SoC.Library.ScenarioTests
         public Guid Id { get; private set; }
         public bool InstructionsProcessed { get { return this.instructionIndex >= this.instructions.Count; } }
         public bool IsFinished { get { return this.InstructionsProcessed && this.EventsVerified; } }
+        public bool IsFinished2 { get { return this.expectedEventIndex >= this.expectedEventActions.Count; } }
         public string Name { get; private set; }
         #endregion
 
@@ -128,6 +129,7 @@ namespace SoC.Library.ScenarioTests
                 while (!this.IsFinished)
                 {
                     this.WaitForGameEvent();
+                    // this.VerifyEvents2();
                     this.VerifyEvents();
                     this.ProcessInstructions();
                 }
@@ -136,6 +138,20 @@ namespace SoC.Library.ScenarioTests
             {
                 this.GameException = e;
                 this.log.Add($"ERROR: {e.Message}: {e.StackTrace}");
+            }
+        }
+
+        private void VerifyEvents2()
+        {
+            if (this.expectedEventIndex >= this.expectedEventActions.Count)
+                return;
+
+            if (this.IsEventVerified(this.expectedEventActions[this.expectedEventIndex].ExpectedEvent,
+                    this.actualEvents[this.actualEvents.Count - 1]))
+            {
+                if (this.expectedEventActions[this.expectedEventIndex].Action != null)
+                    this.SendAction(this.expectedEventActions[this.expectedEventIndex].Action);
+                this.expectedEventIndex++;
             }
         }
 
@@ -250,7 +266,7 @@ namespace SoC.Library.ScenarioTests
             {
                 while (this.actualEventIndex < this.actualEvents.Count)
                 {
-                    if (this.VerifyEvent(this.expectedEvents[this.expectedEventIndex], this.actualEvents[this.actualEventIndex]))
+                    if (this.IsEventVerified(this.expectedEvents[this.expectedEventIndex], this.actualEvents[this.actualEventIndex]))
                     {
                         this.verificationStatusByGameEvent[this.expectedEvents[this.expectedEventIndex]] = true;
                         this.expectedEventIndex++;
@@ -263,15 +279,15 @@ namespace SoC.Library.ScenarioTests
             return this.expectedEventIndex >= this.expectedEvents.Count;
         }
 
-        private bool VerifyEvent(GameEvent expectedEvent, GameEvent actualEvent)
+        private bool IsEventVerified(GameEvent expectedEvent, GameEvent actualEvent)
         {
             if (expectedEvent is ScenarioRequestStateEvent expectedRequestEvent && actualEvent is RequestStateEvent actualRequestEvent)
                 return this.IsRequestStateEventVerified(expectedRequestEvent, actualRequestEvent);
             
-            return this.IsEventVerified(expectedEvent, actualEvent);
+            return this.IsStandardEventVerified(expectedEvent, actualEvent);
         }
 
-        private bool IsEventVerified(GameEvent expectedEvent, GameEvent actualEvent)
+        private bool IsStandardEventVerified(GameEvent expectedEvent, GameEvent actualEvent)
         {
             var expectedJSON = JToken.Parse(expectedEvent.ToJSONString());
             var actualJSON = JToken.Parse(actualEvent.ToJSONString());
