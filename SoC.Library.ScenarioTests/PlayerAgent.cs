@@ -28,6 +28,8 @@ namespace SoC.Library.ScenarioTests
         private int instructionIndex;
         private string label;
         private IDictionary<string, Guid> playerIdsByName;
+
+        private List<EventActionPair> expectedEventActions = new List<EventActionPair>();
         #endregion
 
         #region Construction
@@ -53,6 +55,23 @@ namespace SoC.Library.ScenarioTests
 
         #region Methods
         public void AddInstruction(Instruction instruction) => this.instructions.Add(instruction);
+
+        public void AddInstruction2(Instruction instruction)
+        {
+            if (instruction is EventInstruction eventInstruction)
+            {
+                this.expectedEventActions.Add(new EventActionPair(eventInstruction.GetEvent()));
+            }
+            else if (instruction is ActionInstruction actionInstruction)
+            {
+                this.expectedEventActions[this.expectedEventActions.Count - 1].Action = actionInstruction;
+            }
+            else if (instruction is PlayerStateInstruction playerStateInstruction)
+            {
+                this.expectedEventActions[this.expectedEventActions.Count - 1].Action = playerStateInstruction.GetAction();
+                this.expectedEventActions.Add(new EventActionPair(playerStateInstruction.GetEvent(this.playerIdsByName)));
+            }
+        }
 
         public List<Tuple<GameEvent, bool>> GetEventResults()
         {
@@ -300,5 +319,16 @@ namespace SoC.Library.ScenarioTests
             }
         }
         #endregion
+
+        private class EventActionPair
+        {
+            public EventActionPair(GameEvent gameEvent)
+            {
+                this.ExpectedEvent = gameEvent;
+            }
+
+            public GameEvent ExpectedEvent { get; private set; }
+            public ActionInstruction Action { get; set; }
+        }
     }
 }
