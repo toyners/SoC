@@ -118,7 +118,6 @@ namespace SoC.Library.ScenarioTests
                 .Build();
 
             this.CompletePlayerInfrastructureSetup(args)
-                .WithNoResourceCollection()
                 .WhenDiceRollEvent(Adam, 4, 4)
                 .WhenResourceCollectedEvent(Adam, firstTurnCollectedResources)
                     .State(Adam).Resources(ResourceClutch.OneBrick).End()
