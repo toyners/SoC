@@ -196,7 +196,8 @@ namespace SoC.Library.ScenarioTests
 
         public PlayerStateInstruction State(string playerName)
         {
-            var playerState = new PlayerStateInstruction(playerName, this);
+            var playerAgent = this.playerAgents.First(p => p.Name == playerName);
+            var playerState = new PlayerStateInstruction(playerAgent, this);
             this.instructions.Add(playerState);
             return playerState;
         }

@@ -22,7 +22,7 @@ namespace SoC.Library.ScenarioTests
         private readonly List<Instruction> instructions = new List<Instruction>();
         private readonly ILog log = new Log();
         private readonly bool verboseLogging;
-        private readonly Dictionary<GameEvent, bool> verificationStatusByGameEvent = new Dictionary<GameEvent, bool>();
+        //private readonly Dictionary<GameEvent, bool> verificationStatusByGameEvent = new Dictionary<GameEvent, bool>();
         private int actualEventIndex;
         private int expectedEventIndex;
         private int instructionIndex;
@@ -49,15 +49,14 @@ namespace SoC.Library.ScenarioTests
         public Exception GameException { get; private set; }
         public Guid Id { get; private set; }
         public bool InstructionsProcessed { get { return this.instructionIndex >= this.instructions.Count; } }
-        public bool IsFinished { get { return this.InstructionsProcessed && this.EventsVerified; } }
-        public bool IsFinished2 { get { return this.expectedEventIndex >= this.expectedEventActions.Count; } }
+        public bool IsFinished { get { return this.expectedEventIndex >= this.expectedEventActions.Count; } }
         public string Name { get; private set; }
+        private EventActionPair CurrentEventActionPair { get { return this.expectedEventActions[this.expectedEventIndex]; } }
+        private EventActionPair LastEventActionPair { get { return this.expectedEventActions[this.expectedEventActions.Count - 1]; } }
         #endregion
 
         #region Methods
-        public void AddInstruction(Instruction instruction) => this.instructions.Add(instruction);
-
-        public void AddInstruction2(Instruction instruction)
+        public void AddInstruction(Instruction instruction)
         {
             if (instruction is EventInstruction eventInstruction)
             {
@@ -65,25 +64,23 @@ namespace SoC.Library.ScenarioTests
             }
             else if (instruction is ActionInstruction actionInstruction)
             {
-                this.expectedEventActions[this.expectedEventActions.Count - 1].Action = actionInstruction;
+                this.LastEventActionPair.Action = actionInstruction;
             }
             else if (instruction is PlayerStateInstruction playerStateInstruction)
             {
-                this.expectedEventActions[this.expectedEventActions.Count - 1].Action = playerStateInstruction.GetAction();
-                this.expectedEventActions.Add(new EventActionPair(playerStateInstruction.GetEvent(this.playerIdsByName)));
+                this.LastEventActionPair.Action = playerStateInstruction.GetAction();
+                this.expectedEventActions.Add(new EventActionPair(playerStateInstruction.GetEvent()));
             }
         }
 
         public List<Tuple<GameEvent, bool>> GetEventResults()
         {
             var eventResults = new List<Tuple<GameEvent, bool>>();
-            this.expectedEvents.ForEach(gameEvent => {
+            this.expectedEventActions.ForEach(eventActionPair => {
                 eventResults.Add(
                     new Tuple<GameEvent, bool>(
-                        gameEvent,
-                        this.verificationStatusByGameEvent[gameEvent]
-                    )
-                );
+                        eventActionPair.ExpectedEvent,
+                        eventActionPair.Verified));
             });
 
             return eventResults;
@@ -97,8 +94,9 @@ namespace SoC.Library.ScenarioTests
         public void SaveEvents(string filePath)
         {
             string contents = null;
+            int number = 1;
             this.GetEventResults().ForEach(tuple => {
-                contents += $"\t{tuple.Item1} - {tuple.Item2}\r\n";
+                contents += $"{number++} {tuple.Item1} - {tuple.Item2}\r\n";
             });
             System.IO.File.WriteAllText(filePath, contents);
         }
@@ -129,9 +127,7 @@ namespace SoC.Library.ScenarioTests
                 while (!this.IsFinished)
                 {
                     this.WaitForGameEvent();
-                    // this.VerifyEvents2();
                     this.VerifyEvents();
-                    this.ProcessInstructions();
                 }
             }
             catch (Exception e)
@@ -139,70 +135,6 @@ namespace SoC.Library.ScenarioTests
                 this.GameException = e;
                 this.log.Add($"ERROR: {e.Message}: {e.StackTrace}");
             }
-        }
-
-        private void VerifyEvents2()
-        {
-            if (this.expectedEventIndex >= this.expectedEventActions.Count)
-                return;
-
-            if (this.IsEventVerified(this.expectedEventActions[this.expectedEventIndex].ExpectedEvent,
-                    this.actualEvents[this.actualEvents.Count - 1]))
-            {
-                if (this.expectedEventActions[this.expectedEventIndex].Action != null)
-                    this.SendAction(this.expectedEventActions[this.expectedEventIndex].Action);
-                this.expectedEventIndex++;
-            }
-        }
-
-        private bool ProcessInstructions()
-        {
-            while (this.instructionIndex < this.instructions.Count)
-            {
-                if (this.GameException != null)
-                    throw this.GameException;
-
-                var instruction = this.instructions[this.instructionIndex];
-                if (instruction is LabelInstruction labelInstruction)
-                {
-                    this.log.Add($"Processing {labelInstruction.GetType().Name}");
-                    this.instructionIndex++;
-                    this.label = labelInstruction.Label;
-                }
-                else if (instruction is ActionInstruction actionInstruction)
-                {
-                    if (!this.VerifyEvents())
-                        return false;
-
-                    this.log.Add($"Processing action: {actionInstruction.Operation}");
-                    this.instructionIndex++;
-                    this.SendAction(actionInstruction);
-                }
-                else if (instruction is EventInstruction eventInstruction)
-                {
-                    this.log.Add($"Storing expected event: {eventInstruction.GetType().Name}");
-                    this.instructionIndex++;
-                    var expectedEvent = eventInstruction.GetEvent();
-                    if (eventInstruction.Verbose)
-                        this.expectedEventsWithVerboseLogging.Add(expectedEvent);
-                    this.StoreExpectedEvent(expectedEvent);
-                }
-                else if (instruction is PlayerStateInstruction playerStateInstruction)
-                {
-                    this.log.Add($"Processing {playerStateInstruction.GetType().Name}");
-                    // Make request for player state from game server - place expected event
-                    // into list for verification
-                    if (!this.VerifyEvents())
-                        return false;
-
-                    this.instructionIndex++;
-                    this.StoreExpectedEvent(playerStateInstruction.GetEvent(this.playerIdsByName));
-                    
-                    this.SendAction(playerStateInstruction.GetAction());
-                }
-            }
-
-            return true;
         }
 
         private void SendAction(ActionInstruction action)
@@ -257,26 +189,7 @@ namespace SoC.Library.ScenarioTests
         private void StoreExpectedEvent(GameEvent expectedEvent)
         {
             this.expectedEvents.Add(expectedEvent);
-            this.verificationStatusByGameEvent.Add(expectedEvent, false);
-        }
-
-        private bool VerifyEvents()
-        {
-            if (this.expectedEventIndex < this.expectedEvents.Count)
-            {
-                while (this.actualEventIndex < this.actualEvents.Count)
-                {
-                    if (this.IsEventVerified(this.expectedEvents[this.expectedEventIndex], this.actualEvents[this.actualEventIndex]))
-                    {
-                        this.verificationStatusByGameEvent[this.expectedEvents[this.expectedEventIndex]] = true;
-                        this.expectedEventIndex++;
-                    }
-
-                    this.actualEventIndex++;
-                }
-            }
-
-            return this.expectedEventIndex >= this.expectedEvents.Count;
+            //this.verificationStatusByGameEvent.Add(expectedEvent, false);
         }
 
         private bool IsEventVerified(GameEvent expectedEvent, GameEvent actualEvent)
@@ -317,6 +230,21 @@ namespace SoC.Library.ScenarioTests
             return true;
         }
 
+        private void VerifyEvents()
+        {
+            if (this.expectedEventIndex >= this.expectedEventActions.Count)
+                return;
+
+            if (this.IsEventVerified(this.CurrentEventActionPair.ExpectedEvent,
+                    this.actualEvents[this.actualEvents.Count - 1]))
+            {
+                this.CurrentEventActionPair.Verified = true;
+                if (this.CurrentEventActionPair.Action != null)
+                    this.SendAction(this.CurrentEventActionPair.Action);
+                this.expectedEventIndex++;
+            }
+        }
+
         private void WaitForGameEvent()
         {
             while (true)
@@ -336,6 +264,7 @@ namespace SoC.Library.ScenarioTests
         }
         #endregion
 
+        #region Structures
         private class EventActionPair
         {
             public EventActionPair(GameEvent gameEvent)
@@ -345,6 +274,8 @@ namespace SoC.Library.ScenarioTests
 
             public GameEvent ExpectedEvent { get; private set; }
             public ActionInstruction Action { get; set; }
+            public bool Verified { get; set; }
         }
+        #endregion
     }
 }

@@ -10,10 +10,12 @@ namespace SoC.Library.ScenarioTests.Instructions
     {
         private readonly ScenarioRunner runner;
         private ResourceClutch? expectedResources;
+        private Guid playerId;
 
-        public PlayerStateInstruction(string playerName, ScenarioRunner runner) : base(playerName)
+        public PlayerStateInstruction(PlayerAgent player, ScenarioRunner runner) : base(player.Name)
         {
             this.runner = runner;
+            this.playerId = player.Id;
         }
 
         public PlayerStateInstruction HeldCards(DevelopmentCardTypes developmentCardType)
@@ -39,9 +41,9 @@ namespace SoC.Library.ScenarioTests.Instructions
             return new ActionInstruction(this.PlayerName, ActionInstruction.OperationTypes.RequestState, null);
         }
 
-        public GameEvent GetEvent(IDictionary<string, Guid> playerIdsByName)
+        public GameEvent GetEvent()
         {
-            var requestStateEvent = new ScenarioRequestStateEvent(playerIdsByName[this.PlayerName]);
+            var requestStateEvent = new ScenarioRequestStateEvent(this.playerId);
             requestStateEvent.Resources = this.expectedResources.Value;
             return requestStateEvent;
         }

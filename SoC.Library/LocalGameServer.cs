@@ -438,8 +438,11 @@ namespace Jabberwocky.SoC.Library
 
         private void SendStartPlayerTurnEvent()
         {
-            var token = this.tokenManager.CreateNewToken(this.currentPlayer);
-            this.RaiseEvent(new StartPlayerTurnEvent(), this.currentPlayer, token);
+            //foreach (var player in this.PlayersExcept(this.currentPlayer.Id))
+              //  this.actionManager.SetExpectedActionsForPlayer(player.Id, null);
+            this.actionManager.SetExpectedActionsForPlayer(this.currentPlayer.Id, typeof(EndOfTurnAction));
+            //var token = this.tokenManager.CreateNewToken(this.currentPlayer);
+            this.RaiseEvent(new StartPlayerTurnEvent(), this.currentPlayer /*, token*/);
         }
 
         private void WaitForGameStartConfirmationFromPlayers()

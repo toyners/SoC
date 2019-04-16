@@ -134,7 +134,7 @@ namespace SoC.Library.ScenarioTests
                         return;
 
                     this.currentInstructionIndex++;
-                    this.ExpectedEvents.Add(playerStateInstruction.GetEvent(this.playerIdsByName));
+                    this.ExpectedEvents.Add(playerStateInstruction.GetEvent());
                     this.SendAction(playerStateInstruction.GetAction());
                 }
             }
