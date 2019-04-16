@@ -25,8 +25,6 @@ namespace SoC.Library.ScenarioTests
         //private readonly Dictionary<GameEvent, bool> verificationStatusByGameEvent = new Dictionary<GameEvent, bool>();
         private int actualEventIndex;
         private int expectedEventIndex;
-        private int instructionIndex;
-        private string label;
         private IDictionary<string, Guid> playerIdsByName;
 
         private List<EventActionPair> expectedEventActions = new List<EventActionPair>();
@@ -45,10 +43,9 @@ namespace SoC.Library.ScenarioTests
         #endregion
 
         #region Properties
-        public bool EventsVerified { get { return this.expectedEventIndex >= this.expectedEvents.Count; } }
         public Exception GameException { get; private set; }
         public Guid Id { get; private set; }
-        public bool InstructionsProcessed { get { return this.instructionIndex >= this.instructions.Count; } }
+        //public bool InstructionsProcessed { get { return this.instructionIndex >= this.instructions.Count; } }
         public bool IsFinished { get { return this.expectedEventIndex >= this.expectedEventActions.Count; } }
         public string Name { get; private set; }
         private EventActionPair CurrentEventActionPair { get { return this.expectedEventActions[this.expectedEventIndex]; } }
@@ -97,7 +94,7 @@ namespace SoC.Library.ScenarioTests
             string contents = null;
             int number = 1;
             this.GetEventResults().ForEach(tuple => {
-                contents += $"{number++:00} {tuple.Item1}{(tuple.Item2 != null ? ", " + tuple.Item2.Operation : "")} => {tuple.Item3}\r\n";
+                contents += $"{number++:00} {tuple.Item1.SimpleTypeName}{(tuple.Item2 != null ? ", " + tuple.Item2.Operation : "")} => {tuple.Item3}\r\n";
             });
             System.IO.File.WriteAllText(filePath, contents);
         }
@@ -187,12 +184,6 @@ namespace SoC.Library.ScenarioTests
             }
         }
 
-        private void StoreExpectedEvent(GameEvent expectedEvent)
-        {
-            this.expectedEvents.Add(expectedEvent);
-            //this.verificationStatusByGameEvent.Add(expectedEvent, false);
-        }
-
         private bool IsEventVerified(GameEvent expectedEvent, GameEvent actualEvent)
         {
             if (expectedEvent is ScenarioRequestStateEvent expectedRequestEvent && actualEvent is RequestStateEvent actualRequestEvent)
@@ -225,10 +216,11 @@ namespace SoC.Library.ScenarioTests
 
         private bool IsRequestStateEventVerified(ScenarioRequestStateEvent expectedEvent, RequestStateEvent actualEvent)
         {
-            if (expectedEvent.Resources.HasValue && expectedEvent.Resources.Value != actualEvent.Resources)
-                return false;
+            var result = expectedEvent.Resources.HasValue && expectedEvent.Resources.Value != actualEvent.Resources;
 
-            return true;
+            this.log.Add($"{(result ? "MATCHED" : "NOT MATCHED")} - Expected {expectedEvent.SimpleTypeName}, Actual {actualEvent.SimpleTypeName}");
+
+            return result;
         }
 
         private void VerifyEvents()
