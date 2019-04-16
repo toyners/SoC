@@ -73,9 +73,9 @@ namespace SoC.Library.ScenarioTests
             return this;
         }
 
-        public ScenarioRunner EndTurn()
+        public ScenarioRunner EndTurn(string playerName)
         {
-            this.AddActionInstruction(ActionInstruction.OperationTypes.EndOfTurn, null);
+            this.AddActionInstruction(playerName, ActionInstruction.OperationTypes.EndOfTurn, null);
             return this;
         }
 
@@ -184,7 +184,7 @@ namespace SoC.Library.ScenarioTests
                     .Select(playerAgent => {
                         var playerAgentMessage = $"{playerAgent.Name} did not finish.\r\n";
                         playerAgent.GetEventResults().ForEach(tuple => {
-                            playerAgentMessage += $"\t{tuple.Item1} - {tuple.Item2}\r\n";
+                            playerAgentMessage += $"\t{tuple.Item1} => {tuple.Item3}\r\n";
                         });
                         return playerAgentMessage;
                     })
@@ -359,6 +359,15 @@ namespace SoC.Library.ScenarioTests
         {
             var actionInstruction = new ActionInstruction(
                 this.LastInstruction.PlayerName,
+                operation,
+                arguments);
+            this.instructions.Add(actionInstruction);
+        }
+
+        private void AddActionInstruction(string playerName, ActionInstruction.OperationTypes operation, object[] arguments)
+        {
+            var actionInstruction = new ActionInstruction(
+                playerName,
                 operation,
                 arguments);
             this.instructions.Add(actionInstruction);

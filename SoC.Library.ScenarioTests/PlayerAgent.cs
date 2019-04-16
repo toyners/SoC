@@ -73,13 +73,14 @@ namespace SoC.Library.ScenarioTests
             }
         }
 
-        public List<Tuple<GameEvent, bool>> GetEventResults()
+        public List<Tuple<GameEvent, ActionInstruction, bool>> GetEventResults()
         {
-            var eventResults = new List<Tuple<GameEvent, bool>>();
+            var eventResults = new List<Tuple<GameEvent, ActionInstruction, bool>>();
             this.expectedEventActions.ForEach(eventActionPair => {
                 eventResults.Add(
-                    new Tuple<GameEvent, bool>(
+                    new Tuple<GameEvent, ActionInstruction, bool>(
                         eventActionPair.ExpectedEvent,
+                        eventActionPair.Action,
                         eventActionPair.Verified));
             });
 
@@ -96,7 +97,7 @@ namespace SoC.Library.ScenarioTests
             string contents = null;
             int number = 1;
             this.GetEventResults().ForEach(tuple => {
-                contents += $"{number++} {tuple.Item1} - {tuple.Item2}\r\n";
+                contents += $"{number++:00} {tuple.Item1}{(tuple.Item2 != null ? ", " + tuple.Item2.Operation : "")} => {tuple.Item3}\r\n";
             });
             System.IO.File.WriteAllText(filePath, contents);
         }
