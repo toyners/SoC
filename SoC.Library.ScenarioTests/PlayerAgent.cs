@@ -22,7 +22,6 @@ namespace SoC.Library.ScenarioTests
         private readonly List<Instruction> instructions = new List<Instruction>();
         private readonly ILog log = new Log();
         private readonly bool verboseLogging;
-        //private readonly Dictionary<GameEvent, bool> verificationStatusByGameEvent = new Dictionary<GameEvent, bool>();
         private int actualEventIndex;
         private int expectedEventIndex;
         private IDictionary<string, Guid> playerIdsByName;
@@ -45,7 +44,6 @@ namespace SoC.Library.ScenarioTests
         #region Properties
         public Exception GameException { get; private set; }
         public Guid Id { get; private set; }
-        //public bool InstructionsProcessed { get { return this.instructionIndex >= this.instructions.Count; } }
         public bool IsFinished { get { return this.expectedEventIndex >= this.expectedEventActions.Count; } }
         public string Name { get; private set; }
         private EventActionPair CurrentEventActionPair { get { return this.expectedEventActions[this.expectedEventIndex]; } }
@@ -219,6 +217,13 @@ namespace SoC.Library.ScenarioTests
             var result = expectedEvent.Resources.HasValue && expectedEvent.Resources.Value != actualEvent.Resources;
 
             this.log.Add($"{(result ? "MATCHED" : "NOT MATCHED")} - Expected {expectedEvent.SimpleTypeName}, Actual {actualEvent.SimpleTypeName}");
+            if (!result ||
+                this.verboseLogging ||
+                this.expectedEventsWithVerboseLogging.Contains(expectedEvent))
+            {
+                this.log.Add($" EXPECTED: {expectedEvent.Resources.Value}");
+                this.log.Add($" ACTUAL: {actualEvent.Resources}");
+            }
 
             return result;
         }
