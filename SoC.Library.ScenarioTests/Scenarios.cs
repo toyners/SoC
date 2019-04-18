@@ -158,6 +158,14 @@ namespace SoC.Library.ScenarioTests
                 .WhenResourceCollectedEvent(Dana, fourTurnCollectedResources)
                     .State(Dana).Resources(ResourceClutch.OneOre).End()
                 .EndTurn(Dana)
+                .WhenDiceRollEvent(Adam, 1, 1)
+                    .QuitGame(Adam)
+                .WhenDiceRollEvent(Babara, 1, 1)
+                    .QuitGame(Babara)
+                .WhenDiceRollEvent(Charlie, 1, 1)
+                    .QuitGame(Charlie)
+                .WhenDiceRollEvent(Dana, 1, 1)
+                    .QuitGame(Dana)
                 .Run();
         }
 

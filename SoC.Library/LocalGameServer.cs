@@ -166,24 +166,16 @@ namespace Jabberwocky.SoC.Library
         private void CollectResourcesAtStartOfTurn(uint resourceRoll)
         {
             var resourcesCollectedByPlayerId = this.gameBoard.GetResourcesForRoll(resourceRoll);
+
+            foreach (var keyValuePair in resourcesCollectedByPlayerId)
+            {
+                var player = this.playersById[keyValuePair.Key];
+                foreach (var resourceCollection in keyValuePair.Value)
+                    player.AddResources(resourceCollection.Resources);
+            }
+
             var resourcesCollectedEvent = new ResourcesCollectedEvent(resourcesCollectedByPlayerId);
             this.RaiseEvent(resourcesCollectedEvent);
-            /*foreach (var player in this.players)
-            {
-                if (!resourcesCollectedByPlayerId.TryGetValue(player.Id, out var resourcesCollectedForPlayer))
-                    continue;
-
-                var resourcesCollectedOrderedByLocation = resourcesCollectedForPlayer
-                    .OrderBy(rc => rc.Location).ToArray();
-
-                foreach (var resourceCollection in resourcesCollectedForPlayer)
-                    player.AddResources(resourceCollection.Resources);
-
-                var resourcesCollectedEvent = new ResourcesCollectedEvent(player.Id, resourcesCollectedOrderedByLocation);
-
-                this.RaiseEvent(resourcesCollectedEvent, player);
-                this.RaiseEvent(resourcesCollectedEvent, this.PlayersExcept(player.Id));
-            }*/
         }
 
         private void GameSetup()
@@ -365,6 +357,20 @@ namespace Jabberwocky.SoC.Library
                 return;
             }
 
+            if (playerAction is QuitGameAction quitGameAction)
+            {
+                this.players = this.players.Where(player => player.Id != quitGameAction.InitiatingPlayerId).ToArray();
+                this.playerIndex--;
+                // TODO: Should PlayersById be cleaned up? If it is only used for reference then 
+                // don't bother.
+                // TODO: Last player should win
+                if (this.players.Length == 0)
+                    this.isQuitting = true;
+                else
+                    this.StartTurn();
+                return;
+            }
+
             if (playerAction is RequestStateAction requestStateAction)
             {
                 var player = this.playersById[requestStateAction.InitiatingPlayerId];
@@ -438,10 +444,11 @@ namespace Jabberwocky.SoC.Library
 
         private void SendStartPlayerTurnEvent()
         {
+            // TODO: Prevent other player actions from being recognised.
             //foreach (var player in this.PlayersExcept(this.currentPlayer.Id))
-              //  this.actionManager.SetExpectedActionsForPlayer(player.Id, null);
-            this.actionManager.SetExpectedActionsForPlayer(this.currentPlayer.Id, typeof(EndOfTurnAction));
-            //var token = this.tokenManager.CreateNewToken(this.currentPlayer);
+                //this.actionManager.SetExpectedActionsForPlayer(player.Id, null);
+            this.actionManager.SetExpectedActionsForPlayer(this.currentPlayer.Id, 
+                typeof(EndOfTurnAction), typeof(QuitGameAction));
             this.RaiseEvent(new StartPlayerTurnEvent(), this.currentPlayer /*, token*/);
         }
 

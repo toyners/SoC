@@ -214,7 +214,7 @@ namespace SoC.Library.ScenarioTests
 
         private bool IsRequestStateEventVerified(ScenarioRequestStateEvent expectedEvent, RequestStateEvent actualEvent)
         {
-            var result = expectedEvent.Resources.HasValue && expectedEvent.Resources.Value != actualEvent.Resources;
+            var result = expectedEvent.Resources.HasValue && expectedEvent.Resources.Value == actualEvent.Resources;
 
             this.log.Add($"{(result ? "MATCHED" : "NOT MATCHED")} - Expected {expectedEvent.SimpleTypeName}, Actual {actualEvent.SimpleTypeName}");
             if (!result ||
