@@ -289,7 +289,7 @@ namespace Jabberwocky.SoC.Library
         private void ProcessAnswerDirectTradeOfferAction(AnswerDirectTradeOfferAction answerDirectTradeOfferAction)
         {
             var answerDirectTradeOfferEvent = new AnswerDirectTradeOfferEvent(
-                    answerDirectTradeOfferAction.InitiatingPlayerId, answerDirectTradeOfferAction.WantedResources);
+                answerDirectTradeOfferAction.InitiatingPlayerId, answerDirectTradeOfferAction.WantedResources);
 
             this.answeringDirectTradeOffers.Add(
                 answerDirectTradeOfferAction.InitiatingPlayerId,
@@ -317,12 +317,15 @@ namespace Jabberwocky.SoC.Library
 
         private void ProcessMakeDirectTradeOfferAction(MakeDirectTradeOfferAction makeDirectTradeOfferAction)
         {
-            var makeDirectTradeOfferEvent = new MakeDirectTradeOfferEvent(
-                        makeDirectTradeOfferAction.InitiatingPlayerId, makeDirectTradeOfferAction.WantedResources);
-
             this.initialDirectTradeOffer = new Tuple<Guid, ResourceClutch>(
                 makeDirectTradeOfferAction.InitiatingPlayerId,
                 makeDirectTradeOfferAction.WantedResources);
+
+            this.actionManager.AddExpectedActionsForPlayer(this.currentPlayer.Id,
+                typeof(AcceptDirectTradeAction));
+
+            var makeDirectTradeOfferEvent = new MakeDirectTradeOfferEvent(
+                makeDirectTradeOfferAction.InitiatingPlayerId, makeDirectTradeOfferAction.WantedResources);
 
             var otherPlayers = this.PlayersExcept(makeDirectTradeOfferAction.InitiatingPlayerId).ToList();
             otherPlayers.ForEach(player => {
@@ -347,12 +350,14 @@ namespace Jabberwocky.SoC.Library
 
             if (playerAction is EndOfTurnAction)
             {
+
                 this.StartTurn();
                 return;
             }
 
             if (playerAction is MakeDirectTradeOfferAction makeDirectTradeOfferAction)
             {
+                
                 this.ProcessMakeDirectTradeOfferAction(makeDirectTradeOfferAction);
                 return;
             }
@@ -390,12 +395,12 @@ namespace Jabberwocky.SoC.Library
             this.eventRaiser.RaiseEvent(gameEvent);
         }
 
-        private void RaiseEvent(GameEvent gameEvent, IEnumerable<IPlayer> otherPlayers)
+        private void RaiseEvent(GameEvent gameEvent, IEnumerable<IPlayer> players)
         {
             var message = $"Sending {this.ToPrettyString(gameEvent)} " +
-                $"to {string.Join(", ", otherPlayers.Select(player => player.Name))}";
+                $"to {string.Join(", ", players.Select(player => player.Name))}";
             this.log.Add(message);
-            this.eventRaiser.RaiseEvent(gameEvent, otherPlayers);
+            this.eventRaiser.RaiseEvent(gameEvent, players);
         }
 
         private void RaiseEvent(GameEvent gameEvent, IPlayer player, GameToken token = null)
@@ -444,11 +449,10 @@ namespace Jabberwocky.SoC.Library
 
         private void SendStartPlayerTurnEvent()
         {
-            // TODO: Prevent other player actions from being recognised.
-            //foreach (var player in this.PlayersExcept(this.currentPlayer.Id))
-                //this.actionManager.SetExpectedActionsForPlayer(player.Id, null);
+            foreach (var player in this.PlayersExcept(this.currentPlayer.Id))
+               this.actionManager.SetExpectedActionsForPlayer(player.Id, null);
             this.actionManager.SetExpectedActionsForPlayer(this.currentPlayer.Id, 
-                typeof(EndOfTurnAction), typeof(QuitGameAction));
+                typeof(EndOfTurnAction), typeof(QuitGameAction), typeof(MakeDirectTradeOfferAction));
             this.RaiseEvent(new StartPlayerTurnEvent(), this.currentPlayer /*, token*/);
         }
 
@@ -501,14 +505,17 @@ namespace Jabberwocky.SoC.Library
                 {
                     var token = actionRequest.Item1;
                     var playerAction = actionRequest.Item2;
-                    this.log.Add($"Received {playerAction.GetType().Name} from {this.playersById[playerAction.InitiatingPlayerId].Name}");
+                    var playerActionTypeName = playerAction.GetType().Name;
+                    var playerName = this.playersById[playerAction.InitiatingPlayerId].Name;
+                    this.log.Add($"Received {playerActionTypeName} from {playerName}");
 
                     if (playerAction is RequestStateAction && !this.requestStateActionsMustHaveToken)
                         return playerAction;
 
                     if (!this.actionManager.ValidateAction(playerAction))
-                        throw new Exception($"FAILED: Action Validation - {this.playersById[playerAction.InitiatingPlayerId].Name}, {playerAction.GetType().Name}");
+                        throw new Exception($"FAILED: Action Validation - {playerName}, {playerActionTypeName}");
 
+                    this.log.Add($"Validated {playerActionTypeName} from {playerName}");
                     return playerAction;
                 }
             }
@@ -539,6 +546,7 @@ namespace Jabberwocky.SoC.Library
    
         public interface IActionManager
         {
+            void AddExpectedActionsForPlayer(Guid playerId, params Type[] actionsTypes);
             void SetExpectedActionsForPlayer(Guid playerId, params Type[] actionTypes);
             bool ValidateAction(PlayerAction playerAction);
         }
@@ -547,6 +555,15 @@ namespace Jabberwocky.SoC.Library
         {
             private readonly Dictionary<Guid, Type> actionTypeByPlayerId = new Dictionary<Guid, Type>();
             private readonly Dictionary<Guid, HashSet<Type>> actionTypesByPlayerId = new Dictionary<Guid, HashSet<Type>>();
+
+            public void AddExpectedActionsForPlayer(Guid playerId, params Type[] actionTypes)
+            {
+                if (actionTypes == null || actionTypes.Length == 0)
+                    throw new Exception("Must add at least one action type to player");
+
+                foreach (var actionType in actionTypes)
+                    this.actionTypesByPlayerId[playerId].Add(actionType);
+            }
 
             public void SetExpectedActionsForPlayer(Guid playerId, params Type[] actionTypes)
             {
