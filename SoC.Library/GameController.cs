@@ -8,14 +8,13 @@ namespace Jabberwocky.SoC.Library
     public class GameController
     {
         #region Fields
-        private GameToken gameToken;
         private Guid playerId;
         private MakeDirectTradeOfferEvent lastMakeDirectTradeOfferEvent;
         private AnswerDirectTradeOfferEvent lasetAnswerDirectTradeOffEvent;
         #endregion
 
         #region Events
-        public event Action<GameToken, PlayerAction> PlayerActionEvent;
+        public event Action<PlayerAction> PlayerActionEvent;
         public event Action<GameEvent> GameEvent;
         public event Action<Exception> GameExceptionEvent;
         #endregion
@@ -64,9 +63,8 @@ namespace Jabberwocky.SoC.Library
             this.SendAction(new QuitGameAction(this.playerId));
         }
 
-        internal void GameEventHandler(GameEvent gameEvent, GameToken gameToken)
+        internal void GameEventHandler(GameEvent gameEvent)
         {
-            this.gameToken = gameToken;
             if (gameEvent is GameJoinedEvent gameJoinedEvent)
                 this.playerId = gameJoinedEvent.PlayerId;
 
@@ -86,7 +84,7 @@ namespace Jabberwocky.SoC.Library
 
         private void SendAction(PlayerAction playerAction)
         {
-            this.PlayerActionEvent.Invoke(this.gameToken, playerAction);
+            this.PlayerActionEvent.Invoke(playerAction);
         }
         #endregion
     }

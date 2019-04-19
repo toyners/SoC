@@ -16,13 +16,12 @@ namespace Jabberwocky.SoC.Library
     {
         #region Fields
         private readonly ActionManager actionManager;
-        private readonly ConcurrentQueue<Tuple<GameToken, PlayerAction>> actionRequests = new ConcurrentQueue<Tuple<GameToken, PlayerAction>>();
+        private readonly ConcurrentQueue<PlayerAction> actionRequests = new ConcurrentQueue<PlayerAction>();
         private readonly IDevelopmentCardHolder developmentCardHolder;
         private readonly EventRaiser eventRaiser;
         private readonly GameBoard gameBoard;
         private readonly ILog log = new Log();
         private readonly INumberGenerator numberGenerator;
-        private readonly ITokenManager tokenManager;
         private IPlayer currentPlayer;
         private bool isQuitting;
         private IDictionary<Guid, IPlayer> playersById;
@@ -44,7 +43,6 @@ namespace Jabberwocky.SoC.Library
             this.developmentCardHolder = developmentCardHolder;
             this.turnTimer = new GameServerTimer();
             this.idGenerator = () => { return Guid.NewGuid(); };
-            this.tokenManager = new TokenManager();
             this.eventRaiser = new EventRaiser();
             this.actionManager = new ActionManager();
         }
@@ -195,11 +193,10 @@ namespace Jabberwocky.SoC.Library
 
         private void GameSetupLoop(IPlayer player)
         {
-            var token = this.tokenManager.CreateNewToken(player);
             // TODO: Pass back current settled locations
             var placeSetupInfrastructureEvent = new PlaceSetupInfrastructureEvent();
             this.actionManager.SetExpectedActionsForPlayer(player.Id, typeof(PlaceSetupInfrastructureAction));
-            this.RaiseEvent(placeSetupInfrastructureEvent, player, token);
+            this.RaiseEvent(placeSetupInfrastructureEvent, player);
             while (true)
             {
                 var playerAction = this.WaitForPlayerAction();
@@ -272,18 +269,14 @@ namespace Jabberwocky.SoC.Library
                 acceptDirectTradeAction.SellerId,
                 sellingResources);
 
-            // Current player gets token to continue their turn
-            var token = this.tokenManager.CreateNewToken(
-                    this.playersById[this.currentPlayer.Id]);
-
-            this.RaiseEvent(acceptTradeEvent, this.currentPlayer, token);
+            this.RaiseEvent(acceptTradeEvent, this.currentPlayer);
             this.RaiseEvent(acceptTradeEvent, this.PlayersExcept(this.currentPlayer.Id));
         }
 
-        private void PlayerActionEventHandler(GameToken token, PlayerAction playerAction)
+        private void PlayerActionEventHandler(PlayerAction playerAction)
         {
             // Leave all validation and processing to the game server thread
-            this.actionRequests.Enqueue(new Tuple<GameToken, PlayerAction>(token, playerAction));
+            this.actionRequests.Enqueue(playerAction);
         }
 
         private void ProcessAnswerDirectTradeOfferAction(AnswerDirectTradeOfferAction answerDirectTradeOfferAction)
@@ -295,14 +288,10 @@ namespace Jabberwocky.SoC.Library
                 answerDirectTradeOfferAction.InitiatingPlayerId,
                 answerDirectTradeOfferAction.WantedResources);
 
-            var token = this.tokenManager.CreateNewToken(
-                    this.playersById[answerDirectTradeOfferAction.InitialPlayerId]);
-
             // Initial player gets chance to confirm. 
             this.RaiseEvent(
                 answerDirectTradeOfferEvent,
-                this.playersById[answerDirectTradeOfferAction.InitialPlayerId],
-                token);
+                this.playersById[answerDirectTradeOfferAction.InitialPlayerId]);
 
             // Other two players gets informational event
             var informationalAnswerDirectTradeOfferEvent = new AnswerDirectTradeOfferEvent(
@@ -330,7 +319,7 @@ namespace Jabberwocky.SoC.Library
             var otherPlayers = this.PlayersExcept(makeDirectTradeOfferAction.InitiatingPlayerId).ToList();
             otherPlayers.ForEach(player => {
                 this.actionManager.SetExpectedActionsForPlayer(player.Id, typeof(AnswerDirectTradeOfferAction));
-                this.RaiseEvent(makeDirectTradeOfferEvent, player, this.tokenManager.CreateNewToken(player));
+                this.RaiseEvent(makeDirectTradeOfferEvent, player);
             });
         }
 
@@ -391,8 +380,7 @@ namespace Jabberwocky.SoC.Library
 
         private void RaiseEvent(GameEvent gameEvent)
         {
-            this.log.Add($"Sending {gameEvent.SimpleTypeName} to all players");
-            this.eventRaiser.RaiseEvent(gameEvent);
+            this.RaiseEvent(gameEvent, this.players);
         }
 
         private void RaiseEvent(GameEvent gameEvent, IEnumerable<IPlayer> players)
@@ -403,19 +391,10 @@ namespace Jabberwocky.SoC.Library
             this.eventRaiser.RaiseEvent(gameEvent, players);
         }
 
-        private void RaiseEvent(GameEvent gameEvent, IPlayer player, GameToken token = null)
+        private void RaiseEvent(GameEvent gameEvent, IPlayer player)
         {
-            if (token != null)
-                this.log.Add($"Sending {this.ToPrettyString(gameEvent)} to {player.Name} with token {token}");
-            else
-                this.log.Add($"Sending {gameEvent.SimpleTypeName} to {player.Name} without token");
-            this.eventRaiser.RaiseEvent(gameEvent, player.Id, token);
-        }
-
-        private void RaiseEventWithReusedToken(GameEvent gameEvent, IPlayer player)
-        {
-            var token = this.tokenManager.GetTokenForPlayer(player);
-            this.RaiseEvent(gameEvent, player, token);
+            this.log.Add($"Sending {this.ToPrettyString(gameEvent)} to {player.Name}");
+            this.eventRaiser.RaiseEvent(gameEvent, player.Id);
         }
 
         private void StartTurn()
@@ -424,7 +403,7 @@ namespace Jabberwocky.SoC.Library
 
             this.SendStartPlayerTurnEvent();
             this.numberGenerator.RollTwoDice(out this.dice1, out this.dice2);
-            this.SendDiceRollEvent();
+            this.RaiseEvent(new DiceRollEvent(this.currentPlayer.Id, this.dice1, this.dice2));
 
             var resourceRoll = this.dice1 + this.dice2;
             if (resourceRoll != 7)
@@ -436,17 +415,7 @@ namespace Jabberwocky.SoC.Library
 
             }
         }
-
-        private void SendDiceRollEvent()
-        {
-            var diceRollEvent = new DiceRollEvent(this.currentPlayer.Id, this.dice1, this.dice2);
-            
-            this.RaiseEventWithReusedToken(diceRollEvent, this.currentPlayer);
-
-            this.RaiseEvent(new DiceRollEvent(this.currentPlayer.Id, this.dice1, this.dice2),
-                this.PlayersExcept(this.currentPlayer.Id));
-        }
-
+        
         private void SendStartPlayerTurnEvent()
         {
             foreach (var player in this.PlayersExcept(this.currentPlayer.Id))
@@ -501,10 +470,8 @@ namespace Jabberwocky.SoC.Library
                     throw new TimeoutException($"Time out exception waiting for player '{this.currentPlayer.Name}'");
                 }
 
-                if (this.actionRequests.TryDequeue(out var actionRequest))
+                if (this.actionRequests.TryDequeue(out var playerAction))
                 {
-                    var token = actionRequest.Item1;
-                    var playerAction = actionRequest.Item2;
                     var playerActionTypeName = playerAction.GetType().Name;
                     var playerName = this.playersById[playerAction.InitiatingPlayerId].Name;
                     this.log.Add($"Received {playerActionTypeName} from {playerName}");
@@ -536,14 +503,6 @@ namespace Jabberwocky.SoC.Library
         #endregion
 
         #region Structures
-        public interface ITokenManager
-        {
-            GameToken CreateNewToken(IPlayer player);
-            IPlayer GetPlayerForToken(GameToken token);
-            GameToken GetTokenForPlayer(IPlayer player);
-            bool ValidateToken(GameToken token);
-        }
-   
         public interface IActionManager
         {
             void AddExpectedActionsForPlayer(Guid playerId, params Type[] actionsTypes);
@@ -589,31 +548,21 @@ namespace Jabberwocky.SoC.Library
 
         private class EventRaiser
         {
-            private Dictionary<Guid, Action<GameEvent, GameToken>> gameEventHandlersByPlayerId = new Dictionary<Guid, Action<GameEvent, GameToken>>();
-            private event Action<GameEvent, GameToken> gameEventHandler;
+            private Dictionary<Guid, Action<GameEvent>> gameEventHandlersByPlayerId = new Dictionary<Guid, Action<GameEvent>>();
 
             public bool CanRaiseEvents { get; set; } = true;
 
-            public void AddEventHandler(Guid playerId, Action<GameEvent, GameToken> gameEventHandler)
+            public void AddEventHandler(Guid playerId, Action<GameEvent> gameEventHandler)
             {
-                this.gameEventHandler += gameEventHandler;
                 this.gameEventHandlersByPlayerId.Add(playerId, gameEventHandler);
             }
 
-            public void RaiseEvent(GameEvent gameEvent)
-            {
-                if (!this.CanRaiseEvents)
-                    return;
-
-                this.gameEventHandler.Invoke(gameEvent, null);
-            }
-
-            public void RaiseEvent(GameEvent gameEvent, Guid playerId, GameToken gameToken = null)
+            public void RaiseEvent(GameEvent gameEvent, Guid playerId)
             {
                 if (!this.CanRaiseEvents)
                     return;
                 
-                this.gameEventHandlersByPlayerId[playerId].Invoke(gameEvent, gameToken);
+                this.gameEventHandlersByPlayerId[playerId].Invoke(gameEvent);
             }
 
             public void RaiseEvent(GameEvent gameEvent, IEnumerable<IPlayer> players)
@@ -622,38 +571,8 @@ namespace Jabberwocky.SoC.Library
                     return;
 
                 foreach (var player in players)
-                    this.gameEventHandlersByPlayerId[player.Id].Invoke(gameEvent, null);
+                    this.gameEventHandlersByPlayerId[player.Id].Invoke(gameEvent);
             }
-        }
-
-        private class TokenManager: ITokenManager
-        {
-            private readonly Dictionary<GameToken, IPlayer> playersByToken = new Dictionary<GameToken, IPlayer>();
-            private readonly Dictionary<IPlayer, GameToken> tokensByPlayer = new Dictionary<IPlayer, GameToken>();
-
-            public GameToken CreateNewToken(IPlayer player)
-            {
-                GameToken token;
-                if (this.tokensByPlayer.ContainsKey(player))
-                {
-                    token = this.tokensByPlayer[player];
-                    this.tokensByPlayer.Remove(player);
-                    if (this.playersByToken.ContainsKey(token))
-                        this.playersByToken.Remove(token);
-                }
-
-                token = new GameToken();
-                this.tokensByPlayer.Add(player, token);
-                this.playersByToken.Add(token, player);
-                return token;
-            }
-
-            public IPlayer GetPlayerForToken(GameToken token) => this.playersByToken[token];
-
-            public GameToken GetTokenForPlayer(IPlayer player) => this.tokensByPlayer[player];
-
-            public bool ValidateToken(GameToken token) => 
-                token != null && this.playersByToken.ContainsKey(token);
         }
         #endregion
     }
