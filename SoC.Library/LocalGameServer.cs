@@ -193,7 +193,6 @@ namespace Jabberwocky.SoC.Library
 
         private void GameSetupLoop(IPlayer player)
         {
-            // TODO: Pass back current settled locations
             var placeSetupInfrastructureEvent = new PlaceSetupInfrastructureEvent();
             this.actionManager.SetExpectedActionsForPlayer(player.Id, typeof(PlaceSetupInfrastructureAction));
             this.RaiseEvent(placeSetupInfrastructureEvent, player);
@@ -213,7 +212,7 @@ namespace Jabberwocky.SoC.Library
                 }
                 else
                 {
-                    //TODO: Handle case where action is not correct
+                    //TODO: Handle case where action is not correct. Send message back to client
                 }
             }
         }
@@ -238,8 +237,6 @@ namespace Jabberwocky.SoC.Library
 
         private void PlaceInfrastructure(IPlayer player, uint settlementLocation, uint roadEndLocation)
         {
-            // TODO: Validation
-
             try
             {
                 this.gameBoard.PlaceStartingInfrastructure(player.Id, settlementLocation, roadEndLocation);
@@ -247,7 +244,7 @@ namespace Jabberwocky.SoC.Library
             }
             catch (Exception e)
             {
-                // TODO
+                // TODO: Send back message to user
             }
         }
 
