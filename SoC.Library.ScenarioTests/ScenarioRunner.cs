@@ -16,7 +16,7 @@ namespace SoC.Library.ScenarioTests
         #region Fields
         private readonly ScenarioDevelopmentCardHolder developmentCardHolder = new ScenarioDevelopmentCardHolder();
         private readonly List<PlayerAgent> playerAgents = new List<PlayerAgent>();
-        private readonly Dictionary<string, Guid> playerIdsByName = new Dictionary<string, Guid>();
+        private readonly Dictionary<string, PlayerAgent> playerAgentsByName = new Dictionary<string, PlayerAgent>();
         private readonly Dictionary<string, ResourceClutch> startingResourcesByName = new Dictionary<string, ResourceClutch>();
         private GameBoard gameBoard;
         private List<Instruction> instructions = new List<Instruction>();
@@ -110,10 +110,8 @@ namespace SoC.Library.ScenarioTests
             if (Thread.CurrentThread.Name == null)
                 Thread.CurrentThread.Name = "Scenario Runner";
 
-            var playerIds = new Queue<Guid>(this.playerAgents.Select(agent => agent.Id));
 
-            var playerAgentsByName = this.playerAgents.ToDictionary(playerAgent => playerAgent.Name, playerAgent => playerAgent);
-            this.instructions.ForEach(instruction => playerAgentsByName[instruction.PlayerName].AddInstruction(instruction));
+            this.instructions.ForEach(instruction => this.playerAgentsByName[instruction.PlayerName].AddInstruction(instruction));
 
             if (this.gameBoard == null)
                 this.gameBoard = new GameBoard(BoardSizes.Standard);
@@ -127,6 +125,7 @@ namespace SoC.Library.ScenarioTests
             if (!this.useServerTimer)
                 gameServer.SetTurnTimer(new MockTurnTimer());
 
+            var playerIds = new Queue<Guid>(this.playerAgents.Select(agent => agent.Id));
             gameServer.SetIdGenerator(() => { return playerIds.Dequeue(); });
 
             gameServer.SetRequestStateExemption(this.requestStateActionsMustHaveToken);
@@ -212,7 +211,7 @@ namespace SoC.Library.ScenarioTests
         {
             this.playerAgents.ForEach(playerAgent =>
             {
-                var gameEvent = new InfrastructurePlacedEvent(this.playerIdsByName[playerName], settlementLocation, roadEndLocation);
+                var gameEvent = new InfrastructurePlacedEvent(this.GetPlayerId(playerName), settlementLocation, roadEndLocation);
                 this.instructions.Add(new EventInstruction(playerAgent.Name, gameEvent));
             });
             
@@ -221,7 +220,7 @@ namespace SoC.Library.ScenarioTests
 
         public ScenarioRunner WhenAcceptDirectTradeEvent(string playerName, string buyerName, ResourceClutch buyingResources, string sellerName, ResourceClutch sellingResources)
         {
-            var gameEvent = new AcceptTradeEvent(this.playerIdsByName[buyerName], buyingResources, this.playerIdsByName[sellerName], sellingResources);
+            var gameEvent = new AcceptTradeEvent(this.GetPlayerId(buyerName), buyingResources, this.GetPlayerId(sellerName), sellingResources);
             var eventInstruction = new AcceptDirectTradeEventInstruction(playerName, gameEvent);
             this.instructions.Add(eventInstruction);
             return this;
@@ -229,7 +228,7 @@ namespace SoC.Library.ScenarioTests
 
         public ScenarioRunner WhenAnswerDirectTradeOfferEvent(string playerName, string buyingPlayerName, ResourceClutch wantedResources)
         {
-            var gameEvent = new AnswerDirectTradeOfferEvent(this.playerIdsByName[buyingPlayerName], wantedResources);
+            var gameEvent = new AnswerDirectTradeOfferEvent(this.GetPlayerId(buyingPlayerName), wantedResources);
             var eventInstruction = new AnswerDirectTradeOfferEventInstruction(playerName, gameEvent);
             this.instructions.Add(eventInstruction);
             return this;
@@ -246,7 +245,7 @@ namespace SoC.Library.ScenarioTests
         public ScenarioRunner WhenDiceRollEvent(string playerName, uint dice1, uint dice2)
         {
             this.numberGenerator.AddTwoDiceRoll(dice1, dice2);
-            var gameEvent = new DiceRollEvent(this.playerIdsByName[playerName], dice1, dice2);
+            var gameEvent = new DiceRollEvent(this.GetPlayerId(playerName), dice1, dice2);
             var eventInstruction = new DiceRollEventInstruction(playerName, gameEvent);
             this.instructions.Add(eventInstruction);
             return this;
@@ -254,7 +253,7 @@ namespace SoC.Library.ScenarioTests
 
         public ScenarioRunner WhenGameJoinedEvent(string playerName)
         {
-            var gameEvent = new GameJoinedEvent(this.playerIdsByName[playerName]);
+            var gameEvent = new GameJoinedEvent(this.GetPlayerId(playerName));
             var eventInstruction = new EventInstruction(playerName, gameEvent);
             this.instructions.Add(eventInstruction);
             return this;
@@ -270,7 +269,7 @@ namespace SoC.Library.ScenarioTests
 
         public ScenarioRunner WhenMakeDirectTradeOfferEvent(string playerName, string buyingPlayerName, ResourceClutch wantedResources)
         {
-            var gameEvent = new MakeDirectTradeOfferEvent(this.playerIdsByName[buyingPlayerName], wantedResources);
+            var gameEvent = new MakeDirectTradeOfferEvent(this.GetPlayerId(buyingPlayerName), wantedResources);
             var eventInstruction = new MakeDirectTradeOfferEventInstruction(playerName, gameEvent);
             this.instructions.Add(eventInstruction);
             return this;
@@ -308,11 +307,19 @@ namespace SoC.Library.ScenarioTests
             return this;
         }
 
+        private Guid GetPlayerId(string playerName)
+        {
+            if (!this.playerAgentsByName.ContainsKey(playerName))
+                throw new Exception($"Player name {playerName} not recognised.");
+
+            return this.playerAgentsByName[playerName].Id;
+        }
+
         public ScenarioRunner WhenResourceCollectedEvent(string playerName, Dictionary<string, ResourceCollection[]> resourcesCollectedByPlayerName)
         {
             var resourcesCollectedByPlayerId = new Dictionary<Guid, ResourceCollection[]>();
             foreach (var kv in resourcesCollectedByPlayerName)
-                resourcesCollectedByPlayerId.Add(this.playerIdsByName[kv.Key], kv.Value);
+                resourcesCollectedByPlayerId.Add(this.GetPlayerId(kv.Key), kv.Value);
             var gameEvent = new ResourcesCollectedEvent(resourcesCollectedByPlayerId);
             var eventInstruction = new EventInstruction(playerName, gameEvent);
             this.instructions.Add(eventInstruction);
@@ -323,7 +330,7 @@ namespace SoC.Library.ScenarioTests
         {
             var playerAgent = new PlayerAgent(playerName, verboseLogging);
             this.playerAgents.Add(playerAgent);
-            this.playerIdsByName.Add(playerAgent.Name, playerAgent.Id);
+            this.playerAgentsByName.Add(playerAgent.Name, playerAgent);
             return this;
         }
 
