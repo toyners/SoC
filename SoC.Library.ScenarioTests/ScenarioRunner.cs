@@ -211,12 +211,12 @@ namespace SoC.Library.ScenarioTests
             return this;
         }
 
-        public ScenarioRunner VerifyInfrastructurePlacedEventForAllPlayers(string playerName, uint settlementLocation, uint roadEndLocation)
+        public ScenarioRunner VerifyAllPlayersReceivedInfrastructurePlacedEvent(string playerName, uint settlementLocation, uint roadEndLocation)
         {
             this.playerAgents.ForEach(playerAgent =>
             {
                 var gameEvent = new InfrastructurePlacedEvent(this.GetPlayerId(playerName), settlementLocation, roadEndLocation);
-                this.instructions.Add(new EventInstruction(playerAgent.Name, gameEvent));
+                playerAgent.AddInstruction(new EventInstruction(playerAgent.Name, gameEvent));
             });
             
             return this;
