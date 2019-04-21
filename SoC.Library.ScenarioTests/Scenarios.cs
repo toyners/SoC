@@ -204,6 +204,26 @@ namespace SoC.Library.ScenarioTests
                 .Run();
         }
 
+        [Scenario]
+        public void Scenario_AllOtherPlayersQuit(string[] args)
+        {
+            this.CompletePlayerInfrastructureSetup(args)
+                .WithNoResourceCollection()
+                .WhenDiceRollEvent(Adam, 3, 3)
+                    .EndTurn(Adam)
+                    /*Player(Adam).ReceivesPlayerQuitConfirmationEvent(Adam)
+                    Player(Babara).ReceivesPlayerQuitEvent(Adam)
+                    Player(Charlie).ReceivesPlayerQuitEvent(Adam)
+                    Player(Dana).ReceivesPlayerQuitEvent(Adam)*/
+                .WhenDiceRollEvent(Babara, 3, 3)
+                    .QuitGame(Babara)
+                .WhenDiceRollEvent(Charlie, 3, 3)
+                    .QuitGame(Charlie)
+                .WhenDiceRollEvent(Dana, 3, 3)
+                    .QuitGame(Dana)
+                .Run();
+        }
+
         private static CollectedResourcesBuilder CreateExpectedCollectedResources()
         {
             return new CollectedResourcesBuilder();
