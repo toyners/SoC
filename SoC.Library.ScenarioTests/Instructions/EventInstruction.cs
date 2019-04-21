@@ -10,6 +10,7 @@ namespace SoC.Library.ScenarioTests.Instructions
         private GameEvent expectedEvent;
         public EventInstruction(string playerName, GameEvent expectedEvent) : base(playerName)
             => this.expectedEvent = expectedEvent;
+        public EventInstruction(GameEvent expectedEvent) : base(null) => this.expectedEvent = expectedEvent;
 
         public bool Verbose { get; set; }
 

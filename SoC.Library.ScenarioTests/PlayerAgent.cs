@@ -22,7 +22,6 @@ namespace SoC.Library.ScenarioTests
         private readonly List<Instruction> instructions = new List<Instruction>();
         private readonly ILog log = new Log();
         private readonly bool verboseLogging;
-        private int actualEventIndex;
         private int expectedEventIndex;
         private IDictionary<string, Guid> playerIdsByName;
 

@@ -67,7 +67,7 @@ namespace SoC.Library.ScenarioTests
             return this;
         }
 
-        public ScenarioRunner ConfirmGameStartAction(string playerName)
+        public ScenarioRunner ThenConfirmGameStart()
         {
             this.AddActionInstruction(ActionInstruction.OperationTypes.ConfirmStart, null);
             return this;
@@ -92,16 +92,21 @@ namespace SoC.Library.ScenarioTests
             return this;
         }
 
-        public ScenarioRunner PlaceStartingInfrastructure(uint settlementLocation, uint roadEndLocation)
+        public ScenarioRunner ThenPlaceStartingInfrastructure(uint settlementLocation, uint roadEndLocation)
         {
             this.AddActionInstruction(ActionInstruction.OperationTypes.PlaceStartingInfrastructure,
                 new object[] { settlementLocation, roadEndLocation });
             return this;
         }
 
-        public ScenarioRunner QuitGame(string playerName)
+        public ScenarioRunner ThenQuitGame()
         {
             this.AddActionInstruction(ActionInstruction.OperationTypes.QuitGame, null);
+            return this;
+        }
+
+        public ScenarioRunner ThenDoNothing()
+        {
             return this;
         }
 
@@ -110,8 +115,7 @@ namespace SoC.Library.ScenarioTests
             if (Thread.CurrentThread.Name == null)
                 Thread.CurrentThread.Name = "Scenario Runner";
 
-
-            this.instructions.ForEach(instruction => this.playerAgentsByName[instruction.PlayerName].AddInstruction(instruction));
+            //this.instructions.ForEach(instruction => this.playerAgentsByName[instruction.PlayerName].AddInstruction(instruction));
 
             if (this.gameBoard == null)
                 this.gameBoard = new GameBoard(BoardSizes.Standard);
@@ -234,10 +238,10 @@ namespace SoC.Library.ScenarioTests
             return this;
         }
 
-        public ScenarioRunner WhenConfirmGameStartEvent(string playerName)
+        public ScenarioRunner ReceivesConfirmGameStartEvent()
         {
             var gameEvent = new ConfirmGameStartEvent();
-            var eventInstruction = new EventInstruction(playerName, gameEvent);
+            var eventInstruction = new EventInstruction(this.currentPlayerAgent.Name, gameEvent);
             this.instructions.Add(eventInstruction);
             return this;
         }
@@ -251,19 +255,19 @@ namespace SoC.Library.ScenarioTests
             return this;
         }
 
-        public ScenarioRunner WhenGameJoinedEvent(string playerName)
+        public ScenarioRunner ReceivesGameJoinedEvent()
         {
-            var gameEvent = new GameJoinedEvent(this.GetPlayerId(playerName));
-            var eventInstruction = new EventInstruction(playerName, gameEvent);
-            this.instructions.Add(eventInstruction);
+            var gameEvent = new GameJoinedEvent(this.GetPlayerId(this.currentPlayerAgent.Name));
+            var eventInstruction = new EventInstruction(gameEvent);
+            this.currentPlayerAgent.AddInstruction(eventInstruction);
             return this;
         }
 
-        public ScenarioRunner WhenInitialBoardSetupEvent(string playerName, GameBoardSetup gameBoardSetup)
+        public ScenarioRunner ReceivesInitialBoardSetupEvent(GameBoardSetup gameBoardSetup)
         {
             var gameEvent = new InitialBoardSetupEvent(gameBoardSetup);
-            var eventInstruction = new EventInstruction(playerName, gameEvent);
-            this.instructions.Add(eventInstruction);
+            var eventInstruction = new EventInstruction(this.currentPlayerAgent.Name, gameEvent);
+            this.currentPlayerAgent.AddInstruction(eventInstruction);
             return this;
         }
 
@@ -275,29 +279,58 @@ namespace SoC.Library.ScenarioTests
             return this;
         }
 
-        public ScenarioRunner WhenPlaceInfrastructureSetupEvent(string playerName)
+        public ScenarioRunner ReceivesPlaceInfrastructureSetupEvent()
         {
             var gameEvent = new PlaceSetupInfrastructureEvent();
-            var eventInstruction = new EventInstruction(playerName, gameEvent);
-            this.instructions.Add(eventInstruction);
+            var eventInstruction = new EventInstruction(this.currentPlayerAgent.Name, gameEvent);
+            this.currentPlayerAgent.AddInstruction(eventInstruction);
             return this;
         }
 
-        public ScenarioRunner WhenPlayerOrderEvent(string playerName, string[] playerNames)
+        public ScenarioRunner ReceivesPlayerOrderEvent(string[] playerNames)
         {
             var playerIds = this.playerAgents.Select(playerAgent => playerAgent.Id).ToArray();
             var gameEvent = new PlayerOrderEvent(playerIds);
-            var eventInstruction = new EventInstruction(playerName, gameEvent);
-            this.instructions.Add(eventInstruction);
+            var eventInstruction = new EventInstruction(gameEvent);
+            this.currentPlayerAgent.AddInstruction(eventInstruction);
             return this;
         }
 
-        public ScenarioRunner WhenPlayerSetupEvent(string playerName)
+        public ScenarioRunner ReceivesPlayerSetupEvent()
         {
             var playerIdsByName = this.playerAgents.ToDictionary(playerAgent => playerAgent.Name, playerAgent => playerAgent.Id);
             var gameEvent = new PlayerSetupEvent(playerIdsByName);
-            var eventInstruction = new EventInstruction(playerName, gameEvent);
-            this.instructions.Add(eventInstruction);
+            var eventInstruction = new EventInstruction(this.currentPlayerAgent.Name, gameEvent);
+            this.currentPlayerAgent.AddInstruction(eventInstruction);
+            return this;
+        }
+
+        public ScenarioRunner ThenEndTurn()
+        {
+            this.currentPlayerAgent.AddInstruction(this.CreateActionInstruction(
+                ActionInstruction.OperationTypes.EndOfTurn, null));
+            return this;
+        }
+
+        public ScenarioRunner ReceivesDiceRollEvent(uint dice1, uint dice2)
+        {
+            this.numberGenerator.AddTwoDiceRoll(dice1, dice2);
+            var gameEvent = new DiceRollEvent(this.GetPlayerId(this.currentPlayerAgent.Name), dice1, dice2);
+            var eventInstruction = new EventInstruction(this.currentPlayerAgent.Name, gameEvent);
+            this.currentPlayerAgent.AddInstruction(eventInstruction);
+            //this.instructions.Add(eventInstruction);
+            return this;
+        }
+
+        public ScenarioRunner ReceivesPlayerWonEvent(string winningPlayerName)
+        {
+            throw new NotImplementedException();
+        }
+
+        private PlayerAgent currentPlayerAgent;
+        public ScenarioRunner WhenPlayer(string playerName)
+        {
+            this.currentPlayerAgent = this.playerAgentsByName[playerName];
             return this;
         }
 
@@ -364,11 +397,7 @@ namespace SoC.Library.ScenarioTests
 
         private void AddActionInstruction(ActionInstruction.OperationTypes operation, object[] arguments)
         {
-            var actionInstruction = new ActionInstruction(
-                this.LastInstruction.PlayerName,
-                operation,
-                arguments);
-            this.instructions.Add(actionInstruction);
+            this.currentPlayerAgent.AddInstruction(this.CreateActionInstruction(operation, arguments));
         }
 
         private void AddActionInstruction(string playerName, ActionInstruction.OperationTypes operation, object[] arguments)
@@ -378,6 +407,14 @@ namespace SoC.Library.ScenarioTests
                 operation,
                 arguments);
             this.instructions.Add(actionInstruction);
+        }
+
+        private ActionInstruction CreateActionInstruction(ActionInstruction.OperationTypes operation, object[] arguments)
+        {
+            return new ActionInstruction(
+                null,
+                operation,
+                arguments);
         }
 
         private void QuitGame(LocalGameServer gameServer)
