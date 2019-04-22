@@ -28,13 +28,13 @@ namespace SoC.Library.ScenarioTests.Instructions
             return this;
         }
 
-        public PlayerStateInstruction Resources(ResourceClutch expectedResources)
+        public PlayerStateInstruction WithResources(ResourceClutch expectedResources)
         {
             this.expectedResources = expectedResources;
             return this;
         }
 
-        public ScenarioRunner End() { return this.runner; }
+        public ScenarioRunner EndPlayerStateMeasuring() { return this.runner; }
 
         public ActionInstruction GetAction()
         {

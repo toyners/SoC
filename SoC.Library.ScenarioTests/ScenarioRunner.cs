@@ -73,12 +73,6 @@ namespace SoC.Library.ScenarioTests
             return this;
         }
 
-        public ScenarioRunner EndTurn(string playerName)
-        {
-            this.AddActionInstruction(playerName, ActionInstruction.OperationTypes.EndOfTurn, null);
-            return this;
-        }
-
         public ScenarioRunner Label(string playerName, string label)
         {
             this.instructions.Add(new LabelInstruction(playerName, label));
@@ -114,8 +108,6 @@ namespace SoC.Library.ScenarioTests
         {
             if (Thread.CurrentThread.Name == null)
                 Thread.CurrentThread.Name = "Scenario Runner";
-
-            //this.instructions.ForEach(instruction => this.playerAgentsByName[instruction.PlayerName].AddInstruction(instruction));
 
             if (this.gameBoard == null)
                 this.gameBoard = new GameBoard(BoardSizes.Standard);
@@ -197,11 +189,10 @@ namespace SoC.Library.ScenarioTests
                 throw new TimeoutException(timeOutMessage);
         }
 
-        public PlayerStateInstruction State(string playerName)
+        public PlayerStateInstruction ThenMeasurePlayerState()
         {
-            var playerAgent = this.playerAgents.First(p => p.Name == playerName);
-            var playerState = new PlayerStateInstruction(playerAgent, this);
-            this.instructions.Add(playerState);
+            var playerState = new PlayerStateInstruction(this.currentPlayerAgent, this);
+            this.currentPlayerAgent.AddInstruction(playerState);
             return playerState;
         }
 
@@ -242,15 +233,6 @@ namespace SoC.Library.ScenarioTests
         {
             var gameEvent = new ConfirmGameStartEvent();
             var eventInstruction = new EventInstruction(this.currentPlayerAgent.Name, gameEvent);
-            this.instructions.Add(eventInstruction);
-            return this;
-        }
-
-        public ScenarioRunner WhenDiceRollEvent(string playerName, uint dice1, uint dice2)
-        {
-            this.numberGenerator.AddTwoDiceRoll(dice1, dice2);
-            var gameEvent = new DiceRollEvent(this.GetPlayerId(playerName), dice1, dice2);
-            var eventInstruction = new DiceRollEventInstruction(playerName, gameEvent);
             this.instructions.Add(eventInstruction);
             return this;
         }
@@ -348,14 +330,14 @@ namespace SoC.Library.ScenarioTests
             return this.playerAgentsByName[playerName].Id;
         }
 
-        public ScenarioRunner WhenResourceCollectedEvent(string playerName, Dictionary<string, ResourceCollection[]> resourcesCollectedByPlayerName)
+        public ScenarioRunner ReceivesResourceCollectedEvent(Dictionary<string, ResourceCollection[]> resourcesCollectedByPlayerName)
         {
             var resourcesCollectedByPlayerId = new Dictionary<Guid, ResourceCollection[]>();
             foreach (var kv in resourcesCollectedByPlayerName)
                 resourcesCollectedByPlayerId.Add(this.GetPlayerId(kv.Key), kv.Value);
             var gameEvent = new ResourcesCollectedEvent(resourcesCollectedByPlayerId);
-            var eventInstruction = new EventInstruction(playerName, gameEvent);
-            this.instructions.Add(eventInstruction);
+            var eventInstruction = new EventInstruction(gameEvent);
+            this.currentPlayerAgent.AddInstruction(eventInstruction);
             return this;
         }
 
