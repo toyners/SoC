@@ -53,14 +53,14 @@ namespace SoC.Library.ScenarioTests
             return new ScenarioRunner(args);
         }
 
-        public ScenarioRunner AnswerDirectTradeOffer(ResourceClutch wantedResources)
+        public ScenarioRunner ThenAnswerDirectTradeOffer(ResourceClutch wantedResources)
         {
             this.AddActionInstruction(ActionInstruction.OperationTypes.AnswerDirectTradeOffer, 
                 new object[] { wantedResources });
             return this;
         }
 
-        public ScenarioRunner AcceptTrade(string sellerName)
+        public ScenarioRunner ThenAcceptTradeOffer(string sellerName)
         {
             this.AddActionInstruction(ActionInstruction.OperationTypes.AcceptTrade,
                 new object[] { sellerName });
@@ -79,7 +79,7 @@ namespace SoC.Library.ScenarioTests
             return this;
         }
 
-        public ScenarioRunner MakeDirectTradeOffer(ResourceClutch wantedResources)
+        public ScenarioRunner ThenMakeDirectTradeOffer(ResourceClutch wantedResources)
         {
             this.AddActionInstruction(ActionInstruction.OperationTypes.MakeDirectTradeOffer, 
                 new object[] { wantedResources });
@@ -213,19 +213,19 @@ namespace SoC.Library.ScenarioTests
             return this;
         }
 
-        public ScenarioRunner WhenAcceptDirectTradeEvent(string playerName, string buyerName, ResourceClutch buyingResources, string sellerName, ResourceClutch sellingResources)
+        public ScenarioRunner ReceivesAcceptDirectTradeEvent(string buyerName, ResourceClutch buyingResources, string sellerName, ResourceClutch sellingResources)
         {
             var gameEvent = new AcceptTradeEvent(this.GetPlayerId(buyerName), buyingResources, this.GetPlayerId(sellerName), sellingResources);
-            var eventInstruction = new AcceptDirectTradeEventInstruction(playerName, gameEvent);
-            this.instructions.Add(eventInstruction);
+            var eventInstruction = new EventInstruction(gameEvent);
+            this.currentPlayerAgent.AddInstruction(eventInstruction);
             return this;
         }
 
-        public ScenarioRunner WhenAnswerDirectTradeOfferEvent(string playerName, string buyingPlayerName, ResourceClutch wantedResources)
+        public ScenarioRunner ReceivesAnswerDirectTradeOfferEvent(string buyingPlayerName, ResourceClutch wantedResources)
         {
             var gameEvent = new AnswerDirectTradeOfferEvent(this.GetPlayerId(buyingPlayerName), wantedResources);
-            var eventInstruction = new AnswerDirectTradeOfferEventInstruction(playerName, gameEvent);
-            this.instructions.Add(eventInstruction);
+            var eventInstruction = new EventInstruction(gameEvent);
+            this.currentPlayerAgent.AddInstruction(eventInstruction);
             return this;
         }
 
@@ -253,11 +253,11 @@ namespace SoC.Library.ScenarioTests
             return this;
         }
 
-        public ScenarioRunner WhenMakeDirectTradeOfferEvent(string playerName, string buyingPlayerName, ResourceClutch wantedResources)
+        public ScenarioRunner ReceivesMakeDirectTradeOfferEvent(string buyingPlayerName, ResourceClutch wantedResources)
         {
             var gameEvent = new MakeDirectTradeOfferEvent(this.GetPlayerId(buyingPlayerName), wantedResources);
-            var eventInstruction = new MakeDirectTradeOfferEventInstruction(playerName, gameEvent);
-            this.instructions.Add(eventInstruction);
+            var eventInstruction = new EventInstruction(gameEvent);
+            this.currentPlayerAgent.AddInstruction(eventInstruction);
             return this;
         }
 
