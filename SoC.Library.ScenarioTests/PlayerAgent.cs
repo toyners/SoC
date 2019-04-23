@@ -260,6 +260,9 @@ namespace SoC.Library.ScenarioTests
 
                 this.log.Add($"Received {actualEvent.GetType().Name}");
 
+                if (this.didNotReceiveTypes.Contains(actualEvent.GetType()))
+                    throw new Exception($"{this.Name} received event of type {actualEvent.GetType()} but should not have");
+
                 this.actualEvents.Add(actualEvent);
                 break;
             }
@@ -277,6 +280,12 @@ namespace SoC.Library.ScenarioTests
             public GameEvent ExpectedEvent { get; private set; }
             public ActionInstruction Action { get; set; }
             public bool Verified { get; set; }
+        }
+
+        private HashSet<Type> didNotReceiveTypes = new HashSet<Type>();
+        public void AddDidNotReceiveType(Type type)
+        {
+            this.didNotReceiveTypes.Add(type);
         }
         #endregion
     }

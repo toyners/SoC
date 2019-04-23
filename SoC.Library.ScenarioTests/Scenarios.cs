@@ -3,6 +3,7 @@ namespace SoC.Library.ScenarioTests
 {
     using Jabberwocky.SoC.Library;
     using Jabberwocky.SoC.Library.GameBoards;
+    using Jabberwocky.SoC.Library.GameEvents;
 
     public class Scenarios
     {
@@ -276,6 +277,12 @@ namespace SoC.Library.ScenarioTests
                 .WhenPlayer(Adam)
                     .ReceivesPlayerWonEvent(Adam)
                     .ThenDoNothing()
+                .VerifyPlayer(Babara)
+                    .DidNotReceiveEvent<GameWinEvent>()
+                .VerifyPlayer(Charlie)
+                    .DidNotReceiveEvent<GameWinEvent>()
+                .VerifyPlayer(Dana)
+                    .DidNotReceiveEvent<GameWinEvent>()
                 .Run();
         }
 

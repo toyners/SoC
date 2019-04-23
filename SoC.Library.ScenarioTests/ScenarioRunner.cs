@@ -280,9 +280,6 @@ namespace SoC.Library.ScenarioTests
             return this;
         }
 
-        
-
-
         public ScenarioRunner ReceivesDiceRollEvent(uint dice1, uint dice2)
         {
             this.numberGenerator.AddTwoDiceRoll(dice1, dice2);
@@ -295,7 +292,7 @@ namespace SoC.Library.ScenarioTests
 
         public ScenarioRunner ReceivesPlayerWonEvent(string winningPlayerName)
         {
-            throw new NotImplementedException();
+            return this;
         }
 
         public ScenarioRunner ReceivesResourceCollectedEvent(Dictionary<string, ResourceCollection[]> resourcesCollectedByPlayerName)
@@ -384,6 +381,17 @@ namespace SoC.Library.ScenarioTests
 
             while (!gameServer.IsFinished)
                 Thread.Sleep(50);
+        }
+
+        public ScenarioRunner VerifyPlayer(string playerName)
+        {
+            return this.WhenPlayer(playerName);
+        }
+
+        public ScenarioRunner DidNotReceiveEvent<T>() where T : GameEvent
+        {
+            this.currentPlayerAgent.AddDidNotReceiveType(typeof(T));
+            return this;
         }
         #endregion
     }
