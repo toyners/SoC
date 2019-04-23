@@ -192,7 +192,6 @@ namespace SoC.Library.ScenarioTests
         public PlayerStateInstruction ThenMeasurePlayerState()
         {
             var playerState = new PlayerStateInstruction(this.currentPlayerAgent, this);
-            this.currentPlayerAgent.AddInstruction(playerState);
             return playerState;
         }
 
@@ -232,8 +231,8 @@ namespace SoC.Library.ScenarioTests
         public ScenarioRunner ReceivesConfirmGameStartEvent()
         {
             var gameEvent = new ConfirmGameStartEvent();
-            var eventInstruction = new EventInstruction(this.currentPlayerAgent.Name, gameEvent);
-            this.instructions.Add(eventInstruction);
+            var eventInstruction = new EventInstruction(gameEvent);
+            this.currentPlayerAgent.AddInstruction(eventInstruction);
             return this;
         }
 

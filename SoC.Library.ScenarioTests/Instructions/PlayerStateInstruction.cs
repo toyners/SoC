@@ -1,8 +1,6 @@
 ﻿
 namespace SoC.Library.ScenarioTests.Instructions
 {
-    using System;
-    using System.Collections.Generic;
     using Jabberwocky.SoC.Library;
     using Jabberwocky.SoC.Library.GameEvents;
 
@@ -10,12 +8,12 @@ namespace SoC.Library.ScenarioTests.Instructions
     {
         private readonly ScenarioRunner runner;
         private ResourceClutch? expectedResources;
-        private Guid playerId;
+        private PlayerAgent playerAgent;
 
-        public PlayerStateInstruction(PlayerAgent player, ScenarioRunner runner) : base(player.Name)
+        public PlayerStateInstruction(PlayerAgent playerAgent, ScenarioRunner runner) : base(playerAgent.Name)
         {
             this.runner = runner;
-            this.playerId = player.Id;
+            this.playerAgent = playerAgent;
         }
 
         public PlayerStateInstruction HeldCards(DevelopmentCardTypes developmentCardType)
@@ -34,7 +32,11 @@ namespace SoC.Library.ScenarioTests.Instructions
             return this;
         }
 
-        public ScenarioRunner EndPlayerStateMeasuring() { return this.runner; }
+        public ScenarioRunner EndPlayerStateMeasuring()
+        {
+            this.playerAgent.AddInstruction(this);
+            return this.runner;
+        }
 
         public ActionInstruction GetAction()
         {
@@ -43,7 +45,7 @@ namespace SoC.Library.ScenarioTests.Instructions
 
         public GameEvent GetEvent()
         {
-            var requestStateEvent = new ScenarioRequestStateEvent(this.playerId);
+            var requestStateEvent = new ScenarioRequestStateEvent(this.playerAgent.Id);
             requestStateEvent.Resources = this.expectedResources.Value;
             return requestStateEvent;
         }
