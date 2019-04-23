@@ -189,6 +189,11 @@ namespace SoC.Library.ScenarioTests
             return this.IsStandardEventVerified(expectedEvent, actualEvent);
         }
 
+        public void SetVerboseLoggingOnVerificationOfPreviousEvent(bool verboseLogging)
+        {
+            throw new NotImplementedException();
+        }
+
         private bool IsStandardEventVerified(GameEvent expectedEvent, GameEvent actualEvent)
         {
             var expectedJSON = JToken.Parse(expectedEvent.ToJSONString());

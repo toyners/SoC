@@ -18,11 +18,11 @@ namespace SoC.Library.ScenarioTests
         private readonly List<PlayerAgent> playerAgents = new List<PlayerAgent>();
         private readonly Dictionary<string, PlayerAgent> playerAgentsByName = new Dictionary<string, PlayerAgent>();
         private readonly Dictionary<string, ResourceClutch> startingResourcesByName = new Dictionary<string, ResourceClutch>();
-        private GameBoard gameBoard;
-        private List<Instruction> instructions = new List<Instruction>();
-        private ScenarioNumberGenerator numberGenerator;
         private readonly bool requestStateActionsMustHaveToken = true;
         private readonly bool useServerTimer = true;
+        private PlayerAgent currentPlayerAgent;
+        private GameBoard gameBoard;
+        private ScenarioNumberGenerator numberGenerator;
         #endregion
 
         #region Construction
@@ -40,176 +40,10 @@ namespace SoC.Library.ScenarioTests
         }
         #endregion
 
-        #region Properties
-        private Instruction LastInstruction
-        {
-            get { return this.instructions[this.instructions.Count - 1]; }
-        }
-        #endregion
-
         #region Methods
         public static ScenarioRunner CreateScenarioRunner(string[] args = null)
         {
             return new ScenarioRunner(args);
-        }
-
-        public ScenarioRunner ThenAnswerDirectTradeOffer(ResourceClutch wantedResources)
-        {
-            this.AddActionInstruction(ActionInstruction.OperationTypes.AnswerDirectTradeOffer, 
-                new object[] { wantedResources });
-            return this;
-        }
-
-        public ScenarioRunner ThenAcceptTradeOffer(string sellerName)
-        {
-            this.AddActionInstruction(ActionInstruction.OperationTypes.AcceptTrade,
-                new object[] { sellerName });
-            return this;
-        }
-
-        public ScenarioRunner ThenConfirmGameStart()
-        {
-            this.AddActionInstruction(ActionInstruction.OperationTypes.ConfirmStart, null);
-            return this;
-        }
-
-        public ScenarioRunner Label(string playerName, string label)
-        {
-            this.instructions.Add(new LabelInstruction(playerName, label));
-            return this;
-        }
-
-        public ScenarioRunner ThenMakeDirectTradeOffer(ResourceClutch wantedResources)
-        {
-            this.AddActionInstruction(ActionInstruction.OperationTypes.MakeDirectTradeOffer, 
-                new object[] { wantedResources });
-            return this;
-        }
-
-        public ScenarioRunner ThenPlaceStartingInfrastructure(uint settlementLocation, uint roadEndLocation)
-        {
-            this.AddActionInstruction(ActionInstruction.OperationTypes.PlaceStartingInfrastructure,
-                new object[] { settlementLocation, roadEndLocation });
-            return this;
-        }
-
-        public ScenarioRunner ThenQuitGame()
-        {
-            this.AddActionInstruction(ActionInstruction.OperationTypes.QuitGame, null);
-            return this;
-        }
-
-        public ScenarioRunner ThenDoNothing()
-        {
-            return this;
-        }
-
-        public void Run()
-        {
-            if (Thread.CurrentThread.Name == null)
-                Thread.CurrentThread.Name = "Scenario Runner";
-
-            if (this.gameBoard == null)
-                this.gameBoard = new GameBoard(BoardSizes.Standard);
-
-            var gameServer = new LocalGameServer(
-                this.numberGenerator,
-                this.gameBoard,
-                this.developmentCardHolder
-            );
-
-            if (!this.useServerTimer)
-                gameServer.SetTurnTimer(new MockTurnTimer());
-
-            var playerIds = new Queue<Guid>(this.playerAgents.Select(agent => agent.Id));
-            gameServer.SetIdGenerator(() => { return playerIds.Dequeue(); });
-
-            gameServer.SetRequestStateExemption(this.requestStateActionsMustHaveToken);
-
-            gameServer.LaunchGame();
-
-            var tasks = new List<Task>();
-            this.playerAgents.ForEach(playerAgent =>
-            {
-                playerAgent.JoinGame(gameServer);
-                tasks.Add(playerAgent.StartAsync());
-            });
-
-            foreach (var kv in this.startingResourcesByName)
-                gameServer.AddResourcesToPlayer(kv.Key, kv.Value);
-
-            Task gameServerTask = gameServer.StartGameAsync();
-            tasks.Add(gameServerTask);
-
-            Task.WaitAll(tasks.ToArray(), 20000);
-
-            if (!gameServerTask.IsCompleted)
-                this.QuitGame(gameServer);
-
-            gameServer.SaveLog(@"GameServer.log");
-            this.playerAgents.ForEach(playerAgent => {
-                playerAgent.SaveEvents($"{playerAgent.Name}.events");
-                playerAgent.SaveLog($"{playerAgent.Name}.log");
-            });
-
-            if (gameServerTask.IsFaulted)
-            {
-                var exception = gameServerTask.Exception;
-                var flattenedException = exception.Flatten();
-                throw new Exception($"Game server: {flattenedException.InnerException.Message}");
-            }
-
-            string message = string.Join("\r\n",
-                tasks
-                    .Where(task => task.IsFaulted)
-                    .Select(playerAgentTask => {
-                        var exception = playerAgentTask.Exception;
-                        var flattenedException = exception.Flatten();
-                        var playerAgent = (PlayerAgent)playerAgentTask.AsyncState;
-                        return $"{playerAgent.Name}: {flattenedException.InnerException.Message}";
-                    })
-                );
-            
-            if (!string.IsNullOrEmpty(message))
-                throw new Exception(message);
-
-            string timeOutMessage = string.Join("\r\n",
-                this.playerAgents
-                    .Where(playerAgent => !playerAgent.IsFinished)
-                    .Select(playerAgent => {
-                        var playerAgentMessage = $"{playerAgent.Name} did not finish.\r\n";
-                        playerAgent.GetEventResults().ForEach(tuple => {
-                            playerAgentMessage += $"\t{tuple.Item1} => {tuple.Item3}\r\n";
-                        });
-                        return playerAgentMessage;
-                    })
-                );
-
-            if (!string.IsNullOrEmpty(timeOutMessage))
-                throw new TimeoutException(timeOutMessage);
-        }
-
-        public PlayerStateInstruction ThenMeasurePlayerState()
-        {
-            var playerState = new PlayerStateInstruction(this.currentPlayerAgent, this);
-            return playerState;
-        }
-
-        public ScenarioRunner VerboseLogging()
-        {
-            ((EventInstruction)this.LastInstruction).Verbose = true;
-            return this;
-        }
-
-        public ScenarioRunner VerifyAllPlayersReceivedInfrastructurePlacedEvent(string playerName, uint settlementLocation, uint roadEndLocation)
-        {
-            this.playerAgents.ForEach(playerAgent =>
-            {
-                var gameEvent = new InfrastructurePlacedEvent(this.GetPlayerId(playerName), settlementLocation, roadEndLocation);
-                playerAgent.AddInstruction(new EventInstruction(playerAgent.Name, gameEvent));
-            });
-            
-            return this;
         }
 
         public ScenarioRunner ReceivesAcceptDirectTradeEvent(string buyerName, ResourceClutch buyingResources, string sellerName, ResourceClutch sellingResources)
@@ -286,12 +120,168 @@ namespace SoC.Library.ScenarioTests
             return this;
         }
 
+        public void Run()
+        {
+            if (Thread.CurrentThread.Name == null)
+                Thread.CurrentThread.Name = "Scenario Runner";
+
+            if (this.gameBoard == null)
+                this.gameBoard = new GameBoard(BoardSizes.Standard);
+
+            var gameServer = new LocalGameServer(
+                this.numberGenerator,
+                this.gameBoard,
+                this.developmentCardHolder
+            );
+
+            if (!this.useServerTimer)
+                gameServer.SetTurnTimer(new MockTurnTimer());
+
+            var playerIds = new Queue<Guid>(this.playerAgents.Select(agent => agent.Id));
+            gameServer.SetIdGenerator(() => { return playerIds.Dequeue(); });
+
+            gameServer.SetRequestStateExemption(this.requestStateActionsMustHaveToken);
+
+            gameServer.LaunchGame();
+
+            var tasks = new List<Task>();
+            this.playerAgents.ForEach(playerAgent =>
+            {
+                playerAgent.JoinGame(gameServer);
+                tasks.Add(playerAgent.StartAsync());
+            });
+
+            foreach (var kv in this.startingResourcesByName)
+                gameServer.AddResourcesToPlayer(kv.Key, kv.Value);
+
+            Task gameServerTask = gameServer.StartGameAsync();
+            tasks.Add(gameServerTask);
+
+            Task.WaitAll(tasks.ToArray(), 20000);
+
+            if (!gameServerTask.IsCompleted)
+                this.QuitGame(gameServer);
+
+            gameServer.SaveLog(@"GameServer.log");
+            this.playerAgents.ForEach(playerAgent => {
+                playerAgent.SaveEvents($"{playerAgent.Name}.events");
+                playerAgent.SaveLog($"{playerAgent.Name}.log");
+            });
+
+            if (gameServerTask.IsFaulted)
+            {
+                var exception = gameServerTask.Exception;
+                var flattenedException = exception.Flatten();
+                throw new Exception($"Game server: {flattenedException.InnerException.Message}");
+            }
+
+            string message = string.Join("\r\n",
+                tasks
+                    .Where(task => task.IsFaulted)
+                    .Select(playerAgentTask => {
+                        var exception = playerAgentTask.Exception;
+                        var flattenedException = exception.Flatten();
+                        var playerAgent = (PlayerAgent)playerAgentTask.AsyncState;
+                        return $"{playerAgent.Name}: {flattenedException.InnerException.Message}";
+                    })
+                );
+
+            if (!string.IsNullOrEmpty(message))
+                throw new Exception(message);
+
+            string timeOutMessage = string.Join("\r\n",
+                this.playerAgents
+                    .Where(playerAgent => !playerAgent.IsFinished)
+                    .Select(playerAgent => {
+                        var playerAgentMessage = $"{playerAgent.Name} did not finish.\r\n";
+                        playerAgent.GetEventResults().ForEach(tuple => {
+                            playerAgentMessage += $"\t{tuple.Item1} => {tuple.Item3}\r\n";
+                        });
+                        return playerAgentMessage;
+                    })
+                );
+
+            if (!string.IsNullOrEmpty(timeOutMessage))
+                throw new TimeoutException(timeOutMessage);
+        }
+
+        public ScenarioRunner ThenAnswerDirectTradeOffer(ResourceClutch wantedResources)
+        {
+            this.AddActionInstruction(ActionInstruction.OperationTypes.AnswerDirectTradeOffer, 
+                new object[] { wantedResources });
+            return this;
+        }
+
+        public ScenarioRunner ThenAcceptTradeOffer(string sellerName)
+        {
+            this.AddActionInstruction(ActionInstruction.OperationTypes.AcceptTrade,
+                new object[] { sellerName });
+            return this;
+        }
+
+        public ScenarioRunner ThenConfirmGameStart()
+        {
+            this.AddActionInstruction(ActionInstruction.OperationTypes.ConfirmStart, null);
+            return this;
+        }
+
+        public ScenarioRunner ThenDoNothing()
+        {
+            return this;
+        }
+
         public ScenarioRunner ThenEndTurn()
         {
             this.currentPlayerAgent.AddInstruction(this.CreateActionInstruction(
                 ActionInstruction.OperationTypes.EndOfTurn, null));
             return this;
         }
+
+        public ScenarioRunner ThenMakeDirectTradeOffer(ResourceClutch wantedResources)
+        {
+            this.AddActionInstruction(ActionInstruction.OperationTypes.MakeDirectTradeOffer, 
+                new object[] { wantedResources });
+            return this;
+        }
+
+        public ScenarioRunner ThenPlaceStartingInfrastructure(uint settlementLocation, uint roadEndLocation)
+        {
+            this.AddActionInstruction(ActionInstruction.OperationTypes.PlaceStartingInfrastructure,
+                new object[] { settlementLocation, roadEndLocation });
+            return this;
+        }
+
+        public ScenarioRunner ThenQuitGame()
+        {
+            this.AddActionInstruction(ActionInstruction.OperationTypes.QuitGame, null);
+            return this;
+        }
+
+        public PlayerStateInstruction ThenVerifyPlayerState()
+        {
+            var playerState = new PlayerStateInstruction(this.currentPlayerAgent, this);
+            return playerState;
+        }
+
+        public ScenarioRunner VerboseLogging()
+        {
+            this.currentPlayerAgent.SetVerboseLoggingOnVerificationOfPreviousEvent(true);
+            return this;
+        }
+
+        public ScenarioRunner VerifyAllPlayersReceivedInfrastructurePlacedEvent(string playerName, uint settlementLocation, uint roadEndLocation)
+        {
+            this.playerAgents.ForEach(playerAgent =>
+            {
+                var gameEvent = new InfrastructurePlacedEvent(this.GetPlayerId(playerName), settlementLocation, roadEndLocation);
+                playerAgent.AddInstruction(new EventInstruction(playerAgent.Name, gameEvent));
+            });
+            
+            return this;
+        }
+
+        
+
 
         public ScenarioRunner ReceivesDiceRollEvent(uint dice1, uint dice2)
         {
@@ -308,7 +298,17 @@ namespace SoC.Library.ScenarioTests
             throw new NotImplementedException();
         }
 
-        private PlayerAgent currentPlayerAgent;
+        public ScenarioRunner ReceivesResourceCollectedEvent(Dictionary<string, ResourceCollection[]> resourcesCollectedByPlayerName)
+        {
+            var resourcesCollectedByPlayerId = new Dictionary<Guid, ResourceCollection[]>();
+            foreach (var kv in resourcesCollectedByPlayerName)
+                resourcesCollectedByPlayerId.Add(this.GetPlayerId(kv.Key), kv.Value);
+            var gameEvent = new ResourcesCollectedEvent(resourcesCollectedByPlayerId);
+            var eventInstruction = new EventInstruction(gameEvent);
+            this.currentPlayerAgent.AddInstruction(eventInstruction);
+            return this;
+        }
+
         public ScenarioRunner WhenPlayer(string playerName)
         {
             this.currentPlayerAgent = this.playerAgentsByName[playerName];
@@ -318,25 +318,6 @@ namespace SoC.Library.ScenarioTests
         public ScenarioRunner WithNoResourceCollection()
         {
             this.gameBoard = new ScenarioGameBoardWithNoResourcesCollected();
-            return this;
-        }
-
-        private Guid GetPlayerId(string playerName)
-        {
-            if (!this.playerAgentsByName.ContainsKey(playerName))
-                throw new Exception($"Player name {playerName} not recognised.");
-
-            return this.playerAgentsByName[playerName].Id;
-        }
-
-        public ScenarioRunner ReceivesResourceCollectedEvent(Dictionary<string, ResourceCollection[]> resourcesCollectedByPlayerName)
-        {
-            var resourcesCollectedByPlayerId = new Dictionary<Guid, ResourceCollection[]>();
-            foreach (var kv in resourcesCollectedByPlayerName)
-                resourcesCollectedByPlayerId.Add(this.GetPlayerId(kv.Key), kv.Value);
-            var gameEvent = new ResourcesCollectedEvent(resourcesCollectedByPlayerId);
-            var eventInstruction = new EventInstruction(gameEvent);
-            this.currentPlayerAgent.AddInstruction(eventInstruction);
             return this;
         }
 
@@ -381,21 +362,20 @@ namespace SoC.Library.ScenarioTests
             this.currentPlayerAgent.AddInstruction(this.CreateActionInstruction(operation, arguments));
         }
 
-        private void AddActionInstruction(string playerName, ActionInstruction.OperationTypes operation, object[] arguments)
-        {
-            var actionInstruction = new ActionInstruction(
-                playerName,
-                operation,
-                arguments);
-            this.instructions.Add(actionInstruction);
-        }
-
         private ActionInstruction CreateActionInstruction(ActionInstruction.OperationTypes operation, object[] arguments)
         {
             return new ActionInstruction(
                 null,
                 operation,
                 arguments);
+        }
+
+        private Guid GetPlayerId(string playerName)
+        {
+            if (!this.playerAgentsByName.ContainsKey(playerName))
+                throw new Exception($"Player name {playerName} not recognised.");
+
+            return this.playerAgentsByName[playerName].Id;
         }
 
         private void QuitGame(LocalGameServer gameServer)
