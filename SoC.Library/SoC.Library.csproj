@@ -63,6 +63,7 @@
     <Compile Include="GameEvents\ConfirmGameStartEvent.cs" />
     <Compile Include="GameEvents\GameJoinedEvent.cs" />
     <Compile Include="GameEvents\PlayerOrderEvent.cs" />
+    <Compile Include="GameEvents\PlayerQuitEvent.cs" />
     <Compile Include="GameToken.cs" />
     <Compile Include="ILog.cs" />
     <Compile Include="Log.cs" />

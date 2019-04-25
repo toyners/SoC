@@ -4,6 +4,7 @@ namespace SoC.Library.ScenarioTests
     using System;
     using System.Collections.Concurrent;
     using System.Collections.Generic;
+    using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
     using Jabberwocky.SoC.Library;
@@ -124,6 +125,8 @@ namespace SoC.Library.ScenarioTests
                     this.WaitForGameEvent();
                     this.VerifyEvents();
                 }
+
+                this.log.Add("Finished");
             }
             catch (Exception e)
             {
@@ -258,10 +261,12 @@ namespace SoC.Library.ScenarioTests
                 if (actualEvent is PlayerSetupEvent playerSetupEvent)
                     this.playerIdsByName = playerSetupEvent.PlayerIdsByName;
 
-                this.log.Add($"Received {actualEvent.GetType().Name}");
-
                 if (this.didNotReceiveTypes.Contains(actualEvent.GetType()))
-                    throw new Exception($"{this.Name} received event of type {actualEvent.GetType()} but should not have");
+                    throw new Exception($"Received event of type {actualEvent.GetType()} but should not have");
+                else if (this.didNotReceiveEvents.FirstOrDefault(d => JToken.DeepEquals(d, JToken.Parse(actualEvent.ToJSONString()))) != null)
+                    throw new Exception($"Received event {actualEvent.GetType()} but should not have");
+                else
+                    this.log.Add($"Received {actualEvent.GetType().Name}");
 
                 this.actualEvents.Add(actualEvent);
                 break;
@@ -282,10 +287,17 @@ namespace SoC.Library.ScenarioTests
             public bool Verified { get; set; }
         }
 
-        private HashSet<Type> didNotReceiveTypes = new HashSet<Type>();
-        public void AddDidNotReceiveType(Type type)
+        private readonly HashSet<Type> didNotReceiveTypes = new HashSet<Type>();
+        public void AddDidNotReceiveEventType(Type gameEventType)
         {
-            this.didNotReceiveTypes.Add(type);
+            this.didNotReceiveTypes.Add(gameEventType);
+        }
+
+        private readonly List<JToken> didNotReceiveEvents = new List<JToken>();
+        public void AddDidNotReceiveEvent(GameEvent gameEvent)
+        {
+            var gameEventToken = JToken.Parse(gameEvent.ToJSONString());
+            this.didNotReceiveEvents.Add(gameEventToken);
         }
         #endregion
     }

@@ -286,12 +286,15 @@ namespace SoC.Library.ScenarioTests
             var gameEvent = new DiceRollEvent(this.GetPlayerId(this.currentPlayerAgent.Name), dice1, dice2);
             var eventInstruction = new EventInstruction(this.currentPlayerAgent.Name, gameEvent);
             this.currentPlayerAgent.AddInstruction(eventInstruction);
-            //this.instructions.Add(eventInstruction);
             return this;
         }
 
-        public ScenarioRunner ReceivesPlayerWonEvent(string winningPlayerName)
+        public ScenarioRunner ReceivesPlayerWonEvent(string winningPlayerName, uint victoryPoints)
         {
+            this.currentPlayerAgent.AddInstruction(
+                new EventInstruction(
+                    new GameWinEvent(this.playerAgentsByName[winningPlayerName].Id, victoryPoints)
+                ));
             return this;
         }
 
@@ -383,6 +386,14 @@ namespace SoC.Library.ScenarioTests
                 Thread.Sleep(50);
         }
 
+        public ScenarioRunner ReceivesPlayerQuitEvent(string quittingPlayerName)
+        {
+            this.currentPlayerAgent.AddInstruction(
+                new EventInstruction(
+                    new PlayerQuitEvent(this.playerAgentsByName[quittingPlayerName].Id)));
+            return this;
+        }
+
         public ScenarioRunner VerifyPlayer(string playerName)
         {
             return this.WhenPlayer(playerName);
@@ -390,7 +401,13 @@ namespace SoC.Library.ScenarioTests
 
         public ScenarioRunner DidNotReceiveEvent<T>() where T : GameEvent
         {
-            this.currentPlayerAgent.AddDidNotReceiveType(typeof(T));
+            this.currentPlayerAgent.AddDidNotReceiveEventType(typeof(T));
+            return this;
+        }
+
+        public ScenarioRunner DidNotReceivePlayerQuitEvent(string quittingPlayerName)
+        {
+            this.currentPlayerAgent.AddDidNotReceiveEvent(new PlayerQuitEvent(this.playerAgentsByName[quittingPlayerName].Id));
             return this;
         }
         #endregion
