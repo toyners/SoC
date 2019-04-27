@@ -139,7 +139,7 @@ namespace Jabberwocky.SoC.Library
                 catch (Exception e)
                 {
                     this.log.Add($"ERROR: {e.Message}: {e.StackTrace}");
-                    //this.GameExceptionEvent?.Invoke(e); TODO: Do I need this? Probably better to send close game
+                    // this.GameExceptionEvent?.Invoke(e); TODO: Do I need this? Probably better to send close game
                     // messages instead
                     throw e;
                 }
@@ -450,7 +450,7 @@ namespace Jabberwocky.SoC.Library
                 }
                 else
                 {
-                    // Illegal command
+                    // TODO: Illegal command
                 }
             }
 
