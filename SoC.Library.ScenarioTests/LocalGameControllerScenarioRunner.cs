@@ -106,7 +106,7 @@ namespace SoC.Library.ScenarioTests
             if (this.gameBoard == null)
                 this.gameBoard = new GameBoard(BoardSizes.Standard);
 
-            var gameServer = new LocalGameServer(
+            var gameServer = new LocalGameManager(
                 this.NumberGenerator,
                 this.gameBoard,
                 this.developmentCardHolder

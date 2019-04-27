@@ -128,7 +128,7 @@ namespace SoC.Library.ScenarioTests
             if (this.gameBoard == null)
                 this.gameBoard = new GameBoard(BoardSizes.Standard);
 
-            var gameServer = new LocalGameServer(
+            var gameServer = new LocalGameManager(
                 this.numberGenerator,
                 this.gameBoard,
                 this.developmentCardHolder
@@ -378,7 +378,7 @@ namespace SoC.Library.ScenarioTests
             return this.playerAgentsByName[playerName].Id;
         }
 
-        private void QuitGame(LocalGameServer gameServer)
+        private void QuitGame(LocalGameManager gameServer)
         {
             gameServer.Quit();
 
