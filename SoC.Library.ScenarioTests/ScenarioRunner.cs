@@ -396,7 +396,9 @@ namespace SoC.Library.ScenarioTests
 
         public ScenarioRunner VerifyPlayer(string playerName)
         {
-            return this.WhenPlayer(playerName);
+            this.WhenPlayer(playerName);
+            this.currentPlayerAgent.RunForever = true;
+            return this;
         }
 
         public ScenarioRunner DidNotReceiveEvent<T>() where T : GameEvent
