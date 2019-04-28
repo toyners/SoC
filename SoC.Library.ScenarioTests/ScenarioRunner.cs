@@ -144,29 +144,46 @@ namespace SoC.Library.ScenarioTests
 
             gameServer.LaunchGame();
 
-            var tasks = new List<Task>();
+            var playerAgentTasks = new List<Task>();
             this.playerAgents.ForEach(playerAgent =>
             {
                 playerAgent.JoinGame(gameServer);
-                tasks.Add(playerAgent.StartAsync());
+                playerAgentTasks.Add(playerAgent.StartAsync());
             });
 
             foreach (var kv in this.startingResourcesByName)
                 gameServer.AddResourcesToPlayer(kv.Key, kv.Value);
 
             Task gameServerTask = gameServer.StartGameAsync();
-            tasks.Add(gameServerTask);
 
+            var tasks = new List<Task>(playerAgentTasks);
+            tasks.Add(gameServerTask);
             Task.WaitAll(tasks.ToArray(), 20000);
 
             if (!gameServerTask.IsCompleted)
-                this.QuitGame(gameServer);
+            {
+                gameServer.Quit();
+                while (!gameServerTask.IsCompleted)
+                    Thread.Sleep(50);
+                // this.QuitGame(gameServer);
+            }
 
-            gameServer.SaveLog(@"GameServer.log");
-            this.playerAgents.ForEach(playerAgent => {
+            for (var i = 0; i < this.playerAgents.Count; i++)
+            {
+                var playerAgentTask = playerAgentTasks[i];
+                var playerAgent = this.playerAgents[i];
+                if (!playerAgentTask.IsCompleted)
+                {
+                    this.playerAgents[i].Quit();
+                    while (!playerAgentTask.IsCompleted)
+                        Thread.Sleep(50);
+                }
+
                 playerAgent.SaveEvents($"{playerAgent.Name}.events");
                 playerAgent.SaveLog($"{playerAgent.Name}.log");
-            });
+            }
+
+            gameServer.SaveLog(@"GameServer.log");
 
             if (gameServerTask.IsFaulted)
             {
@@ -176,8 +193,8 @@ namespace SoC.Library.ScenarioTests
             }
 
             string message = string.Join("\r\n",
-                tasks
-                    .Where(task => task.IsFaulted)
+                playerAgentTasks
+                    .Where(playerAgentTask => playerAgentTask.IsFaulted)
                     .Select(playerAgentTask => {
                         var exception = playerAgentTask.Exception;
                         var flattenedException = exception.Flatten();

@@ -88,6 +88,12 @@ namespace SoC.Library.ScenarioTests
             gameServer.JoinGame(this.Name, this.gameController);
         }
 
+        private bool isQuitting;
+        public void Quit()
+        {
+            this.isQuitting = true;
+        }
+
         public void SaveEvents(string filePath)
         {
             string contents = null;
@@ -132,7 +138,8 @@ namespace SoC.Library.ScenarioTests
                 if (this.RunForever)
                 {
                     this.log.Add("Running forever");
-                    while (true) Thread.Sleep(50);
+                    while (!this.isQuitting)
+                        Thread.Sleep(50);
                 }
             }
             catch (Exception e)
