@@ -96,8 +96,8 @@ namespace SoC.Library.ScenarioTests
         {
             string contents = null;
             int number = 1;
-            this.GetEventResults().ForEach(tuple => {
-                contents += $"{number++:00} {tuple.Item1.SimpleTypeName}{(tuple.Item2 != null ? ", " + tuple.Item2.Operation : "")} => {tuple.Item3}\r\n";
+            this.expectedEventActions.ForEach(eventAction => {
+                contents += $"{number++:00} {eventAction.ToString()}\r\n";
             });
             System.IO.File.WriteAllText(filePath, contents);
         }
@@ -224,8 +224,12 @@ namespace SoC.Library.ScenarioTests
                 this.expectedEventsWithVerboseLogging.Contains(expectedEvent))
             {
                 this.log.Add($"{(result ? "MATCHED" : "NOT MATCHED")}");
-                this.log.Add($" EXPECTED: {expectedJSON}");
-                this.log.Add($" ACTUAL: {actualJSON}");
+                this.log.Add($"   EXPECTED: " +
+                    $"{(expectedEvent.PlayerId != Guid.Empty ? "Player name is " + this.GetPlayerName(expectedEvent.PlayerId) : "")}\r\n" +
+                    $"    {expectedJSON}");
+                this.log.Add($"   ACTUAL: " +
+                    $"{(actualEvent.PlayerId != Guid.Empty ? "Player name is " + this.GetPlayerName(actualEvent.PlayerId) : "")}\r\n" +
+                    $"    {actualJSON}");
             }
             else
             {
@@ -233,6 +237,17 @@ namespace SoC.Library.ScenarioTests
             }
 
             return result;
+        }
+
+        private string GetPlayerName(Guid playerId)
+        {
+            foreach(var kv in this.playerIdsByName)
+            {
+                if (kv.Value == playerId)
+                    return kv.Key;
+            }
+
+            throw new KeyNotFoundException();
         }
 
         private bool IsRequestStateEventVerified(ScenarioRequestStateEvent expectedEvent, RequestStateEvent actualEvent)
@@ -304,6 +319,21 @@ namespace SoC.Library.ScenarioTests
             public GameEvent ExpectedEvent { get; private set; }
             public ActionInstruction Action { get; set; }
             public bool Verified { get; set; }
+
+            public override string ToString()
+            {
+                return $"{this.ToExpectedEventString()} -> " +
+                    $"{(this.Verified ? "Verified": "NOT VERIFIED")}" +
+                    $"{(this.Action != null ? ", " + "ACTION: " + this.Action.Operation : "(no action)")}";
+            }
+
+            private string ToExpectedEventString()
+            {
+                if (this.ExpectedEvent is DiceRollEvent diceRollEvent)
+                    return $"{diceRollEvent.SimpleTypeName}[{diceRollEvent.Dice1},{diceRollEvent.Dice2}]";
+
+                return this.ExpectedEvent.SimpleTypeName;
+            }
         }
 
         private readonly HashSet<Type> didNotReceiveTypes = new HashSet<Type>();
