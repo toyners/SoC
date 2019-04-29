@@ -142,6 +142,10 @@ namespace SoC.Library.ScenarioTests
                         Thread.Sleep(50);
                 }
             }
+            catch (TaskCanceledException)
+            {
+
+            }
             catch (Exception e)
             {
                 this.GameException = e;
@@ -268,6 +272,9 @@ namespace SoC.Library.ScenarioTests
         {
             while (true)
             {
+                if (this.isQuitting)
+                    throw new TaskCanceledException();
+
                 Thread.Sleep(50);
                 if (!this.actualEventQueue.TryDequeue(out var actualEvent))
                     continue;
