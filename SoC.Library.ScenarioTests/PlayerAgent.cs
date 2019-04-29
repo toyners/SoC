@@ -17,10 +17,8 @@ namespace SoC.Library.ScenarioTests
         #region Fields
         private readonly List<GameEvent> actualEvents = new List<GameEvent>();
         private readonly ConcurrentQueue<GameEvent> actualEventQueue = new ConcurrentQueue<GameEvent>();
-        private readonly List<GameEvent> expectedEvents = new List<GameEvent>();
         private readonly HashSet<GameEvent> expectedEventsWithVerboseLogging = new HashSet<GameEvent>();
         private readonly GameController gameController;
-        private readonly List<Instruction> instructions = new List<Instruction>();
         private readonly ILog log = new Log();
         private readonly bool verboseLogging;
         private int expectedEventIndex;
