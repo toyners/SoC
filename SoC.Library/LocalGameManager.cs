@@ -15,6 +15,7 @@ namespace Jabberwocky.SoC.Library
     public class LocalGameManager
     {
         #region Fields
+        
         private readonly ActionManager actionManager;
         private readonly ConcurrentQueue<PlayerAction> actionRequests = new ConcurrentQueue<PlayerAction>();
         private readonly IDevelopmentCardHolder developmentCardHolder;
@@ -33,6 +34,10 @@ namespace Jabberwocky.SoC.Library
         private Func<Guid> idGenerator;
         private Tuple<Guid, ResourceClutch> initialDirectTradeOffer;
         private Dictionary<Guid, ResourceClutch> answeringDirectTradeOffers = new Dictionary<Guid, ResourceClutch>();
+
+        // Only needed for scenario running?
+        private CancellationTokenSource cancellationTokenSource;
+        private CancellationToken cancellationToken;
         #endregion
 
         #region Construction
@@ -82,6 +87,7 @@ namespace Jabberwocky.SoC.Library
 
         public void Quit()
         {
+            this.cancellationTokenSource.Cancel();
             this.isQuitting = true;
             this.eventRaiser.CanRaiseEvents = false;
         }
@@ -107,6 +113,8 @@ namespace Jabberwocky.SoC.Library
 
         public Task StartGameAsync()
         {
+            this.cancellationToken = this.cancellationTokenSource.Token;
+
             // Launch server processing on separate thread
             return Task.Factory.StartNew(() =>
             {

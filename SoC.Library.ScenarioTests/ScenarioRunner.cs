@@ -165,7 +165,6 @@ namespace SoC.Library.ScenarioTests
                 gameServer.Quit();
                 while (!gameServerTask.IsCompleted)
                     Thread.Sleep(50);
-                // this.QuitGame(gameServer);
             }
 
             for (var i = 0; i < this.playerAgents.Count; i++)
