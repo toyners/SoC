@@ -202,9 +202,6 @@ namespace SoC.Library.ScenarioTests
                 .WhenPlayer(Charlie)
                     .ReceivesDiceRollEvent(1, 1)
                     .ThenQuitGame()
-                .WhenPlayer(Dana)
-                    .ReceivesDiceRollEvent(1, 1)
-                    .ThenQuitGame()
                 .Run();
         }
 

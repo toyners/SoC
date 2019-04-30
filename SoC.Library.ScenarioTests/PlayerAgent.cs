@@ -137,7 +137,19 @@ namespace SoC.Library.ScenarioTests
                 {
                     this.log.Add("Running forever");
                     while (!this.isQuitting)
+                    {
                         Thread.Sleep(50);
+                        if (this.actualEventQueue.TryDequeue(out var actualEvent))
+                        {
+                            if (this.didNotReceiveTypes.Contains(actualEvent.GetType()))
+                                throw new Exception($"Received event of type {actualEvent.GetType()} but should not have");
+                            else if (this.didNotReceiveEvents.FirstOrDefault(d => JToken.DeepEquals(d, JToken.Parse(actualEvent.ToJSONString()))) != null)
+                                throw new Exception($"Received event {actualEvent.GetType()} but should not have");
+                            else
+                                this.log.Add($"Received {actualEvent.GetType().Name}");
+                        }
+                    }
+                        
                 }
             }
             catch (TaskCanceledException)
