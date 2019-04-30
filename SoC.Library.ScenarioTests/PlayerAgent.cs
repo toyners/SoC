@@ -154,12 +154,13 @@ namespace SoC.Library.ScenarioTests
             }
             catch (TaskCanceledException)
             {
-
+                return;
             }
             catch (Exception e)
             {
                 this.GameException = e;
                 this.log.Add($"ERROR: {e.Message}: {e.StackTrace}");
+                throw e;
             }
         }
 
