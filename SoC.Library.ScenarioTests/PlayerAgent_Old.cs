@@ -33,7 +33,6 @@ namespace SoC.Library.ScenarioTests
             this.Name = name;
             this.Id = Guid.NewGuid();
             this.gameController = new GameController();
-            this.gameController.GameExceptionEvent += this.GameExceptionEventHandler;
             this.gameController.GameEvent += this.GameEventHandler;
         }
         #endregion

@@ -34,13 +34,11 @@ namespace SoC.Library.ScenarioTests
             this.verboseLogging = verboseLogging;
             this.Id = Guid.NewGuid();
             this.gameController = new GameController();
-            this.gameController.GameExceptionEvent += this.GameExceptionEventHandler;
             this.gameController.GameEvent += this.GameEventHandler;
         }
         #endregion
 
         #region Properties
-        public Exception GameException { get; private set; }
         public Guid Id { get; private set; }
         public bool IsFinished { get { return this.expectedEventIndex >= this.expectedEventActions.Count; } }
         public string Name { get; private set; }
@@ -114,11 +112,6 @@ namespace SoC.Library.ScenarioTests
             this.actualEventQueue.Enqueue(gameEvent);
         }
 
-        private void GameExceptionEventHandler(Exception exception)
-        {
-            this.GameException = exception;
-        }
-    
         private void Run()
         {
             Thread.CurrentThread.Name = this.Name;
@@ -158,7 +151,6 @@ namespace SoC.Library.ScenarioTests
             }
             catch (Exception e)
             {
-                this.GameException = e;
                 this.log.Add($"ERROR: {e.Message}: {e.StackTrace}");
                 throw e;
             }

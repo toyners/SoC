@@ -16,7 +16,6 @@ namespace Jabberwocky.SoC.Library
         #region Events
         public event Action<PlayerAction> PlayerActionEvent;
         public event Action<GameEvent> GameEvent;
-        public event Action<Exception> GameExceptionEvent;
         #endregion
 
         #region Methods
@@ -75,11 +74,6 @@ namespace Jabberwocky.SoC.Library
                 this.lasetAnswerDirectTradeOffEvent = answerDirectTradeOfferEvent;
 
             this.GameEvent.Invoke(gameEvent);
-        }
-
-        internal void GameExceptionHandler(Exception exception)
-        {
-            this.GameExceptionEvent.Invoke(exception);
         }
 
         private void SendAction(PlayerAction playerAction)
