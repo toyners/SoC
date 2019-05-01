@@ -17,14 +17,13 @@ namespace SoC.Library.ScenarioTests
         #region Fields
         private readonly List<GameEvent> actualEvents = new List<GameEvent>();
         private readonly ConcurrentQueue<GameEvent> actualEventQueue = new ConcurrentQueue<GameEvent>();
+        private readonly List<EventActionPair> expectedEventActions = new List<EventActionPair>();
         private readonly HashSet<GameEvent> expectedEventsWithVerboseLogging = new HashSet<GameEvent>();
         private readonly GameController gameController;
         private readonly ILog log = new Log();
         private readonly bool verboseLogging;
         private int expectedEventIndex;
         private IDictionary<string, Guid> playerIdsByName;
-
-        private List<EventActionPair> expectedEventActions = new List<EventActionPair>();
         #endregion
 
         #region Construction
