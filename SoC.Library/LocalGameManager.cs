@@ -24,7 +24,6 @@ namespace Jabberwocky.SoC.Library
         private readonly ILog log = new Log();
         private readonly INumberGenerator numberGenerator;
         private IPlayer currentPlayer;
-        private bool isQuitting;
         private IDictionary<Guid, IPlayer> playersById;
         private int playerIndex;
         private IPlayer[] players;
@@ -36,7 +35,7 @@ namespace Jabberwocky.SoC.Library
         private Dictionary<Guid, ResourceClutch> answeringDirectTradeOffers = new Dictionary<Guid, ResourceClutch>();
 
         // Only needed for scenario running?
-        private CancellationTokenSource cancellationTokenSource;
+        private CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
         private CancellationToken cancellationToken;
         #endregion
 
@@ -87,9 +86,8 @@ namespace Jabberwocky.SoC.Library
 
         public void Quit()
         {
-            this.cancellationTokenSource.Cancel();
-            this.isQuitting = true;
             this.eventRaiser.CanRaiseEvents = false;
+            this.cancellationTokenSource.Cancel();
         }
 
         public void SaveLog(string filePath) => this.log.WriteToFile(filePath);
@@ -139,7 +137,7 @@ namespace Jabberwocky.SoC.Library
                         this.WaitForGameStartConfirmationFromPlayers();
                         this.MainGameLoop();
                     }
-                    catch (TaskCanceledException)
+                    catch (OperationCanceledException)
                     {
                         return;
                     }
@@ -227,17 +225,15 @@ namespace Jabberwocky.SoC.Library
 
         private void MainGameLoop()
         {
-            if (this.isQuitting)
-                throw new TaskCanceledException();
-
             this.playerIndex = -1;
             this.StartTurn();
             this.turnTimer.Reset();
-            while (true)
+            var isFinished = false;
+            while (!isFinished)
             {
                 var playerAction = this.WaitForPlayerAction();
                 this.turnTimer.Reset();
-                this.ProcessPlayerAction(playerAction);
+                isFinished = this.ProcessPlayerAction(playerAction);
             }
         }
 
@@ -328,32 +324,31 @@ namespace Jabberwocky.SoC.Library
             });
         }
 
-        private void ProcessPlayerAction(PlayerAction playerAction)
+        private bool ProcessPlayerAction(PlayerAction playerAction)
         {
             if (playerAction is AcceptDirectTradeAction acceptDirectTradeAction)
             {
                 this.ProcessAcceptDirectTradeAction(acceptDirectTradeAction);
-                return;
+                return false;
             }
 
             if (playerAction is AnswerDirectTradeOfferAction answerDirectTradeOfferAction)
             {
                 this.ProcessAnswerDirectTradeOfferAction(answerDirectTradeOfferAction);
-                return;
+                return false;
             }
 
             if (playerAction is EndOfTurnAction)
             {
-
                 this.StartTurn();
-                return;
+                return false;
             }
 
             if (playerAction is MakeDirectTradeOfferAction makeDirectTradeOfferAction)
             {
                 
                 this.ProcessMakeDirectTradeOfferAction(makeDirectTradeOfferAction);
-                return;
+                return false;
             }
 
             if (playerAction is QuitGameAction quitGameAction)
@@ -361,18 +356,18 @@ namespace Jabberwocky.SoC.Library
                 this.RaiseEvent(new PlayerQuitEvent(quitGameAction.InitiatingPlayerId));
                 this.players = this.players.Where(player => player.Id != quitGameAction.InitiatingPlayerId).ToArray();
                 this.playerIndex--;
-                // TODO: Should PlayersById be cleaned up? If it is only used for reference then 
-                // don't bother.
+                // TODO: Should PlayersById be cleaned up? If it is only used for reference then don't bother.
                 if (this.players.Length == 1)
                 {
                     this.RaiseEvent(new GameWinEvent(this.players[0].Id, this.players[0].VictoryPoints));
-                    this.isQuitting = true;
+                    return true;
                 }
                 else
                 {
                     this.StartTurn();
                 }
-                return;
+
+                return false;
             }
 
             if (playerAction is RequestStateAction requestStateAction)
@@ -382,7 +377,7 @@ namespace Jabberwocky.SoC.Library
                 requestStateEvent.Resources = player.Resources;
 
                 this.RaiseEvent(requestStateEvent, player);
-                return;
+                return false;
             }
 
             throw new Exception($"Player action {playerAction.GetType()} not recognised.");
@@ -463,7 +458,7 @@ namespace Jabberwocky.SoC.Library
             }
 
             if (this.players.Length == 0)
-                throw new TaskCanceledException();
+                throw new OperationCanceledException();
         }
 
         private PlayerAction WaitForPlayerAction()
@@ -471,8 +466,7 @@ namespace Jabberwocky.SoC.Library
             while (true)
             {
                 Thread.Sleep(50);
-                if (this.isQuitting)
-                    throw new TaskCanceledException();
+                this.cancellationToken.ThrowIfCancellationRequested();
 
                 if (this.turnTimer.IsLate)
                 {

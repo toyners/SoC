@@ -394,14 +394,6 @@ namespace SoC.Library.ScenarioTests
             return this.playerAgentsByName[playerName].Id;
         }
 
-        private void QuitGame(LocalGameManager gameServer)
-        {
-            gameServer.Quit();
-
-            while (!gameServer.IsFinished)
-                Thread.Sleep(50);
-        }
-
         public ScenarioRunner ReceivesPlayerQuitEvent(string quittingPlayerName)
         {
             this.currentPlayerAgent.AddInstruction(
