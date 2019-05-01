@@ -405,7 +405,7 @@ namespace SoC.Library.ScenarioTests
         public ScenarioRunner VerifyPlayer(string playerName)
         {
             this.WhenPlayer(playerName);
-            this.currentPlayerAgent.RunForever = true;
+            this.currentPlayerAgent.ContinueRunningWhenFinished = true;
             return this;
         }
 
