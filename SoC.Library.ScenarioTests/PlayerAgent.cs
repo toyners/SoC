@@ -17,11 +17,13 @@ namespace SoC.Library.ScenarioTests
         #region Fields
         private readonly List<GameEvent> actualEvents = new List<GameEvent>();
         private readonly ConcurrentQueue<GameEvent> actualEventQueue = new ConcurrentQueue<GameEvent>();
+        private readonly CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
         private readonly List<EventActionPair> expectedEventActions = new List<EventActionPair>();
         private readonly HashSet<GameEvent> expectedEventsWithVerboseLogging = new HashSet<GameEvent>();
         private readonly GameController gameController;
         private readonly ILog log = new Log();
         private readonly bool verboseLogging;
+        private CancellationToken cancellationToken;
         private int expectedEventIndex;
         private IDictionary<string, Guid> playerIdsByName;
         #endregion
@@ -34,6 +36,7 @@ namespace SoC.Library.ScenarioTests
             this.Id = Guid.NewGuid();
             this.gameController = new GameController();
             this.gameController.GameEvent += this.GameEventHandler;
+            this.cancellationToken = this.cancellationTokenSource.Token;
         }
         #endregion
 
@@ -83,10 +86,9 @@ namespace SoC.Library.ScenarioTests
             gameServer.JoinGame(this.Name, this.gameController);
         }
 
-        private bool isQuitting;
         public void Quit()
         {
-            this.isQuitting = true;
+            this.cancellationTokenSource.Cancel();
         }
 
         public void SaveEvents(string filePath)
@@ -128,7 +130,7 @@ namespace SoC.Library.ScenarioTests
                 if (this.ContinueRunningWhenFinished)
                 {
                     this.log.Add("Continue running and receiving game events");
-                    while (!this.isQuitting)
+                    while (!this.cancellationToken.IsCancellationRequested)
                     {
                         Thread.Sleep(50);
                         if (this.actualEventQueue.TryDequeue(out var actualEvent))
@@ -141,10 +143,9 @@ namespace SoC.Library.ScenarioTests
                                 this.log.Add($"Received {actualEvent.GetType().Name}");
                         }
                     }
-                        
                 }
             }
-            catch (TaskCanceledException)
+            catch (OperationCanceledException)
             {
                 return;
             }
@@ -289,9 +290,7 @@ namespace SoC.Library.ScenarioTests
         {
             while (true)
             {
-                if (this.isQuitting)
-                    throw new TaskCanceledException();
-
+                this.cancellationToken.ThrowIfCancellationRequested();
                 Thread.Sleep(50);
                 if (!this.actualEventQueue.TryDequeue(out var actualEvent))
                     continue;
