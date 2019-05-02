@@ -158,15 +158,11 @@ namespace SoC.Library.ScenarioTests
 
             var tasks = new List<Task>(playerAgentTasks);
             tasks.Add(gameServerTask);
-            Exception exception1 = null;
             try
             {
                 Task.WaitAll(tasks.ToArray(), 20000);
             }
-            catch (Exception e)
-            {
-                exception1 = e;
-            }
+            catch { }
 
             if (!gameServerTask.IsCompleted)
             {
@@ -192,9 +188,6 @@ namespace SoC.Library.ScenarioTests
 
             gameServer.SaveLog(@"GameServer.log");
 
-            if (exception1 != null)
-                throw exception1;
-
             if (gameServerTask.IsFaulted)
             {
                 var exception = gameServerTask.Exception;
@@ -205,7 +198,8 @@ namespace SoC.Library.ScenarioTests
             string message = string.Join("\r\n",
                 playerAgentTasks
                     .Where(playerAgentTask => playerAgentTask.IsFaulted)
-                    .Select(playerAgentTask => {
+                    .Select(playerAgentTask =>
+                    {
                         var exception = playerAgentTask.Exception;
                         var flattenedException = exception.Flatten();
                         var playerAgent = (PlayerAgent)playerAgentTask.AsyncState;
@@ -219,9 +213,11 @@ namespace SoC.Library.ScenarioTests
             string timeOutMessage = string.Join("\r\n",
                 this.playerAgents
                     .Where(playerAgent => !playerAgent.IsFinished)
-                    .Select(playerAgent => {
+                    .Select(playerAgent =>
+                    {
                         var playerAgentMessage = $"{playerAgent.Name} did not finish.\r\n";
-                        playerAgent.GetEventResults().ForEach(tuple => {
+                        playerAgent.GetEventResults().ForEach(tuple =>
+                        {
                             playerAgentMessage += $"\t{tuple.Item1} => {tuple.Item3}\r\n";
                         });
                         return playerAgentMessage;
