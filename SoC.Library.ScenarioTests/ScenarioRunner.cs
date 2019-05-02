@@ -158,7 +158,15 @@ namespace SoC.Library.ScenarioTests
 
             var tasks = new List<Task>(playerAgentTasks);
             tasks.Add(gameServerTask);
-            Task.WaitAll(tasks.ToArray(), 20000);
+            Exception exception1 = null;
+            try
+            {
+                Task.WaitAll(tasks.ToArray(), 20000);
+            }
+            catch (Exception e)
+            {
+                exception1 = e;
+            }
 
             if (!gameServerTask.IsCompleted)
             {
@@ -183,6 +191,9 @@ namespace SoC.Library.ScenarioTests
             }
 
             gameServer.SaveLog(@"GameServer.log");
+
+            if (exception1 != null)
+                throw exception1;
 
             if (gameServerTask.IsFaulted)
             {
