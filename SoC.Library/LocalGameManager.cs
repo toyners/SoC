@@ -352,10 +352,10 @@ namespace Jabberwocky.SoC.Library
 
             if (playerAction is QuitGameAction quitGameAction)
             {
-                this.RaiseEvent(new PlayerQuitEvent(quitGameAction.InitiatingPlayerId));
                 this.players = this.players.Where(player => player.Id != quitGameAction.InitiatingPlayerId).ToArray();
                 this.playerIndex--;
-                // TODO: Should PlayersById be cleaned up? If it is only used for reference then don't bother.
+                this.playersById.Remove(quitGameAction.InitiatingPlayerId);
+                this.RaiseEvent(new PlayerQuitEvent(quitGameAction.InitiatingPlayerId));
                 if (this.players.Length == 1)
                 {
                     this.RaiseEvent(new GameWinEvent(this.players[0].Id, this.players[0].VictoryPoints));
