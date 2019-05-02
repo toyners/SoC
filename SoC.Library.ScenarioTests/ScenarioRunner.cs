@@ -162,7 +162,10 @@ namespace SoC.Library.ScenarioTests
             {
                 Task.WaitAll(tasks.ToArray(), 20000);
             }
-            catch { }
+            catch
+            {
+                // Handle exceptions below
+            }
 
             if (!gameServerTask.IsCompleted)
             {
