@@ -49,6 +49,18 @@ namespace SoC.Library.ScenarioTests
             return new ScenarioRunner(args);
         }
 
+        public ScenarioRunner DidNotReceiveEvent<T>() where T : GameEvent
+        {
+            this.currentPlayerAgent.AddDidNotReceiveEventType(typeof(T));
+            return this;
+        }
+
+        public ScenarioRunner DidNotReceivePlayerQuitEvent(string quittingPlayerName)
+        {
+            this.currentPlayerAgent.AddDidNotReceiveEvent(new PlayerQuitEvent(this.playerAgentsByName[quittingPlayerName].Id));
+            return this;
+        }
+
         public ScenarioRunner ReceivesAcceptDirectTradeEvent(string buyerName, ResourceClutch buyingResources, string sellerName, ResourceClutch sellingResources)
         {
             var gameEvent = new AcceptTradeEvent(this.GetPlayerId(buyerName), buyingResources, this.GetPlayerId(sellerName), sellingResources);
@@ -69,6 +81,15 @@ namespace SoC.Library.ScenarioTests
         {
             var gameEvent = new ConfirmGameStartEvent();
             var eventInstruction = new EventInstruction(gameEvent);
+            this.currentPlayerAgent.AddInstruction(eventInstruction);
+            return this;
+        }
+
+        public ScenarioRunner ReceivesDiceRollEvent(uint dice1, uint dice2)
+        {
+            this.numberGenerator.AddTwoDiceRoll(dice1, dice2);
+            var gameEvent = new DiceRollEvent(this.GetPlayerId(this.currentPlayerAgent.Name), dice1, dice2);
+            var eventInstruction = new EventInstruction(this.currentPlayerAgent.Name, gameEvent);
             this.currentPlayerAgent.AddInstruction(eventInstruction);
             return this;
         }
@@ -114,11 +135,39 @@ namespace SoC.Library.ScenarioTests
             return this;
         }
 
+        public ScenarioRunner ReceivesPlayerQuitEvent(string quittingPlayerName)
+        {
+            this.currentPlayerAgent.AddInstruction(
+                new EventInstruction(
+                    new PlayerQuitEvent(this.playerAgentsByName[quittingPlayerName].Id)));
+            return this;
+        }
+
+        public ScenarioRunner ReceivesPlayerWonEvent(string winningPlayerName, uint victoryPoints)
+        {
+            this.currentPlayerAgent.AddInstruction(
+                new EventInstruction(
+                    new GameWinEvent(this.playerAgentsByName[winningPlayerName].Id, victoryPoints)
+                ));
+            return this;
+        }
+
         public ScenarioRunner ReceivesPlayerSetupEvent()
         {
             var playerIdsByName = this.playerAgents.ToDictionary(playerAgent => playerAgent.Name, playerAgent => playerAgent.Id);
             var gameEvent = new PlayerSetupEvent(playerIdsByName);
             var eventInstruction = new EventInstruction(this.currentPlayerAgent.Name, gameEvent);
+            this.currentPlayerAgent.AddInstruction(eventInstruction);
+            return this;
+        }
+
+        public ScenarioRunner ReceivesResourceCollectedEvent(Dictionary<string, ResourceCollection[]> resourcesCollectedByPlayerName)
+        {
+            var resourcesCollectedByPlayerId = new Dictionary<Guid, ResourceCollection[]>();
+            foreach (var kv in resourcesCollectedByPlayerName)
+                resourcesCollectedByPlayerId.Add(this.GetPlayerId(kv.Key), kv.Value);
+            var gameEvent = new ResourcesCollectedEvent(resourcesCollectedByPlayerId);
+            var eventInstruction = new EventInstruction(gameEvent);
             this.currentPlayerAgent.AddInstruction(eventInstruction);
             return this;
         }
@@ -308,36 +357,14 @@ namespace SoC.Library.ScenarioTests
                 var gameEvent = new InfrastructurePlacedEvent(this.GetPlayerId(playerName), settlementLocation, roadEndLocation);
                 playerAgent.AddInstruction(new EventInstruction(playerAgent.Name, gameEvent));
             });
-            
+
             return this;
         }
 
-        public ScenarioRunner ReceivesDiceRollEvent(uint dice1, uint dice2)
+        public ScenarioRunner VerifyPlayer(string playerName)
         {
-            this.numberGenerator.AddTwoDiceRoll(dice1, dice2);
-            var gameEvent = new DiceRollEvent(this.GetPlayerId(this.currentPlayerAgent.Name), dice1, dice2);
-            var eventInstruction = new EventInstruction(this.currentPlayerAgent.Name, gameEvent);
-            this.currentPlayerAgent.AddInstruction(eventInstruction);
-            return this;
-        }
-
-        public ScenarioRunner ReceivesPlayerWonEvent(string winningPlayerName, uint victoryPoints)
-        {
-            this.currentPlayerAgent.AddInstruction(
-                new EventInstruction(
-                    new GameWinEvent(this.playerAgentsByName[winningPlayerName].Id, victoryPoints)
-                ));
-            return this;
-        }
-
-        public ScenarioRunner ReceivesResourceCollectedEvent(Dictionary<string, ResourceCollection[]> resourcesCollectedByPlayerName)
-        {
-            var resourcesCollectedByPlayerId = new Dictionary<Guid, ResourceCollection[]>();
-            foreach (var kv in resourcesCollectedByPlayerName)
-                resourcesCollectedByPlayerId.Add(this.GetPlayerId(kv.Key), kv.Value);
-            var gameEvent = new ResourcesCollectedEvent(resourcesCollectedByPlayerId);
-            var eventInstruction = new EventInstruction(gameEvent);
-            this.currentPlayerAgent.AddInstruction(eventInstruction);
+            this.WhenPlayer(playerName);
+            this.currentPlayerAgent.ContinueRunningWhenFinished = true;
             return this;
         }
 
@@ -408,33 +435,6 @@ namespace SoC.Library.ScenarioTests
                 throw new Exception($"Player name {playerName} not recognised.");
 
             return this.playerAgentsByName[playerName].Id;
-        }
-
-        public ScenarioRunner ReceivesPlayerQuitEvent(string quittingPlayerName)
-        {
-            this.currentPlayerAgent.AddInstruction(
-                new EventInstruction(
-                    new PlayerQuitEvent(this.playerAgentsByName[quittingPlayerName].Id)));
-            return this;
-        }
-
-        public ScenarioRunner VerifyPlayer(string playerName)
-        {
-            this.WhenPlayer(playerName);
-            this.currentPlayerAgent.ContinueRunningWhenFinished = true;
-            return this;
-        }
-
-        public ScenarioRunner DidNotReceiveEvent<T>() where T : GameEvent
-        {
-            this.currentPlayerAgent.AddDidNotReceiveEventType(typeof(T));
-            return this;
-        }
-
-        public ScenarioRunner DidNotReceivePlayerQuitEvent(string quittingPlayerName)
-        {
-            this.currentPlayerAgent.AddDidNotReceiveEvent(new PlayerQuitEvent(this.playerAgentsByName[quittingPlayerName].Id));
-            return this;
         }
         #endregion
     }
