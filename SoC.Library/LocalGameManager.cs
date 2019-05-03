@@ -236,8 +236,6 @@ namespace Jabberwocky.SoC.Library
             }
         }
 
-        private IEnumerable<IPlayer> PlayersExcept(params Guid[] playerIds) => this.playersById.Select(kv => kv.Value).Where(player => !playerIds.Contains(player.Id));
-
         private void PlaceInfrastructure(IPlayer player, uint settlementLocation, uint roadEndLocation)
         {
             try
@@ -250,6 +248,14 @@ namespace Jabberwocky.SoC.Library
                 // TODO: Send back message to user
             }
         }
+
+        private void PlayerActionEventHandler(PlayerAction playerAction)
+        {
+            // Leave all validation and processing to the game server thread
+            this.actionRequests.Enqueue(playerAction);
+        }
+
+        private IEnumerable<IPlayer> PlayersExcept(params Guid[] playerIds) => this.playersById.Select(kv => kv.Value).Where(player => !playerIds.Contains(player.Id));
 
         private void ProcessAcceptDirectTradeAction(AcceptDirectTradeAction acceptDirectTradeAction)
         {
@@ -271,12 +277,6 @@ namespace Jabberwocky.SoC.Library
 
             this.RaiseEvent(acceptTradeEvent, this.currentPlayer);
             this.RaiseEvent(acceptTradeEvent, this.PlayersExcept(this.currentPlayer.Id));
-        }
-
-        private void PlayerActionEventHandler(PlayerAction playerAction)
-        {
-            // Leave all validation and processing to the game server thread
-            this.actionRequests.Enqueue(playerAction);
         }
 
         private void ProcessAnswerDirectTradeOfferAction(AnswerDirectTradeOfferAction answerDirectTradeOfferAction)
@@ -352,21 +352,7 @@ namespace Jabberwocky.SoC.Library
 
             if (playerAction is QuitGameAction quitGameAction)
             {
-                this.players = this.players.Where(player => player.Id != quitGameAction.InitiatingPlayerId).ToArray();
-                this.playerIndex--;
-                this.playersById.Remove(quitGameAction.InitiatingPlayerId);
-                this.RaiseEvent(new PlayerQuitEvent(quitGameAction.InitiatingPlayerId));
-                if (this.players.Length == 1)
-                {
-                    this.RaiseEvent(new GameWinEvent(this.players[0].Id, this.players[0].VictoryPoints));
-                    return true;
-                }
-                else
-                {
-                    this.StartTurn();
-                }
-
-                return false;
+                return this.ProcessQuitGameAction(quitGameAction);
             }
 
             if (playerAction is RequestStateAction requestStateAction)
@@ -382,6 +368,25 @@ namespace Jabberwocky.SoC.Library
             throw new Exception($"Player action {playerAction.GetType()} not recognised.");
         }
 
+        private bool ProcessQuitGameAction(QuitGameAction quitGameAction)
+        {
+            this.players = this.players.Where(player => player.Id != quitGameAction.InitiatingPlayerId).ToArray();
+            this.playerIndex--;
+            this.playersById.Remove(quitGameAction.InitiatingPlayerId);
+            this.RaiseEvent(new PlayerQuitEvent(quitGameAction.InitiatingPlayerId));
+            if (this.players.Length == 1)
+            {
+                this.RaiseEvent(new GameWinEvent(this.players[0].Id, this.players[0].VictoryPoints));
+                return true;
+            }
+            else
+            {
+                this.StartTurn();
+            }
+
+            return false;
+        }
+    
         private void RaiseEvent(GameEvent gameEvent)
         {
             this.RaiseEvent(gameEvent, this.players);
@@ -399,6 +404,15 @@ namespace Jabberwocky.SoC.Library
         {
             this.log.Add($"Sending {this.ToPrettyString(gameEvent)} to {player.Name}");
             this.eventRaiser.RaiseEvent(gameEvent, player.Id);
+        }
+
+        private void SendStartPlayerTurnEvent()
+        {
+            foreach (var player in this.PlayersExcept(this.currentPlayer.Id))
+                this.actionManager.SetExpectedActionsForPlayer(player.Id, null);
+            this.actionManager.SetExpectedActionsForPlayer(this.currentPlayer.Id,
+                typeof(EndOfTurnAction), typeof(QuitGameAction), typeof(MakeDirectTradeOfferAction));
+            this.RaiseEvent(new StartPlayerTurnEvent(), this.currentPlayer /*, token*/);
         }
 
         private void StartTurn()
@@ -419,14 +433,18 @@ namespace Jabberwocky.SoC.Library
 
             }
         }
-        
-        private void SendStartPlayerTurnEvent()
+
+        private string ToPrettyString(GameEvent gameEvent)
         {
-            foreach (var player in this.PlayersExcept(this.currentPlayer.Id))
-               this.actionManager.SetExpectedActionsForPlayer(player.Id, null);
-            this.actionManager.SetExpectedActionsForPlayer(this.currentPlayer.Id, 
-                typeof(EndOfTurnAction), typeof(QuitGameAction), typeof(MakeDirectTradeOfferAction));
-            this.RaiseEvent(new StartPlayerTurnEvent(), this.currentPlayer /*, token*/);
+            var message = $"{gameEvent.SimpleTypeName}";
+            if (gameEvent is DiceRollEvent diceRollEvent)
+                message += $", Dice rolls {diceRollEvent.Dice1} {diceRollEvent.Dice2}";
+            return message;
+        }
+
+        private string ToPrettyString(IEnumerable<string> playerNames)
+        {
+            return $"{string.Join(", ", playerNames)}";
         }
 
         private void WaitForGameStartConfirmationFromPlayers()
@@ -489,19 +507,6 @@ namespace Jabberwocky.SoC.Library
                     return playerAction;
                 }
             }
-        }
-
-        private string ToPrettyString(GameEvent gameEvent)
-        {
-            var message = $"{gameEvent.SimpleTypeName}";
-            if (gameEvent is DiceRollEvent diceRollEvent)
-                message += $", Dice rolls {diceRollEvent.Dice1} {diceRollEvent.Dice2}";
-            return message;
-        }
-
-        private string ToPrettyString(IEnumerable<string> playerNames)
-        {
-            return $"{string.Join(", ", playerNames)}";
         }
         #endregion
 
