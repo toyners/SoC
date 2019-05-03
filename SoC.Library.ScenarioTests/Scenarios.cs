@@ -206,7 +206,7 @@ namespace SoC.Library.ScenarioTests
         }
 
         [Scenario]
-        public void Scenario_PlayerTradesOneResourceWithPlayer(string[] args)
+        public void Scenario_PlayerTradesOneResourceWithAnotherPlayer(string[] args)
         {
             var adamResources = ResourceClutch.OneWool;
             var babaraResources = ResourceClutch.OneGrain;
