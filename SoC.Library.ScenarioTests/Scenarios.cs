@@ -109,6 +109,12 @@ namespace SoC.Library.ScenarioTests
         }
 
         [Scenario]
+        public void Scenario_PlayerSendsIncorrectCommand()
+        {
+
+        }
+
+        [Scenario]
         public void Scenario_AllPlayersCollectResourcesAsPartOfTurnStart(string[] args)
         {
             var firstTurnCollectedResources = CreateExpectedCollectedResources()
