@@ -57,13 +57,13 @@ namespace SoC.ScenarioRunnerConsole
                             Console.Write($"Running '{method.Name}' ...");
                             var instance = Activator.CreateInstance(method.DeclaringType);
 
-                            object[] methodArgs;
+                            var methodArgs = new List<string>();
+                            methodArgs.Add(method.Name);
+                            methodArgs.Add("-NoTokenRequiredForRequestState");
                             if (!serverTimerOn)
-                                methodArgs = new object[] { new string[] { "NoTimer", "NoTokenRequiredForRequestState" } };
-                            else
-                                methodArgs = new object[] { new string[] { "NoTokenRequiredForRequestState" } };
+                                methodArgs.Add("-NoTimer");
 
-                            method.Invoke(instance, methodArgs);
+                            method.Invoke(instance, new object[] { methodArgs.ToArray() });
                             Console.WriteLine("Completed");
                         }
                         catch (Exception e)

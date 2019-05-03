@@ -3,6 +3,7 @@ namespace SoC.Library.ScenarioTests
 {
     using System;
     using System.Collections.Generic;
+    using System.IO;
     using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
@@ -19,6 +20,7 @@ namespace SoC.Library.ScenarioTests
         private readonly Dictionary<string, PlayerAgent> playerAgentsByName = new Dictionary<string, PlayerAgent>();
         private readonly Dictionary<string, ResourceClutch> startingResourcesByName = new Dictionary<string, ResourceClutch>();
         private readonly bool requestStateActionsMustHaveToken = true;
+        private readonly string scenarioName;
         private readonly bool useServerTimer = true;
         private PlayerAgent currentPlayerAgent;
         private GameBoard gameBoard;
@@ -30,9 +32,10 @@ namespace SoC.Library.ScenarioTests
         {
             if (args != null)
             {
-                if (args.Contains("NoTimer"))
+                this.scenarioName = args[0];
+                if (args.Contains("-NoTimer"))
                     this.useServerTimer = false;
-                if (args.Contains("NoTokenRequiredForRequestState"))
+                if (args.Contains("-NoTokenRequiredForRequestState"))
                     this.requestStateActionsMustHaveToken = false;
             }
 
@@ -174,6 +177,9 @@ namespace SoC.Library.ScenarioTests
                     Thread.Sleep(50);
             }
 
+            var logDirectory = $".\\Logs\\{this.scenarioName} {DateTime.Now.ToString("HH-mm-ss dd-MMM-yyyy")}";
+            Directory.CreateDirectory(logDirectory);
+
             for (var i = 0; i < this.playerAgents.Count; i++)
             {
                 var playerAgentTask = playerAgentTasks[i];
@@ -185,11 +191,11 @@ namespace SoC.Library.ScenarioTests
                         Thread.Sleep(50);
                 }
 
-                playerAgent.SaveEvents($"{playerAgent.Name}.events");
-                playerAgent.SaveLog($"{playerAgent.Name}.log");
+                playerAgent.SaveEvents($"{logDirectory}\\{playerAgent.Name}.events");
+                playerAgent.SaveLog($"{logDirectory}\\{playerAgent.Name}.log");
             }
 
-            gameServer.SaveLog(@"GameServer.log");
+            gameServer.SaveLog($"{logDirectory}\\GameServer.log");
 
             if (gameServerTask.IsFaulted)
             {
