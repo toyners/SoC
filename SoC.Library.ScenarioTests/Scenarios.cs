@@ -114,14 +114,44 @@ namespace SoC.Library.ScenarioTests
             var expectedGameBoardSetup = new GameBoardSetup(new GameBoard(BoardSizes.Standard));
             var playerOrder = new[] { Adam, Babara, Charlie, Dana };
             ScenarioRunner.CreateScenarioRunner(args)
-                .WithPlayer(Adam)
-                .WithPlayer(Babara)
-                .WithPlayer(Charlie)
-                .WithPlayer(Dana)
+                .WithPlayer(Adam).WithPlayer(Babara).WithPlayer(Charlie).WithPlayer(Dana)
                 .WithTurnOrder(playerOrder)
                 .WhenPlayer(Adam)
                     .ReceivesPlaceInfrastructureSetupEvent().ThenEndTurn()
-                    .ReceivesGameErrorEvent("302")
+                    .ReceivesGameErrorEvent("301", "Invalid action: Expected PlaceStartingInfrastructure or QuitGame")
+                .Run();
+        }
+
+        [Scenario]
+        public void Scenario_PlayerQuitsDuringGameSetup(string[] args)
+        {
+            // TODO: Complete this test
+            var expectedGameBoardSetup = new GameBoardSetup(new GameBoard(BoardSizes.Standard));
+            var playerOrder = new[] { Adam, Babara, Charlie, Dana };
+            ScenarioRunner.CreateScenarioRunner(args)
+                .WithPlayer(Adam).WithPlayer(Babara).WithPlayer(Charlie).WithPlayer(Dana)
+                .WithTurnOrder(playerOrder)
+                .WhenPlayer(Adam)
+                    .ReceivesPlaceInfrastructureSetupEvent().ThenQuitGame()
+                .Run();
+        }
+
+        [Scenario]
+        public void Scenario_PlayerSendsIncorrectCommandDuringGameStartConfirmation(string[] args)
+        {
+            var expectedGameBoardSetup = new GameBoardSetup(new GameBoard(BoardSizes.Standard));
+            var playerOrder = new[] { Adam, Babara, Charlie, Dana };
+            ScenarioRunner.CreateScenarioRunner(args)
+                .WithPlayer(Adam).WithPlayer(Babara).WithPlayer(Charlie).WithPlayer(Dana)
+                .WithTurnOrder(playerOrder)
+                .WhenPlayer(Adam)
+                    .ReceivesPlaceInfrastructureSetupEvent()
+                    .ThenPlaceStartingInfrastructure(Adam_FirstSettlementLocation, Adam_FirstRoadEndLocation)
+                    .ReceivesPlaceInfrastructureSetupEvent()
+                    .ThenPlaceStartingInfrastructure(Adam_SecondSettlementLocation, Adam_SecondRoadEndLocation)
+                    .ReceivesConfirmGameStartEvent()
+                    .ThenEndTurn()
+                    .ReceivesGameErrorEvent("302", "Invalid action: Expected ConfirmStart or QuitGame")
                 .Run();
         }
 
