@@ -109,9 +109,20 @@ namespace SoC.Library.ScenarioTests
         }
 
         [Scenario]
-        public void Scenario_PlayerSendsIncorrectCommandDuringGameSetup()
+        public void Scenario_PlayerSendsIncorrectCommandDuringGameSetup(string[] args)
         {
-
+            var expectedGameBoardSetup = new GameBoardSetup(new GameBoard(BoardSizes.Standard));
+            var playerOrder = new[] { Adam, Babara, Charlie, Dana };
+            ScenarioRunner.CreateScenarioRunner(args)
+                .WithPlayer(Adam)
+                .WithPlayer(Babara)
+                .WithPlayer(Charlie)
+                .WithPlayer(Dana)
+                .WithTurnOrder(playerOrder)
+                .WhenPlayer(Adam)
+                    .ReceivesPlaceInfrastructureSetupEvent().ThenEndTurn()
+                    .ReceivesGameErrorEvent("302")
+                .Run();
         }
 
         [Scenario]

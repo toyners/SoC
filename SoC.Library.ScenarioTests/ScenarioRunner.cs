@@ -102,6 +102,14 @@ namespace SoC.Library.ScenarioTests
             return this;
         }
 
+        public ScenarioRunner ReceivesGameErrorEvent(string errorCode)
+        {
+            var gameEvent = new GameErrorEvent(this.GetPlayerId(this.currentPlayerAgent.Name), errorCode);
+            var eventInstruction = new EventInstruction(gameEvent);
+            this.currentPlayerAgent.AddInstruction(eventInstruction);
+            return this;
+        }
+
         public ScenarioRunner ReceivesInitialBoardSetupEvent(GameBoardSetup gameBoardSetup)
         {
             var gameEvent = new InitialBoardSetupEvent(gameBoardSetup);

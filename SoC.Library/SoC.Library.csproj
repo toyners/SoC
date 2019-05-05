@@ -61,6 +61,7 @@
     <Compile Include="DevelopmentCards\VictoryPointDevelopmentCard.cs" />
     <Compile Include="DevelopmentCards\YearOfPlentyDevelopmentCard.cs" />
     <Compile Include="GameEvents\ConfirmGameStartEvent.cs" />
+    <Compile Include="GameEvents\GameErrorEvent.cs" />
     <Compile Include="GameEvents\GameJoinedEvent.cs" />
     <Compile Include="GameEvents\PlayerOrderEvent.cs" />
     <Compile Include="GameEvents\PlayerQuitEvent.cs" />
