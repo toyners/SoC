@@ -109,7 +109,7 @@ namespace SoC.Library.ScenarioTests
         }
 
         [Scenario]
-        public void Scenario_PlayerSendsIncorrectCommand()
+        public void Scenario_PlayerSendsIncorrectCommandDuringGameSetup()
         {
 
         }
