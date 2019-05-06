@@ -118,7 +118,7 @@ namespace SoC.Library.ScenarioTests
                 .WithTurnOrder(playerOrder)
                 .WhenPlayer(Adam)
                     .ReceivesPlaceInfrastructureSetupEvent().ThenEndTurn()
-                    .ReceivesGameErrorEvent("301", "Invalid action: Expected PlaceStartingInfrastructure or QuitGame")
+                    .ReceivesGameErrorEvent("301", "Invalid action: Expected PlaceSetupInfrastructureAction or QuitGameAction")
                 .Run();
         }
 
@@ -157,7 +157,7 @@ namespace SoC.Library.ScenarioTests
                     .ThenPlaceStartingInfrastructure(Adam_SecondSettlementLocation, Adam_SecondRoadEndLocation)
                     .ReceivesConfirmGameStartEvent()
                     .ThenEndTurn()
-                    .ReceivesGameErrorEvent("302", "Invalid action: Expected ConfirmStart or QuitGame")
+                    .ReceivesGameErrorEvent("302", "Invalid action: Expected ConfirmGameStartAction or QuitGameAction")
                 .WhenPlayer(Babara)
                     .ReceivesPlaceInfrastructureSetupEvent()
                     .ThenPlaceStartingInfrastructure(Babara_FirstSettlementLocation, Babara_FirstRoadEndLocation)

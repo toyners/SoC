@@ -557,7 +557,7 @@ namespace Jabberwocky.SoC.Library
         private class EventRaiser
         {
             private Dictionary<Guid, Action<GameEvent>> gameEventHandlersByPlayerId = new Dictionary<Guid, Action<GameEvent>>();
-
+        
             public bool CanRaiseEvents { get; set; } = true;
 
             public void AddEventHandler(Guid playerId, Action<GameEvent> gameEventHandler)
