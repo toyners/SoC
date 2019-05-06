@@ -125,7 +125,6 @@ namespace SoC.Library.ScenarioTests
         [Scenario]
         public void Scenario_PlayerQuitsDuringGameSetup(string[] args)
         {
-            // TODO: Complete this test
             var expectedGameBoardSetup = new GameBoardSetup(new GameBoard(BoardSizes.Standard));
             var playerOrder = new[] { Adam, Babara, Charlie, Dana };
             ScenarioRunner.CreateScenarioRunner(args)
