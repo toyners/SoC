@@ -133,6 +133,12 @@ namespace SoC.Library.ScenarioTests
                 .WithTurnOrder(playerOrder)
                 .WhenPlayer(Adam)
                     .ReceivesPlaceInfrastructureSetupEvent().ThenQuitGame()
+                .WhenPlayer(Babara)
+                    .ReceivesPlayerQuitEvent(Adam).ThenDoNothing()
+                .WhenPlayer(Charlie)
+                    .ReceivesPlayerQuitEvent(Adam).ThenDoNothing()
+                .WhenPlayer(Dana)
+                    .ReceivesPlayerQuitEvent(Adam).ThenDoNothing()
                 .Run();
         }
 
@@ -152,6 +158,21 @@ namespace SoC.Library.ScenarioTests
                     .ReceivesConfirmGameStartEvent()
                     .ThenEndTurn()
                     .ReceivesGameErrorEvent("302", "Invalid action: Expected ConfirmStart or QuitGame")
+                .WhenPlayer(Babara)
+                    .ReceivesPlaceInfrastructureSetupEvent()
+                    .ThenPlaceStartingInfrastructure(Babara_FirstSettlementLocation, Babara_FirstRoadEndLocation)
+                    .ReceivesPlaceInfrastructureSetupEvent()
+                    .ThenPlaceStartingInfrastructure(Babara_SecondSettlementLocation, Babara_SecondRoadEndLocation)
+                .WhenPlayer(Charlie)
+                    .ReceivesPlaceInfrastructureSetupEvent()
+                    .ThenPlaceStartingInfrastructure(Charlie_FirstSettlementLocation, Charlie_FirstRoadEndLocation)
+                    .ReceivesPlaceInfrastructureSetupEvent()
+                    .ThenPlaceStartingInfrastructure(Charlie_SecondSettlementLocation, Charlie_SecondRoadEndLocation)
+                .WhenPlayer(Dana)
+                    .ReceivesPlaceInfrastructureSetupEvent()
+                    .ThenPlaceStartingInfrastructure(Dana_FirstSettlementLocation, Dana_FirstRoadEndLocation)
+                    .ReceivesPlaceInfrastructureSetupEvent()
+                    .ThenPlaceStartingInfrastructure(Dana_SecondSettlementLocation, Dana_SecondRoadEndLocation)
                 .Run();
         }
 
