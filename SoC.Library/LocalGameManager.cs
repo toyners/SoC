@@ -186,20 +186,22 @@ namespace Jabberwocky.SoC.Library
             // Place first settlement
             for (int i = 0; i < this.players.Length; i++)
             {
-                this.GameSetupLoop(this.players[i]);
+                this.GameSetupForPlayer(this.players[i]);
             }
 
             // Place second settlement
             for (int i = this.players.Length - 1; i >= 0; i--)
             {
-                this.GameSetupLoop(this.players[i]);
+                this.GameSetupForPlayer(this.players[i]);
             }
         }
 
-        private void GameSetupLoop(IPlayer player)
+        private void GameSetupForPlayer(IPlayer player)
         {
             var placeSetupInfrastructureEvent = new PlaceSetupInfrastructureEvent();
-            this.actionManager.SetExpectedActionsForPlayer(player.Id, typeof(PlaceSetupInfrastructureAction));
+            this.actionManager.SetExpectedActionsForPlayer(player.Id, 
+                typeof(PlaceSetupInfrastructureAction),
+                typeof(QuitGameAction));
             this.RaiseEvent(placeSetupInfrastructureEvent, player);
             while (true)
             {
@@ -220,6 +222,34 @@ namespace Jabberwocky.SoC.Library
                     //TODO: Handle case where action is not correct. Send message back to client
                 }
             }
+        }
+
+        private string GetErrorCode(HashSet<Type> expectedActions)
+        {
+            if (expectedActions.Count == 2)
+            {
+                if (expectedActions.Contains(typeof(PlaceSetupInfrastructureAction)) &&
+                    expectedActions.Contains(typeof(QuitGameAction)))
+                {
+                    return "301";
+                }
+            }
+
+            throw new NotImplementedException("Cannot get error code");
+        }
+
+        private string GetErrorMessage(HashSet<Type> expectedActions)
+        {
+            if (expectedActions.Count == 2)
+            {
+                if (expectedActions.Contains(typeof(PlaceSetupInfrastructureAction)) &&
+                    expectedActions.Contains(typeof(QuitGameAction)))
+                {
+                    return "Invalid action: Expected PlaceSetupInfrastructureAction or QuitGameAction";
+                }
+            }
+
+            throw new NotImplementedException("Cannot get error message");
         }
 
         private void MainGameLoop()
@@ -501,7 +531,14 @@ namespace Jabberwocky.SoC.Library
                         return playerAction;
 
                     if (!this.actionManager.ValidateAction(playerAction))
-                        throw new Exception($"FAILED: Action Validation - {playerName}, {playerActionTypeName}");
+                    {
+                        var expectedActions = this.actionManager.GetExpectedActionsForPlayer(playerAction.InitiatingPlayerId);
+                        var errorCode = this.GetErrorCode(expectedActions);
+                        var errorMessage = this.GetErrorMessage(expectedActions);
+                        this.RaiseEvent(new GameErrorEvent(playerAction.InitiatingPlayerId, errorCode, errorMessage));
+                        this.log.Add($"FAILED: Action Validation - {playerName}, {playerActionTypeName}");
+                        continue;
+                    }
 
                     this.log.Add($"Validated {playerActionTypeName} from {playerName}");
                     return playerAction;
@@ -514,13 +551,13 @@ namespace Jabberwocky.SoC.Library
         public interface IActionManager
         {
             void AddExpectedActionsForPlayer(Guid playerId, params Type[] actionsTypes);
+            HashSet<Type> GetExpectedActionsForPlayer(Guid playerId);
             void SetExpectedActionsForPlayer(Guid playerId, params Type[] actionTypes);
             bool ValidateAction(PlayerAction playerAction);
         }
 
         private class ActionManager : IActionManager
         {
-            private readonly Dictionary<Guid, Type> actionTypeByPlayerId = new Dictionary<Guid, Type>();
             private readonly Dictionary<Guid, HashSet<Type>> actionTypesByPlayerId = new Dictionary<Guid, HashSet<Type>>();
 
             public void AddExpectedActionsForPlayer(Guid playerId, params Type[] actionTypes)
@@ -530,6 +567,11 @@ namespace Jabberwocky.SoC.Library
 
                 foreach (var actionType in actionTypes)
                     this.actionTypesByPlayerId[playerId].Add(actionType);
+            }
+
+            public HashSet<Type> GetExpectedActionsForPlayer(Guid playerId)
+            {
+                return this.actionTypesByPlayerId[playerId];
             }
 
             public void SetExpectedActionsForPlayer(Guid playerId, params Type[] actionTypes)
