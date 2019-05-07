@@ -203,25 +203,9 @@ namespace Jabberwocky.SoC.Library
                 typeof(PlaceSetupInfrastructureAction),
                 typeof(QuitGameAction));
             this.RaiseEvent(placeSetupInfrastructureEvent, player);
-            while (true)
-            {
-                var playerAction = this.WaitForPlayerAction();
-                this.turnTimer.Reset();
-
-                if (playerAction is PlaceSetupInfrastructureAction placeSetupInfrastructureAction)
-                {
-                    this.actionManager.SetExpectedActionsForPlayer(playerAction.InitiatingPlayerId, null);
-                    var settlementLocation = placeSetupInfrastructureAction.SettlementLocation;
-                    var roadEndLocation = placeSetupInfrastructureAction.RoadEndLocation;
-                    this.PlaceInfrastructure(player, settlementLocation, roadEndLocation);
-                    this.RaiseEvent(new InfrastructurePlacedEvent(playerAction.InitiatingPlayerId, settlementLocation, roadEndLocation));
-                    break;
-                }
-                else
-                {
-                    //TODO: Handle case where action is not correct. Send message back to client
-                }
-            }
+            var playerAction = this.WaitForPlayerAction();
+            this.turnTimer.Reset();
+            this.ProcessPlayerAction(playerAction);
         }
 
         private string GetErrorCode(HashSet<Type> expectedActions)
@@ -353,6 +337,16 @@ namespace Jabberwocky.SoC.Library
             });
         }
 
+        private void ProcessPlaceSetupInfrastructureAction(PlaceSetupInfrastructureAction placeSetupInfrastructureAction)
+        {
+            var player = this.playersById[placeSetupInfrastructureAction.InitiatingPlayerId];
+            this.actionManager.SetExpectedActionsForPlayer(player.Id, null);
+            var settlementLocation = placeSetupInfrastructureAction.SettlementLocation;
+            var roadEndLocation = placeSetupInfrastructureAction.RoadEndLocation;
+            this.PlaceInfrastructure(player, settlementLocation, roadEndLocation);
+            this.RaiseEvent(new InfrastructurePlacedEvent(player.Id, settlementLocation, roadEndLocation));
+        }
+
         private bool ProcessPlayerAction(PlayerAction playerAction)
         {
             if (playerAction is AcceptDirectTradeAction acceptDirectTradeAction)
@@ -375,8 +369,13 @@ namespace Jabberwocky.SoC.Library
 
             if (playerAction is MakeDirectTradeOfferAction makeDirectTradeOfferAction)
             {
-                
                 this.ProcessMakeDirectTradeOfferAction(makeDirectTradeOfferAction);
+                return false;
+            }
+
+            if (playerAction is PlaceSetupInfrastructureAction placeSetupInfrastructureAction)
+            {
+                this.ProcessPlaceSetupInfrastructureAction(placeSetupInfrastructureAction);
                 return false;
             }
 
@@ -387,11 +386,7 @@ namespace Jabberwocky.SoC.Library
 
             if (playerAction is RequestStateAction requestStateAction)
             {
-                var player = this.playersById[requestStateAction.InitiatingPlayerId];
-                var requestStateEvent = new RequestStateEvent(requestStateAction.InitiatingPlayerId);
-                requestStateEvent.Resources = player.Resources;
-
-                this.RaiseEvent(requestStateEvent, player);
+                this.ProcessRequestStateAction(requestStateAction);
                 return false;
             }
 
@@ -416,7 +411,15 @@ namespace Jabberwocky.SoC.Library
 
             return false;
         }
-    
+
+        private void ProcessRequestStateAction(RequestStateAction requestStateAction)
+        {
+            var player = this.playersById[requestStateAction.InitiatingPlayerId];
+            var requestStateEvent = new RequestStateEvent(player.Id);
+            requestStateEvent.Resources = player.Resources;
+            this.RaiseEvent(requestStateEvent, player);
+        }
+
         private void RaiseEvent(GameEvent gameEvent)
         {
             this.RaiseEvent(gameEvent, this.players);
