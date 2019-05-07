@@ -44,7 +44,7 @@ namespace SoC.Library.ScenarioTests
         public Guid Id { get; private set; }
         public bool IsFinished { get { return this.expectedEventIndex >= this.expectedEventActions.Count; } }
         public string Name { get; private set; }
-        public bool ContinueRunningWhenFinished { get; set; }
+        public bool FinishWhenAllEventsVerified { get; set; } = true;
         private EventActionPair CurrentEventActionPair { get { return this.expectedEventActions[this.expectedEventIndex]; } }
         private EventActionPair LastEventActionPair { get { return this.expectedEventActions[this.expectedEventActions.Count - 1]; } }
         #endregion
@@ -105,7 +105,7 @@ namespace SoC.Library.ScenarioTests
 
         public Task StartAsync()
         {
-            return Task.Factory.StartNew(o => { this.Run(); }, this, CancellationToken.None);
+            return Task.Factory.StartNew(o => { this.Run(); }, this, this.cancellationToken);
         }
 
         private void GameEventHandler(GameEvent gameEvent)
@@ -125,9 +125,7 @@ namespace SoC.Library.ScenarioTests
                     this.VerifyEvents();
                 }
 
-                this.log.Add("Finished");
-
-                if (this.ContinueRunningWhenFinished)
+                if (!this.FinishWhenAllEventsVerified)
                 {
                     this.log.Add("Continue running and receiving game events");
                     while (!this.cancellationToken.IsCancellationRequested)
@@ -144,6 +142,8 @@ namespace SoC.Library.ScenarioTests
                         }
                     }
                 }
+
+                this.log.Add("Finished");
             }
             catch (OperationCanceledException)
             {

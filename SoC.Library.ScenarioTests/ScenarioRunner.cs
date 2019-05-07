@@ -372,7 +372,7 @@ namespace SoC.Library.ScenarioTests
         public ScenarioRunner VerifyPlayer(string playerName)
         {
             this.WhenPlayer(playerName);
-            this.currentPlayerAgent.ContinueRunningWhenFinished = true;
+            this.currentPlayerAgent.FinishWhenAllEventsVerified = false;
             return this;
         }
 
