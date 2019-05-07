@@ -24,14 +24,16 @@ namespace Jabberwocky.SoC.Library
         private readonly ILog log = new Log();
         private readonly INumberGenerator numberGenerator;
         private IPlayer currentPlayer;
-        private bool isGameSetup = true;
-        private IDictionary<Guid, IPlayer> playersById;
-        private int playerIndex;
-        private IPlayer[] players;
         private uint dice1, dice2;
+        private Func<Guid> idGenerator;
+        private bool isGameSetup = true;
+        private int playerIndex;
+        private IDictionary<Guid, IPlayer> playersById;
+        private IPlayer[] players;
         private bool requestStateActionsMustHaveToken = true;
         private IGameTimer turnTimer;
-        private Func<Guid> idGenerator;
+
+        // TODO: Review this - cleaner way to do this?
         private Tuple<Guid, ResourceClutch> initialDirectTradeOffer;
         private Dictionary<Guid, ResourceClutch> answeringDirectTradeOffers = new Dictionary<Guid, ResourceClutch>();
 
