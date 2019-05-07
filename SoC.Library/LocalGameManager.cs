@@ -24,6 +24,7 @@ namespace Jabberwocky.SoC.Library
         private readonly ILog log = new Log();
         private readonly INumberGenerator numberGenerator;
         private IPlayer currentPlayer;
+        private bool isGameSetup = true;
         private IDictionary<Guid, IPlayer> playersById;
         private int playerIndex;
         private IPlayer[] players;
@@ -194,6 +195,8 @@ namespace Jabberwocky.SoC.Library
             {
                 this.GameSetupForPlayer(this.players[i]);
             }
+
+            this.isGameSetup = false;
         }
 
         private void GameSetupForPlayer(IPlayer player)
@@ -404,7 +407,7 @@ namespace Jabberwocky.SoC.Library
                 this.RaiseEvent(new GameWinEvent(this.players[0].Id, this.players[0].VictoryPoints));
                 return true;
             }
-            else
+            else if (!this.isGameSetup)
             {
                 this.StartTurn();
             }
