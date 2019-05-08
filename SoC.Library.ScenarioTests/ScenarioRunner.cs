@@ -220,7 +220,18 @@ namespace SoC.Library.ScenarioTests
             tasks.Add(gameServerTask);
             try
             {
-                Task.WaitAll(tasks.ToArray(), 20000);
+                int tickCount = 400;
+                while (tickCount-- > 0)
+                {
+                    Thread.Sleep(50);
+                    if (playerAgentTasks.Any(playerAgentTask => playerAgentTask.IsFaulted))
+                        break;
+                    if (playerAgentTasks.All(playerAgentTask => playerAgentTask.IsCompleted))
+                        break;
+                    if (gameServerTask.IsFaulted)
+                        break;
+                }
+                //Task.WaitAll(tasks.ToArray(), 20000);
             }
             catch
             {

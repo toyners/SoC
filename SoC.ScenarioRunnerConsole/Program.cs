@@ -63,8 +63,10 @@ namespace SoC.ScenarioRunnerConsole
                             if (!serverTimerOn)
                                 methodArgs.Add("-NoTimer");
 
+                            var start = DateTime.Now;
                             method.Invoke(instance, new object[] { methodArgs.ToArray() });
-                            Console.WriteLine("Completed");
+                            var duration = (DateTime.Now - start).TotalMilliseconds / 1000.0;
+                            Console.WriteLine("Completed - " + duration.ToString("#0.00") + "s");
                         }
                         catch (Exception e)
                         {
