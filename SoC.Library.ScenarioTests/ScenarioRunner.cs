@@ -220,7 +220,7 @@ namespace SoC.Library.ScenarioTests
             tasks.Add(gameServerTask);
             try
             {
-                int tickCount = 400;
+                int tickCount = 200;
                 while (tickCount-- > 0)
                 {
                     Thread.Sleep(50);
@@ -231,7 +231,6 @@ namespace SoC.Library.ScenarioTests
                     if (gameServerTask.IsFaulted)
                         break;
                 }
-                //Task.WaitAll(tasks.ToArray(), 20000);
             }
             catch
             {

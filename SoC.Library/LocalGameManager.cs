@@ -222,6 +222,12 @@ namespace Jabberwocky.SoC.Library
                 {
                     return "301";
                 }
+
+                if (expectedActions.Contains(typeof(ConfirmGameStartAction)) &&
+                    expectedActions.Contains(typeof(QuitGameAction)))
+                {
+                    return "302";
+                }
             }
 
             throw new NotImplementedException("Cannot get error code");
@@ -235,6 +241,12 @@ namespace Jabberwocky.SoC.Library
                     expectedActions.Contains(typeof(QuitGameAction)))
                 {
                     return "Invalid action: Expected PlaceSetupInfrastructureAction or QuitGameAction";
+                }
+
+                if (expectedActions.Contains(typeof(ConfirmGameStartAction)) &&
+                    expectedActions.Contains(typeof(QuitGameAction)))
+                {
+                    return "Invalid action: Expected ConfirmGameStartAction or QuitGameAction";
                 }
             }
 
