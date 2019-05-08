@@ -123,7 +123,7 @@ namespace SoC.Library.ScenarioTests
         }
 
         [Scenario]
-        public void Scenario_PlayerQuitsDuringGameSetup(string[] args)
+        public void Scenario_PlayerQuitsDuringFirstRoundOfGameSetup(string[] args)
         {
             var expectedGameBoardSetup = new GameBoardSetup(new GameBoard(BoardSizes.Standard));
             var playerOrder = new[] { Adam, Babara, Charlie, Dana };
@@ -138,6 +138,28 @@ namespace SoC.Library.ScenarioTests
                     .ReceivesPlayerQuitEvent(Adam).ThenDoNothing()
                 .WhenPlayer(Dana)
                     .ReceivesPlayerQuitEvent(Adam).ThenDoNothing()
+                .Run();
+        }
+
+        [Scenario]
+        public void Scenario_PlayerQuitsDuringSecondRoundOfGameSetup(string[] args)
+        {
+            var expectedGameBoardSetup = new GameBoardSetup(new GameBoard(BoardSizes.Standard));
+            var playerOrder = new[] { Adam, Babara, Charlie, Dana };
+            ScenarioRunner.CreateScenarioRunner(args)
+                .WithPlayer(Adam).WithPlayer(Babara).WithPlayer(Charlie).WithPlayer(Dana)
+                .WithTurnOrder(playerOrder)
+                .WhenPlayer(Adam)
+                    .ReceivesPlaceInfrastructureSetupEvent().ThenPlaceStartingInfrastructure(Adam_FirstSettlementLocation, Adam_FirstRoadEndLocation)
+                    .ReceivesPlaceInfrastructureSetupEvent().ThenQuitGame()
+                .WhenPlayer(Babara)
+                    .ReceivesPlayerQuitEvent(Adam).ThenDoNothing()
+                .WhenPlayer(Charlie)
+                    .ReceivesPlayerQuitEvent(Adam).ThenDoNothing()
+                .WhenPlayer(Dana)
+                    .ReceivesPlayerQuitEvent(Adam).ThenDoNothing()
+                .VerifyPlayer(Adam)
+                    .DidNotReceiveAnyEventsAfter<PlaceSetupInfrastructureEvent>()
                 .Run();
         }
 
