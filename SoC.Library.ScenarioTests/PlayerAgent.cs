@@ -61,9 +61,9 @@ namespace SoC.Library.ScenarioTests
             this.didNotReceiveEvents.Add(gameEventToken);
         }
 
-        public void AddDidNotReceiveEventsAfterEventOfType(int lastEventCount)
+        public void AddDidNotReceiveEventsAfterEventOfType<T>(int lastEventCount = 1)
         {
-            throw new NotImplementedException();
+            this.expectedEventCountByTypes.Add(typeof(T), lastEventCount);
         }
 
         public void AddDidNotReceiveEventType(Type gameEventType)
@@ -319,16 +319,33 @@ namespace SoC.Library.ScenarioTests
                 if (actualEvent is PlayerSetupEvent playerSetupEvent)
                     this.playerIdsByName = playerSetupEvent.PlayerIdsByName;
 
-                if (this.didNotReceiveTypes.Contains(actualEvent.GetType()))
-                    throw new Exception($"Received event of type {actualEvent.GetType()} but should not have");
-                else if (this.didNotReceiveEvents.FirstOrDefault(d => JToken.DeepEquals(d, JToken.Parse(actualEvent.ToJSONString()))) != null)
-                    throw new Exception($"Received event {actualEvent.GetType()} but should not have");
-                else
-                    this.log.Add($"Received {actualEvent.GetType().Name}");
+                this.Verify(actualEvent);
+
+                this.log.Add($"Received {actualEvent.GetType().Name}");
 
                 this.actualEvents.Add(actualEvent);
                 break;
             }
+        }
+
+        Dictionary<Type, int> eventCountByTypes = new Dictionary<Type, int>();
+        Dictionary<Type, int> expectedEventCountByTypes = new Dictionary<Type, int>();
+        private void Verify(GameEvent actualEvent)
+        {
+            var actualEventType = actualEvent.GetType();
+            if (this.didNotReceiveTypes.Contains(actualEventType))
+                throw new Exception($"Received event of type {actualEvent.GetType()} but should not have");
+            if (this.didNotReceiveEvents.FirstOrDefault(d => JToken.DeepEquals(d, JToken.Parse(actualEvent.ToJSONString()))) != null)
+                throw new Exception($"Received event {actualEvent.GetType()} but should not have");
+
+            if (!this.eventCountByTypes.ContainsKey(actualEventType))
+            {
+                this.eventCountByTypes[actualEventType]++;
+                if (this.eventCountByTypes[actualEventType] > this.expectedEventCountByTypes[actualEventType])
+                    throw new Exception($"Received {this.eventCountByTypes[actualEventType]} events of type {actualEventType}. " +
+                        $"Expected {this.expectedEventCountByTypes[actualEventType]}");
+            }
+
         }
         #endregion
 
