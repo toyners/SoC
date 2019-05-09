@@ -18,6 +18,8 @@ namespace SoC.Library.ScenarioTests
         private readonly List<GameEvent> actualEvents = new List<GameEvent>();
         private readonly ConcurrentQueue<GameEvent> actualEventQueue = new ConcurrentQueue<GameEvent>();
         private readonly CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
+        private readonly List<JToken> didNotReceiveEvents = new List<JToken>();
+        private readonly HashSet<Type> didNotReceiveTypes = new HashSet<Type>();
         private readonly List<EventActionPair> expectedEventActions = new List<EventActionPair>();
         private readonly HashSet<GameEvent> expectedEventsWithVerboseLogging = new HashSet<GameEvent>();
         private readonly GameController gameController;
@@ -46,10 +48,29 @@ namespace SoC.Library.ScenarioTests
         public string Name { get; private set; }
         public bool FinishWhenAllEventsVerified { get; set; } = true;
         private EventActionPair CurrentEventActionPair { get { return this.expectedEventActions[this.expectedEventIndex]; } }
+
+        
+
         private EventActionPair LastEventActionPair { get { return this.expectedEventActions[this.expectedEventActions.Count - 1]; } }
         #endregion
 
         #region Methods
+        public void AddDidNotReceiveEvent(GameEvent gameEvent)
+        {
+            var gameEventToken = JToken.Parse(gameEvent.ToJSONString());
+            this.didNotReceiveEvents.Add(gameEventToken);
+        }
+
+        public void AddDidNotReceiveEventsAfterEventOfType(int lastEventCount)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void AddDidNotReceiveEventType(Type gameEventType)
+        {
+            this.didNotReceiveTypes.Add(gameEventType);
+        }
+
         public void AddInstruction(Instruction instruction)
         {
             if (instruction is EventInstruction eventInstruction)
@@ -337,19 +358,6 @@ namespace SoC.Library.ScenarioTests
 
                 return this.ExpectedEvent.SimpleTypeName;
             }
-        }
-
-        private readonly HashSet<Type> didNotReceiveTypes = new HashSet<Type>();
-        public void AddDidNotReceiveEventType(Type gameEventType)
-        {
-            this.didNotReceiveTypes.Add(gameEventType);
-        }
-
-        private readonly List<JToken> didNotReceiveEvents = new List<JToken>();
-        public void AddDidNotReceiveEvent(GameEvent gameEvent)
-        {
-            var gameEventToken = JToken.Parse(gameEvent.ToJSONString());
-            this.didNotReceiveEvents.Add(gameEventToken);
         }
         #endregion
     }

@@ -51,7 +51,7 @@ namespace SoC.Library.ScenarioTests
 
         public ScenarioRunner DidNotReceiveAnyEventsAfter<T>(int lastEventCount = 1)
         {
-            //this.currentPlayerAgent.AddDidNotReceiveEventsAfterEventOfType(lastEventCount);
+            this.currentPlayerAgent.AddDidNotReceiveEventsAfterEventOfType(lastEventCount);
             return this;
         }
 
