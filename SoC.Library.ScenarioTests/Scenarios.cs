@@ -153,19 +153,19 @@ namespace SoC.Library.ScenarioTests
                     .ReceivesPlaceInfrastructureSetupEvent().ThenPlaceStartingInfrastructure(Adam_FirstSettlementLocation, Adam_FirstRoadEndLocation)
                     .ReceivesPlaceInfrastructureSetupEvent().ThenQuitGame()
                 .WhenPlayer(Babara)
-                    .ReceivesPlayerQuitEvent(Adam).ThenDoNothing()
                     .ReceivesPlaceInfrastructureSetupEvent().ThenPlaceStartingInfrastructure(Babara_FirstSettlementLocation, Babara_FirstRoadEndLocation)
                     .ReceivesPlaceInfrastructureSetupEvent().ThenPlaceStartingInfrastructure(Babara_SecondSettlementLocation, Babara_SecondRoadEndLocation)
-                .WhenPlayer(Charlie)
                     .ReceivesPlayerQuitEvent(Adam).ThenDoNothing()
+                .WhenPlayer(Charlie)
                     .ReceivesPlaceInfrastructureSetupEvent().ThenPlaceStartingInfrastructure(Charlie_FirstSettlementLocation, Charlie_FirstRoadEndLocation)
                     .ReceivesPlaceInfrastructureSetupEvent().ThenPlaceStartingInfrastructure(Charlie_SecondSettlementLocation, Charlie_SecondRoadEndLocation)
-                .WhenPlayer(Dana)
                     .ReceivesPlayerQuitEvent(Adam).ThenDoNothing()
+                .WhenPlayer(Dana)
                     .ReceivesPlaceInfrastructureSetupEvent().ThenPlaceStartingInfrastructure(Dana_FirstSettlementLocation, Dana_FirstRoadEndLocation)
                     .ReceivesPlaceInfrastructureSetupEvent().ThenPlaceStartingInfrastructure(Dana_SecondSettlementLocation, Dana_SecondRoadEndLocation)
+                    .ReceivesPlayerQuitEvent(Adam).ThenDoNothing()
                 .VerifyPlayer(Adam)
-                    .DidNotReceiveEventsAfterCount<PlaceSetupInfrastructureEvent>(1)
+                    .DidNotReceiveEvent<ConfirmGameStartEvent>()
                 .Run();
         }
 
