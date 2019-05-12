@@ -38,8 +38,9 @@ namespace SoC.ScenarioRunnerConsole
                     serverTimerOn = !serverTimerOn;
                     continue;
                 }
-                
-                methodNumber = int.Parse(key);
+
+                if (!int.TryParse(key, out methodNumber))
+                    continue;
                 Console.WriteLine();
 
                 var task = Task.Factory.StartNew(() =>

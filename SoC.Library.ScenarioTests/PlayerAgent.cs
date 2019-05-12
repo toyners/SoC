@@ -19,7 +19,9 @@ namespace SoC.Library.ScenarioTests
         private readonly ConcurrentQueue<GameEvent> actualEventQueue = new ConcurrentQueue<GameEvent>();
         private readonly CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
         private readonly List<JToken> didNotReceiveEvents = new List<JToken>();
-        private readonly HashSet<Type> didNotReceiveTypes = new HashSet<Type>();
+        private readonly Dictionary<Type, int> maximumEventTypeCountsByEventType = new Dictionary<Type, int>();
+        private readonly Dictionary<Type, int> eventTypeCountsByEventType = new Dictionary<Type, int>();
+
         private readonly List<EventActionPair> expectedEventActions = new List<EventActionPair>();
         private readonly HashSet<GameEvent> expectedEventsWithVerboseLogging = new HashSet<GameEvent>();
         private readonly GameController gameController;
@@ -48,9 +50,6 @@ namespace SoC.Library.ScenarioTests
         public string Name { get; private set; }
         public bool FinishWhenAllEventsVerified { get; set; } = true;
         private EventActionPair CurrentEventActionPair { get { return this.expectedEventActions[this.expectedEventIndex]; } }
-
-        
-
         private EventActionPair LastEventActionPair { get { return this.expectedEventActions[this.expectedEventActions.Count - 1]; } }
         #endregion
 
@@ -61,14 +60,15 @@ namespace SoC.Library.ScenarioTests
             this.didNotReceiveEvents.Add(gameEventToken);
         }
 
-        public void AddDidNotReceiveEventsAfterEventOfType(int lastEventCount)
+        public void AddDidNotReceiveEventType<T>()
         {
-            throw new NotImplementedException();
+            this.AddDidNotReceiveEventType<T>(1);
         }
 
-        public void AddDidNotReceiveEventType(Type gameEventType)
+        public void AddDidNotReceiveEventType<T>(int eventCount)
         {
-            this.didNotReceiveTypes.Add(gameEventType);
+            this.maximumEventTypeCountsByEventType.Add(typeof(T), eventCount);
+            this.eventTypeCountsByEventType.Add(typeof(T), 0);
         }
 
         public void AddInstruction(Instruction instruction)
@@ -87,6 +87,8 @@ namespace SoC.Library.ScenarioTests
                 this.expectedEventActions.Add(new EventActionPair(playerStateInstruction.GetEvent()));
             }
         }
+
+        
 
         public List<Tuple<GameEvent, ActionInstruction, bool>> GetEventResults()
         {
@@ -154,12 +156,8 @@ namespace SoC.Library.ScenarioTests
                         Thread.Sleep(50);
                         if (this.actualEventQueue.TryDequeue(out var actualEvent))
                         {
-                            if (this.didNotReceiveTypes.Contains(actualEvent.GetType()))
-                                throw new Exception($"Received event of type {actualEvent.GetType()} but should not have");
-                            else if (this.didNotReceiveEvents.FirstOrDefault(d => JToken.DeepEquals(d, JToken.Parse(actualEvent.ToJSONString()))) != null)
-                                throw new Exception($"Received event {actualEvent.GetType()} but should not have");
-                            else
-                                this.log.Add($"Received {actualEvent.GetType().Name}");
+                            this.VerifyActualEvent(actualEvent);
+                            this.log.Add($"Received {actualEvent.GetType().Name}");
                         }
                     }
                 }
@@ -319,16 +317,37 @@ namespace SoC.Library.ScenarioTests
                 if (actualEvent is PlayerSetupEvent playerSetupEvent)
                     this.playerIdsByName = playerSetupEvent.PlayerIdsByName;
 
-                if (this.didNotReceiveTypes.Contains(actualEvent.GetType()))
-                    throw new Exception($"Received event of type {actualEvent.GetType()} but should not have");
-                else if (this.didNotReceiveEvents.FirstOrDefault(d => JToken.DeepEquals(d, JToken.Parse(actualEvent.ToJSONString()))) != null)
-                    throw new Exception($"Received event {actualEvent.GetType()} but should not have");
-                else
-                    this.log.Add($"Received {actualEvent.GetType().Name}");
+                this.VerifyActualEvent(actualEvent);
+                
+                this.log.Add($"Received {actualEvent.GetType().Name}");
 
                 this.actualEvents.Add(actualEvent);
                 break;
             }
+        }
+
+        private void VerifyActualEvent(GameEvent actualEvent)
+        {
+            var actualEventType = actualEvent.GetType();
+            if (this.maximumEventTypeCountsByEventType.ContainsKey(actualEventType))
+            {
+                this.eventTypeCountsByEventType[actualEventType]++;
+                if (this.eventTypeCountsByEventType[actualEventType] > 
+                    this.maximumEventTypeCountsByEventType[actualEventType])
+                {
+                    if (this.maximumEventTypeCountsByEventType[actualEventType] > 0)
+                    {
+                        throw new Exception($"Received {this.eventTypeCountsByEventType[actualEventType]} event(s)" +
+                            $" of type {actualEvent.GetType()} but should have received only " +
+                            $"{this.maximumEventTypeCountsByEventType[actualEventType]}");
+                    }
+
+                    throw new Exception($"Received event of type {actualEvent.GetType()} but should not have");
+                }
+            }
+
+            if (this.didNotReceiveEvents.FirstOrDefault(d => JToken.DeepEquals(d, JToken.Parse(actualEvent.ToJSONString()))) != null)
+                throw new Exception($"Received event {actualEvent.GetType()} but should not have");
         }
         #endregion
 

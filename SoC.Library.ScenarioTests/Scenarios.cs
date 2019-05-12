@@ -159,7 +159,7 @@ namespace SoC.Library.ScenarioTests
                 .WhenPlayer(Dana)
                     .ReceivesPlayerQuitEvent(Adam).ThenDoNothing()
                 .VerifyPlayer(Adam)
-                    .DidNotReceiveAnyEventsAfter<PlaceSetupInfrastructureEvent>()
+                    .DidNotReceiveAnyEventsAfterCount<PlaceSetupInfrastructureEvent>()
                 .Run();
         }
 
