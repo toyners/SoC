@@ -306,7 +306,7 @@ namespace SoC.Harness.ViewModels
             }
         }
 
-        private void RoadSegmentBuiltEventHandler(RoadSegmentBuiltEvent roadSegmentBuiltEvent)
+        private void RoadSegmentBuiltEventHandler(RoadSegmentPlacedEvent roadSegmentBuiltEvent)
         {
             throw new NotImplementedException();
         }

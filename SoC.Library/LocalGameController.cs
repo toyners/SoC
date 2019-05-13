@@ -124,7 +124,7 @@ namespace Jabberwocky.SoC.Library
         public Action<ResourceUpdateEvent> ResourcesLostEvent { get; set; }
         public Action<ResourcesCollectedEvent> ResourcesCollectedEvent { get; set; }
         public Action<ResourceTransactionList> ResourcesTransferredEvent { get; set; }
-        public Action<RoadSegmentBuiltEvent> RoadSegmentBuiltEvent { get; set; }
+        public Action<RoadSegmentPlacedEvent> RoadSegmentBuiltEvent { get; set; }
         public Action<int> RobberEvent { get; set; }
         public Action<Dictionary<Guid, int>> RobbingChoicesEvent { get; set; }
         public Action<SettlementBuiltEvent> SettlementBuiltEvent { get; set; }
@@ -158,7 +158,7 @@ namespace Jabberwocky.SoC.Library
 
             this.BuildRoadSegment(roadStartLocation, roadEndLocation);
             var playerData = this.CreateSinglePlayerData(this.mainPlayer);
-            this.RoadSegmentBuiltEvent?.Invoke(new RoadSegmentBuiltEvent(this.mainPlayer.Id, roadStartLocation, roadEndLocation));
+            this.RoadSegmentBuiltEvent?.Invoke(new RoadSegmentPlacedEvent(this.mainPlayer.Id, roadStartLocation, roadEndLocation));
 
             Guid previousPlayerWithLongestRoadId;
             if (this.PlayerHasJustBuiltTheLongestRoad(out previousPlayerWithLongestRoadId))

@@ -35,7 +35,7 @@ namespace Jabberwocky.SoC.Library.ScenarioTests.Builders
 
         public ExpectedEventsBuilder BuildRoadEvent(uint roadSegmentStart, uint roadSegmentEnd)
         {
-            this.expectedEvents.Add(new RoadSegmentBuiltEvent(this.playerTurn.PlayerId, roadSegmentStart, roadSegmentEnd));
+            this.expectedEvents.Add(new RoadSegmentPlacedEvent(this.playerTurn.PlayerId, roadSegmentStart, roadSegmentEnd));
             return this;
         }
 

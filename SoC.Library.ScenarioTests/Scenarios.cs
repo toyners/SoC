@@ -350,6 +350,19 @@ namespace SoC.Library.ScenarioTests
         }
 
         [Scenario]
+        public void Scenario_PlayerPlacesRoad(string[] args)
+        {
+            this.CompletePlayerInfrastructureSetup(args)
+                .WithNoResourceCollection()
+                .WithStartingResourcesForPlayer(Adam, ResourceClutch.RoadSegment)
+                .WhenPlayer(Adam)
+                    .ReceivesDiceRollEvent(3, 3)
+                    .ThenPlaceRoadSegment(4, 3)
+                .VerifyAllPlayersReceiveRoadSegmentPlacedEvent(Adam, 4, 3)
+                .Run();
+        }
+
+        [Scenario]
         public void Scenario_AllOtherPlayersQuit(string[] args)
         {
             this.CompletePlayerInfrastructureSetup(args)

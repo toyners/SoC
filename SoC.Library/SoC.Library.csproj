@@ -65,6 +65,7 @@
     <Compile Include="GameEvents\GameJoinedEvent.cs" />
     <Compile Include="GameEvents\PlayerOrderEvent.cs" />
     <Compile Include="GameEvents\PlayerQuitEvent.cs" />
+    <Compile Include="GameEvents\RoadSegmentPlacedEvent.cs" />
     <Compile Include="GameToken.cs" />
     <Compile Include="ILog.cs" />
     <Compile Include="Log.cs" />
@@ -135,7 +136,6 @@
     <Compile Include="GameEvents\LargestArmyChangedEvent.cs" />
     <Compile Include="GameEvents\GameEvent.cs" />
     <Compile Include="GameEvents\ResourceTransactionEvent.cs" />
-    <Compile Include="GameEvents\RoadSegmentBuiltEvent.cs" />
     <Compile Include="GameEvents\SettlementBuiltEvent.cs" />
     <Compile Include="GameEvents\TradeWithBankEvent.cs" />
     <Compile Include="Interfaces\IDevelopmentCardHolder.cs" />

@@ -349,6 +349,13 @@ namespace SoC.Library.ScenarioTests
             return this;
         }
 
+        public ScenarioRunner ThenPlaceRoadSegment(uint startLocation, uint endLocation)
+        {
+            this.AddActionInstruction(ActionInstruction.OperationTypes.PlaceRoadSegment,
+                new object[] { startLocation, endLocation });
+            return this;
+        }
+
         public ScenarioRunner ThenPlaceStartingInfrastructure(uint settlementLocation, uint roadEndLocation)
         {
             this.AddActionInstruction(ActionInstruction.OperationTypes.PlaceStartingInfrastructure,
@@ -379,6 +386,17 @@ namespace SoC.Library.ScenarioTests
             this.playerAgents.ForEach(playerAgent =>
             {
                 var gameEvent = new InfrastructurePlacedEvent(this.GetPlayerId(playerName), settlementLocation, roadEndLocation);
+                playerAgent.AddInstruction(new EventInstruction(playerAgent.Name, gameEvent));
+            });
+
+            return this;
+        }
+
+        public ScenarioRunner VerifyAllPlayersReceiveRoadSegmentPlacedEvent(string playerName, uint startLocation, uint endLocation)
+        {
+            this.playerAgents.ForEach(playerAgent =>
+            {
+                var gameEvent = new RoadSegmentPlacedEvent(this.GetPlayerId(playerName), startLocation, endLocation);
                 playerAgent.AddInstruction(new EventInstruction(playerAgent.Name, gameEvent));
             });
 
@@ -460,6 +478,8 @@ namespace SoC.Library.ScenarioTests
 
             return this.playerAgentsByName[playerName].Id;
         }
+
+        
         #endregion
     }
 }

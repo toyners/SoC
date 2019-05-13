@@ -528,7 +528,7 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
                     message += $"\r\nReceiving player '{receivingPlayer.Name}', Giving player '{givingPlayer.Name}', Resources {resourceTransaction.Resources}";
                 }
             }
-            else if (gameEvent is RoadSegmentBuiltEvent roadSegmentBuildEvent)
+            else if (gameEvent is RoadSegmentPlacedEvent roadSegmentBuildEvent)
             {
                 message += $"From {roadSegmentBuildEvent.StartLocation} to {roadSegmentBuildEvent.EndLocation}";
             }

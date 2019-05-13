@@ -216,7 +216,7 @@ namespace SoC.Library.ScenarioTests
             {
                 this.currentTurn?.AddEvent(new ResourceTransactionEvent(this.players[0].Id, list));
             };
-            this.localGameController.RoadSegmentBuiltEvent = (RoadSegmentBuiltEvent r) => this.currentTurn?.AddEvent(r);
+            this.localGameController.RoadSegmentBuiltEvent = (RoadSegmentPlacedEvent r) => this.currentTurn?.AddEvent(r);
             this.localGameController.RobberEvent = (int r) =>
             {
                 this.currentTurn.AddEvent(new ScenarioRobberEvent(r));

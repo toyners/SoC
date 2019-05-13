@@ -635,11 +635,11 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
 
             // Assert
             var expectedEvents = new GameEvent[] {
-                new RoadSegmentBuiltEvent(firstOpponent.Id, 17, 16),
-                new RoadSegmentBuiltEvent(firstOpponent.Id, 16, 27),
-                new RoadSegmentBuiltEvent(firstOpponent.Id, 27, 28),
-                new RoadSegmentBuiltEvent(firstOpponent.Id, 28, 29),
-                new RoadSegmentBuiltEvent(firstOpponent.Id, 29, 18),
+                new RoadSegmentPlacedEvent(firstOpponent.Id, 17, 16),
+                new RoadSegmentPlacedEvent(firstOpponent.Id, 16, 27),
+                new RoadSegmentPlacedEvent(firstOpponent.Id, 27, 28),
+                new RoadSegmentPlacedEvent(firstOpponent.Id, 28, 29),
+                new RoadSegmentPlacedEvent(firstOpponent.Id, 29, 18),
                 new LongestRoadBuiltEvent(firstOpponent.Id, player.Id)
             };
 
