@@ -22,8 +22,7 @@ namespace SoC.Library.ScenarioTests.Instructions
         public readonly OperationTypes Operation;
         public readonly object[] Parameters;
 
-        public ActionInstruction(string playerName, OperationTypes operaton, object[] parameters)
-            : base(playerName)
+        public ActionInstruction(OperationTypes operaton, object[] parameters)
         {
             this.Operation = operaton;
             this.Parameters = parameters;

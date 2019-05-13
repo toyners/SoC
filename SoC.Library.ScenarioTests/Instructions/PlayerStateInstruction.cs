@@ -10,7 +10,7 @@ namespace SoC.Library.ScenarioTests.Instructions
         private ResourceClutch? expectedResources;
         private PlayerAgent playerAgent;
 
-        public PlayerStateInstruction(PlayerAgent playerAgent, ScenarioRunner runner) : base(playerAgent.Name)
+        public PlayerStateInstruction(PlayerAgent playerAgent, ScenarioRunner runner)
         {
             this.runner = runner;
             this.playerAgent = playerAgent;
@@ -40,7 +40,7 @@ namespace SoC.Library.ScenarioTests.Instructions
 
         public ActionInstruction GetAction()
         {
-            return new ActionInstruction(this.PlayerName, ActionInstruction.OperationTypes.RequestState, null);
+            return new ActionInstruction(ActionInstruction.OperationTypes.RequestState, null);
         }
 
         public GameEvent GetEvent()
