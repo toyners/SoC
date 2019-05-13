@@ -49,7 +49,7 @@ namespace SoC.Library.ScenarioTests
             return new ScenarioRunner(args);
         }
 
-        public ScenarioRunner DidNotReceiveEventsAfterCount<T>(int eventCount = 0)
+        public ScenarioRunner DidNotReceiveEventsAfterCount<T>(int eventCount = 0) where T : GameEvent
         {
             this.currentPlayerAgent.AddDidNotReceiveEventType<T>(eventCount);
             return this;

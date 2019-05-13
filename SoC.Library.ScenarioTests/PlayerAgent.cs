@@ -60,12 +60,12 @@ namespace SoC.Library.ScenarioTests
             this.didNotReceiveEvents.Add(gameEventToken);
         }
 
-        public void AddDidNotReceiveEventType<T>()
+        public void AddDidNotReceiveEventType<T>() where T : GameEvent
         {
             this.AddDidNotReceiveEventType<T>(1);
         }
 
-        public void AddDidNotReceiveEventType<T>(int eventCount)
+        public void AddDidNotReceiveEventType<T>(int eventCount) where T : GameEvent
         {
             this.maximumEventTypeCountsByEventType.Add(typeof(T), eventCount);
             this.eventTypeCountsByEventType.Add(typeof(T), 0);
