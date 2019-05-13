@@ -65,7 +65,6 @@
     <Compile Include="ComputerPlayer2.cs" />
     <Compile Include="Instructions\InfrastructurePlacedEventInstruction.cs" />
     <Compile Include="Instructions\Instruction.cs" />
-    <Compile Include="Instructions\LabelInstruction.cs" />
     <Compile Include="Instructions\MakeDirectTradeOfferEventInstruction.cs" />
     <Compile Include="Instructions\PlayerStateInstruction.cs" />
     <Compile Include="Instructions\TradeWithPlayerCompletedEventInstruction.cs" />
