@@ -224,7 +224,7 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
 
         public LocalGameControllerScenarioRunner EndTurn()
         {
-            var instruction = new ActionInstruction(this.PlayerName, ActionInstruction.OperationTypes.EndOfTurn, null);
+            var instruction = new ActionInstruction(ActionInstruction.OperationTypes.EndOfTurn, null);
             this.instructions.Enqueue(instruction);
             return this.runner;
         }
@@ -687,7 +687,7 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
 
         public GameTurn MakeDirectTradeOffer(ResourceClutch wantedResources)
         {
-            var instruction = new ActionInstruction(this.PlayerName, 
+            var instruction = new ActionInstruction(
                 ActionInstruction.OperationTypes.MakeDirectTradeOffer,
                 new object[] { wantedResources });
             this.instructions.Enqueue(instruction);
@@ -713,15 +713,15 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
 
         public GameTurn MakeDirectTradeOfferEvent(string playerName, string buyingPlayerName, ResourceClutch resources)
         {
-            var instruction = new MakeDirectTradeOfferEventInstruction(playerName, null);
-            this.instructions.Enqueue(instruction);
+            /*var instruction = new MakeDirectTradeOfferEventInstruction(playerName, null);
+            this.instructions.Enqueue(instruction);*/
 
             return this;
         }
 
         public GameTurn AnswerDirectTradeOffer(string playerName, ResourceClutch resources)
         {
-            this.instructions.Enqueue(new ActionInstruction(playerName, 
+            this.instructions.Enqueue(new ActionInstruction(
                 ActionInstruction.OperationTypes.AnswerDirectTradeOffer,
                 new object[] { resources }));
 

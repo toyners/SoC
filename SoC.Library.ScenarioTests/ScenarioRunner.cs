@@ -95,7 +95,7 @@ namespace SoC.Library.ScenarioTests
         {
             this.numberGenerator.AddTwoDiceRoll(dice1, dice2);
             var gameEvent = new DiceRollEvent(this.GetPlayerId(this.currentPlayerAgent.Name), dice1, dice2);
-            var eventInstruction = new EventInstruction(this.currentPlayerAgent.Name, gameEvent);
+            var eventInstruction = new EventInstruction(gameEvent);
             this.currentPlayerAgent.AddInstruction(eventInstruction);
             return this;
         }
@@ -119,7 +119,7 @@ namespace SoC.Library.ScenarioTests
         public ScenarioRunner ReceivesInitialBoardSetupEvent(GameBoardSetup gameBoardSetup)
         {
             var gameEvent = new InitialBoardSetupEvent(gameBoardSetup);
-            var eventInstruction = new EventInstruction(this.currentPlayerAgent.Name, gameEvent);
+            var eventInstruction = new EventInstruction(gameEvent);
             this.currentPlayerAgent.AddInstruction(eventInstruction);
             return this;
         }
@@ -135,7 +135,7 @@ namespace SoC.Library.ScenarioTests
         public ScenarioRunner ReceivesPlaceInfrastructureSetupEvent()
         {
             var gameEvent = new PlaceSetupInfrastructureEvent();
-            var eventInstruction = new EventInstruction(this.currentPlayerAgent.Name, gameEvent);
+            var eventInstruction = new EventInstruction(gameEvent);
             this.currentPlayerAgent.AddInstruction(eventInstruction);
             return this;
         }
@@ -170,7 +170,7 @@ namespace SoC.Library.ScenarioTests
         {
             var playerIdsByName = this.playerAgents.ToDictionary(playerAgent => playerAgent.Name, playerAgent => playerAgent.Id);
             var gameEvent = new PlayerSetupEvent(playerIdsByName);
-            var eventInstruction = new EventInstruction(this.currentPlayerAgent.Name, gameEvent);
+            var eventInstruction = new EventInstruction(gameEvent);
             this.currentPlayerAgent.AddInstruction(eventInstruction);
             return this;
         }
@@ -386,7 +386,7 @@ namespace SoC.Library.ScenarioTests
             this.playerAgents.ForEach(playerAgent =>
             {
                 var gameEvent = new InfrastructurePlacedEvent(this.GetPlayerId(playerName), settlementLocation, roadEndLocation);
-                playerAgent.AddInstruction(new EventInstruction(playerAgent.Name, gameEvent));
+                playerAgent.AddInstruction(new EventInstruction(gameEvent));
             });
 
             return this;
@@ -397,7 +397,7 @@ namespace SoC.Library.ScenarioTests
             this.playerAgents.ForEach(playerAgent =>
             {
                 var gameEvent = new RoadSegmentPlacedEvent(this.GetPlayerId(playerName), startLocation, endLocation);
-                playerAgent.AddInstruction(new EventInstruction(playerAgent.Name, gameEvent));
+                playerAgent.AddInstruction(new EventInstruction(gameEvent));
             });
 
             return this;
@@ -465,10 +465,7 @@ namespace SoC.Library.ScenarioTests
 
         private ActionInstruction CreateActionInstruction(ActionInstruction.OperationTypes operation, object[] arguments)
         {
-            return new ActionInstruction(
-                null,
-                operation,
-                arguments);
+            return new ActionInstruction(operation, arguments);
         }
 
         private Guid GetPlayerId(string playerName)

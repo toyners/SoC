@@ -68,7 +68,7 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
 
         private void PlaceStartingInfrastructure(uint settlementLocation, uint roadEndLocation)
         {
-            var instruction = new ActionInstruction(this.PlayerName,
+            var instruction = new ActionInstruction(
                 ActionInstruction.OperationTypes.PlaceStartingInfrastructure,
                 new object[] { settlementLocation, roadEndLocation });
             this.instructions.Enqueue(instruction);

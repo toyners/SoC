@@ -91,7 +91,8 @@ namespace SoC.Library.ScenarioTests
             if (playerTurn == null || !playerTurn.HasInstructions)
                 return;
 
-            var instructions = playerTurn.Instructions.Where(i => i.PlayerName == this.Name).ToList();
+            //var instructions = playerTurn.Instructions.Where(i => i.PlayerName == this.Name).ToList();
+            var instructions = new List<object>();
             if (instructions.Count == 0)
                 return;
 
@@ -100,7 +101,7 @@ namespace SoC.Library.ScenarioTests
                 RoundLabel = roundLabel,
                 TurnLabel = turnLabel
             };
-            turn.Instructions = new List<Instruction>(instructions);
+            //turn.Instructions = new List<Instruction>(instructions);
             this.turns.Add(turn);
         }
 
