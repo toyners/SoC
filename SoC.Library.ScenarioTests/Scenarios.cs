@@ -34,6 +34,109 @@ namespace SoC.Library.ScenarioTests
         const uint Adam_SecondRoadEndLocation = 39;
 
         [Scenario]
+        public void AllPlayersCollectResourcesAsPartOfGameSetup(string[] args)
+        {
+            throw new NotImplementedException();
+        }
+
+        [Scenario]
+        public void AllPlayersCollectResourcesAsPartOfTurnStart(string[] args)
+        {
+            var firstTurnCollectedResources = CreateExpectedCollectedResources()
+                .Add(Adam, Adam_FirstSettlementLocation, ResourceClutch.OneBrick)
+                .Add(Babara, Babara_SecondSettlementLocation, ResourceClutch.OneGrain)
+                .Build();
+
+            var secondTurnCollectedResources = CreateExpectedCollectedResources()
+                .Add(Babara, Babara_FirstSettlementLocation, ResourceClutch.OneOre)
+                .Add(Charlie, Charlie_FirstSettlementLocation, ResourceClutch.OneLumber)
+                .Add(Charlie, Charlie_SecondSettlementLocation, ResourceClutch.OneLumber)
+                .Add(Dana, Dana_FirstSettlementLocation, ResourceClutch.OneOre)
+                .Build();
+
+            var thirdTurnCollectedResources = CreateExpectedCollectedResources()
+                .Add(Charlie, Charlie_SecondSettlementLocation, ResourceClutch.OneOre)
+                .Build();
+
+            var fourTurnCollectedResources = CreateExpectedCollectedResources()
+                .Add(Adam, Adam_FirstSettlementLocation, ResourceClutch.OneWool)
+                .Add(Babara, Babara_SecondSettlementLocation, ResourceClutch.OneWool)
+                .Build();
+
+            this.CompletePlayerInfrastructureSetup(args)
+                .WhenPlayer(Adam)
+                    .ReceivesDiceRollEvent(4, 4).ThenDoNothing()
+                    .ReceivesResourceCollectedEvent(firstTurnCollectedResources)
+                    .ThenVerifyPlayerState().WithResources(ResourceClutch.OneBrick).EndPlayerStateMeasuring()
+                    .ThenEndTurn()
+                .WhenPlayer(Babara)
+                    .ReceivesResourceCollectedEvent(firstTurnCollectedResources)
+                    .ThenVerifyPlayerState().WithResources(ResourceClutch.OneGrain).EndPlayerStateMeasuring()
+                .WhenPlayer(Charlie)
+                    .ReceivesResourceCollectedEvent(firstTurnCollectedResources)
+                    .ThenVerifyPlayerState().WithResources(ResourceClutch.Zero).EndPlayerStateMeasuring()
+                .WhenPlayer(Dana)
+                    .ReceivesResourceCollectedEvent(firstTurnCollectedResources)
+                    .ThenVerifyPlayerState().WithResources(ResourceClutch.Zero).EndPlayerStateMeasuring()
+
+                .WhenPlayer(Babara)
+                    .ReceivesDiceRollEvent(3, 3).ThenDoNothing()
+                    .ReceivesResourceCollectedEvent(secondTurnCollectedResources)
+                    .ThenVerifyPlayerState().WithResources(ResourceClutch.OneGrain + ResourceClutch.OneOre).EndPlayerStateMeasuring()
+                    .ThenEndTurn()
+                .WhenPlayer(Adam)
+                    .ReceivesResourceCollectedEvent(secondTurnCollectedResources)
+                    .ThenVerifyPlayerState().WithResources(ResourceClutch.OneBrick).EndPlayerStateMeasuring()
+                .WhenPlayer(Charlie)
+                    .ReceivesResourceCollectedEvent(secondTurnCollectedResources)
+                    .ThenVerifyPlayerState().WithResources(ResourceClutch.OneLumber * 2).EndPlayerStateMeasuring()
+                .WhenPlayer(Dana)
+                    .ReceivesResourceCollectedEvent(secondTurnCollectedResources)
+                    .ThenVerifyPlayerState().WithResources(ResourceClutch.OneOre).EndPlayerStateMeasuring()
+
+                .WhenPlayer(Charlie)
+                    .ReceivesDiceRollEvent(1, 2).ThenDoNothing()
+                    .ReceivesResourceCollectedEvent(thirdTurnCollectedResources)
+                    .ThenVerifyPlayerState().WithResources((ResourceClutch.OneLumber * 2) + ResourceClutch.OneOre).EndPlayerStateMeasuring()
+                    .ThenEndTurn()
+                .WhenPlayer(Adam)
+                    .ReceivesResourceCollectedEvent(thirdTurnCollectedResources)
+                    .ThenVerifyPlayerState().WithResources(ResourceClutch.OneBrick).EndPlayerStateMeasuring()
+                .WhenPlayer(Babara)
+                    .ReceivesResourceCollectedEvent(thirdTurnCollectedResources)
+                    .ThenVerifyPlayerState().WithResources(ResourceClutch.OneGrain + ResourceClutch.OneOre).EndPlayerStateMeasuring()
+                .WhenPlayer(Dana)
+                    .ReceivesResourceCollectedEvent(thirdTurnCollectedResources)
+                    .ThenVerifyPlayerState().WithResources(ResourceClutch.OneOre).EndPlayerStateMeasuring()
+
+                .WhenPlayer(Dana)
+                    .ReceivesDiceRollEvent(6, 4).ThenDoNothing()
+                    .ReceivesResourceCollectedEvent(fourTurnCollectedResources)
+                    .ThenVerifyPlayerState().WithResources(ResourceClutch.OneOre).EndPlayerStateMeasuring()
+                    .ThenEndTurn()
+                .WhenPlayer(Adam)
+                    .ReceivesResourceCollectedEvent(fourTurnCollectedResources)
+                    .ThenVerifyPlayerState().WithResources(ResourceClutch.OneBrick + ResourceClutch.OneWool).EndPlayerStateMeasuring()
+                .WhenPlayer(Babara)
+                    .ReceivesResourceCollectedEvent(fourTurnCollectedResources)
+                    .ThenVerifyPlayerState().WithResources(ResourceClutch.OneGrain + ResourceClutch.OneOre + ResourceClutch.OneWool).EndPlayerStateMeasuring()
+                .WhenPlayer(Charlie)
+                    .ReceivesResourceCollectedEvent(fourTurnCollectedResources)
+                    .ThenVerifyPlayerState().WithResources((ResourceClutch.OneLumber * 2) + ResourceClutch.OneOre).EndPlayerStateMeasuring()
+
+                .WhenPlayer(Adam)
+                    .ReceivesDiceRollEvent(1, 1)
+                    .ThenQuitGame()
+                .WhenPlayer(Babara)
+                    .ReceivesDiceRollEvent(1, 1)
+                    .ThenQuitGame()
+                .WhenPlayer(Charlie)
+                    .ReceivesDiceRollEvent(1, 1)
+                    .ThenQuitGame()
+                .Run();
+        }
+
+        [Scenario]
         public void AllPlayersCompleteSetup(string[] args)
         {
             var expectedGameBoardSetup = new GameBoardSetup(new GameBoard(BoardSizes.Standard));
@@ -110,17 +213,93 @@ namespace SoC.Library.ScenarioTests
         }
 
         [Scenario]
-        public void PlayerSendsIncorrectCommandDuringGameSetup(string[] args)
+        public void AllOtherPlayersQuit(string[] args)
         {
-            var expectedGameBoardSetup = new GameBoardSetup(new GameBoard(BoardSizes.Standard));
-            var playerOrder = new[] { Adam, Babara, Charlie, Dana };
-            ScenarioRunner.CreateScenarioRunner(args)
-                .WithPlayer(Adam).WithPlayer(Babara).WithPlayer(Charlie).WithPlayer(Dana)
-                .WithTurnOrder(playerOrder)
+            this.CompletePlayerInfrastructureSetup(args)
+                .WithNoResourceCollection()
                 .WhenPlayer(Adam)
-                    .ReceivesPlaceInfrastructureSetupEvent().ThenEndTurn()
-                    .ReceivesGameErrorEvent("301", "Invalid action: Expected PlaceSetupInfrastructureAction or QuitGameAction")
+                    .ReceivesDiceRollEvent(3, 3).ThenEndTurn()
+                    .ReceivesPlayerQuitEvent(Babara).ThenDoNothing()
+                    .ReceivesPlayerQuitEvent(Charlie).ThenDoNothing()
+                    .ReceivesPlayerQuitEvent(Dana).ThenDoNothing()
+                    .ReceivesPlayerWonEvent(Adam, 2).ThenDoNothing()
+                .WhenPlayer(Babara)
+                    .ReceivesDiceRollEvent(3, 3).ThenQuitGame()
+                .WhenPlayer(Charlie)
+                    .ReceivesPlayerQuitEvent(Babara).ThenDoNothing()
+                    .ReceivesDiceRollEvent(3, 3).ThenQuitGame()
+                .WhenPlayer(Dana)
+                    .ReceivesPlayerQuitEvent(Babara).ThenDoNothing()
+                    .ReceivesPlayerQuitEvent(Charlie).ThenDoNothing()
+                    .ReceivesDiceRollEvent(3, 3).ThenQuitGame()
+                .VerifyPlayer(Babara)
+                    .DidNotReceiveEvent<GameWinEvent>()
+                    .DidNotReceivePlayerQuitEvent(Babara)
+                    .DidNotReceivePlayerQuitEvent(Charlie)
+                    .DidNotReceivePlayerQuitEvent(Dana)
+                .VerifyPlayer(Charlie)
+                    .DidNotReceiveEvent<GameWinEvent>()
+                    .DidNotReceivePlayerQuitEvent(Charlie)
+                    .DidNotReceivePlayerQuitEvent(Dana)
+                .VerifyPlayer(Dana)
+                    .DidNotReceiveEvent<GameWinEvent>()
+                    .DidNotReceivePlayerQuitEvent(Dana)
                 .Run();
+        }
+
+        [Scenario]
+        public void PlayerBuildsCity(string[] args)
+        {
+            throw new NotImplementedException();
+        }
+
+        [Scenario]
+        public void PlayerBuildsCityAndWins(string[] args)
+        {
+            throw new NotImplementedException();
+        }
+
+        [Scenario]
+        public void PlayerBuildsSettlement(string[] args)
+        {
+            throw new NotImplementedException();
+        }
+
+        [Scenario]
+        public void PlayerBuildsSettlementAndWins(string[] args)
+        {
+            throw new NotImplementedException();
+        }
+
+        [Scenario]
+        public void PlayerPlacesRoad(string[] args)
+        {
+            this.CompletePlayerInfrastructureSetup(args)
+                .WithNoResourceCollection()
+                .WithStartingResourcesForPlayer(Adam, ResourceClutch.RoadSegment)
+                .WhenPlayer(Adam)
+                    .ReceivesDiceRollEvent(3, 3)
+                    .ThenPlaceRoadSegment(4, 3)
+                .VerifyAllPlayersReceiveRoadSegmentPlacedEvent(Adam, 4, 3)
+                .Run();
+        }
+
+        [Scenario]
+        public void PlayerPlaysKnightCard(string[] args)
+        {
+            throw new NotImplementedException();
+        }
+
+        [Scenario]
+        public void PlayerRollsSeven(string[] args)
+        {
+            throw new NotImplementedException();
+        }
+
+        [Scenario]
+        public void PlayerRollsSevenAndAllPlayersWithMoreThanSevenResourcesLoseResources(string[] args)
+        {
+            throw new NotImplementedException();
         }
 
         [Scenario]
@@ -205,105 +384,16 @@ namespace SoC.Library.ScenarioTests
         }
 
         [Scenario]
-        public void AllPlayersCollectResourcesAsPartOfGameSetup(string[] args)
+        public void PlayerSendsIncorrectCommandDuringGameSetup(string[] args)
         {
-            throw new NotImplementedException();
-        }
-
-        [Scenario]
-        public void AllPlayersCollectResourcesAsPartOfTurnStart(string[] args)
-        {
-            var firstTurnCollectedResources = CreateExpectedCollectedResources()
-                .Add(Adam, Adam_FirstSettlementLocation, ResourceClutch.OneBrick)
-                .Add(Babara, Babara_SecondSettlementLocation, ResourceClutch.OneGrain)
-                .Build();
-
-            var secondTurnCollectedResources = CreateExpectedCollectedResources()
-                .Add(Babara, Babara_FirstSettlementLocation, ResourceClutch.OneOre)
-                .Add(Charlie, Charlie_FirstSettlementLocation, ResourceClutch.OneLumber)
-                .Add(Charlie, Charlie_SecondSettlementLocation, ResourceClutch.OneLumber)
-                .Add(Dana, Dana_FirstSettlementLocation, ResourceClutch.OneOre)
-                .Build();
-
-            var thirdTurnCollectedResources = CreateExpectedCollectedResources()
-                .Add(Charlie, Charlie_SecondSettlementLocation, ResourceClutch.OneOre)
-                .Build();
-
-            var fourTurnCollectedResources = CreateExpectedCollectedResources()
-                .Add(Adam, Adam_FirstSettlementLocation, ResourceClutch.OneWool)
-                .Add(Babara, Babara_SecondSettlementLocation, ResourceClutch.OneWool)
-                .Build();
-
-            this.CompletePlayerInfrastructureSetup(args)
+            var expectedGameBoardSetup = new GameBoardSetup(new GameBoard(BoardSizes.Standard));
+            var playerOrder = new[] { Adam, Babara, Charlie, Dana };
+            ScenarioRunner.CreateScenarioRunner(args)
+                .WithPlayer(Adam).WithPlayer(Babara).WithPlayer(Charlie).WithPlayer(Dana)
+                .WithTurnOrder(playerOrder)
                 .WhenPlayer(Adam)
-                    .ReceivesDiceRollEvent(4, 4).ThenDoNothing()
-                    .ReceivesResourceCollectedEvent(firstTurnCollectedResources)
-                    .ThenVerifyPlayerState().WithResources(ResourceClutch.OneBrick).EndPlayerStateMeasuring()
-                    .ThenEndTurn()
-                .WhenPlayer(Babara)
-                    .ReceivesResourceCollectedEvent(firstTurnCollectedResources)
-                    .ThenVerifyPlayerState().WithResources(ResourceClutch.OneGrain).EndPlayerStateMeasuring()
-                .WhenPlayer(Charlie)
-                    .ReceivesResourceCollectedEvent(firstTurnCollectedResources)
-                    .ThenVerifyPlayerState().WithResources(ResourceClutch.Zero).EndPlayerStateMeasuring()
-                .WhenPlayer(Dana)
-                    .ReceivesResourceCollectedEvent(firstTurnCollectedResources)
-                    .ThenVerifyPlayerState().WithResources(ResourceClutch.Zero).EndPlayerStateMeasuring()
-                
-                .WhenPlayer(Babara)
-                    .ReceivesDiceRollEvent(3, 3).ThenDoNothing()
-                    .ReceivesResourceCollectedEvent(secondTurnCollectedResources)
-                    .ThenVerifyPlayerState().WithResources(ResourceClutch.OneGrain + ResourceClutch.OneOre).EndPlayerStateMeasuring()
-                    .ThenEndTurn()
-                .WhenPlayer(Adam)
-                    .ReceivesResourceCollectedEvent(secondTurnCollectedResources)
-                    .ThenVerifyPlayerState().WithResources(ResourceClutch.OneBrick).EndPlayerStateMeasuring()
-                .WhenPlayer(Charlie)
-                    .ReceivesResourceCollectedEvent(secondTurnCollectedResources)
-                    .ThenVerifyPlayerState().WithResources(ResourceClutch.OneLumber * 2).EndPlayerStateMeasuring()
-                .WhenPlayer(Dana)
-                    .ReceivesResourceCollectedEvent(secondTurnCollectedResources)
-                    .ThenVerifyPlayerState().WithResources(ResourceClutch.OneOre).EndPlayerStateMeasuring()
-                
-                .WhenPlayer(Charlie)
-                    .ReceivesDiceRollEvent(1, 2).ThenDoNothing()
-                    .ReceivesResourceCollectedEvent(thirdTurnCollectedResources)
-                    .ThenVerifyPlayerState().WithResources((ResourceClutch.OneLumber * 2) + ResourceClutch.OneOre).EndPlayerStateMeasuring()
-                    .ThenEndTurn()
-                .WhenPlayer(Adam)
-                    .ReceivesResourceCollectedEvent(thirdTurnCollectedResources)
-                    .ThenVerifyPlayerState().WithResources(ResourceClutch.OneBrick).EndPlayerStateMeasuring()
-                .WhenPlayer(Babara)
-                    .ReceivesResourceCollectedEvent(thirdTurnCollectedResources)
-                    .ThenVerifyPlayerState().WithResources(ResourceClutch.OneGrain + ResourceClutch.OneOre).EndPlayerStateMeasuring()
-                .WhenPlayer(Dana)
-                    .ReceivesResourceCollectedEvent(thirdTurnCollectedResources)
-                    .ThenVerifyPlayerState().WithResources(ResourceClutch.OneOre).EndPlayerStateMeasuring()
-
-                .WhenPlayer(Dana)
-                    .ReceivesDiceRollEvent(6, 4).ThenDoNothing()
-                    .ReceivesResourceCollectedEvent(fourTurnCollectedResources)
-                    .ThenVerifyPlayerState().WithResources(ResourceClutch.OneOre).EndPlayerStateMeasuring()
-                    .ThenEndTurn()
-                .WhenPlayer(Adam)
-                    .ReceivesResourceCollectedEvent(fourTurnCollectedResources)
-                    .ThenVerifyPlayerState().WithResources(ResourceClutch.OneBrick + ResourceClutch.OneWool).EndPlayerStateMeasuring()
-                .WhenPlayer(Babara)
-                    .ReceivesResourceCollectedEvent(fourTurnCollectedResources)
-                    .ThenVerifyPlayerState().WithResources(ResourceClutch.OneGrain + ResourceClutch.OneOre + ResourceClutch.OneWool).EndPlayerStateMeasuring()
-                .WhenPlayer(Charlie)
-                    .ReceivesResourceCollectedEvent(fourTurnCollectedResources)
-                    .ThenVerifyPlayerState().WithResources((ResourceClutch.OneLumber * 2) + ResourceClutch.OneOre).EndPlayerStateMeasuring()
-                
-                .WhenPlayer(Adam)
-                    .ReceivesDiceRollEvent(1, 1)
-                    .ThenQuitGame()
-                .WhenPlayer(Babara)
-                    .ReceivesDiceRollEvent(1, 1)
-                    .ThenQuitGame()
-                .WhenPlayer(Charlie)
-                    .ReceivesDiceRollEvent(1, 1)
-                    .ThenQuitGame()
+                    .ReceivesPlaceInfrastructureSetupEvent().ThenEndTurn()
+                    .ReceivesGameErrorEvent("301", "Invalid action: Expected PlaceSetupInfrastructureAction or QuitGameAction")
                 .Run();
         }
 
@@ -357,51 +447,39 @@ namespace SoC.Library.ScenarioTests
         }
 
         [Scenario]
-        public void PlayerPlacesRoad(string[] args)
+        public void PlayerWithEightPointsGainsLargestArmyAndWins(string[] args)
         {
-            this.CompletePlayerInfrastructureSetup(args)
-                .WithNoResourceCollection()
-                .WithStartingResourcesForPlayer(Adam, ResourceClutch.RoadSegment)
-                .WhenPlayer(Adam)
-                    .ReceivesDiceRollEvent(3, 3)
-                    .ThenPlaceRoadSegment(4, 3)
-                .VerifyAllPlayersReceiveRoadSegmentPlacedEvent(Adam, 4, 3)
-                .Run();
+            throw new NotImplementedException();
         }
 
         [Scenario]
-        public void AllOtherPlayersQuit(string[] args)
+        public void PlayerWithEightPointsGainsLongestRoadAndWins(string[] args)
         {
-            this.CompletePlayerInfrastructureSetup(args)
-                .WithNoResourceCollection()
-                .WhenPlayer(Adam)
-                    .ReceivesDiceRollEvent(3, 3).ThenEndTurn()
-                    .ReceivesPlayerQuitEvent(Babara).ThenDoNothing()
-                    .ReceivesPlayerQuitEvent(Charlie).ThenDoNothing()
-                    .ReceivesPlayerQuitEvent(Dana).ThenDoNothing()
-                    .ReceivesPlayerWonEvent(Adam, 2).ThenDoNothing()
-                .WhenPlayer(Babara)
-                    .ReceivesDiceRollEvent(3, 3).ThenQuitGame()
-                .WhenPlayer(Charlie)
-                    .ReceivesPlayerQuitEvent(Babara).ThenDoNothing()
-                    .ReceivesDiceRollEvent(3, 3).ThenQuitGame()
-                .WhenPlayer(Dana)
-                    .ReceivesPlayerQuitEvent(Babara).ThenDoNothing()
-                    .ReceivesPlayerQuitEvent(Charlie).ThenDoNothing()
-                    .ReceivesDiceRollEvent(3, 3).ThenQuitGame()
-                .VerifyPlayer(Babara)
-                    .DidNotReceiveEvent<GameWinEvent>()
-                    .DidNotReceivePlayerQuitEvent(Babara)
-                    .DidNotReceivePlayerQuitEvent(Charlie)
-                    .DidNotReceivePlayerQuitEvent(Dana)
-                .VerifyPlayer(Charlie)
-                    .DidNotReceiveEvent<GameWinEvent>()
-                    .DidNotReceivePlayerQuitEvent(Charlie)
-                    .DidNotReceivePlayerQuitEvent(Dana)
-                .VerifyPlayer(Dana)
-                    .DidNotReceiveEvent<GameWinEvent>()
-                    .DidNotReceivePlayerQuitEvent(Dana)
-                .Run();
+            throw new NotImplementedException();
+        }
+
+        [Scenario]
+        public void PlayerWithLargestArmyDoesNotRaiseEventWhenPlayingSubsequentKnight(string[] args)
+        {
+            throw new NotImplementedException();
+        }
+
+        [Scenario]
+        public void PlayerWithLargestArmyDoesNotGetMoreVictoryPointsWhenPlayingSubsequentKnight(string[] args)
+        {
+            throw new NotImplementedException();
+        }
+
+        [Scenario]
+        public void PlayerWithNinePointsGainsLargestArmyAndWins(string[] args)
+        {
+            throw new NotImplementedException();
+        }
+
+        [Scenario]
+        public void PlayerWithNinePointsGainsLongestRoadAndWins(string[] args)
+        {
+            throw new NotImplementedException();
         }
 
         private static CollectedResourcesBuilder CreateExpectedCollectedResources()

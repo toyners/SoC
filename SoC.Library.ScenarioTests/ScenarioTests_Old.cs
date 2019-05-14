@@ -44,7 +44,7 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void New_Scenario_AllPlayersHaveDiceRollEventInTheirTurn()
         {
-            this.CreateStandardLocalGameControllerScenarioRunner_Old()
+            /*this.CreateStandardLocalGameControllerScenarioRunner_Old()
                 .WithStartingResourcesForPlayer(MainPlayerName, ResourceClutch.DevelopmentCard)
                 .WithNoResourceCollection()
                 .PlayerTurn(MainPlayerName, 4, 4)
@@ -60,13 +60,13 @@ namespace SoC.Library.ScenarioTests
                     .DiceRollEvent(5, 6)
                     .EndTurn()
                 .Build()
-                .Run_Old();
+                .Run_Old();*/
         }
 
         [Test]
         public void Scenario_Scenario_AllPlayersCollectResourcesAsPartOfFirstTurnStart()
         {
-            this.CreateStandardLocalGameControllerScenarioRunner_Old()
+            /*this.CreateStandardLocalGameControllerScenarioRunner_Old()
                 .PlayerTurn(MainPlayerName, 1, 5)
                     .ResourceCollectedEvent(FirstOpponentName,
                         new Tuple<uint, ResourceClutch>(FirstOpponentFirstSettlementLocation, ResourceClutch.OneOre))
@@ -77,13 +77,13 @@ namespace SoC.Library.ScenarioTests
                         new Tuple<uint, ResourceClutch>(ThirdOpponentFirstSettlementLocation, ResourceClutch.OneOre))
                     .EndTurn()
                 .Build()
-                .Run_Old();
+                .Run_Old();*/
         }
 
         [Test]
         public void New_Scenario_AllPlayersCollectResourcesAsPartOfTurnStart()
         {
-            var localGameController = this.CreateStandardLocalGameControllerScenarioRunner_Old()
+            /*var localGameController = this.CreateStandardLocalGameControllerScenarioRunner_Old()
                 .PlayerTurn(MainPlayerName, 4, 4)
                     .ResourceCollectedEvent(MainPlayerName,
                         new Tuple<uint, ResourceClutch>(MainPlayerFirstSettlementLocation, ResourceClutch.OneBrick))
@@ -116,13 +116,13 @@ namespace SoC.Library.ScenarioTests
                             new Tuple<uint, ResourceClutch>(FirstOpponentSecondSettlementLocation, ResourceClutch.OneWool))
                     .EndTurn()
                 .Build()
-                .Run_Old();
+                .Run_Old();*/
         }
 
         [Test]
         public void New_Scenario_ComputerPlayerBuildsSettlement()
         {
-            var thirdOpponentStartingResources = (ResourceClutch.RoadSegment * 2) + ResourceClutch.Settlement;
+            /*var thirdOpponentStartingResources = (ResourceClutch.RoadSegment * 2) + ResourceClutch.Settlement;
             this.CreateStandardLocalGameControllerScenarioRunner_Old()
                 .WithNoResourceCollection()
                 .WithStartingResourcesForPlayer(ThirdOpponentName, thirdOpponentStartingResources)
@@ -135,13 +135,13 @@ namespace SoC.Library.ScenarioTests
                     .BuildSettlement(23).BuildSettlementEvent(23)
                     .EndTurn()
                 .Build()
-                .Run_Old();
+                .Run_Old();*/
         }
 
         [Test]
         public void New_Scenario_ComputerPlayerBuildsSettlementToWin()
         {
-            var firstOpponentResources = (ResourceClutch.RoadSegment * 5) + (ResourceClutch.Settlement * 3) + (ResourceClutch.City * 3);
+            /*var firstOpponentResources = (ResourceClutch.RoadSegment * 5) + (ResourceClutch.Settlement * 3) + (ResourceClutch.City * 3);
             this.CreateStandardLocalGameControllerScenarioRunner_Old()
                 .WithNoResourceCollection()
                 .WithStartingResourcesForPlayer(FirstOpponentName, firstOpponentResources)
@@ -161,13 +161,13 @@ namespace SoC.Library.ScenarioTests
                         .GameWinEvent(10)
                     .EndTurn()
                 .Build()
-                .Run_Old();
+                .Run_Old();*/
         }
 
         [Test]
         public void New_Scenario_ComputerPlayerBuildsCity()
         {
-            this.CreateStandardLocalGameControllerScenarioRunner_Old()
+            /*this.CreateStandardLocalGameControllerScenarioRunner_Old()
                 .WithNoResourceCollection()
                 .WithStartingResourcesForPlayer(ThirdOpponentName, ResourceClutch.City)
                 .PlayerTurn(MainPlayerName, 5, 6).EndTurn()
@@ -178,13 +178,13 @@ namespace SoC.Library.ScenarioTests
                     .BuildCityEvent(33)
                     .EndTurn()
                 .Build()
-                .Run_Old();
+                .Run_Old();*/
         }
 
         [Test]
         public void New_Scenario_BothPlayerAndComputerPlayerBuildCities()
         {
-            this.CreateStandardLocalGameControllerScenarioRunner_Old()
+            /*this.CreateStandardLocalGameControllerScenarioRunner_Old()
                 .WithNoResourceCollection()
                 .WithStartingResourcesForPlayer(MainPlayer, ResourceClutch.City)
                 .WithStartingResourcesForPlayer(ThirdOpponent_Dana, ResourceClutch.City)
@@ -199,13 +199,13 @@ namespace SoC.Library.ScenarioTests
                     .BuildCityEvent(33)
                     .EndTurn()
                 .Build()
-                .Run_Old();
+                .Run_Old();*/
         }
 
         [Test]
         public void New_Scenario_ComputerPlayerBuildsCityToWin()
         {
-            var firstOpponentResources = (ResourceClutch.RoadSegment * 5) + (ResourceClutch.Settlement * 4) + (ResourceClutch.City * 4);
+            /*var firstOpponentResources = (ResourceClutch.RoadSegment * 5) + (ResourceClutch.Settlement * 4) + (ResourceClutch.City * 4);
 
             this.CreateStandardLocalGameControllerScenarioRunner_Old()
                 .WithNoResourceCollection()
@@ -228,7 +228,7 @@ namespace SoC.Library.ScenarioTests
                         .GameWinEvent(10)
                     .EndTurn()
                 .Build()
-                .Run_Old();
+                .Run_Old();*/
         }
 
         [Test]
@@ -435,7 +435,7 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void Scenario_ComputerPlayerRollsSevenAndTakesResourceFromPlayer()
         {
-            var mainPlayerResources = ResourceClutch.OneWool;
+            /*var mainPlayerResources = ResourceClutch.OneWool;
             this.CreateStandardLocalGameControllerScenarioRunner_Old()
                 .WithNoResourceCollection()
                 .WithStartingResourcesForPlayer(MainPlayerName, mainPlayerResources)
@@ -463,7 +463,7 @@ namespace SoC.Library.ScenarioTests
                         .End()
                     .EndTurn()
                 .Build()
-                .Run_Old();
+                .Run_Old();*/
         }
 
         [Test]
@@ -472,10 +472,10 @@ namespace SoC.Library.ScenarioTests
             Assert.Fail("Not Implemented");
         }
 
-        /*[Test]
+        [Test]
         public void New_Scenario_ComputerPlayerRollsSeventAndAllPlayersWithMoreThanSevenResourcesLosesResources()
         {
-            this.CreateStandardLocalGameControllerScenarioRunner_Old()
+            /*this.CreateStandardLocalGameControllerScenarioRunner_Old()
                 .WithNoResourceCollection()
                 .WithStartingResourcesForPlayer(MainPlayerName, ResourceClutch.OneBrick * 7)
                 .WithStartingResourcesForPlayer(FirstOpponentName, ResourceClutch.OneBrick * 8)
@@ -508,16 +508,16 @@ namespace SoC.Library.ScenarioTests
                         .End()
                     .EndTurn()
                 .Build()
-                .Run_Old();
+                .Run_Old();*/
         }
-        */
+        
         /// <summary>
         /// Test that the largest army event is not raised when the player plays knight cards and already has the largest army
         /// </summary>
         [Test]
         public void Scenario_LargestArmyEventOnlyRaisedFirstTimeThatPlayerHasMostKnightCardsPlayed()
         {
-            var mainPlayerResources = ResourceClutch.DevelopmentCard * 4;
+            /*var mainPlayerResources = ResourceClutch.DevelopmentCard * 4;
             this.CreateStandardLocalGameControllerScenarioRunner_Old()
                 .WithNoResourceCollection()
                 .WithStartingResourcesForPlayer(MainPlayerName, mainPlayerResources)
@@ -563,7 +563,7 @@ namespace SoC.Library.ScenarioTests
                     .EndTurn()
                 .PlayerTurn_Old(FirstOpponentName, 3, 3).EndTurn()
                 .Build()
-                .Run_Old();
+                .Run_Old();*/
         }
 
         /// <summary>
@@ -572,7 +572,7 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void Scenario_LargestArmyEventOnlyReturnedFirstTimeThatOpponentHasMostKnightCardsPlayed()
         {
-            var firstOpponentResources = ResourceClutch.DevelopmentCard * 4;
+            /*var firstOpponentResources = ResourceClutch.DevelopmentCard * 4;
             this.CreateStandardLocalGameControllerScenarioRunner_Old()
                 .WithNoResourceCollection()
                 .WithStartingResourcesForPlayer(FirstOpponentName, firstOpponentResources)
@@ -638,7 +638,7 @@ namespace SoC.Library.ScenarioTests
                         .End()
                     .EndTurn()
                 .Build()
-                .Run_Old();
+                .Run_Old();*/
         }
 
         /// <summary>
@@ -648,7 +648,7 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void Scenario_LargestArmyEventsRaisedWhenBothPlayerAndOpponentPlayTheMostKnightDevelopmentCards()
         {
-            var mainPlayerResources = ResourceClutch.DevelopmentCard * 3;
+            /*var mainPlayerResources = ResourceClutch.DevelopmentCard * 3;
             var firstOpponentResources = ResourceClutch.DevelopmentCard * 4;
             this.CreateStandardLocalGameControllerScenarioRunner_Old()
                 .WithNoResourceCollection()
@@ -760,7 +760,7 @@ namespace SoC.Library.ScenarioTests
                         .End()
                     .EndTurn()
                 .Build()
-                .Run_Old();
+                .Run_Old();*/
         }
 
         /// <summary>
@@ -770,7 +770,7 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void Scenario_LargestArmyVictoryPointsOnlyChangedFirstTimeThatPlayerHasMostKnightCardsPlayed()
         {
-            var mainPlayerResources = ResourceClutch.DevelopmentCard * 4;
+            /*var mainPlayerResources = ResourceClutch.DevelopmentCard * 4;
             this.CreateStandardLocalGameControllerScenarioRunner(mainPlayerResources, ResourceClutch.Zero, ResourceClutch.Zero, ResourceClutch.Zero)
                 .PlayerTurn_Old(MainPlayerName, 4, 4)
                     .Actions()
@@ -819,13 +819,13 @@ namespace SoC.Library.ScenarioTests
                         .End()
                     .EndTurn()
                 .Build()
-                .Run_Old();
+                .Run_Old();*/
         }
 
         [Test]
         public void Scenario_PlayerLosesResourceWhenComputerPlayerPlaysTheKnightCard()
         {
-            var mainPlayerResources = ResourceClutch.OneOre;
+            /*var mainPlayerResources = ResourceClutch.OneOre;
             var firstOpponentResources = ResourceClutch.DevelopmentCard;
             this.CreateStandardLocalGameControllerScenarioRunner_Old()
                 .WithNoResourceCollection()
@@ -852,7 +852,7 @@ namespace SoC.Library.ScenarioTests
                         .End()
                     .EndTurn()
                 .Build()
-                .Run_Old();
+                .Run_Old();*/
         }
 
         [Test]
