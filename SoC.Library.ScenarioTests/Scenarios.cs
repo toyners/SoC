@@ -1,6 +1,7 @@
 ﻿
 namespace SoC.Library.ScenarioTests
 {
+    using System;
     using Jabberwocky.SoC.Library;
     using Jabberwocky.SoC.Library.GameBoards;
     using Jabberwocky.SoC.Library.GameEvents;
@@ -33,7 +34,7 @@ namespace SoC.Library.ScenarioTests
         const uint Adam_SecondRoadEndLocation = 39;
 
         [Scenario]
-        public void Scenario_AllPlayersCompleteSetup(string[] args)
+        public void AllPlayersCompleteSetup(string[] args)
         {
             var expectedGameBoardSetup = new GameBoardSetup(new GameBoard(BoardSizes.Standard));
             var playerOrder = new[] { Adam, Babara, Charlie, Dana };
@@ -109,7 +110,7 @@ namespace SoC.Library.ScenarioTests
         }
 
         [Scenario]
-        public void Scenario_PlayerSendsIncorrectCommandDuringGameSetup(string[] args)
+        public void PlayerSendsIncorrectCommandDuringGameSetup(string[] args)
         {
             var expectedGameBoardSetup = new GameBoardSetup(new GameBoard(BoardSizes.Standard));
             var playerOrder = new[] { Adam, Babara, Charlie, Dana };
@@ -123,7 +124,7 @@ namespace SoC.Library.ScenarioTests
         }
 
         [Scenario]
-        public void Scenario_PlayerQuitsDuringFirstRoundOfGameSetup(string[] args)
+        public void PlayerQuitsDuringFirstRoundOfGameSetup(string[] args)
         {
             var expectedGameBoardSetup = new GameBoardSetup(new GameBoard(BoardSizes.Standard));
             var playerOrder = new[] { Adam, Babara, Charlie, Dana };
@@ -142,7 +143,7 @@ namespace SoC.Library.ScenarioTests
         }
 
         [Scenario]
-        public void Scenario_PlayerQuitsDuringSecondRoundOfGameSetup(string[] args)
+        public void PlayerQuitsDuringSecondRoundOfGameSetup(string[] args)
         {
             var expectedGameBoardSetup = new GameBoardSetup(new GameBoard(BoardSizes.Standard));
             var playerOrder = new[] { Adam, Babara, Charlie, Dana };
@@ -170,7 +171,7 @@ namespace SoC.Library.ScenarioTests
         }
 
         [Scenario]
-        public void Scenario_PlayerSendsIncorrectCommandDuringGameStartConfirmation(string[] args)
+        public void PlayerSendsIncorrectCommandDuringGameStartConfirmation(string[] args)
         {
             var expectedGameBoardSetup = new GameBoardSetup(new GameBoard(BoardSizes.Standard));
             var playerOrder = new[] { Adam, Babara, Charlie, Dana };
@@ -204,7 +205,13 @@ namespace SoC.Library.ScenarioTests
         }
 
         [Scenario]
-        public void Scenario_AllPlayersCollectResourcesAsPartOfTurnStart(string[] args)
+        public void AllPlayersCollectResourcesAsPartOfGameSetup(string[] args)
+        {
+            throw new NotImplementedException();
+        }
+
+        [Scenario]
+        public void AllPlayersCollectResourcesAsPartOfTurnStart(string[] args)
         {
             var firstTurnCollectedResources = CreateExpectedCollectedResources()
                 .Add(Adam, Adam_FirstSettlementLocation, ResourceClutch.OneBrick)
@@ -301,7 +308,7 @@ namespace SoC.Library.ScenarioTests
         }
 
         [Scenario]
-        public void Scenario_PlayerTradesOneResourceWithAnotherPlayer(string[] args)
+        public void PlayerTradesOneResourceWithAnotherPlayer(string[] args)
         {
             var adamResources = ResourceClutch.OneWool;
             var babaraResources = ResourceClutch.OneGrain;
@@ -350,7 +357,7 @@ namespace SoC.Library.ScenarioTests
         }
 
         [Scenario]
-        public void Scenario_PlayerPlacesRoad(string[] args)
+        public void PlayerPlacesRoad(string[] args)
         {
             this.CompletePlayerInfrastructureSetup(args)
                 .WithNoResourceCollection()
@@ -363,7 +370,7 @@ namespace SoC.Library.ScenarioTests
         }
 
         [Scenario]
-        public void Scenario_AllOtherPlayersQuit(string[] args)
+        public void AllOtherPlayersQuit(string[] args)
         {
             this.CompletePlayerInfrastructureSetup(args)
                 .WithNoResourceCollection()
