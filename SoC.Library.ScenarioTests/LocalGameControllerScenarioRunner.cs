@@ -31,7 +31,7 @@ namespace SoC.Library.ScenarioTests
 
         #region Fields
         private readonly ScenarioDevelopmentCardHolder developmentCardHolder = new ScenarioDevelopmentCardHolder();
-        private readonly List<PlayerSetupAction> firstRoundSetupActions = new List<PlayerSetupAction>(4);
+        //private readonly List<PlayerSetupAction> firstRoundSetupActions = new List<PlayerSetupAction>(4);
         private readonly Dictionary<Type, GameEvent> lastEventsByType = new Dictionary<Type, GameEvent>();
         private Dictionary<string, Guid> playerIdsByName = new Dictionary<string, Guid>();
         private readonly Queue<PlaceSetupInfrastructureAction> playerSetupActions = new Queue<PlaceSetupInfrastructureAction>();
@@ -39,7 +39,7 @@ namespace SoC.Library.ScenarioTests
 
         private readonly ScenarioPlayerPool playerPool = new ScenarioPlayerPool();
         private readonly List<GameTurn> playerTurns = new List<GameTurn>();
-        private readonly List<PlayerSetupAction> secondRoundSetupActions = new List<PlayerSetupAction>(4);
+        //private readonly List<PlayerSetupAction> secondRoundSetupActions = new List<PlayerSetupAction>(4);
         private readonly Dictionary<string, ScenarioComputerPlayer> computerPlayersByName = new Dictionary<string, ScenarioComputerPlayer>();
         private readonly List<IPlayer> players = new List<IPlayer>(4);
         private readonly List<GameTurn> gameTurns = new List<GameTurn>();
@@ -75,7 +75,7 @@ namespace SoC.Library.ScenarioTests
 
         public void Run()
         {
-            Thread.CurrentThread.Name = "Scenario Runner";
+            /*Thread.CurrentThread.Name = "Scenario Runner";
 
             var playerIds = new Queue<Guid>(this.playerAgents.Select(agent => agent.Id));
 
@@ -85,7 +85,7 @@ namespace SoC.Library.ScenarioTests
                 {
                     playerAgent.InitialiseTurnInstructions(setupTurn, setupTurn.Label, "");
                 }
-            }*/
+            }
             
             var roundNumber = 0;
             for (var gameTurnIndex = 0; gameTurnIndex < this.gameTurns.Count; gameTurnIndex++)
@@ -154,7 +154,7 @@ namespace SoC.Library.ScenarioTests
                 }
 
                 throw new Exception(message);
-            }
+            }*/
         }
 
         private void GameServerExceptionEventHandler(Exception exception)
@@ -378,10 +378,10 @@ namespace SoC.Library.ScenarioTests
             return this;
         }
 
-        private readonly List<PlayerAgent_Old> playerAgents = new List<PlayerAgent_Old>();
+        //private readonly List<PlayerAgent> playerAgents = new List<PlayerAgent>();
         public LocalGameControllerScenarioRunner WithTurnOrder(string firstPlayerName, string secondPlayerName, string thirdPlayerName, string fourthPlayerName)
         {
-            var rolls = new uint[4];
+            /*var rolls = new uint[4];
             for (var index = 0; index < this.playerAgents.Count; index++)
             {
                 var playerName = this.playerAgents[index].Name;
@@ -396,7 +396,7 @@ namespace SoC.Library.ScenarioTests
             }
 
             foreach (var roll in rolls)
-                this.NumberGenerator.AddTwoDiceRoll(roll / 2, roll / 2);
+                this.NumberGenerator.AddTwoDiceRoll(roll / 2, roll / 2);*/
 
             return this;
         }
@@ -528,12 +528,6 @@ namespace SoC.Library.ScenarioTests
             return this;
         }
 
-        internal LocalGameControllerScenarioRunner WithPlayer(string playerName)
-        {
-            this.playerAgents.Add(new PlayerAgent_Old(playerName));
-            return this;
-        }
-
         internal LocalGameControllerScenarioRunner PlayerInfrastructureSetup(string playerName, uint settlementLocation, uint roadEndLocation, bool verifySetupInfrastructureEvent = true)
         {
             //this.setupTurns.Add(SetupTurn.PlayerInfrastructureSetupEvent(playerName, this, settlementLocation, roadEndLocation, verifySetupInfrastructureEvent));
@@ -545,20 +539,8 @@ namespace SoC.Library.ScenarioTests
             //this.setupTurns.AddRange(this.playerAgents.Select(agent => SetupTurn.InitialBoardSetupEvent(agent.Name, this)));
             return this;
         }
-
-        internal LocalGameControllerScenarioRunner PlayerSetupEvent()
-        {
-            var playerIdsByName = this.playerAgents.ToDictionary(p => p.Name, p => p.Id);
-            //this.setupTurns.AddRange(this.playerAgents.Select(agent => SetupTurn.PlayerSetupEvent(agent.Name, this, playerIdsByName)));
-            return this;
-        }
         #endregion
     }
 
     internal abstract class RunnerAction { }
-
-    internal class InsertDevelopmentCardAction : RunnerAction
-    {
-        public DevelopmentCardTypes DevelopmentCardType;
-    }
 }

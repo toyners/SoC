@@ -59,7 +59,6 @@
     <Compile Include="ScenarioEvents\ScenarioRequestStateEvent.cs" />
     <Compile Include="MockTurnTimer.cs" />
     <Compile Include="PlayerAgent.cs" />
-    <Compile Include="PlayerAgent_Old.cs" />
     <Compile Include="PlayerTurn\GameTurn.cs" />
     <Compile Include="ScenarioActions\ComputerPlayerActionWrapper.cs" />
     <Compile Include="ScenarioActions\ScenarioMakeDirectTradeOffer.cs" />
@@ -72,7 +71,6 @@
     <Compile Include="ScenarioEvents\ScenarioRobbingChoicesEvent.cs" />
     <Compile Include="ScenarioGameBoardWithNoResourcesCollected.cs" />
     <Compile Include="LocalGameControllerScenarioRunner.cs" />
-    <Compile Include="PlayerSetupAction.cs" />
     <Compile Include="ScenarioBuyDevelopmentCardEvent.cs" />
     <Compile Include="ScenarioComputerPlayer.cs" />
     <Compile Include="ScenarioDevelopmentCardHolder.cs" />
