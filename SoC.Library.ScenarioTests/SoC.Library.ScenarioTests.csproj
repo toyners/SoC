@@ -53,35 +53,24 @@
   <ItemGroup>
     <Compile Include="CollectedResourcesBuilder.cs" />
     <Compile Include="Instructions\ActionInstruction.cs" />
-    <Compile Include="Builders\ExpectedEventsBuilder.cs" />
-    <Compile Include="Builders\PlayerActionBuilder.cs" />
-    <Compile Include="Builders\PlayerResponseBuilder.cs" />
-    <Compile Include="Builders\PlayerStateBuilder.cs" />
     <Compile Include="Instructions\EventInstruction.cs" />
-    <Compile Include="HumanPlayer.cs" />
-    <Compile Include="ComputerPlayer2.cs" />
     <Compile Include="Instructions\Instruction.cs" />
     <Compile Include="Instructions\PlayerStateInstruction.cs" />
     <Compile Include="ScenarioEvents\ScenarioRequestStateEvent.cs" />
     <Compile Include="MockTurnTimer.cs" />
     <Compile Include="PlayerAgent.cs" />
     <Compile Include="PlayerAgent_Old.cs" />
-    <Compile Include="PlayerSnapshot.cs" />
     <Compile Include="PlayerTurn\GameTurn.cs" />
-    <Compile Include="PlayerTurn\SetupTurn.cs" />
     <Compile Include="ScenarioActions\ComputerPlayerActionWrapper.cs" />
     <Compile Include="ScenarioActions\ScenarioMakeDirectTradeOffer.cs" />
     <Compile Include="ScenarioActions\ScenarioPlaceRobberAction.cs" />
     <Compile Include="ScenarioActions\ScenarioDropResourcesAction.cs" />
     <Compile Include="ScenarioActions\ScenarioSelectResourceFromPlayerAction.cs" />
-    <Compile Include="ScenarioActions\ScenarioVerifySnapshotAction.cs" />
     <Compile Include="ScenarioAttribute.cs" />
     <Compile Include="ScenarioEvents\ScenarioErrorMessageEvent.cs" />
     <Compile Include="ScenarioEvents\ScenarioRobberEvent.cs" />
     <Compile Include="ScenarioEvents\ScenarioRobbingChoicesEvent.cs" />
     <Compile Include="ScenarioGameBoardWithNoResourcesCollected.cs" />
-    <Compile Include="PlayerTurn\ComputerPlayerTurn.cs" />
-    <Compile Include="PlayerTurn\HumanPlayerTurn.cs" />
     <Compile Include="LocalGameControllerScenarioRunner.cs" />
     <Compile Include="PlayerSetupAction.cs" />
     <Compile Include="ScenarioBuyDevelopmentCardEvent.cs" />
@@ -93,7 +82,6 @@
     <Compile Include="ScenarioActions\ScenarioPlayKnightCardAction.cs" />
     <Compile Include="ScenarioRunner.cs" />
     <Compile Include="Scenarios.cs" />
-    <Compile Include="ScenarioTests_Old.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

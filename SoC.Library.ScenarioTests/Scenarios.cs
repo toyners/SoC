@@ -303,6 +303,44 @@ namespace SoC.Library.ScenarioTests
         }
 
         [Scenario]
+        public void PlayerRollsSevenAndSelectedHexHasNoPlayers(string[] args)
+        {
+            throw new NotImplementedException();
+        }
+
+        [Scenario]
+        public void PlayerRollsSevenAndSelectedHexHasOnePlayer(string[] args)
+        {
+            throw new NotImplementedException();
+        }
+
+        [Scenario]
+        public void PlayerRollsSevenAndGetsResourceFromSelectedPlayer(string[] args)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Passing in an id of a player that is not on the selected robber hex when choosing the resource 
+        /// causes an error to be raised.
+        /// </summary>
+        [Scenario]
+        public void PlayerRollsSevenAndSelectsInvalidPlayer(string[] args)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// The robber hex set by the player has only player settlements so calling the CallingChooseResourceFromOpponent 
+        /// method raises an error
+        /// </summary>
+        [Scenario]
+        public void PlayerRollsSevenAndHasNoCompetitorsOnSelectedHex(string[] args)
+        {
+            throw new NotImplementedException();
+        }
+
+        [Scenario]
         public void PlayerQuitsDuringFirstRoundOfGameSetup(string[] args)
         {
             var expectedGameBoardSetup = new GameBoardSetup(new GameBoard(BoardSizes.Standard));

@@ -109,11 +109,11 @@ namespace SoC.Library.ScenarioTests
             do
             {
                 action = this.actions.Dequeue();
-                if (action is ScenarioVerifySnapshotAction scenarioVerifySnapshotAction)
+                /*if (action is ScenarioVerifySnapshotAction scenarioVerifySnapshotAction)
                 {
                     scenarioVerifySnapshotAction.Verify();
                     action = null;
-                }
+                }*/
             } while (this.actions.Count > 0 && action == null);
 
             return action;

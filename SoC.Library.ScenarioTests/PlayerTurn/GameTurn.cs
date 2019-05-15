@@ -7,9 +7,7 @@ using Jabberwocky.SoC.Library.DevelopmentCards;
 using Jabberwocky.SoC.Library.GameEvents;
 using Jabberwocky.SoC.Library.Interfaces;
 using Jabberwocky.SoC.Library.PlayerActions;
-using Jabberwocky.SoC.Library.ScenarioTests.Builders;
 using NUnit.Framework;
-using SoC.Library.ScenarioTests.Builders;
 using SoC.Library.ScenarioTests.Instructions;
 using SoC.Library.ScenarioTests.ScenarioActions;
 using SoC.Library.ScenarioTests.ScenarioEvents;
@@ -81,10 +79,10 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
             {
                 this.LocalGameController.DropResources(scenarioResourcesToDropAction.Resources);
             }
-            else if (action is ScenarioVerifySnapshotAction scenarioVerifySnapshotAction)
+            /*else if (action is ScenarioVerifySnapshotAction scenarioVerifySnapshotAction)
             {
                 scenarioVerifySnapshotAction.Verify();
-            }
+            }*/
             else
             {
                 throw new Exception("Scenario Player action not recognised");
@@ -131,11 +129,6 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
         #endregion
 
         #region Methods
-        public PlayerActionBuilder Actions()
-        {
-            return new PlayerActionBuilder(this);
-        }
-
         public GameTurn BuildCity(uint cityLocation)
         {
             this.instructions_old.Enqueue(new BuildCityAction(cityLocation));
@@ -262,12 +255,6 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
             var expectedLongestRoadBuiltEvent = new LongestRoadBuiltEvent(this.PlayerId, Guid.Empty);
             this.instructions_old.Enqueue(expectedLongestRoadBuiltEvent);
             return this;
-        }
-
-        public ExpectedEventsBuilder Events()
-        {
-            //return new ExpectedEventsBuilder(this, this.runner.PlayersByName);
-            return null;
         }
 
         private int actualEventIndex;
@@ -406,17 +393,6 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
             {
                 throw new Exception($"Response of type '{response.GetType()}' not handled");
             }
-        }
-
-        public PlayerResponseBuilder Responses()
-        {
-            return null;
-            //return new PlayerResponseBuilder(this, this.runner.PlayersByName);
-        }
-
-        public PlayerStateBuilder OldState(string playerName)
-        {
-            throw new NotImplementedException();
         }
 
         public PlayerStateInstruction State(string playerName)
@@ -598,7 +574,7 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
                     }
                     //this.actionResolversByPlayer[this.player]?.Invoke(action);
                 }
-                else if (instruction is PlayerState playerState)
+                /*else if (instruction is PlayerState playerState)
                 {
                     // Still got unmatched expected events so don't verify the player state yet
                     if (!this.IsVerified)
@@ -615,7 +591,7 @@ namespace SoC.Library.ScenarioTests.PlayerTurn
                     {
                         playerState.Verify();
                     }
-                }
+                }*/
             }
         }
 
