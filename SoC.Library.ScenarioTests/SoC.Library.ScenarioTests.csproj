@@ -59,7 +59,6 @@
     <Compile Include="ScenarioEvents\ScenarioRequestStateEvent.cs" />
     <Compile Include="MockTurnTimer.cs" />
     <Compile Include="PlayerAgent.cs" />
-    <Compile Include="PlayerTurn\GameTurn.cs" />
     <Compile Include="ScenarioActions\ComputerPlayerActionWrapper.cs" />
     <Compile Include="ScenarioActions\ScenarioMakeDirectTradeOffer.cs" />
     <Compile Include="ScenarioActions\ScenarioPlaceRobberAction.cs" />
@@ -70,7 +69,6 @@
     <Compile Include="ScenarioEvents\ScenarioRobberEvent.cs" />
     <Compile Include="ScenarioEvents\ScenarioRobbingChoicesEvent.cs" />
     <Compile Include="ScenarioGameBoardWithNoResourcesCollected.cs" />
-    <Compile Include="LocalGameControllerScenarioRunner.cs" />
     <Compile Include="ScenarioBuyDevelopmentCardEvent.cs" />
     <Compile Include="ScenarioComputerPlayer.cs" />
     <Compile Include="ScenarioDevelopmentCardHolder.cs" />
@@ -90,6 +88,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="PlayerTurn\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
