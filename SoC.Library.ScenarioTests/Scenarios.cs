@@ -268,7 +268,13 @@ namespace SoC.Library.ScenarioTests
         [Scenario]
         public void PlayerBuildsSettlementAndWins(string[] args)
         {
-            throw new NotImplementedException();
+            this.CompletePlayerInfrastructureSetup(args)
+                .WithNoResourceCollection()
+                .WithStartingResourcesForPlayer(Adam, ResourceClutch.Settlement)
+                .WithInitialPlayerSetupFor(Adam, Resources(ResourceClutch.Settlement))
+                .WithInitialActionsFor(Adam, null)
+                .WithPlayer(Adam)
+                .Run();
         }
 
         [Scenario]
@@ -568,5 +574,7 @@ namespace SoC.Library.ScenarioTests
                     .ReceivesConfirmGameStartEvent()
                     .ThenConfirmGameStart();
         }
+
+        //public static ScenarioRunner.IPlayerSetupActions Resources(ResourceClutch resourceClutch) { return null; }
     }
 }

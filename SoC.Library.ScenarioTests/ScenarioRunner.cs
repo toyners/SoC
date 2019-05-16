@@ -416,6 +416,26 @@ namespace SoC.Library.ScenarioTests
             return this;
         }
 
+        public interface IPlayerSetupActions
+        {
+            void Process(Jabberwocky.SoC.Library.Interfaces.IPlayer player);
+        }
+
+        public class PlayerSetupActions : IPlayerSetupActions
+        {
+            public void Process(Jabberwocky.SoC.Library.Interfaces.IPlayer player) { }
+        }
+
+        public ScenarioRunner WithInitialActionsFor(string playerName, params object[] actions)
+        {
+            throw new NotImplementedException();
+        }
+
+        public ScenarioRunner WithInitialPlayerSetupFor(string playerName, params IPlayerSetupActions[] attributes)
+        {
+            return this;
+        }
+
         public ScenarioRunner WithNoResourceCollection()
         {
             this.gameBoard = new ScenarioGameBoardWithNoResourcesCollected();
