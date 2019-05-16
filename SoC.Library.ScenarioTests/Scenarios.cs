@@ -5,6 +5,7 @@ namespace SoC.Library.ScenarioTests
     using Jabberwocky.SoC.Library;
     using Jabberwocky.SoC.Library.GameBoards;
     using Jabberwocky.SoC.Library.GameEvents;
+    using static SoC.Library.ScenarioTests.ScenarioRunner;
 
     public class Scenarios
     {
@@ -575,6 +576,6 @@ namespace SoC.Library.ScenarioTests
                     .ThenConfirmGameStart();
         }
 
-        //public static ScenarioRunner.IPlayerSetupActions Resources(ResourceClutch resourceClutch) { return null; }
+        public static IPlayerSetupActions Resources(ResourceClutch resourceClutch) { return null; }
     }
 }

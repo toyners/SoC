@@ -416,10 +416,7 @@ namespace SoC.Library.ScenarioTests
             return this;
         }
 
-        public interface IPlayerSetupActions
-        {
-            void Process(Jabberwocky.SoC.Library.Interfaces.IPlayer player);
-        }
+        
 
         public class PlayerSetupActions : IPlayerSetupActions
         {
@@ -498,5 +495,10 @@ namespace SoC.Library.ScenarioTests
 
         
         #endregion
+    }
+
+    public interface IPlayerSetupActions
+    {
+        void Process(Jabberwocky.SoC.Library.Interfaces.IPlayer player);
     }
 }
