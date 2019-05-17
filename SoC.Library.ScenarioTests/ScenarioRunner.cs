@@ -10,6 +10,7 @@ namespace SoC.Library.ScenarioTests
     using Jabberwocky.SoC.Library;
     using Jabberwocky.SoC.Library.GameBoards;
     using Jabberwocky.SoC.Library.GameEvents;
+    using Jabberwocky.SoC.Library.Interfaces;
     using SoC.Library.ScenarioTests.Instructions;
 
     internal class ScenarioRunner
@@ -416,8 +417,6 @@ namespace SoC.Library.ScenarioTests
             return this;
         }
 
-        
-
         public class PlayerSetupActions : IPlayerSetupActions
         {
             public void Process(Jabberwocky.SoC.Library.Interfaces.IPlayer player) { }
@@ -428,8 +427,10 @@ namespace SoC.Library.ScenarioTests
             throw new NotImplementedException();
         }
 
-        public ScenarioRunner WithInitialPlayerSetupFor(string playerName, params IPlayerSetupActions[] attributes)
+        public ScenarioRunner WithInitialPlayerSetupFor(string playerName, params IPlayerSetupActions[] playerSetupActions)
         {
+            /*foreach(var playerSetupAction in playerSetupActions)
+                playerSetupAction.Process(this.playerAgentsByName[playerName]);*/
             return this;
         }
 
@@ -492,13 +493,11 @@ namespace SoC.Library.ScenarioTests
 
             return this.playerAgentsByName[playerName].Id;
         }
-
-        
         #endregion
     }
 
     public interface IPlayerSetupActions
     {
-        void Process(Jabberwocky.SoC.Library.Interfaces.IPlayer player);
+        void Process(IPlayer player);
     }
 }
