@@ -5,7 +5,7 @@ namespace SoC.Library.ScenarioTests
     using Jabberwocky.SoC.Library;
     using Jabberwocky.SoC.Library.GameBoards;
     using Jabberwocky.SoC.Library.GameEvents;
-    using static SoC.Library.ScenarioTests.ScenarioRunner;
+    using Jabberwocky.SoC.Library.Interfaces;
 
     public class Scenarios
     {
@@ -271,7 +271,6 @@ namespace SoC.Library.ScenarioTests
         {
             this.CompletePlayerInfrastructureSetup(args)
                 .WithNoResourceCollection()
-                .WithStartingResourcesForPlayer(Adam, ResourceClutch.Settlement)
                 .WithInitialPlayerSetupFor(Adam, Resources(ResourceClutch.Settlement))
                 .WithInitialActionsFor(Adam, null)
                 .WithPlayer(Adam)
@@ -283,7 +282,7 @@ namespace SoC.Library.ScenarioTests
         {
             this.CompletePlayerInfrastructureSetup(args)
                 .WithNoResourceCollection()
-                .WithStartingResourcesForPlayer(Adam, ResourceClutch.RoadSegment)
+                .WithInitialPlayerSetupFor(Adam, Resources(ResourceClutch.RoadSegment))
                 .WhenPlayer(Adam)
                     .ReceivesDiceRollEvent(3, 3)
                     .ThenPlaceRoadSegment(4, 3)
@@ -450,8 +449,8 @@ namespace SoC.Library.ScenarioTests
 
             this.CompletePlayerInfrastructureSetup(args)
                 .WithNoResourceCollection()
-                .WithStartingResourcesForPlayer(Adam, adamResources)
-                .WithStartingResourcesForPlayer(Babara, babaraResources)
+                .WithInitialPlayerSetupFor(Adam, Resources(adamResources))
+                .WithInitialPlayerSetupFor(Babara, Resources(babaraResources))
                 .WhenPlayer(Adam)
                     .ReceivesDiceRollEvent(3, 3)
                     .ThenEndTurn()
@@ -576,6 +575,13 @@ namespace SoC.Library.ScenarioTests
                     .ThenConfirmGameStart();
         }
 
-        public static IPlayerSetupActions Resources(ResourceClutch resourceClutch) { return null; }
+        public static IPlayerSetupActions Resources(ResourceClutch resources) => new ResourceSetup(resources);
+    }
+
+    public class ResourceSetup : IPlayerSetupActions
+    {
+        private ResourceClutch resources;
+        public ResourceSetup(ResourceClutch resources) => this.resources = resources;
+        public void Process(IPlayer player) => player.AddResources(this.resources);
     }
 }

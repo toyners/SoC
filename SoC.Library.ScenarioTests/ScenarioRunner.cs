@@ -448,12 +448,6 @@ namespace SoC.Library.ScenarioTests
             return this;
         }
 
-        public ScenarioRunner WithStartingResourcesForPlayer(string playerName, ResourceClutch playerResources)
-        {
-            this.startingResourcesByName.Add(playerName, playerResources);
-            return this;
-        }
-
         public ScenarioRunner WithTurnOrder(string[] playerNames)
         {
             var rolls = new uint[4];
