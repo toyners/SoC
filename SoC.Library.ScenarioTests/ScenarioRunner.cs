@@ -188,7 +188,7 @@ namespace SoC.Library.ScenarioTests
             return this;
         }
 
-        public ScenarioRunner ReceivesRoadSegmentPlacementEvent(string playername, int v1, int v2)
+        public ScenarioRunner ReceivesRoadSegmentPlacementEvent(string playername, uint v1, uint v2)
         {
             throw new NotImplementedException();
         }
