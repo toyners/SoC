@@ -26,6 +26,7 @@ namespace SoC.Library.ScenarioTests
         private PlayerAgent currentPlayerAgent;
         private GameBoard gameBoard;
         private ScenarioNumberGenerator numberGenerator;
+        private IPlayerPool playerFactory;
         #endregion
 
         #region Construction
@@ -195,10 +196,14 @@ namespace SoC.Library.ScenarioTests
             if (this.gameBoard == null)
                 this.gameBoard = new GameBoard(BoardSizes.Standard);
 
+            if (this.playerFactory == null)
+                this.playerFactory = new PlayerPool();
+
             var gameServer = new LocalGameManager(
                 this.numberGenerator,
                 this.gameBoard,
-                this.developmentCardHolder
+                this.developmentCardHolder,
+                this.playerFactory
             );
 
             if (!this.useServerTimer)
@@ -417,11 +422,6 @@ namespace SoC.Library.ScenarioTests
             return this;
         }
 
-        public class PlayerSetupActions : IPlayerSetupActions
-        {
-            public void Process(Jabberwocky.SoC.Library.Interfaces.IPlayer player) { }
-        }
-
         public ScenarioRunner WithInitialActionsFor(string playerName, params object[] actions)
         {
             throw new NotImplementedException();
@@ -429,8 +429,11 @@ namespace SoC.Library.ScenarioTests
 
         public ScenarioRunner WithInitialPlayerSetupFor(string playerName, params IPlayerSetupActions[] playerSetupActions)
         {
-            /*foreach(var playerSetupAction in playerSetupActions)
-                playerSetupAction.Process(this.playerAgentsByName[playerName]);*/
+            if (this.playerFactory == null)
+                this.playerFactory = new ScenarioPlayerFactory();
+
+            ((ScenarioPlayerFactory)this.playerFactory).AddPlayerSetup(playerName, playerSetupActions);
+
             return this;
         }
 

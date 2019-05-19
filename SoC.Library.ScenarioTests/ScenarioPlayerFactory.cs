@@ -9,7 +9,7 @@ namespace SoC.Library.ScenarioTests
     using Jabberwocky.SoC.Library.Interfaces;
     using Jabberwocky.SoC.Library.Store;
 
-    internal class ScenarioPlayerPool : IPlayerPool
+    internal class ScenarioPlayerFactory : IPlayerPool
     {
         private readonly Queue<string> names = new Queue<string>();
 
@@ -53,5 +53,8 @@ namespace SoC.Library.ScenarioTests
         {
             this.names.Enqueue(name);
         }
+
+        public void AddPlayerSetup(string name, IPlayerSetupActions[] playerSetupActions)
+            => throw new NotImplementedException();
     }
 }

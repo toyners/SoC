@@ -15,7 +15,6 @@ namespace Jabberwocky.SoC.Library
     public class LocalGameManager
     {
         #region Fields
-        
         private readonly ActionManager actionManager;
         private readonly ConcurrentQueue<PlayerAction> actionRequests = new ConcurrentQueue<PlayerAction>();
         private readonly IDevelopmentCardHolder developmentCardHolder;
@@ -23,6 +22,7 @@ namespace Jabberwocky.SoC.Library
         private readonly GameBoard gameBoard;
         private readonly ILog log = new Log();
         private readonly INumberGenerator numberGenerator;
+        private readonly IPlayerPool playerFactory;
         private IPlayer currentPlayer;
         private uint dice1, dice2;
         private Func<Guid> idGenerator;
@@ -43,7 +43,7 @@ namespace Jabberwocky.SoC.Library
         #endregion
 
         #region Construction
-        public LocalGameManager(INumberGenerator numberGenerator, GameBoard gameBoard, IDevelopmentCardHolder developmentCardHolder)
+        public LocalGameManager(INumberGenerator numberGenerator, GameBoard gameBoard, IDevelopmentCardHolder developmentCardHolder, IPlayerPool playerFactory)
         {
             this.numberGenerator = numberGenerator;
             this.gameBoard = gameBoard;
@@ -52,6 +52,7 @@ namespace Jabberwocky.SoC.Library
             this.idGenerator = () => { return Guid.NewGuid(); };
             this.eventRaiser = new EventRaiser();
             this.actionManager = new ActionManager();
+            this.playerFactory = playerFactory;
         }
         #endregion
 

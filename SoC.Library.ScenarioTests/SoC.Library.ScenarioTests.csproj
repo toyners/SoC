@@ -74,8 +74,8 @@
     <Compile Include="ScenarioDevelopmentCardHolder.cs" />
     <Compile Include="ScenarioNumberGenerator.cs" />
     <Compile Include="ScenarioPlayer.cs" />
-    <Compile Include="ScenarioPlayerPool.cs" />
     <Compile Include="ScenarioActions\ScenarioPlayKnightCardAction.cs" />
+    <Compile Include="ScenarioPlayerFactory.cs" />
     <Compile Include="ScenarioRunner.cs" />
     <Compile Include="Scenarios.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

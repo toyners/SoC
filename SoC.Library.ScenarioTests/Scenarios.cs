@@ -271,7 +271,7 @@ namespace SoC.Library.ScenarioTests
         {
             this.CompletePlayerInfrastructureSetup(args)
                 .WithNoResourceCollection()
-                .WithInitialPlayerSetupFor(Adam, Resources(ResourceClutch.Settlement))
+                .WithInitialPlayerSetupFor(Adam, Resources(ResourceClutch.Settlement), VictoryPoints(9))
                 .WithInitialActionsFor(Adam, null)
                 .WithPlayer(Adam)
                 .Run();
@@ -576,6 +576,8 @@ namespace SoC.Library.ScenarioTests
         }
 
         public static IPlayerSetupActions Resources(ResourceClutch resources) => new ResourceSetup(resources);
+
+        public static IPlayerSetupActions VictoryPoints(uint value) => new VictoryPointSetup(value);
     }
 
     public class ResourceSetup : IPlayerSetupActions
@@ -583,5 +585,12 @@ namespace SoC.Library.ScenarioTests
         private ResourceClutch resources;
         public ResourceSetup(ResourceClutch resources) => this.resources = resources;
         public void Process(IPlayer player) => player.AddResources(this.resources);
+    }
+
+    public class VictoryPointSetup : IPlayerSetupActions
+    {
+        private uint victoryPoints;
+        public VictoryPointSetup(uint victoryPoints) => this.victoryPoints = victoryPoints;
+        public void Process(IPlayer player) => throw new NotImplementedException();
     }
 }
