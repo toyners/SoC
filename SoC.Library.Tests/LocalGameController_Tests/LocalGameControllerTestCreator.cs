@@ -52,9 +52,9 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
             thirdOpponent.AddInitialInfrastructureChoices(ThirdSettlementOneLocation, ThirdRoadOneEnd, ThirdSettlementTwoLocation, ThirdRoadTwoEnd);
         }
 
-        public static IPlayerPool CreateMockPlayerPool(IPlayer player, params IPlayer[] otherPlayers)
+        public static IPlayerFactory CreateMockPlayerPool(IPlayer player, params IPlayer[] otherPlayers)
         {
-            var mockPlayerPool = Substitute.For<IPlayerPool>();
+            var mockPlayerPool = Substitute.For<IPlayerFactory>();
             mockPlayerPool.CreatePlayer().Returns(player);
 
             var index = 0;
@@ -100,7 +100,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
 
             MockPlayer player;
             MockComputerPlayer firstOpponent, secondOpponent, thirdOpponent;
-            IPlayerPool playerPool = null;
+            IPlayerFactory playerPool = null;
             if (playerSetup != null)
             {
                 player = playerSetup.Player;
@@ -171,9 +171,9 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
             public MockComputerPlayer FirstOpponent;
             public MockComputerPlayer SecondOpponent;
             public MockComputerPlayer ThirdOpponent;
-            public IPlayerPool PlayerPool;
+            public IPlayerFactory PlayerPool;
 
-            public PlayerSetup(MockPlayer player, MockComputerPlayer firstOpponent, MockComputerPlayer secondOpponent, MockComputerPlayer thirdOpponent, IPlayerPool playerPool)
+            public PlayerSetup(MockPlayer player, MockComputerPlayer firstOpponent, MockComputerPlayer secondOpponent, MockComputerPlayer thirdOpponent, IPlayerFactory playerPool)
             {
                 player.VerifyThatObjectIsNotNull();
                 firstOpponent.VerifyThatObjectIsNotNull();

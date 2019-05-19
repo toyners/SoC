@@ -94,7 +94,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
     }
 
     [Obsolete("Deprecated. Use LocalGameControllerTestCreator class.")]
-    protected LocalGameController CreateLocalGameController(INumberGenerator dice, IPlayerPool playerPool, IDevelopmentCardHolder developmentCardHolder)
+    protected LocalGameController CreateLocalGameController(INumberGenerator dice, IPlayerFactory playerPool, IDevelopmentCardHolder developmentCardHolder)
     {
       var localGameControllerCreator = new LocalGameControllerCreator();
 

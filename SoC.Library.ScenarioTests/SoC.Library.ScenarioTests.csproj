@@ -56,6 +56,8 @@
     <Compile Include="Instructions\EventInstruction.cs" />
     <Compile Include="Instructions\Instruction.cs" />
     <Compile Include="Instructions\PlayerStateInstruction.cs" />
+    <Compile Include="IPlayerSetupAction.cs" />
+    <Compile Include="ResourceSetup.cs" />
     <Compile Include="ScenarioEvents\ScenarioRequestStateEvent.cs" />
     <Compile Include="MockTurnTimer.cs" />
     <Compile Include="PlayerAgent.cs" />
@@ -79,6 +81,7 @@
     <Compile Include="ScenarioRunner.cs" />
     <Compile Include="Scenarios.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="VictoryPointSetup.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\SoC.Library\SoC.Library.csproj">
@@ -89,9 +92,7 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="PlayerTurn\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

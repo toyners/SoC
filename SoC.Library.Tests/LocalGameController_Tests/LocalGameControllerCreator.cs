@@ -9,7 +9,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
   public class LocalGameControllerCreator
   {
     #region Fields
-    private IPlayerPool playerPool;
+    private IPlayerFactory playerPool;
     private INumberGenerator dice;
     private GameBoard gameBoard;
     private IDevelopmentCardHolder developmentCardHolder;
@@ -26,7 +26,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     #endregion
 
     #region Methods
-    public LocalGameControllerCreator ChangePlayerPool(IPlayerPool playerPool)
+    public LocalGameControllerCreator ChangePlayerPool(IPlayerFactory playerPool)
     {
       this.playerPool = playerPool;
       return this;

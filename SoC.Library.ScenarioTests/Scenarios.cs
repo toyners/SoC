@@ -5,7 +5,6 @@ namespace SoC.Library.ScenarioTests
     using Jabberwocky.SoC.Library;
     using Jabberwocky.SoC.Library.GameBoards;
     using Jabberwocky.SoC.Library.GameEvents;
-    using Jabberwocky.SoC.Library.Interfaces;
 
     public class Scenarios
     {
@@ -273,7 +272,10 @@ namespace SoC.Library.ScenarioTests
                 .WithNoResourceCollection()
                 .WithInitialPlayerSetupFor(Adam, Resources(ResourceClutch.Settlement), VictoryPoints(9))
                 .WithInitialActionsFor(Adam, null)
-                .WithPlayer(Adam)
+                .WhenPlayer(Adam)
+                    .ReceivesDiceRollEvent(3, 3)
+                    .ThenPlaceRoadSegment(4, 3)
+                    .ReceivesRoadSegmentPlacementEvent(Adam, 4, 3)
                 .Run();
         }
 
@@ -575,22 +577,8 @@ namespace SoC.Library.ScenarioTests
                     .ThenConfirmGameStart();
         }
 
-        public static IPlayerSetupActions Resources(ResourceClutch resources) => new ResourceSetup(resources);
+        internal static IPlayerSetupAction Resources(ResourceClutch resources) => new ResourceSetup(resources);
 
-        public static IPlayerSetupActions VictoryPoints(uint value) => new VictoryPointSetup(value);
-    }
-
-    public class ResourceSetup : IPlayerSetupActions
-    {
-        private ResourceClutch resources;
-        public ResourceSetup(ResourceClutch resources) => this.resources = resources;
-        public void Process(IPlayer player) => player.AddResources(this.resources);
-    }
-
-    public class VictoryPointSetup : IPlayerSetupActions
-    {
-        private uint victoryPoints;
-        public VictoryPointSetup(uint victoryPoints) => this.victoryPoints = victoryPoints;
-        public void Process(IPlayer player) => throw new NotImplementedException();
+        internal static IPlayerSetupAction VictoryPoints(uint value) => new VictoryPointSetup(value);
     }
 }

@@ -8,7 +8,7 @@ using Jabberwocky.SoC.Library.Store;
 
 namespace SoC.Harness
 {
-  public class LocalPlayerPool : IPlayerPool
+  public class LocalPlayerPool : IPlayerFactory
   {
     private Queue<string> names = new Queue<string>(new[] { "Barbara", "Charlie", "Dana" });
 
@@ -37,7 +37,12 @@ namespace SoC.Harness
       throw new NotImplementedException();
     }
 
-    public Guid GetBankId()
+        public IPlayer CreatePlayer(string name, Guid id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Guid GetBankId()
     {
       throw new NotImplementedException();
     }

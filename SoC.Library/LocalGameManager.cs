@@ -22,7 +22,7 @@ namespace Jabberwocky.SoC.Library
         private readonly GameBoard gameBoard;
         private readonly ILog log = new Log();
         private readonly INumberGenerator numberGenerator;
-        private readonly IPlayerPool playerFactory;
+        private readonly IPlayerFactory playerFactory;
         private IPlayer currentPlayer;
         private uint dice1, dice2;
         private Func<Guid> idGenerator;
@@ -43,7 +43,7 @@ namespace Jabberwocky.SoC.Library
         #endregion
 
         #region Construction
-        public LocalGameManager(INumberGenerator numberGenerator, GameBoard gameBoard, IDevelopmentCardHolder developmentCardHolder, IPlayerPool playerFactory)
+        public LocalGameManager(INumberGenerator numberGenerator, GameBoard gameBoard, IDevelopmentCardHolder developmentCardHolder, IPlayerFactory playerFactory)
         {
             this.numberGenerator = numberGenerator;
             this.gameBoard = gameBoard;
@@ -70,7 +70,7 @@ namespace Jabberwocky.SoC.Library
 
         public void JoinGame(string playerName, GameController gameController)
         {
-            var player = new Player(playerName, this.idGenerator.Invoke());
+            var player = this.playerFactory.CreatePlayer(playerName, this.idGenerator.Invoke());
             this.players[this.playerIndex++] = player;
 
             this.eventRaiser.AddEventHandler(player.Id, gameController.GameEventHandler);

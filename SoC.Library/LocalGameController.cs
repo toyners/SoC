@@ -58,7 +58,7 @@ namespace Jabberwocky.SoC.Library
         #endregion
 
         #region Fields
-        private IPlayerPool playerPool;
+        private IPlayerFactory playerPool;
         private bool cardPlayedThisTurn;
         private HashSet<DevelopmentCard> cardsPlayed;
         private HashSet<DevelopmentCard> cardsPurchasedThisTurn;
@@ -82,10 +82,10 @@ namespace Jabberwocky.SoC.Library
         #endregion
 
         #region Construction
-        public LocalGameController(INumberGenerator dice, IPlayerPool playerPool, bool provideFullPlayerData = false)
+        public LocalGameController(INumberGenerator dice, IPlayerFactory playerPool, bool provideFullPlayerData = false)
             : this(dice, playerPool, new GameBoard(BoardSizes.Standard), new DevelopmentCardHolder(), provideFullPlayerData) { }
 
-        public LocalGameController(INumberGenerator dice, IPlayerPool computerPlayerFactory, GameBoard gameBoard, IDevelopmentCardHolder developmentCardHolder, bool provideFullPlayerData = false)
+        public LocalGameController(INumberGenerator dice, IPlayerFactory computerPlayerFactory, GameBoard gameBoard, IDevelopmentCardHolder developmentCardHolder, bool provideFullPlayerData = false)
         {
             this.numberGenerator = dice;
             this.playerPool = computerPlayerFactory;

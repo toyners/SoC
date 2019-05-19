@@ -9,16 +9,14 @@ namespace SoC.Library.ScenarioTests
     using Jabberwocky.SoC.Library.Interfaces;
     using Jabberwocky.SoC.Library.Store;
 
-    internal class ScenarioPlayerFactory : IPlayerPool
+    internal class ScenarioPlayerFactory : IPlayerFactory
     {
         private readonly Queue<string> names = new Queue<string>();
-
-        public Dictionary<string, IPlayer> PlayersByName { get; } = new Dictionary<string, IPlayer>();
+        private readonly Dictionary<string, IPlayerSetupAction[]> playerSetupActionsByName = new Dictionary<string, IPlayerSetupAction[]>();
 
         public IPlayer CreateComputerPlayer(GameBoard gameBoard, LocalGameController localGameController, INumberGenerator numberGenerator)
         {
             var player = new ScenarioComputerPlayer(this.names.Dequeue(), gameBoard, localGameController, numberGenerator);
-            this.PlayersByName.Add(player.Name, player);
             return player;
         }
 
@@ -29,9 +27,7 @@ namespace SoC.Library.ScenarioTests
 
         public IPlayer CreatePlayer()
         {
-            var player = new ScenarioPlayer(this.names.Dequeue());
-            this.PlayersByName.Add(player.Name, player);
-            return player;
+            throw new NotImplementedException();
         }
 
         public IPlayer CreatePlayer(XmlReader reader)
@@ -53,8 +49,22 @@ namespace SoC.Library.ScenarioTests
         {
             this.names.Enqueue(name);
         }
+        
+        public void AddPlayerSetup(string playerName, IPlayerSetupAction[] playerSetupActions)
+            => this.playerSetupActionsByName.Add(playerName, playerSetupActions);
 
-        public void AddPlayerSetup(string name, IPlayerSetupActions[] playerSetupActions)
-            => throw new NotImplementedException();
+        public IPlayer CreatePlayer(string name, Guid id)
+        {
+            var scenarioPlayer = new ScenarioPlayer(name, id);
+            if (this.playerSetupActionsByName.ContainsKey(name))
+            {
+                foreach (var playerSetupAction  in this.playerSetupActionsByName[name])
+                {
+                    playerSetupAction.Process(scenarioPlayer);
+                }
+            }
+
+            return scenarioPlayer;
+        }
     }
 }

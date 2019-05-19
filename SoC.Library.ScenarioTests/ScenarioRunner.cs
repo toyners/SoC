@@ -26,7 +26,7 @@ namespace SoC.Library.ScenarioTests
         private PlayerAgent currentPlayerAgent;
         private GameBoard gameBoard;
         private ScenarioNumberGenerator numberGenerator;
-        private IPlayerPool playerFactory;
+        private IPlayerFactory playerFactory;
         #endregion
 
         #region Construction
@@ -186,6 +186,11 @@ namespace SoC.Library.ScenarioTests
             var eventInstruction = new EventInstruction(gameEvent);
             this.currentPlayerAgent.AddInstruction(eventInstruction);
             return this;
+        }
+
+        public ScenarioRunner ReceivesRoadSegmentPlacementEvent(string playername, int v1, int v2)
+        {
+            throw new NotImplementedException();
         }
 
         public void Run()
@@ -427,7 +432,7 @@ namespace SoC.Library.ScenarioTests
             throw new NotImplementedException();
         }
 
-        public ScenarioRunner WithInitialPlayerSetupFor(string playerName, params IPlayerSetupActions[] playerSetupActions)
+        public ScenarioRunner WithInitialPlayerSetupFor(string playerName, params IPlayerSetupAction[] playerSetupActions)
         {
             if (this.playerFactory == null)
                 this.playerFactory = new ScenarioPlayerFactory();
@@ -491,10 +496,5 @@ namespace SoC.Library.ScenarioTests
             return this.playerAgentsByName[playerName].Id;
         }
         #endregion
-    }
-
-    public interface IPlayerSetupActions
-    {
-        void Process(IPlayer player);
     }
 }

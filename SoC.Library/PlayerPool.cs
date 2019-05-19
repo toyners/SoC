@@ -8,7 +8,7 @@ namespace Jabberwocky.SoC.Library
     using System.Collections.Generic;
     using Jabberwocky.SoC.Library.Store;
 
-    public class PlayerPool : IPlayerPool
+    public class PlayerPool : IPlayerFactory
     {
         private Guid bankId = Guid.NewGuid();
         private Queue<string> names = new Queue<string>(new[] { "Bob", "Carol", "Dana" });
@@ -60,6 +60,11 @@ namespace Jabberwocky.SoC.Library
         public IPlayer CreatePlayer(IGameDataSection<GameDataSectionKeys, GameDataValueKeys, ResourceTypes> data)
         {
             return new Player(data);
+        }
+
+        public IPlayer CreatePlayer(string name, Guid id)
+        {
+            throw new NotImplementedException();
         }
 
         /// <summary>

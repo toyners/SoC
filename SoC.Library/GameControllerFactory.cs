@@ -9,11 +9,11 @@ namespace Jabberwocky.SoC.Library
 
     public class GameControllerFactory
     {
-        private IPlayerPool computerPlayerFactory;
+        private IPlayerFactory computerPlayerFactory;
         private IDiceFactory diceRollerFactory;
 
         #region Construction
-        public GameControllerFactory(IDiceFactory diceRollerFactory, IPlayerPool computerPlayerFactory)
+        public GameControllerFactory(IDiceFactory diceRollerFactory, IPlayerFactory computerPlayerFactory)
         {
             this.diceRollerFactory = diceRollerFactory;
             this.computerPlayerFactory = computerPlayerFactory;

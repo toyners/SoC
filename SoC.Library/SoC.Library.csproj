@@ -68,6 +68,7 @@
     <Compile Include="GameEvents\RoadSegmentPlacedEvent.cs" />
     <Compile Include="GameToken.cs" />
     <Compile Include="ILog.cs" />
+    <Compile Include="Interfaces\IPlayerFactory.cs" />
     <Compile Include="Log.cs" />
     <Compile Include="PlayerActions\AcceptDirectTradeAction.cs" />
     <Compile Include="PlayerActions\AnswerDirectTradeOfferAction.cs" />
@@ -142,7 +143,6 @@
     <Compile Include="PlayerPool.cs" />
     <Compile Include="ErrorDetails.cs" />
     <Compile Include="Interfaces\IComputerPlayer.cs" />
-    <Compile Include="Interfaces\IPlayerPool.cs" />
     <Compile Include="PathFinder.cs" />
     <Compile Include="Player.cs" />
     <Compile Include="GameEvents\PlayMonopolyCardEvent.cs" />
