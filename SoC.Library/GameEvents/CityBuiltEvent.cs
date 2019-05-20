@@ -3,7 +3,7 @@ namespace Jabberwocky.SoC.Library.GameEvents
 {
     using System;
 
-    public class CityBuiltEvent : SettlementBuiltEvent
+    public class CityBuiltEvent : SettlementPlacedEvent
     {
         public CityBuiltEvent(Guid playerId, uint location) : base(playerId, location)
         {

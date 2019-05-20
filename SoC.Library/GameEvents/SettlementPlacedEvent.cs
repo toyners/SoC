@@ -3,11 +3,11 @@ namespace Jabberwocky.SoC.Library.GameEvents
 {
     using System;
 
-    public class SettlementBuiltEvent : GameEvent
+    public class SettlementPlacedEvent : GameEvent
     {
         public readonly uint Location;
 
-        public SettlementBuiltEvent(Guid playerId, uint location) : base(playerId)
+        public SettlementPlacedEvent(Guid playerId, uint location) : base(playerId)
         {
             this.Location = location;
         }
@@ -19,7 +19,7 @@ namespace Jabberwocky.SoC.Library.GameEvents
                 return false;
             }
 
-            return this.Location == ((SettlementBuiltEvent)obj).Location;
+            return this.Location == ((SettlementPlacedEvent)obj).Location;
         }
 
         public override string ToString()

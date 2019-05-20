@@ -188,9 +188,32 @@ namespace SoC.Library.ScenarioTests
             return this;
         }
 
-        public ScenarioRunner ReceivesRoadSegmentPlacementEvent(string playername, uint v1, uint v2)
+        public ScenarioRunner ReceivesRoadSegmentPlacementEvent(uint roadSegmentStartLocation, uint roadSegmentEndLocation)
         {
-            throw new NotImplementedException();
+            var gameEvent = new RoadSegmentPlacedEvent(this.playerAgentsByName[this.currentPlayerAgent.Name].Id, roadSegmentStartLocation, roadSegmentEndLocation);
+            this.currentPlayerAgent.AddInstruction(new EventInstruction(gameEvent));
+            return this;
+        }
+
+        public ScenarioRunner ReceivesRoadSegmentPlacementEvent(string playerName, uint roadSegmentStartLocation, uint roadSegmentEndLocation)
+        {
+            var gameEvent = new RoadSegmentPlacedEvent(this.playerAgentsByName[playerName].Id, roadSegmentStartLocation, roadSegmentEndLocation);
+            this.currentPlayerAgent.AddInstruction(new EventInstruction(gameEvent));
+            return this;
+        }
+
+        public ScenarioRunner ReceivesSettlementPlacementEvent(uint settlementLocation)
+        {
+            var gameEvent = new SettlementPlacedEvent(this.playerAgentsByName[this.currentPlayerAgent.Name].Id, settlementLocation);
+            this.currentPlayerAgent.AddInstruction(new EventInstruction(gameEvent));
+            return this;
+        }
+
+        public ScenarioRunner ReceivesSettlementPlacementEvent(string playerName, uint settlementLocation)
+        {
+            var gameEvent = new SettlementPlacedEvent(this.playerAgentsByName[playerName].Id, settlementLocation);
+            this.currentPlayerAgent.AddInstruction(new EventInstruction(gameEvent));
+            return this;
         }
 
         public void Run()
@@ -367,10 +390,28 @@ namespace SoC.Library.ScenarioTests
             return this;
         }
 
+        public ScenarioRunner ThenPlaceSettlement(uint settlementLocation)
+        {
+            this.AddActionInstruction(ActionInstruction.OperationTypes.PlaceSettlement,
+                new object[] { settlementLocation });
+            return this;
+        }
+
         public ScenarioRunner ThenPlaceStartingInfrastructure(uint settlementLocation, uint roadEndLocation)
         {
             this.AddActionInstruction(ActionInstruction.OperationTypes.PlaceStartingInfrastructure,
                 new object[] { settlementLocation, roadEndLocation });
+            return this;
+        }
+
+        public ScenarioRunner VerifyAllPlayersReceivedGameWonEvent(string winningPlayerName, uint victoryPoints)
+        {
+            this.playerAgents.ForEach(playerAgent =>
+            {
+                var gameEvent = new GameWinEvent(this.GetPlayerId(winningPlayerName), victoryPoints);
+                playerAgent.AddInstruction(new EventInstruction(gameEvent));
+            });
+
             return this;
         }
 

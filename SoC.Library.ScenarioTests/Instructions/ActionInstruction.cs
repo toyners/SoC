@@ -14,6 +14,7 @@ namespace SoC.Library.ScenarioTests.Instructions
             EndOfTurn,
             MakeDirectTradeOffer,
             PlaceRoadSegment,
+            PlaceSettlement,
             PlaceStartingInfrastructure,
             RequestState,
             QuitGame,

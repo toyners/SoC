@@ -435,6 +435,8 @@ namespace Jabberwocky.SoC.Library
             var player = this.playersById[requestStateAction.InitiatingPlayerId];
             var requestStateEvent = new RequestStateEvent(player.Id);
             requestStateEvent.Resources = player.Resources;
+            requestStateEvent.RoadSegments = player.RemainingRoadSegments;
+            requestStateEvent.VictoryPoints = player.VictoryPoints;
             this.RaiseEvent(requestStateEvent, player);
         }
 

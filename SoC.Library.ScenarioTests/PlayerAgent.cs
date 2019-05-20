@@ -88,8 +88,6 @@ namespace SoC.Library.ScenarioTests
             }
         }
 
-        
-
         public List<Tuple<GameEvent, ActionInstruction, bool>> GetEventResults()
         {
             var eventResults = new List<Tuple<GameEvent, ActionInstruction, bool>>();
@@ -277,6 +275,8 @@ namespace SoC.Library.ScenarioTests
         private bool IsRequestStateEventVerified(ScenarioRequestStateEvent expectedEvent, RequestStateEvent actualEvent)
         {
             var result = expectedEvent.Resources.HasValue && expectedEvent.Resources.Value == actualEvent.Resources;
+            result &= expectedEvent.RoadSegment.HasValue && expectedEvent.RoadSegment.Value == actualEvent.RoadSegments;
+            result &= expectedEvent.VictoryPoints.HasValue && expectedEvent.VictoryPoints.Value == actualEvent.VictoryPoints;
 
             this.log.Add($"{(result ? "MATCHED" : "NOT MATCHED")} - Expected {expectedEvent.SimpleTypeName}, Actual {actualEvent.SimpleTypeName}");
             if (!result ||

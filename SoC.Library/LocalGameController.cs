@@ -127,7 +127,7 @@ namespace Jabberwocky.SoC.Library
         public Action<RoadSegmentPlacedEvent> RoadSegmentBuiltEvent { get; set; }
         public Action<int> RobberEvent { get; set; }
         public Action<Dictionary<Guid, int>> RobbingChoicesEvent { get; set; }
-        public Action<SettlementBuiltEvent> SettlementBuiltEvent { get; set; }
+        public Action<SettlementPlacedEvent> SettlementBuiltEvent { get; set; }
         public Action<GameBoardUpdate> StartInitialSetupTurnEvent { get; set; }
         public Action<GameToken> StartPlayerTurnEvent { get; set; }
         public Action<Guid> StartOpponentTurnEvent { get; set; }
@@ -177,7 +177,7 @@ namespace Jabberwocky.SoC.Library
             }
 
             this.BuildSettlement(location);
-            this.SettlementBuiltEvent?.Invoke(new SettlementBuiltEvent(this.mainPlayer.Id, location));
+            this.SettlementBuiltEvent?.Invoke(new SettlementPlacedEvent(this.mainPlayer.Id, location));
             this.CheckMainPlayerIsWinner();
         }
 

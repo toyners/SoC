@@ -16,7 +16,7 @@ namespace Jabberwocky.SoC.Library.Store
         public string Name;
         public List<DevelopmentCard> PlayedCards;
         public ResourceClutch Resources;
-        public int RoadSegmentsBuilt;
+        public uint RoadSegmentsBuilt;
         public int SettlementsBuilt;
         public uint VictoryPoints; // TODO: This should derived from the other properties
 
