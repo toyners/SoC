@@ -14,17 +14,6 @@ namespace Jabberwocky.SoC.Library.GameEvents
             this.EndLocation = endLocation;
         }
 
-        /*public override bool Equals(object obj)
-        {
-            if (!base.Equals(obj))
-            {
-                return false;
-            }
-
-            var other = (RoadSegmentPlacedEvent)obj;
-            return this.StartLocation == other.StartLocation && this.EndLocation == other.EndLocation;
-        }*/
-
         public override string ToString()
         {
             return $"{base.ToString()} from {this.StartLocation} to {this.EndLocation}";
