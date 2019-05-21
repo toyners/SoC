@@ -9,6 +9,7 @@ namespace Jabberwocky.SoC.Library.Interfaces
     public interface IPlayer
     {
         #region Properties
+        bool CanPlaceRoadSegment { get; }
         int CitiesBuilt { get; }
         bool HasLargestArmy { get; set; }
         bool HasLongestRoad { get; set; }
@@ -22,7 +23,7 @@ namespace Jabberwocky.SoC.Library.Interfaces
         uint RemainingRoadSegments { get; }
         int RemainingSettlements { get; }
         ResourceClutch Resources { get; }
-        uint RoadSegmentsBuilt { get; }
+        uint PlacedRoadSegments { get; }
         int SettlementsBuilt { get; }
         uint VictoryPoints { get; }
 

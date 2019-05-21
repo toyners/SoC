@@ -32,7 +32,7 @@ namespace Jabberwocky.SoC.Library.Store
             this.Name = player.Name;
             this.PlayedCards = player.PlayedCards;
             this.Resources = player.Resources;
-            this.RoadSegmentsBuilt = player.RoadSegmentsBuilt;
+            this.RoadSegmentsBuilt = player.PlacedRoadSegments;
             this.SettlementsBuilt = player.SettlementsBuilt;
             this.VictoryPoints = player.VictoryPoints;
         }

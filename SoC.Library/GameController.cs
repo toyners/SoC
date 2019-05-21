@@ -52,6 +52,11 @@ namespace Jabberwocky.SoC.Library
             this.SendAction(new PlaceRoadSegmentAction(this.playerId, roadSegmentStartLocation, roadSegmentEndLocation));
         }
 
+        public void PlaceSettlement(uint v)
+        {
+            throw new NotImplementedException();
+        }
+
         public void PlaceSetupInfrastructure(uint settlementLocation, uint roadEndLocation)
         {
             this.SendAction(new PlaceSetupInfrastructureAction(this.playerId, settlementLocation, roadEndLocation));

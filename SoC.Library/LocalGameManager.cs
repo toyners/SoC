@@ -355,6 +355,30 @@ namespace Jabberwocky.SoC.Library
             });
         }
 
+        private void ProcessPlaceRoadSegmentAction(PlaceRoadSegmentAction placeRoadSegmentAction)
+        {
+            try
+            {
+                if (!this.currentPlayer.CanPlaceRoadSegment)
+                {
+                    // TODO: Notify player
+                    return;
+                }
+                this.gameBoard.PlaceRoadSegment(this.currentPlayer.Id,
+                    placeRoadSegmentAction.StartLocation,
+                    placeRoadSegmentAction.EndLocation);
+                this.currentPlayer.PlaceRoadSegment();
+
+                this.RaiseEvent(new RoadSegmentPlacedEvent(this.currentPlayer.Id, 
+                    placeRoadSegmentAction.StartLocation,
+                    placeRoadSegmentAction.EndLocation));
+            }
+            catch (GameBoard.PlacementException pe)
+            {
+                // TODO: Notify player
+            }
+        }
+
         private void ProcessPlaceSetupInfrastructureAction(PlaceSetupInfrastructureAction placeSetupInfrastructureAction)
         {
             var player = this.playersById[placeSetupInfrastructureAction.InitiatingPlayerId];
@@ -399,7 +423,8 @@ namespace Jabberwocky.SoC.Library
 
             if (playerAction is PlaceRoadSegmentAction placeRoadSegmentAction)
             {
-                throw new NotImplementedException();
+                this.ProcessPlaceRoadSegmentAction(placeRoadSegmentAction);
+                return false;
             }
 
             if (playerAction is QuitGameAction quitGameAction)

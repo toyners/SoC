@@ -1423,7 +1423,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
         public class PlacementException : Exception
         {
             public PlacementException() : base() { }
-            public PlacementException(String message) : base(message) { }
+            public PlacementException(string message) : base(message) { }
         }
 
         public class LocationProduction

@@ -60,12 +60,13 @@ namespace Jabberwocky.SoC.Library
             this.Name = playerModel.Name;
             this.PlayedCards = playerModel.PlayedCards;
             this.Resources = playerModel.Resources;
-            this.RoadSegmentsBuilt = playerModel.RoadSegmentsBuilt;
+            this.PlacedRoadSegments = playerModel.RoadSegmentsBuilt;
             this.SettlementsBuilt = playerModel.SettlementsBuilt;
         }
         #endregion
 
         #region Properties
+        public bool CanPlaceRoadSegment => this.RemainingRoadSegments > 0 && this.Resources > ResourceClutch.RoadSegment;
         public int CitiesBuilt { get; protected set; }
         public bool HasLargestArmy
         {
@@ -116,10 +117,10 @@ namespace Jabberwocky.SoC.Library
         public string Name { get; private set; }
         public List<DevelopmentCard> PlayedCards { get; protected set; }
         public int RemainingCities { get { return TotalCities - this.CitiesBuilt; } }
-        public uint RemainingRoadSegments { get { return TotalRoadSegments - this.RoadSegmentsBuilt; } }
+        public uint RemainingRoadSegments { get { return TotalRoadSegments - this.PlacedRoadSegments; } }
         public int RemainingSettlements { get { return TotalSettlements - this.SettlementsBuilt; } }
         public ResourceClutch Resources { get; protected set; }
-        public uint RoadSegmentsBuilt { get; protected set; }
+        public uint PlacedRoadSegments { get; protected set; }
         public int SettlementsBuilt { get; protected set; }
         public uint VictoryPoints { get; protected set; }
 
@@ -243,9 +244,8 @@ namespace Jabberwocky.SoC.Library
 
         public void PlaceRoadSegment()
         {
-            this.BrickCount--;
-            this.LumberCount--;
-            this.RoadSegmentsBuilt++;
+            this.Resources -= ResourceClutch.RoadSegment;
+            this.PlacedRoadSegments++;
         }
 
         public void PlaceSettlement()
@@ -260,7 +260,7 @@ namespace Jabberwocky.SoC.Library
 
         public void PlaceStartingInfrastructure()
         {
-            this.RoadSegmentsBuilt++;
+            this.PlacedRoadSegments++;
             this.SettlementsBuilt++;
             this.VictoryPoints++;
         }

@@ -1453,7 +1453,7 @@ namespace Jabberwocky.SoC.Library
         private bool PlayerHasJustBuiltTheLongestRoad(out Guid previousPlayerId)
         {
             previousPlayerId = Guid.Empty;
-            if (this.currentPlayer.RoadSegmentsBuilt < 5)
+            if (this.currentPlayer.PlacedRoadSegments < 5)
             {
                 return false;
             }

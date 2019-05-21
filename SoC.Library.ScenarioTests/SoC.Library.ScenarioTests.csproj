@@ -58,6 +58,7 @@
     <Compile Include="Instructions\PlayerStateInstruction.cs" />
     <Compile Include="IPlayerSetupAction.cs" />
     <Compile Include="ResourceSetup.cs" />
+    <Compile Include="RoadSegmentSetup.cs" />
     <Compile Include="ScenarioEvents\ScenarioRequestStateEvent.cs" />
     <Compile Include="MockTurnTimer.cs" />
     <Compile Include="PlayerAgent.cs" />
