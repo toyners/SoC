@@ -397,6 +397,11 @@ namespace Jabberwocky.SoC.Library
                 return false;
             }
 
+            if (playerAction is PlaceRoadSegmentAction placeRoadSegmentAction)
+            {
+                throw new NotImplementedException();
+            }
+
             if (playerAction is QuitGameAction quitGameAction)
             {
                 return this.ProcessQuitGameAction(quitGameAction);
@@ -464,8 +469,9 @@ namespace Jabberwocky.SoC.Library
             foreach (var player in this.PlayersExcept(this.currentPlayer.Id))
                 this.actionManager.SetExpectedActionsForPlayer(player.Id, null);
             this.actionManager.SetExpectedActionsForPlayer(this.currentPlayer.Id,
-                typeof(EndOfTurnAction), typeof(QuitGameAction), typeof(MakeDirectTradeOfferAction));
-            this.RaiseEvent(new StartPlayerTurnEvent(), this.currentPlayer /*, token*/);
+                typeof(EndOfTurnAction), typeof(QuitGameAction), typeof(MakeDirectTradeOfferAction),
+                typeof(PlaceRoadSegmentAction));
+            this.RaiseEvent(new StartPlayerTurnEvent(), this.currentPlayer);
         }
 
         private void StartTurn()

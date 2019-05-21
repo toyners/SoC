@@ -203,6 +203,11 @@ namespace SoC.Library.ScenarioTests
                     this.gameController.MakeDirectTradeOffer((ResourceClutch)action.Parameters[0]);
                     break;
                 }
+                case ActionInstruction.OperationTypes.PlaceRoadSegment:
+                {
+                    this.gameController.PlaceRoadSegment((uint)action.Parameters[0], (uint)action.Parameters[1]);
+                    break;
+                }
                 case ActionInstruction.OperationTypes.PlaceStartingInfrastructure:
                 {
                     this.gameController.PlaceSetupInfrastructure((uint)action.Parameters[0], (uint)action.Parameters[1]);

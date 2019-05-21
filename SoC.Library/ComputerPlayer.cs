@@ -136,7 +136,7 @@ namespace Jabberwocky.SoC.Library
 
                                     var destination = roadPathCandidate.Value[index++];
 
-                                    var roadBuildSegmentAction = new BuildRoadSegmentAction(roadPathCandidate.Key, destination);
+                                    var roadBuildSegmentAction = new PlaceRoadSegmentAction(Guid.Empty, roadPathCandidate.Key, destination);
                                     this.actions.Enqueue(roadBuildSegmentAction);
                                 }
                             }
@@ -155,7 +155,7 @@ namespace Jabberwocky.SoC.Library
 
                             Action action = () =>
                             {
-                                var roadBuildSegmentAction = new BuildRoadSegmentAction(kv.Key, destination);
+                                var roadBuildSegmentAction = new PlaceRoadSegmentAction(Guid.Empty, kv.Key, destination);
                                 this.actions.Enqueue(roadBuildSegmentAction);
                             };
 

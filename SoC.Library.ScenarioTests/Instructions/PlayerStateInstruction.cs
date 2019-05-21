@@ -9,7 +9,7 @@ namespace SoC.Library.ScenarioTests.Instructions
         private readonly PlayerAgent playerAgent;
         private readonly ScenarioRunner runner;
         private ResourceClutch? resources;
-        private uint? roadSegmentCount;
+        private uint? roadSegments;
         private uint? victoryPoints;
 
         public PlayerStateInstruction(PlayerAgent playerAgent, ScenarioRunner runner)
@@ -31,7 +31,7 @@ namespace SoC.Library.ScenarioTests.Instructions
 
         public PlayerStateInstruction RoadSegments(uint roadSegmentCount)
         {
-            this.roadSegmentCount = roadSegmentCount;
+            this.roadSegments = roadSegmentCount;
             return this;
         }
 
@@ -55,12 +55,10 @@ namespace SoC.Library.ScenarioTests.Instructions
         public GameEvent GetEvent()
         {
             var requestStateEvent = new ScenarioRequestStateEvent(this.playerAgent.Id);
-            requestStateEvent.Resources = this.resources.Value;
-            requestStateEvent.RoadSegment = this.roadSegmentCount.Value;
-            requestStateEvent.VictoryPoints = this.victoryPoints.Value;
+            requestStateEvent.Resources = this.resources.GetValueOrDefault();
+            requestStateEvent.RoadSegment = this.roadSegments.GetValueOrDefault();
+            requestStateEvent.VictoryPoints = this.victoryPoints.GetValueOrDefault();
             return requestStateEvent;
         }
-
-        
     }
 }

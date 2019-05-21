@@ -81,6 +81,7 @@
     <Compile Include="PlayerActions\DropResourcesAction.cs" />
     <Compile Include="PlayerActions\EndOfTurnAction.cs" />
     <Compile Include="PlayerActions\MakeDirectTradeOfferAction.cs" />
+    <Compile Include="PlayerActions\PlaceRoadSegmentAction.cs" />
     <Compile Include="PlayerActions\PlaceSetupInfrastructureAction.cs" />
     <Compile Include="PlayerActions\PlaceRobberAction.cs" />
     <Compile Include="PlayerActions\PlayerAction.cs" />
@@ -130,7 +131,6 @@
     <Compile Include="Store\IGameDataReader.cs" />
     <Compile Include="ProductionFactorComparison.cs" />
     <Compile Include="Enums\ComputerPlayerActionTypes.cs" />
-    <Compile Include="PlayerActions\BuildRoadSeqmentsAction.cs" />
     <Compile Include="GameEvents\CityBuiltEvent.cs" />
     <Compile Include="PlayerActions\TradeWithBankAction.cs" />
     <Compile Include="GameEvents\LongestRoadBuiltEvent.cs" />

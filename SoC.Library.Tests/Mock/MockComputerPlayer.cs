@@ -25,7 +25,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.Mock
         private Queue<PlayMonopolyCardInstruction> playMonopolyCardActions = new Queue<PlayMonopolyCardInstruction>();
         private Queue<PlayYearOfPlentyCardInstruction> playYearOfPlentyCardActions = new Queue<PlayYearOfPlentyCardInstruction>();
         private Queue<TradeWithBankInstruction> tradeWithBankInstructions = new Queue<TradeWithBankInstruction>();
-        private Queue<BuildRoadSegmentAction> buildRoadSegmentActions = new Queue<BuildRoadSegmentAction>();
+        private Queue<PlaceRoadSegmentAction> buildRoadSegmentActions = new Queue<PlaceRoadSegmentAction>();
         public Queue<UInt32> SettlementLocations = new Queue<UInt32>();
         public Queue<Tuple<UInt32, UInt32>> InitialInfrastructure = new Queue<Tuple<UInt32, UInt32>>();
         public Queue<ComputerPlayerActionTypes> Actions = new Queue<ComputerPlayerActionTypes>();
@@ -111,7 +111,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.Mock
                 var startLocation = instruction.Locations[index];
                 var endLocation = instruction.Locations[index + 1];
 
-                this.buildRoadSegmentActions.Enqueue(new BuildRoadSegmentAction(startLocation, endLocation));
+                this.buildRoadSegmentActions.Enqueue(new PlaceRoadSegmentAction(Guid.Empty, startLocation, endLocation));
                 this.Actions.Enqueue(ComputerPlayerActionTypes.BuildRoadSegment);
             }
 
