@@ -266,8 +266,7 @@ namespace SoC.Library.ScenarioTests
                 .WithNoResourceCollection()
                 .WithInitialPlayerSetupFor(
                     Adam,
-                    Resources(ResourceClutch.RoadSegment + ResourceClutch.Settlement),
-                    VictoryPoints(9))
+                    Resources(ResourceClutch.RoadSegment + ResourceClutch.Settlement))
                 .WhenPlayer(Adam)
                     .ReceivesDiceRollEvent(3, 3)
                     .ThenPlaceRoadSegment(4, 3)
@@ -298,7 +297,7 @@ namespace SoC.Library.ScenarioTests
                 .WithInitialPlayerSetupFor(
                     Adam, 
                     Resources(ResourceClutch.RoadSegment + ResourceClutch.Settlement),
-                    VictoryPoints(9))
+                    VictoryPoints(7)) // Account for placing infrastructure
                 .WhenPlayer(Adam)
                     .ReceivesDiceRollEvent(3, 3)
                     .ThenPlaceRoadSegment(4, 3)
