@@ -34,6 +34,7 @@ namespace Jabberwocky.SoC.Library.Interfaces
         int OreCount { get; }
         int WoolCount { get; }
         int ResourcesCount { get; }
+        bool CanPlaceSettlement { get; }
         #endregion
 
         #region Methods

@@ -3,11 +3,11 @@ namespace Jabberwocky.SoC.Library.PlayerActions
 {
     using System;
 
-    public class BuildSettlementAction : PlayerAction
+    public class PlaceSettlementAction : PlayerAction
     {
         public readonly uint SettlementLocation;
 
-        public BuildSettlementAction(uint settlementLocation) : base(Guid.Empty)
+        public PlaceSettlementAction(Guid playerId, uint settlementLocation) : base(playerId)
         {
             this.SettlementLocation = settlementLocation;
         }

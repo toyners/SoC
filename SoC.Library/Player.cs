@@ -66,7 +66,8 @@ namespace Jabberwocky.SoC.Library
         #endregion
 
         #region Properties
-        public bool CanPlaceRoadSegment => this.RemainingRoadSegments > 0 && this.Resources > ResourceClutch.RoadSegment;
+        public bool CanPlaceRoadSegment => this.RemainingRoadSegments > 0 && this.Resources >= ResourceClutch.RoadSegment;
+        public bool CanPlaceSettlement => this.RemainingSettlements > 0 && this.Resources >= ResourceClutch.Settlement;
         public int CitiesBuilt { get; protected set; }
         public bool HasLargestArmy
         {
@@ -250,11 +251,8 @@ namespace Jabberwocky.SoC.Library
 
         public void PlaceSettlement()
         {
-            this.BrickCount--;
-            this.GrainCount--;
-            this.LumberCount--;
-            this.WoolCount--;
-            this.SettlementsBuilt++;
+            this.Resources -= ResourceClutch.Settlement;
+            //this.SettlementsBuilt++; //TODO: Add scenario to test this
             this.VictoryPoints++;
         }
 

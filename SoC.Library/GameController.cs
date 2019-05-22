@@ -54,7 +54,7 @@ namespace Jabberwocky.SoC.Library
 
         public void PlaceSettlement(uint settlementLocation)
         {
-            throw new NotImplementedException();
+            this.SendAction(new PlaceSettlementAction(this.playerId, settlementLocation));
         }
 
         public void PlaceSetupInfrastructure(uint settlementLocation, uint roadEndLocation)

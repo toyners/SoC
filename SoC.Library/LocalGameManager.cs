@@ -379,6 +379,30 @@ namespace Jabberwocky.SoC.Library
             }
         }
 
+        private void ProcessPlaceSettlementAction(PlaceSettlementAction placeSettlementAction)
+        {
+            try
+            {
+                if (!this.currentPlayer.CanPlaceSettlement)
+                {
+                    // TODO: Notify player
+                    return;
+                }
+                this.gameBoard.PlaceSettlement(this.currentPlayer.Id,
+                    placeSettlementAction.SettlementLocation);
+                this.currentPlayer.PlaceSettlement();
+
+                this.RaiseEvent(new SettlementPlacedEvent(this.currentPlayer.Id,
+                    placeSettlementAction.SettlementLocation));
+
+
+            }
+            catch (GameBoard.PlacementException pe)
+            {
+                // TODO: Notify player
+            }
+        }
+
         private void ProcessPlaceSetupInfrastructureAction(PlaceSetupInfrastructureAction placeSetupInfrastructureAction)
         {
             var player = this.playersById[placeSetupInfrastructureAction.InitiatingPlayerId];
@@ -424,6 +448,12 @@ namespace Jabberwocky.SoC.Library
             if (playerAction is PlaceRoadSegmentAction placeRoadSegmentAction)
             {
                 this.ProcessPlaceRoadSegmentAction(placeRoadSegmentAction);
+                return false;
+            }
+
+            if (playerAction is PlaceSettlementAction placeSettlementAction)
+            {
+                this.ProcessPlaceSettlementAction(placeSettlementAction);
                 return false;
             }
 
@@ -495,7 +525,7 @@ namespace Jabberwocky.SoC.Library
                 this.actionManager.SetExpectedActionsForPlayer(player.Id, null);
             this.actionManager.SetExpectedActionsForPlayer(this.currentPlayer.Id,
                 typeof(EndOfTurnAction), typeof(QuitGameAction), typeof(MakeDirectTradeOfferAction),
-                typeof(PlaceRoadSegmentAction));
+                typeof(PlaceRoadSegmentAction), typeof(PlaceSettlementAction));
             this.RaiseEvent(new StartPlayerTurnEvent(), this.currentPlayer);
         }
 

@@ -74,7 +74,6 @@
     <Compile Include="PlayerActions\AcceptDirectTradeAction.cs" />
     <Compile Include="PlayerActions\AnswerDirectTradeOfferAction.cs" />
     <Compile Include="PlayerActions\BuildCityAction.cs" />
-    <Compile Include="PlayerActions\BuildSettlementAction.cs" />
     <Compile Include="PlayerActions\BuildStartingInfrastructure.cs" />
     <Compile Include="PlayerActions\BuyDevelopmentCardAction.cs" />
     <Compile Include="PlayerActions\ConfirmGameStartAction.cs" />
@@ -82,6 +81,7 @@
     <Compile Include="PlayerActions\EndOfTurnAction.cs" />
     <Compile Include="PlayerActions\MakeDirectTradeOfferAction.cs" />
     <Compile Include="PlayerActions\PlaceRoadSegmentAction.cs" />
+    <Compile Include="PlayerActions\PlaceSettlementAction.cs" />
     <Compile Include="PlayerActions\PlaceSetupInfrastructureAction.cs" />
     <Compile Include="PlayerActions\PlaceRobberAction.cs" />
     <Compile Include="PlayerActions\PlayerAction.cs" />

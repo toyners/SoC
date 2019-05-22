@@ -262,7 +262,32 @@ namespace SoC.Library.ScenarioTests
         [Scenario]
         public void PlayerPlacesSettlement(string[] args)
         {
-            throw new NotImplementedException();
+            this.CompletePlayerInfrastructureSetup(args)
+                .WithNoResourceCollection()
+                .WithInitialPlayerSetupFor(
+                    Adam,
+                    Resources(ResourceClutch.RoadSegment + ResourceClutch.Settlement),
+                    VictoryPoints(9))
+                .WhenPlayer(Adam)
+                    .ReceivesDiceRollEvent(3, 3)
+                    .ThenPlaceRoadSegment(4, 3)
+                    .ReceivesRoadSegmentPlacementEvent(4, 3)
+                    .ThenPlaceSettlement(3)
+                    .ReceivesSettlementPlacementEvent(3)
+                    .ThenVerifyPlayerState()
+                        .Resources(ResourceClutch.Zero)
+                        .VictoryPoints(3)
+                        .End()
+                .WhenPlayer(Babara)
+                    .ReceivesRoadSegmentPlacementEvent(Adam, 4, 3).ThenDoNothing()
+                    .ReceivesSettlementPlacementEvent(Adam, 3).ThenDoNothing()
+                .WhenPlayer(Charlie)
+                    .ReceivesRoadSegmentPlacementEvent(Adam, 4, 3).ThenDoNothing()
+                    .ReceivesSettlementPlacementEvent(Adam, 3).ThenDoNothing()
+                .WhenPlayer(Dana)
+                    .ReceivesRoadSegmentPlacementEvent(Adam, 4, 3).ThenDoNothing()
+                    .ReceivesSettlementPlacementEvent(Adam, 3).ThenDoNothing()
+                .Run();
         }
 
         [Scenario]
@@ -270,7 +295,10 @@ namespace SoC.Library.ScenarioTests
         {
             this.CompletePlayerInfrastructureSetup(args)
                 .WithNoResourceCollection()
-                .WithInitialPlayerSetupFor(Adam, Resources(ResourceClutch.RoadSegment + ResourceClutch.Settlement))
+                .WithInitialPlayerSetupFor(
+                    Adam, 
+                    Resources(ResourceClutch.RoadSegment + ResourceClutch.Settlement),
+                    VictoryPoints(9))
                 .WhenPlayer(Adam)
                     .ReceivesDiceRollEvent(3, 3)
                     .ThenPlaceRoadSegment(4, 3)
@@ -292,6 +320,36 @@ namespace SoC.Library.ScenarioTests
                     .ReceivesSettlementPlacementEvent(Adam, 3).ThenDoNothing()
                 .VerifyAllPlayersReceivedGameWonEvent(Adam, 10)
                 .Run();
+        }
+
+        [Scenario]
+        public void PlayerTriesToPlaceSettlementOnLocationOccupiedByPlayer(string[] args)
+        {
+            throw new NotImplementedException();
+        }
+
+        [Scenario]
+        public void PlayerTriesToPlaceSettlementOnLocationOccupiedByOtherPlayer(string[] args)
+        {
+            throw new NotImplementedException();
+        }
+
+        [Scenario]
+        public void PlayerTriesToPlaceSettlementOnUnconnectedLocation(string[] args)
+        {
+            throw new NotImplementedException();
+        }
+
+        [Scenario]
+        public void PlayerTriesToPlaceSettlementWithNoSettlementsLeft(string[] args)
+        {
+            throw new NotImplementedException();
+        }
+
+        [Scenario]
+        public void PlayerTriesToPlaceSettlementWithNotEnoughResources(string[] args)
+        {
+            throw new NotImplementedException();
         }
 
         [Scenario]
@@ -321,7 +379,7 @@ namespace SoC.Library.ScenarioTests
         }
 
         [Scenario]
-        public void PlayerTriesToPlaceRoadSegmentWithNoResourcesLeft(string[] args)
+        public void PlayerTriesToPlaceRoadSegmentWithNotEnoughResources(string[] args)
         {
             this.CompletePlayerInfrastructureSetup(args)
                 .WithNoResourceCollection()
