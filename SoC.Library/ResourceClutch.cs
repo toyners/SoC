@@ -195,6 +195,8 @@ namespace Jabberwocky.SoC.Library
 
             if (result.EndsWith(", "))
                 result = result.Substring(0, result.Length - 2);
+            else if (result.Length == 0)
+                result = "(nothing)";
 
             return result;
         }

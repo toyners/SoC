@@ -284,17 +284,26 @@ namespace SoC.Library.ScenarioTests
 
         private bool IsRequestStateEventVerified(ScenarioRequestStateEvent expectedEvent, RequestStateEvent actualEvent)
         {
-            var result = expectedEvent.Resources.HasValue && expectedEvent.Resources.Value == actualEvent.Resources;
-            result &= expectedEvent.RoadSegment.HasValue && expectedEvent.RoadSegment.Value == actualEvent.RoadSegments;
-            result &= expectedEvent.VictoryPoints.HasValue && expectedEvent.VictoryPoints.Value == actualEvent.VictoryPoints;
+            var result = true;
+            if (expectedEvent.Resources.HasValue)
+                result &= expectedEvent.Resources.HasValue && expectedEvent.Resources.Value == actualEvent.Resources;
+            if (expectedEvent.RoadSegments.HasValue)
+                result &= expectedEvent.RoadSegments.Value == actualEvent.RoadSegments;
+            if (expectedEvent.VictoryPoints.HasValue)
+                result &= expectedEvent.VictoryPoints.Value == actualEvent.VictoryPoints;
 
             this.log.Add($"{(result ? "MATCHED" : "NOT MATCHED")} - Expected {expectedEvent.SimpleTypeName}, Actual {actualEvent.SimpleTypeName}");
             if (!result ||
                 this.verboseLogging ||
                 this.expectedEventsWithVerboseLogging.Contains(expectedEvent))
             {
-                this.log.Add($" EXPECTED: {expectedEvent.Resources.Value}");
-                this.log.Add($" ACTUAL: {actualEvent.Resources}");
+                this.log.Add($"EXPECTED => ACTUAL");
+                if (expectedEvent.Resources.HasValue)
+                    this.log.Add($"Resources: {expectedEvent.Resources.Value} => {actualEvent.Resources.ToString()}");
+                if (expectedEvent.RoadSegments.HasValue)
+                    this.log.Add($"Road Segments: {expectedEvent.RoadSegments.Value} => {actualEvent.RoadSegments}");
+                if (expectedEvent.VictoryPoints.HasValue)
+                    this.log.Add($"Victory Points: {expectedEvent.VictoryPoints.Value} => {actualEvent.VictoryPoints}");
             }
 
             return result;

@@ -56,7 +56,9 @@ namespace Jabberwocky.SoC.Library
         }
         #endregion
 
+        #region Properties
         public bool IsFinished { get; private set; }
+        #endregion
 
         #region Methods
         public void AddResourcesToPlayer(string playerName, ResourceClutch value)
@@ -254,6 +256,11 @@ namespace Jabberwocky.SoC.Library
             throw new NotImplementedException("Cannot get error message");
         }
 
+        private IPlayer GetWinningPlayer()
+        {
+            return this.players.FirstOrDefault(player => player.VictoryPoints >= 10);
+        }
+
         private void MainGameLoop()
         {
             this.playerIndex = -1;
@@ -379,14 +386,14 @@ namespace Jabberwocky.SoC.Library
             }
         }
 
-        private void ProcessPlaceSettlementAction(PlaceSettlementAction placeSettlementAction)
+        private bool ProcessPlaceSettlementAction(PlaceSettlementAction placeSettlementAction)
         {
             try
             {
                 if (!this.currentPlayer.CanPlaceSettlement)
                 {
                     // TODO: Notify player
-                    return;
+                    return false;
                 }
                 this.gameBoard.PlaceSettlement(this.currentPlayer.Id,
                     placeSettlementAction.SettlementLocation);
@@ -395,12 +402,19 @@ namespace Jabberwocky.SoC.Library
                 this.RaiseEvent(new SettlementPlacedEvent(this.currentPlayer.Id,
                     placeSettlementAction.SettlementLocation));
 
-
+                var winningPlayer = this.GetWinningPlayer();
+                if (winningPlayer != null)
+                {
+                    this.RaiseEvent(new GameWinEvent(winningPlayer.Id, winningPlayer.VictoryPoints));
+                    return true;
+                }
             }
             catch (GameBoard.PlacementException pe)
             {
                 // TODO: Notify player
             }
+
+            return false;
         }
 
         private void ProcessPlaceSetupInfrastructureAction(PlaceSetupInfrastructureAction placeSetupInfrastructureAction)

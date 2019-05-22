@@ -10,6 +10,7 @@ namespace Jabberwocky.SoC.Library.Interfaces
     {
         #region Properties
         bool CanPlaceRoadSegment { get; }
+        bool CanPlaceSettlement { get; }
         int CitiesBuilt { get; }
         bool HasLargestArmy { get; set; }
         bool HasLongestRoad { get; set; }
@@ -34,7 +35,6 @@ namespace Jabberwocky.SoC.Library.Interfaces
         int OreCount { get; }
         int WoolCount { get; }
         int ResourcesCount { get; }
-        bool CanPlaceSettlement { get; }
         #endregion
 
         #region Methods

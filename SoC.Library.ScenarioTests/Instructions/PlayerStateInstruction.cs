@@ -55,9 +55,9 @@ namespace SoC.Library.ScenarioTests.Instructions
         public GameEvent GetEvent()
         {
             var requestStateEvent = new ScenarioRequestStateEvent(this.playerAgent.Id);
-            requestStateEvent.Resources = this.resources.GetValueOrDefault();
-            requestStateEvent.RoadSegment = this.roadSegments.GetValueOrDefault();
-            requestStateEvent.VictoryPoints = this.victoryPoints.GetValueOrDefault();
+            requestStateEvent.Resources = this.resources;
+            requestStateEvent.RoadSegments = this.roadSegments;
+            requestStateEvent.VictoryPoints = this.victoryPoints;
             return requestStateEvent;
         }
     }
