@@ -304,10 +304,6 @@ namespace SoC.Library.ScenarioTests
                     .ReceivesRoadSegmentPlacementEvent(4, 3)
                     .ThenPlaceSettlement(3)
                     .ReceivesSettlementPlacementEvent(3)
-                    .ThenVerifyPlayerState()
-                        .Resources(ResourceClutch.Zero)
-                        .VictoryPoints(10)
-                        .End()
                 .WhenPlayer(Babara)
                     .ReceivesRoadSegmentPlacementEvent(Adam, 4, 3).ThenDoNothing()
                     .ReceivesSettlementPlacementEvent(Adam, 3).ThenDoNothing()
@@ -318,6 +314,11 @@ namespace SoC.Library.ScenarioTests
                     .ReceivesRoadSegmentPlacementEvent(Adam, 4, 3).ThenDoNothing()
                     .ReceivesSettlementPlacementEvent(Adam, 3).ThenDoNothing()
                 .VerifyAllPlayersReceivedGameWonEvent(Adam, 10)
+                .WhenPlayer(Adam)
+                    .ThenVerifyPlayerState()
+                        .Resources(ResourceClutch.Zero)
+                        .VictoryPoints(10)
+                        .End()
                 .Run();
         }
 
