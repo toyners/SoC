@@ -5,7 +5,9 @@ namespace SoC.Library.ScenarioTests
     using Jabberwocky.SoC.Library;
     using Jabberwocky.SoC.Library.GameBoards;
     using Jabberwocky.SoC.Library.GameEvents;
+    using NUnit.Framework;
 
+    [TestFixture]
     public class Scenarios
     {
         const string Adam = "Adam";
@@ -137,11 +139,12 @@ namespace SoC.Library.ScenarioTests
         }
 
         [Scenario]
-        public void AllPlayersCompleteSetup(string[] args)
+        [Test]
+        public void AllPlayersCompleteSetup()
         {
             var expectedGameBoardSetup = new GameBoardSetup(new GameBoard(BoardSizes.Standard));
             var playerOrder = new[] { Adam, Babara, Charlie, Dana };
-            ScenarioRunner.CreateScenarioRunner(args)
+            ScenarioRunner.CreateScenarioRunner(new[] { "-NoTimer" })
                 .WithPlayer(Adam)
                 .WithPlayer(Babara)
                 .WithPlayer(Charlie)
