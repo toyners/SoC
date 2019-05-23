@@ -330,7 +330,25 @@ namespace SoC.Library.ScenarioTests
         [Scenario]
         public void PlayerTriesToPlaceSettlementOnLocationOccupiedByOtherPlayer(string[] args)
         {
-            throw new NotImplementedException();
+            this.CompletePlayerInfrastructureSetup(args)
+                .WithNoResourceCollection()
+                .WithInitialPlayerSetupFor(
+                    Adam,
+                    Resources((ResourceClutch.RoadSegment * 2) + ResourceClutch.Settlement))
+                .WithInitialPlayerSetupFor(
+                    Babara,
+                    Resources(ResourceClutch.RoadSegment + ResourceClutch.Settlement))
+                .WhenPlayer(Adam)
+                    .ReceivesDiceRollEvent(3, 3).ThenPlaceRoadSegment(12, 13)
+                    .ReceivesRoadSegmentPlacementEvent(12, 13).ThenPlaceRoadSegment(13, 14)
+                    .ReceivesRoadSegmentPlacementEvent(13, 14).ThenPlaceSettlement(14)
+                .WhenPlayer(Babara)
+                    .ReceivesDiceRollEvent(3, 3).ThenPlaceRoadSegment(15, 14)
+                    .ReceivesRoadSegmentPlacementEvent(Babara, 15, 14).ThenPlaceSettlement(14)
+                // Receive error for placing settlement on occupied location
+                .WhenPlayer(Charlie)
+                .WhenPlayer(Dana)
+                .Run();
         }
 
         [Scenario]
