@@ -64,7 +64,7 @@ namespace Jabberwocky.SoC.Library
 
         public IPlayer CreatePlayer(string name, Guid id)
         {
-            throw new NotImplementedException();
+            return new Player(name, id);
         }
 
         /// <summary>
