@@ -41,6 +41,7 @@ namespace SoC.Library.ScenarioTests
         {
             var assembly = System.Reflection.Assembly.GetExecutingAssembly();
             var type = assembly.GetType("SoC.Library.ScenarioTests.Scenarios");
+            var executingMethod = System.Reflection.MethodInfo.GetCurrentMethod();
             throw new NotImplementedException();
         }
 
