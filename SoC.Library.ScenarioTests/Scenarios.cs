@@ -35,14 +35,18 @@ namespace SoC.Library.ScenarioTests
         const uint Babara_SecondRoadEndLocation = 44;
         const uint Adam_SecondRoadEndLocation = 39;
 
+        [Test]
         [Scenario]
-        public void AllPlayersCollectResourcesAsPartOfGameSetup(string[] args)
+        public void AllPlayersCollectResourcesAsPartOfGameSetup()
         {
+            var assembly = System.Reflection.Assembly.GetExecutingAssembly();
+            var type = assembly.GetType("SoC.Library.ScenarioTests.Scenarios");
             throw new NotImplementedException();
         }
 
+        [Test]
         [Scenario]
-        public void AllPlayersCollectResourcesAsPartOfTurnStart(string[] args)
+        public void AllPlayersCollectResourcesAsPartOfTurnStart()
         {
             var firstTurnCollectedResources = CreateExpectedCollectedResources()
                 .Add(Adam, Adam_FirstSettlementLocation, ResourceClutch.OneBrick)
@@ -65,7 +69,7 @@ namespace SoC.Library.ScenarioTests
                 .Add(Babara, Babara_SecondSettlementLocation, ResourceClutch.OneWool)
                 .Build();
 
-            this.CompletePlayerInfrastructureSetup(args)
+            this.CompletePlayerInfrastructureSetup(new[] { "AllPlayersCollectResourcesAsPartOfTurnStart" })
                 .WhenPlayer(Adam)
                     .ReceivesDiceRollEvent(4, 4).ThenDoNothing()
                     .ReceivesResourceCollectedEvent(firstTurnCollectedResources)
@@ -144,7 +148,7 @@ namespace SoC.Library.ScenarioTests
         {
             var expectedGameBoardSetup = new GameBoardSetup(new GameBoard(BoardSizes.Standard));
             var playerOrder = new[] { Adam, Babara, Charlie, Dana };
-            ScenarioRunner.CreateScenarioRunner(new[] { "-NoTimer" })
+            ScenarioRunner.CreateScenarioRunner(new[] { "AllPlayersCompleteSetup" })
                 .WithPlayer(Adam)
                 .WithPlayer(Babara)
                 .WithPlayer(Charlie)

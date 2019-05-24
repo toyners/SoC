@@ -30,7 +30,6 @@ namespace Jabberwocky.SoC.Library
         private int playerIndex;
         private IDictionary<Guid, IPlayer> playersById;
         private IPlayer[] players;
-        private bool requestStateActionsMustHaveToken = true;
         private IGameTimer turnTimer;
 
         // TODO: Review this - cleaner way to do this?
@@ -102,11 +101,6 @@ namespace Jabberwocky.SoC.Library
         {
             if (idGenerator != null)
                 this.idGenerator = idGenerator;
-        }
-
-        public void SetRequestStateExemption(bool value)
-        {
-            this.requestStateActionsMustHaveToken = value;
         }
 
         public void SetTurnTimer(IGameTimer turnTimer)
@@ -625,7 +619,7 @@ namespace Jabberwocky.SoC.Library
                     var playerName = this.playersById[playerAction.InitiatingPlayerId].Name;
                     this.log.Add($"Received {playerActionTypeName} from {playerName}");
 
-                    if (playerAction is RequestStateAction && !this.requestStateActionsMustHaveToken)
+                    if (playerAction is RequestStateAction)
                         return playerAction;
 
                     if (!this.actionManager.ValidateAction(playerAction))

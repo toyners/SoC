@@ -20,9 +20,7 @@ namespace SoC.Library.ScenarioTests
         private readonly List<PlayerAgent> playerAgents = new List<PlayerAgent>();
         private readonly Dictionary<string, PlayerAgent> playerAgentsByName = new Dictionary<string, PlayerAgent>();
         private readonly Dictionary<string, ResourceClutch> startingResourcesByName = new Dictionary<string, ResourceClutch>();
-        private readonly bool requestStateActionsMustHaveToken = true;
         private readonly string scenarioName;
-        private readonly bool useServerTimer = true;
         private PlayerAgent currentPlayerAgent;
         private GameBoard gameBoard;
         private ScenarioNumberGenerator numberGenerator;
@@ -35,10 +33,6 @@ namespace SoC.Library.ScenarioTests
             if (args != null)
             {
                 this.scenarioName = args[0];
-                if (args.Contains("-NoTimer"))
-                    this.useServerTimer = false;
-                if (args.Contains("-NoTokenRequiredForRequestState"))
-                    this.requestStateActionsMustHaveToken = false;
             }
 
             this.numberGenerator = new ScenarioNumberGenerator();
@@ -234,13 +228,10 @@ namespace SoC.Library.ScenarioTests
                 this.playerFactory
             );
 
-            if (!this.useServerTimer)
-                gameServer.SetTurnTimer(new MockTurnTimer());
+            gameServer.SetTurnTimer(new MockTurnTimer());
 
             var playerIds = new Queue<Guid>(this.playerAgents.Select(agent => agent.Id));
             gameServer.SetIdGenerator(() => { return playerIds.Dequeue(); });
-
-            gameServer.SetRequestStateExemption(this.requestStateActionsMustHaveToken);
 
             gameServer.LaunchGame();
 
@@ -284,7 +275,7 @@ namespace SoC.Library.ScenarioTests
                     Thread.Sleep(50);
             }
 
-            var logDirectory = $".\\Logs\\{this.scenarioName} {DateTime.Now.ToString("HH-mm-ss dd-MMM-yyyy")}";
+            var logDirectory = $"C:\\Scenario Logs\\{this.scenarioName} {DateTime.Now.ToString("HH-mm-ss dd-MMM-yyyy")}";
             Directory.CreateDirectory(logDirectory);
 
             for (var i = 0; i < this.playerAgents.Count; i++)
