@@ -39,9 +39,7 @@ namespace SoC.Library.ScenarioTests
         [Scenario]
         public void AllPlayersCollectResourcesAsPartOfGameSetup()
         {
-            var assembly = System.Reflection.Assembly.GetExecutingAssembly();
-            var type = assembly.GetType("SoC.Library.ScenarioTests.Scenarios");
-            var executingMethod = System.Reflection.MethodInfo.GetCurrentMethod();
+            var executingMethod = System.Reflection.MethodBase.GetCurrentMethod();
             throw new NotImplementedException();
         }
 
