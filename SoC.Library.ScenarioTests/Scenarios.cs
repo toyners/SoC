@@ -39,7 +39,6 @@ namespace SoC.Library.ScenarioTests
         [Scenario]
         public void AllPlayersCollectResourcesAsPartOfGameSetup()
         {
-            var executingMethod = System.Reflection.MethodBase.GetCurrentMethod();
             throw new NotImplementedException();
         }
 
@@ -68,7 +67,7 @@ namespace SoC.Library.ScenarioTests
                 .Add(Babara, Babara_SecondSettlementLocation, ResourceClutch.OneWool)
                 .Build();
 
-            this.CompletePlayerInfrastructureSetup(new[] { "AllPlayersCollectResourcesAsPartOfTurnStart" })
+            this.CompletePlayerInfrastructureSetup(new[] { System.Reflection.MethodBase.GetCurrentMethod().Name })
                 .WhenPlayer(Adam)
                     .ReceivesDiceRollEvent(4, 4).ThenDoNothing()
                     .ReceivesResourceCollectedEvent(firstTurnCollectedResources)
