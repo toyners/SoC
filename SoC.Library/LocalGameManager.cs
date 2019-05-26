@@ -217,13 +217,13 @@ namespace Jabberwocky.SoC.Library
                 if (expectedActions.Contains(typeof(PlaceSetupInfrastructureAction)) &&
                     expectedActions.Contains(typeof(QuitGameAction)))
                 {
-                    return "301";
+                    return "901";
                 }
 
                 if (expectedActions.Contains(typeof(ConfirmGameStartAction)) &&
                     expectedActions.Contains(typeof(QuitGameAction)))
                 {
-                    return "302";
+                    return "902";
                 }
             }
 
@@ -376,7 +376,14 @@ namespace Jabberwocky.SoC.Library
             }
             catch (GameBoard.PlacementException pe)
             {
-                // TODO: Notify player
+                switch (pe.VerificationStatus)
+                {
+                    case GameBoard.VerificationStatus.RoadIsOffBoard:
+                    {
+                        this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, "903", pe.Message));
+                        break;
+                    }
+                }
             }
         }
 

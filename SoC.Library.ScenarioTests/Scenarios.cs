@@ -382,7 +382,7 @@ namespace SoC.Library.ScenarioTests
                 .WhenPlayer(Adam)
                     .ReceivesDiceRollEvent(3, 3)
                     .ThenPlaceRoadSegment(4, 0)
-                    .ReceivesGameErrorEvent("", "").ThenDoNothing()
+                    .ReceivesGameErrorEvent("903", "Locations (4, 0) invalid for placing road segment").ThenDoNothing()
                 .Run();
         }
 
@@ -529,7 +529,7 @@ namespace SoC.Library.ScenarioTests
                     .ThenPlaceStartingInfrastructure(Adam_SecondSettlementLocation, Adam_SecondRoadEndLocation)
                     .ReceivesConfirmGameStartEvent()
                     .ThenEndTurn()
-                    .ReceivesGameErrorEvent("302", "Invalid action: Expected ConfirmGameStartAction or QuitGameAction")
+                    .ReceivesGameErrorEvent("902", "Invalid action: Expected ConfirmGameStartAction or QuitGameAction")
                 .WhenPlayer(Babara)
                     .ReceivesPlaceInfrastructureSetupEvent()
                     .ThenPlaceStartingInfrastructure(Babara_FirstSettlementLocation, Babara_FirstRoadEndLocation)
@@ -558,7 +558,7 @@ namespace SoC.Library.ScenarioTests
                 .WithTurnOrder(playerOrder)
                 .WhenPlayer(Adam)
                     .ReceivesPlaceInfrastructureSetupEvent().ThenEndTurn()
-                    .ReceivesGameErrorEvent("301", "Invalid action: Expected PlaceSetupInfrastructureAction or QuitGameAction")
+                    .ReceivesGameErrorEvent("901", "Invalid action: Expected PlaceSetupInfrastructureAction or QuitGameAction")
                 .Run();
         }
 

@@ -926,25 +926,25 @@ namespace Jabberwocky.SoC.Library.GameBoards
         {
             switch (verificationResults.Status)
             {
-                case VerificationStatus.LocationForCityIsInvalid: throw new PlacementException("Cannot place city because location is not on board.");
-                case VerificationStatus.LocationIsAlreadyCity: throw new PlacementException("Cannot place city on existing city.");
-                case VerificationStatus.LocationForSettlementIsInvalid: throw new PlacementException("Cannot place settlement because location is not on board.");
-                case VerificationStatus.LocationIsOccupied: throw new PlacementException("Cannot place settlement because location is already settled.");
-                case VerificationStatus.LocationIsNotOwned: throw new PlacementException("Cannot place city because location is settled by an opponent.");
-                case VerificationStatus.LocationIsNotSettled: throw new PlacementException("Cannot place city because location is not settled.");
-                case VerificationStatus.NoDirectConnection: throw new PlacementException("Cannot place road because no direct connection between start location and end location.");
-                case VerificationStatus.RoadNotConnectedToExistingRoad: throw new PlacementException("Cannot place road because it is not connected to an existing road segment.");
-                case VerificationStatus.RoadIsOccupied: throw new PlacementException("Cannot place road because road already exists.");
-                case VerificationStatus.RoadIsOffBoard: throw new PlacementException("Cannot place road because board location is not valid.");
-                case VerificationStatus.SettlementNotConnectedToExistingRoad: throw new PlacementException("Cannot place settlement because location is not on a road.");
-                case VerificationStatus.StartingInfrastructureAlreadyPresent: throw new PlacementException("Cannot place starting infrastructure more than once per player.");
+                case VerificationStatus.LocationForCityIsInvalid: throw new PlacementException(verificationResults.Status, "Cannot place city because location is not on board.");
+                case VerificationStatus.LocationIsAlreadyCity: throw new PlacementException(verificationResults.Status, "Cannot place city on existing city.");
+                case VerificationStatus.LocationForSettlementIsInvalid: throw new PlacementException(verificationResults.Status, "Cannot place settlement because location is not on board.");
+                case VerificationStatus.LocationIsOccupied: throw new PlacementException(verificationResults.Status, "Cannot place settlement because location is already settled.");
+                case VerificationStatus.LocationIsNotOwned: throw new PlacementException(verificationResults.Status, "Cannot place city because location is settled by an opponent.");
+                case VerificationStatus.LocationIsNotSettled: throw new PlacementException(verificationResults.Status, "Cannot place city because location is not settled.");
+                case VerificationStatus.NoDirectConnection: throw new PlacementException(verificationResults.Status, "Cannot place road because no direct connection between start location and end location.");
+                case VerificationStatus.RoadNotConnectedToExistingRoad: throw new PlacementException(verificationResults.Status, "Cannot place road because it is not connected to an existing road segment.");
+                case VerificationStatus.RoadIsOccupied: throw new PlacementException(verificationResults.Status, "Cannot place road because road already exists.");
+                case VerificationStatus.RoadIsOffBoard: throw new PlacementException(verificationResults.Status, "Cannot place road because board location is not valid.");
+                case VerificationStatus.SettlementNotConnectedToExistingRoad: throw new PlacementException(verificationResults.Status, "Cannot place settlement because location is not on a road.");
+                case VerificationStatus.StartingInfrastructureAlreadyPresent: throw new PlacementException(verificationResults.Status, "Cannot place starting infrastructure more than once per player.");
                 case VerificationStatus.StartingInfrastructureNotPresentWhenPlacingCity:
-                case VerificationStatus.StartingInfrastructureNotCompleteWhenPlacingCity: throw new PlacementException("Cannot place city before placing all initial infrastructure.");
+                case VerificationStatus.StartingInfrastructureNotCompleteWhenPlacingCity: throw new PlacementException(verificationResults.Status, "Cannot place city before placing all initial infrastructure.");
                 case VerificationStatus.StartingInfrastructureNotCompleteWhenPlacingRoad:
-                case VerificationStatus.StartingInfrastructureNotPresentWhenPlacingRoad: throw new PlacementException("Cannot place road before placing all initial infrastructure.");
+                case VerificationStatus.StartingInfrastructureNotPresentWhenPlacingRoad: throw new PlacementException(verificationResults.Status, "Cannot place road before placing all initial infrastructure.");
                 case VerificationStatus.StartingInfrastructureNotCompleteWhenPlacingSettlement:
-                case VerificationStatus.StartingInfrastructureNotPresentWhenPlacingSettlement: throw new PlacementException("Cannot place settlement before placing all initial infrastructure.");
-                case VerificationStatus.TooCloseToSettlement: throw new PlacementException("Cannot place settlement because location is too close to exising settlement.");
+                case VerificationStatus.StartingInfrastructureNotPresentWhenPlacingSettlement: throw new PlacementException(verificationResults.Status, "Cannot place settlement before placing all initial infrastructure.");
+                case VerificationStatus.TooCloseToSettlement: throw new PlacementException(verificationResults.Status, "Cannot place settlement because location is too close to exising settlement.");
             }
         }
 
@@ -1422,8 +1422,12 @@ namespace Jabberwocky.SoC.Library.GameBoards
 
         public class PlacementException : Exception
         {
+            public VerificationStatus VerificationStatus;
             public PlacementException() : base() { }
-            public PlacementException(string message) : base(message) { }
+            public PlacementException(VerificationStatus verificationStatus, string message) : base(message)
+            {
+                this.VerificationStatus = verificationStatus;
+            }
         }
 
         public class LocationProduction
