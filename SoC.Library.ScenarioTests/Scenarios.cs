@@ -2,6 +2,7 @@
 namespace SoC.Library.ScenarioTests
 {
     using System;
+    using System.Reflection;
     using Jabberwocky.SoC.Library;
     using Jabberwocky.SoC.Library.GameBoards;
     using Jabberwocky.SoC.Library.GameEvents;
@@ -36,14 +37,12 @@ namespace SoC.Library.ScenarioTests
         const uint Adam_SecondRoadEndLocation = 39;
 
         [Test]
-        [Scenario]
         public void AllPlayersCollectResourcesAsPartOfGameSetup()
         {
             throw new NotImplementedException();
         }
 
         [Test]
-        [Scenario]
         public void AllPlayersCollectResourcesAsPartOfTurnStart()
         {
             var firstTurnCollectedResources = CreateExpectedCollectedResources()
@@ -67,7 +66,7 @@ namespace SoC.Library.ScenarioTests
                 .Add(Babara, Babara_SecondSettlementLocation, ResourceClutch.OneWool)
                 .Build();
 
-            this.CompletePlayerInfrastructureSetup(new[] { System.Reflection.MethodBase.GetCurrentMethod().Name })
+            this.CompletePlayerInfrastructureSetup(new[] { MethodBase.GetCurrentMethod().Name })
                 .WhenPlayer(Adam)
                     .ReceivesDiceRollEvent(4, 4).ThenDoNothing()
                     .ReceivesResourceCollectedEvent(firstTurnCollectedResources)
@@ -140,13 +139,12 @@ namespace SoC.Library.ScenarioTests
                 .Run();
         }
 
-        [Scenario]
         [Test]
         public void AllPlayersCompleteSetup()
         {
             var expectedGameBoardSetup = new GameBoardSetup(new GameBoard(BoardSizes.Standard));
             var playerOrder = new[] { Adam, Babara, Charlie, Dana };
-            ScenarioRunner.CreateScenarioRunner(new[] { "AllPlayersCompleteSetup" })
+            ScenarioRunner.CreateScenarioRunner(new[] { MethodBase.GetCurrentMethod().Name })
                 .WithPlayer(Adam)
                 .WithPlayer(Babara)
                 .WithPlayer(Charlie)
@@ -217,10 +215,10 @@ namespace SoC.Library.ScenarioTests
                 .Run();
         }
 
-        [Scenario]
-        public void AllOtherPlayersQuit(string[] args)
+        [Test]
+        public void AllOtherPlayersQuit()
         {
-            this.CompletePlayerInfrastructureSetup(args)
+            this.CompletePlayerInfrastructureSetup(new[] { MethodBase.GetCurrentMethod().Name })
                 .WithNoResourceCollection()
                 .WhenPlayer(Adam)
                     .ReceivesDiceRollEvent(3, 3).ThenEndTurn()
@@ -252,22 +250,22 @@ namespace SoC.Library.ScenarioTests
                 .Run();
         }
 
-        [Scenario]
-        public void PlayerPlacesCity(string[] args)
+        [Test]
+        public void PlayerPlacesCity()
         {
             throw new NotImplementedException();
         }
 
-        [Scenario]
-        public void PlayerPlacesCityAndWins(string[] args)
+        [Test]
+        public void PlayerPlacesCityAndWins()
         {
             throw new NotImplementedException();
         }
 
-        [Scenario]
-        public void PlayerPlacesSettlement(string[] args)
+        [Test]
+        public void PlayerPlacesSettlement()
         {
-            this.CompletePlayerInfrastructureSetup(args)
+            this.CompletePlayerInfrastructureSetup(new[] { MethodBase.GetCurrentMethod().Name })
                 .WithNoResourceCollection()
                 .WithInitialPlayerSetupFor(
                     Adam,
@@ -294,10 +292,10 @@ namespace SoC.Library.ScenarioTests
                 .Run();
         }
 
-        [Scenario]
-        public void PlayerPlacesSettlementAndWins(string[] args)
+        [Test]
+        public void PlayerPlacesSettlementAndWins()
         {
-            this.CompletePlayerInfrastructureSetup(args)
+            this.CompletePlayerInfrastructureSetup(new[] { MethodBase.GetCurrentMethod().Name })
                 .WithNoResourceCollection()
                 .WithInitialPlayerSetupFor(
                     Adam, 
@@ -327,16 +325,16 @@ namespace SoC.Library.ScenarioTests
                 .Run();
         }
 
-        [Scenario]
-        public void PlayerTriesToPlaceSettlementOnLocationOccupiedByPlayer(string[] args)
+        [Test]
+        public void PlayerTriesToPlaceSettlementOnLocationOccupiedByPlayer()
         {
             throw new NotImplementedException();
         }
 
-        [Scenario]
-        public void PlayerTriesToPlaceSettlementOnLocationOccupiedByOtherPlayer(string[] args)
+        [Test]
+        public void PlayerTriesToPlaceSettlementOnLocationOccupiedByOtherPlayer()
         {
-            this.CompletePlayerInfrastructureSetup(args)
+            this.CompletePlayerInfrastructureSetup(new[] { MethodBase.GetCurrentMethod().Name })
                 .WithNoResourceCollection()
                 .WithInitialPlayerSetupFor(
                     Adam,
@@ -357,28 +355,28 @@ namespace SoC.Library.ScenarioTests
                 .Run();
         }
 
-        [Scenario]
-        public void PlayerTriesToPlaceSettlementOnUnconnectedLocation(string[] args)
+        [Test]
+        public void PlayerTriesToPlaceSettlementOnUnconnectedLocation()
         {
             throw new NotImplementedException();
         }
 
-        [Scenario]
-        public void PlayerTriesToPlaceSettlementWithNoSettlementsLeft(string[] args)
+        [Test]
+        public void PlayerTriesToPlaceSettlementWithNoSettlementsLeft()
         {
             throw new NotImplementedException();
         }
 
-        [Scenario]
-        public void PlayerTriesToPlaceSettlementWithNotEnoughResources(string[] args)
+        [Test]
+        public void PlayerTriesToPlaceSettlementWithNotEnoughResources()
         {
             throw new NotImplementedException();
         }
 
-        [Scenario]
-        public void PlayerTriesToPlaceRoadSegmentWithInvalidLocations(string[] args)
+        [Test]
+        public void PlayerTriesToPlaceRoadSegmentWithInvalidLocations()
         {
-            this.CompletePlayerInfrastructureSetup(args)
+            this.CompletePlayerInfrastructureSetup(new[] { MethodBase.GetCurrentMethod().Name })
                 .WithNoResourceCollection()
                 .WithInitialPlayerSetupFor(Adam, Resources(ResourceClutch.RoadSegment), PlacedRoadSegments(Player.TotalRoadSegments))
                 .WhenPlayer(Adam)
@@ -388,10 +386,10 @@ namespace SoC.Library.ScenarioTests
                 .Run();
         }
 
-        [Scenario]
-        public void PlayerTriesToPlaceRoadSegmentWithNoRoadSegmentsLeft(string[] args)
+        [Test]
+        public void PlayerTriesToPlaceRoadSegmentWithNoRoadSegmentsLeft()
         {
-            this.CompletePlayerInfrastructureSetup(args)
+            this.CompletePlayerInfrastructureSetup(new[] { MethodBase.GetCurrentMethod().Name })
                 .WithNoResourceCollection()
                 .WithInitialPlayerSetupFor(Adam, Resources(ResourceClutch.RoadSegment), PlacedRoadSegments(Player.TotalRoadSegments))
                 .WhenPlayer(Adam)
@@ -401,10 +399,10 @@ namespace SoC.Library.ScenarioTests
                 .Run();
         }
 
-        [Scenario]
-        public void PlayerTriesToPlaceRoadSegmentWithNotEnoughResources(string[] args)
+        [Test]
+        public void PlayerTriesToPlaceRoadSegmentWithNotEnoughResources()
         {
-            this.CompletePlayerInfrastructureSetup(args)
+            this.CompletePlayerInfrastructureSetup(new[] { MethodBase.GetCurrentMethod().Name })
                 .WithNoResourceCollection()
                 .WhenPlayer(Adam)
                     .ReceivesDiceRollEvent(3, 3)
@@ -413,38 +411,38 @@ namespace SoC.Library.ScenarioTests
                 .Run();
         }
 
-        [Scenario]
-        public void PlayerPlaysKnightCard(string[] args)
+        [Test]
+        public void PlayerPlaysKnightCard()
         {
             throw new NotImplementedException();
         }
 
-        [Scenario]
-        public void PlayerRollsSeven(string[] args)
+        [Test]
+        public void PlayerRollsSeven()
         {
             throw new NotImplementedException();
         }
 
-        [Scenario]
-        public void PlayerRollsSevenAndAllPlayersWithMoreThanSevenResourcesLoseResources(string[] args)
+        [Test]
+        public void PlayerRollsSevenAndAllPlayersWithMoreThanSevenResourcesLoseResources()
         {
             throw new NotImplementedException();
         }
 
-        [Scenario]
-        public void PlayerRollsSevenAndSelectedHexHasNoPlayers(string[] args)
+        [Test]
+        public void PlayerRollsSevenAndSelectedHexHasNoPlayers()
         {
             throw new NotImplementedException();
         }
 
-        [Scenario]
-        public void PlayerRollsSevenAndSelectedHexHasOnePlayer(string[] args)
+        [Test]
+        public void PlayerRollsSevenAndSelectedHexHasOnePlayer()
         {
             throw new NotImplementedException();
         }
 
-        [Scenario]
-        public void PlayerRollsSevenAndGetsResourceFromSelectedPlayer(string[] args)
+        [Test]
+        public void PlayerRollsSevenAndGetsResourceFromSelectedPlayer()
         {
             throw new NotImplementedException();
         }
@@ -453,8 +451,8 @@ namespace SoC.Library.ScenarioTests
         /// Passing in an id of a player that is not on the selected robber hex when choosing the resource 
         /// causes an error to be raised.
         /// </summary>
-        [Scenario]
-        public void PlayerRollsSevenAndSelectsInvalidPlayer(string[] args)
+        [Test]
+        public void PlayerRollsSevenAndSelectsInvalidPlayer()
         {
             throw new NotImplementedException();
         }
@@ -463,18 +461,18 @@ namespace SoC.Library.ScenarioTests
         /// The robber hex set by the player has only player settlements so calling the CallingChooseResourceFromOpponent 
         /// method raises an error
         /// </summary>
-        [Scenario]
-        public void PlayerRollsSevenAndHasNoCompetitorsOnSelectedHex(string[] args)
+        [Test]
+        public void PlayerRollsSevenAndHasNoCompetitorsOnSelectedHex()
         {
             throw new NotImplementedException();
         }
 
-        [Scenario]
-        public void PlayerQuitsDuringFirstRoundOfGameSetup(string[] args)
+        [Test]
+        public void PlayerQuitsDuringFirstRoundOfGameSetup()
         {
             var expectedGameBoardSetup = new GameBoardSetup(new GameBoard(BoardSizes.Standard));
             var playerOrder = new[] { Adam, Babara, Charlie, Dana };
-            ScenarioRunner.CreateScenarioRunner(args)
+            ScenarioRunner.CreateScenarioRunner(new[] { MethodBase.GetCurrentMethod().Name })
                 .WithPlayer(Adam).WithPlayer(Babara).WithPlayer(Charlie).WithPlayer(Dana)
                 .WithTurnOrder(playerOrder)
                 .WhenPlayer(Adam)
@@ -488,12 +486,12 @@ namespace SoC.Library.ScenarioTests
                 .Run();
         }
 
-        [Scenario]
-        public void PlayerQuitsDuringSecondRoundOfGameSetup(string[] args)
+        [Test]
+        public void PlayerQuitsDuringSecondRoundOfGameSetup()
         {
             var expectedGameBoardSetup = new GameBoardSetup(new GameBoard(BoardSizes.Standard));
             var playerOrder = new[] { Adam, Babara, Charlie, Dana };
-            ScenarioRunner.CreateScenarioRunner(args)
+            ScenarioRunner.CreateScenarioRunner(new[] { MethodBase.GetCurrentMethod().Name })
                 .WithPlayer(Adam).WithPlayer(Babara).WithPlayer(Charlie).WithPlayer(Dana)
                 .WithTurnOrder(playerOrder)
                 .WhenPlayer(Adam)
@@ -516,12 +514,12 @@ namespace SoC.Library.ScenarioTests
                 .Run();
         }
 
-        [Scenario]
-        public void PlayerSendsIncorrectCommandDuringGameStartConfirmation(string[] args)
+        [Test]
+        public void PlayerSendsIncorrectCommandDuringGameStartConfirmation()
         {
             var expectedGameBoardSetup = new GameBoardSetup(new GameBoard(BoardSizes.Standard));
             var playerOrder = new[] { Adam, Babara, Charlie, Dana };
-            ScenarioRunner.CreateScenarioRunner(args)
+            ScenarioRunner.CreateScenarioRunner(new[] { MethodBase.GetCurrentMethod().Name })
                 .WithPlayer(Adam).WithPlayer(Babara).WithPlayer(Charlie).WithPlayer(Dana)
                 .WithTurnOrder(playerOrder)
                 .WhenPlayer(Adam)
@@ -550,12 +548,12 @@ namespace SoC.Library.ScenarioTests
                 .Run();
         }
 
-        [Scenario]
-        public void PlayerSendsIncorrectCommandDuringGameSetup(string[] args)
+        [Test]
+        public void PlayerSendsIncorrectCommandDuringGameSetup()
         {
             var expectedGameBoardSetup = new GameBoardSetup(new GameBoard(BoardSizes.Standard));
             var playerOrder = new[] { Adam, Babara, Charlie, Dana };
-            ScenarioRunner.CreateScenarioRunner(args)
+            ScenarioRunner.CreateScenarioRunner(new[] { MethodBase.GetCurrentMethod().Name })
                 .WithPlayer(Adam).WithPlayer(Babara).WithPlayer(Charlie).WithPlayer(Dana)
                 .WithTurnOrder(playerOrder)
                 .WhenPlayer(Adam)
@@ -564,13 +562,13 @@ namespace SoC.Library.ScenarioTests
                 .Run();
         }
 
-        [Scenario]
-        public void PlayerTradesOneResourceWithAnotherPlayer(string[] args)
+        [Test]
+        public void PlayerTradesOneResourceWithAnotherPlayer()
         {
             var adamResources = ResourceClutch.OneWool;
             var babaraResources = ResourceClutch.OneGrain;
 
-            this.CompletePlayerInfrastructureSetup(args)
+            this.CompletePlayerInfrastructureSetup(new[] { MethodBase.GetCurrentMethod().Name })
                 .WithNoResourceCollection()
                 .WithInitialPlayerSetupFor(Adam, Resources(adamResources))
                 .WithInitialPlayerSetupFor(Babara, Resources(babaraResources))
@@ -613,38 +611,38 @@ namespace SoC.Library.ScenarioTests
                 .Run();
         }
 
-        [Scenario]
-        public void PlayerWithEightPointsGainsLargestArmyAndWins(string[] args)
+        [Test]
+        public void PlayerWithEightPointsGainsLargestArmyAndWins()
         {
             throw new NotImplementedException();
         }
 
-        [Scenario]
-        public void PlayerWithEightPointsGainsLongestRoadAndWins(string[] args)
+        [Test]
+        public void PlayerWithEightPointsGainsLongestRoadAndWins()
         {
             throw new NotImplementedException();
         }
 
-        [Scenario]
-        public void PlayerWithLargestArmyDoesNotRaiseEventWhenPlayingSubsequentKnight(string[] args)
+        [Test]
+        public void PlayerWithLargestArmyDoesNotRaiseEventWhenPlayingSubsequentKnight()
         {
             throw new NotImplementedException();
         }
 
-        [Scenario]
-        public void PlayerWithLargestArmyDoesNotGetMoreVictoryPointsWhenPlayingSubsequentKnight(string[] args)
+        [Test]
+        public void PlayerWithLargestArmyDoesNotGetMoreVictoryPointsWhenPlayingSubsequentKnight()
         {
             throw new NotImplementedException();
         }
 
-        [Scenario]
-        public void PlayerWithNinePointsGainsLargestArmyAndWins(string[] args)
+        [Test]
+        public void PlayerWithNinePointsGainsLargestArmyAndWins()
         {
             throw new NotImplementedException();
         }
 
-        [Scenario]
-        public void PlayerWithNinePointsGainsLongestRoadAndWins(string[] args)
+        [Test]
+        public void PlayerWithNinePointsGainsLongestRoadAndWins()
         {
             throw new NotImplementedException();
         }
@@ -654,7 +652,7 @@ namespace SoC.Library.ScenarioTests
             return new CollectedResourcesBuilder();
         }
 
-        private ScenarioRunner CompletePlayerInfrastructureSetup(string[] args)
+        private ScenarioRunner CompletePlayerInfrastructureSetup(string[] args = null)
         {
             return ScenarioRunner.CreateScenarioRunner(args)
                 .WithPlayer(Adam)
