@@ -378,11 +378,24 @@ namespace SoC.Library.ScenarioTests
         {
             this.CompletePlayerInfrastructureSetup(new[] { MethodBase.GetCurrentMethod().Name })
                 .WithNoResourceCollection()
+                .WithInitialPlayerSetupFor(Adam, Resources(ResourceClutch.RoadSegment))
+                .WhenPlayer(Adam)
+                    .ReceivesDiceRollEvent(3, 3)
+                    .ThenPlaceRoadSegment(4, 55)
+                    .ReceivesGameErrorEvent("903", "Locations (4, 55) invalid for placing road segment").ThenDoNothing()
+                .Run();
+        }
+
+        [Test]
+        public void PlayerTriesToPlaceRoadSegmentWithUnconnectedLocations()
+        {
+            this.CompletePlayerInfrastructureSetup(new[] { MethodBase.GetCurrentMethod().Name })
+                .WithNoResourceCollection()
                 .WithInitialPlayerSetupFor(Adam, Resources(ResourceClutch.RoadSegment), PlacedRoadSegments(Player.TotalRoadSegments))
                 .WhenPlayer(Adam)
                     .ReceivesDiceRollEvent(3, 3)
-                    .ThenPlaceRoadSegment(4, 0)
-                    .ReceivesGameErrorEvent("903", "Locations (4, 0) invalid for placing road segment").ThenDoNothing()
+                    .ThenPlaceRoadSegment(4, 3)
+                    .ReceivesGameErrorEvent("904", "Locations (4, 0) not connected when placing road segment").ThenDoNothing()
                 .Run();
         }
 
@@ -395,7 +408,7 @@ namespace SoC.Library.ScenarioTests
                 .WhenPlayer(Adam)
                     .ReceivesDiceRollEvent(3, 3)
                     .ThenPlaceRoadSegment(4, 3)
-                    .ReceivesGameErrorEvent("", "").ThenDoNothing()
+                    .ReceivesGameErrorEvent("905", "No road segments to place").ThenDoNothing()
                 .Run();
         }
 
@@ -407,7 +420,20 @@ namespace SoC.Library.ScenarioTests
                 .WhenPlayer(Adam)
                     .ReceivesDiceRollEvent(3, 3)
                     .ThenPlaceRoadSegment(4, 3)
-                    .ReceivesGameErrorEvent("", "").ThenDoNothing()
+                    .ReceivesGameErrorEvent("906", "Not enough resources for placing road segment").ThenDoNothing()
+                .Run();
+        }
+
+        [Test]
+        public void PlayerTriesToPlaceRoadSegmentOnOccupiedLocations()
+        {
+            this.CompletePlayerInfrastructureSetup(new[] { MethodBase.GetCurrentMethod().Name })
+                .WithNoResourceCollection()
+                .WithInitialPlayerSetupFor(Adam, Resources(ResourceClutch.RoadSegment))
+                .WhenPlayer(Adam)
+                    .ReceivesDiceRollEvent(3, 3)
+                    .ThenPlaceRoadSegment(4, 12)
+                    .ReceivesGameErrorEvent("907", "Cannot place road segment on existing road segment (4, 12)").ThenDoNothing()
                 .Run();
         }
 

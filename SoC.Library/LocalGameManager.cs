@@ -362,7 +362,10 @@ namespace Jabberwocky.SoC.Library
             {
                 if (!this.currentPlayer.CanPlaceRoadSegment)
                 {
-                    // TODO: Notify player
+                    if (this.currentPlayer.RemainingRoadSegments == 0)
+                        this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, "905", "No road segments to place"));
+                    if (this.currentPlayer.Resources < ResourceClutch.RoadSegment)
+                        this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, "906", "Not enough resources for placing road segment"));
                     return;
                 }
                 this.gameBoard.PlaceRoadSegment(this.currentPlayer.Id,
@@ -380,7 +383,17 @@ namespace Jabberwocky.SoC.Library
                 {
                     case GameBoard.VerificationStatus.RoadIsOffBoard:
                     {
-                        this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, "903", pe.Message));
+                        this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, "903", $"Locations ({placeRoadSegmentAction.StartLocation}, {placeRoadSegmentAction.EndLocation}) invalid for placing road segment"));
+                        break;
+                    }
+                    case GameBoard.VerificationStatus.NoDirectConnection:
+                    {
+                        this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, "904", $"Locations ({placeRoadSegmentAction.StartLocation}, {placeRoadSegmentAction.EndLocation}) not connected when placing road segment"));
+                        break;
+                    }
+                    case GameBoard.VerificationStatus.RoadIsOccupied:
+                    {
+                        this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, "907", $"Cannot place road segment on existing road segment ({placeRoadSegmentAction.StartLocation}, {placeRoadSegmentAction.EndLocation})"));
                         break;
                     }
                 }
