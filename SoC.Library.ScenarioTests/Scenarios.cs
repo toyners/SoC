@@ -346,12 +346,11 @@ namespace SoC.Library.ScenarioTests
                     .ReceivesDiceRollEvent(3, 3).ThenPlaceRoadSegment(12, 13)
                     .ReceivesRoadSegmentPlacementEvent(12, 13).ThenPlaceRoadSegment(13, 14)
                     .ReceivesRoadSegmentPlacementEvent(13, 14).ThenPlaceSettlement(14)
+                    .ReceivesSettlementPlacementEvent(14).ThenEndTurn()
                 .WhenPlayer(Babara)
                     .ReceivesDiceRollEvent(3, 3).ThenPlaceRoadSegment(15, 14)
-                    .ReceivesRoadSegmentPlacementEvent(Babara, 15, 14).ThenPlaceSettlement(14)
-                // Receive error for placing settlement on occupied location
-                .WhenPlayer(Charlie)
-                .WhenPlayer(Dana)
+                    .ReceivesRoadSegmentPlacementEvent(15, 14).ThenPlaceSettlement(14)
+                    .ReceivesGameErrorEvent("908", "Location (14) already occupied").ThenDoNothing()
                 .Run();
         }
 
@@ -391,10 +390,10 @@ namespace SoC.Library.ScenarioTests
         {
             this.CompletePlayerInfrastructureSetup(new[] { MethodBase.GetCurrentMethod().Name })
                 .WithNoResourceCollection()
-                .WithInitialPlayerSetupFor(Adam, Resources(ResourceClutch.RoadSegment), PlacedRoadSegments(Player.TotalRoadSegments))
+                .WithInitialPlayerSetupFor(Adam, Resources(ResourceClutch.RoadSegment))
                 .WhenPlayer(Adam)
                     .ReceivesDiceRollEvent(3, 3)
-                    .ThenPlaceRoadSegment(4, 3)
+                    .ThenPlaceRoadSegment(4, 0)
                     .ReceivesGameErrorEvent("904", "Locations (4, 0) not connected when placing road segment").ThenDoNothing()
                 .Run();
         }
@@ -404,7 +403,7 @@ namespace SoC.Library.ScenarioTests
         {
             this.CompletePlayerInfrastructureSetup(new[] { MethodBase.GetCurrentMethod().Name })
                 .WithNoResourceCollection()
-                .WithInitialPlayerSetupFor(Adam, Resources(ResourceClutch.RoadSegment), PlacedRoadSegments(Player.TotalRoadSegments))
+                .WithInitialPlayerSetupFor(Adam, Resources(ResourceClutch.RoadSegment), PlacedRoadSegments(Player.TotalRoadSegments - 2))
                 .WhenPlayer(Adam)
                     .ReceivesDiceRollEvent(3, 3)
                     .ThenPlaceRoadSegment(4, 3)
