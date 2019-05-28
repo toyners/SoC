@@ -726,6 +726,6 @@ namespace SoC.Library.ScenarioTests
 
         private static IPlayerSetupAction VictoryPoints(uint value) => new VictoryPointSetup(value);
 
-        private static IPlayerSetupAction PlacedRoadSegments(uint value) => new PlacedRoadSegmentSetup(value);
+        private static IPlayerSetupAction PlacedRoadSegments(int value) => new PlacedRoadSegmentSetup(value);
     }
 }

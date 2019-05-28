@@ -21,10 +21,10 @@ namespace Jabberwocky.SoC.Library.Interfaces
         string Name { get; }
         List<DevelopmentCard> PlayedCards { get; }
         int RemainingCities { get; }
-        uint RemainingRoadSegments { get; }
+        int RemainingRoadSegments { get; }
         int RemainingSettlements { get; }
         ResourceClutch Resources { get; }
-        uint PlacedRoadSegments { get; }
+        int PlacedRoadSegments { get; }
         int SettlementsBuilt { get; }
         uint VictoryPoints { get; }
 

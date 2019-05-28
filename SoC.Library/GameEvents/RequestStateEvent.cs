@@ -10,7 +10,7 @@ namespace Jabberwocky.SoC.Library.GameEvents
         }
 
         public ResourceClutch Resources { get; set; }
-        public uint RoadSegments { get; set; }
+        public int RoadSegments { get; set; }
         public uint VictoryPoints { get; set; }
     }
 }

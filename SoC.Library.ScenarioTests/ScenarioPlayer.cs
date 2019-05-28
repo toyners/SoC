@@ -8,6 +8,6 @@ namespace SoC.Library.ScenarioTests
         internal ScenarioPlayer(string name, Guid id) : base(name, id) {}
 
         internal void SetVictoryPoints(uint victoryPoints) => this.VictoryPoints = victoryPoints;
-        internal void SetPlacedRoadSegments(uint placedRoadSegments) => this.PlacedRoadSegments = placedRoadSegments;
+        internal void SetPlacedRoadSegments(int placedRoadSegments) => this.PlacedRoadSegments = placedRoadSegments;
     }
 }

@@ -14,7 +14,7 @@ namespace Jabberwocky.SoC.Library
     public class Player : IPlayer
     {
         #region Fields
-        public const uint TotalRoadSegments = 15;
+        public const int TotalRoadSegments = 15;
         public const int TotalSettlements = 5;
         public const int TotalCities = 4;
 
@@ -118,10 +118,10 @@ namespace Jabberwocky.SoC.Library
         public string Name { get; private set; }
         public List<DevelopmentCard> PlayedCards { get; protected set; }
         public int RemainingCities { get { return TotalCities - this.CitiesBuilt; } }
-        public uint RemainingRoadSegments { get { return TotalRoadSegments - this.PlacedRoadSegments; } }
+        public int RemainingRoadSegments { get { return TotalRoadSegments - this.PlacedRoadSegments; } }
         public int RemainingSettlements { get { return TotalSettlements - this.SettlementsBuilt; } }
         public ResourceClutch Resources { get; protected set; }
-        public uint PlacedRoadSegments { get; protected set; }
+        public int PlacedRoadSegments { get; protected set; }
         public int SettlementsBuilt { get; protected set; }
         public uint VictoryPoints { get; protected set; }
 

@@ -2,8 +2,8 @@
 {
     internal class PlacedRoadSegmentSetup : IPlayerSetupAction
     {
-        private uint placedRoadSegments;
-        public PlacedRoadSegmentSetup(uint value) => this.placedRoadSegments = value;
+        private int placedRoadSegments;
+        public PlacedRoadSegmentSetup(int value) => this.placedRoadSegments = value;
         public void Process(ScenarioPlayer player) => player.SetPlacedRoadSegments(this.placedRoadSegments);
     }
 }
