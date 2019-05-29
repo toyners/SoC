@@ -261,6 +261,8 @@ namespace SoC.Library.ScenarioTests
                         break;
                     if (gameServerTask.IsFaulted)
                         break;
+                    if (this.playerAgents.All(playerAgent => playerAgent.IsFinished) && tickCount > 10)
+                        tickCount = 10; // Provide a small window for unwanted events to be detected 
                 }
             }
             catch
