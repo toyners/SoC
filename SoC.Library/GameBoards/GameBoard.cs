@@ -929,7 +929,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
                 case VerificationStatus.LocationForCityIsInvalid: throw new PlacementException(verificationResults.Status, "Cannot place city because location is not on board.");
                 case VerificationStatus.LocationIsAlreadyCity: throw new PlacementException(verificationResults.Status, "Cannot place city on existing city.");
                 case VerificationStatus.LocationForSettlementIsInvalid: throw new PlacementException(verificationResults.Status, "Cannot place settlement because location is not on board.");
-                case VerificationStatus.LocationIsOccupied: throw new PlacementException(verificationResults.Status, "Cannot place settlement because location is already settled.");
+                case VerificationStatus.LocationIsOccupied: throw new PlacementException(verificationResults.Status, verificationResults.PlayerId, "Cannot place settlement because location is already settled.");
                 case VerificationStatus.LocationIsNotOwned: throw new PlacementException(verificationResults.Status, "Cannot place city because location is settled by an opponent.");
                 case VerificationStatus.LocationIsNotSettled: throw new PlacementException(verificationResults.Status, "Cannot place city because location is not settled.");
                 case VerificationStatus.NoDirectConnection: throw new PlacementException(verificationResults.Status, "Cannot place road because no direct connection between start location and end location.");
@@ -1423,10 +1423,16 @@ namespace Jabberwocky.SoC.Library.GameBoards
         public class PlacementException : Exception
         {
             public VerificationStatus VerificationStatus;
+            public Guid OtherPlayerId;
             public PlacementException() : base() { }
             public PlacementException(VerificationStatus verificationStatus, string message) : base(message)
             {
                 this.VerificationStatus = verificationStatus;
+            }
+            public PlacementException(VerificationStatus verificationStatus, Guid otherPlayerId, string message) : base(message)
+            {
+                this.VerificationStatus = verificationStatus;
+                this.OtherPlayerId = otherPlayerId;
             }
         }
 

@@ -62,7 +62,7 @@ namespace SoC.Library.ScenarioTests
 
         public void AddDidNotReceiveEventType<T>() where T : GameEvent
         {
-            this.AddDidNotReceiveEventType<T>(1);
+            this.AddDidNotReceiveEventType<T>(0);
         }
 
         public void AddDidNotReceiveEventType<T>(int eventCount) where T : GameEvent

@@ -363,9 +363,11 @@ namespace Jabberwocky.SoC.Library
                 if (!this.currentPlayer.CanPlaceRoadSegment)
                 {
                     if (this.currentPlayer.RemainingRoadSegments == 0)
-                        this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, "905", "No road segments to place"));
+                        this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, "905", "No road segments to place"),
+                            this.currentPlayer);
                     if (this.currentPlayer.Resources < ResourceClutch.RoadSegment)
-                        this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, "906", "Not enough resources for placing road segment"));
+                        this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, "906", "Not enough resources for placing road segment"),
+                            this.currentPlayer);
                     return;
                 }
                 this.gameBoard.PlaceRoadSegment(this.currentPlayer.Id,
@@ -383,17 +385,20 @@ namespace Jabberwocky.SoC.Library
                 {
                     case GameBoard.VerificationStatus.RoadIsOffBoard:
                     {
-                        this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, "903", $"Locations ({placeRoadSegmentAction.StartLocation}, {placeRoadSegmentAction.EndLocation}) invalid for placing road segment"));
+                        this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, "903", $"Locations ({placeRoadSegmentAction.StartLocation}, {placeRoadSegmentAction.EndLocation}) invalid for placing road segment"),
+                            this.currentPlayer);
                         break;
                     }
                     case GameBoard.VerificationStatus.NoDirectConnection:
                     {
-                        this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, "904", $"Locations ({placeRoadSegmentAction.StartLocation}, {placeRoadSegmentAction.EndLocation}) not connected when placing road segment"));
+                        this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, "904", $"Locations ({placeRoadSegmentAction.StartLocation}, {placeRoadSegmentAction.EndLocation}) not connected when placing road segment"),
+                            this.currentPlayer);
                         break;
                     }
                     case GameBoard.VerificationStatus.RoadIsOccupied:
                     {
-                        this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, "907", $"Cannot place road segment on existing road segment ({placeRoadSegmentAction.StartLocation}, {placeRoadSegmentAction.EndLocation})"));
+                        this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, "907", $"Cannot place road segment on existing road segment ({placeRoadSegmentAction.StartLocation}, {placeRoadSegmentAction.EndLocation})"),
+                            this.currentPlayer);
                         break;
                     }
                 }
@@ -425,7 +430,14 @@ namespace Jabberwocky.SoC.Library
             }
             catch (GameBoard.PlacementException pe)
             {
-                // TODO: Notify player
+                switch (pe.VerificationStatus)
+                {
+                    case GameBoard.VerificationStatus.LocationIsOccupied:
+                    {
+                        this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, "908", $"Locations ({placeSettlementAction.SettlementLocation}) already occupied by {this.playersById[pe.OtherPlayerId].Name}"));
+                        break;
+                    }
+                }
             }
 
             return false;
