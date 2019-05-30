@@ -7,7 +7,7 @@ namespace Jabberwocky.SoC.Library.Interfaces
 
     public interface IEventSender
     {
-        bool IsActive { get; set; }
+        bool CanSendEvents { get; set; }
         void SendEvent(GameEvent gameEvent, Guid playerId);
         void SendEvent(GameEvent gameEvent, IEnumerable<IPlayer> players);
     }

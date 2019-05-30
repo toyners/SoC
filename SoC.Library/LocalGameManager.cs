@@ -91,7 +91,7 @@ namespace Jabberwocky.SoC.Library
 
         public void Quit()
         {
-            this.eventRaiser.CanRaiseEvents = false;
+            this.eventRaiser.CanSendEvents = false;
             this.cancellationTokenSource.Cancel();
         }
 
@@ -550,13 +550,13 @@ namespace Jabberwocky.SoC.Library
             var message = $"Sending {this.ToPrettyString(gameEvent)} " +
                 $"to {string.Join(", ", players.Select(player => player.Name))}";
             this.log.Add(message);
-            this.eventRaiser.RaiseEvent(gameEvent, players);
+            this.eventRaiser.SendEvent(gameEvent, players);
         }
 
         private void RaiseEvent(GameEvent gameEvent, IPlayer player)
         {
             this.log.Add($"Sending {this.ToPrettyString(gameEvent)} to {player.Name}");
-            this.eventRaiser.RaiseEvent(gameEvent, player.Id);
+            this.eventRaiser.SendEvent(gameEvent, player.Id);
         }
 
         private void SendStartPlayerTurnEvent()
@@ -720,28 +720,28 @@ namespace Jabberwocky.SoC.Library
             }
         }
 
-        private class EventRaiser
+        private class EventRaiser : IEventSender
         {
             private Dictionary<Guid, Action<GameEvent>> gameEventHandlersByPlayerId = new Dictionary<Guid, Action<GameEvent>>();
         
-            public bool CanRaiseEvents { get; set; } = true;
+            public bool CanSendEvents { get; set; } = true;
 
             public void AddEventHandler(Guid playerId, Action<GameEvent> gameEventHandler)
             {
                 this.gameEventHandlersByPlayerId.Add(playerId, gameEventHandler);
             }
 
-            public void RaiseEvent(GameEvent gameEvent, Guid playerId)
+            public void SendEvent(GameEvent gameEvent, Guid playerId)
             {
-                if (!this.CanRaiseEvents)
+                if (!this.CanSendEvents)
                     return;
                 
                 this.gameEventHandlersByPlayerId[playerId].Invoke(gameEvent);
             }
 
-            public void RaiseEvent(GameEvent gameEvent, IEnumerable<IPlayer> players)
+            public void SendEvent(GameEvent gameEvent, IEnumerable<IPlayer> players)
             {
-                if (!this.CanRaiseEvents)
+                if (!this.CanSendEvents)
                     return;
 
                 foreach (var player in players)
