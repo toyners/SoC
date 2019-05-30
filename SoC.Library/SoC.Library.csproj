@@ -69,6 +69,7 @@
     <Compile Include="GameEvents\SettlementPlacedEvent.cs" />
     <Compile Include="GameToken.cs" />
     <Compile Include="ILog.cs" />
+    <Compile Include="Interfaces\IEventSender.cs" />
     <Compile Include="Interfaces\IPlayerFactory.cs" />
     <Compile Include="Log.cs" />
     <Compile Include="PlayerActions\AcceptDirectTradeAction.cs" />
