@@ -401,6 +401,12 @@ namespace Jabberwocky.SoC.Library
                             this.currentPlayer);
                         break;
                     }
+                    case GameBoard.VerificationStatus.RoadNotConnectedToExistingRoad:
+                    {
+                        this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, "910", $"Cannot place road segment because locations ({placeRoadSegmentAction.StartLocation}, {placeRoadSegmentAction.EndLocation}) are not connected to existing road"),
+                            this.currentPlayer);
+                        break;
+                    }
                 }
             }
         }
@@ -434,7 +440,16 @@ namespace Jabberwocky.SoC.Library
                 {
                     case GameBoard.VerificationStatus.LocationIsOccupied:
                     {
-                        this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, "908", $"Locations ({placeSettlementAction.SettlementLocation}) already occupied by {this.playersById[pe.OtherPlayerId].Name}"));
+                        var occupyingPlayer = this.playersById[pe.OtherPlayerId];
+                        var occupyingPlayerName = occupyingPlayer == this.currentPlayer ? "you" : occupyingPlayer.Name;
+                        this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, "908", $"Location ({placeSettlementAction.SettlementLocation}) already occupied by {occupyingPlayerName}"),
+                            this.currentPlayer);
+                        break;
+                    }
+                    case GameBoard.VerificationStatus.SettlementNotConnectedToExistingRoad:
+                    {
+                        this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, "909", $"Location ({placeSettlementAction.SettlementLocation}) is not connected to your road system"),
+                            this.currentPlayer);
                         break;
                     }
                 }
