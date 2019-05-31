@@ -1,4 +1,5 @@
-﻿namespace SoC.Library.ScenarioTests
+﻿
+namespace SoC.Library.ScenarioTests
 {
     internal class PlacedRoadSegmentSetup : IPlayerSetupAction
     {
