@@ -417,7 +417,9 @@ namespace Jabberwocky.SoC.Library
             {
                 if (!this.currentPlayer.CanPlaceSettlement)
                 {
-                    // TODO: Notify player
+                    if (this.currentPlayer.RemainingSettlements == 0)
+                        this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, "911", "No settlements to place"),
+                            this.currentPlayer);
                     return false;
                 }
                 this.gameBoard.PlaceSettlement(this.currentPlayer.Id,

@@ -172,7 +172,7 @@ namespace Jabberwocky.SoC.Library
                 // If building the settlement on any location will win the game then do it
             }
 
-            if (resourceClutch >= ResourceClutch.City && this.RemainingCities > 0 && this.SettlementsBuilt > this.CitiesBuilt)
+            if (resourceClutch >= ResourceClutch.City && this.RemainingCities > 0 && this.PlacedSettlements > this.CitiesBuilt)
             {
                 // Got resources to build city and got settlements to promote.
                 // If building the city will win the game then do it
@@ -198,7 +198,7 @@ namespace Jabberwocky.SoC.Library
 
         public virtual void ChooseInitialInfrastructure(out UInt32 settlementLocation, out UInt32 roadEndLocation)
         {
-            if (this.SettlementsBuilt >= 2)
+            if (this.PlacedSettlements >= 2)
             {
                 throw new Exception("Should not get here");
             }

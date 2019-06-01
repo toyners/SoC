@@ -25,7 +25,7 @@ namespace Jabberwocky.SoC.Library.Interfaces
         int RemainingSettlements { get; }
         ResourceClutch Resources { get; }
         int PlacedRoadSegments { get; }
-        int SettlementsBuilt { get; }
+        int PlacedSettlements { get; }
         uint VictoryPoints { get; }
 
         // TODO: Obsolete properties

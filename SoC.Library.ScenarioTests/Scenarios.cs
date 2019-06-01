@@ -828,6 +828,6 @@ namespace SoC.Library.ScenarioTests
 
         private static IPlayerSetupAction PlacedRoadSegments(int value) => new PlacedRoadSegmentSetup(value);
 
-        private static IPlayerSetupAction PlacedSettlements(int value) => throw new NotImplementedException();
+        private static IPlayerSetupAction PlacedSettlements(int value) => new PlacedSettlementsSetup(value);
     }
 }

@@ -61,7 +61,7 @@ namespace Jabberwocky.SoC.Library
             this.PlayedCards = playerModel.PlayedCards;
             this.Resources = playerModel.Resources;
             this.PlacedRoadSegments = playerModel.RoadSegmentsBuilt;
-            this.SettlementsBuilt = playerModel.SettlementsBuilt;
+            this.PlacedSettlements = playerModel.SettlementsBuilt;
         }
         #endregion
 
@@ -119,10 +119,10 @@ namespace Jabberwocky.SoC.Library
         public List<DevelopmentCard> PlayedCards { get; protected set; }
         public int RemainingCities { get { return TotalCities - this.CitiesBuilt; } }
         public int RemainingRoadSegments { get { return TotalRoadSegments - this.PlacedRoadSegments; } }
-        public int RemainingSettlements { get { return TotalSettlements - this.SettlementsBuilt; } }
+        public int RemainingSettlements { get { return TotalSettlements - this.PlacedSettlements; } }
         public ResourceClutch Resources { get; protected set; }
         public int PlacedRoadSegments { get; protected set; }
-        public int SettlementsBuilt { get; protected set; }
+        public int PlacedSettlements { get; protected set; }
         public uint VictoryPoints { get; protected set; }
 
         // TODO: Obsolete. 
@@ -259,7 +259,7 @@ namespace Jabberwocky.SoC.Library
         public void PlaceStartingInfrastructure()
         {
             this.PlacedRoadSegments++;
-            this.SettlementsBuilt++;
+            this.PlacedSettlements++;
             this.VictoryPoints++;
         }
 
