@@ -21,9 +21,10 @@ namespace SoC.Library.ScenarioTests.Instructions
             this.playerAgent = playerAgent;
         }
 
-        public PlayerStateInstruction Cities(int v)
+        public PlayerStateInstruction Cities(uint cities)
         {
-            throw new NotImplementedException();
+            this.cities = cities;
+            return this;
         }
 
         public PlayerStateInstruction HeldCards(DevelopmentCardTypes developmentCardType)
@@ -43,9 +44,10 @@ namespace SoC.Library.ScenarioTests.Instructions
             return this;
         }
 
-        public PlayerStateInstruction Settlements(int v)
+        public PlayerStateInstruction Settlements(uint settlements)
         {
-            throw new NotImplementedException();
+            this.settlements = settlements;
+            return this;
         }
 
         public PlayerStateInstruction VictoryPoints(uint victoryPoints)

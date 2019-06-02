@@ -81,6 +81,7 @@
     <Compile Include="PlayerActions\DropResourcesAction.cs" />
     <Compile Include="PlayerActions\EndOfTurnAction.cs" />
     <Compile Include="PlayerActions\MakeDirectTradeOfferAction.cs" />
+    <Compile Include="PlayerActions\PlaceCityAction.cs" />
     <Compile Include="PlayerActions\PlaceRoadSegmentAction.cs" />
     <Compile Include="PlayerActions\PlaceSettlementAction.cs" />
     <Compile Include="PlayerActions\PlaceSetupInfrastructureAction.cs" />

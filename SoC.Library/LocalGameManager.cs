@@ -487,6 +487,11 @@ namespace Jabberwocky.SoC.Library
                 return false;
             }
 
+            if (playerAction is PlaceCityAction placeCityAction)
+            {
+                return false;
+            }
+
             if (playerAction is EndOfTurnAction)
             {
                 this.StartTurn();
