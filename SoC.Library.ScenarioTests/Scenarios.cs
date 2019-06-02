@@ -421,7 +421,18 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void PlayerTriesToPlaceSettlementWithNotEnoughResources()
         {
-            throw new NotImplementedException();
+            this.CompletePlayerInfrastructureSetup(new[] { MethodBase.GetCurrentMethod().Name })
+                .WithNoResourceCollection()
+                .WhenPlayer(Adam)
+                    .ReceivesDiceRollEvent(3, 3).ThenPlaceSettlement(3)
+                    .ReceivesGameErrorEvent("912", "Not enough resources for placing settlement").ThenDoNothing()
+                .VerifyPlayer(Babara)
+                    .DidNotReceiveEvent<GameErrorEvent>()
+                .VerifyPlayer(Charlie)
+                    .DidNotReceiveEvent<GameErrorEvent>()
+                .VerifyPlayer(Dana)
+                    .DidNotReceiveEvent<GameErrorEvent>()
+                .Run();
         }
 
         [Test]
