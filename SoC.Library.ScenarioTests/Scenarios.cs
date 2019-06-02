@@ -253,7 +253,31 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void PlayerPlacesCity()
         {
-            throw new NotImplementedException();
+            this.CompletePlayerInfrastructureSetup(new[] { MethodBase.GetCurrentMethod().Name })
+                .WithNoResourceCollection()
+                .WithInitialPlayerSetupFor(
+                    Adam,
+                    Resources(ResourceClutch.RoadSegment + ResourceClutch.Settlement + ResourceClutch.City))
+                .WhenPlayer(Adam)
+                    .ReceivesDiceRollEvent(3, 3).ThenPlaceRoadSegment(4, 3)
+                    .ReceivesRoadSegmentPlacementEvent(4, 3).ThenPlaceSettlement(3)
+                    .ReceivesSettlementPlacementEvent(3).ThenPlaceCity(3)
+                    .ThenVerifyPlayerState()
+                        .Resources(ResourceClutch.Zero)
+                        .VictoryPoints(4)
+                        .Settlements(Player.TotalSettlements - 2)
+                        .Cities(Player.TotalCities - 1)
+                        .End()
+                .WhenPlayer(Babara)
+                    .ReceivesRoadSegmentPlacementEvent(Adam, 4, 3).ThenDoNothing()
+                    .ReceivesSettlementPlacementEvent(Adam, 3).ThenDoNothing()
+                .WhenPlayer(Charlie)
+                    .ReceivesRoadSegmentPlacementEvent(Adam, 4, 3).ThenDoNothing()
+                    .ReceivesSettlementPlacementEvent(Adam, 3).ThenDoNothing()
+                .WhenPlayer(Dana)
+                    .ReceivesRoadSegmentPlacementEvent(Adam, 4, 3).ThenDoNothing()
+                    .ReceivesSettlementPlacementEvent(Adam, 3).ThenDoNothing()
+                .Run();
         }
 
         [Test]

@@ -13,6 +13,7 @@ namespace SoC.Library.ScenarioTests.Instructions
             ConfirmStart,
             EndOfTurn,
             MakeDirectTradeOffer,
+            PlaceCity,
             PlaceRoadSegment,
             PlaceSettlement,
             PlaceStartingInfrastructure,

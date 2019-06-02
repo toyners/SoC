@@ -336,7 +336,7 @@ namespace SoC.Library.ScenarioTests
             if (!string.IsNullOrEmpty(timeOutMessage))
                 throw new TimeoutException(timeOutMessage);
         }
-
+        
         public ScenarioRunner ThenAnswerDirectTradeOffer(ResourceClutch wantedResources)
         {
             this.AddActionInstruction(ActionInstruction.OperationTypes.AnswerDirectTradeOffer, 
@@ -373,6 +373,13 @@ namespace SoC.Library.ScenarioTests
         {
             this.AddActionInstruction(ActionInstruction.OperationTypes.MakeDirectTradeOffer, 
                 new object[] { wantedResources });
+            return this;
+        }
+
+        public ScenarioRunner ThenPlaceCity(uint cityLocation)
+        {
+            this.AddActionInstruction(ActionInstruction.OperationTypes.PlaceCity,
+                new object[] { cityLocation});
             return this;
         }
 

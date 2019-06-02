@@ -9,8 +9,10 @@ namespace Jabberwocky.SoC.Library.GameEvents
         {
         }
 
+        public int Cities { get; set; }
         public ResourceClutch Resources { get; set; }
         public int RoadSegments { get; set; }
+        public int Settlements { get; set; }
         public uint VictoryPoints { get; set; }
     }
 }

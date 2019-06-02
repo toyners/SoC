@@ -1,6 +1,7 @@
 ﻿
 namespace SoC.Library.ScenarioTests.Instructions
 {
+    using System;
     using Jabberwocky.SoC.Library;
     using Jabberwocky.SoC.Library.GameEvents;
 
@@ -8,14 +9,21 @@ namespace SoC.Library.ScenarioTests.Instructions
     {
         private readonly PlayerAgent playerAgent;
         private readonly ScenarioRunner runner;
+        private uint? cities;
         private ResourceClutch? resources;
         private uint? roadSegments;
+        private uint? settlements;
         private uint? victoryPoints;
 
         public PlayerStateInstruction(PlayerAgent playerAgent, ScenarioRunner runner)
         {
             this.runner = runner;
             this.playerAgent = playerAgent;
+        }
+
+        public PlayerStateInstruction Cities(int v)
+        {
+            throw new NotImplementedException();
         }
 
         public PlayerStateInstruction HeldCards(DevelopmentCardTypes developmentCardType)
@@ -33,6 +41,11 @@ namespace SoC.Library.ScenarioTests.Instructions
         {
             this.roadSegments = roadSegmentCount;
             return this;
+        }
+
+        public PlayerStateInstruction Settlements(int v)
+        {
+            throw new NotImplementedException();
         }
 
         public PlayerStateInstruction VictoryPoints(uint victoryPoints)
@@ -60,5 +73,7 @@ namespace SoC.Library.ScenarioTests.Instructions
             requestStateEvent.VictoryPoints = this.victoryPoints;
             return requestStateEvent;
         }
+
+        
     }
 }
