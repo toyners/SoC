@@ -285,10 +285,14 @@ namespace SoC.Library.ScenarioTests
         private bool IsRequestStateEventVerified(ScenarioRequestStateEvent expectedEvent, RequestStateEvent actualEvent)
         {
             var result = true;
+            if (expectedEvent.Cities.HasValue)
+                result &= expectedEvent.Cities.Value == actualEvent.Cities;
             if (expectedEvent.Resources.HasValue)
-                result &= expectedEvent.Resources.HasValue && expectedEvent.Resources.Value == actualEvent.Resources;
+                result &= expectedEvent.Resources.Value == actualEvent.Resources;
             if (expectedEvent.RoadSegments.HasValue)
                 result &= expectedEvent.RoadSegments.Value == actualEvent.RoadSegments;
+            if (expectedEvent.Settlements.HasValue)
+                result &= expectedEvent.Settlements.Value == actualEvent.Settlements;
             if (expectedEvent.VictoryPoints.HasValue)
                 result &= expectedEvent.VictoryPoints.Value == actualEvent.VictoryPoints;
 

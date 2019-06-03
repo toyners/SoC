@@ -11,7 +11,7 @@ namespace Jabberwocky.SoC.Library.Interfaces
         #region Properties
         bool CanPlaceRoadSegment { get; }
         bool CanPlaceSettlement { get; }
-        int CitiesBuilt { get; }
+        int PlacedCities { get; }
         bool HasLargestArmy { get; set; }
         bool HasLongestRoad { get; set; }
         List<DevelopmentCard> HeldCards { get; }

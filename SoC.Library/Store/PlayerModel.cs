@@ -24,7 +24,7 @@ namespace Jabberwocky.SoC.Library.Store
 
         public PlayerModel(IPlayer player)
         {
-            this.CitiesBuilt = player.CitiesBuilt;
+            this.CitiesBuilt = player.PlacedCities;
             this.HeldCards = player.HeldCards;
             this.Id = player.Id;
             this.IsComputer = player.IsComputer;

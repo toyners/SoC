@@ -70,8 +70,10 @@ namespace SoC.Library.ScenarioTests.Instructions
         public GameEvent GetEvent()
         {
             var requestStateEvent = new ScenarioRequestStateEvent(this.playerAgent.Id);
+            requestStateEvent.Cities = this.cities;
             requestStateEvent.Resources = this.resources;
             requestStateEvent.RoadSegments = this.roadSegments;
+            requestStateEvent.Settlements = this.settlements;
             requestStateEvent.VictoryPoints = this.victoryPoints;
             return requestStateEvent;
         }

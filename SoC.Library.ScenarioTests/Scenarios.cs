@@ -417,6 +417,7 @@ namespace SoC.Library.ScenarioTests
                     .ReceivesSettlementPlacementEvent(3)
                     .ThenVerifyPlayerState()
                         .Resources(ResourceClutch.Zero)
+                        .Settlements(Player.TotalSettlements - 3)
                         .VictoryPoints(3)
                         .End()
                 .WhenPlayer(Babara)

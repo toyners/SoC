@@ -11,8 +11,10 @@ namespace SoC.Library.ScenarioTests.Instructions
         {
         }
 
-        public ResourceClutch? Resources { get; set; }
-        public uint? RoadSegments { get; set; }
-        public uint? VictoryPoints { get; set; }
+        public uint? Cities { get; internal set; }
+        public ResourceClutch? Resources { get; internal set; }
+        public uint? RoadSegments { get; internal set; }
+        public uint? VictoryPoints { get; internal set; }
+        public uint? Settlements { get; internal set; }
     }
 }

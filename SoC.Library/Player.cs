@@ -53,7 +53,7 @@ namespace Jabberwocky.SoC.Library
 
         public Player(PlayerModel playerModel)
         {
-            this.CitiesBuilt = playerModel.CitiesBuilt;
+            this.PlacedCities = playerModel.CitiesBuilt;
             this.HeldCards = playerModel.HeldCards;
             this.Id = playerModel.Id;
             this.PlayedKnightCards = playerModel.KnightCards;
@@ -68,7 +68,6 @@ namespace Jabberwocky.SoC.Library
         #region Properties
         public bool CanPlaceRoadSegment => this.RemainingRoadSegments > 0 && this.Resources >= ResourceClutch.RoadSegment;
         public bool CanPlaceSettlement => this.RemainingSettlements > 0 && this.Resources >= ResourceClutch.Settlement;
-        public int CitiesBuilt { get; protected set; }
         public bool HasLargestArmy
         {
             get { return this.hasLargestArmy; }
@@ -117,10 +116,11 @@ namespace Jabberwocky.SoC.Library
         public uint PlayedKnightCards { get; private set; }
         public string Name { get; private set; }
         public List<DevelopmentCard> PlayedCards { get; protected set; }
-        public int RemainingCities { get { return TotalCities - this.CitiesBuilt; } }
+        public int RemainingCities { get { return TotalCities - this.PlacedCities; } }
         public int RemainingRoadSegments { get { return TotalRoadSegments - this.PlacedRoadSegments; } }
         public int RemainingSettlements { get { return TotalSettlements - this.PlacedSettlements; } }
         public ResourceClutch Resources { get; protected set; }
+        public int PlacedCities { get; protected set; }
         public int PlacedRoadSegments { get; protected set; }
         public int PlacedSettlements { get; protected set; }
         public uint VictoryPoints { get; protected set; }
@@ -230,9 +230,9 @@ namespace Jabberwocky.SoC.Library
 
         public void PlaceCity()
         {
-            this.GrainCount -= Constants.GrainForBuildingCity;
-            this.OreCount -= Constants.OreForBuildingCity;
-            this.CitiesBuilt++;
+            this.Resources -= ResourceClutch.City;
+            this.PlacedCities++;
+            this.PlacedSettlements--;
             this.VictoryPoints++;
         }
 
@@ -252,7 +252,7 @@ namespace Jabberwocky.SoC.Library
         public void PlaceSettlement()
         {
             this.Resources -= ResourceClutch.Settlement;
-            //this.SettlementsBuilt++; //TODO: Add scenario to test this
+            this.PlacedSettlements++;
             this.VictoryPoints++;
         }
 
