@@ -12,7 +12,7 @@ namespace Jabberwocky.SoC.Library.GameEvents
             this.Location = location;
         }
 
-        public override bool Equals(object obj)
+        /*public override bool Equals(object obj)
         {
             if (!base.Equals(obj))
             {
@@ -25,6 +25,6 @@ namespace Jabberwocky.SoC.Library.GameEvents
         public override string ToString()
         {
             return $"{base.ToString()} in location {this.Location}";
-        }
+        }*/
     }
 }

@@ -105,7 +105,7 @@ namespace Jabberwocky.SoC.Library
         #endregion
 
         #region Events
-        public Action<CityBuiltEvent> CityBuiltEvent { get; set; }
+        public Action<CityPlacedEvent> CityBuiltEvent { get; set; }
         public Action<DevelopmentCard> DevelopmentCardPurchasedEvent { get; set; }
         public Action<DevelopmentCardBoughtEvent> DevelopmentCardBoughtEvent { get; set; }
         public Action<Guid, uint, uint> DiceRollEvent { get; set; }
@@ -145,7 +145,7 @@ namespace Jabberwocky.SoC.Library
             }
 
             this.BuildCity(location);
-            this.CityBuiltEvent?.Invoke(new CityBuiltEvent(this.mainPlayer.Id, location));
+            this.CityBuiltEvent?.Invoke(new CityPlacedEvent(this.mainPlayer.Id, location));
             this.CheckMainPlayerIsWinner();
         }
 

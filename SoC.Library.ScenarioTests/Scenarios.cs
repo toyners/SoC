@@ -287,6 +287,121 @@ namespace SoC.Library.ScenarioTests
         }
 
         [Test]
+        public void PlayerTriesToPlaceCityOnLocationOccupiedByPlayer()
+        {
+            throw new NotImplementedException();
+            this.CompletePlayerInfrastructureSetup(new[] { MethodBase.GetCurrentMethod().Name })
+                .WithNoResourceCollection()
+                .WithInitialPlayerSetupFor(
+                    Adam,
+                    Resources(ResourceClutch.RoadSegment + (ResourceClutch.Settlement * 2)))
+                .WhenPlayer(Adam)
+                    .ReceivesDiceRollEvent(3, 3).ThenPlaceRoadSegment(4, 3)
+                    .ReceivesRoadSegmentPlacementEvent(4, 3).ThenPlaceSettlement(3)
+                    .ReceivesSettlementPlacementEvent(3).ThenPlaceSettlement(3)
+                    .ReceivesGameErrorEvent("908", "Location (3) already occupied by you").ThenDoNothing()
+                .VerifyPlayer(Babara)
+                    .DidNotReceiveEvent<GameErrorEvent>()
+                .VerifyPlayer(Charlie)
+                    .DidNotReceiveEvent<GameErrorEvent>()
+                .VerifyPlayer(Dana)
+                    .DidNotReceiveEvent<GameErrorEvent>()
+                .Run();
+        }
+
+        [Test]
+        public void PlayerTriesToPlaceCityOnLocationOccupiedByOtherPlayer()
+        {
+            throw new NotImplementedException();
+            this.CompletePlayerInfrastructureSetup(new[] { MethodBase.GetCurrentMethod().Name })
+                .WithNoResourceCollection()
+                .WithInitialPlayerSetupFor(
+                    Adam,
+                    Resources((ResourceClutch.RoadSegment * 2) + ResourceClutch.Settlement))
+                .WithInitialPlayerSetupFor(
+                    Charlie,
+                    Resources(ResourceClutch.RoadSegment + ResourceClutch.Settlement))
+                .WhenPlayer(Adam)
+                    .ReceivesDiceRollEvent(3, 3).ThenPlaceRoadSegment(12, 13)
+                    .ReceivesRoadSegmentPlacementEvent(12, 13).ThenPlaceRoadSegment(13, 14)
+                    .ReceivesRoadSegmentPlacementEvent(13, 14).ThenPlaceSettlement(14)
+                    .ReceivesSettlementPlacementEvent(14).ThenEndTurn()
+                .WhenPlayer(Babara)
+                    .ReceivesDiceRollEvent(3, 3).ThenEndTurn()
+                .WhenPlayer(Charlie)
+                    .ReceivesDiceRollEvent(3, 3).ThenPlaceRoadSegment(15, 14)
+                    .ReceivesRoadSegmentPlacementEvent(15, 14).ThenPlaceSettlement(14)
+                    .ReceivesGameErrorEvent("908", "Location (14) already occupied by Adam").ThenDoNothing()
+                .VerifyPlayer(Adam)
+                    .DidNotReceiveEvent<GameErrorEvent>()
+                .VerifyPlayer(Babara)
+                    .DidNotReceiveEvent<GameErrorEvent>()
+                .VerifyPlayer(Dana)
+                    .DidNotReceiveEvent<GameErrorEvent>()
+                .Run();
+        }
+
+        [Test]
+        public void PlayerTriesToPlaceCityOnLocationWithoutSettlement()
+        {
+            throw new NotImplementedException();
+            this.CompletePlayerInfrastructureSetup(new[] { MethodBase.GetCurrentMethod().Name })
+                .WithNoResourceCollection()
+                .WithInitialPlayerSetupFor(
+                    Adam,
+                    Resources(ResourceClutch.Settlement))
+                .WhenPlayer(Adam)
+                    .ReceivesDiceRollEvent(3, 3).ThenPlaceSettlement(3)
+                    .ReceivesGameErrorEvent("909", "Location (3) is not connected to your road system").ThenDoNothing()
+                .VerifyPlayer(Babara)
+                    .DidNotReceiveEvent<GameErrorEvent>()
+                .VerifyPlayer(Charlie)
+                    .DidNotReceiveEvent<GameErrorEvent>()
+                .VerifyPlayer(Dana)
+                    .DidNotReceiveEvent<GameErrorEvent>()
+                .Run();
+        }
+
+        [Test]
+        public void PlayerTriesToPlaceCityWithNoCitiesLeft()
+        {
+            throw new NotImplementedException();
+            this.CompletePlayerInfrastructureSetup(new[] { MethodBase.GetCurrentMethod().Name })
+                .WithNoResourceCollection()
+                .WithInitialPlayerSetupFor(
+                    Adam,
+                    Resources(ResourceClutch.Settlement), PlacedSettlements(Player.TotalSettlements - 2))
+                .WhenPlayer(Adam)
+                    .ReceivesDiceRollEvent(3, 3).ThenPlaceSettlement(3)
+                    .ReceivesGameErrorEvent("911", "No settlements to place").ThenDoNothing()
+                .VerifyPlayer(Babara)
+                    .DidNotReceiveEvent<GameErrorEvent>()
+                .VerifyPlayer(Charlie)
+                    .DidNotReceiveEvent<GameErrorEvent>()
+                .VerifyPlayer(Dana)
+                    .DidNotReceiveEvent<GameErrorEvent>()
+                .Run();
+        }
+
+        [Test]
+        public void PlayerTriesToPlaceCityWithNotEnoughResources()
+        {
+            throw new NotImplementedException();
+            this.CompletePlayerInfrastructureSetup(new[] { MethodBase.GetCurrentMethod().Name })
+                .WithNoResourceCollection()
+                .WhenPlayer(Adam)
+                    .ReceivesDiceRollEvent(3, 3).ThenPlaceSettlement(3)
+                    .ReceivesGameErrorEvent("912", "Not enough resources for placing settlement").ThenDoNothing()
+                .VerifyPlayer(Babara)
+                    .DidNotReceiveEvent<GameErrorEvent>()
+                .VerifyPlayer(Charlie)
+                    .DidNotReceiveEvent<GameErrorEvent>()
+                .VerifyPlayer(Dana)
+                    .DidNotReceiveEvent<GameErrorEvent>()
+                .Run();
+        }
+
+        [Test]
         public void PlayerPlacesSettlement()
         {
             this.CompletePlayerInfrastructureSetup(new[] { MethodBase.GetCurrentMethod().Name })

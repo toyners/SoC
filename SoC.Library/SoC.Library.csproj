@@ -60,6 +60,7 @@
     <Compile Include="DevelopmentCards\RoadBuildingDevelopmentCard.cs" />
     <Compile Include="DevelopmentCards\VictoryPointDevelopmentCard.cs" />
     <Compile Include="DevelopmentCards\YearOfPlentyDevelopmentCard.cs" />
+    <Compile Include="GameEvents\CityPlacedEvent.cs" />
     <Compile Include="GameEvents\ConfirmGameStartEvent.cs" />
     <Compile Include="GameEvents\GameErrorEvent.cs" />
     <Compile Include="GameEvents\GameJoinedEvent.cs" />
@@ -133,7 +134,6 @@
     <Compile Include="Store\IGameDataReader.cs" />
     <Compile Include="ProductionFactorComparison.cs" />
     <Compile Include="Enums\ComputerPlayerActionTypes.cs" />
-    <Compile Include="GameEvents\CityBuiltEvent.cs" />
     <Compile Include="PlayerActions\TradeWithBankAction.cs" />
     <Compile Include="GameEvents\LongestRoadBuiltEvent.cs" />
     <Compile Include="GameEvents\PlayYearOfPlentyCardEvent.cs" />

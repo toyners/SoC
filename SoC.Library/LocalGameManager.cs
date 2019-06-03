@@ -356,6 +356,23 @@ namespace Jabberwocky.SoC.Library
             });
         }
 
+        private void ProcessPlaceCityAction(PlaceCityAction placeCityAction)
+        {
+            try
+            {
+                this.gameBoard.PlaceCity(this.currentPlayer.Id,
+                    placeCityAction.CityLocation);
+                this.currentPlayer.PlaceCity();
+
+                this.RaiseEvent(new CityPlacedEvent(this.currentPlayer.Id,
+                    placeCityAction.CityLocation));
+            }
+            catch (GameBoard.PlacementException pe)
+            {
+
+            }
+        }
+
         private void ProcessPlaceRoadSegmentAction(PlaceRoadSegmentAction placeRoadSegmentAction)
         {
             try
@@ -489,6 +506,7 @@ namespace Jabberwocky.SoC.Library
 
             if (playerAction is PlaceCityAction placeCityAction)
             {
+                this.ProcessPlaceCityAction(placeCityAction);
                 return false;
             }
 
