@@ -79,6 +79,13 @@ namespace SoC.Library.ScenarioTests
             return this;
         }
 
+        public ScenarioRunner ReceivesCityPlacementEvent(uint cityLocation)
+        {
+            var gameEvent = new CityPlacedEvent(this.playerAgentsByName[this.currentPlayerAgent.Name].Id, cityLocation);
+            this.currentPlayerAgent.AddInstruction(new EventInstruction(gameEvent));
+            return this;
+        }
+
         public ScenarioRunner ReceivesConfirmGameStartEvent()
         {
             var gameEvent = new ConfirmGameStartEvent();
@@ -336,7 +343,7 @@ namespace SoC.Library.ScenarioTests
             if (!string.IsNullOrEmpty(timeOutMessage))
                 throw new TimeoutException(timeOutMessage);
         }
-        
+
         public ScenarioRunner ThenAnswerDirectTradeOffer(ResourceClutch wantedResources)
         {
             this.AddActionInstruction(ActionInstruction.OperationTypes.AnswerDirectTradeOffer, 

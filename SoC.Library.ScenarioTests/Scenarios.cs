@@ -262,6 +262,7 @@ namespace SoC.Library.ScenarioTests
                     .ReceivesDiceRollEvent(3, 3).ThenPlaceRoadSegment(4, 3)
                     .ReceivesRoadSegmentPlacementEvent(4, 3).ThenPlaceSettlement(3)
                     .ReceivesSettlementPlacementEvent(3).ThenPlaceCity(3)
+                    .ReceivesCityPlacementEvent(3)
                     .ThenVerifyPlayerState()
                         .Resources(ResourceClutch.Zero)
                         .VictoryPoints(4)

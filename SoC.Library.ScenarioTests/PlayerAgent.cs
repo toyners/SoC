@@ -79,10 +79,14 @@ namespace SoC.Library.ScenarioTests
             }
             else if (instruction is ActionInstruction actionInstruction)
             {
+                if (this.LastEventActionPair.Action != null)
+                    throw new Exception("Last event action already set");
                 this.LastEventActionPair.Action = actionInstruction;
             }
             else if (instruction is PlayerStateInstruction playerStateInstruction)
             {
+                if (this.LastEventActionPair.Action != null)
+                    throw new Exception("Last event action already set");
                 this.LastEventActionPair.Action = playerStateInstruction.GetAction();
                 this.expectedEventActions.Add(new EventActionPair(playerStateInstruction.GetEvent()));
             }
@@ -201,6 +205,11 @@ namespace SoC.Library.ScenarioTests
                 case ActionInstruction.OperationTypes.MakeDirectTradeOffer:
                 {
                     this.gameController.MakeDirectTradeOffer((ResourceClutch)action.Parameters[0]);
+                    break;
+                }
+                case ActionInstruction.OperationTypes.PlaceCity:
+                {
+                    this.gameController.PlaceCity((uint)action.Parameters[0]);
                     break;
                 }
                 case ActionInstruction.OperationTypes.PlaceRoadSegment:
