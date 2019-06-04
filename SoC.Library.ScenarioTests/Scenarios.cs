@@ -273,19 +273,46 @@ namespace SoC.Library.ScenarioTests
                 .WhenPlayer(Babara)
                     .ReceivesRoadSegmentPlacementEvent(Adam, 4, 3).ThenDoNothing()
                     .ReceivesSettlementPlacementEvent(Adam, 3).ThenDoNothing()
+                    .ReceivesCityPlacementEvent(Adam, 3).ThenDoNothing()
                 .WhenPlayer(Charlie)
                     .ReceivesRoadSegmentPlacementEvent(Adam, 4, 3).ThenDoNothing()
                     .ReceivesSettlementPlacementEvent(Adam, 3).ThenDoNothing()
+                    .ReceivesCityPlacementEvent(Adam, 3).ThenDoNothing()
                 .WhenPlayer(Dana)
                     .ReceivesRoadSegmentPlacementEvent(Adam, 4, 3).ThenDoNothing()
                     .ReceivesSettlementPlacementEvent(Adam, 3).ThenDoNothing()
+                    .ReceivesCityPlacementEvent(Adam, 3).ThenDoNothing()
                 .Run();
         }
 
         [Test]
         public void PlayerPlacesCityAndWins()
         {
-            throw new NotImplementedException();
+            this.CompletePlayerInfrastructureSetup(new[] { MethodBase.GetCurrentMethod().Name })
+                .WithNoResourceCollection()
+                .WithInitialPlayerSetupFor(
+                    Adam,
+                    Resources(ResourceClutch.RoadSegment + ResourceClutch.Settlement + ResourceClutch.City),
+                    VictoryPoints(6))
+                .WhenPlayer(Adam)
+                    .ReceivesDiceRollEvent(3, 3).ThenPlaceRoadSegment(4, 3)
+                    .ReceivesRoadSegmentPlacementEvent(4, 3).ThenPlaceSettlement(3)
+                    .ReceivesSettlementPlacementEvent(3).ThenPlaceCity(3)
+                    .ReceivesCityPlacementEvent(3).ThenDoNothing()
+                    .ReceivesPlayerWonEvent(10)
+                .WhenPlayer(Babara)
+                    .ReceivesPlayerWonEvent(Adam, 10).ThenDoNothing()
+                .WhenPlayer(Charlie)
+                    .ReceivesPlayerWonEvent(Adam, 10).ThenDoNothing()
+                .WhenPlayer(Dana)
+                    .ReceivesPlayerWonEvent(Adam, 10).ThenDoNothing()
+                .WhenPlayer(Adam)
+                    .ThenVerifyPlayerState()
+                        .Resources(ResourceClutch.Zero)
+                        .VictoryPoints(10)
+                        .Cities(Player.TotalCities - 1)
+                        .End()
+                .Run();
         }
 
         [Test]
@@ -444,10 +471,8 @@ namespace SoC.Library.ScenarioTests
                     Resources(ResourceClutch.RoadSegment + ResourceClutch.Settlement),
                     VictoryPoints(7)) // Account for placing infrastructure
                 .WhenPlayer(Adam)
-                    .ReceivesDiceRollEvent(3, 3)
-                    .ThenPlaceRoadSegment(4, 3)
-                    .ReceivesRoadSegmentPlacementEvent(4, 3)
-                    .ThenPlaceSettlement(3)
+                    .ReceivesDiceRollEvent(3, 3).ThenPlaceRoadSegment(4, 3)
+                    .ReceivesRoadSegmentPlacementEvent(4, 3).ThenPlaceSettlement(3)
                     .ReceivesSettlementPlacementEvent(3)
                 .WhenPlayer(Babara)
                     .ReceivesRoadSegmentPlacementEvent(Adam, 4, 3).ThenDoNothing()
@@ -978,7 +1003,6 @@ namespace SoC.Library.ScenarioTests
                 .VerifyPlayer(Babara).DidNotReceiveEvent(actionNotRecognisedError)
                 .VerifyPlayer(Charlie).DidNotReceiveEvent(actionNotRecognisedError)
                 .VerifyPlayer(Dana).DidNotReceiveEvent(actionNotRecognisedError);
-
         }
 
         internal static IPlayerSetupAction Resources(ResourceClutch resources) => new ResourceSetup(resources);

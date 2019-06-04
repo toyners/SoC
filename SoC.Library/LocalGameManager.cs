@@ -324,7 +324,7 @@ namespace Jabberwocky.SoC.Library
             });
         }
 
-        private void ProcessPlaceCityAction(PlaceCityAction placeCityAction)
+        private bool ProcessPlaceCityAction(PlaceCityAction placeCityAction)
         {
             try
             {
@@ -334,11 +334,20 @@ namespace Jabberwocky.SoC.Library
 
                 this.RaiseEvent(new CityPlacedEvent(this.currentPlayer.Id,
                     placeCityAction.CityLocation));
+
+                var winningPlayer = this.GetWinningPlayer();
+                if (winningPlayer != null)
+                {
+                    this.RaiseEvent(new GameWinEvent(winningPlayer.Id, winningPlayer.VictoryPoints));
+                    return true;
+                }
             }
             catch (GameBoard.PlacementException pe)
             {
 
             }
+
+            return false;
         }
 
         private void ProcessPlaceRoadSegmentAction(PlaceRoadSegmentAction placeRoadSegmentAction)
@@ -472,12 +481,6 @@ namespace Jabberwocky.SoC.Library
                 return false;
             }
 
-            if (playerAction is PlaceCityAction placeCityAction)
-            {
-                this.ProcessPlaceCityAction(placeCityAction);
-                return false;
-            }
-
             if (playerAction is EndOfTurnAction)
             {
                 this.StartTurn();
@@ -488,6 +491,11 @@ namespace Jabberwocky.SoC.Library
             {
                 this.ProcessMakeDirectTradeOfferAction(makeDirectTradeOfferAction);
                 return false;
+            }
+
+            if (playerAction is PlaceCityAction placeCityAction)
+            {
+                return this.ProcessPlaceCityAction(placeCityAction);
             }
 
             if (playerAction is PlaceSetupInfrastructureAction placeSetupInfrastructureAction)
@@ -504,8 +512,7 @@ namespace Jabberwocky.SoC.Library
 
             if (playerAction is PlaceSettlementAction placeSettlementAction)
             {
-                this.ProcessPlaceSettlementAction(placeSettlementAction);
-                return false;
+                return this.ProcessPlaceSettlementAction(placeSettlementAction);
             }
 
             if (playerAction is QuitGameAction quitGameAction)
@@ -578,7 +585,8 @@ namespace Jabberwocky.SoC.Library
                 this.actionManager.SetExpectedActionsForPlayer(player.Id, null);
             this.actionManager.SetExpectedActionsForPlayer(this.currentPlayer.Id,
                 typeof(EndOfTurnAction), typeof(QuitGameAction), typeof(MakeDirectTradeOfferAction),
-                typeof(PlaceRoadSegmentAction), typeof(PlaceSettlementAction));
+                typeof(PlaceRoadSegmentAction), typeof(PlaceSettlementAction), typeof(PlaceCityAction));
+
             this.RaiseEvent(new StartPlayerTurnEvent(), this.currentPlayer);
         }
 

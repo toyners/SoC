@@ -92,6 +92,13 @@ namespace SoC.Library.ScenarioTests
             return this;
         }
 
+        public ScenarioRunner ReceivesCityPlacementEvent(string playerName, uint cityLocation)
+        {
+            var gameEvent = new CityPlacedEvent(this.playerAgentsByName[playerName].Id, cityLocation);
+            this.currentPlayerAgent.AddInstruction(new EventInstruction(gameEvent));
+            return this;
+        }
+
         public ScenarioRunner ReceivesConfirmGameStartEvent()
         {
             var gameEvent = new ConfirmGameStartEvent();
@@ -163,6 +170,15 @@ namespace SoC.Library.ScenarioTests
             this.currentPlayerAgent.AddInstruction(
                 new EventInstruction(
                     new PlayerQuitEvent(this.playerAgentsByName[quittingPlayerName].Id)));
+            return this;
+        }
+
+        public ScenarioRunner ReceivesPlayerWonEvent(uint victoryPoints)
+        {
+            this.currentPlayerAgent.AddInstruction(
+                new EventInstruction(
+                    new GameWinEvent(this.currentPlayerAgent.Id, victoryPoints)
+                ));
             return this;
         }
 
