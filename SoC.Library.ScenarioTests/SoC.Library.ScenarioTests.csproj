@@ -60,6 +60,7 @@
     <Compile Include="PlacedRoadSegmentSetup.cs" />
     <Compile Include="PlacedSettlementsSetup.cs" />
     <Compile Include="ResourceSetup.cs" />
+    <Compile Include="ScenarioEvents\ScenarioGameErrorEvent.cs" />
     <Compile Include="ScenarioEvents\ScenarioRequestStateEvent.cs" />
     <Compile Include="MockTurnTimer.cs" />
     <Compile Include="PlayerAgent.cs" />
@@ -69,7 +70,6 @@
     <Compile Include="ScenarioActions\ScenarioDropResourcesAction.cs" />
     <Compile Include="ScenarioActions\ScenarioSelectResourceFromPlayerAction.cs" />
     <Compile Include="ScenarioAttribute.cs" />
-    <Compile Include="ScenarioEvents\ScenarioErrorMessageEvent.cs" />
     <Compile Include="ScenarioEvents\ScenarioRobberEvent.cs" />
     <Compile Include="ScenarioEvents\ScenarioRobbingChoicesEvent.cs" />
     <Compile Include="ScenarioGameBoardWithNoResourcesCollected.cs" />

@@ -1,9 +1,9 @@
 ﻿
 namespace SoC.Library.ScenarioTests.Instructions
 {
-    using System;
     using Jabberwocky.SoC.Library;
     using Jabberwocky.SoC.Library.GameEvents;
+    using SoC.Library.ScenarioTests.ScenarioEvents;
 
     internal class PlayerStateInstruction : Instruction
     {

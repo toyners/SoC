@@ -11,6 +11,7 @@ namespace SoC.Library.ScenarioTests
     using Jabberwocky.SoC.Library.GameEvents;
     using Newtonsoft.Json.Linq;
     using SoC.Library.ScenarioTests.Instructions;
+    using SoC.Library.ScenarioTests.ScenarioEvents;
 
     internal class PlayerAgent
     {
@@ -60,12 +61,12 @@ namespace SoC.Library.ScenarioTests
             this.didNotReceiveEvents.Add(gameEventToken);
         }
 
-        public void AddDidNotReceiveEventType<T>() where T : GameEvent
+        public void AddDidNotReceiveEventOfType<T>() where T : GameEvent
         {
-            this.AddDidNotReceiveEventType<T>(0);
+            this.AddDidNotReceiveEventOfType<T>(0);
         }
 
-        public void AddDidNotReceiveEventType<T>(int eventCount) where T : GameEvent
+        public void AddDidNotReceiveEventOfType<T>(int eventCount) where T : GameEvent
         {
             this.maximumEventTypeCountsByEventType.Add(typeof(T), eventCount);
             this.eventTypeCountsByEventType.Add(typeof(T), 0);
@@ -245,50 +246,37 @@ namespace SoC.Library.ScenarioTests
         {
             if (expectedEvent is ScenarioRequestStateEvent expectedRequestEvent && actualEvent is RequestStateEvent actualRequestEvent)
                 return this.IsRequestStateEventVerified(expectedRequestEvent, actualRequestEvent);
+            else if (expectedEvent is ScenarioGameErrorEvent expectedErrorEvent && actualEvent is GameErrorEvent actualErrorEvent)
+                return this.IsGameErrorEventVerified(expectedErrorEvent, actualErrorEvent);
             
             return this.IsStandardEventVerified(expectedEvent, actualEvent);
         }
 
-        public void SetVerboseLoggingOnVerificationOfPreviousEvent(bool verboseLogging)
+        private bool IsGameErrorEventVerified(ScenarioGameErrorEvent expectedEvent, GameErrorEvent actualEvent)
         {
-            throw new NotImplementedException();
-        }
+            var result = true;
+            if (expectedEvent.Id.HasValue)
+                result &= expectedEvent.Id.Value == actualEvent.PlayerId;
+            if (expectedEvent.ErrorCode != null)
+                result &= expectedEvent.ErrorCode == actualEvent.ErrorCode;
+            if (expectedEvent.ErrorMessage != null)
+                result &= expectedEvent.ErrorMessage == actualEvent.ErrorMessage;
 
-        private bool IsStandardEventVerified(GameEvent expectedEvent, GameEvent actualEvent)
-        {
-            var expectedJSON = JToken.Parse(expectedEvent.ToJSONString());
-            var actualJSON = JToken.Parse(actualEvent.ToJSONString());
-            var result = JToken.DeepEquals(expectedJSON, actualJSON);
-
-            if ((!result && expectedEvent.GetType() == actualEvent.GetType()) || 
-                this.verboseLogging || 
+            this.log.Add($"{(result ? "MATCHED" : "NOT MATCHED")} - Expected {expectedEvent.SimpleTypeName}, Actual {actualEvent.SimpleTypeName}");
+            if (!result ||
+                this.verboseLogging ||
                 this.expectedEventsWithVerboseLogging.Contains(expectedEvent))
             {
-                this.log.Add($"{(result ? "MATCHED" : "NOT MATCHED")}");
-                this.log.Add($"   EXPECTED: " +
-                    $"{(expectedEvent.PlayerId != Guid.Empty ? "Player name is " + this.GetPlayerName(expectedEvent.PlayerId) : "")}\r\n" +
-                    $"    {expectedJSON}");
-                this.log.Add($"   ACTUAL: " +
-                    $"{(actualEvent.PlayerId != Guid.Empty ? "Player name is " + this.GetPlayerName(actualEvent.PlayerId) : "")}\r\n" +
-                    $"    {actualJSON}");
-            }
-            else
-            {
-                this.log.Add($"{(result ? "MATCHED" : "NOT MATCHED")} - Expected {expectedEvent.SimpleTypeName}, Actual {actualEvent.SimpleTypeName}");
+                this.log.Add($"EXPECTED => ACTUAL");
+                if (expectedEvent.Id.HasValue)
+                    this.log.Add($"Player Id: {expectedEvent.Id.Value} => {actualEvent.PlayerId}");
+                if (expectedEvent.ErrorCode != null)
+                    this.log.Add($"Error Code: {expectedEvent.ErrorCode} => {actualEvent.ErrorCode}");
+                if (expectedEvent.ErrorMessage != null)
+                    this.log.Add($"Error Message: {expectedEvent.ErrorMessage} => {actualEvent.ErrorMessage}");
             }
 
             return result;
-        }
-
-        private string GetPlayerName(Guid playerId)
-        {
-            foreach(var kv in this.playerIdsByName)
-            {
-                if (kv.Value == playerId)
-                    return kv.Key;
-            }
-
-            throw new KeyNotFoundException();
         }
 
         private bool IsRequestStateEventVerified(ScenarioRequestStateEvent expectedEvent, RequestStateEvent actualEvent)
@@ -320,6 +308,48 @@ namespace SoC.Library.ScenarioTests
             }
 
             return result;
+        }
+
+        private bool IsStandardEventVerified(GameEvent expectedEvent, GameEvent actualEvent)
+        {
+            var expectedJSON = JToken.Parse(expectedEvent.ToJSONString());
+            var actualJSON = JToken.Parse(actualEvent.ToJSONString());
+            var result = JToken.DeepEquals(expectedJSON, actualJSON);
+
+            if ((!result && expectedEvent.GetType() == actualEvent.GetType()) ||
+                this.verboseLogging ||
+                this.expectedEventsWithVerboseLogging.Contains(expectedEvent))
+            {
+                this.log.Add($"{(result ? "MATCHED" : "NOT MATCHED")}");
+                this.log.Add($"   EXPECTED: " +
+                    $"{(expectedEvent.PlayerId != Guid.Empty ? "Player name is " + this.GetPlayerName(expectedEvent.PlayerId) : "")}\r\n" +
+                    $"    {expectedJSON}");
+                this.log.Add($"   ACTUAL: " +
+                    $"{(actualEvent.PlayerId != Guid.Empty ? "Player name is " + this.GetPlayerName(actualEvent.PlayerId) : "")}\r\n" +
+                    $"    {actualJSON}");
+            }
+            else
+            {
+                this.log.Add($"{(result ? "MATCHED" : "NOT MATCHED")} - Expected {expectedEvent.SimpleTypeName}, Actual {actualEvent.SimpleTypeName}");
+            }
+
+            return result;
+        }
+
+        public void SetVerboseLoggingOnVerificationOfPreviousEvent(bool verboseLogging)
+        {
+            throw new NotImplementedException();
+        }
+
+        private string GetPlayerName(Guid playerId)
+        {
+            foreach(var kv in this.playerIdsByName)
+            {
+                if (kv.Value == playerId)
+                    return kv.Key;
+            }
+
+            throw new KeyNotFoundException();
         }
 
         private void VerifyEvents()

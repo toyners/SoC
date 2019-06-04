@@ -210,44 +210,12 @@ namespace Jabberwocky.SoC.Library
             this.ProcessPlayerAction(playerAction);
         }
 
-        private string GetErrorCode(HashSet<Type> expectedActions)
+        private string GetErrorMessage(Type actualAction, HashSet<Type> expectedActions)
         {
-            if (expectedActions.Count == 2)
-            {
-                if (expectedActions.Contains(typeof(PlaceSetupInfrastructureAction)) &&
-                    expectedActions.Contains(typeof(QuitGameAction)))
-                {
-                    return "901";
-                }
-
-                if (expectedActions.Contains(typeof(ConfirmGameStartAction)) &&
-                    expectedActions.Contains(typeof(QuitGameAction)))
-                {
-                    return "902";
-                }
-            }
-
-            throw new NotImplementedException("Cannot get error code");
-        }
-
-        private string GetErrorMessage(HashSet<Type> expectedActions)
-        {
-            if (expectedActions.Count == 2)
-            {
-                if (expectedActions.Contains(typeof(PlaceSetupInfrastructureAction)) &&
-                    expectedActions.Contains(typeof(QuitGameAction)))
-                {
-                    return "Invalid action: Expected PlaceSetupInfrastructureAction or QuitGameAction";
-                }
-
-                if (expectedActions.Contains(typeof(ConfirmGameStartAction)) &&
-                    expectedActions.Contains(typeof(QuitGameAction)))
-                {
-                    return "Invalid action: Expected ConfirmGameStartAction or QuitGameAction";
-                }
-            }
-
-            throw new NotImplementedException("Cannot get error message");
+            var expectedActionsList = string.Join(", ", 
+                expectedActions.Select(
+                    expectedAction => expectedAction.ToString()));
+            return $"Received action type {actualAction}. Expected one of {expectedActionsList}";
         }
 
         private IPlayer GetWinningPlayer()
@@ -702,9 +670,9 @@ namespace Jabberwocky.SoC.Library
                     if (!this.actionManager.ValidateAction(playerAction))
                     {
                         var expectedActions = this.actionManager.GetExpectedActionsForPlayer(playerAction.InitiatingPlayerId);
-                        var errorCode = this.GetErrorCode(expectedActions);
-                        var errorMessage = this.GetErrorMessage(expectedActions);
-                        this.RaiseEvent(new GameErrorEvent(playerAction.InitiatingPlayerId, errorCode, errorMessage));
+                        var errorMessage = this.GetErrorMessage(playerAction.GetType(), expectedActions);
+                        this.RaiseEvent(new GameErrorEvent(playerAction.InitiatingPlayerId, "999", errorMessage),
+                            this.playersById[playerAction.InitiatingPlayerId]);
                         this.log.Add($"FAILED: Action Validation - {playerName}, {playerActionTypeName}");
                         continue;
                     }

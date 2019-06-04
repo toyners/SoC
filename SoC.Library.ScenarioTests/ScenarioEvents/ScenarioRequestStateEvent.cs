@@ -1,5 +1,5 @@
 ﻿
-namespace SoC.Library.ScenarioTests.Instructions
+namespace SoC.Library.ScenarioTests.ScenarioEvents
 {
     using System;
     using Jabberwocky.SoC.Library;

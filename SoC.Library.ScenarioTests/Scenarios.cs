@@ -7,6 +7,7 @@ namespace SoC.Library.ScenarioTests
     using Jabberwocky.SoC.Library.GameBoards;
     using Jabberwocky.SoC.Library.GameEvents;
     using NUnit.Framework;
+    using SoC.Library.ScenarioTests.ScenarioEvents;
 
     [TestFixture]
     public class Scenarios
@@ -236,16 +237,16 @@ namespace SoC.Library.ScenarioTests
                     .ReceivesPlayerQuitEvent(Charlie).ThenDoNothing()
                     .ReceivesDiceRollEvent(3, 3).ThenQuitGame()
                 .VerifyPlayer(Babara)
-                    .DidNotReceiveEvent<GameWinEvent>()
+                    .DidNotReceiveEventOfType<GameWinEvent>()
                     .DidNotReceivePlayerQuitEvent(Babara)
                     .DidNotReceivePlayerQuitEvent(Charlie)
                     .DidNotReceivePlayerQuitEvent(Dana)
                 .VerifyPlayer(Charlie)
-                    .DidNotReceiveEvent<GameWinEvent>()
+                    .DidNotReceiveEventOfType<GameWinEvent>()
                     .DidNotReceivePlayerQuitEvent(Charlie)
                     .DidNotReceivePlayerQuitEvent(Dana)
                 .VerifyPlayer(Dana)
-                    .DidNotReceiveEvent<GameWinEvent>()
+                    .DidNotReceiveEventOfType<GameWinEvent>()
                     .DidNotReceivePlayerQuitEvent(Dana)
                 .Run();
         }
@@ -302,11 +303,11 @@ namespace SoC.Library.ScenarioTests
                     .ReceivesSettlementPlacementEvent(3).ThenPlaceSettlement(3)
                     .ReceivesGameErrorEvent("908", "Location (3) already occupied by you").ThenDoNothing()
                 .VerifyPlayer(Babara)
-                    .DidNotReceiveEvent<GameErrorEvent>()
+                    .DidNotReceiveEventOfType<GameErrorEvent>()
                 .VerifyPlayer(Charlie)
-                    .DidNotReceiveEvent<GameErrorEvent>()
+                    .DidNotReceiveEventOfType<GameErrorEvent>()
                 .VerifyPlayer(Dana)
-                    .DidNotReceiveEvent<GameErrorEvent>()
+                    .DidNotReceiveEventOfType<GameErrorEvent>()
                 .Run();
         }
 
@@ -334,11 +335,11 @@ namespace SoC.Library.ScenarioTests
                     .ReceivesRoadSegmentPlacementEvent(15, 14).ThenPlaceSettlement(14)
                     .ReceivesGameErrorEvent("908", "Location (14) already occupied by Adam").ThenDoNothing()
                 .VerifyPlayer(Adam)
-                    .DidNotReceiveEvent<GameErrorEvent>()
+                    .DidNotReceiveEventOfType<GameErrorEvent>()
                 .VerifyPlayer(Babara)
-                    .DidNotReceiveEvent<GameErrorEvent>()
+                    .DidNotReceiveEventOfType<GameErrorEvent>()
                 .VerifyPlayer(Dana)
-                    .DidNotReceiveEvent<GameErrorEvent>()
+                    .DidNotReceiveEventOfType<GameErrorEvent>()
                 .Run();
         }
 
@@ -355,11 +356,11 @@ namespace SoC.Library.ScenarioTests
                     .ReceivesDiceRollEvent(3, 3).ThenPlaceSettlement(3)
                     .ReceivesGameErrorEvent("909", "Location (3) is not connected to your road system").ThenDoNothing()
                 .VerifyPlayer(Babara)
-                    .DidNotReceiveEvent<GameErrorEvent>()
+                    .DidNotReceiveEventOfType<GameErrorEvent>()
                 .VerifyPlayer(Charlie)
-                    .DidNotReceiveEvent<GameErrorEvent>()
+                    .DidNotReceiveEventOfType<GameErrorEvent>()
                 .VerifyPlayer(Dana)
-                    .DidNotReceiveEvent<GameErrorEvent>()
+                    .DidNotReceiveEventOfType<GameErrorEvent>()
                 .Run();
         }
 
@@ -376,11 +377,11 @@ namespace SoC.Library.ScenarioTests
                     .ReceivesDiceRollEvent(3, 3).ThenPlaceSettlement(3)
                     .ReceivesGameErrorEvent("911", "No settlements to place").ThenDoNothing()
                 .VerifyPlayer(Babara)
-                    .DidNotReceiveEvent<GameErrorEvent>()
+                    .DidNotReceiveEventOfType<GameErrorEvent>()
                 .VerifyPlayer(Charlie)
-                    .DidNotReceiveEvent<GameErrorEvent>()
+                    .DidNotReceiveEventOfType<GameErrorEvent>()
                 .VerifyPlayer(Dana)
-                    .DidNotReceiveEvent<GameErrorEvent>()
+                    .DidNotReceiveEventOfType<GameErrorEvent>()
                 .Run();
         }
 
@@ -394,11 +395,11 @@ namespace SoC.Library.ScenarioTests
                     .ReceivesDiceRollEvent(3, 3).ThenPlaceSettlement(3)
                     .ReceivesGameErrorEvent("912", "Not enough resources for placing settlement").ThenDoNothing()
                 .VerifyPlayer(Babara)
-                    .DidNotReceiveEvent<GameErrorEvent>()
+                    .DidNotReceiveEventOfType<GameErrorEvent>()
                 .VerifyPlayer(Charlie)
-                    .DidNotReceiveEvent<GameErrorEvent>()
+                    .DidNotReceiveEventOfType<GameErrorEvent>()
                 .VerifyPlayer(Dana)
-                    .DidNotReceiveEvent<GameErrorEvent>()
+                    .DidNotReceiveEventOfType<GameErrorEvent>()
                 .Run();
         }
 
@@ -480,11 +481,11 @@ namespace SoC.Library.ScenarioTests
                     .ReceivesSettlementPlacementEvent(3).ThenPlaceSettlement(3)
                     .ReceivesGameErrorEvent("908", "Location (3) already occupied by you").ThenDoNothing()
                 .VerifyPlayer(Babara)
-                    .DidNotReceiveEvent<GameErrorEvent>()
+                    .DidNotReceiveEventOfType<GameErrorEvent>()
                 .VerifyPlayer(Charlie)
-                    .DidNotReceiveEvent<GameErrorEvent>()
+                    .DidNotReceiveEventOfType<GameErrorEvent>()
                 .VerifyPlayer(Dana)
-                    .DidNotReceiveEvent<GameErrorEvent>()
+                    .DidNotReceiveEventOfType<GameErrorEvent>()
                 .Run();
         }
 
@@ -511,11 +512,11 @@ namespace SoC.Library.ScenarioTests
                     .ReceivesRoadSegmentPlacementEvent(15, 14).ThenPlaceSettlement(14)
                     .ReceivesGameErrorEvent("908", "Location (14) already occupied by Adam").ThenDoNothing()
                 .VerifyPlayer(Adam)
-                    .DidNotReceiveEvent<GameErrorEvent>()
+                    .DidNotReceiveEventOfType<GameErrorEvent>()
                 .VerifyPlayer(Babara)
-                    .DidNotReceiveEvent<GameErrorEvent>()
+                    .DidNotReceiveEventOfType<GameErrorEvent>()
                 .VerifyPlayer(Dana)
-                    .DidNotReceiveEvent<GameErrorEvent>()
+                    .DidNotReceiveEventOfType<GameErrorEvent>()
                 .Run();
         }
 
@@ -531,11 +532,11 @@ namespace SoC.Library.ScenarioTests
                     .ReceivesDiceRollEvent(3, 3).ThenPlaceSettlement(3)
                     .ReceivesGameErrorEvent("909", "Location (3) is not connected to your road system").ThenDoNothing()
                 .VerifyPlayer(Babara)
-                    .DidNotReceiveEvent<GameErrorEvent>()
+                    .DidNotReceiveEventOfType<GameErrorEvent>()
                 .VerifyPlayer(Charlie)
-                    .DidNotReceiveEvent<GameErrorEvent>()
+                    .DidNotReceiveEventOfType<GameErrorEvent>()
                 .VerifyPlayer(Dana)
-                    .DidNotReceiveEvent<GameErrorEvent>()
+                    .DidNotReceiveEventOfType<GameErrorEvent>()
                 .Run();
         }
 
@@ -551,11 +552,11 @@ namespace SoC.Library.ScenarioTests
                     .ReceivesDiceRollEvent(3, 3).ThenPlaceSettlement(3)
                     .ReceivesGameErrorEvent("911", "No settlements to place").ThenDoNothing()
                 .VerifyPlayer(Babara)
-                    .DidNotReceiveEvent<GameErrorEvent>()
+                    .DidNotReceiveEventOfType<GameErrorEvent>()
                 .VerifyPlayer(Charlie)
-                    .DidNotReceiveEvent<GameErrorEvent>()
+                    .DidNotReceiveEventOfType<GameErrorEvent>()
                 .VerifyPlayer(Dana)
-                    .DidNotReceiveEvent<GameErrorEvent>()
+                    .DidNotReceiveEventOfType<GameErrorEvent>()
                 .Run();
         }
 
@@ -568,11 +569,11 @@ namespace SoC.Library.ScenarioTests
                     .ReceivesDiceRollEvent(3, 3).ThenPlaceSettlement(3)
                     .ReceivesGameErrorEvent("912", "Not enough resources for placing settlement").ThenDoNothing()
                 .VerifyPlayer(Babara)
-                    .DidNotReceiveEvent<GameErrorEvent>()
+                    .DidNotReceiveEventOfType<GameErrorEvent>()
                 .VerifyPlayer(Charlie)
-                    .DidNotReceiveEvent<GameErrorEvent>()
+                    .DidNotReceiveEventOfType<GameErrorEvent>()
                 .VerifyPlayer(Dana)
-                    .DidNotReceiveEvent<GameErrorEvent>()
+                    .DidNotReceiveEventOfType<GameErrorEvent>()
                 .Run();
         }
 
@@ -587,11 +588,11 @@ namespace SoC.Library.ScenarioTests
                     .ThenPlaceRoadSegment(4, 55)
                     .ReceivesGameErrorEvent("903", "Locations (4, 55) invalid for placing road segment").ThenDoNothing()
                 .VerifyPlayer(Babara)
-                    .DidNotReceiveEvent<GameErrorEvent>()
+                    .DidNotReceiveEventOfType<GameErrorEvent>()
                 .VerifyPlayer(Charlie)
-                    .DidNotReceiveEvent<GameErrorEvent>()
+                    .DidNotReceiveEventOfType<GameErrorEvent>()
                 .VerifyPlayer(Dana)
-                    .DidNotReceiveEvent<GameErrorEvent>()
+                    .DidNotReceiveEventOfType<GameErrorEvent>()
                 .Run();
         }
 
@@ -606,11 +607,11 @@ namespace SoC.Library.ScenarioTests
                     .ThenPlaceRoadSegment(4, 0)
                     .ReceivesGameErrorEvent("904", "Locations (4, 0) not connected when placing road segment").ThenDoNothing()
                 .VerifyPlayer(Babara)
-                    .DidNotReceiveEvent<GameErrorEvent>()
+                    .DidNotReceiveEventOfType<GameErrorEvent>()
                 .VerifyPlayer(Charlie)
-                    .DidNotReceiveEvent<GameErrorEvent>()
+                    .DidNotReceiveEventOfType<GameErrorEvent>()
                 .VerifyPlayer(Dana)
-                    .DidNotReceiveEvent<GameErrorEvent>()
+                    .DidNotReceiveEventOfType<GameErrorEvent>()
                 .Run();
         }
 
@@ -625,11 +626,11 @@ namespace SoC.Library.ScenarioTests
                     .ThenPlaceRoadSegment(4, 3)
                     .ReceivesGameErrorEvent("905", "No road segments to place").ThenDoNothing()
                 .VerifyPlayer(Babara)
-                    .DidNotReceiveEvent<GameErrorEvent>()
+                    .DidNotReceiveEventOfType<GameErrorEvent>()
                 .VerifyPlayer(Charlie)
-                    .DidNotReceiveEvent<GameErrorEvent>()
+                    .DidNotReceiveEventOfType<GameErrorEvent>()
                 .VerifyPlayer(Dana)
-                    .DidNotReceiveEvent<GameErrorEvent>()
+                    .DidNotReceiveEventOfType<GameErrorEvent>()
                 .Run();
         }
 
@@ -643,11 +644,11 @@ namespace SoC.Library.ScenarioTests
                     .ThenPlaceRoadSegment(4, 3)
                     .ReceivesGameErrorEvent("906", "Not enough resources for placing road segment").ThenDoNothing()
                 .VerifyPlayer(Babara)
-                    .DidNotReceiveEvent<GameErrorEvent>()
+                    .DidNotReceiveEventOfType<GameErrorEvent>()
                 .VerifyPlayer(Charlie)
-                    .DidNotReceiveEvent<GameErrorEvent>()
+                    .DidNotReceiveEventOfType<GameErrorEvent>()
                 .VerifyPlayer(Dana)
-                    .DidNotReceiveEvent<GameErrorEvent>()
+                    .DidNotReceiveEventOfType<GameErrorEvent>()
                 .Run();
         }
 
@@ -662,11 +663,11 @@ namespace SoC.Library.ScenarioTests
                     .ThenPlaceRoadSegment(4, 12)
                     .ReceivesGameErrorEvent("907", "Cannot place road segment on existing road segment (4, 12)").ThenDoNothing()
                 .VerifyPlayer(Babara)
-                    .DidNotReceiveEvent<GameErrorEvent>()
+                    .DidNotReceiveEventOfType<GameErrorEvent>()
                 .VerifyPlayer(Charlie)
-                    .DidNotReceiveEvent<GameErrorEvent>()
+                    .DidNotReceiveEventOfType<GameErrorEvent>()
                 .VerifyPlayer(Dana)
-                    .DidNotReceiveEvent<GameErrorEvent>()
+                    .DidNotReceiveEventOfType<GameErrorEvent>()
                 .Run();
         }
 
@@ -681,11 +682,11 @@ namespace SoC.Library.ScenarioTests
                     .ThenPlaceRoadSegment(3, 2)
                     .ReceivesGameErrorEvent("910", "Cannot place road segment because locations (3, 2) are not connected to existing road").ThenDoNothing()
                 .VerifyPlayer(Babara)
-                    .DidNotReceiveEvent<GameErrorEvent>()
+                    .DidNotReceiveEventOfType<GameErrorEvent>()
                 .VerifyPlayer(Charlie)
-                    .DidNotReceiveEvent<GameErrorEvent>()
+                    .DidNotReceiveEventOfType<GameErrorEvent>()
                 .VerifyPlayer(Dana)
-                    .DidNotReceiveEvent<GameErrorEvent>()
+                    .DidNotReceiveEventOfType<GameErrorEvent>()
                 .Run();
         }
 
@@ -788,7 +789,7 @@ namespace SoC.Library.ScenarioTests
                     .ReceivesPlaceInfrastructureSetupEvent().ThenPlaceStartingInfrastructure(Dana_SecondSettlementLocation, Dana_SecondRoadEndLocation)
                     .ReceivesPlayerQuitEvent(Adam).ThenDoNothing()
                 .VerifyPlayer(Adam)
-                    .DidNotReceiveEvent<ConfirmGameStartEvent>()
+                    .DidNotReceiveEventOfType<ConfirmGameStartEvent>()
                 .Run();
         }
 
@@ -932,6 +933,7 @@ namespace SoC.Library.ScenarioTests
 
         private ScenarioRunner CompletePlayerInfrastructureSetup(string[] args = null)
         {
+            var actionNotRecognisedError = new ScenarioGameErrorEvent(null, "999", null);
             return ScenarioRunner.CreateScenarioRunner(args)
                 .WithPlayer(Adam)
                 .WithPlayer(Babara)
@@ -971,7 +973,12 @@ namespace SoC.Library.ScenarioTests
                     .ThenConfirmGameStart()
                 .WhenPlayer(Dana)
                     .ReceivesConfirmGameStartEvent()
-                    .ThenConfirmGameStart();
+                    .ThenConfirmGameStart()
+                .VerifyPlayer(Adam).DidNotReceiveEvent(actionNotRecognisedError)
+                .VerifyPlayer(Babara).DidNotReceiveEvent(actionNotRecognisedError)
+                .VerifyPlayer(Charlie).DidNotReceiveEvent(actionNotRecognisedError)
+                .VerifyPlayer(Dana).DidNotReceiveEvent(actionNotRecognisedError);
+
         }
 
         internal static IPlayerSetupAction Resources(ResourceClutch resources) => new ResourceSetup(resources);
