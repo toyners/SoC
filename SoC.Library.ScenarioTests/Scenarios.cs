@@ -833,7 +833,7 @@ namespace SoC.Library.ScenarioTests
                     .ThenPlaceStartingInfrastructure(Adam_SecondSettlementLocation, Adam_SecondRoadEndLocation)
                     .ReceivesConfirmGameStartEvent()
                     .ThenEndTurn()
-                    .ReceivesGameErrorEvent("902", "Invalid action: Expected ConfirmGameStartAction or QuitGameAction")
+                    .ReceivesGameErrorEvent("999", "Received action type EndOfTurnAction. Expected one of ConfirmGameStartAction, QuitGameAction")
                 .WhenPlayer(Babara)
                     .ReceivesPlaceInfrastructureSetupEvent()
                     .ThenPlaceStartingInfrastructure(Babara_FirstSettlementLocation, Babara_FirstRoadEndLocation)
@@ -862,7 +862,7 @@ namespace SoC.Library.ScenarioTests
                 .WithTurnOrder(playerOrder)
                 .WhenPlayer(Adam)
                     .ReceivesPlaceInfrastructureSetupEvent().ThenEndTurn()
-                    .ReceivesGameErrorEvent("901", "Invalid action: Expected PlaceSetupInfrastructureAction or QuitGameAction")
+                    .ReceivesGameErrorEvent("999", "Received action type EndOfTurnAction. Expected one of PlaceSetupInfrastructureAction, QuitGameAction")
                 .Run();
         }
 

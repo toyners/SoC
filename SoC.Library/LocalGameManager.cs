@@ -222,10 +222,12 @@ namespace Jabberwocky.SoC.Library
 
         private string GetErrorMessage(Type actualAction, HashSet<Type> expectedActions)
         {
-            var expectedActionsList = string.Join(", ", 
-                expectedActions.Select(
-                    expectedAction => expectedAction.ToString()));
-            return $"Received action type {actualAction}. Expected one of {expectedActionsList}";
+            var expectedActionsNames = expectedActions.Select(
+                    expectedAction => expectedAction.Name).ToList();
+
+            expectedActionsNames.Sort();
+
+            return $"Received action type {actualAction.Name}. Expected one of {string.Join(", ", expectedActionsNames)}";
         }
 
         private IPlayer GetWinningPlayer()
