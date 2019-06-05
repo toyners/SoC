@@ -136,6 +136,7 @@ namespace Jabberwocky.SoC.Library
                         this.GameSetup();
                         this.WaitForGameStartConfirmationFromPlayers();
                         this.MainGameLoop();
+                        this.CaretakerLoop();
                     }
                     catch (OperationCanceledException)
                     {
@@ -153,6 +154,15 @@ namespace Jabberwocky.SoC.Library
                     this.IsFinished = true;
                 }
             });
+        }
+
+        private void CaretakerLoop()
+        {
+            while (true)
+            {
+                var requestStateAction = this.WaitForRequestStateAction();
+                this.ProcessRequestStateAction(requestStateAction);
+            }
         }
 
         private void ChangeToNextPlayer()
@@ -687,6 +697,35 @@ namespace Jabberwocky.SoC.Library
 
                     this.log.Add($"Validated {playerActionTypeName} from {playerName}");
                     return playerAction;
+                }
+            }
+        }
+
+        private RequestStateAction WaitForRequestStateAction()
+        {
+            while (true)
+            {
+                Thread.Sleep(50);
+                this.cancellationToken.ThrowIfCancellationRequested();
+
+                if (this.actionRequests.TryDequeue(out var playerAction))
+                {
+                    var playerActionTypeName = playerAction.GetType().Name;
+                    var playerName = this.playersById[playerAction.InitiatingPlayerId].Name;
+
+                    if (!(playerAction is RequestStateAction))
+                    {
+                        var errorMessage = $"Received action type {playerActionTypeName}. Expected RequestStateAction";
+                        this.RaiseEvent(new GameErrorEvent(playerAction.InitiatingPlayerId, "999", errorMessage),
+                            this.playersById[playerAction.InitiatingPlayerId]);
+                        this.log.Add($"FAILED: Action Validation - {playerName}, {playerActionTypeName}");
+                        continue;
+                    }
+                    
+                    this.log.Add($"Received {playerActionTypeName} from {playerName}");
+
+                    
+                    return (RequestStateAction)playerAction;
                 }
             }
         }
