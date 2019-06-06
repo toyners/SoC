@@ -43,11 +43,11 @@ namespace SoC.Library.ScenarioTests
             var gameSetupCollectedResources = CreateExpectedCollectedResources()
                 .Add(Adam, Adam_SecondSettlementLocation, ResourceClutch.OneBrick + ResourceClutch.OneGrain + ResourceClutch.OneWool)
                 .Add(Babara, Babara_SecondSettlementLocation, ResourceClutch.OneGrain + ResourceClutch.OneLumber + ResourceClutch.OneWool)
-                .Add(Charlie, Charlie_SecondSettlementLocation, ResourceClutch.OneGrain + ResourceClutch.OneLumber + ResourceClutch.OneWool)
-                .Add(Dana, Dana_SecondSettlementLocation, ResourceClutch.OneLumber + ResourceClutch.OneOre + ResourceClutch.OneWool)
+                .Add(Charlie, Charlie_SecondSettlementLocation, ResourceClutch.OneOre + ResourceClutch.OneLumber + ResourceClutch.OneWool)
+                .Add(Dana, Dana_SecondSettlementLocation, ResourceClutch.OneLumber + ResourceClutch.OneGrain + ResourceClutch.OneWool)
                 .Build();
 
-            ScenarioRunner.CreateScenarioRunner()
+            ScenarioRunner.CreateScenarioRunner(new[] { MethodBase.GetCurrentMethod().Name })
                 .WithPlayer(Adam)
                 .WithPlayer(Babara)
                 .WithPlayer(Charlie)
@@ -77,17 +77,18 @@ namespace SoC.Library.ScenarioTests
                     .ReceivesPlaceInfrastructureSetupEvent()
                     .ThenPlaceStartingInfrastructure(Adam_SecondSettlementLocation, Adam_SecondRoadEndLocation)
                     .ReceivesConfirmGameStartEvent().ThenConfirmGameStart()
-                    .ReceivesResourceCollectedEvent(gameSetupCollectedResources).ThenQuitGame()
+                    .ReceivesResourceCollectedEvent(gameSetupCollectedResources).ThenDoNothing()
+                    .ReceivesDiceRollEvent(3, 3).ThenQuitGame()
                 .WhenPlayer(Babara)
                     .ReceivesConfirmGameStartEvent().ThenConfirmGameStart()
-                    .ReceivesResourceCollectedEvent(gameSetupCollectedResources).ThenQuitGame()
+                    .ReceivesResourceCollectedEvent(gameSetupCollectedResources).ThenDoNothing()
+                    .ReceivesDiceRollEvent(3, 3).ThenQuitGame()
                 .WhenPlayer(Charlie)
                     .ReceivesConfirmGameStartEvent().ThenConfirmGameStart()
-                    .ReceivesResourceCollectedEvent(gameSetupCollectedResources).ThenQuitGame()
+                    .ReceivesResourceCollectedEvent(gameSetupCollectedResources).ThenDoNothing()
+                    .ReceivesDiceRollEvent(3, 3).ThenQuitGame()
                 .WhenPlayer(Dana)
                     .ReceivesConfirmGameStartEvent().ThenConfirmGameStart()
-                    .ReceivesResourceCollectedEvent(gameSetupCollectedResources)
-                    .ThenQuitGame()
                 .Run();
         }
 
@@ -440,35 +441,13 @@ namespace SoC.Library.ScenarioTests
         }
 
         [Test]
-        public void PlayerTriesToPlaceCityWithNoCitiesLeft()
-        {
-            throw new NotImplementedException();
-            this.CompletePlayerInfrastructureSetup(new[] { MethodBase.GetCurrentMethod().Name })
-                .WithNoResourceCollection()
-                .WithInitialPlayerSetupFor(
-                    Adam,
-                    Resources(ResourceClutch.Settlement), PlacedSettlements(Player.TotalSettlements - 2))
-                .WhenPlayer(Adam)
-                    .ReceivesDiceRollEvent(3, 3).ThenPlaceSettlement(3)
-                    .ReceivesGameErrorEvent("911", "No settlements to place").ThenDoNothing()
-                .VerifyPlayer(Babara)
-                    .DidNotReceiveEventOfType<GameErrorEvent>()
-                .VerifyPlayer(Charlie)
-                    .DidNotReceiveEventOfType<GameErrorEvent>()
-                .VerifyPlayer(Dana)
-                    .DidNotReceiveEventOfType<GameErrorEvent>()
-                .Run();
-        }
-
-        [Test]
         public void PlayerTriesToPlaceCityWithNotEnoughResources()
         {
-            throw new NotImplementedException();
             this.CompletePlayerInfrastructureSetup(new[] { MethodBase.GetCurrentMethod().Name })
                 .WithNoResourceCollection()
                 .WhenPlayer(Adam)
-                    .ReceivesDiceRollEvent(3, 3).ThenPlaceSettlement(3)
-                    .ReceivesGameErrorEvent("912", "Not enough resources for placing settlement").ThenDoNothing()
+                    .ReceivesDiceRollEvent(3, 3).ThenPlaceCity(Adam_FirstSettlementLocation)
+                    .ReceivesGameErrorEvent("913", "Not enough resources for placing city").ThenDoNothing()
                 .VerifyPlayer(Babara)
                     .DidNotReceiveEventOfType<GameErrorEvent>()
                 .VerifyPlayer(Charlie)

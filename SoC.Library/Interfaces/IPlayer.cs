@@ -9,6 +9,7 @@ namespace Jabberwocky.SoC.Library.Interfaces
     public interface IPlayer
     {
         #region Properties
+        bool CanPlaceCity { get; }
         bool CanPlaceRoadSegment { get; }
         bool CanPlaceSettlement { get; }
         int PlacedCities { get; }

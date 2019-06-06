@@ -182,9 +182,11 @@ namespace Jabberwocky.SoC.Library
 
             foreach (var keyValuePair in resourcesCollectedByPlayerId)
             {
-                var player = this.playersById[keyValuePair.Key];
-                foreach (var resourceCollection in keyValuePair.Value)
-                    player.AddResources(resourceCollection.Resources);
+                if (this.playersById.TryGetValue(keyValuePair.Key, out var player))
+                {
+                    foreach (var resourceCollection in keyValuePair.Value)
+                        player.AddResources(resourceCollection.Resources);
+                }
             }
 
             var resourcesCollectedEvent = new ResourcesCollectedEvent(resourcesCollectedByPlayerId);
@@ -340,6 +342,14 @@ namespace Jabberwocky.SoC.Library
         {
             try
             {
+                if (!this.currentPlayer.CanPlaceCity)
+                {
+                    if (this.currentPlayer.Resources < ResourceClutch.City)
+                        this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, "913", "Not enough resources for placing city"),
+                            this.currentPlayer);
+                    return false;
+                }
+
                 this.gameBoard.PlaceCity(this.currentPlayer.Id,
                     placeCityAction.CityLocation);
                 this.currentPlayer.PlaceCity();

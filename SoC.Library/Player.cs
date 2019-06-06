@@ -66,6 +66,7 @@ namespace Jabberwocky.SoC.Library
         #endregion
 
         #region Properties
+        public bool CanPlaceCity => this.Resources >= ResourceClutch.City;
         public bool CanPlaceRoadSegment => this.RemainingRoadSegments > 0 && this.Resources >= ResourceClutch.RoadSegment;
         public bool CanPlaceSettlement => this.RemainingSettlements > 0 && this.Resources >= ResourceClutch.Settlement;
         public bool HasLargestArmy
