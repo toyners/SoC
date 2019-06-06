@@ -422,15 +422,15 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void PlayerTriesToPlaceCityOnLocationWithoutSettlement()
         {
-            throw new NotImplementedException();
             this.CompletePlayerInfrastructureSetup(new[] { MethodBase.GetCurrentMethod().Name })
                 .WithNoResourceCollection()
                 .WithInitialPlayerSetupFor(
                     Adam,
-                    Resources(ResourceClutch.Settlement))
+                    Resources(ResourceClutch.RoadSegment + ResourceClutch.City))
                 .WhenPlayer(Adam)
-                    .ReceivesDiceRollEvent(3, 3).ThenPlaceSettlement(3)
-                    .ReceivesGameErrorEvent("909", "Location (3) is not connected to your road system").ThenDoNothing()
+                    .ReceivesDiceRollEvent(3, 3).ThenPlaceRoadSegment(3, 4)
+                    .ReceivesRoadSegmentPlacementEvent(3, 4).ThenPlaceCity(3)
+                    .ReceivesGameErrorEvent("914", "Location (3) is not connected to your road system").ThenDoNothing()
                 .VerifyPlayer(Babara)
                     .DidNotReceiveEventOfType<GameErrorEvent>()
                 .VerifyPlayer(Charlie)
