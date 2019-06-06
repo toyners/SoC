@@ -663,6 +663,17 @@ namespace Jabberwocky.SoC.Library
 
             if (this.players.Length == 0)
                 throw new OperationCanceledException();
+
+            var resourcesCollectedByPlayerId = new Dictionary<Guid, ResourceCollection[]>();
+            foreach (var player in this.players)
+            {
+                var settlementlocation = this.gameBoard.GetSettlementsForPlayer(player.Id)[1];
+                var resourcesForLocation = this.gameBoard.GetResourcesForLocation(settlementlocation);
+                var resourceCollection = new ResourceCollection(settlementlocation, resourcesForLocation);
+                resourcesCollectedByPlayerId.Add(player.Id, new[] { resourceCollection });
+            }
+            var resourcesCollectedEvent = new ResourcesCollectedEvent(resourcesCollectedByPlayerId);
+            this.RaiseEvent(resourcesCollectedEvent);
         }
 
         private PlayerAction WaitForPlayerAction()
