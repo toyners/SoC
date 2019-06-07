@@ -7,6 +7,7 @@ namespace Jabberwocky.SoC.Library
     using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
+    using Jabberwocky.SoC.Library.Enums;
     using Jabberwocky.SoC.Library.GameBoards;
     using Jabberwocky.SoC.Library.GameEvents;
     using Jabberwocky.SoC.Library.Interfaces;
@@ -342,11 +343,11 @@ namespace Jabberwocky.SoC.Library
         {
             try
             {
-                if (!this.currentPlayer.CanPlaceCity)
+                PlayerPlacementVerificationStates verificationState = this.currentPlayer.CanPlaceCity;
+                if (verificationState == PlayerPlacementVerificationStates.NotEnoughResources)
                 {
-                    if (this.currentPlayer.Resources < ResourceClutch.City)
-                        this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, "913", "Not enough resources for placing city"),
-                            this.currentPlayer);
+                    this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, "913", "Not enough resources for placing city"),
+                        this.currentPlayer);
                     return false;
                 }
 
@@ -366,7 +367,17 @@ namespace Jabberwocky.SoC.Library
             }
             catch (GameBoard.PlacementException pe)
             {
-
+                switch (pe.VerificationStatus)
+                {
+                    case GameBoard.VerificationStatus.LocationIsOccupied:
+                    {
+                        var occupyingPlayer = this.playersById[pe.OtherPlayerId];
+                        var occupyingPlayerName = occupyingPlayer == this.currentPlayer ? "you" : occupyingPlayer.Name;
+                        this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, "908", $"Location ({placeCityAction.CityLocation}) already occupied by {occupyingPlayerName}"),
+                            this.currentPlayer);
+                        break;
+                    }
+                }
             }
 
             return false;
@@ -376,16 +387,20 @@ namespace Jabberwocky.SoC.Library
         {
             try
             {
-                if (!this.currentPlayer.CanPlaceRoadSegment)
+                PlayerPlacementVerificationStates verificationState = this.currentPlayer.CanPlaceRoadSegment;
+                if (verificationState == PlayerPlacementVerificationStates.NoRoadSegments)
                 {
-                    if (this.currentPlayer.RemainingRoadSegments == 0)
-                        this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, "905", "No road segments to place"),
-                            this.currentPlayer);
-                    if (this.currentPlayer.Resources < ResourceClutch.RoadSegment)
-                        this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, "906", "Not enough resources for placing road segment"),
-                            this.currentPlayer);
+                    this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, "905", "No road segments to place"),
+                        this.currentPlayer);
                     return;
                 }
+                else if (verificationState == PlayerPlacementVerificationStates.NotEnoughResources)
+                {
+                    this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, "906", "Not enough resources for placing road segment"),
+                        this.currentPlayer);
+                    return;
+                }
+
                 this.gameBoard.PlaceRoadSegment(this.currentPlayer.Id,
                     placeRoadSegmentAction.StartLocation,
                     placeRoadSegmentAction.EndLocation);
@@ -431,16 +446,19 @@ namespace Jabberwocky.SoC.Library
         {
             try
             {
-                if (!this.currentPlayer.CanPlaceSettlement)
-                {
-                    if (this.currentPlayer.RemainingSettlements == 0)
-                        this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, "911", "No settlements to place"),
-                            this.currentPlayer);
-                    if (this.currentPlayer.Resources < ResourceClutch.Settlement)
-                        this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, "912", "Not enough resources for placing settlement"),
-                            this.currentPlayer);
+                PlayerPlacementVerificationStates verificationState = this.currentPlayer.CanPlaceSettlement;
+                if (verificationState == PlayerPlacementVerificationStates.NoSettlements) { 
+                    this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, "911", "No settlements to place"),
+                        this.currentPlayer);
                     return false;
                 }
+                else if (verificationState == PlayerPlacementVerificationStates.NotEnoughResources)
+                {
+                    this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, "912", "Not enough resources for placing settlement"),
+                        this.currentPlayer);
+                    return false;
+                }
+
                 this.gameBoard.PlaceSettlement(this.currentPlayer.Id,
                     placeSettlementAction.SettlementLocation);
                 this.currentPlayer.PlaceSettlement();

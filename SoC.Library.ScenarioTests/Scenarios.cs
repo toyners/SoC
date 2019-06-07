@@ -367,17 +367,15 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void PlayerTriesToPlaceCityOnLocationOccupiedByPlayer()
         {
-            throw new NotImplementedException();
             this.CompletePlayerInfrastructureSetup(new[] { MethodBase.GetCurrentMethod().Name })
                 .WithNoResourceCollection()
                 .WithInitialPlayerSetupFor(
                     Adam,
-                    Resources(ResourceClutch.RoadSegment + (ResourceClutch.Settlement * 2)))
+                    Resources(ResourceClutch.City * 2))
                 .WhenPlayer(Adam)
-                    .ReceivesDiceRollEvent(3, 3).ThenPlaceRoadSegment(4, 3)
-                    .ReceivesRoadSegmentPlacementEvent(4, 3).ThenPlaceSettlement(3)
-                    .ReceivesSettlementPlacementEvent(3).ThenPlaceSettlement(3)
-                    .ReceivesGameErrorEvent("908", "Location (3) already occupied by you").ThenDoNothing()
+                    .ReceivesDiceRollEvent(3, 3).ThenPlaceCity(Adam_FirstSettlementLocation)
+                    .ReceivesCityPlacementEvent(Adam_FirstSettlementLocation).ThenPlaceCity(Adam_FirstSettlementLocation)
+                    .ReceivesGameErrorEvent("908", $"Location ({Adam_FirstSettlementLocation}) already occupied by you").ThenDoNothing()
                 .VerifyPlayer(Babara)
                     .DidNotReceiveEventOfType<GameErrorEvent>()
                 .VerifyPlayer(Charlie)
@@ -390,7 +388,6 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void PlayerTriesToPlaceCityOnLocationOccupiedByOtherPlayer()
         {
-            throw new NotImplementedException();
             this.CompletePlayerInfrastructureSetup(new[] { MethodBase.GetCurrentMethod().Name })
                 .WithNoResourceCollection()
                 .WithInitialPlayerSetupFor(
@@ -398,7 +395,7 @@ namespace SoC.Library.ScenarioTests
                     Resources((ResourceClutch.RoadSegment * 2) + ResourceClutch.Settlement))
                 .WithInitialPlayerSetupFor(
                     Charlie,
-                    Resources(ResourceClutch.RoadSegment + ResourceClutch.Settlement))
+                    Resources(ResourceClutch.RoadSegment + ResourceClutch.City))
                 .WhenPlayer(Adam)
                     .ReceivesDiceRollEvent(3, 3).ThenPlaceRoadSegment(12, 13)
                     .ReceivesRoadSegmentPlacementEvent(12, 13).ThenPlaceRoadSegment(13, 14)
@@ -408,7 +405,7 @@ namespace SoC.Library.ScenarioTests
                     .ReceivesDiceRollEvent(3, 3).ThenEndTurn()
                 .WhenPlayer(Charlie)
                     .ReceivesDiceRollEvent(3, 3).ThenPlaceRoadSegment(15, 14)
-                    .ReceivesRoadSegmentPlacementEvent(15, 14).ThenPlaceSettlement(14)
+                    .ReceivesRoadSegmentPlacementEvent(15, 14).ThenPlaceCity(14)
                     .ReceivesGameErrorEvent("908", "Location (14) already occupied by Adam").ThenDoNothing()
                 .VerifyPlayer(Adam)
                     .DidNotReceiveEventOfType<GameErrorEvent>()

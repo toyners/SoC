@@ -7,6 +7,7 @@ namespace Jabberwocky.SoC.Library
     using System.Xml;
     using Interfaces;
     using Jabberwocky.SoC.Library.DevelopmentCards;
+    using Jabberwocky.SoC.Library.Enums;
     using Jabberwocky.SoC.Library.PlayerData;
     using Jabberwocky.SoC.Library.Store;
 
@@ -66,9 +67,29 @@ namespace Jabberwocky.SoC.Library
         #endregion
 
         #region Properties
-        public bool CanPlaceCity => this.Resources >= ResourceClutch.City;
-        public bool CanPlaceRoadSegment => this.RemainingRoadSegments > 0 && this.Resources >= ResourceClutch.RoadSegment;
-        public bool CanPlaceSettlement => this.RemainingSettlements > 0 && this.Resources >= ResourceClutch.Settlement;
+        public PlayerPlacementVerificationStates CanPlaceCity => this.Resources < ResourceClutch.City ? PlayerPlacementVerificationStates.NotEnoughResources : PlayerPlacementVerificationStates.Success;
+        public PlayerPlacementVerificationStates CanPlaceRoadSegment
+        {
+            get
+            {
+                if (this.RemainingRoadSegments <= 0)
+                    return PlayerPlacementVerificationStates.NoRoadSegments;
+                else if (this.Resources < ResourceClutch.RoadSegment)
+                    return PlayerPlacementVerificationStates.NotEnoughResources;
+                return PlayerPlacementVerificationStates.Success;
+            }
+        }
+        public PlayerPlacementVerificationStates CanPlaceSettlement
+        {
+            get
+            {
+                if (this.RemainingSettlements <= 0)
+                    return PlayerPlacementVerificationStates.NoSettlements;
+                else if (this.Resources < ResourceClutch.Settlement)
+                    return PlayerPlacementVerificationStates.NotEnoughResources;
+                return PlayerPlacementVerificationStates.Success;
+            }
+        }
         public bool HasLargestArmy
         {
             get { return this.hasLargestArmy; }

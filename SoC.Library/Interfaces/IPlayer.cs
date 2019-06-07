@@ -4,14 +4,15 @@ namespace Jabberwocky.SoC.Library.Interfaces
     using System;
     using System.Collections.Generic;
     using Jabberwocky.SoC.Library.DevelopmentCards;
+    using Jabberwocky.SoC.Library.Enums;
     using Jabberwocky.SoC.Library.PlayerData;
 
     public interface IPlayer
     {
         #region Properties
-        bool CanPlaceCity { get; }
-        bool CanPlaceRoadSegment { get; }
-        bool CanPlaceSettlement { get; }
+        PlayerPlacementVerificationStates CanPlaceCity { get; }
+        PlayerPlacementVerificationStates CanPlaceRoadSegment { get; }
+        PlayerPlacementVerificationStates CanPlaceSettlement { get; }
         int PlacedCities { get; }
         bool HasLargestArmy { get; set; }
         bool HasLongestRoad { get; set; }
