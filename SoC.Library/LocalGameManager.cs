@@ -369,7 +369,7 @@ namespace Jabberwocky.SoC.Library
             {
                 switch (pe.VerificationStatus)
                 {
-                    case GameBoard.VerificationStatus.LocationIsOccupied:
+                    case GameBoard.VerificationStatus.LocationIsNotOwned:
                     {
                         var occupyingPlayer = this.playersById[pe.OtherPlayerId];
                         var occupyingPlayerName = occupyingPlayer == this.currentPlayer ? "you" : occupyingPlayer.Name;
