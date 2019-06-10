@@ -427,7 +427,7 @@ namespace SoC.Library.ScenarioTests
                 .WhenPlayer(Adam)
                     .ReceivesDiceRollEvent(3, 3).ThenPlaceRoadSegment(3, 4)
                     .ReceivesRoadSegmentPlacementEvent(3, 4).ThenPlaceCity(3)
-                    .ReceivesGameErrorEvent("914", "Location (3) is not connected to your road system").ThenDoNothing()
+                    .ReceivesGameErrorEvent("914", "Location (3) not an settlement").ThenDoNothing()
                 .VerifyPlayer(Babara)
                     .DidNotReceiveEventOfType<GameErrorEvent>()
                 .VerifyPlayer(Charlie)

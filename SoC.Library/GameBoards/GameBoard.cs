@@ -930,7 +930,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
                 case VerificationStatus.LocationIsAlreadyCity: throw new PlacementException(verificationResults.Status, "Cannot place city on existing city.");
                 case VerificationStatus.LocationForSettlementIsInvalid: throw new PlacementException(verificationResults.Status, "Cannot place settlement because location is not on board.");
                 case VerificationStatus.LocationIsOccupied: throw new PlacementException(verificationResults.Status, verificationResults.PlayerId, "Cannot place settlement because location is already settled.");
-                case VerificationStatus.LocationIsNotOwned: throw new PlacementException(verificationResults.Status, "Cannot place city because location is settled by an opponent.");
+                case VerificationStatus.LocationIsNotOwned: throw new PlacementException(verificationResults.Status, verificationResults.PlayerId, "Cannot place city because location is settled by an opponent.");
                 case VerificationStatus.LocationIsNotSettled: throw new PlacementException(verificationResults.Status, "Cannot place city because location is not settled.");
                 case VerificationStatus.NoDirectConnection: throw new PlacementException(verificationResults.Status, "Cannot place road because no direct connection between start location and end location.");
                 case VerificationStatus.RoadNotConnectedToExistingRoad: throw new PlacementException(verificationResults.Status, "Cannot place road because it is not connected to an existing road segment.");

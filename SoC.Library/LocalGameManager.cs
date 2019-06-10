@@ -372,8 +372,19 @@ namespace Jabberwocky.SoC.Library
                     case GameBoard.VerificationStatus.LocationIsNotOwned:
                     {
                         var occupyingPlayer = this.playersById[pe.OtherPlayerId];
-                        var occupyingPlayerName = occupyingPlayer == this.currentPlayer ? "you" : occupyingPlayer.Name;
-                        this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, "908", $"Location ({placeCityAction.CityLocation}) already occupied by {occupyingPlayerName}"),
+                        this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, "908", $"Location ({placeCityAction.CityLocation}) already occupied by {occupyingPlayer.Name}"),
+                            this.currentPlayer);
+                        break;
+                    }
+                    case GameBoard.VerificationStatus.LocationIsAlreadyCity:
+                    {
+                        this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, "908", $"Location ({placeCityAction.CityLocation}) already occupied by you"),
+                            this.currentPlayer);
+                        break;
+                    }
+                    case GameBoard.VerificationStatus.LocationIsNotSettled:
+                    {
+                        this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, "914", $"Location ({placeCityAction.CityLocation}) not an settlement"),
                             this.currentPlayer);
                         break;
                     }
