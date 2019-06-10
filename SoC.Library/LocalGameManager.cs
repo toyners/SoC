@@ -388,6 +388,18 @@ namespace Jabberwocky.SoC.Library
                             this.currentPlayer);
                         break;
                     }
+                    case GameBoard.VerificationStatus.LocationForCityIsInvalid:
+                    {
+                        this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, "915", $"Location ({placeCityAction.CityLocation}) is invalid"),
+                            this.currentPlayer);
+                        break;
+                    }
+                    default:
+                    {
+                        this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, "998", $"Unknown error"),
+                            this.currentPlayer);
+                        break;
+                    }
                 }
             }
 
@@ -499,6 +511,18 @@ namespace Jabberwocky.SoC.Library
                     case GameBoard.VerificationStatus.SettlementNotConnectedToExistingRoad:
                     {
                         this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, "909", $"Location ({placeSettlementAction.SettlementLocation}) is not connected to your road system"),
+                            this.currentPlayer);
+                        break;
+                    }
+                    case GameBoard.VerificationStatus.LocationForSettlementIsInvalid:
+                    {
+                        this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, "915", $"Location ({placeSettlementAction.SettlementLocation}) is invalid"),
+                            this.currentPlayer);
+                        break;
+                    }
+                    default:
+                    {
+                        this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, "998", $"Unknown error"),
                             this.currentPlayer);
                         break;
                     }

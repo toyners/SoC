@@ -386,6 +386,26 @@ namespace SoC.Library.ScenarioTests
         }
 
         [Test]
+        public void PlayerTriesToPlaceCityOnInvalidLocation()
+        {
+            this.CompletePlayerInfrastructureSetup(new[] { MethodBase.GetCurrentMethod().Name })
+                .WithNoResourceCollection()
+                .WithInitialPlayerSetupFor(
+                    Adam,
+                    Resources(ResourceClutch.City))
+                .WhenPlayer(Adam)
+                    .ReceivesDiceRollEvent(3, 3).ThenPlaceCity(100)
+                    .ReceivesGameErrorEvent("915", $"Location (100) is invalid").ThenDoNothing()
+                .VerifyPlayer(Babara)
+                    .DidNotReceiveEventOfType<GameErrorEvent>()
+                .VerifyPlayer(Charlie)
+                    .DidNotReceiveEventOfType<GameErrorEvent>()
+                .VerifyPlayer(Dana)
+                    .DidNotReceiveEventOfType<GameErrorEvent>()
+                .Run();
+        }
+
+        [Test]
         public void PlayerTriesToPlaceCityOnLocationOccupiedByOtherPlayer()
         {
             this.CompletePlayerInfrastructureSetup(new[] { MethodBase.GetCurrentMethod().Name })
@@ -513,6 +533,26 @@ namespace SoC.Library.ScenarioTests
                         .Resources(ResourceClutch.Zero)
                         .VictoryPoints(10)
                         .End()
+                .Run();
+        }
+
+        [Test]
+        public void PlayerTriesToPlaceSettlementOnInvalidLocation()
+        {
+            this.CompletePlayerInfrastructureSetup(new[] { MethodBase.GetCurrentMethod().Name })
+                .WithNoResourceCollection()
+                .WithInitialPlayerSetupFor(
+                    Adam,
+                    Resources(ResourceClutch.Settlement))
+                .WhenPlayer(Adam)
+                    .ReceivesDiceRollEvent(3, 3).ThenPlaceSettlement(100)
+                    .ReceivesGameErrorEvent("915", $"Location (100) is invalid").ThenDoNothing()
+                .VerifyPlayer(Babara)
+                    .DidNotReceiveEventOfType<GameErrorEvent>()
+                .VerifyPlayer(Charlie)
+                    .DidNotReceiveEventOfType<GameErrorEvent>()
+                .VerifyPlayer(Dana)
+                    .DidNotReceiveEventOfType<GameErrorEvent>()
                 .Run();
         }
 
