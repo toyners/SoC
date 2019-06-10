@@ -565,6 +565,11 @@ namespace SoC.Library.ScenarioTests
 
             return this.playerAgentsByName[playerName].Id;
         }
+
+        public ScenarioRunner ReceivesPlaceRobberEvent(int numberOfResourcesToLose)
+        {
+            throw new NotImplementedException();
+        }
         #endregion
     }
 }

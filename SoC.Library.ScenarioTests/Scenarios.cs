@@ -794,7 +794,37 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void PlayerRollsSevenAndAllPlayersWithMoreThanSevenResourcesLoseResources()
         {
-            throw new NotImplementedException();
+            this.CompletePlayerInfrastructureSetup(new[] { MethodBase.GetCurrentMethod().Name })
+                .WithNoResourceCollection()
+                .WithInitialPlayerSetupFor(
+                    Adam,
+                    Resources(new ResourceClutch(1, 2, 2, 2, 2))) // 9 resources
+                .WithInitialPlayerSetupFor(
+                    Babara,
+                    Resources(new ResourceClutch(1, 1, 1, 2, 2))) // 7 resources
+                .WithInitialPlayerSetupFor(
+                    Charlie,
+                    Resources(new ResourceClutch(1, 1, 1, 1, 2))) // 6 resources
+                .WithInitialPlayerSetupFor(
+                    Dana,
+                    Resources(new ResourceClutch(1, 1, 2, 2, 2))) // 8 resources
+                .WhenPlayer(Adam)
+                    .ReceivesDiceRollEvent(3, 4).ThenDoNothing()
+                    .ReceivesPlaceRobberEvent(2)
+                .WhenPlayer(Babara)
+                    .ReceivesPlaceRobberEvent(0)
+                    
+                .WhenPlayer(Charlie)
+                    .ReceivesPlaceRobberEvent(0)
+                .WhenPlayer(Dana)
+                    .ReceivesPlaceRobberEvent(1)
+                .VerifyAllPlayersReceivedGameWonEvent(Adam, 10)
+                .WhenPlayer(Adam)
+                    .ThenVerifyPlayerState()
+                        .Resources(ResourceClutch.Zero)
+                        .VictoryPoints(10)
+                        .End()
+                .Run();
         }
 
         [Test]
