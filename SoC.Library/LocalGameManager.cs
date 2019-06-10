@@ -461,6 +461,12 @@ namespace Jabberwocky.SoC.Library
                             this.currentPlayer);
                         break;
                     }
+                    default:
+                    {
+                        this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, "998", $"Unknown error"),
+                            this.currentPlayer);
+                        break;
+                    }
                 }
             }
         }
