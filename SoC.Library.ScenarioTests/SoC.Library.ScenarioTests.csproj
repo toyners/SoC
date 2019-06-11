@@ -55,6 +55,7 @@
     <Compile Include="Instructions\ActionInstruction.cs" />
     <Compile Include="Instructions\EventInstruction.cs" />
     <Compile Include="Instructions\Instruction.cs" />
+    <Compile Include="Instructions\MultipleEventInstruction.cs" />
     <Compile Include="Instructions\PlayerStateInstruction.cs" />
     <Compile Include="IPlayerSetupAction.cs" />
     <Compile Include="PlacedRoadSegmentSetup.cs" />

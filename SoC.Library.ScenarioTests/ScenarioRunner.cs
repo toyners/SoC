@@ -586,6 +586,16 @@ namespace SoC.Library.ScenarioTests
 
             return this.playerAgentsByName[playerName].Id;
         }
+
+        public ScenarioRunner ReceivesAll()
+        {
+            return this;
+        }
+
+        public ScenarioRunner End()
+        {
+            throw new NotImplementedException();
+        }
         #endregion
     }
 }
