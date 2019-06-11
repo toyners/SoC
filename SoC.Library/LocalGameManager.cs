@@ -225,6 +225,9 @@ namespace Jabberwocky.SoC.Library
 
         private string GetErrorMessage(Type actualAction, HashSet<Type> expectedActions)
         {
+            if (expectedActions == null || expectedActions.Count == 0)
+                return $"Received action type {actualAction.Name}. No action expected";
+            
             var expectedActionsNames = expectedActions.Select(
                     expectedAction => expectedAction.Name).ToList();
 
@@ -568,6 +571,18 @@ namespace Jabberwocky.SoC.Library
                 return false;
             }
 
+            if (playerAction is LoseResourcesAction loseResourcesAction)
+            {
+                var player = this.playersById[loseResourcesAction.InitiatingPlayerId];
+                if (player.Resources - loseResourcesAction.Resources < ResourceClutch.Zero)
+                {
+                    // TODO: Return error to player agent
+                }
+                player.RemoveResources(loseResourcesAction.Resources);
+                this.RaiseEvent(new ResourcesLostEvent(loseResourcesAction.Resources));
+                return false;
+            }
+
             if (playerAction is MakeDirectTradeOfferAction makeDirectTradeOfferAction)
             {
                 this.ProcessMakeDirectTradeOfferAction(makeDirectTradeOfferAction);
@@ -686,7 +701,16 @@ namespace Jabberwocky.SoC.Library
             }
             else
             {
-
+                foreach (var player in this.players)
+                {
+                    this.actionManager.SetExpectedActionsForPlayer(player.Id, null);
+                    if (player.Resources.Count > 7)
+                    {
+                        this.actionManager.SetExpectedActionsForPlayer(player.Id, typeof(LoseResourcesAction));
+                        var resourceCount = player.Resources.Count / 2;
+                        this.RaiseEvent(new ChooseLostResourcesEvent(resourceCount), player);
+                    }
+                }
             }
         }
 

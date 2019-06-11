@@ -859,6 +859,54 @@ namespace SoC.Library.ScenarioTests
         }
 
         [Test]
+        public void PlayerRollsSevenAndPlayerSendsTooManyResourceCount()
+        {
+            var adamsInitialResources = new ResourceClutch(1, 2, 2, 2, 2); // 9 resources
+            var adamsLostResources = new ResourceClutch(1, 1, 1, 1, 1);
+
+            this.CompletePlayerInfrastructureSetup(new[] { MethodBase.GetCurrentMethod().Name })
+                .WithNoResourceCollection()
+                .WithInitialPlayerSetupFor(
+                    Adam,
+                    Resources(adamsInitialResources))
+                .WhenPlayer(Adam)
+                    .ReceivesDiceRollEvent(3, 4).ThenDoNothing()
+                    .ReceivesChooseLostResourcesEvent(4).ThenChooseResourcesToLose(adamsLostResources)
+                    .ReceivesGameErrorEvent("916", "Expected 4 resources to lose but received 5")
+                .VerifyPlayer(Babara)
+                    .DidNotReceiveEventOfType<GameErrorEvent>()
+                .VerifyPlayer(Charlie)
+                    .DidNotReceiveEventOfType<GameErrorEvent>()
+                .VerifyPlayer(Dana)
+                    .DidNotReceiveEventOfType<GameErrorEvent>()
+                .Run();
+        }
+
+        [Test]
+        public void PlayerRollsSevenAndPlayerSendsTooLittleResourceCount()
+        {
+            var adamsInitialResources = new ResourceClutch(1, 2, 2, 2, 2); // 9 resources
+            var adamsLostResources = new ResourceClutch(0, 0, 1, 1, 1);
+
+            this.CompletePlayerInfrastructureSetup(new[] { MethodBase.GetCurrentMethod().Name })
+                .WithNoResourceCollection()
+                .WithInitialPlayerSetupFor(
+                    Adam,
+                    Resources(adamsInitialResources))
+                .WhenPlayer(Adam)
+                    .ReceivesDiceRollEvent(3, 4).ThenDoNothing()
+                    .ReceivesChooseLostResourcesEvent(4).ThenChooseResourcesToLose(adamsLostResources)
+                    .ReceivesGameErrorEvent("916", "Expected 4 resources to lose but received 3")
+                .VerifyPlayer(Babara)
+                    .DidNotReceiveEventOfType<GameErrorEvent>()
+                .VerifyPlayer(Charlie)
+                    .DidNotReceiveEventOfType<GameErrorEvent>()
+                .VerifyPlayer(Dana)
+                    .DidNotReceiveEventOfType<GameErrorEvent>()
+                .Run();
+        }
+
+        [Test]
         public void PlayerRollsSevenAndSelectedHexHasNoPlayers()
         {
             throw new NotImplementedException();

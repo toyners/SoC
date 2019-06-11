@@ -32,6 +32,11 @@ namespace Jabberwocky.SoC.Library
                 resourceClutch));
         }
 
+        public void ChooseResourcesToLose(ResourceClutch resourceClutch)
+        {
+            this.SendAction(new LoseResourcesAction(this.playerId, resourceClutch));
+        }
+
         public void ConfirmStart()
         {
             this.SendAction(new ConfirmGameStartAction(this.playerId));

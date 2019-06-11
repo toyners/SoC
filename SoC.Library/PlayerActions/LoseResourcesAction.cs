@@ -3,11 +3,11 @@ namespace Jabberwocky.SoC.Library.PlayerActions
 {
     using System;
 
-    public class DropResourcesAction : PlayerAction
+    public class LoseResourcesAction : PlayerAction
     {
         public readonly ResourceClutch Resources;
 
-        public DropResourcesAction(ResourceClutch resources) : base(Guid.Empty)
+        public LoseResourcesAction(Guid playerId, ResourceClutch resources) : base(playerId)
         {
             this.Resources = resources;
         }

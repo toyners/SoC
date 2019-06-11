@@ -1,6 +1,7 @@
 ﻿
 namespace SoC.Library.ScenarioTests.ScenarioActions
 {
+    /*
     using System;
     using Jabberwocky.SoC.Library;
     using Jabberwocky.SoC.Library.PlayerActions;
@@ -16,9 +17,10 @@ namespace SoC.Library.ScenarioTests.ScenarioActions
             this.Resources = resources;
         }
 
-        public DropResourcesAction CreateDropResourcesAction()
+        public LoseResourcesAction CreateDropResourcesAction()
         {
-            return new DropResourcesAction(this.Resources);
+            return new LoseResourcesAction(Guid.Empty, this.Resources);
         }
     }
+    */
 }

@@ -453,7 +453,7 @@ namespace Jabberwocky.SoC.Library
             return gameBoardData.GetPathBetweenLocations(locationIndex, bestLocationIndex);
         }
 
-        public virtual DropResourcesAction GetDropResourcesAction()
+        public virtual LoseResourcesAction GetDropResourcesAction()
         {
             throw new NotImplementedException();
         }

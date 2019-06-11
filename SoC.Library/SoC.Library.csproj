@@ -82,8 +82,8 @@
     <Compile Include="PlayerActions\BuildStartingInfrastructure.cs" />
     <Compile Include="PlayerActions\BuyDevelopmentCardAction.cs" />
     <Compile Include="PlayerActions\ConfirmGameStartAction.cs" />
-    <Compile Include="PlayerActions\DropResourcesAction.cs" />
     <Compile Include="PlayerActions\EndOfTurnAction.cs" />
+    <Compile Include="PlayerActions\LoseResourcesAction.cs" />
     <Compile Include="PlayerActions\MakeDirectTradeOfferAction.cs" />
     <Compile Include="PlayerActions\PlaceCityAction.cs" />
     <Compile Include="PlayerActions\PlaceRoadSegmentAction.cs" />

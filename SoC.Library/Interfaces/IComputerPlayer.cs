@@ -22,7 +22,7 @@ namespace Jabberwocky.SoC.Library.Interfaces
         uint ChooseRobberLocation();
         IPlayer ChoosePlayerToRob(IEnumerable<IPlayer> otherPlayers);
         PlayerAction PlayTurn(PlayerDataModel[] otherPlayerData, LocalGameController localGameController);
-        DropResourcesAction GetDropResourcesAction();
+        LoseResourcesAction GetDropResourcesAction();
         PlayerAction GetPlayerAction();
         YearOfPlentyDevelopmentCard ChooseYearOfPlentyCard();
         #endregion

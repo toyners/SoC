@@ -89,13 +89,13 @@ namespace SoC.Library.ScenarioTests
             return resourcesToDrop;
         }
 
-        public void AddDropResourcesAction(DropResourcesAction dropResourcesAction)
+        public void AddDropResourcesAction(LoseResourcesAction dropResourcesAction)
         {
             this.dropResourcesActions.Enqueue(dropResourcesAction);
         }
 
-        private Queue<DropResourcesAction> dropResourcesActions = new Queue<DropResourcesAction>();
-        public override DropResourcesAction GetDropResourcesAction()
+        private Queue<LoseResourcesAction> dropResourcesActions = new Queue<LoseResourcesAction>();
+        public override LoseResourcesAction GetDropResourcesAction()
         {
             return this.dropResourcesActions.Count > 0 ? this.dropResourcesActions.Dequeue() : null;
         }
