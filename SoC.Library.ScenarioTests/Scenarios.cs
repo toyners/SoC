@@ -794,36 +794,67 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void PlayerRollsSevenAndAllPlayersWithMoreThanSevenResourcesLoseResources()
         {
+            var adamsInitialResources = new ResourceClutch(1, 2, 2, 2, 2); // 9 resources
+            var babarasInitialResources = new ResourceClutch(2, 2, 2, 2, 2); // 10 resources
+            var charliesInitialResources = new ResourceClutch(1, 1, 1, 1, 2); // 6 resources
+            var danasInitialResources = new ResourceClutch(1, 1, 2, 2, 2); // 8 resources
+
+            var adamsLostResources = new ResourceClutch(0, 1, 1, 1, 1);
+            var babarasLostResources = new ResourceClutch(1, 1, 1, 1, 1);
+            var danasLostResources = new ResourceClutch(0, 1, 1, 1, 1);
+
+            var adamsFinalResources = adamsInitialResources - adamsLostResources;
+            var babarasFinalResources = babarasInitialResources - babarasLostResources;
+            var danasFinalResources = danasInitialResources - danasLostResources;
+
             this.CompletePlayerInfrastructureSetup(new[] { MethodBase.GetCurrentMethod().Name })
                 .WithNoResourceCollection()
                 .WithInitialPlayerSetupFor(
                     Adam,
-                    Resources(new ResourceClutch(1, 2, 2, 2, 2))) // 9 resources
+                    Resources(adamsInitialResources))
                 .WithInitialPlayerSetupFor(
                     Babara,
-                    Resources(new ResourceClutch(1, 1, 1, 2, 2))) // 7 resources
+                    Resources(babarasInitialResources))
                 .WithInitialPlayerSetupFor(
                     Charlie,
-                    Resources(new ResourceClutch(1, 1, 1, 1, 2))) // 6 resources
+                    Resources(charliesInitialResources))
                 .WithInitialPlayerSetupFor(
                     Dana,
-                    Resources(new ResourceClutch(1, 1, 2, 2, 2))) // 8 resources
+                    Resources(danasInitialResources))
                 .WhenPlayer(Adam)
                     .ReceivesDiceRollEvent(3, 4).ThenDoNothing()
-                    .ReceivesPlaceRobberEvent(2)
-                .WhenPlayer(Babara)
-                    .ReceivesPlaceRobberEvent(0)
-                    
-                .WhenPlayer(Charlie)
-                    .ReceivesPlaceRobberEvent(0)
-                .WhenPlayer(Dana)
-                    .ReceivesPlaceRobberEvent(1)
-                .VerifyAllPlayersReceivedGameWonEvent(Adam, 10)
-                .WhenPlayer(Adam)
+                    .ReceivesChooseLostResourcesEvent(4).ThenChooseResourcesToLose(adamsLostResources)
+                    .ReceivesResourcesLostEvent(Adam, adamsLostResources).ThenDoNothing()
+                    .ReceivesResourcesLostEvent(Babara, babarasLostResources).ThenDoNothing()
+                    .ReceivesResourcesLostEvent(Dana, danasLostResources)
                     .ThenVerifyPlayerState()
-                        .Resources(ResourceClutch.Zero)
-                        .VictoryPoints(10)
+                        .Resources(adamsFinalResources)
                         .End()
+                .WhenPlayer(Babara)
+                    .ReceivesChooseLostResourcesEvent(5).ThenChooseResourcesToLose(babarasLostResources)
+                    .ReceivesResourcesLostEvent(Adam, adamsLostResources).ThenDoNothing()
+                    .ReceivesResourcesLostEvent(Babara, babarasLostResources).ThenDoNothing()
+                    .ReceivesResourcesLostEvent(Dana, danasLostResources)
+                    .ThenVerifyPlayerState()
+                        .Resources(babarasFinalResources)
+                        .End()
+                .WhenPlayer(Charlie)
+                    .ReceivesResourcesLostEvent(Adam, adamsLostResources).ThenDoNothing()
+                    .ReceivesResourcesLostEvent(Babara, babarasLostResources).ThenDoNothing()
+                    .ReceivesResourcesLostEvent(Dana, danasLostResources)
+                    .ThenVerifyPlayerState()
+                        .Resources(charliesInitialResources)
+                        .End()
+                .WhenPlayer(Dana)
+                    .ReceivesChooseLostResourcesEvent(4).ThenChooseResourcesToLose(danasLostResources)
+                    .ReceivesResourcesLostEvent(Adam, adamsLostResources).ThenDoNothing()
+                    .ReceivesResourcesLostEvent(Babara, babarasLostResources).ThenDoNothing()
+                    .ReceivesResourcesLostEvent(Dana, danasLostResources)
+                    .ThenVerifyPlayerState()
+                        .Resources(danasFinalResources)
+                        .End()
+                .VerifyPlayer(Charlie)
+                    .DidNotReceiveEventOfType<ChooseLostResourcesEvent>()
                 .Run();
         }
 

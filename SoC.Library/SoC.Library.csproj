@@ -61,12 +61,14 @@
     <Compile Include="DevelopmentCards\VictoryPointDevelopmentCard.cs" />
     <Compile Include="DevelopmentCards\YearOfPlentyDevelopmentCard.cs" />
     <Compile Include="Enums\PlayerPlacementVerificationStates.cs" />
+    <Compile Include="GameEvents\ChooseLostResourcesEvent.cs" />
     <Compile Include="GameEvents\CityPlacedEvent.cs" />
     <Compile Include="GameEvents\ConfirmGameStartEvent.cs" />
     <Compile Include="GameEvents\GameErrorEvent.cs" />
     <Compile Include="GameEvents\GameJoinedEvent.cs" />
     <Compile Include="GameEvents\PlayerOrderEvent.cs" />
     <Compile Include="GameEvents\PlayerQuitEvent.cs" />
+    <Compile Include="GameEvents\ResourcesLostEvent.cs" />
     <Compile Include="GameEvents\RoadSegmentPlacedEvent.cs" />
     <Compile Include="GameEvents\SettlementPlacedEvent.cs" />
     <Compile Include="GameToken.cs" />

@@ -85,6 +85,13 @@ namespace SoC.Library.ScenarioTests
             return this;
         }
 
+        public ScenarioRunner ReceivesChooseLostResourcesEvent(int numberOfResourcesToLose)
+        {
+            var gameEvent = new ChooseLostResourcesEvent(numberOfResourcesToLose);
+            this.currentPlayerAgent.AddInstruction(new EventInstruction(gameEvent));
+            return this;
+        }
+
         public ScenarioRunner ReceivesCityPlacementEvent(uint cityLocation)
         {
             var gameEvent = new CityPlacedEvent(this.playerAgentsByName[this.currentPlayerAgent.Name].Id, cityLocation);
@@ -208,6 +215,13 @@ namespace SoC.Library.ScenarioTests
             var gameEvent = new ResourcesCollectedEvent(resourcesCollectedByPlayerId);
             var eventInstruction = new EventInstruction(gameEvent);
             this.currentPlayerAgent.AddInstruction(eventInstruction);
+            return this;
+        }
+
+        public ScenarioRunner ReceivesResourcesLostEvent(string playerName, ResourceClutch lostResources)
+        {
+            var gameEvent = new ResourcesLostEvent(lostResources);
+            this.currentPlayerAgent.AddInstruction(new EventInstruction(gameEvent));
             return this;
         }
 
@@ -377,6 +391,13 @@ namespace SoC.Library.ScenarioTests
         {
             this.AddActionInstruction(ActionInstruction.OperationTypes.AcceptTrade,
                 new object[] { sellerName });
+            return this;
+        }
+
+        public ScenarioRunner ThenChooseResourcesToLose(ResourceClutch resourcesToLose)
+        {
+            this.AddActionInstruction(ActionInstruction.OperationTypes.ChooseResourcesToLose,
+                new object[] { resourcesToLose });
             return this;
         }
 
@@ -564,11 +585,6 @@ namespace SoC.Library.ScenarioTests
                 throw new Exception($"Player name {playerName} not recognised.");
 
             return this.playerAgentsByName[playerName].Id;
-        }
-
-        public ScenarioRunner ReceivesPlaceRobberEvent(int numberOfResourcesToLose)
-        {
-            throw new NotImplementedException();
         }
         #endregion
     }
