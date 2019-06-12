@@ -91,20 +91,23 @@ namespace SoC.Library.ScenarioTests
                 this.LastEventActionPair.Action = playerStateInstruction.GetAction();
                 this.expectedEventActions.Add(new EventActionPair(playerStateInstruction.GetEvent()));
             }
+            else if (instruction is MultipleEventInstruction multipleEventInstruction)
+            {
+                var eventActionPair = new EventActionPair();
+                foreach (var gameEvent in multipleEventInstruction.Events)
+                    eventActionPair.Add(gameEvent);
+                this.expectedEventActions.Add(eventActionPair);
+            }
         }
 
-        public List<Tuple<GameEvent, ActionInstruction, bool>> GetEventResults()
+        public string GetEventLog()
         {
-            var eventResults = new List<Tuple<GameEvent, ActionInstruction, bool>>();
-            this.expectedEventActions.ForEach(eventActionPair => {
-                eventResults.Add(
-                    new Tuple<GameEvent, ActionInstruction, bool>(
-                        eventActionPair.ExpectedEvent,
-                        eventActionPair.Action,
-                        eventActionPair.Verified));
+            string contents = null;
+            int number = 1;
+            this.expectedEventActions.ForEach(eventAction => {
+                contents += $"{number++:00} {eventAction.ToString()}\r\n";
             });
-
-            return eventResults;
+            return contents;
         }
 
         public void JoinGame(LocalGameManager gameServer)
@@ -119,12 +122,7 @@ namespace SoC.Library.ScenarioTests
 
         public void SaveEvents(string filePath)
         {
-            string contents = null;
-            int number = 1;
-            this.expectedEventActions.ForEach(eventAction => {
-                contents += $"{number++:00} {eventAction.ToString()}\r\n";
-            });
-            System.IO.File.WriteAllText(filePath, contents);
+            System.IO.File.WriteAllText(filePath, this.GetEventLog());
         }
 
         public void SaveLog(string filePath) => this.log.WriteToFile(filePath);
@@ -362,10 +360,23 @@ namespace SoC.Library.ScenarioTests
             if (this.expectedEventIndex >= this.expectedEventActions.Count)
                 return;
 
-            if (this.IsEventVerified(this.CurrentEventActionPair.ExpectedEvent,
-                    this.actualEvents[this.actualEvents.Count - 1]))
+            GameEvent actualEvent = this.actualEvents[this.actualEvents.Count - 1];
+
+            for (var i = 0; i < this.CurrentEventActionPair.ExpectedEvents.Count; i++)
             {
-                this.CurrentEventActionPair.Verified = true;
+                if (this.CurrentEventActionPair.Statuses[i])
+                    continue;
+
+                if (this.IsEventVerified(this.CurrentEventActionPair.ExpectedEvents[i], actualEvent))
+                { 
+                    this.CurrentEventActionPair.Statuses[i] = true;
+                    break;
+                }
+            }
+
+            var finished = this.CurrentEventActionPair.Statuses.All(status => status);
+            if (finished)
+            {
                 if (this.CurrentEventActionPair.Action != null)
                     this.SendAction(this.CurrentEventActionPair.Action);
                 this.expectedEventIndex++;
@@ -421,28 +432,43 @@ namespace SoC.Library.ScenarioTests
         #region Structures
         private class EventActionPair
         {
+            public EventActionPair() { }
             public EventActionPair(GameEvent gameEvent)
             {
-                this.ExpectedEvent = gameEvent;
+                this.Add(gameEvent);
             }
 
-            public GameEvent ExpectedEvent { get; private set; }
+            public List<GameEvent> ExpectedEvents { get; private set; } = new List<GameEvent>();
             public ActionInstruction Action { get; set; }
-            public bool Verified { get; set; }
+            public List<bool> Statuses { get; set; } = new List<bool>();
+
+            public void Add(GameEvent gameEvent)
+            {
+                this.ExpectedEvents.Add(gameEvent);
+                this.Statuses.Add(false);
+            }
 
             public override string ToString()
             {
                 return $"{this.ToExpectedEventString()} -> " +
-                    $"{(this.Verified ? "Verified": "NOT VERIFIED")}" +
-                    $"{(this.Action != null ? ", " + "ACTION: " + this.Action.Operation : "(no action)")}";
+                    $"{(this.Action != null ? "ACTION: " + this.Action.Operation : "(no action)")}";
             }
 
             private string ToExpectedEventString()
             {
-                if (this.ExpectedEvent is DiceRollEvent diceRollEvent)
-                    return $"{diceRollEvent.SimpleTypeName}[{diceRollEvent.Dice1},{diceRollEvent.Dice2}]";
+                string result = null;
+                for (var i = 0; i < this.ExpectedEvents.Count; i++)
+                {
+                    var expectedEvent = this.ExpectedEvents[i];
+                    if (expectedEvent is DiceRollEvent diceRollEvent)
+                        result += $"{diceRollEvent.SimpleTypeName}[{diceRollEvent.Dice1},{diceRollEvent.Dice2}]";
+                    else
+                        result += expectedEvent.SimpleTypeName;
 
-                return this.ExpectedEvent.SimpleTypeName;
+                    result += this.Statuses[i] == false ? " (NOT VERIFIED), " : ", ";
+                }
+
+                return result.Substring(0, result.Length - 2);
             }
         }
         #endregion

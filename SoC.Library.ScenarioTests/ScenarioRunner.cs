@@ -23,6 +23,7 @@ namespace SoC.Library.ScenarioTests
         private readonly string scenarioName;
         private PlayerAgent currentPlayerAgent;
         private GameBoard gameBoard;
+        private MultipleEventInstruction multipleEventInstruction;
         private ScenarioNumberGenerator numberGenerator;
         private IPlayerFactory playerFactory;
         #endregion
@@ -66,6 +67,21 @@ namespace SoC.Library.ScenarioTests
         public ScenarioRunner DidNotReceivePlayerQuitEvent(string quittingPlayerName)
         {
             this.currentPlayerAgent.AddDidNotReceiveEvent(new PlayerQuitEvent(this.playerAgentsByName[quittingPlayerName].Id));
+            return this;
+        }
+
+        public ScenarioRunner ReceivesAll()
+        {
+            if (this.multipleEventInstruction != null)
+                throw new Exception("Previous multiple event instruction not closed");
+            this.multipleEventInstruction = new MultipleEventInstruction();
+            return this;
+        }
+
+        public ScenarioRunner ReceivesAllEnd()
+        {
+            this.currentPlayerAgent.AddInstruction(this.multipleEventInstruction);
+            this.multipleEventInstruction = null;
             return this;
         }
 
@@ -221,8 +237,16 @@ namespace SoC.Library.ScenarioTests
         public ScenarioRunner ReceivesResourcesLostEvent(string playerName, ResourceClutch lostResources)
         {
             var gameEvent = new ResourcesLostEvent(lostResources);
-            this.currentPlayerAgent.AddInstruction(new EventInstruction(gameEvent));
+            this.AddEventInstruction(gameEvent);
             return this;
+        }
+
+        private void AddEventInstruction(GameEvent gameEvent)
+        {
+            if (this.multipleEventInstruction != null)
+                this.multipleEventInstruction.Add(gameEvent);
+            else
+                this.currentPlayerAgent.AddInstruction(new EventInstruction(gameEvent));
         }
 
         public ScenarioRunner ReceivesRoadSegmentPlacementEvent(uint roadSegmentStartLocation, uint roadSegmentEndLocation)
@@ -365,15 +389,7 @@ namespace SoC.Library.ScenarioTests
             string timeOutMessage = string.Join("\r\n",
                 this.playerAgents
                     .Where(playerAgent => !playerAgent.IsFinished)
-                    .Select(playerAgent =>
-                    {
-                        var playerAgentMessage = $"{playerAgent.Name} did not finish.\r\n";
-                        playerAgent.GetEventResults().ForEach(tuple =>
-                        {
-                            playerAgentMessage += $"\t{tuple.Item1} => {tuple.Item3}\r\n";
-                        });
-                        return playerAgentMessage;
-                    })
+                    .Select(playerAgent => $"{playerAgent.Name} did not finish.\r\n{playerAgent.GetEventLog()}\r\n")
                 );
 
             if (!string.IsNullOrEmpty(timeOutMessage))
@@ -585,16 +601,6 @@ namespace SoC.Library.ScenarioTests
                 throw new Exception($"Player name {playerName} not recognised.");
 
             return this.playerAgentsByName[playerName].Id;
-        }
-
-        public ScenarioRunner ReceivesAll()
-        {
-            return this;
-        }
-
-        public ScenarioRunner End()
-        {
-            throw new NotImplementedException();
         }
         #endregion
     }

@@ -77,7 +77,5 @@ namespace SoC.Library.ScenarioTests.Instructions
             requestStateEvent.VictoryPoints = this.victoryPoints;
             return requestStateEvent;
         }
-
-        
     }
 }

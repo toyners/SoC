@@ -828,7 +828,7 @@ namespace SoC.Library.ScenarioTests
                         .ReceivesResourcesLostEvent(Adam, adamsLostResources)
                         .ReceivesResourcesLostEvent(Babara, babarasLostResources)
                         .ReceivesResourcesLostEvent(Dana, danasLostResources)
-                        .End()
+                        .ReceivesAllEnd()
                     .ThenVerifyPlayerState()
                         .Resources(adamsFinalResources)
                         .End()

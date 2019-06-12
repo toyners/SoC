@@ -5,7 +5,7 @@ namespace SoC.Library.ScenarioTests.Instructions
 {
     internal class MultipleEventInstruction : Instruction
     {
-        private HashSet<GameEvent> events = new HashSet<GameEvent>();
-        public void Add(GameEvent expectedEvent) => this.events.Add(expectedEvent);
+        public void Add(GameEvent expectedEvent) => this.Events.Add(expectedEvent);
+        public HashSet<GameEvent> Events { get; private set; } = new HashSet<GameEvent>();
     }
 }
