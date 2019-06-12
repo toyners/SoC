@@ -297,11 +297,6 @@ namespace Jabberwocky.SoC.Library
             }
 
             this.Resources -= resourceClutch;
-            /*this.BrickCount -= resourceClutch.BrickCount;
-            this.GrainCount -= resourceClutch.GrainCount;
-            this.LumberCount -= resourceClutch.LumberCount;
-            this.OreCount -= resourceClutch.OreCount;
-            this.WoolCount -= resourceClutch.WoolCount;*/
         }
 
         /// <summary>

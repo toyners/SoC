@@ -828,32 +828,36 @@ namespace SoC.Library.ScenarioTests
                         .ReceivesResourcesLostEvent(Adam, adamsLostResources)
                         .ReceivesResourcesLostEvent(Babara, babarasLostResources)
                         .ReceivesResourcesLostEvent(Dana, danasLostResources)
-                        .ReceivesAllEnd()
+                    .ReceivesAllEnd()
                     .ThenVerifyPlayerState()
                         .Resources(adamsFinalResources)
                         .End()
                 .WhenPlayer(Babara)
                     .ReceivesChooseLostResourcesEvent(5).ThenChooseResourcesToLose(babarasLostResources)
-                    //.ReceivesResourcesLostEvent(Adam, adamsLostResources)
-                    //.ThenDoNothing()
-                    .ReceivesResourcesLostEvent(Babara, babarasLostResources)
-                    //.ThenDoNothing()
-                    //.ReceivesResourcesLostEvent(Dana, danasLostResources)
+                    .ReceivesAll()
+                        .ReceivesResourcesLostEvent(Adam, adamsLostResources)
+                        .ReceivesResourcesLostEvent(Babara, babarasLostResources)
+                        .ReceivesResourcesLostEvent(Dana, danasLostResources)
+                    .ReceivesAllEnd()
                     .ThenVerifyPlayerState()
                         .Resources(babarasFinalResources)
                         .End()
                 .WhenPlayer(Charlie)
-                    .ReceivesResourcesLostEvent(Adam, adamsLostResources).ThenDoNothing()
-                    .ReceivesResourcesLostEvent(Babara, babarasLostResources).ThenDoNothing()
-                    .ReceivesResourcesLostEvent(Dana, danasLostResources)
+                    .ReceivesAll()
+                        .ReceivesResourcesLostEvent(Adam, adamsLostResources)
+                        .ReceivesResourcesLostEvent(Babara, babarasLostResources)
+                        .ReceivesResourcesLostEvent(Dana, danasLostResources)
+                    .ReceivesAllEnd()
                     .ThenVerifyPlayerState()
                         .Resources(charliesInitialResources)
                         .End()
                 .WhenPlayer(Dana)
                     .ReceivesChooseLostResourcesEvent(4).ThenChooseResourcesToLose(danasLostResources)
-                    //.ReceivesResourcesLostEvent(Adam, adamsLostResources).ThenDoNothing()
-                    //.ReceivesResourcesLostEvent(Babara, babarasLostResources).ThenDoNothing()
-                    .ReceivesResourcesLostEvent(Dana, danasLostResources)
+                    .ReceivesAll()
+                        .ReceivesResourcesLostEvent(Adam, adamsLostResources)
+                        .ReceivesResourcesLostEvent(Babara, babarasLostResources)
+                        .ReceivesResourcesLostEvent(Dana, danasLostResources)
+                    .ReceivesAllEnd()
                     .ThenVerifyPlayerState()
                         .Resources(danasFinalResources)
                         .End()
@@ -863,7 +867,7 @@ namespace SoC.Library.ScenarioTests
         }
 
         [Test]
-        public void PlayerRollsSevenAndPlayerSendsTooManyResourceCount()
+        public void PlayerRollsSevenAndPlayerSendsTooManyResources()
         {
             var adamsInitialResources = new ResourceClutch(1, 2, 2, 2, 2); // 9 resources
             var adamsLostResources = new ResourceClutch(1, 1, 1, 1, 1);
@@ -876,7 +880,7 @@ namespace SoC.Library.ScenarioTests
                 .WhenPlayer(Adam)
                     .ReceivesDiceRollEvent(3, 4).ThenDoNothing()
                     .ReceivesChooseLostResourcesEvent(4).ThenChooseResourcesToLose(adamsLostResources)
-                    .ReceivesGameErrorEvent("916", "Expected 4 resources to lose but received 5")
+                    .ReceivesGameErrorEvent("916", "Expected 4 resources but received 5")
                 .VerifyPlayer(Babara)
                     .DidNotReceiveEventOfType<GameErrorEvent>()
                 .VerifyPlayer(Charlie)
@@ -885,9 +889,9 @@ namespace SoC.Library.ScenarioTests
                     .DidNotReceiveEventOfType<GameErrorEvent>()
                 .Run();
         }
-
+        
         [Test]
-        public void PlayerRollsSevenAndPlayerSendsTooLittleResourceCount()
+        public void PlayerRollsSevenAndPlayerSendsTooLittleResources()
         {
             var adamsInitialResources = new ResourceClutch(1, 2, 2, 2, 2); // 9 resources
             var adamsLostResources = new ResourceClutch(0, 0, 1, 1, 1);
@@ -900,7 +904,31 @@ namespace SoC.Library.ScenarioTests
                 .WhenPlayer(Adam)
                     .ReceivesDiceRollEvent(3, 4).ThenDoNothing()
                     .ReceivesChooseLostResourcesEvent(4).ThenChooseResourcesToLose(adamsLostResources)
-                    .ReceivesGameErrorEvent("916", "Expected 4 resources to lose but received 3")
+                    .ReceivesGameErrorEvent("916", "Expected 4 resources but received 3")
+                .VerifyPlayer(Babara)
+                    .DidNotReceiveEventOfType<GameErrorEvent>()
+                .VerifyPlayer(Charlie)
+                    .DidNotReceiveEventOfType<GameErrorEvent>()
+                .VerifyPlayer(Dana)
+                    .DidNotReceiveEventOfType<GameErrorEvent>()
+                .Run();
+        }
+
+        [Test]
+        public void PlayerRollsSevenAndPlayerSendsResourcesResultingInNegativeResources()
+        {
+            var adamsInitialResources = new ResourceClutch(1, 2, 2, 2, 2); // 9 resources
+            var adamsLostResources = new ResourceClutch(2, 0, 0, 1, 1);
+
+            this.CompletePlayerInfrastructureSetup(new[] { MethodBase.GetCurrentMethod().Name })
+                .WithNoResourceCollection()
+                .WithInitialPlayerSetupFor(
+                    Adam,
+                    Resources(adamsInitialResources))
+                .WhenPlayer(Adam)
+                    .ReceivesDiceRollEvent(3, 4).ThenDoNothing()
+                    .ReceivesChooseLostResourcesEvent(4).ThenChooseResourcesToLose(adamsLostResources)
+                    .ReceivesGameErrorEvent("917", "Resources sent results in negative counts")
                 .VerifyPlayer(Babara)
                     .DidNotReceiveEventOfType<GameErrorEvent>()
                 .VerifyPlayer(Charlie)

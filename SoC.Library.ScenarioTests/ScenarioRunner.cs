@@ -389,7 +389,7 @@ namespace SoC.Library.ScenarioTests
             string timeOutMessage = string.Join("\r\n",
                 this.playerAgents
                     .Where(playerAgent => !playerAgent.IsFinished)
-                    .Select(playerAgent => $"{playerAgent.Name} did not finish.\r\n{playerAgent.GetEventLog()}\r\n")
+                    .Select(playerAgent => $"\r\n{playerAgent.Name} did not finish.\r\n{playerAgent.GetEventLog()}")
                 );
 
             if (!string.IsNullOrEmpty(timeOutMessage))

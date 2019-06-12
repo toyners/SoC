@@ -18,6 +18,7 @@ namespace Jabberwocky.SoC.Library
         #region Fields
         private readonly ActionManager actionManager;
         private readonly ConcurrentQueue<PlayerAction> actionRequests = new ConcurrentQueue<PlayerAction>();
+        private readonly Dictionary<Guid, ChooseLostResourcesEvent> chooseLostResourcesEventByPlayerId = new Dictionary<Guid, ChooseLostResourcesEvent>();
         private readonly IDevelopmentCardHolder developmentCardHolder;
         private readonly EventRaiser eventRaiser;
         private readonly GameBoard gameBoard;
@@ -30,6 +31,8 @@ namespace Jabberwocky.SoC.Library
         private bool isGameSetup = true;
         private int playerIndex;
         private IDictionary<Guid, IPlayer> playersById;
+
+
         private IPlayer[] players;
         private IGameTimer turnTimer;
 
@@ -574,11 +577,23 @@ namespace Jabberwocky.SoC.Library
             if (playerAction is LoseResourcesAction loseResourcesAction)
             {
                 var player = this.playersById[loseResourcesAction.InitiatingPlayerId];
+                var chooseLostResourcesEvent = this.chooseLostResourcesEventByPlayerId[player.Id];
+                if (loseResourcesAction.Resources.Count != chooseLostResourcesEvent.ResourceCount)
+                {
+                    var expectedResourceCount = chooseLostResourcesEvent.ResourceCount + " resource";
+                    if (chooseLostResourcesEvent.ResourceCount > 1)
+                        expectedResourceCount += "s";
+                    this.RaiseEvent(new GameErrorEvent(player.Id, "916", $"Expected {expectedResourceCount} but received {loseResourcesAction.Resources.Count}"), player);
+                    return false;
+                }
+
                 if (player.Resources - loseResourcesAction.Resources < ResourceClutch.Zero)
                 {
                     // TODO: Return error to player agent
                 }
+
                 player.RemoveResources(loseResourcesAction.Resources);
+                this.chooseLostResourcesEventByPlayerId[player.Id] = null;
                 this.RaiseEvent(new ResourcesLostEvent(loseResourcesAction.Resources));
                 return false;
             }
@@ -708,6 +723,8 @@ namespace Jabberwocky.SoC.Library
                     {
                         this.actionManager.SetExpectedActionsForPlayer(player.Id, typeof(LoseResourcesAction));
                         var resourceCount = player.Resources.Count / 2;
+                        var chooseLostResourceEvent = new ChooseLostResourcesEvent(resourceCount);
+                        this.chooseLostResourcesEventByPlayerId[player.Id] = chooseLostResourceEvent;
                         this.RaiseEvent(new ChooseLostResourcesEvent(resourceCount), player);
                     }
                 }
