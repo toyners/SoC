@@ -590,6 +590,8 @@ namespace Jabberwocky.SoC.Library
                 if (player.Resources - loseResourcesAction.Resources < ResourceClutch.Zero)
                 {
                     // TODO: Return error to player agent
+                    this.RaiseEvent(new GameErrorEvent(player.Id, "917", "Resources sent results in negative counts"), player);
+                    return false;
                 }
 
                 player.RemoveResources(loseResourcesAction.Resources);
