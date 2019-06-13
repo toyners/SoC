@@ -786,12 +786,6 @@ namespace SoC.Library.ScenarioTests
         }
 
         [Test]
-        public void PlayerRollsSeven()
-        {
-            throw new NotImplementedException();
-        }
-
-        [Test]
         public void PlayerRollsSevenAndAllPlayersWithMoreThanSevenResourcesLoseResources()
         {
             var adamsInitialResources = new ResourceClutch(1, 2, 2, 2, 2); // 9 resources
@@ -939,9 +933,103 @@ namespace SoC.Library.ScenarioTests
         }
 
         [Test]
-        public void PlayerRollsSevenAndSelectedHexHasNoPlayers()
+        public void PlayerRollsSevenAndAllPlayersWithMoreThanSeventResourcesMustSendsResourcesBeforeRobberCanBePlaced()
         {
             throw new NotImplementedException();
+            var adamsInitialResources = new ResourceClutch(1, 2, 2, 2, 2); // 9 resources
+            var babarasInitialResources = new ResourceClutch(2, 2, 2, 2, 2); // 10 resources
+            var charliesInitialResources = new ResourceClutch(1, 1, 1, 1, 2); // 6 resources
+            var danasInitialResources = new ResourceClutch(1, 1, 2, 2, 2); // 8 resources
+
+            var adamsLostResources = new ResourceClutch(0, 1, 1, 1, 1);
+            var babarasLostResources = new ResourceClutch(1, 1, 1, 1, 1);
+            var danasLostResources = new ResourceClutch(0, 1, 1, 1, 1);
+
+            var adamsFinalResources = adamsInitialResources - adamsLostResources;
+            var babarasFinalResources = babarasInitialResources - babarasLostResources;
+            var danasFinalResources = danasInitialResources - danasLostResources;
+
+            this.CompletePlayerInfrastructureSetup(new[] { MethodBase.GetCurrentMethod().Name })
+                .WithNoResourceCollection()
+                .WithInitialPlayerSetupFor(
+                    Adam,
+                    Resources(adamsInitialResources))
+                .WithInitialPlayerSetupFor(
+                    Babara,
+                    Resources(babarasInitialResources))
+                .WithInitialPlayerSetupFor(
+                    Charlie,
+                    Resources(charliesInitialResources))
+                .WithInitialPlayerSetupFor(
+                    Dana,
+                    Resources(danasInitialResources))
+                .WhenPlayer(Adam)
+                    .ReceivesDiceRollEvent(3, 4).ThenDoNothing()
+                    .ReceivesChooseLostResourcesEvent(4).ThenChooseResourcesToLose(adamsLostResources)
+                    .ReceivesAll()
+                        .ReceivesResourcesLostEvent(Adam, adamsLostResources)
+                        .ReceivesResourcesLostEvent(Babara, babarasLostResources)
+                        .ReceivesResourcesLostEvent(Dana, danasLostResources)
+                    .ReceivesAllEnd()
+                    .ThenVerifyPlayerState()
+                        .Resources(adamsFinalResources)
+                        .End()
+                .WhenPlayer(Babara)
+                    .ReceivesChooseLostResourcesEvent(5).ThenChooseResourcesToLose(babarasLostResources)
+                    .ReceivesAll()
+                        .ReceivesResourcesLostEvent(Adam, adamsLostResources)
+                        .ReceivesResourcesLostEvent(Babara, babarasLostResources)
+                        .ReceivesResourcesLostEvent(Dana, danasLostResources)
+                    .ReceivesAllEnd()
+                    .ThenVerifyPlayerState()
+                        .Resources(babarasFinalResources)
+                        .End()
+                .WhenPlayer(Charlie)
+                    .ReceivesAll()
+                        .ReceivesResourcesLostEvent(Adam, adamsLostResources)
+                        .ReceivesResourcesLostEvent(Babara, babarasLostResources)
+                        .ReceivesResourcesLostEvent(Dana, danasLostResources)
+                    .ReceivesAllEnd()
+                    .ThenVerifyPlayerState()
+                        .Resources(charliesInitialResources)
+                        .End()
+                .WhenPlayer(Dana)
+                    .ReceivesChooseLostResourcesEvent(4).ThenChooseResourcesToLose(danasLostResources)
+                    .ReceivesAll()
+                        .ReceivesResourcesLostEvent(Adam, adamsLostResources)
+                        .ReceivesResourcesLostEvent(Babara, babarasLostResources)
+                        .ReceivesResourcesLostEvent(Dana, danasLostResources)
+                    .ReceivesAllEnd()
+                    .ThenVerifyPlayerState()
+                        .Resources(danasFinalResources)
+                        .End()
+                .VerifyPlayer(Charlie)
+                    .DidNotReceiveEventOfType<ChooseLostResourcesEvent>()
+                .Run();
+        }
+
+        [Test]
+        public void PlayerRollsSevenAndSelectedHexHasNoPlayers()
+        {
+            var adamsInitialResources = new ResourceClutch(1, 2, 2, 2, 2); // 9 resources
+            var adamsLostResources = new ResourceClutch(2, 0, 0, 1, 1);
+
+            this.CompletePlayerInfrastructureSetup(new[] { MethodBase.GetCurrentMethod().Name })
+                .WithNoResourceCollection()
+                .WithInitialPlayerSetupFor(
+                    Adam,
+                    Resources(adamsInitialResources))
+                .WhenPlayer(Adam)
+                    .ReceivesDiceRollEvent(3, 4).ThenDoNothing()
+                    .ReceivesChooseLostResourcesEvent(4).ThenChooseResourcesToLose(adamsLostResources)
+                    .ReceivesGameErrorEvent("917", "Resources sent results in negative counts")
+                .VerifyPlayer(Babara)
+                    .DidNotReceiveEventOfType<GameErrorEvent>()
+                .VerifyPlayer(Charlie)
+                    .DidNotReceiveEventOfType<GameErrorEvent>()
+                .VerifyPlayer(Dana)
+                    .DidNotReceiveEventOfType<GameErrorEvent>()
+                .Run();
         }
 
         [Test]
@@ -951,7 +1039,19 @@ namespace SoC.Library.ScenarioTests
         }
 
         [Test]
-        public void PlayerRollsSevenAndGetsResourceFromSelectedPlayer()
+        public void PlayerRollsSevenAndSelectedHexHasOnePlayerWhichIsRollingPlayer()
+        {
+            throw new NotImplementedException();
+        }
+
+        [Test]
+        public void PlayerRollsSevenAndSelectedHexHasMultiplePlayers()
+        {
+            throw new NotImplementedException();
+        }
+
+        [Test]
+        public void PlayerRollsSevenAndSelectedHexHasMultiplePlayersIncludingRollingPlayer()
         {
             throw new NotImplementedException();
         }
