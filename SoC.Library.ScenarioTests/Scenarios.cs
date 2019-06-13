@@ -935,7 +935,7 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void PlayerRollsSevenAndAllPlayersWithMoreThanSeventResourcesMustSendsResourcesBeforeRobberCanBePlaced()
         {
-            throw new NotImplementedException();
+            //throw new NotImplementedException();
             var adamsInitialResources = new ResourceClutch(1, 2, 2, 2, 2); // 9 resources
             var babarasInitialResources = new ResourceClutch(2, 2, 2, 2, 2); // 10 resources
             var charliesInitialResources = new ResourceClutch(1, 1, 1, 1, 2); // 6 resources
@@ -970,10 +970,8 @@ namespace SoC.Library.ScenarioTests
                         .ReceivesResourcesLostEvent(Adam, adamsLostResources)
                         .ReceivesResourcesLostEvent(Babara, babarasLostResources)
                         .ReceivesResourcesLostEvent(Dana, danasLostResources)
-                    .ReceivesAllEnd()
-                    .ThenVerifyPlayerState()
-                        .Resources(adamsFinalResources)
-                        .End()
+                    .ReceivesAllEnd().ThenDoNothing()
+                    .ReceivesPlaceRobberEvent()
                 .WhenPlayer(Babara)
                     .ReceivesChooseLostResourcesEvent(5).ThenChooseResourcesToLose(babarasLostResources)
                     .ReceivesAll()
@@ -1071,7 +1069,7 @@ namespace SoC.Library.ScenarioTests
         /// method raises an error
         /// </summary>
         [Test]
-        public void PlayerRollsSevenAndHasNoCompetitorsOnSelectedHex()
+        public void PlayerRollsSevenAndHasNoPlayersOnSelectedHex()
         {
             throw new NotImplementedException();
         }

@@ -179,6 +179,12 @@ namespace SoC.Library.ScenarioTests
             return this;
         }
 
+        public ScenarioRunner ReceivesPlaceRobberEvent()
+        {
+            this.AddEventInstruction(new PlaceRobberEvent());
+            return this;
+        }
+
         public ScenarioRunner ReceivesPlayerOrderEvent(string[] playerNames)
         {
             var playerIds = this.playerAgents.Select(playerAgent => playerAgent.Id).ToArray();
@@ -239,14 +245,6 @@ namespace SoC.Library.ScenarioTests
             var gameEvent = new ResourcesLostEvent(lostResources);
             this.AddEventInstruction(gameEvent);
             return this;
-        }
-
-        private void AddEventInstruction(GameEvent gameEvent)
-        {
-            if (this.multipleEventInstruction != null)
-                this.multipleEventInstruction.Add(gameEvent);
-            else
-                this.currentPlayerAgent.AddInstruction(new EventInstruction(gameEvent));
         }
 
         public ScenarioRunner ReceivesRoadSegmentPlacementEvent(uint roadSegmentStartLocation, uint roadSegmentEndLocation)
@@ -588,6 +586,14 @@ namespace SoC.Library.ScenarioTests
         private void AddActionInstruction(ActionInstruction.OperationTypes operation, object[] arguments)
         {
             this.currentPlayerAgent.AddInstruction(this.CreateActionInstruction(operation, arguments));
+        }
+
+        private void AddEventInstruction(GameEvent gameEvent)
+        {
+            if (this.multipleEventInstruction != null)
+                this.multipleEventInstruction.Add(gameEvent);
+            else
+                this.currentPlayerAgent.AddInstruction(new EventInstruction(gameEvent));
         }
 
         private ActionInstruction CreateActionInstruction(ActionInstruction.OperationTypes operation, object[] arguments)

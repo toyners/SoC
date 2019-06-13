@@ -64,9 +64,9 @@ namespace Jabberwocky.SoC.Library
         #endregion
 
         #region Methods
+        // This is a scenario only method
         public void AddResourcesToPlayer(string playerName, ResourceClutch value)
         {
-            // TODO: Return an error if player not found?
             this.players
                 .Where(p => p.Name == playerName)
                 .FirstOrDefault()
@@ -641,11 +641,16 @@ namespace Jabberwocky.SoC.Library
             throw new Exception($"Player action {playerAction.GetType()} not recognised.");
         }
 
+        private void ProcessPlayerQuit(Guid playerId)
+        {
+            this.players = this.players.Where(player => player.Id == playerId).ToArray();
+            this.playersById.Remove(playerId);
+        }
+
         private bool ProcessQuitGameAction(QuitGameAction quitGameAction)
         {
-            this.players = this.players.Where(player => player.Id != quitGameAction.InitiatingPlayerId).ToArray();
+            this.ProcessPlayerQuit(quitGameAction.InitiatingPlayerId);
             this.playerIndex--;
-            this.playersById.Remove(quitGameAction.InitiatingPlayerId);
             this.RaiseEvent(new PlayerQuitEvent(quitGameAction.InitiatingPlayerId));
             if (this.players.Length == 1)
             {
@@ -763,12 +768,7 @@ namespace Jabberwocky.SoC.Library
                 else if (playerAction is QuitGameAction quitGameAction)
                 {
                     playersToConfirm.Remove(this.playersById[quitGameAction.InitiatingPlayerId]);
-                    this.players = this.players.Where(player => player.Id == quitGameAction.InitiatingPlayerId).ToArray();
-                    this.playersById.Remove(quitGameAction.InitiatingPlayerId);
-                }
-                else
-                {
-                    // TODO: Illegal command
+                    this.ProcessPlayerQuit(quitGameAction.InitiatingPlayerId);
                 }
             }
 
@@ -785,6 +785,27 @@ namespace Jabberwocky.SoC.Library
             }
             var resourcesCollectedEvent = new ResourcesCollectedEvent(resourcesCollectedByPlayerId);
             this.RaiseEvent(resourcesCollectedEvent);
+        }
+
+        private void WaitForLostResourcesFromPlayers()
+        {
+            foreach (var player in this.players)
+            {
+                this.actionManager.SetExpectedActionsForPlayer(player.Id, null);
+                if (player.Resources.Count > 7)
+                {
+                    this.actionManager.SetExpectedActionsForPlayer(player.Id, typeof(LoseResourcesAction));
+                    var resourceCount = player.Resources.Count / 2;
+                    var chooseLostResourceEvent = new ChooseLostResourcesEvent(resourceCount);
+                    this.chooseLostResourcesEventByPlayerId[player.Id] = chooseLostResourceEvent;
+                    this.RaiseEvent(new ChooseLostResourcesEvent(resourceCount), player);
+                }
+            }
+
+            while (this.chooseLostResourcesEventByPlayerId.Count > 0)
+            {
+                var playerAction = this.WaitForPlayerAction();
+            }
         }
 
         private PlayerAction WaitForPlayerAction()
