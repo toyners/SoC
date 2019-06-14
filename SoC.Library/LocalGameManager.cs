@@ -574,31 +574,6 @@ namespace Jabberwocky.SoC.Library
                 return false;
             }
 
-            if (playerAction is LoseResourcesAction loseResourcesAction)
-            {
-                var player = this.playersById[loseResourcesAction.InitiatingPlayerId];
-                var chooseLostResourcesEvent = this.chooseLostResourcesEventByPlayerId[player.Id];
-                if (loseResourcesAction.Resources.Count != chooseLostResourcesEvent.ResourceCount)
-                {
-                    var expectedResourceCount = chooseLostResourcesEvent.ResourceCount + " resource";
-                    if (chooseLostResourcesEvent.ResourceCount > 1)
-                        expectedResourceCount += "s";
-                    this.RaiseEvent(new GameErrorEvent(player.Id, "916", $"Expected {expectedResourceCount} but received {loseResourcesAction.Resources.Count}"), player);
-                    return false;
-                }
-
-                if (player.Resources - loseResourcesAction.Resources < ResourceClutch.Zero)
-                {
-                    this.RaiseEvent(new GameErrorEvent(player.Id, "917", "Resources sent results in negative counts"), player);
-                    return false;
-                }
-
-                player.RemoveResources(loseResourcesAction.Resources);
-                this.chooseLostResourcesEventByPlayerId[player.Id] = null;
-                this.RaiseEvent(new ResourcesLostEvent(loseResourcesAction.Resources));
-                return false;
-            }
-
             if (playerAction is MakeDirectTradeOfferAction makeDirectTradeOfferAction)
             {
                 this.ProcessMakeDirectTradeOfferAction(makeDirectTradeOfferAction);
@@ -711,7 +686,10 @@ namespace Jabberwocky.SoC.Library
         {
             this.ChangeToNextPlayer();
 
-            this.SendStartPlayerTurnEvent();
+            foreach (var player in this.players)
+                this.actionManager.SetExpectedActionsForPlayer(player.Id, null);
+
+            this.RaiseEvent(new StartPlayerTurnEvent(), this.currentPlayer);
             this.numberGenerator.RollTwoDice(out this.dice1, out this.dice2);
             this.RaiseEvent(new DiceRollEvent(this.currentPlayer.Id, this.dice1, this.dice2));
 
@@ -722,19 +700,12 @@ namespace Jabberwocky.SoC.Library
             }
             else
             {
-                foreach (var player in this.players)
-                {
-                    this.actionManager.SetExpectedActionsForPlayer(player.Id, null);
-                    if (player.Resources.Count > 7)
-                    {
-                        this.actionManager.SetExpectedActionsForPlayer(player.Id, typeof(LoseResourcesAction));
-                        var resourceCount = player.Resources.Count / 2;
-                        var chooseLostResourceEvent = new ChooseLostResourcesEvent(resourceCount);
-                        this.chooseLostResourcesEventByPlayerId[player.Id] = chooseLostResourceEvent;
-                        this.RaiseEvent(new ChooseLostResourcesEvent(resourceCount), player);
-                    }
-                }
+                this.WaitForLostResourcesFromPlayers();
             }
+
+            this.actionManager.SetExpectedActionsForPlayer(this.currentPlayer.Id,
+                typeof(EndOfTurnAction), typeof(QuitGameAction), typeof(MakeDirectTradeOfferAction),
+                typeof(PlaceRoadSegmentAction), typeof(PlaceSettlementAction), typeof(PlaceCityAction));
         }
 
         private string ToPrettyString(GameEvent gameEvent)
@@ -804,7 +775,29 @@ namespace Jabberwocky.SoC.Library
 
             while (this.chooseLostResourcesEventByPlayerId.Count > 0)
             {
-                var playerAction = this.WaitForPlayerAction();
+                var loseResourcesAction = (LoseResourcesAction)this.WaitForPlayerAction();
+                var player = this.playersById[loseResourcesAction.InitiatingPlayerId];
+                var chooseLostResourcesEvent = this.chooseLostResourcesEventByPlayerId[player.Id];
+
+                if (loseResourcesAction.Resources.Count != chooseLostResourcesEvent.ResourceCount)
+                {
+                    var expectedResourceCount = chooseLostResourcesEvent.ResourceCount + " resource";
+                    if (chooseLostResourcesEvent.ResourceCount > 1)
+                        expectedResourceCount += "s";
+                    this.RaiseEvent(new GameErrorEvent(player.Id, "916", $"Expected {expectedResourceCount} but received {loseResourcesAction.Resources.Count}"), player);
+                    continue;
+                }
+
+                if (player.Resources - loseResourcesAction.Resources < ResourceClutch.Zero)
+                {
+                    this.RaiseEvent(new GameErrorEvent(player.Id, "917", "Resources sent results in negative counts"), player);
+                    continue;
+                }
+
+                player.RemoveResources(loseResourcesAction.Resources);
+                this.actionManager.SetExpectedActionsForPlayer(player.Id, null);
+                this.chooseLostResourcesEventByPlayerId.Remove(player.Id);
+                this.RaiseEvent(new ResourcesLostEvent(loseResourcesAction.Resources));
             }
         }
 
