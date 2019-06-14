@@ -180,10 +180,9 @@ namespace Jabberwocky.SoC.Library
             this.currentPlayer = this.players[this.playerIndex];
         }
 
-        private void CollectResourcesAtStartOfTurn(uint resourceRoll)
+        private void StartTurnWithResourceCollection(uint dice1, uint dice2)
         {
-            var resourcesCollectedByPlayerId = this.gameBoard.GetResourcesForRoll(resourceRoll);
-
+            var resourcesCollectedByPlayerId = this.gameBoard.GetResourcesForRoll(dice1 + dice2);
             foreach (var keyValuePair in resourcesCollectedByPlayerId)
             {
                 if (this.playersById.TryGetValue(keyValuePair.Key, out var player))
@@ -193,8 +192,8 @@ namespace Jabberwocky.SoC.Library
                 }
             }
 
-            var resourcesCollectedEvent = new ResourcesCollectedEvent(resourcesCollectedByPlayerId);
-            this.RaiseEvent(resourcesCollectedEvent);
+            var startPlayerTurnEvent = new StartPlayerTurnEvent(this.currentPlayer.Id, dice1, dice2, resourcesCollectedByPlayerId);
+            this.RaiseEvent(startPlayerTurnEvent);
         }
 
         private void GameSetup()
@@ -673,13 +672,13 @@ namespace Jabberwocky.SoC.Library
 
         private void SendStartPlayerTurnEvent()
         {
-            foreach (var player in this.PlayersExcept(this.currentPlayer.Id))
+            /*foreach (var player in this.PlayersExcept(this.currentPlayer.Id))
                 this.actionManager.SetExpectedActionsForPlayer(player.Id, null);
             this.actionManager.SetExpectedActionsForPlayer(this.currentPlayer.Id,
                 typeof(EndOfTurnAction), typeof(QuitGameAction), typeof(MakeDirectTradeOfferAction),
                 typeof(PlaceRoadSegmentAction), typeof(PlaceSettlementAction), typeof(PlaceCityAction));
 
-            this.RaiseEvent(new StartPlayerTurnEvent(), this.currentPlayer);
+            this.RaiseEvent(new StartPlayerTurnEvent(), this.currentPlayer);*/
         }
 
         private void StartTurn()
@@ -689,23 +688,28 @@ namespace Jabberwocky.SoC.Library
             foreach (var player in this.players)
                 this.actionManager.SetExpectedActionsForPlayer(player.Id, null);
 
-            this.RaiseEvent(new StartPlayerTurnEvent(), this.currentPlayer);
+            //this.RaiseEvent(new StartPlayerTurnEvent(), this.currentPlayer);
             this.numberGenerator.RollTwoDice(out this.dice1, out this.dice2);
             this.RaiseEvent(new DiceRollEvent(this.currentPlayer.Id, this.dice1, this.dice2));
 
-            var resourceRoll = this.dice1 + this.dice2;
-            if (resourceRoll != 7)
+            //var resourceRoll = this.dice1 + this.dice2;
+            if (this.dice1 + this.dice2 != 7)
             {
-                this.CollectResourcesAtStartOfTurn(resourceRoll);
+                this.StartTurnWithResourceCollection(this.dice1, this.dice2);
             }
             else
             {
-                this.WaitForLostResourcesFromPlayers();
+                this.StartTurnWithRobberPlacement(this.dice1, this.dice2);
             }
 
             this.actionManager.SetExpectedActionsForPlayer(this.currentPlayer.Id,
-                typeof(EndOfTurnAction), typeof(QuitGameAction), typeof(MakeDirectTradeOfferAction),
+                typeof(EndOfTurnAction), typeof(MakeDirectTradeOfferAction),
                 typeof(PlaceRoadSegmentAction), typeof(PlaceSettlementAction), typeof(PlaceCityAction));
+        }
+
+        private void StartTurnWithRobberPlacement(uint dice1, uint dice2)
+        {
+            throw new NotImplementedException();
         }
 
         private string ToPrettyString(GameEvent gameEvent)
