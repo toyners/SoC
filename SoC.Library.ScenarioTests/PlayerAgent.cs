@@ -251,6 +251,8 @@ namespace SoC.Library.ScenarioTests
                 return this.IsRequestStateEventVerified(expectedRequestEvent, actualRequestEvent);
             else if (expectedEvent is ScenarioGameErrorEvent expectedErrorEvent && actualEvent is GameErrorEvent actualErrorEvent)
                 return this.IsGameErrorEventVerified(expectedErrorEvent, actualErrorEvent);
+            else if (expectedEvent is ScenarioStartTurnEvent expectedStartEvent && actualEvent is StartTurnEvent actualStartEvent)
+                return this.IsStartTurnEventVerified(expectedStartEvent, actualStartEvent);
             
             return this.IsStandardEventVerified(expectedEvent, actualEvent);
         }
@@ -335,6 +337,17 @@ namespace SoC.Library.ScenarioTests
             {
                 this.log.Add($"{(result ? "MATCHED" : "NOT MATCHED")} - Expected {expectedEvent.SimpleTypeName}, Actual {actualEvent.SimpleTypeName}");
             }
+
+            return result;
+        }
+
+        private bool IsStartTurnEventVerified(ScenarioStartTurnEvent expectedEvent, StartTurnEvent actualEvent)
+        {
+            var result = expectedEvent.PlayerId == actualEvent.PlayerId &&
+                expectedEvent.Dice1 == actualEvent.Dice1 &&
+                expectedEvent.Dice2 == actualEvent.Dice2;
+            //if (expectedEvent.CollectedResources != actualEvent.CollectedResources)
+            //    result &= expectedEvent.Cities.Value == actualEvent.Cities;
 
             return result;
         }

@@ -26,7 +26,7 @@ namespace Jabberwocky.SoC.Library
         private readonly INumberGenerator numberGenerator;
         private readonly IPlayerFactory playerFactory;
         private IPlayer currentPlayer;
-        private uint dice1, dice2;
+        //private uint dice1, dice2;
         private Func<Guid> idGenerator;
         private bool isGameSetup = true;
         private int playerIndex;
@@ -192,7 +192,7 @@ namespace Jabberwocky.SoC.Library
                 }
             }
 
-            var startPlayerTurnEvent = new StartPlayerTurnEvent(this.currentPlayer.Id, dice1, dice2, resourcesCollectedByPlayerId);
+            var startPlayerTurnEvent = new StartTurnEvent(this.currentPlayer.Id, dice1, dice2, resourcesCollectedByPlayerId);
             this.RaiseEvent(startPlayerTurnEvent);
         }
 
@@ -689,17 +689,18 @@ namespace Jabberwocky.SoC.Library
                 this.actionManager.SetExpectedActionsForPlayer(player.Id, null);
 
             //this.RaiseEvent(new StartPlayerTurnEvent(), this.currentPlayer);
-            this.numberGenerator.RollTwoDice(out this.dice1, out this.dice2);
-            this.RaiseEvent(new DiceRollEvent(this.currentPlayer.Id, this.dice1, this.dice2));
+
+            this.numberGenerator.RollTwoDice(out var dice1, out var dice2);
+            //this.RaiseEvent(new DiceRollEvent(this.currentPlayer.Id, dice1, dice2));
 
             //var resourceRoll = this.dice1 + this.dice2;
-            if (this.dice1 + this.dice2 != 7)
+            if (dice1 + dice2 != 7)
             {
-                this.StartTurnWithResourceCollection(this.dice1, this.dice2);
+                this.StartTurnWithResourceCollection(dice1, dice2);
             }
             else
             {
-                this.StartTurnWithRobberPlacement(this.dice1, this.dice2);
+                this.StartTurnWithRobberPlacement(dice1, dice2);
             }
 
             this.actionManager.SetExpectedActionsForPlayer(this.currentPlayer.Id,

@@ -73,6 +73,7 @@
     <Compile Include="ScenarioAttribute.cs" />
     <Compile Include="ScenarioEvents\ScenarioRobberEvent.cs" />
     <Compile Include="ScenarioEvents\ScenarioRobbingChoicesEvent.cs" />
+    <Compile Include="ScenarioEvents\ScenarioStartTurnEvent.cs" />
     <Compile Include="ScenarioGameBoardWithNoResourcesCollected.cs" />
     <Compile Include="ScenarioBuyDevelopmentCardEvent.cs" />
     <Compile Include="ScenarioComputerPlayer.cs" />
