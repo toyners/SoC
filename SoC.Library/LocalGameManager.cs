@@ -684,7 +684,7 @@ namespace Jabberwocky.SoC.Library
             }
             else
             {
-                this.StartTurnWithRobberPlacement();
+                this.StartTurnWithRobberPlacement(dice1, dice2);
             }
 
             this.actionManager.SetExpectedActionsForPlayer(this.currentPlayer.Id,
@@ -692,7 +692,7 @@ namespace Jabberwocky.SoC.Library
                 typeof(PlaceRoadSegmentAction), typeof(PlaceSettlementAction), typeof(PlaceCityAction));
         }
 
-        private void StartTurnWithRobberPlacement()
+        private void StartTurnWithRobberPlacement(uint dice1, uint dice2)
         {
             this.WaitForLostResourcesFromPlayers();
         }
