@@ -931,7 +931,6 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void PlayerRollsSevenAndAllPlayersWithMoreThanSeventResourcesMustSendsResourcesBeforeRobberCanBePlaced()
         {
-            //throw new NotImplementedException();
             var adamsInitialResources = new ResourceClutch(1, 2, 2, 2, 2); // 9 resources
             var babarasInitialResources = new ResourceClutch(2, 2, 2, 2, 2); // 10 resources
             var charliesInitialResources = new ResourceClutch(1, 1, 1, 1, 2); // 6 resources
