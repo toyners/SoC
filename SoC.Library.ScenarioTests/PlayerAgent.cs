@@ -349,6 +349,17 @@ namespace SoC.Library.ScenarioTests
             //if (expectedEvent.CollectedResources != actualEvent.CollectedResources)
             //    result &= expectedEvent.Cities.Value == actualEvent.Cities;
 
+            this.log.Add($"{(result ? "MATCHED" : "NOT MATCHED")} - Expected {expectedEvent.SimpleTypeName}, Actual {actualEvent.SimpleTypeName}");
+            if (!result ||
+                this.verboseLogging ||
+                this.expectedEventsWithVerboseLogging.Contains(expectedEvent))
+            {
+                this.log.Add($"EXPECTED => ACTUAL");
+                
+                this.log.Add($"Player: {this.GetPlayerName(expectedEvent.PlayerId)} ({expectedEvent.PlayerId}) => {this.GetPlayerName(actualEvent.PlayerId)} ({actualEvent.PlayerId})");
+                this.log.Add($"Dice: {expectedEvent.Dice1},{expectedEvent.Dice2} => {actualEvent.Dice1},{actualEvent.Dice2}");
+            }
+
             return result;
         }
 

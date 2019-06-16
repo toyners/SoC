@@ -825,7 +825,8 @@ namespace Jabberwocky.SoC.Library
                     var playerName = this.playersById[playerAction.InitiatingPlayerId].Name;
                     this.log.Add($"Received {playerActionTypeName} from {playerName}");
 
-                    if (playerAction is RequestStateAction)
+                    if (playerAction is RequestStateAction ||
+                        playerAction is QuitGameAction)
                         return playerAction;
 
                     if (!this.actionManager.ValidateAction(playerAction))

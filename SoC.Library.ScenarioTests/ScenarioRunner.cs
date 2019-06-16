@@ -271,6 +271,7 @@ namespace SoC.Library.ScenarioTests
 
         public ScenarioRunner ReceivesStartTurnEvent(uint dice1, uint dice2)
         {
+            this.numberGenerator.AddTwoDiceRoll(dice1, dice2);
             return this.test(this.currentPlayerAgent.Id, dice1, dice2, null);
             this.numberGenerator.AddTwoDiceRoll(dice1, dice2);
             this.AddEventInstruction(new ScenarioStartTurnEvent(this.currentPlayerAgent.Id, dice1, dice2, null));
@@ -279,6 +280,7 @@ namespace SoC.Library.ScenarioTests
 
         public ScenarioRunner ReceivesStartTurnWithResourcesCollectedEvent(uint dice1, uint dice2, Dictionary<string, ResourceCollection[]> collectedResources)
         {
+            this.numberGenerator.AddTwoDiceRoll(dice1, dice2);
             return this.test(this.currentPlayerAgent.Id, dice1, dice2, collectedResources);
             /*this.AddEventInstruction(new ScenarioStartTurnEvent(this.currentPlayerAgent.Name, dice1, dice2, collectedResources));
             return ReceivesStartTurnWithResourcesCollectedEvent*/
@@ -294,7 +296,6 @@ namespace SoC.Library.ScenarioTests
 
         private ScenarioRunner test(Guid playerId, uint dice1, uint dice2, Dictionary<string, ResourceCollection[]> collectedResources)
         {
-            this.numberGenerator.AddTwoDiceRoll(dice1, dice2);
             this.AddEventInstruction(new ScenarioStartTurnEvent(playerId, dice1, dice2, collectedResources));
             return this;
         }
