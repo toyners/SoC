@@ -700,8 +700,8 @@ namespace Jabberwocky.SoC.Library
         private string ToPrettyString(GameEvent gameEvent)
         {
             var message = $"{gameEvent.SimpleTypeName}";
-            if (gameEvent is DiceRollEvent diceRollEvent)
-                message += $", Dice rolls {diceRollEvent.Dice1} {diceRollEvent.Dice2}";
+            if (gameEvent is StartTurnEvent startTurnEvent)
+                message += $", Dice rolls {startTurnEvent.Dice1} {startTurnEvent.Dice2}";
             return message;
         }
 

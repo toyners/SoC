@@ -484,8 +484,8 @@ namespace SoC.Library.ScenarioTests
                 for (var i = 0; i < this.ExpectedEvents.Count; i++)
                 {
                     var expectedEvent = this.ExpectedEvents[i];
-                    if (expectedEvent is DiceRollEvent diceRollEvent)
-                        result += $"{diceRollEvent.SimpleTypeName}[{diceRollEvent.Dice1},{diceRollEvent.Dice2}]";
+                    if (expectedEvent is ScenarioStartTurnEvent scenarioStartTurnEvent)
+                        result += $"{scenarioStartTurnEvent.SimpleTypeName}[{scenarioStartTurnEvent.Dice1},{scenarioStartTurnEvent.Dice2}]";
                     else
                         result += expectedEvent.SimpleTypeName;
 

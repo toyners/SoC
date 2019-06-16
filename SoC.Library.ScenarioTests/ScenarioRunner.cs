@@ -131,15 +131,6 @@ namespace SoC.Library.ScenarioTests
             return this;
         }
 
-        public ScenarioRunner ReceivesDiceRollEvent(uint dice1, uint dice2)
-        {
-            this.numberGenerator.AddTwoDiceRoll(dice1, dice2);
-            var gameEvent = new DiceRollEvent(this.GetPlayerId(this.currentPlayerAgent.Name), dice1, dice2);
-            var eventInstruction = new EventInstruction(gameEvent);
-            this.currentPlayerAgent.AddInstruction(eventInstruction);
-            return this;
-        }
-
         public ScenarioRunner ReceivesGameJoinedEvent()
         {
             var gameEvent = new GameJoinedEvent(this.GetPlayerId(this.currentPlayerAgent.Name));

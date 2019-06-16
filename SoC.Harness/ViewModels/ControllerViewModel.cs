@@ -233,9 +233,9 @@ namespace SoC.Harness.ViewModels
         {
             foreach(var gameEvent in gameEvents)
             {
-                if (gameEvent is DiceRollEvent rolledDiceEvent)
+                if (gameEvent is StartTurnEvent startTurnEvent)
                 {
-                    var diceRoll = rolledDiceEvent.Dice1 + rolledDiceEvent.Dice2;
+                    var diceRoll = startTurnEvent.Dice1 + startTurnEvent.Dice2;
                     var playerViewModel = this.playerViewModelsById[gameEvent.PlayerId];
                     playerViewModel.UpdateHistory($"{playerViewModel.Name} rolled {diceRoll}");
                 }

@@ -110,7 +110,6 @@
     <Compile Include="GameEvents\PlayKnightCardEvent.cs" />
     <Compile Include="GameEvents\RequestStateEvent.cs" />
     <Compile Include="GameEvents\ResourcesCollectedEvent.cs" />
-    <Compile Include="GameEvents\DiceRollEvent.cs" />
     <Compile Include="GameBoards\GameBoardQuery.cs" />
     <Compile Include="GameBoards\IGameBoardQuery.cs" />
     <Compile Include="GameBoards\IGameBoard.cs" />
