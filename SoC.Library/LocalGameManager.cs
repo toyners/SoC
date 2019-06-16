@@ -617,7 +617,7 @@ namespace Jabberwocky.SoC.Library
 
         private void ProcessPlayerQuit(Guid playerId)
         {
-            this.players = this.players.Where(player => player.Id == playerId).ToArray();
+            this.players = this.players.Where(player => player.Id != playerId).ToArray();
             this.playersById.Remove(playerId);
         }
 
@@ -670,17 +670,6 @@ namespace Jabberwocky.SoC.Library
             this.eventRaiser.SendEvent(gameEvent, player.Id);
         }
 
-        private void SendStartPlayerTurnEvent()
-        {
-            /*foreach (var player in this.PlayersExcept(this.currentPlayer.Id))
-                this.actionManager.SetExpectedActionsForPlayer(player.Id, null);
-            this.actionManager.SetExpectedActionsForPlayer(this.currentPlayer.Id,
-                typeof(EndOfTurnAction), typeof(QuitGameAction), typeof(MakeDirectTradeOfferAction),
-                typeof(PlaceRoadSegmentAction), typeof(PlaceSettlementAction), typeof(PlaceCityAction));
-
-            this.RaiseEvent(new StartPlayerTurnEvent(), this.currentPlayer);*/
-        }
-
         private void StartTurn()
         {
             this.ChangeToNextPlayer();
@@ -688,12 +677,7 @@ namespace Jabberwocky.SoC.Library
             foreach (var player in this.players)
                 this.actionManager.SetExpectedActionsForPlayer(player.Id, null);
 
-            //this.RaiseEvent(new StartPlayerTurnEvent(), this.currentPlayer);
-
             this.numberGenerator.RollTwoDice(out var dice1, out var dice2);
-            //this.RaiseEvent(new DiceRollEvent(this.currentPlayer.Id, dice1, dice2));
-
-            //var resourceRoll = this.dice1 + this.dice2;
             if (dice1 + dice2 != 7)
             {
                 this.StartTurnWithResourceCollection(dice1, dice2);
