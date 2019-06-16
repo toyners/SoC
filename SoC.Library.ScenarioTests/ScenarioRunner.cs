@@ -263,29 +263,21 @@ namespace SoC.Library.ScenarioTests
         public ScenarioRunner ReceivesStartTurnEvent(uint dice1, uint dice2)
         {
             this.numberGenerator.AddTwoDiceRoll(dice1, dice2);
-            return this.test(this.currentPlayerAgent.Id, dice1, dice2, null);
-            this.numberGenerator.AddTwoDiceRoll(dice1, dice2);
-            this.AddEventInstruction(new ScenarioStartTurnEvent(this.currentPlayerAgent.Id, dice1, dice2, null));
-            return this;
+            return this.ReceivesStartTurnWithResourcesCollectedEvent(this.currentPlayerAgent.Id, dice1, dice2, null);
         }
 
         public ScenarioRunner ReceivesStartTurnWithResourcesCollectedEvent(uint dice1, uint dice2, Dictionary<string, ResourceCollection[]> collectedResources)
         {
             this.numberGenerator.AddTwoDiceRoll(dice1, dice2);
-            return this.test(this.currentPlayerAgent.Id, dice1, dice2, collectedResources);
-            /*this.AddEventInstruction(new ScenarioStartTurnEvent(this.currentPlayerAgent.Name, dice1, dice2, collectedResources));
-            return ReceivesStartTurnWithResourcesCollectedEvent*/
+            return this.ReceivesStartTurnWithResourcesCollectedEvent(this.currentPlayerAgent.Id, dice1, dice2, collectedResources);
         }
 
         public ScenarioRunner ReceivesStartTurnWithResourcesCollectedEvent(string playerName, uint dice1, uint dice2, Dictionary<string, ResourceCollection[]> collectedResources)
         {
-            return test(this.playerAgentsByName[playerName].Id, dice1, dice2, collectedResources);
-            this.numberGenerator.AddTwoDiceRoll(dice1, dice2);
-            this.AddEventInstruction(new ScenarioStartTurnEvent(this.playerAgentsByName[playerName].Id, dice1, dice2, collectedResources));
-            return this;
+            return this.ReceivesStartTurnWithResourcesCollectedEvent(this.playerAgentsByName[playerName].Id, dice1, dice2, collectedResources);
         }
 
-        private ScenarioRunner test(Guid playerId, uint dice1, uint dice2, Dictionary<string, ResourceCollection[]> collectedResources)
+        private ScenarioRunner ReceivesStartTurnWithResourcesCollectedEvent(Guid playerId, uint dice1, uint dice2, Dictionary<string, ResourceCollection[]> collectedResources)
         {
             this.AddEventInstruction(new ScenarioStartTurnEvent(playerId, dice1, dice2, collectedResources));
             return this;
