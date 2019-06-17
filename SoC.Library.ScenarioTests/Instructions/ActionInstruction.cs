@@ -16,6 +16,7 @@ namespace SoC.Library.ScenarioTests.Instructions
             MakeDirectTradeOffer,
             PlaceCity,
             PlaceRoadSegment,
+            PlaceRobber,
             PlaceSettlement,
             PlaceStartingInfrastructure,
             RequestState,

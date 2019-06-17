@@ -253,6 +253,11 @@ namespace SoC.Library.ScenarioTests
             return this;
         }
 
+        public ScenarioRunner ReceivesRobberPlacedEvent(int v)
+        {
+            throw new NotImplementedException();
+        }
+
         public ScenarioRunner ReceivesSettlementPlacementEvent(uint settlementLocation)
         {
             var gameEvent = new SettlementPlacedEvent(this.playerAgentsByName[this.currentPlayerAgent.Name].Id, settlementLocation);
@@ -466,6 +471,13 @@ namespace SoC.Library.ScenarioTests
         {
             this.AddActionInstruction(ActionInstruction.OperationTypes.PlaceRoadSegment,
                 new object[] { startLocation, endLocation });
+            return this;
+        }
+
+        public ScenarioRunner ThenPlaceRobber(uint hex)
+        {
+            this.AddActionInstruction(ActionInstruction.OperationTypes.PlaceRobber,
+                new object[] { hex });
             return this;
         }
 

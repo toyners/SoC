@@ -1002,49 +1002,66 @@ namespace SoC.Library.ScenarioTests
         }
 
         [Test]
-        public void PlayerRollsSevenAndSelectedHexHasNoPlayers()
+        public void PlayerRollsSevenAndNewHexHasNoPlayers()
         {
-            var adamsInitialResources = new ResourceClutch(1, 2, 2, 2, 2); // 9 resources
-            var adamsLostResources = new ResourceClutch(2, 0, 0, 1, 1);
-
             this.CompletePlayerInfrastructureSetup(new[] { MethodBase.GetCurrentMethod().Name })
                 .WithNoResourceCollection()
-                .WithInitialPlayerSetupFor(
-                    Adam,
-                    Resources(adamsInitialResources))
                 .WhenPlayer(Adam)
                     .ReceivesStartTurnEvent(3, 4).ThenDoNothing()
-                    .ReceivesChooseLostResourcesEvent(4).ThenChooseResourcesToLose(adamsLostResources)
-                    .ReceivesGameErrorEvent("917", "Resources sent results in negative counts")
+                    .ReceivesPlaceRobberEvent().ThenPlaceRobber(4)
+                .WhenPlayer(Babara)
+                    .ReceivesRobberPlacedEvent(4).ThenDoNothing()
+                .WhenPlayer(Charlie)
+                    .ReceivesRobberPlacedEvent(4).ThenDoNothing()
+                .WhenPlayer(Dana)
+                    .ReceivesRobberPlacedEvent(4).ThenDoNothing()
+                .VerifyPlayer(Babara)
+                    .DidNotReceiveEventOfType<ChooseLostResourcesEvent>()
+                .VerifyPlayer(Charlie)
+                    .DidNotReceiveEventOfType<ChooseLostResourcesEvent>()
+                .VerifyPlayer(Dana)
+                    .DidNotReceiveEventOfType<ChooseLostResourcesEvent>()
+                .Run();
+        }
+
+        [Test]
+        public void PlayerRollsSevenAndNewHexIsSameAsCurrentHex()
+        {
+            throw new NotImplementedException();
+            /*this.CompletePlayerInfrastructureSetup(new[] { MethodBase.GetCurrentMethod().Name })
+                .WithNoResourceCollection()
+                .WhenPlayer(Adam)
+                    .ReceivesStartTurnEvent(3, 4).ThenDoNothing()
+                    .ReceivesPlaceRobberEvent().ThenPlaceRobber()
                 .VerifyPlayer(Babara)
                     .DidNotReceiveEventOfType<GameErrorEvent>()
                 .VerifyPlayer(Charlie)
                     .DidNotReceiveEventOfType<GameErrorEvent>()
                 .VerifyPlayer(Dana)
                     .DidNotReceiveEventOfType<GameErrorEvent>()
-                .Run();
+                .Run();*/
         }
 
         [Test]
-        public void PlayerRollsSevenAndSelectedHexHasOnePlayer()
+        public void PlayerRollsSevenAndNewHexHasOnePlayer()
         {
             throw new NotImplementedException();
         }
 
         [Test]
-        public void PlayerRollsSevenAndSelectedHexHasOnePlayerWhichIsRollingPlayer()
+        public void PlayerRollsSevenAndNewHexHasOnePlayerWhichIsRollingPlayer()
         {
             throw new NotImplementedException();
         }
 
         [Test]
-        public void PlayerRollsSevenAndSelectedHexHasMultiplePlayers()
+        public void PlayerRollsSevenAndNewHexHasMultiplePlayers()
         {
             throw new NotImplementedException();
         }
 
         [Test]
-        public void PlayerRollsSevenAndSelectedHexHasMultiplePlayersIncludingRollingPlayer()
+        public void PlayerRollsSevenAndNewHexHasMultiplePlayersIncludingRollingPlayer()
         {
             throw new NotImplementedException();
         }
@@ -1064,7 +1081,7 @@ namespace SoC.Library.ScenarioTests
         /// method raises an error
         /// </summary>
         [Test]
-        public void PlayerRollsSevenAndHasNoPlayersOnSelectedHex()
+        public void PlayerRollsSevenAndHasNoPlayersOnNewHex()
         {
             throw new NotImplementedException();
         }
