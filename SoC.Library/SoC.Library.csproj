@@ -71,6 +71,7 @@
     <Compile Include="GameEvents\PlayerQuitEvent.cs" />
     <Compile Include="GameEvents\ResourcesLostEvent.cs" />
     <Compile Include="GameEvents\RoadSegmentPlacedEvent.cs" />
+    <Compile Include="GameEvents\RobberPlacedEvent.cs" />
     <Compile Include="GameEvents\SettlementPlacedEvent.cs" />
     <Compile Include="GameToken.cs" />
     <Compile Include="ILog.cs" />

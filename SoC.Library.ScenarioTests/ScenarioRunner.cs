@@ -253,9 +253,10 @@ namespace SoC.Library.ScenarioTests
             return this;
         }
 
-        public ScenarioRunner ReceivesRobberPlacedEvent(int v)
+        public ScenarioRunner ReceivesRobberPlacedEvent(string playerName, uint hex)
         {
-            throw new NotImplementedException();
+            this.AddEventInstruction(new RobberPlacedEvent(this.playerAgentsByName[playerName].Id, hex));
+            return this;
         }
 
         public ScenarioRunner ReceivesSettlementPlacementEvent(uint settlementLocation)

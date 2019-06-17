@@ -62,6 +62,11 @@ namespace Jabberwocky.SoC.Library
             this.SendAction(new PlaceRoadSegmentAction(this.playerId, roadSegmentStartLocation, roadSegmentEndLocation));
         }
 
+        public void PlaceRobber(uint hex)
+        {
+            this.SendAction(new PlaceRobberAction(this.playerId, hex));
+        }
+
         public void PlaceSettlement(uint settlementLocation)
         {
             this.SendAction(new PlaceSettlementAction(this.playerId, settlementLocation));

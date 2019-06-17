@@ -221,6 +221,11 @@ namespace SoC.Library.ScenarioTests
                     this.gameController.PlaceRoadSegment((uint)action.Parameters[0], (uint)action.Parameters[1]);
                     break;
                 }
+                case ActionInstruction.OperationTypes.PlaceRobber:
+                {
+                    this.gameController.PlaceRobber((uint)action.Parameters[0]);
+                    break;
+                }
                 case ActionInstruction.OperationTypes.PlaceSettlement:
                 {
                     this.gameController.PlaceSettlement((uint)action.Parameters[0]);

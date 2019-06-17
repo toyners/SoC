@@ -6,14 +6,11 @@ namespace Jabberwocky.SoC.Library.PlayerActions
     public class PlaceRobberAction : PlayerAction
     {
         #region Fields
-        public readonly uint RobberHex;
+        public readonly uint Hex;
         #endregion
 
         #region Construction
-        public PlaceRobberAction(uint robberHex) : base(Guid.Empty)
-        {
-            this.RobberHex = robberHex;
-        }
+        public PlaceRobberAction(Guid playerId, uint hex) : base(playerId) => this.Hex = hex;
         #endregion
     }
 }

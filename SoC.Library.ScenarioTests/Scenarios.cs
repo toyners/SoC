@@ -1010,11 +1010,11 @@ namespace SoC.Library.ScenarioTests
                     .ReceivesStartTurnEvent(3, 4).ThenDoNothing()
                     .ReceivesPlaceRobberEvent().ThenPlaceRobber(4)
                 .WhenPlayer(Babara)
-                    .ReceivesRobberPlacedEvent(4).ThenDoNothing()
+                    .ReceivesRobberPlacedEvent(Adam, 4).ThenDoNothing()
                 .WhenPlayer(Charlie)
-                    .ReceivesRobberPlacedEvent(4).ThenDoNothing()
+                    .ReceivesRobberPlacedEvent(Adam, 4).ThenDoNothing()
                 .WhenPlayer(Dana)
-                    .ReceivesRobberPlacedEvent(4).ThenDoNothing()
+                    .ReceivesRobberPlacedEvent(Adam, 4).ThenDoNothing()
                 .VerifyPlayer(Babara)
                     .DidNotReceiveEventOfType<ChooseLostResourcesEvent>()
                 .VerifyPlayer(Charlie)
@@ -1072,16 +1072,6 @@ namespace SoC.Library.ScenarioTests
         /// </summary>
         [Test]
         public void PlayerRollsSevenAndSelectsInvalidPlayer()
-        {
-            throw new NotImplementedException();
-        }
-
-        /// <summary>
-        /// The robber hex set by the player has only player settlements so calling the CallingChooseResourceFromOpponent 
-        /// method raises an error
-        /// </summary>
-        [Test]
-        public void PlayerRollsSevenAndHasNoPlayersOnNewHex()
         {
             throw new NotImplementedException();
         }
