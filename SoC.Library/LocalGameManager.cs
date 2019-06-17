@@ -694,7 +694,12 @@ namespace Jabberwocky.SoC.Library
 
         private void StartTurnWithRobberPlacement(uint dice1, uint dice2)
         {
+            var startPlayerTurnEvent = new StartTurnEvent(this.currentPlayer.Id, dice1, dice2, null);
+            this.RaiseEvent(startPlayerTurnEvent);
             this.WaitForLostResourcesFromPlayers();
+
+            this.actionManager.SetExpectedActionsForPlayer(this.currentPlayer.Id, typeof(PlaceRobberAction));
+            this.RaiseEvent(new PlaceRobberEvent(), this.currentPlayer);
         }
 
         private string ToPrettyString(GameEvent gameEvent)
