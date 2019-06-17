@@ -30,6 +30,7 @@ namespace Jabberwocky.SoC.Library
         private Func<Guid> idGenerator;
         private bool isGameSetup = true;
         private int playerIndex;
+        private uint robberHex = 0;
         private IDictionary<Guid, IPlayer> playersById;
 
 
@@ -596,6 +597,13 @@ namespace Jabberwocky.SoC.Library
                 return false;
             }
 
+            if (playerAction is PlaceRobberAction placeRobberAction)
+            {
+                this.robberHex = placeRobberAction.Hex;
+                this.RaiseEvent(new RobberPlacedEvent(this.currentPlayer.Id, this.robberHex), this.PlayersExcept(this.currentPlayer.Id));
+                return false;
+            }
+
             if (playerAction is PlaceSettlementAction placeSettlementAction)
             {
                 return this.ProcessPlaceSettlementAction(placeSettlementAction);
@@ -697,9 +705,15 @@ namespace Jabberwocky.SoC.Library
             var startPlayerTurnEvent = new StartTurnEvent(this.currentPlayer.Id, dice1, dice2, null);
             this.RaiseEvent(startPlayerTurnEvent);
             this.WaitForLostResourcesFromPlayers();
+            this.WaitForRobberPlacement();
+        }
 
+        private void WaitForRobberPlacement()
+        {
             this.actionManager.SetExpectedActionsForPlayer(this.currentPlayer.Id, typeof(PlaceRobberAction));
             this.RaiseEvent(new PlaceRobberEvent(), this.currentPlayer);
+
+            this.ProcessPlayerAction(this.WaitForPlayerAction());
         }
 
         private string ToPrettyString(GameEvent gameEvent)
