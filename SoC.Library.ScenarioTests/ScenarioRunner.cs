@@ -363,7 +363,6 @@ namespace SoC.Library.ScenarioTests
                     Thread.Sleep(50);
             }
 
-            //var logDirectory = $"C:\\Scenario Logs\\{this.scenarioName} {DateTime.Now.ToString("HH-mm-ss dd-MMM-yyyy")}";
             var logDirectory = $"C:\\Scenario Logs\\{this.scenarioName}";
             if (Directory.Exists(logDirectory))
                 Directory.Delete(logDirectory, true);
