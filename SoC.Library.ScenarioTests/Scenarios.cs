@@ -2,6 +2,7 @@
 namespace SoC.Library.ScenarioTests
 {
     using System;
+    using System.Collections.Generic;
     using System.Reflection;
     using Jabberwocky.SoC.Library;
     using Jabberwocky.SoC.Library.GameBoards;
@@ -1299,18 +1300,33 @@ namespace SoC.Library.ScenarioTests
             return new CollectedResourcesBuilder();
         }
 
+        private const string FirstPlayerName = "first_name";
+        private const string FirstPlayerSettlement = "first_firstsettlement";
+        private const string FirstPlayerRoadEnd = "first_firstroadend";
         private ScenarioRunner CompletePlayerInfrastructureSetup(string[] args = null)
+        {
+            IDictionary<string, object> infrastructureSetup = new Dictionary<string, object>
+            {
+                { FirstPlayerName, Adam },
+                { FirstPlayerSettlement, Adam_FirstSettlementLocation },
+                { FirstPlayerRoadEnd, Adam_FirstRoadEndLocation }
+            };
+            
+            return this.CompletePlayerInfrastructureSetup(infrastructureSetup, args);
+        }
+
+        private ScenarioRunner CompletePlayerInfrastructureSetup(IDictionary<string, object> infrastructureSetup, string[] args = null)
         {
             var actionNotRecognisedError = new ScenarioGameErrorEvent(null, "999", null);
             return ScenarioRunner.CreateScenarioRunner(args)
-                .WithPlayer(Adam)
+                .WithPlayer(infrastructureSetup[FirstPlayerName].ToString())
                 .WithPlayer(Babara)
                 .WithPlayer(Charlie)
                 .WithPlayer(Dana)
                 .WithTurnOrder(new[] { Adam, Babara, Charlie, Dana })
                 .WhenPlayer(Adam)
                     .ReceivesPlaceInfrastructureSetupEvent()
-                    .ThenPlaceStartingInfrastructure(Adam_FirstSettlementLocation, Adam_FirstRoadEndLocation)
+                    .ThenPlaceStartingInfrastructure((uint)infrastructureSetup[FirstPlayerSettlement], (uint)infrastructureSetup[FirstPlayerRoadEnd])
                 .WhenPlayer(Babara)
                     .ReceivesPlaceInfrastructureSetupEvent()
                     .ThenPlaceStartingInfrastructure(Babara_FirstSettlementLocation, Babara_FirstRoadEndLocation)
