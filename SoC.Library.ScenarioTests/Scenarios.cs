@@ -1051,13 +1051,51 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void PlayerRollsSevenAndNewHexHasOnePlayerWhichIsRollingPlayer()
         {
-            throw new NotImplementedException();
+            this.CompletePlayerInfrastructureSetup(new[] { MethodBase.GetCurrentMethod().Name })
+                .WithNoResourceCollection()
+                .WhenPlayer(Adam)
+                    .ReceivesStartTurnEvent(3, 4).ThenDoNothing()
+                    .ReceivesPlaceRobberEvent().ThenPlaceRobber(2)
+                .WhenPlayer(Babara)
+                    .ReceivesRobberPlacedEvent(Adam, 2).ThenDoNothing()
+                .WhenPlayer(Charlie)
+                    .ReceivesRobberPlacedEvent(Adam, 2).ThenDoNothing()
+                .WhenPlayer(Dana)
+                    .ReceivesRobberPlacedEvent(Adam, 2).ThenDoNothing()
+                .VerifyPlayer(Adam)
+                    .DidNotReceiveEventOfType<ChooseLostResourcesEvent>()
+                .VerifyPlayer(Babara)
+                    .DidNotReceiveEventOfType<ChooseLostResourcesEvent>()
+                .VerifyPlayer(Charlie)
+                    .DidNotReceiveEventOfType<ChooseLostResourcesEvent>()
+                .VerifyPlayer(Dana)
+                    .DidNotReceiveEventOfType<ChooseLostResourcesEvent>()
+                .Run();
         }
 
         [Test]
         public void PlayerRollsSevenAndNewHexHasMultiplePlayers()
         {
-            throw new NotImplementedException();
+            this.CompletePlayerInfrastructureSetup(new[] { MethodBase.GetCurrentMethod().Name })
+                .WithNoResourceCollection()
+                .WhenPlayer(Adam)
+                    .ReceivesStartTurnEvent(3, 4).ThenDoNothing()
+                    .ReceivesPlaceRobberEvent().ThenPlaceRobber(2)
+                .WhenPlayer(Babara)
+                    .ReceivesRobberPlacedEvent(Adam, 2).ThenDoNothing()
+                .WhenPlayer(Charlie)
+                    .ReceivesRobberPlacedEvent(Adam, 2).ThenDoNothing()
+                .WhenPlayer(Dana)
+                    .ReceivesRobberPlacedEvent(Adam, 2).ThenDoNothing()
+                .VerifyPlayer(Adam)
+                    .DidNotReceiveEventOfType<ChooseLostResourcesEvent>()
+                .VerifyPlayer(Babara)
+                    .DidNotReceiveEventOfType<ChooseLostResourcesEvent>()
+                .VerifyPlayer(Charlie)
+                    .DidNotReceiveEventOfType<ChooseLostResourcesEvent>()
+                .VerifyPlayer(Dana)
+                    .DidNotReceiveEventOfType<ChooseLostResourcesEvent>()
+                .Run();
         }
 
         [Test]
