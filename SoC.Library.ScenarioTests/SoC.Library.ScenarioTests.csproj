@@ -52,6 +52,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CollectedResourcesBuilder.cs" />
+    <Compile Include="InfrastructureSetupBuilder.cs" />
     <Compile Include="Instructions\ActionInstruction.cs" />
     <Compile Include="Instructions\EventInstruction.cs" />
     <Compile Include="Instructions\Instruction.cs" />

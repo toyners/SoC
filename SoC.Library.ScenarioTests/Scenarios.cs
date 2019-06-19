@@ -9,6 +9,7 @@ namespace SoC.Library.ScenarioTests
     using Jabberwocky.SoC.Library.GameEvents;
     using NUnit.Framework;
     using SoC.Library.ScenarioTests.ScenarioEvents;
+    using static SoC.Library.ScenarioTests.InfrastructureSetupBuilder;
 
     [TestFixture]
     public class Scenarios
@@ -1305,49 +1306,62 @@ namespace SoC.Library.ScenarioTests
         private const string FirstPlayerRoadEnd = "first_firstroadend";
         private ScenarioRunner CompletePlayerInfrastructureSetup(string[] args = null)
         {
-            IDictionary<string, object> infrastructureSetup = new Dictionary<string, object>
-            {
-                { FirstPlayerName, Adam },
-                { FirstPlayerSettlement, Adam_FirstSettlementLocation },
-                { FirstPlayerRoadEnd, Adam_FirstRoadEndLocation }
-            };
+            var infrastructureSetupBuilder = new InfrastructureSetupBuilder();
+            infrastructureSetupBuilder.Add(Adam, Adam_FirstSettlementLocation, Adam_FirstRoadEndLocation)
+                .Add(Babara, Babara_FirstSettlementLocation, Babara_FirstRoadEndLocation)
+                .Add(Charlie, Charlie_FirstSettlementLocation, Charlie_FirstRoadEndLocation)
+                .Add(Dana, Dana_FirstSettlementLocation, Dana_FirstRoadEndLocation)
+                .Add(Dana, Dana_SecondSettlementLocation, Dana_SecondRoadEndLocation)
+                .Add(Charlie, Charlie_SecondSettlementLocation, Charlie_SecondRoadEndLocation)
+                .Add(Babara, Babara_SecondSettlementLocation, Babara_SecondRoadEndLocation)
+                .Add(Adam, Adam_SecondSettlementLocation, Adam_SecondRoadEndLocation);
             
-            return this.CompletePlayerInfrastructureSetup(infrastructureSetup, args);
+            return this.CompletePlayerInfrastructureSetup(infrastructureSetupBuilder.Build(), args);
         }
 
-        private ScenarioRunner CompletePlayerInfrastructureSetup(IDictionary<string, object> infrastructureSetup, string[] args = null)
+        private ScenarioRunner CompletePlayerInfrastructureSetup(InfrastructureSetup infrastructureSetup, string[] args = null)
         {
             var actionNotRecognisedError = new ScenarioGameErrorEvent(null, "999", null);
-            return ScenarioRunner.CreateScenarioRunner(args)
-                .WithPlayer(infrastructureSetup[FirstPlayerName].ToString())
-                .WithPlayer(Babara)
-                .WithPlayer(Charlie)
-                .WithPlayer(Dana)
-                .WithTurnOrder(new[] { Adam, Babara, Charlie, Dana })
-                .WhenPlayer(Adam)
+            var scenarioRunner = ScenarioRunner.CreateScenarioRunner(args)
+                .WithPlayer(infrastructureSetup.PlayerOneName)
+                .WithPlayer(infrastructureSetup.PlayerTwoName)
+                .WithPlayer(infrastructureSetup.PlayerThreeName)
+                .WithPlayer(infrastructureSetup.PlayerFourName)
+                .WithTurnOrder(infrastructureSetup.PlayerOrder);
+
+            foreach (var setupLocation in infrastructureSetup.SetupLocations)
+            {
+                scenarioRunner.WhenPlayer(setupLocation.PlayerName)
                     .ReceivesPlaceInfrastructureSetupEvent()
-                    .ThenPlaceStartingInfrastructure((uint)infrastructureSetup[FirstPlayerSettlement], (uint)infrastructureSetup[FirstPlayerRoadEnd])
+                    .ThenPlaceStartingInfrastructure(setupLocation.SettlementLocation, setupLocation.RoadEndLocation);
+            }
+
+/*                .WhenPlayer(Adam)
+                    .ReceivesPlaceInfrastructureSetupEvent()
+                    .ThenPlaceStartingInfrastructure(infrastructureSetup.SetupLocations[0].SettlementLocation, infrastructureSetup.SetupLocations[0].RoadEndLocation)
                 .WhenPlayer(Babara)
                     .ReceivesPlaceInfrastructureSetupEvent()
-                    .ThenPlaceStartingInfrastructure(Babara_FirstSettlementLocation, Babara_FirstRoadEndLocation)
+                    .ThenPlaceStartingInfrastructure(infrastructureSetup.SetupLocations[1].SettlementLocation, infrastructureSetup.SetupLocations[1].RoadEndLocation)
                 .WhenPlayer(Charlie)
                     .ReceivesPlaceInfrastructureSetupEvent()
-                    .ThenPlaceStartingInfrastructure(Charlie_FirstSettlementLocation, Charlie_FirstRoadEndLocation)
+                    .ThenPlaceStartingInfrastructure(infrastructureSetup.SetupLocations[2].SettlementLocation, infrastructureSetup.SetupLocations[2].RoadEndLocation)
                 .WhenPlayer(Dana)
                     .ReceivesPlaceInfrastructureSetupEvent()
-                    .ThenPlaceStartingInfrastructure(Dana_FirstSettlementLocation, Dana_FirstRoadEndLocation)
+                    .ThenPlaceStartingInfrastructure(infrastructureSetup.SetupLocations[3].SettlementLocation, infrastructureSetup.SetupLocations[3].RoadEndLocation)
                     .ReceivesPlaceInfrastructureSetupEvent()
-                    .ThenPlaceStartingInfrastructure(Dana_SecondSettlementLocation, Dana_SecondRoadEndLocation)
+                    .ThenPlaceStartingInfrastructure(infrastructureSetup[4].Item2.Item1, infrastructureSetup[4].Item2.Item2)
                 .WhenPlayer(Charlie)
                     .ReceivesPlaceInfrastructureSetupEvent()
-                    .ThenPlaceStartingInfrastructure(Charlie_SecondSettlementLocation, Charlie_SecondRoadEndLocation)
+                    .ThenPlaceStartingInfrastructure(infrastructureSetup[5].Item2.Item1, infrastructureSetup[5].Item2.Item2)
                 .WhenPlayer(Babara)
                     .ReceivesPlaceInfrastructureSetupEvent()
-                    .ThenPlaceStartingInfrastructure(Babara_SecondSettlementLocation, Babara_SecondRoadEndLocation)
+                    .ThenPlaceStartingInfrastructure(infrastructureSetup[6].Item2.Item1, infrastructureSetup[6].Item2.Item2)
                 .WhenPlayer(Adam)
                     .ReceivesPlaceInfrastructureSetupEvent()
-                    .ThenPlaceStartingInfrastructure(Adam_SecondSettlementLocation, Adam_SecondRoadEndLocation)
-                    .ReceivesConfirmGameStartEvent()
+                    .ThenPlaceStartingInfrastructure(infrastructureSetup[7].Item2.Item1, infrastructureSetup[7].Item2.Item2)
+                    .ReceivesConfirmGameStartEvent()*/
+
+                return scenarioRunner.WhenPlayer(Adam)
                     .ThenConfirmGameStart()
                 .WhenPlayer(Babara)
                     .ReceivesConfirmGameStartEvent()
