@@ -1336,46 +1336,17 @@ namespace SoC.Library.ScenarioTests
                     .ThenPlaceStartingInfrastructure(setupLocation.SettlementLocation, setupLocation.RoadEndLocation);
             }
 
-/*                .WhenPlayer(Adam)
-                    .ReceivesPlaceInfrastructureSetupEvent()
-                    .ThenPlaceStartingInfrastructure(infrastructureSetup.SetupLocations[0].SettlementLocation, infrastructureSetup.SetupLocations[0].RoadEndLocation)
-                .WhenPlayer(Babara)
-                    .ReceivesPlaceInfrastructureSetupEvent()
-                    .ThenPlaceStartingInfrastructure(infrastructureSetup.SetupLocations[1].SettlementLocation, infrastructureSetup.SetupLocations[1].RoadEndLocation)
-                .WhenPlayer(Charlie)
-                    .ReceivesPlaceInfrastructureSetupEvent()
-                    .ThenPlaceStartingInfrastructure(infrastructureSetup.SetupLocations[2].SettlementLocation, infrastructureSetup.SetupLocations[2].RoadEndLocation)
-                .WhenPlayer(Dana)
-                    .ReceivesPlaceInfrastructureSetupEvent()
-                    .ThenPlaceStartingInfrastructure(infrastructureSetup.SetupLocations[3].SettlementLocation, infrastructureSetup.SetupLocations[3].RoadEndLocation)
-                    .ReceivesPlaceInfrastructureSetupEvent()
-                    .ThenPlaceStartingInfrastructure(infrastructureSetup[4].Item2.Item1, infrastructureSetup[4].Item2.Item2)
-                .WhenPlayer(Charlie)
-                    .ReceivesPlaceInfrastructureSetupEvent()
-                    .ThenPlaceStartingInfrastructure(infrastructureSetup[5].Item2.Item1, infrastructureSetup[5].Item2.Item2)
-                .WhenPlayer(Babara)
-                    .ReceivesPlaceInfrastructureSetupEvent()
-                    .ThenPlaceStartingInfrastructure(infrastructureSetup[6].Item2.Item1, infrastructureSetup[6].Item2.Item2)
-                .WhenPlayer(Adam)
-                    .ReceivesPlaceInfrastructureSetupEvent()
-                    .ThenPlaceStartingInfrastructure(infrastructureSetup[7].Item2.Item1, infrastructureSetup[7].Item2.Item2)
-                    .ReceivesConfirmGameStartEvent()*/
+            foreach (var playerName in infrastructureSetup.PlayerOrder)
+            {
+                scenarioRunner
+                    .WhenPlayer(playerName)
+                        .ReceivesConfirmGameStartEvent()
+                        .ThenConfirmGameStart()
+                    .VerifyPlayer(playerName)
+                        .DidNotReceiveEvent(actionNotRecognisedError);
+            }
 
-                return scenarioRunner.WhenPlayer(Adam)
-                    .ThenConfirmGameStart()
-                .WhenPlayer(Babara)
-                    .ReceivesConfirmGameStartEvent()
-                    .ThenConfirmGameStart()
-                .WhenPlayer(Charlie)
-                    .ReceivesConfirmGameStartEvent()
-                    .ThenConfirmGameStart()
-                .WhenPlayer(Dana)
-                    .ReceivesConfirmGameStartEvent()
-                    .ThenConfirmGameStart()
-                .VerifyPlayer(Adam).DidNotReceiveEvent(actionNotRecognisedError)
-                .VerifyPlayer(Babara).DidNotReceiveEvent(actionNotRecognisedError)
-                .VerifyPlayer(Charlie).DidNotReceiveEvent(actionNotRecognisedError)
-                .VerifyPlayer(Dana).DidNotReceiveEvent(actionNotRecognisedError);
+            return scenarioRunner;
         }
 
         internal static IPlayerSetupAction Resources(ResourceClutch resources) => new ResourceSetup(resources);

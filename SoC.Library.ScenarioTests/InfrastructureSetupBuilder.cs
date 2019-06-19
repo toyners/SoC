@@ -14,7 +14,10 @@ namespace SoC.Library.ScenarioTests
                 this.playerNames.Add(playerName);
 
             if (!this.locationsByPlayerName.TryGetValue(playerName, out var list))
+            {
                 list = new List<Tuple<uint, uint>>();
+                this.locationsByPlayerName.Add(playerName, list);
+            }
 
             list.Add(new Tuple<uint, uint>(settlementLocation, roadEndLocation));
             return this;
