@@ -1078,17 +1078,28 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void PlayerRollsSevenAndNewHexHasMultiplePlayers()
         {
-            this.CompletePlayerInfrastructureSetup(new[] { MethodBase.GetCurrentMethod().Name })
+            var infrastructureSetupBuilder = new InfrastructureSetupBuilder();
+            infrastructureSetupBuilder.Add(Adam, Adam_FirstSettlementLocation, Adam_FirstRoadEndLocation)
+                .Add(Babara, 21, 11)
+                .Add(Charlie, Charlie_FirstSettlementLocation, Charlie_FirstRoadEndLocation)
+                .Add(Dana, Dana_FirstSettlementLocation, Dana_FirstRoadEndLocation)
+                .Add(Dana, 35, 24)
+                .Add(Charlie, 33, 32)
+                .Add(Babara, Babara_SecondSettlementLocation, Babara_SecondRoadEndLocation)
+                .Add(Adam, Adam_SecondSettlementLocation, Adam_SecondRoadEndLocation);
+
+            this.CompletePlayerInfrastructureSetup(infrastructureSetupBuilder.Build(), new[] { MethodBase.GetCurrentMethod().Name })
                 .WithNoResourceCollection()
                 .WhenPlayer(Adam)
                     .ReceivesStartTurnEvent(3, 4).ThenDoNothing()
-                    .ReceivesPlaceRobberEvent().ThenPlaceRobber(2)
+                    .ReceivesPlaceRobberEvent().ThenPlaceRobber(9)
+                    .ReceivesRobbingChoicesEvent(new Tuple<string, uint>(Babara, 0), new Tuple<string, uint>(Charlie, 0), new Tuple<string, uint>(Dana, 0)).ThenDoNothing()
                 .WhenPlayer(Babara)
-                    .ReceivesRobberPlacedEvent(Adam, 2).ThenDoNothing()
+                    .ReceivesRobberPlacedEvent(Adam, 9).ThenDoNothing()
                 .WhenPlayer(Charlie)
-                    .ReceivesRobberPlacedEvent(Adam, 2).ThenDoNothing()
+                    .ReceivesRobberPlacedEvent(Adam, 9).ThenDoNothing()
                 .WhenPlayer(Dana)
-                    .ReceivesRobberPlacedEvent(Adam, 2).ThenDoNothing()
+                    .ReceivesRobberPlacedEvent(Adam, 9).ThenDoNothing()
                 .VerifyPlayer(Adam)
                     .DidNotReceiveEventOfType<ChooseLostResourcesEvent>()
                 .VerifyPlayer(Babara)
@@ -1301,9 +1312,6 @@ namespace SoC.Library.ScenarioTests
             return new CollectedResourcesBuilder();
         }
 
-        private const string FirstPlayerName = "first_name";
-        private const string FirstPlayerSettlement = "first_firstsettlement";
-        private const string FirstPlayerRoadEnd = "first_firstroadend";
         private ScenarioRunner CompletePlayerInfrastructureSetup(string[] args = null)
         {
             var infrastructureSetupBuilder = new InfrastructureSetupBuilder();

@@ -638,6 +638,11 @@ namespace SoC.Library.ScenarioTests
 
             return this.playerAgentsByName[playerName].Id;
         }
+
+        public ScenarioRunner ReceivesRobbingChoicesEvent(params Tuple<string, uint>[] robbingChoices)
+        {
+            throw new NotImplementedException();
+        }
         #endregion
     }
 }
