@@ -259,6 +259,13 @@ namespace SoC.Library.ScenarioTests
             return this;
         }
 
+        public ScenarioRunner ReceivesRobbingChoicesEvent(Dictionary<string, int> robbingChoices)
+        {
+            var resolvedRobbingChoices = robbingChoices.ToDictionary(e => this.playerAgentsByName[e.Key].Id, e => e.Value);
+            this.AddEventInstruction(new RobbingChoicesEvent(this.currentPlayerAgent.Id, resolvedRobbingChoices));
+            return this;
+        }
+
         public ScenarioRunner ReceivesSettlementPlacementEvent(uint settlementLocation)
         {
             var gameEvent = new SettlementPlacedEvent(this.playerAgentsByName[this.currentPlayerAgent.Name].Id, settlementLocation);
@@ -637,11 +644,6 @@ namespace SoC.Library.ScenarioTests
                 throw new Exception($"Player name {playerName} not recognised.");
 
             return this.playerAgentsByName[playerName].Id;
-        }
-
-        public ScenarioRunner ReceivesRobbingChoicesEvent(params Tuple<string, uint>[] robbingChoices)
-        {
-            throw new NotImplementedException();
         }
         #endregion
     }

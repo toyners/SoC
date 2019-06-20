@@ -1088,12 +1088,18 @@ namespace SoC.Library.ScenarioTests
                 .Add(Babara, Babara_SecondSettlementLocation, Babara_SecondRoadEndLocation)
                 .Add(Adam, Adam_SecondSettlementLocation, Adam_SecondRoadEndLocation);
 
+            var robbingChoices = new Dictionary<string, int>()
+            {
+                { Babara, 1 },
+                { Charlie, 2 },
+                { Dana, 3 }
+            };
+
             this.CompletePlayerInfrastructureSetup(infrastructureSetupBuilder.Build(), new[] { MethodBase.GetCurrentMethod().Name })
-                .WithNoResourceCollection()
                 .WhenPlayer(Adam)
                     .ReceivesStartTurnEvent(3, 4).ThenDoNothing()
                     .ReceivesPlaceRobberEvent().ThenPlaceRobber(9)
-                    .ReceivesRobbingChoicesEvent(new Tuple<string, uint>(Babara, 0), new Tuple<string, uint>(Charlie, 0), new Tuple<string, uint>(Dana, 0)).ThenDoNothing()
+                    .ReceivesRobbingChoicesEvent(robbingChoices).ThenDoNothing()
                 .WhenPlayer(Babara)
                     .ReceivesRobberPlacedEvent(Adam, 9).ThenDoNothing()
                 .WhenPlayer(Charlie)
