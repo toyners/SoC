@@ -79,18 +79,27 @@ namespace SoC.Library.ScenarioTests
                     .ReceivesPlaceInfrastructureSetupEvent()
                     .ThenPlaceStartingInfrastructure(Adam_SecondSettlementLocation, Adam_SecondRoadEndLocation)
                     .ReceivesConfirmGameStartEvent().ThenConfirmGameStart()
-                    .ReceivesResourceCollectedEvent(gameSetupCollectedResources).ThenDoNothing()
+                    .ReceivesResourceCollectedEvent(gameSetupCollectedResources).ThenVerifyPlayerState()
+                        .Resources(new ResourceClutch())
+                        .End()
                     .ReceivesStartTurnEvent(3, 3).ThenQuitGame()
                 .WhenPlayer(Babara)
                     .ReceivesConfirmGameStartEvent().ThenConfirmGameStart()
-                    .ReceivesResourceCollectedEvent(gameSetupCollectedResources).ThenDoNothing()
+                    .ReceivesResourceCollectedEvent(gameSetupCollectedResources).ThenVerifyPlayerState()
+                        .Resources(new ResourceClutch())
+                        .End()
                     .ReceivesStartTurnEvent(3, 3).ThenQuitGame()
                 .WhenPlayer(Charlie)
                     .ReceivesConfirmGameStartEvent().ThenConfirmGameStart()
-                    .ReceivesResourceCollectedEvent(gameSetupCollectedResources).ThenDoNothing()
+                    .ReceivesResourceCollectedEvent(gameSetupCollectedResources).ThenVerifyPlayerState()
+                        .Resources(new ResourceClutch())
+                        .End()
                     .ReceivesStartTurnEvent(3, 3).ThenQuitGame()
                 .WhenPlayer(Dana)
                     .ReceivesConfirmGameStartEvent().ThenConfirmGameStart()
+                    .ReceivesResourceCollectedEvent(gameSetupCollectedResources).ThenVerifyPlayerState()
+                        .Resources(new ResourceClutch())
+                        .End()
                 .Run();
         }
 
@@ -1090,8 +1099,8 @@ namespace SoC.Library.ScenarioTests
 
             var robbingChoices = new Dictionary<string, int>()
             {
-                { Babara, 1 },
-                { Charlie, 2 },
+                { Babara, 3 },
+                { Charlie, 3 },
                 { Dana, 3 }
             };
 
