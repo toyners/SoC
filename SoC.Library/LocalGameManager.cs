@@ -763,6 +763,7 @@ namespace Jabberwocky.SoC.Library
             {
                 var settlementlocation = this.gameBoard.GetSettlementsForPlayer(player.Id)[1];
                 var resourcesForLocation = this.gameBoard.GetResourcesForLocation(settlementlocation);
+                player.AddResources(resourcesForLocation);
                 var resourceCollection = new ResourceCollection(settlementlocation, resourcesForLocation);
                 resourcesCollectedByPlayerId.Add(player.Id, new[] { resourceCollection });
             }

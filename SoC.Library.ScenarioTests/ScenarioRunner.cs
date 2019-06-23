@@ -279,6 +279,11 @@ namespace SoC.Library.ScenarioTests
             return this.ReceivesStartTurnWithResourcesCollectedEvent(this.currentPlayerAgent.Id, dice1, dice2, null);
         }
 
+        public ScenarioRunner ReceivesStartTurnEvent(string playerName, uint dice1, uint dice2)
+        {
+            return this.ReceivesStartTurnWithResourcesCollectedEvent(this.playerAgentsByName[playerName].Id, dice1, dice2, null);
+        }
+
         public ScenarioRunner ReceivesStartTurnWithResourcesCollectedEvent(uint dice1, uint dice2, Dictionary<string, ResourceCollection[]> collectedResources)
         {
             this.numberGenerator.AddTwoDiceRoll(dice1, dice2);
