@@ -3,6 +3,7 @@ namespace Jabberwocky.SoC.Library
 {
     using System.Collections.Generic;
     using System.IO;
+    using Jabberwocky.SoC.Library.Interfaces;
 
     public class Log : ILog
     {

@@ -23,6 +23,7 @@ namespace Jabberwocky.SoC.Library
         private readonly EventRaiser eventRaiser;
         private readonly GameBoard gameBoard;
         private readonly ILog log = new Log();
+        private readonly IActionLog actionLog = null;
         private readonly INumberGenerator numberGenerator;
         private readonly IPlayerFactory playerFactory;
         private IPlayer currentPlayer;

@@ -75,7 +75,8 @@
     <Compile Include="GameEvents\RobbingChoicesEvent.cs" />
     <Compile Include="GameEvents\SettlementPlacedEvent.cs" />
     <Compile Include="GameToken.cs" />
-    <Compile Include="ILog.cs" />
+    <Compile Include="Interfaces\IActionLog.cs" />
+    <Compile Include="Interfaces\ILog.cs" />
     <Compile Include="Interfaces\IEventSender.cs" />
     <Compile Include="Interfaces\IPlayerFactory.cs" />
     <Compile Include="Log.cs" />

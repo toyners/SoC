@@ -9,6 +9,7 @@ namespace SoC.Library.ScenarioTests
     using System.Threading.Tasks;
     using Jabberwocky.SoC.Library;
     using Jabberwocky.SoC.Library.GameEvents;
+    using Jabberwocky.SoC.Library.Interfaces;
     using Newtonsoft.Json.Linq;
     using SoC.Library.ScenarioTests.Instructions;
     using SoC.Library.ScenarioTests.ScenarioEvents;
