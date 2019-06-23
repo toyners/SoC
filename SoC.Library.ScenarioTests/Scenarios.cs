@@ -44,12 +44,12 @@ namespace SoC.Library.ScenarioTests
         {
             var expectedAdamResources = ResourceClutch.OneBrick + ResourceClutch.OneGrain + ResourceClutch.OneWool;
             var expectedBabaraResources = ResourceClutch.OneGrain + ResourceClutch.OneLumber + ResourceClutch.OneWool;
-            var expectedCharlieResources = ResourceClutch.OneOre + ResourceClutch.OneLumber + ResourceClutch.OneWool;
+            var expectedCharlieResources = ResourceClutch.OneLumber;
             var expectedDanaResources = ResourceClutch.OneLumber + ResourceClutch.OneGrain + ResourceClutch.OneWool;
             var gameSetupCollectedResources = CreateExpectedCollectedResources()
                 .Add(Adam, Adam_SecondSettlementLocation, expectedAdamResources)
                 .Add(Babara, Babara_SecondSettlementLocation, expectedBabaraResources)
-                .Add(Charlie, Charlie_SecondSettlementLocation, expectedCharlieResources)
+                .Add(Charlie, 37, expectedCharlieResources)
                 .Add(Dana, Dana_SecondSettlementLocation, expectedDanaResources)
                 .Build();
 
@@ -75,7 +75,7 @@ namespace SoC.Library.ScenarioTests
                     .ThenPlaceStartingInfrastructure(Dana_SecondSettlementLocation, Dana_SecondRoadEndLocation)
                 .WhenPlayer(Charlie)
                     .ReceivesPlaceInfrastructureSetupEvent()
-                    .ThenPlaceStartingInfrastructure(Charlie_SecondSettlementLocation, Charlie_SecondRoadEndLocation)
+                    .ThenPlaceStartingInfrastructure(37, 36)
                 .WhenPlayer(Babara)
                     .ReceivesPlaceInfrastructureSetupEvent()
                     .ThenPlaceStartingInfrastructure(Babara_SecondSettlementLocation, Babara_SecondRoadEndLocation)
@@ -85,7 +85,7 @@ namespace SoC.Library.ScenarioTests
                     .ReceivesConfirmGameStartEvent().ThenConfirmGameStart()
                     .ReceivesAll()
                         .ReceivesResourceCollectedEvent(gameSetupCollectedResources)
-                        .ReceivesStartTurnEvent(3, 3)
+                        .ReceivesStartTurnEvent(1, 2)
                     .ReceivesAllEnd().ThenVerifyPlayerState()
                         .Resources(expectedAdamResources)
                         .End()
@@ -93,7 +93,7 @@ namespace SoC.Library.ScenarioTests
                     .ReceivesConfirmGameStartEvent().ThenConfirmGameStart()
                     .ReceivesAll()
                         .ReceivesResourceCollectedEvent(gameSetupCollectedResources)
-                        .ReceivesStartTurnEvent(Adam, 3, 3)
+                        .ReceivesStartTurnEvent(Adam, 1, 2)
                     .ReceivesAllEnd().ThenVerifyPlayerState()
                         .Resources(expectedBabaraResources)
                         .End()
@@ -101,7 +101,7 @@ namespace SoC.Library.ScenarioTests
                     .ReceivesConfirmGameStartEvent().ThenConfirmGameStart()
                     .ReceivesAll()
                         .ReceivesResourceCollectedEvent(gameSetupCollectedResources)
-                        .ReceivesStartTurnEvent(Adam, 3, 3)
+                        .ReceivesStartTurnEvent(Adam, 1, 2)
                     .ReceivesAllEnd().ThenVerifyPlayerState()
                         .Resources(expectedCharlieResources)
                         .End()
@@ -109,7 +109,7 @@ namespace SoC.Library.ScenarioTests
                     .ReceivesConfirmGameStartEvent().ThenConfirmGameStart()
                     .ReceivesAll()
                         .ReceivesResourceCollectedEvent(gameSetupCollectedResources)
-                        .ReceivesStartTurnEvent(Adam, 3, 3)
+                        .ReceivesStartTurnEvent(Adam, 1, 2)
                     .ReceivesAllEnd().ThenVerifyPlayerState()
                         .Resources(expectedDanaResources)
                         .End()
