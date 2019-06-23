@@ -27,13 +27,11 @@ namespace Jabberwocky.SoC.Library
         private readonly INumberGenerator numberGenerator;
         private readonly IPlayerFactory playerFactory;
         private IPlayer currentPlayer;
-        //private uint dice1, dice2;
         private Func<Guid> idGenerator;
         private bool isGameSetup = true;
         private int playerIndex;
         private uint robberHex = 0;
         private IDictionary<Guid, IPlayer> playersById;
-
 
         private IPlayer[] players;
         private IGameTimer turnTimer;
