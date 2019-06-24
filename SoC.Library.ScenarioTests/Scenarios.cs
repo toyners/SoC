@@ -1077,7 +1077,20 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void PlayerRollsSevenAndNewHexHasOnePlayer()
         {
-            throw new NotImplementedException();
+            this.CompletePlayerInfrastructureSetup(new[] { MethodBase.GetCurrentMethod().Name })
+                .WithNoResourceCollection()
+                .WhenPlayer(Adam)
+                    .ReceivesStartTurnEvent(3, 4).ThenDoNothing()
+                    .ReceivesPlaceRobberEvent().ThenPlaceRobber(3)
+                    .ReceivesResourcesGainedFromEvent()
+                .WhenPlayer(Babara)
+                    .ReceivesRobberPlacedEvent(Adam, 3).ThenDoNothing()
+                    .ReceivesResourcesLostEvent(null, ResourceClutch.Zero)
+                .WhenPlayer(Charlie)
+                    .ReceivesRobberPlacedEvent(Adam, 3).ThenDoNothing()
+                .WhenPlayer(Dana)
+                    .ReceivesRobberPlacedEvent(Adam, 3).ThenDoNothing()
+                .Run();
         }
 
         [Test]
@@ -1095,6 +1108,7 @@ namespace SoC.Library.ScenarioTests
                 .WhenPlayer(Dana)
                     .ReceivesRobberPlacedEvent(Adam, 2).ThenDoNothing()
                 .VerifyPlayer(Adam)
+                    .DidNotReceiveEventOfType<RobbingChoicesEvent>()
                     .DidNotReceiveEventOfType<ChooseLostResourcesEvent>()
                 .VerifyPlayer(Babara)
                     .DidNotReceiveEventOfType<ChooseLostResourcesEvent>()
