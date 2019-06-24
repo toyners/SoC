@@ -602,8 +602,12 @@ namespace Jabberwocky.SoC.Library
                 this.RaiseEvent(new RobberPlacedEvent(this.currentPlayer.Id, this.robberHex), this.PlayersExcept(this.currentPlayer.Id));
 
                 var playerIdsInHex = this.gameBoard.GetPlayersForHex(this.robberHex);
-                var resourceCountsByPlayerId = playerIdsInHex.ToDictionary(playerId => playerId, playerId => this.playersById[playerId].Resources.Count);
-                this.RaiseEvent(new RobbingChoicesEvent(this.currentPlayer.Id, resourceCountsByPlayerId));
+                if (playerIdsInHex != null)
+                {
+                    var resourceCountsByPlayerId = playerIdsInHex.ToDictionary(playerId => playerId, playerId => this.playersById[playerId].Resources.Count);
+                    this.RaiseEvent(new RobbingChoicesEvent(this.currentPlayer.Id, resourceCountsByPlayerId));
+                }
+
                 return false;
             }
 

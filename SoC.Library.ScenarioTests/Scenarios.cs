@@ -1045,6 +1045,8 @@ namespace SoC.Library.ScenarioTests
                     .ReceivesRobberPlacedEvent(Adam, 4).ThenDoNothing()
                 .WhenPlayer(Dana)
                     .ReceivesRobberPlacedEvent(Adam, 4).ThenDoNothing()
+                .VerifyPlayer(Adam)
+                    .DidNotReceiveEventOfType<RobbingChoicesEvent>()
                 .VerifyPlayer(Babara)
                     .DidNotReceiveEventOfType<ChooseLostResourcesEvent>()
                 .VerifyPlayer(Charlie)
