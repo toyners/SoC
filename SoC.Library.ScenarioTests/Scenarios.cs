@@ -119,6 +119,7 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void AllPlayersCollectResourcesAsPartOfTurnStart()
         {
+
             var firstTurnCollectedResources = CreateExpectedCollectedResources()
                 .Add(Adam, Adam_FirstSettlementLocation, ResourceClutch.OneBrick)
                 .Add(Babara, Babara_SecondSettlementLocation, ResourceClutch.OneGrain)
@@ -141,6 +142,11 @@ namespace SoC.Library.ScenarioTests
                 .Build();
 
             this.CompletePlayerInfrastructureSetup(new[] { MethodBase.GetCurrentMethod().Name })
+                // Zero away the resources collected at start of the game
+                .WithInitialPlayerSetupFor(Adam, Resources(new ResourceClutch(-1, -1, 0, 0, -1)))
+                .WithInitialPlayerSetupFor(Babara, Resources(new ResourceClutch(0, -1, -1, 0, -1)))
+                .WithInitialPlayerSetupFor(Charlie, Resources(new ResourceClutch(0, 0, -1, -1, -1)))
+                .WithInitialPlayerSetupFor(Dana, Resources(new ResourceClutch(0, -1, -1, 0, -1)))
                 .WhenPlayer(Adam)
                     .ReceivesStartTurnWithResourcesCollectedEvent(4, 4, firstTurnCollectedResources)
                     .ThenVerifyPlayerState().Resources(ResourceClutch.OneBrick).End()
