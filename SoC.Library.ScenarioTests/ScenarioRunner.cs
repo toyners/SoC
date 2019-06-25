@@ -232,7 +232,7 @@ namespace SoC.Library.ScenarioTests
             return this;
         }
 
-        public ScenarioRunner ReceivesResourcesLostEvent(string playerName, ResourceClutch lostResources)
+        public ScenarioRunner ReceivesResourcesStolenEvent(string playerName, ResourceClutch lostResources)
         {
             var gameEvent = new ResourcesLostEvent(lostResources);
             this.AddEventInstruction(gameEvent);
@@ -651,7 +651,13 @@ namespace SoC.Library.ScenarioTests
             return this.playerAgentsByName[playerName].Id;
         }
 
-        public ScenarioRunner ReceivesResourcesGainedFromEvent()
+        public ScenarioRunner ReceivesResourcesGainedFromEvent(string robbedPlayerName, ResourceTypes resourceType)
+        {
+            this.numberGenerator.AddRobbed(this.playerAgentsByName[robbedPlayerName], resourceType);
+            return this;
+        }
+
+        public ScenarioRunner ReceivesResourcesStolenEvent(ResourceClutch zero)
         {
             throw new NotImplementedException();
         }

@@ -32,6 +32,8 @@ namespace SoC.Library.ScenarioTests
         private CancellationToken cancellationToken;
         private int expectedEventIndex;
         private IDictionary<string, Guid> playerIdsByName;
+
+        public ResourceClutch Resources;
         #endregion
 
         #region Construction
