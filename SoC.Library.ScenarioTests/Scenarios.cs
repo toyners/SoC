@@ -1082,7 +1082,7 @@ namespace SoC.Library.ScenarioTests
                 .WhenPlayer(Adam)
                     .ReceivesStartTurnEvent(3, 4).ThenDoNothing()
                     .ReceivesPlaceRobberEvent().ThenPlaceRobber(3)
-                    .ReceivesResourcesGainedFromEvent(Babara, ResourceTypes.Lumber)
+                    .ReceivesResourcesRobbedEvent(Babara, ResourceTypes.Lumber)
                 .WhenPlayer(Babara)
                     .ReceivesRobberPlacedEvent(Adam, 3).ThenDoNothing()
                     .ReceivesResourcesStolenEvent(ResourceClutch.Zero)

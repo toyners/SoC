@@ -651,7 +651,7 @@ namespace SoC.Library.ScenarioTests
             return this.playerAgentsByName[playerName].Id;
         }
 
-        public ScenarioRunner ReceivesResourcesGainedFromEvent(string robbedPlayerName, ResourceTypes resourceType)
+        public ScenarioRunner ReceivesResourcesRobbedEvent(string robbedPlayerName, ResourceTypes resourceType)
         {
             this.numberGenerator.AddRobbed(this.playerAgentsByName[robbedPlayerName], resourceType);
             return this;

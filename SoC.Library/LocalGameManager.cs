@@ -607,6 +607,12 @@ namespace Jabberwocky.SoC.Library
                     var resourceCountsByPlayerId = playerIdsInHex.ToDictionary(playerId => playerId, playerId => this.playersById[playerId].Resources.Count);
                     this.RaiseEvent(new RobbingChoicesEvent(this.currentPlayer.Id, resourceCountsByPlayerId));
                 }
+                else if (playerIdsInHex.Length == 1)
+                {
+                    var player = this.playersById[playerIdsInHex[0]];
+                    var resourceIndex = this.numberGenerator.GetRandomNumberBetweenZeroAndMaximum(player.Resources.Count);
+                    var robbedResource = player.LoseResourceAtIndex(resourceIndex);
+                }
 
                 return false;
             }
