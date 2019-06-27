@@ -69,6 +69,7 @@
     <Compile Include="GameEvents\PlaceRobberEvent.cs" />
     <Compile Include="GameEvents\PlayerOrderEvent.cs" />
     <Compile Include="GameEvents\PlayerQuitEvent.cs" />
+    <Compile Include="GameEvents\ResourcesGainedEvent.cs" />
     <Compile Include="GameEvents\ResourcesLostEvent.cs" />
     <Compile Include="GameEvents\RoadSegmentPlacedEvent.cs" />
     <Compile Include="GameEvents\RobberPlacedEvent.cs" />

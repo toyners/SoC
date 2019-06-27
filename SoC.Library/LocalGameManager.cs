@@ -612,6 +612,9 @@ namespace Jabberwocky.SoC.Library
                     var player = this.playersById[playerIdsInHex[0]];
                     var resourceIndex = this.numberGenerator.GetRandomNumberBetweenZeroAndMaximum(player.Resources.Count);
                     var robbedResource = player.LoseResourceAtIndex(resourceIndex);
+                    this.RaiseEvent(new ResourcesLostEvent(robbedResource, this.currentPlayer.Id, ResourcesLostEvent.ReasonTypes.Robbed), player);
+                    this.RaiseEvent(new ResourcesLostEvent(robbedResource, this.currentPlayer.Id, ResourcesLostEvent.ReasonTypes.Witness),
+                        this.PlayersExcept(this.currentPlayer.Id, player.Id));
                 }
 
                 return false;
@@ -819,7 +822,7 @@ namespace Jabberwocky.SoC.Library
                 player.RemoveResources(loseResourcesAction.Resources);
                 this.actionManager.SetExpectedActionsForPlayer(player.Id, null);
                 this.chooseLostResourcesEventByPlayerId.Remove(player.Id);
-                this.RaiseEvent(new ResourcesLostEvent(loseResourcesAction.Resources));
+                this.RaiseEvent(new ResourcesLostEvent(loseResourcesAction.Resources, Guid.Empty, ResourcesLostEvent.ReasonTypes.TooManyResources));
             }
         }
 

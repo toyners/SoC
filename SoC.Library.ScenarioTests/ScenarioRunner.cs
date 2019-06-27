@@ -232,9 +232,9 @@ namespace SoC.Library.ScenarioTests
             return this;
         }
 
-        public ScenarioRunner ReceivesResourcesStolenEvent(string playerName, ResourceClutch lostResources)
+        public ScenarioRunner ReceivesResourcesStolenEvent(string playerName, ResourceClutch lostResource)
         {
-            var gameEvent = new ResourcesLostEvent(lostResources);
+            var gameEvent = new ResourcesLostEvent(lostResource, this.playerAgentsByName[playerName].Id, ResourcesLostEvent.ReasonTypes.Witness);
             this.AddEventInstruction(gameEvent);
             return this;
         }
@@ -651,15 +651,34 @@ namespace SoC.Library.ScenarioTests
             return this.playerAgentsByName[playerName].Id;
         }
 
-        public ScenarioRunner ReceivesResourcesRobbedEvent(string robbedPlayerName, ResourceTypes resourceType)
+        public ScenarioRunner ReceivesResourcesRobbedEvent(string robbedPlayerName, ResourceClutch resource)
         {
+            ResourceTypes resourceType;
+            if (resource == ResourceClutch.OneBrick)
+                resourceType = ResourceTypes.Brick;
+            else if (resource == ResourceClutch.OneGrain)
+                resourceType = ResourceTypes.Grain;
+            else if (resource == ResourceClutch.OneLumber)
+                resourceType = ResourceTypes.Lumber;
+            else if (resource == ResourceClutch.OneOre)
+                resourceType = ResourceTypes.Ore;
+            else if (resource == ResourceClutch.OneWool)
+                resourceType = ResourceTypes.Wool;
+            else
+                throw new Exception("Resources should be one-of");
+
             this.numberGenerator.AddRobbed(this.playerAgentsByName[robbedPlayerName], resourceType);
+            var gameEvent = new ResourcesGainedEvent(resource);
+            this.AddEventInstruction(gameEvent);
+
             return this;
         }
 
-        public ScenarioRunner ReceivesResourcesStolenEvent(ResourceClutch zero)
+        public ScenarioRunner ReceivesResourcesStolenEvent(ResourceClutch resource)
         {
-            throw new NotImplementedException();
+            var gameEvent = new ResourcesLostEvent(resource, this.currentPlayerAgent.Id, ResourcesLostEvent.ReasonTypes.Robbed);
+            this.AddEventInstruction(gameEvent);
+            return this;
         }
         #endregion
     }

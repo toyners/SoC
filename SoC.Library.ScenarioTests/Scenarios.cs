@@ -1077,18 +1077,19 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void PlayerRollsSevenAndNewHexHasOnePlayer()
         {
+            var robbedResource = ResourceClutch.OneLumber;
             this.CompletePlayerInfrastructureSetup(new[] { MethodBase.GetCurrentMethod().Name })
                 .WithNoResourceCollection()
                 .WhenPlayer(Adam)
                     .ReceivesStartTurnEvent(3, 4).ThenDoNothing()
                     .ReceivesPlaceRobberEvent().ThenPlaceRobber(3)
-                    .ReceivesResourcesRobbedEvent(Babara, ResourceTypes.Lumber)
+                    .ReceivesResourcesRobbedEvent(Babara, robbedResource)
                 .WhenPlayer(Babara)
                     .ReceivesRobberPlacedEvent(Adam, 3).ThenDoNothing()
-                    .ReceivesResourcesStolenEvent(ResourceClutch.Zero)
+                    .ReceivesResourcesStolenEvent(robbedResource)
                 .WhenPlayer(Charlie)
                     .ReceivesRobberPlacedEvent(Adam, 3).ThenDoNothing()
-                    .ReceivesResourcesStolenEvent(null, ResourceClutch.Zero)
+                    .ReceivesResourcesStolenEvent(Babara, robbedResource)
                 .WhenPlayer(Dana)
                     .ReceivesRobberPlacedEvent(Adam, 3).ThenDoNothing()
                 .Run();
