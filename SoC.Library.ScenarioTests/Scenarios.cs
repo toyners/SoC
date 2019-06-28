@@ -1079,7 +1079,6 @@ namespace SoC.Library.ScenarioTests
         {
             var robbedResource = ResourceClutch.OneLumber;
             this.CompletePlayerInfrastructureSetup(new[] { MethodBase.GetCurrentMethod().Name })
-                .WithNoResourceCollection()
                 .WhenPlayer(Adam)
                     .ReceivesStartTurnEvent(3, 4).ThenDoNothing()
                     .ReceivesPlaceRobberEvent().ThenPlaceRobber(3)
@@ -1103,6 +1102,7 @@ namespace SoC.Library.ScenarioTests
                 .WhenPlayer(Adam)
                     .ReceivesStartTurnEvent(3, 4).ThenDoNothing()
                     .ReceivesPlaceRobberEvent().ThenPlaceRobber(2)
+                    .ReceivesRobberPlacedEvent(2)
                 .WhenPlayer(Babara)
                     .ReceivesRobberPlacedEvent(Adam, 2).ThenDoNothing()
                 .WhenPlayer(Charlie)

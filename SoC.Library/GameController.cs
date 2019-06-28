@@ -13,6 +13,10 @@ namespace Jabberwocky.SoC.Library
         private AnswerDirectTradeOfferEvent lasetAnswerDirectTradeOffEvent;
         #endregion
 
+        #region Properties
+        public ResourceClutch Resources { get; private set; }
+        #endregion
+
         #region Events
         public event Action<PlayerAction> PlayerActionEvent;
         public event Action<GameEvent> GameEvent;
@@ -91,12 +95,15 @@ namespace Jabberwocky.SoC.Library
         {
             if (gameEvent is GameJoinedEvent gameJoinedEvent)
                 this.playerId = gameJoinedEvent.PlayerId;
-
-            if (gameEvent is MakeDirectTradeOfferEvent makeDirectTradeOfferEvent)
+            else if (gameEvent is MakeDirectTradeOfferEvent makeDirectTradeOfferEvent)
                 this.lastMakeDirectTradeOfferEvent = makeDirectTradeOfferEvent;
-        
-            if (gameEvent is AnswerDirectTradeOfferEvent answerDirectTradeOfferEvent)
+            else if (gameEvent is AnswerDirectTradeOfferEvent answerDirectTradeOfferEvent)
                 this.lasetAnswerDirectTradeOffEvent = answerDirectTradeOfferEvent;
+            else if (gameEvent is ResourcesCollectedEvent resourcesCollectedEvent && resourcesCollectedEvent.ResourcesCollectedByPlayerId.ContainsKey(this.playerId))
+            {
+                foreach (var resourceCollection in resourcesCollectedEvent.ResourcesCollectedByPlayerId[this.playerId])
+                    this.Resources += resourceCollection.Resources;
+            }
 
             this.GameEvent.Invoke(gameEvent);
         }

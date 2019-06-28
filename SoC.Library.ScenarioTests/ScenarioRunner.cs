@@ -253,6 +253,12 @@ namespace SoC.Library.ScenarioTests
             return this;
         }
 
+        public ScenarioRunner ReceivesRobberPlacedEvent(uint hex)
+        {
+            this.AddEventInstruction(new RobberPlacedEvent(this.currentPlayerAgent.Id, hex));
+            return this;
+        }
+
         public ScenarioRunner ReceivesRobberPlacedEvent(string playerName, uint hex)
         {
             this.AddEventInstruction(new RobberPlacedEvent(this.playerAgentsByName[playerName].Id, hex));

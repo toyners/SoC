@@ -33,7 +33,6 @@ namespace SoC.Library.ScenarioTests
         private int expectedEventIndex;
         private IDictionary<string, Guid> playerIdsByName;
 
-        public ResourceClutch Resources;
         #endregion
 
         #region Construction
@@ -49,10 +48,11 @@ namespace SoC.Library.ScenarioTests
         #endregion
 
         #region Properties
+        public bool FinishWhenAllEventsVerified { get; set; } = true;
         public Guid Id { get; private set; }
         public bool IsFinished { get { return this.expectedEventIndex >= this.expectedEventActions.Count; } }
         public string Name { get; private set; }
-        public bool FinishWhenAllEventsVerified { get; set; } = true;
+        public ResourceClutch Resources { get { return this.gameController.Resources; } }
         private EventActionPair CurrentEventActionPair { get { return this.expectedEventActions[this.expectedEventIndex]; } }
         private EventActionPair LastEventActionPair { get { return this.expectedEventActions[this.expectedEventActions.Count - 1]; } }
         #endregion

@@ -604,17 +604,21 @@ namespace Jabberwocky.SoC.Library
                 var playerIdsInHex = this.gameBoard.GetPlayersForHex(this.robberHex);
                 if (playerIdsInHex != null)
                 {
-                    var resourceCountsByPlayerId = playerIdsInHex.ToDictionary(playerId => playerId, playerId => this.playersById[playerId].Resources.Count);
-                    this.RaiseEvent(new RobbingChoicesEvent(this.currentPlayer.Id, resourceCountsByPlayerId));
-                }
-                else if (playerIdsInHex.Length == 1)
-                {
-                    var player = this.playersById[playerIdsInHex[0]];
-                    var resourceIndex = this.numberGenerator.GetRandomNumberBetweenZeroAndMaximum(player.Resources.Count);
-                    var robbedResource = player.LoseResourceAtIndex(resourceIndex);
-                    this.RaiseEvent(new ResourcesLostEvent(robbedResource, this.currentPlayer.Id, ResourcesLostEvent.ReasonTypes.Robbed), player);
-                    this.RaiseEvent(new ResourcesLostEvent(robbedResource, this.currentPlayer.Id, ResourcesLostEvent.ReasonTypes.Witness),
-                        this.PlayersExcept(this.currentPlayer.Id, player.Id));
+                    if (playerIdsInHex.Length == 1)
+                    {
+                        var player = this.playersById[playerIdsInHex[0]];
+                        var resourceIndex = this.numberGenerator.GetRandomNumberBetweenZeroAndMaximum(player.Resources.Count);
+                        var robbedResource = player.LoseResourceAtIndex(resourceIndex);
+                        this.RaiseEvent(new ResourcesGainedEvent(robbedResource), this.currentPlayer);
+                        this.RaiseEvent(new ResourcesLostEvent(robbedResource, this.currentPlayer.Id, ResourcesLostEvent.ReasonTypes.Robbed), player);
+                        this.RaiseEvent(new ResourcesLostEvent(robbedResource, this.currentPlayer.Id, ResourcesLostEvent.ReasonTypes.Witness),
+                            this.PlayersExcept(this.currentPlayer.Id, player.Id));
+                    }
+                    else
+                    {
+                        var resourceCountsByPlayerId = playerIdsInHex.ToDictionary(playerId => playerId, playerId => this.playersById[playerId].Resources.Count);
+                        this.RaiseEvent(new RobbingChoicesEvent(this.currentPlayer.Id, resourceCountsByPlayerId));
+                    }
                 }
 
                 return false;
