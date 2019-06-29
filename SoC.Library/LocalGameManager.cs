@@ -599,7 +599,7 @@ namespace Jabberwocky.SoC.Library
             if (playerAction is PlaceRobberAction placeRobberAction)
             {
                 this.robberHex = placeRobberAction.Hex;
-                this.RaiseEvent(new RobberPlacedEvent(this.currentPlayer.Id, this.robberHex), this.PlayersExcept(this.currentPlayer.Id));
+                this.RaiseEvent(new RobberPlacedEvent(this.currentPlayer.Id, this.robberHex));
 
                 var playerIdsInHex = this.gameBoard.GetPlayersForHex(this.robberHex);
                 if (playerIdsInHex != null)
@@ -607,6 +607,7 @@ namespace Jabberwocky.SoC.Library
                     if (playerIdsInHex.Length == 1)
                     {
                         var player = this.playersById[playerIdsInHex[0]];
+                        //if ()
                         var resourceIndex = this.numberGenerator.GetRandomNumberBetweenZeroAndMaximum(player.Resources.Count);
                         var robbedResource = player.LoseResourceAtIndex(resourceIndex);
                         this.RaiseEvent(new ResourcesGainedEvent(robbedResource), this.currentPlayer);
