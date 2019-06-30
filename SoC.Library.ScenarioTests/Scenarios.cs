@@ -1059,19 +1059,19 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void PlayerRollsSevenAndNewHexIsSameAsCurrentHex()
         {
-            throw new NotImplementedException();
-            /*this.CompletePlayerInfrastructureSetup(new[] { MethodBase.GetCurrentMethod().Name })
+            this.CompletePlayerInfrastructureSetup(new[] { MethodBase.GetCurrentMethod().Name })
                 .WithNoResourceCollection()
                 .WhenPlayer(Adam)
                     .ReceivesStartTurnEvent(3, 4).ThenDoNothing()
-                    .ReceivesPlaceRobberEvent().ThenPlaceRobber()
+                    .ReceivesPlaceRobberEvent().ThenPlaceRobber(0)
+                    .ReceivesGameErrorEvent("918", "New robber hex cannot be the same as previous robber hex")
                 .VerifyPlayer(Babara)
                     .DidNotReceiveEventOfType<GameErrorEvent>()
                 .VerifyPlayer(Charlie)
                     .DidNotReceiveEventOfType<GameErrorEvent>()
                 .VerifyPlayer(Dana)
                     .DidNotReceiveEventOfType<GameErrorEvent>()
-                .Run();*/
+                .Run();
         }
 
         [Test]

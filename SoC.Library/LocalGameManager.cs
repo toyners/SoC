@@ -598,6 +598,13 @@ namespace Jabberwocky.SoC.Library
 
             if (playerAction is PlaceRobberAction placeRobberAction)
             {
+                if (this.robberHex == placeRobberAction.Hex)
+                {
+                    this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, "918", "New robber hex cannot be the same as previous robber hex"),
+                        this.currentPlayer);
+                    return false;
+                }
+
                 this.robberHex = placeRobberAction.Hex;
                 this.RaiseEvent(new RobberPlacedEvent(this.currentPlayer.Id, this.robberHex));
 
