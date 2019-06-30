@@ -686,6 +686,11 @@ namespace SoC.Library.ScenarioTests
             this.AddEventInstruction(gameEvent);
             return this;
         }
+
+        public ScenarioRunner ThenSelectRobbingVictim(string victimPlayerName)
+        {
+            throw new NotImplementedException();
+        }
         #endregion
     }
 }

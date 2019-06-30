@@ -1211,7 +1211,43 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void PlayerRollsSevenAndSelectsInvalidPlayer()
         {
-            throw new NotImplementedException();
+            var infrastructureSetupBuilder = new InfrastructureSetupBuilder();
+            infrastructureSetupBuilder.Add(Adam, Adam_FirstSettlementLocation, Adam_FirstRoadEndLocation)
+                .Add(Babara, Babara_FirstSettlementLocation, Babara_FirstRoadEndLocation)
+                .Add(Charlie, Charlie_FirstSettlementLocation, Charlie_FirstRoadEndLocation)
+                .Add(Dana, Dana_FirstSettlementLocation, Dana_FirstRoadEndLocation)
+                .Add(Dana, 35, 24)
+                .Add(Charlie, 33, 32)
+                .Add(Babara, Babara_SecondSettlementLocation, Babara_SecondRoadEndLocation)
+                .Add(Adam, Adam_SecondSettlementLocation, Adam_SecondRoadEndLocation);
+
+            var robbingChoices = new Dictionary<string, int>()
+            {
+                { Charlie, 3 },
+                { Dana, 3 }
+            };
+
+            this.CompletePlayerInfrastructureSetup(infrastructureSetupBuilder.Build(), new[] { MethodBase.GetCurrentMethod().Name })
+                .WhenPlayer(Adam)
+                    .ReceivesStartTurnEvent(3, 4).ThenDoNothing()
+                    .ReceivesPlaceRobberEvent().ThenPlaceRobber(9)
+                    .ReceivesRobbingChoicesEvent(robbingChoices).ThenSelectRobbingVictim(Babara)
+                    .ReceivesGameErrorEvent("919", "Invalid player selection")
+                .WhenPlayer(Babara)
+                    .ReceivesRobberPlacedEvent(Adam, 9).ThenDoNothing()
+                .WhenPlayer(Charlie)
+                    .ReceivesRobberPlacedEvent(Adam, 9).ThenDoNothing()
+                .WhenPlayer(Dana)
+                    .ReceivesRobberPlacedEvent(Adam, 9).ThenDoNothing()
+                .VerifyPlayer(Adam)
+                    .DidNotReceiveEventOfType<ChooseLostResourcesEvent>()
+                .VerifyPlayer(Babara)
+                    .DidNotReceiveEventOfType<ChooseLostResourcesEvent>()
+                .VerifyPlayer(Charlie)
+                    .DidNotReceiveEventOfType<ChooseLostResourcesEvent>()
+                .VerifyPlayer(Dana)
+                    .DidNotReceiveEventOfType<ChooseLostResourcesEvent>()
+                .Run();
         }
 
         [Test]
