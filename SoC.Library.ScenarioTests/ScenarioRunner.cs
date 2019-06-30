@@ -516,6 +516,13 @@ namespace SoC.Library.ScenarioTests
             return this;
         }
 
+        public ScenarioRunner ThenSelectRobbedPlayer(string victimPlayerName)
+        {
+            this.AddActionInstruction(ActionInstruction.OperationTypes.SelectRobbingVictim,
+                new object[] { victimPlayerName });
+            return this;
+        }
+
         public ScenarioRunner VerifyAllPlayersReceivedGameWonEvent(string winningPlayerName, uint victoryPoints)
         {
             this.playerAgents.ForEach(playerAgent =>
@@ -685,11 +692,6 @@ namespace SoC.Library.ScenarioTests
             var gameEvent = new ResourcesLostEvent(resource, this.currentPlayerAgent.Id, ResourcesLostEvent.ReasonTypes.Robbed);
             this.AddEventInstruction(gameEvent);
             return this;
-        }
-
-        public ScenarioRunner ThenSelectRobbingVictim(string victimPlayerName)
-        {
-            throw new NotImplementedException();
         }
         #endregion
     }

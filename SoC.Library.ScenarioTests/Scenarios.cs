@@ -1231,7 +1231,7 @@ namespace SoC.Library.ScenarioTests
                 .WhenPlayer(Adam)
                     .ReceivesStartTurnEvent(3, 4).ThenDoNothing()
                     .ReceivesPlaceRobberEvent().ThenPlaceRobber(9)
-                    .ReceivesRobbingChoicesEvent(robbingChoices).ThenSelectRobbingVictim(Babara)
+                    .ReceivesRobbingChoicesEvent(robbingChoices).ThenSelectRobbedPlayer(Babara)
                     .ReceivesGameErrorEvent("919", "Invalid player selection")
                 .WhenPlayer(Babara)
                     .ReceivesRobberPlacedEvent(Adam, 9).ThenDoNothing()

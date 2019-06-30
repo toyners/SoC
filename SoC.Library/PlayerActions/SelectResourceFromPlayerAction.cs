@@ -5,8 +5,8 @@ namespace Jabberwocky.SoC.Library.PlayerActions
 
     public class SelectResourceFromPlayerAction : PlayerAction
     {
-        public SelectResourceFromPlayerAction(Guid playerId) : base(playerId)
-        {
-        }
+        public Guid SelectedPlayerId;
+        public SelectResourceFromPlayerAction(Guid selectedPlayerId) : base(Guid.Empty)
+            => this.SelectedPlayerId = selectedPlayerId;
     }
 }

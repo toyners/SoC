@@ -28,6 +28,11 @@ namespace Jabberwocky.SoC.Library
             this.SendAction(new AcceptDirectTradeAction(this.playerId, sellerId));
         }
 
+        public void SelectRobbedPlayer(Guid selectedPlayerId)
+        {
+            this.SendAction(new SelectResourceFromPlayerAction(selectedPlayerId));
+        }
+
         public void AnswerDirectTradeOffer(ResourceClutch resourceClutch)
         {
             this.SendAction(new AnswerDirectTradeOfferAction(

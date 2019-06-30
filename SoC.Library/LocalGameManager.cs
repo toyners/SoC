@@ -553,6 +553,7 @@ namespace Jabberwocky.SoC.Library
             this.RaiseEvent(new InfrastructurePlacedEvent(player.Id, settlementLocation, roadEndLocation));
         }
 
+        private Guid[] playerIdsInRobberHex;
         private bool ProcessPlayerAction(PlayerAction playerAction)
         {
             if (playerAction is AcceptDirectTradeAction acceptDirectTradeAction)
@@ -596,6 +597,18 @@ namespace Jabberwocky.SoC.Library
                 return false;
             }
 
+            if (playerAction is SelectResourceFromPlayerAction selectResourceFromPlayerAction)
+            {
+                if (!this.playerIdsInRobberHex.Contains(selectResourceFromPlayerAction.SelectedPlayerId))
+                {
+                    this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, "919", "Invalid player selection"),
+                        this.currentPlayer);
+                    return false;
+                }
+
+                return false;
+            }
+
             if (playerAction is PlaceRobberAction placeRobberAction)
             {
                 if (this.robberHex == placeRobberAction.Hex)
@@ -608,14 +621,14 @@ namespace Jabberwocky.SoC.Library
                 this.robberHex = placeRobberAction.Hex;
                 this.RaiseEvent(new RobberPlacedEvent(this.currentPlayer.Id, this.robberHex));
 
-                var playerIdsInHex = this.gameBoard.GetPlayersForHex(this.robberHex);
-                if (playerIdsInHex != null)
+                this.playerIdsInRobberHex = this.gameBoard.GetPlayersForHex(this.robberHex);
+                if (this.playerIdsInRobberHex != null)
                 {
-                    if (playerIdsInHex.Length == 1)
+                    if (this.playerIdsInRobberHex.Length == 1)
                     {
-                        if (playerIdsInHex[0] != this.currentPlayer.Id)
+                        if (this.playerIdsInRobberHex[0] != this.currentPlayer.Id)
                         {
-                            var player = this.playersById[playerIdsInHex[0]];
+                            var player = this.playersById[this.playerIdsInRobberHex[0]];
 
                             var resourceIndex = this.numberGenerator.GetRandomNumberBetweenZeroAndMaximum(player.Resources.Count);
                             var robbedResource = player.LoseResourceAtIndex(resourceIndex);
@@ -627,7 +640,7 @@ namespace Jabberwocky.SoC.Library
                     }
                     else
                     {
-                        var resourceCountsByPlayerId = playerIdsInHex.Where(playerId => playerId != this.currentPlayer.Id).ToDictionary(playerId => playerId, playerId => this.playersById[playerId].Resources.Count);
+                        var resourceCountsByPlayerId = this.playerIdsInRobberHex.Where(playerId => playerId != this.currentPlayer.Id).ToDictionary(playerId => playerId, playerId => this.playersById[playerId].Resources.Count);
                         this.RaiseEvent(new RobbingChoicesEvent(this.currentPlayer.Id, resourceCountsByPlayerId));
                     }
                 }
