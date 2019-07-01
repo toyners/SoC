@@ -20,7 +20,7 @@ namespace SoC.Library.ScenarioTests.Instructions
             PlaceSettlement,
             PlaceStartingInfrastructure,
             RequestState,
-            SelectRobbingVictim,
+            SelectResourceFromPlayer,
             QuitGame,
         }
 

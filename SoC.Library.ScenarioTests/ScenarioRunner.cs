@@ -518,7 +518,7 @@ namespace SoC.Library.ScenarioTests
 
         public ScenarioRunner ThenSelectRobbedPlayer(string victimPlayerName)
         {
-            this.AddActionInstruction(ActionInstruction.OperationTypes.SelectRobbingVictim,
+            this.AddActionInstruction(ActionInstruction.OperationTypes.SelectResourceFromPlayer,
                 new object[] { victimPlayerName });
             return this;
         }

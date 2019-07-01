@@ -249,9 +249,9 @@ namespace SoC.Library.ScenarioTests
                     this.gameController.QuitGame();
                     break;
                 }
-                case ActionInstruction.OperationTypes.SelectRobbingVictim:
+                case ActionInstruction.OperationTypes.SelectResourceFromPlayer:
                 {
-                    this.gameController.SelectRobbedPlayer(this.playerIdsByName[(string)action.Parameters[0]]);
+                    this.gameController.SelectResourceFromPlayer(this.playerIdsByName[(string)action.Parameters[0]]);
                     break;
                 }
                 default: throw new Exception($"Operation '{action.Operation}' not recognised");
