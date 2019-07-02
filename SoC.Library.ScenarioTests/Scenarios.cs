@@ -12,6 +12,7 @@ namespace SoC.Library.ScenarioTests
     using static SoC.Library.ScenarioTests.InfrastructureSetupBuilder;
 
     [TestFixture]
+    [Category("A_Scenarios")]
     public class Scenarios
     {
         const string Adam = "Adam";
