@@ -13,7 +13,7 @@ namespace Jabberwocky.SoC.Library
     using Jabberwocky.SoC.Library.Interfaces;
     using Jabberwocky.SoC.Library.PlayerActions;
 
-    public class LocalGameManager
+    public class GameManager
     {
         #region Fields
         private readonly ActionManager actionManager;
@@ -46,7 +46,7 @@ namespace Jabberwocky.SoC.Library
         #endregion
 
         #region Construction
-        public LocalGameManager(INumberGenerator numberGenerator, GameBoard gameBoard, IDevelopmentCardHolder developmentCardHolder, IPlayerFactory playerFactory)
+        public GameManager(INumberGenerator numberGenerator, GameBoard gameBoard, IDevelopmentCardHolder developmentCardHolder, IPlayerFactory playerFactory)
         {
             this.numberGenerator = numberGenerator;
             this.gameBoard = gameBoard;

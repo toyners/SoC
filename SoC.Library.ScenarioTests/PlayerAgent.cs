@@ -113,7 +113,7 @@ namespace SoC.Library.ScenarioTests
             return contents;
         }
 
-        public void JoinGame(LocalGameManager gameServer)
+        public void JoinGame(GameManager gameServer)
         {
             gameServer.JoinGame(this.Name, this.gameController);
         }

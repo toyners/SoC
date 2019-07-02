@@ -75,6 +75,7 @@
     <Compile Include="GameEvents\RobberPlacedEvent.cs" />
     <Compile Include="GameEvents\RobbingChoicesEvent.cs" />
     <Compile Include="GameEvents\SettlementPlacedEvent.cs" />
+    <Compile Include="GameManager.cs" />
     <Compile Include="GameToken.cs" />
     <Compile Include="Interfaces\IActionLog.cs" />
     <Compile Include="Interfaces\ILog.cs" />
@@ -123,7 +124,6 @@
     <Compile Include="GameServerTimer.cs" />
     <Compile Include="IGameTimer.cs" />
     <Compile Include="GameEvents\InitialBoardSetupEvent.cs" />
-    <Compile Include="LocalGameManager.cs" />
     <Compile Include="GameState.cs" />
     <Compile Include="GameEvents\PlaceSetupInfrastructureEvent.cs" />
     <Compile Include="PlayerData\PlayerFullDataModel.cs" />

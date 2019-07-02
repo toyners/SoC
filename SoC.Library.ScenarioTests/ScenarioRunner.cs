@@ -325,7 +325,7 @@ namespace SoC.Library.ScenarioTests
             if (this.playerFactory == null)
                 this.playerFactory = new PlayerPool();
 
-            var gameServer = new LocalGameManager(
+            var gameServer = new GameManager(
                 this.numberGenerator,
                 this.gameBoard,
                 this.developmentCardHolder,
