@@ -958,19 +958,17 @@ namespace Jabberwocky.SoC.Library
                     var playerName = this.playersById[playerAction.InitiatingPlayerId].Name;
                     var message = $"Received {playerActionTypeName} from {playerName}";
 
+                    if (this.IsAutomaticPlayerAction(playerAction))
+                    {
+                        //players[index] = null;
+                        this.log.Add(message + " AUTOMATIC");
+                        return playerAction;
+                    }
+
                     if (!players.Contains(playerAction.InitiatingPlayerId))
                     {
                         this.log.Add(message + " PLAYER MISSING");
                         continue;
-                    }
-
-                    var index = players.FindIndex(playerId => playerId == playerAction.InitiatingPlayerId);
-
-                    if (this.IsAutomaticPlayerAction(playerAction))
-                    {
-                        players[index] = null;
-                        this.log.Add(message + " AUTOMATIC");
-                        return playerAction;
                     }
 
                     if (!allowedActionTypes.Contains(playerAction.GetType()))
@@ -978,6 +976,9 @@ namespace Jabberwocky.SoC.Library
                         this.log.Add(message + " NO MATCH");
                         continue;
                     }
+
+                    var index = players.FindIndex(playerId => playerId == playerAction.InitiatingPlayerId);
+                    players[index] = null;
 
                     this.log.Add($"Validated {playerActionTypeName} from {playerName}");
                     return playerAction;
