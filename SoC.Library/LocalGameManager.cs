@@ -929,6 +929,61 @@ namespace Jabberwocky.SoC.Library
 
             this.ProcessPlayerAction(this.WaitForPlayerAction());
         }
+
+        private PlayerAction WaitForPlayerAction(HashSet<Type> allowedActionTypes, List<Guid?> players, IGameTimer[] turnTimers, PlayerAction[] timeOutActions)
+        {
+            while (true)
+            {
+                Thread.Sleep(50);
+                this.cancellationToken.ThrowIfCancellationRequested();
+
+                for (var index = 0; index < turnTimers.Length; index++)
+                {
+                    if (turnTimers[index].IsLate)
+                    {
+                        // TODO: return time out player action
+                        // players[index] = null;
+                        // return timeOutActions[index]
+                    }
+                }
+
+                if (this.actionRequests.TryDequeue(out var playerAction))
+                {
+                    var playerActionTypeName = playerAction.GetType().Name;
+                    var playerName = this.playersById[playerAction.InitiatingPlayerId].Name;
+                    var message = $"Received {playerActionTypeName} from {playerName}";
+
+                    if (!players.Contains(playerAction.InitiatingPlayerId))
+                    {
+                        this.log.Add(message + " PLAYER MISSING");
+                        continue;
+                    }
+
+                    var index = players.FindIndex(playerId => playerId == playerAction.InitiatingPlayerId);
+
+                    if (this.IsAutomaticPlayerAction(playerAction))
+                    {
+                        players[index] = null;
+                        this.log.Add(message + " AUTOMATIC");
+                        return playerAction;
+                    }
+
+                    if (!allowedActionTypes.Contains(playerAction.GetType()))
+                    {
+                        this.log.Add(message + " NO MATCH");
+                        continue;
+                    }
+
+                    this.log.Add($"Validated {playerActionTypeName} from {playerName}");
+                    return playerAction;
+                }
+            }
+        }
+
+        private bool IsAutomaticPlayerAction(PlayerAction playerAction)
+        {
+            return playerAction is RequestStateAction || playerAction is QuitGameAction;
+        }
         #endregion
 
         #region Structures
