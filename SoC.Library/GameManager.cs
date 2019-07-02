@@ -927,7 +927,12 @@ namespace Jabberwocky.SoC.Library
             this.actionManager.SetExpectedActionsForPlayer(this.currentPlayer.Id, typeof(PlaceRobberAction));
             this.RaiseEvent(new PlaceRobberEvent(), this.currentPlayer);
 
-            this.ProcessPlayerAction(this.WaitForPlayerAction());
+            var allowedTypes = new HashSet<Type>();
+            allowedTypes.Add(typeof(PlaceRobberAction));
+            var playerIds = new List<Guid?>();
+            playerIds.Add(this.currentPlayer.Id);
+            var playerAction = this.WaitForPlayerAction(allowedTypes, playerIds, new[] { this.turnTimer }, null);
+            this.ProcessPlayerAction(playerAction);
         }
 
         private PlayerAction WaitForPlayerAction(HashSet<Type> allowedActionTypes, List<Guid?> players, IGameTimer[] turnTimers, PlayerAction[] timeOutActions)
