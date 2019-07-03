@@ -664,21 +664,17 @@ namespace SoC.Library.ScenarioTests
             return this.playerAgentsByName[playerName].Id;
         }
 
-        public ScenarioRunner ReceivesResourcesRobbedEvent(string robbedPlayerName, ResourceClutch resource)
+        public ScenarioRunner ReceivesResourcesRobbedEvent(string robbedPlayerName, ResourceTypes resourceType)
         {
-            ResourceTypes resourceType;
-            if (resource == ResourceClutch.OneBrick)
-                resourceType = ResourceTypes.Brick;
-            else if (resource == ResourceClutch.OneGrain)
-                resourceType = ResourceTypes.Grain;
-            else if (resource == ResourceClutch.OneLumber)
-                resourceType = ResourceTypes.Lumber;
-            else if (resource == ResourceClutch.OneOre)
-                resourceType = ResourceTypes.Ore;
-            else if (resource == ResourceClutch.OneWool)
-                resourceType = ResourceTypes.Wool;
-            else
-                throw new Exception("Resources should be one-of");
+            ResourceClutch resource = ResourceClutch.Zero;
+            switch (resourceType)
+            {
+                case ResourceTypes.Brick: resource = ResourceClutch.OneBrick; break;
+                case ResourceTypes.Grain: resource = ResourceClutch.OneGrain; break;
+                case ResourceTypes.Lumber: resource = ResourceClutch.OneLumber; break;
+                case ResourceTypes.Ore: resource = ResourceClutch.OneOre; break;
+                case ResourceTypes.Wool: resource = ResourceClutch.OneWool; break;
+            }
 
             this.numberGenerator.AddRobbed(this.playerAgentsByName[robbedPlayerName], resourceType);
             var gameEvent = new ResourcesGainedEvent(resource);

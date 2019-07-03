@@ -603,7 +603,6 @@ namespace Jabberwocky.SoC.Library
                 {
                     this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, "919", "Invalid player selection"),
                         this.currentPlayer);
-                    return false;
                 }
 
                 return false;
@@ -667,10 +666,10 @@ namespace Jabberwocky.SoC.Library
                 else
                 {
                     var resourceCountsByPlayerId = this.playerIdsInRobberHex.Where(playerId => playerId != this.currentPlayer.Id).ToDictionary(playerId => playerId, playerId => this.playersById[playerId].Resources.Count);
-                    this.actionManager.SetExpectedActionsForPlayer(this.currentPlayer.Id, typeof(SelectResourceFromPlayerAction));
                     this.RaiseEvent(new RobbingChoicesEvent(this.currentPlayer.Id, resourceCountsByPlayerId));
 
-                    // WaitForPlayerAction() for selected resource from player action
+                    this.actionManager.SetExpectedActionsForPlayer(this.currentPlayer.Id, typeof(SelectResourceFromPlayerAction));
+                    this.ProcessPlayerAction(this.WaitForPlayerAction());
                 }
             }
         }
@@ -924,15 +923,10 @@ namespace Jabberwocky.SoC.Library
 
         private void WaitForRobberPlacement()
         {
-            this.actionManager.SetExpectedActionsForPlayer(this.currentPlayer.Id, typeof(PlaceRobberAction));
             this.RaiseEvent(new PlaceRobberEvent(), this.currentPlayer);
 
-            var allowedTypes = new HashSet<Type>();
-            allowedTypes.Add(typeof(PlaceRobberAction));
-            var playerIds = new List<Guid?>();
-            playerIds.Add(this.currentPlayer.Id);
-            var playerAction = this.WaitForPlayerAction(allowedTypes, playerIds, new[] { this.turnTimer }, null);
-            this.ProcessPlayerAction(playerAction);
+            this.actionManager.SetExpectedActionsForPlayer(this.currentPlayer.Id, typeof(PlaceRobberAction));
+            this.ProcessPlayerAction(this.WaitForPlayerAction());
         }
 
         private PlayerAction WaitForPlayerAction(HashSet<Type> allowedActionTypes, List<Guid?> players, IGameTimer[] turnTimers, PlayerAction[] timeOutActions)
