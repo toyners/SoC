@@ -1286,18 +1286,22 @@ namespace SoC.Library.ScenarioTests
                     .ThenVerifyPlayerState()
                         .Resources(ResourceClutch.OneBrick + ResourceClutch.OneGrain + robbedResource + ResourceClutch.OneWool)
                     .End()
+                    .ThenPlaceRoadSegment(4, 3)
                 .WhenPlayer(Babara)
                     .ReceivesRobberPlacedEvent(Adam, 9).ThenDoNothing()
                     .ReceivesResourcesStolenEvent(Charlie, robbedResource)
+                    .ReceivesRoadSegmentPlacementEvent(Adam, 4, 3)
                 .WhenPlayer(Charlie)
                     .ReceivesRobberPlacedEvent(Adam, 9).ThenDoNothing()
                     .ReceivesResourcesStolenEvent(robbedResource)
                     .ThenVerifyPlayerState()
                         .Resources(ResourceClutch.OneGrain + ResourceClutch.OneWool)
                     .End()
+                    .ReceivesRoadSegmentPlacementEvent(Adam, 4, 3)
                 .WhenPlayer(Dana)
                     .ReceivesRobberPlacedEvent(Adam, 9).ThenDoNothing()
                     .ReceivesResourcesStolenEvent(Charlie, robbedResource)
+                    .ReceivesRoadSegmentPlacementEvent(Adam, 4, 3)
                 .Run();
         }
 
