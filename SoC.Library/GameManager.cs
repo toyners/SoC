@@ -604,6 +604,17 @@ namespace Jabberwocky.SoC.Library
                     this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, "919", "Invalid player selection"),
                         this.currentPlayer);
                 }
+                else
+                {
+                    var player = this.playersById[selectResourceFromPlayerAction.SelectedPlayerId];
+                    var resourceIndex = this.numberGenerator.GetRandomNumberBetweenZeroAndMaximum(player.Resources.Count);
+                    var robbedResource = player.LoseResourceAtIndex(resourceIndex);
+                    this.currentPlayer.AddResources(robbedResource);
+                    this.RaiseEvent(new ResourcesGainedEvent(robbedResource), this.currentPlayer);
+                    this.RaiseEvent(new ResourcesLostEvent(robbedResource, this.currentPlayer.Id, ResourcesLostEvent.ReasonTypes.Robbed), player);
+                    this.RaiseEvent(new ResourcesLostEvent(robbedResource, this.currentPlayer.Id, ResourcesLostEvent.ReasonTypes.Witness),
+                        this.PlayersExcept(this.currentPlayer.Id, player.Id));
+                }
 
                 return false;
             }
@@ -657,6 +668,7 @@ namespace Jabberwocky.SoC.Library
 
                         var resourceIndex = this.numberGenerator.GetRandomNumberBetweenZeroAndMaximum(player.Resources.Count);
                         var robbedResource = player.LoseResourceAtIndex(resourceIndex);
+                        this.currentPlayer.AddResources(robbedResource);
                         this.RaiseEvent(new ResourcesGainedEvent(robbedResource), this.currentPlayer);
                         this.RaiseEvent(new ResourcesLostEvent(robbedResource, this.currentPlayer.Id, ResourcesLostEvent.ReasonTypes.Robbed), player);
                         this.RaiseEvent(new ResourcesLostEvent(robbedResource, this.currentPlayer.Id, ResourcesLostEvent.ReasonTypes.Witness),
