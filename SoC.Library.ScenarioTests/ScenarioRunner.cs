@@ -516,6 +516,11 @@ namespace SoC.Library.ScenarioTests
             return this;
         }
 
+        public ScenarioRunner ThenPlayKnightCard()
+        {
+            throw new NotImplementedException();
+        }
+
         public ScenarioRunner ThenSelectRobbedPlayer(string victimPlayerName)
         {
             this.AddActionInstruction(ActionInstruction.OperationTypes.SelectResourceFromPlayer,
