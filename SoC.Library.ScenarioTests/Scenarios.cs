@@ -809,30 +809,35 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void PlayerPlaysKnightCard()
         {
+            var robbingChoices = new Dictionary<string, int>()
+            {
+                { Babara, 3 },
+                { Dana, 3 }
+            };
             var robbedResource = ResourceClutch.OneLumber;
             this.CompletePlayerInfrastructureSetup( new[] { MethodBase.GetCurrentMethod().Name })
                 .WhenPlayer(Adam)
-                    .ReceivesStartTurnEvent(3, 3).ThenPlayKnightCard(9)
-                    //.ReceivesRobbingChoicesEvent(robbingChoices).ThenSelectRobbedPlayer(Charlie)
-                    .ReceivesResourcesRobbedEvent(Charlie, ResourceTypes.Lumber)
+                    .ReceivesStartTurnEvent(3, 3).ThenPlayKnightCard(8)
+                    .ReceivesRobbingChoicesEvent(robbingChoices).ThenSelectRobbedPlayer(Babara)
+                    .ReceivesResourcesRobbedEvent(Babara, ResourceTypes.Lumber)
                     .ThenVerifyPlayerState()
                         .Resources(ResourceClutch.OneBrick + ResourceClutch.OneGrain + robbedResource + ResourceClutch.OneWool)
                     .End()
                     .ThenPlaceRoadSegment(4, 3)
                 .WhenPlayer(Babara)
-                    .ReceivesRobberPlacedEvent(Adam, 9).ThenDoNothing()
-                    .ReceivesResourcesStolenEvent(Charlie, robbedResource)
-                    .ReceivesRoadSegmentPlacementEvent(Adam, 4, 3)
-                .WhenPlayer(Charlie)
-                    .ReceivesRobberPlacedEvent(Adam, 9).ThenDoNothing()
+                    .ReceivesKinghtCardPlayerEvent(Adam, 8).ThenDoNothing()
                     .ReceivesResourcesStolenEvent(robbedResource)
                     .ThenVerifyPlayerState()
                         .Resources(ResourceClutch.OneGrain + ResourceClutch.OneWool)
                     .End()
                     .ReceivesRoadSegmentPlacementEvent(Adam, 4, 3)
+                .WhenPlayer(Charlie)
+                    .ReceivesKinghtCardPlayerEvent(Adam, 8).ThenDoNothing()
+                    .ReceivesResourcesStolenEvent(Babara, robbedResource)
+                    .ReceivesRoadSegmentPlacementEvent(Adam, 4, 3)
                 .WhenPlayer(Dana)
-                    .ReceivesRobberPlacedEvent(Adam, 9).ThenDoNothing()
-                    .ReceivesResourcesStolenEvent(Charlie, robbedResource)
+                    .ReceivesKinghtCardPlayerEvent(Adam, 8).ThenDoNothing()
+                    .ReceivesResourcesStolenEvent(Babara, robbedResource)
                     .ReceivesRoadSegmentPlacementEvent(Adam, 4, 3)
                 .Run();
         }

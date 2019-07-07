@@ -155,6 +155,11 @@ namespace SoC.Library.ScenarioTests
             return this;
         }
 
+        public ScenarioRunner ReceivesKinghtCardPlayerEvent(string playerName, int hex)
+        {
+            throw new NotImplementedException();
+        }
+
         public ScenarioRunner ReceivesMakeDirectTradeOfferEvent(string buyingPlayerName, ResourceClutch wantedResources)
         {
             var gameEvent = new MakeDirectTradeOfferEvent(this.GetPlayerId(buyingPlayerName), wantedResources);
@@ -232,6 +237,13 @@ namespace SoC.Library.ScenarioTests
             return this;
         }
 
+        public ScenarioRunner ReceivesResourcesStolenEvent(ResourceClutch lostResource)
+        {
+            var gameEvent = new ResourcesLostEvent(lostResource, this.currentPlayerAgent.Id, ResourcesLostEvent.ReasonTypes.Robbed);
+            this.AddEventInstruction(gameEvent);
+            return this;
+        }
+
         public ScenarioRunner ReceivesResourcesStolenEvent(string playerName, ResourceClutch lostResource)
         {
             var gameEvent = new ResourcesLostEvent(lostResource, this.playerAgentsByName[playerName].Id, ResourcesLostEvent.ReasonTypes.Witness);
@@ -250,6 +262,25 @@ namespace SoC.Library.ScenarioTests
         {
             var gameEvent = new RoadSegmentPlacedEvent(this.playerAgentsByName[playerName].Id, roadSegmentStartLocation, roadSegmentEndLocation);
             this.currentPlayerAgent.AddInstruction(new EventInstruction(gameEvent));
+            return this;
+        }
+
+        public ScenarioRunner ReceivesResourcesRobbedEvent(string robbedPlayerName, ResourceTypes resourceType)
+        {
+            ResourceClutch resource = ResourceClutch.Zero;
+            switch (resourceType)
+            {
+                case ResourceTypes.Brick: resource = ResourceClutch.OneBrick; break;
+                case ResourceTypes.Grain: resource = ResourceClutch.OneGrain; break;
+                case ResourceTypes.Lumber: resource = ResourceClutch.OneLumber; break;
+                case ResourceTypes.Ore: resource = ResourceClutch.OneOre; break;
+                case ResourceTypes.Wool: resource = ResourceClutch.OneWool; break;
+            }
+
+            this.numberGenerator.AddRobbed(this.playerAgentsByName[robbedPlayerName], resourceType);
+            var gameEvent = new ResourcesGainedEvent(resource);
+            this.AddEventInstruction(gameEvent);
+
             return this;
         }
 
@@ -669,32 +700,6 @@ namespace SoC.Library.ScenarioTests
                 throw new Exception($"Player name {playerName} not recognised.");
 
             return this.playerAgentsByName[playerName].Id;
-        }
-
-        public ScenarioRunner ReceivesResourcesRobbedEvent(string robbedPlayerName, ResourceTypes resourceType)
-        {
-            ResourceClutch resource = ResourceClutch.Zero;
-            switch (resourceType)
-            {
-                case ResourceTypes.Brick: resource = ResourceClutch.OneBrick; break;
-                case ResourceTypes.Grain: resource = ResourceClutch.OneGrain; break;
-                case ResourceTypes.Lumber: resource = ResourceClutch.OneLumber; break;
-                case ResourceTypes.Ore: resource = ResourceClutch.OneOre; break;
-                case ResourceTypes.Wool: resource = ResourceClutch.OneWool; break;
-            }
-
-            this.numberGenerator.AddRobbed(this.playerAgentsByName[robbedPlayerName], resourceType);
-            var gameEvent = new ResourcesGainedEvent(resource);
-            this.AddEventInstruction(gameEvent);
-
-            return this;
-        }
-
-        public ScenarioRunner ReceivesResourcesStolenEvent(ResourceClutch resource)
-        {
-            var gameEvent = new ResourcesLostEvent(resource, this.currentPlayerAgent.Id, ResourcesLostEvent.ReasonTypes.Robbed);
-            this.AddEventInstruction(gameEvent);
-            return this;
         }
         #endregion
     }
