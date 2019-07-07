@@ -19,6 +19,7 @@ namespace SoC.Library.ScenarioTests.Instructions
             PlaceRobber,
             PlaceSettlement,
             PlaceStartingInfrastructure,
+            PlayKnightCard,
             RequestState,
             SelectResourceFromPlayer,
             QuitGame,

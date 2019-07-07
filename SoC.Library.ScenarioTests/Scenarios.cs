@@ -812,8 +812,7 @@ namespace SoC.Library.ScenarioTests
             var robbedResource = ResourceClutch.OneLumber;
             this.CompletePlayerInfrastructureSetup( new[] { MethodBase.GetCurrentMethod().Name })
                 .WhenPlayer(Adam)
-                    .ReceivesStartTurnEvent(3, 3).ThenPlayKnightCard()
-                    .ReceivesPlaceRobberEvent().ThenPlaceRobber(9)
+                    .ReceivesStartTurnEvent(3, 3).ThenPlayKnightCard(9)
                     //.ReceivesRobbingChoicesEvent(robbingChoices).ThenSelectRobbedPlayer(Charlie)
                     .ReceivesResourcesRobbedEvent(Charlie, ResourceTypes.Lumber)
                     .ThenVerifyPlayerState()
