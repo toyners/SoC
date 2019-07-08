@@ -7,6 +7,7 @@ namespace Jabberwocky.SoC.Library
     using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
+    using Jabberwocky.SoC.Library.DevelopmentCards;
     using Jabberwocky.SoC.Library.Enums;
     using Jabberwocky.SoC.Library.GameBoards;
     using Jabberwocky.SoC.Library.GameEvents;
@@ -599,6 +600,13 @@ namespace Jabberwocky.SoC.Library
 
             if (playerAction is PlayKnightCardAction playKnightCardAction)
             {
+                DevelopmentCard card = null;
+                if ((card = this.currentPlayer.HeldCards.FirstOrDefault(c => c.Type != DevelopmentCardTypes.Knight)) == null)
+                {
+                    this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, "920", "No Knight card owned"),
+                        this.currentPlayer);
+                }
+
                 return false;
             }
 
