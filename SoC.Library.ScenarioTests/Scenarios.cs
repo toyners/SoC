@@ -843,6 +843,66 @@ namespace SoC.Library.ScenarioTests
         }
 
         [Test]
+        public void PlayerPlaysKnightCardThatIsNotOwned()
+        {
+            this.CompletePlayerInfrastructureSetup(new[] { MethodBase.GetCurrentMethod().Name })
+                .WithNoResourceCollection()
+                .WhenPlayer(Adam)
+                    .ReceivesStartTurnEvent(3, 3).ThenPlayKnightCard(0)
+                    .ReceivesGameErrorEvent("920", "No Knight card owned")
+                .VerifyPlayer(Babara)
+                    .DidNotReceiveEventOfType<GameErrorEvent>()
+                .VerifyPlayer(Charlie)
+                    .DidNotReceiveEventOfType<GameErrorEvent>()
+                .VerifyPlayer(Dana)
+                    .DidNotReceiveEventOfType<GameErrorEvent>()
+                .Run();
+        }
+
+        [Test]
+        public void PlayerPlaysKnightCardAndNewHexIsSameAsCurrentHex()
+        {
+            this.CompletePlayerInfrastructureSetup(new[] { MethodBase.GetCurrentMethod().Name })
+                .WithNoResourceCollection()
+                .WhenPlayer(Adam)
+                    .ReceivesStartTurnEvent(3, 3).ThenPlayKnightCard(0)
+                    .ReceivesGameErrorEvent("918", "New robber hex cannot be the same as previous robber hex")
+                .VerifyPlayer(Babara)
+                    .DidNotReceiveEventOfType<GameErrorEvent>()
+                .VerifyPlayer(Charlie)
+                    .DidNotReceiveEventOfType<GameErrorEvent>()
+                .VerifyPlayer(Dana)
+                    .DidNotReceiveEventOfType<GameErrorEvent>()
+                .Run();
+        }
+
+        [Test]
+        public void PlayerPlaysKnightCardAndNewHexHasNoPlayers()
+        {
+            this.CompletePlayerInfrastructureSetup(new[] { MethodBase.GetCurrentMethod().Name })
+                .WithNoResourceCollection()
+                .WhenPlayer(Adam)
+                    .ReceivesStartTurnEvent(3, 3).ThenPlayKnightCard(4)
+                    .ReceivesPlaceRobberEvent().ThenPlaceRobber(4)
+                .WhenPlayer(Babara)
+                    .ReceivesKinghtCardPlayerEvent(Adam, 4).ThenDoNothing()
+                .WhenPlayer(Charlie)
+                    .ReceivesKinghtCardPlayerEvent(Adam, 4).ThenDoNothing()
+                .WhenPlayer(Dana)
+                    .ReceivesKinghtCardPlayerEvent(Adam, 4).ThenDoNothing()
+                .VerifyPlayer(Adam)
+                    .DidNotReceiveEventOfType<RobbingChoicesEvent>()
+                    .DidNotReceiveEventOfType<ResourcesGainedEvent>()
+                .VerifyPlayer(Babara)
+                    .DidNotReceiveEventOfType<ResourcesLostEvent>()
+                .VerifyPlayer(Charlie)
+                    .DidNotReceiveEventOfType<ResourcesLostEvent>()
+                .VerifyPlayer(Dana)
+                    .DidNotReceiveEventOfType<ResourcesLostEvent>()
+                .Run();
+        }
+
+        [Test]
         public void PlayerRollsSevenAndAllPlayersWithMoreThanSevenResourcesLoseResources()
         {
             var adamsInitialResources = new ResourceClutch(1, 2, 2, 2, 2); // 9 resources

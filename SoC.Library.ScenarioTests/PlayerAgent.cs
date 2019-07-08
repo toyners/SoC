@@ -239,6 +239,11 @@ namespace SoC.Library.ScenarioTests
                     this.gameController.PlaceSetupInfrastructure((uint)action.Parameters[0], (uint)action.Parameters[1]);
                     break;
                 }
+                case ActionInstruction.OperationTypes.PlayKnightCard:
+                {
+                    this.gameController.PlayKnightCard((uint)action.Parameters[0]);
+                    break;
+                }
                 case ActionInstruction.OperationTypes.RequestState:
                 {
                     this.gameController.RequestState();

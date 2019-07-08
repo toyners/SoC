@@ -86,6 +86,11 @@ namespace Jabberwocky.SoC.Library
             this.SendAction(new PlaceSetupInfrastructureAction(this.playerId, settlementLocation, roadEndLocation));
         }
 
+        public void PlayKnightCard(uint hex)
+        {
+            this.SendAction(new PlayKnightCardAction(this.playerId, hex));
+        }
+
         public void RequestState()
         {
             this.SendAction(new RequestStateAction(this.playerId));

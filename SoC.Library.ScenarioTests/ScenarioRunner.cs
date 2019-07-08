@@ -155,9 +155,10 @@ namespace SoC.Library.ScenarioTests
             return this;
         }
 
-        public ScenarioRunner ReceivesKinghtCardPlayerEvent(string playerName, int hex)
+        public ScenarioRunner ReceivesKinghtCardPlayerEvent(string playerName, uint hex)
         {
-            throw new NotImplementedException();
+            this.AddEventInstruction(new KnightCardPlayedEvent(this.playerAgentsByName[playerName].Id, hex));
+            return this;
         }
 
         public ScenarioRunner ReceivesMakeDirectTradeOfferEvent(string buyingPlayerName, ResourceClutch wantedResources)

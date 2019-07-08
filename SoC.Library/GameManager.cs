@@ -597,6 +597,11 @@ namespace Jabberwocky.SoC.Library
                 return false;
             }
 
+            if (playerAction is PlayKnightCardAction playKnightCardAction)
+            {
+                return false;
+            }
+
             if (playerAction is SelectResourceFromPlayerAction selectResourceFromPlayerAction)
             {
                 if (!this.playerIdsInRobberHex.Contains(selectResourceFromPlayerAction.SelectedPlayerId))
