@@ -773,7 +773,8 @@ namespace Jabberwocky.SoC.Library
 
             this.actionManager.SetExpectedActionsForPlayer(this.currentPlayer.Id,
                 typeof(EndOfTurnAction), typeof(MakeDirectTradeOfferAction),
-                typeof(PlaceRoadSegmentAction), typeof(PlaceSettlementAction), typeof(PlaceCityAction));
+                typeof(PlaceCityAction), typeof(PlaceRoadSegmentAction),
+                typeof(PlaceSettlementAction));
         }
 
         private void StartTurnWithRobberPlacement(uint dice1, uint dice2)
