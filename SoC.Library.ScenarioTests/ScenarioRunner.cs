@@ -430,7 +430,8 @@ namespace SoC.Library.ScenarioTests
                 }
 
                 playerAgent.SaveEvents($"{logDirectory}\\{playerAgent.Name}.events");
-                playerAgent.SaveLog($"{logDirectory}\\{playerAgent.Name}.log");
+                playerAgent.SaveOldLog($"{logDirectory}\\{playerAgent.Name}.log");
+                playerAgent.SaveLog($"{logDirectory}\\{playerAgent.Name}.html");
             }
 
             gameServer.SaveLog($"{logDirectory}\\GameServer.log");
