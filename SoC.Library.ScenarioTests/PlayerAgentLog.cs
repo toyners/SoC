@@ -4,36 +4,52 @@ namespace SoC.Library.ScenarioTests
     using System;
     using System.Collections.Generic;
     using System.IO;
+    using System.Linq;
     using Jabberwocky.SoC.Library.GameEvents;
 
     public class PlayerAgentLog : IPlayerAgentLog
     {
-        private readonly List<ILogEvent> gameEvents = new List<ILogEvent>();
+        private readonly List<ILogEvent> logEvents = new List<ILogEvent>();
 
         public void AddMatchedEvent(GameEvent actualEvent, GameEvent expectedEvent) =>
-            this.gameEvents.Add(new MatchedExpectedEvent(actualEvent, expectedEvent));
+            this.logEvents.Add(new MatchedExpectedEvent(actualEvent, expectedEvent));
 
         public void AddActualEvent(GameEvent actualEvent) =>
-            this.gameEvents.Add(new UnmatchActualEvent(actualEvent));
+            this.logEvents.Add(new UnmatchActualEvent(actualEvent));
 
         public void AddUnmatchedExpectedEvent(GameEvent expectedEvent) =>
-            this.gameEvents.Add(new UnmatchedExpectedEvent(expectedEvent));
+            this.logEvents.Add(new UnmatchedExpectedEvent(expectedEvent));
 
         public void AddException(Exception exception) =>
-            this.gameEvents.Add(new ExceptionEvent(exception));
+            this.logEvents.Add(new ExceptionEvent(exception));
 
         public void AddNote(string note) =>
-            this.gameEvents.Add(new NoteEvent(note));
+            this.logEvents.Add(new NoteEvent(note));
 
         public void WriteToFile(string filePath)
         {
-            var content = "";
-            File.WriteAllText(filePath, content);
+            var content = "<html><head><title>Report</title>" +
+                "<style>" +
+                "table {" +
+                "border: 1px solid black;" +
+                "border-collapse: collapse;" +
+                "} " +
+                "td {" +
+                "border: 1px solid black" +
+                "</style></head><body><table>" +
+                "<tr><th>Actual</th><th>Expected</th></tr>";
+            
+            foreach (var logEvent in this.logEvents.Where(l => !(l is NoteEvent || l is ExceptionEvent)))
+            {
+                content += logEvent.ToHtml();
+            }
+
+            File.WriteAllText(filePath, content + "</table></body>");
         }
 
         private interface ILogEvent
         {
-            string ToHtmlRow();
+            string ToHtml();
         }
 
         private class UnmatchActualEvent : ILogEvent
@@ -41,9 +57,9 @@ namespace SoC.Library.ScenarioTests
             private GameEvent actualEvent;
             public UnmatchActualEvent(GameEvent actualEvent) => this.actualEvent = actualEvent;
 
-            public string ToHtmlRow()
+            public string ToHtml()
             {
-                return "";
+                return $"<tr><td>{this.actualEvent.SimpleTypeName}</td><td></td></tr>";
             }
         }
 
@@ -52,9 +68,9 @@ namespace SoC.Library.ScenarioTests
             private GameEvent expectedEvent;
             public UnmatchedExpectedEvent(GameEvent expectedEvent) => this.expectedEvent = expectedEvent;
 
-            public string ToHtmlRow()
+            public string ToHtml()
             {
-                return "";
+                return $"<tr><td></td><td>{this.expectedEvent.SimpleTypeName}</td></tr>";
             }
         }
 
@@ -67,9 +83,9 @@ namespace SoC.Library.ScenarioTests
                 this.expectedEvent = expectedEvent;
             }
 
-            public string ToHtmlRow()
+            public string ToHtml()
             {
-                return "";
+                return $"<tr><td>{this.actualEvent.SimpleTypeName}</td><td>{this.expectedEvent.SimpleTypeName}</td></tr>";
             }
         }
 
@@ -78,9 +94,9 @@ namespace SoC.Library.ScenarioTests
             private Exception exception;
             public ExceptionEvent(Exception exception) => this.exception = exception;
 
-            public string ToHtmlRow()
+            public string ToHtml()
             {
-                return "";
+                return $"<tr><td colspan=\"2\">{this.exception.Message}</td></tr>";
             }
         }
 
@@ -89,9 +105,9 @@ namespace SoC.Library.ScenarioTests
             private string note;
             public NoteEvent(string note) => this.note = note;
 
-            public string ToHtmlRow()
+            public string ToHtml()
             {
-                return "";
+                return $"<tr><td colspan=\"2\">{this.note}</td></tr>";
             }
         }
     }

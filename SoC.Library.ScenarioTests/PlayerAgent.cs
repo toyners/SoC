@@ -128,8 +128,6 @@ namespace SoC.Library.ScenarioTests
             System.IO.File.WriteAllText(filePath, this.GetEventLog());
         }
 
-        public void SaveOldLog(string filePath) => this.log.WriteToFile(filePath);
-
         public void SaveLog(string filePath) => this.log.WriteToFile(filePath);
 
         public Task StartAsync()
