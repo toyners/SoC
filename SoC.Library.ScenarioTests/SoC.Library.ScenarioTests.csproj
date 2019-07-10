@@ -58,9 +58,11 @@
     <Compile Include="Instructions\Instruction.cs" />
     <Compile Include="Instructions\MultipleEventInstruction.cs" />
     <Compile Include="Instructions\PlayerStateInstruction.cs" />
+    <Compile Include="IPlayerAgentLog.cs" />
     <Compile Include="IPlayerSetupAction.cs" />
     <Compile Include="PlacedRoadSegmentSetup.cs" />
     <Compile Include="PlacedSettlementsSetup.cs" />
+    <Compile Include="PlayerAgentLog.cs" />
     <Compile Include="ResourceSetup.cs" />
     <Compile Include="ScenarioEvents\ScenarioGameErrorEvent.cs" />
     <Compile Include="ScenarioEvents\ScenarioRequestStateEvent.cs" />

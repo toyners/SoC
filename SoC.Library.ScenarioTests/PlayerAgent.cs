@@ -27,7 +27,7 @@ namespace SoC.Library.ScenarioTests
         private readonly List<EventActionPair> expectedEventActions = new List<EventActionPair>();
         private readonly HashSet<GameEvent> expectedEventsWithVerboseLogging = new HashSet<GameEvent>();
         private readonly GameController gameController;
-        private readonly ILog log = new Log();
+        private readonly IPlayerAgentLog log = new PlayerAgentLog();
         private readonly bool verboseLogging;
         private CancellationToken cancellationToken;
         private int expectedEventIndex;
@@ -130,8 +130,7 @@ namespace SoC.Library.ScenarioTests
 
         public void SaveOldLog(string filePath) => this.log.WriteToFile(filePath);
 
-        public void SaveLog(string filePath)
-        { }
+        public void SaveLog(string filePath) => this.log.WriteToFile(filePath);
 
         public Task StartAsync()
         {
@@ -157,19 +156,19 @@ namespace SoC.Library.ScenarioTests
 
                 if (!this.FinishWhenAllEventsVerified)
                 {
-                    this.log.Add("Continue running and receiving game events");
+                    this.log.AddNote("Continue running and receiving game events");
                     while (!this.cancellationToken.IsCancellationRequested)
                     {
                         Thread.Sleep(50);
                         if (this.actualEventQueue.TryDequeue(out var actualEvent))
                         {
                             this.VerifyActualEvent(actualEvent);
-                            this.log.Add($"Received {actualEvent.GetType().Name}");
+                            this.log.AddNote($"Received {actualEvent.GetType().Name}");
                         }
                     }
                 }
 
-                this.log.Add("Finished");
+                this.log.AddNote("Finished");
             }
             catch (OperationCanceledException)
             {
@@ -177,14 +176,14 @@ namespace SoC.Library.ScenarioTests
             }
             catch (Exception e)
             {
-                this.log.Add($"ERROR: {e.Message}: {e.StackTrace}");
+                this.log.AddException(e);
                 throw e;
             }
         }
 
         private void SendAction(ActionInstruction action)
         {
-            this.log.Add($"Sending {action.Operation} operation");
+            this.log.AddNote($"Sending {action.Operation} operation");
             switch (action.Operation)
             {
                 case ActionInstruction.OperationTypes.AcceptTrade:
@@ -288,7 +287,10 @@ namespace SoC.Library.ScenarioTests
             if (expectedEvent.ErrorMessage != null)
                 result &= expectedEvent.ErrorMessage == actualEvent.ErrorMessage;
 
-            this.log.Add($"{(result ? "MATCHED" : "NOT MATCHED")} - Expected {expectedEvent.SimpleTypeName}, Actual {actualEvent.SimpleTypeName}");
+            if (result)
+                this.log.AddMatchedEvent(actualEvent, expectedEvent);
+
+            /*this.log.Add($"{(result ? "MATCHED" : "NOT MATCHED")} - Expected {expectedEvent.SimpleTypeName}, Actual {actualEvent.SimpleTypeName}");
             if (!result ||
                 this.verboseLogging ||
                 this.expectedEventsWithVerboseLogging.Contains(expectedEvent))
@@ -300,7 +302,7 @@ namespace SoC.Library.ScenarioTests
                     this.log.Add($"Error Code: {expectedEvent.ErrorCode} => {actualEvent.ErrorCode}");
                 if (expectedEvent.ErrorMessage != null)
                     this.log.Add($"Error Message: {expectedEvent.ErrorMessage} => {actualEvent.ErrorMessage}");
-            }
+            }*/
 
             return result;
         }
@@ -319,7 +321,7 @@ namespace SoC.Library.ScenarioTests
             if (expectedEvent.VictoryPoints.HasValue)
                 result &= expectedEvent.VictoryPoints.Value == actualEvent.VictoryPoints;
 
-            this.log.Add($"{(result ? "MATCHED" : "NOT MATCHED")} - Expected {expectedEvent.SimpleTypeName}, Actual {actualEvent.SimpleTypeName}");
+            /*this.log.Add($"{(result ? "MATCHED" : "NOT MATCHED")} - Expected {expectedEvent.SimpleTypeName}, Actual {actualEvent.SimpleTypeName}");
             if (!result ||
                 this.verboseLogging ||
                 this.expectedEventsWithVerboseLogging.Contains(expectedEvent))
@@ -331,7 +333,7 @@ namespace SoC.Library.ScenarioTests
                     this.log.Add($"Road Segments: {expectedEvent.RoadSegments.Value} => {actualEvent.RoadSegments}");
                 if (expectedEvent.VictoryPoints.HasValue)
                     this.log.Add($"Victory Points: {expectedEvent.VictoryPoints.Value} => {actualEvent.VictoryPoints}");
-            }
+            }*/
 
             return result;
         }
@@ -342,7 +344,7 @@ namespace SoC.Library.ScenarioTests
             var actualJSON = JToken.Parse(actualEvent.ToJSONString());
             var result = JToken.DeepEquals(expectedJSON, actualJSON);
 
-            if ((!result && expectedEvent.GetType() == actualEvent.GetType()) ||
+            /*if ((!result && expectedEvent.GetType() == actualEvent.GetType()) ||
                 this.verboseLogging ||
                 this.expectedEventsWithVerboseLogging.Contains(expectedEvent))
             {
@@ -357,7 +359,7 @@ namespace SoC.Library.ScenarioTests
             else
             {
                 this.log.Add($"{(result ? "MATCHED" : "NOT MATCHED")} - Expected {expectedEvent.SimpleTypeName}, Actual {actualEvent.SimpleTypeName}");
-            }
+            }*/
 
             return result;
         }
@@ -370,7 +372,7 @@ namespace SoC.Library.ScenarioTests
             //if (expectedEvent.CollectedResources != actualEvent.CollectedResources)
             //    result &= expectedEvent.Cities.Value == actualEvent.Cities;
 
-            this.log.Add($"{(result ? "MATCHED" : "NOT MATCHED")} - Expected {expectedEvent.SimpleTypeName}, Actual {actualEvent.SimpleTypeName}");
+            /*this.log.Add($"{(result ? "MATCHED" : "NOT MATCHED")} - Expected {expectedEvent.SimpleTypeName}, Actual {actualEvent.SimpleTypeName}");
             if (!result ||
                 this.verboseLogging ||
                 this.expectedEventsWithVerboseLogging.Contains(expectedEvent))
@@ -379,7 +381,7 @@ namespace SoC.Library.ScenarioTests
                 
                 this.log.Add($"Player: {this.GetPlayerName(expectedEvent.PlayerId)} ({expectedEvent.PlayerId}) => {this.GetPlayerName(actualEvent.PlayerId)} ({actualEvent.PlayerId})");
                 this.log.Add($"Dice: {expectedEvent.Dice1},{expectedEvent.Dice2} => {actualEvent.Dice1},{actualEvent.Dice2}");
-            }
+            }*/
 
             return result;
         }
@@ -406,7 +408,7 @@ namespace SoC.Library.ScenarioTests
                 return;
 
             GameEvent actualEvent = this.actualEvents[this.actualEvents.Count - 1];
-
+            var matched = false;
             for (var i = 0; i < this.CurrentEventActionPair.ExpectedEvents.Count; i++)
             {
                 if (this.CurrentEventActionPair.Statuses[i])
@@ -415,9 +417,14 @@ namespace SoC.Library.ScenarioTests
                 if (this.IsEventVerified(this.CurrentEventActionPair.ExpectedEvents[i], actualEvent))
                 { 
                     this.CurrentEventActionPair.Statuses[i] = true;
+                    this.log.AddMatchedEvent(actualEvent, this.CurrentEventActionPair.ExpectedEvents[i]);
+                    matched = true;
                     break;
                 }
             }
+
+            if (!matched)
+                this.log.AddActualEvent(actualEvent);
 
             var finished = this.CurrentEventActionPair.Statuses.All(status => status);
             if (finished)
@@ -442,7 +449,7 @@ namespace SoC.Library.ScenarioTests
 
                 this.VerifyActualEvent(actualEvent);
                 
-                this.log.Add($"Received {actualEvent.GetType().Name}");
+                this.log.AddNote($"Received {actualEvent.GetType().Name}");
 
                 this.actualEvents.Add(actualEvent);
                 break;
