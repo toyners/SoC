@@ -1,5 +1,6 @@
 ﻿
 using System;
+using System.Collections.Generic;
 using Jabberwocky.SoC.Library.GameEvents;
 
 namespace SoC.Library.ScenarioTests

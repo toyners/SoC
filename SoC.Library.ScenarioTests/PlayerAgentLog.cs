@@ -11,6 +11,8 @@ namespace SoC.Library.ScenarioTests
     {
         private readonly List<ILogEvent> logEvents = new List<ILogEvent>();
 
+        public static IDictionary<Guid, string> PlayerNamesById { get; set; }
+
         public void AddMatchedEvent(GameEvent actualEvent, GameEvent expectedEvent) =>
             this.logEvents.Add(new MatchedExpectedEvent(actualEvent, expectedEvent));
 
@@ -36,8 +38,8 @@ namespace SoC.Library.ScenarioTests
                 "} " +
                 "td {" +
                 "border: 1px solid black } " +
-                ".matched {" +
-                "background-color: green; } " +
+                ".matched { background-color: lightgreen; } " +
+                ".unmatched_expected { background-color: orange; } " +
                 "</style></head><body><div><table>" +
                 "<tr><th>Actual</th><th>Expected</th></tr>";
             
@@ -47,7 +49,7 @@ namespace SoC.Library.ScenarioTests
             }
 
             content += "</table></div><br /><div><table>" +
-                "<tr><th>Actual</th><th>Expected</th></tr>";
+                "<tr><th>Actual</th><th>Expected</th><th>Notes</th></tr>";
             foreach (var logEvent in this.logEvents)
             {
                 content += logEvent.ToHtml();
@@ -91,10 +93,10 @@ namespace SoC.Library.ScenarioTests
         {
             private string note;
             public NoteEvent(string note) => this.note = note;
-
+        
             public string ToHtml()
             {
-                return $"<tr><td colspan=\"2\">{this.note}</td></tr>";
+                return $"<tr><td /><td /><td>{this.note}</td></tr>";
             }
         }
 
@@ -105,7 +107,7 @@ namespace SoC.Library.ScenarioTests
 
             public string ToHtml()
             {
-                return $"<tr><td>{this.actualEvent.SimpleTypeName}</td><td></td></tr>";
+                return $"<tr><td>{this.actualEvent.SimpleTypeName}<br>{GetEventProperties(this.actualEvent)}</td><td></td></tr>";
             }
         }
 
@@ -116,8 +118,29 @@ namespace SoC.Library.ScenarioTests
 
             public string ToHtml()
             {
-                return $"<tr><td></td><td>{this.expectedEvent.SimpleTypeName}</td></tr>";
+                return $"<tr class=\"unmatched_expected\">" +
+                    $"<td></td>" +
+                    $"<td>{this.expectedEvent.SimpleTypeName}<br>{GetEventProperties(this.expectedEvent)}</td></tr>";
             }
+        }
+
+        private static string GetEventProperties(GameEvent gameEvent)
+        {
+            if (gameEvent is GameErrorEvent gameErrorEvent)
+            {
+                return $"Error code: <b>{gameErrorEvent.ErrorCode}</b><br>" +
+                    $"Error message: <b>{gameErrorEvent.ErrorMessage}</b>";
+            }
+
+            return "Not recognised";
+        }
+
+        private static string GetPlayerName(Guid playerId)
+        {
+            if (PlayerNamesById == null)
+                return playerId.ToString();
+
+            return PlayerNamesById[playerId];
         }
     }
 }

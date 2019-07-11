@@ -9,7 +9,6 @@ namespace SoC.Library.ScenarioTests
     using System.Threading.Tasks;
     using Jabberwocky.SoC.Library;
     using Jabberwocky.SoC.Library.GameEvents;
-    using Jabberwocky.SoC.Library.Interfaces;
     using Newtonsoft.Json.Linq;
     using SoC.Library.ScenarioTests.Instructions;
     using SoC.Library.ScenarioTests.ScenarioEvents;
@@ -170,6 +169,23 @@ namespace SoC.Library.ScenarioTests
             }
             catch (OperationCanceledException)
             {
+                try
+                {
+                    for (var i = this.expectedEventIndex; i < this.expectedEventActions.Count; i++)
+                    {
+                        var expectedEventAction = this.expectedEventActions[i];
+                        for (var j = 0; j < expectedEventAction.Statuses.Count; j++)
+                        {
+                            if (!expectedEventAction.Statuses[j])
+                                this.log.AddUnmatchedExpectedEvent(expectedEventAction.ExpectedEvents[j]);
+                        }
+                    }
+                }
+                catch
+                {
+                    // Ignore exceptions happening here
+                }
+
                 return;
             }
             catch (Exception e)
