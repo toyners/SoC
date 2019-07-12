@@ -864,6 +864,7 @@ namespace SoC.Library.ScenarioTests
         {
             this.CompletePlayerInfrastructureSetup(new[] { MethodBase.GetCurrentMethod().Name })
                 .WithNoResourceCollection()
+                .WithInitialPlayerSetupFor(Adam, KnightCard())
                 .WhenPlayer(Adam)
                     .ReceivesStartTurnEvent(3, 3).ThenPlayKnightCard(0)
                     .ReceivesGameErrorEvent("918", "New robber hex cannot be the same as previous robber hex")
@@ -1804,12 +1805,19 @@ namespace SoC.Library.ScenarioTests
             return scenarioRunner;
         }
 
-        internal static IPlayerSetupAction Resources(ResourceClutch resources) => new ResourceSetup(resources);
+        private static IPlayerSetupAction Resources(ResourceClutch resources) => new ResourceSetup(resources);
 
         private static IPlayerSetupAction VictoryPoints(uint value) => new VictoryPointSetup(value);
 
         private static IPlayerSetupAction PlacedRoadSegments(int value) => new PlacedRoadSegmentSetup(value);
 
         private static IPlayerSetupAction PlacedSettlements(int value) => new PlacedSettlementsSetup(value);
+
+        private static IPlayerSetupAction KnightCard() => new KnightCardSetup();
+    }
+
+    internal class KnightCardSetup : IPlayerSetupAction
+    {
+        public void Process(ScenarioPlayer player) => player.SetKnightCard();
     }
 }
