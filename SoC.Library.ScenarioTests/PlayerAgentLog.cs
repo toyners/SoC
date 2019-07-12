@@ -10,6 +10,8 @@ namespace SoC.Library.ScenarioTests
     public class PlayerAgentLog : IPlayerAgentLog
     {
         private readonly List<ILogEvent> logEvents = new List<ILogEvent>();
+        private const string titleFontSize = "15";
+        private const string propertiesFontSize = "12";
 
         public static IDictionary<Guid, string> PlayerNamesById { get; set; }
 
@@ -35,10 +37,16 @@ namespace SoC.Library.ScenarioTests
                 "table {" +
                 "border: 1px solid black;" +
                 "border-collapse: collapse;" +
+                "width: 100%" +
+                "} " +
+                "th {" +
+                "width: 30%" +
                 "} " +
                 "td {" +
                 "border: 1px solid black } " +
                 ".matched { background-color: lightgreen; } " +
+                ".matched span { font-size: 15px; } " +
+                ".matched div { font-size: 12px; } " +
                 ".unmatched_expected { background-color: orange; } " +
                 "</style></head><body><div><table>" +
                 "<tr><th>Actual</th><th>Expected</th></tr>";
@@ -85,7 +93,8 @@ namespace SoC.Library.ScenarioTests
 
             public string ToHtml()
             {
-                return $"<tr class=\"matched\"><td>{this.actualEvent.SimpleTypeName}</td><td>{this.expectedEvent.SimpleTypeName}</td></tr>";
+                return $"<tr class=\"matched\"><td><span>{this.actualEvent.SimpleTypeName}</span><br><div>{GetEventProperties(this.actualEvent)}</div></td>" +
+                    $"<td><span>{this.expectedEvent.SimpleTypeName}</span><br><div>{GetEventProperties(this.actualEvent)}</div></td></tr>";
             }
         }
 
@@ -107,7 +116,8 @@ namespace SoC.Library.ScenarioTests
 
             public string ToHtml()
             {
-                return $"<tr><td>{this.actualEvent.SimpleTypeName}<br>{GetEventProperties(this.actualEvent)}</td><td></td></tr>";
+                return $"<tr><td>{this.actualEvent.SimpleTypeName}<br>{GetEventProperties(this.actualEvent)}</td>" +
+                    $"<td></td></tr>";
             }
         }
 
@@ -126,18 +136,19 @@ namespace SoC.Library.ScenarioTests
 
         private static string GetEventProperties(GameEvent gameEvent)
         {
+            var result = "";
             if (gameEvent is GameErrorEvent gameErrorEvent)
             {
-                return $"Error code: <b>{gameErrorEvent.ErrorCode}</b><br>" +
+                result += $"Error code: <b>{gameErrorEvent.ErrorCode}</b><br>" +
                     $"Error message: <b>{gameErrorEvent.ErrorMessage}</b>";
             }
 
-            return "Not recognised";
+            return $"Player: <b>{GetPlayerName(gameEvent.PlayerId)}</b>" + (result.Length > 0 ? "<br>" : "") + result;
         }
 
         private static string GetPlayerName(Guid playerId)
         {
-            if (PlayerNamesById == null)
+            if (PlayerNamesById == null || !PlayerNamesById.ContainsKey(playerId))
                 return playerId.ToString();
 
             return PlayerNamesById[playerId];

@@ -459,7 +459,10 @@ namespace SoC.Library.ScenarioTests
                     continue;
 
                 if (actualEvent is PlayerSetupEvent playerSetupEvent)
+                {
                     this.playerIdsByName = playerSetupEvent.PlayerIdsByName;
+                    PlayerAgentLog.PlayerNamesById = this.playerIdsByName.ToDictionary(kv => kv.Value, kv => kv.Key);
+                }
 
                 this.VerifyActualEvent(actualEvent);
                 
