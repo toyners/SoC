@@ -3,6 +3,7 @@ namespace SoC.Library.ScenarioTests
 {
     using System;
     using System.Collections.Generic;
+    using System.IO;
     using System.Reflection;
     using Jabberwocky.SoC.Library;
     using Jabberwocky.SoC.Library.GameBoards;
@@ -295,7 +296,8 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void AllOtherPlayersQuit()
         {
-            this.CompletePlayerInfrastructureSetup(new[] { MethodBase.GetCurrentMethod().Name })
+            var testName = MethodBase.GetCurrentMethod().Name;
+            this.CompletePlayerInfrastructureSetup(new[] { testName })
                 .WithNoResourceCollection()
                 .WhenPlayer(Adam)
                     .ReceivesStartTurnEvent(3, 3).ThenEndTurn()
@@ -325,6 +327,8 @@ namespace SoC.Library.ScenarioTests
                     .DidNotReceiveEventOfType<GameWinEvent>()
                     .DidNotReceivePlayerQuitEvent(Dana)
                 .Run();
+
+            this.AttachReports(testName);
         }
 
         [Test]
@@ -862,19 +866,27 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void PlayerPlaysKnightCardAndNewHexIsSameAsCurrentHex()
         {
-            this.CompletePlayerInfrastructureSetup(new[] { MethodBase.GetCurrentMethod().Name })
-                .WithNoResourceCollection()
-                .WithInitialPlayerSetupFor(Adam, KnightCard())
-                .WhenPlayer(Adam)
-                    .ReceivesStartTurnEvent(3, 3).ThenPlayKnightCard(0)
-                    .ReceivesGameErrorEvent("918", "New robber hex cannot be the same as previous robber hex")
-                .VerifyPlayer(Babara)
-                    .DidNotReceiveEventOfType<GameErrorEvent>()
-                .VerifyPlayer(Charlie)
-                    .DidNotReceiveEventOfType<GameErrorEvent>()
-                .VerifyPlayer(Dana)
-                    .DidNotReceiveEventOfType<GameErrorEvent>()
-                .Run();
+            var testName = MethodBase.GetCurrentMethod().Name;
+            try
+            {
+                this.CompletePlayerInfrastructureSetup(new[] { testName })
+                    .WithNoResourceCollection()
+                    .WithInitialPlayerSetupFor(Adam, KnightCard())
+                    .WhenPlayer(Adam)
+                        .ReceivesStartTurnEvent(3, 3).ThenPlayKnightCard(0)
+                        .ReceivesGameErrorEvent("918", "New robber hex cannot be the same as previous robber hex")
+                    .VerifyPlayer(Babara)
+                        .DidNotReceiveEventOfType<GameErrorEvent>()
+                    .VerifyPlayer(Charlie)
+                        .DidNotReceiveEventOfType<GameErrorEvent>()
+                    .VerifyPlayer(Dana)
+                        .DidNotReceiveEventOfType<GameErrorEvent>()
+                    .Run();
+            }
+            finally
+            {
+                this.AttachReports(testName);
+            }
         }
 
         [Test]
@@ -1760,6 +1772,35 @@ namespace SoC.Library.ScenarioTests
             return new CollectedResourcesBuilder();
         }
 
+        private static IPlayerSetupAction Resources(ResourceClutch resources) => new ResourceSetup(resources);
+
+        private static IPlayerSetupAction VictoryPoints(uint value) => new VictoryPointSetup(value);
+
+        private static IPlayerSetupAction PlacedRoadSegments(int value) => new PlacedRoadSegmentSetup(value);
+
+        private static IPlayerSetupAction PlacedSettlements(int value) => new PlacedSettlementsSetup(value);
+
+        private static IPlayerSetupAction KnightCard() => new KnightCardSetup();
+
+        private void AttachReports(string testName)
+        {
+            var filePath = $"C:\\Scenario Logs\\{testName}\\Adam.html";
+            if (File.Exists(filePath))
+                TestContext.AddTestAttachment(filePath);
+
+            filePath = $"C:\\Scenario Logs\\{testName}\\Babara.html";
+            if (File.Exists(filePath))
+                TestContext.AddTestAttachment(filePath);
+
+            filePath = $"C:\\Scenario Logs\\{testName}\\Charlie.html";
+            if (File.Exists(filePath))
+                TestContext.AddTestAttachment(filePath);
+
+            filePath = $"C:\\Scenario Logs\\{testName}\\Dana.html";
+            if (File.Exists(filePath))
+                TestContext.AddTestAttachment(filePath);
+        }
+
         private ScenarioRunner CompletePlayerInfrastructureSetup(string[] args = null)
         {
             var infrastructureSetupBuilder = new InfrastructureSetupBuilder();
@@ -1771,7 +1812,7 @@ namespace SoC.Library.ScenarioTests
                 .Add(Charlie, Charlie_SecondSettlementLocation, Charlie_SecondRoadEndLocation)
                 .Add(Babara, Babara_SecondSettlementLocation, Babara_SecondRoadEndLocation)
                 .Add(Adam, Adam_SecondSettlementLocation, Adam_SecondRoadEndLocation);
-            
+
             return this.CompletePlayerInfrastructureSetup(infrastructureSetupBuilder.Build(), args);
         }
 
@@ -1804,16 +1845,6 @@ namespace SoC.Library.ScenarioTests
 
             return scenarioRunner;
         }
-
-        private static IPlayerSetupAction Resources(ResourceClutch resources) => new ResourceSetup(resources);
-
-        private static IPlayerSetupAction VictoryPoints(uint value) => new VictoryPointSetup(value);
-
-        private static IPlayerSetupAction PlacedRoadSegments(int value) => new PlacedRoadSegmentSetup(value);
-
-        private static IPlayerSetupAction PlacedSettlements(int value) => new PlacedSettlementsSetup(value);
-
-        private static IPlayerSetupAction KnightCard() => new KnightCardSetup();
     }
 
     internal class KnightCardSetup : IPlayerSetupAction
