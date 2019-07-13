@@ -59,11 +59,12 @@
     <Compile Include="Instructions\MultipleEventInstruction.cs" />
     <Compile Include="Instructions\PlayerStateInstruction.cs" />
     <Compile Include="IPlayerAgentLog.cs" />
-    <Compile Include="IPlayerSetupAction.cs" />
-    <Compile Include="PlacedRoadSegmentSetup.cs" />
-    <Compile Include="PlacedSettlementsSetup.cs" />
+    <Compile Include="PlayerSetupActions\KnightCardSetup.cs" />
+    <Compile Include="PlayerSetupActions\IPlayerSetupAction.cs" />
+    <Compile Include="PlayerSetupActions\PlacedRoadSegmentSetup.cs" />
+    <Compile Include="PlayerSetupActions\PlacedSettlementsSetup.cs" />
     <Compile Include="PlayerAgentLog.cs" />
-    <Compile Include="ResourceSetup.cs" />
+    <Compile Include="PlayerSetupActions\ResourceSetup.cs" />
     <Compile Include="ScenarioEvents\ScenarioGameErrorEvent.cs" />
     <Compile Include="ScenarioEvents\ScenarioRequestStateEvent.cs" />
     <Compile Include="MockTurnTimer.cs" />
@@ -88,7 +89,7 @@
     <Compile Include="ScenarioRunner.cs" />
     <Compile Include="Scenarios.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="VictoryPointSetup.cs" />
+    <Compile Include="PlayerSetupActions\VictoryPointSetup.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\SoC.Library\SoC.Library.csproj">

@@ -9,6 +9,7 @@ namespace SoC.Library.ScenarioTests
     using Jabberwocky.SoC.Library.GameBoards;
     using Jabberwocky.SoC.Library.GameEvents;
     using NUnit.Framework;
+    using SoC.Library.ScenarioTests.PlayerSetupActions;
     using SoC.Library.ScenarioTests.ScenarioEvents;
     using static SoC.Library.ScenarioTests.InfrastructureSetupBuilder;
 
@@ -849,18 +850,26 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void PlayerPlaysKnightCardThatIsNotOwned()
         {
-            this.CompletePlayerInfrastructureSetup(new[] { MethodBase.GetCurrentMethod().Name })
-                .WithNoResourceCollection()
-                .WhenPlayer(Adam)
-                    .ReceivesStartTurnEvent(3, 3).ThenPlayKnightCard(0)
-                    .ReceivesGameErrorEvent("920", "No Knight card owned")
-                .VerifyPlayer(Babara)
-                    .DidNotReceiveEventOfType<GameErrorEvent>()
-                .VerifyPlayer(Charlie)
-                    .DidNotReceiveEventOfType<GameErrorEvent>()
-                .VerifyPlayer(Dana)
-                    .DidNotReceiveEventOfType<GameErrorEvent>()
-                .Run();
+            var testName = MethodBase.GetCurrentMethod().Name;
+            try
+            {
+                this.CompletePlayerInfrastructureSetup(new[] { testName })
+                    .WithNoResourceCollection()
+                    .WhenPlayer(Adam)
+                        .ReceivesStartTurnEvent(3, 3).ThenPlayKnightCard(0)
+                        .ReceivesGameErrorEvent("920", "No Knight card owned")
+                    .VerifyPlayer(Babara)
+                        .DidNotReceiveEventOfType<GameErrorEvent>()
+                    .VerifyPlayer(Charlie)
+                        .DidNotReceiveEventOfType<GameErrorEvent>()
+                    .VerifyPlayer(Dana)
+                        .DidNotReceiveEventOfType<GameErrorEvent>()
+                    .Run();
+            }
+            finally
+            {
+                this.AttachReports(testName);
+            }
         }
 
         [Test]
@@ -1845,10 +1854,5 @@ namespace SoC.Library.ScenarioTests
 
             return scenarioRunner;
         }
-    }
-
-    internal class KnightCardSetup : IPlayerSetupAction
-    {
-        public void Process(ScenarioPlayer player) => player.SetKnightCard();
     }
 }

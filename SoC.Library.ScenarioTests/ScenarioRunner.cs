@@ -12,6 +12,7 @@ namespace SoC.Library.ScenarioTests
     using Jabberwocky.SoC.Library.GameEvents;
     using Jabberwocky.SoC.Library.Interfaces;
     using SoC.Library.ScenarioTests.Instructions;
+    using SoC.Library.ScenarioTests.PlayerSetupActions;
     using SoC.Library.ScenarioTests.ScenarioEvents;
 
     internal class ScenarioRunner

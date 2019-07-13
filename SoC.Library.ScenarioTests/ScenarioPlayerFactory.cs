@@ -8,6 +8,7 @@ namespace SoC.Library.ScenarioTests
     using Jabberwocky.SoC.Library.GameBoards;
     using Jabberwocky.SoC.Library.Interfaces;
     using Jabberwocky.SoC.Library.Store;
+    using SoC.Library.ScenarioTests.PlayerSetupActions;
 
     internal class ScenarioPlayerFactory : IPlayerFactory
     {
