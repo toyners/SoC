@@ -45,253 +45,276 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void AllPlayersCollectResourcesAsPartOfGameSetup()
         {
-            var expectedAdamResources = ResourceClutch.OneBrick + ResourceClutch.OneGrain + ResourceClutch.OneWool;
-            var expectedBabaraResources = ResourceClutch.OneGrain + ResourceClutch.OneLumber + ResourceClutch.OneWool;
-            var expectedCharlieResources = ResourceClutch.OneLumber;
-            var expectedDanaResources = ResourceClutch.OneLumber + ResourceClutch.OneGrain + ResourceClutch.OneWool;
-            var gameSetupCollectedResources = CreateExpectedCollectedResources()
-                .Add(Adam, Adam_SecondSettlementLocation, expectedAdamResources)
-                .Add(Babara, Babara_SecondSettlementLocation, expectedBabaraResources)
-                .Add(Charlie, 37, expectedCharlieResources)
-                .Add(Dana, Dana_SecondSettlementLocation, expectedDanaResources)
-                .Build();
+            var testName = MethodBase.GetCurrentMethod().Name;
+            try
+            {
+                var expectedAdamResources = ResourceClutch.OneBrick + ResourceClutch.OneGrain + ResourceClutch.OneWool;
+                var expectedBabaraResources = ResourceClutch.OneGrain + ResourceClutch.OneLumber + ResourceClutch.OneWool;
+                var expectedCharlieResources = ResourceClutch.OneLumber;
+                var expectedDanaResources = ResourceClutch.OneLumber + ResourceClutch.OneGrain + ResourceClutch.OneWool;
+                var gameSetupCollectedResources = CreateExpectedCollectedResources()
+                    .Add(Adam, Adam_SecondSettlementLocation, expectedAdamResources)
+                    .Add(Babara, Babara_SecondSettlementLocation, expectedBabaraResources)
+                    .Add(Charlie, 37, expectedCharlieResources)
+                    .Add(Dana, Dana_SecondSettlementLocation, expectedDanaResources)
+                    .Build();
 
-            ScenarioRunner.CreateScenarioRunner(new[] { MethodBase.GetCurrentMethod().Name })
-                .WithPlayer(Adam)
-                .WithPlayer(Babara)
-                .WithPlayer(Charlie)
-                .WithPlayer(Dana)
-                .WithTurnOrder(new[] { Adam, Babara, Charlie, Dana })
-                .WhenPlayer(Adam)
-                    .ReceivesPlaceInfrastructureSetupEvent()
-                    .ThenPlaceStartingInfrastructure(Adam_FirstSettlementLocation, Adam_FirstRoadEndLocation)
-                .WhenPlayer(Babara)
-                    .ReceivesPlaceInfrastructureSetupEvent()
-                    .ThenPlaceStartingInfrastructure(Babara_FirstSettlementLocation, Babara_FirstRoadEndLocation)
-                .WhenPlayer(Charlie)
-                    .ReceivesPlaceInfrastructureSetupEvent()
-                    .ThenPlaceStartingInfrastructure(Charlie_FirstSettlementLocation, Charlie_FirstRoadEndLocation)
-                .WhenPlayer(Dana)
-                    .ReceivesPlaceInfrastructureSetupEvent()
-                    .ThenPlaceStartingInfrastructure(Dana_FirstSettlementLocation, Dana_FirstRoadEndLocation)
-                    .ReceivesPlaceInfrastructureSetupEvent()
-                    .ThenPlaceStartingInfrastructure(Dana_SecondSettlementLocation, Dana_SecondRoadEndLocation)
-                .WhenPlayer(Charlie)
-                    .ReceivesPlaceInfrastructureSetupEvent()
-                    .ThenPlaceStartingInfrastructure(37, 36)
-                .WhenPlayer(Babara)
-                    .ReceivesPlaceInfrastructureSetupEvent()
-                    .ThenPlaceStartingInfrastructure(Babara_SecondSettlementLocation, Babara_SecondRoadEndLocation)
-                .WhenPlayer(Adam)
-                    .ReceivesPlaceInfrastructureSetupEvent()
-                    .ThenPlaceStartingInfrastructure(Adam_SecondSettlementLocation, Adam_SecondRoadEndLocation)
-                    .ReceivesConfirmGameStartEvent().ThenConfirmGameStart()
-                    .ReceivesAll()
-                        .ReceivesResourceCollectedEvent(gameSetupCollectedResources)
-                        .ReceivesStartTurnEvent(1, 2)
-                    .ReceivesAllEnd().ThenVerifyPlayerState()
-                        .Resources(expectedAdamResources)
-                        .End()
-                .WhenPlayer(Babara)
-                    .ReceivesConfirmGameStartEvent().ThenConfirmGameStart()
-                    .ReceivesAll()
-                        .ReceivesResourceCollectedEvent(gameSetupCollectedResources)
-                        .ReceivesStartTurnEvent(Adam, 1, 2)
-                    .ReceivesAllEnd().ThenVerifyPlayerState()
-                        .Resources(expectedBabaraResources)
-                        .End()
-                .WhenPlayer(Charlie)
-                    .ReceivesConfirmGameStartEvent().ThenConfirmGameStart()
-                    .ReceivesAll()
-                        .ReceivesResourceCollectedEvent(gameSetupCollectedResources)
-                        .ReceivesStartTurnEvent(Adam, 1, 2)
-                    .ReceivesAllEnd().ThenVerifyPlayerState()
-                        .Resources(expectedCharlieResources)
-                        .End()
-                .WhenPlayer(Dana)
-                    .ReceivesConfirmGameStartEvent().ThenConfirmGameStart()
-                    .ReceivesAll()
-                        .ReceivesResourceCollectedEvent(gameSetupCollectedResources)
-                        .ReceivesStartTurnEvent(Adam, 1, 2)
-                    .ReceivesAllEnd().ThenVerifyPlayerState()
-                        .Resources(expectedDanaResources)
-                        .End()
-                .Run();
+                ScenarioRunner.CreateScenarioRunner(new[] { testName })
+                    .WithPlayer(Adam)
+                    .WithPlayer(Babara)
+                    .WithPlayer(Charlie)
+                    .WithPlayer(Dana)
+                    .WithTurnOrder(new[] { Adam, Babara, Charlie, Dana })
+                    .WhenPlayer(Adam)
+                        .ReceivesPlaceInfrastructureSetupEvent()
+                        .ThenPlaceStartingInfrastructure(Adam_FirstSettlementLocation, Adam_FirstRoadEndLocation)
+                    .WhenPlayer(Babara)
+                        .ReceivesPlaceInfrastructureSetupEvent()
+                        .ThenPlaceStartingInfrastructure(Babara_FirstSettlementLocation, Babara_FirstRoadEndLocation)
+                    .WhenPlayer(Charlie)
+                        .ReceivesPlaceInfrastructureSetupEvent()
+                        .ThenPlaceStartingInfrastructure(Charlie_FirstSettlementLocation, Charlie_FirstRoadEndLocation)
+                    .WhenPlayer(Dana)
+                        .ReceivesPlaceInfrastructureSetupEvent()
+                        .ThenPlaceStartingInfrastructure(Dana_FirstSettlementLocation, Dana_FirstRoadEndLocation)
+                        .ReceivesPlaceInfrastructureSetupEvent()
+                        .ThenPlaceStartingInfrastructure(Dana_SecondSettlementLocation, Dana_SecondRoadEndLocation)
+                    .WhenPlayer(Charlie)
+                        .ReceivesPlaceInfrastructureSetupEvent()
+                        .ThenPlaceStartingInfrastructure(37, 36)
+                    .WhenPlayer(Babara)
+                        .ReceivesPlaceInfrastructureSetupEvent()
+                        .ThenPlaceStartingInfrastructure(Babara_SecondSettlementLocation, Babara_SecondRoadEndLocation)
+                    .WhenPlayer(Adam)
+                        .ReceivesPlaceInfrastructureSetupEvent()
+                        .ThenPlaceStartingInfrastructure(Adam_SecondSettlementLocation, Adam_SecondRoadEndLocation)
+                        .ReceivesConfirmGameStartEvent().ThenConfirmGameStart()
+                        .ReceivesAll()
+                            .ReceivesResourceCollectedEvent(gameSetupCollectedResources)
+                            .ReceivesStartTurnEvent(1, 2)
+                        .ReceivesAllEnd().ThenVerifyPlayerState()
+                            .Resources(expectedAdamResources)
+                            .End()
+                    .WhenPlayer(Babara)
+                        .ReceivesConfirmGameStartEvent().ThenConfirmGameStart()
+                        .ReceivesAll()
+                            .ReceivesResourceCollectedEvent(gameSetupCollectedResources)
+                            .ReceivesStartTurnEvent(Adam, 1, 2)
+                        .ReceivesAllEnd().ThenVerifyPlayerState()
+                            .Resources(expectedBabaraResources)
+                            .End()
+                    .WhenPlayer(Charlie)
+                        .ReceivesConfirmGameStartEvent().ThenConfirmGameStart()
+                        .ReceivesAll()
+                            .ReceivesResourceCollectedEvent(gameSetupCollectedResources)
+                            .ReceivesStartTurnEvent(Adam, 1, 2)
+                        .ReceivesAllEnd().ThenVerifyPlayerState()
+                            .Resources(expectedCharlieResources)
+                            .End()
+                    .WhenPlayer(Dana)
+                        .ReceivesConfirmGameStartEvent().ThenConfirmGameStart()
+                        .ReceivesAll()
+                            .ReceivesResourceCollectedEvent(gameSetupCollectedResources)
+                            .ReceivesStartTurnEvent(Adam, 1, 2)
+                        .ReceivesAllEnd().ThenVerifyPlayerState()
+                            .Resources(expectedDanaResources)
+                            .End()
+                    .Run();
+            }
+            finally
+            {
+                this.AttachReports(testName);
+            }
         }
 
         [Test]
         public void AllPlayersCollectResourcesAsPartOfTurnStart()
         {
+            var testName = MethodBase.GetCurrentMethod().Name;
+            try
+            { 
+                var firstTurnCollectedResources = CreateExpectedCollectedResources()
+                    .Add(Adam, Adam_FirstSettlementLocation, ResourceClutch.OneBrick)
+                    .Add(Babara, Babara_SecondSettlementLocation, ResourceClutch.OneGrain)
+                    .Build();
 
-            var firstTurnCollectedResources = CreateExpectedCollectedResources()
-                .Add(Adam, Adam_FirstSettlementLocation, ResourceClutch.OneBrick)
-                .Add(Babara, Babara_SecondSettlementLocation, ResourceClutch.OneGrain)
-                .Build();
+                var secondTurnCollectedResources = CreateExpectedCollectedResources()
+                    .Add(Babara, Babara_FirstSettlementLocation, ResourceClutch.OneOre)
+                    .Add(Charlie, Charlie_FirstSettlementLocation, ResourceClutch.OneLumber)
+                    .Add(Charlie, Charlie_SecondSettlementLocation, ResourceClutch.OneLumber)
+                    .Add(Dana, Dana_FirstSettlementLocation, ResourceClutch.OneOre)
+                    .Build();
 
-            var secondTurnCollectedResources = CreateExpectedCollectedResources()
-                .Add(Babara, Babara_FirstSettlementLocation, ResourceClutch.OneOre)
-                .Add(Charlie, Charlie_FirstSettlementLocation, ResourceClutch.OneLumber)
-                .Add(Charlie, Charlie_SecondSettlementLocation, ResourceClutch.OneLumber)
-                .Add(Dana, Dana_FirstSettlementLocation, ResourceClutch.OneOre)
-                .Build();
+                var thirdTurnCollectedResources = CreateExpectedCollectedResources()
+                    .Add(Charlie, Charlie_SecondSettlementLocation, ResourceClutch.OneOre)
+                    .Build();
 
-            var thirdTurnCollectedResources = CreateExpectedCollectedResources()
-                .Add(Charlie, Charlie_SecondSettlementLocation, ResourceClutch.OneOre)
-                .Build();
+                var fourthTurnCollectedResources = CreateExpectedCollectedResources()
+                    .Add(Adam, Adam_FirstSettlementLocation, ResourceClutch.OneWool)
+                    .Add(Babara, Babara_SecondSettlementLocation, ResourceClutch.OneWool)
+                    .Build();
 
-            var fourthTurnCollectedResources = CreateExpectedCollectedResources()
-                .Add(Adam, Adam_FirstSettlementLocation, ResourceClutch.OneWool)
-                .Add(Babara, Babara_SecondSettlementLocation, ResourceClutch.OneWool)
-                .Build();
+                this.CompletePlayerInfrastructureSetup(new[] { testName })
+                    // Zero away the resources collected at start of the game
+                    .WithInitialPlayerSetupFor(Adam, Resources(new ResourceClutch(-1, -1, 0, 0, -1)))
+                    .WithInitialPlayerSetupFor(Babara, Resources(new ResourceClutch(0, -1, -1, 0, -1)))
+                    .WithInitialPlayerSetupFor(Charlie, Resources(new ResourceClutch(0, 0, -1, -1, -1)))
+                    .WithInitialPlayerSetupFor(Dana, Resources(new ResourceClutch(0, -1, -1, 0, -1)))
+                    .WhenPlayer(Adam)
+                        .ReceivesStartTurnWithResourcesCollectedEvent(4, 4, firstTurnCollectedResources)
+                        .ThenVerifyPlayerState().Resources(ResourceClutch.OneBrick).End()
+                        .ThenEndTurn()
+                    .WhenPlayer(Babara)
+                        .ReceivesStartTurnWithResourcesCollectedEvent(Adam, 4, 4, firstTurnCollectedResources)
+                        .ThenVerifyPlayerState().Resources(ResourceClutch.OneGrain).End()
+                    .WhenPlayer(Charlie)
+                        .ReceivesStartTurnWithResourcesCollectedEvent(Adam, 4, 4, firstTurnCollectedResources)
+                        .ThenVerifyPlayerState().Resources(ResourceClutch.Zero).End()
+                    .WhenPlayer(Dana)
+                        .ReceivesStartTurnWithResourcesCollectedEvent(Adam, 4, 4, firstTurnCollectedResources)
+                        .ThenVerifyPlayerState().Resources(ResourceClutch.Zero).End()
 
-            this.CompletePlayerInfrastructureSetup(new[] { MethodBase.GetCurrentMethod().Name })
-                // Zero away the resources collected at start of the game
-                .WithInitialPlayerSetupFor(Adam, Resources(new ResourceClutch(-1, -1, 0, 0, -1)))
-                .WithInitialPlayerSetupFor(Babara, Resources(new ResourceClutch(0, -1, -1, 0, -1)))
-                .WithInitialPlayerSetupFor(Charlie, Resources(new ResourceClutch(0, 0, -1, -1, -1)))
-                .WithInitialPlayerSetupFor(Dana, Resources(new ResourceClutch(0, -1, -1, 0, -1)))
-                .WhenPlayer(Adam)
-                    .ReceivesStartTurnWithResourcesCollectedEvent(4, 4, firstTurnCollectedResources)
-                    .ThenVerifyPlayerState().Resources(ResourceClutch.OneBrick).End()
-                    .ThenEndTurn()
-                .WhenPlayer(Babara)
-                    .ReceivesStartTurnWithResourcesCollectedEvent(Adam, 4, 4, firstTurnCollectedResources)
-                    .ThenVerifyPlayerState().Resources(ResourceClutch.OneGrain).End()
-                .WhenPlayer(Charlie)
-                    .ReceivesStartTurnWithResourcesCollectedEvent(Adam, 4, 4, firstTurnCollectedResources)
-                    .ThenVerifyPlayerState().Resources(ResourceClutch.Zero).End()
-                .WhenPlayer(Dana)
-                    .ReceivesStartTurnWithResourcesCollectedEvent(Adam, 4, 4, firstTurnCollectedResources)
-                    .ThenVerifyPlayerState().Resources(ResourceClutch.Zero).End()
+                    .WhenPlayer(Babara)
+                        .ReceivesStartTurnWithResourcesCollectedEvent(3, 3, secondTurnCollectedResources)
+                        .ThenVerifyPlayerState().Resources(ResourceClutch.OneGrain + ResourceClutch.OneOre).End()
+                        .ThenEndTurn()
+                    .WhenPlayer(Adam)
+                        .ReceivesStartTurnWithResourcesCollectedEvent(Babara, 3, 3, secondTurnCollectedResources)
+                        .ThenVerifyPlayerState().Resources(ResourceClutch.OneBrick).End()
+                    .WhenPlayer(Charlie)
+                        .ReceivesStartTurnWithResourcesCollectedEvent(Babara, 3, 3, secondTurnCollectedResources)
+                        .ThenVerifyPlayerState().Resources(ResourceClutch.OneLumber * 2).End()
+                    .WhenPlayer(Dana)
+                        .ReceivesStartTurnWithResourcesCollectedEvent(Babara, 3, 3, secondTurnCollectedResources)
+                        .ThenVerifyPlayerState().Resources(ResourceClutch.OneOre).End()
 
-                .WhenPlayer(Babara)
-                    .ReceivesStartTurnWithResourcesCollectedEvent(3, 3, secondTurnCollectedResources)
-                    .ThenVerifyPlayerState().Resources(ResourceClutch.OneGrain + ResourceClutch.OneOre).End()
-                    .ThenEndTurn()
-                .WhenPlayer(Adam)
-                    .ReceivesStartTurnWithResourcesCollectedEvent(Babara, 3, 3, secondTurnCollectedResources)
-                    .ThenVerifyPlayerState().Resources(ResourceClutch.OneBrick).End()
-                .WhenPlayer(Charlie)
-                    .ReceivesStartTurnWithResourcesCollectedEvent(Babara, 3, 3, secondTurnCollectedResources)
-                    .ThenVerifyPlayerState().Resources(ResourceClutch.OneLumber * 2).End()
-                .WhenPlayer(Dana)
-                    .ReceivesStartTurnWithResourcesCollectedEvent(Babara, 3, 3, secondTurnCollectedResources)
-                    .ThenVerifyPlayerState().Resources(ResourceClutch.OneOre).End()
+                    .WhenPlayer(Charlie)
+                        .ReceivesStartTurnWithResourcesCollectedEvent(1, 2, thirdTurnCollectedResources)
+                        .ThenVerifyPlayerState().Resources((ResourceClutch.OneLumber * 2) + ResourceClutch.OneOre).End()
+                        .ThenEndTurn()
+                    .WhenPlayer(Adam)
+                        .ReceivesStartTurnWithResourcesCollectedEvent(Charlie, 1, 2, thirdTurnCollectedResources)
+                        .ThenVerifyPlayerState().Resources(ResourceClutch.OneBrick).End()
+                    .WhenPlayer(Babara)
+                        .ReceivesStartTurnWithResourcesCollectedEvent(Charlie, 1, 2, thirdTurnCollectedResources)
+                        .ThenVerifyPlayerState().Resources(ResourceClutch.OneGrain + ResourceClutch.OneOre).End()
+                    .WhenPlayer(Dana)
+                        .ReceivesStartTurnWithResourcesCollectedEvent(Charlie, 1, 2, thirdTurnCollectedResources)
+                        .ThenVerifyPlayerState().Resources(ResourceClutch.OneOre).End()
 
-                .WhenPlayer(Charlie)
-                    .ReceivesStartTurnWithResourcesCollectedEvent(1, 2, thirdTurnCollectedResources)
-                    .ThenVerifyPlayerState().Resources((ResourceClutch.OneLumber * 2) + ResourceClutch.OneOre).End()
-                    .ThenEndTurn()
-                .WhenPlayer(Adam)
-                    .ReceivesStartTurnWithResourcesCollectedEvent(Charlie, 1, 2, thirdTurnCollectedResources)
-                    .ThenVerifyPlayerState().Resources(ResourceClutch.OneBrick).End()
-                .WhenPlayer(Babara)
-                    .ReceivesStartTurnWithResourcesCollectedEvent(Charlie, 1, 2, thirdTurnCollectedResources)
-                    .ThenVerifyPlayerState().Resources(ResourceClutch.OneGrain + ResourceClutch.OneOre).End()
-                .WhenPlayer(Dana)
-                    .ReceivesStartTurnWithResourcesCollectedEvent(Charlie, 1, 2, thirdTurnCollectedResources)
-                    .ThenVerifyPlayerState().Resources(ResourceClutch.OneOre).End()
+                    .WhenPlayer(Dana)
+                        .ReceivesStartTurnWithResourcesCollectedEvent(6, 4, fourthTurnCollectedResources)
+                        .ThenVerifyPlayerState().Resources(ResourceClutch.OneOre).End()
+                        .ThenEndTurn()
+                    .WhenPlayer(Adam)
+                        .ReceivesStartTurnWithResourcesCollectedEvent(Dana, 6, 4, fourthTurnCollectedResources)
+                        .ThenVerifyPlayerState().Resources(ResourceClutch.OneBrick + ResourceClutch.OneWool).End()
+                    .WhenPlayer(Babara)
+                        .ReceivesStartTurnWithResourcesCollectedEvent(Dana, 6, 4, fourthTurnCollectedResources)
+                        .ThenVerifyPlayerState().Resources(ResourceClutch.OneGrain + ResourceClutch.OneOre + ResourceClutch.OneWool).End()
+                    .WhenPlayer(Charlie)
+                        .ReceivesStartTurnWithResourcesCollectedEvent(Dana, 6, 4, fourthTurnCollectedResources)
+                        .ThenVerifyPlayerState().Resources((ResourceClutch.OneLumber * 2) + ResourceClutch.OneOre).End()
 
-                .WhenPlayer(Dana)
-                    .ReceivesStartTurnWithResourcesCollectedEvent(6, 4, fourthTurnCollectedResources)
-                    .ThenVerifyPlayerState().Resources(ResourceClutch.OneOre).End()
-                    .ThenEndTurn()
-                .WhenPlayer(Adam)
-                    .ReceivesStartTurnWithResourcesCollectedEvent(Dana, 6, 4, fourthTurnCollectedResources)
-                    .ThenVerifyPlayerState().Resources(ResourceClutch.OneBrick + ResourceClutch.OneWool).End()
-                .WhenPlayer(Babara)
-                    .ReceivesStartTurnWithResourcesCollectedEvent(Dana, 6, 4, fourthTurnCollectedResources)
-                    .ThenVerifyPlayerState().Resources(ResourceClutch.OneGrain + ResourceClutch.OneOre + ResourceClutch.OneWool).End()
-                .WhenPlayer(Charlie)
-                    .ReceivesStartTurnWithResourcesCollectedEvent(Dana, 6, 4, fourthTurnCollectedResources)
-                    .ThenVerifyPlayerState().Resources((ResourceClutch.OneLumber * 2) + ResourceClutch.OneOre).End()
-
-                .WhenPlayer(Adam)
-                    .ReceivesStartTurnEvent(1, 1)
-                    .ThenQuitGame()
-                .WhenPlayer(Babara)
-                    .ReceivesStartTurnEvent(1, 1)
-                    .ThenQuitGame()
-                .WhenPlayer(Charlie)
-                    .ReceivesStartTurnEvent(1, 1)
-                    .ThenQuitGame()
-                .Run();
+                    .WhenPlayer(Adam)
+                        .ReceivesStartTurnEvent(1, 1)
+                        .ThenQuitGame()
+                    .WhenPlayer(Babara)
+                        .ReceivesStartTurnEvent(1, 1)
+                        .ThenQuitGame()
+                    .WhenPlayer(Charlie)
+                        .ReceivesStartTurnEvent(1, 1)
+                        .ThenQuitGame()
+                    .Run();
+            }
+            finally
+            {
+                this.AttachReports(testName);
+            }
         }
 
         [Test]
         public void AllPlayersCompleteSetup()
         {
-            var expectedGameBoardSetup = new GameBoardSetup(new GameBoard(BoardSizes.Standard));
-            var playerOrder = new[] { Adam, Babara, Charlie, Dana };
-            ScenarioRunner.CreateScenarioRunner(new[] { MethodBase.GetCurrentMethod().Name })
-                .WithPlayer(Adam)
-                .WithPlayer(Babara)
-                .WithPlayer(Charlie)
-                .WithPlayer(Dana)
-                .WithTurnOrder(playerOrder)
-                .WhenPlayer(Adam)
-                    .ReceivesGameJoinedEvent().ThenDoNothing()
-                    .ReceivesPlayerSetupEvent().ThenDoNothing()
-                    .ReceivesInitialBoardSetupEvent(expectedGameBoardSetup).ThenDoNothing()
-                    .ReceivesPlayerOrderEvent(playerOrder)
-                .WhenPlayer(Babara)
-                    .ReceivesGameJoinedEvent()
-                    .ReceivesPlayerSetupEvent()
-                    .ReceivesInitialBoardSetupEvent(expectedGameBoardSetup)
-                    .ReceivesPlayerOrderEvent(playerOrder)
-                .WhenPlayer(Charlie)
-                    .ReceivesGameJoinedEvent()
-                    .ReceivesPlayerSetupEvent()
-                    .ReceivesInitialBoardSetupEvent(expectedGameBoardSetup)
-                    .ReceivesPlayerOrderEvent(playerOrder)
-                .WhenPlayer(Dana)
-                    .ReceivesGameJoinedEvent()
-                    .ReceivesPlayerSetupEvent()
-                    .ReceivesInitialBoardSetupEvent(expectedGameBoardSetup)
-                    .ReceivesPlayerOrderEvent(playerOrder)
-                .WhenPlayer(Adam)
-                    .ReceivesPlaceInfrastructureSetupEvent()
-                    .ThenPlaceStartingInfrastructure(Adam_FirstSettlementLocation, Adam_FirstRoadEndLocation)
-                    .VerifyAllPlayersReceivedInfrastructurePlacedEvent(Adam, Adam_FirstSettlementLocation, Adam_FirstRoadEndLocation)
-                .WhenPlayer(Babara)
-                    .ReceivesPlaceInfrastructureSetupEvent()
-                    .ThenPlaceStartingInfrastructure(Babara_FirstSettlementLocation, Babara_FirstRoadEndLocation)
-                    .VerifyAllPlayersReceivedInfrastructurePlacedEvent(Babara, Babara_FirstSettlementLocation, Babara_FirstRoadEndLocation)
-                .WhenPlayer(Charlie)
-                    .ReceivesPlaceInfrastructureSetupEvent()
-                    .ThenPlaceStartingInfrastructure(Charlie_FirstSettlementLocation, Charlie_FirstRoadEndLocation)
-                    .VerifyAllPlayersReceivedInfrastructurePlacedEvent(Charlie, Charlie_FirstSettlementLocation, Charlie_FirstRoadEndLocation)
-                .WhenPlayer(Dana)
-                    .ReceivesPlaceInfrastructureSetupEvent()
-                    .ThenPlaceStartingInfrastructure(Dana_FirstSettlementLocation, Dana_FirstRoadEndLocation)
-                    .VerifyAllPlayersReceivedInfrastructurePlacedEvent(Dana, Dana_FirstSettlementLocation, Dana_FirstRoadEndLocation)
-                    .ReceivesPlaceInfrastructureSetupEvent()
-                    .ThenPlaceStartingInfrastructure(Dana_SecondSettlementLocation, Dana_SecondRoadEndLocation)
-                    .VerifyAllPlayersReceivedInfrastructurePlacedEvent(Dana, Dana_SecondSettlementLocation, Dana_SecondRoadEndLocation)
-                .WhenPlayer(Charlie)
-                    .ReceivesPlaceInfrastructureSetupEvent()
-                    .ThenPlaceStartingInfrastructure(Charlie_SecondSettlementLocation, Charlie_SecondRoadEndLocation)
-                    .VerifyAllPlayersReceivedInfrastructurePlacedEvent(Charlie, Charlie_SecondSettlementLocation, Charlie_SecondRoadEndLocation)
-                .WhenPlayer(Babara)
-                    .ReceivesPlaceInfrastructureSetupEvent()
-                    .ThenPlaceStartingInfrastructure(Babara_SecondSettlementLocation, Babara_SecondRoadEndLocation)
-                    .VerifyAllPlayersReceivedInfrastructurePlacedEvent(Babara, Babara_SecondSettlementLocation, Babara_SecondRoadEndLocation)
-                .WhenPlayer(Adam)
-                    .ReceivesPlaceInfrastructureSetupEvent()
-                    .ThenPlaceStartingInfrastructure(Adam_SecondSettlementLocation, Adam_SecondRoadEndLocation)
-                    .VerifyAllPlayersReceivedInfrastructurePlacedEvent(Adam, Adam_SecondSettlementLocation, Adam_SecondRoadEndLocation)
-                    .ReceivesConfirmGameStartEvent()
-                    .ThenQuitGame()
-                .WhenPlayer(Babara)
-                    .ReceivesConfirmGameStartEvent()
-                    .ThenQuitGame()
-                .WhenPlayer(Charlie)
-                    .ReceivesConfirmGameStartEvent()
-                    .ThenQuitGame()
-                .WhenPlayer(Dana)
-                    .ReceivesConfirmGameStartEvent()
-                    .ThenQuitGame()
-                .Run();
+            var testName = MethodBase.GetCurrentMethod().Name;
+            try
+            { 
+                var expectedGameBoardSetup = new GameBoardSetup(new GameBoard(BoardSizes.Standard));
+                var playerOrder = new[] { Adam, Babara, Charlie, Dana };
+                ScenarioRunner.CreateScenarioRunner(new[] { testName })
+                    .WithPlayer(Adam)
+                    .WithPlayer(Babara)
+                    .WithPlayer(Charlie)
+                    .WithPlayer(Dana)
+                    .WithTurnOrder(playerOrder)
+                    .WhenPlayer(Adam)
+                        .ReceivesGameJoinedEvent().ThenDoNothing()
+                        .ReceivesPlayerSetupEvent().ThenDoNothing()
+                        .ReceivesInitialBoardSetupEvent(expectedGameBoardSetup).ThenDoNothing()
+                        .ReceivesPlayerOrderEvent(playerOrder)
+                    .WhenPlayer(Babara)
+                        .ReceivesGameJoinedEvent()
+                        .ReceivesPlayerSetupEvent()
+                        .ReceivesInitialBoardSetupEvent(expectedGameBoardSetup)
+                        .ReceivesPlayerOrderEvent(playerOrder)
+                    .WhenPlayer(Charlie)
+                        .ReceivesGameJoinedEvent()
+                        .ReceivesPlayerSetupEvent()
+                        .ReceivesInitialBoardSetupEvent(expectedGameBoardSetup)
+                        .ReceivesPlayerOrderEvent(playerOrder)
+                    .WhenPlayer(Dana)
+                        .ReceivesGameJoinedEvent()
+                        .ReceivesPlayerSetupEvent()
+                        .ReceivesInitialBoardSetupEvent(expectedGameBoardSetup)
+                        .ReceivesPlayerOrderEvent(playerOrder)
+                    .WhenPlayer(Adam)
+                        .ReceivesPlaceInfrastructureSetupEvent()
+                        .ThenPlaceStartingInfrastructure(Adam_FirstSettlementLocation, Adam_FirstRoadEndLocation)
+                        .VerifyAllPlayersReceivedInfrastructurePlacedEvent(Adam, Adam_FirstSettlementLocation, Adam_FirstRoadEndLocation)
+                    .WhenPlayer(Babara)
+                        .ReceivesPlaceInfrastructureSetupEvent()
+                        .ThenPlaceStartingInfrastructure(Babara_FirstSettlementLocation, Babara_FirstRoadEndLocation)
+                        .VerifyAllPlayersReceivedInfrastructurePlacedEvent(Babara, Babara_FirstSettlementLocation, Babara_FirstRoadEndLocation)
+                    .WhenPlayer(Charlie)
+                        .ReceivesPlaceInfrastructureSetupEvent()
+                        .ThenPlaceStartingInfrastructure(Charlie_FirstSettlementLocation, Charlie_FirstRoadEndLocation)
+                        .VerifyAllPlayersReceivedInfrastructurePlacedEvent(Charlie, Charlie_FirstSettlementLocation, Charlie_FirstRoadEndLocation)
+                    .WhenPlayer(Dana)
+                        .ReceivesPlaceInfrastructureSetupEvent()
+                        .ThenPlaceStartingInfrastructure(Dana_FirstSettlementLocation, Dana_FirstRoadEndLocation)
+                        .VerifyAllPlayersReceivedInfrastructurePlacedEvent(Dana, Dana_FirstSettlementLocation, Dana_FirstRoadEndLocation)
+                        .ReceivesPlaceInfrastructureSetupEvent()
+                        .ThenPlaceStartingInfrastructure(Dana_SecondSettlementLocation, Dana_SecondRoadEndLocation)
+                        .VerifyAllPlayersReceivedInfrastructurePlacedEvent(Dana, Dana_SecondSettlementLocation, Dana_SecondRoadEndLocation)
+                    .WhenPlayer(Charlie)
+                        .ReceivesPlaceInfrastructureSetupEvent()
+                        .ThenPlaceStartingInfrastructure(Charlie_SecondSettlementLocation, Charlie_SecondRoadEndLocation)
+                        .VerifyAllPlayersReceivedInfrastructurePlacedEvent(Charlie, Charlie_SecondSettlementLocation, Charlie_SecondRoadEndLocation)
+                    .WhenPlayer(Babara)
+                        .ReceivesPlaceInfrastructureSetupEvent()
+                        .ThenPlaceStartingInfrastructure(Babara_SecondSettlementLocation, Babara_SecondRoadEndLocation)
+                        .VerifyAllPlayersReceivedInfrastructurePlacedEvent(Babara, Babara_SecondSettlementLocation, Babara_SecondRoadEndLocation)
+                    .WhenPlayer(Adam)
+                        .ReceivesPlaceInfrastructureSetupEvent()
+                        .ThenPlaceStartingInfrastructure(Adam_SecondSettlementLocation, Adam_SecondRoadEndLocation)
+                        .VerifyAllPlayersReceivedInfrastructurePlacedEvent(Adam, Adam_SecondSettlementLocation, Adam_SecondRoadEndLocation)
+                        .ReceivesConfirmGameStartEvent()
+                        .ThenQuitGame()
+                    .WhenPlayer(Babara)
+                        .ReceivesConfirmGameStartEvent()
+                        .ThenQuitGame()
+                    .WhenPlayer(Charlie)
+                        .ReceivesConfirmGameStartEvent()
+                        .ThenQuitGame()
+                    .WhenPlayer(Dana)
+                        .ReceivesConfirmGameStartEvent()
+                        .ThenQuitGame()
+                    .Run();
+            }
+            finally
+            {
+                this.AttachReports(testName);
+            }
         }
 
         [Test]
@@ -340,143 +363,185 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void PlayerPlacesCity()
         {
-            this.CompletePlayerInfrastructureSetup(new[] { MethodBase.GetCurrentMethod().Name })
-                .WithNoResourceCollection()
-                .WithInitialPlayerSetupFor(
-                    Adam,
-                    Resources(ResourceClutch.RoadSegment + ResourceClutch.Settlement + ResourceClutch.City))
-                .WhenPlayer(Adam)
-                    .ReceivesStartTurnEvent(3, 3).ThenPlaceRoadSegment(4, 3)
-                    .ReceivesRoadSegmentPlacementEvent(4, 3).ThenPlaceSettlement(3)
-                    .ReceivesSettlementPlacementEvent(3).ThenPlaceCity(3)
-                    .ReceivesCityPlacementEvent(3)
-                    .ThenVerifyPlayerState()
-                        .Resources(ResourceClutch.Zero)
-                        .VictoryPoints(4)
-                        .Settlements(Player.TotalSettlements - 2)
-                        .Cities(Player.TotalCities - 1)
-                        .End()
-                .WhenPlayer(Babara)
-                    .ReceivesRoadSegmentPlacementEvent(Adam, 4, 3).ThenDoNothing()
-                    .ReceivesSettlementPlacementEvent(Adam, 3).ThenDoNothing()
-                    .ReceivesCityPlacementEvent(Adam, 3).ThenDoNothing()
-                .WhenPlayer(Charlie)
-                    .ReceivesRoadSegmentPlacementEvent(Adam, 4, 3).ThenDoNothing()
-                    .ReceivesSettlementPlacementEvent(Adam, 3).ThenDoNothing()
-                    .ReceivesCityPlacementEvent(Adam, 3).ThenDoNothing()
-                .WhenPlayer(Dana)
-                    .ReceivesRoadSegmentPlacementEvent(Adam, 4, 3).ThenDoNothing()
-                    .ReceivesSettlementPlacementEvent(Adam, 3).ThenDoNothing()
-                    .ReceivesCityPlacementEvent(Adam, 3).ThenDoNothing()
-                .Run();
+            var testName = MethodBase.GetCurrentMethod().Name;
+            try
+            { 
+                this.CompletePlayerInfrastructureSetup(new[] { testName })
+                    .WithNoResourceCollection()
+                    .WithInitialPlayerSetupFor(
+                        Adam,
+                        Resources(ResourceClutch.RoadSegment + ResourceClutch.Settlement + ResourceClutch.City))
+                    .WhenPlayer(Adam)
+                        .ReceivesStartTurnEvent(3, 3).ThenPlaceRoadSegment(4, 3)
+                        .ReceivesRoadSegmentPlacementEvent(4, 3).ThenPlaceSettlement(3)
+                        .ReceivesSettlementPlacementEvent(3).ThenPlaceCity(3)
+                        .ReceivesCityPlacementEvent(3)
+                        .ThenVerifyPlayerState()
+                            .Resources(ResourceClutch.Zero)
+                            .VictoryPoints(4)
+                            .Settlements(Player.TotalSettlements - 2)
+                            .Cities(Player.TotalCities - 1)
+                            .End()
+                    .WhenPlayer(Babara)
+                        .ReceivesRoadSegmentPlacementEvent(Adam, 4, 3).ThenDoNothing()
+                        .ReceivesSettlementPlacementEvent(Adam, 3).ThenDoNothing()
+                        .ReceivesCityPlacementEvent(Adam, 3).ThenDoNothing()
+                    .WhenPlayer(Charlie)
+                        .ReceivesRoadSegmentPlacementEvent(Adam, 4, 3).ThenDoNothing()
+                        .ReceivesSettlementPlacementEvent(Adam, 3).ThenDoNothing()
+                        .ReceivesCityPlacementEvent(Adam, 3).ThenDoNothing()
+                    .WhenPlayer(Dana)
+                        .ReceivesRoadSegmentPlacementEvent(Adam, 4, 3).ThenDoNothing()
+                        .ReceivesSettlementPlacementEvent(Adam, 3).ThenDoNothing()
+                        .ReceivesCityPlacementEvent(Adam, 3).ThenDoNothing()
+                    .Run();
+            }
+            finally
+            {
+                this.AttachReports(testName);
+            }
         }
 
         [Test]
         public void PlayerPlacesCityAndWins()
         {
-            this.CompletePlayerInfrastructureSetup(new[] { MethodBase.GetCurrentMethod().Name })
-                .WithNoResourceCollection()
-                .WithInitialPlayerSetupFor(
-                    Adam,
-                    Resources(ResourceClutch.RoadSegment + ResourceClutch.Settlement + ResourceClutch.City),
-                    VictoryPoints(6))
-                .WhenPlayer(Adam)
-                    .ReceivesStartTurnEvent(3, 3).ThenPlaceRoadSegment(4, 3)
-                    .ReceivesRoadSegmentPlacementEvent(4, 3).ThenPlaceSettlement(3)
-                    .ReceivesSettlementPlacementEvent(3).ThenPlaceCity(3)
-                    .ReceivesCityPlacementEvent(3).ThenDoNothing()
-                    .ReceivesPlayerWonEvent(10)
-                .WhenPlayer(Babara)
-                    .ReceivesPlayerWonEvent(Adam, 10).ThenDoNothing()
-                .WhenPlayer(Charlie)
-                    .ReceivesPlayerWonEvent(Adam, 10).ThenDoNothing()
-                .WhenPlayer(Dana)
-                    .ReceivesPlayerWonEvent(Adam, 10).ThenDoNothing()
-                .WhenPlayer(Adam)
-                    .ThenVerifyPlayerState()
-                        .Resources(ResourceClutch.Zero)
-                        .VictoryPoints(10)
-                        .Cities(Player.TotalCities - 1)
-                        .End()
-                .Run();
+            var testName = MethodBase.GetCurrentMethod().Name;
+            try { 
+                this.CompletePlayerInfrastructureSetup(new[] { testName })
+                    .WithNoResourceCollection()
+                    .WithInitialPlayerSetupFor(
+                        Adam,
+                        Resources(ResourceClutch.RoadSegment + ResourceClutch.Settlement + ResourceClutch.City),
+                        VictoryPoints(6))
+                    .WhenPlayer(Adam)
+                        .ReceivesStartTurnEvent(3, 3).ThenPlaceRoadSegment(4, 3)
+                        .ReceivesRoadSegmentPlacementEvent(4, 3).ThenPlaceSettlement(3)
+                        .ReceivesSettlementPlacementEvent(3).ThenPlaceCity(3)
+                        .ReceivesCityPlacementEvent(3).ThenDoNothing()
+                        .ReceivesPlayerWonEvent(10)
+                    .WhenPlayer(Babara)
+                        .ReceivesPlayerWonEvent(Adam, 10).ThenDoNothing()
+                    .WhenPlayer(Charlie)
+                        .ReceivesPlayerWonEvent(Adam, 10).ThenDoNothing()
+                    .WhenPlayer(Dana)
+                        .ReceivesPlayerWonEvent(Adam, 10).ThenDoNothing()
+                    .WhenPlayer(Adam)
+                        .ThenVerifyPlayerState()
+                            .Resources(ResourceClutch.Zero)
+                            .VictoryPoints(10)
+                            .Cities(Player.TotalCities - 1)
+                            .End()
+                    .Run();
+            }
+            finally
+            {
+                this.AttachReports(testName);
+            }
         }
 
         [Test]
         public void PlayerTriesToPlaceCityOnLocationOccupiedByPlayer()
         {
-            this.CompletePlayerInfrastructureSetup(new[] { MethodBase.GetCurrentMethod().Name })
-                .WithNoResourceCollection()
-                .WithInitialPlayerSetupFor(
-                    Adam,
-                    Resources(ResourceClutch.City * 2))
-                .WhenPlayer(Adam)
-                    .ReceivesStartTurnEvent(3, 3).ThenPlaceCity(Adam_FirstSettlementLocation)
-                    .ReceivesCityPlacementEvent(Adam_FirstSettlementLocation).ThenPlaceCity(Adam_FirstSettlementLocation)
-                    .ReceivesGameErrorEvent("908", $"Location ({Adam_FirstSettlementLocation}) already occupied by you").ThenDoNothing()
-                .VerifyPlayer(Babara)
-                    .DidNotReceiveEventOfType<GameErrorEvent>()
-                .VerifyPlayer(Charlie)
-                    .DidNotReceiveEventOfType<GameErrorEvent>()
-                .VerifyPlayer(Dana)
-                    .DidNotReceiveEventOfType<GameErrorEvent>()
-                .Run();
+            var testName = MethodBase.GetCurrentMethod().Name;
+            try
+            { 
+                this.CompletePlayerInfrastructureSetup(new[] { testName })
+                    .WithNoResourceCollection()
+                    .WithInitialPlayerSetupFor(
+                        Adam,
+                        Resources(ResourceClutch.City * 2))
+                    .WhenPlayer(Adam)
+                        .ReceivesStartTurnEvent(3, 3).ThenPlaceCity(Adam_FirstSettlementLocation)
+                        .ReceivesCityPlacementEvent(Adam_FirstSettlementLocation).ThenPlaceCity(Adam_FirstSettlementLocation)
+                        .ReceivesGameErrorEvent("908", $"Location ({Adam_FirstSettlementLocation}) already occupied by you").ThenDoNothing()
+                    .VerifyPlayer(Babara)
+                        .DidNotReceiveEventOfType<GameErrorEvent>()
+                    .VerifyPlayer(Charlie)
+                        .DidNotReceiveEventOfType<GameErrorEvent>()
+                    .VerifyPlayer(Dana)
+                        .DidNotReceiveEventOfType<GameErrorEvent>()
+                    .Run();
+            }
+            finally
+            {
+                this.AttachReports(testName);
+            }
         }
 
         [Test]
         public void PlayerTriesToPlaceCityOnInvalidLocation()
         {
-            this.CompletePlayerInfrastructureSetup(new[] { MethodBase.GetCurrentMethod().Name })
-                .WithNoResourceCollection()
-                .WithInitialPlayerSetupFor(
-                    Adam,
-                    Resources(ResourceClutch.City))
-                .WhenPlayer(Adam)
-                    .ReceivesStartTurnEvent(3, 3).ThenPlaceCity(100)
-                    .ReceivesGameErrorEvent("915", $"Location (100) is invalid").ThenDoNothing()
-                .VerifyPlayer(Babara)
-                    .DidNotReceiveEventOfType<GameErrorEvent>()
-                .VerifyPlayer(Charlie)
-                    .DidNotReceiveEventOfType<GameErrorEvent>()
-                .VerifyPlayer(Dana)
-                    .DidNotReceiveEventOfType<GameErrorEvent>()
-                .Run();
+            var testName = MethodBase.GetCurrentMethod().Name;
+            try
+            {
+                this.CompletePlayerInfrastructureSetup(new[] { testName })
+                    .WithNoResourceCollection()
+                    .WithInitialPlayerSetupFor(
+                        Adam,
+                        Resources(ResourceClutch.City))
+                    .WhenPlayer(Adam)
+                        .ReceivesStartTurnEvent(3, 3).ThenPlaceCity(100)
+                        .ReceivesGameErrorEvent("915", $"Location (100) is invalid").ThenDoNothing()
+                    .VerifyPlayer(Babara)
+                        .DidNotReceiveEventOfType<GameErrorEvent>()
+                    .VerifyPlayer(Charlie)
+                        .DidNotReceiveEventOfType<GameErrorEvent>()
+                    .VerifyPlayer(Dana)
+                        .DidNotReceiveEventOfType<GameErrorEvent>()
+                    .Run();
+            }
+            finally
+            {
+                this.AttachReports(testName);
+            }
         }
 
         [Test]
         public void PlayerTriesToPlaceCityOnLocationOccupiedByOtherPlayer()
         {
-            this.CompletePlayerInfrastructureSetup(new[] { MethodBase.GetCurrentMethod().Name })
-                .WithNoResourceCollection()
-                .WithInitialPlayerSetupFor(
-                    Adam,
-                    Resources((ResourceClutch.RoadSegment * 2) + ResourceClutch.Settlement))
-                .WithInitialPlayerSetupFor(
-                    Charlie,
-                    Resources(ResourceClutch.RoadSegment + ResourceClutch.City))
-                .WhenPlayer(Adam)
-                    .ReceivesStartTurnEvent(3, 3).ThenPlaceRoadSegment(12, 13)
-                    .ReceivesRoadSegmentPlacementEvent(12, 13).ThenPlaceRoadSegment(13, 14)
-                    .ReceivesRoadSegmentPlacementEvent(13, 14).ThenPlaceSettlement(14)
-                    .ReceivesSettlementPlacementEvent(14).ThenEndTurn()
-                .WhenPlayer(Babara)
-                    .ReceivesStartTurnEvent(3, 3).ThenEndTurn()
-                .WhenPlayer(Charlie)
-                    .ReceivesStartTurnEvent(3, 3).ThenPlaceRoadSegment(15, 14)
-                    .ReceivesRoadSegmentPlacementEvent(15, 14).ThenPlaceCity(14)
-                    .ReceivesGameErrorEvent("908", "Location (14) already occupied by Adam").ThenDoNothing()
-                .VerifyPlayer(Adam)
-                    .DidNotReceiveEventOfType<GameErrorEvent>()
-                .VerifyPlayer(Babara)
-                    .DidNotReceiveEventOfType<GameErrorEvent>()
-                .VerifyPlayer(Dana)
-                    .DidNotReceiveEventOfType<GameErrorEvent>()
-                .Run();
+            var testName = MethodBase.GetCurrentMethod().Name;
+            try
+            { 
+                this.CompletePlayerInfrastructureSetup(new[] { testName })
+                    .WithNoResourceCollection()
+                    .WithInitialPlayerSetupFor(
+                        Adam,
+                        Resources((ResourceClutch.RoadSegment * 2) + ResourceClutch.Settlement))
+                    .WithInitialPlayerSetupFor(
+                        Charlie,
+                        Resources(ResourceClutch.RoadSegment + ResourceClutch.City))
+                    .WhenPlayer(Adam)
+                        .ReceivesStartTurnEvent(3, 3).ThenPlaceRoadSegment(12, 13)
+                        .ReceivesRoadSegmentPlacementEvent(12, 13).ThenPlaceRoadSegment(13, 14)
+                        .ReceivesRoadSegmentPlacementEvent(13, 14).ThenPlaceSettlement(14)
+                        .ReceivesSettlementPlacementEvent(14).ThenEndTurn()
+                    .WhenPlayer(Babara)
+                        .ReceivesStartTurnEvent(3, 3).ThenEndTurn()
+                    .WhenPlayer(Charlie)
+                        .ReceivesStartTurnEvent(3, 3).ThenPlaceRoadSegment(15, 14)
+                        .ReceivesRoadSegmentPlacementEvent(15, 14).ThenPlaceCity(14)
+                        .ReceivesGameErrorEvent("908", "Location (14) already occupied by Adam").ThenDoNothing()
+                    .VerifyPlayer(Adam)
+                        .DidNotReceiveEventOfType<GameErrorEvent>()
+                    .VerifyPlayer(Babara)
+                        .DidNotReceiveEventOfType<GameErrorEvent>()
+                    .VerifyPlayer(Dana)
+                        .DidNotReceiveEventOfType<GameErrorEvent>()
+                    .Run();
+            }
+            finally
+            {
+                this.AttachReports(testName);
+            }
         }
 
         [Test]
         public void PlayerTriesToPlaceCityOnLocationWithoutSettlement()
         {
-            this.CompletePlayerInfrastructureSetup(new[] { MethodBase.GetCurrentMethod().Name })
+            var testName = MethodBase.GetCurrentMethod().Name;
+            try
+            { 
+            this.CompletePlayerInfrastructureSetup(new[] { testName })
                 .WithNoResourceCollection()
                 .WithInitialPlayerSetupFor(
                     Adam,
@@ -492,111 +557,151 @@ namespace SoC.Library.ScenarioTests
                 .VerifyPlayer(Dana)
                     .DidNotReceiveEventOfType<GameErrorEvent>()
                 .Run();
+            }
+            finally
+            {
+                this.AttachReports(testName);
+            }
         }
 
         [Test]
         public void PlayerTriesToPlaceCityWithNotEnoughResources()
         {
-            this.CompletePlayerInfrastructureSetup(new[] { MethodBase.GetCurrentMethod().Name })
-                .WithNoResourceCollection()
-                .WhenPlayer(Adam)
-                    .ReceivesStartTurnEvent(3, 3).ThenPlaceCity(Adam_FirstSettlementLocation)
-                    .ReceivesGameErrorEvent("913", "Not enough resources for placing city").ThenDoNothing()
-                .VerifyPlayer(Babara)
-                    .DidNotReceiveEventOfType<GameErrorEvent>()
-                .VerifyPlayer(Charlie)
-                    .DidNotReceiveEventOfType<GameErrorEvent>()
-                .VerifyPlayer(Dana)
-                    .DidNotReceiveEventOfType<GameErrorEvent>()
-                .Run();
+            var testName = MethodBase.GetCurrentMethod().Name;
+            try
+            { 
+                this.CompletePlayerInfrastructureSetup(new[] { testName })
+                    .WithNoResourceCollection()
+                    .WhenPlayer(Adam)
+                        .ReceivesStartTurnEvent(3, 3).ThenPlaceCity(Adam_FirstSettlementLocation)
+                        .ReceivesGameErrorEvent("913", "Not enough resources for placing city").ThenDoNothing()
+                    .VerifyPlayer(Babara)
+                        .DidNotReceiveEventOfType<GameErrorEvent>()
+                    .VerifyPlayer(Charlie)
+                        .DidNotReceiveEventOfType<GameErrorEvent>()
+                    .VerifyPlayer(Dana)
+                        .DidNotReceiveEventOfType<GameErrorEvent>()
+                    .Run();
+            }
+            finally
+            {
+                this.AttachReports(testName);
+            }
         }
 
         [Test]
         public void PlayerPlacesSettlement()
         {
-            this.CompletePlayerInfrastructureSetup(new[] { MethodBase.GetCurrentMethod().Name })
-                .WithNoResourceCollection()
-                .WithInitialPlayerSetupFor(
-                    Adam,
-                    Resources(ResourceClutch.RoadSegment + ResourceClutch.Settlement))
-                .WhenPlayer(Adam)
-                    .ReceivesStartTurnEvent(3, 3)
-                    .ThenPlaceRoadSegment(4, 3)
-                    .ReceivesRoadSegmentPlacementEvent(4, 3)
-                    .ThenPlaceSettlement(3)
-                    .ReceivesSettlementPlacementEvent(3)
-                    .ThenVerifyPlayerState()
-                        .Resources(ResourceClutch.Zero)
-                        .Settlements(Player.TotalSettlements - 3)
-                        .VictoryPoints(3)
-                        .End()
-                .WhenPlayer(Babara)
-                    .ReceivesRoadSegmentPlacementEvent(Adam, 4, 3).ThenDoNothing()
-                    .ReceivesSettlementPlacementEvent(Adam, 3).ThenDoNothing()
-                .WhenPlayer(Charlie)
-                    .ReceivesRoadSegmentPlacementEvent(Adam, 4, 3).ThenDoNothing()
-                    .ReceivesSettlementPlacementEvent(Adam, 3).ThenDoNothing()
-                .WhenPlayer(Dana)
-                    .ReceivesRoadSegmentPlacementEvent(Adam, 4, 3).ThenDoNothing()
-                    .ReceivesSettlementPlacementEvent(Adam, 3).ThenDoNothing()
-                .Run();
+            var testName = MethodBase.GetCurrentMethod().Name;
+            try
+            { 
+                this.CompletePlayerInfrastructureSetup(new[] { testName })
+                    .WithNoResourceCollection()
+                    .WithInitialPlayerSetupFor(
+                        Adam,
+                        Resources(ResourceClutch.RoadSegment + ResourceClutch.Settlement))
+                    .WhenPlayer(Adam)
+                        .ReceivesStartTurnEvent(3, 3)
+                        .ThenPlaceRoadSegment(4, 3)
+                        .ReceivesRoadSegmentPlacementEvent(4, 3)
+                        .ThenPlaceSettlement(3)
+                        .ReceivesSettlementPlacementEvent(3)
+                        .ThenVerifyPlayerState()
+                            .Resources(ResourceClutch.Zero)
+                            .Settlements(Player.TotalSettlements - 3)
+                            .VictoryPoints(3)
+                            .End()
+                    .WhenPlayer(Babara)
+                        .ReceivesRoadSegmentPlacementEvent(Adam, 4, 3).ThenDoNothing()
+                        .ReceivesSettlementPlacementEvent(Adam, 3).ThenDoNothing()
+                    .WhenPlayer(Charlie)
+                        .ReceivesRoadSegmentPlacementEvent(Adam, 4, 3).ThenDoNothing()
+                        .ReceivesSettlementPlacementEvent(Adam, 3).ThenDoNothing()
+                    .WhenPlayer(Dana)
+                        .ReceivesRoadSegmentPlacementEvent(Adam, 4, 3).ThenDoNothing()
+                        .ReceivesSettlementPlacementEvent(Adam, 3).ThenDoNothing()
+                    .Run();
+            }
+            finally
+            {
+                this.AttachReports(testName);
+            }
         }
 
         [Test]
         public void PlayerPlacesSettlementAndWins()
         {
-            this.CompletePlayerInfrastructureSetup(new[] { MethodBase.GetCurrentMethod().Name })
-                .WithNoResourceCollection()
-                .WithInitialPlayerSetupFor(
-                    Adam, 
-                    Resources(ResourceClutch.RoadSegment + ResourceClutch.Settlement),
-                    VictoryPoints(7)) // Account for placing infrastructure
-                .WhenPlayer(Adam)
-                    .ReceivesStartTurnEvent(3, 3).ThenPlaceRoadSegment(4, 3)
-                    .ReceivesRoadSegmentPlacementEvent(4, 3).ThenPlaceSettlement(3)
-                    .ReceivesSettlementPlacementEvent(3)
-                .WhenPlayer(Babara)
-                    .ReceivesRoadSegmentPlacementEvent(Adam, 4, 3).ThenDoNothing()
-                    .ReceivesSettlementPlacementEvent(Adam, 3).ThenDoNothing()
-                .WhenPlayer(Charlie)
-                    .ReceivesRoadSegmentPlacementEvent(Adam, 4, 3).ThenDoNothing()
-                    .ReceivesSettlementPlacementEvent(Adam, 3).ThenDoNothing()
-                .WhenPlayer(Dana)
-                    .ReceivesRoadSegmentPlacementEvent(Adam, 4, 3).ThenDoNothing()
-                    .ReceivesSettlementPlacementEvent(Adam, 3).ThenDoNothing()
-                .VerifyAllPlayersReceivedGameWonEvent(Adam, 10)
-                .WhenPlayer(Adam)
-                    .ThenVerifyPlayerState()
-                        .Resources(ResourceClutch.Zero)
-                        .VictoryPoints(10)
-                        .End()
-                .Run();
+            var testName = MethodBase.GetCurrentMethod().Name;
+            try
+            { 
+                this.CompletePlayerInfrastructureSetup(new[] { testName })
+                    .WithNoResourceCollection()
+                    .WithInitialPlayerSetupFor(
+                        Adam, 
+                        Resources(ResourceClutch.RoadSegment + ResourceClutch.Settlement),
+                        VictoryPoints(7)) // Account for placing infrastructure
+                    .WhenPlayer(Adam)
+                        .ReceivesStartTurnEvent(3, 3).ThenPlaceRoadSegment(4, 3)
+                        .ReceivesRoadSegmentPlacementEvent(4, 3).ThenPlaceSettlement(3)
+                        .ReceivesSettlementPlacementEvent(3)
+                    .WhenPlayer(Babara)
+                        .ReceivesRoadSegmentPlacementEvent(Adam, 4, 3).ThenDoNothing()
+                        .ReceivesSettlementPlacementEvent(Adam, 3).ThenDoNothing()
+                    .WhenPlayer(Charlie)
+                        .ReceivesRoadSegmentPlacementEvent(Adam, 4, 3).ThenDoNothing()
+                        .ReceivesSettlementPlacementEvent(Adam, 3).ThenDoNothing()
+                    .WhenPlayer(Dana)
+                        .ReceivesRoadSegmentPlacementEvent(Adam, 4, 3).ThenDoNothing()
+                        .ReceivesSettlementPlacementEvent(Adam, 3).ThenDoNothing()
+                    .VerifyAllPlayersReceivedGameWonEvent(Adam, 10)
+                    .WhenPlayer(Adam)
+                        .ThenVerifyPlayerState()
+                            .Resources(ResourceClutch.Zero)
+                            .VictoryPoints(10)
+                            .End()
+                    .Run();
+            }
+            finally
+            {
+                this.AttachReports(testName);
+            }
         }
 
         [Test]
         public void PlayerTriesToPlaceSettlementOnInvalidLocation()
         {
-            this.CompletePlayerInfrastructureSetup(new[] { MethodBase.GetCurrentMethod().Name })
-                .WithNoResourceCollection()
-                .WithInitialPlayerSetupFor(
-                    Adam,
-                    Resources(ResourceClutch.Settlement))
-                .WhenPlayer(Adam)
-                    .ReceivesStartTurnEvent(3, 3).ThenPlaceSettlement(100)
-                    .ReceivesGameErrorEvent("915", $"Location (100) is invalid").ThenDoNothing()
-                .VerifyPlayer(Babara)
-                    .DidNotReceiveEventOfType<GameErrorEvent>()
-                .VerifyPlayer(Charlie)
-                    .DidNotReceiveEventOfType<GameErrorEvent>()
-                .VerifyPlayer(Dana)
-                    .DidNotReceiveEventOfType<GameErrorEvent>()
-                .Run();
+            var testName = MethodBase.GetCurrentMethod().Name;
+            try
+            { 
+                this.CompletePlayerInfrastructureSetup(new[] { testName })
+                    .WithNoResourceCollection()
+                    .WithInitialPlayerSetupFor(
+                        Adam,
+                        Resources(ResourceClutch.Settlement))
+                    .WhenPlayer(Adam)
+                        .ReceivesStartTurnEvent(3, 3).ThenPlaceSettlement(100)
+                        .ReceivesGameErrorEvent("915", $"Location (100) is invalid").ThenDoNothing()
+                    .VerifyPlayer(Babara)
+                        .DidNotReceiveEventOfType<GameErrorEvent>()
+                    .VerifyPlayer(Charlie)
+                        .DidNotReceiveEventOfType<GameErrorEvent>()
+                    .VerifyPlayer(Dana)
+                        .DidNotReceiveEventOfType<GameErrorEvent>()
+                    .Run();
+            }
+            finally
+            {
+                this.AttachReports(testName);
+            }
         }
 
         [Test]
         public void PlayerTriesToPlaceSettlementOnLocationOccupiedByPlayer()
         {
-            this.CompletePlayerInfrastructureSetup(new[] { MethodBase.GetCurrentMethod().Name })
+            var testName = MethodBase.GetCurrentMethod().Name;
+            try
+            { 
+            this.CompletePlayerInfrastructureSetup(new[] { testName })
                 .WithNoResourceCollection()
                 .WithInitialPlayerSetupFor(
                     Adam,
@@ -613,43 +718,57 @@ namespace SoC.Library.ScenarioTests
                 .VerifyPlayer(Dana)
                     .DidNotReceiveEventOfType<GameErrorEvent>()
                 .Run();
+            }
+            finally
+            {
+                this.AttachReports(testName);
+            }
         }
 
         [Test]
         public void PlayerTriesToPlaceSettlementOnLocationOccupiedByOtherPlayer()
         {
-            this.CompletePlayerInfrastructureSetup(new[] { MethodBase.GetCurrentMethod().Name })
-                .WithNoResourceCollection()
-                .WithInitialPlayerSetupFor(
-                    Adam,
-                    Resources((ResourceClutch.RoadSegment * 2) + ResourceClutch.Settlement))
-                .WithInitialPlayerSetupFor(
-                    Charlie,
-                    Resources(ResourceClutch.RoadSegment + ResourceClutch.Settlement))
-                .WhenPlayer(Adam)
-                    .ReceivesStartTurnEvent(3, 3).ThenPlaceRoadSegment(12, 13)
-                    .ReceivesRoadSegmentPlacementEvent(12, 13).ThenPlaceRoadSegment(13, 14)
-                    .ReceivesRoadSegmentPlacementEvent(13, 14).ThenPlaceSettlement(14)
-                    .ReceivesSettlementPlacementEvent(14).ThenEndTurn()
-                .WhenPlayer(Babara)
-                    .ReceivesStartTurnEvent(3, 3).ThenEndTurn()
-                .WhenPlayer(Charlie)
-                    .ReceivesStartTurnEvent(3, 3).ThenPlaceRoadSegment(15, 14)
-                    .ReceivesRoadSegmentPlacementEvent(15, 14).ThenPlaceSettlement(14)
-                    .ReceivesGameErrorEvent("908", "Location (14) already occupied by Adam").ThenDoNothing()
-                .VerifyPlayer(Adam)
-                    .DidNotReceiveEventOfType<GameErrorEvent>()
-                .VerifyPlayer(Babara)
-                    .DidNotReceiveEventOfType<GameErrorEvent>()
-                .VerifyPlayer(Dana)
-                    .DidNotReceiveEventOfType<GameErrorEvent>()
-                .Run();
+            var testName = MethodBase.GetCurrentMethod().Name;
+            try
+            { 
+                this.CompletePlayerInfrastructureSetup(new[] { testName })
+                    .WithNoResourceCollection()
+                    .WithInitialPlayerSetupFor(
+                        Adam,
+                        Resources((ResourceClutch.RoadSegment * 2) + ResourceClutch.Settlement))
+                    .WithInitialPlayerSetupFor(
+                        Charlie,
+                        Resources(ResourceClutch.RoadSegment + ResourceClutch.Settlement))
+                    .WhenPlayer(Adam)
+                        .ReceivesStartTurnEvent(3, 3).ThenPlaceRoadSegment(12, 13)
+                        .ReceivesRoadSegmentPlacementEvent(12, 13).ThenPlaceRoadSegment(13, 14)
+                        .ReceivesRoadSegmentPlacementEvent(13, 14).ThenPlaceSettlement(14)
+                        .ReceivesSettlementPlacementEvent(14).ThenEndTurn()
+                    .WhenPlayer(Babara)
+                        .ReceivesStartTurnEvent(3, 3).ThenEndTurn()
+                    .WhenPlayer(Charlie)
+                        .ReceivesStartTurnEvent(3, 3).ThenPlaceRoadSegment(15, 14)
+                        .ReceivesRoadSegmentPlacementEvent(15, 14).ThenPlaceSettlement(14)
+                        .ReceivesGameErrorEvent("908", "Location (14) already occupied by Adam").ThenDoNothing()
+                    .VerifyPlayer(Adam)
+                        .DidNotReceiveEventOfType<GameErrorEvent>()
+                    .VerifyPlayer(Babara)
+                        .DidNotReceiveEventOfType<GameErrorEvent>()
+                    .VerifyPlayer(Dana)
+                        .DidNotReceiveEventOfType<GameErrorEvent>()
+                    .Run();
+            }
+            finally
+            {
+                this.AttachReports(testName);
+            }
         }
 
         [Test]
         public void PlayerTriesToPlaceSettlementOnUnconnectedLocation()
         {
-            this.CompletePlayerInfrastructureSetup(new[] { MethodBase.GetCurrentMethod().Name })
+            var testName = MethodBase.GetCurrentMethod().Name;
+            this.CompletePlayerInfrastructureSetup(new[] { testName })
                 .WithNoResourceCollection()
                 .WithInitialPlayerSetupFor(
                     Adam,
@@ -669,7 +788,8 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void PlayerTriesToPlaceSettlementWithNoSettlementsLeft()
         {
-            this.CompletePlayerInfrastructureSetup(new[] { MethodBase.GetCurrentMethod().Name })
+            var testName = MethodBase.GetCurrentMethod().Name;
+            this.CompletePlayerInfrastructureSetup(new[] { testName })
                 .WithNoResourceCollection()
                 .WithInitialPlayerSetupFor(
                     Adam,
@@ -689,7 +809,8 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void PlayerTriesToPlaceSettlementWithNotEnoughResources()
         {
-            this.CompletePlayerInfrastructureSetup(new[] { MethodBase.GetCurrentMethod().Name })
+            var testName = MethodBase.GetCurrentMethod().Name;
+            this.CompletePlayerInfrastructureSetup(new[] { testName })
                 .WithNoResourceCollection()
                 .WhenPlayer(Adam)
                     .ReceivesStartTurnEvent(3, 3).ThenPlaceSettlement(3)
@@ -706,7 +827,8 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void PlayerTriesToPlaceRoadSegmentWithInvalidLocations()
         {
-            this.CompletePlayerInfrastructureSetup(new[] { MethodBase.GetCurrentMethod().Name })
+            var testName = MethodBase.GetCurrentMethod().Name;
+            this.CompletePlayerInfrastructureSetup(new[] { testName })
                 .WithNoResourceCollection()
                 .WithInitialPlayerSetupFor(Adam, Resources(ResourceClutch.RoadSegment))
                 .WhenPlayer(Adam)
@@ -725,7 +847,8 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void PlayerTriesToPlaceRoadSegmentWithUnconnectedLocations()
         {
-            this.CompletePlayerInfrastructureSetup(new[] { MethodBase.GetCurrentMethod().Name })
+            var testName = MethodBase.GetCurrentMethod().Name;
+            this.CompletePlayerInfrastructureSetup(new[] { testName })
                 .WithNoResourceCollection()
                 .WithInitialPlayerSetupFor(Adam, Resources(ResourceClutch.RoadSegment))
                 .WhenPlayer(Adam)
@@ -744,7 +867,8 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void PlayerTriesToPlaceRoadSegmentWithNoRoadSegmentsLeft()
         {
-            this.CompletePlayerInfrastructureSetup(new[] { MethodBase.GetCurrentMethod().Name })
+            var testName = MethodBase.GetCurrentMethod().Name;
+            this.CompletePlayerInfrastructureSetup(new[] { testName })
                 .WithNoResourceCollection()
                 .WithInitialPlayerSetupFor(Adam, Resources(ResourceClutch.RoadSegment), PlacedRoadSegments(Player.TotalRoadSegments - 2))
                 .WhenPlayer(Adam)
@@ -763,7 +887,8 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void PlayerTriesToPlaceRoadSegmentWithNotEnoughResources()
         {
-            this.CompletePlayerInfrastructureSetup(new[] { MethodBase.GetCurrentMethod().Name })
+            var testName = MethodBase.GetCurrentMethod().Name;
+            this.CompletePlayerInfrastructureSetup(new[] { testName })
                 .WithNoResourceCollection()
                 .WhenPlayer(Adam)
                     .ReceivesStartTurnEvent(3, 3)
@@ -781,7 +906,8 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void PlayerTriesToPlaceRoadSegmentOnOccupiedLocations()
         {
-            this.CompletePlayerInfrastructureSetup(new[] { MethodBase.GetCurrentMethod().Name })
+            var testName = MethodBase.GetCurrentMethod().Name;
+            this.CompletePlayerInfrastructureSetup(new[] { testName })
                 .WithNoResourceCollection()
                 .WithInitialPlayerSetupFor(Adam, Resources(ResourceClutch.RoadSegment))
                 .WhenPlayer(Adam)
@@ -800,7 +926,8 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void PlayerTriesToPlaceRoadSegmentOnLocationsNotConnectedToExistingRoadSystem()
         {
-            this.CompletePlayerInfrastructureSetup(new[] { MethodBase.GetCurrentMethod().Name })
+            var testName = MethodBase.GetCurrentMethod().Name;
+            this.CompletePlayerInfrastructureSetup(new[] { testName })
                 .WithNoResourceCollection()
                 .WithInitialPlayerSetupFor(Adam, Resources(ResourceClutch.RoadSegment))
                 .WhenPlayer(Adam)
@@ -819,13 +946,14 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void PlayerPlaysKnightCard()
         {
+            var testName = MethodBase.GetCurrentMethod().Name;
             var robbingChoices = new Dictionary<string, int>()
             {
                 { Babara, 3 },
                 { Dana, 3 }
             };
             var robbedResource = ResourceClutch.OneLumber;
-            this.CompletePlayerInfrastructureSetup( new[] { MethodBase.GetCurrentMethod().Name })
+            this.CompletePlayerInfrastructureSetup(new[] { testName })
                 .WhenPlayer(Adam)
                     .ReceivesStartTurnEvent(3, 3).ThenPlayKnightCard(8)
                     .ReceivesRobbingChoicesEvent(robbingChoices).ThenSelectRobbedPlayer(Babara)
@@ -906,7 +1034,8 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void PlayerPlaysKnightCardAndNewHexHasNoPlayers()
         {
-            this.CompletePlayerInfrastructureSetup(new[] { MethodBase.GetCurrentMethod().Name })
+            var testName = MethodBase.GetCurrentMethod().Name;
+            this.CompletePlayerInfrastructureSetup(new[] { testName })
                 .WithNoResourceCollection()
                 .WhenPlayer(Adam)
                     .ReceivesStartTurnEvent(3, 3).ThenPlayKnightCard(4)
@@ -932,8 +1061,9 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void PlayerPlaysKnightCardAndNewHexHasOnePlayer()
         {
+            var testName = MethodBase.GetCurrentMethod().Name;
             var robbedResource = ResourceClutch.OneLumber;
-            this.CompletePlayerInfrastructureSetup(new[] { MethodBase.GetCurrentMethod().Name })
+            this.CompletePlayerInfrastructureSetup(new[] { testName })
                 .WhenPlayer(Adam)
                     .ReceivesStartTurnEvent(3, 3).ThenDoNothing()
                     .ReceivesPlaceRobberEvent().ThenPlaceRobber(3)
@@ -958,7 +1088,8 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void PlayerPlaysKnightCardAndNewHexHasOnePlayerWhichIsCardPlayer()
         {
-            this.CompletePlayerInfrastructureSetup(new[] { MethodBase.GetCurrentMethod().Name })
+            var testName = MethodBase.GetCurrentMethod().Name;
+            this.CompletePlayerInfrastructureSetup(new[] { testName })
                 .WithNoResourceCollection()
                 .WhenPlayer(Adam)
                     .ReceivesStartTurnEvent(3, 3).ThenDoNothing()
@@ -985,48 +1116,57 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void PlayerPlaysKnightCardAndSelectsInvalidPlayer()
         {
-            var infrastructureSetupBuilder = new InfrastructureSetupBuilder();
-            infrastructureSetupBuilder.Add(Adam, Adam_FirstSettlementLocation, Adam_FirstRoadEndLocation)
-                .Add(Babara, Babara_FirstSettlementLocation, Babara_FirstRoadEndLocation)
-                .Add(Charlie, Charlie_FirstSettlementLocation, Charlie_FirstRoadEndLocation)
-                .Add(Dana, Dana_FirstSettlementLocation, Dana_FirstRoadEndLocation)
-                .Add(Dana, 35, 24)
-                .Add(Charlie, 33, 32)
-                .Add(Babara, Babara_SecondSettlementLocation, Babara_SecondRoadEndLocation)
-                .Add(Adam, Adam_SecondSettlementLocation, Adam_SecondRoadEndLocation);
-
-            var robbingChoices = new Dictionary<string, int>()
+            var testName = MethodBase.GetCurrentMethod().Name;
+            try
             {
-                { Charlie, 3 },
-                { Dana, 3 }
-            };
+                var infrastructureSetupBuilder = new InfrastructureSetupBuilder();
+                infrastructureSetupBuilder.Add(Adam, Adam_FirstSettlementLocation, Adam_FirstRoadEndLocation)
+                    .Add(Babara, Babara_FirstSettlementLocation, Babara_FirstRoadEndLocation)
+                    .Add(Charlie, Charlie_FirstSettlementLocation, Charlie_FirstRoadEndLocation)
+                    .Add(Dana, Dana_FirstSettlementLocation, Dana_FirstRoadEndLocation)
+                    .Add(Dana, 35, 24)
+                    .Add(Charlie, 33, 32)
+                    .Add(Babara, Babara_SecondSettlementLocation, Babara_SecondRoadEndLocation)
+                    .Add(Adam, Adam_SecondSettlementLocation, Adam_SecondRoadEndLocation);
 
-            this.CompletePlayerInfrastructureSetup(infrastructureSetupBuilder.Build(), new[] { MethodBase.GetCurrentMethod().Name })
-                .WhenPlayer(Adam)
-                    .ReceivesStartTurnEvent(3, 3).ThenDoNothing()
-                    .ReceivesPlaceRobberEvent().ThenPlaceRobber(9)
-                    .ReceivesRobbingChoicesEvent(robbingChoices).ThenSelectRobbedPlayer(Babara)
-                    .ReceivesGameErrorEvent("919", "Invalid player selection")
-                .WhenPlayer(Babara)
-                    .ReceivesRobberPlacedEvent(Adam, 9).ThenDoNothing()
-                .WhenPlayer(Charlie)
-                    .ReceivesRobberPlacedEvent(Adam, 9).ThenDoNothing()
-                .WhenPlayer(Dana)
-                    .ReceivesRobberPlacedEvent(Adam, 9).ThenDoNothing()
-                .VerifyPlayer(Adam)
-                    .DidNotReceiveEventOfType<ChooseLostResourcesEvent>()
-                .VerifyPlayer(Babara)
-                    .DidNotReceiveEventOfType<ChooseLostResourcesEvent>()
-                .VerifyPlayer(Charlie)
-                    .DidNotReceiveEventOfType<ChooseLostResourcesEvent>()
-                .VerifyPlayer(Dana)
-                    .DidNotReceiveEventOfType<ChooseLostResourcesEvent>()
-                .Run();
+                var robbingChoices = new Dictionary<string, int>()
+                {
+                    { Charlie, 3 },
+                    { Dana, 3 }
+                };
+
+                this.CompletePlayerInfrastructureSetup(infrastructureSetupBuilder.Build(), new[] { testName })
+                    .WhenPlayer(Adam)
+                        .ReceivesStartTurnEvent(3, 3).ThenDoNothing()
+                        .ReceivesPlaceRobberEvent().ThenPlaceRobber(9)
+                        .ReceivesRobbingChoicesEvent(robbingChoices).ThenSelectRobbedPlayer(Babara)
+                        .ReceivesGameErrorEvent("919", "Invalid player selection")
+                    .WhenPlayer(Babara)
+                        .ReceivesRobberPlacedEvent(Adam, 9).ThenDoNothing()
+                    .WhenPlayer(Charlie)
+                        .ReceivesRobberPlacedEvent(Adam, 9).ThenDoNothing()
+                    .WhenPlayer(Dana)
+                        .ReceivesRobberPlacedEvent(Adam, 9).ThenDoNothing()
+                    .VerifyPlayer(Adam)
+                        .DidNotReceiveEventOfType<ChooseLostResourcesEvent>()
+                    .VerifyPlayer(Babara)
+                        .DidNotReceiveEventOfType<ChooseLostResourcesEvent>()
+                    .VerifyPlayer(Charlie)
+                        .DidNotReceiveEventOfType<ChooseLostResourcesEvent>()
+                    .VerifyPlayer(Dana)
+                        .DidNotReceiveEventOfType<ChooseLostResourcesEvent>()
+                    .Run();
+            }
+            finally
+            {
+                this.AttachReports(testName);
+            }
         }
 
         [Test]
         public void PlayerPlaysKnightCardAndNewHexHasMultiplePlayers()
         {
+            var testName = MethodBase.GetCurrentMethod().Name;
             var infrastructureSetupBuilder = new InfrastructureSetupBuilder();
             infrastructureSetupBuilder.Add(Adam, Adam_FirstSettlementLocation, Adam_FirstRoadEndLocation)
                 .Add(Babara, 21, 11)
@@ -1044,7 +1184,7 @@ namespace SoC.Library.ScenarioTests
                 { Dana, 3 }
             };
 
-            this.CompletePlayerInfrastructureSetup(infrastructureSetupBuilder.Build(), new[] { MethodBase.GetCurrentMethod().Name })
+            this.CompletePlayerInfrastructureSetup(infrastructureSetupBuilder.Build(), new[] { testName })
                 .WhenPlayer(Adam)
                     .ReceivesStartTurnEvent(3, 3).ThenDoNothing()
                     .ReceivesPlaceRobberEvent().ThenPlaceRobber(9)
@@ -1069,6 +1209,7 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void PlayerPlaysKnightCardAndNewHexHasMultiplePlayersIncludingCardPlayer()
         {
+            var testName = MethodBase.GetCurrentMethod().Name;
             var infrastructureSetupBuilder = new InfrastructureSetupBuilder();
             infrastructureSetupBuilder.Add(Adam, Adam_FirstSettlementLocation, Adam_FirstRoadEndLocation)
                 .Add(Babara, 21, 11)
@@ -1086,7 +1227,7 @@ namespace SoC.Library.ScenarioTests
                 { Dana, 3 }
             };
 
-            this.CompletePlayerInfrastructureSetup(infrastructureSetupBuilder.Build(), new[] { MethodBase.GetCurrentMethod().Name })
+            this.CompletePlayerInfrastructureSetup(infrastructureSetupBuilder.Build(), new[] { testName })
                 .WhenPlayer(Adam)
                     .ReceivesStartTurnEvent(3, 3).ThenDoNothing()
                     .ReceivesPlaceRobberEvent().ThenPlaceRobber(9)
@@ -1111,6 +1252,7 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void PlayerRollsSevenAndAllPlayersWithMoreThanSevenResourcesLoseResources()
         {
+            var testName = MethodBase.GetCurrentMethod().Name;
             var adamsInitialResources = new ResourceClutch(1, 2, 2, 2, 2); // 9 resources
             var babarasInitialResources = new ResourceClutch(2, 2, 2, 2, 2); // 10 resources
             var charliesInitialResources = new ResourceClutch(1, 1, 1, 1, 2); // 6 resources
@@ -1124,7 +1266,7 @@ namespace SoC.Library.ScenarioTests
             var babarasFinalResources = babarasInitialResources - babarasLostResources;
             var danasFinalResources = danasInitialResources - danasLostResources;
 
-            this.CompletePlayerInfrastructureSetup(new[] { MethodBase.GetCurrentMethod().Name })
+            this.CompletePlayerInfrastructureSetup(new[] { testName })
                 .WithNoResourceCollection()
                 .WithInitialPlayerSetupFor(
                     Adam,
@@ -1186,10 +1328,11 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void PlayerRollsSevenAndPlayerSendsTooManyResources()
         {
+            var testName = MethodBase.GetCurrentMethod().Name;
             var adamsInitialResources = new ResourceClutch(1, 2, 2, 2, 2); // 9 resources
             var adamsLostResources = new ResourceClutch(1, 1, 1, 1, 1);
 
-            this.CompletePlayerInfrastructureSetup(new[] { MethodBase.GetCurrentMethod().Name })
+            this.CompletePlayerInfrastructureSetup(new[] { testName })
                 .WithNoResourceCollection()
                 .WithInitialPlayerSetupFor(
                     Adam,
@@ -1210,10 +1353,11 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void PlayerRollsSevenAndPlayerSendsTooLittleResources()
         {
+            var testName = MethodBase.GetCurrentMethod().Name;
             var adamsInitialResources = new ResourceClutch(1, 2, 2, 2, 2); // 9 resources
             var adamsLostResources = new ResourceClutch(0, 0, 1, 1, 1);
 
-            this.CompletePlayerInfrastructureSetup(new[] { MethodBase.GetCurrentMethod().Name })
+            this.CompletePlayerInfrastructureSetup(new[] { testName })
                 .WithNoResourceCollection()
                 .WithInitialPlayerSetupFor(
                     Adam,
@@ -1234,10 +1378,11 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void PlayerRollsSevenAndPlayerSendsResourcesResultingInNegativeResources()
         {
+            var testName = MethodBase.GetCurrentMethod().Name;
             var adamsInitialResources = new ResourceClutch(1, 2, 2, 2, 2); // 9 resources
             var adamsLostResources = new ResourceClutch(2, 0, 0, 1, 1);
 
-            this.CompletePlayerInfrastructureSetup(new[] { MethodBase.GetCurrentMethod().Name })
+            this.CompletePlayerInfrastructureSetup(new[] { testName })
                 .WithNoResourceCollection()
                 .WithInitialPlayerSetupFor(
                     Adam,
@@ -1258,6 +1403,7 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void PlayerRollsSevenAndAllPlayersWithMoreThanSeventResourcesMustSendResourcesBeforeRobberCanBePlaced()
         {
+            var testName = MethodBase.GetCurrentMethod().Name;
             var adamsInitialResources = new ResourceClutch(1, 2, 2, 2, 2); // 9 resources
             var babarasInitialResources = new ResourceClutch(2, 2, 2, 2, 2); // 10 resources
             var charliesInitialResources = new ResourceClutch(1, 1, 1, 1, 2); // 6 resources
@@ -1271,7 +1417,7 @@ namespace SoC.Library.ScenarioTests
             var babarasFinalResources = babarasInitialResources - babarasLostResources;
             var danasFinalResources = danasInitialResources - danasLostResources;
 
-            this.CompletePlayerInfrastructureSetup(new[] { MethodBase.GetCurrentMethod().Name })
+            this.CompletePlayerInfrastructureSetup(new[] { testName })
                 .WithNoResourceCollection()
                 .WithInitialPlayerSetupFor(
                     Adam,
@@ -1331,7 +1477,8 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void PlayerRollsSevenAndNewHexHasNoPlayers()
         {
-            this.CompletePlayerInfrastructureSetup(new[] { MethodBase.GetCurrentMethod().Name })
+            var testName = MethodBase.GetCurrentMethod().Name;
+            this.CompletePlayerInfrastructureSetup(new[] { testName })
                 .WithNoResourceCollection()
                 .WhenPlayer(Adam)
                     .ReceivesStartTurnEvent(3, 4).ThenDoNothing()
@@ -1356,7 +1503,8 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void PlayerRollsSevenAndNewHexIsSameAsCurrentHex()
         {
-            this.CompletePlayerInfrastructureSetup(new[] { MethodBase.GetCurrentMethod().Name })
+            var testName = MethodBase.GetCurrentMethod().Name;
+            this.CompletePlayerInfrastructureSetup(new[] { testName })
                 .WithNoResourceCollection()
                 .WhenPlayer(Adam)
                     .ReceivesStartTurnEvent(3, 4).ThenDoNothing()
@@ -1374,8 +1522,9 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void PlayerRollsSevenAndNewHexHasOnePlayer()
         {
+            var testName = MethodBase.GetCurrentMethod().Name;
             var robbedResource = ResourceClutch.OneLumber;
-            this.CompletePlayerInfrastructureSetup(new[] { MethodBase.GetCurrentMethod().Name })
+            this.CompletePlayerInfrastructureSetup(new[] { testName })
                 .WhenPlayer(Adam)
                     .ReceivesStartTurnEvent(3, 4).ThenDoNothing()
                     .ReceivesPlaceRobberEvent().ThenPlaceRobber(3)
@@ -1400,7 +1549,8 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void PlayerRollsSevenAndNewHexHasOnePlayerWhichIsRollingPlayer()
         {
-            this.CompletePlayerInfrastructureSetup(new[] { MethodBase.GetCurrentMethod().Name })
+            var testName = MethodBase.GetCurrentMethod().Name;
+            this.CompletePlayerInfrastructureSetup(new[] { testName })
                 .WithNoResourceCollection()
                 .WhenPlayer(Adam)
                     .ReceivesStartTurnEvent(3, 4).ThenDoNothing()
@@ -1427,6 +1577,7 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void PlayerRollsSevenAndNewHexHasMultiplePlayers()
         {
+            var testName = MethodBase.GetCurrentMethod().Name;
             var infrastructureSetupBuilder = new InfrastructureSetupBuilder();
             infrastructureSetupBuilder.Add(Adam, Adam_FirstSettlementLocation, Adam_FirstRoadEndLocation)
                 .Add(Babara, 21, 11)
@@ -1444,7 +1595,7 @@ namespace SoC.Library.ScenarioTests
                 { Dana, 3 }
             };
 
-            this.CompletePlayerInfrastructureSetup(infrastructureSetupBuilder.Build(), new[] { MethodBase.GetCurrentMethod().Name })
+            this.CompletePlayerInfrastructureSetup(infrastructureSetupBuilder.Build(), new[] { testName })
                 .WhenPlayer(Adam)
                     .ReceivesStartTurnEvent(3, 4).ThenDoNothing()
                     .ReceivesPlaceRobberEvent().ThenPlaceRobber(9)
@@ -1469,6 +1620,7 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void PlayerRollsSevenAndNewHexHasMultiplePlayersIncludingRollingPlayer()
         {
+            var testName = MethodBase.GetCurrentMethod().Name;
             var infrastructureSetupBuilder = new InfrastructureSetupBuilder();
             infrastructureSetupBuilder.Add(Adam, 21, 11)
                 .Add(Babara, Babara_FirstSettlementLocation, Babara_FirstRoadEndLocation)
@@ -1485,7 +1637,7 @@ namespace SoC.Library.ScenarioTests
                 { Dana, 3 }
             };
 
-            this.CompletePlayerInfrastructureSetup(infrastructureSetupBuilder.Build(), new[] { MethodBase.GetCurrentMethod().Name })
+            this.CompletePlayerInfrastructureSetup(infrastructureSetupBuilder.Build(), new[] { testName })
                 .WhenPlayer(Adam)
                     .ReceivesStartTurnEvent(3, 4).ThenDoNothing()
                     .ReceivesPlaceRobberEvent().ThenPlaceRobber(9)
@@ -1514,6 +1666,7 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void PlayerRollsSevenAndSelectsInvalidPlayer()
         {
+            var testName = MethodBase.GetCurrentMethod().Name;
             var infrastructureSetupBuilder = new InfrastructureSetupBuilder();
             infrastructureSetupBuilder.Add(Adam, Adam_FirstSettlementLocation, Adam_FirstRoadEndLocation)
                 .Add(Babara, Babara_FirstSettlementLocation, Babara_FirstRoadEndLocation)
@@ -1530,7 +1683,7 @@ namespace SoC.Library.ScenarioTests
                 { Dana, 3 }
             };
 
-            this.CompletePlayerInfrastructureSetup(infrastructureSetupBuilder.Build(), new[] { MethodBase.GetCurrentMethod().Name })
+            this.CompletePlayerInfrastructureSetup(infrastructureSetupBuilder.Build(), new[] { testName })
                 .WhenPlayer(Adam)
                     .ReceivesStartTurnEvent(3, 4).ThenDoNothing()
                     .ReceivesPlaceRobberEvent().ThenPlaceRobber(9)
@@ -1556,6 +1709,7 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void PlayerRollsSevenAndGetsResourceFromSelectedPlayer()
         {
+            var testName = MethodBase.GetCurrentMethod().Name;
             var infrastructureSetupBuilder = new InfrastructureSetupBuilder();
             infrastructureSetupBuilder.Add(Adam, Adam_FirstSettlementLocation, Adam_FirstRoadEndLocation)
                 .Add(Babara, Babara_FirstSettlementLocation, Babara_FirstRoadEndLocation)
@@ -1573,7 +1727,7 @@ namespace SoC.Library.ScenarioTests
             };
 
             var robbedResource = ResourceClutch.OneLumber;
-            this.CompletePlayerInfrastructureSetup(infrastructureSetupBuilder.Build(), new[] { MethodBase.GetCurrentMethod().Name })
+            this.CompletePlayerInfrastructureSetup(infrastructureSetupBuilder.Build(), new[] { testName })
                 .WhenPlayer(Adam)
                     .ReceivesStartTurnEvent(3, 4).ThenDoNothing()
                     .ReceivesPlaceRobberEvent().ThenPlaceRobber(9)
@@ -1604,9 +1758,10 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void PlayerQuitsDuringFirstRoundOfGameSetup()
         {
+            var testName = MethodBase.GetCurrentMethod().Name;
             var expectedGameBoardSetup = new GameBoardSetup(new GameBoard(BoardSizes.Standard));
             var playerOrder = new[] { Adam, Babara, Charlie, Dana };
-            ScenarioRunner.CreateScenarioRunner(new[] { MethodBase.GetCurrentMethod().Name })
+            ScenarioRunner.CreateScenarioRunner(new[] { testName })
                 .WithPlayer(Adam).WithPlayer(Babara).WithPlayer(Charlie).WithPlayer(Dana)
                 .WithTurnOrder(playerOrder)
                 .WhenPlayer(Adam)
@@ -1623,9 +1778,10 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void PlayerQuitsDuringSecondRoundOfGameSetup()
         {
+            var testName = MethodBase.GetCurrentMethod().Name;
             var expectedGameBoardSetup = new GameBoardSetup(new GameBoard(BoardSizes.Standard));
             var playerOrder = new[] { Adam, Babara, Charlie, Dana };
-            ScenarioRunner.CreateScenarioRunner(new[] { MethodBase.GetCurrentMethod().Name })
+            ScenarioRunner.CreateScenarioRunner(new[] { testName })
                 .WithPlayer(Adam).WithPlayer(Babara).WithPlayer(Charlie).WithPlayer(Dana)
                 .WithTurnOrder(playerOrder)
                 .WhenPlayer(Adam)
@@ -1651,9 +1807,10 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void PlayerSendsIncorrectCommandDuringGameStartConfirmation()
         {
+            var testName = MethodBase.GetCurrentMethod().Name;
             var expectedGameBoardSetup = new GameBoardSetup(new GameBoard(BoardSizes.Standard));
             var playerOrder = new[] { Adam, Babara, Charlie, Dana };
-            ScenarioRunner.CreateScenarioRunner(new[] { MethodBase.GetCurrentMethod().Name })
+            ScenarioRunner.CreateScenarioRunner(new[] { testName })
                 .WithPlayer(Adam).WithPlayer(Babara).WithPlayer(Charlie).WithPlayer(Dana)
                 .WithTurnOrder(playerOrder)
                 .WhenPlayer(Adam)
@@ -1685,9 +1842,10 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void PlayerSendsIncorrectCommandDuringGameSetup()
         {
+            var testName = MethodBase.GetCurrentMethod().Name;
             var expectedGameBoardSetup = new GameBoardSetup(new GameBoard(BoardSizes.Standard));
             var playerOrder = new[] { Adam, Babara, Charlie, Dana };
-            ScenarioRunner.CreateScenarioRunner(new[] { MethodBase.GetCurrentMethod().Name })
+            ScenarioRunner.CreateScenarioRunner(new[] { testName })
                 .WithPlayer(Adam).WithPlayer(Babara).WithPlayer(Charlie).WithPlayer(Dana)
                 .WithTurnOrder(playerOrder)
                 .WhenPlayer(Adam)
@@ -1699,10 +1857,11 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void PlayerTradesOneResourceWithAnotherPlayer()
         {
+            var testName = MethodBase.GetCurrentMethod().Name;
             var adamResources = ResourceClutch.OneWool;
             var babaraResources = ResourceClutch.OneGrain;
 
-            this.CompletePlayerInfrastructureSetup(new[] { MethodBase.GetCurrentMethod().Name })
+            this.CompletePlayerInfrastructureSetup(new[] { testName })
                 .WithNoResourceCollection()
                 .WithInitialPlayerSetupFor(Adam, Resources(adamResources))
                 .WithInitialPlayerSetupFor(Babara, Resources(babaraResources))

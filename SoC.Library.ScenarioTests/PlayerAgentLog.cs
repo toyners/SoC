@@ -41,17 +41,19 @@ namespace SoC.Library.ScenarioTests
                 ".border { " +
                 "border: 1px solid black; " +
                 "} " +
-                ".actual span { font-size: 15px; } " +
-                ".actual div { font-size: 12px; } " +
-                ".expected span { font-size: 15px; } " +
-                ".expected div { font-size: 12px; } " +
+                ".actual span { font-size: 16px; } " +
+                ".actual div { font-size: 14px; } " +
+                ".expected { background-color: orange; } " +
+                ".expected span { font-size: 16px; } " +
+                ".expected div { font-size: 14px; } " +
                 ".matched { background-color: lightgreen; } " +
-                ".matched span { font-size: 15px; } " +
-                ".matched div { font-size: 12px; } " +
-                ".unmatched_expected { background-color: orange; } " +
+                ".matched span { font-size: 16px; } " +
+                ".matched div { font-size: 14px; } " +
+                ".note div { font-size: 16px; } " +
+                ".note { background-color: cyan; } " +
                 "</style></head><body><div><table>";
             
-            foreach (var logEvent in this.logEvents.Where(l => !(l is NoteEvent || l is ExceptionEvent)))
+            foreach (var logEvent in this.logEvents.Where(l => !(l is ExceptionEvent)))
             {
                 content += logEvent.ToHtml();
             }
@@ -93,8 +95,15 @@ namespace SoC.Library.ScenarioTests
 
             public string ToHtml()
             {
-                return $"<tr class=\"matched border\"><td class=\"border\"><span>{this.actualEvent.SimpleTypeName}</span><br><div>{GetEventProperties(this.actualEvent)}</div></td>" +
-                    $"<td class=\"border\"><span>{this.expectedEvent.SimpleTypeName}</span><br><div>{GetEventProperties(this.actualEvent)}</div></td></tr>";
+                return $"<tr class=\"matched\">" +
+                    $"<td class=\"border\">" +
+                    $"<img src=\"..\\green_tick.png\" alt=\"\" height=\"20\" width=\"20\">" +
+                    $"<span>{this.actualEvent.SimpleTypeName}</span><br>" +
+                    $"<div>{GetEventProperties(this.actualEvent)}</div>" +
+                    $"</td>" +
+                    $"<td class=\"border\">" +
+                    $"<span>{this.expectedEvent.SimpleTypeName}</span><br>" +
+                    $"<div>{GetEventProperties(this.actualEvent)}</div></td></tr>";
             }
         }
 
@@ -105,7 +114,7 @@ namespace SoC.Library.ScenarioTests
         
             public string ToHtml()
             {
-                return $"<tr><td /><td /><td>{this.note}</td></tr>";
+                return $"<tr class=\"note\"><td class=\"border\"><div>{this.note}</div></td></tr>";
             }
         }
 
@@ -128,7 +137,9 @@ namespace SoC.Library.ScenarioTests
             public string ToHtml()
             {
                 return $"<tr class=\"expected\">" +
-                    $"<td class=\"border\"><span>{this.expectedEvent.SimpleTypeName}</span><br><div>{GetEventProperties(this.expectedEvent)}</div></td></tr>";
+                    $"<td class=\"border\">" +
+                    $"<img src=\"..\\red_cross.png\" alt=\"\" height=\"20\" width=\"20\">" +
+                    $"<span>{this.expectedEvent.SimpleTypeName}</span><br><div>{GetEventProperties(this.expectedEvent)}</div></td></tr>";
             }
         }
 
