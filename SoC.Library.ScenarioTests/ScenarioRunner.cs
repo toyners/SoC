@@ -458,10 +458,11 @@ namespace SoC.Library.ScenarioTests
             if (!string.IsNullOrEmpty(message))
                 throw new Exception(message);
 
-            string timeOutMessage = string.Join("\r\n",
+            string timeOutMessage = "\r\n" + string.Join("\r\n",
                 this.playerAgents
                     .Where(playerAgent => !playerAgent.IsFinished)
-                    .Select(playerAgent => $"\r\n{playerAgent.Name} did not finish.\r\n{playerAgent.GetEventLog()}")
+                    .Select(playerAgent => $"{playerAgent.Name} did not finish.")
+                    //.Select(playerAgent => $"\r\n{playerAgent.Name} did not finish.\r\n{playerAgent.GetEventLog()}")
                 );
 
             if (!string.IsNullOrEmpty(timeOutMessage))

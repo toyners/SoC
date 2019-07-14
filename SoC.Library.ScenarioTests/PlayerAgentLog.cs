@@ -159,7 +159,7 @@ namespace SoC.Library.ScenarioTests
             else if (gameEvent is PlayerSetupEvent playerSetupEvent)
             {
                 foreach (var kv in playerSetupEvent.PlayerIdsByName)
-                    result += $"<b>Name</b> {kv.Key} <b>Id</b> {kv.Value}<br>";
+                    result += $"Name <b>{kv.Key}</b> Id <b>{kv.Value}</b><br>";
             }
 
             return $"Player: <b>{GetPlayerName(gameEvent.PlayerId)}</b>" + (result.Length > 0 ? "<br>" : "") + result;
