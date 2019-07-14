@@ -19,10 +19,10 @@ namespace SoC.Library.ScenarioTests
             this.logEvents.Add(new MatchedExpectedEvent(actualEvent, expectedEvent));
 
         public void AddActualEvent(GameEvent actualEvent) =>
-            this.logEvents.Add(new UnmatchedActualEvent(actualEvent));
+            this.logEvents.Add(new ActualEvent(actualEvent));
 
         public void AddUnmatchedExpectedEvent(GameEvent expectedEvent) =>
-            this.logEvents.Add(new UnmatchedExpectedEvent(expectedEvent));
+            this.logEvents.Add(new ExpectedEvent(expectedEvent));
 
         public void AddException(Exception exception) =>
             this.logEvents.Add(new ExceptionEvent(exception));
@@ -35,33 +35,33 @@ namespace SoC.Library.ScenarioTests
             var content = "<html><head><title>Report</title>" +
                 "<style>" +
                 "table {" +
-                "border: 1px solid black;" +
+                "width: 100%; " +
                 "border-collapse: collapse;" +
-                "width: 100%" +
                 "} " +
-                "th {" +
-                "width: 30%" +
+                ".border { " +
+                "border: 1px solid black; " +
                 "} " +
-                "td {" +
-                "border: 1px solid black } " +
+                ".actual span { font-size: 15px; } " +
+                ".actual div { font-size: 12px; } " +
+                ".expected span { font-size: 15px; } " +
+                ".expected div { font-size: 12px; } " +
                 ".matched { background-color: lightgreen; } " +
                 ".matched span { font-size: 15px; } " +
                 ".matched div { font-size: 12px; } " +
                 ".unmatched_expected { background-color: orange; } " +
-                "</style></head><body><div><table>" +
-                "<tr><th>Actual</th><th>Expected</th></tr>";
+                "</style></head><body><div><table>";
             
             foreach (var logEvent in this.logEvents.Where(l => !(l is NoteEvent || l is ExceptionEvent)))
             {
                 content += logEvent.ToHtml();
             }
 
-            content += "</table></div><br /><div><table>" +
+            /*content += "</table></div><br /><div><table>" +
                 "<tr><th>Actual</th><th>Expected</th><th>Notes</th></tr>";
             foreach (var logEvent in this.logEvents)
             {
                 content += logEvent.ToHtml();
-            }
+            }*/
 
             File.WriteAllText(filePath, content + "</table></div></body>");
         }
@@ -93,8 +93,8 @@ namespace SoC.Library.ScenarioTests
 
             public string ToHtml()
             {
-                return $"<tr class=\"matched\"><td><span>{this.actualEvent.SimpleTypeName}</span><br><div>{GetEventProperties(this.actualEvent)}</div></td>" +
-                    $"<td><span>{this.expectedEvent.SimpleTypeName}</span><br><div>{GetEventProperties(this.actualEvent)}</div></td></tr>";
+                return $"<tr class=\"matched border\"><td class=\"border\"><span>{this.actualEvent.SimpleTypeName}</span><br><div>{GetEventProperties(this.actualEvent)}</div></td>" +
+                    $"<td class=\"border\"><span>{this.expectedEvent.SimpleTypeName}</span><br><div>{GetEventProperties(this.actualEvent)}</div></td></tr>";
             }
         }
 
@@ -109,28 +109,26 @@ namespace SoC.Library.ScenarioTests
             }
         }
 
-        private class UnmatchedActualEvent : ILogEvent
+        private class ActualEvent : ILogEvent
         {
             private GameEvent actualEvent;
-            public UnmatchedActualEvent(GameEvent actualEvent) => this.actualEvent = actualEvent;
+            public ActualEvent(GameEvent actualEvent) => this.actualEvent = actualEvent;
 
             public string ToHtml()
             {
-                return $"<tr><td>{this.actualEvent.SimpleTypeName}<br>{GetEventProperties(this.actualEvent)}</td>" +
-                    $"<td></td></tr>";
+                return $"<tr><td class=\"actual border\"><span>{this.actualEvent.SimpleTypeName}</span><br><div>{GetEventProperties(this.actualEvent)}</div></td></tr>";
             }
         }
 
-        private class UnmatchedExpectedEvent : ILogEvent
+        private class ExpectedEvent : ILogEvent
         {
             private GameEvent expectedEvent;
-            public UnmatchedExpectedEvent(GameEvent expectedEvent) => this.expectedEvent = expectedEvent;
+            public ExpectedEvent(GameEvent expectedEvent) => this.expectedEvent = expectedEvent;
 
             public string ToHtml()
             {
-                return $"<tr class=\"unmatched_expected\">" +
-                    $"<td></td>" +
-                    $"<td>{this.expectedEvent.SimpleTypeName}<br>{GetEventProperties(this.expectedEvent)}</td></tr>";
+                return $"<tr class=\"expected\">" +
+                    $"<td class=\"border\"><span>{this.expectedEvent.SimpleTypeName}</span><br><div>{GetEventProperties(this.expectedEvent)}</div></td></tr>";
             }
         }
 
@@ -141,6 +139,16 @@ namespace SoC.Library.ScenarioTests
             {
                 result += $"Error code: <b>{gameErrorEvent.ErrorCode}</b><br>" +
                     $"Error message: <b>{gameErrorEvent.ErrorMessage}</b>";
+            }
+            else if (gameEvent is InfrastructurePlacedEvent infrastructurePlacedEvent)
+            {
+                result += $"Settlement Location: <b>{infrastructurePlacedEvent.SettlementLocation}</b><br>" +
+                    $"Road segment end Location: <b>{infrastructurePlacedEvent.RoadSegmentEndLocation}</b>";
+            }
+            else if (gameEvent is PlayerSetupEvent playerSetupEvent)
+            {
+                foreach (var kv in playerSetupEvent.PlayerIdsByName)
+                    result += $"<b>Name</b> {kv.Key} <b>Id</b> {kv.Value}<br>";
             }
 
             return $"Player: <b>{GetPlayerName(gameEvent.PlayerId)}</b>" + (result.Length > 0 ? "<br>" : "") + result;

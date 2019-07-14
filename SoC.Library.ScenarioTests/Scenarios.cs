@@ -298,38 +298,43 @@ namespace SoC.Library.ScenarioTests
         public void AllOtherPlayersQuit()
         {
             var testName = MethodBase.GetCurrentMethod().Name;
-            this.CompletePlayerInfrastructureSetup(new[] { testName })
-                .WithNoResourceCollection()
-                .WhenPlayer(Adam)
-                    .ReceivesStartTurnEvent(3, 3).ThenEndTurn()
-                    .ReceivesPlayerQuitEvent(Babara).ThenDoNothing()
-                    .ReceivesPlayerQuitEvent(Charlie).ThenDoNothing()
-                    .ReceivesPlayerQuitEvent(Dana).ThenDoNothing()
-                    .ReceivesPlayerWonEvent(Adam, 2).ThenDoNothing()
-                .WhenPlayer(Babara)
-                    .ReceivesStartTurnEvent(3, 3).ThenQuitGame()
-                .WhenPlayer(Charlie)
-                    .ReceivesPlayerQuitEvent(Babara).ThenDoNothing()
-                    .ReceivesStartTurnEvent(3, 3).ThenQuitGame()
-                .WhenPlayer(Dana)
-                    .ReceivesPlayerQuitEvent(Babara).ThenDoNothing()
-                    .ReceivesPlayerQuitEvent(Charlie).ThenDoNothing()
-                    .ReceivesStartTurnEvent(3, 3).ThenQuitGame()
-                .VerifyPlayer(Babara)
-                    .DidNotReceiveEventOfType<GameWinEvent>()
-                    .DidNotReceivePlayerQuitEvent(Babara)
-                    .DidNotReceivePlayerQuitEvent(Charlie)
-                    .DidNotReceivePlayerQuitEvent(Dana)
-                .VerifyPlayer(Charlie)
-                    .DidNotReceiveEventOfType<GameWinEvent>()
-                    .DidNotReceivePlayerQuitEvent(Charlie)
-                    .DidNotReceivePlayerQuitEvent(Dana)
-                .VerifyPlayer(Dana)
-                    .DidNotReceiveEventOfType<GameWinEvent>()
-                    .DidNotReceivePlayerQuitEvent(Dana)
-                .Run();
-
-            this.AttachReports(testName);
+            try
+            {
+                this.CompletePlayerInfrastructureSetup(new[] { testName })
+                    .WithNoResourceCollection()
+                    .WhenPlayer(Adam)
+                        .ReceivesStartTurnEvent(3, 3).ThenEndTurn()
+                        .ReceivesPlayerQuitEvent(Babara).ThenDoNothing()
+                        .ReceivesPlayerQuitEvent(Charlie).ThenDoNothing()
+                        .ReceivesPlayerQuitEvent(Dana).ThenDoNothing()
+                        .ReceivesPlayerWonEvent(Adam, 2).ThenDoNothing()
+                    .WhenPlayer(Babara)
+                        .ReceivesStartTurnEvent(3, 3).ThenQuitGame()
+                    .WhenPlayer(Charlie)
+                        .ReceivesPlayerQuitEvent(Babara).ThenDoNothing()
+                        .ReceivesStartTurnEvent(3, 3).ThenQuitGame()
+                    .WhenPlayer(Dana)
+                        .ReceivesPlayerQuitEvent(Babara).ThenDoNothing()
+                        .ReceivesPlayerQuitEvent(Charlie).ThenDoNothing()
+                        .ReceivesStartTurnEvent(3, 3).ThenQuitGame()
+                    .VerifyPlayer(Babara)
+                        .DidNotReceiveEventOfType<GameWinEvent>()
+                        .DidNotReceivePlayerQuitEvent(Babara)
+                        .DidNotReceivePlayerQuitEvent(Charlie)
+                        .DidNotReceivePlayerQuitEvent(Dana)
+                    .VerifyPlayer(Charlie)
+                        .DidNotReceiveEventOfType<GameWinEvent>()
+                        .DidNotReceivePlayerQuitEvent(Charlie)
+                        .DidNotReceivePlayerQuitEvent(Dana)
+                    .VerifyPlayer(Dana)
+                        .DidNotReceiveEventOfType<GameWinEvent>()
+                        .DidNotReceivePlayerQuitEvent(Dana)
+                    .Run();
+            }
+            finally
+            {
+                this.AttachReports(testName);
+            }
         }
 
         [Test]
