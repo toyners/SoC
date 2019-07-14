@@ -1,17 +1,18 @@
 ﻿
 using System;
-using System.Collections.Generic;
 using Jabberwocky.SoC.Library.GameEvents;
+using Jabberwocky.SoC.Library.PlayerActions;
 
 namespace SoC.Library.ScenarioTests
 {
     public interface IPlayerAgentLog
     {
+        void AddAction(PlayerAction playerAction);
         void AddActualEvent(GameEvent actualEvent);
-        void AddMatchedEvent(GameEvent actualEvent, GameEvent expectedEvent);
-        void AddUnmatchedExpectedEvent(GameEvent expectedEvent);
         void AddException(Exception exception);
+        void AddMatchedEvent(GameEvent actualEvent, GameEvent expectedEvent);
         void AddNote(string note);
+        void AddUnmatchedExpectedEvent(GameEvent expectedEvent);
         void WriteToFile(string filePath);
     }
 }

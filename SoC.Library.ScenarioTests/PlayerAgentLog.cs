@@ -6,6 +6,7 @@ namespace SoC.Library.ScenarioTests
     using System.IO;
     using System.Linq;
     using Jabberwocky.SoC.Library.GameEvents;
+    using Jabberwocky.SoC.Library.PlayerActions;
 
     public class PlayerAgentLog : IPlayerAgentLog
     {
@@ -29,6 +30,9 @@ namespace SoC.Library.ScenarioTests
 
         public void AddNote(string note) =>
             this.logEvents.Add(new NoteEvent(note));
+
+        public void AddAction(PlayerAction action) =>
+            this.logEvents.Add(new ActionEvent(action));
 
         public void WriteToFile(string filePath)
         {
@@ -71,6 +75,17 @@ namespace SoC.Library.ScenarioTests
         private interface ILogEvent
         {
             string ToHtml();
+        }
+
+        private class ActionEvent : ILogEvent
+        {
+            private PlayerAction playerAction;
+            public ActionEvent(PlayerAction playerAction) => this.playerAction = playerAction;
+
+            public string ToHtml()
+            {
+                return "Not comleted";
+            }
         }
 
         private class ExceptionEvent : ILogEvent
