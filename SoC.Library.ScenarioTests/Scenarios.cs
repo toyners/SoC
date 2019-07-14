@@ -768,216 +768,286 @@ namespace SoC.Library.ScenarioTests
         public void PlayerTriesToPlaceSettlementOnUnconnectedLocation()
         {
             var testName = MethodBase.GetCurrentMethod().Name;
-            this.CompletePlayerInfrastructureSetup(new[] { testName })
-                .WithNoResourceCollection()
-                .WithInitialPlayerSetupFor(
-                    Adam,
-                    Resources(ResourceClutch.Settlement))
-                .WhenPlayer(Adam)
-                    .ReceivesStartTurnEvent(3, 3).ThenPlaceSettlement(3)
-                    .ReceivesGameErrorEvent("909", "Location (3) is not connected to your road system").ThenDoNothing()
-                .VerifyPlayer(Babara)
-                    .DidNotReceiveEventOfType<GameErrorEvent>()
-                .VerifyPlayer(Charlie)
-                    .DidNotReceiveEventOfType<GameErrorEvent>()
-                .VerifyPlayer(Dana)
-                    .DidNotReceiveEventOfType<GameErrorEvent>()
-                .Run();
+            try
+            {
+                this.CompletePlayerInfrastructureSetup(new[] { testName })
+                    .WithNoResourceCollection()
+                    .WithInitialPlayerSetupFor(
+                        Adam,
+                        Resources(ResourceClutch.Settlement))
+                    .WhenPlayer(Adam)
+                        .ReceivesStartTurnEvent(3, 3).ThenPlaceSettlement(3)
+                        .ReceivesGameErrorEvent("909", "Location (3) is not connected to your road system").ThenDoNothing()
+                    .VerifyPlayer(Babara)
+                        .DidNotReceiveEventOfType<GameErrorEvent>()
+                    .VerifyPlayer(Charlie)
+                        .DidNotReceiveEventOfType<GameErrorEvent>()
+                    .VerifyPlayer(Dana)
+                        .DidNotReceiveEventOfType<GameErrorEvent>()
+                    .Run();
+            }
+            finally
+            {
+                this.AttachReports(testName);
+            }
         }
 
         [Test]
         public void PlayerTriesToPlaceSettlementWithNoSettlementsLeft()
         {
             var testName = MethodBase.GetCurrentMethod().Name;
-            this.CompletePlayerInfrastructureSetup(new[] { testName })
-                .WithNoResourceCollection()
-                .WithInitialPlayerSetupFor(
-                    Adam,
-                    Resources(ResourceClutch.Settlement), PlacedSettlements(Player.TotalSettlements - 2))
-                .WhenPlayer(Adam)
-                    .ReceivesStartTurnEvent(3, 3).ThenPlaceSettlement(3)
-                    .ReceivesGameErrorEvent("911", "No settlements to place").ThenDoNothing()
-                .VerifyPlayer(Babara)
-                    .DidNotReceiveEventOfType<GameErrorEvent>()
-                .VerifyPlayer(Charlie)
-                    .DidNotReceiveEventOfType<GameErrorEvent>()
-                .VerifyPlayer(Dana)
-                    .DidNotReceiveEventOfType<GameErrorEvent>()
-                .Run();
+            try
+            {
+                this.CompletePlayerInfrastructureSetup(new[] { testName })
+                    .WithNoResourceCollection()
+                    .WithInitialPlayerSetupFor(
+                        Adam,
+                        Resources(ResourceClutch.Settlement), PlacedSettlements(Player.TotalSettlements - 2))
+                    .WhenPlayer(Adam)
+                        .ReceivesStartTurnEvent(3, 3).ThenPlaceSettlement(3)
+                        .ReceivesGameErrorEvent("911", "No settlements to place").ThenDoNothing()
+                    .VerifyPlayer(Babara)
+                        .DidNotReceiveEventOfType<GameErrorEvent>()
+                    .VerifyPlayer(Charlie)
+                        .DidNotReceiveEventOfType<GameErrorEvent>()
+                    .VerifyPlayer(Dana)
+                        .DidNotReceiveEventOfType<GameErrorEvent>()
+                    .Run();
+            }
+            finally
+            {
+                this.AttachReports(testName);
+            }
         }
 
         [Test]
         public void PlayerTriesToPlaceSettlementWithNotEnoughResources()
         {
             var testName = MethodBase.GetCurrentMethod().Name;
-            this.CompletePlayerInfrastructureSetup(new[] { testName })
-                .WithNoResourceCollection()
-                .WhenPlayer(Adam)
-                    .ReceivesStartTurnEvent(3, 3).ThenPlaceSettlement(3)
-                    .ReceivesGameErrorEvent("912", "Not enough resources for placing settlement").ThenDoNothing()
-                .VerifyPlayer(Babara)
-                    .DidNotReceiveEventOfType<GameErrorEvent>()
-                .VerifyPlayer(Charlie)
-                    .DidNotReceiveEventOfType<GameErrorEvent>()
-                .VerifyPlayer(Dana)
-                    .DidNotReceiveEventOfType<GameErrorEvent>()
-                .Run();
+            try
+            {
+                this.CompletePlayerInfrastructureSetup(new[] { testName })
+                    .WithNoResourceCollection()
+                    .WhenPlayer(Adam)
+                        .ReceivesStartTurnEvent(3, 3).ThenPlaceSettlement(3)
+                        .ReceivesGameErrorEvent("912", "Not enough resources for placing settlement").ThenDoNothing()
+                    .VerifyPlayer(Babara)
+                        .DidNotReceiveEventOfType<GameErrorEvent>()
+                    .VerifyPlayer(Charlie)
+                        .DidNotReceiveEventOfType<GameErrorEvent>()
+                    .VerifyPlayer(Dana)
+                        .DidNotReceiveEventOfType<GameErrorEvent>()
+                    .Run();
+            }
+            finally
+            {
+                this.AttachReports(testName);
+            }
         }
 
         [Test]
         public void PlayerTriesToPlaceRoadSegmentWithInvalidLocations()
         {
             var testName = MethodBase.GetCurrentMethod().Name;
-            this.CompletePlayerInfrastructureSetup(new[] { testName })
-                .WithNoResourceCollection()
-                .WithInitialPlayerSetupFor(Adam, Resources(ResourceClutch.RoadSegment))
-                .WhenPlayer(Adam)
-                    .ReceivesStartTurnEvent(3, 3)
-                    .ThenPlaceRoadSegment(4, 55)
-                    .ReceivesGameErrorEvent("903", "Locations (4, 55) invalid for placing road segment").ThenDoNothing()
-                .VerifyPlayer(Babara)
-                    .DidNotReceiveEventOfType<GameErrorEvent>()
-                .VerifyPlayer(Charlie)
-                    .DidNotReceiveEventOfType<GameErrorEvent>()
-                .VerifyPlayer(Dana)
-                    .DidNotReceiveEventOfType<GameErrorEvent>()
-                .Run();
+            try
+            {
+                this.CompletePlayerInfrastructureSetup(new[] { testName })
+                    .WithNoResourceCollection()
+                    .WithInitialPlayerSetupFor(Adam, Resources(ResourceClutch.RoadSegment))
+                    .WhenPlayer(Adam)
+                        .ReceivesStartTurnEvent(3, 3)
+                        .ThenPlaceRoadSegment(4, 55)
+                        .ReceivesGameErrorEvent("903", "Locations (4, 55) invalid for placing road segment").ThenDoNothing()
+                    .VerifyPlayer(Babara)
+                        .DidNotReceiveEventOfType<GameErrorEvent>()
+                    .VerifyPlayer(Charlie)
+                        .DidNotReceiveEventOfType<GameErrorEvent>()
+                    .VerifyPlayer(Dana)
+                        .DidNotReceiveEventOfType<GameErrorEvent>()
+                    .Run();
+            }
+            finally
+            {
+                this.AttachReports(testName);
+            }
         }
 
         [Test]
         public void PlayerTriesToPlaceRoadSegmentWithUnconnectedLocations()
         {
             var testName = MethodBase.GetCurrentMethod().Name;
-            this.CompletePlayerInfrastructureSetup(new[] { testName })
-                .WithNoResourceCollection()
-                .WithInitialPlayerSetupFor(Adam, Resources(ResourceClutch.RoadSegment))
-                .WhenPlayer(Adam)
-                    .ReceivesStartTurnEvent(3, 3)
-                    .ThenPlaceRoadSegment(4, 0)
-                    .ReceivesGameErrorEvent("904", "Locations (4, 0) not connected when placing road segment").ThenDoNothing()
-                .VerifyPlayer(Babara)
-                    .DidNotReceiveEventOfType<GameErrorEvent>()
-                .VerifyPlayer(Charlie)
-                    .DidNotReceiveEventOfType<GameErrorEvent>()
-                .VerifyPlayer(Dana)
-                    .DidNotReceiveEventOfType<GameErrorEvent>()
-                .Run();
+            try
+            {
+                this.CompletePlayerInfrastructureSetup(new[] { testName })
+                    .WithNoResourceCollection()
+                    .WithInitialPlayerSetupFor(Adam, Resources(ResourceClutch.RoadSegment))
+                    .WhenPlayer(Adam)
+                        .ReceivesStartTurnEvent(3, 3)
+                        .ThenPlaceRoadSegment(4, 0)
+                        .ReceivesGameErrorEvent("904", "Locations (4, 0) not connected when placing road segment").ThenDoNothing()
+                    .VerifyPlayer(Babara)
+                        .DidNotReceiveEventOfType<GameErrorEvent>()
+                    .VerifyPlayer(Charlie)
+                        .DidNotReceiveEventOfType<GameErrorEvent>()
+                    .VerifyPlayer(Dana)
+                        .DidNotReceiveEventOfType<GameErrorEvent>()
+                    .Run();
+            }
+            finally
+            {
+                this.AttachReports(testName);
+            }
         }
 
         [Test]
         public void PlayerTriesToPlaceRoadSegmentWithNoRoadSegmentsLeft()
         {
             var testName = MethodBase.GetCurrentMethod().Name;
-            this.CompletePlayerInfrastructureSetup(new[] { testName })
-                .WithNoResourceCollection()
-                .WithInitialPlayerSetupFor(Adam, Resources(ResourceClutch.RoadSegment), PlacedRoadSegments(Player.TotalRoadSegments - 2))
-                .WhenPlayer(Adam)
-                    .ReceivesStartTurnEvent(3, 3)
-                    .ThenPlaceRoadSegment(4, 3)
-                    .ReceivesGameErrorEvent("905", "No road segments to place").ThenDoNothing()
-                .VerifyPlayer(Babara)
-                    .DidNotReceiveEventOfType<GameErrorEvent>()
-                .VerifyPlayer(Charlie)
-                    .DidNotReceiveEventOfType<GameErrorEvent>()
-                .VerifyPlayer(Dana)
-                    .DidNotReceiveEventOfType<GameErrorEvent>()
-                .Run();
+            try
+            {
+                this.CompletePlayerInfrastructureSetup(new[] { testName })
+                    .WithNoResourceCollection()
+                    .WithInitialPlayerSetupFor(Adam, Resources(ResourceClutch.RoadSegment), PlacedRoadSegments(Player.TotalRoadSegments - 2))
+                    .WhenPlayer(Adam)
+                        .ReceivesStartTurnEvent(3, 3)
+                        .ThenPlaceRoadSegment(4, 3)
+                        .ReceivesGameErrorEvent("905", "No road segments to place").ThenDoNothing()
+                    .VerifyPlayer(Babara)
+                        .DidNotReceiveEventOfType<GameErrorEvent>()
+                    .VerifyPlayer(Charlie)
+                        .DidNotReceiveEventOfType<GameErrorEvent>()
+                    .VerifyPlayer(Dana)
+                        .DidNotReceiveEventOfType<GameErrorEvent>()
+                    .Run();
+            }
+            finally
+            {
+                this.AttachReports(testName);
+            }
         }
 
         [Test]
         public void PlayerTriesToPlaceRoadSegmentWithNotEnoughResources()
         {
             var testName = MethodBase.GetCurrentMethod().Name;
-            this.CompletePlayerInfrastructureSetup(new[] { testName })
-                .WithNoResourceCollection()
-                .WhenPlayer(Adam)
-                    .ReceivesStartTurnEvent(3, 3)
-                    .ThenPlaceRoadSegment(4, 3)
-                    .ReceivesGameErrorEvent("906", "Not enough resources for placing road segment").ThenDoNothing()
-                .VerifyPlayer(Babara)
-                    .DidNotReceiveEventOfType<GameErrorEvent>()
-                .VerifyPlayer(Charlie)
-                    .DidNotReceiveEventOfType<GameErrorEvent>()
-                .VerifyPlayer(Dana)
-                    .DidNotReceiveEventOfType<GameErrorEvent>()
-                .Run();
+            try
+            {
+                this.CompletePlayerInfrastructureSetup(new[] { testName })
+                    .WithNoResourceCollection()
+                    .WhenPlayer(Adam)
+                        .ReceivesStartTurnEvent(3, 3)
+                        .ThenPlaceRoadSegment(4, 3)
+                        .ReceivesGameErrorEvent("906", "Not enough resources for placing road segment").ThenDoNothing()
+                    .VerifyPlayer(Babara)
+                        .DidNotReceiveEventOfType<GameErrorEvent>()
+                    .VerifyPlayer(Charlie)
+                        .DidNotReceiveEventOfType<GameErrorEvent>()
+                    .VerifyPlayer(Dana)
+                        .DidNotReceiveEventOfType<GameErrorEvent>()
+                    .Run();
+            }
+            finally
+            {
+                this.AttachReports(testName);
+            }
         }
 
         [Test]
         public void PlayerTriesToPlaceRoadSegmentOnOccupiedLocations()
         {
             var testName = MethodBase.GetCurrentMethod().Name;
-            this.CompletePlayerInfrastructureSetup(new[] { testName })
-                .WithNoResourceCollection()
-                .WithInitialPlayerSetupFor(Adam, Resources(ResourceClutch.RoadSegment))
-                .WhenPlayer(Adam)
-                    .ReceivesStartTurnEvent(3, 3)
-                    .ThenPlaceRoadSegment(4, 12)
-                    .ReceivesGameErrorEvent("907", "Cannot place road segment on existing road segment (4, 12)").ThenDoNothing()
-                .VerifyPlayer(Babara)
-                    .DidNotReceiveEventOfType<GameErrorEvent>()
-                .VerifyPlayer(Charlie)
-                    .DidNotReceiveEventOfType<GameErrorEvent>()
-                .VerifyPlayer(Dana)
-                    .DidNotReceiveEventOfType<GameErrorEvent>()
-                .Run();
+            try
+            {
+                this.CompletePlayerInfrastructureSetup(new[] { testName })
+                    .WithNoResourceCollection()
+                    .WithInitialPlayerSetupFor(Adam, Resources(ResourceClutch.RoadSegment))
+                    .WhenPlayer(Adam)
+                        .ReceivesStartTurnEvent(3, 3)
+                        .ThenPlaceRoadSegment(4, 12)
+                        .ReceivesGameErrorEvent("907", "Cannot place road segment on existing road segment (4, 12)").ThenDoNothing()
+                    .VerifyPlayer(Babara)
+                        .DidNotReceiveEventOfType<GameErrorEvent>()
+                    .VerifyPlayer(Charlie)
+                        .DidNotReceiveEventOfType<GameErrorEvent>()
+                    .VerifyPlayer(Dana)
+                        .DidNotReceiveEventOfType<GameErrorEvent>()
+                    .Run();
+            }
+            finally
+            {
+                this.AttachReports(testName);
+            }
         }
 
         [Test]
         public void PlayerTriesToPlaceRoadSegmentOnLocationsNotConnectedToExistingRoadSystem()
         {
             var testName = MethodBase.GetCurrentMethod().Name;
-            this.CompletePlayerInfrastructureSetup(new[] { testName })
-                .WithNoResourceCollection()
-                .WithInitialPlayerSetupFor(Adam, Resources(ResourceClutch.RoadSegment))
-                .WhenPlayer(Adam)
-                    .ReceivesStartTurnEvent(3, 3)
-                    .ThenPlaceRoadSegment(3, 2)
-                    .ReceivesGameErrorEvent("910", "Cannot place road segment because locations (3, 2) are not connected to existing road").ThenDoNothing()
-                .VerifyPlayer(Babara)
-                    .DidNotReceiveEventOfType<GameErrorEvent>()
-                .VerifyPlayer(Charlie)
-                    .DidNotReceiveEventOfType<GameErrorEvent>()
-                .VerifyPlayer(Dana)
-                    .DidNotReceiveEventOfType<GameErrorEvent>()
-                .Run();
+            try
+            {
+                this.CompletePlayerInfrastructureSetup(new[] { testName })
+                    .WithNoResourceCollection()
+                    .WithInitialPlayerSetupFor(Adam, Resources(ResourceClutch.RoadSegment))
+                    .WhenPlayer(Adam)
+                        .ReceivesStartTurnEvent(3, 3)
+                        .ThenPlaceRoadSegment(3, 2)
+                        .ReceivesGameErrorEvent("910", "Cannot place road segment because locations (3, 2) are not connected to existing road").ThenDoNothing()
+                    .VerifyPlayer(Babara)
+                        .DidNotReceiveEventOfType<GameErrorEvent>()
+                    .VerifyPlayer(Charlie)
+                        .DidNotReceiveEventOfType<GameErrorEvent>()
+                    .VerifyPlayer(Dana)
+                        .DidNotReceiveEventOfType<GameErrorEvent>()
+                    .Run();
+            }
+            finally
+            {
+                this.AttachReports(testName);
+            }
         }
 
         [Test]
         public void PlayerPlaysKnightCard()
         {
             var testName = MethodBase.GetCurrentMethod().Name;
-            var robbingChoices = new Dictionary<string, int>()
+            try
             {
-                { Babara, 3 },
-                { Dana, 3 }
-            };
-            var robbedResource = ResourceClutch.OneLumber;
-            this.CompletePlayerInfrastructureSetup(new[] { testName })
-                .WhenPlayer(Adam)
-                    .ReceivesStartTurnEvent(3, 3).ThenPlayKnightCard(8)
-                    .ReceivesRobbingChoicesEvent(robbingChoices).ThenSelectRobbedPlayer(Babara)
-                    .ReceivesResourcesRobbedEvent(Babara, ResourceTypes.Lumber)
-                    .ThenVerifyPlayerState()
-                        .Resources(ResourceClutch.OneBrick + ResourceClutch.OneGrain + robbedResource + ResourceClutch.OneWool)
-                    .End()
-                    .ThenPlaceRoadSegment(4, 3)
-                .WhenPlayer(Babara)
-                    .ReceivesKinghtCardPlayerEvent(Adam, 8).ThenDoNothing()
-                    .ReceivesResourcesStolenEvent(robbedResource)
-                    .ThenVerifyPlayerState()
-                        .Resources(ResourceClutch.OneGrain + ResourceClutch.OneWool)
-                    .End()
-                    .ReceivesRoadSegmentPlacementEvent(Adam, 4, 3)
-                .WhenPlayer(Charlie)
-                    .ReceivesKinghtCardPlayerEvent(Adam, 8).ThenDoNothing()
-                    .ReceivesResourcesStolenEvent(Babara, robbedResource)
-                    .ReceivesRoadSegmentPlacementEvent(Adam, 4, 3)
-                .WhenPlayer(Dana)
-                    .ReceivesKinghtCardPlayerEvent(Adam, 8).ThenDoNothing()
-                    .ReceivesResourcesStolenEvent(Babara, robbedResource)
-                    .ReceivesRoadSegmentPlacementEvent(Adam, 4, 3)
-                .Run();
+                var robbingChoices = new Dictionary<string, int>()
+                {
+                    { Babara, 3 },
+                    { Dana, 3 }
+                };
+                var robbedResource = ResourceClutch.OneLumber;
+                this.CompletePlayerInfrastructureSetup(new[] { testName })
+                    .WhenPlayer(Adam)
+                        .ReceivesStartTurnEvent(3, 3).ThenPlayKnightCard(8)
+                        .ReceivesRobbingChoicesEvent(robbingChoices).ThenSelectRobbedPlayer(Babara)
+                        .ReceivesResourcesRobbedEvent(Babara, ResourceTypes.Lumber)
+                        .ThenVerifyPlayerState()
+                            .Resources(ResourceClutch.OneBrick + ResourceClutch.OneGrain + robbedResource + ResourceClutch.OneWool)
+                        .End()
+                        .ThenPlaceRoadSegment(4, 3)
+                    .WhenPlayer(Babara)
+                        .ReceivesKinghtCardPlayerEvent(Adam, 8).ThenDoNothing()
+                        .ReceivesResourcesStolenEvent(robbedResource)
+                        .ThenVerifyPlayerState()
+                            .Resources(ResourceClutch.OneGrain + ResourceClutch.OneWool)
+                        .End()
+                        .ReceivesRoadSegmentPlacementEvent(Adam, 4, 3)
+                    .WhenPlayer(Charlie)
+                        .ReceivesKinghtCardPlayerEvent(Adam, 8).ThenDoNothing()
+                        .ReceivesResourcesStolenEvent(Babara, robbedResource)
+                        .ReceivesRoadSegmentPlacementEvent(Adam, 4, 3)
+                    .WhenPlayer(Dana)
+                        .ReceivesKinghtCardPlayerEvent(Adam, 8).ThenDoNothing()
+                        .ReceivesResourcesStolenEvent(Babara, robbedResource)
+                        .ReceivesRoadSegmentPlacementEvent(Adam, 4, 3)
+                    .Run();
+            }
+            finally
+            {
+                this.AttachReports(testName);
+            }
         }
 
         [Test]
