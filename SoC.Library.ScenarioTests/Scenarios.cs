@@ -1035,82 +1035,103 @@ namespace SoC.Library.ScenarioTests
         public void PlayerPlaysKnightCardAndNewHexHasNoPlayers()
         {
             var testName = MethodBase.GetCurrentMethod().Name;
-            this.CompletePlayerInfrastructureSetup(new[] { testName })
-                .WithNoResourceCollection()
-                .WhenPlayer(Adam)
-                    .ReceivesStartTurnEvent(3, 3).ThenPlayKnightCard(4)
-                    .ReceivesPlaceRobberEvent().ThenPlaceRobber(4)
-                .WhenPlayer(Babara)
-                    .ReceivesKinghtCardPlayerEvent(Adam, 4).ThenDoNothing()
-                .WhenPlayer(Charlie)
-                    .ReceivesKinghtCardPlayerEvent(Adam, 4).ThenDoNothing()
-                .WhenPlayer(Dana)
-                    .ReceivesKinghtCardPlayerEvent(Adam, 4).ThenDoNothing()
-                .VerifyPlayer(Adam)
-                    .DidNotReceiveEventOfType<RobbingChoicesEvent>()
-                    .DidNotReceiveEventOfType<ResourcesGainedEvent>()
-                .VerifyPlayer(Babara)
-                    .DidNotReceiveEventOfType<ResourcesLostEvent>()
-                .VerifyPlayer(Charlie)
-                    .DidNotReceiveEventOfType<ResourcesLostEvent>()
-                .VerifyPlayer(Dana)
-                    .DidNotReceiveEventOfType<ResourcesLostEvent>()
-                .Run();
+            try
+            { 
+                this.CompletePlayerInfrastructureSetup(new[] { testName })
+                    .WithNoResourceCollection()
+                    .WhenPlayer(Adam)
+                        .ReceivesStartTurnEvent(3, 3).ThenPlayKnightCard(4)
+                        .ReceivesPlaceRobberEvent().ThenPlaceRobber(4)
+                    .WhenPlayer(Babara)
+                        .ReceivesKinghtCardPlayerEvent(Adam, 4).ThenDoNothing()
+                    .WhenPlayer(Charlie)
+                        .ReceivesKinghtCardPlayerEvent(Adam, 4).ThenDoNothing()
+                    .WhenPlayer(Dana)
+                        .ReceivesKinghtCardPlayerEvent(Adam, 4).ThenDoNothing()
+                    .VerifyPlayer(Adam)
+                        .DidNotReceiveEventOfType<RobbingChoicesEvent>()
+                        .DidNotReceiveEventOfType<ResourcesGainedEvent>()
+                    .VerifyPlayer(Babara)
+                        .DidNotReceiveEventOfType<ResourcesLostEvent>()
+                    .VerifyPlayer(Charlie)
+                        .DidNotReceiveEventOfType<ResourcesLostEvent>()
+                    .VerifyPlayer(Dana)
+                        .DidNotReceiveEventOfType<ResourcesLostEvent>()
+                    .Run();
+            }
+            finally
+            {
+                this.AttachReports(testName);
+            }
         }
 
         [Test]
         public void PlayerPlaysKnightCardAndNewHexHasOnePlayer()
         {
             var testName = MethodBase.GetCurrentMethod().Name;
-            var robbedResource = ResourceClutch.OneLumber;
-            this.CompletePlayerInfrastructureSetup(new[] { testName })
-                .WhenPlayer(Adam)
-                    .ReceivesStartTurnEvent(3, 3).ThenDoNothing()
-                    .ReceivesPlaceRobberEvent().ThenPlaceRobber(3)
-                    .ReceivesResourcesRobbedEvent(Babara, ResourceTypes.Lumber)
-                    .ThenVerifyPlayerState()
-                        .Resources(ResourceClutch.OneBrick + ResourceClutch.OneGrain + ResourceClutch.OneLumber + ResourceClutch.OneWool)
-                    .End()
-                .WhenPlayer(Babara)
-                    .ReceivesRobberPlacedEvent(Adam, 3).ThenDoNothing()
-                    .ReceivesResourcesStolenEvent(robbedResource)
-                    .ThenVerifyPlayerState()
-                        .Resources(ResourceClutch.OneGrain + ResourceClutch.OneWool)
-                    .End()
-                .WhenPlayer(Charlie)
-                    .ReceivesRobberPlacedEvent(Adam, 3).ThenDoNothing()
-                    .ReceivesResourcesStolenEvent(Babara, robbedResource)
-                .WhenPlayer(Dana)
-                    .ReceivesRobberPlacedEvent(Adam, 3).ThenDoNothing()
-                .Run();
+            try
+            { 
+                var robbedResource = ResourceClutch.OneLumber;
+                this.CompletePlayerInfrastructureSetup(new[] { testName })
+                    .WhenPlayer(Adam)
+                        .ReceivesStartTurnEvent(3, 3).ThenDoNothing()
+                        .ReceivesPlaceRobberEvent().ThenPlaceRobber(3)
+                        .ReceivesResourcesRobbedEvent(Babara, ResourceTypes.Lumber)
+                        .ThenVerifyPlayerState()
+                            .Resources(ResourceClutch.OneBrick + ResourceClutch.OneGrain + ResourceClutch.OneLumber + ResourceClutch.OneWool)
+                        .End()
+                    .WhenPlayer(Babara)
+                        .ReceivesRobberPlacedEvent(Adam, 3).ThenDoNothing()
+                        .ReceivesResourcesStolenEvent(robbedResource)
+                        .ThenVerifyPlayerState()
+                            .Resources(ResourceClutch.OneGrain + ResourceClutch.OneWool)
+                        .End()
+                    .WhenPlayer(Charlie)
+                        .ReceivesRobberPlacedEvent(Adam, 3).ThenDoNothing()
+                        .ReceivesResourcesStolenEvent(Babara, robbedResource)
+                    .WhenPlayer(Dana)
+                        .ReceivesRobberPlacedEvent(Adam, 3).ThenDoNothing()
+                    .Run();
+            }
+            finally
+            {
+                this.AttachReports(testName);
+            }
         }
 
         [Test]
         public void PlayerPlaysKnightCardAndNewHexHasOnePlayerWhichIsCardPlayer()
         {
             var testName = MethodBase.GetCurrentMethod().Name;
-            this.CompletePlayerInfrastructureSetup(new[] { testName })
-                .WithNoResourceCollection()
-                .WhenPlayer(Adam)
-                    .ReceivesStartTurnEvent(3, 3).ThenDoNothing()
-                    .ReceivesPlaceRobberEvent().ThenPlaceRobber(2)
-                    .ReceivesRobberPlacedEvent(2)
-                .WhenPlayer(Babara)
-                    .ReceivesRobberPlacedEvent(Adam, 2).ThenDoNothing()
-                .WhenPlayer(Charlie)
-                    .ReceivesRobberPlacedEvent(Adam, 2).ThenDoNothing()
-                .WhenPlayer(Dana)
-                    .ReceivesRobberPlacedEvent(Adam, 2).ThenDoNothing()
-                .VerifyPlayer(Adam)
-                    .DidNotReceiveEventOfType<RobbingChoicesEvent>()
-                    .DidNotReceiveEventOfType<ChooseLostResourcesEvent>()
-                .VerifyPlayer(Babara)
-                    .DidNotReceiveEventOfType<ChooseLostResourcesEvent>()
-                .VerifyPlayer(Charlie)
-                    .DidNotReceiveEventOfType<ChooseLostResourcesEvent>()
-                .VerifyPlayer(Dana)
-                    .DidNotReceiveEventOfType<ChooseLostResourcesEvent>()
-                .Run();
+            try
+            {
+                this.CompletePlayerInfrastructureSetup(new[] { testName })
+                    .WithNoResourceCollection()
+                    .WhenPlayer(Adam)
+                        .ReceivesStartTurnEvent(3, 3).ThenDoNothing()
+                        .ReceivesPlaceRobberEvent().ThenPlaceRobber(2)
+                        .ReceivesRobberPlacedEvent(2)
+                    .WhenPlayer(Babara)
+                        .ReceivesRobberPlacedEvent(Adam, 2).ThenDoNothing()
+                    .WhenPlayer(Charlie)
+                        .ReceivesRobberPlacedEvent(Adam, 2).ThenDoNothing()
+                    .WhenPlayer(Dana)
+                        .ReceivesRobberPlacedEvent(Adam, 2).ThenDoNothing()
+                    .VerifyPlayer(Adam)
+                        .DidNotReceiveEventOfType<RobbingChoicesEvent>()
+                        .DidNotReceiveEventOfType<ChooseLostResourcesEvent>()
+                    .VerifyPlayer(Babara)
+                        .DidNotReceiveEventOfType<ChooseLostResourcesEvent>()
+                    .VerifyPlayer(Charlie)
+                        .DidNotReceiveEventOfType<ChooseLostResourcesEvent>()
+                    .VerifyPlayer(Dana)
+                        .DidNotReceiveEventOfType<ChooseLostResourcesEvent>()
+                    .Run();
+            }
+            finally
+            {
+                this.AttachReports(testName);
+            }
         }
 
         [Test]
@@ -1167,496 +1188,587 @@ namespace SoC.Library.ScenarioTests
         public void PlayerPlaysKnightCardAndNewHexHasMultiplePlayers()
         {
             var testName = MethodBase.GetCurrentMethod().Name;
-            var infrastructureSetupBuilder = new InfrastructureSetupBuilder();
-            infrastructureSetupBuilder.Add(Adam, Adam_FirstSettlementLocation, Adam_FirstRoadEndLocation)
-                .Add(Babara, 21, 11)
-                .Add(Charlie, Charlie_FirstSettlementLocation, Charlie_FirstRoadEndLocation)
-                .Add(Dana, Dana_FirstSettlementLocation, Dana_FirstRoadEndLocation)
-                .Add(Dana, 35, 24)
-                .Add(Charlie, 33, 32)
-                .Add(Babara, Babara_SecondSettlementLocation, Babara_SecondRoadEndLocation)
-                .Add(Adam, Adam_SecondSettlementLocation, Adam_SecondRoadEndLocation);
+            try
+            {     
+                var infrastructureSetupBuilder = new InfrastructureSetupBuilder();
+                infrastructureSetupBuilder.Add(Adam, Adam_FirstSettlementLocation, Adam_FirstRoadEndLocation)
+                    .Add(Babara, 21, 11)
+                    .Add(Charlie, Charlie_FirstSettlementLocation, Charlie_FirstRoadEndLocation)
+                    .Add(Dana, Dana_FirstSettlementLocation, Dana_FirstRoadEndLocation)
+                    .Add(Dana, 35, 24)
+                    .Add(Charlie, 33, 32)
+                    .Add(Babara, Babara_SecondSettlementLocation, Babara_SecondRoadEndLocation)
+                    .Add(Adam, Adam_SecondSettlementLocation, Adam_SecondRoadEndLocation);
 
-            var robbingChoices = new Dictionary<string, int>()
+                var robbingChoices = new Dictionary<string, int>()
+                {
+                    { Babara, 3 },
+                    { Charlie, 3 },
+                    { Dana, 3 }
+                };
+
+                this.CompletePlayerInfrastructureSetup(infrastructureSetupBuilder.Build(), new[] { testName })
+                    .WhenPlayer(Adam)
+                        .ReceivesStartTurnEvent(3, 3).ThenDoNothing()
+                        .ReceivesPlaceRobberEvent().ThenPlaceRobber(9)
+                        .ReceivesRobbingChoicesEvent(robbingChoices).ThenDoNothing()
+                    .WhenPlayer(Babara)
+                        .ReceivesRobberPlacedEvent(Adam, 9).ThenDoNothing()
+                    .WhenPlayer(Charlie)
+                        .ReceivesRobberPlacedEvent(Adam, 9).ThenDoNothing()
+                    .WhenPlayer(Dana)
+                        .ReceivesRobberPlacedEvent(Adam, 9).ThenDoNothing()
+                    .VerifyPlayer(Adam)
+                        .DidNotReceiveEventOfType<ChooseLostResourcesEvent>()
+                    .VerifyPlayer(Babara)
+                        .DidNotReceiveEventOfType<ChooseLostResourcesEvent>()
+                    .VerifyPlayer(Charlie)
+                        .DidNotReceiveEventOfType<ChooseLostResourcesEvent>()
+                    .VerifyPlayer(Dana)
+                        .DidNotReceiveEventOfType<ChooseLostResourcesEvent>()
+                    .Run();
+            }
+            finally
             {
-                { Babara, 3 },
-                { Charlie, 3 },
-                { Dana, 3 }
-            };
-
-            this.CompletePlayerInfrastructureSetup(infrastructureSetupBuilder.Build(), new[] { testName })
-                .WhenPlayer(Adam)
-                    .ReceivesStartTurnEvent(3, 3).ThenDoNothing()
-                    .ReceivesPlaceRobberEvent().ThenPlaceRobber(9)
-                    .ReceivesRobbingChoicesEvent(robbingChoices).ThenDoNothing()
-                .WhenPlayer(Babara)
-                    .ReceivesRobberPlacedEvent(Adam, 9).ThenDoNothing()
-                .WhenPlayer(Charlie)
-                    .ReceivesRobberPlacedEvent(Adam, 9).ThenDoNothing()
-                .WhenPlayer(Dana)
-                    .ReceivesRobberPlacedEvent(Adam, 9).ThenDoNothing()
-                .VerifyPlayer(Adam)
-                    .DidNotReceiveEventOfType<ChooseLostResourcesEvent>()
-                .VerifyPlayer(Babara)
-                    .DidNotReceiveEventOfType<ChooseLostResourcesEvent>()
-                .VerifyPlayer(Charlie)
-                    .DidNotReceiveEventOfType<ChooseLostResourcesEvent>()
-                .VerifyPlayer(Dana)
-                    .DidNotReceiveEventOfType<ChooseLostResourcesEvent>()
-                .Run();
+                this.AttachReports(testName);
+            }
         }
 
         [Test]
         public void PlayerPlaysKnightCardAndNewHexHasMultiplePlayersIncludingCardPlayer()
         {
             var testName = MethodBase.GetCurrentMethod().Name;
-            var infrastructureSetupBuilder = new InfrastructureSetupBuilder();
-            infrastructureSetupBuilder.Add(Adam, Adam_FirstSettlementLocation, Adam_FirstRoadEndLocation)
-                .Add(Babara, 21, 11)
-                .Add(Charlie, Charlie_FirstSettlementLocation, Charlie_FirstRoadEndLocation)
-                .Add(Dana, Dana_FirstSettlementLocation, Dana_FirstRoadEndLocation)
-                .Add(Dana, 35, 24)
-                .Add(Charlie, 33, 32)
-                .Add(Babara, Babara_SecondSettlementLocation, Babara_SecondRoadEndLocation)
-                .Add(Adam, Adam_SecondSettlementLocation, Adam_SecondRoadEndLocation);
+            try
+            { 
+                var infrastructureSetupBuilder = new InfrastructureSetupBuilder();
+                infrastructureSetupBuilder.Add(Adam, Adam_FirstSettlementLocation, Adam_FirstRoadEndLocation)
+                    .Add(Babara, 21, 11)
+                    .Add(Charlie, Charlie_FirstSettlementLocation, Charlie_FirstRoadEndLocation)
+                    .Add(Dana, Dana_FirstSettlementLocation, Dana_FirstRoadEndLocation)
+                    .Add(Dana, 35, 24)
+                    .Add(Charlie, 33, 32)
+                    .Add(Babara, Babara_SecondSettlementLocation, Babara_SecondRoadEndLocation)
+                    .Add(Adam, Adam_SecondSettlementLocation, Adam_SecondRoadEndLocation);
 
-            var robbingChoices = new Dictionary<string, int>()
+                var robbingChoices = new Dictionary<string, int>()
+                {
+                    { Babara, 3 },
+                    { Charlie, 3 },
+                    { Dana, 3 }
+                };
+
+                this.CompletePlayerInfrastructureSetup(infrastructureSetupBuilder.Build(), new[] { testName })
+                    .WhenPlayer(Adam)
+                        .ReceivesStartTurnEvent(3, 3).ThenDoNothing()
+                        .ReceivesPlaceRobberEvent().ThenPlaceRobber(9)
+                        .ReceivesRobbingChoicesEvent(robbingChoices).ThenDoNothing()
+                    .WhenPlayer(Babara)
+                        .ReceivesRobberPlacedEvent(Adam, 9).ThenDoNothing()
+                    .WhenPlayer(Charlie)
+                        .ReceivesRobberPlacedEvent(Adam, 9).ThenDoNothing()
+                    .WhenPlayer(Dana)
+                        .ReceivesRobberPlacedEvent(Adam, 9).ThenDoNothing()
+                    .VerifyPlayer(Adam)
+                        .DidNotReceiveEventOfType<ChooseLostResourcesEvent>()
+                    .VerifyPlayer(Babara)
+                        .DidNotReceiveEventOfType<ChooseLostResourcesEvent>()
+                    .VerifyPlayer(Charlie)
+                        .DidNotReceiveEventOfType<ChooseLostResourcesEvent>()
+                    .VerifyPlayer(Dana)
+                        .DidNotReceiveEventOfType<ChooseLostResourcesEvent>()
+                    .Run();
+            }
+            finally
             {
-                { Babara, 3 },
-                { Charlie, 3 },
-                { Dana, 3 }
-            };
-
-            this.CompletePlayerInfrastructureSetup(infrastructureSetupBuilder.Build(), new[] { testName })
-                .WhenPlayer(Adam)
-                    .ReceivesStartTurnEvent(3, 3).ThenDoNothing()
-                    .ReceivesPlaceRobberEvent().ThenPlaceRobber(9)
-                    .ReceivesRobbingChoicesEvent(robbingChoices).ThenDoNothing()
-                .WhenPlayer(Babara)
-                    .ReceivesRobberPlacedEvent(Adam, 9).ThenDoNothing()
-                .WhenPlayer(Charlie)
-                    .ReceivesRobberPlacedEvent(Adam, 9).ThenDoNothing()
-                .WhenPlayer(Dana)
-                    .ReceivesRobberPlacedEvent(Adam, 9).ThenDoNothing()
-                .VerifyPlayer(Adam)
-                    .DidNotReceiveEventOfType<ChooseLostResourcesEvent>()
-                .VerifyPlayer(Babara)
-                    .DidNotReceiveEventOfType<ChooseLostResourcesEvent>()
-                .VerifyPlayer(Charlie)
-                    .DidNotReceiveEventOfType<ChooseLostResourcesEvent>()
-                .VerifyPlayer(Dana)
-                    .DidNotReceiveEventOfType<ChooseLostResourcesEvent>()
-                .Run();
+                this.AttachReports(testName);
+            }
         }
 
         [Test]
         public void PlayerRollsSevenAndAllPlayersWithMoreThanSevenResourcesLoseResources()
         {
             var testName = MethodBase.GetCurrentMethod().Name;
-            var adamsInitialResources = new ResourceClutch(1, 2, 2, 2, 2); // 9 resources
-            var babarasInitialResources = new ResourceClutch(2, 2, 2, 2, 2); // 10 resources
-            var charliesInitialResources = new ResourceClutch(1, 1, 1, 1, 2); // 6 resources
-            var danasInitialResources = new ResourceClutch(1, 1, 2, 2, 2); // 8 resources
+            try
+            {
+                var adamsInitialResources = new ResourceClutch(1, 2, 2, 2, 2); // 9 resources
+                var babarasInitialResources = new ResourceClutch(2, 2, 2, 2, 2); // 10 resources
+                var charliesInitialResources = new ResourceClutch(1, 1, 1, 1, 2); // 6 resources
+                var danasInitialResources = new ResourceClutch(1, 1, 2, 2, 2); // 8 resources
 
-            var adamsLostResources = new ResourceClutch(0, 1, 1, 1, 1);
-            var babarasLostResources = new ResourceClutch(1, 1, 1, 1, 1);
-            var danasLostResources = new ResourceClutch(0, 1, 1, 1, 1);
+                var adamsLostResources = new ResourceClutch(0, 1, 1, 1, 1);
+                var babarasLostResources = new ResourceClutch(1, 1, 1, 1, 1);
+                var danasLostResources = new ResourceClutch(0, 1, 1, 1, 1);
 
-            var adamsFinalResources = adamsInitialResources - adamsLostResources;
-            var babarasFinalResources = babarasInitialResources - babarasLostResources;
-            var danasFinalResources = danasInitialResources - danasLostResources;
+                var adamsFinalResources = adamsInitialResources - adamsLostResources;
+                var babarasFinalResources = babarasInitialResources - babarasLostResources;
+                var danasFinalResources = danasInitialResources - danasLostResources;
 
-            this.CompletePlayerInfrastructureSetup(new[] { testName })
-                .WithNoResourceCollection()
-                .WithInitialPlayerSetupFor(
-                    Adam,
-                    Resources(adamsInitialResources))
-                .WithInitialPlayerSetupFor(
-                    Babara,
-                    Resources(babarasInitialResources))
-                .WithInitialPlayerSetupFor(
-                    Charlie,
-                    Resources(charliesInitialResources))
-                .WithInitialPlayerSetupFor(
-                    Dana,
-                    Resources(danasInitialResources))
-                .WhenPlayer(Adam)
-                    .ReceivesStartTurnEvent(3, 4).ThenDoNothing()
-                    .ReceivesChooseLostResourcesEvent(4).ThenChooseResourcesToLose(adamsLostResources)
-                    .ReceivesAll()
-                        .ReceivesResourcesStolenEvent(Adam, adamsLostResources)
-                        .ReceivesResourcesStolenEvent(Babara, babarasLostResources)
-                        .ReceivesResourcesStolenEvent(Dana, danasLostResources)
-                    .ReceivesAllEnd()
-                    .ThenVerifyPlayerState()
-                        .Resources(adamsFinalResources)
-                        .End()
-                .WhenPlayer(Babara)
-                    .ReceivesChooseLostResourcesEvent(5).ThenChooseResourcesToLose(babarasLostResources)
-                    .ReceivesAll()
-                        .ReceivesResourcesStolenEvent(Adam, adamsLostResources)
-                        .ReceivesResourcesStolenEvent(Babara, babarasLostResources)
-                        .ReceivesResourcesStolenEvent(Dana, danasLostResources)
-                    .ReceivesAllEnd()
-                    .ThenVerifyPlayerState()
-                        .Resources(babarasFinalResources)
-                        .End()
-                .WhenPlayer(Charlie)
-                    .ReceivesAll()
-                        .ReceivesResourcesStolenEvent(Adam, adamsLostResources)
-                        .ReceivesResourcesStolenEvent(Babara, babarasLostResources)
-                        .ReceivesResourcesStolenEvent(Dana, danasLostResources)
-                    .ReceivesAllEnd()
-                    .ThenVerifyPlayerState()
-                        .Resources(charliesInitialResources)
-                        .End()
-                .WhenPlayer(Dana)
-                    .ReceivesChooseLostResourcesEvent(4).ThenChooseResourcesToLose(danasLostResources)
-                    .ReceivesAll()
-                        .ReceivesResourcesStolenEvent(Adam, adamsLostResources)
-                        .ReceivesResourcesStolenEvent(Babara, babarasLostResources)
-                        .ReceivesResourcesStolenEvent(Dana, danasLostResources)
-                    .ReceivesAllEnd()
-                    .ThenVerifyPlayerState()
-                        .Resources(danasFinalResources)
-                        .End()
-                .VerifyPlayer(Charlie)
-                    .DidNotReceiveEventOfType<ChooseLostResourcesEvent>()
-                .Run();
+                this.CompletePlayerInfrastructureSetup(new[] { testName })
+                    .WithNoResourceCollection()
+                    .WithInitialPlayerSetupFor(
+                        Adam,
+                        Resources(adamsInitialResources))
+                    .WithInitialPlayerSetupFor(
+                        Babara,
+                        Resources(babarasInitialResources))
+                    .WithInitialPlayerSetupFor(
+                        Charlie,
+                        Resources(charliesInitialResources))
+                    .WithInitialPlayerSetupFor(
+                        Dana,
+                        Resources(danasInitialResources))
+                    .WhenPlayer(Adam)
+                        .ReceivesStartTurnEvent(3, 4).ThenDoNothing()
+                        .ReceivesChooseLostResourcesEvent(4).ThenChooseResourcesToLose(adamsLostResources)
+                        .ReceivesAll()
+                            .ReceivesResourcesStolenEvent(Adam, adamsLostResources)
+                            .ReceivesResourcesStolenEvent(Babara, babarasLostResources)
+                            .ReceivesResourcesStolenEvent(Dana, danasLostResources)
+                        .ReceivesAllEnd()
+                        .ThenVerifyPlayerState()
+                            .Resources(adamsFinalResources)
+                            .End()
+                    .WhenPlayer(Babara)
+                        .ReceivesChooseLostResourcesEvent(5).ThenChooseResourcesToLose(babarasLostResources)
+                        .ReceivesAll()
+                            .ReceivesResourcesStolenEvent(Adam, adamsLostResources)
+                            .ReceivesResourcesStolenEvent(Babara, babarasLostResources)
+                            .ReceivesResourcesStolenEvent(Dana, danasLostResources)
+                        .ReceivesAllEnd()
+                        .ThenVerifyPlayerState()
+                            .Resources(babarasFinalResources)
+                            .End()
+                    .WhenPlayer(Charlie)
+                        .ReceivesAll()
+                            .ReceivesResourcesStolenEvent(Adam, adamsLostResources)
+                            .ReceivesResourcesStolenEvent(Babara, babarasLostResources)
+                            .ReceivesResourcesStolenEvent(Dana, danasLostResources)
+                        .ReceivesAllEnd()
+                        .ThenVerifyPlayerState()
+                            .Resources(charliesInitialResources)
+                            .End()
+                    .WhenPlayer(Dana)
+                        .ReceivesChooseLostResourcesEvent(4).ThenChooseResourcesToLose(danasLostResources)
+                        .ReceivesAll()
+                            .ReceivesResourcesStolenEvent(Adam, adamsLostResources)
+                            .ReceivesResourcesStolenEvent(Babara, babarasLostResources)
+                            .ReceivesResourcesStolenEvent(Dana, danasLostResources)
+                        .ReceivesAllEnd()
+                        .ThenVerifyPlayerState()
+                            .Resources(danasFinalResources)
+                            .End()
+                    .VerifyPlayer(Charlie)
+                        .DidNotReceiveEventOfType<ChooseLostResourcesEvent>()
+                    .Run();
+            }
+            finally
+            {
+                this.AttachReports(testName);
+            }
         }
 
         [Test]
         public void PlayerRollsSevenAndPlayerSendsTooManyResources()
         {
             var testName = MethodBase.GetCurrentMethod().Name;
-            var adamsInitialResources = new ResourceClutch(1, 2, 2, 2, 2); // 9 resources
-            var adamsLostResources = new ResourceClutch(1, 1, 1, 1, 1);
+            try
+            {
+                var adamsInitialResources = new ResourceClutch(1, 2, 2, 2, 2); // 9 resources
+                var adamsLostResources = new ResourceClutch(1, 1, 1, 1, 1);
 
-            this.CompletePlayerInfrastructureSetup(new[] { testName })
-                .WithNoResourceCollection()
-                .WithInitialPlayerSetupFor(
-                    Adam,
-                    Resources(adamsInitialResources))
-                .WhenPlayer(Adam)
-                    .ReceivesStartTurnEvent(3, 4).ThenDoNothing()
-                    .ReceivesChooseLostResourcesEvent(4).ThenChooseResourcesToLose(adamsLostResources)
-                    .ReceivesGameErrorEvent("916", "Expected 4 resources but received 5")
-                .VerifyPlayer(Babara)
-                    .DidNotReceiveEventOfType<GameErrorEvent>()
-                .VerifyPlayer(Charlie)
-                    .DidNotReceiveEventOfType<GameErrorEvent>()
-                .VerifyPlayer(Dana)
-                    .DidNotReceiveEventOfType<GameErrorEvent>()
-                .Run();
+                this.CompletePlayerInfrastructureSetup(new[] { testName })
+                    .WithNoResourceCollection()
+                    .WithInitialPlayerSetupFor(
+                        Adam,
+                        Resources(adamsInitialResources))
+                    .WhenPlayer(Adam)
+                        .ReceivesStartTurnEvent(3, 4).ThenDoNothing()
+                        .ReceivesChooseLostResourcesEvent(4).ThenChooseResourcesToLose(adamsLostResources)
+                        .ReceivesGameErrorEvent("916", "Expected 4 resources but received 5")
+                    .VerifyPlayer(Babara)
+                        .DidNotReceiveEventOfType<GameErrorEvent>()
+                    .VerifyPlayer(Charlie)
+                        .DidNotReceiveEventOfType<GameErrorEvent>()
+                    .VerifyPlayer(Dana)
+                        .DidNotReceiveEventOfType<GameErrorEvent>()
+                    .Run();
+            }
+            finally
+            {
+                this.AttachReports(testName);
+            }
         }
         
         [Test]
         public void PlayerRollsSevenAndPlayerSendsTooLittleResources()
         {
             var testName = MethodBase.GetCurrentMethod().Name;
-            var adamsInitialResources = new ResourceClutch(1, 2, 2, 2, 2); // 9 resources
-            var adamsLostResources = new ResourceClutch(0, 0, 1, 1, 1);
+            try
+            {
+                var adamsInitialResources = new ResourceClutch(1, 2, 2, 2, 2); // 9 resources
+                var adamsLostResources = new ResourceClutch(0, 0, 1, 1, 1);
 
-            this.CompletePlayerInfrastructureSetup(new[] { testName })
-                .WithNoResourceCollection()
-                .WithInitialPlayerSetupFor(
-                    Adam,
-                    Resources(adamsInitialResources))
-                .WhenPlayer(Adam)
-                    .ReceivesStartTurnEvent(3, 4).ThenDoNothing()
-                    .ReceivesChooseLostResourcesEvent(4).ThenChooseResourcesToLose(adamsLostResources)
-                    .ReceivesGameErrorEvent("916", "Expected 4 resources but received 3")
-                .VerifyPlayer(Babara)
-                    .DidNotReceiveEventOfType<GameErrorEvent>()
-                .VerifyPlayer(Charlie)
-                    .DidNotReceiveEventOfType<GameErrorEvent>()
-                .VerifyPlayer(Dana)
-                    .DidNotReceiveEventOfType<GameErrorEvent>()
-                .Run();
+                this.CompletePlayerInfrastructureSetup(new[] { testName })
+                    .WithNoResourceCollection()
+                    .WithInitialPlayerSetupFor(
+                        Adam,
+                        Resources(adamsInitialResources))
+                    .WhenPlayer(Adam)
+                        .ReceivesStartTurnEvent(3, 4).ThenDoNothing()
+                        .ReceivesChooseLostResourcesEvent(4).ThenChooseResourcesToLose(adamsLostResources)
+                        .ReceivesGameErrorEvent("916", "Expected 4 resources but received 3")
+                    .VerifyPlayer(Babara)
+                        .DidNotReceiveEventOfType<GameErrorEvent>()
+                    .VerifyPlayer(Charlie)
+                        .DidNotReceiveEventOfType<GameErrorEvent>()
+                    .VerifyPlayer(Dana)
+                        .DidNotReceiveEventOfType<GameErrorEvent>()
+                    .Run();
+            }
+            finally
+            {
+                this.AttachReports(testName);
+            }
         }
 
         [Test]
         public void PlayerRollsSevenAndPlayerSendsResourcesResultingInNegativeResources()
         {
             var testName = MethodBase.GetCurrentMethod().Name;
-            var adamsInitialResources = new ResourceClutch(1, 2, 2, 2, 2); // 9 resources
-            var adamsLostResources = new ResourceClutch(2, 0, 0, 1, 1);
+            try
+            {
+                var adamsInitialResources = new ResourceClutch(1, 2, 2, 2, 2); // 9 resources
+                var adamsLostResources = new ResourceClutch(2, 0, 0, 1, 1);
 
-            this.CompletePlayerInfrastructureSetup(new[] { testName })
-                .WithNoResourceCollection()
-                .WithInitialPlayerSetupFor(
-                    Adam,
-                    Resources(adamsInitialResources))
-                .WhenPlayer(Adam)
-                    .ReceivesStartTurnEvent(3, 4).ThenDoNothing()
-                    .ReceivesChooseLostResourcesEvent(4).ThenChooseResourcesToLose(adamsLostResources)
-                    .ReceivesGameErrorEvent("917", "Resources sent results in negative counts")
-                .VerifyPlayer(Babara)
-                    .DidNotReceiveEventOfType<GameErrorEvent>()
-                .VerifyPlayer(Charlie)
-                    .DidNotReceiveEventOfType<GameErrorEvent>()
-                .VerifyPlayer(Dana)
-                    .DidNotReceiveEventOfType<GameErrorEvent>()
-                .Run();
+                this.CompletePlayerInfrastructureSetup(new[] { testName })
+                    .WithNoResourceCollection()
+                    .WithInitialPlayerSetupFor(
+                        Adam,
+                        Resources(adamsInitialResources))
+                    .WhenPlayer(Adam)
+                        .ReceivesStartTurnEvent(3, 4).ThenDoNothing()
+                        .ReceivesChooseLostResourcesEvent(4).ThenChooseResourcesToLose(adamsLostResources)
+                        .ReceivesGameErrorEvent("917", "Resources sent results in negative counts")
+                    .VerifyPlayer(Babara)
+                        .DidNotReceiveEventOfType<GameErrorEvent>()
+                    .VerifyPlayer(Charlie)
+                        .DidNotReceiveEventOfType<GameErrorEvent>()
+                    .VerifyPlayer(Dana)
+                        .DidNotReceiveEventOfType<GameErrorEvent>()
+                    .Run();
+            }
+            finally
+            {
+                this.AttachReports(testName);
+            }
         }
 
         [Test]
         public void PlayerRollsSevenAndAllPlayersWithMoreThanSeventResourcesMustSendResourcesBeforeRobberCanBePlaced()
         {
             var testName = MethodBase.GetCurrentMethod().Name;
-            var adamsInitialResources = new ResourceClutch(1, 2, 2, 2, 2); // 9 resources
-            var babarasInitialResources = new ResourceClutch(2, 2, 2, 2, 2); // 10 resources
-            var charliesInitialResources = new ResourceClutch(1, 1, 1, 1, 2); // 6 resources
-            var danasInitialResources = new ResourceClutch(1, 1, 2, 2, 2); // 8 resources
+            try
+            {
+                var adamsInitialResources = new ResourceClutch(1, 2, 2, 2, 2); // 9 resources
+                var babarasInitialResources = new ResourceClutch(2, 2, 2, 2, 2); // 10 resources
+                var charliesInitialResources = new ResourceClutch(1, 1, 1, 1, 2); // 6 resources
+                var danasInitialResources = new ResourceClutch(1, 1, 2, 2, 2); // 8 resources
 
-            var adamsLostResources = new ResourceClutch(0, 1, 1, 1, 1);
-            var babarasLostResources = new ResourceClutch(1, 1, 1, 1, 1);
-            var danasLostResources = new ResourceClutch(0, 1, 1, 1, 1);
+                var adamsLostResources = new ResourceClutch(0, 1, 1, 1, 1);
+                var babarasLostResources = new ResourceClutch(1, 1, 1, 1, 1);
+                var danasLostResources = new ResourceClutch(0, 1, 1, 1, 1);
 
-            var adamsFinalResources = adamsInitialResources - adamsLostResources;
-            var babarasFinalResources = babarasInitialResources - babarasLostResources;
-            var danasFinalResources = danasInitialResources - danasLostResources;
+                var adamsFinalResources = adamsInitialResources - adamsLostResources;
+                var babarasFinalResources = babarasInitialResources - babarasLostResources;
+                var danasFinalResources = danasInitialResources - danasLostResources;
 
-            this.CompletePlayerInfrastructureSetup(new[] { testName })
-                .WithNoResourceCollection()
-                .WithInitialPlayerSetupFor(
-                    Adam,
-                    Resources(adamsInitialResources))
-                .WithInitialPlayerSetupFor(
-                    Babara,
-                    Resources(babarasInitialResources))
-                .WithInitialPlayerSetupFor(
-                    Charlie,
-                    Resources(charliesInitialResources))
-                .WithInitialPlayerSetupFor(
-                    Dana,
-                    Resources(danasInitialResources))
-                .WhenPlayer(Adam)
-                    .ReceivesStartTurnEvent(3, 4).ThenDoNothing()
-                    .ReceivesChooseLostResourcesEvent(4).ThenChooseResourcesToLose(adamsLostResources)
-                    .ReceivesAll()
-                        .ReceivesResourcesStolenEvent(Adam, adamsLostResources)
-                        .ReceivesResourcesStolenEvent(Babara, babarasLostResources)
-                        .ReceivesResourcesStolenEvent(Dana, danasLostResources)
-                    .ReceivesAllEnd().ThenDoNothing()
-                    .ReceivesPlaceRobberEvent()
-                .WhenPlayer(Babara)
-                    .ReceivesChooseLostResourcesEvent(5).ThenChooseResourcesToLose(babarasLostResources)
-                    .ReceivesAll()
-                        .ReceivesResourcesStolenEvent(Adam, adamsLostResources)
-                        .ReceivesResourcesStolenEvent(Babara, babarasLostResources)
-                        .ReceivesResourcesStolenEvent(Dana, danasLostResources)
-                    .ReceivesAllEnd()
-                    .ThenVerifyPlayerState()
-                        .Resources(babarasFinalResources)
-                        .End()
-                .WhenPlayer(Charlie)
-                    .ReceivesAll()
-                        .ReceivesResourcesStolenEvent(Adam, adamsLostResources)
-                        .ReceivesResourcesStolenEvent(Babara, babarasLostResources)
-                        .ReceivesResourcesStolenEvent(Dana, danasLostResources)
-                    .ReceivesAllEnd()
-                    .ThenVerifyPlayerState()
-                        .Resources(charliesInitialResources)
-                        .End()
-                .WhenPlayer(Dana)
-                    .ReceivesChooseLostResourcesEvent(4).ThenChooseResourcesToLose(danasLostResources)
-                    .ReceivesAll()
-                        .ReceivesResourcesStolenEvent(Adam, adamsLostResources)
-                        .ReceivesResourcesStolenEvent(Babara, babarasLostResources)
-                        .ReceivesResourcesStolenEvent(Dana, danasLostResources)
-                    .ReceivesAllEnd()
-                    .ThenVerifyPlayerState()
-                        .Resources(danasFinalResources)
-                        .End()
-                .VerifyPlayer(Charlie)
-                    .DidNotReceiveEventOfType<ChooseLostResourcesEvent>()
-                .Run();
+                this.CompletePlayerInfrastructureSetup(new[] { testName })
+                    .WithNoResourceCollection()
+                    .WithInitialPlayerSetupFor(
+                        Adam,
+                        Resources(adamsInitialResources))
+                    .WithInitialPlayerSetupFor(
+                        Babara,
+                        Resources(babarasInitialResources))
+                    .WithInitialPlayerSetupFor(
+                        Charlie,
+                        Resources(charliesInitialResources))
+                    .WithInitialPlayerSetupFor(
+                        Dana,
+                        Resources(danasInitialResources))
+                    .WhenPlayer(Adam)
+                        .ReceivesStartTurnEvent(3, 4).ThenDoNothing()
+                        .ReceivesChooseLostResourcesEvent(4).ThenChooseResourcesToLose(adamsLostResources)
+                        .ReceivesAll()
+                            .ReceivesResourcesStolenEvent(Adam, adamsLostResources)
+                            .ReceivesResourcesStolenEvent(Babara, babarasLostResources)
+                            .ReceivesResourcesStolenEvent(Dana, danasLostResources)
+                        .ReceivesAllEnd().ThenDoNothing()
+                        .ReceivesPlaceRobberEvent()
+                    .WhenPlayer(Babara)
+                        .ReceivesChooseLostResourcesEvent(5).ThenChooseResourcesToLose(babarasLostResources)
+                        .ReceivesAll()
+                            .ReceivesResourcesStolenEvent(Adam, adamsLostResources)
+                            .ReceivesResourcesStolenEvent(Babara, babarasLostResources)
+                            .ReceivesResourcesStolenEvent(Dana, danasLostResources)
+                        .ReceivesAllEnd()
+                        .ThenVerifyPlayerState()
+                            .Resources(babarasFinalResources)
+                            .End()
+                    .WhenPlayer(Charlie)
+                        .ReceivesAll()
+                            .ReceivesResourcesStolenEvent(Adam, adamsLostResources)
+                            .ReceivesResourcesStolenEvent(Babara, babarasLostResources)
+                            .ReceivesResourcesStolenEvent(Dana, danasLostResources)
+                        .ReceivesAllEnd()
+                        .ThenVerifyPlayerState()
+                            .Resources(charliesInitialResources)
+                            .End()
+                    .WhenPlayer(Dana)
+                        .ReceivesChooseLostResourcesEvent(4).ThenChooseResourcesToLose(danasLostResources)
+                        .ReceivesAll()
+                            .ReceivesResourcesStolenEvent(Adam, adamsLostResources)
+                            .ReceivesResourcesStolenEvent(Babara, babarasLostResources)
+                            .ReceivesResourcesStolenEvent(Dana, danasLostResources)
+                        .ReceivesAllEnd()
+                        .ThenVerifyPlayerState()
+                            .Resources(danasFinalResources)
+                            .End()
+                    .VerifyPlayer(Charlie)
+                        .DidNotReceiveEventOfType<ChooseLostResourcesEvent>()
+                    .Run();
+            }
+            finally
+            {
+                this.AttachReports(testName);
+            }
         }
 
         [Test]
         public void PlayerRollsSevenAndNewHexHasNoPlayers()
         {
             var testName = MethodBase.GetCurrentMethod().Name;
-            this.CompletePlayerInfrastructureSetup(new[] { testName })
-                .WithNoResourceCollection()
-                .WhenPlayer(Adam)
-                    .ReceivesStartTurnEvent(3, 4).ThenDoNothing()
-                    .ReceivesPlaceRobberEvent().ThenPlaceRobber(4)
-                .WhenPlayer(Babara)
-                    .ReceivesRobberPlacedEvent(Adam, 4).ThenDoNothing()
-                .WhenPlayer(Charlie)
-                    .ReceivesRobberPlacedEvent(Adam, 4).ThenDoNothing()
-                .WhenPlayer(Dana)
-                    .ReceivesRobberPlacedEvent(Adam, 4).ThenDoNothing()
-                .VerifyPlayer(Adam)
-                    .DidNotReceiveEventOfType<RobbingChoicesEvent>()
-                .VerifyPlayer(Babara)
-                    .DidNotReceiveEventOfType<ChooseLostResourcesEvent>()
-                .VerifyPlayer(Charlie)
-                    .DidNotReceiveEventOfType<ChooseLostResourcesEvent>()
-                .VerifyPlayer(Dana)
-                    .DidNotReceiveEventOfType<ChooseLostResourcesEvent>()
-                .Run();
+            try
+            {
+                this.CompletePlayerInfrastructureSetup(new[] { testName })
+                    .WithNoResourceCollection()
+                    .WhenPlayer(Adam)
+                        .ReceivesStartTurnEvent(3, 4).ThenDoNothing()
+                        .ReceivesPlaceRobberEvent().ThenPlaceRobber(4)
+                    .WhenPlayer(Babara)
+                        .ReceivesRobberPlacedEvent(Adam, 4).ThenDoNothing()
+                    .WhenPlayer(Charlie)
+                        .ReceivesRobberPlacedEvent(Adam, 4).ThenDoNothing()
+                    .WhenPlayer(Dana)
+                        .ReceivesRobberPlacedEvent(Adam, 4).ThenDoNothing()
+                    .VerifyPlayer(Adam)
+                        .DidNotReceiveEventOfType<RobbingChoicesEvent>()
+                    .VerifyPlayer(Babara)
+                        .DidNotReceiveEventOfType<ChooseLostResourcesEvent>()
+                    .VerifyPlayer(Charlie)
+                        .DidNotReceiveEventOfType<ChooseLostResourcesEvent>()
+                    .VerifyPlayer(Dana)
+                        .DidNotReceiveEventOfType<ChooseLostResourcesEvent>()
+                    .Run();
+            }
+            finally
+            {
+                this.AttachReports(testName);
+            }
         }
 
         [Test]
         public void PlayerRollsSevenAndNewHexIsSameAsCurrentHex()
         {
             var testName = MethodBase.GetCurrentMethod().Name;
-            this.CompletePlayerInfrastructureSetup(new[] { testName })
-                .WithNoResourceCollection()
-                .WhenPlayer(Adam)
-                    .ReceivesStartTurnEvent(3, 4).ThenDoNothing()
-                    .ReceivesPlaceRobberEvent().ThenPlaceRobber(0)
-                    .ReceivesGameErrorEvent("918", "New robber hex cannot be the same as previous robber hex")
-                .VerifyPlayer(Babara)
-                    .DidNotReceiveEventOfType<GameErrorEvent>()
-                .VerifyPlayer(Charlie)
-                    .DidNotReceiveEventOfType<GameErrorEvent>()
-                .VerifyPlayer(Dana)
-                    .DidNotReceiveEventOfType<GameErrorEvent>()
-                .Run();
+            try
+            {
+                this.CompletePlayerInfrastructureSetup(new[] { testName })
+                    .WithNoResourceCollection()
+                    .WhenPlayer(Adam)
+                        .ReceivesStartTurnEvent(3, 4).ThenDoNothing()
+                        .ReceivesPlaceRobberEvent().ThenPlaceRobber(0)
+                        .ReceivesGameErrorEvent("918", "New robber hex cannot be the same as previous robber hex")
+                    .VerifyPlayer(Babara)
+                        .DidNotReceiveEventOfType<GameErrorEvent>()
+                    .VerifyPlayer(Charlie)
+                        .DidNotReceiveEventOfType<GameErrorEvent>()
+                    .VerifyPlayer(Dana)
+                        .DidNotReceiveEventOfType<GameErrorEvent>()
+                    .Run();
+            }
+            finally
+            {
+                this.AttachReports(testName);
+            }
         }
 
         [Test]
         public void PlayerRollsSevenAndNewHexHasOnePlayer()
         {
             var testName = MethodBase.GetCurrentMethod().Name;
-            var robbedResource = ResourceClutch.OneLumber;
-            this.CompletePlayerInfrastructureSetup(new[] { testName })
-                .WhenPlayer(Adam)
-                    .ReceivesStartTurnEvent(3, 4).ThenDoNothing()
-                    .ReceivesPlaceRobberEvent().ThenPlaceRobber(3)
-                    .ReceivesResourcesRobbedEvent(Babara, ResourceTypes.Lumber)
-                    .ThenVerifyPlayerState()
-                        .Resources(ResourceClutch.OneBrick + ResourceClutch.OneGrain + ResourceClutch.OneLumber + ResourceClutch.OneWool)
-                    .End()
-                .WhenPlayer(Babara)
-                    .ReceivesRobberPlacedEvent(Adam, 3).ThenDoNothing()
-                    .ReceivesResourcesStolenEvent(robbedResource)
-                    .ThenVerifyPlayerState()
-                        .Resources(ResourceClutch.OneGrain + ResourceClutch.OneWool)
-                    .End()
-                .WhenPlayer(Charlie)
-                    .ReceivesRobberPlacedEvent(Adam, 3).ThenDoNothing()
-                    .ReceivesResourcesStolenEvent(Babara, robbedResource)
-                .WhenPlayer(Dana)
-                    .ReceivesRobberPlacedEvent(Adam, 3).ThenDoNothing()
-                .Run();
+            try
+            {
+                var robbedResource = ResourceClutch.OneLumber;
+                this.CompletePlayerInfrastructureSetup(new[] { testName })
+                    .WhenPlayer(Adam)
+                        .ReceivesStartTurnEvent(3, 4).ThenDoNothing()
+                        .ReceivesPlaceRobberEvent().ThenPlaceRobber(3)
+                        .ReceivesResourcesRobbedEvent(Babara, ResourceTypes.Lumber)
+                        .ThenVerifyPlayerState()
+                            .Resources(ResourceClutch.OneBrick + ResourceClutch.OneGrain + ResourceClutch.OneLumber + ResourceClutch.OneWool)
+                        .End()
+                    .WhenPlayer(Babara)
+                        .ReceivesRobberPlacedEvent(Adam, 3).ThenDoNothing()
+                        .ReceivesResourcesStolenEvent(robbedResource)
+                        .ThenVerifyPlayerState()
+                            .Resources(ResourceClutch.OneGrain + ResourceClutch.OneWool)
+                        .End()
+                    .WhenPlayer(Charlie)
+                        .ReceivesRobberPlacedEvent(Adam, 3).ThenDoNothing()
+                        .ReceivesResourcesStolenEvent(Babara, robbedResource)
+                    .WhenPlayer(Dana)
+                        .ReceivesRobberPlacedEvent(Adam, 3).ThenDoNothing()
+                    .Run();
+            }
+            finally
+            {
+                this.AttachReports(testName);
+            }
         }
 
         [Test]
         public void PlayerRollsSevenAndNewHexHasOnePlayerWhichIsRollingPlayer()
         {
             var testName = MethodBase.GetCurrentMethod().Name;
-            this.CompletePlayerInfrastructureSetup(new[] { testName })
-                .WithNoResourceCollection()
-                .WhenPlayer(Adam)
-                    .ReceivesStartTurnEvent(3, 4).ThenDoNothing()
-                    .ReceivesPlaceRobberEvent().ThenPlaceRobber(2)
-                    .ReceivesRobberPlacedEvent(2)
-                .WhenPlayer(Babara)
-                    .ReceivesRobberPlacedEvent(Adam, 2).ThenDoNothing()
-                .WhenPlayer(Charlie)
-                    .ReceivesRobberPlacedEvent(Adam, 2).ThenDoNothing()
-                .WhenPlayer(Dana)
-                    .ReceivesRobberPlacedEvent(Adam, 2).ThenDoNothing()
-                .VerifyPlayer(Adam)
-                    .DidNotReceiveEventOfType<RobbingChoicesEvent>()
-                    .DidNotReceiveEventOfType<ChooseLostResourcesEvent>()
-                .VerifyPlayer(Babara)
-                    .DidNotReceiveEventOfType<ChooseLostResourcesEvent>()
-                .VerifyPlayer(Charlie)
-                    .DidNotReceiveEventOfType<ChooseLostResourcesEvent>()
-                .VerifyPlayer(Dana)
-                    .DidNotReceiveEventOfType<ChooseLostResourcesEvent>()
-                .Run();
+            try
+            {
+                this.CompletePlayerInfrastructureSetup(new[] { testName })
+                    .WithNoResourceCollection()
+                    .WhenPlayer(Adam)
+                        .ReceivesStartTurnEvent(3, 4).ThenDoNothing()
+                        .ReceivesPlaceRobberEvent().ThenPlaceRobber(2)
+                        .ReceivesRobberPlacedEvent(2)
+                    .WhenPlayer(Babara)
+                        .ReceivesRobberPlacedEvent(Adam, 2).ThenDoNothing()
+                    .WhenPlayer(Charlie)
+                        .ReceivesRobberPlacedEvent(Adam, 2).ThenDoNothing()
+                    .WhenPlayer(Dana)
+                        .ReceivesRobberPlacedEvent(Adam, 2).ThenDoNothing()
+                    .VerifyPlayer(Adam)
+                        .DidNotReceiveEventOfType<RobbingChoicesEvent>()
+                        .DidNotReceiveEventOfType<ChooseLostResourcesEvent>()
+                    .VerifyPlayer(Babara)
+                        .DidNotReceiveEventOfType<ChooseLostResourcesEvent>()
+                    .VerifyPlayer(Charlie)
+                        .DidNotReceiveEventOfType<ChooseLostResourcesEvent>()
+                    .VerifyPlayer(Dana)
+                        .DidNotReceiveEventOfType<ChooseLostResourcesEvent>()
+                    .Run();
+            }
+            finally
+            {
+                this.AttachReports(testName);
+            }
         }
 
         [Test]
         public void PlayerRollsSevenAndNewHexHasMultiplePlayers()
         {
             var testName = MethodBase.GetCurrentMethod().Name;
-            var infrastructureSetupBuilder = new InfrastructureSetupBuilder();
-            infrastructureSetupBuilder.Add(Adam, Adam_FirstSettlementLocation, Adam_FirstRoadEndLocation)
-                .Add(Babara, 21, 11)
-                .Add(Charlie, Charlie_FirstSettlementLocation, Charlie_FirstRoadEndLocation)
-                .Add(Dana, Dana_FirstSettlementLocation, Dana_FirstRoadEndLocation)
-                .Add(Dana, 35, 24)
-                .Add(Charlie, 33, 32)
-                .Add(Babara, Babara_SecondSettlementLocation, Babara_SecondRoadEndLocation)
-                .Add(Adam, Adam_SecondSettlementLocation, Adam_SecondRoadEndLocation);
-
-            var robbingChoices = new Dictionary<string, int>()
+            try
             {
-                { Babara, 3 },
-                { Charlie, 3 },
-                { Dana, 3 }
-            };
+                var infrastructureSetupBuilder = new InfrastructureSetupBuilder();
+                infrastructureSetupBuilder.Add(Adam, Adam_FirstSettlementLocation, Adam_FirstRoadEndLocation)
+                    .Add(Babara, 21, 11)
+                    .Add(Charlie, Charlie_FirstSettlementLocation, Charlie_FirstRoadEndLocation)
+                    .Add(Dana, Dana_FirstSettlementLocation, Dana_FirstRoadEndLocation)
+                    .Add(Dana, 35, 24)
+                    .Add(Charlie, 33, 32)
+                    .Add(Babara, Babara_SecondSettlementLocation, Babara_SecondRoadEndLocation)
+                    .Add(Adam, Adam_SecondSettlementLocation, Adam_SecondRoadEndLocation);
 
-            this.CompletePlayerInfrastructureSetup(infrastructureSetupBuilder.Build(), new[] { testName })
-                .WhenPlayer(Adam)
-                    .ReceivesStartTurnEvent(3, 4).ThenDoNothing()
-                    .ReceivesPlaceRobberEvent().ThenPlaceRobber(9)
-                    .ReceivesRobbingChoicesEvent(robbingChoices).ThenDoNothing()
-                .WhenPlayer(Babara)
-                    .ReceivesRobberPlacedEvent(Adam, 9).ThenDoNothing()
-                .WhenPlayer(Charlie)
-                    .ReceivesRobberPlacedEvent(Adam, 9).ThenDoNothing()
-                .WhenPlayer(Dana)
-                    .ReceivesRobberPlacedEvent(Adam, 9).ThenDoNothing()
-                .VerifyPlayer(Adam)
-                    .DidNotReceiveEventOfType<ChooseLostResourcesEvent>()
-                .VerifyPlayer(Babara)
-                    .DidNotReceiveEventOfType<ChooseLostResourcesEvent>()
-                .VerifyPlayer(Charlie)
-                    .DidNotReceiveEventOfType<ChooseLostResourcesEvent>()
-                .VerifyPlayer(Dana)
-                    .DidNotReceiveEventOfType<ChooseLostResourcesEvent>()
-                .Run();
+                var robbingChoices = new Dictionary<string, int>()
+                {
+                    { Babara, 3 },
+                    { Charlie, 3 },
+                    { Dana, 3 }
+                };
+
+                this.CompletePlayerInfrastructureSetup(infrastructureSetupBuilder.Build(), new[] { testName })
+                    .WhenPlayer(Adam)
+                        .ReceivesStartTurnEvent(3, 4).ThenDoNothing()
+                        .ReceivesPlaceRobberEvent().ThenPlaceRobber(9)
+                        .ReceivesRobbingChoicesEvent(robbingChoices).ThenDoNothing()
+                    .WhenPlayer(Babara)
+                        .ReceivesRobberPlacedEvent(Adam, 9).ThenDoNothing()
+                    .WhenPlayer(Charlie)
+                        .ReceivesRobberPlacedEvent(Adam, 9).ThenDoNothing()
+                    .WhenPlayer(Dana)
+                        .ReceivesRobberPlacedEvent(Adam, 9).ThenDoNothing()
+                    .VerifyPlayer(Adam)
+                        .DidNotReceiveEventOfType<ChooseLostResourcesEvent>()
+                    .VerifyPlayer(Babara)
+                        .DidNotReceiveEventOfType<ChooseLostResourcesEvent>()
+                    .VerifyPlayer(Charlie)
+                        .DidNotReceiveEventOfType<ChooseLostResourcesEvent>()
+                    .VerifyPlayer(Dana)
+                        .DidNotReceiveEventOfType<ChooseLostResourcesEvent>()
+                    .Run();
+            }
+            finally
+            {
+                this.AttachReports(testName);
+            }
         }
 
         [Test]
         public void PlayerRollsSevenAndNewHexHasMultiplePlayersIncludingRollingPlayer()
         {
             var testName = MethodBase.GetCurrentMethod().Name;
-            var infrastructureSetupBuilder = new InfrastructureSetupBuilder();
-            infrastructureSetupBuilder.Add(Adam, 21, 11)
-                .Add(Babara, Babara_FirstSettlementLocation, Babara_FirstRoadEndLocation)
-                .Add(Charlie, Charlie_FirstSettlementLocation, Charlie_FirstRoadEndLocation)
-                .Add(Dana, Dana_FirstSettlementLocation, Dana_FirstRoadEndLocation)
-                .Add(Dana, 35, 24)
-                .Add(Charlie, 33, 32)
-                .Add(Babara, Babara_SecondSettlementLocation, Babara_SecondRoadEndLocation)
-                .Add(Adam, Adam_SecondSettlementLocation, Adam_SecondRoadEndLocation);
+            try
+            { 
+                var infrastructureSetupBuilder = new InfrastructureSetupBuilder();
+                infrastructureSetupBuilder.Add(Adam, 21, 11)
+                    .Add(Babara, Babara_FirstSettlementLocation, Babara_FirstRoadEndLocation)
+                    .Add(Charlie, Charlie_FirstSettlementLocation, Charlie_FirstRoadEndLocation)
+                    .Add(Dana, Dana_FirstSettlementLocation, Dana_FirstRoadEndLocation)
+                    .Add(Dana, 35, 24)
+                    .Add(Charlie, 33, 32)
+                    .Add(Babara, Babara_SecondSettlementLocation, Babara_SecondRoadEndLocation)
+                    .Add(Adam, Adam_SecondSettlementLocation, Adam_SecondRoadEndLocation);
 
-            var robbingChoices = new Dictionary<string, int>()
+                var robbingChoices = new Dictionary<string, int>()
+                {
+                    { Charlie, 3 },
+                    { Dana, 3 }
+                };
+
+                this.CompletePlayerInfrastructureSetup(infrastructureSetupBuilder.Build(), new[] { testName })
+                    .WhenPlayer(Adam)
+                        .ReceivesStartTurnEvent(3, 4).ThenDoNothing()
+                        .ReceivesPlaceRobberEvent().ThenPlaceRobber(9)
+                        .ReceivesRobbingChoicesEvent(robbingChoices).ThenDoNothing()
+                    .WhenPlayer(Babara)
+                        .ReceivesRobberPlacedEvent(Adam, 9).ThenDoNothing()
+                    .WhenPlayer(Charlie)
+                        .ReceivesRobberPlacedEvent(Adam, 9).ThenDoNothing()
+                    .WhenPlayer(Dana)
+                        .ReceivesRobberPlacedEvent(Adam, 9).ThenDoNothing()
+                    .VerifyPlayer(Adam)
+                        .DidNotReceiveEventOfType<ChooseLostResourcesEvent>()
+                    .VerifyPlayer(Babara)
+                        .DidNotReceiveEventOfType<ChooseLostResourcesEvent>()
+                    .VerifyPlayer(Charlie)
+                        .DidNotReceiveEventOfType<ChooseLostResourcesEvent>()
+                    .VerifyPlayer(Dana)
+                        .DidNotReceiveEventOfType<ChooseLostResourcesEvent>()
+                    .Run();
+            }
+            finally
             {
-                { Charlie, 3 },
-                { Dana, 3 }
-            };
-
-            this.CompletePlayerInfrastructureSetup(infrastructureSetupBuilder.Build(), new[] { testName })
-                .WhenPlayer(Adam)
-                    .ReceivesStartTurnEvent(3, 4).ThenDoNothing()
-                    .ReceivesPlaceRobberEvent().ThenPlaceRobber(9)
-                    .ReceivesRobbingChoicesEvent(robbingChoices).ThenDoNothing()
-                .WhenPlayer(Babara)
-                    .ReceivesRobberPlacedEvent(Adam, 9).ThenDoNothing()
-                .WhenPlayer(Charlie)
-                    .ReceivesRobberPlacedEvent(Adam, 9).ThenDoNothing()
-                .WhenPlayer(Dana)
-                    .ReceivesRobberPlacedEvent(Adam, 9).ThenDoNothing()
-                .VerifyPlayer(Adam)
-                    .DidNotReceiveEventOfType<ChooseLostResourcesEvent>()
-                .VerifyPlayer(Babara)
-                    .DidNotReceiveEventOfType<ChooseLostResourcesEvent>()
-                .VerifyPlayer(Charlie)
-                    .DidNotReceiveEventOfType<ChooseLostResourcesEvent>()
-                .VerifyPlayer(Dana)
-                    .DidNotReceiveEventOfType<ChooseLostResourcesEvent>()
-                .Run();
+                this.AttachReports(testName);
+            }
         }
 
         /// <summary>
@@ -1667,241 +1779,290 @@ namespace SoC.Library.ScenarioTests
         public void PlayerRollsSevenAndSelectsInvalidPlayer()
         {
             var testName = MethodBase.GetCurrentMethod().Name;
-            var infrastructureSetupBuilder = new InfrastructureSetupBuilder();
-            infrastructureSetupBuilder.Add(Adam, Adam_FirstSettlementLocation, Adam_FirstRoadEndLocation)
-                .Add(Babara, Babara_FirstSettlementLocation, Babara_FirstRoadEndLocation)
-                .Add(Charlie, Charlie_FirstSettlementLocation, Charlie_FirstRoadEndLocation)
-                .Add(Dana, Dana_FirstSettlementLocation, Dana_FirstRoadEndLocation)
-                .Add(Dana, 35, 24)
-                .Add(Charlie, 33, 32)
-                .Add(Babara, Babara_SecondSettlementLocation, Babara_SecondRoadEndLocation)
-                .Add(Adam, Adam_SecondSettlementLocation, Adam_SecondRoadEndLocation);
-
-            var robbingChoices = new Dictionary<string, int>()
+            try
             {
-                { Charlie, 3 },
-                { Dana, 3 }
-            };
+                var infrastructureSetupBuilder = new InfrastructureSetupBuilder();
+                infrastructureSetupBuilder.Add(Adam, Adam_FirstSettlementLocation, Adam_FirstRoadEndLocation)
+                    .Add(Babara, Babara_FirstSettlementLocation, Babara_FirstRoadEndLocation)
+                    .Add(Charlie, Charlie_FirstSettlementLocation, Charlie_FirstRoadEndLocation)
+                    .Add(Dana, Dana_FirstSettlementLocation, Dana_FirstRoadEndLocation)
+                    .Add(Dana, 35, 24)
+                    .Add(Charlie, 33, 32)
+                    .Add(Babara, Babara_SecondSettlementLocation, Babara_SecondRoadEndLocation)
+                    .Add(Adam, Adam_SecondSettlementLocation, Adam_SecondRoadEndLocation);
 
-            this.CompletePlayerInfrastructureSetup(infrastructureSetupBuilder.Build(), new[] { testName })
-                .WhenPlayer(Adam)
-                    .ReceivesStartTurnEvent(3, 4).ThenDoNothing()
-                    .ReceivesPlaceRobberEvent().ThenPlaceRobber(9)
-                    .ReceivesRobbingChoicesEvent(robbingChoices).ThenSelectRobbedPlayer(Babara)
-                    .ReceivesGameErrorEvent("919", "Invalid player selection")
-                .WhenPlayer(Babara)
-                    .ReceivesRobberPlacedEvent(Adam, 9).ThenDoNothing()
-                .WhenPlayer(Charlie)
-                    .ReceivesRobberPlacedEvent(Adam, 9).ThenDoNothing()
-                .WhenPlayer(Dana)
-                    .ReceivesRobberPlacedEvent(Adam, 9).ThenDoNothing()
-                .VerifyPlayer(Adam)
-                    .DidNotReceiveEventOfType<ChooseLostResourcesEvent>()
-                .VerifyPlayer(Babara)
-                    .DidNotReceiveEventOfType<ChooseLostResourcesEvent>()
-                .VerifyPlayer(Charlie)
-                    .DidNotReceiveEventOfType<ChooseLostResourcesEvent>()
-                .VerifyPlayer(Dana)
-                    .DidNotReceiveEventOfType<ChooseLostResourcesEvent>()
-                .Run();
+                var robbingChoices = new Dictionary<string, int>()
+                {
+                    { Charlie, 3 },
+                    { Dana, 3 }
+                };
+
+                this.CompletePlayerInfrastructureSetup(infrastructureSetupBuilder.Build(), new[] { testName })
+                    .WhenPlayer(Adam)
+                        .ReceivesStartTurnEvent(3, 4).ThenDoNothing()
+                        .ReceivesPlaceRobberEvent().ThenPlaceRobber(9)
+                        .ReceivesRobbingChoicesEvent(robbingChoices).ThenSelectRobbedPlayer(Babara)
+                        .ReceivesGameErrorEvent("919", "Invalid player selection")
+                    .WhenPlayer(Babara)
+                        .ReceivesRobberPlacedEvent(Adam, 9).ThenDoNothing()
+                    .WhenPlayer(Charlie)
+                        .ReceivesRobberPlacedEvent(Adam, 9).ThenDoNothing()
+                    .WhenPlayer(Dana)
+                        .ReceivesRobberPlacedEvent(Adam, 9).ThenDoNothing()
+                    .VerifyPlayer(Adam)
+                        .DidNotReceiveEventOfType<ChooseLostResourcesEvent>()
+                    .VerifyPlayer(Babara)
+                        .DidNotReceiveEventOfType<ChooseLostResourcesEvent>()
+                    .VerifyPlayer(Charlie)
+                        .DidNotReceiveEventOfType<ChooseLostResourcesEvent>()
+                    .VerifyPlayer(Dana)
+                        .DidNotReceiveEventOfType<ChooseLostResourcesEvent>()
+                    .Run();
+            }
+            finally
+            {
+                this.AttachReports(testName);
+            }
         }
 
         [Test]
         public void PlayerRollsSevenAndGetsResourceFromSelectedPlayer()
         {
             var testName = MethodBase.GetCurrentMethod().Name;
-            var infrastructureSetupBuilder = new InfrastructureSetupBuilder();
-            infrastructureSetupBuilder.Add(Adam, Adam_FirstSettlementLocation, Adam_FirstRoadEndLocation)
-                .Add(Babara, Babara_FirstSettlementLocation, Babara_FirstRoadEndLocation)
-                .Add(Charlie, Charlie_FirstSettlementLocation, Charlie_FirstRoadEndLocation)
-                .Add(Dana, Dana_FirstSettlementLocation, Dana_FirstRoadEndLocation)
-                .Add(Dana, 35, 24)
-                .Add(Charlie, 33, 32)
-                .Add(Babara, Babara_SecondSettlementLocation, Babara_SecondRoadEndLocation)
-                .Add(Adam, Adam_SecondSettlementLocation, Adam_SecondRoadEndLocation);
-
-            var robbingChoices = new Dictionary<string, int>()
+            try
             {
-                { Charlie, 3 },
-                { Dana, 3 }
-            };
+                var infrastructureSetupBuilder = new InfrastructureSetupBuilder();
+                infrastructureSetupBuilder.Add(Adam, Adam_FirstSettlementLocation, Adam_FirstRoadEndLocation)
+                    .Add(Babara, Babara_FirstSettlementLocation, Babara_FirstRoadEndLocation)
+                    .Add(Charlie, Charlie_FirstSettlementLocation, Charlie_FirstRoadEndLocation)
+                    .Add(Dana, Dana_FirstSettlementLocation, Dana_FirstRoadEndLocation)
+                    .Add(Dana, 35, 24)
+                    .Add(Charlie, 33, 32)
+                    .Add(Babara, Babara_SecondSettlementLocation, Babara_SecondRoadEndLocation)
+                    .Add(Adam, Adam_SecondSettlementLocation, Adam_SecondRoadEndLocation);
 
-            var robbedResource = ResourceClutch.OneLumber;
-            this.CompletePlayerInfrastructureSetup(infrastructureSetupBuilder.Build(), new[] { testName })
-                .WhenPlayer(Adam)
-                    .ReceivesStartTurnEvent(3, 4).ThenDoNothing()
-                    .ReceivesPlaceRobberEvent().ThenPlaceRobber(9)
-                    .ReceivesRobbingChoicesEvent(robbingChoices).ThenSelectRobbedPlayer(Charlie)
-                    .ReceivesResourcesRobbedEvent(Charlie, ResourceTypes.Lumber)
-                    .ThenVerifyPlayerState()
-                        .Resources(ResourceClutch.OneBrick + ResourceClutch.OneGrain + robbedResource + ResourceClutch.OneWool)
-                    .End()
-                    .ThenPlaceRoadSegment(4, 3)
-                .WhenPlayer(Babara)
-                    .ReceivesRobberPlacedEvent(Adam, 9).ThenDoNothing()
-                    .ReceivesResourcesStolenEvent(Charlie, robbedResource)
-                    .ReceivesRoadSegmentPlacementEvent(Adam, 4, 3)
-                .WhenPlayer(Charlie)
-                    .ReceivesRobberPlacedEvent(Adam, 9).ThenDoNothing()
-                    .ReceivesResourcesStolenEvent(robbedResource)
-                    .ThenVerifyPlayerState()
-                        .Resources(ResourceClutch.OneGrain + ResourceClutch.OneWool)
-                    .End()
-                    .ReceivesRoadSegmentPlacementEvent(Adam, 4, 3)
-                .WhenPlayer(Dana)
-                    .ReceivesRobberPlacedEvent(Adam, 9).ThenDoNothing()
-                    .ReceivesResourcesStolenEvent(Charlie, robbedResource)
-                    .ReceivesRoadSegmentPlacementEvent(Adam, 4, 3)
-                .Run();
+                var robbingChoices = new Dictionary<string, int>()
+                {
+                    { Charlie, 3 },
+                    { Dana, 3 }
+                };
+
+                var robbedResource = ResourceClutch.OneLumber;
+                this.CompletePlayerInfrastructureSetup(infrastructureSetupBuilder.Build(), new[] { testName })
+                    .WhenPlayer(Adam)
+                        .ReceivesStartTurnEvent(3, 4).ThenDoNothing()
+                        .ReceivesPlaceRobberEvent().ThenPlaceRobber(9)
+                        .ReceivesRobbingChoicesEvent(robbingChoices).ThenSelectRobbedPlayer(Charlie)
+                        .ReceivesResourcesRobbedEvent(Charlie, ResourceTypes.Lumber)
+                        .ThenVerifyPlayerState()
+                            .Resources(ResourceClutch.OneBrick + ResourceClutch.OneGrain + robbedResource + ResourceClutch.OneWool)
+                        .End()
+                        .ThenPlaceRoadSegment(4, 3)
+                    .WhenPlayer(Babara)
+                        .ReceivesRobberPlacedEvent(Adam, 9).ThenDoNothing()
+                        .ReceivesResourcesStolenEvent(Charlie, robbedResource)
+                        .ReceivesRoadSegmentPlacementEvent(Adam, 4, 3)
+                    .WhenPlayer(Charlie)
+                        .ReceivesRobberPlacedEvent(Adam, 9).ThenDoNothing()
+                        .ReceivesResourcesStolenEvent(robbedResource)
+                        .ThenVerifyPlayerState()
+                            .Resources(ResourceClutch.OneGrain + ResourceClutch.OneWool)
+                        .End()
+                        .ReceivesRoadSegmentPlacementEvent(Adam, 4, 3)
+                    .WhenPlayer(Dana)
+                        .ReceivesRobberPlacedEvent(Adam, 9).ThenDoNothing()
+                        .ReceivesResourcesStolenEvent(Charlie, robbedResource)
+                        .ReceivesRoadSegmentPlacementEvent(Adam, 4, 3)
+                    .Run();
+            }
+            finally
+            {
+                this.AttachReports(testName);
+            }
         }
 
         [Test]
         public void PlayerQuitsDuringFirstRoundOfGameSetup()
         {
             var testName = MethodBase.GetCurrentMethod().Name;
-            var expectedGameBoardSetup = new GameBoardSetup(new GameBoard(BoardSizes.Standard));
-            var playerOrder = new[] { Adam, Babara, Charlie, Dana };
-            ScenarioRunner.CreateScenarioRunner(new[] { testName })
-                .WithPlayer(Adam).WithPlayer(Babara).WithPlayer(Charlie).WithPlayer(Dana)
-                .WithTurnOrder(playerOrder)
-                .WhenPlayer(Adam)
-                    .ReceivesPlaceInfrastructureSetupEvent().ThenQuitGame()
-                .WhenPlayer(Babara)
-                    .ReceivesPlayerQuitEvent(Adam).ThenDoNothing()
-                .WhenPlayer(Charlie)
-                    .ReceivesPlayerQuitEvent(Adam).ThenDoNothing()
-                .WhenPlayer(Dana)
-                    .ReceivesPlayerQuitEvent(Adam).ThenDoNothing()
-                .Run();
+            try
+            {
+                var expectedGameBoardSetup = new GameBoardSetup(new GameBoard(BoardSizes.Standard));
+                var playerOrder = new[] { Adam, Babara, Charlie, Dana };
+                ScenarioRunner.CreateScenarioRunner(new[] { testName })
+                    .WithPlayer(Adam).WithPlayer(Babara).WithPlayer(Charlie).WithPlayer(Dana)
+                    .WithTurnOrder(playerOrder)
+                    .WhenPlayer(Adam)
+                        .ReceivesPlaceInfrastructureSetupEvent().ThenQuitGame()
+                    .WhenPlayer(Babara)
+                        .ReceivesPlayerQuitEvent(Adam).ThenDoNothing()
+                    .WhenPlayer(Charlie)
+                        .ReceivesPlayerQuitEvent(Adam).ThenDoNothing()
+                    .WhenPlayer(Dana)
+                        .ReceivesPlayerQuitEvent(Adam).ThenDoNothing()
+                    .Run();
+            }
+            finally
+            {
+                this.AttachReports(testName);
+            }
         }
 
         [Test]
         public void PlayerQuitsDuringSecondRoundOfGameSetup()
         {
             var testName = MethodBase.GetCurrentMethod().Name;
-            var expectedGameBoardSetup = new GameBoardSetup(new GameBoard(BoardSizes.Standard));
-            var playerOrder = new[] { Adam, Babara, Charlie, Dana };
-            ScenarioRunner.CreateScenarioRunner(new[] { testName })
-                .WithPlayer(Adam).WithPlayer(Babara).WithPlayer(Charlie).WithPlayer(Dana)
-                .WithTurnOrder(playerOrder)
-                .WhenPlayer(Adam)
-                    .ReceivesPlaceInfrastructureSetupEvent().ThenPlaceStartingInfrastructure(Adam_FirstSettlementLocation, Adam_FirstRoadEndLocation)
-                    .ReceivesPlaceInfrastructureSetupEvent().ThenQuitGame()
-                .WhenPlayer(Babara)
-                    .ReceivesPlaceInfrastructureSetupEvent().ThenPlaceStartingInfrastructure(Babara_FirstSettlementLocation, Babara_FirstRoadEndLocation)
-                    .ReceivesPlaceInfrastructureSetupEvent().ThenPlaceStartingInfrastructure(Babara_SecondSettlementLocation, Babara_SecondRoadEndLocation)
-                    .ReceivesPlayerQuitEvent(Adam).ThenDoNothing()
-                .WhenPlayer(Charlie)
-                    .ReceivesPlaceInfrastructureSetupEvent().ThenPlaceStartingInfrastructure(Charlie_FirstSettlementLocation, Charlie_FirstRoadEndLocation)
-                    .ReceivesPlaceInfrastructureSetupEvent().ThenPlaceStartingInfrastructure(Charlie_SecondSettlementLocation, Charlie_SecondRoadEndLocation)
-                    .ReceivesPlayerQuitEvent(Adam).ThenDoNothing()
-                .WhenPlayer(Dana)
-                    .ReceivesPlaceInfrastructureSetupEvent().ThenPlaceStartingInfrastructure(Dana_FirstSettlementLocation, Dana_FirstRoadEndLocation)
-                    .ReceivesPlaceInfrastructureSetupEvent().ThenPlaceStartingInfrastructure(Dana_SecondSettlementLocation, Dana_SecondRoadEndLocation)
-                    .ReceivesPlayerQuitEvent(Adam).ThenDoNothing()
-                .VerifyPlayer(Adam)
-                    .DidNotReceiveEventOfType<ConfirmGameStartEvent>()
-                .Run();
+            try
+            {
+                var expectedGameBoardSetup = new GameBoardSetup(new GameBoard(BoardSizes.Standard));
+                var playerOrder = new[] { Adam, Babara, Charlie, Dana };
+                ScenarioRunner.CreateScenarioRunner(new[] { testName })
+                    .WithPlayer(Adam).WithPlayer(Babara).WithPlayer(Charlie).WithPlayer(Dana)
+                    .WithTurnOrder(playerOrder)
+                    .WhenPlayer(Adam)
+                        .ReceivesPlaceInfrastructureSetupEvent().ThenPlaceStartingInfrastructure(Adam_FirstSettlementLocation, Adam_FirstRoadEndLocation)
+                        .ReceivesPlaceInfrastructureSetupEvent().ThenQuitGame()
+                    .WhenPlayer(Babara)
+                        .ReceivesPlaceInfrastructureSetupEvent().ThenPlaceStartingInfrastructure(Babara_FirstSettlementLocation, Babara_FirstRoadEndLocation)
+                        .ReceivesPlaceInfrastructureSetupEvent().ThenPlaceStartingInfrastructure(Babara_SecondSettlementLocation, Babara_SecondRoadEndLocation)
+                        .ReceivesPlayerQuitEvent(Adam).ThenDoNothing()
+                    .WhenPlayer(Charlie)
+                        .ReceivesPlaceInfrastructureSetupEvent().ThenPlaceStartingInfrastructure(Charlie_FirstSettlementLocation, Charlie_FirstRoadEndLocation)
+                        .ReceivesPlaceInfrastructureSetupEvent().ThenPlaceStartingInfrastructure(Charlie_SecondSettlementLocation, Charlie_SecondRoadEndLocation)
+                        .ReceivesPlayerQuitEvent(Adam).ThenDoNothing()
+                    .WhenPlayer(Dana)
+                        .ReceivesPlaceInfrastructureSetupEvent().ThenPlaceStartingInfrastructure(Dana_FirstSettlementLocation, Dana_FirstRoadEndLocation)
+                        .ReceivesPlaceInfrastructureSetupEvent().ThenPlaceStartingInfrastructure(Dana_SecondSettlementLocation, Dana_SecondRoadEndLocation)
+                        .ReceivesPlayerQuitEvent(Adam).ThenDoNothing()
+                    .VerifyPlayer(Adam)
+                        .DidNotReceiveEventOfType<ConfirmGameStartEvent>()
+                    .Run();
+            }
+            finally
+            {
+                this.AttachReports(testName);
+            }
         }
 
         [Test]
         public void PlayerSendsIncorrectCommandDuringGameStartConfirmation()
         {
             var testName = MethodBase.GetCurrentMethod().Name;
-            var expectedGameBoardSetup = new GameBoardSetup(new GameBoard(BoardSizes.Standard));
-            var playerOrder = new[] { Adam, Babara, Charlie, Dana };
-            ScenarioRunner.CreateScenarioRunner(new[] { testName })
-                .WithPlayer(Adam).WithPlayer(Babara).WithPlayer(Charlie).WithPlayer(Dana)
-                .WithTurnOrder(playerOrder)
-                .WhenPlayer(Adam)
-                    .ReceivesPlaceInfrastructureSetupEvent()
-                    .ThenPlaceStartingInfrastructure(Adam_FirstSettlementLocation, Adam_FirstRoadEndLocation)
-                    .ReceivesPlaceInfrastructureSetupEvent()
-                    .ThenPlaceStartingInfrastructure(Adam_SecondSettlementLocation, Adam_SecondRoadEndLocation)
-                    .ReceivesConfirmGameStartEvent()
-                    .ThenEndTurn()
-                    .ReceivesGameErrorEvent("999", "Received action type EndOfTurnAction. Expected one of ConfirmGameStartAction, QuitGameAction")
-                .WhenPlayer(Babara)
-                    .ReceivesPlaceInfrastructureSetupEvent()
-                    .ThenPlaceStartingInfrastructure(Babara_FirstSettlementLocation, Babara_FirstRoadEndLocation)
-                    .ReceivesPlaceInfrastructureSetupEvent()
-                    .ThenPlaceStartingInfrastructure(Babara_SecondSettlementLocation, Babara_SecondRoadEndLocation)
-                .WhenPlayer(Charlie)
-                    .ReceivesPlaceInfrastructureSetupEvent()
-                    .ThenPlaceStartingInfrastructure(Charlie_FirstSettlementLocation, Charlie_FirstRoadEndLocation)
-                    .ReceivesPlaceInfrastructureSetupEvent()
-                    .ThenPlaceStartingInfrastructure(Charlie_SecondSettlementLocation, Charlie_SecondRoadEndLocation)
-                .WhenPlayer(Dana)
-                    .ReceivesPlaceInfrastructureSetupEvent()
-                    .ThenPlaceStartingInfrastructure(Dana_FirstSettlementLocation, Dana_FirstRoadEndLocation)
-                    .ReceivesPlaceInfrastructureSetupEvent()
-                    .ThenPlaceStartingInfrastructure(Dana_SecondSettlementLocation, Dana_SecondRoadEndLocation)
-                .Run();
+            try
+            {
+                var expectedGameBoardSetup = new GameBoardSetup(new GameBoard(BoardSizes.Standard));
+                var playerOrder = new[] { Adam, Babara, Charlie, Dana };
+                ScenarioRunner.CreateScenarioRunner(new[] { testName })
+                    .WithPlayer(Adam).WithPlayer(Babara).WithPlayer(Charlie).WithPlayer(Dana)
+                    .WithTurnOrder(playerOrder)
+                    .WhenPlayer(Adam)
+                        .ReceivesPlaceInfrastructureSetupEvent()
+                        .ThenPlaceStartingInfrastructure(Adam_FirstSettlementLocation, Adam_FirstRoadEndLocation)
+                        .ReceivesPlaceInfrastructureSetupEvent()
+                        .ThenPlaceStartingInfrastructure(Adam_SecondSettlementLocation, Adam_SecondRoadEndLocation)
+                        .ReceivesConfirmGameStartEvent()
+                        .ThenEndTurn()
+                        .ReceivesGameErrorEvent("999", "Received action type EndOfTurnAction. Expected one of ConfirmGameStartAction, QuitGameAction")
+                    .WhenPlayer(Babara)
+                        .ReceivesPlaceInfrastructureSetupEvent()
+                        .ThenPlaceStartingInfrastructure(Babara_FirstSettlementLocation, Babara_FirstRoadEndLocation)
+                        .ReceivesPlaceInfrastructureSetupEvent()
+                        .ThenPlaceStartingInfrastructure(Babara_SecondSettlementLocation, Babara_SecondRoadEndLocation)
+                    .WhenPlayer(Charlie)
+                        .ReceivesPlaceInfrastructureSetupEvent()
+                        .ThenPlaceStartingInfrastructure(Charlie_FirstSettlementLocation, Charlie_FirstRoadEndLocation)
+                        .ReceivesPlaceInfrastructureSetupEvent()
+                        .ThenPlaceStartingInfrastructure(Charlie_SecondSettlementLocation, Charlie_SecondRoadEndLocation)
+                    .WhenPlayer(Dana)
+                        .ReceivesPlaceInfrastructureSetupEvent()
+                        .ThenPlaceStartingInfrastructure(Dana_FirstSettlementLocation, Dana_FirstRoadEndLocation)
+                        .ReceivesPlaceInfrastructureSetupEvent()
+                        .ThenPlaceStartingInfrastructure(Dana_SecondSettlementLocation, Dana_SecondRoadEndLocation)
+                    .Run();
+            }
+            finally
+            {
+                this.AttachReports(testName);
+            }
         }
 
         [Test]
         public void PlayerSendsIncorrectCommandDuringGameSetup()
         {
             var testName = MethodBase.GetCurrentMethod().Name;
-            var expectedGameBoardSetup = new GameBoardSetup(new GameBoard(BoardSizes.Standard));
-            var playerOrder = new[] { Adam, Babara, Charlie, Dana };
-            ScenarioRunner.CreateScenarioRunner(new[] { testName })
-                .WithPlayer(Adam).WithPlayer(Babara).WithPlayer(Charlie).WithPlayer(Dana)
-                .WithTurnOrder(playerOrder)
-                .WhenPlayer(Adam)
-                    .ReceivesPlaceInfrastructureSetupEvent().ThenEndTurn()
-                    .ReceivesGameErrorEvent("999", "Received action type EndOfTurnAction. Expected one of PlaceSetupInfrastructureAction, QuitGameAction")
-                .Run();
+            try
+            {
+                var expectedGameBoardSetup = new GameBoardSetup(new GameBoard(BoardSizes.Standard));
+                var playerOrder = new[] { Adam, Babara, Charlie, Dana };
+                ScenarioRunner.CreateScenarioRunner(new[] { testName })
+                    .WithPlayer(Adam).WithPlayer(Babara).WithPlayer(Charlie).WithPlayer(Dana)
+                    .WithTurnOrder(playerOrder)
+                    .WhenPlayer(Adam)
+                        .ReceivesPlaceInfrastructureSetupEvent().ThenEndTurn()
+                        .ReceivesGameErrorEvent("999", "Received action type EndOfTurnAction. Expected one of PlaceSetupInfrastructureAction, QuitGameAction")
+                    .Run();
+            }
+            finally
+            {
+                this.AttachReports(testName);
+            }
         }
 
         [Test]
         public void PlayerTradesOneResourceWithAnotherPlayer()
         {
             var testName = MethodBase.GetCurrentMethod().Name;
-            var adamResources = ResourceClutch.OneWool;
-            var babaraResources = ResourceClutch.OneGrain;
+            try
+            {
+                var adamResources = ResourceClutch.OneWool;
+                var babaraResources = ResourceClutch.OneGrain;
 
-            this.CompletePlayerInfrastructureSetup(new[] { testName })
-                .WithNoResourceCollection()
-                .WithInitialPlayerSetupFor(Adam, Resources(adamResources))
-                .WithInitialPlayerSetupFor(Babara, Resources(babaraResources))
-                .WhenPlayer(Adam)
-                    .ReceivesStartTurnEvent(3, 3)
-                    .ThenEndTurn()
-                .WhenPlayer(Babara)
-                    .ReceivesStartTurnEvent(3, 3)
-                    .ThenMakeDirectTradeOffer(ResourceClutch.OneWool)
-                .WhenPlayer(Adam)
-                    .ReceivesMakeDirectTradeOfferEvent(Babara, ResourceClutch.OneWool)
-                    .ThenAnswerDirectTradeOffer(ResourceClutch.OneGrain)
-                .WhenPlayer(Charlie)
-                    .ReceivesMakeDirectTradeOfferEvent(Babara, ResourceClutch.OneWool).ThenDoNothing()
-                .WhenPlayer(Dana)
-                    .ReceivesMakeDirectTradeOfferEvent(Babara, ResourceClutch.OneWool).ThenDoNothing()
-                .WhenPlayer(Babara)
-                    .ReceivesAnswerDirectTradeOfferEvent(Adam, ResourceClutch.OneGrain)
-                    .ThenAcceptTradeOffer(Adam)
-                .WhenPlayer(Charlie)
-                    .ReceivesAnswerDirectTradeOfferEvent(Adam, ResourceClutch.OneGrain).ThenDoNothing()
-                .WhenPlayer(Dana)
-                    .ReceivesAnswerDirectTradeOfferEvent(Adam, ResourceClutch.OneGrain).ThenDoNothing()
-                .WhenPlayer(Adam)
-                    .ReceivesAcceptDirectTradeEvent(Babara, ResourceClutch.OneWool, Adam, ResourceClutch.OneGrain)
-                    .ThenVerifyPlayerState()
-                        .Resources(ResourceClutch.OneGrain)
-                        .End()
-                .WhenPlayer(Babara)
-                    .ReceivesAcceptDirectTradeEvent(Babara, ResourceClutch.OneWool, Adam, ResourceClutch.OneGrain)
-                    .ThenVerifyPlayerState()
-                        .Resources(ResourceClutch.OneWool)
-                        .End()
-                .WhenPlayer(Charlie)
-                    .ReceivesAcceptDirectTradeEvent(Babara, ResourceClutch.OneWool, Adam, ResourceClutch.OneGrain)
-                    .ThenDoNothing()
-                .WhenPlayer(Dana)
-                    .ReceivesAcceptDirectTradeEvent(Babara, ResourceClutch.OneWool, Adam, ResourceClutch.OneGrain)
-                    .ThenDoNothing()
-                .Run();
+                this.CompletePlayerInfrastructureSetup(new[] { testName })
+                    .WithNoResourceCollection()
+                    .WithInitialPlayerSetupFor(Adam, Resources(adamResources))
+                    .WithInitialPlayerSetupFor(Babara, Resources(babaraResources))
+                    .WhenPlayer(Adam)
+                        .ReceivesStartTurnEvent(3, 3)
+                        .ThenEndTurn()
+                    .WhenPlayer(Babara)
+                        .ReceivesStartTurnEvent(3, 3)
+                        .ThenMakeDirectTradeOffer(ResourceClutch.OneWool)
+                    .WhenPlayer(Adam)
+                        .ReceivesMakeDirectTradeOfferEvent(Babara, ResourceClutch.OneWool)
+                        .ThenAnswerDirectTradeOffer(ResourceClutch.OneGrain)
+                    .WhenPlayer(Charlie)
+                        .ReceivesMakeDirectTradeOfferEvent(Babara, ResourceClutch.OneWool).ThenDoNothing()
+                    .WhenPlayer(Dana)
+                        .ReceivesMakeDirectTradeOfferEvent(Babara, ResourceClutch.OneWool).ThenDoNothing()
+                    .WhenPlayer(Babara)
+                        .ReceivesAnswerDirectTradeOfferEvent(Adam, ResourceClutch.OneGrain)
+                        .ThenAcceptTradeOffer(Adam)
+                    .WhenPlayer(Charlie)
+                        .ReceivesAnswerDirectTradeOfferEvent(Adam, ResourceClutch.OneGrain).ThenDoNothing()
+                    .WhenPlayer(Dana)
+                        .ReceivesAnswerDirectTradeOfferEvent(Adam, ResourceClutch.OneGrain).ThenDoNothing()
+                    .WhenPlayer(Adam)
+                        .ReceivesAcceptDirectTradeEvent(Babara, ResourceClutch.OneWool, Adam, ResourceClutch.OneGrain)
+                        .ThenVerifyPlayerState()
+                            .Resources(ResourceClutch.OneGrain)
+                            .End()
+                    .WhenPlayer(Babara)
+                        .ReceivesAcceptDirectTradeEvent(Babara, ResourceClutch.OneWool, Adam, ResourceClutch.OneGrain)
+                        .ThenVerifyPlayerState()
+                            .Resources(ResourceClutch.OneWool)
+                            .End()
+                    .WhenPlayer(Charlie)
+                        .ReceivesAcceptDirectTradeEvent(Babara, ResourceClutch.OneWool, Adam, ResourceClutch.OneGrain)
+                        .ThenDoNothing()
+                    .WhenPlayer(Dana)
+                        .ReceivesAcceptDirectTradeEvent(Babara, ResourceClutch.OneWool, Adam, ResourceClutch.OneGrain)
+                        .ThenDoNothing()
+                    .Run();
+            }
+            finally
+            {
+                this.AttachReports(testName);
+            }
         }
 
         [Test]
