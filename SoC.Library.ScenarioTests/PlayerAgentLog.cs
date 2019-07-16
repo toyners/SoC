@@ -11,8 +11,8 @@ namespace SoC.Library.ScenarioTests
     public class PlayerAgentLog : IPlayerAgentLog
     {
         private readonly List<ILogEvent> logEvents = new List<ILogEvent>();
-        private const string titleFontSize = "15";
-        private const string propertiesFontSize = "12";
+        private const string TitleFontSize = "16";
+        private const string PropertiesFontSize = "14";
 
         public static IDictionary<Guid, string> PlayerNamesById { get; set; }
 
@@ -46,16 +46,16 @@ namespace SoC.Library.ScenarioTests
                 "border: 1px solid black; " +
                 "} " +
                 ".action { background-color: #5C6AFA; } " +
-                ".action span { font-size: 16px; } " + 
-                ".actual span { font-size: 16px; } " +
-                ".actual div { font-size: 14px; } " +   
+                $".action span {{ font-size: {TitleFontSize}px; }} " + 
+                $".actual span {{ font-size: {TitleFontSize}px; }} " +
+                $".actual div {{ font-size: {PropertiesFontSize}px; }} " +
                 ".expected { background-color: orange; } " +
-                ".expected span { font-size: 16px; } " +
-                ".expected div { font-size: 14px; } " +
+                $".expected span {{ font-size: {TitleFontSize}px; }} " +
+                $".expected div {{ font-size: {PropertiesFontSize}px; }} " +
                 ".matched { background-color: lightgreen; } " +
-                ".matched span { font-size: 16px; } " +
-                ".matched div { font-size: 14px; } " +
-                ".note div { font-size: 16px; } " +
+                $".matched span {{ font-size: {TitleFontSize}px; }} " +
+                $".matched div {{ font-size: {PropertiesFontSize}px; }} " +
+                $".note div {{ font-size: {TitleFontSize}px; }} " +
                 ".note { background-color: cyan; } " +
                 "</style></head><body><div><table>";
             
