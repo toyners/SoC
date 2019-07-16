@@ -1109,6 +1109,7 @@ namespace SoC.Library.ScenarioTests
             { 
                 this.CompletePlayerInfrastructureSetup(new[] { testName })
                     .WithNoResourceCollection()
+                    .WithInitialPlayerSetupFor(Adam, KnightCard())
                     .WhenPlayer(Adam)
                         .ReceivesStartTurnEvent(3, 3).ThenPlayKnightCard(4)
                         .ReceivesPlaceRobberEvent().ThenPlaceRobber(4)
