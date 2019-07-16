@@ -197,7 +197,7 @@ namespace SoC.Library.ScenarioTests
 
         private void SendAction(ActionInstruction action)
         {
-            this.log.AddNote($"Sending {action.Operation} operation");
+            this.log.AddAction(action);
             switch (action.Operation)
             {
                 case ActionInstruction.OperationTypes.AcceptTrade:

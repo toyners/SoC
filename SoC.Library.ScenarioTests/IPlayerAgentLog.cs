@@ -1,13 +1,13 @@
 ﻿
 using System;
 using Jabberwocky.SoC.Library.GameEvents;
-using Jabberwocky.SoC.Library.PlayerActions;
+using SoC.Library.ScenarioTests.Instructions;
 
 namespace SoC.Library.ScenarioTests
 {
     public interface IPlayerAgentLog
     {
-        void AddAction(PlayerAction playerAction);
+        void AddAction(ActionInstruction action);
         void AddActualEvent(GameEvent actualEvent);
         void AddException(Exception exception);
         void AddMatchedEvent(GameEvent actualEvent, GameEvent expectedEvent);

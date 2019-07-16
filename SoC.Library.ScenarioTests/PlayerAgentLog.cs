@@ -6,7 +6,7 @@ namespace SoC.Library.ScenarioTests
     using System.IO;
     using System.Linq;
     using Jabberwocky.SoC.Library.GameEvents;
-    using Jabberwocky.SoC.Library.PlayerActions;
+    using SoC.Library.ScenarioTests.Instructions;
 
     public class PlayerAgentLog : IPlayerAgentLog
     {
@@ -31,7 +31,7 @@ namespace SoC.Library.ScenarioTests
         public void AddNote(string note) =>
             this.logEvents.Add(new NoteEvent(note));
 
-        public void AddAction(PlayerAction action) =>
+        public void AddAction(ActionInstruction action) =>
             this.logEvents.Add(new ActionEvent(action));
 
         public void WriteToFile(string filePath)
@@ -45,8 +45,10 @@ namespace SoC.Library.ScenarioTests
                 ".border { " +
                 "border: 1px solid black; " +
                 "} " +
+                ".action { background-color: #5C6AFA; } " +
+                ".action span { font-size: 16px; } " + 
                 ".actual span { font-size: 16px; } " +
-                ".actual div { font-size: 14px; } " +
+                ".actual div { font-size: 14px; } " +   
                 ".expected { background-color: orange; } " +
                 ".expected span { font-size: 16px; } " +
                 ".expected div { font-size: 14px; } " +
@@ -79,12 +81,17 @@ namespace SoC.Library.ScenarioTests
 
         private class ActionEvent : ILogEvent
         {
-            private PlayerAction playerAction;
-            public ActionEvent(PlayerAction playerAction) => this.playerAction = playerAction;
+            private ActionInstruction playerAction;
+            public ActionEvent(ActionInstruction playerAction) => this.playerAction = playerAction;
 
             public string ToHtml()
             {
-                return "Not comleted";
+                return $"<tr>" +
+                    "<td /><td class=\"action border\">" +
+                    //$"<td class=\"border\">" +
+                    //$"<img src=\"..\\green_tick.png\" alt=\"\" height=\"20\" width=\"20\">" +
+                    $"<span>{this.playerAction.Operation} operation</span>" +
+                    $"</td></tr>";
             }
         }
 
