@@ -458,7 +458,7 @@ namespace SoC.Library.ScenarioTests
             if (!string.IsNullOrEmpty(message))
                 throw new Exception(message);
 
-            string timeOutMessage = "\r\n" + string.Join("\r\n",
+            string timeOutMessage = string.Join("\r\n",
                 this.playerAgents
                     .Where(playerAgent => !playerAgent.IsFinished)
                     .Select(playerAgent => $"{playerAgent.Name} did not finish.")
@@ -466,7 +466,7 @@ namespace SoC.Library.ScenarioTests
                 );
 
             if (!string.IsNullOrEmpty(timeOutMessage))
-                throw new TimeoutException(timeOutMessage);
+                throw new TimeoutException("\r\n" + timeOutMessage);
         }
 
         public ScenarioRunner ThenAnswerDirectTradeOffer(ResourceClutch wantedResources)

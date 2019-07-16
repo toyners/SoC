@@ -607,6 +607,12 @@ namespace Jabberwocky.SoC.Library
                         this.currentPlayer);
                 }
 
+                if (this.robberHex == playKnightCardAction.NewRobberHex)
+                {
+                    this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, "918", "New robber hex cannot be the same as previous robber hex"),
+                        this.currentPlayer);
+                }
+
                 return false;
             }
 

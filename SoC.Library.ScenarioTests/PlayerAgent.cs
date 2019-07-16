@@ -160,7 +160,7 @@ namespace SoC.Library.ScenarioTests
                         if (this.actualEventQueue.TryDequeue(out var actualEvent))
                         {
                             this.VerifyActualEvent(actualEvent);
-                            this.log.AddNote($"Received {actualEvent.GetType().Name}");
+                            this.log.AddActualEvent(actualEvent);
                         }
                     }
                 }
@@ -466,8 +466,6 @@ namespace SoC.Library.ScenarioTests
 
                 this.VerifyActualEvent(actualEvent);
                 
-                this.log.AddNote($"Received {actualEvent.GetType().Name}");
-
                 this.actualEvents.Add(actualEvent);
                 break;
             }
