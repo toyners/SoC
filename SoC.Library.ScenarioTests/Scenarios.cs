@@ -42,6 +42,14 @@ namespace SoC.Library.ScenarioTests
         const uint Babara_SecondRoadEndLocation = 44;
         const uint Adam_SecondRoadEndLocation = 39;
 
+        private string logDirectory;
+
+        [SetUp]
+        public void Setup()
+        {
+            this.logDirectory = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
+        }
+
         [Test]
         public void AllPlayersCollectResourcesAsPartOfGameSetup()
         {
@@ -119,11 +127,11 @@ namespace SoC.Library.ScenarioTests
                         .ReceivesAllEnd().ThenVerifyPlayerState()
                             .Resources(expectedDanaResources)
                             .End()
-                    .Run();
+                    .Run(this.logDirectory);
             }
             finally
             {
-                this.AttachReports(testName);
+                this.AttachReports();
             }
         }
 
@@ -225,11 +233,11 @@ namespace SoC.Library.ScenarioTests
                     .WhenPlayer(Charlie)
                         .ReceivesStartTurnEvent(1, 1)
                         .ThenQuitGame()
-                    .Run();
+                    .Run(this.logDirectory);
             }
             finally
             {
-                this.AttachReports(testName);
+                this.AttachReports();
             }
         }
 
@@ -309,11 +317,11 @@ namespace SoC.Library.ScenarioTests
                     .WhenPlayer(Dana)
                         .ReceivesConfirmGameStartEvent()
                         .ThenQuitGame()
-                    .Run();
+                    .Run(this.logDirectory);
             }
             finally
             {
-                this.AttachReports(testName);
+                this.AttachReports();
             }
         }
 
@@ -352,11 +360,11 @@ namespace SoC.Library.ScenarioTests
                     .VerifyPlayer(Dana)
                         .DidNotReceiveEventOfType<GameWinEvent>()
                         .DidNotReceivePlayerQuitEvent(Dana)
-                    .Run();
+                    .Run(this.logDirectory);
             }
             finally
             {
-                this.AttachReports(testName);
+                this.AttachReports();
             }
         }
 
@@ -394,11 +402,11 @@ namespace SoC.Library.ScenarioTests
                         .ReceivesRoadSegmentPlacementEvent(Adam, 4, 3).ThenDoNothing()
                         .ReceivesSettlementPlacementEvent(Adam, 3).ThenDoNothing()
                         .ReceivesCityPlacementEvent(Adam, 3).ThenDoNothing()
-                    .Run();
+                    .Run(this.logDirectory);
             }
             finally
             {
-                this.AttachReports(testName);
+                this.AttachReports();
             }
         }
 
@@ -431,11 +439,11 @@ namespace SoC.Library.ScenarioTests
                             .VictoryPoints(10)
                             .Cities(Player.TotalCities - 1)
                             .End()
-                    .Run();
+                    .Run(this.logDirectory);
             }
             finally
             {
-                this.AttachReports(testName);
+                this.AttachReports();
             }
         }
 
@@ -460,11 +468,11 @@ namespace SoC.Library.ScenarioTests
                         .DidNotReceiveEventOfType<GameErrorEvent>()
                     .VerifyPlayer(Dana)
                         .DidNotReceiveEventOfType<GameErrorEvent>()
-                    .Run();
+                    .Run(this.logDirectory);
             }
             finally
             {
-                this.AttachReports(testName);
+                this.AttachReports();
             }
         }
 
@@ -488,11 +496,11 @@ namespace SoC.Library.ScenarioTests
                         .DidNotReceiveEventOfType<GameErrorEvent>()
                     .VerifyPlayer(Dana)
                         .DidNotReceiveEventOfType<GameErrorEvent>()
-                    .Run();
+                    .Run(this.logDirectory);
             }
             finally
             {
-                this.AttachReports(testName);
+                this.AttachReports();
             }
         }
 
@@ -527,11 +535,11 @@ namespace SoC.Library.ScenarioTests
                         .DidNotReceiveEventOfType<GameErrorEvent>()
                     .VerifyPlayer(Dana)
                         .DidNotReceiveEventOfType<GameErrorEvent>()
-                    .Run();
+                    .Run(this.logDirectory);
             }
             finally
             {
-                this.AttachReports(testName);
+                this.AttachReports();
             }
         }
 
@@ -556,11 +564,11 @@ namespace SoC.Library.ScenarioTests
                     .DidNotReceiveEventOfType<GameErrorEvent>()
                 .VerifyPlayer(Dana)
                     .DidNotReceiveEventOfType<GameErrorEvent>()
-                .Run();
+                .Run(this.logDirectory);
             }
             finally
             {
-                this.AttachReports(testName);
+                this.AttachReports();
             }
         }
 
@@ -581,11 +589,11 @@ namespace SoC.Library.ScenarioTests
                         .DidNotReceiveEventOfType<GameErrorEvent>()
                     .VerifyPlayer(Dana)
                         .DidNotReceiveEventOfType<GameErrorEvent>()
-                    .Run();
+                    .Run(this.logDirectory);
             }
             finally
             {
-                this.AttachReports(testName);
+                this.AttachReports();
             }
         }
 
@@ -620,11 +628,11 @@ namespace SoC.Library.ScenarioTests
                     .WhenPlayer(Dana)
                         .ReceivesRoadSegmentPlacementEvent(Adam, 4, 3).ThenDoNothing()
                         .ReceivesSettlementPlacementEvent(Adam, 3).ThenDoNothing()
-                    .Run();
+                    .Run(this.logDirectory);
             }
             finally
             {
-                this.AttachReports(testName);
+                this.AttachReports();
             }
         }
 
@@ -659,11 +667,11 @@ namespace SoC.Library.ScenarioTests
                             .Resources(ResourceClutch.Zero)
                             .VictoryPoints(10)
                             .End()
-                    .Run();
+                    .Run(this.logDirectory);
             }
             finally
             {
-                this.AttachReports(testName);
+                this.AttachReports();
             }
         }
 
@@ -687,11 +695,11 @@ namespace SoC.Library.ScenarioTests
                         .DidNotReceiveEventOfType<GameErrorEvent>()
                     .VerifyPlayer(Dana)
                         .DidNotReceiveEventOfType<GameErrorEvent>()
-                    .Run();
+                    .Run(this.logDirectory);
             }
             finally
             {
-                this.AttachReports(testName);
+                this.AttachReports();
             }
         }
 
@@ -717,11 +725,11 @@ namespace SoC.Library.ScenarioTests
                     .DidNotReceiveEventOfType<GameErrorEvent>()
                 .VerifyPlayer(Dana)
                     .DidNotReceiveEventOfType<GameErrorEvent>()
-                .Run();
+                .Run(this.logDirectory);
             }
             finally
             {
-                this.AttachReports(testName);
+                this.AttachReports();
             }
         }
 
@@ -756,11 +764,11 @@ namespace SoC.Library.ScenarioTests
                         .DidNotReceiveEventOfType<GameErrorEvent>()
                     .VerifyPlayer(Dana)
                         .DidNotReceiveEventOfType<GameErrorEvent>()
-                    .Run();
+                    .Run(this.logDirectory);
             }
             finally
             {
-                this.AttachReports(testName);
+                this.AttachReports();
             }
         }
 
@@ -784,11 +792,11 @@ namespace SoC.Library.ScenarioTests
                         .DidNotReceiveEventOfType<GameErrorEvent>()
                     .VerifyPlayer(Dana)
                         .DidNotReceiveEventOfType<GameErrorEvent>()
-                    .Run();
+                    .Run(this.logDirectory);
             }
             finally
             {
-                this.AttachReports(testName);
+                this.AttachReports();
             }
         }
 
@@ -812,11 +820,11 @@ namespace SoC.Library.ScenarioTests
                         .DidNotReceiveEventOfType<GameErrorEvent>()
                     .VerifyPlayer(Dana)
                         .DidNotReceiveEventOfType<GameErrorEvent>()
-                    .Run();
+                    .Run(this.logDirectory);
             }
             finally
             {
-                this.AttachReports(testName);
+                this.AttachReports();
             }
         }
 
@@ -837,11 +845,11 @@ namespace SoC.Library.ScenarioTests
                         .DidNotReceiveEventOfType<GameErrorEvent>()
                     .VerifyPlayer(Dana)
                         .DidNotReceiveEventOfType<GameErrorEvent>()
-                    .Run();
+                    .Run(this.logDirectory);
             }
             finally
             {
-                this.AttachReports(testName);
+                this.AttachReports();
             }
         }
 
@@ -864,11 +872,11 @@ namespace SoC.Library.ScenarioTests
                         .DidNotReceiveEventOfType<GameErrorEvent>()
                     .VerifyPlayer(Dana)
                         .DidNotReceiveEventOfType<GameErrorEvent>()
-                    .Run();
+                    .Run(this.logDirectory);
             }
             finally
             {
-                this.AttachReports(testName);
+                this.AttachReports();
             }
         }
 
@@ -891,11 +899,11 @@ namespace SoC.Library.ScenarioTests
                         .DidNotReceiveEventOfType<GameErrorEvent>()
                     .VerifyPlayer(Dana)
                         .DidNotReceiveEventOfType<GameErrorEvent>()
-                    .Run();
+                    .Run(this.logDirectory);
             }
             finally
             {
-                this.AttachReports(testName);
+                this.AttachReports();
             }
         }
 
@@ -918,11 +926,11 @@ namespace SoC.Library.ScenarioTests
                         .DidNotReceiveEventOfType<GameErrorEvent>()
                     .VerifyPlayer(Dana)
                         .DidNotReceiveEventOfType<GameErrorEvent>()
-                    .Run();
+                    .Run(this.logDirectory);
             }
             finally
             {
-                this.AttachReports(testName);
+                this.AttachReports();
             }
         }
 
@@ -944,11 +952,11 @@ namespace SoC.Library.ScenarioTests
                         .DidNotReceiveEventOfType<GameErrorEvent>()
                     .VerifyPlayer(Dana)
                         .DidNotReceiveEventOfType<GameErrorEvent>()
-                    .Run();
+                    .Run(this.logDirectory);
             }
             finally
             {
-                this.AttachReports(testName);
+                this.AttachReports();
             }
         }
 
@@ -971,11 +979,11 @@ namespace SoC.Library.ScenarioTests
                         .DidNotReceiveEventOfType<GameErrorEvent>()
                     .VerifyPlayer(Dana)
                         .DidNotReceiveEventOfType<GameErrorEvent>()
-                    .Run();
+                    .Run(this.logDirectory);
             }
             finally
             {
-                this.AttachReports(testName);
+                this.AttachReports();
             }
         }
 
@@ -998,11 +1006,11 @@ namespace SoC.Library.ScenarioTests
                         .DidNotReceiveEventOfType<GameErrorEvent>()
                     .VerifyPlayer(Dana)
                         .DidNotReceiveEventOfType<GameErrorEvent>()
-                    .Run();
+                    .Run(this.logDirectory);
             }
             finally
             {
-                this.AttachReports(testName);
+                this.AttachReports();
             }
         }
 
@@ -1042,11 +1050,11 @@ namespace SoC.Library.ScenarioTests
                         .ReceivesKinghtCardPlayerEvent(Adam, 8).ThenDoNothing()
                         .ReceivesResourcesStolenEvent(Babara, robbedResource)
                         .ReceivesRoadSegmentPlacementEvent(Adam, 4, 3)
-                    .Run();
+                    .Run(this.logDirectory);
             }
             finally
             {
-                this.AttachReports(testName);
+                this.AttachReports();
             }
         }
 
@@ -1067,11 +1075,11 @@ namespace SoC.Library.ScenarioTests
                         .DidNotReceiveEventOfType<GameErrorEvent>()
                     .VerifyPlayer(Dana)
                         .DidNotReceiveEventOfType<GameErrorEvent>()
-                    .Run();
+                    .Run(this.logDirectory);
             }
             finally
             {
-                this.AttachReports(testName);
+                this.AttachReports();
             }
         }
 
@@ -1093,11 +1101,11 @@ namespace SoC.Library.ScenarioTests
                         .DidNotReceiveEventOfType<GameErrorEvent>()
                     .VerifyPlayer(Dana)
                         .DidNotReceiveEventOfType<GameErrorEvent>()
-                    .Run();
+                    .Run(this.logDirectory);
             }
             finally
             {
-                this.AttachReports(testName);
+                this.AttachReports();
             }
         }
 
@@ -1128,11 +1136,11 @@ namespace SoC.Library.ScenarioTests
                         .DidNotReceiveEventOfType<ResourcesLostEvent>()
                     .VerifyPlayer(Dana)
                         .DidNotReceiveEventOfType<ResourcesLostEvent>()
-                    .Run();
+                    .Run(this.logDirectory);
             }
             finally
             {
-                this.AttachReports(testName);
+                this.AttachReports();
             }
         }
 
@@ -1162,11 +1170,11 @@ namespace SoC.Library.ScenarioTests
                         .ReceivesResourcesStolenEvent(Babara, robbedResource)
                     .WhenPlayer(Dana)
                         .ReceivesRobberPlacedEvent(Adam, 3).ThenDoNothing()
-                    .Run();
+                    .Run(this.logDirectory);
             }
             finally
             {
-                this.AttachReports(testName);
+                this.AttachReports();
             }
         }
 
@@ -1197,11 +1205,11 @@ namespace SoC.Library.ScenarioTests
                         .DidNotReceiveEventOfType<ChooseLostResourcesEvent>()
                     .VerifyPlayer(Dana)
                         .DidNotReceiveEventOfType<ChooseLostResourcesEvent>()
-                    .Run();
+                    .Run(this.logDirectory);
             }
             finally
             {
-                this.AttachReports(testName);
+                this.AttachReports();
             }
         }
 
@@ -1247,11 +1255,11 @@ namespace SoC.Library.ScenarioTests
                         .DidNotReceiveEventOfType<ChooseLostResourcesEvent>()
                     .VerifyPlayer(Dana)
                         .DidNotReceiveEventOfType<ChooseLostResourcesEvent>()
-                    .Run();
+                    .Run(this.logDirectory);
             }
             finally
             {
-                this.AttachReports(testName);
+                this.AttachReports();
             }
         }
 
@@ -1297,11 +1305,11 @@ namespace SoC.Library.ScenarioTests
                         .DidNotReceiveEventOfType<ChooseLostResourcesEvent>()
                     .VerifyPlayer(Dana)
                         .DidNotReceiveEventOfType<ChooseLostResourcesEvent>()
-                    .Run();
+                    .Run(this.logDirectory);
             }
             finally
             {
-                this.AttachReports(testName);
+                this.AttachReports();
             }
         }
 
@@ -1347,11 +1355,11 @@ namespace SoC.Library.ScenarioTests
                         .DidNotReceiveEventOfType<ChooseLostResourcesEvent>()
                     .VerifyPlayer(Dana)
                         .DidNotReceiveEventOfType<ChooseLostResourcesEvent>()
-                    .Run();
+                    .Run(this.logDirectory);
             }
             finally
             {
-                this.AttachReports(testName);
+                this.AttachReports();
             }
         }
 
@@ -1430,11 +1438,11 @@ namespace SoC.Library.ScenarioTests
                             .End()
                     .VerifyPlayer(Charlie)
                         .DidNotReceiveEventOfType<ChooseLostResourcesEvent>()
-                    .Run();
+                    .Run(this.logDirectory);
             }
             finally
             {
-                this.AttachReports(testName);
+                this.AttachReports();
             }
         }
 
@@ -1462,11 +1470,11 @@ namespace SoC.Library.ScenarioTests
                         .DidNotReceiveEventOfType<GameErrorEvent>()
                     .VerifyPlayer(Dana)
                         .DidNotReceiveEventOfType<GameErrorEvent>()
-                    .Run();
+                    .Run(this.logDirectory);
             }
             finally
             {
-                this.AttachReports(testName);
+                this.AttachReports();
             }
         }
         
@@ -1494,11 +1502,11 @@ namespace SoC.Library.ScenarioTests
                         .DidNotReceiveEventOfType<GameErrorEvent>()
                     .VerifyPlayer(Dana)
                         .DidNotReceiveEventOfType<GameErrorEvent>()
-                    .Run();
+                    .Run(this.logDirectory);
             }
             finally
             {
-                this.AttachReports(testName);
+                this.AttachReports();
             }
         }
 
@@ -1526,11 +1534,11 @@ namespace SoC.Library.ScenarioTests
                         .DidNotReceiveEventOfType<GameErrorEvent>()
                     .VerifyPlayer(Dana)
                         .DidNotReceiveEventOfType<GameErrorEvent>()
-                    .Run();
+                    .Run(this.logDirectory);
             }
             finally
             {
-                this.AttachReports(testName);
+                this.AttachReports();
             }
         }
 
@@ -1607,11 +1615,11 @@ namespace SoC.Library.ScenarioTests
                             .End()
                     .VerifyPlayer(Charlie)
                         .DidNotReceiveEventOfType<ChooseLostResourcesEvent>()
-                    .Run();
+                    .Run(this.logDirectory);
             }
             finally
             {
-                this.AttachReports(testName);
+                this.AttachReports();
             }
         }
 
@@ -1640,11 +1648,11 @@ namespace SoC.Library.ScenarioTests
                         .DidNotReceiveEventOfType<ChooseLostResourcesEvent>()
                     .VerifyPlayer(Dana)
                         .DidNotReceiveEventOfType<ChooseLostResourcesEvent>()
-                    .Run();
+                    .Run(this.logDirectory);
             }
             finally
             {
-                this.AttachReports(testName);
+                this.AttachReports();
             }
         }
 
@@ -1666,11 +1674,11 @@ namespace SoC.Library.ScenarioTests
                         .DidNotReceiveEventOfType<GameErrorEvent>()
                     .VerifyPlayer(Dana)
                         .DidNotReceiveEventOfType<GameErrorEvent>()
-                    .Run();
+                    .Run(this.logDirectory);
             }
             finally
             {
-                this.AttachReports(testName);
+                this.AttachReports();
             }
         }
 
@@ -1700,11 +1708,11 @@ namespace SoC.Library.ScenarioTests
                         .ReceivesResourcesStolenEvent(Babara, robbedResource)
                     .WhenPlayer(Dana)
                         .ReceivesRobberPlacedEvent(Adam, 3).ThenDoNothing()
-                    .Run();
+                    .Run(this.logDirectory);
             }
             finally
             {
-                this.AttachReports(testName);
+                this.AttachReports();
             }
         }
 
@@ -1735,11 +1743,11 @@ namespace SoC.Library.ScenarioTests
                         .DidNotReceiveEventOfType<ChooseLostResourcesEvent>()
                     .VerifyPlayer(Dana)
                         .DidNotReceiveEventOfType<ChooseLostResourcesEvent>()
-                    .Run();
+                    .Run(this.logDirectory);
             }
             finally
             {
-                this.AttachReports(testName);
+                this.AttachReports();
             }
         }
 
@@ -1785,11 +1793,11 @@ namespace SoC.Library.ScenarioTests
                         .DidNotReceiveEventOfType<ChooseLostResourcesEvent>()
                     .VerifyPlayer(Dana)
                         .DidNotReceiveEventOfType<ChooseLostResourcesEvent>()
-                    .Run();
+                    .Run(this.logDirectory);
             }
             finally
             {
-                this.AttachReports(testName);
+                this.AttachReports();
             }
         }
 
@@ -1834,11 +1842,11 @@ namespace SoC.Library.ScenarioTests
                         .DidNotReceiveEventOfType<ChooseLostResourcesEvent>()
                     .VerifyPlayer(Dana)
                         .DidNotReceiveEventOfType<ChooseLostResourcesEvent>()
-                    .Run();
+                    .Run(this.logDirectory);
             }
             finally
             {
-                this.AttachReports(testName);
+                this.AttachReports();
             }
         }
 
@@ -1888,11 +1896,11 @@ namespace SoC.Library.ScenarioTests
                         .DidNotReceiveEventOfType<ChooseLostResourcesEvent>()
                     .VerifyPlayer(Dana)
                         .DidNotReceiveEventOfType<ChooseLostResourcesEvent>()
-                    .Run();
+                    .Run(this.logDirectory);
             }
             finally
             {
-                this.AttachReports(testName);
+                this.AttachReports();
             }
         }
 
@@ -1944,11 +1952,11 @@ namespace SoC.Library.ScenarioTests
                         .ReceivesRobberPlacedEvent(Adam, 9).ThenDoNothing()
                         .ReceivesResourcesStolenEvent(Charlie, robbedResource)
                         .ReceivesRoadSegmentPlacementEvent(Adam, 4, 3)
-                    .Run();
+                    .Run(this.logDirectory);
             }
             finally
             {
-                this.AttachReports(testName);
+                this.AttachReports();
             }
         }
 
@@ -1971,11 +1979,11 @@ namespace SoC.Library.ScenarioTests
                         .ReceivesPlayerQuitEvent(Adam).ThenDoNothing()
                     .WhenPlayer(Dana)
                         .ReceivesPlayerQuitEvent(Adam).ThenDoNothing()
-                    .Run();
+                    .Run(this.logDirectory);
             }
             finally
             {
-                this.AttachReports(testName);
+                this.AttachReports();
             }
         }
 
@@ -2007,11 +2015,11 @@ namespace SoC.Library.ScenarioTests
                         .ReceivesPlayerQuitEvent(Adam).ThenDoNothing()
                     .VerifyPlayer(Adam)
                         .DidNotReceiveEventOfType<ConfirmGameStartEvent>()
-                    .Run();
+                    .Run(this.logDirectory);
             }
             finally
             {
-                this.AttachReports(testName);
+                this.AttachReports();
             }
         }
 
@@ -2049,11 +2057,11 @@ namespace SoC.Library.ScenarioTests
                         .ThenPlaceStartingInfrastructure(Dana_FirstSettlementLocation, Dana_FirstRoadEndLocation)
                         .ReceivesPlaceInfrastructureSetupEvent()
                         .ThenPlaceStartingInfrastructure(Dana_SecondSettlementLocation, Dana_SecondRoadEndLocation)
-                    .Run();
+                    .Run(this.logDirectory);
             }
             finally
             {
-                this.AttachReports(testName);
+                this.AttachReports();
             }
         }
 
@@ -2071,11 +2079,11 @@ namespace SoC.Library.ScenarioTests
                     .WhenPlayer(Adam)
                         .ReceivesPlaceInfrastructureSetupEvent().ThenEndTurn()
                         .ReceivesGameErrorEvent("999", "Received action type EndOfTurnAction. Expected one of PlaceSetupInfrastructureAction, QuitGameAction")
-                    .Run();
+                    .Run(this.logDirectory);
             }
             finally
             {
-                this.AttachReports(testName);
+                this.AttachReports();
             }
         }
 
@@ -2128,11 +2136,11 @@ namespace SoC.Library.ScenarioTests
                     .WhenPlayer(Dana)
                         .ReceivesAcceptDirectTradeEvent(Babara, ResourceClutch.OneWool, Adam, ResourceClutch.OneGrain)
                         .ThenDoNothing()
-                    .Run();
+                    .Run(this.logDirectory);
             }
             finally
             {
-                this.AttachReports(testName);
+                this.AttachReports();
             }
         }
 
@@ -2187,21 +2195,25 @@ namespace SoC.Library.ScenarioTests
 
         private static IPlayerSetupAction KnightCard() => new KnightCardSetup();
 
-        private void AttachReports(string testName)
+        private void AttachReports()
         {
-            var filePath = $"C:\\Scenario Logs\\{testName}\\Adam.html";
+            var filePath = $"{this.logDirectory}\\Adam.html";
             if (File.Exists(filePath))
                 TestContext.AddTestAttachment(filePath);
 
-            filePath = $"C:\\Scenario Logs\\{testName}\\Babara.html";
+            filePath = $"{ this.logDirectory}\\Babara.html";
             if (File.Exists(filePath))
                 TestContext.AddTestAttachment(filePath);
 
-            filePath = $"C:\\Scenario Logs\\{testName}\\Charlie.html";
+            filePath = $"{this.logDirectory}\\Charlie.html";
             if (File.Exists(filePath))
                 TestContext.AddTestAttachment(filePath);
 
-            filePath = $"C:\\Scenario Logs\\{testName}\\Dana.html";
+            filePath = $"{this.logDirectory}\\Dana.html";
+            if (File.Exists(filePath))
+                TestContext.AddTestAttachment(filePath);
+
+            filePath = $"{this.logDirectory}\\GameServer.log";
             if (File.Exists(filePath))
                 TestContext.AddTestAttachment(filePath);
         }

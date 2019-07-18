@@ -22,7 +22,6 @@ namespace SoC.Library.ScenarioTests
         private readonly List<PlayerAgent> playerAgents = new List<PlayerAgent>();
         private readonly Dictionary<string, PlayerAgent> playerAgentsByName = new Dictionary<string, PlayerAgent>();
         private readonly Dictionary<string, ResourceClutch> startingResourcesByName = new Dictionary<string, ResourceClutch>();
-        private readonly string scenarioName;
         private PlayerAgent currentPlayerAgent;
         private GameBoard gameBoard;
         private MultipleEventInstruction multipleEventInstruction;
@@ -33,11 +32,6 @@ namespace SoC.Library.ScenarioTests
         #region Construction
         private ScenarioRunner(string[] args)
         {
-            if (args != null)
-            {
-                this.scenarioName = args[0];
-            }
-
             this.numberGenerator = new ScenarioNumberGenerator();
         }
         #endregion
@@ -347,7 +341,7 @@ namespace SoC.Library.ScenarioTests
             return this;
         }
 
-        public void Run()
+        public void Run(string logDirectory)
         {
             if (Thread.CurrentThread.Name == null)
                 Thread.CurrentThread.Name = "Scenario Runner";
@@ -414,7 +408,6 @@ namespace SoC.Library.ScenarioTests
                     Thread.Sleep(50);
             }
 
-            var logDirectory = $"C:\\Scenario Logs\\{this.scenarioName}";
             if (Directory.Exists(logDirectory))
                 Directory.Delete(logDirectory, true);
             Directory.CreateDirectory(logDirectory);
@@ -430,7 +423,6 @@ namespace SoC.Library.ScenarioTests
                         Thread.Sleep(50);
                 }
 
-                playerAgent.SaveEvents($"{logDirectory}\\{playerAgent.Name}.events");
                 playerAgent.SaveLog($"{logDirectory}\\{playerAgent.Name}.html");
             }
 
@@ -462,7 +454,6 @@ namespace SoC.Library.ScenarioTests
                 this.playerAgents
                     .Where(playerAgent => !playerAgent.IsFinished)
                     .Select(playerAgent => $"{playerAgent.Name} did not finish.")
-                    //.Select(playerAgent => $"\r\n{playerAgent.Name} did not finish.\r\n{playerAgent.GetEventLog()}")
                 );
 
             if (!string.IsNullOrEmpty(timeOutMessage))
