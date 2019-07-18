@@ -53,7 +53,7 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void AllPlayersCollectResourcesAsPartOfGameSetup()
         {
-            var testName = MethodBase.GetCurrentMethod().Name;
+            
             try
             {
                 var expectedAdamResources = ResourceClutch.OneBrick + ResourceClutch.OneGrain + ResourceClutch.OneWool;
@@ -67,7 +67,7 @@ namespace SoC.Library.ScenarioTests
                     .Add(Dana, Dana_SecondSettlementLocation, expectedDanaResources)
                     .Build();
 
-                ScenarioRunner.CreateScenarioRunner(new[] { testName })
+                ScenarioRunner.CreateScenarioRunner()
                     .WithPlayer(Adam)
                     .WithPlayer(Babara)
                     .WithPlayer(Charlie)
@@ -138,7 +138,7 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void AllPlayersCollectResourcesAsPartOfTurnStart()
         {
-            var testName = MethodBase.GetCurrentMethod().Name;
+            
             try
             { 
                 var firstTurnCollectedResources = CreateExpectedCollectedResources()
@@ -162,7 +162,7 @@ namespace SoC.Library.ScenarioTests
                     .Add(Babara, Babara_SecondSettlementLocation, ResourceClutch.OneWool)
                     .Build();
 
-                this.CompletePlayerInfrastructureSetup(new[] { testName })
+                this.CompletePlayerInfrastructureSetup()
                     // Zero away the resources collected at start of the game
                     .WithInitialPlayerSetupFor(Adam, Resources(new ResourceClutch(-1, -1, 0, 0, -1)))
                     .WithInitialPlayerSetupFor(Babara, Resources(new ResourceClutch(0, -1, -1, 0, -1)))
@@ -244,12 +244,12 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void AllPlayersCompleteSetup()
         {
-            var testName = MethodBase.GetCurrentMethod().Name;
+            
             try
             { 
                 var expectedGameBoardSetup = new GameBoardSetup(new GameBoard(BoardSizes.Standard));
                 var playerOrder = new[] { Adam, Babara, Charlie, Dana };
-                ScenarioRunner.CreateScenarioRunner(new[] { testName })
+                ScenarioRunner.CreateScenarioRunner()
                     .WithPlayer(Adam)
                     .WithPlayer(Babara)
                     .WithPlayer(Charlie)
@@ -328,10 +328,10 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void AllOtherPlayersQuit()
         {
-            var testName = MethodBase.GetCurrentMethod().Name;
+            
             try
             {
-                this.CompletePlayerInfrastructureSetup(new[] { testName })
+                this.CompletePlayerInfrastructureSetup()
                     .WithNoResourceCollection()
                     .WhenPlayer(Adam)
                         .ReceivesStartTurnEvent(3, 3).ThenEndTurn()
@@ -371,10 +371,10 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void PlayerPlacesCity()
         {
-            var testName = MethodBase.GetCurrentMethod().Name;
+            
             try
             { 
-                this.CompletePlayerInfrastructureSetup(new[] { testName })
+                this.CompletePlayerInfrastructureSetup()
                     .WithNoResourceCollection()
                     .WithInitialPlayerSetupFor(
                         Adam,
@@ -413,9 +413,9 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void PlayerPlacesCityAndWins()
         {
-            var testName = MethodBase.GetCurrentMethod().Name;
+            
             try { 
-                this.CompletePlayerInfrastructureSetup(new[] { testName })
+                this.CompletePlayerInfrastructureSetup()
                     .WithNoResourceCollection()
                     .WithInitialPlayerSetupFor(
                         Adam,
@@ -450,10 +450,10 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void PlayerTriesToPlaceCityOnLocationOccupiedByPlayer()
         {
-            var testName = MethodBase.GetCurrentMethod().Name;
+            
             try
             { 
-                this.CompletePlayerInfrastructureSetup(new[] { testName })
+                this.CompletePlayerInfrastructureSetup()
                     .WithNoResourceCollection()
                     .WithInitialPlayerSetupFor(
                         Adam,
@@ -479,10 +479,10 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void PlayerTriesToPlaceCityOnInvalidLocation()
         {
-            var testName = MethodBase.GetCurrentMethod().Name;
+            
             try
             {
-                this.CompletePlayerInfrastructureSetup(new[] { testName })
+                this.CompletePlayerInfrastructureSetup()
                     .WithNoResourceCollection()
                     .WithInitialPlayerSetupFor(
                         Adam,
@@ -507,10 +507,10 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void PlayerTriesToPlaceCityOnLocationOccupiedByOtherPlayer()
         {
-            var testName = MethodBase.GetCurrentMethod().Name;
+            
             try
             { 
-                this.CompletePlayerInfrastructureSetup(new[] { testName })
+                this.CompletePlayerInfrastructureSetup()
                     .WithNoResourceCollection()
                     .WithInitialPlayerSetupFor(
                         Adam,
@@ -546,10 +546,10 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void PlayerTriesToPlaceCityOnLocationWithoutSettlement()
         {
-            var testName = MethodBase.GetCurrentMethod().Name;
+            
             try
             { 
-            this.CompletePlayerInfrastructureSetup(new[] { testName })
+            this.CompletePlayerInfrastructureSetup()
                 .WithNoResourceCollection()
                 .WithInitialPlayerSetupFor(
                     Adam,
@@ -575,10 +575,10 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void PlayerTriesToPlaceCityWithNotEnoughResources()
         {
-            var testName = MethodBase.GetCurrentMethod().Name;
+            
             try
             { 
-                this.CompletePlayerInfrastructureSetup(new[] { testName })
+                this.CompletePlayerInfrastructureSetup()
                     .WithNoResourceCollection()
                     .WhenPlayer(Adam)
                         .ReceivesStartTurnEvent(3, 3).ThenPlaceCity(Adam_FirstSettlementLocation)
@@ -600,10 +600,10 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void PlayerPlacesSettlement()
         {
-            var testName = MethodBase.GetCurrentMethod().Name;
+            
             try
             { 
-                this.CompletePlayerInfrastructureSetup(new[] { testName })
+                this.CompletePlayerInfrastructureSetup()
                     .WithNoResourceCollection()
                     .WithInitialPlayerSetupFor(
                         Adam,
@@ -639,10 +639,10 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void PlayerPlacesSettlementAndWins()
         {
-            var testName = MethodBase.GetCurrentMethod().Name;
+            
             try
             { 
-                this.CompletePlayerInfrastructureSetup(new[] { testName })
+                this.CompletePlayerInfrastructureSetup()
                     .WithNoResourceCollection()
                     .WithInitialPlayerSetupFor(
                         Adam, 
@@ -678,10 +678,10 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void PlayerTriesToPlaceSettlementOnInvalidLocation()
         {
-            var testName = MethodBase.GetCurrentMethod().Name;
+            
             try
             { 
-                this.CompletePlayerInfrastructureSetup(new[] { testName })
+                this.CompletePlayerInfrastructureSetup()
                     .WithNoResourceCollection()
                     .WithInitialPlayerSetupFor(
                         Adam,
@@ -706,10 +706,10 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void PlayerTriesToPlaceSettlementOnLocationOccupiedByPlayer()
         {
-            var testName = MethodBase.GetCurrentMethod().Name;
+            
             try
             { 
-            this.CompletePlayerInfrastructureSetup(new[] { testName })
+            this.CompletePlayerInfrastructureSetup()
                 .WithNoResourceCollection()
                 .WithInitialPlayerSetupFor(
                     Adam,
@@ -736,10 +736,10 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void PlayerTriesToPlaceSettlementOnLocationOccupiedByOtherPlayer()
         {
-            var testName = MethodBase.GetCurrentMethod().Name;
+            
             try
             { 
-                this.CompletePlayerInfrastructureSetup(new[] { testName })
+                this.CompletePlayerInfrastructureSetup()
                     .WithNoResourceCollection()
                     .WithInitialPlayerSetupFor(
                         Adam,
@@ -775,10 +775,10 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void PlayerTriesToPlaceSettlementOnUnconnectedLocation()
         {
-            var testName = MethodBase.GetCurrentMethod().Name;
+            
             try
             {
-                this.CompletePlayerInfrastructureSetup(new[] { testName })
+                this.CompletePlayerInfrastructureSetup()
                     .WithNoResourceCollection()
                     .WithInitialPlayerSetupFor(
                         Adam,
@@ -803,10 +803,10 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void PlayerTriesToPlaceSettlementWithNoSettlementsLeft()
         {
-            var testName = MethodBase.GetCurrentMethod().Name;
+            
             try
             {
-                this.CompletePlayerInfrastructureSetup(new[] { testName })
+                this.CompletePlayerInfrastructureSetup()
                     .WithNoResourceCollection()
                     .WithInitialPlayerSetupFor(
                         Adam,
@@ -831,10 +831,10 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void PlayerTriesToPlaceSettlementWithNotEnoughResources()
         {
-            var testName = MethodBase.GetCurrentMethod().Name;
+            
             try
             {
-                this.CompletePlayerInfrastructureSetup(new[] { testName })
+                this.CompletePlayerInfrastructureSetup()
                     .WithNoResourceCollection()
                     .WhenPlayer(Adam)
                         .ReceivesStartTurnEvent(3, 3).ThenPlaceSettlement(3)
@@ -856,10 +856,10 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void PlayerTriesToPlaceRoadSegmentWithInvalidLocations()
         {
-            var testName = MethodBase.GetCurrentMethod().Name;
+            
             try
             {
-                this.CompletePlayerInfrastructureSetup(new[] { testName })
+                this.CompletePlayerInfrastructureSetup()
                     .WithNoResourceCollection()
                     .WithInitialPlayerSetupFor(Adam, Resources(ResourceClutch.RoadSegment))
                     .WhenPlayer(Adam)
@@ -883,10 +883,10 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void PlayerTriesToPlaceRoadSegmentWithUnconnectedLocations()
         {
-            var testName = MethodBase.GetCurrentMethod().Name;
+            
             try
             {
-                this.CompletePlayerInfrastructureSetup(new[] { testName })
+                this.CompletePlayerInfrastructureSetup()
                     .WithNoResourceCollection()
                     .WithInitialPlayerSetupFor(Adam, Resources(ResourceClutch.RoadSegment))
                     .WhenPlayer(Adam)
@@ -910,10 +910,10 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void PlayerTriesToPlaceRoadSegmentWithNoRoadSegmentsLeft()
         {
-            var testName = MethodBase.GetCurrentMethod().Name;
+            
             try
             {
-                this.CompletePlayerInfrastructureSetup(new[] { testName })
+                this.CompletePlayerInfrastructureSetup()
                     .WithNoResourceCollection()
                     .WithInitialPlayerSetupFor(Adam, Resources(ResourceClutch.RoadSegment), PlacedRoadSegments(Player.TotalRoadSegments - 2))
                     .WhenPlayer(Adam)
@@ -937,10 +937,10 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void PlayerTriesToPlaceRoadSegmentWithNotEnoughResources()
         {
-            var testName = MethodBase.GetCurrentMethod().Name;
+            
             try
             {
-                this.CompletePlayerInfrastructureSetup(new[] { testName })
+                this.CompletePlayerInfrastructureSetup()
                     .WithNoResourceCollection()
                     .WhenPlayer(Adam)
                         .ReceivesStartTurnEvent(3, 3)
@@ -963,10 +963,10 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void PlayerTriesToPlaceRoadSegmentOnOccupiedLocations()
         {
-            var testName = MethodBase.GetCurrentMethod().Name;
+            
             try
             {
-                this.CompletePlayerInfrastructureSetup(new[] { testName })
+                this.CompletePlayerInfrastructureSetup()
                     .WithNoResourceCollection()
                     .WithInitialPlayerSetupFor(Adam, Resources(ResourceClutch.RoadSegment))
                     .WhenPlayer(Adam)
@@ -990,10 +990,10 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void PlayerTriesToPlaceRoadSegmentOnLocationsNotConnectedToExistingRoadSystem()
         {
-            var testName = MethodBase.GetCurrentMethod().Name;
+            
             try
             {
-                this.CompletePlayerInfrastructureSetup(new[] { testName })
+                this.CompletePlayerInfrastructureSetup()
                     .WithNoResourceCollection()
                     .WithInitialPlayerSetupFor(Adam, Resources(ResourceClutch.RoadSegment))
                     .WhenPlayer(Adam)
@@ -1017,7 +1017,7 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void PlayerPlaysKnightCard()
         {
-            var testName = MethodBase.GetCurrentMethod().Name;
+            
             try
             {
                 var robbingChoices = new Dictionary<string, int>()
@@ -1026,7 +1026,7 @@ namespace SoC.Library.ScenarioTests
                     { Dana, 3 }
                 };
                 var robbedResource = ResourceClutch.OneLumber;
-                this.CompletePlayerInfrastructureSetup(new[] { testName })
+                this.CompletePlayerInfrastructureSetup()
                     .WhenPlayer(Adam)
                         .ReceivesStartTurnEvent(3, 3).ThenPlayKnightCard(8)
                         .ReceivesRobbingChoicesEvent(robbingChoices).ThenSelectRobbedPlayer(Babara)
@@ -1061,10 +1061,10 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void PlayerPlaysKnightCardThatIsNotOwned()
         {
-            var testName = MethodBase.GetCurrentMethod().Name;
+            
             try
             {
-                this.CompletePlayerInfrastructureSetup(new[] { testName })
+                this.CompletePlayerInfrastructureSetup()
                     .WithNoResourceCollection()
                     .WhenPlayer(Adam)
                         .ReceivesStartTurnEvent(3, 3).ThenPlayKnightCard(0)
@@ -1086,10 +1086,10 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void PlayerPlaysKnightCardAndNewHexIsSameAsCurrentHex()
         {
-            var testName = MethodBase.GetCurrentMethod().Name;
+            
             try
             {
-                this.CompletePlayerInfrastructureSetup(new[] { testName })
+                this.CompletePlayerInfrastructureSetup()
                     .WithNoResourceCollection()
                     .WithInitialPlayerSetupFor(Adam, KnightCard())
                     .WhenPlayer(Adam)
@@ -1112,10 +1112,10 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void PlayerPlaysKnightCardAndNewHexHasNoPlayers()
         {
-            var testName = MethodBase.GetCurrentMethod().Name;
+            
             try
             { 
-                this.CompletePlayerInfrastructureSetup(new[] { testName })
+                this.CompletePlayerInfrastructureSetup()
                     .WithNoResourceCollection()
                     .WithInitialPlayerSetupFor(Adam, KnightCard())
                     .WhenPlayer(Adam)
@@ -1147,11 +1147,11 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void PlayerPlaysKnightCardAndNewHexHasOnePlayer()
         {
-            var testName = MethodBase.GetCurrentMethod().Name;
+            
             try
             { 
                 var robbedResource = ResourceClutch.OneLumber;
-                this.CompletePlayerInfrastructureSetup(new[] { testName })
+                this.CompletePlayerInfrastructureSetup()
                     .WhenPlayer(Adam)
                         .ReceivesStartTurnEvent(3, 3).ThenDoNothing()
                         .ReceivesPlaceRobberEvent().ThenPlaceRobber(3)
@@ -1181,10 +1181,10 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void PlayerPlaysKnightCardAndNewHexHasOnePlayerWhichIsCardPlayer()
         {
-            var testName = MethodBase.GetCurrentMethod().Name;
+            
             try
             {
-                this.CompletePlayerInfrastructureSetup(new[] { testName })
+                this.CompletePlayerInfrastructureSetup()
                     .WithNoResourceCollection()
                     .WhenPlayer(Adam)
                         .ReceivesStartTurnEvent(3, 3).ThenDoNothing()
@@ -1216,7 +1216,7 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void PlayerPlaysKnightCardAndSelectsInvalidPlayer()
         {
-            var testName = MethodBase.GetCurrentMethod().Name;
+            
             try
             {
                 var infrastructureSetupBuilder = new InfrastructureSetupBuilder();
@@ -1235,7 +1235,7 @@ namespace SoC.Library.ScenarioTests
                     { Dana, 3 }
                 };
 
-                this.CompletePlayerInfrastructureSetup(infrastructureSetupBuilder.Build(), new[] { testName })
+                this.CompletePlayerInfrastructureSetup(infrastructureSetupBuilder.Build())
                     .WhenPlayer(Adam)
                         .ReceivesStartTurnEvent(3, 3).ThenDoNothing()
                         .ReceivesPlaceRobberEvent().ThenPlaceRobber(9)
@@ -1266,7 +1266,7 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void PlayerPlaysKnightCardAndNewHexHasMultiplePlayers()
         {
-            var testName = MethodBase.GetCurrentMethod().Name;
+            
             try
             {     
                 var infrastructureSetupBuilder = new InfrastructureSetupBuilder();
@@ -1286,7 +1286,7 @@ namespace SoC.Library.ScenarioTests
                     { Dana, 3 }
                 };
 
-                this.CompletePlayerInfrastructureSetup(infrastructureSetupBuilder.Build(), new[] { testName })
+                this.CompletePlayerInfrastructureSetup(infrastructureSetupBuilder.Build())
                     .WhenPlayer(Adam)
                         .ReceivesStartTurnEvent(3, 3).ThenDoNothing()
                         .ReceivesPlaceRobberEvent().ThenPlaceRobber(9)
@@ -1316,7 +1316,7 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void PlayerPlaysKnightCardAndNewHexHasMultiplePlayersIncludingCardPlayer()
         {
-            var testName = MethodBase.GetCurrentMethod().Name;
+            
             try
             { 
                 var infrastructureSetupBuilder = new InfrastructureSetupBuilder();
@@ -1336,7 +1336,7 @@ namespace SoC.Library.ScenarioTests
                     { Dana, 3 }
                 };
 
-                this.CompletePlayerInfrastructureSetup(infrastructureSetupBuilder.Build(), new[] { testName })
+                this.CompletePlayerInfrastructureSetup(infrastructureSetupBuilder.Build())
                     .WhenPlayer(Adam)
                         .ReceivesStartTurnEvent(3, 3).ThenDoNothing()
                         .ReceivesPlaceRobberEvent().ThenPlaceRobber(9)
@@ -1366,7 +1366,7 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void PlayerRollsSevenAndAllPlayersWithMoreThanSevenResourcesLoseResources()
         {
-            var testName = MethodBase.GetCurrentMethod().Name;
+            
             try
             {
                 var adamsInitialResources = new ResourceClutch(1, 2, 2, 2, 2); // 9 resources
@@ -1382,7 +1382,7 @@ namespace SoC.Library.ScenarioTests
                 var babarasFinalResources = babarasInitialResources - babarasLostResources;
                 var danasFinalResources = danasInitialResources - danasLostResources;
 
-                this.CompletePlayerInfrastructureSetup(new[] { testName })
+                this.CompletePlayerInfrastructureSetup()
                     .WithNoResourceCollection()
                     .WithInitialPlayerSetupFor(
                         Adam,
@@ -1449,13 +1449,13 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void PlayerRollsSevenAndPlayerSendsTooManyResources()
         {
-            var testName = MethodBase.GetCurrentMethod().Name;
+            
             try
             {
                 var adamsInitialResources = new ResourceClutch(1, 2, 2, 2, 2); // 9 resources
                 var adamsLostResources = new ResourceClutch(1, 1, 1, 1, 1);
 
-                this.CompletePlayerInfrastructureSetup(new[] { testName })
+                this.CompletePlayerInfrastructureSetup()
                     .WithNoResourceCollection()
                     .WithInitialPlayerSetupFor(
                         Adam,
@@ -1481,13 +1481,13 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void PlayerRollsSevenAndPlayerSendsTooLittleResources()
         {
-            var testName = MethodBase.GetCurrentMethod().Name;
+            
             try
             {
                 var adamsInitialResources = new ResourceClutch(1, 2, 2, 2, 2); // 9 resources
                 var adamsLostResources = new ResourceClutch(0, 0, 1, 1, 1);
 
-                this.CompletePlayerInfrastructureSetup(new[] { testName })
+                this.CompletePlayerInfrastructureSetup()
                     .WithNoResourceCollection()
                     .WithInitialPlayerSetupFor(
                         Adam,
@@ -1513,13 +1513,13 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void PlayerRollsSevenAndPlayerSendsResourcesResultingInNegativeResources()
         {
-            var testName = MethodBase.GetCurrentMethod().Name;
+            
             try
             {
                 var adamsInitialResources = new ResourceClutch(1, 2, 2, 2, 2); // 9 resources
                 var adamsLostResources = new ResourceClutch(2, 0, 0, 1, 1);
 
-                this.CompletePlayerInfrastructureSetup(new[] { testName })
+                this.CompletePlayerInfrastructureSetup()
                     .WithNoResourceCollection()
                     .WithInitialPlayerSetupFor(
                         Adam,
@@ -1545,7 +1545,7 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void PlayerRollsSevenAndAllPlayersWithMoreThanSeventResourcesMustSendResourcesBeforeRobberCanBePlaced()
         {
-            var testName = MethodBase.GetCurrentMethod().Name;
+            
             try
             {
                 var adamsInitialResources = new ResourceClutch(1, 2, 2, 2, 2); // 9 resources
@@ -1561,7 +1561,7 @@ namespace SoC.Library.ScenarioTests
                 var babarasFinalResources = babarasInitialResources - babarasLostResources;
                 var danasFinalResources = danasInitialResources - danasLostResources;
 
-                this.CompletePlayerInfrastructureSetup(new[] { testName })
+                this.CompletePlayerInfrastructureSetup()
                     .WithNoResourceCollection()
                     .WithInitialPlayerSetupFor(
                         Adam,
@@ -1626,10 +1626,10 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void PlayerRollsSevenAndNewHexHasNoPlayers()
         {
-            var testName = MethodBase.GetCurrentMethod().Name;
+            
             try
             {
-                this.CompletePlayerInfrastructureSetup(new[] { testName })
+                this.CompletePlayerInfrastructureSetup()
                     .WithNoResourceCollection()
                     .WhenPlayer(Adam)
                         .ReceivesStartTurnEvent(3, 4).ThenDoNothing()
@@ -1659,10 +1659,10 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void PlayerRollsSevenAndNewHexIsSameAsCurrentHex()
         {
-            var testName = MethodBase.GetCurrentMethod().Name;
+            
             try
             {
-                this.CompletePlayerInfrastructureSetup(new[] { testName })
+                this.CompletePlayerInfrastructureSetup()
                     .WithNoResourceCollection()
                     .WhenPlayer(Adam)
                         .ReceivesStartTurnEvent(3, 4).ThenDoNothing()
@@ -1685,11 +1685,11 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void PlayerRollsSevenAndNewHexHasOnePlayer()
         {
-            var testName = MethodBase.GetCurrentMethod().Name;
+            
             try
             {
                 var robbedResource = ResourceClutch.OneLumber;
-                this.CompletePlayerInfrastructureSetup(new[] { testName })
+                this.CompletePlayerInfrastructureSetup()
                     .WhenPlayer(Adam)
                         .ReceivesStartTurnEvent(3, 4).ThenDoNothing()
                         .ReceivesPlaceRobberEvent().ThenPlaceRobber(3)
@@ -1719,10 +1719,10 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void PlayerRollsSevenAndNewHexHasOnePlayerWhichIsRollingPlayer()
         {
-            var testName = MethodBase.GetCurrentMethod().Name;
+            
             try
             {
-                this.CompletePlayerInfrastructureSetup(new[] { testName })
+                this.CompletePlayerInfrastructureSetup()
                     .WithNoResourceCollection()
                     .WhenPlayer(Adam)
                         .ReceivesStartTurnEvent(3, 4).ThenDoNothing()
@@ -1754,7 +1754,7 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void PlayerRollsSevenAndNewHexHasMultiplePlayers()
         {
-            var testName = MethodBase.GetCurrentMethod().Name;
+            
             try
             {
                 var infrastructureSetupBuilder = new InfrastructureSetupBuilder();
@@ -1774,7 +1774,7 @@ namespace SoC.Library.ScenarioTests
                     { Dana, 3 }
                 };
 
-                this.CompletePlayerInfrastructureSetup(infrastructureSetupBuilder.Build(), new[] { testName })
+                this.CompletePlayerInfrastructureSetup(infrastructureSetupBuilder.Build())
                     .WhenPlayer(Adam)
                         .ReceivesStartTurnEvent(3, 4).ThenDoNothing()
                         .ReceivesPlaceRobberEvent().ThenPlaceRobber(9)
@@ -1804,7 +1804,7 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void PlayerRollsSevenAndNewHexHasMultiplePlayersIncludingRollingPlayer()
         {
-            var testName = MethodBase.GetCurrentMethod().Name;
+            
             try
             { 
                 var infrastructureSetupBuilder = new InfrastructureSetupBuilder();
@@ -1823,7 +1823,7 @@ namespace SoC.Library.ScenarioTests
                     { Dana, 3 }
                 };
 
-                this.CompletePlayerInfrastructureSetup(infrastructureSetupBuilder.Build(), new[] { testName })
+                this.CompletePlayerInfrastructureSetup(infrastructureSetupBuilder.Build())
                     .WhenPlayer(Adam)
                         .ReceivesStartTurnEvent(3, 4).ThenDoNothing()
                         .ReceivesPlaceRobberEvent().ThenPlaceRobber(9)
@@ -1857,7 +1857,7 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void PlayerRollsSevenAndSelectsInvalidPlayer()
         {
-            var testName = MethodBase.GetCurrentMethod().Name;
+            
             try
             {
                 var infrastructureSetupBuilder = new InfrastructureSetupBuilder();
@@ -1876,7 +1876,7 @@ namespace SoC.Library.ScenarioTests
                     { Dana, 3 }
                 };
 
-                this.CompletePlayerInfrastructureSetup(infrastructureSetupBuilder.Build(), new[] { testName })
+                this.CompletePlayerInfrastructureSetup(infrastructureSetupBuilder.Build())
                     .WhenPlayer(Adam)
                         .ReceivesStartTurnEvent(3, 4).ThenDoNothing()
                         .ReceivesPlaceRobberEvent().ThenPlaceRobber(9)
@@ -1907,7 +1907,7 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void PlayerRollsSevenAndGetsResourceFromSelectedPlayer()
         {
-            var testName = MethodBase.GetCurrentMethod().Name;
+            
             try
             {
                 var infrastructureSetupBuilder = new InfrastructureSetupBuilder();
@@ -1927,7 +1927,7 @@ namespace SoC.Library.ScenarioTests
                 };
 
                 var robbedResource = ResourceClutch.OneLumber;
-                this.CompletePlayerInfrastructureSetup(infrastructureSetupBuilder.Build(), new[] { testName })
+                this.CompletePlayerInfrastructureSetup(infrastructureSetupBuilder.Build())
                     .WhenPlayer(Adam)
                         .ReceivesStartTurnEvent(3, 4).ThenDoNothing()
                         .ReceivesPlaceRobberEvent().ThenPlaceRobber(9)
@@ -1963,12 +1963,12 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void PlayerQuitsDuringFirstRoundOfGameSetup()
         {
-            var testName = MethodBase.GetCurrentMethod().Name;
+            
             try
             {
                 var expectedGameBoardSetup = new GameBoardSetup(new GameBoard(BoardSizes.Standard));
                 var playerOrder = new[] { Adam, Babara, Charlie, Dana };
-                ScenarioRunner.CreateScenarioRunner(new[] { testName })
+                ScenarioRunner.CreateScenarioRunner()
                     .WithPlayer(Adam).WithPlayer(Babara).WithPlayer(Charlie).WithPlayer(Dana)
                     .WithTurnOrder(playerOrder)
                     .WhenPlayer(Adam)
@@ -1990,12 +1990,12 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void PlayerQuitsDuringSecondRoundOfGameSetup()
         {
-            var testName = MethodBase.GetCurrentMethod().Name;
+            
             try
             {
                 var expectedGameBoardSetup = new GameBoardSetup(new GameBoard(BoardSizes.Standard));
                 var playerOrder = new[] { Adam, Babara, Charlie, Dana };
-                ScenarioRunner.CreateScenarioRunner(new[] { testName })
+                ScenarioRunner.CreateScenarioRunner()
                     .WithPlayer(Adam).WithPlayer(Babara).WithPlayer(Charlie).WithPlayer(Dana)
                     .WithTurnOrder(playerOrder)
                     .WhenPlayer(Adam)
@@ -2026,12 +2026,12 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void PlayerSendsIncorrectCommandDuringGameStartConfirmation()
         {
-            var testName = MethodBase.GetCurrentMethod().Name;
+            
             try
             {
                 var expectedGameBoardSetup = new GameBoardSetup(new GameBoard(BoardSizes.Standard));
                 var playerOrder = new[] { Adam, Babara, Charlie, Dana };
-                ScenarioRunner.CreateScenarioRunner(new[] { testName })
+                ScenarioRunner.CreateScenarioRunner()
                     .WithPlayer(Adam).WithPlayer(Babara).WithPlayer(Charlie).WithPlayer(Dana)
                     .WithTurnOrder(playerOrder)
                     .WhenPlayer(Adam)
@@ -2068,12 +2068,12 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void PlayerSendsIncorrectCommandDuringGameSetup()
         {
-            var testName = MethodBase.GetCurrentMethod().Name;
+            
             try
             {
                 var expectedGameBoardSetup = new GameBoardSetup(new GameBoard(BoardSizes.Standard));
                 var playerOrder = new[] { Adam, Babara, Charlie, Dana };
-                ScenarioRunner.CreateScenarioRunner(new[] { testName })
+                ScenarioRunner.CreateScenarioRunner()
                     .WithPlayer(Adam).WithPlayer(Babara).WithPlayer(Charlie).WithPlayer(Dana)
                     .WithTurnOrder(playerOrder)
                     .WhenPlayer(Adam)
@@ -2090,13 +2090,13 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void PlayerTradesOneResourceWithAnotherPlayer()
         {
-            var testName = MethodBase.GetCurrentMethod().Name;
+            
             try
             {
                 var adamResources = ResourceClutch.OneWool;
                 var babaraResources = ResourceClutch.OneGrain;
 
-                this.CompletePlayerInfrastructureSetup(new[] { testName })
+                this.CompletePlayerInfrastructureSetup()
                     .WithNoResourceCollection()
                     .WithInitialPlayerSetupFor(Adam, Resources(adamResources))
                     .WithInitialPlayerSetupFor(Babara, Resources(babaraResources))
