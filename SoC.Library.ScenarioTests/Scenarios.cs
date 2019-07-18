@@ -4,7 +4,6 @@ namespace SoC.Library.ScenarioTests
     using System;
     using System.Collections.Generic;
     using System.IO;
-    using System.Reflection;
     using Jabberwocky.SoC.Library;
     using Jabberwocky.SoC.Library.GameBoards;
     using Jabberwocky.SoC.Library.GameEvents;
@@ -53,7 +52,6 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void AllPlayersCollectResourcesAsPartOfGameSetup()
         {
-            
             try
             {
                 var expectedAdamResources = ResourceClutch.OneBrick + ResourceClutch.OneGrain + ResourceClutch.OneWool;
@@ -138,8 +136,7 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void AllPlayersCollectResourcesAsPartOfTurnStart()
         {
-            
-            try
+			try
             { 
                 var firstTurnCollectedResources = CreateExpectedCollectedResources()
                     .Add(Adam, Adam_FirstSettlementLocation, ResourceClutch.OneBrick)
@@ -244,8 +241,7 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void AllPlayersCompleteSetup()
         {
-            
-            try
+	try
             { 
                 var expectedGameBoardSetup = new GameBoardSetup(new GameBoard(BoardSizes.Standard));
                 var playerOrder = new[] { Adam, Babara, Charlie, Dana };
@@ -328,8 +324,7 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void AllOtherPlayersQuit()
         {
-            
-            try
+			try
             {
                 this.CompletePlayerInfrastructureSetup()
                     .WithNoResourceCollection()
@@ -371,8 +366,7 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void PlayerPlacesCity()
         {
-            
-            try
+			try
             { 
                 this.CompletePlayerInfrastructureSetup()
                     .WithNoResourceCollection()
@@ -413,8 +407,7 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void PlayerPlacesCityAndWins()
         {
-            
-            try { 
+			try { 
                 this.CompletePlayerInfrastructureSetup()
                     .WithNoResourceCollection()
                     .WithInitialPlayerSetupFor(
@@ -450,8 +443,7 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void PlayerTriesToPlaceCityOnLocationOccupiedByPlayer()
         {
-            
-            try
+			try
             { 
                 this.CompletePlayerInfrastructureSetup()
                     .WithNoResourceCollection()
@@ -479,8 +471,7 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void PlayerTriesToPlaceCityOnInvalidLocation()
         {
-            
-            try
+			try
             {
                 this.CompletePlayerInfrastructureSetup()
                     .WithNoResourceCollection()
@@ -507,8 +498,7 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void PlayerTriesToPlaceCityOnLocationOccupiedByOtherPlayer()
         {
-            
-            try
+			try
             { 
                 this.CompletePlayerInfrastructureSetup()
                     .WithNoResourceCollection()
@@ -546,8 +536,7 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void PlayerTriesToPlaceCityOnLocationWithoutSettlement()
         {
-            
-            try
+			try
             { 
             this.CompletePlayerInfrastructureSetup()
                 .WithNoResourceCollection()
@@ -575,8 +564,7 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void PlayerTriesToPlaceCityWithNotEnoughResources()
         {
-            
-            try
+			try
             { 
                 this.CompletePlayerInfrastructureSetup()
                     .WithNoResourceCollection()
@@ -600,8 +588,7 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void PlayerPlacesSettlement()
         {
-            
-            try
+			try
             { 
                 this.CompletePlayerInfrastructureSetup()
                     .WithNoResourceCollection()
@@ -639,8 +626,7 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void PlayerPlacesSettlementAndWins()
         {
-            
-            try
+			try
             { 
                 this.CompletePlayerInfrastructureSetup()
                     .WithNoResourceCollection()
@@ -678,8 +664,7 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void PlayerTriesToPlaceSettlementOnInvalidLocation()
         {
-            
-            try
+			try
             { 
                 this.CompletePlayerInfrastructureSetup()
                     .WithNoResourceCollection()
@@ -706,8 +691,7 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void PlayerTriesToPlaceSettlementOnLocationOccupiedByPlayer()
         {
-            
-            try
+			try
             { 
             this.CompletePlayerInfrastructureSetup()
                 .WithNoResourceCollection()
@@ -736,8 +720,7 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void PlayerTriesToPlaceSettlementOnLocationOccupiedByOtherPlayer()
         {
-            
-            try
+			try
             { 
                 this.CompletePlayerInfrastructureSetup()
                     .WithNoResourceCollection()
@@ -775,8 +758,7 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void PlayerTriesToPlaceSettlementOnUnconnectedLocation()
         {
-            
-            try
+			try
             {
                 this.CompletePlayerInfrastructureSetup()
                     .WithNoResourceCollection()
@@ -803,8 +785,7 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void PlayerTriesToPlaceSettlementWithNoSettlementsLeft()
         {
-            
-            try
+			try
             {
                 this.CompletePlayerInfrastructureSetup()
                     .WithNoResourceCollection()
@@ -831,8 +812,7 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void PlayerTriesToPlaceSettlementWithNotEnoughResources()
         {
-            
-            try
+			try
             {
                 this.CompletePlayerInfrastructureSetup()
                     .WithNoResourceCollection()
@@ -856,8 +836,7 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void PlayerTriesToPlaceRoadSegmentWithInvalidLocations()
         {
-            
-            try
+			try
             {
                 this.CompletePlayerInfrastructureSetup()
                     .WithNoResourceCollection()
@@ -883,8 +862,7 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void PlayerTriesToPlaceRoadSegmentWithUnconnectedLocations()
         {
-            
-            try
+			try
             {
                 this.CompletePlayerInfrastructureSetup()
                     .WithNoResourceCollection()
@@ -910,8 +888,7 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void PlayerTriesToPlaceRoadSegmentWithNoRoadSegmentsLeft()
         {
-            
-            try
+			try
             {
                 this.CompletePlayerInfrastructureSetup()
                     .WithNoResourceCollection()
@@ -937,8 +914,7 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void PlayerTriesToPlaceRoadSegmentWithNotEnoughResources()
         {
-            
-            try
+			try
             {
                 this.CompletePlayerInfrastructureSetup()
                     .WithNoResourceCollection()
@@ -963,8 +939,7 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void PlayerTriesToPlaceRoadSegmentOnOccupiedLocations()
         {
-            
-            try
+			try
             {
                 this.CompletePlayerInfrastructureSetup()
                     .WithNoResourceCollection()
@@ -990,8 +965,7 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void PlayerTriesToPlaceRoadSegmentOnLocationsNotConnectedToExistingRoadSystem()
         {
-            
-            try
+			try
             {
                 this.CompletePlayerInfrastructureSetup()
                     .WithNoResourceCollection()
@@ -1017,8 +991,7 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void PlayerPlaysKnightCard()
         {
-            
-            try
+			try
             {
                 var robbingChoices = new Dictionary<string, int>()
                 {
@@ -1061,8 +1034,7 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void PlayerPlaysKnightCardThatIsNotOwned()
         {
-            
-            try
+			try
             {
                 this.CompletePlayerInfrastructureSetup()
                     .WithNoResourceCollection()
@@ -1086,8 +1058,7 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void PlayerPlaysKnightCardAndNewHexIsSameAsCurrentHex()
         {
-            
-            try
+			try
             {
                 this.CompletePlayerInfrastructureSetup()
                     .WithNoResourceCollection()
@@ -1112,8 +1083,7 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void PlayerPlaysKnightCardAndNewHexHasNoPlayers()
         {
-            
-            try
+			try
             { 
                 this.CompletePlayerInfrastructureSetup()
                     .WithNoResourceCollection()
@@ -1147,8 +1117,7 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void PlayerPlaysKnightCardAndNewHexHasOnePlayer()
         {
-            
-            try
+			try
             { 
                 var robbedResource = ResourceClutch.OneLumber;
                 this.CompletePlayerInfrastructureSetup()
@@ -1181,8 +1150,7 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void PlayerPlaysKnightCardAndNewHexHasOnePlayerWhichIsCardPlayer()
         {
-            
-            try
+			try
             {
                 this.CompletePlayerInfrastructureSetup()
                     .WithNoResourceCollection()
@@ -1216,8 +1184,7 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void PlayerPlaysKnightCardAndSelectsInvalidPlayer()
         {
-            
-            try
+			try
             {
                 var infrastructureSetupBuilder = new InfrastructureSetupBuilder();
                 infrastructureSetupBuilder.Add(Adam, Adam_FirstSettlementLocation, Adam_FirstRoadEndLocation)
@@ -1266,8 +1233,7 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void PlayerPlaysKnightCardAndNewHexHasMultiplePlayers()
         {
-            
-            try
+			try
             {     
                 var infrastructureSetupBuilder = new InfrastructureSetupBuilder();
                 infrastructureSetupBuilder.Add(Adam, Adam_FirstSettlementLocation, Adam_FirstRoadEndLocation)
@@ -1316,8 +1282,7 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void PlayerPlaysKnightCardAndNewHexHasMultiplePlayersIncludingCardPlayer()
         {
-            
-            try
+			try
             { 
                 var infrastructureSetupBuilder = new InfrastructureSetupBuilder();
                 infrastructureSetupBuilder.Add(Adam, Adam_FirstSettlementLocation, Adam_FirstRoadEndLocation)
@@ -1366,8 +1331,7 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void PlayerRollsSevenAndAllPlayersWithMoreThanSevenResourcesLoseResources()
         {
-            
-            try
+			try
             {
                 var adamsInitialResources = new ResourceClutch(1, 2, 2, 2, 2); // 9 resources
                 var babarasInitialResources = new ResourceClutch(2, 2, 2, 2, 2); // 10 resources
@@ -1449,8 +1413,7 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void PlayerRollsSevenAndPlayerSendsTooManyResources()
         {
-            
-            try
+			try
             {
                 var adamsInitialResources = new ResourceClutch(1, 2, 2, 2, 2); // 9 resources
                 var adamsLostResources = new ResourceClutch(1, 1, 1, 1, 1);
@@ -1481,8 +1444,7 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void PlayerRollsSevenAndPlayerSendsTooLittleResources()
         {
-            
-            try
+			try
             {
                 var adamsInitialResources = new ResourceClutch(1, 2, 2, 2, 2); // 9 resources
                 var adamsLostResources = new ResourceClutch(0, 0, 1, 1, 1);
@@ -1513,8 +1475,7 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void PlayerRollsSevenAndPlayerSendsResourcesResultingInNegativeResources()
         {
-            
-            try
+			try
             {
                 var adamsInitialResources = new ResourceClutch(1, 2, 2, 2, 2); // 9 resources
                 var adamsLostResources = new ResourceClutch(2, 0, 0, 1, 1);
@@ -1545,8 +1506,7 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void PlayerRollsSevenAndAllPlayersWithMoreThanSeventResourcesMustSendResourcesBeforeRobberCanBePlaced()
         {
-            
-            try
+			try
             {
                 var adamsInitialResources = new ResourceClutch(1, 2, 2, 2, 2); // 9 resources
                 var babarasInitialResources = new ResourceClutch(2, 2, 2, 2, 2); // 10 resources
@@ -1626,8 +1586,7 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void PlayerRollsSevenAndNewHexHasNoPlayers()
         {
-            
-            try
+			try
             {
                 this.CompletePlayerInfrastructureSetup()
                     .WithNoResourceCollection()
@@ -1659,8 +1618,7 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void PlayerRollsSevenAndNewHexIsSameAsCurrentHex()
         {
-            
-            try
+			try
             {
                 this.CompletePlayerInfrastructureSetup()
                     .WithNoResourceCollection()
@@ -1685,8 +1643,7 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void PlayerRollsSevenAndNewHexHasOnePlayer()
         {
-            
-            try
+			try
             {
                 var robbedResource = ResourceClutch.OneLumber;
                 this.CompletePlayerInfrastructureSetup()
@@ -1719,8 +1676,7 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void PlayerRollsSevenAndNewHexHasOnePlayerWhichIsRollingPlayer()
         {
-            
-            try
+			try
             {
                 this.CompletePlayerInfrastructureSetup()
                     .WithNoResourceCollection()
@@ -1754,8 +1710,7 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void PlayerRollsSevenAndNewHexHasMultiplePlayers()
         {
-            
-            try
+			try
             {
                 var infrastructureSetupBuilder = new InfrastructureSetupBuilder();
                 infrastructureSetupBuilder.Add(Adam, Adam_FirstSettlementLocation, Adam_FirstRoadEndLocation)
@@ -1804,8 +1759,7 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void PlayerRollsSevenAndNewHexHasMultiplePlayersIncludingRollingPlayer()
         {
-            
-            try
+			try
             { 
                 var infrastructureSetupBuilder = new InfrastructureSetupBuilder();
                 infrastructureSetupBuilder.Add(Adam, 21, 11)
@@ -1857,8 +1811,7 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void PlayerRollsSevenAndSelectsInvalidPlayer()
         {
-            
-            try
+			try
             {
                 var infrastructureSetupBuilder = new InfrastructureSetupBuilder();
                 infrastructureSetupBuilder.Add(Adam, Adam_FirstSettlementLocation, Adam_FirstRoadEndLocation)
@@ -1907,8 +1860,7 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void PlayerRollsSevenAndGetsResourceFromSelectedPlayer()
         {
-            
-            try
+			try
             {
                 var infrastructureSetupBuilder = new InfrastructureSetupBuilder();
                 infrastructureSetupBuilder.Add(Adam, Adam_FirstSettlementLocation, Adam_FirstRoadEndLocation)
@@ -1963,8 +1915,7 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void PlayerQuitsDuringFirstRoundOfGameSetup()
         {
-            
-            try
+			try
             {
                 var expectedGameBoardSetup = new GameBoardSetup(new GameBoard(BoardSizes.Standard));
                 var playerOrder = new[] { Adam, Babara, Charlie, Dana };
@@ -1990,8 +1941,7 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void PlayerQuitsDuringSecondRoundOfGameSetup()
         {
-            
-            try
+			try
             {
                 var expectedGameBoardSetup = new GameBoardSetup(new GameBoard(BoardSizes.Standard));
                 var playerOrder = new[] { Adam, Babara, Charlie, Dana };
@@ -2026,8 +1976,7 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void PlayerSendsIncorrectCommandDuringGameStartConfirmation()
         {
-            
-            try
+			try
             {
                 var expectedGameBoardSetup = new GameBoardSetup(new GameBoard(BoardSizes.Standard));
                 var playerOrder = new[] { Adam, Babara, Charlie, Dana };
@@ -2068,8 +2017,7 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void PlayerSendsIncorrectCommandDuringGameSetup()
         {
-            
-            try
+			try
             {
                 var expectedGameBoardSetup = new GameBoardSetup(new GameBoard(BoardSizes.Standard));
                 var playerOrder = new[] { Adam, Babara, Charlie, Dana };
@@ -2090,8 +2038,7 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void PlayerTradesOneResourceWithAnotherPlayer()
         {
-            
-            try
+			try
             {
                 var adamResources = ResourceClutch.OneWool;
                 var babaraResources = ResourceClutch.OneGrain;
