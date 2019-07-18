@@ -1042,10 +1042,13 @@ namespace SoC.Library.ScenarioTests
                         .ReceivesStartTurnEvent(3, 3).ThenPlayKnightCard(0)
                         .ReceivesGameErrorEvent("920", "No Knight card owned")
                     .VerifyPlayer(Babara)
+                        .DidNotReceiveEventOfType<KnightCardPlayedEvent>()
                         .DidNotReceiveEventOfType<GameErrorEvent>()
                     .VerifyPlayer(Charlie)
+                        .DidNotReceiveEventOfType<KnightCardPlayedEvent>()
                         .DidNotReceiveEventOfType<GameErrorEvent>()
                     .VerifyPlayer(Dana)
+                        .DidNotReceiveEventOfType<KnightCardPlayedEvent>()
                         .DidNotReceiveEventOfType<GameErrorEvent>()
                     .Run(this.logDirectory);
             }
@@ -1067,10 +1070,13 @@ namespace SoC.Library.ScenarioTests
                         .ReceivesStartTurnEvent(3, 3).ThenPlayKnightCard(0)
                         .ReceivesGameErrorEvent("918", "New robber hex cannot be the same as previous robber hex")
                     .VerifyPlayer(Babara)
+                        .DidNotReceiveEventOfType<KnightCardPlayedEvent>()
                         .DidNotReceiveEventOfType<GameErrorEvent>()
                     .VerifyPlayer(Charlie)
+                        .DidNotReceiveEventOfType<KnightCardPlayedEvent>()
                         .DidNotReceiveEventOfType<GameErrorEvent>()
                     .VerifyPlayer(Dana)
+                        .DidNotReceiveEventOfType<KnightCardPlayedEvent>()
                         .DidNotReceiveEventOfType<GameErrorEvent>()
                     .Run(this.logDirectory);
             }
@@ -1090,7 +1096,6 @@ namespace SoC.Library.ScenarioTests
                     .WithInitialPlayerSetupFor(Adam, KnightCard())
                     .WhenPlayer(Adam)
                         .ReceivesStartTurnEvent(3, 3).ThenPlayKnightCard(4)
-                        .ReceivesPlaceRobberEvent().ThenPlaceRobber(4)
                     .WhenPlayer(Babara)
                         .ReceivesKinghtCardPlayerEvent(Adam, 4).ThenDoNothing()
                     .WhenPlayer(Charlie)
