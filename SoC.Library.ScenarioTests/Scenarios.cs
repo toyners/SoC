@@ -2153,7 +2153,7 @@ namespace SoC.Library.ScenarioTests
             if (File.Exists(filePath))
                 TestContext.AddTestAttachment(filePath);
 
-            filePath = $"{this.logDirectory}\\Babara.html";
+            filePath = $"{this.logDirectory}\\Barbara.html";
             if (File.Exists(filePath))
                 TestContext.AddTestAttachment(filePath);
 
