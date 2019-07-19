@@ -150,9 +150,15 @@ namespace SoC.Library.ScenarioTests
             return this;
         }
 
-        public ScenarioRunner ReceivesKinghtCardPlayerEvent(string playerName, uint hex)
+        public ScenarioRunner ReceivesKnightCardPlayedEvent(string playerName, uint hex)
         {
             this.AddEventInstruction(new KnightCardPlayedEvent(this.playerAgentsByName[playerName].Id, hex));
+            return this;
+        }
+
+        public ScenarioRunner ReceivesKnightCardPlayedEvent(uint hex)
+        {
+            this.AddEventInstruction(new KnightCardPlayedEvent(this.currentPlayerAgent.Id, hex));
             return this;
         }
 

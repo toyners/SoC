@@ -600,19 +600,7 @@ namespace Jabberwocky.SoC.Library
 
             if (playerAction is PlayKnightCardAction playKnightCardAction)
             {
-                DevelopmentCard card = null;
-                if ((card = this.currentPlayer.HeldCards.FirstOrDefault(c => c.Type == DevelopmentCardTypes.Knight)) == null)
-                {
-                    this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, "920", "No Knight card owned"),
-                        this.currentPlayer);
-                }
-
-                if (this.robberHex == playKnightCardAction.NewRobberHex)
-                {
-                    this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, "918", "New robber hex cannot be the same as previous robber hex"),
-                        this.currentPlayer);
-                }
-
+                this.ProcessPlayKnightCardAction(playKnightCardAction);
                 return false;
             }
 
@@ -661,6 +649,24 @@ namespace Jabberwocky.SoC.Library
             }
 
             throw new Exception($"Player action {playerAction.GetType()} not recognised.");
+        }
+
+        private void ProcessPlayKnightCardAction(PlayKnightCardAction playKnightCardAction)
+        {
+            DevelopmentCard card = null;
+            if ((card = this.currentPlayer.HeldCards.FirstOrDefault(c => c.Type == DevelopmentCardTypes.Knight)) == null)
+            {
+                this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, "920", "No Knight card owned"),
+                    this.currentPlayer);
+            }
+
+            if (this.robberHex == playKnightCardAction.NewRobberHex)
+            {
+                this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, "918", "New robber hex cannot be the same as previous robber hex"),
+                    this.currentPlayer);
+            }
+
+
         }
 
         private void ProcessPlaceRobberAction(PlaceRobberAction placeRobberAction)
