@@ -30,9 +30,10 @@ namespace Jabberwocky.SoC.Library
         private IPlayer currentPlayer;
         private Func<Guid> idGenerator;
         private bool isGameSetup = true;
+        private Guid[] playerIdsInRobberHex;
         private int playerIndex;
-        private uint robberHex = 0;
         private IDictionary<Guid, IPlayer> playersById;
+        private uint robberHex = 0;
 
         private IPlayer[] players;
         private IGameTimer turnTimer;
@@ -477,6 +478,48 @@ namespace Jabberwocky.SoC.Library
             }
         }
 
+        private void ProcessPlaceRobberAction(PlaceRobberAction placeRobberAction)
+        {
+            if (this.robberHex == placeRobberAction.Hex)
+            {
+                this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, "918", "New robber hex cannot be the same as previous robber hex"),
+                    this.currentPlayer);
+                return;
+            }
+
+            this.actionManager.SetExpectedActionsForPlayer(this.currentPlayer.Id, null);
+            this.robberHex = placeRobberAction.Hex;
+            this.RaiseEvent(new RobberPlacedEvent(this.currentPlayer.Id, this.robberHex));
+
+            this.playerIdsInRobberHex = this.gameBoard.GetPlayersForHex(this.robberHex);
+            if (this.playerIdsInRobberHex != null)
+            {
+                if (this.playerIdsInRobberHex.Length == 1)
+                {
+                    if (this.playerIdsInRobberHex[0] != this.currentPlayer.Id)
+                    {
+                        var player = this.playersById[this.playerIdsInRobberHex[0]];
+
+                        var resourceIndex = this.numberGenerator.GetRandomNumberBetweenZeroAndMaximum(player.Resources.Count);
+                        var robbedResource = player.LoseResourceAtIndex(resourceIndex);
+                        this.currentPlayer.AddResources(robbedResource);
+                        this.RaiseEvent(new ResourcesGainedEvent(robbedResource), this.currentPlayer);
+                        this.RaiseEvent(new ResourcesLostEvent(robbedResource, this.currentPlayer.Id, ResourcesLostEvent.ReasonTypes.Robbed), player);
+                        this.RaiseEvent(new ResourcesLostEvent(robbedResource, this.currentPlayer.Id, ResourcesLostEvent.ReasonTypes.Witness),
+                            this.PlayersExcept(this.currentPlayer.Id, player.Id));
+                    }
+                }
+                else
+                {
+                    var resourceCountsByPlayerId = this.playerIdsInRobberHex.Where(playerId => playerId != this.currentPlayer.Id).ToDictionary(playerId => playerId, playerId => this.playersById[playerId].Resources.Count);
+                    this.RaiseEvent(new RobbingChoicesEvent(this.currentPlayer.Id, resourceCountsByPlayerId));
+
+                    this.actionManager.SetExpectedActionsForPlayer(this.currentPlayer.Id, typeof(SelectResourceFromPlayerAction));
+                    this.ProcessPlayerAction(this.WaitForPlayerAction());
+                }
+            }
+        }
+
         private bool ProcessPlaceSettlementAction(PlaceSettlementAction placeSettlementAction)
         {
             try
@@ -554,7 +597,6 @@ namespace Jabberwocky.SoC.Library
             this.RaiseEvent(new InfrastructurePlacedEvent(player.Id, settlementLocation, roadEndLocation));
         }
 
-        private Guid[] playerIdsInRobberHex;
         private bool ProcessPlayerAction(PlayerAction playerAction)
         {
             if (playerAction is AcceptDirectTradeAction acceptDirectTradeAction)
@@ -666,49 +708,8 @@ namespace Jabberwocky.SoC.Library
                     this.currentPlayer);
             }
 
-
-        }
-
-        private void ProcessPlaceRobberAction(PlaceRobberAction placeRobberAction)
-        {
-            if (this.robberHex == placeRobberAction.Hex)
-            {
-                this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, "918", "New robber hex cannot be the same as previous robber hex"),
-                    this.currentPlayer);
-                return;
-            }
-
-            this.actionManager.SetExpectedActionsForPlayer(this.currentPlayer.Id, null);
-            this.robberHex = placeRobberAction.Hex;
-            this.RaiseEvent(new RobberPlacedEvent(this.currentPlayer.Id, this.robberHex));
-
-            this.playerIdsInRobberHex = this.gameBoard.GetPlayersForHex(this.robberHex);
-            if (this.playerIdsInRobberHex != null)
-            {
-                if (this.playerIdsInRobberHex.Length == 1)
-                {
-                    if (this.playerIdsInRobberHex[0] != this.currentPlayer.Id)
-                    {
-                        var player = this.playersById[this.playerIdsInRobberHex[0]];
-
-                        var resourceIndex = this.numberGenerator.GetRandomNumberBetweenZeroAndMaximum(player.Resources.Count);
-                        var robbedResource = player.LoseResourceAtIndex(resourceIndex);
-                        this.currentPlayer.AddResources(robbedResource);
-                        this.RaiseEvent(new ResourcesGainedEvent(robbedResource), this.currentPlayer);
-                        this.RaiseEvent(new ResourcesLostEvent(robbedResource, this.currentPlayer.Id, ResourcesLostEvent.ReasonTypes.Robbed), player);
-                        this.RaiseEvent(new ResourcesLostEvent(robbedResource, this.currentPlayer.Id, ResourcesLostEvent.ReasonTypes.Witness),
-                            this.PlayersExcept(this.currentPlayer.Id, player.Id));
-                    }
-                }
-                else
-                {
-                    var resourceCountsByPlayerId = this.playerIdsInRobberHex.Where(playerId => playerId != this.currentPlayer.Id).ToDictionary(playerId => playerId, playerId => this.playersById[playerId].Resources.Count);
-                    this.RaiseEvent(new RobbingChoicesEvent(this.currentPlayer.Id, resourceCountsByPlayerId));
-
-                    this.actionManager.SetExpectedActionsForPlayer(this.currentPlayer.Id, typeof(SelectResourceFromPlayerAction));
-                    this.ProcessPlayerAction(this.WaitForPlayerAction());
-                }
-            }
+            this.robberHex = playKnightCardAction.NewRobberHex;
+            this.RaiseEvent(new KnightCardPlayedEvent(this.currentPlayer.Id, this.robberHex));
         }
 
         private void ProcessPlayerQuit(Guid playerId)
