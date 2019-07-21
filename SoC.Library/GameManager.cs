@@ -712,6 +712,23 @@ namespace Jabberwocky.SoC.Library
 
             this.robberHex = playKnightCardAction.NewRobberHex;
             this.RaiseEvent(new KnightCardPlayedEvent(this.currentPlayer.Id, this.robberHex));
+
+            this.playerIdsInRobberHex = this.gameBoard.GetPlayersForHex(this.robberHex);
+            if (this.playerIdsInRobberHex != null)
+            {
+                if (this.playerIdsInRobberHex[0] != this.currentPlayer.Id)
+                {
+                    var player = this.playersById[this.playerIdsInRobberHex[0]];
+
+                    var resourceIndex = this.numberGenerator.GetRandomNumberBetweenZeroAndMaximum(player.Resources.Count);
+                    var robbedResource = player.LoseResourceAtIndex(resourceIndex);
+                    this.currentPlayer.AddResources(robbedResource);
+                    this.RaiseEvent(new ResourcesGainedEvent(robbedResource), this.currentPlayer);
+                    this.RaiseEvent(new ResourcesLostEvent(robbedResource, this.currentPlayer.Id, ResourcesLostEvent.ReasonTypes.Robbed), player);
+                    this.RaiseEvent(new ResourcesLostEvent(robbedResource, this.currentPlayer.Id, ResourcesLostEvent.ReasonTypes.Witness),
+                        this.PlayersExcept(this.currentPlayer.Id, player.Id));
+                }
+            }
         }
 
         private void ProcessPlayerQuit(Guid playerId)

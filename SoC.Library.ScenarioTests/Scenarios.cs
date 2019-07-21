@@ -1145,8 +1145,9 @@ namespace SoC.Library.ScenarioTests
             { 
                 var robbedResource = ResourceClutch.OneLumber;
                 this.CompletePlayerInfrastructureSetup()
+                    .WithInitialPlayerSetupFor(Adam, KnightCard())
                     .WhenPlayer(Adam)
-                        .ReceivesStartTurnEvent(3, 3).ThenPlayKnightCard(3)
+                        .ReceivesStartTurnEvent(1, 1).ThenPlayKnightCard(3)
                         .ReceivesKnightCardPlayedEvent(3).ThenDoNothing()
                         .ReceivesResourcesRobbedEvent(Babara, ResourceTypes.Lumber)
                         .ThenVerifyPlayerState()
@@ -1179,6 +1180,7 @@ namespace SoC.Library.ScenarioTests
             {
                 this.CompletePlayerInfrastructureSetup()
                     .WithNoResourceCollection()
+                    .WithInitialPlayerSetupFor(Adam, KnightCard())
                     .WhenPlayer(Adam)
                         .ReceivesStartTurnEvent(3, 3).ThenPlayKnightCard(1)
                         .ReceivesKnightCardPlayedEvent(1).ThenDoNothing()
