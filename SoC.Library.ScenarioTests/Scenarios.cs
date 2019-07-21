@@ -1224,22 +1224,23 @@ namespace SoC.Library.ScenarioTests
 
                 var robbingChoices = new Dictionary<string, int>()
                 {
-                    { Charlie, 3 },
-                    { Dana, 3 }
+                    { Charlie, 4 },
+                    { Dana, 5 }
                 };
 
                 this.CompletePlayerInfrastructureSetup(infrastructureSetupBuilder.Build())
+                    .WithInitialPlayerSetupFor(Adam, KnightCard())
                     .WhenPlayer(Adam)
-                        .ReceivesStartTurnEvent(3, 3).ThenDoNothing()
-                        .ReceivesPlaceRobberEvent().ThenPlaceRobber(9)
+                        .ReceivesStartTurnEvent(3, 3).ThenPlayKnightCard(9)
+                        .ReceivesKnightCardPlayedEvent(9).ThenDoNothing()
                         .ReceivesRobbingChoicesEvent(robbingChoices).ThenSelectRobbedPlayer(Babara)
                         .ReceivesGameErrorEvent("919", "Invalid player selection")
                     .WhenPlayer(Babara)
-                        .ReceivesRobberPlacedEvent(Adam, 9).ThenDoNothing()
+                        .ReceivesKnightCardPlayedEvent(Adam, 9).ThenDoNothing()
                     .WhenPlayer(Charlie)
-                        .ReceivesRobberPlacedEvent(Adam, 9).ThenDoNothing()
+                        .ReceivesKnightCardPlayedEvent(Adam, 9).ThenDoNothing()
                     .WhenPlayer(Dana)
-                        .ReceivesRobberPlacedEvent(Adam, 9).ThenDoNothing()
+                        .ReceivesKnightCardPlayedEvent(Adam, 9).ThenDoNothing()
                     .VerifyPlayer(Adam)
                         .DidNotReceiveEventOfType<ChooseLostResourcesEvent>()
                     .VerifyPlayer(Babara)
@@ -1274,21 +1275,22 @@ namespace SoC.Library.ScenarioTests
                 var robbingChoices = new Dictionary<string, int>()
                 {
                     { Babara, 3 },
-                    { Charlie, 3 },
-                    { Dana, 3 }
+                    { Charlie, 4 },
+                    { Dana, 5 }
                 };
 
                 this.CompletePlayerInfrastructureSetup(infrastructureSetupBuilder.Build())
+                    .WithInitialPlayerSetupFor(Adam, KnightCard())
                     .WhenPlayer(Adam)
-                        .ReceivesStartTurnEvent(3, 3).ThenDoNothing()
-                        .ReceivesPlaceRobberEvent().ThenPlaceRobber(9)
+                        .ReceivesStartTurnEvent(3, 3).ThenPlayKnightCard(9)
+                        .ReceivesKnightCardPlayedEvent(9).ThenDoNothing()
                         .ReceivesRobbingChoicesEvent(robbingChoices).ThenDoNothing()
                     .WhenPlayer(Babara)
-                        .ReceivesRobberPlacedEvent(Adam, 9).ThenDoNothing()
+                        .ReceivesKnightCardPlayedEvent(Adam, 9).ThenDoNothing()
                     .WhenPlayer(Charlie)
-                        .ReceivesRobberPlacedEvent(Adam, 9).ThenDoNothing()
+                        .ReceivesKnightCardPlayedEvent(Adam, 9).ThenDoNothing()
                     .WhenPlayer(Dana)
-                        .ReceivesRobberPlacedEvent(Adam, 9).ThenDoNothing()
+                        .ReceivesKnightCardPlayedEvent(Adam, 9).ThenDoNothing()
                     .VerifyPlayer(Adam)
                         .DidNotReceiveEventOfType<ChooseLostResourcesEvent>()
                     .VerifyPlayer(Babara)
@@ -1323,21 +1325,22 @@ namespace SoC.Library.ScenarioTests
                 var robbingChoices = new Dictionary<string, int>()
                 {
                     { Babara, 3 },
-                    { Charlie, 3 },
-                    { Dana, 3 }
+                    { Charlie, 4 },
+                    { Dana, 5 }
                 };
 
                 this.CompletePlayerInfrastructureSetup(infrastructureSetupBuilder.Build())
+                    .WithInitialPlayerSetupFor(Adam, KnightCard())
                     .WhenPlayer(Adam)
-                        .ReceivesStartTurnEvent(3, 3).ThenDoNothing()
-                        .ReceivesPlaceRobberEvent().ThenPlaceRobber(9)
+                        .ReceivesStartTurnEvent(3, 3).ThenPlayKnightCard(9)
+                        .ReceivesKnightCardPlayedEvent(9).ThenDoNothing()
                         .ReceivesRobbingChoicesEvent(robbingChoices).ThenDoNothing()
                     .WhenPlayer(Babara)
-                        .ReceivesRobberPlacedEvent(Adam, 9).ThenDoNothing()
+                        .ReceivesKnightCardPlayedEvent(Adam, 9).ThenDoNothing()
                     .WhenPlayer(Charlie)
-                        .ReceivesRobberPlacedEvent(Adam, 9).ThenDoNothing()
+                        .ReceivesKnightCardPlayedEvent(Adam, 9).ThenDoNothing()
                     .WhenPlayer(Dana)
-                        .ReceivesRobberPlacedEvent(Adam, 9).ThenDoNothing()
+                        .ReceivesKnightCardPlayedEvent(Adam, 9).ThenDoNothing()
                     .VerifyPlayer(Adam)
                         .DidNotReceiveEventOfType<ChooseLostResourcesEvent>()
                     .VerifyPlayer(Babara)

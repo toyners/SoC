@@ -174,6 +174,11 @@ namespace SoC.Library.ScenarioTests
                 foreach (var kv in playerSetupEvent.PlayerIdsByName)
                     result += $"Name <b>{kv.Key}</b> Id <b>{kv.Value}</b><br>";
             }
+            else if (gameEvent is RobbingChoicesEvent robbingChoicesEvent)
+            {
+                foreach (var kv in robbingChoicesEvent.RobbingChoices)
+                    result += $"Name <b>{GetPlayerName(kv.Key)}</b> Resource count <b>{kv.Value}</b><br>";
+            }
 
             return $"Player: <b>{GetPlayerName(gameEvent.PlayerId)}</b>" + (result.Length > 0 ? "<br>" : "") + result;
         }
