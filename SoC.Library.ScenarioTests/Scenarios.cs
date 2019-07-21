@@ -1018,6 +1018,7 @@ namespace SoC.Library.ScenarioTests
                 };
                 var robbedResource = ResourceClutch.OneLumber;
                 this.CompletePlayerInfrastructureSetup()
+                    .WithInitialPlayerSetupFor(Adam, KnightCard())
                     .WhenPlayer(Adam)
                         .ReceivesStartTurnEvent(3, 3).ThenPlayKnightCard(8)
                         .ReceivesRobbingChoicesEvent(robbingChoices).ThenSelectRobbedPlayer(Babara)
