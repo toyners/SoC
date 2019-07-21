@@ -1013,8 +1013,8 @@ namespace SoC.Library.ScenarioTests
             {
                 var robbingChoices = new Dictionary<string, int>()
                 {
-                    { Babara, 3 },
-                    { Dana, 3 }
+                    { Babara, 4 },
+                    { Dana, 4 }
                 };
                 var robbedResource = ResourceClutch.OneLumber;
                 this.CompletePlayerInfrastructureSetup()
