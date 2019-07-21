@@ -414,10 +414,6 @@ namespace SoC.Library.ScenarioTests
                     Thread.Sleep(50);
             }
 
-            if (Directory.Exists(logDirectory))
-                Directory.Delete(logDirectory, true);
-            Directory.CreateDirectory(logDirectory);
-
             for (var i = 0; i < this.playerAgents.Count; i++)
             {
                 var playerAgentTask = playerAgentTasks[i];

@@ -47,6 +47,24 @@ namespace SoC.Library.ScenarioTests
         public void Setup()
         {
             this.logDirectory = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
+            if (!Directory.Exists(this.logDirectory))
+            {
+                Directory.CreateDirectory(this.logDirectory);
+
+                var greenTickFilePath = $"{this.logDirectory}\\green_tick.png";
+                using (var stream = new MemoryStream())
+                {
+                    Properties.Resources.GreenTick.Save(stream, System.Drawing.Imaging.ImageFormat.Png);
+                    File.WriteAllBytes(greenTickFilePath, stream.ToArray());
+                }
+
+                var redCrossFilePath = $"{this.logDirectory}\\red_cross.png";
+                using (var stream = new MemoryStream())
+                {
+                    Properties.Resources.RedCross.Save(stream, System.Drawing.Imaging.ImageFormat.Png);
+                    File.WriteAllBytes(redCrossFilePath, stream.ToArray());
+                }
+            }
         }
 
         [Test]

@@ -64,13 +64,6 @@ namespace SoC.Library.ScenarioTests
                 content += logEvent.ToHtml();
             }
 
-            /*content += "</table></div><br /><div><table>" +
-                "<tr><th>Actual</th><th>Expected</th><th>Notes</th></tr>";
-            foreach (var logEvent in this.logEvents)
-            {
-                content += logEvent.ToHtml();
-            }*/
-
             File.WriteAllText(filePath, content + "</table></div></body>");
         }
 
@@ -88,8 +81,6 @@ namespace SoC.Library.ScenarioTests
             {
                 return $"<tr>" +
                     "<td /><td class=\"action border\">" +
-                    //$"<td class=\"border\">" +
-                    //$"<img src=\"..\\green_tick.png\" alt=\"\" height=\"20\" width=\"20\">" +
                     $"<span>{this.playerAction.Operation} operation</span>" +
                     $"</td></tr>";
             }
@@ -119,7 +110,7 @@ namespace SoC.Library.ScenarioTests
             {
                 return $"<tr class=\"matched\">" +
                     $"<td class=\"border\">" +
-                    $"<img src=\"..\\green_tick.png\" alt=\"\" height=\"20\" width=\"20\">" +
+                    $"<img src=\"green_tick.png\" alt=\"\" height=\"20\" width=\"20\">" +
                     $"<span>{this.actualEvent.SimpleTypeName}</span><br>" +
                     $"<div>{GetEventProperties(this.actualEvent)}</div>" +
                     $"</td>" +
@@ -160,7 +151,7 @@ namespace SoC.Library.ScenarioTests
             {
                 return $"<tr class=\"expected\">" +
                     $"<td class=\"border\">" +
-                    $"<img src=\"..\\red_cross.png\" alt=\"\" height=\"20\" width=\"20\">" +
+                    $"<img src=\"red_cross.png\" alt=\"\" height=\"20\" width=\"20\">" +
                     $"<span>{this.expectedEvent.SimpleTypeName}</span><br><div>{GetEventProperties(this.expectedEvent)}</div></td></tr>";
             }
         }

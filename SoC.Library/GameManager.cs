@@ -700,12 +700,14 @@ namespace Jabberwocky.SoC.Library
             {
                 this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, "920", "No Knight card owned"),
                     this.currentPlayer);
+                return;
             }
 
             if (this.robberHex == playKnightCardAction.NewRobberHex)
             {
                 this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, "918", "New robber hex cannot be the same as previous robber hex"),
                     this.currentPlayer);
+                return;
             }
 
             this.robberHex = playKnightCardAction.NewRobberHex;
