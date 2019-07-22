@@ -278,7 +278,7 @@ namespace SoC.Library.ScenarioTests
                 case ResourceTypes.Wool: resource = ResourceClutch.OneWool; break;
             }
 
-            this.numberGenerator.AddRobbed(this.playerAgentsByName[robbedPlayerName], resourceType);
+            this.numberGenerator.PlayerLosesResource(this.playerAgentsByName[robbedPlayerName], resourceType);
             var gameEvent = new ResourcesGainedEvent(resource);
             this.AddEventInstruction(gameEvent);
 

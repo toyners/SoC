@@ -8,11 +8,10 @@ namespace SoC.Library.ScenarioTests
     internal class ScenarioNumberGenerator : INumberGenerator
     {
         private readonly Queue<Tuple<uint, uint>> diceRolls = new Queue<Tuple<uint, uint>>();
-        private readonly List<int> numbers = new List<int>();
+        private readonly Queue<PlayerResource> scenarios = new Queue<PlayerResource>();
 
         public void AddRandomNumber(int number)
         {
-            this.numbers.Add(number);
         }
 
         public void AddTwoDiceRoll(uint dice1, uint dice2)
@@ -22,12 +21,10 @@ namespace SoC.Library.ScenarioTests
 
         public int GetRandomNumberBetweenZeroAndMaximum(int exclusiveMaximum)
         {
-            var n = this.scenarios.Dequeue();
-            var playerAgent = n.playerAgent;
-            if (playerAgent.Resources.Count != exclusiveMaximum)
-                throw new Exception($"Resource count ({playerAgent.Resources.Count}) does not match exclusiveMaximum ({exclusiveMaximum})");
+            var playerResource = this.scenarios.Dequeue();
+            var playerAgent = playerResource.playerAgent;
 
-            switch (n.resourceType)
+            switch (playerResource.resourceType)
             {
                 case ResourceTypes.Brick:
                 {
@@ -64,9 +61,6 @@ namespace SoC.Library.ScenarioTests
             }
 
             throw new Exception("Should not get here");
-            /*var number = this.numbers[0];
-            this.numbers.RemoveAt(0);
-            return number;*/
         }
 
         public void RollTwoDice(out uint dice1, out uint dice2)
@@ -79,13 +73,12 @@ namespace SoC.Library.ScenarioTests
             dice2 = tuple.Item2;
         }
 
-        private Queue<Number> scenarios = new Queue<Number>();
-        public void AddRobbed(PlayerAgent playerAgent, ResourceTypes resourceType)
+        public void PlayerLosesResource(PlayerAgent playerAgent, ResourceTypes resourceType)
         {
-            this.scenarios.Enqueue(new Number { playerAgent = playerAgent, resourceType = resourceType });
+            this.scenarios.Enqueue(new PlayerResource { playerAgent = playerAgent, resourceType = resourceType });
         }
 
-        public class Number
+        private class PlayerResource
         {
             public PlayerAgent playerAgent;
             public ResourceTypes resourceType;
