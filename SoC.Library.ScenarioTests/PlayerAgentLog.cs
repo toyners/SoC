@@ -7,6 +7,7 @@ namespace SoC.Library.ScenarioTests
     using System.Linq;
     using Jabberwocky.SoC.Library.GameEvents;
     using SoC.Library.ScenarioTests.Instructions;
+    using SoC.Library.ScenarioTests.ScenarioEvents;
 
     public class PlayerAgentLog : IPlayerAgentLog
     {
@@ -174,10 +175,35 @@ namespace SoC.Library.ScenarioTests
                 foreach (var kv in playerSetupEvent.PlayerIdsByName)
                     result += $"Name <b>{kv.Key}</b> Id <b>{kv.Value}</b><br>";
             }
+            else if (gameEvent is RequestStateEvent requestStateEvent)
+            {
+                result += $"Cities <b>{requestStateEvent.Cities}</b><br>" +
+                    $"Resources <b>{requestStateEvent.Resources}</b><br>" +
+                    $"Road Segments <b>{requestStateEvent.RoadSegments}</b><br>" +
+                    $"Settlements <b>{requestStateEvent.Settlements}</b><br>" +
+                    $"Victory Points <b>{requestStateEvent.VictoryPoints}</b>";
+            }
+            else if (gameEvent is ResourcesCollectedEvent resourcesCollectedEvent)
+            {
+                foreach (var kv in resourcesCollectedEvent.ResourcesCollectedByPlayerId)
+                {
+                    result += $"Name <b>{GetPlayerName(kv.Key)}</b><br>";
+                    foreach (var kv2 in kv.Value)
+                        result += $"Location <b>{kv2.Location}</b> Resources <b>{kv2.Resources}</b><br>";
+                }
+            }
             else if (gameEvent is RobbingChoicesEvent robbingChoicesEvent)
             {
                 foreach (var kv in robbingChoicesEvent.RobbingChoices)
                     result += $"Name <b>{GetPlayerName(kv.Key)}</b> Resource count <b>{kv.Value}</b><br>";
+            }
+            else if (gameEvent is ScenarioRequestStateEvent scenarioRequestStateEvent)
+            {
+                result += $"Cities <b>{scenarioRequestStateEvent.Cities}</b><br>" +
+                    $"Resources <b>{scenarioRequestStateEvent.Resources}</b><br>" +
+                    $"Road Segments <b>{scenarioRequestStateEvent.RoadSegments}</b><br>" +
+                    $"Settlements <b>{scenarioRequestStateEvent.Settlements}</b><br>" +
+                    $"Victory Points <b>{scenarioRequestStateEvent.VictoryPoints}</b>";
             }
 
             return $"Player: <b>{GetPlayerName(gameEvent.PlayerId)}</b>" + (result.Length > 0 ? "<br>" : "") + result;

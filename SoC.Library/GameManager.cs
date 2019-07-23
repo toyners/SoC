@@ -738,6 +738,11 @@ namespace Jabberwocky.SoC.Library
 
                     this.actionManager.SetExpectedActionsForPlayer(this.currentPlayer.Id, typeof(SelectResourceFromPlayerAction));
                     this.ProcessPlayerAction(this.WaitForPlayerAction());
+
+                    this.actionManager.SetExpectedActionsForPlayer(this.currentPlayer.Id,
+                        typeof(EndOfTurnAction), typeof(MakeDirectTradeOfferAction),
+                        typeof(PlaceCityAction), typeof(PlaceRoadSegmentAction),
+                        typeof(PlaceSettlementAction), typeof(PlayKnightCardAction));
                 }
             }
         }

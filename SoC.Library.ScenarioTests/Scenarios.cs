@@ -1007,7 +1007,7 @@ namespace SoC.Library.ScenarioTests
         }
 
         [Test]
-        public void PlayerPlaysKnightCard()
+        public void PlayerPlaysKnightCardAndGetsResourceFromSelectedPlayer()
         {
 			try
             {
@@ -1031,7 +1031,7 @@ namespace SoC.Library.ScenarioTests
                         .ReceivesKnightCardPlayedEvent(Adam, 8).ThenDoNothing()
                         .ReceivesResourcesStolenEvent(robbedResource)
                         .ThenVerifyPlayerState()
-                            .Resources(ResourceClutch.OneGrain + ResourceClutch.OneWool)
+                            .Resources(ResourceClutch.OneGrain + ResourceClutch.OneOre + ResourceClutch.OneWool)
                         .End()
                         .ReceivesRoadSegmentPlacementEvent(Adam, 4, 3)
                     .WhenPlayer(Charlie)
