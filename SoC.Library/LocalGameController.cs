@@ -1326,7 +1326,7 @@ namespace Jabberwocky.SoC.Library
         private IPlayer DeterminePlayerWithMostKnightCards()
         {
             IPlayer playerWithMostKnightCards = null;
-            uint workingKnightCardCount = 3;
+            int workingKnightCardCount = 3;
 
             foreach (var player in this.players)
             {
