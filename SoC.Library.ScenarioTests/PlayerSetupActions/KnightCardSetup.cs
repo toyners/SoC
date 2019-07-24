@@ -3,6 +3,9 @@ namespace SoC.Library.ScenarioTests.PlayerSetupActions
 {
     internal class KnightCardSetup : IPlayerSetupAction
     {
-        public void Process(ScenarioPlayer player) => player.SetKnightCard();
+        private readonly int cardCount;
+
+        public KnightCardSetup(int cardCount) => this.cardCount = cardCount;
+        public void Process(ScenarioPlayer player) => player.SetKnightCard(this.cardCount);
     }
 }

@@ -351,7 +351,7 @@ namespace SoC.Library.ScenarioTests
                         .ReceivesPlayerQuitEvent(Babara).ThenDoNothing()
                         .ReceivesPlayerQuitEvent(Charlie).ThenDoNothing()
                         .ReceivesPlayerQuitEvent(Dana).ThenDoNothing()
-                        .ReceivesPlayerWonEvent(Adam, 2).ThenDoNothing()
+                        .ReceivesPlayerWonEvent(2, Adam).ThenDoNothing()
                     .WhenPlayer(Babara)
                         .ReceivesStartTurnEvent(3, 3).ThenQuitGame()
                     .WhenPlayer(Charlie)
@@ -439,11 +439,11 @@ namespace SoC.Library.ScenarioTests
                         .ReceivesCityPlacementEvent(3).ThenDoNothing()
                         .ReceivesPlayerWonEvent(10)
                     .WhenPlayer(Babara)
-                        .ReceivesPlayerWonEvent(Adam, 10).ThenDoNothing()
+                        .ReceivesPlayerWonEvent(10, Adam).ThenDoNothing()
                     .WhenPlayer(Charlie)
-                        .ReceivesPlayerWonEvent(Adam, 10).ThenDoNothing()
+                        .ReceivesPlayerWonEvent(10, Adam).ThenDoNothing()
                     .WhenPlayer(Dana)
-                        .ReceivesPlayerWonEvent(Adam, 10).ThenDoNothing()
+                        .ReceivesPlayerWonEvent(10, Adam).ThenDoNothing()
                     .WhenPlayer(Adam)
                         .ThenVerifyPlayerState()
                             .Resources(ResourceClutch.Zero)
@@ -2125,7 +2125,44 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void PlayerWithEightPointsGainsLargestArmyAndWins()
         {
-            throw new NotImplementedException();
+            try
+            {
+                this.CompletePlayerInfrastructureSetup()
+                    .WithNoResourceCollection()
+                    .WithInitialPlayerSetupFor(Adam, VictoryPoints(8), KnightCard(3))
+                    .WhenPlayer(Adam)
+                        .ReceivesStartTurnEvent(3, 3).ThenPlayKnightCard(4)
+                        .ReceivesKnightCardPlayedEvent(4).ThenEndTurn()
+                        .ReceivesStartTurnEvent(3, 3).ThenPlayKnightCard(0)
+                        .ReceivesKnightCardPlayedEvent(0).ThenEndTurn()
+                        .ReceivesStartTurnEvent(3, 3).ThenPlayKnightCard(4)
+                        .ReceivesKnightCardPlayedEvent(4)
+                        .ReceivesLargestArmyChangedEvent()
+                        .ReceivesPlayerWonEvent(10)
+                    .WhenPlayer(Babara)
+                        .ReceivesStartTurnEvent(3, 3).ThenEndTurn()
+                        .ReceivesStartTurnEvent(3, 3).ThenEndTurn()
+                        .ReceivesKnightCardPlayedEvent(Adam, 4)
+                        .ReceivesLargestArmyChangedEvent(Adam)
+                        .ReceivesPlayerWonEvent(10, Adam)
+                    .WhenPlayer(Charlie)
+                        .ReceivesStartTurnEvent(3, 3).ThenEndTurn()
+                        .ReceivesStartTurnEvent(3, 3).ThenEndTurn()
+                        .ReceivesKnightCardPlayedEvent(Adam, 4)
+                        .ReceivesLargestArmyChangedEvent(Adam)
+                        .ReceivesPlayerWonEvent(10, Adam)
+                    .WhenPlayer(Dana)
+                        .ReceivesStartTurnEvent(3, 3).ThenEndTurn()
+                        .ReceivesStartTurnEvent(3, 3).ThenEndTurn()
+                        .ReceivesKnightCardPlayedEvent(Adam, 4)
+                        .ReceivesLargestArmyChangedEvent(Adam)
+                        .ReceivesPlayerWonEvent(10, Adam)
+                    .Run(this.logDirectory);
+            }
+            finally
+            {
+                this.AttachReports();
+            }
         }
 
         [Test]
@@ -2171,7 +2208,7 @@ namespace SoC.Library.ScenarioTests
 
         private static IPlayerSetupAction PlacedSettlements(int value) => new PlacedSettlementsSetup(value);
 
-        private static IPlayerSetupAction KnightCard() => new KnightCardSetup();
+        private static IPlayerSetupAction KnightCard(int cardCount = 1) => new KnightCardSetup(cardCount);
 
         private void AttachReports()
         {

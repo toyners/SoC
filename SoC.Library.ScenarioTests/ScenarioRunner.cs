@@ -161,6 +161,19 @@ namespace SoC.Library.ScenarioTests
             return this;
         }
 
+        public ScenarioRunner ReceivesLargestArmyChangedEvent(string previousPlayerName = null)
+        {
+            return this.ReceivesLargestArmyChangedEvent(this.currentPlayerAgent.Name, previousPlayerName);
+        }
+
+        public ScenarioRunner ReceivesLargestArmyChangedEvent(string playerName, string previousPlayerName = null)
+        {
+            Guid? previousPlayerId = previousPlayerName != null ? (Guid?)this.playerAgentsByName[previousPlayerName].Id : null;
+            var gameEvent = new LargestArmyChangedEvent(this.playerAgentsByName[playerName].Id, previousPlayerId);
+            this.AddEventInstruction(gameEvent);
+            return this;
+        }
+
         public ScenarioRunner ReceivesMakeDirectTradeOfferEvent(string buyingPlayerName, ResourceClutch wantedResources)
         {
             var gameEvent = new MakeDirectTradeOfferEvent(this.GetPlayerId(buyingPlayerName), wantedResources);
@@ -200,20 +213,12 @@ namespace SoC.Library.ScenarioTests
             return this;
         }
 
-        public ScenarioRunner ReceivesPlayerWonEvent(uint victoryPoints)
+        public ScenarioRunner ReceivesPlayerWonEvent(uint victoryPoints, string winningPlayerName = null)
         {
+            var playerId = winningPlayerName != null ? this.playerAgentsByName[winningPlayerName].Id : this.currentPlayerAgent.Id;
             this.currentPlayerAgent.AddInstruction(
                 new EventInstruction(
-                    new GameWinEvent(this.currentPlayerAgent.Id, victoryPoints)
-                ));
-            return this;
-        }
-
-        public ScenarioRunner ReceivesPlayerWonEvent(string winningPlayerName, uint victoryPoints)
-        {
-            this.currentPlayerAgent.AddInstruction(
-                new EventInstruction(
-                    new GameWinEvent(this.playerAgentsByName[winningPlayerName].Id, victoryPoints)
+                    new GameWinEvent(playerId, victoryPoints)
                 ));
             return this;
         }

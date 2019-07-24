@@ -10,6 +10,10 @@ namespace SoC.Library.ScenarioTests
         internal void SetVictoryPoints(uint victoryPoints) => this.VictoryPoints = victoryPoints;
         internal void SetPlacedRoadSegments(int placedRoadSegments) => this.PlacedRoadSegments = placedRoadSegments;
         internal void SetPlacedSettlements(int placedSettlements) => this.PlacedSettlements = placedSettlements;
-        internal void SetKnightCard() => this.HeldCards.Add(new Jabberwocky.SoC.Library.DevelopmentCards.KnightDevelopmentCard());
+        internal void SetKnightCard(int cardCount)
+        {
+            while (cardCount-- > 0)
+                this.HeldCards.Add(new Jabberwocky.SoC.Library.DevelopmentCards.KnightDevelopmentCard());
+        }
     }
 }

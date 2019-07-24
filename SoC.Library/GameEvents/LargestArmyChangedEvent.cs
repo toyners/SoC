@@ -6,18 +6,18 @@ namespace Jabberwocky.SoC.Library.GameEvents
   public class LargestArmyChangedEvent : GameEvent
   {
     #region Fields
-    public readonly Guid PreviousPlayerId;
+    public readonly Guid? PreviousPlayerId;
     #endregion
 
     #region Construction
-    public LargestArmyChangedEvent(Guid playerId, Guid previousPlayerId) : base(playerId)
+    public LargestArmyChangedEvent(Guid playerId, Guid? previousPlayerId) : base(playerId)
     {
       this.PreviousPlayerId = previousPlayerId;
     }
     #endregion
 
     #region Methods
-    public override bool Equals(object obj)
+    /*public override bool Equals(object obj)
     {
       if (!base.Equals(obj))
       {
@@ -30,7 +30,7 @@ namespace Jabberwocky.SoC.Library.GameEvents
     public override Int32 GetHashCode()
     {
       return base.GetHashCode();
-    }
+    }*/
     #endregion
   }
 }
