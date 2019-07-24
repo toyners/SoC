@@ -326,6 +326,10 @@ namespace SoC.Library.ScenarioTests
             var result = true;
             if (expectedEvent.Cities.HasValue)
                 result &= expectedEvent.Cities.Value == actualEvent.Cities;
+            if (expectedEvent.PlayedKnightCards.HasValue)
+                result &= expectedEvent.PlayedKnightCards.Value == actualEvent.PlayedKnightCards;
+            if (expectedEvent.DevelopmentCardsByCount != null)
+                throw new NotImplementedException();
             if (expectedEvent.Resources.HasValue)
                 result &= expectedEvent.Resources.Value == actualEvent.Resources;
             if (expectedEvent.RoadSegments.HasValue)
@@ -334,20 +338,6 @@ namespace SoC.Library.ScenarioTests
                 result &= expectedEvent.Settlements.Value == actualEvent.Settlements;
             if (expectedEvent.VictoryPoints.HasValue)
                 result &= expectedEvent.VictoryPoints.Value == actualEvent.VictoryPoints;
-
-            /*this.log.Add($"{(result ? "MATCHED" : "NOT MATCHED")} - Expected {expectedEvent.SimpleTypeName}, Actual {actualEvent.SimpleTypeName}");
-            if (!result ||
-                this.verboseLogging ||
-                this.expectedEventsWithVerboseLogging.Contains(expectedEvent))
-            {
-                this.log.Add($"EXPECTED => ACTUAL");
-                if (expectedEvent.Resources.HasValue)
-                    this.log.Add($"Resources: {expectedEvent.Resources.Value} => {actualEvent.Resources.ToString()}");
-                if (expectedEvent.RoadSegments.HasValue)
-                    this.log.Add($"Road Segments: {expectedEvent.RoadSegments.Value} => {actualEvent.RoadSegments}");
-                if (expectedEvent.VictoryPoints.HasValue)
-                    this.log.Add($"Victory Points: {expectedEvent.VictoryPoints.Value} => {actualEvent.VictoryPoints}");
-            }*/
 
             return result;
         }

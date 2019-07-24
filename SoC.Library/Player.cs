@@ -135,7 +135,7 @@ namespace Jabberwocky.SoC.Library
         public List<DevelopmentCard> HeldCards { get; protected set; }
         public Guid Id { get; private set; }
         public virtual bool IsComputer { get { return false; } }
-        public uint PlayedKnightCards { get; private set; }
+        public int PlayedKnightCards { get; private set; }
         public string Name { get; private set; }
         public List<DevelopmentCard> PlayedCards { get; protected set; }
         public int RemainingCities { get { return TotalCities - this.PlacedCities; } }

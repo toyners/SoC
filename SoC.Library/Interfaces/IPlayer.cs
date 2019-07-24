@@ -19,7 +19,7 @@ namespace Jabberwocky.SoC.Library.Interfaces
         List<DevelopmentCard> HeldCards { get; }
         Guid Id { get; }
         bool IsComputer { get; }
-        uint PlayedKnightCards { get; }
+        int PlayedKnightCards { get; }
         string Name { get; }
         List<DevelopmentCard> PlayedCards { get; }
         int RemainingCities { get; }

@@ -382,6 +382,18 @@ namespace SoC.Library.ScenarioTests
         }
 
         [Test]
+        public void PlayerBuysDevelopmentCard()
+        {
+            throw new NotImplementedException();
+        }
+
+        [Test]
+        public void PlayerBuysDevelopmentCardAndTriesToUseItInSameTurn()
+        {
+            throw new NotImplementedException();
+        }
+
+        [Test]
         public void PlayerPlacesCity()
         {
 			try
@@ -1020,11 +1032,18 @@ namespace SoC.Library.ScenarioTests
                 this.CompletePlayerInfrastructureSetup()
                     .WithInitialPlayerSetupFor(Adam, KnightCard())
                     .WhenPlayer(Adam)
-                        .ReceivesStartTurnEvent(3, 3).ThenPlayKnightCard(8)
+                        .ReceivesStartTurnEvent(3, 3)
+                        .ThenVerifyPlayerState()
+                            .HeldCards(DevelopmentCardTypes.Knight, 1)
+                            .PlayedKnightCards(0)
+                        .End()
+                        .ThenPlayKnightCard(8)
                         .ReceivesRobbingChoicesEvent(robbingChoices).ThenSelectRobbedPlayer(Babara)
                         .ReceivesResourcesRobbedEvent(Babara, ResourceTypes.Lumber)
                         .ThenVerifyPlayerState()
                             .Resources(ResourceClutch.OneBrick + ResourceClutch.OneGrain + robbedResource + ResourceClutch.OneWool)
+                            .HeldCards(DevelopmentCardTypes.Knight, 0)
+                            .PlayedKnightCards(1)
                         .End()
                         .ThenPlaceRoadSegment(4, 3)
                     .WhenPlayer(Babara)

@@ -12,7 +12,7 @@ namespace Jabberwocky.SoC.Library.Store
         public List<DevelopmentCard> HeldCards;
         public Guid Id;
         public bool IsComputer;
-        public uint KnightCards;
+        public int KnightCards;
         public string Name;
         public List<DevelopmentCard> PlayedCards;
         public ResourceClutch Resources;

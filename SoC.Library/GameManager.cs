@@ -710,6 +710,8 @@ namespace Jabberwocky.SoC.Library
                 return;
             }
 
+            //this.currentPlayer.PlaceKnightDevelopmentCard
+
             this.robberHex = playKnightCardAction.NewRobberHex;
             this.RaiseEvent(new KnightCardPlayedEvent(this.currentPlayer.Id, this.robberHex));
 
@@ -776,6 +778,7 @@ namespace Jabberwocky.SoC.Library
             var player = this.playersById[requestStateAction.InitiatingPlayerId];
             var requestStateEvent = new RequestStateEvent(player.Id);
             requestStateEvent.Cities = player.RemainingCities;
+            requestStateEvent.PlayedKnightCards = player.PlayedKnightCards;
             requestStateEvent.Resources = player.Resources;
             requestStateEvent.RoadSegments = player.RemainingRoadSegments;
             requestStateEvent.Settlements = player.RemainingSettlements;
