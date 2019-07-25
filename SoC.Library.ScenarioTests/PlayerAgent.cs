@@ -304,20 +304,6 @@ namespace SoC.Library.ScenarioTests
             if (result)
                 this.log.AddMatchedEvent(actualEvent, expectedEvent);
 
-            /*this.log.Add($"{(result ? "MATCHED" : "NOT MATCHED")} - Expected {expectedEvent.SimpleTypeName}, Actual {actualEvent.SimpleTypeName}");
-            if (!result ||
-                this.verboseLogging ||
-                this.expectedEventsWithVerboseLogging.Contains(expectedEvent))
-            {
-                this.log.Add($"EXPECTED => ACTUAL");
-                if (expectedEvent.Id.HasValue)
-                    this.log.Add($"Player Id: {expectedEvent.Id.Value} => {actualEvent.PlayerId}");
-                if (expectedEvent.ErrorCode != null)
-                    this.log.Add($"Error Code: {expectedEvent.ErrorCode} => {actualEvent.ErrorCode}");
-                if (expectedEvent.ErrorMessage != null)
-                    this.log.Add($"Error Message: {expectedEvent.ErrorMessage} => {actualEvent.ErrorMessage}");
-            }*/
-
             return result;
         }
 
@@ -329,7 +315,7 @@ namespace SoC.Library.ScenarioTests
             if (expectedEvent.PlayedKnightCards.HasValue)
                 result &= expectedEvent.PlayedKnightCards.Value == actualEvent.PlayedKnightCards;
             if (expectedEvent.DevelopmentCardsByCount != null)
-                throw new NotImplementedException();
+                result &= this.IsDictionaryMatched(expectedEvent.DevelopmentCardsByCount, actualEvent.DevelopmentCardsByCount);
             if (expectedEvent.Resources.HasValue)
                 result &= expectedEvent.Resources.Value == actualEvent.Resources;
             if (expectedEvent.RoadSegments.HasValue)
@@ -348,24 +334,31 @@ namespace SoC.Library.ScenarioTests
             var actualJSON = JToken.Parse(actualEvent.ToJSONString());
             var result = JToken.DeepEquals(expectedJSON, actualJSON);
 
-            /*if ((!result && expectedEvent.GetType() == actualEvent.GetType()) ||
-                this.verboseLogging ||
-                this.expectedEventsWithVerboseLogging.Contains(expectedEvent))
-            {
-                this.log.Add($"{(result ? "MATCHED" : "NOT MATCHED")}");
-                this.log.Add($"   EXPECTED: " +
-                    $"{(expectedEvent.PlayerId != Guid.Empty ? "Player name is " + this.GetPlayerName(expectedEvent.PlayerId) : "")}\r\n" +
-                    $"    {expectedJSON}");
-                this.log.Add($"   ACTUAL: " +
-                    $"{(actualEvent.PlayerId != Guid.Empty ? "Player name is " + this.GetPlayerName(actualEvent.PlayerId) : "")}\r\n" +
-                    $"    {actualJSON}");
-            }
-            else
-            {
-                this.log.Add($"{(result ? "MATCHED" : "NOT MATCHED")} - Expected {expectedEvent.SimpleTypeName}, Actual {actualEvent.SimpleTypeName}");
-            }*/
-
             return result;
+        }
+
+        private bool IsDictionaryMatched(Dictionary<DevelopmentCardTypes, int> first, Dictionary<DevelopmentCardTypes, int> second)
+        {
+            if (second == null)
+                return false;
+            var firstKeys = new List<DevelopmentCardTypes>(first.Keys);
+            var secondKeys = new List<DevelopmentCardTypes>(second.Keys);
+            if (firstKeys.Count != secondKeys.Count)
+                return false;
+
+            firstKeys.Sort();
+            secondKeys.Sort();
+
+            for (var i = 0; i < firstKeys.Count; i++)
+            {
+                if (firstKeys[i] != secondKeys[i])
+                    return false;
+
+                if (first[firstKeys[i]] != second[secondKeys[i]])
+                    return false;
+            }
+
+            return true;
         }
 
         private bool IsStartTurnEventVerified(ScenarioStartTurnEvent expectedEvent, StartTurnEvent actualEvent)
@@ -373,19 +366,6 @@ namespace SoC.Library.ScenarioTests
             var result = expectedEvent.PlayerId == actualEvent.PlayerId &&
                 expectedEvent.Dice1 == actualEvent.Dice1 &&
                 expectedEvent.Dice2 == actualEvent.Dice2;
-            //if (expectedEvent.CollectedResources != actualEvent.CollectedResources)
-            //    result &= expectedEvent.Cities.Value == actualEvent.Cities;
-
-            /*this.log.Add($"{(result ? "MATCHED" : "NOT MATCHED")} - Expected {expectedEvent.SimpleTypeName}, Actual {actualEvent.SimpleTypeName}");
-            if (!result ||
-                this.verboseLogging ||
-                this.expectedEventsWithVerboseLogging.Contains(expectedEvent))
-            {
-                this.log.Add($"EXPECTED => ACTUAL");
-                
-                this.log.Add($"Player: {this.GetPlayerName(expectedEvent.PlayerId)} ({expectedEvent.PlayerId}) => {this.GetPlayerName(actualEvent.PlayerId)} ({actualEvent.PlayerId})");
-                this.log.Add($"Dice: {expectedEvent.Dice1},{expectedEvent.Dice2} => {actualEvent.Dice1},{actualEvent.Dice2}");
-            }*/
 
             return result;
         }

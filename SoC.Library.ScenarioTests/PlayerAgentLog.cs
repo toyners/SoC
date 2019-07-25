@@ -5,6 +5,7 @@ namespace SoC.Library.ScenarioTests
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
+    using Jabberwocky.SoC.Library;
     using Jabberwocky.SoC.Library.GameEvents;
     using SoC.Library.ScenarioTests.Instructions;
     using SoC.Library.ScenarioTests.ScenarioEvents;
@@ -178,6 +179,7 @@ namespace SoC.Library.ScenarioTests
             else if (gameEvent is RequestStateEvent requestStateEvent)
             {
                 result += $"Cities <b>{requestStateEvent.Cities}</b><br>" +
+                    $"Played Knight Cards <b>{requestStateEvent.PlayedKnightCards}</b><br>" +
                     $"Resources <b>{requestStateEvent.Resources}</b><br>" +
                     $"Road Segments <b>{requestStateEvent.RoadSegments}</b><br>" +
                     $"Settlements <b>{requestStateEvent.Settlements}</b><br>" +
@@ -199,15 +201,20 @@ namespace SoC.Library.ScenarioTests
             }
             else if (gameEvent is ScenarioRequestStateEvent scenarioRequestStateEvent)
             {
-                result += $"Cities <b>{scenarioRequestStateEvent.Cities}</b><br>" +
-                    $"Resources <b>{scenarioRequestStateEvent.Resources}</b><br>" +
-                    $"Road Segments <b>{scenarioRequestStateEvent.RoadSegments}</b><br>" +
-                    $"Settlements <b>{scenarioRequestStateEvent.Settlements}</b><br>" +
-                    $"Victory Points <b>{scenarioRequestStateEvent.VictoryPoints}</b>";
+                result += $"Cities {GetFormattedProperty(scenarioRequestStateEvent.Cities)}<br>" +
+                    $"Played Knight Cards {GetFormattedProperty(scenarioRequestStateEvent.PlayedKnightCards)}<br>" +
+                    $"Resources {GetFormattedProperty(scenarioRequestStateEvent.Resources)}<br>" +
+                    $"Road Segments {GetFormattedProperty(scenarioRequestStateEvent.RoadSegments)}<br>" +
+                    $"Settlements {GetFormattedProperty(scenarioRequestStateEvent.Settlements)}<br>" +
+                    $"Victory Points {GetFormattedProperty(scenarioRequestStateEvent.VictoryPoints)}";
             }
 
             return $"Player: <b>{GetPlayerName(gameEvent.PlayerId)}</b>" + (result.Length > 0 ? "<br>" : "") + result;
         }
+
+        private static string GetFormattedProperty(uint? value) => value.HasValue ? "<b>" + value.ToString() + "</b>" : "<not set>";
+        private static string GetFormattedProperty(int? value) => value.HasValue ? "<b>" + value.ToString() + "</b>" : "<not set>";
+        private static string GetFormattedProperty(ResourceClutch? value) => value.HasValue ? "<b>" + value.ToString() + "</b>" : "<not set>";
 
         private static string GetPlayerName(Guid playerId)
         {
