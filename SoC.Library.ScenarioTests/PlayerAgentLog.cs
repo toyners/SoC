@@ -151,8 +151,8 @@ namespace SoC.Library.ScenarioTests
 
             public string ToHtml()
             {
-                return $"<tr class=\"expected\">" +
-                    $"<td class=\"border\">" +
+                return $"<tr><td />" +
+                    $"<td class=\"expected border\">" +
                     $"<img src=\"red_cross.png\" alt=\"\" height=\"20\" width=\"20\">" +
                     $"<span>{this.expectedEvent.SimpleTypeName}</span><br><div>{GetEventProperties(this.expectedEvent)}</div></td></tr>";
             }
@@ -166,10 +166,18 @@ namespace SoC.Library.ScenarioTests
                 result += $"Error code: <b>{gameErrorEvent.ErrorCode}</b><br>" +
                     $"Error message: <b>{gameErrorEvent.ErrorMessage}</b>";
             }
+            else if (gameEvent is GameWinEvent gameWinEvent)
+            {
+                result += $"Victory Points <b>{gameWinEvent.VictoryPoints}</b>";
+            }
             else if (gameEvent is InfrastructurePlacedEvent infrastructurePlacedEvent)
             {
                 result += $"Settlement Location: <b>{infrastructurePlacedEvent.SettlementLocation}</b><br>" +
                     $"Road segment end Location: <b>{infrastructurePlacedEvent.RoadSegmentEndLocation}</b>";
+            }
+            else if (gameEvent is LargestArmyChangedEvent largestArmyChangedEvent)
+            {
+                result += $"Previous Player: <b>{(largestArmyChangedEvent.PreviousPlayerId != null ? GetPlayerName(largestArmyChangedEvent.PreviousPlayerId.Value) : "[none]")}</b>";
             }
             else if (gameEvent is PlayerSetupEvent playerSetupEvent)
             {

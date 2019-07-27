@@ -652,8 +652,7 @@ namespace Jabberwocky.SoC.Library
 
             if (playerAction is PlayKnightCardAction playKnightCardAction)
             {
-                this.ProcessPlayKnightCardAction(playKnightCardAction);
-                return false;
+                return this.ProcessPlayKnightCardAction(playKnightCardAction);
             }
 
             if (playerAction is SelectResourceFromPlayerAction selectResourceFromPlayerAction)
@@ -703,21 +702,21 @@ namespace Jabberwocky.SoC.Library
             throw new Exception($"Player action {playerAction.GetType()} not recognised.");
         }
 
-        private void ProcessPlayKnightCardAction(PlayKnightCardAction playKnightCardAction)
+        private bool ProcessPlayKnightCardAction(PlayKnightCardAction playKnightCardAction)
         {
             DevelopmentCard card = null;
             if ((card = this.currentPlayer.HeldCards.FirstOrDefault(c => c.Type == DevelopmentCardTypes.Knight)) == null)
             {
                 this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, "920", "No Knight card owned"),
                     this.currentPlayer);
-                return;
+                return false;
             }
 
             if (this.robberHex == playKnightCardAction.NewRobberHex)
             {
                 this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, "918", "New robber hex cannot be the same as previous robber hex"),
                     this.currentPlayer);
-                return;
+                return false;
             }
 
             this.currentPlayer.PlaceKnightDevelopmentCard((KnightDevelopmentCard)card);
@@ -725,7 +724,20 @@ namespace Jabberwocky.SoC.Library
             this.robberHex = playKnightCardAction.NewRobberHex;
             this.RaiseEvent(new KnightCardPlayedEvent(this.currentPlayer.Id, this.robberHex));
 
+            if (this.currentPlayer.PlayedKnightCards >= 3)
+            {
+                this.currentPlayer.HasLargestArmy = true;
+                this.RaiseEvent(new LargestArmyChangedEvent(this.currentPlayer.Id, null));
+
+                if (this.currentPlayer.VictoryPoints >= 10)
+                {
+                    this.RaiseEvent(new GameWinEvent(this.currentPlayer.Id, this.currentPlayer.VictoryPoints));
+                    return true;
+                }
+            }
+
             this.ProcessNewRobberPlacement();
+            return false;
         }
 
         private void ProcessPlayerQuit(Guid playerId)

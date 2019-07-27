@@ -161,9 +161,9 @@ namespace SoC.Library.ScenarioTests
             return this;
         }
 
-        public ScenarioRunner ReceivesLargestArmyChangedEvent(string previousPlayerName = null)
+        public ScenarioRunner ReceivesLargestArmyChangedEvent()
         {
-            return this.ReceivesLargestArmyChangedEvent(this.currentPlayerAgent.Name, previousPlayerName);
+            return this.ReceivesLargestArmyChangedEvent(this.currentPlayerAgent.Name);
         }
 
         public ScenarioRunner ReceivesLargestArmyChangedEvent(string playerName, string previousPlayerName = null)
