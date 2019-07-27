@@ -179,6 +179,7 @@ namespace SoC.Library.ScenarioTests
             else if (gameEvent is RequestStateEvent requestStateEvent)
             {
                 result += $"Cities <b>{requestStateEvent.Cities}</b><br>" +
+                    $"Held Cards {GetFormattedCards(requestStateEvent.DevelopmentCardsByCount)}<br>" +
                     $"Played Knight Cards <b>{requestStateEvent.PlayedKnightCards}</b><br>" +
                     $"Resources <b>{requestStateEvent.Resources}</b><br>" +
                     $"Road Segments <b>{requestStateEvent.RoadSegments}</b><br>" +
@@ -202,6 +203,7 @@ namespace SoC.Library.ScenarioTests
             else if (gameEvent is ScenarioRequestStateEvent scenarioRequestStateEvent)
             {
                 result += $"Cities {GetFormattedProperty(scenarioRequestStateEvent.Cities)}<br>" +
+                    $"Held Cards {GetFormattedCards(scenarioRequestStateEvent.DevelopmentCardsByCount)}<br>" + 
                     $"Played Knight Cards {GetFormattedProperty(scenarioRequestStateEvent.PlayedKnightCards)}<br>" +
                     $"Resources {GetFormattedProperty(scenarioRequestStateEvent.Resources)}<br>" +
                     $"Road Segments {GetFormattedProperty(scenarioRequestStateEvent.RoadSegments)}<br>" +
@@ -212,9 +214,23 @@ namespace SoC.Library.ScenarioTests
             return $"Player: <b>{GetPlayerName(gameEvent.PlayerId)}</b>" + (result.Length > 0 ? "<br>" : "") + result;
         }
 
-        private static string GetFormattedProperty(uint? value) => value.HasValue ? "<b>" + value.ToString() + "</b>" : "<not set>";
-        private static string GetFormattedProperty(int? value) => value.HasValue ? "<b>" + value.ToString() + "</b>" : "<not set>";
-        private static string GetFormattedProperty(ResourceClutch? value) => value.HasValue ? "<b>" + value.ToString() + "</b>" : "<not set>";
+        private static string GetFormattedCards(Dictionary<DevelopmentCardTypes, int> developmentCardsByCount)
+        {
+            if (developmentCardsByCount == null || developmentCardsByCount.Count == 0)
+                return "[not set]";
+
+            var result = "";
+            var sortedKeys = new List<DevelopmentCardTypes>(developmentCardsByCount.Keys);
+            sortedKeys.Sort();
+            foreach (var sortedKey in sortedKeys)
+                result += $"<b>{sortedKey} = {developmentCardsByCount[sortedKey]}</b> ";
+
+            return result.Substring(0, result.Length - 1);
+        }
+
+        private static string GetFormattedProperty(uint? value) => value.HasValue ? "<b>" + value.ToString() + "</b>" : "[not set]";
+        private static string GetFormattedProperty(int? value) => value.HasValue ? "<b>" + value.ToString() + "</b>" : "[not set]";
+        private static string GetFormattedProperty(ResourceClutch? value) => value.HasValue ? "<b>" + value.ToString() + "</b>" : "[not set]";
 
         private static string GetPlayerName(Guid playerId)
         {

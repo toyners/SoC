@@ -778,6 +778,15 @@ namespace Jabberwocky.SoC.Library
             var player = this.playersById[requestStateAction.InitiatingPlayerId];
             var requestStateEvent = new RequestStateEvent(player.Id);
             requestStateEvent.Cities = player.RemainingCities;
+
+            requestStateEvent.DevelopmentCardsByCount = player.HeldCards?.Aggregate(new Dictionary<DevelopmentCardTypes, int>(),
+                (dict, card) => {
+                    if (!dict.ContainsKey(card.Type))
+                        dict.Add(card.Type, 1);
+                    else
+                        dict[card.Type]++;
+                    return dict;
+                });
             requestStateEvent.PlayedKnightCards = player.PlayedKnightCards;
             requestStateEvent.Resources = player.Resources;
             requestStateEvent.RoadSegments = player.RemainingRoadSegments;
