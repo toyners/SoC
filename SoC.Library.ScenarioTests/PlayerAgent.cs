@@ -339,10 +339,19 @@ namespace SoC.Library.ScenarioTests
 
         private bool IsDictionaryMatched(Dictionary<DevelopmentCardTypes, int> first, Dictionary<DevelopmentCardTypes, int> second)
         {
-            if (second == null)
-                return false;
-            var firstKeys = new List<DevelopmentCardTypes>(first.Keys);
             var secondKeys = new List<DevelopmentCardTypes>(second.Keys);
+            if (secondKeys.Count == 0)
+            {
+                foreach (var kv in first)
+                {
+                    if (kv.Value > 0)
+                        return false;
+                }
+
+                return true;
+            }
+
+            var firstKeys = new List<DevelopmentCardTypes>(first.Keys);
             if (firstKeys.Count != secondKeys.Count)
                 return false;
 

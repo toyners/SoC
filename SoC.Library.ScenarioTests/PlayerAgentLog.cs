@@ -216,16 +216,25 @@ namespace SoC.Library.ScenarioTests
 
         private static string GetFormattedCards(Dictionary<DevelopmentCardTypes, int> developmentCardsByCount)
         {
-            if (developmentCardsByCount == null || developmentCardsByCount.Count == 0)
+            if (developmentCardsByCount == null)
                 return "[not set]";
+
+            if (developmentCardsByCount.Count == 0)
+                return "<b>0 cards</b>";
 
             var result = "";
             var sortedKeys = new List<DevelopmentCardTypes>(developmentCardsByCount.Keys);
             sortedKeys.Sort();
+            var totalCards = 0;
             foreach (var sortedKey in sortedKeys)
-                result += $"<b>{sortedKey} = {developmentCardsByCount[sortedKey]}</b> ";
+            {
+                totalCards += developmentCardsByCount[sortedKey];
+                result += $"<b>{sortedKey} = {developmentCardsByCount[sortedKey]},</b> ";
+            }
 
-            return result.Substring(0, result.Length - 1);
+            if (totalCards == 0)
+                return "<b>0 cards</b>";
+            return result.Substring(0, result.Length - ",</b> ".Length) + "</b>";
         }
 
         private static string GetFormattedProperty(uint? value) => value.HasValue ? "<b>" + value.ToString() + "</b>" : "[not set]";

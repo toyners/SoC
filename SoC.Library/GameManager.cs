@@ -710,7 +710,7 @@ namespace Jabberwocky.SoC.Library
                 return;
             }
 
-            // this.currentPlayer.PlaceKnightDevelopmentCard
+            this.currentPlayer.PlaceKnightDevelopmentCard((KnightDevelopmentCard)card);
 
             this.robberHex = playKnightCardAction.NewRobberHex;
             this.RaiseEvent(new KnightCardPlayedEvent(this.currentPlayer.Id, this.robberHex));
