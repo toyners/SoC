@@ -68,7 +68,7 @@ namespace SoC.Library.ScenarioTests.Instructions
             return this;
         }
 
-        public ScenarioRunner End()
+        public ScenarioRunner EndPlayerVerification()
         {
             this.playerAgent.AddInstruction(this);
             return this.runner;
