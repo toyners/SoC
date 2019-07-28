@@ -1070,6 +1070,63 @@ namespace SoC.Library.ScenarioTests
         }
 
         [Test]
+        public void PlayersPlayKnightCardsAndLargestArmyEventFiresCorrectly()
+        {
+            try
+            {
+                this.CompletePlayerInfrastructureSetup()
+                    .WithInitialPlayerSetupFor(Adam, KnightCard(5))
+                    .WithInitialPlayerSetupFor(Babara, KnightCard(4))
+                    .WhenPlayer(Adam)
+                        .ReceivesStartTurnEvent(3, 3).ThenPlayKnightCard(4)
+                        .ReceivesKnightCardPlayedEvent(4).ThenPlayKnightCard(0)
+                        .ReceivesKnightCardPlayedEvent(0).ThenPlayKnightCard(4)
+                        .ReceivesKnightCardPlayedEvent(4)
+                        .ReceivesLargestArmyChangedEvent()
+                        .ThenVerifyPlayerState()
+                            .PlayedKnightCards(3)
+                            .HeldCards(DevelopmentCardTypes.Knight, 2)
+                        .EndPlayerVerification().ThenEndTurn()
+                        .ReceivesLargestArmyChangedEvent(Babara, Adam)
+                        .ReceivesStartTurnEvent(3, 3).ThenPlayKnightCard(0)
+                        .ReceivesKnightCardPlayedEvent(0).ThenPlayKnightCard(4)
+                        .ReceivesKnightCardPlayedEvent(4)
+                        .ReceivesLargestArmyChangedEvent(Adam, Babara)
+                        .ThenVerifyPlayerState()
+                            .PlayedKnightCards(5)
+                            .HeldCards(DevelopmentCardTypes.Knight, 0)
+                        .EndPlayerVerification().ThenEndTurn()
+                    .WhenPlayer(Babara)
+                        .ReceivesLargestArmyChangedEvent(Adam)
+                        .ReceivesStartTurnEvent(3, 3).ThenPlayKnightCard(0)
+                        .ReceivesKnightCardPlayedEvent(0).ThenPlayKnightCard(4)
+                        .ReceivesKnightCardPlayedEvent(4).ThenPlayKnightCard(0)
+                        .ReceivesKnightCardPlayedEvent(0).ThenPlayKnightCard(4)
+                        .ReceivesLargestArmyChangedEvent(Babara, Adam)
+                        .ThenVerifyPlayerState()
+                            .PlayedKnightCards(4)
+                            .HeldCards(DevelopmentCardTypes.Knight, 0)
+                        .EndPlayerVerification().ThenEndTurn()
+                        .ReceivesLargestArmyChangedEvent(Adam, Babara)
+                    .WhenPlayer(Charlie)
+                        .ReceivesLargestArmyChangedEvent(Adam, null).ThenDoNothing()
+                        .ReceivesLargestArmyChangedEvent(Babara, Adam).ThenDoNothing()
+                        .ReceivesStartTurnEvent(3, 3).ThenEndTurn()
+                        .ReceivesLargestArmyChangedEvent(Adam, Babara)
+                    .WhenPlayer(Dana)
+                        .ReceivesLargestArmyChangedEvent(Adam, null).ThenDoNothing()
+                        .ReceivesLargestArmyChangedEvent(Babara, Adam).ThenDoNothing()
+                        .ReceivesStartTurnEvent(3, 3).ThenEndTurn()
+                        .ReceivesLargestArmyChangedEvent(Adam, Babara)
+                    .Run(this.logDirectory);
+            }
+            finally
+            {
+                this.AttachReports();
+            }
+        }
+
+        [Test]
         public void PlayerPlaysKnightCardThatIsNotOwned()
         {
 			try
@@ -2147,8 +2204,7 @@ namespace SoC.Library.ScenarioTests
             try
             {
                 this.CompletePlayerInfrastructureSetup()
-                    .WithNoResourceCollection()
-                    .WithInitialPlayerSetupFor(Adam, VictoryPoints(6), KnightCard(3))
+                    .WithInitialPlayerSetupFor(Adam, VictoryPoints(6), KnightCard(3)) // 6 + 2 settlements placed as part of startup = 8
                     .WhenPlayer(Adam)
                         .ReceivesStartTurnEvent(3, 3).ThenPlayKnightCard(4)
                         .ReceivesKnightCardPlayedEvent(4).ThenEndTurn()
