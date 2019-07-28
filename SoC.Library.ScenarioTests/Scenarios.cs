@@ -1108,16 +1108,19 @@ namespace SoC.Library.ScenarioTests
                             .HeldCards(DevelopmentCardTypes.Knight, 0)
                         .EndPlayerVerification().ThenEndTurn()
                         .ReceivesLargestArmyChangedEvent(Adam, Babara)
+                        .ReceivesStartTurnEvent(3, 3).ThenQuitGame()
                     .WhenPlayer(Charlie)
                         .ReceivesLargestArmyChangedEvent(Adam, null).ThenDoNothing()
                         .ReceivesLargestArmyChangedEvent(Babara, Adam).ThenDoNothing()
                         .ReceivesStartTurnEvent(3, 3).ThenEndTurn()
                         .ReceivesLargestArmyChangedEvent(Adam, Babara)
+                        .ReceivesStartTurnEvent(3, 3).ThenQuitGame()
                     .WhenPlayer(Dana)
                         .ReceivesLargestArmyChangedEvent(Adam, null).ThenDoNothing()
                         .ReceivesLargestArmyChangedEvent(Babara, Adam).ThenDoNothing()
                         .ReceivesStartTurnEvent(3, 3).ThenEndTurn()
                         .ReceivesLargestArmyChangedEvent(Adam, Babara)
+                        .ReceivesStartTurnEvent(3, 3).ThenQuitGame()
                     .Run(this.logDirectory);
             }
             finally

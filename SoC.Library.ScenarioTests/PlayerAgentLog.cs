@@ -175,6 +175,10 @@ namespace SoC.Library.ScenarioTests
                 result += $"Settlement Location: <b>{infrastructurePlacedEvent.SettlementLocation}</b><br>" +
                     $"Road segment end Location: <b>{infrastructurePlacedEvent.RoadSegmentEndLocation}</b>";
             }
+            else if (gameEvent is KnightCardPlayedEvent knightCardPlayedEvent)
+            {
+                result += $"Hex Location: <b>{knightCardPlayedEvent.HexLocation}</b><br>";
+            }
             else if (gameEvent is LargestArmyChangedEvent largestArmyChangedEvent)
             {
                 result += $"Previous Player: <b>{(largestArmyChangedEvent.PreviousPlayerId != null ? GetPlayerName(largestArmyChangedEvent.PreviousPlayerId.Value) : "[none]")}</b>";

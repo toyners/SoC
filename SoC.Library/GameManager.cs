@@ -45,6 +45,7 @@ namespace Jabberwocky.SoC.Library
         // Only needed for scenario running?
         private CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
         private CancellationToken cancellationToken;
+        private IPlayer playerWithLargestArmy;
         #endregion
 
         #region Construction
@@ -726,8 +727,17 @@ namespace Jabberwocky.SoC.Library
 
             if (this.currentPlayer.PlayedKnightCards >= 3)
             {
-                this.currentPlayer.HasLargestArmy = true;
-                this.RaiseEvent(new LargestArmyChangedEvent(this.currentPlayer.Id, null));
+                if (this.playerWithLargestArmy == null)
+                {
+                    this.RaiseEvent(new LargestArmyChangedEvent(this.currentPlayer.Id, null));
+                    this.playerWithLargestArmy = this.currentPlayer;
+                }
+                else if (this.currentPlayer != this.playerWithLargestArmy &&
+                    this.currentPlayer.PlayedKnightCards > this.playerWithLargestArmy.PlayedKnightCards)
+                {
+                    this.RaiseEvent(new LargestArmyChangedEvent(this.currentPlayer.Id, this.playerWithLargestArmy.Id));
+                    this.playerWithLargestArmy = this.currentPlayer;
+                }
 
                 if (this.currentPlayer.VictoryPoints >= 10)
                 {
