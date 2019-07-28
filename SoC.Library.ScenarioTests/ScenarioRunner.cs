@@ -480,6 +480,11 @@ namespace SoC.Library.ScenarioTests
             return this;
         }
 
+        public ScenarioRunner ThenBuyDevelopmentCard()
+        {
+            throw new NotImplementedException();
+        }
+
         public ScenarioRunner ThenChooseResourcesToLose(ResourceClutch resourcesToLose)
         {
             this.AddActionInstruction(ActionInstruction.OperationTypes.ChooseResourcesToLose,

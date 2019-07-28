@@ -384,7 +384,19 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void PlayerBuysDevelopmentCard()
         {
-            throw new NotImplementedException();
+            try
+            {
+                this.CompletePlayerInfrastructureSetup()
+                    .WithNoResourceCollection()
+                    .WithInitialPlayerSetupFor(Adam, Resources(ResourceClutch.DevelopmentCard))
+                    .WhenPlayer(Adam)
+                        .ReceivesStartTurnEvent(3, 3).ThenBuyDevelopmentCard()
+                .Run(this.logDirectory);
+            }
+            finally
+            {
+                this.AttachReports();
+            }
         }
 
         [Test]
