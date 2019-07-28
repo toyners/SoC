@@ -125,6 +125,13 @@ namespace SoC.Library.ScenarioTests
             return this;
         }
 
+        public ScenarioRunner ReceivesDevelopmentCardBoughtEvent(string playerName = null)
+        {
+            var playerId = playerName != null ? this.playerAgentsByName[playerName].Id : this.currentPlayerAgent.Id;
+            this.AddEventInstruction(new DevelopmentCardBoughtEvent(playerId));
+            return this;
+        }
+
         public ScenarioRunner ReceivesGameJoinedEvent()
         {
             var gameEvent = new GameJoinedEvent(this.GetPlayerId(this.currentPlayerAgent.Name));
@@ -482,7 +489,8 @@ namespace SoC.Library.ScenarioTests
 
         public ScenarioRunner ThenBuyDevelopmentCard()
         {
-            throw new NotImplementedException();
+            this.AddActionInstruction(ActionInstruction.OperationTypes.BuyDevelopmentCard, null);
+            return this;
         }
 
         public ScenarioRunner ThenChooseResourcesToLose(ResourceClutch resourcesToLose)
@@ -516,7 +524,7 @@ namespace SoC.Library.ScenarioTests
                 new object[] { wantedResources });
             return this;
         }
-
+        
         public ScenarioRunner ThenPlaceCity(uint cityLocation)
         {
             this.AddActionInstruction(ActionInstruction.OperationTypes.PlaceCity,

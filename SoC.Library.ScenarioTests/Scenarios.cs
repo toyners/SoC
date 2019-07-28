@@ -391,7 +391,32 @@ namespace SoC.Library.ScenarioTests
                     .WithInitialPlayerSetupFor(Adam, Resources(ResourceClutch.DevelopmentCard))
                     .WhenPlayer(Adam)
                         .ReceivesStartTurnEvent(3, 3).ThenBuyDevelopmentCard()
+                        .ReceivesDevelopmentCardBoughtEvent()
+                    .WhenPlayer(Babara)
+                        .ReceivesDevelopmentCardBoughtEvent(Adam)
+                    .WhenPlayer(Charlie)
+                        .ReceivesDevelopmentCardBoughtEvent(Adam)
+                    .WhenPlayer(Dana)
+                        .ReceivesDevelopmentCardBoughtEvent(Adam)
                 .Run(this.logDirectory);
+            }
+            finally
+            {
+                this.AttachReports();
+            }
+        }
+
+        [Test]
+        public void PlayerBuysDevelopmentCardWithoutEnoughResources()
+        {
+            try
+            {
+                this.CompletePlayerInfrastructureSetup()
+                    .WithNoResourceCollection()
+                    .WhenPlayer(Adam)
+                        .ReceivesStartTurnEvent(3, 3).ThenBuyDevelopmentCard()
+                        .ReceivesGameErrorEvent("", "")
+                    .Run(this.logDirectory);
             }
             finally
             {
@@ -604,7 +629,7 @@ namespace SoC.Library.ScenarioTests
         }
 
         [Test]
-        public void PlayerTriesToPlaceCityWithNotEnoughResources()
+        public void PlayerTriesToPlaceCityWithoutEnoughResources()
         {
 			try
             { 
@@ -954,7 +979,7 @@ namespace SoC.Library.ScenarioTests
         }
 
         [Test]
-        public void PlayerTriesToPlaceRoadSegmentWithNotEnoughResources()
+        public void PlayerTriesToPlaceRoadSegmentWithoutEnoughResources()
         {
 			try
             {

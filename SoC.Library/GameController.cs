@@ -41,6 +41,11 @@ namespace Jabberwocky.SoC.Library
                 resourceClutch));
         }
 
+        public void BuyDevelopmentCard()
+        {
+            this.SendAction(new BuyDevelopmentCardAction(this.playerId));
+        }
+
         public void ChooseResourcesToLose(ResourceClutch resourceClutch)
         {
             this.SendAction(new LoseResourcesAction(this.playerId, resourceClutch));

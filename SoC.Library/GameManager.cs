@@ -375,10 +375,7 @@ namespace Jabberwocky.SoC.Library
                     this.actionManager.SetExpectedActionsForPlayer(this.currentPlayer.Id, typeof(SelectResourceFromPlayerAction));
                     this.ProcessPlayerAction(this.WaitForPlayerAction());
 
-                    this.actionManager.SetExpectedActionsForPlayer(this.currentPlayer.Id,
-                        typeof(EndOfTurnAction), typeof(MakeDirectTradeOfferAction),
-                        typeof(PlaceCityAction), typeof(PlaceRoadSegmentAction),
-                        typeof(PlaceSettlementAction), typeof(PlayKnightCardAction));
+                    this.SetStandardExpectedActionsForCurrentPlayer();
                 }
             }
         }
@@ -622,6 +619,12 @@ namespace Jabberwocky.SoC.Library
                 return false;
             }
 
+            if (playerAction is BuyDevelopmentCardAction buyDevelopmentCardAction)
+            {
+                //this.currentPlayer.
+                return false;
+            }
+
             if (playerAction is EndOfTurnAction)
             {
                 this.StartTurn();
@@ -815,6 +818,18 @@ namespace Jabberwocky.SoC.Library
             this.eventRaiser.SendEvent(gameEvent, player.Id);
         }
 
+        private void SetStandardExpectedActionsForCurrentPlayer()
+        {
+            this.actionManager.SetExpectedActionsForPlayer(this.currentPlayer.Id,
+                typeof(BuyDevelopmentCardAction),
+                typeof(EndOfTurnAction), typeof(MakeDirectTradeOfferAction),
+                typeof(PlaceCityAction), typeof(PlaceRoadSegmentAction),
+                typeof(PlaceSettlementAction), typeof(PlayKnightCardAction));
+
+            foreach (var player in this.PlayersExcept(this.currentPlayer.Id))
+                this.actionManager.SetExpectedActionsForPlayer(player.Id, null);
+        }
+
         private void StartTurn()
         {
             this.ChangeToNextPlayer();
@@ -826,16 +841,12 @@ namespace Jabberwocky.SoC.Library
             if (dice1 + dice2 != 7)
             {
                 this.StartTurnWithResourceCollection(dice1, dice2);
+                this.SetStandardExpectedActionsForCurrentPlayer();
             }
             else
             {
                 this.StartTurnWithRobberPlacement(dice1, dice2);
             }
-
-            this.actionManager.SetExpectedActionsForPlayer(this.currentPlayer.Id,
-                typeof(EndOfTurnAction), typeof(MakeDirectTradeOfferAction),
-                typeof(PlaceCityAction), typeof(PlaceRoadSegmentAction),
-                typeof(PlaceSettlementAction), typeof(PlayKnightCardAction));
         }
 
         private void StartTurnWithRobberPlacement(uint dice1, uint dice2)
@@ -1011,7 +1022,6 @@ namespace Jabberwocky.SoC.Library
         private void WaitForRobberPlacement()
         {
             this.RaiseEvent(new PlaceRobberEvent(), this.currentPlayer);
-
             this.actionManager.SetExpectedActionsForPlayer(this.currentPlayer.Id, typeof(PlaceRobberAction));
             this.ProcessPlayerAction(this.WaitForPlayerAction());
         }

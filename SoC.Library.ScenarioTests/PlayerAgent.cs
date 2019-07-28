@@ -210,6 +210,11 @@ namespace SoC.Library.ScenarioTests
                     this.gameController.AnswerDirectTradeOffer((ResourceClutch)action.Parameters[0]);
                     break;
                 }
+                case ActionInstruction.OperationTypes.BuyDevelopmentCard:
+                {
+                    this.gameController.BuyDevelopmentCard();
+                    break;
+                }
                 case ActionInstruction.OperationTypes.ChooseResourcesToLose:
                 {
                     this.gameController.ChooseResourcesToLose((ResourceClutch)action.Parameters[0]);

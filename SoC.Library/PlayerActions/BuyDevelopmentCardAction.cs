@@ -5,6 +5,6 @@ namespace Jabberwocky.SoC.Library.PlayerActions
 
     public class BuyDevelopmentCardAction : PlayerAction
     {
-        public BuyDevelopmentCardAction() : base(Guid.Empty) {}
+        public BuyDevelopmentCardAction(Guid playerId) : base(playerId) {}
     }
 }
