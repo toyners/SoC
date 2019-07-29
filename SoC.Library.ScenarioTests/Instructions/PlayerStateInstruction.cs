@@ -1,6 +1,7 @@
 ﻿
 namespace SoC.Library.ScenarioTests.Instructions
 {
+    using System;
     using System.Collections.Generic;
     using Jabberwocky.SoC.Library;
     using Jabberwocky.SoC.Library.GameEvents;
@@ -10,6 +11,7 @@ namespace SoC.Library.ScenarioTests.Instructions
     {
         private readonly PlayerAgent playerAgent;
         private readonly ScenarioRunner runner;
+        private int? heldCards;
         private uint? cities;
         private ResourceClutch? resources;
         private uint? roadSegments;
@@ -30,7 +32,14 @@ namespace SoC.Library.ScenarioTests.Instructions
             return this;
         }
 
-        public PlayerStateInstruction HeldCards(DevelopmentCardTypes developmentCardType, int count)
+        [Obsolete("No currently being used")]
+        public PlayerStateInstruction HeldCards(int totalCount)
+        {
+            this.heldCards = totalCount;
+            return this;
+        }
+
+        public PlayerStateInstruction HeldCardsByType(DevelopmentCardTypes developmentCardType, int count)
         {
             if (this.developmentCardsByCount == null)
                 this.developmentCardsByCount = new Dictionary<DevelopmentCardTypes, int>();
@@ -82,8 +91,9 @@ namespace SoC.Library.ScenarioTests.Instructions
         public GameEvent GetEvent()
         {
             var requestStateEvent = new ScenarioRequestStateEvent(this.playerAgent.Id);
-            requestStateEvent.DevelopmentCardsByCount = this.developmentCardsByCount;
             requestStateEvent.Cities = this.cities;
+            requestStateEvent.DevelopmentCardsByCount = this.developmentCardsByCount;
+            requestStateEvent.HeldCards = this.heldCards;
             requestStateEvent.PlayedKnightCards = this.playedKnightCards;
             requestStateEvent.Resources = this.resources;
             requestStateEvent.RoadSegments = this.roadSegments;

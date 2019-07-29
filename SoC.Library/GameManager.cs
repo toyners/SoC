@@ -621,7 +621,14 @@ namespace Jabberwocky.SoC.Library
 
             if (playerAction is BuyDevelopmentCardAction buyDevelopmentCardAction)
             {
-                //this.currentPlayer.
+                if (this.currentPlayer.Resources < ResourceClutch.DevelopmentCard)
+                {
+                    this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, "921", "Not enough resources for buying development card"), this.currentPlayer);
+                    return false;
+                }
+
+                //this.currentPlayer.PayForDevelopmentCard();
+
                 return false;
             }
 
@@ -783,12 +790,14 @@ namespace Jabberwocky.SoC.Library
             var requestStateEvent = new RequestStateEvent(player.Id);
             requestStateEvent.Cities = player.RemainingCities;
 
+            requestStateEvent.HeldCards = 0;
             requestStateEvent.DevelopmentCardsByCount = player.HeldCards?.Aggregate(new Dictionary<DevelopmentCardTypes, int>(),
                 (dict, card) => {
                     if (!dict.ContainsKey(card.Type))
                         dict.Add(card.Type, 1);
                     else
                         dict[card.Type]++;
+                    requestStateEvent.HeldCards++;
                     return dict;
                 });
             requestStateEvent.PlayedKnightCards = player.PlayedKnightCards;

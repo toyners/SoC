@@ -125,10 +125,15 @@ namespace SoC.Library.ScenarioTests
             return this;
         }
 
-        public ScenarioRunner ReceivesDevelopmentCardBoughtEvent(string playerName = null)
+        public ScenarioRunner ReceivesDevelopmentCardBoughtEvent(DevelopmentCardTypes developmentCardType)
         {
-            var playerId = playerName != null ? this.playerAgentsByName[playerName].Id : this.currentPlayerAgent.Id;
-            this.AddEventInstruction(new DevelopmentCardBoughtEvent(playerId));
+            this.AddEventInstruction(new DevelopmentCardBoughtEvent(this.currentPlayerAgent.Id, developmentCardType));
+            return this;
+        }
+
+        public ScenarioRunner ReceivesDevelopmentCardBoughtEvent(string playerName)
+        {
+            this.AddEventInstruction(new DevelopmentCardBoughtEvent(this.playerAgentsByName[playerName].Id));
             return this;
         }
 

@@ -191,7 +191,8 @@ namespace SoC.Library.ScenarioTests
             else if (gameEvent is RequestStateEvent requestStateEvent)
             {
                 result += $"Cities <b>{requestStateEvent.Cities}</b><br>" +
-                    $"Held Cards {GetFormattedCards(requestStateEvent.DevelopmentCardsByCount)}<br>" +
+                    $"Held Cards {requestStateEvent.HeldCards}<br>" +
+                    $"Held Cards by Type {GetFormattedCards(requestStateEvent.DevelopmentCardsByCount)}<br>" +
                     $"Played Knight Cards <b>{requestStateEvent.PlayedKnightCards}</b><br>" +
                     $"Resources <b>{requestStateEvent.Resources}</b><br>" +
                     $"Road Segments <b>{requestStateEvent.RoadSegments}</b><br>" +
@@ -215,7 +216,8 @@ namespace SoC.Library.ScenarioTests
             else if (gameEvent is ScenarioRequestStateEvent scenarioRequestStateEvent)
             {
                 result += $"Cities {GetFormattedProperty(scenarioRequestStateEvent.Cities)}<br>" +
-                    $"Held Cards {GetFormattedCards(scenarioRequestStateEvent.DevelopmentCardsByCount)}<br>" + 
+                    $"Held Cards {GetFormattedProperty(scenarioRequestStateEvent.HeldCards)}<br>" +
+                    $"Held Cards by Type {GetFormattedCards(scenarioRequestStateEvent.DevelopmentCardsByCount)}<br>" + 
                     $"Played Knight Cards {GetFormattedProperty(scenarioRequestStateEvent.PlayedKnightCards)}<br>" +
                     $"Resources {GetFormattedProperty(scenarioRequestStateEvent.Resources)}<br>" +
                     $"Road Segments {GetFormattedProperty(scenarioRequestStateEvent.RoadSegments)}<br>" +

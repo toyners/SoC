@@ -317,10 +317,12 @@ namespace SoC.Library.ScenarioTests
             var result = true;
             if (expectedEvent.Cities.HasValue)
                 result &= expectedEvent.Cities.Value == actualEvent.Cities;
-            if (expectedEvent.PlayedKnightCards.HasValue)
-                result &= expectedEvent.PlayedKnightCards.Value == actualEvent.PlayedKnightCards;
             if (expectedEvent.DevelopmentCardsByCount != null)
                 result &= this.IsDictionaryMatched(expectedEvent.DevelopmentCardsByCount, actualEvent.DevelopmentCardsByCount);
+            if (expectedEvent.HeldCards != null)
+                result &= expectedEvent.HeldCards.Value == actualEvent.HeldCards;
+            if (expectedEvent.PlayedKnightCards.HasValue)
+                result &= expectedEvent.PlayedKnightCards.Value == actualEvent.PlayedKnightCards;
             if (expectedEvent.Resources.HasValue)
                 result &= expectedEvent.Resources.Value == actualEvent.Resources;
             if (expectedEvent.RoadSegments.HasValue)
