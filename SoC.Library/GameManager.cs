@@ -753,12 +753,17 @@ namespace Jabberwocky.SoC.Library
                 {
                     this.RaiseEvent(new LargestArmyChangedEvent(this.currentPlayer.Id, null));
                     this.playerWithLargestArmy = this.currentPlayer;
+                    this.currentPlayer.HasLargestArmy = true;
                 }
                 else if (this.currentPlayer != this.playerWithLargestArmy &&
                     this.currentPlayer.PlayedKnightCards > this.playerWithLargestArmy.PlayedKnightCards)
                 {
-                    this.RaiseEvent(new LargestArmyChangedEvent(this.currentPlayer.Id, this.playerWithLargestArmy.Id));
+                    var previousPlayer = this.playerWithLargestArmy;
+                    previousPlayer.HasLargestArmy = false;
                     this.playerWithLargestArmy = this.currentPlayer;
+                    this.currentPlayer.HasLargestArmy = true;
+
+                    this.RaiseEvent(new LargestArmyChangedEvent(this.currentPlayer.Id, previousPlayer.Id));
                 }
 
                 if (this.currentPlayer.VictoryPoints >= 10)
