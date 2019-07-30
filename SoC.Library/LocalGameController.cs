@@ -1161,7 +1161,7 @@ namespace Jabberwocky.SoC.Library
         {
             DevelopmentCard developmentCard;
             this.developmentCardHolder.TryGetNextCard(out developmentCard);
-            this.currentPlayer.PayForDevelopmentCard();
+            this.currentPlayer.BuyDevelopmentCard();
             this.cardsPurchasedThisTurn.Add(developmentCard);
             return developmentCard;
         }

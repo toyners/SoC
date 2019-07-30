@@ -127,6 +127,7 @@ namespace SoC.Library.ScenarioTests
 
         public ScenarioRunner ReceivesDevelopmentCardBoughtEvent(DevelopmentCardTypes developmentCardType)
         {
+            this.developmentCardHolder.AddDevelopmentCard(developmentCardType);
             this.AddEventInstruction(new DevelopmentCardBoughtEvent(this.currentPlayerAgent.Id, developmentCardType));
             return this;
         }

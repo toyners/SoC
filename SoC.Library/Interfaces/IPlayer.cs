@@ -10,6 +10,7 @@ namespace Jabberwocky.SoC.Library.Interfaces
     public interface IPlayer
     {
         #region Properties
+        bool CanBuyDevelopmentCard { get; }
         PlayerPlacementVerificationStates CanPlaceCity { get; }
         PlayerPlacementVerificationStates CanPlaceRoadSegment { get; }
         PlayerPlacementVerificationStates CanPlaceSettlement { get; }
@@ -42,7 +43,7 @@ namespace Jabberwocky.SoC.Library.Interfaces
         #region Methods
         void AddResources(ResourceClutch resourceClutch);
         PlayerDataBase GetDataModel(bool provideFullPlayerData);
-        void PayForDevelopmentCard();
+        void BuyDevelopmentCard();
         void PlaceCity();
         void PlaceKnightDevelopmentCard(KnightDevelopmentCard card);
         void PlaceRoadSegment();

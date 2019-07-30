@@ -161,7 +161,12 @@ namespace SoC.Library.ScenarioTests
         private static string GetEventProperties(GameEvent gameEvent)
         {
             var result = "";
-            if (gameEvent is GameErrorEvent gameErrorEvent)
+            if (gameEvent is DevelopmentCardBoughtEvent developmentCardBoughtEvent && 
+                developmentCardBoughtEvent.CardType.HasValue)
+            {
+                result += $"Card type: <b>{developmentCardBoughtEvent.CardType}</b>";
+            }
+            else if (gameEvent is GameErrorEvent gameErrorEvent)
             {
                 result += $"Error code: <b>{gameErrorEvent.ErrorCode}</b><br>" +
                     $"Error message: <b>{gameErrorEvent.ErrorMessage}</b>";

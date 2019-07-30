@@ -19,6 +19,7 @@ namespace Jabberwocky.SoC.Library
         #region Fields
         private readonly ActionManager actionManager;
         private readonly ConcurrentQueue<PlayerAction> actionRequests = new ConcurrentQueue<PlayerAction>();
+        private readonly ISet<DevelopmentCard> cardsBoughtThisTurn = new HashSet<DevelopmentCard>();
         private readonly Dictionary<Guid, ChooseLostResourcesEvent> chooseLostResourcesEventByPlayerId = new Dictionary<Guid, ChooseLostResourcesEvent>();
         private readonly IDevelopmentCardHolder developmentCardHolder;
         private readonly EventRaiser eventRaiser;
@@ -328,6 +329,23 @@ namespace Jabberwocky.SoC.Library
             this.RaiseEvent(informationalAnswerDirectTradeOfferEvent, otherPlayers);
         }
 
+        private void ProcessBuyDevelopmentCardAction()
+        {
+            if (!this.currentPlayer.CanBuyDevelopmentCard)
+            {
+                this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, "921", "Not enough resources for buying development card"), this.currentPlayer);
+            }
+            else
+            {
+                this.currentPlayer.BuyDevelopmentCard();
+                this.developmentCardHolder.TryGetNextCard(out var card);
+                this.currentPlayer.HeldCards.Add(card);
+                this.cardsBoughtThisTurn.Add(card);
+                this.RaiseEvent(new DevelopmentCardBoughtEvent(this.currentPlayer.Id, card.Type));
+                this.RaiseEvent(new DevelopmentCardBoughtEvent(this.currentPlayer.Id), this.PlayersExcept(this.currentPlayer.Id));
+            }
+        }
+
         private void ProcessMakeDirectTradeOfferAction(MakeDirectTradeOfferAction makeDirectTradeOfferAction)
         {
             this.initialDirectTradeOffer = new Tuple<Guid, ResourceClutch>(
@@ -621,14 +639,7 @@ namespace Jabberwocky.SoC.Library
 
             if (playerAction is BuyDevelopmentCardAction buyDevelopmentCardAction)
             {
-                if (this.currentPlayer.Resources < ResourceClutch.DevelopmentCard)
-                {
-                    this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, "921", "Not enough resources for buying development card"), this.currentPlayer);
-                    return false;
-                }
-
-                //this.currentPlayer.PayForDevelopmentCard();
-
+                this.ProcessBuyDevelopmentCardAction();
                 return false;
             }
 
@@ -716,9 +727,10 @@ namespace Jabberwocky.SoC.Library
         private bool ProcessPlayKnightCardAction(PlayKnightCardAction playKnightCardAction)
         {
             DevelopmentCard card = null;
-            if ((card = this.currentPlayer.HeldCards.FirstOrDefault(c => c.Type == DevelopmentCardTypes.Knight)) == null)
+            if ((card = this.currentPlayer.HeldCards.FirstOrDefault(c => c.Type == DevelopmentCardTypes.Knight &&
+                !this.cardsBoughtThisTurn.Contains(c))) == null)
             {
-                this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, "920", "No Knight card owned"),
+                this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, "920", "No Knight card owned that can be played this turn"),
                     this.currentPlayer);
                 return false;
             }
@@ -842,6 +854,7 @@ namespace Jabberwocky.SoC.Library
         private void StartTurn()
         {
             this.ChangeToNextPlayer();
+            this.cardsBoughtThisTurn.Clear();
 
             foreach (var player in this.players)
                 this.actionManager.SetExpectedActionsForPlayer(player.Id, null);

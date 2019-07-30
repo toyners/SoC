@@ -431,7 +431,20 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void PlayerBuysDevelopmentCardAndTriesToUseItInSameTurn()
         {
-            throw new NotImplementedException();
+            try
+            {
+                this.CompletePlayerInfrastructureSetup()
+                    .WithInitialPlayerSetupFor(Adam, Resources(ResourceClutch.DevelopmentCard))
+                    .WhenPlayer(Adam)
+                        .ReceivesStartTurnEvent(3, 3).ThenBuyDevelopmentCard()
+                        .ReceivesDevelopmentCardBoughtEvent(DevelopmentCardTypes.Knight).ThenPlayKnightCard(4)
+                        .ReceivesGameErrorEvent("920", "No Knight card owned that can be played this turn")
+                    .Run(this.logDirectory);
+            }
+            finally
+            {
+                this.AttachReports();
+            }
         }
 
         [Test]
@@ -1179,7 +1192,7 @@ namespace SoC.Library.ScenarioTests
                     .WithNoResourceCollection()
                     .WhenPlayer(Adam)
                         .ReceivesStartTurnEvent(3, 3).ThenPlayKnightCard(0)
-                        .ReceivesGameErrorEvent("920", "No Knight card owned")
+                        .ReceivesGameErrorEvent("920", "No Knight card owned that can be played this turn")
                     .VerifyPlayer(Babara)
                         .DidNotReceiveEventOfType<KnightCardPlayedEvent>()
                         .DidNotReceiveEventOfType<GameErrorEvent>()

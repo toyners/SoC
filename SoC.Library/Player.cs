@@ -67,6 +67,7 @@ namespace Jabberwocky.SoC.Library
         #endregion
 
         #region Properties
+        public bool CanBuyDevelopmentCard => this.Resources >= ResourceClutch.DevelopmentCard;
         public PlayerPlacementVerificationStates CanPlaceCity => this.Resources < ResourceClutch.City ? PlayerPlacementVerificationStates.NotEnoughResources : PlayerPlacementVerificationStates.Success;
         public PlayerPlacementVerificationStates CanPlaceRoadSegment
         {
@@ -240,7 +241,7 @@ namespace Jabberwocky.SoC.Library
             throw new NotImplementedException("Should not get here");
         }
 
-        public void PayForDevelopmentCard()
+        public void BuyDevelopmentCard()
         {
             this.Resources -= ResourceClutch.DevelopmentCard;
         }

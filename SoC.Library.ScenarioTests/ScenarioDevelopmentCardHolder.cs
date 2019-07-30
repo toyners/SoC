@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Jabberwocky.SoC.Library;
 using Jabberwocky.SoC.Library.DevelopmentCards;
 using Jabberwocky.SoC.Library.Interfaces;
 
@@ -11,8 +12,16 @@ namespace SoC.Library.ScenarioTests
 
         public bool HasCards => this.developmentCards.Count > 0;
 
-        public void AddDevelopmentCard(DevelopmentCard developmentCard)
+        public void AddDevelopmentCard(DevelopmentCardTypes developmentCardType)
         {
+            DevelopmentCard developmentCard = null;
+            switch (developmentCardType)
+            {
+                case DevelopmentCardTypes.Knight: developmentCard = new KnightDevelopmentCard(); break;
+                case DevelopmentCardTypes.RoadBuilding: developmentCard = new RoadBuildingDevelopmentCard(); break;
+                default: throw new NotImplementedException($"Development card type {developmentCardType} not recognised");
+            }
+
             this.developmentCards.Enqueue(developmentCard);
         }
 
