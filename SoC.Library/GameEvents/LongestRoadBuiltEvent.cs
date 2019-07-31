@@ -1,12 +1,13 @@
 ﻿
 namespace Jabberwocky.SoC.Library.GameEvents
 {
-  using System;
+    using System;
 
-  public class LongestRoadBuiltEvent : LargestArmyChangedEvent
-  {
-    public LongestRoadBuiltEvent(Guid playerId, Guid previousPlayerWithLongestRoadId) : base(playerId, previousPlayerWithLongestRoadId)
+    public class LongestRoadBuiltEvent : LargestArmyChangedEvent
     {
+        public readonly uint[] Locations;
+        public LongestRoadBuiltEvent(Guid playerId, uint[] locations, Guid? previousPlayerWithLongestRoadId) 
+            : base(playerId, previousPlayerWithLongestRoadId)
+            => this.Locations = locations;
     }
-  }
 }

@@ -2343,41 +2343,28 @@ namespace SoC.Library.ScenarioTests
         [TestCase(7u, 11u)]
         public void PlayerWithEightOrNinePointsGainsLongestRoadAndWins(uint initialVP, uint winningVP)
         {
-            throw new NotImplementedException();
             try
             {
+                var longestRoadLocations = new uint[] { 12, 4, 3, 2, 1, 0 };
                 this.CompletePlayerInfrastructureSetup()
-                    .WithInitialPlayerSetupFor(Adam, VictoryPoints(initialVP), KnightCard(3)) // initialVP + 2 settlements placed as part of startup = 8 or 9
+                    // initialVP + 2 settlements placed as part of startup = 8 or 9
+                    .WithInitialPlayerSetupFor(Adam, VictoryPoints(initialVP), Resources(ResourceClutch.RoadSegment * 4)) 
                     .WhenPlayer(Adam)
-                        .ReceivesStartTurnEvent(3, 3).ThenPlayKnightCard(4)
-                        .ReceivesKnightCardPlayedEvent(4).ThenEndTurn()
-                        .ReceivesStartTurnEvent(3, 3).ThenPlayKnightCard(0)
-                        .ReceivesKnightCardPlayedEvent(0).ThenEndTurn()
-                        .ReceivesStartTurnEvent(3, 3).ThenPlayKnightCard(4)
-                        .ReceivesKnightCardPlayedEvent(4)
-                        .ReceivesLargestArmyChangedEvent()
+                        .ReceivesStartTurnEvent(3, 3).ThenPlaceRoadSegment(4, 3)
+                        .ReceivesRoadSegmentPlacementEvent(4, 3).ThenPlaceRoadSegment(3, 2)
+                        .ReceivesRoadSegmentPlacementEvent(3, 2).ThenPlaceRoadSegment(2, 1)
+                        .ReceivesRoadSegmentPlacementEvent(2, 1).ThenPlaceRoadSegment(1, 0)
+                        .ReceivesRoadSegmentPlacementEvent(1, 0)
+                        .ReceivesLongestRoadChangedEvent(longestRoadLocations)
                         .ReceivesPlayerWonEvent(winningVP)
-                        .ThenVerifyPlayerState()
-                            .PlayedKnightCards(3)
-                            .HeldCardsByType(DevelopmentCardTypes.Knight, 0)
-                        .EndPlayerVerification()
                     .WhenPlayer(Babara)
-                        .ReceivesStartTurnEvent(3, 3).ThenEndTurn()
-                        .ReceivesStartTurnEvent(3, 3).ThenEndTurn()
-                        .ReceivesKnightCardPlayedEvent(Adam, 4)
-                        .ReceivesLargestArmyChangedEvent(Adam, null)
+                        .ReceivesLongestRoadChangedEvent(Adam, longestRoadLocations)
                         .ReceivesPlayerWonEvent(winningVP, Adam)
                     .WhenPlayer(Charlie)
-                        .ReceivesStartTurnEvent(3, 3).ThenEndTurn()
-                        .ReceivesStartTurnEvent(3, 3).ThenEndTurn()
-                        .ReceivesKnightCardPlayedEvent(Adam, 4)
-                        .ReceivesLargestArmyChangedEvent(Adam, null)
+                        .ReceivesLongestRoadChangedEvent(Adam, longestRoadLocations)
                         .ReceivesPlayerWonEvent(winningVP, Adam)
                     .WhenPlayer(Dana)
-                        .ReceivesStartTurnEvent(3, 3).ThenEndTurn()
-                        .ReceivesStartTurnEvent(3, 3).ThenEndTurn()
-                        .ReceivesKnightCardPlayedEvent(Adam, 4)
-                        .ReceivesLargestArmyChangedEvent(Adam, null)
+                        .ReceivesLongestRoadChangedEvent(Adam, longestRoadLocations)
                         .ReceivesPlayerWonEvent(winningVP, Adam)
                     .Run(this.logDirectory);
             }

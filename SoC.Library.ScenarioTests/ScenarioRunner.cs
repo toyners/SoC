@@ -187,6 +187,19 @@ namespace SoC.Library.ScenarioTests
             return this;
         }
 
+        public ScenarioRunner ReceivesLongestRoadChangedEvent(uint[] locations, string previousPlayerName = null)
+        {
+            return this.ReceivesLongestRoadChangedEvent(this.currentPlayerAgent.Name, locations, previousPlayerName);
+        }
+
+        public ScenarioRunner ReceivesLongestRoadChangedEvent(string playerName, uint[] locations, string previousPlayerName = null)
+        {
+            Guid? previousPlayerId = previousPlayerName != null ? (Guid?)this.playerAgentsByName[previousPlayerName].Id : null;
+            var gameEvent = new LongestRoadBuiltEvent(this.playerAgentsByName[playerName].Id, locations, previousPlayerId);
+            this.AddEventInstruction(gameEvent);
+            return this;
+        }
+
         public ScenarioRunner ReceivesMakeDirectTradeOfferEvent(string buyingPlayerName, ResourceClutch wantedResources)
         {
             var gameEvent = new MakeDirectTradeOfferEvent(this.GetPlayerId(buyingPlayerName), wantedResources);

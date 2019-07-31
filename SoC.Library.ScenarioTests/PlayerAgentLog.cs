@@ -213,10 +213,15 @@ namespace SoC.Library.ScenarioTests
                         result += $"Location <b>{kv2.Location}</b> Resources <b>{kv2.Resources}</b><br>";
                 }
             }
+            else if (gameEvent is RoadSegmentPlacedEvent roadSegmentPlacedEvent)
+            {
+                result += $"Start: <b>{GetFormattedProperty(roadSegmentPlacedEvent.StartLocation)}</b> " +
+                    $"End: <b>{roadSegmentPlacedEvent.EndLocation}</b>";
+            }
             else if (gameEvent is RobbingChoicesEvent robbingChoicesEvent)
             {
                 foreach (var kv in robbingChoicesEvent.RobbingChoices)
-                    result += $"Name <b>{GetPlayerName(kv.Key)}</b> Resource count <b>{kv.Value}</b><br>";
+                    result += $"Name: <b>{GetPlayerName(kv.Key)}</b> Resource count: <b>{kv.Value}</b><br>";
             }
             else if (gameEvent is ScenarioRequestStateEvent scenarioRequestStateEvent)
             {
