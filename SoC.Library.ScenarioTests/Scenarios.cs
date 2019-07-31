@@ -448,6 +448,32 @@ namespace SoC.Library.ScenarioTests
         }
 
         [Test]
+        public void PlayerBuysDevelopmentCardAndUsesItOnSubsequentTurn()
+        {
+            try
+            {
+                this.CompletePlayerInfrastructureSetup()
+                    .WithInitialPlayerSetupFor(Adam, Resources(ResourceClutch.DevelopmentCard))
+                    .WhenPlayer(Adam)
+                        .ReceivesStartTurnEvent(3, 3).ThenBuyDevelopmentCard()
+                        .ReceivesDevelopmentCardBoughtEvent(DevelopmentCardTypes.Knight).ThenEndTurn()
+                        .ReceivesStartTurnEvent(3, 3).ThenPlayKnightCard(4)
+                        .ReceivesKnightCardPlayedEvent(4)
+                    .WhenPlayer(Babara)
+                        .ReceivesStartTurnEvent(3, 3).ThenEndTurn()
+                    .WhenPlayer(Charlie)
+                        .ReceivesStartTurnEvent(3, 3).ThenEndTurn()
+                    .WhenPlayer(Dana)
+                        .ReceivesStartTurnEvent(3, 3).ThenEndTurn()
+                    .Run(this.logDirectory);
+            }
+            finally
+            {
+                this.AttachReports();
+            }
+        }
+
+        [Test]
         public void PlayerPlacesCity()
         {
 			try
@@ -2265,12 +2291,14 @@ namespace SoC.Library.ScenarioTests
         }
 
         [Test]
-        public void PlayerWithEightPointsGainsLargestArmyAndWins()
+        [TestCase(6u, 10u)]
+        [TestCase(7u, 11u)]
+        public void PlayerWithEightOrNinePointsGainsLargestArmyAndWins(uint initialVP, uint winningVP)
         {
             try
             {
                 this.CompletePlayerInfrastructureSetup()
-                    .WithInitialPlayerSetupFor(Adam, VictoryPoints(6), KnightCard(3)) // 6 + 2 settlements placed as part of startup = 8
+                    .WithInitialPlayerSetupFor(Adam, VictoryPoints(initialVP), KnightCard(3)) // initialVP + 2 settlements placed as part of startup = 8 or 9
                     .WhenPlayer(Adam)
                         .ReceivesStartTurnEvent(3, 3).ThenPlayKnightCard(4)
                         .ReceivesKnightCardPlayedEvent(4).ThenEndTurn()
@@ -2279,7 +2307,7 @@ namespace SoC.Library.ScenarioTests
                         .ReceivesStartTurnEvent(3, 3).ThenPlayKnightCard(4)
                         .ReceivesKnightCardPlayedEvent(4)
                         .ReceivesLargestArmyChangedEvent()
-                        .ReceivesPlayerWonEvent(10)
+                        .ReceivesPlayerWonEvent(winningVP)
                         .ThenVerifyPlayerState()
                             .PlayedKnightCards(3)
                             .HeldCardsByType(DevelopmentCardTypes.Knight, 0)
@@ -2289,19 +2317,19 @@ namespace SoC.Library.ScenarioTests
                         .ReceivesStartTurnEvent(3, 3).ThenEndTurn()
                         .ReceivesKnightCardPlayedEvent(Adam, 4)
                         .ReceivesLargestArmyChangedEvent(Adam, null)
-                        .ReceivesPlayerWonEvent(10, Adam)
+                        .ReceivesPlayerWonEvent(winningVP, Adam)
                     .WhenPlayer(Charlie)
                         .ReceivesStartTurnEvent(3, 3).ThenEndTurn()
                         .ReceivesStartTurnEvent(3, 3).ThenEndTurn()
                         .ReceivesKnightCardPlayedEvent(Adam, 4)
                         .ReceivesLargestArmyChangedEvent(Adam, null)
-                        .ReceivesPlayerWonEvent(10, Adam)
+                        .ReceivesPlayerWonEvent(winningVP, Adam)
                     .WhenPlayer(Dana)
                         .ReceivesStartTurnEvent(3, 3).ThenEndTurn()
                         .ReceivesStartTurnEvent(3, 3).ThenEndTurn()
                         .ReceivesKnightCardPlayedEvent(Adam, 4)
                         .ReceivesLargestArmyChangedEvent(Adam, null)
-                        .ReceivesPlayerWonEvent(10, Adam)
+                        .ReceivesPlayerWonEvent(winningVP, Adam)
                     .Run(this.logDirectory);
             }
             finally
@@ -2311,33 +2339,142 @@ namespace SoC.Library.ScenarioTests
         }
 
         [Test]
-        public void PlayerWithEightPointsGainsLongestRoadAndWins()
+        [TestCase(6u, 10u)]
+        [TestCase(7u, 11u)]
+        public void PlayerWithEightOrNinePointsGainsLongestRoadAndWins(uint initialVP, uint winningVP)
         {
-            throw new NotImplementedException();
+            try
+            {
+                this.CompletePlayerInfrastructureSetup()
+                    .WithInitialPlayerSetupFor(Adam, VictoryPoints(initialVP), KnightCard(3)) // initialVP + 2 settlements placed as part of startup = 8 or 9
+                    .WhenPlayer(Adam)
+                        .ReceivesStartTurnEvent(3, 3).ThenPlayKnightCard(4)
+                        .ReceivesKnightCardPlayedEvent(4).ThenEndTurn()
+                        .ReceivesStartTurnEvent(3, 3).ThenPlayKnightCard(0)
+                        .ReceivesKnightCardPlayedEvent(0).ThenEndTurn()
+                        .ReceivesStartTurnEvent(3, 3).ThenPlayKnightCard(4)
+                        .ReceivesKnightCardPlayedEvent(4)
+                        .ReceivesLargestArmyChangedEvent()
+                        .ReceivesPlayerWonEvent(winningVP)
+                        .ThenVerifyPlayerState()
+                            .PlayedKnightCards(3)
+                            .HeldCardsByType(DevelopmentCardTypes.Knight, 0)
+                        .EndPlayerVerification()
+                    .WhenPlayer(Babara)
+                        .ReceivesStartTurnEvent(3, 3).ThenEndTurn()
+                        .ReceivesStartTurnEvent(3, 3).ThenEndTurn()
+                        .ReceivesKnightCardPlayedEvent(Adam, 4)
+                        .ReceivesLargestArmyChangedEvent(Adam, null)
+                        .ReceivesPlayerWonEvent(winningVP, Adam)
+                    .WhenPlayer(Charlie)
+                        .ReceivesStartTurnEvent(3, 3).ThenEndTurn()
+                        .ReceivesStartTurnEvent(3, 3).ThenEndTurn()
+                        .ReceivesKnightCardPlayedEvent(Adam, 4)
+                        .ReceivesLargestArmyChangedEvent(Adam, null)
+                        .ReceivesPlayerWonEvent(winningVP, Adam)
+                    .WhenPlayer(Dana)
+                        .ReceivesStartTurnEvent(3, 3).ThenEndTurn()
+                        .ReceivesStartTurnEvent(3, 3).ThenEndTurn()
+                        .ReceivesKnightCardPlayedEvent(Adam, 4)
+                        .ReceivesLargestArmyChangedEvent(Adam, null)
+                        .ReceivesPlayerWonEvent(winningVP, Adam)
+                    .Run(this.logDirectory);
+            }
+            finally
+            {
+                this.AttachReports();
+            }
         }
 
         [Test]
         public void PlayerWithLargestArmyDoesNotRaiseEventWhenPlayingSubsequentKnight()
         {
-            throw new NotImplementedException();
+            try
+            {
+                this.CompletePlayerInfrastructureSetup()
+                    .WithInitialPlayerSetupFor(Adam, KnightCard(4))
+                    .WhenPlayer(Adam)
+                        .ReceivesStartTurnEvent(3, 3).ThenPlayKnightCard(4)
+                        .ReceivesKnightCardPlayedEvent(4).ThenPlayKnightCard(0)
+                        .ReceivesKnightCardPlayedEvent(0).ThenPlayKnightCard(4)
+                        .ReceivesKnightCardPlayedEvent(4).ThenEndTurn()
+                        .ReceivesStartTurnEvent(3, 3).ThenPlayKnightCard(0)
+                        .DidNotReceiveEventOfTypeAfterCount<LargestArmyChangedEvent>(1)
+                    .WhenPlayer(Babara)
+                        .ReceivesStartTurnEvent(3, 3).ThenEndTurn()
+                    .WhenPlayer(Charlie)
+                        .ReceivesStartTurnEvent(3, 3).ThenEndTurn()
+                    .WhenPlayer(Dana)
+                        .ReceivesStartTurnEvent(3, 3).ThenEndTurn()
+                    .Run(this.logDirectory);
+            }
+            finally
+            {
+                this.AttachReports();
+            }
         }
 
         [Test]
         public void PlayerWithLargestArmyDoesNotGetMoreVictoryPointsWhenPlayingSubsequentKnight()
         {
-            throw new NotImplementedException();
+            try
+            {
+                this.CompletePlayerInfrastructureSetup()
+                    .WithInitialPlayerSetupFor(Adam, KnightCard(4))
+                    .WhenPlayer(Adam)
+                        .ReceivesStartTurnEvent(3, 3).ThenPlayKnightCard(4)
+                        .ReceivesKnightCardPlayedEvent(4).ThenPlayKnightCard(0)
+                        .ReceivesKnightCardPlayedEvent(0).ThenPlayKnightCard(4)
+                        .ReceivesKnightCardPlayedEvent(4)
+                        .ThenVerifyPlayerState()
+                            .VictoryPoints(4)
+                        .EndPlayerVerification()
+                        .ThenEndTurn()
+                        .ReceivesStartTurnEvent(3, 3).ThenPlayKnightCard(0)
+                        .ReceivesKnightCardPlayedEvent(0)
+                        .ThenVerifyPlayerState()
+                            .VictoryPoints(4)
+                        .EndPlayerVerification()
+                    .WhenPlayer(Babara)
+                        .ReceivesStartTurnEvent(3, 3).ThenEndTurn()
+                    .WhenPlayer(Charlie)
+                        .ReceivesStartTurnEvent(3, 3).ThenEndTurn()
+                    .WhenPlayer(Dana)
+                        .ReceivesStartTurnEvent(3, 3).ThenEndTurn()
+                    .Run(this.logDirectory);
+            }
+            finally
+            {
+                this.AttachReports();
+            }
         }
 
         [Test]
-        public void PlayerWithNinePointsGainsLargestArmyAndWins()
+        public void PlayerWithLargestArmyDoesNotGetMoreVictoryPointsWhenPlayingSubsequentKnightIsSameTurn()
         {
-            throw new NotImplementedException();
-        }
-
-        [Test]
-        public void PlayerWithNinePointsGainsLongestRoadAndWins()
-        {
-            throw new NotImplementedException();
+            try
+            {
+                this.CompletePlayerInfrastructureSetup()
+                    .WithInitialPlayerSetupFor(Adam, KnightCard(4))
+                    .WhenPlayer(Adam)
+                        .ReceivesStartTurnEvent(3, 3).ThenPlayKnightCard(4)
+                        .ReceivesKnightCardPlayedEvent(4).ThenPlayKnightCard(0)
+                        .ReceivesKnightCardPlayedEvent(0).ThenPlayKnightCard(4)
+                        .ReceivesKnightCardPlayedEvent(4)
+                        .ThenVerifyPlayerState()
+                            .VictoryPoints(4)
+                        .EndPlayerVerification()
+                        .ThenPlayKnightCard(0)
+                        .ReceivesKnightCardPlayedEvent(0)
+                        .ThenVerifyPlayerState()
+                            .VictoryPoints(4)
+                        .EndPlayerVerification()
+                    .Run(this.logDirectory);
+            }
+            finally
+            {
+                this.AttachReports();
+            }
         }
 
         private static CollectedResourcesBuilder CreateExpectedCollectedResources()
