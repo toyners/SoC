@@ -2343,6 +2343,7 @@ namespace SoC.Library.ScenarioTests
         [TestCase(7u, 11u)]
         public void PlayerWithEightOrNinePointsGainsLongestRoadAndWins(uint initialVP, uint winningVP)
         {
+            throw new NotImplementedException();
             try
             {
                 this.CompletePlayerInfrastructureSetup()
