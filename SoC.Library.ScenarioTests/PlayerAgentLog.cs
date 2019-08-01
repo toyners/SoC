@@ -184,9 +184,18 @@ namespace SoC.Library.ScenarioTests
             {
                 result += $"Hex Location: <b>{knightCardPlayedEvent.HexLocation}</b><br>";
             }
-            else if (gameEvent is LargestArmyChangedEvent largestArmyChangedEvent)
+            else if (gameEvent is LargestArmyChangedEvent largestArmyChangedEvent && !(gameEvent is LongestRoadBuiltEvent))
             {
                 result += $"Previous Player: <b>{(largestArmyChangedEvent.PreviousPlayerId != null ? GetPlayerName(largestArmyChangedEvent.PreviousPlayerId.Value) : "[none]")}</b>";
+            }
+            else if (gameEvent is LongestRoadBuiltEvent longestRoadBuiltEvent)
+            {
+                result += $"Previous Player: <b>{(longestRoadBuiltEvent.PreviousPlayerId != null ? GetPlayerName(longestRoadBuiltEvent.PreviousPlayerId.Value) : "[none]")}</b><br>" +
+                    $"Road Location: <b>";
+                foreach (var location in longestRoadBuiltEvent.Locations)
+                    result += $"{location}, ";
+
+                result = result.Substring(0, result.Length - 2) + "</b>";
             }
             else if (gameEvent is PlayerSetupEvent playerSetupEvent)
             {

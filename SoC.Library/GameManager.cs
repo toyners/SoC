@@ -28,12 +28,15 @@ namespace Jabberwocky.SoC.Library
         private readonly IActionLog actionLog = null;
         private readonly INumberGenerator numberGenerator;
         private readonly IPlayerFactory playerFactory;
+
         private IPlayer currentPlayer;
         private Func<Guid> idGenerator;
         private bool isGameSetup = true;
         private Guid[] playerIdsInRobberHex;
         private int playerIndex;
         private IDictionary<Guid, IPlayer> playersById;
+        private IPlayer playerWithLargestArmy;
+        private IPlayer playerWithLongestRoad;
         private uint robberHex = 0;
 
         private IPlayer[] players;
@@ -46,7 +49,6 @@ namespace Jabberwocky.SoC.Library
         // Only needed for scenario running?
         private CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
         private CancellationToken cancellationToken;
-        private IPlayer playerWithLargestArmy;
         #endregion
 
         #region Construction
@@ -465,7 +467,7 @@ namespace Jabberwocky.SoC.Library
             return false;
         }
 
-        private void ProcessPlaceRoadSegmentAction(PlaceRoadSegmentAction placeRoadSegmentAction)
+        private bool ProcessPlaceRoadSegmentAction(PlaceRoadSegmentAction placeRoadSegmentAction)
         {
             try
             {
@@ -474,21 +476,13 @@ namespace Jabberwocky.SoC.Library
                 {
                     this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, "905", "No road segments to place"),
                         this.currentPlayer);
-                    return;
+                    return false;
                 }
                 else if (verificationState == PlayerPlacementVerificationStates.NotEnoughResources)
                 {
                     this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, "906", "Not enough resources for placing road segment"),
                         this.currentPlayer);
-                    return;
-                }
-
-                if (this.currentPlayer.PlacedRoadSegments >= 5)
-                {
-                    if (this.gameBoard.TryGetLongestRoadDetails(out var playerId, out var locations))
-                    {
-                        this.RaiseEvent(new LongestRoadBuiltEvent(playerId, locations, null));
-                    }
+                    return false;
                 }
 
                 this.gameBoard.PlaceRoadSegment(this.currentPlayer.Id,
@@ -499,6 +493,32 @@ namespace Jabberwocky.SoC.Library
                 this.RaiseEvent(new RoadSegmentPlacedEvent(this.currentPlayer.Id, 
                     placeRoadSegmentAction.StartLocation,
                     placeRoadSegmentAction.EndLocation));
+
+                if (this.currentPlayer.PlacedRoadSegments >= 5)
+                {
+                    if (this.gameBoard.TryGetLongestRoadDetails(out var playerId, out var locations) && locations.Length > 5)
+                    {
+                        if (playerId == this.currentPlayer.Id && (this.playerWithLongestRoad == null || this.playerWithLongestRoad != this.currentPlayer))
+                        {
+                            Guid? previousPlayerId = null;
+                            if (this.playerWithLongestRoad != null)
+                            {
+                                this.playerWithLongestRoad.HasLongestRoad = false;
+                                previousPlayerId = this.playerWithLongestRoad.Id;
+                            }
+
+                            this.playerWithLongestRoad = this.currentPlayer;
+                            this.playerWithLongestRoad.HasLongestRoad = true;
+                            this.RaiseEvent(new LongestRoadBuiltEvent(this.playerWithLongestRoad.Id, locations, previousPlayerId));
+                        }
+
+                        if (this.currentPlayer.VictoryPoints >= 10)
+                        {
+                            this.RaiseEvent(new GameWinEvent(this.currentPlayer.Id, this.currentPlayer.VictoryPoints));
+                            return true;
+                        }
+                    }
+                }
             }
             catch (GameBoard.PlacementException pe)
             {
@@ -536,6 +556,8 @@ namespace Jabberwocky.SoC.Library
                     }
                 }
             }
+
+            return false;
         }
 
         private void ProcessPlaceRobberAction(PlaceRobberAction placeRobberAction)
@@ -676,8 +698,7 @@ namespace Jabberwocky.SoC.Library
 
             if (playerAction is PlaceRoadSegmentAction placeRoadSegmentAction)
             {
-                this.ProcessPlaceRoadSegmentAction(placeRoadSegmentAction);
-                return false;
+                return this.ProcessPlaceRoadSegmentAction(placeRoadSegmentAction);
             }
 
             if (playerAction is PlayKnightCardAction playKnightCardAction)

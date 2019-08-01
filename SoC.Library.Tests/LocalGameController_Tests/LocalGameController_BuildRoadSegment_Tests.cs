@@ -640,7 +640,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
                 new RoadSegmentPlacedEvent(firstOpponent.Id, 27, 28),
                 new RoadSegmentPlacedEvent(firstOpponent.Id, 28, 29),
                 new RoadSegmentPlacedEvent(firstOpponent.Id, 29, 18),
-                new LongestRoadBuiltEvent(firstOpponent.Id, player.Id)
+                new LongestRoadBuiltEvent(firstOpponent.Id, null, player.Id)
             };
 
             //actualEvents.ShouldContainExact(expectedEvents);

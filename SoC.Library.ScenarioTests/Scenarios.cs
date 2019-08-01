@@ -2339,6 +2339,96 @@ namespace SoC.Library.ScenarioTests
         }
 
         [Test]
+        public void PlayerWithLongestRoadDoesNotGetMoreVictoryPointsWhenBuildingSubsequentRoadSegments()
+        {
+            try
+            {
+                this.CompletePlayerInfrastructureSetup()
+                    .WithInitialPlayerSetupFor(Adam, Resources(ResourceClutch.RoadSegment * 5))
+                    .WhenPlayer(Adam)
+                        .ReceivesStartTurnEvent(3, 3).ThenPlaceRoadSegment(4, 3)
+                        .ReceivesRoadSegmentPlacementEvent(4, 3).ThenPlaceRoadSegment(3, 2)
+                        .ReceivesRoadSegmentPlacementEvent(3, 2).ThenPlaceRoadSegment(2, 1)
+                        .ReceivesRoadSegmentPlacementEvent(2, 1).ThenPlaceRoadSegment(1, 0)
+                        .ReceivesRoadSegmentPlacementEvent(1, 0)
+                        .ThenVerifyPlayerState()
+                            .VictoryPoints(4)
+                        .EndPlayerVerification()
+                        .ThenEndTurn()
+                        .ReceivesStartTurnEvent(3, 3).ThenPlaceRoadSegment(0, 8)
+                        .ReceivesRoadSegmentPlacementEvent(0, 8)
+                        .ThenVerifyPlayerState()
+                            .VictoryPoints(4)
+                        .EndPlayerVerification()
+                        .DidNotReceiveEventOfType<GameWinEvent>()
+                    .WhenPlayer(Babara)
+                        .ReceivesStartTurnEvent(3, 3).ThenEndTurn()
+                    .WhenPlayer(Charlie)
+                        .ReceivesStartTurnEvent(3, 3).ThenEndTurn()
+                    .WhenPlayer(Dana)
+                        .ReceivesStartTurnEvent(3, 3).ThenEndTurn()
+                    .Run(this.logDirectory);
+            }
+            finally
+            {
+                this.AttachReports();
+            }
+        }
+
+        [Test]
+        public void PlayerWithLongestRoadDoesNotGetMoreVictoryPointsWhenBuildingSubsequentRoadSegmentsInSameTurn()
+        {
+            try
+            {
+                this.CompletePlayerInfrastructureSetup()
+                    .WithInitialPlayerSetupFor(Adam, Resources(ResourceClutch.RoadSegment * 5))
+                    .WhenPlayer(Adam)
+                        .ReceivesStartTurnEvent(3, 3).ThenPlaceRoadSegment(4, 3)
+                        .ReceivesRoadSegmentPlacementEvent(4, 3).ThenPlaceRoadSegment(3, 2)
+                        .ReceivesRoadSegmentPlacementEvent(3, 2).ThenPlaceRoadSegment(2, 1)
+                        .ReceivesRoadSegmentPlacementEvent(2, 1).ThenPlaceRoadSegment(1, 0)
+                        .ReceivesRoadSegmentPlacementEvent(1, 0)
+                        .ThenVerifyPlayerState()
+                            .VictoryPoints(4)
+                        .EndPlayerVerification()
+                        .ThenPlaceRoadSegment(0, 8)
+                        .ReceivesRoadSegmentPlacementEvent(0, 8)
+                        .ThenVerifyPlayerState()
+                            .VictoryPoints(4)
+                        .EndPlayerVerification()
+                    .Run(this.logDirectory);
+            }
+            finally
+            {
+                this.AttachReports();
+            }
+        }
+
+        [Test]
+        public void PlayerWithLongestRoadDoesNotRaiseEventWhenBuildingSubsequentRoadSegments()
+        {
+            try
+            {
+                this.CompletePlayerInfrastructureSetup()
+                    .WithInitialPlayerSetupFor(Adam, Resources(ResourceClutch.RoadSegment * 5))
+                    .WhenPlayer(Adam)
+                        .ReceivesStartTurnEvent(3, 3).ThenPlaceRoadSegment(4, 3)
+                        .ReceivesRoadSegmentPlacementEvent(4, 3).ThenPlaceRoadSegment(3, 2)
+                        .ReceivesRoadSegmentPlacementEvent(3, 2).ThenPlaceRoadSegment(2, 1)
+                        .ReceivesRoadSegmentPlacementEvent(2, 1).ThenPlaceRoadSegment(1, 0)
+                        .ReceivesRoadSegmentPlacementEvent(1, 0)
+                        .ThenPlaceRoadSegment(0, 8)
+                        .ReceivesRoadSegmentPlacementEvent(0, 8)
+                        .DidNotReceiveEventOfTypeAfterCount<LongestRoadBuiltEvent>(1)
+                    .Run(this.logDirectory);
+            }
+            finally
+            {
+                this.AttachReports();
+            }
+        }
+
+        [Test]
         [TestCase(6u, 10u)]
         [TestCase(7u, 11u)]
         public void PlayerWithEightOrNinePointsGainsLongestRoadAndWins(uint initialVP, uint winningVP)
@@ -2366,6 +2456,75 @@ namespace SoC.Library.ScenarioTests
                     .WhenPlayer(Dana)
                         .ReceivesLongestRoadChangedEvent(Adam, longestRoadLocations)
                         .ReceivesPlayerWonEvent(winningVP, Adam)
+                    .Run(this.logDirectory);
+            }
+            finally
+            {
+                this.AttachReports();
+            }
+        }
+
+        [Test]
+        public void PlayersBuildRoadSegmentsLongestRoadEventFiresCorrectly()
+        {
+            try
+            {
+                var firstLongestRoadLocations = new uint[] { 12, 4, 3, 2, 1, 0 };
+                var secondLongestRoadLocations = new uint[] { 43, 44, 45, 53, 52, 51, 50 };
+                var thirdLongestRoadLocations = new uint[] { 12, 4, 3, 2, 1, 0, 8, 9 };
+                this.CompletePlayerInfrastructureSetup()
+                    .WithInitialPlayerSetupFor(Adam, Resources(ResourceClutch.RoadSegment * 6))
+                    .WithInitialPlayerSetupFor(Babara, Resources(ResourceClutch.RoadSegment * 5))
+                    .WhenPlayer(Adam)
+                        .ReceivesStartTurnEvent(3, 3).ThenPlaceRoadSegment(4, 3)
+                        .ReceivesRoadSegmentPlacementEvent(4, 3).ThenPlaceRoadSegment(3, 2)
+                        .ReceivesRoadSegmentPlacementEvent(3, 2).ThenPlaceRoadSegment(2, 1)
+                        .ReceivesRoadSegmentPlacementEvent(2, 1).ThenPlaceRoadSegment(1, 0)
+                        .ReceivesRoadSegmentPlacementEvent(1, 0)
+                        .ReceivesLongestRoadChangedEvent(firstLongestRoadLocations)
+                        .ThenVerifyPlayerState()
+                            .VictoryPoints(4)
+                        .EndPlayerVerification().ThenEndTurn()
+                        .ReceivesLongestRoadChangedEvent(Babara, secondLongestRoadLocations, Adam)
+                        .ThenVerifyPlayerState()
+                            .VictoryPoints(2)
+                        .EndPlayerVerification()
+                        .ReceivesStartTurnEvent(3, 3).ThenPlaceRoadSegment(0, 8)
+                        .ReceivesRoadSegmentPlacementEvent(0, 8).ThenPlaceRoadSegment(8, 9)
+                        .ReceivesRoadSegmentPlacementEvent(8, 9)
+                        .ReceivesLongestRoadChangedEvent(Adam, thirdLongestRoadLocations, Babara)
+                        .ThenVerifyPlayerState()
+                            .VictoryPoints(4)
+                        .EndPlayerVerification().ThenEndTurn()
+                    .WhenPlayer(Babara)
+                        .ReceivesLongestRoadChangedEvent(Adam, firstLongestRoadLocations)
+                        .ReceivesStartTurnEvent(3, 3).ThenPlaceRoadSegment(44, 45)
+                        .ReceivesRoadSegmentPlacementEvent(44, 45).ThenPlaceRoadSegment(45, 53)
+                        .ReceivesRoadSegmentPlacementEvent(45, 53).ThenPlaceRoadSegment(53, 52)
+                        .ReceivesRoadSegmentPlacementEvent(53, 52).ThenPlaceRoadSegment(52, 51)
+                        .ReceivesRoadSegmentPlacementEvent(52, 51).ThenPlaceRoadSegment(51, 50)
+                        .ReceivesRoadSegmentPlacementEvent(51, 50)
+                        .ReceivesLongestRoadChangedEvent(Babara, secondLongestRoadLocations, Adam)
+                        .ThenVerifyPlayerState()
+                            .VictoryPoints(4)
+                        .EndPlayerVerification().ThenEndTurn()
+                        .ReceivesLongestRoadChangedEvent(Adam, thirdLongestRoadLocations, Babara)
+                        .ThenVerifyPlayerState()
+                            .VictoryPoints(2)
+                        .EndPlayerVerification()
+                        .ReceivesStartTurnEvent(3, 3).ThenQuitGame()
+                    .WhenPlayer(Charlie)
+                        .ReceivesLongestRoadChangedEvent(Adam, firstLongestRoadLocations).ThenDoNothing()
+                        .ReceivesLongestRoadChangedEvent(Babara, secondLongestRoadLocations, Adam).ThenDoNothing()
+                        .ReceivesStartTurnEvent(3, 3).ThenEndTurn()
+                        .ReceivesLongestRoadChangedEvent(Adam, thirdLongestRoadLocations, Babara)
+                        .ReceivesStartTurnEvent(3, 3).ThenQuitGame()
+                    .WhenPlayer(Dana)
+                        .ReceivesLongestRoadChangedEvent(Adam, firstLongestRoadLocations).ThenDoNothing()
+                        .ReceivesLongestRoadChangedEvent(Babara, secondLongestRoadLocations, Adam).ThenDoNothing()
+                        .ReceivesStartTurnEvent(3, 3).ThenEndTurn()
+                        .ReceivesLongestRoadChangedEvent(Adam, thirdLongestRoadLocations, Babara)
+                        .ReceivesStartTurnEvent(3, 3).ThenQuitGame()
                     .Run(this.logDirectory);
             }
             finally
@@ -2438,7 +2597,7 @@ namespace SoC.Library.ScenarioTests
         }
 
         [Test]
-        public void PlayerWithLargestArmyDoesNotGetMoreVictoryPointsWhenPlayingSubsequentKnightIsSameTurn()
+        public void PlayerWithLargestArmyDoesNotGetMoreVictoryPointsWhenPlayingSubsequentKnightInSameTurn()
         {
             try
             {
