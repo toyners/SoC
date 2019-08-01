@@ -483,9 +483,12 @@ namespace Jabberwocky.SoC.Library
                     return;
                 }
 
-                if (this.currentPlayer.PlacedRoadSegments >= 0)
+                if (this.currentPlayer.PlacedRoadSegments >= 5)
                 {
-                    this.gameBoard.TryGetLongestRoadDetails(out var playerId, out var locations);
+                    if (this.gameBoard.TryGetLongestRoadDetails(out var playerId, out var locations))
+                    {
+                        this.RaiseEvent(new LongestRoadBuiltEvent(playerId, locations, null));
+                    }
                 }
 
                 this.gameBoard.PlaceRoadSegment(this.currentPlayer.Id,
