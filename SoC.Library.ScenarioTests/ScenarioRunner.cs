@@ -733,6 +733,11 @@ namespace SoC.Library.ScenarioTests
 
             return this.playerAgentsByName[playerName].Id;
         }
+
+        public ScenarioRunner ThenPlayRoadBuildingCard(int v)
+        {
+            throw new NotImplementedException();
+        }
         #endregion
     }
 }

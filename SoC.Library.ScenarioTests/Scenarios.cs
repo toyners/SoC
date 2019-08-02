@@ -1273,6 +1273,33 @@ namespace SoC.Library.ScenarioTests
         }
 
         [Test]
+        public void PlayerPlaysRoadBuildingCardThatIsNotOwned()
+        {
+            try
+            {
+                this.CompletePlayerInfrastructureSetup()
+                    .WithNoResourceCollection()
+                    .WhenPlayer(Adam)
+                        .ReceivesStartTurnEvent(3, 3).ThenPlayRoadBuildingCard(0)
+                        .ReceivesGameErrorEvent("920", "No Road building card owned that can be played this turn")
+                    .VerifyPlayer(Babara)
+                        .DidNotReceiveEventOfType<KnightCardPlayedEvent>()
+                        .DidNotReceiveEventOfType<GameErrorEvent>()
+                    .VerifyPlayer(Charlie)
+                        .DidNotReceiveEventOfType<KnightCardPlayedEvent>()
+                        .DidNotReceiveEventOfType<GameErrorEvent>()
+                    .VerifyPlayer(Dana)
+                        .DidNotReceiveEventOfType<KnightCardPlayedEvent>()
+                        .DidNotReceiveEventOfType<GameErrorEvent>()
+                    .Run(this.logDirectory);
+            }
+            finally
+            {
+                this.AttachReports();
+            }
+        }
+
+        [Test]
         public void PlayerPlaysKnightCardAndNewHexIsSameAsCurrentHex()
         {
 			try
