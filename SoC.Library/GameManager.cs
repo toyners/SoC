@@ -758,7 +758,9 @@ namespace Jabberwocky.SoC.Library
         {
             if (this.developmentCardPlayerThisTurn)
             {
-                throw new Exception("Development card played this turn");
+                this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, "922", "Cannot play more than one development card per turn"),
+                    this.currentPlayer);
+                return false;
             }
 
             DevelopmentCard card = null;
