@@ -32,6 +32,7 @@ namespace Jabberwocky.SoC.Library
         private IPlayer currentPlayer;
         private Func<Guid> idGenerator;
         private bool isGameSetup = true;
+        private bool developmentCardPlayerThisTurn;
         private Guid[] playerIdsInRobberHex;
         private int playerIndex;
         private IDictionary<Guid, IPlayer> playersById;
@@ -755,6 +756,11 @@ namespace Jabberwocky.SoC.Library
 
         private bool ProcessPlayKnightCardAction(PlayKnightCardAction playKnightCardAction)
         {
+            if (this.developmentCardPlayerThisTurn)
+            {
+                throw new Exception("Development card played this turn");
+            }
+
             DevelopmentCard card = null;
             if ((card = this.currentPlayer.HeldCards.FirstOrDefault(c => c.Type == DevelopmentCardTypes.Knight &&
                 !this.cardsBoughtThisTurn.Contains(c))) == null)
@@ -763,6 +769,8 @@ namespace Jabberwocky.SoC.Library
                     this.currentPlayer);
                 return false;
             }
+
+            this.developmentCardPlayerThisTurn = true;
 
             if (this.robberHex == playKnightCardAction.NewRobberHex)
             {
@@ -889,6 +897,7 @@ namespace Jabberwocky.SoC.Library
         {
             this.ChangeToNextPlayer();
             this.cardsBoughtThisTurn.Clear();
+            this.developmentCardPlayerThisTurn = false;
 
             foreach (var player in this.players)
                 this.actionManager.SetExpectedActionsForPlayer(player.Id, null);
