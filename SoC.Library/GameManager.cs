@@ -710,7 +710,7 @@ namespace Jabberwocky.SoC.Library
             if (playerAction is PlayRoadBuildingCardAction playRoadBuildingCardAction)
             {
                 DevelopmentCard card = null;
-                if ((card = this.currentPlayer.HeldCards.FirstOrDefault(c => c.Type == DevelopmentCardTypes.Knight &&
+                if ((card = this.currentPlayer.HeldCards.FirstOrDefault(c => c.Type == DevelopmentCardTypes.RoadBuilding &&
                     !this.cardsBoughtThisTurn.Contains(c))) == null)
                 {
                     this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, "920", "No Road building card owned that can be played this turn"),
