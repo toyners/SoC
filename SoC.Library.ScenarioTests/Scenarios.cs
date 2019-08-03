@@ -154,8 +154,8 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void AllPlayersCollectResourcesAsPartOfTurnStart()
         {
-			try
-            { 
+            try
+            {
                 var firstTurnCollectedResources = CreateExpectedCollectedResources()
                     .Add(Adam, Adam_FirstSettlementLocation, ResourceClutch.OneBrick)
                     .Add(Babara, Babara_SecondSettlementLocation, ResourceClutch.OneGrain)
@@ -259,8 +259,8 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void AllPlayersCompleteSetup()
         {
-	try
-            { 
+            try
+            {
                 var expectedGameBoardSetup = new GameBoardSetup(new GameBoard(BoardSizes.Standard));
                 var playerOrder = new[] { Adam, Babara, Charlie, Dana };
                 ScenarioRunner.CreateScenarioRunner()
@@ -342,7 +342,7 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void AllOtherPlayersQuit()
         {
-			try
+            try
             {
                 this.CompletePlayerInfrastructureSetup()
                     .WithNoResourceCollection()
@@ -476,8 +476,8 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void PlayerPlacesCity()
         {
-			try
-            { 
+            try
+            {
                 this.CompletePlayerInfrastructureSetup()
                     .WithNoResourceCollection()
                     .WithInitialPlayerSetupFor(
@@ -517,7 +517,7 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void PlayerPlacesCityAndWins()
         {
-			try { 
+            try {
                 this.CompletePlayerInfrastructureSetup()
                     .WithNoResourceCollection()
                     .WithInitialPlayerSetupFor(
@@ -553,8 +553,8 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void PlayerTriesToPlaceCityOnLocationOccupiedByPlayer()
         {
-			try
-            { 
+            try
+            {
                 this.CompletePlayerInfrastructureSetup()
                     .WithNoResourceCollection()
                     .WithInitialPlayerSetupFor(
@@ -581,7 +581,7 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void PlayerTriesToPlaceCityOnInvalidLocation()
         {
-			try
+            try
             {
                 this.CompletePlayerInfrastructureSetup()
                     .WithNoResourceCollection()
@@ -608,8 +608,8 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void PlayerTriesToPlaceCityOnLocationOccupiedByOtherPlayer()
         {
-			try
-            { 
+            try
+            {
                 this.CompletePlayerInfrastructureSetup()
                     .WithNoResourceCollection()
                     .WithInitialPlayerSetupFor(
@@ -646,24 +646,24 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void PlayerTriesToPlaceCityOnLocationWithoutSettlement()
         {
-			try
-            { 
-            this.CompletePlayerInfrastructureSetup()
-                .WithNoResourceCollection()
-                .WithInitialPlayerSetupFor(
-                    Adam,
-                    Resources(ResourceClutch.RoadSegment + ResourceClutch.City))
-                .WhenPlayer(Adam)
-                    .ReceivesStartTurnEvent(3, 3).ThenPlaceRoadSegment(3, 4)
-                    .ReceivesRoadSegmentPlacementEvent(3, 4).ThenPlaceCity(3)
-                    .ReceivesGameErrorEvent("914", "Location (3) not an settlement").ThenDoNothing()
-                .VerifyPlayer(Babara)
-                    .DidNotReceiveEventOfType<GameErrorEvent>()
-                .VerifyPlayer(Charlie)
-                    .DidNotReceiveEventOfType<GameErrorEvent>()
-                .VerifyPlayer(Dana)
-                    .DidNotReceiveEventOfType<GameErrorEvent>()
-                .Run(this.logDirectory);
+            try
+            {
+                this.CompletePlayerInfrastructureSetup()
+                    .WithNoResourceCollection()
+                    .WithInitialPlayerSetupFor(
+                        Adam,
+                        Resources(ResourceClutch.RoadSegment + ResourceClutch.City))
+                    .WhenPlayer(Adam)
+                        .ReceivesStartTurnEvent(3, 3).ThenPlaceRoadSegment(3, 4)
+                        .ReceivesRoadSegmentPlacementEvent(3, 4).ThenPlaceCity(3)
+                        .ReceivesGameErrorEvent("914", "Location (3) not an settlement").ThenDoNothing()
+                    .VerifyPlayer(Babara)
+                        .DidNotReceiveEventOfType<GameErrorEvent>()
+                    .VerifyPlayer(Charlie)
+                        .DidNotReceiveEventOfType<GameErrorEvent>()
+                    .VerifyPlayer(Dana)
+                        .DidNotReceiveEventOfType<GameErrorEvent>()
+                    .Run(this.logDirectory);
             }
             finally
             {
@@ -674,8 +674,8 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void PlayerTriesToPlaceCityWithoutEnoughResources()
         {
-			try
-            { 
+            try
+            {
                 this.CompletePlayerInfrastructureSetup()
                     .WithNoResourceCollection()
                     .WhenPlayer(Adam)
@@ -698,8 +698,8 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void PlayerPlacesSettlement()
         {
-			try
-            { 
+            try
+            {
                 this.CompletePlayerInfrastructureSetup()
                     .WithNoResourceCollection()
                     .WithInitialPlayerSetupFor(
@@ -736,12 +736,12 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void PlayerPlacesSettlementAndWins()
         {
-			try
-            { 
+            try
+            {
                 this.CompletePlayerInfrastructureSetup()
                     .WithNoResourceCollection()
                     .WithInitialPlayerSetupFor(
-                        Adam, 
+                        Adam,
                         Resources(ResourceClutch.RoadSegment + ResourceClutch.Settlement),
                         VictoryPoints(7)) // Account for placing infrastructure
                     .WhenPlayer(Adam)
@@ -774,8 +774,8 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void PlayerTriesToPlaceSettlementOnInvalidLocation()
         {
-			try
-            { 
+            try
+            {
                 this.CompletePlayerInfrastructureSetup()
                     .WithNoResourceCollection()
                     .WithInitialPlayerSetupFor(
@@ -801,25 +801,25 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void PlayerTriesToPlaceSettlementOnLocationOccupiedByPlayer()
         {
-			try
-            { 
-            this.CompletePlayerInfrastructureSetup()
-                .WithNoResourceCollection()
-                .WithInitialPlayerSetupFor(
-                    Adam,
-                    Resources(ResourceClutch.RoadSegment + (ResourceClutch.Settlement * 2)))
-                .WhenPlayer(Adam)
-                    .ReceivesStartTurnEvent(3, 3).ThenPlaceRoadSegment(4, 3)
-                    .ReceivesRoadSegmentPlacementEvent(4, 3).ThenPlaceSettlement(3)
-                    .ReceivesSettlementPlacementEvent(3).ThenPlaceSettlement(3)
-                    .ReceivesGameErrorEvent("908", "Location (3) already occupied by you").ThenDoNothing()
-                .VerifyPlayer(Babara)
-                    .DidNotReceiveEventOfType<GameErrorEvent>()
-                .VerifyPlayer(Charlie)
-                    .DidNotReceiveEventOfType<GameErrorEvent>()
-                .VerifyPlayer(Dana)
-                    .DidNotReceiveEventOfType<GameErrorEvent>()
-                .Run(this.logDirectory);
+            try
+            {
+                this.CompletePlayerInfrastructureSetup()
+                    .WithNoResourceCollection()
+                    .WithInitialPlayerSetupFor(
+                        Adam,
+                        Resources(ResourceClutch.RoadSegment + (ResourceClutch.Settlement * 2)))
+                    .WhenPlayer(Adam)
+                        .ReceivesStartTurnEvent(3, 3).ThenPlaceRoadSegment(4, 3)
+                        .ReceivesRoadSegmentPlacementEvent(4, 3).ThenPlaceSettlement(3)
+                        .ReceivesSettlementPlacementEvent(3).ThenPlaceSettlement(3)
+                        .ReceivesGameErrorEvent("908", "Location (3) already occupied by you").ThenDoNothing()
+                    .VerifyPlayer(Babara)
+                        .DidNotReceiveEventOfType<GameErrorEvent>()
+                    .VerifyPlayer(Charlie)
+                        .DidNotReceiveEventOfType<GameErrorEvent>()
+                    .VerifyPlayer(Dana)
+                        .DidNotReceiveEventOfType<GameErrorEvent>()
+                    .Run(this.logDirectory);
             }
             finally
             {
@@ -830,8 +830,8 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void PlayerTriesToPlaceSettlementOnLocationOccupiedByOtherPlayer()
         {
-			try
-            { 
+            try
+            {
                 this.CompletePlayerInfrastructureSetup()
                     .WithNoResourceCollection()
                     .WithInitialPlayerSetupFor(
@@ -868,7 +868,7 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void PlayerTriesToPlaceSettlementOnUnconnectedLocation()
         {
-			try
+            try
             {
                 this.CompletePlayerInfrastructureSetup()
                     .WithNoResourceCollection()
@@ -895,7 +895,7 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void PlayerTriesToPlaceSettlementWithNoSettlementsLeft()
         {
-			try
+            try
             {
                 this.CompletePlayerInfrastructureSetup()
                     .WithNoResourceCollection()
@@ -922,7 +922,7 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void PlayerTriesToPlaceSettlementWithNotEnoughResources()
         {
-			try
+            try
             {
                 this.CompletePlayerInfrastructureSetup()
                     .WithNoResourceCollection()
@@ -946,7 +946,7 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void PlayerTriesToPlaceRoadSegmentWithInvalidLocations()
         {
-			try
+            try
             {
                 this.CompletePlayerInfrastructureSetup()
                     .WithNoResourceCollection()
@@ -972,7 +972,7 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void PlayerTriesToPlaceRoadSegmentWithUnconnectedLocations()
         {
-			try
+            try
             {
                 this.CompletePlayerInfrastructureSetup()
                     .WithNoResourceCollection()
@@ -998,7 +998,7 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void PlayerTriesToPlaceRoadSegmentWithNoRoadSegmentsLeft()
         {
-			try
+            try
             {
                 this.CompletePlayerInfrastructureSetup()
                     .WithNoResourceCollection()
@@ -1024,7 +1024,7 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void PlayerTriesToPlaceRoadSegmentWithoutEnoughResources()
         {
-			try
+            try
             {
                 this.CompletePlayerInfrastructureSetup()
                     .WithNoResourceCollection()
@@ -1049,7 +1049,7 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void PlayerTriesToPlaceRoadSegmentOnOccupiedLocations()
         {
-			try
+            try
             {
                 this.CompletePlayerInfrastructureSetup()
                     .WithNoResourceCollection()
@@ -1075,7 +1075,7 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void PlayerTriesToPlaceRoadSegmentOnLocationsNotConnectedToExistingRoadSystem()
         {
-			try
+            try
             {
                 this.CompletePlayerInfrastructureSetup()
                     .WithNoResourceCollection()
@@ -1101,7 +1101,7 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void PlayerPlaysKnightCardAndGetsResourceFromSelectedPlayer()
         {
-			try
+            try
             {
                 var robbingChoices = new Dictionary<string, int>()
                 {
@@ -1248,7 +1248,7 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void PlayerPlaysKnightCardThatIsNotOwned()
         {
-			try
+            try
             {
                 this.CompletePlayerInfrastructureSetup()
                     .WithNoResourceCollection()
@@ -1297,6 +1297,12 @@ namespace SoC.Library.ScenarioTests
             {
                 this.AttachReports();
             }
+        }
+
+        [Test]
+        public void PlayerPlaysRoadBuildingCardAndWins()
+        {
+            throw new NotImplementedException();
         }
 
         [Test]
