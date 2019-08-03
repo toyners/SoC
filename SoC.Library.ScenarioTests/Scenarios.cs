@@ -1280,7 +1280,7 @@ namespace SoC.Library.ScenarioTests
                 this.CompletePlayerInfrastructureSetup()
                     .WithNoResourceCollection()
                     .WhenPlayer(Adam)
-                        .ReceivesStartTurnEvent(3, 3).ThenPlayRoadBuildingCard(0)
+                        .ReceivesStartTurnEvent(3, 3).ThenPlayRoadBuildingCard(4, 3, 3, 2)
                         .ReceivesGameErrorEvent("920", "No Road building card owned that can be played this turn")
                     .VerifyPlayer(Babara)
                         .DidNotReceiveEventOfType<KnightCardPlayedEvent>()
@@ -2748,6 +2748,34 @@ namespace SoC.Library.ScenarioTests
                         .ReceivesStartTurnEvent(3, 3).ThenPlayKnightCard(4)
                         .ReceivesKnightCardPlayedEvent(4).ThenPlayKnightCard(0)
                         .ReceivesGameErrorEvent("922", "Cannot play more than one development card per turn")
+                    .WhenPlayer(Babara)
+                        .DidNotReceiveEventOfType<GameErrorEvent>()
+                    .WhenPlayer(Charlie)
+                        .DidNotReceiveEventOfType<GameErrorEvent>()
+                    .WhenPlayer(Dana)
+                        .DidNotReceiveEventOfType<GameErrorEvent>()
+                    .Run(this.logDirectory);
+            }
+            finally
+            {
+                this.AttachReports();
+            }
+        }
+
+        [Test]
+        [TestCase(DevelopmentCardTypes.Knight, "No Knight card owned that can be played this turn")]
+        [TestCase(DevelopmentCardTypes.RoadBuilding, "No Road build card owned that can be played this turn")]
+        public void PlayerTriesToPlayDevelopmentCardAfterBuyingItInSameTurn(DevelopmentCardTypes cardType, string expectedErrorMessage)
+        {
+            try
+            {
+                this.CompletePlayerInfrastructureSetup()
+                    .WithInitialPlayerSetupFor(Adam, Resources(ResourceClutch.DevelopmentCard))
+                    .WhenPlayer(Adam)
+                        .ReceivesStartTurnEvent(3, 3).ThenBuyDevelopmentCard()
+                        .ReceivesDevelopmentCardBoughtEvent(cardType)
+                        .ThenPlayKnightCard(4)
+                        .ReceivesGameErrorEvent("920", expectedErrorMessage)
                     .WhenPlayer(Babara)
                         .DidNotReceiveEventOfType<GameErrorEvent>()
                     .WhenPlayer(Charlie)

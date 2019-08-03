@@ -586,6 +586,13 @@ namespace SoC.Library.ScenarioTests
             return this;
         }
 
+        public ScenarioRunner ThenPlayRoadBuildingCard(uint firstRoadSegmentStartLocation, uint firstRoadSegmentEndLocation, uint secondRoadSegmentStartLocation, uint secondRoadSegmentEndLocation)
+        {
+            this.AddActionInstruction(ActionInstruction.OperationTypes.PlayRoadBuildingCard,
+                new object[] { firstRoadSegmentStartLocation, firstRoadSegmentEndLocation, secondRoadSegmentStartLocation, secondRoadSegmentEndLocation });
+            return this;
+        }
+
         public ScenarioRunner ThenSelectRobbedPlayer(string victimPlayerName)
         {
             this.AddActionInstruction(ActionInstruction.OperationTypes.SelectResourceFromPlayer,
@@ -732,11 +739,6 @@ namespace SoC.Library.ScenarioTests
                 throw new Exception($"Player name {playerName} not recognised.");
 
             return this.playerAgentsByName[playerName].Id;
-        }
-
-        public ScenarioRunner ThenPlayRoadBuildingCard(int v)
-        {
-            throw new NotImplementedException();
         }
         #endregion
     }

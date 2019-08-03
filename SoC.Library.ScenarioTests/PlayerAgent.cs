@@ -265,6 +265,15 @@ namespace SoC.Library.ScenarioTests
                     this.gameController.PlayKnightCard((uint)action.Parameters[0]);
                     break;
                 }
+                case ActionInstruction.OperationTypes.PlayRoadBuildingCard:
+                {
+                    this.gameController.PlayRoadBuildingCard(
+                        (uint)action.Parameters[0],
+                        (uint)action.Parameters[1],
+                        (uint)action.Parameters[2],
+                        (uint)action.Parameters[3]);
+                    break;
+                }
                 case ActionInstruction.OperationTypes.RequestState:
                 {
                     this.gameController.RequestState();

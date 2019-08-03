@@ -707,6 +707,19 @@ namespace Jabberwocky.SoC.Library
                 return this.ProcessPlayKnightCardAction(playKnightCardAction);
             }
 
+            if (playerAction is PlayRoadBuildingCardAction playRoadBuildingCardAction)
+            {
+                DevelopmentCard card = null;
+                if ((card = this.currentPlayer.HeldCards.FirstOrDefault(c => c.Type == DevelopmentCardTypes.Knight &&
+                    !this.cardsBoughtThisTurn.Contains(c))) == null)
+                {
+                    this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, "920", "No Road building card owned that can be played this turn"),
+                        this.currentPlayer);
+                    return false;
+                }
+                return false;
+            }
+
             if (playerAction is SelectResourceFromPlayerAction selectResourceFromPlayerAction)
             {
                 if (!this.playerIdsInRobberHex.Contains(selectResourceFromPlayerAction.SelectedPlayerId))
@@ -889,7 +902,8 @@ namespace Jabberwocky.SoC.Library
                 typeof(BuyDevelopmentCardAction),
                 typeof(EndOfTurnAction), typeof(MakeDirectTradeOfferAction),
                 typeof(PlaceCityAction), typeof(PlaceRoadSegmentAction),
-                typeof(PlaceSettlementAction), typeof(PlayKnightCardAction));
+                typeof(PlaceSettlementAction), typeof(PlayKnightCardAction),
+                typeof(PlayRoadBuildingCardAction));
 
             foreach (var player in this.PlayersExcept(this.currentPlayer.Id))
                 this.actionManager.SetExpectedActionsForPlayer(player.Id, null);

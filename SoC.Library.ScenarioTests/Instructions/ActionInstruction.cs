@@ -21,6 +21,7 @@ namespace SoC.Library.ScenarioTests.Instructions
             PlaceSettlement,
             PlaceStartingInfrastructure,
             PlayKnightCard,
+            PlayRoadBuildingCard,
             RequestState,
             SelectResourceFromPlayer,
             QuitGame,

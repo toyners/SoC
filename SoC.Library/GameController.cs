@@ -96,6 +96,13 @@ namespace Jabberwocky.SoC.Library
             this.SendAction(new PlayKnightCardAction(this.playerId, hex));
         }
 
+        public void PlayRoadBuildingCard(uint firstRoadSegmentStartLocation, uint firstRoadSegmentEndLocation, uint secondRoadSegmentStartLocation, uint secondRoadSegmentEndLocation)
+        {
+            this.SendAction(new PlayRoadBuildingCardAction(this.playerId,
+                firstRoadSegmentStartLocation, firstRoadSegmentEndLocation,
+                secondRoadSegmentStartLocation, secondRoadSegmentEndLocation));
+        }
+
         public void RequestState()
         {
             this.SendAction(new RequestStateAction(this.playerId));
