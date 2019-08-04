@@ -2770,18 +2770,30 @@ namespace SoC.Library.ScenarioTests
 
         [Test]
         [TestCase(DevelopmentCardTypes.Knight, "No Knight card owned that can be played this turn")]
-        [TestCase(DevelopmentCardTypes.RoadBuilding, "No Road build card owned that can be played this turn")]
+        [TestCase(DevelopmentCardTypes.Monopoly, "No Monopoly card owned that can be played this turn")]
+        [TestCase(DevelopmentCardTypes.RoadBuilding, "No Road building card owned that can be played this turn")]
+        [TestCase(DevelopmentCardTypes.YearOfPlenty, "No Year of Plenty card owned that can be played this turn")]
         public void PlayerTriesToPlayDevelopmentCardAfterBuyingItInSameTurn(DevelopmentCardTypes cardType, string expectedErrorMessage)
         {
             try
             {
-                this.CompletePlayerInfrastructureSetup()
+                var scenarioRunner = this.CompletePlayerInfrastructureSetup()
                     .WithInitialPlayerSetupFor(Adam, Resources(ResourceClutch.DevelopmentCard))
                     .WhenPlayer(Adam)
                         .ReceivesStartTurnEvent(3, 3).ThenBuyDevelopmentCard()
-                        .ReceivesDevelopmentCardBoughtEvent(cardType)
-                        .ThenPlayKnightCard(4)
-                        .ReceivesGameErrorEvent("920", expectedErrorMessage)
+                        .ReceivesDevelopmentCardBoughtEvent(cardType);
+
+                switch(cardType)
+                {
+                    case DevelopmentCardTypes.Knight: scenarioRunner.ThenPlayKnightCard(4); break;
+                    case DevelopmentCardTypes.Monopoly: scenarioRunner.ThenPlayMonopolyCard(); break;
+                    case DevelopmentCardTypes.RoadBuilding: scenarioRunner.ThenPlayRoadBuildingCard(4, 3, 3, 2); break;
+                    case DevelopmentCardTypes.YearOfPlenty: scenarioRunner.ThenPlayYearOfPlentyCard(); break;
+                    default: throw new ArgumentException($"'{cardType}' not recognised", "cardType");
+                }
+
+                scenarioRunner
+                    .ReceivesGameErrorEvent("920", expectedErrorMessage)
                     .WhenPlayer(Babara)
                         .DidNotReceiveEventOfType<GameErrorEvent>()
                     .WhenPlayer(Charlie)

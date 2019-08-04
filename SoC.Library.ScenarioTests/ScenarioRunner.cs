@@ -586,11 +586,21 @@ namespace SoC.Library.ScenarioTests
             return this;
         }
 
+        public ScenarioRunner ThenPlayMonopolyCard()
+        {
+            throw new NotImplementedException();
+        }
+
         public ScenarioRunner ThenPlayRoadBuildingCard(uint firstRoadSegmentStartLocation, uint firstRoadSegmentEndLocation, uint secondRoadSegmentStartLocation, uint secondRoadSegmentEndLocation)
         {
             this.AddActionInstruction(ActionInstruction.OperationTypes.PlayRoadBuildingCard,
                 new object[] { firstRoadSegmentStartLocation, firstRoadSegmentEndLocation, secondRoadSegmentStartLocation, secondRoadSegmentEndLocation });
             return this;
+        }
+
+        public ScenarioRunner ThenPlayYearOfPlentyCard()
+        {
+            throw new NotImplementedException();
         }
 
         public ScenarioRunner ThenSelectRobbedPlayer(string victimPlayerName)
