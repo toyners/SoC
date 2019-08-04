@@ -723,16 +723,7 @@ namespace Jabberwocky.SoC.Library
 
             if (playerAction is PlayRoadBuildingCardAction playRoadBuildingCardAction)
             {
-                DevelopmentCard card = null;
-                if ((card = this.currentPlayer.HeldCards.FirstOrDefault(c => c.Type == DevelopmentCardTypes.RoadBuilding &&
-                    !this.cardsBoughtThisTurn.Contains(c))) == null)
-                {
-                    this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, "920", "No Road building card owned that can be played this turn"),
-                        this.currentPlayer);
-                    return false;
-                }
-
-                return false;
+                return this.ProcessPlayRoadBuildingCardAction(playRoadBuildingCardAction); 
             }
 
             if (playerAction is PlayYearOfPlentyCardAction playYearOfPlentyCardAction)
@@ -804,7 +795,7 @@ namespace Jabberwocky.SoC.Library
                     this.currentPlayer);
                 return false;
             }
-
+        
             DevelopmentCard card = null;
             if ((card = this.currentPlayer.HeldCards.FirstOrDefault(c => c.Type == DevelopmentCardTypes.Knight &&
                 !this.cardsBoughtThisTurn.Contains(c))) == null)
@@ -814,6 +805,7 @@ namespace Jabberwocky.SoC.Library
                 return false;
             }
 
+            // TODO: Move this after below check
             this.developmentCardPlayerThisTurn = true;
 
             if (this.robberHex == playKnightCardAction.NewRobberHex)
@@ -855,6 +847,22 @@ namespace Jabberwocky.SoC.Library
             }
 
             this.ProcessNewRobberPlacement();
+            return false;
+        }
+
+        private bool ProcessPlayRoadBuildingCardAction(PlayRoadBuildingCardAction playRoadBuildingCardAction)
+        {
+            DevelopmentCard card = null;
+            if ((card = this.currentPlayer.HeldCards.FirstOrDefault(c => c.Type == DevelopmentCardTypes.RoadBuilding &&
+                !this.cardsBoughtThisTurn.Contains(c))) == null)
+            {
+                this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, "920", "No Road building card owned that can be played this turn"),
+                    this.currentPlayer);
+                return false;
+            }
+
+            this.currentPlayer.PlaceRoadBuildingDevelopmentCard((RoadBuildingDevelopmentCard)card);
+
             return false;
         }
 

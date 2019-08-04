@@ -429,25 +429,6 @@ namespace SoC.Library.ScenarioTests
         }
 
         [Test]
-        public void PlayerBuysDevelopmentCardAndTriesToUseItInSameTurn()
-        {
-            try
-            {
-                this.CompletePlayerInfrastructureSetup()
-                    .WithInitialPlayerSetupFor(Adam, Resources(ResourceClutch.DevelopmentCard))
-                    .WhenPlayer(Adam)
-                        .ReceivesStartTurnEvent(3, 3).ThenBuyDevelopmentCard()
-                        .ReceivesDevelopmentCardBoughtEvent(DevelopmentCardTypes.Knight).ThenPlayKnightCard(4)
-                        .ReceivesGameErrorEvent("920", "No Knight card owned that can be played this turn")
-                    .Run(this.logDirectory);
-            }
-            finally
-            {
-                this.AttachReports();
-            }
-        }
-
-        [Test]
         public void PlayerBuysDevelopmentCardAndUsesItOnSubsequentTurn()
         {
             try
@@ -1300,6 +1281,31 @@ namespace SoC.Library.ScenarioTests
         }
 
         [Test]
+        public void PlayerPlaysRoadBuildingCard()
+        {
+            try
+            {
+                this.CompletePlayerInfrastructureSetup()
+                    .WithNoResourceCollection()
+                    .WithInitialPlayerSetupFor(Adam, RoadBuildingCard(1))
+                    .WhenPlayer(Adam)
+                        .ReceivesStartTurnEvent(3, 3).ThenPlayRoadBuildingCard(4, 3, 3, 2)
+                        .ReceivesRoadBuildingCardPlayedEvent(4, 3, 3, 2)
+                    .VerifyPlayer(Babara)
+                        .ReceivesRoadBuildingCardPlayedEvent(4, 3, 3, 2, Adam)
+                    .VerifyPlayer(Charlie)
+                        .ReceivesRoadBuildingCardPlayedEvent(4, 3, 3, 2, Adam)
+                    .VerifyPlayer(Dana)
+                        .ReceivesRoadBuildingCardPlayedEvent(4, 3, 3, 2, Adam)
+                    .Run(this.logDirectory);
+            }
+            finally
+            {
+                this.AttachReports();
+            }
+        }
+
+        [Test]
         public void PlayerPlaysRoadBuildingCardAndWinsWithLongestRoad()
         {
             try
@@ -1307,7 +1313,7 @@ namespace SoC.Library.ScenarioTests
                 this.CompletePlayerInfrastructureSetup()
                     .WithNoResourceCollection()
                     .WithInitialPlayerSetupFor(Adam, Resources(ResourceClutch.RoadSegment * 2), RoadBuildingCard(1),
-                    VictoryPoints(6))
+                        VictoryPoints(6))
                     .WhenPlayer(Adam)
                         .ReceivesStartTurnEvent(3, 3).ThenPlaceRoadSegment(4, 3)
                         .ReceivesRoadSegmentPlacementEvent(4, 3).ThenPlaceRoadSegment(3, 2)

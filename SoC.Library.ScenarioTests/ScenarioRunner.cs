@@ -302,9 +302,12 @@ namespace SoC.Library.ScenarioTests
             return this;
         }
 
-        public ScenarioRunner ReceivesRoadBuildingCardPlayedEvent(int v1, int v2, int v3, int v4, string playerName = null)
+        public ScenarioRunner ReceivesRoadBuildingCardPlayedEvent(uint firstRoadSegmentStartLocation, uint firstRoadSegmentEndLocation, uint secondRoadSegmentStartLocation, uint secondRoadSegmentEndLocation, string playerName = null)
         {
-            throw new NotImplementedException();
+            var playerId = playerName != null ? this.playerAgentsByName[playerName].Id : this.currentPlayerAgent.Id;
+            var gameEvent = new RoadBuildingCardPlayedEvent(playerId, firstRoadSegmentStartLocation, firstRoadSegmentEndLocation, secondRoadSegmentStartLocation, secondRoadSegmentEndLocation);
+            this.AddEventInstruction(gameEvent);
+            return this;
         }
 
         public ScenarioRunner ReceivesRoadSegmentPlacementEvent(uint roadSegmentStartLocation, uint roadSegmentEndLocation)

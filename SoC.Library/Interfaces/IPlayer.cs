@@ -52,6 +52,7 @@ namespace Jabberwocky.SoC.Library.Interfaces
         void RemoveResources(ResourceClutch resourceClutch);
         ResourceClutch LoseResourceAtIndex(int resourceIndex);
         ResourceClutch LoseResourcesOfType(ResourceTypes resourceType);
+        void PlaceRoadBuildingDevelopmentCard(RoadBuildingDevelopmentCard card);
         #endregion
     }
 }
