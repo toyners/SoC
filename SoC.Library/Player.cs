@@ -379,6 +379,11 @@ namespace Jabberwocky.SoC.Library
             var value = reader.GetAttribute(attributeName);
             return !string.IsNullOrEmpty(value) ? int.Parse(value) : 0;
         }
+
+        public void PlaceRoadBuildingDevelopmentCard(RoadBuildingDevelopmentCard card)
+        {
+            throw new NotImplementedException();
+        }
         #endregion
     }
 }
