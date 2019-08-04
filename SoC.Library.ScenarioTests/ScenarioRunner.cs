@@ -586,9 +586,11 @@ namespace SoC.Library.ScenarioTests
             return this;
         }
 
-        public ScenarioRunner ThenPlayMonopolyCard()
+        public ScenarioRunner ThenPlayMonopolyCard(ResourceTypes resourceType)
         {
-            throw new NotImplementedException();
+            this.AddActionInstruction(ActionInstruction.OperationTypes.PlayMonopolyCard,
+                new object[] { resourceType });
+            return this;
         }
 
         public ScenarioRunner ThenPlayRoadBuildingCard(uint firstRoadSegmentStartLocation, uint firstRoadSegmentEndLocation, uint secondRoadSegmentStartLocation, uint secondRoadSegmentEndLocation)
@@ -600,7 +602,8 @@ namespace SoC.Library.ScenarioTests
 
         public ScenarioRunner ThenPlayYearOfPlentyCard()
         {
-            throw new NotImplementedException();
+            this.AddActionInstruction(ActionInstruction.OperationTypes.PlayYearOfPlentyCard, null);
+            return this;
         }
 
         public ScenarioRunner ThenSelectRobbedPlayer(string victimPlayerName)

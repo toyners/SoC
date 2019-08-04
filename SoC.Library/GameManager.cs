@@ -707,6 +707,20 @@ namespace Jabberwocky.SoC.Library
                 return this.ProcessPlayKnightCardAction(playKnightCardAction);
             }
 
+            if (playerAction is PlayMonopolyCardAction playMonopolyCardAction)
+            {
+                DevelopmentCard card = null;
+                if ((card = this.currentPlayer.HeldCards.FirstOrDefault(c => c.Type == DevelopmentCardTypes.Monopoly &&
+                    !this.cardsBoughtThisTurn.Contains(c))) == null)
+                {
+                    this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, "920", "No Monopoly card owned that can be played this turn"),
+                        this.currentPlayer);
+                    return false;
+                }
+
+                return false;
+            }
+
             if (playerAction is PlayRoadBuildingCardAction playRoadBuildingCardAction)
             {
                 DevelopmentCard card = null;
@@ -717,6 +731,21 @@ namespace Jabberwocky.SoC.Library
                         this.currentPlayer);
                     return false;
                 }
+
+                return false;
+            }
+
+            if (playerAction is PlayYearOfPlentyCardAction playYearOfPlentyCardAction)
+            {
+                DevelopmentCard card = null;
+                if ((card = this.currentPlayer.HeldCards.FirstOrDefault(c => c.Type == DevelopmentCardTypes.YearOfPlenty &&
+                    !this.cardsBoughtThisTurn.Contains(c))) == null)
+                {
+                    this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, "920", "No Year of Plenty card owned that can be played this turn"),
+                        this.currentPlayer);
+                    return false;
+                }
+
                 return false;
             }
 
@@ -903,7 +932,8 @@ namespace Jabberwocky.SoC.Library
                 typeof(EndOfTurnAction), typeof(MakeDirectTradeOfferAction),
                 typeof(PlaceCityAction), typeof(PlaceRoadSegmentAction),
                 typeof(PlaceSettlementAction), typeof(PlayKnightCardAction),
-                typeof(PlayRoadBuildingCardAction));
+                typeof(PlayMonopolyCardAction), typeof(PlayRoadBuildingCardAction),
+                typeof(PlayYearOfPlentyCardAction));
 
             foreach (var player in this.PlayersExcept(this.currentPlayer.Id))
                 this.actionManager.SetExpectedActionsForPlayer(player.Id, null);

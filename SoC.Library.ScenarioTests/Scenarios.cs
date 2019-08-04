@@ -2786,7 +2786,7 @@ namespace SoC.Library.ScenarioTests
                 switch(cardType)
                 {
                     case DevelopmentCardTypes.Knight: scenarioRunner.ThenPlayKnightCard(4); break;
-                    case DevelopmentCardTypes.Monopoly: scenarioRunner.ThenPlayMonopolyCard(); break;
+                    case DevelopmentCardTypes.Monopoly: scenarioRunner.ThenPlayMonopolyCard(ResourceTypes.Brick); break;
                     case DevelopmentCardTypes.RoadBuilding: scenarioRunner.ThenPlayRoadBuildingCard(4, 3, 3, 2); break;
                     case DevelopmentCardTypes.YearOfPlenty: scenarioRunner.ThenPlayYearOfPlentyCard(); break;
                     default: throw new ArgumentException($"'{cardType}' not recognised", "cardType");

@@ -96,11 +96,21 @@ namespace Jabberwocky.SoC.Library
             this.SendAction(new PlayKnightCardAction(this.playerId, hex));
         }
 
+        public void PlayMonopolyCard(ResourceTypes resourceType)
+        {
+            this.SendAction(new PlayMonopolyCardAction(this.playerId, resourceType));
+        }
+
         public void PlayRoadBuildingCard(uint firstRoadSegmentStartLocation, uint firstRoadSegmentEndLocation, uint secondRoadSegmentStartLocation, uint secondRoadSegmentEndLocation)
         {
             this.SendAction(new PlayRoadBuildingCardAction(this.playerId,
                 firstRoadSegmentStartLocation, firstRoadSegmentEndLocation,
                 secondRoadSegmentStartLocation, secondRoadSegmentEndLocation));
+        }
+
+        public void PlayYearOfPlentyCard()
+        {
+            this.SendAction(new PlayYearOfPlentyCardAction(this.playerId));
         }
 
         public void RequestState()

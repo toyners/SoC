@@ -18,7 +18,9 @@ namespace SoC.Library.ScenarioTests
             switch (developmentCardType)
             {
                 case DevelopmentCardTypes.Knight: developmentCard = new KnightDevelopmentCard(); break;
+                case DevelopmentCardTypes.Monopoly: developmentCard = new MonopolyDevelopmentCard(); break;
                 case DevelopmentCardTypes.RoadBuilding: developmentCard = new RoadBuildingDevelopmentCard(); break;
+                case DevelopmentCardTypes.YearOfPlenty: developmentCard = new YearOfPlentyDevelopmentCard(); break;
                 default: throw new NotImplementedException($"Development card type {developmentCardType} not recognised");
             }
 

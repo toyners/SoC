@@ -98,7 +98,9 @@
     <Compile Include="PlayerActions\PlaceRobberAction.cs" />
     <Compile Include="PlayerActions\PlayerAction.cs" />
     <Compile Include="PlayerActions\PlayKnightCardAction.cs" />
+    <Compile Include="PlayerActions\PlayMonopolyCardAction.cs" />
     <Compile Include="PlayerActions\PlayRoadBuildingCardAction.cs" />
+    <Compile Include="PlayerActions\PlayYearOfPlentyCardAction.cs" />
     <Compile Include="PlayerActions\QuitGameAction.cs" />
     <Compile Include="PlayerActions\RequestStateAction.cs" />
     <Compile Include="PlayerActions\SelectResourceFromPlayerAction.cs" />

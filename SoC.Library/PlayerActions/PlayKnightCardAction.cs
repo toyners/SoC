@@ -5,10 +5,9 @@ namespace Jabberwocky.SoC.Library.PlayerActions
 
     public class PlayKnightCardAction : PlayerAction
     {
-        public readonly uint NewRobberHex;
         public PlayKnightCardAction(Guid playerId, uint newRobberHex) : base(playerId)
-        {
-            this.NewRobberHex = newRobberHex;
-        }
+            => this.NewRobberHex = newRobberHex;
+
+        public uint NewRobberHex { get; private set; }
     }
 }

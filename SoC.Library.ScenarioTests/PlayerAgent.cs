@@ -265,6 +265,11 @@ namespace SoC.Library.ScenarioTests
                     this.gameController.PlayKnightCard((uint)action.Parameters[0]);
                     break;
                 }
+                case ActionInstruction.OperationTypes.PlayMonopolyCard:
+                {
+                    this.gameController.PlayMonopolyCard((ResourceTypes)action.Parameters[0]);
+                    break;
+                }
                 case ActionInstruction.OperationTypes.PlayRoadBuildingCard:
                 {
                     this.gameController.PlayRoadBuildingCard(
@@ -272,6 +277,11 @@ namespace SoC.Library.ScenarioTests
                         (uint)action.Parameters[1],
                         (uint)action.Parameters[2],
                         (uint)action.Parameters[3]);
+                    break;
+                }
+                case ActionInstruction.OperationTypes.PlayYearOfPlentyCard:
+                {
+                    this.gameController.PlayYearOfPlentyCard();
                     break;
                 }
                 case ActionInstruction.OperationTypes.RequestState:
