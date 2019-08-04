@@ -71,6 +71,7 @@
     <Compile Include="GameEvents\PlayerQuitEvent.cs" />
     <Compile Include="GameEvents\ResourcesGainedEvent.cs" />
     <Compile Include="GameEvents\ResourcesLostEvent.cs" />
+    <Compile Include="GameEvents\RoadBuildingCardPlayedEvent.cs" />
     <Compile Include="GameEvents\RoadSegmentPlacedEvent.cs" />
     <Compile Include="GameEvents\RobberPlacedEvent.cs" />
     <Compile Include="GameEvents\RobbingChoicesEvent.cs" />

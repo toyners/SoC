@@ -1283,7 +1283,7 @@ namespace SoC.Library.ScenarioTests
                         .ReceivesStartTurnEvent(3, 3).ThenPlayRoadBuildingCard(4, 3, 3, 2)
                         .ReceivesGameErrorEvent("920", "No Road building card owned that can be played this turn")
                     .VerifyPlayer(Babara)
-                        .DidNotReceiveEventOfType<KnightCardPlayedEvent>()
+                        .DidNotReceiveEventOfType<RoadBuildingCardPlayedEvent>()
                         .DidNotReceiveEventOfType<GameErrorEvent>()
                     .VerifyPlayer(Charlie)
                         .DidNotReceiveEventOfType<KnightCardPlayedEvent>()
@@ -1300,9 +1300,31 @@ namespace SoC.Library.ScenarioTests
         }
 
         [Test]
-        public void PlayerPlaysRoadBuildingCardAndWins()
+        public void PlayerPlaysRoadBuildingCardAndWinsWithLongestRoad()
         {
-            throw new NotImplementedException();
+            try
+            {
+                this.CompletePlayerInfrastructureSetup()
+                    .WithNoResourceCollection()
+                    .WithInitialPlayerSetupFor(Adam, Resources(ResourceClutch.RoadSegment * 2), DevelopmentCard(DevelopmentCardTypes.RoadBuilding))
+                    .WhenPlayer(Adam)
+                        .ReceivesStartTurnEvent(3, 3).ThenPlayRoadBuildingCard(4, 3, 3, 2)
+                        .ReceivesGameErrorEvent("920", "No Road building card owned that can be played this turn")
+                    .VerifyPlayer(Babara)
+                        .DidNotReceiveEventOfType<KnightCardPlayedEvent>()
+                        .DidNotReceiveEventOfType<GameErrorEvent>()
+                    .VerifyPlayer(Charlie)
+                        .DidNotReceiveEventOfType<KnightCardPlayedEvent>()
+                        .DidNotReceiveEventOfType<GameErrorEvent>()
+                    .VerifyPlayer(Dana)
+                        .DidNotReceiveEventOfType<KnightCardPlayedEvent>()
+                        .DidNotReceiveEventOfType<GameErrorEvent>()
+                    .Run(this.logDirectory);
+            }
+            finally
+            {
+                this.AttachReports();
+            }
         }
 
         [Test]
@@ -2812,6 +2834,8 @@ namespace SoC.Library.ScenarioTests
         {
             return new CollectedResourcesBuilder();
         }
+
+        private static IPlayerSetupAction DevelopmentCard(DevelopmentCardTypes developmentCardType) => null;
 
         private static IPlayerSetupAction Resources(ResourceClutch resources) => new ResourceSetup(resources);
 
