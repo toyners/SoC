@@ -60,6 +60,7 @@
     <Compile Include="Instructions\MultipleEventInstruction.cs" />
     <Compile Include="Instructions\PlayerStateInstruction.cs" />
     <Compile Include="IPlayerAgentLog.cs" />
+    <Compile Include="PlayerSetupActions\RoadBuildingCardSetup.cs" />
     <Compile Include="PlayerSetupActions\KnightCardSetup.cs" />
     <Compile Include="PlayerSetupActions\IPlayerSetupAction.cs" />
     <Compile Include="PlayerSetupActions\PlacedRoadSegmentSetup.cs" />

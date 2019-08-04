@@ -1286,10 +1286,10 @@ namespace SoC.Library.ScenarioTests
                         .DidNotReceiveEventOfType<RoadBuildingCardPlayedEvent>()
                         .DidNotReceiveEventOfType<GameErrorEvent>()
                     .VerifyPlayer(Charlie)
-                        .DidNotReceiveEventOfType<KnightCardPlayedEvent>()
+                        .DidNotReceiveEventOfType<RoadBuildingCardPlayedEvent>()
                         .DidNotReceiveEventOfType<GameErrorEvent>()
                     .VerifyPlayer(Dana)
-                        .DidNotReceiveEventOfType<KnightCardPlayedEvent>()
+                        .DidNotReceiveEventOfType<RoadBuildingCardPlayedEvent>()
                         .DidNotReceiveEventOfType<GameErrorEvent>()
                     .Run(this.logDirectory);
             }
@@ -1306,19 +1306,21 @@ namespace SoC.Library.ScenarioTests
             {
                 this.CompletePlayerInfrastructureSetup()
                     .WithNoResourceCollection()
-                    .WithInitialPlayerSetupFor(Adam, Resources(ResourceClutch.RoadSegment * 2), DevelopmentCard(DevelopmentCardTypes.RoadBuilding))
+                    .WithInitialPlayerSetupFor(Adam, Resources(ResourceClutch.RoadSegment * 2), RoadBuildingCard(1),
+                    VictoryPoints(6))
                     .WhenPlayer(Adam)
-                        .ReceivesStartTurnEvent(3, 3).ThenPlayRoadBuildingCard(4, 3, 3, 2)
-                        .ReceivesGameErrorEvent("920", "No Road building card owned that can be played this turn")
+                        .ReceivesStartTurnEvent(3, 3).ThenPlaceRoadSegment(4, 3)
+                        .ReceivesRoadSegmentPlacementEvent(4, 3).ThenPlaceRoadSegment(3, 2)
+                        .ReceivesRoadSegmentPlacementEvent(3, 2).ThenPlayRoadBuildingCard(2, 1, 1, 0)
+                        .ReceivesRoadBuildingCardPlayedEvent(2, 1, 1, 0)
+                        .ReceivesLongestRoadChangedEvent(new uint[] { 12, 4, 3, 2, 1, 0 })
+                        .ReceivesPlayerWonEvent(10)
                     .VerifyPlayer(Babara)
-                        .DidNotReceiveEventOfType<KnightCardPlayedEvent>()
-                        .DidNotReceiveEventOfType<GameErrorEvent>()
+                        .ReceivesRoadBuildingCardPlayedEvent(2, 1, 1, 0, Adam)
                     .VerifyPlayer(Charlie)
-                        .DidNotReceiveEventOfType<KnightCardPlayedEvent>()
-                        .DidNotReceiveEventOfType<GameErrorEvent>()
+                        .ReceivesRoadBuildingCardPlayedEvent(2, 1, 1, 0, Adam)
                     .VerifyPlayer(Dana)
-                        .DidNotReceiveEventOfType<KnightCardPlayedEvent>()
-                        .DidNotReceiveEventOfType<GameErrorEvent>()
+                        .ReceivesRoadBuildingCardPlayedEvent(2, 1, 1, 0, Adam)
                     .Run(this.logDirectory);
             }
             finally
@@ -2835,7 +2837,7 @@ namespace SoC.Library.ScenarioTests
             return new CollectedResourcesBuilder();
         }
 
-        private static IPlayerSetupAction DevelopmentCard(DevelopmentCardTypes developmentCardType) => null;
+        private static IPlayerSetupAction RoadBuildingCard(int cardCount = 1) => new RoadBuildingCardSetup(cardCount); 
 
         private static IPlayerSetupAction Resources(ResourceClutch resources) => new ResourceSetup(resources);
 

@@ -269,34 +269,6 @@ namespace SoC.Library.ScenarioTests
             return this;
         }
 
-        public ScenarioRunner ReceivesResourcesStolenEvent(ResourceClutch lostResource)
-        {
-            var gameEvent = new ResourcesLostEvent(lostResource, this.currentPlayerAgent.Id, ResourcesLostEvent.ReasonTypes.Robbed);
-            this.AddEventInstruction(gameEvent);
-            return this;
-        }
-
-        public ScenarioRunner ReceivesResourcesStolenEvent(string playerName, ResourceClutch lostResource)
-        {
-            var gameEvent = new ResourcesLostEvent(lostResource, this.playerAgentsByName[playerName].Id, ResourcesLostEvent.ReasonTypes.Witness);
-            this.AddEventInstruction(gameEvent);
-            return this;
-        }
-
-        public ScenarioRunner ReceivesRoadSegmentPlacementEvent(uint roadSegmentStartLocation, uint roadSegmentEndLocation)
-        {
-            var gameEvent = new RoadSegmentPlacedEvent(this.playerAgentsByName[this.currentPlayerAgent.Name].Id, roadSegmentStartLocation, roadSegmentEndLocation);
-            this.currentPlayerAgent.AddInstruction(new EventInstruction(gameEvent));
-            return this;
-        }
-
-        public ScenarioRunner ReceivesRoadSegmentPlacementEvent(string playerName, uint roadSegmentStartLocation, uint roadSegmentEndLocation)
-        {
-            var gameEvent = new RoadSegmentPlacedEvent(this.playerAgentsByName[playerName].Id, roadSegmentStartLocation, roadSegmentEndLocation);
-            this.currentPlayerAgent.AddInstruction(new EventInstruction(gameEvent));
-            return this;
-        }
-
         public ScenarioRunner ReceivesResourcesRobbedEvent(string robbedPlayerName, ResourceTypes resourceType)
         {
             ResourceClutch resource = ResourceClutch.Zero;
@@ -315,6 +287,40 @@ namespace SoC.Library.ScenarioTests
 
             return this;
         }
+
+        public ScenarioRunner ReceivesResourcesStolenEvent(string playerName, ResourceClutch lostResource)
+        {
+            var gameEvent = new ResourcesLostEvent(lostResource, this.playerAgentsByName[playerName].Id, ResourcesLostEvent.ReasonTypes.Witness);
+            this.AddEventInstruction(gameEvent);
+            return this;
+        }
+
+        public ScenarioRunner ReceivesResourcesStolenEvent(ResourceClutch lostResource)
+        {
+            var gameEvent = new ResourcesLostEvent(lostResource, this.currentPlayerAgent.Id, ResourcesLostEvent.ReasonTypes.Robbed);
+            this.AddEventInstruction(gameEvent);
+            return this;
+        }
+
+        public ScenarioRunner ReceivesRoadBuildingCardPlayedEvent(int v1, int v2, int v3, int v4, string playerName = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        public ScenarioRunner ReceivesRoadSegmentPlacementEvent(uint roadSegmentStartLocation, uint roadSegmentEndLocation)
+        {
+            var gameEvent = new RoadSegmentPlacedEvent(this.playerAgentsByName[this.currentPlayerAgent.Name].Id, roadSegmentStartLocation, roadSegmentEndLocation);
+            this.currentPlayerAgent.AddInstruction(new EventInstruction(gameEvent));
+            return this;
+        }
+
+        public ScenarioRunner ReceivesRoadSegmentPlacementEvent(string playerName, uint roadSegmentStartLocation, uint roadSegmentEndLocation)
+        {
+            var gameEvent = new RoadSegmentPlacedEvent(this.playerAgentsByName[playerName].Id, roadSegmentStartLocation, roadSegmentEndLocation);
+            this.currentPlayerAgent.AddInstruction(new EventInstruction(gameEvent));
+            return this;
+        }
+
 
         public ScenarioRunner ReceivesRobberPlacedEvent(uint hex)
         {
