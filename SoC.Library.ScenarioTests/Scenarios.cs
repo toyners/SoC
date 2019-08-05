@@ -2774,16 +2774,30 @@ namespace SoC.Library.ScenarioTests
         }
 
         [Test]
-        public void PlayerTriesToPlayMoreThanOneDevelopmentCardDuringTurn()
+        [TestCase(DevelopmentCardTypes.Knight)]
+        [TestCase(DevelopmentCardTypes.Monopoly)]
+        [TestCase(DevelopmentCardTypes.RoadBuilding)]
+        [TestCase(DevelopmentCardTypes.YearOfPlenty)]
+        public void PlayerTriesToPlayMoreThanOneDevelopmentCardDuringTurn(DevelopmentCardTypes cardType)
         {
             try
             {
-                this.CompletePlayerInfrastructureSetup()
-                    .WithInitialPlayerSetupFor(Adam, KnightCard(2))
+                var scenarioRunner = this.CompletePlayerInfrastructureSetup()
+                    .WithInitialPlayerSetupFor(Adam, KnightCard(2), RoadBuildingCard(2))
                     .WhenPlayer(Adam)
                         .ReceivesStartTurnEvent(3, 3).ThenPlayKnightCard(4)
-                        .ReceivesKnightCardPlayedEvent(4).ThenPlayKnightCard(0)
-                        .ReceivesGameErrorEvent("922", "Cannot play more than one development card per turn")
+                        .ReceivesKnightCardPlayedEvent(4);
+
+                switch (cardType)
+                {
+                    case DevelopmentCardTypes.Knight: scenarioRunner.ThenPlayKnightCard(0); break;
+                    case DevelopmentCardTypes.Monopoly: scenarioRunner.ThenPlayMonopolyCard(ResourceTypes.Brick); break;
+                    case DevelopmentCardTypes.RoadBuilding: scenarioRunner.ThenPlayRoadBuildingCard(4, 3, 3, 2); break;
+                    case DevelopmentCardTypes.YearOfPlenty: scenarioRunner.ThenPlayYearOfPlentyCard(); break;
+                    default: throw new ArgumentException($"'{cardType}' not recognised", "cardType");
+                }
+
+                scenarioRunner.ReceivesGameErrorEvent("922", "Cannot play more than one development card per turn")
                     .WhenPlayer(Babara)
                         .DidNotReceiveEventOfType<GameErrorEvent>()
                     .WhenPlayer(Charlie)
