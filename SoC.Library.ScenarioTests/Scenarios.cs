@@ -1364,6 +1364,36 @@ namespace SoC.Library.ScenarioTests
         }
 
         [Test]
+        public void PlayerPlaysKnightCardAfterInitialError()
+        {
+            try
+            {
+                this.CompletePlayerInfrastructureSetup()
+                    .WithNoResourceCollection()
+                    .WithInitialPlayerSetupFor(Adam, KnightCard())
+                    .WhenPlayer(Adam)
+                        .ReceivesStartTurnEvent(3, 3).ThenPlayKnightCard(0)
+                        .ReceivesGameErrorEvent("918", "New robber hex cannot be the same as previous robber hex")
+                        .ThenPlayKnightCard(4)
+                        .DidNotReceiveEventOfTypeAfterCount<GameErrorEvent>(1)
+                    .VerifyPlayer(Babara)
+                        .DidNotReceiveEventOfType<KnightCardPlayedEvent>()
+                        .DidNotReceiveEventOfType<GameErrorEvent>()
+                    .VerifyPlayer(Charlie)
+                        .DidNotReceiveEventOfType<KnightCardPlayedEvent>()
+                        .DidNotReceiveEventOfType<GameErrorEvent>()
+                    .VerifyPlayer(Dana)
+                        .DidNotReceiveEventOfType<KnightCardPlayedEvent>()
+                        .DidNotReceiveEventOfType<GameErrorEvent>()
+                    .Run(this.logDirectory);
+            }
+            finally
+            {
+                this.AttachReports();
+            }
+        }
+
+        [Test]
         public void PlayerPlaysKnightCardAndNewHexHasNoPlayers()
         {
 			try
