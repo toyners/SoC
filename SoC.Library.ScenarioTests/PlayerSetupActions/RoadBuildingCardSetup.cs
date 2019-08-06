@@ -1,12 +1,12 @@
 ﻿
 namespace SoC.Library.ScenarioTests.PlayerSetupActions
 {
-    internal class RoadBuildingCardSetup : IPlayerSetupAction
-    {
-        private readonly int cardCount;
-        public RoadBuildingCardSetup(int cardCount)
-            => this.cardCount = cardCount;
+    using Jabberwocky.SoC.Library;
 
-        public void Process(ScenarioPlayer player) => player.SetRoadBuildingCard(this.cardCount);
+    internal class RoadBuildingCardSetup : CardSetup
+    {
+        public RoadBuildingCardSetup(int cardCount) : base(cardCount) { }
+        public override void Process(ScenarioPlayer player) => 
+            player.SetHeldCard(this.cardCount, DevelopmentCardTypes.RoadBuilding);
     }
 }

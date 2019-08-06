@@ -2783,7 +2783,7 @@ namespace SoC.Library.ScenarioTests
             try
             {
                 var scenarioRunner = this.CompletePlayerInfrastructureSetup()
-                    .WithInitialPlayerSetupFor(Adam, KnightCard(2), RoadBuildingCard(2))
+                    .WithInitialPlayerSetupFor(Adam, KnightCard(2), MonopolyCard(2), RoadBuildingCard(2), YearOfPlentyCard(2))
                     .WhenPlayer(Adam)
                         .ReceivesStartTurnEvent(3, 3).ThenPlayKnightCard(4)
                         .ReceivesKnightCardPlayedEvent(4);
@@ -2857,17 +2857,14 @@ namespace SoC.Library.ScenarioTests
             return new CollectedResourcesBuilder();
         }
 
-        private static IPlayerSetupAction RoadBuildingCard(int cardCount = 1) => new RoadBuildingCardSetup(cardCount); 
-
-        private static IPlayerSetupAction Resources(ResourceClutch resources) => new ResourceSetup(resources);
-
-        private static IPlayerSetupAction VictoryPoints(uint value) => new VictoryPointSetup(value);
-
-        private static IPlayerSetupAction PlacedRoadSegments(int value) => new PlacedRoadSegmentSetup(value);
-
-        private static IPlayerSetupAction PlacedSettlements(int value) => new PlacedSettlementsSetup(value);
-
         private static IPlayerSetupAction KnightCard(int cardCount = 1) => new KnightCardSetup(cardCount);
+        private static IPlayerSetupAction MonopolyCard(int cardCount = 1) => new MonopolyCardSetup(cardCount);
+        private static IPlayerSetupAction PlacedRoadSegments(int value) => new PlacedRoadSegmentSetup(value);
+        private static IPlayerSetupAction PlacedSettlements(int value) => new PlacedSettlementsSetup(value);
+        private static IPlayerSetupAction Resources(ResourceClutch resources) => new ResourceSetup(resources);
+        private static IPlayerSetupAction RoadBuildingCard(int cardCount = 1) => new RoadBuildingCardSetup(cardCount);
+        private static IPlayerSetupAction VictoryPoints(uint value) => new VictoryPointSetup(value);
+        private static IPlayerSetupAction YearOfPlentyCard(int cardCount = 1) => new YearOfPlentyCardSetup(cardCount);
 
         private void AttachReports()
         {

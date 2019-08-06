@@ -60,6 +60,8 @@
     <Compile Include="Instructions\MultipleEventInstruction.cs" />
     <Compile Include="Instructions\PlayerStateInstruction.cs" />
     <Compile Include="IPlayerAgentLog.cs" />
+    <Compile Include="PlayerSetupActions\CardSetup.cs" />
+    <Compile Include="PlayerSetupActions\MonopolyCardSetup.cs" />
     <Compile Include="PlayerSetupActions\RoadBuildingCardSetup.cs" />
     <Compile Include="PlayerSetupActions\KnightCardSetup.cs" />
     <Compile Include="PlayerSetupActions\IPlayerSetupAction.cs" />
@@ -67,6 +69,7 @@
     <Compile Include="PlayerSetupActions\PlacedSettlementsSetup.cs" />
     <Compile Include="PlayerAgentLog.cs" />
     <Compile Include="PlayerSetupActions\ResourceSetup.cs" />
+    <Compile Include="PlayerSetupActions\YearOfPlentyCardSetup.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>

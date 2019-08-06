@@ -1,11 +1,12 @@
 ﻿
 namespace SoC.Library.ScenarioTests.PlayerSetupActions
 {
-    internal class KnightCardSetup : IPlayerSetupAction
-    {
-        private readonly int cardCount;
+    using Jabberwocky.SoC.Library;
 
-        public KnightCardSetup(int cardCount) => this.cardCount = cardCount;
-        public void Process(ScenarioPlayer player) => player.SetKnightCard(this.cardCount);
+    internal class KnightCardSetup : CardSetup
+    {
+        public KnightCardSetup(int cardCount) : base(cardCount) { }
+        public override void Process(ScenarioPlayer player) => 
+            player.SetHeldCard(this.cardCount, DevelopmentCardTypes.Knight);
     }
 }

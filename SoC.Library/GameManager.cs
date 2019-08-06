@@ -709,6 +709,13 @@ namespace Jabberwocky.SoC.Library
 
             if (playerAction is PlayMonopolyCardAction playMonopolyCardAction)
             {
+                if (this.developmentCardPlayerThisTurn)
+                {
+                    this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, "922", "Cannot play more than one development card per turn"),
+                        this.currentPlayer);
+                    return false;
+                }
+
                 DevelopmentCard card = null;
                 if ((card = this.currentPlayer.HeldCards.FirstOrDefault(c => c.Type == DevelopmentCardTypes.Monopoly &&
                     !this.cardsBoughtThisTurn.Contains(c))) == null)
@@ -728,6 +735,13 @@ namespace Jabberwocky.SoC.Library
 
             if (playerAction is PlayYearOfPlentyCardAction playYearOfPlentyCardAction)
             {
+                if (this.developmentCardPlayerThisTurn)
+                {
+                    this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, "922", "Cannot play more than one development card per turn"),
+                        this.currentPlayer);
+                    return false;
+                }
+
                 DevelopmentCard card = null;
                 if ((card = this.currentPlayer.HeldCards.FirstOrDefault(c => c.Type == DevelopmentCardTypes.YearOfPlenty &&
                     !this.cardsBoughtThisTurn.Contains(c))) == null)
