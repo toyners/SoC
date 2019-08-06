@@ -51,6 +51,7 @@ namespace SoC.Library.ScenarioTests
                 $".action span {{ font-size: {TitleFontSize}px; }} " + 
                 $".actual span {{ font-size: {TitleFontSize}px; }} " +
                 $".actual div {{ font-size: {PropertiesFontSize}px; }} " +
+                ".exception { background-color: red; } " +
                 ".expected { background-color: orange; } " +
                 $".expected span {{ font-size: {TitleFontSize}px; }} " +
                 $".expected div {{ font-size: {PropertiesFontSize}px; }} " +
@@ -61,7 +62,7 @@ namespace SoC.Library.ScenarioTests
                 ".note { background-color: cyan; } " +
                 "</style></head><body><div><table>";
             
-            foreach (var logEvent in this.logEvents.Where(l => !(l is ExceptionEvent)))
+            foreach (var logEvent in this.logEvents)
             {
                 content += logEvent.ToHtml();
             }
@@ -95,7 +96,7 @@ namespace SoC.Library.ScenarioTests
 
             public string ToHtml()
             {
-                return $"<tr><td colspan=\"2\">{this.exception.Message}</td></tr>";
+                return $"<tr class=\"exception border\"><td colspan=\"2\">{this.exception.Message}</td></tr>";
             }
         }
 
