@@ -4,7 +4,6 @@ namespace SoC.Library.ScenarioTests
     using System;
     using System.Collections.Generic;
     using System.IO;
-    using System.Linq;
     using Jabberwocky.SoC.Library;
     using Jabberwocky.SoC.Library.GameEvents;
     using SoC.Library.ScenarioTests.Instructions;
@@ -12,10 +11,13 @@ namespace SoC.Library.ScenarioTests
 
     public class PlayerAgentLog : IPlayerAgentLog
     {
+        #region Fields
         private readonly List<ILogEvent> logEvents = new List<ILogEvent>();
         private const string TitleFontSize = "16";
         private const string PropertiesFontSize = "14";
+        #endregion
 
+        #region Methods
         public static IDictionary<Guid, string> PlayerNamesById { get; set; }
 
         public void AddMatchedEvent(GameEvent actualEvent, GameEvent expectedEvent) =>
@@ -32,6 +34,9 @@ namespace SoC.Library.ScenarioTests
 
         public void AddNote(string note) =>
             this.logEvents.Add(new NoteEvent(note));
+
+        public void AddReceivedUnwantedEventException(ReceivedUnwantedEventException r) =>
+            this.logEvents.Add(new ReceivedUnwantedEventExceptionEvent(r));
 
         public void AddAction(ActionInstruction action) =>
             this.logEvents.Add(new ActionEvent(action));
@@ -62,101 +67,10 @@ namespace SoC.Library.ScenarioTests
                 ".note { background-color: cyan; } " +
                 "</style></head><body><div><table>";
             
-            foreach (var logEvent in this.logEvents)
-            {
-                content += logEvent.ToHtml();
-            }
+            for (var index = this.logEvents.Count - 1; index >= 0; index--)
+                content += this.logEvents[index].ToHtml();
 
             File.WriteAllText(filePath, content + "</table></div></body>");
-        }
-
-        private interface ILogEvent
-        {
-            string ToHtml();
-        }
-
-        private class ActionEvent : ILogEvent
-        {
-            private ActionInstruction playerAction;
-            public ActionEvent(ActionInstruction playerAction) => this.playerAction = playerAction;
-
-            public string ToHtml()
-            {
-                return $"<tr>" +
-                    "<td /><td class=\"action border\">" +
-                    $"<span>{this.playerAction.Operation} operation</span>" +
-                    $"</td></tr>";
-            }
-        }
-
-        private class ExceptionEvent : ILogEvent
-        {
-            private Exception exception;
-            public ExceptionEvent(Exception exception) => this.exception = exception;
-
-            public string ToHtml()
-            {
-                return $"<tr class=\"exception border\"><td colspan=\"2\">{this.exception.Message}</td></tr>";
-            }
-        }
-
-        private class MatchedExpectedEvent : ILogEvent
-        {
-            private GameEvent actualEvent, expectedEvent;
-            public MatchedExpectedEvent(GameEvent actualEvent, GameEvent expectedEvent)
-            {
-                this.actualEvent = actualEvent;
-                this.expectedEvent = expectedEvent;
-            }
-
-            public string ToHtml()
-            {
-                return $"<tr class=\"matched\">" +
-                    $"<td class=\"border\">" +
-                    $"<img src=\"green_tick.png\" alt=\"\" height=\"20\" width=\"20\">" +
-                    $"<span>{this.actualEvent.SimpleTypeName}</span><br>" +
-                    $"<div>{GetEventProperties(this.actualEvent)}</div>" +
-                    $"</td>" +
-                    $"<td class=\"border\">" +
-                    $"<span>{this.expectedEvent.SimpleTypeName}</span><br>" +
-                    $"<div>{GetEventProperties(this.actualEvent)}</div></td></tr>";
-            }
-        }
-
-        private class NoteEvent : ILogEvent
-        {
-            private string note;
-            public NoteEvent(string note) => this.note = note;
-        
-            public string ToHtml()
-            {
-                return $"<tr class=\"note\"><td class=\"border\"><div>{this.note}</div></td></tr>";
-            }
-        }
-
-        private class ActualEvent : ILogEvent
-        {
-            private GameEvent actualEvent;
-            public ActualEvent(GameEvent actualEvent) => this.actualEvent = actualEvent;
-
-            public string ToHtml()
-            {
-                return $"<tr><td class=\"actual border\"><span>{this.actualEvent.SimpleTypeName}</span><br><div>{GetEventProperties(this.actualEvent)}</div></td></tr>";
-            }
-        }
-
-        private class ExpectedEvent : ILogEvent
-        {
-            private GameEvent expectedEvent;
-            public ExpectedEvent(GameEvent expectedEvent) => this.expectedEvent = expectedEvent;
-
-            public string ToHtml()
-            {
-                return $"<tr><td />" +
-                    $"<td class=\"expected border\">" +
-                    $"<img src=\"red_cross.png\" alt=\"\" height=\"20\" width=\"20\">" +
-                    $"<span>{this.expectedEvent.SimpleTypeName}</span><br><div>{GetEventProperties(this.expectedEvent)}</div></td></tr>";
-            }
         }
 
         private static string GetEventProperties(GameEvent gameEvent)
@@ -282,5 +196,111 @@ namespace SoC.Library.ScenarioTests
 
             return PlayerNamesById[playerId];
         }
+        #endregion
+
+        #region Classes
+        private interface ILogEvent
+        {
+            string ToHtml();
+        }
+
+        private class ActionEvent : ILogEvent
+        {
+            private readonly ActionInstruction playerAction;
+            public ActionEvent(ActionInstruction playerAction) => this.playerAction = playerAction;
+
+            public string ToHtml()
+            {
+                return $"<tr>" +
+                    "<td /><td class=\"action border\">" +
+                    $"<span>{this.playerAction.Operation} operation</span>" +
+                    $"</td></tr>";
+            }
+        }
+
+        private class ExceptionEvent : ILogEvent
+        {
+            private readonly Exception exception;
+            public ExceptionEvent(Exception exception) => this.exception = exception;
+
+            public string ToHtml()
+            {
+                return $"<tr class=\"exception border\"><td colspan=\"2\">{this.exception.Message}</td></tr>";
+            }
+        }
+
+        private class MatchedExpectedEvent : ILogEvent
+        {
+            private readonly GameEvent actualEvent, expectedEvent;
+            public MatchedExpectedEvent(GameEvent actualEvent, GameEvent expectedEvent)
+            {
+                this.actualEvent = actualEvent;
+                this.expectedEvent = expectedEvent;
+            }
+
+            public string ToHtml()
+            {
+                return $"<tr class=\"matched\">" +
+                    $"<td class=\"border\">" +
+                    $"<img src=\"green_tick.png\" alt=\"\" height=\"20\" width=\"20\">" +
+                    $"<span>{this.actualEvent.SimpleTypeName}</span><br>" +
+                    $"<div>{GetEventProperties(this.actualEvent)}</div>" +
+                    $"</td>" +
+                    $"<td class=\"border\">" +
+                    $"<span>{this.expectedEvent.SimpleTypeName}</span><br>" +
+                    $"<div>{GetEventProperties(this.actualEvent)}</div></td></tr>";
+            }
+        }
+
+        private class NoteEvent : ILogEvent
+        {
+            private readonly string note;
+            public NoteEvent(string note) => this.note = note;
+
+            public string ToHtml()
+            {
+                return $"<tr class=\"note\"><td class=\"border\"><div>{this.note}</div></td></tr>";
+            }
+        }
+
+        private class ReceivedUnwantedEventExceptionEvent : ILogEvent
+        {
+            private readonly ReceivedUnwantedEventException receivedUnwantedEventException;
+            public ReceivedUnwantedEventExceptionEvent(ReceivedUnwantedEventException receivedUnwantedEventException)
+            {
+                this.receivedUnwantedEventException = receivedUnwantedEventException;
+            }
+
+            public string ToHtml()
+            {
+                return $"<tr><td class=\"exception border\"><span>{this.receivedUnwantedEventException.Message}</span></td></tr>";
+            }
+        }
+
+        private class ActualEvent : ILogEvent
+        {
+            private readonly GameEvent actualEvent;
+            public ActualEvent(GameEvent actualEvent) => this.actualEvent = actualEvent;
+
+            public string ToHtml()
+            {
+                return $"<tr><td class=\"actual border\"><span>{this.actualEvent.SimpleTypeName}</span><br><div>{GetEventProperties(this.actualEvent)}</div></td></tr>";
+            }
+        }
+
+        private class ExpectedEvent : ILogEvent
+        {
+            private readonly GameEvent expectedEvent;
+            public ExpectedEvent(GameEvent expectedEvent) => this.expectedEvent = expectedEvent;
+
+            public string ToHtml()
+            {
+                return $"<tr><td />" +
+                    $"<td class=\"expected border\">" +
+                    $"<img src=\"red_cross.png\" alt=\"\" height=\"20\" width=\"20\">" +
+                    $"<span>{this.expectedEvent.SimpleTypeName}</span><br><div>{GetEventProperties(this.expectedEvent)}</div></td></tr>";
+            }
+        }
+        #endregion
     }
 }

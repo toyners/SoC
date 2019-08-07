@@ -75,6 +75,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="ReceivedUnwantedEventException.cs" />
     <Compile Include="ScenarioEvents\ScenarioGameErrorEvent.cs" />
     <Compile Include="ScenarioEvents\ScenarioRequestStateEvent.cs" />
     <Compile Include="MockTurnTimer.cs" />

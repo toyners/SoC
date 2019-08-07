@@ -12,6 +12,7 @@ namespace SoC.Library.ScenarioTests
         void AddException(Exception exception);
         void AddMatchedEvent(GameEvent actualEvent, GameEvent expectedEvent);
         void AddNote(string note);
+        void AddReceivedUnwantedEventException(ReceivedUnwantedEventException r);
         void AddUnmatchedExpectedEvent(GameEvent expectedEvent);
         void WriteToFile(string filePath);
     }

@@ -188,10 +188,15 @@ namespace SoC.Library.ScenarioTests
 
                 return;
             }
+            catch (ReceivedUnwantedEventException r)
+            {
+                this.log.AddReceivedUnwantedEventException(r);
+                throw;
+            }
             catch (Exception e)
             {
                 this.log.AddException(e);
-                throw e;
+                throw;
             }
         }
 
@@ -487,17 +492,17 @@ namespace SoC.Library.ScenarioTests
                 {
                     if (this.maximumEventTypeCountsByEventType[actualEventType] > 0)
                     {
-                        throw new Exception($"Received {this.eventTypeCountsByEventType[actualEventType]} event(s)" +
-                            $" of type {actualEvent.GetType()} but should have received only " +
+                        throw new ReceivedUnwantedEventException($"Received {this.eventTypeCountsByEventType[actualEventType]} event(s)" +
+                            $" of type {actualEvent.SimpleTypeName} but should have received only " +
                             $"{this.maximumEventTypeCountsByEventType[actualEventType]}");
                     }
 
-                    throw new Exception($"Received event of type {actualEvent.GetType()} but should not have");
+                    throw new ReceivedUnwantedEventException($"Received event of type {actualEvent.SimpleTypeName} but should not have");
                 }
             }
 
             if (this.didNotReceiveEvents.FirstOrDefault(d => JToken.DeepEquals(d, JToken.Parse(actualEvent.ToJSONString()))) != null)
-                throw new Exception($"Received event {actualEvent.GetType()} but should not have");
+                throw new ReceivedUnwantedEventException($"Received event {actualEvent.SimpleTypeName} but should not have");
         }
         #endregion
 
