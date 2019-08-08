@@ -826,7 +826,7 @@ namespace Jabberwocky.SoC.Library
                 return false;
             }
 
-            this.currentPlayer.PlaceKnightDevelopmentCard((KnightDevelopmentCard)card);
+            this.currentPlayer.PlayDevelopmentCard(card);
 
             this.robberHex = playKnightCardAction.NewRobberHex;
             this.developmentCardPlayerThisTurn = true;
@@ -880,8 +880,10 @@ namespace Jabberwocky.SoC.Library
                 return false;
             }
 
-            this.currentPlayer.PlaceRoadBuildingDevelopmentCard((RoadBuildingDevelopmentCard)card);
+            this.currentPlayer.PlayDevelopmentCard(card);
             this.developmentCardPlayerThisTurn = true;
+
+            this.ProcessPlaceRoadSegmentAction
 
             return false;
         }

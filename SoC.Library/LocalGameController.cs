@@ -1491,7 +1491,7 @@ namespace Jabberwocky.SoC.Library
         private void PlayKnightDevelopmentCard(KnightDevelopmentCard card, uint newRobberHex)
         {
             this.PlayDevelopmentCard(card);
-            this.currentPlayer.PlaceKnightDevelopmentCard(card);
+            this.currentPlayer.PlayDevelopmentCard(card);
             this.robberHex = newRobberHex;
         }
 

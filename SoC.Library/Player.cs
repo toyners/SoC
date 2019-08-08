@@ -254,11 +254,13 @@ namespace Jabberwocky.SoC.Library
             this.VictoryPoints++;
         }
 
-        public void PlaceKnightDevelopmentCard(KnightDevelopmentCard card)
+        public void PlayDevelopmentCard(DevelopmentCard card)
         {
-            this.PlayedKnightCards++;
             this.HeldCards.Remove(card);
             this.PlayedCards.Add(card);
+
+            if (card is KnightDevelopmentCard)
+                this.PlayedKnightCards++;
         }
 
         public void PlaceRoadSegment()
@@ -378,11 +380,6 @@ namespace Jabberwocky.SoC.Library
         {
             var value = reader.GetAttribute(attributeName);
             return !string.IsNullOrEmpty(value) ? int.Parse(value) : 0;
-        }
-
-        public void PlaceRoadBuildingDevelopmentCard(RoadBuildingDevelopmentCard card)
-        {
-            throw new NotImplementedException();
         }
         #endregion
     }

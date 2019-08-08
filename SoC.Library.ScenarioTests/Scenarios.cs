@@ -1281,6 +1281,52 @@ namespace SoC.Library.ScenarioTests
         }
 
         [Test]
+        [TestCase(1)]
+        [TestCase(0)]
+        public void PlayerPlaysRoadBuildingCardButDoesNotHaveEnoughRoadSegments(int remainingRoadSegments)
+        {
+            try
+            {
+                this.CompletePlayerInfrastructureSetup()
+
+                    .WithNoResourceCollection()
+                    .WithInitialPlayerSetupFor(Adam, PlacedRoadSegments(Player.TotalRoadSegments - remainingRoadSegments), RoadBuildingCard(1))
+                    .WhenPlayer(Adam)
+                        .ReceivesStartTurnEvent(3, 3).ThenPlayRoadBuildingCard(4, 3, 3, 2)
+                        .ReceivesGameErrorEvent("920", "No Road building card owned that can be played this turn")
+                    .VerifyPlayer(Babara)
+                        .DidNotReceiveEventOfType<RoadBuildingCardPlayedEvent>()
+                        .DidNotReceiveEventOfType<GameErrorEvent>()
+                    .VerifyPlayer(Charlie)
+                        .DidNotReceiveEventOfType<RoadBuildingCardPlayedEvent>()
+                        .DidNotReceiveEventOfType<GameErrorEvent>()
+                    .VerifyPlayer(Dana)
+                        .DidNotReceiveEventOfType<RoadBuildingCardPlayedEvent>()
+                        .DidNotReceiveEventOfType<GameErrorEvent>()
+                    .Run(this.logDirectory);
+            }
+            finally
+            {
+                this.AttachReports();
+            }
+        }
+
+        public void PlayerPlaysRoadBuildingCardButRoadSegmentNotConnectedToExistingRoadSystem()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void PlayerPlaysRoadBuildingCardButRoadSegmentIsOnOccupieLocations()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void PlayerPlaysRoadBuildingCardButRoadSegmentLocationsAreInvalid()
+        {
+            throw new NotImplementedException();
+        }
+
+        [Test]
         public void PlayerPlaysRoadBuildingCard()
         {
             try
@@ -2886,6 +2932,11 @@ namespace SoC.Library.ScenarioTests
 
         private static IPlayerSetupAction KnightCard(int cardCount = 1) => new KnightCardSetup(cardCount);
         private static IPlayerSetupAction MonopolyCard(int cardCount = 1) => new MonopolyCardSetup(cardCount);
+        /// <summary>
+        /// Set number of road segments that have been placed.
+        /// </summary>
+        /// <param name="value">Number of road segments</param>
+        /// <returns></returns>
         private static IPlayerSetupAction PlacedRoadSegments(int value) => new PlacedRoadSegmentSetup(value);
         private static IPlayerSetupAction PlacedSettlements(int value) => new PlacedSettlementsSetup(value);
         private static IPlayerSetupAction Resources(ResourceClutch resources) => new ResourceSetup(resources);

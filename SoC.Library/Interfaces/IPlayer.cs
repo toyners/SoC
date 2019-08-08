@@ -45,14 +45,13 @@ namespace Jabberwocky.SoC.Library.Interfaces
         PlayerDataBase GetDataModel(bool provideFullPlayerData);
         void BuyDevelopmentCard();
         void PlaceCity();
-        void PlaceKnightDevelopmentCard(KnightDevelopmentCard card);
         void PlaceRoadSegment();
         void PlaceSettlement();
         void PlaceStartingInfrastructure();
+        void PlayDevelopmentCard(DevelopmentCard card);
         void RemoveResources(ResourceClutch resourceClutch);
         ResourceClutch LoseResourceAtIndex(int resourceIndex);
         ResourceClutch LoseResourcesOfType(ResourceTypes resourceType);
-        void PlaceRoadBuildingDevelopmentCard(RoadBuildingDevelopmentCard card);
         #endregion
     }
 }

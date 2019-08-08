@@ -25,6 +25,5 @@ namespace SoC.Library.ScenarioTests
         internal void SetVictoryPoints(uint victoryPoints) => this.VictoryPoints = victoryPoints;
         internal void SetPlacedRoadSegments(int placedRoadSegments) => this.PlacedRoadSegments = placedRoadSegments;
         internal void SetPlacedSettlements(int placedSettlements) => this.PlacedSettlements = placedSettlements;
-        
     }
 }
