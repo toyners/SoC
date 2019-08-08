@@ -819,9 +819,6 @@ namespace Jabberwocky.SoC.Library
                 return false;
             }
 
-            // TODO: Move this after below check
-            this.developmentCardPlayerThisTurn = true;
-
             if (this.robberHex == playKnightCardAction.NewRobberHex)
             {
                 this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, "918", "New robber hex cannot be the same as previous robber hex"),
@@ -832,6 +829,7 @@ namespace Jabberwocky.SoC.Library
             this.currentPlayer.PlaceKnightDevelopmentCard((KnightDevelopmentCard)card);
 
             this.robberHex = playKnightCardAction.NewRobberHex;
+            this.developmentCardPlayerThisTurn = true;
             this.RaiseEvent(new KnightCardPlayedEvent(this.currentPlayer.Id, this.robberHex));
 
             if (this.currentPlayer.PlayedKnightCards >= 3)

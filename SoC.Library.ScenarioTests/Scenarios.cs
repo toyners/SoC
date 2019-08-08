@@ -1377,13 +1377,10 @@ namespace SoC.Library.ScenarioTests
                         .ThenPlayKnightCard(4)
                         .DidNotReceiveEventOfTypeAfterCount<GameErrorEvent>(1)
                     .VerifyPlayer(Babara)
-                        .DidNotReceiveEventOfType<KnightCardPlayedEvent>()
                         .DidNotReceiveEventOfType<GameErrorEvent>()
                     .VerifyPlayer(Charlie)
-                        .DidNotReceiveEventOfType<KnightCardPlayedEvent>()
                         .DidNotReceiveEventOfType<GameErrorEvent>()
                     .VerifyPlayer(Dana)
-                        .DidNotReceiveEventOfType<KnightCardPlayedEvent>()
                         .DidNotReceiveEventOfType<GameErrorEvent>()
                     .Run(this.logDirectory);
             }
