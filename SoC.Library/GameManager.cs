@@ -475,7 +475,7 @@ namespace Jabberwocky.SoC.Library
                 PlayerPlacementVerificationStates verificationState = this.currentPlayer.CanPlaceRoadSegment;
                 if (verificationState == PlayerPlacementVerificationStates.NoRoadSegments)
                 {
-                    this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, (int)ErrorCodes.NotEnoughRoadSegments, "No road segments to place"),
+                    this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, (int)ErrorCodes.NotEnoughRoadSegments, "Not enough road segments to place"),
                         this.currentPlayer);
                     return false;
                 }
