@@ -60,6 +60,7 @@
     <Compile Include="DevelopmentCards\RoadBuildingDevelopmentCard.cs" />
     <Compile Include="DevelopmentCards\VictoryPointDevelopmentCard.cs" />
     <Compile Include="DevelopmentCards\YearOfPlentyDevelopmentCard.cs" />
+    <Compile Include="Enums\ErrorCodes.cs" />
     <Compile Include="Enums\PlayerPlacementVerificationStates.cs" />
     <Compile Include="GameEvents\ChooseLostResourcesEvent.cs" />
     <Compile Include="GameEvents\CityPlacedEvent.cs" />

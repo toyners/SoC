@@ -336,7 +336,7 @@ namespace Jabberwocky.SoC.Library
         {
             if (!this.currentPlayer.CanBuyDevelopmentCard)
             {
-                this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, "921", "Not enough resources for buying development card"), this.currentPlayer);
+                this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, (int)ErrorCodes.NotEnoughResourcesForDevelopmentCard, "Not enough resources for buying development card"), this.currentPlayer);
             }
             else
             {
@@ -408,7 +408,7 @@ namespace Jabberwocky.SoC.Library
                 PlayerPlacementVerificationStates verificationState = this.currentPlayer.CanPlaceCity;
                 if (verificationState == PlayerPlacementVerificationStates.NotEnoughResources)
                 {
-                    this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, "913", "Not enough resources for placing city"),
+                    this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, (int)ErrorCodes.NotEnoughResourcesForCity, "Not enough resources for placing city"),
                         this.currentPlayer);
                     return false;
                 }
@@ -434,31 +434,31 @@ namespace Jabberwocky.SoC.Library
                     case GameBoard.VerificationStatus.LocationIsNotOwned:
                     {
                         var occupyingPlayer = this.playersById[pe.OtherPlayerId];
-                        this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, "908", $"Location ({placeCityAction.CityLocation}) already occupied by {occupyingPlayer.Name}"),
+                        this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, (int)ErrorCodes.LocationAlreadyOccupiedByPlayer, $"Location ({placeCityAction.CityLocation}) already occupied by {occupyingPlayer.Name}"),
                             this.currentPlayer);
                         break;
                     }
                     case GameBoard.VerificationStatus.LocationIsAlreadyCity:
                     {
-                        this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, "908", $"Location ({placeCityAction.CityLocation}) already occupied by you"),
+                        this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, (int)ErrorCodes.LocationAlreadyOccupiedByPlayer, $"Location ({placeCityAction.CityLocation}) already occupied by you"),
                             this.currentPlayer);
                         break;
                     }
                     case GameBoard.VerificationStatus.LocationIsNotSettled:
                     {
-                        this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, "914", $"Location ({placeCityAction.CityLocation}) not an settlement"),
+                        this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, (int)ErrorCodes.LocationDoesNotHaveSettlement, $"Location ({placeCityAction.CityLocation}) not an settlement"),
                             this.currentPlayer);
                         break;
                     }
                     case GameBoard.VerificationStatus.LocationForCityIsInvalid:
                     {
-                        this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, "915", $"Location ({placeCityAction.CityLocation}) is invalid"),
+                        this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, (int)ErrorCodes.LocationIsInvalid, $"Location ({placeCityAction.CityLocation}) is invalid"),
                             this.currentPlayer);
                         break;
                     }
                     default:
                     {
-                        this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, "998", $"Unknown error"),
+                        this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, (int)ErrorCodes.UnknownError, $"Unknown error"),
                             this.currentPlayer);
                         break;
                     }
@@ -475,13 +475,13 @@ namespace Jabberwocky.SoC.Library
                 PlayerPlacementVerificationStates verificationState = this.currentPlayer.CanPlaceRoadSegment;
                 if (verificationState == PlayerPlacementVerificationStates.NoRoadSegments)
                 {
-                    this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, "905", "No road segments to place"),
+                    this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, (int)ErrorCodes.NotEnoughRoadSegments, "No road segments to place"),
                         this.currentPlayer);
                     return false;
                 }
                 else if (verificationState == PlayerPlacementVerificationStates.NotEnoughResources)
                 {
-                    this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, "906", "Not enough resources for placing road segment"),
+                    this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, (int)ErrorCodes.NotEnoughResourcesForRoadSegment, "Not enough resources for placing road segment"),
                         this.currentPlayer);
                     return false;
                 }
@@ -527,31 +527,31 @@ namespace Jabberwocky.SoC.Library
                 {
                     case GameBoard.VerificationStatus.RoadIsOffBoard:
                     {
-                        this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, "903", $"Locations ({placeRoadSegmentAction.StartLocation}, {placeRoadSegmentAction.EndLocation}) invalid for placing road segment"),
+                        this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, (int)ErrorCodes.LocationsInvalidForRoadSegment, $"Locations ({placeRoadSegmentAction.StartLocation}, {placeRoadSegmentAction.EndLocation}) invalid for placing road segment"),
                             this.currentPlayer);
                         break;
                     }
                     case GameBoard.VerificationStatus.NoDirectConnection:
                     {
-                        this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, "904", $"Locations ({placeRoadSegmentAction.StartLocation}, {placeRoadSegmentAction.EndLocation}) not connected when placing road segment"),
+                        this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, (int)ErrorCodes.LocationsNotDirectlyConnected, $"Locations ({placeRoadSegmentAction.StartLocation}, {placeRoadSegmentAction.EndLocation}) not connected when placing road segment"),
                             this.currentPlayer);
                         break;
                     }
                     case GameBoard.VerificationStatus.RoadIsOccupied:
                     {
-                        this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, "907", $"Cannot place road segment on existing road segment ({placeRoadSegmentAction.StartLocation}, {placeRoadSegmentAction.EndLocation})"),
+                        this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, (int)ErrorCodes.LocationAlreadyOccupiedByPlayer, $"Cannot place road segment on existing road segment ({placeRoadSegmentAction.StartLocation}, {placeRoadSegmentAction.EndLocation})"),
                             this.currentPlayer);
                         break;
                     }
                     case GameBoard.VerificationStatus.RoadNotConnectedToExistingRoad:
                     {
-                        this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, "910", $"Cannot place road segment because locations ({placeRoadSegmentAction.StartLocation}, {placeRoadSegmentAction.EndLocation}) are not connected to existing road"),
+                        this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, (int)ErrorCodes.LocationNotConnectedToRoadSystem, $"Cannot place road segment because locations ({placeRoadSegmentAction.StartLocation}, {placeRoadSegmentAction.EndLocation}) are not connected to existing road"),
                             this.currentPlayer);
                         break;
                     }
                     default:
                     {
-                        this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, "998", $"Unknown error"),
+                        this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, (int)ErrorCodes.UnknownError, $"Unknown error"),
                             this.currentPlayer);
                         break;
                     }
@@ -565,7 +565,7 @@ namespace Jabberwocky.SoC.Library
         {
             if (this.robberHex == placeRobberAction.Hex)
             {
-                this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, "918", "New robber hex cannot be the same as previous robber hex"),
+                this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, (int)ErrorCodes.NewRobberHexIsSameAsCurrentRobberHex, "New robber hex cannot be the same as previous robber hex"),
                     this.currentPlayer);
                 return;
             }
@@ -583,13 +583,13 @@ namespace Jabberwocky.SoC.Library
             {
                 PlayerPlacementVerificationStates verificationState = this.currentPlayer.CanPlaceSettlement;
                 if (verificationState == PlayerPlacementVerificationStates.NoSettlements) { 
-                    this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, "911", "No settlements to place"),
+                    this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, (int)ErrorCodes.NoSettlements, "No settlements to place"),
                         this.currentPlayer);
                     return false;
                 }
                 else if (verificationState == PlayerPlacementVerificationStates.NotEnoughResources)
                 {
-                    this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, "912", "Not enough resources for placing settlement"),
+                    this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, (int)ErrorCodes.NotEnoughResourcesForSettlement, "Not enough resources for placing settlement"),
                         this.currentPlayer);
                     return false;
                 }
@@ -616,25 +616,25 @@ namespace Jabberwocky.SoC.Library
                     {
                         var occupyingPlayer = this.playersById[pe.OtherPlayerId];
                         var occupyingPlayerName = occupyingPlayer == this.currentPlayer ? "you" : occupyingPlayer.Name;
-                        this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, "908", $"Location ({placeSettlementAction.SettlementLocation}) already occupied by {occupyingPlayerName}"),
+                        this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, (int)ErrorCodes.LocationAlreadyOccupiedByPlayer, $"Location ({placeSettlementAction.SettlementLocation}) already occupied by {occupyingPlayerName}"),
                             this.currentPlayer);
                         break;
                     }
                     case GameBoard.VerificationStatus.SettlementNotConnectedToExistingRoad:
                     {
-                        this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, "909", $"Location ({placeSettlementAction.SettlementLocation}) is not connected to your road system"),
+                        this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, (int)ErrorCodes.LocationNotConnectedToRoadSystem, $"Location ({placeSettlementAction.SettlementLocation}) is not connected to your road system"),
                             this.currentPlayer);
                         break;
                     }
                     case GameBoard.VerificationStatus.LocationForSettlementIsInvalid:
                     {
-                        this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, "915", $"Location ({placeSettlementAction.SettlementLocation}) is invalid"),
+                        this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, (int)ErrorCodes.LocationIsInvalid, $"Location ({placeSettlementAction.SettlementLocation}) is invalid"),
                             this.currentPlayer);
                         break;
                     }
                     default:
                     {
-                        this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, "998", $"Unknown error"),
+                        this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, (int)ErrorCodes.UnknownError, $"Unknown error"),
                             this.currentPlayer);
                         break;
                     }
@@ -711,7 +711,7 @@ namespace Jabberwocky.SoC.Library
             {
                 if (this.developmentCardPlayerThisTurn)
                 {
-                    this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, "922", "Cannot play more than one development card per turn"),
+                    this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, (int)ErrorCodes.CannotPlayDevelopmentCard, "Cannot play more than one development card per turn"),
                         this.currentPlayer);
                     return false;
                 }
@@ -720,7 +720,7 @@ namespace Jabberwocky.SoC.Library
                 if ((card = this.currentPlayer.HeldCards.FirstOrDefault(c => c.Type == DevelopmentCardTypes.Monopoly &&
                     !this.cardsBoughtThisTurn.Contains(c))) == null)
                 {
-                    this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, "920", "No Monopoly card owned that can be played this turn"),
+                    this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, (int)ErrorCodes.NoDevelopmentCardCanBePlayed, "No Monopoly card owned that can be played this turn"),
                         this.currentPlayer);
                     return false;
                 }
@@ -737,7 +737,7 @@ namespace Jabberwocky.SoC.Library
             {
                 if (this.developmentCardPlayerThisTurn)
                 {
-                    this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, "922", "Cannot play more than one development card per turn"),
+                    this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, (int)ErrorCodes.CannotPlayDevelopmentCard, "Cannot play more than one development card per turn"),
                         this.currentPlayer);
                     return false;
                 }
@@ -746,7 +746,7 @@ namespace Jabberwocky.SoC.Library
                 if ((card = this.currentPlayer.HeldCards.FirstOrDefault(c => c.Type == DevelopmentCardTypes.YearOfPlenty &&
                     !this.cardsBoughtThisTurn.Contains(c))) == null)
                 {
-                    this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, "920", "No Year of Plenty card owned that can be played this turn"),
+                    this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, (int)ErrorCodes.NoDevelopmentCardCanBePlayed, "No Year of Plenty card owned that can be played this turn"),
                         this.currentPlayer);
                     return false;
                 }
@@ -758,7 +758,7 @@ namespace Jabberwocky.SoC.Library
             {
                 if (!this.playerIdsInRobberHex.Contains(selectResourceFromPlayerAction.SelectedPlayerId))
                 {
-                    this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, "919", "Invalid player selection"),
+                    this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, (int)ErrorCodes.InvalidPlayerSelection, "Invalid player selection"),
                         this.currentPlayer);
                 }
                 else
@@ -805,7 +805,7 @@ namespace Jabberwocky.SoC.Library
         {
             if (this.developmentCardPlayerThisTurn)
             {
-                this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, "922", "Cannot play more than one development card per turn"),
+                this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, (int)ErrorCodes.CannotPlayDevelopmentCard, "Cannot play more than one development card per turn"),
                     this.currentPlayer);
                 return false;
             }
@@ -814,14 +814,14 @@ namespace Jabberwocky.SoC.Library
             if ((card = this.currentPlayer.HeldCards.FirstOrDefault(c => c.Type == DevelopmentCardTypes.Knight &&
                 !this.cardsBoughtThisTurn.Contains(c))) == null)
             {
-                this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, "920", "No Knight card owned that can be played this turn"),
+                this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, (int)ErrorCodes.NoDevelopmentCardCanBePlayed, "No Knight card owned that can be played this turn"),
                     this.currentPlayer);
                 return false;
             }
 
             if (this.robberHex == playKnightCardAction.NewRobberHex)
             {
-                this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, "918", "New robber hex cannot be the same as previous robber hex"),
+                this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, (int)ErrorCodes.NewRobberHexIsSameAsCurrentRobberHex, "New robber hex cannot be the same as previous robber hex"),
                     this.currentPlayer);
                 return false;
             }
@@ -866,7 +866,7 @@ namespace Jabberwocky.SoC.Library
         {
             if (this.developmentCardPlayerThisTurn)
             {
-                this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, "922", "Cannot play more than one development card per turn"),
+                this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, (int)ErrorCodes.CannotPlayDevelopmentCard, "Cannot play more than one development card per turn"),
                     this.currentPlayer);
                 return false;
             }
@@ -875,7 +875,7 @@ namespace Jabberwocky.SoC.Library
             if ((card = this.currentPlayer.HeldCards.FirstOrDefault(c => c.Type == DevelopmentCardTypes.RoadBuilding &&
                 !this.cardsBoughtThisTurn.Contains(c))) == null)
             {
-                this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, "920", "No Road building card owned that can be played this turn"),
+                this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, (int)ErrorCodes.NoDevelopmentCardCanBePlayed, "No Road building card owned that can be played this turn"),
                     this.currentPlayer);
                 return false;
             }
@@ -883,7 +883,7 @@ namespace Jabberwocky.SoC.Library
             this.currentPlayer.PlayDevelopmentCard(card);
             this.developmentCardPlayerThisTurn = true;
 
-            this.ProcessPlaceRoadSegmentAction
+            //this.ProcessPlaceRoadSegmentAction
 
             return false;
         }
@@ -1075,13 +1075,13 @@ namespace Jabberwocky.SoC.Library
                     var expectedResourceCount = chooseLostResourcesEvent.ResourceCount + " resource";
                     if (chooseLostResourcesEvent.ResourceCount > 1)
                         expectedResourceCount += "s";
-                    this.RaiseEvent(new GameErrorEvent(player.Id, "916", $"Expected {expectedResourceCount} but received {loseResourcesAction.Resources.Count}"), player);
+                    this.RaiseEvent(new GameErrorEvent(player.Id, (int)ErrorCodes.IncorrectResourceCount, $"Expected {expectedResourceCount} but received {loseResourcesAction.Resources.Count}"), player);
                     continue;
                 }
 
                 if (player.Resources - loseResourcesAction.Resources < ResourceClutch.Zero)
                 {
-                    this.RaiseEvent(new GameErrorEvent(player.Id, "917", "Resources sent results in negative counts"), player);
+                    this.RaiseEvent(new GameErrorEvent(player.Id, (int)ErrorCodes.IncorrectResourceCount, "Resources sent results in negative counts"), player);
                     continue;
                 }
 
@@ -1119,7 +1119,7 @@ namespace Jabberwocky.SoC.Library
                     {
                         var expectedActions = this.actionManager.GetExpectedActionsForPlayer(playerAction.InitiatingPlayerId);
                         var errorMessage = this.GetErrorMessage(playerAction.GetType(), expectedActions);
-                        this.RaiseEvent(new GameErrorEvent(playerAction.InitiatingPlayerId, "999", errorMessage),
+                        this.RaiseEvent(new GameErrorEvent(playerAction.InitiatingPlayerId, (int)ErrorCodes.IllegalPlayerAction, errorMessage),
                             this.playersById[playerAction.InitiatingPlayerId]);
                         this.log.Add($"FAILED: Action Validation - {playerName}, {playerActionTypeName}");
                         continue;
@@ -1146,7 +1146,7 @@ namespace Jabberwocky.SoC.Library
                     if (!(playerAction is RequestStateAction))
                     {
                         var errorMessage = $"Received action type {playerActionTypeName}. Expected RequestStateAction";
-                        this.RaiseEvent(new GameErrorEvent(playerAction.InitiatingPlayerId, "999", errorMessage),
+                        this.RaiseEvent(new GameErrorEvent(playerAction.InitiatingPlayerId, (int)ErrorCodes.IllegalPlayerAction, errorMessage),
                             this.playersById[playerAction.InitiatingPlayerId]);
                         this.log.Add($"FAILED: Action Validation - {playerName}, {playerActionTypeName}");
                         continue;

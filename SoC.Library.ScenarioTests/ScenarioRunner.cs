@@ -7,6 +7,7 @@ namespace SoC.Library.ScenarioTests
     using System.Threading;
     using System.Threading.Tasks;
     using Jabberwocky.SoC.Library;
+    using Jabberwocky.SoC.Library.Enums;
     using Jabberwocky.SoC.Library.GameBoards;
     using Jabberwocky.SoC.Library.GameEvents;
     using Jabberwocky.SoC.Library.Interfaces;
@@ -146,9 +147,9 @@ namespace SoC.Library.ScenarioTests
             return this;
         }
 
-        public ScenarioRunner ReceivesGameErrorEvent(string errorCode, string errorMessage)
+        public ScenarioRunner ReceivesGameErrorEvent(ErrorCodes errorCode, string errorMessage)
         {
-            var gameEvent = new GameErrorEvent(this.GetPlayerId(this.currentPlayerAgent.Name), errorCode, errorMessage);
+            var gameEvent = new GameErrorEvent(this.GetPlayerId(this.currentPlayerAgent.Name), (int)errorCode, errorMessage);
             var eventInstruction = new EventInstruction(gameEvent);
             this.currentPlayerAgent.AddInstruction(eventInstruction);
             return this;

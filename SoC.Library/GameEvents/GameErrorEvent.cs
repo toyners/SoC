@@ -5,12 +5,13 @@ namespace Jabberwocky.SoC.Library.GameEvents
 
     public class GameErrorEvent : GameEvent
     {
-        public string ErrorCode;
-        public string ErrorMessage;
-        public GameErrorEvent(Guid playerId, string errorCode, string errorMessage) : base(playerId)
+        public GameErrorEvent(Guid playerId, int errorCode, string errorMessage) : base(playerId)
         {
             this.ErrorCode = errorCode;
             this.ErrorMessage = errorMessage;
         }
+
+        public int ErrorCode { get; private set; }
+        public string ErrorMessage { get; private set; }
     }
 }
