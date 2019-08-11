@@ -61,7 +61,7 @@
     <Compile Include="DevelopmentCards\VictoryPointDevelopmentCard.cs" />
     <Compile Include="DevelopmentCards\YearOfPlentyDevelopmentCard.cs" />
     <Compile Include="Enums\ErrorCodes.cs" />
-    <Compile Include="Enums\PlayerPlacementVerificationStates.cs" />
+    <Compile Include="Enums\PlayerPlacementStatusCodes.cs" />
     <Compile Include="GameEvents\ChooseLostResourcesEvent.cs" />
     <Compile Include="GameEvents\CityPlacedEvent.cs" />
     <Compile Include="GameEvents\ConfirmGameStartEvent.cs" />
@@ -84,6 +84,7 @@
     <Compile Include="Interfaces\IEventSender.cs" />
     <Compile Include="Interfaces\IPlayerFactory.cs" />
     <Compile Include="Log.cs" />
+    <Compile Include="Enums\PlacementStatusCodes.cs" />
     <Compile Include="PlayerActions\AcceptDirectTradeAction.cs" />
     <Compile Include="PlayerActions\AnswerDirectTradeOfferAction.cs" />
     <Compile Include="PlayerActions\BuildCityAction.cs" />

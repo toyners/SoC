@@ -68,27 +68,27 @@ namespace Jabberwocky.SoC.Library
 
         #region Properties
         public bool CanBuyDevelopmentCard => this.Resources >= ResourceClutch.DevelopmentCard;
-        public PlayerPlacementVerificationStates CanPlaceCity => this.Resources < ResourceClutch.City ? PlayerPlacementVerificationStates.NotEnoughResources : PlayerPlacementVerificationStates.Success;
-        public PlayerPlacementVerificationStates CanPlaceRoadSegment
+        public PlayerPlacementStatusCodes CanPlaceCity => this.Resources < ResourceClutch.City ? PlayerPlacementStatusCodes.NotEnoughResources : PlayerPlacementStatusCodes.Success;
+        public PlayerPlacementStatusCodes CanPlaceRoadSegment
         {
             get
             {
                 if (this.RemainingRoadSegments <= 0)
-                    return PlayerPlacementVerificationStates.NoRoadSegments;
+                    return PlayerPlacementStatusCodes.NoRoadSegments;
                 else if (this.Resources < ResourceClutch.RoadSegment)
-                    return PlayerPlacementVerificationStates.NotEnoughResources;
-                return PlayerPlacementVerificationStates.Success;
+                    return PlayerPlacementStatusCodes.NotEnoughResources;
+                return PlayerPlacementStatusCodes.Success;
             }
         }
-        public PlayerPlacementVerificationStates CanPlaceSettlement
+        public PlayerPlacementStatusCodes CanPlaceSettlement
         {
             get
             {
                 if (this.RemainingSettlements <= 0)
-                    return PlayerPlacementVerificationStates.NoSettlements;
+                    return PlayerPlacementStatusCodes.NoSettlements;
                 else if (this.Resources < ResourceClutch.Settlement)
-                    return PlayerPlacementVerificationStates.NotEnoughResources;
-                return PlayerPlacementVerificationStates.Success;
+                    return PlayerPlacementStatusCodes.NotEnoughResources;
+                return PlayerPlacementStatusCodes.Success;
             }
         }
         public bool HasLargestArmy

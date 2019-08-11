@@ -405,8 +405,8 @@ namespace Jabberwocky.SoC.Library
         {
             try
             {
-                PlayerPlacementVerificationStates verificationState = this.currentPlayer.CanPlaceCity;
-                if (verificationState == PlayerPlacementVerificationStates.NotEnoughResources)
+                PlayerPlacementStatusCodes verificationState = this.currentPlayer.CanPlaceCity;
+                if (verificationState == PlayerPlacementStatusCodes.NotEnoughResources)
                 {
                     this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, (int)ErrorCodes.NotEnoughResourcesForCity, "Not enough resources for placing city"),
                         this.currentPlayer);
@@ -472,14 +472,14 @@ namespace Jabberwocky.SoC.Library
         {
             try
             {
-                PlayerPlacementVerificationStates verificationState = this.currentPlayer.CanPlaceRoadSegment;
-                if (verificationState == PlayerPlacementVerificationStates.NoRoadSegments)
+                PlayerPlacementStatusCodes verificationState = this.currentPlayer.CanPlaceRoadSegment;
+                if (verificationState == PlayerPlacementStatusCodes.NoRoadSegments)
                 {
                     this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, (int)ErrorCodes.NotEnoughRoadSegments, "Not enough road segments to place"),
                         this.currentPlayer);
                     return false;
                 }
-                else if (verificationState == PlayerPlacementVerificationStates.NotEnoughResources)
+                else if (verificationState == PlayerPlacementStatusCodes.NotEnoughResources)
                 {
                     this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, (int)ErrorCodes.NotEnoughResourcesForRoadSegment, "Not enough resources for placing road segment"),
                         this.currentPlayer);
@@ -581,13 +581,13 @@ namespace Jabberwocky.SoC.Library
         {
             try
             {
-                PlayerPlacementVerificationStates verificationState = this.currentPlayer.CanPlaceSettlement;
-                if (verificationState == PlayerPlacementVerificationStates.NoSettlements) { 
+                PlayerPlacementStatusCodes verificationState = this.currentPlayer.CanPlaceSettlement;
+                if (verificationState == PlayerPlacementStatusCodes.NoSettlements) { 
                     this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, (int)ErrorCodes.NoSettlements, "No settlements to place"),
                         this.currentPlayer);
                     return false;
                 }
-                else if (verificationState == PlayerPlacementVerificationStates.NotEnoughResources)
+                else if (verificationState == PlayerPlacementStatusCodes.NotEnoughResources)
                 {
                     this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, (int)ErrorCodes.NotEnoughResourcesForSettlement, "Not enough resources for placing settlement"),
                         this.currentPlayer);
@@ -877,6 +877,23 @@ namespace Jabberwocky.SoC.Library
             {
                 this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, (int)ErrorCodes.NoDevelopmentCardCanBePlayed, "No Road building card owned that can be played this turn"),
                     this.currentPlayer);
+                return false;
+            }
+
+            PlayerPlacementStatusCodes verificationState = this.currentPlayer.CanPlaceRoadSegment;
+            if (verificationState == PlayerPlacementStatusCodes.NoRoadSegments)
+            {
+                this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, (int)ErrorCodes.NotEnoughRoadSegments, "Not enough road segments to place"),
+                    this.currentPlayer);
+                return false;
+            }
+
+            var statusCode = this.gameBoard.TryPlaceRoadSegment(this.currentPlayer.Id,
+                playRoadBuildingCardAction.FirstRoadSegmentStartLocation,
+                playRoadBuildingCardAction.FirstRoadSegmentEndLocation);
+
+            if (statusCode != PlacementStatusCodes.Success)
+            {
                 return false;
             }
 

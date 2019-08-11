@@ -1,7 +1,7 @@
 ﻿
 namespace Jabberwocky.SoC.Library.Enums
 {
-    public enum PlayerPlacementVerificationStates
+    public enum PlayerPlacementStatusCodes
     {
         Success,
         NotEnoughResources,

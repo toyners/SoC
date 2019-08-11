@@ -3,6 +3,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
 {
     using System;
     using System.Collections.Generic;
+    using Jabberwocky.SoC.Library.Enums;
 
     public interface IGameBoard
     {
@@ -15,5 +16,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
         Tuple<uint, uint, Guid>[] GetRoadData();
 
         Dictionary<uint, Guid> GetSettlementData();
+
+        PlacementStatusCodes TryPlaceRoadSegment(Guid playerId, uint roadSegmentStartLocation, uint roadSegmentEndLocation);
     }
 }

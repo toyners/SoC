@@ -6,6 +6,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
     using System.Diagnostics;
     using System.Linq;
     using System.Xml;
+    using Jabberwocky.SoC.Library.Enums;
     using Jabberwocky.SoC.Library.Store;
 
     /// <summary>
@@ -766,6 +767,11 @@ namespace Jabberwocky.SoC.Library.GameBoards
             }
 
             return gotSingleLongestRoad;
+        }
+
+        public PlacementStatusCodes TryPlaceRoadSegment(Guid playerId, uint roadSegmentStartLocation, uint roadSegmentEndLocation)
+        {
+            return PlacementStatusCodes.Success;
         }
 
         // TODO: Make the Internal* methods private
