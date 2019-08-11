@@ -1311,19 +1311,41 @@ namespace SoC.Library.ScenarioTests
             }
         }
 
-        public void PlayerPlaysRoadBuildingCardButRoadSegmentNotConnectedToExistingRoadSystem()
+        [Test]
+        [TestCase(3u, 2u, 2u, 1u, ErrorCodes.LocationNotConnectedToRoadSystem, "Cannot place road segment because locations (3, 2) are not connected to existing road")]
+        [TestCase(4u, 3u, 2u, 1u, ErrorCodes.LocationNotConnectedToRoadSystem, "Cannot place road segment because locations (2, 1) are not connected to existing road")]
+        [TestCase(4u, 12u, 4u, 3u, ErrorCodes.LocationNotConnectedToRoadSystem, "Cannot place road segment on existing road segment (4, 12)")]
+        [TestCase(4u, 3u, 4u, 12u, ErrorCodes.LocationNotConnectedToRoadSystem, "Cannot place road segment on existing road segment (4, 12)")]
+        [TestCase(4u, 3u, 4u, 3u, ErrorCodes.LocationNotConnectedToRoadSystem, "Cannot place road segment on existing road segment (4, 3)")]
+        [TestCase(4u, 54u, 4u, 3u, ErrorCodes.LocationsInvalidForRoadSegment, "Locations (4, 54) invalid for placing road segment")]
+        [TestCase(4u, 3u, 4u, 54u, ErrorCodes.LocationsInvalidForRoadSegment, "Locations (4, 54) invalid for placing road segment")]
+        [TestCase(4u, 0u, 4u, 3u, ErrorCodes.LocationsNotDirectlyConnected, "Locations (4, 0) not directly connected when placing road segment")]
+        [TestCase(4u, 3u, 4u, 0u, ErrorCodes.LocationsNotDirectlyConnected, "Locations (4, 0) not directly connected when placing road segment")]
+        public void PlayerPlaysRoadBuildingCardButLocationsAreInvalid(uint firstRoadSegmentStartLocation, uint firstRoadSegmentEndLocation, uint secondRoadSegmentStartLocation, uint secondRoadSegmentEndLocation, ErrorCodes expectedCode, string expectedMessage)
         {
-            throw new NotImplementedException();
-        }
-
-        public void PlayerPlaysRoadBuildingCardButRoadSegmentIsOnOccupieLocations()
-        {
-            throw new NotImplementedException();
-        }
-
-        public void PlayerPlaysRoadBuildingCardButRoadSegmentLocationsAreInvalid()
-        {
-            throw new NotImplementedException();
+            try
+            {
+                this.CompletePlayerInfrastructureSetup()
+                    .WithNoResourceCollection()
+                    .WithInitialPlayerSetupFor(Adam, RoadBuildingCard(1))
+                    .WhenPlayer(Adam)
+                        .ReceivesStartTurnEvent(3, 3).ThenPlayRoadBuildingCard(firstRoadSegmentStartLocation, firstRoadSegmentEndLocation, secondRoadSegmentStartLocation, secondRoadSegmentEndLocation)
+                        .ReceivesGameErrorEvent(expectedCode, expectedMessage)
+                    .VerifyPlayer(Babara)
+                        .DidNotReceiveEventOfType<RoadBuildingCardPlayedEvent>()
+                        .DidNotReceiveEventOfType<GameErrorEvent>()
+                    .VerifyPlayer(Charlie)
+                        .DidNotReceiveEventOfType<RoadBuildingCardPlayedEvent>()
+                        .DidNotReceiveEventOfType<GameErrorEvent>()
+                    .VerifyPlayer(Dana)
+                        .DidNotReceiveEventOfType<RoadBuildingCardPlayedEvent>()
+                        .DidNotReceiveEventOfType<GameErrorEvent>()
+                    .Run(this.logDirectory);
+            }
+            finally
+            {
+                this.AttachReports();
+            }
         }
 
         [Test]
