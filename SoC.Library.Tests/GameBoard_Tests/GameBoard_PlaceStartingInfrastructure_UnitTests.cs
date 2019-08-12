@@ -142,7 +142,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.GameBoard_Tests
       // Assert
       action.ShouldNotThrow();
       gameBoardData.CanPlaceSettlement(playerId, FirstPlayerSettlementLocation).Status.ShouldBe(GameBoard.VerificationStatus.LocationIsOccupied);
-      gameBoardData.CanPlaceRoad(playerId, FirstPlayerSettlementLocation, FirstPlayerRoadEndLocation).Status.ShouldBe(GameBoard.VerificationStatus.RoadIsOccupied);
+      gameBoardData.CanPlaceRoad(playerId, FirstPlayerSettlementLocation, FirstPlayerRoadEndLocation).ShouldBe(PlacementStatusCodes.RoadIsOccupied);
     }
   }
 }

@@ -26,7 +26,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.GameBoard_Tests
       var result = gameBoardData.CanPlaceRoad(playerId, 10, FirstPlayerRoadEndLocation);
 
       // Assert
-      result.Status.ShouldBe(GameBoard.VerificationStatus.Valid);
+      result.ShouldBe(PlacementStatusCodes.Success);
     }
 
     [Test]
@@ -39,7 +39,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.GameBoard_Tests
       var result = gameBoardData.CanPlaceRoad(Guid.NewGuid(), 0, 1);
 
       // Assert
-      result.Status.ShouldBe(GameBoard.VerificationStatus.StartingInfrastructureNotPresentWhenPlacingRoad);
+      result.ShouldBe(PlacementStatusCodes.StartingInfrastructureNotPresentWhenPlacingRoad);
     }
 
     [Test]
@@ -54,7 +54,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.GameBoard_Tests
       var result = gameBoardData.CanPlaceRoad(playerId, 10, FirstPlayerRoadEndLocation);
 
       // Assert
-      result.Status.ShouldBe(GameBoard.VerificationStatus.StartingInfrastructureNotCompleteWhenPlacingRoad);
+      result.ShouldBe(PlacementStatusCodes.StartingInfrastructureNotCompleteWhenPlacingRoad);
     }
 
     [Test]
@@ -72,7 +72,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.GameBoard_Tests
       var result = gameBoardData.CanPlaceRoad(playerId, roadStartLocation, roadEndLocation);
 
       // Assert
-      result.Status.ShouldBe(GameBoard.VerificationStatus.Valid);
+      result.ShouldBe(PlacementStatusCodes.Success);
     }
 
     [Test]
@@ -91,7 +91,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.GameBoard_Tests
       var result = gameBoardData.CanPlaceRoad(playerId, start, end);
 
       // Assert
-      result.Status.ShouldBe(GameBoard.VerificationStatus.RoadIsOffBoard);
+      result.ShouldBe(PlacementStatusCodes.RoadIsOffBoard);
     }
 
     [Test]
@@ -109,7 +109,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.GameBoard_Tests
       var result = gameBoardData.CanPlaceRoad(playerId, start, end);
 
       // Assert
-      result.Status.ShouldBe(GameBoard.VerificationStatus.NoDirectConnection);
+      result.ShouldBe(PlacementStatusCodes.NoDirectConnection);
     }
 
     [Test]
@@ -122,7 +122,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.GameBoard_Tests
       gameBoardData.PlaceStartingInfrastructure(playerId, SecondPlayerSettlementLocation, SecondPlayerRoadEndLocation);
 
       var result = gameBoardData.CanPlaceRoad(playerId, FirstPlayerSettlementLocation, FirstPlayerRoadEndLocation);
-      result.Status.ShouldBe(GameBoard.VerificationStatus.RoadIsOccupied);
+      result.ShouldBe(PlacementStatusCodes.RoadIsOccupied);
     }
 
     [Test]
@@ -140,7 +140,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.GameBoard_Tests
       var result = gameBoardData.CanPlaceRoad(playerId, roadStartLocation, roadEndLocation);
 
       // Assert
-      result.Status.ShouldBe(GameBoard.VerificationStatus.RoadNotConnectedToExistingRoad);
+      result.ShouldBe(PlacementStatusCodes.RoadNotConnectedToExistingRoad);
     }
     #endregion
   }

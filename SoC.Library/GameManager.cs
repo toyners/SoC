@@ -892,9 +892,16 @@ namespace Jabberwocky.SoC.Library
                 playRoadBuildingCardAction.FirstRoadSegmentStartLocation,
                 playRoadBuildingCardAction.FirstRoadSegmentEndLocation);
 
-            if (statusCode != PlacementStatusCodes.Success)
+            switch (statusCode)
             {
-                return false;
+                case PlacementStatusCodes.RoadNotConnectedToExistingRoad:
+                {
+                    this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, (int)ErrorCodes.LocationNotConnectedToRoadSystem, 
+                        $"Cannot place road segment because locations ({playRoadBuildingCardAction.FirstRoadSegmentStartLocation}, {playRoadBuildingCardAction.FirstRoadSegmentEndLocation}) are not connected to existing road"),
+                        this.currentPlayer);
+                    break;
+                }
+                default: break;
             }
 
             this.currentPlayer.PlayDevelopmentCard(card);

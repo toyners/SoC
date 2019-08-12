@@ -6,7 +6,6 @@ namespace Jabberwocky.SoC.Library.GameBoards
     using System.Diagnostics;
     using System.Linq;
     using System.Xml;
-    using Jabberwocky.SoC.Library.Enums;
     using Jabberwocky.SoC.Library.Store;
 
     /// <summary>
@@ -181,40 +180,40 @@ namespace Jabberwocky.SoC.Library.GameBoards
             return hex < StandardBoardHexCount;
         }
 
-        public VerificationResults CanPlaceRoad(Guid playerId, uint roadStartLocation, uint roadEndLocation)
+        public PlacementStatusCodes CanPlaceRoad(Guid playerId, uint roadStartLocation, uint roadEndLocation)
         {
             // Has the player placed their starting infrastructure
             switch (this.PlacedStartingInfrastructureStatus(playerId))
             {
-                case StartingInfrastructureStatus.None: return new VerificationResults { Status = VerificationStatus.StartingInfrastructureNotPresentWhenPlacingRoad };
-                case StartingInfrastructureStatus.Partial: return new VerificationResults { Status = VerificationStatus.StartingInfrastructureNotCompleteWhenPlacingRoad };
+                case StartingInfrastructureStatus.None: return PlacementStatusCodes.StartingInfrastructureNotPresentWhenPlacingRoad;
+                case StartingInfrastructureStatus.Partial: return PlacementStatusCodes.StartingInfrastructureNotCompleteWhenPlacingRoad;
             }
 
             // Are both road locations on the board.
             if (!this.RoadLocationsOnBoard(roadStartLocation, roadEndLocation))
             {
-                return new VerificationResults { Status = VerificationStatus.RoadIsOffBoard };
+                return PlacementStatusCodes.RoadIsOffBoard;
             }
 
             // Is direct connection possible
             if (!this.DirectConnectionBetweenLocations(roadStartLocation, roadEndLocation))
             {
-                return new VerificationResults { Status = VerificationStatus.NoDirectConnection };
+                return PlacementStatusCodes.NoDirectConnection;
             }
 
             // Is there already a road built at the same location.
             if (this.RoadAlreadyPresent(roadStartLocation, roadEndLocation))
             {
-                return new VerificationResults { Status = VerificationStatus.RoadIsOccupied };
+                return PlacementStatusCodes.RoadIsOccupied;
             }
 
             // Does it connect to existing road
             if (!this.WillConnectToExistingRoad(playerId, roadStartLocation, roadEndLocation))
             {
-                return new VerificationResults { Status = VerificationStatus.RoadNotConnectedToExistingRoad };
+                return PlacementStatusCodes.RoadNotConnectedToExistingRoad;
             }
 
-            return new VerificationResults { Status = VerificationStatus.Valid };
+            return PlacementStatusCodes.Success;
         }
 
         public VerificationResults CanPlaceSettlement(Guid playerId, uint locationIndex)
@@ -618,10 +617,11 @@ namespace Jabberwocky.SoC.Library.GameBoards
             this.InternalPlaceCity(playerId, location);
         }
 
+        [Obsolete("Use TryPlaceRoadSegment")]
         public void PlaceRoadSegment(Guid playerId, uint roadStartLocation, uint roadEndLocation)
         {
             var verificationResults = this.CanPlaceRoad(playerId, roadStartLocation, roadEndLocation);
-            this.ThrowExceptionOnBadVerificationResult(verificationResults);
+            //this.ThrowExceptionOnBadVerificationResult(verificationResults);
 
             this.InternalPlaceRoadSegment(playerId, roadStartLocation, roadEndLocation);
         }
@@ -771,6 +771,11 @@ namespace Jabberwocky.SoC.Library.GameBoards
 
         public PlacementStatusCodes TryPlaceRoadSegment(Guid playerId, uint roadSegmentStartLocation, uint roadSegmentEndLocation)
         {
+            var placementStatus = this.CanPlaceRoad(playerId, roadSegmentStartLocation, roadSegmentEndLocation);
+            if (placementStatus != PlacementStatusCodes.Success)
+                return placementStatus;
+
+            this.InternalPlaceRoadSegment(playerId, roadSegmentStartLocation, roadSegmentEndLocation);
             return PlacementStatusCodes.Success;
         }
 

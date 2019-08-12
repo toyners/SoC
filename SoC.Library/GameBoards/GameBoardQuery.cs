@@ -127,6 +127,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
             return this.neighboursOfLocation[location];
         }
 
+        [Obsolete("Not Used")]
         public ISet<Connection> GetValidConnectionsForPlayerInfrastructure(Guid playerId)
         {
             // Get all road segments for the player.
@@ -143,7 +144,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
             {
                 foreach (var neighbouringLocation in this.neighboursOfLocation[connection.Location1])
                 {
-                    if (this.board.CanPlaceRoad(playerId, connection.Location1, neighbouringLocation).Status == VerificationStatus.Valid)
+                    if (this.board.CanPlaceRoad(playerId, connection.Location1, neighbouringLocation) == PlacementStatusCodes.Success)
                     {
                         result.Add(this.board.GetConnection(connection.Location1, neighbouringLocation));
                     }
@@ -151,7 +152,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
 
                 foreach (var neighbouringLocation in this.neighboursOfLocation[connection.Location2])
                 {
-                    if (this.board.CanPlaceRoad(playerId, connection.Location2, neighbouringLocation).Status == VerificationStatus.Valid)
+                    if (this.board.CanPlaceRoad(playerId, connection.Location2, neighbouringLocation) == PlacementStatusCodes.Success)
                     {
                         result.Add(this.board.GetConnection(connection.Location2, neighbouringLocation));
                     }

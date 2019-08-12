@@ -3,7 +3,6 @@ namespace Jabberwocky.SoC.Library.GameBoards
 {
     using System;
     using System.Collections.Generic;
-    using Jabberwocky.SoC.Library.Enums;
 
     public interface IGameBoard
     {

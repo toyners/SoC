@@ -1761,7 +1761,8 @@ namespace Jabberwocky.SoC.Library
         private bool VerifyRoadSegmentPlacing(uint settlementLocation, uint roadEndLocation)
         {
             var placeRoadStatus = this.gameBoard.CanPlaceRoad(this.currentPlayer.Id, settlementLocation, roadEndLocation);
-            return this.VerifyRoadSegmentPlacing(placeRoadStatus, settlementLocation, roadEndLocation);
+            //return this.VerifyRoadSegmentPlacing(placeRoadStatus, settlementLocation, roadEndLocation);
+            return false;
         }
 
         private bool VerifyRoadSegmentPlacing(GameBoard.VerificationResults verificationResults, uint settlementLocation, uint roadEndLocation)
