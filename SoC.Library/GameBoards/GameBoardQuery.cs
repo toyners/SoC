@@ -144,7 +144,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
             {
                 foreach (var neighbouringLocation in this.neighboursOfLocation[connection.Location1])
                 {
-                    if (this.board.CanPlaceRoad(playerId, connection.Location1, neighbouringLocation) == PlacementStatusCodes.Success)
+                    if (this.board.CanPlaceRoadSegment(playerId, connection.Location1, neighbouringLocation) == PlacementStatusCodes.Success)
                     {
                         result.Add(this.board.GetConnection(connection.Location1, neighbouringLocation));
                     }
@@ -152,7 +152,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
 
                 foreach (var neighbouringLocation in this.neighboursOfLocation[connection.Location2])
                 {
-                    if (this.board.CanPlaceRoad(playerId, connection.Location2, neighbouringLocation) == PlacementStatusCodes.Success)
+                    if (this.board.CanPlaceRoadSegment(playerId, connection.Location2, neighbouringLocation) == PlacementStatusCodes.Success)
                     {
                         result.Add(this.board.GetConnection(connection.Location2, neighbouringLocation));
                     }

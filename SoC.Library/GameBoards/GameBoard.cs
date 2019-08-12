@@ -180,7 +180,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
             return hex < StandardBoardHexCount;
         }
 
-        public PlacementStatusCodes CanPlaceRoad(Guid playerId, uint roadStartLocation, uint roadEndLocation)
+        public PlacementStatusCodes CanPlaceRoadSegment(Guid playerId, uint roadStartLocation, uint roadEndLocation)
         {
             // Has the player placed their starting infrastructure
             switch (this.PlacedStartingInfrastructureStatus(playerId))
@@ -620,7 +620,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
         [Obsolete("Use TryPlaceRoadSegment")]
         public void PlaceRoadSegment(Guid playerId, uint roadStartLocation, uint roadEndLocation)
         {
-            var verificationResults = this.CanPlaceRoad(playerId, roadStartLocation, roadEndLocation);
+            var verificationResults = this.CanPlaceRoadSegment(playerId, roadStartLocation, roadEndLocation);
             //this.ThrowExceptionOnBadVerificationResult(verificationResults);
 
             this.InternalPlaceRoadSegment(playerId, roadStartLocation, roadEndLocation);
@@ -771,7 +771,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
 
         public PlacementStatusCodes TryPlaceRoadSegment(Guid playerId, uint roadSegmentStartLocation, uint roadSegmentEndLocation)
         {
-            var placementStatus = this.CanPlaceRoad(playerId, roadSegmentStartLocation, roadSegmentEndLocation);
+            var placementStatus = this.CanPlaceRoadSegment(playerId, roadSegmentStartLocation, roadSegmentEndLocation);
             if (placementStatus != PlacementStatusCodes.Success)
                 return placementStatus;
 
