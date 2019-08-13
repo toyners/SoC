@@ -1029,6 +1029,12 @@ namespace SoC.Library.ScenarioTests
         }
 
         [Test]
+        public void PlayerTriesToPlaceRoadSegmentButLocationsAreInvalid()
+        {
+            throw new NotImplementedException();
+        }
+
+        [Test]
         public void PlayerTriesToPlaceRoadSegmentOnOccupiedLocations()
         {
             try

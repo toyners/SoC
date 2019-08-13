@@ -181,6 +181,9 @@ namespace Jabberwocky.SoC.Library.GameBoards
         }
 
         public PlacementStatusCodes CanPlaceRoadSegment(Guid playerId, uint roadStartLocation, uint roadEndLocation)
+            => this.CanPlaceRoadSegment(playerId, roadStartLocation, roadEndLocation, null, null);
+
+        public PlacementStatusCodes CanPlaceRoadSegment(Guid playerId, uint roadStartLocation, uint roadEndLocation, uint? a, uint? b)
         {
             // Has the player placed their starting infrastructure
             switch (this.PlacedStartingInfrastructureStatus(playerId))
@@ -205,10 +208,19 @@ namespace Jabberwocky.SoC.Library.GameBoards
             if (this.RoadAlreadyPresent(roadStartLocation, roadEndLocation))
             {
                 return PlacementStatusCodes.RoadIsOccupied;
+            } else if (a != null && b != null &&
+                ((a.Value == roadStartLocation && b.Value == roadEndLocation) ||
+                (a.Value == roadEndLocation && b.Value == roadStartLocation)))
+            {
+                return PlacementStatusCodes.RoadIsOccupied;
             }
 
             // Does it connect to existing road
-            if (!this.WillConnectToExistingRoad(playerId, roadStartLocation, roadEndLocation))
+            if (a != null && b != null && a != roadStartLocation && a != roadEndLocation && b != roadStartLocation && b != roadEndLocation)
+            {
+                return PlacementStatusCodes.RoadNotConnectedToExistingRoad;
+            }
+            else if (!this.WillConnectToExistingRoad(playerId, roadStartLocation, roadEndLocation))
             {
                 return PlacementStatusCodes.RoadNotConnectedToExistingRoad;
             }
@@ -888,8 +900,9 @@ namespace Jabberwocky.SoC.Library.GameBoards
 
         private bool WillConnectToExistingRoad(Guid playerId, uint roadStartLocationIndex, uint roadEndLocationIndex)
         {
-            var roadSegment = this.roadSegmentsByPlayer[playerId].Where(r => (r.Location1 == roadStartLocationIndex || r.Location2 == roadStartLocationIndex ||
-              r.Location1 == roadEndLocationIndex || r.Location2 == roadEndLocationIndex)).FirstOrDefault();
+            var roadSegment = this.roadSegmentsByPlayer[playerId].Where(r => (r.Location1 == roadStartLocationIndex || 
+                r.Location2 == roadStartLocationIndex || r.Location1 == roadEndLocationIndex || 
+                r.Location2 == roadEndLocationIndex)).FirstOrDefault();
 
             return roadSegment != null;
         }
