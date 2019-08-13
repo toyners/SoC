@@ -901,6 +901,64 @@ namespace Jabberwocky.SoC.Library
                         this.currentPlayer);
                     break;
                 }
+                case PlacementStatusCodes.RoadIsOccupied:
+                {
+                    this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, (int)ErrorCodes.LocationsInvalidForRoadSegment,
+                        $"Cannot place road segment on existing road segment ({playRoadBuildingCardAction.FirstRoadSegmentStartLocation}, {playRoadBuildingCardAction.FirstRoadSegmentEndLocation})"),
+                        this.currentPlayer);
+                    break;
+                }
+                case PlacementStatusCodes.RoadIsOffBoard:
+                {
+                    this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, (int)ErrorCodes.LocationsInvalidForRoadSegment,
+                        $"Locations ({playRoadBuildingCardAction.FirstRoadSegmentStartLocation}, {playRoadBuildingCardAction.FirstRoadSegmentEndLocation}) invalid for placing road segment"),
+                        this.currentPlayer);
+                    break;
+                }
+                case PlacementStatusCodes.NoDirectConnection:
+                {
+                    this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, (int)ErrorCodes.LocationsNotDirectlyConnected,
+                        $"Locations ({playRoadBuildingCardAction.FirstRoadSegmentStartLocation}, {playRoadBuildingCardAction.FirstRoadSegmentEndLocation}) not directly connected when placing road segment"),
+                        this.currentPlayer);
+                    break;
+                }
+                default: break;
+            }
+
+            statusCode = this.gameBoard.CanPlaceRoadSegment(this.currentPlayer.Id,
+                playRoadBuildingCardAction.SecondRoadSegmentStartLocation,
+                playRoadBuildingCardAction.SecondRoadSegmentEndLocation);
+
+            switch (statusCode)
+            {
+                case PlacementStatusCodes.RoadNotConnectedToExistingRoad:
+                {
+                    this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, (int)ErrorCodes.LocationNotConnectedToRoadSystem,
+                        $"Cannot place road segment because locations ({playRoadBuildingCardAction.SecondRoadSegmentStartLocation}, {playRoadBuildingCardAction.SecondRoadSegmentEndLocation}) are not connected to existing road"),
+                        this.currentPlayer);
+                    break;
+                }
+                case PlacementStatusCodes.RoadIsOccupied:
+                {
+                    this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, (int)ErrorCodes.LocationsInvalidForRoadSegment,
+                        $"Cannot place road segment on existing road segment ({playRoadBuildingCardAction.SecondRoadSegmentStartLocation}, {playRoadBuildingCardAction.SecondRoadSegmentEndLocation})"),
+                        this.currentPlayer);
+                    break;
+                }
+                case PlacementStatusCodes.RoadIsOffBoard:
+                {
+                    this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, (int)ErrorCodes.LocationsInvalidForRoadSegment,
+                        $"Locations ({playRoadBuildingCardAction.SecondRoadSegmentStartLocation}, {playRoadBuildingCardAction.SecondRoadSegmentEndLocation}) invalid for placing road segment"),
+                        this.currentPlayer);
+                    break;
+                }
+                case PlacementStatusCodes.NoDirectConnection:
+                {
+                    this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, (int)ErrorCodes.LocationsNotDirectlyConnected,
+                        $"Locations ({playRoadBuildingCardAction.SecondRoadSegmentStartLocation}, {playRoadBuildingCardAction.SecondRoadSegmentEndLocation}) not directly connected when placing road segment"),
+                        this.currentPlayer);
+                    break;
+                }
                 default: break;
             }
 
