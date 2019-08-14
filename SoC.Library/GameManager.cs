@@ -497,30 +497,29 @@ namespace Jabberwocky.SoC.Library
                         this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, (int)ErrorCodes.LocationNotConnectedToRoadSystem,
                             $"Cannot place road segment because locations ({placeRoadSegmentAction.StartLocation}, {placeRoadSegmentAction.EndLocation}) are not connected to existing road"),
                             this.currentPlayer);
-                        break;
+                        return false;
                     }
                     case PlacementStatusCodes.RoadIsOccupied:
                     {
                         this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, (int)ErrorCodes.LocationsInvalidForRoadSegment,
                             $"Cannot place road segment on existing road segment ({placeRoadSegmentAction.StartLocation}, {placeRoadSegmentAction.EndLocation})"),
                             this.currentPlayer);
-                        break;
+                        return false;
                     }
                     case PlacementStatusCodes.RoadIsOffBoard:
                     {
                         this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, (int)ErrorCodes.LocationsInvalidForRoadSegment,
                             $"Locations ({placeRoadSegmentAction.StartLocation}, {placeRoadSegmentAction.EndLocation}) invalid for placing road segment"),
                             this.currentPlayer);
-                        break;
+                        return false;
                     }
                     case PlacementStatusCodes.NoDirectConnection:
                     {
                         this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, (int)ErrorCodes.LocationsNotDirectlyConnected,
                             $"Locations ({placeRoadSegmentAction.StartLocation}, {placeRoadSegmentAction.EndLocation}) not directly connected when placing road segment"),
                             this.currentPlayer);
-                        break;
+                        return false;
                     }
-                    default: break;
                 }
 
                 this.currentPlayer.PlaceRoadSegment();
