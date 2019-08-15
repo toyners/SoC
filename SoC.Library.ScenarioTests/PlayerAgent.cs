@@ -494,15 +494,15 @@ namespace SoC.Library.ScenarioTests
                     {
                         throw new ReceivedUnwantedEventException($"Received {this.eventTypeCountsByEventType[actualEventType]} event(s)" +
                             $" of type {actualEvent.SimpleTypeName} but should have received only " +
-                            $"{this.maximumEventTypeCountsByEventType[actualEventType]}");
+                            $"{this.maximumEventTypeCountsByEventType[actualEventType]}", actualEvent);
                     }
 
-                    throw new ReceivedUnwantedEventException($"Received event of type {actualEvent.SimpleTypeName} but should not have");
+                    throw new ReceivedUnwantedEventException($"Received event of type {actualEvent.SimpleTypeName} but should not have", actualEvent);
                 }
             }
 
             if (this.didNotReceiveEvents.FirstOrDefault(d => JToken.DeepEquals(d, JToken.Parse(actualEvent.ToJSONString()))) != null)
-                throw new ReceivedUnwantedEventException($"Received event {actualEvent.SimpleTypeName} but should not have");
+                throw new ReceivedUnwantedEventException($"Received event {actualEvent.SimpleTypeName} but should not have", actualEvent);
         }
         #endregion
 

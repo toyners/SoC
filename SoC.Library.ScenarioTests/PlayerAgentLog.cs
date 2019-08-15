@@ -273,7 +273,10 @@ namespace SoC.Library.ScenarioTests
 
             public string ToHtml()
             {
-                return $"<tr><td class=\"exception border\"><span>{this.receivedUnwantedEventException.Message}</span></td></tr>";
+                var eventProperties = this.receivedUnwantedEventException.UnwantedEvent != null ?
+                    "<br><div>" + GetEventProperties(this.receivedUnwantedEventException.UnwantedEvent) + "</div>" : "";
+                return $"<tr><td class=\"exception border\"><span>{this.receivedUnwantedEventException.Message}</span>" +
+                    $"{eventProperties}</td></tr>";
             }
         }
 
