@@ -688,10 +688,8 @@ namespace SoC.Library.ScenarioTests
                         Adam,
                         Resources(ResourceClutch.RoadSegment + ResourceClutch.Settlement))
                     .WhenPlayer(Adam)
-                        .ReceivesStartTurnEvent(3, 3)
-                        .ThenPlaceRoadSegment(4, 3)
-                        .ReceivesRoadSegmentPlacementEvent(4, 3)
-                        .ThenPlaceSettlement(3)
+                        .ReceivesStartTurnEvent(3, 3).ThenPlaceRoadSegment(4, 3)
+                        .ReceivesRoadSegmentPlacementEvent(4, 3).ThenPlaceSettlement(3)
                         .ReceivesSettlementPlacementEvent(3)
                         .ThenVerifyPlayerState()
                             .Resources(ResourceClutch.Zero)
@@ -926,58 +924,6 @@ namespace SoC.Library.ScenarioTests
         }
 
         [Test]
-        public void PlayerTriesToPlaceRoadSegmentWithInvalidLocations()
-        {
-            try
-            {
-                this.CompletePlayerInfrastructureSetup()
-                    .WithNoResourceCollection()
-                    .WithInitialPlayerSetupFor(Adam, Resources(ResourceClutch.RoadSegment))
-                    .WhenPlayer(Adam)
-                        .ReceivesStartTurnEvent(3, 3)
-                        .ThenPlaceRoadSegment(4, 55)
-                        .ReceivesGameErrorEvent(ErrorCodes.LocationsInvalidForRoadSegment, "Locations (4, 55) invalid for placing road segment").ThenDoNothing()
-                    .VerifyPlayer(Babara)
-                        .DidNotReceiveEventOfType<GameErrorEvent>()
-                    .VerifyPlayer(Charlie)
-                        .DidNotReceiveEventOfType<GameErrorEvent>()
-                    .VerifyPlayer(Dana)
-                        .DidNotReceiveEventOfType<GameErrorEvent>()
-                    .Run(this.logDirectory);
-            }
-            finally
-            {
-                this.AttachReports();
-            }
-        }
-
-        [Test]
-        public void PlayerTriesToPlaceRoadSegmentWithUnconnectedLocations()
-        {
-            try
-            {
-                this.CompletePlayerInfrastructureSetup()
-                    .WithNoResourceCollection()
-                    .WithInitialPlayerSetupFor(Adam, Resources(ResourceClutch.RoadSegment))
-                    .WhenPlayer(Adam)
-                        .ReceivesStartTurnEvent(3, 3)
-                        .ThenPlaceRoadSegment(4, 0)
-                        .ReceivesGameErrorEvent(ErrorCodes.LocationsNotDirectlyConnected, "Locations (4, 0) not directly connected when placing road segment").ThenDoNothing()
-                    .VerifyPlayer(Babara)
-                        .DidNotReceiveEventOfType<GameErrorEvent>()
-                    .VerifyPlayer(Charlie)
-                        .DidNotReceiveEventOfType<GameErrorEvent>()
-                    .VerifyPlayer(Dana)
-                        .DidNotReceiveEventOfType<GameErrorEvent>()
-                    .Run(this.logDirectory);
-            }
-            finally
-            {
-                this.AttachReports();
-            }
-        }
-
-        [Test]
         public void PlayerTriesToPlaceRoadSegmentWithNoRoadSegmentsLeft()
         {
             try
@@ -1029,13 +975,11 @@ namespace SoC.Library.ScenarioTests
         }
 
         [Test]
-        public void PlayerTriesToPlaceRoadSegmentButLocationsAreInvalid()
-        {
-            throw new NotImplementedException();
-        }
-
-        [Test]
-        public void PlayerTriesToPlaceRoadSegmentOnOccupiedLocations()
+        [TestCase(4u, 12u, ErrorCodes.LocationsInvalidForRoadSegment, "Cannot place road segment on existing road segment (4, 12)")]
+        [TestCase(3u, 2u, ErrorCodes.LocationNotConnectedToRoadSystem, "Cannot place road segment because locations (3, 2) are not connected to existing road")]
+        [TestCase(4u, 55u, ErrorCodes.LocationsInvalidForRoadSegment, "Locations (4, 55) invalid for placing road segment")]
+        [TestCase(4u, 0u, ErrorCodes.LocationsNotDirectlyConnected, "Locations (4, 0) not directly connected when placing road segment")]
+        public void PlayerTriesToPlaceRoadSegmentButLocationsAreInvalid(uint roadSegmentStartLocation, uint roadSegmentEndLocation, ErrorCodes errorCode, string errorMessage)
         {
             try
             {
@@ -1043,35 +987,8 @@ namespace SoC.Library.ScenarioTests
                     .WithNoResourceCollection()
                     .WithInitialPlayerSetupFor(Adam, Resources(ResourceClutch.RoadSegment))
                     .WhenPlayer(Adam)
-                        .ReceivesStartTurnEvent(3, 3)
-                        .ThenPlaceRoadSegment(4, 12)
-                        .ReceivesGameErrorEvent(ErrorCodes.LocationsInvalidForRoadSegment, "Cannot place road segment on existing road segment (4, 12)").ThenDoNothing()
-                    .VerifyPlayer(Babara)
-                        .DidNotReceiveEventOfType<GameErrorEvent>()
-                    .VerifyPlayer(Charlie)
-                        .DidNotReceiveEventOfType<GameErrorEvent>()
-                    .VerifyPlayer(Dana)
-                        .DidNotReceiveEventOfType<GameErrorEvent>()
-                    .Run(this.logDirectory);
-            }
-            finally
-            {
-                this.AttachReports();
-            }
-        }
-
-        [Test]
-        public void PlayerTriesToPlaceRoadSegmentOnLocationsNotConnectedToExistingRoadSystem()
-        {
-            try
-            {
-                this.CompletePlayerInfrastructureSetup()
-                    .WithNoResourceCollection()
-                    .WithInitialPlayerSetupFor(Adam, Resources(ResourceClutch.RoadSegment))
-                    .WhenPlayer(Adam)
-                        .ReceivesStartTurnEvent(3, 3)
-                        .ThenPlaceRoadSegment(3, 2)
-                        .ReceivesGameErrorEvent(ErrorCodes.LocationNotConnectedToRoadSystem, "Cannot place road segment because locations (3, 2) are not connected to existing road").ThenDoNothing()
+                        .ReceivesStartTurnEvent(3, 3).ThenPlaceRoadSegment(roadSegmentStartLocation, roadSegmentEndLocation)
+                        .ReceivesGameErrorEvent(errorCode, errorMessage).ThenDoNothing()
                     .VerifyPlayer(Babara)
                         .DidNotReceiveEventOfType<GameErrorEvent>()
                     .VerifyPlayer(Charlie)

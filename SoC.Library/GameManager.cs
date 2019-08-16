@@ -486,7 +486,7 @@ namespace Jabberwocky.SoC.Library
                     return false;
                 }
 
-                var statusCode = this.gameBoard.CanPlaceRoadSegment(this.currentPlayer.Id,
+                var statusCode = this.gameBoard.TryPlaceRoadSegment(this.currentPlayer.Id,
                     placeRoadSegmentAction.StartLocation,
                     placeRoadSegmentAction.EndLocation);
 
