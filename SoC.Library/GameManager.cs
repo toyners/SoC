@@ -971,36 +971,47 @@ namespace Jabberwocky.SoC.Library
                     this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, (int)ErrorCodes.LocationNotConnectedToRoadSystem,
                         $"Cannot place road segment because locations ({playRoadBuildingCardAction.SecondRoadSegmentStartLocation}, {playRoadBuildingCardAction.SecondRoadSegmentEndLocation}) are not connected to existing road"),
                         this.currentPlayer);
-                    break;
+                    return false;
                 }
                 case PlacementStatusCodes.RoadIsOccupied:
                 {
                     this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, (int)ErrorCodes.LocationsInvalidForRoadSegment,
                         $"Cannot place road segment on existing road segment ({playRoadBuildingCardAction.SecondRoadSegmentStartLocation}, {playRoadBuildingCardAction.SecondRoadSegmentEndLocation})"),
                         this.currentPlayer);
-                    break;
+                    return false;
                 }
                 case PlacementStatusCodes.RoadIsOffBoard:
                 {
                     this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, (int)ErrorCodes.LocationsInvalidForRoadSegment,
                         $"Locations ({playRoadBuildingCardAction.SecondRoadSegmentStartLocation}, {playRoadBuildingCardAction.SecondRoadSegmentEndLocation}) invalid for placing road segment"),
                         this.currentPlayer);
-                    break;
+                    return false;
                 }
                 case PlacementStatusCodes.NoDirectConnection:
                 {
                     this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, (int)ErrorCodes.LocationsNotDirectlyConnected,
                         $"Locations ({playRoadBuildingCardAction.SecondRoadSegmentStartLocation}, {playRoadBuildingCardAction.SecondRoadSegmentEndLocation}) not directly connected when placing road segment"),
                         this.currentPlayer);
-                    break;
+                    return false;
                 }
-                default: break;
             }
+
+            this.gameBoard.TryPlaceRoadSegment(this.currentPlayer.Id,
+                playRoadBuildingCardAction.FirstRoadSegmentStartLocation,
+                playRoadBuildingCardAction.FirstRoadSegmentEndLocation);
+
+            this.gameBoard.TryPlaceRoadSegment(this.currentPlayer.Id,
+                playRoadBuildingCardAction.SecondRoadSegmentStartLocation,
+                playRoadBuildingCardAction.SecondRoadSegmentEndLocation);
 
             this.currentPlayer.PlayDevelopmentCard(card);
             this.developmentCardPlayerThisTurn = true;
 
-            //this.ProcessPlaceRoadSegmentAction
+            this.RaiseEvent(new RoadBuildingCardPlayedEvent(this.currentPlayer.Id,
+                playRoadBuildingCardAction.FirstRoadSegmentStartLocation,
+                playRoadBuildingCardAction.FirstRoadSegmentEndLocation,
+                playRoadBuildingCardAction.SecondRoadSegmentStartLocation,
+                playRoadBuildingCardAction.SecondRoadSegmentEndLocation));
 
             return false;
         }

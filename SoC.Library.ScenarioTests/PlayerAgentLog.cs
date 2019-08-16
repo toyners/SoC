@@ -211,10 +211,20 @@ namespace SoC.Library.ScenarioTests
 
             public string ToHtml()
             {
-                return $"<tr>" +
+                var message = $"<tr>" +
                     "<td /><td class=\"action border\">" +
-                    $"<span>{this.playerAction.Operation} operation</span>" +
-                    $"</td></tr>";
+                    $"<span>{this.playerAction.Operation} operation</span>";
+
+                if (this.playerAction.Parameters != null)
+                {
+                    message += "<br><div>Parameters: ";
+                    foreach(var parameter in this.playerAction.Parameters)
+                        message += $"{parameter.ToString()}, ";
+
+                    message = message.Substring(0, message.Length - 2) + "</div>";
+                }
+                    
+                return message + $"</td></tr>";
             }
         }
 

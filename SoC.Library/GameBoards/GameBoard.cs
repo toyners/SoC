@@ -216,9 +216,10 @@ namespace Jabberwocky.SoC.Library.GameBoards
             }
 
             // Does it connect to existing road
-            if (a != null && b != null && a != roadStartLocation && a != roadEndLocation && b != roadStartLocation && b != roadEndLocation)
+            if (a != null && b != null)
             {
-                return PlacementStatusCodes.RoadNotConnectedToExistingRoad;
+                if (a != roadStartLocation && a != roadEndLocation && b != roadStartLocation && b != roadEndLocation)
+                    return PlacementStatusCodes.RoadNotConnectedToExistingRoad;
             }
             else if (!this.WillConnectToExistingRoad(playerId, roadStartLocation, roadEndLocation))
             {
