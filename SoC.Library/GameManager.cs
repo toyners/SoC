@@ -556,7 +556,7 @@ namespace Jabberwocky.SoC.Library
             }
             catch (GameBoard.PlacementException pe)
             {
-                switch (pe.VerificationStatus)
+                /*switch (pe.VerificationStatus)
                 {
                     case GameBoard.VerificationStatus.RoadIsOffBoard:
                     {
@@ -588,7 +588,7 @@ namespace Jabberwocky.SoC.Library
                             this.currentPlayer);
                         break;
                     }
-                }
+                }*/
             }
 
             return false;
@@ -932,30 +932,29 @@ namespace Jabberwocky.SoC.Library
                     this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, (int)ErrorCodes.LocationNotConnectedToRoadSystem, 
                         $"Cannot place road segment because locations ({playRoadBuildingCardAction.FirstRoadSegmentStartLocation}, {playRoadBuildingCardAction.FirstRoadSegmentEndLocation}) are not connected to existing road"),
                         this.currentPlayer);
-                    break;
+                    return false;
                 }
                 case PlacementStatusCodes.RoadIsOccupied:
                 {
                     this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, (int)ErrorCodes.LocationsInvalidForRoadSegment,
                         $"Cannot place road segment on existing road segment ({playRoadBuildingCardAction.FirstRoadSegmentStartLocation}, {playRoadBuildingCardAction.FirstRoadSegmentEndLocation})"),
                         this.currentPlayer);
-                    break;
+                    return false;
                 }
                 case PlacementStatusCodes.RoadIsOffBoard:
                 {
                     this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, (int)ErrorCodes.LocationsInvalidForRoadSegment,
                         $"Locations ({playRoadBuildingCardAction.FirstRoadSegmentStartLocation}, {playRoadBuildingCardAction.FirstRoadSegmentEndLocation}) invalid for placing road segment"),
                         this.currentPlayer);
-                    break;
+                    return false;
                 }
                 case PlacementStatusCodes.NoDirectConnection:
                 {
                     this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, (int)ErrorCodes.LocationsNotDirectlyConnected,
                         $"Locations ({playRoadBuildingCardAction.FirstRoadSegmentStartLocation}, {playRoadBuildingCardAction.FirstRoadSegmentEndLocation}) not directly connected when placing road segment"),
                         this.currentPlayer);
-                    break;
+                    return false;
                 }
-                default: break;
             }
 
             statusCode = this.gameBoard.CanPlaceRoadSegment(this.currentPlayer.Id,
@@ -1004,6 +1003,9 @@ namespace Jabberwocky.SoC.Library
                 playRoadBuildingCardAction.SecondRoadSegmentStartLocation,
                 playRoadBuildingCardAction.SecondRoadSegmentEndLocation);
 
+            this.currentPlayer.PlaceRoadSegment(false);
+            this.currentPlayer.PlaceRoadSegment(false);
+
             this.currentPlayer.PlayDevelopmentCard(card);
             this.developmentCardPlayerThisTurn = true;
 
@@ -1012,6 +1014,32 @@ namespace Jabberwocky.SoC.Library
                 playRoadBuildingCardAction.FirstRoadSegmentEndLocation,
                 playRoadBuildingCardAction.SecondRoadSegmentStartLocation,
                 playRoadBuildingCardAction.SecondRoadSegmentEndLocation));
+
+            if (this.currentPlayer.PlacedRoadSegments >= 5)
+            {
+                if (this.gameBoard.TryGetLongestRoadDetails(out var playerId, out var locations) && locations.Length > 5)
+                {
+                    if (playerId == this.currentPlayer.Id && (this.playerWithLongestRoad == null || this.playerWithLongestRoad != this.currentPlayer))
+                    {
+                        Guid? previousPlayerId = null;
+                        if (this.playerWithLongestRoad != null)
+                        {
+                            this.playerWithLongestRoad.HasLongestRoad = false;
+                            previousPlayerId = this.playerWithLongestRoad.Id;
+                        }
+
+                        this.playerWithLongestRoad = this.currentPlayer;
+                        this.playerWithLongestRoad.HasLongestRoad = true;
+                        this.RaiseEvent(new LongestRoadBuiltEvent(this.playerWithLongestRoad.Id, locations, previousPlayerId));
+                    }
+
+                    if (this.currentPlayer.VictoryPoints >= 10)
+                    {
+                        this.RaiseEvent(new GameWinEvent(this.currentPlayer.Id, this.currentPlayer.VictoryPoints));
+                        return true;
+                    }
+                }
+            }
 
             return false;
         }

@@ -183,7 +183,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
         public PlacementStatusCodes CanPlaceRoadSegment(Guid playerId, uint roadStartLocation, uint roadEndLocation)
             => this.CanPlaceRoadSegment(playerId, roadStartLocation, roadEndLocation, null, null);
 
-        public PlacementStatusCodes CanPlaceRoadSegment(Guid playerId, uint roadStartLocation, uint roadEndLocation, uint? a, uint? b)
+        public PlacementStatusCodes CanPlaceRoadSegment(Guid playerId, uint roadStartLocation, uint roadEndLocation, uint? futureRoadSegmentStartLocation, uint? futureRoadSegmentEndLocation)
         {
             // Has the player placed their starting infrastructure
             switch (this.PlacedStartingInfrastructureStatus(playerId))
@@ -204,21 +204,22 @@ namespace Jabberwocky.SoC.Library.GameBoards
                 return PlacementStatusCodes.NoDirectConnection;
             }
 
-            // Is there already a road built at the same location.
+            var gotFutureRoadSegmentLocations = futureRoadSegmentStartLocation != null && futureRoadSegmentEndLocation != null;
+            // Is there already a (future) road built at the same location.
             if (this.RoadAlreadyPresent(roadStartLocation, roadEndLocation))
             {
                 return PlacementStatusCodes.RoadIsOccupied;
-            } else if (a != null && b != null &&
-                ((a.Value == roadStartLocation && b.Value == roadEndLocation) ||
-                (a.Value == roadEndLocation && b.Value == roadStartLocation)))
+            } else if (gotFutureRoadSegmentLocations &&
+                ((futureRoadSegmentStartLocation.Value == roadStartLocation && futureRoadSegmentEndLocation.Value == roadEndLocation) ||
+                (futureRoadSegmentStartLocation.Value == roadEndLocation && futureRoadSegmentEndLocation.Value == roadStartLocation)))
             {
                 return PlacementStatusCodes.RoadIsOccupied;
             }
 
-            // Does it connect to existing road
-            if (a != null && b != null)
+            // Does it connect to existing (or future) road
+            if (gotFutureRoadSegmentLocations)
             {
-                if (a != roadStartLocation && a != roadEndLocation && b != roadStartLocation && b != roadEndLocation)
+                if (futureRoadSegmentStartLocation != roadStartLocation && futureRoadSegmentStartLocation != roadEndLocation && futureRoadSegmentEndLocation != roadStartLocation && futureRoadSegmentEndLocation != roadEndLocation)
                     return PlacementStatusCodes.RoadNotConnectedToExistingRoad;
             }
             else if (!this.WillConnectToExistingRoad(playerId, roadStartLocation, roadEndLocation))

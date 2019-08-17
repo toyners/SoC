@@ -73,7 +73,9 @@ namespace Jabberwocky.SoC.Library
         {
             get
             {
-                if (this.RemainingRoadSegments <= 0)
+                if (this.RemainingRoadSegments < 0)
+                    throw new Exception();
+                if (this.RemainingRoadSegments == 0)
                     return PlayerPlacementStatusCodes.NoRoadSegments;
                 else if (this.Resources < ResourceClutch.RoadSegment)
                     return PlayerPlacementStatusCodes.NotEnoughResources;
@@ -263,10 +265,14 @@ namespace Jabberwocky.SoC.Library
                 this.PlayedKnightCards++;
         }
 
-        public void PlaceRoadSegment()
+        public void PlaceRoadSegment(bool deductResources = true)
         {
-            this.Resources -= ResourceClutch.RoadSegment;
+            if (deductResources)
+                this.Resources -= ResourceClutch.RoadSegment;
             this.PlacedRoadSegments++;
+
+            if (this.PlacedRoadSegments > TotalRoadSegments)
+                throw new Exception();
         }
 
         public void PlaceSettlement()

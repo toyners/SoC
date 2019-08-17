@@ -1314,10 +1314,16 @@ namespace SoC.Library.ScenarioTests
                         .ReceivesPlayerWonEvent(10)
                     .VerifyPlayer(Babara)
                         .ReceivesRoadBuildingCardPlayedEvent(2, 1, 1, 0, Adam)
+                        .ReceivesLongestRoadChangedEvent(new uint[] { 12, 4, 3, 2, 1, 0 }, Adam)
+                        .ReceivesPlayerWonEvent(10, Adam)
                     .VerifyPlayer(Charlie)
                         .ReceivesRoadBuildingCardPlayedEvent(2, 1, 1, 0, Adam)
+                        .ReceivesLongestRoadChangedEvent(new uint[] { 12, 4, 3, 2, 1, 0 }, Adam)
+                        .ReceivesPlayerWonEvent(10, Adam)
                     .VerifyPlayer(Dana)
                         .ReceivesRoadBuildingCardPlayedEvent(2, 1, 1, 0, Adam)
+                        .ReceivesLongestRoadChangedEvent(new uint[] { 12, 4, 3, 2, 1, 0 }, Adam)
+                        .ReceivesPlayerWonEvent(10, Adam)
                     .Run(this.logDirectory);
             }
             finally

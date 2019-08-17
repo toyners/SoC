@@ -45,7 +45,7 @@ namespace Jabberwocky.SoC.Library.Interfaces
         PlayerDataBase GetDataModel(bool provideFullPlayerData);
         void BuyDevelopmentCard();
         void PlaceCity();
-        void PlaceRoadSegment();
+        void PlaceRoadSegment(bool deductResources = true);
         void PlaceSettlement();
         void PlaceStartingInfrastructure();
         void PlayDevelopmentCard(DevelopmentCard card);
