@@ -165,8 +165,6 @@ namespace Jabberwocky.SoC.Library
 
         public PlayerPlacementStatusCodes CanPlaceRoadSegments(int roadSegmentCount)
         {
-            if (this.RemainingRoadSegments < 0)
-                throw new Exception();
             if (this.RemainingRoadSegments < roadSegmentCount)
                 return PlayerPlacementStatusCodes.NoRoadSegments;
             else if (this.Resources < (ResourceClutch.RoadSegment * roadSegmentCount))
@@ -269,9 +267,6 @@ namespace Jabberwocky.SoC.Library
             if (deductResources)
                 this.Resources -= ResourceClutch.RoadSegment;
             this.PlacedRoadSegments++;
-
-            if (this.PlacedRoadSegments > TotalRoadSegments)
-                throw new Exception();
         }
 
         public void PlaceSettlement()
