@@ -472,7 +472,7 @@ namespace Jabberwocky.SoC.Library
         {
             try
             {
-                PlayerPlacementStatusCodes verificationState = this.currentPlayer.CanPlaceRoadSegment;
+                PlayerPlacementStatusCodes verificationState = this.currentPlayer.CanPlaceRoadSegments(1);
                 if (verificationState == PlayerPlacementStatusCodes.NoRoadSegments)
                 {
                     this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, (int)ErrorCodes.NotEnoughRoadSegments, "Not enough road segments to place"),
@@ -913,7 +913,7 @@ namespace Jabberwocky.SoC.Library
                 return false;
             }
 
-            PlayerPlacementStatusCodes verificationState = this.currentPlayer.CanPlaceRoadSegment;
+            PlayerPlacementStatusCodes verificationState = this.currentPlayer.CanPlaceRoadSegments(2);
             if (verificationState == PlayerPlacementStatusCodes.NoRoadSegments)
             {
                 this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, (int)ErrorCodes.NotEnoughRoadSegments, "Not enough road segments to place"),

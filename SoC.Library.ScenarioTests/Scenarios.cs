@@ -1213,7 +1213,7 @@ namespace SoC.Library.ScenarioTests
             {
                 this.CompletePlayerInfrastructureSetup()
                     .WithNoResourceCollection()
-                    .WithInitialPlayerSetupFor(Adam, PlacedRoadSegments(Player.TotalRoadSegments - remainingRoadSegments), RoadBuildingCard(1))
+                    .WithInitialPlayerSetupFor(Adam, PlacedRoadSegments(Player.TotalRoadSegments - (remainingRoadSegments + 2)), RoadBuildingCard(1))
                     .WhenPlayer(Adam)
                         .ReceivesStartTurnEvent(3, 3).ThenPlayRoadBuildingCard(4, 3, 3, 2)
                         .ReceivesGameErrorEvent(ErrorCodes.NotEnoughRoadSegments, "Not enough road segments to place")

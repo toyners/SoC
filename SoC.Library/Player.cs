@@ -69,19 +69,6 @@ namespace Jabberwocky.SoC.Library
         #region Properties
         public bool CanBuyDevelopmentCard => this.Resources >= ResourceClutch.DevelopmentCard;
         public PlayerPlacementStatusCodes CanPlaceCity => this.Resources < ResourceClutch.City ? PlayerPlacementStatusCodes.NotEnoughResources : PlayerPlacementStatusCodes.Success;
-        public PlayerPlacementStatusCodes CanPlaceRoadSegment
-        {
-            get
-            {
-                if (this.RemainingRoadSegments < 0)
-                    throw new Exception();
-                if (this.RemainingRoadSegments == 0)
-                    return PlayerPlacementStatusCodes.NoRoadSegments;
-                else if (this.Resources < ResourceClutch.RoadSegment)
-                    return PlayerPlacementStatusCodes.NotEnoughResources;
-                return PlayerPlacementStatusCodes.Success;
-            }
-        }
         public PlayerPlacementStatusCodes CanPlaceSettlement
         {
             get
@@ -175,6 +162,18 @@ namespace Jabberwocky.SoC.Library
             this.OreCount += resourceClutch.OreCount;
             this.WoolCount += resourceClutch.WoolCount;
         }
+
+        public PlayerPlacementStatusCodes CanPlaceRoadSegments(int roadSegmentCount)
+        {
+            if (this.RemainingRoadSegments < 0)
+                throw new Exception();
+            if (this.RemainingRoadSegments < roadSegmentCount)
+                return PlayerPlacementStatusCodes.NoRoadSegments;
+            else if (this.Resources < (ResourceClutch.RoadSegment * roadSegmentCount))
+                return PlayerPlacementStatusCodes.NotEnoughResources;
+            return PlayerPlacementStatusCodes.Success;
+        }
+
 
         public PlayerDataBase GetDataModel(bool provideFullPlayerData)
         {

@@ -12,7 +12,6 @@ namespace Jabberwocky.SoC.Library.Interfaces
         #region Properties
         bool CanBuyDevelopmentCard { get; }
         PlayerPlacementStatusCodes CanPlaceCity { get; }
-        PlayerPlacementStatusCodes CanPlaceRoadSegment { get; }
         PlayerPlacementStatusCodes CanPlaceSettlement { get; }
         int PlacedCities { get; }
         bool HasLargestArmy { get; set; }
@@ -42,6 +41,7 @@ namespace Jabberwocky.SoC.Library.Interfaces
 
         #region Methods
         void AddResources(ResourceClutch resourceClutch);
+        PlayerPlacementStatusCodes CanPlaceRoadSegments(int roadSegmentCount);
         PlayerDataBase GetDataModel(bool provideFullPlayerData);
         void BuyDevelopmentCard();
         void PlaceCity();
