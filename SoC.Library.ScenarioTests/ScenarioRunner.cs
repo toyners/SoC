@@ -188,15 +188,11 @@ namespace SoC.Library.ScenarioTests
             return this;
         }
 
-        public ScenarioRunner ReceivesLongestRoadChangedEvent(uint[] locations, string previousPlayerName = null)
+        public ScenarioRunner ReceivesLongestRoadChangedEvent(uint[] locations, string playerName = null, string previousPlayerName = null)
         {
-            return this.ReceivesLongestRoadChangedEvent(this.currentPlayerAgent.Name, locations, previousPlayerName);
-        }
-
-        public ScenarioRunner ReceivesLongestRoadChangedEvent(string playerName, uint[] locations, string previousPlayerName = null)
-        {
-            Guid? previousPlayerId = previousPlayerName != null ? (Guid?)this.playerAgentsByName[previousPlayerName].Id : null;
-            var gameEvent = new LongestRoadBuiltEvent(this.playerAgentsByName[playerName].Id, locations, previousPlayerId);
+            Guid playerId = playerName != null ? this.playerAgentsByName[playerName].Id : this.currentPlayerAgent.Id;
+            Guid ? previousPlayerId = previousPlayerName != null ? (Guid?)this.playerAgentsByName[previousPlayerName].Id : null;
+            var gameEvent = new LongestRoadBuiltEvent(playerId, locations, previousPlayerId);
             this.AddEventInstruction(gameEvent);
             return this;
         }
@@ -311,9 +307,10 @@ namespace SoC.Library.ScenarioTests
             return this;
         }
 
-        public ScenarioRunner ReceivesRoadSegmentPlacementEvent(uint roadSegmentStartLocation, uint roadSegmentEndLocation)
+        public ScenarioRunner ReceivesRoadSegmentPlacementEvent(uint roadSegmentStartLocation, uint roadSegmentEndLocation, string playerName = null)
         {
-            var gameEvent = new RoadSegmentPlacedEvent(this.playerAgentsByName[this.currentPlayerAgent.Name].Id, roadSegmentStartLocation, roadSegmentEndLocation);
+            var playerId = playerName != null ? this.playerAgentsByName[playerName].Id : this.currentPlayerAgent.Id;
+            var gameEvent = new RoadSegmentPlacedEvent(playerId, roadSegmentStartLocation, roadSegmentEndLocation);
             this.currentPlayerAgent.AddInstruction(new EventInstruction(gameEvent));
             return this;
         }
