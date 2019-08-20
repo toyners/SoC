@@ -250,6 +250,11 @@ namespace Jabberwocky.SoC.Library
             return this.players.FirstOrDefault(player => player.VictoryPoints >= 10);
         }
 
+        private bool IsAutomaticPlayerAction(PlayerAction playerAction)
+        {
+            return playerAction is RequestStateAction || playerAction is QuitGameAction;
+        }
+
         private void MainGameLoop()
         {
             this.playerIndex = -1;
@@ -490,36 +495,11 @@ namespace Jabberwocky.SoC.Library
                     placeRoadSegmentAction.StartLocation,
                     placeRoadSegmentAction.EndLocation);
 
-                switch (statusCode)
+                if (!this.VerifyPlaceRoadSegmentStatus(statusCode,
+                    placeRoadSegmentAction.StartLocation,
+                    placeRoadSegmentAction.EndLocation))
                 {
-                    case PlacementStatusCodes.RoadNotConnectedToExistingRoad:
-                    {
-                        this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, (int)ErrorCodes.LocationNotConnectedToRoadSystem,
-                            $"Cannot place road segment because locations ({placeRoadSegmentAction.StartLocation}, {placeRoadSegmentAction.EndLocation}) are not connected to existing road"),
-                            this.currentPlayer);
-                        return false;
-                    }
-                    case PlacementStatusCodes.RoadIsOccupied:
-                    {
-                        this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, (int)ErrorCodes.LocationsInvalidForRoadSegment,
-                            $"Cannot place road segment on existing road segment ({placeRoadSegmentAction.StartLocation}, {placeRoadSegmentAction.EndLocation})"),
-                            this.currentPlayer);
-                        return false;
-                    }
-                    case PlacementStatusCodes.RoadIsOffBoard:
-                    {
-                        this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, (int)ErrorCodes.LocationsInvalidForRoadSegment,
-                            $"Locations ({placeRoadSegmentAction.StartLocation}, {placeRoadSegmentAction.EndLocation}) invalid for placing road segment"),
-                            this.currentPlayer);
-                        return false;
-                    }
-                    case PlacementStatusCodes.NoDirectConnection:
-                    {
-                        this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, (int)ErrorCodes.LocationsNotDirectlyConnected,
-                            $"Locations ({placeRoadSegmentAction.StartLocation}, {placeRoadSegmentAction.EndLocation}) not directly connected when placing road segment"),
-                            this.currentPlayer);
-                        return false;
-                    }
+                    return false;
                 }
 
                 this.currentPlayer.PlaceRoadSegment();
@@ -925,36 +905,11 @@ namespace Jabberwocky.SoC.Library
                 playRoadBuildingCardAction.FirstRoadSegmentStartLocation,
                 playRoadBuildingCardAction.FirstRoadSegmentEndLocation);
 
-            switch (statusCode)
+            if (!this.VerifyPlaceRoadSegmentStatus(statusCode,
+                playRoadBuildingCardAction.FirstRoadSegmentStartLocation,
+                playRoadBuildingCardAction.FirstRoadSegmentEndLocation))
             {
-                case PlacementStatusCodes.RoadNotConnectedToExistingRoad:
-                {
-                    this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, (int)ErrorCodes.LocationNotConnectedToRoadSystem, 
-                        $"Cannot place road segment because locations ({playRoadBuildingCardAction.FirstRoadSegmentStartLocation}, {playRoadBuildingCardAction.FirstRoadSegmentEndLocation}) are not connected to existing road"),
-                        this.currentPlayer);
-                    return false;
-                }
-                case PlacementStatusCodes.RoadIsOccupied:
-                {
-                    this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, (int)ErrorCodes.LocationsInvalidForRoadSegment,
-                        $"Cannot place road segment on existing road segment ({playRoadBuildingCardAction.FirstRoadSegmentStartLocation}, {playRoadBuildingCardAction.FirstRoadSegmentEndLocation})"),
-                        this.currentPlayer);
-                    return false;
-                }
-                case PlacementStatusCodes.RoadIsOffBoard:
-                {
-                    this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, (int)ErrorCodes.LocationsInvalidForRoadSegment,
-                        $"Locations ({playRoadBuildingCardAction.FirstRoadSegmentStartLocation}, {playRoadBuildingCardAction.FirstRoadSegmentEndLocation}) invalid for placing road segment"),
-                        this.currentPlayer);
-                    return false;
-                }
-                case PlacementStatusCodes.NoDirectConnection:
-                {
-                    this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, (int)ErrorCodes.LocationsNotDirectlyConnected,
-                        $"Locations ({playRoadBuildingCardAction.FirstRoadSegmentStartLocation}, {playRoadBuildingCardAction.FirstRoadSegmentEndLocation}) not directly connected when placing road segment"),
-                        this.currentPlayer);
-                    return false;
-                }
+                return false;
             }
 
             statusCode = this.gameBoard.CanPlaceRoadSegment(this.currentPlayer.Id,
@@ -963,36 +918,11 @@ namespace Jabberwocky.SoC.Library
                 playRoadBuildingCardAction.FirstRoadSegmentStartLocation,
                 playRoadBuildingCardAction.FirstRoadSegmentEndLocation);
 
-            switch (statusCode)
+            if (!this.VerifyPlaceRoadSegmentStatus(statusCode,
+                playRoadBuildingCardAction.SecondRoadSegmentStartLocation,
+                playRoadBuildingCardAction.SecondRoadSegmentEndLocation))
             {
-                case PlacementStatusCodes.RoadNotConnectedToExistingRoad:
-                {
-                    this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, (int)ErrorCodes.LocationNotConnectedToRoadSystem,
-                        $"Cannot place road segment because locations ({playRoadBuildingCardAction.SecondRoadSegmentStartLocation}, {playRoadBuildingCardAction.SecondRoadSegmentEndLocation}) are not connected to existing road"),
-                        this.currentPlayer);
-                    return false;
-                }
-                case PlacementStatusCodes.RoadIsOccupied:
-                {
-                    this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, (int)ErrorCodes.LocationsInvalidForRoadSegment,
-                        $"Cannot place road segment on existing road segment ({playRoadBuildingCardAction.SecondRoadSegmentStartLocation}, {playRoadBuildingCardAction.SecondRoadSegmentEndLocation})"),
-                        this.currentPlayer);
-                    return false;
-                }
-                case PlacementStatusCodes.RoadIsOffBoard:
-                {
-                    this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, (int)ErrorCodes.LocationsInvalidForRoadSegment,
-                        $"Locations ({playRoadBuildingCardAction.SecondRoadSegmentStartLocation}, {playRoadBuildingCardAction.SecondRoadSegmentEndLocation}) invalid for placing road segment"),
-                        this.currentPlayer);
-                    return false;
-                }
-                case PlacementStatusCodes.NoDirectConnection:
-                {
-                    this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, (int)ErrorCodes.LocationsNotDirectlyConnected,
-                        $"Locations ({playRoadBuildingCardAction.SecondRoadSegmentStartLocation}, {playRoadBuildingCardAction.SecondRoadSegmentEndLocation}) not directly connected when placing road segment"),
-                        this.currentPlayer);
-                    return false;
-                }
+                return false;
             }
 
             this.gameBoard.TryPlaceRoadSegment(this.currentPlayer.Id,
@@ -1165,6 +1095,43 @@ namespace Jabberwocky.SoC.Library
         private string ToPrettyString(IEnumerable<string> playerNames)
         {
             return $"{string.Join(", ", playerNames)}";
+        }
+
+        private bool VerifyPlaceRoadSegmentStatus(PlacementStatusCodes statusCode, uint roadSegmentStartLocation, uint roadSegmentEndLocation)
+        {
+            switch (statusCode)
+            {
+                case PlacementStatusCodes.RoadNotConnectedToExistingRoad:
+                {
+                    this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, (int)ErrorCodes.LocationNotConnectedToRoadSystem,
+                        $"Cannot place road segment because locations ({roadSegmentStartLocation}, {roadSegmentEndLocation}) are not connected to existing road"),
+                        this.currentPlayer);
+                    return false;
+                }
+                case PlacementStatusCodes.RoadIsOccupied:
+                {
+                    this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, (int)ErrorCodes.LocationsInvalidForRoadSegment,
+                        $"Cannot place road segment on existing road segment ({roadSegmentStartLocation}, {roadSegmentEndLocation})"),
+                        this.currentPlayer);
+                    return false;
+                }
+                case PlacementStatusCodes.RoadIsOffBoard:
+                {
+                    this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, (int)ErrorCodes.LocationsInvalidForRoadSegment,
+                        $"Locations ({roadSegmentStartLocation}, {roadSegmentEndLocation}) invalid for placing road segment"),
+                        this.currentPlayer);
+                    return false;
+                }
+                case PlacementStatusCodes.NoDirectConnection:
+                {
+                    this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, (int)ErrorCodes.LocationsNotDirectlyConnected,
+                        $"Locations ({roadSegmentStartLocation}, {roadSegmentEndLocation}) not directly connected when placing road segment"),
+                        this.currentPlayer);
+                    return false;
+                }
+            }
+
+            return true;
         }
 
         private void WaitForGameStartConfirmationFromPlayers()
@@ -1372,11 +1339,6 @@ namespace Jabberwocky.SoC.Library
                     return playerAction;
                 }
             }
-        }
-
-        private bool IsAutomaticPlayerAction(PlayerAction playerAction)
-        {
-            return playerAction is RequestStateAction || playerAction is QuitGameAction;
         }
         #endregion
 
