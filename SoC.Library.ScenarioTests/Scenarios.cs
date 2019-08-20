@@ -1398,7 +1398,29 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void PlayerPlaysYearOfPlentyCard()
         {
-            throw new NotImplementedException();
+            try
+            {
+                this.CompletePlayerInfrastructureSetup()
+                    .WithNoResourceCollection()
+                    .WithInitialPlayerSetupFor(Adam, YearOfPlentyCard(1))
+                    .WhenPlayer(Adam)
+                        .ReceivesStartTurnEvent(3, 3).ThenPlayYearOfPlentyCard(ResourceTypes.Brick, ResourceTypes.Grain)
+                        .ReceivesYearOfPlentyCardPlayedEvent(ResourceTypes.Brick, ResourceTypes.Grain)
+                        .ThenVerifyPlayerState()
+                            .Resources(ResourceClutch.OneBrick + ResourceClutch.OneGrain)
+                        .EndPlayerVerification()
+                    .VerifyPlayer(Babara)
+                        .ReceivesYearOfPlentyCardPlayedEvent(ResourceTypes.Brick, ResourceTypes.Grain, Adam)
+                    .VerifyPlayer(Charlie)
+                        .ReceivesYearOfPlentyCardPlayedEvent(ResourceTypes.Brick, ResourceTypes.Grain, Adam)
+                    .VerifyPlayer(Dana)
+                        .ReceivesYearOfPlentyCardPlayedEvent(ResourceTypes.Brick, ResourceTypes.Grain, Adam)
+                    .Run(this.logDirectory);
+            }
+            finally
+            {
+                this.AttachReports();
+            }
         }
 
         [Test]
@@ -2898,7 +2920,7 @@ namespace SoC.Library.ScenarioTests
                     case DevelopmentCardTypes.Knight: scenarioRunner.ThenPlayKnightCard(0); break;
                     case DevelopmentCardTypes.Monopoly: scenarioRunner.ThenPlayMonopolyCard(ResourceTypes.Brick); break;
                     case DevelopmentCardTypes.RoadBuilding: scenarioRunner.ThenPlayRoadBuildingCard(4, 3, 3, 2); break;
-                    case DevelopmentCardTypes.YearOfPlenty: scenarioRunner.ThenPlayYearOfPlentyCard(); break;
+                    case DevelopmentCardTypes.YearOfPlenty: scenarioRunner.ThenPlayYearOfPlentyCard(ResourceTypes.Brick, ResourceTypes.Brick); break;
                     default: throw new ArgumentException($"'{cardType}' not recognised", "cardType");
                 }
 
@@ -2937,7 +2959,7 @@ namespace SoC.Library.ScenarioTests
                     case DevelopmentCardTypes.Knight: scenarioRunner.ThenPlayKnightCard(4); break;
                     case DevelopmentCardTypes.Monopoly: scenarioRunner.ThenPlayMonopolyCard(ResourceTypes.Brick); break;
                     case DevelopmentCardTypes.RoadBuilding: scenarioRunner.ThenPlayRoadBuildingCard(4, 3, 3, 2); break;
-                    case DevelopmentCardTypes.YearOfPlenty: scenarioRunner.ThenPlayYearOfPlentyCard(); break;
+                    case DevelopmentCardTypes.YearOfPlenty: scenarioRunner.ThenPlayYearOfPlentyCard(ResourceTypes.Brick, ResourceTypes.Brick); break;
                     default: throw new ArgumentException($"'{cardType}' not recognised", "cardType");
                 }
 

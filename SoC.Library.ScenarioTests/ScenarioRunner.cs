@@ -322,7 +322,6 @@ namespace SoC.Library.ScenarioTests
             return this;
         }
 
-
         public ScenarioRunner ReceivesRobberPlacedEvent(uint hex)
         {
             this.AddEventInstruction(new RobberPlacedEvent(this.currentPlayerAgent.Id, hex));
@@ -381,6 +380,11 @@ namespace SoC.Library.ScenarioTests
         {
             var gameEvent = new SettlementPlacedEvent(this.playerAgentsByName[playerName].Id, settlementLocation);
             this.currentPlayerAgent.AddInstruction(new EventInstruction(gameEvent));
+            return this;
+        }
+
+        public ScenarioRunner ReceivesYearOfPlentyCardPlayedEvent(ResourceTypes firstResource, ResourceTypes secondResource, string playerName = null)
+        {
             return this;
         }
 
@@ -607,7 +611,7 @@ namespace SoC.Library.ScenarioTests
             return this;
         }
 
-        public ScenarioRunner ThenPlayYearOfPlentyCard()
+        public ScenarioRunner ThenPlayYearOfPlentyCard(ResourceTypes firstResource, ResourceTypes secondResource)
         {
             this.AddActionInstruction(ActionInstruction.OperationTypes.PlayYearOfPlentyCard, null);
             return this;
