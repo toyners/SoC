@@ -1396,6 +1396,24 @@ namespace SoC.Library.ScenarioTests
         }
 
         [Test]
+        public void PlayerPlaysYearOfPlentyCard()
+        {
+            throw new NotImplementedException();
+        }
+
+        [Test]
+        public void PlayerPlaysMonopolyCard()
+        {
+            throw new NotImplementedException();
+        }
+
+        [Test]
+        public void PlayerPlaysMonopolyCardButGetsNoResources()
+        {
+            throw new NotImplementedException();
+        }
+
+        [Test]
         public void PlayerPlaysKnightCardAndNewHexIsSameAsCurrentHex()
         {
 			try
