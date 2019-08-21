@@ -9,8 +9,6 @@ namespace Jabberwocky.SoC.Library.GameEvents
     public abstract class GameEvent
     {
         #region Fields
-        [JsonProperty] // [JsonIgnore] to ignore property
-        public readonly Guid PlayerId;
         #endregion
 
         #region Construction
@@ -21,6 +19,8 @@ namespace Jabberwocky.SoC.Library.GameEvents
         #endregion
 
         #region Properties
+        [JsonProperty] // [JsonIgnore] to ignore property
+        public Guid PlayerId { get; }
         public string TypeName { get { return this.GetType().Name; } } // Used in JSON comparison 
         [JsonIgnore]
         public string SimpleTypeName
