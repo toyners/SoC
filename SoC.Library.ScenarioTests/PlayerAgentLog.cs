@@ -158,6 +158,11 @@ namespace SoC.Library.ScenarioTests
                     $"Settlements {GetFormattedProperty(scenarioRequestStateEvent.Settlements)}<br>" +
                     $"Victory Points {GetFormattedProperty(scenarioRequestStateEvent.VictoryPoints)}";
             }
+            else if (gameEvent is YearOfPlentyCardPlayedEvent yearOfPlentyCardPlayedEvent)
+            {
+                result += $"First Resource <b>{yearOfPlentyCardPlayedEvent.FirstResource}</b><br />" +
+                    $"Second Resource <b>{yearOfPlentyCardPlayedEvent.SecondResource}</b>";
+            }
 
             return $"Player: <b>{GetPlayerName(gameEvent.PlayerId)}</b>" + (result.Length > 0 ? "<br>" : "") + result;
         }

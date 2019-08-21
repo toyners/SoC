@@ -83,13 +83,13 @@ namespace SoC.Library.ScenarioTests
             else if (instruction is ActionInstruction actionInstruction)
             {
                 if (this.LastEventActionPair.Action != null)
-                    throw new Exception("Last event action already set");
+                    throw new Exception($"Last event action already set with operation {this.LastEventActionPair.Action.Operation}");
                 this.LastEventActionPair.Action = actionInstruction;
             }
             else if (instruction is PlayerStateInstruction playerStateInstruction)
             {
                 if (this.LastEventActionPair.Action != null)
-                    throw new Exception("Last event action already set");
+                    throw new Exception($"Last event action already set with operation {this.LastEventActionPair.Action.Operation}");
                 this.LastEventActionPair.Action = playerStateInstruction.GetAction();
                 this.expectedEventActions.Add(new EventActionPair(playerStateInstruction.GetEvent()));
             }

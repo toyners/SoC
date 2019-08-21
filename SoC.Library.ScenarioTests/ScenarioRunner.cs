@@ -385,6 +385,9 @@ namespace SoC.Library.ScenarioTests
 
         public ScenarioRunner ReceivesYearOfPlentyCardPlayedEvent(ResourceTypes firstResource, ResourceTypes secondResource, string playerName = null)
         {
+            var playerId = playerName != null ? this.playerAgentsByName[playerName].Id : this.currentPlayerAgent.Id;
+            var gameEvent = new YearOfPlentyCardPlayedEvent(playerId, firstResource, secondResource);
+            this.AddEventInstruction(gameEvent);
             return this;
         }
 

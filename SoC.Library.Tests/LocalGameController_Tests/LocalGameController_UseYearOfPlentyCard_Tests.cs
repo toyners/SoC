@@ -312,7 +312,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
 
             var expectedResourceTransactionList = new ResourceTransactionList();
             expectedResourceTransactionList.Add(new ResourceTransaction(firstOpponent.Id, bankId, new ResourceClutch(1, 1, 0, 0, 0)));
-            var expectedPlayYearOfPlentyCardEvent = new PlayYearOfPlentyCardEvent(firstOpponent.Id, expectedResourceTransactionList);
+            var expectedPlayYearOfPlentyCardEvent = new YearOfPlentyCardPlayedEvent(firstOpponent.Id, expectedResourceTransactionList);
 
             gameEvents.Count.ShouldBe(15);
             gameEvents[2].Count.ShouldBe(2);
@@ -365,7 +365,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
 
             var expectedResourceTransactionList = new ResourceTransactionList();
             expectedResourceTransactionList.Add(new ResourceTransaction(firstOpponent.Id, bankId, ResourceClutch.OneBrick * 2));
-            var expectedPlayYearOfPlentyCardEvent = new PlayYearOfPlentyCardEvent(firstOpponent.Id, expectedResourceTransactionList);
+            var expectedPlayYearOfPlentyCardEvent = new YearOfPlentyCardPlayedEvent(firstOpponent.Id, expectedResourceTransactionList);
 
             gameEvents.Count.ShouldBe(15);
             gameEvents[2].Count.ShouldBe(2);
