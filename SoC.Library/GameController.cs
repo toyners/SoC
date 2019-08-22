@@ -108,9 +108,9 @@ namespace Jabberwocky.SoC.Library
                 secondRoadSegmentStartLocation, secondRoadSegmentEndLocation));
         }
 
-        public void PlayYearOfPlentyCard()
+        public void PlayYearOfPlentyCard(ResourceTypes firstResource, ResourceTypes secondResource)
         {
-            this.SendAction(new PlayYearOfPlentyCardAction(this.playerId));
+            this.SendAction(new PlayYearOfPlentyCardAction(this.playerId, firstResource, secondResource));
         }
 
         public void RequestState()

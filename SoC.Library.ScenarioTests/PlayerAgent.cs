@@ -286,7 +286,7 @@ namespace SoC.Library.ScenarioTests
                 }
                 case ActionInstruction.OperationTypes.PlayYearOfPlentyCard:
                 {
-                    this.gameController.PlayYearOfPlentyCard();
+                    this.gameController.PlayYearOfPlentyCard((ResourceTypes)action.Parameters[0], (ResourceTypes)action.Parameters[1]);
                     break;
                 }
                 case ActionInstruction.OperationTypes.RequestState:

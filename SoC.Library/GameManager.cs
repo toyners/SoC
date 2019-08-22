@@ -764,6 +764,32 @@ namespace Jabberwocky.SoC.Library
                     return false;
                 }
 
+                this.currentPlayer.PlayDevelopmentCard(card);
+                ResourceClutch resources = ResourceClutch.Zero;
+                switch (playYearOfPlentyCardAction.FirstResource)
+                {
+                    case ResourceTypes.Brick: resources += ResourceClutch.OneBrick; break;
+                    case ResourceTypes.Grain: resources += ResourceClutch.OneGrain; break;
+                    case ResourceTypes.Lumber: resources += ResourceClutch.OneLumber; break;
+                    case ResourceTypes.Ore: resources += ResourceClutch.OneOre; break;
+                    case ResourceTypes.Wool: resources += ResourceClutch.OneWool; break;
+                }
+
+                switch (playYearOfPlentyCardAction.SecondResource)
+                {
+                    case ResourceTypes.Brick: resources += ResourceClutch.OneBrick; break;
+                    case ResourceTypes.Grain: resources += ResourceClutch.OneGrain; break;
+                    case ResourceTypes.Lumber: resources += ResourceClutch.OneLumber; break;
+                    case ResourceTypes.Ore: resources += ResourceClutch.OneOre; break;
+                    case ResourceTypes.Wool: resources += ResourceClutch.OneWool; break;
+                }
+
+                this.currentPlayer.AddResources(resources);
+
+                this.RaiseEvent(new YearOfPlentyCardPlayedEvent(this.currentPlayer.Id,
+                    playYearOfPlentyCardAction.FirstResource,
+                    playYearOfPlentyCardAction.SecondResource));
+
                 return false;
             }
 

@@ -616,7 +616,8 @@ namespace SoC.Library.ScenarioTests
 
         public ScenarioRunner ThenPlayYearOfPlentyCard(ResourceTypes firstResource, ResourceTypes secondResource)
         {
-            this.AddActionInstruction(ActionInstruction.OperationTypes.PlayYearOfPlentyCard, null);
+            this.AddActionInstruction(ActionInstruction.OperationTypes.PlayYearOfPlentyCard,
+                new object[] { firstResource, secondResource });
             return this;
         }
 
