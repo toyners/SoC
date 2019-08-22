@@ -167,6 +167,36 @@ namespace Jabberwocky.SoC.Library
             });
         }
 
+        private DevelopmentCard CanDevelopmentCardBePlayed(DevelopmentCardTypes developmentCardType)
+        {
+            if (this.developmentCardPlayerThisTurn)
+            {
+                this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, (int)ErrorCodes.CannotPlayDevelopmentCard, "Cannot play more than one development card per turn"),
+                    this.currentPlayer);
+                return null;
+            }
+
+            DevelopmentCard card = null;
+            if ((card = this.currentPlayer.HeldCards.FirstOrDefault(c => c.Type == developmentCardType &&
+                !this.cardsBoughtThisTurn.Contains(c))) == null)
+            {
+                string developmentCardTypeName = null;
+                switch (developmentCardType)
+                {
+                    case DevelopmentCardTypes.Knight: developmentCardTypeName = "Knight"; break;
+                    case DevelopmentCardTypes.Monopoly: developmentCardTypeName = "Monopoly"; break;
+                    case DevelopmentCardTypes.RoadBuilding: developmentCardTypeName = "Road building"; break;
+                    case DevelopmentCardTypes.YearOfPlenty: developmentCardTypeName = "Year of Plenty"; break;
+                }
+
+                this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, (int)ErrorCodes.NoDevelopmentCardCanBePlayed, $"No {developmentCardTypeName} card owned that can be played this turn"),
+                    this.currentPlayer);
+                return null;
+            }
+
+            return card;
+        }
+
         private void CaretakerLoop()
         {
             while (true)
@@ -475,100 +505,61 @@ namespace Jabberwocky.SoC.Library
 
         private bool ProcessPlaceRoadSegmentAction(PlaceRoadSegmentAction placeRoadSegmentAction)
         {
-            try
+            PlayerPlacementStatusCodes verificationState = this.currentPlayer.CanPlaceRoadSegments(1);
+            if (verificationState == PlayerPlacementStatusCodes.NoRoadSegments)
             {
-                PlayerPlacementStatusCodes verificationState = this.currentPlayer.CanPlaceRoadSegments(1);
-                if (verificationState == PlayerPlacementStatusCodes.NoRoadSegments)
-                {
-                    this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, (int)ErrorCodes.NotEnoughRoadSegments, "Not enough road segments to place"),
-                        this.currentPlayer);
-                    return false;
-                }
-                else if (verificationState == PlayerPlacementStatusCodes.NotEnoughResources)
-                {
-                    this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, (int)ErrorCodes.NotEnoughResourcesForRoadSegment, "Not enough resources for placing road segment"),
-                        this.currentPlayer);
-                    return false;
-                }
-
-                var statusCode = this.gameBoard.TryPlaceRoadSegment(this.currentPlayer.Id,
-                    placeRoadSegmentAction.StartLocation,
-                    placeRoadSegmentAction.EndLocation);
-
-                if (!this.VerifyPlaceRoadSegmentStatus(statusCode,
-                    placeRoadSegmentAction.StartLocation,
-                    placeRoadSegmentAction.EndLocation))
-                {
-                    return false;
-                }
-
-                this.currentPlayer.PlaceRoadSegment();
-
-                this.RaiseEvent(new RoadSegmentPlacedEvent(this.currentPlayer.Id, 
-                    placeRoadSegmentAction.StartLocation,
-                    placeRoadSegmentAction.EndLocation));
-
-                if (this.currentPlayer.PlacedRoadSegments >= 5)
-                {
-                    if (this.gameBoard.TryGetLongestRoadDetails(out var playerId, out var locations) && locations.Length > 5)
-                    {
-                        if (playerId == this.currentPlayer.Id && (this.playerWithLongestRoad == null || this.playerWithLongestRoad != this.currentPlayer))
-                        {
-                            Guid? previousPlayerId = null;
-                            if (this.playerWithLongestRoad != null)
-                            {
-                                this.playerWithLongestRoad.HasLongestRoad = false;
-                                previousPlayerId = this.playerWithLongestRoad.Id;
-                            }
-
-                            this.playerWithLongestRoad = this.currentPlayer;
-                            this.playerWithLongestRoad.HasLongestRoad = true;
-                            this.RaiseEvent(new LongestRoadBuiltEvent(this.playerWithLongestRoad.Id, locations, previousPlayerId));
-                        }
-
-                        if (this.currentPlayer.VictoryPoints >= 10)
-                        {
-                            this.RaiseEvent(new GameWinEvent(this.currentPlayer.Id, this.currentPlayer.VictoryPoints));
-                            return true;
-                        }
-                    }
-                }
+                this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, (int)ErrorCodes.NotEnoughRoadSegments, "Not enough road segments to place"),
+                    this.currentPlayer);
+                return false;
             }
-            catch (GameBoard.PlacementException pe)
+            else if (verificationState == PlayerPlacementStatusCodes.NotEnoughResources)
             {
-                /*switch (pe.VerificationStatus)
+                this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, (int)ErrorCodes.NotEnoughResourcesForRoadSegment, "Not enough resources for placing road segment"),
+                    this.currentPlayer);
+                return false;
+            }
+
+            var statusCode = this.gameBoard.TryPlaceRoadSegment(this.currentPlayer.Id,
+                placeRoadSegmentAction.StartLocation,
+                placeRoadSegmentAction.EndLocation);
+
+            if (!this.VerifyPlaceRoadSegmentStatus(statusCode,
+                placeRoadSegmentAction.StartLocation,
+                placeRoadSegmentAction.EndLocation))
+            {
+                return false;
+            }
+
+            this.currentPlayer.PlaceRoadSegment();
+
+            this.RaiseEvent(new RoadSegmentPlacedEvent(this.currentPlayer.Id, 
+                placeRoadSegmentAction.StartLocation,
+                placeRoadSegmentAction.EndLocation));
+
+            if (this.currentPlayer.PlacedRoadSegments >= 5)
+            {
+                if (this.gameBoard.TryGetLongestRoadDetails(out var playerId, out var locations) && locations.Length > 5)
                 {
-                    case GameBoard.VerificationStatus.RoadIsOffBoard:
+                    if (playerId == this.currentPlayer.Id && (this.playerWithLongestRoad == null || this.playerWithLongestRoad != this.currentPlayer))
                     {
-                        this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, (int)ErrorCodes.LocationsInvalidForRoadSegment, $"Locations ({placeRoadSegmentAction.StartLocation}, {placeRoadSegmentAction.EndLocation}) invalid for placing road segment"),
-                            this.currentPlayer);
-                        break;
+                        Guid? previousPlayerId = null;
+                        if (this.playerWithLongestRoad != null)
+                        {
+                            this.playerWithLongestRoad.HasLongestRoad = false;
+                            previousPlayerId = this.playerWithLongestRoad.Id;
+                        }
+
+                        this.playerWithLongestRoad = this.currentPlayer;
+                        this.playerWithLongestRoad.HasLongestRoad = true;
+                        this.RaiseEvent(new LongestRoadBuiltEvent(this.playerWithLongestRoad.Id, locations, previousPlayerId));
                     }
-                    case GameBoard.VerificationStatus.NoDirectConnection:
+
+                    if (this.currentPlayer.VictoryPoints >= 10)
                     {
-                        this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, (int)ErrorCodes.LocationsNotDirectlyConnected, $"Locations ({placeRoadSegmentAction.StartLocation}, {placeRoadSegmentAction.EndLocation}) not connected when placing road segment"),
-                            this.currentPlayer);
-                        break;
+                        this.RaiseEvent(new GameWinEvent(this.currentPlayer.Id, this.currentPlayer.VictoryPoints));
+                        return true;
                     }
-                    case GameBoard.VerificationStatus.RoadIsOccupied:
-                    {
-                        this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, (int)ErrorCodes.LocationAlreadyOccupiedByPlayer, $"Cannot place road segment on existing road segment ({placeRoadSegmentAction.StartLocation}, {placeRoadSegmentAction.EndLocation})"),
-                            this.currentPlayer);
-                        break;
-                    }
-                    case GameBoard.VerificationStatus.RoadNotConnectedToExistingRoad:
-                    {
-                        this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, (int)ErrorCodes.LocationNotConnectedToRoadSystem, $"Cannot place road segment because locations ({placeRoadSegmentAction.StartLocation}, {placeRoadSegmentAction.EndLocation}) are not connected to existing road"),
-                            this.currentPlayer);
-                        break;
-                    }
-                    default:
-                    {
-                        this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, (int)ErrorCodes.UnknownError, $"Unknown error"),
-                            this.currentPlayer);
-                        break;
-                    }
-                }*/
+                }
             }
 
             return false;
@@ -748,48 +739,7 @@ namespace Jabberwocky.SoC.Library
 
             if (playerAction is PlayYearOfPlentyCardAction playYearOfPlentyCardAction)
             {
-                if (this.developmentCardPlayerThisTurn)
-                {
-                    this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, (int)ErrorCodes.CannotPlayDevelopmentCard, "Cannot play more than one development card per turn"),
-                        this.currentPlayer);
-                    return false;
-                }
-
-                DevelopmentCard card = null;
-                if ((card = this.currentPlayer.HeldCards.FirstOrDefault(c => c.Type == DevelopmentCardTypes.YearOfPlenty &&
-                    !this.cardsBoughtThisTurn.Contains(c))) == null)
-                {
-                    this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, (int)ErrorCodes.NoDevelopmentCardCanBePlayed, "No Year of Plenty card owned that can be played this turn"),
-                        this.currentPlayer);
-                    return false;
-                }
-
-                this.currentPlayer.PlayDevelopmentCard(card);
-                ResourceClutch resources = ResourceClutch.Zero;
-                switch (playYearOfPlentyCardAction.FirstResource)
-                {
-                    case ResourceTypes.Brick: resources += ResourceClutch.OneBrick; break;
-                    case ResourceTypes.Grain: resources += ResourceClutch.OneGrain; break;
-                    case ResourceTypes.Lumber: resources += ResourceClutch.OneLumber; break;
-                    case ResourceTypes.Ore: resources += ResourceClutch.OneOre; break;
-                    case ResourceTypes.Wool: resources += ResourceClutch.OneWool; break;
-                }
-
-                switch (playYearOfPlentyCardAction.SecondResource)
-                {
-                    case ResourceTypes.Brick: resources += ResourceClutch.OneBrick; break;
-                    case ResourceTypes.Grain: resources += ResourceClutch.OneGrain; break;
-                    case ResourceTypes.Lumber: resources += ResourceClutch.OneLumber; break;
-                    case ResourceTypes.Ore: resources += ResourceClutch.OneOre; break;
-                    case ResourceTypes.Wool: resources += ResourceClutch.OneWool; break;
-                }
-
-                this.currentPlayer.AddResources(resources);
-
-                this.RaiseEvent(new YearOfPlentyCardPlayedEvent(this.currentPlayer.Id,
-                    playYearOfPlentyCardAction.FirstResource,
-                    playYearOfPlentyCardAction.SecondResource));
-
+                this.ProcessPlayYearOfPlentyCardAction(playYearOfPlentyCardAction);
                 return false;
             }
 
@@ -840,24 +790,18 @@ namespace Jabberwocky.SoC.Library
             throw new Exception($"Player action {playerAction.GetType()} not recognised.");
         }
 
+        private void ProcessPlayerQuit(Guid playerId)
+        {
+            this.players = this.players.Where(player => player.Id != playerId).ToArray();
+            this.playersById.Remove(playerId);
+        }
+
         private bool ProcessPlayKnightCardAction(PlayKnightCardAction playKnightCardAction)
         {
-            if (this.developmentCardPlayerThisTurn)
-            {
-                this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, (int)ErrorCodes.CannotPlayDevelopmentCard, "Cannot play more than one development card per turn"),
-                    this.currentPlayer);
+            DevelopmentCard card = this.CanDevelopmentCardBePlayed(DevelopmentCardTypes.Knight);
+            if (card == null)
                 return false;
-            }
         
-            DevelopmentCard card = null;
-            if ((card = this.currentPlayer.HeldCards.FirstOrDefault(c => c.Type == DevelopmentCardTypes.Knight &&
-                !this.cardsBoughtThisTurn.Contains(c))) == null)
-            {
-                this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, (int)ErrorCodes.NoDevelopmentCardCanBePlayed, "No Knight card owned that can be played this turn"),
-                    this.currentPlayer);
-                return false;
-            }
-
             if (this.robberHex == playKnightCardAction.NewRobberHex)
             {
                 this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, (int)ErrorCodes.NewRobberHexIsSameAsCurrentRobberHex, "New robber hex cannot be the same as previous robber hex"),
@@ -903,21 +847,9 @@ namespace Jabberwocky.SoC.Library
 
         private bool ProcessPlayRoadBuildingCardAction(PlayRoadBuildingCardAction playRoadBuildingCardAction)
         {
-            if (this.developmentCardPlayerThisTurn)
-            {
-                this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, (int)ErrorCodes.CannotPlayDevelopmentCard, "Cannot play more than one development card per turn"),
-                    this.currentPlayer);
+            DevelopmentCard card = this.CanDevelopmentCardBePlayed(DevelopmentCardTypes.RoadBuilding);
+            if (card == null)
                 return false;
-            }
-
-            DevelopmentCard card = null;
-            if ((card = this.currentPlayer.HeldCards.FirstOrDefault(c => c.Type == DevelopmentCardTypes.RoadBuilding &&
-                !this.cardsBoughtThisTurn.Contains(c))) == null)
-            {
-                this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, (int)ErrorCodes.NoDevelopmentCardCanBePlayed, "No Road building card owned that can be played this turn"),
-                    this.currentPlayer);
-                return false;
-            }
 
             PlayerPlacementStatusCodes verificationState = this.currentPlayer.CanPlaceRoadSegments(2);
             if (verificationState == PlayerPlacementStatusCodes.NoRoadSegments)
@@ -1000,10 +932,31 @@ namespace Jabberwocky.SoC.Library
             return false;
         }
 
-        private void ProcessPlayerQuit(Guid playerId)
+        private void ProcessPlayYearOfPlentyCardAction(PlayYearOfPlentyCardAction playYearOfPlentyCardAction)
         {
-            this.players = this.players.Where(player => player.Id != playerId).ToArray();
-            this.playersById.Remove(playerId);
+            DevelopmentCard card = this.CanDevelopmentCardBePlayed(DevelopmentCardTypes.YearOfPlenty);
+            if (card == null)
+                return;
+
+            ResourceClutch resources = ResourceClutch.Zero;
+            foreach (var resource in new[] { playYearOfPlentyCardAction.FirstResource, playYearOfPlentyCardAction.SecondResource })
+            {
+                switch (resource)
+                {
+                    case ResourceTypes.Brick: resources += ResourceClutch.OneBrick; break;
+                    case ResourceTypes.Grain: resources += ResourceClutch.OneGrain; break;
+                    case ResourceTypes.Lumber: resources += ResourceClutch.OneLumber; break;
+                    case ResourceTypes.Ore: resources += ResourceClutch.OneOre; break;
+                    case ResourceTypes.Wool: resources += ResourceClutch.OneWool; break;
+                }
+            }
+
+            this.currentPlayer.AddResources(resources);
+            this.currentPlayer.PlayDevelopmentCard(card);
+
+            this.RaiseEvent(new YearOfPlentyCardPlayedEvent(this.currentPlayer.Id,
+                playYearOfPlentyCardAction.FirstResource,
+                playYearOfPlentyCardAction.SecondResource));
         }
 
         private bool ProcessQuitGameAction(QuitGameAction quitGameAction)
