@@ -1402,10 +1402,10 @@ namespace SoC.Library.ScenarioTests
             {
                 this.CompletePlayerInfrastructureSetup()
                     .WithNoResourceCollection()
-                    .WithInitialPlayerSetupFor(Adam, YearOfPlentyCard(1))
+                    .WithInitialPlayerSetupFor(Adam, MonopolyCard())
                     .WhenPlayer(Adam)
-                        .ReceivesStartTurnEvent(3, 3).ThenPlayYearOfPlentyCard(ResourceTypes.Brick, ResourceTypes.Grain)
-                        .ReceivesYearOfPlentyCardPlayedEvent(ResourceTypes.Brick, ResourceTypes.Grain)
+                        .ReceivesStartTurnEvent(3, 3).ThenPlayMonopolyCard(ResourceTypes.Lumber)
+                        .ReceivesMonopolyCardPlayedEvent(null)
                         .ThenVerifyPlayerState()
                             .Resources(ResourceClutch.OneBrick + ResourceClutch.OneGrain)
                         .EndPlayerVerification()
@@ -1426,7 +1426,29 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void PlayerPlaysMonopolyCard()
         {
-            throw new NotImplementedException();
+            try
+            {
+                this.CompletePlayerInfrastructureSetup()
+                    .WithNoResourceCollection()
+                    .WithInitialPlayerSetupFor(Adam, YearOfPlentyCard(1))
+                    .WhenPlayer(Adam)
+                        .ReceivesStartTurnEvent(3, 3).ThenPlayYearOfPlentyCard(ResourceTypes.Brick, ResourceTypes.Grain)
+                        .ReceivesYearOfPlentyCardPlayedEvent(ResourceTypes.Brick, ResourceTypes.Grain)
+                        .ThenVerifyPlayerState()
+                            .Resources(ResourceClutch.OneBrick + ResourceClutch.OneGrain)
+                        .EndPlayerVerification()
+                    .VerifyPlayer(Babara)
+                        .ReceivesYearOfPlentyCardPlayedEvent(ResourceTypes.Brick, ResourceTypes.Grain, Adam)
+                    .VerifyPlayer(Charlie)
+                        .ReceivesYearOfPlentyCardPlayedEvent(ResourceTypes.Brick, ResourceTypes.Grain, Adam)
+                    .VerifyPlayer(Dana)
+                        .ReceivesYearOfPlentyCardPlayedEvent(ResourceTypes.Brick, ResourceTypes.Grain, Adam)
+                    .Run(this.logDirectory);
+            }
+            finally
+            {
+                this.AttachReports();
+            }
         }
 
         [Test]

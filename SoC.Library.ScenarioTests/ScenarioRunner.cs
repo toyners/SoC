@@ -205,6 +205,15 @@ namespace SoC.Library.ScenarioTests
             return this;
         }
 
+        public ScenarioRunner ReceivesMonopolyCardPlayedEvent(ResourceTransactionList resourceTransactionList, string playerName = null)
+        {
+            var playerId = playerName != null ? this.playerAgentsByName[playerName].Id : this.currentPlayerAgent.Id;
+            var gameEvent = new PlayMonopolyCardEvent(playerId, resourceTransactionList);
+            var eventInstruction = new EventInstruction(gameEvent);
+            this.currentPlayerAgent.AddInstruction(eventInstruction);
+            return this;
+        }
+
         public ScenarioRunner ReceivesPlaceInfrastructureSetupEvent()
         {
             var gameEvent = new PlaceSetupInfrastructureEvent();
