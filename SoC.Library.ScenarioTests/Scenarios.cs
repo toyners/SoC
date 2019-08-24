@@ -1396,7 +1396,7 @@ namespace SoC.Library.ScenarioTests
         }
 
         [Test]
-        public void PlayerPlaysYearOfPlentyCard()
+        public void PlayerPlayMonopolyCard()
         {
             try
             {
