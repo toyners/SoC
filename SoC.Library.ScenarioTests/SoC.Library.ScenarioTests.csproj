@@ -89,10 +89,10 @@
     <Compile Include="ScenarioEvents\ScenarioRobberEvent.cs" />
     <Compile Include="ScenarioEvents\ScenarioRobbingChoicesEvent.cs" />
     <Compile Include="ScenarioEvents\ScenarioStartTurnEvent.cs" />
-    <Compile Include="ScenarioGameBoardWithNoResourcesCollected.cs" />
     <Compile Include="ScenarioBuyDevelopmentCardEvent.cs" />
     <Compile Include="ScenarioComputerPlayer.cs" />
     <Compile Include="ScenarioDevelopmentCardHolder.cs" />
+    <Compile Include="ScenarioGameBoard.cs" />
     <Compile Include="ScenarioNumberGenerator.cs" />
     <Compile Include="ScenarioPlayer.cs" />
     <Compile Include="ScenarioActions\ScenarioPlayKnightCardAction.cs" />

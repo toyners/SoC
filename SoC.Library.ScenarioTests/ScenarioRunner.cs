@@ -14,6 +14,7 @@ namespace SoC.Library.ScenarioTests
     using SoC.Library.ScenarioTests.Instructions;
     using SoC.Library.ScenarioTests.PlayerSetupActions;
     using SoC.Library.ScenarioTests.ScenarioEvents;
+    using static SoC.Library.ScenarioTests.ScenarioGameBoard;
 
     internal class ScenarioRunner
     {
@@ -716,9 +717,9 @@ namespace SoC.Library.ScenarioTests
             return this;
         }
 
-        public ScenarioRunner WithNoResourceCollection()
+        public ScenarioRunner WithNoResourceCollection(ResourceCollectionTypes resourceCollectionType = ResourceCollectionTypes.Neither)
         {
-            this.gameBoard = new ScenarioGameBoardWithNoResourcesCollected();
+            this.gameBoard = new ScenarioGameBoard(resourceCollectionType);
             return this;
         }
 

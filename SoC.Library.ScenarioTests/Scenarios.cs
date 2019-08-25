@@ -1396,12 +1396,12 @@ namespace SoC.Library.ScenarioTests
         }
 
         [Test]
-        public void PlayerPlayMonopolyCard()
+        public void PlayerPlaysMonopolyCard()
         {
             try
             {
                 this.CompletePlayerInfrastructureSetup()
-                    .WithNoResourceCollection()
+                    .WithNoResourceCollection(ScenarioGameBoard.ResourceCollectionTypes.SetupOnly)
                     .WithInitialPlayerSetupFor(Adam, MonopolyCard())
                     .WhenPlayer(Adam)
                         .ReceivesStartTurnEvent(3, 3).ThenPlayMonopolyCard(ResourceTypes.Lumber)
@@ -1424,7 +1424,7 @@ namespace SoC.Library.ScenarioTests
         }
 
         [Test]
-        public void PlayerPlaysMonopolyCard()
+        public void PlayerPlaysYearOfPlentyCard()
         {
             try
             {
