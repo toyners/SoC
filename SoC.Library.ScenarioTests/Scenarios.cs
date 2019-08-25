@@ -1398,6 +1398,14 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void PlayerPlaysMonopolyCard()
         {
+            var expectedBabaraResources = ResourceClutch.OneLumber;
+            var expectedCharlieResources = ResourceClutch.OneLumber;
+            var expectedDanaResources = ResourceClutch.OneLumber;
+            var expectedResources = new Dictionary<string, ResourceClutch>();
+            expectedResources.Add(Babara, expectedBabaraResources);
+            expectedResources.Add(Charlie, expectedCharlieResources);
+            expectedResources.Add(Dana, expectedDanaResources);
+
             try
             {
                 this.CompletePlayerInfrastructureSetup()
@@ -1405,7 +1413,7 @@ namespace SoC.Library.ScenarioTests
                     .WithInitialPlayerSetupFor(Adam, MonopolyCard())
                     .WhenPlayer(Adam)
                         .ReceivesStartTurnEvent(3, 3).ThenPlayMonopolyCard(ResourceTypes.Lumber)
-                        .ReceivesMonopolyCardPlayedEvent(null)
+                        .ReceivesMonopolyCardPlayedEvent(expectedResources)
                         .ThenVerifyPlayerState()
                             .Resources(ResourceClutch.OneBrick + ResourceClutch.OneGrain)
                         .EndPlayerVerification()
