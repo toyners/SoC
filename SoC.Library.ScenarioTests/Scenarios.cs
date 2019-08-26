@@ -1489,7 +1489,7 @@ namespace SoC.Library.ScenarioTests
                     .WithInitialPlayerSetupFor(Charlie, Resources(ResourceClutch.OneGrain))
                     .WithInitialPlayerSetupFor(Dana, Resources(ResourceClutch.OneBrick * 3))
                     .WhenPlayer(Adam)
-                        .ReceivesStartTurnEvent(3, 3).ThenPlayMonopolyCard(ResourceTypes.Lumber)
+                        .ReceivesStartTurnEvent(3, 3).ThenPlayMonopolyCard(ResourceTypes.Brick)
                         .ReceivesMonopolyCardPlayedEvent(expectedResources)
                         .ThenVerifyPlayerState()
                             .Resources(ResourceClutch.OneBrick * 5)
