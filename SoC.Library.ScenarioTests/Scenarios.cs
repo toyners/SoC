@@ -346,7 +346,7 @@ namespace SoC.Library.ScenarioTests
             try
             {
                 this.CompletePlayerInfrastructureSetup()
-                    .WithNoResourceCollection()
+                    .WithCustomResourceCollection()
                     .WhenPlayer(Adam)
                         .ReceivesStartTurnEvent(3, 3).ThenEndTurn()
                         .ReceivesPlayerQuitEvent(Babara).ThenDoNothing()
@@ -388,7 +388,7 @@ namespace SoC.Library.ScenarioTests
             try
             {
                 this.CompletePlayerInfrastructureSetup()
-                    .WithNoResourceCollection()
+                    .WithCustomResourceCollection()
                     .WithInitialPlayerSetupFor(Adam, Resources(ResourceClutch.DevelopmentCard))
                     .WhenPlayer(Adam)
                         .ReceivesStartTurnEvent(3, 3).ThenBuyDevelopmentCard()
@@ -417,7 +417,7 @@ namespace SoC.Library.ScenarioTests
             try
             {
                 this.CompletePlayerInfrastructureSetup()
-                    .WithNoResourceCollection()
+                    .WithCustomResourceCollection()
                     .WhenPlayer(Adam)
                         .ReceivesStartTurnEvent(3, 3).ThenBuyDevelopmentCard()
                         .ReceivesGameErrorEvent(ErrorCodes.NotEnoughResourcesForDevelopmentCard, "Not enough resources for buying development card")
@@ -461,7 +461,7 @@ namespace SoC.Library.ScenarioTests
             try
             {
                 this.CompletePlayerInfrastructureSetup()
-                    .WithNoResourceCollection()
+                    .WithCustomResourceCollection()
                     .WithInitialPlayerSetupFor(
                         Adam,
                         Resources(ResourceClutch.RoadSegment + ResourceClutch.Settlement + ResourceClutch.City))
@@ -501,7 +501,7 @@ namespace SoC.Library.ScenarioTests
         {
             try {
                 this.CompletePlayerInfrastructureSetup()
-                    .WithNoResourceCollection()
+                    .WithCustomResourceCollection()
                     .WithInitialPlayerSetupFor(
                         Adam,
                         Resources(ResourceClutch.RoadSegment + ResourceClutch.Settlement + ResourceClutch.City),
@@ -538,7 +538,7 @@ namespace SoC.Library.ScenarioTests
             try
             {
                 this.CompletePlayerInfrastructureSetup()
-                    .WithNoResourceCollection()
+                    .WithCustomResourceCollection()
                     .WithInitialPlayerSetupFor(
                         Adam,
                         Resources(ResourceClutch.City * 2))
@@ -566,7 +566,7 @@ namespace SoC.Library.ScenarioTests
             try
             {
                 this.CompletePlayerInfrastructureSetup()
-                    .WithNoResourceCollection()
+                    .WithCustomResourceCollection()
                     .WithInitialPlayerSetupFor(
                         Adam,
                         Resources(ResourceClutch.City))
@@ -593,7 +593,7 @@ namespace SoC.Library.ScenarioTests
             try
             {
                 this.CompletePlayerInfrastructureSetup()
-                    .WithNoResourceCollection()
+                    .WithCustomResourceCollection()
                     .WithInitialPlayerSetupFor(
                         Adam,
                         Resources((ResourceClutch.RoadSegment * 2) + ResourceClutch.Settlement))
@@ -631,7 +631,7 @@ namespace SoC.Library.ScenarioTests
             try
             {
                 this.CompletePlayerInfrastructureSetup()
-                    .WithNoResourceCollection()
+                    .WithCustomResourceCollection()
                     .WithInitialPlayerSetupFor(
                         Adam,
                         Resources(ResourceClutch.RoadSegment + ResourceClutch.City))
@@ -659,7 +659,7 @@ namespace SoC.Library.ScenarioTests
             try
             {
                 this.CompletePlayerInfrastructureSetup()
-                    .WithNoResourceCollection()
+                    .WithCustomResourceCollection()
                     .WhenPlayer(Adam)
                         .ReceivesStartTurnEvent(3, 3).ThenPlaceCity(Adam_FirstSettlementLocation)
                         .ReceivesGameErrorEvent(ErrorCodes.NotEnoughResourcesForCity, "Not enough resources for placing city").ThenDoNothing()
@@ -683,7 +683,7 @@ namespace SoC.Library.ScenarioTests
             try
             {
                 this.CompletePlayerInfrastructureSetup()
-                    .WithNoResourceCollection()
+                    .WithCustomResourceCollection()
                     .WithInitialPlayerSetupFor(
                         Adam,
                         Resources(ResourceClutch.RoadSegment + ResourceClutch.Settlement))
@@ -719,7 +719,7 @@ namespace SoC.Library.ScenarioTests
             try
             {
                 this.CompletePlayerInfrastructureSetup()
-                    .WithNoResourceCollection()
+                    .WithCustomResourceCollection()
                     .WithInitialPlayerSetupFor(
                         Adam,
                         Resources(ResourceClutch.RoadSegment + ResourceClutch.Settlement),
@@ -757,7 +757,7 @@ namespace SoC.Library.ScenarioTests
             try
             {
                 this.CompletePlayerInfrastructureSetup()
-                    .WithNoResourceCollection()
+                    .WithCustomResourceCollection()
                     .WithInitialPlayerSetupFor(
                         Adam,
                         Resources(ResourceClutch.Settlement))
@@ -784,7 +784,7 @@ namespace SoC.Library.ScenarioTests
             try
             {
                 this.CompletePlayerInfrastructureSetup()
-                    .WithNoResourceCollection()
+                    .WithCustomResourceCollection()
                     .WithInitialPlayerSetupFor(
                         Adam,
                         Resources(ResourceClutch.RoadSegment + (ResourceClutch.Settlement * 2)))
@@ -813,7 +813,7 @@ namespace SoC.Library.ScenarioTests
             try
             {
                 this.CompletePlayerInfrastructureSetup()
-                    .WithNoResourceCollection()
+                    .WithCustomResourceCollection()
                     .WithInitialPlayerSetupFor(
                         Adam,
                         Resources((ResourceClutch.RoadSegment * 2) + ResourceClutch.Settlement))
@@ -851,7 +851,7 @@ namespace SoC.Library.ScenarioTests
             try
             {
                 this.CompletePlayerInfrastructureSetup()
-                    .WithNoResourceCollection()
+                    .WithCustomResourceCollection()
                     .WithInitialPlayerSetupFor(
                         Adam,
                         Resources(ResourceClutch.Settlement))
@@ -878,7 +878,7 @@ namespace SoC.Library.ScenarioTests
             try
             {
                 this.CompletePlayerInfrastructureSetup()
-                    .WithNoResourceCollection()
+                    .WithCustomResourceCollection()
                     .WithInitialPlayerSetupFor(
                         Adam,
                         Resources(ResourceClutch.Settlement), PlacedSettlements(Player.TotalSettlements - 2))
@@ -905,7 +905,7 @@ namespace SoC.Library.ScenarioTests
             try
             {
                 this.CompletePlayerInfrastructureSetup()
-                    .WithNoResourceCollection()
+                    .WithCustomResourceCollection()
                     .WhenPlayer(Adam)
                         .ReceivesStartTurnEvent(3, 3).ThenPlaceSettlement(3)
                         .ReceivesGameErrorEvent(ErrorCodes.NotEnoughResourcesForSettlement, "Not enough resources for placing settlement").ThenDoNothing()
@@ -929,7 +929,7 @@ namespace SoC.Library.ScenarioTests
             try
             {
                 this.CompletePlayerInfrastructureSetup()
-                    .WithNoResourceCollection()
+                    .WithCustomResourceCollection()
                     .WithInitialPlayerSetupFor(Adam, Resources(ResourceClutch.RoadSegment), PlacedRoadSegments(Player.TotalRoadSegments - 2))
                     .WhenPlayer(Adam)
                         .ReceivesStartTurnEvent(3, 3)
@@ -955,7 +955,7 @@ namespace SoC.Library.ScenarioTests
             try
             {
                 this.CompletePlayerInfrastructureSetup()
-                    .WithNoResourceCollection()
+                    .WithCustomResourceCollection()
                     .WhenPlayer(Adam)
                         .ReceivesStartTurnEvent(3, 3)
                         .ThenPlaceRoadSegment(4, 3)
@@ -984,7 +984,7 @@ namespace SoC.Library.ScenarioTests
             try
             {
                 this.CompletePlayerInfrastructureSetup()
-                    .WithNoResourceCollection()
+                    .WithCustomResourceCollection()
                     .WithInitialPlayerSetupFor(Adam, Resources(ResourceClutch.RoadSegment))
                     .WhenPlayer(Adam)
                         .ReceivesStartTurnEvent(3, 3).ThenPlaceRoadSegment(roadSegmentStartLocation, roadSegmentEndLocation)
@@ -1156,7 +1156,7 @@ namespace SoC.Library.ScenarioTests
             try
             {
                 this.CompletePlayerInfrastructureSetup()
-                    .WithNoResourceCollection()
+                    .WithCustomResourceCollection()
                     .WhenPlayer(Adam)
                         .ReceivesStartTurnEvent(3, 3).ThenPlayKnightCard(0)
                         .ReceivesGameErrorEvent(ErrorCodes.NoDevelopmentCardCanBePlayed, "No Knight card owned that can be played this turn")
@@ -1183,7 +1183,7 @@ namespace SoC.Library.ScenarioTests
             try
             {
                 this.CompletePlayerInfrastructureSetup()
-                    .WithNoResourceCollection()
+                    .WithCustomResourceCollection()
                     .WhenPlayer(Adam)
                         .ReceivesStartTurnEvent(3, 3).ThenPlayRoadBuildingCard(4, 3, 3, 2)
                         .ReceivesGameErrorEvent(ErrorCodes.NoDevelopmentCardCanBePlayed, "No Road building card owned that can be played this turn")
@@ -1212,7 +1212,7 @@ namespace SoC.Library.ScenarioTests
             try
             {
                 this.CompletePlayerInfrastructureSetup()
-                    .WithNoResourceCollection()
+                    .WithCustomResourceCollection()
                     .WithInitialPlayerSetupFor(Adam, PlacedRoadSegments(Player.TotalRoadSegments - (remainingRoadSegments + 2)), RoadBuildingCard(1))
                     .WhenPlayer(Adam)
                         .ReceivesStartTurnEvent(3, 3).ThenPlayRoadBuildingCard(4, 3, 3, 2)
@@ -1249,7 +1249,7 @@ namespace SoC.Library.ScenarioTests
             try
             {
                 this.CompletePlayerInfrastructureSetup()
-                    .WithNoResourceCollection()
+                    .WithCustomResourceCollection()
                     .WithInitialPlayerSetupFor(Adam, RoadBuildingCard(1))
                     .WhenPlayer(Adam)
                         .ReceivesStartTurnEvent(3, 3).ThenPlayRoadBuildingCard(firstRoadSegmentStartLocation, firstRoadSegmentEndLocation, secondRoadSegmentStartLocation, secondRoadSegmentEndLocation)
@@ -1277,7 +1277,7 @@ namespace SoC.Library.ScenarioTests
             try
             {
                 this.CompletePlayerInfrastructureSetup()
-                    .WithNoResourceCollection()
+                    .WithCustomResourceCollection()
                     .WithInitialPlayerSetupFor(Adam, RoadBuildingCard(1))
                     .WhenPlayer(Adam)
                         .ReceivesStartTurnEvent(3, 3).ThenPlayRoadBuildingCard(4, 3, 3, 2)
@@ -1302,7 +1302,7 @@ namespace SoC.Library.ScenarioTests
             try
             {
                 this.CompletePlayerInfrastructureSetup()
-                    .WithNoResourceCollection()
+                    .WithCustomResourceCollection()
                     .WithInitialPlayerSetupFor(Adam, Resources(ResourceClutch.RoadSegment * 2), RoadBuildingCard(1),
                         VictoryPoints(6))
                     .WhenPlayer(Adam)
@@ -1338,7 +1338,7 @@ namespace SoC.Library.ScenarioTests
             try
             {
                 this.CompletePlayerInfrastructureSetup()
-                    .WithNoResourceCollection()
+                    .WithCustomResourceCollection()
                     .WithInitialPlayerSetupFor(Adam, Resources(ResourceClutch.RoadSegment * 3), RoadBuildingCard(1),
                         VictoryPoints(6))
                     .WithInitialPlayerSetupFor(Babara, Resources(ResourceClutch.RoadSegment * 4))
@@ -1406,7 +1406,7 @@ namespace SoC.Library.ScenarioTests
             try
             {
                 this.CompletePlayerInfrastructureSetup()
-                    .WithNoResourceCollection(ScenarioGameBoard.ResourceCollectionTypes.SetupOnly)
+                    .WithCustomResourceCollection(ScenarioGameBoard.ResourceCollectionTypes.SetupOnly)
                     .WithInitialPlayerSetupFor(Adam, MonopolyCard())
                     .WhenPlayer(Adam)
                         .ReceivesStartTurnEvent(3, 3).ThenPlayMonopolyCard(ResourceTypes.Lumber)
@@ -1438,12 +1438,54 @@ namespace SoC.Library.ScenarioTests
         }
 
         [Test]
+        public void PlayerPlaysMonopolyCardButGetsNoResources()
+        {
+            var expectedResources = new Dictionary<string, ResourceClutch>();
+            //expectedResources.Add(Babara, ResourceClutch.OneLumber);
+            //expectedResources.Add(Charlie, ResourceClutch.OneLumber);
+            //expectedResources.Add(Dana, ResourceClutch.OneLumber);
+
+            try
+            {
+                this.CompletePlayerInfrastructureSetup()
+                    .WithCustomResourceCollection()
+                    .WithInitialPlayerSetupFor(Adam, MonopolyCard())
+                    .WhenPlayer(Adam)
+                        .ReceivesStartTurnEvent(3, 3).ThenPlayMonopolyCard(ResourceTypes.Lumber)
+                        .ReceivesMonopolyCardPlayedEvent(expectedResources)
+                        .ThenVerifyPlayerState()
+                            .Resources(ResourceClutch.Zero)
+                        .EndPlayerVerification()
+                    .VerifyPlayer(Babara)
+                        .ReceivesMonopolyCardPlayedEvent(expectedResources, Adam)
+                        .ThenVerifyPlayerState()
+                            .Resources(ResourceClutch.Zero)
+                        .EndPlayerVerification()
+                    .VerifyPlayer(Charlie)
+                        .ReceivesMonopolyCardPlayedEvent(expectedResources, Adam)
+                        .ThenVerifyPlayerState()
+                            .Resources(ResourceClutch.Zero)
+                        .EndPlayerVerification()
+                    .VerifyPlayer(Dana)
+                        .ReceivesMonopolyCardPlayedEvent(expectedResources, Adam)
+                        .ThenVerifyPlayerState()
+                            .Resources(ResourceClutch.Zero)
+                        .EndPlayerVerification()
+                    .Run(this.logDirectory);
+            }
+            finally
+            {
+                this.AttachReports();
+            }
+        }
+
+        [Test]
         public void PlayerPlaysYearOfPlentyCard()
         {
             try
             {
                 this.CompletePlayerInfrastructureSetup()
-                    .WithNoResourceCollection()
+                    .WithCustomResourceCollection()
                     .WithInitialPlayerSetupFor(Adam, YearOfPlentyCard(1))
                     .WhenPlayer(Adam)
                         .ReceivesStartTurnEvent(3, 3).ThenPlayYearOfPlentyCard(ResourceTypes.Brick, ResourceTypes.Grain)
@@ -1466,18 +1508,12 @@ namespace SoC.Library.ScenarioTests
         }
 
         [Test]
-        public void PlayerPlaysMonopolyCardButGetsNoResources()
-        {
-            throw new NotImplementedException();
-        }
-
-        [Test]
         public void PlayerPlaysKnightCardAndNewHexIsSameAsCurrentHex()
         {
 			try
             {
                 this.CompletePlayerInfrastructureSetup()
-                    .WithNoResourceCollection()
+                    .WithCustomResourceCollection()
                     .WithInitialPlayerSetupFor(Adam, KnightCard())
                     .WhenPlayer(Adam)
                         .ReceivesStartTurnEvent(3, 3).ThenPlayKnightCard(0)
@@ -1505,7 +1541,7 @@ namespace SoC.Library.ScenarioTests
             try
             {
                 this.CompletePlayerInfrastructureSetup()
-                    .WithNoResourceCollection()
+                    .WithCustomResourceCollection()
                     .WithInitialPlayerSetupFor(Adam, KnightCard())
                     .WhenPlayer(Adam)
                         .ReceivesStartTurnEvent(3, 3).ThenPlayKnightCard(0)
@@ -1532,7 +1568,7 @@ namespace SoC.Library.ScenarioTests
 			try
             { 
                 this.CompletePlayerInfrastructureSetup()
-                    .WithNoResourceCollection()
+                    .WithCustomResourceCollection()
                     .WithInitialPlayerSetupFor(Adam, KnightCard())
                     .WhenPlayer(Adam)
                         .ReceivesStartTurnEvent(3, 3).ThenPlayKnightCard(4)
@@ -1601,7 +1637,7 @@ namespace SoC.Library.ScenarioTests
 			try
             {
                 this.CompletePlayerInfrastructureSetup()
-                    .WithNoResourceCollection()
+                    .WithCustomResourceCollection()
                     .WithInitialPlayerSetupFor(Adam, KnightCard())
                     .WhenPlayer(Adam)
                         .ReceivesStartTurnEvent(3, 3).ThenPlayKnightCard(1)
@@ -1798,7 +1834,7 @@ namespace SoC.Library.ScenarioTests
                 var danasFinalResources = danasInitialResources - danasLostResources;
 
                 this.CompletePlayerInfrastructureSetup()
-                    .WithNoResourceCollection()
+                    .WithCustomResourceCollection()
                     .WithInitialPlayerSetupFor(
                         Adam,
                         Resources(adamsInitialResources))
@@ -1870,7 +1906,7 @@ namespace SoC.Library.ScenarioTests
                 var adamsLostResources = new ResourceClutch(1, 1, 1, 1, 1);
 
                 this.CompletePlayerInfrastructureSetup()
-                    .WithNoResourceCollection()
+                    .WithCustomResourceCollection()
                     .WithInitialPlayerSetupFor(
                         Adam,
                         Resources(adamsInitialResources))
@@ -1901,7 +1937,7 @@ namespace SoC.Library.ScenarioTests
                 var adamsLostResources = new ResourceClutch(0, 0, 1, 1, 1);
 
                 this.CompletePlayerInfrastructureSetup()
-                    .WithNoResourceCollection()
+                    .WithCustomResourceCollection()
                     .WithInitialPlayerSetupFor(
                         Adam,
                         Resources(adamsInitialResources))
@@ -1932,7 +1968,7 @@ namespace SoC.Library.ScenarioTests
                 var adamsLostResources = new ResourceClutch(2, 0, 0, 1, 1);
 
                 this.CompletePlayerInfrastructureSetup()
-                    .WithNoResourceCollection()
+                    .WithCustomResourceCollection()
                     .WithInitialPlayerSetupFor(
                         Adam,
                         Resources(adamsInitialResources))
@@ -1973,7 +2009,7 @@ namespace SoC.Library.ScenarioTests
                 var danasFinalResources = danasInitialResources - danasLostResources;
 
                 this.CompletePlayerInfrastructureSetup()
-                    .WithNoResourceCollection()
+                    .WithCustomResourceCollection()
                     .WithInitialPlayerSetupFor(
                         Adam,
                         Resources(adamsInitialResources))
@@ -2040,7 +2076,7 @@ namespace SoC.Library.ScenarioTests
 			try
             {
                 this.CompletePlayerInfrastructureSetup()
-                    .WithNoResourceCollection()
+                    .WithCustomResourceCollection()
                     .WhenPlayer(Adam)
                         .ReceivesStartTurnEvent(3, 4).ThenDoNothing()
                         .ReceivesPlaceRobberEvent().ThenPlaceRobber(4)
@@ -2072,7 +2108,7 @@ namespace SoC.Library.ScenarioTests
 			try
             {
                 this.CompletePlayerInfrastructureSetup()
-                    .WithNoResourceCollection()
+                    .WithCustomResourceCollection()
                     .WhenPlayer(Adam)
                         .ReceivesStartTurnEvent(3, 4).ThenDoNothing()
                         .ReceivesPlaceRobberEvent().ThenPlaceRobber(0)
@@ -2131,7 +2167,7 @@ namespace SoC.Library.ScenarioTests
 			try
             {
                 this.CompletePlayerInfrastructureSetup()
-                    .WithNoResourceCollection()
+                    .WithCustomResourceCollection()
                     .WhenPlayer(Adam)
                         .ReceivesStartTurnEvent(3, 4).ThenDoNothing()
                         .ReceivesPlaceRobberEvent().ThenPlaceRobber(2)
@@ -2496,7 +2532,7 @@ namespace SoC.Library.ScenarioTests
                 var babaraResources = ResourceClutch.OneGrain;
 
                 this.CompletePlayerInfrastructureSetup()
-                    .WithNoResourceCollection()
+                    .WithCustomResourceCollection()
                     .WithInitialPlayerSetupFor(Adam, Resources(adamResources))
                     .WithInitialPlayerSetupFor(Babara, Resources(babaraResources))
                     .WhenPlayer(Adam)
@@ -2840,7 +2876,7 @@ namespace SoC.Library.ScenarioTests
             try
             {
                 this.CompletePlayerInfrastructureSetup()
-                    .WithNoResourceCollection()
+                    .WithCustomResourceCollection()
                     .WithInitialPlayerSetupFor(Adam, KnightCard(4))
                     .WhenPlayer(Adam)
                         .ReceivesStartTurnEvent(3, 3)

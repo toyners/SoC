@@ -720,7 +720,7 @@ namespace SoC.Library.ScenarioTests
             return this;
         }
 
-        public ScenarioRunner WithNoResourceCollection(ResourceCollectionTypes resourceCollectionType = ResourceCollectionTypes.Neither)
+        public ScenarioRunner WithCustomResourceCollection(ResourceCollectionTypes resourceCollectionType = ResourceCollectionTypes.Neither)
         {
             this.gameBoard = new ScenarioGameBoard(resourceCollectionType);
             return this;
