@@ -167,36 +167,6 @@ namespace Jabberwocky.SoC.Library
             });
         }
 
-        private DevelopmentCard CanDevelopmentCardBePlayed(DevelopmentCardTypes developmentCardType)
-        {
-            if (this.developmentCardPlayerThisTurn)
-            {
-                this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, (int)ErrorCodes.CannotPlayDevelopmentCard, "Cannot play more than one development card per turn"),
-                    this.currentPlayer);
-                return null;
-            }
-
-            DevelopmentCard card = null;
-            if ((card = this.currentPlayer.HeldCards.FirstOrDefault(c => c.Type == developmentCardType &&
-                !this.cardsBoughtThisTurn.Contains(c))) == null)
-            {
-                string developmentCardTypeName = null;
-                switch (developmentCardType)
-                {
-                    case DevelopmentCardTypes.Knight: developmentCardTypeName = "Knight"; break;
-                    case DevelopmentCardTypes.Monopoly: developmentCardTypeName = "Monopoly"; break;
-                    case DevelopmentCardTypes.RoadBuilding: developmentCardTypeName = "Road building"; break;
-                    case DevelopmentCardTypes.YearOfPlenty: developmentCardTypeName = "Year of Plenty"; break;
-                }
-
-                this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, (int)ErrorCodes.NoDevelopmentCardCanBePlayed, $"No {developmentCardTypeName} card owned that can be played this turn"),
-                    this.currentPlayer);
-                return null;
-            }
-
-            return card;
-        }
-
         private void CaretakerLoop()
         {
             while (true)
@@ -260,6 +230,36 @@ namespace Jabberwocky.SoC.Library
             var playerAction = this.WaitForPlayerAction();
             this.turnTimer.Reset();
             this.ProcessPlayerAction(playerAction);
+        }
+
+        private DevelopmentCard GetDevelopmentCardToBePlayed(DevelopmentCardTypes developmentCardType)
+        {
+            if (this.developmentCardPlayerThisTurn)
+            {
+                this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, (int)ErrorCodes.CannotPlayDevelopmentCard, "Cannot play more than one development card per turn"),
+                    this.currentPlayer);
+                return null;
+            }
+
+            DevelopmentCard card = null;
+            if ((card = this.currentPlayer.HeldCards.FirstOrDefault(c => c.Type == developmentCardType &&
+                !this.cardsBoughtThisTurn.Contains(c))) == null)
+            {
+                string developmentCardTypeName = null;
+                switch (developmentCardType)
+                {
+                    case DevelopmentCardTypes.Knight: developmentCardTypeName = "Knight"; break;
+                    case DevelopmentCardTypes.Monopoly: developmentCardTypeName = "Monopoly"; break;
+                    case DevelopmentCardTypes.RoadBuilding: developmentCardTypeName = "Road building"; break;
+                    case DevelopmentCardTypes.YearOfPlenty: developmentCardTypeName = "Year of Plenty"; break;
+                }
+
+                this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, (int)ErrorCodes.NoDevelopmentCardCanBePlayed, $"No {developmentCardTypeName} card owned that can be played this turn"),
+                    this.currentPlayer);
+                return null;
+            }
+
+            return card;
         }
 
         private string GetErrorMessage(Type actualAction, HashSet<Type> expectedActions)
@@ -713,22 +713,7 @@ namespace Jabberwocky.SoC.Library
 
             if (playerAction is PlayMonopolyCardAction playMonopolyCardAction)
             {
-                if (this.developmentCardPlayerThisTurn)
-                {
-                    this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, (int)ErrorCodes.CannotPlayDevelopmentCard, "Cannot play more than one development card per turn"),
-                        this.currentPlayer);
-                    return false;
-                }
-
-                DevelopmentCard card = null;
-                if ((card = this.currentPlayer.HeldCards.FirstOrDefault(c => c.Type == DevelopmentCardTypes.Monopoly &&
-                    !this.cardsBoughtThisTurn.Contains(c))) == null)
-                {
-                    this.RaiseEvent(new GameErrorEvent(this.currentPlayer.Id, (int)ErrorCodes.NoDevelopmentCardCanBePlayed, "No Monopoly card owned that can be played this turn"),
-                        this.currentPlayer);
-                    return false;
-                }
-
+                this.ProcessPlayMonopolyCardAction(playMonopolyCardAction);
                 return false;
             }
 
@@ -798,7 +783,7 @@ namespace Jabberwocky.SoC.Library
 
         private bool ProcessPlayKnightCardAction(PlayKnightCardAction playKnightCardAction)
         {
-            DevelopmentCard card = this.CanDevelopmentCardBePlayed(DevelopmentCardTypes.Knight);
+            DevelopmentCard card = this.GetDevelopmentCardToBePlayed(DevelopmentCardTypes.Knight);
             if (card == null)
                 return false;
         
@@ -845,9 +830,31 @@ namespace Jabberwocky.SoC.Library
             return false;
         }
 
+        private void ProcessPlayMonopolyCardAction(PlayMonopolyCardAction playMonopolyCardAction)
+        {
+            DevelopmentCard card = this.GetDevelopmentCardToBePlayed(DevelopmentCardTypes.Monopoly);
+            if (card == null)
+                return;
+
+            ResourceTransactionList resourceTransactionList = null;
+            foreach (var player in this.PlayersExcept(this.currentPlayer.Id))
+            {
+                var resourceClutch = player.LoseResourcesOfType(playMonopolyCardAction.ResourceType);
+                if (resourceClutch != ResourceClutch.Zero)
+                {
+                    if (resourceTransactionList == null)
+                        resourceTransactionList = new ResourceTransactionList();
+
+                    resourceTransactionList.Add(new ResourceTransaction(this.currentPlayer.Id, player.Id, resourceClutch));
+                }
+            }
+
+            this.RaiseEvent(new PlayMonopolyCardEvent(this.currentPlayer.Id, resourceTransactionList));
+        }
+
         private bool ProcessPlayRoadBuildingCardAction(PlayRoadBuildingCardAction playRoadBuildingCardAction)
         {
-            DevelopmentCard card = this.CanDevelopmentCardBePlayed(DevelopmentCardTypes.RoadBuilding);
+            DevelopmentCard card = this.GetDevelopmentCardToBePlayed(DevelopmentCardTypes.RoadBuilding);
             if (card == null)
                 return false;
 
@@ -934,7 +941,7 @@ namespace Jabberwocky.SoC.Library
 
         private void ProcessPlayYearOfPlentyCardAction(PlayYearOfPlentyCardAction playYearOfPlentyCardAction)
         {
-            DevelopmentCard card = this.CanDevelopmentCardBePlayed(DevelopmentCardTypes.YearOfPlenty);
+            DevelopmentCard card = this.GetDevelopmentCardToBePlayed(DevelopmentCardTypes.YearOfPlenty);
             if (card == null)
                 return;
 

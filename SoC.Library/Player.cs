@@ -202,42 +202,19 @@ namespace Jabberwocky.SoC.Library
 
         public ResourceClutch LoseResourcesOfType(ResourceTypes resourceType)
         {
-            if (resourceType == ResourceTypes.Brick)
+            ResourceClutch resourceClutch = ResourceClutch.Zero;
+            switch (resourceType)
             {
-                var resourceClutch = new ResourceClutch(this.BrickCount, 0, 0, 0, 0);
-                this.BrickCount = 0;
-                return resourceClutch;
+                case ResourceTypes.Brick: resourceClutch = new ResourceClutch(this.Resources.BrickCount, 0, 0, 0, 0); break;
+                case ResourceTypes.Grain: resourceClutch = new ResourceClutch(0, this.Resources.GrainCount, 0, 0, 0); break;
+                case ResourceTypes.Lumber: resourceClutch = new ResourceClutch(0, 0, this.Resources.LumberCount, 0, 0); break;
+                case ResourceTypes.Ore: resourceClutch = new ResourceClutch(0, 0, 0, this.Resources.OreCount, 0); break;
+                case ResourceTypes.Wool: resourceClutch = new ResourceClutch(0, 0, 0, 0, this.Resources.WoolCount); break;
             }
 
-            if (resourceType == ResourceTypes.Grain)
-            {
-                var resourceClutch = new ResourceClutch(0, this.GrainCount, 0, 0, 0);
-                this.GrainCount = 0;
-                return resourceClutch;
-            }
-
-            if (resourceType == ResourceTypes.Lumber)
-            {
-                var resourceClutch = new ResourceClutch(0, 0, this.LumberCount, 0, 0);
-                this.LumberCount = 0;
-                return resourceClutch;
-            }
-
-            if (resourceType == ResourceTypes.Ore)
-            {
-                var resourceClutch = new ResourceClutch(0, 0, 0, this.OreCount, 0);
-                this.OreCount = 0;
-                return resourceClutch;
-            }
-
-            if (resourceType == ResourceTypes.Wool)
-            {
-                var resourceClutch = new ResourceClutch(0, 0, 0, 0, this.WoolCount);
-                this.WoolCount = 0;
-                return resourceClutch;
-            }
-
-            throw new NotImplementedException("Should not get here");
+            if (resourceClutch != ResourceClutch.Zero)
+                this.Resources -= resourceClutch;
+            return resourceClutch;
         }
 
         public void BuyDevelopmentCard()

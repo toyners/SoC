@@ -112,6 +112,16 @@ namespace SoC.Library.ScenarioTests
 
                 result = result.Substring(0, result.Length - 2) + "</b>";
             }
+            else if (gameEvent is PlayMonopolyCardEvent playMonopolyCardEvent)
+            {
+                for (var i = 0; i < playMonopolyCardEvent.ResourceTransactionList.Count; i++)
+                {
+                    var resourceTransaction = playMonopolyCardEvent.ResourceTransactionList[i];
+                    result += $"<b>{PlayerNamesById[resourceTransaction.GivingPlayerId]}</b> " +
+                        $"gave <b>{resourceTransaction.Resources}</b> " +
+                        $"to <b>{PlayerNamesById[resourceTransaction.ReceivingPlayerId]}</b><br />";
+                }
+            }
             else if (gameEvent is PlayerSetupEvent playerSetupEvent)
             {
                 foreach (var kv in playerSetupEvent.PlayerIdsByName)

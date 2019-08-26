@@ -1398,13 +1398,10 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void PlayerPlaysMonopolyCard()
         {
-            var expectedBabaraResources = ResourceClutch.OneLumber;
-            var expectedCharlieResources = ResourceClutch.OneLumber;
-            var expectedDanaResources = ResourceClutch.OneLumber;
             var expectedResources = new Dictionary<string, ResourceClutch>();
-            expectedResources.Add(Babara, expectedBabaraResources);
-            expectedResources.Add(Charlie, expectedCharlieResources);
-            expectedResources.Add(Dana, expectedDanaResources);
+            expectedResources.Add(Babara, ResourceClutch.OneLumber);
+            expectedResources.Add(Charlie, ResourceClutch.OneLumber);
+            expectedResources.Add(Dana, ResourceClutch.OneLumber);
 
             try
             {
@@ -1415,14 +1412,23 @@ namespace SoC.Library.ScenarioTests
                         .ReceivesStartTurnEvent(3, 3).ThenPlayMonopolyCard(ResourceTypes.Lumber)
                         .ReceivesMonopolyCardPlayedEvent(expectedResources)
                         .ThenVerifyPlayerState()
-                            .Resources(ResourceClutch.OneBrick + ResourceClutch.OneGrain)
+                            .Resources(ResourceClutch.OneBrick + ResourceClutch.OneGrain + (ResourceClutch.OneLumber * 3))
                         .EndPlayerVerification()
                     .VerifyPlayer(Babara)
-                        .ReceivesYearOfPlentyCardPlayedEvent(ResourceTypes.Brick, ResourceTypes.Grain, Adam)
+                        .ReceivesMonopolyCardPlayedEvent(expectedResources, Adam)
+                        .ThenVerifyPlayerState()
+                            .Resources(ResourceClutch.OneLumber)
+                        .EndPlayerVerification()
                     .VerifyPlayer(Charlie)
-                        .ReceivesYearOfPlentyCardPlayedEvent(ResourceTypes.Brick, ResourceTypes.Grain, Adam)
+                        .ReceivesMonopolyCardPlayedEvent(expectedResources, Adam)
+                        .ThenVerifyPlayerState()
+                            .Resources(ResourceClutch.OneLumber)
+                        .EndPlayerVerification()
                     .VerifyPlayer(Dana)
-                        .ReceivesYearOfPlentyCardPlayedEvent(ResourceTypes.Brick, ResourceTypes.Grain, Adam)
+                        .ReceivesMonopolyCardPlayedEvent(expectedResources, Adam)
+                        .ThenVerifyPlayerState()
+                            .Resources(ResourceClutch.OneLumber)
+                        .EndPlayerVerification()
                     .Run(this.logDirectory);
             }
             finally
