@@ -836,18 +836,18 @@ namespace Jabberwocky.SoC.Library
             if (card == null)
                 return;
 
-            ResourceTransactionList resourceTransactionList = null;
+            var resourceTransactionList = new ResourceTransactionList();
             foreach (var player in this.PlayersExcept(this.currentPlayer.Id))
             {
                 var resourceClutch = player.LoseResourcesOfType(playMonopolyCardAction.ResourceType);
                 if (resourceClutch != ResourceClutch.Zero)
                 {
-                    if (resourceTransactionList == null)
-                        resourceTransactionList = new ResourceTransactionList();
-
                     resourceTransactionList.Add(new ResourceTransaction(this.currentPlayer.Id, player.Id, resourceClutch));
+                    this.currentPlayer.AddResources(resourceClutch);
                 }
             }
+
+            this.currentPlayer.PlayDevelopmentCard(card);
 
             this.RaiseEvent(new PlayMonopolyCardEvent(this.currentPlayer.Id, resourceTransactionList));
         }
