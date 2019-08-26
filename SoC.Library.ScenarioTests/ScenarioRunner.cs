@@ -418,31 +418,31 @@ namespace SoC.Library.ScenarioTests
             if (this.playerFactory == null)
                 this.playerFactory = new PlayerPool();
 
-            var gameServer = new GameManager(
+            var gameManager = new GameManager(
                 this.numberGenerator,
                 this.gameBoard,
                 this.developmentCardHolder,
                 this.playerFactory
             );
 
-            gameServer.SetTurnTimer(new MockTurnTimer());
+            gameManager.SetTurnTimer(new MockTurnTimer());
 
             var playerIds = new Queue<Guid>(this.playerAgents.Select(agent => agent.Id));
-            gameServer.SetIdGenerator(() => { return playerIds.Dequeue(); });
+            gameManager.SetIdGenerator(() => { return playerIds.Dequeue(); });
 
-            gameServer.LaunchGame();
+            gameManager.LaunchGame();
 
             var playerAgentTasks = new List<Task>();
             this.playerAgents.ForEach(playerAgent =>
             {
-                playerAgent.JoinGame(gameServer);
+                playerAgent.JoinGame(gameManager);
                 playerAgentTasks.Add(playerAgent.StartAsync());
             });
 
             foreach (var kv in this.startingResourcesByName)
-                gameServer.AddResourcesToPlayer(kv.Key, kv.Value);
+                gameManager.AddResourcesToPlayer(kv.Key, kv.Value);
 
-            Task gameServerTask = gameServer.StartGameAsync();
+            Task gameServerTask = gameManager.StartGameAsync();
 
             var tasks = new List<Task>(playerAgentTasks);
             tasks.Add(gameServerTask);
@@ -469,7 +469,7 @@ namespace SoC.Library.ScenarioTests
 
             if (!gameServerTask.IsCompleted)
             {
-                gameServer.Quit();
+                gameManager.Quit();
                 while (!gameServerTask.IsCompleted)
                     Thread.Sleep(50);
             }
@@ -488,7 +488,7 @@ namespace SoC.Library.ScenarioTests
                 playerAgent.SaveLog($"{logDirectory}\\{playerAgent.Name}.html");
             }
 
-            gameServer.SaveLog($"{logDirectory}\\GameServer.log");
+            gameManager.SaveLog($"{logDirectory}\\GameServer.log");
 
             if (gameServerTask.IsFaulted)
             {

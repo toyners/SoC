@@ -14,7 +14,7 @@ namespace Jabberwocky.SoC.Library
     using Jabberwocky.SoC.Library.Interfaces;
     using Jabberwocky.SoC.Library.PlayerActions;
 
-    public class GameManager
+    public class GameManager : IGameManager
     {
         #region Fields
         private readonly ActionManager actionManager;
@@ -185,22 +185,6 @@ namespace Jabberwocky.SoC.Library
             }
 
             this.currentPlayer = this.players[this.playerIndex];
-        }
-
-        private void StartTurnWithResourceCollection(uint dice1, uint dice2)
-        {
-            var resourcesCollectedByPlayerId = this.gameBoard.GetResourcesForRoll(dice1 + dice2);
-            foreach (var keyValuePair in resourcesCollectedByPlayerId)
-            {
-                if (this.playersById.TryGetValue(keyValuePair.Key, out var player))
-                {
-                    foreach (var resourceCollection in keyValuePair.Value)
-                        player.AddResources(resourceCollection.Resources);
-                }
-            }
-
-            var startPlayerTurnEvent = new StartTurnEvent(this.currentPlayer.Id, dice1, dice2, resourcesCollectedByPlayerId);
-            this.RaiseEvent(startPlayerTurnEvent);
         }
 
         private void GameSetup()
@@ -1060,6 +1044,22 @@ namespace Jabberwocky.SoC.Library
             {
                 this.StartTurnWithRobberPlacement(dice1, dice2);
             }
+        }
+
+        private void StartTurnWithResourceCollection(uint dice1, uint dice2)
+        {
+            var resourcesCollectedByPlayerId = this.gameBoard.GetResourcesForRoll(dice1 + dice2);
+            foreach (var keyValuePair in resourcesCollectedByPlayerId)
+            {
+                if (this.playersById.TryGetValue(keyValuePair.Key, out var player))
+                {
+                    foreach (var resourceCollection in keyValuePair.Value)
+                        player.AddResources(resourceCollection.Resources);
+                }
+            }
+
+            var startPlayerTurnEvent = new StartTurnEvent(this.currentPlayer.Id, dice1, dice2, resourcesCollectedByPlayerId);
+            this.RaiseEvent(startPlayerTurnEvent);
         }
 
         private void StartTurnWithRobberPlacement(uint dice1, uint dice2)
