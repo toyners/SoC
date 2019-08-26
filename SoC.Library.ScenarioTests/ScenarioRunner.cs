@@ -210,8 +210,11 @@ namespace SoC.Library.ScenarioTests
         {
             var playerId = playerName != null ? this.playerAgentsByName[playerName].Id : this.currentPlayerAgent.Id;
             var resourceTransactionList = new ResourceTransactionList();
-            foreach (var kv in resourcesByPlayerName)
-                resourceTransactionList.Add(new ResourceTransaction(playerId, this.playerAgentsByName[kv.Key].Id, kv.Value));
+            if (resourcesByPlayerName != null && resourcesByPlayerName.Count > 0)
+            {
+                foreach (var kv in resourcesByPlayerName)
+                    resourceTransactionList.Add(new ResourceTransaction(playerId, this.playerAgentsByName[kv.Key].Id, kv.Value));
+            }
             var gameEvent = new PlayMonopolyCardEvent(playerId, resourceTransactionList);
             var eventInstruction = new EventInstruction(gameEvent);
             this.currentPlayerAgent.AddInstruction(eventInstruction);

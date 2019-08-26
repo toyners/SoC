@@ -1440,11 +1440,6 @@ namespace SoC.Library.ScenarioTests
         [Test]
         public void PlayerPlaysMonopolyCardButGetsNoResources()
         {
-            var expectedResources = new Dictionary<string, ResourceClutch>();
-            //expectedResources.Add(Babara, ResourceClutch.OneLumber);
-            //expectedResources.Add(Charlie, ResourceClutch.OneLumber);
-            //expectedResources.Add(Dana, ResourceClutch.OneLumber);
-
             try
             {
                 this.CompletePlayerInfrastructureSetup()
@@ -1452,9 +1447,52 @@ namespace SoC.Library.ScenarioTests
                     .WithInitialPlayerSetupFor(Adam, MonopolyCard())
                     .WhenPlayer(Adam)
                         .ReceivesStartTurnEvent(3, 3).ThenPlayMonopolyCard(ResourceTypes.Lumber)
-                        .ReceivesMonopolyCardPlayedEvent(expectedResources)
+                        .ReceivesMonopolyCardPlayedEvent(null)
                         .ThenVerifyPlayerState()
                             .Resources(ResourceClutch.Zero)
+                        .EndPlayerVerification()
+                    .VerifyPlayer(Babara)
+                        .ReceivesMonopolyCardPlayedEvent(null, Adam)
+                        .ThenVerifyPlayerState()
+                            .Resources(ResourceClutch.Zero)
+                        .EndPlayerVerification()
+                    .VerifyPlayer(Charlie)
+                        .ReceivesMonopolyCardPlayedEvent(null, Adam)
+                        .ThenVerifyPlayerState()
+                            .Resources(ResourceClutch.Zero)
+                        .EndPlayerVerification()
+                    .VerifyPlayer(Dana)
+                        .ReceivesMonopolyCardPlayedEvent(null, Adam)
+                        .ThenVerifyPlayerState()
+                            .Resources(ResourceClutch.Zero)
+                        .EndPlayerVerification()
+                    .Run(this.logDirectory);
+            }
+            finally
+            {
+                this.AttachReports();
+            }
+        }
+
+        [Test]
+        public void PlayerPlaysMonopolyCardAndGetsSomeResources()
+        {
+            var expectedResources = new Dictionary<string, ResourceClutch>();
+            expectedResources.Add(Babara, ResourceClutch.OneBrick * 2);
+            expectedResources.Add(Dana, ResourceClutch.OneBrick * 3);
+            try
+            {
+                this.CompletePlayerInfrastructureSetup()
+                    .WithCustomResourceCollection()
+                    .WithInitialPlayerSetupFor(Adam, MonopolyCard())
+                    .WithInitialPlayerSetupFor(Babara, Resources(ResourceClutch.OneBrick * 2))
+                    .WithInitialPlayerSetupFor(Charlie, Resources(ResourceClutch.OneGrain))
+                    .WithInitialPlayerSetupFor(Dana, Resources(ResourceClutch.OneBrick * 3))
+                    .WhenPlayer(Adam)
+                        .ReceivesStartTurnEvent(3, 3).ThenPlayMonopolyCard(ResourceTypes.Lumber)
+                        .ReceivesMonopolyCardPlayedEvent(expectedResources)
+                        .ThenVerifyPlayerState()
+                            .Resources(ResourceClutch.OneBrick * 5)
                         .EndPlayerVerification()
                     .VerifyPlayer(Babara)
                         .ReceivesMonopolyCardPlayedEvent(expectedResources, Adam)
@@ -1464,7 +1502,7 @@ namespace SoC.Library.ScenarioTests
                     .VerifyPlayer(Charlie)
                         .ReceivesMonopolyCardPlayedEvent(expectedResources, Adam)
                         .ThenVerifyPlayerState()
-                            .Resources(ResourceClutch.Zero)
+                            .Resources(ResourceClutch.OneGrain)
                         .EndPlayerVerification()
                     .VerifyPlayer(Dana)
                         .ReceivesMonopolyCardPlayedEvent(expectedResources, Adam)
