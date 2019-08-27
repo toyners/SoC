@@ -192,13 +192,13 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
             expectedResources.Add(new ResourceTransaction(player.Id, secondOpponent.Id, ResourceClutch.OneBrick * 2));
 
             gainedResources.ShouldBe(expectedResources);
-            player.ResourcesCount.ShouldBe(3);
-            player.BrickCount.ShouldBe(3);
-            firstOpponent.ResourcesCount.ShouldBe(4);
-            firstOpponent.BrickCount.ShouldBe(0);
-            secondOpponent.ResourcesCount.ShouldBe(0);
-            thirdOpponent.ResourcesCount.ShouldBe(4);
-            thirdOpponent.BrickCount.ShouldBe(0);
+            player.Resources.Count.ShouldBe(3);
+            player.Resources.BrickCount.ShouldBe(3);
+            firstOpponent.Resources.Count.ShouldBe(4);
+            firstOpponent.Resources.BrickCount.ShouldBe(0);
+            secondOpponent.Resources.Count.ShouldBe(0);
+            thirdOpponent.Resources.Count.ShouldBe(4);
+            thirdOpponent.Resources.BrickCount.ShouldBe(0);
         }
 
         [Test]
@@ -238,13 +238,13 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
 
             // Assert
             gainedResources.ShouldBeNull();
-            player.ResourcesCount.ShouldBe(0);
-            firstOpponent.ResourcesCount.ShouldBe(1);
-            firstOpponent.GrainCount.ShouldBe(1);
-            secondOpponent.ResourcesCount.ShouldBe(1);
-            secondOpponent.LumberCount.ShouldBe(1);
-            thirdOpponent.ResourcesCount.ShouldBe(1);
-            thirdOpponent.OreCount.ShouldBe(1);
+            player.Resources.Count.ShouldBe(0);
+            firstOpponent.Resources.Count.ShouldBe(1);
+            firstOpponent.Resources.GrainCount.ShouldBe(1);
+            secondOpponent.Resources.Count.ShouldBe(1);
+            secondOpponent.Resources.LumberCount.ShouldBe(1);
+            thirdOpponent.Resources.Count.ShouldBe(1);
+            thirdOpponent.Resources.OreCount.ShouldBe(1);
         }
 
         [Test]
@@ -346,12 +346,12 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
             gameEvents[9].Count.ShouldBe(2);
             gameEvents[9][1].ShouldBe(expectedPlayMonopolyCardEvent);
             
-            player.ResourcesCount.ShouldBe(0);
-            firstOpponent.ResourcesCount.ShouldBe(3);
-            firstOpponent.BrickCount.ShouldBe(firstOpponent.ResourcesCount);
-            secondOpponent.ResourcesCount.ShouldBe(4);
-            secondOpponent.BrickCount.ShouldBe(0);
-            thirdOpponent.ResourcesCount.ShouldBe(0);
+            player.Resources.Count.ShouldBe(0);
+            firstOpponent.Resources.Count.ShouldBe(3);
+            firstOpponent.Resources.BrickCount.ShouldBe(firstOpponent.Resources.Count);
+            secondOpponent.Resources.Count.ShouldBe(4);
+            secondOpponent.Resources.BrickCount.ShouldBe(0);
+            thirdOpponent.Resources.Count.ShouldBe(0);
         }
 
         private IDevelopmentCardHolder CreateMockCardDevelopmentCardHolder(DevelopmentCard firstDevelopmentCard, params DevelopmentCard[] otherDevelopmentCards)

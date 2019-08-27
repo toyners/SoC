@@ -23,11 +23,11 @@ namespace Jabberwocky.SoC.Library.UnitTests
       player.AddResources(new ResourceClutch(5, 4, 3, 2, 1));
 
       // Assert
-      player.BrickCount.ShouldBe(5);
-      player.GrainCount.ShouldBe(4);
-      player.LumberCount.ShouldBe(3);
-      player.OreCount.ShouldBe(2);
-      player.WoolCount.ShouldBe(1);
+      player.Resources.BrickCount.ShouldBe(5);
+      player.Resources.GrainCount.ShouldBe(4);
+      player.Resources.LumberCount.ShouldBe(3);
+      player.Resources.OreCount.ShouldBe(2);
+      player.Resources.WoolCount.ShouldBe(1);
     }
 
     [Test]
@@ -41,11 +41,11 @@ namespace Jabberwocky.SoC.Library.UnitTests
       player.RemoveResources(new ResourceClutch(4, 3, 2, 1, 0));
 
       // Assert
-      player.BrickCount.ShouldBe(1);
-      player.GrainCount.ShouldBe(1);
-      player.LumberCount.ShouldBe(1);
-      player.OreCount.ShouldBe(1);
-      player.WoolCount.ShouldBe(1);
+      player.Resources.BrickCount.ShouldBe(1);
+      player.Resources.GrainCount.ShouldBe(1);
+      player.Resources.LumberCount.ShouldBe(1);
+      player.Resources.OreCount.ShouldBe(1);
+      player.Resources.WoolCount.ShouldBe(1);
     }
 
     [Test]
@@ -75,7 +75,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
       Action action = () => { player.LoseResourceAtIndex(index); };
 
       // Assert
-      action.ShouldThrow<IndexOutOfRangeException>().Message.ShouldBe("Index " + index + " is out of bounds (0.." + (player.ResourcesCount - 1) + ").");
+      action.ShouldThrow<IndexOutOfRangeException>().Message.ShouldBe("Index " + index + " is out of bounds (0.." + (player.Resources.Count - 1) + ").");
     }
 
     [Test]
@@ -97,12 +97,12 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
       // Assert
       actualResourceClutch.ShouldBe(expectedResourceClutch);
-      player.ResourcesCount.ShouldBe(4);
-      player.BrickCount.ShouldBe(1 - expectedBrickCount);
-      player.GrainCount.ShouldBe(1 - expectedGrainCount);
-      player.LumberCount.ShouldBe(1 - expectedLumberCount);
-      player.OreCount.ShouldBe(1 - expectedOreCount);
-      player.WoolCount.ShouldBe(1 - expectedWoolCount);
+      player.Resources.Count.ShouldBe(4);
+      player.Resources.BrickCount.ShouldBe(1 - expectedBrickCount);
+      player.Resources.GrainCount.ShouldBe(1 - expectedGrainCount);
+      player.Resources.LumberCount.ShouldBe(1 - expectedLumberCount);
+      player.Resources.OreCount.ShouldBe(1 - expectedOreCount);
+      player.Resources.WoolCount.ShouldBe(1 - expectedWoolCount);
     }
 
     [Test]
@@ -143,15 +143,15 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
       // Assert
       actualResourceClutch.ShouldBe(expectedResourceClutch);
-      player.ResourcesCount.ShouldBe(count * 4);
+      player.Resources.Count.ShouldBe(count * 4);
 
       switch (resourceType)
       {
-        case ResourceTypes.Brick: player.BrickCount.ShouldBe(0); break;
-        case ResourceTypes.Grain: player.GrainCount.ShouldBe(0); break;
-        case ResourceTypes.Lumber: player.LumberCount.ShouldBe(0); break;
-        case ResourceTypes.Ore: player.OreCount.ShouldBe(0); break;
-        case ResourceTypes.Wool: player.WoolCount.ShouldBe(0); break;
+        case ResourceTypes.Brick: player.Resources.BrickCount.ShouldBe(0); break;
+        case ResourceTypes.Grain: player.Resources.GrainCount.ShouldBe(0); break;
+        case ResourceTypes.Lumber: player.Resources.LumberCount.ShouldBe(0); break;
+        case ResourceTypes.Ore: player.Resources.OreCount.ShouldBe(0); break;
+        case ResourceTypes.Wool: player.Resources.WoolCount.ShouldBe(0); break;
       }
     }
     #endregion 

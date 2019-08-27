@@ -184,9 +184,9 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
             expected.Add(new ResourceTransaction(player.Id, bankId, new ResourceClutch(1, 1, 0, 0, 0)));
 
             resources.ShouldBe(expected);
-            player.ResourcesCount.ShouldBe(2);
-            player.BrickCount.ShouldBe(1);
-            player.GrainCount.ShouldBe(1);
+            player.Resources.Count.ShouldBe(2);
+            player.Resources.BrickCount.ShouldBe(1);
+            player.Resources.GrainCount.ShouldBe(1);
         }
 
         [Test]
@@ -222,8 +222,8 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
             expected.Add(new ResourceTransaction(player.Id, bankId, ResourceClutch.OneBrick * 2));
 
             resources.ShouldBe(expected);
-            player.ResourcesCount.ShouldBe(2);
-            player.BrickCount.ShouldBe(2);
+            player.Resources.Count.ShouldBe(2);
+            player.Resources.BrickCount.ShouldBe(2);
         }
 
         [Test]
@@ -320,13 +320,13 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
             gameEvents[9].Count.ShouldBe(2);
             gameEvents[9][1].ShouldBe(expectedPlayYearOfPlentyCardEvent);
 
-            player.ResourcesCount.ShouldBe(0);
-            firstOpponent.ResourcesCount.ShouldBe(2);
-            firstOpponent.BrickCount.ShouldBe(1);
-            firstOpponent.GrainCount.ShouldBe(1);
-            secondOpponent.ResourcesCount.ShouldBe(0);
-            secondOpponent.BrickCount.ShouldBe(0);
-            thirdOpponent.ResourcesCount.ShouldBe(0);
+            player.Resources.Count.ShouldBe(0);
+            firstOpponent.Resources.Count.ShouldBe(2);
+            firstOpponent.Resources.BrickCount.ShouldBe(1);
+            firstOpponent.Resources.GrainCount.ShouldBe(1);
+            secondOpponent.Resources.Count.ShouldBe(0);
+            secondOpponent.Resources.BrickCount.ShouldBe(0);
+            thirdOpponent.Resources.Count.ShouldBe(0);
         }
 
         [Test]
@@ -373,12 +373,12 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
             gameEvents[9].Count.ShouldBe(2);
             gameEvents[9][1].ShouldBe(expectedPlayYearOfPlentyCardEvent);
 
-            player.ResourcesCount.ShouldBe(0);
-            firstOpponent.ResourcesCount.ShouldBe(2);
-            firstOpponent.BrickCount.ShouldBe(2);
-            secondOpponent.ResourcesCount.ShouldBe(0);
-            secondOpponent.BrickCount.ShouldBe(0);
-            thirdOpponent.ResourcesCount.ShouldBe(0);
+            player.Resources.Count.ShouldBe(0);
+            firstOpponent.Resources.Count.ShouldBe(2);
+            firstOpponent.Resources.BrickCount.ShouldBe(2);
+            secondOpponent.Resources.Count.ShouldBe(0);
+            secondOpponent.Resources.BrickCount.ShouldBe(0);
+            thirdOpponent.Resources.Count.ShouldBe(0);
         }
 
         private IDevelopmentCardHolder CreateMockCardDevelopmentCardHolder(DevelopmentCard firstDevelopmentCard, params DevelopmentCard[] otherDevelopmentCards)

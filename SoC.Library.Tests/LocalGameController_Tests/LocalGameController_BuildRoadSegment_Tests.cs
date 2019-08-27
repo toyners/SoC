@@ -62,8 +62,8 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
             localGameController.BuildRoadSegment(turnToken, 4u, 3u);
 
             // Assert
-            player.BrickCount.ShouldBe(0);
-            player.LumberCount.ShouldBe(0);
+            player.Resources.BrickCount.ShouldBe(0);
+            player.Resources.LumberCount.ShouldBe(0);
         }
 
         [Test]

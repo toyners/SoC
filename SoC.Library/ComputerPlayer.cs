@@ -78,7 +78,7 @@ namespace Jabberwocky.SoC.Library
         {
             this.decisionMaker.Reset();
 
-            var resourceClutch = new ResourceClutch(this.BrickCount, this.GrainCount, this.LumberCount, this.OreCount, this.WoolCount);
+            var resourceClutch = new ResourceClutch(this.Resources.BrickCount, this.Resources.GrainCount, this.Resources.LumberCount, this.Resources.OreCount, this.Resources.WoolCount);
 
             if (resourceClutch >= ResourceClutch.RoadSegment && this.RemainingRoadSegments > 0)
             {

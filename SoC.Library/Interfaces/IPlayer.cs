@@ -29,14 +29,6 @@ namespace Jabberwocky.SoC.Library.Interfaces
         int PlacedRoadSegments { get; }
         int PlacedSettlements { get; }
         uint VictoryPoints { get; }
-
-        // TODO: Obsolete properties
-        int BrickCount { get; }
-        int GrainCount { get; }
-        int LumberCount { get; }
-        int OreCount { get; }
-        int WoolCount { get; }
-        int ResourcesCount { get; }
         #endregion
 
         #region Methods

@@ -41,11 +41,11 @@ namespace Jabberwocky.SoC.Library.UnitTests
       player.ShouldBeOfType<ComputerPlayer>();
       player.Id.ShouldBe(playerId);
       player.Name.ShouldBe("Player");
-      player.BrickCount.ShouldBe(1);
-      player.GrainCount.ShouldBe(2);
-      player.LumberCount.ShouldBe(3);
-      player.OreCount.ShouldBe(4);
-      player.WoolCount.ShouldBe(5);
+      player.Resources.BrickCount.ShouldBe(1);
+      player.Resources.GrainCount.ShouldBe(2);
+      player.Resources.LumberCount.ShouldBe(3);
+      player.Resources.OreCount.ShouldBe(4);
+      player.Resources.WoolCount.ShouldBe(5);
       player.IsComputer.ShouldBeTrue();
     }
 
@@ -74,11 +74,11 @@ namespace Jabberwocky.SoC.Library.UnitTests
       // Assert
       player.Id.ShouldBe(playerId);
       player.Name.ShouldBe("Player");
-      player.BrickCount.ShouldBe(0);
-      player.GrainCount.ShouldBe(0);
-      player.LumberCount.ShouldBe(0);
-      player.OreCount.ShouldBe(0);
-      player.WoolCount.ShouldBe(0);
+      player.Resources.BrickCount.ShouldBe(0);
+      player.Resources.GrainCount.ShouldBe(0);
+      player.Resources.LumberCount.ShouldBe(0);
+      player.Resources.OreCount.ShouldBe(0);
+      player.Resources.WoolCount.ShouldBe(0);
       player.IsComputer.ShouldBeFalse();
     }
 

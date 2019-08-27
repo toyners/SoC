@@ -99,10 +99,10 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
 
             resources.ShouldBe(expected);
 
-            player.ResourcesCount.ShouldBe(receivingCount + otherCount + leftOverBrickCount);
-            player.BrickCount.ShouldBe(leftOverBrickCount);
-            player.GrainCount.ShouldBe(receivingCount);
-            player.WoolCount.ShouldBe(otherCount);
+            player.Resources.Count.ShouldBe(receivingCount + otherCount + leftOverBrickCount);
+            player.Resources.BrickCount.ShouldBe(leftOverBrickCount);
+            player.Resources.GrainCount.ShouldBe(receivingCount);
+            player.Resources.WoolCount.ShouldBe(otherCount);
         }
 
         [Test]
@@ -246,8 +246,8 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
             gameEvents[2].Count.ShouldBe(2);
             gameEvents[2][1].ShouldBe(expectedTradeWithBankEvent);
 
-            firstOpponent.ResourcesCount.ShouldBe(1);
-            firstOpponent.WoolCount.ShouldBe(1);
+            firstOpponent.Resources.Count.ShouldBe(1);
+            firstOpponent.Resources.WoolCount.ShouldBe(1);
         }
 
         private LocalGameControllerTestCreator.TestInstances TestSetup()

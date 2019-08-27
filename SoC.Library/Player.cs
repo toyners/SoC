@@ -45,11 +45,11 @@ namespace Jabberwocky.SoC.Library
         {
             this.Id = data.GetIdentityValue(GameDataValueKeys.PlayerId);
             this.Name = data.GetStringValue(GameDataValueKeys.PlayerName);
-            this.BrickCount = data.GetIntegerValue(GameDataValueKeys.PlayerBrick);
+            /*this.BrickCount = data.GetIntegerValue(GameDataValueKeys.PlayerBrick);
             this.GrainCount = data.GetIntegerValue(GameDataValueKeys.PlayerGrain);
             this.LumberCount = data.GetIntegerValue(GameDataValueKeys.PlayerLumber);
             this.OreCount = data.GetIntegerValue(GameDataValueKeys.PlayerOre);
-            this.WoolCount = data.GetIntegerValue(GameDataValueKeys.PlayerWool);
+            this.WoolCount = data.GetIntegerValue(GameDataValueKeys.PlayerWool);*/
         }
 
         public Player(PlayerModel playerModel)
@@ -138,7 +138,7 @@ namespace Jabberwocky.SoC.Library
         public uint VictoryPoints { get; protected set; }
 
         // TODO: Obsolete. 
-        public int BrickCount { get; protected set; }
+        /*public int BrickCount { get; protected set; }
         public int GrainCount { get; protected set; }
         public int LumberCount { get; protected set; }
         public int OreCount { get; protected set; }
@@ -149,18 +149,13 @@ namespace Jabberwocky.SoC.Library
             {
                 return this.BrickCount + this.GrainCount + this.LumberCount + this.OreCount + this.WoolCount;
             }
-        }
+        }*/
         #endregion
 
         #region Methods
         public void AddResources(ResourceClutch resourceClutch)
         {
             this.Resources += resourceClutch;
-            this.BrickCount += resourceClutch.BrickCount;
-            this.GrainCount += resourceClutch.GrainCount;
-            this.LumberCount += resourceClutch.LumberCount;
-            this.OreCount += resourceClutch.OreCount;
-            this.WoolCount += resourceClutch.WoolCount;
         }
 
         public PlayerPlacementStatusCodes CanPlaceRoadSegments(int roadSegmentCount)
@@ -187,14 +182,14 @@ namespace Jabberwocky.SoC.Library
 
         public ResourceClutch LoseResourceAtIndex(int index)
         {
-            if (this.ResourcesCount == 0)
+            if (this.Resources.Count == 0)
             {
                 return ResourceClutch.Zero;
             }
 
-            if (index < 0 || index >= this.ResourcesCount)
+            if (index < 0 || index >= this.Resources.Count)
             {
-                throw new IndexOutOfRangeException("Index " + index + " is out of bounds (0.." + (this.ResourcesCount - 1) + ").");
+                throw new IndexOutOfRangeException("Index " + index + " is out of bounds (0.." + (this.Resources.Count - 1) + ").");
             }
 
             return this.GetResourceForIndex(index);
@@ -291,11 +286,12 @@ namespace Jabberwocky.SoC.Library
                 }
 
                 this.Name = reader.GetAttribute("name");
-                this.BrickCount = this.GetValueOrZero(reader, "brick");
-                this.GrainCount = this.GetValueOrZero(reader, "grain");
-                this.LumberCount = this.GetValueOrZero(reader, "lumber");
-                this.OreCount = this.GetValueOrZero(reader, "ore");
-                this.WoolCount = this.GetValueOrZero(reader, "wool");
+                this.Resources = new ResourceClutch(
+                    this.GetValueOrZero(reader, "brick"),
+                    this.GetValueOrZero(reader, "grain"),
+                    this.GetValueOrZero(reader, "lumber"),
+                    this.GetValueOrZero(reader, "ore"),
+                    this.GetValueOrZero(reader, "wool"));
             }
             catch (Exception e)
             {
@@ -315,37 +311,33 @@ namespace Jabberwocky.SoC.Library
 
         private ResourceClutch GetResourceForIndex(int index)
         {
-            if (index < this.BrickCount)
+            if (index < this.Resources.BrickCount)
             {
-                this.BrickCount--;
                 this.Resources -= ResourceClutch.OneBrick;
                 return ResourceClutch.OneBrick;
             }
 
-            if (index < this.BrickCount + this.GrainCount)
+            if (index < this.Resources.BrickCount + this.Resources.GrainCount)
             {
-                this.GrainCount--;
                 this.Resources -= ResourceClutch.OneGrain;
                 return ResourceClutch.OneGrain;
             }
 
-            if (index < this.BrickCount + this.GrainCount + this.LumberCount)
+            if (index < this.Resources.BrickCount + this.Resources.GrainCount + this.Resources.LumberCount)
             {
-                this.LumberCount--;
                 this.Resources -= ResourceClutch.OneLumber;
                 return ResourceClutch.OneLumber;
             }
 
-            if (index < this.BrickCount + this.GrainCount + this.LumberCount + this.OreCount)
+            if (index < this.Resources.BrickCount + this.Resources.GrainCount + this.Resources.LumberCount + this.Resources.OreCount)
             {
-                this.OreCount--;
                 this.Resources -= ResourceClutch.OneOre;
                 return ResourceClutch.OneOre;
             }
 
-            if (index < this.BrickCount + this.GrainCount + this.LumberCount + this.OreCount + this.WoolCount)
+            if (index < this.Resources.BrickCount + this.Resources.GrainCount + this.Resources.LumberCount + 
+                this.Resources.OreCount + this.Resources.WoolCount)
             {
-                this.WoolCount--;
                 this.Resources -= ResourceClutch.OneWool;
                 return ResourceClutch.OneWool;
             }

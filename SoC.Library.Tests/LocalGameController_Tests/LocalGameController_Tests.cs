@@ -288,17 +288,17 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
             var secondOpponent = testInstances.SecondOpponent;
             var thirdOpponent = testInstances.ThirdOpponent;
 
-            firstOpponent.GrainCount.ShouldBe(1);
-            firstOpponent.LumberCount.ShouldBe(1);
-            firstOpponent.WoolCount.ShouldBe(1);
+            firstOpponent.Resources.GrainCount.ShouldBe(1);
+            firstOpponent.Resources.LumberCount.ShouldBe(1);
+            firstOpponent.Resources.WoolCount.ShouldBe(1);
 
-            secondOpponent.LumberCount.ShouldBe(1);
-            secondOpponent.OreCount.ShouldBe(1);
-            secondOpponent.WoolCount.ShouldBe(1);
+            secondOpponent.Resources.LumberCount.ShouldBe(1);
+            secondOpponent.Resources.OreCount.ShouldBe(1);
+            secondOpponent.Resources.WoolCount.ShouldBe(1);
 
-            thirdOpponent.GrainCount.ShouldBe(1);
-            thirdOpponent.LumberCount.ShouldBe(1);
-            thirdOpponent.WoolCount.ShouldBe(1);
+            thirdOpponent.Resources.GrainCount.ShouldBe(1);
+            thirdOpponent.Resources.LumberCount.ShouldBe(1);
+            thirdOpponent.Resources.WoolCount.ShouldBe(1);
         }
 
         [Test]
@@ -700,10 +700,10 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
             // Act
             var streamContent = "<game>" +
               "<players>" +
-              "<player id=\"" + player.Id + "\" name=\"" + player.Name + "\" brick=\"" + player.BrickCount + "\" grain=\"" + player.GrainCount + "\" lumber=\"" + player.LumberCount + "\" ore=\"" + player.OreCount + "\" wool=\"" + player.WoolCount + "\" />" +
-              "<player id=\"" + firstOpponent.Id + "\" name=\"" + firstOpponent.Name + "\" iscomputer=\"true\" brick=\"" + firstOpponent.BrickCount + "\" grain=\"" + firstOpponent.GrainCount + "\" lumber=\"" + firstOpponent.LumberCount + "\" ore=\"" + firstOpponent.OreCount + "\" wool=\"" + firstOpponent.WoolCount + "\" />" +
-              "<player id=\"" + secondOpponent.Id + "\" name=\"" + secondOpponent.Name + "\" iscomputer=\"true\" brick=\"" + secondOpponent.BrickCount + "\" grain=\"" + secondOpponent.GrainCount + "\" lumber=\"" + secondOpponent.LumberCount + "\" ore=\"" + secondOpponent.OreCount + "\" wool=\"" + secondOpponent.WoolCount + "\" />" +
-              "<player id=\"" + thirdOpponent.Id + "\" name=\"" + thirdOpponent.Name + "\" iscomputer=\"true\" brick=\"" + thirdOpponent.BrickCount + "\" grain=\"" + thirdOpponent.GrainCount + "\" lumber=\"" + thirdOpponent.LumberCount + "\" ore=\"" + thirdOpponent.OreCount + "\" wool=\"" + thirdOpponent.WoolCount + "\" />" +
+              "<player id=\"" + player.Id + "\" name=\"" + player.Name + "\" brick=\"" + player.Resources.BrickCount + "\" grain=\"" + player.Resources.GrainCount + "\" lumber=\"" + player.Resources.LumberCount + "\" ore=\"" + player.Resources.OreCount + "\" wool=\"" + player.Resources.WoolCount + "\" />" +
+              "<player id=\"" + firstOpponent.Id + "\" name=\"" + firstOpponent.Name + "\" iscomputer=\"true\" brick=\"" + firstOpponent.Resources.BrickCount + "\" grain=\"" + firstOpponent.Resources.GrainCount + "\" lumber=\"" + firstOpponent.Resources.LumberCount + "\" ore=\"" + firstOpponent.Resources.OreCount + "\" wool=\"" + firstOpponent.Resources.WoolCount + "\" />" +
+              "<player id=\"" + secondOpponent.Id + "\" name=\"" + secondOpponent.Name + "\" iscomputer=\"true\" brick=\"" + secondOpponent.Resources.BrickCount + "\" grain=\"" + secondOpponent.Resources.GrainCount + "\" lumber=\"" + secondOpponent.Resources.LumberCount + "\" ore=\"" + secondOpponent.Resources.OreCount + "\" wool=\"" + secondOpponent.Resources.WoolCount + "\" />" +
+              "<player id=\"" + thirdOpponent.Id + "\" name=\"" + thirdOpponent.Name + "\" iscomputer=\"true\" brick=\"" + thirdOpponent.Resources.BrickCount + "\" grain=\"" + thirdOpponent.Resources.GrainCount + "\" lumber=\"" + thirdOpponent.Resources.LumberCount + "\" ore=\"" + thirdOpponent.Resources.OreCount + "\" wool=\"" + thirdOpponent.Resources.WoolCount + "\" />" +
               "</players>" +
               "</game>";
             var streamContentBytes = Encoding.UTF8.GetBytes(streamContent);
@@ -778,7 +778,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
             playerDataView.Name.ShouldBe(player.Name);
             playerDataView.PlayedDevelopmentCards.ShouldBeNull();
             playerDataView.HiddenDevelopmentCards.ShouldBe(0);
-            playerDataView.ResourceCards.ShouldBe(player.ResourcesCount);
+            playerDataView.ResourceCards.ShouldBe(player.Resources.Count);
             playerDataView.IsComputer.ShouldBe(player.IsComputer);
         }
 

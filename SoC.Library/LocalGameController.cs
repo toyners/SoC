@@ -890,7 +890,7 @@ namespace Jabberwocky.SoC.Library
             this.robbingChoices = new Dictionary<Guid, int>();
             foreach (var playerId in playerIds)
             {
-                this.robbingChoices.Add(playerId, this.playersById[playerId].ResourcesCount);
+                this.robbingChoices.Add(playerId, this.playersById[playerId].Resources.Count);
             }
 
             this.GamePhase = GamePhases.ChooseResourceFromOpponent;
@@ -1003,11 +1003,11 @@ namespace Jabberwocky.SoC.Library
             int resourceCount = 0;
             switch (givingResourceType)
             {
-                case ResourceTypes.Brick: resourceCount = this.mainPlayer.BrickCount; break;
-                case ResourceTypes.Grain: resourceCount = this.mainPlayer.GrainCount; break;
-                case ResourceTypes.Lumber: resourceCount = this.mainPlayer.LumberCount; break;
-                case ResourceTypes.Ore: resourceCount = this.mainPlayer.OreCount; break;
-                case ResourceTypes.Wool: resourceCount = this.mainPlayer.WoolCount; break;
+                case ResourceTypes.Brick: resourceCount = this.mainPlayer.Resources.BrickCount; break;
+                case ResourceTypes.Grain: resourceCount = this.mainPlayer.Resources.GrainCount; break;
+                case ResourceTypes.Lumber: resourceCount = this.mainPlayer.Resources.LumberCount; break;
+                case ResourceTypes.Ore: resourceCount = this.mainPlayer.Resources.OreCount; break;
+                case ResourceTypes.Wool: resourceCount = this.mainPlayer.Resources.WoolCount; break;
             }
 
             if (!this.VerifyTradeWithBank(receivingCount, resourceCount, givingResourceType, receivingResourceType))
@@ -1398,7 +1398,7 @@ namespace Jabberwocky.SoC.Library
 
         private ResourceClutch GetResourceFromPlayer(IPlayer player)
         {
-            var resourceIndex = this.numberGenerator.GetRandomNumberBetweenZeroAndMaximum(player.ResourcesCount);
+            var resourceIndex = this.numberGenerator.GetRandomNumberBetweenZeroAndMaximum(player.Resources.Count);
             return player.LoseResourceAtIndex(resourceIndex);
         }
 
@@ -1503,19 +1503,19 @@ namespace Jabberwocky.SoC.Library
                 return;
             }
 
-            if (this.currentPlayer.BrickCount == 0 && this.currentPlayer.LumberCount == 0)
+            if (this.currentPlayer.Resources.BrickCount == 0 && this.currentPlayer.Resources.LumberCount == 0)
             {
                 this.ErrorRaisedEvent?.Invoke(new ErrorDetails("Cannot build road segment. Missing 1 brick and 1 lumber."));
                 return;
             }
 
-            if (this.currentPlayer.BrickCount == 0)
+            if (this.currentPlayer.Resources.BrickCount == 0)
             {
                 this.ErrorRaisedEvent?.Invoke(new ErrorDetails("Cannot build road segment. Missing 1 brick."));
                 return;
             }
 
-            if (this.currentPlayer.LumberCount == 0)
+            if (this.currentPlayer.Resources.LumberCount == 0)
             {
                 this.ErrorRaisedEvent?.Invoke(new ErrorDetails("Cannot build road segment. Missing 1 lumber."));
                 return;
@@ -1536,24 +1536,24 @@ namespace Jabberwocky.SoC.Library
                 return false;
             }
 
-            if (this.currentPlayer.GrainCount < Constants.GrainForBuildingCity && this.currentPlayer.OreCount < Constants.OreForBuildingCity)
+            if (this.currentPlayer.Resources.GrainCount < Constants.GrainForBuildingCity && this.currentPlayer.Resources.OreCount < Constants.OreForBuildingCity)
             {
-                var missingGrainCount = (Constants.GrainForBuildingCity - this.currentPlayer.GrainCount);
-                var missingOreCount = (Constants.OreForBuildingCity - this.currentPlayer.OreCount);
+                var missingGrainCount = (Constants.GrainForBuildingCity - this.currentPlayer.Resources.GrainCount);
+                var missingOreCount = (Constants.OreForBuildingCity - this.currentPlayer.Resources.OreCount);
                 this.ErrorRaisedEvent?.Invoke(new ErrorDetails("Cannot build city. Missing " + missingGrainCount + " grain and " + missingOreCount + " ore."));
                 return false;
             }
 
-            if (this.currentPlayer.GrainCount < Constants.GrainForBuildingCity)
+            if (this.currentPlayer.Resources.GrainCount < Constants.GrainForBuildingCity)
             {
-                var missingGrainCount = (Constants.GrainForBuildingCity - this.currentPlayer.GrainCount);
+                var missingGrainCount = (Constants.GrainForBuildingCity - this.currentPlayer.Resources.GrainCount);
                 this.ErrorRaisedEvent?.Invoke(new ErrorDetails("Cannot build city. Missing " + missingGrainCount + " grain."));
                 return false;
             }
 
-            if (this.currentPlayer.OreCount < Constants.OreForBuildingCity)
+            if (this.currentPlayer.Resources.OreCount < Constants.OreForBuildingCity)
             {
-                var missingOreCount = (Constants.OreForBuildingCity - this.currentPlayer.OreCount);
+                var missingOreCount = (Constants.OreForBuildingCity - this.currentPlayer.Resources.OreCount);
                 this.ErrorRaisedEvent?.Invoke(new ErrorDetails("Cannot build city. Missing " + missingOreCount + " ore."));
                 return false;
             }
@@ -1644,43 +1644,43 @@ namespace Jabberwocky.SoC.Library
                 return false;
             }
 
-            if (this.currentPlayer.GrainCount < 1 && this.currentPlayer.OreCount < 1 && this.currentPlayer.WoolCount < 1)
+            if (this.currentPlayer.Resources.GrainCount < 1 && this.currentPlayer.Resources.OreCount < 1 && this.currentPlayer.Resources.WoolCount < 1)
             {
                 this.ErrorRaisedEvent?.Invoke(new ErrorDetails("Cannot buy development card. Missing 1 grain and 1 ore and 1 wool."));
                 return false;
             }
 
-            if (this.currentPlayer.GrainCount < 1 && this.currentPlayer.OreCount < 1)
+            if (this.currentPlayer.Resources.GrainCount < 1 && this.currentPlayer.Resources.OreCount < 1)
             {
                 this.ErrorRaisedEvent?.Invoke(new ErrorDetails("Cannot buy development card. Missing 1 grain and 1 ore."));
                 return false;
             }
 
-            if (this.currentPlayer.GrainCount < 1 && this.currentPlayer.WoolCount < 1)
+            if (this.currentPlayer.Resources.GrainCount < 1 && this.currentPlayer.Resources.WoolCount < 1)
             {
                 this.ErrorRaisedEvent?.Invoke(new ErrorDetails("Cannot buy development card. Missing 1 grain and 1 wool."));
                 return false;
             }
 
-            if (this.currentPlayer.OreCount < 1 && this.currentPlayer.WoolCount < 1)
+            if (this.currentPlayer.Resources.OreCount < 1 && this.currentPlayer.Resources.WoolCount < 1)
             {
                 this.ErrorRaisedEvent?.Invoke(new ErrorDetails("Cannot buy development card. Missing 1 ore and 1 wool."));
                 return false;
             }
 
-            if (this.currentPlayer.GrainCount < 1)
+            if (this.currentPlayer.Resources.GrainCount < 1)
             {
                 this.ErrorRaisedEvent?.Invoke(new ErrorDetails("Cannot buy development card. Missing 1 grain."));
                 return false;
             }
 
-            if (this.currentPlayer.OreCount < 1)
+            if (this.currentPlayer.Resources.OreCount < 1)
             {
                 this.ErrorRaisedEvent?.Invoke(new ErrorDetails("Cannot buy development card. Missing 1 ore."));
                 return false;
             }
 
-            if (this.currentPlayer.WoolCount < 1)
+            if (this.currentPlayer.Resources.WoolCount < 1)
             {
                 this.ErrorRaisedEvent?.Invoke(new ErrorDetails("Cannot buy development card. Missing 1 wool."));
                 return false;
@@ -1803,22 +1803,22 @@ namespace Jabberwocky.SoC.Library
             }
 
             String message = null;
-            if (this.mainPlayer.BrickCount == 0)
+            if (this.mainPlayer.Resources.BrickCount == 0)
             {
                 message += "1 brick and ";
             }
 
-            if (this.mainPlayer.GrainCount == 0)
+            if (this.mainPlayer.Resources.GrainCount == 0)
             {
                 message += "1 grain and ";
             }
 
-            if (this.mainPlayer.LumberCount == 0)
+            if (this.mainPlayer.Resources.LumberCount == 0)
             {
                 message += "1 lumber and ";
             }
 
-            if (this.mainPlayer.WoolCount == 0)
+            if (this.mainPlayer.Resources.WoolCount == 0)
             {
                 message += "1 wool and ";
             }

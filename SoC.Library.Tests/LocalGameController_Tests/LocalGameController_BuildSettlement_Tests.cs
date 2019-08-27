@@ -44,7 +44,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
             // Assert
             settlementBuilt.ShouldBeTrue();
             player.VictoryPoints.ShouldBe(3u);
-            player.ResourcesCount.ShouldBe(0);
+            player.Resources.Count.ShouldBe(0);
         }
 
         [Test]
