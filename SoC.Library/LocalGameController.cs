@@ -1094,14 +1094,14 @@ namespace Jabberwocky.SoC.Library
             var resources = ResourceClutch.Zero;
             foreach (var resourceChoice in new[] { firstChoice, secondChoice })
             {
-                switch (resourceChoice)
+                /*switch (resourceChoice)
                 {
                     case ResourceTypes.Brick: resources.BrickCount++; break;
                     case ResourceTypes.Lumber: resources.LumberCount++; break;
                     case ResourceTypes.Grain: resources.GrainCount++; break;
                     case ResourceTypes.Ore: resources.OreCount++; break;
                     case ResourceTypes.Wool: resources.WoolCount++; break;
-                }
+                }*/
             }
 
             this.mainPlayer.AddResources(resources);

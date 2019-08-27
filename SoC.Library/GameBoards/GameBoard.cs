@@ -513,19 +513,19 @@ namespace Jabberwocky.SoC.Library.GameBoards
                 switch (this.hexes[hexIndex].Type)
                 {
                     case ResourceTypes.Brick:
-                        resourceClutch.BrickCount++;
+                        resourceClutch += ResourceClutch.OneBrick;
                         break;
                     case ResourceTypes.Grain:
-                        resourceClutch.GrainCount++;
+                        resourceClutch += ResourceClutch.OneGrain;
                         break;
                     case ResourceTypes.Lumber:
-                        resourceClutch.LumberCount++;
+                        resourceClutch += ResourceClutch.OneLumber;
                         break;
                     case ResourceTypes.Ore:
-                        resourceClutch.OreCount++;
+                        resourceClutch += ResourceClutch.OneOre;
                         break;
                     case ResourceTypes.Wool:
-                        resourceClutch.WoolCount++;
+                        resourceClutch += ResourceClutch.OneWool;
                         break;
                 }
             }

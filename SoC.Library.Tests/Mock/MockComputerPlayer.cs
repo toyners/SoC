@@ -196,11 +196,11 @@ namespace Jabberwocky.SoC.Library.UnitTests.Mock
             {
                 switch (resourceChoice)
                 {
-                    case ResourceTypes.Brick: resources.BrickCount++; break;
-                    case ResourceTypes.Lumber: resources.LumberCount++; break;
-                    case ResourceTypes.Grain: resources.GrainCount++; break;
-                    case ResourceTypes.Ore: resources.OreCount++; break;
-                    case ResourceTypes.Wool: resources.WoolCount++; break;
+                    case ResourceTypes.Brick: resources += ResourceClutch.OneBrick; break;
+                    case ResourceTypes.Grain: resources += ResourceClutch.OneGrain; break;
+                    case ResourceTypes.Lumber: resources += ResourceClutch.OneLumber; break;
+                    case ResourceTypes.Ore: resources += ResourceClutch.OneOre; break;
+                    case ResourceTypes.Wool: resources += ResourceClutch.OneWool; break;
                 }
             }
 
@@ -209,7 +209,7 @@ namespace Jabberwocky.SoC.Library.UnitTests.Mock
 
         public override ResourceClutch ChooseResourcesToDrop()
         {
-            return DroppedResources;
+            return this.DroppedResources;
         }
 
         public override ResourceTypes ChooseResourceTypeToRob()

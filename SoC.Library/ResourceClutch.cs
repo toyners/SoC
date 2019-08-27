@@ -19,12 +19,6 @@ namespace Jabberwocky.SoC.Library
         public static ResourceClutch OneOre = new ResourceClutch(0, 0, 0, 1, 0);
         public static ResourceClutch OneWool = new ResourceClutch(0, 0, 0, 0, 1);
         public static ResourceClutch OneOfEach = new ResourceClutch(1, 1, 1, 1, 1);
-
-        public int BrickCount;
-        public int GrainCount;
-        public int LumberCount;
-        public int OreCount;
-        public int WoolCount;
         #endregion
 
         #region Construction
@@ -62,7 +56,12 @@ namespace Jabberwocky.SoC.Library
         #endregion
 
         #region Properties
+        public int BrickCount { get; }
         public int Count { get { return this.BrickCount + this.GrainCount + this.LumberCount + this.OreCount + this.WoolCount; } }
+        public int GrainCount { get; }
+        public int LumberCount { get; }
+        public int OreCount { get; }
+        public int WoolCount { get; }
         #endregion
 
         #region Methods
