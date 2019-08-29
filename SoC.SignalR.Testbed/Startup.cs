@@ -36,6 +36,8 @@ namespace SoC.SignalR.Testbed
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
             services.AddSignalR();
+
+            services.AddSingleton<IGameManager, GameManager>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
