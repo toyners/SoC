@@ -10,8 +10,16 @@ namespace SoC.SignalR.Testbed
         //public int RequestType { get; set; }
     }
 
-    public class JoinRequest : Request
+    public class CreateGameRequest : Request
+    {
+    }
+
+    public class JoinGameRequest : Request
     {
         public Guid GameId { get; set; }
+    }
+
+    public class GetWaitingGamesRequest : Request
+    {
     }
 }

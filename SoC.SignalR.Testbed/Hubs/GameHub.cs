@@ -9,9 +9,14 @@ namespace SoC.SignalR.Testbed.Hubs
 
         public GameHub(IGameManager gameManager) => this.gameManager = gameManager;
 
-        public void PostRequest(Request request)
+        public void PostRequest(JoinGameRequest joinRequest)
         {
-            this.gameManager.ProcessRequest(request);
+            this.gameManager.ProcessRequest(joinRequest);
+        }
+
+        public void GetWaitingGamesRequest(GetWaitingGamesRequest getWaitingGamesRequest)
+        {
+            this.gameManager.ProcessRequest(getWaitingGamesRequest);
         }
     }
 }
