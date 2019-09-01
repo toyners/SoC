@@ -1,4 +1,4 @@
-"use strict";
+﻿"use strict";
 
 var connection = new signalR.HubConnectionBuilder().withUrl("/gameRequest").build();
 
@@ -16,7 +16,7 @@ connection.on("ReceiveMessage", function (user, message) {
 connection.start().then(function () {
     document.getElementById("sendRequest").disabled = false;
 }).catch(function (err) {
-    return console.error(err.toString());
+        return console.error(err.toString());
 });
 
 document.getElementById("sendRequest").addEventListener("click", function (event) {
