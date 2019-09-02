@@ -5,11 +5,12 @@ var connection = new signalR.HubConnectionBuilder().withUrl("/gameRequest").buil
 //Disable send button until connection is established
 document.getElementById("joinGameRequest").disabled = true;
 
-connection.on("ReceiveResponse", function (response) {
-    //var msg = message.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-    //var encodedMsg = user + " says " + msg;
-    var li = document.createElement("li");
-    li.textContent = response.content;
+connection.on("GameListResponse", function (response) {
+    document.getElementById("gamesList").children.clear();
+    var li = document.createElement("p");
+    if (response.gameInfo === null) {
+        li.textContent = '(no games)';
+    }
     document.getElementById("gamesList").appendChild(li);
 });
 

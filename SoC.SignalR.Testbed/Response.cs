@@ -7,8 +7,20 @@ namespace SoC.SignalR.Testbed
 {
     public class Response
     {
-        public Response(string content) => this.Content = content;
+    }
 
-        public string Content { get; set; }
+    public class GameInfoListResponse : Response
+    {
+        public GameInfoListResponse(GameInfo[] gameInfo) => this.GameInfo = gameInfo;
+
+        public GameInfo[] GameInfo { get; set; }
+    }
+
+    public class GameInfo
+    {
+        public string Name { get; set; }
+        public string Status { get; set; }
+        public int NumberOfPlayers { get; set; }
+        public int NumberOfSlots { get; set; }
     }
 }

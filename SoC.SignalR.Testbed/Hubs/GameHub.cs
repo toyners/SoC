@@ -18,7 +18,7 @@ namespace SoC.SignalR.Testbed.Hubs
         public async void GetWaitingGamesRequest(GetWaitingGamesRequest getWaitingGamesRequest)
         {
             var response = this.gameManager.ProcessRequest(getWaitingGamesRequest);
-            await this.Clients.Caller.SendAsync("ReceiveResponse", response);
+            await this.Clients.Caller.SendAsync("GameListResponse", response);
         }
     }
 }

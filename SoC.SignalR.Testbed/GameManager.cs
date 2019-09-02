@@ -14,7 +14,7 @@ namespace SoC.SignalR.Testbed
         {
             if  (request is GetWaitingGamesRequest)
             {
-                return new Response("Game listing");
+                return new GameInfoListResponse(null);
             }
 
             return null;
