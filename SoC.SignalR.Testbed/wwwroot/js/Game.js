@@ -6,12 +6,17 @@ var connection = new signalR.HubConnectionBuilder().withUrl("/gameRequest").buil
 document.getElementById("joinGameRequest").disabled = true;
 
 connection.on("GameListResponse", function (response) {
-    document.getElementById("gamesList").children.clear();
+    var gamesList = document.getElementById("gamesList");
+    var child = gamesList.firstElementChild;
+    while (child) {
+        e.removeChild(child);
+        child = gamesList.firstElementChild;
+    } 
     var li = document.createElement("p");
     if (response.gameInfo === null) {
         li.textContent = '(no games)';
     }
-    document.getElementById("gamesList").appendChild(li);
+    gamesList.appendChild(li);
 });
 
 connection.start().then(function () {
