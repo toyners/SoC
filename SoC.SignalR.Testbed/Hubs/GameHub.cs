@@ -11,12 +11,14 @@ namespace SoC.SignalR.Testbed.Hubs
 
         public void PostRequest(JoinGameRequest joinRequest)
         {
-            this.gameManager.ProcessRequest(joinRequest);
+            var response = this.gameManager.ProcessRequest(joinRequest);
+            //await this.Clients.Caller.SendAsync("ReceiveResponse", response);
         }
 
-        public void GetWaitingGamesRequest(GetWaitingGamesRequest getWaitingGamesRequest)
+        public async void GetWaitingGamesRequest(GetWaitingGamesRequest getWaitingGamesRequest)
         {
-            this.gameManager.ProcessRequest(getWaitingGamesRequest);
+            var response = this.gameManager.ProcessRequest(getWaitingGamesRequest);
+            await this.Clients.Caller.SendAsync("ReceiveResponse", response);
         }
     }
 }

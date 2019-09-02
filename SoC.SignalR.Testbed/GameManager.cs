@@ -10,9 +10,14 @@ namespace SoC.SignalR.Testbed
 
         public GameManager(IHubContext<GameHub> hubContext) => this.hubContext = hubContext;
 
-        public void ProcessRequest(Request request)
+        public Response ProcessRequest(Request request)
         {
+            if  (request is GetWaitingGamesRequest)
+            {
+                return new Response("Game listing");
+            }
 
+            return null;
         }
 
         public void SendRequest(Response response)
