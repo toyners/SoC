@@ -9,14 +9,20 @@ connection.on("GameListResponse", function (response) {
     var gamesList = document.getElementById("gamesList");
     var child = gamesList.firstElementChild;
     while (child) {
-        e.removeChild(child);
+        gamesList.removeChild(child);
         child = gamesList.firstElementChild;
     } 
     var li = document.createElement("p");
     if (response.gameInfo === null) {
         li.textContent = '(no games)';
+        gamesList.appendChild(li);
+    } else {
+        response.gameInfo.forEach(function (gameInfo) {
+            var li = document.createElement("li");
+            li.textContent = gameInfo.name + ' ' ;
+            gamesList.appendChild(li);
+        });
     }
-    gamesList.appendChild(li);
 });
 
 connection.on("CreateGameResponse", function (response) {
@@ -35,9 +41,10 @@ connection.start().then(function () {
 });
 
 document.getElementById("createGameRequest").addEventListener("click", function (event) {
+    var gameName = document.getElementById("gameName");
     var request = {
         __typeName: 'CreateGameRequest',
-        name: 'My Game'
+        name: gameName.value
     }
     connection.invoke("CreateGame", request).catch(function (err) {
         return console.error(err.toString());

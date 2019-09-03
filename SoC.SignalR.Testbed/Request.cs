@@ -12,6 +12,7 @@ namespace SoC.SignalR.Testbed
 
     public class CreateGameRequest : Request
     {
+        public string Name { get; set; }
     }
 
     public class JoinGameRequest : Request
