@@ -19,10 +19,30 @@ connection.on("GameListResponse", function (response) {
     gamesList.appendChild(li);
 });
 
+connection.on("CreateGameResponse", function (response) {
+    var status = document.getElementById("status");
+    if (response.gameId !== null) {
+        status.textContent = "Game Created";
+    } else {
+        status.textContent = "Game Creation Failed";
+    }
+});
+
 connection.start().then(function () {
     document.getElementById("joinGameRequest").disabled = false;
 }).catch(function (err) {
     return console.error(err.toString());
+});
+
+document.getElementById("createGameRequest").addEventListener("click", function (event) {
+    var request = {
+        __typeName: 'CreateGameRequest',
+        name: 'My Game'
+    }
+    connection.invoke("CreateGame", request).catch(function (err) {
+        return console.error(err.toString());
+    });
+    event.preventDefault();
 });
 
 document.getElementById("joinGameRequest").addEventListener("click", function (event) {

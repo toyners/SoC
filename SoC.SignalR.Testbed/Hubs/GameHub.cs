@@ -20,5 +20,11 @@ namespace SoC.SignalR.Testbed.Hubs
             var response = this.gameManager.ProcessRequest(getWaitingGamesRequest);
             await this.Clients.Caller.SendAsync("GameListResponse", response);
         }
+
+        public async void CreateGame(CreateGameRequest createGameRequest)
+        {
+            var response = this.gameManager.ProcessRequest(createGameRequest);
+            await this.Clients.Caller.SendAsync("CreateGameResponse", response);
+        }
     }
 }

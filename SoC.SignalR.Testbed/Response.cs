@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace SoC.SignalR.Testbed
 {
@@ -22,5 +19,12 @@ namespace SoC.SignalR.Testbed
         public string Status { get; set; }
         public int NumberOfPlayers { get; set; }
         public int NumberOfSlots { get; set; }
+    }
+
+    public class CreateGameResponse : Response
+    {
+        public CreateGameResponse(Guid gameId) => this.GameId = gameId;
+
+        public Guid GameId { get; set; }
     }
 }

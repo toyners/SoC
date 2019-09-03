@@ -1,6 +1,7 @@
 ﻿
 namespace SoC.SignalR.Testbed
 {
+    using System;
     using Microsoft.AspNetCore.SignalR;
     using SoC.SignalR.Testbed.Hubs;
 
@@ -15,6 +16,11 @@ namespace SoC.SignalR.Testbed
             if  (request is GetWaitingGamesRequest)
             {
                 return new GameInfoListResponse(null);
+            }
+
+            if (request is CreateGameRequest createGameRequest)
+            {
+                return new CreateGameResponse(Guid.NewGuid());
             }
 
             return null;
