@@ -9,12 +9,6 @@ namespace SoC.SignalR.Testbed.Hubs
 
         public GameHub(IGameManager gameManager) => this.gameManager = gameManager;
 
-        public void PostRequest(JoinGameRequest joinRequest)
-        {
-            var response = this.gameManager.ProcessRequest(joinRequest);
-            //await this.Clients.Caller.SendAsync("ReceiveResponse", response);
-        }
-
         public async void GetWaitingGamesRequest(GetWaitingGamesRequest getWaitingGamesRequest)
         {
             var response = this.gameManager.ProcessRequest(getWaitingGamesRequest);
@@ -23,8 +17,12 @@ namespace SoC.SignalR.Testbed.Hubs
 
         public async void CreateGame(CreateGameRequest createGameRequest)
         {
-            var response = this.gameManager.ProcessRequest(createGameRequest);
-            await this.Clients.Caller.SendAsync("CreateGameResponse", response);
+            createGameRequest.ClientProxy = this.Clients.Caller;
+            var createGameResponse = this.gameManager.ProcessRequest(createGameRequest);
+            await this.Clients.Caller.SendAsync("CreateGameResponse", createGameResponse);
+
+            var gameListResponse = this.gameManager.ProcessRequest(new GetWaitingGamesRequest());
+            await this.Clients.All.SendAsync("GameListResponse", gameListResponse);
         }
     }
 }

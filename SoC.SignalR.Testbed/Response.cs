@@ -9,26 +9,27 @@ namespace SoC.SignalR.Testbed
 
     public class GameInfoListResponse : Response
     {
-        public GameInfoListResponse(List<GameInfo> gameInfo) => this.GameInfo = gameInfo;
+        public GameInfoListResponse(List<GameInfoResponse> gameInfo) => this.GameInfo = gameInfo;
 
-        public List<GameInfo> GameInfo { get; set; }
+        public List<GameInfoResponse> GameInfo { get; set; }
     }
 
-    public class GameInfo
+    public class GameInfoResponse : Response
     {
-        public enum GameStatus
-        {
-            Open,
-            Closed,
-            Full,
-            Playing
-        }
         public Guid Id { get; set; }
         public string Name { get; set; }
         public string InitiatingPlayer { get; set; }
         public GameStatus Status { get; set; }
         public int NumberOfPlayers { get; set; }
         public int NumberOfSlots { get; set; }
+    }
+
+    public enum GameStatus
+    {
+        Open,
+        Closed,
+        Full,
+        Playing
     }
 
     public class CreateGameResponse : Response

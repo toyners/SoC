@@ -2,12 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.SignalR;
 
 namespace SoC.SignalR.Testbed
 {
     public class Request
     {
-        //public int RequestType { get; set; }
+        public IClientProxy ClientProxy { get; set; }
     }
 
     public class CreateGameRequest : Request
