@@ -14,7 +14,24 @@ namespace SoC.SignalR.Testbed
 
         public GameManager(IHubContext<GameHub> hubContext) => this.hubContext = hubContext;
 
-        public void CreateGame(CreateGameRequest createGameRequest) { }
+        public CreateGameResponse CreateGame(CreateGameRequest createGameRequest)
+        {
+            var gameInfo = new GameDetails
+            {
+                Id = Guid.NewGuid(),
+                Name = createGameRequest.Name,
+                Status = GameStatus.Open,
+                NumberOfPlayers = 1,
+                NumberOfSlots = 3
+            };
+            this.games.Add(gameInfo);
+            return new CreateGameResponse(gameInfo.Id);
+        }
+
+        public JoinGameResponse JoinGame(JoinGameRequest joinGameRequest)
+        {
+            return null;
+        }
 
         public Response ProcessRequest(Request request)
         {
@@ -23,7 +40,7 @@ namespace SoC.SignalR.Testbed
                 var gameInfoResponses = this.games
                     .Select(gd => new GameInfoResponse {
                         Id = gd.Id,
-                        InitiatingPlayer = gd.InitiatingPlayer,
+                        OwningPlayer = gd.InitiatingPlayer,
                         Name = gd.Name,
                         NumberOfPlayers = gd.NumberOfPlayers,
                         NumberOfSlots = gd.NumberOfSlots,
@@ -31,20 +48,6 @@ namespace SoC.SignalR.Testbed
                     })
                     .ToList();
                 return new GameInfoListResponse(gameInfoResponses);
-            }
-
-            if (request is CreateGameRequest createGameRequest)
-            {
-                var gameInfo = new GameDetails
-                {
-                    Id = Guid.NewGuid(),
-                    Name = createGameRequest.Name,
-                    Status = GameStatus.Open,
-                    NumberOfPlayers = 1,
-                    NumberOfSlots = 3
-                };
-                this.games.Add(gameInfo);
-                return new CreateGameResponse(gameInfo.Id);
             }
 
             return null;

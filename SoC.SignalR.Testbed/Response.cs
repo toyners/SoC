@@ -18,7 +18,7 @@ namespace SoC.SignalR.Testbed
     {
         public Guid Id { get; set; }
         public string Name { get; set; }
-        public string InitiatingPlayer { get; set; }
+        public string OwningPlayer { get; set; }
         public GameStatus Status { get; set; }
         public int NumberOfPlayers { get; set; }
         public int NumberOfSlots { get; set; }
@@ -37,5 +37,10 @@ namespace SoC.SignalR.Testbed
         public CreateGameResponse(Guid gameId) => this.GameId = gameId;
 
         public Guid GameId { get; set; }
+    }
+
+    public class JoinGameResponse : Response
+    {
+
     }
 }

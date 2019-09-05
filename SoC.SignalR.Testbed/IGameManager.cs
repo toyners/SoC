@@ -4,7 +4,8 @@ namespace SoC.SignalR.Testbed
 {
     public interface IGameManager
     {
-        void CreateGame(CreateGameRequest createGameRequest);
+        CreateGameResponse CreateGame(CreateGameRequest createGameRequest);
+        JoinGameResponse JoinGame(JoinGameRequest joinGameRequest);
         Response ProcessRequest(Request request);
         void SendRequest(Response response);
     }
