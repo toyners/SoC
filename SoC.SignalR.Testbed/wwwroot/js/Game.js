@@ -12,15 +12,21 @@ connection.on("GameListResponse", function (response) {
         gamesList.removeChild(child);
         child = gamesList.firstElementChild;
     } 
-    var li = document.createElement("p");
     if (response.gameInfo === null) {
-        li.textContent = '(no games)';
-        gamesList.appendChild(li);
+        var row = document.createElement("tr");
+        var cell = row.insertCell(0);
+        cell.textContent = '(no games)';
+        gamesList.appendChild(row);
     } else {
+        var row = document.createElement("tr");
+        var cell = row.insertCell(0)
+        cell.textContent = "NAME";
+        gamesList.appendChild(row);
         response.gameInfo.forEach(function (gameInfo) {
-            var li = document.createElement("li");
-            li.textContent = gameInfo.name + ' ' ;
-            gamesList.appendChild(li);
+            var row = document.createElement("tr");
+            var cell = row.insertCell(0)
+            cell.textContent = gameInfo.name;
+            gamesList.appendChild(row);
         });
     }
 });

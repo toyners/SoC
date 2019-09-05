@@ -1,45 +1,30 @@
 ﻿@page
 <div class="container">
-    <div class="row">&nbsp;</div>
+
     <div class="row">
-        <div class="col-6">&nbsp;</div>
-        <div class="col-6">
-            User..........<input type="text" id="userInput" />
-            <br />
-            Message...<input type="text" id="messageInput" />
-            <input type="button" id="sendButton" value="Send Message" />
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-12">
-            <hr />
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-6">&nbsp;</div>
-        <div class="col-6">
-            <ul id="messagesList"></ul>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-6">&nbsp;</div>
-        <div class="col-6">
+        <div class="col-auto">
             Game Name: <input type="text" id="gameName" />
             <input type="button" id="createGameRequest" value="Create Game" />
-            <br />
+        </div>
+        <div class="col">
             <input type="button" id="getWaitingGamesRequest" value="Get Waiting Games" />
+        </div>
+        <div class="col">
             <input type="button" id="joinGameRequest" value="Join Game" />
         </div>
     </div>
     <div class="row">
-        <div class="col-6">&nbsp;</div>
-        <div class="col-6">
-            <ul id="gamesList"></ul>
+        <div class="col">
+            <hr />
         </div>
     </div>
     <div class="row">
-        <div class="col-6">&nbsp;</div>
-        <div class="col-6">
+        <div class="col">
+            <table id="gamesList"></table>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
             <p id="status"></p>
         </div>
     </div>
