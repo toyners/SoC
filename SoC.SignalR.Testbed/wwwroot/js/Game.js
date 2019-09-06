@@ -37,6 +37,17 @@ connection.on("GameListResponse", function (response) {
 
         response.gameInfo.forEach(function (gameInfo) {
             var row = document.createElement("tr");
+
+            row.onclick = function () {
+                return function () {
+                    this.gameId = row.getAttribute('gameId');
+                    row.classList.add('selected');
+                    document.getElementById("joinGameRequest").disabled = false;
+                };
+            }(row);
+
+            row.setAttribute('gameId', gameInfo.id);
+
             var cell = row.insertCell(-1);
             cell.textContent = gameInfo.name;
 
@@ -87,14 +98,12 @@ document.getElementById("createGameRequest").addEventListener("click", function 
         return console.error(err.toString());
     });
 
-    document.getElementById("joinGameRequest").disabled = false;
-
     event.preventDefault();
 });
 
 document.getElementById("joinGameRequest").addEventListener("click", function (event) {
     var request = {
-        GameId: gameId
+        GameId: this.gameId
     }
     connection.invoke("PostRequest", request).catch(function (err) {
         return console.error(err.toString());
@@ -108,4 +117,9 @@ document.getElementById("getWaitingGamesRequest").addEventListener("click", func
         return console.error(err.toString());
     });
     event.preventDefault();
+});
+
+$("#gamesList tr").click(function () {
+    this.gameId = $(this).getAttribute('gameId');
+    document.getElementById("joinGameRequest").disabled = false;
 });
