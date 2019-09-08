@@ -54,8 +54,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SoC.ScenarioRunnerConsole",
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SoC.SignalR.Testbed", "SoC.SignalR.Testbed\SoC.SignalR.Testbed.csproj", "{5032CCC9-6B82-4960-8AAA-406D1B4914A1}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SoC.SignalR.Stockticker.Testbed", "SoC.SignalR.Stockticker.Testbed\SoC.SignalR.Stockticker.Testbed.csproj", "{E417DC16-4ABF-4D20-91D5-61081123A366}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -122,10 +120,6 @@ Global
 		{5032CCC9-6B82-4960-8AAA-406D1B4914A1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5032CCC9-6B82-4960-8AAA-406D1B4914A1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5032CCC9-6B82-4960-8AAA-406D1B4914A1}.Release|Any CPU.Build.0 = Release|Any CPU
-		{E417DC16-4ABF-4D20-91D5-61081123A366}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E417DC16-4ABF-4D20-91D5-61081123A366}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E417DC16-4ABF-4D20-91D5-61081123A366}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E417DC16-4ABF-4D20-91D5-61081123A366}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
