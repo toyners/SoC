@@ -11,6 +11,7 @@ namespace SoC.SignalR.Testbed
     {
         private readonly IHubContext<GameHub> hubContext;
         private readonly List<GameDetails> games = new List<GameDetails>();
+        private readonly Dictionary<Guid, GameDetails> gamesById = new Dictionary<Guid, GameDetails>();
 
         public GameManager(IHubContext<GameHub> hubContext) => this.hubContext = hubContext;
 
@@ -25,6 +26,7 @@ namespace SoC.SignalR.Testbed
                 NumberOfSlots = 3
             };
             this.games.Add(gameInfo);
+            this.gamesById.Add(gameInfo.Id, gameInfo);
             return new CreateGameResponse(gameInfo.Id);
         }
 
