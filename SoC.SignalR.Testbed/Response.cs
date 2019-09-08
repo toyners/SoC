@@ -41,6 +41,8 @@ namespace SoC.SignalR.Testbed
 
     public class JoinGameResponse : Response
     {
+        public JoinGameResponse(bool success) => this.Success = success;
 
+        public bool Success { get; set; }
     }
 }

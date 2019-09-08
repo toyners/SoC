@@ -89,10 +89,12 @@ connection.start().then(function () {
 });
 
 document.getElementById("createGameRequest").addEventListener("click", function (event) {
-    var gameName = document.getElementById("gameName");
+    var userNameInput = document.getElementById("userName");
+    var gameNameInput = document.getElementById("gameName");
     var request = {
         __typeName: 'CreateGameRequest',
-        name: gameName.value
+        name: gameNameInput.value,
+        username: userNameInput.value;
     }
     connection.invoke("CreateGame", request).catch(function (err) {
         return console.error(err.toString());

@@ -27,8 +27,12 @@ namespace SoC.SignalR.Testbed.Hubs
 
         public async void JoinGame(JoinGameRequest joinGameRequest)
         {
+            joinGameRequest.ClientProxy = this.Clients.Caller;
             var joinGameResponse = this.gameManager.JoinGame(joinGameRequest);
             await this.Clients.Caller.SendAsync("JoinGameResponse", joinGameResponse);
+
+            var gameListResponse = this.gameManager.ProcessRequest(new GetWaitingGamesRequest());
+            await this.Clients.All.SendAsync("GameListResponse", gameListResponse);
         }
     }
 }

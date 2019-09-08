@@ -32,7 +32,25 @@ namespace SoC.SignalR.Testbed
 
         public JoinGameResponse JoinGame(JoinGameRequest joinGameRequest)
         {
-            return null;
+            if (!this.gamesById.ContainsKey(joinGameRequest.GameId))
+            {
+                return new JoinGameResponse(false);
+            }
+
+            var gameDetails = this.gamesById[joinGameRequest.GameId];
+            if (gameDetails.NumberOfSlots == 0 || gameDetails.Status != GameStatus.Open)
+            {
+                return new JoinGameResponse(false);
+            }
+
+            gameDetails.NumberOfPlayers++;
+            gameDetails.NumberOfSlots--;
+            if (gameDetails.NumberOfSlots == 0)
+            {
+                gameDetails.Status = GameStatus.Full;
+            }
+
+            return new JoinGameResponse(true);
         }
 
         public Response ProcessRequest(Request request)
