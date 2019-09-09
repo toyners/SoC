@@ -9,7 +9,7 @@ namespace SoC.SignalR.Testbed
     public class Request
     {
         public string UserName { get; set; }
-        public IClientProxy ClientProxy { get; set; }
+        public string ConnectionId { get; set; }
     }
 
     public class CreateGameRequest : Request

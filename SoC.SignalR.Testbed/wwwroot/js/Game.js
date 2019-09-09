@@ -125,3 +125,4 @@ $("#gamesList tr").click(function () {
     this.gameId = $(this).getAttribute('gameId');
     document.getElementById("joinGameRequest").disabled = false;
 });
+

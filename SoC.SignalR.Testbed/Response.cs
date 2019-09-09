@@ -27,9 +27,8 @@ namespace SoC.SignalR.Testbed
     public enum GameStatus
     {
         Open,
-        Closed,
-        Full,
-        Playing
+        InGame,
+        Starting
     }
 
     public class CreateGameResponse : Response
@@ -41,8 +40,8 @@ namespace SoC.SignalR.Testbed
 
     public class JoinGameResponse : Response
     {
-        public JoinGameResponse(bool success) => this.Success = success;
+        public JoinGameResponse(GameStatus status) => this.Status = status;
 
-        public bool Success { get; set; }
+        public GameStatus Status { get; set; }
     }
 }

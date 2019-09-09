@@ -17,7 +17,7 @@ namespace SoC.SignalR.Testbed.Hubs
 
         public async void CreateGame(CreateGameRequest createGameRequest)
         {
-            createGameRequest.ClientProxy = this.Clients.Caller;
+            createGameRequest.ConnectionId = this.Context.ConnectionId;
             var createGameResponse = this.gameManager.CreateGame(createGameRequest);
             await this.Clients.Caller.SendAsync("CreateGameResponse", createGameResponse);
 
@@ -27,7 +27,7 @@ namespace SoC.SignalR.Testbed.Hubs
 
         public async void JoinGame(JoinGameRequest joinGameRequest)
         {
-            joinGameRequest.ClientProxy = this.Clients.Caller;
+            joinGameRequest.ConnectionId = this.Context.ConnectionId;
             var joinGameResponse = this.gameManager.JoinGame(joinGameRequest);
             await this.Clients.Caller.SendAsync("JoinGameResponse", joinGameResponse);
 

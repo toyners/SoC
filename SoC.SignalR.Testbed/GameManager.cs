@@ -35,23 +35,23 @@ namespace SoC.SignalR.Testbed
         {
             if (!this.gamesById.ContainsKey(joinGameRequest.GameId))
             {
-                return new JoinGameResponse(false);
+                return null;
             }
 
             var gameDetails = this.gamesById[joinGameRequest.GameId];
             if (gameDetails.NumberOfSlots == 0 || gameDetails.Status != GameStatus.Open)
             {
-                return new JoinGameResponse(false);
+                return new JoinGameResponse(gameDetails.Status);
             }
 
             gameDetails.NumberOfPlayers++;
             gameDetails.NumberOfSlots--;
             if (gameDetails.NumberOfSlots == 0)
             {
-                gameDetails.Status = GameStatus.Full;
+                gameDetails.Status = GameStatus.Starting;
             }
 
-            return new JoinGameResponse(true);
+            return new JoinGameResponse(gameDetails.Status);
         }
 
         public Response ProcessRequest(Request request)
