@@ -21,6 +21,7 @@ namespace SoC.SignalR.Testbed
             {
                 Id = Guid.NewGuid(),
                 Name = createGameRequest.Name,
+                Owner = createGameRequest.UserName,
                 Status = GameStatus.Open,
                 NumberOfPlayers = 1,
                 NumberOfSlots = 3
@@ -60,7 +61,7 @@ namespace SoC.SignalR.Testbed
                 var gameInfoResponses = this.games
                     .Select(gd => new GameInfoResponse {
                         Id = gd.Id,
-                        OwningPlayer = gd.InitiatingPlayer,
+                        Owner = gd.Owner,
                         Name = gd.Name,
                         NumberOfPlayers = gd.NumberOfPlayers,
                         NumberOfSlots = gd.NumberOfSlots,
@@ -83,7 +84,7 @@ namespace SoC.SignalR.Testbed
     {
         public Guid Id { get; set; }
         public string Name { get; set; }
-        public string InitiatingPlayer { get; set; }
+        public string Owner { get; set; }
         public GameStatus Status { get; set; }
         public int NumberOfPlayers { get; set; }
         public int NumberOfSlots { get; set; }

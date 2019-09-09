@@ -52,7 +52,7 @@ connection.on("GameListResponse", function (response) {
             cell.textContent = gameInfo.name;
 
             cell = row.insertCell(-1);
-            cell.textContent = gameInfo.owningPlayer;
+            cell.textContent = gameInfo.owner;
 
             cell = row.insertCell(-1);
             cell.textContent = gameInfo.numberOfSlots + " / " + gameInfo.numberOfPlayers;
@@ -94,7 +94,7 @@ document.getElementById("createGameRequest").addEventListener("click", function 
     var request = {
         __typeName: 'CreateGameRequest',
         name: gameNameInput.value,
-        username: userNameInput.value;
+        username: userNameInput.value,
     }
     connection.invoke("CreateGame", request).catch(function (err) {
         return console.error(err.toString());
