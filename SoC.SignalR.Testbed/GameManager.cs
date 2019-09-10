@@ -2,6 +2,7 @@
 namespace SoC.SignalR.Testbed
 {
     using System;
+    using System.Collections.Concurrent;
     using System.Collections.Generic;
     using System.Linq;
     using Microsoft.AspNetCore.SignalR;
@@ -10,8 +11,10 @@ namespace SoC.SignalR.Testbed
     public class GameManager : IGameManager
     {
         private readonly IHubContext<GameHub> hubContext;
-        private readonly List<GameDetails> games = new List<GameDetails>();
-        private readonly Dictionary<Guid, GameDetails> gamesById = new Dictionary<Guid, GameDetails>();
+        private readonly List<GameDetails> waitingGames = new List<GameDetails>();
+        private readonly Dictionary<Guid, GameDetails> waitingGamesById = new Dictionary<Guid, GameDetails>();
+        private readonly ConcurrentQueue<GameDetails> startingGames = new ConcurrentQueue<GameDetails>();
+        private readonly ConcurrentDictionary<Guid, GameDetails> inPlayGames = new ConcurrentDictionary<Guid, GameDetails>();
 
         public GameManager(IHubContext<GameHub> hubContext) => this.hubContext = hubContext;
 
@@ -23,42 +26,41 @@ namespace SoC.SignalR.Testbed
                 Name = createGameRequest.Name,
                 Owner = createGameRequest.UserName,
                 Status = GameStatus.Open,
-                NumberOfPlayers = 1,
-                NumberOfSlots = 3
             };
-            this.games.Add(gameInfo);
-            this.gamesById.Add(gameInfo.Id, gameInfo);
+            gameInfo.Players.Add(createGameRequest.ConnectionId);
+            this.waitingGames.Add(gameInfo);
+            this.waitingGamesById.Add(gameInfo.Id, gameInfo);
             return new CreateGameResponse(gameInfo.Id);
         }
 
-        public JoinGameResponse JoinGame(JoinGameRequest joinGameRequest)
+        public GameStatus? JoinGame(JoinGameRequest joinGameRequest)
         {
-            if (!this.gamesById.ContainsKey(joinGameRequest.GameId))
+            if (!this.waitingGamesById.ContainsKey(joinGameRequest.GameId))
             {
                 return null;
             }
 
-            var gameDetails = this.gamesById[joinGameRequest.GameId];
+            var gameDetails = this.waitingGamesById[joinGameRequest.GameId];
             if (gameDetails.NumberOfSlots == 0 || gameDetails.Status != GameStatus.Open)
             {
-                return new JoinGameResponse(gameDetails.Status);
+                return gameDetails.Status;
             }
 
-            gameDetails.NumberOfPlayers++;
-            gameDetails.NumberOfSlots--;
+            gameDetails.Players.Add(joinGameRequest.ConnectionId);
             if (gameDetails.NumberOfSlots == 0)
             {
                 gameDetails.Status = GameStatus.Starting;
+
             }
 
-            return new JoinGameResponse(gameDetails.Status);
+            return gameDetails.Status;
         }
 
         public Response ProcessRequest(Request request)
         {
             if  (request is GetWaitingGamesRequest)
             {
-                var gameInfoResponses = this.games
+                var gameInfoResponses = this.waitingGames
                     .Select(gd => new GameInfoResponse {
                         Id = gd.Id,
                         Owner = gd.Owner,
@@ -86,7 +88,8 @@ namespace SoC.SignalR.Testbed
         public string Name { get; set; }
         public string Owner { get; set; }
         public GameStatus Status { get; set; }
-        public int NumberOfPlayers { get; set; }
-        public int NumberOfSlots { get; set; }
+        public int NumberOfPlayers { get { return this.Players.Count; } }
+        public int NumberOfSlots { get { return 4 - this.NumberOfPlayers; } }
+        public List<string> Players { get; set; } = new List<string>();
     }
 }

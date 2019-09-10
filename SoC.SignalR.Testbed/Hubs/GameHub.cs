@@ -28,11 +28,19 @@ namespace SoC.SignalR.Testbed.Hubs
         public async void JoinGame(JoinGameRequest joinGameRequest)
         {
             joinGameRequest.ConnectionId = this.Context.ConnectionId;
-            var joinGameResponse = this.gameManager.JoinGame(joinGameRequest);
-            await this.Clients.Caller.SendAsync("JoinGameResponse", joinGameResponse);
+            var gameStatus = await this.gameManager.JoinGame(joinGameRequest);
+            if (gameStatus == null)
+            {
+                // Handle bad game id
+            }
+            else
+            {
+                var joinGameResponse = new JoinGameResponse(gameStatus.Value);
+                await this.Clients.Caller.SendAsync("JoinGameResponse", joinGameResponse);
 
-            var gameListResponse = this.gameManager.ProcessRequest(new GetWaitingGamesRequest());
-            await this.Clients.All.SendAsync("GameListResponse", gameListResponse);
+                var gameListResponse = this.gameManager.ProcessRequest(new GetWaitingGamesRequest());
+                await this.Clients.All.SendAsync("GameListResponse", gameListResponse);
+            }
         }
     }
 }
