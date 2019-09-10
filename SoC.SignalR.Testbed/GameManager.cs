@@ -33,6 +33,22 @@ namespace SoC.SignalR.Testbed
             return new CreateGameResponse(gameInfo.Id);
         }
 
+        public GameInfoListResponse GetWaitingGames()
+        {
+            var gameInfoResponses = this.waitingGames
+                .Select(gd => new GameInfoResponse
+                {
+                    Id = gd.Id,
+                    Owner = gd.Owner,
+                    Name = gd.Name,
+                    NumberOfPlayers = gd.NumberOfPlayers,
+                    NumberOfSlots = gd.NumberOfSlots,
+                    Status = gd.Status
+                })
+                .ToList();
+            return new GameInfoListResponse(gameInfoResponses);
+        }
+
         public GameStatus? JoinGame(JoinGameRequest joinGameRequest)
         {
             if (!this.waitingGamesById.ContainsKey(joinGameRequest.GameId))
@@ -54,26 +70,6 @@ namespace SoC.SignalR.Testbed
             }
 
             return gameDetails.Status;
-        }
-
-        public Response ProcessRequest(Request request)
-        {
-            if  (request is GetWaitingGamesRequest)
-            {
-                var gameInfoResponses = this.waitingGames
-                    .Select(gd => new GameInfoResponse {
-                        Id = gd.Id,
-                        Owner = gd.Owner,
-                        Name = gd.Name,
-                        NumberOfPlayers = gd.NumberOfPlayers,
-                        NumberOfSlots = gd.NumberOfSlots,
-                        Status = gd.Status
-                    })
-                    .ToList();
-                return new GameInfoListResponse(gameInfoResponses);
-            }
-
-            return null;
         }
 
         public void SendRequest(Response response)

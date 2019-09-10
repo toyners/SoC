@@ -115,7 +115,7 @@ document.getElementById("joinGameRequest").addEventListener("click", function (e
 
 document.getElementById("getWaitingGamesRequest").addEventListener("click", function (event) {
     var request = {}
-    connection.invoke("GetWaitingGamesRequest", request).catch(function (err) {
+    connection.invoke("GetWaitingGames", request).catch(function (err) {
         return console.error(err.toString());
     });
     event.preventDefault();
