@@ -12,33 +12,32 @@ namespace SoC.SignalR.Testbed.Hubs
         {
             createGameRequest.ConnectionId = this.Context.ConnectionId;
             var createGameResponse = this.gameManager.CreateGame(createGameRequest);
-            await this.Clients.Caller.SendAsync("CreateGameResponse", createGameResponse);
+            await this.Clients.Caller.SendAsync("GameCreated", createGameResponse);
 
             var gameListResponse = this.gameManager.GetWaitingGames();
-            await this.Clients.All.SendAsync("GameListResponse", gameListResponse);
+            await this.Clients.All.SendAsync("GameList", gameListResponse);
         }
 
         public async void GetWaitingGames(GetWaitingGamesRequest getWaitingGamesRequest)
         {
             var response = this.gameManager.GetWaitingGames();
-            await this.Clients.Caller.SendAsync("GameListResponse", response);
+            await this.Clients.Caller.SendAsync("GameList", response);
         }
 
         public async void JoinGame(JoinGameRequest joinGameRequest)
         {
             joinGameRequest.ConnectionId = this.Context.ConnectionId;
-            var gameStatus = this.gameManager.JoinGame(joinGameRequest);
-            if (gameStatus == null)
+            var joinGameResponse = this.gameManager.JoinGame(joinGameRequest);
+            if (joinGameResponse == null)
             {
                 // Handle bad game id
             }
             else
             {
-                var joinGameResponse = new JoinGameResponse(gameStatus.Value);
-                await this.Clients.Caller.SendAsync("JoinGameResponse", joinGameResponse);
+                await this.Clients.Caller.SendAsync("GameJoined", joinGameResponse);
 
                 var gameListResponse = this.gameManager.GetWaitingGames();
-                await this.Clients.All.SendAsync("GameListResponse", gameListResponse);
+                await this.Clients.All.SendAsync("GameList", gameListResponse);
             }
         }
     }

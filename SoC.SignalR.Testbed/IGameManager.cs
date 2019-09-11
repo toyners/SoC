@@ -5,7 +5,7 @@ namespace SoC.SignalR.Testbed
     {
         CreateGameResponse CreateGame(CreateGameRequest createGameRequest);
         GameInfoListResponse GetWaitingGames();
-        GameStatus? JoinGame(JoinGameRequest joinGameRequest);
-        void SendRequest(Response response);
+        JoinGameResponse JoinGame(JoinGameRequest joinGameRequest);
+        //void SendRequest(Response response);
     }
 }

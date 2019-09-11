@@ -7,7 +7,7 @@ var gameId = null;
 //Disable send button until connection is established
 document.getElementById("joinGameRequest").disabled = true;
 
-connection.on("GameListResponse", function (response) {
+connection.on("GameList", function (response) {
     var gamesList = document.getElementById("gamesList");
     var child = gamesList.firstElementChild;
     while (child) {
@@ -68,18 +68,32 @@ connection.on("GameListResponse", function (response) {
     }
 });
 
-connection.on("CreateGameResponse", function (response) {
+connection.on("GameCreated", function (response) {
     var status = document.getElementById("status");
     if (response.gameId === null) {
         status.textContent = "Game Creation Failed";
     }
 });
 
-connection.on("JoinGameResponse", function (response) {
+connection.on("GameJoined", function (response) {
     var status = document.getElementById("status");
     if (response.gameId === null) {
         status.textContent = "Game Join Failed";
     }
+});
+
+connection.on("GameLaunched", function (response) {
+    var url = 'https://localhost/Game/' + response.gameId;
+    $.ajax({
+        url: url,
+        type: "GET",
+        success: function (result) {
+
+        },
+        error: function (error) {
+            console.log(`Error: ${error}`);
+        }
+    })
 });
 
 connection.start().then(function () {

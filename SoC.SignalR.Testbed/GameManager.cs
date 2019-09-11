@@ -38,7 +38,19 @@ namespace SoC.SignalR.Testbed
                     this.cancellationToken.ThrowIfCancellationRequested();
                     if (this.startingGames.TryPeek(out var gameDetails))
                     {
-
+                        var duration = DateTime.Now - gameDetails.LaunchTime;
+                        if (duration.TotalSeconds > 2)
+                        {
+                            // Launch game
+                            this.startingGames.TryDequeue(out var gd);
+                            this.inPlayGames.TryAdd(gameDetails.Id, gameDetails);
+                            for (var index = 0; index < gameDetails.Players.Count; index++)
+                            {
+                                var connectionId = gameDetails.Players[index].ConnectionId;
+                                var gameLaunchedResponse = new GameLaunchedResponse(gameDetails.Id);
+                                this.hubContext.Clients.Client(connectionId).SendAsync("GameLaunched", gameLaunchedResponse);
+                            }
+                        }
                     }
 
                     Thread.Sleep(500);
@@ -52,17 +64,17 @@ namespace SoC.SignalR.Testbed
 
         public CreateGameResponse CreateGame(CreateGameRequest createGameRequest)
         {
-            var gameInfo = new GameDetails
+            var gameDetails = new GameDetails
             {
                 Id = Guid.NewGuid(),
                 Name = createGameRequest.Name,
                 Owner = createGameRequest.UserName,
                 Status = GameStatus.Open,
             };
-            gameInfo.Players.Add(createGameRequest.ConnectionId);
-            this.waitingGames.Add(gameInfo);
-            this.waitingGamesById.TryAdd(gameInfo.Id, gameInfo);
-            return new CreateGameResponse(gameInfo.Id);
+            gameDetails.Players.Add(new PlayerDetails { ConnectionId = createGameRequest.ConnectionId });
+            this.waitingGames.Add(gameDetails);
+            this.waitingGamesById.TryAdd(gameDetails.Id, gameDetails);
+            return new CreateGameResponse(gameDetails.Id);
         }
 
         public GameInfoListResponse GetWaitingGames()
@@ -81,7 +93,7 @@ namespace SoC.SignalR.Testbed
             return new GameInfoListResponse(gameInfoResponses);
         }
 
-        public GameStatus? JoinGame(JoinGameRequest joinGameRequest)
+        public JoinGameResponse JoinGame(JoinGameRequest joinGameRequest)
         {
             if (!this.waitingGamesById.ContainsKey(joinGameRequest.GameId))
             {
@@ -91,24 +103,21 @@ namespace SoC.SignalR.Testbed
             var gameDetails = this.waitingGamesById[joinGameRequest.GameId];
             if (gameDetails.NumberOfSlots == 0 || gameDetails.Status != GameStatus.Open)
             {
-                return gameDetails.Status;
+                return new JoinGameResponse(gameDetails.Status);
             }
 
-            gameDetails.Players.Add(joinGameRequest.ConnectionId);
+            gameDetails.Players.Add(new PlayerDetails { ConnectionId = joinGameRequest.ConnectionId });
             if (gameDetails.NumberOfSlots == 0)
             {
                 gameDetails.Status = GameStatus.Starting;
                 this.waitingGamesById.TryRemove(gameDetails.Id, out var gd);
+                this.waitingGames.Remove(gameDetails);
                 this.startingGamesById.TryAdd(gameDetails.Id, gameDetails);
                 this.startingGames.Enqueue(gameDetails);
+                gameDetails.LaunchTime = DateTime.Now;
             }
 
-            return gameDetails.Status;
-        }
-
-        public void SendRequest(Response response)
-        {
-
+            return new JoinGameResponse(gameDetails.Status);
         }
     }
 
@@ -119,7 +128,14 @@ namespace SoC.SignalR.Testbed
         public string Owner { get; set; }
         public GameStatus Status { get; set; }
         public int NumberOfPlayers { get { return this.Players.Count; } }
-        public int NumberOfSlots { get { return 4 - this.NumberOfPlayers; } }
-        public List<string> Players { get; set; } = new List<string>();
+        public int NumberOfSlots { get { return 2 - this.NumberOfPlayers; } }
+        public List<PlayerDetails> Players { get; set; } = new List<PlayerDetails>();
+        public DateTime LaunchTime { get; set; }
+    }
+
+    public class PlayerDetails
+    {
+        public string ConnectionId { get; set; }
+        public string UserName { get; set; }
     }
 }

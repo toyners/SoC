@@ -44,4 +44,9 @@ namespace SoC.SignalR.Testbed
 
         public GameStatus Status { get; set; }
     }
+
+    public class GameLaunchedResponse : CreateGameResponse
+    {
+        public GameLaunchedResponse(Guid gameId) : base(gameId) {}
+    }
 }
