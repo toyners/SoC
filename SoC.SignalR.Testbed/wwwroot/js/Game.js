@@ -83,8 +83,9 @@ connection.on("GameJoined", function (response) {
 });
 
 connection.on("GameLaunched", function (response) {
-    var url = 'https://localhost/Game/' + response.gameId;
-    $.ajax({
+    var url = window.location.href + 'Game/' + response.gameId;
+    window.location.replace(url)
+    /*$.ajax({
         url: url,
         type: "GET",
         success: function (result) {
@@ -93,7 +94,7 @@ connection.on("GameLaunched", function (response) {
         error: function (error) {
             console.log(`Error: ${error}`);
         }
-    })
+    })*/
 });
 
 connection.start().then(function () {
