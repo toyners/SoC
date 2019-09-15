@@ -120,22 +120,4 @@ namespace SoC.SignalR.Testbed
             return new JoinGameResponse(gameDetails.Status);
         }
     }
-
-    public class GameDetails
-    {
-        public Guid Id { get; set; }
-        public string Name { get; set; }
-        public string Owner { get; set; }
-        public GameStatus Status { get; set; }
-        public int NumberOfPlayers { get { return this.Players.Count; } }
-        public int NumberOfSlots { get { return 2 - this.NumberOfPlayers; } }
-        public List<PlayerDetails> Players { get; set; } = new List<PlayerDetails>();
-        public DateTime LaunchTime { get; set; }
-    }
-
-    public class PlayerDetails
-    {
-        public string ConnectionId { get; set; }
-        public string UserName { get; set; }
-    }
 }
