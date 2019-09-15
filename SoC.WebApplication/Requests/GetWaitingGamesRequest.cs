@@ -1,4 +1,4 @@
-﻿namespace SoC.SignalR.Testbed
+﻿namespace SoC.WebApplication.Requests
 {
     public class GetWaitingGamesRequest : RequestBase
     {

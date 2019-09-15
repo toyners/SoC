@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.SignalR;
+using SoC.WebApplication.Requests;
 
 namespace SoC.SignalR.Testbed.Hubs
 {

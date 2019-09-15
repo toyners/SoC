@@ -9,6 +9,7 @@ namespace SoC.SignalR.Testbed
     using System.Threading.Tasks;
     using Microsoft.AspNetCore.SignalR;
     using SoC.SignalR.Testbed.Hubs;
+    using SoC.WebApplication.Requests;
 
     public class GameManager : IGameManager
     {
@@ -19,6 +20,8 @@ namespace SoC.SignalR.Testbed
         private readonly ConcurrentDictionary<Guid, GameDetails> startingGamesById = new ConcurrentDictionary<Guid, GameDetails>();
         private readonly ConcurrentDictionary<Guid, GameDetails> inPlayGames = new ConcurrentDictionary<Guid, GameDetails>();
         private Task startingGameTask;
+        private Task mainGameTask;
+        private ConcurrentQueue<RequestBase> gameRequests = new ConcurrentQueue<RequestBase>();
         private CancellationToken cancellationToken;
         private readonly CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
 
@@ -27,6 +30,7 @@ namespace SoC.SignalR.Testbed
             this.hubContext = hubContext;
             this.cancellationToken = this.cancellationTokenSource.Token;
             this.startingGameTask = Task.Factory.StartNew(o => { this.ProcessStartingGames(); }, this, this.cancellationToken);
+            this.mainGameTask = Task.Factory.StartNew(o => { this.ProcessInPlayGames(); }, null, CancellationToken.None);
         }
 
         private void ProcessStartingGames()
@@ -54,6 +58,26 @@ namespace SoC.SignalR.Testbed
                     }
 
                     Thread.Sleep(500);
+                }
+            }
+            catch (OperationCanceledException)
+            {
+
+            }
+        }
+
+        private void ProcessInPlayGames()
+        {
+            try
+            {
+                while(true)
+                {
+                    while (this.gameRequests.TryDequeue(out var request))
+                    {
+                        //this.inPlayGames[]
+                    }
+
+                    Thread.Sleep(50);
                 }
             }
             catch (OperationCanceledException)

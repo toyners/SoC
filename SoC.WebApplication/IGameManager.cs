@@ -1,4 +1,6 @@
 ﻿
+using SoC.WebApplication.Requests;
+
 namespace SoC.SignalR.Testbed
 {
     public interface IGameManager
@@ -6,6 +8,5 @@ namespace SoC.SignalR.Testbed
         CreateGameResponse CreateGame(CreateGameRequest createGameRequest);
         GameInfoListResponse GetWaitingGames();
         JoinGameResponse JoinGame(JoinGameRequest joinGameRequest);
-        //void SendRequest(Response response);
     }
 }
