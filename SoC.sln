@@ -52,7 +52,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SoC.Library.ScenarioTests",
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SoC.ScenarioRunnerConsole", "SoC.ScenarioRunnerConsole\SoC.ScenarioRunnerConsole.csproj", "{0C375DA6-7D51-43F8-AC3D-E1DD4BDAB28D}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SoC.SignalR.Testbed", "SoC.SignalR.Testbed\SoC.SignalR.Testbed.csproj", "{5032CCC9-6B82-4960-8AAA-406D1B4914A1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SoC.WebApplication", "SoC.WebApplication\SoC.WebApplication.csproj", "{5032CCC9-6B82-4960-8AAA-406D1B4914A1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
