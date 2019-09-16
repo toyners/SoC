@@ -13,7 +13,7 @@ namespace SoC.WebApplication
 
     public class GameManager : IGameManager
     {
-        private readonly IHubContext<GameHub> hubContext;
+        private readonly IHubContext<SetupHub> hubContext;
         private readonly List<GameDetails> waitingGames = new List<GameDetails>();
         private readonly ConcurrentDictionary<Guid, GameDetails> waitingGamesById = new ConcurrentDictionary<Guid, GameDetails>();
         private readonly ConcurrentQueue<GameDetails> startingGames = new ConcurrentQueue<GameDetails>();
@@ -25,7 +25,7 @@ namespace SoC.WebApplication
         private CancellationToken cancellationToken;
         private readonly CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
 
-        public GameManager(IHubContext<GameHub> hubContext)
+        public GameManager(IHubContext<SetupHub> hubContext)
         {
             this.hubContext = hubContext;
             this.cancellationToken = this.cancellationTokenSource.Token;

@@ -3,11 +3,11 @@ using SoC.WebApplication.Requests;
 
 namespace SoC.WebApplication.Hubs
 {
-    public class GameHub : Hub
+    public class SetupHub : Hub
     {
         private IGameManager gameManager;
 
-        public GameHub(IGameManager gameManager) => this.gameManager = gameManager;
+        public SetupHub(IGameManager gameManager) => this.gameManager = gameManager;
 
         public async void CreateGame(CreateGameRequest createGameRequest)
         {

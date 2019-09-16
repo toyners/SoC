@@ -59,7 +59,7 @@ namespace SoC.WebApplication
             app.UseCookiePolicy();
             app.UseSignalR(routes =>
             {
-                routes.MapHub<GameHub>("/gameRequest");
+                routes.MapHub<SetupHub>("/gameRequest");
             });
             app.UseMvc();
         }
