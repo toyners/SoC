@@ -1,6 +1,6 @@
 "use strict";
 
-var connection = new signalR.HubConnectionBuilder().withUrl("/gameRequest").build();
+var connection = new signalR.HubConnectionBuilder().withUrl("/gameSetup").build();
 
 var gameId = null;
 
