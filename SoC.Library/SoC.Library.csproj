@@ -87,6 +87,7 @@
     <Compile Include="Interfaces\IPlayerFactory.cs" />
     <Compile Include="Log.cs" />
     <Compile Include="GameBoards\PlacementStatusCodes.cs" />
+    <Compile Include="NumberGenerator.cs" />
     <Compile Include="PlayerActions\AcceptDirectTradeAction.cs" />
     <Compile Include="PlayerActions\AnswerDirectTradeOfferAction.cs" />
     <Compile Include="PlayerActions\BuildCityAction.cs" />

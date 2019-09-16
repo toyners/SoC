@@ -7,6 +7,9 @@ namespace SoC.WebApplication
     using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
+    using Jabberwocky.SoC.Library;
+    using Jabberwocky.SoC.Library.GameBoards;
+    using Jabberwocky.SoC.Library.Interfaces;
     using Microsoft.AspNetCore.SignalR;
     using SoC.WebApplication.Hubs;
     using SoC.WebApplication.Requests;
@@ -18,12 +21,13 @@ namespace SoC.WebApplication
         private readonly ConcurrentDictionary<Guid, GameDetails> waitingGamesById = new ConcurrentDictionary<Guid, GameDetails>();
         private readonly ConcurrentQueue<GameDetails> startingGames = new ConcurrentQueue<GameDetails>();
         private readonly ConcurrentDictionary<Guid, GameDetails> startingGamesById = new ConcurrentDictionary<Guid, GameDetails>();
-        private readonly ConcurrentDictionary<Guid, GameDetails> inPlayGames = new ConcurrentDictionary<Guid, GameDetails>();
+        private readonly ConcurrentDictionary<Guid, GameManager> inPlayGames = new ConcurrentDictionary<Guid, GameManager>();
         private Task startingGameTask;
         private Task mainGameTask;
         private ConcurrentQueue<GameRequest> gameRequests = new ConcurrentQueue<GameRequest>();
         private CancellationToken cancellationToken;
         private readonly CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
+        private readonly INumberGenerator numberGenerator = new NumberGenerator();
 
         public GamesOrganizer(IHubContext<SetupHub> hubContext)
         {
@@ -47,7 +51,8 @@ namespace SoC.WebApplication
                         {
                             // Launch game
                             this.startingGames.TryDequeue(out var gd);
-                            this.inPlayGames.TryAdd(gameDetails.Id, gameDetails);
+                            var gameManager = this.LaunchGame(gameDetails);
+                            this.inPlayGames.TryAdd(gameDetails.Id, gameManager);
                             for (var index = 0; index < gameDetails.Players.Count; index++)
                             {
                                 var connectionId = gameDetails.Players[index].ConnectionId;
@@ -66,6 +71,16 @@ namespace SoC.WebApplication
             }
         }
 
+        private GameManager LaunchGame(GameDetails gameDetails)
+        {
+            var gameManager = new GameManager(
+                this.numberGenerator, 
+                new GameBoard(BoardSizes.Standard),
+                new DevelopmentCardHolder(),
+                new PlayerPool());
+            return gameManager;
+        }
+
         private void ProcessInPlayGames()
         {
             try
@@ -78,8 +93,6 @@ namespace SoC.WebApplication
                         {
                             // Game missing so handle this
                         }
-
-                        //this.inPlayGames[]
                     }
 
                     Thread.Sleep(50);
