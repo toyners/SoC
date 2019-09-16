@@ -3,7 +3,7 @@ using SoC.WebApplication.Requests;
 
 namespace SoC.WebApplication
 {
-    public interface IGameManager
+    public interface IGamesOrganizer
     {
         CreateGameResponse CreateGame(CreateGameRequest createGameRequest);
         GameInfoListResponse GetWaitingGames();

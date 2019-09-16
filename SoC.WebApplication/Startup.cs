@@ -31,7 +31,7 @@ namespace SoC.WebApplication
 
             services.AddSignalR();
 
-            services.AddSingleton<IGameManager, GameManager>();
+            services.AddSingleton<IGamesOrganizer, GamesOrganizer>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

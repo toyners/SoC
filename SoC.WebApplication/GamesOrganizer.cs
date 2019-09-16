@@ -11,7 +11,7 @@ namespace SoC.WebApplication
     using SoC.WebApplication.Hubs;
     using SoC.WebApplication.Requests;
 
-    public class GameManager : IGameManager
+    public class GamesOrganizer : IGamesOrganizer
     {
         private readonly IHubContext<SetupHub> hubContext;
         private readonly List<GameDetails> waitingGames = new List<GameDetails>();
@@ -25,7 +25,7 @@ namespace SoC.WebApplication
         private CancellationToken cancellationToken;
         private readonly CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
 
-        public GameManager(IHubContext<SetupHub> hubContext)
+        public GamesOrganizer(IHubContext<SetupHub> hubContext)
         {
             this.hubContext = hubContext;
             this.cancellationToken = this.cancellationTokenSource.Token;

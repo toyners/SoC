@@ -4,8 +4,8 @@ namespace SoC.WebApplication.Hubs
 {
     public class GameHub : Hub
     {
-        private IGameManager gameManager;
+        private IGamesOrganizer gameManager;
 
-        public GameHub(IGameManager gameManager) => this.gameManager = gameManager;
+        public GameHub(IGamesOrganizer gameManager) => this.gameManager = gameManager;
     }
 }

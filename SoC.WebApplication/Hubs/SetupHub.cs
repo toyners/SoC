@@ -5,9 +5,9 @@ namespace SoC.WebApplication.Hubs
 {
     public class SetupHub : Hub
     {
-        private IGameManager gameManager;
+        private IGamesOrganizer gameManager;
 
-        public SetupHub(IGameManager gameManager) => this.gameManager = gameManager;
+        public SetupHub(IGamesOrganizer gameManager) => this.gameManager = gameManager;
 
         public async void CreateGame(CreateGameRequest createGameRequest)
         {
