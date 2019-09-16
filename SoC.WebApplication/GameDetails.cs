@@ -1,5 +1,5 @@
 ﻿
-namespace SoC.SignalR.Testbed
+namespace SoC.WebApplication
 {
     using System;
     using System.Collections.Generic;

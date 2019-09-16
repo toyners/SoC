@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.SignalR;
 using SoC.WebApplication.Requests;
 
-namespace SoC.SignalR.Testbed.Hubs
+namespace SoC.WebApplication.Hubs
 {
     public class GameHub : Hub
     {

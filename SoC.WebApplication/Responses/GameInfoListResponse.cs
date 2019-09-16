@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace SoC.SignalR.Testbed
+namespace SoC.WebApplication
 {
     public class GameInfoListResponse : ResponseBase
     {

@@ -1,7 +1,7 @@
 ﻿
 using SoC.WebApplication.Requests;
 
-namespace SoC.SignalR.Testbed
+namespace SoC.WebApplication
 {
     public interface IGameManager
     {

@@ -9,15 +9,15 @@ using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using SoC.SignalR.Testbed.Hubs;
+using SoC.WebApplication.Hubs;
 
-namespace SoC.SignalR.Testbed
+namespace SoC.WebApplication
 {
     public class Startup
     {
         public Startup(IConfiguration configuration)
         {
-            Configuration = configuration;
+            this.Configuration = configuration;
         }
 
         public IConfiguration Configuration { get; }
@@ -59,7 +59,6 @@ namespace SoC.SignalR.Testbed
             app.UseCookiePolicy();
             app.UseSignalR(routes =>
             {
-                routes.MapHub<ChatHub>("/chatHub");
                 routes.MapHub<GameHub>("/gameRequest");
             });
             app.UseMvc();

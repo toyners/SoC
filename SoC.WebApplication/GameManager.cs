@@ -1,5 +1,5 @@
 ﻿
-namespace SoC.SignalR.Testbed
+namespace SoC.WebApplication
 {
     using System;
     using System.Collections.Concurrent;
@@ -8,7 +8,7 @@ namespace SoC.SignalR.Testbed
     using System.Threading;
     using System.Threading.Tasks;
     using Microsoft.AspNetCore.SignalR;
-    using SoC.SignalR.Testbed.Hubs;
+    using SoC.WebApplication.Hubs;
     using SoC.WebApplication.Requests;
 
     public class GameManager : IGameManager
