@@ -21,7 +21,7 @@ namespace SoC.WebApplication
         private readonly ConcurrentDictionary<Guid, GameDetails> inPlayGames = new ConcurrentDictionary<Guid, GameDetails>();
         private Task startingGameTask;
         private Task mainGameTask;
-        private ConcurrentQueue<RequestBase> gameRequests = new ConcurrentQueue<RequestBase>();
+        private ConcurrentQueue<GameRequest> gameRequests = new ConcurrentQueue<GameRequest>();
         private CancellationToken cancellationToken;
         private readonly CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
 
@@ -74,6 +74,11 @@ namespace SoC.WebApplication
                 {
                     while (this.gameRequests.TryDequeue(out var request))
                     {
+                        if (!this.inPlayGames.TryGetValue(request.GameId, out var game))
+                        {
+                            // Game missing so handle this
+                        }
+
                         //this.inPlayGames[]
                     }
 
