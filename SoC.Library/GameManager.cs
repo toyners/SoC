@@ -22,25 +22,25 @@ namespace Jabberwocky.SoC.Library
         private readonly ISet<DevelopmentCard> cardsBoughtThisTurn = new HashSet<DevelopmentCard>();
         private readonly Dictionary<Guid, ChooseLostResourcesEvent> chooseLostResourcesEventByPlayerId = new Dictionary<Guid, ChooseLostResourcesEvent>();
         private readonly IDevelopmentCardHolder developmentCardHolder;
-        private readonly EventRaiser eventRaiser;
+        private readonly IEventSender eventSender;
         private readonly GameBoard gameBoard;
         private readonly ILog log = new Log();
         private readonly IActionLog actionLog = null;
         private readonly INumberGenerator numberGenerator;
-        private readonly IPlayerFactory playerFactory;
+        protected readonly IPlayerFactory playerFactory;
 
         private IPlayer currentPlayer;
-        private Func<Guid> idGenerator;
+        protected Func<Guid> idGenerator;
         private bool isGameSetup = true;
         private bool developmentCardPlayerThisTurn;
         private Guid[] playerIdsInRobberHex;
-        private int playerIndex;
+        protected int playerIndex;
         private IDictionary<Guid, IPlayer> playersById;
         private IPlayer playerWithLargestArmy;
         private IPlayer playerWithLongestRoad;
         private uint robberHex = 0;
 
-        private IPlayer[] players;
+        protected IPlayer[] players;
         private IGameTimer turnTimer;
 
         // TODO: Review this - cleaner way to do this?
@@ -53,14 +53,14 @@ namespace Jabberwocky.SoC.Library
         #endregion
 
         #region Construction
-        public GameManager(INumberGenerator numberGenerator, GameBoard gameBoard, IDevelopmentCardHolder developmentCardHolder, IPlayerFactory playerFactory)
+        public GameManager(INumberGenerator numberGenerator, GameBoard gameBoard, IDevelopmentCardHolder developmentCardHolder, IPlayerFactory playerFactory, IEventSender eventSender)
         {
             this.numberGenerator = numberGenerator;
             this.gameBoard = gameBoard;
             this.developmentCardHolder = developmentCardHolder;
             this.turnTimer = new GameServerTimer();
             this.idGenerator = () => { return Guid.NewGuid(); };
-            this.eventRaiser = new EventRaiser();
+            this.eventSender = eventSender;
             this.actionManager = new ActionManager();
             this.playerFactory = playerFactory;
         }
@@ -80,16 +80,16 @@ namespace Jabberwocky.SoC.Library
                 ?.AddResources(value);
         }
 
-        public void JoinGame(string playerName, GameController gameController)
+        /*public void JoinGame(string playerName, GameController gameController)
         {
             var player = this.playerFactory.CreatePlayer(playerName, this.idGenerator.Invoke());
             this.players[this.playerIndex++] = player;
 
-            this.eventRaiser.AddEventHandler(player.Id, gameController.GameEventHandler);
+            this.eventSender.AddEventHandler(player.Id, gameController.GameEventHandler);
             gameController.PlayerActionEvent += this.PlayerActionEventHandler;
 
             this.RaiseEvent(new GameJoinedEvent(player.Id), player);
-        }
+        }*/
 
         public void LaunchGame(GameOptions gameOptions = null)
         {
@@ -102,7 +102,7 @@ namespace Jabberwocky.SoC.Library
 
         public void Quit()
         {
-            this.eventRaiser.CanSendEvents = false;
+            this.eventSender.CanSendEvents = false;
             this.cancellationTokenSource.Cancel();
         }
 
@@ -114,11 +114,11 @@ namespace Jabberwocky.SoC.Library
                 this.idGenerator = idGenerator;
         }
 
-        public void SetTurnTimer(IGameTimer turnTimer)
+        /*public void SetTurnTimer(IGameTimer turnTimer)
         {
             if (turnTimer != null)
                 this.turnTimer = turnTimer;
-        }
+        }*/
 
         public Task StartGameAsync()
         {
@@ -296,7 +296,7 @@ namespace Jabberwocky.SoC.Library
             }
         }
 
-        private void PlayerActionEventHandler(PlayerAction playerAction)
+        public void PlayerActionEventHandler(PlayerAction playerAction)
         {
             // Leave all validation and processing to the game server thread
             this.actionRequests.Enqueue(playerAction);
@@ -1002,13 +1002,13 @@ namespace Jabberwocky.SoC.Library
             var message = $"Sending {this.ToPrettyString(gameEvent)} " +
                 $"to {string.Join(", ", players.Select(player => player.Name))}";
             this.log.Add(message);
-            this.eventRaiser.SendEvent(gameEvent, players);
+            this.eventSender.SendEvent(gameEvent, players);
         }
 
-        private void RaiseEvent(GameEvent gameEvent, IPlayer player)
+        protected void RaiseEvent(GameEvent gameEvent, IPlayer player)
         {
             this.log.Add($"Sending {this.ToPrettyString(gameEvent)} to {player.Name}");
-            this.eventRaiser.SendEvent(gameEvent, player.Id);
+            this.eventSender.SendEvent(gameEvent, player.Id);
         }
 
         private void SetStandardExpectedActionsForCurrentPlayer()
@@ -1374,35 +1374,6 @@ namespace Jabberwocky.SoC.Library
                 }
 
                 return false;
-            }
-        }
-
-        private class EventRaiser : IEventSender
-        {
-            private Dictionary<Guid, Action<GameEvent>> gameEventHandlersByPlayerId = new Dictionary<Guid, Action<GameEvent>>();
-        
-            public bool CanSendEvents { get; set; } = true;
-
-            public void AddEventHandler(Guid playerId, Action<GameEvent> gameEventHandler)
-            {
-                this.gameEventHandlersByPlayerId.Add(playerId, gameEventHandler);
-            }
-
-            public void SendEvent(GameEvent gameEvent, Guid playerId)
-            {
-                if (!this.CanSendEvents)
-                    return;
-                
-                this.gameEventHandlersByPlayerId[playerId].Invoke(gameEvent);
-            }
-
-            public void SendEvent(GameEvent gameEvent, IEnumerable<IPlayer> players)
-            {
-                if (!this.CanSendEvents)
-                    return;
-
-                foreach (var player in players)
-                    this.gameEventHandlersByPlayerId[player.Id].Invoke(gameEvent);
             }
         }
         #endregion

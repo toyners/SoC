@@ -418,14 +418,22 @@ namespace SoC.Library.ScenarioTests
             if (this.playerFactory == null)
                 this.playerFactory = new PlayerPool();
 
-            var gameManager = new GameManager(
+            var gameEventHandlersByPlayerId = new Dictionary<Guid, Action<GameEvent>>();
+            this.playerAgents.ForEach(playerAgent => {
+                gameEventHandlersByPlayerId.Add(playerAgent.Id, playerAgent.GameController.GameEventHandler);
+            });
+
+            var eventSender = new ScenarioEventSender(gameEventHandlersByPlayerId);
+
+            var gameManager = new ScenarioGameManager(
                 this.numberGenerator,
                 this.gameBoard,
                 this.developmentCardHolder,
-                this.playerFactory
+                this.playerFactory,
+                eventSender
             );
 
-            gameManager.SetTurnTimer(new MockTurnTimer());
+            //gameManager.SetTurnTimer(new MockTurnTimer());
 
             var playerIds = new Queue<Guid>(this.playerAgents.Select(agent => agent.Id));
             gameManager.SetIdGenerator(() => { return playerIds.Dequeue(); });
@@ -435,7 +443,8 @@ namespace SoC.Library.ScenarioTests
             var playerAgentTasks = new List<Task>();
             this.playerAgents.ForEach(playerAgent =>
             {
-                playerAgent.JoinGame(gameManager);
+                gameManager.JoinGame(playerAgent.Name);
+                playerAgent.GameController.PlayerActionEvent += gameManager.PlayerActionEventHandler;
                 playerAgentTasks.Add(playerAgent.StartAsync());
             });
 

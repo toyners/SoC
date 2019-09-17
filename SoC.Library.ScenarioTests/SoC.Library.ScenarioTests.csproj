@@ -53,6 +53,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CollectedResourcesBuilder.cs" />
+    <Compile Include="GameController.cs" />
     <Compile Include="InfrastructureSetupBuilder.cs" />
     <Compile Include="Instructions\ActionInstruction.cs" />
     <Compile Include="Instructions\EventInstruction.cs" />
@@ -76,6 +77,7 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="ReceivedUnwantedEventException.cs" />
+    <Compile Include="ScenarioEventSender.cs" />
     <Compile Include="ScenarioEvents\ScenarioGameErrorEvent.cs" />
     <Compile Include="ScenarioEvents\ScenarioRequestStateEvent.cs" />
     <Compile Include="MockTurnTimer.cs" />
@@ -93,6 +95,7 @@
     <Compile Include="ScenarioComputerPlayer.cs" />
     <Compile Include="ScenarioDevelopmentCardHolder.cs" />
     <Compile Include="ScenarioGameBoard.cs" />
+    <Compile Include="ScenarioGameManager.cs" />
     <Compile Include="ScenarioNumberGenerator.cs" />
     <Compile Include="ScenarioPlayer.cs" />
     <Compile Include="ScenarioActions\ScenarioPlayKnightCardAction.cs" />

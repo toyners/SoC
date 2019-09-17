@@ -5,8 +5,6 @@ namespace Jabberwocky.SoC.Library.Interfaces
 
     public interface IGameManager
     {
-        void JoinGame(string playerName, GameController gameController);
-
         void LaunchGame(GameOptions gameOptions = null);
 
         void Quit();

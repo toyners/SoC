@@ -9,12 +9,13 @@ namespace SoC.WebApplication
     using System.Threading.Tasks;
     using Jabberwocky.SoC.Library;
     using Jabberwocky.SoC.Library.GameBoards;
+    using Jabberwocky.SoC.Library.GameEvents;
     using Jabberwocky.SoC.Library.Interfaces;
     using Microsoft.AspNetCore.SignalR;
     using SoC.WebApplication.Hubs;
     using SoC.WebApplication.Requests;
 
-    public class GamesOrganizer : IGamesOrganizer
+    public class GamesOrganizer : IGamesOrganizer, IEventSender
     {
         private readonly IHubContext<SetupHub> hubContext;
         private readonly List<GameDetails> waitingGames = new List<GameDetails>();
@@ -28,6 +29,8 @@ namespace SoC.WebApplication
         private CancellationToken cancellationToken;
         private readonly CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
         private readonly INumberGenerator numberGenerator = new NumberGenerator();
+
+        public bool CanSendEvents { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
         public GamesOrganizer(IHubContext<SetupHub> hubContext)
         {
@@ -77,7 +80,8 @@ namespace SoC.WebApplication
                 this.numberGenerator, 
                 new GameBoard(BoardSizes.Standard),
                 new DevelopmentCardHolder(),
-                new PlayerPool());
+                new PlayerPool(),
+                null);
             return gameManager;
         }
 
@@ -160,6 +164,16 @@ namespace SoC.WebApplication
             }
 
             return new JoinGameResponse(gameDetails.Status);
+        }
+
+        public void SendEvent(GameEvent gameEvent, Guid playerId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void SendEvent(GameEvent gameEvent, IEnumerable<IPlayer> players)
+        {
+            throw new NotImplementedException();
         }
     }
 }

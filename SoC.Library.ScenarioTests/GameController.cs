@@ -1,7 +1,8 @@
 ﻿
-namespace Jabberwocky.SoC.Library
+namespace SoC.Library.ScenarioTests
 {
     using System;
+    using Jabberwocky.SoC.Library;
     using Jabberwocky.SoC.Library.GameEvents;
     using Jabberwocky.SoC.Library.PlayerActions;
 

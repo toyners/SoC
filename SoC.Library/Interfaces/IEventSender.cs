@@ -11,9 +11,4 @@ namespace Jabberwocky.SoC.Library.Interfaces
         void SendEvent(GameEvent gameEvent, Guid playerId);
         void SendEvent(GameEvent gameEvent, IEnumerable<IPlayer> players);
     }
-
-    public interface IActionReceiver
-    {
-
-    }
 }

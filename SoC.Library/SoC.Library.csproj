@@ -111,7 +111,6 @@
     <Compile Include="PlayerActions\RequestStateAction.cs" />
     <Compile Include="PlayerActions\SelectResourceFromPlayerAction.cs" />
     <Compile Include="GameBoards\GameBoardSetup.cs" />
-    <Compile Include="GameController.cs" />
     <Compile Include="GameEvents\AnswerDirectTradeOfferEvent.cs" />
     <Compile Include="GameEvents\BuyDevelopmentCardEvent.cs" />
     <Compile Include="GameEvents\DevelopmentCardBoughtEvent.cs" />

@@ -22,16 +22,13 @@ namespace SoC.Library.ScenarioTests
         private readonly List<JToken> didNotReceiveEvents = new List<JToken>();
         private readonly Dictionary<Type, int> maximumEventTypeCountsByEventType = new Dictionary<Type, int>();
         private readonly Dictionary<Type, int> eventTypeCountsByEventType = new Dictionary<Type, int>();
-
         private readonly List<EventActionPair> expectedEventActions = new List<EventActionPair>();
         private readonly HashSet<GameEvent> expectedEventsWithVerboseLogging = new HashSet<GameEvent>();
-        private readonly GameController gameController;
         private readonly IPlayerAgentLog log = new PlayerAgentLog();
         private readonly bool verboseLogging;
         private CancellationToken cancellationToken;
         private int expectedEventIndex;
         private IDictionary<string, Guid> playerIdsByName;
-
         #endregion
 
         #region Construction
@@ -40,18 +37,19 @@ namespace SoC.Library.ScenarioTests
             this.Name = name;
             this.verboseLogging = verboseLogging;
             this.Id = Guid.NewGuid();
-            this.gameController = new GameController();
-            this.gameController.GameEvent += this.GameEventHandler;
+            this.GameController = new GameController();
+            this.GameController.GameEvent += this.GameEventHandler;
             this.cancellationToken = this.cancellationTokenSource.Token;
         }
         #endregion
 
         #region Properties
         public bool FinishWhenAllEventsVerified { get; set; } = true;
+        public GameController GameController { get; private set; }
         public Guid Id { get; private set; }
         public bool IsFinished { get { return this.expectedEventIndex >= this.expectedEventActions.Count; } }
         public string Name { get; private set; }
-        public ResourceClutch Resources { get { return this.gameController.Resources; } }
+        public ResourceClutch Resources { get { return this.GameController.Resources; } }
         private EventActionPair CurrentEventActionPair { get { return this.expectedEventActions[this.expectedEventIndex]; } }
         private EventActionPair LastEventActionPair { get { return this.expectedEventActions[this.expectedEventActions.Count - 1]; } }
         #endregion
@@ -110,11 +108,6 @@ namespace SoC.Library.ScenarioTests
                 contents += $"{number++:00} {eventAction.ToString()}\r\n";
             });
             return contents;
-        }
-
-        public void JoinGame(GameManager gameServer)
-        {
-            gameServer.JoinGame(this.Name, this.gameController);
         }
 
         public void Quit()
@@ -207,77 +200,77 @@ namespace SoC.Library.ScenarioTests
             {
                 case ActionInstruction.OperationTypes.AcceptTrade:
                 {
-                    this.gameController.AcceptDirectTradeOffer(this.playerIdsByName[(string)action.Parameters[0]]);
+                    this.GameController.AcceptDirectTradeOffer(this.playerIdsByName[(string)action.Parameters[0]]);
                     break;
                 }
                 case ActionInstruction.OperationTypes.AnswerDirectTradeOffer:
                 {
-                    this.gameController.AnswerDirectTradeOffer((ResourceClutch)action.Parameters[0]);
+                    this.GameController.AnswerDirectTradeOffer((ResourceClutch)action.Parameters[0]);
                     break;
                 }
                 case ActionInstruction.OperationTypes.BuyDevelopmentCard:
                 {
-                    this.gameController.BuyDevelopmentCard();
+                    this.GameController.BuyDevelopmentCard();
                     break;
                 }
                 case ActionInstruction.OperationTypes.ChooseResourcesToLose:
                 {
-                    this.gameController.ChooseResourcesToLose((ResourceClutch)action.Parameters[0]);
+                    this.GameController.ChooseResourcesToLose((ResourceClutch)action.Parameters[0]);
                     break;
                 }
                 case ActionInstruction.OperationTypes.ConfirmStart:
                 {
-                    this.gameController.ConfirmStart();
+                    this.GameController.ConfirmStart();
                     break;
                 }
                 case ActionInstruction.OperationTypes.EndOfTurn:
                 {
-                    this.gameController.EndTurn();
+                    this.GameController.EndTurn();
                     break;
                 }
                 case ActionInstruction.OperationTypes.MakeDirectTradeOffer:
                 {
-                    this.gameController.MakeDirectTradeOffer((ResourceClutch)action.Parameters[0]);
+                    this.GameController.MakeDirectTradeOffer((ResourceClutch)action.Parameters[0]);
                     break;
                 }
                 case ActionInstruction.OperationTypes.PlaceCity:
                 {
-                    this.gameController.PlaceCity((uint)action.Parameters[0]);
+                    this.GameController.PlaceCity((uint)action.Parameters[0]);
                     break;
                 }
                 case ActionInstruction.OperationTypes.PlaceRoadSegment:
                 {
-                    this.gameController.PlaceRoadSegment((uint)action.Parameters[0], (uint)action.Parameters[1]);
+                    this.GameController.PlaceRoadSegment((uint)action.Parameters[0], (uint)action.Parameters[1]);
                     break;
                 }
                 case ActionInstruction.OperationTypes.PlaceRobber:
                 {
-                    this.gameController.PlaceRobber((uint)action.Parameters[0]);
+                    this.GameController.PlaceRobber((uint)action.Parameters[0]);
                     break;
                 }
                 case ActionInstruction.OperationTypes.PlaceSettlement:
                 {
-                    this.gameController.PlaceSettlement((uint)action.Parameters[0]);
+                    this.GameController.PlaceSettlement((uint)action.Parameters[0]);
                     break;
                 }
                 case ActionInstruction.OperationTypes.PlaceStartingInfrastructure:
                 {
-                    this.gameController.PlaceSetupInfrastructure((uint)action.Parameters[0], (uint)action.Parameters[1]);
+                    this.GameController.PlaceSetupInfrastructure((uint)action.Parameters[0], (uint)action.Parameters[1]);
                     break;
                 }
                 case ActionInstruction.OperationTypes.PlayKnightCard:
                 {
-                    this.gameController.PlayKnightCard((uint)action.Parameters[0]);
+                    this.GameController.PlayKnightCard((uint)action.Parameters[0]);
                     break;
                 }
                 case ActionInstruction.OperationTypes.PlayMonopolyCard:
                 {
-                    this.gameController.PlayMonopolyCard((ResourceTypes)action.Parameters[0]);
+                    this.GameController.PlayMonopolyCard((ResourceTypes)action.Parameters[0]);
                     break;
                 }
                 case ActionInstruction.OperationTypes.PlayRoadBuildingCard:
                 {
-                    this.gameController.PlayRoadBuildingCard(
+                    this.GameController.PlayRoadBuildingCard(
                         (uint)action.Parameters[0],
                         (uint)action.Parameters[1],
                         (uint)action.Parameters[2],
@@ -286,22 +279,22 @@ namespace SoC.Library.ScenarioTests
                 }
                 case ActionInstruction.OperationTypes.PlayYearOfPlentyCard:
                 {
-                    this.gameController.PlayYearOfPlentyCard((ResourceTypes)action.Parameters[0], (ResourceTypes)action.Parameters[1]);
+                    this.GameController.PlayYearOfPlentyCard((ResourceTypes)action.Parameters[0], (ResourceTypes)action.Parameters[1]);
                     break;
                 }
                 case ActionInstruction.OperationTypes.RequestState:
                 {
-                    this.gameController.RequestState();
+                    this.GameController.RequestState();
                     break;
                 }
                 case ActionInstruction.OperationTypes.QuitGame:
                 {
-                    this.gameController.QuitGame();
+                    this.GameController.QuitGame();
                     break;
                 }
                 case ActionInstruction.OperationTypes.SelectResourceFromPlayer:
                 {
-                    this.gameController.SelectResourceFromPlayer(this.playerIdsByName[(string)action.Parameters[0]]);
+                    this.GameController.SelectResourceFromPlayer(this.playerIdsByName[(string)action.Parameters[0]]);
                     break;
                 }
                 default: throw new Exception($"Operation '{action.Operation}' not recognised");
