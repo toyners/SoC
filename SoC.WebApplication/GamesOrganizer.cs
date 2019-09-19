@@ -81,6 +81,7 @@ namespace SoC.WebApplication
                 new GameBoard(BoardSizes.Standard),
                 new DevelopmentCardHolder(),
                 new PlayerPool(),
+                null,
                 null);
             return gameManager;
         }

@@ -430,10 +430,14 @@ namespace SoC.Library.ScenarioTests
                 this.gameBoard,
                 this.developmentCardHolder,
                 this.playerFactory,
-                eventSender
+                eventSender,
+                new GameOptions
+                {
+                    MaxPlayers = 4,
+                    MaxAIPlayers = 0,
+                    TurnTimeInSeconds = -1
+                }
             );
-
-            //gameManager.SetTurnTimer(new MockTurnTimer());
 
             var playerIds = new Queue<Guid>(this.playerAgents.Select(agent => agent.Id));
             gameManager.SetIdGenerator(() => { return playerIds.Dequeue(); });

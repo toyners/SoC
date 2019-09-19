@@ -58,12 +58,13 @@ namespace Jabberwocky.SoC.Library
             GameBoard gameBoard, 
             IDevelopmentCardHolder developmentCardHolder, 
             IPlayerFactory playerFactory, 
-            IEventSender eventSender)
+            IEventSender eventSender,
+            GameOptions gameOptions)
         {
             this.numberGenerator = numberGenerator;
             this.gameBoard = gameBoard;
             this.developmentCardHolder = developmentCardHolder;
-            this.turnTimer = new GameServerTimer();
+            this.turnTimer = new GameServerTimer(gameOptions.TurnTimeInSeconds);
             this.idGenerator = () => { return Guid.NewGuid(); };
             this.eventSender = eventSender;
             this.actionManager = new ActionManager();

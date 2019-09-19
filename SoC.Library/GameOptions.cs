@@ -1,21 +1,14 @@
 ﻿
 namespace Jabberwocky.SoC.Library
 {
-  using Enums;
+    using Enums;
 
-  public class GameOptions
-  {
-    public GameConnectionTypes Connection;
-
-    public uint MaxPlayers;
-
-    public uint MaxAIPlayers;
-
-    public GameOptions()
+    public class GameOptions
     {
-      this.Connection = GameConnectionTypes.Local;
-      this.MaxPlayers = 1;
-      this.MaxAIPlayers = 3;
+        public GameConnectionTypes Connection = GameConnectionTypes.Local;
+
+        public uint MaxPlayers { get; set; } = 1;
+        public uint MaxAIPlayers { get; set; } = 3;
+        public int TurnTimeInSeconds { get; set; } = 120;
     }
-  }
 }

@@ -15,8 +15,8 @@ namespace SoC.Library.ScenarioTests
 
     public class ScenarioGameManager : GameManager, IScenarioGameManager
     {
-        public ScenarioGameManager(INumberGenerator numberGenerator, GameBoard gameBoard, IDevelopmentCardHolder developmentCardHolder, IPlayerFactory playerFactory, IEventSender eventSender)
-            : base(numberGenerator, gameBoard, developmentCardHolder, playerFactory, eventSender) {}
+        public ScenarioGameManager(INumberGenerator numberGenerator, GameBoard gameBoard, IDevelopmentCardHolder developmentCardHolder, IPlayerFactory playerFactory, IEventSender eventSender, GameOptions gameOptions)
+            : base(numberGenerator, gameBoard, developmentCardHolder, playerFactory, eventSender, gameOptions) {}
 
         public void JoinGame(string playerName)
         {
