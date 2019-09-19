@@ -81,6 +81,8 @@
     <Compile Include="GameManager.cs" />
     <Compile Include="GameToken.cs" />
     <Compile Include="Interfaces\IActionLog.cs" />
+    <Compile Include="Interfaces\IEventReceiver.cs" />
+    <Compile Include="Interfaces\IEventStore.cs" />
     <Compile Include="Interfaces\IGameManager.cs" />
     <Compile Include="Interfaces\ILog.cs" />
     <Compile Include="Interfaces\IEventSender.cs" />

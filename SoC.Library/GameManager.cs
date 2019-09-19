@@ -22,6 +22,7 @@ namespace Jabberwocky.SoC.Library
         private readonly ISet<DevelopmentCard> cardsBoughtThisTurn = new HashSet<DevelopmentCard>();
         private readonly Dictionary<Guid, ChooseLostResourcesEvent> chooseLostResourcesEventByPlayerId = new Dictionary<Guid, ChooseLostResourcesEvent>();
         private readonly IDevelopmentCardHolder developmentCardHolder;
+        private readonly IEventReceiver eventReceiver;
         private readonly IEventSender eventSender;
         private readonly GameBoard gameBoard;
         private readonly ILog log = new Log();
@@ -94,16 +95,10 @@ namespace Jabberwocky.SoC.Library
 
         public void SaveLog(string filePath) => this.log.WriteToFile(filePath);
 
-        public void SetIdGenerator(Func<Guid> idGenerator)
+        /*public void SetIdGenerator(Func<Guid> idGenerator)
         {
             if (idGenerator != null)
                 this.idGenerator = idGenerator;
-        }
-
-        /*public void SetTurnTimer(IGameTimer turnTimer)
-        {
-            if (turnTimer != null)
-                this.turnTimer = turnTimer;
         }*/
 
         public Task StartGameAsync()
@@ -1200,7 +1195,7 @@ namespace Jabberwocky.SoC.Library
                     throw new TimeoutException($"Time out exception waiting for player '{this.currentPlayer.Name}'");
                 }
 
-                if (this.actionRequests.TryDequeue(out var playerAction))
+                if (this.eventReceiver.TryGetPlayerAction(out var playerAction))
                 {
                     var playerActionTypeName = playerAction.GetType().Name;
                     var playerName = this.playersById[playerAction.InitiatingPlayerId].Name;
@@ -1233,7 +1228,7 @@ namespace Jabberwocky.SoC.Library
                 Thread.Sleep(50);
                 this.cancellationToken.ThrowIfCancellationRequested();
 
-                if (this.actionRequests.TryDequeue(out var playerAction))
+                if (this.eventReceiver.TryGetPlayerAction(out var playerAction))
                 {
                     var playerActionTypeName = playerAction.GetType().Name;
                     var playerName = this.playersById[playerAction.InitiatingPlayerId].Name;
@@ -1279,7 +1274,7 @@ namespace Jabberwocky.SoC.Library
                     }
                 }
 
-                if (this.actionRequests.TryDequeue(out var playerAction))
+                if (this.eventReceiver.TryGetPlayerAction(out var playerAction))
                 {
                     var playerActionTypeName = playerAction.GetType().Name;
                     var playerName = this.playersById[playerAction.InitiatingPlayerId].Name;
