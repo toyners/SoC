@@ -77,15 +77,6 @@ namespace Jabberwocky.SoC.Library
         #endregion
 
         #region Methods
-        // This is a scenario only method
-        public void AddResourcesToPlayer(string playerName, ResourceClutch value)
-        {
-            this.players
-                .Where(p => p.Name == playerName)
-                .FirstOrDefault()
-                ?.AddResources(value);
-        }
-
         public void LaunchGame(GameOptions gameOptions = null)
         {
             if (gameOptions == null)

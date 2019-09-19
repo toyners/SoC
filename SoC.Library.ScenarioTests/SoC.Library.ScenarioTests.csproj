@@ -60,6 +60,7 @@
     <Compile Include="Instructions\Instruction.cs" />
     <Compile Include="Instructions\MultipleEventInstruction.cs" />
     <Compile Include="Instructions\PlayerStateInstruction.cs" />
+    <Compile Include="Interfaces\IScenarioGameManager.cs" />
     <Compile Include="IPlayerAgentLog.cs" />
     <Compile Include="PlayerSetupActions\CardSetup.cs" />
     <Compile Include="PlayerSetupActions\MonopolyCardSetup.cs" />

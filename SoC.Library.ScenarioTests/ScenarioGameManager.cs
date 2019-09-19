@@ -1,22 +1,25 @@
-﻿using System;
-using System.Threading.Tasks;
-using Jabberwocky.SoC.Library;
-using Jabberwocky.SoC.Library.GameBoards;
-using Jabberwocky.SoC.Library.GameEvents;
-using Jabberwocky.SoC.Library.Interfaces;
-using Jabberwocky.SoC.Library.PlayerActions;
-
+﻿
 namespace SoC.Library.ScenarioTests
 {
-    public interface IScenarioGameManager : IGameManager
-    {
-        void JoinGame(string playerName);
-    }
+    using System.Linq;
+    using Jabberwocky.SoC.Library;
+    using Jabberwocky.SoC.Library.GameBoards;
+    using Jabberwocky.SoC.Library.GameEvents;
+    using Jabberwocky.SoC.Library.Interfaces;
+    using SoC.Library.ScenarioTests.Interfaces;
 
     public class ScenarioGameManager : GameManager, IScenarioGameManager
     {
         public ScenarioGameManager(INumberGenerator numberGenerator, GameBoard gameBoard, IDevelopmentCardHolder developmentCardHolder, IPlayerFactory playerFactory, IEventSender eventSender, GameOptions gameOptions)
             : base(numberGenerator, gameBoard, developmentCardHolder, playerFactory, eventSender, gameOptions) {}
+
+        public void AddResourcesToPlayer(string playerName, ResourceClutch value)
+        {
+            this.players
+                .Where(p => p.Name == playerName)
+                .FirstOrDefault()
+                ?.AddResources(value);
+        }
 
         public void JoinGame(string playerName)
         {
