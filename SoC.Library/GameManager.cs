@@ -53,7 +53,12 @@ namespace Jabberwocky.SoC.Library
         #endregion
 
         #region Construction
-        public GameManager(INumberGenerator numberGenerator, GameBoard gameBoard, IDevelopmentCardHolder developmentCardHolder, IPlayerFactory playerFactory, IEventSender eventSender)
+        public GameManager(
+            INumberGenerator numberGenerator, 
+            GameBoard gameBoard, 
+            IDevelopmentCardHolder developmentCardHolder, 
+            IPlayerFactory playerFactory, 
+            IEventSender eventSender)
         {
             this.numberGenerator = numberGenerator;
             this.gameBoard = gameBoard;
@@ -79,17 +84,6 @@ namespace Jabberwocky.SoC.Library
                 .FirstOrDefault()
                 ?.AddResources(value);
         }
-
-        /*public void JoinGame(string playerName, GameController gameController)
-        {
-            var player = this.playerFactory.CreatePlayer(playerName, this.idGenerator.Invoke());
-            this.players[this.playerIndex++] = player;
-
-            this.eventSender.AddEventHandler(player.Id, gameController.GameEventHandler);
-            gameController.PlayerActionEvent += this.PlayerActionEventHandler;
-
-            this.RaiseEvent(new GameJoinedEvent(player.Id), player);
-        }*/
 
         public void LaunchGame(GameOptions gameOptions = null)
         {
