@@ -35,7 +35,7 @@ namespace Jabberwocky.SoC.Library
         private bool isGameSetup = true;
         private bool developmentCardPlayerThisTurn;
         private Guid[] playerIdsInRobberHex;
-        protected int playerIndex;
+        protected int playerIndex = 0;
         private IDictionary<Guid, IPlayer> playersById;
         private IPlayer playerWithLargestArmy;
         private IPlayer playerWithLongestRoad;
@@ -70,6 +70,7 @@ namespace Jabberwocky.SoC.Library
             this.eventSender = eventSender;
             this.actionManager = new ActionManager();
             this.playerFactory = playerFactory;
+            this.players = new IPlayer[gameOptions.MaxPlayers + gameOptions.MaxAIPlayers];
         }
         #endregion
 
@@ -83,15 +84,6 @@ namespace Jabberwocky.SoC.Library
             var player = this.playerFactory.CreatePlayer(playerName, this.idGenerator.Invoke());
             this.players[this.playerIndex++] = player;
             this.RaiseEvent(new GameJoinedEvent(player.Id), player);
-        }
-
-        public void LaunchGame(GameOptions gameOptions = null)
-        {
-            if (gameOptions == null)
-                gameOptions = new GameOptions();
-
-            this.playerIndex = 0;
-            this.players = new IPlayer[gameOptions.MaxPlayers + gameOptions.MaxAIPlayers];
         }
 
         public void Quit()

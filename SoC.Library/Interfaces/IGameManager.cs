@@ -6,9 +6,7 @@ namespace Jabberwocky.SoC.Library.Interfaces
 
     public interface IGameManager
     {
-
         void JoinGame(string playerName);
-        void LaunchGame(GameOptions gameOptions = null);
         void Quit();
         void SetIdGenerator(Func<Guid> idGenerator);
         Task StartGameAsync();
