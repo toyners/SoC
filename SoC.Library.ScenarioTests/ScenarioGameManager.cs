@@ -10,7 +10,13 @@ namespace SoC.Library.ScenarioTests
 
     public class ScenarioGameManager : GameManager, IScenarioGameManager
     {
-        public ScenarioGameManager(INumberGenerator numberGenerator, GameBoard gameBoard, IDevelopmentCardHolder developmentCardHolder, IPlayerFactory playerFactory, IEventSender eventSender, GameOptions gameOptions)
+        public ScenarioGameManager(
+            INumberGenerator numberGenerator, 
+            GameBoard gameBoard, 
+            IDevelopmentCardHolder developmentCardHolder, 
+            IPlayerFactory playerFactory, 
+            IEventSender eventSender, 
+            GameOptions gameOptions)
             : base(numberGenerator, gameBoard, developmentCardHolder, playerFactory, eventSender, gameOptions) {}
 
         public void AddResourcesToPlayer(string playerName, ResourceClutch value)
@@ -21,11 +27,11 @@ namespace SoC.Library.ScenarioTests
                 ?.AddResources(value);
         }
 
-        public void JoinGame(string playerName)
+        /*public void JoinGame(string playerName)
         {
             var player = this.playerFactory.CreatePlayer(playerName, this.idGenerator.Invoke());
             this.players[this.playerIndex++] = player;
             this.RaiseEvent(new GameJoinedEvent(player.Id), player);
-        }
+        }*/
     }
 }

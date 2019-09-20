@@ -78,6 +78,13 @@ namespace Jabberwocky.SoC.Library
         #endregion
 
         #region Methods
+        public void JoinGame(string playerName)
+        {
+            var player = this.playerFactory.CreatePlayer(playerName, this.idGenerator.Invoke());
+            this.players[this.playerIndex++] = player;
+            this.RaiseEvent(new GameJoinedEvent(player.Id), player);
+        }
+
         public void LaunchGame(GameOptions gameOptions = null)
         {
             if (gameOptions == null)
@@ -95,11 +102,11 @@ namespace Jabberwocky.SoC.Library
 
         public void SaveLog(string filePath) => this.log.WriteToFile(filePath);
 
-        /*public void SetIdGenerator(Func<Guid> idGenerator)
+        public void SetIdGenerator(Func<Guid> idGenerator)
         {
-            if (idGenerator != null)
-                this.idGenerator = idGenerator;
-        }*/
+            this.idGenerator = idGenerator ?? 
+                throw new NullReferenceException("Parameter 'idGenerator' cannot be null");
+        }
 
         public Task StartGameAsync()
         {

@@ -412,11 +412,11 @@ namespace SoC.Library.ScenarioTests
             if (Thread.CurrentThread.Name == null)
                 Thread.CurrentThread.Name = "Scenario Runner";
 
-            if (this.gameBoard == null)
-                this.gameBoard = new GameBoard(BoardSizes.Standard);
+            this.gameBoard = this.gameBoard ?? new GameBoard(BoardSizes.Standard);
+            this.playerFactory = this.playerFactory ?? new PlayerPool();
 
-            if (this.playerFactory == null)
-                this.playerFactory = new PlayerPool();
+            /*if (this.playerFactory == null)
+                this.playerFactory = new PlayerPool();*/
 
             var gameEventHandlersByPlayerId = new Dictionary<Guid, Action<GameEvent>>();
             this.playerAgents.ForEach(playerAgent => {
