@@ -42,7 +42,7 @@ namespace Jabberwocky.SoC.Library
         private uint robberHex = 0;
 
         protected IPlayer[] players;
-        private IGameTimer turnTimer;
+        private readonly IGameTimer turnTimer;
 
         // TODO: Review this - cleaner way to do this?
         private Tuple<Guid, ResourceClutch> initialDirectTradeOffer;
