@@ -26,12 +26,5 @@ namespace SoC.Library.ScenarioTests
                 .FirstOrDefault()
                 ?.AddResources(value);
         }
-
-        /*public void JoinGame(string playerName)
-        {
-            var player = this.playerFactory.CreatePlayer(playerName, this.idGenerator.Invoke());
-            this.players[this.playerIndex++] = player;
-            this.RaiseEvent(new GameJoinedEvent(player.Id), player);
-        }*/
     }
 }

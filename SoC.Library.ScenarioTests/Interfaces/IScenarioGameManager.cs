@@ -7,6 +7,5 @@ namespace SoC.Library.ScenarioTests.Interfaces
     public interface IScenarioGameManager : IGameManager
     {
         void AddResourcesToPlayer(string playerName, ResourceClutch value);
-        //void JoinGame(string playerName);
     }
 }

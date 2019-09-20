@@ -415,9 +415,6 @@ namespace SoC.Library.ScenarioTests
             this.gameBoard = this.gameBoard ?? new GameBoard(BoardSizes.Standard);
             this.playerFactory = this.playerFactory ?? new PlayerPool();
 
-            /*if (this.playerFactory == null)
-                this.playerFactory = new PlayerPool();*/
-
             var gameEventHandlersByPlayerId = new Dictionary<Guid, Action<GameEvent>>();
             this.playerAgents.ForEach(playerAgent => {
                 gameEventHandlersByPlayerId.Add(playerAgent.Id, playerAgent.GameController.GameEventHandler);
@@ -441,8 +438,6 @@ namespace SoC.Library.ScenarioTests
 
             var playerIds = new Queue<Guid>(this.playerAgents.Select(agent => agent.Id));
             gameManager.SetIdGenerator(() => { return playerIds.Dequeue(); });
-
-            gameManager.LaunchGame();
 
             var playerAgentTasks = new List<Task>();
             this.playerAgents.ForEach(playerAgent =>
