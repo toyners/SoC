@@ -86,6 +86,8 @@
     <Compile Include="Interfaces\IGameManager.cs" />
     <Compile Include="Interfaces\ILog.cs" />
     <Compile Include="Interfaces\IEventSender.cs" />
+    <Compile Include="Interfaces\IPlayerActionReceiver.cs" />
+    <Compile Include="Interfaces\IPlayerActionSender.cs" />
     <Compile Include="Interfaces\IPlayerFactory.cs" />
     <Compile Include="Log.cs" />
     <Compile Include="GameBoards\PlacementStatusCodes.cs" />
