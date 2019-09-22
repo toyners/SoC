@@ -9,11 +9,12 @@ namespace SoC.Library.ScenarioTests
     using System.Threading.Tasks;
     using Jabberwocky.SoC.Library;
     using Jabberwocky.SoC.Library.GameEvents;
+    using Jabberwocky.SoC.Library.Interfaces;
     using Newtonsoft.Json.Linq;
     using SoC.Library.ScenarioTests.Instructions;
     using SoC.Library.ScenarioTests.ScenarioEvents;
 
-    internal class PlayerAgent
+    internal class PlayerAgent : IEventReceiver
     {
         #region Fields
         private readonly List<GameEvent> actualEvents = new List<GameEvent>();
@@ -496,6 +497,11 @@ namespace SoC.Library.ScenarioTests
 
             if (this.didNotReceiveEvents.FirstOrDefault(d => JToken.DeepEquals(d, JToken.Parse(actualEvent.ToJSONString()))) != null)
                 throw new ReceivedUnwantedEventException($"Received event {actualEvent.SimpleTypeName} but should not have", actualEvent);
+        }
+
+        public void Receive(GameEvent gameEvent)
+        {
+            throw new NotImplementedException();
         }
         #endregion
 

@@ -22,7 +22,7 @@ namespace Jabberwocky.SoC.Library
         private readonly ISet<DevelopmentCard> cardsBoughtThisTurn = new HashSet<DevelopmentCard>();
         private readonly Dictionary<Guid, ChooseLostResourcesEvent> chooseLostResourcesEventByPlayerId = new Dictionary<Guid, ChooseLostResourcesEvent>();
         private readonly IDevelopmentCardHolder developmentCardHolder;
-        private readonly IEventReceiver eventReceiver;
+        private readonly IPlayerActionReceiver playerActionReceiver;
         private readonly IEventSender eventSender;
         private readonly GameBoard gameBoard;
         private readonly ILog log = new Log();
@@ -1194,7 +1194,7 @@ namespace Jabberwocky.SoC.Library
                     throw new TimeoutException($"Time out exception waiting for player '{this.currentPlayer.Name}'");
                 }
 
-                if (this.eventReceiver.TryGetPlayerAction(out var playerAction))
+                if (this.playerActionReceiver.TryGetPlayerAction(out var playerAction))
                 {
                     var playerActionTypeName = playerAction.GetType().Name;
                     var playerName = this.playersById[playerAction.InitiatingPlayerId].Name;
@@ -1227,7 +1227,7 @@ namespace Jabberwocky.SoC.Library
                 Thread.Sleep(50);
                 this.cancellationToken.ThrowIfCancellationRequested();
 
-                if (this.eventReceiver.TryGetPlayerAction(out var playerAction))
+                if (this.playerActionReceiver.TryGetPlayerAction(out var playerAction))
                 {
                     var playerActionTypeName = playerAction.GetType().Name;
                     var playerName = this.playersById[playerAction.InitiatingPlayerId].Name;
@@ -1273,7 +1273,7 @@ namespace Jabberwocky.SoC.Library
                     }
                 }
 
-                if (this.eventReceiver.TryGetPlayerAction(out var playerAction))
+                if (this.playerActionReceiver.TryGetPlayerAction(out var playerAction))
                 {
                     var playerActionTypeName = playerAction.GetType().Name;
                     var playerName = this.playersById[playerAction.InitiatingPlayerId].Name;

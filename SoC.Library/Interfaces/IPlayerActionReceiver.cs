@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿
 namespace Jabberwocky.SoC.Library.Interfaces
 {
+    using Jabberwocky.SoC.Library.PlayerActions;
+
     interface IPlayerActionReceiver
     {
+        bool TryGetPlayerAction(out PlayerAction playerAction);
     }
 }

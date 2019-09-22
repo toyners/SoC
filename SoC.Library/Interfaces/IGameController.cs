@@ -24,6 +24,7 @@ namespace Jabberwocky.SoC.Library.Interfaces
         #endregion
     }
 
+    // TODO: Remove this
     public struct Offer
     {
         PlayerDataOld player;
