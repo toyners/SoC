@@ -4,15 +4,20 @@ namespace SoC.Library.ScenarioTests
     using System;
     using Jabberwocky.SoC.Library;
     using Jabberwocky.SoC.Library.GameEvents;
+    using Jabberwocky.SoC.Library.Interfaces;
     using Jabberwocky.SoC.Library.PlayerActions;
 
-    public class GameController
+    public class GameController : IEventReceiver
     {
         #region Fields
         private Guid playerId;
         private MakeDirectTradeOfferEvent lastMakeDirectTradeOfferEvent;
         private AnswerDirectTradeOfferEvent lasetAnswerDirectTradeOffEvent;
+        private IPlayerActionReceiver playerActionReceiver;
         #endregion
+
+        public GameController(IPlayerActionReceiver playerActionReceiver) => 
+            this.playerActionReceiver = playerActionReceiver;
 
         #region Properties
         public ResourceClutch Resources { get; private set; }
@@ -124,7 +129,7 @@ namespace SoC.Library.ScenarioTests
             this.SendAction(new QuitGameAction(this.playerId));
         }
 
-        internal void GameEventHandler(GameEvent gameEvent)
+        /*internal void GameEventHandler(GameEvent gameEvent)
         {
             if (gameEvent is GameJoinedEvent gameJoinedEvent)
                 this.playerId = gameJoinedEvent.PlayerId;
@@ -139,11 +144,28 @@ namespace SoC.Library.ScenarioTests
             }
 
             this.GameEvent.Invoke(gameEvent);
-        }
+        }*/
 
         private void SendAction(PlayerAction playerAction)
         {
             this.PlayerActionEvent.Invoke(playerAction);
+        }
+
+        public void Post(GameEvent gameEvent)
+        {
+            if (gameEvent is GameJoinedEvent gameJoinedEvent)
+                this.playerId = gameJoinedEvent.PlayerId;
+            else if (gameEvent is MakeDirectTradeOfferEvent makeDirectTradeOfferEvent)
+                this.lastMakeDirectTradeOfferEvent = makeDirectTradeOfferEvent;
+            else if (gameEvent is AnswerDirectTradeOfferEvent answerDirectTradeOfferEvent)
+                this.lasetAnswerDirectTradeOffEvent = answerDirectTradeOfferEvent;
+            else if (gameEvent is ResourcesCollectedEvent resourcesCollectedEvent && resourcesCollectedEvent.ResourcesCollectedByPlayerId.ContainsKey(this.playerId))
+            {
+                foreach (var resourceCollection in resourcesCollectedEvent.ResourcesCollectedByPlayerId[this.playerId])
+                    this.Resources += resourceCollection.Resources;
+            }
+
+            this.GameEvent.Invoke(gameEvent);
         }
         #endregion
     }

@@ -3,8 +3,8 @@ namespace Jabberwocky.SoC.Library.Interfaces
 {
     using Jabberwocky.SoC.Library.PlayerActions;
 
-    interface IPlayerActionReceiver
+    public interface IPlayerActionReceiver
     {
-        bool TryGetPlayerAction(out PlayerAction playerAction);
+        void Post(PlayerAction playerAction);
     }
 }

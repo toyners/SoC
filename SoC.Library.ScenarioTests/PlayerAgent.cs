@@ -14,7 +14,7 @@ namespace SoC.Library.ScenarioTests
     using SoC.Library.ScenarioTests.Instructions;
     using SoC.Library.ScenarioTests.ScenarioEvents;
 
-    internal class PlayerAgent : IEventReceiver
+    internal class PlayerAgent
     {
         #region Fields
         private readonly List<GameEvent> actualEvents = new List<GameEvent>();
@@ -33,12 +33,22 @@ namespace SoC.Library.ScenarioTests
         #endregion
 
         #region Construction
+        public PlayerAgent(string name, IPlayerActionReceiver playerActionReceiver, bool verboseLogging = false)
+        {
+            this.Name = name;
+            this.verboseLogging = verboseLogging;
+            this.Id = Guid.NewGuid();
+            this.GameController = new GameController(playerActionReceiver);
+            this.GameController.GameEvent += this.GameEventHandler;
+            this.cancellationToken = this.cancellationTokenSource.Token;
+        }
+
         public PlayerAgent(string name, bool verboseLogging = false)
         {
             this.Name = name;
             this.verboseLogging = verboseLogging;
             this.Id = Guid.NewGuid();
-            this.GameController = new GameController();
+            this.GameController = new GameController(null);
             this.GameController.GameEvent += this.GameEventHandler;
             this.cancellationToken = this.cancellationTokenSource.Token;
         }
@@ -497,11 +507,6 @@ namespace SoC.Library.ScenarioTests
 
             if (this.didNotReceiveEvents.FirstOrDefault(d => JToken.DeepEquals(d, JToken.Parse(actualEvent.ToJSONString()))) != null)
                 throw new ReceivedUnwantedEventException($"Received event {actualEvent.SimpleTypeName} but should not have", actualEvent);
-        }
-
-        public void Receive(GameEvent gameEvent)
-        {
-            throw new NotImplementedException();
         }
         #endregion
 
