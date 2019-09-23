@@ -29,34 +29,31 @@ namespace SoC.Library.ScenarioTests
         private readonly bool verboseLogging;
         private CancellationToken cancellationToken;
         private int expectedEventIndex;
+        private GameController gameController;
         private IDictionary<string, Guid> playerIdsByName;
         #endregion
 
         #region Construction
-        public PlayerAgent(string name, IPlayerActionReceiver playerActionReceiver, bool verboseLogging = false)
-        {
-            this.Name = name;
-            this.verboseLogging = verboseLogging;
-            this.Id = Guid.NewGuid();
-            this.GameController = new GameController(playerActionReceiver);
-            this.GameController.GameEvent += this.GameEventHandler;
-            this.cancellationToken = this.cancellationTokenSource.Token;
-        }
-
         public PlayerAgent(string name, bool verboseLogging = false)
         {
             this.Name = name;
             this.verboseLogging = verboseLogging;
             this.Id = Guid.NewGuid();
-            this.GameController = new GameController(null);
-            this.GameController.GameEvent += this.GameEventHandler;
             this.cancellationToken = this.cancellationTokenSource.Token;
         }
         #endregion
 
         #region Properties
         public bool FinishWhenAllEventsVerified { get; set; } = true;
-        public GameController GameController { get; private set; }
+        public GameController GameController
+        {
+            private get { return this.gameController; }
+            set
+            {
+                this.gameController = value;
+                this.gameController.GameEvent += this.GameEventHandler;
+            }
+        }
         public Guid Id { get; private set; }
         public bool IsFinished { get { return this.expectedEventIndex >= this.expectedEventActions.Count; } }
         public string Name { get; private set; }
@@ -329,7 +326,7 @@ namespace SoC.Library.ScenarioTests
             var result = true;
             if (expectedEvent.Id.HasValue)
                 result &= expectedEvent.Id.Value == actualEvent.PlayerId;
-            if (expectedEvent.ErrorCode != null)
+            //if (expectedEvent.ErrorCode != null)
                 result &= expectedEvent.ErrorCode == actualEvent.ErrorCode;
             if (expectedEvent.ErrorMessage != null)
                 result &= expectedEvent.ErrorMessage == actualEvent.ErrorMessage;

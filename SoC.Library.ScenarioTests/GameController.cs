@@ -13,18 +13,15 @@ namespace SoC.Library.ScenarioTests
         private Guid playerId;
         private MakeDirectTradeOfferEvent lastMakeDirectTradeOfferEvent;
         private AnswerDirectTradeOfferEvent lasetAnswerDirectTradeOffEvent;
-        private IPlayerActionReceiver playerActionReceiver;
         #endregion
-
-        public GameController(IPlayerActionReceiver playerActionReceiver) => 
-            this.playerActionReceiver = playerActionReceiver;
 
         #region Properties
         public ResourceClutch Resources { get; private set; }
+        public IPlayerActionReceiver PlayerActionReceiver { get; set; }
         #endregion
 
         #region Events
-        public event Action<PlayerAction> PlayerActionEvent;
+        //public event Action<PlayerAction> PlayerActionEvent;
         public event Action<GameEvent> GameEvent;
         #endregion
 
@@ -129,26 +126,9 @@ namespace SoC.Library.ScenarioTests
             this.SendAction(new QuitGameAction(this.playerId));
         }
 
-        /*internal void GameEventHandler(GameEvent gameEvent)
-        {
-            if (gameEvent is GameJoinedEvent gameJoinedEvent)
-                this.playerId = gameJoinedEvent.PlayerId;
-            else if (gameEvent is MakeDirectTradeOfferEvent makeDirectTradeOfferEvent)
-                this.lastMakeDirectTradeOfferEvent = makeDirectTradeOfferEvent;
-            else if (gameEvent is AnswerDirectTradeOfferEvent answerDirectTradeOfferEvent)
-                this.lasetAnswerDirectTradeOffEvent = answerDirectTradeOfferEvent;
-            else if (gameEvent is ResourcesCollectedEvent resourcesCollectedEvent && resourcesCollectedEvent.ResourcesCollectedByPlayerId.ContainsKey(this.playerId))
-            {
-                foreach (var resourceCollection in resourcesCollectedEvent.ResourcesCollectedByPlayerId[this.playerId])
-                    this.Resources += resourceCollection.Resources;
-            }
-
-            this.GameEvent.Invoke(gameEvent);
-        }*/
-
         private void SendAction(PlayerAction playerAction)
         {
-            this.PlayerActionEvent.Invoke(playerAction);
+            this.PlayerActionReceiver.Post(playerAction);
         }
 
         public void Post(GameEvent gameEvent)

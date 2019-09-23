@@ -7,10 +7,10 @@ namespace SoC.Library.ScenarioTests
 {
     internal class ScenarioEventSender : IEventSender
     {
-        private IDictionary<Guid, Action<GameEvent>> gameEventHandlersByPlayerId = new Dictionary<Guid, Action<GameEvent>>();
-        public ScenarioEventSender(IDictionary<Guid, Action<GameEvent>> gameEventHandlersByPlayerId)
+        private IDictionary<Guid, IEventReceiver> eventReceiversByPlayerId = new Dictionary<Guid, IEventReceiver>();
+        public ScenarioEventSender(IDictionary<Guid, IEventReceiver> eventReceiversByPlayerId)
         {
-            this.gameEventHandlersByPlayerId = gameEventHandlersByPlayerId;
+            this.eventReceiversByPlayerId = eventReceiversByPlayerId;
         }
 
         public bool CanSendEvents { get; set; } = true;
@@ -20,7 +20,7 @@ namespace SoC.Library.ScenarioTests
             if (!this.CanSendEvents)
                 return;
 
-            this.gameEventHandlersByPlayerId[playerId].Invoke(gameEvent);
+            this.eventReceiversByPlayerId[playerId].Post(gameEvent);
         }
 
         public void SendEvent(GameEvent gameEvent, IEnumerable<IPlayer> players)
@@ -29,7 +29,7 @@ namespace SoC.Library.ScenarioTests
                 return;
 
             foreach (var player in players)
-                this.gameEventHandlersByPlayerId[player.Id].Invoke(gameEvent);
+                this.eventReceiversByPlayerId[player.Id].Post(gameEvent);
         }
     }
 }

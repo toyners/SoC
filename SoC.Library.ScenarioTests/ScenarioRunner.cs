@@ -415,9 +415,13 @@ namespace SoC.Library.ScenarioTests
             this.gameBoard = this.gameBoard ?? new GameBoard(BoardSizes.Standard);
             this.playerFactory = this.playerFactory ?? new PlayerPool();
 
-            var gameEventHandlersByPlayerId = new Dictionary<Guid, Action<GameEvent>>();
+            var gameEventHandlersByPlayerId = new Dictionary<Guid, IEventReceiver>();
+            var gameControllers = new List<GameController>();
             this.playerAgents.ForEach(playerAgent => {
-                gameEventHandlersByPlayerId.Add(playerAgent.Id, playerAgent.GameController.GameEventHandler);
+                var gameController = new GameController();
+                playerAgent.GameController = gameController;
+                gameControllers.Add(gameController);
+                gameEventHandlersByPlayerId.Add(playerAgent.Id, gameController);
             });
 
             var eventSender = new ScenarioEventSender(gameEventHandlersByPlayerId);
@@ -436,6 +440,8 @@ namespace SoC.Library.ScenarioTests
                 }
             );
 
+            gameControllers.ForEach(gameController => gameController.PlayerActionReceiver = gameManager);
+
             var playerIds = new Queue<Guid>(this.playerAgents.Select(agent => agent.Id));
             gameManager.SetIdGenerator(() => { return playerIds.Dequeue(); });
 
@@ -443,7 +449,7 @@ namespace SoC.Library.ScenarioTests
             this.playerAgents.ForEach(playerAgent =>
             {
                 gameManager.JoinGame(playerAgent.Name);
-                playerAgent.GameController.PlayerActionEvent += gameManager.PlayerActionEventHandler;
+                //playerAgent.GameController.PlayerActionEvent += gameManager.PlayerActionEventHandler;
                 playerAgentTasks.Add(playerAgent.StartAsync());
             });
 
