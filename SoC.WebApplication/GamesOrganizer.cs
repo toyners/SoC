@@ -81,8 +81,13 @@ namespace SoC.WebApplication
                 new GameBoard(BoardSizes.Standard),
                 new DevelopmentCardHolder(),
                 new PlayerPool(),
-                null,
-                null);
+                this,
+                new GameOptions
+                {
+                     MaxPlayers = 4,
+                     MaxAIPlayers = 0,
+                     TurnTimeInSeconds = 120
+                });
             return gameManager;
         }
 
