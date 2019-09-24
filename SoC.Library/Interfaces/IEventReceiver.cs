@@ -5,7 +5,6 @@ namespace Jabberwocky.SoC.Library.Interfaces
 
     public interface IEventReceiver
     {
-        //bool TryGetPlayerAction(out PlayerAction playerAction);
-        void Receive(GameEvent gameEvent);
+        void Post(GameEvent gameEvent);
     }
 }

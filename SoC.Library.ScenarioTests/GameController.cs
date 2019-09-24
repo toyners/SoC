@@ -4,9 +4,10 @@ namespace SoC.Library.ScenarioTests
     using System;
     using Jabberwocky.SoC.Library;
     using Jabberwocky.SoC.Library.GameEvents;
+    using Jabberwocky.SoC.Library.Interfaces;
     using Jabberwocky.SoC.Library.PlayerActions;
 
-    public class GameController
+    public class GameController : IEventReceiver
     {
         #region Fields
         private Guid playerId;
@@ -16,10 +17,11 @@ namespace SoC.Library.ScenarioTests
 
         #region Properties
         public ResourceClutch Resources { get; private set; }
+        public IPlayerActionReceiver PlayerActionReceiver { get; set; }
         #endregion
 
         #region Events
-        public event Action<PlayerAction> PlayerActionEvent;
+        //public event Action<PlayerAction> PlayerActionEvent;
         public event Action<GameEvent> GameEvent;
         #endregion
 
@@ -124,7 +126,12 @@ namespace SoC.Library.ScenarioTests
             this.SendAction(new QuitGameAction(this.playerId));
         }
 
-        internal void GameEventHandler(GameEvent gameEvent)
+        private void SendAction(PlayerAction playerAction)
+        {
+            this.PlayerActionReceiver.Post(playerAction);
+        }
+
+        public void Post(GameEvent gameEvent)
         {
             if (gameEvent is GameJoinedEvent gameJoinedEvent)
                 this.playerId = gameJoinedEvent.PlayerId;
@@ -139,11 +146,6 @@ namespace SoC.Library.ScenarioTests
             }
 
             this.GameEvent.Invoke(gameEvent);
-        }
-
-        private void SendAction(PlayerAction playerAction)
-        {
-            this.PlayerActionEvent.Invoke(playerAction);
         }
         #endregion
     }
