@@ -22,7 +22,7 @@ namespace SoC.WebApplication
         private readonly ConcurrentDictionary<Guid, GameDetails> waitingGamesById = new ConcurrentDictionary<Guid, GameDetails>();
         private readonly ConcurrentQueue<GameDetails> startingGames = new ConcurrentQueue<GameDetails>();
         private readonly ConcurrentDictionary<Guid, GameDetails> startingGamesById = new ConcurrentDictionary<Guid, GameDetails>();
-        private readonly ConcurrentDictionary<Guid, GameManager> inPlayGames = new ConcurrentDictionary<Guid, GameManager>();
+        private readonly ConcurrentDictionary<Guid, GameManagerToken> inPlayGames = new ConcurrentDictionary<Guid, GameManagerToken>();
         private Task startingGameTask;
         private Task mainGameTask;
         private ConcurrentQueue<GameRequest> gameRequests = new ConcurrentQueue<GameRequest>();
@@ -54,8 +54,8 @@ namespace SoC.WebApplication
                         {
                             // Launch game
                             this.startingGames.TryDequeue(out var gd);
-                            var gameManager = this.LaunchGame(gameDetails);
-                            this.inPlayGames.TryAdd(gameDetails.Id, gameManager);
+                            var gameManagerToken = this.LaunchGame(gameDetails);
+                            this.inPlayGames.TryAdd(gameDetails.Id, gameManagerToken);
                             for (var index = 0; index < gameDetails.Players.Count; index++)
                             {
                                 var connectionId = gameDetails.Players[index].ConnectionId;
@@ -74,21 +74,32 @@ namespace SoC.WebApplication
             }
         }
 
-        private GameManager LaunchGame(GameDetails gameDetails)
+        private GameManagerToken LaunchGame(GameDetails gameDetails)
         {
             var gameManager = new GameManager(
-                this.numberGenerator, 
+                this.numberGenerator,
                 new GameBoard(BoardSizes.Standard),
                 new DevelopmentCardHolder(),
                 new PlayerPool(),
                 this,
                 new GameOptions
                 {
-                     MaxPlayers = 4,
-                     MaxAIPlayers = 0,
-                     TurnTimeInSeconds = 120
-                });
-            return gameManager;
+                    Players = gameDetails.NumberOfPlayers,
+                    TurnTimeInSeconds = 120
+                }
+            );
+
+            gameDetails.Players.ForEach(player => {
+                gameManager.JoinGame(player.UserName);
+            });
+
+            var token = new GameManagerToken
+            {
+                GameManager = gameManager,
+                GameManagerTask = gameManager.StartGameAsync()
+            };
+
+            return token;
         }
 
         private void ProcessInPlayGames()
@@ -123,7 +134,7 @@ namespace SoC.WebApplication
                 Owner = createGameRequest.UserName,
                 Status = GameStatus.Open,
             };
-            gameDetails.Players.Add(new PlayerDetails { ConnectionId = createGameRequest.ConnectionId });
+            gameDetails.Players.Add(new PlayerDetails { ConnectionId = createGameRequest.ConnectionId, UserName = createGameRequest.UserName });
             this.waitingGames.Add(gameDetails);
             this.waitingGamesById.TryAdd(gameDetails.Id, gameDetails);
             return new CreateGameResponse(gameDetails.Id);
@@ -158,7 +169,7 @@ namespace SoC.WebApplication
                 return new JoinGameResponse(gameDetails.Status);
             }
 
-            gameDetails.Players.Add(new PlayerDetails { ConnectionId = joinGameRequest.ConnectionId });
+            gameDetails.Players.Add(new PlayerDetails { ConnectionId = joinGameRequest.ConnectionId, UserName = joinGameRequest.UserName });
             if (gameDetails.NumberOfSlots == 0)
             {
                 gameDetails.Status = GameStatus.Starting;
@@ -174,12 +185,19 @@ namespace SoC.WebApplication
 
         public void SendEvent(GameEvent gameEvent, Guid playerId)
         {
-            throw new NotImplementedException();
+            if (gameEvent is GameJoinedEvent)
+                return;
         }
 
         public void SendEvent(GameEvent gameEvent, IEnumerable<IPlayer> players)
         {
             throw new NotImplementedException();
+        }
+
+        private struct GameManagerToken
+        {
+            public GameManager GameManager;
+            public Task GameManagerTask;
         }
     }
 }

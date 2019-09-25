@@ -659,7 +659,7 @@ namespace Jabberwocky.SoC.Library
 
             if (gameOptions == null)
             {
-                gameOptions = new GameOptions { MaxPlayers = 1, MaxAIPlayers = 3 };
+                gameOptions = new GameOptions { Players = 1, MaxAIPlayers = 3 };
             }
 
             this.CreatePlayers(gameOptions);

@@ -434,7 +434,7 @@ namespace SoC.Library.ScenarioTests
                 eventSender,
                 new GameOptions
                 {
-                    MaxPlayers = 4,
+                    Players = 4,
                     MaxAIPlayers = 0,
                     TurnTimeInSeconds = -1
                 }

@@ -69,7 +69,7 @@ namespace Jabberwocky.SoC.Library
             this.eventSender = eventSender;
             this.actionManager = new ActionManager();
             this.playerFactory = playerFactory;
-            this.players = new IPlayer[gameOptions.MaxPlayers + gameOptions.MaxAIPlayers];
+            this.players = new IPlayer[gameOptions.Players + gameOptions.MaxAIPlayers];
         }
         #endregion
 

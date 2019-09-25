@@ -109,8 +109,10 @@ document.getElementById("createGameRequest").addEventListener("click", function 
 });
 
 document.getElementById("joinGameRequest").addEventListener("click", function (event) {
+    var userNameInput = document.getElementById("userName");
     var request = {
-        GameId: gameId
+        GameId: gameId,
+        username: userNameInput.value,
     }
     connection.invoke("JoinGame", request).catch(function (err) {
         return console.error(err.toString());
