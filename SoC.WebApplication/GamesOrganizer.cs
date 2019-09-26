@@ -57,9 +57,9 @@ namespace SoC.WebApplication
                             this.inPlayGames.TryAdd(gameDetails.Id, gameManagerToken);
                             for (var index = 0; index < gameDetails.Players.Count; index++)
                             {
-                                var connectionId = gameDetails.Players[index].ConnectionId;
-                                var gameLaunchedResponse = new GameLaunchedResponse(gameDetails.Id);
-                                this.setupHubContext.Clients.Client(connectionId).SendAsync("GameLaunched", gameLaunchedResponse);
+                                var playerDetails = gameDetails.Players[index];
+                                var gameLaunchedResponse = new GameLaunchedResponse(gameDetails.Id, playerDetails.Id);
+                                this.setupHubContext.Clients.Client(playerDetails.ConnectionId).SendAsync("GameLaunched", gameLaunchedResponse);
                             }
                         }
                     }
@@ -132,6 +132,8 @@ namespace SoC.WebApplication
             }
         }
 
+        public void ConfirmGameJoin()
+
         public CreateGameResponse CreateGame(CreateGameRequest createGameRequest)
         {
             var gameDetails = new GameDetails
@@ -146,6 +148,7 @@ namespace SoC.WebApplication
             this.waitingGamesById.TryAdd(gameDetails.Id, gameDetails);
             return new CreateGameResponse(gameDetails.Id);
         }
+
 
         public GameInfoListResponse GetWaitingGames()
         {
