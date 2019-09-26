@@ -15,9 +15,10 @@ namespace SoC.WebApplication
     using SoC.WebApplication.Hubs;
     using SoC.WebApplication.Requests;
 
-    public class GamesOrganizer : IGamesOrganizer, IEventSender
+    public class GamesOrganizer : IGamesOrganizer
     {
-        private readonly IHubContext<SetupHub> hubContext;
+        private readonly IHubContext<SetupHub> setupHubContext;
+        private readonly IHubContext<GameHub> gameHubContext;  
         private readonly List<GameDetails> waitingGames = new List<GameDetails>();
         private readonly ConcurrentDictionary<Guid, GameDetails> waitingGamesById = new ConcurrentDictionary<Guid, GameDetails>();
         private readonly ConcurrentQueue<GameDetails> startingGames = new ConcurrentQueue<GameDetails>();
@@ -30,11 +31,9 @@ namespace SoC.WebApplication
         private readonly CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
         private readonly INumberGenerator numberGenerator = new NumberGenerator();
 
-        public bool CanSendEvents { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-
-        public GamesOrganizer(IHubContext<SetupHub> hubContext)
+        public GamesOrganizer(IHubContext<SetupHub> setupHubContext)
         {
-            this.hubContext = hubContext;
+            this.setupHubContext = setupHubContext;
             this.cancellationToken = this.cancellationTokenSource.Token;
             this.startingGameTask = Task.Factory.StartNew(o => { this.ProcessStartingGames(); }, this, this.cancellationToken);
             this.mainGameTask = Task.Factory.StartNew(o => { this.ProcessInPlayGames(); }, null, CancellationToken.None);
@@ -60,7 +59,7 @@ namespace SoC.WebApplication
                             {
                                 var connectionId = gameDetails.Players[index].ConnectionId;
                                 var gameLaunchedResponse = new GameLaunchedResponse(gameDetails.Id);
-                                this.hubContext.Clients.Client(connectionId).SendAsync("GameLaunched", gameLaunchedResponse);
+                                this.setupHubContext.Clients.Client(connectionId).SendAsync("GameLaunched", gameLaunchedResponse);
                             }
                         }
                     }
@@ -76,12 +75,19 @@ namespace SoC.WebApplication
 
         private GameManagerToken LaunchGame(GameDetails gameDetails)
         {
+            var connectionIdsByPlayerId = new Dictionary<Guid, string>();
+            gameDetails.Players.ForEach(player =>
+            {
+                connectionIdsByPlayerId.Add(player.Id, player.ConnectionId);
+            });
+            var eventSender = new EventSender(this.setupHubContext, connectionIdsByPlayerId);
+
             var gameManager = new GameManager(
                 this.numberGenerator,
                 new GameBoard(BoardSizes.Standard),
                 new DevelopmentCardHolder(),
                 new PlayerPool(),
-                this,
+                eventSender,
                 new GameOptions
                 {
                     Players = gameDetails.NumberOfPlayers,
@@ -89,7 +95,8 @@ namespace SoC.WebApplication
                 }
             );
 
-            gameDetails.Players.ForEach(player => {
+            gameDetails.Players.ForEach(player =>
+            {
                 gameManager.JoinGame(player.UserName);
             });
 
@@ -198,6 +205,23 @@ namespace SoC.WebApplication
         {
             public GameManager GameManager;
             public Task GameManagerTask;
+        }
+
+        private class EventSender : IEventSender
+        {
+            private readonly IHubContext<SetupHub> gameHubContext;
+            private readonly Dictionary<Guid, string> connectionIdsByPlayerId;
+            public EventSender(IHubContext<SetupHub> gameHubContext, Dictionary<Guid, string> connectionIdsByPlayerId)
+            {
+                this.gameHubContext = gameHubContext;
+                this.connectionIdsByPlayerId = connectionIdsByPlayerId;
+            }
+
+            public void Send(GameEvent gameEvent, Guid playerId)
+            {
+                var connectionId = this.connectionIdsByPlayerId[playerId];
+                this.gameHubContext.Clients.Client(connectionId).SendAsync("GameEvent", gameEvent);
+            }
         }
     }
 }

@@ -13,23 +13,18 @@ namespace SoC.Library.ScenarioTests
             this.eventReceiversByPlayerId = eventReceiversByPlayerId;
         }
 
-        public bool CanSendEvents { get; set; } = true;
-
-        public void SendEvent(GameEvent gameEvent, Guid playerId)
+        public void Send(GameEvent gameEvent, Guid playerId)
         {
-            if (!this.CanSendEvents)
-                return;
-
             this.eventReceiversByPlayerId[playerId].Post(gameEvent);
         }
 
-        public void SendEvent(GameEvent gameEvent, IEnumerable<IPlayer> players)
+        /*public void SendEvent(GameEvent gameEvent, IEnumerable<IPlayer> players)
         {
             if (!this.CanSendEvents)
                 return;
 
             foreach (var player in players)
                 this.eventReceiversByPlayerId[player.Id].Post(gameEvent);
-        }
+        }*/
     }
 }

@@ -87,7 +87,6 @@ namespace Jabberwocky.SoC.Library
 
         public void Quit()
         {
-            this.eventSender.CanSendEvents = false;
             this.cancellationTokenSource.Cancel();
         }
 
@@ -981,13 +980,14 @@ namespace Jabberwocky.SoC.Library
             var message = $"Sending {this.ToPrettyString(gameEvent)} " +
                 $"to {string.Join(", ", players.Select(player => player.Name))}";
             this.log.Add(message);
-            this.eventSender.SendEvent(gameEvent, players);
+            foreach (var player in players)
+                this.eventSender.Send(gameEvent, player.Id);
         }
 
         protected void RaiseEvent(GameEvent gameEvent, IPlayer player)
         {
             this.log.Add($"Sending {this.ToPrettyString(gameEvent)} to {player.Name}");
-            this.eventSender.SendEvent(gameEvent, player.Id);
+            this.eventSender.Send(gameEvent, player.Id);
         }
 
         private void SetStandardExpectedActionsForCurrentPlayer()
