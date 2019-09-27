@@ -3,5 +3,6 @@
     public class CreateGameRequest : RequestBase
     {
         public string Name { get; set; }
+        public int MaxPlayers { get; set; }
     }
 }

@@ -28,14 +28,27 @@ namespace SoC.WebApplication.Hubs
         public async void JoinGame(JoinGameRequest joinGameRequest)
         {
             joinGameRequest.ConnectionId = this.Context.ConnectionId;
-            var joinGameResponse = this.gamesOrganizer.JoinGame(joinGameRequest);
-            if (joinGameResponse == null)
+            var result = this.gamesOrganizer.JoinGame(joinGameRequest, out var joinGameResponses);
+            if (result == null)
             {
                 // Handle bad game id
             }
             else
             {
-                await this.Clients.Caller.SendAsync("GameJoined", joinGameResponse);
+                if (!result.Value)
+                {
+                    await this.Clients.Caller.SendAsync("GameJoined", joinGameResponses[0]);
+                }
+                else
+                {
+                    foreach (var joinGameResponse in joinGameResponses)
+                    {
+                        var launchGameResponse = (LaunchGameResponse)joinGameResponse;
+                        await this.Clients
+                            .Client(launchGameResponse.ConnectionId)
+                            .SendAsync("GameJoined", launchGameResponse);
+                    }
+                }
 
                 var gameListResponse = this.gamesOrganizer.GetWaitingGames();
                 await this.Clients.All.SendAsync("GameList", gameListResponse);

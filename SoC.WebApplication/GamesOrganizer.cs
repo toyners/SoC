@@ -19,7 +19,6 @@ namespace SoC.WebApplication
     {
         private readonly IHubContext<SetupHub> setupHubContext;
         private readonly IHubContext<GameHub> gameHubContext;  
-        private readonly List<GameDetails> waitingGames = new List<GameDetails>();
         private readonly ConcurrentDictionary<Guid, GameDetails> waitingGamesById = new ConcurrentDictionary<Guid, GameDetails>();
         private readonly ConcurrentQueue<GameDetails> startingGames = new ConcurrentQueue<GameDetails>();
         private readonly ConcurrentDictionary<Guid, GameDetails> startingGamesById = new ConcurrentDictionary<Guid, GameDetails>();
@@ -132,19 +131,20 @@ namespace SoC.WebApplication
             }
         }
 
-        public void ConfirmGameJoin()
+        public void ConfirmGameJoin(ConfirmGameJoinRequest confirmGameJoinRequest)
+        {
+
+        }
 
         public CreateGameResponse CreateGame(CreateGameRequest createGameRequest)
         {
             var gameDetails = new GameDetails
             {
-                Id = Guid.NewGuid(),
                 Name = createGameRequest.Name,
                 Owner = createGameRequest.UserName,
                 Status = GameStatus.Open,
             };
             gameDetails.Players.Add(new PlayerDetails { ConnectionId = createGameRequest.ConnectionId, UserName = createGameRequest.UserName });
-            this.waitingGames.Add(gameDetails);
             this.waitingGamesById.TryAdd(gameDetails.Id, gameDetails);
             return new CreateGameResponse(gameDetails.Id);
         }
@@ -152,7 +152,8 @@ namespace SoC.WebApplication
 
         public GameInfoListResponse GetWaitingGames()
         {
-            var gameInfoResponses = this.waitingGames
+            var gameInfoResponses = this.waitingGamesById.Values
+                .Where(gd => gd.Status == GameStatus.Open)
                 .Select(gd => new GameInfoResponse
                 {
                     Id = gd.Id,
@@ -166,8 +167,9 @@ namespace SoC.WebApplication
             return new GameInfoListResponse(gameInfoResponses);
         }
 
-        public JoinGameResponse JoinGame(JoinGameRequest joinGameRequest)
+        public bool? JoinGame(JoinGameRequest joinGameRequest, out JoinGameResponse[] responses)
         {
+            responses = null;
             if (!this.waitingGamesById.ContainsKey(joinGameRequest.GameId))
             {
                 return null;
@@ -176,7 +178,8 @@ namespace SoC.WebApplication
             var gameDetails = this.waitingGamesById[joinGameRequest.GameId];
             if (gameDetails.NumberOfSlots == 0 || gameDetails.Status != GameStatus.Open)
             {
-                return new JoinGameResponse(gameDetails.Status);
+                responses = new[] { new JoinGameResponse(gameDetails.Status) };
+                return false;
             }
 
             gameDetails.Players.Add(new PlayerDetails { ConnectionId = joinGameRequest.ConnectionId, UserName = joinGameRequest.UserName });
@@ -184,13 +187,20 @@ namespace SoC.WebApplication
             {
                 gameDetails.Status = GameStatus.Starting;
                 this.waitingGamesById.TryRemove(gameDetails.Id, out var gd);
-                this.waitingGames.Remove(gameDetails);
                 this.startingGamesById.TryAdd(gameDetails.Id, gameDetails);
                 this.startingGames.Enqueue(gameDetails);
                 gameDetails.LaunchTime = DateTime.Now;
             }
 
-            return new JoinGameResponse(gameDetails.Status);
+            responses = new LaunchGameResponse[gameDetails.NumberOfPlayers];
+            for (var index = 0; index < gameDetails.Players.Count; index++)
+            {
+                var playerDetails = gameDetails.Players[index];
+                responses[index] = new LaunchGameResponse(
+                    gameDetails.Status, gameDetails.Id, playerDetails.Id, playerDetails.ConnectionId);
+            }
+
+            return true;
         }
 
         public void SendEvent(GameEvent gameEvent, Guid playerId)

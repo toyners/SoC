@@ -1,8 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.SignalR;
-
+﻿
 namespace SoC.WebApplication.Requests
 {
     public class RequestBase

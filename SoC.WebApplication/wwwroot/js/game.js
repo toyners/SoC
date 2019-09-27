@@ -3,7 +3,12 @@
 var connection = new signalR.HubConnectionBuilder().withUrl("/gameRequest").build();
 
 $(window).on("load", function () {
-    connection.invoke("ConfirmGameJoin").catch(function (err) {
+    var gameId, playerId
+    var request = {
+        gameId: gameId,
+        playerId: playerId
+    };
+    connection.invoke("ConfirmGameJoin", request).catch(function (err) {
         return console.error(err.toString());
     });
 });

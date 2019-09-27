@@ -75,13 +75,6 @@ connection.on("GameCreated", function (response) {
     }
 });
 
-connection.on("GameJoined", function (response) {
-    var status = document.getElementById("status");
-    if (response.gameId === null) {
-        status.textContent = "Game Join Failed";
-    }
-});
-
 connection.on("GameLaunched", function (response) {
     var url = window.location.href + 'Game/' + response.gameId;
     window.location.replace(url)
@@ -96,10 +89,12 @@ connection.start().then(function () {
 document.getElementById("createGameRequest").addEventListener("click", function (event) {
     var userNameInput = document.getElementById("userName");
     var gameNameInput = document.getElementById("gameName");
+    var playerCountInput = document.getElementById("playerCount");
+    var playerCount = parseInt(playerCountInput.value);
     var request = {
-        __typeName: 'CreateGameRequest',
         name: gameNameInput.value,
         username: userNameInput.value,
+        maxplayers: playerCount
     }
     connection.invoke("CreateGame", request).catch(function (err) {
         return console.error(err.toString());
@@ -118,6 +113,13 @@ document.getElementById("joinGameRequest").addEventListener("click", function (e
         return console.error(err.toString());
     });
     event.preventDefault();
+});
+
+connection.on("GameJoined", function (response) {
+    var status = document.getElementById("status");
+    if (response.gameId === null) {
+        status.textContent = "Game Join Failed";
+    }
 });
 
 document.getElementById("getWaitingGamesRequest").addEventListener("click", function (event) {
