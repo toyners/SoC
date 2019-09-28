@@ -12,11 +12,26 @@ namespace SoC.WebApplication.Hubs
         public async void CreateGame(CreateGameRequest createGameRequest)
         {
             createGameRequest.ConnectionId = this.Context.ConnectionId;
-            var createGameResponse = this.gamesOrganizer.CreateGame(createGameRequest);
-            await this.Clients.Caller.SendAsync("GameCreated", createGameResponse);
+            var response = this.gamesOrganizer.CreateGame(createGameRequest);
 
-            var gameListResponse = this.gamesOrganizer.GetWaitingGames();
-            await this.Clients.All.SendAsync("GameList", gameListResponse);
+            var createGameResponse = response as CreateGameResponse;
+            if (createGameResponse != null)
+            {
+                await this.Clients.Caller.SendAsync("GameCreated", (CreateGameResponse)response);
+
+                var gameListResponse = this.gamesOrganizer.GetWaitingGames();
+                await this.Clients.All.SendAsync("GameList", gameListResponse);
+                return;
+            }
+
+            var launchGameResponse = response as LaunchGameResponse;
+            if (launchGameResponse != null)
+            {
+                await this.Clients.Caller.SendAsync("GameJoined", launchGameResponse);
+                return;
+            }
+
+            throw new System.Exception("Unexpected response");
         }
 
         public async void GetWaitingGames(GetWaitingGamesRequest getWaitingGamesRequest)

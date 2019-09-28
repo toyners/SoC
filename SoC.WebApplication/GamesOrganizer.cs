@@ -136,17 +136,27 @@ namespace SoC.WebApplication
 
         }
 
-        public CreateGameResponse CreateGame(CreateGameRequest createGameRequest)
+        public ResponseBase CreateGame(CreateGameRequest createGameRequest)
         {
             var gameDetails = new GameDetails
             {
                 Name = createGameRequest.Name,
                 Owner = createGameRequest.UserName,
-                Status = GameStatus.Open,
             };
             gameDetails.Players.Add(new PlayerDetails { ConnectionId = createGameRequest.ConnectionId, UserName = createGameRequest.UserName });
-            this.waitingGamesById.TryAdd(gameDetails.Id, gameDetails);
-            return new CreateGameResponse(gameDetails.Id);
+
+            if (createGameRequest.MaxPlayers == 1)
+            {
+                gameDetails.Status = GameStatus.Starting;
+                var playerDetails = gameDetails.Players[0];
+                return new LaunchGameResponse(gameDetails.Status, gameDetails.Id, playerDetails.Id, playerDetails.ConnectionId);
+            }
+            else
+            {
+                gameDetails.Status = GameStatus.Open;
+                this.waitingGamesById.TryAdd(gameDetails.Id, gameDetails);
+                return new CreateGameResponse(gameDetails.Id);
+            }
         }
 
 

@@ -5,7 +5,7 @@ namespace SoC.WebApplication
 {
     public interface IGamesOrganizer
     {
-        CreateGameResponse CreateGame(CreateGameRequest createGameRequest);
+        ResponseBase CreateGame(CreateGameRequest createGameRequest);
         GameInfoListResponse GetWaitingGames();
         bool? JoinGame(JoinGameRequest joinGameRequest, out JoinGameResponse[] responses);
     }
