@@ -123,8 +123,9 @@ connection.on("GameJoined", function (response) {
 
     if (response.className === "GameJoinedResponse") {
 
-    } else if (response.className === "") {
-
+    } else if (response.className === "LaunchGameResponse") {
+        var url = window.location.href + 'Game/' + response.gameId + '/' + response.playerId;
+        window.location.replace(url)
     }
 });
 
