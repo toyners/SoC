@@ -79,7 +79,7 @@ namespace SoC.WebApplication
             {
                 connectionIdsByPlayerId.Add(player.Id, player.ConnectionId);
             });
-            var eventSender = new EventSender(this.setupHubContext, connectionIdsByPlayerId);
+            var eventSender = new EventSender(this.gameHubContext, connectionIdsByPlayerId);
 
             var gameManager = new GameManager(
                 this.numberGenerator,
@@ -133,7 +133,19 @@ namespace SoC.WebApplication
 
         public void ConfirmGameJoin(ConfirmGameJoinRequest confirmGameJoinRequest)
         {
+            var gameId = Guid.Parse(confirmGameJoinRequest.GameId);
+            if (this.startingGamesById.TryGetValue(gameId, out var gameDetails))
+            {
+                var playerId = Guid.Parse(confirmGameJoinRequest.PlayerId);
+                var player = gameDetails.Players.First(pd => pd.Id.Equals(playerId));
+                player.ConnectionId = confirmGameJoinRequest.ConnectionId;
 
+                var playerWithoutConnectionId = gameDetails.Players.FirstOrDefault(pd => pd.Id == null);
+                if (playerWithoutConnectionId != null)
+                {
+                    this.LaunchGame(gameDetails);
+                }
+            }
         }
 
         public ResponseBase CreateGame(CreateGameRequest createGameRequest)
@@ -148,6 +160,9 @@ namespace SoC.WebApplication
             if (createGameRequest.MaxPlayers == 1)
             {
                 gameDetails.Status = GameStatus.Starting;
+                gameDetails.LaunchTime = DateTime.Now;
+                this.startingGamesById.TryAdd(gameDetails.Id, gameDetails);
+                
                 var playerDetails = gameDetails.Players[0];
                 return new LaunchGameResponse(gameDetails.Status, gameDetails.Id, playerDetails.Id, playerDetails.ConnectionId);
             }
@@ -232,9 +247,9 @@ namespace SoC.WebApplication
 
         private class EventSender : IEventSender
         {
-            private readonly IHubContext<SetupHub> gameHubContext;
+            private readonly IHubContext<GameHub> gameHubContext;
             private readonly Dictionary<Guid, string> connectionIdsByPlayerId;
-            public EventSender(IHubContext<SetupHub> gameHubContext, Dictionary<Guid, string> connectionIdsByPlayerId)
+            public EventSender(IHubContext<GameHub> gameHubContext, Dictionary<Guid, string> connectionIdsByPlayerId)
             {
                 this.gameHubContext = gameHubContext;
                 this.connectionIdsByPlayerId = connectionIdsByPlayerId;

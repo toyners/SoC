@@ -12,7 +12,7 @@ namespace SoC.WebApplication.Hubs
         public async void ConfirmGameJoin(ConfirmGameJoinRequest confirmGameJoinRequest)
         {
             confirmGameJoinRequest.ConnectionId = this.Context.ConnectionId;
-            //this.gameOrganizer.
+            this.gameOrganizer.ConfirmGameJoin(confirmGameJoinRequest);
         }
     }
 }

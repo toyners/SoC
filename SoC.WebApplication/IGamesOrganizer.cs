@@ -8,5 +8,6 @@ namespace SoC.WebApplication
         ResponseBase CreateGame(CreateGameRequest createGameRequest);
         GameInfoListResponse GetWaitingGames();
         bool? JoinGame(JoinGameRequest joinGameRequest, out JoinGameResponse[] responses);
+        void ConfirmGameJoin(ConfirmGameJoinRequest confirmGameJoinRequest);
     }
 }
