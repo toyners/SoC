@@ -120,6 +120,12 @@ connection.on("GameJoined", function (response) {
     if (response.gameId === null) {
         status.textContent = "Game Join Failed";
     }
+
+    if (response.className === "GameJoinedResponse") {
+
+    } else if (response.className === "") {
+
+    }
 });
 
 document.getElementById("getWaitingGamesRequest").addEventListener("click", function (event) {
