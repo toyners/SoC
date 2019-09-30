@@ -8,7 +8,7 @@ namespace Jabberwocky.SoC.Library
     using System.Collections.Generic;
     using Jabberwocky.SoC.Library.Store;
 
-    public class PlayerPool : IPlayerFactory
+    public class PlayerFactory : IPlayerFactory
     {
         private Guid bankId = Guid.NewGuid();
         private Queue<string> names = new Queue<string>(new[] { "Bob", "Carol", "Dana" });

@@ -413,7 +413,7 @@ namespace SoC.Library.ScenarioTests
                 Thread.CurrentThread.Name = "Scenario Runner";
 
             this.gameBoard = this.gameBoard ?? new GameBoard(BoardSizes.Standard);
-            this.playerFactory = this.playerFactory ?? new PlayerPool();
+            this.playerFactory = this.playerFactory ?? new PlayerFactory();
 
             var gameEventHandlersByPlayerId = new Dictionary<Guid, IEventReceiver>();
             var gameControllers = new List<GameController>();

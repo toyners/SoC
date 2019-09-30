@@ -139,6 +139,7 @@
     <Compile Include="GameState.cs" />
     <Compile Include="GameEvents\PlaceSetupInfrastructureEvent.cs" />
     <Compile Include="PlayerData\PlayerFullDataModel.cs" />
+    <Compile Include="PlayerFactory.cs" />
     <Compile Include="Store\GameBoardModel.cs" />
     <Compile Include="Store\PlayerModel.cs" />
     <Compile Include="Store\GameModel.cs" />
@@ -160,7 +161,6 @@
     <Compile Include="GameEvents\ResourceTransactionEvent.cs" />
     <Compile Include="GameEvents\TradeWithBankEvent.cs" />
     <Compile Include="Interfaces\IDevelopmentCardHolder.cs" />
-    <Compile Include="PlayerPool.cs" />
     <Compile Include="ErrorDetails.cs" />
     <Compile Include="Interfaces\IComputerPlayer.cs" />
     <Compile Include="PathFinder.cs" />

@@ -31,7 +31,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
         using (var reader = XmlReader.Create(memoryStream, new XmlReaderSettings { ConformanceLevel = ConformanceLevel.Fragment, CloseInput = false, IgnoreComments = true, IgnoreWhitespace = true }))
         {
           reader.Read();
-          var playerPool = new PlayerPool();
+          var playerPool = new PlayerFactory();
           player = playerPool.CreatePlayer(reader);
         } 
       }
@@ -66,7 +66,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
         using (var reader = XmlReader.Create(memoryStream, new XmlReaderSettings { ConformanceLevel = ConformanceLevel.Fragment, CloseInput = false, IgnoreComments = true, IgnoreWhitespace = true }))
         {
           reader.Read();
-          var playerPool = new PlayerPool();
+          var playerPool = new PlayerFactory();
           player = playerPool.CreatePlayer(reader);
         }
       }
@@ -98,7 +98,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
         {
           using (var reader = XmlReader.Create(memoryStream, new XmlReaderSettings { ConformanceLevel = ConformanceLevel.Fragment, CloseInput = false, IgnoreComments = true, IgnoreWhitespace = true }))
           {
-            var playerPool = new PlayerPool();
+            var playerPool = new PlayerFactory();
             playerPool.CreatePlayer(reader);
           }
         }
@@ -125,7 +125,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
           using (var reader = XmlReader.Create(memoryStream, new XmlReaderSettings { ConformanceLevel = ConformanceLevel.Fragment, CloseInput = false, IgnoreComments = true, IgnoreWhitespace = true }))
           {
             reader.Read();
-            var playerPool = new PlayerPool();
+            var playerPool = new PlayerFactory();
             playerPool.CreatePlayer(reader);
           }
         }
@@ -140,7 +140,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     [Category("PlayerPool")]
     public void CreatePlayer_IsComputerParameterIsFalse_PlayerInstanceIsNotComputerControlled()
     {
-      var playerPool = new PlayerPool();
+      var playerPool = new PlayerFactory();
       var player = playerPool.CreatePlayer();
 
       player.IsComputer.ShouldBeFalse();
@@ -151,7 +151,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     [Category("PlayerPool")]
     public void CreateComputerPlayer_NoGameBoardArgument_PlayerInstanceIsComputerControlled()
     {
-      var playerPool = new PlayerPool();
+      var playerPool = new PlayerFactory();
       var player = playerPool.CreateComputerPlayer((GameBoard)null, null, null);
 
       player.IsComputer.ShouldBeTrue();

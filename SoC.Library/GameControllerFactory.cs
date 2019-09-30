@@ -19,7 +19,7 @@ namespace Jabberwocky.SoC.Library
             this.computerPlayerFactory = computerPlayerFactory;
         }
 
-        public GameControllerFactory() : this(new DiceFactory(), new PlayerPool()) { }
+        public GameControllerFactory() : this(new DiceFactory(), new PlayerFactory()) { }
         #endregion
 
         #region Methods

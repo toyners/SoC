@@ -85,7 +85,7 @@ namespace SoC.WebApplication
                 this.numberGenerator,
                 new GameBoard(BoardSizes.Standard),
                 new DevelopmentCardHolder(),
-                new PlayerPool(),
+                new PlayerFactory(),
                 eventSender,
                 new GameOptions
                 {

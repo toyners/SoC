@@ -18,7 +18,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     #region Contruction
     public LocalGameControllerCreator()
     {
-      this.playerPool = new PlayerPool();
+      this.playerPool = new PlayerFactory();
       this.dice = new Dice();
       this.gameBoard = new GameBoard(BoardSizes.Standard);
       this.developmentCardHolder = new DevelopmentCardHolder();
