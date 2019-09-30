@@ -69,7 +69,6 @@
     <Compile Include="PlayerSetupActions\IPlayerSetupAction.cs" />
     <Compile Include="PlayerSetupActions\PlacedRoadSegmentSetup.cs" />
     <Compile Include="PlayerSetupActions\PlacedSettlementsSetup.cs" />
-    <Compile Include="PlayerAgentLog.cs" />
     <Compile Include="PlayerSetupActions\ResourceSetup.cs" />
     <Compile Include="PlayerSetupActions\YearOfPlentyCardSetup.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
@@ -82,7 +81,6 @@
     <Compile Include="ScenarioEvents\ScenarioGameErrorEvent.cs" />
     <Compile Include="ScenarioEvents\ScenarioRequestStateEvent.cs" />
     <Compile Include="MockTurnTimer.cs" />
-    <Compile Include="PlayerAgent.cs" />
     <Compile Include="ScenarioActions\ComputerPlayerActionWrapper.cs" />
     <Compile Include="ScenarioActions\ScenarioMakeDirectTradeOffer.cs" />
     <Compile Include="ScenarioActions\ScenarioPlaceRobberAction.cs" />
@@ -100,6 +98,8 @@
     <Compile Include="ScenarioNumberGenerator.cs" />
     <Compile Include="ScenarioPlayer.cs" />
     <Compile Include="ScenarioActions\ScenarioPlayKnightCardAction.cs" />
+    <Compile Include="ScenarioPlayerAgent.cs" />
+    <Compile Include="ScenarioPlayerAgentLog.cs" />
     <Compile Include="ScenarioPlayerFactory.cs" />
     <Compile Include="ScenarioRunner.cs" />
     <Compile Include="Scenarios.cs" />

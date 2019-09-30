@@ -20,10 +20,10 @@ namespace SoC.Library.ScenarioTests
     {
         #region Fields
         private readonly ScenarioDevelopmentCardHolder developmentCardHolder = new ScenarioDevelopmentCardHolder();
-        private readonly List<PlayerAgent> playerAgents = new List<PlayerAgent>();
-        private readonly Dictionary<string, PlayerAgent> playerAgentsByName = new Dictionary<string, PlayerAgent>();
+        private readonly List<ScenarioPlayerAgent> playerAgents = new List<ScenarioPlayerAgent>();
+        private readonly Dictionary<string, ScenarioPlayerAgent> playerAgentsByName = new Dictionary<string, ScenarioPlayerAgent>();
         private readonly Dictionary<string, ResourceClutch> startingResourcesByName = new Dictionary<string, ResourceClutch>();
-        private PlayerAgent currentPlayerAgent;
+        private ScenarioPlayerAgent currentPlayerAgent;
         private GameBoard gameBoard;
         private MultipleEventInstruction multipleEventInstruction;
         private ScenarioNumberGenerator numberGenerator;
@@ -518,7 +518,7 @@ namespace SoC.Library.ScenarioTests
                     {
                         var exception = playerAgentTask.Exception;
                         var flattenedException = exception.Flatten();
-                        var playerAgent = (PlayerAgent)playerAgentTask.AsyncState;
+                        var playerAgent = (ScenarioPlayerAgent)playerAgentTask.AsyncState;
                         return $"{playerAgent.Name}: {flattenedException.InnerException.Message}";
                     })
                 );
@@ -745,7 +745,7 @@ namespace SoC.Library.ScenarioTests
 
         public ScenarioRunner WithPlayer(string playerName, bool verboseLogging = false)
         {
-            var playerAgent = new PlayerAgent(playerName, verboseLogging);
+            var playerAgent = new ScenarioPlayerAgent(playerName, verboseLogging);
             this.playerAgents.Add(playerAgent);
             this.playerAgentsByName.Add(playerAgent.Name, playerAgent);
             return this;

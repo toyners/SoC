@@ -14,7 +14,7 @@ namespace SoC.Library.ScenarioTests
     using SoC.Library.ScenarioTests.Instructions;
     using SoC.Library.ScenarioTests.ScenarioEvents;
 
-    internal class PlayerAgent
+    internal class ScenarioPlayerAgent
     {
         #region Fields
         private readonly List<GameEvent> actualEvents = new List<GameEvent>();
@@ -25,7 +25,7 @@ namespace SoC.Library.ScenarioTests
         private readonly Dictionary<Type, int> eventTypeCountsByEventType = new Dictionary<Type, int>();
         private readonly List<EventActionPair> expectedEventActions = new List<EventActionPair>();
         private readonly HashSet<GameEvent> expectedEventsWithVerboseLogging = new HashSet<GameEvent>();
-        private readonly IPlayerAgentLog log = new PlayerAgentLog();
+        private readonly IPlayerAgentLog log = new ScenarioPlayerAgentLog();
         private readonly bool verboseLogging;
         private CancellationToken cancellationToken;
         private int expectedEventIndex;
@@ -34,7 +34,7 @@ namespace SoC.Library.ScenarioTests
         #endregion
 
         #region Construction
-        public PlayerAgent(string name, bool verboseLogging = false)
+        public ScenarioPlayerAgent(string name, bool verboseLogging = false)
         {
             this.Name = name;
             this.verboseLogging = verboseLogging;
@@ -472,7 +472,7 @@ namespace SoC.Library.ScenarioTests
                 if (actualEvent is PlayerSetupEvent playerSetupEvent)
                 {
                     this.playerIdsByName = playerSetupEvent.PlayerIdsByName;
-                    PlayerAgentLog.PlayerNamesById = this.playerIdsByName.ToDictionary(kv => kv.Value, kv => kv.Key);
+                    ScenarioPlayerAgentLog.PlayerNamesById = this.playerIdsByName.ToDictionary(kv => kv.Value, kv => kv.Key);
                 }
 
                 this.VerifyActualEvent(actualEvent);

@@ -9,7 +9,7 @@ namespace SoC.Library.ScenarioTests
     using SoC.Library.ScenarioTests.Instructions;
     using SoC.Library.ScenarioTests.ScenarioEvents;
 
-    public class PlayerAgentLog : IPlayerAgentLog
+    public class ScenarioPlayerAgentLog : IPlayerAgentLog
     {
         #region Fields
         private readonly List<ILogEvent> logEvents = new List<ILogEvent>();

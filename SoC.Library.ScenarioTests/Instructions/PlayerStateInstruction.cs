@@ -9,7 +9,7 @@ namespace SoC.Library.ScenarioTests.Instructions
 
     internal class PlayerStateInstruction : Instruction
     {
-        private readonly PlayerAgent playerAgent;
+        private readonly ScenarioPlayerAgent playerAgent;
         private readonly ScenarioRunner runner;
         private int? heldCards;
         private uint? cities;
@@ -20,7 +20,7 @@ namespace SoC.Library.ScenarioTests.Instructions
         private int? playedKnightCards;
         private Dictionary<DevelopmentCardTypes, int> developmentCardsByCount;
 
-        public PlayerStateInstruction(PlayerAgent playerAgent, ScenarioRunner runner)
+        public PlayerStateInstruction(ScenarioPlayerAgent playerAgent, ScenarioRunner runner)
         {
             this.runner = runner;
             this.playerAgent = playerAgent;

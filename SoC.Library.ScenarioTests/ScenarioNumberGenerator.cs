@@ -73,14 +73,14 @@ namespace SoC.Library.ScenarioTests
             dice2 = tuple.Item2;
         }
 
-        public void PlayerLosesResource(PlayerAgent playerAgent, ResourceTypes resourceType)
+        public void PlayerLosesResource(ScenarioPlayerAgent playerAgent, ResourceTypes resourceType)
         {
             this.scenarios.Enqueue(new PlayerResource { playerAgent = playerAgent, resourceType = resourceType });
         }
 
         private class PlayerResource
         {
-            public PlayerAgent playerAgent;
+            public ScenarioPlayerAgent playerAgent;
             public ResourceTypes resourceType;
         }
     }
