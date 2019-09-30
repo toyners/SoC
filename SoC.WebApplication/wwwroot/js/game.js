@@ -18,7 +18,7 @@ connection.start().then(function () {
 
 connection.on("GameEvent", function (response) {
     ;
-}).catch(function err) {
+}).catch(function (err) {
     return console.error(err.toString());
 });
 

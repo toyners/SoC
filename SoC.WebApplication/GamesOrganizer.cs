@@ -140,8 +140,8 @@ namespace SoC.WebApplication
                 var player = gameDetails.Players.First(pd => pd.Id.Equals(playerId));
                 player.ConnectionId = confirmGameJoinRequest.ConnectionId;
 
-                var playerWithoutConnectionId = gameDetails.Players.FirstOrDefault(pd => pd.Id == null);
-                if (playerWithoutConnectionId != null)
+                var playerWithoutConnectionId = gameDetails.Players.FirstOrDefault(pd => pd.ConnectionId == null);
+                if (playerWithoutConnectionId == null)
                 {
                     this.LaunchGame(gameDetails);
                 }
