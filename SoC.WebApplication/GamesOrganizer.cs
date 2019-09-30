@@ -72,14 +72,25 @@ namespace SoC.WebApplication
             }
         }
 
+        //HashSet<>
         private GameManagerToken LaunchGame(GameDetails gameDetails)
         {
+            Dictionary<Guid, IEventReceiver> eventReceiversByPlayerId = null;
+            if (gameDetails.TotalBotCount > 0)
+            {
+                eventReceiversByPlayerId = new Dictionary<Guid, IEventReceiver>();
+                while (gameDetails.TotalBotCount-- > 0)
+                {
+
+                }
+            }
+
             var connectionIdsByPlayerId = new Dictionary<Guid, string>();
             gameDetails.Players.ForEach(player =>
             {
                 connectionIdsByPlayerId.Add(player.Id, player.ConnectionId);
             });
-            var eventSender = new EventSender(this.gameHubContext, connectionIdsByPlayerId);
+            var eventSender = new EventSender(this.gameHubContext, connectionIdsByPlayerId, eventReceiversByPlayerId);
 
             var gameManager = new GameManager(
                 this.numberGenerator,
@@ -154,6 +165,8 @@ namespace SoC.WebApplication
             {
                 Name = createGameRequest.Name,
                 Owner = createGameRequest.UserName,
+                TotalPlayerCount = createGameRequest.MaxPlayers,
+                TotalBotCount = createGameRequest.MaxBots,
             };
             gameDetails.Players.Add(new PlayerDetails { ConnectionId = createGameRequest.ConnectionId, UserName = createGameRequest.UserName });
 
@@ -249,7 +262,9 @@ namespace SoC.WebApplication
         {
             private readonly IHubContext<GameHub> gameHubContext;
             private readonly Dictionary<Guid, string> connectionIdsByPlayerId;
-            public EventSender(IHubContext<GameHub> gameHubContext, Dictionary<Guid, string> connectionIdsByPlayerId)
+            public EventSender(IHubContext<GameHub> gameHubContext, 
+                Dictionary<Guid, string> connectionIdsByPlayerId,
+                Dictionary<Guid, IEventReceiver> eventReceiversByPlayerId)
             {
                 this.gameHubContext = gameHubContext;
                 this.connectionIdsByPlayerId = connectionIdsByPlayerId;

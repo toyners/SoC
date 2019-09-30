@@ -87,14 +87,21 @@ connection.start().then(function () {
 });
 
 document.getElementById("createGameRequest").addEventListener("click", function (event) {
+    // TODO: Validation of inputs
     var userNameInput = document.getElementById("userName");
     var gameNameInput = document.getElementById("gameName");
+
     var playerCountInput = document.getElementById("playerCount");
     var playerCount = parseInt(playerCountInput.value);
+
+    var botCountInput = document.getElementById("botCount");
+    var botCount = parseInt(botCountInput.value);
+
     var request = {
         name: gameNameInput.value,
         username: userNameInput.value,
-        maxplayers: playerCount
+        maxplayers: playerCount,
+        maxbots: botCount,
     }
     connection.invoke("CreateGame", request).catch(function (err) {
         return console.error(err.toString());
