@@ -31,6 +31,7 @@ namespace SoC.WebApplication
 
             services.AddSignalR();
 
+            services.AddSingleton<IGamesAdministrator, GamesAdministrator>();
             services.AddSingleton<IGamesOrganizer, GamesOrganizer>();
         }
 

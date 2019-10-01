@@ -7,8 +7,6 @@ namespace SoC.WebApplication
     using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
-    using Jabberwocky.SoC.Library;
-    using Jabberwocky.SoC.Library.GameBoards;
     using Jabberwocky.SoC.Library.GameEvents;
     using Jabberwocky.SoC.Library.Interfaces;
     using Microsoft.AspNetCore.SignalR;
@@ -18,128 +16,21 @@ namespace SoC.WebApplication
     public class GamesOrganizer : IGamesOrganizer
     {
         private readonly IHubContext<SetupHub> setupHubContext;
-        private readonly IHubContext<GameHub> gameHubContext;  
+        private readonly IHubContext<GameHub> gameHubContext;
+        private readonly IGamesAdministrator gamesAdministrator;
         private readonly ConcurrentDictionary<Guid, GameDetails> waitingGamesById = new ConcurrentDictionary<Guid, GameDetails>();
         private readonly ConcurrentQueue<GameDetails> startingGames = new ConcurrentQueue<GameDetails>();
         private readonly ConcurrentDictionary<Guid, GameDetails> startingGamesById = new ConcurrentDictionary<Guid, GameDetails>();
-        private readonly ConcurrentDictionary<Guid, GameManagerToken> inPlayGames = new ConcurrentDictionary<Guid, GameManagerToken>();
-        private Task startingGameTask;
-        private Task mainGameTask;
-        private ConcurrentQueue<GameRequest> gameRequests = new ConcurrentQueue<GameRequest>();
-        private CancellationToken cancellationToken;
+        private readonly Task startingGameTask;
+        private readonly CancellationToken cancellationToken;
         private readonly CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
-        private readonly INumberGenerator numberGenerator = new NumberGenerator();
 
-        public GamesOrganizer(IHubContext<SetupHub> setupHubContext)
+        public GamesOrganizer(IHubContext<SetupHub> setupHubContext, IGamesAdministrator gamesAdministrator)
         {
             this.setupHubContext = setupHubContext;
+            this.gamesAdministrator = gamesAdministrator;
             this.cancellationToken = this.cancellationTokenSource.Token;
             this.startingGameTask = Task.Factory.StartNew(o => { this.ProcessStartingGames(); }, this, this.cancellationToken);
-            this.mainGameTask = Task.Factory.StartNew(o => { this.ProcessInPlayGames(); }, null, CancellationToken.None);
-        }
-
-        private void ProcessStartingGames()
-        {
-            try
-            {
-                while (true)
-                {
-                    this.cancellationToken.ThrowIfCancellationRequested();
-                    if (this.startingGames.TryPeek(out var gameDetails))
-                    {
-                        var duration = DateTime.Now - gameDetails.LaunchTime;
-                        if (duration.TotalSeconds > 2)
-                        {
-                            // Launch game
-                            this.startingGames.TryDequeue(out var gd);
-                            var gameManagerToken = this.LaunchGame(gameDetails);
-                            this.inPlayGames.TryAdd(gameDetails.Id, gameManagerToken);
-                            for (var index = 0; index < gameDetails.Players.Count; index++)
-                            {
-                                var playerDetails = gameDetails.Players[index];
-                                var gameLaunchedResponse = new GameLaunchedResponse(gameDetails.Id, playerDetails.Id);
-                                this.setupHubContext.Clients.Client(playerDetails.ConnectionId).SendAsync("GameLaunched", gameLaunchedResponse);
-                            }
-                        }
-                    }
-
-                    Thread.Sleep(500);
-                }
-            }
-            catch (OperationCanceledException)
-            {
-
-            }
-        }
-
-        //HashSet<>
-        private GameManagerToken LaunchGame(GameDetails gameDetails)
-        {
-            Dictionary<Guid, IEventReceiver> eventReceiversByPlayerId = null;
-            if (gameDetails.TotalBotCount > 0)
-            {
-                eventReceiversByPlayerId = new Dictionary<Guid, IEventReceiver>();
-                while (gameDetails.TotalBotCount-- > 0)
-                {
-
-                }
-            }
-
-            var connectionIdsByPlayerId = new Dictionary<Guid, string>();
-            gameDetails.Players.ForEach(player =>
-            {
-                connectionIdsByPlayerId.Add(player.Id, player.ConnectionId);
-            });
-            var eventSender = new EventSender(this.gameHubContext, connectionIdsByPlayerId, eventReceiversByPlayerId);
-
-            var gameManager = new GameManager(
-                this.numberGenerator,
-                new GameBoard(BoardSizes.Standard),
-                new DevelopmentCardHolder(),
-                new PlayerFactory(),
-                eventSender,
-                new GameOptions
-                {
-                    Players = gameDetails.NumberOfPlayers,
-                    TurnTimeInSeconds = 120
-                }
-            );
-
-            gameDetails.Players.ForEach(player =>
-            {
-                gameManager.JoinGame(player.UserName);
-            });
-
-            var token = new GameManagerToken
-            {
-                GameManager = gameManager,
-                GameManagerTask = gameManager.StartGameAsync()
-            };
-
-            return token;
-        }
-
-        private void ProcessInPlayGames()
-        {
-            try
-            {
-                while(true)
-                {
-                    while (this.gameRequests.TryDequeue(out var request))
-                    {
-                        if (!this.inPlayGames.TryGetValue(request.GameId, out var game))
-                        {
-                            // Game missing so handle this
-                        }
-                    }
-
-                    Thread.Sleep(50);
-                }
-            }
-            catch (OperationCanceledException)
-            {
-
-            }
         }
 
         public void ConfirmGameJoin(ConfirmGameJoinRequest confirmGameJoinRequest)
@@ -154,7 +45,7 @@ namespace SoC.WebApplication
                 var playerWithoutConnectionId = gameDetails.Players.FirstOrDefault(pd => pd.ConnectionId == null);
                 if (playerWithoutConnectionId == null)
                 {
-                    this.LaunchGame(gameDetails);
+                    this.gamesAdministrator.LaunchGame(gameDetails);
                 }
             }
         }
@@ -186,7 +77,6 @@ namespace SoC.WebApplication
                 return new CreateGameResponse(gameDetails.Id);
             }
         }
-
 
         public GameInfoListResponse GetWaitingGames()
         {
@@ -252,28 +142,38 @@ namespace SoC.WebApplication
             throw new NotImplementedException();
         }
 
-        private struct GameManagerToken
+        private void ProcessStartingGames()
         {
-            public GameManager GameManager;
-            public Task GameManagerTask;
-        }
-
-        private class EventSender : IEventSender
-        {
-            private readonly IHubContext<GameHub> gameHubContext;
-            private readonly Dictionary<Guid, string> connectionIdsByPlayerId;
-            public EventSender(IHubContext<GameHub> gameHubContext, 
-                Dictionary<Guid, string> connectionIdsByPlayerId,
-                Dictionary<Guid, IEventReceiver> eventReceiversByPlayerId)
+            try
             {
-                this.gameHubContext = gameHubContext;
-                this.connectionIdsByPlayerId = connectionIdsByPlayerId;
+                while (true)
+                {
+                    this.cancellationToken.ThrowIfCancellationRequested();
+                    if (this.startingGames.TryPeek(out var gameDetails))
+                    {
+                        var duration = DateTime.Now - gameDetails.LaunchTime;
+                        if (duration.TotalSeconds > 2)
+                        {
+                            // Launch game
+                            this.startingGames.TryDequeue(out var gd);
+                            this.gamesAdministrator.LaunchGame(gameDetails);
+                            /*var gameManagerToken = this.LaunchGame(gameDetails);
+                            this.inPlayGames.TryAdd(gameDetails.Id, gameManagerToken);
+                            for (var index = 0; index < gameDetails.Players.Count; index++)
+                            {
+                                var playerDetails = gameDetails.Players[index];
+                                var gameLaunchedResponse = new GameLaunchedResponse(gameDetails.Id, playerDetails.Id);
+                                this.setupHubContext.Clients.Client(playerDetails.ConnectionId).SendAsync("GameLaunched", gameLaunchedResponse);
+                            }*/
+                        }
+                    }
+
+                    Thread.Sleep(500);
+                }
             }
-
-            public void Send(GameEvent gameEvent, Guid playerId)
+            catch (OperationCanceledException)
             {
-                var connectionId = this.connectionIdsByPlayerId[playerId];
-                this.gameHubContext.Clients.Client(connectionId).SendAsync("GameEvent", gameEvent);
+
             }
         }
     }
