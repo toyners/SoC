@@ -4,6 +4,7 @@ namespace SoC.WebApplication
     using System;
     using System.Collections.Concurrent;
     using System.Collections.Generic;
+    using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
     using Jabberwocky.SoC.Library;
@@ -21,7 +22,7 @@ namespace SoC.WebApplication
         private readonly IHubContext<GameHub> gameHubContext;
         private readonly ConcurrentDictionary<Guid, GameManagerToken> inPlayGames = new ConcurrentDictionary<Guid, GameManagerToken>();
         private readonly ConcurrentQueue<GameRequest> gameRequests = new ConcurrentQueue<GameRequest>();
-        private readonly ConcurrentQueue<GameDetails> gamesToLaunch = new ConcurrentQueue<GameDetails>();
+        private readonly ConcurrentDictionary<Guid, GameDetails> gamesToLaunchById = new ConcurrentDictionary<Guid, GameDetails>();
         private readonly Task launchGameTask;
         private readonly Task mainGameTask;
         private readonly INumberGenerator numberGenerator = new NumberGenerator();
@@ -30,13 +31,31 @@ namespace SoC.WebApplication
         {
             this.gameHubContext = gameHubContext;
             this.cancellationToken = this.cancellationTokenSource.Token;
-            this.launchGameTask = Task.Factory.StartNew(o => { this.LaunchGame(); }, null, this.cancellationToken);
+            //this.launchGameTask = Task.Factory.StartNew(o => { this.LaunchGame(); }, null, this.cancellationToken);
             this.mainGameTask = Task.Factory.StartNew(o => { this.ProcessInPlayGames(); }, null, this.cancellationToken);
         }
 
         public void AddGame(GameDetails gameDetails)
         {
-            this.gamesToLaunch.Enqueue(gameDetails);
+            this.gamesToLaunchById.TryAdd(gameDetails.Id, gameDetails);
+        }
+
+        public void ConfirmGameJoin(ConfirmGameJoinRequest confirmGameJoinRequest)
+        {
+            var gameId = Guid.Parse(confirmGameJoinRequest.GameId);
+            if (this.gamesToLaunchById.TryGetValue(gameId, out var gameDetails))
+            {
+                var playerId = Guid.Parse(confirmGameJoinRequest.PlayerId);
+                var player = gameDetails.Players.First(pd => pd.Id.Equals(playerId));
+                player.ConnectionId = confirmGameJoinRequest.ConnectionId;
+
+                var playerWithoutConnectionId = gameDetails.Players.FirstOrDefault(pd => pd.ConnectionId == null);
+                if (playerWithoutConnectionId == null)
+                {
+                    var gameManagerToken = this.LaunchGame(gameDetails);
+                    this.inPlayGames.GetOrAdd(gameDetails.Id, gameManagerToken);
+                }
+            }
         }
 
         public void Shutdown()
@@ -73,11 +92,11 @@ namespace SoC.WebApplication
             {
                 while (true)
                 {
-                    while (this.gamesToLaunch.TryDequeue(out var gameDetails))
+                    /*while (this.gamesToLaunch.TryDequeue(out var gameDetails))
                     {
                         var gameManagerToken = this.LaunchGame(gameDetails);
                         this.inPlayGames.GetOrAdd(gameDetails.Id, gameManagerToken);
-                    }
+                    }*/
 
                     Thread.Sleep(50);
                 }

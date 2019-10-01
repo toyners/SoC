@@ -5,14 +5,14 @@ namespace SoC.WebApplication.Hubs
 {
     public class GameHub : Hub
     {
-        private IGamesOrganizer gameOrganizer;
+        private IGamesAdministrator gamesAdministrator;
 
-        public GameHub(IGamesOrganizer gameOrganizer) => this.gameOrganizer = gameOrganizer;
+        public GameHub(IGamesAdministrator gamesAdministrator) => this.gamesAdministrator = gamesAdministrator;
 
         public async void ConfirmGameJoin(ConfirmGameJoinRequest confirmGameJoinRequest)
         {
             confirmGameJoinRequest.ConnectionId = this.Context.ConnectionId;
-            this.gameOrganizer.ConfirmGameJoin(confirmGameJoinRequest);
+            this.gamesAdministrator.ConfirmGameJoin(confirmGameJoinRequest);
         }
     }
 }

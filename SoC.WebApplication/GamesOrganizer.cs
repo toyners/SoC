@@ -33,23 +33,6 @@ namespace SoC.WebApplication
             this.startingGameTask = Task.Factory.StartNew(o => { this.ProcessStartingGames(); }, this, this.cancellationToken);
         }
 
-        public void ConfirmGameJoin(ConfirmGameJoinRequest confirmGameJoinRequest)
-        {
-            var gameId = Guid.Parse(confirmGameJoinRequest.GameId);
-            if (this.startingGamesById.TryGetValue(gameId, out var gameDetails))
-            {
-                var playerId = Guid.Parse(confirmGameJoinRequest.PlayerId);
-                var player = gameDetails.Players.First(pd => pd.Id.Equals(playerId));
-                player.ConnectionId = confirmGameJoinRequest.ConnectionId;
-
-                var playerWithoutConnectionId = gameDetails.Players.FirstOrDefault(pd => pd.ConnectionId == null);
-                if (playerWithoutConnectionId == null)
-                {
-                    this.gamesAdministrator.LaunchGame(gameDetails);
-                }
-            }
-        }
-
         public ResponseBase CreateGame(CreateGameRequest createGameRequest)
         {
             var gameDetails = new GameDetails
@@ -64,8 +47,7 @@ namespace SoC.WebApplication
             if (createGameRequest.MaxPlayers == 1)
             {
                 gameDetails.Status = GameStatus.Starting;
-                gameDetails.LaunchTime = DateTime.Now;
-                this.startingGamesById.TryAdd(gameDetails.Id, gameDetails);
+                this.gamesAdministrator.AddGame(gameDetails);
                 
                 var playerDetails = gameDetails.Players[0];
                 return new LaunchGameResponse(gameDetails.Status, gameDetails.Id, playerDetails.Id, playerDetails.ConnectionId);
@@ -131,17 +113,6 @@ namespace SoC.WebApplication
             return true;
         }
 
-        public void SendEvent(GameEvent gameEvent, Guid playerId)
-        {
-            if (gameEvent is GameJoinedEvent)
-                return;
-        }
-
-        public void SendEvent(GameEvent gameEvent, IEnumerable<IPlayer> players)
-        {
-            throw new NotImplementedException();
-        }
-
         private void ProcessStartingGames()
         {
             try
@@ -156,7 +127,7 @@ namespace SoC.WebApplication
                         {
                             // Launch game
                             this.startingGames.TryDequeue(out var gd);
-                            this.gamesAdministrator.LaunchGame(gameDetails);
+                            this.gamesAdministrator.AddGame(gameDetails);
                             /*var gameManagerToken = this.LaunchGame(gameDetails);
                             this.inPlayGames.TryAdd(gameDetails.Id, gameManagerToken);
                             for (var index = 0; index < gameDetails.Players.Count; index++)
