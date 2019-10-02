@@ -11,11 +11,12 @@ namespace SoC.WebApplication
     using Jabberwocky.SoC.Library.GameBoards;
     using Jabberwocky.SoC.Library.GameEvents;
     using Jabberwocky.SoC.Library.Interfaces;
+    using Jabberwocky.SoC.Library.PlayerActions;
     using Microsoft.AspNetCore.SignalR;
     using SoC.WebApplication.Hubs;
     using SoC.WebApplication.Requests;
 
-    public class GamesAdministrator : IGamesAdministrator
+    public class GamesAdministrator : IGamesAdministrator, IPlayerRequestReceiver
     {
         private readonly CancellationToken cancellationToken;
         private readonly CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
@@ -55,6 +56,15 @@ namespace SoC.WebApplication
                     var gameManagerToken = this.LaunchGame(gameDetails);
                     this.inPlayGames.GetOrAdd(gameDetails.Id, gameManagerToken);
                 }
+            }
+        }
+
+        public void PlayerAction(PlayerActionRequest playerActionRequest)
+        {
+            if (this.inPlayGames.TryGetValue(playerActionRequest.GameId, out var gameManagerToken))
+            {
+                PlayerAction playerAction = null;
+                gameManagerToken.GameManager.Post(playerAction);
             }
         }
 
@@ -108,22 +118,29 @@ namespace SoC.WebApplication
         }
 
         private GameManagerToken LaunchGame(GameDetails gameDetails)
-        { 
+        {
+            var playerIds = new Queue<Guid>();
+
+            var connectionIdsByPlayerId = new Dictionary<Guid, string>();
+            gameDetails.Players.ForEach(player =>
+            {
+                connectionIdsByPlayerId.Add(player.Id, player.ConnectionId);
+                playerIds.Enqueue(player.Id);
+            });
+
             Dictionary<Guid, IEventReceiver> eventReceiversByPlayerId = null;
             if (gameDetails.TotalBotCount > 0)
             {
                 eventReceiversByPlayerId = new Dictionary<Guid, IEventReceiver>();
                 while (gameDetails.TotalBotCount-- > 0)
                 {
-
+                    var bot = new Bot(gameDetails.Id, this);
+                    eventReceiversByPlayerId.Add(bot.Id, bot);
+                    playerIds.Enqueue(bot.Id);
                 }
             }
 
-            var connectionIdsByPlayerId = new Dictionary<Guid, string>();
-            gameDetails.Players.ForEach(player =>
-            {
-                connectionIdsByPlayerId.Add(player.Id, player.ConnectionId);
-            });
+            
             var eventSender = new EventSender(this.gameHubContext, connectionIdsByPlayerId, eventReceiversByPlayerId);
 
             var gameManager = new GameManager(
@@ -138,6 +155,8 @@ namespace SoC.WebApplication
                     TurnTimeInSeconds = 120
                 }
             );
+
+            gameManager.SetIdGenerator(() => { return playerIds.Dequeue(); });
 
             gameDetails.Players.ForEach(player =>
             {
@@ -163,18 +182,31 @@ namespace SoC.WebApplication
         {
             private readonly IHubContext<GameHub> gameHubContext;
             private readonly Dictionary<Guid, string> connectionIdsByPlayerId;
+            private readonly Dictionary<Guid, IEventReceiver> eventReceiversByPlayerId;
             public EventSender(IHubContext<GameHub> gameHubContext,
                 Dictionary<Guid, string> connectionIdsByPlayerId,
                 Dictionary<Guid, IEventReceiver> eventReceiversByPlayerId)
             {
                 this.gameHubContext = gameHubContext;
                 this.connectionIdsByPlayerId = connectionIdsByPlayerId;
+                this.eventReceiversByPlayerId = eventReceiversByPlayerId;
             }
 
             public void Send(GameEvent gameEvent, Guid playerId)
             {
-                var connectionId = this.connectionIdsByPlayerId[playerId];
-                this.gameHubContext.Clients.Client(connectionId).SendAsync("GameEvent", gameEvent);
+                if (this.eventReceiversByPlayerId.ContainsKey(playerId))
+                {
+                    this.eventReceiversByPlayerId[playerId].Post(gameEvent);
+                }
+                else if (this.connectionIdsByPlayerId.ContainsKey(playerId))
+                {
+                    var connectionId = this.connectionIdsByPlayerId[playerId];
+                    this.gameHubContext.Clients.Client(connectionId).SendAsync("GameEvent", gameEvent);
+                }
+                else
+                {
+                    throw new NotImplementedException("Should not get here");
+                }
             }
         }
     }

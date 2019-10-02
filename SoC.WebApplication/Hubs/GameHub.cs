@@ -14,5 +14,10 @@ namespace SoC.WebApplication.Hubs
             confirmGameJoinRequest.ConnectionId = this.Context.ConnectionId;
             this.gamesAdministrator.ConfirmGameJoin(confirmGameJoinRequest);
         }
+
+        public void PlayerAction(PlayerActionRequest playerActionRequest)
+        {
+            this.gamesAdministrator.PlayerAction(playerActionRequest);
+        }
     }
 }
