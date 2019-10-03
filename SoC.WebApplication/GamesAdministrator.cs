@@ -54,6 +54,7 @@ namespace SoC.WebApplication
                 if (playerWithoutConnectionId == null)
                 {
                     var gameManagerToken = this.LaunchGame(gameDetails);
+                    this.gamesToLaunchById.TryRemove(gameDetails.Id, out var gd);
                     this.inPlayGames.GetOrAdd(gameDetails.Id, gameManagerToken);
                 }
             }

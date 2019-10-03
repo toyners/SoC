@@ -17,7 +17,10 @@ connection.start().then(function () {
 });
 
 connection.on("GameEvent", function (response) {
-    ;
+    var typeName = response.typeName;
+    if (typeName === "GameJoinedEvent") {
+
+    }
 }).catch(function (err) {
     return console.error(err.toString());
 });
