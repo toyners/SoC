@@ -16,14 +16,16 @@ namespace SoC.WebApplication
         private readonly Task processingTask;
         private readonly IPlayerRequestReceiver playerActionReceiver;
 
-        public Bot(Guid gameId, IPlayerRequestReceiver playerActionReceiver)
+        public Bot(string name, Guid gameId, IPlayerRequestReceiver playerActionReceiver)
         {
+            this.Name = name;
             this.gameId = gameId;
             this.playerActionReceiver = playerActionReceiver;
             this.processingTask = Task.Factory.StartNew(o => { this.ProcessAsync(); }, CancellationToken.None);
         }
 
         public Guid Id { get; private set; } = Guid.NewGuid();
+        public string Name { get; private set; }
 
         public void Post(GameEvent gameEvent)
         {

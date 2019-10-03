@@ -7,7 +7,7 @@ var gameId = null;
 //Disable send button until connection is established
 document.getElementById("joinGameRequest").disabled = true;
 
-connection.on("GameList", function (response) {
+connection.on("GameSessionList", function (response) {
     var gamesList = document.getElementById("gamesList");
     var child = gamesList.firstElementChild;
     while (child) {
@@ -68,7 +68,7 @@ connection.on("GameList", function (response) {
     }
 });
 
-connection.on("GameCreated", function (response) {
+connection.on("GameSessionCreated", function (response) {
     var status = document.getElementById("status");
     if (response.gameId === null) {
         status.textContent = "Game Creation Failed";
@@ -103,7 +103,7 @@ document.getElementById("createGameRequest").addEventListener("click", function 
         maxplayers: playerCount,
         maxbots: botCount,
     }
-    connection.invoke("CreateGame", request).catch(function (err) {
+    connection.invoke("CreateGameSession", request).catch(function (err) {
         return console.error(err.toString());
     });
 
@@ -116,13 +116,13 @@ document.getElementById("joinGameRequest").addEventListener("click", function (e
         GameId: gameId,
         username: userNameInput.value,
     }
-    connection.invoke("JoinGame", request).catch(function (err) {
+    connection.invoke("JoinGameSession", request).catch(function (err) {
         return console.error(err.toString());
     });
     event.preventDefault();
 });
 
-connection.on("GameJoined", function (response) {
+connection.on("GameSessionJoined", function (response) {
     var status = document.getElementById("status");
     if (response.gameId === null) {
         status.textContent = "Game Join Failed";
@@ -138,7 +138,7 @@ connection.on("GameJoined", function (response) {
 
 document.getElementById("getWaitingGamesRequest").addEventListener("click", function (event) {
     var request = {}
-    connection.invoke("GetWaitingGames", request).catch(function (err) {
+    connection.invoke("GetWaitingGameSessions", request).catch(function (err) {
         return console.error(err.toString());
     });
     event.preventDefault();

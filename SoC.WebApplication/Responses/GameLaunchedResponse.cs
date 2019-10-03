@@ -2,7 +2,7 @@
 
 namespace SoC.WebApplication
 {
-    public class GameLaunchedResponse : CreateGameResponse
+    public class GameLaunchedResponse : CreateGameSessionResponse
     {
         public GameLaunchedResponse(Guid gameId, Guid playerId) : base(gameId) => this.PlayerId = playerId;
 

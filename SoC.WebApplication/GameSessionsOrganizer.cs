@@ -3,39 +3,35 @@ namespace SoC.WebApplication
 {
     using System;
     using System.Collections.Concurrent;
-    using System.Collections.Generic;
     using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
-    using Jabberwocky.SoC.Library.GameEvents;
-    using Jabberwocky.SoC.Library.Interfaces;
     using Microsoft.AspNetCore.SignalR;
     using SoC.WebApplication.Hubs;
     using SoC.WebApplication.Requests;
 
-    public class GamesOrganizer : IGamesOrganizer
+    public class GameSessionsOrganizer : IGameSessionsOrganizer
     {
-        private readonly IHubContext<SetupHub> setupHubContext;
-        private readonly IHubContext<GameHub> gameHubContext;
+        private readonly IHubContext<GameSessionHub> gameSessionHubContext;
         private readonly IGamesAdministrator gamesAdministrator;
-        private readonly ConcurrentDictionary<Guid, GameDetails> waitingGamesById = new ConcurrentDictionary<Guid, GameDetails>();
-        private readonly ConcurrentQueue<GameDetails> startingGames = new ConcurrentQueue<GameDetails>();
-        private readonly ConcurrentDictionary<Guid, GameDetails> startingGamesById = new ConcurrentDictionary<Guid, GameDetails>();
+        private readonly ConcurrentDictionary<Guid, GameSessionDetails> waitingGameSessionsById = new ConcurrentDictionary<Guid, GameSessionDetails>();
+        private readonly ConcurrentQueue<GameSessionDetails> startingGames = new ConcurrentQueue<GameSessionDetails>();
+        private readonly ConcurrentDictionary<Guid, GameSessionDetails> startingGamesById = new ConcurrentDictionary<Guid, GameSessionDetails>();
         private readonly Task startingGameTask;
         private readonly CancellationToken cancellationToken;
         private readonly CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
 
-        public GamesOrganizer(IHubContext<SetupHub> setupHubContext, IGamesAdministrator gamesAdministrator)
+        public GameSessionsOrganizer(IHubContext<GameSessionHub> gameSessionHubContext, IGamesAdministrator gamesAdministrator)
         {
-            this.setupHubContext = setupHubContext;
+            this.gameSessionHubContext = gameSessionHubContext;
             this.gamesAdministrator = gamesAdministrator;
             this.cancellationToken = this.cancellationTokenSource.Token;
             this.startingGameTask = Task.Factory.StartNew(o => { this.ProcessStartingGames(); }, this, this.cancellationToken);
         }
 
-        public ResponseBase CreateGame(CreateGameRequest createGameRequest)
+        public ResponseBase CreateGameSession(CreateGameSessionRequest createGameRequest)
         {
-            var gameDetails = new GameDetails
+            var gameDetails = new GameSessionDetails
             {
                 Name = createGameRequest.Name,
                 Owner = createGameRequest.UserName,
@@ -55,14 +51,14 @@ namespace SoC.WebApplication
             else
             {
                 gameDetails.Status = GameStatus.Open;
-                this.waitingGamesById.TryAdd(gameDetails.Id, gameDetails);
-                return new CreateGameResponse(gameDetails.Id);
+                this.waitingGameSessionsById.TryAdd(gameDetails.Id, gameDetails);
+                return new CreateGameSessionResponse(gameDetails.Id);
             }
         }
 
-        public GameInfoListResponse GetWaitingGames()
+        public GameInfoListResponse GetWaitingGameSessions()
         {
-            var gameInfoResponses = this.waitingGamesById.Values
+            var gameInfoResponses = this.waitingGameSessionsById.Values
                 .Where(gd => gd.Status == GameStatus.Open)
                 .Select(gd => new GameInfoResponse
                 {
@@ -77,15 +73,15 @@ namespace SoC.WebApplication
             return new GameInfoListResponse(gameInfoResponses);
         }
 
-        public bool? JoinGame(JoinGameRequest joinGameRequest, out JoinGameResponse[] responses)
+        public bool? JoinGameSession(JoinGameSessionRequest joinGameRequest, out JoinGameResponse[] responses)
         {
             responses = null;
-            if (!this.waitingGamesById.ContainsKey(joinGameRequest.GameId))
+            if (!this.waitingGameSessionsById.ContainsKey(joinGameRequest.GameId))
             {
                 return null;
             }
 
-            var gameDetails = this.waitingGamesById[joinGameRequest.GameId];
+            var gameDetails = this.waitingGameSessionsById[joinGameRequest.GameId];
             if (gameDetails.NumberOfSlots == 0 || gameDetails.Status != GameStatus.Open)
             {
                 responses = new[] { new JoinGameResponse(gameDetails.Status) };
@@ -96,7 +92,7 @@ namespace SoC.WebApplication
             if (gameDetails.NumberOfSlots == 0)
             {
                 gameDetails.Status = GameStatus.Starting;
-                this.waitingGamesById.TryRemove(gameDetails.Id, out var gd);
+                this.waitingGameSessionsById.TryRemove(gameDetails.Id, out var gd);
                 this.startingGamesById.TryAdd(gameDetails.Id, gameDetails);
                 this.startingGames.Enqueue(gameDetails);
                 gameDetails.LaunchTime = DateTime.Now;

@@ -23,7 +23,7 @@ namespace SoC.WebApplication
         private readonly IHubContext<GameHub> gameHubContext;
         private readonly ConcurrentDictionary<Guid, GameManagerToken> inPlayGames = new ConcurrentDictionary<Guid, GameManagerToken>();
         private readonly ConcurrentQueue<GameRequest> gameRequests = new ConcurrentQueue<GameRequest>();
-        private readonly ConcurrentDictionary<Guid, GameDetails> gamesToLaunchById = new ConcurrentDictionary<Guid, GameDetails>();
+        private readonly ConcurrentDictionary<Guid, GameSessionDetails> gamesToLaunchById = new ConcurrentDictionary<Guid, GameSessionDetails>();
         private readonly Task launchGameTask;
         private readonly Task mainGameTask;
         private readonly INumberGenerator numberGenerator = new NumberGenerator();
@@ -36,7 +36,7 @@ namespace SoC.WebApplication
             this.mainGameTask = Task.Factory.StartNew(o => { this.ProcessInPlayGames(); }, null, this.cancellationToken);
         }
 
-        public void AddGame(GameDetails gameDetails)
+        public void AddGame(GameSessionDetails gameDetails)
         {
             this.gamesToLaunchById.TryAdd(gameDetails.Id, gameDetails);
         }
@@ -117,7 +117,7 @@ namespace SoC.WebApplication
             }
         }
 
-        private GameManagerToken LaunchGame(GameDetails gameDetails)
+        private GameManagerToken LaunchGame(GameSessionDetails gameDetails)
         {
             var playerIds = new Queue<Guid>();
 
@@ -129,17 +129,20 @@ namespace SoC.WebApplication
             });
 
             Dictionary<Guid, IEventReceiver> eventReceiversByPlayerId = null;
+            List<Bot> bots = null;
             if (gameDetails.TotalBotCount > 0)
             {
+                bots = new List<Bot>();
                 eventReceiversByPlayerId = new Dictionary<Guid, IEventReceiver>();
+                var botNumber = 1;
                 while (gameDetails.TotalBotCount-- > 0)
                 {
-                    var bot = new Bot(gameDetails.Id, this);
+                    var bot = new Bot("Bot #" + (botNumber++), gameDetails.Id, this);
+                    bots.Add(bot);
                     eventReceiversByPlayerId.Add(bot.Id, bot);
                     playerIds.Enqueue(bot.Id);
                 }
             }
-
             
             var eventSender = new EventSender(this.gameHubContext, connectionIdsByPlayerId, eventReceiversByPlayerId);
 
@@ -162,6 +165,14 @@ namespace SoC.WebApplication
             {
                 gameManager.JoinGame(player.UserName);
             });
+
+            if (bots != null)
+            {
+                bots.ForEach(bot => 
+                {
+                    gameManager.JoinGame(bot.Name);
+                });
+            }
 
             var token = new GameManagerToken
             {

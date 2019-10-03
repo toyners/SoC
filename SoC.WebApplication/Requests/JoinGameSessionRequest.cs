@@ -2,7 +2,7 @@
 
 namespace SoC.WebApplication.Requests
 {
-    public class JoinGameRequest : RequestBase
+    public class JoinGameSessionRequest : RequestBase
     {
         public Guid GameId { get; set; }
     }

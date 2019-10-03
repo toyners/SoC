@@ -32,7 +32,7 @@ namespace SoC.WebApplication
             services.AddSignalR();
 
             services.AddSingleton<IGamesAdministrator, GamesAdministrator>();
-            services.AddSingleton<IGamesOrganizer, GamesOrganizer>();
+            services.AddSingleton<IGameSessionsOrganizer, GameSessionsOrganizer>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -54,7 +54,7 @@ namespace SoC.WebApplication
             app.UseCookiePolicy();
             app.UseSignalR(routes =>
             {
-                routes.MapHub<SetupHub>("/gameSetup");
+                routes.MapHub<GameSessionHub>("/gameSetup");
                 routes.MapHub<GameHub>("/gameRequest");
             });
             app.UseMvc();

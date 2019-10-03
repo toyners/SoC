@@ -4,7 +4,7 @@ namespace SoC.WebApplication
     using System;
     using System.Collections.Generic;
 
-    public class GameDetails
+    public class GameSessionDetails
     {
         public Guid Id { get; } = Guid.NewGuid();
         public string Name { get; set; }

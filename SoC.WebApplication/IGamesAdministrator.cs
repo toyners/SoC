@@ -5,7 +5,7 @@ namespace SoC.WebApplication
 
     public interface IGamesAdministrator : IPlayerRequestReceiver
     {
-        void AddGame(GameDetails gameDetails);
+        void AddGame(GameSessionDetails gameDetails);
         void ConfirmGameJoin(ConfirmGameJoinRequest confirmGameJoinRequest);
         void Shutdown();
     }

@@ -1,6 +1,6 @@
 ﻿namespace SoC.WebApplication.Requests
 {
-    public class CreateGameRequest : RequestBase
+    public class CreateGameSessionRequest : RequestBase
     {
         public string Name { get; set; }
         public int MaxPlayers { get; set; }
