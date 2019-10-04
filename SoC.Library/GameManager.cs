@@ -54,13 +54,25 @@ namespace Jabberwocky.SoC.Library
 
         #region Construction
         public GameManager(
-            INumberGenerator numberGenerator, 
-            GameBoard gameBoard, 
-            IDevelopmentCardHolder developmentCardHolder, 
-            IPlayerFactory playerFactory, 
+            INumberGenerator numberGenerator,
+            GameBoard gameBoard,
+            IDevelopmentCardHolder developmentCardHolder,
+            IPlayerFactory playerFactory,
+            IEventSender eventSender,
+            GameOptions gameOptions)
+            : this(Guid.NewGuid(), numberGenerator, gameBoard, developmentCardHolder, playerFactory, eventSender, gameOptions)
+        { }
+
+        public GameManager(
+            Guid id,
+            INumberGenerator numberGenerator,
+            GameBoard gameBoard,
+            IDevelopmentCardHolder developmentCardHolder,
+            IPlayerFactory playerFactory,
             IEventSender eventSender,
             GameOptions gameOptions)
         {
+            this.Id = id;
             this.numberGenerator = numberGenerator;
             this.gameBoard = gameBoard;
             this.developmentCardHolder = developmentCardHolder;
@@ -74,6 +86,7 @@ namespace Jabberwocky.SoC.Library
         #endregion
 
         #region Properties
+        public Guid Id { get; private set; }
         public bool IsFinished { get; private set; }
         #endregion
 

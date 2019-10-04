@@ -21,10 +21,10 @@ namespace SoC.WebApplication
         private readonly CancellationToken cancellationToken;
         private readonly CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
         private readonly IHubContext<GameHub> gameHubContext;
-        private readonly ConcurrentDictionary<Guid, GameManagerToken> inPlayGames = new ConcurrentDictionary<Guid, GameManagerToken>();
+        private readonly ConcurrentDictionary<Guid, GameManagerToken> inPlayGamesById = new ConcurrentDictionary<Guid, GameManagerToken>();
+        private List<GameManagerToken> inPlayGames = new List<GameManagerToken>();
         private readonly ConcurrentQueue<GameRequest> gameRequests = new ConcurrentQueue<GameRequest>();
         private readonly ConcurrentDictionary<Guid, GameSessionDetails> gamesToLaunchById = new ConcurrentDictionary<Guid, GameSessionDetails>();
-        private readonly Task launchGameTask;
         private readonly Task mainGameTask;
         private readonly INumberGenerator numberGenerator = new NumberGenerator();
 
@@ -32,7 +32,6 @@ namespace SoC.WebApplication
         {
             this.gameHubContext = gameHubContext;
             this.cancellationToken = this.cancellationTokenSource.Token;
-            //this.launchGameTask = Task.Factory.StartNew(o => { this.LaunchGame(); }, null, this.cancellationToken);
             this.mainGameTask = Task.Factory.StartNew(o => { this.ProcessInPlayGames(); }, null, this.cancellationToken);
         }
 
@@ -53,16 +52,19 @@ namespace SoC.WebApplication
                 var playerWithoutConnectionId = gameDetails.Players.FirstOrDefault(pd => pd.ConnectionId == null);
                 if (playerWithoutConnectionId == null)
                 {
-                    var gameManagerToken = this.LaunchGame(gameDetails);
-                    this.gamesToLaunchById.TryRemove(gameDetails.Id, out var gd);
-                    this.inPlayGames.GetOrAdd(gameDetails.Id, gameManagerToken);
+                    if (this.gamesToLaunchById.TryRemove(gameDetails.Id, out var gd))
+                    {
+                        var gameManagerToken = this.LaunchGame(gameDetails);
+                        if (this.inPlayGamesById.TryAdd(gameDetails.Id, gameManagerToken))
+                            this.inPlayGames.Add(gameManagerToken);
+                    }
                 }
             }
         }
 
         public void PlayerAction(PlayerActionRequest playerActionRequest)
         {
-            if (this.inPlayGames.TryGetValue(playerActionRequest.GameId, out var gameManagerToken))
+            if (this.inPlayGamesById.TryGetValue(playerActionRequest.GameId, out var gameManagerToken))
             {
                 PlayerAction playerAction = null;
                 gameManagerToken.GameManager.Post(playerAction);
@@ -78,38 +80,44 @@ namespace SoC.WebApplication
         {
             try
             {
+                var clearDownCount = 0;
                 while (true)
                 {
-                    while (this.gameRequests.TryDequeue(out var request))
+                    for (var index = 0; index < this.inPlayGames.Count; index++)
                     {
-                        if (!this.inPlayGames.TryGetValue(request.GameId, out var game))
+                        var gameManagerToken = this.inPlayGames[index];
+                        if (gameManagerToken != null)
                         {
-                            // Game missing so handle this
+                            var gameManagerTask = gameManagerToken.Task;
+                            var clearDownGame = false;
+                            if (gameManagerTask.IsCompletedSuccessfully)
+                            {
+                                clearDownGame = true;
+                            }
+                            else if (gameManagerTask.IsFaulted)
+                            {
+                                clearDownGame = true;
+                            }
+
+                            if (clearDownGame)
+                            {
+                                var gameManager = gameManagerToken.GameManager;
+                                if (this.inPlayGamesById.TryRemove(gameManager.Id, out var gmt))
+                                {
+                                    this.inPlayGames[index] = null;
+                                    clearDownCount++;
+                                }
+                            }
                         }
                     }
 
-                    Thread.Sleep(50);
-                }
-            }
-            catch (OperationCanceledException)
-            {
-
-            }
-        }
-
-        private void LaunchGame()
-        {
-            try
-            {
-                while (true)
-                {
-                    /*while (this.gamesToLaunch.TryDequeue(out var gameDetails))
+                    if (clearDownCount > 10)
                     {
-                        var gameManagerToken = this.LaunchGame(gameDetails);
-                        this.inPlayGames.GetOrAdd(gameDetails.Id, gameManagerToken);
-                    }*/
+                        this.inPlayGames = this.inPlayGames.Where(token => token != null).ToList();
+                        clearDownCount = 0;
+                    }
 
-                    Thread.Sleep(50);
+                    Thread.Sleep(100);
                 }
             }
             catch (OperationCanceledException)
@@ -148,6 +156,7 @@ namespace SoC.WebApplication
             var eventSender = new EventSender(this.gameHubContext, connectionIdsByPlayerId, eventReceiversByPlayerId);
 
             var gameManager = new GameManager(
+                gameDetails.Id,
                 this.numberGenerator,
                 new GameBoard(BoardSizes.Standard),
                 new DevelopmentCardHolder(),
@@ -175,19 +184,19 @@ namespace SoC.WebApplication
                 });
             }
 
-            var token = new GameManagerToken
-            {
-                GameManager = gameManager,
-                GameManagerTask = gameManager.StartGameAsync()
-            };
-
-            return token;
+            return new GameManagerToken(gameManager, gameManager.StartGameAsync());
         }
 
-        private struct GameManagerToken
+        private class GameManagerToken
         {
-            public GameManager GameManager;
-            public Task GameManagerTask;
+            public GameManagerToken(GameManager gameManager, Task task)
+            {
+                this.GameManager = gameManager;
+                this.Task = task;
+            }
+
+            public GameManager GameManager { get; private set; }
+            public Task Task { get; private set; }
         }
 
         private class EventSender : IEventSender

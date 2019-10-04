@@ -2,6 +2,8 @@
 
 var connection = new signalR.HubConnectionBuilder().withUrl("/gameRequest").build();
 
+var playerIdsByName = null;
+
 connection.start().then(function () {
     //document.getElementById("joinGameRequest").disabled = false;
     var fragments = window.location.pathname.split("/");
@@ -20,18 +22,11 @@ connection.on("GameEvent", function (response) {
     var typeName = response.typeName;
     if (typeName === "GameJoinedEvent") {
 
+    } else if (typeName === "PlayerSetupEvent") {
+        playerIdsByName = response.playerIdsByName;
+    } else if (typeName === "InitialBoardSetupEvent") {
+
     }
 }).catch(function (err) {
     return console.error(err.toString());
 });
-
-/*$(window).on("load", function () {
-    var gameId, playerId
-    var request = {
-        gameId: gameId,
-        playerId: playerId
-    };
-    connection.invoke("ConfirmGameJoin", request).catch(function (err) {
-        return console.error(err.toString());
-    });
-});*/
