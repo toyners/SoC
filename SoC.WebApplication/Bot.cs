@@ -61,6 +61,11 @@ namespace SoC.WebApplication
                         continue;
                     }
 
+                    if (gameEvent is PlaceSetupInfrastructureEvent)
+                    {
+                        continue;
+                    }
+
                     var playerActionRequest = new PlayerActionRequest
                     {
                         GameId = this.gameId,

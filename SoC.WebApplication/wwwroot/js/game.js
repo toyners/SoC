@@ -4,6 +4,11 @@ var connection = new signalR.HubConnectionBuilder().withUrl("/gameRequest").buil
 
 var playerIdsByName = null;
 
+var state = new Kiwi.State('Play');
+state.preload = function () {
+    var i = 0;
+}
+
 connection.start().then(function () {
     //document.getElementById("joinGameRequest").disabled = false;
     var fragments = window.location.pathname.split("/");
@@ -25,6 +30,10 @@ connection.on("GameEvent", function (response) {
     } else if (typeName === "PlayerSetupEvent") {
         playerIdsByName = response.playerIdsByName;
     } else if (typeName === "InitialBoardSetupEvent") {
+
+    } else if (typeName === "PlayerTurnOrderCreator") {
+
+    } else if (typeName === "PlaceSetupInfrastructureEvent") {
 
     }
 }).catch(function (err) {

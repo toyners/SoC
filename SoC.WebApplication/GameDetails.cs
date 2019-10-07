@@ -14,6 +14,7 @@ namespace SoC.WebApplication
         public int TotalBotCount { get; set; }
         public int TotalPlayerCount { get; set; }
         public int NumberOfSlots { get { return this.TotalPlayerCount - this.NumberOfPlayers; } }
+        public int TurnTimeoutInSeconds { get; set; }
         public List<PlayerDetails> Players { get; set; } = new List<PlayerDetails>();
         public DateTime LaunchTime { get; set; }
     }

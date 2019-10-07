@@ -76,12 +76,15 @@ namespace SoC.WebApplication
             throw new NotImplementedException();
         }
 
-        private GameManagerToken LaunchGame(GameSessionDetails gameDetails)
+        private GameManagerToken LaunchGame(GameSessionDetails gameSessionDetails)
         {
+            if (gameSessionDetails == null)
+                throw new ArgumentNullException(nameof(gameSessionDetails));
+
             var playerIds = new Queue<Guid>();
 
             var connectionIdsByPlayerId = new Dictionary<Guid, string>();
-            gameDetails.Players.ForEach(player =>
+            gameSessionDetails.Players.ForEach(player =>
             {
                 connectionIdsByPlayerId.Add(player.Id, player.ConnectionId);
                 playerIds.Enqueue(player.Id);
@@ -89,14 +92,13 @@ namespace SoC.WebApplication
 
             Dictionary<Guid, IEventReceiver> eventReceiversByPlayerId = null;
             List<Bot> bots = null;
-            if (gameDetails.TotalBotCount > 0)
+            if (gameSessionDetails.TotalBotCount > 0)
             {
                 bots = new List<Bot>();
                 eventReceiversByPlayerId = new Dictionary<Guid, IEventReceiver>();
-                var botNumber = 1;
-                while (gameDetails.TotalBotCount-- > 0)
+                while (gameSessionDetails.TotalBotCount-- > 0)
                 {
-                    var bot = new Bot("Bot #" + (botNumber++), gameDetails.Id, this);
+                    var bot = new Bot("Bot #" + (bots.Count + 1), gameSessionDetails.Id, this);
                     bots.Add(bot);
                     eventReceiversByPlayerId.Add(bot.Id, bot);
                     playerIds.Enqueue(bot.Id);
@@ -106,7 +108,7 @@ namespace SoC.WebApplication
             var eventSender = new EventSender(this.gameHubContext, connectionIdsByPlayerId, eventReceiversByPlayerId);
 
             var gameManager = new GameManager(
-                gameDetails.Id,
+                gameSessionDetails.Id,
                 this.numberGenerator,
                 new GameBoard(BoardSizes.Standard),
                 new DevelopmentCardHolder(),
@@ -114,14 +116,14 @@ namespace SoC.WebApplication
                 eventSender,
                 new GameOptions
                 {
-                    Players = gameDetails.NumberOfPlayers,
-                    TurnTimeInSeconds = 120
+                    Players = gameSessionDetails.NumberOfPlayers,
+                    TurnTimeInSeconds = gameSessionDetails.TurnTimeoutInSeconds
                 }
             );
 
             gameManager.SetIdGenerator(() => { return playerIds.Dequeue(); });
 
-            gameDetails.Players.ForEach(player =>
+            gameSessionDetails.Players.ForEach(player =>
             {
                 gameManager.JoinGame(player.UserName);
             });
