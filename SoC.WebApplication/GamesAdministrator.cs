@@ -76,6 +76,67 @@ namespace SoC.WebApplication
             throw new NotImplementedException();
         }
 
+        private GameManagerToken LaunchGame(GameSessionDetails gameDetails)
+        {
+            var playerIds = new Queue<Guid>();
+
+            var connectionIdsByPlayerId = new Dictionary<Guid, string>();
+            gameDetails.Players.ForEach(player =>
+            {
+                connectionIdsByPlayerId.Add(player.Id, player.ConnectionId);
+                playerIds.Enqueue(player.Id);
+            });
+
+            Dictionary<Guid, IEventReceiver> eventReceiversByPlayerId = null;
+            List<Bot> bots = null;
+            if (gameDetails.TotalBotCount > 0)
+            {
+                bots = new List<Bot>();
+                eventReceiversByPlayerId = new Dictionary<Guid, IEventReceiver>();
+                var botNumber = 1;
+                while (gameDetails.TotalBotCount-- > 0)
+                {
+                    var bot = new Bot("Bot #" + (botNumber++), gameDetails.Id, this);
+                    bots.Add(bot);
+                    eventReceiversByPlayerId.Add(bot.Id, bot);
+                    playerIds.Enqueue(bot.Id);
+                }
+            }
+
+            var eventSender = new EventSender(this.gameHubContext, connectionIdsByPlayerId, eventReceiversByPlayerId);
+
+            var gameManager = new GameManager(
+                gameDetails.Id,
+                this.numberGenerator,
+                new GameBoard(BoardSizes.Standard),
+                new DevelopmentCardHolder(),
+                new PlayerFactory(),
+                eventSender,
+                new GameOptions
+                {
+                    Players = gameDetails.NumberOfPlayers,
+                    TurnTimeInSeconds = 120
+                }
+            );
+
+            gameManager.SetIdGenerator(() => { return playerIds.Dequeue(); });
+
+            gameDetails.Players.ForEach(player =>
+            {
+                gameManager.JoinGame(player.UserName);
+            });
+
+            if (bots != null)
+            {
+                bots.ForEach(bot =>
+                {
+                    gameManager.JoinGame(bot.Name);
+                });
+            }
+
+            return new GameManagerToken(gameManager, gameManager.StartGameAsync(), eventSender);
+        }
+
         private void ProcessInPlayGames()
         {
             try
@@ -97,6 +158,7 @@ namespace SoC.WebApplication
                             else if (gameManagerTask.IsFaulted)
                             {
                                 clearDownGame = true;
+                                // TODO: Send disconnected message to all players using the event sender
                             }
 
                             if (clearDownGame)
@@ -126,77 +188,18 @@ namespace SoC.WebApplication
             }
         }
 
-        private GameManagerToken LaunchGame(GameSessionDetails gameDetails)
-        {
-            var playerIds = new Queue<Guid>();
-
-            var connectionIdsByPlayerId = new Dictionary<Guid, string>();
-            gameDetails.Players.ForEach(player =>
-            {
-                connectionIdsByPlayerId.Add(player.Id, player.ConnectionId);
-                playerIds.Enqueue(player.Id);
-            });
-
-            Dictionary<Guid, IEventReceiver> eventReceiversByPlayerId = null;
-            List<Bot> bots = null;
-            if (gameDetails.TotalBotCount > 0)
-            {
-                bots = new List<Bot>();
-                eventReceiversByPlayerId = new Dictionary<Guid, IEventReceiver>();
-                var botNumber = 1;
-                while (gameDetails.TotalBotCount-- > 0)
-                {
-                    var bot = new Bot("Bot #" + (botNumber++), gameDetails.Id, this);
-                    bots.Add(bot);
-                    eventReceiversByPlayerId.Add(bot.Id, bot);
-                    playerIds.Enqueue(bot.Id);
-                }
-            }
-            
-            var eventSender = new EventSender(this.gameHubContext, connectionIdsByPlayerId, eventReceiversByPlayerId);
-
-            var gameManager = new GameManager(
-                gameDetails.Id,
-                this.numberGenerator,
-                new GameBoard(BoardSizes.Standard),
-                new DevelopmentCardHolder(),
-                new PlayerFactory(),
-                eventSender,
-                new GameOptions
-                {
-                    Players = gameDetails.NumberOfPlayers,
-                    TurnTimeInSeconds = 120
-                }
-            );
-
-            gameManager.SetIdGenerator(() => { return playerIds.Dequeue(); });
-
-            gameDetails.Players.ForEach(player =>
-            {
-                gameManager.JoinGame(player.UserName);
-            });
-
-            if (bots != null)
-            {
-                bots.ForEach(bot => 
-                {
-                    gameManager.JoinGame(bot.Name);
-                });
-            }
-
-            return new GameManagerToken(gameManager, gameManager.StartGameAsync());
-        }
-
         private class GameManagerToken
         {
-            public GameManagerToken(GameManager gameManager, Task task)
+            public GameManagerToken(GameManager gameManager, Task task, IEventSender eventSender)
             {
                 this.GameManager = gameManager;
                 this.Task = task;
+                this.EventSender = eventSender;
             }
 
             public GameManager GameManager { get; private set; }
             public Task Task { get; private set; }
+            public IEventSender EventSender { get; private set; }
         }
 
         private class EventSender : IEventSender

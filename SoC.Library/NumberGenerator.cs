@@ -1,17 +1,22 @@
-﻿using Jabberwocky.SoC.Library.Interfaces;
-
+﻿
 namespace Jabberwocky.SoC.Library
 {
+    using System;
+    using Jabberwocky.SoC.Library.Interfaces;
+
     public class NumberGenerator : INumberGenerator
     {
+        private readonly Random random = new Random();
+
         public int GetRandomNumberBetweenZeroAndMaximum(int exclusiveMaximum)
         {
-            throw new System.NotImplementedException();
+            return this.random.Next(exclusiveMaximum);
         }
 
         public void RollTwoDice(out uint dice1, out uint dice2)
         {
-            throw new System.NotImplementedException();
+            dice1 = (uint)this.random.Next(6) + 1;
+            dice2 = (uint)this.random.Next(6) + 1;
         }
     }
 }

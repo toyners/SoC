@@ -3,6 +3,7 @@ namespace SoC.WebApplication
 {
     using System;
     using System.Collections.Concurrent;
+    using System.Collections.Generic;
     using System.Threading;
     using System.Threading.Tasks;
     using Jabberwocky.SoC.Library.GameEvents;
@@ -15,6 +16,7 @@ namespace SoC.WebApplication
         private readonly Guid gameId;
         private readonly Task processingTask;
         private readonly IPlayerRequestReceiver playerActionReceiver;
+        private IDictionary<string, Guid> playerIdsByName;
 
         public Bot(string name, Guid gameId, IPlayerRequestReceiver playerActionReceiver)
         {
@@ -38,6 +40,27 @@ namespace SoC.WebApplication
             {
                 while (this.gameEvents.TryDequeue(out var gameEvent))
                 {
+                    if (gameEvent is GameJoinedEvent)
+                    {
+                        continue; // Nothing to do
+                    }
+
+                    if (gameEvent is PlayerSetupEvent)
+                    {
+                        this.playerIdsByName = ((PlayerSetupEvent)gameEvent).PlayerIdsByName;
+                        continue;
+                    }
+
+                    if (gameEvent is InitialBoardSetupEvent)
+                    {
+                        continue;
+                    }
+
+                    if (gameEvent is PlayerOrderEvent)
+                    {
+                        continue;
+                    }
+
                     var playerActionRequest = new PlayerActionRequest
                     {
                         GameId = this.gameId,
