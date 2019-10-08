@@ -23,7 +23,7 @@ function startGame() {
     var state = new Kiwi.State('Play');
     state.preload = function () {
         Kiwi.State.prototype.preload(this);
-        this.addImage('background', './images/background.png');
+        this.addImage('background', '../../../images/background.png');
     };
 
     state.create = function () {
@@ -33,8 +33,8 @@ function startGame() {
     };
 
     var gameOptions = {
-        width: 768,
-        height: 512
+        width: 800,
+        height: 600
     };
 
     game = new Kiwi.Game('game-container', 'soc', state, gameOptions);

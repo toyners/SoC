@@ -18,4 +18,11 @@
     <ProjectReference Include="..\SoC.Library\SoC.Library.csproj" />
   </ItemGroup>
 
+
+  <ItemGroup>
+    <Content Update="wwwroot\images\Background.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
 </Project>
