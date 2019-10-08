@@ -3,11 +3,7 @@
 var connection = new signalR.HubConnectionBuilder().withUrl("/gameRequest").build();
 
 var playerIdsByName = null;
-
-var state = new Kiwi.State('Play');
-state.preload = function () {
-    var i = 0;
-}
+var game = null;
 
 connection.start().then(function () {
     //document.getElementById("joinGameRequest").disabled = false;
@@ -23,10 +19,31 @@ connection.start().then(function () {
     return console.error(err.toString());
 });
 
+function startGame() {
+    var state = new Kiwi.State('Play');
+    state.preload = function () {
+        Kiwi.State.prototype.preload(this);
+        this.addImage('background', './images/background.png');
+    };
+
+    state.create = function () {
+        Kiwi.State.prototype.create(this);
+        this.background = new Kiwi.GameObjects.Sprite(this, this.textures.background, 0, 0);
+        this.addChild(this.background);
+    };
+
+    var gameOptions = {
+        width: 768,
+        height: 512
+    };
+
+    game = new Kiwi.Game('game-container', 'soc', state, gameOptions);
+}
+
 connection.on("GameEvent", function (response) {
     var typeName = response.typeName;
     if (typeName === "GameJoinedEvent") {
-
+        startGame();
     } else if (typeName === "PlayerSetupEvent") {
         playerIdsByName = response.playerIdsByName;
     } else if (typeName === "InitialBoardSetupEvent") {
