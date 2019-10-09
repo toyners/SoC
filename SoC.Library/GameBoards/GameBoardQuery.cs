@@ -13,7 +13,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
         #region Fields
         private GameBoard board;
         private readonly List<uint>[] locationInformation;
-        private readonly Tuple<ResourceTypes?, uint>[] hexInformation;
+        private readonly HexInformation[] hexInformation;
         private readonly int[] locationsOrderedByBestYield;
         private readonly uint[][] neighboursOfLocation; //TODO: Push to board - this is static (maybe)
         #endregion
@@ -23,7 +23,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
         {
             this.board = board;
             this.hexInformation = this.board.GetHexData();
-            this.locationInformation = new List<UInt32>[GameBoard.StandardBoardLocationCount];
+            this.locationInformation = new List<uint>[GameBoard.StandardBoardLocationCount];
 
             using (var stream = this.GetType().GetTypeInfo().Assembly.GetManifestResourceStream("Jabberwocky.SoC.Library.GameBoards.Locations.txt"))
             {
@@ -50,7 +50,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
         #endregion
 
         #region Methods
-        private Int32 CalculateYield(uint productionFactor)
+        private int CalculateYield(int productionFactor)
         {
             switch (productionFactor)
             {
@@ -177,7 +177,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
                 {
                     foreach (var hexId in this.locationInformation[firstLocation])
                     {
-                        firstLocationYield += this.CalculateYield(this.hexInformation[hexId].Item2);
+                        firstLocationYield += this.CalculateYield(this.hexInformation[hexId].ProductionFactor);
                     }
 
                     yieldsByLocation.Add(firstLocation, firstLocationYield);
@@ -187,7 +187,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
                 {
                     foreach (var hexId in this.locationInformation[secondLocation])
                     {
-                        secondLocationYield += this.CalculateYield(this.hexInformation[hexId].Item2);
+                        secondLocationYield += this.CalculateYield(this.hexInformation[hexId].ProductionFactor);
                     }
 
                     yieldsByLocation.Add(secondLocation, secondLocationYield);
@@ -240,9 +240,9 @@ namespace Jabberwocky.SoC.Library.GameBoards
             foreach (var hexId in hexes)
             {
                 score += "Hex: " + hexId + " has pf " +
-                  this.hexInformation[hexId].Item2 + " (" + this.CalculateYield(this.hexInformation[hexId].Item2) + ") ";
+                  this.hexInformation[hexId].ProductionFactor + " (" + this.CalculateYield(this.hexInformation[hexId].ProductionFactor) + ") ";
 
-                yield += this.CalculateYield(this.hexInformation[hexId].Item2);
+                yield += this.CalculateYield(this.hexInformation[hexId].ProductionFactor);
             }
 
             score += ". Total yield is " + yield;

@@ -346,7 +346,7 @@ namespace Jabberwocky.SoC.Library
             return action;
         }
 
-        private int CalculateChanceOfReturnOnRoll(uint[] productionValues)
+        private int CalculateChanceOfReturnOnRoll(int[] productionValues)
         {
             int totalChance = 0;
             foreach (var productionValue in productionValues)

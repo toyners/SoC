@@ -409,7 +409,7 @@ namespace SoC.Harness.ViewModels
             this.localGameController.BuildRoadSegment(this.currentTurnToken, start, end);
         }
 
-        public Tuple<ResourceTypes?, uint>[] GetHexData()
+        public HexInformation[] GetHexData()
         {
             return this.gameBoardSetup != null ? this.gameBoardSetup.HexData : null;
         }

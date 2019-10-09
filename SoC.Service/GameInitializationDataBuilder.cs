@@ -23,9 +23,9 @@ namespace Jabberwocky.SoC.Service
             };
         }
 
-        private static byte CreateDataForProvider(Tuple<ResourceTypes?, uint> resourceProducer)
+        private static byte CreateDataForProvider(HexInformation resourceProducer)
         {
-            return (byte)((resourceProducer.Item2 * 10) + TranslateProviderTypeToNumber(resourceProducer.Item1));
+            return (byte)((resourceProducer.ProductionFactor * 10) + TranslateProviderTypeToNumber(resourceProducer.ResourceType));
         }
 
         private static byte TranslateProviderTypeToNumber(ResourceTypes? type)

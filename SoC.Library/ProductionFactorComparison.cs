@@ -9,9 +9,9 @@ namespace Jabberwocky.SoC.Library
   /// </summary>
   public static class ProductionFactorComparison
   {
-    private static UInt32[] normalisedValues = { 0, 2, 4, 6, 8, 0, 9, 7, 5, 3, 1 };
+    private static int[] normalisedValues = { 0, 2, 4, 6, 8, 0, 9, 7, 5, 3, 1 };
 
-    public static Int32 Compare(UInt32 pf1, UInt32 pf2)
+    public static Int32 Compare(int pf1, int pf2)
     {
       if (pf1 < 2 || pf1 > 12 || pf1 == 7)
       {
@@ -39,7 +39,7 @@ namespace Jabberwocky.SoC.Library
       return 1;
     }
 
-    internal static Boolean WithinRange(UInt32 production, UInt32 brickProductionRangeLower, UInt32 brickProductionRangeUpper)
+    internal static bool WithinRange(int production, int brickProductionRangeLower, int brickProductionRangeUpper)
     {
       throw new NotImplementedException();
     }

@@ -8,7 +8,7 @@ namespace Jabberwocky.SoC.Library.Store
     public class GameBoardModel
     {
         public Dictionary<uint, Guid> Cities;
-        public Tuple<ResourceTypes?, uint>[] Hexes;
+        public HexInformation[] Hexes;
         public Tuple<uint, uint, Guid>[] Roads;
         public Dictionary<uint, Guid> Settlements;
 

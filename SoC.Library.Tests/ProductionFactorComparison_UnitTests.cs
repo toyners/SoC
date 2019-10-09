@@ -17,13 +17,13 @@ namespace Jabberwocky.SoC.Library.UnitTests
     [Test]
     public void ProductionFactorComparison_ReturnsLocationList()
     {
-      var list = new List<UInt32>(new UInt32[] { 2, 12, 3, 11, 4, 10, 5, 9, 6, 8 });
+      var list = new List<int>(new int[] { 2, 12, 3, 11, 4, 10, 5, 9, 6, 8 });
       list.Sort((pf1, pf2) =>
       {
         return ProductionFactorComparison.Compare(pf1, pf2);
       });
 
-      list.ShouldContainExact(new UInt32[] { 8, 6, 9, 5, 10, 4, 11, 3, 12, 2 });
+      list.ShouldContainExact(new int[] { 8, 6, 9, 5, 10, 4, 11, 3, 12, 2 });
     }
 
     [Test]
@@ -33,7 +33,7 @@ namespace Jabberwocky.SoC.Library.UnitTests
     [TestCase(2u, 7u, "pf2")]
     [TestCase(2u, 1u, "pf2")]
     [TestCase(2u, 13u, "pf2")]
-    public void ProductionFactorComparison_ValueIsInvalid_ThrowsMeaningfulException(UInt32 pf1, UInt32 pf2, String parameterName)
+    public void ProductionFactorComparison_ValueIsInvalid_ThrowsMeaningfulException(int pf1, int pf2, string parameterName)
     {
       Action action = () => { var i = ProductionFactorComparison.Compare(pf1, pf2); };
 

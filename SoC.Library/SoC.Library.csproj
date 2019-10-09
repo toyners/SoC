@@ -62,6 +62,7 @@
     <Compile Include="DevelopmentCards\YearOfPlentyDevelopmentCard.cs" />
     <Compile Include="Enums\ErrorCodes.cs" />
     <Compile Include="Enums\PlayerPlacementStatusCodes.cs" />
+    <Compile Include="GameBoards\HexInformation.cs" />
     <Compile Include="GameEvents\ChooseLostResourcesEvent.cs" />
     <Compile Include="GameEvents\CityPlacedEvent.cs" />
     <Compile Include="GameEvents\ConfirmGameStartEvent.cs" />

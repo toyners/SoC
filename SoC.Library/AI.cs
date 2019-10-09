@@ -12,7 +12,7 @@ namespace Jabberwocky.SoC.Library
       this.gameBoard = gameBoard;
     }
 
-    public UInt32[] GetLocationsForBestReturningResourceType(GameBoard gameBoard, ResourceTypes resourceType, out UInt32 productionFactor)
+    public UInt32[] GetLocationsForBestReturningResourceType(GameBoard gameBoard, ResourceTypes resourceType, out int productionFactor)
     {
       return gameBoard.GetLocationsForResourceTypeWithProductionFactors(resourceType, out productionFactor);
     }

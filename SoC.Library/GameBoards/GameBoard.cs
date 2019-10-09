@@ -347,33 +347,37 @@ namespace Jabberwocky.SoC.Library.GameBoards
             return data;
         }
 
-        public Tuple<ResourceTypes?, uint>[] GetHexData()
+        public HexInformation[] GetHexData()
         {
-            var data = new Tuple<ResourceTypes?, uint>[this.hexes.Length];
+            var data = new HexInformation[this.hexes.Length];
             for (var index = 0; index < this.hexes.Length; index++)
             {
-                data[index] = new Tuple<ResourceTypes?, uint>(this.hexes[index].Type, this.hexes[index].Production);
+                data[index] = new HexInformation
+                {
+                    ResourceType = this.hexes[index].Type,
+                    ProductionFactor = (int)this.hexes[index].Production
+                };
             }
 
             return data;
         }
 
-        public Tuple<uint, uint>[] GetLocationsForResourceProducerOrderedByProductionFactorDescending(ResourceTypes resource)
+        public Tuple<uint, int>[] GetLocationsForResourceProducerOrderedByProductionFactorDescending(ResourceTypes resource)
         {
-            var results = new List<Tuple<uint, uint>>();
+            var results = new List<Tuple<uint, int>>();
             var resourceProducers = this.resourceProducersByType[resource];
             foreach (var resourceProducer in resourceProducers)
             {
                 foreach (var location in this.locationsByResourceProvider[resourceProducer])
                 {
-                    results.Add(new Tuple<uint, uint>(location, resourceProducer.Production));
+                    results.Add(new Tuple<uint, int>(location, resourceProducer.Production));
                 }
             }
 
             return results.ToArray();
         }
 
-        public uint[] GetLocationsForResourceTypeWithProductionFactors(ResourceTypes resourceType, out uint highestProductionFactor)
+        public uint[] GetLocationsForResourceTypeWithProductionFactors(ResourceTypes resourceType, out int highestProductionFactor)
         {
             // Get locations for resources of type: return locations and their production factor
             // Order by production factor
@@ -462,10 +466,10 @@ namespace Jabberwocky.SoC.Library.GameBoards
         /// </summary>
         /// <param name="location">Index of the location to get production values for.</param>
         /// <returns>Array of production values.</returns>
-        public uint[] GetProductionValuesForLocation(uint location)
+        public int[] GetProductionValuesForLocation(uint location)
         {
             var hexesForLocation = this.hexesForLocations[location];
-            var productionValues = new List<uint>();
+            var productionValues = new List<int>();
 
             foreach (var hexIndex in hexesForLocation)
             {
@@ -848,12 +852,12 @@ namespace Jabberwocky.SoC.Library.GameBoards
         {
         }
 
-        private void LoadHexData(Tuple<ResourceTypes?, uint>[] hexes)
+        private void LoadHexData(HexInformation[] hexes)
         {
             this.hexes = new ResourceProducer[StandardBoardHexCount];
             for (var i = 0; i < this.hexes.Length; i++)
             {
-                this.hexes[i] = new ResourceProducer { Type = hexes[i].Item1, Production = hexes[i].Item2 };
+                this.hexes[i] = new ResourceProducer { Type = hexes[i].ResourceType, Production = hexes[i].ProductionFactor };
             }
         }
 
@@ -991,7 +995,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
             var index = 0;
             foreach (var productionValue in productionValues)
             {
-                this.hexes[index++].Production = uint.Parse(productionValue);
+                this.hexes[index++].Production = int.Parse(productionValue);
             }
         }
 
@@ -1034,7 +1038,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
             for (var index = 0; index < this.hexes.Length; index++)
             {
                 this.hexes[index].Type = resourceTypes[index];
-                this.hexes[index].Production = (uint)productionValues[index];
+                this.hexes[index].Production = productionValues[index];
             }
 
             var settlements = reader.GetSections(GameDataSectionKeys.Buildings);
@@ -1299,33 +1303,33 @@ namespace Jabberwocky.SoC.Library.GameBoards
         {
             this.hexes = new ResourceProducer[StandardBoardHexCount];
             //d,b8,o5
-            this.hexes[0] = new ResourceProducer { Type = null, Production = 0u };
-            this.hexes[1] = new ResourceProducer { Type = ResourceTypes.Brick, Production = 8u };
-            this.hexes[2] = new ResourceProducer { Type = ResourceTypes.Ore, Production = 5u };
+            this.hexes[0] = new ResourceProducer { Type = null, Production = 0 };
+            this.hexes[1] = new ResourceProducer { Type = ResourceTypes.Brick, Production = 8 };
+            this.hexes[2] = new ResourceProducer { Type = ResourceTypes.Ore, Production = 5 };
 
             //b4,l3,w10,g2,
-            this.hexes[3] = new ResourceProducer { Type = ResourceTypes.Brick, Production = 4u };
-            this.hexes[4] = new ResourceProducer { Type = ResourceTypes.Lumber, Production = 3u };
-            this.hexes[5] = new ResourceProducer { Type = ResourceTypes.Wool, Production = 10u };
-            this.hexes[6] = new ResourceProducer { Type = ResourceTypes.Grain, Production = 2u };
+            this.hexes[3] = new ResourceProducer { Type = ResourceTypes.Brick, Production = 4 };
+            this.hexes[4] = new ResourceProducer { Type = ResourceTypes.Lumber, Production = 3 };
+            this.hexes[5] = new ResourceProducer { Type = ResourceTypes.Wool, Production = 10 };
+            this.hexes[6] = new ResourceProducer { Type = ResourceTypes.Grain, Production = 2 };
 
             //l11,o6,g11,w9,l6,
-            this.hexes[7] = new ResourceProducer { Type = ResourceTypes.Lumber, Production = 11u };
-            this.hexes[8] = new ResourceProducer { Type = ResourceTypes.Ore, Production = 6u };
-            this.hexes[9] = new ResourceProducer { Type = ResourceTypes.Grain, Production = 11u };
-            this.hexes[10] = new ResourceProducer { Type = ResourceTypes.Wool, Production = 9u };
-            this.hexes[11] = new ResourceProducer { Type = ResourceTypes.Lumber, Production = 6u };
+            this.hexes[7] = new ResourceProducer { Type = ResourceTypes.Lumber, Production = 11 };
+            this.hexes[8] = new ResourceProducer { Type = ResourceTypes.Ore, Production = 6 };
+            this.hexes[9] = new ResourceProducer { Type = ResourceTypes.Grain, Production = 11 };
+            this.hexes[10] = new ResourceProducer { Type = ResourceTypes.Wool, Production = 9 };
+            this.hexes[11] = new ResourceProducer { Type = ResourceTypes.Lumber, Production = 6 };
 
             //w12,b5,l4,o3
-            this.hexes[12] = new ResourceProducer { Type = ResourceTypes.Wool, Production = 12u };
-            this.hexes[13] = new ResourceProducer { Type = ResourceTypes.Brick, Production = 5u };
-            this.hexes[14] = new ResourceProducer { Type = ResourceTypes.Lumber, Production = 4u };
-            this.hexes[15] = new ResourceProducer { Type = ResourceTypes.Ore, Production = 3u };
+            this.hexes[12] = new ResourceProducer { Type = ResourceTypes.Wool, Production = 12 };
+            this.hexes[13] = new ResourceProducer { Type = ResourceTypes.Brick, Production = 5 };
+            this.hexes[14] = new ResourceProducer { Type = ResourceTypes.Lumber, Production = 4 };
+            this.hexes[15] = new ResourceProducer { Type = ResourceTypes.Ore, Production = 3 };
 
             //g9,w10 (see above),g8
-            this.hexes[16] = new ResourceProducer { Type = ResourceTypes.Grain, Production = 9u };
-            this.hexes[17] = new ResourceProducer { Type = ResourceTypes.Wool, Production = 10u };
-            this.hexes[18] = new ResourceProducer { Type = ResourceTypes.Grain, Production = 8u };
+            this.hexes[16] = new ResourceProducer { Type = ResourceTypes.Grain, Production = 9 };
+            this.hexes[17] = new ResourceProducer { Type = ResourceTypes.Wool, Production = 10 };
+            this.hexes[18] = new ResourceProducer { Type = ResourceTypes.Grain, Production = 8 };
 
             this.resourceProducersByType = this.CreateResourceProducersByType(this.hexes);
         }
@@ -1372,7 +1376,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
         private class ResourceProducer
         {
             public ResourceTypes? Type;
-            public uint Production;
+            public int Production;
         }
 
         public class ResourceProducerLocation

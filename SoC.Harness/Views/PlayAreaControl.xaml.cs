@@ -419,7 +419,7 @@ namespace SoC.Harness.Views
 
                     this.GetBitmaps(hexDetails, resourceBitmaps, numberBitmaps, out resourceBitmap, out numberBitmap);
 
-                    if (hexDetails.Item1 == null)
+                    if (hexDetails.ResourceType == null)
                     {
                         // Initial starting location for the robber is the Desert hex
                         var robberBitmap = new BitmapImage(new Uri(@"resources\robber.png", UriKind.Relative));
@@ -632,10 +632,10 @@ namespace SoC.Harness.Views
             };
         }
 
-        private Dictionary<uint, BitmapImage> CreateNumberBitmaps()
+        private Dictionary<int, BitmapImage> CreateNumberBitmaps()
         {
 #pragma warning disable IDE0009 // Member access should be qualified.
-            return new Dictionary<uint, BitmapImage>
+            return new Dictionary<int, BitmapImage>
           {
             { 2, new BitmapImage(new Uri(@"resources\productionfactors\2.png", UriKind.Relative)) },
             { 3, new BitmapImage(new Uri(@"resources\productionfactors\3.png", UriKind.Relative)) },
@@ -665,18 +665,18 @@ namespace SoC.Harness.Views
 #pragma warning restore IDE0009 // Member access should be qualified.
         }
 
-        private void GetBitmaps(Tuple<ResourceTypes?, uint> hexData, Dictionary<ResourceTypes, BitmapImage> resourceBitmaps, Dictionary<uint, BitmapImage> numberBitmaps, out BitmapImage resourceBitmap, out BitmapImage numberBitmap)
+        private void GetBitmaps(HexInformation hexData, Dictionary<ResourceTypes, BitmapImage> resourceBitmaps, Dictionary<int, BitmapImage> numberBitmaps, out BitmapImage resourceBitmap, out BitmapImage numberBitmap)
         {
-            if (!hexData.Item1.HasValue)
+            if (!hexData.ResourceType.HasValue)
             {
                 resourceBitmap = new BitmapImage(new Uri(@"resources\hextypes\desert.png", UriKind.Relative));
             }
             else
             {
-                resourceBitmap = resourceBitmaps[hexData.Item1.Value];
+                resourceBitmap = resourceBitmaps[hexData.ResourceType.Value];
             }
 
-            numberBitmap = (hexData.Item2 != 0 ? numberBitmaps[hexData.Item2] : null);
+            numberBitmap = (hexData.ProductionFactor != 0 ? numberBitmaps[hexData.ProductionFactor] : null);
         }
 
         private void Location_MouseClick(object sender, MouseButtonEventArgs e)

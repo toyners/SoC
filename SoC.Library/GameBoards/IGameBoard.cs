@@ -10,7 +10,7 @@ namespace Jabberwocky.SoC.Library.GameBoards
 
         Dictionary<uint, Guid> GetCityData();
 
-        Tuple<ResourceTypes?, uint>[] GetHexData();
+        HexInformation[] GetHexData();
 
         Tuple<uint, uint, Guid>[] GetRoadData();
 

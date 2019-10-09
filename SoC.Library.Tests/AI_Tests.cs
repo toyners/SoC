@@ -15,15 +15,15 @@ namespace Jabberwocky.SoC.Library.UnitTests
   {
     #region Methods
     [Test]
-    [TestCase(ResourceTypes.Brick, new uint[] { 2, 3, 4, 10, 11, 12 }, 8u)]
-    [TestCase(ResourceTypes.Grain, new uint[] { 43, 44, 45, 51, 52, 53 }, 8u)]
-    [TestCase(ResourceTypes.Lumber, new uint[] { 24, 25, 26, 35, 36, 37 }, 6u)]
-    [TestCase(ResourceTypes.Ore, new uint[] { 18, 19, 20, 29, 30, 31 }, 6u)]
-    [TestCase(ResourceTypes.Wool, new uint[] { 22, 23, 24, 33, 34, 35 }, 9u)]
-    public void GetPossibleSettlementLocationsForBestReturningResourceOfType_EmptyBoard_ReturnsExpected(ResourceTypes resourceType, UInt32[] expectedLocations, UInt32 expectedProductionFactor)
+    [TestCase(ResourceTypes.Brick, new uint[] { 2, 3, 4, 10, 11, 12 }, 8)]
+    [TestCase(ResourceTypes.Grain, new uint[] { 43, 44, 45, 51, 52, 53 }, 8)]
+    [TestCase(ResourceTypes.Lumber, new uint[] { 24, 25, 26, 35, 36, 37 }, 6)]
+    [TestCase(ResourceTypes.Ore, new uint[] { 18, 19, 20, 29, 30, 31 }, 6)]
+    [TestCase(ResourceTypes.Wool, new uint[] { 22, 23, 24, 33, 34, 35 }, 9)]
+    public void GetPossibleSettlementLocationsForBestReturningResourceOfType_EmptyBoard_ReturnsExpected(ResourceTypes resourceType, UInt32[] expectedLocations, int expectedProductionFactor)
     {
       var gameBoard = new GameBoard(BoardSizes.Standard);
-      UInt32 actualProductionFactor = 0;
+      int actualProductionFactor = 0;
       var ai = new AI(gameBoard);
       var actualLocations = ai.GetLocationsForBestReturningResourceType(gameBoard, resourceType, out actualProductionFactor);
 
@@ -43,10 +43,10 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
       var ai = new AI(gameBoard);
 
-      UInt32 actualProductionFactor = 0;
+      int actualProductionFactor = 0;
       var actualLocations = ai.GetLocationsForBestReturningResourceType(gameBoard, ResourceTypes.Ore, out actualProductionFactor);
 
-      actualProductionFactor.ShouldBe(6u);
+      actualProductionFactor.ShouldBe(6);
       actualLocations.ShouldContainExact(new[] { 30u });
     }
 
@@ -64,10 +64,10 @@ namespace Jabberwocky.SoC.Library.UnitTests
 
       var ai = new AI(gameBoard);
 
-      UInt32 actualProductionFactor = 0;
+      int actualProductionFactor = 0;
       var actualLocations = ai.GetLocationsForBestReturningResourceType(gameBoard, ResourceTypes.Ore, out actualProductionFactor);
 
-      actualProductionFactor.ShouldBe(5u);
+      actualProductionFactor.ShouldBe(5);
       actualLocations.ShouldContainExact(new[] { 4u, 5u, 6u, 12u, 13u, 14u });
     }
     #endregion 

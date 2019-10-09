@@ -654,27 +654,27 @@ namespace Jabberwocky.SoC.Library.UnitTests.LocalGameController_Tests
 
             // Assert
             boardData.ShouldNotBeNull();
-            Tuple<ResourceTypes?, UInt32>[] hexes = boardData.GetHexData();
+            HexInformation[] hexes = boardData.GetHexData();
             hexes.Length.ShouldBe(GameBoard.StandardBoardHexCount);
-            hexes[0].ShouldBe(new Tuple<ResourceTypes?, UInt32>(ResourceTypes.Grain, 9));
-            hexes[1].ShouldBe(new Tuple<ResourceTypes?, UInt32>(ResourceTypes.Lumber, 8));
-            hexes[2].ShouldBe(new Tuple<ResourceTypes?, UInt32>(ResourceTypes.Brick, 5));
-            hexes[3].ShouldBe(new Tuple<ResourceTypes?, UInt32>(ResourceTypes.Grain, 12));
-            hexes[4].ShouldBe(new Tuple<ResourceTypes?, UInt32>(ResourceTypes.Lumber, 11));
-            hexes[5].ShouldBe(new Tuple<ResourceTypes?, UInt32>(ResourceTypes.Ore, 3));
-            hexes[6].ShouldBe(new Tuple<ResourceTypes?, UInt32>(ResourceTypes.Grain, 6));
-            hexes[7].ShouldBe(new Tuple<ResourceTypes?, UInt32>(ResourceTypes.Ore, 10));
-            hexes[8].ShouldBe(new Tuple<ResourceTypes?, UInt32>(ResourceTypes.Brick, 6));
-            hexes[9].ShouldBe(new Tuple<ResourceTypes?, UInt32>(null, 0));
-            hexes[10].ShouldBe(new Tuple<ResourceTypes?, UInt32>(ResourceTypes.Grain, 4));
-            hexes[11].ShouldBe(new Tuple<ResourceTypes?, UInt32>(ResourceTypes.Wool, 11));
-            hexes[12].ShouldBe(new Tuple<ResourceTypes?, UInt32>(ResourceTypes.Wool, 2));
-            hexes[13].ShouldBe(new Tuple<ResourceTypes?, UInt32>(ResourceTypes.Wool, 4));
-            hexes[14].ShouldBe(new Tuple<ResourceTypes?, UInt32>(ResourceTypes.Lumber, 3));
-            hexes[15].ShouldBe(new Tuple<ResourceTypes?, UInt32>(ResourceTypes.Wool, 5));
-            hexes[16].ShouldBe(new Tuple<ResourceTypes?, UInt32>(ResourceTypes.Lumber, 9));
-            hexes[17].ShouldBe(new Tuple<ResourceTypes?, UInt32>(ResourceTypes.Brick, 10));
-            hexes[18].ShouldBe(new Tuple<ResourceTypes?, UInt32>(ResourceTypes.Ore, 8));
+            hexes[0].ShouldBe(new HexInformation { ResourceType = ResourceTypes.Grain, ProductionFactor = 9 });
+            hexes[1].ShouldBe(new HexInformation { ResourceType = ResourceTypes.Lumber, ProductionFactor = 8});
+            hexes[2].ShouldBe(new HexInformation { ResourceType = ResourceTypes.Brick, ProductionFactor = 5});
+            hexes[3].ShouldBe(new HexInformation { ResourceType = ResourceTypes.Grain, ProductionFactor = 12});
+            hexes[4].ShouldBe(new HexInformation { ResourceType = ResourceTypes.Lumber, ProductionFactor = 11});
+            hexes[5].ShouldBe(new HexInformation { ResourceType = ResourceTypes.Ore, ProductionFactor = 3});
+            hexes[6].ShouldBe(new HexInformation { ResourceType = ResourceTypes.Grain, ProductionFactor = 6});
+            hexes[7].ShouldBe(new HexInformation { ResourceType = ResourceTypes.Ore, ProductionFactor = 10});
+            hexes[8].ShouldBe(new HexInformation { ResourceType = ResourceTypes.Brick, ProductionFactor = 6});
+            hexes[9].ShouldBe(new HexInformation { ResourceType = null, ProductionFactor = 0});
+            hexes[10].ShouldBe(new HexInformation { ResourceType = ResourceTypes.Grain, ProductionFactor = 4});
+            hexes[11].ShouldBe(new HexInformation { ResourceType = ResourceTypes.Wool, ProductionFactor = 11});
+            hexes[12].ShouldBe(new HexInformation { ResourceType = ResourceTypes.Wool, ProductionFactor = 2});
+            hexes[13].ShouldBe(new HexInformation { ResourceType = ResourceTypes.Wool, ProductionFactor = 4});
+            hexes[14].ShouldBe(new HexInformation { ResourceType = ResourceTypes.Lumber, ProductionFactor = 3});
+            hexes[15].ShouldBe(new HexInformation { ResourceType = ResourceTypes.Wool, ProductionFactor = 5});
+            hexes[16].ShouldBe(new HexInformation { ResourceType = ResourceTypes.Lumber, ProductionFactor = 9});
+            hexes[17].ShouldBe(new HexInformation { ResourceType = ResourceTypes.Brick, ProductionFactor = 10});
+            hexes[18].ShouldBe(new HexInformation { ResourceType = ResourceTypes.Ore, ProductionFactor = 8});
         }
 
         //TODO: Replace with test for latest Load method
