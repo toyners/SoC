@@ -20,6 +20,20 @@ connection.start().then(function () {
     return console.error(err.toString());
 });
 
+function getTexture(resourceType, textures) {
+    if (!resourceType) {
+        return textures.deserthex;
+    } else {
+        switch (resourceType) {
+            case 0: return textures.brickhex;
+            case 1: return textures.grainhex;
+            case 2: return textures.lumberhex;
+            case 3: return textures.orehex;
+            case 4: return textures.woolhex;
+        }
+    }
+}
+
 function startGame() {
     var state = new Kiwi.State('Play');
     state.preload = function () {
@@ -38,32 +52,52 @@ function startGame() {
         this.background = new Kiwi.GameObjects.Sprite(this, this.textures.background, 0, 0);
         this.addChild(this.background);
 
-        function getTexture(resourceType, textures) {
-            if (!resourceType) {
-                return textures.deserthex;
-            } else {
-                switch (resourceType) {
-                    case 0: return textures.brickhex;
-                    case 1: return textures.grainhex;
-                    case 2: return textures.lumberhex;
-                    case 3: return textures.orehex;
-                    case 4: return textures.woolhex;
-                }
-            }
-        }
+        var layoutColumnData = [
+            { x: 10, y: 54, count: 3 },
+            { x: 44, y: 32, count: 4 },
+            { x: 78, y: 10, count: 5 },
+            { x: 112, y: 32, count: 4 },
+            { x: 146, y: 54, count: 3 },
+        ];
 
-        var index = Math.trunc(hexData.length / 2);
-        var hex = hexData[index];
+        var cellHeight = 45;
+
+        var startingIndex = Math.trunc(hexData.length / 2);
+        var hex = hexData[startingIndex];
         this.hexSprites = [];
 
-        this.hexSprites[index] = new Kiwi.GameObjects.Sprite(this, getTexture(hex.resourceType, this.textures), 400 - 23, 300 - 23);
-        this.addChild(this.hexSprites[index]);
+        var startX = 400 - 23;
+        var startY = 300 - 23;
+        var x = startX;
+        var y = startY;
 
-        /*this.hex_one = new Kiwi.GameObjects.Sprite(this, this.textures.deserthex, 10, 54);
-        this.addChild(this.hex_one);
+        this.hexSprites[startingIndex] = new Kiwi.GameObjects.Sprite(this, getTexture(hex.resourceType, this.textures), x, y);
+        this.addChild(this.hexSprites[startingIndex]);
 
-        this.hex_two = new Kiwi.GameObjects.Sprite(this, this.textures.brickhex, 10, 99);
-        this.addChild(this.hex_two);*/
+        y = y - cellHeight;
+        startingIndex = startingIndex - 1;
+        hex = hexData[startingIndex];
+        this.hexSprites[startingIndex] = new Kiwi.GameObjects.Sprite(this, getTexture(hex.resourceType, this.textures), x, y);
+        this.addChild(this.hexSprites[startingIndex]);
+
+        y = y - cellHeight;
+        startingIndex = startingIndex - 1;
+        hex = hexData[startingIndex];
+        this.hexSprites[startingIndex] = new Kiwi.GameObjects.Sprite(this, getTexture(hex.resourceType, this.textures), x, y);
+        this.addChild(this.hexSprites[startingIndex]);
+
+        x = startX - 34;
+        y = startY - 22;
+        startingIndex = startingIndex - 3;
+        hex = hexData[startingIndex];
+        this.hexSprites[startingIndex] = new Kiwi.GameObjects.Sprite(this, getTexture(hex.resourceType, this.textures), x, y);
+        this.addChild(this.hexSprites[startingIndex]);
+
+        y = y - cellHeight;
+        startingIndex = startingIndex - 1;
+        hex = hexData[startingIndex];
+        this.hexSprites[startingIndex] = new Kiwi.GameObjects.Sprite(this, getTexture(hex.resourceType, this.textures), x, y);
+        this.addChild(this.hexSprites[startingIndex]);
     };
 
     var gameOptions = {
