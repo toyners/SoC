@@ -4,6 +4,7 @@ var connection = new signalR.HubConnectionBuilder().withUrl("/gameRequest").buil
 
 var playerIdsByName = null;
 var game = null;
+var hexData = null;
 
 connection.start().then(function () {
     //document.getElementById("joinGameRequest").disabled = false;
@@ -37,14 +38,32 @@ function startGame() {
         this.background = new Kiwi.GameObjects.Sprite(this, this.textures.background, 0, 0);
         this.addChild(this.background);
 
-        this.hex_ten = new Kiwi.GameObjects.Sprite(this, this.textures.grainhex, 400 - 22, 300 - 22);
-        this.addChild(this.hex_ten);
+        function getTexture(resourceType, textures) {
+            if (!resourceType) {
+                return textures.deserthex;
+            } else {
+                switch (resourceType) {
+                    case 0: return textures.brickhex;
+                    case 1: return textures.grainhex;
+                    case 2: return textures.lumberhex;
+                    case 3: return textures.orehex;
+                    case 4: return textures.woolhex;
+                }
+            }
+        }
 
-        this.hex_one = new Kiwi.GameObjects.Sprite(this, this.textures.deserthex, 10, 54);
+        var index = Math.trunc(hexData.length / 2);
+        var hex = hexData[index];
+        this.hexSprites = [];
+
+        this.hexSprites[index] = new Kiwi.GameObjects.Sprite(this, getTexture(hex.resourceType, this.textures), 400 - 23, 300 - 23);
+        this.addChild(this.hexSprites[index]);
+
+        /*this.hex_one = new Kiwi.GameObjects.Sprite(this, this.textures.deserthex, 10, 54);
         this.addChild(this.hex_one);
 
         this.hex_two = new Kiwi.GameObjects.Sprite(this, this.textures.brickhex, 10, 99);
-        this.addChild(this.hex_two);
+        this.addChild(this.hex_two);*/
     };
 
     var gameOptions = {
@@ -62,7 +81,7 @@ connection.on("GameEvent", function (response) {
     } else if (typeName === "PlayerSetupEvent") {
         playerIdsByName = response.playerIdsByName;
     } else if (typeName === "InitialBoardSetupEvent") {
-        var i = 0;
+        hexData = response.gameBoardSetup.hexData;
     } else if (typeName === "PlayerTurnOrderCreator") {
 
     } else if (typeName === "PlaceSetupInfrastructureEvent") {
