@@ -87,8 +87,21 @@ function startGame() {
         this.addChild(this.hexSprites[startingIndex]);
 
         x = startX - 34;
-        y = startY - 22;
-        startingIndex = startingIndex - 3;
+        y = startY - 22 + (2 * cellHeight);
+
+        startingIndex = startingIndex - 1;
+        hex = hexData[startingIndex];
+        this.hexSprites[startingIndex] = new Kiwi.GameObjects.Sprite(this, getTexture(hex.resourceType, this.textures), x, y);
+        this.addChild(this.hexSprites[startingIndex]);
+
+        y = y - cellHeight;
+        startingIndex = startingIndex - 1;
+        hex = hexData[startingIndex];
+        this.hexSprites[startingIndex] = new Kiwi.GameObjects.Sprite(this, getTexture(hex.resourceType, this.textures), x, y);
+        this.addChild(this.hexSprites[startingIndex]);
+
+        y = y - cellHeight;
+        startingIndex = startingIndex - 1;
         hex = hexData[startingIndex];
         this.hexSprites[startingIndex] = new Kiwi.GameObjects.Sprite(this, getTexture(hex.resourceType, this.textures), x, y);
         this.addChild(this.hexSprites[startingIndex]);
