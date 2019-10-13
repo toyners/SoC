@@ -189,6 +189,7 @@ function startGame() {
             this.addChild(this.productionFactorSprites[index]);
         }
 
+        // First hex - x = 309, y = 232
         y = y - cellHeight;
         index = index - 1;
         hex = hexData[index];
@@ -284,6 +285,7 @@ function startGame() {
             this.addChild(this.productionFactorSprites[index]);
         }
 
+        // Last hex - x = 445, y = 322
         y = y + cellHeight;
         index = index + 1;
         hex = hexData[index];
