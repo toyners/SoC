@@ -72,22 +72,23 @@ function startGame() {
         this.addImage('twelve', '../../../images/productionfactors/12.png');
     };
 
+    var backgroundWidth = 800;
+    var backgroundHeight = 600;
+
     state.create = function () {
         Kiwi.State.prototype.create(this);
         this.background = new Kiwi.GameObjects.Sprite(this, this.textures.background, 0, 0);
         this.addChild(this.background);
 
-        var cellHeight = 45;
-
         this.hexSprites = [];
         this.productionFactorSprites = [];
 
-        var startingIndex = Math.trunc(hexData.length / 2);
+        var cellHeight = 45;
         var halfCellHeight = Math.trunc(45 / 2);
         var halfCellWidth = halfCellHeight;
         var cellFragmentWidth = 34;
-        var startX = 400 - halfCellWidth;
-        var startY = 300 - halfCellHeight;
+        var startX = (backgroundWidth / 2) - halfCellWidth;
+        var startY = (backgroundHeight / 2) - halfCellHeight;
         var x = startX;
         var y = startY;
         var index = 0;
@@ -100,7 +101,8 @@ function startGame() {
             { x: startX + (2 * cellFragmentWidth), y: startY - cellHeight, count: 3 },
         ];
 
-        for (var columnData in layoutColumnData) {
+        for (var columnDataKey in layoutColumnData) {
+            var columnData = layoutColumnData[columnDataKey];
             x = columnData.x;
             y = columnData.y;
             var count = columnData.count;
@@ -115,210 +117,11 @@ function startGame() {
                 y += cellHeight;
             }
         }
-
-        /*var hex = hexData[index];
-        this.hexSprites[index] = new Kiwi.GameObjects.Sprite(this, getResourceTexture(hex.resourceType, this.textures), x, y);
-        this.addChild(this.hexSprites[index]);
-        if (hex.productionFactor != 0) {
-            this.productionFactorSprites[index] = new Kiwi.GameObjects.Sprite(this, getProductionFactorTexture(hex.productionFactor, this.textures), x, y);
-            this.addChild(this.productionFactorSprites[index]);
-        }
-
-        y = y - cellHeight;
-        index = index - 1;
-        hex = hexData[index];
-        this.hexSprites[index] = new Kiwi.GameObjects.Sprite(this, getResourceTexture(hex.resourceType, this.textures), x, y);
-        this.addChild(this.hexSprites[index]);
-        if (hex.productionFactor != 0) {
-            this.productionFactorSprites[index] = new Kiwi.GameObjects.Sprite(this, getProductionFactorTexture(hex.productionFactor, this.textures), x, y);
-            this.addChild(this.productionFactorSprites[index]);
-        }
-
-        y = y - cellHeight;
-        index = index - 1;
-        hex = hexData[index];
-        this.hexSprites[index] = new Kiwi.GameObjects.Sprite(this, getResourceTexture(hex.resourceType, this.textures), x, y);
-        this.addChild(this.hexSprites[index]);
-        if (hex.productionFactor != 0) {
-            this.productionFactorSprites[index] = new Kiwi.GameObjects.Sprite(this, getProductionFactorTexture(hex.productionFactor, this.textures), x, y);
-            this.addChild(this.productionFactorSprites[index]);
-        }
-
-        x = startX - 34;
-        y = startY - 22 + (2 * cellHeight);
-
-        index = index - 1;
-        hex = hexData[index];
-        this.hexSprites[index] = new Kiwi.GameObjects.Sprite(this, getResourceTexture(hex.resourceType, this.textures), x, y);
-        this.addChild(this.hexSprites[index]);
-        if (hex.productionFactor != 0) {
-            this.productionFactorSprites[index] = new Kiwi.GameObjects.Sprite(this, getProductionFactorTexture(hex.productionFactor, this.textures), x, y);
-            this.addChild(this.productionFactorSprites[index]);
-        }
-
-        y = y - cellHeight;
-        index = index - 1;
-        hex = hexData[index];
-        this.hexSprites[index] = new Kiwi.GameObjects.Sprite(this, getResourceTexture(hex.resourceType, this.textures), x, y);
-        this.addChild(this.hexSprites[index]);
-        if (hex.productionFactor != 0) {
-            this.productionFactorSprites[index] = new Kiwi.GameObjects.Sprite(this, getProductionFactorTexture(hex.productionFactor, this.textures), x, y);
-            this.addChild(this.productionFactorSprites[index]);
-        }
-
-        y = y - cellHeight;
-        index = index - 1;
-        hex = hexData[index];
-        this.hexSprites[index] = new Kiwi.GameObjects.Sprite(this, getResourceTexture(hex.resourceType, this.textures), x, y);
-        this.addChild(this.hexSprites[index]);
-        if (hex.productionFactor != 0) {
-            this.productionFactorSprites[index] = new Kiwi.GameObjects.Sprite(this, getProductionFactorTexture(hex.productionFactor, this.textures), x, y);
-            this.addChild(this.productionFactorSprites[index]);
-        }
-
-        y = y - cellHeight;
-        index = index - 1;
-        hex = hexData[index];
-        this.hexSprites[index] = new Kiwi.GameObjects.Sprite(this, getResourceTexture(hex.resourceType, this.textures), x, y);
-        this.addChild(this.hexSprites[index]);
-        if (hex.productionFactor != 0) {
-            this.productionFactorSprites[index] = new Kiwi.GameObjects.Sprite(this, getProductionFactorTexture(hex.productionFactor, this.textures), x, y);
-            this.addChild(this.productionFactorSprites[index]);
-        }
-
-        x = startX - (2 * 34);
-        y = startY + cellHeight;
-
-        index = index - 1;
-        hex = hexData[index];
-        this.hexSprites[index] = new Kiwi.GameObjects.Sprite(this, getResourceTexture(hex.resourceType, this.textures), x, y);
-        this.addChild(this.hexSprites[index]);
-        if (hex.productionFactor != 0) {
-            this.productionFactorSprites[index] = new Kiwi.GameObjects.Sprite(this, getProductionFactorTexture(hex.productionFactor, this.textures), x, y);
-            this.addChild(this.productionFactorSprites[index]);
-        }
-
-        y = y - cellHeight;
-        index = index - 1;
-        hex = hexData[index];
-        this.hexSprites[index] = new Kiwi.GameObjects.Sprite(this, getResourceTexture(hex.resourceType, this.textures), x, y);
-        this.addChild(this.hexSprites[index]);
-        if (hex.productionFactor != 0) {
-            this.productionFactorSprites[index] = new Kiwi.GameObjects.Sprite(this, getProductionFactorTexture(hex.productionFactor, this.textures), x, y);
-            this.addChild(this.productionFactorSprites[index]);
-        }
-
-        // First hex - x = 309, y = 232
-        y = y - cellHeight;
-        index = index - 1;
-        hex = hexData[index];
-        this.hexSprites[index] = new Kiwi.GameObjects.Sprite(this, getResourceTexture(hex.resourceType, this.textures), x, y);
-        this.addChild(this.hexSprites[index]);
-        if (hex.productionFactor != 0) {
-            this.productionFactorSprites[index] = new Kiwi.GameObjects.Sprite(this, getProductionFactorTexture(hex.productionFactor, this.textures), x, y);
-            this.addChild(this.productionFactorSprites[index]);
-        }
-
-        x = startX;
-        y = startY + cellHeight;
-        index = startingIndex + 1;
-        hex = hexData[index];
-        this.hexSprites[index] = new Kiwi.GameObjects.Sprite(this, getResourceTexture(hex.resourceType, this.textures), x, y);
-        this.addChild(this.hexSprites[index]);
-        if (hex.productionFactor != 0) {
-            this.productionFactorSprites[index] = new Kiwi.GameObjects.Sprite(this, getProductionFactorTexture(hex.productionFactor, this.textures), x, y);
-            this.addChild(this.productionFactorSprites[index]);
-        }
-
-        y = y + cellHeight;
-        index = index + 1;
-        hex = hexData[index];
-        this.hexSprites[index] = new Kiwi.GameObjects.Sprite(this, getResourceTexture(hex.resourceType, this.textures), x, y);
-        this.addChild(this.hexSprites[index]);
-        if (hex.productionFactor != 0) {
-            this.productionFactorSprites[index] = new Kiwi.GameObjects.Sprite(this, getProductionFactorTexture(hex.productionFactor, this.textures), x, y);
-            this.addChild(this.productionFactorSprites[index]);
-        }
-
-        x = startX + 34;
-        y = startY + 22 - (2 * cellHeight);
-
-        index = index + 1;
-        hex = hexData[index];
-        this.hexSprites[index] = new Kiwi.GameObjects.Sprite(this, getResourceTexture(hex.resourceType, this.textures), x, y);
-        this.addChild(this.hexSprites[index]);
-        if (hex.productionFactor != 0) {
-            this.productionFactorSprites[index] = new Kiwi.GameObjects.Sprite(this, getProductionFactorTexture(hex.productionFactor, this.textures), x, y);
-            this.addChild(this.productionFactorSprites[index]);
-        }
-
-        y = y + cellHeight;
-        index = index + 1;
-        hex = hexData[index];
-        this.hexSprites[index] = new Kiwi.GameObjects.Sprite(this, getResourceTexture(hex.resourceType, this.textures), x, y);
-        this.addChild(this.hexSprites[index]);
-        if (hex.productionFactor != 0) {
-            this.productionFactorSprites[index] = new Kiwi.GameObjects.Sprite(this, getProductionFactorTexture(hex.productionFactor, this.textures), x, y);
-            this.addChild(this.productionFactorSprites[index]);
-        }
-
-        y = y + cellHeight;
-        index = index + 1;
-        hex = hexData[index];
-        this.hexSprites[index] = new Kiwi.GameObjects.Sprite(this, getResourceTexture(hex.resourceType, this.textures), x, y);
-        this.addChild(this.hexSprites[index]);
-        if (hex.productionFactor != 0) {
-            this.productionFactorSprites[index] = new Kiwi.GameObjects.Sprite(this, getProductionFactorTexture(hex.productionFactor, this.textures), x, y);
-            this.addChild(this.productionFactorSprites[index]);
-        }
-
-        y = y + cellHeight;
-        index = index + 1;
-        hex = hexData[index];
-        this.hexSprites[index] = new Kiwi.GameObjects.Sprite(this, getResourceTexture(hex.resourceType, this.textures), x, y);
-        this.addChild(this.hexSprites[index]);
-        if (hex.productionFactor != 0) {
-            this.productionFactorSprites[index] = new Kiwi.GameObjects.Sprite(this, getProductionFactorTexture(hex.productionFactor, this.textures), x, y);
-            this.addChild(this.productionFactorSprites[index]);
-        }
-
-        x = startX + (2 * 34);
-        y = startY - cellHeight;
-
-        index = index + 1;
-        hex = hexData[index];
-        this.hexSprites[index] = new Kiwi.GameObjects.Sprite(this, getResourceTexture(hex.resourceType, this.textures), x, y);
-        this.addChild(this.hexSprites[index]);
-        if (hex.productionFactor != 0) {
-            this.productionFactorSprites[index] = new Kiwi.GameObjects.Sprite(this, getProductionFactorTexture(hex.productionFactor, this.textures), x, y);
-            this.addChild(this.productionFactorSprites[index]);
-        }
-
-        y = y + cellHeight;
-        index = index + 1;
-        hex = hexData[index];
-        this.hexSprites[index] = new Kiwi.GameObjects.Sprite(this, getResourceTexture(hex.resourceType, this.textures), x, y);
-        this.addChild(this.hexSprites[index]);
-        if (hex.productionFactor != 0) {
-            this.productionFactorSprites[index] = new Kiwi.GameObjects.Sprite(this, getProductionFactorTexture(hex.productionFactor, this.textures), x, y);
-            this.addChild(this.productionFactorSprites[index]);
-        }
-
-        // Last hex - x = 445, y = 322
-        y = y + cellHeight;
-        index = index + 1;
-        hex = hexData[index];
-        this.hexSprites[index] = new Kiwi.GameObjects.Sprite(this, getResourceTexture(hex.resourceType, this.textures), x, y);
-        this.addChild(this.hexSprites[index]);
-        if (hex.productionFactor != 0) {
-            this.productionFactorSprites[index] = new Kiwi.GameObjects.Sprite(this, getProductionFactorTexture(hex.productionFactor, this.textures), x, y);
-            this.addChild(this.productionFactorSprites[index]);
-        }*/
     };
 
     var gameOptions = {
-        width: 800,
-        height: 600
+        width: backgroundWidth,
+        height: backgroundHeight
     };
 
     game = new Kiwi.Game('game-container', 'soc', state, gameOptions);
