@@ -189,7 +189,6 @@
     <Compile Include="GameSession.cs" />
     <Compile Include="Interfaces\IGameController.cs" />
     <Compile Include="Interfaces\IPlayer.cs" />
-    <Compile Include="OldGameManager.cs" />
     <Compile Include="GameSessionManager.cs" />
     <Compile Include="Interfaces\INumberGenerator.cs" />
     <Compile Include="Interfaces\IDiceFactory.cs" />
