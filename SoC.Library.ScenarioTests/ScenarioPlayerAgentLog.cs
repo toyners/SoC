@@ -90,7 +90,7 @@ namespace SoC.Library.ScenarioTests
             {
                 result += $"Victory Points <b>{gameWinEvent.VictoryPoints}</b>";
             }
-            else if (gameEvent is InfrastructurePlacedEvent infrastructurePlacedEvent)
+            else if (gameEvent is SetupInfrastructurePlacedEvent infrastructurePlacedEvent)
             {
                 result += $"Settlement Location: <b>{infrastructurePlacedEvent.SettlementLocation}</b><br>" +
                     $"Road segment end Location: <b>{infrastructurePlacedEvent.RoadSegmentEndLocation}</b>";

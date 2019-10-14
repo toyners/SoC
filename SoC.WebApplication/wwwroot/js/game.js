@@ -130,11 +130,12 @@ function startGame() {
 connection.on("GameEvent", function (response) {
     var typeName = response.typeName;
     if (typeName === "GameJoinedEvent") {
-        startGame();
+        
     } else if (typeName === "PlayerSetupEvent") {
         playerIdsByName = response.playerIdsByName;
     } else if (typeName === "InitialBoardSetupEvent") {
         hexData = response.gameBoardSetup.hexData;
+        startGame();
     } else if (typeName === "PlayerTurnOrderCreator") {
 
     } else if (typeName === "PlaceSetupInfrastructureEvent") {

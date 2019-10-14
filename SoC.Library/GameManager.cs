@@ -630,7 +630,7 @@ namespace Jabberwocky.SoC.Library
             var settlementLocation = placeSetupInfrastructureAction.SettlementLocation;
             var roadEndLocation = placeSetupInfrastructureAction.RoadEndLocation;
             this.PlaceInfrastructure(player, settlementLocation, roadEndLocation);
-            this.RaiseEvent(new InfrastructurePlacedEvent(player.Id, settlementLocation, roadEndLocation));
+            this.RaiseEvent(new SetupInfrastructurePlacedEvent(player.Id, settlementLocation, roadEndLocation));
         }
 
         private bool ProcessPlayerAction(PlayerAction playerAction)

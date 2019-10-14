@@ -691,7 +691,7 @@ namespace SoC.Library.ScenarioTests
         {
             this.playerAgents.ForEach(playerAgent =>
             {
-                var gameEvent = new InfrastructurePlacedEvent(this.GetPlayerId(playerName), settlementLocation, roadEndLocation);
+                var gameEvent = new SetupInfrastructurePlacedEvent(this.GetPlayerId(playerName), settlementLocation, roadEndLocation);
                 playerAgent.AddInstruction(new EventInstruction(gameEvent));
             });
 
