@@ -54,7 +54,6 @@ namespace Jabberwocky.SoC.Service
       this.gameSessions = new Dictionary<Guid, GameSession>();
       this.maximumPlayerCount = maximumPlayerCount;
       this.cancellationTokenSource = new CancellationTokenSource();
-      this.gameManagerFactory = new Library.GameSessionManager();
       this.gameSessionTokenFactory = new GameSessionTokenFactory();
       this.playerCardRepository = new PlayerCardRepository();
       this.loggerFactory = new FileLoggerFactory(logFileBasePath);
