@@ -265,7 +265,8 @@ namespace SoC.Library.ScenarioTests
         public ScenarioRunner ReceivesPlayerSetupEvent()
         {
             var playerIdsByName = this.playerAgents.ToDictionary(playerAgent => playerAgent.Name, playerAgent => playerAgent.Id);
-            var gameEvent = new PlayerSetupEvent(playerIdsByName);
+            var playerNames = this.playerAgents.Select(playerAgent => playerAgent.Name).ToArray();
+            var gameEvent = new PlayerSetupEvent(playerNames, playerIdsByName);
             var eventInstruction = new EventInstruction(gameEvent);
             this.currentPlayerAgent.AddInstruction(eventInstruction);
             return this;

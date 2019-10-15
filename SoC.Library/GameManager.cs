@@ -124,7 +124,8 @@ namespace Jabberwocky.SoC.Library
                     this.playersById = this.players.ToDictionary(p => p.Id, p => p);
 
                     var playerIdsByName = this.players.ToDictionary(p => p.Name, p => p.Id);
-                    this.RaiseEvent(new PlayerSetupEvent(playerIdsByName));
+                    var playerNames = this.players.Select(player => player.Name).ToArray();
+                    this.RaiseEvent(new PlayerSetupEvent(playerNames, playerIdsByName));
 
                     var gameBoardSetup = new GameBoardSetup(this.gameBoard);
                     this.RaiseEvent(new InitialBoardSetupEvent(gameBoardSetup));

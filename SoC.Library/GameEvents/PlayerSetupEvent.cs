@@ -6,7 +6,7 @@ namespace Jabberwocky.SoC.Library.GameEvents
 
     public class PlayerSetupEvent : GameEventWithSingleArgument<IDictionary<string, Guid>>
     {
-        public PlayerSetupEvent(IDictionary<string, Guid> playerIdsByName) : base(playerIdsByName)
+        public PlayerSetupEvent(string[] playerNames, IDictionary<string, Guid> playerIdsByName) : base(playerIdsByName)
         {
             if (playerIdsByName == null || playerIdsByName.Count == 0)
                 throw new ArgumentNullException("playerIdsByName");
