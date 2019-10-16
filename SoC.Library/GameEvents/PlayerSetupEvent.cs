@@ -4,14 +4,19 @@ namespace Jabberwocky.SoC.Library.GameEvents
     using System;
     using System.Collections.Generic;
 
-    public class PlayerSetupEvent : GameEventWithSingleArgument<IDictionary<string, Guid>>
+    public class PlayerSetupEvent : GameEvent
     {
-        public PlayerSetupEvent(string[] playerNames, IDictionary<string, Guid> playerIdsByName) : base(playerIdsByName)
+        public PlayerSetupEvent(string[] playerNames, IDictionary<string, Guid> playerIdsByName) : base(Guid.Empty)
         {
             if (playerIdsByName == null || playerIdsByName.Count == 0)
                 throw new ArgumentNullException("playerIdsByName");
+
+            this.PlayerNames = playerNames;
+            this.PlayerIdsByName = playerIdsByName;
         }
 
-        public IDictionary<string, Guid> PlayerIdsByName { get { return this.Item; } }
+
+        public IDictionary<string, Guid> PlayerIdsByName { get; set; }
+        public string[] PlayerNames { get; set; }
     }
 }

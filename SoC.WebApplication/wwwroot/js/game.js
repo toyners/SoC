@@ -2,6 +2,7 @@
 
 var connection = new signalR.HubConnectionBuilder().withUrl("/gameRequest").build();
 
+var playerNames = null;
 var playerIdsByName = null;
 var game = null;
 var hexData = null;
@@ -117,6 +118,21 @@ function startGame() {
                 y += cellHeight;
             }
         }
+
+        this.firstPlayerName = new Kiwi.GameObjects.Textfield(this, playerNames[0], 50, 50, "#000", 32, 'normal', 'Impact');
+        this.addChild(this.firstPlayerName);
+
+        this.secondPlayerName = new Kiwi.GameObjects.Textfield(this, playerNames[1], 50, 300, "#000", 32, 'normal', 'Impact');
+        this.addChild(this.secondPlayerName);
+
+        this.thirdPlayerName = new Kiwi.GameObjects.Textfield(this, playerNames[2], 500, 50, "#000", 32, 'normal', 'Impact');
+        this.addChild(this.thirdPlayerName);
+
+        this.fourthPlayerName = new Kiwi.GameObjects.Textfield(this, playerNames[3], 500, 300, "#000", 32, 'normal', 'Impact');
+        this.addChild(this.fourthPlayerName);
+        
+        // Add text to the state
+        this.addChild(this.text);
     };
 
     var gameOptions = {
@@ -132,6 +148,7 @@ connection.on("GameEvent", function (response) {
     if (typeName === "GameJoinedEvent") {
         
     } else if (typeName === "PlayerSetupEvent") {
+        playerNames = response.playerNames;
         playerIdsByName = response.playerIdsByName;
     } else if (typeName === "InitialBoardSetupEvent") {
         hexData = response.gameBoardSetup.hexData;
