@@ -119,16 +119,16 @@ function startGame() {
             }
         }
 
-        this.firstPlayerName = new Kiwi.GameObjects.Textfield(this, playerNames[0], 50, 50, "#000", 32, 'normal', 'Impact');
+        this.firstPlayerName = new Kiwi.GameObjects.Textfield(this, playerNames[0], 10, 10, "#000", 32, 'normal', 'Impact');
         this.addChild(this.firstPlayerName);
 
-        this.secondPlayerName = new Kiwi.GameObjects.Textfield(this, playerNames[1], 50, 300, "#000", 32, 'normal', 'Impact');
+        this.secondPlayerName = new Kiwi.GameObjects.Textfield(this, playerNames[1], 10, 550, "#000", 32, 'normal', 'Impact');
         this.addChild(this.secondPlayerName);
 
-        this.thirdPlayerName = new Kiwi.GameObjects.Textfield(this, playerNames[2], 500, 50, "#000", 32, 'normal', 'Impact');
+        this.thirdPlayerName = new Kiwi.GameObjects.Textfield(this, playerNames[2], 700, 10, "#000", 32, 'normal', 'Impact');
         this.addChild(this.thirdPlayerName);
 
-        this.fourthPlayerName = new Kiwi.GameObjects.Textfield(this, playerNames[3], 500, 300, "#000", 32, 'normal', 'Impact');
+        this.fourthPlayerName = new Kiwi.GameObjects.Textfield(this, playerNames[3], 700, 550, "#000", 32, 'normal', 'Impact');
         this.addChild(this.fourthPlayerName);
         
         // Add text to the state
