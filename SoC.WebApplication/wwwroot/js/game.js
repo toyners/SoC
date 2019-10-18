@@ -130,9 +130,6 @@ function startGame() {
 
         this.fourthPlayerName = new Kiwi.GameObjects.Textfield(this, playerNames[3], 700, 550, "#000", 32, 'normal', 'Impact');
         this.addChild(this.fourthPlayerName);
-        
-        // Add text to the state
-        this.addChild(this.text);
     };
 
     var gameOptions = {
