@@ -2,8 +2,9 @@
 
 var connection = new signalR.HubConnectionBuilder().withUrl("/gameRequest").build();
 
-var playerNames = null;
+var playerNamesInOrder = null;
 var playerIdsByName = null;
+var playerNamesById = null;
 var game = null;
 var hexData = null;
 
@@ -119,16 +120,16 @@ function startGame() {
             }
         }
 
-        this.firstPlayerName = new Kiwi.GameObjects.Textfield(this, playerNames[0], 10, 10, "#000", 32, 'normal', 'Impact');
+        this.firstPlayerName = new Kiwi.GameObjects.Textfield(this, playerNamesInOrder[0], 10, 10, "#000", 32, 'normal', 'Impact');
         this.addChild(this.firstPlayerName);
 
-        this.secondPlayerName = new Kiwi.GameObjects.Textfield(this, playerNames[1], 10, 550, "#000", 32, 'normal', 'Impact');
+        this.secondPlayerName = new Kiwi.GameObjects.Textfield(this, playerNamesInOrder[1], 10, 550, "#000", 32, 'normal', 'Impact');
         this.addChild(this.secondPlayerName);
 
-        this.thirdPlayerName = new Kiwi.GameObjects.Textfield(this, playerNames[2], 700, 10, "#000", 32, 'normal', 'Impact');
+        this.thirdPlayerName = new Kiwi.GameObjects.Textfield(this, playerNamesInOrder[2], 700, 10, "#000", 32, 'normal', 'Impact');
         this.addChild(this.thirdPlayerName);
 
-        this.fourthPlayerName = new Kiwi.GameObjects.Textfield(this, playerNames[3], 700, 550, "#000", 32, 'normal', 'Impact');
+        this.fourthPlayerName = new Kiwi.GameObjects.Textfield(this, playerNamesInOrder[3], 700, 550, "#000", 32, 'normal', 'Impact');
         this.addChild(this.fourthPlayerName);
     };
 
@@ -145,13 +146,20 @@ connection.on("GameEvent", function (response) {
     if (typeName === "GameJoinedEvent") {
         
     } else if (typeName === "PlayerSetupEvent") {
-        playerNames = response.playerNames;
         playerIdsByName = response.playerIdsByName;
+        playerNamesById = {};
+        for (var key in playerIdsByName) {
+            var value = playerIdsByName[key];
+            playerNamesById[value] = key;
+        }
     } else if (typeName === "InitialBoardSetupEvent") {
         hexData = response.gameBoardSetup.hexData;
+    } else if (typeName === "PlayerOrderEvent") {
+        playerNamesInOrder = [];
+        response.playerIds.forEach(function (playerId) {
+            playerNamesInOrder.push(playerNamesById[playerId]);
+        });
         startGame();
-    } else if (typeName === "PlayerTurnOrderCreator") {
-
     } else if (typeName === "PlaceSetupInfrastructureEvent") {
 
     }

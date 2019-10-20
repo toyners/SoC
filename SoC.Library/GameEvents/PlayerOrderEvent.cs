@@ -2,12 +2,11 @@
 namespace Jabberwocky.SoC.Library.GameEvents
 {
     using System;
-    using Jabberwocky.SoC.Library.GameEvents;
 
     public class PlayerOrderEvent : GameEvent
     {
-        public PlayerOrderEvent(Guid[] playerTurnOrder) : base(Guid.Empty)
-        {
-        }
+        public PlayerOrderEvent(Guid[] playerIds) : base(Guid.Empty) => this.PlayerIds = playerIds;
+        
+        public Guid[] PlayerIds { get; set; }
     }
 }
