@@ -66,7 +66,7 @@ namespace SoC.WebApplication
         {
             if (this.inPlayGamesById.TryGetValue(playerActionRequest.GameId, out var gameManagerToken))
             {
-                PlayerAction playerAction = null;
+                var playerAction = (PlayerAction)Newtonsoft.Json.JsonConvert.DeserializeObject(playerActionRequest.Data);
                 gameManagerToken.GameManager.Post(playerAction);
             }
         }
@@ -90,6 +90,9 @@ namespace SoC.WebApplication
                 playerIds.Enqueue(player.Id);
             });
 
+            var gameBoard = new GameBoard(BoardSizes.Standard);
+            var gameBoardQuery = new GameBoardQuery(gameBoard);
+
             Dictionary<Guid, IEventReceiver> eventReceiversByPlayerId = null;
             List<Bot> bots = null;
             if (gameSessionDetails.TotalBotCount > 0)
@@ -98,7 +101,7 @@ namespace SoC.WebApplication
                 eventReceiversByPlayerId = new Dictionary<Guid, IEventReceiver>();
                 while (gameSessionDetails.TotalBotCount-- > 0)
                 {
-                    var bot = new Bot("Bot #" + (bots.Count + 1), gameSessionDetails.Id, this);
+                    var bot = new Bot("Bot #" + (bots.Count + 1), gameSessionDetails.Id, this, gameBoardQuery);
                     bots.Add(bot);
                     eventReceiversByPlayerId.Add(bot.Id, bot);
                     playerIds.Enqueue(bot.Id);
@@ -110,7 +113,7 @@ namespace SoC.WebApplication
             var gameManager = new GameManager(
                 gameSessionDetails.Id,
                 this.numberGenerator,
-                new GameBoard(BoardSizes.Standard),
+                gameBoard,
                 new DevelopmentCardHolder(),
                 new PlayerFactory(),
                 eventSender,

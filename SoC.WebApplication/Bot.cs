@@ -6,23 +6,27 @@ namespace SoC.WebApplication
     using System.Collections.Generic;
     using System.Threading;
     using System.Threading.Tasks;
+    using Jabberwocky.SoC.Library.GameBoards;
     using Jabberwocky.SoC.Library.GameEvents;
     using Jabberwocky.SoC.Library.Interfaces;
     using SoC.WebApplication.Requests;
 
     public class Bot : IEventReceiver
     {
+        private readonly GameBoardQuery gameBoardQuery;
         private readonly ConcurrentQueue<GameEvent> gameEvents = new ConcurrentQueue<GameEvent>();
         private readonly Guid gameId;
         private readonly Task processingTask;
         private readonly IPlayerRequestReceiver playerActionReceiver;
         private IDictionary<string, Guid> playerIdsByName;
 
-        public Bot(string name, Guid gameId, IPlayerRequestReceiver playerActionReceiver)
+        public Bot(string name, Guid gameId, IPlayerRequestReceiver playerActionReceiver, GameBoardQuery gameBoardQuery)
         {
             this.Name = name;
             this.gameId = gameId;
             this.playerActionReceiver = playerActionReceiver;
+            this.gameBoardQuery = gameBoardQuery;
+
             this.processingTask = Task.Factory.StartNew(o => { this.ProcessAsync(); }, CancellationToken.None);
         }
 
@@ -40,6 +44,8 @@ namespace SoC.WebApplication
             {
                 while (this.gameEvents.TryDequeue(out var gameEvent))
                 {
+                    string requestPayload = null;
+
                     if (gameEvent is GameJoinedEvent)
                     {
                         continue; // Nothing to do
@@ -63,16 +69,21 @@ namespace SoC.WebApplication
 
                     if (gameEvent is PlaceSetupInfrastructureEvent)
                     {
-                        continue;
+                        var locations = this.gameBoardQuery.GetLocationsWithBestYield(1);
+                        requestPayload = string.Format("{{ __typename: \\\"PlaceSetupInfrastructureAction\\\", settlementLocation: {0}, roadEndLocation: {1}}}",
+                            locations[0],
+                            locations[0] + 1);
                     }
-
-                    var playerActionRequest = new PlayerActionRequest
+                    
+                    if (requestPayload != null)
                     {
-                        GameId = this.gameId,
-                        PlayerId = this.Id,
-                        Data = "",
-                    };
-                    this.playerActionReceiver.PlayerAction(playerActionRequest);
+                        this.playerActionReceiver.PlayerAction(new PlayerActionRequest
+                        {
+                            GameId = this.gameId,
+                            PlayerId = this.Id,
+                            Data = requestPayload,
+                        });
+                    }
                 }
 
                 Thread.Sleep(100);
