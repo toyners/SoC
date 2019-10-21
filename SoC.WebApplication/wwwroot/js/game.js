@@ -144,7 +144,7 @@ function startGame() {
 connection.on("GameEvent", function (response) {
     var typeName = response.typeName;
     if (typeName === "GameJoinedEvent") {
-        
+
     } else if (typeName === "PlayerSetupEvent") {
         playerIdsByName = response.playerIdsByName;
         playerNamesById = {};
@@ -161,6 +161,8 @@ connection.on("GameEvent", function (response) {
         });
         startGame();
     } else if (typeName === "PlaceSetupInfrastructureEvent") {
+
+    } else if (typeName === "SetupInfrastructurePlacedEvent") {
 
     }
 }).catch(function (err) {
