@@ -1,5 +1,24 @@
 "use strict";
 
+class Queue {
+    constructor() {
+        this.queue = [];
+    }
+
+    enqueue(element) {
+        this.queue.push(element);
+    }
+
+    dequeue() {
+        if (this.isEmpty()) return null;
+        return this.queue.shift();
+    }
+
+    isEmpty() {
+        return !this.queue.length;
+    }
+}
+
 var connection = new signalR.HubConnectionBuilder().withUrl("/gameRequest").build();
 
 var playerNamesInOrder = null;
@@ -131,6 +150,10 @@ function startGame() {
 
         this.fourthPlayerName = new Kiwi.GameObjects.Textfield(this, playerNamesInOrder[3], 700, 550, "#000", 32, 'normal', 'Impact');
         this.addChild(this.fourthPlayerName);
+    };
+
+    state.update = function () {
+        Kiwi.State.prototype.update.call(this);
     };
 
     var gameOptions = {
