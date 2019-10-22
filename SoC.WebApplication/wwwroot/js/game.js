@@ -26,6 +26,7 @@ var playerIdsByName = null;
 var playerNamesById = null;
 var game = null;
 var hexData = null;
+var gameEvents = new Queue();
 
 connection.start().then(function () {
     //document.getElementById("joinGameRequest").disabled = false;
@@ -154,6 +155,13 @@ function startGame() {
 
     state.update = function () {
         Kiwi.State.prototype.update.call(this);
+
+        if (!this.gameEvents.isEmpty()) {
+            var gameEvent = this.gameEvents.dequeue();
+            if (gameEvent.typeName === "SetupInfrastructurePlacedEvent") {
+
+            }
+        }
     };
 
     var gameOptions = {
@@ -183,10 +191,8 @@ connection.on("GameEvent", function (response) {
             playerNamesInOrder.push(playerNamesById[playerId]);
         });
         startGame();
-    } else if (typeName === "PlaceSetupInfrastructureEvent") {
-
-    } else if (typeName === "SetupInfrastructurePlacedEvent") {
-
+    } else {
+        this.gameEvents.enqueue(response);
     }
 }).catch(function (err) {
     return console.error(err.toString());

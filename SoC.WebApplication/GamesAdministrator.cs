@@ -13,6 +13,7 @@ namespace SoC.WebApplication
     using Jabberwocky.SoC.Library.Interfaces;
     using Jabberwocky.SoC.Library.PlayerActions;
     using Microsoft.AspNetCore.SignalR;
+    using Newtonsoft.Json;
     using SoC.WebApplication.Hubs;
     using SoC.WebApplication.Requests;
 
@@ -66,7 +67,8 @@ namespace SoC.WebApplication
         {
             if (this.inPlayGamesById.TryGetValue(playerActionRequest.GameId, out var gameManagerToken))
             {
-                var playerAction = (PlayerAction)Newtonsoft.Json.JsonConvert.DeserializeObject(playerActionRequest.Data);
+                var instance = (Newtonsoft.Json.Linq.JObject)JsonConvert.DeserializeObject(playerActionRequest.Data);
+                PlayerAction playerAction = null;
                 gameManagerToken.GameManager.Post(playerAction);
             }
         }

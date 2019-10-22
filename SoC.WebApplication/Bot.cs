@@ -70,7 +70,7 @@ namespace SoC.WebApplication
                     if (gameEvent is PlaceSetupInfrastructureEvent)
                     {
                         var locations = this.gameBoardQuery.GetLocationsWithBestYield(1);
-                        requestPayload = string.Format("{{ __typename: \\\"PlaceSetupInfrastructureAction\\\", settlementLocation: {0}, roadEndLocation: {1}}}",
+                        requestPayload = string.Format("{{ __typename: \"PlaceSetupInfrastructureAction\", settlementLocation: {0}, roadEndLocation: {1}}}",
                             locations[0],
                             locations[0] + 1);
                     }
