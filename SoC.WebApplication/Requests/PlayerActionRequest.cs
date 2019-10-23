@@ -7,6 +7,7 @@ namespace SoC.WebApplication.Requests
     {
         public Guid GameId { get; set; }
         public Guid PlayerId { get; set; }
+        public string PlayerActionType { get; set; }
         public string Data { get; set; }
     }
 }

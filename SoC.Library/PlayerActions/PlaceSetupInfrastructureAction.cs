@@ -2,11 +2,15 @@
 namespace Jabberwocky.SoC.Library.PlayerActions
 {
     using System;
+    using Newtonsoft.Json;
 
     public class PlaceSetupInfrastructureAction : PlayerAction
     {
-        public readonly uint SettlementLocation;
-        public readonly uint RoadEndLocation;
+        [JsonProperty]
+        public uint SettlementLocation { get; }
+
+        [JsonProperty]
+        public uint RoadEndLocation { get; }
         public PlaceSetupInfrastructureAction(Guid playerId, uint settlementLocation, uint roadEndLocation) : base(playerId)
         {
             this.SettlementLocation = settlementLocation;

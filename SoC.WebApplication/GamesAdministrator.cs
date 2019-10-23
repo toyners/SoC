@@ -5,6 +5,7 @@ namespace SoC.WebApplication
     using System.Collections.Concurrent;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Reflection;
     using System.Threading;
     using System.Threading.Tasks;
     using Jabberwocky.SoC.Library;
@@ -28,6 +29,8 @@ namespace SoC.WebApplication
         private readonly ConcurrentDictionary<Guid, GameSessionDetails> gamesToLaunchById = new ConcurrentDictionary<Guid, GameSessionDetails>();
         private readonly Task mainGameTask;
         private readonly INumberGenerator numberGenerator = new NumberGenerator();
+        private static readonly Assembly SocLibrary = Assembly.GetAssembly(typeof(PlayerAction));
+        private static readonly Dictionary<string, Type> PlayerActionTypesByFullName = new Dictionary<string, Type>();
 
         public GamesAdministrator(IHubContext<GameHub> gameHubContext)
         {
@@ -67,8 +70,14 @@ namespace SoC.WebApplication
         {
             if (this.inPlayGamesById.TryGetValue(playerActionRequest.GameId, out var gameManagerToken))
             {
-                var instance = (Newtonsoft.Json.Linq.JObject)JsonConvert.DeserializeObject(playerActionRequest.Data);
-                PlayerAction playerAction = null;
+                string key = playerActionRequest.PlayerActionType;
+                if (!PlayerActionTypesByFullName.TryGetValue(key, out var playerActionType))
+                {
+                    playerActionType = SocLibrary.GetType(playerActionRequest.PlayerActionType);
+                    PlayerActionTypesByFullName.Add(key, playerActionType);
+                }
+                
+                var playerAction = (PlayerAction)JsonConvert.DeserializeObject(playerActionRequest.Data, playerActionType);
                 gameManagerToken.GameManager.Post(playerAction);
             }
         }

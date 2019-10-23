@@ -9,6 +9,8 @@ namespace SoC.WebApplication
     using Jabberwocky.SoC.Library.GameBoards;
     using Jabberwocky.SoC.Library.GameEvents;
     using Jabberwocky.SoC.Library.Interfaces;
+    using Jabberwocky.SoC.Library.PlayerActions;
+    using Newtonsoft.Json;
     using SoC.WebApplication.Requests;
 
     public class Bot : IEventReceiver
@@ -45,7 +47,7 @@ namespace SoC.WebApplication
                 while (this.gameEvents.TryDequeue(out var gameEvent))
                 {
                     string requestPayload = null;
-
+                    string playerActionType = null;
                     if (gameEvent is GameJoinedEvent)
                     {
                         continue; // Nothing to do
@@ -70,9 +72,9 @@ namespace SoC.WebApplication
                     if (gameEvent is PlaceSetupInfrastructureEvent)
                     {
                         var locations = this.gameBoardQuery.GetLocationsWithBestYield(1);
-                        requestPayload = string.Format("{{ __typename: \"PlaceSetupInfrastructureAction\", settlementLocation: {0}, roadEndLocation: {1}}}",
-                            locations[0],
-                            locations[0] + 1);
+                        var request = new PlaceSetupInfrastructureAction(this.Id, locations[0], locations[0] + 1);
+                        requestPayload = JsonConvert.SerializeObject(request);
+                        playerActionType = request.GetType().ToString();
                     }
                     
                     if (requestPayload != null)
@@ -81,6 +83,7 @@ namespace SoC.WebApplication
                         {
                             GameId = this.gameId,
                             PlayerId = this.Id,
+                            PlayerActionType = playerActionType,
                             Data = requestPayload,
                         });
                     }
