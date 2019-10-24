@@ -19,7 +19,7 @@ namespace Jabberwocky.SoC.Library.GameEvents
         #endregion
 
         #region Properties
-        [JsonProperty] // [JsonIgnore] to ignore property
+        [JsonProperty]
         public Guid PlayerId { get; }
         public string TypeName { get { return this.GetType().Name; } } // Used in JSON comparison 
         [JsonIgnore]

@@ -136,20 +136,6 @@ namespace Jabberwocky.SoC.Library
         public int PlacedRoadSegments { get; protected set; }
         public int PlacedSettlements { get; protected set; }
         public uint VictoryPoints { get; protected set; }
-
-        // TODO: Obsolete. 
-        /*public int BrickCount { get; protected set; }
-        public int GrainCount { get; protected set; }
-        public int LumberCount { get; protected set; }
-        public int OreCount { get; protected set; }
-        public int WoolCount { get; protected set; }
-        public virtual int ResourcesCount
-        {
-            get
-            {
-                return this.BrickCount + this.GrainCount + this.LumberCount + this.OreCount + this.WoolCount;
-            }
-        }*/
         #endregion
 
         #region Methods

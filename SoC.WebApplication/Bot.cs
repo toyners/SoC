@@ -73,7 +73,13 @@ namespace SoC.WebApplication
                     {
                         var locations = this.gameBoardQuery.GetLocationsWithBestYield(1);
                         var request = new PlaceSetupInfrastructureAction(this.Id, locations[0], locations[0] + 1);
-                        requestPayload = JsonConvert.SerializeObject(request);
+
+                        var jsonSerializerSettings = new JsonSerializerSettings();
+                        jsonSerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Serialize;
+                        jsonSerializerSettings.PreserveReferencesHandling = PreserveReferencesHandling.Objects;
+                        jsonSerializerSettings.TypeNameHandling = TypeNameHandling.Objects;
+
+                        requestPayload = JsonConvert.SerializeObject(request, jsonSerializerSettings);
                         playerActionType = request.GetType().ToString();
                     }
                     
