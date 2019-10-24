@@ -76,8 +76,13 @@ namespace SoC.WebApplication
                     playerActionType = SocLibrary.GetType(playerActionRequest.PlayerActionType);
                     PlayerActionTypesByFullName.Add(key, playerActionType);
                 }
-                
-                var playerAction = (PlayerAction)JsonConvert.DeserializeObject(playerActionRequest.Data, playerActionType);
+
+                var jsonSerializerSettings = new JsonSerializerSettings();
+                jsonSerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Serialize;
+                jsonSerializerSettings.PreserveReferencesHandling = PreserveReferencesHandling.Objects;
+                jsonSerializerSettings.TypeNameHandling = TypeNameHandling.Objects;
+                var playerAction = (PlayerAction)JsonConvert.DeserializeObject(playerActionRequest.Data, 
+                    playerActionType, jsonSerializerSettings);
                 gameManagerToken.GameManager.Post(playerAction);
             }
         }

@@ -15,7 +15,6 @@ namespace Jabberwocky.SoC.Library.GameEvents
             this.PlayerIdsByName = playerIdsByName;
         }
 
-
         public IDictionary<string, Guid> PlayerIdsByName { get; set; }
         public string[] PlayerNames { get; set; }
     }
