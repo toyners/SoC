@@ -1,24 +1,5 @@
 "use strict";
 
-class Queue {
-    constructor() {
-        this.queue = [];
-    }
-
-    enqueue(element) {
-        this.queue.push(element);
-    }
-
-    dequeue() {
-        if (this.isEmpty()) return null;
-        return this.queue.shift();
-    }
-
-    isEmpty() {
-        return !this.queue.length;
-    }
-}
-
 var connection = new signalR.HubConnectionBuilder().withUrl("/gameRequest").build();
 
 var playerNamesInOrder = null;
