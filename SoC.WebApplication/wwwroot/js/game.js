@@ -156,10 +156,10 @@ function startGame() {
     state.update = function () {
         Kiwi.State.prototype.update.call(this);
 
-        if (!this.gameEvents.isEmpty()) {
-            var gameEvent = this.gameEvents.dequeue();
+        if (!gameEvents.isEmpty()) {
+            var gameEvent = gameEvents.dequeue();
             if (gameEvent.typeName === "SetupInfrastructurePlacedEvent") {
-
+                // Placing infrastructure animation
             }
         }
     };
@@ -172,27 +172,27 @@ function startGame() {
     game = new Kiwi.Game('game-container', 'soc', state, gameOptions);
 }
 
-connection.on("GameEvent", function (response) {
-    var typeName = response.typeName;
+connection.on("GameEvent", function (gameEvent) {
+    var typeName = gameEvent.typeName;
     if (typeName === "GameJoinedEvent") {
 
     } else if (typeName === "PlayerSetupEvent") {
-        playerIdsByName = response.playerIdsByName;
+        playerIdsByName = gameEvent.playerIdsByName;
         playerNamesById = {};
         for (var key in playerIdsByName) {
             var value = playerIdsByName[key];
             playerNamesById[value] = key;
         }
     } else if (typeName === "InitialBoardSetupEvent") {
-        hexData = response.gameBoardSetup.hexData;
+        hexData = gameEvent.gameBoardSetup.hexData;
     } else if (typeName === "PlayerOrderEvent") {
         playerNamesInOrder = [];
-        response.playerIds.forEach(function (playerId) {
+        gameEvent.playerIds.forEach(function (playerId) {
             playerNamesInOrder.push(playerNamesById[playerId]);
         });
         startGame();
     } else {
-        this.gameEvents.enqueue(response);
+        gameEvents.enqueue(gameEvent);
     }
 }).catch(function (err) {
     return console.error(err.toString());

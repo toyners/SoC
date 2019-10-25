@@ -9,6 +9,6 @@ namespace Jabberwocky.SoC.Library.PlayerActions
         public PlayerAction(Guid initiatingPlayerId) => this.InitiatingPlayerId = initiatingPlayerId;
 
         [JsonProperty]
-        public Guid InitiatingPlayerId { get; set; }
+        public Guid InitiatingPlayerId { get; }
     }
 }

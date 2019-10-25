@@ -6,7 +6,7 @@ namespace Jabberwocky.SoC.Library.PlayerActions
 
     public class PlaceSetupInfrastructureAction : PlayerAction
     {
-        public PlaceSetupInfrastructureAction(Guid playerId, uint settlementLocation, uint roadEndLocation) : base(playerId)
+        public PlaceSetupInfrastructureAction(Guid initiatingPlayerId, uint settlementLocation, uint roadEndLocation) : base(initiatingPlayerId)
         {
             this.SettlementLocation = settlementLocation;
             this.RoadEndLocation = roadEndLocation;
