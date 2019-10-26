@@ -32,6 +32,8 @@ function getProductionFactorTexture(productionFactor, textures) {
 function create() {
     Kiwi.State.prototype.create(this);
     this.background = new Kiwi.GameObjects.Sprite(this, this.textures.background, 0, 0);
+    var backgroundWidth = this.background.width;
+    var backgroundHeight = this.background.height;
     this.addChild(this.background);
 
     this.hexSprites = [];
