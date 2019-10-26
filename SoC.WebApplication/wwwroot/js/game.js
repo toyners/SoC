@@ -23,35 +23,6 @@ connection.start().then(function () {
     return console.error(err.toString());
 });
 
-function getResourceTexture(resourceType, textures) {
-    if (resourceType == null) {
-        return textures.deserthex;
-    } else {
-        switch (resourceType) {
-            case 0: return textures.brickhex;
-            case 1: return textures.grainhex;
-            case 2: return textures.lumberhex;
-            case 3: return textures.orehex;
-            case 4: return textures.woolhex;
-        }
-    }
-}
-
-function getProductionFactorTexture(productionFactor, textures) {
-    switch (productionFactor) {
-        case 2: return textures.two;
-        case 3: return textures.three;
-        case 4: return textures.four;
-        case 5: return textures.five;
-        case 6: return textures.six;
-        case 8: return textures.eight;
-        case 9: return textures.nine;
-        case 10: return textures.ten;
-        case 11: return textures.eleven;
-        case 12: return textures.twelve;
-    }
-}
-
 function startGame() {
     var state = new Kiwi.State('Play');
     state.preload = preload;
@@ -59,7 +30,7 @@ function startGame() {
     var backgroundWidth = 800;
     var backgroundHeight = 600;
 
-    state.create = function () {
+    state.create = create; /*function () {
         Kiwi.State.prototype.create(this);
         this.background = new Kiwi.GameObjects.Sprite(this, this.textures.background, 0, 0);
         this.addChild(this.background);
@@ -124,7 +95,7 @@ function startGame() {
                 // Placing infrastructure animation
             }
         }
-    };
+    };*/
 
     var gameOptions = {
         width: backgroundWidth,
