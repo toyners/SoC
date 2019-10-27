@@ -1,5 +1,19 @@
 ﻿"use strict"
 
+class PlayerUI {
+    constructor(name) {
+        this.name = name;
+        this.settlementCount = 15;
+        this.roadCount = 5;
+        this.cityCount = 4;
+    }
+
+    addSettlement(texture, state) {
+        var settlement = new Kiwi.GameObjects.Sprite(state, texture, x, y);
+        state.addChild(settlement);
+    }
+}
+
 function getResourceTexture(resourceType, textures) {
     if (resourceType == null) {
         return textures.deserthex;
@@ -74,15 +88,24 @@ function create() {
         }
     }
 
-    this.firstPlayerName = new Kiwi.GameObjects.Textfield(this, playerNamesInOrder[0], 10, 10, "#000", 32, 'normal', 'Impact');
+    this.players = [];
+    var player = new PlayerUI(playerNamesInOrder[0]);
+    this.players.push(player);
+    this.firstPlayerName = new Kiwi.GameObjects.Textfield(this, player.name, 10, 10, "#000", 32, 'normal', 'Impact');
     this.addChild(this.firstPlayerName);
 
-    this.secondPlayerName = new Kiwi.GameObjects.Textfield(this, playerNamesInOrder[1], 10, 550, "#000", 32, 'normal', 'Impact');
+    player = new PlayerUI(playerNamesInOrder[1]);
+    this.players.push(player);
+    this.secondPlayerName = new Kiwi.GameObjects.Textfield(this, player.name, 10, 550, "#000", 32, 'normal', 'Impact');
     this.addChild(this.secondPlayerName);
 
-    this.thirdPlayerName = new Kiwi.GameObjects.Textfield(this, playerNamesInOrder[2], 700, 10, "#000", 32, 'normal', 'Impact');
+    player = new PlayerUI(playerNamesInOrder[2]);
+    this.players.push(player);
+    this.thirdPlayerName = new Kiwi.GameObjects.Textfield(this, player.name, 700, 10, "#000", 32, 'normal', 'Impact');
     this.addChild(this.thirdPlayerName);
 
-    this.fourthPlayerName = new Kiwi.GameObjects.Textfield(this, playerNamesInOrder[3], 700, 550, "#000", 32, 'normal', 'Impact');
+    player = new PlayerUI(playerNamesInOrder[3]);
+    this.players.push(player);
+    this.fourthPlayerName = new Kiwi.GameObjects.Textfield(this, player.name, 700, 550, "#000", 32, 'normal', 'Impact');
     this.addChild(this.fourthPlayerName);
 }

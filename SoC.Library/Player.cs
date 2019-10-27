@@ -17,7 +17,7 @@ namespace Jabberwocky.SoC.Library
         #region Fields
         public const int TotalRoadSegments = 15;
         public const int TotalSettlements = 5;
-        public const int TotalCities = 4;
+        public const int TotalCities = 4;   
 
         private bool hasLargestArmy;
         private bool hasLongestRoad;
