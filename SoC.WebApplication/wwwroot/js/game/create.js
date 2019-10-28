@@ -102,6 +102,10 @@ function create() {
     this.players.push(player);
     this.firstPlayerName = new Kiwi.GameObjects.Textfield(this, player.name, 10, 10, "#000", 32, 'normal', 'Impact');
     this.addChild(this.firstPlayerName);
+    var settlementCounter = new Kiwi.GameObjects.Textfield(this, '5x', 10, 50, "#000", 22, 'normal', 'Impact');
+    this.addChild(settlementCounter);
+    var settlementIcon = new Kiwi.GameObjects.StaticImage(this, this.textures.redhouse, 35, 55);
+    this.addChild(settlementIcon);
 
     player = new PlayerUI(playerNamesInOrder[1]);
     this.players.push(player);
