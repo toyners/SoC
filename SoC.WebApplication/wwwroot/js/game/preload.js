@@ -20,4 +20,5 @@ function preload() {
     this.addImage('eleven', '../../../images/productionfactors/11.png');
     this.addImage('twelve', '../../../images/productionfactors/12.png');
     this.addImage('redhouse', '../../../images/redhouse.png');
+    this.addImage('brick2', '../../../images/hextypes/brick2.png');
 }

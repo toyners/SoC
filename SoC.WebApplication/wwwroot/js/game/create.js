@@ -15,6 +15,7 @@ class PlayerUI {
 }
 
 function getResourceTexture(resourceType, textures) {
+    return textures.brick2;
     if (resourceType == null) {
         return textures.deserthex;
     } else {
@@ -43,10 +44,10 @@ function getProductionFactorTexture(productionFactor, textures) {
     }
 }
 
-var cellHeight = 45;
-var halfCellHeight = Math.trunc(45 / 2);
+var cellHeight = 90; //45;
+var halfCellHeight = Math.trunc(cellHeight / 2);
 var halfCellWidth = halfCellHeight;
-var cellFragmentWidth = 34;
+var cellFragmentWidth = 68; //34;
 
 function displayBoard(state, layoutColumnData, hexData, textures, startX, startY) {
     var x = startX;
