@@ -6,5 +6,6 @@
         public int MaxPlayers { get; set; }
         public int MaxBots { get; set; }
         public int TurnTimeoutInSeconds { get; set; }
+        public bool PlayerStarts { get; set; }
     }
 }

@@ -118,7 +118,7 @@ namespace SoC.WebApplication
 
             var gameManager = new GameManager(
                 gameSessionDetails.Id,
-                this.numberGenerator,
+                gameSessionDetails.PlayerStarts ? new PlayerStartsNumberGenerator() : this.numberGenerator,
                 gameBoard,
                 new DevelopmentCardHolder(),
                 new PlayerFactory(),
@@ -242,6 +242,38 @@ namespace SoC.WebApplication
                 {
                     throw new NotImplementedException("Should not get here");
                 }
+            }
+        }
+
+        private class PlayerStartsNumberGenerator : INumberGenerator
+        {
+            private readonly Random random = new Random();
+            private Queue<uint> numbers = new Queue<uint>();
+            public PlayerStartsNumberGenerator()
+            {
+                this.numbers.Enqueue(12);
+                this.numbers.Enqueue(10);
+                this.numbers.Enqueue(8);
+                this.numbers.Enqueue(6);
+            }
+
+            public int GetRandomNumberBetweenZeroAndMaximum(int exclusiveMaximum)
+            {
+                return this.random.Next(exclusiveMaximum);
+            }
+
+            public void RollTwoDice(out uint dice1, out uint dice2)
+            {
+                if (this.numbers.Count > 0)
+                {
+                    var number = this.numbers.Dequeue();
+                    dice1 = number / 2;
+                    dice2 = dice1;
+                    return;
+                }
+
+                dice1 = (uint)this.random.Next(6) + 1;
+                dice2 = (uint)this.random.Next(6) + 1;
             }
         }
     }

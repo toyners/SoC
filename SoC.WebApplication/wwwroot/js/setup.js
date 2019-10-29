@@ -100,12 +100,16 @@ document.getElementById("createGameRequest").addEventListener("click", function 
     var turnTimeoutInput = document.getElementById("turnTimeout");
     var turnTimeout = parseInt(turnTimeoutInput.value);
 
+    var playerStartsInput = document.getElementById("playerStarts");
+    var playerStarts = playerStartsInput.value === "on";
+
     var request = {
         name: gameNameInput.value,
         username: userNameInput.value,
         maxplayers: playerCount,
         maxbots: botCount,
-        turntimeoutinseconds: turnTimeout
+        turntimeoutinseconds: turnTimeout,
+        playerstarts: playerStarts
     }
     connection.invoke("CreateGameSession", request).catch(function (err) {
         return console.error(err.toString());

@@ -17,5 +17,6 @@ namespace SoC.WebApplication
         public int TurnTimeoutInSeconds { get; set; }
         public List<PlayerDetails> Players { get; set; } = new List<PlayerDetails>();
         public DateTime LaunchTime { get; set; }
+        public bool PlayerStarts { get; set; }
     }
 }

@@ -42,6 +42,7 @@ namespace SoC.WebApplication
 
             if (createGameRequest.MaxPlayers == 1)
             {
+                gameDetails.PlayerStarts = createGameRequest.PlayerStarts;
                 gameDetails.Status = GameStatus.Starting;
                 this.gamesAdministrator.AddGame(gameDetails);
                 
