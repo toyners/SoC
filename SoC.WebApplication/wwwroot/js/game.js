@@ -37,8 +37,16 @@ function startGame() {
 
         if (!gameEvents.isEmpty()) {
             var gameEvent = gameEvents.dequeue();
-            if (gameEvent.typeName === "SetupInfrastructurePlacedEvent") {
-                // Placing infrastructure animation
+            switch (gameEvent.typeName) {
+                case "PlaceSetupInfrastructureEvent": {
+                    this.currentPlayerMarker.visible = true;
+                    this.currentPlayerMarker.animation.play('main');
+                    break;
+                }
+                case "SetupInfrastructurePlacedEvent": {
+                    // Placing infrastructure animation
+                    break;
+                }
             }
         }
     };

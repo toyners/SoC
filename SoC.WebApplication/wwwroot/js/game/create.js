@@ -96,7 +96,12 @@ function create() {
         { x: startX + (2 * cellFragmentWidth), y: startY - cellHeight, count: 3 },
     ];
     displayBoard(this, layoutColumnData, hexData, this.textures, startX, startY);
-    
+
+    this.currentPlayerMarker = new Kiwi.GameObjects.Sprite(this, this.textures.playermarker, 90, 5);
+    this.currentPlayerMarker.visible = false;
+    this.currentPlayerMarker.animation.add('main', [3, 2, 1], 0.15, true, false);
+    this.addChild(this.currentPlayerMarker);
+
     this.players = [];
     var player = new PlayerUI(playerNamesInOrder[0]);
     this.players.push(player);
