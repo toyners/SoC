@@ -102,6 +102,11 @@ function create() {
     this.currentPlayerMarker.animation.add('main', [3, 2, 1], 0.15, true, false);
     this.addChild(this.currentPlayerMarker);
 
+    var halfHouseIconWidth = 7;
+    var halfHouseIconHeight = 7;
+    var houseIcon = new Kiwi.GameObjects.Sprite(this, this.textures.houseicon, startX, startY + halfCellHeight);
+    this.addChild(houseIcon);
+
     this.players = [];
     var player = new PlayerUI(playerNamesInOrder[0]);
     this.players.push(player);
@@ -109,8 +114,8 @@ function create() {
     this.addChild(this.firstPlayerName);
     this.settlementCounter = new Kiwi.GameObjects.Textfield(this, '5x', 10, 50, "#000", 22, 'normal', 'Impact');
     this.addChild(this.settlementCounter);
-    var settlementIcon = new Kiwi.GameObjects.StaticImage(this, this.textures.redhouse, 35, 55);
-    this.addChild(settlementIcon);
+    var settlementCounterIcon = new Kiwi.GameObjects.StaticImage(this, this.textures.redhouse, 35, 55);
+    this.addChild(settlementCounterIcon);
 
     player = new PlayerUI(playerNamesInOrder[1]);
     this.players.push(player);

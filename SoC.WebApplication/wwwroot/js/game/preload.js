@@ -20,6 +20,8 @@ function preload() {
     this.addImage('eleven', '../../../images/productionfactors/11.png');
     this.addImage('twelve', '../../../images/productionfactors/12.png');
     this.addImage('redhouse', '../../../images/redhouse.png');
+    this.addImage('redhousehover', '../../../images/redhousehover.png');
+    this.addImage('houseicon', '../../../images/houseicon.png');
 
     this.addSpriteSheet('playermarker', '../../../images/currentplayermarker.png', 50, 45);
 }
