@@ -115,6 +115,8 @@ function create() {
     player = new PlayerUI(playerNamesInOrder[1]);
     this.players.push(player);
     this.secondPlayerName = new Kiwi.GameObjects.Textfield(this, player.name, 10, 550, "#000", 32, 'normal', 'Impact');
+    this.settlementCounter = new Kiwi.GameObjects.Textfield(this, '5x', 10, 500, "#000", 22, 'normal', 'Impact');
+    this.addChild(this.settlementCounter);
     this.addChild(this.secondPlayerName);
 
     player = new PlayerUI(playerNamesInOrder[2]);
