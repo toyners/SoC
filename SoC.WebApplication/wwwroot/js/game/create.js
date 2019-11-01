@@ -102,9 +102,11 @@ function create() {
     this.currentPlayerMarker.animation.add('main', [3, 2, 1], 0.15, true, false);
     this.addChild(this.currentPlayerMarker);
 
-    var halfHouseIconWidth = 7;
-    var halfHouseIconHeight = 7;
-    var houseIcon = new Kiwi.GameObjects.Sprite(this, this.textures.houseicon, startX, startY + halfCellHeight);
+    var halfHouseIconWidth = 12;
+    var halfHouseIconHeight = 12;
+    var houseIcon = new Kiwi.GameObjects.Sprite(this, this.textures.houseicon, startX - halfHouseIconWidth, startY + halfCellHeight - halfHouseIconHeight);
+    houseIcon.input.onUp.add(this.houseIconClicked, this);
+    houseIcon.input.onEntered.add(this.houseIconHover, this);
     this.addChild(houseIcon);
 
     this.players = [];

@@ -9,6 +9,25 @@ var game = null;
 var hexData = null;
 var gameEvents = new Queue();
 
+class SettlementPlacementUI {
+    constructor() {
+        this.settlements = {};
+    }
+
+    addSettlementPlacement(settlementIconSprite) {
+
+    }
+
+    toggleSettlementSprite(settlementIconSpriteId, on) {
+
+    }
+
+    getSettlementLocation(settlementIconSpriteId) {
+
+    }
+}
+
+
 connection.start().then(function () {
     //document.getElementById("joinGameRequest").disabled = false;
     var fragments = window.location.pathname.split("/");
@@ -30,7 +49,16 @@ function startGame() {
     var backgroundWidth = 800;
     var backgroundHeight = 600;
 
-    state.create = create; 
+    state.create = create;
+
+    state.houseIconClicked = function (context, params) {
+        var houseIcon = params[0];
+        
+    };
+
+    state.houseIconHover = function (context, params) {
+        var i = 0;
+    }
 
     state.update = function () {
         Kiwi.State.prototype.update.call(this);
