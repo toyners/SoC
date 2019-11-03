@@ -11,11 +11,11 @@ var gameEvents = new Queue();
 
 class SettlementPlacementUI {
     constructor() {
-        this.settlements = {};
+        this.settlementPlacements = {};
     }
 
-    addSettlementPlacement(settlementIconSprite) {
-
+    addSettlementPlacement(location, settlementIconSprite, settlementHoverSprite) {
+        this.settlementPlacements[location] = { icon: settlementIconSprite, hover: settlementHoverSprite };
     }
 
     toggleSettlementSprite(settlementIconSpriteId, on) {
