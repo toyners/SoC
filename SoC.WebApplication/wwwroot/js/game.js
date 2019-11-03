@@ -19,9 +19,9 @@ class SettlementPlacementUI {
         this.settlementPlacementIcons[settlementHoverSprite.id] = this.settlementPlacementIcons[settlementIconSprite.id];
     }
 
-    toggleSettlementSprite(settlementIconSpriteId, useHover) {
-        var settlementPlacement = this.settlementPlacements[settlementIconSpriteId];
-        if (useHover) {
+    toggleSettlementSprite(spriteId) {
+        var settlementPlacement = this.settlementPlacements[spriteId];
+        if (spriteId === settlementPlacement.icon.id) {
             settlementPlacement.icon.visible = false;
             settlementPlacement.hover.visible = true;
         } else {
@@ -70,12 +70,12 @@ function startGame() {
 
     state.settlementIconHoverStart = function (context, params) {
         var settlementIcon = params[0];
-        this.settlementPlacementUI.toggleSettlementSprite(settlementIcon.id, true);
+        this.settlementPlacementUI.toggleSettlementSprite(settlementIcon.id);
     }
 
     state.settlementIconHoverEnd = function (context, params) {
         var settlementIcon = params[0];
-        this.settlementPlacementUI.toggleSettlementSprite(settlementIcon.id, boolean);
+        this.settlementPlacementUI.toggleSettlementSprite(settlementIcon.id);
     }
 
     state.update = function () {

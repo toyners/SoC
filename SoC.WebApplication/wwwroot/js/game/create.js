@@ -111,6 +111,7 @@ function create() {
 
     var settlementHoverIcon = new Kiwi.GameObjects.Sprite(this, this.textures.redsettlementhover, startX - halfHouseIconWidth, startY + halfCellHeight - halfHouseIconHeight);
     settlementHoverIcon.input.onLeft.add(this.settlementIconHoverEnd, this);
+    settlementHoverIcon.visible = false;
     this.addChild(settlementHoverIcon);
 
     this.settlementPlacementUI.addSettlementPlacement(settlementIcon, settlementHoverIcon);
