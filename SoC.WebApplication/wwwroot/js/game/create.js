@@ -104,10 +104,16 @@ function create() {
 
     var halfHouseIconWidth = 12;
     var halfHouseIconHeight = 12;
-    var houseIcon = new Kiwi.GameObjects.Sprite(this, this.textures.houseicon, startX - halfHouseIconWidth, startY + halfCellHeight - halfHouseIconHeight);
-    houseIcon.input.onUp.add(this.houseIconClicked, this);
-    houseIcon.input.onEntered.add(this.houseIconHover, this);
-    this.addChild(houseIcon);
+    var settlementIcon = new Kiwi.GameObjects.Sprite(this, this.textures.settlementicon, startX - halfHouseIconWidth, startY + halfCellHeight - halfHouseIconHeight);
+    settlementIcon.input.onUp.add(this.settlementIconClicked, this);
+    settlementIcon.input.onEntered.add(this.settlementIconHoverStart, this);
+    this.addChild(settlementIcon);
+
+    var settlementHoverIcon = new Kiwi.GameObjects.Sprite(this, this.textures.redsettlementhover, startX - halfHouseIconWidth, startY + halfCellHeight - halfHouseIconHeight);
+    settlementHoverIcon.input.onLeft.add(this.settlementIconHoverEnd, this);
+    this.addChild(settlementHoverIcon);
+
+    this.settlementPlacementUI.addSettlementPlacement(settlementIcon, settlementHoverIcon);
 
     this.players = [];
     var player = new PlayerUI(playerNamesInOrder[0]);

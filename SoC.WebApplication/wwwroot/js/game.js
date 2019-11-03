@@ -11,21 +11,30 @@ var gameEvents = new Queue();
 
 class SettlementPlacementUI {
     constructor() {
-        this.settlementPlacements = {};
+        this.settlementPlacementIcons = {};
     }
 
-    addSettlementPlacement(location, settlementIconSprite, settlementHoverSprite) {
-        this.settlementPlacements[location] = { icon: settlementIconSprite, hover: settlementHoverSprite };
+    addSettlementPlacement(settlementIconSprite, settlementHoverSprite) {
+        this.settlementPlacementIcons[settlementIconSprite.id] = { icon: settlementIconSprite, hover: settlementHoverSprite };
+        this.settlementPlacementIcons[settlementHoverSprite.id] = this.settlementPlacementIcons[settlementIconSprite.id];
     }
 
-    toggleSettlementSprite(settlementIconSpriteId, on) {
-
+    toggleSettlementSprite(settlementIconSpriteId, useHover) {
+        var settlementPlacement = this.settlementPlacements[settlementIconSpriteId];
+        if (useHover) {
+            settlementPlacement.icon.visible = false;
+            settlementPlacement.hover.visible = true;
+        } else {
+            settlementPlacement.icon.visible = true;
+            settlementPlacement.hover.visible = false;
+        }
     }
 
     getSettlementLocation(settlementIconSpriteId) {
 
     }
 }
+
 
 
 connection.start().then(function () {
@@ -49,15 +58,24 @@ function startGame() {
     var backgroundWidth = 800;
     var backgroundHeight = 600;
 
+    state.settlementPlacementUI = new SettlementPlacementUI();
+
     state.create = create;
 
-    state.houseIconClicked = function (context, params) {
-        var houseIcon = params[0];
+    state.settlementIconClicked = function (context, params) {
+        var settlementIcon = params[0];
+        //this.settlementPlacementUI.toggleSettlementSprite(settlementIcon.id, )
         
     };
 
-    state.houseIconHover = function (context, params) {
-        var i = 0;
+    state.settlementIconHoverStart = function (context, params) {
+        var settlementIcon = params[0];
+        this.settlementPlacementUI.toggleSettlementSprite(settlementIcon.id, true);
+    }
+
+    state.settlementIconHoverEnd = function (context, params) {
+        var settlementIcon = params[0];
+        this.settlementPlacementUI.toggleSettlementSprite(settlementIcon.id, boolean);
     }
 
     state.update = function () {

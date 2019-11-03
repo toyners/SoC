@@ -19,9 +19,9 @@ function preload() {
     this.addImage('ten', '../../../images/productionfactors/10.png');
     this.addImage('eleven', '../../../images/productionfactors/11.png');
     this.addImage('twelve', '../../../images/productionfactors/12.png');
-    this.addImage('redhouse', '../../../images/redhouse.png');
-    this.addImage('redhousehover', '../../../images/redhousehover.png');
-    this.addImage('houseicon', '../../../images/houseicon.png');
+    this.addImage('redsettlement', '../../../images/redsettlement.png');
+    this.addImage('redsettlementhover', '../../../images/redsettlementhover.png');
+    this.addImage('settlementicon', '../../../images/settlementicon.png');
 
     this.addSpriteSheet('playermarker', '../../../images/currentplayermarker.png', 50, 45);
 }
