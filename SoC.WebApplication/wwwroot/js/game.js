@@ -11,15 +11,28 @@ var gameEvents = new Queue();
 
 class SettlementPlacementUI {
     constructor() {
+        this.locked = false;
         this.settlementPlacements = {};
+        this.settlementIconSpritesById = {};
     }
 
     addSettlementPlacement(settlementIconSprite, settlementHoverSprite) {
         this.settlementPlacements[settlementIconSprite.id] = { icon: settlementIconSprite, hover: settlementHoverSprite };
         this.settlementPlacements[settlementHoverSprite.id] = this.settlementPlacements[settlementIconSprite.id];
+        this.settlementIconSpritesById[settlementIconSprite.id] = settlementIconSprite;
+    }
+
+    selectSettlement() {
+        for (var id in this.settlementIconSpritesById) {
+            this.settlementIconSpritesById[id].visible = false;
+        }
+
+        this.locked = true;
     }
 
     toggleSettlementSprite(spriteId) {
+        if (this.locked)
+            return;
         var settlementPlacement = this.settlementPlacements[spriteId];
         if (spriteId === settlementPlacement.icon.id) {
             settlementPlacement.icon.visible = false;
@@ -63,9 +76,7 @@ function startGame() {
     state.create = create;
 
     state.settlementIconClicked = function (context, params) {
-        var settlementIcon = params[0];
-        //this.settlementPlacementUI.toggleSettlementSprite(settlementIcon.id, )
-        
+        this.settlementPlacementUI.selectSettlement()
     };
 
     state.settlementIconHoverStart = function (context, params) {
