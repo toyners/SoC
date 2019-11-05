@@ -13,6 +13,14 @@ class SettlementPlacementUI {
         this.settlementIconSpritesById[settlementIconSprite.id] = settlementIconSprite;
     }
 
+    clearSettlement() {
+        for (var id in this.settlementIconSpritesById) {
+            this.settlementIconSpritesById[id].visible = true;
+        }
+
+        this.locked = false;
+    }
+
     selectSettlement() {
         for (var id in this.settlementIconSpritesById) {
             this.settlementIconSpritesById[id].visible = false;

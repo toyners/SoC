@@ -10,7 +10,6 @@ var hexData = null;
 var gameEvents = new Queue();
 
 connection.start().then(function () {
-    //document.getElementById("joinGameRequest").disabled = false;
     var fragments = window.location.pathname.split("/");
     var request = {
         gameId: fragments[2],
