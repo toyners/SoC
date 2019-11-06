@@ -53,13 +53,13 @@ function displayBoard(state, layoutColumnData, hexData, textures, startX, startY
     var y = startY;
     var index = 0;
 
-    var layoutColumnData = [
+    /*var layoutColumnData = [
         { x: startX - (2 * cellFragmentWidth), y: startY - cellHeight, count: 3 },
         { x: startX - cellFragmentWidth, y: startY - halfCellHeight - cellHeight, count: 4 },
         { x: startX, y: startY - (2 * cellHeight), count: 5 },
         { x: startX + cellFragmentWidth, y: startY - halfCellHeight - cellHeight, count: 4 },
         { x: startX + (2 * cellFragmentWidth), y: startY - cellHeight, count: 3 },
-    ];
+    ];*/
 
     for (var columnDataKey in layoutColumnData) {
         var columnData = layoutColumnData[columnDataKey];
