@@ -48,34 +48,28 @@ var halfCellHeight = Math.trunc(cellHeight / 2);
 var halfCellWidth = halfCellHeight;
 var cellFragmentWidth = 68;
 
-function displayBoard(state, layoutColumnData, hexData, textures, startX, startY) {
-    var x = startX;
-    var y = startY;
+function displayBoard(state, layoutColumnData, hexData, textures) {
     var index = 0;
-
-    /*var layoutColumnData = [
-        { x: startX - (2 * cellFragmentWidth), y: startY - cellHeight, count: 3 },
-        { x: startX - cellFragmentWidth, y: startY - halfCellHeight - cellHeight, count: 4 },
-        { x: startX, y: startY - (2 * cellHeight), count: 5 },
-        { x: startX + cellFragmentWidth, y: startY - halfCellHeight - cellHeight, count: 4 },
-        { x: startX + (2 * cellFragmentWidth), y: startY - cellHeight, count: 3 },
-    ];*/
-
+ 
     for (var columnDataKey in layoutColumnData) {
         var columnData = layoutColumnData[columnDataKey];
-        x = columnData.x;
-        y = columnData.y;
+        var y = columnData.y;
         var count = columnData.count;
         while (count-- > 0) {
             var hex = hexData[index++];
-            var hexImage = new Kiwi.GameObjects.StaticImage(state, getResourceTexture(hex.resourceType, textures), x, y);
+            var hexImage = new Kiwi.GameObjects.StaticImage(state, getResourceTexture(hex.resourceType, textures), columnData.x, y);
             state.addChild(hexImage);
             if (hex.productionFactor != 0) {
-                var productionImage = new Kiwi.GameObjects.StaticImage(state, getProductionFactorTexture(hex.productionFactor, textures), x, y);
+                var productionImage = new Kiwi.GameObjects.StaticImage(state, getProductionFactorTexture(hex.productionFactor, textures), columnData.x, y);
                 state.addChild(productionImage);
             }
             y += cellHeight;
         }
+    }
+}
+
+function setupPlacementUI(state, layoutColumnData, textures, startX, startY) {
+    for (var columnDataKey in layoutColumnData) {
     }
 }
 
