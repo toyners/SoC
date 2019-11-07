@@ -68,24 +68,34 @@ function displayBoard(state, layoutColumnData, hexData, textures) {
     }
 }
 
-function setupPlacementUI(state, layoutColumnData, textures, clickedHandler, hoverStartHandler, hoverEndHandler) {
+function setupPlacementUI(state, layoutSettlementData, textures, clickedHandler, hoverStartHandler, hoverEndHandler) {
+    var halfSettlementIconWidth = 11;
+    var halfSettlementIconHeight = 11;
+    var cellIndent = 20;
     var result = new SettlementPlacementUI();
-    for (var columnDataKey in layoutColumnData) {
+    for (var settlementDataKey in layoutSettlementData) {
+        var settlementData = layoutSettlementData[settlementDataKey];
+        var x = settlementData.x - halfSettlementIconWidth;
+        var y = settlementData.y - halfSettlementIconHeight;
+        var total = (settlementData.count * 2) + 1;
+        for (var count = 1; count <= total; count++) {
+            var actualX = x + (count % 2 != 0 ? cellIndent : 0);
+            var settlementIcon = new Kiwi.GameObjects.Sprite(state, textures.settlementicon, actualX, y);
+            settlementIcon.input.onUp.add(clickedHandler, state);
+            settlementIcon.input.onEntered.add(hoverStartHandler, state);
+            state.addChild(settlementIcon);
+
+            var settlementHoverIcon = new Kiwi.GameObjects.Sprite(state, textures.redsettlementhover, actualX, y);
+            settlementHoverIcon.input.onLeft.add(hoverEndHandler, state);
+            settlementHoverIcon.visible = false;
+            state.addChild(settlementHoverIcon);
+
+            result.addSettlementPlacement(settlementIcon, settlementHoverIcon);
+
+            y += halfCellHeight;
+
+        }
     }
-
-    var halfHouseIconWidth = 12;
-    var halfHouseIconHeight = 12;
-    var settlementIcon = new Kiwi.GameObjects.Sprite(state, textures.settlementicon, startX - halfHouseIconWidth, startY + halfCellHeight - halfHouseIconHeight);
-    settlementIcon.input.onUp.add(clickedHandler, state);
-    settlementIcon.input.onEntered.add(hoverStartHandler, state);
-    state.addChild(settlementIcon);
-
-    var settlementHoverIcon = new Kiwi.GameObjects.Sprite(state, textures.redsettlementhover, startX - halfHouseIconWidth, startY + halfCellHeight - halfHouseIconHeight);
-    settlementHoverIcon.input.onLeft.add(hoverEndHandler, state);
-    settlementHoverIcon.visible = false;
-    state.addChild(settlementHoverIcon);
-
-    result.addSettlementPlacement(settlementIcon, settlementHoverIcon);
 
     return result;
 }
@@ -113,7 +123,15 @@ function create() {
     this.currentPlayerMarker.animation.add('main', [3, 2, 1], 0.15, true, false);
     this.addChild(this.currentPlayerMarker);
 
-    this.settlementPlacementUI = setupPlacementUI(this, layoutColumnData, this.textures, this.settlementIconClicked, this.settlementIconHoverStart, this.settlementIconHoverEnd)
+    var layoutSettlementData = [
+        { x: startX - (2 * cellFragmentWidth), y: startY - cellHeight, count: 3 },
+        { x: startX - cellFragmentWidth, y: startY - halfCellHeight - cellHeight, count: 4 },
+        { x: startX, y: startY - (2 * cellHeight), count: 5 },
+        { x: startX, y: startY - (2 * cellHeight), count: 5 },
+        { x: startX + cellFragmentWidth, y: startY - halfCellHeight - cellHeight, count: 4 },
+        { x: startX + (2 * cellFragmentWidth), y: startY - cellHeight, count: 3 },
+    ];
+    this.settlementPlacementUI = setupPlacementUI(this, layoutSettlementData, this.textures, this.settlementIconClicked, this.settlementIconHoverStart, this.settlementIconHoverEnd)
 
     this.players = [];
     var player = new PlayerUI(playerNamesInOrder[0]);
