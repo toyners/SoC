@@ -44,8 +44,9 @@ function getProductionFactorTexture(productionFactor, textures) {
 }
 
 var cellHeight = 90;
+var cellWidth = 90;
 var halfCellHeight = Math.trunc(cellHeight / 2);
-var halfCellWidth = halfCellHeight;
+var halfCellWidth = Math.trunc(cellWidth / 2);
 var cellFragmentWidth = 68;
 
 function displayBoard(state, layoutColumnData, hexData, textures) {
@@ -79,7 +80,7 @@ function setupPlacementUI(state, layoutSettlementData, textures, clickedHandler,
         var y = settlementData.y - halfSettlementIconHeight;
         var total = (settlementData.count * 2) + 1;
         for (var count = 1; count <= total; count++) {
-            var actualX = x + (count % 2 != 0 ? cellIndent : 0);
+            var actualX = x + (count % 2 != 0 ? (settlementData.nudge * cellIndent) : 0);
             var settlementIcon = new Kiwi.GameObjects.Sprite(state, textures.settlementicon, actualX, y);
             settlementIcon.input.onUp.add(clickedHandler, state);
             settlementIcon.input.onEntered.add(hoverStartHandler, state);
@@ -120,16 +121,16 @@ function create() {
 
     this.currentPlayerMarker = new Kiwi.GameObjects.Sprite(this, this.textures.playermarker, 90, 5);
     this.currentPlayerMarker.visible = false;
-    this.currentPlayerMarker.animation.add('main', [3, 2, 1], 0.15, true, false);
+    this.currentPlayerMarker.animation.add('main', [2, 1, 0], 0.15, true, false);
     this.addChild(this.currentPlayerMarker);
 
     var layoutSettlementData = [
-        { x: startX - (2 * cellFragmentWidth), y: startY - cellHeight, count: 3 },
-        { x: startX - cellFragmentWidth, y: startY - halfCellHeight - cellHeight, count: 4 },
-        { x: startX, y: startY - (2 * cellHeight), count: 5 },
-        { x: startX, y: startY - (2 * cellHeight), count: 5 },
-        { x: startX + cellFragmentWidth, y: startY - halfCellHeight - cellHeight, count: 4 },
-        { x: startX + (2 * cellFragmentWidth), y: startY - cellHeight, count: 3 },
+        { x: startX - (2 * cellFragmentWidth), y: startY - cellHeight, count: 3, nudge: 1 },
+        { x: startX - cellFragmentWidth, y: startY - halfCellHeight - cellHeight, count: 4, nudge: 1 },
+        { x: startX, y: startY - (2 * cellHeight), count: 5, nudge: 1 },
+        { x: startX + cellWidth, y: startY - (2 * cellHeight), count: 5, nudge: -1 },
+        { x: startX + cellWidth + cellFragmentWidth, y: startY - halfCellHeight - cellHeight, count: 4, nudge: -1 },
+        { x: startX + cellWidth + (2 * cellFragmentWidth), y: startY - cellHeight, count: 3, nudge: -1 },
     ];
     this.settlementPlacementUI = setupPlacementUI(this, layoutSettlementData, this.textures, this.settlementIconClicked, this.settlementIconHoverStart, this.settlementIconHoverEnd)
 
