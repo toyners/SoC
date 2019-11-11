@@ -69,6 +69,28 @@ function displayBoard(state, layoutColumnData, hexData, textures) {
     }
 }
 
+function getRoadTexture(index, textures) {
+    switch (index) {
+        case 0: return textures.roadhorizontalicon;
+        case 1: return textures.three;
+        case 2: return textures.four;
+    }
+}
+
+function setupInitialRoadPlacementUI(state, roadPlacementData, textures) {
+    var result = new InitialRoadPlacementUI();
+    for (var roadPlacementKey in roadPlacementData) {
+        var placementDataList = roadPlacementData[roadPlacementKey];
+        for (var index = 0; index < placementDataList.length; index++) {
+            var placementData = placementDataList[index];
+            var roadIcon = new Kiwi.GameObjects.Sprite(state, getRoadTexture(placementData.imageIndex, textures), placementData.x, placementData.y);
+            state.addChild(roadIcon);
+        }
+    }
+
+    return result;
+}
+
 function setupPlacementUI(state, layoutSettlementData, textures, clickedHandler, hoverStartHandler, hoverEndHandler) {
     var halfSettlementIconWidth = 11;
     var halfSettlementIconHeight = 11;
@@ -123,6 +145,12 @@ function create() {
     this.currentPlayerMarker.visible = false;
     this.currentPlayerMarker.animation.add('main', [2, 1, 0], 0.15, true, false);
     this.addChild(this.currentPlayerMarker);
+
+    var roadPlacementData = [
+        [{ x: startX - (2 * cellFragmentWidth) + halfCellWidth - 14, y: startY - cellHeight, imageIndex: 0 }]
+    ];
+
+    this.initialRoadPlacementUI = setupInitialRoadPlacementUI(this, roadPlacementData, this.textures);
 
     var layoutSettlementData = [
         { x: startX - (2 * cellFragmentWidth), y: startY - cellHeight, count: 3, nudge: 1 },

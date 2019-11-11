@@ -9,7 +9,7 @@ class InitialRoadPlacementUI {
 
     }
 
-    displayRoadsForLocation {
+    displayRoadsForLocation() {
 
     }
 }
