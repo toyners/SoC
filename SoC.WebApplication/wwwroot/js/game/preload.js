@@ -23,6 +23,7 @@ function preload() {
     this.addImage('redsettlementhover', '../../../images/redsettlementhover.png');
     this.addImage('settlementicon', '../../../images/settlementicon.png');
     this.addImage('roadhorizontalicon', '../../../images/roadhorizontalicon.png')
+    this.addImage('roadhorizontaliconhover', '../../../images/roadhorizontalicon_redhover.png')
 
     this.addSpriteSheet('playermarker', '../../../images/currentplayermarker.png', 50, 45);
 }
