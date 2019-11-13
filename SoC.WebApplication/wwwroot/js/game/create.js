@@ -77,7 +77,7 @@ function getRoadTexture(index, textures) {
     }
 }
 
-function setupInitialRoadPlacementUI(state, roadPlacementData, textures) {
+function setupInitialRoadPlacementUI(state, roadPlacementData, textures, clickedHandler, hoverStartHandler, hoverEndHandler) {
     var result = new InitialRoadPlacementUI();
     for (var roadPlacementKey in roadPlacementData) {
         var placementData = roadPlacementData[roadPlacementKey];
@@ -87,11 +87,14 @@ function setupInitialRoadPlacementUI(state, roadPlacementData, textures) {
         var roadHoverImage = getRoadTexture(placementData.imageIndex + 1, textures)
         for (var index = 0; index < placementData.count; index++) {
             var roadIcon = new Kiwi.GameObjects.Sprite(state, roadImage, x, y);
+            roadIcon.input.onUp.add(clickedHandler, state);
+            roadIcon.input.onEntered.add(hoverStartHandler, state);
             roadIcon.visible = false;
             state.addChild(roadIcon);
 
             var roadHoverIcon = new Kiwi.GameObjects.Sprite(state, roadHoverImage, x, y);
             roadHoverIcon.visible = false;
+            roadHoverIcon.input.onLeft.add(hoverEndHandler, state);
             state.addChild(roadHoverIcon);
 
             y += placementData.deltaY;
