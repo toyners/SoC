@@ -37,6 +37,6 @@ function getRoadPlacementData(originX, originY) {
     var halfRoadWidth = 14;
     var halfRoadHeight = 5;
     return [
-        { x: startX - (2 * cellFragmentWidth) + halfCellWidth - halfRoadWidth, y: startY - cellHeight, imageIndex: 0, count: 4, deltaY: cellHeight - halfRoadHeight }
+        { x: startX - (2 * threeQuarterTileWidth) + halfTileWidth - halfRoadWidth, y: startY - tileHeight, imageIndex: 0, count: 4, deltaY: tileHeight - halfRoadHeight }
     ];
 }
