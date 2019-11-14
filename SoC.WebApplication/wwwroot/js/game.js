@@ -29,8 +29,6 @@ function startGame() {
     var backgroundWidth = 800;
     var backgroundHeight = 600;
 
-    state.settlementPlacementUI = new SettlementPlacementUI();
-
     state.create = create;
 
     state.settlementIconClicked = function (context, params) {
