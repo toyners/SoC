@@ -51,9 +51,9 @@ var cellFragmentWidth = 68;
 
 function displayBoard(state, layoutColumnData, hexData, textures) {
     var index = 0;
- 
-    for (var columnDataKey in layoutColumnData) {
-        var columnData = layoutColumnData[columnDataKey];
+
+    for (var index = 0; index < layoutColumnData.data.length; index++) {
+        var columnData = layoutColumnData.data[index];
         var y = columnData.y;
         var count = columnData.count;
         while (count-- > 0) {
@@ -64,7 +64,7 @@ function displayBoard(state, layoutColumnData, hexData, textures) {
                 var productionImage = new Kiwi.GameObjects.StaticImage(state, getProductionFactorTexture(hex.productionFactor, textures), columnData.x, y);
                 state.addChild(productionImage);
             }
-            y += cellHeight;
+            y += layoutColumnData.deltaY;
         }
     }
 }
@@ -87,14 +87,14 @@ function setupInitialRoadPlacementUI(state, roadPlacementData, textures, clicked
         var roadHoverImage = getRoadTexture(placementData.imageIndex + 1, textures)
         for (var index = 0; index < placementData.count; index++) {
             var roadIcon = new Kiwi.GameObjects.Sprite(state, roadImage, x, y);
-            roadIcon.input.onUp.add(clickedHandler, state);
-            roadIcon.input.onEntered.add(hoverStartHandler, state);
             roadIcon.visible = false;
+            //roadIcon.input.onUp.add(clickedHandler, state);
+            //roadIcon.input.onEntered.add(hoverStartHandler, state);
             state.addChild(roadIcon);
 
             var roadHoverIcon = new Kiwi.GameObjects.Sprite(state, roadHoverImage, x, y);
             roadHoverIcon.visible = false;
-            roadHoverIcon.input.onLeft.add(hoverEndHandler, state);
+            //roadHoverIcon.input.onLeft.add(hoverEndHandler, state);
             state.addChild(roadHoverIcon);
 
             y += placementData.deltaY;

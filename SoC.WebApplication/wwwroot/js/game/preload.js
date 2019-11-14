@@ -19,9 +19,9 @@ function preload() {
     this.addImage('ten', '../../../images/productionfactors/10.png');
     this.addImage('eleven', '../../../images/productionfactors/11.png');
     this.addImage('twelve', '../../../images/productionfactors/12.png');
-    this.addImage('redsettlement', '../../../images/redsettlement.png');
-    this.addImage('redsettlementhover', '../../../images/redsettlementhover.png');
-    this.addImage('settlementicon', '../../../images/settlementicon.png');
+    this.addImage('redsettlement', '../../../images/settlement/redsettlement.png');
+    this.addImage('redsettlementhover', '../../../images/settlement/redsettlementhover.png');
+    this.addImage('settlementicon', '../../../images/settlement/settlementicon.png');
     this.addImage('roadhorizontalicon', '../../../images/roadhorizontalicon.png')
     this.addImage('roadhorizontaliconhover', '../../../images/roadhorizontalicon_redhover.png')
 
