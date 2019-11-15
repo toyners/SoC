@@ -98,11 +98,12 @@ function setupInitialRoadPlacementUI(state, roadPlacementData, textures, clicked
     return result;
 }
 
-function setupPlacementUI(state, layoutSettlementData, textures, clickedHandler, hoverStartHandler, hoverEndHandler) {
+function setupPlacementUI(state, textures, layoutSettlementData, roadPlacementData, clickedHandler, hoverStartHandler, hoverEndHandler) {
     var halfSettlementIconWidth = 11;
     var halfSettlementIconHeight = 11;
     var cellIndent = 20;
-    var result = new SettlementPlacementUI();
+    var settlementPlacementUI = new SettlementPlacementUI();
+    var roadPlacementUI = new InitialRoadPlacementUI();
     for (var index = 0; index < layoutSettlementData.data.length; index++) {
         var settlementData = layoutSettlementData.data[index];
         var x = settlementData.x - halfSettlementIconWidth;
@@ -120,13 +121,13 @@ function setupPlacementUI(state, layoutSettlementData, textures, clickedHandler,
             settlementHoverIcon.visible = false;
             state.addChild(settlementHoverIcon);
 
-            result.addSettlementPlacement(settlementIcon, settlementHoverIcon);
+            settlementPlacementUI.addSettlementPlacement(settlementIcon, settlementHoverIcon);
 
             y += layoutSettlementData.deltaY;
         }
     }
 
-    return result;
+    return [settlementPlacementUI, roadPlacementUI];
 }
 
 function create() {
@@ -142,7 +143,11 @@ function create() {
 
     this.initialRoadPlacementUI = setupInitialRoadPlacementUI(this, getRoadPlacementData(originX, originY), this.textures);
 
-    this.settlementPlacementUI = setupPlacementUI(this, getSettlementPlacementData(originX, originY), this.textures, this.settlementIconClicked, this.settlementIconHoverStart, this.settlementIconHoverEnd)
+    var placementUIs = setupPlacementUI(this, this.textures,
+        getSettlementPlacementData(originX, originY), getRoadPlacementData(originX, originY),
+        this.settlementIconClicked, this.settlementIconHoverStart, this.settlementIconHoverEnd);
+    this.settlementPlacementUI = placementUIs[0];
+    this.initialRoadPlacementUI = placementUIs[1];
 
     this.currentPlayerMarker = new Kiwi.GameObjects.Sprite(this, this.textures.playermarker, 90, 5);
     this.currentPlayerMarker.visible = false;

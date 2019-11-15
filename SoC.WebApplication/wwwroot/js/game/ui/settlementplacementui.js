@@ -29,6 +29,8 @@ class SettlementPlacementUI {
         this.locked = true;
     }
 
+    settlementSelected() { return this.locked; }
+
     toggleSettlementSprite(spriteId) {
         if (this.locked)
             return;
