@@ -9,17 +9,18 @@ var threeQuarterTileWidth = 68;
 function getTilePlacementData(originX, originY) {
     var startX = originX - halfTileWidth;
     var startY = originY - halfTileHeight;
-    var result = {
+    //var result = {
+    return {
         deltaY: tileHeight,
         data: [
-            { x: startX - (2 * threeQuarterTileWidth), y: startY - halfTileHeight, count: 3 },
-            { x: startX - threeQuarterTileWidth, y: startY - halfTileHeight - halfTileHeight, count: 4 },
-            { x: startX, y: startY - (2 * halfTileHeight), count: 5 },
-            { x: startX + threeQuarterTileWidth, y: startY - halfTileHeight - halfTileHeight, count: 4 },
-            { x: startX + (2 * threeQuarterTileWidth), y: startY - halfTileHeight, count: 3 }
+            { x: startX - (2 * threeQuarterTileWidth), y: startY - tileHeight, count: 3 },
+            { x: startX - threeQuarterTileWidth, y: startY - halfTileHeight - tileHeight, count: 4 },
+            { x: startX, y: startY - (2 * tileHeight), count: 5 },
+            { x: startX + threeQuarterTileWidth, y: startY - halfTileHeight - tileHeight, count: 4 },
+            { x: startX + (2 * threeQuarterTileWidth), y: startY - tileHeight, count: 3 }
         ]
     };
-    return result;
+    //return result;
 }
 
 function getSettlementPlacementData(originX, originY) {

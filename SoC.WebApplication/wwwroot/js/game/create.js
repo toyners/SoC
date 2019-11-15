@@ -50,14 +50,14 @@ var halfCellWidth = Math.trunc(cellWidth / 2);
 var cellFragmentWidth = 68;
 
 function displayBoard(state, layoutColumnData, hexData, textures) {
-    var index = 0;
+    var hexindex = 0;
 
     for (var index = 0; index < layoutColumnData.data.length; index++) {
         var columnData = layoutColumnData.data[index];
         var y = columnData.y;
         var count = columnData.count;
         while (count-- > 0) {
-            var hex = hexData[index++];
+            var hex = hexData[hexindex++];
             var hexImage = new Kiwi.GameObjects.StaticImage(state, getResourceTexture(hex.resourceType, textures), columnData.x, y);
             state.addChild(hexImage);
             if (hex.productionFactor != 0) {
