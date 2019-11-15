@@ -9,7 +9,6 @@ var threeQuarterTileWidth = 68;
 function getTilePlacementData(originX, originY) {
     var startX = originX - halfTileWidth;
     var startY = originY - halfTileHeight;
-    //var result = {
     return {
         deltaY: tileHeight,
         data: [
@@ -20,20 +19,22 @@ function getTilePlacementData(originX, originY) {
             { x: startX + (2 * threeQuarterTileWidth), y: startY - tileHeight, count: 3 }
         ]
     };
-    //return result;
 }
 
 function getSettlementPlacementData(originX, originY) {
     var startX = originX - halfTileWidth;
     var startY = originY - halfTileHeight;
-    return [
-        { x: startX - (2 * threeQuarterTileWidth), y: startY - tileHeight, count: 3, nudge: 1 },
-        { x: startX - threeQuarterTileWidth, y: startY - halfTileHeight - tileHeight, count: 4, nudge: 1 },
-        { x: startX, y: startY - (2 * tileHeight), count: 5, nudge: 1 },
-        { x: startX + tileWidth, y: startY - (2 * tileHeight), count: 5, nudge: -1 },
-        { x: startX + tileWidth + threeQuarterTileWidth, y: startY - halfTileHeight - tileHeight, count: 4, nudge: -1 },
-        { x: startX + tileWidth + (2 * threeQuarterTileWidth), y: startY - tileHeight, count: 3, nudge: -1 },
-    ];
+    return {
+        deltaY: halfTileHeight,
+        data: [
+            { x: startX - (2 * threeQuarterTileWidth), y: startY - tileHeight, count: 3, nudge: 1 },
+            { x: startX - threeQuarterTileWidth, y: startY - halfTileHeight - tileHeight, count: 4, nudge: 1 },
+            { x: startX, y: startY - (2 * tileHeight), count: 5, nudge: 1 },
+            { x: startX + tileWidth, y: startY - (2 * tileHeight), count: 5, nudge: -1 },
+            { x: startX + tileWidth + threeQuarterTileWidth, y: startY - halfTileHeight - tileHeight, count: 4, nudge: -1 },
+            { x: startX + tileWidth + (2 * threeQuarterTileWidth), y: startY - tileHeight, count: 3, nudge: -1 }
+        ]
+    };
 }
 
 function getRoadPlacementData(originX, originY) {
@@ -42,6 +43,7 @@ function getRoadPlacementData(originX, originY) {
     var halfRoadWidth = 14;
     var halfRoadHeight = 5;
     return [
-        { x: startX - (2 * threeQuarterTileWidth) + halfTileWidth - halfRoadWidth, y: startY - tileHeight, imageIndex: 0, count: 4, deltaY: tileHeight - halfRoadHeight }
+        { x: startX - (2 * threeQuarterTileWidth) + halfTileWidth - halfRoadWidth, y: startY - tileHeight, imageIndex: 0, count: 4, deltaY: tileHeight - halfRoadHeight },
+        { x: startX - (2 * threeQuarterTileWidth) + halfTileWidth, y: startY - tileHeight, imageIndex: 2, count: 3, deltaY: tileHeight }
     ];
 }

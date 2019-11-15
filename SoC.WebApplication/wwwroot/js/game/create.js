@@ -43,12 +43,6 @@ function getProductionFactorTexture(productionFactor, textures) {
     }
 }
 
-var cellHeight = 90;
-var cellWidth = 90;
-var halfCellHeight = Math.trunc(cellHeight / 2);
-var halfCellWidth = Math.trunc(cellWidth / 2);
-var cellFragmentWidth = 68;
-
 function displayBoard(state, layoutColumnData, hexData, textures) {
     var hexindex = 0;
 
@@ -73,7 +67,7 @@ function getRoadTexture(index, textures) {
     switch (index) {
         case 0: return textures.roadhorizontalicon;
         case 1: return textures.roadhorizontaliconhover;
-        case 2: return textures.four;
+        case 2: return textures.roadupperlefticon;
     }
 }
 
@@ -109,8 +103,8 @@ function setupPlacementUI(state, layoutSettlementData, textures, clickedHandler,
     var halfSettlementIconHeight = 11;
     var cellIndent = 20;
     var result = new SettlementPlacementUI();
-    for (var settlementDataKey in layoutSettlementData) {
-        var settlementData = layoutSettlementData[settlementDataKey];
+    for (var index = 0; index < layoutSettlementData.data.length; index++) {
+        var settlementData = layoutSettlementData.data[index];
         var x = settlementData.x - halfSettlementIconWidth;
         var y = settlementData.y - halfSettlementIconHeight;
         var total = (settlementData.count * 2) + 1;
@@ -128,7 +122,7 @@ function setupPlacementUI(state, layoutSettlementData, textures, clickedHandler,
 
             result.addSettlementPlacement(settlementIcon, settlementHoverIcon);
 
-            y += halfCellHeight;
+            y += layoutSettlementData.deltaY;
         }
     }
 
