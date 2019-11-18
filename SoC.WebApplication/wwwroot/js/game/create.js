@@ -98,14 +98,14 @@ function setupInitialRoadPlacementUI(state, roadPlacementData, textures, clicked
     return result;
 }
 
-function setupPlacementUI(state, textures, layoutSettlementData, roadPlacementData, clickedHandler, hoverStartHandler, hoverEndHandler) {
+function setupPlacementUI(state, textures, settlementPlacementData, roadPlacementData, clickedHandler, hoverStartHandler, hoverEndHandler) {
     var halfSettlementIconWidth = 11;
     var halfSettlementIconHeight = 11;
     var cellIndent = 20;
     var settlementPlacementUI = new SettlementPlacementUI();
-    var roadPlacementUI = new InitialRoadPlacementUI();
-    for (var index = 0; index < layoutSettlementData.data.length; index++) {
-        var settlementData = layoutSettlementData.data[index];
+    var spriteIds = [];
+    for (var index = 0; index < settlementPlacementData.data.length; index++) {
+        var settlementData = settlementPlacementData.data[index];
         var x = settlementData.x - halfSettlementIconWidth;
         var y = settlementData.y - halfSettlementIconHeight;
         var total = (settlementData.count * 2) + 1;
@@ -122,11 +122,40 @@ function setupPlacementUI(state, textures, layoutSettlementData, roadPlacementDa
             state.addChild(settlementHoverIcon);
 
             settlementPlacementUI.addSettlementPlacement(settlementIcon, settlementHoverIcon);
-            roadPlacementUI.addRoadPlacement(settlementIcon.id, []);
+            spriteIds.push(settlementIcon.id);
 
-            y += layoutSettlementData.deltaY;
+            y += settlementPlacementData.deltaY;
         }
     }
+
+    var roadPlacementUI = new InitialRoadPlacementUI();
+    for (var index = 0; index < roadPlacementData.length; index++) {
+        var roadData = roadPlacementData[index];
+        var x = roadData.x;
+        var y = roadData.y;
+        var roadImage = getRoadTexture(placementData.imageIndex, textures)
+        var roadHoverImage = getRoadTexture(placementData.imageIndex + 1, textures)
+        var locations = roadData.locations;
+        var locationIndex = 0;
+        for (var index = 0; index < roadData.count; index++) {
+            var roadIcon = new Kiwi.GameObjects.Sprite(state, roadImage, x, y);
+            //roadIcon.visible = false;
+            //roadIcon.input.onUp.add(clickedHandler, state);
+            //roadIcon.input.onEntered.add(hoverStartHandler, state);
+            state.addChild(roadIcon);
+
+            roadPlacementUI.addRoadPlacement(spriteIds[locations[locationIndex++]], roadIcon);
+            roadPlacementUI.addRoadPlacement(spriteIds[locations[locationIndex++]], roadIcon);
+
+            var roadHoverIcon = new Kiwi.GameObjects.Sprite(state, roadHoverImage, x, y);
+            roadHoverIcon.visible = false;
+            //roadHoverIcon.input.onLeft.add(hoverEndHandler, state);
+            state.addChild(roadHoverIcon);
+
+            y += placementData.deltaY;
+        }
+    }
+
 
     return [settlementPlacementUI, roadPlacementUI];
 }

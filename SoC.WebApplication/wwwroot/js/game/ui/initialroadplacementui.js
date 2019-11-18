@@ -5,8 +5,13 @@ class InitialRoadPlacementUI {
         this.roadsBySettlementId = {};
     }
 
-    addRoadPlacement(spriteId, roadIcons) {
-        this.roadsBySettlementId[spriteId, roadIcons];
+    addRoadPlacement(spriteId, roadIcon) {
+        var roadIcons = this.roadsBySettlementId[spriteId];
+        if (!roadIcons) {
+            roadIcons = [];
+            this.roadsBySettlementId[spriteId] = roadIcons;
+        }
+        roadIcons.push(roadIcon);
     }
 
     clearRoad() {
