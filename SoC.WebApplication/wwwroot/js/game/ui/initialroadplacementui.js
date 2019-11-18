@@ -2,11 +2,11 @@
 
 class InitialRoadPlacementUI {
     constructor() {
-
+        this.roadsBySettlementId = {};
     }
 
-    addRoadPlacement() {
-
+    addRoadPlacement(spriteId, roadIcons) {
+        this.roadsBySettlementId[spriteId, roadIcons];
     }
 
     clearRoad() {
@@ -25,11 +25,10 @@ class InitialRoadPlacementUI {
         this.locked = true;*/
     }
 
-    showRoads(spriteId) {
-
-    }
-
-    toggleRoadSprite(spriteId) {
+    toggleRoadSprites(spriteId) {
+        for (road of this.roadsBySettlementId[spriteId]) {
+            road.visible = true;
+        }
         /*if (this.locked)
             return;
         var settlementPlacement = this.settlementPlacements[spriteId];

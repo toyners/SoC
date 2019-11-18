@@ -122,6 +122,7 @@ function setupPlacementUI(state, textures, layoutSettlementData, roadPlacementDa
             state.addChild(settlementHoverIcon);
 
             settlementPlacementUI.addSettlementPlacement(settlementIcon, settlementHoverIcon);
+            roadPlacementUI.addRoadPlacement(settlementIcon.id, []);
 
             y += layoutSettlementData.deltaY;
         }

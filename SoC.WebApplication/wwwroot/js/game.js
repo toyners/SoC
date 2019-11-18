@@ -32,7 +32,8 @@ function startGame() {
     state.create = create;
 
     state.settlementIconClicked = function (context, params) {
-        this.settlementPlacementUI.selectSettlement()
+        this.settlementPlacementUI.selectSettlement();
+        this.initialRoadPlacementUI.toggleRoadSprites(context.id);
     };
 
     state.settlementIconHoverStart = function (context, params) {
