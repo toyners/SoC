@@ -86,7 +86,7 @@ connection.start().then(function () {
     return console.error(err.toString());
 });
 
-document.getElementById("createGameRequest").addEventListener("click", function (event) {
+function createGame() {
     // TODO: Validation of inputs
     var userNameInput = document.getElementById("userName");
     var gameNameInput = document.getElementById("gameName");
@@ -114,7 +114,14 @@ document.getElementById("createGameRequest").addEventListener("click", function 
     connection.invoke("CreateGameSession", request).catch(function (err) {
         return console.error(err.toString());
     });
+}
 
+Mousetrap.bind('ctrl+c', function (e) {
+    createGame();
+});
+
+document.getElementById("createGameRequest").addEventListener("click", function (event) {
+    createGame();
     event.preventDefault();
 });
 
