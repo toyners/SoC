@@ -41,7 +41,7 @@ function getRoadPlacementData(originX, originY) {
     var startX = originX - halfTileWidth;
     var startY = originY - halfTileHeight;
     var halfRoadWidth = 14;
-    var halfRoadHeight = 5;
+    var halfRoadHeight = 4;
     return [
         {
             x: startX - (2 * threeQuarterTileWidth) + halfTileWidth - halfRoadWidth,
@@ -53,7 +53,7 @@ function getRoadPlacementData(originX, originY) {
         },
         // Upper left icons
         {
-            x: startX - (2 * threeQuarterTileWidth) + halfTileWidth,
+            x: startX - (2 * threeQuarterTileWidth) + halfTileWidth - (2 * halfRoadWidth),
             y: startY - tileHeight,
             imageIndex: 2,
             count: 3,
