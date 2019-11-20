@@ -31,7 +31,7 @@ class InitialRoadPlacementUI {
     }
 
     toggleRoadSprites(spriteId) {
-        for (road of this.roadsBySettlementId[spriteId]) {
+        for (var road of this.roadsBySettlementId[spriteId]) {
             road.visible = true;
         }
         /*if (this.locked)

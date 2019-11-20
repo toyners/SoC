@@ -115,7 +115,7 @@ function setupPlacementUI(state, textures, settlementPlacementData, roadPlacemen
         var count = roadData.count;
         while (count-- > 0) {
             var roadIcon = new Kiwi.GameObjects.Sprite(state, roadImage, x, y);
-            //roadIcon.visible = false;
+            roadIcon.visible = false;
             //roadIcon.input.onUp.add(clickedHandler, state);
             //roadIcon.input.onEntered.add(hoverStartHandler, state);
             icons.push(roadIcon);
