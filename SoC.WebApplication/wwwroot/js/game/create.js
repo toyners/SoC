@@ -115,6 +115,7 @@ function setupPlacementUI(state, textures, settlementPlacementData, roadPlacemen
         var count = roadData.count;
         while (count-- > 0) {
             var roadIcon = new Kiwi.GameObjects.Sprite(state, roadImage, x, y);
+            roadIcon.rotation -= roadData.rotation;
             roadIcon.visible = false;
             //roadIcon.input.onUp.add(clickedHandler, state);
             //roadIcon.input.onEntered.add(hoverStartHandler, state);
@@ -124,6 +125,7 @@ function setupPlacementUI(state, textures, settlementPlacementData, roadPlacemen
             roadPlacementUI.addRoadPlacement(spriteIds[locations[locationIndex++]], roadIcon);
 
             var roadHoverIcon = new Kiwi.GameObjects.Sprite(state, roadHoverImage, x, y);
+            roadHoverIcon.rotation -= roadData.rotation;
             roadHoverIcon.visible = false;
             //roadHoverIcon.input.onLeft.add(hoverEndHandler, state);
             icons.push(roadHoverIcon);
