@@ -2,16 +2,23 @@
 
 class InitialRoadPlacementUI {
     constructor() {
+        this.roadsBySpriteId = {}; 
         this.roadsBySettlementId = {};
     }
 
-    addRoadPlacement(spriteId, roadIcon) {
-        var roadIcons = this.roadsBySettlementId[spriteId];
-        if (!roadIcons) {
-            roadIcons = [];
-            this.roadsBySettlementId[spriteId] = roadIcons;
+    addRoadPlacement(roadSprite, roadHoverSprite) {
+        var road = { default: roadSprite, hover: roadHoverSprite };
+        this.roadsBySpriteId[roadSprite.id] = road;
+        this.roadsBySpriteId[roadHoverSprite.id] = road;
+    }
+
+    addRoadPlacement(roadSprite, settlementSpriteId) {
+        var roadSprites = this.roadsBySettlementId[settlementSpriteId];
+        if (!roadSprites) {
+            roadSprites = [];
+            this.roadsBySettlementId[settlementSpriteId] = roadSprites;
         }
-        roadIcons.push(roadIcon);
+        roadSprites.push(roadSprite);
     }
 
     clearRoad() {
@@ -30,7 +37,7 @@ class InitialRoadPlacementUI {
         this.locked = true;*/
     }
 
-    toggleRoadSprites(spriteId) {
+    showRoadSprites(spriteId) {
         for (var road of this.roadsBySettlementId[spriteId]) {
             road.visible = true;
         }
@@ -44,5 +51,9 @@ class InitialRoadPlacementUI {
             settlementPlacement.icon.visible = true;
             settlementPlacement.hover.visible = false;
         }*/
+    }
+
+    toggle(spriteId) {
+
     }
 }

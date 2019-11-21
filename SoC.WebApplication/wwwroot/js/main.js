@@ -31,17 +31,23 @@ function startGame() {
 
     state.create = create;
 
-    state.settlementIconClicked = function (context, params) {
+    state.iconClicked = function (context, params) {
         this.settlementPlacementUI.selectSettlement();
-        this.initialRoadPlacementUI.toggleRoadSprites(context.id);
+        this.initialRoadPlacementUI.showRoadSprites(context.id);
     };
 
-    state.settlementIconHoverStart = function (context, params) {
-        this.settlementPlacementUI.toggleSettlementSprite(context.id);
+    state.iconHoverStart = function (context, params) {
+        if (context.hasTag('settlement'))
+            this.settlementPlacementUI.toggleSettlementSprite(context.id);
+        else
+            this.initialRoadPlacementUI.toggleRoadSprites(context.id);
     }
 
-    state.settlementIconHoverEnd = function (context, params) {
-        this.settlementPlacementUI.toggleSettlementSprite(context.id);
+    state.iconHoverEnd = function (context, params) {
+        if (context.hasTag('settlement')) 
+            this.settlementPlacementUI.toggleSettlementSprite(context.id);
+        else
+            this.initialRoadPlacementUI.toggleRoadSprites(context.id);
     }
 
     state.update = function () {
