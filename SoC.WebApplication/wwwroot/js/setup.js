@@ -81,7 +81,7 @@ connection.on("GameLaunched", function (response) {
 });
 
 connection.start().then(function () {
-    //document.getElementById("joinGameRequest").disabled = false;
+    createGame();
 }).catch(function (err) {
     return console.error(err.toString());
 });
