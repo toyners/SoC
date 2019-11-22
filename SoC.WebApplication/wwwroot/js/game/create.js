@@ -78,7 +78,7 @@ function setupPlacementUI(state, textures, settlementPlacementData, roadPlacemen
     var cellIndent = 20;
     var settlementPlacementUI = new SettlementPlacementUI();
     var spriteIds = [];
-    var icons = [];
+    var sprites = [];
     for (var index = 0; index < settlementPlacementData.data.length; index++) {
         var settlementData = settlementPlacementData.data[index];
         var x = settlementData.x - halfSettlementIconWidth;
@@ -90,13 +90,13 @@ function setupPlacementUI(state, textures, settlementPlacementData, roadPlacemen
             settlementIcon.addTag('settlement');
             settlementIcon.input.onUp.add(clickedHandler, state);
             settlementIcon.input.onEntered.add(hoverStartHandler, state);
-            icons.push(settlementIcon);
+            sprites.push(settlementIcon);
 
             var settlementHoverIcon = new Kiwi.GameObjects.Sprite(state, textures.redsettlementhover, actualX, y);
             settlementHoverIcon.addTag('settlement');
             settlementHoverIcon.input.onLeft.add(hoverEndHandler, state);
             settlementHoverIcon.visible = false;
-            icons.push(settlementHoverIcon);
+            sprites.push(settlementHoverIcon);
 
             settlementPlacementUI.addSettlementPlacement(settlementIcon, settlementHoverIcon);
             spriteIds.push(settlementIcon.id);
@@ -122,24 +122,26 @@ function setupPlacementUI(state, textures, settlementPlacementData, roadPlacemen
             roadSprite.visible = false;
             roadSprite.input.onUp.add(clickedHandler, state);
             roadSprite.input.onEntered.add(hoverStartHandler, state);
-            icons.push(roadSprite);
+            sprites.push(roadSprite);
 
-            roadPlacementUI.addRoadPlacement(roadSprite, spriteIds[locations[locationIndex++]]);
-            roadPlacementUI.addRoadPlacement(roadSprite, spriteIds[locations[locationIndex++]]);
+            roadPlacementUI.addRoadForSettlement(roadSprite, spriteIds[locations[locationIndex++]]);
+            roadPlacementUI.addRoadForSettlement(roadSprite, spriteIds[locations[locationIndex++]]);
 
-            var roadHoverIcon = new Kiwi.GameObjects.Sprite(state, roadHoverImage, x, y);
-            roadHoverIcon.addTag('road');
-            roadHoverIcon.rotation -= roadData.rotation;
-            roadHoverIcon.visible = false;
-            roadHoverIcon.input.onLeft.add(hoverEndHandler, state);
-            icons.push(roadHoverIcon);
+            var roadHoverSprite = new Kiwi.GameObjects.Sprite(state, roadHoverImage, x, y);
+            roadHoverSprite.addTag('road');
+            roadHoverSprite.rotation -= roadData.rotation;
+            roadHoverSprite.visible = false;
+            roadHoverSprite.input.onLeft.add(hoverEndHandler, state);
+            sprites.push(roadHoverSprite);
+
+            roadPlacementUI.addRoadPlacement(roadSprite, roadHoverSprite);
 
             y += roadData.deltaY;
         }
     }
 
-    for (var i = icons.length - 1; i >= 0; i--)
-        state.addChild(icons[i]);
+    for (var i = sprites.length - 1; i >= 0; i--)
+        state.addChild(sprites[i]);
 
     return [settlementPlacementUI, roadPlacementUI];
 }

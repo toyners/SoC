@@ -4,6 +4,8 @@ class InitialRoadPlacementUI {
     constructor() {
         this.roadsBySpriteId = {}; 
         this.roadsBySettlementId = {};
+        this.settlementId = null;
+        this.roadSelected = false;
     }
 
     addRoadPlacement(roadSprite, roadHoverSprite) {
@@ -12,7 +14,7 @@ class InitialRoadPlacementUI {
         this.roadsBySpriteId[roadHoverSprite.id] = road;
     }
 
-    addRoadPlacement(roadSprite, settlementSpriteId) {
+    addRoadForSettlement(roadSprite, settlementSpriteId) {
         var roadSprites = this.roadsBySettlementId[settlementSpriteId];
         if (!roadSprites) {
             roadSprites = [];
@@ -22,38 +24,36 @@ class InitialRoadPlacementUI {
     }
 
     clearRoad() {
-        /*for (var id in this.settlementIconSpritesById) {
-            this.settlementIconSpritesById[id].visible = true;
+        for (var road of this.roadsBySettlementId[this.settlementId]) {
+            road.visible = true;
         }
 
-        this.locked = false;*/
+        this.roadSelected = false;
     }
 
     selectRoad() {
-        /*for (var id in this.settlementIconSpritesById) {
-            this.settlementIconSpritesById[id].visible = false;
+        for (var road of this.roadsBySettlementId[this.settlementId]) {
+            road.visible = false;
         }
 
-        this.locked = true;*/
+        this.roadSelected = true;
     }
 
     showRoadSprites(spriteId) {
         for (var road of this.roadsBySettlementId[spriteId]) {
             road.visible = true;
         }
-        /*if (this.locked)
-            return;
-        var settlementPlacement = this.settlementPlacements[spriteId];
-        if (spriteId === settlementPlacement.icon.id) {
-            settlementPlacement.icon.visible = false;
-            settlementPlacement.hover.visible = true;
-        } else {
-            settlementPlacement.icon.visible = true;
-            settlementPlacement.hover.visible = false;
-        }*/
+        this.settlementId = spriteId;
     }
 
     toggle(spriteId) {
-
+        var roadData = this.roadsBySpriteId[spriteId];
+        if (spriteId === roadData.default.id) {
+            //roadData.default.visible = false;
+            roadData.hover.visible = true;
+        } else {
+            //roadData.default.visible = true;
+            roadData.hover.visible = false;
+        }
     }
 }
