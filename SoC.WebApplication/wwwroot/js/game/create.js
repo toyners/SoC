@@ -65,7 +65,7 @@ function displayBoard(state, layoutColumnData, hexData, textures) {
 
 function getRoadTexture(index, textures) {
     switch (index) {
-        case 0: return textures.roadhorizontalicon;
+        case 0: return textures.road;
         case 1: return textures.roadhorizontaliconhover;
         case 2: return textures.roadupperlefticon;
         case 3: return textures.roadupperlefticon;
@@ -110,31 +110,23 @@ function setupPlacementUI(state, textures, settlementPlacementData, roadPlacemen
         var roadData = roadPlacementData[index];
         var x = roadData.x;
         var y = roadData.y;
-        var roadImage = getRoadTexture(roadData.imageIndex, textures)
-        var roadHoverImage = getRoadTexture(roadData.imageIndex + 1, textures)
         var locations = roadData.locations;
         var locationIndex = 0;
         var count = roadData.count;
         while (count-- > 0) {
-            var roadSprite = new Kiwi.GameObjects.Sprite(state, roadImage, x, y);
+            var roadSprite = new Kiwi.GameObjects.Sprite(state, textures.road, x, y);
             roadSprite.addTag('road');
             roadSprite.rotation -= roadData.rotation;
             roadSprite.visible = false;
             roadSprite.input.onUp.add(clickedHandler, state);
             roadSprite.input.onEntered.add(hoverStartHandler, state);
+            roadSprite.input.onLeft.add(hoverEndHandler, state);
             sprites.push(roadSprite);
 
             roadPlacementUI.addRoadForSettlement(roadSprite, spriteIds[locations[locationIndex++]]);
             roadPlacementUI.addRoadForSettlement(roadSprite, spriteIds[locations[locationIndex++]]);
 
-            var roadHoverSprite = new Kiwi.GameObjects.Sprite(state, roadHoverImage, x, y);
-            roadHoverSprite.addTag('road');
-            roadHoverSprite.rotation -= roadData.rotation;
-            roadHoverSprite.visible = false;
-            roadHoverSprite.input.onLeft.add(hoverEndHandler, state);
-            sprites.push(roadHoverSprite);
-
-            roadPlacementUI.addRoadPlacement(roadSprite, roadHoverSprite);
+            roadPlacementUI.addRoadPlacement(roadSprite);
 
             y += roadData.deltaY;
         }

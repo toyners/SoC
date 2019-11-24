@@ -8,10 +8,8 @@ class InitialRoadPlacementUI {
         this.roadSelected = false;
     }
 
-    addRoadPlacement(roadSprite, roadHoverSprite) {
-        var road = { default: roadSprite, hover: roadHoverSprite };
-        this.roadsBySpriteId[roadSprite.id] = road;
-        this.roadsBySpriteId[roadHoverSprite.id] = road;
+    addRoadPlacement(roadSprite) {
+        this.roadsBySpriteId[roadSprite.id] = roadSprite;
     }
 
     addRoadForSettlement(roadSprite, settlementSpriteId) {
@@ -32,8 +30,9 @@ class InitialRoadPlacementUI {
     }
 
     selectRoad() {
-        for (var road of this.roadsBySettlementId[this.settlementId]) {
-            road.visible = false;
+        for (var roadSprite of this.roadsBySettlementId[this.settlementId]) {
+            if (roadSprite.cellIndex === 0)
+                roadSprite.visible = false;
         }
 
         this.roadSelected = true;
@@ -47,13 +46,9 @@ class InitialRoadPlacementUI {
     }
 
     toggle(spriteId) {
-        var roadData = this.roadsBySpriteId[spriteId];
-        if (spriteId === roadData.default.id) {
-            //roadData.default.visible = false;
-            roadData.hover.visible = true;
-        } else {
-            //roadData.default.visible = true;
-            roadData.hover.visible = false;
+        if (!this.roadSelected) {
+            var roadSprite = this.roadsBySpriteId[spriteId];
+            roadSprite.cellIndex = roadSprite.cellIndex === 0 ? 1 : 0;
         }
     }
 }
