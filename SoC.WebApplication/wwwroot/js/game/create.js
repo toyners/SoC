@@ -72,6 +72,84 @@ function getRoadTexture(index, textures) {
     }
 }
 
+function setupInitialPlacementUI(state, textures, settlementPlacementData, roadPlacementData, hoverStartHandler, hoverEndHandler) {
+    var halfSettlementIconWidth = 11;
+    var halfSettlementIconHeight = 11;
+    var cellIndent = 20;
+    var initialPlacementUI = new InitialPlacementUI();
+    var spriteIds = [];
+    var sprites = [];
+
+    var settlementClickedHandler = function (context, params) {
+        initialPlacementUI.selectSettlement();
+        initialPlacementUI.showRoadSprites(context.id);
+
+        //this.initialRoadPlacementUI.selectRoad();
+    };
+
+    var settlementEnterHandler = function (context, params) {
+        initialPlacementUI.toggleSettlementSprite(context.id);
+    }
+
+    for (var index = 0; index < settlementPlacementData.data.length; index++) {
+        var settlementData = settlementPlacementData.data[index];
+        var x = settlementData.x - halfSettlementIconWidth;
+        var y = settlementData.y - halfSettlementIconHeight;
+        var total = (settlementData.count * 2) + 1;
+        for (var count = 1; count <= total; count++) {
+            var actualX = x + (count % 2 != 0 ? (settlementData.nudge * cellIndent) : 0);
+            var settlementIcon = new Kiwi.GameObjects.Sprite(state, textures.settlementicon, actualX, y);
+            settlementIcon.addTag('settlement');
+            settlementIcon.input.onUp.add(settlementClickedHandler, state);
+            settlementIcon.input.onEntered.add(hoverStartHandler, state);
+            sprites.push(settlementIcon);
+
+            var settlementHoverIcon = new Kiwi.GameObjects.Sprite(state, textures.redsettlementhover, actualX, y);
+            settlementHoverIcon.addTag('settlement');
+            settlementHoverIcon.input.onLeft.add(hoverEndHandler, state);
+            settlementHoverIcon.visible = false;
+            sprites.push(settlementHoverIcon);
+
+            settlementPlacementUI.addSettlementPlacement(settlementIcon, settlementHoverIcon);
+            spriteIds.push(settlementIcon.id);
+
+            y += settlementPlacementData.deltaY;
+        }
+    }
+
+    var roadPlacementUI = new InitialRoadPlacementUI();
+    for (var index = 0; index < roadPlacementData.length; index++) {
+        var roadData = roadPlacementData[index];
+        var x = roadData.x;
+        var y = roadData.y;
+        var locations = roadData.locations;
+        var locationIndex = 0;
+        var count = roadData.count;
+        while (count-- > 0) {
+            var roadSprite = new Kiwi.GameObjects.Sprite(state, textures.road, x, y);
+            roadSprite.addTag('road');
+            roadSprite.rotation -= roadData.rotation;
+            roadSprite.visible = false;
+            roadSprite.input.onUp.add(clickedHandler, state);
+            roadSprite.input.onEntered.add(hoverStartHandler, state);
+            roadSprite.input.onLeft.add(hoverEndHandler, state);
+            sprites.push(roadSprite);
+
+            roadPlacementUI.addRoadForSettlement(roadSprite, spriteIds[locations[locationIndex++]]);
+            roadPlacementUI.addRoadForSettlement(roadSprite, spriteIds[locations[locationIndex++]]);
+
+            roadPlacementUI.addRoadPlacement(roadSprite);
+
+            y += roadData.deltaY;
+        }
+    }
+
+    for (var i = sprites.length - 1; i >= 0; i--)
+        state.addChild(sprites[i]);
+
+    return initialPlacementUI;
+}
+
 function setupPlacementUI(state, textures, settlementPlacementData, roadPlacementData, clickedHandler, hoverStartHandler, hoverEndHandler) {
     var halfSettlementIconWidth = 11;
     var halfSettlementIconHeight = 11;
@@ -148,6 +226,8 @@ function create() {
     var originX = (backgroundWidth / 2);
     var originY = (backgroundHeight / 2);
     displayBoard(this, getTilePlacementData(originX, originY), hexData, this.textures);
+
+    this.initialRoadPlacementUI = setupInitialPlacementUI();
 
     var placementUIs = setupPlacementUI(this, this.textures,
         getSettlementPlacementData(originX, originY), getRoadPlacementData(originX, originY),

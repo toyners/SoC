@@ -22,8 +22,9 @@ class InitialRoadPlacementUI {
     }
 
     clearRoad() {
-        for (var road of this.roadsBySettlementId[this.settlementId]) {
-            road.visible = true;
+        for (var roadSprite of this.roadsBySettlementId[this.settlementId]) {
+            roadSprite.cellIndex = 0;
+            roadSprite.visible = true;
         }
 
         this.roadSelected = false;

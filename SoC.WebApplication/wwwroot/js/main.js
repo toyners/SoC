@@ -22,7 +22,7 @@ connection.start().then(function () {
     return console.error(err.toString());
 });
 
-function startGame() {
+function main() {
     var state = new Kiwi.State('Play');
     state.preload = preload;
  
@@ -71,6 +71,20 @@ function startGame() {
                 }
             }
         }
+
+        if (this.initialPlacementUI) {
+            var placementData = this.initialPlacementUI.getData();
+            if (placementData) {
+                var request = {
+                    settlementLocation: placementData.settlementLocation,
+                    roadEndLocation: placementData.roadEndLocation
+                };
+                this.initialPlacementUI = undefined;
+                connection.invoke("PlaceSetupInfrastructure", request).catch(function (err) {
+                    return console.error(err.toString());
+                });
+            }
+        }
     };
 
     var gameOptions = {
@@ -99,7 +113,7 @@ connection.on("GameEvent", function (gameEvent) {
         gameEvent.playerIds.forEach(function (playerId) {
             playerNamesInOrder.push(playerNamesById[playerId]);
         });
-        startGame();
+        main();
     } else {
         gameEvents.enqueue(gameEvent);
     }
