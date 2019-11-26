@@ -1,13 +1,28 @@
 ﻿"use strict";
 
 class InitialPlacementUI {
-    constructor() {
+    constructor(state) {
         this.roadsBySpriteId = {};
         this.roadsBySettlementId = {};
         this.roadSelected = false;
         this.settlementId = null;
         this.settlementSelected = false;
         this.settlementSpritesById = {};
+        this.selectSettlementLabel = new Kiwi.GameObjects.Textfield(state, "Select a settlement", 10, 100, "#000", 22, 'normal', 'Impact');
+        state.addChild(this.selectSettlementLabel);
+        this.selectRoadLabel = new Kiwi.GameObjects.Textfield(state, "Select a road", 10, 120, "#000", 22, 'normal', 'Impact');
+        state.addChild(this.selectRoadLabel);
+        //this.confirmButton = new Kiwi.GameObjects.Sprite(state, "Confirm", 30, 140);
+        //state.addChild(this.confirmButton);
+    }
+
+    addRoadForSettlement(roadSprite, settlementSpriteId) {
+        var roadSprites = this.roadsBySettlementId[settlementSpriteId];
+        if (!roadSprites) {
+            roadSprites = [];
+            this.roadsBySettlementId[settlementSpriteId] = roadSprites;
+        }
+        roadSprites.push(roadSprite);
     }
 
     addRoadPlacement(roadSprite) {
@@ -16,6 +31,10 @@ class InitialPlacementUI {
 
     addSettlementSprite(settlementSprite) {
         this.settlementSpritesById[settlementSprite.id] = settlementSprite;
+    }
+
+    getData() {
+        return null;
     }
 
     selectRoad() {
@@ -28,8 +47,8 @@ class InitialPlacementUI {
     }
 
     selectSettlement() {
-        for (var id in this.settlementIconSpritesById) {
-            var settlementSprite = this.settlementIconSpritesById[id];
+        for (var id in this.settlementSpritesById) {
+            var settlementSprite = this.settlementSpritesById[id];
             if (settlementSprite.cellIndex === 0)
                 settlementSprite.visible = false;
         }

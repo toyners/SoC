@@ -31,29 +31,6 @@ function main() {
 
     state.create = create;
 
-    state.iconClicked = function (context, params) {
-        if (context.hasTag('settlement')) {
-            this.settlementPlacementUI.selectSettlement();
-            this.initialRoadPlacementUI.showRoadSprites(context.id);
-        } else {
-            this.initialRoadPlacementUI.selectRoad();
-        }
-    };
-
-    state.iconHoverStart = function (context, params) {
-        if (context.hasTag('settlement'))
-            this.settlementPlacementUI.toggleSettlementSprite(context.id);
-        else
-            this.initialRoadPlacementUI.toggle(context.id);
-    }
-
-    state.iconHoverEnd = function (context, params) {
-        if (context.hasTag('settlement')) 
-            this.settlementPlacementUI.toggleSettlementSprite(context.id);
-        else
-            this.initialRoadPlacementUI.toggle(context.id);
-    }
-
     state.update = function () {
         Kiwi.State.prototype.update.call(this);
 
