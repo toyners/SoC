@@ -1,7 +1,7 @@
 ﻿"use strict";
 
 class InitialPlacementUI {
-    constructor(state) {
+    constructor(state, textures) {
         this.roadsBySpriteId = {};
         this.roadsBySettlementId = {};
         this.roadSelected = false;
@@ -12,8 +12,13 @@ class InitialPlacementUI {
         state.addChild(this.selectSettlementLabel);
         this.selectRoadLabel = new Kiwi.GameObjects.Textfield(state, "Select a road", 10, 120, "#000", 22, 'normal', 'Impact');
         state.addChild(this.selectRoadLabel);
-        //this.confirmButton = new Kiwi.GameObjects.Sprite(state, "Confirm", 30, 140);
-        //state.addChild(this.confirmButton);
+        this.confirmButton = new Kiwi.GameObjects.Sprite(state, textures.confirm, 30, 150);
+        this.confirmButton.visible = false;
+        
+        this.confirmButton.input.onEntered.add(function (context, params) { context.cellIndex = 1; }, state);
+        this.confirmButton.input.onLeft.add(function (context, params) { context.cellIndex = 0; }, state);
+        state.addChild(this.confirmButton);
+        this.confirmed = false;
     }
 
     addRoadForSettlement(roadSprite, settlementSpriteId) {
@@ -34,7 +39,17 @@ class InitialPlacementUI {
     }
 
     getData() {
-        return null;
+        return this.confirmed
+            ? { 
+                settlementLocation: this.settlementLocation,
+                roadEndLocation: this.roadEndLocation
+            }
+            : null;
+    }
+
+    onConfirm() {
+        this.confirmButton.visible = true;
+        this.confirmed = true;
     }
 
     selectRoad() {
@@ -44,6 +59,7 @@ class InitialPlacementUI {
         }
 
         this.roadSelected = true;
+        this.confirmButton.visible = true;
     }
 
     selectSettlement() {

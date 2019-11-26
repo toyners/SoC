@@ -9,7 +9,7 @@ namespace SoC.WebApplication.Hubs
 
         public GameHub(IGamesAdministrator gamesAdministrator) => this.gamesAdministrator = gamesAdministrator;
 
-        public async void ConfirmGameJoin(ConfirmGameJoinRequest confirmGameJoinRequest)
+        public void ConfirmGameJoin(ConfirmGameJoinRequest confirmGameJoinRequest)
         {
             confirmGameJoinRequest.ConnectionId = this.Context.ConnectionId;
             this.gamesAdministrator.ConfirmGameJoin(confirmGameJoinRequest);

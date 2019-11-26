@@ -64,7 +64,7 @@ function displayBoard(state, layoutColumnData, hexData, textures) {
 }
 
 function setupInitialPlacementUI(state, textures, settlementPlacementData, roadPlacementData) {
-    var initialPlacementUI = new InitialPlacementUI(state);
+    var initialPlacementUI = new InitialPlacementUI(state, textures);
     var sprites = [];
 
     var settlementClickedHandler = function (context, params) {
@@ -132,6 +132,8 @@ function setupInitialPlacementUI(state, textures, settlementPlacementData, roadP
 
     for (var i = sprites.length - 1; i >= 0; i--)
         state.addChild(sprites[i]);
+
+    initialPlacementUI.confirmButton.input.onUp.add(function (context, params) { initialPlacementUI.onConfirm(); }, state);
 
     return initialPlacementUI;
 }

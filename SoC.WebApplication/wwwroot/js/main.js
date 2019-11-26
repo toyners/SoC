@@ -2,6 +2,8 @@
 
 var connection = new signalR.HubConnectionBuilder().withUrl("/gameRequest").build();
 
+var gameId = null;
+var playerId = null;
 var playerNamesInOrder = null;
 var playerIdsByName = null;
 var playerNamesById = null;
@@ -11,9 +13,11 @@ var gameEvents = new Queue();
 
 connection.start().then(function () {
     var fragments = window.location.pathname.split("/");
+    gameId = fragments[2];
+    playerId = fragments[3];
     var request = {
-        gameId: fragments[2],
-        playerId: fragments[3]
+        gameId: gameId,
+        playerId: playerId
     };
     connection.invoke("ConfirmGameJoin", request).catch(function (err) {
         return console.error(err.toString());
@@ -53,11 +57,13 @@ function main() {
             var placementData = this.initialPlacementUI.getData();
             if (placementData) {
                 var request = {
-                    settlementLocation: placementData.settlementLocation,
-                    roadEndLocation: placementData.roadEndLocation
+                    gameId: gameId,
+                    playerId: playerId,
+                    playerActionType: 'PlaceSetupInfrastructureAction',
+                    data: placementData
                 };
-                this.initialPlacementUI = undefined;
-                connection.invoke("PlaceSetupInfrastructure", request).catch(function (err) {
+                this.initialPlacementUI = null;
+                connection.invoke("PlayerAction", request).catch(function (err) {
                     return console.error(err.toString());
                 });
             }
