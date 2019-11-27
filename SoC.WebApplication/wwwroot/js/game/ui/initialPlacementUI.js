@@ -4,45 +4,48 @@ class InitialPlacementUI {
     constructor(state, textures) {
         this.roadsBySpriteId = {};
         this.roadsBySettlementId = {};
-        this.roadSelected = false;
+        this.roadLocation = null;
         this.settlementId = null;
-        this.settlementSelected = false;
-        this.settlementSpritesById = {};
+        this.settlementById = {};
         this.selectSettlementLabel = new Kiwi.GameObjects.Textfield(state, "Select a settlement", 10, 100, "#000", 22, 'normal', 'Impact');
         state.addChild(this.selectSettlementLabel);
         this.selectRoadLabel = new Kiwi.GameObjects.Textfield(state, "Select a road", 10, 120, "#000", 22, 'normal', 'Impact');
         state.addChild(this.selectRoadLabel);
         this.confirmButton = new Kiwi.GameObjects.Sprite(state, textures.confirm, 30, 150);
         this.confirmButton.visible = false;
-        
-        this.confirmButton.input.onEntered.add(function (context, params) { context.cellIndex = 1; }, state);
-        this.confirmButton.input.onLeft.add(function (context, params) { context.cellIndex = 0; }, state);
+
+        var confirmToggleHandler = function (context, params) {
+            context.cellIndex = context.cellIndex == 0 ? 1 : 0;
+        };
+
+        this.confirmButton.input.onEntered.add(confirmToggleHandler, state);
+        this.confirmButton.input.onLeft.add(confirmToggleHandler, state);
         state.addChild(this.confirmButton);
         this.confirmed = false;
     }
 
-    addRoadForSettlement(roadSprite, settlementSpriteId) {
-        var roadSprites = this.roadsBySettlementId[settlementSpriteId];
-        if (!roadSprites) {
-            roadSprites = [];
-            this.roadsBySettlementId[settlementSpriteId] = roadSprites;
+    addRoadForSettlement(roadSprite, settlementSpriteId, endLocation) {
+        var roads = this.roadsBySettlementId[settlementSpriteId];
+        if (!roads) {
+            roads = [];
+            this.roadsBySettlementId[settlementSpriteId] = roads;
         }
-        roadSprites.push(roadSprite);
+        roads.push({ location: endLocation, sprite: roadSprite });
     }
 
     addRoadPlacement(roadSprite) {
         this.roadsBySpriteId[roadSprite.id] = roadSprite;
     }
 
-    addSettlementSprite(settlementSprite) {
-        this.settlementSpritesById[settlementSprite.id] = settlementSprite;
+    addSettlementSprite(settlementSprite, settlementLocation) {
+        this.settlementById[settlementSprite.id] = { location: settlementLocation, sprite: settlementSprite };
     }
 
     getData() {
         return this.confirmed
-            ? { 
-                settlementLocation: this.settlementLocation,
-                roadEndLocation: this.roadEndLocation
+            ? {
+                settlementLocation: this.settlementById[this.settlementId].location,
+                roadEndLocation: this.roadLocation
             }
             : null;
     }
@@ -53,43 +56,43 @@ class InitialPlacementUI {
     }
 
     selectRoad() {
-        for (var roadSprite of this.roadsBySettlementId[this.settlementId]) {
-            if (roadSprite.cellIndex === 0)
-                roadSprite.visible = false;
+        for (var road of this.roadsBySettlementId[this.settlementId]) {
+            if (road.sprite.cellIndex === 0)
+                road.sprite.visible = false;
+            else
+                this.roadLocation = road.location;
         }
 
-        this.roadSelected = true;
         this.confirmButton.visible = true;
     }
 
     selectSettlement() {
-        for (var id in this.settlementSpritesById) {
-            var settlementSprite = this.settlementSpritesById[id];
-            if (settlementSprite.cellIndex === 0)
-                settlementSprite.visible = false;
+        for (var id in this.settlementById) {
+            var settlement = this.settlementById[id];
+            if (settlement.sprite.cellIndex === 0)
+                settlement.sprite.visible = false;
+            else
+                this.settlementId = id;
         }
-
-        this.settlementSelected = true;
     }
 
     showRoadSprites(spriteId) {
         for (var road of this.roadsBySettlementId[spriteId]) {
-            road.visible = true;
+            road.sprite.visible = true;
         }
-        this.settlementId = spriteId;
     }
 
     toggleRoadSprite(spriteId) {
-        if (!this.roadSelected) {
-            var roadSprite = this.roadsBySpriteId[spriteId];
-            roadSprite.cellIndex = roadSprite.cellIndex === 0 ? 1 : 0;
-        }
+        if (this.roadLocation != null)
+            return;
+        var roadSprite = this.roadsBySpriteId[spriteId];
+        roadSprite.cellIndex = roadSprite.cellIndex === 0 ? 1 : 0;
     }
 
     toggleSettlementSprite(spriteId) {
-        if (!this.settlementSelected) {
-            var settlementSprite = this.settlementSpritesById[spriteId];
-            settlementSprite.cellIndex = settlementSprite.cellIndex === 0 ? 1 : 0;
-        }
+        if (this.settlementId != null)
+            return;
+        var settlement = this.settlementById[spriteId];
+        settlement.sprite.cellIndex = settlement.sprite.cellIndex === 0 ? 1 : 0;
     }
 }

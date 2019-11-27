@@ -79,6 +79,7 @@ function setupInitialPlacementUI(state, textures, settlementPlacementData, roadP
     var halfSettlementIconWidth = 11;
     var halfSettlementIconHeight = 11;
     var cellIndent = 20;
+    var settlementLocation = 0;
     for (var index = 0; index < settlementPlacementData.data.length; index++) {
         var settlementData = settlementPlacementData.data[index];
         var x = settlementData.x - halfSettlementIconWidth;
@@ -91,7 +92,7 @@ function setupInitialPlacementUI(state, textures, settlementPlacementData, roadP
             settlementSprite.input.onEntered.add(settlementHoverHandler, state);
             settlementSprite.input.onLeft.add(settlementHoverHandler, state);
 
-            initialPlacementUI.addSettlementSprite(settlementSprite);
+            initialPlacementUI.addSettlementSprite(settlementSprite, settlementLocation++);
             sprites.push(settlementSprite);
 
             y += settlementPlacementData.deltaY;
@@ -121,11 +122,12 @@ function setupInitialPlacementUI(state, textures, settlementPlacementData, roadP
             roadSprite.input.onEntered.add(roadHoverHandler, state);
             roadSprite.input.onLeft.add(roadHoverHandler, state);
 
-            initialPlacementUI.addRoadForSettlement(roadSprite, sprites[locations[locationIndex++]].id);
-            initialPlacementUI.addRoadForSettlement(roadSprite, sprites[locations[locationIndex++]].id);
+            initialPlacementUI.addRoadForSettlement(roadSprite, sprites[locations[locationIndex]].id, locations[locationIndex + 1]);
+            initialPlacementUI.addRoadForSettlement(roadSprite, sprites[locations[locationIndex + 1]].id, locations[locationIndex]);
             initialPlacementUI.addRoadPlacement(roadSprite);
             sprites.push(roadSprite);
 
+            locationIndex++;
             y += roadData.deltaY;
         }
     }
