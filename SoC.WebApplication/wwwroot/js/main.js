@@ -60,7 +60,11 @@ function main() {
                     gameId: gameId,
                     playerId: playerId,
                     playerActionType: 'PlaceSetupInfrastructureAction',
-                    data: JSON.stringify(placementData)
+                    data: JSON.stringify({
+                        initiatingPlayerId: playerId,
+                        settlementLocation: placementData.settlementLocation,
+                        roadEndLocation: placementData.roadLocation
+                    })
                 };
                 this.initialPlacementUI = null;
                 connection.invoke("PlayerAction", request).catch(function (err) {

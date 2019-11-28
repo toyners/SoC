@@ -29,6 +29,8 @@ namespace SoC.WebApplication
         private readonly ConcurrentDictionary<Guid, GameSessionDetails> gamesToLaunchById = new ConcurrentDictionary<Guid, GameSessionDetails>();
         private readonly Task mainGameTask;
         private readonly INumberGenerator numberGenerator = new NumberGenerator();
+        private static readonly Assembly SocLibrary = Assembly.GetAssembly(typeof(PlayerAction));
+        private static readonly Dictionary<string, Type> PlayerActionTypesByFullName = new Dictionary<string, Type>();
 
         public GamesAdministrator(IHubContext<GameHub> gameHubContext)
         {
@@ -68,11 +70,19 @@ namespace SoC.WebApplication
         {
             if (this.inPlayGamesById.TryGetValue(playerActionRequest.GameId, out var gameManagerToken))
             {
+                string key = playerActionRequest.PlayerActionType;
+                if (!PlayerActionTypesByFullName.TryGetValue(key, out var playerActionType))
+                {
+                    playerActionType = SocLibrary.GetType("Jabberwocky.SoC.Library.PlayerActions." + playerActionRequest.PlayerActionType);
+                    PlayerActionTypesByFullName.Add(key, playerActionType);
+                }
+
                 var jsonSerializerSettings = new JsonSerializerSettings();
                 jsonSerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Serialize;
                 jsonSerializerSettings.PreserveReferencesHandling = PreserveReferencesHandling.Objects;
                 jsonSerializerSettings.TypeNameHandling = TypeNameHandling.Objects;
-                var playerAction = (PlayerAction)JsonConvert.DeserializeObject(playerActionRequest.Data, jsonSerializerSettings);
+                var playerAction = (PlayerAction)JsonConvert.DeserializeObject(playerActionRequest.Data, 
+                    playerActionType, jsonSerializerSettings);
                 gameManagerToken.GameManager.Post(playerAction);
             }
         }
