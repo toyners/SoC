@@ -60,7 +60,7 @@ function main() {
                     gameId: gameId,
                     playerId: playerId,
                     playerActionType: 'PlaceSetupInfrastructureAction',
-                    data: placementData.toString()
+                    data: JSON.stringify(placementData)
                 };
                 this.initialPlacementUI = null;
                 connection.invoke("PlayerAction", request).catch(function (err) {
