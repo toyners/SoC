@@ -24,6 +24,10 @@ class InitialPlacementUI {
         this.confirmed = false;
     }
 
+    addInitialPlacement(settlementLocation, endLocation) {
+
+    }
+
     addRoadForSettlement(roadSprite, settlementSpriteId, endLocation) {
         var roads = this.roadsBySettlementId[settlementSpriteId];
         if (!roads) {
@@ -50,10 +54,16 @@ class InitialPlacementUI {
             : null;
     }
 
+    isConfirmed() { return this.confirmed; }
+
     onConfirm() {
-        this.confirmButton.visible = true;
+        this.confirmButton.visible = false;
+        this.selectSettlementLabel.visible = false;
+        this.selectRoadLabel.visible = false;
         this.confirmed = true;
     }
+
+    reset() { this.confirmed = false; }
 
     selectRoad() {
         for (var road of this.roadsBySettlementId[this.settlementId]) {

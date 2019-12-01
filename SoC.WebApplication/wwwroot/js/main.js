@@ -10,6 +10,7 @@ var playerNamesById = null;
 var game = null;
 var hexData = null;
 var gameEvents = new Queue();
+var initialPlacements = 0;
 
 connection.start().then(function () {
     var fragments = window.location.pathname.split("/");
@@ -42,18 +43,28 @@ function main() {
             var gameEvent = gameEvents.dequeue();
             switch (gameEvent.typeName) {
                 case "PlaceSetupInfrastructureEvent": {
+                    this.initialPlacements++;
                     this.currentPlayerMarker.visible = true;
                     this.currentPlayerMarker.animation.play('main');
                     break;
                 }
                 case "SetupInfrastructurePlacedEvent": {
-                    // Placing infrastructure animation
+                    
+                    if (gameEvent.playerId !== playerId) {
+                        var i = 0
+                    } else {
+                        this.initialPlacementUI.addInitialPlacement(gameEvent.settlementLocation, gameEvent.roadEndLocation);
+
+                        // Placing infrastructure animation
+
+                    }
+
                     break;
                 }
             }
         }
 
-        if (this.initialPlacementUI) {
+        if (this.initialPlacementUI && this.initialPlacementUI.isConfirmed()) {
             var placementData = this.initialPlacementUI.getData();
             if (placementData) {
                 var request = {
@@ -66,7 +77,12 @@ function main() {
                         roadEndLocation: placementData.roadEndLocation
                     })
                 };
-                this.initialPlacementUI = null;
+
+                if (initialPlacements == 2)
+                    this.initialPlacementUI = null;
+                else
+                    this.initialPlacementUI.reset();
+
                 connection.invoke("PlayerAction", request).catch(function (err) {
                     return console.error(err.toString());
                 });
