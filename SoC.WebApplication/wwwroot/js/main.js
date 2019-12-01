@@ -63,7 +63,7 @@ function main() {
                     data: JSON.stringify({
                         initiatingPlayerId: playerId,
                         settlementLocation: placementData.settlementLocation,
-                        roadEndLocation: placementData.roadLocation
+                        roadEndLocation: placementData.roadEndLocation
                     })
                 };
                 this.initialPlacementUI = null;
