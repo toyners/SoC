@@ -7,6 +7,7 @@ var playerId = null;
 var playerNamesInOrder = null;
 var playerIdsByName = null;
 var playerNamesById = null;
+var settlementImageIndexById = null;
 var game = null;
 var hexData = null;
 var gameEvents = new Queue();
@@ -30,10 +31,11 @@ connection.start().then(function () {
 function main() {
     var state = new Kiwi.State('Play');
     state.preload = preload;
- 
+
     var backgroundWidth = 800;
     var backgroundHeight = 600;
 
+    state.settlementImageIndexById = settlementImageIndexById;
     state.create = create;
 
     state.update = function () {
@@ -44,19 +46,15 @@ function main() {
             switch (gameEvent.typeName) {
                 case "PlaceSetupInfrastructureEvent": {
                     this.initialPlacements++;
+                    this.initialPlacementUI.showSettlementSprites();
                     this.currentPlayerMarker.visible = true;
                     this.currentPlayerMarker.animation.play('main');
                     break;
                 }
                 case "SetupInfrastructurePlacedEvent": {
-                    
                     if (gameEvent.playerId !== playerId) {
-                        var i = 0
-                    } else {
-                        this.initialPlacementUI.addInitialPlacement(gameEvent.settlementLocation, gameEvent.roadEndLocation);
-
+                        this.initialPlacementUI.addInitialPlacement(gameEvent.playerId, gameEvent.settlementLocation, gameEvent.roadEndLocation);
                         // Placing infrastructure animation
-
                     }
 
                     break;
@@ -65,6 +63,7 @@ function main() {
         }
 
         if (this.initialPlacementUI && this.initialPlacementUI.isConfirmed()) {
+            this.currentPlayerMarker.visible = false;
             var placementData = this.initialPlacementUI.getData();
             if (placementData) {
                 var request = {
@@ -104,10 +103,13 @@ connection.on("GameEvent", function (gameEvent) {
 
     } else if (typeName === "PlayerSetupEvent") {
         playerIdsByName = gameEvent.playerIdsByName;
+        var settlementColourIndexes = [4, 6, 8];
         playerNamesById = {};
-        for (var key in playerIdsByName) {
-            var value = playerIdsByName[key];
-            playerNamesById[value] = key;
+        settlementImageIndexById = {};
+        for (var playerName in playerIdsByName) {
+            var playerId = playerIdsByName[playerName];
+            playerNamesById[playerId] = playerName;
+            settlementImageIndexById[playerId] = settlementColourIndexes.pop();
         }
     } else if (typeName === "InitialBoardSetupEvent") {
         hexData = gameEvent.gameBoardSetup.hexData;

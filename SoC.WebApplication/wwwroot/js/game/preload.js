@@ -19,8 +19,6 @@ function preload() {
     this.addImage('ten', '../../../images/productionfactors/10.png');
     this.addImage('eleven', '../../../images/productionfactors/11.png');
     this.addImage('twelve', '../../../images/productionfactors/12.png');
-    this.addImage('redsettlement', '../../../images/settlement/redsettlement.png');
-    this.addImage('redsettlementhover', '../../../images/settlement/redsettlementhover.png');
     this.addImage('roadhorizontaliconhover', '../../../images/road/roadhorizontalicon_redhover.png');
     this.addImage('roadupperlefticon', '../../../images/road/roadupperlefticon.png');
 

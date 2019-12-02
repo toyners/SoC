@@ -63,8 +63,8 @@ function displayBoard(state, layoutColumnData, hexData, textures) {
     }
 }
 
-function setupInitialPlacementUI(state, textures, settlementPlacementData, roadPlacementData) {
-    var initialPlacementUI = new InitialPlacementUI(state, textures);
+function setupInitialPlacementUI(state, textures, settlementPlacementData, roadPlacementData, settlementImageIndexById) {
+    var initialPlacementUI = new InitialPlacementUI(state, textures, settlementImageIndexById);
     var sprites = [];
 
     var settlementClickedHandler = function (context, params) {
@@ -88,6 +88,7 @@ function setupInitialPlacementUI(state, textures, settlementPlacementData, roadP
         for (var count = 1; count <= total; count++) {
             var actualX = x + (count % 2 != 0 ? (settlementData.nudge * cellIndent) : 0);
             var settlementSprite = new Kiwi.GameObjects.Sprite(state, textures.settlement, actualX, y);
+            settlementSprite.visible = false;
             settlementSprite.input.onUp.add(settlementClickedHandler, state);
             settlementSprite.input.onEntered.add(settlementHoverHandler, state);
             settlementSprite.input.onLeft.add(settlementHoverHandler, state);
@@ -122,8 +123,8 @@ function setupInitialPlacementUI(state, textures, settlementPlacementData, roadP
             roadSprite.input.onEntered.add(roadHoverHandler, state);
             roadSprite.input.onLeft.add(roadHoverHandler, state);
 
-            initialPlacementUI.addRoadForSettlement(roadSprite, sprites[locations[locationIndex]].id, locations[locationIndex + 1]);
-            initialPlacementUI.addRoadForSettlement(roadSprite, sprites[locations[locationIndex + 1]].id, locations[locationIndex]);
+            initialPlacementUI.addRoadForSettlement(roadSprite, sprites[locations[locationIndex]].id, locations[locationIndex], locations[locationIndex + 1]);
+            initialPlacementUI.addRoadForSettlement(roadSprite, sprites[locations[locationIndex + 1]].id, locations[locationIndex + 1], locations[locationIndex]);
             initialPlacementUI.addRoadPlacement(roadSprite);
             sprites.push(roadSprite);
 
@@ -152,7 +153,8 @@ function create() {
     displayBoard(this, getTilePlacementData(originX, originY), hexData, this.textures);
 
     this.initialPlacementUI = setupInitialPlacementUI(this, this.textures,
-        getSettlementPlacementData(originX, originY), getRoadPlacementData(originX, originY));
+        getSettlementPlacementData(originX, originY), getRoadPlacementData(originX, originY),
+        this.settlementImageIndexById);
 
     this.currentPlayerMarker = new Kiwi.GameObjects.Sprite(this, this.textures.playermarker, 90, 5);
     this.currentPlayerMarker.visible = false;

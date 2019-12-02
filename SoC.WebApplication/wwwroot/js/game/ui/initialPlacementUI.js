@@ -1,12 +1,15 @@
 ﻿"use strict";
 
 class InitialPlacementUI {
-    constructor(state, textures) {
+    constructor(state, textures, settlementImageIndexById) {
+        this.settlementImageIndexById = settlementImageIndexById;
         this.roadsBySpriteId = {};
         this.roadsBySettlementId = {};
+        this.roadsBySettlementLocation = {};
         this.roadLocation = null;
         this.settlementId = null;
         this.settlementById = {};
+        this.settlementByLocation = {};
         this.selectSettlementLabel = new Kiwi.GameObjects.Textfield(state, "Select a settlement", 10, 100, "#000", 22, 'normal', 'Impact');
         state.addChild(this.selectSettlementLabel);
         this.selectRoadLabel = new Kiwi.GameObjects.Textfield(state, "Select a road", 10, 120, "#000", 22, 'normal', 'Impact');
@@ -24,17 +27,24 @@ class InitialPlacementUI {
         this.confirmed = false;
     }
 
-    addInitialPlacement(settlementLocation, endLocation) {
-
+    addInitialPlacement(playerId, settlementLocation, endLocation) {
+        var cellIndex = this.settlementImageIndexById[playerId];
+        this.settlementByLocation[settlementLocation].cellIndex = cellIndex;
+        for (var road of this.roadsBySettlementId[this.settlementId]) {
+            if (road.location === endLocation)
+                road.sprite.cellIndex = cellIndex;
+        }
     }
 
-    addRoadForSettlement(roadSprite, settlementSpriteId, endLocation) {
+    addRoadForSettlement(roadSprite, settlementSpriteId, settlementLocation, endLocation) {
         var roads = this.roadsBySettlementId[settlementSpriteId];
         if (!roads) {
             roads = [];
             this.roadsBySettlementId[settlementSpriteId] = roads;
+            this.roadsBySettlementLocation[settlementLocation] = roads;
         }
         roads.push({ location: endLocation, sprite: roadSprite });
+
     }
 
     addRoadPlacement(roadSprite) {
@@ -43,6 +53,7 @@ class InitialPlacementUI {
 
     addSettlementSprite(settlementSprite, settlementLocation) {
         this.settlementById[settlementSprite.id] = { location: settlementLocation, sprite: settlementSprite };
+        this.settlementByLocation[settlementLocation] = this.settlementById[settlementSprite.id];
     }
 
     getData() {
@@ -86,9 +97,17 @@ class InitialPlacementUI {
         }
     }
 
-    showRoadSprites(spriteId) {
-        for (var road of this.roadsBySettlementId[spriteId]) {
+    showRoadSprites(settlementId) {
+        for (var road of this.roadsBySettlementId[settlementId]) {
             road.sprite.visible = true;
+        }
+    }
+
+    showSettlementSprites() {
+        for (var settlementKey in this.settlementById) {
+            var settlement = this.settlementById[settlementKey];
+            if (settlement.cellIndex === 0)
+                settlement.sprite.visible = true;
         }
     }
 
