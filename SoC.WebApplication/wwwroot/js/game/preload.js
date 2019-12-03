@@ -26,4 +26,5 @@ function preload() {
     this.addSpriteSheet('road', '../../../images/road/road.png', 28, 11);
     this.addSpriteSheet('playermarker', '../../../images/currentplayermarker.png', 50, 45);
     this.addSpriteSheet('confirm', '../../../images/confirm.png', 160, 50);
+    this.addSpriteSheet('cancel', '../../../images/cancel.png', 70, 30);
 }

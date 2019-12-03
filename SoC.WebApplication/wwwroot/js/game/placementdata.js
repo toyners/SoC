@@ -63,8 +63,8 @@ function getRoadPlacementData(originX, originY) {
         },
         // Lower left icons
         {
-            x: startX - (2 * threeQuarterTileWidth) + halfTileWidth - (2 * halfRoadWidth) + 25,
-            y: startY - tileHeight + 25,
+            x: startX - (2 * threeQuarterTileWidth) + halfTileWidth - (2 * halfRoadWidth) - 25,
+            y: startY - tileHeight + 50,
             count: 3,
             deltaY: tileHeight,
             rotation: -sixtyDegree,

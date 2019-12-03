@@ -16,7 +16,7 @@ class InitialPlacementUI {
         state.addChild(this.selectRoadLabel);
         this.confirmButton = new Kiwi.GameObjects.Sprite(state, textures.confirm, 30, 150);
         this.confirmButton.visible = false;
-
+        
         var confirmToggleHandler = function (context, params) {
             context.cellIndex = context.cellIndex == 0 ? 1 : 0;
         };
@@ -25,6 +25,10 @@ class InitialPlacementUI {
         this.confirmButton.input.onLeft.add(confirmToggleHandler, state);
         state.addChild(this.confirmButton);
         this.confirmed = false;
+
+        this.cancelSettlementButton = new Kiwi.GameObjects.Sprite(state, textures.cancel, 70, 100);
+        this.cancelSettlementButton.visible = false;
+        this.cancelRoadButton = new Kiwi.GameObjects.Sprite(state, textures.cancel, 70, 120);
     }
 
     addInitialPlacement(playerId, settlementLocation, endLocation) {
