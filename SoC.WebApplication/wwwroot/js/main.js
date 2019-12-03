@@ -53,7 +53,7 @@ function main() {
                 }
                 case "SetupInfrastructurePlacedEvent": {
                     if (gameEvent.playerId !== playerId) {
-                        this.initialPlacementUI.addInitialPlacement(gameEvent.playerId, gameEvent.settlementLocation, gameEvent.roadEndLocation);
+                        this.initialPlacementUI.addInitialPlacement(gameEvent.playerId, gameEvent.settlementLocation, gameEvent.roadSegmentEndLocation);
                         // Placing infrastructure animation
                     }
 

@@ -29,10 +29,14 @@ class InitialPlacementUI {
 
     addInitialPlacement(playerId, settlementLocation, endLocation) {
         var cellIndex = this.settlementImageIndexById[playerId];
-        this.settlementByLocation[settlementLocation].cellIndex = cellIndex;
-        for (var road of this.roadsBySettlementId[this.settlementId]) {
-            if (road.location === endLocation)
+        var settlement = this.settlementByLocation[settlementLocation];
+        settlement.sprite.visible = true;
+        settlement.sprite.cellIndex = cellIndex;
+        for (var road of this.roadsBySettlementLocation[settlementLocation]) {
+            if (road.location === endLocation) {
+                road.sprite.visible = true;
                 road.sprite.cellIndex = cellIndex;
+            }
         }
     }
 
@@ -106,7 +110,7 @@ class InitialPlacementUI {
     showSettlementSprites() {
         for (var settlementKey in this.settlementById) {
             var settlement = this.settlementById[settlementKey];
-            if (settlement.cellIndex === 0)
+            if (settlement.sprite.cellIndex === 0)
                 settlement.sprite.visible = true;
         }
     }
