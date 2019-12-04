@@ -1,12 +1,13 @@
 ﻿"use strict";
 
 class InitialPlacementUI {
-    constructor(state, textures, settlementImageIndexById, confirmClickHandler, cancelSettlementClickHandler, cancelRoadClickHandler) {
+    constructor(state, textures, hoverImageIndex, settlementImageIndexById, confirmClickHandler, cancelSettlementClickHandler, cancelRoadClickHandler) {
+        this.hoverImageIndex = hoverImageIndex;
         this.settlementImageIndexById = settlementImageIndexById;
         this.roadsBySpriteId = {};
         this.roadsBySettlementId = {};
         this.roadsBySettlementLocation = {};
-        this.roadLocation = null;
+        this.selectedRoad = null;
         this.settlementId = null;
         this.settlementById = {};
         this.settlementByLocation = {};
@@ -27,17 +28,19 @@ class InitialPlacementUI {
         state.addChild(this.confirmButton);
         this.confirmed = false;
 
-        this.cancelSettlementButton = new Kiwi.GameObjects.Sprite(state, textures.cancel, 70, 100);
+        this.cancelSettlementButton = new Kiwi.GameObjects.Sprite(state, textures.cancel, 200, 100);
         this.cancelSettlementButton.visible = false;
         this.cancelSettlementButton.input.onEntered.add(buttonToggleHandler, state);
         this.cancelSettlementButton.input.onLeft.add(buttonToggleHandler, state);
         this.cancelSettlementButton.input.onUp.add(cancelSettlementClickHandler, state);
+        state.addChild(this.cancelSettlementButton);
 
-        this.cancelRoadButton = new Kiwi.GameObjects.Sprite(state, textures.cancel, 70, 120);
+        this.cancelRoadButton = new Kiwi.GameObjects.Sprite(state, textures.cancel, 140, 120);
         this.cancelRoadButton.visible = false;
         this.cancelRoadButton.input.onEntered.add(buttonToggleHandler, state);
         this.cancelRoadButton.input.onLeft.add(buttonToggleHandler, state);
         this.cancelRoadButton.input.onUp.add(cancelRoadClickHandler, state);
+        state.addChild(this.cancelRoadButton);
     }
 
     addInitialPlacement(playerId, settlementLocation, endLocation) {
@@ -77,7 +80,7 @@ class InitialPlacementUI {
         return this.confirmed
             ? {
                 settlementLocation: this.settlementById[this.settlementId].location,
-                roadEndLocation: this.roadLocation
+                roadEndLocation: this.selectedRoad.location
             }
             : null;
     }
@@ -85,13 +88,15 @@ class InitialPlacementUI {
     isConfirmed() { return this.confirmed; }
 
     onCancelRoad() {
-        if (this.roadLocation) {
-
+        if (this.selectedRoad) {
+            this.selectedRoad.sprite.cellIndex = 0;
+            this.selectedRoad = null;
+            this.cancelRoadButton.visible = false;
         }
     }
 
     onCancelSettlement() {
-        onCancelRoad();
+        this.onCancelRoad();
 
         for (var id in this.settlementById) {
             var settlement = this.settlementById[id];
@@ -102,6 +107,7 @@ class InitialPlacementUI {
         }
 
         this.settlementId = null;
+        this.cancelSettlementButton.visible = false;
     }
 
     onConfirm() {
@@ -117,11 +123,12 @@ class InitialPlacementUI {
         for (var road of this.roadsBySettlementId[this.settlementId]) {
             if (road.sprite.cellIndex === 0)
                 road.sprite.visible = false;
-            else
-                this.roadLocation = road.location;
+            else if (road.sprite.cellIndex === this.hoverImageIndex)
+                this.selectedRoad = road;
         }
 
         this.confirmButton.visible = true;
+        this.cancelRoadButton.visible = true;
     }
 
     selectSettlement() {
@@ -132,6 +139,8 @@ class InitialPlacementUI {
             else
                 this.settlementId = id;
         }
+
+        this.cancelSettlementButton.visible = true;
     }
 
     showRoadSprites(settlementId) {
@@ -149,16 +158,18 @@ class InitialPlacementUI {
     }
 
     toggleRoadSprite(spriteId) {
-        if (this.roadLocation != null)
+        if (this.selectedRoad != null)
             return;
         var roadSprite = this.roadsBySpriteId[spriteId];
-        roadSprite.cellIndex = roadSprite.cellIndex === 0 ? 1 : 0;
+        if (roadSprite.cellIndex === 0 || roadSprite.cellIndex === this.hoverImageIndex)
+            roadSprite.cellIndex = roadSprite.cellIndex === 0 ? this.hoverImageIndex : 0;
     }
 
     toggleSettlementSprite(spriteId) {
         if (this.settlementId != null)
             return;
         var settlement = this.settlementById[spriteId];
-        settlement.sprite.cellIndex = settlement.sprite.cellIndex === 0 ? 1 : 0;
+        if (settlement.sprite.cellIndex === 0 || settlement.sprite.cellIndex === this.hoverImageIndex)
+            settlement.sprite.cellIndex = settlement.sprite.cellIndex === 0 ? this.hoverImageIndex : 0;
     }
 }

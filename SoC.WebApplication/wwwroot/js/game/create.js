@@ -64,7 +64,7 @@ function displayBoard(state, layoutColumnData, hexData, textures) {
 }
 
 function setupInitialPlacementUI(state, textures, settlementPlacementData, roadPlacementData, settlementImageIndexById) {
-    var initialPlacementUI = new InitialPlacementUI(state, textures, settlementImageIndexById,
+    var initialPlacementUI = new InitialPlacementUI(state, textures, 1, settlementImageIndexById,
         function (context, params) { initialPlacementUI.onConfirm(); },
         function (context, params) { initialPlacementUI.onCancelSettlement(); },
         function (context, params) { initialPlacementUI.onCancelRoad(); });
