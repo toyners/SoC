@@ -1,7 +1,7 @@
 ﻿"use strict";
 
 class InitialPlacementUI {
-    constructor(state, textures, settlementImageIndexById) {
+    constructor(state, textures, settlementImageIndexById, confirmClickHandler) {
         this.settlementImageIndexById = settlementImageIndexById;
         this.roadsBySpriteId = {};
         this.roadsBySettlementId = {};
@@ -23,6 +23,7 @@ class InitialPlacementUI {
 
         this.confirmButton.input.onEntered.add(confirmToggleHandler, state);
         this.confirmButton.input.onLeft.add(confirmToggleHandler, state);
+        this.confirmButton.input.onUp.add(confirmClickHandler, state);
         state.addChild(this.confirmButton);
         this.confirmed = false;
 

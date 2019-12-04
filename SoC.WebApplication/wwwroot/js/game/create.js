@@ -64,7 +64,8 @@ function displayBoard(state, layoutColumnData, hexData, textures) {
 }
 
 function setupInitialPlacementUI(state, textures, settlementPlacementData, roadPlacementData, settlementImageIndexById) {
-    var initialPlacementUI = new InitialPlacementUI(state, textures, settlementImageIndexById);
+    var initialPlacementUI = new InitialPlacementUI(state, textures, settlementImageIndexById,
+        function (context, params) { initialPlacementUI.onConfirm(); });
     var sprites = [];
 
     var settlementClickedHandler = function (context, params) {
@@ -136,7 +137,7 @@ function setupInitialPlacementUI(state, textures, settlementPlacementData, roadP
     for (var i = sprites.length - 1; i >= 0; i--)
         state.addChild(sprites[i]);
 
-    initialPlacementUI.confirmButton.input.onUp.add(function (context, params) { initialPlacementUI.onConfirm(); }, state);
+    //initialPlacementUI.confirmButton.input.onUp.add(function (context, params) { initialPlacementUI.onConfirm(); }, state);
 
     return initialPlacementUI;
 }
