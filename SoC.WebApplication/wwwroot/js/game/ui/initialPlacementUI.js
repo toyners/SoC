@@ -1,7 +1,7 @@
 ﻿"use strict";
 
 class InitialPlacementUI {
-    constructor(state, textures, settlementImageIndexById, confirmClickHandler) {
+    constructor(state, textures, settlementImageIndexById, confirmClickHandler, cancelSettlementClickHandler, cancelRoadClickHandler) {
         this.settlementImageIndexById = settlementImageIndexById;
         this.roadsBySpriteId = {};
         this.roadsBySettlementId = {};
@@ -14,22 +14,30 @@ class InitialPlacementUI {
         state.addChild(this.selectSettlementLabel);
         this.selectRoadLabel = new Kiwi.GameObjects.Textfield(state, "Select a road", 10, 120, "#000", 22, 'normal', 'Impact');
         state.addChild(this.selectRoadLabel);
-        this.confirmButton = new Kiwi.GameObjects.Sprite(state, textures.confirm, 30, 150);
-        this.confirmButton.visible = false;
         
-        var confirmToggleHandler = function (context, params) {
+        var buttonToggleHandler = function (context, params) {
             context.cellIndex = context.cellIndex == 0 ? 1 : 0;
         };
 
-        this.confirmButton.input.onEntered.add(confirmToggleHandler, state);
-        this.confirmButton.input.onLeft.add(confirmToggleHandler, state);
+        this.confirmButton = new Kiwi.GameObjects.Sprite(state, textures.confirm, 30, 150);
+        this.confirmButton.visible = false;
+        this.confirmButton.input.onEntered.add(buttonToggleHandler, state);
+        this.confirmButton.input.onLeft.add(buttonToggleHandler, state);
         this.confirmButton.input.onUp.add(confirmClickHandler, state);
         state.addChild(this.confirmButton);
         this.confirmed = false;
 
         this.cancelSettlementButton = new Kiwi.GameObjects.Sprite(state, textures.cancel, 70, 100);
         this.cancelSettlementButton.visible = false;
+        this.cancelSettlementButton.input.onEntered.add(buttonToggleHandler, state);
+        this.cancelSettlementButton.input.onLeft.add(buttonToggleHandler, state);
+        this.cancelSettlementButton.input.onUp.add(cancelSettlementClickHandler, state);
+
         this.cancelRoadButton = new Kiwi.GameObjects.Sprite(state, textures.cancel, 70, 120);
+        this.cancelRoadButton.visible = false;
+        this.cancelRoadButton.input.onEntered.add(buttonToggleHandler, state);
+        this.cancelRoadButton.input.onLeft.add(buttonToggleHandler, state);
+        this.cancelRoadButton.input.onUp.add(cancelRoadClickHandler, state);
     }
 
     addInitialPlacement(playerId, settlementLocation, endLocation) {
@@ -75,6 +83,26 @@ class InitialPlacementUI {
     }
 
     isConfirmed() { return this.confirmed; }
+
+    onCancelRoad() {
+        if (this.roadLocation) {
+
+        }
+    }
+
+    onCancelSettlement() {
+        onCancelRoad();
+
+        for (var id in this.settlementById) {
+            var settlement = this.settlementById[id];
+            if (settlement.sprite.cellIndex === 0)
+                settlement.sprite.visible = false;
+            else if (this.settlementId === id)
+                settlement.sprite.cellIndex === 0;
+        }
+
+        this.settlementId = null;
+    }
 
     onConfirm() {
         this.confirmButton.visible = false;
