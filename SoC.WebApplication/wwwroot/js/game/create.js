@@ -145,12 +145,12 @@ function setupInitialPlacementUI(state, textures, settlementPlacementData, roadP
 
 function create() {
     Kiwi.State.prototype.create(this);
-    this.background = new Kiwi.GameObjects.StaticImage(this, this.textures.background, 0, 0);
+    this.background = new Kiwi.GameObjects.StaticImage(this, this.textures.test, 0, 0);
     var backgroundWidth = this.background.width;
     var backgroundHeight = this.background.height;
     this.addChild(this.background);
 
-    var originX = (backgroundWidth / 2);
+    /*var originX = (backgroundWidth / 2);
     var originY = (backgroundHeight / 2);
     displayBoard(this, getTilePlacementData(originX, originY), hexData, this.textures);
 
@@ -188,5 +188,5 @@ function create() {
     player = new PlayerUI(playerNamesInOrder[3]);
     this.players.push(player);
     this.fourthPlayerName = new Kiwi.GameObjects.Textfield(this, player.name, 700, 550, "#000", 32, 'normal', 'Impact');
-    this.addChild(this.fourthPlayerName);
+    this.addChild(this.fourthPlayerName);*/
 }

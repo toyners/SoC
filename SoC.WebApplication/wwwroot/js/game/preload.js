@@ -27,4 +27,6 @@ function preload() {
     this.addSpriteSheet('playermarker', '../../../images/currentplayermarker.png', 50, 45);
     this.addSpriteSheet('confirm', '../../../images/confirm.png', 30, 30);
     this.addSpriteSheet('cancel', '../../../images/cancel.png', 30, 30);
+
+    this.addImage('test', '../../../images/test.png');
 }
