@@ -88,10 +88,6 @@
       <Project>{5CAC4497-470C-49FE-9CFD-AD5C908BEA79}</Project>
       <Name>SoC.Library</Name>
     </ProjectReference>
-    <ProjectReference Include="..\SoC.Service\SoC.Service.csproj">
-      <Project>{0CCA125D-9987-4128-895E-25C0DD1B684F}</Project>
-      <Name>SoC.Service</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />

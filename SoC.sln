@@ -3,19 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.28010.2016
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SoC.Service", "SoC.Service\SoC.Service.csproj", "{0CCA125D-9987-4128-895E-25C0DD1B684F}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SoC.Service.Console", "SoC.Service.Console\SoC.Service.Console.csproj", "{C56E7E2E-DCB8-4B6D-AEEA-EF87DE8CB059}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SoC.Client.Console", "SoC.Client.Console\SoC.Client.Console.csproj", "{BB8D6826-93DF-410E-AC65-D3A32A59F337}"
-	ProjectSection(ProjectDependencies) = postProject
-		{0CCA125D-9987-4128-895E-25C0DD1B684F} = {0CCA125D-9987-4128-895E-25C0DD1B684F}
-	EndProjectSection
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SoC.Client", "SoC.Client\SoC.Client.csproj", "{576AA68D-D15E-4257-AA48-4C1077CECDA9}"
-	ProjectSection(ProjectDependencies) = postProject
-		{0CCA125D-9987-4128-895E-25C0DD1B684F} = {0CCA125D-9987-4128-895E-25C0DD1B684F}
-	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SoC.Library", "SoC.Library\SoC.Library.csproj", "{5CAC4497-470C-49FE-9CFD-AD5C908BEA79}"
 EndProject
@@ -38,10 +26,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SoC.Client.TestHarness", "SoC.Client.TestHarness\SoC.Client.TestHarness.csproj", "{21989B2D-C26B-47EE-8F5C-BCBF414AE282}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SoC.Service.UnitTests", "SoC.Service.UnitTests\SoC.Service.UnitTests.csproj", "{FADCAC9F-D0A1-445A-9B51-4FA20F273DC3}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SoC.Service.IntegrationTests", "SoC.Service.IntegrationTests\SoC.Service.IntegrationTests.csproj", "{2C55EA06-7F06-4425-BC08-4C60C4491C43}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SoC.Harness", "SoC.Harness\SoC.Harness.csproj", "{AEF9C361-8D0E-4957-A379-0A1EAD19100F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SoC.Library.ScenarioTests", "SoC.Library.ScenarioTests\SoC.Library.ScenarioTests.csproj", "{6249F3D5-65EF-439C-87FE-EB60A2C4F613}"
@@ -56,15 +40,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{0CCA125D-9987-4128-895E-25C0DD1B684F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{0CCA125D-9987-4128-895E-25C0DD1B684F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{0CCA125D-9987-4128-895E-25C0DD1B684F}.Release|Any CPU.Build.0 = Release|Any CPU
-		{C56E7E2E-DCB8-4B6D-AEEA-EF87DE8CB059}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C56E7E2E-DCB8-4B6D-AEEA-EF87DE8CB059}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C56E7E2E-DCB8-4B6D-AEEA-EF87DE8CB059}.Release|Any CPU.Build.0 = Release|Any CPU
-		{BB8D6826-93DF-410E-AC65-D3A32A59F337}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{BB8D6826-93DF-410E-AC65-D3A32A59F337}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{BB8D6826-93DF-410E-AC65-D3A32A59F337}.Release|Any CPU.Build.0 = Release|Any CPU
 		{576AA68D-D15E-4257-AA48-4C1077CECDA9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{576AA68D-D15E-4257-AA48-4C1077CECDA9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{576AA68D-D15E-4257-AA48-4C1077CECDA9}.Release|Any CPU.Build.0 = Release|Any CPU
@@ -78,12 +53,6 @@ Global
 		{21989B2D-C26B-47EE-8F5C-BCBF414AE282}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{21989B2D-C26B-47EE-8F5C-BCBF414AE282}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{21989B2D-C26B-47EE-8F5C-BCBF414AE282}.Release|Any CPU.Build.0 = Release|Any CPU
-		{FADCAC9F-D0A1-445A-9B51-4FA20F273DC3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{FADCAC9F-D0A1-445A-9B51-4FA20F273DC3}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{FADCAC9F-D0A1-445A-9B51-4FA20F273DC3}.Release|Any CPU.Build.0 = Release|Any CPU
-		{2C55EA06-7F06-4425-BC08-4C60C4491C43}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{2C55EA06-7F06-4425-BC08-4C60C4491C43}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{2C55EA06-7F06-4425-BC08-4C60C4491C43}.Release|Any CPU.Build.0 = Release|Any CPU
 		{AEF9C361-8D0E-4957-A379-0A1EAD19100F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{AEF9C361-8D0E-4957-A379-0A1EAD19100F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AEF9C361-8D0E-4957-A379-0A1EAD19100F}.Release|Any CPU.Build.0 = Release|Any CPU

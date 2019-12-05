@@ -57,10 +57,6 @@
       <Project>{576aa68d-d15e-4257-aa48-4c1077cecda9}</Project>
       <Name>SoC.Client</Name>
     </ProjectReference>
-    <ProjectReference Include="..\SoC.Service\SoC.Service.csproj">
-      <Project>{0CCA125D-9987-4128-895E-25C0DD1B684F}</Project>
-      <Name>SoC.Service</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

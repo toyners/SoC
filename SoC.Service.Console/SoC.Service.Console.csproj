@@ -52,12 +52,6 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\SoC.Service\SoC.Service.csproj">
-      <Project>{0cca125d-9987-4128-895e-25c0dd1b684f}</Project>
-      <Name>SoC.Service</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <WCFMetadata Include="Service References\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
