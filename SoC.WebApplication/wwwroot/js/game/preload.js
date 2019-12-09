@@ -3,12 +3,12 @@
 function preload() {
     Kiwi.State.prototype.preload(this);
     this.addImage('background', '../../../images/background.png');
-    this.addImage('brickhex', '../../../images/hextypes/brick.png');
+    /*this.addImage('brickhex', '../../../images/hextypes/brick.png');
     this.addImage('deserthex', '../../../images/hextypes/desert.png');
     this.addImage('grainhex', '../../../images/hextypes/grain.png');
     this.addImage('lumberhex', '../../../images/hextypes/lumber.png');
     this.addImage('orehex', '../../../images/hextypes/ore.png');
-    this.addImage('woolhex', '../../../images/hextypes/wool.png');
+    this.addImage('woolhex', '../../../images/hextypes/wool.png');*/
     this.addImage('two', '../../../images/productionfactors/2.png');
     this.addImage('three', '../../../images/productionfactors/3.png');
     this.addImage('four', '../../../images/productionfactors/4.png');
@@ -22,11 +22,13 @@ function preload() {
     this.addImage('roadhorizontaliconhover', '../../../images/road/roadhorizontalicon_redhover.png');
     this.addImage('roadupperlefticon', '../../../images/road/roadupperlefticon.png');
 
+    this.addSpriteSheet('hextypes', '../../../images/hextypes.png', 100, 100);
     this.addSpriteSheet('settlement', '../../../images/settlement/settlement.png', 25, 25);
     this.addSpriteSheet('road', '../../../images/road/road.png', 28, 11);
     this.addSpriteSheet('playermarker', '../../../images/currentplayermarker.png', 50, 45);
     this.addSpriteSheet('confirm', '../../../images/confirm.png', 30, 30);
     this.addSpriteSheet('cancel', '../../../images/cancel.png', 30, 30);
 
-    this.addImage('test', '../../../images/test.png');
+    //this.addImage('test', '../../../images/test.png');
+    this.addImage('test', '../../../images/100x100 test.png')
 }
