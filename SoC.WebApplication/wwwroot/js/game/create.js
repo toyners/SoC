@@ -52,8 +52,8 @@ function displayBoard(state, layoutColumnData, hexData, textures) {
         var count = columnData.count;
         while (count-- > 0) {
             var hex = hexData[hexindex++];
-            var hexImageCellIndex = hex.resourceType != null ? hex.resourceType : 5;
-            var hexImage = new Kiwi.GameObjects.StaticImage(state, getResourceTexture(hex.resourceType, textures), columnData.x, y);
+            var hexImage = new Kiwi.GameObjects.StaticImage(state, textures.hextypes, columnData.x, y);
+            hexImage.cellIndex = hex.resourceType != null ? hex.resourceType : 5;
             state.addChild(hexImage);
             if (hex.productionFactor != 0) {
                 var productionImage = new Kiwi.GameObjects.StaticImage(state, getProductionFactorTexture(hex.productionFactor, textures), columnData.x, y);
@@ -146,7 +146,7 @@ function setupInitialPlacementUI(state, textures, settlementPlacementData, roadP
 
 function create() {
     Kiwi.State.prototype.create(this);
-    this.background = new Kiwi.GameObjects.StaticImage(this, this.textures.test, 0, 0);
+    this.background = new Kiwi.GameObjects.StaticImage(this, this.textures.background, 0, 0);
     var backgroundWidth = this.background.width;
     var backgroundHeight = this.background.height;
     this.addChild(this.background);
