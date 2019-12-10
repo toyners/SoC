@@ -14,20 +14,6 @@ class PlayerUI {
     }
 }
 
-function getResourceTexture(resourceType, textures) {
-    if (resourceType == null) {
-        return textures.deserthex;
-    } else {
-        switch (resourceType) {
-            case 0: return textures.brickhex;
-            case 1: return textures.grainhex;
-            case 2: return textures.lumberhex;
-            case 3: return textures.orehex;
-            case 4: return textures.woolhex;
-        }
-    }
-}
-
 function getProductionFactorTexture(productionFactor, textures) {
     switch (productionFactor) {
         case 2: return textures.two;

@@ -1,10 +1,12 @@
 ﻿"use strict"
 
-var tileHeight = 90;
-var tileWidth = 90;
+var tileHeight = 100;
+var tileWidth = 100;
+var innerHeight = 88;
+var innerWidth = 86;
 var halfTileHeight = Math.trunc(tileHeight / 2);
 var halfTileWidth = Math.trunc(tileWidth / 2);
-var threeQuarterTileWidth = 68;
+var majorTileWidth = 70;
 
 function getTilePlacementData(originX, originY) {
     var startX = originX - halfTileWidth;
@@ -12,11 +14,11 @@ function getTilePlacementData(originX, originY) {
     return {
         deltaY: tileHeight,
         data: [
-            { x: startX - (2 * threeQuarterTileWidth), y: startY - tileHeight, count: 3 },
-            { x: startX - threeQuarterTileWidth, y: startY - halfTileHeight - tileHeight, count: 4 },
-            { x: startX, y: startY - (2 * tileHeight), count: 5 },
-            { x: startX + threeQuarterTileWidth, y: startY - halfTileHeight - tileHeight, count: 4 },
-            { x: startX + (2 * threeQuarterTileWidth), y: startY - tileHeight, count: 3 }
+            { x: startX - (2 * majorTileWidth), y: startY - innerHeight, count: 3 },
+            { x: startX - majorTileWidth, y: startY - halfTileHeight - tileHeight, count: 4 },
+            { x: startX, y: startY - (2 * innerHeight), count: 5 },
+            { x: startX + majorTileWidth, y: startY - halfTileHeight - tileHeight, count: 4 },
+            { x: startX + (2 * majorTileWidth), y: startY - tileHeight, count: 3 }
         ]
     };
 }
@@ -27,12 +29,12 @@ function getSettlementPlacementData(originX, originY) {
     return {
         deltaY: halfTileHeight,
         data: [
-            { x: startX - (2 * threeQuarterTileWidth), y: startY - tileHeight, count: 3, nudge: 1 },
-            { x: startX - threeQuarterTileWidth, y: startY - halfTileHeight - tileHeight, count: 4, nudge: 1 },
+            { x: startX - (2 * majorTileWidth), y: startY - tileHeight, count: 3, nudge: 1 },
+            { x: startX - majorTileWidth, y: startY - halfTileHeight - tileHeight, count: 4, nudge: 1 },
             { x: startX, y: startY - (2 * tileHeight), count: 5, nudge: 1 },
             { x: startX + tileWidth, y: startY - (2 * tileHeight), count: 5, nudge: -1 },
-            { x: startX + tileWidth + threeQuarterTileWidth, y: startY - halfTileHeight - tileHeight, count: 4, nudge: -1 },
-            { x: startX + tileWidth + (2 * threeQuarterTileWidth), y: startY - tileHeight, count: 3, nudge: -1 }
+            { x: startX + tileWidth + majorTileWidth, y: startY - halfTileHeight - tileHeight, count: 4, nudge: -1 },
+            { x: startX + tileWidth + (2 * majorTileWidth), y: startY - tileHeight, count: 3, nudge: -1 }
         ]
     };
 }
@@ -45,7 +47,7 @@ function getRoadPlacementData(originX, originY) {
     var sixtyDegree = 1.045;
     return [
         {
-            x: startX - (2 * threeQuarterTileWidth) + halfTileWidth - halfRoadWidth,
+            x: startX - (2 * majorTileWidth) + halfTileWidth - halfRoadWidth,
             y: startY - tileHeight,
             count: 4,
             deltaY: tileHeight - halfRoadHeight,
@@ -54,7 +56,7 @@ function getRoadPlacementData(originX, originY) {
         },
         // Upper left icons
         {
-            x: startX - (2 * threeQuarterTileWidth) + halfTileWidth - (2 * halfRoadWidth) - 25,
+            x: startX - (2 * majorTileWidth) + halfTileWidth - (2 * halfRoadWidth) - 25,
             y: startY - tileHeight + 25,
             count: 3,
             deltaY: tileHeight,
@@ -63,7 +65,7 @@ function getRoadPlacementData(originX, originY) {
         },
         // Lower left icons
         {
-            x: startX - (2 * threeQuarterTileWidth) + halfTileWidth - (2 * halfRoadWidth) - 25,
+            x: startX - (2 * majorTileWidth) + halfTileWidth - (2 * halfRoadWidth) - 25,
             y: startY - tileHeight + 50,
             count: 3,
             deltaY: tileHeight,
