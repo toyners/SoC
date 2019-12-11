@@ -42,8 +42,8 @@ function displayBoard(state, layoutColumnData, hexData, textures) {
             hexImage.cellIndex = hex.resourceType != null ? hex.resourceType : 5;
             state.addChild(hexImage);
             if (hex.productionFactor != 0) {
-                var productionImage = new Kiwi.GameObjects.StaticImage(state, getProductionFactorTexture(hex.productionFactor, textures), columnData.x, y);
-                state.addChild(productionImage);
+                /*var productionImage = new Kiwi.GameObjects.StaticImage(state, getProductionFactorTexture(hex.productionFactor, textures), columnData.x, y);
+                state.addChild(productionImage);*/
             }
             y += layoutColumnData.deltaY;
         }

@@ -4,21 +4,23 @@ var tileHeight = 100;
 var tileWidth = 100;
 var innerHeight = 88;
 var innerWidth = 86;
+var edgeHeight = 6;
 var halfTileHeight = Math.trunc(tileHeight / 2);
 var halfTileWidth = Math.trunc(tileWidth / 2);
 var majorTileWidth = 70;
+var majorTitleHeight = 48;
 
 function getTilePlacementData(originX, originY) {
     var startX = originX - halfTileWidth;
     var startY = originY - halfTileHeight;
     return {
-        deltaY: tileHeight,
+        deltaY: tileHeight - edgeHeight,
         data: [
-            { x: startX - (2 * majorTileWidth), y: startY - innerHeight, count: 3 },
-            { x: startX - majorTileWidth, y: startY - halfTileHeight - tileHeight, count: 4 },
-            { x: startX, y: startY - (2 * innerHeight), count: 5 },
-            { x: startX + majorTileWidth, y: startY - halfTileHeight - tileHeight, count: 4 },
-            { x: startX + (2 * majorTileWidth), y: startY - tileHeight, count: 3 }
+            { x: startX - (2 * majorTileWidth), y: startY - (innerHeight + edgeHeight), count: 3 },
+            { x: startX - majorTileWidth, y: startY - (innerHeight + edgeHeight + majorTitleHeight), count: 4 },
+            { x: startX, y: startY - (2 * (innerHeight + edgeHeight)), count: 5 },
+            { x: startX + majorTileWidth, y: startY - (innerHeight + edgeHeight + majorTitleHeight), count: 4 },
+            { x: startX + (2 * majorTileWidth), y: startY - (innerHeight + edgeHeight), count: 3 }
         ]
     };
 }
