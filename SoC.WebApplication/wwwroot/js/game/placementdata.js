@@ -37,7 +37,7 @@ function getSettlementPlacementData(originX, originY) {
         data: [
             { x: startX - (2 * majorTileWidth) + settlementIndent, y: startY - (tileHeight + edgeHeight) - 1, count: 7, nudge: 1 },
             { x: startX - majorTileWidth + settlementIndent, y: startY - (tileHeight - edgeHeight + majorTitleHeight), count: 4, nudge: 1 },
-            { x: startX, y: startY - (2 * (tileHeight - edgeHeight)), count: 5, nudge: 1 },
+            { x: startX + settlementIndent, y: startY - (2 * (tileHeight - edgeHeight)), count: 5, nudge: 1 },
 
             { x: startX + tileWidth, y: startY - (2 * tileHeight), count: 5, nudge: -1 },
             { x: startX + tileWidth + majorTileWidth, y: startY - halfTileHeight - tileHeight, count: 4, nudge: -1 },

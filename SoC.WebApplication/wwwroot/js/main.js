@@ -37,7 +37,7 @@ function main() {
 
     state.settlementImageIndexById = settlementImageIndexById;
     state.create = create;
-    /*
+
     state.update = function () {
         Kiwi.State.prototype.update.call(this);
 
@@ -88,7 +88,7 @@ function main() {
             }
         }
     };
-    */
+
     var gameOptions = {
         width: backgroundWidth,
         height: backgroundHeight
