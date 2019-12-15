@@ -16,24 +16,29 @@ function getTilePlacementData(originX, originY) {
     return {
         deltaY: tileHeight - edgeHeight,
         data: [
-            { x: startX - (2 * majorTileWidth), y: startY - (innerHeight + edgeHeight), count: 3 },
-            { x: startX - majorTileWidth, y: startY - (innerHeight + edgeHeight + majorTitleHeight), count: 4 },
-            { x: startX, y: startY - (2 * (innerHeight + edgeHeight)), count: 5 },
-            { x: startX + majorTileWidth, y: startY - (innerHeight + edgeHeight + majorTitleHeight), count: 4 },
-            { x: startX + (2 * majorTileWidth), y: startY - (innerHeight + edgeHeight), count: 3 }
+            { x: startX - (2 * majorTileWidth), y: startY - (tileHeight - edgeHeight), count: 3 },
+            { x: startX - majorTileWidth, y: startY - (tileHeight - edgeHeight + majorTitleHeight), count: 4 },
+            { x: startX, y: startY - (2 * (tileHeight - edgeHeight)), count: 5 },
+            { x: startX + majorTileWidth, y: startY - (tileHeight - edgeHeight + majorTitleHeight), count: 4 },
+            { x: startX + (2 * majorTileWidth), y: startY - (tileHeight - edgeHeight), count: 3 }
         ]
     };
 }
 
+var settlementIndent = 27;
+var settlementDeltaX = 24;
+var settlementDeltaY = 48;
 function getSettlementPlacementData(originX, originY) {
     var startX = originX - halfTileWidth;
     var startY = originY - halfTileHeight;
     return {
-        deltaY: halfTileHeight,
+        deltaX: settlementDeltaX,
+        deltaY: settlementDeltaY,
         data: [
-            { x: startX - (2 * majorTileWidth), y: startY - tileHeight, count: 3, nudge: 1 },
-            { x: startX - majorTileWidth, y: startY - halfTileHeight - tileHeight, count: 4, nudge: 1 },
-            { x: startX, y: startY - (2 * tileHeight), count: 5, nudge: 1 },
+            { x: startX - (2 * majorTileWidth) + settlementIndent, y: startY - (tileHeight + edgeHeight) - 1, count: 7, nudge: 1 },
+            { x: startX - majorTileWidth + settlementIndent, y: startY - (tileHeight - edgeHeight + majorTitleHeight), count: 4, nudge: 1 },
+            { x: startX, y: startY - (2 * (tileHeight - edgeHeight)), count: 5, nudge: 1 },
+
             { x: startX + tileWidth, y: startY - (2 * tileHeight), count: 5, nudge: -1 },
             { x: startX + tileWidth + majorTileWidth, y: startY - halfTileHeight - tileHeight, count: 4, nudge: -1 },
             { x: startX + tileWidth + (2 * majorTileWidth), y: startY - tileHeight, count: 3, nudge: -1 }
