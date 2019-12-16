@@ -71,14 +71,15 @@ function setupInitialPlacementUI(state, textures, settlementPlacementData, roadP
     var halfSettlementIconWidth = 12;
     var halfSettlementIconHeight = 12;
     var settlementLocation = 0;
-    for (var index = 0; index < settlementPlacementData.columns.length; index++) {
-        var settlementColumnData = settlementPlacementData.columns[index];
-        var x = settlementColumnData.x - halfSettlementIconWidth;
-        var y = settlementColumnData.y - halfSettlementIconHeight;
-        var settlementIndent = settlementColumnData.direction * settlementPlacementData.deltaX;
-        for (var count = 0; count < settlementColumnData.count; count++) {
-            var actualX = x + (count % 2 != 0 ? settlementIndent : 0);
-            var settlementSprite = new Kiwi.GameObjects.Sprite(state, textures.settlement, actualX, y);
+    for (var index = 0; index < settlementPlacementData.length; index++) {
+        var columnPlacementData = settlementPlacementData[index];
+        var x = columnPlacementData.x - halfSettlementIconWidth;
+        var y = columnPlacementData.y - halfSettlementIconHeight;
+        var offsets = columnPlacementData.offsets;
+        var offsetCount = offsets.length + 1;
+        var offsetIndex = 0;
+        while (offsetCount > 0) {
+            var settlementSprite = new Kiwi.GameObjects.Sprite(state, textures.settlement, x, y);
             settlementSprite.visible = false;
             settlementSprite.input.onUp.add(settlementClickedHandler, state);
             settlementSprite.input.onEntered.add(settlementHoverHandler, state);
@@ -87,7 +88,12 @@ function setupInitialPlacementUI(state, textures, settlementPlacementData, roadP
             initialPlacementUI.addSettlementSprite(settlementSprite, settlementLocation++);
             sprites.push(settlementSprite);
 
-            y += settlementPlacementData.deltaY;
+            if (offsetCount > 1) {
+                x += offsets[offsetIndex].deltaX;
+                y += offsets[offsetIndex++].deltaY;
+            }
+
+            offsetCount--;
         }
     }
 
@@ -99,7 +105,7 @@ function setupInitialPlacementUI(state, textures, settlementPlacementData, roadP
         initialPlacementUI.toggleRoadSprite(context.id);
     }
     
-    for (var index = 0; index < roadPlacementData.length; index++) {
+    /*for (var index = 0; index < roadPlacementData.length; index++) {
         var roadData = roadPlacementData[index];
         var x = roadData.x;
         var y = roadData.y;
@@ -122,7 +128,7 @@ function setupInitialPlacementUI(state, textures, settlementPlacementData, roadP
             locationIndex++;
             y += roadData.deltaY;
         }
-    }
+    }*/
 
     for (var i = sprites.length - 1; i >= 0; i--)
         state.addChild(sprites[i]);
