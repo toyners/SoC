@@ -68,17 +68,16 @@ function setupInitialPlacementUI(state, textures, settlementPlacementData, roadP
         initialPlacementUI.toggleSettlementSprite(context.id);
     }
 
-    var halfSettlementIconWidth = 11;
-    var halfSettlementIconHeight = 11;
-    var cellIndent = 20;
+    var halfSettlementIconWidth = 12;
+    var halfSettlementIconHeight = 12;
     var settlementLocation = 0;
-    for (var index = 0; index < settlementPlacementData.data.length; index++) {
-        var settlementData = settlementPlacementData.data[index];
-        var x = settlementData.x - halfSettlementIconWidth;
-        var y = settlementData.y - halfSettlementIconHeight;
-        var total = (settlementData.count * 2) + 1;
-        for (var count = 1; count <= total; count++) {
-            var actualX = x + (count % 2 != 0 ? (settlementData.nudge * cellIndent) : 0);
+    for (var index = 0; index < settlementPlacementData.columns.length; index++) {
+        var settlementColumnData = settlementPlacementData.columns[index];
+        var x = settlementColumnData.x - halfSettlementIconWidth;
+        var y = settlementColumnData.y - halfSettlementIconHeight;
+        var settlementIndent = settlementColumnData.direction * settlementPlacementData.deltaX;
+        for (var count = 0; count < settlementColumnData.count; count++) {
+            var actualX = x + (count % 2 != 0 ? settlementIndent : 0);
             var settlementSprite = new Kiwi.GameObjects.Sprite(state, textures.settlement, actualX, y);
             settlementSprite.visible = false;
             settlementSprite.input.onUp.add(settlementClickedHandler, state);
@@ -142,7 +141,7 @@ function create() {
     var originY = (backgroundHeight / 2);
     displayBoard(this, getTilePlacementData(originX, originY), hexData, this.textures);
 
-    /*this.initialPlacementUI = setupInitialPlacementUI(this, this.textures,
+    this.initialPlacementUI = setupInitialPlacementUI(this, this.textures,
         getSettlementPlacementData(originX, originY), getRoadPlacementData(originX, originY),
         this.settlementImageIndexById);
 
@@ -176,5 +175,5 @@ function create() {
     player = new PlayerUI(playerNamesInOrder[3]);
     this.players.push(player);
     this.fourthPlayerName = new Kiwi.GameObjects.Textfield(this, player.name, 700, 550, "#000", 32, 'normal', 'Impact');
-    this.addChild(this.fourthPlayerName);*/
+    this.addChild(this.fourthPlayerName);
 }

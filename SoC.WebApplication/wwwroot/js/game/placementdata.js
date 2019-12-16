@@ -34,14 +34,14 @@ function getSettlementPlacementData(originX, originY) {
     return {
         deltaX: settlementDeltaX,
         deltaY: settlementDeltaY,
-        data: [
-            { x: startX - (2 * majorTileWidth) + settlementIndent, y: startY - (tileHeight + edgeHeight) - 1, count: 7, nudge: 1 },
-            { x: startX - majorTileWidth + settlementIndent, y: startY - (tileHeight - edgeHeight + majorTitleHeight), count: 4, nudge: 1 },
-            { x: startX + settlementIndent, y: startY - (2 * (tileHeight - edgeHeight)), count: 5, nudge: 1 },
+        columns: [
+            { x: startX - (2 * majorTileWidth) + settlementIndent, y: startY - (tileHeight + edgeHeight + 1), count: 7, direction: -1 },
+            { x: startX - majorTileWidth + settlementIndent, y: startY - (tileHeight - edgeHeight + majorTitleHeight), count: 9, direction: -1 },
+            { x: startX + settlementIndent, y: startY - (2 * (tileHeight - edgeHeight)), count: 11, direction: -1 },
 
-            { x: startX + tileWidth, y: startY - (2 * tileHeight), count: 5, nudge: -1 },
-            { x: startX + tileWidth + majorTileWidth, y: startY - halfTileHeight - tileHeight, count: 4, nudge: -1 },
-            { x: startX + tileWidth + (2 * majorTileWidth), y: startY - tileHeight, count: 3, nudge: -1 }
+            { x: startX + tileWidth, y: startY - (2 * tileHeight), count: 11, direction: -1 },
+            { x: startX + tileWidth + majorTileWidth, y: startY - halfTileHeight - tileHeight, count: 9, direction: -1 },
+            { x: startX + tileWidth + (2 * majorTileWidth), y: startY - tileHeight, count: 7, direction: -1 }
         ]
     };
 }
