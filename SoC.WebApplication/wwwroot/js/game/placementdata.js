@@ -61,30 +61,14 @@ function getRoadPlacementData(originX, originY) {
     var sixtyDegree = 1.045;
     return [
         {
-            x: startX - (2 * majorTileWidth) + halfTileWidth - halfRoadWidth,
-            y: startY - tileHeight,
-            count: 4,
-            deltaY: tileHeight - halfRoadHeight,
-            rotation: 0,
-            locations: [ 0, 8, 2, 10, 4, 12, 6, 14 ]
+            x: startX + 2, y: startY + 4,
+            imageIndex: 0,
+            locations: [ 0, 1 ]
         },
-        // Upper left icons
         {
-            x: startX - (2 * majorTileWidth) + halfTileWidth - (2 * halfRoadWidth) - 25,
-            y: startY - tileHeight + 25,
-            count: 3,
-            deltaY: tileHeight,
-            rotation: sixtyDegree,
-            locations: [0, 1, 2, 3, 4, 5]
-        },
-        // Lower left icons
-        {
-            x: startX - (2 * majorTileWidth) + halfTileWidth - (2 * halfRoadWidth) - 25,
-            y: startY - tileHeight + 50,
-            count: 3,
-            deltaY: tileHeight,
-            rotation: -sixtyDegree,
-            locations: [1, 2, 3, 4, 5, 6]
+            x: startX + 2, deltaY: startY + 49,
+            imageIndex: 1,
+            locations: [1, 2]
         }
     ];
 }
