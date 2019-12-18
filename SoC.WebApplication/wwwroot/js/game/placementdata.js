@@ -56,19 +56,26 @@ function getSettlementPlacementData(originX, originY) {
 function getRoadPlacementData(originX, originY) {
     var startX = originX - halfTileWidth;
     var startY = originY - halfTileHeight;
-    var halfRoadWidth = 14;
-    var halfRoadHeight = 4;
-    var sixtyDegree = 1.045;
     return [
         {
-            x: startX + 2, y: startY + 4,
+            imageName: 'roads',
             imageIndex: 0,
-            locations: [ 0, 1 ]
+            roads: [
+                //{ x: startX + 2, y: startY + 4, locations: [0, 1] },
+                { x: startX - (2 * majorTileWidth) + 2, y: startY - (tileHeight - edgeHeight) + 4, locations: [0, 1] },
+                { x: startX - (2 * majorTileWidth) + 2, y: startY + 4, locations: [2, 3] },
+                { x: startX - (2 * majorTileWidth) + 2, y: startY + (tileHeight - edgeHeight) + 4, locations: [4, 5] },
+            ]
         },
         {
-            x: startX + 2, deltaY: startY + 49,
-            imageIndex: 1,
-            locations: [1, 2]
+            imageName: 'roads',
+            imageIndex: 3,
+            roads: [
+                //{ x: startX + 2, y: startY + 53, locations: [1, 2] }
+                { x: startX - (2 * majorTileWidth) + 2, y: startY - (tileHeight - edgeHeight) + 53, locations: [1, 2] },
+                { x: startX - (2 * majorTileWidth) + 2, y: startY + 53, locations: [3, 4] },
+                { x: startX - (2 * majorTileWidth) + 2, y: startY + (tileHeight - edgeHeight) + 53, locations: [5, 6] },
+            ]
         }
     ];
 }

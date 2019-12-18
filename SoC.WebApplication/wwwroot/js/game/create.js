@@ -104,11 +104,29 @@ function setupInitialPlacementUI(state, textures, settlementPlacementData, roadP
     var roadHoverHandler = function (context, params) {
         initialPlacementUI.toggleRoadSprite(context.id);
     }
-    
-    for (var index = 0; index < roadPlacementData.length; index++) {
+
+    for (var roadCollectionData of roadPlacementData) {
+        for (var roadData of roadCollectionData.roads) {
+            var roadSprite = new Kiwi.GameObjects.Sprite(state, textures[roadCollectionData.imageName], roadData.x, roadData.y);
+            roadSprite.cellIndex = roadCollectionData.imageIndex;
+            //roadSprite.visible = false;
+            roadSprite.input.onUp.add(roadClickedHandler, state);
+            roadSprite.input.onEntered.add(roadHoverHandler, state);
+            roadSprite.input.onLeft.add(roadHoverHandler, state);
+
+            var locations = roadData.locations;
+            initialPlacementUI.addRoadForSettlement(roadSprite, sprites[locations[0]].id, locations[0], locations[1]);
+            initialPlacementUI.addRoadForSettlement(roadSprite, sprites[locations[1]].id, locations[1], locations[0]);
+            initialPlacementUI.addRoadPlacement(roadSprite);
+            sprites.push(roadSprite);
+        }
+    }
+
+    /*for (var index = 0; index < roadPlacementData.length; index++) {
         var roadData = roadPlacementData[index];
-        var roadSprite = new Kiwi.GameObjects.Sprite(state, textures.roads, roadData.x, roadData.y);
-        roadSprite.visible = false;
+        var roadSprite = new Kiwi.GameObjects.Sprite(state, textures['roads'], roadData.x, roadData.y);
+        roadSprite.cellIndex = roadData.imageIndex;
+        //roadSprite.visible = false;
         roadSprite.input.onUp.add(roadClickedHandler, state);
         roadSprite.input.onEntered.add(roadHoverHandler, state);
         roadSprite.input.onLeft.add(roadHoverHandler, state);
@@ -118,7 +136,7 @@ function setupInitialPlacementUI(state, textures, settlementPlacementData, roadP
         initialPlacementUI.addRoadForSettlement(roadSprite, sprites[locations[1]].id, locations[1], locations[0]);
         initialPlacementUI.addRoadPlacement(roadSprite);
         sprites.push(roadSprite);
-    }
+    }*/
 
     for (var i = sprites.length - 1; i >= 0; i--)
         state.addChild(sprites[i]);
