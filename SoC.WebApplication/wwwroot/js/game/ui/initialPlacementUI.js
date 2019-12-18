@@ -56,19 +56,29 @@ class InitialPlacementUI {
         }
     }
 
-    addRoadForSettlement(roadSprite, settlementSpriteId, settlementLocation, endLocation) {
+    addRoadForSettlement(road, settlementSpriteId, settlementLocation, endLocation) {
         var roads = this.roadsBySettlementId[settlementSpriteId];
         if (!roads) {
             roads = [];
             this.roadsBySettlementId[settlementSpriteId] = roads;
             this.roadsBySettlementLocation[settlementLocation] = roads;
         }
-        roads.push({ location: endLocation, sprite: roadSprite });
-
+        roads.push({ location: endLocation, road: road });
     }
 
-    addRoadPlacement(roadSprite) {
-        this.roadsBySpriteId[roadSprite.id] = roadSprite;
+    addRoadPlacement(roadSprite, defaultImageIndex, hoverImageIndex, firstSettlementSpriteId, firstSettlementLocation,
+        secondSettlementSpriteId, secondSettlementLocation) {
+
+        var road = {
+            sprite: roadSprite,
+            defaultImageIndex: defaultImageIndex,
+            hoverImageIndex: hoverImageIndex            
+        };
+
+        this.roadsBySpriteId[roadSprite.id] = road;
+
+        addRoadForSettlement(road, firstSettlementSpriteId, firstSettlementLocation, secondSettlementLocation);
+        addRoadForSettlement(road, secondSettlementSpriteId, secondSettlementLocation, firstSettlementLocation);
     }
 
     addSettlementSprite(settlementSprite, settlementLocation) {
@@ -170,9 +180,11 @@ class InitialPlacementUI {
     toggleRoadSprite(spriteId) {
         if (this.selectedRoad != null)
             return;
-        var roadSprite = this.roadsBySpriteId[spriteId];
-        if (roadSprite.cellIndex === 0 || roadSprite.cellIndex === this.hoverImageIndex)
-            roadSprite.cellIndex = roadSprite.cellIndex === 0 ? this.hoverImageIndex : 0;
+        var road = this.roadsBySpriteId[spriteId];
+        if (road.sprite.cellIndex === road.defaultImageIndex)
+            road.sprite.cellIndex = road.hoverImageIndex;
+        else if (road.sprite.cellIndex === road.hoverImageIndex)
+            road.sprite.cellIndex = road.defaultImageIndex;
     }
 
     toggleSettlementSprite(spriteId) {

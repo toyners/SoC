@@ -60,6 +60,7 @@ function getRoadPlacementData(originX, originY) {
         {
             imageName: 'roads',
             imageIndex: 0,
+            hoverImageIndex: 1,
             roads: [
                 //{ x: startX + 2, y: startY + 4, locations: [0, 1] },
                 { x: startX - (2 * majorTileWidth) + 2, y: startY - (tileHeight - edgeHeight) + 4, locations: [0, 1] },
@@ -70,6 +71,7 @@ function getRoadPlacementData(originX, originY) {
         {
             imageName: 'roads',
             imageIndex: 3,
+            hoverImageIndex: 4,
             roads: [
                 //{ x: startX + 2, y: startY + 53, locations: [1, 2] }
                 { x: startX - (2 * majorTileWidth) + 2, y: startY - (tileHeight - edgeHeight) + 53, locations: [1, 2] },
