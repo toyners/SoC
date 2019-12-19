@@ -9,18 +9,19 @@ var halfTileHeight = Math.trunc(tileHeight / 2);
 var halfTileWidth = Math.trunc(tileWidth / 2);
 var majorTileWidth = 70;
 var majorTitleHeight = 48;
+var stepY = tileHeight - edgeHeight;
 
 function getTilePlacementData(originX, originY) {
     var startX = originX - halfTileWidth;
     var startY = originY - halfTileHeight;
     return {
-        deltaY: tileHeight - edgeHeight,
+        deltaY: stepY,
         data: [
-            { x: startX - (2 * majorTileWidth), y: startY - (tileHeight - edgeHeight), count: 3 },
-            { x: startX - majorTileWidth, y: startY - (tileHeight - edgeHeight + majorTitleHeight), count: 4 },
-            { x: startX, y: startY - (2 * (tileHeight - edgeHeight)), count: 5 },
-            { x: startX + majorTileWidth, y: startY - (tileHeight - edgeHeight + majorTitleHeight), count: 4 },
-            { x: startX + (2 * majorTileWidth), y: startY - (tileHeight - edgeHeight), count: 3 }
+            { x: startX - (2 * majorTileWidth), y: startY - stepY, count: 3 },
+            { x: startX - majorTileWidth, y: startY - (stepY + majorTitleHeight), count: 4 },
+            { x: startX, y: startY - (2 * stepY), count: 5 },
+            { x: startX + majorTileWidth, y: startY - (stepY + majorTitleHeight), count: 4 },
+            { x: startX + (2 * majorTileWidth), y: startY - stepY, count: 3 }
         ]
     };
 }
@@ -34,7 +35,7 @@ function getSettlementPlacementData(originX, originY) {
     return [
         {
             x: startX - (2 * majorTileWidth) + settlementIndent,
-            y: startY - (tileHeight - edgeHeight - 1),
+            y: startY - (stepY - 1),
             offsets: [
                 { deltaX: -settlementDeltaX, deltaY: settlementDeltaY },
                 { deltaX: settlementDeltaX, deltaY: settlementDeltaY - 2 },
@@ -43,34 +44,64 @@ function getSettlementPlacementData(originX, originY) {
                 { deltaX: -settlementDeltaX, deltaY: settlementDeltaY - 1 },
                 { deltaX: settlementDeltaX, deltaY: settlementDeltaY - 1 }
             ]
+        },
+        {
+            x: startX - majorTileWidth + settlementIndent,
+            y: startY - (stepY + majorTitleHeight),
+            offsets: [
+                { deltaX: -settlementDeltaX, deltaY: settlementDeltaY },
+                { deltaX: settlementDeltaX, deltaY: settlementDeltaY },
+                { deltaX: -settlementDeltaX, deltaY: settlementDeltaY },
+                { deltaX: settlementDeltaX, deltaY: settlementDeltaY - 1 },
+                { deltaX: -settlementDeltaX, deltaY: settlementDeltaY - 1 },
+                { deltaX: settlementDeltaX, deltaY: settlementDeltaY - 2 },
+                { deltaX: -settlementDeltaX, deltaY: settlementDeltaY - 1 },
+                { deltaX: settlementDeltaX, deltaY: settlementDeltaY - 1 },
+            ]
+        },
+        {
+            x: startX + settlementIndent,
+            y: startY - (2 * stepY),
+            offsets: [
+                { deltaX: -settlementDeltaX, deltaY: settlementDeltaY - 1 },
+                { deltaX: settlementDeltaX, deltaY: settlementDeltaY },
+                { deltaX: -settlementDeltaX, deltaY: settlementDeltaY },
+                { deltaX: settlementDeltaX, deltaY: settlementDeltaY - 1 },
+                { deltaX: -settlementDeltaX, deltaY: settlementDeltaY - 1 },
+                { deltaX: settlementDeltaX, deltaY: settlementDeltaY - 2 },
+                { deltaX: -settlementDeltaX, deltaY: settlementDeltaY - 1 },
+                { deltaX: settlementDeltaX, deltaY: settlementDeltaY - 1 },
+                { deltaX: -settlementDeltaX, deltaY: settlementDeltaY - 1 },
+                { deltaX: settlementDeltaX, deltaY: settlementDeltaY - 1 },
+            ]
         }
-            /*{ x: startX - majorTileWidth + settlementIndent, y: startY - (tileHeight - edgeHeight + majorTitleHeight), count: 9, direction: -1 },
-            { x: startX + settlementIndent, y: startY - (2 * (tileHeight - edgeHeight)), count: 11, direction: -1 },
-
-            { x: startX + tileWidth, y: startY - (2 * tileHeight), count: 11, direction: -1 },
-            { x: startX + tileWidth + majorTileWidth, y: startY - halfTileHeight - tileHeight, count: 9, direction: -1 },
-            { x: startX + tileWidth + (2 * majorTileWidth), y: startY - tileHeight, count: 7, direction: -1 }*/
     ];
 }
 
 function getRoadPlacementData(originX, originY) {
     var startX = originX - halfTileWidth;
     var startY = originY - halfTileHeight;
+
     return [
         {
             imageName: 'roads',
             imageIndex: 0,
             hoverImageIndex: 1,
             roads: [
-                //{ x: startX + 2, y: startY + 4, locations: [0, 1] },
-                { x: startX - (2 * majorTileWidth) + 2, y: startY - (tileHeight - edgeHeight) + 6, locations: [0, 1] },
+                // Column 1
+                { x: startX - (2 * majorTileWidth) + 2, y: startY - stepY + 6, locations: [0, 1] },
                 { x: startX - (2 * majorTileWidth) + 2, y: startY + 6, locations: [2, 3] },
-                { x: startX - (2 * majorTileWidth) + 2, y: startY + (tileHeight - edgeHeight) + 6, locations: [4, 5] },
+                { x: startX - (2 * majorTileWidth) + 2, y: startY + stepY + 6, locations: [4, 5] },
 
-                { x: startX - majorTileWidth + 2, y: startY - (tileHeight - edgeHeight + majorTitleHeight) + 6, locations: [7, 8] },
+                // Column 2
+                { x: startX - majorTileWidth + 2, y: startY - (stepY + majorTitleHeight) + 6, locations: [7, 8] },
                 { x: startX - majorTileWidth + 2, y: startY - majorTitleHeight + 6, locations: [9, 10] },
-                { x: startX - majorTileWidth + 2, y: startY + (tileHeight - edgeHeight + majorTitleHeight) + 6, locations: [11, 12] },
-                { x: startX - majorTileWidth + 2, y: startY + ((2 * (tileHeight - edgeHeight)) + majorTitleHeight) + 6, locations: [13, 14] }
+                { x: startX - majorTileWidth + 2, y: startY + (stepY + majorTitleHeight) + 6, locations: [11, 12] },
+                { x: startX - majorTileWidth + 2, y: startY + ((2 * stepY) + majorTitleHeight) + 6, locations: [13, 14] },
+
+                // Column 3
+                { x: startX, y: startY - (2 * stepY), locations: [16, 17] },
+
             ]
         },
         {
@@ -78,12 +109,12 @@ function getRoadPlacementData(originX, originY) {
             imageIndex: 3,
             hoverImageIndex: 4,
             roads: [
-                //{ x: startX + 2, y: startY + 53, locations: [1, 2] }
-                { x: startX - (2 * majorTileWidth) + 2, y: startY - (tileHeight - edgeHeight) + 53, locations: [1, 2] },
+                // Column 1
+                { x: startX - (2 * majorTileWidth) + 2, y: startY - (stepY) + 53, locations: [1, 2] },
                 { x: startX - (2 * majorTileWidth) + 2, y: startY + 53, locations: [3, 4] },
-                { x: startX - (2 * majorTileWidth) + 2, y: startY + (tileHeight - edgeHeight) + 53, locations: [5, 6] },
+                { x: startX - (2 * majorTileWidth) + 2, y: startY + (stepY) + 53, locations: [5, 6] },
 
-                { x: startX - majorTileWidth + 2, y: startY - (tileHeight - edgeHeight + majorTitleHeight) + 53, locations: [8, 9] },
+                { x: startX - majorTileWidth + 2, y: startY - (stepY + majorTitleHeight) + 53, locations: [8, 9] },
             ]
         }
     ];
