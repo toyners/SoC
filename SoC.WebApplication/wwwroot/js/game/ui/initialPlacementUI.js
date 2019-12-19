@@ -77,8 +77,8 @@ class InitialPlacementUI {
 
         this.roadsBySpriteId[roadSprite.id] = road;
 
-        addRoadForSettlement(road, firstSettlementSpriteId, firstSettlementLocation, secondSettlementLocation);
-        addRoadForSettlement(road, secondSettlementSpriteId, secondSettlementLocation, firstSettlementLocation);
+        this.addRoadForSettlement(road, firstSettlementSpriteId, firstSettlementLocation, secondSettlementLocation);
+        this.addRoadForSettlement(road, secondSettlementSpriteId, secondSettlementLocation, firstSettlementLocation);
     }
 
     addSettlementSprite(settlementSprite, settlementLocation) {
