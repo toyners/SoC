@@ -33,6 +33,7 @@ function getSettlementPlacementData(originX, originY) {
     var startX = originX - halfTileWidth;
     var startY = originY - halfTileHeight;
     return [
+        // First column
         {
             x: startX - (2 * majorTileWidth) + settlementIndent,
             y: startY - (stepY - 1),
@@ -45,13 +46,14 @@ function getSettlementPlacementData(originX, originY) {
                 { deltaX: settlementDeltaX, deltaY: settlementDeltaY - 1 }
             ]
         },
+        // Second column
         {
             x: startX - majorTileWidth + settlementIndent,
             y: startY - (stepY + majorTitleHeight),
             offsets: [
                 { deltaX: -settlementDeltaX, deltaY: settlementDeltaY },
                 { deltaX: settlementDeltaX, deltaY: settlementDeltaY },
-                { deltaX: -settlementDeltaX, deltaY: settlementDeltaY },
+                { deltaX: -settlementDeltaX, deltaY: settlementDeltaY - 1 },
                 { deltaX: settlementDeltaX, deltaY: settlementDeltaY - 1 },
                 { deltaX: -settlementDeltaX, deltaY: settlementDeltaY - 1 },
                 { deltaX: settlementDeltaX, deltaY: settlementDeltaY - 2 },
@@ -59,6 +61,7 @@ function getSettlementPlacementData(originX, originY) {
                 { deltaX: settlementDeltaX, deltaY: settlementDeltaY - 1 },
             ]
         },
+        // Third column
         {
             x: startX + settlementIndent,
             y: startY - (2 * stepY),
@@ -74,7 +77,52 @@ function getSettlementPlacementData(originX, originY) {
                 { deltaX: -settlementDeltaX, deltaY: settlementDeltaY - 1 },
                 { deltaX: settlementDeltaX, deltaY: settlementDeltaY - 1 },
             ]
-        }
+        },
+        // Fourth column
+        {
+            x: startX + tileWidth - settlementIndent,
+            y: startY - (2 * stepY),
+            offsets: [
+                { deltaX: settlementDeltaX, deltaY: settlementDeltaY - 1 },
+                { deltaX: -settlementDeltaX, deltaY: settlementDeltaY },
+                { deltaX: settlementDeltaX, deltaY: settlementDeltaY },
+                { deltaX: -settlementDeltaX, deltaY: settlementDeltaY - 1 },
+                { deltaX: settlementDeltaX, deltaY: settlementDeltaY - 1 },
+                { deltaX: -settlementDeltaX, deltaY: settlementDeltaY - 2 },
+                { deltaX: settlementDeltaX, deltaY: settlementDeltaY - 1 },
+                { deltaX: -settlementDeltaX, deltaY: settlementDeltaY - 1 },
+                { deltaX: settlementDeltaX, deltaY: settlementDeltaY - 1 },
+                { deltaX: -settlementDeltaX, deltaY: settlementDeltaY - 1 },
+            ]
+        },
+        // Fifth column
+        {
+            x: startX + tileWidth + majorTileWidth - settlementIndent,
+            y: startY - (stepY + majorTitleHeight),
+            offsets: [
+                { deltaX: settlementDeltaX, deltaY: settlementDeltaY },
+                { deltaX: -settlementDeltaX, deltaY: settlementDeltaY },
+                { deltaX: settlementDeltaX, deltaY: settlementDeltaY - 1 },
+                { deltaX: -settlementDeltaX, deltaY: settlementDeltaY - 1 },
+                { deltaX: settlementDeltaX, deltaY: settlementDeltaY - 1 },
+                { deltaX: -settlementDeltaX, deltaY: settlementDeltaY - 2 },
+                { deltaX: settlementDeltaX, deltaY: settlementDeltaY - 1 },
+                { deltaX: -settlementDeltaX, deltaY: settlementDeltaY - 1 },
+            ]
+        },
+        // Sixth column
+        {
+            x: startX + tileWidth + (2 * majorTileWidth) - settlementIndent,
+            y: startY - (stepY - 1),
+            offsets: [
+                { deltaX: settlementDeltaX, deltaY: settlementDeltaY },
+                { deltaX: -settlementDeltaX, deltaY: settlementDeltaY - 2 },
+                { deltaX: settlementDeltaX, deltaY: settlementDeltaY - 1 },
+                { deltaX: -settlementDeltaX, deltaY: settlementDeltaY - 2 },
+                { deltaX: settlementDeltaX, deltaY: settlementDeltaY - 1 },
+                { deltaX: -settlementDeltaX, deltaY: settlementDeltaY - 1 }
+            ]
+        },
     ];
 }
 
