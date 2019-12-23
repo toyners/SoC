@@ -129,12 +129,17 @@ function getSettlementPlacementData(originX, originY) {
 function getRoadPlacementData(originX, originY) {
     var startX = originX - halfTileWidth;
     var startY = originY - halfTileHeight;
+    var angularRoads = 'roads';
+    var defaultNorthEastIndex = 0;
+    var hoverNorthEastIndex = 1;
+    var defaultNorthWestIndex = 3;
+    var hoverNorthWestIndex = 4;
 
     return [
         {
-            imageName: 'roads',
-            imageIndex: 0,
-            hoverImageIndex: 1,
+            imageName: angularRoads,
+            imageIndex: defaultNorthEastIndex,
+            hoverImageIndex: hoverNorthEastIndex,
             roads: [
                 // Column 1
                 { x: startX - (2 * majorTileWidth) + 2, y: startY - stepY + 6, locations: [0, 1] },
@@ -144,8 +149,8 @@ function getRoadPlacementData(originX, originY) {
                 // Column 2
                 { x: startX - majorTileWidth + 2, y: startY - (stepY + majorTitleHeight) + 6, locations: [7, 8] },
                 { x: startX - majorTileWidth + 2, y: startY - majorTitleHeight + 6, locations: [9, 10] },
-                { x: startX - majorTileWidth + 2, y: startY + (stepY + majorTitleHeight) + 6, locations: [11, 12] },
-                { x: startX - majorTileWidth + 2, y: startY + ((2 * stepY) + majorTitleHeight) + 6, locations: [13, 14] },
+                { x: startX - majorTileWidth + 2, y: startY + majorTitleHeight + 6, locations: [11, 12] },
+                { x: startX - majorTileWidth + 2, y: startY + stepY + majorTitleHeight + 6, locations: [13, 14] },
 
                 // Column 3
                 { x: startX, y: startY - (2 * stepY), locations: [16, 17] },
@@ -153,15 +158,16 @@ function getRoadPlacementData(originX, originY) {
             ]
         },
         {
-            imageName: 'roads',
-            imageIndex: 3,
-            hoverImageIndex: 4,
+            imageName: angularRoads,
+            imageIndex: defaultNorthWestIndex,
+            hoverImageIndex: hoverNorthWestIndex,
             roads: [
                 // Column 1
                 { x: startX - (2 * majorTileWidth) + 2, y: startY - (stepY) + 53, locations: [1, 2] },
                 { x: startX - (2 * majorTileWidth) + 2, y: startY + 53, locations: [3, 4] },
                 { x: startX - (2 * majorTileWidth) + 2, y: startY + (stepY) + 53, locations: [5, 6] },
 
+                // Column 2
                 { x: startX - majorTileWidth + 2, y: startY - (stepY + majorTitleHeight) + 53, locations: [8, 9] },
             ]
         }
