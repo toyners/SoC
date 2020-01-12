@@ -46,7 +46,7 @@ function main() {
             switch (gameEvent.typeName) {
                 case "PlaceSetupInfrastructureEvent": {
                     this.initialPlacements++;
-                    this.initialPlacementUI.showSettlementSprites();
+                    //this.initialPlacementUI.showSettlementSprites();
                     this.currentPlayerMarker.visible = true;
                     this.currentPlayerMarker.animation.play('main');
                     break;
