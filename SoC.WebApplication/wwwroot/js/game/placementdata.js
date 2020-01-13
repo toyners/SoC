@@ -129,11 +129,14 @@ function getSettlementPlacementData(originX, originY) {
 function getRoadPlacementData(originX, originY) {
     var startX = originX - halfTileWidth;
     var startY = originY - halfTileHeight;
-    var angularRoads = 'roads';
+    var angularRoads = 'angular_roads';
+    var horizontalRoads = 'horizontal_roads'
     var defaultNorthEastIndex = 0;
     var hoverNorthEastIndex = 1;
     var defaultNorthWestIndex = 3;
     var hoverNorthWestIndex = 4;
+    var defaultHorizontalIndex = 0;
+    var hoverHorizontalIndex = 1;
 
     return [
         {
@@ -154,8 +157,17 @@ function getRoadPlacementData(originX, originY) {
 
                 // Column 3
                 { x: startX + 2, y: startY - (2 * stepY) + 5, locations: [16, 17] },
-                { x: startX + 4, y: startY - stepY, locations: [18, 19] },
+                { x: startX + 2, y: startY - stepY + 5, locations: [18, 19] },
+                { x: startX + 2, y: startY + 5, locations: [20, 21] },
+                { x: startX + 2, y: startY + stepY + 5, locations: [22, 23] },
+                { x: startX + 2, y: startY + (2 * stepY) + 5, locations: [24, 25] },
 
+                // Column 4
+                { x: startX + majorTileWidth + 2, y: startY - (2 * stepY) + 52, locations: [28, 29] },
+                { x: startX + majorTileWidth + 2, y: startY - stepY + 52, locations: [30, 31] },
+                { x: startX + majorTileWidth + 2, y: startY + 52, locations: [32, 33] },
+                { x: startX + majorTileWidth + 2, y: startY + stepY + 52, locations: [34, 35] },
+                { x: startX + majorTileWidth + 2, y: startY + (2 * stepY) + 52, locations: [36, 37] },
             ]
         },
         {
@@ -173,6 +185,29 @@ function getRoadPlacementData(originX, originY) {
                 { x: startX - majorTileWidth + 2, y: startY - majorTitleHeight + 53, locations: [10, 11] },
                 { x: startX - majorTileWidth + 2, y: startY + majorTitleHeight + 52, locations: [12, 13] },
                 { x: startX - majorTileWidth + 2, y: startY + stepY + majorTitleHeight + 52, locations: [14, 15] },
+
+                // Column 3
+                { x: startX + 2, y: startY - (2 * stepY) + 53, locations: [17, 18] },
+                { x: startX + 2, y: startY - stepY + 53, locations: [19, 20] },
+                { x: startX + 2, y: startY + 53, locations: [21, 22] },
+                { x: startX + 2, y: startY + stepY + 53, locations: [23, 24] },
+                { x: startX + 2, y: startY + (2 * stepY) + 53, locations: [25, 26] },
+
+                // Column 4
+                { x: startX + majorTileWidth + 2, y: startY - (2 * stepY) + 5, locations: [27, 28] },
+                { x: startX + majorTileWidth + 2, y: startY - stepY + 5, locations: [29, 30] },
+                { x: startX + majorTileWidth + 2, y: startY + 5, locations: [31, 32] },
+                { x: startX + majorTileWidth + 2, y: startY + stepY + 5, locations: [33, 34] },
+                { x: startX + majorTileWidth + 2, y: startY + (2 * stepY) + 5, locations: [35, 36] },
+            ]
+        },
+        {
+            imageName: horizontalRoads,
+            imageIndex: defaultHorizontalIndex,
+            hoverImageIndex: hoverHorizontalIndex,
+            roads: [
+                // Column 1
+                { x: startX - (2 * majorTileWidth) + 2, y: startY - stepY + 6, locations: [0, 8] },
             ]
         }
     ];
