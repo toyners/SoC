@@ -168,6 +168,17 @@ function getRoadPlacementData(originX, originY) {
                 { x: startX + majorTileWidth + 2, y: startY + 52, locations: [32, 33] },
                 { x: startX + majorTileWidth + 2, y: startY + stepY + 52, locations: [34, 35] },
                 { x: startX + majorTileWidth + 2, y: startY + (2 * stepY) + 52, locations: [36, 37] },
+
+                // Column 5
+                { x: startX + (2 * majorTileWidth) + 2, y: startY - stepY + 6, locations: [39, 40] },
+                { x: startX + (2 * majorTileWidth) + 2, y: startY + 6, locations: [41, 42] },
+                { x: startX + (2 * majorTileWidth) + 2, y: startY + stepY + 6, locations: [43, 44] },
+                { x: startX + (2 * majorTileWidth) + 2, y: startY + (2 * stepY) + 6, locations: [45, 46] },
+
+                // Column 6
+                { x: startX + (3 * majorTileWidth) + 2, y: startY - majorTitleHeight + 6, locations: [48, 49] },
+                { x: startX + (3 * majorTileWidth) + 2, y: startY + majorTitleHeight + 5, locations: [50, 51] },
+                { x: startX + (3 * majorTileWidth) + 2, y: startY + stepY + majorTitleHeight + 5, locations: [52, 53] },
             ]
         },
         {
@@ -199,6 +210,17 @@ function getRoadPlacementData(originX, originY) {
                 { x: startX + majorTileWidth + 2, y: startY + 5, locations: [31, 32] },
                 { x: startX + majorTileWidth + 2, y: startY + stepY + 5, locations: [33, 34] },
                 { x: startX + majorTileWidth + 2, y: startY + (2 * stepY) + 5, locations: [35, 36] },
+
+                // Column 5
+                { x: startX + (2 * majorTileWidth) + 2, y: startY - (2 * stepY) + 53, locations: [38, 39] },
+                { x: startX + (2 * majorTileWidth) + 2, y: startY - stepY + 53, locations: [40, 41] },
+                { x: startX + (2 * majorTileWidth) + 2, y: startY + 53, locations: [42, 43] },
+                { x: startX + (2 * majorTileWidth) + 2, y: startY + stepY + 53, locations: [44, 45] },
+
+                // Column 6
+                { x: startX + (3 * majorTileWidth) + 2, y: startY - (stepY + majorTitleHeight) + 53, locations: [47, 48] },
+                { x: startX + (3 * majorTileWidth) + 2, y: startY - majorTitleHeight + 53, locations: [49, 50] },
+                { x: startX + (3 * majorTileWidth) + 2, y: startY + majorTitleHeight + 53, locations: [51, 52] },
             ]
         },
         {
@@ -211,6 +233,13 @@ function getRoadPlacementData(originX, originY) {
                 { x: startX - (2 * majorTileWidth) + 31, y: startY - 2, locations: [2, 10] },
                 { x: startX - (2 * majorTileWidth) + 31, y: startY + stepY - 2, locations: [4, 12] },
                 { x: startX - (2 * majorTileWidth) + 31, y: startY + (2 * stepY) - 2, locations: [6, 14] },
+
+                // Column 2
+                { x: startX - majorTileWidth + 31, y: startY - (stepY + majorTitleHeight) - 2, locations: [7, 17] },
+                { x: startX - majorTileWidth + 31, y: startY - majorTitleHeight - 2, locations: [9, 19] },
+                { x: startX - majorTileWidth + 31, y: startY + ((2 * stepY) + majorTitleHeight) - 2, locations: [11, 21] },
+                { x: startX - majorTileWidth + 31, y: startY + ((3 * stepY) + majorTitleHeight) - 2, locations: [13, 23] },
+                { x: startX - majorTileWidth + 31, y: startY + ((4 * stepY) + majorTitleHeight) - 2, locations: [15, 25] },
             ]
         }
     ];
