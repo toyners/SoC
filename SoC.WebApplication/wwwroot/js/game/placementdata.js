@@ -207,7 +207,10 @@ function getRoadPlacementData(originX, originY) {
             hoverImageIndex: hoverHorizontalIndex,
             roads: [
                 // Column 1
-                { x: startX - (2 * majorTileWidth) + 2, y: startY - stepY + 6, locations: [0, 8] },
+                { x: startX - (2 * majorTileWidth) + 31, y: startY - stepY - 2, locations: [0, 8] },
+                { x: startX - (2 * majorTileWidth) + 31, y: startY - 2, locations: [2, 10] },
+                { x: startX - (2 * majorTileWidth) + 31, y: startY + stepY - 2, locations: [4, 12] },
+                { x: startX - (2 * majorTileWidth) + 31, y: startY + (2 * stepY) - 2, locations: [6, 14] },
             ]
         }
     ];
