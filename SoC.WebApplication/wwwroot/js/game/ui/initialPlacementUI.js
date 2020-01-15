@@ -1,8 +1,8 @@
 ﻿"use strict";
 
 class InitialPlacementUI {
-    constructor(state, textures, hoverImageIndex, settlementImageIndexById, confirmClickHandler, cancelSettlementClickHandler, cancelRoadClickHandler) {
-        this.hoverImageIndex = hoverImageIndex;
+    constructor(state, textures, settlementImageIndexById, confirmClickHandler, cancelSettlementClickHandler, cancelRoadClickHandler) {
+        this.settlementHoverImageIndex = 1;
         this.settlementImageIndexById = settlementImageIndexById;
         this.roadIconsById = {};
         this.roadsBySettlementId = {};
@@ -139,11 +139,14 @@ class InitialPlacementUI {
 
     reset() { this.confirmed = false; }
 
-    selectRoad() {
+    handleRoadClick() {
+        if (!this.settlementId || this.selectedRoad)
+            return;
+
         for (var road of this.roadsBySettlementId[this.settlementId]) {
             if (road.icon.sprite.cellIndex === 0)
                 road.icon.sprite.visible = false;
-            else if (road.icon.sprite.cellIndex === this.hoverImageIndex)
+            else if (road.icon.sprite.cellIndex === road.icon.hoverImageIndex)
                 this.selectedRoad = road;
         }
 
@@ -151,16 +154,40 @@ class InitialPlacementUI {
         this.cancelRoadButton.visible = true;
     }
 
-    selectSettlement() {
+    handleRoadHover(spriteId) {
+        if (!this.settlementId || this.selectedRoad)
+            return;
+
+        var roadIcon = this.roadIconsById[spriteId];
+        if (roadIcon.sprite.cellIndex === roadIcon.defaultImageIndex)
+            roadIcon.sprite.cellIndex = roadIcon.hoverImageIndex;
+        else if (roadIcon.sprite.cellIndex === roadIcon.hoverImageIndex)
+            roadIcon.sprite.cellIndex = roadIcon.defaultImageIndex;
+    }
+
+    handleSettlementClick(spriteId) {
+        if (this.settlementId)
+            return;
+
         for (var id in this.settlementById) {
-            var settlement = this.settlementById[id];
-            if (settlement.sprite.cellIndex === 0)
-                settlement.sprite.visible = false;
-            else
-                this.settlementId = id;
+            if (id != spriteId) {
+                this.settlementById[id].sprite.visible = false;
+            } else {
+                this.settlementId = spriteId;
+            }
         }
 
+        this.showRoadSprites(this.settlementId);
         this.cancelSettlementButton.visible = true;
+    }
+
+    handleSettlementHover(spriteId) {
+        if (this.settlementId != null)
+            return;
+
+        var settlement = this.settlementById[spriteId];
+        if (settlement.sprite.cellIndex === 0 || settlement.sprite.cellIndex === this.settlementHoverImageIndex)
+            settlement.sprite.cellIndex = settlement.sprite.cellIndex === 0 ? this.settlementHoverImageIndex : 0;
     }
 
     showRoadSprites(settlementId) {
@@ -175,23 +202,5 @@ class InitialPlacementUI {
             if (settlement.sprite.cellIndex === 0)
                 settlement.sprite.visible = true;
         }
-    }
-
-    toggleRoadSprite(spriteId) {
-        if (this.selectedRoad != null)
-            return;
-        var roadIcon = this.roadIconsById[spriteId];
-        if (roadIcon.sprite.cellIndex === roadIcon.defaultImageIndex)
-            roadIcon.sprite.cellIndex = roadIcon.hoverImageIndex;
-        else if (roadIcon.sprite.cellIndex === roadIcon.hoverImageIndex)
-            roadIcon.sprite.cellIndex = roadIcon.defaultImageIndex;
-    }
-
-    toggleSettlementSprite(spriteId) {
-        if (this.settlementId != null)
-            return;
-        var settlement = this.settlementById[spriteId];
-        if (settlement.sprite.cellIndex === 0 || settlement.sprite.cellIndex === this.hoverImageIndex)
-            settlement.sprite.cellIndex = settlement.sprite.cellIndex === 0 ? this.hoverImageIndex : 0;
     }
 }

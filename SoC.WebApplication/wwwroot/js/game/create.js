@@ -52,7 +52,7 @@ function displayBoard(state, layoutColumnData, hexData, textures) {
 }
 
 function setupInitialPlacementUI(state, textures, settlementPlacementData, roadPlacementData, settlementImageIndexById) {
-    var initialPlacementUI = new InitialPlacementUI(state, textures, 1, settlementImageIndexById,
+    var initialPlacementUI = new InitialPlacementUI(state, textures, settlementImageIndexById,
         function (context, params) { initialPlacementUI.onConfirm(); },
         function (context, params) { initialPlacementUI.onCancelSettlement(); },
         function (context, params) { initialPlacementUI.onCancelRoad(); });
@@ -60,12 +60,11 @@ function setupInitialPlacementUI(state, textures, settlementPlacementData, roadP
     var sprites = [];
 
     var settlementClickedHandler = function (context, params) {
-        initialPlacementUI.selectSettlement();
-        initialPlacementUI.showRoadSprites(context.id);
+        initialPlacementUI.handleSettlementClick(context.id);
     };
 
     var settlementHoverHandler = function (context, params) {
-        initialPlacementUI.toggleSettlementSprite(context.id);
+        initialPlacementUI.handleSettlementHover(context.id);
     }
 
     var halfSettlementIconWidth = 12;
@@ -98,11 +97,11 @@ function setupInitialPlacementUI(state, textures, settlementPlacementData, roadP
     }
 
     var roadClickedHandler = function (context, params) {
-        initialPlacementUI.selectRoad();
+        initialPlacementUI.handleRoadClick();
     }
 
     var roadHoverHandler = function (context, params) {
-        initialPlacementUI.toggleRoadSprite(context.id);
+        initialPlacementUI.handleRoadHover(context.id);
     }
 
     for (var roadCollectionData of roadPlacementData) {
