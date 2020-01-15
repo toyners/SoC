@@ -109,7 +109,7 @@ function setupInitialPlacementUI(state, textures, settlementPlacementData, roadP
         for (var roadData of roadCollectionData.roads) {
             var roadSprite = new Kiwi.GameObjects.Sprite(state, textures[roadCollectionData.imageName], roadData.x, roadData.y);
             roadSprite.cellIndex = roadCollectionData.imageIndex;
-            //roadSprite.visible = false;
+            roadSprite.visible = false;
             roadSprite.input.onUp.add(roadClickedHandler, state);
             roadSprite.input.onEntered.add(roadHoverHandler, state);
             roadSprite.input.onLeft.add(roadHoverHandler, state);
