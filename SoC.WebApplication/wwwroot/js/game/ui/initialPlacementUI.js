@@ -1,9 +1,9 @@
 ﻿"use strict";
 
 class InitialPlacementUI {
-    constructor(state, textures, settlementImageIndexById, confirmClickHandler, cancelSettlementClickHandler, cancelRoadClickHandler) {
+    constructor(state, textures, imageIndexesById, confirmClickHandler, cancelSettlementClickHandler, cancelRoadClickHandler) {
         this.settlementHoverImageIndex = 1;
-        this.settlementImageIndexById = settlementImageIndexById;
+        this.imageIndexesById = imageIndexesById;
         this.roadIconsById = {};
         this.roadsBySettlementId = {};
         this.roadsBySettlementLocation = {};
@@ -44,14 +44,14 @@ class InitialPlacementUI {
     }
 
     addInitialPlacement(playerId, settlementLocation, endLocation) {
-        var cellIndex = this.settlementImageIndexById[playerId];
+        var imageIndexes = this.imageIndexesById[playerId];
         var settlement = this.settlementByLocation[settlementLocation];
         settlement.sprite.visible = true;
-        settlement.sprite.cellIndex = cellIndex;
+        settlement.sprite.cellIndex = imageIndexes[0];
         for (var road of this.roadsBySettlementLocation[settlementLocation]) {
             if (road.location === endLocation) {
                 road.icon.sprite.visible = true;
-                road.icon.sprite.cellIndex = cellIndex;
+                road.icon.sprite.cellIndex = imageIndexes[0];
             }
         }
     }

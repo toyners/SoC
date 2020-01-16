@@ -7,7 +7,7 @@ var playerId = null;
 var playerNamesInOrder = null;
 var playerIdsByName = null;
 var playerNamesById = null;
-var settlementImageIndexById = null;
+var imageIndexesById = null;
 var game = null;
 var hexData = null;
 var gameEvents = new Queue();
@@ -35,7 +35,7 @@ function main() {
     var backgroundWidth = 800;
     var backgroundHeight = 600;
 
-    state.settlementImageIndexById = settlementImageIndexById;
+    state.imageIndexesById = imageIndexesById;
     state.create = create;
 
     state.update = function () {
@@ -104,12 +104,24 @@ connection.on("GameEvent", function (gameEvent) {
     } else if (typeName === "PlayerSetupEvent") {
         playerIdsByName = gameEvent.playerIdsByName;
         var settlementColourIndexes = [4, 6, 8];
+        var northEastRoadColourIndexes = [4, 6, 8];
+        var northWestRoadColourIndexes = [13, 15, 17];
+        var horizontalRoadColourIndexes = [4, 6, 8];
         playerNamesById = {};
-        settlementImageIndexById = {};
+        imageIndexesById = {};
+        roadImageIndexesById = {};
+        var index = 0;
         for (var playerName in playerIdsByName) {
             var playerId = playerIdsByName[playerName];
             playerNamesById[playerId] = playerName;
-            settlementImageIndexById[playerId] = settlementColourIndexes.pop();
+            var imageIndexes = [
+                settlementColourIndexes[index],
+                northEastRoadColourIndexes[index],
+                northWestRoadColourIndexes[index],
+                horizontalRoadColourIndexes[index]
+            ];
+            imageIndexesById[playerId] = imageIndexes;
+            index++;
         }
     } else if (typeName === "InitialBoardSetupEvent") {
         hexData = gameEvent.gameBoardSetup.hexData;
