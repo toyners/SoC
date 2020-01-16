@@ -51,8 +51,8 @@ function displayBoard(state, layoutColumnData, hexData, textures) {
     }
 }
 
-function setupInitialPlacementUI(state, textures, settlementPlacementData, roadPlacementData, settlementImageIndexById) {
-    var initialPlacementUI = new InitialPlacementUI(state, textures, settlementImageIndexById,
+function setupInitialPlacementUI(state, textures, settlementPlacementData, roadPlacementData, imageIndexesById) {
+    var initialPlacementUI = new InitialPlacementUI(state, textures, imageIndexesById,
         function (context, params) { initialPlacementUI.onConfirm(); },
         function (context, params) { initialPlacementUI.onCancelSettlement(); },
         function (context, params) { initialPlacementUI.onCancelRoad(); });
@@ -115,7 +115,7 @@ function setupInitialPlacementUI(state, textures, settlementPlacementData, roadP
 
             var locations = roadData.locations;
             initialPlacementUI.addRoadPlacement(roadSprite, roadCollectionData.imageIndex, roadCollectionData.hoverImageIndex,
-                sprites[locations[0]].id, locations[0], sprites[locations[1]].id, locations[1]);
+                roadCollectionData.type, sprites[locations[0]].id, locations[0], sprites[locations[1]].id, locations[1]);
             sprites.push(roadSprite);
         }
     }
@@ -139,7 +139,7 @@ function create() {
 
     this.initialPlacementUI = setupInitialPlacementUI(this, this.textures,
         getSettlementPlacementData(originX, originY), getRoadPlacementData(originX, originY),
-        this.settlementImageIndexById);
+        this.imageIndexesById);
 
     this.currentPlayerMarker = new Kiwi.GameObjects.Sprite(this, this.textures.playermarker, 90, 5);
     this.currentPlayerMarker.visible = false;

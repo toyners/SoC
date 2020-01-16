@@ -51,7 +51,11 @@ class InitialPlacementUI {
         for (var road of this.roadsBySettlementLocation[settlementLocation]) {
             if (road.location === endLocation) {
                 road.icon.sprite.visible = true;
-                road.icon.sprite.cellIndex = imageIndexes[0];
+                road.icon.sprite.cellIndex = imageIndexes[road.icon.typeIndex];
+                road.icon.sprite.onUp = [];
+                road.icon.sprite.onEntered = [];
+                road.icon.sprite.onLeft = [];
+                break;
             }
         }
     }
@@ -66,13 +70,14 @@ class InitialPlacementUI {
         roads.push({ location: endLocation, icon: roadIcon });
     }
 
-    addRoadPlacement(roadSprite, defaultImageIndex, hoverImageIndex, firstSettlementSpriteId, firstSettlementLocation,
+    addRoadPlacement(roadSprite, defaultImageIndex, hoverImageIndex, type, firstSettlementSpriteId, firstSettlementLocation,
         secondSettlementSpriteId, secondSettlementLocation) {
 
         var roadIcon = {
             sprite: roadSprite,
             defaultImageIndex: defaultImageIndex,
-            hoverImageIndex: hoverImageIndex            
+            hoverImageIndex: hoverImageIndex,
+            typeIndex: type
         };
 
         this.roadIconsById[roadSprite.id] = roadIcon;

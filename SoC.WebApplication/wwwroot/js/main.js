@@ -109,7 +109,6 @@ connection.on("GameEvent", function (gameEvent) {
         var horizontalRoadColourIndexes = [4, 6, 8];
         playerNamesById = {};
         imageIndexesById = {};
-        roadImageIndexesById = {};
         var index = 0;
         for (var playerName in playerIdsByName) {
             var playerId = playerIdsByName[playerName];
