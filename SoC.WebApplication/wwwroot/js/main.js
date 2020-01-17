@@ -52,10 +52,8 @@ function main() {
                     break;
                 }
                 case "SetupInfrastructurePlacedEvent": {
-                    if (gameEvent.playerId !== playerId) {
-                        this.initialPlacementUI.addInitialPlacement(gameEvent.playerId, gameEvent.settlementLocation, gameEvent.roadSegmentEndLocation);
-                        // Placing infrastructure animation
-                    }
+                    this.initialPlacementUI.addPlacement(gameEvent.playerId, gameEvent.settlementLocation, gameEvent.roadSegmentEndLocation);
+                    // Placing infrastructure animation
 
                     break;
                 }
@@ -103,10 +101,10 @@ connection.on("GameEvent", function (gameEvent) {
 
     } else if (typeName === "PlayerSetupEvent") {
         playerIdsByName = gameEvent.playerIdsByName;
-        var settlementColourIndexes = [4, 6, 8];
-        var northEastRoadColourIndexes = [4, 6, 8];
-        var northWestRoadColourIndexes = [13, 15, 17];
-        var horizontalRoadColourIndexes = [4, 6, 8];
+        var settlementColourIndexes = [2, 4, 6, 8];
+        var northEastRoadColourIndexes = [2, 4, 6, 8];
+        var northWestRoadColourIndexes = [11, 13, 15, 17];
+        var horizontalRoadColourIndexes = [2, 4, 6, 8];
         playerNamesById = {};
         imageIndexesById = {};
         var index = 0;

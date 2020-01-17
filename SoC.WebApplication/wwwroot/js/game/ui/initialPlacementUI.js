@@ -43,7 +43,7 @@ class InitialPlacementUI {
         state.addChild(this.cancelRoadButton);
     }
 
-    addInitialPlacement(playerId, settlementLocation, endLocation) {
+    addPlacement(playerId, settlementLocation, endLocation) {
         var imageIndexes = this.imageIndexesById[playerId];
         var settlement = this.settlementByLocation[settlementLocation];
         settlement.sprite.visible = true;
@@ -55,8 +55,11 @@ class InitialPlacementUI {
                 road.icon.sprite.onUp = [];
                 road.icon.sprite.onEntered = [];
                 road.icon.sprite.onLeft = [];
-                break;
             }
+
+            // Neighbouring settlement sprites are no longer valid for selection.
+            if (this.settlementByLocation[road.location])
+                delete this.settlementByLocation[road.location];
         }
     }
 
