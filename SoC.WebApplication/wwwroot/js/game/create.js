@@ -100,8 +100,12 @@ function setupInitialPlacementUI(state, textures, settlementPlacementData, roadP
         initialPlacementUI.handleRoadClick();
     }
 
-    var roadHoverHandler = function (context, params) {
-        initialPlacementUI.handleRoadHover(context.id);
+    var roadHoverEnterHandler = function (context, params) {
+        initialPlacementUI.handleRoadHoverEnter(context.id);
+    }
+
+    var roadHoverLeftHandler = function (context, params) {
+        initialPlacementUI.handleRoadHoverLeft(context.id);
     }
 
     for (var roadCollectionData of roadPlacementData) {
@@ -110,8 +114,8 @@ function setupInitialPlacementUI(state, textures, settlementPlacementData, roadP
             roadSprite.cellIndex = roadCollectionData.imageIndex;
             roadSprite.visible = false;
             roadSprite.input.onUp.add(roadClickedHandler, state);
-            roadSprite.input.onEntered.add(roadHoverHandler, state);
-            roadSprite.input.onLeft.add(roadHoverHandler, state);
+            roadSprite.input.onEntered.add(roadHoverEnterHandler, state);
+            roadSprite.input.onLeft.add(roadHoverLeftHandler, state);
 
             var locations = roadData.locations;
             initialPlacementUI.addRoadPlacement(roadSprite, roadCollectionData.imageIndex, roadCollectionData.hoverImageIndex,

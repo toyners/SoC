@@ -162,14 +162,22 @@ class InitialPlacementUI {
         this.cancelRoadButton.visible = true;
     }
 
-    handleRoadHover(spriteId) {
+    handleRoadHoverEnter(spriteId) {
         if (!this.settlementId || this.selectedRoad)
             return;
 
         var roadIcon = this.roadIconsById[spriteId];
         if (roadIcon.sprite.cellIndex === roadIcon.defaultImageIndex)
             roadIcon.sprite.cellIndex = roadIcon.hoverImageIndex;
-        else if (roadIcon.sprite.cellIndex === roadIcon.hoverImageIndex)
+        
+    }
+
+    handleRoadHoverLeft(spriteId) {
+        if (!this.settlementId || this.selectedRoad)
+            return;
+
+        var roadIcon = this.roadIconsById[spriteId];
+        if (roadIcon.sprite.cellIndex === roadIcon.hoverImageIndex)
             roadIcon.sprite.cellIndex = roadIcon.defaultImageIndex;
     }
 
