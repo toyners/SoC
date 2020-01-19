@@ -133,8 +133,8 @@ function getRoadPlacementData(originX, originY) {
     var horizontalRoads = 'horizontal_roads'
     var defaultNorthEastIndex = 0;
     var hoverNorthEastIndex = 1;
-    var defaultNorthWestIndex = 3;
-    var hoverNorthWestIndex = 4;
+    var defaultNorthWestIndex = 9;
+    var hoverNorthWestIndex = 10;
     var defaultHorizontalIndex = 0;
     var hoverHorizontalIndex = 1;
     var northEastType = 1;
