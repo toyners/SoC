@@ -242,9 +242,9 @@ function getRoadPlacementData(originX, originY) {
                 // Column 2
                 { x: startX - majorTileWidth + 31, y: startY - (stepY + majorTitleHeight) - 2, locations: [7, 17] },
                 { x: startX - majorTileWidth + 31, y: startY - majorTitleHeight - 2, locations: [9, 19] },
-                { x: startX - majorTileWidth + 31, y: startY + majorTitleHeight - 2, locations: [11, 21] },
-                { x: startX - majorTileWidth + 31, y: startY + (stepY + majorTitleHeight) - 2, locations: [13, 23] },
-                { x: startX - majorTileWidth + 31, y: startY + ((2 * stepY) + majorTitleHeight) - 2, locations: [15, 25] },
+                { x: startX - majorTileWidth + 31, y: startY + majorTitleHeight - 4, locations: [11, 21] },
+                { x: startX - majorTileWidth + 31, y: startY + (stepY + majorTitleHeight) - 4, locations: [13, 23] },
+                { x: startX - majorTileWidth + 31, y: startY + ((2 * stepY) + majorTitleHeight) - 4, locations: [15, 25] },
 
                 // Column 3
                 { x: startX + 31, y: startY - (2 * stepY) - 2, locations: [16, 27] },
@@ -257,9 +257,9 @@ function getRoadPlacementData(originX, originY) {
                 // Column 4
                 { x: startX + majorTileWidth + 31, y: startY - (stepY + majorTitleHeight) - 2, locations: [28, 38] },
                 { x: startX + majorTileWidth + 31, y: startY - majorTitleHeight - 2, locations: [30, 40] },
-                { x: startX + majorTileWidth + 31, y: startY + majorTitleHeight - 2, locations: [32, 42] },
-                { x: startX + majorTileWidth + 31, y: startY + (stepY + majorTitleHeight) - 2, locations: [34, 44] },
-                { x: startX + majorTileWidth + 31, y: startY + ((2 * stepY) + majorTitleHeight) - 2, locations: [36, 46] },
+                { x: startX + majorTileWidth + 31, y: startY + majorTitleHeight - 4, locations: [32, 42] },
+                { x: startX + majorTileWidth + 31, y: startY + (stepY + majorTitleHeight) - 4, locations: [34, 44] },
+                { x: startX + majorTileWidth + 31, y: startY + ((2 * stepY) + majorTitleHeight) - 4, locations: [36, 46] },
 
                 // Column 5
                 { x: startX + (2 * majorTileWidth) + 31, y: startY - stepY - 2, locations: [39, 47] },
