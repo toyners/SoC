@@ -58,8 +58,12 @@ class InitialPlacementUI {
             }
 
             // Neighbouring settlement sprites are no longer valid for selection.
-            if (this.settlementByLocation[road.location])
+            var neighbouringSettlement = this.settlementByLocation[road.location];
+            if (neighbouringSettlement) {
+                //neighbouringSettlement.sprite.visible = false;
+                delete this.settlementById[neighbouringSettlement.sprite.id];
                 delete this.settlementByLocation[road.location];
+            }
         }
     }
 
@@ -90,8 +94,9 @@ class InitialPlacementUI {
     }
 
     addSettlementSprite(settlementSprite, settlementLocation) {
-        this.settlementById[settlementSprite.id] = { location: settlementLocation, sprite: settlementSprite };
-        this.settlementByLocation[settlementLocation] = this.settlementById[settlementSprite.id];
+        var settlement = { location: settlementLocation, sprite: settlementSprite };
+        this.settlementById[settlementSprite.id] = settlement;
+        this.settlementByLocation[settlementLocation] = settlement;
     }
 
     getData() {
