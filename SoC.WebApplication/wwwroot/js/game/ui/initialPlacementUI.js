@@ -150,7 +150,12 @@ class InitialPlacementUI {
         this.confirmed = true;
     }
 
-    reset() { this.confirmed = false; }
+    reset() {
+        this.settlementId = null;
+        this.selectSettlementLabel.visible = false;
+        this.selectRoadLabel.visible = false;
+        this.confirmed = false;
+    }
 
     handleRoadClick() {
         if (!this.settlementId || this.selectedRoad)
