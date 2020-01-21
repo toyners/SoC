@@ -97,7 +97,7 @@ function setupInitialPlacementUI(state, textures, settlementPlacementData, roadP
     }
 
     var roadClickedHandler = function (context, params) {
-        initialPlacementUI.handleRoadClick();
+        initialPlacementUI.handleRoadClick(context.id);
     }
 
     var roadHoverEnterHandler = function (context, params) {

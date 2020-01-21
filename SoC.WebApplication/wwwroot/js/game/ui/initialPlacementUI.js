@@ -60,7 +60,6 @@ class InitialPlacementUI {
             // Neighbouring settlement sprites are no longer valid for selection.
             var neighbouringSettlement = this.settlementByLocation[road.location];
             if (neighbouringSettlement) {
-                //neighbouringSettlement.sprite.visible = false;
                 delete this.settlementById[neighbouringSettlement.sprite.id];
                 delete this.settlementByLocation[road.location];
             }
@@ -152,20 +151,23 @@ class InitialPlacementUI {
 
     reset() {
         this.settlementId = null;
-        this.selectSettlementLabel.visible = false;
-        this.selectRoadLabel.visible = false;
-        this.confirmed = false;
+        this.selectSettlementLabel.visible = true;
+        this.selectRoadLabel.visible = true;
+        this.confirmed = true;
     }
 
-    handleRoadClick() {
+    handleRoadClick(spriteId) {
         if (!this.settlementId || this.selectedRoad)
             return;
 
         for (var road of this.roadsBySettlementId[this.settlementId]) {
-            if (road.icon.sprite.cellIndex === 0)
+            if (road.icon.sprite.id !== spriteId) {
                 road.icon.sprite.visible = false;
-            else if (road.icon.sprite.cellIndex === road.icon.hoverImageIndex)
+            }
+            else {
+                road.icon.sprite.cellIndex = road.icon.hoverImageIndex;
                 this.selectedRoad = road;
+            }
         }
 
         this.confirmButton.visible = true;
@@ -196,9 +198,10 @@ class InitialPlacementUI {
             return;
 
         for (var id in this.settlementById) {
-            if (id != spriteId) {
-                this.settlementById[id].sprite.visible = false;
-            } else {
+            var settlementSprite = this.settlementById[id].sprite;
+            if (id != spriteId && settlementSprite.cellIndex === 0) {
+                settlementSprite.visible = false;
+            } else if (id == spriteId) {
                 this.settlementId = spriteId;
             }
         }
@@ -212,6 +215,8 @@ class InitialPlacementUI {
             return;
 
         var settlement = this.settlementById[spriteId];
+        if (!settlement)
+            return;
         if (settlement.sprite.cellIndex === 0 || settlement.sprite.cellIndex === this.settlementHoverImageIndex)
             settlement.sprite.cellIndex = settlement.sprite.cellIndex === 0 ? this.settlementHoverImageIndex : 0;
     }
