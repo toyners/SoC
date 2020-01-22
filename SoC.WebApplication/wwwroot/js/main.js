@@ -43,6 +43,19 @@ function main() {
         if (!gameEvents.isEmpty()) {
             var gameEvent = gameEvents.dequeue();
             switch (gameEvent.typeName) {
+                case "ConfirmGameStartEvent": {
+                    var request = {
+                        gameId: gameId,
+                        playerId: playerId,
+                        playerActionType: 'ConfirmGameStartAction',
+                        data: JSON.stringify({
+                            initiatingPlayerId: playerId
+                        })
+                    };
+                    connection.invoke("PlayerAction", request).catch(function (err) {
+                        return console.error(err.toString());
+                    });
+                }
                 case "PlaceSetupInfrastructureEvent": {
                     this.initialPlacementUI.showSettlementSprites();
                     this.currentPlayerMarker.visible = true;
