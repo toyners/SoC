@@ -11,7 +11,6 @@ var imageIndexesById = null;
 var game = null;
 var hexData = null;
 var gameEvents = new Queue();
-var initialPlacements = 0;
 
 connection.start().then(function () {
     var fragments = window.location.pathname.split("/");
@@ -45,7 +44,6 @@ function main() {
             var gameEvent = gameEvents.dequeue();
             switch (gameEvent.typeName) {
                 case "PlaceSetupInfrastructureEvent": {
-                    initialPlacements += 1;
                     this.initialPlacementUI.showSettlementSprites();
                     this.currentPlayerMarker.visible = true;
                     this.currentPlayerMarker.animation.play('main');
@@ -75,8 +73,7 @@ function main() {
                     })
                 };
 
-                if (!this.initialPlacementUI.isLastRound())
-                    this.initialPlacementUI.reset();
+                this.initialPlacementUI.reset();
 
                 connection.invoke("PlayerAction", request).catch(function (err) {
                     return console.error(err.toString());
