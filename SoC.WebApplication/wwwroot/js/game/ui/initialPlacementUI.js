@@ -3,6 +3,7 @@
 class InitialPlacementUI {
     constructor(state, textures, imageIndexesById, confirmClickHandler, cancelSettlementClickHandler, cancelRoadClickHandler) {
         this.settlementHoverImageIndex = 1;
+        this.roundCount = 0;
         this.imageIndexesById = imageIndexesById;
         this.roadIconsById = {};
         this.roadsBySettlementId = {};
@@ -109,9 +110,11 @@ class InitialPlacementUI {
 
     isConfirmed() { return this.confirmed; }
 
+    isLastRound() { return this.roundCount < 3; }
+
     onCancelRoad() {
         if (this.selectedRoad) {
-            this.selectedRoad.icon.sprite.cellIndex = 0;
+            this.selectedRoad.icon.sprite.cellIndex = this.selectedRoad.icon.defaultImageIndex;
             this.selectedRoad = null;
             this.showRoadSprites(this.settlementId);
             this.cancelRoadButton.visible = false;
@@ -153,7 +156,7 @@ class InitialPlacementUI {
         this.settlementId = null;
         this.selectSettlementLabel.visible = true;
         this.selectRoadLabel.visible = true;
-        this.confirmed = true;
+        this.confirmed = false;
     }
 
     handleRoadClick(spriteId) {
@@ -228,6 +231,7 @@ class InitialPlacementUI {
     }
 
     showSettlementSprites() {
+        this.roundCount += 1;
         for (var settlementKey in this.settlementById) {
             var settlement = this.settlementById[settlementKey];
             if (settlement.sprite.cellIndex === 0)

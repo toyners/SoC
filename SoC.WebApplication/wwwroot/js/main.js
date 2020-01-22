@@ -60,7 +60,7 @@ function main() {
             }
         }
 
-        if (this.initialPlacementUI && this.initialPlacementUI.isConfirmed()) {
+        if (this.initialPlacementUI.isConfirmed()) {
             this.currentPlayerMarker.visible = false;
             var placementData = this.initialPlacementUI.getData();
             if (placementData) {
@@ -75,9 +75,7 @@ function main() {
                     })
                 };
 
-                if (initialPlacements == 2)
-                    this.initialPlacementUI = null;
-                else
+                if (!this.initialPlacementUI.isLastRound())
                     this.initialPlacementUI.reset();
 
                 connection.invoke("PlayerAction", request).catch(function (err) {
