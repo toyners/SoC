@@ -154,6 +154,7 @@ class InitialPlacementUI {
 
     reset() {
         this.settlementId = null;
+        this.selectedRoad = null;
         this.selectSettlementLabel.visible = true;
         this.selectRoadLabel.visible = true;
         this.confirmed = false;
