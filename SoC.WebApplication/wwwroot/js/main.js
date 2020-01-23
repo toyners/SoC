@@ -62,10 +62,16 @@ function main() {
                     this.currentPlayerMarker.animation.play('main');
                     break;
                 }
+                case "ResourcesCollectedEvent": {
+                    break;
+                }
                 case "SetupInfrastructurePlacedEvent": {
                     this.initialPlacementUI.addPlacement(gameEvent.playerId, gameEvent.settlementLocation, gameEvent.roadSegmentEndLocation);
                     // Placing infrastructure animation
 
+                    break;
+                }
+                case "StartTurnEvent": {
                     break;
                 }
             }

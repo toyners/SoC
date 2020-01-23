@@ -21,6 +21,7 @@ namespace SoC.WebApplication
         private readonly Task processingTask;
         private readonly IPlayerRequestReceiver playerActionReceiver;
         private IDictionary<string, Guid> playerIdsByName;
+        private JsonSerializerSettings jsonSerializerSettings;
 
         public Bot(string name, Guid gameId, IPlayerRequestReceiver playerActionReceiver, GameBoardQuery gameBoardQuery)
         {
@@ -28,6 +29,11 @@ namespace SoC.WebApplication
             this.gameId = gameId;
             this.playerActionReceiver = playerActionReceiver;
             this.gameBoardQuery = gameBoardQuery;
+
+            this.jsonSerializerSettings = new JsonSerializerSettings();
+            this.jsonSerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Serialize;
+            this.jsonSerializerSettings.PreserveReferencesHandling = PreserveReferencesHandling.Objects;
+            this.jsonSerializerSettings.TypeNameHandling = TypeNameHandling.Objects;
 
             this.processingTask = Task.Factory.StartNew(o => { this.ProcessAsync(); }, CancellationToken.None);
         }
@@ -46,8 +52,12 @@ namespace SoC.WebApplication
             {
                 while (this.gameEvents.TryDequeue(out var gameEvent))
                 {
-                    string requestPayload = null;
-                    string playerActionType = null;
+                    PlayerAction request = null;
+                    if (gameEvent is ConfirmGameStartEvent)
+                    {
+                        request = new ConfirmGameStartAction(this.Id);
+                    }
+
                     if (gameEvent is GameJoinedEvent)
                     {
                         continue; // Nothing to do
@@ -72,19 +82,13 @@ namespace SoC.WebApplication
                     if (gameEvent is PlaceSetupInfrastructureEvent)
                     {
                         var locations = this.gameBoardQuery.GetLocationsWithBestYield(1);
-                        var request = new PlaceSetupInfrastructureAction(this.Id, locations[0], locations[0] + 1);
-
-                        var jsonSerializerSettings = new JsonSerializerSettings();
-                        jsonSerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Serialize;
-                        jsonSerializerSettings.PreserveReferencesHandling = PreserveReferencesHandling.Objects;
-                        jsonSerializerSettings.TypeNameHandling = TypeNameHandling.Objects;
-
-                        requestPayload = JsonConvert.SerializeObject(request, jsonSerializerSettings);
-                        playerActionType = request.GetType().ToString();
+                        request = new PlaceSetupInfrastructureAction(this.Id, locations[0], locations[0] + 1);
                     }
                     
-                    if (requestPayload != null)
+                    if (request != null)
                     {
+                        var requestPayload = JsonConvert.SerializeObject(request, this.jsonSerializerSettings);
+                        var playerActionType = request.GetType().ToString();
                         this.playerActionReceiver.PlayerAction(new PlayerActionRequest
                         {
                             GameId = this.gameId,
