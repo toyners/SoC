@@ -44,6 +44,18 @@ class SettlementManager {
         state.addChild(this.cancelRoadButton);
     }
 
+    confirmSettlement() {
+
+    }
+
+    highlightSettlement() {
+
+    }
+
+    selectSettlement() {
+
+    }
+
     handleSettlementClick(spriteId) {
         if (this.settlementId)
             return;
