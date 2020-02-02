@@ -8,6 +8,7 @@ class InitialPlacementManager {
         this.roadIconsById = {};
         this.roadButtonsById = {};
         this.roadsBySettlementId = {};
+        this.roadButtonsBySettlementId = {};
         this.roadsBySettlementLocation = {};
         this.selectedRoad = null;
         this.settlementId = null;
@@ -68,7 +69,15 @@ class InitialPlacementManager {
         }
     }
 
-    addRoadForSettlement(roadIcon, settlementSpriteId, settlementLocation, endLocation) {
+    addRoadForSettlement(roadIcon, buildButtonSprite, settlementSpriteId, settlementLocation, endLocation) {
+        var buildButtonSprites = this.roadButtonsBySettlementId[settlementSpriteId]
+        if (!buildButtonSprites) {
+            buildButtonSprites = [];
+            this.roadButtonsBySettlementId[settlementSpriteId] = buildButtonSprites;
+        }
+
+        buildButtonSprites.push(buildButtonSprite);
+
         var roads = this.roadsBySettlementId[settlementSpriteId];
         if (!roads) {
             roads = [];
@@ -92,8 +101,11 @@ class InitialPlacementManager {
 
         this.roadIconsById[roadSprite.id] = roadIcon;
 
-        this.addRoadForSettlement(roadIcon, firstSettlementSpriteId, firstSettlementLocation, secondSettlementLocation);
-        this.addRoadForSettlement(roadIcon, secondSettlementSpriteId, secondSettlementLocation, firstSettlementLocation);
+        buildButtonSprite.visible = false;
+        this.roadButtonsById[buildButtonSprite.Id] = buildButtonSprite;
+
+        this.addRoadForSettlement(roadIcon, buildButtonSprite, firstSettlementSpriteId, firstSettlementLocation, secondSettlementLocation);
+        this.addRoadForSettlement(roadIcon, buildButtonSprite, secondSettlementSpriteId, secondSettlementLocation, firstSettlementLocation);
     }
 
     addSettlementSprite(settlementSprite, settlementLocation) {
@@ -225,7 +237,7 @@ class InitialPlacementManager {
             }
         }
 
-        this.showRoadSprites(this.settlementId);
+        this.showRoadBuildSprites(this.settlementId);
         this.cancelSettlementButton.visible = true;
     }
 
@@ -240,9 +252,9 @@ class InitialPlacementManager {
             settlement.sprite.cellIndex = settlement.sprite.cellIndex === 0 ? this.settlementHoverImageIndex : 0;
     }
 
-    showRoadSprites(settlementId) {
-        for (var road of this.roadsBySettlementId[settlementId]) {
-            road.icon.sprite.visible = true;
+    showRoadBuildSprites(settlementId) {
+        for (var road of this.roadButtonsBySettlementId[settlementId]) {
+            road.visible = true;
         }
     }
 
