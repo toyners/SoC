@@ -82,7 +82,7 @@ function setupInitialPlacementManager(state, textures, settlementPlacementData, 
     }
 
     var roadClickedHandler = function (context, params) {
-        initialPlacementManager.handleRoadBuildButtonLeft(context.id);
+        initialPlacementManager.handleRoadBuildButtonClicked(context.id);
     }
 
     var roadHoverEnterHandler = function (context, params) {
