@@ -146,8 +146,6 @@ function getRoadPlacementData(originX, originY) {
             imageIndex: defaultNorthEastIndex,
             hoverImageIndex: hoverNorthEastIndex,
             type: northEastType,
-            buildButtonDeltaX: 0,
-            buildButtonDeltaY: 7,
             roads: [
                 // Column 1
                 { x: startX - (2 * majorTileWidth) + 2, y: startY - stepY + 6, locations: [0, 1] },

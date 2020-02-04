@@ -98,24 +98,14 @@ function setupInitialPlacementManager(state, textures, settlementPlacementData, 
             var roadSprite = new Kiwi.GameObjects.Sprite(state, textures[roadCollectionData.imageName], roadData.x, roadData.y);
             roadSprite.cellIndex = roadCollectionData.imageIndex;
             roadSprite.visible = false;
-            /*roadSprite.input.onUp.add(roadClickedHandler, state);
+            roadSprite.input.onUp.add(roadClickedHandler, state);
             roadSprite.input.onEntered.add(roadHoverEnterHandler, state);
-            roadSprite.input.onLeft.add(roadHoverLeftHandler, state);*/
-
-            var buildButtonSprite = new Kiwi.GameObjects.Sprite(state, textures[roadCollectionData.imageName],
-                roadData.x + roadCollectionData.buildButtonDeltaX, roadData.y + roadCollectionData.buildButtonDeltaY);
-            buildButtonSprite.input.onUp.add(roadClickedHandler, state);
-            buildButtonSprite.input.onEntered.add(roadHoverEnterHandler, state);
-            buildButtonSprite.input.onLeft.add(roadHoverLeftHandler, state);
+            roadSprite.input.onLeft.add(roadHoverLeftHandler, state);
 
             var locations = roadData.locations;
-            initialPlacementManager.addRoadPlacement(
-                roadSprite, roadCollectionData.imageIndex, roadCollectionData.hoverImageIndex,
-                roadCollectionData.type, sprites[locations[0]].id, locations[0], sprites[locations[1]].id, locations[1],
-                buildButtonSprite
-            );
+            initialPlacementManager.addRoadPlacement(roadSprite, roadCollectionData.imageIndex, roadCollectionData.hoverImageIndex,
+                roadCollectionData.type, sprites[locations[0]].id, locations[0], sprites[locations[1]].id, locations[1]);
             sprites.push(roadSprite);
-            sprites.push(buildButtonSprite);
         }
     }
 

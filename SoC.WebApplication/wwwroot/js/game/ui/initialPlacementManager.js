@@ -6,7 +6,6 @@ class InitialPlacementManager {
         this.roundCount = 0;
         this.imageIndexesById = imageIndexesById;
         this.roadIconsById = {};
-        this.roadButtonsById = {};
         this.roadsBySettlementId = {};
         this.roadsBySettlementLocation = {};
         this.selectedRoad = null;
@@ -78,11 +77,9 @@ class InitialPlacementManager {
         roads.push({ location: endLocation, icon: roadIcon });
     }
 
-    addRoadPlacement(roadSprite, defaultImageIndex, hoverImageIndex, type,
-        firstSettlementSpriteId, firstSettlementLocation,
-        secondSettlementSpriteId, secondSettlementLocation,
-        buildButtonSprite
-    ) {
+    addRoadPlacement(roadSprite, defaultImageIndex, hoverImageIndex, type, firstSettlementSpriteId, firstSettlementLocation,
+        secondSettlementSpriteId, secondSettlementLocation) {
+
         var roadIcon = {
             sprite: roadSprite,
             defaultImageIndex: defaultImageIndex,
@@ -198,18 +195,6 @@ class InitialPlacementManager {
         var roadIcon = this.roadIconsById[spriteId];
         if (roadIcon.sprite.cellIndex === roadIcon.hoverImageIndex)
             roadIcon.sprite.cellIndex = roadIcon.defaultImageIndex;
-    }
-
-    handleRoadBuildButtonLeft(spriteId) {
-        this.roadButtonsById[spriteId].cellIndex = 0;
-    }
-
-    handleRoadBuildButtonEntered(spriteId) {
-        this.roadButtonsById[spriteId].cellIndex = 1;
-    }
-
-    handleRoadBuildButtonClicked(spriteId) {
-        this.selectedRoadId = spriteId;
     }
 
     handleSettlementClick(spriteId) {
