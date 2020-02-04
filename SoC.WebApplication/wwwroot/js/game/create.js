@@ -37,7 +37,7 @@ function displayBoard(state, layoutColumnData, hexData, textures) {
 }
 
 function setupInitialPlacementManager(state, textures, settlementPlacementData, roadPlacementData, imageIndexesById) {
-    var initialPlacementManager = new InitialPlacementManager(state, textures, imageIndexesById,
+    var initialPlacementManager = new InitialPlacementUI(state, textures, imageIndexesById,
         function (context, params) { initialPlacementManager.onConfirm(); },
         function (context, params) { initialPlacementManager.onCancelSettlement(); },
         function (context, params) { initialPlacementManager.onCancelRoad(); });
@@ -82,15 +82,15 @@ function setupInitialPlacementManager(state, textures, settlementPlacementData, 
     }
 
     var roadClickedHandler = function (context, params) {
-        initialPlacementManager.handleRoadBuildButtonLeft(context.id);
+        initialPlacementManager.handleRoadClick(context.id);
     }
 
     var roadHoverEnterHandler = function (context, params) {
-        initialPlacementManager.handleRoadBuildButtonEntered(context.id);
+        initialPlacementManager.handleRoadHoverEnter(context.id);
     }
 
     var roadHoverLeftHandler = function (context, params) {
-        initialPlacementManager.handleRoadBuildButtonLeft(context.id);
+        initialPlacementManager.handleRoadHoverLeft(context.id);
     }
 
     for (var roadCollectionData of roadPlacementData) {
@@ -102,7 +102,7 @@ function setupInitialPlacementManager(state, textures, settlementPlacementData, 
             roadSprite.input.onEntered.add(roadHoverEnterHandler, state);
             roadSprite.input.onLeft.add(roadHoverLeftHandler, state);*/
 
-            var buildButtonSprite = new Kiwi.GameObjects.Sprite(state, textures['build_road_button'],
+            var buildButtonSprite = new Kiwi.GameObjects.Sprite(state, textures[roadCollectionData.imageName],
                 roadData.x + roadCollectionData.buildButtonDeltaX, roadData.y + roadCollectionData.buildButtonDeltaY);
             buildButtonSprite.input.onUp.add(roadClickedHandler, state);
             buildButtonSprite.input.onEntered.add(roadHoverEnterHandler, state);
@@ -136,7 +136,7 @@ function create() {
     var originY = (backgroundHeight / 2);
     displayBoard(this, getTilePlacementData(originX, originY), hexData, this.textures);
 
-    this.initialPlacementManager = setupInitialPlacementManager(this, this.textures,
+    this.initialPlacementManager = setupInitialPlacementUI(this, this.textures,
         getSettlementPlacementData(originX, originY), getRoadPlacementData(originX, originY),
         this.imageIndexesById);
 
