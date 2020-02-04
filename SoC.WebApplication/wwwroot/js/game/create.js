@@ -36,20 +36,20 @@ function displayBoard(state, layoutColumnData, hexData, textures) {
     }
 }
 
-function setupInitialPlacementManager(state, textures, settlementPlacementData, roadPlacementData, imageIndexesById) {
-    var initialPlacementManager = new InitialPlacementUI(state, textures, imageIndexesById,
-        function (context, params) { initialPlacementManager.onConfirm(); },
-        function (context, params) { initialPlacementManager.onCancelSettlement(); },
-        function (context, params) { initialPlacementManager.onCancelRoad(); });
+function setupInitialPlacementUI(state, textures, settlementPlacementData, roadPlacementData, imageIndexesById) {
+    var initialPlacementUI = new InitialPlacementUI(state, textures, imageIndexesById,
+        function (context, params) { initialPlacementUI.onConfirm(); },
+        function (context, params) { initialPlacementUI.onCancelSettlement(); },
+        function (context, params) { initialPlacementUI.onCancelRoad(); });
 
     var sprites = [];
 
     var settlementClickedHandler = function (context, params) {
-        initialPlacementManager.handleSettlementClick(context.id);
+        initialPlacementUI.handleSettlementClick(context.id);
     };
 
     var settlementHoverHandler = function (context, params) {
-        initialPlacementManager.handleSettlementHover(context.id);
+        initialPlacementUI.handleSettlementHover(context.id);
     }
 
     var halfSettlementIconWidth = 12;
@@ -69,7 +69,7 @@ function setupInitialPlacementManager(state, textures, settlementPlacementData, 
             settlementSprite.input.onEntered.add(settlementHoverHandler, state);
             settlementSprite.input.onLeft.add(settlementHoverHandler, state);
 
-            initialPlacementManager.addSettlementSprite(settlementSprite, settlementLocation++);
+            initialPlacementUI.addSettlementSprite(settlementSprite, settlementLocation++);
             sprites.push(settlementSprite);
 
             if (offsetCount > 1) {
@@ -82,15 +82,15 @@ function setupInitialPlacementManager(state, textures, settlementPlacementData, 
     }
 
     var roadClickedHandler = function (context, params) {
-        initialPlacementManager.handleRoadClick(context.id);
+        initialPlacementUI.handleRoadClick(context.id);
     }
 
     var roadHoverEnterHandler = function (context, params) {
-        initialPlacementManager.handleRoadHoverEnter(context.id);
+        initialPlacementUI.handleRoadHoverEnter(context.id);
     }
 
     var roadHoverLeftHandler = function (context, params) {
-        initialPlacementManager.handleRoadHoverLeft(context.id);
+        initialPlacementUI.handleRoadHoverLeft(context.id);
     }
 
     for (var roadCollectionData of roadPlacementData) {
@@ -103,7 +103,7 @@ function setupInitialPlacementManager(state, textures, settlementPlacementData, 
             roadSprite.input.onLeft.add(roadHoverLeftHandler, state);
 
             var locations = roadData.locations;
-            initialPlacementManager.addRoadPlacement(roadSprite, roadCollectionData.imageIndex, roadCollectionData.hoverImageIndex,
+            initialPlacementUI.addRoadPlacement(roadSprite, roadCollectionData.imageIndex, roadCollectionData.hoverImageIndex,
                 roadCollectionData.type, sprites[locations[0]].id, locations[0], sprites[locations[1]].id, locations[1]);
             sprites.push(roadSprite);
         }
@@ -112,7 +112,7 @@ function setupInitialPlacementManager(state, textures, settlementPlacementData, 
     for (var i = sprites.length - 1; i >= 0; i--)
         state.addChild(sprites[i]);
 
-    return initialPlacementManager;
+    return initialPlacementUI;
 }
 
 function create() {
@@ -126,7 +126,7 @@ function create() {
     var originY = (backgroundHeight / 2);
     displayBoard(this, getTilePlacementData(originX, originY), hexData, this.textures);
 
-    this.initialPlacementManager = setupInitialPlacementUI(this, this.textures,
+    this.initialPlacementUI = setupInitialPlacementUI(this, this.textures,
         getSettlementPlacementData(originX, originY), getRoadPlacementData(originX, originY),
         this.imageIndexesById);
 

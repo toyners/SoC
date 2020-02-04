@@ -57,7 +57,7 @@ function main() {
                     });
                 }
                 case "PlaceSetupInfrastructureEvent": {
-                    this.initialPlacementManager.showSettlementSprites();
+                    this.initialPlacementUI.showSettlementSprites();
                     this.currentPlayerMarker.visible = true;
                     this.currentPlayerMarker.animation.play('main');
                     break;
@@ -66,7 +66,7 @@ function main() {
                     break;
                 }
                 case "SetupInfrastructurePlacedEvent": {
-                    this.initialPlacementManager.addPlacement(gameEvent.playerId, gameEvent.settlementLocation, gameEvent.roadSegmentEndLocation);
+                    this.initialPlacementUI.addPlacement(gameEvent.playerId, gameEvent.settlementLocation, gameEvent.roadSegmentEndLocation);
                     // Placing infrastructure animation
 
                     break;
@@ -77,9 +77,9 @@ function main() {
             }
         }
 
-        if (this.initialPlacementManager.isConfirmed()) {
+        if (this.initialPlacementUI.isConfirmed()) {
             this.currentPlayerMarker.visible = false;
-            var placementData = this.initialPlacementManager.getData();
+            var placementData = this.initialPlacementUI.getData();
             if (placementData) {
                 var request = {
                     gameId: gameId,
@@ -92,7 +92,7 @@ function main() {
                     })
                 };
 
-                this.initialPlacementManager.reset();
+                this.initialPlacementUI.reset();
 
                 connection.invoke("PlayerAction", request).catch(function (err) {
                     return console.error(err.toString());
