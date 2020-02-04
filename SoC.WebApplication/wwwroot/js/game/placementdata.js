@@ -147,7 +147,7 @@ function getRoadPlacementData(originX, originY) {
             hoverImageIndex: hoverNorthEastIndex,
             type: northEastType,
             buildButtonDeltaX: 0,
-            buildButtonDeltaY: 10,
+            buildButtonDeltaY: 7,
             roads: [
                 // Column 1
                 { x: startX - (2 * majorTileWidth) + 2, y: startY - stepY + 6, locations: [0, 1] },
@@ -191,8 +191,6 @@ function getRoadPlacementData(originX, originY) {
             imageIndex: defaultNorthWestIndex,
             hoverImageIndex: hoverNorthWestIndex,
             type: northWestType,
-            buildButtonDeltaX: 0,
-            buildButtonDeltaY: 10,
             roads: [
                 // Column 1
                 { x: startX - (2 * majorTileWidth) + 2, y: startY - (stepY) + 53, locations: [1, 2] },
@@ -236,8 +234,6 @@ function getRoadPlacementData(originX, originY) {
             imageIndex: defaultHorizontalIndex,
             hoverImageIndex: hoverHorizontalIndex,
             type: horizontalType,
-            buildButtonDeltaX: 10,
-            buildButtonDeltaY: -5,
             roads: [
                 // Column 1
                 { x: startX - (2 * majorTileWidth) + 31, y: startY - stepY - 2, locations: [0, 8] },

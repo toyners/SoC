@@ -102,8 +102,7 @@ class InitialPlacementManager {
         this.roadIconsById[roadSprite.id] = roadIcon;
 
         buildButtonSprite.visible = false;
-        this.roadButtonsById[buildButtonSprite.id] = buildButtonSprite;
-        
+        this.roadButtonsById[buildButtonSprite.Id] = buildButtonSprite;
 
         this.addRoadForSettlement(roadIcon, buildButtonSprite, firstSettlementSpriteId, firstSettlementLocation, secondSettlementLocation);
         this.addRoadForSettlement(roadIcon, buildButtonSprite, secondSettlementSpriteId, secondSettlementLocation, firstSettlementLocation);
@@ -214,35 +213,15 @@ class InitialPlacementManager {
     }
 
     handleRoadBuildButtonLeft(spriteId) {
-        if (!this.settlementId || this.selectedRoad)
-            return;
         this.roadButtonsById[spriteId].cellIndex = 0;
     }
 
     handleRoadBuildButtonEntered(spriteId) {
-        if (!this.settlementId || this.selectedRoad)
-            return;
         this.roadButtonsById[spriteId].cellIndex = 1;
     }
 
     handleRoadBuildButtonClicked(spriteId) {
         this.selectedRoadId = spriteId;
-
-        if (!this.settlementId || this.selectedRoad)
-            return;
-
-        for (var road of this.roadsBySettlementId[this.settlementId]) {
-            if (road.icon.sprite.id !== spriteId) {
-                road.icon.sprite.visible = false;
-            }
-            else {
-                road.icon.sprite.cellIndex = road.icon.hoverImageIndex;
-                this.selectedRoad = road;
-            }
-        }
-
-        this.confirmButton.visible = true;
-        this.cancelRoadButton.visible = true;
     }
 
     handleSettlementClick(spriteId) {
