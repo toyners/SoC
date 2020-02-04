@@ -1,6 +1,6 @@
 ﻿"use strict";
 
-class InitialPlacementUI {
+class InitialPlacementManager {
     constructor(state, textures, imageIndexesById, confirmClickHandler, cancelSettlementClickHandler, cancelRoadClickHandler) {
         this.settlementHoverImageIndex = 1;
         this.roundCount = 0;

@@ -52,19 +52,19 @@ function displayBoard(state, layoutColumnData, hexData, textures) {
 }
 
 function setupInitialPlacementUI(state, textures, settlementPlacementData, roadPlacementData, imageIndexesById) {
-    var initialPlacementUI = new InitialPlacementUI(state, textures, imageIndexesById,
-        function (context, params) { initialPlacementUI.onConfirm(); },
-        function (context, params) { initialPlacementUI.onCancelSettlement(); },
-        function (context, params) { initialPlacementUI.onCancelRoad(); });
+    var initialPlacementManager = new InitialPlacementManager(state, textures, imageIndexesById,
+        function (context, params) { initialPlacementManager.onConfirm(); },
+        function (context, params) { initialPlacementManager.onCancelSettlement(); },
+        function (context, params) { initialPlacementManager.onCancelRoad(); });
 
     var sprites = [];
 
     var settlementClickedHandler = function (context, params) {
-        initialPlacementUI.handleSettlementClick(context.id);
+        initialPlacementManager.handleSettlementClick(context.id);
     };
 
     var settlementHoverHandler = function (context, params) {
-        initialPlacementUI.handleSettlementHover(context.id);
+        initialPlacementManager.handleSettlementHover(context.id);
     }
 
     var halfSettlementIconWidth = 12;
@@ -84,7 +84,7 @@ function setupInitialPlacementUI(state, textures, settlementPlacementData, roadP
             settlementSprite.input.onEntered.add(settlementHoverHandler, state);
             settlementSprite.input.onLeft.add(settlementHoverHandler, state);
 
-            initialPlacementUI.addSettlementSprite(settlementSprite, settlementLocation++);
+            initialPlacementManager.addSettlementSprite(settlementSprite, settlementLocation++);
             sprites.push(settlementSprite);
 
             if (offsetCount > 1) {
@@ -97,15 +97,15 @@ function setupInitialPlacementUI(state, textures, settlementPlacementData, roadP
     }
 
     var roadClickedHandler = function (context, params) {
-        initialPlacementUI.handleRoadClick(context.id);
+        initialPlacementManager.handleRoadClick(context.id);
     }
 
     var roadHoverEnterHandler = function (context, params) {
-        initialPlacementUI.handleRoadHoverEnter(context.id);
+        initialPlacementManager.handleRoadHoverEnter(context.id);
     }
 
     var roadHoverLeftHandler = function (context, params) {
-        initialPlacementUI.handleRoadHoverLeft(context.id);
+        initialPlacementManager.handleRoadHoverLeft(context.id);
     }
 
     for (var roadCollectionData of roadPlacementData) {
@@ -118,7 +118,7 @@ function setupInitialPlacementUI(state, textures, settlementPlacementData, roadP
             roadSprite.input.onLeft.add(roadHoverLeftHandler, state);
 
             var locations = roadData.locations;
-            initialPlacementUI.addRoadPlacement(roadSprite, roadCollectionData.imageIndex, roadCollectionData.hoverImageIndex,
+            initialPlacementManager.addRoadPlacement(roadSprite, roadCollectionData.imageIndex, roadCollectionData.hoverImageIndex,
                 roadCollectionData.type, sprites[locations[0]].id, locations[0], sprites[locations[1]].id, locations[1]);
             sprites.push(roadSprite);
         }
@@ -127,7 +127,7 @@ function setupInitialPlacementUI(state, textures, settlementPlacementData, roadP
     for (var i = sprites.length - 1; i >= 0; i--)
         state.addChild(sprites[i]);
 
-    return initialPlacementUI;
+    return initialPlacementManager;
 }
 
 function create() {
@@ -141,7 +141,7 @@ function create() {
     var originY = (backgroundHeight / 2);
     displayBoard(this, getTilePlacementData(originX, originY), hexData, this.textures);
 
-    this.initialPlacementUI = setupInitialPlacementUI(this, this.textures,
+    this.initialPlacementManager = setupInitialPlacementUI(this, this.textures,
         getSettlementPlacementData(originX, originY), getRoadPlacementData(originX, originY),
         this.imageIndexesById);
 
