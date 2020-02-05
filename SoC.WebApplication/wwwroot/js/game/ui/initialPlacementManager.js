@@ -181,9 +181,9 @@ class InitialPlacementManager {
             return;
 
         var roadIcon = this.roadIconsById[spriteId];
+
         if (roadIcon.sprite.cellIndex === roadIcon.defaultImageIndex)
             roadIcon.sprite.cellIndex = roadIcon.hoverImageIndex;
-        
     }
 
     handleRoadHoverLeft(spriteId) {
@@ -191,6 +191,7 @@ class InitialPlacementManager {
             return;
 
         var roadIcon = this.roadIconsById[spriteId];
+
         if (roadIcon.sprite.cellIndex === roadIcon.hoverImageIndex)
             roadIcon.sprite.cellIndex = roadIcon.defaultImageIndex;
     }
@@ -213,6 +214,15 @@ class InitialPlacementManager {
     }
 
     handleSettlementEnter(spriteId) {
+
+        if (this.settlementId === spriteId) {
+            for (var road of this.roadsBySettlementId[this.settlementId]) {
+                if (road.icon.sprite.input.withinBounds)
+                    road.icon.sprite.cellIndex = road.icon.defaultImageIndex;
+            }
+            return;
+        }
+
         if (this.settlementId != null)
             return;
 
@@ -225,7 +235,7 @@ class InitialPlacementManager {
 
     handleSettlementLeft(spriteId) {
 
-        if (this.settlementId == spriteId) {
+        if (this.settlementId === spriteId) {
             for (var road of this.roadsBySettlementId[this.settlementId]) {
                 if (road.icon.sprite.input.withinBounds)
                     road.icon.sprite.cellIndex = road.icon.hoverImageIndex;
