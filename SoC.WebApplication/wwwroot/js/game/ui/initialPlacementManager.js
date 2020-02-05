@@ -53,14 +53,14 @@ class InitialPlacementManager {
             if (road.location === endLocation) {
                 road.icon.sprite.visible = true;
                 road.icon.sprite.cellIndex = imageIndexes[road.icon.typeIndex];
-                road.icon.sprite.onUp = [];
-                road.icon.sprite.onEntered = [];
-                road.icon.sprite.onLeft = [];
+                road.icon.sprite.input.enabled = false;
             }
-
+            /*outsideBounds
+            withinBounds*/
             // Neighbouring settlement sprites are no longer valid for selection.
             var neighbouringSettlement = this.settlementByLocation[road.location];
             if (neighbouringSettlement) {
+                neighbouringSettlement.sprite.input.enabled = false;
                 delete this.settlementById[neighbouringSettlement.sprite.id];
                 delete this.settlementByLocation[road.location];
             }
@@ -212,15 +212,35 @@ class InitialPlacementManager {
         this.cancelSettlementButton.visible = true;
     }
 
-    handleSettlementHover(spriteId) {
+    handleSettlementEnter(spriteId) {
         if (this.settlementId != null)
             return;
 
         var settlement = this.settlementById[spriteId];
         if (!settlement)
             return;
-        if (settlement.sprite.cellIndex === 0 || settlement.sprite.cellIndex === this.settlementHoverImageIndex)
-            settlement.sprite.cellIndex = settlement.sprite.cellIndex === 0 ? this.settlementHoverImageIndex : 0;
+        if (settlement.sprite.cellIndex === 0)
+            settlement.sprite.cellIndex = this.settlementHoverImageIndex;
+    }
+
+    handleSettlementLeft(spriteId) {
+
+        if (this.settlementId == spriteId) {
+            for (var road of this.roadsBySettlementId[this.settlementId]) {
+                if (road.icon.sprite.input.withinBounds)
+                    road.icon.sprite.cellIndex = road.icon.hoverImageIndex;
+            }
+            return;
+        }
+
+        if (this.settlementId != null)
+            return;
+
+        var settlement = this.settlementById[spriteId];
+        if (!settlement)
+            return;
+        if (settlement.sprite.cellIndex === this.settlementHoverImageIndex)
+            settlement.sprite.cellIndex = 0;
     }
 
     showRoadSprites(settlementId) {

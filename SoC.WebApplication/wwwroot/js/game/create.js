@@ -48,8 +48,12 @@ function setupInitialPlacementUI(state, textures, settlementPlacementData, roadP
         initialPlacementManager.handleSettlementClick(context.id);
     };
 
-    var settlementHoverHandler = function (context, params) {
-        initialPlacementManager.handleSettlementHover(context.id);
+    var settlementHoverEnterHandler = function (context, params) {
+        initialPlacementManager.handleSettlementEnter(context.id);
+    }
+
+    var settlementHoverLeftHandler = function (context, params) {
+        initialPlacementManager.handleSettlementLeft(context.id);
     }
 
     var halfSettlementIconWidth = 12;
@@ -66,8 +70,8 @@ function setupInitialPlacementUI(state, textures, settlementPlacementData, roadP
             var settlementSprite = new Kiwi.GameObjects.Sprite(state, textures.settlement, x, y);
             settlementSprite.visible = false;
             settlementSprite.input.onUp.add(settlementClickedHandler, state);
-            settlementSprite.input.onEntered.add(settlementHoverHandler, state);
-            settlementSprite.input.onLeft.add(settlementHoverHandler, state);
+            settlementSprite.input.onEntered.add(settlementHoverEnterHandler, state);
+            settlementSprite.input.onLeft.add(settlementHoverLeftHandler, state);
 
             initialPlacementManager.addSettlementSprite(settlementSprite, settlementLocation++);
             sprites.push(settlementSprite);
