@@ -110,8 +110,6 @@ class InitialPlacementManager {
 
     isConfirmed() { return this.confirmed; }
 
-    isLastRound() { return this.roundCount < 3; }
-
     onCancelRoad() {
         if (this.selectedRoad) {
             this.selectedRoad.icon.sprite.cellIndex = this.selectedRoad.icon.defaultImageIndex;
