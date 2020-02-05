@@ -57,6 +57,7 @@ function main() {
                     });
                 }
                 case "PlaceSetupInfrastructureEvent": {
+                    this.initialPlacementManager.showPlacements();
                     this.initialPlacementManager.showSettlementSprites();
                     this.currentPlayerMarker.visible = true;
                     this.currentPlayerMarker.animation.play('main');
@@ -67,11 +68,12 @@ function main() {
                 }
                 case "SetupInfrastructurePlacedEvent": {
                     this.initialPlacementManager.addPlacement(gameEvent.playerId, gameEvent.settlementLocation, gameEvent.roadSegmentEndLocation);
-                    // Placing infrastructure animation
-
                     break;
                 }
                 case "StartTurnEvent": {
+                    break;
+                }
+                default: {
                     break;
                 }
             }

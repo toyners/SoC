@@ -42,27 +42,37 @@ class InitialPlacementManager {
         this.cancelRoadButton.input.onLeft.add(buttonToggleHandler, state);
         this.cancelRoadButton.input.onUp.add(cancelRoadClickHandler, state);
         state.addChild(this.cancelRoadButton);
+
+        this.placements = [];
     }
 
     addPlacement(playerId, settlementLocation, endLocation) {
-        var imageIndexes = this.imageIndexesById[playerId];
-        var settlement = this.settlementByLocation[settlementLocation];
-        settlement.sprite.visible = true;
-        settlement.sprite.cellIndex = imageIndexes[0];
-        for (var road of this.roadsBySettlementLocation[settlementLocation]) {
-            if (road.location === endLocation) {
-                road.icon.sprite.visible = true;
-                road.icon.sprite.cellIndex = imageIndexes[road.icon.typeIndex];
-                road.icon.sprite.input.enabled = false;
-            }
-            /*outsideBounds
-            withinBounds*/
-            // Neighbouring settlement sprites are no longer valid for selection.
-            var neighbouringSettlement = this.settlementByLocation[road.location];
-            if (neighbouringSettlement) {
-                neighbouringSettlement.sprite.input.enabled = false;
-                delete this.settlementById[neighbouringSettlement.sprite.id];
-                delete this.settlementByLocation[road.location];
+        this.placements.push({ playerId: playerId, settlementLocation: settlementLocation, endLocation: endLocation });
+        
+    }
+
+    showPlacements() {
+        if (this.placements.length > 0) {
+            var placement = this.placements.shift();
+
+            var imageIndexes = this.imageIndexesById[placement.playerId];
+            var settlement = this.settlementByLocation[placement.settlementLocation];
+            settlement.sprite.visible = true;
+            settlement.sprite.cellIndex = imageIndexes[0];
+            for (var road of this.roadsBySettlementLocation[placement.settlementLocation]) {
+                if (road.location === placement.endLocation) {
+                    road.icon.sprite.visible = true;
+                    road.icon.sprite.cellIndex = imageIndexes[road.icon.typeIndex];
+                    road.icon.sprite.input.enabled = false;
+                }
+
+                // Neighbouring settlement sprites are no longer valid for selection.
+                var neighbouringSettlement = this.settlementByLocation[road.location];
+                if (neighbouringSettlement) {
+                    neighbouringSettlement.sprite.input.enabled = false;
+                    delete this.settlementById[neighbouringSettlement.sprite.id];
+                    delete this.settlementByLocation[road.location];
+                }
             }
         }
     }
