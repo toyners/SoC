@@ -14,21 +14,6 @@ class PlayerUI {
     }
 }
 
-function getProductionFactorTexture(productionFactor, textures) {
-    switch (productionFactor) {
-        case 2: return textures.two;
-        case 3: return textures.three;
-        case 4: return textures.four;
-        case 5: return textures.five;
-        case 6: return textures.six;
-        case 8: return textures.eight;
-        case 9: return textures.nine;
-        case 10: return textures.ten;
-        case 11: return textures.eleven;
-        case 12: return textures.twelve;
-    }
-}
-
 function displayBoard(state, layoutColumnData, hexData, textures) {
     var hexindex = 0;
 
