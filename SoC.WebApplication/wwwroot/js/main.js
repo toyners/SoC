@@ -60,8 +60,7 @@ function main() {
                     break;
                 }
                 case "PlaceSetupInfrastructureEvent": {
-                    this.initialPlacementManager.showPlacements();
-                    this.initialPlacementManager.showSettlementSprites();
+                    this.initialPlacementManager.activate();
                     this.currentPlayerMarker.visible = true;
                     this.currentPlayerMarker.animation.play('main');
                     break;
@@ -97,7 +96,7 @@ function main() {
                     })
                 };
 
-                this.initialPlacementManager.reset();
+                //this.initialPlacementManager.reset();
 
                 connection.invoke("PlayerAction", request).catch(function (err) {
                     return console.error(err.toString());

@@ -110,12 +110,18 @@ class InitialPlacementManager {
     }
 
     getData() {
-        return this.confirmed
-            ? {
+        if (this.confirmed) {
+            var result = {
                 settlementLocation: this.settlementById[this.settlementId].location,
                 roadEndLocation: this.selectedRoad.location
-            }
-            : null;
+            };
+            this.settlementId = null;
+            this.selectedRoad = null;
+            this.confirmed = false;
+            return result;
+        }
+
+        return null;
     }
 
     isConfirmed() { return this.confirmed; }
@@ -158,14 +164,6 @@ class InitialPlacementManager {
         this.selectSettlementLabel.visible = false;
         this.selectRoadLabel.visible = false;
         this.confirmed = true;
-    }
-
-    reset() {
-        this.settlementId = null;
-        this.selectedRoad = null;
-        this.selectSettlementLabel.visible = true;
-        this.selectRoadLabel.visible = true;
-        this.confirmed = false;
     }
 
     handleRoadClick(spriteId) {
@@ -269,8 +267,11 @@ class InitialPlacementManager {
         }
     }
 
-    showSettlementSprites() {
+    activate() {
         this.roundCount += 1;
+        this.showPlacements();
+        this.selectSettlementLabel.visible = true;
+        this.selectRoadLabel.visible = true;
         for (var settlementKey in this.settlementById) {
             var settlement = this.settlementById[settlementKey];
             if (settlement.sprite.cellIndex === 0)
