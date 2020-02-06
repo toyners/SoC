@@ -52,7 +52,7 @@ class InitialPlacementManager {
     }
 
     showPlacements() {
-        if (this.placements.length > 0) {
+        while (this.placements.length > 0) {
             var placement = this.placements.shift();
 
             var imageIndexes = this.imageIndexesById[placement.playerId];

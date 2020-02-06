@@ -44,6 +44,8 @@ function main() {
             var gameEvent = gameEvents.dequeue();
             switch (gameEvent.typeName) {
                 case "ConfirmGameStartEvent": {
+                    this.initialPlacementManager.showPlacements();
+
                     var request = {
                         gameId: gameId,
                         playerId: playerId,
@@ -55,6 +57,7 @@ function main() {
                     connection.invoke("PlayerAction", request).catch(function (err) {
                         return console.error(err.toString());
                     });
+                    break;
                 }
                 case "PlaceSetupInfrastructureEvent": {
                     this.initialPlacementManager.showPlacements();
