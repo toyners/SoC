@@ -22,13 +22,13 @@ function displayBoard(state, layoutColumnData, hexData, textures) {
     }
 }
 
-function displayPlayer(player) {
-    this.firstPlayerName = new Kiwi.GameObjects.Textfield(this, player.name, 10, 10, "#000", 32, 'normal', 'Impact');
-    this.addChild(this.firstPlayerName);
+function displayPlayer(state, player) {
+    var playerName = new Kiwi.GameObjects.Textfield(state, player.name, 10, 10, "#000", 32, 'normal', 'Impact');
+    state.addChild(playerName);
     //this.settlementCounter = new Kiwi.GameObjects.Textfield(this, String.toString(player.settlementCount) + 'x', 10, 50, "#000", 22, 'normal', 'Impact');
     //this.addChild(this.settlementCounter);
-    var settlementCounterIcon = new Kiwi.GameObjects.StaticImage(this, this.textures.redhouse, 35, 55);
-    this.addChild(settlementCounterIcon);
+    //var settlementCounterIcon = new Kiwi.GameObjects.StaticImage(this, this.textures.redhouse, 35, 55);
+    //this.addChild(settlementCounterIcon);
 }
 
 function setupInitialPlacementUI(state, textures, settlementPlacementData, roadPlacementData, imageIndexesById) {
@@ -135,24 +135,26 @@ function create() {
     this.addChild(this.currentPlayerMarker);
 
     this.players = [];
-    var player = new Player(playerNamesInOrder[0]);
-    this.players.push(player);
-    displayPlayer(player);
 
-    player = new Player(playerNamesInOrder[1]);
+    var player = new Player(this, playerNamesInOrder[0], 10, 10, true);
     this.players.push(player);
-    this.secondPlayerName = new Kiwi.GameObjects.Textfield(this, player.name, 10, 550, "#000", 32, 'normal', 'Impact');
+    //displayPlayer(this, player, 10, 10, true);
+
+    player = new Player(this, playerNamesInOrder[1], 10, 550, false);
+    this.players.push(player);
+    //displayPlayer(this, player, 10, 550, false);
+    /*this.secondPlayerName = new Kiwi.GameObjects.Textfield(this, player.name, 10, 550, "#000", 32, 'normal', 'Impact');
     this.settlementCounter = new Kiwi.GameObjects.Textfield(this, '5x', 10, 500, "#000", 22, 'normal', 'Impact');
     this.addChild(this.settlementCounter);
-    this.addChild(this.secondPlayerName);
+    this.addChild(this.secondPlayerName);*/
 
-    player = new Player(playerNamesInOrder[2]);
+    player = new Player(this, playerNamesInOrder[2], 700, 10, true);
     this.players.push(player);
-    this.thirdPlayerName = new Kiwi.GameObjects.Textfield(this, player.name, 700, 10, "#000", 32, 'normal', 'Impact');
-    this.addChild(this.thirdPlayerName);
+    //this.thirdPlayerName = new Kiwi.GameObjects.Textfield(this, player.name, 700, 10, "#000", 32, 'normal', 'Impact');
+    //this.addChild(this.thirdPlayerName);
 
-    player = new Player(playerNamesInOrder[3]);
+    player = new Player(this, playerNamesInOrder[3], 700, 550, false);
     this.players.push(player);
-    this.fourthPlayerName = new Kiwi.GameObjects.Textfield(this, player.name, 700, 550, "#000", 32, 'normal', 'Impact');
-    this.addChild(this.fourthPlayerName);
+    /*this.fourthPlayerName = new Kiwi.GameObjects.Textfield(this, player.name, 700, 550, "#000", 32, 'normal', 'Impact');
+    this.addChild(this.fourthPlayerName);*/
 }
