@@ -1,9 +1,9 @@
 ﻿
 class Player {
     constructor(state, name, x, y, topDown) {
-        this.settlementCount = 15;
-        this.roadCount = 5;
+        this.settlementCount = 5;
         this.cityCount = 4;
+        this.roadCount = 15;
 
         var diffY = topDown ? 40 : -40;
 
@@ -14,5 +14,7 @@ class Player {
 
         this.settlementCounter = new Kiwi.GameObjects.Textfield(state, this.settlementCount + 'x', x, y, "#000", 22, 'normal', 'Impact');
         state.addChild(this.settlementCounter);
+        
+        //var settlementIcon = new Kiwi.GameObjects.StaticImage(this, this.textures.background, 0, 0);
     }
 }

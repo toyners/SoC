@@ -96,8 +96,6 @@ function main() {
                     })
                 };
 
-                //this.initialPlacementManager.reset();
-
                 connection.invoke("PlayerAction", request).catch(function (err) {
                     return console.error(err.toString());
                 });
