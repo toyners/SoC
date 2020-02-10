@@ -138,23 +138,13 @@ function create() {
 
     var player = new Player(this, playerNamesInOrder[0], 10, 10, true);
     this.players.push(player);
-    //displayPlayer(this, player, 10, 10, true);
 
     player = new Player(this, playerNamesInOrder[1], 10, 550, false);
     this.players.push(player);
-    //displayPlayer(this, player, 10, 550, false);
-    /*this.secondPlayerName = new Kiwi.GameObjects.Textfield(this, player.name, 10, 550, "#000", 32, 'normal', 'Impact');
-    this.settlementCounter = new Kiwi.GameObjects.Textfield(this, '5x', 10, 500, "#000", 22, 'normal', 'Impact');
-    this.addChild(this.settlementCounter);
-    this.addChild(this.secondPlayerName);*/
-
+    
     player = new Player(this, playerNamesInOrder[2], 700, 10, true);
     this.players.push(player);
-    //this.thirdPlayerName = new Kiwi.GameObjects.Textfield(this, player.name, 700, 10, "#000", 32, 'normal', 'Impact');
-    //this.addChild(this.thirdPlayerName);
 
     player = new Player(this, playerNamesInOrder[3], 700, 550, false);
     this.players.push(player);
-    /*this.fourthPlayerName = new Kiwi.GameObjects.Textfield(this, player.name, 700, 550, "#000", 32, 'normal', 'Impact');
-    this.addChild(this.fourthPlayerName);*/
 }

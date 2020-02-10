@@ -12,12 +12,7 @@ class Player {
 
         y += diffY;
 
-        this.settlementCounter = new Kiwi.GameObjects.Textfield(state, String.toString(this.settlementCount) + 'x', x, y, "#000", 22, 'normal', 'Impact');
+        this.settlementCounter = new Kiwi.GameObjects.Textfield(state, this.settlementCount + 'x', x, y, "#000", 22, 'normal', 'Impact');
         state.addChild(this.settlementCounter);
-    }
-
-    addSettlement(texture, state) {
-        var settlement = new Kiwi.GameObjects.Sprite(state, texture, x, y);
-        state.addChild(settlement);
     }
 }
