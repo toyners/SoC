@@ -22,15 +22,6 @@ function displayBoard(state, layoutColumnData, hexData, textures) {
     }
 }
 
-function displayPlayer(state, player) {
-    var playerName = new Kiwi.GameObjects.Textfield(state, player.name, 10, 10, "#000", 32, 'normal', 'Impact');
-    state.addChild(playerName);
-    //this.settlementCounter = new Kiwi.GameObjects.Textfield(this, String.toString(player.settlementCount) + 'x', 10, 50, "#000", 22, 'normal', 'Impact');
-    //this.addChild(this.settlementCounter);
-    //var settlementCounterIcon = new Kiwi.GameObjects.StaticImage(this, this.textures.redhouse, 35, 55);
-    //this.addChild(settlementCounterIcon);
-}
-
 function setupInitialPlacementUI(state, textures, settlementPlacementData, roadPlacementData, imageIndexesById) {
     var initialPlacementManager = new InitialPlacementManager(state, textures, imageIndexesById,
         function (context, params) { initialPlacementManager.onConfirm(); },
