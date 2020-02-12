@@ -32,13 +32,16 @@ class Player {
 
     decrementRoadCount() {
         this.roadCount--;
+        this.roadCounter.text = this.roadCount + 'x';
     }
 
     decrementSettlementCount() {
         this.settlementCount--;
+        this.settlementCounter.text = this.settlementCount + 'x'
     }
 
     incrementSettlementCount() {
         this.settlementCount++;
+        this.settlementCounter.text = this.settlementCount + 'x'
     }
 }
