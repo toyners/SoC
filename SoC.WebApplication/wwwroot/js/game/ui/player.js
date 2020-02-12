@@ -41,6 +41,4 @@ class Player {
     incrementSettlementCount() {
         this.settlementCount++;
     }
-
-
 }
