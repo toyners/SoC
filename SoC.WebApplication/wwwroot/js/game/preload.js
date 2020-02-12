@@ -1,6 +1,6 @@
 ﻿"use strict";
 
-function preload() {
+function preloadGameState() {
     Kiwi.State.prototype.preload(this);
     this.addImage('background', '../../../images/background.png');
     this.addSpriteSheet('hextypes', '../../../images/hextypes.png', 100, 100);

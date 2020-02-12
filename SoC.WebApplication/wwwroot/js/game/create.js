@@ -105,7 +105,7 @@ function setupInitialPlacementUI(state, textures, settlementPlacementData, roadP
     return initialPlacementManager;
 }
 
-function create() {
+function createGameState() {
     Kiwi.State.prototype.create(this);
     this.background = new Kiwi.GameObjects.StaticImage(this, this.textures.background, 0, 0);
     var backgroundWidth = this.background.width;

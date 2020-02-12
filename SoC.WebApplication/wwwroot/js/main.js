@@ -28,87 +28,19 @@ connection.start().then(function () {
 });
 
 function main() {
-    var state = new Kiwi.State('Play');
-    state.preload = preload;
+    var gameState = new Kiwi.State('Play');
+    gameState.preload = preloadGameState;
 
-    var backgroundWidth = 800;
-    var backgroundHeight = 600;
-
-    state.imageIndexesById = imageIndexesById;
-    state.create = create;
-
-    state.update = function () {
-        Kiwi.State.prototype.update.call(this);
-
-        if (!gameEvents.isEmpty()) {
-            var gameEvent = gameEvents.dequeue();
-            switch (gameEvent.typeName) {
-                case "ConfirmGameStartEvent": {
-                    this.initialPlacementManager.showPlacements();
-
-                    var request = {
-                        gameId: gameId,
-                        playerId: playerId,
-                        playerActionType: 'ConfirmGameStartAction',
-                        data: JSON.stringify({
-                            initiatingPlayerId: playerId
-                        })
-                    };
-                    connection.invoke("PlayerAction", request).catch(function (err) {
-                        return console.error(err.toString());
-                    });
-                    break;
-                }
-                case "PlaceSetupInfrastructureEvent": {
-                    this.initialPlacementManager.activate();
-                    this.currentPlayerMarker.visible = true;
-                    this.currentPlayerMarker.animation.play('main');
-                    break;
-                }
-                case "ResourcesCollectedEvent": {
-                    break;
-                }
-                case "SetupInfrastructurePlacedEvent": {
-                    this.initialPlacementManager.addPlacement(gameEvent.playerId, gameEvent.settlementLocation, gameEvent.roadSegmentEndLocation);
-                    break;
-                }
-                case "StartTurnEvent": {
-                    break;
-                }
-                default: {
-                    break;
-                }
-            }
-        }
-
-        if (this.initialPlacementManager.isConfirmed()) {
-            this.currentPlayerMarker.visible = false;
-            var placementData = this.initialPlacementManager.getData();
-            if (placementData) {
-                var request = {
-                    gameId: gameId,
-                    playerId: playerId,
-                    playerActionType: 'PlaceSetupInfrastructureAction',
-                    data: JSON.stringify({
-                        initiatingPlayerId: playerId,
-                        settlementLocation: placementData.settlementLocation,
-                        roadEndLocation: placementData.roadEndLocation
-                    })
-                };
-
-                connection.invoke("PlayerAction", request).catch(function (err) {
-                    return console.error(err.toString());
-                });
-            }
-        }
-    };
+    gameState.imageIndexesById = imageIndexesById;
+    gameState.create = createGameState;
+    gameState.update = updateGameState;
 
     var gameOptions = {
-        width: backgroundWidth,
-        height: backgroundHeight
+        width: 800,
+        height: 600
     };
 
-    game = new Kiwi.Game('game-container', 'soc', state, gameOptions);
+    var game = new Kiwi.Game('game-container', 'soc', gameState, gameOptions);
 }
 
 connection.on("GameEvent", function (gameEvent) {
