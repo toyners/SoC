@@ -1,20 +1,46 @@
 ﻿
 class Player {
-    constructor(state, name, x, y, topDown) {
+    constructor(gameState, name, x, y, topDown, leftRight, settlementIconName) {
         this.settlementCount = 5;
         this.cityCount = 4;
         this.roadCount = 15;
 
         var diffY = topDown ? 40 : -40;
+        var diffX = leftRight ? 55 : -55;
 
-        var playerName = new Kiwi.GameObjects.Textfield(state, name, x, y, "#000", 32, 'normal', 'Impact');
-        state.addChild(playerName);
+        var playerName = new Kiwi.GameObjects.Textfield(gameState, name, x, y, "#000", 32, 'normal', 'Impact');
+        gameState.addChild(playerName);
 
         y += diffY;
 
-        this.settlementCounter = new Kiwi.GameObjects.Textfield(state, this.settlementCount + 'x', x, y, "#000", 22, 'normal', 'Impact');
-        state.addChild(this.settlementCounter);
-        
-        //var settlementIcon = new Kiwi.GameObjects.StaticImage(this, this.textures.background, 0, 0);
+        this.settlementCounter = new Kiwi.GameObjects.Textfield(gameState, this.settlementCount + 'x', x, y, "#000", 22, 'normal', 'Impact');
+        gameState.addChild(this.settlementCounter);
+
+        if (settlementIconName) {
+            var settlementIcon = new Kiwi.GameObjects.StaticImage(gameState, gameState.textures[settlementIconName], x + 25, y - 5);
+            gameState.addChild(settlementIcon);
+        }
+
+        x += diffX;
+        this.cityCounter = new Kiwi.GameObjects.Textfield(gameState, this.cityCount + 'x', x, y, "#000", 22, 'normal', 'Impact');
+        gameState.addChild(this.cityCounter);
+
+        x += diffX;
+        this.roadCounter = new Kiwi.GameObjects.Textfield(gameState, this.roadCount + 'x', x, y, "#000", 22, 'normal', 'Impact');
+        gameState.addChild(this.roadCounter);
     }
+
+    decrementRoadCount() {
+        this.roadCount--;
+    }
+
+    decrementSettlementCount() {
+        this.settlementCount--;
+    }
+
+    incrementSettlementCount() {
+        this.settlementCount++;
+    }
+
+
 }

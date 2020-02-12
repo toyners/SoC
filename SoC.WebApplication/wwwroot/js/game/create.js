@@ -127,15 +127,15 @@ function createGameState() {
 
     this.players = [];
 
-    var player = new Player(this, playerNamesInOrder[0], 10, 10, true);
+    var player = new Player(this, playerNamesInOrder[0], 10, 10, true, true, "redSettlement");
     this.players.push(player);
 
-    player = new Player(this, playerNamesInOrder[1], 10, 550, false);
+    player = new Player(this, playerNamesInOrder[1], 10, 550, false, true);
     this.players.push(player);
     
-    player = new Player(this, playerNamesInOrder[2], 700, 10, true);
+    player = new Player(this, playerNamesInOrder[2], 700, 10, true, false);
     this.players.push(player);
 
-    player = new Player(this, playerNamesInOrder[3], 700, 550, false);
+    player = new Player(this, playerNamesInOrder[3], 700, 550, false, false);
     this.players.push(player);
 }
