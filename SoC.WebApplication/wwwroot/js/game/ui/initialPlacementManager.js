@@ -48,7 +48,6 @@ class InitialPlacementManager {
 
     addPlacement(playerId, settlementLocation, endLocation) {
         this.placements.push({ playerId: playerId, settlementLocation: settlementLocation, endLocation: endLocation });
-        
     }
 
     showPlacements() {
