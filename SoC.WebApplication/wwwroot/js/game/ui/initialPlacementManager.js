@@ -1,10 +1,10 @@
 ﻿"use strict";
 
 class InitialPlacementManager {
-    constructor(state, textures, imageIndexesById, confirmClickHandler, cancelSettlementClickHandler, cancelRoadClickHandler) {
+    constructor(state, textures, confirmClickHandler, cancelSettlementClickHandler, cancelRoadClickHandler) {
         this.settlementHoverImageIndex = 1;
         this.roundCount = 0;
-        this.imageIndexesById = imageIndexesById;
+        this.playerData = state.playerData;
         this.roadIconsById = {};
         this.roadsBySettlementId = {};
         this.roadsBySettlementLocation = {};
@@ -54,7 +54,7 @@ class InitialPlacementManager {
         while (this.placements.length > 0) {
             var placement = this.placements.shift();
 
-            var imageIndexes = this.imageIndexesById[placement.playerId];
+            var imageIndexes = this.playerData.playerById[placement.playerId].imageIndexes;
             var settlement = this.settlementByLocation[placement.settlementLocation];
             settlement.sprite.visible = true;
             settlement.sprite.cellIndex = imageIndexes[0];

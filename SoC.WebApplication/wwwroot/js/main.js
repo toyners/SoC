@@ -5,13 +5,8 @@ var connection = new signalR.HubConnectionBuilder().withUrl("/gameRequest").buil
 var gameState = null;
 var gameId = null;
 var playerId = null;
-//var playerNamesInOrder = null;
-//var playerIdsByName = null;
-//var playerNamesById = null;
-//var imageIndexesById = null;
 var game = null;
 var hexData = null;
-//var gameEvents = new Queue();
 
 connection.start().then(function () {
     var fragments = window.location.pathname.split("/");
@@ -29,10 +24,7 @@ connection.start().then(function () {
 });
 
 function main() {
-    //var gameState = new Kiwi.State('Play');
     gameState.preload = preloadGameState;
-
-    gameState.imageIndexesById = imageIndexesById;
     gameState.create = createGameState;
     gameState.update = updateGameState;
 
@@ -50,7 +42,6 @@ connection.on("GameEvent", function (gameEvent) {
         gameState = new Kiwi.State('Play');
         gameState.gameEvents = new Queue();
     } else if (typeName === "PlayerSetupEvent") {
-        playerIdsByName = gameEvent.playerIdsByName;
         var settlementColourIndexes = [2, 4, 6, 8];
         var northEastRoadColourIndexes = [2, 4, 6, 8];
         var northWestRoadColourIndexes = [11, 13, 15, 17];
@@ -60,28 +51,22 @@ connection.on("GameEvent", function (gameEvent) {
             playerById: {}
         };
 
-        playerNamesById = {};
-        imageIndexesById = {};
         var index = 0;
-        for (var playerName in playerIdsByName) {
-            var playerId = playerIdsByName[playerName];
+        for (var playerName in gameEvent.playerIdsByName) {
 
-            //playerNamesById[playerId] = playerName;
             var imageIndexes = [
                 settlementColourIndexes[index],
                 northEastRoadColourIndexes[index],
                 northWestRoadColourIndexes[index],
                 horizontalRoadColourIndexes[index]
             ];
-            //imageIndexesById[playerId] = imageIndexes;
 
             var player = {
-                id: playerId,
+                id: gameEvent.playerIdsByName[playerName],
                 name: playerName,
                 imageIndexes: imageIndexes
             }
 
-            playerData.players.push(player);
             playerData.playerById[player.id] = player;
 
             index++;
@@ -92,9 +77,10 @@ connection.on("GameEvent", function (gameEvent) {
     } else if (typeName === "InitialBoardSetupEvent") {
         hexData = gameEvent.gameBoardSetup.hexData;
     } else if (typeName === "PlayerOrderEvent") {
-        playerNamesInOrder = [];
+
+        gameState.playerData.players = [];
         gameEvent.playerIds.forEach(function (playerId) {
-            playerNamesInOrder.push(playerNamesById[playerId]);
+            gameState.playerData.players.push(gameState.playerData.playerById[playerId]);
         });
         main();
     } else {
