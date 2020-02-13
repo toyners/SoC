@@ -2,15 +2,16 @@
 
 var connection = new signalR.HubConnectionBuilder().withUrl("/gameRequest").build();
 
+var gameState = null;
 var gameId = null;
 var playerId = null;
-var playerNamesInOrder = null;
-var playerIdsByName = null;
-var playerNamesById = null;
-var imageIndexesById = null;
+//var playerNamesInOrder = null;
+//var playerIdsByName = null;
+//var playerNamesById = null;
+//var imageIndexesById = null;
 var game = null;
 var hexData = null;
-var gameEvents = new Queue();
+//var gameEvents = new Queue();
 
 connection.start().then(function () {
     var fragments = window.location.pathname.split("/");
@@ -28,7 +29,7 @@ connection.start().then(function () {
 });
 
 function main() {
-    var gameState = new Kiwi.State('Play');
+    //var gameState = new Kiwi.State('Play');
     gameState.preload = preloadGameState;
 
     gameState.imageIndexesById = imageIndexesById;
@@ -46,28 +47,48 @@ function main() {
 connection.on("GameEvent", function (gameEvent) {
     var typeName = gameEvent.typeName;
     if (typeName === "GameJoinedEvent") {
-
+        gameState = new Kiwi.State('Play');
+        gameState.gameEvents = new Queue();
     } else if (typeName === "PlayerSetupEvent") {
         playerIdsByName = gameEvent.playerIdsByName;
         var settlementColourIndexes = [2, 4, 6, 8];
         var northEastRoadColourIndexes = [2, 4, 6, 8];
         var northWestRoadColourIndexes = [11, 13, 15, 17];
         var horizontalRoadColourIndexes = [2, 4, 6, 8];
+        var playerData = {
+            players: [],
+            playerById: {}
+        };
+
         playerNamesById = {};
         imageIndexesById = {};
         var index = 0;
         for (var playerName in playerIdsByName) {
             var playerId = playerIdsByName[playerName];
-            playerNamesById[playerId] = playerName;
+
+            //playerNamesById[playerId] = playerName;
             var imageIndexes = [
                 settlementColourIndexes[index],
                 northEastRoadColourIndexes[index],
                 northWestRoadColourIndexes[index],
                 horizontalRoadColourIndexes[index]
             ];
-            imageIndexesById[playerId] = imageIndexes;
+            //imageIndexesById[playerId] = imageIndexes;
+
+            var player = {
+                id: playerId,
+                name: playerName,
+                imageIndexes: imageIndexes
+            }
+
+            playerData.players.push(player);
+            playerData.playerById[player.id] = player;
+
             index++;
         }
+
+        gameState.playerData = playerData;
+
     } else if (typeName === "InitialBoardSetupEvent") {
         hexData = gameEvent.gameBoardSetup.hexData;
     } else if (typeName === "PlayerOrderEvent") {
@@ -77,7 +98,7 @@ connection.on("GameEvent", function (gameEvent) {
         });
         main();
     } else {
-        gameEvents.enqueue(gameEvent);
+        gameState.gameEvents.enqueue(gameEvent);
     }
 }).catch(function (err) {
     return console.error(err.toString());

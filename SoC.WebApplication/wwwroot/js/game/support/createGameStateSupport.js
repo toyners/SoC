@@ -22,13 +22,13 @@ function displayBoard(gameState, layoutColumnData, hexData, textures) {
     }
 }
 
-function setupPlayers(gameState, playerData) {
+function setupPlayers(gameState) {
     var players = [];
 
-    players.push(new Player(gameState, playerData[0], 10, 10, true, true));
-    players.push(new Player(gameState, playerData[1], 10, 550, false, true));
-    players.push(new Player(gameState, playerData[2], 700, 10, true, false));
-    players.push(new Player(gameState, playerData[3], 700, 550, false, false));
+    players.push(new Player(gameState, gameState.playerData[0], 10, 10, true, true));
+    players.push(new Player(gameState, gameState.playerData[1], 10, 550, false, true));
+    players.push(new Player(gameState, gameState.playerData[2], 700, 10, true, false));
+    players.push(new Player(gameState, gameState.playerData[3], 700, 550, false, false));
 
     return players;
 }

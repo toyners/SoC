@@ -3,8 +3,8 @@
 function updateGameState() {
     Kiwi.State.prototype.update.call(this); // Must use .call otherwise the components property is undefined 
 
-    if (!gameEvents.isEmpty()) {
-        var gameEvent = gameEvents.dequeue();
+    if (!this.gameEvents.isEmpty()) {
+        var gameEvent = this.gameEvents.dequeue();
         switch (gameEvent.typeName) {
             case "ConfirmGameStartEvent": {
                 this.initialPlacementManager.showPlacements();
