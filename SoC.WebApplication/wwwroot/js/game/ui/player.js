@@ -16,10 +16,9 @@ class Player {
         this.settlementCounter = new Kiwi.GameObjects.Textfield(gameState, this.settlementCount + 'x', x, y, "#000", 22, 'normal', 'Impact');
         gameState.addChild(this.settlementCounter);
 
-        if (settlementIconName) {
-            var settlementIcon = new Kiwi.GameObjects.StaticImage(gameState, gameState.textures[playerData.settlementIcon], x + 25, y - 5);
-            gameState.addChild(settlementIcon);
-        }
+        var settlementIcon = new Kiwi.GameObjects.StaticImage(gameState, gameState.textures.settlement, x + 25, y - 5);
+        settlementIcon.cellIndex = playerData.imageIndexes[0];
+        gameState.addChild(settlementIcon);
 
         x += diffX;
         this.cityCounter = new Kiwi.GameObjects.Textfield(gameState, this.cityCount + 'x', x, y, "#000", 22, 'normal', 'Impact');
