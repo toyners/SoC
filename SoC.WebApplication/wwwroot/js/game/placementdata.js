@@ -129,8 +129,8 @@ function getSettlementPlacementData(originX, originY) {
 function getRoadPlacementData(originX, originY) {
     var startX = originX - halfTileWidth;
     var startY = originY - halfTileHeight;
-    var angularRoads = 'angular_roads';
-    var horizontalRoads = 'horizontal_roads'
+    var angularRoads = 'angularRoads';
+    var horizontalRoads = 'horizontalRoads'
     var defaultNorthEastIndex = 0;
     var hoverNorthEastIndex = 1;
     var defaultNorthWestIndex = 9;

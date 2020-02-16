@@ -7,8 +7,8 @@ function preloadGameState() {
     this.addSpriteSheet('productionfactors', '../../../images/productionfactors.png', 100, 100);
 
     this.addSpriteSheet('settlement', '../../../images/settlement/settlement.png', 25, 25);
-    this.addSpriteSheet('angular_roads', '../../../images/road/angular_roads.png', 26, 41);
-    this.addSpriteSheet('horizontal_roads', '../../../images/road/horizontal_roads.png', 37, 10);
+    this.addSpriteSheet('angularRoads', '../../../images/road/angular_roads.png', 26, 41);
+    this.addSpriteSheet('horizontalRoads', '../../../images/road/horizontal_roads.png', 37, 10);
     this.addSpriteSheet('playermarker', '../../../images/currentplayermarker.png', 50, 45);
     this.addSpriteSheet('confirm', '../../../images/confirm.png', 30, 30);
     this.addSpriteSheet('cancel', '../../../images/cancel.png', 30, 30);
