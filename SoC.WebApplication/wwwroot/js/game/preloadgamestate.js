@@ -15,6 +15,4 @@ function preloadGameState() {
 
     //this.addImage('test', '../../../images/test.png');
     this.addImage('test', '../../../images/100x100 test.png')
-
-    this.addImage('redSettlement', '../../../images/settlement/red_settlement.png')
 }
