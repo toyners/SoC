@@ -6,7 +6,6 @@ var gameState = null;
 var gameId = null;
 var playerId = null;
 var game = null;
-var hexData = null;
 
 connection.start().then(function () {
     var fragments = window.location.pathname.split("/");
@@ -75,7 +74,7 @@ connection.on("GameEvent", function (gameEvent) {
         gameState.playerData = playerData;
 
     } else if (typeName === "InitialBoardSetupEvent") {
-        hexData = gameEvent.gameBoardSetup.hexData;
+        gameState.hexData = gameEvent.gameBoardSetup.hexData;
     } else if (typeName === "PlayerOrderEvent") {
 
         gameState.playerData.players = [];

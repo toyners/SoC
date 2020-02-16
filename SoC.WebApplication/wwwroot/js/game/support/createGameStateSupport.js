@@ -1,6 +1,7 @@
 ﻿"use strict"
 
-function displayBoard(gameState, layoutColumnData, hexData, textures) {
+function displayBoard(gameState, layoutColumnData, textures) {
+    var hexData = gameState.hexData;
     var hexindex = 0;
 
     for (var index = 0; index < layoutColumnData.data.length; index++) {

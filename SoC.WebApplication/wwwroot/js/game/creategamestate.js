@@ -9,7 +9,7 @@ function createGameState() {
 
     var originX = (backgroundWidth / 2);
     var originY = (backgroundHeight / 2);
-    displayBoard(this, getTilePlacementData(originX, originY), hexData, this.textures);
+    displayBoard(this, getTilePlacementData(originX, originY), this.textures);
 
     this.players = setupPlayers(this)
 
