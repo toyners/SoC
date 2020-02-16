@@ -16,8 +16,10 @@ class Player {
         this.settlementCounter = new Kiwi.GameObjects.Textfield(gameState, this.settlementCount + 'x', x, y, "#000", 22, 'normal', 'Impact');
         gameState.addChild(this.settlementCounter);
 
-        var settlementIcon = new Kiwi.GameObjects.StaticImage(gameState, gameState.textures.settlement, x + 25, y - 5);
+        var settlementIcon = new Kiwi.GameObjects.StaticImage(gameState, gameState.textures.settlement, x + 25, y - 3);
         settlementIcon.cellIndex = playerData.imageIndexes[0];
+        settlementIcon.scaleX = 0.8;
+        settlementIcon.scaleY = 0.8;
         gameState.addChild(settlementIcon);
 
         x += diffX;
