@@ -22,19 +22,21 @@ class Player {
         settlementIcon.scaleY = 0.8;
         gameState.addChild(settlementIcon);
 
-        x += diffX;
-        this.cityCounter = new Kiwi.GameObjects.Textfield(gameState, this.cityCount + 'x', x, y, "#000", 22, 'normal', 'Impact');
+        this.cityCounter = new Kiwi.GameObjects.Textfield(gameState, this.cityCount + 'x', x + diffX, y, "#000", 22, 'normal', 'Impact');
         gameState.addChild(this.cityCounter);
 
-        x += diffX;
-        this.roadCounter = new Kiwi.GameObjects.Textfield(gameState, this.roadCount + 'x', x, y, "#000", 22, 'normal', 'Impact');
+        this.roadCounter = new Kiwi.GameObjects.Textfield(gameState, this.roadCount + 'x', x + (2 * diffX), y, "#000", 22, 'normal', 'Impact');
         gameState.addChild(this.roadCounter);
 
-        var roadIcon = new Kiwi.GameObjects.StaticImage(gameState, gameState.textures.horizontalRoads, x + 28, y + 5);
+        var roadIcon = new Kiwi.GameObjects.StaticImage(gameState, gameState.textures.horizontalRoads, x + (2 * diffX) + 28, y + 5);
         roadIcon.cellIndex = playerData.imageIndexes[3];
         roadIcon.scaleX = 0.6;
         roadIcon.scaleY = 0.8;
         gameState.addChild(roadIcon);
+
+        y += diffY;
+        var brickIcon = new Kiwi.GameObjects.StaticImage(gameState, gameState.textures.resourceTypes, x, y);
+        brickIcon.cellIndex = 0;
     }
 
     decrementRoadCount() {
