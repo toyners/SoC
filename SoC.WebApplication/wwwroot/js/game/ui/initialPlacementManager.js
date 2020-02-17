@@ -4,7 +4,11 @@ class InitialPlacementManager {
     constructor(state, textures, confirmClickHandler, cancelSettlementClickHandler, cancelRoadClickHandler) {
         this.settlementHoverImageIndex = 1;
         this.roundCount = 0;
-        this.playerData = state.playerData;
+        this.imageIndexesByPlayerId = {};
+        for (var playerId in state.playerData.playerById) {
+            this.imageIndexesByPlayerId[playerId] = state.playerData.playerById[playerId].imageIndexes;
+        }
+
         this.roadIconsById = {};
         this.roadsBySettlementId = {};
         this.roadsBySettlementLocation = {};
@@ -54,7 +58,7 @@ class InitialPlacementManager {
         while (this.placements.length > 0) {
             var placement = this.placements.shift();
 
-            var imageIndexes = this.playerData.playerById[placement.playerId].imageIndexes;
+            var imageIndexes = this.imageIndexesByPlayerId[placement.playerId];
             var settlement = this.settlementByLocation[placement.settlementLocation];
             settlement.sprite.visible = true;
             settlement.sprite.cellIndex = imageIndexes[0];
