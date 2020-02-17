@@ -4,6 +4,8 @@ class Player {
         this.settlementCount = 5;
         this.cityCount = 4;
         this.roadCount = 15;
+        this.brickCount = 0;
+        this.grainCount = 0;
 
         var diffY = topDown ? 40 : -40;
         var diffX = leftRight ? 65 : -65;
@@ -37,6 +39,17 @@ class Player {
         y += diffY;
         var brickIcon = new Kiwi.GameObjects.StaticImage(gameState, gameState.textures.resourceTypes, x, y);
         brickIcon.cellIndex = 0;
+        gameState.addChild(brickIcon);
+
+        this.brickCounter = new Kiwi.GameObjects.Textfield(gameState, ':' + this.brickCount, x + 20, y, "#000", 20, 'normal', 'Impact');
+        gameState.addChild(this.brickCounter);
+
+        var grainIcon = new Kiwi.GameObjects.StaticImage(gameState, gameState.textures.resourceTypes, x + 50, y);
+        grainIcon.cellIndex = 1;
+        gameState.addChild(grainIcon);
+
+        this.grainCounter = new Kiwi.GameObjects.Textfield(gameState, ':' + this.grainCount, x + 70, y, "#000", 20, 'normal', 'Impact');
+        gameState.addChild(this.grainCounter);
     }
 
     decrementRoadCount() {

@@ -13,7 +13,7 @@ function preloadGameState() {
     this.addSpriteSheet('confirm', '../../../images/confirm.png', 30, 30);
     this.addSpriteSheet('cancel', '../../../images/cancel.png', 30, 30);
 
-    this.addSpriteSheet('resourceTypes', '../../../images/resourceTypes.png', 25, 25)
+    this.addSpriteSheet('resourceTypes', '../../../images/resourceTypes.png', 20, 20)
 
     //this.addImage('test', '../../../images/test.png');
     this.addImage('test', '../../../images/100x100 test.png')
