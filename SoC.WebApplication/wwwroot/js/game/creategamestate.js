@@ -11,7 +11,7 @@ function createGameState() {
     var originY = (backgroundHeight / 2);
     displayBoard(this, getTilePlacementData(originX, originY), this.textures);
 
-    this.players = setupPlayers(this)
+    this.playersById = setupPlayers(this)
 
     this.initialPlacementManager = setupInitialPlacementUI(this, this.textures,
         getSettlementPlacementData(originX, originY), getRoadPlacementData(originX, originY));

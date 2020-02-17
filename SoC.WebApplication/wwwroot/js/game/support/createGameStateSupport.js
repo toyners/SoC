@@ -24,14 +24,14 @@ function displayBoard(gameState, layoutColumnData, textures) {
 }
 
 function setupPlayers(gameState) {
-    var players = [];
+    var playersById = {};
 
-    players.push(new Player(gameState, gameState.playerData.players[0], 10, 10, true, true));
-    players.push(new Player(gameState, gameState.playerData.players[1], 10, 550, false, true));
-    players.push(new Player(gameState, gameState.playerData.players[2], 700, 10, true, false));
-    players.push(new Player(gameState, gameState.playerData.players[3], 700, 550, false, false));
+    playersById[gameState.playerData.players[0].id] = new Player(gameState, gameState.playerData.players[0], 10, 10, true, true);
+    playersById[gameState.playerData.players[1].id] = new Player(gameState, gameState.playerData.players[1], 10, 550, false, true);
+    playersById[gameState.playerData.players[2].id] = new Player(gameState, gameState.playerData.players[2], 700, 10, true, false);
+    playersById[gameState.playerData.players[3].id] = new Player(gameState, gameState.playerData.players[3], 700, 550, false, false);
 
-    return players;
+    return playersById;
 }
 
 function setupInitialPlacementUI(gameState, textures, settlementPlacementData, roadPlacementData) {
