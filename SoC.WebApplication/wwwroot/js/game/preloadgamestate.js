@@ -13,7 +13,9 @@ function preloadGameState() {
     this.addSpriteSheet('confirm', '../../../images/confirm.png', 30, 30);
     this.addSpriteSheet('cancel', '../../../images/cancel.png', 30, 30);
 
-    this.addSpriteSheet('resourceTypes', '../../../images/resourceTypes.png', 20, 20)
+    this.addSpriteSheet('resourceTypes', '../../../images/player/resourceTypes.png', 20, 20)
+    this.addSpriteSheet('settlementIcons', '../../../images/player/settlementIcons.png', 20, 20)
+    this.addSpriteSheet('roadIcons', '../../../images/player/roadIcons.png', 20, 20)
 
     //this.addImage('test', '../../../images/test.png');
     this.addImage('test', '../../../images/100x100 test.png')
