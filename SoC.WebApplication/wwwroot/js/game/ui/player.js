@@ -1,6 +1,6 @@
 ﻿
 class Player {
-    constructor(gameState, playerData, x, y, topDown, leftRight) {
+    constructor(gameState, playerData, layout) {
         this.settlementCount = 5;
         this.cityCount = 4;
         this.roadCount = 15;
@@ -10,65 +10,64 @@ class Player {
         this.oreCount = 0;
         this.woolCount = 0;
 
-        var diffY = topDown ? 40 : -40;
-        var diffX = leftRight ? 65 : -65;
+        var line = layout.shift();
 
-        var playerName = new Kiwi.GameObjects.Textfield(gameState, playerData.name, x, y, "#000", 32, 'normal', 'Impact');
+        var playerName = new Kiwi.GameObjects.Textfield(gameState, playerData.name, line.x, line.y, "#000", 32, 'normal', 'Impact');
         gameState.addChild(playerName);
 
-        y += diffY;
+        line = layout.shift();
 
-        var settlementIcon = new Kiwi.GameObjects.StaticImage(gameState, gameState.textures.settlementIcons, x, y);
-        settlementIcon.cellIndex = playerData.imageIndexes[0];
+        var settlementIcon = new Kiwi.GameObjects.StaticImage(gameState, gameState.textures.settlementIcons, line.x, line.y);
+        settlementIcon.cellIndex = playerData.imageIndexes[4];
         gameState.addChild(settlementIcon);
 
-        this.settlementCounter = new Kiwi.GameObjects.Textfield(gameState, this.settlementCount, x + 25, y, "#000", 22, 'normal', 'Impact');
+        this.settlementCounter = new Kiwi.GameObjects.Textfield(gameState, this.settlementCount, line.x + 25, line.y, "#000", 22, 'normal', 'Impact');
         gameState.addChild(this.settlementCounter);
 
-        this.cityCounter = new Kiwi.GameObjects.Textfield(gameState, this.cityCount, x + diffX, y, "#000", 22, 'normal', 'Impact');
+        this.cityCounter = new Kiwi.GameObjects.Textfield(gameState, this.cityCount, line.x + 65,line.y, "#000", 22, 'normal', 'Impact');
         gameState.addChild(this.cityCounter);
 
-        var roadIcon = new Kiwi.GameObjects.StaticImage(gameState, gameState.textures.roadIcons, x + (2 * diffX) + 28, y);
-        roadIcon.cellIndex = playerData.imageIndexes[3];
+        var roadIcon = new Kiwi.GameObjects.StaticImage(gameState, gameState.textures.roadIcons, line.x + 160, line.y);
+        roadIcon.cellIndex = playerData.imageIndexes[4];
         gameState.addChild(roadIcon);
 
-        this.roadCounter = new Kiwi.GameObjects.Textfield(gameState, this.roadCount, x + (2 * diffX), y, "#000", 22, 'normal', 'Impact');
+        this.roadCounter = new Kiwi.GameObjects.Textfield(gameState, this.roadCount, line.x + 130, line.y, "#000", 22, 'normal', 'Impact');
         gameState.addChild(this.roadCounter);
 
-        y += diffY;
-        var brickIcon = new Kiwi.GameObjects.StaticImage(gameState, gameState.textures.resourceTypes, x, y);
+        line = layout.shift();
+        var brickIcon = new Kiwi.GameObjects.StaticImage(gameState, gameState.textures.resourceTypes, line.x, line.y);
         brickIcon.cellIndex = 0;
         gameState.addChild(brickIcon);
 
-        this.brickCounter = new Kiwi.GameObjects.Textfield(gameState, this.brickCount, x + 20, y, "#000", 20, 'normal', 'Impact');
+        this.brickCounter = new Kiwi.GameObjects.Textfield(gameState, this.brickCount, line.x + 25, line.y, "#000", 20, 'normal', 'Impact');
         gameState.addChild(this.brickCounter);
 
-        var grainIcon = new Kiwi.GameObjects.StaticImage(gameState, gameState.textures.resourceTypes, x + 50, y);
+        var grainIcon = new Kiwi.GameObjects.StaticImage(gameState, gameState.textures.resourceTypes, line.x + 50, line.y);
         grainIcon.cellIndex = 1;
         gameState.addChild(grainIcon);
 
-        this.grainCounter = new Kiwi.GameObjects.Textfield(gameState, this.grainCount, x + 70, y, "#000", 20, 'normal', 'Impact');
+        this.grainCounter = new Kiwi.GameObjects.Textfield(gameState, this.grainCount, line.x + 70, line.y, "#000", 20, 'normal', 'Impact');
         gameState.addChild(this.grainCounter);
 
-        var lumberIcon = new Kiwi.GameObjects.StaticImage(gameState, gameState.textures.resourceTypes, x + 100, y);
+        var lumberIcon = new Kiwi.GameObjects.StaticImage(gameState, gameState.textures.resourceTypes, line.x + 100, line.y);
         lumberIcon.cellIndex = 2;
         gameState.addChild(lumberIcon);
 
-        this.lumberCounter = new Kiwi.GameObjects.Textfield(gameState, this.lumberCount, x + 120, y, "#000", 20, 'normal', 'Impact');
+        this.lumberCounter = new Kiwi.GameObjects.Textfield(gameState, this.lumberCount, line.x + 120, line.y, "#000", 20, 'normal', 'Impact');
         gameState.addChild(this.lumberCounter);
 
-        var oreIcon = new Kiwi.GameObjects.StaticImage(gameState, gameState.textures.resourceTypes, x + 150, y);
+        var oreIcon = new Kiwi.GameObjects.StaticImage(gameState, gameState.textures.resourceTypes, line.x + 150, line.y);
         oreIcon.cellIndex = 3;
         gameState.addChild(oreIcon);
 
-        this.oreCounter = new Kiwi.GameObjects.Textfield(gameState, this.oreCount, x + 170, y, "#000", 20, 'normal', 'Impact');
+        this.oreCounter = new Kiwi.GameObjects.Textfield(gameState, this.oreCount, line.x + 170, line.y, "#000", 20, 'normal', 'Impact');
         gameState.addChild(this.oreCounter);
 
-        var woolIcon = new Kiwi.GameObjects.StaticImage(gameState, gameState.textures.resourceTypes, x + 200, y);
+        var woolIcon = new Kiwi.GameObjects.StaticImage(gameState, gameState.textures.resourceTypes, line.x + 200, line.y);
         woolIcon.cellIndex = 4;
         gameState.addChild(woolIcon);
 
-        this.woolCounter = new Kiwi.GameObjects.Textfield(gameState, this.woolCount, x + 220, y, "#000", 20, 'normal', 'Impact');
+        this.woolCounter = new Kiwi.GameObjects.Textfield(gameState, this.woolCount, line.x + 220, line.y, "#000", 20, 'normal', 'Impact');
         gameState.addChild(this.woolCounter);
     }
 

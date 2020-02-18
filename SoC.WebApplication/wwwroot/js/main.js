@@ -45,6 +45,8 @@ connection.on("GameEvent", function (gameEvent) {
         var northEastRoadColourIndexes = [2, 4, 6, 8];
         var northWestRoadColourIndexes = [11, 13, 15, 17];
         var horizontalRoadColourIndexes = [2, 4, 6, 8];
+        var iconIndexes = [0, 1, 2, 3];
+
         var playerData = {
             players: [],
             playerById: {}
@@ -57,7 +59,8 @@ connection.on("GameEvent", function (gameEvent) {
                 settlementColourIndexes[index],
                 northEastRoadColourIndexes[index],
                 northWestRoadColourIndexes[index],
-                horizontalRoadColourIndexes[index]
+                horizontalRoadColourIndexes[index],
+                iconIndexes[index]
             ];
 
             var player = {

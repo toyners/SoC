@@ -26,10 +26,14 @@ function displayBoard(gameState, layoutColumnData, textures) {
 function setupPlayers(gameState) {
     var playersById = {};
 
-    playersById[gameState.playerData.players[0].id] = new Player(gameState, gameState.playerData.players[0], 10, 10, true, true);
-    playersById[gameState.playerData.players[1].id] = new Player(gameState, gameState.playerData.players[1], 10, 550, false, true);
-    playersById[gameState.playerData.players[2].id] = new Player(gameState, gameState.playerData.players[2], 700, 10, true, false);
-    playersById[gameState.playerData.players[3].id] = new Player(gameState, gameState.playerData.players[3], 700, 550, false, false);
+    playersById[gameState.playerData.players[0].id] = new Player(gameState, gameState.playerData.players[0],
+        [{ x: 10, y: 10 }, {x: 10, y: 50}, {x: 10, y: 80}]);
+    playersById[gameState.playerData.players[1].id] = new Player(gameState, gameState.playerData.players[1],
+        [{ x: 10, y: 550 }, { x: 10, y: 520 }, { x: 10, y: 480 }]);
+    playersById[gameState.playerData.players[2].id] = new Player(gameState, gameState.playerData.players[2],
+        [{ x: 700, y: 10 }, { x: 700, y: 50 }, { x: 700, y: 80 }]);
+    playersById[gameState.playerData.players[3].id] = new Player(gameState, gameState.playerData.players[3],
+        [{ x: 700, y: 550 }, { x: 700, y: 520 }, { x: 700, y: 480 }]);
 
     return playersById;
 }
