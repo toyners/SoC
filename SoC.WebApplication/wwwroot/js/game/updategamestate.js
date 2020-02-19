@@ -11,10 +11,10 @@ function updateGameState() {
 
                 var request = {
                     gameId: gameId,
-                    playerId: playerId,
+                    playerId: this.playerId,
                     playerActionType: 'ConfirmGameStartAction',
                     data: JSON.stringify({
-                        initiatingPlayerId: playerId
+                        initiatingPlayerId: this.playerId
                     })
                 };
                 connection.invoke("PlayerAction", request).catch(function (err) {
@@ -30,7 +30,15 @@ function updateGameState() {
             }
             case "ResourcesCollectedEvent": {
                 for (var playerId in gameEvent.resourcesCollectedByPlayerId) {
-                    var resources = gameEvent.resourcesCollectedByPlayerId[playerId];
+                    var player = this.playersById[playerId];
+                    var resourcesForPlayer = gameEvent.resourcesCollectedByPlayerId[playerId];
+                    if (resourcesForPlayer) {
+                        for (var resourcesForLocation in resourcesForPlayer) {
+                            var resources = resourcesForLocation.resources;
+                            if (resources.brickCount)
+                                player.updateBrickCount(resources.brickCount);
+                        }
+                    }
                 }
 
                 break;
@@ -54,10 +62,10 @@ function updateGameState() {
         if (placementData) {
             var request = {
                 gameId: gameId,
-                playerId: playerId,
+                playerId: this.playerId,
                 playerActionType: 'PlaceSetupInfrastructureAction',
                 data: JSON.stringify({
-                    initiatingPlayerId: playerId,
+                    initiatingPlayerId: this.playerId,
                     settlementLocation: placementData.settlementLocation,
                     roadEndLocation: placementData.roadEndLocation
                 })
