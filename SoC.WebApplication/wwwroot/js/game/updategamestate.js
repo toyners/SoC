@@ -29,6 +29,10 @@ function updateGameState() {
                 break;
             }
             case "ResourcesCollectedEvent": {
+                for (var playerId in gameEvent.resourcesCollectedByPlayerId) {
+                    var resources = gameEvent.resourcesCollectedByPlayerId[playerId];
+                }
+
                 break;
             }
             case "SetupInfrastructurePlacedEvent": {

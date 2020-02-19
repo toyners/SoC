@@ -1,6 +1,6 @@
 ﻿
 class Player {
-    constructor(gameState, playerData, layout) {
+    constructor(gameState, playerData, isLocal, layout) {
         this.settlementCount = 5;
         this.cityCount = 4;
         this.roadCount = 15;
@@ -9,6 +9,8 @@ class Player {
         this.lumberCount = 0;
         this.oreCount = 0;
         this.woolCount = 0;
+        this.resourceCount = 0;
+        this.isLocal = isLocal;
 
         var line = layout.shift();
 
@@ -24,65 +26,126 @@ class Player {
         this.settlementCounter = new Kiwi.GameObjects.Textfield(gameState, this.settlementCount, line.x + 25, line.y, "#000", 22, 'normal', 'Impact');
         gameState.addChild(this.settlementCounter);
 
-        this.cityCounter = new Kiwi.GameObjects.Textfield(gameState, this.cityCount, line.x + 65,line.y, "#000", 22, 'normal', 'Impact');
-        gameState.addChild(this.cityCounter);
-
-        var roadIcon = new Kiwi.GameObjects.StaticImage(gameState, gameState.textures.roadIcons, line.x + 160, line.y);
+        var roadIcon = new Kiwi.GameObjects.StaticImage(gameState, gameState.textures.roadIcons, line.x + 55, line.y);
         roadIcon.cellIndex = playerData.imageIndexes[4];
         gameState.addChild(roadIcon);
 
-        this.roadCounter = new Kiwi.GameObjects.Textfield(gameState, this.roadCount, line.x + 130, line.y, "#000", 22, 'normal', 'Impact');
+        this.roadCounter = new Kiwi.GameObjects.Textfield(gameState, this.roadCount, line.x + 80, line.y, "#000", 22, 'normal', 'Impact');
         gameState.addChild(this.roadCounter);
 
-        line = layout.shift();
-        var brickIcon = new Kiwi.GameObjects.StaticImage(gameState, gameState.textures.resourceTypes, line.x, line.y);
-        brickIcon.cellIndex = 0;
-        gameState.addChild(brickIcon);
+        //this.cityCounter = new Kiwi.GameObjects.Textfield(gameState, this.cityCount, line.x + 65, line.y, "#000", 22, 'normal', 'Impact');
+        //gameState.addChild(this.cityCounter);
 
-        this.brickCounter = new Kiwi.GameObjects.Textfield(gameState, this.brickCount, line.x + 25, line.y, "#000", 20, 'normal', 'Impact');
-        gameState.addChild(this.brickCounter);
+        if (isLocal) {
+            line = layout.shift();
+            var brickIcon = new Kiwi.GameObjects.StaticImage(gameState, gameState.textures.resourceTypes, line.x, line.y);
+            brickIcon.cellIndex = 0;
+            gameState.addChild(brickIcon);
 
-        var grainIcon = new Kiwi.GameObjects.StaticImage(gameState, gameState.textures.resourceTypes, line.x + 50, line.y);
-        grainIcon.cellIndex = 1;
-        gameState.addChild(grainIcon);
+            this.brickCounter = new Kiwi.GameObjects.Textfield(gameState, this.brickCount, line.x + 25, line.y, "#000", 20, 'normal', 'Impact');
+            gameState.addChild(this.brickCounter);
 
-        this.grainCounter = new Kiwi.GameObjects.Textfield(gameState, this.grainCount, line.x + 70, line.y, "#000", 20, 'normal', 'Impact');
-        gameState.addChild(this.grainCounter);
+            var grainIcon = new Kiwi.GameObjects.StaticImage(gameState, gameState.textures.resourceTypes, line.x + 55, line.y);
+            grainIcon.cellIndex = 1;
+            gameState.addChild(grainIcon);
 
-        var lumberIcon = new Kiwi.GameObjects.StaticImage(gameState, gameState.textures.resourceTypes, line.x + 100, line.y);
-        lumberIcon.cellIndex = 2;
-        gameState.addChild(lumberIcon);
+            this.grainCounter = new Kiwi.GameObjects.Textfield(gameState, this.grainCount, line.x + 80, line.y, "#000", 20, 'normal', 'Impact');
+            gameState.addChild(this.grainCounter);
 
-        this.lumberCounter = new Kiwi.GameObjects.Textfield(gameState, this.lumberCount, line.x + 120, line.y, "#000", 20, 'normal', 'Impact');
-        gameState.addChild(this.lumberCounter);
+            var lumberIcon = new Kiwi.GameObjects.StaticImage(gameState, gameState.textures.resourceTypes, line.x + 110, line.y);
+            lumberIcon.cellIndex = 2;
+            gameState.addChild(lumberIcon);
 
-        var oreIcon = new Kiwi.GameObjects.StaticImage(gameState, gameState.textures.resourceTypes, line.x + 150, line.y);
-        oreIcon.cellIndex = 3;
-        gameState.addChild(oreIcon);
+            this.lumberCounter = new Kiwi.GameObjects.Textfield(gameState, this.lumberCount, line.x + 135, line.y, "#000", 20, 'normal', 'Impact');
+            gameState.addChild(this.lumberCounter);
 
-        this.oreCounter = new Kiwi.GameObjects.Textfield(gameState, this.oreCount, line.x + 170, line.y, "#000", 20, 'normal', 'Impact');
-        gameState.addChild(this.oreCounter);
+            var oreIcon = new Kiwi.GameObjects.StaticImage(gameState, gameState.textures.resourceTypes, line.x + 165, line.y);
+            oreIcon.cellIndex = 3;
+            gameState.addChild(oreIcon);
 
-        var woolIcon = new Kiwi.GameObjects.StaticImage(gameState, gameState.textures.resourceTypes, line.x + 200, line.y);
-        woolIcon.cellIndex = 4;
-        gameState.addChild(woolIcon);
+            this.oreCounter = new Kiwi.GameObjects.Textfield(gameState, this.oreCount, line.x + 190, line.y, "#000", 20, 'normal', 'Impact');
+            gameState.addChild(this.oreCounter);
 
-        this.woolCounter = new Kiwi.GameObjects.Textfield(gameState, this.woolCount, line.x + 220, line.y, "#000", 20, 'normal', 'Impact');
-        gameState.addChild(this.woolCounter);
+            var woolIcon = new Kiwi.GameObjects.StaticImage(gameState, gameState.textures.resourceTypes, line.x + 220, line.y);
+            woolIcon.cellIndex = 4;
+            gameState.addChild(woolIcon);
+
+            this.woolCounter = new Kiwi.GameObjects.Textfield(gameState, this.woolCount, line.x + 245, line.y, "#000", 20, 'normal', 'Impact');
+            gameState.addChild(this.woolCounter);
+        } else {
+            line = layout.shift();
+
+            var resourceIcon = new Kiwi.GameObjects.StaticImage(gameState, gameState.textures.resourceTypes, line.x, line.y);
+            resourceIcon.cellIndex = 5;
+            gameState.addChild(resourceIcon);
+
+            this.resourceCounter = new Kiwi.GameObjects.Textfield(gameState, this.resourceCount, line.x + 25, line.y, "#000", 20, 'normal', 'Impact');
+            gameState.addChild(this.resourceCounter);
+        }
     }
 
     decrementRoadCount() {
         this.roadCount--;
-        this.roadCounter.text = this.roadCount + 'x';
+        this.roadCounter.text = this.roadCount;
     }
 
     decrementSettlementCount() {
         this.settlementCount--;
-        this.settlementCounter.text = this.settlementCount + 'x'
+        this.settlementCounter.text = this.settlementCount;
     }
 
     incrementSettlementCount() {
         this.settlementCount++;
-        this.settlementCounter.text = this.settlementCount + 'x'
+        this.settlementCounter.text = this.settlementCount;
+    }
+
+    updateBrickCount(delta) {
+        if (this.isLocal) {
+            this.brickCount += delta;
+            this.brickCounter.text = this.brickCount;
+        } else {
+            this.resourceCount += delta
+            this.resourceCounter.text = this.resourceCount;
+        }
+    }
+
+    updateGrainCount(delta) {
+        if (this.isLocal) {
+            this.grainCount += delta;
+            this.grainCounter.text = this.grainCount;
+        } else {
+            this.resourceCount += delta
+            this.resourceCounter.text = this.resourceCount;
+        }
+    }
+
+    updateLumberCount(delta) {
+        if (this.isLocal) {
+            this.lumberCount += delta;
+            this.lumberCounter.text = this.lumberCount;
+        } else {
+            this.resourceCount += delta
+            this.resourceCounter.text = this.resourceCount;
+        }
+    }
+
+    updateOreCount(delta) {
+        if (this.isLocal) {
+            this.oreCount += delta;
+            this.oreCounter.text = this.oreCount;
+        } else {
+            this.resourceCount += delta
+            this.resourceCounter.text = this.resourceCount;
+        }
+    }
+
+    updateWoolCount(delta) {
+        if (this.isLocal) {
+            this.woolCount += delta;
+            this.woolCounter.text = this.woolCount;
+        } else {
+            this.resourceCount += delta
+            this.resourceCounter.text = this.resourceCount;
+        }
     }
 }

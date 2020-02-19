@@ -27,13 +27,13 @@ function setupPlayers(gameState) {
     var playersById = {};
 
     playersById[gameState.playerData.players[0].id] = new Player(gameState, gameState.playerData.players[0],
-        [{ x: 10, y: 10 }, {x: 10, y: 50}, {x: 10, y: 80}]);
+        true, [{ x: 10, y: 10 }, {x: 10, y: 50}, {x: 10, y: 80}]);
     playersById[gameState.playerData.players[1].id] = new Player(gameState, gameState.playerData.players[1],
-        [{ x: 10, y: 550 }, { x: 10, y: 520 }, { x: 10, y: 480 }]);
+        false, [{ x: 10, y: 550 }, { x: 10, y: 520 }, { x: 10, y: 480 }]);
     playersById[gameState.playerData.players[2].id] = new Player(gameState, gameState.playerData.players[2],
-        [{ x: 700, y: 10 }, { x: 700, y: 50 }, { x: 700, y: 80 }]);
+        false, [{ x: 700, y: 10 }, { x: 700, y: 50 }, { x: 700, y: 80 }]);
     playersById[gameState.playerData.players[3].id] = new Player(gameState, gameState.playerData.players[3],
-        [{ x: 700, y: 550 }, { x: 700, y: 520 }, { x: 700, y: 480 }]);
+        false, [{ x: 700, y: 550 }, { x: 700, y: 520 }, { x: 700, y: 480 }]);
 
     return playersById;
 }
