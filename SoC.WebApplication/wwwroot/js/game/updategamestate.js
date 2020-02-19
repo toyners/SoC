@@ -29,26 +29,7 @@ function updateGameState() {
                 break;
             }
             case "ResourcesCollectedEvent": {
-                for (var playerId in gameEvent.resourcesCollectedByPlayerId) {
-                    var player = this.playersById[playerId];
-                    var resourcesForPlayer = gameEvent.resourcesCollectedByPlayerId[playerId];
-                    if (resourcesForPlayer) {
-                        for (var resourcesForLocation of resourcesForPlayer) {
-                            var resources = resourcesForLocation.resources;
-                            if (resources.brickCount)
-                                player.updateBrickCount(resources.brickCount);
-                            if (resources.grainCount)
-                                player.updateGrainCount(resources.grainCount);
-                            if (resources.lumberCount)
-                                player.updateGrainCount(resources.lumberCount);
-                            if (resources.oreCount)
-                                player.updateGrainCount(resources.oreCount);
-                            if (resources.woolCount)
-                                player.updateGrainCount(resources.woolCount);
-                        }
-                    }
-                }
-
+                processCollectedResources(gameState, gameEvent.resourcesCollectedByPlayerId);
                 break;
             }
             case "SetupInfrastructurePlacedEvent": {
@@ -56,6 +37,7 @@ function updateGameState() {
                 break;
             }
             case "StartTurnEvent": {
+                processCollectedResources(gameState, gameEvent.collectedResources);
                 break;
             }
             default: {
