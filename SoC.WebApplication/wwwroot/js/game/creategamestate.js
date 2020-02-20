@@ -20,4 +20,12 @@ function createGameState() {
     this.currentPlayerMarker.visible = false;
     this.currentPlayerMarker.animation.add('main', [2, 1, 0], 0.15, true, false);
     this.addChild(this.currentPlayerMarker);
+
+    this.diceOne = new Kiwi.GameObjects.Sprite(this, this.textures.dice, 50, (backgroundHeight / 2) - 50);
+    this.diceOne.visible = false;
+    this.addChild(this.diceOne);
+
+    this.diceTwo = new Kiwi.GameObjects.Sprite(this, this.textures.dice, 100, (backgroundHeight / 2) - 50);
+    this.diceTwo.visible = false;
+    this.addChild(this.diceTwo);
 }

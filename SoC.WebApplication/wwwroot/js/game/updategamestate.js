@@ -38,6 +38,13 @@ function updateGameState() {
             }
             case "StartTurnEvent": {
                 processCollectedResources(gameState, gameEvent.collectedResources);
+
+                this.diceOne.visible = true;
+                this.diceOne.cellIndex = gameEvent.dice1 - 1;
+
+                this.diceTwo.visible = true;
+                this.diceTwo.cellIndex = gameEvent.dice2 - 1;
+                
                 break;
             }
             default: {

@@ -17,6 +17,8 @@ function preloadGameState() {
     this.addSpriteSheet('settlementIcons', '../../../images/player/settlementIcons.png', 20, 20)
     this.addSpriteSheet('roadIcons', '../../../images/player/roadIcons.png', 20, 20)
 
+    this.addSpriteSheet('dice', '../../../images/dice.png', 40, 40)
+
     //this.addImage('test', '../../../images/test.png');
     this.addImage('test', '../../../images/100x100 test.png')
 }
