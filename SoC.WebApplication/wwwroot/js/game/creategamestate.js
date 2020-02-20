@@ -33,12 +33,23 @@ function createGameState() {
     this.end.visible = false;
     this.addChild(this.end);
 
-    var buttonToggleHandler = function (context, params) {
+    this.buttonToggleHandler = function (context, params) {
         context.cellIndex = context.cellIndex == 0 ? 1 : 0;
     };
 
-    //this.end.input.onUp.add(settlementClickedHandler, gameState);
-    this.end.input.onEntered.add(buttonToggleHandler, gameState);
-    this.end.input.onLeft.add(buttonToggleHandler, gameState);
+    this.endTurnHandler = function (context, params) {
+        if (context.visible) {
+            this.playerActions.enqueue({
+                id: this.playerId,
+                type: 'EndOfTurnAction',
+                data: { initiatingPlayerId: this.playerId }
+            });
 
+            context.visible = false;
+        }
+    }
+
+    this.end.input.onUp.add(this.endTurnHandler, gameState);
+    this.end.input.onEntered.add(this.buttonToggleHandler, gameState);
+    this.end.input.onLeft.add(this.buttonToggleHandler, gameState);
 }

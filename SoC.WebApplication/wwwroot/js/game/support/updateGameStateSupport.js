@@ -21,3 +21,16 @@ function processCollectedResources(gameState, resourcesCollectedByPlayerId) {
         }
     }
 }
+
+function sendRequest(playerAction, connection) {
+    var request = {
+        gameId: gameId,
+        playerId: playerAction.id,
+        playerActionType: playerAction.type,
+        data: JSON.stringify(playerAction.data)
+    };
+
+    connection.invoke("PlayerAction", request).catch(function (err) {
+        return console.error(err.toString());
+    });
+}

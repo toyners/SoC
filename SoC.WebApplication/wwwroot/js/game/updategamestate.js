@@ -55,6 +55,12 @@ function updateGameState() {
         }
     }
 
+    if (!this.playerActions.isEmpty()) {
+        var playerAction = this.playerActions.dequeue();
+
+        sendRequest(playerAction, connection);
+    }
+
     if (this.initialPlacementManager.isConfirmed()) {
         this.currentPlayerMarker.visible = false;
         var placementData = this.initialPlacementManager.getData();

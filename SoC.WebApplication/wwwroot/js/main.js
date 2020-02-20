@@ -40,6 +40,7 @@ connection.on("GameEvent", function (gameEvent) {
     if (typeName === "GameJoinedEvent") {
         gameState = new Kiwi.State('Play');
         gameState.gameEvents = new Queue();
+        gameState.playerActions = new Queue();
         gameState.playerId = playerId;
     } else if (typeName === "PlayerSetupEvent") {
         var settlementColourIndexes = [2, 4, 6, 8];
