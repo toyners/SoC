@@ -39,6 +39,8 @@ function updateGameState() {
             case "StartTurnEvent": {
                 processCollectedResources(gameState, gameEvent.collectedResources);
 
+                this.end.visible = true;
+
                 this.diceOne.visible = true;
                 this.diceOne.cellIndex = gameEvent.dice1 - 1;
 

@@ -12,6 +12,7 @@ function preloadGameState() {
     this.addSpriteSheet('playermarker', '../../../images/currentplayermarker.png', 50, 45);
     this.addSpriteSheet('confirm', '../../../images/confirm.png', 30, 30);
     this.addSpriteSheet('cancel', '../../../images/cancel.png', 30, 30);
+    this.addSpriteSheet('end', '../../../images/end.png', 60, 30)
 
     this.addSpriteSheet('resourceTypes', '../../../images/player/resourceTypes.png', 20, 20)
     this.addSpriteSheet('settlementIcons', '../../../images/player/settlementIcons.png', 20, 20)

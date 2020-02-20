@@ -28,4 +28,17 @@ function createGameState() {
     this.diceTwo = new Kiwi.GameObjects.Sprite(this, this.textures.dice, 100, (backgroundHeight / 2) - 50);
     this.diceTwo.visible = false;
     this.addChild(this.diceTwo);
+
+    this.end = new Kiwi.GameObjects.Sprite(this, this.textures.end, 10, (backgroundHeight / 2) - 90);
+    this.end.visible = false;
+    this.addChild(this.end);
+
+    var buttonToggleHandler = function (context, params) {
+        context.cellIndex = context.cellIndex == 0 ? 1 : 0;
+    };
+
+    //this.end.input.onUp.add(settlementClickedHandler, gameState);
+    this.end.input.onEntered.add(buttonToggleHandler, gameState);
+    this.end.input.onLeft.add(buttonToggleHandler, gameState);
+
 }
