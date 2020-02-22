@@ -9,16 +9,13 @@ function updateGameState() {
             case "ConfirmGameStartEvent": {
                 this.initialPlacementManager.showPlacements();
 
-                var request = {
-                    gameId: gameId,
-                    playerId: this.playerId,
+                this.playerActions.enqueue({
+                    gameId: this.gameId,
+                    id: this.playerId,
                     playerActionType: 'ConfirmGameStartAction',
-                    data: JSON.stringify({
+                    data: {
                         initiatingPlayerId: this.playerId
-                    })
-                };
-                connection.invoke("PlayerAction", request).catch(function (err) {
-                    return console.error(err.toString());
+                    }
                 });
                 break;
             }
@@ -58,7 +55,7 @@ function updateGameState() {
     if (!this.playerActions.isEmpty()) {
         var playerAction = this.playerActions.dequeue();
 
-        sendRequest(playerAction, connection);
+        sendRequest(this.gameId, playerAction, connection);
     }
 
     if (this.initialPlacementManager.isConfirmed()) {

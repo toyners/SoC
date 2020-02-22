@@ -24,7 +24,7 @@ function processCollectedResources(gameState, resourcesCollectedByPlayerId) {
 
 function sendRequest(playerAction, connection) {
     var request = {
-        gameId: gameId,
+        gameId: playerAction.gameId,
         playerId: playerAction.id,
         playerActionType: playerAction.type,
         data: JSON.stringify(playerAction.data)

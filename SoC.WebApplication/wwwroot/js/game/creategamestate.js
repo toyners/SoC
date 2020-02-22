@@ -2,6 +2,14 @@
 
 function createGameState() {
     Kiwi.State.prototype.create(this);
+
+    this.gameEvents = new Queue();
+    this.playerActions = new Queue();
+
+    this.buttonToggleHandler = function (context, params) {
+        context.cellIndex = context.cellIndex == 0 ? 1 : 0;
+    };
+
     this.background = new Kiwi.GameObjects.StaticImage(this, this.textures.background, 0, 0);
     var backgroundWidth = this.background.width;
     var backgroundHeight = this.background.height;
@@ -9,11 +17,11 @@ function createGameState() {
 
     var originX = (backgroundWidth / 2);
     var originY = (backgroundHeight / 2);
-    displayBoard(this, getTilePlacementData(originX, originY), this.textures);
+    displayBoard(this, getTilePlacementData(originX, originY));
 
     this.playersById = setupPlayers(this)
 
-    this.initialPlacementManager = setupInitialPlacementUI(this, this.textures,
+    this.initialPlacementManager = setupInitialPlacementUI(this,
         getSettlementPlacementData(originX, originY), getRoadPlacementData(originX, originY));
 
     this.currentPlayerMarker = new Kiwi.GameObjects.Sprite(this, this.textures.playermarker, 90, 5);
@@ -33,9 +41,7 @@ function createGameState() {
     this.end.visible = false;
     this.addChild(this.end);
 
-    this.buttonToggleHandler = function (context, params) {
-        context.cellIndex = context.cellIndex == 0 ? 1 : 0;
-    };
+    
 
     this.endTurnHandler = function (context, params) {
         if (context.visible) {

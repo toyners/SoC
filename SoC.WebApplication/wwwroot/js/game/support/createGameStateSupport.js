@@ -1,6 +1,6 @@
 ﻿"use strict"
 
-function displayBoard(gameState, layoutColumnData, textures) {
+function displayBoard(gameState, layoutColumnData) {
     var hexData = gameState.hexData;
     var hexindex = 0;
 
@@ -10,11 +10,11 @@ function displayBoard(gameState, layoutColumnData, textures) {
         var count = columnData.count;
         while (count-- > 0) {
             var hex = hexData[hexindex++];
-            var hexImage = new Kiwi.GameObjects.StaticImage(gameState, textures.hextypes, columnData.x, y);
+            var hexImage = new Kiwi.GameObjects.StaticImage(gameState, gameState.textures.hextypes, columnData.x, y);
             hexImage.cellIndex = hex.resourceType != null ? hex.resourceType : 5;
             gameState.addChild(hexImage);
             if (hex.productionFactor != 0) {
-                var productionImage = new Kiwi.GameObjects.StaticImage(gameState, textures.productionfactors, columnData.x, y);
+                var productionImage = new Kiwi.GameObjects.StaticImage(gameState, gameState.textures.productionfactors, columnData.x, y);
                 productionImage.cellIndex = hex.productionFactor;
                 gameState.addChild(productionImage);
             }
@@ -38,8 +38,8 @@ function setupPlayers(gameState) {
     return playersById;
 }
 
-function setupInitialPlacementUI(gameState, textures, settlementPlacementData, roadPlacementData) {
-    var initialPlacementManager = new InitialPlacementManager(gameState, textures,
+function setupInitialPlacementUI(gameState, settlementPlacementData, roadPlacementData) {
+    var initialPlacementManager = new InitialPlacementManager(gameState,
         function (context, params) { initialPlacementManager.onConfirm(); },
         function (context, params) { initialPlacementManager.onCancelSettlement(); },
         function (context, params) { initialPlacementManager.onCancelRoad(); });
@@ -69,7 +69,7 @@ function setupInitialPlacementUI(gameState, textures, settlementPlacementData, r
         var offsetCount = offsets.length + 1;
         var offsetIndex = 0;
         while (offsetCount > 0) {
-            var settlementSprite = new Kiwi.GameObjects.Sprite(gameState, textures.settlement, x, y);
+            var settlementSprite = new Kiwi.GameObjects.Sprite(gameState, gameState.textures.settlement, x, y);
             settlementSprite.visible = false;
             settlementSprite.input.onUp.add(settlementClickedHandler, gameState);
             settlementSprite.input.onEntered.add(settlementHoverEnterHandler, gameState);
@@ -101,7 +101,7 @@ function setupInitialPlacementUI(gameState, textures, settlementPlacementData, r
 
     for (var roadCollectionData of roadPlacementData) {
         for (var roadData of roadCollectionData.roads) {
-            var roadSprite = new Kiwi.GameObjects.Sprite(gameState, textures[roadCollectionData.imageName], roadData.x, roadData.y);
+            var roadSprite = new Kiwi.GameObjects.Sprite(gameState, gameState.textures[roadCollectionData.imageName], roadData.x, roadData.y);
             roadSprite.cellIndex = roadCollectionData.imageIndex;
             roadSprite.visible = false;
             roadSprite.input.onUp.add(roadClickedHandler, gameState);

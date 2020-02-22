@@ -1,19 +1,19 @@
 "use strict";
 
 var connection = new signalR.HubConnectionBuilder().withUrl("/gameRequest").build();
-
 var gameState = null;
-var gameId = null;
-var playerId = null;
 var game = null;
 
 connection.start().then(function () {
     var fragments = window.location.pathname.split("/");
-    gameId = fragments[2];
-    playerId = fragments[3];
+
+    gameState = new Kiwi.State('State');
+    gameState.playerId = fragments[2];
+    gameState.gameId = fragments[3];
+    
     var request = {
-        gameId: gameId,
-        playerId: playerId
+        gameId: gameState.gameId,
+        playerId: gameState.playerId
     };
     connection.invoke("ConfirmGameJoin", request).catch(function (err) {
         return console.error(err.toString());
@@ -38,10 +38,7 @@ function main() {
 connection.on("GameEvent", function (gameEvent) {
     var typeName = gameEvent.typeName;
     if (typeName === "GameJoinedEvent") {
-        gameState = new Kiwi.State('Play');
-        gameState.gameEvents = new Queue();
-        gameState.playerActions = new Queue();
-        gameState.playerId = playerId;
+        
     } else if (typeName === "PlayerSetupEvent") {
         var settlementColourIndexes = [2, 4, 6, 8];
         var northEastRoadColourIndexes = [2, 4, 6, 8];
