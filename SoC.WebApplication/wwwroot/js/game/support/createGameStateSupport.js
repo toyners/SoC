@@ -39,10 +39,7 @@ function setupPlayers(gameState) {
 }
 
 function setupInitialPlacementUI(gameState, settlementPlacementData, roadPlacementData) {
-    var initialPlacementManager = new InitialPlacementManager(gameState,
-        function (context, params) { initialPlacementManager.onConfirm(); },
-        function (context, params) { initialPlacementManager.onCancelSettlement(); },
-        function (context, params) { initialPlacementManager.onCancelRoad(); });
+    var initialPlacementManager = new InitialPlacementManager(gameState);
 
     var sprites = [];
 

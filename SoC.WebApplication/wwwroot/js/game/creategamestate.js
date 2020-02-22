@@ -3,9 +3,6 @@
 function createGameState() {
     Kiwi.State.prototype.create(this);
 
-    this.gameEvents = new Queue();
-    this.playerActions = new Queue();
-
     this.buttonToggleHandler = function (context, params) {
         context.cellIndex = context.cellIndex == 0 ? 1 : 0;
     };
@@ -40,8 +37,6 @@ function createGameState() {
     this.end = new Kiwi.GameObjects.Sprite(this, this.textures.end, 10, (backgroundHeight / 2) - 90);
     this.end.visible = false;
     this.addChild(this.end);
-
-    
 
     this.endTurnHandler = function (context, params) {
         if (context.visible) {

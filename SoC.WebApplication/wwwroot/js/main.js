@@ -8,9 +8,11 @@ connection.start().then(function () {
     var fragments = window.location.pathname.split("/");
 
     gameState = new Kiwi.State('State');
-    gameState.playerId = fragments[2];
-    gameState.gameId = fragments[3];
-    
+    gameState.gameEvents = new Queue();
+    gameState.playerActions = new Queue();
+    gameState.gameId = fragments[2];
+    gameState.playerId = fragments[3];
+
     var request = {
         gameId: gameState.gameId,
         playerId: gameState.playerId

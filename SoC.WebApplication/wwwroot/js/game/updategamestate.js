@@ -12,7 +12,7 @@ function updateGameState() {
                 this.playerActions.enqueue({
                     gameId: this.gameId,
                     id: this.playerId,
-                    playerActionType: 'ConfirmGameStartAction',
+                    type: 'ConfirmGameStartAction',
                     data: {
                         initiatingPlayerId: this.playerId
                     }
@@ -55,27 +55,7 @@ function updateGameState() {
     if (!this.playerActions.isEmpty()) {
         var playerAction = this.playerActions.dequeue();
 
-        sendRequest(this.gameId, playerAction, connection);
+        sendRequest(playerAction, connection);
     }
 
-    if (this.initialPlacementManager.isConfirmed()) {
-        this.currentPlayerMarker.visible = false;
-        var placementData = this.initialPlacementManager.getData();
-        if (placementData) {
-            var request = {
-                gameId: gameId,
-                playerId: this.playerId,
-                playerActionType: 'PlaceSetupInfrastructureAction',
-                data: JSON.stringify({
-                    initiatingPlayerId: this.playerId,
-                    settlementLocation: placementData.settlementLocation,
-                    roadEndLocation: placementData.roadEndLocation
-                })
-            };
-
-            connection.invoke("PlayerAction", request).catch(function (err) {
-                return console.error(err.toString());
-            });
-        }
-    }
 }
