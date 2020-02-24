@@ -23,8 +23,18 @@ function displayBoard(gameState, layoutColumnData) {
     }
 }
 
-function setupMessageManager(gameState) {
-    return new MessageManager(gameState, [{x: 10, y: 120}, {x: 10, y: 440}, {x: 700, y: 120}, {x: 700, y: 440}]);
+function setupMessageManagers(gameState) {
+    var messageManagersByPlayerId = {};
+
+    messageManagersByPlayerId[gameState.playerData.players[0].id] = new MessageManager(gameState,
+        [{ x: 10, y: 120 }, { x: 10, y: 140 }, { x: 10, y: 160 }, { x: 10, y: 180 }]);
+    messageManagersByPlayerId[gameState.playerData.players[1].id] = new MessageManager(gameState,
+        [{ x: 10, y: 550 }, { x: 10, y: 530 }, { x: 10, y: 510 }, { x: 10, y: 490 }]);
+    messageManagersByPlayerId[gameState.playerData.players[2].id] = new MessageManager(gameState,
+        [{ x: 700, y: 120 }, { x: 700, y: 140 }, { x: 700, y: 160 }, { x: 700, y: 180 }]);
+    messageManagersByPlayerId[gameState.playerData.players[3].id] = new MessageManager(gameState,
+        [{ x: 700, y: 550 }, { x: 700, y: 530 }, { x: 700, y: 510 }, { x: 700, y: 490 }]);
+    return messageManagersByPlayerId;
 }
 
 function setupPlayers(gameState) {

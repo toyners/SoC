@@ -2,7 +2,29 @@
 
 class MessageManager {
     constructor(gameState, layout) {
-        this.messageTextFieldsByPlayerId = {};
+        this.messageLines = [];
+
+        for (var coords of layout) {
+            var messageField = new Kiwi.GameObjects.Textfield(gameState, "", coords.x, coords.y, "#000", 16, 'normal', 'impact');
+            this.messageLines.push(messageField);
+            gameState.addChild(messageField);
+        }
+    }
+
+    addLine(text) {
+        for (var messageLine of this.messageLines) {
+            if (messageLine.text == "") {
+                messageLine.text = text;
+                break;
+            }
+        }
+    }
+}
+
+class MessageAdministrator {
+    constructor(gameState, layout) {
+        this.queue = new Queue();
+        this.messageManagers = {};
 
         for (var playerData of gameState.playerData.players) {
             var coords = layout.shift();
@@ -11,17 +33,5 @@ class MessageManager {
             this.messageTextFieldsByPlayerId[playerData.id] = messageField;
             gameState.addChild(messageField);
         }
-        
-        //this.timer = gameState.game.time.clock.createTimer('time', 1, 5, false);
-        //this.timer.createTimerEvent(Kiwi.Time.TimerEvent.TIMER_STOP, gameState.onTimerStop, gameState);
-    }
-
-    hideText(playerId) {
-        this.messageTextFieldsByPlayerId[playerId].visible = false;
-    }
-
-    showText(playerId, text) {
-        this.messageTextFieldsByPlayerId[playerId].text = text;
-        this.messageTextFieldsByPlayerId[playerId].visible = true;
     }
 }
