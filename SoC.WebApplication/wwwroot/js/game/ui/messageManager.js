@@ -20,18 +20,3 @@ class MessageManager {
         }
     }
 }
-
-class MessageAdministrator {
-    constructor(gameState, layout) {
-        this.queue = new Queue();
-        this.messageManagers = {};
-
-        for (var playerData of gameState.playerData.players) {
-            var coords = layout.shift();
-            var messageField = new Kiwi.GameObjects.Textfield(gameState, "", coords.x, coords.y, "#000", 16, 'normal', 'impact');
-            messageField.visible = false;
-            this.messageTextFieldsByPlayerId[playerData.id] = messageField;
-            gameState.addChild(messageField);
-        }
-    }
-}
