@@ -29,9 +29,9 @@ function setupMessageManagers(gameState) {
     messageManagersByPlayerId[gameState.playerData.players[0].id] = new MessageManager(gameState,
         [{ x: 10, y: 120 }, { x: 10, y: 140 }, { x: 10, y: 160 }, { x: 10, y: 180 }]);
     messageManagersByPlayerId[gameState.playerData.players[1].id] = new MessageManager(gameState,
-        [{ x: 10, y: 550 }, { x: 10, y: 530 }, { x: 10, y: 510 }, { x: 10, y: 490 }]);
+        [{ x: 10, y: 490 }, { x: 10, y: 470 }, { x: 10, y: 450 }, { x: 10, y: 430 }]);
     messageManagersByPlayerId[gameState.playerData.players[2].id] = new MessageManager(gameState,
-        [{ x: 700, y: 120 }, { x: 700, y: 140 }, { x: 700, y: 160 }, { x: 700, y: 180 }]);
+        [{ x: 640, y: 120 }, { x: 640, y: 140 }, { x: 640, y: 160 }, { x: 640, y: 180 }]);
     messageManagersByPlayerId[gameState.playerData.players[3].id] = new MessageManager(gameState,
         [{ x: 700, y: 550 }, { x: 700, y: 530 }, { x: 700, y: 510 }, { x: 700, y: 490 }]);
     return messageManagersByPlayerId;
