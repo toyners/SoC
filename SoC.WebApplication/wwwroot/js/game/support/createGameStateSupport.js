@@ -23,6 +23,10 @@ function displayBoard(gameState, layoutColumnData) {
     }
 }
 
+function setupMessageManager(gameState) {
+    return new MessageManager(gameState, [{x: 10, y: 120}, {x: 10, y: 440}, {x: 700, y: 120}, {x: 700, y: 440}]);
+}
+
 function setupPlayers(gameState) {
     var playersById = {};
 

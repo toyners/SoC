@@ -64,10 +64,13 @@ connection.on("GameEvent", function (gameEvent) {
                 iconIndexes[index]
             ];
 
+            var playerId = gameEvent.playerIdsByName[playerName];
+            var isLocal = (playerId === gameState.playerId);
             var player = {
-                id: gameEvent.playerIdsByName[playerName],
+                id: playerId,
                 name: playerName,
-                imageIndexes: imageIndexes
+                imageIndexes: imageIndexes,
+                isLocal: isLocal
             }
 
             playerData.playerById[player.id] = player;

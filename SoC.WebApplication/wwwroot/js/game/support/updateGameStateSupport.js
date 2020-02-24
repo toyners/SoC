@@ -6,18 +6,35 @@ function processCollectedResources(gameState, resourcesCollectedByPlayerId) {
         var resourcesForPlayer = resourcesCollectedByPlayerId[playerId];
         if (resourcesForPlayer) {
             for (var resourcesForLocation of resourcesForPlayer) {
+                var message = "";
                 var resources = resourcesForLocation.resources;
-                if (resources.brickCount)
+                if (resources.brickCount) {
                     player.updateBrickCount(resources.brickCount);
-                if (resources.grainCount)
+                    message += resources.brickCount + ' brick, ';
+                }
+                if (resources.grainCount) {
                     player.updateGrainCount(resources.grainCount);
-                if (resources.lumberCount)
+                    message += resources.grainCount + ' grain, ';
+                }
+                if (resources.lumberCount) {
                     player.updateLumberCount(resources.lumberCount);
-                if (resources.oreCount)
+                    message += resources.lumberCount + ' lumber, ';
+                }
+                if (resources.oreCount) {
                     player.updateOreCount(resources.oreCount);
-                if (resources.woolCount)
+                    message += resources.oreCount + ' ore, ';
+                }
+                if (resources.woolCount) {
                     player.updateWoolCount(resources.woolCount);
+                    message += resources.woolCount + ' wool, ';
+                }
             }
+
+            if (message == "")
+                message = "No resources collected";
+            else
+                message = "Collected " + message;
+            gameState.messageManager.showText(playerId, message);
         }
     }
 }

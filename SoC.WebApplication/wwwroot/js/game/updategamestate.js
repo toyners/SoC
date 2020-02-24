@@ -35,7 +35,6 @@ function updateGameState() {
             }
             case "StartTurnEvent": {
                 processCollectedResources(gameState, gameEvent.collectedResources);
-                this.messageManager.setText("StartTurnEvent");
 
                 this.end.visible = true;
 

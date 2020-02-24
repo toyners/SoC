@@ -18,7 +18,7 @@ function createGameState() {
 
     this.playersById = setupPlayers(this)
 
-    this.messageManager = new MessageManager(this);
+    this.messageManager = setupMessageManager(this);
 
     this.initialPlacementManager = setupInitialPlacementUI(this,
         getSettlementPlacementData(originX, originY), getRoadPlacementData(originX, originY));
