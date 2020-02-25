@@ -57,5 +57,4 @@ function updateGameState() {
 
         sendRequest(playerAction, connection);
     }
-
 }

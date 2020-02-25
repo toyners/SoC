@@ -43,9 +43,10 @@ function createGameState() {
     this.endTurnHandler = function (context, params) {
         if (context.visible) {
             this.playerActions.enqueue({
-                id: this.playerId,
+                id: context.parent.playerId,
+                gameId: context.parent.gameId,
                 type: 'EndOfTurnAction',
-                data: { initiatingPlayerId: this.playerId }
+                data: { initiatingPlayerId: context.parent.playerId }
             });
 
             context.visible = false;
