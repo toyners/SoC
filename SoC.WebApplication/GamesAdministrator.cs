@@ -282,8 +282,11 @@ namespace SoC.WebApplication
                     return;
                 }
 
-                dice1 = (uint)this.random.Next(6) + 1;
-                dice2 = (uint)this.random.Next(6) + 1;
+                do
+                {
+                    dice1 = (uint)this.random.Next(6) + 1;
+                    dice2 = (uint)this.random.Next(6) + 1;
+                } while (dice1 + dice2 == 7);
             }
         }
     }
