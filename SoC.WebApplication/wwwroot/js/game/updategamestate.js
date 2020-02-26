@@ -19,6 +19,9 @@ function updateGameState() {
                 });
                 break;
             }
+            case "PlaceRobberEvent": {
+                break;
+            }
             case "PlaceSetupInfrastructureEvent": {
                 this.initialPlacementManager.activate();
                 this.currentPlayerMarker.visible = true;
@@ -42,7 +45,7 @@ function updateGameState() {
                 this.diceTwo.visible = true;
                 this.diceTwo.cellIndex = gameEvent.dice2 - 1;
 
-                if (this.playersById[gameEvent.playerId].isLocal)
+                if (this.playersById[gameEvent.playerId].isLocal && this.diceOne + this.diceTwo != 7)
                     this.end.visible = true;
 
                 break;
