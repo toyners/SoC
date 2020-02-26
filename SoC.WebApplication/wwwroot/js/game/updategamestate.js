@@ -26,7 +26,7 @@ function updateGameState() {
                 break;
             }
             case "ResourcesCollectedEvent": {
-                processCollectedResources(gameState, gameEvent.resourcesCollectedByPlayerId);
+                processCollectedResources(this, gameEvent.resourcesCollectedByPlayerId);
                 break;
             }
             case "SetupInfrastructurePlacedEvent": {
@@ -34,16 +34,17 @@ function updateGameState() {
                 break;
             }
             case "StartTurnEvent": {
-                processCollectedResources(gameState, gameEvent.collectedResources);
-
-                this.end.visible = true;
+                processCollectedResources(this, gameEvent.collectedResources);
 
                 this.diceOne.visible = true;
                 this.diceOne.cellIndex = gameEvent.dice1 - 1;
 
                 this.diceTwo.visible = true;
                 this.diceTwo.cellIndex = gameEvent.dice2 - 1;
-                
+
+                if (this.playersById[gameEvent.playerId].isLocal)
+                    this.end.visible = true;
+
                 break;
             }
             default: {

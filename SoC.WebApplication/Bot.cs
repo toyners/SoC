@@ -6,6 +6,7 @@ namespace SoC.WebApplication
     using System.Collections.Generic;
     using System.Threading;
     using System.Threading.Tasks;
+    using Jabberwocky.SoC.Library;
     using Jabberwocky.SoC.Library.GameBoards;
     using Jabberwocky.SoC.Library.GameEvents;
     using Jabberwocky.SoC.Library.Interfaces;
@@ -22,6 +23,7 @@ namespace SoC.WebApplication
         private readonly IPlayerRequestReceiver playerActionReceiver;
         private IDictionary<string, Guid> playerIdsByName;
         private JsonSerializerSettings jsonSerializerSettings;
+        private ResourceCollection resources;
 
         public Bot(string name, Guid gameId, IPlayerRequestReceiver playerActionReceiver, GameBoardQuery gameBoardQuery)
         {
@@ -46,6 +48,19 @@ namespace SoC.WebApplication
             this.gameEvents.Enqueue(gameEvent);
         }
 
+        private void Send(PlayerAction request)
+        {
+            var requestPayload = JsonConvert.SerializeObject(request, this.jsonSerializerSettings);
+            var playerActionType = request.GetType().ToString();
+            this.playerActionReceiver.PlayerAction(new PlayerActionRequest
+            {
+                GameId = this.gameId,
+                PlayerId = this.Id,
+                PlayerActionType = playerActionType,
+                Data = requestPayload,
+            });
+        }
+
         private void ProcessAsync()
         {
             while (true)
@@ -55,7 +70,8 @@ namespace SoC.WebApplication
                     PlayerAction request = null;
                     if (gameEvent is ConfirmGameStartEvent)
                     {
-                        request = new ConfirmGameStartAction(this.Id);
+                        this.Send(new ConfirmGameStartAction(this.Id));
+                        continue;
                     }
 
                     if (gameEvent is GameJoinedEvent)
@@ -82,20 +98,14 @@ namespace SoC.WebApplication
                     if (gameEvent is PlaceSetupInfrastructureEvent)
                     {
                         var locations = this.gameBoardQuery.GetLocationsWithBestYield(1);
-                        request = new PlaceSetupInfrastructureAction(this.Id, locations[0], locations[0] + 1);
+                        this.Send(new PlaceSetupInfrastructureAction(this.Id, locations[0], locations[0] + 1));
+                        continue;
                     }
-                    
-                    if (request != null)
+
+                    if (gameEvent is StartTurnEvent)
                     {
-                        var requestPayload = JsonConvert.SerializeObject(request, this.jsonSerializerSettings);
-                        var playerActionType = request.GetType().ToString();
-                        this.playerActionReceiver.PlayerAction(new PlayerActionRequest
-                        {
-                            GameId = this.gameId,
-                            PlayerId = this.Id,
-                            PlayerActionType = playerActionType,
-                            Data = requestPayload,
-                        });
+                        var startTurnEvent = (StartTurnEvent)gameEvent;
+                        continue;
                     }
                 }
 
