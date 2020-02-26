@@ -23,7 +23,7 @@ namespace SoC.WebApplication
         private readonly IPlayerRequestReceiver playerActionReceiver;
         private IDictionary<string, Guid> playerIdsByName;
         private JsonSerializerSettings jsonSerializerSettings;
-        private ResourceCollection resources;
+        private ResourceClutch resources = ResourceClutch.Zero;
 
         public Bot(string name, Guid gameId, IPlayerRequestReceiver playerActionReceiver, GameBoardQuery gameBoardQuery)
         {
@@ -105,6 +105,15 @@ namespace SoC.WebApplication
                     if (gameEvent is StartTurnEvent)
                     {
                         var startTurnEvent = (StartTurnEvent)gameEvent;
+                        if (startTurnEvent.CollectedResources != null &&
+                            startTurnEvent.CollectedResources.TryGetValue(this.Id, out var collectedResources))
+                        {
+                            foreach (var rc in collectedResources)
+                                this.resources += rc.Resources;
+                        }
+
+                        if (startTurnEvent.PlayerId == this.Id)
+                            this.Send(new EndOfTurnAction(this.Id));
                         continue;
                     }
                 }
