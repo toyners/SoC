@@ -14,13 +14,21 @@ class MessageManager {
 
     addLine(text) {
         this.messageLines.push(text);
-        for (var messageLineField of this.messageLineFields) {
-            if (messageLineField.text == "") {
-                messageLineField.text = text;
-                return;
+        if (this.messageLines.length <= this.messageLineFields.length) {
+            for (var messageLineField of this.messageLineFields) {
+                if (messageLineField.text == "") {
+                    messageLineField.text = text;
+                    break;
+                }
             }
-        }
+            // Should not get here
+        } else {
+            var index = 1;
+            for (; index < this.messageLineFields.length; index++) {
+                this.messageLineFields[index - 1].text = this.messageLineFields[index].text;
+            }
 
-        for ()
+            this.messageLineFields[index - 1].text = text;
+        }
     }
 }

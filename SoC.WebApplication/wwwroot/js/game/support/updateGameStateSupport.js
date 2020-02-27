@@ -33,7 +33,7 @@ function processCollectedResources(gameState, resourcesCollectedByPlayerId) {
             if (message == "")
                 message = "No resources collected";
             else
-                message = "Collected " + message;
+                message = "Collected " + message.substring(message.length - 2);
             gameState.messageManagersByPlayerId[playerId].addLine(message);
         }
     }
