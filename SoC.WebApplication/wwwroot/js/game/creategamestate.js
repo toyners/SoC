@@ -23,10 +23,7 @@ function createGameState() {
     this.initialPlacementManager = setupInitialPlacementUI(this,
         getSettlementPlacementData(originX, originY), getRoadPlacementData(originX, originY));
 
-    this.currentPlayerMarker = new Kiwi.GameObjects.Sprite(this, this.textures.playermarker, 90, 5);
-    this.currentPlayerMarker.visible = false;
-    this.currentPlayerMarker.animation.add('main', [2, 1, 0], 0.15, true, false);
-    this.addChild(this.currentPlayerMarker);
+    
 
     this.diceOne = new Kiwi.GameObjects.Sprite(this, this.textures.dice, 50, (backgroundHeight / 2) - 50);
     this.diceOne.visible = false;

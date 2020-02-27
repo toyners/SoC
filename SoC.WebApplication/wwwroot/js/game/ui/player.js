@@ -1,6 +1,6 @@
 ﻿
 class Player {
-    constructor(gameState, playerData, isLocal, layout) {
+    constructor(gameState, playerData, isLocal, initData) {
         this.settlementCount = 5;
         this.cityCount = 4;
         this.roadCount = 15;
@@ -12,6 +12,12 @@ class Player {
         this.resourceCount = 0;
         this.isLocal = isLocal;
 
+        this.currentPlayerMarker = new Kiwi.GameObjects.Sprite(this, gameState.textures[initData.marker], 90, 5);
+        this.currentPlayerMarker.visible = false;
+        this.currentPlayerMarker.animation.add('main', [2, 1, 0], 0.15, true, false);
+        gameState.addChild(this.currentPlayerMarker);
+
+        var layout = initData.layout;
         var line = layout.shift();
 
         var playerName = new Kiwi.GameObjects.Textfield(gameState, playerData.name, line.x, line.y, "#000", 32, 'normal', 'Impact');
@@ -82,6 +88,11 @@ class Player {
             this.resourceCounter = new Kiwi.GameObjects.Textfield(gameState, this.resourceCount, line.x + 25, line.y, "#000", 20, 'normal', 'Impact');
             gameState.addChild(this.resourceCounter);
         }
+    }
+
+    activate() {
+        this.currentPlayerMarker.visible = true;
+        this.currentPlayerMarker.animation.play('main');
     }
 
     decrementRoadCount() {

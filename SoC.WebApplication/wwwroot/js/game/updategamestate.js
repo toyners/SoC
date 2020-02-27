@@ -24,8 +24,7 @@ function updateGameState() {
             }
             case "PlaceSetupInfrastructureEvent": {
                 this.initialPlacementManager.activate();
-                this.currentPlayerMarker.visible = true;
-                this.currentPlayerMarker.animation.play('main');
+                // TODO: currentPlayer.activate
                 break;
             }
             case "ResourcesCollectedEvent": {

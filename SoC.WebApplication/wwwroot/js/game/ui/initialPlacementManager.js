@@ -3,7 +3,6 @@
 class InitialPlacementManager {
     constructor(gameState) {
         this.settlementHoverImageIndex = 1;
-        this.roundCount = 0;
         this.imageIndexesByPlayerId = {};
         for (var playerId in gameState.playerData.playerById) {
             this.imageIndexesByPlayerId[playerId] = gameState.playerData.playerById[playerId].imageIndexes;
@@ -302,7 +301,6 @@ class InitialPlacementManager {
     }
 
     activate() {
-        this.roundCount += 1;
         this.showPlacements();
         this.selectSettlementLabel.visible = true;
         this.selectRoadLabel.visible = true;
