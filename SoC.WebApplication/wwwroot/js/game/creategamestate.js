@@ -23,8 +23,6 @@ function createGameState() {
     this.initialPlacementManager = setupInitialPlacementUI(this,
         getSettlementPlacementData(originX, originY), getRoadPlacementData(originX, originY));
 
-    
-
     this.diceOne = new Kiwi.GameObjects.Sprite(this, this.textures.dice, 50, (backgroundHeight / 2) - 50);
     this.diceOne.visible = false;
     this.addChild(this.diceOne);
