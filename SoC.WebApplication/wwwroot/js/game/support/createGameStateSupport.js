@@ -41,13 +41,13 @@ function setupPlayers(gameState) {
     var playersById = {};
 
     playersById[gameState.playerData.players[0].id] = new Player(gameState, gameState.playerData.players[0],
-        true, { layout: [{ x: 10, y: 10 }, { x: 10, y: 50 }, { x: 10, y: 80 }], marker: marker });
+        true, { layout: [{ x: 10, y: 10 }, { x: 10, y: 50 }, { x: 10, y: 80 }], marker: gameState.textures.marker });
     playersById[gameState.playerData.players[1].id] = new Player(gameState, gameState.playerData.players[1],
-        false, { layout: [{ x: 10, y: 550 }, { x: 10, y: 520 }, { x: 10, y: 480 }], marker: reverseMarker });
+        false, { layout: [{ x: 10, y: 550 }, { x: 10, y: 520 }, { x: 10, y: 480 }], marker: gameState.textures.reverseMarker });
     playersById[gameState.playerData.players[2].id] = new Player(gameState, gameState.playerData.players[2],
-        false, { layout: [{ x: 700, y: 10 }, { x: 700, y: 50 }, { x: 700, y: 80 }], marker: marker } );
+        false, { layout: [{ x: 700, y: 10 }, { x: 700, y: 50 }, { x: 700, y: 80 }], marker: gameState.textures.marker });
     playersById[gameState.playerData.players[3].id] = new Player(gameState, gameState.playerData.players[3],
-        false, { layout: [{ x: 700, y: 550 }, { x: 700, y: 520 }, { x: 700, y: 480 }], marker: reverseMarker);
+        false, { layout: [{ x: 700, y: 550 }, { x: 700, y: 520 }, { x: 700, y: 480 }], marker: gameState.textures.reverseMarker });
 
     return playersById;
 }

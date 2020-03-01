@@ -12,7 +12,7 @@ class Player {
         this.resourceCount = 0;
         this.isLocal = isLocal;
 
-        this.currentPlayerMarker = new Kiwi.GameObjects.Sprite(this, gameState.textures[initData.marker], 90, 5);
+        this.currentPlayerMarker = new Kiwi.GameObjects.Sprite(gameState, initData.marker, 90, 5);
         this.currentPlayerMarker.visible = false;
         this.currentPlayerMarker.animation.add('main', [2, 1, 0], 0.15, true, false);
         gameState.addChild(this.currentPlayerMarker);
