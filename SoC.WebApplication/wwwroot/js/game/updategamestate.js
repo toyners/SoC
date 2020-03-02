@@ -24,7 +24,11 @@ function updateGameState() {
             }
             case "PlaceSetupInfrastructureEvent": {
                 this.initialPlacementManager.activate();
-                // TODO: currentPlayer.activate
+                var previousPlayer = this.changeCurrentPlayer();
+                if (previousPlayer) {
+                    previousPlayer.deactivate();
+                }
+                this.currentPlayer.activate();
                 break;
             }
             case "ResourcesCollectedEvent": {

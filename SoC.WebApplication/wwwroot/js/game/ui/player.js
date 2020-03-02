@@ -1,6 +1,7 @@
 ﻿
 class Player {
-    constructor(gameState, playerData, isLocal, initData) {
+    constructor(gameState, playerData, initData) {
+        this.id = playerData.id;
         this.settlementCount = 5;
         this.cityCount = 4;
         this.roadCount = 15;
@@ -10,9 +11,9 @@ class Player {
         this.oreCount = 0;
         this.woolCount = 0;
         this.resourceCount = 0;
-        this.isLocal = isLocal;
+        this.isLocal = playerData.isLocal;
 
-        this.currentPlayerMarker = new Kiwi.GameObjects.Sprite(gameState, initData.marker, 90, 5);
+        this.currentPlayerMarker = new Kiwi.GameObjects.Sprite(gameState, initData.marker.image, initData.marker.x, initData.marker.y);
         this.currentPlayerMarker.visible = false;
         this.currentPlayerMarker.animation.add('main', [2, 1, 0], 0.15, true, false);
         gameState.addChild(this.currentPlayerMarker);
@@ -42,7 +43,7 @@ class Player {
         //this.cityCounter = new Kiwi.GameObjects.Textfield(gameState, this.cityCount, line.x + 65, line.y, "#000", 22, 'normal', 'Impact');
         //gameState.addChild(this.cityCounter);
 
-        if (isLocal) {
+        if (this.isLocal) {
             line = layout.shift();
             var brickIcon = new Kiwi.GameObjects.StaticImage(gameState, gameState.textures.resourceTypes, line.x, line.y);
             brickIcon.cellIndex = 0;
@@ -92,6 +93,11 @@ class Player {
 
     activate() {
         this.currentPlayerMarker.visible = true;
+        this.currentPlayerMarker.animation.play('main');
+    }
+
+    deactivate() {
+        this.currentPlayerMarker.visible = false;
         this.currentPlayerMarker.animation.play('main');
     }
 

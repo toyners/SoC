@@ -16,7 +16,7 @@ function createGameState() {
     var originY = (backgroundHeight / 2);
     displayBoard(this, getTilePlacementData(originX, originY));
 
-    this.playersById = setupPlayers(this)
+    setupPlayers(this)
 
     this.messageManagersByPlayerId = setupMessageManagers(this);
 

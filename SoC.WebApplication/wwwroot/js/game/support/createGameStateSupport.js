@@ -39,17 +39,57 @@ function setupMessageManagers(gameState) {
 
 function setupPlayers(gameState) {
     var playersById = {};
+    var players = [];
 
-    playersById[gameState.playerData.players[0].id] = new Player(gameState, gameState.playerData.players[0],
-        true, { layout: [{ x: 10, y: 10 }, { x: 10, y: 50 }, { x: 10, y: 80 }], marker: gameState.textures.marker });
-    playersById[gameState.playerData.players[1].id] = new Player(gameState, gameState.playerData.players[1],
-        false, { layout: [{ x: 10, y: 550 }, { x: 10, y: 520 }, { x: 10, y: 480 }], marker: gameState.textures.reverseMarker });
-    playersById[gameState.playerData.players[2].id] = new Player(gameState, gameState.playerData.players[2],
-        false, { layout: [{ x: 700, y: 10 }, { x: 700, y: 50 }, { x: 700, y: 80 }], marker: gameState.textures.marker });
-    playersById[gameState.playerData.players[3].id] = new Player(gameState, gameState.playerData.players[3],
-        false, { layout: [{ x: 700, y: 550 }, { x: 700, y: 520 }, { x: 700, y: 480 }], marker: gameState.textures.reverseMarker });
+    var player = new Player(gameState, gameState.playerData.players[0],
+        {
+            layout: [{ x: 10, y: 10 }, { x: 10, y: 50 }, { x: 10, y: 80 }],
+            marker: { image: gameState.textures.marker, x: 90, y: 5 }
+        });
+    playersById[gameState.playerData.players[0].id] = player;
+    players.push(player);
+    
+    player = new Player(gameState, gameState.playerData.players[1],
+        {
+            layout: [{ x: 10, y: 550 }, { x: 10, y: 520 }, { x: 10, y: 480 }],
+            marker: { image: gameState.textures.reverseMarker, x: 500, y: 5 }
+        });
+    playersById[gameState.playerData.players[1].id] = player;
+    players.push(player);
 
-    return playersById;
+    player = new Player(gameState, gameState.playerData.players[2],
+        {
+            layout: [{ x: 700, y: 10 }, { x: 700, y: 50 }, { x: 700, y: 80 }],
+            marker: { image: gameState.textures.marker, x: 90, y: 300 }
+        });
+    playersById[gameState.playerData.players[2].id] = player;
+    players.push(player);
+
+    player = new Player(gameState, gameState.playerData.players[3],
+        {
+            layout: [{ x: 700, y: 550 }, { x: 700, y: 520 }, { x: 700, y: 480 }],
+            marker: { image: gameState.textures.reverseMarker, x: 500, y: 300 }
+        });
+    playersById[gameState.playerData.players[3].id] = player;
+    players.push(player);
+
+    gameState.playersById = playersById;
+    gameState.players = players;
+    gameState.currentPlayer = null;
+    gameState.currentPlayerIndex = -1;
+
+    gameState.changeCurrentPlayer = function () {
+        if (this.currentPlayerIndex == -1 || this.currentPlayerIndex >= this.players.length) {
+            this.currentPlayerIndex = 0;
+        } else {
+            this.currentPlayerIndex++;
+        }
+
+        var previousPlayer = this.currentPlayer || null;
+        this.currentPlayer = this.players[this.currentPlayerIndex];
+
+        return previousPlayer;
+    };
 }
 
 function setupInitialPlacementUI(gameState, settlementPlacementData, roadPlacementData) {
