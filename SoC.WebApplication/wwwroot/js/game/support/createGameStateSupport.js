@@ -42,34 +42,34 @@ function setupPlayers(gameState) {
     var players = [];
 
     var player = new Player(gameState, gameState.playerData.players[0],
-        {
-            layout: [{ x: 10, y: 10 }, { x: 10, y: 50 }, { x: 10, y: 80 }],
-            marker: { image: gameState.textures.marker, x: 90, y: 5 }
-        });
+    {
+        layout: [{ x: 10, y: 10 }, { x: 10, y: 50 }, { x: 10, y: 80 }],
+        marker: { image: gameState.textures.marker, x: 90, y: 5 }
+    });
     playersById[gameState.playerData.players[0].id] = player;
     players.push(player);
     
     player = new Player(gameState, gameState.playerData.players[1],
-        {
-            layout: [{ x: 10, y: 550 }, { x: 10, y: 520 }, { x: 10, y: 480 }],
-            marker: { image: gameState.textures.reverseMarker, x: 500, y: 5 }
-        });
+    {
+        layout: [{ x: 10, y: 550 }, { x: 10, y: 520 }, { x: 10, y: 480 }],
+        marker: { image: gameState.textures.reverseMarker, x: 500, y: 5 }
+    });
     playersById[gameState.playerData.players[1].id] = player;
     players.push(player);
 
     player = new Player(gameState, gameState.playerData.players[2],
-        {
-            layout: [{ x: 700, y: 10 }, { x: 700, y: 50 }, { x: 700, y: 80 }],
-            marker: { image: gameState.textures.marker, x: 90, y: 300 }
-        });
+    {
+        layout: [{ x: 700, y: 10 }, { x: 700, y: 50 }, { x: 700, y: 80 }],
+        marker: { image: gameState.textures.marker, x: 90, y: 300 }
+    });
     playersById[gameState.playerData.players[2].id] = player;
     players.push(player);
 
     player = new Player(gameState, gameState.playerData.players[3],
-        {
-            layout: [{ x: 700, y: 550 }, { x: 700, y: 520 }, { x: 700, y: 480 }],
-            marker: { image: gameState.textures.reverseMarker, x: 500, y: 300 }
-        });
+    {
+        layout: [{ x: 700, y: 550 }, { x: 700, y: 520 }, { x: 700, y: 480 }],
+        marker: { image: gameState.textures.reverseMarker, x: 500, y: 300 }
+    });
     playersById[gameState.playerData.players[3].id] = player;
     players.push(player);
 
