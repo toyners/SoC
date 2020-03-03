@@ -3,6 +3,8 @@
 function createGameState() {
     Kiwi.State.prototype.create(this);
 
+    this.unprocessedEvents = new Queue();
+
     this.buttonToggleHandler = function (context, params) {
         context.cellIndex = context.cellIndex == 0 ? 1 : 0;
     };
@@ -51,4 +53,12 @@ function createGameState() {
     this.end.input.onUp.add(this.endTurnHandler, gameState);
     this.end.input.onEntered.add(this.buttonToggleHandler, gameState);
     this.end.input.onLeft.add(this.buttonToggleHandler, gameState);
+
+    this.onTurnTimerStop = function () {
+        var index = 0;
+        index++;
+    }
+
+    this.turnTimer = this.game.time.clock.createTimer('time', 2, 3, false);
+    this.turnTimer.createTimerEvent(Kiwi.Time.TimerEvent.TIMER_STOP, this.onTurnTimerStop, this);
 }

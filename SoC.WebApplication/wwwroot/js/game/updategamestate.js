@@ -36,7 +36,8 @@ function updateGameState() {
                 break;
             }
             case "SetupInfrastructurePlacedEvent": {
-                this.initialPlacementManager.addPlacement(gameEvent.playerId, gameEvent.settlementLocation, gameEvent.roadSegmentEndLocation);
+                this.unprocessedEvents.enqueue(gameEvent);
+                //this.initialPlacementManager.addPlacement(gameEvent.playerId, gameEvent.settlementLocation, gameEvent.roadSegmentEndLocation);
                 break;
             }
             case "StartTurnEvent": {

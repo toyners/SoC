@@ -31,6 +31,7 @@ class InitialPlacementManager {
             var previousPlayer = gameState.changeCurrentPlayer();
             gameState.currentPlayer.activate();
             previousPlayer.deactivate();
+            
             gameState.playerActions.enqueue({
                 gameId: gameState.gameId,
                 id: gameState.playerId,
@@ -42,6 +43,7 @@ class InitialPlacementManager {
             });
 
             gameState.initialPlacementManager.reset();
+            gameState.turnTimer.start();
         };
 
         this.confirmButton = new Kiwi.GameObjects.Sprite(gameState, gameState.textures.confirm, x, y + 57);
