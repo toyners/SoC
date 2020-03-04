@@ -7,7 +7,7 @@ function updateGameState() {
         var gameEvent = this.gameEvents.dequeue();
         switch (gameEvent.typeName) {
             case "ConfirmGameStartEvent": {
-                this.initialPlacementManager.showPlacements();
+                //this.initialPlacementManager.showPlacements();
 
                 this.playerActions.enqueue({
                     gameId: this.gameId,
@@ -27,10 +27,7 @@ function updateGameState() {
                     this.unprocessedEvents.enqueue(gameEvent);
                 } else {
                     this.initialPlacementManager.activate();
-                    var previousPlayer = this.changeCurrentPlayer();
-                    if (previousPlayer) {
-                        previousPlayer.deactivate();
-                    }
+                    this.changeCurrentPlayer();
                     this.currentPlayer.activate();
                 }
                 break;
@@ -41,7 +38,6 @@ function updateGameState() {
             }
             case "SetupInfrastructurePlacedEvent": {
                 this.unprocessedEvents.enqueue(gameEvent);
-                //this.initialPlacementManager.addPlacement(gameEvent.playerId, gameEvent.settlementLocation, gameEvent.roadSegmentEndLocation);
                 break;
             }
             case "StartTurnEvent": {

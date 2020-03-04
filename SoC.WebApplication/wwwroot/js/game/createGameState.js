@@ -60,16 +60,50 @@ function createGameState() {
         }
 
         if (!this.unprocessedEvents.isEmpty()) {
-            var gameEvent = this.unprocessedEvents.peek();
+            var gameEvent = this.unprocessedEvents.dequeue();
             if (gameEvent.playerId !== this.currentPlayer.id) {
-                var i = 1 / 0; // TODO: Should not get here
+                this.currentPlayer.deactivate();
+                this.changeCurrentPlayer();
+                this.currentPlayer.activate();
+
+                if (!this.currentPlayer.isLocal) {
+                    this.turnTimer.start();
+                }
+                return;
             }
 
+            switch (gameEvent.typeName) {
+                case "PlaceSetupInfrastructureEvent": {
+                    this.currentPlayer.deactivate();
+                    this.initialPlacementManager.activate();
+                    this.changeCurrentPlayer();
+                    this.currentPlayer.activate();
+                    break;
+                }
+                case "SetupInfrastructurePlacedEvent": {
+                    this.initialPlacementManager.showPlacement(gameEvent.playerId, gameEvent.settlementLocation, gameEvent.roadSegmentEndLocation);
+                    break;
+                }
+            }
 
-            this.turnTimer.start();
+            var nextEvent = this.unprocessedEvents.peek();
+            if (nextEvent) {
+                if (nextEvent.playerId !== this.currentPlayer.id) {
+                    this.currentPlayer.deactivate();
+                    this.changeCurrentPlayer();
+                    this.currentPlayer.activate();
+                    if (this.currentPlayer.isLocal)
+                        this.turnTimer.start();
+                } else {
+                    this.pauseTimer.start();
+                }
+            }
         }
     }
 
-    this.turnTimer = this.game.time.clock.createTimer('time', 2, 3, false);
+    this.turnTimer = this.game.time.clock.createTimer('time1', 2, 3, false);
     this.turnTimer.createTimerEvent(Kiwi.Time.TimerEvent.TIMER_STOP, this.onTurnTimerStop, this);
+
+    this.pauseTimer = this.game.time.clock.createTimer('time2', 1, 2, false);
+    this.pauseTimer.createTimerEvent(Kiwi.Time.TimerEvent.TIMER_STOP, this.onTurnTimerStop, this);
 }
