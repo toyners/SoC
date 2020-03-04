@@ -23,12 +23,16 @@ function updateGameState() {
                 break;
             }
             case "PlaceSetupInfrastructureEvent": {
-                this.initialPlacementManager.activate();
-                var previousPlayer = this.changeCurrentPlayer();
-                if (previousPlayer) {
-                    previousPlayer.deactivate();
+                if (this.currentPlayer && !this.currentPlayer.isLocal) {
+                    this.unprocessedEvents.enqueue(gameEvent);
+                } else {
+                    this.initialPlacementManager.activate();
+                    var previousPlayer = this.changeCurrentPlayer();
+                    if (previousPlayer) {
+                        previousPlayer.deactivate();
+                    }
+                    this.currentPlayer.activate();
                 }
-                this.currentPlayer.activate();
                 break;
             }
             case "ResourcesCollectedEvent": {

@@ -55,8 +55,19 @@ function createGameState() {
     this.end.input.onLeft.add(this.buttonToggleHandler, gameState);
 
     this.onTurnTimerStop = function () {
-        var index = 0;
-        index++;
+        if (this.currentPlayer.isLocal) {
+            var i = 1 / 0; // TODO: Should not get here
+        }
+
+        if (!this.unprocessedEvents.isEmpty()) {
+            var gameEvent = this.unprocessedEvents.peek();
+            if (gameEvent.playerId !== this.currentPlayer.id) {
+                var i = 1 / 0; // TODO: Should not get here
+            }
+
+
+            this.turnTimer.start();
+        }
     }
 
     this.turnTimer = this.game.time.clock.createTimer('time', 2, 3, false);

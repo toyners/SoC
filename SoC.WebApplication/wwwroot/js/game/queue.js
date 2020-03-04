@@ -17,4 +17,9 @@ class Queue {
     isEmpty() {
         return !this.queue.length;
     }
+
+    peek() {
+        if (this.isEmpty()) return null;
+        return this.queue[0];
+    }
 }
