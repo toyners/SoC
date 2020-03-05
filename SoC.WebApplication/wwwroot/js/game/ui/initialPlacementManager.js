@@ -11,6 +11,7 @@ class InitialPlacementManager {
         var x = 10;
         var y = 140;
 
+        this.rounds = 0;
         this.playersById = gameState.playersById;
         this.roadIconsById = {};
         this.roadsBySettlementId = {};
@@ -28,9 +29,9 @@ class InitialPlacementManager {
             if (!context.visible)
                 return; 
             var gameState = context.parent;
-            var previousPlayer = gameState.changeCurrentPlayer();
-            gameState.currentPlayer.activate();
-            previousPlayer.deactivate();
+            //var previousPlayer = gameState.changeCurrentPlayer();
+            //gameState.currentPlayer.activate();
+            //previousPlayer.deactivate();
             
             gameState.playerActions.enqueue({
                 gameId: gameState.gameId,
@@ -42,7 +43,7 @@ class InitialPlacementManager {
                 }
             });
 
-            gameState.initialPlacementManager.reset();
+            gameState.initialPlacementManager.deactivate();
             gameState.turnTimer.start();
         };
 
@@ -184,16 +185,6 @@ class InitialPlacementManager {
         this.confirmButton.visible = false;
     }
 
-    reset() {
-        this.confirmButton.visible = false;
-        this.cancelRoadButton.visible = false;
-        this.cancelSettlementButton.visible = false;
-        this.selectSettlementLabel.visible = false;
-        this.selectRoadLabel.visible = false;
-        this.settlementId = null;
-        this.selectedRoad = null;
-    }
-
     handleRoadClick(spriteId) {
         if (!this.settlementId || this.selectedRoad)
             return;
@@ -295,8 +286,11 @@ class InitialPlacementManager {
         }
     }
 
+    firstRoundCompleted() {
+        return this.rounds === 1;
+    }
+
     activate() {
-        //this.showPlacements();
         this.selectSettlementLabel.visible = true;
         this.selectRoadLabel.visible = true;
         for (var settlementKey in this.settlementById) {
@@ -304,5 +298,16 @@ class InitialPlacementManager {
             if (settlement.sprite.cellIndex === 0)
                 settlement.sprite.visible = true;
         }
+    }
+
+    deactivate() {
+        this.rounds++;
+        this.confirmButton.visible = false;
+        this.cancelRoadButton.visible = false;
+        this.cancelSettlementButton.visible = false;
+        this.selectSettlementLabel.visible = false;
+        this.selectRoadLabel.visible = false;
+        this.settlementId = null;
+        this.selectedRoad = null;
     }
 }

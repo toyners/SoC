@@ -12,6 +12,7 @@ class Player {
         this.woolCount = 0;
         this.resourceCount = 0;
         this.isLocal = playerData.isLocal;
+        this.name = playerData.name;
 
         this.currentPlayerMarker = new Kiwi.GameObjects.Sprite(gameState, initData.marker.image, initData.marker.x, initData.marker.y);
         this.currentPlayerMarker.visible = false;
