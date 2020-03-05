@@ -72,19 +72,7 @@ function createGameState() {
                 return;
             }
 
-            switch (gameEvent.typeName) {
-                case "PlaceSetupInfrastructureEvent": {
-                    this.currentPlayer.deactivate();
-                    this.initialPlacementManager.activate();
-                    this.changeCurrentPlayer();
-                    this.currentPlayer.activate();
-                    break;
-                }
-                case "SetupInfrastructurePlacedEvent": {
-                    this.initialPlacementManager.showPlacement(gameEvent.playerId, gameEvent.settlementLocation, gameEvent.roadSegmentEndLocation);
-                    break;
-                }
-            }
+            this.processEvent(gameEvent);
 
             var nextEvent = this.unprocessedEvents.peek();
             if (nextEvent) {
@@ -92,8 +80,12 @@ function createGameState() {
                     this.currentPlayer.deactivate();
                     this.changeCurrentPlayer();
                     this.currentPlayer.activate();
-                    if (this.currentPlayer.isLocal)
+                    if (this.currentPlayer.isLocal) {
+                        this.processEvent(this.unprocessedEvents.dequeue());
+                    }
+                    else {
                         this.turnTimer.start();
+                    }
                 } else {
                     this.pauseTimer.start();
                 }
@@ -106,4 +98,17 @@ function createGameState() {
 
     this.pauseTimer = this.game.time.clock.createTimer('time2', 1, 2, false);
     this.pauseTimer.createTimerEvent(Kiwi.Time.TimerEvent.TIMER_STOP, this.onTurnTimerStop, this);
+
+    this.processEvent = function (gameEvent) {
+        switch (gameEvent.typeName) {
+            case "PlaceSetupInfrastructureEvent": {
+                this.initialPlacementManager.activate();
+                break;
+            }
+            case "SetupInfrastructurePlacedEvent": {
+                this.initialPlacementManager.showPlacement(this.currentPlayer, gameEvent.settlementLocation, gameEvent.roadSegmentEndLocation);
+                break;
+            }
+        }
+    }
 }

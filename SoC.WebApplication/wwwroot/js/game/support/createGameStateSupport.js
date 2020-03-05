@@ -44,7 +44,7 @@ function setupPlayers(gameState) {
     var player = new Player(gameState, gameState.playerData.players[0],
     {
         layout: [{ x: 10, y: 10 }, { x: 10, y: 50 }, { x: 10, y: 80 }],
-        marker: { image: gameState.textures.marker, x: 90, y: 5 }
+        marker: { image: gameState.textures.marker, x: 100, y: 5 }
     });
     playersById[gameState.playerData.players[0].id] = player;
     players.push(player);
@@ -52,7 +52,7 @@ function setupPlayers(gameState) {
     player = new Player(gameState, gameState.playerData.players[1],
     {
         layout: [{ x: 10, y: 550 }, { x: 10, y: 520 }, { x: 10, y: 480 }],
-        marker: { image: gameState.textures.marker, x: 90, y: 550 }
+        marker: { image: gameState.textures.marker, x: 100, y: 545 }
     });
     playersById[gameState.playerData.players[1].id] = player;
     players.push(player);
@@ -60,7 +60,7 @@ function setupPlayers(gameState) {
     player = new Player(gameState, gameState.playerData.players[2],
     {
         layout: [{ x: 700, y: 10 }, { x: 700, y: 50 }, { x: 700, y: 80 }],
-        marker: { image: gameState.textures.reverseMarker, x: 650, y: 5 }
+        marker: { image: gameState.textures.reverseMarker, x: 640, y: 5 }
     });
     playersById[gameState.playerData.players[2].id] = player;
     players.push(player);
@@ -68,7 +68,7 @@ function setupPlayers(gameState) {
     player = new Player(gameState, gameState.playerData.players[3],
     {
         layout: [{ x: 700, y: 550 }, { x: 700, y: 520 }, { x: 700, y: 480 }],
-        marker: { image: gameState.textures.reverseMarker, x: 500, y: 550 }
+        marker: { image: gameState.textures.reverseMarker, x: 640, y: 545 }
     });
     playersById[gameState.playerData.players[3].id] = player;
     players.push(player);
@@ -79,7 +79,7 @@ function setupPlayers(gameState) {
     gameState.currentPlayerIndex = -1;
 
     gameState.changeCurrentPlayer = function () {
-        if (this.currentPlayerIndex == -1 || this.currentPlayerIndex >= this.players.length) {
+        if (this.currentPlayerIndex === -1 || this.currentPlayerIndex === this.players.length - 1) {
             this.currentPlayerIndex = 0;
         } else {
             this.currentPlayerIndex++;
