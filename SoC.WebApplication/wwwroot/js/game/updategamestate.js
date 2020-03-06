@@ -26,7 +26,7 @@ function updateGameState() {
                     this.unprocessedEvents.enqueue(gameEvent);
                 } else {
                     this.initialPlacementManager.activate();
-                    this.changeCurrentPlayer();
+                    this.currentPlayer = this.playersById[this.playerId];
                     this.currentPlayer.activate();
                 }
                 break;
@@ -40,7 +40,7 @@ function updateGameState() {
                     this.initialPlacementManager.showPlacement(this.currentPlayer, gameEvent.settlementLocation, gameEvent.roadSegmentEndLocation);
                     if (this.players[3].id !== this.currentPlayer.id && this.initialPlacementManager.firstRoundCompleted()) {
                         this.currentPlayer.deactivate();
-                        this.changeCurrentPlayer();
+                        this.currentPlayer = playersById[gameEvent.playerId];
                         this.currentPlayer.activate();
                     }
                 } else {

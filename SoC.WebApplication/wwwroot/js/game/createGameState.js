@@ -63,7 +63,7 @@ function createGameState() {
             var gameEvent = this.unprocessedEvents.dequeue();
             if (gameEvent.playerId !== this.currentPlayer.id) {
                 this.currentPlayer.deactivate();
-                this.changeCurrentPlayer();
+                this.currentPlayer = this.playersById[nextEvent.playerId];
                 this.currentPlayer.activate();
 
                 if (!this.currentPlayer.isLocal) {
@@ -78,7 +78,7 @@ function createGameState() {
             if (nextEvent) {
                 if (nextEvent.playerId !== this.currentPlayer.id) {
                     this.currentPlayer.deactivate();
-                    this.changeCurrentPlayer();
+                    this.currentPlayer = this.playersById[nextEvent.playerId];
                     this.currentPlayer.activate();
                     if (this.currentPlayer.isLocal) {
                         this.processEvent(this.unprocessedEvents.dequeue());
