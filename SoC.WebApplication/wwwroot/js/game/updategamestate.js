@@ -40,12 +40,10 @@ function updateGameState() {
             case "SetupInfrastructurePlacedEvent": {
                 if (this.currentPlayer.isLocal) {
                     this.initialPlacementManager.showPlacement(this.currentPlayer, gameEvent.settlementLocation, gameEvent.roadSegmentEndLocation);
-                    var previousPlayer = this.changeCurrentPlayer();
-                    if (this.currentPlayer != previousPlayer) {
-                        previousPlayer.deactivate();
-                        this.currentPlayer.activate();
-                        this.turnTimer.start();
-                    }
+                    this.currentPlayer.deactivate();
+                    this.changeCurrentPlayer();
+                    this.currentPlayer.activate();
+                    this.turnTimer.start();
                 } else {
                     this.unprocessedEvents.enqueue(gameEvent);
                 }

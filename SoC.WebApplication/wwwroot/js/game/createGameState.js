@@ -38,19 +38,12 @@ function createGameState() {
     this.addChild(this.end);
 
     this.currentPlayer = null;
-    this.currentPlayerIndex = -1;
+    this.playerSetupOrder = this.players.concat(this.players.slice(0, 3).reverse());
 
     this.changeCurrentPlayer = function () {
-        if (this.currentPlayerIndex === -1) {
-            this.currentPlayerIndex = 0;
-        } else if (this.currentPlayerIndex === this.players.length - 1) {
-            this.currentPlayerIndex--;
-        } else {
-            this.currentPlayerIndex++;
-        }
 
         var previousPlayer = this.currentPlayer || null;
-        this.currentPlayer = this.players[this.currentPlayerIndex];
+        this.currentPlayer = this.playerSetupOrder.shift();
 
         return previousPlayer;
     };
@@ -79,24 +72,13 @@ function createGameState() {
 
         if (!this.unprocessedEvents.isEmpty()) {
             var gameEvent = this.unprocessedEvents.dequeue();
-            if (gameEvent.playerId !== this.currentPlayer.id) {
-                this.currentPlayer.deactivate();
-                this.changeCurrentPlayer();
-                this.currentPlayer.activate();
-
-                if (!this.currentPlayer.isLocal) {
-                    this.turnTimer.start();
-                }
-                return;
-            }
-
             this.processEvent(gameEvent);
 
             var nextEvent = this.unprocessedEvents.peek();
             if (nextEvent) {
                 if (nextEvent.playerId !== this.currentPlayer.id) {
                     this.currentPlayer.deactivate();
-                    this.currentPlayer = this.changeCurrentPlayer();
+                    this.changeCurrentPlayer();
                     this.currentPlayer.activate();
                     if (this.currentPlayer.isLocal) {
                         this.processEvent(this.unprocessedEvents.dequeue());
