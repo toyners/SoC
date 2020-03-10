@@ -48,7 +48,8 @@ function setupPlayers(gameState) {
     });
     playersById[gameState.playerData.players[0].id] = player;
     players.push(player);
-    
+
+
     player = new Player(gameState, gameState.playerData.players[1],
     {
         layout: [{ x: 10, y: 550 }, { x: 10, y: 520 }, { x: 10, y: 480 }],
@@ -75,21 +76,6 @@ function setupPlayers(gameState) {
 
     gameState.playersById = playersById;
     gameState.players = players;
-    gameState.currentPlayer = null;
-    gameState.currentPlayerIndex = -1;
-
-    gameState.changeCurrentPlayer = function () {
-        if (this.currentPlayerIndex === -1 || this.currentPlayerIndex === this.players.length - 1) {
-            this.currentPlayerIndex = 0;
-        } else {
-            this.currentPlayerIndex++;
-        }
-
-        var previousPlayer = this.currentPlayer || null;
-        this.currentPlayer = this.players[this.currentPlayerIndex];
-
-        return previousPlayer;
-    };
 }
 
 function setupInitialPlacementUI(gameState, settlementPlacementData, roadPlacementData) {

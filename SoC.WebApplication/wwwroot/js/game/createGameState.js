@@ -37,6 +37,24 @@ function createGameState() {
     this.end.visible = false;
     this.addChild(this.end);
 
+    this.currentPlayer = null;
+    this.currentPlayerIndex = -1;
+
+    this.changeCurrentPlayer = function () {
+        if (this.currentPlayerIndex === -1) {
+            this.currentPlayerIndex = 0;
+        } else if (this.currentPlayerIndex === this.players.length - 1) {
+            this.currentPlayerIndex--;
+        } else {
+            this.currentPlayerIndex++;
+        }
+
+        var previousPlayer = this.currentPlayer || null;
+        this.currentPlayer = this.players[this.currentPlayerIndex];
+
+        return previousPlayer;
+    };
+
     this.endTurnHandler = function (context, params) {
         if (context.visible) {
             this.playerActions.enqueue({
@@ -63,7 +81,7 @@ function createGameState() {
             var gameEvent = this.unprocessedEvents.dequeue();
             if (gameEvent.playerId !== this.currentPlayer.id) {
                 this.currentPlayer.deactivate();
-                this.currentPlayer = this.playersById[nextEvent.playerId];
+                this.changeCurrentPlayer();
                 this.currentPlayer.activate();
 
                 if (!this.currentPlayer.isLocal) {
@@ -78,7 +96,7 @@ function createGameState() {
             if (nextEvent) {
                 if (nextEvent.playerId !== this.currentPlayer.id) {
                     this.currentPlayer.deactivate();
-                    this.currentPlayer = this.playersById[nextEvent.playerId];
+                    this.currentPlayer = this.changeCurrentPlayer();
                     this.currentPlayer.activate();
                     if (this.currentPlayer.isLocal) {
                         this.processEvent(this.unprocessedEvents.dequeue());

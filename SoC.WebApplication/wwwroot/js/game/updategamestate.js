@@ -22,12 +22,14 @@ function updateGameState() {
                 break;
             }
             case "PlaceSetupInfrastructureEvent": {
-                if (this.currentPlayer && !this.currentPlayer.isLocal) {
-                    this.unprocessedEvents.enqueue(gameEvent);
-                } else {
-                    this.initialPlacementManager.activate();
-                    this.currentPlayer = this.playersById[this.playerId];
+                if (!this.currentPlayer) {
+                    this.changeCurrentPlayer();
                     this.currentPlayer.activate();
+                    this.initialPlacementManager.activate();
+                } else if (this.currentPlayer.isLocal) {
+                    this.initialPlacementManager.activate();
+                } else {
+                    this.unprocessedEvents.enqueue(gameEvent);
                 }
                 break;
             }
@@ -38,10 +40,11 @@ function updateGameState() {
             case "SetupInfrastructurePlacedEvent": {
                 if (this.currentPlayer.isLocal) {
                     this.initialPlacementManager.showPlacement(this.currentPlayer, gameEvent.settlementLocation, gameEvent.roadSegmentEndLocation);
-                    if (this.players[3].id !== this.currentPlayer.id && this.initialPlacementManager.firstRoundCompleted()) {
-                        this.currentPlayer.deactivate();
-                        this.currentPlayer = playersById[gameEvent.playerId];
+                    var previousPlayer = this.changeCurrentPlayer();
+                    if (this.currentPlayer != previousPlayer) {
+                        previousPlayer.deactivate();
                         this.currentPlayer.activate();
+                        this.turnTimer.start();
                     }
                 } else {
                     this.unprocessedEvents.enqueue(gameEvent);
