@@ -13,6 +13,11 @@ class InitialPlacementManager {
 
         this.rounds = 0;
         this.playersById = gameState.playersById;
+        this.placementsByPlayerId = new Map();
+        for (var id in this.playersById) {
+            this.placementsByPlayerId.set(id, 2);
+        }
+
         this.roadIconsById = {};
         this.roadsBySettlementId = {};
         this.roadsBySettlementLocation = {};
@@ -49,7 +54,6 @@ class InitialPlacementManager {
         this.confirmButton.input.onUp.add(confirmButtonClickHandler, gameState);
         gameState.addChild(this.confirmButton);
 
-
         var cancelSettlementClickHandler = function (context, params) {
             if (!context.visible)
                 return;
@@ -81,6 +85,10 @@ class InitialPlacementManager {
         this.placements = [];
     }
 
+    awaitingPlacements() {
+        return this.placementsByPlayerId.size > 0;
+    }
+
     showPlacement(player, settlementLocation, endLocation) {
         var imageIndexes = this.imageIndexesByPlayerId[player.id];
         var settlement = this.settlementByLocation[settlementLocation];
@@ -106,6 +114,12 @@ class InitialPlacementManager {
                 delete this.settlementByLocation[road.location];
             }
         }
+
+        var placementCount = this.placementsByPlayerId.get(player.id);
+        if (placementCount == 2)
+            this.placementsByPlayerId.set(player.id, placementCount - 1);
+        else 
+            this.placementsByPlayerId.delete(player.id);
     }
 
     addRoadForSettlement(roadIcon, settlementSpriteId, settlementLocation, endLocation) {
@@ -281,8 +295,8 @@ class InitialPlacementManager {
         }
     }
 
-    firstRoundCompleted() {
-        return this.rounds === 1;
+    secondRoundCompleted() {
+        return this.rounds === 2;
     }
 
     activate() {
