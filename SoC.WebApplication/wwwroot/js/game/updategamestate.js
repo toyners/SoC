@@ -7,7 +7,6 @@ function updateGameState() {
         var gameEvent = this.gameEvents.dequeue();
         switch (gameEvent.typeName) {
             case "ConfirmGameStartEvent": {
-
                 this.playerActions.enqueue({
                     gameId: this.gameId,
                     id: this.playerId,
@@ -40,6 +39,7 @@ function updateGameState() {
             case "SetupInfrastructurePlacedEvent": {
                 if (this.currentPlayer.isLocal) {
                     this.initialPlacementManager.showPlacement(this.currentPlayer, gameEvent.settlementLocation, gameEvent.roadSegmentEndLocation);
+
                     if (this.initialPlacementManager.awaitingPlacements() != 0) {
                         this.currentPlayer.deactivate();
                         this.changeCurrentPlayer();
