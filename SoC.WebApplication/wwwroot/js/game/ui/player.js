@@ -97,6 +97,10 @@ class Player {
         this.currentPlayerMarker.animation.play('main');
     }
 
+    canBuild() {
+        return (this.brickCount > 0 && this.lumberCount > 0);
+    }
+
     deactivate() {
         this.currentPlayerMarker.visible = false;
         this.currentPlayerMarker.animation.play('main');

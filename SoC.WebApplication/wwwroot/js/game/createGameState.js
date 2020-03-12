@@ -1,12 +1,18 @@
 ﻿"use strict"
 
+var BUTTON_NORMAL = 0;
+var BUTTON_HIGHLIGHTED = 1;
+var BUTTON_DISABLED = 2;
+
 function createGameState() {
     Kiwi.State.prototype.create(this);
 
     this.unprocessedEvents = new Queue();
 
     this.buttonToggleHandler = function (context, params) {
-        context.cellIndex = context.cellIndex == 0 ? 1 : 0;
+        if (context.cellIndex !== BUTTON_DISABLED) {
+            context.cellIndex = context.cellIndex == BUTTON_NORMAL ? BUTTON_HIGHLIGHTED : BUTTON_NORMAL;
+        }
     };
 
     this.background = new Kiwi.GameObjects.StaticImage(this, this.textures.background, 0, 0);
@@ -33,9 +39,42 @@ function createGameState() {
     this.diceTwo.visible = false;
     this.addChild(this.diceTwo);
 
-    this.end = new Kiwi.GameObjects.Sprite(this, this.textures.end, 10, (backgroundHeight / 2) - 90);
-    this.end.visible = false;
-    this.addChild(this.end);
+    this.build = new Kiwi.GameObjects.Sprite(this, this.textures.build, 10, (backgroundHeight / 2) - 90);
+    this.build.visible = false;
+    this.addChild(this.build);
+
+    this.buildHandler = function (context) {
+        if (context.visible && context.cellIndex !== BUTTON_DISABLED) {
+            context.visible = false;
+
+            var gameState = context.parent;
+            gameState.hideTurnMenu();
+            gameState.showBuildMenu();
+        }
+    }
+
+    this.back = new Kiwi.GameObjects.Sprite(this, this.textures.back, 10, (backgroundHeight / 2) - 90);
+    this.back.visible = false;
+    this.addChild(this.back);
+
+    this.backHandler = function (context) {
+        if (context.visible) {
+            context.visible = false;
+
+            var gameState = context.parent;
+            gameState.hideBuildMenu();
+            gameState.showTurnMenu();
+        }
+    }
+
+    this.showBuildMenu = function () {
+        this.back.visible = true;
+    }
+
+    this.hideBuildMenu = function () {
+        this.back.visible = false;
+        this.build.visible = true;
+    }
 
     this.currentPlayer = null;
     this.playerSetupOrder = this.players.concat(this.players.slice(0, 3).reverse());
@@ -47,6 +86,10 @@ function createGameState() {
 
         return previousPlayer;
     };
+
+    this.end = new Kiwi.GameObjects.Sprite(this, this.textures.end, 10, (backgroundHeight / 2) + 30);
+    this.end.visible = false;
+    this.addChild(this.end);
 
     this.endTurnHandler = function (context, params) {
         if (context.visible) {

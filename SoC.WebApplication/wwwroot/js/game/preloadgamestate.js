@@ -15,6 +15,7 @@ function preloadGameState() {
     this.addSpriteSheet('marker', '../../../images/player/playermarker.png', 50, 45);
     this.addSpriteSheet('reverseMarker', '../../../images/player/reverseplayermarker.png', 50, 45);
 
+    this.addSpriteSheet('back', controlImagePath + 'back.png', 70, 30)
     this.addSpriteSheet('build', controlImagePath + 'build.png', 70, 30)
     this.addSpriteSheet('confirm', controlImagePath + 'confirm.png', 96, 30);
     this.addSpriteSheet('cancel', controlImagePath + 'cancel.png', 30, 30);
