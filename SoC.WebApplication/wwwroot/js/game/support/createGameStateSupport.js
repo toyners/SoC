@@ -157,3 +157,14 @@ function setupInitialPlacementUI(gameState, settlementPlacementData, roadPlaceme
 
     return initialPlacementManager;
 }
+
+function createButton(gameState, imageName, x, y, buttonClickHandler, buttonToggleHandler) {
+    var button = new Kiwi.GameObjects.Sprite(gameState, gameState.textures[imageName], x, y);
+    button.visible = false;
+
+    button.input.onUp.add(buttonClickHandler, gameState);
+    button.input.onEntered.add(buttonToggleHandler, gameState);
+    button.input.onLeft.add(buttonToggleHandler, gameState);
+
+    return button;
+}

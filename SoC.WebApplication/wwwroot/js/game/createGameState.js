@@ -39,10 +39,6 @@ function createGameState() {
     this.diceTwo.visible = false;
     this.addChild(this.diceTwo);
 
-    this.build = new Kiwi.GameObjects.Sprite(this, this.textures.build, 10, (backgroundHeight / 2) - 90);
-    this.build.visible = false;
-    this.addChild(this.build);
-
     this.buildHandler = function (context) {
         if (context.visible && context.cellIndex !== BUTTON_DISABLED) {
             context.visible = false;
@@ -52,6 +48,9 @@ function createGameState() {
             gameState.showBuildMenu();
         }
     }
+
+    this.build = createButton(this, 'build', 10, (backgroundHeight / 2) - 90, this.buildHandler, this.buttonToggleHandler);
+    this.addChild(this.build);
 
     this.back = new Kiwi.GameObjects.Sprite(this, this.textures.back, 10, (backgroundHeight / 2) - 90);
     this.back.visible = false;
@@ -67,13 +66,24 @@ function createGameState() {
         }
     }
 
+    this.back.input.onUp.add(this.backHandler, gameState);
+    this.back.input.onEntered.add(this.buttonToggleHandler, gameState);
+    this.back.input.onLeft.add(this.buttonToggleHandler, gameState);
+
+    this.showTurnMenu = function () {
+        this.build.visible = true;
+    }
+
+    this.hideTurnMenu = function () {
+        this.build.visible = false;
+    }
+
     this.showBuildMenu = function () {
         this.back.visible = true;
     }
 
     this.hideBuildMenu = function () {
         this.back.visible = false;
-        this.build.visible = true;
     }
 
     this.currentPlayer = null;
