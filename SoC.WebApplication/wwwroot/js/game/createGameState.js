@@ -10,7 +10,7 @@ function createGameState() {
     this.unprocessedEvents = new Queue();
 
     this.buttonToggleHandler = function (context, params) {
-        if (context.cellIndex !== BUTTON_DISABLED) {
+        if (context.visible && context.cellIndex !== BUTTON_DISABLED) {
             context.cellIndex = context.cellIndex == BUTTON_NORMAL ? BUTTON_HIGHLIGHTED : BUTTON_NORMAL;
         }
     };
