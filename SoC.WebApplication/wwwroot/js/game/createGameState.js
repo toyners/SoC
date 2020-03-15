@@ -9,6 +9,8 @@ function createGameState() {
 
     this.unprocessedEvents = new Queue();
 
+    this.clickHandled = 0;
+
     this.buttonToggleHandler = function (context, params) {
         if (context.visible && context.cellIndex !== BUTTON_DISABLED) {
             context.cellIndex = context.cellIndex == BUTTON_NORMAL ? BUTTON_HIGHLIGHTED : BUTTON_NORMAL;
@@ -41,11 +43,15 @@ function createGameState() {
 
     this.buildHandler = function (context) {
         if (context.visible && context.cellIndex !== BUTTON_DISABLED) {
-            context.visible = false;
-
             var gameState = context.parent;
-            gameState.hideTurnMenu();
-            gameState.showBuildMenu();
+
+            if (gameState.clickHandled < 1) {
+                gameState.hideTurnMenu();
+                gameState.showBuildMenu();
+                gameState.clickHandled = 1;
+            } else {
+                gameState.clickHandled = 0;
+            }
         }
     }
 
@@ -58,8 +64,6 @@ function createGameState() {
 
     this.backHandler = function (context) {
         if (context.visible) {
-            context.visible = false;
-
             var gameState = context.parent;
             gameState.hideBuildMenu();
             gameState.showTurnMenu();
@@ -146,7 +150,7 @@ function createGameState() {
         }
     }
 
-    this.turnTimer = this.game.time.clock.createTimer('time1', 2, 3, false);
+    this.turnTimer = this.game.time.clock.createTimer('time1', 1, 2, false);
     this.turnTimer.createTimerEvent(Kiwi.Time.TimerEvent.TIMER_STOP, this.onTurnTimerStop, this);
 
     this.pauseTimer = this.game.time.clock.createTimer('time2', 1, 2, false);

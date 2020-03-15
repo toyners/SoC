@@ -312,6 +312,7 @@ class InitialPlacementManager {
     deactivate() {
         this.rounds++;
         this.confirmButton.visible = false;
+        this.confirmButton.cellIndex = BUTTON_NORMAL;
         this.cancelRoadButton.visible = false;
         this.cancelSettlementButton.visible = false;
         this.selectSettlementLabel.visible = false;
