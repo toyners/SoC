@@ -7,6 +7,7 @@ var BUTTON_DISABLED = 2;
 var BUTTON_ID_UNSET = 0;
 var BUTTON_BACK_ID = 1;
 var BUTTON_BUILD_ID = 2;
+var BUTTON_SETTLEMENT_ID = 3;
 
 function createGameState() {
     Kiwi.State.prototype.create(this);
@@ -51,6 +52,25 @@ function createGameState() {
     this.diceTwo.visible = false;
     this.addChild(this.diceTwo);
 
+    this.showTurnMenu = function () {
+        this.build.visible = true;
+    }
+
+    this.hideTurnMenu = function () {
+        this.build.visible = false;
+    }
+
+    this.showBuildMenu = function () {
+        this.back.visible = true;
+        this.back.cellIndex = BUTTON_HIGHLIGHTED;
+        this.settlement.visible = true;
+
+    }
+
+    this.hideBuildMenu = function () {
+        this.back.visible = false;
+    }
+
     this.onUpBuildHandler = function (context) {
         if (context.visible && context.cellIndex !== BUTTON_DISABLED) {
             var gameState = context.parent;
@@ -72,48 +92,38 @@ function createGameState() {
         this.onDownBuildHandler, this.onUpBuildHandler, this.buttonEnterHandler, this.buttonLeftHandler);
     this.addChild(this.build);
 
-    this.back = new Kiwi.GameObjects.Sprite(this, this.textures.back, 10, (backgroundHeight / 2) - 90);
-    this.back.visible = false;
-    this.addChild(this.back);
-
-    this.backHandler = function (context) {
+    this.onUpBackHandler = function (context) {
         if (context.visible) {
             var gameState = context.parent;
-            if (gameState.clickHandled === 2) {
+            if (gameState.onDownPressButtonId === BUTTON_BACK_ID) {
                 gameState.hideBuildMenu();
                 gameState.showTurnMenu();
-                gameState.clickHandled = 0;
+                gameState.onDownPressButtonId = BUTTON_ID_UNSET;
             }
         }
     }
 
     this.onDownBackHandler = function (context) {
         if (context.visible) {
-            context.parent.clickHandled = 2;
+            context.parent.onDownPressButtonId = BUTTON_BACK_ID;
         }
     }
 
-    this.back.input.onUp.add(this.backHandler, gameState);
-    this.back.input.onEntered.add(this.buttonEnterHandler, gameState);
-    this.back.input.onLeft.add(this.buttonLeftHandler, gameState);
-    this.back.input.onDown.add(this.onDownBackHandler, this);
-
-    this.showTurnMenu = function () {
-        this.build.visible = true;
+    var onDownHandler = function (buttonId) {
+        return new function (context) {
+            if (context.visible) {
+                context.parent.onDownPressButtonId = buttonId;
+            }
+        };
     }
 
-    this.hideTurnMenu = function () {
-        this.build.visible = false;
-    }
+    this.back = createButton(this, 'back', 10, (backgroundHeight / 2) - 90,
+        this.onDownBackHandler, this.onUpBackHandler, this.buttonEnterHandler, this.buttonLeftHandler);
+    this.addChild(this.back);
 
-    this.showBuildMenu = function () {
-        this.back.visible = true;
-        this.back.cellIndex = BUTTON_HIGHLIGHTED;
-    }
-
-    this.hideBuildMenu = function () {
-        this.back.visible = false;
-    }
+    this.settlement = createButton(this, 'settlement', 10, (backgroundHeight / 2) - 50,
+        new function (context) { }, new function (context) { }, this.buttonEnterHandler, this.buttonLeftHandler);
+    this.addChild(this.settlement);
 
     this.currentPlayer = null;
     this.playerSetupOrder = this.players.concat(this.players.slice(0, 3).reverse());
@@ -130,7 +140,7 @@ function createGameState() {
     this.end.visible = false;
     this.addChild(this.end);
 
-    this.endTurnHandler = function (context, params) {
+    this.endTurnHandler = function (context) {
         if (context.visible) {
             this.playerActions.enqueue({
                 id: this.playerId,
