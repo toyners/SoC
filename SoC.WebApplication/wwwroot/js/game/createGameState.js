@@ -4,16 +4,26 @@ var BUTTON_NORMAL = 0;
 var BUTTON_HIGHLIGHTED = 1;
 var BUTTON_DISABLED = 2;
 
+var BUTTON_ID_UNSET = 0;
+var BUTTON_BACK_ID = 1;
+var BUTTON_BUILD_ID = 2;
+
 function createGameState() {
     Kiwi.State.prototype.create(this);
 
     this.unprocessedEvents = new Queue();
 
-    this.clickHandled = 0;
+    this.onDownPressButtonId = 0;
 
-    this.buttonToggleHandler = function (context, params) {
+    this.buttonEnterHandler = function (context) {
         if (context.visible && context.cellIndex !== BUTTON_DISABLED) {
-            context.cellIndex = context.cellIndex == BUTTON_NORMAL ? BUTTON_HIGHLIGHTED : BUTTON_NORMAL;
+            context.cellIndex = BUTTON_HIGHLIGHTED;
+        }
+    };
+
+    this.buttonLeftHandler = function (context) {
+        if (context.visible && context.cellIndex !== BUTTON_DISABLED) {
+            context.cellIndex = BUTTON_NORMAL;
         }
     };
 
@@ -41,21 +51,25 @@ function createGameState() {
     this.diceTwo.visible = false;
     this.addChild(this.diceTwo);
 
-    this.buildHandler = function (context) {
+    this.onUpBuildHandler = function (context) {
         if (context.visible && context.cellIndex !== BUTTON_DISABLED) {
             var gameState = context.parent;
-
-            if (gameState.clickHandled < 1) {
+            if (gameState.onDownPressButtonId === BUTTON_BUILD_ID) {
                 gameState.hideTurnMenu();
                 gameState.showBuildMenu();
-                gameState.clickHandled = 1;
-            } else {
-                gameState.clickHandled = 0;
+                gameState.onDownPressButtonId = BUTTON_ID_UNSET;
             }
         }
     }
 
-    this.build = createButton(this, 'build', 10, (backgroundHeight / 2) - 90, this.buildHandler, this.buttonToggleHandler);
+    this.onDownBuildHandler = function (context) {
+        if (context.visible && context.cellIndex !== BUTTON_DISABLED) {
+            context.parent.onDownPressButtonId = BUTTON_BUILD_ID;
+        }
+    }
+
+    this.build = createButton(this, 'build', 10, (backgroundHeight / 2) - 90,
+        this.onDownBuildHandler, this.onUpBuildHandler, this.buttonEnterHandler, this.buttonLeftHandler);
     this.addChild(this.build);
 
     this.back = new Kiwi.GameObjects.Sprite(this, this.textures.back, 10, (backgroundHeight / 2) - 90);
@@ -65,14 +79,24 @@ function createGameState() {
     this.backHandler = function (context) {
         if (context.visible) {
             var gameState = context.parent;
-            gameState.hideBuildMenu();
-            gameState.showTurnMenu();
+            if (gameState.clickHandled === 2) {
+                gameState.hideBuildMenu();
+                gameState.showTurnMenu();
+                gameState.clickHandled = 0;
+            }
+        }
+    }
+
+    this.onDownBackHandler = function (context) {
+        if (context.visible) {
+            context.parent.clickHandled = 2;
         }
     }
 
     this.back.input.onUp.add(this.backHandler, gameState);
-    this.back.input.onEntered.add(this.buttonToggleHandler, gameState);
-    this.back.input.onLeft.add(this.buttonToggleHandler, gameState);
+    this.back.input.onEntered.add(this.buttonEnterHandler, gameState);
+    this.back.input.onLeft.add(this.buttonLeftHandler, gameState);
+    this.back.input.onDown.add(this.onDownBackHandler, this);
 
     this.showTurnMenu = function () {
         this.build.visible = true;
@@ -84,6 +108,7 @@ function createGameState() {
 
     this.showBuildMenu = function () {
         this.back.visible = true;
+        this.back.cellIndex = BUTTON_HIGHLIGHTED;
     }
 
     this.hideBuildMenu = function () {
@@ -119,8 +144,8 @@ function createGameState() {
     }
 
     this.end.input.onUp.add(this.endTurnHandler, gameState);
-    this.end.input.onEntered.add(this.buttonToggleHandler, gameState);
-    this.end.input.onLeft.add(this.buttonToggleHandler, gameState);
+    this.end.input.onEntered.add(this.buttonEnterHandler, gameState);
+    this.end.input.onLeft.add(this.buttonLeftHandler, gameState);
 
     this.onTurnTimerStop = function () {
         if (this.currentPlayer.isLocal) {

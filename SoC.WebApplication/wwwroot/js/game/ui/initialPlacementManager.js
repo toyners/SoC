@@ -49,8 +49,8 @@ class InitialPlacementManager {
 
         this.confirmButton = new Kiwi.GameObjects.Sprite(gameState, gameState.textures.confirm, x, y + 57);
         this.confirmButton.visible = false;
-        this.confirmButton.input.onEntered.add(gameState.buttonToggleHandler, gameState);
-        this.confirmButton.input.onLeft.add(gameState.buttonToggleHandler, gameState);
+        this.confirmButton.input.onEntered.add(gameState.buttonEnterHandler, gameState);
+        this.confirmButton.input.onLeft.add(gameState.buttonLeftHandler, gameState);
         this.confirmButton.input.onUp.add(confirmButtonClickHandler, gameState);
         gameState.addChild(this.confirmButton);
 
@@ -63,8 +63,8 @@ class InitialPlacementManager {
 
         this.cancelSettlementButton = new Kiwi.GameObjects.Sprite(gameState, gameState.textures.cancel, x + 170, y - 5);
         this.cancelSettlementButton.visible = false;
-        this.cancelSettlementButton.input.onEntered.add(gameState.buttonToggleHandler, gameState);
-        this.cancelSettlementButton.input.onLeft.add(gameState.buttonToggleHandler, gameState);
+        this.cancelSettlementButton.input.onEntered.add(gameState.buttonEnterHandler, gameState);
+        this.cancelSettlementButton.input.onLeft.add(gameState.buttonLeftHandler, gameState);
         this.cancelSettlementButton.input.onUp.add(cancelSettlementClickHandler, gameState);
         gameState.addChild(this.cancelSettlementButton);
 
@@ -77,8 +77,8 @@ class InitialPlacementManager {
 
         this.cancelRoadButton = new Kiwi.GameObjects.Sprite(gameState, gameState.textures.cancel, x + 170, y + 30);
         this.cancelRoadButton.visible = false;
-        this.cancelRoadButton.input.onEntered.add(gameState.buttonToggleHandler, gameState);
-        this.cancelRoadButton.input.onLeft.add(gameState.buttonToggleHandler, gameState);
+        this.cancelRoadButton.input.onEntered.add(gameState.buttonEnterHandler, gameState);
+        this.cancelRoadButton.input.onLeft.add(gameState.buttonLeftHandler, gameState);
         this.cancelRoadButton.input.onUp.add(cancelRoadClickHandler, gameState);
         gameState.addChild(this.cancelRoadButton);
 

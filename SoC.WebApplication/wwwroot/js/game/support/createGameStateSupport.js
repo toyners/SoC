@@ -158,13 +158,14 @@ function setupInitialPlacementUI(gameState, settlementPlacementData, roadPlaceme
     return initialPlacementManager;
 }
 
-function createButton(gameState, imageName, x, y, buttonClickHandler, buttonToggleHandler) {
+function createButton(gameState, imageName, x, y, buttonPressDownHandler, buttonPressUpHandler, buttonEnterHandler, buttonLeftHandler) {
     var button = new Kiwi.GameObjects.Sprite(gameState, gameState.textures[imageName], x, y);
     button.visible = false;
 
-    button.input.onUp.add(buttonClickHandler, gameState);
-    button.input.onEntered.add(buttonToggleHandler, gameState);
-    button.input.onLeft.add(buttonToggleHandler, gameState);
+    button.input.onDown.add(buttonPressDownHandler, this);
+    button.input.onUp.add(buttonPressUpHandler, gameState);
+    button.input.onEntered.add(buttonEnterHandler, gameState);
+    button.input.onLeft.add(buttonLeftHandler, gameState);
 
     return button;
 }
