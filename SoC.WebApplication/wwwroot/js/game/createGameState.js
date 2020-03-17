@@ -76,7 +76,7 @@ function createGameState() {
     }
 
     this.build = createButton(this, 'build', 10, (backgroundHeight / 2) - 90,
-        this.onDownBuildHandler, this.onUpBuildHandler, this.buttonEnterHandler, this.buttonLeftHandler);
+        null, this.onUpBuildHandler, this.buttonEnterHandler, this.buttonLeftHandler);
     this.addChild(this.build);
 
     this.onUpBackHandler = function (context) {
@@ -88,7 +88,7 @@ function createGameState() {
     }
 
     this.back = createButton(this, 'back', 10, (backgroundHeight / 2) - 90,
-        onDownHandler, this.onUpBackHandler, this.buttonEnterHandler, this.buttonLeftHandler);
+        null, this.onUpBackHandler, this.buttonEnterHandler, this.buttonLeftHandler);
     this.addChild(this.back);
 
     this.settlement = createButton(this, 'settlement', 10, (backgroundHeight / 2) - 50,
