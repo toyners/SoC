@@ -4,17 +4,10 @@ var BUTTON_NORMAL = 0;
 var BUTTON_HIGHLIGHTED = 1;
 var BUTTON_DISABLED = 2;
 
-var BUTTON_ID_UNSET = 0;
-var BUTTON_BACK_ID = 1;
-var BUTTON_BUILD_ID = 2;
-var BUTTON_SETTLEMENT_ID = 3;
-
 function createGameState() {
     Kiwi.State.prototype.create(this);
 
     this.unprocessedEvents = new Queue();
-
-    this.onDownPressButtonId = 0;
 
     this.buttonEnterHandler = function (context) {
         if (context.visible && context.cellIndex !== BUTTON_DISABLED) {
@@ -54,37 +47,31 @@ function createGameState() {
 
     this.showTurnMenu = function () {
         this.build.visible = true;
+        this.build.input.enabled = true;
     }
 
     this.hideTurnMenu = function () {
         this.build.visible = false;
+        this.build.input.enabled = false;
     }
 
     this.showBuildMenu = function () {
         this.back.visible = true;
+        this.back.input.enabled = true;
         this.back.cellIndex = BUTTON_HIGHLIGHTED;
         this.settlement.visible = true;
-
     }
 
     this.hideBuildMenu = function () {
         this.back.visible = false;
+        this.back.input.enabled = false;
     }
 
     this.onUpBuildHandler = function (context) {
         if (context.visible && context.cellIndex !== BUTTON_DISABLED) {
             var gameState = context.parent;
-            if (gameState.onDownPressButtonId === BUTTON_BUILD_ID) {
-                gameState.hideTurnMenu();
-                gameState.showBuildMenu();
-                gameState.onDownPressButtonId = BUTTON_ID_UNSET;
-            }
-        }
-    }
-
-    this.onDownBuildHandler = function (context) {
-        if (context.visible && context.cellIndex !== BUTTON_DISABLED) {
-            context.parent.onDownPressButtonId = BUTTON_BUILD_ID;
+            gameState.hideTurnMenu();
+            gameState.showBuildMenu();
         }
     }
 
@@ -95,34 +82,17 @@ function createGameState() {
     this.onUpBackHandler = function (context) {
         if (context.visible) {
             var gameState = context.parent;
-            if (gameState.onDownPressButtonId === BUTTON_BACK_ID) {
-                gameState.hideBuildMenu();
-                gameState.showTurnMenu();
-                gameState.onDownPressButtonId = BUTTON_ID_UNSET;
-            }
+            gameState.hideBuildMenu();
+            gameState.showTurnMenu();
         }
-    }
-
-    this.onDownBackHandler = function (context) {
-        if (context.visible) {
-            context.parent.onDownPressButtonId = BUTTON_BACK_ID;
-        }
-    }
-
-    var onDownHandler = function (buttonId) {
-        return new function (context) {
-            if (context.visible) {
-                context.parent.onDownPressButtonId = buttonId;
-            }
-        };
     }
 
     this.back = createButton(this, 'back', 10, (backgroundHeight / 2) - 90,
-        this.onDownBackHandler, this.onUpBackHandler, this.buttonEnterHandler, this.buttonLeftHandler);
+        onDownHandler, this.onUpBackHandler, this.buttonEnterHandler, this.buttonLeftHandler);
     this.addChild(this.back);
 
     this.settlement = createButton(this, 'settlement', 10, (backgroundHeight / 2) - 50,
-        new function (context) { }, new function (context) { }, this.buttonEnterHandler, this.buttonLeftHandler);
+        null, null, this.buttonEnterHandler, this.buttonLeftHandler);
     this.addChild(this.settlement);
 
     this.currentPlayer = null;

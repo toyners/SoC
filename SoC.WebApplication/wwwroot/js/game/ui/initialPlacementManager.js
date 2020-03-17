@@ -30,7 +30,7 @@ class InitialPlacementManager {
         this.selectRoadLabel = new Kiwi.GameObjects.Textfield(gameState, "Select a road", x, y + 32, "#000", 20, 'normal', 'Impact');
         gameState.addChild(this.selectRoadLabel);
 
-        var confirmButtonClickHandler = function (context, params) {
+        var confirmButtonClickHandler = function (context) {
             if (!context.visible)
                 return; 
             var gameState = context.parent;

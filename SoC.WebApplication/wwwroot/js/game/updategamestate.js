@@ -61,7 +61,7 @@ function updateGameState() {
                 this.diceTwo.cellIndex = gameEvent.dice2 - 1;
 
                 if (this.playersById[gameEvent.playerId].isLocal && this.diceOne + this.diceTwo != 7) {
-                    this.build.visible = true;
+                    this.build.visible = this.build.input.enabled = true;
                     this.build.cellIndex = this.currentPlayer.canBuild() ? BUTTON_NORMAL : BUTTON_DISABLED;
                     this.end.visible = true;
                 }
