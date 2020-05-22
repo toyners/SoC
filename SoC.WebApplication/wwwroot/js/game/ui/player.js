@@ -98,7 +98,20 @@ class Player {
     }
 
     canBuild() {
-        return (this.brickCount > 0 && this.lumberCount > 0);
+        return this.canBuildSettlement() || this.canBuildRoad() || this.canBuildCity();
+    }
+
+    canBuildCity() {
+        return false;
+    }
+
+    canBuildRoad() {
+        return false;
+    }
+
+    canBuildSettlement() {
+        return this.settlementCount > 0 && this.brickCount > 0 && this.lumberCount > 0 &&
+            this.grainCount > 0 && this.woolCount > 0;
     }
 
     deactivate() {

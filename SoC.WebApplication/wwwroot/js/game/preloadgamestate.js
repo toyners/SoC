@@ -19,7 +19,7 @@ function preloadGameState() {
     this.addSpriteSheet('build', controlImagePath + 'build.png', 70, 30)
     this.addSpriteSheet('cancel', controlImagePath + 'cancel.png', 30, 30);
     this.addSpriteSheet('confirm', controlImagePath + 'confirm.png', 96, 30);
-    this.addSpriteSheet('settlement', controlImagePath + 'settlement.png', 121, 30);
+    this.addSpriteSheet(buttonSettlementImageName, controlImagePath + 'settlement.png', 121, 30);
     this.addSpriteSheet('end', controlImagePath + 'end.png', 107, 30)
 
     this.addSpriteSheet('resourceTypes', '../../../images/player/resourceTypes.png', 20, 20)

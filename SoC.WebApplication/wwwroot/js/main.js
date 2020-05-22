@@ -3,6 +3,7 @@
 var connection = new signalR.HubConnectionBuilder().withUrl("/gameRequest").build();
 var gameState = null;
 var game = null;
+var buttonSettlementImageName = "Button_Settlement";
 
 connection.start().then(function () {
     var fragments = window.location.pathname.split("/");

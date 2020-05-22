@@ -41,38 +41,66 @@ function setupPlayers(gameState) {
     var playersById = {};
     var players = [];
 
-    var player = new Player(gameState, gameState.playerData.players[0],
+    var playerData = gameState.playerData.players[0];
+    var player = new Player(gameState, playerData,
     {
         layout: [{ x: 10, y: 10 }, { x: 10, y: 50 }, { x: 10, y: 80 }],
         marker: { image: gameState.textures.marker, x: 100, y: 5 }
     });
-    playersById[gameState.playerData.players[0].id] = player;
+    playersById[playerData.id] = player;
     players.push(player);
 
+    if (playerData.isLocal)
+        gameState.localPlayer = player;
 
-    player = new Player(gameState, gameState.playerData.players[1],
+    playerData = gameState.playerData.players[1];
+    player = new Player(gameState, playerData,
     {
         layout: [{ x: 10, y: 550 }, { x: 10, y: 520 }, { x: 10, y: 480 }],
         marker: { image: gameState.textures.marker, x: 100, y: 545 }
     });
-    playersById[gameState.playerData.players[1].id] = player;
+    playersById[playerData.id] = player;
     players.push(player);
 
-    player = new Player(gameState, gameState.playerData.players[2],
+    if (playerData.isLocal)
+    {
+        if (gameState.localPlayer)
+            throw new Exception();
+
+        gameState.localPlayer = player;
+    }
+
+    playerData = gameState.playerData.players[2];
+    player = new Player(gameState, playerData,
     {
         layout: [{ x: 700, y: 10 }, { x: 700, y: 50 }, { x: 700, y: 80 }],
         marker: { image: gameState.textures.reverseMarker, x: 640, y: 5 }
     });
-    playersById[gameState.playerData.players[2].id] = player;
+    playersById[playerData.id] = player;
     players.push(player);
-    
-    player = new Player(gameState, gameState.playerData.players[3],
+
+    if (playerData.isLocal) {
+        if (gameState.localPlayer)
+            throw new Exception();
+
+        gameState.localPlayer = player;
+    }
+
+    playerData = gameState.playerData.players[3];
+    player = new Player(gameState, playerData,
     {
         layout: [{ x: 700, y: 550 }, { x: 700, y: 520 }, { x: 700, y: 480 }],
         marker: { image: gameState.textures.reverseMarker, x: 640, y: 545 }
     });
-    playersById[gameState.playerData.players[3].id] = player;
+    playersById[playerData.id] = player;
     players.push(player);
+
+    if (playerData.isLocal) {
+        if (gameState.localPlayer)
+            throw new Exception();
+
+        gameState.localPlayer = player;
+    }
 
     gameState.playersById = playersById;
     gameState.players = players;

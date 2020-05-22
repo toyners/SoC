@@ -67,7 +67,6 @@ namespace SoC.WebApplication
             {
                 while (this.gameEvents.TryDequeue(out var gameEvent))
                 {
-                    PlayerAction request = null;
                     if (gameEvent is ConfirmGameStartEvent)
                     {
                         this.Send(new ConfirmGameStartAction(this.Id));
@@ -97,7 +96,12 @@ namespace SoC.WebApplication
 
                     if (gameEvent is PlaceSetupInfrastructureEvent)
                     {
+                        var start = DateTime.Now;
                         var locations = this.gameBoardQuery.GetLocationsWithBestYield(1);
+                        var waitTimeInMilliseconds = (9 - (DateTime.Now - start).Seconds) * 1000;
+                        if (waitTimeInMilliseconds > 0)
+                            Thread.Sleep(waitTimeInMilliseconds);
+
                         this.Send(new PlaceSetupInfrastructureAction(this.Id, locations[0], locations[0] + 1));
                         continue;
                     }

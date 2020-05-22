@@ -24,11 +24,9 @@ function updateGameState() {
                 if (!this.currentPlayer) {
                     this.changeCurrentPlayer();
                     this.currentPlayer.activate();
+                }
+                if (this.currentPlayer.isLocal) {
                     this.initialPlacementManager.activate();
-                } else if (this.currentPlayer.isLocal) {
-                    this.initialPlacementManager.activate();
-                } else {
-                    this.unprocessedEvents.enqueue(gameEvent);
                 }
                 break;
             }
@@ -37,17 +35,14 @@ function updateGameState() {
                 break;
             }
             case "SetupInfrastructurePlacedEvent": {
-                if (this.currentPlayer.isLocal) {
-                    this.initialPlacementManager.showPlacement(this.currentPlayer, gameEvent.settlementLocation, gameEvent.roadSegmentEndLocation);
+                this.playerSetupOrder.shift()
+                var previousPlayer = this.changeCurrentPlayer(gameEvent.playerId);
+                this.initialPlacementManager.showPlacement(this.currentPlayer, gameEvent.settlementLocation, gameEvent.roadSegmentEndLocation);
 
-                    if (this.initialPlacementManager.awaitingPlacements() != 0) {
-                        this.currentPlayer.deactivate();
-                        this.changeCurrentPlayer();
-                        this.currentPlayer.activate();
-                        this.turnTimer.start();
-                    }
-                } else {
-                    this.unprocessedEvents.enqueue(gameEvent);
+                if (this.initialPlacementManager.awaitingPlacements() != 0) {
+                    this.currentPlayer.deactivate();
+                    this.changeCurrentPlayer();
+                    this.currentPlayer.activate();
                 }
                 break;
             }
@@ -60,10 +55,13 @@ function updateGameState() {
                 this.diceTwo.visible = true;
                 this.diceTwo.cellIndex = gameEvent.dice2 - 1;
 
-                if (this.playersById[gameEvent.playerId].isLocal && this.diceOne + this.diceTwo != 7) {
-                    this.build.visible = this.build.input.enabled = true;
-                    this.build.cellIndex = this.currentPlayer.canBuild() ? BUTTON_NORMAL : BUTTON_DISABLED;
-                    this.end.visible = true;
+                if (this.playersById[gameEvent.playerId].isLocal) {
+                    if (this.diceOne + this.diceTwo != 7) {
+                        this.build.visible = this.build.input.enabled = true;
+                        this.build.cellIndex = this.currentPlayer.canBuild() ? BUTTON_NORMAL : BUTTON_DISABLED;
+                        this.buildSettlement.cellIndex = this.player.canBuildSettlement() ? BUTTON_NORMAL : BUTTON_DISABLED;
+                        this.end.visible = true;
+                    }
                 }
 
                 break;

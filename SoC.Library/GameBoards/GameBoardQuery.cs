@@ -77,8 +77,6 @@ namespace Jabberwocky.SoC.Library.GameBoards
         /// <returns></returns>
         public uint[] GetLocationsWithBestYield(int count)
         {
-            var result = new uint[count];
-
             var queue = new Queue<uint>();
             var index = 0;
             while (queue.Count < count && index < this.locationsOrderedByBestYield.Length)
