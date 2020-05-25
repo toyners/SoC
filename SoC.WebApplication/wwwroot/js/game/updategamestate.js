@@ -35,15 +35,21 @@ function updateGameState() {
                 break;
             }
             case "SetupInfrastructurePlacedEvent": {
-                this.playerSetupOrder.shift()
-                var previousPlayer = this.changeCurrentPlayer(gameEvent.playerId);
+                var expectedPlayer = this.playerSetupOrder.shift();
+                if (this.currentPlayer.id !== expectedPlayer.id) {
+                    var i = 1 / 0; //TODO throw better exception
+                }
+
                 this.initialPlacementManager.showPlacement(this.currentPlayer, gameEvent.settlementLocation, gameEvent.roadSegmentEndLocation);
 
-                if (this.initialPlacementManager.awaitingPlacements() != 0) {
-                    this.currentPlayer.deactivate();
-                    this.changeCurrentPlayer();
-                    this.currentPlayer.activate();
+                this.currentPlayer.deactivate();
+
+                var nextPlayer = this.playerSetupOrder.length > 0 ? this.playerSetupOrder[0] : null;
+                if (nextPlayer) {
+                    this.changeCurrentPlayer(nextPlayer.id);
+                    nextPlayer.activate();
                 }
+
                 break;
             }
             case "StartTurnEvent": {

@@ -45,7 +45,7 @@ function createGameState() {
         return previousPlayer;
     };
     
-    this.playerSetupOrder = this.players.concat(this.players.slice(0, 3).reverse());
+    this.playerSetupOrder = this.players.concat(this.players.slice(0, 4).reverse());
 
     this.messageManagersByPlayerId = setupMessageManagers(this);
 
