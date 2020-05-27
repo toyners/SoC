@@ -61,6 +61,8 @@ namespace SoC.WebApplication
             });
         }
 
+        private const int TurnDuration = 2;
+
         private void ProcessAsync()
         {
             while (true)
@@ -98,7 +100,7 @@ namespace SoC.WebApplication
                     {
                         var start = DateTime.Now;
                         var locations = this.gameBoardQuery.GetLocationsWithBestYield(1);
-                        var waitTimeInMilliseconds = (9 - (DateTime.Now - start).Seconds) * 1000;
+                        var waitTimeInMilliseconds = (TurnDuration - (DateTime.Now - start).Seconds) * 1000;
                         if (waitTimeInMilliseconds > 0)
                             Thread.Sleep(waitTimeInMilliseconds);
 

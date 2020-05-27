@@ -37,6 +37,49 @@ function setupMessageManagers(gameState) {
     return messageManagersByPlayerId;
 }
 
+function setupEventHandlers(gameState) {
+    gameState.buttonEnterHandler = function (context) {
+        if (context.visible && context.input.enabled) {
+            context.cellIndex = BUTTON_HIGHLIGHTED;
+        }
+    };
+
+    gameState.buttonLeftHandler = function (context) {
+        if (context.visible && context.input.enabled) {
+            context.cellIndex = BUTTON_NORMAL;
+        }
+    };
+
+    gameState.onUpBackHandler = function (context) {
+        if (context.visible && context.input.enabled) {
+            var gameState = context.parent;
+            gameState.hideBuildMenu();
+            gameState.showTurnMenu();
+        }
+    }
+
+    gameState.onUpBuildHandler = function (context) {
+        if (context.visible && context.input.enabled) {
+            var gameState = context.parent;
+            gameState.hideTurnMenu();
+            gameState.showBuildMenu();
+        }
+    }
+
+    gameState.onUpEndTurnHandler = function (context) {
+        if (context.visible && context.input.enabled) {
+            this.playerActions.enqueue({
+                id: this.playerId,
+                gameId: this.gameId,
+                type: 'EndOfTurnAction',
+                data: { initiatingPlayerId: this.playerId }
+            });
+
+            context.visible = context.enabled = false;
+        }
+    }
+}
+
 function setupPlayers(gameState) {
     var playersById = {};
     var players = [];
@@ -190,7 +233,7 @@ function createButton(gameState, imageName, x, y, buttonPressDownHandler, button
     var button = new Kiwi.GameObjects.Sprite(gameState, gameState.textures[imageName], x, y);
 
     if (buttonPressDownHandler) {
-        button.input.onDown.add(buttonPressDownHandler, this);
+        button.input.onDown.add(buttonPressDownHandler, gameState);
     }
     if (buttonPressUpHandler) {
         button.input.onUp.add(buttonPressUpHandler, gameState);

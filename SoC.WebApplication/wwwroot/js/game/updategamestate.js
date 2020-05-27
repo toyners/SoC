@@ -37,7 +37,7 @@ function updateGameState() {
             case "SetupInfrastructurePlacedEvent": {
                 var expectedPlayer = this.playerSetupOrder.shift();
                 if (this.currentPlayer.id !== expectedPlayer.id) {
-                    var i = 1 / 0; //TODO throw better exception
+                    throw new Error("Current player is not expected player");
                 }
 
                 this.initialPlacementManager.showPlacement(this.currentPlayer, gameEvent.settlementLocation, gameEvent.roadSegmentEndLocation);
@@ -53,6 +53,10 @@ function updateGameState() {
                 break;
             }
             case "StartTurnEvent": {
+                this.currentPlayer.deactivate();
+                this.changeCurrentPlayer(gameEvent.playerId);
+                this.currentPlayer.activate();
+
                 processCollectedResources(this, gameEvent.collectedResources);
 
                 this.diceOne.visible = true;
@@ -61,19 +65,20 @@ function updateGameState() {
                 this.diceTwo.visible = true;
                 this.diceTwo.cellIndex = gameEvent.dice2 - 1;
 
-                if (this.playersById[gameEvent.playerId].isLocal) {
+                if (this.currentPlayer.isLocal) {
                     if (this.diceOne + this.diceTwo != 7) {
-                        this.build.visible = this.build.input.enabled = true;
                         this.build.cellIndex = this.currentPlayer.canBuild() ? BUTTON_NORMAL : BUTTON_DISABLED;
-                        this.buildSettlement.cellIndex = this.player.canBuildSettlement() ? BUTTON_NORMAL : BUTTON_DISABLED;
-                        this.end.visible = true;
+                        this.buildRoad.cellIndex = this.currentPlayer.canBuildRoad() ? BUTTON_NORMAL : BUTTON_DISABLED;
+                        this.buildSettlement.cellIndex = this.currentPlayer.canBuildSettlement() ? BUTTON_NORMAL : BUTTON_DISABLED;
+                        this.showTurnMenu();
+                        this.end.visible = this.end.input.enabled = true;
                     }
                 }
 
                 break;
             }
             default: {
-                break;
+                throw new Error(gameEvent.typeName + " not recognised");
             }
         }
     }

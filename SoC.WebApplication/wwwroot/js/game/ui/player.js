@@ -106,7 +106,7 @@ class Player {
     }
 
     canBuildRoad() {
-        return false;
+        return this.roadCount > 0 && this.brickCount > 0 && this.lumberCount > 0;
     }
 
     canBuildSettlement() {

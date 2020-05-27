@@ -9,18 +9,6 @@ function createGameState() {
 
     this.unprocessedEvents = new Queue();
 
-    this.buttonEnterHandler = function (context) {
-        if (context.visible && context.cellIndex !== BUTTON_DISABLED) {
-            context.cellIndex = BUTTON_HIGHLIGHTED;
-        }
-    };
-
-    this.buttonLeftHandler = function (context) {
-        if (context.visible && context.cellIndex !== BUTTON_DISABLED) {
-            context.cellIndex = BUTTON_NORMAL;
-        }
-    };
-
     this.background = new Kiwi.GameObjects.StaticImage(this, this.textures.background, 0, 0);
     var backgroundWidth = this.background.width;
     var backgroundHeight = this.background.height;
@@ -33,7 +21,17 @@ function createGameState() {
     this.currentPlayer = null;
     this.localPlayer = null;
 
-    setupPlayers(this)
+    setupPlayers(this);
+
+    setupEventHandlers(this);
+
+    this.build = createButton(this, 'build', 10, (backgroundHeight / 2) - 90,
+        null, this.onUpBuildHandler, this.buttonEnterHandler, this.buttonLeftHandler);
+    this.addChild(this.build);
+
+    this.back = createButton(this, 'back', 10, (backgroundHeight / 2) - 90,
+        null, this.onUpBackHandler, this.buttonEnterHandler, this.buttonLeftHandler);
+    this.addChild(this.back);
 
     this.changeCurrentPlayer = function (playerId) {
         var previousPlayer = this.currentPlayer || null;
@@ -60,9 +58,9 @@ function createGameState() {
     this.diceTwo.visible = false;
     this.addChild(this.diceTwo);
 
-    this.build = createButton(this, 'build', 10, (backgroundHeight / 2) - 90,
-        null, this.onUpBuildHandler, this.buttonEnterHandler, this.buttonLeftHandler);
-    this.addChild(this.build);
+    this.buildRoad = createButton(this, buttonRoadImageName, 10, (backgroundHeight / 2) - 10,
+        null, null, this.buttonEnterHandler, this.buttonLeftHandler);
+    this.addChild(this.buildRoad);
 
     this.buildSettlement = createButton(this, buttonSettlementImageName, 10, (backgroundHeight / 2) - 50,
         null, null, this.buttonEnterHandler, this.buttonLeftHandler);
@@ -70,68 +68,33 @@ function createGameState() {
 
     this.showTurnMenu = function () {
         this.build.visible = true;
-        this.build.input.enabled = true;
+        this.build.input.enabled = (this.build.cellIndex != BUTTON_DISABLED);
     }
 
     this.hideTurnMenu = function () {
-        this.build.visible = false;
-        this.build.input.enabled = false;
+        this.build.visible = this.build.input.enabled = false;
     }
 
     this.showBuildMenu = function () {
-        this.back.visible = true;
-        this.back.input.enabled = true;
+        this.back.visible = this.back.input.enabled = true;
         this.back.cellIndex = BUTTON_HIGHLIGHTED;
+        this.buildRoad.visible = true;
+        this.buildRoad.input.enabled = (this.buildRoad.cellIndex != BUTTON_DISABLED);
         this.buildSettlement.visible = true;
+        this.buildSettlement.input.enabled = (this.buildSettlement.cellIndex != BUTTON_DISABLED);
     }
 
     this.hideBuildMenu = function () {
-        this.back.visible = false;
-        this.back.input.enabled = false;
+        this.back.visible = this.back.input.enabled = false;
+        this.buildRoad.visible = this.buildRoad.input.enabled = false;
+        this.buildSettlement.visible = this.buildSettlement.input.enabled = false;
     }
 
-    this.onUpBuildHandler = function (context) {
-        if (context.visible && context.cellIndex !== BUTTON_DISABLED) {
-            var gameState = context.parent;
-            gameState.hideTurnMenu();
-            gameState.showBuildMenu();
-        }
-    }
-
-    this.onUpBackHandler = function (context) {
-        if (context.visible) {
-            var gameState = context.parent;
-            gameState.hideBuildMenu();
-            gameState.showTurnMenu();
-        }
-    }
-
-    this.back = createButton(this, 'back', 10, (backgroundHeight / 2) - 90,
-        null, this.onUpBackHandler, this.buttonEnterHandler, this.buttonLeftHandler);
-    this.addChild(this.back);
-
-    this.end = new Kiwi.GameObjects.Sprite(this, this.textures.end, 10, (backgroundHeight / 2) + 30);
-    this.end.visible = false;
+    this.end = createButton(this, buttonEndImageName, 10, (backgroundHeight / 2) + 30,
+        null, this.onUpEndTurnHandler, this.buttonEnterHandler, this.buttonLeftHandler);
     this.addChild(this.end);
 
-    this.endTurnHandler = function (context) {
-        if (context.visible) {
-            this.playerActions.enqueue({
-                id: this.playerId,
-                gameId: this.gameId,
-                type: 'EndOfTurnAction',
-                data: { initiatingPlayerId: this.playerId }
-            });
-
-            context.visible = false;
-        }
-    }
-
-    this.end.input.onUp.add(this.endTurnHandler, gameState);
-    this.end.input.onEntered.add(this.buttonEnterHandler, gameState);
-    this.end.input.onLeft.add(this.buttonLeftHandler, gameState);
-
-    this.onTurnTimerStop = function () {
+    /*this.onTurnTimerStop = function () {
         if (this.currentPlayer.isLocal) {
             var i = 1 / 0; // TODO: Should not get here
         }
@@ -176,5 +139,5 @@ function createGameState() {
                 break;
             }
         }
-    }
+    }*/
 }
