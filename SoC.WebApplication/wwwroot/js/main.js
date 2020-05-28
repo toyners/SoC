@@ -6,6 +6,7 @@ var game = null;
 var buttonSettlementImageName = "Button_Settlement";
 var buttonRoadImageName = "Button_Road";
 var buttonEndImageName = "Button_End";
+var buttonBuyImageName = "Button_Buy";
 
 connection.start().then(function () {
     var fragments = window.location.pathname.split("/");

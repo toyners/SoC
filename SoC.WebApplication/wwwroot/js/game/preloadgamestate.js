@@ -17,6 +17,7 @@ function preloadGameState() {
 
     this.addSpriteSheet('back', controlImagePath + 'back.png', 70, 30)
     this.addSpriteSheet('build', controlImagePath + 'build.png', 70, 30)
+    this.addSpriteSheet(buttonBuyImageName, controlImagePath + 'buy.png', 56, 30)
     this.addSpriteSheet('cancel', controlImagePath + 'cancel.png', 30, 30);
     this.addSpriteSheet('confirm', controlImagePath + 'confirm.png', 96, 30);
     this.addSpriteSheet(buttonEndImageName, controlImagePath + 'end.png', 107, 30)

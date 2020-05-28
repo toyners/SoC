@@ -114,6 +114,10 @@ class Player {
             this.grainCount > 0 && this.woolCount > 0;
     }
 
+    canBuy() {
+        return this.grainCount > 0 && this.oreCount > 0 && this.woolCount > 0;
+    }
+
     deactivate() {
         this.currentPlayerMarker.visible = false;
         this.currentPlayerMarker.animation.play('main');

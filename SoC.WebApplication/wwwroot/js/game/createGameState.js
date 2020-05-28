@@ -29,6 +29,10 @@ function createGameState() {
         null, this.onUpBuildHandler, this.buttonEnterHandler, this.buttonLeftHandler);
     this.addChild(this.build);
 
+    this.buy = createButton(this, buttonBuyImageName, 10, (backgroundHeight / 2) - 50,
+        null, null, this.buttonEnterHandler, this.buttonLeftHandler);
+    this.addChild(this.buy);
+
     this.back = createButton(this, 'back', 10, (backgroundHeight / 2) - 90,
         null, this.onUpBackHandler, this.buttonEnterHandler, this.buttonLeftHandler);
     this.addChild(this.back);

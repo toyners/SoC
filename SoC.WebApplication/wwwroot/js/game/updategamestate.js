@@ -68,6 +68,7 @@ function updateGameState() {
                 if (this.currentPlayer.isLocal) {
                     if (this.diceOne + this.diceTwo != 7) {
                         this.build.cellIndex = this.currentPlayer.canBuild() ? BUTTON_NORMAL : BUTTON_DISABLED;
+                        this.buy.cellIndex = this.currentPlayer.canBuy() ? BUTTON_NORMAL : BUTTON_DISABLED;
                         this.buildRoad.cellIndex = this.currentPlayer.canBuildRoad() ? BUTTON_NORMAL : BUTTON_DISABLED;
                         this.buildSettlement.cellIndex = this.currentPlayer.canBuildSettlement() ? BUTTON_NORMAL : BUTTON_DISABLED;
                         this.showTurnMenu();
